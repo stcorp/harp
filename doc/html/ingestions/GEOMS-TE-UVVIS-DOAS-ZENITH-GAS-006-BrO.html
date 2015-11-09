@@ -1,0 +1,680 @@
+
+
+<!DOCTYPE html>
+<!--[if IE 8]><html class="no-js lt-ie9" lang="en" > <![endif]-->
+<!--[if gt IE 8]><!--> <html class="no-js" lang="en" > <!--<![endif]-->
+<head>
+  <meta charset="utf-8">
+  
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  
+  <title>GEOMS-TE-UVVIS-DOAS-ZENITH-GAS-006-BrO &mdash; HARP 0.1b documentation</title>
+  
+
+  
+  
+
+  
+
+  
+  
+    
+
+  
+
+  
+  
+    <link rel="stylesheet" href="../_static/css/theme.css" type="text/css" />
+  
+
+  
+    <link rel="stylesheet" href="../_static/custom.css" type="text/css" />
+  
+
+  
+    <link rel="top" title="HARP 0.1b documentation" href="../index.html"/> 
+
+  
+  <script src="../_static/js/modernizr.min.js"></script>
+
+</head>
+
+<body class="wy-body-for-nav" role="document">
+
+  <div class="wy-grid-for-nav">
+
+    
+    <nav data-toggle="wy-nav-shift" class="wy-nav-side">
+      <div class="wy-side-scroll">
+        <div class="wy-side-nav-search">
+          
+
+          
+            <a href="../index.html" class="icon icon-home"> HARP
+          
+
+          
+          </a>
+
+          
+            
+            
+              <div class="version">
+                0.1
+              </div>
+            
+          
+
+          
+<div role="search">
+  <form id="rtd-search-form" class="wy-form" action="../search.html" method="get">
+    <input type="text" name="q" placeholder="Search docs" />
+    <input type="hidden" name="check_keywords" value="yes" />
+    <input type="hidden" name="area" value="default" />
+  </form>
+</div>
+
+          
+        </div>
+
+        <div class="wy-menu wy-menu-vertical" data-spy="affix" role="navigation" aria-label="main navigation">
+          
+            
+            
+                <ul>
+<li class="toctree-l1"><a class="reference internal" href="../install.html">Installation</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../dataformats.html">Data formats</a></li>
+<li class="toctree-l1"><a class="reference internal" href="index.html">Ingestion definitions</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../libharp.html">C library</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../harpcheck.html">harpcheck</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../harpcollocate.html">harpcollocate</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../harpconvert.html">harpconvert</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../harpdump.html">harpdump</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../harpfilter.html">harpfilter</a></li>
+</ul>
+
+            
+          
+        </div>
+      </div>
+    </nav>
+
+    <section data-toggle="wy-nav-shift" class="wy-nav-content-wrap">
+
+      
+      <nav class="wy-nav-top" role="navigation" aria-label="top navigation">
+        <i data-toggle="wy-nav-top" class="fa fa-bars"></i>
+        <a href="../index.html">HARP</a>
+      </nav>
+
+
+      
+      <div class="wy-nav-content">
+        <div class="rst-content">
+          
+
+
+
+
+
+<div role="navigation" aria-label="breadcrumbs navigation">
+  <ul class="wy-breadcrumbs">
+    <li><a href="../index.html">Docs</a> &raquo;</li>
+      
+    <li>GEOMS-TE-UVVIS-DOAS-ZENITH-GAS-006-BrO</li>
+      <li class="wy-breadcrumbs-aside">
+        
+          
+        
+      </li>
+  </ul>
+  <hr/>
+</div>
+          <div role="main" class="document" itemscope="itemscope" itemtype="http://schema.org/Article">
+           <div itemprop="articleBody">
+            
+  <div class="section" id="geoms-te-uvvis-doas-zenith-gas-006-bro">
+<h1>GEOMS-TE-UVVIS-DOAS-ZENITH-GAS-006-BrO</h1>
+<div class="section" id="variables">
+<h2>Variables</h2>
+<p>The table below lists the variables that are present in the HARP product that results from an ingestion of <code class="docutils literal"><span class="pre">GEOMS-TE-UVVIS-DOAS-ZENITH-GAS-006-BrO</span></code> data.</p>
+<table border="1" class="docutils">
+<colgroup>
+<col width="25%" />
+<col width="5%" />
+<col width="15%" />
+<col width="15%" />
+<col width="40%" />
+</colgroup>
+<thead valign="bottom">
+<tr class="row-odd"><th class="head">field name</th>
+<th class="head">type</th>
+<th class="head">dimensions</th>
+<th class="head">unit</th>
+<th class="head">description</th>
+</tr>
+</thead>
+<tbody valign="top">
+<tr class="row-even"><td><strong>index</strong></td>
+<td>int32</td>
+<td>{<em>time</em>}</td>
+<td>&nbsp;</td>
+<td>zero-based index of the sample within the source product</td>
+</tr>
+<tr class="row-odd"><td><strong>instrument_name</strong></td>
+<td>string</td>
+<td>&nbsp;</td>
+<td>&nbsp;</td>
+<td>name of the instrument</td>
+</tr>
+<tr class="row-even"><td><strong>site_name</strong></td>
+<td>string</td>
+<td>&nbsp;</td>
+<td>&nbsp;</td>
+<td>name of the site at which the instrument is located</td>
+</tr>
+<tr class="row-odd"><td><strong>datetime</strong></td>
+<td>double</td>
+<td>{<em>time</em>}</td>
+<td>days since 2000-01-01</td>
+<td>mean time of the measurement</td>
+</tr>
+<tr class="row-even"><td><strong>datetime_start</strong></td>
+<td>double</td>
+<td>{<em>time</em>}</td>
+<td>days since 2000-01-01</td>
+<td>start time of the measurement</td>
+</tr>
+<tr class="row-odd"><td><strong>datetime_stop</strong></td>
+<td>double</td>
+<td>{<em>time</em>}</td>
+<td>days since 2000-01-01</td>
+<td>stop time of the measurement</td>
+</tr>
+<tr class="row-even"><td><strong>instrument_latitude</strong></td>
+<td>double</td>
+<td>&nbsp;</td>
+<td>degree_north</td>
+<td>latitude of the instrument</td>
+</tr>
+<tr class="row-odd"><td><strong>instrument_longitude</strong></td>
+<td>double</td>
+<td>&nbsp;</td>
+<td>degree_east</td>
+<td>longitude of the measurement</td>
+</tr>
+<tr class="row-even"><td><strong>instrument_altitude</strong></td>
+<td>double</td>
+<td>&nbsp;</td>
+<td>m</td>
+<td>altitude of the instrument relative to the location site</td>
+</tr>
+<tr class="row-odd"><td><strong>altitude</strong></td>
+<td>double</td>
+<td>{<em>time</em>, <em>vertical</em>}</td>
+<td>km</td>
+<td>effictive retrieval altitude</td>
+</tr>
+<tr class="row-even"><td><strong>pressure</strong></td>
+<td>double</td>
+<td>{<em>time</em>, <em>vertical</em>}</td>
+<td>hPa</td>
+<td>independent pressure profile</td>
+</tr>
+<tr class="row-odd"><td><strong>temperature</strong></td>
+<td>double</td>
+<td>{<em>time</em>, <em>vertical</em>}</td>
+<td>K</td>
+<td>independent temperature profile</td>
+</tr>
+<tr class="row-even"><td><strong>altitude_bounds</strong></td>
+<td>double</td>
+<td>{<em>time</em>, <em>vertical</em>, 2}</td>
+<td>km</td>
+<td>lower and upper boundaries of the height layers</td>
+</tr>
+<tr class="row-odd"><td><strong>solar_zenith_angle</strong></td>
+<td>double</td>
+<td>{<em>time</em>}</td>
+<td>deg</td>
+<td>solar astronomical zenith angle</td>
+</tr>
+<tr class="row-even"><td><strong>solar_azimuth_angle</strong></td>
+<td>double</td>
+<td>{<em>time</em>}</td>
+<td>deg</td>
+<td>solar azimuth angle</td>
+</tr>
+<tr class="row-odd"><td><strong>viewing_azimith_angle</strong></td>
+<td>double</td>
+<td>{<em>time</em>}</td>
+<td>deg</td>
+<td>viewing azimuth angle of the instrument</td>
+</tr>
+<tr class="row-even"><td><strong>viewing_zenith_angle</strong></td>
+<td>double</td>
+<td>{<em>time</em>}</td>
+<td>deg</td>
+<td>viewing zenith angle of the instrument</td>
+</tr>
+<tr class="row-odd"><td><strong>latitude</strong></td>
+<td>double</td>
+<td>{<em>time</em>, <em>vertical</em>}</td>
+<td>degree_north</td>
+<td>latitude of effective air mass at each altitude</td>
+</tr>
+<tr class="row-even"><td><strong>longitude</strong></td>
+<td>double</td>
+<td>{<em>time</em>, <em>vertical</em>}</td>
+<td>degree_east</td>
+<td>longitude of effective air mass at each altitude</td>
+</tr>
+<tr class="row-odd"><td><strong>cloud_flag</strong></td>
+<td>string</td>
+<td>{<em>time</em>}</td>
+<td>&nbsp;</td>
+<td>one of clear-sky, thin-clouds, thick-clouds, broken-clouds, unavailable</td>
+</tr>
+<tr class="row-even"><td><strong>stratospheric_aerosol_optical_depth</strong></td>
+<td>double</td>
+<td>{<em>time</em>}</td>
+<td>1</td>
+<td>total stratospheric aerosol optical depth user for the retrieval</td>
+</tr>
+<tr class="row-odd"><td><strong>BrO_volume_mixing_ratio</strong></td>
+<td>double</td>
+<td>{<em>time</em>, <em>vertical</em>}</td>
+<td>ppv</td>
+<td>BrO volume mixing ratio</td>
+</tr>
+<tr class="row-even"><td><strong>BrO_volume_mixing_ratio_cov_random</strong></td>
+<td>double</td>
+<td>{<em>time</em>, <em>vertical</em>, <em>vertical</em>}</td>
+<td>ppv</td>
+<td>random covariance of the BrO volume mixing ratio</td>
+</tr>
+<tr class="row-odd"><td><strong>BrO_volume_mixing_ratio_cov_systematic</strong></td>
+<td>double</td>
+<td>{<em>time</em>, <em>vertical</em>, <em>vertical</em>}</td>
+<td>ppv</td>
+<td>systematic covariance of the BrO volume mixing ratio</td>
+</tr>
+<tr class="row-even"><td><strong>BrO_volume_mixing_ratio_apriori</strong></td>
+<td>double</td>
+<td>{<em>time</em>, <em>vertical</em>}</td>
+<td>ppv</td>
+<td>a priori BrO volume mixing ratio</td>
+</tr>
+<tr class="row-odd"><td><strong>BrO_volume_mixing_ratio_avk</strong></td>
+<td>double</td>
+<td>{<em>time</em>, <em>vertical</em>, <em>vertical</em>}</td>
+<td>1</td>
+<td>averaging kernel for the BrO volume mixing ratio</td>
+</tr>
+<tr class="row-even"><td><strong>tropospheric_BrO_column_number_density</strong></td>
+<td>double</td>
+<td>{<em>time</em>}</td>
+<td>Pmolec cm-2</td>
+<td>tropospheric BrO column number density</td>
+</tr>
+<tr class="row-odd"><td><strong>tropospheric_BrO_column_number_density_stdev_random</strong></td>
+<td>double</td>
+<td>{<em>time</em>, <em>vertical</em>}</td>
+<td>Pmolec cm-2</td>
+<td>random uncertainty of the tropospheric BrO column number density</td>
+</tr>
+<tr class="row-even"><td><strong>tropospheric_BrO_column_number_density_stdev_systematic</strong></td>
+<td>double</td>
+<td>{<em>time</em>, <em>vertical</em>}</td>
+<td>Pmolec cm-2</td>
+<td>systematic covariance of the tropospheric BrO column number density</td>
+</tr>
+<tr class="row-odd"><td><strong>tropospheric_BrO_column_number_density_apriori</strong></td>
+<td>double</td>
+<td>{<em>time</em>}</td>
+<td>Pmolec cm-2</td>
+<td>a priori tropospheric BrO column number density</td>
+</tr>
+<tr class="row-even"><td><strong>tropospheric_BrO_column_number_density_avk</strong></td>
+<td>double</td>
+<td>{<em>time</em>, <em>vertical</em>}</td>
+<td>1</td>
+<td>averaging kernel for the tropospheric BrO column number density</td>
+</tr>
+<tr class="row-odd"><td><strong>stratospheric_BrO_column_number_density</strong></td>
+<td>double</td>
+<td>{<em>time</em>}</td>
+<td>Pmolec cm-2</td>
+<td>stratospheric BrO column number density</td>
+</tr>
+<tr class="row-even"><td><strong>stratospheric_BrO_column_number_density_stdev_random</strong></td>
+<td>double</td>
+<td>{<em>time</em>, <em>vertical</em>}</td>
+<td>Pmolec cm-2</td>
+<td>random uncertainty of the stratospheric BrO column number density</td>
+</tr>
+<tr class="row-odd"><td><strong>stratospheric_BrO_column_number_density_stdev_systematic</strong></td>
+<td>double</td>
+<td>{<em>time</em>, <em>vertical</em>}</td>
+<td>Pmolec cm-2</td>
+<td>systematic covariance of the stratospheric BrO column number density</td>
+</tr>
+<tr class="row-even"><td><strong>stratospheric_BrO_column_number_density_apriori</strong></td>
+<td>double</td>
+<td>{<em>time</em>}</td>
+<td>Pmolec cm-2</td>
+<td>a priori stratospheric BrO column number density</td>
+</tr>
+<tr class="row-odd"><td><strong>stratospheric_BrO_column_number_density_avk</strong></td>
+<td>double</td>
+<td>{<em>time</em>, <em>vertical</em>}</td>
+<td>1</td>
+<td>averaging kernel for the stratospheric BrO column number density</td>
+</tr>
+<tr class="row-even"><td><strong>stratospheric_BrO_column_number_density_amf</strong></td>
+<td>double</td>
+<td>{<em>time</em>}</td>
+<td>1</td>
+<td>air mass factor for the stratospheric BrO column number density</td>
+</tr>
+<tr class="row-odd"><td><strong>BrO_column_number_density</strong></td>
+<td>double</td>
+<td>{<em>time</em>, <em>vertical</em>}</td>
+<td>Pmolec cm-2</td>
+<td>BrO partial column number density profile</td>
+</tr>
+<tr class="row-even"><td><strong>BrO_column_number_density_apriori</strong></td>
+<td>double</td>
+<td>{<em>time</em>, <em>vertical</em>}</td>
+<td>Pmolec cm-2</td>
+<td>a priori BrO partial column number density profile</td>
+</tr>
+</tbody>
+</table>
+</div>
+<div class="section" id="mapping-description">
+<h2>Mapping description</h2>
+<p>The table below details where and how each variable was retrieved from the input product.</p>
+<table border="1" class="docutils">
+<colgroup>
+<col width="39%" />
+<col width="8%" />
+<col width="53%" />
+</colgroup>
+<thead valign="bottom">
+<tr class="row-odd"><th class="head">field name</th>
+<th class="head" colspan="2">mapping description</th>
+</tr>
+</thead>
+<tbody valign="top">
+<tr class="row-even"><td><strong>instrument_name</strong></td>
+<td><em>path</em></td>
+<td><strong>/&#64;DATA.SOURCE</strong></td>
+</tr>
+<tr class="row-odd"><td><strong>site_name</strong></td>
+<td><em>path</em></td>
+<td><strong>/&#64;DATA.LOCATION</strong></td>
+</tr>
+<tr class="row-even"><td><strong>datetime</strong></td>
+<td><em>path</em></td>
+<td><strong>/DATETIME</strong></td>
+</tr>
+<tr class="row-odd"><td><strong>datetime_start</strong></td>
+<td><em>path</em></td>
+<td><strong>/DATETIME.START</strong></td>
+</tr>
+<tr class="row-even"><td><strong>datetime_stop</strong></td>
+<td><em>path</em></td>
+<td><strong>/DATETIME.STOP</strong></td>
+</tr>
+<tr class="row-odd"><td><strong>instrument_latitude</strong></td>
+<td><em>path</em></td>
+<td><strong>/LATITUDE.INSTRUMENT</strong></td>
+</tr>
+<tr class="row-even"><td><strong>instrument_longitude</strong></td>
+<td><em>path</em></td>
+<td><strong>/LONGITUDE.INSTRUMENT</strong></td>
+</tr>
+<tr class="row-odd"><td><strong>instrument_altitude</strong></td>
+<td><em>path</em></td>
+<td><strong>/ALTITUDE.INSTRUMENT</strong></td>
+</tr>
+<tr class="row-even"><td><strong>altitude</strong></td>
+<td><em>path</em></td>
+<td><strong>/ALTITUDE</strong></td>
+</tr>
+<tr class="row-odd"><td><strong>pressure</strong></td>
+<td><em>path</em></td>
+<td><strong>/PRESSURE_INDEPENDENT</strong></td>
+</tr>
+<tr class="row-even"><td><strong>temperature</strong></td>
+<td><em>path</em></td>
+<td><strong>/TEMPERATURE_INDEPENDENT</strong></td>
+</tr>
+<tr class="row-odd"><td><strong>altitude_bounds</strong></td>
+<td><em>path</em></td>
+<td><strong>/ALTITUDE.BOUNDARIES</strong></td>
+</tr>
+<tr class="row-even"><td><strong>solar_zenith_angle</strong></td>
+<td><em>path</em></td>
+<td><strong>/ANGLE.SOLAR_ZENITH.ASTRONOMICAL</strong></td>
+</tr>
+<tr class="row-odd"><td><strong>solar_azimuth_angle</strong></td>
+<td><em>path</em></td>
+<td><strong>/ANGLE.SOLAR_AZIMUTH</strong></td>
+</tr>
+<tr class="row-even"><td><strong>viewing_azimith_angle</strong></td>
+<td><em>path</em></td>
+<td><strong>/ANGLE.VIEW_AZIMUTH</strong></td>
+</tr>
+<tr class="row-odd"><td><strong>viewing_zenith_angle</strong></td>
+<td><em>path</em></td>
+<td><strong>/ANGLE.VIEW_ZENITH</strong></td>
+</tr>
+<tr class="row-even"><td rowspan="2"><strong>latitude</strong></td>
+<td><em>available</em></td>
+<td>optional</td>
+</tr>
+<tr class="row-odd"><td><em>path</em></td>
+<td><strong>/LATITUDE</strong></td>
+</tr>
+<tr class="row-even"><td rowspan="2"><strong>longitude</strong></td>
+<td><em>available</em></td>
+<td>optional</td>
+</tr>
+<tr class="row-odd"><td><em>path</em></td>
+<td><strong>/LONGITUDE</strong></td>
+</tr>
+<tr class="row-even"><td><strong>cloud_flag</strong></td>
+<td><em>path</em></td>
+<td><strong>/CLOUD.CONDITIONS</strong></td>
+</tr>
+<tr class="row-odd"><td rowspan="5"><strong>stratospheric_aerosol_optical_depth</strong></td>
+<td><em>available</em></td>
+<td>optional</td>
+</tr>
+<tr class="row-even"><td><em>condition</em></td>
+<td>AOD=modeled</td>
+</tr>
+<tr class="row-odd"><td><em>path</em></td>
+<td><strong>/AEROSOL.OPTICAL.DEPTH.STRATOSPHERIC_INDEPENDENT</strong></td>
+</tr>
+<tr class="row-even"><td><em>condition</em></td>
+<td>AOD=measured</td>
+</tr>
+<tr class="row-odd"><td><em>path</em></td>
+<td><strong>/AEROSOL.OPTICAL.DEPTH.STRATOSPHERIC_SCATTER.SOLAR.ZENITH</strong></td>
+</tr>
+<tr class="row-even"><td rowspan="2"><strong>BrO_volume_mixing_ratio</strong></td>
+<td><em>available</em></td>
+<td>optional</td>
+</tr>
+<tr class="row-odd"><td><em>path</em></td>
+<td><strong>/BrO.MIXING.RATIO.VOLUME_SCATTER.SOLAR.ZENITH</strong></td>
+</tr>
+<tr class="row-even"><td rowspan="2"><strong>BrO_volume_mixing_ratio_cov_random</strong></td>
+<td><em>available</em></td>
+<td>optional</td>
+</tr>
+<tr class="row-odd"><td><em>path</em></td>
+<td><strong>/BrO.MIXING.RATIO.VOLUME_SCATTER.SOLAR.ZENITH_UNCERTAINTY.RANDOM.COVARIANCE</strong></td>
+</tr>
+<tr class="row-even"><td rowspan="2"><strong>BrO_volume_mixing_ratio_cov_systematic</strong></td>
+<td><em>available</em></td>
+<td>optional</td>
+</tr>
+<tr class="row-odd"><td><em>path</em></td>
+<td><strong>/BrO.MIXING.RATIO.VOLUME_SCATTER.SOLAR.ZENITH_UNCERTAINTY.SYSTEMATIC.COVARIANCE</strong></td>
+</tr>
+<tr class="row-even"><td rowspan="2"><strong>BrO_volume_mixing_ratio_apriori</strong></td>
+<td><em>available</em></td>
+<td>optional</td>
+</tr>
+<tr class="row-odd"><td><em>path</em></td>
+<td><strong>/BrO.MIXING.RATIO.VOLUME_SCATTER.SOLAR.ZENITH_APRIORI</strong></td>
+</tr>
+<tr class="row-even"><td rowspan="2"><strong>BrO_volume_mixing_ratio_avk</strong></td>
+<td><em>available</em></td>
+<td>optional</td>
+</tr>
+<tr class="row-odd"><td><em>path</em></td>
+<td><strong>/BrO.MIXING.RATIO.VOLUME_SCATTER.SOLAR.ZENITH_AVK</strong></td>
+</tr>
+<tr class="row-even"><td rowspan="2"><strong>tropospheric_BrO_column_number_density</strong></td>
+<td><em>available</em></td>
+<td>optional</td>
+</tr>
+<tr class="row-odd"><td><em>path</em></td>
+<td><strong>/BrO.COLUMN.TROPOSPHERIC_SCATTER.SOLAR.ZENITH</strong></td>
+</tr>
+<tr class="row-even"><td rowspan="2"><strong>tropospheric_BrO_column_number_density_stdev_random</strong></td>
+<td><em>available</em></td>
+<td>optional</td>
+</tr>
+<tr class="row-odd"><td><em>path</em></td>
+<td><strong>/BrO.COLUMN.TROPOSPHERIC_SCATTER.SOLAR.ZENITH_UNCERTAINTY.RANDOM.STANDARD</strong></td>
+</tr>
+<tr class="row-even"><td rowspan="2"><strong>tropospheric_BrO_column_number_density_stdev_systematic</strong></td>
+<td><em>available</em></td>
+<td>optional</td>
+</tr>
+<tr class="row-odd"><td><em>path</em></td>
+<td><strong>/BrO.COLUMN.TROPOSPHERIC_SCATTER.SOLAR.ZENITH_UNCERTAINTY.SYSTEMATIC.STANDARD</strong></td>
+</tr>
+<tr class="row-even"><td rowspan="2"><strong>tropospheric_BrO_column_number_density_apriori</strong></td>
+<td><em>available</em></td>
+<td>optional</td>
+</tr>
+<tr class="row-odd"><td><em>path</em></td>
+<td><strong>/BrO.COLUMN.TROPOSPHERIC_SCATTER.SOLAR.ZENITH_APRIORI</strong></td>
+</tr>
+<tr class="row-even"><td rowspan="2"><strong>tropospheric_BrO_column_number_density_avk</strong></td>
+<td><em>available</em></td>
+<td>optional</td>
+</tr>
+<tr class="row-odd"><td><em>path</em></td>
+<td><strong>/BrO.COLUMN.TROPOSPHERIC_SCATTER.SOLAR.ZENITH_AVK</strong></td>
+</tr>
+<tr class="row-even"><td><strong>stratospheric_BrO_column_number_density</strong></td>
+<td><em>path</em></td>
+<td><strong>/BrO.COLUMN.STRATOSPHERIC_SCATTER.SOLAR.ZENITH</strong></td>
+</tr>
+<tr class="row-odd"><td><strong>stratospheric_BrO_column_number_density_stdev_random</strong></td>
+<td><em>path</em></td>
+<td><strong>/BrO.COLUMN.STRATOSPHERIC_SCATTER.SOLAR.ZENITH_UNCERTAINTY.RANDOM.STANDARD</strong></td>
+</tr>
+<tr class="row-even"><td><strong>stratospheric_BrO_column_number_density_stdev_systematic</strong></td>
+<td><em>path</em></td>
+<td><strong>/BrO.COLUMN.STRATOSPHERIC_SCATTER.SOLAR.ZENITH_UNCERTAINTY.SYSTEMATIC.STANDARD</strong></td>
+</tr>
+<tr class="row-odd"><td><strong>stratospheric_BrO_column_number_density_apriori</strong></td>
+<td><em>path</em></td>
+<td><strong>/BrO.COLUMN.STRATOSPHERIC_SCATTER.SOLAR.ZENITH_APRIORI</strong></td>
+</tr>
+<tr class="row-even"><td><strong>stratospheric_BrO_column_number_density_avk</strong></td>
+<td><em>path</em></td>
+<td><strong>/BrO.COLUMN.STRATOSPHERIC_SCATTER.SOLAR.ZENITH_AVK</strong></td>
+</tr>
+<tr class="row-odd"><td><strong>stratospheric_BrO_column_number_density_amf</strong></td>
+<td><em>path</em></td>
+<td><strong>/BrO.COLUMN.STRATOSPHERIC_SCATTER.SOLAR.ZENITH_AMF</strong></td>
+</tr>
+<tr class="row-even"><td rowspan="2"><strong>BrO_column_number_density</strong></td>
+<td><em>available</em></td>
+<td>optional</td>
+</tr>
+<tr class="row-odd"><td><em>path</em></td>
+<td><strong>/BrO.COLUMN.PARTIAL_SCATTER.SOLAR.ZENITH</strong></td>
+</tr>
+<tr class="row-even"><td rowspan="2"><strong>BrO_column_number_density_apriori</strong></td>
+<td><em>available</em></td>
+<td>optional</td>
+</tr>
+<tr class="row-odd"><td><em>path</em></td>
+<td><strong>/BrO.COLUMN.PARTIAL_SCATTER.SOLAR.ZENITH_APRIORI</strong></td>
+</tr>
+</tbody>
+</table>
+</div>
+</div>
+
+
+           </div>
+          </div>
+          <footer>
+  
+
+  <hr/>
+
+  <div role="contentinfo">
+    <p>
+        &copy; Copyright 2015 S&amp;T, The Netherlands.
+
+    </p>
+  </div> 
+
+</footer>
+
+        </div>
+      </div>
+
+    </section>
+
+  </div>
+  
+
+
+  
+
+    <script type="text/javascript">
+        var DOCUMENTATION_OPTIONS = {
+            URL_ROOT:'../',
+            VERSION:'0.1b',
+            COLLAPSE_INDEX:false,
+            FILE_SUFFIX:'.html',
+            HAS_SOURCE:  false
+        };
+    </script>
+      <script type="text/javascript" src="../_static/jquery.js"></script>
+      <script type="text/javascript" src="../_static/underscore.js"></script>
+      <script type="text/javascript" src="../_static/doctools.js"></script>
+      <script type="text/javascript" src="https://cdn.mathjax.org/mathjax/latest/MathJax.js?config=TeX-AMS-MML_HTMLorMML"></script>
+
+  
+
+  
+  
+    <script type="text/javascript" src="../_static/js/theme.js"></script>
+  
+
+  
+  
+  <script type="text/javascript">
+      jQuery(function () {
+          SphinxRtdTheme.StickyNav.enable();
+      });
+  </script>
+   
+
+</body>
+</html>

@@ -1,0 +1,404 @@
+
+
+<!DOCTYPE html>
+<!--[if IE 8]><html class="no-js lt-ie9" lang="en" > <![endif]-->
+<!--[if gt IE 8]><!--> <html class="no-js" lang="en" > <!--<![endif]-->
+<head>
+  <meta charset="utf-8">
+  
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  
+  <title>Installation &mdash; HARP 0.1b documentation</title>
+  
+
+  
+  
+
+  
+
+  
+  
+    
+
+  
+
+  
+  
+    <link rel="stylesheet" href="_static/css/theme.css" type="text/css" />
+  
+
+  
+    <link rel="stylesheet" href="_static/custom.css" type="text/css" />
+  
+
+  
+    <link rel="top" title="HARP 0.1b documentation" href="index.html"/>
+        <link rel="next" title="Data formats" href="dataformats.html"/>
+        <link rel="prev" title="HARP Manual" href="index.html"/> 
+
+  
+  <script src="_static/js/modernizr.min.js"></script>
+
+</head>
+
+<body class="wy-body-for-nav" role="document">
+
+  <div class="wy-grid-for-nav">
+
+    
+    <nav data-toggle="wy-nav-shift" class="wy-nav-side">
+      <div class="wy-side-scroll">
+        <div class="wy-side-nav-search">
+          
+
+          
+            <a href="index.html" class="icon icon-home"> HARP
+          
+
+          
+          </a>
+
+          
+            
+            
+              <div class="version">
+                0.1
+              </div>
+            
+          
+
+          
+<div role="search">
+  <form id="rtd-search-form" class="wy-form" action="search.html" method="get">
+    <input type="text" name="q" placeholder="Search docs" />
+    <input type="hidden" name="check_keywords" value="yes" />
+    <input type="hidden" name="area" value="default" />
+  </form>
+</div>
+
+          
+        </div>
+
+        <div class="wy-menu wy-menu-vertical" data-spy="affix" role="navigation" aria-label="main navigation">
+          
+            
+            
+                <ul class="current">
+<li class="toctree-l1 current"><a class="current reference internal" href="">Installation</a><ul>
+<li class="toctree-l2"><a class="reference internal" href="#supported-platforms">Supported platforms</a></li>
+<li class="toctree-l2"><a class="reference internal" href="#what-you-will-need">What you will need</a></li>
+<li class="toctree-l2"><a class="reference internal" href="#building-the-source-package-unix">Building the source package (Unix)</a></li>
+<li class="toctree-l2"><a class="reference internal" href="#installing-the-source-package-unix">Installing the source package (Unix)</a></li>
+<li class="toctree-l2"><a class="reference internal" href="#documentation-location">Documentation location</a></li>
+<li class="toctree-l2"><a class="reference internal" href="#feedback">Feedback</a></li>
+</ul>
+</li>
+<li class="toctree-l1"><a class="reference internal" href="dataformats.html">Data formats</a></li>
+<li class="toctree-l1"><a class="reference internal" href="ingestions/index.html">Ingestion definitions</a></li>
+<li class="toctree-l1"><a class="reference internal" href="libharp.html">C library</a></li>
+<li class="toctree-l1"><a class="reference internal" href="harpcheck.html">harpcheck</a></li>
+<li class="toctree-l1"><a class="reference internal" href="harpcollocate.html">harpcollocate</a></li>
+<li class="toctree-l1"><a class="reference internal" href="harpconvert.html">harpconvert</a></li>
+<li class="toctree-l1"><a class="reference internal" href="harpdump.html">harpdump</a></li>
+<li class="toctree-l1"><a class="reference internal" href="harpfilter.html">harpfilter</a></li>
+</ul>
+
+            
+          
+        </div>
+      </div>
+    </nav>
+
+    <section data-toggle="wy-nav-shift" class="wy-nav-content-wrap">
+
+      
+      <nav class="wy-nav-top" role="navigation" aria-label="top navigation">
+        <i data-toggle="wy-nav-top" class="fa fa-bars"></i>
+        <a href="index.html">HARP</a>
+      </nav>
+
+
+      
+      <div class="wy-nav-content">
+        <div class="rst-content">
+          
+
+
+
+
+
+<div role="navigation" aria-label="breadcrumbs navigation">
+  <ul class="wy-breadcrumbs">
+    <li><a href="index.html">Docs</a> &raquo;</li>
+      
+    <li>Installation</li>
+      <li class="wy-breadcrumbs-aside">
+        
+          
+        
+      </li>
+  </ul>
+  <hr/>
+</div>
+          <div role="main" class="document" itemscope="itemscope" itemtype="http://schema.org/Article">
+           <div itemprop="articleBody">
+            
+  <div class="section" id="installation">
+<h1>Installation</h1>
+<p>This documentation provides installation instructions for HARP.</p>
+<p>HARP is a toolset for ingesting, processing and inter-comparing satellite data
+against correlative data. The toolset is composed of a set of command line
+tools and a library of analysis functions.</p>
+<div class="section" id="supported-platforms">
+<h2>Supported platforms</h2>
+<p>HARP is designed to run on most Unix-based operating systems (including Linux
+and Mac OS X) and Windows. The platforms that are supported include at least
+Linux, Windows, and Mac OS X.
+The current version of HARP does not support Windows yet, but this will be
+added in a later release.</p>
+</div>
+<div class="section" id="what-you-will-need">
+<h2>What you will need</h2>
+<blockquote>
+<div><ul>
+<li><p class="first">The HARP package : The package only comes in a source installation
+(harp-x.y.z.tar.gz) or a binary installation (Windows only; not yet
+available). Note that x.y.z stands for the version number of the package.
+The source package contains the source code for the HARP components (C
+Library and command line tools) together with all documentation.
+You will need this package if you want to use HARP on a Unix-based system.</p>
+<p>If you do not have the HARP package, you can download it from the BEAT
+website:</p>
+<blockquote>
+<div><p><a class="reference external" href="http://stcorp.nl/beat">http://stcorp.nl/beat</a></p>
+</div></blockquote>
+</li>
+</ul>
+<p>The following items are needed if you use the HARP source distribution:</p>
+<ul>
+<li><p class="first">A C compiler : Most Unix platforms come with their own C compiler so this
+should not be a problem. For Mac OS X you should make sure you have
+installed the Developer Tools.</p>
+</li>
+<li><p class="first">A recent version of HDF4. You will also need the additional libraries
+libjpeg, zlib, and szlib depending on whether HDF4 was build against them.
+In order to prevent conflicts of the HDF4 library with the netCDF interface
+that HARP uses, make sure you build the HDF4 software from source and use
+the following options when configuring the package:</p>
+<div class="highlight-python"><div class="highlight"><pre>./configure --enable-shared --disable-fortran --disable-netcdf
+</pre></div>
+</div>
+<p>Make sure that after installation the location of the libraries is in your
+shared library path (e.g. update your <code class="docutils literal"><span class="pre">LD_LIBRARY_PATH</span></code> environment
+variable).</p>
+</li>
+<li><p class="first">A recent version of HDF5. You will also need the additional libraries
+zlib, and szlib depending on whether HDF5 was build against them.</p>
+</li>
+</ul>
+</div></blockquote>
+</div>
+<div class="section" id="building-the-source-package-unix">
+<h2>Building the source package (Unix)</h2>
+<p>The HARP source package comes with both an autotools and a CMake build system.
+For Unix-based systems the recommended approach is to use the autotools based
+system (using the configure script), which is what is described below.
+Building with CMake is nevertheless supported, although not documented here.</p>
+<p>The following steps will guide you through the process of building the HARP
+library and executables:</p>
+<blockquote>
+<div><ol class="arabic">
+<li><p class="first">Go to the directory that contains the downloaded harp-x.y.z.tar.gz
+file and unpack this package:</p>
+<div class="highlight-python"><div class="highlight"><pre>% gzip -d harp-x.y.z.tar.gz
+% tar xf harp-x.y.z.tar
+</pre></div>
+</div>
+<p>Make sure you replace <code class="docutils literal"><span class="pre">x.y.z</span></code> with the appropriate version number.</p>
+</li>
+<li><p class="first">You should now have a <code class="docutils literal"><span class="pre">harp-x.y.z</span></code> directory. Go to this directory:</p>
+<div class="highlight-python"><div class="highlight"><pre>% cd harp-x.y.z
+</pre></div>
+</div>
+</li>
+<li><p class="first">Next you will have to execute the <code class="docutils literal"><span class="pre">configure</span></code> script that checks what
+system you are on and sets up the build environment. There are several
+options you can pass to this script. The most important ones are:</p>
+<dl class="docutils">
+<dt><code class="docutils literal"><span class="pre">--prefix</span> <span class="pre">&lt;HARP</span> <span class="pre">installation</span> <span class="pre">directory&gt;</span></code> :</dt>
+<dd><p class="first last">By default, if you perform an installation of the HARP package
+(see further below on how to do this) all
+files are installed in subdirectories under <code class="docutils literal"><span class="pre">/usr/local</span></code>.
+Executables will appear under <code class="docutils literal"><span class="pre">/usr/local/bin</span></code>, libraries under
+<code class="docutils literal"><span class="pre">/usr/local/lib</span></code> and all data files (e.g. documentation) under
+<code class="docutils literal"><span class="pre">/usr/local/share/harp</span></code>.
+However, installing the files into the default places requires you to
+have administrator privileges, which you may not have. In order to
+install HARP in a different location where you do have permission to
+copy files to, you can use this option to provide a different
+installation directory. For instance, you can use
+<code class="docutils literal"><span class="pre">--prefix=$HOME/harp</span></code> to install the software in the subdirectory
+<code class="docutils literal"><span class="pre">harp</span></code> of your home directory.</p>
+</dd>
+<dt><code class="docutils literal"><span class="pre">HDF4_LIB=&lt;HDF4</span> <span class="pre">library</span> <span class="pre">directory&gt;</span></code> :</dt>
+<dd><p class="first last">The configure script will automatically try to locate the HDF4
+libraries in the default locations for libraries (<code class="docutils literal"><span class="pre">/usr/local/lib</span></code>
+is usually not considered a default location!).
+If <code class="docutils literal"><span class="pre">./configure</span></code> complains that it can&#8217;t find the <code class="docutils literal"><span class="pre">df</span></code> or
+<code class="docutils literal"><span class="pre">mfhdf</span></code> library files, pass this option to <code class="docutils literal"><span class="pre">./configure</span></code> with the
+location of these library files.</p>
+</dd>
+<dt><code class="docutils literal"><span class="pre">HDF4_INCLUDE=&lt;HDF4</span> <span class="pre">include</span> <span class="pre">file</span> <span class="pre">directory&gt;</span></code> :</dt>
+<dd><p class="first last">The configure script will automatically try to locate the HDF4 include
+files in the default locations for include files
+(<code class="docutils literal"><span class="pre">/usr/local/include</span></code> is usually not considered a default
+location!).
+If <code class="docutils literal"><span class="pre">./configure</span></code> complains that it can&#8217;t find the <code class="docutils literal"><span class="pre">hdf.h</span></code> or
+<code class="docutils literal"><span class="pre">mfhdf.h</span></code> include files, pass this option to <code class="docutils literal"><span class="pre">./configure</span></code> with
+the location of these include files.</p>
+</dd>
+<dt><code class="docutils literal"><span class="pre">HDF5_LIB=&lt;HDF5</span> <span class="pre">library</span> <span class="pre">directory&gt;</span></code> :</dt>
+<dd><p class="first last">The configure script will automatically try to locate the HDF5 library
+in the default locations for libraries (<code class="docutils literal"><span class="pre">/usr/local/lib</span></code> is usually
+not considered a default location!).
+If <code class="docutils literal"><span class="pre">./configure</span></code> complains that it can&#8217;t find the <code class="docutils literal"><span class="pre">hdf5</span></code> library
+files, pass this option to <code class="docutils literal"><span class="pre">./configure</span></code> with the location of this
+library file.</p>
+</dd>
+<dt><code class="docutils literal"><span class="pre">HDF5_INCLUDE=&lt;HDF5</span> <span class="pre">include</span> <span class="pre">file</span> <span class="pre">directory&gt;</span></code> :</dt>
+<dd><p class="first last">The configure script will automatically try to locate the HDF5 include
+files in the default locations for include files
+(<code class="docutils literal"><span class="pre">/usr/local/include</span></code> is usually not considered a default location!).
+If <code class="docutils literal"><span class="pre">./configure</span></code> complains that it can&#8217;t find the <code class="docutils literal"><span class="pre">hdf5.h</span></code> include
+file, pass this option to <code class="docutils literal"><span class="pre">./configure</span></code> with the location of this
+include file.</p>
+</dd>
+</dl>
+<p>You should now call the configure script with the options that are
+appropriate for you. For instance, if you want to install HARP in the
+<cite>harp</cite> subdirectory of your home directory then your invocation of
+configure would be:</p>
+<div class="highlight-python"><div class="highlight"><pre>% ./configure --prefix=$HOME/harp
+</pre></div>
+</div>
+</li>
+<li><p class="first">If this completes successfully, you are now able to build the library by
+executing the <cite>make</cite> command:</p>
+<div class="highlight-python"><div class="highlight"><pre>% make
+</pre></div>
+</div>
+<p>If everything was successful, you are now ready to install the package
+(this installation step is not optional! You will have to install HARP
+before you can use it). If you encountered any problems while building
+HARP and if you need help contact us (see the Feedback section at the
+bottom for contact information).</p>
+</li>
+</ol>
+</div></blockquote>
+</div>
+<div class="section" id="installing-the-source-package-unix">
+<h2>Installing the source package (Unix)</h2>
+<p>In order to make use of the HARP library and tools, you should install HARP as
+build in the previous step. Please make sure you have provided the appropriate
+installation directory option (<code class="docutils literal"><span class="pre">--prefix=&lt;installdir&gt;</span></code>) to the configure
+script, as explained in the previous section, if you do not want to install
+HARP in its default location <code class="docutils literal"><span class="pre">/usr/local</span></code>. After running the configure
+script, issue the following command:</p>
+<div class="highlight-python"><div class="highlight"><pre>% make install
+</pre></div>
+</div>
+</div>
+<div class="section" id="documentation-location">
+<h2>Documentation location</h2>
+<p>Both the source and binary HARP packages come with documentation in HTML.
+For the source package you can access the documentation from within the
+unpacked HARP source package directory by going to the <code class="docutils literal"><span class="pre">doc/html</span></code>
+subdirectory and opening the file index.html in your browser. If you perform
+an install of the source package all documentation will also be installed. You
+can find the documentation under the subdirectory <code class="docutils literal"><span class="pre">share/harp/doc/html</span></code> of
+your installation directory (<code class="docutils literal"><span class="pre">/usr/local</span></code> by default).</p>
+</div>
+<div class="section" id="feedback">
+<h2>Feedback</h2>
+<p>If you encounter any problems while trying to build, install or run one or more
+components of the HARP package you can send an e-mail to:</p>
+<blockquote>
+<div><a class="reference external" href="mailto:harp&#37;&#52;&#48;stcorp&#46;nl">harp<span>&#64;</span>stcorp<span>&#46;</span>nl</a></div></blockquote>
+<p>If you are using the source package on a Unix based system, please provide a
+copy of the config.log file that is created when you run <code class="docutils literal"><span class="pre">./configure</span></code> and a
+copy of the output of <code class="docutils literal"><span class="pre">make</span></code> with your e-mail.</p>
+<p>Apart from problems, we would also appreciate to hear from you if you have any
+ideas, suggestions, or comments that may help us to improve the quality or
+functionality of HARP.</p>
+</div>
+</div>
+
+
+           </div>
+          </div>
+          <footer>
+  
+    <div class="rst-footer-buttons" role="navigation" aria-label="footer navigation">
+      
+        <a href="dataformats.html" class="btn btn-neutral float-right" title="Data formats" accesskey="n">Next <span class="fa fa-arrow-circle-right"></span></a>
+      
+      
+        <a href="index.html" class="btn btn-neutral" title="HARP Manual" accesskey="p"><span class="fa fa-arrow-circle-left"></span> Previous</a>
+      
+    </div>
+  
+
+  <hr/>
+
+  <div role="contentinfo">
+    <p>
+        &copy; Copyright 2015 S&amp;T, The Netherlands.
+
+    </p>
+  </div> 
+
+</footer>
+
+        </div>
+      </div>
+
+    </section>
+
+  </div>
+  
+
+
+  
+
+    <script type="text/javascript">
+        var DOCUMENTATION_OPTIONS = {
+            URL_ROOT:'./',
+            VERSION:'0.1b',
+            COLLAPSE_INDEX:false,
+            FILE_SUFFIX:'.html',
+            HAS_SOURCE:  false
+        };
+    </script>
+      <script type="text/javascript" src="_static/jquery.js"></script>
+      <script type="text/javascript" src="_static/underscore.js"></script>
+      <script type="text/javascript" src="_static/doctools.js"></script>
+      <script type="text/javascript" src="https://cdn.mathjax.org/mathjax/latest/MathJax.js?config=TeX-AMS-MML_HTMLorMML"></script>
+
+  
+
+  
+  
+    <script type="text/javascript" src="_static/js/theme.js"></script>
+  
+
+  
+  
+  <script type="text/javascript">
+      jQuery(function () {
+          SphinxRtdTheme.StickyNav.enable();
+      });
+  </script>
+   
+
+</body>
+</html>

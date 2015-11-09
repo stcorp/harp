@@ -1,0 +1,452 @@
+
+
+<!DOCTYPE html>
+<!--[if IE 8]><html class="no-js lt-ie9" lang="en" > <![endif]-->
+<!--[if gt IE 8]><!--> <html class="no-js" lang="en" > <!--<![endif]-->
+<head>
+  <meta charset="utf-8">
+  
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  
+  <title>GEOMS-TE-MWR-003-O3 &mdash; HARP 0.1b documentation</title>
+  
+
+  
+  
+
+  
+
+  
+  
+    
+
+  
+
+  
+  
+    <link rel="stylesheet" href="../_static/css/theme.css" type="text/css" />
+  
+
+  
+    <link rel="stylesheet" href="../_static/custom.css" type="text/css" />
+  
+
+  
+    <link rel="top" title="HARP 0.1b documentation" href="../index.html"/> 
+
+  
+  <script src="../_static/js/modernizr.min.js"></script>
+
+</head>
+
+<body class="wy-body-for-nav" role="document">
+
+  <div class="wy-grid-for-nav">
+
+    
+    <nav data-toggle="wy-nav-shift" class="wy-nav-side">
+      <div class="wy-side-scroll">
+        <div class="wy-side-nav-search">
+          
+
+          
+            <a href="../index.html" class="icon icon-home"> HARP
+          
+
+          
+          </a>
+
+          
+            
+            
+              <div class="version">
+                0.1
+              </div>
+            
+          
+
+          
+<div role="search">
+  <form id="rtd-search-form" class="wy-form" action="../search.html" method="get">
+    <input type="text" name="q" placeholder="Search docs" />
+    <input type="hidden" name="check_keywords" value="yes" />
+    <input type="hidden" name="area" value="default" />
+  </form>
+</div>
+
+          
+        </div>
+
+        <div class="wy-menu wy-menu-vertical" data-spy="affix" role="navigation" aria-label="main navigation">
+          
+            
+            
+                <ul>
+<li class="toctree-l1"><a class="reference internal" href="../install.html">Installation</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../dataformats.html">Data formats</a></li>
+<li class="toctree-l1"><a class="reference internal" href="index.html">Ingestion definitions</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../libharp.html">C library</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../harpcheck.html">harpcheck</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../harpcollocate.html">harpcollocate</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../harpconvert.html">harpconvert</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../harpdump.html">harpdump</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../harpfilter.html">harpfilter</a></li>
+</ul>
+
+            
+          
+        </div>
+      </div>
+    </nav>
+
+    <section data-toggle="wy-nav-shift" class="wy-nav-content-wrap">
+
+      
+      <nav class="wy-nav-top" role="navigation" aria-label="top navigation">
+        <i data-toggle="wy-nav-top" class="fa fa-bars"></i>
+        <a href="../index.html">HARP</a>
+      </nav>
+
+
+      
+      <div class="wy-nav-content">
+        <div class="rst-content">
+          
+
+
+
+
+
+<div role="navigation" aria-label="breadcrumbs navigation">
+  <ul class="wy-breadcrumbs">
+    <li><a href="../index.html">Docs</a> &raquo;</li>
+      
+    <li>GEOMS-TE-MWR-003-O3</li>
+      <li class="wy-breadcrumbs-aside">
+        
+          
+        
+      </li>
+  </ul>
+  <hr/>
+</div>
+          <div role="main" class="document" itemscope="itemscope" itemtype="http://schema.org/Article">
+           <div itemprop="articleBody">
+            
+  <div class="section" id="geoms-te-mwr-003-o3">
+<h1>GEOMS-TE-MWR-003-O3</h1>
+<div class="section" id="variables">
+<h2>Variables</h2>
+<p>The table below lists the variables that are present in the HARP product that results from an ingestion of <code class="docutils literal"><span class="pre">GEOMS-TE-MWR-003-O3</span></code> data.</p>
+<table border="1" class="docutils">
+<colgroup>
+<col width="25%" />
+<col width="5%" />
+<col width="15%" />
+<col width="15%" />
+<col width="40%" />
+</colgroup>
+<thead valign="bottom">
+<tr class="row-odd"><th class="head">field name</th>
+<th class="head">type</th>
+<th class="head">dimensions</th>
+<th class="head">unit</th>
+<th class="head">description</th>
+</tr>
+</thead>
+<tbody valign="top">
+<tr class="row-even"><td><strong>index</strong></td>
+<td>int32</td>
+<td>{<em>time</em>}</td>
+<td>&nbsp;</td>
+<td>zero-based index of the sample within the source product</td>
+</tr>
+<tr class="row-odd"><td><strong>instrument_name</strong></td>
+<td>string</td>
+<td>&nbsp;</td>
+<td>&nbsp;</td>
+<td>name of the instrument</td>
+</tr>
+<tr class="row-even"><td><strong>site_name</strong></td>
+<td>string</td>
+<td>&nbsp;</td>
+<td>&nbsp;</td>
+<td>name of the site at which the instrument is located</td>
+</tr>
+<tr class="row-odd"><td><strong>instrument_latitude</strong></td>
+<td>double</td>
+<td>&nbsp;</td>
+<td>degree_north</td>
+<td>latitude of the instrument</td>
+</tr>
+<tr class="row-even"><td><strong>instrument_longitude</strong></td>
+<td>double</td>
+<td>&nbsp;</td>
+<td>degree_east</td>
+<td>longitude of the measurement</td>
+</tr>
+<tr class="row-odd"><td><strong>instrument_altitude</strong></td>
+<td>double</td>
+<td>&nbsp;</td>
+<td>m</td>
+<td>altitude of the instrument</td>
+</tr>
+<tr class="row-even"><td><strong>datetime</strong></td>
+<td>double</td>
+<td>{<em>time</em>}</td>
+<td>days since 2000-01-01</td>
+<td>time of the measurement</td>
+</tr>
+<tr class="row-odd"><td><strong>viewing_azimith_angle</strong></td>
+<td>double</td>
+<td>{<em>time</em>}</td>
+<td>deg</td>
+<td>viewing azimuth angle</td>
+</tr>
+<tr class="row-even"><td><strong>viewing_zenith_angle</strong></td>
+<td>double</td>
+<td>{<em>time</em>}</td>
+<td>deg</td>
+<td>mean viewing zenith angle</td>
+</tr>
+<tr class="row-odd"><td><strong>solar_zenith_angle</strong></td>
+<td>double</td>
+<td>{<em>time</em>}</td>
+<td>deg</td>
+<td>mean solar zenith angle</td>
+</tr>
+<tr class="row-even"><td><strong>datetime_start</strong></td>
+<td>double</td>
+<td>{<em>time</em>}</td>
+<td>days since 2000-01-01</td>
+<td>start time of the measurement</td>
+</tr>
+<tr class="row-odd"><td><strong>datetime_stop</strong></td>
+<td>double</td>
+<td>{<em>time</em>}</td>
+<td>days since 2000-01-01</td>
+<td>stop time of the measurement</td>
+</tr>
+<tr class="row-even"><td><strong>altitude</strong></td>
+<td>double</td>
+<td>{<em>vertical</em>}</td>
+<td>m</td>
+<td>altitude</td>
+</tr>
+<tr class="row-odd"><td><strong>pressure</strong></td>
+<td>double</td>
+<td>{<em>time</em>, <em>vertical</em>}</td>
+<td>hPa</td>
+<td>independent pressure profile</td>
+</tr>
+<tr class="row-even"><td><strong>temperature</strong></td>
+<td>double</td>
+<td>{<em>time</em>, <em>vertical</em>}</td>
+<td>K</td>
+<td>independent temperature profile</td>
+</tr>
+<tr class="row-odd"><td><strong>O3_volume_mixing_ratio</strong></td>
+<td>double</td>
+<td>{<em>time</em>, <em>vertical</em>}</td>
+<td>ppv</td>
+<td>O3 volume mixing ratio</td>
+</tr>
+<tr class="row-even"><td><strong>O3_volume_mixing_ratio_stdev_random</strong></td>
+<td>double</td>
+<td>{<em>time</em>, <em>vertical</em>}</td>
+<td>ppv</td>
+<td>random standard deviation of the O3 volume mixing</td>
+</tr>
+<tr class="row-odd"><td><strong>O3_volume_mixing_ratio_stdev_systematic</strong></td>
+<td>double</td>
+<td>{<em>time</em>, <em>vertical</em>, <em>vertical</em>}</td>
+<td>ppv</td>
+<td>systematic standard deviation of the O3 volume mi</td>
+</tr>
+<tr class="row-even"><td><strong>O3_volume_mixing_ratio_apriori</strong></td>
+<td>double</td>
+<td>{<em>time</em>, <em>vertical</em>}</td>
+<td>ppv</td>
+<td>a priori O3 volume mixing ratio</td>
+</tr>
+<tr class="row-odd"><td><strong>O3_volume_mixing_ratio_avk</strong></td>
+<td>double</td>
+<td>{<em>time</em>, <em>vertical</em>, <em>vertical</em>}</td>
+<td>1</td>
+<td>averaging kernel for the O3 volume mixing ratio</td>
+</tr>
+<tr class="row-even"><td><strong>H2O_column_number_density</strong></td>
+<td>double</td>
+<td>{<em>time</em>}</td>
+<td>molec/cm2</td>
+<td>derived integrated water vapor partial column from retrieval</td>
+</tr>
+</tbody>
+</table>
+</div>
+<div class="section" id="mapping-description">
+<h2>Mapping description</h2>
+<p>The table below details where and how each variable was retrieved from the input product.</p>
+<table border="1" class="docutils">
+<colgroup>
+<col width="35%" />
+<col width="10%" />
+<col width="55%" />
+</colgroup>
+<thead valign="bottom">
+<tr class="row-odd"><th class="head">field name</th>
+<th class="head" colspan="2">mapping description</th>
+</tr>
+</thead>
+<tbody valign="top">
+<tr class="row-even"><td><strong>instrument_name</strong></td>
+<td><em>path</em></td>
+<td><strong>/&#64;DATA.SOURCE</strong></td>
+</tr>
+<tr class="row-odd"><td><strong>site_name</strong></td>
+<td><em>path</em></td>
+<td><strong>/&#64;DATA.LOCATION</strong></td>
+</tr>
+<tr class="row-even"><td><strong>instrument_latitude</strong></td>
+<td><em>path</em></td>
+<td><strong>/LATITUDE.INSTRUMENT</strong></td>
+</tr>
+<tr class="row-odd"><td><strong>instrument_longitude</strong></td>
+<td><em>path</em></td>
+<td><strong>/LONGITUDE.INSTRUMENT</strong></td>
+</tr>
+<tr class="row-even"><td><strong>instrument_altitude</strong></td>
+<td><em>path</em></td>
+<td><strong>/ALTITUDE.INSTRUMENT</strong></td>
+</tr>
+<tr class="row-odd"><td><strong>datetime</strong></td>
+<td><em>path</em></td>
+<td><strong>/DATETIME</strong></td>
+</tr>
+<tr class="row-even"><td><strong>viewing_azimith_angle</strong></td>
+<td><em>path</em></td>
+<td><strong>/ANGLE.VIEW_AZIMUTH</strong></td>
+</tr>
+<tr class="row-odd"><td><strong>viewing_zenith_angle</strong></td>
+<td><em>path</em></td>
+<td><strong>/ANGLE.VIEW_ZENITH_MEAN</strong></td>
+</tr>
+<tr class="row-even"><td><strong>solar_zenith_angle</strong></td>
+<td><em>path</em></td>
+<td><strong>/ANGLE.SOLAR_ZENITH_MEAN</strong></td>
+</tr>
+<tr class="row-odd"><td><strong>datetime_start</strong></td>
+<td><em>path</em></td>
+<td><strong>/DATETIME.START</strong></td>
+</tr>
+<tr class="row-even"><td><strong>datetime_stop</strong></td>
+<td><em>path</em></td>
+<td><strong>/DATETIME.STOP</strong></td>
+</tr>
+<tr class="row-odd"><td><strong>altitude</strong></td>
+<td><em>path</em></td>
+<td><strong>/ALTITUDE</strong></td>
+</tr>
+<tr class="row-even"><td><strong>pressure</strong></td>
+<td><em>path</em></td>
+<td><strong>/PRESSURE_INDEPENDENT</strong></td>
+</tr>
+<tr class="row-odd"><td><strong>temperature</strong></td>
+<td><em>path</em></td>
+<td><strong>/TEMPERATURE_INDEPENDENT</strong></td>
+</tr>
+<tr class="row-even"><td><strong>O3_volume_mixing_ratio</strong></td>
+<td><em>path</em></td>
+<td><strong>/O3.MIXING.RATIO.VOLUME_EMISSION</strong></td>
+</tr>
+<tr class="row-odd"><td><strong>O3_volume_mixing_ratio_stdev_random</strong></td>
+<td><em>path</em></td>
+<td><strong>/O3.MIXING.RATIO.VOLUME_EMISSION_UNCERTAINTY.RANDOM.STANDARD</strong></td>
+</tr>
+<tr class="row-even"><td><strong>O3_volume_mixing_ratio_stdev_systematic</strong></td>
+<td><em>path</em></td>
+<td><strong>/O3.MIXING.RATIO.VOLUME_EMISSION_UNCERTAINTY.SYSTEMATIC.STANDARD</strong></td>
+</tr>
+<tr class="row-odd"><td><strong>O3_volume_mixing_ratio_apriori</strong></td>
+<td><em>path</em></td>
+<td><strong>/O3.MIXING.RATIO.VOLUME_EMISSION_APRIORI</strong></td>
+</tr>
+<tr class="row-even"><td><strong>O3_volume_mixing_ratio_avk</strong></td>
+<td><em>path</em></td>
+<td><strong>/O3.MIXING.RATIO.VOLUME_EMISSION_AVK</strong></td>
+</tr>
+<tr class="row-odd"><td rowspan="3"><strong>H2O_column_number_density</strong></td>
+<td><em>available</em></td>
+<td>optional</td>
+</tr>
+<tr class="row-even"><td><em>condition</em></td>
+<td>variable is available</td>
+</tr>
+<tr class="row-odd"><td><em>path</em></td>
+<td><strong>/H2O.COLUMN_DERIVED</strong></td>
+</tr>
+</tbody>
+</table>
+</div>
+</div>
+
+
+           </div>
+          </div>
+          <footer>
+  
+
+  <hr/>
+
+  <div role="contentinfo">
+    <p>
+        &copy; Copyright 2015 S&amp;T, The Netherlands.
+
+    </p>
+  </div> 
+
+</footer>
+
+        </div>
+      </div>
+
+    </section>
+
+  </div>
+  
+
+
+  
+
+    <script type="text/javascript">
+        var DOCUMENTATION_OPTIONS = {
+            URL_ROOT:'../',
+            VERSION:'0.1b',
+            COLLAPSE_INDEX:false,
+            FILE_SUFFIX:'.html',
+            HAS_SOURCE:  false
+        };
+    </script>
+      <script type="text/javascript" src="../_static/jquery.js"></script>
+      <script type="text/javascript" src="../_static/underscore.js"></script>
+      <script type="text/javascript" src="../_static/doctools.js"></script>
+      <script type="text/javascript" src="https://cdn.mathjax.org/mathjax/latest/MathJax.js?config=TeX-AMS-MML_HTMLorMML"></script>
+
+  
+
+  
+  
+    <script type="text/javascript" src="../_static/js/theme.js"></script>
+  
+
+  
+  
+  <script type="text/javascript">
+      jQuery(function () {
+          SphinxRtdTheme.StickyNav.enable();
+      });
+  </script>
+   
+
+</body>
+</html>

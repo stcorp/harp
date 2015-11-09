@@ -1,0 +1,20 @@
+
+These files are taken from Expat, Release 2.0.1.
+
+The source files have been slightly modified in order to fit them into this
+build system. The changes that were made are:
+
+ - Source files now only include config.h (instead of a choice of
+   expat_config.h, winconfig.h, etc.).
+
+ - expat_external.h includes harp_expat_mangle.h to name mangle all
+   public symbols.
+
+ - Checks for BYTEORDER have been replaced with checks for WORDS_BIGENDIAN.
+
+ - Added '(void)variable;' entries in many functions to eliminate
+  'unused parameter' warnings.
+
+ - Added EMPTY_NORMAL_VTABLE macro to eliminate 'missing initializer'
+   warnings.
+

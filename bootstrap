@@ -1,0 +1,25 @@
+#!/bin/sh
+
+echo "---removing generated files---"
+# products from ./configure and make
+if test -f Makefile ; then
+# touch all automatically generated targets that we do not want to rebuild
+  touch aclocal.m4
+  touch configure
+  touch Makefile.in
+  touch config.status
+  touch Makefile
+# make maintainer-clean
+  make -k maintainer-clean
+fi
+
+# products from autoreconf
+rm -Rf autom4te.cache
+rm -f Makefile.in config.h.in aclocal.m4 compile config.guess config.sub \
+      configure depcomp install-sh ltmain.sh missing
+
+if test "$1" != "clean" ; then
+  # bootstrap
+  echo "---autoreconf---"
+  autoreconf -v -i -f
+fi

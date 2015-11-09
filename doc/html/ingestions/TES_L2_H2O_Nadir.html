@@ -1,0 +1,319 @@
+
+
+<!DOCTYPE html>
+<!--[if IE 8]><html class="no-js lt-ie9" lang="en" > <![endif]-->
+<!--[if gt IE 8]><!--> <html class="no-js" lang="en" > <!--<![endif]-->
+<head>
+  <meta charset="utf-8">
+  
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  
+  <title>TES_L2_H2O_Nadir &mdash; HARP 0.1b documentation</title>
+  
+
+  
+  
+
+  
+
+  
+  
+    
+
+  
+
+  
+  
+    <link rel="stylesheet" href="../_static/css/theme.css" type="text/css" />
+  
+
+  
+    <link rel="stylesheet" href="../_static/custom.css" type="text/css" />
+  
+
+  
+    <link rel="top" title="HARP 0.1b documentation" href="../index.html"/> 
+
+  
+  <script src="../_static/js/modernizr.min.js"></script>
+
+</head>
+
+<body class="wy-body-for-nav" role="document">
+
+  <div class="wy-grid-for-nav">
+
+    
+    <nav data-toggle="wy-nav-shift" class="wy-nav-side">
+      <div class="wy-side-scroll">
+        <div class="wy-side-nav-search">
+          
+
+          
+            <a href="../index.html" class="icon icon-home"> HARP
+          
+
+          
+          </a>
+
+          
+            
+            
+              <div class="version">
+                0.1
+              </div>
+            
+          
+
+          
+<div role="search">
+  <form id="rtd-search-form" class="wy-form" action="../search.html" method="get">
+    <input type="text" name="q" placeholder="Search docs" />
+    <input type="hidden" name="check_keywords" value="yes" />
+    <input type="hidden" name="area" value="default" />
+  </form>
+</div>
+
+          
+        </div>
+
+        <div class="wy-menu wy-menu-vertical" data-spy="affix" role="navigation" aria-label="main navigation">
+          
+            
+            
+                <ul>
+<li class="toctree-l1"><a class="reference internal" href="../install.html">Installation</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../dataformats.html">Data formats</a></li>
+<li class="toctree-l1"><a class="reference internal" href="index.html">Ingestion definitions</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../libharp.html">C library</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../harpcheck.html">harpcheck</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../harpcollocate.html">harpcollocate</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../harpconvert.html">harpconvert</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../harpdump.html">harpdump</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../harpfilter.html">harpfilter</a></li>
+</ul>
+
+            
+          
+        </div>
+      </div>
+    </nav>
+
+    <section data-toggle="wy-nav-shift" class="wy-nav-content-wrap">
+
+      
+      <nav class="wy-nav-top" role="navigation" aria-label="top navigation">
+        <i data-toggle="wy-nav-top" class="fa fa-bars"></i>
+        <a href="../index.html">HARP</a>
+      </nav>
+
+
+      
+      <div class="wy-nav-content">
+        <div class="rst-content">
+          
+
+
+
+
+
+<div role="navigation" aria-label="breadcrumbs navigation">
+  <ul class="wy-breadcrumbs">
+    <li><a href="../index.html">Docs</a> &raquo;</li>
+      
+    <li>TES_L2_H2O_Nadir</li>
+      <li class="wy-breadcrumbs-aside">
+        
+          
+        
+      </li>
+  </ul>
+  <hr/>
+</div>
+          <div role="main" class="document" itemscope="itemscope" itemtype="http://schema.org/Article">
+           <div itemprop="articleBody">
+            
+  <div class="section" id="tes-l2-h2o-nadir">
+<h1>TES_L2_H2O_Nadir</h1>
+<div class="section" id="variables">
+<h2>Variables</h2>
+<p>The table below lists the variables that are present in the HARP product that results from an ingestion of <code class="docutils literal"><span class="pre">TES_L2_H2O_Nadir</span></code> data.</p>
+<table border="1" class="docutils">
+<colgroup>
+<col width="25%" />
+<col width="5%" />
+<col width="15%" />
+<col width="15%" />
+<col width="40%" />
+</colgroup>
+<thead valign="bottom">
+<tr class="row-odd"><th class="head">field name</th>
+<th class="head">type</th>
+<th class="head">dimensions</th>
+<th class="head">unit</th>
+<th class="head">description</th>
+</tr>
+</thead>
+<tbody valign="top">
+<tr class="row-even"><td><strong>index</strong></td>
+<td>int32</td>
+<td>{<em>time</em>}</td>
+<td>&nbsp;</td>
+<td>zero-based index of the sample within the source product</td>
+</tr>
+<tr class="row-odd"><td><strong>datetime</strong></td>
+<td>double</td>
+<td>{<em>time</em>}</td>
+<td>seconds since 2000-01-01</td>
+<td>time of the measurement (in seconds since 2000-01-01 00:00:00)</td>
+</tr>
+<tr class="row-even"><td><strong>longitude</strong></td>
+<td>double</td>
+<td>{<em>time</em>}</td>
+<td>degree_east</td>
+<td>tangent longitude</td>
+</tr>
+<tr class="row-odd"><td><strong>latitude</strong></td>
+<td>double</td>
+<td>{<em>time</em>}</td>
+<td>degree_north</td>
+<td>tangent latitude</td>
+</tr>
+<tr class="row-even"><td><strong>altitude</strong></td>
+<td>double</td>
+<td>{<em>time</em>, <em>vertical</em>}</td>
+<td>m</td>
+<td>altitude per profile level</td>
+</tr>
+<tr class="row-odd"><td><strong>pressure</strong></td>
+<td>double</td>
+<td>{<em>time</em>, <em>vertical</em>}</td>
+<td>hPa</td>
+<td>pressure per profile level</td>
+</tr>
+<tr class="row-even"><td><strong>H2O_volume_mixing_ratio</strong></td>
+<td>double</td>
+<td>{<em>time</em>, <em>vertical</em>}</td>
+<td>ppv</td>
+<td>H2O volume mixing ratio</td>
+</tr>
+<tr class="row-odd"><td><strong>H2O_volume_mixing_ratio_stdev</strong></td>
+<td>double</td>
+<td>{<em>time</em>, <em>vertical</em>}</td>
+<td>ppv</td>
+<td>H2O volume mixing ratio precision</td>
+</tr>
+</tbody>
+</table>
+</div>
+<div class="section" id="mapping-description">
+<h2>Mapping description</h2>
+<p>The table below details where and how each variable was retrieved from the input product.</p>
+<table border="1" class="docutils">
+<colgroup>
+<col width="30%" />
+<col width="13%" />
+<col width="58%" />
+</colgroup>
+<thead valign="bottom">
+<tr class="row-odd"><th class="head">field name</th>
+<th class="head" colspan="2">mapping description</th>
+</tr>
+</thead>
+<tbody valign="top">
+<tr class="row-even"><td rowspan="2"><strong>datetime</strong></td>
+<td><em>path</em></td>
+<td><strong>/HDFEOS/SWATHS/H2ONadirSwath/Geolocation_Fields/Time[]</strong></td>
+</tr>
+<tr class="row-odd"><td><em>description</em></td>
+<td>the time converted from TAI93 to seconds since 2000-01-01T00:00:00</td>
+</tr>
+<tr class="row-even"><td><strong>longitude</strong></td>
+<td><em>path</em></td>
+<td><strong>/HDFEOS/SWATHS/H2ONadirSwath/Geolocation_Fields/Longitude[]</strong></td>
+</tr>
+<tr class="row-odd"><td><strong>latitude</strong></td>
+<td><em>path</em></td>
+<td><strong>/HDFEOS/SWATHS/H2ONadirSwath/Geolocation_Fields/Latitude[]</strong></td>
+</tr>
+<tr class="row-even"><td><strong>altitude</strong></td>
+<td><em>path</em></td>
+<td><strong>/HDFEOS/SWATHS/H2ONadirSwath/Data_Fields/Altitude[]</strong></td>
+</tr>
+<tr class="row-odd"><td><strong>pressure</strong></td>
+<td><em>path</em></td>
+<td><strong>/HDFEOS/SWATHS/H2ONadirSwath/Data_Fields/Pressure[]</strong></td>
+</tr>
+<tr class="row-even"><td><strong>H2O_volume_mixing_ratio</strong></td>
+<td><em>path</em></td>
+<td><strong>/HDFEOS/SWATHS/H2ONadirSwath/Data_Fields/H2O[]</strong></td>
+</tr>
+<tr class="row-odd"><td><strong>H2O_volume_mixing_ratio_stdev</strong></td>
+<td><em>path</em></td>
+<td><strong>/HDFEOS/SWATHS/H2ONadirSwath/Data_Fields/H2OPrecision[]</strong></td>
+</tr>
+</tbody>
+</table>
+</div>
+</div>
+
+
+           </div>
+          </div>
+          <footer>
+  
+
+  <hr/>
+
+  <div role="contentinfo">
+    <p>
+        &copy; Copyright 2015 S&amp;T, The Netherlands.
+
+    </p>
+  </div> 
+
+</footer>
+
+        </div>
+      </div>
+
+    </section>
+
+  </div>
+  
+
+
+  
+
+    <script type="text/javascript">
+        var DOCUMENTATION_OPTIONS = {
+            URL_ROOT:'../',
+            VERSION:'0.1b',
+            COLLAPSE_INDEX:false,
+            FILE_SUFFIX:'.html',
+            HAS_SOURCE:  false
+        };
+    </script>
+      <script type="text/javascript" src="../_static/jquery.js"></script>
+      <script type="text/javascript" src="../_static/underscore.js"></script>
+      <script type="text/javascript" src="../_static/doctools.js"></script>
+      <script type="text/javascript" src="https://cdn.mathjax.org/mathjax/latest/MathJax.js?config=TeX-AMS-MML_HTMLorMML"></script>
+
+  
+
+  
+  
+    <script type="text/javascript" src="../_static/js/theme.js"></script>
+  
+
+  
+  
+  <script type="text/javascript">
+      jQuery(function () {
+          SphinxRtdTheme.StickyNav.enable();
+      });
+  </script>
+   
+
+</body>
+</html>

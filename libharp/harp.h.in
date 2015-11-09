@@ -1,0 +1,337 @@
+/*
+ * Copyright (C) 2015 S[&]T, The Netherlands.
+ *
+ * This file is part of HARP.
+ *
+ * HARP is free software; you can redistribute it and/or modify
+ * it under the terms of the GNU General Public License as published by
+ * the Free Software Foundation; either version 2 of the License, or
+ * (at your option) any later version.
+ *
+ * HARP is distributed in the hope that it will be useful,
+ * but WITHOUT ANY WARRANTY; without even the implied warranty of
+ * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+ * GNU General Public License for more details.
+ *
+ * You should have received a copy of the GNU General Public License
+ * along with HARP; if not, write to the Free Software
+ * Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307  USA
+ */
+
+#ifndef HARP_H
+#define HARP_H
+
+/** \file */
+
+/* *INDENT-OFF* */
+#ifdef __cplusplus
+extern "C"
+{
+#endif
+/* *INDENT-ON* */
+
+#if defined(WIN32) && defined(LIBHARPDLL)
+#ifdef LIBHARPDLL_EXPORTS
+#define LIBHARP_API __declspec(dllexport)
+#else
+#define LIBHARP_API __declspec(dllimport)
+#endif
+#else
+#define LIBHARP_API
+#endif
+
+#ifndef HARP_CONFIG_H
+
+/* These are the 'configure' defines that we need to export.
+ * However, we need to assume that the user of harp.h may also be defining
+ * some of these values himself. In order to prevent double definitions each
+ * define below is encapsulated by a #ifndef - #endif block.
+ */
+
+#ifndef HAVE_INTTYPES_H
+#undef HAVE_INTTYPES_H
+#endif
+#ifndef HAVE_STDINT_H
+#undef HAVE_STDINT_H
+#endif
+#ifndef HAVE_SYS_TYPES_H
+#undef HAVE_SYS_TYPES_H
+#endif
+
+#ifndef int8_t
+#undef int8_t
+#endif
+#ifndef int16_t
+#undef int16_t
+#endif
+#ifndef int32_t
+#undef int32_t
+#endif
+#ifndef int64_t
+#undef int64_t
+#endif
+
+#ifndef uint8_t
+#undef uint8_t
+#endif
+#ifndef uint16_t
+#undef uint16_t
+#endif
+#ifndef uint32_t
+#undef uint32_t
+#endif
+#ifndef uint64_t
+#undef uint64_t
+#endif
+
+#ifdef HAVE_INTTYPES_H
+#include <inttypes.h>
+#else
+#ifdef HAVE_STDINT_H
+#include <stdint.h>
+#else
+#ifdef HAVE_SYS_TYPES_H
+#include <sys/types.h>
+#endif
+#endif
+#endif
+
+#endif /* HARP_CONFIG_H */
+
+LIBHARP_API extern const char *libharp_version;
+
+/** Maximum number of dimensions of a multidimensional array. */
+#define HARP_MAX_NUM_DIMS       8
+
+LIBHARP_API extern int harp_errno;
+
+#define HARP_SUCCESS                                          (0)
+#define HARP_ERROR_OUT_OF_MEMORY                             (-1)
+
+#define HARP_ERROR_HDF4                                     (-10)
+#define HARP_ERROR_HDF5                                     (-11)
+#define HARP_ERROR_NETCDF                                   (-12)
+#define HARP_ERROR_CODA                                     (-13)
+
+#define HARP_ERROR_FILE_NOT_FOUND                           (-20)
+#define HARP_ERROR_FILE_OPEN                                (-21)
+#define HARP_ERROR_FILE_CLOSE                               (-22)
+#define HARP_ERROR_FILE_READ                                (-23)
+#define HARP_ERROR_FILE_WRITE                               (-24)
+
+#define HARP_ERROR_INVALID_ARGUMENT                         (-30)
+#define HARP_ERROR_INVALID_INDEX                            (-31)
+#define HARP_ERROR_INVALID_NAME                             (-32)
+#define HARP_ERROR_INVALID_FORMAT                           (-33)
+#define HARP_ERROR_INVALID_DATETIME                         (-34)
+#define HARP_ERROR_INVALID_TYPE                             (-35)
+#define HARP_ERROR_ARRAY_NUM_DIMS_MISMATCH                  (-36)
+#define HARP_ERROR_ARRAY_OUT_OF_BOUNDS                      (-37)
+#define HARP_ERROR_VARIABLE_NOT_FOUND                       (-38)
+
+#define HARP_ERROR_UNIT_CONVERSION                          (-40)
+
+#define HARP_ERROR_UNSUPPORTED_PRODUCT                      (-50)
+
+#define HARP_ERROR_PRODUCT                                  (-60)
+
+#define HARP_ERROR_SCRIPT                                   (-70)
+#define HARP_ERROR_SCRIPT_SYNTAX                            (-71)
+
+#define HARP_ERROR_INGESTION                                (-80)
+#define HARP_ERROR_INGESTION_OPTION_SYNTAX                  (-81)
+#define HARP_ERROR_INVALID_INGESTION_OPTION                 (-82)
+#define HARP_ERROR_INVALID_INGESTION_OPTION_VALUE           (-83)
+
+#define HARP_ERROR_NO_DATA                                  (-90)
+
+/** \addtogroup harp_general
+ * @{
+ */
+
+enum harp_data_type_enum
+{
+    harp_type_int8,     /**< BYTE */
+    harp_type_int16,    /**< INTEGER */
+    harp_type_int32,    /**< LONG */
+    harp_type_float,    /**< FLOAT */
+    harp_type_double,   /**< DOUBLE */
+    harp_type_string    /**< STRING */
+};
+typedef enum harp_data_type_enum harp_data_type;
+
+#define HARP_NUM_DATA_TYPES (((int)harp_type_string) + 1)
+
+union harp_scalar_union
+{
+    int8_t int8_data;
+    int16_t int16_data;
+    int32_t int32_data;
+    float float_data;
+    double double_data;
+};
+typedef union harp_scalar_union harp_scalar;
+
+union harp_array_union
+{
+    int8_t *int8_data;
+    int16_t *int16_data;
+    int32_t *int32_data;
+    float *float_data;
+    double *double_data;
+    char **string_data;
+    void *ptr;
+};
+typedef union harp_array_union harp_array;
+
+enum harp_dimension_type_enum
+{
+    harp_dimension_independent = -1,
+    harp_dimension_time,
+    harp_dimension_latitude,
+    harp_dimension_longitude,
+    harp_dimension_vertical,
+    harp_dimension_spectral
+};
+typedef enum harp_dimension_type_enum harp_dimension_type;
+
+#define HARP_NUM_DIM_TYPES  (((int)harp_dimension_spectral) + 1)
+
+/** @} */
+
+/** \addtogroup harp_variable
+ * @{
+ */
+
+/** HARP Variable struct */
+struct harp_variable_struct
+{
+    char *name; /**< name of variable */
+    harp_data_type data_type; /**< storage type of the data */
+    int num_dimensions; /**< number of array dimensions */
+    harp_dimension_type dimension_type[HARP_MAX_NUM_DIMS]; /**< type of each of the array dimensions */
+    long dimension[HARP_MAX_NUM_DIMS];  /**< length of each of the array dimensions */
+    long num_elements;  /**< total number of elements (equals product of array dimensions) */
+    harp_array data;    /**< array data of the variable */
+    /* special attributes - the harp_scalar attributes are only valid if data_type != harp_type_string */
+    char *description;  /**< corresponds to netCDF long_name */
+    char *unit; /**< corresponds to netCDF units */
+    harp_scalar valid_min;      /**< corresponds to netCDF valid_min or valid_range[0] */
+    harp_scalar valid_max;      /**< corresponds to netCDF valid_max or valid_range[1] */
+};
+
+/** HARP Variable typedef */
+typedef struct harp_variable_struct harp_variable;
+
+/** @} */
+
+/** \addtogroup harp_product
+ * @{
+ */
+
+/** HARP Product struct */
+struct harp_product_struct
+{
+    long dimension[HARP_NUM_DIM_TYPES]; /**< length of each dimension (0 for unused dimensions) */
+    int num_variables;  /**< number of variables in this product */
+    harp_variable **variable;   /**< pointers to the variables */
+    char *source_product; /**< identifier of the product the HARP product originates from */
+    char *history;  /**< value for the 'history' global attribute */
+};
+
+/** HARP Product typedef */
+typedef struct harp_product_struct harp_product;
+
+/** @} */
+
+/* General */
+LIBHARP_API int harp_init(void);
+LIBHARP_API void harp_done(void);
+
+LIBHARP_API int harp_isfinite(double x);
+LIBHARP_API int harp_isnan(double x);
+LIBHARP_API double harp_nan(void);
+LIBHARP_API int harp_isinf(double x);
+LIBHARP_API int harp_isplusinf(double x);
+LIBHARP_API int harp_ismininf(double x);
+LIBHARP_API double harp_plusinf(void);
+LIBHARP_API double harp_mininf(void);
+
+LIBHARP_API void harp_str64(int64_t a, char *s);
+LIBHARP_API void harp_str64u(uint64_t a, char *s);
+
+LIBHARP_API long harp_get_size_for_type(harp_data_type data_type);
+
+LIBHARP_API const char *harp_get_data_type_name(harp_data_type data_type);
+LIBHARP_API const char *harp_get_dimension_type_name(harp_dimension_type dimension_type);
+
+LIBHARP_API int harp_parse_dimension_type(const char *str, harp_dimension_type *dimension_type);
+
+LIBHARP_API int harp_set_coda_definition_path(const char *path);
+LIBHARP_API int harp_set_coda_definition_path_conditional(const char *file, const char *searchpath,
+                                                          const char *relative_location);
+
+LIBHARP_API int harp_set_option_enable_aux_afgl86(int enable);
+LIBHARP_API int harp_get_option_enable_aux_afgl86(void);
+LIBHARP_API int harp_set_option_enable_aux_usstd76(int enable);
+LIBHARP_API int harp_get_option_enable_aux_usstd76(void);
+
+LIBHARP_API int harp_convert_unit(const char *from_unit, const char *to_unit, long num_values, double *value);
+
+/* Error */
+LIBHARP_API void harp_set_error(int err, const char *message, ...);
+LIBHARP_API void harp_add_error_message(const char *message, ...);
+LIBHARP_API const char *harp_errno_to_string(int err);
+
+/* Variables */
+LIBHARP_API int harp_variable_new(const char *name, harp_data_type data_type, int num_dimensions,
+                                  const harp_dimension_type *dimension_type, const long *dimension,
+                                  harp_variable **new_variable);
+LIBHARP_API void harp_variable_delete(harp_variable *variable);
+LIBHARP_API int harp_variable_copy(const harp_variable *variable, harp_variable **new_variable);
+LIBHARP_API int harp_variable_rename(harp_variable *variable, const char *name);
+LIBHARP_API int harp_variable_convert_data_type(harp_variable *variable, harp_data_type target_data_type);
+LIBHARP_API int harp_variable_convert_unit(harp_variable *variable, const char *target_unit);
+LIBHARP_API int harp_variable_has_dimension_type(const harp_variable *variable, harp_dimension_type dimension_type);
+LIBHARP_API int harp_variable_has_dimension_types(const harp_variable *variable, int num_dimensions,
+                                                  const harp_dimension_type *dimension_type);
+LIBHARP_API int harp_variable_has_unit(const harp_variable *variable, const char *unit);
+
+/* Product */
+LIBHARP_API int harp_product_new(harp_product **new_product);
+LIBHARP_API void harp_product_delete(harp_product *product);
+LIBHARP_API int harp_product_copy(const harp_product *product, harp_product **new_product);
+LIBHARP_API int harp_product_add_variable(harp_product *product, harp_variable *variable);
+LIBHARP_API int harp_product_detach_variable(harp_product *product, const harp_variable *variable);
+LIBHARP_API int harp_product_remove_variable(harp_product *product, harp_variable *variable);
+LIBHARP_API int harp_product_replace_variable(harp_product *product, harp_variable *variable);
+LIBHARP_API int harp_product_is_empty(const harp_product *product);
+LIBHARP_API int harp_product_has_variable(const harp_product *product, const char *name);
+LIBHARP_API int harp_product_get_variable_by_name(const harp_product *product, const char *name,
+                                                  harp_variable **variable);
+LIBHARP_API int harp_product_get_variable_id_by_name(const harp_product *product, const char *name, int *variable_id);
+LIBHARP_API int harp_product_get_derived_variable(const harp_product *product, const char *name, const char *unit,
+                                                  int num_dimensions, const harp_dimension_type *dimension_type,
+                                                  harp_variable **variable);
+LIBHARP_API int harp_product_add_derived_variable(harp_product *product, const char *name, const char *unit,
+                                                  int num_dimensions, const harp_dimension_type *dimension_type);
+LIBHARP_API int harp_product_update_history(harp_product *product, const char *executable, int argc, char *argv[]);
+
+/* Ingestion */
+LIBHARP_API int harp_ingest(const char *filename, const char *script, const char *options, harp_product **product);
+
+/* Import */
+LIBHARP_API int harp_import(const char *filename, harp_product **product);
+LIBHARP_API int harp_import_global_attributes(const char *filename, double *datetime_start, double *datetime_stop,
+                                              char **source_product);
+
+/* Export */
+LIBHARP_API int harp_export(const char *filename, const char *format, const harp_product *product);
+
+/* *INDENT-OFF* */
+#ifdef __cplusplus
+}
+#endif
+/* *INDENT-ON* */
+
+#endif

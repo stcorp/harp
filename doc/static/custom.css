@@ -1,0 +1,26 @@
+/* Overrides of the default theme CSS rules. The use of explicit qualifiers
+ * "html body div" ensures these rules are preferred over the default CSS rules
+ * even if this file is loaded first.
+ */
+
+/* Override theme to use all available horizontal space (instead of a fixed
+ * maximum of 800 pixels).
+ */ 
+html body div.wy-nav-content {
+    max-width: 100%;
+}
+
+/* Override theme to force all tables to the same width (100%). */
+html body div.wy-table-responsive table {
+    width: 100%;
+}
+
+/* Override theme to disable horizontal scroll bars on wide tables. */
+html body div.wy-table-responsive table td,
+html body div.wy-table-responsive table th {
+    white-space: normal;
+}
+
+html body div.wy-table-responsive {
+    overflow: visible;
+}

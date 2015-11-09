@@ -1,0 +1,32 @@
+
+These files are taken from udunits, version 2.1.17.
+
+The source files have been slightly modified in order to fit them into this
+build system. The changes that were made are:
+
+ - scanner.l and parser.y have been renamed to utscanner.l and utparser.y
+
+ - removed 'outfile' %option from utscanner.l
+
+ - scanner.c is no longer included by parser.y resulting in the following
+   additional changes:
+   - _restartScanner is now a global variable named utrestartScanner
+   - #define yyparse utparse
+   - #define yylex utlex
+   - #define yyerror uterror
+   - added ut_get_bufferpos function (returning yy_c_buf_p  - buf->yy_ch_buf)
+   - added several function declarations to prevent compiler warnings
+
+ - Added several casts to unsigned to eliminate 'comparison between signed
+   and unsigned' warnings.
+
+ - Fixed vector initialisation in ut_decode_time() in unticore.c.
+
+ - Made the following functions static: gregorianDateToJulianDay,
+   julianDayToGregorianDate
+
+ - Removed the following static functions since they were not used:
+   unitcore.c:timestampNew()
+   xml.c:startNoPlural()
+   xml.c:endNoPlural()
+

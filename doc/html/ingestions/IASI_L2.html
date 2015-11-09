@@ -1,0 +1,401 @@
+
+
+<!DOCTYPE html>
+<!--[if IE 8]><html class="no-js lt-ie9" lang="en" > <![endif]-->
+<!--[if gt IE 8]><!--> <html class="no-js" lang="en" > <!--<![endif]-->
+<head>
+  <meta charset="utf-8">
+  
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  
+  <title>IASI_L2 &mdash; HARP 0.1b documentation</title>
+  
+
+  
+  
+
+  
+
+  
+  
+    
+
+  
+
+  
+  
+    <link rel="stylesheet" href="../_static/css/theme.css" type="text/css" />
+  
+
+  
+    <link rel="stylesheet" href="../_static/custom.css" type="text/css" />
+  
+
+  
+    <link rel="top" title="HARP 0.1b documentation" href="../index.html"/> 
+
+  
+  <script src="../_static/js/modernizr.min.js"></script>
+
+</head>
+
+<body class="wy-body-for-nav" role="document">
+
+  <div class="wy-grid-for-nav">
+
+    
+    <nav data-toggle="wy-nav-shift" class="wy-nav-side">
+      <div class="wy-side-scroll">
+        <div class="wy-side-nav-search">
+          
+
+          
+            <a href="../index.html" class="icon icon-home"> HARP
+          
+
+          
+          </a>
+
+          
+            
+            
+              <div class="version">
+                0.1
+              </div>
+            
+          
+
+          
+<div role="search">
+  <form id="rtd-search-form" class="wy-form" action="../search.html" method="get">
+    <input type="text" name="q" placeholder="Search docs" />
+    <input type="hidden" name="check_keywords" value="yes" />
+    <input type="hidden" name="area" value="default" />
+  </form>
+</div>
+
+          
+        </div>
+
+        <div class="wy-menu wy-menu-vertical" data-spy="affix" role="navigation" aria-label="main navigation">
+          
+            
+            
+                <ul>
+<li class="toctree-l1"><a class="reference internal" href="../install.html">Installation</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../dataformats.html">Data formats</a></li>
+<li class="toctree-l1"><a class="reference internal" href="index.html">Ingestion definitions</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../libharp.html">C library</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../harpcheck.html">harpcheck</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../harpcollocate.html">harpcollocate</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../harpconvert.html">harpconvert</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../harpdump.html">harpdump</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../harpfilter.html">harpfilter</a></li>
+</ul>
+
+            
+          
+        </div>
+      </div>
+    </nav>
+
+    <section data-toggle="wy-nav-shift" class="wy-nav-content-wrap">
+
+      
+      <nav class="wy-nav-top" role="navigation" aria-label="top navigation">
+        <i data-toggle="wy-nav-top" class="fa fa-bars"></i>
+        <a href="../index.html">HARP</a>
+      </nav>
+
+
+      
+      <div class="wy-nav-content">
+        <div class="rst-content">
+          
+
+
+
+
+
+<div role="navigation" aria-label="breadcrumbs navigation">
+  <ul class="wy-breadcrumbs">
+    <li><a href="../index.html">Docs</a> &raquo;</li>
+      
+    <li>IASI_L2</li>
+      <li class="wy-breadcrumbs-aside">
+        
+          
+        
+      </li>
+  </ul>
+  <hr/>
+</div>
+          <div role="main" class="document" itemscope="itemscope" itemtype="http://schema.org/Article">
+           <div itemprop="articleBody">
+            
+  <div class="section" id="iasi-l2">
+<h1>IASI_L2</h1>
+<div class="section" id="variables">
+<h2>Variables</h2>
+<p>The table below lists the variables that are present in the HARP product that results from an ingestion of <code class="docutils literal"><span class="pre">IASI_L2</span></code> data.</p>
+<table border="1" class="docutils">
+<colgroup>
+<col width="25%" />
+<col width="5%" />
+<col width="15%" />
+<col width="15%" />
+<col width="40%" />
+</colgroup>
+<thead valign="bottom">
+<tr class="row-odd"><th class="head">field name</th>
+<th class="head">type</th>
+<th class="head">dimensions</th>
+<th class="head">unit</th>
+<th class="head">description</th>
+</tr>
+</thead>
+<tbody valign="top">
+<tr class="row-even"><td><strong>index</strong></td>
+<td>int32</td>
+<td>{<em>time</em>}</td>
+<td>&nbsp;</td>
+<td>zero-based index of the sample within the source product</td>
+</tr>
+<tr class="row-odd"><td><strong>datetime</strong></td>
+<td>double</td>
+<td>{<em>time</em>}</td>
+<td>seconds since 2000-01-01</td>
+<td>The time of the measurement at end of integration time (in seconds since 2000-01-01 00:00:00)</td>
+</tr>
+<tr class="row-even"><td><strong>longitude</strong></td>
+<td>double</td>
+<td>{<em>time</em>}</td>
+<td>degree_east</td>
+<td>center longitude of the measurement</td>
+</tr>
+<tr class="row-odd"><td><strong>latitude</strong></td>
+<td>double</td>
+<td>{<em>time</em>}</td>
+<td>degree_north</td>
+<td>center latitude of the measurement</td>
+</tr>
+<tr class="row-even"><td><strong>longitude_bounds</strong></td>
+<td>double</td>
+<td>{<em>time</em>, 4}</td>
+<td>degree_east</td>
+<td>corner longitudes of the measurement</td>
+</tr>
+<tr class="row-odd"><td><strong>latitude_bounds</strong></td>
+<td>double</td>
+<td>{<em>time</em>, 4}</td>
+<td>degree_north</td>
+<td>corner latitudes of the measurement</td>
+</tr>
+<tr class="row-even"><td><strong>surface_solar_azimuth_angle</strong></td>
+<td>double</td>
+<td>{<em>time</em>}</td>
+<td>degree</td>
+<td>solar azimuth angle at the surface</td>
+</tr>
+<tr class="row-odd"><td><strong>surface_solar_zenith_angle</strong></td>
+<td>double</td>
+<td>{<em>time</em>}</td>
+<td>degree</td>
+<td>solar zenith angle at the surface</td>
+</tr>
+<tr class="row-even"><td><strong>surface_viewing_azimuth_angle</strong></td>
+<td>double</td>
+<td>{<em>time</em>}</td>
+<td>degree</td>
+<td>viewing azimuth angle at the surface</td>
+</tr>
+<tr class="row-odd"><td><strong>surface_viewing_zenith_angle</strong></td>
+<td>double</td>
+<td>{<em>time</em>}</td>
+<td>degree</td>
+<td>viewing zenith angle at the surface</td>
+</tr>
+<tr class="row-even"><td><strong>CH4_column_mass_density</strong></td>
+<td>double</td>
+<td>{<em>time</em>}</td>
+<td>kg/m^2</td>
+<td>CH4 column mass density</td>
+</tr>
+<tr class="row-odd"><td><strong>CO_column_mass_density</strong></td>
+<td>double</td>
+<td>{<em>time</em>}</td>
+<td>kg/m^2</td>
+<td>CO column mass density</td>
+</tr>
+<tr class="row-even"><td><strong>CO2_column_mass_density</strong></td>
+<td>double</td>
+<td>{<em>time</em>}</td>
+<td>kg/m^2</td>
+<td>CO2 column mass density</td>
+</tr>
+<tr class="row-odd"><td><strong>O3_column_mass_density</strong></td>
+<td>double</td>
+<td>{<em>time</em>}</td>
+<td>kg/m^2</td>
+<td>O3 column mass density</td>
+</tr>
+<tr class="row-even"><td><strong>N2O_column_mass_density</strong></td>
+<td>double</td>
+<td>{<em>time</em>}</td>
+<td>kg/m^2</td>
+<td>N2O column mass density</td>
+</tr>
+<tr class="row-odd"><td><strong>scan_subset_counter</strong></td>
+<td>int8</td>
+<td>{<em>time</em>}</td>
+<td>&nbsp;</td>
+<td>the relative index (0-119) of this measurement within an MDR</td>
+</tr>
+</tbody>
+</table>
+</div>
+<div class="section" id="mapping-description">
+<h2>Mapping description</h2>
+<p>The table below details where and how each variable was retrieved from the input product.</p>
+<table border="1" class="docutils">
+<colgroup>
+<col width="11%" />
+<col width="5%" />
+<col width="84%" />
+</colgroup>
+<thead valign="bottom">
+<tr class="row-odd"><th class="head">field name</th>
+<th class="head" colspan="2">mapping description</th>
+</tr>
+</thead>
+<tbody valign="top">
+<tr class="row-even"><td rowspan="2"><strong>datetime</strong></td>
+<td><em>path</em></td>
+<td><strong>/MDR[]/MDR/RECORD_HEADER/RECORD_START_TIME</strong></td>
+</tr>
+<tr class="row-odd"><td><em>description</em></td>
+<td>The time for a scan is the MDR start time + the scan id (0..29) times 8 / 37. Each part of the 2x2 matrix of a scan will get assigned the same measurement time (i.e. there are 30 unique time values per mdr)</td>
+</tr>
+<tr class="row-even"><td><strong>longitude</strong></td>
+<td><em>path</em></td>
+<td><strong>/MDR[]/MDR/EARTH_LOCATION[,1]</strong></td>
+</tr>
+<tr class="row-odd"><td><strong>latitude</strong></td>
+<td><em>path</em></td>
+<td><strong>/MDR[]/MDR/EARTH_LOCATION[,0]</strong></td>
+</tr>
+<tr class="row-even"><td rowspan="2"><strong>longitude_bounds</strong></td>
+<td><em>path</em></td>
+<td><strong>/MDR[]/MDR/EARTH_LOCATION[]</strong></td>
+</tr>
+<tr class="row-odd"><td><em>description</em></td>
+<td>the corner coordinates are rough estimates of the circle areas for the scan elements; the size of a scan element (in a certain direction) is taken to be half the distance, from center to center, from a scan element to its nearest neigbouring scan element</td>
+</tr>
+<tr class="row-even"><td rowspan="2"><strong>latitude_bounds</strong></td>
+<td><em>path</em></td>
+<td><strong>/MDR[]/MDR/EARTH_LOCATION[]</strong></td>
+</tr>
+<tr class="row-odd"><td><em>description</em></td>
+<td>the corner coordinates are rough estimates of the circle areas for the scan elements; the size of a scan element (in a certain direction) is taken to be half the distance, from center to center, from a scan element to its nearest neigbouring scan element</td>
+</tr>
+<tr class="row-even"><td><strong>surface_solar_azimuth_angle</strong></td>
+<td><em>path</em></td>
+<td><strong>/MDR[]/MDR/ANGULAR_RELATION[,2]</strong></td>
+</tr>
+<tr class="row-odd"><td><strong>surface_solar_zenith_angle</strong></td>
+<td><em>path</em></td>
+<td><strong>/MDR[]/MDR/ANGULAR_RELATION[,0]</strong></td>
+</tr>
+<tr class="row-even"><td><strong>surface_viewing_azimuth_angle</strong></td>
+<td><em>path</em></td>
+<td><strong>/MDR[]/MDR/ANGULAR_RELATION[,3]</strong></td>
+</tr>
+<tr class="row-odd"><td><strong>surface_viewing_zenith_angle</strong></td>
+<td><em>path</em></td>
+<td><strong>/MDR[]/MDR/ANGULAR_RELATION[,1]</strong></td>
+</tr>
+<tr class="row-even"><td><strong>CH4_column_mass_density</strong></td>
+<td><em>path</em></td>
+<td><strong>/MDR[]/MDR/INTEGRATED_CH4[]</strong></td>
+</tr>
+<tr class="row-odd"><td><strong>CO_column_mass_density</strong></td>
+<td><em>path</em></td>
+<td><strong>/MDR[]/MDR/INTEGRATED_CO[]</strong></td>
+</tr>
+<tr class="row-even"><td><strong>CO2_column_mass_density</strong></td>
+<td><em>path</em></td>
+<td><strong>/MDR[]/MDR/INTEGRATED_CO2[]</strong></td>
+</tr>
+<tr class="row-odd"><td><strong>O3_column_mass_density</strong></td>
+<td><em>path</em></td>
+<td><strong>/MDR[]/MDR/INTEGRATED_OZONE[]</strong></td>
+</tr>
+<tr class="row-even"><td><strong>N2O_column_mass_density</strong></td>
+<td><em>path</em></td>
+<td><strong>/MDR[]/MDR/INTEGRATED_N2O[]</strong></td>
+</tr>
+</tbody>
+</table>
+</div>
+</div>
+
+
+           </div>
+          </div>
+          <footer>
+  
+
+  <hr/>
+
+  <div role="contentinfo">
+    <p>
+        &copy; Copyright 2015 S&amp;T, The Netherlands.
+
+    </p>
+  </div> 
+
+</footer>
+
+        </div>
+      </div>
+
+    </section>
+
+  </div>
+  
+
+
+  
+
+    <script type="text/javascript">
+        var DOCUMENTATION_OPTIONS = {
+            URL_ROOT:'../',
+            VERSION:'0.1b',
+            COLLAPSE_INDEX:false,
+            FILE_SUFFIX:'.html',
+            HAS_SOURCE:  false
+        };
+    </script>
+      <script type="text/javascript" src="../_static/jquery.js"></script>
+      <script type="text/javascript" src="../_static/underscore.js"></script>
+      <script type="text/javascript" src="../_static/doctools.js"></script>
+      <script type="text/javascript" src="https://cdn.mathjax.org/mathjax/latest/MathJax.js?config=TeX-AMS-MML_HTMLorMML"></script>
+
+  
+
+  
+  
+    <script type="text/javascript" src="../_static/js/theme.js"></script>
+  
+
+  
+  
+  <script type="text/javascript">
+      jQuery(function () {
+          SphinxRtdTheme.StickyNav.enable();
+      });
+  </script>
+   
+
+</body>
+</html>

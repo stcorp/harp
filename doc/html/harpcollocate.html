@@ -1,0 +1,426 @@
+
+
+<!DOCTYPE html>
+<!--[if IE 8]><html class="no-js lt-ie9" lang="en" > <![endif]-->
+<!--[if gt IE 8]><!--> <html class="no-js" lang="en" > <!--<![endif]-->
+<head>
+  <meta charset="utf-8">
+  
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  
+  <title>harpcollocate &mdash; HARP 0.1b documentation</title>
+  
+
+  
+  
+
+  
+
+  
+  
+    
+
+  
+
+  
+  
+    <link rel="stylesheet" href="_static/css/theme.css" type="text/css" />
+  
+
+  
+    <link rel="stylesheet" href="_static/custom.css" type="text/css" />
+  
+
+  
+    <link rel="top" title="HARP 0.1b documentation" href="index.html"/>
+        <link rel="next" title="harpconvert" href="harpconvert.html"/>
+        <link rel="prev" title="harpcheck" href="harpcheck.html"/> 
+
+  
+  <script src="_static/js/modernizr.min.js"></script>
+
+</head>
+
+<body class="wy-body-for-nav" role="document">
+
+  <div class="wy-grid-for-nav">
+
+    
+    <nav data-toggle="wy-nav-shift" class="wy-nav-side">
+      <div class="wy-side-scroll">
+        <div class="wy-side-nav-search">
+          
+
+          
+            <a href="index.html" class="icon icon-home"> HARP
+          
+
+          
+          </a>
+
+          
+            
+            
+              <div class="version">
+                0.1
+              </div>
+            
+          
+
+          
+<div role="search">
+  <form id="rtd-search-form" class="wy-form" action="search.html" method="get">
+    <input type="text" name="q" placeholder="Search docs" />
+    <input type="hidden" name="check_keywords" value="yes" />
+    <input type="hidden" name="area" value="default" />
+  </form>
+</div>
+
+          
+        </div>
+
+        <div class="wy-menu wy-menu-vertical" data-spy="affix" role="navigation" aria-label="main navigation">
+          
+            
+            
+                <ul class="current">
+<li class="toctree-l1"><a class="reference internal" href="install.html">Installation</a></li>
+<li class="toctree-l1"><a class="reference internal" href="dataformats.html">Data formats</a></li>
+<li class="toctree-l1"><a class="reference internal" href="ingestions/index.html">Ingestion definitions</a></li>
+<li class="toctree-l1"><a class="reference internal" href="libharp.html">C library</a></li>
+<li class="toctree-l1"><a class="reference internal" href="harpcheck.html">harpcheck</a></li>
+<li class="toctree-l1 current"><a class="current reference internal" href="">harpcollocate</a><ul>
+<li class="toctree-l2"><a class="reference internal" href="#collocation">Collocation</a></li>
+<li class="toctree-l2"><a class="reference internal" href="#obtaining-collocation-result-file">Obtaining collocation result file</a></li>
+<li class="toctree-l2"><a class="reference internal" href="#resampling-collocation-result-file">Resampling collocation result file</a></li>
+<li class="toctree-l2"><a class="reference internal" href="#updating-collocation-result-file">Updating collocation result file</a></li>
+</ul>
+</li>
+<li class="toctree-l1"><a class="reference internal" href="harpconvert.html">harpconvert</a></li>
+<li class="toctree-l1"><a class="reference internal" href="harpdump.html">harpdump</a></li>
+<li class="toctree-l1"><a class="reference internal" href="harpfilter.html">harpfilter</a></li>
+</ul>
+
+            
+          
+        </div>
+      </div>
+    </nav>
+
+    <section data-toggle="wy-nav-shift" class="wy-nav-content-wrap">
+
+      
+      <nav class="wy-nav-top" role="navigation" aria-label="top navigation">
+        <i data-toggle="wy-nav-top" class="fa fa-bars"></i>
+        <a href="index.html">HARP</a>
+      </nav>
+
+
+      
+      <div class="wy-nav-content">
+        <div class="rst-content">
+          
+
+
+
+
+
+<div role="navigation" aria-label="breadcrumbs navigation">
+  <ul class="wy-breadcrumbs">
+    <li><a href="index.html">Docs</a> &raquo;</li>
+      
+    <li>harpcollocate</li>
+      <li class="wy-breadcrumbs-aside">
+        
+          
+        
+      </li>
+  </ul>
+  <hr/>
+</div>
+          <div role="main" class="document" itemscope="itemscope" itemtype="http://schema.org/Article">
+           <div itemprop="articleBody">
+            
+  <div class="section" id="harpcollocate">
+<h1>harpcollocate</h1>
+<p>The tool harpcollocate is used to derive a list of measurements that match in time, latitude and longitude for two sets
+of HARP compliant HDF4/HDF5/netCDF files.</p>
+<div class="highlight-python"><div class="highlight"><pre>Usage:
+  harpcollocate sub-command [options]
+    Determine the collocation filter for two sets of HARP files.
+
+    Available sub-commands:
+      matchup
+      resample
+      update
+
+    Use &#39;harpcollocate &lt;sub-command&gt; --help&#39; to get help on a specific
+    sub-command.
+
+  harpcollocate -h, --help
+    Show help (this text).
+
+  harpcollocate -v, --version
+    Print the version number of HARP and exit.
+</pre></div>
+</div>
+<div class="section" id="collocation">
+<h2>Collocation</h2>
+<dl class="docutils">
+<dt>Collocation of two sets of files involves the following steps:</dt>
+<dd><ol class="first last arabic simple">
+<li><code class="docutils literal"><span class="pre">harpcollocate</span> <span class="pre">matchup</span></code> is used to derive the collocation result file.</li>
+<li><code class="docutils literal"><span class="pre">harpcollocate</span> <span class="pre">resample</span></code> is optionally used to further process the collocation result file.</li>
+<li><code class="docutils literal"><span class="pre">harpconvert</span> <span class="pre">-fca</span> <span class="pre">...</span></code> is used together with the collocation result file to select the matching measurements in each file of the primary dataset</li>
+<li><code class="docutils literal"><span class="pre">harpconvert</span> <span class="pre">-fcb</span> <span class="pre">...</span></code> is used together with the collocation result file to select the matching measurements in each file of the secondary dataset</li>
+</ol>
+</dd>
+</dl>
+<p>When needed, harpcollocate update can be used to refresh the collocation result file.</p>
+</div>
+<div class="section" id="obtaining-collocation-result-file">
+<h2>Obtaining collocation result file</h2>
+<p>The tool harpcollocate matchup is used to derive a list of measurement pairs that match in time, latitude and longitude.</p>
+<div class="highlight-python"><div class="highlight"><pre>Usage:
+  harpcollocate matchup [options]
+    Determine the collocation filter for two sets of HARP files,
+    and optionally resample the collocation result
+
+    Options:
+
+      -h, --help
+           Show matchup help (this text)
+      -ia, --input-a &lt;input&gt;
+           Specifies directory or names of input files of dataset A
+      -ib, --input-b &lt;input&gt;
+           Specifies directory or names of input files of dataset B
+      -or, --output-result &lt;output&gt;
+           Specifies collocation result file (comma separated values)
+
+      Collocation options,
+      set at least one of the following ([unit] is optional):
+      -dt &#39;value [unit]&#39;          : sets maximum allowed difference in time
+      -dp &#39;value [unit]&#39;          : sets maximum allowed point distance
+      -dlat &#39;value [unit]&#39;        : sets maximum allowed point difference
+                                    in latitude
+      -dlon &#39;value [unit]&#39;        : sets maximum allowed point difference
+                                    in longitude
+      -da &#39;value [unit]&#39;          : sets minimum allowed overlapping
+                                    percentage of polygon areas
+      -dsza &#39;value [unit]&#39;        : sets allowed maximum difference
+                                    in solar zenith angle
+      -dsaa &#39;value [unit]&#39;        : sets allowed maximum difference
+                                    in solar azimuth angle
+      -dvza &#39;value [unit]&#39;        : sets allowed maximum difference
+                                    in viewing zenith angle
+      -dvaa &#39;value [unit]&#39;        : sets allowed maximum difference
+                                    in viewing azimuth angle
+      -dtheta &#39;value [unit]&#39;      : sets allowed maximum difference
+                                    in scattering angle
+      -overlap                    : sets that polygon areas must overlap
+      -painab                     : sets that points of dataset A must fall
+                                    in polygon areas of B
+      -pbinaa                     : sets that points of dataset B must fall
+                                    in polygon areas of A
+      When &#39;[unit]&#39; is not specified, a default unit is used:
+        Criteria; [default unit]
+        -dt; [s]
+        -dp; [m]
+        -dlat; [degree_north]
+        -dlon; [degree_east]
+        -da; [%]
+        -dsza, -dsaa, -dvza, -dvaa, -dvaa, -dtheta; [degree]
+
+      Resampling options:
+      -Rnna, --nearest-neighbour-a: keep only nearest neighbour,
+                                    dataset A is the master dataset
+      -Rnnb, --nearest-neighbour-b: keep only nearest neighbour,
+                                    dataset B is the master dataset
+      The nearest neighbour is the sample with which the squared sum
+      of the weighted differences is minimal
+      When resampling is set to &#39;Rnna&#39; and/or &#39;Rnnb&#39;,
+      the following parameters can be set:
+      -wft &#39;value [unit]&#39;         : sets the weighting factor for time
+      -wfdp &#39;value [unit]&#39;        : sets the weighting factor for
+                                    point distance
+      -wfa &#39;value [unit]&#39;         : sets the weighting factor for
+                                    overlapping percentage
+      -wfsza &#39;value [unit]&#39;       : sets the weighting factor
+                                    for solar zenith angle
+      -wfsaa &#39;value [unit]&#39;       : sets the weighting factor
+                                    for solar azimuth angle
+      -wfvza &#39;value [unit]&#39;       : sets the weighting factor
+                                    for viewing zenith angle
+      -wfvaa &#39;value [unit]&#39;       : sets the weighting factor
+                                    for viewing azimuth angle
+      -wftheta &#39;value [unit]&#39;     : sets the weighting factor
+                                    for scattering angle
+      When &#39;[unit]&#39; is not specified in the above, a default unit will be
+      adopted:
+        Weighting factors; [default unit]
+        -wft; [1/s]
+        -wfdp; [1/m]
+        -wfa; [1/%]
+        -wfsza, -wfsaa, -wfvza, -wfvaa, -wfvaa, -wftheta; [1/degree]
+      When a weighting factor is not set, a default value of 1 and
+      the default unit are adopted. Recommend value and unit for the
+      weighting factors are the reciprocals of the corresponding
+      collocation criteria value and unit that is used.
+</pre></div>
+</div>
+</div>
+<div class="section" id="resampling-collocation-result-file">
+<h2>Resampling collocation result file</h2>
+<p>The command <code class="docutils literal"><span class="pre">harpcollocate</span> <span class="pre">resample</span></code> is used to apply resampling on the collocation result file. For example, to limit
+a series of matches to only the nearest neighbour.</p>
+<div class="highlight-python"><div class="highlight"><pre>Usage:
+  harpcollocate resample [options]
+    Resample an existing collocation result file
+
+    Options:
+
+      -h, --help
+           Show resample help (this text)
+      -ir, --input-result &lt;input&gt;
+           Input collocation result file (comma separated values)
+      -or, --output-result &lt;output&gt;
+           Create a new file, and do not overwrite the input
+           collocation result file
+
+      Resampling options:
+      -Rnna, --nearest-neighbour-a: keep only nearest neighbour,
+                                    dataset A is the master dataset
+      -Rnnb, --nearest-neighbour-b: keep only nearest neighbour,
+                                    dataset B is the master dataset
+      The nearest neighbour is the sample with which the squared sum
+      of the weighted differences is minimal
+      When resampling is set to &#39;Rnna&#39; and/or &#39;Rnnb&#39;,
+      the following parameters can be set:
+      -wft &#39;value [unit]&#39;         : sets the weighting factor for time
+      -wfdp &#39;value [unit]&#39;        : sets the weighting factor for
+                                    point distance
+      -wfa &#39;value [unit]&#39;         : sets the weighting factor for
+                                    overlapping percentage
+      -wfsza &#39;value [unit]&#39;       : sets the weighting factor
+                                    for solar zenith angle
+      -wfsaa &#39;value [unit]&#39;       : sets the weighting factor
+                                    for solar azimuth angle
+      -wfvza &#39;value [unit]&#39;       : sets the weighting factor
+                                    for viewing zenith angle
+      -wfvaa &#39;value [unit]&#39;       : sets the weighting factor
+                                    for viewing azimuth angle
+      -wftheta &#39;value [unit]&#39;     : sets the weighting factor
+                                    for scattering angle
+      When &#39;[unit]&#39; is not specified in the above, a default unit will be
+      adopted:
+        Weighting factors; [default unit]
+        -wft; [1/s]
+        -wfdp; [1/m]
+        -wfa; [1/%]
+        -wfsza, -wfsaa, -wfvza, -wfvaa, -wfvaa, -wftheta; [1/degree]
+      When a weighting factor is not set, a default value of 1 and
+      the default unit are adopted. Recommend value and unit for the
+      weighting factors are the reciprocals of the corresponding
+      collocation criteria value and unit that is used.
+</pre></div>
+</div>
+</div>
+<div class="section" id="updating-collocation-result-file">
+<h2>Updating collocation result file</h2>
+<dl class="docutils">
+<dt>The command <code class="docutils literal"><span class="pre">harpcollocate</span> <span class="pre">update</span></code> is used to:</dt>
+<dd><ol class="first last arabic simple">
+<li>Determine which files in the collocation result file are still in existance</li>
+<li>Update the collocation result file accordingly</li>
+</ol>
+</dd>
+</dl>
+<div class="highlight-python"><div class="highlight"><pre>Usage:
+  harpcollocate update [options]
+    Update an existing collocation result file by checking
+    the measurements in two sets of HARP files that still exist
+
+    Options:
+      -ia, --input-a &lt;input&gt;
+           Specifies directory or names of input files of dataset A
+      -ib, --input-b &lt;input&gt;
+           Specifies directory or names of input files of dataset B
+      -ir, --input-result &lt;input&gt;
+           Input collocation result file (comma separated values)
+      -or, --output-result &lt;output&gt;
+           Create a new file, and do not overwrite the input
+           collocation result file
+</pre></div>
+</div>
+</div>
+</div>
+
+
+           </div>
+          </div>
+          <footer>
+  
+    <div class="rst-footer-buttons" role="navigation" aria-label="footer navigation">
+      
+        <a href="harpconvert.html" class="btn btn-neutral float-right" title="harpconvert" accesskey="n">Next <span class="fa fa-arrow-circle-right"></span></a>
+      
+      
+        <a href="harpcheck.html" class="btn btn-neutral" title="harpcheck" accesskey="p"><span class="fa fa-arrow-circle-left"></span> Previous</a>
+      
+    </div>
+  
+
+  <hr/>
+
+  <div role="contentinfo">
+    <p>
+        &copy; Copyright 2015 S&amp;T, The Netherlands.
+
+    </p>
+  </div> 
+
+</footer>
+
+        </div>
+      </div>
+
+    </section>
+
+  </div>
+  
+
+
+  
+
+    <script type="text/javascript">
+        var DOCUMENTATION_OPTIONS = {
+            URL_ROOT:'./',
+            VERSION:'0.1b',
+            COLLAPSE_INDEX:false,
+            FILE_SUFFIX:'.html',
+            HAS_SOURCE:  false
+        };
+    </script>
+      <script type="text/javascript" src="_static/jquery.js"></script>
+      <script type="text/javascript" src="_static/underscore.js"></script>
+      <script type="text/javascript" src="_static/doctools.js"></script>
+      <script type="text/javascript" src="https://cdn.mathjax.org/mathjax/latest/MathJax.js?config=TeX-AMS-MML_HTMLorMML"></script>
+
+  
+
+  
+  
+    <script type="text/javascript" src="_static/js/theme.js"></script>
+  
+
+  
+  
+  <script type="text/javascript">
+      jQuery(function () {
+          SphinxRtdTheme.StickyNav.enable();
+      });
+  </script>
+   
+
+</body>
+</html>

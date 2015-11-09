@@ -1,0 +1,2641 @@
+
+
+<!DOCTYPE html>
+<!--[if IE 8]><html class="no-js lt-ie9" lang="en" > <![endif]-->
+<!--[if gt IE 8]><!--> <html class="no-js" lang="en" > <!--<![endif]-->
+<head>
+  <meta charset="utf-8">
+  
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  
+  <title>Algorithms &mdash; HARP 0.1b documentation</title>
+  
+
+  
+  
+
+  
+
+  
+  
+    
+
+  
+
+  
+  
+    <link rel="stylesheet" href="_static/css/theme.css" type="text/css" />
+  
+
+  
+    <link rel="stylesheet" href="_static/custom.css" type="text/css" />
+  
+
+  
+    <link rel="top" title="HARP 0.1b documentation" href="index.html"/>
+        <link rel="up" title="C library" href="libharp.html"/>
+        <link rel="next" title="Error" href="libharp_error.html"/>
+        <link rel="prev" title="C library" href="libharp.html"/> 
+
+  
+  <script src="_static/js/modernizr.min.js"></script>
+
+</head>
+
+<body class="wy-body-for-nav" role="document">
+
+  <div class="wy-grid-for-nav">
+
+    
+    <nav data-toggle="wy-nav-shift" class="wy-nav-side">
+      <div class="wy-side-scroll">
+        <div class="wy-side-nav-search">
+          
+
+          
+            <a href="index.html" class="icon icon-home"> HARP
+          
+
+          
+          </a>
+
+          
+            
+            
+              <div class="version">
+                0.1
+              </div>
+            
+          
+
+          
+<div role="search">
+  <form id="rtd-search-form" class="wy-form" action="search.html" method="get">
+    <input type="text" name="q" placeholder="Search docs" />
+    <input type="hidden" name="check_keywords" value="yes" />
+    <input type="hidden" name="area" value="default" />
+  </form>
+</div>
+
+          
+        </div>
+
+        <div class="wy-menu wy-menu-vertical" data-spy="affix" role="navigation" aria-label="main navigation">
+          
+            
+            
+                <ul class="current">
+<li class="toctree-l1"><a class="reference internal" href="install.html">Installation</a></li>
+<li class="toctree-l1"><a class="reference internal" href="dataformats.html">Data formats</a></li>
+<li class="toctree-l1"><a class="reference internal" href="ingestions/index.html">Ingestion definitions</a></li>
+<li class="toctree-l1 current"><a class="reference internal" href="libharp.html">C library</a><ul class="current">
+<li class="toctree-l2"><a class="reference internal" href="libharp.html#introduction">Introduction</a></li>
+<li class="toctree-l2 current"><a class="reference internal" href="libharp.html#modules">Modules</a><ul class="current">
+<li class="toctree-l3 current"><a class="current reference internal" href="">Algorithms</a></li>
+<li class="toctree-l3"><a class="reference internal" href="libharp_error.html">Error</a></li>
+<li class="toctree-l3"><a class="reference internal" href="libharp_general.html">General</a></li>
+<li class="toctree-l3"><a class="reference internal" href="libharp_product.html">Product</a></li>
+<li class="toctree-l3"><a class="reference internal" href="libharp_variable.html">Variable</a></li>
+</ul>
+</li>
+</ul>
+</li>
+<li class="toctree-l1"><a class="reference internal" href="harpcheck.html">harpcheck</a></li>
+<li class="toctree-l1"><a class="reference internal" href="harpcollocate.html">harpcollocate</a></li>
+<li class="toctree-l1"><a class="reference internal" href="harpconvert.html">harpconvert</a></li>
+<li class="toctree-l1"><a class="reference internal" href="harpdump.html">harpdump</a></li>
+<li class="toctree-l1"><a class="reference internal" href="harpfilter.html">harpfilter</a></li>
+</ul>
+
+            
+          
+        </div>
+      </div>
+    </nav>
+
+    <section data-toggle="wy-nav-shift" class="wy-nav-content-wrap">
+
+      
+      <nav class="wy-nav-top" role="navigation" aria-label="top navigation">
+        <i data-toggle="wy-nav-top" class="fa fa-bars"></i>
+        <a href="index.html">HARP</a>
+      </nav>
+
+
+      
+      <div class="wy-nav-content">
+        <div class="rst-content">
+          
+
+
+
+
+
+<div role="navigation" aria-label="breadcrumbs navigation">
+  <ul class="wy-breadcrumbs">
+    <li><a href="index.html">Docs</a> &raquo;</li>
+      
+          <li><a href="libharp.html">C library</a> &raquo;</li>
+      
+    <li>Algorithms</li>
+      <li class="wy-breadcrumbs-aside">
+        
+          
+        
+      </li>
+  </ul>
+  <hr/>
+</div>
+          <div role="main" class="document" itemscope="itemscope" itemtype="http://schema.org/Article">
+           <div itemprop="articleBody">
+            
+  <div class="section" id="algorithms">
+<h1>Algorithms</h1>
+<dl class="group">
+<dt>
+<span class="target" id="libharpgroup__harp__algorithm"></span><em>group</em> <code class="descname">harp_algorithm</code></dt>
+<dd><p>The collection of scientific/mathematical algorithms as used internally by HARP. </p>
+<div class="breathe-sectiondef container">
+<p class="breathe-sectiondef-title rubric">Defines</p>
+<dl class="macro">
+<dt id="c.CONST_NUM_AVOGADRO">
+<span class="target" id="libharpgroup__harp__algorithm_1ga5e28c38284e6d7bbe2aa1ffd232213d7"></span><code class="descname">CONST_NUM_AVOGADRO</code></dt>
+<dd></dd></dl>
+
+<dl class="macro">
+<dt id="c.CONST_SPEED_OF_LIGHT">
+<span class="target" id="libharpgroup__harp__algorithm_1ga43cbca92bae9cd75a1f26bb8f1f07740"></span><code class="descname">CONST_SPEED_OF_LIGHT</code></dt>
+<dd></dd></dl>
+
+<dl class="macro">
+<dt id="c.CONST_GRAVITATIONAL_CONSTANT">
+<span class="target" id="libharpgroup__harp__algorithm_1gab43b2693115ff7d8360def6e533af165"></span><code class="descname">CONST_GRAVITATIONAL_CONSTANT</code></dt>
+<dd></dd></dl>
+
+<dl class="macro">
+<dt id="c.CONST_PLANCKS_CONSTANT_H">
+<span class="target" id="libharpgroup__harp__algorithm_1ga436c9ba4dda188154baed4430926eb8e"></span><code class="descname">CONST_PLANCKS_CONSTANT_H</code></dt>
+<dd></dd></dl>
+
+<dl class="macro">
+<dt id="c.CONST_PLANCKS_CONSTANT_HBAR">
+<span class="target" id="libharpgroup__harp__algorithm_1ga4e3c413309e2cfcd4faf3be702b3fe90"></span><code class="descname">CONST_PLANCKS_CONSTANT_HBAR</code></dt>
+<dd></dd></dl>
+
+<dl class="macro">
+<dt id="c.CONST_ELECTRON_VOLT">
+<span class="target" id="libharpgroup__harp__algorithm_1ga673807ba64c0af8801a5a1573faf780d"></span><code class="descname">CONST_ELECTRON_VOLT</code></dt>
+<dd></dd></dl>
+
+<dl class="macro">
+<dt id="c.CONST_MASS_ELECTRON">
+<span class="target" id="libharpgroup__harp__algorithm_1gaf63e9feb2b682dcf5bd03ad0505baac5"></span><code class="descname">CONST_MASS_ELECTRON</code></dt>
+<dd></dd></dl>
+
+<dl class="macro">
+<dt id="c.CONST_MASS_MUON">
+<span class="target" id="libharpgroup__harp__algorithm_1ga07e85cea23fa32594c442118865c9296"></span><code class="descname">CONST_MASS_MUON</code></dt>
+<dd></dd></dl>
+
+<dl class="macro">
+<dt id="c.CONST_MASS_PROTON">
+<span class="target" id="libharpgroup__harp__algorithm_1gab382e35057038dc0605acee22969459f"></span><code class="descname">CONST_MASS_PROTON</code></dt>
+<dd></dd></dl>
+
+<dl class="macro">
+<dt id="c.CONST_MASS_NEUTRON">
+<span class="target" id="libharpgroup__harp__algorithm_1ga592dbed4a5a57156c78b3efab7667452"></span><code class="descname">CONST_MASS_NEUTRON</code></dt>
+<dd></dd></dl>
+
+<dl class="macro">
+<dt id="c.CONST_RYDBERG">
+<span class="target" id="libharpgroup__harp__algorithm_1ga7dc5eaa496c893e0a487f3a2779467f8"></span><code class="descname">CONST_RYDBERG</code></dt>
+<dd></dd></dl>
+
+<dl class="macro">
+<dt id="c.CONST_BOLTZMANN">
+<span class="target" id="libharpgroup__harp__algorithm_1ga0c1101bfeffe8e7d69a82ff1343892d8"></span><code class="descname">CONST_BOLTZMANN</code></dt>
+<dd></dd></dl>
+
+<dl class="macro">
+<dt id="c.CONST_BOHR_MAGNETON">
+<span class="target" id="libharpgroup__harp__algorithm_1ga56be32f60644f19c8fc4e4b001163573"></span><code class="descname">CONST_BOHR_MAGNETON</code></dt>
+<dd></dd></dl>
+
+<dl class="macro">
+<dt id="c.CONST_NUCLEAR_MAGNETON">
+<span class="target" id="libharpgroup__harp__algorithm_1ga4fb016267fb235d8ddb495e29117cac4"></span><code class="descname">CONST_NUCLEAR_MAGNETON</code></dt>
+<dd></dd></dl>
+
+<dl class="macro">
+<dt id="c.CONST_ELECTRON_MAGNETIC_MOMENT">
+<span class="target" id="libharpgroup__harp__algorithm_1ga63343eabd89219b14e75c9b741edffe5"></span><code class="descname">CONST_ELECTRON_MAGNETIC_MOMENT</code></dt>
+<dd></dd></dl>
+
+<dl class="macro">
+<dt id="c.CONST_PROTON_MAGNETIC_MOMENT">
+<span class="target" id="libharpgroup__harp__algorithm_1gae8f454d8439a8d328e9770cc3263534e"></span><code class="descname">CONST_PROTON_MAGNETIC_MOMENT</code></dt>
+<dd></dd></dl>
+
+<dl class="macro">
+<dt id="c.CONST_MOLAR_GAS">
+<span class="target" id="libharpgroup__harp__algorithm_1gab6b48c786a88d1ebd2f4b73286a838da"></span><code class="descname">CONST_MOLAR_GAS</code></dt>
+<dd></dd></dl>
+
+<dl class="macro">
+<dt id="c.CONST_STANDARD_GAS_VOLUME">
+<span class="target" id="libharpgroup__harp__algorithm_1ga5b0fe0b766c8867d058c0673d660eca4"></span><code class="descname">CONST_STANDARD_GAS_VOLUME</code></dt>
+<dd></dd></dl>
+
+<dl class="macro">
+<dt id="c.CONST_MINUTE">
+<span class="target" id="libharpgroup__harp__algorithm_1gaf2c3907e345f49c25b18f662cb85b66d"></span><code class="descname">CONST_MINUTE</code></dt>
+<dd></dd></dl>
+
+<dl class="macro">
+<dt id="c.CONST_HOUR">
+<span class="target" id="libharpgroup__harp__algorithm_1ga5156e115cca3984b34176f76fb593485"></span><code class="descname">CONST_HOUR</code></dt>
+<dd></dd></dl>
+
+<dl class="macro">
+<dt id="c.CONST_DAY">
+<span class="target" id="libharpgroup__harp__algorithm_1ga0703ae7a1294d4490b1838a533f108ad"></span><code class="descname">CONST_DAY</code></dt>
+<dd></dd></dl>
+
+<dl class="macro">
+<dt id="c.CONST_WEEK">
+<span class="target" id="libharpgroup__harp__algorithm_1gaa2bddb58ddefd25fb455d06c02c323c4"></span><code class="descname">CONST_WEEK</code></dt>
+<dd></dd></dl>
+
+<dl class="macro">
+<dt id="c.CONST_INCH">
+<span class="target" id="libharpgroup__harp__algorithm_1gabbf8efb08f26b068fb6cb9f3d3bfbebe"></span><code class="descname">CONST_INCH</code></dt>
+<dd></dd></dl>
+
+<dl class="macro">
+<dt id="c.CONST_FOOT">
+<span class="target" id="libharpgroup__harp__algorithm_1ga58e1506036357157022e1677bfab5155"></span><code class="descname">CONST_FOOT</code></dt>
+<dd></dd></dl>
+
+<dl class="macro">
+<dt id="c.CONST_YARD">
+<span class="target" id="libharpgroup__harp__algorithm_1gabace6283fb49ea2d3e8996a750c118a5"></span><code class="descname">CONST_YARD</code></dt>
+<dd></dd></dl>
+
+<dl class="macro">
+<dt id="c.CONST_MILE">
+<span class="target" id="libharpgroup__harp__algorithm_1gad725dad892ef8af201780022a5c4cfb7"></span><code class="descname">CONST_MILE</code></dt>
+<dd></dd></dl>
+
+<dl class="macro">
+<dt id="c.CONST_NAUTICAL_MILE">
+<span class="target" id="libharpgroup__harp__algorithm_1ga8078df79e7f4e1dd7ee2ef6523f6d5a7"></span><code class="descname">CONST_NAUTICAL_MILE</code></dt>
+<dd></dd></dl>
+
+<dl class="macro">
+<dt id="c.CONST_FATHOM">
+<span class="target" id="libharpgroup__harp__algorithm_1gac250ee132361280434b3546a1d3af093"></span><code class="descname">CONST_FATHOM</code></dt>
+<dd></dd></dl>
+
+<dl class="macro">
+<dt id="c.CONST_MIL">
+<span class="target" id="libharpgroup__harp__algorithm_1ga282ca3247a7618736e1e4ff6e8bd19b7"></span><code class="descname">CONST_MIL</code></dt>
+<dd></dd></dl>
+
+<dl class="macro">
+<dt id="c.CONST_POINT">
+<span class="target" id="libharpgroup__harp__algorithm_1gab438578b895ca154fbfac2c260cf08e9"></span><code class="descname">CONST_POINT</code></dt>
+<dd></dd></dl>
+
+<dl class="macro">
+<dt id="c.CONST_TEXPOINT">
+<span class="target" id="libharpgroup__harp__algorithm_1ga43f63967058e2e773114c6ac72eeda8f"></span><code class="descname">CONST_TEXPOINT</code></dt>
+<dd></dd></dl>
+
+<dl class="macro">
+<dt id="c.CONST_MICRON">
+<span class="target" id="libharpgroup__harp__algorithm_1ga46807e55c88bd5e51c7a3e9432db6583"></span><code class="descname">CONST_MICRON</code></dt>
+<dd></dd></dl>
+
+<dl class="macro">
+<dt id="c.CONST_ANGSTROM">
+<span class="target" id="libharpgroup__harp__algorithm_1ga745e6144c07098adac41c8713106fa03"></span><code class="descname">CONST_ANGSTROM</code></dt>
+<dd></dd></dl>
+
+<dl class="macro">
+<dt id="c.CONST_HECTARE">
+<span class="target" id="libharpgroup__harp__algorithm_1ga85025a095e12aa6cf9cbb770c90108ac"></span><code class="descname">CONST_HECTARE</code></dt>
+<dd></dd></dl>
+
+<dl class="macro">
+<dt id="c.CONST_ACRE">
+<span class="target" id="libharpgroup__harp__algorithm_1ga58f4817c1816dc2da72ea5a04b7c6c3b"></span><code class="descname">CONST_ACRE</code></dt>
+<dd></dd></dl>
+
+<dl class="macro">
+<dt id="c.CONST_BARN">
+<span class="target" id="libharpgroup__harp__algorithm_1ga0ed59a7f4429b080cd29cf7f6d047fdf"></span><code class="descname">CONST_BARN</code></dt>
+<dd></dd></dl>
+
+<dl class="macro">
+<dt id="c.CONST_LITER">
+<span class="target" id="libharpgroup__harp__algorithm_1ga20c28c8cac649b3890ce2b23868b33d3"></span><code class="descname">CONST_LITER</code></dt>
+<dd></dd></dl>
+
+<dl class="macro">
+<dt id="c.CONST_US_GALLON">
+<span class="target" id="libharpgroup__harp__algorithm_1ga97af8e6bdef2ba61422ceceecade00d4"></span><code class="descname">CONST_US_GALLON</code></dt>
+<dd></dd></dl>
+
+<dl class="macro">
+<dt id="c.CONST_QUART">
+<span class="target" id="libharpgroup__harp__algorithm_1gaf7661df66dcbdfd95982173efa761089"></span><code class="descname">CONST_QUART</code></dt>
+<dd></dd></dl>
+
+<dl class="macro">
+<dt id="c.CONST_PINT">
+<span class="target" id="libharpgroup__harp__algorithm_1gaf197f75a53ec2462b3503fd36c3acb2c"></span><code class="descname">CONST_PINT</code></dt>
+<dd></dd></dl>
+
+<dl class="macro">
+<dt id="c.CONST_CUP">
+<span class="target" id="libharpgroup__harp__algorithm_1ga5b5388903d3eaac00a7938033ce887be"></span><code class="descname">CONST_CUP</code></dt>
+<dd></dd></dl>
+
+<dl class="macro">
+<dt id="c.CONST_FLUID_OUNCE">
+<span class="target" id="libharpgroup__harp__algorithm_1ga6f27f70070e337fa7df39efaaa43d8cb"></span><code class="descname">CONST_FLUID_OUNCE</code></dt>
+<dd></dd></dl>
+
+<dl class="macro">
+<dt id="c.CONST_TABLESPOON">
+<span class="target" id="libharpgroup__harp__algorithm_1ga063418aac2f4da94ac8a44d2c15f52e1"></span><code class="descname">CONST_TABLESPOON</code></dt>
+<dd></dd></dl>
+
+<dl class="macro">
+<dt id="c.CONST_TEASPOON">
+<span class="target" id="libharpgroup__harp__algorithm_1ga3433cf07f5d3fcde2f9682075916e670"></span><code class="descname">CONST_TEASPOON</code></dt>
+<dd></dd></dl>
+
+<dl class="macro">
+<dt id="c.CONST_CANADIAN_GALLON">
+<span class="target" id="libharpgroup__harp__algorithm_1ga2e18d515204297a3fd228e5daf3bde81"></span><code class="descname">CONST_CANADIAN_GALLON</code></dt>
+<dd></dd></dl>
+
+<dl class="macro">
+<dt id="c.CONST_UK_GALLON">
+<span class="target" id="libharpgroup__harp__algorithm_1ga60ec9411b7f238bb05620fa5b6c125c7"></span><code class="descname">CONST_UK_GALLON</code></dt>
+<dd></dd></dl>
+
+<dl class="macro">
+<dt id="c.CONST_MILES_PER_HOUR">
+<span class="target" id="libharpgroup__harp__algorithm_1ga2659ce24cd43e10f7ff75b76a5b5d377"></span><code class="descname">CONST_MILES_PER_HOUR</code></dt>
+<dd></dd></dl>
+
+<dl class="macro">
+<dt id="c.CONST_KILOMETERS_PER_HOUR">
+<span class="target" id="libharpgroup__harp__algorithm_1gaccd3dc319fe6ded4af2e89e92ad0203c"></span><code class="descname">CONST_KILOMETERS_PER_HOUR</code></dt>
+<dd></dd></dl>
+
+<dl class="macro">
+<dt id="c.CONST_KNOT">
+<span class="target" id="libharpgroup__harp__algorithm_1ga32c80c788c309e2896a38758f135038c"></span><code class="descname">CONST_KNOT</code></dt>
+<dd></dd></dl>
+
+<dl class="macro">
+<dt id="c.CONST_POUND_MASS">
+<span class="target" id="libharpgroup__harp__algorithm_1ga0b63e7e4fe281fa30720c0ccbeacd79d"></span><code class="descname">CONST_POUND_MASS</code></dt>
+<dd></dd></dl>
+
+<dl class="macro">
+<dt id="c.CONST_OUNCE_MASS">
+<span class="target" id="libharpgroup__harp__algorithm_1gac760a14cae38436374155c8ca251525e"></span><code class="descname">CONST_OUNCE_MASS</code></dt>
+<dd></dd></dl>
+
+<dl class="macro">
+<dt id="c.CONST_TON">
+<span class="target" id="libharpgroup__harp__algorithm_1ga7ab9b19790fa8e02b10d0171e9b8d3c8"></span><code class="descname">CONST_TON</code></dt>
+<dd></dd></dl>
+
+<dl class="macro">
+<dt id="c.CONST_METRIC_TON">
+<span class="target" id="libharpgroup__harp__algorithm_1gac50c31975eab818cdcf0809fe14d7b8e"></span><code class="descname">CONST_METRIC_TON</code></dt>
+<dd></dd></dl>
+
+<dl class="macro">
+<dt id="c.CONST_UK_TON">
+<span class="target" id="libharpgroup__harp__algorithm_1ga6dcbe05f6d60284c693ebb1ae6276caa"></span><code class="descname">CONST_UK_TON</code></dt>
+<dd></dd></dl>
+
+<dl class="macro">
+<dt id="c.CONST_TROY_OUNCE">
+<span class="target" id="libharpgroup__harp__algorithm_1ga77ab5e1aa1ebd5def0cfec0e1b336f38"></span><code class="descname">CONST_TROY_OUNCE</code></dt>
+<dd></dd></dl>
+
+<dl class="macro">
+<dt id="c.CONST_CARAT">
+<span class="target" id="libharpgroup__harp__algorithm_1ga2c10ffe5bf88c7dfbeb462d1dcc8d7f5"></span><code class="descname">CONST_CARAT</code></dt>
+<dd></dd></dl>
+
+<dl class="macro">
+<dt id="c.CONST_UNIFIED_ATOMIC_MASS">
+<span class="target" id="libharpgroup__harp__algorithm_1gad977dcb1d61aca7f9ae51eaf2cf1b92d"></span><code class="descname">CONST_UNIFIED_ATOMIC_MASS</code></dt>
+<dd></dd></dl>
+
+<dl class="macro">
+<dt id="c.CONST_GRAM_FORCE">
+<span class="target" id="libharpgroup__harp__algorithm_1ga3cf877bd2094b52e5709cf41874e7b3f"></span><code class="descname">CONST_GRAM_FORCE</code></dt>
+<dd></dd></dl>
+
+<dl class="macro">
+<dt id="c.CONST_POUND_FORCE">
+<span class="target" id="libharpgroup__harp__algorithm_1gaf4a321596c03c06d8e0f100d76fdaabb"></span><code class="descname">CONST_POUND_FORCE</code></dt>
+<dd></dd></dl>
+
+<dl class="macro">
+<dt id="c.CONST_KILOPOUND_FORCE">
+<span class="target" id="libharpgroup__harp__algorithm_1ga37775b226b5a15b80aea4f5f0079592d"></span><code class="descname">CONST_KILOPOUND_FORCE</code></dt>
+<dd></dd></dl>
+
+<dl class="macro">
+<dt id="c.CONST_POUNDAL">
+<span class="target" id="libharpgroup__harp__algorithm_1gabef691b4b0ea83db0000a8bd1c04e229"></span><code class="descname">CONST_POUNDAL</code></dt>
+<dd></dd></dl>
+
+<dl class="macro">
+<dt id="c.CONST_CALORIE">
+<span class="target" id="libharpgroup__harp__algorithm_1gadbc3d150f5fd40d9e7b33bf554c0563b"></span><code class="descname">CONST_CALORIE</code></dt>
+<dd></dd></dl>
+
+<dl class="macro">
+<dt id="c.CONST_BTU">
+<span class="target" id="libharpgroup__harp__algorithm_1ga17b28973875d2f9a6040d6fc16974915"></span><code class="descname">CONST_BTU</code></dt>
+<dd></dd></dl>
+
+<dl class="macro">
+<dt id="c.CONST_THERM">
+<span class="target" id="libharpgroup__harp__algorithm_1ga6f651515cf2a18bc223aea749258e408"></span><code class="descname">CONST_THERM</code></dt>
+<dd></dd></dl>
+
+<dl class="macro">
+<dt id="c.CONST_HORSEPOWER">
+<span class="target" id="libharpgroup__harp__algorithm_1ga87e1ba3d79948a420745541b446e60cf"></span><code class="descname">CONST_HORSEPOWER</code></dt>
+<dd></dd></dl>
+
+<dl class="macro">
+<dt id="c.CONST_BAR">
+<span class="target" id="libharpgroup__harp__algorithm_1gaf3903efb79c15d6f37d5f02b46e46039"></span><code class="descname">CONST_BAR</code></dt>
+<dd></dd></dl>
+
+<dl class="macro">
+<dt id="c.CONST_PASCAL">
+<span class="target" id="libharpgroup__harp__algorithm_1gae9bac7734f10eccc47625b6f505c42b1"></span><code class="descname">CONST_PASCAL</code></dt>
+<dd></dd></dl>
+
+<dl class="macro">
+<dt id="c.CONST_TORR">
+<span class="target" id="libharpgroup__harp__algorithm_1ga01c39245e0f0f4b99d39c8efe23d4401"></span><code class="descname">CONST_TORR</code></dt>
+<dd></dd></dl>
+
+<dl class="macro">
+<dt id="c.CONST_METER_OF_MERCURY">
+<span class="target" id="libharpgroup__harp__algorithm_1ga673e9ae2f17907702a86f6391632cf5b"></span><code class="descname">CONST_METER_OF_MERCURY</code></dt>
+<dd></dd></dl>
+
+<dl class="macro">
+<dt id="c.CONST_INCH_OF_MERCURY">
+<span class="target" id="libharpgroup__harp__algorithm_1ga8b52b510c3ed2191081af9db0a7f5da7"></span><code class="descname">CONST_INCH_OF_MERCURY</code></dt>
+<dd></dd></dl>
+
+<dl class="macro">
+<dt id="c.CONST_INCH_OF_WATER">
+<span class="target" id="libharpgroup__harp__algorithm_1gaa0988545d8c00fc18bd265b51eed4721"></span><code class="descname">CONST_INCH_OF_WATER</code></dt>
+<dd></dd></dl>
+
+<dl class="macro">
+<dt id="c.CONST_PSI">
+<span class="target" id="libharpgroup__harp__algorithm_1gad130888fdd7c60f7edaa4a768d7f4c90"></span><code class="descname">CONST_PSI</code></dt>
+<dd></dd></dl>
+
+<dl class="macro">
+<dt id="c.CONST_POISE">
+<span class="target" id="libharpgroup__harp__algorithm_1ga7364efd93c14afec0e7822ace3f66812"></span><code class="descname">CONST_POISE</code></dt>
+<dd></dd></dl>
+
+<dl class="macro">
+<dt id="c.CONST_STOKES">
+<span class="target" id="libharpgroup__harp__algorithm_1ga924246ba462a2b3f2f8fb9914dbc4557"></span><code class="descname">CONST_STOKES</code></dt>
+<dd></dd></dl>
+
+<dl class="macro">
+<dt id="c.CONST_FARADAY">
+<span class="target" id="libharpgroup__harp__algorithm_1ga3d6b5a62f19da5f0c460105b501ced0c"></span><code class="descname">CONST_FARADAY</code></dt>
+<dd></dd></dl>
+
+<dl class="macro">
+<dt id="c.CONST_ELECTRON_CHARGE">
+<span class="target" id="libharpgroup__harp__algorithm_1ga60ce547e6e8e2c56a5dea1ab0b994255"></span><code class="descname">CONST_ELECTRON_CHARGE</code></dt>
+<dd></dd></dl>
+
+<dl class="macro">
+<dt id="c.CONST_GAUSS">
+<span class="target" id="libharpgroup__harp__algorithm_1ga15999cb94ac2a80e3678c62c95921340"></span><code class="descname">CONST_GAUSS</code></dt>
+<dd></dd></dl>
+
+<dl class="macro">
+<dt id="c.CONST_STILB">
+<span class="target" id="libharpgroup__harp__algorithm_1ga024057f082bda43aa197faf63e3bf353"></span><code class="descname">CONST_STILB</code></dt>
+<dd></dd></dl>
+
+<dl class="macro">
+<dt id="c.CONST_LUMEN">
+<span class="target" id="libharpgroup__harp__algorithm_1ga287839a6da35608ce7893d9fb69496eb"></span><code class="descname">CONST_LUMEN</code></dt>
+<dd></dd></dl>
+
+<dl class="macro">
+<dt id="c.CONST_LUX">
+<span class="target" id="libharpgroup__harp__algorithm_1ga4de82cca4e5cd15f0f77b1e920e047ae"></span><code class="descname">CONST_LUX</code></dt>
+<dd></dd></dl>
+
+<dl class="macro">
+<dt id="c.CONST_PHOT">
+<span class="target" id="libharpgroup__harp__algorithm_1gaac5d26b1b5b7f4fa68b4a2a3cfca7157"></span><code class="descname">CONST_PHOT</code></dt>
+<dd></dd></dl>
+
+<dl class="macro">
+<dt id="c.CONST_FOOTCANDLE">
+<span class="target" id="libharpgroup__harp__algorithm_1gad1ca039ae5530c4c28e6571a5b34e41f"></span><code class="descname">CONST_FOOTCANDLE</code></dt>
+<dd></dd></dl>
+
+<dl class="macro">
+<dt id="c.CONST_LAMBERT">
+<span class="target" id="libharpgroup__harp__algorithm_1gaaaaab8a3c7c2ef18f5a8b92aeb8b0024"></span><code class="descname">CONST_LAMBERT</code></dt>
+<dd></dd></dl>
+
+<dl class="macro">
+<dt id="c.CONST_FOOTLAMBERT">
+<span class="target" id="libharpgroup__harp__algorithm_1ga6b7c64ed4ec666eb716553a7cc2f3602"></span><code class="descname">CONST_FOOTLAMBERT</code></dt>
+<dd></dd></dl>
+
+<dl class="macro">
+<dt id="c.CONST_CURIE">
+<span class="target" id="libharpgroup__harp__algorithm_1ga2741b41b1cc08f57ce1152e126ac7234"></span><code class="descname">CONST_CURIE</code></dt>
+<dd></dd></dl>
+
+<dl class="macro">
+<dt id="c.CONST_ROENTGEN">
+<span class="target" id="libharpgroup__harp__algorithm_1ga31b5e43634fe3fa07110d13487e35d88"></span><code class="descname">CONST_ROENTGEN</code></dt>
+<dd></dd></dl>
+
+<dl class="macro">
+<dt id="c.CONST_RAD">
+<span class="target" id="libharpgroup__harp__algorithm_1ga87f08e37f6aa8a817e6956980b71ec30"></span><code class="descname">CONST_RAD</code></dt>
+<dd></dd></dl>
+
+<dl class="macro">
+<dt id="c.CONST_SOLAR_MASS">
+<span class="target" id="libharpgroup__harp__algorithm_1gab1082f9268e59b3c826e7724e569c888"></span><code class="descname">CONST_SOLAR_MASS</code></dt>
+<dd></dd></dl>
+
+<dl class="macro">
+<dt id="c.CONST_BOHR_RADIUS">
+<span class="target" id="libharpgroup__harp__algorithm_1gaa0417a71f8f971ce39ac87804b0e2062"></span><code class="descname">CONST_BOHR_RADIUS</code></dt>
+<dd></dd></dl>
+
+<dl class="macro">
+<dt id="c.CONST_NEWTON">
+<span class="target" id="libharpgroup__harp__algorithm_1gad375a0dcf8b80fbb24d8dc935acaed0a"></span><code class="descname">CONST_NEWTON</code></dt>
+<dd></dd></dl>
+
+<dl class="macro">
+<dt id="c.CONST_DYNE">
+<span class="target" id="libharpgroup__harp__algorithm_1ga68861a8a13f4e6a84aa3f1bd4f7580a2"></span><code class="descname">CONST_DYNE</code></dt>
+<dd></dd></dl>
+
+<dl class="macro">
+<dt id="c.CONST_JOULE">
+<span class="target" id="libharpgroup__harp__algorithm_1ga2a24b4984dbc1a32586dcbf5eb43f365"></span><code class="descname">CONST_JOULE</code></dt>
+<dd></dd></dl>
+
+<dl class="macro">
+<dt id="c.CONST_ERG">
+<span class="target" id="libharpgroup__harp__algorithm_1ga995e8c09bc0490f15e4c3d1518588a1e"></span><code class="descname">CONST_ERG</code></dt>
+<dd></dd></dl>
+
+<dl class="macro">
+<dt id="c.CONST_STEFAN_BOLTZMANN_CONSTANT">
+<span class="target" id="libharpgroup__harp__algorithm_1ga5307921e6c6da4245c2ae1932293e58d"></span><code class="descname">CONST_STEFAN_BOLTZMANN_CONSTANT</code></dt>
+<dd></dd></dl>
+
+<dl class="macro">
+<dt id="c.CONST_THOMSON_CROSS_SECTION">
+<span class="target" id="libharpgroup__harp__algorithm_1ga391698648f471a14bf8fb8ee59757d96"></span><code class="descname">CONST_THOMSON_CROSS_SECTION</code></dt>
+<dd></dd></dl>
+
+<dl class="macro">
+<dt id="c.CONST_VACUUM_PERMITTIVITY">
+<span class="target" id="libharpgroup__harp__algorithm_1ga7b8545d2f399e5b3e1439a4df15f7196"></span><code class="descname">CONST_VACUUM_PERMITTIVITY</code></dt>
+<dd></dd></dl>
+
+<dl class="macro">
+<dt id="c.CONST_VACUUM_PERMEABILITY">
+<span class="target" id="libharpgroup__harp__algorithm_1ga6234586b3cc9b35f009f0c46cbcc2cc4"></span><code class="descname">CONST_VACUUM_PERMEABILITY</code></dt>
+<dd></dd></dl>
+
+<dl class="macro">
+<dt id="c.CONST_DEBYE">
+<span class="target" id="libharpgroup__harp__algorithm_1ga4feade6123259a58acea5a610abf31d2"></span><code class="descname">CONST_DEBYE</code></dt>
+<dd></dd></dl>
+
+<dl class="macro">
+<dt id="c.CONST_MOLAR_MASS_BrO">
+<span class="target" id="libharpgroup__harp__algorithm_1ga015a406ff1ae505a180e9cf2931d2581"></span><code class="descname">CONST_MOLAR_MASS_BrO</code></dt>
+<dd></dd></dl>
+
+<dl class="macro">
+<dt id="c.CONST_MOLAR_MASS_C2H2">
+<span class="target" id="libharpgroup__harp__algorithm_1ga434ab4d833ca27073daef6c1c4cf9265"></span><code class="descname">CONST_MOLAR_MASS_C2H2</code></dt>
+<dd></dd></dl>
+
+<dl class="macro">
+<dt id="c.CONST_MOLAR_MASS_C2H6">
+<span class="target" id="libharpgroup__harp__algorithm_1gaeb2f4436ff7068cc4d4cccaaac32c98d"></span><code class="descname">CONST_MOLAR_MASS_C2H6</code></dt>
+<dd></dd></dl>
+
+<dl class="macro">
+<dt id="c.CONST_MOLAR_MASS_CCl2F2">
+<span class="target" id="libharpgroup__harp__algorithm_1gaa503b73286bef70076c0860092717480"></span><code class="descname">CONST_MOLAR_MASS_CCl2F2</code></dt>
+<dd></dd></dl>
+
+<dl class="macro">
+<dt id="c.CONST_MOLAR_MASS_CCl3F">
+<span class="target" id="libharpgroup__harp__algorithm_1ga07714a6a25830142e592a278d6e1b077"></span><code class="descname">CONST_MOLAR_MASS_CCl3F</code></dt>
+<dd></dd></dl>
+
+<dl class="macro">
+<dt id="c.CONST_MOLAR_MASS_CF4">
+<span class="target" id="libharpgroup__harp__algorithm_1gaf17208061420fa9891abad6eea234e2b"></span><code class="descname">CONST_MOLAR_MASS_CF4</code></dt>
+<dd></dd></dl>
+
+<dl class="macro">
+<dt id="c.CONST_MOLAR_MASS_CH2O">
+<span class="target" id="libharpgroup__harp__algorithm_1ga2f88183b2db36c4098a92f1d3e320c3b"></span><code class="descname">CONST_MOLAR_MASS_CH2O</code></dt>
+<dd></dd></dl>
+
+<dl class="macro">
+<dt id="c.CONST_MOLAR_MASS_CH3Cl">
+<span class="target" id="libharpgroup__harp__algorithm_1ga4cd394b718c23ce6bee0333922ab9fef"></span><code class="descname">CONST_MOLAR_MASS_CH3Cl</code></dt>
+<dd></dd></dl>
+
+<dl class="macro">
+<dt id="c.CONST_MOLAR_MASS_CH4">
+<span class="target" id="libharpgroup__harp__algorithm_1ga0036254113e3da72102fa10ab8315a3b"></span><code class="descname">CONST_MOLAR_MASS_CH4</code></dt>
+<dd></dd></dl>
+
+<dl class="macro">
+<dt id="c.CONST_MOLAR_MASS_CHF2Cl">
+<span class="target" id="libharpgroup__harp__algorithm_1ga21092724cdb92f4868a6ba75b374e173"></span><code class="descname">CONST_MOLAR_MASS_CHF2Cl</code></dt>
+<dd></dd></dl>
+
+<dl class="macro">
+<dt id="c.CONST_MOLAR_MASS_ClNO">
+<span class="target" id="libharpgroup__harp__algorithm_1ga6a2bc4fbcd761220dd5a50ceb528d258"></span><code class="descname">CONST_MOLAR_MASS_ClNO</code></dt>
+<dd></dd></dl>
+
+<dl class="macro">
+<dt id="c.CONST_MOLAR_MASS_ClONO2">
+<span class="target" id="libharpgroup__harp__algorithm_1ga2f6ca5e069ef89547e3f89b2371ce68c"></span><code class="descname">CONST_MOLAR_MASS_ClONO2</code></dt>
+<dd></dd></dl>
+
+<dl class="macro">
+<dt id="c.CONST_MOLAR_MASS_ClO">
+<span class="target" id="libharpgroup__harp__algorithm_1ga0e96e0e576a5ff1c320905200a2c6ebf"></span><code class="descname">CONST_MOLAR_MASS_ClO</code></dt>
+<dd></dd></dl>
+
+<dl class="macro">
+<dt id="c.CONST_MOLAR_MASS_CO2">
+<span class="target" id="libharpgroup__harp__algorithm_1ga10065f53b0d546762f90d38b6cdba519"></span><code class="descname">CONST_MOLAR_MASS_CO2</code></dt>
+<dd></dd></dl>
+
+<dl class="macro">
+<dt id="c.CONST_MOLAR_MASS_COF2">
+<span class="target" id="libharpgroup__harp__algorithm_1gae7158973eec15fe693f7512cf267e000"></span><code class="descname">CONST_MOLAR_MASS_COF2</code></dt>
+<dd></dd></dl>
+
+<dl class="macro">
+<dt id="c.CONST_MOLAR_MASS_CO">
+<span class="target" id="libharpgroup__harp__algorithm_1gad89a42fdcbb8a10b6f41446beff3f667"></span><code class="descname">CONST_MOLAR_MASS_CO</code></dt>
+<dd></dd></dl>
+
+<dl class="macro">
+<dt id="c.CONST_MOLAR_MASS_H2O_161">
+<span class="target" id="libharpgroup__harp__algorithm_1gacb60cada4efc7c28564b211d44b3fc5c"></span><code class="descname">CONST_MOLAR_MASS_H2O_161</code></dt>
+<dd></dd></dl>
+
+<dl class="macro">
+<dt id="c.CONST_MOLAR_MASS_H2O_162">
+<span class="target" id="libharpgroup__harp__algorithm_1gae2f95cf595df663d8e476655ef0cb5c7"></span><code class="descname">CONST_MOLAR_MASS_H2O_162</code></dt>
+<dd></dd></dl>
+
+<dl class="macro">
+<dt id="c.CONST_MOLAR_MASS_H2O_171">
+<span class="target" id="libharpgroup__harp__algorithm_1ga3a503a19a83d02366b551a3a48c79bdb"></span><code class="descname">CONST_MOLAR_MASS_H2O_171</code></dt>
+<dd></dd></dl>
+
+<dl class="macro">
+<dt id="c.CONST_MOLAR_MASS_H2O_181">
+<span class="target" id="libharpgroup__harp__algorithm_1ga3934379bfdeb3f6fa78ef78d5f15faf3"></span><code class="descname">CONST_MOLAR_MASS_H2O_181</code></dt>
+<dd></dd></dl>
+
+<dl class="macro">
+<dt id="c.CONST_MOLAR_MASS_H2O2">
+<span class="target" id="libharpgroup__harp__algorithm_1ga310f5f8a9b7ee5e109dd2a7673cf86b9"></span><code class="descname">CONST_MOLAR_MASS_H2O2</code></dt>
+<dd></dd></dl>
+
+<dl class="macro">
+<dt id="c.CONST_MOLAR_MASS_H2O">
+<span class="target" id="libharpgroup__harp__algorithm_1ga2eb36821715a534323c9e3f1c3a63c9e"></span><code class="descname">CONST_MOLAR_MASS_H2O</code></dt>
+<dd></dd></dl>
+
+<dl class="macro">
+<dt id="c.CONST_MOLAR_MASS_HCl">
+<span class="target" id="libharpgroup__harp__algorithm_1ga9732f9a528e37a34908df5e29122f242"></span><code class="descname">CONST_MOLAR_MASS_HCl</code></dt>
+<dd></dd></dl>
+
+<dl class="macro">
+<dt id="c.CONST_MOLAR_MASS_HCN">
+<span class="target" id="libharpgroup__harp__algorithm_1ga548c65d97225f584bbec01bfb124cd97"></span><code class="descname">CONST_MOLAR_MASS_HCN</code></dt>
+<dd></dd></dl>
+
+<dl class="macro">
+<dt id="c.CONST_MOLAR_MASS_HCOOH">
+<span class="target" id="libharpgroup__harp__algorithm_1ga6e2dc00be390339ecd1c41189281ccfd"></span><code class="descname">CONST_MOLAR_MASS_HCOOH</code></dt>
+<dd></dd></dl>
+
+<dl class="macro">
+<dt id="c.CONST_MOLAR_MASS_HF">
+<span class="target" id="libharpgroup__harp__algorithm_1gaf0eaf90cb350ef71db4e577eaea1b62a"></span><code class="descname">CONST_MOLAR_MASS_HF</code></dt>
+<dd></dd></dl>
+
+<dl class="macro">
+<dt id="c.CONST_MOLAR_MASS_HO2NO2">
+<span class="target" id="libharpgroup__harp__algorithm_1ga2b60147c9533adeaca33fd075dab4c18"></span><code class="descname">CONST_MOLAR_MASS_HO2NO2</code></dt>
+<dd></dd></dl>
+
+<dl class="macro">
+<dt id="c.CONST_MOLAR_MASS_HO2">
+<span class="target" id="libharpgroup__harp__algorithm_1gae78b98bf144c73e13b0b4f2f0709dc64"></span><code class="descname">CONST_MOLAR_MASS_HO2</code></dt>
+<dd></dd></dl>
+
+<dl class="macro">
+<dt id="c.CONST_MOLAR_MASS_HOCl">
+<span class="target" id="libharpgroup__harp__algorithm_1ga8986d0fc65a557693de1c40c8b015677"></span><code class="descname">CONST_MOLAR_MASS_HOCl</code></dt>
+<dd></dd></dl>
+
+<dl class="macro">
+<dt id="c.CONST_MOLAR_MASS_HNO3">
+<span class="target" id="libharpgroup__harp__algorithm_1gab3a2d3a71a9ea7e03dfa0e6061d44a61"></span><code class="descname">CONST_MOLAR_MASS_HNO3</code></dt>
+<dd></dd></dl>
+
+<dl class="macro">
+<dt id="c.CONST_MOLAR_MASS_N2O">
+<span class="target" id="libharpgroup__harp__algorithm_1ga3260ae30dead790f16a0071200dc5ebe"></span><code class="descname">CONST_MOLAR_MASS_N2O</code></dt>
+<dd></dd></dl>
+
+<dl class="macro">
+<dt id="c.CONST_MOLAR_MASS_N2O5">
+<span class="target" id="libharpgroup__harp__algorithm_1gae59312cdd79a7b254abe6f6717d0d295"></span><code class="descname">CONST_MOLAR_MASS_N2O5</code></dt>
+<dd></dd></dl>
+
+<dl class="macro">
+<dt id="c.CONST_MOLAR_MASS_N2">
+<span class="target" id="libharpgroup__harp__algorithm_1ga4550e62dcec7e9f42a1786c0496bb880"></span><code class="descname">CONST_MOLAR_MASS_N2</code></dt>
+<dd></dd></dl>
+
+<dl class="macro">
+<dt id="c.CONST_MOLAR_MASS_NO2">
+<span class="target" id="libharpgroup__harp__algorithm_1ga4f6a5fa4baf2d3b629df42a239fe441c"></span><code class="descname">CONST_MOLAR_MASS_NO2</code></dt>
+<dd></dd></dl>
+
+<dl class="macro">
+<dt id="c.CONST_MOLAR_MASS_NO3">
+<span class="target" id="libharpgroup__harp__algorithm_1ga344e058442646a5b52ba0dc0a3abeec6"></span><code class="descname">CONST_MOLAR_MASS_NO3</code></dt>
+<dd></dd></dl>
+
+<dl class="macro">
+<dt id="c.CONST_MOLAR_MASS_NO">
+<span class="target" id="libharpgroup__harp__algorithm_1ga7cec5fb5271855ecd0c2888fdf1afc48"></span><code class="descname">CONST_MOLAR_MASS_NO</code></dt>
+<dd></dd></dl>
+
+<dl class="macro">
+<dt id="c.CONST_MOLAR_MASS_O2">
+<span class="target" id="libharpgroup__harp__algorithm_1ga338fdb11b7a62763ceb3b91d15ac6e23"></span><code class="descname">CONST_MOLAR_MASS_O2</code></dt>
+<dd></dd></dl>
+
+<dl class="macro">
+<dt id="c.CONST_MOLAR_MASS_O3_666">
+<span class="target" id="libharpgroup__harp__algorithm_1gaba83dd83eb9362602dfe3433898cb60c"></span><code class="descname">CONST_MOLAR_MASS_O3_666</code></dt>
+<dd></dd></dl>
+
+<dl class="macro">
+<dt id="c.CONST_MOLAR_MASS_O3_667">
+<span class="target" id="libharpgroup__harp__algorithm_1gae331d1d1948b371db65dc5456b0fc22f"></span><code class="descname">CONST_MOLAR_MASS_O3_667</code></dt>
+<dd></dd></dl>
+
+<dl class="macro">
+<dt id="c.CONST_MOLAR_MASS_O3_668">
+<span class="target" id="libharpgroup__harp__algorithm_1ga95ba9bb082bc4e9570ec5315b27d1fbb"></span><code class="descname">CONST_MOLAR_MASS_O3_668</code></dt>
+<dd></dd></dl>
+
+<dl class="macro">
+<dt id="c.CONST_MOLAR_MASS_O3_686">
+<span class="target" id="libharpgroup__harp__algorithm_1ga056382a713ff5164a505c882ecac1244"></span><code class="descname">CONST_MOLAR_MASS_O3_686</code></dt>
+<dd></dd></dl>
+
+<dl class="macro">
+<dt id="c.CONST_MOLAR_MASS_O3">
+<span class="target" id="libharpgroup__harp__algorithm_1gadf2db576b6c20dc307f7c1730f6cff72"></span><code class="descname">CONST_MOLAR_MASS_O3</code></dt>
+<dd></dd></dl>
+
+<dl class="macro">
+<dt id="c.CONST_MOLAR_MASS_O4">
+<span class="target" id="libharpgroup__harp__algorithm_1ga0f4d1bc92da73bc9f7797952090157ed"></span><code class="descname">CONST_MOLAR_MASS_O4</code></dt>
+<dd></dd></dl>
+
+<dl class="macro">
+<dt id="c.CONST_MOLAR_MASS_OBrO">
+<span class="target" id="libharpgroup__harp__algorithm_1ga82d9c4e195aaf8e8781d83a28b9e2bca"></span><code class="descname">CONST_MOLAR_MASS_OBrO</code></dt>
+<dd></dd></dl>
+
+<dl class="macro">
+<dt id="c.CONST_MOLAR_MASS_OClO">
+<span class="target" id="libharpgroup__harp__algorithm_1ga7939b28291dad486768afd14e865dfa4"></span><code class="descname">CONST_MOLAR_MASS_OClO</code></dt>
+<dd></dd></dl>
+
+<dl class="macro">
+<dt id="c.CONST_MOLAR_MASS_OCS">
+<span class="target" id="libharpgroup__harp__algorithm_1gafdcec516596e8f64318df986e80ef884"></span><code class="descname">CONST_MOLAR_MASS_OCS</code></dt>
+<dd></dd></dl>
+
+<dl class="macro">
+<dt id="c.CONST_MOLAR_MASS_OH">
+<span class="target" id="libharpgroup__harp__algorithm_1ga53a58c6937618505a787aad3e8c9aa19"></span><code class="descname">CONST_MOLAR_MASS_OH</code></dt>
+<dd></dd></dl>
+
+<dl class="macro">
+<dt id="c.CONST_MOLAR_MASS_SF6">
+<span class="target" id="libharpgroup__harp__algorithm_1ga0552cd330f307b9616968958a5c1923b"></span><code class="descname">CONST_MOLAR_MASS_SF6</code></dt>
+<dd></dd></dl>
+
+<dl class="macro">
+<dt id="c.CONST_MOLAR_MASS_SO2">
+<span class="target" id="libharpgroup__harp__algorithm_1ga6ba2fbbd1992132576d095bcf2030842"></span><code class="descname">CONST_MOLAR_MASS_SO2</code></dt>
+<dd></dd></dl>
+
+<dl class="macro">
+<dt id="c.CONST_MOLAR_MASS_DRY_AIR">
+<span class="target" id="libharpgroup__harp__algorithm_1ga2ed17f2c3de7dc825d42707807b98ba2"></span><code class="descname">CONST_MOLAR_MASS_DRY_AIR</code></dt>
+<dd></dd></dl>
+
+<dl class="macro">
+<dt id="c.CONST_MEAN_MOLAR_MASS_WET_AIR">
+<span class="target" id="libharpgroup__harp__algorithm_1ga70ea4b2930509f5b886f5a29eaa30980"></span><code class="descname">CONST_MEAN_MOLAR_MASS_WET_AIR</code></dt>
+<dd></dd></dl>
+
+<dl class="macro">
+<dt id="c.CONST_DOBSON_UNIT">
+<span class="target" id="libharpgroup__harp__algorithm_1gaba59f22f950b602fb4b21d9173450e70"></span><code class="descname">CONST_DOBSON_UNIT</code></dt>
+<dd></dd></dl>
+
+<dl class="macro">
+<dt id="c.CONST_STD_AIR_DENSITY">
+<span class="target" id="libharpgroup__harp__algorithm_1gac000cf699b926dd6aad5533150877a5f"></span><code class="descname">CONST_STD_AIR_DENSITY</code></dt>
+<dd></dd></dl>
+
+<dl class="macro">
+<dt id="c.CONST_STD_PRESSURE">
+<span class="target" id="libharpgroup__harp__algorithm_1gacb0061de2b143a20da8f2887773f29d7"></span><code class="descname">CONST_STD_PRESSURE</code></dt>
+<dd></dd></dl>
+
+<dl class="macro">
+<dt id="c.CONST_STD_TEMPERATURE">
+<span class="target" id="libharpgroup__harp__algorithm_1gaadc7a6b8e96ab1aabd98b533938999cc"></span><code class="descname">CONST_STD_TEMPERATURE</code></dt>
+<dd></dd></dl>
+
+<dl class="macro">
+<dt id="c.CONST_GAS_SPECIFIC_WET_AIR">
+<span class="target" id="libharpgroup__harp__algorithm_1gac4346b7a31ae9a0a473b7b847636c0a7"></span><code class="descname">CONST_GAS_SPECIFIC_WET_AIR</code></dt>
+<dd></dd></dl>
+
+<dl class="macro">
+<dt id="c.CONST_GAS_SPECIFIC_DRY_AIR">
+<span class="target" id="libharpgroup__harp__algorithm_1gacbc6e37e53ade9b959c01444d7e163eb"></span><code class="descname">CONST_GAS_SPECIFIC_DRY_AIR</code></dt>
+<dd></dd></dl>
+
+<dl class="macro">
+<dt id="c.CONST_TOA_ALTITUDE">
+<span class="target" id="libharpgroup__harp__algorithm_1gad69d60fc1d75ee54cf62107973a47964"></span><code class="descname">CONST_TOA_ALTITUDE</code></dt>
+<dd></dd></dl>
+
+<dl class="macro">
+<dt id="c.CONST_ASTRONOMICAL_UNIT">
+<span class="target" id="libharpgroup__harp__algorithm_1gac9fb12de01042082a32f071694bbe842"></span><code class="descname">CONST_ASTRONOMICAL_UNIT</code></dt>
+<dd></dd></dl>
+
+<dl class="macro">
+<dt id="c.CONST_LIGHT_YEAR">
+<span class="target" id="libharpgroup__harp__algorithm_1ga304caea1baaf9cbfe5e8ff37c3514f6a"></span><code class="descname">CONST_LIGHT_YEAR</code></dt>
+<dd></dd></dl>
+
+<dl class="macro">
+<dt id="c.CONST_PARSEC">
+<span class="target" id="libharpgroup__harp__algorithm_1ga3a5dea5e4c65a6c3f0c1ba1e09ba768b"></span><code class="descname">CONST_PARSEC</code></dt>
+<dd></dd></dl>
+
+<dl class="macro">
+<dt id="c.CONST_GRAV_ACCEL">
+<span class="target" id="libharpgroup__harp__algorithm_1gab45bdd891fd0b5dd8bfce6f1da95c2a7"></span><code class="descname">CONST_GRAV_ACCEL</code></dt>
+<dd></dd></dl>
+
+<dl class="macro">
+<dt id="c.CONST_EARTH_RADIUS_WGS84_SPHERE">
+<span class="target" id="libharpgroup__harp__algorithm_1ga33c272a05f07bd2458ef61f0ddac507c"></span><code class="descname">CONST_EARTH_RADIUS_WGS84_SPHERE</code></dt>
+<dd></dd></dl>
+
+<dl class="macro">
+<dt id="c.CONST_GRAV_ACCEL_45LAT_WGS84_SPHERE">
+<span class="target" id="libharpgroup__harp__algorithm_1ga73e07c60be0a8a8c8bff59d3c9bc7ceb"></span><code class="descname">CONST_GRAV_ACCEL_45LAT_WGS84_SPHERE</code></dt>
+<dd></dd></dl>
+
+<dl class="macro">
+<dt id="c.CONST_GRAVITATIONAL_CONSTANT_WGS84_ELLIPSOID">
+<span class="target" id="libharpgroup__harp__algorithm_1gafe3fbca0eb90328558712f899eb829b4"></span><code class="descname">CONST_GRAVITATIONAL_CONSTANT_WGS84_ELLIPSOID</code></dt>
+<dd></dd></dl>
+
+<dl class="macro">
+<dt id="c.CONST_ANGULAR_VELOCITY_WGS84_ELLIPSOID">
+<span class="target" id="libharpgroup__harp__algorithm_1ga56e9e21418abc804006a687ab920e778"></span><code class="descname">CONST_ANGULAR_VELOCITY_WGS84_ELLIPSOID</code></dt>
+<dd></dd></dl>
+
+<dl class="macro">
+<dt id="c.CONST_SEMI_MAJOR_AXIS_WGS84_ELLIPSOID">
+<span class="target" id="libharpgroup__harp__algorithm_1ga68abd419467bbb04610fd5bf7af5ed1b"></span><code class="descname">CONST_SEMI_MAJOR_AXIS_WGS84_ELLIPSOID</code></dt>
+<dd></dd></dl>
+
+<dl class="macro">
+<dt id="c.CONST_SEMI_MINOR_AXIS_WGS84_ELLIPSOID">
+<span class="target" id="libharpgroup__harp__algorithm_1gad5f0dd75719c1806c898435a0bd439e2"></span><code class="descname">CONST_SEMI_MINOR_AXIS_WGS84_ELLIPSOID</code></dt>
+<dd></dd></dl>
+
+<dl class="macro">
+<dt id="c.CONST_FLATTENING_WGS84_ELLIPSOID">
+<span class="target" id="libharpgroup__harp__algorithm_1ga5430e1ca6c593d59f86dc271ccffd996"></span><code class="descname">CONST_FLATTENING_WGS84_ELLIPSOID</code></dt>
+<dd></dd></dl>
+
+<dl class="macro">
+<dt id="c.CONST_LINEAR_ECCENTRICITY_WGS84_ELLIPSOID">
+<span class="target" id="libharpgroup__harp__algorithm_1ga5b53e66449b3d104ea0596821e04343c"></span><code class="descname">CONST_LINEAR_ECCENTRICITY_WGS84_ELLIPSOID</code></dt>
+<dd></dd></dl>
+
+<dl class="macro">
+<dt id="c.CONST_ECCENTRICITY_WGS84_ELLIPSOID">
+<span class="target" id="libharpgroup__harp__algorithm_1gac98e1017bfe36fdac1f27816b6d34173"></span><code class="descname">CONST_ECCENTRICITY_WGS84_ELLIPSOID</code></dt>
+<dd></dd></dl>
+
+<dl class="macro">
+<dt id="c.CONST_GRAV_ACCEL_POLAR_WGS84_ELLIPSOID">
+<span class="target" id="libharpgroup__harp__algorithm_1ga525aefa7c45865dbccaa313078f229d4"></span><code class="descname">CONST_GRAV_ACCEL_POLAR_WGS84_ELLIPSOID</code></dt>
+<dd></dd></dl>
+
+<dl class="macro">
+<dt id="c.CONST_GRAV_ACCEL_EQUATOR_WGS84_ELLIPSOID">
+<span class="target" id="libharpgroup__harp__algorithm_1gafb9387129fab66cded1b488a26ab4f52"></span><code class="descname">CONST_GRAV_ACCEL_EQUATOR_WGS84_ELLIPSOID</code></dt>
+<dd></dd></dl>
+
+<dl class="macro">
+<dt id="c.CONST_SOMIGLIANA_WGS84_ELLIPSOID">
+<span class="target" id="libharpgroup__harp__algorithm_1ga32eee1dc903779cdf573df4bb11be779"></span><code class="descname">CONST_SOMIGLIANA_WGS84_ELLIPSOID</code></dt>
+<dd></dd></dl>
+
+<dl class="macro">
+<dt id="c.CONST_GRAV_RATIO_WGS84_ELLIPSOID">
+<span class="target" id="libharpgroup__harp__algorithm_1ga1c1943b4594711a96ef56fe8e656a59e"></span><code class="descname">CONST_GRAV_RATIO_WGS84_ELLIPSOID</code></dt>
+<dd></dd></dl>
+
+</div>
+<div class="breathe-sectiondef container">
+<p class="breathe-sectiondef-title rubric">Functions</p>
+<dl class="function">
+<dt id="_CPPv234harp_fraction_of_day_from_datetimed">
+<span id="harp_fraction_of_day_from_datetime__double"></span><span class="target" id="libharpgroup__harp__algorithm_1ga8cb77807d4bf9af9fd8d72a4a1a05ad8"></span>double <code class="descname">harp_fraction_of_day_from_datetime</code><span class="sig-paren">(</span>double <em>datetime</em><span class="sig-paren">)</span></dt>
+<dd><p>Calculate the fraction of the day <dl class="docutils">
+<dt><strong>Return</strong></dt>
+<dd>the fraction of the day [1] </dd>
+<dt><strong>Parameters</strong></dt>
+<dd><ul class="breatheparameterlist first last">
+<li><code class="first docutils literal"><span class="pre">datetime</span></code> - <p>Datetime [s since 2000-01-01] </p>
+</li>
+</ul>
+</dd>
+</dl>
+</p>
+</dd></dl>
+
+<dl class="function">
+<dt id="_CPPv235harp_fraction_of_year_from_datetimed">
+<span id="harp_fraction_of_year_from_datetime__double"></span><span class="target" id="libharpgroup__harp__algorithm_1ga58bde2255b98f2bb083b8e9a4f6995fe"></span>double <code class="descname">harp_fraction_of_year_from_datetime</code><span class="sig-paren">(</span>double <em>datetime</em><span class="sig-paren">)</span></dt>
+<dd><p>Calculate the fraction of the year <dl class="docutils">
+<dt><strong>Return</strong></dt>
+<dd>the fraction of the year [1] </dd>
+<dt><strong>Parameters</strong></dt>
+<dd><ul class="breatheparameterlist first last">
+<li><code class="first docutils literal"><span class="pre">datetime</span></code> - <p>Datetime [s since 2000-01-01] </p>
+</li>
+</ul>
+</dd>
+</dl>
+</p>
+</dd></dl>
+
+<dl class="function">
+<dt id="_CPPv240get_equation_of_time_angle_from_datetimed">
+<span id="get_equation_of_time_angle_from_datetime__double"></span><span class="target" id="libharpgroup__harp__algorithm_1ga1173562b83b15071d0d96e01c9a0dfe6"></span><em class="property">static</em> double <code class="descname">get_equation_of_time_angle_from_datetime</code><span class="sig-paren">(</span>double <em>datetime</em><span class="sig-paren">)</span></dt>
+<dd><p>Calculate the equation of time (EOT) angle <dl class="docutils">
+<dt><strong>Return</strong></dt>
+<dd>the equation of time angle [degree] </dd>
+<dt><strong>Parameters</strong></dt>
+<dd><ul class="breatheparameterlist first last">
+<li><code class="first docutils literal"><span class="pre">datetime</span></code> - <p>Datetime [s since 2000-01-01] </p>
+</li>
+</ul>
+</dd>
+</dl>
+</p>
+</dd></dl>
+
+<dl class="function">
+<dt id="_CPPv241get_solar_declination_angle_from_datetimed">
+<span id="get_solar_declination_angle_from_datetime__double"></span><span class="target" id="libharpgroup__harp__algorithm_1ga5078a9b3b1d461d287eb2244d0750975"></span><em class="property">static</em> double <code class="descname">get_solar_declination_angle_from_datetime</code><span class="sig-paren">(</span>double <em>datetime</em><span class="sig-paren">)</span></dt>
+<dd><p>Calculate the solar declination angle <dl class="docutils">
+<dt><strong>Return</strong></dt>
+<dd>the solar declination angle [degree] </dd>
+<dt><strong>Parameters</strong></dt>
+<dd><ul class="breatheparameterlist first last">
+<li><code class="first docutils literal"><span class="pre">datetime</span></code> - <p>Datetime [s since 2000-01-01] </p>
+</li>
+</ul>
+</dd>
+</dl>
+</p>
+</dd></dl>
+
+<dl class="function">
+<dt id="_CPPv245harp_daytime_ampm_from_datetime_and_longitudedd">
+<span id="harp_daytime_ampm_from_datetime_and_longitude__double.double"></span><span class="target" id="libharpgroup__harp__algorithm_1gaf4a7a358857b20ccc42ef787361070b4"></span><em class="property">const</em> char *<code class="descname">harp_daytime_ampm_from_datetime_and_longitude</code><span class="sig-paren">(</span>double <em>datetime</em>, double <em>longitude</em><span class="sig-paren">)</span></dt>
+<dd><p>Determine whether measurement was taken during day or during night based on solar zenith angle. <dl class="docutils">
+<dt><strong>Return</strong></dt>
+<dd><ul class="simple">
+<li><code class="docutils literal"><span class="pre">AM</span></code>, The measurement was taken between 00:00 and 12:00. </li>
+<li><code class="docutils literal"><span class="pre">PM</span></code>, The measurement was taken between 12:00 and 24:00. </li>
+</ul>
+</dd>
+<dt><strong>Parameters</strong></dt>
+<dd><ul class="breatheparameterlist first last">
+<li><code class="first docutils literal"><span class="pre">datetime</span></code> - <p>Datetime [s since 2000-01-01] (using UTC timezone) </p>
+</li>
+<li><code class="first docutils literal"><span class="pre">longitude</span></code> - <p>Longitude [degree_east] </p>
+</li>
+</ul>
+</dd>
+</dl>
+</p>
+</dd></dl>
+
+<dl class="function">
+<dt id="_CPPv236harp_daytime_from_solar_zenith_angled">
+<span id="harp_daytime_from_solar_zenith_angle__double"></span><span class="target" id="libharpgroup__harp__algorithm_1gaa056256a8848f66e6e5d4a4bf1baf37b"></span>int <code class="descname">harp_daytime_from_solar_zenith_angle</code><span class="sig-paren">(</span>double <em>solar_zenith_angle</em><span class="sig-paren">)</span></dt>
+<dd><p>Determine whether measurement was taken during day or during night based on solar zenith angle. <dl class="docutils">
+<dt><strong>Return</strong></dt>
+<dd><ul class="simple">
+<li><code class="docutils literal"><span class="pre">1</span></code>, The measurement was taken during the day. </li>
+<li><code class="docutils literal"><span class="pre">0</span></code>, The measurement was taken during the night. </li>
+</ul>
+</dd>
+<dt><strong>Parameters</strong></dt>
+<dd><ul class="breatheparameterlist first last">
+<li><code class="first docutils literal"><span class="pre">solar_zenith_angle</span></code> - <p>Solar zenith angle [degree] </p>
+</li>
+</ul>
+</dd>
+</dl>
+</p>
+</dd></dl>
+
+<dl class="function">
+<dt id="_CPPv230harp_frequency_from_wavelengthd">
+<span id="harp_frequency_from_wavelength__double"></span><span class="target" id="libharpgroup__harp__algorithm_1ga053c3304e5f3be671e379e1e7dcb589e"></span>double <code class="descname">harp_frequency_from_wavelength</code><span class="sig-paren">(</span>double <em>wavelength</em><span class="sig-paren">)</span></dt>
+<dd><p>Convert (electromagnetic wave) wavelength to (electromagnetic wave) frequency <dl class="docutils">
+<dt><strong>Return</strong></dt>
+<dd>the frequency [Hz] </dd>
+<dt><strong>Parameters</strong></dt>
+<dd><ul class="breatheparameterlist first last">
+<li><code class="first docutils literal"><span class="pre">wavelength</span></code> - <p>Wavelength [nm] </p>
+</li>
+</ul>
+</dd>
+</dl>
+</p>
+</dd></dl>
+
+<dl class="function">
+<dt id="_CPPv230harp_frequency_from_wavenumberd">
+<span id="harp_frequency_from_wavenumber__double"></span><span class="target" id="libharpgroup__harp__algorithm_1ga73bbdec26c6eb42a555f2144a7adbd18"></span>double <code class="descname">harp_frequency_from_wavenumber</code><span class="sig-paren">(</span>double <em>wavenumber</em><span class="sig-paren">)</span></dt>
+<dd><p>Convert (electromagnetic wave) wavenumber to (electromagnetic wave) frequency <dl class="docutils">
+<dt><strong>Return</strong></dt>
+<dd>the frequency [Hz] </dd>
+<dt><strong>Parameters</strong></dt>
+<dd><ul class="breatheparameterlist first last">
+<li><code class="first docutils literal"><span class="pre">wavenumber</span></code> - <p>Wavenumber [1/cm] </p>
+</li>
+</ul>
+</dd>
+</dl>
+</p>
+</dd></dl>
+
+<dl class="function">
+<dt id="_CPPv237harp_gravity_at_surface_from_latituded">
+<span id="harp_gravity_at_surface_from_latitude__double"></span><span class="target" id="libharpgroup__harp__algorithm_1ga57afbd52ad0e9fee939fb00859ab7ee4"></span>double <code class="descname">harp_gravity_at_surface_from_latitude</code><span class="sig-paren">(</span>double <em>latitude</em><span class="sig-paren">)</span></dt>
+<dd></dd></dl>
+
+<dl class="function">
+<dt id="_CPPv248harp_gravity_at_surface_from_latitude_and_heightdd">
+<span id="harp_gravity_at_surface_from_latitude_and_height__double.double"></span><span class="target" id="libharpgroup__harp__algorithm_1gaee1a7eacac8c692eed726ae4d9d15f39"></span>double <code class="descname">harp_gravity_at_surface_from_latitude_and_height</code><span class="sig-paren">(</span>double <em>latitude</em>, double <em>height</em><span class="sig-paren">)</span></dt>
+<dd></dd></dl>
+
+<dl class="function">
+<dt id="_CPPv251harp_illumination_condition_from_solar_zenith_angled">
+<span id="harp_illumination_condition_from_solar_zenith_angle__double"></span><span class="target" id="libharpgroup__harp__algorithm_1ga9c644c4b0eb6ccbb346a5e701f2cc1c9"></span><em class="property">const</em> char *<code class="descname">harp_illumination_condition_from_solar_zenith_angle</code><span class="sig-paren">(</span>double <em>solar_zenith_angle</em><span class="sig-paren">)</span></dt>
+<dd><p>Determine whether measurement was taken during day, during twilight or during night based on solar zenith angle. <dl class="docutils">
+<dt><strong>Return</strong></dt>
+<dd>the illumination condition as string &#8220;day&#8221;, &#8220;twilight&#8221;, or &#8220;night&#8221; </dd>
+<dt><strong>Parameters</strong></dt>
+<dd><ul class="breatheparameterlist first last">
+<li><code class="first docutils literal"><span class="pre">solar_zenith_angle</span></code> - <p>Solar zenith angle [degree] </p>
+</li>
+</ul>
+</dd>
+</dl>
+</p>
+</dd></dl>
+
+<dl class="function">
+<dt id="_CPPv252harp_local_curvature_radius_at_surface_from_latituded">
+<span id="harp_local_curvature_radius_at_surface_from_latitude__double"></span><span class="target" id="libharpgroup__harp__algorithm_1ga205cc6341f905f56b73867dddc7a0f3e"></span>double <code class="descname">harp_local_curvature_radius_at_surface_from_latitude</code><span class="sig-paren">(</span>double <em>latitude</em><span class="sig-paren">)</span></dt>
+<dd></dd></dl>
+
+<dl class="function">
+<dt id="_CPPv259harp_normalized_radiance_from_radiance_and_solar_irradiancedd">
+<span id="harp_normalized_radiance_from_radiance_and_solar_irradiance__double.double"></span><span class="target" id="libharpgroup__harp__algorithm_1gafd6b06078f801ecaa27bdb9b01d2ff2a"></span>double <code class="descname">harp_normalized_radiance_from_radiance_and_solar_irradiance</code><span class="sig-paren">(</span>double <em>radiance</em>, double <em>solar_irradiance</em><span class="sig-paren">)</span></dt>
+<dd><p>Convert radiance to normalized radiance <dl class="docutils">
+<dt><strong>Return</strong></dt>
+<dd>the normalized radiance [1] </dd>
+<dt><strong>Parameters</strong></dt>
+<dd><ul class="breatheparameterlist first last">
+<li><code class="first docutils literal"><span class="pre">radiance</span></code> - <p>Radiance [mW m-2 sr-1] </p>
+</li>
+<li><code class="first docutils literal"><span class="pre">solar_irradiance</span></code> - <p>Solar irradiance [mW m-2] </p>
+</li>
+</ul>
+</dd>
+</dl>
+</p>
+</dd></dl>
+
+<dl class="function">
+<dt id="_CPPv264harp_normalized_radiance_from_reflectance_and_solar_zenith_angledd">
+<span id="harp_normalized_radiance_from_reflectance_and_solar_zenith_angle__double.double"></span><span class="target" id="libharpgroup__harp__algorithm_1gad2415c58a9ae5c518614025c536e9810"></span>double <code class="descname">harp_normalized_radiance_from_reflectance_and_solar_zenith_angle</code><span class="sig-paren">(</span>double <em>reflectance</em>, double <em>solar_zenith_angle</em><span class="sig-paren">)</span></dt>
+<dd><p>Convert reflectance to normalized radiance <dl class="docutils">
+<dt><strong>Return</strong></dt>
+<dd>the normalized radiance [1] </dd>
+<dt><strong>Parameters</strong></dt>
+<dd><ul class="breatheparameterlist first last">
+<li><code class="first docutils literal"><span class="pre">reflectance</span></code> - <p>Reflectance [1] </p>
+</li>
+<li><code class="first docutils literal"><span class="pre">solar_zenith_angle</span></code> - <p>Solar zenith angle [degree] </p>
+</li>
+</ul>
+</dd>
+</dl>
+</p>
+</dd></dl>
+
+<dl class="function">
+<dt id="_CPPv259harp_radiance_from_normalized_radiance_and_solar_irradiancedd">
+<span id="harp_radiance_from_normalized_radiance_and_solar_irradiance__double.double"></span><span class="target" id="libharpgroup__harp__algorithm_1gab03b6db463697432130bea1d1467f91e"></span>double <code class="descname">harp_radiance_from_normalized_radiance_and_solar_irradiance</code><span class="sig-paren">(</span>double <em>normalized_radiance</em>, double <em>solar_irradiance</em><span class="sig-paren">)</span></dt>
+<dd><p>Convert normalized radiance to radiance <dl class="docutils">
+<dt><strong>Return</strong></dt>
+<dd>the radiance [mW m-2 sr-1] </dd>
+<dt><strong>Parameters</strong></dt>
+<dd><ul class="breatheparameterlist first last">
+<li><code class="first docutils literal"><span class="pre">normalized_radiance</span></code> - <p>Normalized radiance [1] </p>
+</li>
+<li><code class="first docutils literal"><span class="pre">solar_irradiance</span></code> - <p>Solar irradiance [mW m-2] </p>
+</li>
+</ul>
+</dd>
+</dl>
+</p>
+</dd></dl>
+
+<dl class="function">
+<dt id="_CPPv270harp_radiance_from_reflectance_solar_irradiance_and_solar_zenith_angleddd">
+<span id="harp_radiance_from_reflectance_solar_irradiance_and_solar_zenith_angle__double.double.double"></span><span class="target" id="libharpgroup__harp__algorithm_1gaf8b0d1659433cc6b6aeac60dcf67e42b"></span>double <code class="descname">harp_radiance_from_reflectance_solar_irradiance_and_solar_zenith_angle</code><span class="sig-paren">(</span>double <em>reflectance</em>, double <em>solar_irradiance</em>, double <em>solar_zenith_angle</em><span class="sig-paren">)</span></dt>
+<dd><p>Convert reflectance to radiance <dl class="docutils">
+<dt><strong>Return</strong></dt>
+<dd>the radiance [mW m-2 sr-1] </dd>
+<dt><strong>Parameters</strong></dt>
+<dd><ul class="breatheparameterlist first last">
+<li><code class="first docutils literal"><span class="pre">reflectance</span></code> - <p>Reflectance [1] </p>
+</li>
+<li><code class="first docutils literal"><span class="pre">solar_irradiance</span></code> - <p>Solar irradiance [mW m-2] </p>
+</li>
+<li><code class="first docutils literal"><span class="pre">solar_zenith_angle</span></code> - <p>Solar zenith angle [degree] </p>
+</li>
+</ul>
+</dd>
+</dl>
+</p>
+</dd></dl>
+
+<dl class="function">
+<dt id="_CPPv270harp_reflectance_from_radiance_solar_irradiance_and_solar_zenith_angleddd">
+<span id="harp_reflectance_from_radiance_solar_irradiance_and_solar_zenith_angle__double.double.double"></span><span class="target" id="libharpgroup__harp__algorithm_1gac5704b442dca8bdbd7c6d793e355a925"></span>double <code class="descname">harp_reflectance_from_radiance_solar_irradiance_and_solar_zenith_angle</code><span class="sig-paren">(</span>double <em>radiance</em>, double <em>solar_irradiance</em>, double <em>solar_zenith_angle</em><span class="sig-paren">)</span></dt>
+<dd><p>Convert radiance to reflectance <dl class="docutils">
+<dt><strong>Return</strong></dt>
+<dd>the reflectance [1] </dd>
+<dt><strong>Parameters</strong></dt>
+<dd><ul class="breatheparameterlist first last">
+<li><code class="first docutils literal"><span class="pre">radiance</span></code> - <p>Radiance [mW m-2 sr-1] </p>
+</li>
+<li><code class="first docutils literal"><span class="pre">solar_irradiance</span></code> - <p>Solar irradiance [mW m-2] </p>
+</li>
+<li><code class="first docutils literal"><span class="pre">solar_zenith_angle</span></code> - <p>Solar zenith angle [degree] </p>
+</li>
+</ul>
+</dd>
+</dl>
+</p>
+</dd></dl>
+
+<dl class="function">
+<dt id="_CPPv264harp_reflectance_from_normalized_radiance_and_solar_zenith_angledd">
+<span id="harp_reflectance_from_normalized_radiance_and_solar_zenith_angle__double.double"></span><span class="target" id="libharpgroup__harp__algorithm_1ga4261127decb24b577fd6d9b2c970cbdb"></span>double <code class="descname">harp_reflectance_from_normalized_radiance_and_solar_zenith_angle</code><span class="sig-paren">(</span>double <em>normalized_radiance</em>, double <em>solar_zenith_angle</em><span class="sig-paren">)</span></dt>
+<dd><p>Convert normalized radiance to reflectance <dl class="docutils">
+<dt><strong>Return</strong></dt>
+<dd>the reflectance [1] </dd>
+<dt><strong>Parameters</strong></dt>
+<dd><ul class="breatheparameterlist first last">
+<li><code class="first docutils literal"><span class="pre">normalized_radiance</span></code> - <p>Normalized radiance [mW m-2 sr-1] </p>
+</li>
+<li><code class="first docutils literal"><span class="pre">solar_zenith_angle</span></code> - <p>Solar zenith angle [degree] </p>
+</li>
+</ul>
+</dd>
+</dl>
+</p>
+</dd></dl>
+
+<dl class="function">
+<dt id="_CPPv258harp_scattering_angle_from_solar_angles_and_viewing_anglesdddd">
+<span id="harp_scattering_angle_from_solar_angles_and_viewing_angles__double.double.double.double"></span><span class="target" id="libharpgroup__harp__algorithm_1ga5e703bdb80d2fd1ff2c883fb15c3cd75"></span>double <code class="descname">harp_scattering_angle_from_solar_angles_and_viewing_angles</code><span class="sig-paren">(</span>double <em>sza</em>, double <em>saa</em>, double <em>vza</em>, double <em>vaa</em><span class="sig-paren">)</span></dt>
+<dd><p>Convert viewing and solar angles into scattering angle <dl class="docutils">
+<dt><strong>Return</strong></dt>
+<dd>the scattering angle [degree] </dd>
+<dt><strong>Parameters</strong></dt>
+<dd><ul class="breatheparameterlist first last">
+<li><code class="first docutils literal"><span class="pre">sza</span></code> - <p>Solar Zenith Angle [degree] </p>
+</li>
+<li><code class="first docutils literal"><span class="pre">saa</span></code> - <p>Solar Azimuth Angle [degree] </p>
+</li>
+<li><code class="first docutils literal"><span class="pre">vza</span></code> - <p>Viewing Zenith Angle [degree] </p>
+</li>
+<li><code class="first docutils literal"><span class="pre">vaa</span></code> - <p>Viewing Azimuth Angle [degree] </p>
+</li>
+</ul>
+</dd>
+</dl>
+</p>
+</dd></dl>
+
+<dl class="function">
+<dt id="_CPPv261harp_solar_azimuth_angle_from_datetime_longitude_and_latitudeddd">
+<span id="harp_solar_azimuth_angle_from_datetime_longitude_and_latitude__double.double.double"></span><span class="target" id="libharpgroup__harp__algorithm_1ga2cc9fe5ed521adbd8471c87f4255f300"></span>double <code class="descname">harp_solar_azimuth_angle_from_datetime_longitude_and_latitude</code><span class="sig-paren">(</span>double <em>datetime</em>, double <em>longitude</em>, double <em>latitude</em><span class="sig-paren">)</span></dt>
+<dd><p>Calculate the solar azimuth angle for the given time and location <dl class="docutils">
+<dt><strong>Return</strong></dt>
+<dd>the solar azimuth angle [degree] </dd>
+<dt><strong>Parameters</strong></dt>
+<dd><ul class="breatheparameterlist first last">
+<li><code class="first docutils literal"><span class="pre">datetime</span></code> - <p>Datetime [s since 2000-01-01] </p>
+</li>
+<li><code class="first docutils literal"><span class="pre">longitude</span></code> - <p>Longitude [degree_east] </p>
+</li>
+<li><code class="first docutils literal"><span class="pre">latitude</span></code> - <p>Latitude [degree_north] </p>
+</li>
+</ul>
+</dd>
+</dl>
+</p>
+</dd></dl>
+
+<dl class="function">
+<dt id="_CPPv263harp_solar_elevation_angle_from_datetime_longitude_and_latitudeddd">
+<span id="harp_solar_elevation_angle_from_datetime_longitude_and_latitude__double.double.double"></span><span class="target" id="libharpgroup__harp__algorithm_1ga1b4cd0c13f26a75697f9d7b6ac666002"></span>double <code class="descname">harp_solar_elevation_angle_from_datetime_longitude_and_latitude</code><span class="sig-paren">(</span>double <em>datetime</em>, double <em>longitude</em>, double <em>latitude</em><span class="sig-paren">)</span></dt>
+<dd><p>Calculate the solar elevation angle for the given time and location <dl class="docutils">
+<dt><strong>Return</strong></dt>
+<dd>the solar elevation angle [degree] </dd>
+<dt><strong>Parameters</strong></dt>
+<dd><ul class="breatheparameterlist first last">
+<li><code class="first docutils literal"><span class="pre">datetime</span></code> - <p>Datetime [s since 2000-01-01] </p>
+</li>
+<li><code class="first docutils literal"><span class="pre">latitude</span></code> - <p>Latitude [degree_north] </p>
+</li>
+<li><code class="first docutils literal"><span class="pre">longitude</span></code> - <p>Longitude [degree_east] </p>
+</li>
+</ul>
+</dd>
+</dl>
+</p>
+</dd></dl>
+
+<dl class="function">
+<dt id="_CPPv238harp_elevation_angle_from_zenith_angled">
+<span id="harp_elevation_angle_from_zenith_angle__double"></span><span class="target" id="libharpgroup__harp__algorithm_1ga723f1e8c2ddf456cda34d3f43cc65593"></span>double <code class="descname">harp_elevation_angle_from_zenith_angle</code><span class="sig-paren">(</span>double <em>zenith_angle</em><span class="sig-paren">)</span></dt>
+<dd><p>Convert zenith angle to elevation angle <dl class="docutils">
+<dt><strong>Return</strong></dt>
+<dd>the elevation angle [degree] </dd>
+<dt><strong>Parameters</strong></dt>
+<dd><ul class="breatheparameterlist first last">
+<li><code class="first docutils literal"><span class="pre">zenith_angle</span></code> - <p>Zenith angle[degree] </p>
+</li>
+</ul>
+</dd>
+</dl>
+</p>
+</dd></dl>
+
+<dl class="function">
+<dt id="_CPPv238harp_zenith_angle_from_elevation_angled">
+<span id="harp_zenith_angle_from_elevation_angle__double"></span><span class="target" id="libharpgroup__harp__algorithm_1ga0fe53cdf1708794a3e2f503510b0b28b"></span>double <code class="descname">harp_zenith_angle_from_elevation_angle</code><span class="sig-paren">(</span>double <em>elevation_angle</em><span class="sig-paren">)</span></dt>
+<dd><p>Convert zenith angle to elevation angle <dl class="docutils">
+<dt><strong>Return</strong></dt>
+<dd>the zenith angle [degree] </dd>
+<dt><strong>Parameters</strong></dt>
+<dd><ul class="breatheparameterlist first last">
+<li><code class="first docutils literal"><span class="pre">elevation_angle</span></code> - <p>elevation angle [degree] </p>
+</li>
+</ul>
+</dd>
+</dl>
+</p>
+</dd></dl>
+
+<dl class="function">
+<dt id="_CPPv260harp_viewing_geometry_angles_at_altitude_from_other_altitudedddddPdPdPd">
+<span id="harp_viewing_geometry_angles_at_altitude_from_other_altitude__double.double.double.double.double.doubleP.doubleP.doubleP"></span><span class="target" id="libharpgroup__harp__algorithm_1ga6487078735a8d06873e47ca6bce7e086"></span>int <code class="descname">harp_viewing_geometry_angles_at_altitude_from_other_altitude</code><span class="sig-paren">(</span>double <em>source_altitude</em>, double <em>source_solar_zenith_angle</em>, double <em>source_viewing_zenith_angle</em>, double <em>source_relative_azimuth_angle</em>, double <em>target_altitude</em>, double *<em>new_target_solar_zenith_angle</em>, double *<em>new_target_viewing_zenith_angle</em>, double *<em>new_target_relative_azimuth_angle</em><span class="sig-paren">)</span></dt>
+<dd><p>Convert the solar zenith angle, the viewing zenith angle and relative azimuth angle at one height to another height <dl class="docutils">
+<dt><strong>Parameters</strong></dt>
+<dd><ul class="breatheparameterlist first last">
+<li><code class="first docutils literal"><span class="pre">source_altitude</span></code> - <p>Source altitude [m] </p>
+</li>
+<li><code class="first docutils literal"><span class="pre">source_solar_zenith_angle</span></code> - <p>Solar zenith angle at source altitude [degree] </p>
+</li>
+<li><code class="first docutils literal"><span class="pre">source_viewing_zenith_angle</span></code> - <p>Viewing zenith angle at source altitude [degree] </p>
+</li>
+<li><code class="first docutils literal"><span class="pre">source_relative_azimuth_angle</span></code> - <p>Relative azimuth angle at source altitude [degree] </p>
+</li>
+<li><code class="first docutils literal"><span class="pre">target_altitude</span></code> - <p>Target altitude [m] </p>
+</li>
+<li><code class="first docutils literal"><span class="pre">new_target_solar_zenith_angle</span></code> - <p>Solar zenith angle at target altitude [degree] </p>
+</li>
+<li><code class="first docutils literal"><span class="pre">new_target_viewing_zenith_angle</span></code> - <p>Viewing zenith angle at target altitude [degree] </p>
+</li>
+<li><code class="first docutils literal"><span class="pre">new_target_relative_azimuth_angle</span></code> - <p>Relative azimuth angle at target altitude [degree] </p>
+</li>
+</ul>
+</dd>
+</dl>
+</p>
+</dd></dl>
+
+<dl class="function">
+<dt id="_CPPv265harp_viewing_geometry_angle_profiles_from_viewing_geometry_anglesddddlPKdPdPdPd">
+<span id="harp_viewing_geometry_angle_profiles_from_viewing_geometry_angles__double.double.double.double.l.doubleCP.doubleP.doubleP.doubleP"></span><span class="target" id="libharpgroup__harp__algorithm_1gab07278fb93ce5002ad6c3eeb6e8884b5"></span>int <code class="descname">harp_viewing_geometry_angle_profiles_from_viewing_geometry_angles</code><span class="sig-paren">(</span>double <em>altitude</em>, double <em>solar_zenith_angle</em>, double <em>viewing_zenith_angle</em>, double <em>relative_azimuth_angle</em>, long <em>num_levels</em>, <em class="property">const</em> double *<em>altitude_profile</em>, double *<em>solar_zenith_angle_profile</em>, double *<em>viewing_zenith_angle_profile</em>, double *<em>relative_azimuth_angle_profile</em><span class="sig-paren">)</span></dt>
+<dd><p>Calculate the solar zenith angle, the viewing zenith angle, and the relative azimuth angle for the requested altitudes <dl class="docutils">
+<dt><strong>Parameters</strong></dt>
+<dd><ul class="breatheparameterlist first last">
+<li><code class="first docutils literal"><span class="pre">altitude</span></code> - <p>Height corresponding to the input angles (reference altitude) [m] </p>
+</li>
+<li><code class="first docutils literal"><span class="pre">solar_zenith_angle</span></code> - <p>Solar zenith angle at reference altitude [degree] </p>
+</li>
+<li><code class="first docutils literal"><span class="pre">viewing_zenith_angle</span></code> - <p>Viewing zenith angle at reference altitude [degree] </p>
+</li>
+<li><code class="first docutils literal"><span class="pre">relative_azimuth_angle</span></code> - <p>Relative azimuth angle at reference altitude [degree] </p>
+</li>
+<li><code class="first docutils literal"><span class="pre">num_levels</span></code> - <p>Number of levels </p>
+</li>
+<li><code class="first docutils literal"><span class="pre">altitude_profile</span></code> - <p>Altitude profile [m] </p>
+</li>
+<li><code class="first docutils literal"><span class="pre">solar_zenith_angle_profile</span></code> - <p>Solar zenith angles at profile altitudes [degree] </p>
+</li>
+<li><code class="first docutils literal"><span class="pre">viewing_zenith_angle_profile</span></code> - <p>Viewing zenith angles at profile altitudes [degree] </p>
+</li>
+<li><code class="first docutils literal"><span class="pre">relative_azimuth_angle_profile</span></code> - <p>Relative azimuth angles at profile altitudes [degree] </p>
+</li>
+</ul>
+</dd>
+</dl>
+</p>
+</dd></dl>
+
+<dl class="function">
+<dt id="_CPPv230harp_wavelength_from_frequencyd">
+<span id="harp_wavelength_from_frequency__double"></span><span class="target" id="libharpgroup__harp__algorithm_1ga241e3901b8815835080cf0cd303479ea"></span>double <code class="descname">harp_wavelength_from_frequency</code><span class="sig-paren">(</span>double <em>frequency</em><span class="sig-paren">)</span></dt>
+<dd><p>Convert (electromagnetic wave) frequency to (electromagnetic wave) wavelength <ul class="simple">
+<li><span class="math">\(\lambda\)</span> : wavelength [1/cm] </li>
+<li><span class="math">\(f\)</span> : frequency [Hz] </li>
+<li><span class="math">\(c\)</span> : speed of light [m/s]</li>
+</ul>
+<span class="math">\(\lambda = 10^9 c / f\)</span></p>
+<p><dl class="docutils">
+<dt><strong>Return</strong></dt>
+<dd>Wavelength [nm] </dd>
+<dt><strong>Parameters</strong></dt>
+<dd><ul class="breatheparameterlist first last">
+<li><code class="first docutils literal"><span class="pre">frequency</span></code> - <p>Frequency [Hz] </p>
+</li>
+</ul>
+</dd>
+</dl>
+</p>
+</dd></dl>
+
+<dl class="function">
+<dt id="_CPPv231harp_wavelength_from_wavenumberd">
+<span id="harp_wavelength_from_wavenumber__double"></span><span class="target" id="libharpgroup__harp__algorithm_1gaf9daea90a32323a97b1967cb8921f3ff"></span>double <code class="descname">harp_wavelength_from_wavenumber</code><span class="sig-paren">(</span>double <em>wavenumber</em><span class="sig-paren">)</span></dt>
+<dd><p>Convert (electromagnetic wave) wavenumber to (electromagnetic wave) wavelength <ul class="simple">
+<li><span class="math">\(\nu\)</span> : wavenumber [1/cm] </li>
+<li><span class="math">\(\lambda\)</span> : wavelength [nm]</li>
+</ul>
+<span class="math">\(\lambda = 10^{-7} / \nu\)</span></p>
+<p><dl class="docutils">
+<dt><strong>Return</strong></dt>
+<dd>Wavelength [nm] </dd>
+<dt><strong>Parameters</strong></dt>
+<dd><ul class="breatheparameterlist first last">
+<li><code class="first docutils literal"><span class="pre">wavenumber</span></code> - <p>Wavenumber [1/cm] </p>
+</li>
+</ul>
+</dd>
+</dl>
+</p>
+</dd></dl>
+
+<dl class="function">
+<dt id="_CPPv230harp_wavenumber_from_frequencyd">
+<span id="harp_wavenumber_from_frequency__double"></span><span class="target" id="libharpgroup__harp__algorithm_1ga07ba71fdb7748ee5be23582ad81c69da"></span>double <code class="descname">harp_wavenumber_from_frequency</code><span class="sig-paren">(</span>double <em>frequency</em><span class="sig-paren">)</span></dt>
+<dd><p>Convert (electromagnetic wave) frequency to (electromagnetic wave) wavenumber <ul class="simple">
+<li><span class="math">\(\nu\)</span> : wavenumber [1/cm] </li>
+<li><span class="math">\(f\)</span> : frequency [Hz] </li>
+<li><span class="math">\(c\)</span> : speed of light [m/s]</li>
+</ul>
+<span class="math">\(\nu = 10^{-2} f / c\)</span></p>
+<p><dl class="docutils">
+<dt><strong>Return</strong></dt>
+<dd>Wavenumber [1/cm] </dd>
+<dt><strong>Parameters</strong></dt>
+<dd><ul class="breatheparameterlist first last">
+<li><code class="first docutils literal"><span class="pre">frequency</span></code> - <p>Frequency [Hz] </p>
+</li>
+</ul>
+</dd>
+</dl>
+</p>
+</dd></dl>
+
+<dl class="function">
+<dt id="_CPPv231harp_wavenumber_from_wavelengthd">
+<span id="harp_wavenumber_from_wavelength__double"></span><span class="target" id="libharpgroup__harp__algorithm_1ga11b2cf1b5e9c5fa4034c65d3c9856597"></span>double <code class="descname">harp_wavenumber_from_wavelength</code><span class="sig-paren">(</span>double <em>wavelength</em><span class="sig-paren">)</span></dt>
+<dd><p>Convert (electromagnetic wave) wavelength to (electromagnetic wave) wavenumber <ul class="simple">
+<li><span class="math">\(\nu\)</span> : wavenumber [1/cm] </li>
+<li><span class="math">\(\lambda\)</span> : wavelength [nm]</li>
+</ul>
+<span class="math">\(\nu = 10^7 / \lambda\)</span></p>
+<p><dl class="docutils">
+<dt><strong>Return</strong></dt>
+<dd>Wavenumber [1/cm] </dd>
+<dt><strong>Parameters</strong></dt>
+<dd><ul class="breatheparameterlist first last">
+<li><code class="first docutils literal"><span class="pre">wavelength</span></code> - <p>Wavelength [nm] </p>
+</li>
+</ul>
+</dd>
+</dl>
+</p>
+</dd></dl>
+
+<dl class="function">
+<dt id="_CPPv253get_water_vapour_saturation_pressure_from_temperatured">
+<span id="get_water_vapour_saturation_pressure_from_temperature__double"></span><span class="target" id="libharpgroup__harp__algorithm_1gaffb7639f34167096efed20035d58342c"></span><em class="property">static</em> double <code class="descname">get_water_vapour_saturation_pressure_from_temperature</code><span class="sig-paren">(</span>double <em>temperature</em><span class="sig-paren">)</span></dt>
+<dd><p>Calculate water vapour saturation pressure. Formula from Bolton 1980. <dl class="docutils">
+<dt><strong>Return</strong></dt>
+<dd>the water vapour saturation pressure [hPa] </dd>
+<dt><strong>Parameters</strong></dt>
+<dd><ul class="breatheparameterlist first last">
+<li><code class="first docutils literal"><span class="pre">temperature</span></code> - <p>Temperature [K] </p>
+</li>
+</ul>
+</dd>
+</dl>
+</p>
+</dd></dl>
+
+<dl class="function">
+<dt id="_CPPv239get_saturation_density_from_temperatured">
+<span id="get_saturation_density_from_temperature__double"></span><span class="target" id="libharpgroup__harp__algorithm_1gaf9cef3039ee7d12c0efa2bfbddfa240f"></span><em class="property">static</em> double <code class="descname">get_saturation_density_from_temperature</code><span class="sig-paren">(</span>double <em>temperature</em><span class="sig-paren">)</span></dt>
+<dd><p>Calculate water water vapour saturation density <dl class="docutils">
+<dt><strong>Return</strong></dt>
+<dd>the water vapour saturation density [molec/m3] </dd>
+<dt><strong>Parameters</strong></dt>
+<dd><ul class="breatheparameterlist first last">
+<li><code class="first docutils literal"><span class="pre">temperature</span></code> - <p>Temperature [K] </p>
+</li>
+</ul>
+</dd>
+</dl>
+</p>
+</dd></dl>
+
+<dl class="function">
+<dt id="_CPPv226harp_chemical_species_name21harp_chemical_species">
+<span id="harp_chemical_species_name__harp_chemical_species"></span><span class="target" id="libharpgroup__harp__algorithm_1ga2a2452c9c5bab393c31cc568890c1f0f"></span><em class="property">const</em> char *<code class="descname">harp_chemical_species_name</code><span class="sig-paren">(</span>harp_chemical_species <em>species</em><span class="sig-paren">)</span></dt>
+<dd><p>Return species name <dl class="docutils">
+<dt><strong>Return</strong></dt>
+<dd>string with name of the species </dd>
+<dt><strong>Parameters</strong></dt>
+<dd><ul class="breatheparameterlist first last">
+<li><code class="first docutils literal"><span class="pre">species</span></code> - <p>species enumeration value </p>
+</li>
+</ul>
+</dd>
+</dl>
+</p>
+</dd></dl>
+
+<dl class="function">
+<dt id="_CPPv240harp_chemical_species_from_variable_namePKc">
+<span id="harp_chemical_species_from_variable_name__cCP"></span><span class="target" id="libharpgroup__harp__algorithm_1ga8c4e114a2f0a16d02a88eaf773839e43"></span>harp_chemical_species <code class="descname">harp_chemical_species_from_variable_name</code><span class="sig-paren">(</span><em class="property">const</em> char *<em>variable_name</em><span class="sig-paren">)</span></dt>
+<dd><p>Determine species from variable name <dl class="docutils">
+<dt><strong>Return</strong></dt>
+<dd>species enum identifier </dd>
+<dt><strong>Parameters</strong></dt>
+<dd><ul class="breatheparameterlist first last">
+<li><code class="first docutils literal"><span class="pre">variable_name</span></code> - <p>variable name </p>
+</li>
+</ul>
+</dd>
+</dl>
+</p>
+</dd></dl>
+
+<dl class="function">
+<dt id="_CPPv252harp_density_from_partial_column_and_altitude_boundsdPKd">
+<span id="harp_density_from_partial_column_and_altitude_bounds__double.doubleCP"></span><span class="target" id="libharpgroup__harp__algorithm_1gae93dca96af0d4300c6bd702e1e85e920"></span>double <code class="descname">harp_density_from_partial_column_and_altitude_bounds</code><span class="sig-paren">(</span>double <em>partial_column</em>, <em class="property">const</em> double *<em>altitude_bounds</em><span class="sig-paren">)</span></dt>
+<dd><p>Convert a partial column profile to a density profile using the altitude boundaries as provided This is a generic routine to convert partial columns to a densitity profile. It works for all cases where the conversion is a matter of dividing the partial column value by the altitude height to get the density value. <dl class="docutils">
+<dt><strong>Return</strong></dt>
+<dd>the density profile [?/m] </dd>
+<dt><strong>Parameters</strong></dt>
+<dd><ul class="breatheparameterlist first last">
+<li><code class="first docutils literal"><span class="pre">partial_column</span></code> - <p>Partial column [?] </p>
+</li>
+<li><code class="first docutils literal"><span class="pre">altitude_bounds</span></code> - <p>Lower and upper altitude [m] boundaries [2] </p>
+</li>
+</ul>
+</dd>
+</dl>
+</p>
+</dd></dl>
+
+<dl class="function">
+<dt id="_CPPv237harp_mass_density_from_number_densityd21harp_chemical_species">
+<span id="harp_mass_density_from_number_density__double.harp_chemical_species"></span><span class="target" id="libharpgroup__harp__algorithm_1gac7cc2d2bd3b9be0b7bbde6c6ba52bce0"></span>double <code class="descname">harp_mass_density_from_number_density</code><span class="sig-paren">(</span>double <em>number_density</em>, harp_chemical_species <em>species</em><span class="sig-paren">)</span></dt>
+<dd></dd></dl>
+
+<dl class="function">
+<dt id="_CPPv247harp_mass_mixing_ratio_from_volume_mixing_ratiod21harp_chemical_species">
+<span id="harp_mass_mixing_ratio_from_volume_mixing_ratio__double.harp_chemical_species"></span><span class="target" id="libharpgroup__harp__algorithm_1ga20d045f6d1ce7e594ee521852eea2e7a"></span>double <code class="descname">harp_mass_mixing_ratio_from_volume_mixing_ratio</code><span class="sig-paren">(</span>double <em>volume_mixing_ratio</em>, harp_chemical_species <em>species</em><span class="sig-paren">)</span></dt>
+<dd></dd></dl>
+
+<dl class="function">
+<dt id="_CPPv264harp_mass_mixing_ratio_wet_from_volume_mixing_ratio_and_humiditydd21harp_chemical_species">
+<span id="harp_mass_mixing_ratio_wet_from_volume_mixing_ratio_and_humidity__double.double.harp_chemical_species"></span><span class="target" id="libharpgroup__harp__algorithm_1ga9d8be007b29d448533c34e94dadd5c8c"></span>double <code class="descname">harp_mass_mixing_ratio_wet_from_volume_mixing_ratio_and_humidity</code><span class="sig-paren">(</span>double <em>volume_mixing_ratio</em>, double <em>h2o_mass_mixing_ratio</em>, harp_chemical_species <em>species</em><span class="sig-paren">)</span></dt>
+<dd></dd></dl>
+
+<dl class="function">
+<dt id="_CPPv227harp_molar_mass_for_species21harp_chemical_species">
+<span id="harp_molar_mass_for_species__harp_chemical_species"></span><span class="target" id="libharpgroup__harp__algorithm_1gaa96cf903f3dfa83b7f4c6ad8c5465c13"></span>double <code class="descname">harp_molar_mass_for_species</code><span class="sig-paren">(</span>harp_chemical_species <em>species</em><span class="sig-paren">)</span></dt>
+<dd><p>Get molar mass of species of interest <dl class="docutils">
+<dt><strong>Return</strong></dt>
+<dd>the molar mass [g/mol] </dd>
+<dt><strong>Parameters</strong></dt>
+<dd><ul class="breatheparameterlist first last">
+<li><code class="first docutils literal"><span class="pre">species</span></code> - <p>Species enum </p>
+</li>
+</ul>
+</dd>
+</dl>
+</p>
+</dd></dl>
+
+<dl class="function">
+<dt id="_CPPv227harp_molar_mass_for_wet_aird">
+<span id="harp_molar_mass_for_wet_air__double"></span><span class="target" id="libharpgroup__harp__algorithm_1ga9e2594859eff172586b855c39755ab8a"></span>double <code class="descname">harp_molar_mass_for_wet_air</code><span class="sig-paren">(</span>double <em>h2o_mass_mixing_ratio</em><span class="sig-paren">)</span></dt>
+<dd><p>Get molar mass of wet air from H2O mass mixing ratio (humidity) <dl class="docutils">
+<dt><strong>Return</strong></dt>
+<dd>the molar mass of moist air [g/mol] </dd>
+<dt><strong>Parameters</strong></dt>
+<dd><ul class="breatheparameterlist first last">
+<li><code class="first docutils literal"><span class="pre">h2o_mass_mixing_ratio</span></code> - <p>Humidity (q) [ug/g] </p>
+</li>
+</ul>
+</dd>
+</dl>
+</p>
+</dd></dl>
+
+<dl class="function">
+<dt id="_CPPv237harp_number_density_from_mass_densityd21harp_chemical_species">
+<span id="harp_number_density_from_mass_density__double.harp_chemical_species"></span><span class="target" id="libharpgroup__harp__algorithm_1gac20e3b97110d2795d6d95562e147342e"></span>double <code class="descname">harp_number_density_from_mass_density</code><span class="sig-paren">(</span>double <em>mass_density</em>, harp_chemical_species <em>species</em><span class="sig-paren">)</span></dt>
+<dd><p>Convert mass density to number_density <dl class="docutils">
+<dt><strong>Return</strong></dt>
+<dd>the number density [molec/m3] </dd>
+<dt><strong>Parameters</strong></dt>
+<dd><ul class="breatheparameterlist first last">
+<li><code class="first docutils literal"><span class="pre">mass_density</span></code> - <p>Mass density [ug/m3] </p>
+</li>
+<li><code class="first docutils literal"><span class="pre">species</span></code> - <p>Species enum </p>
+</li>
+</ul>
+</dd>
+</dl>
+</p>
+</dd></dl>
+
+<dl class="function">
+<dt id="_CPPv267harp_number_density_from_mass_mixing_ratio_pressure_and_temperatureddd21harp_chemical_species">
+<span id="harp_number_density_from_mass_mixing_ratio_pressure_and_temperature__double.double.double.harp_chemical_species"></span><span class="target" id="libharpgroup__harp__algorithm_1gaeb7be0f4ca6870dd768e636e7003eb7f"></span>double <code class="descname">harp_number_density_from_mass_mixing_ratio_pressure_and_temperature</code><span class="sig-paren">(</span>double <em>mass_mixing_ratio</em>, double <em>pressure</em>, double <em>temperature</em>, harp_chemical_species <em>species</em><span class="sig-paren">)</span></dt>
+<dd><p>Convert mass mixing ratio to number density <dl class="docutils">
+<dt><strong>Return</strong></dt>
+<dd>the number density [molec/m3] </dd>
+<dt><strong>Parameters</strong></dt>
+<dd><ul class="breatheparameterlist first last">
+<li><code class="first docutils literal"><span class="pre">mass_mixing_ratio</span></code> - <p>mass mixing ratio [ug/g] </p>
+</li>
+<li><code class="first docutils literal"><span class="pre">temperature</span></code> - <p>Temperature [K] </p>
+</li>
+<li><code class="first docutils literal"><span class="pre">pressure</span></code> - <p>Pressure [hPa] </p>
+</li>
+<li><code class="first docutils literal"><span class="pre">species</span></code> - <p>Species enum </p>
+</li>
+</ul>
+</dd>
+</dl>
+</p>
+</dd></dl>
+
+<dl class="function">
+<dt id="_CPPv266harp_number_density_from_partial_pressure_pressure_and_temperatureddd">
+<span id="harp_number_density_from_partial_pressure_pressure_and_temperature__double.double.double"></span><span class="target" id="libharpgroup__harp__algorithm_1gaaf95135733d5bb8d9d01e73d3a8847f6"></span>double <code class="descname">harp_number_density_from_partial_pressure_pressure_and_temperature</code><span class="sig-paren">(</span>double <em>partial_pressure</em>, double <em>pressure</em>, double <em>temperature</em><span class="sig-paren">)</span></dt>
+<dd><p>Convert partial pressure to number_density <dl class="docutils">
+<dt><strong>Return</strong></dt>
+<dd>the number density [molec/m3] </dd>
+<dt><strong>Parameters</strong></dt>
+<dd><ul class="breatheparameterlist first last">
+<li><code class="first docutils literal"><span class="pre">partial_pressure</span></code> - <p>Partial pressure [hPa] </p>
+</li>
+<li><code class="first docutils literal"><span class="pre">pressure</span></code> - <p>Pressure [hPa] </p>
+</li>
+<li><code class="first docutils literal"><span class="pre">temperature</span></code> - <p>Temperature [K] </p>
+</li>
+</ul>
+</dd>
+</dl>
+</p>
+</dd></dl>
+
+<dl class="function">
+<dt id="_CPPv269harp_number_density_from_volume_mixing_ratio_pressure_and_temperatureddd">
+<span id="harp_number_density_from_volume_mixing_ratio_pressure_and_temperature__double.double.double"></span><span class="target" id="libharpgroup__harp__algorithm_1ga425f532e5bd57be5ff60e1e0c54331c2"></span>double <code class="descname">harp_number_density_from_volume_mixing_ratio_pressure_and_temperature</code><span class="sig-paren">(</span>double <em>volume_mixing_ratio</em>, double <em>pressure</em>, double <em>temperature</em><span class="sig-paren">)</span></dt>
+<dd><p>Convert volume mixing ratio to number_density <dl class="docutils">
+<dt><strong>Return</strong></dt>
+<dd>the number density [molec/m3] </dd>
+<dt><strong>Parameters</strong></dt>
+<dd><ul class="breatheparameterlist first last">
+<li><code class="first docutils literal"><span class="pre">volume_mixing_ratio</span></code> - <p>volume mixing ratio [ppmv] </p>
+</li>
+<li><code class="first docutils literal"><span class="pre">pressure</span></code> - <p>Pressure [hPa] </p>
+</li>
+<li><code class="first docutils literal"><span class="pre">temperature</span></code> - <p>Temperature [K] </p>
+</li>
+</ul>
+</dd>
+</dl>
+</p>
+</dd></dl>
+
+<dl class="function">
+<dt id="_CPPv252harp_partial_column_from_density_and_altitude_boundsdPKd">
+<span id="harp_partial_column_from_density_and_altitude_bounds__double.doubleCP"></span><span class="target" id="libharpgroup__harp__algorithm_1gac33368905012a23c0a53bb7959526fae"></span>double <code class="descname">harp_partial_column_from_density_and_altitude_bounds</code><span class="sig-paren">(</span>double <em>density</em>, <em class="property">const</em> double *<em>altitude_bounds</em><span class="sig-paren">)</span></dt>
+<dd><p>Convert a density to a partial column using the altitude boundaries This is a generic routine to convert adensitity to a partial column. It works for all cases where the conversion is a matter of multiplying the density by the altitude height to get the partial column value. <dl class="docutils">
+<dt><strong>Return</strong></dt>
+<dd>the partial column [?] </dd>
+<dt><strong>Parameters</strong></dt>
+<dd><ul class="breatheparameterlist first last">
+<li><code class="first docutils literal"><span class="pre">density</span></code> - <p>Density profile [?/m] </p>
+</li>
+<li><code class="first docutils literal"><span class="pre">altitude_bounds</span></code> - <p>Lower and upper altitude [m] boundaries [2] </p>
+</li>
+</ul>
+</dd>
+</dl>
+</p>
+</dd></dl>
+
+<dl class="function">
+<dt id="_CPPv257harp_partial_pressure_from_mass_mixing_ratio_and_pressuredd21harp_chemical_species">
+<span id="harp_partial_pressure_from_mass_mixing_ratio_and_pressure__double.double.harp_chemical_species"></span><span class="target" id="libharpgroup__harp__algorithm_1ga0bf0211ec4486f902fc8d64505c11e8d"></span>double <code class="descname">harp_partial_pressure_from_mass_mixing_ratio_and_pressure</code><span class="sig-paren">(</span>double <em>mass_mixing_ratio</em>, double <em>pressure</em>, harp_chemical_species <em>species</em><span class="sig-paren">)</span></dt>
+<dd><p>Convert mass mixing ratio to partial pressure <dl class="docutils">
+<dt><strong>Return</strong></dt>
+<dd>the partial pressure [hPa] </dd>
+<dt><strong>Parameters</strong></dt>
+<dd><ul class="breatheparameterlist first last">
+<li><code class="first docutils literal"><span class="pre">mass_mixing_ratio</span></code> - <p>Mass mixing ratio [ug/g] </p>
+</li>
+<li><code class="first docutils literal"><span class="pre">pressure</span></code> - <p>Pressure [hPa] </p>
+</li>
+<li><code class="first docutils literal"><span class="pre">species</span></code> - <p>The chemical species for which the mmr was provided </p>
+</li>
+</ul>
+</dd>
+</dl>
+</p>
+</dd></dl>
+
+<dl class="function">
+<dt id="_CPPv266harp_partial_pressure_from_number_density_pressure_and_temperatureddd">
+<span id="harp_partial_pressure_from_number_density_pressure_and_temperature__double.double.double"></span><span class="target" id="libharpgroup__harp__algorithm_1ga175f35b132aabd68b8b52a6c7933a0c9"></span>double <code class="descname">harp_partial_pressure_from_number_density_pressure_and_temperature</code><span class="sig-paren">(</span>double <em>number_density</em>, double <em>pressure</em>, double <em>temperature</em><span class="sig-paren">)</span></dt>
+<dd><p>Convert number density to partial pressure <dl class="docutils">
+<dt><strong>Return</strong></dt>
+<dd>the partial pressure [hPa] </dd>
+<dt><strong>Parameters</strong></dt>
+<dd><ul class="breatheparameterlist first last">
+<li><code class="first docutils literal"><span class="pre">number_density</span></code> - <p>Number density [molec/m3] </p>
+</li>
+<li><code class="first docutils literal"><span class="pre">pressure</span></code> - <p>Pressure [hPa] </p>
+</li>
+<li><code class="first docutils literal"><span class="pre">temperature</span></code> - <p>Temperature [K] </p>
+</li>
+</ul>
+</dd>
+</dl>
+</p>
+</dd></dl>
+
+<dl class="function">
+<dt id="_CPPv259harp_partial_pressure_from_volume_mixing_ratio_and_pressuredd">
+<span id="harp_partial_pressure_from_volume_mixing_ratio_and_pressure__double.double"></span><span class="target" id="libharpgroup__harp__algorithm_1gad4018a3c0cbce653515da390571c4e82"></span>double <code class="descname">harp_partial_pressure_from_volume_mixing_ratio_and_pressure</code><span class="sig-paren">(</span>double <em>volume_mixing_ratio</em>, double <em>pressure</em><span class="sig-paren">)</span></dt>
+<dd><p>Convert volume mixing ratio to partial pressure <dl class="docutils">
+<dt><strong>Return</strong></dt>
+<dd>the partial pressure [hPa] </dd>
+<dt><strong>Parameters</strong></dt>
+<dd><ul class="breatheparameterlist first last">
+<li><code class="first docutils literal"><span class="pre">volume_mixing_ratio</span></code> - <p>volume mixing ratio [ppmv] </p>
+</li>
+<li><code class="first docutils literal"><span class="pre">pressure</span></code> - <p>Pressure [hPa] </p>
+</li>
+</ul>
+</dd>
+</dl>
+</p>
+</dd></dl>
+
+<dl class="function">
+<dt id="_CPPv222harp_pressure_from_gphd">
+<span id="harp_pressure_from_gph__double"></span><span class="target" id="libharpgroup__harp__algorithm_1ga9f85518b0392fe873c7f3f52d26575c6"></span>double <code class="descname">harp_pressure_from_gph</code><span class="sig-paren">(</span>double <em>gph</em><span class="sig-paren">)</span></dt>
+<dd><p>Convert a geopotential height value value to a pressure value using model values This is a rather inaccurate way of calculating the pressure, so only use it when you can&#8217;t use any of the other approaches. <dl class="docutils">
+<dt><strong>Return</strong></dt>
+<dd>pressure value [hPa] </dd>
+<dt><strong>Parameters</strong></dt>
+<dd><ul class="breatheparameterlist first last">
+<li><code class="first docutils literal"><span class="pre">gph</span></code> - <p>geopotential height to be converted [m] </p>
+</li>
+</ul>
+</dd>
+</dl>
+</p>
+</dd></dl>
+
+<dl class="function">
+<dt id="_CPPv262harp_relative_humidity_from_h2o_number_density_and_temperaturedd">
+<span id="harp_relative_humidity_from_h2o_number_density_and_temperature__double.double"></span><span class="target" id="libharpgroup__harp__algorithm_1ga0e1d5b38c418a308af958e990c7e2667"></span>double <code class="descname">harp_relative_humidity_from_h2o_number_density_and_temperature</code><span class="sig-paren">(</span>double <em>number_density_h2o</em>, double <em>temperature</em><span class="sig-paren">)</span></dt>
+<dd><p>Calculate the relative humidity from the given water vapour number density and temperature. The relative humidity is the ratio of the partial pressure of water vapour in a gaseous mixture of air and water vapour to the saturated vapour pressure of water at a given temperature. <dl class="docutils">
+<dt><strong>Return</strong></dt>
+<dd>the relative humidity [%] </dd>
+<dt><strong>Parameters</strong></dt>
+<dd><ul class="breatheparameterlist first last">
+<li><code class="first docutils literal"><span class="pre">number_density_h2o</span></code> - <p>Water vapour number density [molec/m3] </p>
+</li>
+<li><code class="first docutils literal"><span class="pre">temperature</span></code> - <p>Temperature [K] </p>
+</li>
+</ul>
+</dd>
+</dl>
+</p>
+</dd></dl>
+
+<dl class="function">
+<dt id="_CPPv272harp_virtual_temperature_from_pressure_temperature_and_relative_humidityddd">
+<span id="harp_virtual_temperature_from_pressure_temperature_and_relative_humidity__double.double.double"></span><span class="target" id="libharpgroup__harp__algorithm_1ga9696d45af2cbc29f20446d84124b8cb5"></span>double <code class="descname">harp_virtual_temperature_from_pressure_temperature_and_relative_humidity</code><span class="sig-paren">(</span>double <em>pressure</em>, double <em>temperature</em>, double <em>relative_humidity</em><span class="sig-paren">)</span></dt>
+<dd><p>Calculate the virtual temperature <dl class="docutils">
+<dt><strong>Return</strong></dt>
+<dd>the virtual temperature [K] </dd>
+<dt><strong>Parameters</strong></dt>
+<dd><ul class="breatheparameterlist first last">
+<li><code class="first docutils literal"><span class="pre">pressure</span></code> - <p>Pressure [hPa] </p>
+</li>
+<li><code class="first docutils literal"><span class="pre">temperature</span></code> - <p>Temperature [K] </p>
+</li>
+<li><code class="first docutils literal"><span class="pre">relative_humidity</span></code> - <p>Relative humidity [%] </p>
+</li>
+</ul>
+</dd>
+</dl>
+</p>
+</dd></dl>
+
+<dl class="function">
+<dt id="_CPPv247harp_volume_mixing_ratio_from_mass_mixing_ratiod21harp_chemical_species">
+<span id="harp_volume_mixing_ratio_from_mass_mixing_ratio__double.harp_chemical_species"></span><span class="target" id="libharpgroup__harp__algorithm_1ga6eab4fea676625152d0cfe6657ef51a5"></span>double <code class="descname">harp_volume_mixing_ratio_from_mass_mixing_ratio</code><span class="sig-paren">(</span>double <em>mass_mixing_ratio</em>, harp_chemical_species <em>species</em><span class="sig-paren">)</span></dt>
+<dd><p>Convert mass mixing ratio to volume mixing ratio <dl class="docutils">
+<dt><strong>Return</strong></dt>
+<dd>the volume mixing ratio [ppmv] </dd>
+<dt><strong>Parameters</strong></dt>
+<dd><ul class="breatheparameterlist first last">
+<li><code class="first docutils literal"><span class="pre">mass_mixing_ratio</span></code> - <p>Mass mixing ratio [ug/g] </p>
+</li>
+<li><code class="first docutils literal"><span class="pre">species</span></code> - <p>Molecular species </p>
+</li>
+</ul>
+</dd>
+</dl>
+</p>
+</dd></dl>
+
+<dl class="function">
+<dt id="_CPPv264harp_volume_mixing_ratio_from_mass_mixing_ratio_wet_and_humiditydd21harp_chemical_species">
+<span id="harp_volume_mixing_ratio_from_mass_mixing_ratio_wet_and_humidity__double.double.harp_chemical_species"></span><span class="target" id="libharpgroup__harp__algorithm_1ga560208e7dfa7f70df2133711a8f84659"></span>double <code class="descname">harp_volume_mixing_ratio_from_mass_mixing_ratio_wet_and_humidity</code><span class="sig-paren">(</span>double <em>mass_mixing_ratio</em>, double <em>h2o_mass_mixing_ratio</em>, harp_chemical_species <em>species</em><span class="sig-paren">)</span></dt>
+<dd><p>Convert mass mixing ratio w.r.t moist air to volume mixing ratio <dl class="docutils">
+<dt><strong>Return</strong></dt>
+<dd>the volume mixing ratio [ppmv] </dd>
+<dt><strong>Parameters</strong></dt>
+<dd><ul class="breatheparameterlist first last">
+<li><code class="first docutils literal"><span class="pre">mass_mixing_ratio</span></code> - <p>Mass mixing ratio of species [ug/g] </p>
+</li>
+<li><code class="first docutils literal"><span class="pre">h2o_mass_mixing_ratio</span></code> - <p>Mass mixing ratio of H2O [ug/g] </p>
+</li>
+<li><code class="first docutils literal"><span class="pre">species</span></code> - <p>Molecular species </p>
+</li>
+</ul>
+</dd>
+</dl>
+</p>
+</dd></dl>
+
+<dl class="function">
+<dt id="_CPPv269harp_volume_mixing_ratio_from_number_density_pressure_and_temperatureddd">
+<span id="harp_volume_mixing_ratio_from_number_density_pressure_and_temperature__double.double.double"></span><span class="target" id="libharpgroup__harp__algorithm_1ga9d74e5214946d5d2b379e540b6e4061f"></span>double <code class="descname">harp_volume_mixing_ratio_from_number_density_pressure_and_temperature</code><span class="sig-paren">(</span>double <em>number_density</em>, double <em>pressure</em>, double <em>temperature</em><span class="sig-paren">)</span></dt>
+<dd><p>Convert number density to volume mixing ratio <dl class="docutils">
+<dt><strong>Return</strong></dt>
+<dd>the volume mixing ratio [ppmv] </dd>
+<dt><strong>Parameters</strong></dt>
+<dd><ul class="breatheparameterlist first last">
+<li><code class="first docutils literal"><span class="pre">number_density</span></code> - <p>Number density [molec/m3] </p>
+</li>
+<li><code class="first docutils literal"><span class="pre">temperature</span></code> - <p>Temperature [K] </p>
+</li>
+<li><code class="first docutils literal"><span class="pre">pressure</span></code> - <p>Pressure [hPa] </p>
+</li>
+</ul>
+</dd>
+</dl>
+</p>
+</dd></dl>
+
+<dl class="function">
+<dt id="_CPPv259harp_volume_mixing_ratio_from_partial_pressure_and_pressuredd">
+<span id="harp_volume_mixing_ratio_from_partial_pressure_and_pressure__double.double"></span><span class="target" id="libharpgroup__harp__algorithm_1ga9ddef142390784a9dc1c8ed2c259aeb5"></span>double <code class="descname">harp_volume_mixing_ratio_from_partial_pressure_and_pressure</code><span class="sig-paren">(</span>double <em>partial_pressure</em>, double <em>pressure</em><span class="sig-paren">)</span></dt>
+<dd><p>Convert partial pressure to volume mixing ratio <dl class="docutils">
+<dt><strong>Return</strong></dt>
+<dd>the volume mixing ratio [ppmv] </dd>
+<dt><strong>Parameters</strong></dt>
+<dd><ul class="breatheparameterlist first last">
+<li><code class="first docutils literal"><span class="pre">partial_pressure</span></code> - <p>Partial pressure of constituent [hPa] </p>
+</li>
+<li><code class="first docutils literal"><span class="pre">pressure</span></code> - <p>Pressure of air [hPa] </p>
+</li>
+</ul>
+</dd>
+</dl>
+</p>
+</dd></dl>
+
+<dl class="function">
+<dt id="_CPPv238harp_ocean_frequency_from_ocean_periodd">
+<span id="harp_ocean_frequency_from_ocean_period__double"></span><span class="target" id="libharpgroup__harp__algorithm_1ga844ddece5fcd154ae329d0e6fc7686fc"></span>double <code class="descname">harp_ocean_frequency_from_ocean_period</code><span class="sig-paren">(</span>double <em>ocean_period</em><span class="sig-paren">)</span></dt>
+<dd><p>Convert ocean wave period to ocean wave frequency <dl class="docutils">
+<dt><strong>Return</strong></dt>
+<dd>the ocean frequency [Hz] </dd>
+<dt><strong>Parameters</strong></dt>
+<dd><ul class="breatheparameterlist first last">
+<li><code class="first docutils literal"><span class="pre">ocean_period</span></code> - <p>Ocean wave period [s] </p>
+</li>
+</ul>
+</dd>
+</dl>
+</p>
+</dd></dl>
+
+<dl class="function">
+<dt id="_CPPv242harp_ocean_frequency_from_ocean_wavelengthd">
+<span id="harp_ocean_frequency_from_ocean_wavelength__double"></span><span class="target" id="libharpgroup__harp__algorithm_1gaf50a02b27410627f3e0909549c26e390"></span>double <code class="descname">harp_ocean_frequency_from_ocean_wavelength</code><span class="sig-paren">(</span>double <em>ocean_wavelength</em><span class="sig-paren">)</span></dt>
+<dd><p>Convert ocean wave wavelength to ocean wave frequency <dl class="docutils">
+<dt><strong>Return</strong></dt>
+<dd>the ocean wave frequency f [Hz] </dd>
+<dt><strong>Parameters</strong></dt>
+<dd><ul class="breatheparameterlist first last">
+<li><code class="first docutils literal"><span class="pre">ocean_wavelength</span></code> - <p>Wavelength [m] </p>
+</li>
+</ul>
+</dd>
+</dl>
+</p>
+</dd></dl>
+
+<dl class="function">
+<dt id="_CPPv242harp_ocean_frequency_from_ocean_wavenumberd">
+<span id="harp_ocean_frequency_from_ocean_wavenumber__double"></span><span class="target" id="libharpgroup__harp__algorithm_1gad5c2ac5cee7603f5ed4aada234403411"></span>double <code class="descname">harp_ocean_frequency_from_ocean_wavenumber</code><span class="sig-paren">(</span>double <em>ocean_wavenumber</em><span class="sig-paren">)</span></dt>
+<dd><p>Convert ocean wave wavenumber to ocean wave frequency using the deep water dispersion relation (the depth of the ocean is much greater than the ocean wave&#8217;s wavelength) <dl class="docutils">
+<dt><strong>Return</strong></dt>
+<dd>the ocean wave frequency f [Hz] </dd>
+<dt><strong>Parameters</strong></dt>
+<dd><ul class="breatheparameterlist first last">
+<li><code class="first docutils literal"><span class="pre">ocean_wavenumber</span></code> - <p>Wavenumber [m] </p>
+</li>
+</ul>
+</dd>
+</dl>
+</p>
+</dd></dl>
+
+<dl class="function">
+<dt id="_CPPv238harp_ocean_period_from_ocean_frequencyd">
+<span id="harp_ocean_period_from_ocean_frequency__double"></span><span class="target" id="libharpgroup__harp__algorithm_1gada4ba18ac2e4c023bf0c353d931206a9"></span>double <code class="descname">harp_ocean_period_from_ocean_frequency</code><span class="sig-paren">(</span>double <em>ocean_frequency</em><span class="sig-paren">)</span></dt>
+<dd><p>Convert ocean wave frequency to ocean wave period <dl class="docutils">
+<dt><strong>Return</strong></dt>
+<dd>the ocean wave period T [s] </dd>
+<dt><strong>Parameters</strong></dt>
+<dd><ul class="breatheparameterlist first last">
+<li><code class="first docutils literal"><span class="pre">ocean_frequency</span></code> - <p>Frequency [Hz] </p>
+</li>
+</ul>
+</dd>
+</dl>
+</p>
+</dd></dl>
+
+<dl class="function">
+<dt id="_CPPv239harp_ocean_period_from_ocean_wavelengthd">
+<span id="harp_ocean_period_from_ocean_wavelength__double"></span><span class="target" id="libharpgroup__harp__algorithm_1gadf3d844fee85765b3a4f1460dd4587f7"></span>double <code class="descname">harp_ocean_period_from_ocean_wavelength</code><span class="sig-paren">(</span>double <em>ocean_wavelength</em><span class="sig-paren">)</span></dt>
+<dd><p>Convert ocean wave wavelength to ocean wave period using the deep water dispersion relation <dl class="docutils">
+<dt><strong>Return</strong></dt>
+<dd>the ocean wave period T [s] </dd>
+<dt><strong>Parameters</strong></dt>
+<dd><ul class="breatheparameterlist first last">
+<li><code class="first docutils literal"><span class="pre">ocean_wavelength</span></code> - <p>Wavelength [m] </p>
+</li>
+</ul>
+</dd>
+</dl>
+</p>
+</dd></dl>
+
+<dl class="function">
+<dt id="_CPPv239harp_ocean_period_from_ocean_wavenumberd">
+<span id="harp_ocean_period_from_ocean_wavenumber__double"></span><span class="target" id="libharpgroup__harp__algorithm_1ga2554d9a8a7ec52dba62b32c5b0036f40"></span>double <code class="descname">harp_ocean_period_from_ocean_wavenumber</code><span class="sig-paren">(</span>double <em>ocean_wavenumber</em><span class="sig-paren">)</span></dt>
+<dd><p>Convert ocean wave wavenumber to ocean wave period using the deep water dispersion relation <dl class="docutils">
+<dt><strong>Return</strong></dt>
+<dd>the ocean wave period T [s] </dd>
+<dt><strong>Parameters</strong></dt>
+<dd><ul class="breatheparameterlist first last">
+<li><code class="first docutils literal"><span class="pre">ocean_wavenumber</span></code> - <p>Wavenumber [m] </p>
+</li>
+</ul>
+</dd>
+</dl>
+</p>
+</dd></dl>
+
+<dl class="function">
+<dt id="_CPPv242harp_ocean_wavelength_from_ocean_frequencyd">
+<span id="harp_ocean_wavelength_from_ocean_frequency__double"></span><span class="target" id="libharpgroup__harp__algorithm_1ga4c8e337c73070d56aedc32b3c6a76bba"></span>double <code class="descname">harp_ocean_wavelength_from_ocean_frequency</code><span class="sig-paren">(</span>double <em>ocean_frequency</em><span class="sig-paren">)</span></dt>
+<dd><p>Convert ocean wave frequency to ocean wave wavelength, using the deep water dispersion relation <dl class="docutils">
+<dt><strong>Return</strong></dt>
+<dd>the ocean wave wavelength [m] </dd>
+<dt><strong>Parameters</strong></dt>
+<dd><ul class="breatheparameterlist first last">
+<li><code class="first docutils literal"><span class="pre">ocean_frequency</span></code> - <p>Frequency [Hz] </p>
+</li>
+</ul>
+</dd>
+</dl>
+</p>
+</dd></dl>
+
+<dl class="function">
+<dt id="_CPPv239harp_ocean_wavelength_from_ocean_periodd">
+<span id="harp_ocean_wavelength_from_ocean_period__double"></span><span class="target" id="libharpgroup__harp__algorithm_1ga97a442f4485a3bd1f742860048fa1ce8"></span>double <code class="descname">harp_ocean_wavelength_from_ocean_period</code><span class="sig-paren">(</span>double <em>ocean_period</em><span class="sig-paren">)</span></dt>
+<dd><p>Convert ocean wave period to ocean wave wavelength using the deep water dispersion relation <dl class="docutils">
+<dt><strong>Return</strong></dt>
+<dd>the ocean wave wavelength [m] </dd>
+<dt><strong>Parameters</strong></dt>
+<dd><ul class="breatheparameterlist first last">
+<li><code class="first docutils literal"><span class="pre">ocean_period</span></code> - <p>Ocean wave period T [s] </p>
+</li>
+</ul>
+</dd>
+</dl>
+</p>
+</dd></dl>
+
+<dl class="function">
+<dt id="_CPPv243harp_ocean_wavelength_from_ocean_wavenumberd">
+<span id="harp_ocean_wavelength_from_ocean_wavenumber__double"></span><span class="target" id="libharpgroup__harp__algorithm_1gac04c01aa71b24d4c74ab2ffd54a5968b"></span>double <code class="descname">harp_ocean_wavelength_from_ocean_wavenumber</code><span class="sig-paren">(</span>double <em>ocean_wavenumber</em><span class="sig-paren">)</span></dt>
+<dd><p>Convert ocean wave wavenumber to ocean wave wavelength <dl class="docutils">
+<dt><strong>Return</strong></dt>
+<dd>the ocean wave wavelength [m] </dd>
+<dt><strong>Parameters</strong></dt>
+<dd><ul class="breatheparameterlist first last">
+<li><code class="first docutils literal"><span class="pre">ocean_wavenumber</span></code> - <p>Wavenumber k [1/m] </p>
+</li>
+</ul>
+</dd>
+</dl>
+</p>
+</dd></dl>
+
+<dl class="function">
+<dt id="_CPPv242harp_ocean_wavenumber_from_ocean_frequencyd">
+<span id="harp_ocean_wavenumber_from_ocean_frequency__double"></span><span class="target" id="libharpgroup__harp__algorithm_1gaf9301f9e92f41c4fc923920fcaee457c"></span>double <code class="descname">harp_ocean_wavenumber_from_ocean_frequency</code><span class="sig-paren">(</span>double <em>ocean_frequency</em><span class="sig-paren">)</span></dt>
+<dd><p>Convert ocean wave frequency to ocean wave wavenumber, using the deep water dispersion relation <dl class="docutils">
+<dt><strong>Return</strong></dt>
+<dd>the ocean wave wavenumber k [1/m] </dd>
+<dt><strong>Parameters</strong></dt>
+<dd><ul class="breatheparameterlist first last">
+<li><code class="first docutils literal"><span class="pre">ocean_frequency</span></code> - <p>Frequency f [Hz] </p>
+</li>
+</ul>
+</dd>
+</dl>
+</p>
+</dd></dl>
+
+<dl class="function">
+<dt id="_CPPv239harp_ocean_wavenumber_from_ocean_periodd">
+<span id="harp_ocean_wavenumber_from_ocean_period__double"></span><span class="target" id="libharpgroup__harp__algorithm_1ga596ff72e0cc939cb6ccd048b8366bae9"></span>double <code class="descname">harp_ocean_wavenumber_from_ocean_period</code><span class="sig-paren">(</span>double <em>ocean_period</em><span class="sig-paren">)</span></dt>
+<dd><p>Convert ocean wave period to ocean wave wavelength using the deep water dispersion relation <dl class="docutils">
+<dt><strong>Return</strong></dt>
+<dd>the ocean wave wavenumber [1/m] </dd>
+<dt><strong>Parameters</strong></dt>
+<dd><ul class="breatheparameterlist first last">
+<li><code class="first docutils literal"><span class="pre">ocean_period</span></code> - <p>Ocean wave period T [s] </p>
+</li>
+</ul>
+</dd>
+</dl>
+</p>
+</dd></dl>
+
+<dl class="function">
+<dt id="_CPPv243harp_ocean_wavenumber_from_ocean_wavelengthd">
+<span id="harp_ocean_wavenumber_from_ocean_wavelength__double"></span><span class="target" id="libharpgroup__harp__algorithm_1ga2c891fff29057e9fef27eef4f5aec409"></span>double <code class="descname">harp_ocean_wavenumber_from_ocean_wavelength</code><span class="sig-paren">(</span>double <em>ocean_wavelength</em><span class="sig-paren">)</span></dt>
+<dd><p>Convert ocean wave wavelength to ocean wave wavenumber <dl class="docutils">
+<dt><strong>Return</strong></dt>
+<dd>the ocean wave wavenumber k [1/m] </dd>
+<dt><strong>Parameters</strong></dt>
+<dd><ul class="breatheparameterlist first last">
+<li><code class="first docutils literal"><span class="pre">ocean_wavelength</span></code> - <p>Wavelength [Hz] </p>
+</li>
+</ul>
+</dd>
+</dl>
+</p>
+</dd></dl>
+
+<dl class="function">
+<dt id="_CPPv280harp_sea_surface_temperature_skin_from_subskin_wind_speed_and_solar_zenith_angleddd">
+<span id="harp_sea_surface_temperature_skin_from_subskin_wind_speed_and_solar_zenith_angle__double.double.double"></span><span class="target" id="libharpgroup__harp__algorithm_1ga3ad38a04c0a714da33118540196e7dc0"></span>double <code class="descname">harp_sea_surface_temperature_skin_from_subskin_wind_speed_and_solar_zenith_angle</code><span class="sig-paren">(</span>double <em>sst_subskin</em>, double <em>wind_speed</em>, double <em>solar_zenith_angle</em><span class="sig-paren">)</span></dt>
+<dd><p>Convert subskin to skin sea surface temperature <dl class="docutils">
+<dt><strong>Return</strong></dt>
+<dd>the skin sea surface temperature [K] </dd>
+<dt><strong>Parameters</strong></dt>
+<dd><ul class="breatheparameterlist first last">
+<li><code class="first docutils literal"><span class="pre">sst_subskin</span></code> - <p>Subskin sea surface temperature [K] </p>
+</li>
+<li><code class="first docutils literal"><span class="pre">wind_speed</span></code> - <p>Wind speed [m/s] </p>
+</li>
+<li><code class="first docutils literal"><span class="pre">solar_zenith_angle</span></code> - <p>Solar zenith angle [degree] </p>
+</li>
+</ul>
+</dd>
+</dl>
+</p>
+</dd></dl>
+
+<dl class="function">
+<dt id="_CPPv280harp_sea_surface_temperature_subskin_from_skin_wind_speed_and_solar_zenith_angleddd">
+<span id="harp_sea_surface_temperature_subskin_from_skin_wind_speed_and_solar_zenith_angle__double.double.double"></span><span class="target" id="libharpgroup__harp__algorithm_1ga21255a71872481645cb24c922a874bef"></span>double <code class="descname">harp_sea_surface_temperature_subskin_from_skin_wind_speed_and_solar_zenith_angle</code><span class="sig-paren">(</span>double <em>sst_skin</em>, double <em>wind_speed</em>, double <em>solar_zenith_angle</em><span class="sig-paren">)</span></dt>
+<dd><p>Convert skin to subskin sea surface temperature <dl class="docutils">
+<dt><strong>Return</strong></dt>
+<dd>the subskin sea surface temperature [K] </dd>
+<dt><strong>Parameters</strong></dt>
+<dd><ul class="breatheparameterlist first last">
+<li><code class="first docutils literal"><span class="pre">sst_skin</span></code> - <p>Skin sea surface temperature [K] </p>
+</li>
+<li><code class="first docutils literal"><span class="pre">wind_speed</span></code> - <p>Wind speed [m/s] </p>
+</li>
+<li><code class="first docutils literal"><span class="pre">solar_zenith_angle</span></code> - <p>Solar zenith angle [degree] </p>
+</li>
+</ul>
+</dd>
+</dl>
+</p>
+</dd></dl>
+
+<dl class="function">
+<dt id="_CPPv242harp_profile_altitude_bounds_from_altitudelPKdPd">
+<span id="harp_profile_altitude_bounds_from_altitude__l.doubleCP.doubleP"></span><span class="target" id="libharpgroup__harp__algorithm_1ga395c11bf57551b77d66db269ca8749e1"></span>int <code class="descname">harp_profile_altitude_bounds_from_altitude</code><span class="sig-paren">(</span>long <em>num_levels</em>, <em class="property">const</em> double *<em>altitude_profile</em>, double *<em>altitude_bounds_profile</em><span class="sig-paren">)</span></dt>
+<dd><p>Construct an altitude boundaries profile from an altitude profile <dl class="docutils">
+<dt><strong>Return</strong></dt>
+<dd><ul class="simple">
+<li><code class="docutils literal"><span class="pre">0</span></code>, Success. </li>
+<li><code class="docutils literal"><span class="pre">-1</span></code>, Error occurred (check <a class="reference internal" href="libharp_error.html#libharpgroup__harp__error_1gab2eeb46528306c6799632d1e800c4c36"><span>harp_errno</span></a>). </li>
+</ul>
+</dd>
+<dt><strong>Parameters</strong></dt>
+<dd><ul class="breatheparameterlist first last">
+<li><code class="first docutils literal"><span class="pre">num_levels</span></code> - <p>Number of levels </p>
+</li>
+<li><code class="first docutils literal"><span class="pre">altitude_profile</span></code> - <p>Altitude vertical profile </p>
+</li>
+<li><code class="first docutils literal"><span class="pre">altitude_bounds_profile</span></code> - <p>variable in which the altitude boundaries profile with dimensions [num_levels, 2] will be stored </p>
+</li>
+</ul>
+</dd>
+</dl>
+</p>
+</dd></dl>
+
+<dl class="function">
+<dt id="_CPPv235harp_altitude_from_gph_and_latitudedd">
+<span id="harp_altitude_from_gph_and_latitude__double.double"></span><span class="target" id="libharpgroup__harp__algorithm_1ga4095ac2674634a01f3c827d73d80a028"></span>double <code class="descname">harp_altitude_from_gph_and_latitude</code><span class="sig-paren">(</span>double <em>gph</em>, double <em>latitude</em><span class="sig-paren">)</span></dt>
+<dd><p>Convert geopotential height to geometric height (= altitude) <dl class="docutils">
+<dt><strong>Return</strong></dt>
+<dd>the altitude [m] </dd>
+<dt><strong>Parameters</strong></dt>
+<dd><ul class="breatheparameterlist first last">
+<li><code class="first docutils literal"><span class="pre">gph</span></code> - <p>Geopotential height [m] </p>
+</li>
+<li><code class="first docutils literal"><span class="pre">latitude</span></code> - <p>Latitude [degree_north] </p>
+</li>
+</ul>
+</dd>
+</dl>
+</p>
+</dd></dl>
+
+<dl class="function">
+<dt id="_CPPv268harp_profile_altitude_from_pressure_temperature_h2o_mmr_and_latitudelPKdPKdPKddddPd">
+<span id="harp_profile_altitude_from_pressure_temperature_h2o_mmr_and_latitude__l.doubleCP.doubleCP.doubleCP.double.double.double.doubleP"></span><span class="target" id="libharpgroup__harp__algorithm_1ga89a6a5c80180ffd2d6a51ac69ad22e1b"></span>void <code class="descname">harp_profile_altitude_from_pressure_temperature_h2o_mmr_and_latitude</code><span class="sig-paren">(</span>long <em>num_levels</em>, <em class="property">const</em> double *<em>pressure_profile</em>, <em class="property">const</em> double *<em>temperature_profile</em>, <em class="property">const</em> double *<em>h2o_mmr_profile</em>, double <em>surface_pressure</em>, double <em>surface_height</em>, double <em>latitude</em>, double *<em>altitude_profile</em><span class="sig-paren">)</span></dt>
+<dd><p>Convert a pressure profile to an altitude profile If the h2o_mmr_profile variable is set to NULL a constant mean molar mass for wet air will be used for the conversion (instead of a calculated molar mass of humid air). If the temperature_profile variable is set to NULL the standard temperature will be used for the conversion. <dl class="docutils">
+<dt><strong>Return</strong></dt>
+<dd><ul class="simple">
+<li><code class="docutils literal"><span class="pre">0</span></code>, Success. </li>
+<li><code class="docutils literal"><span class="pre">-1</span></code>, Error occurred (check <a class="reference internal" href="libharp_error.html#libharpgroup__harp__error_1gab2eeb46528306c6799632d1e800c4c36"><span>harp_errno</span></a>). </li>
+</ul>
+</dd>
+<dt><strong>Parameters</strong></dt>
+<dd><ul class="breatheparameterlist first last">
+<li><code class="first docutils literal"><span class="pre">num_levels</span></code> - <p>Length of vertical axis </p>
+</li>
+<li><code class="first docutils literal"><span class="pre">pressure_profile</span></code> - <p>Pressure vertical profile [hPa] </p>
+</li>
+<li><code class="first docutils literal"><span class="pre">temperature_profile</span></code> - <p>Temperature vertical profile [K] </p>
+</li>
+<li><code class="first docutils literal"><span class="pre">h2o_mmr_profile</span></code> - <p>Humidity (q) vertical profile [ug/g] (optional) </p>
+</li>
+<li><code class="first docutils literal"><span class="pre">surface_pressure</span></code> - <p>Surface pressure [hPa] </p>
+</li>
+<li><code class="first docutils literal"><span class="pre">surface_height</span></code> - <p>Surface height [m] </p>
+</li>
+<li><code class="first docutils literal"><span class="pre">latitude</span></code> - <p>Latitude [degree_north] </p>
+</li>
+<li><code class="first docutils literal"><span class="pre">altitude_profile</span></code> - <p>variable in which the vertical profile will be stored [m] </p>
+</li>
+</ul>
+</dd>
+</dl>
+</p>
+</dd></dl>
+
+<dl class="function">
+<dt id="_CPPv235harp_gph_from_altitude_and_latitudedd">
+<span id="harp_gph_from_altitude_and_latitude__double.double"></span><span class="target" id="libharpgroup__harp__algorithm_1gad6a7595717db919f8441c62c73332822"></span>double <code class="descname">harp_gph_from_altitude_and_latitude</code><span class="sig-paren">(</span>double <em>altitude</em>, double <em>latitude</em><span class="sig-paren">)</span></dt>
+<dd><p>Convert geometric height (= altitude) to geopotential height <dl class="docutils">
+<dt><strong>Return</strong></dt>
+<dd>the geopotential height [m] </dd>
+<dt><strong>Parameters</strong></dt>
+<dd><ul class="breatheparameterlist first last">
+<li><code class="first docutils literal"><span class="pre">altitude</span></code> - <p>Altitude [m] </p>
+</li>
+<li><code class="first docutils literal"><span class="pre">latitude</span></code> - <p>Latitude [degree_north] </p>
+</li>
+</ul>
+</dd>
+</dl>
+</p>
+</dd></dl>
+
+<dl class="function">
+<dt id="_CPPv222harp_gph_from_pressured">
+<span id="harp_gph_from_pressure__double"></span><span class="target" id="libharpgroup__harp__algorithm_1ga8cee3f83d6223e2878666c341e3f0317"></span>double <code class="descname">harp_gph_from_pressure</code><span class="sig-paren">(</span>double <em>pressure</em><span class="sig-paren">)</span></dt>
+<dd><p>Convert a pressure value to a geopotential height value using model values This is a rather inaccurate way of calculating the geopotential height, so only use it when you can&#8217;t use any of the other approaches. <dl class="docutils">
+<dt><strong>Return</strong></dt>
+<dd>geopotential height [m] </dd>
+<dt><strong>Parameters</strong></dt>
+<dd><ul class="breatheparameterlist first last">
+<li><code class="first docutils literal"><span class="pre">pressure</span></code> - <p>Pressure value to be converted [hPa] </p>
+</li>
+</ul>
+</dd>
+</dl>
+</p>
+</dd></dl>
+
+<dl class="function">
+<dt id="_CPPv254harp_profile_gph_from_pressure_temperature_and_h2o_mmrlPKdPKdPKdddPd">
+<span id="harp_profile_gph_from_pressure_temperature_and_h2o_mmr__l.doubleCP.doubleCP.doubleCP.double.double.doubleP"></span><span class="target" id="libharpgroup__harp__algorithm_1ga4a389ad77fd91ba3e399050d863d0e82"></span>void <code class="descname">harp_profile_gph_from_pressure_temperature_and_h2o_mmr</code><span class="sig-paren">(</span>long <em>num_levels</em>, <em class="property">const</em> double *<em>pressure_profile</em>, <em class="property">const</em> double *<em>temperature_profile</em>, <em class="property">const</em> double *<em>h2o_mmr_profile</em>, double <em>surface_pressure</em>, double <em>surface_height</em>, double *<em>gph_profile</em><span class="sig-paren">)</span></dt>
+<dd><p>Convert a pressure profile to a geopotential height profile If the h2o_mmr_profile variable is set to NULL a constant mean molar mass for wet air will be used for the conversion (instead of a calculated molar mass of humid air). If the temperature_profile variable is set to NULL the standard temperature will be used for the conversion. <dl class="docutils">
+<dt><strong>Parameters</strong></dt>
+<dd><ul class="breatheparameterlist first last">
+<li><code class="first docutils literal"><span class="pre">num_levels</span></code> - <p>Length of vertical axis </p>
+</li>
+<li><code class="first docutils literal"><span class="pre">pressure_profile</span></code> - <p>Pressure vertical profile [hPa] </p>
+</li>
+<li><code class="first docutils literal"><span class="pre">temperature_profile</span></code> - <p>Temperature vertical profile [K] </p>
+</li>
+<li><code class="first docutils literal"><span class="pre">h2o_mmr_profile</span></code> - <p>Humidity (q) vertical profile [ug/g] (optional) </p>
+</li>
+<li><code class="first docutils literal"><span class="pre">surface_pressure</span></code> - <p>Surface pressure [hPa] </p>
+</li>
+<li><code class="first docutils literal"><span class="pre">surface_height</span></code> - <p>Surface height [m] </p>
+</li>
+<li><code class="first docutils literal"><span class="pre">gph_profile</span></code> - <p>Variable in which the vertical profile will be stored [m] </p>
+</li>
+</ul>
+</dd>
+</dl>
+</p>
+</dd></dl>
+
+<dl class="function">
+<dt id="_CPPv239harp_profile_column_from_partial_columnlPKd">
+<span id="harp_profile_column_from_partial_column__l.doubleCP"></span><span class="target" id="libharpgroup__harp__algorithm_1gae3dc55eac9b8358d586de2106e9112be"></span>double <code class="descname">harp_profile_column_from_partial_column</code><span class="sig-paren">(</span>long <em>num_levels</em>, <em class="property">const</em> double *<em>partial_column_profile</em><span class="sig-paren">)</span></dt>
+<dd><p>Integrate the partial column profile to obtain the column <dl class="docutils">
+<dt><strong>Return</strong></dt>
+<dd>column the integrated column [molec/m2] </dd>
+<dt><strong>Parameters</strong></dt>
+<dd><ul class="breatheparameterlist first last">
+<li><code class="first docutils literal"><span class="pre">num_levels</span></code> - <p>Number of levels of the partial column profile </p>
+</li>
+<li><code class="first docutils literal"><span class="pre">partial_column_profile</span></code> - <p>Partial column profile [molec/m2] </p>
+</li>
+</ul>
+</dd>
+</dl>
+</p>
+</dd></dl>
+
+<dl class="function">
+<dt id="_CPPv263harp_profile_column_uncertainty_from_partial_column_uncertaintylPKd">
+<span id="harp_profile_column_uncertainty_from_partial_column_uncertainty__l.doubleCP"></span><span class="target" id="libharpgroup__harp__algorithm_1gae7bd8c1cd8976b8d359eb0001ee16983"></span>double <code class="descname">harp_profile_column_uncertainty_from_partial_column_uncertainty</code><span class="sig-paren">(</span>long <em>num_levels</em>, <em class="property">const</em> double *<em>partial_column_uncertainty_profile</em><span class="sig-paren">)</span></dt>
+<dd><p>Integrate the partial column uncertainty profile to obtain the column uncertainty <dl class="docutils">
+<dt><strong>Return</strong></dt>
+<dd>the integrated column uncertainty [molec/m2] </dd>
+<dt><strong>Parameters</strong></dt>
+<dd><ul class="breatheparameterlist first last">
+<li><code class="first docutils literal"><span class="pre">num_levels</span></code> - <p>Number of levels of the partial column profile </p>
+</li>
+<li><code class="first docutils literal"><span class="pre">partial_column_uncertainty_profile</span></code> - <p>Partial column profile [molec/m2] </p>
+</li>
+</ul>
+</dd>
+</dl>
+</p>
+</dd></dl>
+
+<dl class="function">
+<dt id="_CPPv257harp_profile_nd_cov_from_vmr_cov_pressure_and_temperaturelPKdPKdPKdPd">
+<span id="harp_profile_nd_cov_from_vmr_cov_pressure_and_temperature__l.doubleCP.doubleCP.doubleCP.doubleP"></span><span class="target" id="libharpgroup__harp__algorithm_1gaac54d266a337b44f4c38d8f87c9e6cc5"></span>void <code class="descname">harp_profile_nd_cov_from_vmr_cov_pressure_and_temperature</code><span class="sig-paren">(</span>long <em>num_levels</em>, <em class="property">const</em> double *<em>volume_mixing_ratio_covariance_matrix</em>, <em class="property">const</em> double *<em>pressure_profile</em>, <em class="property">const</em> double *<em>temperature_profile</em>, double *<em>number_density_covariance_matrix</em><span class="sig-paren">)</span></dt>
+<dd><p>Convert a volume mixing ratio covariance matrix to a number density covariance matrix <dl class="docutils">
+<dt><strong>Parameters</strong></dt>
+<dd><ul class="breatheparameterlist first last">
+<li><code class="first docutils literal"><span class="pre">num_levels</span></code> - <p>Number of levels of the profile </p>
+</li>
+<li><code class="first docutils literal"><span class="pre">volume_mixing_ratio_covariance_matrix</span></code> - <p>volume mixing ratio covariance [(ppmv)^2] </p>
+</li>
+<li><code class="first docutils literal"><span class="pre">pressure_profile</span></code> - <p>Pressure [hPa] </p>
+</li>
+<li><code class="first docutils literal"><span class="pre">temperature_profile</span></code> - <p>Temperature [K] </p>
+</li>
+<li><code class="first docutils literal"><span class="pre">number_density_covariance_matrix</span></code> - <p>variable in which the number density covariance [(molec/m3)^2] will be stored </p>
+</li>
+</ul>
+</dd>
+</dl>
+</p>
+</dd></dl>
+
+<dl class="function">
+<dt id="_CPPv268harp_profile_partial_column_cov_from_density_cov_and_altitude_boundslPKdPKdPd">
+<span id="harp_profile_partial_column_cov_from_density_cov_and_altitude_bounds__l.doubleCP.doubleCP.doubleP"></span><span class="target" id="libharpgroup__harp__algorithm_1ga17a78df5cf25f564260a4dd9cd2a3687"></span>int <code class="descname">harp_profile_partial_column_cov_from_density_cov_and_altitude_bounds</code><span class="sig-paren">(</span>long <em>num_levels</em>, <em class="property">const</em> double *<em>altitude_boundaries</em>, <em class="property">const</em> double *<em>density_covariance_matrix</em>, double *<em>partial_column_covariance_matrix</em><span class="sig-paren">)</span></dt>
+<dd><p>Convert a density uncertainty profile to a partial column covariance matrix using the altitude boundaries as provided <dl class="docutils">
+<dt><strong>Return</strong></dt>
+<dd><ul class="simple">
+<li><code class="docutils literal"><span class="pre">0</span></code>, Success. </li>
+<li><code class="docutils literal"><span class="pre">-1</span></code>, Error occurred (check <a class="reference internal" href="libharp_error.html#libharpgroup__harp__error_1gab2eeb46528306c6799632d1e800c4c36"><span>harp_errno</span></a>). </li>
+</ul>
+</dd>
+<dt><strong>Parameters</strong></dt>
+<dd><ul class="breatheparameterlist first last">
+<li><code class="first docutils literal"><span class="pre">num_levels</span></code> - <p>Number of levels of the profile </p>
+</li>
+<li><code class="first docutils literal"><span class="pre">altitude_boundaries</span></code> - <p>Lower and upper altitude [m] boundaries for each level [num_levels,2] </p>
+</li>
+<li><code class="first docutils literal"><span class="pre">density_covariance_matrix</span></code> - <p>Density covariance [(?/m)^2] </p>
+</li>
+<li><code class="first docutils literal"><span class="pre">partial_column_covariance_matrix</span></code> - <p>variable in which the partial column covariance matrix [(?)^2] will be stored </p>
+</li>
+</ul>
+</dd>
+</dl>
+</p>
+</dd></dl>
+
+<dl class="function">
+<dt id="_CPPv282harp_partial_column_profile_regridded_from_density_profile_and_altitude_boundarieslPKdPKdlPKdPd">
+<span id="harp_partial_column_profile_regridded_from_density_profile_and_altitude_boundaries__l.doubleCP.doubleCP.l.doubleCP.doubleP"></span><span class="target" id="libharpgroup__harp__algorithm_1ga895d25bb326023ba404f625fc022bf69"></span>int <code class="descname">harp_partial_column_profile_regridded_from_density_profile_and_altitude_boundaries</code><span class="sig-paren">(</span>long <em>source_num_levels</em>, <em class="property">const</em> double *<em>source_altitude_boundaries</em>, <em class="property">const</em> double *<em>source_density_profile</em>, long <em>target_num_levels</em>, <em class="property">const</em> double *<em>target_altitude_boundaries</em>, double *<em>target_partial_column_profile</em><span class="sig-paren">)</span></dt>
+<dd><p>Regrid the density profile to obtain the partial column profile, using interval interpolation <dl class="docutils">
+<dt><strong>Return</strong></dt>
+<dd><ul class="simple">
+<li><code class="docutils literal"><span class="pre">0</span></code>, Success. </li>
+<li><code class="docutils literal"><span class="pre">-1</span></code>, Error occurred (check <a class="reference internal" href="libharp_error.html#libharpgroup__harp__error_1gab2eeb46528306c6799632d1e800c4c36"><span>harp_errno</span></a>). </li>
+</ul>
+</dd>
+<dt><strong>Parameters</strong></dt>
+<dd><ul class="breatheparameterlist first last">
+<li><code class="first docutils literal"><span class="pre">source_num_levels</span></code> - <p>Number of levels of the source altitude profile </p>
+</li>
+<li><code class="first docutils literal"><span class="pre">source_altitude_boundaries</span></code> - <p>Lower and upper boundaries [source_num_levels,2] of source altitude layers [m] </p>
+</li>
+<li><code class="first docutils literal"><span class="pre">source_density_profile</span></code> - <p>Density profile [?/m3] on source altitude grid </p>
+</li>
+<li><code class="first docutils literal"><span class="pre">target_num_levels</span></code> - <p>Number of levels of the target partial column profile </p>
+</li>
+<li><code class="first docutils literal"><span class="pre">target_altitude_boundaries</span></code> - <p>Lower and upper boundaries [target_num_levels,2] of target altitude layers [m] </p>
+</li>
+<li><code class="first docutils literal"><span class="pre">target_partial_column_profile</span></code> - <p>The partial column profile [?/m2] </p>
+</li>
+</ul>
+</dd>
+</dl>
+</p>
+</dd></dl>
+
+<dl class="function">
+<dt id="_CPPv2102harp_partial_column_covariance_matrix_regridded_from_density_covariance_matrix_and_altitude_boundarieslPKdPKdlPKdPd">
+<span id="harp_partial_column_covariance_matrix_regridded_from_density_covariance_matrix_and_altitude_boundaries__l.doubleCP.doubleCP.l.doubleCP.doubleP"></span><span class="target" id="libharpgroup__harp__algorithm_1gae02bead88df46cfda1233a0294b7f5d7"></span>int <code class="descname">harp_partial_column_covariance_matrix_regridded_from_density_covariance_matrix_and_altitude_boundaries</code><span class="sig-paren">(</span>long <em>source_num_levels</em>, <em class="property">const</em> double *<em>source_altitude_boundaries</em>, <em class="property">const</em> double *<em>source_density_covariance_matrix</em>, long <em>target_num_levels</em>, <em class="property">const</em> double *<em>target_altitude_boundaries</em>, double *<em>target_partial_column_covariance_matrix</em><span class="sig-paren">)</span></dt>
+<dd><p>Regrid the density profile covariance matrix to obtain the partial column profile covariance matrix, using interval interpolation <dl class="docutils">
+<dt><strong>Return</strong></dt>
+<dd><ul class="simple">
+<li><code class="docutils literal"><span class="pre">0</span></code>, Success. </li>
+<li><code class="docutils literal"><span class="pre">-1</span></code>, Error occurred (check <a class="reference internal" href="libharp_error.html#libharpgroup__harp__error_1gab2eeb46528306c6799632d1e800c4c36"><span>harp_errno</span></a>). </li>
+</ul>
+</dd>
+<dt><strong>Parameters</strong></dt>
+<dd><ul class="breatheparameterlist first last">
+<li><code class="first docutils literal"><span class="pre">source_num_levels</span></code> - <p>Number of levels of the source altitude profile </p>
+</li>
+<li><code class="first docutils literal"><span class="pre">source_altitude_boundaries</span></code> - <p>Lower and upper boundaries [source_num_levels,2] of source altitude layers [m] </p>
+</li>
+<li><code class="first docutils literal"><span class="pre">source_density_covariance_matrix</span></code> - <p>Density profile covariance matrix [(?/m3)^2] on source altitude grid </p>
+</li>
+<li><code class="first docutils literal"><span class="pre">target_num_levels</span></code> - <p>Number of levels of the target partial column profile </p>
+</li>
+<li><code class="first docutils literal"><span class="pre">target_altitude_boundaries</span></code> - <p>Lower and upper boundaries [target_num_levels,2] of target altitude layers [m] </p>
+</li>
+<li><code class="first docutils literal"><span class="pre">target_partial_column_covariance_matrix</span></code> - <p>The partial column profile covariance matrix [(?/m2)^2] </p>
+</li>
+</ul>
+</dd>
+</dl>
+</p>
+</dd></dl>
+
+<dl class="function">
+<dt id="_CPPv268harp_profile_pressure_from_altitude_temperature_h2o_mmr_and_latitudelPKdPKdPKddddPd">
+<span id="harp_profile_pressure_from_altitude_temperature_h2o_mmr_and_latitude__l.doubleCP.doubleCP.doubleCP.double.double.double.doubleP"></span><span class="target" id="libharpgroup__harp__algorithm_1ga45dbafd3cbe21998d93c8e9a10ccf3dc"></span>int <code class="descname">harp_profile_pressure_from_altitude_temperature_h2o_mmr_and_latitude</code><span class="sig-paren">(</span>long <em>num_levels</em>, <em class="property">const</em> double *<em>altitude_profile</em>, <em class="property">const</em> double *<em>temperature_profile</em>, <em class="property">const</em> double *<em>h2o_mmr_profile</em>, double <em>surface_pressure</em>, double <em>surface_height</em>, double <em>latitude</em>, double *<em>pressure_profile</em><span class="sig-paren">)</span></dt>
+<dd><p>Convert an altitude profile to a pressure profile If the h2o_mmr_profile variable is set to NULL a constant mean molar mass for wet air will be used for the conversion (instead of a calculated molar mass of humid air). If the temperature_profile variable is set to NULL the standard temperature will be used for the conversion. <dl class="docutils">
+<dt><strong>Return</strong></dt>
+<dd><ul class="simple">
+<li><code class="docutils literal"><span class="pre">0</span></code>, Success. </li>
+<li><code class="docutils literal"><span class="pre">-1</span></code>, Error occurred (check <a class="reference internal" href="libharp_error.html#libharpgroup__harp__error_1gab2eeb46528306c6799632d1e800c4c36"><span>harp_errno</span></a>). </li>
+</ul>
+</dd>
+<dt><strong>Parameters</strong></dt>
+<dd><ul class="breatheparameterlist first last">
+<li><code class="first docutils literal"><span class="pre">num_levels</span></code> - <p>Length of vertical axis </p>
+</li>
+<li><code class="first docutils literal"><span class="pre">altitude_profile</span></code> - <p>Altitude profile [m] </p>
+</li>
+<li><code class="first docutils literal"><span class="pre">temperature_profile</span></code> - <p>Temperature vertical profile [K] </p>
+</li>
+<li><code class="first docutils literal"><span class="pre">h2o_mmr_profile</span></code> - <p>Humidity (q) vertical profile [ug/g] (optional) </p>
+</li>
+<li><code class="first docutils literal"><span class="pre">surface_pressure</span></code> - <p>Surface pressure [hPa] </p>
+</li>
+<li><code class="first docutils literal"><span class="pre">surface_height</span></code> - <p>Surface height [m] </p>
+</li>
+<li><code class="first docutils literal"><span class="pre">latitude</span></code> - <p>Latitude [degree_north] </p>
+</li>
+<li><code class="first docutils literal"><span class="pre">pressure_profile</span></code> - <p>variable in which the vertical profile will be stored [hPa] </p>
+</li>
+</ul>
+</dd>
+</dl>
+</p>
+</dd></dl>
+
+<dl class="function">
+<dt id="_CPPv254harp_profile_pressure_from_gph_temperature_and_h2o_mmrlPKdPKdPKdddPd">
+<span id="harp_profile_pressure_from_gph_temperature_and_h2o_mmr__l.doubleCP.doubleCP.doubleCP.double.double.doubleP"></span><span class="target" id="libharpgroup__harp__algorithm_1ga32f793a7a51030bfba3643fcf402b16d"></span>int <code class="descname">harp_profile_pressure_from_gph_temperature_and_h2o_mmr</code><span class="sig-paren">(</span>long <em>num_levels</em>, <em class="property">const</em> double *<em>gph_profile</em>, <em class="property">const</em> double *<em>temperature_profile</em>, <em class="property">const</em> double *<em>h2o_mmr_profile</em>, double <em>surface_pressure</em>, double <em>surface_height</em>, double *<em>pressure_profile</em><span class="sig-paren">)</span></dt>
+<dd><p>Convert a geopotential height profile to a pressure profile If the h2o_mmr_profile variable is set to NULL a constant mean molar mass for wet air will be used for the conversion (instead of a calculated molar mass of humid air). If the temperature_profile variable is set to NULL the standard temperature will be used for the conversion. <dl class="docutils">
+<dt><strong>Return</strong></dt>
+<dd><ul class="simple">
+<li><code class="docutils literal"><span class="pre">0</span></code>, Success. </li>
+<li><code class="docutils literal"><span class="pre">-1</span></code>, Error occurred (check <a class="reference internal" href="libharp_error.html#libharpgroup__harp__error_1gab2eeb46528306c6799632d1e800c4c36"><span>harp_errno</span></a>). </li>
+</ul>
+</dd>
+<dt><strong>Parameters</strong></dt>
+<dd><ul class="breatheparameterlist first last">
+<li><code class="first docutils literal"><span class="pre">num_levels</span></code> - <p>Length of vertical axis </p>
+</li>
+<li><code class="first docutils literal"><span class="pre">gph_profile</span></code> - <p>Geopotential height profile [m] </p>
+</li>
+<li><code class="first docutils literal"><span class="pre">temperature_profile</span></code> - <p>Temperature vertical profile [K] </p>
+</li>
+<li><code class="first docutils literal"><span class="pre">h2o_mmr_profile</span></code> - <p>Humidity (q) vertical profile [ug/g] (optional) </p>
+</li>
+<li><code class="first docutils literal"><span class="pre">surface_pressure</span></code> - <p>Surface pressure [hPa] </p>
+</li>
+<li><code class="first docutils literal"><span class="pre">surface_height</span></code> - <p>Surface height [m] </p>
+</li>
+<li><code class="first docutils literal"><span class="pre">pressure_profile</span></code> - <p>Variable in which the vertical profile will be stored [hPa] </p>
+</li>
+</ul>
+</dd>
+</dl>
+</p>
+</dd></dl>
+
+<dl class="function">
+<dt id="_CPPv257harp_profile_vmr_cov_from_nd_cov_pressure_and_temperaturelPKdPKdPKdPd">
+<span id="harp_profile_vmr_cov_from_nd_cov_pressure_and_temperature__l.doubleCP.doubleCP.doubleCP.doubleP"></span><span class="target" id="libharpgroup__harp__algorithm_1gad077a5faf016cc238f943949347c6b8d"></span>int <code class="descname">harp_profile_vmr_cov_from_nd_cov_pressure_and_temperature</code><span class="sig-paren">(</span>long <em>num_levels</em>, <em class="property">const</em> double *<em>number_density_covariance_matrix</em>, <em class="property">const</em> double *<em>pressure_profile</em>, <em class="property">const</em> double *<em>temperature_profile</em>, double *<em>volume_mixing_ratio_covariance_matrix</em><span class="sig-paren">)</span></dt>
+<dd><p>Convert a number density covariance matrix to a volume mixing ratio covariance matrix <dl class="docutils">
+<dt><strong>Return</strong></dt>
+<dd><ul class="simple">
+<li><code class="docutils literal"><span class="pre">0</span></code>, Success. </li>
+<li><code class="docutils literal"><span class="pre">-1</span></code>, Error occurred (check <a class="reference internal" href="libharp_error.html#libharpgroup__harp__error_1gab2eeb46528306c6799632d1e800c4c36"><span>harp_errno</span></a>). </li>
+</ul>
+</dd>
+<dt><strong>Parameters</strong></dt>
+<dd><ul class="breatheparameterlist first last">
+<li><code class="first docutils literal"><span class="pre">num_levels</span></code> - <p>Length of vertical axis </p>
+</li>
+<li><code class="first docutils literal"><span class="pre">number_density_covariance_matrix</span></code> - <p>number density covariance [(molec/m3)^2] </p>
+</li>
+<li><code class="first docutils literal"><span class="pre">pressure_profile</span></code> - <p>Pressure [hPa] </p>
+</li>
+<li><code class="first docutils literal"><span class="pre">temperature_profile</span></code> - <p>Temperature [K] </p>
+</li>
+<li><code class="first docutils literal"><span class="pre">volume_mixing_ratio_covariance_matrix</span></code> - <p>variable in which the volume mixing ratio covariance [(ppmv)^2] will be stored </p>
+</li>
+</ul>
+</dd>
+</dl>
+</p>
+</dd></dl>
+
+</div>
+</dd></dl>
+
+</div>
+
+
+           </div>
+          </div>
+          <footer>
+  
+    <div class="rst-footer-buttons" role="navigation" aria-label="footer navigation">
+      
+        <a href="libharp_error.html" class="btn btn-neutral float-right" title="Error" accesskey="n">Next <span class="fa fa-arrow-circle-right"></span></a>
+      
+      
+        <a href="libharp.html" class="btn btn-neutral" title="C library" accesskey="p"><span class="fa fa-arrow-circle-left"></span> Previous</a>
+      
+    </div>
+  
+
+  <hr/>
+
+  <div role="contentinfo">
+    <p>
+        &copy; Copyright 2015 S&amp;T, The Netherlands.
+
+    </p>
+  </div> 
+
+</footer>
+
+        </div>
+      </div>
+
+    </section>
+
+  </div>
+  
+
+
+  
+
+    <script type="text/javascript">
+        var DOCUMENTATION_OPTIONS = {
+            URL_ROOT:'./',
+            VERSION:'0.1b',
+            COLLAPSE_INDEX:false,
+            FILE_SUFFIX:'.html',
+            HAS_SOURCE:  false
+        };
+    </script>
+      <script type="text/javascript" src="_static/jquery.js"></script>
+      <script type="text/javascript" src="_static/underscore.js"></script>
+      <script type="text/javascript" src="_static/doctools.js"></script>
+      <script type="text/javascript" src="https://cdn.mathjax.org/mathjax/latest/MathJax.js?config=TeX-AMS-MML_HTMLorMML"></script>
+
+  
+
+  
+  
+    <script type="text/javascript" src="_static/js/theme.js"></script>
+  
+
+  
+  
+  <script type="text/javascript">
+      jQuery(function () {
+          SphinxRtdTheme.StickyNav.enable();
+      });
+  </script>
+   
+
+</body>
+</html>

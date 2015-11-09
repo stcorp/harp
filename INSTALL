@@ -1,0 +1,187 @@
+Installation
+============
+
+This documentation provides installation instructions for HARP.
+
+HARP is a toolset for ingesting, processing and inter-comparing satellite data
+against correlative data. The toolset is composed of a set of command line
+tools and a library of analysis functions.
+
+
+Supported platforms
+-------------------
+
+HARP is designed to run on most Unix-based operating systems (including Linux
+and Mac OS X) and Windows. The platforms that are supported include at least
+Linux, Windows, and Mac OS X.
+The current version of HARP does not support Windows yet, but this will be
+added in a later release.
+
+What you will need
+------------------
+
+  - The HARP package : The package only comes in a source installation
+    (harp-x.y.z.tar.gz) or a binary installation (Windows only; not yet
+    available). Note that x.y.z stands for the version number of the package.
+    The source package contains the source code for the HARP components (C
+    Library and command line tools) together with all documentation.
+    You will need this package if you want to use HARP on a Unix-based system.
+
+    If you do not have the HARP package, you can download it from the BEAT
+    website:
+
+        http://stcorp.nl/beat
+
+  The following items are needed if you use the HARP source distribution:
+
+  - A C compiler : Most Unix platforms come with their own C compiler so this
+    should not be a problem. For Mac OS X you should make sure you have
+    installed the Developer Tools.
+
+  - A recent version of HDF4. You will also need the additional libraries
+    libjpeg, zlib, and szlib depending on whether HDF4 was build against them.
+    In order to prevent conflicts of the HDF4 library with the netCDF interface
+    that HARP uses, make sure you build the HDF4 software from source and use
+    the following options when configuring the package::
+
+       ./configure --enable-shared --disable-fortran --disable-netcdf
+       
+    Make sure that after installation the location of the libraries is in your
+    shared library path (e.g. update your ``LD_LIBRARY_PATH`` environment
+    variable).
+
+  - A recent version of HDF5. You will also need the additional libraries
+    zlib, and szlib depending on whether HDF5 was build against them.
+
+
+Building the source package (Unix)
+----------------------------------
+
+The HARP source package comes with both an autotools and a CMake build system.
+For Unix-based systems the recommended approach is to use the autotools based
+system (using the configure script), which is what is described below.
+Building with CMake is nevertheless supported, although not documented here.
+
+The following steps will guide you through the process of building the HARP
+library and executables:
+
+ 1) Go to the directory that contains the downloaded harp-x.y.z.tar.gz
+    file and unpack this package::
+
+    % gzip -d harp-x.y.z.tar.gz
+    % tar xf harp-x.y.z.tar
+
+    Make sure you replace ``x.y.z`` with the appropriate version number.
+
+ 2) You should now have a ``harp-x.y.z`` directory. Go to this directory::
+
+    % cd harp-x.y.z
+
+ 3) Next you will have to execute the ``configure`` script that checks what
+    system you are on and sets up the build environment. There are several
+    options you can pass to this script. The most important ones are:
+
+    ``--prefix <HARP installation directory>`` :
+        By default, if you perform an installation of the HARP package
+        (see further below on how to do this) all
+        files are installed in subdirectories under ``/usr/local``.
+        Executables will appear under ``/usr/local/bin``, libraries under
+        ``/usr/local/lib`` and all data files (e.g. documentation) under
+        ``/usr/local/share/harp``.
+        However, installing the files into the default places requires you to
+        have administrator privileges, which you may not have. In order to
+        install HARP in a different location where you do have permission to
+        copy files to, you can use this option to provide a different
+        installation directory. For instance, you can use 
+        ``--prefix=$HOME/harp`` to install the software in the subdirectory
+        ``harp`` of your home directory.
+
+    ``HDF4_LIB=<HDF4 library directory>`` :
+        The configure script will automatically try to locate the HDF4 
+        libraries in the default locations for libraries (``/usr/local/lib``
+        is usually not considered a default location!).
+        If ``./configure`` complains that it can't find the ``df`` or
+        ``mfhdf`` library files, pass this option to ``./configure`` with the
+        location of these library files.
+    
+    ``HDF4_INCLUDE=<HDF4 include file directory>`` :
+        The configure script will automatically try to locate the HDF4 include
+        files in the default locations for include files
+        (``/usr/local/include`` is usually not considered a default
+        location!).
+        If ``./configure`` complains that it can't find the ``hdf.h`` or
+        ``mfhdf.h`` include files, pass this option to ``./configure`` with
+        the location of these include files.
+
+    ``HDF5_LIB=<HDF5 library directory>`` :
+        The configure script will automatically try to locate the HDF5 library
+        in the default locations for libraries (``/usr/local/lib`` is usually
+        not considered a default location!).
+        If ``./configure`` complains that it can't find the ``hdf5`` library
+        files, pass this option to ``./configure`` with the location of this
+        library file.
+    
+    ``HDF5_INCLUDE=<HDF5 include file directory>`` :
+        The configure script will automatically try to locate the HDF5 include
+        files in the default locations for include files
+        (``/usr/local/include`` is usually not considered a default location!).
+        If ``./configure`` complains that it can't find the ``hdf5.h`` include
+        file, pass this option to ``./configure`` with the location of this
+        include file.
+
+    You should now call the configure script with the options that are
+    appropriate for you. For instance, if you want to install HARP in the
+    `harp` subdirectory of your home directory then your invocation of
+    configure would be::
+
+    % ./configure --prefix=$HOME/harp
+
+ 4) If this completes successfully, you are now able to build the library by
+    executing the `make` command::
+
+    % make
+
+    If everything was successful, you are now ready to install the package
+    (this installation step is not optional! You will have to install HARP
+    before you can use it). If you encountered any problems while building
+    HARP and if you need help contact us (see the Feedback section at the
+    bottom for contact information).
+
+Installing the source package (Unix)
+------------------------------------
+
+In order to make use of the HARP library and tools, you should install HARP as
+build in the previous step. Please make sure you have provided the appropriate
+installation directory option (``--prefix=<installdir>``) to the configure
+script, as explained in the previous section, if you do not want to install
+HARP in its default location ``/usr/local``. After running the configure
+script, issue the following command::
+
+    % make install
+
+Documentation location
+----------------------
+
+Both the source and binary HARP packages come with documentation in HTML.
+For the source package you can access the documentation from within the
+unpacked HARP source package directory by going to the ``doc/html``
+subdirectory and opening the file index.html in your browser. If you perform 
+an install of the source package all documentation will also be installed. You
+can find the documentation under the subdirectory ``share/harp/doc/html`` of
+your installation directory (``/usr/local`` by default).
+
+Feedback
+--------
+
+If you encounter any problems while trying to build, install or run one or more
+components of the HARP package you can send an e-mail to:
+
+    harp@stcorp.nl
+    
+If you are using the source package on a Unix based system, please provide a
+copy of the config.log file that is created when you run ``./configure`` and a
+copy of the output of ``make`` with your e-mail.
+
+Apart from problems, we would also appreciate to hear from you if you have any
+ideas, suggestions, or comments that may help us to improve the quality or
+functionality of HARP.

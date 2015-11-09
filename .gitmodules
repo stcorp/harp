@@ -1,0 +1,18 @@
+[submodule "coda"]
+	path = coda
+	url = https://github.com/stcorp/coda
+[submodule "definitions/ERS_GOME"]
+	path = definitions/ERS_GOME
+	url = https://github.com/stcorp/codadef-ers-gome
+[submodule "definitions/ENVISAT_GOMOS"]
+	path = definitions/ENVISAT_GOMOS
+	url = https://github.com/stcorp/codadef-envisat-gomos
+[submodule "definitions/ENVISAT_MIPAS"]
+	path = definitions/ENVISAT_MIPAS
+	url = https://github.com/stcorp/codadef-envisat-mipas
+[submodule "definitions/ENVISAT_SCIAMACHY"]
+	path = definitions/ENVISAT_SCIAMACHY
+	url = https://github.com/stcorp/codadef-envisat-sciamachy
+[submodule "definitions/EPS"]
+	path = definitions/EPS
+	url = https://github.com/stcorp/codadef-eps

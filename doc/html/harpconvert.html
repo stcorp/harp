@@ -1,0 +1,374 @@
+
+
+<!DOCTYPE html>
+<!--[if IE 8]><html class="no-js lt-ie9" lang="en" > <![endif]-->
+<!--[if gt IE 8]><!--> <html class="no-js" lang="en" > <!--<![endif]-->
+<head>
+  <meta charset="utf-8">
+  
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  
+  <title>harpconvert &mdash; HARP 0.1b documentation</title>
+  
+
+  
+  
+
+  
+
+  
+  
+    
+
+  
+
+  
+  
+    <link rel="stylesheet" href="_static/css/theme.css" type="text/css" />
+  
+
+  
+    <link rel="stylesheet" href="_static/custom.css" type="text/css" />
+  
+
+  
+    <link rel="top" title="HARP 0.1b documentation" href="index.html"/>
+        <link rel="next" title="harpdump" href="harpdump.html"/>
+        <link rel="prev" title="harpcollocate" href="harpcollocate.html"/> 
+
+  
+  <script src="_static/js/modernizr.min.js"></script>
+
+</head>
+
+<body class="wy-body-for-nav" role="document">
+
+  <div class="wy-grid-for-nav">
+
+    
+    <nav data-toggle="wy-nav-shift" class="wy-nav-side">
+      <div class="wy-side-scroll">
+        <div class="wy-side-nav-search">
+          
+
+          
+            <a href="index.html" class="icon icon-home"> HARP
+          
+
+          
+          </a>
+
+          
+            
+            
+              <div class="version">
+                0.1
+              </div>
+            
+          
+
+          
+<div role="search">
+  <form id="rtd-search-form" class="wy-form" action="search.html" method="get">
+    <input type="text" name="q" placeholder="Search docs" />
+    <input type="hidden" name="check_keywords" value="yes" />
+    <input type="hidden" name="area" value="default" />
+  </form>
+</div>
+
+          
+        </div>
+
+        <div class="wy-menu wy-menu-vertical" data-spy="affix" role="navigation" aria-label="main navigation">
+          
+            
+            
+                <ul class="current">
+<li class="toctree-l1"><a class="reference internal" href="install.html">Installation</a></li>
+<li class="toctree-l1"><a class="reference internal" href="dataformats.html">Data formats</a></li>
+<li class="toctree-l1"><a class="reference internal" href="ingestions/index.html">Ingestion definitions</a></li>
+<li class="toctree-l1"><a class="reference internal" href="libharp.html">C library</a></li>
+<li class="toctree-l1"><a class="reference internal" href="harpcheck.html">harpcheck</a></li>
+<li class="toctree-l1"><a class="reference internal" href="harpcollocate.html">harpcollocate</a></li>
+<li class="toctree-l1 current"><a class="current reference internal" href="">harpconvert</a></li>
+<li class="toctree-l1"><a class="reference internal" href="harpdump.html">harpdump</a></li>
+<li class="toctree-l1"><a class="reference internal" href="harpfilter.html">harpfilter</a></li>
+</ul>
+
+            
+          
+        </div>
+      </div>
+    </nav>
+
+    <section data-toggle="wy-nav-shift" class="wy-nav-content-wrap">
+
+      
+      <nav class="wy-nav-top" role="navigation" aria-label="top navigation">
+        <i data-toggle="wy-nav-top" class="fa fa-bars"></i>
+        <a href="index.html">HARP</a>
+      </nav>
+
+
+      
+      <div class="wy-nav-content">
+        <div class="rst-content">
+          
+
+
+
+
+
+<div role="navigation" aria-label="breadcrumbs navigation">
+  <ul class="wy-breadcrumbs">
+    <li><a href="index.html">Docs</a> &raquo;</li>
+      
+    <li>harpconvert</li>
+      <li class="wy-breadcrumbs-aside">
+        
+          
+        
+      </li>
+  </ul>
+  <hr/>
+</div>
+          <div role="main" class="document" itemscope="itemscope" itemtype="http://schema.org/Article">
+           <div itemprop="articleBody">
+            
+  <div class="section" id="harpconvert">
+<h1>harpconvert</h1>
+<p>The harpconvert program is used to convert data files into a HARP compliant HDF4/HDF5/netCDF file that can be further
+processed by the other HARP tools. See <a class="reference internal" href="ingestions/index.html"><em>Ingestion definitions</em></a> for the list of products that can
+be ingested.</p>
+<div class="highlight-python"><div class="highlight"><pre>Usage:
+    harpconvert [options] &lt;input product file&gt; &lt;output product file&gt;
+        Convert the input product to a HARP netCDF/HDF4/HDF5 product.
+
+        Options:
+            -a, --actions &lt;action list&gt;
+                List of actions to apply to the product.
+                An action list needs to be provided as a single expression.
+
+            -o, --options &lt;option list&gt;
+                List of options to pass to the ingestion module.
+                Options are separated by semi-colons. Each option consists
+                of an &lt;option name&gt;=&lt;value&gt; pair. An option list needs to be
+                provided as a single expression.
+
+            -f, --format &lt;format&gt;
+                Output format:
+                    netcdf (default)
+                    hdf4
+                    hdf5
+
+        Action list:
+            Actions are separated by semi-colons. Each action is either
+            a comparison filter, a membership test filter, or a function
+            call. Strings used in actions should be quoted with double
+            quotes.
+
+            Comparison filter:
+                variable operator value [unit]
+                    Exclude measurements for which the comparison evaluates
+                    to false.
+
+                Supported operators:
+                    == !=
+                    &lt; &lt;= &gt;= &gt; (for numerical variables only)
+
+                If a unit is specified, the comparison will be performed in
+                the specified unit. Otherwise, it will be performed in the
+                unit of the variable. Units can only be specified for
+                numerical variables.
+
+            Membership test filter:
+                variable in (value, ...) [unit]
+                variable not in (value, ...) [unit]
+                    Exclude measurements that do not occur in the specified
+                    list.
+
+                If a unit is specified, the comparison will be performed in
+                the specified unit. Otherwise, it will be performed in the
+                unit of the variable. Units can only be specified for
+                numerical variables.
+
+            Function call:
+                function(argument, ...)
+
+            Supported functions:
+                collocate-left(collocation-result-file)
+                    Apply the specified collocation result file as an index
+                    filter assuming the product is part of dataset A.
+
+                collocate-right(collocation-result-file)
+                    Apply the specified collocation result file as an index
+                    filter assuming the product is part of dataset B.
+
+                valid(variable)
+                    Exclude invalid values of the specified variable (values
+                    outside the valid range of the variable, or NaN).
+
+                longitude-range(minimum [unit], maximum [unit])
+                    Exclude measurements of which the longitude of the
+                    measurement location falls outside the specified range.
+                    This function correctly handles longitude ranges that
+                    cross the international date line.
+
+                point-distance(longitude [unit], latitude [unit],
+                               distance [unit])
+                    Exclude measurements situated further than the specified
+                    distance from the specified location.
+
+                area-mask-covers-point(area-mask-file)
+                    Exclude measurements for which no area from the area
+                    mask file contains the measurement location.
+
+                area-mask-covers-area(area-mask-file)
+                    Exclude measurements for which no area from the area
+                    mask file covers the measurement area completely.
+
+                area-mask-intersects-area(area-mask-file,
+                                          minimum-overlap-percentage)
+                    Exclude measurements for which no area from the area
+                    mask file overlaps at least the specified percentage of
+                    the measurement area.
+
+                derive(variable {dimension-type, ...} [unit])
+                    Derive the specified variable from other variables found
+                    in the product. The --list-conversions option of
+                    harpconvert can be used to list available variable
+                    conversions.
+
+                include(variable, ...)
+                    Mark the specified variable(s) for inclusion in the
+                    ingested product. All variables marked for inclusion
+                    will be included in the ingested product, all other
+                    variables will be excluded. By default, all variables
+                    will be included.
+
+                exclude(variable, ...)
+                    Mark the specified variable(s) for exclusion from the
+                    ingested product. All variables marked for exclusion
+                    will be excluded from the ingested product, all other
+                    variables will be included. Variable exclusions will be
+                    evaluated after evaluating all variable inclusions (if
+                    any).
+
+                The unit qualifier is optional for all function arguments
+                that support it. If a unit is not specified, the unit of the
+                corresponding variable will be used.
+
+            Examples:
+                -a &#39;derive(altitude {time} [km]); pressure &gt; 3.0 [bar];&#39;
+                -a &#39;point-distance(-52.5 [degree], 1.0 [rad], 1e3 [km])&#39;
+                -a &#39;index in (0, 10, 20, 30, 40); valid(pressure)&#39;
+
+        If the ingested product is empty, a warning will be printed and the
+        tool will return with exit code 2 (without writing a file).
+
+    harpconvert --test &lt;input product file&gt; [input product file...]
+        Perform an internal test for each product by ingesting the product
+        using all possible combinations of ingestion options.
+
+    harpconvert --list-conversions [options] [input product file]
+        List all available variable conversions. If an input product file is
+        specified, limit the list to variable conversions that are possible
+        given the specified product.
+
+        Options:
+            -o, --options &lt;option list&gt;
+                List of options to pass to the ingestion module.
+                Options are separated by semi-colons. Each option consists
+                of an &lt;option name&gt;=&lt;value&gt; pair. An option list needs to be
+                provided as a single expression.
+
+    harpconvert --generate-documentation [options] [output directory]
+        Generate a series of documentation files in the specified output
+        directory. The documentation describes the set of supported product
+        types and the details of the HARP product(s) that can be produced
+        from them.
+
+        Options:
+            -f, --format &lt;format&gt;
+                Output format:
+                    html (default)
+                    rst
+
+    harpconvert -h, --help
+        Show help (this text).
+
+    harpconvert -v, --version
+        Print the version number of HARP and exit.
+</pre></div>
+</div>
+</div>
+
+
+           </div>
+          </div>
+          <footer>
+  
+    <div class="rst-footer-buttons" role="navigation" aria-label="footer navigation">
+      
+        <a href="harpdump.html" class="btn btn-neutral float-right" title="harpdump" accesskey="n">Next <span class="fa fa-arrow-circle-right"></span></a>
+      
+      
+        <a href="harpcollocate.html" class="btn btn-neutral" title="harpcollocate" accesskey="p"><span class="fa fa-arrow-circle-left"></span> Previous</a>
+      
+    </div>
+  
+
+  <hr/>
+
+  <div role="contentinfo">
+    <p>
+        &copy; Copyright 2015 S&amp;T, The Netherlands.
+
+    </p>
+  </div> 
+
+</footer>
+
+        </div>
+      </div>
+
+    </section>
+
+  </div>
+  
+
+
+  
+
+    <script type="text/javascript">
+        var DOCUMENTATION_OPTIONS = {
+            URL_ROOT:'./',
+            VERSION:'0.1b',
+            COLLAPSE_INDEX:false,
+            FILE_SUFFIX:'.html',
+            HAS_SOURCE:  false
+        };
+    </script>
+      <script type="text/javascript" src="_static/jquery.js"></script>
+      <script type="text/javascript" src="_static/underscore.js"></script>
+      <script type="text/javascript" src="_static/doctools.js"></script>
+      <script type="text/javascript" src="https://cdn.mathjax.org/mathjax/latest/MathJax.js?config=TeX-AMS-MML_HTMLorMML"></script>
+
+  
+
+  
+  
+    <script type="text/javascript" src="_static/js/theme.js"></script>
+  
+
+  
+  
+  <script type="text/javascript">
+      jQuery(function () {
+          SphinxRtdTheme.StickyNav.enable();
+      });
+  </script>
+   
+
+</body>
+</html>

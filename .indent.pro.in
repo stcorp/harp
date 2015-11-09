@@ -1,0 +1,66 @@
+-bad
+-bap
+-bl
+-bli0
+-bls
+-c0
+-cbi4
+-cd0
+-cdw
+-ci0
+-cli4
+-cp0
+-hnl
+-i4
+-l120
+-lp
+-nbbo
+-nbbb
+-nbc
+-nbfda
+-nce
+-ncs
+-nfca
+-npcs
+-npro
+-nprs
+-npsl
+-nsob
+-nut
+-nv
+-pi0
+-saf
+-sai
+-saw
+-sbi0
+-ss
+-ts8
+-T FILE
+-T size_t
+-T int8_t
+-T int16_t
+-T int32_t
+-T int64_t
+-T uint8_t
+-T uint16_t
+-T uint32_t
+-T uint64_t
+-T int32
+-T uint8
+-T uint16
+-T hid_t
+-T H5E_error_t
+-T hsize_t
+-T UCHAR
+-T XML_Parser
+-T cv_converter
+-T ut_unit
+-T coda_array_ordering
+-T coda_filefilter_status
+-T coda_format
+-T coda_type_class
+-T coda_special_type
+-T coda_native_type
+-T coda_product
+-T coda_cursor
+-T coda_type

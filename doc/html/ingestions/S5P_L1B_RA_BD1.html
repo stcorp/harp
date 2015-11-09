@@ -1,0 +1,318 @@
+
+
+<!DOCTYPE html>
+<!--[if IE 8]><html class="no-js lt-ie9" lang="en" > <![endif]-->
+<!--[if gt IE 8]><!--> <html class="no-js" lang="en" > <!--<![endif]-->
+<head>
+  <meta charset="utf-8">
+  
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  
+  <title>S5P_L1B_RA_BD1 &mdash; HARP 0.1b documentation</title>
+  
+
+  
+  
+
+  
+
+  
+  
+    
+
+  
+
+  
+  
+    <link rel="stylesheet" href="../_static/css/theme.css" type="text/css" />
+  
+
+  
+    <link rel="stylesheet" href="../_static/custom.css" type="text/css" />
+  
+
+  
+    <link rel="top" title="HARP 0.1b documentation" href="../index.html"/> 
+
+  
+  <script src="../_static/js/modernizr.min.js"></script>
+
+</head>
+
+<body class="wy-body-for-nav" role="document">
+
+  <div class="wy-grid-for-nav">
+
+    
+    <nav data-toggle="wy-nav-shift" class="wy-nav-side">
+      <div class="wy-side-scroll">
+        <div class="wy-side-nav-search">
+          
+
+          
+            <a href="../index.html" class="icon icon-home"> HARP
+          
+
+          
+          </a>
+
+          
+            
+            
+              <div class="version">
+                0.1
+              </div>
+            
+          
+
+          
+<div role="search">
+  <form id="rtd-search-form" class="wy-form" action="../search.html" method="get">
+    <input type="text" name="q" placeholder="Search docs" />
+    <input type="hidden" name="check_keywords" value="yes" />
+    <input type="hidden" name="area" value="default" />
+  </form>
+</div>
+
+          
+        </div>
+
+        <div class="wy-menu wy-menu-vertical" data-spy="affix" role="navigation" aria-label="main navigation">
+          
+            
+            
+                <ul>
+<li class="toctree-l1"><a class="reference internal" href="../install.html">Installation</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../dataformats.html">Data formats</a></li>
+<li class="toctree-l1"><a class="reference internal" href="index.html">Ingestion definitions</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../libharp.html">C library</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../harpcheck.html">harpcheck</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../harpcollocate.html">harpcollocate</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../harpconvert.html">harpconvert</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../harpdump.html">harpdump</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../harpfilter.html">harpfilter</a></li>
+</ul>
+
+            
+          
+        </div>
+      </div>
+    </nav>
+
+    <section data-toggle="wy-nav-shift" class="wy-nav-content-wrap">
+
+      
+      <nav class="wy-nav-top" role="navigation" aria-label="top navigation">
+        <i data-toggle="wy-nav-top" class="fa fa-bars"></i>
+        <a href="../index.html">HARP</a>
+      </nav>
+
+
+      
+      <div class="wy-nav-content">
+        <div class="rst-content">
+          
+
+
+
+
+
+<div role="navigation" aria-label="breadcrumbs navigation">
+  <ul class="wy-breadcrumbs">
+    <li><a href="../index.html">Docs</a> &raquo;</li>
+      
+    <li>S5P_L1B_RA_BD1</li>
+      <li class="wy-breadcrumbs-aside">
+        
+          
+        
+      </li>
+  </ul>
+  <hr/>
+</div>
+          <div role="main" class="document" itemscope="itemscope" itemtype="http://schema.org/Article">
+           <div itemprop="articleBody">
+            
+  <div class="section" id="s5p-l1b-ra-bd1">
+<h1>S5P_L1B_RA_BD1</h1>
+<div class="section" id="variables">
+<h2>Variables</h2>
+<p>The table below lists the variables that are present in the HARP product that results from an ingestion of <code class="docutils literal"><span class="pre">S5P_L1B_RA_BD1</span></code> data.</p>
+<table border="1" class="docutils">
+<colgroup>
+<col width="25%" />
+<col width="5%" />
+<col width="15%" />
+<col width="15%" />
+<col width="40%" />
+</colgroup>
+<thead valign="bottom">
+<tr class="row-odd"><th class="head">field name</th>
+<th class="head">type</th>
+<th class="head">dimensions</th>
+<th class="head">unit</th>
+<th class="head">description</th>
+</tr>
+</thead>
+<tbody valign="top">
+<tr class="row-even"><td><strong>index</strong></td>
+<td>int32</td>
+<td>{<em>time</em>}</td>
+<td>&nbsp;</td>
+<td>zero-based index of the sample within the source product</td>
+</tr>
+<tr class="row-odd"><td><strong>scanline_pixel_index</strong></td>
+<td>int16</td>
+<td>{<em>time</em>}</td>
+<td>&nbsp;</td>
+<td>zero-based index of the pixel within the scanline</td>
+</tr>
+<tr class="row-even"><td><strong>datetime</strong></td>
+<td>double</td>
+<td>{<em>time</em>}</td>
+<td>seconds since 2000-01-01</td>
+<td>start time of the measurement</td>
+</tr>
+<tr class="row-odd"><td><strong>latitude</strong></td>
+<td>float</td>
+<td>{<em>time</em>}</td>
+<td>degree_north</td>
+<td>latitude of the ground pixel center (WGS84)</td>
+</tr>
+<tr class="row-even"><td><strong>longitude</strong></td>
+<td>float</td>
+<td>{<em>time</em>}</td>
+<td>degree_east</td>
+<td>longitude of the ground pixel center (WGS84)</td>
+</tr>
+<tr class="row-odd"><td><strong>latitude_bounds</strong></td>
+<td>float</td>
+<td>{<em>time</em>, 4}</td>
+<td>degree_north</td>
+<td>latitudes of the ground pixel corners (WGS84)</td>
+</tr>
+<tr class="row-even"><td><strong>longitude_bounds</strong></td>
+<td>float</td>
+<td>{<em>time</em>, 4}</td>
+<td>degree_east</td>
+<td>longitudes of the ground pixel corners (WGS84)</td>
+</tr>
+<tr class="row-odd"><td><strong>instrument_latitude</strong></td>
+<td>float</td>
+<td>{<em>time</em>}</td>
+<td>degree_north</td>
+<td>latitude of the sub-instrument point (WGS84)</td>
+</tr>
+<tr class="row-even"><td><strong>instrument_longitude</strong></td>
+<td>float</td>
+<td>{<em>time</em>}</td>
+<td>degree_east</td>
+<td>longitude of the sub-instrument point (WGS84)</td>
+</tr>
+<tr class="row-odd"><td><strong>instrument_altitude</strong></td>
+<td>float</td>
+<td>{<em>time</em>}</td>
+<td>m</td>
+<td>altitude of the instrument (WGS84)</td>
+</tr>
+<tr class="row-even"><td><strong>solar_zenith_angle</strong></td>
+<td>float</td>
+<td>{<em>time</em>}</td>
+<td>degree</td>
+<td>zenith angle of the Sun at the ground pixel location (WGS84)</td>
+</tr>
+<tr class="row-odd"><td><strong>solar_azimuth_angle</strong></td>
+<td>float</td>
+<td>{<em>time</em>}</td>
+<td>degree</td>
+<td>azimuth angle of the Sun at the ground pixel location (WGS84), measured East-of-North</td>
+</tr>
+<tr class="row-even"><td><strong>viewing_zenith_angle</strong></td>
+<td>float</td>
+<td>{<em>time</em>}</td>
+<td>degree</td>
+<td>zenith angle of the instrument at the ground pixel location (WGS84)</td>
+</tr>
+<tr class="row-odd"><td><strong>viewing_azimuth_angle</strong></td>
+<td>float</td>
+<td>{<em>time</em>}</td>
+<td>degree</td>
+<td>azimuth angle of the instrument at the ground pixel location (WGS84), measured East-of-North</td>
+</tr>
+<tr class="row-even"><td><strong>wavelength</strong></td>
+<td>float</td>
+<td>{<em>time</em>, <em>spectral</em>}</td>
+<td>nm</td>
+<td>nominal wavelength</td>
+</tr>
+<tr class="row-odd"><td><strong>photon_radiance</strong></td>
+<td>float</td>
+<td>{<em>time</em>, <em>spectral</em>}</td>
+<td>mol/(s.m^2.nm.sr)</td>
+<td>spectral photon radiance</td>
+</tr>
+</tbody>
+</table>
+</div>
+</div>
+
+
+           </div>
+          </div>
+          <footer>
+  
+
+  <hr/>
+
+  <div role="contentinfo">
+    <p>
+        &copy; Copyright 2015 S&amp;T, The Netherlands.
+
+    </p>
+  </div> 
+
+</footer>
+
+        </div>
+      </div>
+
+    </section>
+
+  </div>
+  
+
+
+  
+
+    <script type="text/javascript">
+        var DOCUMENTATION_OPTIONS = {
+            URL_ROOT:'../',
+            VERSION:'0.1b',
+            COLLAPSE_INDEX:false,
+            FILE_SUFFIX:'.html',
+            HAS_SOURCE:  false
+        };
+    </script>
+      <script type="text/javascript" src="../_static/jquery.js"></script>
+      <script type="text/javascript" src="../_static/underscore.js"></script>
+      <script type="text/javascript" src="../_static/doctools.js"></script>
+      <script type="text/javascript" src="https://cdn.mathjax.org/mathjax/latest/MathJax.js?config=TeX-AMS-MML_HTMLorMML"></script>
+
+  
+
+  
+  
+    <script type="text/javascript" src="../_static/js/theme.js"></script>
+  
+
+  
+  
+  <script type="text/javascript">
+      jQuery(function () {
+          SphinxRtdTheme.StickyNav.enable();
+      });
+  </script>
+   
+
+</body>
+</html>
