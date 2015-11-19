@@ -1,3 +1,6 @@
+
+* Fixed unit attribute name in HARP products ('unit' -> 'units').
+
 0.1 2015-11-09
 ~~~~~~~~~~~~~~
 

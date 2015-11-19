@@ -544,10 +544,10 @@ static int read_variable(harp_product *product, hid_t dataset_id, const char *na
         return -1;
     }
 
-    result = H5Aexists(dataset_id, "unit");
+    result = H5Aexists(dataset_id, "units");
     if (result > 0)
     {
-        if (read_string_attribute(dataset_id, "unit", &variable->unit) != 0)
+        if (read_string_attribute(dataset_id, "units", &variable->unit) != 0)
         {
             return -1;
         }
@@ -1048,7 +1048,7 @@ static int write_variable(harp_variable *variable, hid_t file_id)
 
     if (variable->unit != NULL)
     {
-        if (write_string_attribute(dataset_id, "unit", variable->unit) != 0)
+        if (write_string_attribute(dataset_id, "units", variable->unit) != 0)
         {
             H5Dclose(dataset_id);
             return -1;

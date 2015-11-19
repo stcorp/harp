@@ -413,7 +413,7 @@ static int read_variable(harp_product *product, int32 sds_id)
         }
     }
 
-    hdf4_index = SDfindattr(sds_id, "unit");
+    hdf4_index = SDfindattr(sds_id, "units");
     if (hdf4_index >= 0)
     {
         if (read_string_attribute(sds_id, hdf4_index, &variable->unit) != 0)
@@ -764,7 +764,7 @@ static int write_variable(harp_variable *variable, int32 sd_id)
 
     if (variable->unit != NULL)
     {
-        if (write_string_attribute(sds_id, "unit", variable->unit) != 0)
+        if (write_string_attribute(sds_id, "units", variable->unit) != 0)
         {
             SDendaccess(sds_id);
             return -1;
