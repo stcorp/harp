@@ -1449,9 +1449,9 @@ static int init_product_definition(harp_ingestion_module *module, ftir_gas gas, 
                                                                      read_surface_temperature_ind);
     harp_variable_definition_add_mapping(variable_definition, NULL, NULL, "/SURFACE.TEMPERATURE_INDEPENDENT", NULL);
 
-    /* solar_azimith_angle */
+    /* solar_azimuth_angle */
     description = "solar azimuth angle";
-    variable_definition = harp_ingestion_register_variable_full_read(product_definition, "solar_azimith_angle",
+    variable_definition = harp_ingestion_register_variable_full_read(product_definition, "solar_azimuth_angle",
                                                                      harp_type_double, 1, dimension_type, NULL,
                                                                      description, "deg", NULL,
                                                                      read_solar_azimuth_angle);
