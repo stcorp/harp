@@ -38,6 +38,7 @@ static int get_harp_type(hid_t datatype_id, harp_data_type *data_type)
                 {
                     sign = 0;
                 }
+
                 switch (H5Tget_size(datatype_id))
                 {
                     case 1:
@@ -68,6 +69,7 @@ static int get_harp_type(hid_t datatype_id, harp_data_type *data_type)
                     harp_set_error(HARP_ERROR_HDF5, NULL);
                     return -1;
                 }
+
                 if (H5Tequal(native_type, H5T_NATIVE_FLOAT))
                 {
                     *data_type = harp_type_float;
@@ -76,6 +78,7 @@ static int get_harp_type(hid_t datatype_id, harp_data_type *data_type)
                 {
                     *data_type = harp_type_double;
                 }
+
                 H5Tclose(native_type);
             }
             break;
@@ -83,9 +86,10 @@ static int get_harp_type(hid_t datatype_id, harp_data_type *data_type)
             *data_type = harp_type_string;
             break;
         default:
-            harp_set_error(HARP_ERROR_PRODUCT, "unsupported basic type for HDF5 data");
+            harp_set_error(HARP_ERROR_PRODUCT, "unsupported HDF5 data type");
             return -1;
     }
+
     return 0;
 }
 
@@ -105,9 +109,10 @@ static hid_t get_hdf5_type(harp_data_type data_type)
             return H5T_NATIVE_DOUBLE;
         case harp_type_string:
             return H5T_C_S1;
+        default:
+            assert(0);
+            exit(1);
     }
-    assert(0);
-    exit(1);
 }
 
 static int read_string_attribute(hid_t obj_id, const char *name, char **data)
@@ -219,7 +224,7 @@ static int read_string_attribute(hid_t obj_id, const char *name, char **data)
     return 0;
 }
 
-static int read_scalar_attribute(hid_t obj_id, const char *name, harp_data_type *data_type, harp_scalar *data)
+static int read_numeric_attribute(hid_t obj_id, const char *name, harp_data_type *data_type, harp_scalar *data)
 {
     hid_t attr_id;
     hid_t data_type_id;
@@ -306,19 +311,21 @@ static int read_dimensions(hid_t obj_id, int *num_dimensions, harp_dimension_typ
     char *cursor;
     char *dims;
 
+    if (H5Aexists(obj_id, "dims") <= 0)
+    {
+        /* If the 'dims' attribute does not exist, the corresponding variable is scalar (i.e. has zero dimensions). */
+        *num_dimensions = 0;
+        return 0;
+    }
+
     if (read_string_attribute(obj_id, "dims", &dims) != 0)
     {
         return -1;
     }
-
-    *num_dimensions = 0;
-    if (*dims == '\0')
-    {
-        free(dims);
-        return 0;
-    }
+    assert(*dims != '\0');
 
     cursor = dims;
+    *num_dimensions = 0;
     while (*cursor != '\0' && *num_dimensions < HARP_MAX_NUM_DIMS)
     {
         char *mark;
@@ -340,6 +347,7 @@ static int read_dimensions(hid_t obj_id, int *num_dimensions, harp_dimension_typ
             free(dims);
             return -1;
         }
+
         (*num_dimensions)++;
     }
 
@@ -385,6 +393,7 @@ static int read_variable(harp_product *product, hid_t dataset_id, const char *na
 
     if (get_harp_type(data_type_id, &data_type) != 0)
     {
+        harp_add_error_message(" (dataset '%s')", name);
         H5Tclose(data_type_id);
         return -1;
     }
@@ -431,12 +440,14 @@ static int read_variable(harp_product *product, hid_t dataset_id, const char *na
 
     if (read_dimensions(dataset_id, &num_dimension_types, dimension_type) != 0)
     {
+        harp_add_error_message(" (dataset '%s')", name);
         return -1;
     }
 
     if (num_dimensions != num_dimension_types)
     {
-        harp_set_error(HARP_ERROR_PRODUCT, "variable '%s' has invalid format", name);
+        harp_set_error(HARP_ERROR_PRODUCT, "dataset '%s' has %d dimensions; expected %d", name, num_dimensions,
+                       num_dimension_types);
         return -1;
     }
 
@@ -563,7 +574,7 @@ static int read_variable(harp_product *product, hid_t dataset_id, const char *na
     {
         harp_data_type attr_data_type;
 
-        if (read_scalar_attribute(dataset_id, "valid_min", &attr_data_type, &variable->valid_min) != 0)
+        if (read_numeric_attribute(dataset_id, "valid_min", &attr_data_type, &variable->valid_min) != 0)
         {
             return -1;
         }
@@ -585,7 +596,7 @@ static int read_variable(harp_product *product, hid_t dataset_id, const char *na
     {
         harp_data_type attr_data_type;
 
-        if (read_scalar_attribute(dataset_id, "valid_max", &attr_data_type, &variable->valid_max) != 0)
+        if (read_numeric_attribute(dataset_id, "valid_max", &attr_data_type, &variable->valid_max) != 0)
         {
             return -1;
         }
@@ -636,6 +647,7 @@ static int read_product(harp_product *product, hid_t file_id)
             hid_t dataset_id;
 
             length = H5Gget_objname_by_idx(root_id, i, NULL, 0);
+
             name = malloc((length + 1) * sizeof(char));
             if (name == NULL)
             {
@@ -644,12 +656,14 @@ static int read_product(harp_product *product, hid_t file_id)
                 H5Gclose(root_id);
                 return -1;
             }
+
             if (H5Gget_objname_by_idx(root_id, i, name, length + 1) < 0)
             {
                 harp_set_error(HARP_ERROR_HDF5, NULL);
                 H5Gclose(root_id);
                 return -1;
             }
+
             dataset_id = H5Dopen(root_id, name);
             if (dataset_id < 0)
             {
@@ -657,12 +671,14 @@ static int read_product(harp_product *product, hid_t file_id)
                 H5Gclose(root_id);
                 return -1;
             }
+
             if (read_variable(product, dataset_id, name) != 0)
             {
                 H5Dclose(dataset_id);
                 H5Gclose(root_id);
                 return -1;
             }
+
             H5Dclose(dataset_id);
         }
     }
@@ -824,7 +840,7 @@ static int write_string_attribute(hid_t obj_id, const char *name, const char *da
     return 0;
 }
 
-static int write_scalar_attribute(hid_t obj_id, const char *name, harp_data_type data_type, harp_scalar data)
+static int write_numeric_attribute(hid_t obj_id, const char *name, harp_data_type data_type, harp_scalar data)
 {
     hid_t attr_id;
     hid_t space_id;
@@ -885,6 +901,11 @@ static int write_dimensions(hid_t obj_id, int num_dimensions, const harp_dimensi
     int length;
     int i;
 
+    if (num_dimensions == 0)
+    {
+        return 0;
+    }
+
     length = 0;
     for (i = 0; i < num_dimensions; i++)
     {
@@ -923,6 +944,7 @@ static int write_dimensions(hid_t obj_id, int num_dimensions, const harp_dimensi
     }
 
     free(dimension_str);
+
     return 0;
 }
 
@@ -941,10 +963,14 @@ static int write_variable(harp_variable *variable, hid_t file_id)
     if (variable->data_type == harp_type_string)
     {
         hid_t data_type_id;
-        long max_length;
+        long length;
         char *buffer;
 
-        buffer = harp_array_get_char_array_from_strings(variable->data, variable->num_elements, &max_length);
+        if (harp_get_char_array_from_string_array(variable->num_elements, variable->data.string_data, 1, &length,
+                                                  &buffer) != 0)
+        {
+            return -1;
+        }
 
         data_type_id = H5Tcopy(H5T_C_S1);
         if (data_type_id < 0)
@@ -954,7 +980,7 @@ static int write_variable(harp_variable *variable, hid_t file_id)
             return -1;
         }
 
-        if (H5Tset_size(data_type_id, max_length) < 0)
+        if (H5Tset_size(data_type_id, length) < 0)
         {
             harp_set_error(HARP_ERROR_HDF5, NULL);
             H5Tclose(data_type_id);
@@ -1037,7 +1063,7 @@ static int write_variable(harp_variable *variable, hid_t file_id)
     }
 
     /* Write attributes. */
-    if (variable->description != NULL)
+    if (variable->description != NULL && strcmp(variable->description, "") != 0)
     {
         if (write_string_attribute(dataset_id, "description", variable->description) != 0)
         {
@@ -1046,7 +1072,7 @@ static int write_variable(harp_variable *variable, hid_t file_id)
         }
     }
 
-    if (variable->unit != NULL)
+    if (variable->unit != NULL && strcmp(variable->unit, "") != 0)
     {
         if (write_string_attribute(dataset_id, "units", variable->unit) != 0)
         {
@@ -1059,7 +1085,7 @@ static int write_variable(harp_variable *variable, hid_t file_id)
     {
         if (!harp_is_valid_min_for_type(variable->data_type, variable->valid_min))
         {
-            if (write_scalar_attribute(dataset_id, "valid_min", variable->data_type, variable->valid_min) != 0)
+            if (write_numeric_attribute(dataset_id, "valid_min", variable->data_type, variable->valid_min) != 0)
             {
                 H5Dclose(dataset_id);
                 return -1;
@@ -1068,7 +1094,7 @@ static int write_variable(harp_variable *variable, hid_t file_id)
 
         if (!harp_is_valid_max_for_type(variable->data_type, variable->valid_max))
         {
-            if (write_scalar_attribute(dataset_id, "valid_max", variable->data_type, variable->valid_max) != 0)
+            if (write_numeric_attribute(dataset_id, "valid_max", variable->data_type, variable->valid_max) != 0)
             {
                 H5Dclose(dataset_id);
                 return -1;
@@ -1098,18 +1124,8 @@ static int write_product(const harp_product *product, hid_t file_id)
         return -1;
     }
 
-    /* Write variables. */
-    for (i = 0; i < product->num_variables; i++)
-    {
-        if (write_variable(product->variable[i], file_id) != 0)
-        {
-            H5Gclose(root_id);
-            return -1;
-        }
-    }
-
     /* Write attributes. */
-    if (product->source_product != NULL)
+    if (product->source_product != NULL && strcmp(product->source_product, "") != 0)
     {
         if (write_string_attribute(file_id, "source_product", product->source_product) != 0)
         {
@@ -1118,9 +1134,19 @@ static int write_product(const harp_product *product, hid_t file_id)
         }
     }
 
-    if (product->history != NULL)
+    if (product->history != NULL && strcmp(product->history, "") != 0)
     {
         if (write_string_attribute(file_id, "history", product->history) != 0)
+        {
+            H5Gclose(root_id);
+            return -1;
+        }
+    }
+
+    /* Write variables. */
+    for (i = 0; i < product->num_variables; i++)
+    {
+        if (write_variable(product->variable[i], file_id) != 0)
         {
             H5Gclose(root_id);
             return -1;
@@ -1137,7 +1163,13 @@ int harp_export_hdf5(const char *filename, const harp_product *product)
 
     if (filename == NULL)
     {
-        harp_set_error(HARP_ERROR_FILE_OPEN, "could not open HDF5 export file (can not write HDF5 data to stdout)");
+        harp_set_error(HARP_ERROR_INVALID_ARGUMENT, "filename is NULL");
+        return -1;
+    }
+
+    if (product == NULL)
+    {
+        harp_set_error(HARP_ERROR_INVALID_ARGUMENT, "product is NULL");
         return -1;
     }
 

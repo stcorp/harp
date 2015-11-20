@@ -925,8 +925,7 @@ void harp_product_remove_all_variables(harp_product *product)
 
 /**
  * Determine the datetime range covered by the product. Start and stop datetimes are returned as the (fractional) number
- * of days since 2000. If the product does not contain datetime information, and it is not possible to derive datetime
- * information from other information contained in the product, the range [-inf, +inf] will be returned instead.
+ * of days since 2000.
  *
  * \param  product        Product to compute the datetime range of.
  * \param  datetime_start Pointer to the location where the start datetime of the product will be stored. If NULL, the
@@ -939,51 +938,54 @@ void harp_product_remove_all_variables(harp_product *product)
  */
 int harp_product_get_datetime_range(const harp_product *product, double *datetime_start, double *datetime_stop)
 {
-    harp_dimension_type dimension_type;
+    harp_dimension_type dimension_type[1] = { harp_dimension_time };
     harp_variable *datetime;
     double start;
     double stop;
+    long i;
 
-    dimension_type = harp_dimension_time;
-    if (harp_product_get_derived_variable(product, "datetime", "days since 2000-01-01", 1, &dimension_type, &datetime)
-        == 0)
-    {
-        long i;
-
-        if (harp_variable_convert_data_type(datetime, harp_type_double) != 0)
-        {
-            harp_variable_delete(datetime);
-            return -1;
-        }
-
-        start = harp_plusinf();
-        stop = harp_mininf();
-
-        for (i = 0; i < datetime->num_elements; i++)
-        {
-            if (datetime->data.double_data[i] < start)
-            {
-                start = datetime->data.double_data[i];
-            }
-
-            if (datetime->data.double_data[i] > stop)
-            {
-                stop = datetime->data.double_data[i];
-            }
-        }
-
-        harp_variable_delete(datetime);
-    }
-    else if (harp_errno == HARP_ERROR_VARIABLE_NOT_FOUND)
-    {
-        /* No datetime information could be derived. This is not considered an error. */
-        start = harp_mininf();
-        stop = harp_plusinf();
-    }
-    else
+    if (harp_product_get_derived_variable(product, "datetime", "days since 2000-01-01", 1, dimension_type, &datetime)
+        != 0)
     {
         return -1;
     }
+
+    if (harp_variable_convert_data_type(datetime, harp_type_double) != 0)
+    {
+        harp_variable_delete(datetime);
+        return -1;
+    }
+
+    start = harp_plusinf();
+    stop = harp_mininf();
+    for (i = 0; i < datetime->num_elements; i++)
+    {
+        const double value = datetime->data.double_data[i];
+
+        if (harp_isnan(value) || value < datetime->valid_min.double_data || value > datetime->valid_max.double_data)
+        {
+            continue;
+        }
+
+        if (value < start)
+        {
+            start = value;
+        }
+
+        if (value > stop)
+        {
+            stop = value;
+        }
+    }
+
+    if (harp_isnan(start) || start < datetime->valid_min.double_data || start > datetime->valid_max.double_data
+        || harp_isnan(stop) || stop < datetime->valid_min.double_data || stop > datetime->valid_max.double_data)
+    {
+        harp_set_error(HARP_ERROR_PRODUCT, "cannot determine valid datetime range");
+        return -1;
+    }
+
+    harp_variable_delete(datetime);
 
     if (datetime_start != NULL)
     {

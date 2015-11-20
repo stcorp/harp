@@ -131,25 +131,34 @@ static int dimensions_add(harp_dimensions *dimensions, harp_dimension_type type,
     return dimensions->num_dimensions - 1;
 }
 
-static harp_data_type get_harp_type(int data_type)
+static int get_harp_type(int netcdf_data_type, harp_data_type *data_type)
 {
-    switch (data_type)
+    switch (netcdf_data_type)
     {
         case NC_BYTE:
-            return harp_type_int8;
+            *data_type = harp_type_int8;
+            break;
         case NC_SHORT:
-            return harp_type_int16;
+            *data_type = harp_type_int16;
+            break;
         case NC_INT:
-            return harp_type_int32;
+            *data_type = harp_type_int32;
+            break;
         case NC_FLOAT:
-            return harp_type_float;
+            *data_type = harp_type_float;
+            break;
         case NC_DOUBLE:
-            return harp_type_double;
+            *data_type = harp_type_double;
+            break;
         case NC_CHAR:
-            return harp_type_string;
+            *data_type = harp_type_string;
+            break;
+        default:
+            harp_set_error(HARP_ERROR_PRODUCT, "unsupported NetCDF data type");
+            return -1;
     }
-    assert(0);
-    exit(1);
+
+    return 0;
 }
 
 static int get_netcdf_type(harp_data_type data_type)
@@ -168,9 +177,10 @@ static int get_netcdf_type(harp_data_type data_type)
             return NC_DOUBLE;
         case harp_type_string:
             return NC_CHAR;
+        default:
+            assert(0);
+            exit(1);
     }
-    assert(0);
-    exit(1);
 }
 
 static int read_string_attribute(int ncid, int varid, const char *name, char **data)
@@ -214,7 +224,7 @@ static int read_string_attribute(int ncid, int varid, const char *name, char **d
     return 0;
 }
 
-static int read_scalar_attribute(int ncid, int varid, const char *name, harp_data_type *data_type, harp_scalar *data)
+static int read_numeric_attribute(int ncid, int varid, const char *name, harp_data_type *data_type, harp_scalar *data)
 {
     nc_type netcdf_data_type;
     size_t netcdf_num_elements;
@@ -233,7 +243,11 @@ static int read_scalar_attribute(int ncid, int varid, const char *name, harp_dat
         return -1;
     }
 
-    *data_type = get_harp_type(netcdf_data_type);
+    if (get_harp_type(netcdf_data_type, data_type) != 0)
+    {
+        harp_add_error_message(" (attribute '%s')", name);
+        return -1;
+    }
 
     switch (netcdf_data_type)
     {
@@ -277,21 +291,27 @@ static int read_variable(harp_product *product, int ncid, int varid, harp_dimens
     char netcdf_name[NC_MAX_NAME + 1];
     nc_type netcdf_data_type;
     int netcdf_num_dimensions;
-    int dim_id[NC_MAX_VAR_DIMS];
+    int netcdf_dim_id[NC_MAX_VAR_DIMS];
     int result;
     int i;
 
-    result = nc_inq_var(ncid, varid, netcdf_name, &netcdf_data_type, &netcdf_num_dimensions, dim_id, NULL);
+    result = nc_inq_var(ncid, varid, netcdf_name, &netcdf_data_type, &netcdf_num_dimensions, netcdf_dim_id, NULL);
     if (result != NC_NOERR)
     {
         harp_set_error(HARP_ERROR_NETCDF, "%s", nc_strerror(result));
         return -1;
     }
 
-    data_type = get_harp_type(netcdf_data_type);
-    num_dimensions = netcdf_num_dimensions;
-    if (data_type == harp_type_string && num_dimensions > 0)
+    if (get_harp_type(netcdf_data_type, &data_type) != 0)
     {
+        harp_add_error_message(" (variable '%s')", netcdf_name);
+        return -1;
+    }
+
+    num_dimensions = netcdf_num_dimensions;
+    if (data_type == harp_type_string)
+    {
+        assert(num_dimensions > 0);
         num_dimensions--;
     }
     assert(num_dimensions <= HARP_MAX_NUM_DIMS);
@@ -299,8 +319,8 @@ static int read_variable(harp_product *product, int ncid, int varid, harp_dimens
     num_elements = 1;
     for (i = 0; i < num_dimensions; i++)
     {
-        dimension_type[i] = dimensions->type[dim_id[i]];
-        dimension[i] = dimensions->length[dim_id[i]];
+        dimension_type[i] = dimensions->type[netcdf_dim_id[i]];
+        dimension[i] = dimensions->length[netcdf_dim_id[i]];
         num_elements *= dimension[i];
     }
 
@@ -319,20 +339,19 @@ static int read_variable(harp_product *product, int ncid, int varid, harp_dimens
     if (data_type == harp_type_string)
     {
         char *buffer;
-        long string_length = 1;
+        long length;
 
-        if (netcdf_num_dimensions > 0)
-        {
-            string_length = dimensions->length[dim_id[netcdf_num_dimensions - 1]];
-        }
+        assert(netcdf_num_dimensions > 0);
+        length = dimensions->length[netcdf_dim_id[netcdf_num_dimensions - 1]];
 
-        buffer = malloc(num_elements * string_length * sizeof(char));
+        buffer = malloc(num_elements * length * sizeof(char));
         if (buffer == NULL)
         {
             harp_set_error(HARP_ERROR_OUT_OF_MEMORY, "out of memory (could not allocate %lu bytes) (%s:%u)",
-                           num_elements * string_length * sizeof(char), __FILE__, __LINE__);
+                           num_elements * length * sizeof(char), __FILE__, __LINE__);
             return -1;
         }
+
         result = nc_get_var_text(ncid, varid, buffer);
         if (result != NC_NOERR)
         {
@@ -340,22 +359,25 @@ static int read_variable(harp_product *product, int ncid, int varid, harp_dimens
             free(buffer);
             return -1;
         }
+
         for (i = 0; i < num_elements; i++)
         {
             char *str;
 
-            str = malloc((string_length + 1) * sizeof(char));
+            str = malloc((length + 1) * sizeof(char));
             if (str == NULL)
             {
                 harp_set_error(HARP_ERROR_OUT_OF_MEMORY, "out of memory (could not allocate %lu bytes) (%s:%u)",
-                               (string_length + 1) * sizeof(char), __FILE__, __LINE__);
+                               (length + 1) * sizeof(char), __FILE__, __LINE__);
                 free(buffer);
                 return -1;
             }
-            memcpy(str, &buffer[i * string_length], string_length);
-            str[string_length] = '\0';
+
+            memcpy(str, &buffer[i * length], length);
+            str[length] = '\0';
             variable->data.string_data[i] = str;
         }
+
         free(buffer);
     }
     else
@@ -381,6 +403,7 @@ static int read_variable(harp_product *product, int ncid, int varid, harp_dimens
                 assert(0);
                 exit(1);
         }
+
         if (result != NC_NOERR)
         {
             harp_set_error(HARP_ERROR_NETCDF, "%s", nc_strerror(result));
@@ -424,7 +447,7 @@ static int read_variable(harp_product *product, int ncid, int varid, harp_dimens
     {
         harp_data_type attr_data_type;
 
-        if (read_scalar_attribute(ncid, varid, "valid_min", &attr_data_type, &variable->valid_min) != 0)
+        if (read_numeric_attribute(ncid, varid, "valid_min", &attr_data_type, &variable->valid_min) != 0)
         {
             harp_add_error_message(" (variable '%s')", netcdf_name);
             return -1;
@@ -447,7 +470,7 @@ static int read_variable(harp_product *product, int ncid, int varid, harp_dimens
     {
         harp_data_type attr_data_type;
 
-        if (read_scalar_attribute(ncid, varid, "valid_max", &attr_data_type, &variable->valid_max) != 0)
+        if (read_numeric_attribute(ncid, varid, "valid_max", &attr_data_type, &variable->valid_max) != 0)
         {
             harp_add_error_message(" (variable '%s')", netcdf_name);
             return -1;
@@ -649,10 +672,16 @@ int harp_import_global_attributes_netcdf(const char *filename, double *datetime_
                                          char **source_product)
 {
     char *attr_source_product = NULL;
-    double attr_datetime_start = -1;
-    double attr_datetime_stop = -1;
+    harp_scalar attr_datetime_start;
+    harp_scalar attr_datetime_stop;
+    harp_data_type attr_data_type;
     int result;
     int ncid;
+
+    if (datetime_start == NULL && datetime_stop == NULL)
+    {
+        return 0;
+    }
 
     if (filename == NULL)
     {
@@ -675,46 +704,48 @@ int harp_import_global_attributes_netcdf(const char *filename, double *datetime_
 
     if (datetime_start != NULL)
     {
-        harp_data_type attr_data_type;
-        harp_scalar attr_data;
-        const char *attr_name = "datetime_start";
-
-        if (read_scalar_attribute(ncid, NC_GLOBAL, attr_name, &attr_data_type, &attr_data) != 0)
+        if (nc_inq_att(ncid, NC_GLOBAL, "datetime_start", NULL, NULL) == NC_NOERR)
         {
-            nc_close(ncid);
-            return -1;
-        }
+            if (read_numeric_attribute(ncid, NC_GLOBAL, "datetime_start", &attr_data_type, &attr_datetime_start) != 0)
+            {
+                nc_close(ncid);
+                return -1;
+            }
 
-        if (attr_data_type != harp_type_double)
+            if (attr_data_type != harp_type_double)
+            {
+                harp_set_error(HARP_ERROR_PRODUCT, "attribute 'datetime_start' has invalid type");
+                nc_close(ncid);
+                return -1;
+            }
+        }
+        else
         {
-            harp_set_error(HARP_ERROR_PRODUCT, "attribute '%s' has invalid type", attr_name);
-            nc_close(ncid);
-            return -1;
+            attr_datetime_start.double_data = harp_mininf();
         }
-
-        attr_datetime_start = attr_data.double_data;
     }
 
     if (datetime_stop != NULL)
     {
-        harp_data_type attr_data_type;
-        harp_scalar attr_data;
-        const char *attr_name = "datetime_stop";
-
-        if (read_scalar_attribute(ncid, NC_GLOBAL, attr_name, &attr_data_type, &attr_data) != 0)
+        if (nc_inq_att(ncid, NC_GLOBAL, "datetime_stop", NULL, NULL) == NC_NOERR)
         {
-            nc_close(ncid);
-            return -1;
-        }
+            if (read_numeric_attribute(ncid, NC_GLOBAL, "datetime_stop", &attr_data_type, &attr_datetime_stop) != 0)
+            {
+                nc_close(ncid);
+                return -1;
+            }
 
-        if (attr_data_type != harp_type_double)
+            if (attr_data_type != harp_type_double)
+            {
+                harp_set_error(HARP_ERROR_PRODUCT, "attribute 'datetime_stop' has invalid type");
+                nc_close(ncid);
+                return -1;
+            }
+        }
+        else
         {
-            harp_set_error(HARP_ERROR_PRODUCT, "attribute '%s' has invalid type", attr_name);
-            nc_close(ncid);
-            return -1;
+            attr_datetime_stop.double_data = harp_plusinf();
         }
-
-        attr_datetime_stop = attr_data.double_data;
     }
 
     if (source_product != NULL)
@@ -739,12 +770,12 @@ int harp_import_global_attributes_netcdf(const char *filename, double *datetime_
 
     if (datetime_start != NULL)
     {
-        *datetime_start = attr_datetime_start;
+        *datetime_start = attr_datetime_start.double_data;
     }
 
     if (datetime_stop != NULL)
     {
-        *datetime_stop = attr_datetime_stop;
+        *datetime_stop = attr_datetime_stop.double_data;
     }
 
     if (source_product != NULL)
@@ -776,11 +807,13 @@ static int write_dimensions(int ncid, const harp_dimensions *dimensions)
             result = nc_def_dim(ncid, harp_get_dimension_type_name(dimensions->type[i]), dimensions->length[i],
                                 &dim_id);
         }
+
         if (result != NC_NOERR)
         {
             harp_set_error(HARP_ERROR_NETCDF, "%s", nc_strerror(result));
             return -1;
         }
+
         assert(dim_id == i);
     }
 
@@ -801,7 +834,7 @@ static int write_string_attribute(int ncid, int varid, const char *name, const c
     return 0;
 }
 
-static int write_scalar_attribute(int ncid, int varid, const char *name, harp_data_type data_type, harp_scalar data)
+static int write_numeric_attribute(int ncid, int varid, const char *name, harp_data_type data_type, harp_scalar data)
 {
     int result;
 
@@ -845,27 +878,37 @@ static int write_variable_definition(int ncid, const harp_variable *variable, ha
     int i;
 
     num_dimensions = variable->num_dimensions;
-    assert(num_dimensions < NC_MAX_VAR_DIMS);
+    assert(num_dimensions <= NC_MAX_VAR_DIMS);
+
     for (i = 0; i < num_dimensions; i++)
     {
         dim_id[i] = dimensions_find(dimensions, variable->dimension_type[i], variable->dimension[i]);
         assert(dim_id[i] >= 0);
     }
 
+    /* A variable of type string is stored as a contiguous array of characters. The array has an additional dimension
+     * the length of which is set to the length of the longest string. Shorter strings will be padded with NUL '\0'
+     * termination characters.
+     *
+     * NetCDF does not support zero length dimensions, so a dimension of length 1 is added if the maximum string length
+     * is 0. In this case a single NUL character will be written for each string.
+     */
     if (variable->data_type == harp_type_string)
     {
         long length;
 
         assert((num_dimensions + 1) < NC_MAX_VAR_DIMS);
 
-        /* determine length for the string dimensions (ensure minimum length of 1) */
-        length = harp_array_get_max_string_length(variable->data, variable->num_elements);
+        /* determine length for the string dimension (ensure a minimum length of 1) */
+        length = harp_get_max_string_length(variable->num_elements, variable->data.string_data);
         if (length == 0)
         {
             length = 1;
         }
+
         dim_id[num_dimensions] = dimensions_find(dimensions, harp_dimension_independent, length);
         assert(dim_id[num_dimensions] >= 0);
+
         num_dimensions++;
     }
 
@@ -876,7 +919,7 @@ static int write_variable_definition(int ncid, const harp_variable *variable, ha
         return -1;
     }
 
-    if (variable->description != NULL)
+    if (variable->description != NULL && strcmp(variable->description, "") != 0)
     {
         if (write_string_attribute(ncid, *varid, "description", variable->description) != 0)
         {
@@ -884,7 +927,7 @@ static int write_variable_definition(int ncid, const harp_variable *variable, ha
         }
     }
 
-    if (variable->unit != NULL)
+    if (variable->unit != NULL && strcmp(variable->unit, "") != 0)
     {
         if (write_string_attribute(ncid, *varid, "units", variable->unit) != 0)
         {
@@ -896,7 +939,7 @@ static int write_variable_definition(int ncid, const harp_variable *variable, ha
     {
         if (!harp_is_valid_min_for_type(variable->data_type, variable->valid_min))
         {
-            if (write_scalar_attribute(ncid, *varid, "valid_min", variable->data_type, variable->valid_min) != 0)
+            if (write_numeric_attribute(ncid, *varid, "valid_min", variable->data_type, variable->valid_min) != 0)
             {
                 return -1;
             }
@@ -904,7 +947,7 @@ static int write_variable_definition(int ncid, const harp_variable *variable, ha
 
         if (!harp_is_valid_max_for_type(variable->data_type, variable->valid_max))
         {
-            if (write_scalar_attribute(ncid, *varid, "valid_max", variable->data_type, variable->valid_max) != 0)
+            if (write_numeric_attribute(ncid, *varid, "valid_max", variable->data_type, variable->valid_max) != 0)
             {
                 return -1;
             }
@@ -939,16 +982,18 @@ static int write_variable(int ncid, int varid, const harp_variable *variable)
             {
                 char *buffer;
 
-                buffer = harp_array_get_char_array_from_strings(variable->data, variable->num_elements, NULL);
-                if (buffer == NULL)
+                if (harp_get_char_array_from_string_array(variable->num_elements, variable->data.string_data, 1, NULL,
+                                                          &buffer) != 0)
                 {
                     return -1;
                 }
+
                 result = nc_put_var_text(ncid, varid, buffer);
                 free(buffer);
             }
             break;
     }
+
     if (result != NC_NOERR)
     {
         harp_set_error(HARP_ERROR_NETCDF, "%s", nc_strerror(result));
@@ -971,20 +1016,34 @@ static int write_product(int ncid, const harp_product *product, harp_dimensions 
         return -1;
     }
 
-    /* write datetime range */
-    if (harp_product_get_datetime_range(product, &datetime_start.double_data, &datetime_stop.double_data) != 0)
+    /* write attributes */
+    if (harp_product_get_datetime_range(product, &datetime_start.double_data, &datetime_stop.double_data) == 0)
     {
-        return -1;
+        if (write_numeric_attribute(ncid, NC_GLOBAL, "datetime_start", harp_type_double, datetime_start) != 0)
+        {
+            return -1;
+        }
+
+        if (write_numeric_attribute(ncid, NC_GLOBAL, "datetime_stop", harp_type_double, datetime_stop) != 0)
+        {
+            return -1;
+        }
     }
 
-    if (write_scalar_attribute(ncid, NC_GLOBAL, "datetime_start", harp_type_double, datetime_start) != 0)
+    if (product->source_product != NULL && strcmp(product->source_product, "") != 0)
     {
-        return -1;
+        if (write_string_attribute(ncid, NC_GLOBAL, "source_product", product->source_product) != 0)
+        {
+            return -1;
+        }
     }
 
-    if (write_scalar_attribute(ncid, NC_GLOBAL, "datetime_stop", harp_type_double, datetime_stop) != 0)
+    if (product->history != NULL && strcmp(product->history, "") != 0)
     {
-        return -1;
+        if (write_string_attribute(ncid, NC_GLOBAL, "history", product->history) != 0)
+        {
+            return -1;
+        }
     }
 
     /* determine dimensions */
@@ -1001,16 +1060,18 @@ static int write_product(int ncid, const harp_product *product, harp_dimensions 
                 return -1;
             }
         }
+
         if (variable->data_type == harp_type_string)
         {
             long length;
 
-            /* determine length for the string dimensions (ensure minimum length of 1) */
-            length = harp_array_get_max_string_length(variable->data, variable->num_elements);
+            /* determine length for the string dimension (ensure a minimum length of 1) */
+            length = harp_get_max_string_length(variable->num_elements, variable->data.string_data);
             if (length == 0)
             {
                 length = 1;
             }
+
             if (dimensions_add(dimensions, harp_dimension_independent, length) < 0)
             {
                 return -1;
@@ -1034,23 +1095,6 @@ static int write_product(int ncid, const harp_product *product, harp_dimensions 
             return -1;
         }
         assert(varid == i);
-    }
-
-    /* write product attributes */
-    if (product->source_product != NULL)
-    {
-        if (write_string_attribute(ncid, NC_GLOBAL, "source_product", product->source_product) != 0)
-        {
-            return -1;
-        }
-    }
-
-    if (product->history != NULL)
-    {
-        if (write_string_attribute(ncid, NC_GLOBAL, "history", product->history) != 0)
-        {
-            return -1;
-        }
     }
 
     result = nc_enddef(ncid);
@@ -1080,7 +1124,13 @@ int harp_export_netcdf(const char *filename, const harp_product *product)
 
     if (filename == NULL)
     {
-        harp_set_error(HARP_ERROR_FILE_OPEN, "could not open netCDF export file (can not write netCDF data to stdout)");
+        harp_set_error(HARP_ERROR_INVALID_ARGUMENT, "filename is NULL");
+        return -1;
+    }
+
+    if (product == NULL)
+    {
+        harp_set_error(HARP_ERROR_INVALID_ARGUMENT, "product is NULL");
         return -1;
     }
 

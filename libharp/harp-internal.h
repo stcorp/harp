@@ -104,8 +104,9 @@ typedef enum harp_overlapping_scenario_enum
 } harp_overlapping_scenario;
 
 /* Utility functions */
-char *harp_array_get_char_array_from_strings(harp_array data, long num_elements, long *max_string_length);
-long harp_array_get_max_string_length(harp_array data, long num_elements);
+long harp_get_max_string_length(long num_strings, char **string_data);
+int harp_get_char_array_from_string_array(long num_strings, char **string_data, long min_string_length,
+                                          long *string_length, char **char_data);
 long harp_get_num_elements(int num_dimensions, const long *dimension);
 void harp_array_null(harp_data_type data_type, long num_elements, harp_array data);
 void harp_array_replace_fill_value(harp_data_type data_type, long num_elements, harp_array data,

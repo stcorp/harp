@@ -494,48 +494,22 @@ long harp_get_num_elements(int num_dimensions, const long *dimension)
     return num_elements;
 }
 
-char *harp_array_get_char_array_from_strings(harp_array data, long num_elements, long *max_string_length)
+/**
+ * Return the length of the longest string.
+ * \param num_strings Number of strings in the array.
+ * \param string_data Array of strings to operate on.
+ * \return Length of the longest string.
+ */
+long harp_get_max_string_length(long num_strings, char **string_data)
 {
-    char *buffer;
-    long max_length;
+    long max_length = 0;
     long i;
 
-    max_length = harp_array_get_max_string_length(data, num_elements);
-    buffer = malloc((size_t)num_elements * max_length * sizeof(char));
-    if (buffer == NULL)
+    for (i = 0; i < num_strings; i++)
     {
-        harp_set_error(HARP_ERROR_OUT_OF_MEMORY, "out of memory (could not allocate %lu bytes) (%s:%u)",
-                       num_elements * max_length * sizeof(char), __FILE__, __LINE__);
-        return NULL;
-    }
-    memset(buffer, 0, (size_t)(num_elements * max_length) * sizeof(char));
-    for (i = 0; i < num_elements; i++)
-    {
-        if (data.string_data[i] != NULL)
+        if (string_data[i] != NULL)
         {
-            memcpy(&buffer[i * max_length], data.string_data[i], strlen(data.string_data[i]));
-        }
-    }
-
-    if (max_string_length != NULL)
-    {
-        *max_string_length = max_length;
-    }
-
-    return buffer;
-}
-
-long harp_array_get_max_string_length(harp_array data, long num_elements)
-{
-    long max_length;
-    long i;
-
-    max_length = 0;
-    for (i = 0; i < num_elements; i++)
-    {
-        if (data.string_data[i] != NULL)
-        {
-            long length = (long)strlen(data.string_data[i]);
+            long length = (long)strlen(string_data[i]);
 
             if (length > max_length)
             {
@@ -545,6 +519,66 @@ long harp_array_get_max_string_length(harp_array data, long num_elements)
     }
 
     return max_length;
+}
+
+/**
+ * Convert an array of variable length strings to a character array of fixed length strings. The size of the character
+ * array is \a num_strings times \a min_string_length or the length of the longest string in \a string_data (whichever
+ * is larger). Shorter strings will be padded with NUL (termination) characters. The caller is responsible for further
+ * memory management of the character array.
+ * \param[in] num_strings Number of strings in the array.
+ * \param[in] string_data Array of strings to operate on.
+ * \param[in] min_string_length Minimal fixed string length.
+ * \param[out] string_length Pointer to the location where the length of the longest string will be stored. If NULL, the
+ *   length will not be stored.
+ * \param[out] char_data Pointer to the location where the pointer to the character array will be stored.
+ * \return
+ *   \arg \c 0, Success.
+ *   \arg \c -1, Error occurred (check #harp_errno).
+ */
+int harp_get_char_array_from_string_array(long num_strings, char **string_data, long min_string_length,
+                                          long *string_length, char **char_data)
+{
+    char *buffer;
+    long length;
+    long i;
+
+    /* Determine fixed string length to use. */
+    length = harp_get_max_string_length(num_strings, string_data);
+    if (length < min_string_length)
+    {
+        length = min_string_length;
+    }
+
+    /* Allocate character array. */
+    buffer = malloc((size_t)num_strings * length * sizeof(char));
+    if (buffer == NULL)
+    {
+        harp_set_error(HARP_ERROR_OUT_OF_MEMORY, "out of memory (could not allocate %lu bytes) (%s:%u)",
+                       num_strings * length * sizeof(char), __FILE__, __LINE__);
+        return -1;
+    }
+
+    /* Fill char array with NUL ('\0') characters. */
+    memset(buffer, '\0', (size_t)(num_strings * length) * sizeof(char));
+
+    /* Copy strings. */
+    for (i = 0; i < num_strings; i++)
+    {
+        if (string_data[i] != NULL)
+        {
+            memcpy(&buffer[i * length], string_data[i], strlen(string_data[i]));
+        }
+    }
+
+    if (string_length != NULL)
+    {
+        *string_length = length;
+    }
+
+    *char_data = buffer;
+
+    return 0;
 }
 
 static void fill_int8(long num_elements, int8_t *data, int8_t value)

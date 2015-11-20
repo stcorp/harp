@@ -35,26 +35,28 @@ static int get_harp_type(int32 hdf4_data_type, harp_data_type *data_type)
     {
         case DFNT_CHAR:
             *data_type = harp_type_string;
-            return 0;
+            break;
         case DFNT_INT8:
             *data_type = harp_type_int8;
-            return 0;
+            break;
         case DFNT_INT16:
             *data_type = harp_type_int16;
-            return 0;
+            break;
         case DFNT_INT32:
             *data_type = harp_type_int32;
-            return 0;
+            break;
         case DFNT_FLOAT32:
             *data_type = harp_type_float;
-            return 0;
+            break;
         case DFNT_FLOAT64:
             *data_type = harp_type_double;
-            return 0;
+            break;
+        default:
+            harp_set_error(HARP_ERROR_PRODUCT, "unsupported HDF4 data type");
+            return -1;
     }
 
-    harp_set_error(HARP_ERROR_PRODUCT, "unsupported basic type for HDF4 data");
-    return -1;
+    return 0;
 }
 
 static int32 get_hdf4_type(harp_data_type data_type)
@@ -73,9 +75,10 @@ static int32 get_hdf4_type(harp_data_type data_type)
             return DFNT_FLOAT64;
         case harp_type_string:
             return DFNT_CHAR;
+        default:
+            assert(0);
+            exit(1);
     }
-    assert(0);
-    exit(1);
 }
 
 static int read_string_attribute(int32 obj_id, int32 index, char **data)
@@ -117,7 +120,7 @@ static int read_string_attribute(int32 obj_id, int32 index, char **data)
     return 0;
 }
 
-static int read_scalar_attribute(int32 obj_id, int32 index, harp_data_type *data_type, harp_scalar *data)
+static int read_numeric_attribute(int32 obj_id, int32 index, harp_data_type *data_type, harp_scalar *data)
 {
     char name[MAX_HDF4_NAME_LENGTH + 1];
     int32 hdf4_data_type;
@@ -181,23 +184,19 @@ static int read_dimensions(int32 sds_id, int *num_dimensions, harp_dimension_typ
     index = SDfindattr(sds_id, "dims");
     if (index < 0)
     {
-        harp_set_error(HARP_ERROR_PRODUCT, "dimension list not found");
-        return -1;
+        /* If the 'dims' attribute does not exist, the corresponding variable is scalar (i.e. has zero dimensions). */
+        *num_dimensions = 0;
+        return 0;
     }
 
     if (read_string_attribute(sds_id, index, &dims) != 0)
     {
         return -1;
     }
-
-    *num_dimensions = 0;
-    if (*dims == '\0')
-    {
-        free(dims);
-        return 0;
-    }
+    assert(*dims != '\0');
 
     cursor = dims;
+    *num_dimensions = 0;
     while (*cursor != '\0' && *num_dimensions < HARP_MAX_NUM_DIMS)
     {
         char *mark;
@@ -219,6 +218,7 @@ static int read_dimensions(int32 sds_id, int *num_dimensions, harp_dimension_typ
             free(dims);
             return -1;
         }
+
         (*num_dimensions)++;
     }
 
@@ -240,108 +240,20 @@ static int read_dimensions(int32 sds_id, int *num_dimensions, harp_dimension_typ
     return 0;
 }
 
-static int read_variable_data(int32 sds_id, harp_array data)
-{
-    char name[MAX_HDF4_NAME_LENGTH + 1];
-    int32 data_type;
-    int32 num_dimensions;
-    int32 dimension[MAX_HDF4_VAR_DIMS];
-    int32 num_attributes;
-    int32 start[MAX_HDF4_VAR_DIMS];
-    long num_elements;
-    int i;
-
-    if (SDgetinfo(sds_id, name, &num_dimensions, dimension, &data_type, &num_attributes) != 0)
-    {
-        harp_set_error(HARP_ERROR_HDF4, NULL);
-        return -1;
-    }
-
-    num_elements = 1;
-    for (i = 0; i < num_dimensions; i++)
-    {
-        start[i] = 0;
-        num_elements *= dimension[i];
-    }
-    if (num_dimensions == 0)
-    {
-        start[0] = 0;
-        dimension[0] = 1;
-    }
-    if (data_type == DFNT_CHAR)
-    {
-        char *buffer = NULL;
-        long num_strings;
-        long string_length;
-
-        if (num_elements > 0)
-        {
-            buffer = malloc(num_elements * sizeof(char));
-            if (buffer == NULL)
-            {
-                harp_set_error(HARP_ERROR_OUT_OF_MEMORY, "out of memory (could not allocate %lu bytes) (%s:%u)",
-                               num_elements * sizeof(char), __FILE__, __LINE__);
-                return -1;
-            }
-            if (SDreaddata(sds_id, start, NULL, dimension, buffer) != 0)
-            {
-                harp_set_error(HARP_ERROR_HDF4, NULL);
-                free(buffer);
-                return -1;
-            }
-        }
-        num_strings = 1;
-        for (i = 0; i < num_dimensions - 1; i++)
-        {
-            num_strings *= dimension[i];
-        }
-        string_length = (num_dimensions > 0 ? dimension[num_dimensions - 1] : 1);
-        for (i = 0; i < num_strings; i++)
-        {
-            char *str;
-
-            str = malloc((string_length + 1) * sizeof(char));
-            if (str == NULL)
-            {
-                harp_set_error(HARP_ERROR_OUT_OF_MEMORY, "out of memory (could not allocate %lu bytes) (%s:%u)",
-                               (string_length + 1) * sizeof(char), __FILE__, __LINE__);
-                free(buffer);
-                return -1;
-            }
-            if (string_length > 0)
-            {
-                memcpy(str, &buffer[i * string_length], string_length);
-            }
-            str[string_length] = '\0';
-            data.string_data[i] = str;
-        }
-        free(buffer);
-    }
-    else
-    {
-        if (SDreaddata(sds_id, start, NULL, dimension, data.ptr) != 0)
-        {
-            harp_set_error(HARP_ERROR_HDF4, NULL);
-            return -1;
-        }
-    }
-
-    return 0;
-}
-
 static int read_variable(harp_product *product, int32 sds_id)
 {
-    harp_variable *variable;
-    harp_data_type data_type;
-    int num_dimensions;
-    harp_dimension_type dimension_type[HARP_MAX_NUM_DIMS];
-    long dimension[HARP_MAX_NUM_DIMS];
     char hdf4_name[MAX_HDF4_NAME_LENGTH + 1];
     int32 hdf4_data_type;
     int32 hdf4_num_dimensions;
     int32 hdf4_dimension[MAX_HDF4_VAR_DIMS];
     int32 hdf4_dont_care;
+    int32 hdf4_start[MAX_HDF4_VAR_DIMS] = { 0 };
     int32 hdf4_index;
+    harp_variable *variable;
+    harp_dimension_type dimension_type[HARP_MAX_NUM_DIMS];
+    long dimension[HARP_MAX_NUM_DIMS];
+    harp_data_type data_type;
+    int num_dimensions;
     int i;
 
     if (SDgetinfo(sds_id, hdf4_name, &hdf4_num_dimensions, hdf4_dimension, &hdf4_data_type, &hdf4_dont_care) != 0)
@@ -349,9 +261,11 @@ static int read_variable(harp_product *product, int32 sds_id)
         harp_set_error(HARP_ERROR_HDF4, NULL);
         return -1;
     }
+    assert(hdf4_num_dimensions > 0);
 
     if (get_harp_type(hdf4_data_type, &data_type) != 0)
     {
+        harp_add_error_message(" (dataset '%s')", hdf4_name);
         return -1;
     }
 
@@ -362,22 +276,39 @@ static int read_variable(harp_product *product, int32 sds_id)
      */
     if (read_dimensions(sds_id, &num_dimensions, dimension_type) != 0)
     {
+        harp_add_error_message(" (dataset '%s')", hdf4_name);
         return -1;
     }
 
-    if (num_dimensions == 0 && (hdf4_num_dimensions != 1 || hdf4_dimension[0] != 1))
+    if (data_type == harp_type_string)
     {
-        harp_set_error(HARP_ERROR_PRODUCT, "variable '%s' has invalid format", hdf4_name);
-        return -1;
+        if (hdf4_num_dimensions != (num_dimensions + 1))
+        {
+            harp_set_error(HARP_ERROR_PRODUCT, "dataset '%s' has %d dimensions; expected %d", hdf4_name,
+                           hdf4_num_dimensions, num_dimensions + 1);
+            return -1;
+        }
     }
-    else if (data_type == harp_type_string && hdf4_num_dimensions != (num_dimensions + 1))
+    else if (num_dimensions == 0)
     {
-        harp_set_error(HARP_ERROR_PRODUCT, "variable '%s' has invalid format", hdf4_name);
-        return -1;
+        if (hdf4_num_dimensions != 1)
+        {
+            harp_set_error(HARP_ERROR_PRODUCT, "dataset '%s' has %d dimensions; expected 1", hdf4_name,
+                           hdf4_num_dimensions);
+            return -1;
+        }
+
+        if (hdf4_dimension[0] != 1)
+        {
+            harp_set_error(HARP_ERROR_PRODUCT, "dataset '%s' has %d elements; expected 1", hdf4_name,
+                           hdf4_dimension[0]);
+            return -1;
+        }
     }
     else if (hdf4_num_dimensions != num_dimensions)
     {
-        harp_set_error(HARP_ERROR_PRODUCT, "variable '%s' has invalid format", hdf4_name);
+        harp_set_error(HARP_ERROR_PRODUCT, "dataset '%s' has %d dimensions; expected %d", hdf4_name,
+                       hdf4_num_dimensions, num_dimensions);
         return -1;
     }
 
@@ -398,9 +329,53 @@ static int read_variable(harp_product *product, int32 sds_id)
     }
 
     /* Read data. */
-    if (read_variable_data(sds_id, variable->data) != 0)
+    if (hdf4_data_type == DFNT_CHAR)
     {
-        return -1;
+        char *buffer = NULL;
+        long length = hdf4_dimension[hdf4_num_dimensions - 1];
+
+        buffer = malloc(variable->num_elements * length * sizeof(char));
+        if (buffer == NULL)
+        {
+            harp_set_error(HARP_ERROR_OUT_OF_MEMORY, "out of memory (could not allocate %lu bytes) (%s:%u)",
+                           variable->num_elements * length * sizeof(char), __FILE__, __LINE__);
+            return -1;
+        }
+
+        if (SDreaddata(sds_id, hdf4_start, NULL, hdf4_dimension, buffer) != 0)
+        {
+            harp_set_error(HARP_ERROR_HDF4, NULL);
+            free(buffer);
+            return -1;
+        }
+
+        for (i = 0; i < variable->num_elements; i++)
+        {
+            char *str;
+
+            str = malloc((length + 1) * sizeof(char));
+            if (str == NULL)
+            {
+                harp_set_error(HARP_ERROR_OUT_OF_MEMORY, "out of memory (could not allocate %lu bytes) (%s:%u)",
+                               (length + 1) * sizeof(char), __FILE__, __LINE__);
+                free(buffer);
+                return -1;
+            }
+
+            memcpy(str, &buffer[i * length], length);
+            str[length] = '\0';
+            variable->data.string_data[i] = str;
+        }
+
+        free(buffer);
+    }
+    else
+    {
+        if (SDreaddata(sds_id, hdf4_start, NULL, hdf4_dimension, variable->data.ptr) != 0)
+        {
+            harp_set_error(HARP_ERROR_HDF4, NULL);
+            return -1;
+        }
     }
 
     /* Read attributes. */
@@ -427,7 +402,7 @@ static int read_variable(harp_product *product, int32 sds_id)
     {
         harp_data_type attr_data_type;
 
-        if (read_scalar_attribute(sds_id, hdf4_index, &attr_data_type, &variable->valid_min) != 0)
+        if (read_numeric_attribute(sds_id, hdf4_index, &attr_data_type, &variable->valid_min) != 0)
         {
             return -1;
         }
@@ -437,7 +412,6 @@ static int read_variable(harp_product *product, int32 sds_id)
             harp_set_error(HARP_ERROR_PRODUCT, "attribute 'valid_min' of variable '%s' has invalid type", hdf4_name);
             return -1;
         }
-
     }
 
     hdf4_index = SDfindattr(sds_id, "valid_max");
@@ -445,7 +419,7 @@ static int read_variable(harp_product *product, int32 sds_id)
     {
         harp_data_type attr_data_type;
 
-        if (read_scalar_attribute(sds_id, hdf4_index, &attr_data_type, &variable->valid_max) != 0)
+        if (read_numeric_attribute(sds_id, hdf4_index, &attr_data_type, &variable->valid_max) != 0)
         {
             return -1;
         }
@@ -484,6 +458,7 @@ static int read_product(harp_product *product, int32 sd_id)
             harp_set_error(HARP_ERROR_HDF4, NULL);
             return -1;
         }
+
         if (read_variable(product, sds_id) != 0)
         {
             SDendaccess(sds_id);
@@ -595,7 +570,7 @@ static int write_string_attribute(int32 obj_id, const char *name, const char *da
     return 0;
 }
 
-static int write_scalar_attribute(int32 obj_id, const char *name, harp_data_type data_type, harp_scalar data)
+static int write_numeric_attribute(int32 obj_id, const char *name, harp_data_type data_type, harp_scalar data)
 {
     int result;
 
@@ -636,6 +611,11 @@ static int write_dimensions(int32 sds_id, int num_dimensions, const harp_dimensi
     int length;
     int i;
 
+    if (num_dimensions == 0)
+    {
+        return 0;
+    }
+
     length = 0;
     for (i = 0; i < num_dimensions; i++)
     {
@@ -651,8 +631,8 @@ static int write_dimensions(int32 sds_id, int num_dimensions, const harp_dimensi
     dimension_str = (char *)malloc((length + 1) * sizeof(char));
     if (dimension_str == NULL)
     {
-        harp_set_error(HARP_ERROR_OUT_OF_MEMORY, "out of memory (could not allocate %lu bytes) (%s:%u)", (length + 1)
-                       * sizeof(char), __FILE__, __LINE__);
+        harp_set_error(HARP_ERROR_OUT_OF_MEMORY, "out of memory (could not allocate %lu bytes) (%s:%u)",
+                       (length + 1) * sizeof(char), __FILE__, __LINE__);
         return -1;
     }
 
@@ -674,20 +654,20 @@ static int write_dimensions(int32 sds_id, int num_dimensions, const harp_dimensi
     }
 
     free(dimension_str);
+
     return 0;
 }
 
 static int write_variable(harp_variable *variable, int32 sd_id)
 {
     int32 sds_id;
-    int32 start[MAX_HDF4_VAR_DIMS];
+    int32 hdf4_start[MAX_HDF4_VAR_DIMS] = { 0 };
     int32 hdf4_num_dimensions;
     int32 hdf4_dimension[MAX_HDF4_VAR_DIMS];
     int i;
 
     for (i = 0; i < variable->num_dimensions; i++)
     {
-        start[i] = 0;
         hdf4_dimension[i] = variable->dimension[i];
     }
     hdf4_num_dimensions = variable->num_dimensions;
@@ -696,16 +676,20 @@ static int write_variable(harp_variable *variable, int32 sd_id)
     if (variable->data_type == harp_type_string)
     {
         char *buffer;
-        long max_string_length;
+        long length;
 
-        buffer = harp_array_get_char_array_from_strings(variable->data, variable->num_elements, &max_string_length);
-        if (buffer == NULL)
+        if (harp_get_char_array_from_string_array(variable->num_elements, variable->data.string_data, 1, &length,
+                                                  &buffer) != 0)
         {
             return -1;
         }
-        start[hdf4_num_dimensions] = 0;
-        hdf4_dimension[hdf4_num_dimensions] = max_string_length;
+
+        /* Add an additional dimension with a length equal to the length of the longest string, or 1 if the longest
+         * string is of length zero.
+         */
+        hdf4_dimension[hdf4_num_dimensions] = length;
         hdf4_num_dimensions++;
+
         sds_id = SDcreate(sd_id, variable->name, DFNT_CHAR, hdf4_num_dimensions, hdf4_dimension);
         if (sds_id == -1)
         {
@@ -713,23 +697,26 @@ static int write_variable(harp_variable *variable, int32 sd_id)
             free(buffer);
             return -1;
         }
-        if (SDwritedata(sds_id, start, NULL, hdf4_dimension, buffer) != 0)
+
+        if (SDwritedata(sds_id, hdf4_start, NULL, hdf4_dimension, buffer) != 0)
         {
             harp_set_error(HARP_ERROR_HDF4, NULL);
             SDendaccess(sds_id);
             free(buffer);
             return -1;
         }
+
         free(buffer);
     }
     else
     {
+        /* HDF4 does not support data sets with zero dimensions. */
         if (hdf4_num_dimensions == 0)
         {
-            hdf4_num_dimensions++;
-            start[0] = 0;
             hdf4_dimension[0] = 1;
+            hdf4_num_dimensions++;
         }
+
         sds_id = SDcreate(sd_id, variable->name, get_hdf4_type(variable->data_type), hdf4_num_dimensions,
                           hdf4_dimension);
         if (sds_id == -1)
@@ -737,7 +724,8 @@ static int write_variable(harp_variable *variable, int32 sd_id)
             harp_set_error(HARP_ERROR_HDF4, NULL);
             return -1;
         }
-        if (SDwritedata(sds_id, start, NULL, hdf4_dimension, variable->data.ptr) != 0)
+
+        if (SDwritedata(sds_id, hdf4_start, NULL, hdf4_dimension, variable->data.ptr) != 0)
         {
             harp_set_error(HARP_ERROR_HDF4, NULL);
             SDendaccess(sds_id);
@@ -753,7 +741,7 @@ static int write_variable(harp_variable *variable, int32 sd_id)
     }
 
     /* Write attributes. */
-    if (variable->description != NULL)
+    if (variable->description != NULL && strcmp(variable->description, "") != 0)
     {
         if (write_string_attribute(sds_id, "description", variable->description) != 0)
         {
@@ -762,7 +750,7 @@ static int write_variable(harp_variable *variable, int32 sd_id)
         }
     }
 
-    if (variable->unit != NULL)
+    if (variable->unit != NULL && strcmp(variable->unit, "") != 0)
     {
         if (write_string_attribute(sds_id, "units", variable->unit) != 0)
         {
@@ -775,7 +763,7 @@ static int write_variable(harp_variable *variable, int32 sd_id)
     {
         if (!harp_is_valid_min_for_type(variable->data_type, variable->valid_min))
         {
-            if (write_scalar_attribute(sds_id, "valid_min", variable->data_type, variable->valid_min) != 0)
+            if (write_numeric_attribute(sds_id, "valid_min", variable->data_type, variable->valid_min) != 0)
             {
                 SDendaccess(sds_id);
                 return -1;
@@ -784,7 +772,7 @@ static int write_variable(harp_variable *variable, int32 sd_id)
 
         if (!harp_is_valid_max_for_type(variable->data_type, variable->valid_max))
         {
-            if (write_scalar_attribute(sds_id, "valid_max", variable->data_type, variable->valid_max) != 0)
+            if (write_numeric_attribute(sds_id, "valid_max", variable->data_type, variable->valid_max) != 0)
             {
                 SDendaccess(sds_id);
                 return -1;
@@ -793,6 +781,7 @@ static int write_variable(harp_variable *variable, int32 sd_id)
     }
 
     SDendaccess(sds_id);
+
     return 0;
 }
 
@@ -806,14 +795,8 @@ static int write_product(const harp_product *product, int32 sd_id)
         return -1;
     }
 
-    /* Write variables. */
-    for (i = 0; i < product->num_variables; i++)
-    {
-        write_variable(product->variable[i], sd_id);
-    }
-
     /* Write attributes. */
-    if (product->source_product != NULL)
+    if (product->source_product != NULL && strcmp(product->source_product, "") != 0)
     {
         if (write_string_attribute(sd_id, "source_product", product->source_product) != 0)
         {
@@ -821,9 +804,18 @@ static int write_product(const harp_product *product, int32 sd_id)
         }
     }
 
-    if (product->history != NULL)
+    if (product->history != NULL && strcmp(product->history, "") != 0)
     {
         if (write_string_attribute(sd_id, "history", product->history) != 0)
+        {
+            return -1;
+        }
+    }
+
+    /* Write variables. */
+    for (i = 0; i < product->num_variables; i++)
+    {
+        if (write_variable(product->variable[i], sd_id) != 0)
         {
             return -1;
         }
@@ -838,7 +830,13 @@ int harp_export_hdf4(const char *filename, const harp_product *product)
 
     if (filename == NULL)
     {
-        harp_set_error(HARP_ERROR_FILE_OPEN, "could not open HDF4 export file (can not write HDF4 data to stdout)");
+        harp_set_error(HARP_ERROR_INVALID_ARGUMENT, "filename is NULL");
+        return -1;
+    }
+
+    if (product == NULL)
+    {
+        harp_set_error(HARP_ERROR_INVALID_ARGUMENT, "product is NULL");
         return -1;
     }
 
