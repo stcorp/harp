@@ -1797,9 +1797,9 @@ static int init_product_definition(harp_ingestion_module *module, uvvis_doas_gas
                                                                      read_solar_azimuth_angle);
     harp_variable_definition_add_mapping(variable_definition, NULL, NULL, "/ANGLE.SOLAR_AZIMUTH", NULL);
 
-    /* viewing_azimith_angle */
+    /* viewing_azimuth_angle */
     description = "viewing azimuth angle of the instrument";
-    variable_definition = harp_ingestion_register_variable_full_read(product_definition, "viewing_azimith_angle",
+    variable_definition = harp_ingestion_register_variable_full_read(product_definition, "viewing_azimuth_angle",
                                                                      harp_type_double, 1, dimension_type, NULL,
                                                                      description, "deg", NULL,
                                                                      read_viewing_azimuth_angle);
