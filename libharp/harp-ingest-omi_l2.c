@@ -65,8 +65,6 @@ typedef struct ingest_info_struct
     coda_cursor geo_cursor;
 
     /* geolocation buffers */
-    harp_array longitude_buffer;
-    harp_array latitude_buffer;
     double *longitude_grid;
     double *latitude_grid;
 
@@ -85,20 +83,17 @@ typedef struct ingest_info_struct
     variable_descriptor omaeruv_aaod;
 } ingest_info;
 
-static void calculate_corner_coordinates(ingest_info *info)
+static void calculate_corner_coordinates(long num_time, long num_xtrack, const double *longitude,
+                                         const double *latitude, double *longitude_grid, double *latitude_grid)
 {
-    double longitude[4];        /* the four center coordinates needed to calculate a corner coordinate */
-    double latitude[4];
-    long num_time;
-    long num_xtrack;
+    double center_longitude[4];        /* the four center coordinates needed to calculate a corner coordinate */
+    double center_latitude[4];
     long i;
     long j;
 
-    /* Corner coordinates lying at the outer edges are calculated by means of extrapolation. */
+    /* corner coordinates lying at the outer edges are calculated by means of extrapolation. */
 
     /* enumerate all corner coordinates (num_xtrack + 1) x (num_time + 1) and calculate the coordinates */
-    num_time = info->dimension[omi_dim_time];
-    num_xtrack = info->dimension[omi_dim_xtrack];
     for (i = 0; i < num_time + 1; i++)
     {
         for (j = 0; j < num_xtrack + 1; j++)
@@ -111,17 +106,13 @@ static void calculate_corner_coordinates(ingest_info *info)
                 /* extrapolate */
                 id1 = i * num_xtrack + j - 1 + (j == 0);
                 id2 = id1 + num_xtrack + (j == 0);
-                harp_geographic_extrapolation(info->longitude_buffer.double_data[id1],
-                                              info->latitude_buffer.double_data[id1],
-                                              info->longitude_buffer.double_data[id2],
-                                              info->latitude_buffer.double_data[id2], &longitude[0], &latitude[0]);
+                harp_geographic_extrapolation(longitude[id1], latitude[id1], longitude[id2], latitude[id2],
+                                              &center_longitude[0], &center_latitude[0]);
 
                 id1 = i * num_xtrack + j - (j == num_xtrack);
                 id2 = id1 + num_xtrack - (j == num_xtrack);
-                harp_geographic_extrapolation(info->longitude_buffer.double_data[id1],
-                                              info->latitude_buffer.double_data[id1],
-                                              info->longitude_buffer.double_data[id2],
-                                              info->latitude_buffer.double_data[id2], &longitude[1], &latitude[1]);
+                harp_geographic_extrapolation(longitude[id1], latitude[id1], longitude[id2], latitude[id2],
+                                              &center_longitude[1], &center_latitude[1]);
             }
             else
             {
@@ -130,15 +121,13 @@ static void calculate_corner_coordinates(ingest_info *info)
                     /* extrapolate */
                     id1 = (i - 1) * num_xtrack + j;
                     id2 = id1 + 1;
-                    harp_geographic_extrapolation(info->longitude_buffer.double_data[id1],
-                                                  info->latitude_buffer.double_data[id1],
-                                                  info->longitude_buffer.double_data[id2],
-                                                  info->latitude_buffer.double_data[id2], &longitude[0], &latitude[0]);
+                    harp_geographic_extrapolation(longitude[id1], latitude[id1], longitude[id2], latitude[id2],
+                                                  &center_longitude[0], &center_latitude[0]);
                 }
                 else
                 {
-                    longitude[0] = info->longitude_buffer.double_data[(i - 1) * num_xtrack + j - 1];
-                    latitude[0] = info->latitude_buffer.double_data[(i - 1) * num_xtrack + j - 1];
+                    center_longitude[0] = longitude[(i - 1) * num_xtrack + j - 1];
+                    center_latitude[0] = latitude[(i - 1) * num_xtrack + j - 1];
                 }
 
                 if (j == num_xtrack)
@@ -146,15 +135,13 @@ static void calculate_corner_coordinates(ingest_info *info)
                     /* extrapolate */
                     id1 = (i - 1) * num_xtrack + j - 1;
                     id2 = id1 - 1;
-                    harp_geographic_extrapolation(info->longitude_buffer.double_data[id1],
-                                                  info->latitude_buffer.double_data[id1],
-                                                  info->longitude_buffer.double_data[id2],
-                                                  info->latitude_buffer.double_data[id2], &longitude[1], &latitude[1]);
+                    harp_geographic_extrapolation(longitude[id1], latitude[id1], longitude[id2], latitude[id2],
+                                                  &center_longitude[1], &center_latitude[1]);
                 }
                 else
                 {
-                    longitude[1] = info->longitude_buffer.double_data[(i - 1) * num_xtrack + j];
-                    latitude[1] = info->latitude_buffer.double_data[(i - 1) * num_xtrack + j];
+                    center_longitude[1] = longitude[(i - 1) * num_xtrack + j];
+                    center_latitude[1] = latitude[(i - 1) * num_xtrack + j];
                 }
             }
 
@@ -163,17 +150,13 @@ static void calculate_corner_coordinates(ingest_info *info)
                 /* extrapolate */
                 id1 = (i - 1) * num_xtrack + j - (j == num_xtrack);
                 id2 = id1 - num_xtrack - (j == num_xtrack);
-                harp_geographic_extrapolation(info->longitude_buffer.double_data[id1],
-                                              info->latitude_buffer.double_data[id1],
-                                              info->longitude_buffer.double_data[id2],
-                                              info->latitude_buffer.double_data[id2], &longitude[2], &latitude[2]);
+                harp_geographic_extrapolation(longitude[id1], latitude[id1], longitude[id2], latitude[id2],
+                                              &center_longitude[2], &center_latitude[2]);
 
                 id1 = (i - 1) * num_xtrack + j - 1 + (j == 0);
                 id2 = id1 - num_xtrack + (j == 0);
-                harp_geographic_extrapolation(info->longitude_buffer.double_data[id1],
-                                              info->latitude_buffer.double_data[id1],
-                                              info->longitude_buffer.double_data[id2],
-                                              info->latitude_buffer.double_data[id2], &longitude[3], &latitude[3]);
+                harp_geographic_extrapolation(longitude[id1], latitude[id1], longitude[id2], latitude[id2],
+                                              &center_longitude[3], &center_latitude[3]);
             }
             else
             {
@@ -182,15 +165,13 @@ static void calculate_corner_coordinates(ingest_info *info)
                     /* extrapolate */
                     id1 = i * num_xtrack + j - 1;
                     id2 = id1 - 1;
-                    harp_geographic_extrapolation(info->longitude_buffer.double_data[id1],
-                                                  info->latitude_buffer.double_data[id1],
-                                                  info->longitude_buffer.double_data[id2],
-                                                  info->latitude_buffer.double_data[id2], &longitude[2], &latitude[2]);
+                    harp_geographic_extrapolation(longitude[id1], latitude[id1], longitude[id2], latitude[id2],
+                                                  &center_longitude[2], &center_latitude[2]);
                 }
                 else
                 {
-                    longitude[2] = info->longitude_buffer.double_data[i * num_xtrack + j];
-                    latitude[2] = info->latitude_buffer.double_data[i * num_xtrack + j];
+                    center_longitude[2] = longitude[i * num_xtrack + j];
+                    center_latitude[2] = latitude[i * num_xtrack + j];
                 }
 
                 if (j == 0)
@@ -198,22 +179,22 @@ static void calculate_corner_coordinates(ingest_info *info)
                     /* extrapolate */
                     id1 = i * num_xtrack + j;
                     id2 = id1 + 1;
-                    harp_geographic_extrapolation(info->longitude_buffer.double_data[id1],
-                                                  info->latitude_buffer.double_data[id1],
-                                                  info->longitude_buffer.double_data[id2],
-                                                  info->latitude_buffer.double_data[id2], &longitude[3], &latitude[3]);
+                    harp_geographic_extrapolation(longitude[id1], latitude[id1], longitude[id2], latitude[id2],
+                                                  &center_longitude[3], &center_latitude[3]);
                 }
                 else
                 {
-                    longitude[3] = info->longitude_buffer.double_data[i * num_xtrack + j - 1];
-                    latitude[3] = info->latitude_buffer.double_data[i * num_xtrack + j - 1];
+                    center_longitude[3] = longitude[i * num_xtrack + j - 1];
+                    center_latitude[3] = latitude[i * num_xtrack + j - 1];
                 }
             }
 
-            harp_geographic_intersection(longitude[0], latitude[0], longitude[2], latitude[2],
-                                         longitude[1], latitude[1], longitude[3], latitude[3],
-                                         &info->longitude_grid[i * (num_xtrack + 1) + j],
-                                         &info->latitude_grid[i * (num_xtrack + 1) + j]);
+            harp_geographic_intersection(center_longitude[0], center_latitude[0],
+                                         center_longitude[2], center_latitude[2],
+                                         center_longitude[1], center_latitude[1],
+                                         center_longitude[3], center_latitude[3],
+                                         &longitude_grid[i * (num_xtrack + 1) + j],
+                                         &latitude_grid[i * (num_xtrack + 1) + j]);
         }
     }
 }
@@ -729,35 +710,38 @@ static int init_dimensions_omo3pr(ingest_info *info)
 
 static int init_geolocation(ingest_info *info)
 {
-    long num_time;
-    long num_xtrack;
-
-    num_time = info->dimension[omi_dim_time];
-    num_xtrack = info->dimension[omi_dim_xtrack];
+    long num_time = info->dimension[omi_dim_time];
+    long num_xtrack = info->dimension[omi_dim_xtrack];
+    harp_array longitude;
+    harp_array latitude;
 
     /* read longitude information */
-    info->longitude_buffer.ptr = malloc(num_xtrack * num_time * sizeof(double));
-    if (info->longitude_buffer.ptr == NULL)
+    longitude.ptr = malloc(num_xtrack * num_time * sizeof(double));
+    if (longitude.ptr == NULL)
     {
         harp_set_error(HARP_ERROR_OUT_OF_MEMORY, "out of memory (could not allocate %lu bytes) (%s:%u)",
                        num_xtrack * num_time * sizeof(double), __FILE__, __LINE__);
         return -1;
     }
-    if (read_variable_double(info, &info->geo_cursor, "Longitude", 2, NULL, info->longitude_buffer) != 0)
+    if (read_variable_double(info, &info->geo_cursor, "Longitude", 2, NULL, longitude) != 0)
     {
+        free(longitude.ptr);
         return -1;
     }
 
     /* read latitude information */
-    info->latitude_buffer.ptr = malloc(num_xtrack * num_time * sizeof(double));
-    if (info->latitude_buffer.ptr == NULL)
+    latitude.ptr = malloc(num_xtrack * num_time * sizeof(double));
+    if (latitude.ptr == NULL)
     {
         harp_set_error(HARP_ERROR_OUT_OF_MEMORY, "out of memory (could not allocate %lu bytes) (%s:%u)",
                        num_xtrack * num_time * sizeof(double), __FILE__, __LINE__);
+        free(longitude.ptr);
         return -1;
     }
-    if (read_variable_double(info, &info->geo_cursor, "Latitude", 2, NULL, info->latitude_buffer) != 0)
+    if (read_variable_double(info, &info->geo_cursor, "Latitude", 2, NULL, latitude) != 0)
     {
+        free(latitude.ptr);
+        free(longitude.ptr);
         return -1;
     }
 
@@ -767,6 +751,8 @@ static int init_geolocation(ingest_info *info)
     {
         harp_set_error(HARP_ERROR_OUT_OF_MEMORY, "out of memory (could not allocate %lu bytes) (%s:%u)",
                        (num_xtrack + 1) * (num_time + 1) * sizeof(double), __FILE__, __LINE__);
+        free(latitude.ptr);
+        free(longitude.ptr);
         return -1;
     }
     info->latitude_grid = malloc((num_xtrack + 1) * (num_time + 1) * sizeof(double));
@@ -774,9 +760,16 @@ static int init_geolocation(ingest_info *info)
     {
         harp_set_error(HARP_ERROR_OUT_OF_MEMORY, "out of memory (could not allocate %lu bytes) (%s:%u)",
                        (num_xtrack + 1) * (num_time + 1) * sizeof(double), __FILE__, __LINE__);
+        free(latitude.ptr);
+        free(longitude.ptr);
         return -1;
     }
-    calculate_corner_coordinates(info);
+
+    calculate_corner_coordinates(num_time, num_xtrack, longitude.double_data, latitude.double_data,
+                                 info->longitude_grid, info->latitude_grid);
+
+    free(latitude.ptr);
+    free(longitude.ptr);
 
     return 0;
 }
@@ -795,8 +788,6 @@ static int ingest_info_new(ingest_info **new_info)
     info->product = NULL;
     info->product_version = -1;
     memset(info->dimension, 0, OMI_NUM_DIM_TYPES * sizeof(long));
-    info->longitude_buffer.ptr = NULL;
-    info->latitude_buffer.ptr = NULL;
     info->longitude_grid = NULL;
     info->latitude_grid = NULL;
     info->clipped_cloud_fraction = 1;
@@ -813,14 +804,6 @@ static int ingest_info_new(ingest_info **new_info)
 
 static void ingest_info_delete(ingest_info *info)
 {
-    if (info->longitude_buffer.ptr != NULL)
-    {
-        free(info->longitude_buffer.ptr);
-    }
-    if (info->latitude_buffer.ptr != NULL)
-    {
-        free(info->latitude_buffer.ptr);
-    }
     if (info->longitude_grid != NULL)
     {
         free(info->longitude_grid);
@@ -885,30 +868,20 @@ static int read_datetime(void *user_data, harp_array data)
     return 0;
 }
 
-static int read_longitude(void *user_data, long index, harp_array data)
-{
-    ingest_info *info = (ingest_info *)user_data;
-
-    *data.double_data = info->longitude_buffer.double_data[index];
-
-    return 0;
-}
-
-static int read_latitude(void *user_data, long index, harp_array data)
-{
-    ingest_info *info = (ingest_info *)user_data;
-
-    *data.double_data = info->latitude_buffer.double_data[index];
-
-    return 0;
-}
-
 static int read_longitude_bounds(void *user_data, long index, harp_array data)
 {
     ingest_info *info = (ingest_info *)user_data;
     long num_xtrack;
     int i;
     int j;
+
+    if (info->longitude_grid == NULL)
+    {
+        if (init_geolocation(info) != 0)
+        {
+            return -1;
+        }
+    }
 
     num_xtrack = info->dimension[omi_dim_xtrack];
     i = index / num_xtrack;     /* 0 <= i < num_time */
@@ -929,6 +902,14 @@ static int read_latitude_bounds(void *user_data, long index, harp_array data)
     int i;
     int j;
 
+    if (info->latitude_grid == NULL)
+    {
+        if (init_geolocation(info) != 0)
+        {
+            return -1;
+        }
+    }
+
     num_xtrack = info->dimension[omi_dim_xtrack];
     i = index / num_xtrack;     /* 0 <= i < num_time */
     j = index - i * num_xtrack; /* 0 <= j < num_xtrack */
@@ -941,14 +922,14 @@ static int read_latitude_bounds(void *user_data, long index, harp_array data)
     return 0;
 }
 
-static int read_longitude_domino(void *user_data, harp_array data)
+static int read_longitude(void *user_data, harp_array data)
 {
     ingest_info *info = (ingest_info *)user_data;
 
     return read_variable_double(info, &info->geo_cursor, "Longitude", 2, NULL, data);
 }
 
-static int read_latitude_domino(void *user_data, harp_array data)
+static int read_latitude(void *user_data, harp_array data)
 {
     ingest_info *info = (ingest_info *)user_data;
 
@@ -1811,11 +1792,6 @@ static int ingestion_init_helper(coda_product *product, ingest_info **new_info)
         ingest_info_delete(info);
         return -1;
     }
-    if (init_geolocation(info) != 0)
-    {
-        ingest_info_delete(info);
-        return -1;
-    }
 
     *new_info = info;
 
@@ -1865,11 +1841,6 @@ static int ingestion_init_omaeruv(const harp_ingestion_module *module, coda_prod
         return -1;
     }
     if (verify_dimensions_omaeruv(info) != 0)
-    {
-        ingest_info_delete(info);
-        return -1;
-    }
-    if (init_geolocation(info) != 0)
     {
         ingest_info_delete(info);
         return -1;
@@ -2026,11 +1997,6 @@ static int ingestion_init_omo3pr(const harp_ingestion_module *module, coda_produ
         return -1;
     }
     if (verify_dimensions_omo3pr(info) != 0)
-    {
-        ingest_info_delete(info);
-        return -1;
-    }
-    if (init_geolocation(info) != 0)
     {
         ingest_info_delete(info);
         return -1;
@@ -2200,10 +2166,9 @@ static void register_longitude_variable(harp_product_definition *product_definit
     const char *description;
 
     description = "longitude of the ground pixel center (WGS84)";
-    variable_definition = harp_ingestion_register_variable_sample_read(product_definition, "longitude",
-                                                                       harp_type_double, 1, dimension_type, NULL,
-                                                                       description, "degree_east", NULL,
-                                                                       read_longitude);
+    variable_definition = harp_ingestion_register_variable_full_read(product_definition, "longitude",
+                                                                     harp_type_double, 1, dimension_type, NULL,
+                                                                     description, "degree_east", NULL, read_longitude);
     harp_variable_definition_set_valid_range_double(variable_definition, -180.0, 180.0);
     harp_variable_definition_add_mapping(variable_definition, NULL, NULL, path, NULL);
 }
@@ -2215,9 +2180,9 @@ static void register_latitude_variable(harp_product_definition *product_definiti
     const char *description;
 
     description = "latitude of the ground pixel center (WGS84)";
-    variable_definition = harp_ingestion_register_variable_sample_read(product_definition, "latitude", harp_type_double,
-                                                                       1, dimension_type, NULL, description,
-                                                                       "degree_north", NULL, read_latitude);
+    variable_definition = harp_ingestion_register_variable_full_read(product_definition, "latitude", harp_type_double,
+                                                                     1, dimension_type, NULL, description,
+                                                                     "degree_north", NULL, read_latitude);
     harp_variable_definition_set_valid_range_double(variable_definition, -90.0, 90.0);
     harp_variable_definition_add_mapping(variable_definition, NULL, NULL, path, NULL);
 }
@@ -2734,7 +2699,7 @@ static void register_omdomino_product(void)
     description = "longitude of the ground pixel center";
     variable_definition = harp_ingestion_register_variable_full_read(product_definition, "longitude", harp_type_double,
                                                                      1, dimension_type, NULL, description,
-                                                                     "degree_east", NULL, read_longitude_domino);
+                                                                     "degree_east", NULL, read_longitude);
     harp_variable_definition_set_valid_range_double(variable_definition, -180.0, 180.0);
     path = "/HDFEOS/SWATHS/DominoNO2/Geolocation_Fields/Longitude[]";
     harp_variable_definition_add_mapping(variable_definition, NULL, NULL, path, NULL);
@@ -2743,7 +2708,7 @@ static void register_omdomino_product(void)
     description = "latitude of the ground pixel center";
     variable_definition = harp_ingestion_register_variable_full_read(product_definition, "latitude", harp_type_double,
                                                                      1, dimension_type, NULL, description,
-                                                                     "degree_north", NULL, read_latitude_domino);
+                                                                     "degree_north", NULL, read_latitude);
     harp_variable_definition_set_valid_range_double(variable_definition, -90.0, 90.0);
     path = "/HDFEOS/SWATHS/DominoNO2/Geolocation_Fields/Latitude[]";
     harp_variable_definition_add_mapping(variable_definition, NULL, NULL, path, NULL);
