@@ -1453,7 +1453,7 @@ static int init_product_definition(harp_ingestion_module *module, ftir_gas gas, 
     description = "solar azimuth angle";
     variable_definition = harp_ingestion_register_variable_full_read(product_definition, "solar_azimuth_angle",
                                                                      harp_type_double, 1, dimension_type, NULL,
-                                                                     description, "deg", NULL,
+                                                                     description, "degree", NULL,
                                                                      read_solar_azimuth_angle);
     harp_variable_definition_add_mapping(variable_definition, NULL, "solar measurement", "/ANGLE.SOLAR_AZIMUTH", NULL);
     harp_variable_definition_add_mapping(variable_definition, NULL, "lunar measurement", "/ANGLE.LUNAR_AZIMUTH", NULL);
@@ -1462,7 +1462,8 @@ static int init_product_definition(harp_ingestion_module *module, ftir_gas gas, 
     description = "solar zenith angle";
     variable_definition = harp_ingestion_register_variable_full_read(product_definition, "solar_zenith_angle",
                                                                      harp_type_double, 1, dimension_type, NULL,
-                                                                     description, "deg", NULL, read_solar_zenith_angle);
+                                                                     description, "degree", NULL,
+                                                                     read_solar_zenith_angle);
     harp_variable_definition_add_mapping(variable_definition, NULL, "solar measurement",
                                          "/ANGLE.SOLAR_ZENITH.ASTRONOMICAL", NULL);
     harp_variable_definition_add_mapping(variable_definition, NULL, "lunar measurement",

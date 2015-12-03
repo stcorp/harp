@@ -730,7 +730,7 @@ static int init_product_definition(harp_ingestion_module *module, mwr_gas gas, i
     description = "viewing azimuth angle";
     variable_definition = harp_ingestion_register_variable_full_read(product_definition, "viewing_azimuth_angle",
                                                                      harp_type_double, 1, dimension_type, NULL,
-                                                                     description, "deg", NULL,
+                                                                     description, "degree", NULL,
                                                                      read_viewing_azimuth_angle);
     harp_variable_definition_add_mapping(variable_definition, NULL, NULL, "/ANGLE.VIEW_AZIMUTH", NULL);
 
@@ -738,7 +738,7 @@ static int init_product_definition(harp_ingestion_module *module, mwr_gas gas, i
     description = "mean viewing zenith angle";
     variable_definition = harp_ingestion_register_variable_full_read(product_definition, "viewing_zenith_angle",
                                                                      harp_type_double, 1, dimension_type, NULL,
-                                                                     description, "deg", NULL,
+                                                                     description, "degree", NULL,
                                                                      read_viewing_zenith_angle);
     harp_variable_definition_add_mapping(variable_definition, NULL, NULL, "/ANGLE.VIEW_ZENITH_MEAN", NULL);
 
@@ -746,7 +746,8 @@ static int init_product_definition(harp_ingestion_module *module, mwr_gas gas, i
     description = "mean solar zenith angle";
     variable_definition = harp_ingestion_register_variable_full_read(product_definition, "solar_zenith_angle",
                                                                      harp_type_double, 1, dimension_type, NULL,
-                                                                     description, "deg", NULL, read_solar_zenith_angle);
+                                                                     description, "degree", NULL,
+                                                                     read_solar_zenith_angle);
     harp_variable_definition_add_mapping(variable_definition, NULL, NULL, "/ANGLE.SOLAR_ZENITH_MEAN", NULL);
 
     /* datetime_start */
