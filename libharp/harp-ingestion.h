@@ -163,6 +163,8 @@ int harp_variable_definition_exclude(const harp_variable_definition *variable_de
 /* Product definition. */
 void harp_product_definition_add_mapping(harp_product_definition *product_definition, const char *mapping_description,
                                          const char *ingestion_option);
+int harp_product_definition_has_dimension_type(const harp_product_definition *product_definition,
+                                               harp_dimension_type dimension_type);
 int harp_product_definition_has_variable(const harp_product_definition *product_definition, const char *name);
 harp_variable_definition *harp_product_definition_find_variable(const harp_product_definition *product_definition,
                                                                 const char *name);

@@ -26,8 +26,10 @@
 #include <stdlib.h>
 #include <string.h>
 
+/* Module register. */
 static harp_ingestion_module_register *module_register = NULL;
 
+/* Module initialization functions (forward declarations). */
 int harp_ingestion_module_cci_l2_o3_np_init(void);
 int harp_ingestion_module_cci_l2_o3_tc_init(void);
 int harp_ingestion_module_geoms_mwr_init(void);
@@ -47,6 +49,31 @@ int harp_ingestion_module_s5p_l1b_init(void);
 int harp_ingestion_module_s5p_l2_init(void);
 int harp_ingestion_module_tes_l2_init(void);
 
+/* Module initialization functions. */
+#define NUM_INGESTION_MODULES 18
+
+typedef int (module_init_func_t) (void);
+static module_init_func_t *module_init_func[NUM_INGESTION_MODULES] = {
+    harp_ingestion_module_cci_l2_o3_np_init,
+    harp_ingestion_module_cci_l2_o3_tc_init,
+    harp_ingestion_module_geoms_mwr_init,
+    harp_ingestion_module_geoms_lidar_init,
+    harp_ingestion_module_geoms_ftir_init,
+    harp_ingestion_module_geoms_uvvis_doas_init,
+    harp_ingestion_module_gome2_l2_init,
+    harp_ingestion_module_gosat_fts_l1b_init,
+    harp_ingestion_module_gosat_fts_l2_init,
+    harp_ingestion_module_hirdls_l2_init,
+    harp_ingestion_module_iasi_l2_init,
+    harp_ingestion_module_mip_nl__2p_init,
+    harp_ingestion_module_mls_l2_init,
+    harp_ingestion_module_omi_l2_init,
+    harp_ingestion_module_omi_l3_init,
+    harp_ingestion_module_s5p_l1b_init,
+    harp_ingestion_module_s5p_l2_init,
+    harp_ingestion_module_tes_l2_init };
+
+/* Forward declarations. */
 static void ingestion_option_definition_delete(harp_ingestion_option_definition *ingestion_option_definition);
 static void variable_definition_delete(harp_variable_definition *variable_definition);
 static void product_definition_delete(harp_product_definition *product_definition);
@@ -133,7 +160,7 @@ static int variable_definition_new(const char *name, harp_data_type data_type, i
     assert(name != NULL);
     assert(num_dimensions >= 0 && num_dimensions <= HARP_MAX_NUM_DIMS);
     assert(num_dimensions == 0 || dimension_type != NULL);
-    assert(unit == NULL || strlen(unit) > 0);
+    assert(unit == NULL || (strlen(unit) > 0 && harp_unit_is_valid(unit)));
     assert(read_all != NULL || read_range != NULL || read_sample != NULL);
 
     /* strings can only be read using read_all and read_range when there is no sample dimension */
@@ -715,18 +742,12 @@ harp_product_definition *harp_ingestion_register_product(harp_ingestion_module *
                                                                                  long dimension[HARP_NUM_DIM_TYPES]))
 {
     harp_product_definition *product_definition;
-    harp_dimension_type dimension_type;
 
     assert(module != NULL);
     if (product_definition_new(name, description, read_dimensions, &product_definition) != 0)
     {
         assert(0);
     }
-
-    dimension_type = harp_dimension_time;
-    harp_ingestion_register_variable_sample_read(product_definition, "index", harp_type_int32, 1, &dimension_type, NULL,
-                                                 "zero-based index of the sample within the source product", NULL, NULL,
-                                                 read_index);
 
     if (ingestion_module_add_product(module, product_definition) != 0)
     {
@@ -919,6 +940,28 @@ void harp_product_definition_add_mapping(harp_product_definition *product_defini
         product_definition->ingestion_option = strdup(ingestion_option);
         assert(product_definition->ingestion_option != NULL);
     }
+}
+
+int harp_product_definition_has_dimension_type(const harp_product_definition *product_definition,
+                                               harp_dimension_type dimension_type)
+{
+    int i;
+
+    for (i = 0; i < product_definition->num_variable_definitions; i++)
+    {
+        const harp_variable_definition *variable_definition = product_definition->variable_definition[i];
+        int j;
+
+        for (j = 0; j < variable_definition->num_dimensions; j++)
+        {
+            if (variable_definition->dimension_type[j] == dimension_type)
+            {
+                return 1;
+            }
+        }
+    }
+
+    return 0;
 }
 
 int harp_product_definition_has_variable(const harp_product_definition *product_definition, const char *name)
@@ -1122,15 +1165,12 @@ int harp_ingestion_find_module(const char *filename, harp_ingestion_module **mod
 
 int harp_ingestion_init(void)
 {
+    int i;
+
     if (module_register != NULL)
     {
-        /* already initialized */
+        /* Already initialized. */
         return 0;
-    }
-
-    if (coda_init() != 0)
-    {
-        return -1;
     }
 
     module_register = (harp_ingestion_module_register *)malloc(sizeof(harp_ingestion_module_register));
@@ -1140,81 +1180,42 @@ int harp_ingestion_init(void)
                        sizeof(harp_ingestion_module_register), __FILE__, __LINE__);
         return -1;
     }
-
     module_register->num_ingestion_modules = 0;
     module_register->ingestion_module = NULL;
 
-    if (harp_ingestion_module_cci_l2_o3_np_init() != 0)
+    if (coda_init() != 0)
     {
         return -1;
     }
-    if (harp_ingestion_module_cci_l2_o3_tc_init() != 0)
+
+    for (i = 0; i < NUM_INGESTION_MODULES; i++)
     {
-        return -1;
+        if (module_init_func[i]() != 0)
+        {
+            return -1;
+        }
     }
-    if (harp_ingestion_module_geoms_mwr_init() != 0)
+
+    /* Add the variable index {time} to all product definitions of which at least one variable depends on the time
+     * dimension.
+     */
+    for (i = 0; i < module_register->num_ingestion_modules; i++)
     {
-        return -1;
-    }
-    if (harp_ingestion_module_geoms_lidar_init() != 0)
-    {
-        return -1;
-    }
-    if (harp_ingestion_module_geoms_ftir_init() != 0)
-    {
-        return -1;
-    }
-    if (harp_ingestion_module_geoms_uvvis_doas_init() != 0)
-    {
-        return -1;
-    }
-    if (harp_ingestion_module_gome2_l2_init() != 0)
-    {
-        return -1;
-    }
-    if (harp_ingestion_module_gosat_fts_l1b_init() != 0)
-    {
-        return -1;
-    }
-    if (harp_ingestion_module_gosat_fts_l2_init() != 0)
-    {
-        return -1;
-    }
-    if (harp_ingestion_module_hirdls_l2_init() != 0)
-    {
-        return -1;
-    }
-    if (harp_ingestion_module_iasi_l2_init() != 0)
-    {
-        return -1;
-    }
-    if (harp_ingestion_module_mip_nl__2p_init() != 0)
-    {
-        return -1;
-    }
-    if (harp_ingestion_module_mls_l2_init() != 0)
-    {
-        return -1;
-    }
-    if (harp_ingestion_module_omi_l2_init() != 0)
-    {
-        return -1;
-    }
-    if (harp_ingestion_module_omi_l3_init() != 0)
-    {
-        return -1;
-    }
-    if (harp_ingestion_module_s5p_l1b_init() != 0)
-    {
-        return -1;
-    }
-    if (harp_ingestion_module_s5p_l2_init() != 0)
-    {
-        return -1;
-    }
-    if (harp_ingestion_module_tes_l2_init() != 0)
-    {
-        return -1;
+        harp_ingestion_module *module = module_register->ingestion_module[i];
+        int j;
+
+        for (j = 0; j < module->num_product_definitions; j++)
+        {
+            harp_product_definition *product_definition = module->product_definition[j];
+
+            if (harp_product_definition_has_dimension_type(product_definition, harp_dimension_time))
+            {
+                harp_dimension_type dimension_type[1] = { harp_dimension_time };
+                harp_ingestion_register_variable_sample_read(product_definition, "index", harp_type_int32, 1,
+                                                             dimension_type, NULL, "zero-based index of the sample "
+                                                             "within the source product", NULL, NULL, read_index);
+            }
+        }
     }
 
     return 0;
