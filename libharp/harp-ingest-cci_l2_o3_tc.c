@@ -504,7 +504,7 @@ int harp_ingestion_module_cci_l2_o3_tc_init(void)
                                                  "O3 total column products", verify_product_type, ingestion_init,
                                                  ingestion_done);
 
-    /* ESACCI_OZONE_L2P_NP product */
+    /* ESACCI_OZONE_L2_TC product */
     product_definition = harp_ingestion_register_product(module, "ESACCI_OZONE_L2_TC", "CCI L2 O3 total column product",
                                                          read_dimensions);
 

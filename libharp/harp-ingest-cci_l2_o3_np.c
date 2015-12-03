@@ -675,7 +675,7 @@ int harp_ingestion_module_cci_l2_o3_np_init(void)
                                                  "L2 O3 nadir profile products", verify_product_type, ingestion_init,
                                                  ingestion_done);
 
-    /* ESACCI_OZONE_L2P_NP product */
+    /* ESACCI_OZONE_L2_NP product */
     product_definition = harp_ingestion_register_product(module, "ESACCI_OZONE_L2_NP", NULL, read_dimensions);
 
     /* scanline_pixel_index */
