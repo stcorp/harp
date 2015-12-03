@@ -564,9 +564,14 @@ int harp_product_filter(harp_product *product, const harp_dimension_mask_set *di
 
             for (j = 0; j < variable->num_dimensions; j++)
             {
-                const harp_dimension_mask *dimension_mask = dimension_mask_set[variable->dimension_type[j]];
+                harp_dimension_type dimension_type = variable->dimension_type[j];
 
-                if (dimension_mask != NULL && dimension_mask->num_dimensions == 2)
+                if (dimension_type == harp_dimension_independent || dimension_mask_set[dimension_type] == NULL)
+                {
+                    continue;
+                }
+
+                if (dimension_mask_set[dimension_type]->num_dimensions == 2)
                 {
                     break;
                 }
