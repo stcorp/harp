@@ -29,7 +29,7 @@
 #include <stdlib.h>
 #include <string.h>
 
-/* Real number of days between 1995/01/01 UTC and 2000/01/01 TAI. */
+/* Fractional number of days between 1995/01/01 UTC and 2000/01/01 TAI. */
 static const double DAYS_FROM_1995_UTC_TO_2000_TAI = (157766400 - 29) / CONST_DAY;
 
 typedef struct ingest_info_struct
@@ -477,6 +477,11 @@ static int verify_product_type(const harp_ingestion_module *module, coda_product
         return -1;
     }
     if (coda_cursor_goto(&cursor, "/atmosphere_mole_content_of_ozone") != 0)
+    {
+        harp_set_error(HARP_ERROR_UNSUPPORTED_PRODUCT, NULL);
+        return -1;
+    }
+    if (coda_cursor_goto(&cursor, "/averaging_kernels") != 0)
     {
         harp_set_error(HARP_ERROR_UNSUPPORTED_PRODUCT, NULL);
         return -1;
