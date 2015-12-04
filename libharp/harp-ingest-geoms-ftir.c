@@ -1142,7 +1142,7 @@ static int init_product_definition(harp_ingestion_module *module, ftir_gas gas, 
     harp_variable_definition_add_mapping(variable_definition, NULL, NULL, "/LATITUDE.INSTRUMENT", NULL);
 
     /* instrument_longitude */
-    description = "longitude of the measurement";
+    description = "longitude of the instrument";
     variable_definition = harp_ingestion_register_variable_full_read(product_definition, "instrument_longitude",
                                                                      harp_type_double, 0, NULL, NULL, description,
                                                                      "degree_east", NULL, read_instrument_longitude);
