@@ -393,7 +393,7 @@ harp_doc: harpconvert libharp/harp.h
 	  $(DOXYGEN) Doxyfile ; \
 	  cd .. ; \
 	  $(mkinstalldirs) doc/ingestions ; \
-	  harpconvert --generate-documentation -f rst doc/ingestions ; \
+	  ./harpconvert --generate-documentation -f rst doc/ingestions ; \
 	  cp $(srcdir)/INSTALL doc/install.rst ; \
 	  if test "x$(srcdir)" != "x$(builddir)" ; then \
 	    cp $(srcdir)/doc/conf.py doc ; \
