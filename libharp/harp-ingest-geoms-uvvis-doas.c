@@ -542,7 +542,7 @@ static int read_longitude(void *user_data, harp_array data)
 {
     ingest_info *info = (ingest_info *)user_data;
 
-    return read_vertical_variable_double(user_data, "LONGITUDE_INSTRUMENT", info->num_time * info->num_vertical, data);
+    return read_vertical_variable_double(user_data, "LONGITUDE", info->num_time * info->num_vertical, data);
 }
 
 static int read_wind_direction(void *user_data, harp_array data)
@@ -1438,9 +1438,9 @@ static int get_optional_variable_availability(ingest_info *info)
         return -1;
     }
 
-    info->has_latitude = (coda_cursor_goto(&cursor, "LATITUDE") == 0);
+    info->has_latitude = (coda_cursor_goto(&cursor, "/LATITUDE") == 0);
 
-    info->has_longitude = (coda_cursor_goto(&cursor, "LONGITUDE") == 0);
+    info->has_longitude = (coda_cursor_goto(&cursor, "/LONGITUDE") == 0);
 
     snprintf(path, MAX_PATH_LENGTH, "%s", info->aod_variant == 0 ? "/AEROSOL_OPTICAL_DEPTH_STRATOSPHERIC_INDEPENDENT" :
              "/AEROSOL_OPTICAL_DEPTH_STRATOSPHERIC_SCATTER_SOLAR_ZENITH");
@@ -1455,8 +1455,8 @@ static int get_optional_variable_availability(ingest_info *info)
         info->has_tropo_column_zenith = (coda_cursor_goto(&cursor, path) == 0);
     }
 
-    info->has_wind_direction = (coda_cursor_goto(&cursor, "WIND.DIRECTION.SURFACE_INDEPENDENT") == 0);
-    info->has_wind_speed = (coda_cursor_goto(&cursor, "WIND.SPEED.SURFACE_INDEPENDENT") == 0);
+    info->has_wind_direction = (coda_cursor_goto(&cursor, "/WIND.DIRECTION.SURFACE_INDEPENDENT") == 0);
+    info->has_wind_speed = (coda_cursor_goto(&cursor, "/WIND.SPEED.SURFACE_INDEPENDENT") == 0);
 
     return 0;
 }
