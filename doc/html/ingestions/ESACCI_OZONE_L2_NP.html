@@ -155,149 +155,149 @@
 </tr>
 </thead>
 <tbody valign="top">
-<tr class="row-even"><td><strong>index</strong></td>
-<td>int32</td>
-<td>{<em>time</em>}</td>
-<td>&nbsp;</td>
-<td>zero-based index of the sample within the source product</td>
-</tr>
-<tr class="row-odd"><td><strong>scanline_pixel_index</strong></td>
+<tr class="row-even"><td><strong>scanline_pixel_index</strong></td>
 <td>int16</td>
 <td>{<em>time</em>}</td>
 <td>&nbsp;</td>
 <td>zero-based index of the instantaneous field of view within the swath</td>
 </tr>
-<tr class="row-even"><td><strong>datetime</strong></td>
+<tr class="row-odd"><td><strong>datetime</strong></td>
 <td>double</td>
 <td>{<em>time</em>}</td>
 <td>hours since 2000-01-01</td>
 <td>time of the measurement</td>
 </tr>
-<tr class="row-odd"><td><strong>longitude</strong></td>
+<tr class="row-even"><td><strong>longitude</strong></td>
 <td>float</td>
 <td>{<em>time</em>}</td>
 <td>degree_east</td>
 <td>longitude of the ground pixel center</td>
 </tr>
-<tr class="row-even"><td><strong>latitude</strong></td>
+<tr class="row-odd"><td><strong>latitude</strong></td>
 <td>float</td>
 <td>{<em>time</em>}</td>
 <td>degree_north</td>
 <td>latitude of the ground pixel center</td>
 </tr>
-<tr class="row-odd"><td><strong>longitude_bounds</strong></td>
+<tr class="row-even"><td><strong>longitude_bounds</strong></td>
 <td>float</td>
 <td>{<em>time</em>, 4}</td>
 <td>degree_east</td>
 <td>longitudes of the ground pixel corners</td>
 </tr>
-<tr class="row-even"><td><strong>latitude_bounds</strong></td>
+<tr class="row-odd"><td><strong>latitude_bounds</strong></td>
 <td>float</td>
 <td>{<em>time</em>, 4}</td>
 <td>degree_north</td>
 <td>latitudes of the ground pixel corners</td>
 </tr>
-<tr class="row-odd"><td><strong>solar_zenith_angle</strong></td>
+<tr class="row-even"><td><strong>solar_zenith_angle</strong></td>
 <td>float</td>
 <td>{<em>time</em>}</td>
 <td>degree</td>
 <td>zenith angle of the Sun at the ground pixel center</td>
 </tr>
-<tr class="row-even"><td><strong>viewing_zenith_angle</strong></td>
+<tr class="row-odd"><td><strong>viewing_zenith_angle</strong></td>
 <td>float</td>
 <td>{<em>time</em>}</td>
 <td>degree</td>
 <td>zenith angle of the instrument at the ground pixel center</td>
 </tr>
-<tr class="row-odd"><td><strong>pressure</strong></td>
+<tr class="row-even"><td><strong>pressure</strong></td>
 <td>float</td>
 <td>{<em>vertical</em>}</td>
 <td>hPa</td>
 <td>pressure</td>
 </tr>
-<tr class="row-even"><td><strong>O3_number_density</strong></td>
+<tr class="row-odd"><td><strong>O3_number_density</strong></td>
 <td>float</td>
 <td>{<em>time</em>, <em>vertical</em>}</td>
 <td>cm^-3</td>
 <td>O3 number density</td>
 </tr>
-<tr class="row-odd"><td><strong>O3_number_density_stdev</strong></td>
+<tr class="row-even"><td><strong>O3_number_density_stdev</strong></td>
 <td>float</td>
 <td>{<em>time</em>, <em>vertical</em>}</td>
 <td>cm^-3</td>
 <td>uncertainty of the O3 number density</td>
 </tr>
-<tr class="row-even"><td><strong>O3_number_density_cov</strong></td>
+<tr class="row-odd"><td><strong>O3_number_density_cov</strong></td>
 <td>float</td>
 <td>{<em>time</em>, <em>vertical</em>, <em>vertical</em>}</td>
 <td>cm^-6</td>
 <td>O3 number density solution covariance matrix</td>
 </tr>
-<tr class="row-odd"><td><strong>O3_number_density_cov_random</strong></td>
+<tr class="row-even"><td><strong>O3_number_density_cov_random</strong></td>
 <td>float</td>
 <td>{<em>time</em>, <em>vertical</em>, <em>vertical</em>}</td>
 <td>cm^-6</td>
 <td>O3 number density measurement noise covariance matrix</td>
 </tr>
-<tr class="row-even"><td><strong>O3_number_density_avk</strong></td>
+<tr class="row-odd"><td><strong>O3_number_density_avk</strong></td>
 <td>float</td>
 <td>{<em>time</em>, <em>vertical</em>, <em>vertical</em>}</td>
 <td>1</td>
 <td>O3 number density averaging kernel</td>
 </tr>
-<tr class="row-odd"><td><strong>O3_volume_mixing_ratio</strong></td>
+<tr class="row-even"><td><strong>O3_volume_mixing_ratio</strong></td>
 <td>float</td>
 <td>{<em>time</em>, <em>vertical</em>}</td>
 <td>ppv</td>
 <td>O3 volume mixing ratio</td>
 </tr>
-<tr class="row-even"><td><strong>O3_volume_mixing_ratio_stdev</strong></td>
+<tr class="row-odd"><td><strong>O3_volume_mixing_ratio_stdev</strong></td>
 <td>float</td>
 <td>{<em>time</em>, <em>vertical</em>}</td>
 <td>ppv</td>
 <td>uncertainty of the O3 volume mixing ratio</td>
 </tr>
-<tr class="row-odd"><td><strong>O3_volume_mixing_ratio_apriori</strong></td>
+<tr class="row-even"><td><strong>O3_volume_mixing_ratio_apriori</strong></td>
 <td>float</td>
 <td>{<em>time</em>, <em>vertical</em>}</td>
 <td>ppv</td>
 <td>O3 volume mixing ratio apriori</td>
 </tr>
-<tr class="row-even"><td><strong>O3_volume_mixing_ratio_apriori_stdev</strong></td>
+<tr class="row-odd"><td><strong>O3_volume_mixing_ratio_apriori_stdev</strong></td>
 <td>float</td>
 <td>{<em>time</em>, <em>vertical</em>}</td>
 <td>ppv</td>
 <td>uncertainty of the O3 volume mixing ratio apriori</td>
 </tr>
-<tr class="row-odd"><td><strong>cloud_fraction</strong></td>
+<tr class="row-even"><td><strong>cloud_fraction</strong></td>
 <td>double</td>
 <td>{<em>time</em>}</td>
 <td>1</td>
 <td>effective cloud fraction</td>
 </tr>
-<tr class="row-even"><td><strong>cloud_top_pressure</strong></td>
+<tr class="row-odd"><td><strong>cloud_top_pressure</strong></td>
 <td>double</td>
 <td>{<em>time</em>}</td>
 <td>hPa</td>
 <td>cloud top pressure</td>
 </tr>
-<tr class="row-odd"><td><strong>cloud_top_albedo</strong></td>
+<tr class="row-even"><td><strong>cloud_top_albedo</strong></td>
 <td>double</td>
 <td>{<em>time</em>}</td>
 <td>1</td>
 <td>cloud top albedo</td>
 </tr>
-<tr class="row-even"><td><strong>surface_albedo</strong></td>
+<tr class="row-odd"><td><strong>surface_albedo</strong></td>
 <td>float</td>
 <td>{<em>time</em>}</td>
 <td>1</td>
 <td>surface albedo</td>
 </tr>
-<tr class="row-odd"><td><strong>surface_pressure</strong></td>
+<tr class="row-even"><td><strong>surface_pressure</strong></td>
 <td>float</td>
 <td>{<em>time</em>}</td>
 <td>hPa</td>
 <td>surface pressure</td>
+</tr>
+<tr class="row-odd"><td><strong>index</strong></td>
+<td>int32</td>
+<td>{<em>time</em>}</td>
+<td>&nbsp;</td>
+<td>zero-based index of the sample within the source product</td>
 </tr>
 </tbody>
 </table>

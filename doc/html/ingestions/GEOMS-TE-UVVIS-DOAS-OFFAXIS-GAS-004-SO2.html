@@ -155,203 +155,203 @@
 </tr>
 </thead>
 <tbody valign="top">
-<tr class="row-even"><td><strong>index</strong></td>
-<td>int32</td>
-<td>{<em>time</em>}</td>
-<td>&nbsp;</td>
-<td>zero-based index of the sample within the source product</td>
-</tr>
-<tr class="row-odd"><td><strong>instrument_name</strong></td>
+<tr class="row-even"><td><strong>instrument_name</strong></td>
 <td>string</td>
 <td>&nbsp;</td>
 <td>&nbsp;</td>
 <td>name of the instrument</td>
 </tr>
-<tr class="row-even"><td><strong>site_name</strong></td>
+<tr class="row-odd"><td><strong>site_name</strong></td>
 <td>string</td>
 <td>&nbsp;</td>
 <td>&nbsp;</td>
 <td>name of the site at which the instrument is located</td>
 </tr>
-<tr class="row-odd"><td><strong>datetime</strong></td>
+<tr class="row-even"><td><strong>datetime</strong></td>
 <td>double</td>
 <td>{<em>time</em>}</td>
 <td>days since 2000-01-01</td>
 <td>mean time of the measurement</td>
 </tr>
-<tr class="row-even"><td><strong>datetime_start</strong></td>
+<tr class="row-odd"><td><strong>datetime_start</strong></td>
 <td>double</td>
 <td>{<em>time</em>}</td>
 <td>days since 2000-01-01</td>
 <td>start time of the measurement</td>
 </tr>
-<tr class="row-odd"><td><strong>datetime_stop</strong></td>
+<tr class="row-even"><td><strong>datetime_stop</strong></td>
 <td>double</td>
 <td>{<em>time</em>}</td>
 <td>days since 2000-01-01</td>
 <td>stop time of the measurement</td>
 </tr>
-<tr class="row-even"><td><strong>instrument_latitude</strong></td>
+<tr class="row-odd"><td><strong>instrument_latitude</strong></td>
 <td>double</td>
 <td>&nbsp;</td>
 <td>degree_north</td>
 <td>latitude of the instrument</td>
 </tr>
-<tr class="row-odd"><td><strong>instrument_longitude</strong></td>
+<tr class="row-even"><td><strong>instrument_longitude</strong></td>
 <td>double</td>
 <td>&nbsp;</td>
 <td>degree_east</td>
-<td>longitude of the measurement</td>
+<td>longitude of the instrument</td>
 </tr>
-<tr class="row-even"><td><strong>instrument_altitude</strong></td>
+<tr class="row-odd"><td><strong>instrument_altitude</strong></td>
 <td>double</td>
 <td>&nbsp;</td>
 <td>m</td>
 <td>altitude of the instrument relative to the location site</td>
 </tr>
-<tr class="row-odd"><td><strong>altitude</strong></td>
+<tr class="row-even"><td><strong>altitude</strong></td>
 <td>double</td>
 <td>{<em>time</em>, <em>vertical</em>}</td>
 <td>km</td>
 <td>effictive retrieval altitude</td>
 </tr>
-<tr class="row-even"><td><strong>pressure</strong></td>
+<tr class="row-odd"><td><strong>pressure</strong></td>
 <td>double</td>
 <td>{<em>time</em>, <em>vertical</em>}</td>
 <td>hPa</td>
 <td>independent pressure profile</td>
 </tr>
-<tr class="row-odd"><td><strong>temperature</strong></td>
+<tr class="row-even"><td><strong>temperature</strong></td>
 <td>double</td>
 <td>{<em>time</em>, <em>vertical</em>}</td>
 <td>K</td>
 <td>independent temperature profile</td>
 </tr>
-<tr class="row-even"><td><strong>altitude_bounds</strong></td>
+<tr class="row-odd"><td><strong>altitude_bounds</strong></td>
 <td>double</td>
 <td>{<em>time</em>, <em>vertical</em>, 2}</td>
 <td>km</td>
 <td>lower and upper boundaries of the height layers</td>
 </tr>
-<tr class="row-odd"><td><strong>solar_zenith_angle</strong></td>
+<tr class="row-even"><td><strong>solar_zenith_angle</strong></td>
 <td>double</td>
 <td>{<em>time</em>}</td>
-<td>deg</td>
+<td>degree</td>
 <td>solar astronomical zenith angle</td>
 </tr>
-<tr class="row-even"><td><strong>solar_azimuth_angle</strong></td>
+<tr class="row-odd"><td><strong>solar_azimuth_angle</strong></td>
 <td>double</td>
 <td>{<em>time</em>}</td>
-<td>deg</td>
+<td>degree</td>
 <td>solar azimuth angle</td>
 </tr>
-<tr class="row-odd"><td><strong>viewing_azimith_angle</strong></td>
+<tr class="row-even"><td><strong>viewing_azimuth_angle</strong></td>
 <td>double</td>
 <td>{<em>time</em>}</td>
-<td>deg</td>
+<td>degree</td>
 <td>viewing azimuth angle of the instrument</td>
 </tr>
-<tr class="row-even"><td><strong>viewing_zenith_angle</strong></td>
+<tr class="row-odd"><td><strong>viewing_zenith_angle</strong></td>
 <td>double</td>
 <td>{<em>time</em>}</td>
-<td>deg</td>
+<td>degree</td>
 <td>viewing zenith angle of the instrument</td>
 </tr>
-<tr class="row-odd"><td><strong>latitude</strong></td>
+<tr class="row-even"><td><strong>latitude</strong></td>
 <td>double</td>
 <td>{<em>time</em>, <em>vertical</em>}</td>
 <td>degree_north</td>
 <td>latitude of effective air mass at each altitude</td>
 </tr>
-<tr class="row-even"><td><strong>longitude</strong></td>
+<tr class="row-odd"><td><strong>longitude</strong></td>
 <td>double</td>
 <td>{<em>time</em>, <em>vertical</em>}</td>
 <td>degree_east</td>
 <td>longitude of effective air mass at each altitude</td>
 </tr>
-<tr class="row-odd"><td><strong>cloud_flag</strong></td>
+<tr class="row-even"><td><strong>cloud_flag</strong></td>
 <td>string</td>
 <td>{<em>time</em>}</td>
 <td>&nbsp;</td>
 <td>one of clear-sky, thin-clouds, thick-clouds, broken-clouds, unavailable</td>
 </tr>
-<tr class="row-even"><td><strong>stratospheric_aerosol_optical_depth</strong></td>
+<tr class="row-odd"><td><strong>stratospheric_aerosol_optical_depth</strong></td>
 <td>double</td>
 <td>{<em>time</em>}</td>
 <td>1</td>
 <td>total stratospheric aerosol optical depth user for the retrieval</td>
 </tr>
-<tr class="row-odd"><td><strong>SO2_volume_mixing_ratio</strong></td>
+<tr class="row-even"><td><strong>SO2_volume_mixing_ratio</strong></td>
 <td>double</td>
 <td>{<em>time</em>, <em>vertical</em>}</td>
 <td>ppv</td>
 <td>SO2 volume mixing ratio</td>
 </tr>
-<tr class="row-even"><td><strong>SO2_volume_mixing_ratio_cov_random</strong></td>
+<tr class="row-odd"><td><strong>SO2_volume_mixing_ratio_cov_random</strong></td>
 <td>double</td>
 <td>{<em>time</em>, <em>vertical</em>, <em>vertical</em>}</td>
 <td>ppv</td>
 <td>random covariance of the SO2 volume mixing ratio</td>
 </tr>
-<tr class="row-odd"><td><strong>SO2_volume_mixing_ratio_cov_systematic</strong></td>
+<tr class="row-even"><td><strong>SO2_volume_mixing_ratio_cov_systematic</strong></td>
 <td>double</td>
 <td>{<em>time</em>, <em>vertical</em>, <em>vertical</em>}</td>
 <td>ppv</td>
 <td>systematic covariance of the SO2 volume mixing ratio</td>
 </tr>
-<tr class="row-even"><td><strong>SO2_volume_mixing_ratio_apriori</strong></td>
+<tr class="row-odd"><td><strong>SO2_volume_mixing_ratio_apriori</strong></td>
 <td>double</td>
 <td>{<em>time</em>, <em>vertical</em>}</td>
 <td>ppv</td>
 <td>a priori SO2 volume mixing ratio</td>
 </tr>
-<tr class="row-odd"><td><strong>SO2_volume_mixing_ratio_avk</strong></td>
+<tr class="row-even"><td><strong>SO2_volume_mixing_ratio_avk</strong></td>
 <td>double</td>
 <td>{<em>time</em>, <em>vertical</em>, <em>vertical</em>}</td>
 <td>1</td>
 <td>averaging kernel for the SO2 volume mixing ratio</td>
 </tr>
-<tr class="row-even"><td><strong>tropospheric_SO2_column_number_density</strong></td>
+<tr class="row-odd"><td><strong>tropospheric_SO2_column_number_density</strong></td>
 <td>double</td>
 <td>{<em>time</em>}</td>
 <td>Pmolec cm-2</td>
 <td>tropospheric SO2 column number density</td>
 </tr>
-<tr class="row-odd"><td><strong>tropospheric_SO2_column_number_density_stdev_random</strong></td>
+<tr class="row-even"><td><strong>tropospheric_SO2_column_number_density_stdev_random</strong></td>
 <td>double</td>
 <td>{<em>time</em>, <em>vertical</em>}</td>
 <td>Pmolec cm-2</td>
 <td>random uncertainty of the tropospheric SO2 column number density</td>
 </tr>
-<tr class="row-even"><td><strong>tropospheric_SO2_column_number_density_stdev_systematic</strong></td>
+<tr class="row-odd"><td><strong>tropospheric_SO2_column_number_density_stdev_systematic</strong></td>
 <td>double</td>
 <td>{<em>time</em>, <em>vertical</em>}</td>
 <td>Pmolec cm-2</td>
 <td>systematic covariance of the tropospheric SO2 column number density</td>
 </tr>
-<tr class="row-odd"><td><strong>tropospheric_SO2_column_number_density_apriori</strong></td>
+<tr class="row-even"><td><strong>tropospheric_SO2_column_number_density_apriori</strong></td>
 <td>double</td>
 <td>{<em>time</em>}</td>
 <td>Pmolec cm-2</td>
 <td>a priori tropospheric SO2 column number density</td>
 </tr>
-<tr class="row-even"><td><strong>tropospheric_SO2_column_number_density_avk</strong></td>
+<tr class="row-odd"><td><strong>tropospheric_SO2_column_number_density_avk</strong></td>
 <td>double</td>
 <td>{<em>time</em>, <em>vertical</em>}</td>
 <td>1</td>
 <td>averaging kernel for the tropospheric SO2 column number density</td>
 </tr>
-<tr class="row-odd"><td><strong>SO2_column_number_density</strong></td>
+<tr class="row-even"><td><strong>SO2_column_number_density</strong></td>
 <td>double</td>
 <td>{<em>time</em>, <em>vertical</em>}</td>
 <td>Pmolec cm-2</td>
 <td>SO2 partial column number density profile</td>
 </tr>
-<tr class="row-even"><td><strong>SO2_column_number_density_apriori</strong></td>
+<tr class="row-odd"><td><strong>SO2_column_number_density_apriori</strong></td>
 <td>double</td>
 <td>{<em>time</em>, <em>vertical</em>}</td>
 <td>Pmolec cm-2</td>
 <td>a priori SO2 partial column number density profile</td>
+</tr>
+<tr class="row-even"><td><strong>index</strong></td>
+<td>int32</td>
+<td>{<em>time</em>}</td>
+<td>&nbsp;</td>
+<td>zero-based index of the sample within the source product</td>
 </tr>
 </tbody>
 </table>
@@ -427,7 +427,7 @@
 <td><em>path</em></td>
 <td><strong>/ANGLE.SOLAR_AZIMUTH</strong></td>
 </tr>
-<tr class="row-even"><td><strong>viewing_azimith_angle</strong></td>
+<tr class="row-even"><td><strong>viewing_azimuth_angle</strong></td>
 <td><em>path</em></td>
 <td><strong>/ANGLE.VIEW_AZIMUTH</strong></td>
 </tr>

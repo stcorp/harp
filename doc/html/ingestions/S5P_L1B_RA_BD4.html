@@ -155,101 +155,101 @@
 </tr>
 </thead>
 <tbody valign="top">
-<tr class="row-even"><td><strong>index</strong></td>
-<td>int32</td>
-<td>{<em>time</em>}</td>
-<td>&nbsp;</td>
-<td>zero-based index of the sample within the source product</td>
-</tr>
-<tr class="row-odd"><td><strong>scanline_pixel_index</strong></td>
+<tr class="row-even"><td><strong>scanline_pixel_index</strong></td>
 <td>int16</td>
 <td>{<em>time</em>}</td>
 <td>&nbsp;</td>
 <td>zero-based index of the pixel within the scanline</td>
 </tr>
-<tr class="row-even"><td><strong>datetime</strong></td>
+<tr class="row-odd"><td><strong>datetime</strong></td>
 <td>double</td>
 <td>{<em>time</em>}</td>
 <td>seconds since 2000-01-01</td>
 <td>start time of the measurement</td>
 </tr>
-<tr class="row-odd"><td><strong>latitude</strong></td>
+<tr class="row-even"><td><strong>latitude</strong></td>
 <td>float</td>
 <td>{<em>time</em>}</td>
 <td>degree_north</td>
 <td>latitude of the ground pixel center (WGS84)</td>
 </tr>
-<tr class="row-even"><td><strong>longitude</strong></td>
+<tr class="row-odd"><td><strong>longitude</strong></td>
 <td>float</td>
 <td>{<em>time</em>}</td>
 <td>degree_east</td>
 <td>longitude of the ground pixel center (WGS84)</td>
 </tr>
-<tr class="row-odd"><td><strong>latitude_bounds</strong></td>
+<tr class="row-even"><td><strong>latitude_bounds</strong></td>
 <td>float</td>
 <td>{<em>time</em>, 4}</td>
 <td>degree_north</td>
 <td>latitudes of the ground pixel corners (WGS84)</td>
 </tr>
-<tr class="row-even"><td><strong>longitude_bounds</strong></td>
+<tr class="row-odd"><td><strong>longitude_bounds</strong></td>
 <td>float</td>
 <td>{<em>time</em>, 4}</td>
 <td>degree_east</td>
 <td>longitudes of the ground pixel corners (WGS84)</td>
 </tr>
-<tr class="row-odd"><td><strong>instrument_latitude</strong></td>
+<tr class="row-even"><td><strong>instrument_latitude</strong></td>
 <td>float</td>
 <td>{<em>time</em>}</td>
 <td>degree_north</td>
 <td>latitude of the sub-instrument point (WGS84)</td>
 </tr>
-<tr class="row-even"><td><strong>instrument_longitude</strong></td>
+<tr class="row-odd"><td><strong>instrument_longitude</strong></td>
 <td>float</td>
 <td>{<em>time</em>}</td>
 <td>degree_east</td>
 <td>longitude of the sub-instrument point (WGS84)</td>
 </tr>
-<tr class="row-odd"><td><strong>instrument_altitude</strong></td>
+<tr class="row-even"><td><strong>instrument_altitude</strong></td>
 <td>float</td>
 <td>{<em>time</em>}</td>
 <td>m</td>
 <td>altitude of the instrument (WGS84)</td>
 </tr>
-<tr class="row-even"><td><strong>solar_zenith_angle</strong></td>
+<tr class="row-odd"><td><strong>solar_zenith_angle</strong></td>
 <td>float</td>
 <td>{<em>time</em>}</td>
 <td>degree</td>
 <td>zenith angle of the Sun at the ground pixel location (WGS84)</td>
 </tr>
-<tr class="row-odd"><td><strong>solar_azimuth_angle</strong></td>
+<tr class="row-even"><td><strong>solar_azimuth_angle</strong></td>
 <td>float</td>
 <td>{<em>time</em>}</td>
 <td>degree</td>
 <td>azimuth angle of the Sun at the ground pixel location (WGS84), measured East-of-North</td>
 </tr>
-<tr class="row-even"><td><strong>viewing_zenith_angle</strong></td>
+<tr class="row-odd"><td><strong>viewing_zenith_angle</strong></td>
 <td>float</td>
 <td>{<em>time</em>}</td>
 <td>degree</td>
 <td>zenith angle of the instrument at the ground pixel location (WGS84)</td>
 </tr>
-<tr class="row-odd"><td><strong>viewing_azimuth_angle</strong></td>
+<tr class="row-even"><td><strong>viewing_azimuth_angle</strong></td>
 <td>float</td>
 <td>{<em>time</em>}</td>
 <td>degree</td>
 <td>azimuth angle of the instrument at the ground pixel location (WGS84), measured East-of-North</td>
 </tr>
-<tr class="row-even"><td><strong>wavelength</strong></td>
+<tr class="row-odd"><td><strong>wavelength</strong></td>
 <td>float</td>
 <td>{<em>time</em>, <em>spectral</em>}</td>
 <td>nm</td>
 <td>nominal wavelength</td>
 </tr>
-<tr class="row-odd"><td><strong>photon_radiance</strong></td>
+<tr class="row-even"><td><strong>photon_radiance</strong></td>
 <td>float</td>
 <td>{<em>time</em>, <em>spectral</em>}</td>
 <td>mol/(s.m^2.nm.sr)</td>
 <td>spectral photon radiance</td>
+</tr>
+<tr class="row-odd"><td><strong>index</strong></td>
+<td>int32</td>
+<td>{<em>time</em>}</td>
+<td>&nbsp;</td>
+<td>zero-based index of the sample within the source product</td>
 </tr>
 </tbody>
 </table>

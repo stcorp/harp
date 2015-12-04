@@ -155,107 +155,107 @@
 </tr>
 </thead>
 <tbody valign="top">
-<tr class="row-even"><td><strong>index</strong></td>
-<td>int32</td>
-<td>{<em>time</em>}</td>
-<td>&nbsp;</td>
-<td>zero-based index of the sample within the source product</td>
-</tr>
-<tr class="row-odd"><td><strong>scanline_pixel_index</strong></td>
+<tr class="row-even"><td><strong>scanline_pixel_index</strong></td>
 <td>int16</td>
 <td>{<em>time</em>}</td>
 <td>&nbsp;</td>
 <td>pixel index (0-based) within the scanline</td>
 </tr>
-<tr class="row-even"><td><strong>datetime</strong></td>
+<tr class="row-odd"><td><strong>datetime</strong></td>
 <td>double</td>
 <td>{<em>time</em>}</td>
 <td>seconds since 2000-01-01</td>
 <td>start time of the measurement</td>
 </tr>
-<tr class="row-odd"><td><strong>longitude</strong></td>
+<tr class="row-even"><td><strong>longitude</strong></td>
 <td>float</td>
 <td>{<em>time</em>}</td>
 <td>degree_east</td>
 <td>longitude of the ground pixel center (WGS84)</td>
 </tr>
-<tr class="row-even"><td><strong>latitude</strong></td>
+<tr class="row-odd"><td><strong>latitude</strong></td>
 <td>float</td>
 <td>{<em>time</em>}</td>
 <td>degree_north</td>
 <td>latitude of the ground pixel center (WGS84)</td>
 </tr>
-<tr class="row-odd"><td><strong>cloud_fraction</strong></td>
+<tr class="row-even"><td><strong>cloud_fraction</strong></td>
 <td>float</td>
 <td>{<em>time</em>}</td>
 <td>&nbsp;</td>
 <td>effective cloud fraction</td>
 </tr>
-<tr class="row-even"><td><strong>cloud_fraction_stdev</strong></td>
+<tr class="row-odd"><td><strong>cloud_fraction_stdev</strong></td>
 <td>float</td>
 <td>{<em>time</em>}</td>
 <td>&nbsp;</td>
 <td>effective cloud fraction precision (1 sigma error)</td>
 </tr>
-<tr class="row-odd"><td><strong>cloud_pressure</strong></td>
+<tr class="row-even"><td><strong>cloud_pressure</strong></td>
 <td>float</td>
 <td>{<em>time</em>}</td>
 <td>hPa</td>
 <td>cloud pressure, at approximately the mid-level of the cloud layer</td>
 </tr>
-<tr class="row-even"><td><strong>cloud_pressure_stdev</strong></td>
+<tr class="row-odd"><td><strong>cloud_pressure_stdev</strong></td>
 <td>float</td>
 <td>{<em>time</em>}</td>
 <td>hPa</td>
 <td>cloud pressure precision (1 sigma error)</td>
 </tr>
-<tr class="row-odd"><td><strong>cloud_height</strong></td>
+<tr class="row-even"><td><strong>cloud_height</strong></td>
 <td>float</td>
 <td>{<em>time</em>}</td>
 <td>m</td>
 <td>cloud height, at the optical centroid level, measured from the surface</td>
 </tr>
-<tr class="row-even"><td><strong>cloud_height_stdev</strong></td>
+<tr class="row-odd"><td><strong>cloud_height_stdev</strong></td>
 <td>float</td>
 <td>{<em>time</em>}</td>
 <td>m</td>
 <td>cloud height precision (1 sigma error)</td>
 </tr>
-<tr class="row-odd"><td><strong>cloud_albedo</strong></td>
+<tr class="row-even"><td><strong>cloud_albedo</strong></td>
 <td>float</td>
 <td>{<em>time</em>}</td>
 <td>&nbsp;</td>
 <td>cloud albedo; this is a fixed value for FRESCO</td>
 </tr>
-<tr class="row-even"><td><strong>cloud_albedo_stdev</strong></td>
+<tr class="row-odd"><td><strong>cloud_albedo_stdev</strong></td>
 <td>float</td>
 <td>{<em>time</em>}</td>
 <td>&nbsp;</td>
 <td>cloud albedo error; since cloud albedo is fixed for FRESCO, this value is set to NaN</td>
 </tr>
-<tr class="row-odd"><td><strong>scene_albedo</strong></td>
+<tr class="row-even"><td><strong>scene_albedo</strong></td>
 <td>float</td>
 <td>{<em>time</em>}</td>
 <td>&nbsp;</td>
 <td>scene albedo when FRESCO is running in snow/ice mode (this quantity is required by the CH4 processor)</td>
 </tr>
-<tr class="row-even"><td><strong>scene_albedo_stdev</strong></td>
+<tr class="row-odd"><td><strong>scene_albedo_stdev</strong></td>
 <td>float</td>
 <td>{<em>time</em>}</td>
 <td>&nbsp;</td>
 <td>scene albedo precision (1 sigma error) when FRESCO is running in snow/ice mode</td>
 </tr>
-<tr class="row-odd"><td><strong>scene_pressure</strong></td>
+<tr class="row-even"><td><strong>scene_pressure</strong></td>
 <td>float</td>
 <td>{<em>time</em>}</td>
 <td>hPa</td>
 <td>apparent scene pressure when FRESCO is running in snow/ice mode (this quantity is required by the CH4 processor)</td>
 </tr>
-<tr class="row-even"><td><strong>scene_pressure_stdev</strong></td>
+<tr class="row-odd"><td><strong>scene_pressure_stdev</strong></td>
 <td>float</td>
 <td>{<em>time</em>}</td>
 <td>hPa</td>
 <td>apparent scene precision (1 sigma error) when FRESCO is running in snow/ice mode</td>
+</tr>
+<tr class="row-even"><td><strong>index</strong></td>
+<td>int32</td>
+<td>{<em>time</em>}</td>
+<td>&nbsp;</td>
+<td>zero-based index of the sample within the source product</td>
 </tr>
 </tbody>
 </table>

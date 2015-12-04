@@ -8,7 +8,7 @@
   
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
   
-  <title>S5P_L1B_RA_BD8 &mdash; HARP 0.1b documentation</title>
+  <title>ESACCI_OZONE_L3_TC &mdash; HARP 0.1b documentation</title>
   
 
   
@@ -121,7 +121,7 @@
   <ul class="wy-breadcrumbs">
     <li><a href="../index.html">Docs</a> &raquo;</li>
       
-    <li>S5P_L1B_RA_BD8</li>
+    <li>ESACCI_OZONE_L3_TC</li>
       <li class="wy-breadcrumbs-aside">
         
           
@@ -133,11 +133,11 @@
           <div role="main" class="document" itemscope="itemscope" itemtype="http://schema.org/Article">
            <div itemprop="articleBody">
             
-  <div class="section" id="s5p-l1b-ra-bd8">
-<h1>S5P_L1B_RA_BD8</h1>
+  <div class="section" id="esacci-ozone-l3-tc">
+<h1>ESACCI_OZONE_L3_TC</h1>
 <div class="section" id="variables">
 <h2>Variables</h2>
-<p>The table below lists the variables that are present in the HARP product that results from an ingestion of <code class="docutils literal"><span class="pre">S5P_L1B_RA_BD8</span></code> data.</p>
+<p>The table below lists the variables that are present in the HARP product that results from an ingestion of <code class="docutils literal"><span class="pre">ESACCI_OZONE_L3_TC</span></code> data.</p>
 <table border="1" class="docutils">
 <colgroup>
 <col width="25%" />
@@ -155,101 +155,98 @@
 </tr>
 </thead>
 <tbody valign="top">
-<tr class="row-even"><td><strong>scanline_pixel_index</strong></td>
-<td>int16</td>
-<td>{<em>time</em>}</td>
-<td>&nbsp;</td>
-<td>zero-based index of the pixel within the scanline</td>
-</tr>
-<tr class="row-odd"><td><strong>datetime</strong></td>
+<tr class="row-even"><td><strong>datetime</strong></td>
 <td>double</td>
-<td>{<em>time</em>}</td>
+<td>{<em>time</em>, 2}</td>
 <td>seconds since 2000-01-01</td>
-<td>start time of the measurement</td>
-</tr>
-<tr class="row-even"><td><strong>latitude</strong></td>
-<td>float</td>
-<td>{<em>time</em>}</td>
-<td>degree_north</td>
-<td>latitude of the ground pixel center (WGS84)</td>
+<td>time coverage</td>
 </tr>
 <tr class="row-odd"><td><strong>longitude</strong></td>
-<td>float</td>
-<td>{<em>time</em>}</td>
+<td>double</td>
+<td>{<em>longitude</em>}</td>
 <td>degree_east</td>
-<td>longitude of the ground pixel center (WGS84)</td>
+<td>longitude of the grid cell center</td>
 </tr>
-<tr class="row-even"><td><strong>latitude_bounds</strong></td>
-<td>float</td>
-<td>{<em>time</em>, 4}</td>
+<tr class="row-even"><td><strong>latitude</strong></td>
+<td>double</td>
+<td>{<em>latitude</em>}</td>
 <td>degree_north</td>
-<td>latitudes of the ground pixel corners (WGS84)</td>
+<td>latitude of the grid cell center</td>
 </tr>
 <tr class="row-odd"><td><strong>longitude_bounds</strong></td>
-<td>float</td>
-<td>{<em>time</em>, 4}</td>
+<td>double</td>
+<td>{<em>longitude</em>, 2}</td>
 <td>degree_east</td>
-<td>longitudes of the ground pixel corners (WGS84)</td>
+<td>longitudes of the grid cell boundaries</td>
 </tr>
-<tr class="row-even"><td><strong>instrument_latitude</strong></td>
-<td>float</td>
-<td>{<em>time</em>}</td>
+<tr class="row-even"><td><strong>latitude_bounds</strong></td>
+<td>double</td>
+<td>{<em>latitude</em>, 2}</td>
 <td>degree_north</td>
-<td>latitude of the sub-instrument point (WGS84)</td>
+<td>latitudes of the grid cell boundaries</td>
 </tr>
-<tr class="row-odd"><td><strong>instrument_longitude</strong></td>
-<td>float</td>
-<td>{<em>time</em>}</td>
-<td>degree_east</td>
-<td>longitude of the sub-instrument point (WGS84)</td>
+<tr class="row-odd"><td><strong>O3_column_number_density</strong></td>
+<td>double</td>
+<td>{<em>latitude</em>, <em>longitude</em>}</td>
+<td>DU</td>
+<td>O3 total column number density</td>
 </tr>
-<tr class="row-even"><td><strong>instrument_altitude</strong></td>
-<td>float</td>
-<td>{<em>time</em>}</td>
-<td>m</td>
-<td>altitude of the instrument (WGS84)</td>
-</tr>
-<tr class="row-odd"><td><strong>solar_zenith_angle</strong></td>
-<td>float</td>
-<td>{<em>time</em>}</td>
-<td>degree</td>
-<td>zenith angle of the Sun at the ground pixel location (WGS84)</td>
-</tr>
-<tr class="row-even"><td><strong>solar_azimuth_angle</strong></td>
-<td>float</td>
-<td>{<em>time</em>}</td>
-<td>degree</td>
-<td>azimuth angle of the Sun at the ground pixel location (WGS84), measured East-of-North</td>
-</tr>
-<tr class="row-odd"><td><strong>viewing_zenith_angle</strong></td>
-<td>float</td>
-<td>{<em>time</em>}</td>
-<td>degree</td>
-<td>zenith angle of the instrument at the ground pixel location (WGS84)</td>
-</tr>
-<tr class="row-even"><td><strong>viewing_azimuth_angle</strong></td>
-<td>float</td>
-<td>{<em>time</em>}</td>
-<td>degree</td>
-<td>azimuth angle of the instrument at the ground pixel location (WGS84), measured East-of-North</td>
-</tr>
-<tr class="row-odd"><td><strong>wavelength</strong></td>
-<td>float</td>
-<td>{<em>time</em>, <em>spectral</em>}</td>
-<td>nm</td>
-<td>nominal wavelength</td>
-</tr>
-<tr class="row-even"><td><strong>photon_radiance</strong></td>
-<td>float</td>
-<td>{<em>time</em>, <em>spectral</em>}</td>
-<td>mol/(s.m^2.nm.sr)</td>
-<td>spectral photon radiance</td>
-</tr>
-<tr class="row-odd"><td><strong>index</strong></td>
+<tr class="row-even"><td><strong>index</strong></td>
 <td>int32</td>
 <td>{<em>time</em>}</td>
 <td>&nbsp;</td>
 <td>zero-based index of the sample within the source product</td>
+</tr>
+</tbody>
+</table>
+</div>
+<div class="section" id="mapping-description">
+<h2>Mapping description</h2>
+<p>The table below details where and how each variable was retrieved from the input product.</p>
+<table border="1" class="docutils">
+<colgroup>
+<col width="4%" />
+<col width="2%" />
+<col width="94%" />
+</colgroup>
+<thead valign="bottom">
+<tr class="row-odd"><th class="head">field name</th>
+<th class="head" colspan="2">mapping description</th>
+</tr>
+</thead>
+<tbody valign="top">
+<tr class="row-even"><td rowspan="2"><strong>datetime</strong></td>
+<td><em>path</em></td>
+<td><strong>/&#64;time_coverage_start, /&#64;time_coverage_end</strong></td>
+</tr>
+<tr class="row-odd"><td><em>description</em></td>
+<td>datetime converted from a UTC start and end date to seconds since 2000-01-01 TAI</td>
+</tr>
+<tr class="row-even"><td><strong>longitude</strong></td>
+<td><em>path</em></td>
+<td><strong>/longitude[]</strong></td>
+</tr>
+<tr class="row-odd"><td><strong>latitude</strong></td>
+<td><em>path</em></td>
+<td><strong>/latitude[]</strong></td>
+</tr>
+<tr class="row-even"><td rowspan="2"><strong>longitude_bounds</strong></td>
+<td><em>path</em></td>
+<td><strong>/longitude[]</strong></td>
+</tr>
+<tr class="row-odd"><td><em>description</em></td>
+<td>The longitudes of the grid cell boundaries are not included in the product. HARP therefore providesits own approximation. Each cell boundary is determined by the two cell centers surrounding it. The cell boundary is placed halfway between the surrounding cell centers. For the cells at the edge of the grid, virtual cell centers are created by extrapolation. Each virtual cell center is placed such that the distance between the virtual cell center and the closest real cell center is equal to the distance between the closest real cell center and second closest real cell center. It is assumed that the longitudes from the product form either a strictly increasing or a strictly decreasing sequence.</td>
+</tr>
+<tr class="row-even"><td rowspan="2"><strong>latitude_bounds</strong></td>
+<td><em>path</em></td>
+<td><strong>/latitude[]</strong></td>
+</tr>
+<tr class="row-odd"><td><em>description</em></td>
+<td>The latitudes of the grid cell boundaries are not included in the product. HARP therefore providesits own approximation. Each cell boundary is determined by the two cell centers surrounding it. The cell boundary is placed halfway between the surrounding cell centers. For the cells at the edge of the grid, virtual cell centers are created by extrapolation. Each virtual cell center is placed such that the distance between the virtual cell center and the closest real cell center is equal to the distance between the closest real cell center and second closest real cell center. It is assumed that the latitudes from the product form either a strictly increasing or a strictly decreasing sequence.</td>
+</tr>
+<tr class="row-even"><td><strong>O3_column_number_density</strong></td>
+<td><em>path</em></td>
+<td><strong>/atmosphere_mole_content_of_ozone[]</strong></td>
 </tr>
 </tbody>
 </table>

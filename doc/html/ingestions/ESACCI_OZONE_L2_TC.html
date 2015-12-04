@@ -155,143 +155,143 @@
 </tr>
 </thead>
 <tbody valign="top">
-<tr class="row-even"><td><strong>index</strong></td>
-<td>int32</td>
-<td>{<em>time</em>}</td>
-<td>&nbsp;</td>
-<td>zero-based index of the sample within the source product</td>
-</tr>
-<tr class="row-odd"><td><strong>scanline_pixel_index</strong></td>
+<tr class="row-even"><td><strong>scanline_pixel_index</strong></td>
 <td>int32</td>
 <td>{<em>time</em>}</td>
 <td>&nbsp;</td>
 <td>zero-based index of the instantaneous field of view within the swath</td>
 </tr>
-<tr class="row-even"><td><strong>datetime</strong></td>
+<tr class="row-odd"><td><strong>datetime</strong></td>
 <td>double</td>
 <td>{<em>time</em>}</td>
 <td>days since 2000-01-01</td>
 <td>time of the measurement</td>
 </tr>
-<tr class="row-odd"><td><strong>longitude</strong></td>
+<tr class="row-even"><td><strong>longitude</strong></td>
 <td>double</td>
 <td>{<em>time</em>}</td>
 <td>degree_east</td>
 <td>longitude of the ground pixel center</td>
 </tr>
-<tr class="row-even"><td><strong>latitude</strong></td>
+<tr class="row-odd"><td><strong>latitude</strong></td>
 <td>double</td>
 <td>{<em>time</em>}</td>
 <td>degree_north</td>
 <td>latitude of the ground pixel center</td>
 </tr>
-<tr class="row-odd"><td><strong>longitude_bounds</strong></td>
+<tr class="row-even"><td><strong>longitude_bounds</strong></td>
 <td>double</td>
 <td>{<em>time</em>, 4}</td>
 <td>degree_east</td>
 <td>longitudes of the ground pixel corners</td>
 </tr>
-<tr class="row-even"><td><strong>latitude_bounds</strong></td>
+<tr class="row-odd"><td><strong>latitude_bounds</strong></td>
 <td>double</td>
 <td>{<em>time</em>, 4}</td>
 <td>degree_north</td>
 <td>latitudes of the ground pixel corners</td>
 </tr>
-<tr class="row-odd"><td><strong>solar_zenith_angle</strong></td>
+<tr class="row-even"><td><strong>solar_zenith_angle</strong></td>
 <td>double</td>
 <td>{<em>time</em>}</td>
 <td>degree</td>
 <td>zenith angle of the Sun at the ground pixel center</td>
 </tr>
-<tr class="row-even"><td><strong>viewing_zenith_angle</strong></td>
+<tr class="row-odd"><td><strong>viewing_zenith_angle</strong></td>
 <td>double</td>
 <td>{<em>time</em>}</td>
 <td>degree</td>
 <td>zenith angle of the instrument at the ground pixel center (&lt; 0 for Eastern, &gt; 0 for Western pixels)</td>
 </tr>
-<tr class="row-odd"><td><strong>relative_azimuth_angle</strong></td>
+<tr class="row-even"><td><strong>relative_azimuth_angle</strong></td>
 <td>double</td>
 <td>{<em>time</em>}</td>
 <td>degree</td>
 <td>relative azimuth angle at the ground pixel center</td>
 </tr>
-<tr class="row-even"><td><strong>O3_column_number_density</strong></td>
+<tr class="row-odd"><td><strong>O3_column_number_density</strong></td>
 <td>double</td>
 <td>{<em>time</em>}</td>
 <td>DU</td>
 <td>O3 total column number density</td>
 </tr>
-<tr class="row-odd"><td><strong>O3_column_number_density_stdev_random</strong></td>
+<tr class="row-even"><td><strong>O3_column_number_density_stdev_random</strong></td>
 <td>double</td>
 <td>{<em>time</em>}</td>
 <td>DU</td>
 <td>random uncertainty of the O3 total column number density</td>
 </tr>
-<tr class="row-even"><td><strong>temperature</strong></td>
+<tr class="row-odd"><td><strong>temperature</strong></td>
 <td>double</td>
 <td>{<em>time</em>}</td>
 <td>K</td>
 <td>retrieved effective temperature</td>
 </tr>
-<tr class="row-odd"><td><strong>cloud_fraction</strong></td>
+<tr class="row-even"><td><strong>cloud_fraction</strong></td>
 <td>double</td>
 <td>{<em>time</em>}</td>
 <td>1</td>
 <td>effective cloud fraction</td>
 </tr>
-<tr class="row-even"><td><strong>cloud_top_pressure</strong></td>
+<tr class="row-odd"><td><strong>cloud_top_pressure</strong></td>
 <td>double</td>
 <td>{<em>time</em>}</td>
 <td>Pa</td>
 <td>cloud top pressure</td>
 </tr>
-<tr class="row-odd"><td><strong>cloud_top_albedo</strong></td>
+<tr class="row-even"><td><strong>cloud_top_albedo</strong></td>
 <td>double</td>
 <td>{<em>time</em>}</td>
 <td>1</td>
 <td>effective cloud top albedo</td>
 </tr>
-<tr class="row-even"><td><strong>pressure</strong></td>
+<tr class="row-odd"><td><strong>pressure</strong></td>
 <td>double</td>
 <td>{<em>time</em>}</td>
 <td>Pa</td>
 <td>pressure at the effective scene used for the retrieval</td>
 </tr>
-<tr class="row-odd"><td><strong>albedo</strong></td>
+<tr class="row-even"><td><strong>albedo</strong></td>
 <td>double</td>
 <td>{<em>time</em>}</td>
 <td>1</td>
 <td>retrieved effective albedo of the scene</td>
 </tr>
-<tr class="row-even"><td><strong>surface_albedo</strong></td>
+<tr class="row-odd"><td><strong>surface_albedo</strong></td>
 <td>double</td>
 <td>{<em>time</em>}</td>
 <td>1</td>
 <td>minimum surface albedo at 335nm from OMI LER climatology</td>
 </tr>
-<tr class="row-odd"><td><strong>surface_altitude</strong></td>
+<tr class="row-even"><td><strong>surface_altitude</strong></td>
 <td>double</td>
 <td>{<em>time</em>}</td>
 <td>m</td>
 <td>surface altitude extracted from GTOPO30</td>
 </tr>
-<tr class="row-even"><td><strong>pressure_bounds</strong></td>
+<tr class="row-odd"><td><strong>pressure_bounds</strong></td>
 <td>double</td>
 <td>{<em>time</em>, <em>vertical</em>, 2}</td>
 <td>Pa</td>
 <td>pressure at the boundaries of the layers used in the forward model</td>
 </tr>
-<tr class="row-odd"><td><strong>O3_column_number_density_avk</strong></td>
+<tr class="row-even"><td><strong>O3_column_number_density_avk</strong></td>
 <td>double</td>
 <td>{<em>time</em>, <em>vertical</em>}</td>
 <td>1</td>
 <td>averaging kernels in the layers of the forward model</td>
 </tr>
-<tr class="row-even"><td><strong>O3_column_number_density_apriori</strong></td>
+<tr class="row-odd"><td><strong>O3_column_number_density_apriori</strong></td>
 <td>double</td>
 <td>{<em>time</em>, <em>vertical</em>}</td>
 <td>DU</td>
 <td>a-priori partial ozone columns in the layers of the forward model</td>
+</tr>
+<tr class="row-even"><td><strong>index</strong></td>
+<td>int32</td>
+<td>{<em>time</em>}</td>
+<td>&nbsp;</td>
+<td>zero-based index of the sample within the source product</td>
 </tr>
 </tbody>
 </table>

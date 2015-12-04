@@ -155,119 +155,119 @@
 </tr>
 </thead>
 <tbody valign="top">
-<tr class="row-even"><td><strong>index</strong></td>
-<td>int32</td>
-<td>{<em>time</em>}</td>
-<td>&nbsp;</td>
-<td>zero-based index of the sample within the source product</td>
-</tr>
-<tr class="row-odd"><td><strong>scanline_pixel_index</strong></td>
+<tr class="row-even"><td><strong>scanline_pixel_index</strong></td>
 <td>int16</td>
 <td>{<em>time</em>}</td>
 <td>&nbsp;</td>
 <td>pixel index (0-based) within the scanline</td>
 </tr>
-<tr class="row-even"><td><strong>datetime</strong></td>
+<tr class="row-odd"><td><strong>datetime</strong></td>
 <td>double</td>
 <td>{<em>time</em>}</td>
 <td>seconds since 2000-01-01</td>
 <td>start time of the measurement</td>
 </tr>
-<tr class="row-odd"><td><strong>longitude</strong></td>
+<tr class="row-even"><td><strong>longitude</strong></td>
 <td>float</td>
 <td>{<em>time</em>}</td>
 <td>degree_east</td>
 <td>longitude of the ground pixel center (WGS84)</td>
 </tr>
-<tr class="row-even"><td><strong>latitude</strong></td>
+<tr class="row-odd"><td><strong>latitude</strong></td>
 <td>float</td>
 <td>{<em>time</em>}</td>
 <td>degree_north</td>
 <td>latitude of the ground pixel center (WGS84)</td>
 </tr>
-<tr class="row-odd"><td><strong>longitude_bounds</strong></td>
+<tr class="row-even"><td><strong>longitude_bounds</strong></td>
 <td>float</td>
 <td>{<em>time</em>, 4}</td>
 <td>degree_east</td>
 <td>longitudes of the ground pixel corners (WGS84)</td>
 </tr>
-<tr class="row-even"><td><strong>latitude_bounds</strong></td>
+<tr class="row-odd"><td><strong>latitude_bounds</strong></td>
 <td>float</td>
 <td>{<em>time</em>, 4}</td>
 <td>degree_north</td>
 <td>latitudes of the ground pixel corners (WGS84)</td>
 </tr>
-<tr class="row-odd"><td><strong>instrument_longitude</strong></td>
+<tr class="row-even"><td><strong>instrument_longitude</strong></td>
 <td>float</td>
 <td>{<em>time</em>}</td>
 <td>degree_east</td>
 <td>longitude of the sub-instrument point (WGS84)</td>
 </tr>
-<tr class="row-even"><td><strong>instrument_latitude</strong></td>
+<tr class="row-odd"><td><strong>instrument_latitude</strong></td>
 <td>float</td>
 <td>{<em>time</em>}</td>
 <td>degree_north</td>
 <td>latitude of the sub-instrument point (WGS84)</td>
 </tr>
-<tr class="row-odd"><td><strong>instrument_altitude</strong></td>
+<tr class="row-even"><td><strong>instrument_altitude</strong></td>
 <td>float</td>
 <td>{<em>time</em>}</td>
 <td>m</td>
 <td>altitude of the instrument (WGS84)</td>
 </tr>
-<tr class="row-even"><td><strong>solar_zenith_angle</strong></td>
+<tr class="row-odd"><td><strong>solar_zenith_angle</strong></td>
 <td>float</td>
 <td>{<em>time</em>}</td>
 <td>degree</td>
 <td>zenith angle of the Sun at the ground pixel location (WGS84)</td>
 </tr>
-<tr class="row-odd"><td><strong>solar_azimuth_angle</strong></td>
+<tr class="row-even"><td><strong>solar_azimuth_angle</strong></td>
 <td>float</td>
 <td>{<em>time</em>}</td>
 <td>degree</td>
 <td>azimuth angle of the Sun at the ground pixel location (WGS84), measured East-of-North</td>
 </tr>
-<tr class="row-even"><td><strong>viewing_zenith_angle</strong></td>
+<tr class="row-odd"><td><strong>viewing_zenith_angle</strong></td>
 <td>float</td>
 <td>{<em>time</em>}</td>
 <td>degree</td>
 <td>zenith angle of the instrument at the ground pixel location (WGS84)</td>
 </tr>
-<tr class="row-odd"><td><strong>viewing_azimuth_angle</strong></td>
+<tr class="row-even"><td><strong>viewing_azimuth_angle</strong></td>
 <td>float</td>
 <td>{<em>time</em>}</td>
 <td>degree</td>
 <td>azimuth angle of the instrument at the ground pixel location (WGS84), measured East-of-North</td>
 </tr>
-<tr class="row-even"><td><strong>altitude_bounds_surface</strong></td>
+<tr class="row-odd"><td><strong>altitude_bounds_surface</strong></td>
 <td>float</td>
 <td>{<em>time</em>, <em>vertical</em>, 2}</td>
 <td>m</td>
 <td>altitude bounds per profile layer; altitude is measured as the vertical distance to the surface</td>
 </tr>
-<tr class="row-odd"><td><strong>pressure_bounds</strong></td>
+<tr class="row-even"><td><strong>pressure_bounds</strong></td>
 <td>float</td>
 <td>{<em>time</em>, <em>vertical</em>, 2}</td>
 <td>hPa</td>
 <td>pressure bounds per profile layer</td>
 </tr>
-<tr class="row-even"><td><strong>CH4_column_mass_mixing_ratio</strong></td>
+<tr class="row-odd"><td><strong>CH4_column_mass_mixing_ratio</strong></td>
 <td>float</td>
 <td>{<em>time</em>}</td>
 <td>ng/g</td>
 <td>column averaged dry air mixing ratio of methane</td>
 </tr>
-<tr class="row-odd"><td><strong>CH4_column_mass_mixing_ratio_stdev</strong></td>
+<tr class="row-even"><td><strong>CH4_column_mass_mixing_ratio_stdev</strong></td>
 <td>float</td>
 <td>{<em>time</em>}</td>
 <td>ng/g</td>
 <td>uncertainty of the column averaged dry air mixing ratio of methane (1 sigma error)</td>
 </tr>
-<tr class="row-even"><td><strong>CH4_column_mass_mixing_ratio_avk</strong></td>
+<tr class="row-odd"><td><strong>CH4_column_mass_mixing_ratio_avk</strong></td>
 <td>float</td>
 <td>{<em>time</em>, <em>vertical</em>}</td>
 <td>&nbsp;</td>
 <td>column averaging kernel for methane retrieval</td>
+</tr>
+<tr class="row-even"><td><strong>index</strong></td>
+<td>int32</td>
+<td>{<em>time</em>}</td>
+<td>&nbsp;</td>
+<td>zero-based index of the sample within the source product</td>
 </tr>
 </tbody>
 </table>

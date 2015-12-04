@@ -155,41 +155,41 @@
 </tr>
 </thead>
 <tbody valign="top">
-<tr class="row-even"><td><strong>index</strong></td>
-<td>int32</td>
-<td>{<em>time</em>}</td>
-<td>&nbsp;</td>
-<td>zero-based index of the sample within the source product</td>
-</tr>
-<tr class="row-odd"><td><strong>datetime</strong></td>
+<tr class="row-even"><td><strong>datetime</strong></td>
 <td>double</td>
 <td>{<em>time</em>}</td>
 <td>seconds since 2000-01-01</td>
 <td>start time of the measurement</td>
 </tr>
-<tr class="row-even"><td><strong>longitude</strong></td>
+<tr class="row-odd"><td><strong>longitude</strong></td>
 <td>double</td>
 <td>{<em>time</em>}</td>
 <td>degree_east</td>
 <td>longitude of the measurement</td>
 </tr>
-<tr class="row-odd"><td><strong>latitude</strong></td>
+<tr class="row-even"><td><strong>latitude</strong></td>
 <td>double</td>
 <td>{<em>time</em>}</td>
 <td>degree_north</td>
 <td>latitude of the measurement</td>
 </tr>
-<tr class="row-even"><td><strong>radiance</strong></td>
+<tr class="row-odd"><td><strong>radiance</strong></td>
 <td>double</td>
 <td>{<em>time</em>, <em>spectral</em>}</td>
 <td>W/(cm^2.sr.cm^-1)</td>
 <td>radiances derived by taking the norm of the fourier transform of measured wavelengths</td>
 </tr>
-<tr class="row-odd"><td><strong>wavenumber</strong></td>
+<tr class="row-even"><td><strong>wavenumber</strong></td>
 <td>double</td>
 <td>{<em>time</em>, <em>spectral</em>}</td>
 <td>cm^-1</td>
 <td>wavenumber for each point in the spectrum</td>
+</tr>
+<tr class="row-odd"><td><strong>index</strong></td>
+<td>int32</td>
+<td>{<em>time</em>}</td>
+<td>&nbsp;</td>
+<td>zero-based index of the sample within the source product</td>
 </tr>
 </tbody>
 </table>
