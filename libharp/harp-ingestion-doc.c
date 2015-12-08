@@ -786,27 +786,7 @@ static int generate_definition_rst(const char *filename, const harp_product_defi
         fputs(", ", f);
 
         fputc('"', f);
-        switch (variable_definition->data_type)
-        {
-            case harp_type_int8:
-                fputs("int8", f);
-                break;
-            case harp_type_int16:
-                fputs("int16", f);
-                break;
-            case harp_type_int32:
-                fputs("int32", f);
-                break;
-            case harp_type_float:
-                fputs("float", f);
-                break;
-            case harp_type_double:
-                fputs("double", f);
-                break;
-            case harp_type_string:
-                fputs("string", f);
-                break;
-        }
+        fputs(harp_get_data_type_name(variable_definition->data_type), f);
         fputc('"', f);
         fputs(", ", f);
 
