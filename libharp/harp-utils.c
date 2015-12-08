@@ -53,8 +53,10 @@ const char *harp_get_data_type_name(harp_data_type data_type)
             return "double";
         case harp_type_string:
             return "string";
+        default:
+            assert(0);
+            exit(1);
     }
-    return "unknown";
 }
 
 /** Retrieve the byte size for a HARP data type.
@@ -78,9 +80,10 @@ long harp_get_size_for_type(harp_data_type data_type)
             return (long)sizeof(double);
         case harp_type_string:
             return (long)sizeof(char *);
+        default:
+            assert(0);
+            exit(1);
     }
-
-    return (long)(-1);
 }
 
 /** Retrieve the fill value for a HARP data type.

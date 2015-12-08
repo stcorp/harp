@@ -579,10 +579,10 @@ const char *harp_get_dimension_type_name(harp_dimension_type dimension_type)
             return "spectral";
         case harp_dimension_vertical:
             return "vertical";
+        default:
+            assert(0);
+            exit(1);
     }
-
-    assert(0);
-    exit(1);
 }
 
 /**
