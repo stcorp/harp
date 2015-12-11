@@ -27,108 +27,140 @@
 
 #include "netcdf.h"
 
-typedef struct harp_dimensions
+typedef enum netcdf_dimension_type_enum
+{
+    netcdf_dimension_time,
+    netcdf_dimension_latitude,
+    netcdf_dimension_longitude,
+    netcdf_dimension_vertical,
+    netcdf_dimension_spectral,
+    netcdf_dimension_independent,
+    netcdf_dimension_string
+} netcdf_dimension_type;
+
+typedef struct netcdf_dimensions_struct
 {
     int num_dimensions;
-    harp_dimension_type *type;
+    netcdf_dimension_type *type;
     long *length;
-} harp_dimensions;
+} netcdf_dimensions;
 
-static void dimensions_init(harp_dimensions *dimensions)
+static const char *get_dimension_type_name(netcdf_dimension_type dimension_type)
 {
-    dimensions->num_dimensions = 0;
-    dimensions->type = NULL;
-    dimensions->length = NULL;
+    switch (dimension_type)
+    {
+        case netcdf_dimension_time:
+            return "time";
+        case netcdf_dimension_latitude:
+            return "latitude";
+        case netcdf_dimension_longitude:
+            return "longitude";
+        case netcdf_dimension_spectral:
+            return "spectral";
+        case netcdf_dimension_vertical:
+            return "vertical";
+        case netcdf_dimension_independent:
+            return "independent";
+        case netcdf_dimension_string:
+            return "string";
+        default:
+            assert(0);
+            exit(1);
+    }
 }
 
-static void dimensions_done(harp_dimensions *dimensions)
+static int parse_dimension_type(const char *str, netcdf_dimension_type *dimension_type)
 {
-    if (dimensions->length != NULL)
-    {
-        free(dimensions->length);
-    }
-    if (dimensions->type != NULL)
-    {
-        free(dimensions->type);
-    }
-}
+    int num_consumed;
 
-/* returns id of dimension matching the specified type (or length for independent dimensions), -1 otherwise */
-static int dimensions_find(harp_dimensions *dimensions, harp_dimension_type type, long length)
-{
-    int i;
-
-    if (type == harp_dimension_independent)
+    if (strcmp(str, get_dimension_type_name(netcdf_dimension_time)) == 0)
     {
-        /* find independent dimension by length */
-        for (i = 0; i < dimensions->num_dimensions; i++)
-        {
-            if (dimensions->type[i] == harp_dimension_independent && dimensions->length[i] == length)
-            {
-                return i;
-            }
-        }
+        *dimension_type = netcdf_dimension_time;
+    }
+    else if (strcmp(str, get_dimension_type_name(netcdf_dimension_latitude)) == 0)
+    {
+        *dimension_type = netcdf_dimension_latitude;
+    }
+    else if (strcmp(str, get_dimension_type_name(netcdf_dimension_longitude)) == 0)
+    {
+        *dimension_type = netcdf_dimension_longitude;
+    }
+    else if (strcmp(str, get_dimension_type_name(netcdf_dimension_spectral)) == 0)
+    {
+        *dimension_type = netcdf_dimension_spectral;
+    }
+    else if (strcmp(str, get_dimension_type_name(netcdf_dimension_vertical)) == 0)
+    {
+        *dimension_type = netcdf_dimension_vertical;
+    }
+    else if (sscanf(str, "independent_%*d%n", &num_consumed) == 0 && (size_t)num_consumed == strlen(str))
+    {
+        *dimension_type = netcdf_dimension_independent;
+    }
+    else if (sscanf(str, "string_%*d%n", &num_consumed) == 0 && (size_t)num_consumed == strlen(str))
+    {
+        *dimension_type = netcdf_dimension_string;
     }
     else
     {
-        /* find by type */
-        for (i = 0; i < dimensions->num_dimensions; i++)
-        {
-            if (dimensions->type[i] == type)
-            {
-                return i;
-            }
-        }
+        harp_set_error(HARP_ERROR_PRODUCT, "unsupported dimension '%s'", str);
+        return -1;
     }
 
-    return -1;
+    return 0;
 }
 
-/* returns id of new dimension on success, -1 otherwise. */
-static int dimensions_add(harp_dimensions *dimensions, harp_dimension_type type, long length)
+static int get_harp_dimension_type(netcdf_dimension_type netcdf_dim_type, harp_dimension_type *harp_dim_type)
 {
-    int index;
-
-    index = dimensions_find(dimensions, type, length);
-    if (index >= 0)
+    switch (netcdf_dim_type)
     {
-        if (dimensions->length[index] != length)
-        {
-            harp_set_error(HARP_ERROR_INVALID_ARGUMENT, "duplicate dimensions with name '%s' and different sizes "
-                           "'%ld' '%ld'", harp_get_dimension_type_name(type), dimensions->length[index], length);
+        case netcdf_dimension_time:
+            *harp_dim_type = harp_dimension_time;
+            break;
+        case netcdf_dimension_latitude:
+            *harp_dim_type = harp_dimension_latitude;
+            break;
+        case netcdf_dimension_longitude:
+            *harp_dim_type = harp_dimension_longitude;
+            break;
+        case netcdf_dimension_spectral:
+            *harp_dim_type = harp_dimension_spectral;
+            break;
+        case netcdf_dimension_vertical:
+            *harp_dim_type = harp_dimension_vertical;
+            break;
+        case netcdf_dimension_independent:
+            *harp_dim_type = harp_dimension_independent;
+            break;
+        default:
+            harp_set_error(HARP_ERROR_PRODUCT, "unsupported dimension type '%s'",
+                           get_dimension_type_name(netcdf_dim_type));
             return -1;
-        }
-        return index;
     }
 
-    /* dimension does not yet exist -> add it */
-    if (dimensions->num_dimensions % BLOCK_SIZE == 0)
+    return 0;
+}
+
+static netcdf_dimension_type get_netcdf_dimension_type(harp_dimension_type dimension_type)
+{
+    switch (dimension_type)
     {
-        long *new_length;
-        harp_dimension_type *new_type;
-
-        new_length = realloc(dimensions->length, (dimensions->num_dimensions + BLOCK_SIZE) * sizeof(long));
-        if (new_length == NULL)
-        {
-            harp_set_error(HARP_ERROR_OUT_OF_MEMORY, "out of memory (could not allocate %lu bytes) (%s:%u)",
-                           (dimensions->num_dimensions + BLOCK_SIZE) * sizeof(long), __FILE__, __LINE__);
-            return -1;
-        }
-        dimensions->length = new_length;
-        new_type = realloc(dimensions->type, (dimensions->num_dimensions + BLOCK_SIZE) * sizeof(harp_dimension_type));
-        if (new_type == NULL)
-        {
-            harp_set_error(HARP_ERROR_OUT_OF_MEMORY, "out of memory (could not allocate %lu bytes) (%s:%u)",
-                           (dimensions->num_dimensions + BLOCK_SIZE) * sizeof(harp_dimension_type), __FILE__, __LINE__);
-            return -1;
-        }
-        dimensions->type = new_type;
+        case harp_dimension_independent:
+            return netcdf_dimension_independent;
+        case harp_dimension_time:
+            return netcdf_dimension_time;
+        case harp_dimension_latitude:
+            return netcdf_dimension_latitude;
+        case harp_dimension_longitude:
+            return netcdf_dimension_longitude;
+        case harp_dimension_spectral:
+            return netcdf_dimension_spectral;
+        case harp_dimension_vertical:
+            return netcdf_dimension_vertical;
+        default:
+            assert(0);
+            exit(1);
     }
-    dimensions->type[dimensions->num_dimensions] = type;
-    dimensions->length[dimensions->num_dimensions] = length;
-    dimensions->num_dimensions++;
-
-    return dimensions->num_dimensions - 1;
 }
 
 static int get_harp_type(int netcdf_data_type, harp_data_type *data_type)
@@ -154,7 +186,7 @@ static int get_harp_type(int netcdf_data_type, harp_data_type *data_type)
             *data_type = harp_type_string;
             break;
         default:
-            harp_set_error(HARP_ERROR_PRODUCT, "unsupported NetCDF data type");
+            harp_set_error(HARP_ERROR_PRODUCT, "unsupported data type");
             return -1;
     }
 
@@ -181,6 +213,105 @@ static int get_netcdf_type(harp_data_type data_type)
             assert(0);
             exit(1);
     }
+}
+
+static void dimensions_init(netcdf_dimensions *dimensions)
+{
+    dimensions->num_dimensions = 0;
+    dimensions->type = NULL;
+    dimensions->length = NULL;
+}
+
+static void dimensions_done(netcdf_dimensions *dimensions)
+{
+    if (dimensions->length != NULL)
+    {
+        free(dimensions->length);
+    }
+    if (dimensions->type != NULL)
+    {
+        free(dimensions->type);
+    }
+}
+
+/* Returns the id of dimension matching the specified type (or the specified length for independent and string
+ * dimensions). Returns -1 if no matching dimension can be found.
+ */
+static int dimensions_find(netcdf_dimensions *dimensions, netcdf_dimension_type type, long length)
+{
+    int i;
+
+    if (type == netcdf_dimension_independent || type == netcdf_dimension_string)
+    {
+        /* find independent and string dimensions by length */
+        for (i = 0; i < dimensions->num_dimensions; i++)
+        {
+            if (dimensions->type[i] == type && dimensions->length[i] == length)
+            {
+                return i;
+            }
+        }
+    }
+    else
+    {
+        /* find by type */
+        for (i = 0; i < dimensions->num_dimensions; i++)
+        {
+            if (dimensions->type[i] == type)
+            {
+                return i;
+            }
+        }
+    }
+
+    return -1;
+}
+
+/* Returns the id of the new dimension on success, -1 otherwise. */
+static int dimensions_add(netcdf_dimensions *dimensions, netcdf_dimension_type type, long length)
+{
+    int index;
+
+    index = dimensions_find(dimensions, type, length);
+    if (index >= 0)
+    {
+        if (dimensions->length[index] != length)
+        {
+            harp_set_error(HARP_ERROR_INVALID_ARGUMENT, "duplicate dimensions with name '%s' and different sizes "
+                           "'%ld' '%ld'", get_dimension_type_name(type), dimensions->length[index], length);
+            return -1;
+        }
+        return index;
+    }
+
+    /* dimension does not yet exist -> add it */
+    if (dimensions->num_dimensions % BLOCK_SIZE == 0)
+    {
+        long *new_length;
+        netcdf_dimension_type *new_type;
+
+        new_length = realloc(dimensions->length, (dimensions->num_dimensions + BLOCK_SIZE) * sizeof(long));
+        if (new_length == NULL)
+        {
+            harp_set_error(HARP_ERROR_OUT_OF_MEMORY, "out of memory (could not allocate %lu bytes) (%s:%u)",
+                           (dimensions->num_dimensions + BLOCK_SIZE) * sizeof(long), __FILE__, __LINE__);
+            return -1;
+        }
+        dimensions->length = new_length;
+        new_type = realloc(dimensions->type, (dimensions->num_dimensions + BLOCK_SIZE) * sizeof(netcdf_dimension_type));
+        if (new_type == NULL)
+        {
+            harp_set_error(HARP_ERROR_OUT_OF_MEMORY, "out of memory (could not allocate %lu bytes) (%s:%u)",
+                           (dimensions->num_dimensions + BLOCK_SIZE) * sizeof(netcdf_dimension_type), __FILE__, __LINE__);
+            return -1;
+        }
+        dimensions->type = new_type;
+    }
+    dimensions->type[dimensions->num_dimensions] = type;
+    dimensions->length[dimensions->num_dimensions] = length;
+    dimensions->num_dimensions++;
+
+    return dimensions->num_dimensions - 1;
 }
 
 static int read_string_attribute(int ncid, int varid, const char *name, char **data)
@@ -280,20 +411,19 @@ static int read_numeric_attribute(int ncid, int varid, const char *name, harp_da
     return 0;
 }
 
-static int read_variable(harp_product *product, int ncid, int varid, harp_dimensions *dimensions)
+static int read_variable(harp_product *product, int ncid, int varid, netcdf_dimensions *dimensions)
 {
     harp_variable *variable;
     harp_data_type data_type;
     int num_dimensions;
     harp_dimension_type dimension_type[HARP_MAX_NUM_DIMS];
     long dimension[HARP_MAX_NUM_DIMS];
-    long num_elements;
     char netcdf_name[NC_MAX_NAME + 1];
     nc_type netcdf_data_type;
     int netcdf_num_dimensions;
     int netcdf_dim_id[NC_MAX_VAR_DIMS];
     int result;
-    int i;
+    long i;
 
     result = nc_inq_var(ncid, varid, netcdf_name, &netcdf_data_type, &netcdf_num_dimensions, netcdf_dim_id, NULL);
     if (result != NC_NOERR)
@@ -309,19 +439,44 @@ static int read_variable(harp_product *product, int ncid, int varid, harp_dimens
     }
 
     num_dimensions = netcdf_num_dimensions;
+
     if (data_type == harp_type_string)
     {
-        assert(num_dimensions > 0);
+        if (num_dimensions == 0)
+        {
+            harp_set_error(HARP_ERROR_PRODUCT, "variable '%s' of type '%s' has 0 dimensions; expected >= 1",
+                           netcdf_name, harp_get_data_type_name(harp_type_string));
+        }
+
+        if (dimensions->type[netcdf_dim_id[num_dimensions - 1]] != netcdf_dimension_string)
+        {
+            harp_set_error(HARP_ERROR_PRODUCT, "inner-most dimension of variable '%s' is of type '%s'; expected '%s'",
+                           netcdf_name, get_dimension_type_name(dimensions->type[netcdf_dim_id[num_dimensions - 1]]),
+                           get_dimension_type_name(netcdf_dimension_string));
+            return -1;
+        }
+
         num_dimensions--;
     }
-    assert(num_dimensions <= HARP_MAX_NUM_DIMS);
 
-    num_elements = 1;
+    if (num_dimensions > HARP_MAX_NUM_DIMS)
+    {
+        harp_set_error(HARP_ERROR_PRODUCT, "variable '%s' has too many dimensions", netcdf_name);
+        return -1;
+    }
+
     for (i = 0; i < num_dimensions; i++)
     {
-        dimension_type[i] = dimensions->type[netcdf_dim_id[i]];
+        if (get_harp_dimension_type(dimensions->type[netcdf_dim_id[i]], &dimension_type[i]) != 0)
+        {
+            harp_add_error_message(" (variable '%s')", netcdf_name);
+            return -1;
+        }
+    }
+
+    for (i = 0; i < num_dimensions; i++)
+    {
         dimension[i] = dimensions->length[netcdf_dim_id[i]];
-        num_elements *= dimension[i];
     }
 
     if (harp_variable_new(netcdf_name, data_type, num_dimensions, dimension_type, dimension, &variable) != 0)
@@ -344,11 +499,11 @@ static int read_variable(harp_product *product, int ncid, int varid, harp_dimens
         assert(netcdf_num_dimensions > 0);
         length = dimensions->length[netcdf_dim_id[netcdf_num_dimensions - 1]];
 
-        buffer = malloc(num_elements * length * sizeof(char));
+        buffer = malloc(variable->num_elements * length * sizeof(char));
         if (buffer == NULL)
         {
             harp_set_error(HARP_ERROR_OUT_OF_MEMORY, "out of memory (could not allocate %lu bytes) (%s:%u)",
-                           num_elements * length * sizeof(char), __FILE__, __LINE__);
+                           variable->num_elements * length * sizeof(char), __FILE__, __LINE__);
             return -1;
         }
 
@@ -360,7 +515,7 @@ static int read_variable(harp_product *product, int ncid, int varid, harp_dimens
             return -1;
         }
 
-        for (i = 0; i < num_elements; i++)
+        for (i = 0; i < variable->num_elements; i++)
         {
             char *str;
 
@@ -523,7 +678,7 @@ static int verify_product(int ncid)
     return -1;
 }
 
-static int read_product(int ncid, harp_product *product, harp_dimensions *dimensions)
+static int read_product(int ncid, harp_product *product, netcdf_dimensions *dimensions)
 {
     int num_dimensions;
     int num_variables;
@@ -541,8 +696,7 @@ static int read_product(int ncid, harp_product *product, harp_dimensions *dimens
 
     for (i = 0; i < num_dimensions; i++)
     {
-        harp_dimension_type type;
-        int num_consumed = -1;
+        netcdf_dimension_type dimension_type;
         char name[NC_MAX_NAME + 1];
         size_t length;
 
@@ -553,20 +707,12 @@ static int read_product(int ncid, harp_product *product, harp_dimensions *dimens
             return -1;
         }
 
-        if (sscanf(name, "independent_%*d%n", &num_consumed) == 0 && (size_t)num_consumed == strlen(name))
+        if (parse_dimension_type(name, &dimension_type) != 0)
         {
-            type = harp_dimension_independent;
-        }
-        else
-        {
-            if (harp_parse_dimension_type(name, &type) != 0 || type == harp_dimension_independent)
-            {
-                harp_set_error(HARP_ERROR_PRODUCT, "unsupported dimension '%s'", name);
-                return -1;
-            }
+            return -1;
         }
 
-        if (dimensions_add(dimensions, type, length) != i)
+        if (dimensions_add(dimensions, dimension_type, length) != i)
         {
             harp_set_error(HARP_ERROR_PRODUCT, "duplicate dimensions with name '%s'", name);
             return -1;
@@ -615,7 +761,7 @@ static int read_product(int ncid, harp_product *product, harp_dimensions *dimens
 int harp_import_netcdf(const char *filename, harp_product **product)
 {
     harp_product *new_product;
-    harp_dimensions dimensions;
+    netcdf_dimensions dimensions;
     int ncid;
     int result;
 
@@ -786,7 +932,7 @@ int harp_import_global_attributes_netcdf(const char *filename, double *datetime_
     return 0;
 }
 
-static int write_dimensions(int ncid, const harp_dimensions *dimensions)
+static int write_dimensions(int ncid, const netcdf_dimensions *dimensions)
 {
     int result;
     int i;
@@ -795,17 +941,23 @@ static int write_dimensions(int ncid, const harp_dimensions *dimensions)
     {
         int dim_id;
 
-        if (dimensions->type[i] == harp_dimension_independent)
+        if (dimensions->type[i] == netcdf_dimension_independent)
         {
             char name[32];
 
             sprintf(name, "independent_%ld", dimensions->length[i]);
             result = nc_def_dim(ncid, name, dimensions->length[i], &dim_id);
         }
+        else if (dimensions->type[i] == netcdf_dimension_string)
+        {
+            char name[32];
+
+            sprintf(name, "string_%ld", dimensions->length[i]);
+            result = nc_def_dim(ncid, name, dimensions->length[i], &dim_id);
+        }
         else
         {
-            result = nc_def_dim(ncid, harp_get_dimension_type_name(dimensions->type[i]), dimensions->length[i],
-                                &dim_id);
+            result = nc_def_dim(ncid, get_dimension_type_name(dimensions->type[i]), dimensions->length[i], &dim_id);
         }
 
         if (result != NC_NOERR)
@@ -870,7 +1022,7 @@ static int write_numeric_attribute(int ncid, int varid, const char *name, harp_d
     return 0;
 }
 
-static int write_variable_definition(int ncid, const harp_variable *variable, harp_dimensions *dimensions, int *varid)
+static int write_variable_definition(int ncid, const harp_variable *variable, netcdf_dimensions *dimensions, int *varid)
 {
     int num_dimensions;
     int dim_id[NC_MAX_VAR_DIMS];
@@ -882,7 +1034,8 @@ static int write_variable_definition(int ncid, const harp_variable *variable, ha
 
     for (i = 0; i < num_dimensions; i++)
     {
-        dim_id[i] = dimensions_find(dimensions, variable->dimension_type[i], variable->dimension[i]);
+        dim_id[i] = dimensions_find(dimensions, get_netcdf_dimension_type(variable->dimension_type[i]),
+                                    variable->dimension[i]);
         assert(dim_id[i] >= 0);
     }
 
@@ -890,7 +1043,7 @@ static int write_variable_definition(int ncid, const harp_variable *variable, ha
      * the length of which is set to the length of the longest string. Shorter strings will be padded with NUL '\0'
      * termination characters.
      *
-     * NetCDF does not support zero length dimensions, so a dimension of length 1 is added if the maximum string length
+     * netCDF does not support zero length dimensions, so a dimension of length 1 is added if the maximum string length
      * is 0. In this case a single NUL character will be written for each string.
      */
     if (variable->data_type == harp_type_string)
@@ -906,7 +1059,7 @@ static int write_variable_definition(int ncid, const harp_variable *variable, ha
             length = 1;
         }
 
-        dim_id[num_dimensions] = dimensions_find(dimensions, harp_dimension_independent, length);
+        dim_id[num_dimensions] = dimensions_find(dimensions, netcdf_dimension_string, length);
         assert(dim_id[num_dimensions] >= 0);
 
         num_dimensions++;
@@ -1003,7 +1156,7 @@ static int write_variable(int ncid, int varid, const harp_variable *variable)
     return 0;
 }
 
-static int write_product(int ncid, const harp_product *product, harp_dimensions *dimensions)
+static int write_product(int ncid, const harp_product *product, netcdf_dimensions *dimensions)
 {
     harp_scalar datetime_start;
     harp_scalar datetime_stop;
@@ -1055,7 +1208,10 @@ static int write_product(int ncid, const harp_product *product, harp_dimensions 
         variable = product->variable[i];
         for (j = 0; j < variable->num_dimensions; j++)
         {
-            if (dimensions_add(dimensions, variable->dimension_type[j], variable->dimension[j]) < 0)
+            netcdf_dimension_type dimension_type;
+
+            dimension_type = get_netcdf_dimension_type(variable->dimension_type[j]);
+            if (dimensions_add(dimensions, dimension_type, variable->dimension[j]) < 0)
             {
                 return -1;
             }
@@ -1072,7 +1228,7 @@ static int write_product(int ncid, const harp_product *product, harp_dimensions 
                 length = 1;
             }
 
-            if (dimensions_add(dimensions, harp_dimension_independent, length) < 0)
+            if (dimensions_add(dimensions, netcdf_dimension_string, length) < 0)
             {
                 return -1;
             }
@@ -1118,7 +1274,7 @@ static int write_product(int ncid, const harp_product *product, harp_dimensions 
 
 int harp_export_netcdf(const char *filename, const harp_product *product)
 {
-    harp_dimensions dimensions;
+    netcdf_dimensions dimensions;
     int result;
     int ncid;
 

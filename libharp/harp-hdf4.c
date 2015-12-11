@@ -29,6 +29,140 @@
 #define MAX_HDF4_NAME_LENGTH 256
 #define MAX_HDF4_VAR_DIMS 32
 
+typedef enum hdf4_dimension_type_enum
+{
+    hdf4_dimension_time,
+    hdf4_dimension_latitude,
+    hdf4_dimension_longitude,
+    hdf4_dimension_vertical,
+    hdf4_dimension_spectral,
+    hdf4_dimension_independent,
+    hdf4_dimension_string,
+    hdf4_dimension_scalar
+} hdf4_dimension_type;
+
+static const char *get_dimension_type_name(hdf4_dimension_type dimension_type)
+{
+    switch (dimension_type)
+    {
+        case hdf4_dimension_time:
+            return "time";
+        case hdf4_dimension_latitude:
+            return "latitude";
+        case hdf4_dimension_longitude:
+            return "longitude";
+        case hdf4_dimension_spectral:
+            return "spectral";
+        case hdf4_dimension_vertical:
+            return "vertical";
+        case hdf4_dimension_independent:
+            return "independent";
+        case hdf4_dimension_string:
+            return "string";
+        case hdf4_dimension_scalar:
+            return "scalar";
+        default:
+            assert(0);
+            exit(1);
+    }
+}
+
+static int parse_dimension_type(const char *str, hdf4_dimension_type *dimension_type)
+{
+    if (strcmp(str, get_dimension_type_name(hdf4_dimension_time)) == 0)
+    {
+        *dimension_type = hdf4_dimension_time;
+    }
+    else if (strcmp(str, get_dimension_type_name(hdf4_dimension_latitude)) == 0)
+    {
+        *dimension_type = hdf4_dimension_latitude;
+    }
+    else if (strcmp(str, get_dimension_type_name(hdf4_dimension_longitude)) == 0)
+    {
+        *dimension_type = hdf4_dimension_longitude;
+    }
+    else if (strcmp(str, get_dimension_type_name(hdf4_dimension_spectral)) == 0)
+    {
+        *dimension_type = hdf4_dimension_spectral;
+    }
+    else if (strcmp(str, get_dimension_type_name(hdf4_dimension_vertical)) == 0)
+    {
+        *dimension_type = hdf4_dimension_vertical;
+    }
+    else if (strcmp(str, get_dimension_type_name(hdf4_dimension_independent)) == 0)
+    {
+        *dimension_type = hdf4_dimension_independent;
+    }
+    else if (strcmp(str, get_dimension_type_name(hdf4_dimension_string)) == 0)
+    {
+        *dimension_type = hdf4_dimension_string;
+    }
+    else if (strcmp(str, get_dimension_type_name(hdf4_dimension_scalar)) == 0)
+    {
+        *dimension_type = hdf4_dimension_scalar;
+    }
+    else
+    {
+        harp_set_error(HARP_ERROR_PRODUCT, "unsupported dimension '%s'", str);
+        return -1;
+    }
+
+    return 0;
+}
+
+static int get_harp_dimension_type(hdf4_dimension_type hdf4_dim_type, harp_dimension_type *harp_dim_type)
+{
+    switch (hdf4_dim_type)
+    {
+        case hdf4_dimension_time:
+            *harp_dim_type = harp_dimension_time;
+            break;
+        case hdf4_dimension_latitude:
+            *harp_dim_type = harp_dimension_latitude;
+            break;
+        case hdf4_dimension_longitude:
+            *harp_dim_type = harp_dimension_longitude;
+            break;
+        case hdf4_dimension_spectral:
+            *harp_dim_type = harp_dimension_spectral;
+            break;
+        case hdf4_dimension_vertical:
+            *harp_dim_type = harp_dimension_vertical;
+            break;
+        case hdf4_dimension_independent:
+            *harp_dim_type = harp_dimension_independent;
+            break;
+        default:
+            harp_set_error(HARP_ERROR_PRODUCT, "unsupported dimension type '%s'",
+                           get_dimension_type_name(hdf4_dim_type));
+            return -1;
+    }
+
+    return 0;
+}
+
+static hdf4_dimension_type get_hdf4_dimension_type(harp_dimension_type dimension_type)
+{
+    switch (dimension_type)
+    {
+        case harp_dimension_independent:
+            return hdf4_dimension_independent;
+        case harp_dimension_time:
+            return hdf4_dimension_time;
+        case harp_dimension_latitude:
+            return hdf4_dimension_latitude;
+        case harp_dimension_longitude:
+            return hdf4_dimension_longitude;
+        case harp_dimension_spectral:
+            return hdf4_dimension_spectral;
+        case harp_dimension_vertical:
+            return hdf4_dimension_vertical;
+        default:
+            assert(0);
+            exit(1);
+    }
+}
+
 static int get_harp_type(int32 hdf4_data_type, harp_data_type *data_type)
 {
     switch (hdf4_data_type)
@@ -52,7 +186,7 @@ static int get_harp_type(int32 hdf4_data_type, harp_data_type *data_type)
             *data_type = harp_type_double;
             break;
         default:
-            harp_set_error(HARP_ERROR_PRODUCT, "unsupported HDF4 data type");
+            harp_set_error(HARP_ERROR_PRODUCT, "unsupported data type");
             return -1;
     }
 
@@ -175,7 +309,7 @@ static int read_numeric_attribute(int32 obj_id, int32 index, harp_data_type *dat
     return 0;
 }
 
-static int read_dimensions(int32 sds_id, int *num_dimensions, harp_dimension_type *dimension_type)
+static int read_dimensions(int32 sds_id, int *num_dimensions, hdf4_dimension_type *dimension_type)
 {
     int32_t index;
     char *cursor;
@@ -184,20 +318,18 @@ static int read_dimensions(int32 sds_id, int *num_dimensions, harp_dimension_typ
     index = SDfindattr(sds_id, "dims");
     if (index < 0)
     {
-        /* If the 'dims' attribute does not exist, the corresponding variable is scalar (i.e. has zero dimensions). */
-        *num_dimensions = 0;
-        return 0;
+        harp_set_error(HARP_ERROR_PRODUCT, "dimension list not found");
+        return -1;
     }
 
     if (read_string_attribute(sds_id, index, &dims) != 0)
     {
         return -1;
     }
-    assert(*dims != '\0');
 
     cursor = dims;
     *num_dimensions = 0;
-    while (*cursor != '\0' && *num_dimensions < HARP_MAX_NUM_DIMS)
+    while (*cursor != '\0' && *num_dimensions < MAX_HDF4_VAR_DIMS)
     {
         char *mark;
 
@@ -213,7 +345,7 @@ static int read_dimensions(int32 sds_id, int *num_dimensions, harp_dimension_typ
             cursor++;
         }
 
-        if (harp_parse_dimension_type(mark, &dimension_type[*num_dimensions]) != 0)
+        if (parse_dimension_type(mark, &dimension_type[*num_dimensions]) != 0)
         {
             free(dims);
             return -1;
@@ -222,7 +354,13 @@ static int read_dimensions(int32 sds_id, int *num_dimensions, harp_dimension_typ
         (*num_dimensions)++;
     }
 
-    if (*num_dimensions == HARP_MAX_NUM_DIMS && *cursor != '\0')
+    if (*num_dimensions == 0)
+    {
+        harp_set_error(HARP_ERROR_PRODUCT, "empty dimension list");
+        return -1;
+    }
+
+    if (*num_dimensions == MAX_HDF4_VAR_DIMS && *cursor != '\0')
     {
         harp_set_error(HARP_ERROR_PRODUCT, "too many dimensions in dimension list");
         free(dims);
@@ -243,18 +381,20 @@ static int read_dimensions(int32 sds_id, int *num_dimensions, harp_dimension_typ
 static int read_variable(harp_product *product, int32 sds_id)
 {
     char hdf4_name[MAX_HDF4_NAME_LENGTH + 1];
+    int32 hdf4_dimension[MAX_HDF4_VAR_DIMS];
+    int32 hdf4_start[MAX_HDF4_VAR_DIMS] = { 0 };
     int32 hdf4_data_type;
     int32 hdf4_num_dimensions;
-    int32 hdf4_dimension[MAX_HDF4_VAR_DIMS];
     int32 hdf4_dont_care;
-    int32 hdf4_start[MAX_HDF4_VAR_DIMS] = { 0 };
     int32 hdf4_index;
+    int dims_num_dimensions;
+    hdf4_dimension_type dims_dimension_type[MAX_HDF4_VAR_DIMS];
     harp_variable *variable;
     harp_dimension_type dimension_type[HARP_MAX_NUM_DIMS];
     long dimension[HARP_MAX_NUM_DIMS];
     harp_data_type data_type;
     int num_dimensions;
-    int i;
+    long i;
 
     if (SDgetinfo(sds_id, hdf4_name, &hdf4_num_dimensions, hdf4_dimension, &hdf4_data_type, &hdf4_dont_care) != 0)
     {
@@ -263,53 +403,85 @@ static int read_variable(harp_product *product, int32 sds_id)
     }
     assert(hdf4_num_dimensions > 0);
 
+    /* Determine HARP data type. */
     if (get_harp_type(hdf4_data_type, &data_type) != 0)
     {
         harp_add_error_message(" (dataset '%s')", hdf4_name);
         return -1;
     }
 
-    /* Read dimensions. NB. The number of dimensions in the dimension list (i.e. the contents of the 'dims' variable
-     * attribute) can differ from the number of dimensions of the variable as stored in the HDF4 file. An additional
-     * dimension of is added for scalars as well as for variables of type string (see also the write_variable()
-     * function).
-     */
-    if (read_dimensions(sds_id, &num_dimensions, dimension_type) != 0)
+    /* Determine HARP number of dimensions, dimension types, and dimension lengths. */
+    if (read_dimensions(sds_id, &dims_num_dimensions, dims_dimension_type) != 0)
     {
         harp_add_error_message(" (dataset '%s')", hdf4_name);
         return -1;
     }
 
+    if (hdf4_num_dimensions != dims_num_dimensions)
+    {
+        harp_set_error(HARP_ERROR_PRODUCT, "dataset '%s' has %d dimensions; expected %d", hdf4_name,
+                       hdf4_num_dimensions, dims_num_dimensions);
+        return -1;
+    }
+
+    num_dimensions = hdf4_num_dimensions;
+
     if (data_type == harp_type_string)
     {
-        if (hdf4_num_dimensions != (num_dimensions + 1))
+        /* HARP represents scalars in HDF4 by adding an additional dimension of type scalar and length 1. Therefore, any
+         * dataset of type string will have at least two dimensions, one scalar dimension and one string dimension.
+         */
+        if (hdf4_num_dimensions < 2)
         {
-            harp_set_error(HARP_ERROR_PRODUCT, "dataset '%s' has %d dimensions; expected %d", hdf4_name,
-                           hdf4_num_dimensions, num_dimensions + 1);
+            harp_set_error(HARP_ERROR_PRODUCT, "dataset '%s' of type '%s' has %d dimensions; expected >= 2", hdf4_name,
+                           harp_get_data_type_name(harp_type_string), hdf4_num_dimensions);
             return -1;
         }
-    }
-    else if (num_dimensions == 0)
-    {
-        if (hdf4_num_dimensions != 1)
+
+        /* Last dimension should be of type string. */
+        if (dims_dimension_type[hdf4_num_dimensions - 1] != hdf4_dimension_string)
         {
-            harp_set_error(HARP_ERROR_PRODUCT, "dataset '%s' has %d dimensions; expected 1", hdf4_name,
-                           hdf4_num_dimensions);
+            harp_set_error(HARP_ERROR_PRODUCT, "inner-most dimension of dataset '%s' is of type '%s'; expected '%s'",
+                           hdf4_name, get_dimension_type_name(dims_dimension_type[hdf4_num_dimensions - 1]),
+                           get_dimension_type_name(hdf4_dimension_string));
+            return -1;
+        }
+
+        num_dimensions--;
+    }
+
+    if (dims_dimension_type[0] == hdf4_dimension_scalar)
+    {
+        if (num_dimensions != 1)
+        {
+            harp_set_error(HARP_ERROR_PRODUCT, "dataset '%s' has %d dimensions; expected %d", hdf4_name,
+                           hdf4_num_dimensions, (data_type == harp_type_string ? 2 : 1));
             return -1;
         }
 
         if (hdf4_dimension[0] != 1)
         {
-            harp_set_error(HARP_ERROR_PRODUCT, "dataset '%s' has %d elements; expected 1", hdf4_name,
+            harp_set_error(HARP_ERROR_PRODUCT, "dataset '%s' has scalar dimension of length %d; expected 1", hdf4_name,
                            hdf4_dimension[0]);
             return -1;
         }
+
+        num_dimensions = 0;
     }
-    else if (hdf4_num_dimensions != num_dimensions)
+
+    if (num_dimensions > HARP_MAX_NUM_DIMS)
     {
-        harp_set_error(HARP_ERROR_PRODUCT, "dataset '%s' has %d dimensions; expected %d", hdf4_name,
-                       hdf4_num_dimensions, num_dimensions);
+        harp_set_error(HARP_ERROR_PRODUCT, "dataset '%s' has too many dimensions", hdf4_name);
         return -1;
+    }
+
+    for (i = 0; i < num_dimensions; i++)
+    {
+        if (get_harp_dimension_type(dims_dimension_type[i], &dimension_type[i]) != 0)
+        {
+            harp_add_error_message(" (dataset '%s')", hdf4_name);
+            return -1;
+        }
     }
 
     for (i = 0; i < num_dimensions; i++)
@@ -317,6 +489,7 @@ static int read_variable(harp_product *product, int32 sds_id)
         dimension[i] = (long)hdf4_dimension[i];
     }
 
+    /* Create HARP variable. */
     if (harp_variable_new(hdf4_name, data_type, num_dimensions, dimension_type, dimension, &variable) != 0)
     {
         return -1;
@@ -329,7 +502,7 @@ static int read_variable(harp_product *product, int32 sds_id)
     }
 
     /* Read data. */
-    if (hdf4_data_type == DFNT_CHAR)
+    if (data_type == harp_type_string)
     {
         char *buffer = NULL;
         long length = hdf4_dimension[hdf4_num_dimensions - 1];
@@ -409,7 +582,7 @@ static int read_variable(harp_product *product, int32 sds_id)
 
         if (attr_data_type != data_type)
         {
-            harp_set_error(HARP_ERROR_PRODUCT, "attribute 'valid_min' of variable '%s' has invalid type", hdf4_name);
+            harp_set_error(HARP_ERROR_PRODUCT, "attribute 'valid_min' of dataset '%s' has invalid type", hdf4_name);
             return -1;
         }
     }
@@ -426,7 +599,7 @@ static int read_variable(harp_product *product, int32 sds_id)
 
         if (attr_data_type != data_type)
         {
-            harp_set_error(HARP_ERROR_PRODUCT, "attribute 'valid_max' of variable '%s' has invalid type", hdf4_name);
+            harp_set_error(HARP_ERROR_PRODUCT, "attribute 'valid_max' of dataset '%s' has invalid type", hdf4_name);
             return -1;
         }
     }
@@ -605,7 +778,7 @@ static int write_numeric_attribute(int32 obj_id, const char *name, harp_data_typ
     return 0;
 }
 
-static int write_dimensions(int32 sds_id, int num_dimensions, const harp_dimension_type *dimension)
+static int write_dimensions(int32 sds_id, int num_dimensions, const hdf4_dimension_type *dimension_type)
 {
     char *dimension_str;
     int length;
@@ -619,7 +792,7 @@ static int write_dimensions(int32 sds_id, int num_dimensions, const harp_dimensi
     length = 0;
     for (i = 0; i < num_dimensions; i++)
     {
-        length += strlen(harp_get_dimension_type_name(dimension[i]));
+        length += strlen(get_dimension_type_name(dimension_type[i]));
 
         /* Reserve additional space for the ',' separator. */
         if (i < num_dimensions - 1)
@@ -639,7 +812,7 @@ static int write_dimensions(int32 sds_id, int num_dimensions, const harp_dimensi
     dimension_str[0] = '\0';
     for (i = 0; i < num_dimensions; i++)
     {
-        strcat(dimension_str, harp_get_dimension_type_name(dimension[i]));
+        strcat(dimension_str, get_dimension_type_name(dimension_type[i]));
 
         if (i < num_dimensions - 1)
         {
@@ -660,17 +833,28 @@ static int write_dimensions(int32 sds_id, int num_dimensions, const harp_dimensi
 
 static int write_variable(harp_variable *variable, int32 sd_id)
 {
+    hdf4_dimension_type dimension_type[MAX_HDF4_VAR_DIMS];
+    int32 dimension[MAX_HDF4_VAR_DIMS];
+    int32 start[MAX_HDF4_VAR_DIMS] = { 0 };
     int32 sds_id;
-    int32 hdf4_start[MAX_HDF4_VAR_DIMS] = { 0 };
-    int32 hdf4_num_dimensions;
-    int32 hdf4_dimension[MAX_HDF4_VAR_DIMS];
+    int32 num_dimensions;
     int i;
 
-    for (i = 0; i < variable->num_dimensions; i++)
+    if (variable->num_dimensions == 0)
     {
-        hdf4_dimension[i] = variable->dimension[i];
+        dimension_type[0] = hdf4_dimension_scalar;
+        dimension[0] = 1;
+        num_dimensions = 1;
     }
-    hdf4_num_dimensions = variable->num_dimensions;
+    else
+    {
+        for (i = 0; i < variable->num_dimensions; i++)
+        {
+            dimension_type[i] = get_hdf4_dimension_type(variable->dimension_type[i]);
+            dimension[i] = variable->dimension[i];
+        }
+        num_dimensions = variable->num_dimensions;
+    }
 
     /* Write data. */
     if (variable->data_type == harp_type_string)
@@ -687,10 +871,11 @@ static int write_variable(harp_variable *variable, int32 sd_id)
         /* Add an additional dimension with a length equal to the length of the longest string, or 1 if the longest
          * string is of length zero.
          */
-        hdf4_dimension[hdf4_num_dimensions] = length;
-        hdf4_num_dimensions++;
+        dimension_type[num_dimensions] = hdf4_dimension_string;
+        dimension[num_dimensions] = length;
+        num_dimensions++;
 
-        sds_id = SDcreate(sd_id, variable->name, DFNT_CHAR, hdf4_num_dimensions, hdf4_dimension);
+        sds_id = SDcreate(sd_id, variable->name, DFNT_CHAR, num_dimensions, dimension);
         if (sds_id == -1)
         {
             harp_set_error(HARP_ERROR_HDF4, NULL);
@@ -698,7 +883,7 @@ static int write_variable(harp_variable *variable, int32 sd_id)
             return -1;
         }
 
-        if (SDwritedata(sds_id, hdf4_start, NULL, hdf4_dimension, buffer) != 0)
+        if (SDwritedata(sds_id, start, NULL, dimension, buffer) != 0)
         {
             harp_set_error(HARP_ERROR_HDF4, NULL);
             SDendaccess(sds_id);
@@ -710,22 +895,14 @@ static int write_variable(harp_variable *variable, int32 sd_id)
     }
     else
     {
-        /* HDF4 does not support data sets with zero dimensions. */
-        if (hdf4_num_dimensions == 0)
-        {
-            hdf4_dimension[0] = 1;
-            hdf4_num_dimensions++;
-        }
-
-        sds_id = SDcreate(sd_id, variable->name, get_hdf4_type(variable->data_type), hdf4_num_dimensions,
-                          hdf4_dimension);
+        sds_id = SDcreate(sd_id, variable->name, get_hdf4_type(variable->data_type), num_dimensions, dimension);
         if (sds_id == -1)
         {
             harp_set_error(HARP_ERROR_HDF4, NULL);
             return -1;
         }
 
-        if (SDwritedata(sds_id, hdf4_start, NULL, hdf4_dimension, variable->data.ptr) != 0)
+        if (SDwritedata(sds_id, start, NULL, dimension, variable->data.ptr) != 0)
         {
             harp_set_error(HARP_ERROR_HDF4, NULL);
             SDendaccess(sds_id);
@@ -734,7 +911,7 @@ static int write_variable(harp_variable *variable, int32 sd_id)
     }
 
     /* Write dimensions. */
-    if (write_dimensions(sds_id, variable->num_dimensions, variable->dimension_type) != 0)
+    if (write_dimensions(sds_id, num_dimensions, dimension_type) != 0)
     {
         SDendaccess(sds_id);
         return -1;

@@ -31,33 +31,25 @@ static int get_harp_type(hid_t datatype_id, harp_data_type *data_type)
     switch (H5Tget_class(datatype_id))
     {
         case H5T_INTEGER:
+            if (H5Tget_sign(datatype_id) == H5T_SGN_2)
             {
-                int sign = 1;
-
-                if (H5Tget_sign(datatype_id) == H5T_SGN_NONE)
-                {
-                    sign = 0;
-                }
-
                 switch (H5Tget_size(datatype_id))
                 {
                     case 1:
-                        *data_type = (sign ? harp_type_int8 : harp_type_int16);
-                        break;
+                        *data_type = harp_type_int8;
+                        return 0;
                     case 2:
-                        *data_type = (sign ? harp_type_int16 : harp_type_int32);
-                        break;
-                    case 3:
-                        *data_type = harp_type_int32;
-                        break;
+                        *data_type = harp_type_int16;
+                        return 0;
                     case 4:
-                        *data_type = (sign ? harp_type_int32 : harp_type_double);
-                        break;
+                        *data_type = harp_type_int32;
+                        return 0;
                     default:
-                        *data_type = harp_type_double;
+                        /* Intentional fall through to the end of the switch statement. */
                         break;
                 }
             }
+            /* Intentional fall through to the end of the switch statement. */
             break;
         case H5T_FLOAT:
             {
@@ -73,24 +65,31 @@ static int get_harp_type(hid_t datatype_id, harp_data_type *data_type)
                 if (H5Tequal(native_type, H5T_NATIVE_FLOAT))
                 {
                     *data_type = harp_type_float;
+                    H5Tclose(native_type);
+                    return 0;
                 }
-                else
+
+                if (H5Tequal(native_type, H5T_NATIVE_DOUBLE))
                 {
                     *data_type = harp_type_double;
+                    H5Tclose(native_type);
+                    return 0;
                 }
 
                 H5Tclose(native_type);
             }
+            /* Intentional fall through to the end of the switch statement. */
             break;
         case H5T_STRING:
             *data_type = harp_type_string;
-            break;
+            return 0;
         default:
-            harp_set_error(HARP_ERROR_PRODUCT, "unsupported HDF5 data type");
-            return -1;
+            /* Intentional fall through to the end of the switch statement. */
+            break;
     }
 
-    return 0;
+    harp_set_error(HARP_ERROR_PRODUCT, "unsupported data type");
+    return -1;
 }
 
 static hid_t get_hdf5_type(harp_data_type data_type)
@@ -322,7 +321,6 @@ static int read_dimensions(hid_t obj_id, int *num_dimensions, harp_dimension_typ
     {
         return -1;
     }
-    assert(*dims != '\0');
 
     cursor = dims;
     *num_dimensions = 0;
@@ -351,6 +349,12 @@ static int read_dimensions(hid_t obj_id, int *num_dimensions, harp_dimension_typ
         (*num_dimensions)++;
     }
 
+    if (*num_dimensions == 0)
+    {
+        harp_set_error(HARP_ERROR_PRODUCT, "empty dimension list");
+        return -1;
+    }
+
     if (*num_dimensions == HARP_MAX_NUM_DIMS && *cursor != '\0')
     {
         harp_set_error(HARP_ERROR_PRODUCT, "too many dimensions in dimension list");
@@ -371,16 +375,16 @@ static int read_dimensions(hid_t obj_id, int *num_dimensions, harp_dimension_typ
 
 static int read_variable(harp_product *product, hid_t dataset_id, const char *name)
 {
-    harp_variable *variable;
-    harp_data_type data_type;
-    int num_dimension_types;
-    harp_dimension_type dimension_type[HARP_MAX_NUM_DIMS];
-    int num_dimensions;
-    long dimension[HARP_MAX_NUM_DIMS];
     hsize_t hdf5_dimension[HARP_MAX_NUM_DIMS];
     hid_t data_type_id;
     hid_t space_id;
     hsize_t size;
+    int hdf5_num_dimensions;
+    harp_variable *variable;
+    harp_dimension_type dimension_type[HARP_MAX_NUM_DIMS];
+    long dimension[HARP_MAX_NUM_DIMS];
+    harp_data_type data_type;
+    int num_dimensions;
     herr_t result;
     long i;
 
@@ -421,14 +425,13 @@ static int read_variable(harp_product *product, hid_t dataset_id, const char *na
         return -1;
     }
 
-    num_dimensions = H5Sget_simple_extent_ndims(space_id);
-    if (num_dimensions < 0)
+    hdf5_num_dimensions = H5Sget_simple_extent_ndims(space_id);
+    if (hdf5_num_dimensions < 0)
     {
         harp_set_error(HARP_ERROR_HDF5, NULL);
         H5Sclose(space_id);
         return -1;
     }
-    assert(num_dimensions <= HARP_MAX_NUM_DIMS);
 
     if (H5Sget_simple_extent_dims(space_id, hdf5_dimension, NULL) < 0)
     {
@@ -438,16 +441,16 @@ static int read_variable(harp_product *product, hid_t dataset_id, const char *na
     }
     H5Sclose(space_id);
 
-    if (read_dimensions(dataset_id, &num_dimension_types, dimension_type) != 0)
+    if (read_dimensions(dataset_id, &num_dimensions, dimension_type) != 0)
     {
         harp_add_error_message(" (dataset '%s')", name);
         return -1;
     }
 
-    if (num_dimensions != num_dimension_types)
+    if (hdf5_num_dimensions != num_dimensions)
     {
-        harp_set_error(HARP_ERROR_PRODUCT, "dataset '%s' has %d dimensions; expected %d", name, num_dimensions,
-                       num_dimension_types);
+        harp_set_error(HARP_ERROR_PRODUCT, "dataset '%s' has %d dimensions; expected %d", name, hdf5_num_dimensions,
+                       num_dimensions);
         return -1;
     }
 
@@ -581,7 +584,7 @@ static int read_variable(harp_product *product, hid_t dataset_id, const char *na
 
         if (attr_data_type != data_type)
         {
-            harp_set_error(HARP_ERROR_PRODUCT, "attribute 'valid_min' of variable '%s' has invalid type", name);
+            harp_set_error(HARP_ERROR_PRODUCT, "attribute 'valid_min' of dataset '%s' has invalid type", name);
             return -1;
         }
     }
@@ -603,7 +606,7 @@ static int read_variable(harp_product *product, hid_t dataset_id, const char *na
 
         if (attr_data_type != data_type)
         {
-            harp_set_error(HARP_ERROR_PRODUCT, "attribute 'valid_max' of variable '%s' has invalid type", name);
+            harp_set_error(HARP_ERROR_PRODUCT, "attribute 'valid_max' of dataset '%s' has invalid type", name);
             return -1;
         }
     }
@@ -895,7 +898,7 @@ static int write_numeric_attribute(hid_t obj_id, const char *name, harp_data_typ
     return 0;
 }
 
-static int write_dimensions(hid_t obj_id, int num_dimensions, const harp_dimension_type *dimension)
+static int write_dimensions(hid_t obj_id, int num_dimensions, const harp_dimension_type *dimension_type)
 {
     char *dimension_str;
     int length;
@@ -909,7 +912,7 @@ static int write_dimensions(hid_t obj_id, int num_dimensions, const harp_dimensi
     length = 0;
     for (i = 0; i < num_dimensions; i++)
     {
-        length += strlen(harp_get_dimension_type_name(dimension[i]));
+        length += strlen(harp_get_dimension_type_name(dimension_type[i]));
 
         /* Reserve additional space for the ',' separator. */
         if (i < num_dimensions - 1)
@@ -929,7 +932,7 @@ static int write_dimensions(hid_t obj_id, int num_dimensions, const harp_dimensi
     dimension_str[0] = '\0';
     for (i = 0; i < num_dimensions; i++)
     {
-        strcat(dimension_str, harp_get_dimension_type_name(dimension[i]));
+        strcat(dimension_str, harp_get_dimension_type_name(dimension_type[i]));
 
         if (i < num_dimensions - 1)
         {

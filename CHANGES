@@ -1,4 +1,7 @@
-
+* Changed netCDF-3/HDF4/HDF5 backends to be more explicit about implicitly
+  created dimensions (which are used to store scalars and strings for formats
+  that do not support this natively).
+ 
 * Fixed unit attribute name in HARP products ('unit' -> 'units').
 
 0.1 2015-11-09
