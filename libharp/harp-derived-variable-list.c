@@ -134,6 +134,42 @@ static int get_aux_variable_usstd76(harp_variable *variable, const harp_variable
     return 0;
 }
 
+static int get_bounds_from_midpoints(harp_variable *variable, const harp_variable **source_variable)
+{
+    long num_elements;
+    long i;
+
+    num_elements = source_variable[0]->num_elements;
+    if (num_elements < 2)
+    {
+        harp_set_error(HARP_ERROR_INVALID_ARGUMENT, "need >= 2 midpoints to compute bounds (%s:%u)", __FILE__,
+                       __LINE__);
+        return -1;
+    }
+
+    /* Lower boundary of [0]. */
+    variable->data.double_data[0] =
+        0.5 * (3.0 * source_variable[0]->data.double_data[0] - source_variable[0]->data.double_data[1]);
+
+    for (i = 0; i < num_elements - 1; i++)
+    {
+        double bound = 0.5 * (source_variable[0]->data.double_data[i] + source_variable[0]->data.double_data[i + 1]);
+
+        /* Upper boundary of [i]. */
+        variable->data.double_data[i * 2 + 1] = bound;
+
+        /* Lower boundary of [i + 1]. */
+        variable->data.double_data[(i + 1) * 2] = bound;
+    }
+
+    /* Upper boundary of [num_elements - 1]. */
+    variable->data.double_data[(num_elements - 1) * 2 + 1] =
+        0.5 * (3.0 * source_variable[0]->data.double_data[num_elements - 1] -
+               source_variable[0]->data.double_data[num_elements - 2]);
+
+    return 0;
+}
+
 static int get_column_from_partial_column(harp_variable *variable, const harp_variable **source_variable)
 {
     long num_levels;
@@ -1326,6 +1362,31 @@ static int add_midpoint_to_bounds_conversion(const char *variable_name, harp_dat
     return 0;
 }
 
+static int add_latlon_midpoints_to_bounds_conversion(const char *variable_name, harp_data_type data_type,
+                                                     const char *unit, harp_dimension_type axis_dimension_type,
+                                                     harp_conversion_function conversion_function)
+{
+    harp_variable_conversion *conversion;
+    harp_dimension_type dimension_type[HARP_MAX_NUM_DIMS];
+    char name_bounds[MAX_NAME_LENGTH];
+
+    snprintf(name_bounds, MAX_NAME_LENGTH, "%s_bounds", variable_name);
+
+    dimension_type[0] = axis_dimension_type;
+    dimension_type[1] = harp_dimension_independent;
+    if (harp_variable_conversion_new(name_bounds, data_type, unit, 2, dimension_type, 2, conversion_function,
+                                     &conversion) != 0)
+    {
+        return -1;
+    }
+    if (harp_variable_conversion_add_source(conversion, variable_name, data_type, unit, 1, dimension_type, 0) != 0)
+    {
+        return -1;
+    }
+
+    return 0;
+}
+
 static int add_uncertainty_conversions(const char *variable_name, const char *unit)
 {
     harp_variable_conversion *conversion;
@@ -2367,6 +2428,11 @@ static int init_conversions(void)
             return -1;
         }
     }
+    if (add_latlon_midpoints_to_bounds_conversion("latitude", harp_type_double, HARP_UNIT_LATITUDE,
+                                                  harp_dimension_latitude, get_bounds_from_midpoints) != 0)
+    {
+        return -1;
+    }
 
     /* longitude */
     if (add_time_indepedent_to_dependent_conversion("longitude", harp_type_double, HARP_UNIT_LONGITUDE, 1,
@@ -2391,6 +2457,11 @@ static int init_conversions(void)
         {
             return -1;
         }
+    }
+    if (add_latlon_midpoints_to_bounds_conversion("longitude", harp_type_double, HARP_UNIT_LONGITUDE,
+                                                  harp_dimension_longitude, get_bounds_from_midpoints) != 0)
+    {
+        return -1;
     }
 
     /* normalized radiance */
@@ -2840,7 +2911,7 @@ static int init_conversions(void)
         }
     }
 
-    /* wavelenght */
+    /* wavelength */
     dimension_type[1] = harp_dimension_spectral;
     for (i = 0; i < 3; i++)
     {

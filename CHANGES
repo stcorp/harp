@@ -1,3 +1,6 @@
+* Added derived variable conversion from latitude {latitude} (mid-points) to
+  latitude_bounds {latitude} (bounds), and similar for longitude.
+
 * Changed netCDF-3/HDF4/HDF5 backends to be more explicit about implicitly
   created dimensions (which are used to store scalars and strings for formats
   that do not support this natively).

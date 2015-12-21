@@ -218,48 +218,6 @@ static int read_dataset(ingest_info *info, const char *path, long num_elements, 
     return 0;
 }
 
-/* Transform an array of N interval centers to an array of 2N interval bounds. The transformation is performed in place.
- * The size of the array \a data should be at least 2N, where the first N elements should contain the interval centers.
- *
- * The interval bounds are assumed to be located halfway between the interval centers. The lower bound of the first
- * interval is determined by assuming that the distance between the lower bound of the first interval and the center of
- * the first interval is equal to the distance between the upper bound of the first interval and the center of the first
- * interval. The upper bound of the last interval is computed similarly.
- */
-static void compute_interval_centers_from_interval_bounds(long num_elements, double default_interval, double *data)
-{
-    if (num_elements == 0)
-    {
-        return;
-    }
-
-    if (num_elements == 1)
-    {
-        data[1] = data[0] + 0.5 * default_interval;
-        data[0] = data[0] - 0.5 * default_interval;
-    }
-    else
-    {
-        long i;
-
-        /* Compute the bounds of the last interval. */
-        data[(num_elements - 1) * 2 + 1] = 0.5 * (3.0 * data[num_elements - 1] - data[num_elements - 2]);
-        data[(num_elements - 1) * 2] = 0.5 * (data[num_elements - 1] + data[num_elements - 2]);
-
-        /* Compute all intermediate bounds. */
-        for (i = num_elements - 2; i >= 1; --i)
-        {
-            /* The upper bound of interval i equals the lower bound of interval i + 1. */
-            data[i * 2 + 1] = data[(i + 1) * 2];
-            data[i * 2] = 0.5 * (data[i] + data[i - 1]);
-        }
-
-        /* Compute the bounds of the first interval. */
-        data[0] = 0.5 * (3.0 * data[0] - data[1]);
-        data[1] = data[2];
-    }
-}
-
 static int read_dimensions(void *user_data, long dimension[HARP_NUM_DIM_TYPES])
 {
     ingest_info *info = (ingest_info *)user_data;
@@ -277,34 +235,6 @@ static int read_datetime_bounds(void *user_data, harp_array data)
 
     data.double_data[0] = info->datetime_start;
     data.double_data[1] = info->datetime_stop;
-
-    return 0;
-}
-
-static int read_longitude_bounds(void *user_data, harp_array data)
-{
-    ingest_info *info = (ingest_info *)user_data;
-
-    if (read_dataset(info, "/longitude", info->num_longitude, data) != 0)
-    {
-        return -1;
-    }
-
-    compute_interval_centers_from_interval_bounds(info->num_longitude, 360.0, data.double_data);
-
-    return 0;
-}
-
-static int read_latitude_bounds(void *user_data, harp_array data)
-{
-    ingest_info *info = (ingest_info *)user_data;
-
-    if (read_dataset(info, "/latitude", info->num_latitude, data) != 0)
-    {
-        return -1;
-    }
-
-    compute_interval_centers_from_interval_bounds(info->num_latitude, 180.0, data.double_data);
 
     return 0;
 }
@@ -403,41 +333,6 @@ int harp_ingestion_module_cci_l3_o3_tc_init(void)
     harp_variable_definition_set_valid_range_double(variable_definition, -90.0f, 90.0f);
     path = "/latitude[]";
     harp_variable_definition_add_mapping(variable_definition, NULL, NULL, path, NULL);
-
-    /* longitude_bounds */
-    description = "longitudes of the grid cell boundaries";
-    variable_definition =
-        harp_ingestion_register_variable_full_read(product_definition, "longitude_bounds", harp_type_double, 2,
-                                                   longitude_dimension_type, bounds_dimension, description,
-                                                   "degree_east", NULL, read_longitude_bounds);
-    path = "/longitude[]";
-    description = "The longitudes of the grid cell boundaries are not included in the product. HARP therefore provides"
-                  "its own approximation. Each cell boundary is determined by the two cell centers surrounding it. The "
-                  "cell boundary is placed halfway between the surrounding cell centers. For the cells at the edge of "
-                  "the grid, virtual cell centers are created by extrapolation. Each virtual cell center is placed "
-                  "such that the distance between the virtual cell center and the closest real cell center is equal to "
-                  "the distance between the closest real cell center and second closest real cell center. It is "
-                  "assumed that the longitudes from the product form either a strictly increasing or a strictly "
-                  "decreasing sequence.";
-    harp_variable_definition_add_mapping(variable_definition, NULL, NULL, path, description);
-
-    /* latitude_bounds */
-    description = "latitudes of the grid cell boundaries";
-    variable_definition =
-        harp_ingestion_register_variable_full_read(product_definition, "latitude_bounds", harp_type_double, 2,
-                                                   latitude_dimension_type, bounds_dimension, description,
-                                                   "degree_north", NULL, read_latitude_bounds);
-    harp_variable_definition_set_valid_range_double(variable_definition, -90.0f, 90.0f);
-    path = "/latitude[]";
-    description = "The latitudes of the grid cell boundaries are not included in the product. HARP therefore provides"
-                  "its own approximation. Each cell boundary is determined by the two cell centers surrounding it. The "
-                  "cell boundary is placed halfway between the surrounding cell centers. For the cells at the edge of "
-                  "the grid, virtual cell centers are created by extrapolation. Each virtual cell center is placed "
-                  "such that the distance between the virtual cell center and the closest real cell center is equal to "
-                  "the distance between the closest real cell center and second closest real cell center. It is "
-                  "assumed that the latitudes from the product form either a strictly increasing or a strictly "
-                  "decreasing sequence.";
-    harp_variable_definition_add_mapping(variable_definition, NULL, NULL, path, description);
 
     /* O3_column_number_density */
     description = "O3 total column number density";
