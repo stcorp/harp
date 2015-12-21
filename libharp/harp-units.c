@@ -118,12 +118,18 @@ static int parse_unit(const char *str, ut_unit **new_unit)
 {
     ut_unit *unit;
 
+    if (str == NULL)
+    {
+        harp_set_error(HARP_ERROR_INVALID_ARGUMENT, "unit is NULL (%s:%lu)", __FILE__, __LINE__);
+        return -1;
+    }
+
     if (unit_system_init() != 0)
     {
         return -1;
     }
 
-    unit = ut_parse(unit_system, (str == NULL ? "" : str), UT_ASCII);
+    unit = ut_parse(unit_system, str, UT_ASCII);
     if (unit == NULL)
     {
         handle_udunits_error();
@@ -137,11 +143,6 @@ static int parse_unit(const char *str, ut_unit **new_unit)
 int harp_unit_is_valid(const char *str)
 {
     ut_unit *unit;
-
-    if (str == NULL)
-    {
-        return 0;
-    }
 
     if (parse_unit(str, &unit) != 0)
     {
