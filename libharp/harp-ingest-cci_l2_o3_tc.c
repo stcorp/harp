@@ -687,8 +687,8 @@ int harp_ingestion_module_cci_l2_o3_tc_init(void)
                                                    pressure_bounds_dimension_type, pressure_bounds_dimension,
                                                    description, "Pa", NULL, read_pressure_bounds);
     path = "/atmosphere_pressure_grid";
-    description = "converted from pressure levels given at the boundaries between adjacent layers to a pair of"
-        "pressures per layer (each pair consists of the pressure at the lower and at the upper boundary of " "a layer)";
+    description = "converted from pressure levels given at the boundaries between adjacent layers to a pair of "
+        "pressures per layer (each pair consists of the pressure at the lower and at the upper boundary of a layer)";
     harp_variable_definition_add_mapping(variable_definition, NULL, NULL, path, description);
 
     /* O3_column_number_density_avk */

@@ -737,7 +737,7 @@ int harp_ingestion_module_cci_l2_o3_np_init(void)
     harp_variable_definition_set_valid_range_float(variable_definition, -90.0f, 90.0f);
     path = "/ll[]";
     description = "longitudes and latitudes of the ground pixel corners are stored interleaved; latitudes are ingested "
-        "as [ll[,0], ll[,2], ll[,6], ll[,4]]; note the reordering of the last two values to ensure a simple " "polygon";
+        "as [ll[,0], ll[,2], ll[,6], ll[,4]]; note the reordering of the last two values to ensure a simple polygon";
     harp_variable_definition_add_mapping(variable_definition, NULL, NULL, path, description);
 
     /* solar_zenith_angle */
