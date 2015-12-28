@@ -30,8 +30,6 @@
 typedef struct ingest_info_struct
 {
     coda_product *product;
-    double datetime_start;
-    double datetime_stop;
     long num_latitude;
     long num_longitude;
 } ingest_info;
@@ -89,6 +87,7 @@ static int init_dimensions(ingest_info *info)
         harp_set_error(HARP_ERROR_CODA, NULL);
         return -1;
     }
+
     if (coda_cursor_goto(&cursor, "/longitude") != 0)
     {
         harp_set_error(HARP_ERROR_CODA, NULL);
@@ -128,21 +127,6 @@ static int init_dimensions(ingest_info *info)
     return 0;
 }
 
-static int init_datetime(ingest_info *info)
-{
-    if (read_datetime(info, "/@time_coverage_start", &info->datetime_start) != 0)
-    {
-        return -1;
-    }
-
-    if (read_datetime(info, "/@time_coverage_end", &info->datetime_stop) != 0)
-    {
-        return -1;
-    }
-
-    return 0;
-}
-
 static void ingestion_done(void *user_data)
 {
     free(user_data);
@@ -165,12 +149,6 @@ static int ingestion_init(const harp_ingestion_module *module, coda_product *pro
     info->product = product;
 
     if (init_dimensions(info) != 0)
-    {
-        ingestion_done(info);
-        return -1;
-    }
-
-    if (init_datetime(info) != 0)
     {
         ingestion_done(info);
         return -1;
@@ -229,14 +207,18 @@ static int read_dimensions(void *user_data, long dimension[HARP_NUM_DIM_TYPES])
     return 0;
 }
 
-static int read_datetime_bounds(void *user_data, harp_array data)
+static int read_datetime_start(void *user_data, harp_array data)
 {
     ingest_info *info = (ingest_info *)user_data;
 
-    data.double_data[0] = info->datetime_start;
-    data.double_data[1] = info->datetime_stop;
+    return read_datetime(info, "/@time_coverage_start", &data.double_data[0]);
+}
 
-    return 0;
+static int read_datetime_stop(void *user_data, harp_array data)
+{
+    ingest_info *info = (ingest_info *)user_data;
+
+    return read_datetime(info, "/@time_coverage_end", &data.double_data[0]);
 }
 
 static int read_longitude(void *user_data, harp_array data)
@@ -289,11 +271,10 @@ int harp_ingestion_module_cci_l3_o3_tc_init(void)
     harp_ingestion_module *module;
     harp_product_definition *product_definition;
     harp_variable_definition *variable_definition;
-    harp_dimension_type datetime_dimension_type[2] = { harp_dimension_time, harp_dimension_independent };
-    harp_dimension_type longitude_dimension_type[2] = { harp_dimension_longitude, harp_dimension_independent };
-    harp_dimension_type latitude_dimension_type[2] = { harp_dimension_latitude, harp_dimension_independent };
+    harp_dimension_type datetime_dimension_type[1] = { harp_dimension_time };
+    harp_dimension_type longitude_dimension_type[1] = { harp_dimension_longitude };
+    harp_dimension_type latitude_dimension_type[1] = { harp_dimension_latitude };
     harp_dimension_type dimension_type[2] = { harp_dimension_latitude, harp_dimension_longitude };
-    long bounds_dimension[2] = { -1, 2 };
     const char *description;
     const char *path;
 
@@ -305,14 +286,24 @@ int harp_ingestion_module_cci_l3_o3_tc_init(void)
     product_definition = harp_ingestion_register_product(module, "ESACCI_OZONE_L3_TC", "CCI L3 O3 total column product",
                                                          read_dimensions);
 
-    /* datetime */
-    description = "time coverage";
+    /* datetime_start */
+    description = "time coverage start";
     variable_definition =
-        harp_ingestion_register_variable_full_read(product_definition, "datetime", harp_type_double, 2,
-                                                   datetime_dimension_type, bounds_dimension, description,
-                                                   "seconds since 2000-01-01", NULL, read_datetime_bounds);
-    path = "/@time_coverage_start, /@time_coverage_end";
-    description = "datetime converted from a UTC start and end date to seconds since 2000-01-01 TAI";
+        harp_ingestion_register_variable_full_read(product_definition, "datetime_start", harp_type_double, 1,
+                                                   datetime_dimension_type, NULL, description,
+                                                   "seconds since 2000-01-01", NULL, read_datetime_start);
+    path = "/@time_coverage_start";
+    description = "datetime converted from a UTC start date to seconds since 2000-01-01 TAI";
+    harp_variable_definition_add_mapping(variable_definition, NULL, NULL, path, description);
+
+    /* datetime_start */
+    description = "time coverage end";
+    variable_definition =
+        harp_ingestion_register_variable_full_read(product_definition, "datetime_stop", harp_type_double, 1,
+                                                   datetime_dimension_type, NULL, description,
+                                                   "seconds since 2000-01-01", NULL, read_datetime_stop);
+    path = "/@time_coverage_end";
+    description = "datetime converted from a UTC end date to seconds since 2000-01-01 TAI";
     harp_variable_definition_add_mapping(variable_definition, NULL, NULL, path, description);
 
     /* longitude */
@@ -330,7 +321,7 @@ int harp_ingestion_module_cci_l3_o3_tc_init(void)
         harp_ingestion_register_variable_full_read(product_definition, "latitude", harp_type_double, 1,
                                                    latitude_dimension_type, NULL, description, "degree_north", NULL,
                                                    read_latitude);
-    harp_variable_definition_set_valid_range_double(variable_definition, -90.0f, 90.0f);
+    harp_variable_definition_set_valid_range_double(variable_definition, -90.0, 90.0);
     path = "/latitude[]";
     harp_variable_definition_add_mapping(variable_definition, NULL, NULL, path, NULL);
 
