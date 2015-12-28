@@ -95,7 +95,10 @@ int main(int argc, char *argv[])
         {
             fprintf(stderr, "ERROR: %s\n", harp_errno_to_string(harp_errno));
         }
-        harp_product_delete(product);
+        else
+        {
+            harp_product_delete(product);
+        }
         printf("\n");
     }
 
