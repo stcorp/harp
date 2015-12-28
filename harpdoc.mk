@@ -45,6 +45,7 @@ HARP_DOCFILES = \
 	doc/html/index.html \
 	doc/html/ingestions/ESACCI_OZONE_L2_NP.html \
 	doc/html/ingestions/ESACCI_OZONE_L2_TC.html \
+	doc/html/ingestions/ESACCI_OZONE_L3_NP.html \
 	doc/html/ingestions/ESACCI_OZONE_L3_TC.html \
 	doc/html/ingestions/GEOMS-TE-FTIR-001-C2H6.html \
 	doc/html/ingestions/GEOMS-TE-FTIR-001-CCl2F2.html \
@@ -394,6 +395,8 @@ doc/html/index.html:
 doc/html/ingestions/ESACCI_OZONE_L2_NP.html:
 	$(MAKE) harp_doc
 doc/html/ingestions/ESACCI_OZONE_L2_TC.html:
+	$(MAKE) harp_doc
+doc/html/ingestions/ESACCI_OZONE_L3_NP.html:
 	$(MAKE) harp_doc
 doc/html/ingestions/ESACCI_OZONE_L3_TC.html:
 	$(MAKE) harp_doc
