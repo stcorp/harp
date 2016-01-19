@@ -161,14 +161,14 @@ static int update_mask_for_product(const harp_collocation_result *collocation_re
 
     if (product->source_product == NULL)
     {
-        harp_set_error(HARP_ERROR_PRODUCT, "%s: source product undefined", product_path);
+        harp_set_error(HARP_ERROR_INVALID_ARGUMENT, "%s: source product undefined", product_path);
         harp_product_delete(product);
         return -1;
     }
 
     if (harp_product_get_variable_by_name(product, "collocation_index", &collocation_index) != 0)
     {
-        harp_set_error(HARP_ERROR_PRODUCT, "%s: variable 'collocation_index' undefined", product_path);
+        harp_set_error(HARP_ERROR_INVALID_ARGUMENT, "%s: variable 'collocation_index' undefined", product_path);
         harp_product_delete(product);
         return -1;
     }

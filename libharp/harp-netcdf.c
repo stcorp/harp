@@ -103,7 +103,7 @@ static int parse_dimension_type(const char *str, netcdf_dimension_type *dimensio
     }
     else
     {
-        harp_set_error(HARP_ERROR_PRODUCT, "unsupported dimension '%s'", str);
+        harp_set_error(HARP_ERROR_IMPORT, "unsupported dimension '%s'", str);
         return -1;
     }
 
@@ -133,7 +133,7 @@ static int get_harp_dimension_type(netcdf_dimension_type netcdf_dim_type, harp_d
             *harp_dim_type = harp_dimension_independent;
             break;
         default:
-            harp_set_error(HARP_ERROR_PRODUCT, "unsupported dimension type '%s'",
+            harp_set_error(HARP_ERROR_IMPORT, "unsupported dimension type '%s'",
                            get_dimension_type_name(netcdf_dim_type));
             return -1;
     }
@@ -186,7 +186,7 @@ static int get_harp_type(int netcdf_data_type, harp_data_type *data_type)
             *data_type = harp_type_string;
             break;
         default:
-            harp_set_error(HARP_ERROR_PRODUCT, "unsupported data type");
+            harp_set_error(HARP_ERROR_IMPORT, "unsupported data type");
             return -1;
     }
 
@@ -330,7 +330,7 @@ static int read_string_attribute(int ncid, int varid, const char *name, char **d
 
     if (data_type != NC_CHAR)
     {
-        harp_set_error(HARP_ERROR_PRODUCT, "attribute '%s' has invalid type", name);
+        harp_set_error(HARP_ERROR_IMPORT, "attribute '%s' has invalid type", name);
         return -1;
     }
 
@@ -370,7 +370,7 @@ static int read_numeric_attribute(int ncid, int varid, const char *name, harp_da
 
     if (netcdf_num_elements != 1)
     {
-        harp_set_error(HARP_ERROR_PRODUCT, "attribute '%s' has invalid format", name);
+        harp_set_error(HARP_ERROR_IMPORT, "attribute '%s' has invalid format", name);
         return -1;
     }
 
@@ -398,7 +398,7 @@ static int read_numeric_attribute(int ncid, int varid, const char *name, harp_da
             result = nc_get_att_double(ncid, varid, name, &data->double_data);
             break;
         default:
-            harp_set_error(HARP_ERROR_PRODUCT, "attribute '%s' has invalid type", name);
+            harp_set_error(HARP_ERROR_IMPORT, "attribute '%s' has invalid type", name);
             return -1;
     }
 
@@ -444,13 +444,13 @@ static int read_variable(harp_product *product, int ncid, int varid, netcdf_dime
     {
         if (num_dimensions == 0)
         {
-            harp_set_error(HARP_ERROR_PRODUCT, "variable '%s' of type '%s' has 0 dimensions; expected >= 1",
+            harp_set_error(HARP_ERROR_IMPORT, "variable '%s' of type '%s' has 0 dimensions; expected >= 1",
                            netcdf_name, harp_get_data_type_name(harp_type_string));
         }
 
         if (dimensions->type[netcdf_dim_id[num_dimensions - 1]] != netcdf_dimension_string)
         {
-            harp_set_error(HARP_ERROR_PRODUCT, "inner-most dimension of variable '%s' is of type '%s'; expected '%s'",
+            harp_set_error(HARP_ERROR_IMPORT, "inner-most dimension of variable '%s' is of type '%s'; expected '%s'",
                            netcdf_name, get_dimension_type_name(dimensions->type[netcdf_dim_id[num_dimensions - 1]]),
                            get_dimension_type_name(netcdf_dimension_string));
             return -1;
@@ -461,7 +461,7 @@ static int read_variable(harp_product *product, int ncid, int varid, netcdf_dime
 
     if (num_dimensions > HARP_MAX_NUM_DIMS)
     {
-        harp_set_error(HARP_ERROR_PRODUCT, "variable '%s' has too many dimensions", netcdf_name);
+        harp_set_error(HARP_ERROR_IMPORT, "variable '%s' has too many dimensions", netcdf_name);
         return -1;
     }
 
@@ -610,7 +610,7 @@ static int read_variable(harp_product *product, int ncid, int varid, netcdf_dime
 
         if (attr_data_type != data_type)
         {
-            harp_set_error(HARP_ERROR_PRODUCT, "attribute 'valid_min' of variable '%s' has invalid type", netcdf_name);
+            harp_set_error(HARP_ERROR_IMPORT, "attribute 'valid_min' of variable '%s' has invalid type", netcdf_name);
             return -1;
         }
     }
@@ -633,7 +633,7 @@ static int read_variable(harp_product *product, int ncid, int varid, netcdf_dime
 
         if (attr_data_type != data_type)
         {
-            harp_set_error(HARP_ERROR_PRODUCT, "attribute 'valid_max' of variable '%s' has invalid type", netcdf_name);
+            harp_set_error(HARP_ERROR_IMPORT, "attribute 'valid_max' of variable '%s' has invalid type", netcdf_name);
             return -1;
         }
     }
@@ -674,7 +674,8 @@ static int verify_product(int ncid)
         }
     }
 
-    harp_set_error(HARP_ERROR_UNSUPPORTED_PRODUCT, "not a valid HARP product");
+    harp_set_error(HARP_ERROR_UNSUPPORTED_PRODUCT, "not a HARP product");
+
     return -1;
 }
 
@@ -714,7 +715,7 @@ static int read_product(int ncid, harp_product *product, netcdf_dimensions *dime
 
         if (dimensions_add(dimensions, dimension_type, length) != i)
         {
-            harp_set_error(HARP_ERROR_PRODUCT, "duplicate dimensions with name '%s'", name);
+            harp_set_error(HARP_ERROR_IMPORT, "duplicate dimensions with name '%s'", name);
             return -1;
         }
     }
@@ -860,7 +861,7 @@ int harp_import_global_attributes_netcdf(const char *filename, double *datetime_
 
             if (attr_data_type != harp_type_double)
             {
-                harp_set_error(HARP_ERROR_PRODUCT, "attribute 'datetime_start' has invalid type");
+                harp_set_error(HARP_ERROR_IMPORT, "attribute 'datetime_start' has invalid type");
                 nc_close(ncid);
                 return -1;
             }
@@ -883,7 +884,7 @@ int harp_import_global_attributes_netcdf(const char *filename, double *datetime_
 
             if (attr_data_type != harp_type_double)
             {
-                harp_set_error(HARP_ERROR_PRODUCT, "attribute 'datetime_stop' has invalid type");
+                harp_set_error(HARP_ERROR_IMPORT, "attribute 'datetime_stop' has invalid type");
                 nc_close(ncid);
                 return -1;
             }

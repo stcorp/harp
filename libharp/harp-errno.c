@@ -119,15 +119,15 @@ static char harp_error_message_buffer[MAX_ERROR_INFO_LENGTH + 1];
  * An error occured in the unit conversion.
  */
 
-/** \def HARP_ERROR_PRODUCT
- * There was an error detected in the product.
- */
-
 /** \def HARP_ERROR_SCRIPT
  * There was an error detected in the script.
  */
 /** \def HARP_ERROR_SCRIPT_SYNTAX
  * There is a syntax error in the script.
+ */
+
+/** \def HARP_ERROR_IMPORT
+ * An error occured during product import.
  */
 
 /** \def HARP_ERROR_INGESTION
@@ -141,6 +141,10 @@ static char harp_error_message_buffer[MAX_ERROR_INFO_LENGTH + 1];
  */
 /** \def HARP_ERROR_INVALID_INGESTION_OPTION_VALUE
  * The ingestion option has value that is not valid for this option.
+ */
+
+/** \def HARP_ERROR_UNSUPPORTED_PRODUCT
+ * The data product is not supported by the import or ingestion module.
  */
 
 /** \def HARP_ERROR_NO_DATA
@@ -316,16 +320,18 @@ LIBHARP_API const char *harp_errno_to_string(int err)
             case HARP_ERROR_UNIT_CONVERSION:
                 return "unit conversion error";
 
-            case HARP_ERROR_PRODUCT:
-                return "product error";
-
             case HARP_ERROR_SCRIPT:
                 return "script error";
             case HARP_ERROR_SCRIPT_SYNTAX:
                 return "syntax error in script";
 
+            case HARP_ERROR_IMPORT:
+                return "import error";
+
             case HARP_ERROR_INGESTION:
                 return "ingestion error";
+            case HARP_ERROR_UNSUPPORTED_PRODUCT:
+                return "product not supported by ingestion module";
             case HARP_ERROR_INGESTION_OPTION_SYNTAX:
                 return "syntax error in ingestion option";
             case HARP_ERROR_INVALID_INGESTION_OPTION:

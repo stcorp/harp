@@ -103,7 +103,7 @@ static int parse_dimension_type(const char *str, hdf4_dimension_type *dimension_
     }
     else
     {
-        harp_set_error(HARP_ERROR_PRODUCT, "unsupported dimension '%s'", str);
+        harp_set_error(HARP_ERROR_IMPORT, "unsupported dimension '%s'", str);
         return -1;
     }
 
@@ -133,7 +133,7 @@ static int get_harp_dimension_type(hdf4_dimension_type hdf4_dim_type, harp_dimen
             *harp_dim_type = harp_dimension_independent;
             break;
         default:
-            harp_set_error(HARP_ERROR_PRODUCT, "unsupported dimension type '%s'",
+            harp_set_error(HARP_ERROR_IMPORT, "unsupported dimension type '%s'",
                            get_dimension_type_name(hdf4_dim_type));
             return -1;
     }
@@ -186,7 +186,7 @@ static int get_harp_type(int32 hdf4_data_type, harp_data_type *data_type)
             *data_type = harp_type_double;
             break;
         default:
-            harp_set_error(HARP_ERROR_PRODUCT, "unsupported data type");
+            harp_set_error(HARP_ERROR_IMPORT, "unsupported data type");
             return -1;
     }
 
@@ -230,7 +230,7 @@ static int read_string_attribute(int32 obj_id, int32 index, char **data)
 
     if (data_type != DFNT_CHAR)
     {
-        harp_set_error(HARP_ERROR_PRODUCT, "attribute '%s' has invalid type", name);
+        harp_set_error(HARP_ERROR_IMPORT, "attribute '%s' has invalid type", name);
         return -1;
     }
 
@@ -274,7 +274,7 @@ static int read_numeric_attribute(int32 obj_id, int32 index, harp_data_type *dat
 
     if (num_elements != 1)
     {
-        harp_set_error(HARP_ERROR_PRODUCT, "attribute '%s' has invalid format", name);
+        harp_set_error(HARP_ERROR_IMPORT, "attribute '%s' has invalid format", name);
         return -1;
     }
 
@@ -296,7 +296,7 @@ static int read_numeric_attribute(int32 obj_id, int32 index, harp_data_type *dat
             result = SDreadattr(obj_id, index, &data->double_data);
             break;
         default:
-            harp_set_error(HARP_ERROR_PRODUCT, "attribute '%s' has invalid type", name);
+            harp_set_error(HARP_ERROR_IMPORT, "attribute '%s' has invalid type", name);
             return -1;
     }
 
@@ -318,7 +318,7 @@ static int read_dimensions(int32 sds_id, int *num_dimensions, hdf4_dimension_typ
     index = SDfindattr(sds_id, "dims");
     if (index < 0)
     {
-        harp_set_error(HARP_ERROR_PRODUCT, "dimension list not found");
+        harp_set_error(HARP_ERROR_IMPORT, "dimension list not found");
         return -1;
     }
 
@@ -356,20 +356,20 @@ static int read_dimensions(int32 sds_id, int *num_dimensions, hdf4_dimension_typ
 
     if (*num_dimensions == 0)
     {
-        harp_set_error(HARP_ERROR_PRODUCT, "empty dimension list");
+        harp_set_error(HARP_ERROR_IMPORT, "empty dimension list");
         return -1;
     }
 
     if (*num_dimensions == MAX_HDF4_VAR_DIMS && *cursor != '\0')
     {
-        harp_set_error(HARP_ERROR_PRODUCT, "too many dimensions in dimension list");
+        harp_set_error(HARP_ERROR_IMPORT, "too many dimensions in dimension list");
         free(dims);
         return -1;
     }
 
     if (*(cursor - 1) == '\0')
     {
-        harp_set_error(HARP_ERROR_PRODUCT, "trailing ',' in dimension list");
+        harp_set_error(HARP_ERROR_IMPORT, "trailing ',' in dimension list");
         free(dims);
         return -1;
     }
@@ -419,7 +419,7 @@ static int read_variable(harp_product *product, int32 sds_id)
 
     if (hdf4_num_dimensions != dims_num_dimensions)
     {
-        harp_set_error(HARP_ERROR_PRODUCT, "dataset '%s' has %d dimensions; expected %d", hdf4_name,
+        harp_set_error(HARP_ERROR_IMPORT, "dataset '%s' has %d dimensions; expected %d", hdf4_name,
                        hdf4_num_dimensions, dims_num_dimensions);
         return -1;
     }
@@ -433,7 +433,7 @@ static int read_variable(harp_product *product, int32 sds_id)
          */
         if (hdf4_num_dimensions < 2)
         {
-            harp_set_error(HARP_ERROR_PRODUCT, "dataset '%s' of type '%s' has %d dimensions; expected >= 2", hdf4_name,
+            harp_set_error(HARP_ERROR_IMPORT, "dataset '%s' of type '%s' has %d dimensions; expected >= 2", hdf4_name,
                            harp_get_data_type_name(harp_type_string), hdf4_num_dimensions);
             return -1;
         }
@@ -441,7 +441,7 @@ static int read_variable(harp_product *product, int32 sds_id)
         /* Last dimension should be of type string. */
         if (dims_dimension_type[hdf4_num_dimensions - 1] != hdf4_dimension_string)
         {
-            harp_set_error(HARP_ERROR_PRODUCT, "inner-most dimension of dataset '%s' is of type '%s'; expected '%s'",
+            harp_set_error(HARP_ERROR_IMPORT, "inner-most dimension of dataset '%s' is of type '%s'; expected '%s'",
                            hdf4_name, get_dimension_type_name(dims_dimension_type[hdf4_num_dimensions - 1]),
                            get_dimension_type_name(hdf4_dimension_string));
             return -1;
@@ -454,14 +454,14 @@ static int read_variable(harp_product *product, int32 sds_id)
     {
         if (num_dimensions != 1)
         {
-            harp_set_error(HARP_ERROR_PRODUCT, "dataset '%s' has %d dimensions; expected %d", hdf4_name,
+            harp_set_error(HARP_ERROR_IMPORT, "dataset '%s' has %d dimensions; expected %d", hdf4_name,
                            hdf4_num_dimensions, (data_type == harp_type_string ? 2 : 1));
             return -1;
         }
 
         if (hdf4_dimension[0] != 1)
         {
-            harp_set_error(HARP_ERROR_PRODUCT, "dataset '%s' has scalar dimension of length %d; expected 1", hdf4_name,
+            harp_set_error(HARP_ERROR_IMPORT, "dataset '%s' has scalar dimension of length %d; expected 1", hdf4_name,
                            hdf4_dimension[0]);
             return -1;
         }
@@ -471,7 +471,7 @@ static int read_variable(harp_product *product, int32 sds_id)
 
     if (num_dimensions > HARP_MAX_NUM_DIMS)
     {
-        harp_set_error(HARP_ERROR_PRODUCT, "dataset '%s' has too many dimensions", hdf4_name);
+        harp_set_error(HARP_ERROR_IMPORT, "dataset '%s' has too many dimensions", hdf4_name);
         return -1;
     }
 
@@ -582,7 +582,7 @@ static int read_variable(harp_product *product, int32 sds_id)
 
         if (attr_data_type != data_type)
         {
-            harp_set_error(HARP_ERROR_PRODUCT, "attribute 'valid_min' of dataset '%s' has invalid type", hdf4_name);
+            harp_set_error(HARP_ERROR_IMPORT, "attribute 'valid_min' of dataset '%s' has invalid type", hdf4_name);
             return -1;
         }
     }
@@ -599,7 +599,7 @@ static int read_variable(harp_product *product, int32 sds_id)
 
         if (attr_data_type != data_type)
         {
-            harp_set_error(HARP_ERROR_PRODUCT, "attribute 'valid_max' of dataset '%s' has invalid type", hdf4_name);
+            harp_set_error(HARP_ERROR_IMPORT, "attribute 'valid_max' of dataset '%s' has invalid type", hdf4_name);
             return -1;
         }
     }
@@ -691,7 +691,8 @@ static int verify_product(int32 sd_id)
         }
     }
 
-    harp_set_error(HARP_ERROR_UNSUPPORTED_PRODUCT, "not a valid HARP product");
+    harp_set_error(HARP_ERROR_UNSUPPORTED_PRODUCT, "not a HARP product");
+
     return -1;
 }
 

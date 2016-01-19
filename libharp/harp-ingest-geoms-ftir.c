@@ -176,7 +176,7 @@ static int read_variable_double(void *user_data, const char *path, long num_elem
     }
     if (actual_num_elements != num_elements)
     {
-        harp_set_error(HARP_ERROR_PRODUCT, "variable %s has %ld elements (expected %ld)", path, actual_num_elements,
+        harp_set_error(HARP_ERROR_INGESTION, "variable %s has %ld elements (expected %ld)", path, actual_num_elements,
                        num_elements);
         return -1;
     }
@@ -822,7 +822,7 @@ static int get_dimensions(ingest_info *info)
         }
         if (values[1] < values[0])
         {
-            harp_set_error(HARP_ERROR_PRODUCT, "time dimension should use a chronological ordering");
+            harp_set_error(HARP_ERROR_INGESTION, "time dimension should use a chronological ordering");
             return -1;
         }
     }
@@ -847,7 +847,7 @@ static int get_dimensions(ingest_info *info)
     }
     else
     {
-        harp_set_error(HARP_ERROR_PRODUCT, "ALTITUDE variable should be one or two dimensional");
+        harp_set_error(HARP_ERROR_INGESTION, "ALTITUDE variable should be one or two dimensional");
         return -1;
     }
     if (info->num_vertical > 1)

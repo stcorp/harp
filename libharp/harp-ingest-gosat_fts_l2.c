@@ -83,7 +83,7 @@ static int init_corner_points(ingest_info *info)
     }
     if (num_elements % 36 != 0)
     {
-        harp_set_error(HARP_ERROR_PRODUCT, "product error detected in GOSAT L2 product (dataset "
+        harp_set_error(HARP_ERROR_INGESTION, "product error detected in GOSAT L2 product (dataset "
                        "'/Data/geolocation/footPrintLatitude' should have 36 points per footprint)");
         return -1;
     }

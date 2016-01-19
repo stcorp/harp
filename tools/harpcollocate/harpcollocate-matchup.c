@@ -1473,9 +1473,14 @@ static int matchup_measurements_in_two_files(harp_collocation_result *collocatio
     long index_b;
     long num_measurements_b;
 
-    if (reduced_product_a == NULL || reduced_product_b == NULL)
+    if (reduced_product_a == NULL)
     {
-        harp_set_error(HARP_ERROR_PRODUCT, "reduced product is empty");
+        harp_set_error(HARP_ERROR_INVALID_ARGUMENT, "reduced_product_a is NULL");
+        return -1;
+    }
+    if (reduced_product_b == NULL)
+    {
+        harp_set_error(HARP_ERROR_INVALID_ARGUMENT, "reduced_product_b is NULL");
         return -1;
     }
 

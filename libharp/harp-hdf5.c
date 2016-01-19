@@ -88,7 +88,7 @@ static int get_harp_type(hid_t datatype_id, harp_data_type *data_type)
             break;
     }
 
-    harp_set_error(HARP_ERROR_PRODUCT, "unsupported data type");
+    harp_set_error(HARP_ERROR_IMPORT, "unsupported data type");
     return -1;
 }
 
@@ -140,7 +140,7 @@ static int read_string_attribute(hid_t obj_id, const char *name, char **data)
 
     if (H5Tget_class(data_type_id) != H5T_STRING || H5Tis_variable_str(data_type_id) > 0)
     {
-        harp_set_error(HARP_ERROR_PRODUCT, "attribute '%s' has invalid type", name);
+        harp_set_error(HARP_ERROR_IMPORT, "attribute '%s' has invalid type", name);
         H5Tclose(data_type_id);
         H5Aclose(attr_id);
         return -1;
@@ -166,7 +166,7 @@ static int read_string_attribute(hid_t obj_id, const char *name, char **data)
 
     if (H5Sis_simple(space_id) <= 0 || H5Sget_simple_extent_type(space_id) != H5S_SCALAR)
     {
-        harp_set_error(HARP_ERROR_PRODUCT, "attribute '%s' has invalid format", name);
+        harp_set_error(HARP_ERROR_IMPORT, "attribute '%s' has invalid format", name);
         H5Sclose(space_id);
         H5Aclose(attr_id);
         return -1;
@@ -264,7 +264,7 @@ static int read_numeric_attribute(hid_t obj_id, const char *name, harp_data_type
 
     if (H5Sis_simple(space_id) <= 0 || H5Sget_simple_extent_type(space_id) != H5S_SCALAR)
     {
-        harp_set_error(HARP_ERROR_PRODUCT, "attribute '%s' has invalid format", name);
+        harp_set_error(HARP_ERROR_IMPORT, "attribute '%s' has invalid format", name);
         H5Sclose(space_id);
         H5Aclose(attr_id);
         return -1;
@@ -289,7 +289,7 @@ static int read_numeric_attribute(hid_t obj_id, const char *name, harp_data_type
             result = H5Aread(attr_id, H5T_NATIVE_DOUBLE, &data->double_data);
             break;
         default:
-            harp_set_error(HARP_ERROR_PRODUCT, "attribute '%s' has invalid type", name);
+            harp_set_error(HARP_ERROR_IMPORT, "attribute '%s' has invalid type", name);
             H5Aclose(attr_id);
             return -1;
     }
@@ -351,20 +351,20 @@ static int read_dimensions(hid_t obj_id, int *num_dimensions, harp_dimension_typ
 
     if (*num_dimensions == 0)
     {
-        harp_set_error(HARP_ERROR_PRODUCT, "empty dimension list");
+        harp_set_error(HARP_ERROR_IMPORT, "empty dimension list");
         return -1;
     }
 
     if (*num_dimensions == HARP_MAX_NUM_DIMS && *cursor != '\0')
     {
-        harp_set_error(HARP_ERROR_PRODUCT, "too many dimensions in dimension list");
+        harp_set_error(HARP_ERROR_IMPORT, "too many dimensions in dimension list");
         free(dims);
         return -1;
     }
 
     if (*(cursor - 1) == '\0')
     {
-        harp_set_error(HARP_ERROR_PRODUCT, "trailing ',' in dimension list");
+        harp_set_error(HARP_ERROR_IMPORT, "trailing ',' in dimension list");
         free(dims);
         return -1;
     }
@@ -420,7 +420,7 @@ static int read_variable(harp_product *product, hid_t dataset_id, const char *na
 
     if (H5Sis_simple(space_id) <= 0)
     {
-        harp_set_error(HARP_ERROR_PRODUCT, "complex HDF5 dataspaces not supported");
+        harp_set_error(HARP_ERROR_IMPORT, "complex HDF5 dataspaces not supported");
         H5Sclose(space_id);
         return -1;
     }
@@ -449,7 +449,7 @@ static int read_variable(harp_product *product, hid_t dataset_id, const char *na
 
     if (hdf5_num_dimensions != num_dimensions)
     {
-        harp_set_error(HARP_ERROR_PRODUCT, "dataset '%s' has %d dimensions; expected %d", name, hdf5_num_dimensions,
+        harp_set_error(HARP_ERROR_IMPORT, "dataset '%s' has %d dimensions; expected %d", name, hdf5_num_dimensions,
                        num_dimensions);
         return -1;
     }
@@ -584,7 +584,7 @@ static int read_variable(harp_product *product, hid_t dataset_id, const char *na
 
         if (attr_data_type != data_type)
         {
-            harp_set_error(HARP_ERROR_PRODUCT, "attribute 'valid_min' of dataset '%s' has invalid type", name);
+            harp_set_error(HARP_ERROR_IMPORT, "attribute 'valid_min' of dataset '%s' has invalid type", name);
             return -1;
         }
     }
@@ -606,7 +606,7 @@ static int read_variable(harp_product *product, hid_t dataset_id, const char *na
 
         if (attr_data_type != data_type)
         {
-            harp_set_error(HARP_ERROR_PRODUCT, "attribute 'valid_max' of dataset '%s' has invalid type", name);
+            harp_set_error(HARP_ERROR_IMPORT, "attribute 'valid_max' of dataset '%s' has invalid type", name);
             return -1;
         }
     }
@@ -751,7 +751,8 @@ static int verify_product(hid_t file_id)
         }
     }
 
-    harp_set_error(HARP_ERROR_UNSUPPORTED_PRODUCT, "not a valid HARP product");
+    harp_set_error(HARP_ERROR_UNSUPPORTED_PRODUCT, "not a HARP product");
+
     return -1;
 }
 

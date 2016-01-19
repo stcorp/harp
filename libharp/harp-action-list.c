@@ -1224,7 +1224,7 @@ static int execute_collocation_filter(harp_product *product, harp_action_list *a
 
         if (product->source_product == NULL)
         {
-            harp_set_error(HARP_ERROR_PRODUCT, "product attribute 'source_product' is NULL");
+            harp_set_error(HARP_ERROR_INVALID_ARGUMENT, "product attribute 'source_product' is NULL");
             return -1;
         }
 

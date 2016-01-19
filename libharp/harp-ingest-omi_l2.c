@@ -300,7 +300,7 @@ static int verify_variable_dimensions(coda_cursor *cursor, int num_dimensions, c
     }
     if (num_coda_dimensions != num_dimensions)
     {
-        harp_set_error(HARP_ERROR_PRODUCT, "product error detected (variable '%s' has %d dimensions, expected %d)",
+        harp_set_error(HARP_ERROR_INGESTION, "product error detected (variable '%s' has %d dimensions, expected %d)",
                        get_variable_name_from_cursor(cursor), num_coda_dimensions, num_dimensions);
         return -1;
     }
@@ -309,7 +309,7 @@ static int verify_variable_dimensions(coda_cursor *cursor, int num_dimensions, c
     {
         if (coda_dimension[i] != dimension[i])
         {
-            harp_set_error(HARP_ERROR_PRODUCT, "product error detected (dimension %d of variable '%s' has %ld elements,"
+            harp_set_error(HARP_ERROR_INGESTION, "product error detected (dimension %d of variable '%s' has %ld elements,"
                            " expected %ld)", i, get_variable_name_from_cursor(cursor), coda_dimension[i], dimension[i]);
             return -1;
         }
@@ -536,12 +536,12 @@ static int verify_dimensions(ingest_info *info)
     /* The time and xtrack dimensions should be >1 because we need to calculate corner coordinates. */
     if (info->dimension[omi_dim_time] == 1)
     {
-        harp_set_error(HARP_ERROR_PRODUCT, "product error detected ('time' dimension should be larger than 1)");
+        harp_set_error(HARP_ERROR_INGESTION, "product error detected ('time' dimension should be larger than 1)");
         return -1;
     }
     if (info->dimension[omi_dim_xtrack] == 1)
     {
-        harp_set_error(HARP_ERROR_PRODUCT, "product error detected ('xtrack' dimension should be larger than 1)");
+        harp_set_error(HARP_ERROR_INGESTION, "product error detected ('xtrack' dimension should be larger than 1)");
         return -1;
     }
 
@@ -557,7 +557,7 @@ static int verify_dimensions_omaeruv(ingest_info *info)
 
     if (info->dimension[omi_dim_spectral] != 3)
     {
-        harp_set_error(HARP_ERROR_PRODUCT, "product error detected ('spectral' dimension has length %ld, expected 3)",
+        harp_set_error(HARP_ERROR_INGESTION, "product error detected ('spectral' dimension has length %ld, expected 3)",
                        info->dimension[omi_dim_spectral]);
         return -1;
     }
@@ -574,7 +574,7 @@ static int verify_dimensions_omo3pr(ingest_info *info)
 
     if (info->dimension[omi_dim_vertical] <= 0)
     {
-        harp_set_error(HARP_ERROR_PRODUCT, "product error detected ('vertical' dimension should be larger than 0)");
+        harp_set_error(HARP_ERROR_INGESTION, "product error detected ('vertical' dimension should be larger than 0)");
         return -1;
     }
 
@@ -637,7 +637,7 @@ static int init_dimensions(ingest_info *info)
     }
     if (num_dims != 2)
     {
-        harp_set_error(HARP_ERROR_PRODUCT, "product error detected (product has %d dimensions, expected 2)", num_dims);
+        harp_set_error(HARP_ERROR_INGESTION, "product error detected (product has %d dimensions, expected 2)", num_dims);
         return -1;
     }
 
@@ -666,7 +666,7 @@ static int init_dimensions_omaeruv(ingest_info *info)
     }
     if (num_dims != 3)
     {
-        harp_set_error(HARP_ERROR_PRODUCT, "product error detected (product has %d dimensions, expected 3)", num_dims);
+        harp_set_error(HARP_ERROR_INGESTION, "product error detected (product has %d dimensions, expected 3)", num_dims);
         return -1;
     }
 
@@ -696,7 +696,7 @@ static int init_dimensions_omo3pr(ingest_info *info)
     }
     if (num_dims != 3)
     {
-        harp_set_error(HARP_ERROR_PRODUCT, "product error detected (product has %d dimensions, expected 3)", num_dims);
+        harp_set_error(HARP_ERROR_INGESTION, "product error detected (product has %d dimensions, expected 3)", num_dims);
         return -1;
     }
 

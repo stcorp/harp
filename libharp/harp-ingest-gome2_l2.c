@@ -75,7 +75,7 @@ static int init_num_main(ingest_info *info)
     }
     if (num_dims != 1)
     {
-        harp_set_error(HARP_ERROR_PRODUCT, "dataset '/GEOLOCATION/LatitudeCentre' has %d dimensions, expected 1)",
+        harp_set_error(HARP_ERROR_INGESTION, "dataset '/GEOLOCATION/LatitudeCentre' has %d dimensions, expected 1)",
                        num_dims);
         return -1;
     }
@@ -115,7 +115,7 @@ static int init_window_info(ingest_info *info)
     }
     if (num_dims != 1)
     {
-        harp_set_error(HARP_ERROR_PRODUCT, "dataset '/META_DATA/MainSpecies' has %d dimensions, expected 1)", num_dims);
+        harp_set_error(HARP_ERROR_INGESTION, "dataset '/META_DATA/MainSpecies' has %d dimensions, expected 1)", num_dims);
         return -1;
     }
 
@@ -181,7 +181,7 @@ static int init_revision(ingest_info *info)
     }
     if (revision[0] < '0' || revision[0] > '9' || revision[1] < '0' || revision[1] > '9')
     {
-        harp_set_error(HARP_ERROR_PRODUCT, "attribute '/META_DATA@Revision' does not contain a valid revision value");
+        harp_set_error(HARP_ERROR_INGESTION, "attribute '/META_DATA@Revision' does not contain a valid revision value");
         return -1;
     }
     info->revision = (revision[0] - '0') * 10 + (revision[1] - '0');
@@ -211,7 +211,7 @@ static int init_format_version(ingest_info *info)
     }
     if (format_version[0] < '0' || format_version[0] > '9')
     {
-        harp_set_error(HARP_ERROR_PRODUCT, "attribute '/META_DATA@ProductFormatVersion' does not contain a valid "
+        harp_set_error(HARP_ERROR_INGESTION, "attribute '/META_DATA@ProductFormatVersion' does not contain a valid "
                        "version value");
         return -1;
     }
@@ -243,7 +243,7 @@ static int read_dataset(ingest_info *info, const char *path, harp_data_type data
     }
     if (coda_num_elements != num_elements)
     {
-        harp_set_error(HARP_ERROR_PRODUCT, "dataset '%s' has %ld elements (expected %ld)", path, coda_num_elements,
+        harp_set_error(HARP_ERROR_INGESTION, "dataset '%s' has %ld elements (expected %ld)", path, coda_num_elements,
                        num_elements);
         return -1;
     }
@@ -503,12 +503,12 @@ static int read_time(void *user_data, harp_array data)
     }
     if (num_dims != 1)
     {
-        harp_set_error(HARP_ERROR_PRODUCT, "dataset '/GEOLOCATION/Time' has %d dimensions, expected 1", num_dims);
+        harp_set_error(HARP_ERROR_INGESTION, "dataset '/GEOLOCATION/Time' has %d dimensions, expected 1", num_dims);
         return -1;
     }
     if (dim[0] != info->num_main)
     {
-        harp_set_error(HARP_ERROR_PRODUCT, "dataset '/GEOLOCATION/Time' has %ld elements, expected %ld", dim[0],
+        harp_set_error(HARP_ERROR_INGESTION, "dataset '/GEOLOCATION/Time' has %ld elements, expected %ld", dim[0],
                        info->num_main);
         return -1;
     }

@@ -136,7 +136,7 @@ static int read_data_set(ingest_info *info, const char *data_set_name, double *b
     }
     if (num_elements != info->num_grid_elements)
     {
-        harp_set_error(HARP_ERROR_PRODUCT, "product error detected (inconsistent grid array size %ld != %ld)",
+        harp_set_error(HARP_ERROR_INGESTION, "product error detected (inconsistent grid array size %ld != %ld)",
                        info->num_grid_elements, num_elements);
         return -1;
     }
@@ -442,7 +442,7 @@ static int init_cursors_and_grid(ingest_info *info, const char *data_group_name)
     }
     if (length != 1)
     {
-        harp_set_error(HARP_ERROR_PRODUCT, "product error detected (incorrect array length for TAI93At0zOfGranule)");
+        harp_set_error(HARP_ERROR_INGESTION, "product error detected (incorrect array length for TAI93At0zOfGranule)");
         return -1;
     }
     if (coda_cursor_read_double_array(&cursor, &(info->granule_time), coda_array_ordering_c) != 0)
@@ -496,7 +496,7 @@ static int init_cursors_and_grid(ingest_info *info, const char *data_group_name)
     str_buffer[length] = '\0';
     if (sscanf(str_buffer, "(%lf,%lf)", &(info->latitude_step), &(info->longitude_step)) != 2)
     {
-        harp_set_error(HARP_ERROR_PRODUCT, "product error detected (invalid format for GridSpacing attribute)");
+        harp_set_error(HARP_ERROR_INGESTION, "product error detected (invalid format for GridSpacing attribute)");
         return -1;
     }
     coda_cursor_goto_parent(&cursor);
@@ -514,7 +514,7 @@ static int init_cursors_and_grid(ingest_info *info, const char *data_group_name)
     }
     if (length != 1)
     {
-        harp_set_error(HARP_ERROR_PRODUCT, "product error detected (incorrect array length for "
+        harp_set_error(HARP_ERROR_INGESTION, "product error detected (incorrect array length for "
                        "NumberOfLongitudesInGrid)");
         return -1;
     }
@@ -538,7 +538,7 @@ static int init_cursors_and_grid(ingest_info *info, const char *data_group_name)
     }
     if (length != 1)
     {
-        harp_set_error(HARP_ERROR_PRODUCT, "product error detected (incorrect array length for "
+        harp_set_error(HARP_ERROR_INGESTION, "product error detected (incorrect array length for "
                        "NumberOfLatitudesInGrid)");
         return -1;
     }
@@ -553,7 +553,7 @@ static int init_cursors_and_grid(ingest_info *info, const char *data_group_name)
     if (fabs(info->num_latitudes * info->latitude_step - 180.0) > eps ||
         fabs(info->num_longitudes * info->longitude_step - 360.0) > eps)
     {
-        harp_set_error(HARP_ERROR_PRODUCT, "product error detected (non-global grid coverage)");
+        harp_set_error(HARP_ERROR_INGESTION, "product error detected (non-global grid coverage)");
         return -1;
     }
     info->latitude_origin = -90.0 + 0.5 * info->latitude_step;

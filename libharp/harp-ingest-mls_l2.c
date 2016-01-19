@@ -186,13 +186,13 @@ static int read_variable(coda_cursor *cursor, const char *name, int num_dimensio
     }
     if (num_coda_dimensions != num_dimensions)
     {
-        harp_set_error(HARP_ERROR_PRODUCT, "product error detected in MLS L2 product (variable %s has %d dimensions, "
+        harp_set_error(HARP_ERROR_INGESTION, "product error detected in MLS L2 product (variable %s has %d dimensions, "
                        "expected %d)", name, num_coda_dimensions, num_dimensions);
         return -1;
     }
     if (dimension_0 != coda_dimension[0])
     {
-        harp_set_error(HARP_ERROR_PRODUCT, "product error detected in MLS L2 product (first dimension for variable %s "
+        harp_set_error(HARP_ERROR_INGESTION, "product error detected in MLS L2 product (first dimension for variable %s "
                        "has %ld elements, expected %ld", name, coda_dimension[0], dimension_0);
         return -1;
     }
@@ -201,7 +201,7 @@ static int read_variable(coda_cursor *cursor, const char *name, int num_dimensio
     {
         if (dimension_1 != coda_dimension[1])
         {
-            harp_set_error(HARP_ERROR_PRODUCT, "product error detected in MLS L2 product (second dimension for "
+            harp_set_error(HARP_ERROR_INGESTION, "product error detected in MLS L2 product (second dimension for "
                            "variable %s has %ld elements, expected %ld", name, coda_dimension[1], dimension_1);
             return -1;
         }

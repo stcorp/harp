@@ -981,7 +981,7 @@ int harp_product_get_datetime_range(const harp_product *product, double *datetim
     if (harp_isnan(start) || start < datetime->valid_min.double_data || start > datetime->valid_max.double_data
         || harp_isnan(stop) || stop < datetime->valid_min.double_data || stop > datetime->valid_max.double_data)
     {
-        harp_set_error(HARP_ERROR_PRODUCT, "cannot determine valid datetime range");
+        harp_set_error(HARP_ERROR_INVALID_ARGUMENT, "cannot determine valid datetime range");
         return -1;
     }
 

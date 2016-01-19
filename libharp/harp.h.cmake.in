@@ -131,17 +131,17 @@ LIBHARP_API extern int harp_errno;
 
 #define HARP_ERROR_UNIT_CONVERSION                          (-40)
 
-#define HARP_ERROR_UNSUPPORTED_PRODUCT                      (-50)
+#define HARP_ERROR_SCRIPT                                   (-50)
+#define HARP_ERROR_SCRIPT_SYNTAX                            (-51)
 
-#define HARP_ERROR_PRODUCT                                  (-60)
+#define HARP_ERROR_IMPORT                                   (-60)
 
-#define HARP_ERROR_SCRIPT                                   (-70)
-#define HARP_ERROR_SCRIPT_SYNTAX                            (-71)
+#define HARP_ERROR_INGESTION                                (-70)
+#define HARP_ERROR_INGESTION_OPTION_SYNTAX                  (-72)
+#define HARP_ERROR_INVALID_INGESTION_OPTION                 (-73)
+#define HARP_ERROR_INVALID_INGESTION_OPTION_VALUE           (-74)
 
-#define HARP_ERROR_INGESTION                                (-80)
-#define HARP_ERROR_INGESTION_OPTION_SYNTAX                  (-81)
-#define HARP_ERROR_INVALID_INGESTION_OPTION                 (-82)
-#define HARP_ERROR_INVALID_INGESTION_OPTION_VALUE           (-83)
+#define HARP_ERROR_UNSUPPORTED_PRODUCT                      (-80)
 
 #define HARP_ERROR_NO_DATA                                  (-90)
 

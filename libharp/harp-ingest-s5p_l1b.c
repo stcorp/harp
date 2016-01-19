@@ -176,7 +176,7 @@ static int verify_variable_dimensions(coda_cursor *cursor, int num_dimensions, c
 
     if (num_coda_dimensions != num_dimensions)
     {
-        harp_set_error(HARP_ERROR_PRODUCT, "product error detected (variable '%s' has %d dimensions, expected %d)",
+        harp_set_error(HARP_ERROR_INGESTION, "product error detected (variable '%s' has %d dimensions, expected %d)",
                        get_variable_name_from_cursor(cursor), num_coda_dimensions, num_dimensions);
         return -1;
     }
@@ -185,7 +185,7 @@ static int verify_variable_dimensions(coda_cursor *cursor, int num_dimensions, c
     {
         if (coda_dimension[i] != dimension[i])
         {
-            harp_set_error(HARP_ERROR_PRODUCT, "product error detected (dimension %d of variable '%s' has %ld elements,"
+            harp_set_error(HARP_ERROR_INGESTION, "product error detected (dimension %d of variable '%s' has %ld elements,"
                            " expected %ld)", i, get_variable_name_from_cursor(cursor), coda_dimension[i], dimension[i]);
             return -1;
         }
@@ -310,7 +310,7 @@ static int get_dimension_length(ingest_info *info, const char *dimension_name, l
 
     if (num_dims != 1)
     {
-        harp_set_error(HARP_ERROR_PRODUCT, "product error detected (cannot determine length of dimension '%s')",
+        harp_set_error(HARP_ERROR_INGESTION, "product error detected (cannot determine length of dimension '%s')",
                        dimension_name);
         return -1;
     }

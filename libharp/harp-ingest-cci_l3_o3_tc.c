@@ -57,7 +57,7 @@ static int read_datetime(ingest_info *info, const char *path, double *datetime)
     }
     if (length != 8)
     {
-        harp_set_error(HARP_ERROR_PRODUCT, "datetime value has length %ld; expected 8 (yyyyMMdd)", length);
+        harp_set_error(HARP_ERROR_INGESTION, "datetime value has length %ld; expected 8 (yyyyMMdd)", length);
         harp_add_coda_cursor_path_to_error_message(&cursor);
         return -1;
     }
@@ -100,7 +100,7 @@ static int init_dimensions(ingest_info *info)
     }
     if (num_coda_dims != 1)
     {
-        harp_set_error(HARP_ERROR_PRODUCT, "dataset has %d dimensions; expected 1", num_coda_dims);
+        harp_set_error(HARP_ERROR_INGESTION, "dataset has %d dimensions; expected 1", num_coda_dims);
         harp_add_coda_cursor_path_to_error_message(&cursor);
         return -1;
     }
@@ -118,7 +118,7 @@ static int init_dimensions(ingest_info *info)
     }
     if (num_coda_dims != 1)
     {
-        harp_set_error(HARP_ERROR_PRODUCT, "dataset has %d dimensions; expected 1", num_coda_dims);
+        harp_set_error(HARP_ERROR_INGESTION, "dataset has %d dimensions; expected 1", num_coda_dims);
         harp_add_coda_cursor_path_to_error_message(&cursor);
         return -1;
     }
@@ -182,7 +182,7 @@ static int read_dataset(ingest_info *info, const char *path, long num_elements, 
     }
     if (coda_num_elements != num_elements)
     {
-        harp_set_error(HARP_ERROR_PRODUCT, "dataset has %ld elements (expected %ld)", coda_num_elements, num_elements);
+        harp_set_error(HARP_ERROR_INGESTION, "dataset has %ld elements (expected %ld)", coda_num_elements, num_elements);
         harp_add_coda_cursor_path_to_error_message(&cursor);
         harp_add_error_message(" (%s:%lu)", __FILE__, __LINE__);
         return -1;
