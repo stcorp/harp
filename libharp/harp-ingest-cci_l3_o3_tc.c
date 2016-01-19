@@ -52,7 +52,7 @@ static int read_datetime(ingest_info *info, const char *path, double *datetime)
     }
     if (coda_cursor_get_string_length(&cursor, &length) != 0)
     {
-        harp_set_error(HARP_ERROR_UNSUPPORTED_PRODUCT, NULL);
+        harp_set_error(HARP_ERROR_CODA, NULL);
         return -1;
     }
     if (length != 8)
@@ -249,7 +249,7 @@ static int verify_product_type(const harp_ingestion_module *module, coda_product
     (void)module;
     if (coda_cursor_set_product(&cursor, product) != 0)
     {
-        harp_set_error(HARP_ERROR_CODA, NULL);
+        harp_set_error(HARP_ERROR_UNSUPPORTED_PRODUCT, NULL);
         return -1;
     }
     if (coda_cursor_goto(&cursor, "/atmosphere_mole_content_of_ozone") != 0)

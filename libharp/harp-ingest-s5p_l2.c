@@ -1220,7 +1220,7 @@ static int verify_product_type(coda_product *product, s5p_product_type product_t
 
     if (coda_cursor_set_product(&cursor, product) != 0)
     {
-        harp_set_error(HARP_ERROR_CODA, NULL);
+        harp_set_error(HARP_ERROR_UNSUPPORTED_PRODUCT, NULL);
         return -1;
     }
     if (coda_cursor_goto(&cursor, "/METADATA/GRANULE_DESCRIPTION@InstrumentName") != 0)
