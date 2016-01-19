@@ -473,6 +473,11 @@ LIBHARP_API int harp_import(const char *filename, harp_product **product)
             return -1;
     }
 
+    if (harp_product_verify(product) != 0)
+    {
+        return -1;
+    }
+
     return 0;
 }
 

@@ -330,14 +330,15 @@ LIBHARP_API const char *harp_errno_to_string(int err)
 
             case HARP_ERROR_INGESTION:
                 return "ingestion error";
-            case HARP_ERROR_UNSUPPORTED_PRODUCT:
-                return "product not supported by ingestion module";
             case HARP_ERROR_INGESTION_OPTION_SYNTAX:
                 return "syntax error in ingestion option";
             case HARP_ERROR_INVALID_INGESTION_OPTION:
                 return "invalid ingestion option";
             case HARP_ERROR_INVALID_INGESTION_OPTION_VALUE:
                 return "invalid ingestion option value";
+
+            case HARP_ERROR_UNSUPPORTED_PRODUCT:
+                return "unsupported product";
 
             case HARP_ERROR_NO_DATA:
                 return "no data left after operation";

@@ -2474,6 +2474,12 @@ static int get_product(ingest_info *info)
         }
     }
 
+    /* Verify ingested product. */
+    if (harp_product_verify(info->product) != 0)
+    {
+        return -1;
+    }
+
     /* Apply remaining actions. */
     if (harp_product_execute_action_list(info->product, info->action_list) != 0)
     {

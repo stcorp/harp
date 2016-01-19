@@ -1465,4 +1465,145 @@ LIBHARP_API int harp_variable_has_unit(const harp_variable *variable, const char
     return (harp_unit_compare(variable->unit, unit) == 0);
 }
 
+/** Verify that a variable is internally consistent and complies with conventions.
+ * \param variable Variable to verify.
+ * \return
+ *   \arg \c 0, Variable verified successfully.
+ *   \arg \c -1, Error occurred (check #harp_errno).
+ */
+LIBHARP_API int harp_variable_verify(const harp_variable *variable)
+{
+    long dimension[HARP_MAX_NUM_DIMS] = { 0 };
+    int dimension_index[HARP_MAX_NUM_DIMS] = { 0 };
+    long num_elements;
+    int i;
+
+    if (variable == NULL)
+    {
+        harp_set_error(HARP_ERROR_INVALID_ARGUMENT, "variable is NULL");
+        return -1;
+    }
+
+    if (variable->name == NULL)
+    {
+        harp_set_error(HARP_ERROR_INVALID_VARIABLE, "name undefined");
+        return -1;
+    }
+
+    switch (variable->data_type)
+    {
+        case harp_type_int8:
+        case harp_type_int16:
+        case harp_type_int32:
+        case harp_type_float:
+        case harp_type_double:
+        case harp_type_string:
+            break;
+        default:
+            harp_set_error(HARP_ERROR_INVALID_VARIABLE, "invalid data type");
+            return -1;
+    }
+
+    if (variable->num_dimensions < 0 || variable->num_dimensions > HARP_MAX_NUM_DIMS)
+    {
+        harp_set_error(HARP_ERROR_INVALID_VARIABLE, "invalid number of dimensions %d", variable->num_dimensions);
+        return -1;
+    }
+
+    for (i = 0; i < variable->num_dimensions; i++)
+    {
+        harp_dimension_type dimension_type = variable->dimension_type[i];
+
+        switch (dimension_type)
+        {
+            case harp_dimension_independent:
+            case harp_dimension_time:
+            case harp_dimension_latitude:
+            case harp_dimension_longitude:
+            case harp_dimension_vertical:
+            case harp_dimension_spectral:
+                break;
+            default:
+                harp_set_error(HARP_ERROR_INVALID_VARIABLE, "dimension at index %d has invalid type", i);
+                return -1;
+        }
+
+        if (dimension_type == harp_dimension_time && variable->dimension_type[0] != harp_dimension_time)
+        {
+            harp_set_error(HARP_ERROR_INVALID_VARIABLE, "inner dimension of type '%s' at index %d not allowed unless "
+                           "outermost dimension (index 0) also of type '%s'",
+                           harp_get_dimension_type_name(harp_dimension_time), i,
+                           harp_get_dimension_type_name(harp_dimension_time));
+            return -1;
+        }
+
+        if (variable->dimension[i] <= 0)
+        {
+            harp_set_error(HARP_ERROR_INVALID_VARIABLE, "dimension at index %d has invalid length %ld", i,
+                           variable->dimension[i]);
+            return -1;
+        }
+
+        if (dimension_type != harp_dimension_independent)
+        {
+            if (dimension[dimension_type] == 0)
+            {
+                dimension[dimension_type] = variable->dimension[i];
+                dimension_index[dimension_type] = i;
+            }
+            else if (variable->dimension[i] != dimension[dimension_type])
+            {
+                harp_set_error(HARP_ERROR_INVALID_VARIABLE, "length %ld of dimension of type '%s' at index %d does not "
+                               "match length %ld of dimension at index %d of the same type", variable->dimension[i],
+                               harp_get_dimension_type_name(dimension_type), i, dimension[dimension_type],
+                               dimension_index[dimension_type]);
+                return -1;
+            }
+        }
+    }
+
+    if (variable->num_elements < 0)
+    {
+        harp_set_error(HARP_ERROR_INVALID_VARIABLE, "invalid number of elements %ld", variable->num_elements);
+        return -1;
+    }
+
+    num_elements = harp_get_num_elements(variable->num_dimensions, variable->dimension);
+    if (variable->num_elements != num_elements)
+    {
+        harp_set_error(HARP_ERROR_INVALID_VARIABLE, "number of elements %ld does not match product of dimension "
+                       "lengths %ld", variable->num_elements, num_elements);
+        return -1;
+
+    }
+
+    if (variable->num_elements > 0 && variable->data.ptr == NULL)
+    {
+        harp_set_error(HARP_ERROR_INVALID_VARIABLE, "number of elements is > 0, but variable contains no data");
+        return -1;
+    }
+
+    if (variable->unit != NULL && !harp_unit_is_valid(variable->unit))
+    {
+        harp_set_error(HARP_ERROR_INVALID_VARIABLE, "invalid unit '%s'", variable->unit);
+        return -1;
+    }
+
+    if ((variable->data_type == harp_type_float && harp_isnan(variable->valid_min.float_data)) ||
+        (variable->data_type == harp_type_double && harp_isnan(variable->valid_min.double_data)))
+    {
+        harp_set_error(HARP_ERROR_INVALID_VARIABLE, "valid_min is NaN");
+        return -1;
+    }
+
+    if ((variable->data_type == harp_type_float && harp_isnan(variable->valid_max.float_data)) ||
+        (variable->data_type == harp_type_double && harp_isnan(variable->valid_max.double_data)))
+    {
+        harp_set_error(HARP_ERROR_INVALID_VARIABLE, "valid_max is NaN");
+        return -1;
+    }
+
+    return 0;
+}
+
 /** @} */

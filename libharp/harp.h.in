@@ -105,45 +105,47 @@ LIBHARP_API extern const char *libharp_version;
 
 LIBHARP_API extern int harp_errno;
 
-#define HARP_SUCCESS                                          (0)
-#define HARP_ERROR_OUT_OF_MEMORY                             (-1)
+#define HARP_SUCCESS                                           (0)
+#define HARP_ERROR_OUT_OF_MEMORY                              (-1)
 
-#define HARP_ERROR_HDF4                                     (-10)
-#define HARP_ERROR_HDF5                                     (-11)
-#define HARP_ERROR_NETCDF                                   (-12)
-#define HARP_ERROR_CODA                                     (-13)
+#define HARP_ERROR_HDF4                                     (-100)
+#define HARP_ERROR_HDF5                                     (-101)
+#define HARP_ERROR_NETCDF                                   (-102)
+#define HARP_ERROR_CODA                                     (-103)
 
-#define HARP_ERROR_FILE_NOT_FOUND                           (-20)
-#define HARP_ERROR_FILE_OPEN                                (-21)
-#define HARP_ERROR_FILE_CLOSE                               (-22)
-#define HARP_ERROR_FILE_READ                                (-23)
-#define HARP_ERROR_FILE_WRITE                               (-24)
+#define HARP_ERROR_FILE_NOT_FOUND                           (-200)
+#define HARP_ERROR_FILE_OPEN                                (-201)
+#define HARP_ERROR_FILE_CLOSE                               (-202)
+#define HARP_ERROR_FILE_READ                                (-203)
+#define HARP_ERROR_FILE_WRITE                               (-204)
 
-#define HARP_ERROR_INVALID_ARGUMENT                         (-30)
-#define HARP_ERROR_INVALID_INDEX                            (-31)
-#define HARP_ERROR_INVALID_NAME                             (-32)
-#define HARP_ERROR_INVALID_FORMAT                           (-33)
-#define HARP_ERROR_INVALID_DATETIME                         (-34)
-#define HARP_ERROR_INVALID_TYPE                             (-35)
-#define HARP_ERROR_ARRAY_NUM_DIMS_MISMATCH                  (-36)
-#define HARP_ERROR_ARRAY_OUT_OF_BOUNDS                      (-37)
-#define HARP_ERROR_VARIABLE_NOT_FOUND                       (-38)
+#define HARP_ERROR_INVALID_ARGUMENT                         (-300)
+#define HARP_ERROR_INVALID_INDEX                            (-301)
+#define HARP_ERROR_INVALID_NAME                             (-302)
+#define HARP_ERROR_INVALID_FORMAT                           (-303)
+#define HARP_ERROR_INVALID_DATETIME                         (-304)
+#define HARP_ERROR_INVALID_TYPE                             (-305)
+#define HARP_ERROR_INVALID_PRODUCT                          (-306)
+#define HARP_ERROR_INVALID_VARIABLE                         (-307)
+#define HARP_ERROR_ARRAY_NUM_DIMS_MISMATCH                  (-308)
+#define HARP_ERROR_ARRAY_OUT_OF_BOUNDS                      (-309)
+#define HARP_ERROR_VARIABLE_NOT_FOUND                       (-310)
 
-#define HARP_ERROR_UNIT_CONVERSION                          (-40)
+#define HARP_ERROR_UNIT_CONVERSION                          (-400)
 
-#define HARP_ERROR_SCRIPT                                   (-50)
-#define HARP_ERROR_SCRIPT_SYNTAX                            (-51)
+#define HARP_ERROR_SCRIPT                                   (-500)
+#define HARP_ERROR_SCRIPT_SYNTAX                            (-501)
 
-#define HARP_ERROR_IMPORT                                   (-60)
+#define HARP_ERROR_IMPORT                                   (-600)
 
-#define HARP_ERROR_INGESTION                                (-70)
-#define HARP_ERROR_INGESTION_OPTION_SYNTAX                  (-72)
-#define HARP_ERROR_INVALID_INGESTION_OPTION                 (-73)
-#define HARP_ERROR_INVALID_INGESTION_OPTION_VALUE           (-74)
+#define HARP_ERROR_INGESTION                                (-700)
+#define HARP_ERROR_INGESTION_OPTION_SYNTAX                  (-701)
+#define HARP_ERROR_INVALID_INGESTION_OPTION                 (-702)
+#define HARP_ERROR_INVALID_INGESTION_OPTION_VALUE           (-703)
 
-#define HARP_ERROR_UNSUPPORTED_PRODUCT                      (-80)
+#define HARP_ERROR_UNSUPPORTED_PRODUCT                      (-800)
 
-#define HARP_ERROR_NO_DATA                                  (-90)
+#define HARP_ERROR_NO_DATA                                  (-900)
 
 /** \addtogroup harp_general
  * @{
@@ -296,6 +298,7 @@ LIBHARP_API int harp_variable_has_dimension_type(const harp_variable *variable, 
 LIBHARP_API int harp_variable_has_dimension_types(const harp_variable *variable, int num_dimensions,
                                                   const harp_dimension_type *dimension_type);
 LIBHARP_API int harp_variable_has_unit(const harp_variable *variable, const char *unit);
+LIBHARP_API int harp_variable_verify(const harp_variable *variable);
 
 /* Product */
 LIBHARP_API int harp_product_new(harp_product **new_product);
@@ -316,6 +319,7 @@ LIBHARP_API int harp_product_get_derived_variable(const harp_product *product, c
 LIBHARP_API int harp_product_add_derived_variable(harp_product *product, const char *name, const char *unit,
                                                   int num_dimensions, const harp_dimension_type *dimension_type);
 LIBHARP_API int harp_product_update_history(harp_product *product, const char *executable, int argc, char *argv[]);
+LIBHARP_API int harp_product_verify(const harp_product *product);
 
 /* Ingestion */
 LIBHARP_API int harp_ingest(const char *filename, const char *script, const char *options, harp_product **product);

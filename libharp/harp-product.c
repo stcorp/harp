@@ -20,6 +20,8 @@
 
 #include "harp-internal.h"
 
+#include "hashtable.h"
+
 #include <assert.h>
 #include <stdlib.h>
 #include <string.h>
@@ -27,6 +29,72 @@
 /** \defgroup harp_product HARP Products
  * The HARP Products module contains everything related to HARP products.
  */
+
+static int get_arguments(int argc, char *argv[], char **new_arguments)
+{
+    char *arguments = NULL;
+    size_t length = 0;
+    int add_quotes = 0;
+    int i;
+
+    /* Determine the stringlength */
+    for (i = 1; i < argc; i++)
+    {
+        length += strlen(argv[i]);
+
+        /* Add quotes for arguments that contain a whitespace, a semi-colon, an expression or a [unit] */
+        add_quotes = (strstr(argv[i], " ") != NULL || strstr(argv[i], ";") != NULL || strstr(argv[i], "[") != NULL ||
+                      strstr(argv[i], "]") != NULL || strstr(argv[i], "<") != NULL || strstr(argv[i], "!") != NULL ||
+                      strstr(argv[i], "=") != NULL || strstr(argv[i], ">") != NULL);
+
+        if (add_quotes)
+        {
+            length += 2;
+        }
+        if (i < argc - 1)
+        {
+            /* Add an extra whitespace */
+            length++;
+        }
+    }
+    /* Add an extra string termination character */
+    length++;
+
+    /* Combine the arguments (while skipping argv[0]) */
+    arguments = calloc(length, sizeof(char));
+    if (arguments == NULL)
+    {
+        harp_set_error(HARP_ERROR_OUT_OF_MEMORY, "out of memory (could not allocate %lu bytes) (%s:%u)",
+                       length * sizeof(char), __FILE__, __LINE__);
+        return -1;
+    }
+
+    for (i = 1; i < argc; i++)
+    {
+        /* Add quotes for arguments that contain a whitespace, a semi-colon, an expression or a [unit] */
+        add_quotes = (strstr(argv[i], " ") != NULL || strstr(argv[i], ";") != NULL || strstr(argv[i], "[") != NULL ||
+                      strstr(argv[i], "]") != NULL || strstr(argv[i], "<") != NULL || strstr(argv[i], "!") != NULL ||
+                      strstr(argv[i], "=") != NULL || strstr(argv[i], ">") != NULL);
+
+        if (add_quotes)
+        {
+            strcat(arguments, "'");
+            strcat(arguments, argv[i]);
+            strcat(arguments, "'");
+        }
+        else
+        {
+            strcat(arguments, argv[i]);
+        }
+        if (i < argc - 1)
+        {
+            strcat(arguments, " ");
+        }
+    }
+
+    *new_arguments = arguments;
+    return 0;
+}
 
 static void sync_product_dimensions_on_variable_add(harp_product *product, const harp_variable *variable)
 {
@@ -586,78 +654,6 @@ LIBHARP_API int harp_product_is_empty(const harp_product *product)
     return (product->num_variables == 0);
 }
 
-/** @} */
-
-static int get_arguments(int argc, char *argv[], char **new_arguments)
-{
-    char *arguments = NULL;
-    size_t length = 0;
-    int add_quotes = 0;
-    int i;
-
-    /* Determine the stringlength */
-    for (i = 1; i < argc; i++)
-    {
-        length += strlen(argv[i]);
-
-        /* Add quotes for arguments that contain a whitespace, a semi-colon, an expression or a [unit] */
-        add_quotes = (strstr(argv[i], " ") != NULL || strstr(argv[i], ";") != NULL || strstr(argv[i], "[") != NULL ||
-                      strstr(argv[i], "]") != NULL || strstr(argv[i], "<") != NULL || strstr(argv[i], "!") != NULL ||
-                      strstr(argv[i], "=") != NULL || strstr(argv[i], ">") != NULL);
-
-        if (add_quotes)
-        {
-            length += 2;
-        }
-        if (i < argc - 1)
-        {
-            /* Add an extra whitespace */
-            length++;
-        }
-    }
-    /* Add an extra string termination character */
-    length++;
-
-    /* Combine the arguments (while skipping argv[0]) */
-    arguments = calloc(length, sizeof(char));
-    if (arguments == NULL)
-    {
-        harp_set_error(HARP_ERROR_OUT_OF_MEMORY, "out of memory (could not allocate %lu bytes) (%s:%u)",
-                       length * sizeof(char), __FILE__, __LINE__);
-        return -1;
-    }
-
-    for (i = 1; i < argc; i++)
-    {
-        /* Add quotes for arguments that contain a whitespace, a semi-colon, an expression or a [unit] */
-        add_quotes = (strstr(argv[i], " ") != NULL || strstr(argv[i], ";") != NULL || strstr(argv[i], "[") != NULL ||
-                      strstr(argv[i], "]") != NULL || strstr(argv[i], "<") != NULL || strstr(argv[i], "!") != NULL ||
-                      strstr(argv[i], "=") != NULL || strstr(argv[i], ">") != NULL);
-
-        if (add_quotes)
-        {
-            strcat(arguments, "'");
-            strcat(arguments, argv[i]);
-            strcat(arguments, "'");
-        }
-        else
-        {
-            strcat(arguments, argv[i]);
-        }
-        if (i < argc - 1)
-        {
-            strcat(arguments, " ");
-        }
-    }
-
-    *new_arguments = arguments;
-    return 0;
-}
-
-/** \addtogroup harp_product
- * @{
- */
-
 /** Update the history attribute in the product based on the command line parameters.
  * This function will extend the existing product history metadata element with a line containing the call that was
  * used to run this program. This command line execution call is constructed based on the \a argc and \a argv arguments.
@@ -719,6 +715,121 @@ LIBHARP_API int harp_product_update_history(harp_product *product, const char *e
     product->history = buffer;
 
     free(arguments);
+
+    return 0;
+}
+
+/** Verify that a product is internally consistent and complies with conventions.
+ * \param product Product to verify.
+ * \return
+ *   \arg \c 0, Product verified successfully.
+ *   \arg \c -1, Error occurred (check #harp_errno).
+ */
+LIBHARP_API int harp_product_verify(const harp_product *product)
+{
+    hashtable *variable_names;
+    int i;
+
+    if (product == NULL)
+    {
+        harp_set_error(HARP_ERROR_INVALID_ARGUMENT, "product is NULL");
+        return -1;
+    }
+
+    for (i = 0; i < HARP_NUM_DIM_TYPES; i++)
+    {
+        if (product->dimension[i] < 0)
+        {
+            harp_set_error(HARP_ERROR_INVALID_PRODUCT, "dimension of type '%s' has invalid length %ld",
+                           harp_get_dimension_type_name((harp_dimension_type)i), product->dimension[i]);
+            return -1;
+        }
+    }
+
+    if (product->num_variables < 0)
+    {
+        harp_set_error(HARP_ERROR_INVALID_PRODUCT, "invalid number of variables %d", product->num_variables);
+        return -1;
+    }
+
+    if (product->num_variables > 0 && product->variable == NULL)
+    {
+        harp_set_error(HARP_ERROR_INVALID_PRODUCT, "number of variables is > 0, but product contains no variables");
+        return -1;
+    }
+
+    /* Check variables. */
+    for (i = 0; i < product->num_variables; i++)
+    {
+        const harp_variable *variable = product->variable[i];
+
+        if (variable == NULL)
+        {
+            harp_set_error(HARP_ERROR_INVALID_PRODUCT, "variable at index %d undefined", i);
+            return -1;
+        }
+
+        if (harp_variable_verify(variable) != 0)
+        {
+            if (variable->name == NULL)
+            {
+                harp_add_error_message(" (variable at index %d)", i);
+            }
+            else
+            {
+                harp_add_error_message(" (variable '%s')", variable->name);
+            }
+
+            return -1;
+        }
+    }
+
+    /* Check consistency of dimensions between product and variables. */
+    for (i = 0; i < product->num_variables; i++)
+    {
+        const harp_variable *variable = product->variable[i];
+        int j;
+
+        for (j = 0; j < variable->num_dimensions; j++)
+        {
+            if (variable->dimension_type[j] == harp_dimension_independent)
+            {
+                continue;
+            }
+
+            if (variable->dimension[j] != product->dimension[variable->dimension_type[j]])
+            {
+                harp_set_error(HARP_ERROR_INVALID_PRODUCT, "length %ld of dimension of type '%s' at index %d of "
+                               "variable '%s' does not match length %ld of product dimension of type '%s'",
+                               variable->dimension[j], harp_get_dimension_type_name(variable->dimension_type[j]), j,
+                               variable->name, product->dimension[variable->dimension_type[j]],
+                               harp_get_dimension_type_name(variable->dimension_type[j]));
+                return -1;
+            }
+        }
+    }
+
+    variable_names = hashtable_new(1);
+    if (variable_names == NULL)
+    {
+        harp_set_error(HARP_ERROR_OUT_OF_MEMORY, "out of memory (could not allocate hashtable) (%s:%u)", __FILE__,
+                       __LINE__);
+        return -1;
+    }
+
+    for (i = 0; i < product->num_variables; i++)
+    {
+        const harp_variable *variable = product->variable[i];
+
+        if (hashtable_add_name(variable_names, variable->name) != 0)
+        {
+            harp_set_error(HARP_ERROR_INVALID_PRODUCT, "variable name '%s' is not unique", variable->name);
+            hashtable_delete(variable_names);
+            return -1;
+        }
+    }
+
+    hashtable_delete(variable_names);
 
     return 0;
 }
