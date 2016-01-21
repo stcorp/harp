@@ -441,6 +441,7 @@ LIBHARP_API void harp_done(void)
  */
 LIBHARP_API int harp_import(const char *filename, harp_product **product)
 {
+    harp_product *imported_product;
     file_format format;
 
     if (determine_file_format(filename, &format) != 0)
@@ -451,19 +452,19 @@ LIBHARP_API int harp_import(const char *filename, harp_product **product)
     switch (format)
     {
         case format_hdf4:
-            if (harp_import_hdf4(filename, product) != 0)
+            if (harp_import_hdf4(filename, &imported_product) != 0)
             {
                 return -1;
             }
             break;
         case format_hdf5:
-            if (harp_import_hdf5(filename, product) != 0)
+            if (harp_import_hdf5(filename, &imported_product) != 0)
             {
                 return -1;
             }
             break;
         case format_netcdf:
-            if (harp_import_netcdf(filename, product) != 0)
+            if (harp_import_netcdf(filename, &imported_product) != 0)
             {
                 return -1;
             }
@@ -473,10 +474,13 @@ LIBHARP_API int harp_import(const char *filename, harp_product **product)
             return -1;
     }
 
-    if (harp_product_verify(product) != 0)
+    if (harp_product_verify(imported_product) != 0)
     {
+        harp_product_delete(imported_product);
         return -1;
     }
+
+    *product = imported_product;
 
     return 0;
 }
