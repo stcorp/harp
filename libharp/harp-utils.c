@@ -775,8 +775,7 @@ void harp_array_replace_fill_value(harp_data_type data_type, long num_elements, 
  *   \arg \c 0, Success.
  *   \arg \c -1, Error occurred (check #harp_errno).
  */
-int harp_array_invert(harp_data_type data_type, int dim_id, int num_dimensions, long dimension[HARP_MAX_NUM_DIMS],
-                      harp_array data)
+int harp_array_invert(harp_data_type data_type, int dim_id, int num_dimensions, const long *dimension, harp_array data)
 {
     long num_elements;
     long block_size;
@@ -893,22 +892,33 @@ int harp_array_invert(harp_data_type data_type, int dim_id, int num_dimensions, 
     return 0;
 }
 
-/** Transpose the contents of an array
+/** Permute the dimensions of an array.
+ *
+ * If \a order is NULL, the order of the dimensions of the source array will be reversed, i.e. the array will be
+ * transposed. For example, if the dimensions of the source array are [10, 20, 30], the dimensions of the destination
+ * array will be [30, 20, 10]. (This is equivalent to specifying an order of [2, 1, 0].)
+ *
+ * Otherwise, the order of the dimensions of the source array will permuted according to \a order. For example, if the
+ * dimensions of the source array are [10, 20, 30] and the specified order is [1, 0, 2], the dimensions of the
+ * destination array will be [20, 10, 30].
+ *
  * \param data_type Data type of the array.
  * \param num_dimensions Number of dimensions in the array.
- * \param dimension Dimension sizes of the array.
- * \param data Array that should be transposed.
+ * \param dimension Dimension lengths of the array.
+ * \param order If NULL, reverse the order of the dimensions of the array, otherwise permute the order of the dimensions
+ *   of the array according to the order specified.
+ * \param data Array of which the dimensions should be permuted.
  * \return
  *   \arg \c 0, Success.
  *   \arg \c -1, Error occurred (check #harp_errno).
  */
-int harp_array_transpose(harp_data_type data_type, int num_dimensions, long dimension[HARP_MAX_NUM_DIMS],
+int harp_array_transpose(harp_data_type data_type, int num_dimensions, const long *dimension, const int *order,
                          harp_array data)
 {
+    long rindex[HARP_MAX_NUM_DIMS] = { 0 }; /* reversed index in multi-dimensional array */
+    long rdim[HARP_MAX_NUM_DIMS];   /* reversed order of dim[] */
+    long stride[HARP_MAX_NUM_DIMS]; /* stride in the destination array (in reverse order) */
     long num_elements;
-    long multiplier[HARP_MAX_NUM_DIMS + 1];
-    long rsub[HARP_MAX_NUM_DIMS + 1];   /* reversed index in multi dim array */
-    long rdim[HARP_MAX_NUM_DIMS + 1];   /* reversed order of dim[] */
     long element_size;
     long index = 0;
     long i;
@@ -921,31 +931,66 @@ int harp_array_transpose(harp_data_type data_type, int num_dimensions, long dime
         return 0;
     }
 
-    element_size = harp_get_size_for_type(data_type);
-
-    src = (uint8_t *)data.ptr;
-
-    num_elements = 1;
-    for (i = 0; i < num_dimensions; i++)
-    {
-        num_elements *= dimension[i];
-        rsub[i] = 0;
-        rdim[i] = dimension[num_dimensions - 1 - i];
-    }
+    num_elements = harp_get_num_elements(num_dimensions, dimension);
     if (num_elements <= 1)
     {
         /* nothing to do */
         return 0;
     }
 
-    multiplier[num_dimensions] = 1;
-    rdim[num_dimensions] = 1;
-    for (i = num_dimensions; i > 0; i--)
+    for (i = 0; i < num_dimensions; i++)
     {
-        multiplier[i - 1] = multiplier[i] * rdim[i];
+        rdim[i] = dimension[num_dimensions - 1 - i];
     }
-    rdim[num_dimensions] = 0;
-    rsub[num_dimensions] = 0;
+
+    if (order == NULL)
+    {
+        /* By default, reverse the order of the dimensions. */
+        stride[num_dimensions - 1] = 1;
+        for (i = num_dimensions - 1; i > 0; i--)
+        {
+            stride[i - 1] = stride[i] * rdim[i];
+        }
+    }
+    else
+    {
+        int iorder[HARP_MAX_NUM_DIMS] = { 0 };  /* map from destination dimension index to source dimension index */
+
+        /* Compute the map from destination dimension index to source dimension index (i.e. the inverse of order, which
+         * is the map from source dimension index to destination dimension index.
+         */
+        for (i = 0; i < num_dimensions; i++)
+        {
+            if (order[i] < 0 || order[i] >= num_dimensions)
+            {
+                harp_set_error(HARP_ERROR_INVALID_ARGUMENT, "dimension index '%d' out of bounds at index %d of "
+                               "dimension order (%s:%lu)", order[i], i, __FILE__, __LINE__);
+                return -1;
+            }
+
+            if (iorder[order[i]] != 0)
+            {
+                harp_set_error(HARP_ERROR_INVALID_ARGUMENT, "duplicate dimension index '%d' at index %d of dimension "
+                               "order (%s:%u)", order[i], i, __FILE__, __LINE__);
+                return -1;
+            }
+
+            iorder[order[i]] = i;
+        }
+
+        /* Compute the stride in the destination array for each dimension of the source array in reverse order. For
+         * example, stride[0] is the stride in the destination array when moving along the fastest running dimension of
+         * the source array (i.e. the dimension with index num_dimensions - 1).
+         */
+        stride[num_dimensions - 1 - iorder[num_dimensions - 1]] = 1;
+        for (i = num_dimensions - 1; i > 0; i--)
+        {
+            stride[num_dimensions - 1 - iorder[i - 1]] = stride[num_dimensions - 1 - iorder[i]] * dimension[iorder[i]];
+        }
+    }
+
+    element_size = harp_get_size_for_type(data_type);
+    src = (uint8_t *)data.ptr;
 
     dst = (uint8_t *)malloc(num_elements * element_size);
     if (dst == NULL)
@@ -963,15 +1008,15 @@ int harp_array_transpose(harp_data_type data_type, int num_dimensions, long dime
                 int j = 0;
 
                 dst[index] = src[i];
-                index += multiplier[j];
-                rsub[j]++;
-                while (rsub[j] == rdim[j])
+                index += stride[j];
+                rindex[j]++;
+                while (rindex[j] == rdim[j])
                 {
-                    rsub[j] = 0;
-                    index -= multiplier[j] * rdim[j];
+                    rindex[j] = 0;
+                    index -= stride[j] * rdim[j];
                     j++;
-                    index += multiplier[j];
-                    rsub[j]++;
+                    index += stride[j];
+                    rindex[j]++;
                 }
             }
             break;
@@ -981,15 +1026,15 @@ int harp_array_transpose(harp_data_type data_type, int num_dimensions, long dime
                 int j = 0;
 
                 ((uint16_t *)dst)[index] = ((uint16_t *)src)[i];
-                index += multiplier[j];
-                rsub[j]++;
-                while (rsub[j] == rdim[j])
+                index += stride[j];
+                rindex[j]++;
+                while (rindex[j] == rdim[j])
                 {
-                    rsub[j] = 0;
-                    index -= multiplier[j] * rdim[j];
+                    rindex[j] = 0;
+                    index -= stride[j] * rdim[j];
                     j++;
-                    index += multiplier[j];
-                    rsub[j]++;
+                    index += stride[j];
+                    rindex[j]++;
                 }
             }
             break;
@@ -999,15 +1044,15 @@ int harp_array_transpose(harp_data_type data_type, int num_dimensions, long dime
                 int j = 0;
 
                 ((uint32_t *)dst)[index] = ((uint32_t *)src)[i];
-                index += multiplier[j];
-                rsub[j]++;
-                while (rsub[j] == rdim[j])
+                index += stride[j];
+                rindex[j]++;
+                while (rindex[j] == rdim[j])
                 {
-                    rsub[j] = 0;
-                    index -= multiplier[j] * rdim[j];
+                    rindex[j] = 0;
+                    index -= stride[j] * rdim[j];
                     j++;
-                    index += multiplier[j];
-                    rsub[j]++;
+                    index += stride[j];
+                    rindex[j]++;
                 }
             }
             break;
@@ -1017,15 +1062,15 @@ int harp_array_transpose(harp_data_type data_type, int num_dimensions, long dime
                 int j = 0;
 
                 ((uint64_t *)dst)[index] = ((uint64_t *)src)[i];
-                index += multiplier[j];
-                rsub[j]++;
-                while (rsub[j] == rdim[j])
+                index += stride[j];
+                rindex[j]++;
+                while (rindex[j] == rdim[j])
                 {
-                    rsub[j] = 0;
-                    index -= multiplier[j] * rdim[j];
+                    rindex[j] = 0;
+                    index -= stride[j] * rdim[j];
                     j++;
-                    index += multiplier[j];
-                    rsub[j]++;
+                    index += stride[j];
+                    rindex[j]++;
                 }
             }
             break;

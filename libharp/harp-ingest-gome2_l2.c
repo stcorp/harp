@@ -357,7 +357,7 @@ static int init_amf(ingest_info *info)
         }
 
         /* Transpose such that all values for each window are contiguous in memory. */
-        if (harp_array_transpose(harp_type_double, 2, dimension, info->amf_buffer) != 0)
+        if (harp_array_transpose(harp_type_double, 2, dimension, NULL, info->amf_buffer) != 0)
         {
             return -1;
         }
@@ -396,7 +396,7 @@ static int init_amf_error(ingest_info *info)
         }
 
         /* Transpose such that all values for each window are contiguous in memory. */
-        if (harp_array_transpose(harp_type_double, 2, dimension, info->amf_error_buffer) != 0)
+        if (harp_array_transpose(harp_type_double, 2, dimension, NULL, info->amf_error_buffer) != 0)
         {
             return -1;
         }
@@ -606,7 +606,7 @@ static int read_longitude_bounds(void *user_data, harp_array data)
     }
 
     /* Transpose such that the four corner coordinates for each sample are contiguous in memory. */
-    if (harp_array_transpose(harp_type_double, 2, dimension, tmp) != 0)
+    if (harp_array_transpose(harp_type_double, 2, dimension, NULL, tmp) != 0)
     {
         return -1;
     }
@@ -642,7 +642,7 @@ static int read_latitude_bounds(void *user_data, harp_array data)
     }
 
     /* Transpose such that the four corner coordinates for each sample are contiguous in memory. */
-    if (harp_array_transpose(harp_type_double, 2, dimension, tmp) != 0)
+    if (harp_array_transpose(harp_type_double, 2, dimension, NULL, tmp) != 0)
     {
         return -1;
     }

@@ -593,7 +593,7 @@ static int read_altitude_bounds(void *user_data, harp_array data)
         {
             sub_array.double_data = &data.double_data[i * 2 * info->num_vertical];
             /* swap [2,ALTITUDE] to [ALTITUDE,2] */
-            if (harp_array_transpose(harp_type_double, 2, &dimension[1], sub_array) != 0)
+            if (harp_array_transpose(harp_type_double, 2, &dimension[1], NULL, sub_array) != 0)
             {
                 return -1;
             }
@@ -618,7 +618,7 @@ static int read_altitude_bounds(void *user_data, harp_array data)
             }
         }
         /* swap [2,ALTITUDE] to [ALTITUDE,2] */
-        if (harp_array_transpose(harp_type_double, 2, dimension, data) != 0)
+        if (harp_array_transpose(harp_type_double, 2, dimension, NULL, data) != 0)
         {
             return -1;
         }

@@ -111,9 +111,8 @@ long harp_get_num_elements(int num_dimensions, const long *dimension);
 void harp_array_null(harp_data_type data_type, long num_elements, harp_array data);
 void harp_array_replace_fill_value(harp_data_type data_type, long num_elements, harp_array data,
                                    harp_scalar fill_value);
-int harp_array_invert(harp_data_type data_type, int dim_id, int num_dimensions, long dimension[HARP_MAX_NUM_DIMS],
-                      harp_array data);
-int harp_array_transpose(harp_data_type data_type, int num_dimensions, long dimension[HARP_MAX_NUM_DIMS],
+int harp_array_invert(harp_data_type data_type, int dim_id, int num_dimensions, const long *dimension, harp_array data);
+int harp_array_transpose(harp_data_type data_type, int num_dimensions, const long *dimension, const int *order,
                          harp_array data);
 harp_scalar harp_get_fill_value_for_type(harp_data_type data_type);
 harp_scalar harp_get_valid_min_for_type(harp_data_type data_type);

@@ -255,7 +255,7 @@ static int read_longitude_bounds(void *user_data, harp_array data)
         long dimension[2] = { 4, info->num_time };
 
         /* Re-order array dimensions from [4, num_time] to [num_time, 4]. */
-        if (harp_array_transpose(harp_type_double, 2, dimension, data) != 0)
+        if (harp_array_transpose(harp_type_double, 2, dimension, NULL, data) != 0)
         {
             return -1;
         }
@@ -278,7 +278,7 @@ static int read_latitude_bounds(void *user_data, harp_array data)
         long dimension[2] = { 4, info->num_time };
 
         /* Re-order array dimensions from [4, num_time] to [num_time, 4]. */
-        if (harp_array_transpose(harp_type_double, 2, dimension, data) != 0)
+        if (harp_array_transpose(harp_type_double, 2, dimension, NULL, data) != 0)
         {
             return -1;
         }
@@ -331,7 +331,7 @@ static int read_pressure_bounds(void *user_data, harp_array data)
         long dimension[2] = { (info->num_layers + 1), info->num_time };
 
         /* Re-order array dimensions from [num_layers + 1, num_time] to [num_time, num_layers + 1]. */
-        if (harp_array_transpose(harp_type_double, 2, dimension, data) != 0)
+        if (harp_array_transpose(harp_type_double, 2, dimension, NULL, data) != 0)
         {
             return -1;
         }
@@ -392,7 +392,7 @@ static int read_O3_column_number_density_avk(void *user_data, harp_array data)
         long dimension[2] = { info->num_layers, info->num_time };
 
         /* Re-order array dimensions from [num_layers, num_time] to [num_time, num_layers]. */
-        if (harp_array_transpose(harp_type_double, 2, dimension, data) != 0)
+        if (harp_array_transpose(harp_type_double, 2, dimension, NULL, data) != 0)
         {
             return -1;
         }
@@ -415,7 +415,7 @@ static int read_O3_column_number_density_apriori(void *user_data, harp_array dat
         long dimension[2] = { info->num_layers, info->num_time };
 
         /* Re-order array dimensions from [num_layers, num_time] to [num_time, num_layers]. */
-        if (harp_array_transpose(harp_type_double, 2, dimension, data) != 0)
+        if (harp_array_transpose(harp_type_double, 2, dimension, NULL, data) != 0)
         {
             return -1;
         }

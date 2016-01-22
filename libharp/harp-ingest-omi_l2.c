@@ -948,7 +948,7 @@ static int read_longitude_bounds_domino(void *user_data, harp_array data)
     }
 
     /* reorder array dimensions from [4, num_time, num_xtrack] to [num_time, num_xtrack, 4] */
-    if (harp_array_transpose(harp_type_double, 2, dimension_transpose, data) != 0)
+    if (harp_array_transpose(harp_type_double, 2, dimension_transpose, NULL, data) != 0)
     {
         return -1;
     }
@@ -968,7 +968,7 @@ static int read_latitude_bounds_domino(void *user_data, harp_array data)
     }
 
     /* reorder array dimensions from [4, num_time, num_xtrack] to [num_time, num_xtrack, 4] */
-    if (harp_array_transpose(harp_type_double, 2, dimension_transpose, data) != 0)
+    if (harp_array_transpose(harp_type_double, 2, dimension_transpose, NULL, data) != 0)
     {
         return -1;
     }

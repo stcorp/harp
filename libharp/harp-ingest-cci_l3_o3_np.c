@@ -226,6 +226,27 @@ static int read_dataset(ingest_info *info, const char *path, long num_elements, 
     return 0;
 }
 
+static int read_and_reorder_dataset_3d(ingest_info *info, const char *path, harp_array data)
+{
+    long dimension[3] = { info->num_vertical, info->num_latitude, info->num_longitude };
+    int order[3] = { 2, 0, 1 };
+
+    if (read_dataset(info, path, harp_get_num_elements(3, dimension), data) != 0)
+    {
+        return -1;
+    }
+
+    /* Reorder array dimensions from [num_vertical, num_latitude, num_longitude] to [num_latitude, num_longitude,
+     * num_vertical].
+     */
+    if (harp_array_transpose(harp_type_float, 3, dimension, order, data) != 0)
+    {
+        return -1;
+    }
+
+    return 0;
+}
+
 static int read_dimensions(void *user_data, long dimension[HARP_NUM_DIM_TYPES])
 {
     ingest_info *info = (ingest_info *)user_data;
@@ -344,81 +365,29 @@ static int read_pressure_bounds(void *user_data, harp_array data)
 static int read_O3_number_density(void *user_data, harp_array data)
 {
     ingest_info *info = (ingest_info *)user_data;
-    long dimension_transpose[2] = { info->num_vertical, info->num_latitude * info->num_longitude };
 
-    if (read_dataset(info, "/O3_ndens", info->num_vertical * info->num_latitude * info->num_longitude, data) != 0)
-    {
-        return -1;
-    }
-
-    /* Reorder array dimensions from [num_vertical, num_latitude, num_longitude] to [num_latitude, num_longitude,
-     * num_vertical]. */
-    if (harp_array_transpose(harp_type_float, 2, dimension_transpose, data) != 0)
-    {
-        return -1;
-    }
-
-    return 0;
+    return read_and_reorder_dataset_3d(info, "/O3_ndens", data);
 }
 
 static int read_O3_number_density_stdev(void *user_data, harp_array data)
 {
     ingest_info *info = (ingest_info *)user_data;
-    long dimension_transpose[2] = { info->num_vertical, info->num_latitude * info->num_longitude };
 
-    if (read_dataset(info, "/O3e_ndens", info->num_vertical * info->num_latitude * info->num_longitude, data) != 0)
-    {
-        return -1;
-    }
-
-    /* Reorder array dimensions from [num_vertical, num_latitude, num_longitude] to [num_latitude, num_longitude,
-     * num_vertical]. */
-    if (harp_array_transpose(harp_type_float, 2, dimension_transpose, data) != 0)
-    {
-        return -1;
-    }
-
-    return 0;
+    return read_and_reorder_dataset_3d(info, "/O3e_ndens", data);
 }
 
 static int read_O3_volume_mixing_ratio(void *user_data, harp_array data)
 {
     ingest_info *info = (ingest_info *)user_data;
-    long dimension_transpose[2] = { info->num_vertical, info->num_latitude * info->num_longitude };
 
-    if (read_dataset(info, "/O3_vmr", info->num_vertical * info->num_latitude * info->num_longitude, data) != 0)
-    {
-        return -1;
-    }
-
-    /* Reorder array dimensions from [num_vertical, num_latitude, num_longitude] to [num_latitude, num_longitude,
-     * num_vertical]. */
-    if (harp_array_transpose(harp_type_float, 2, dimension_transpose, data) != 0)
-    {
-        return -1;
-    }
-
-    return 0;
+    return read_and_reorder_dataset_3d(info, "/O3_vmr", data);
 }
 
 static int read_O3_volume_mixing_ratio_stdev(void *user_data, harp_array data)
 {
     ingest_info *info = (ingest_info *)user_data;
-    long dimension_transpose[2] = { info->num_vertical, info->num_latitude * info->num_longitude };
 
-    if (read_dataset(info, "/O3e_vmr", info->num_vertical * info->num_latitude * info->num_longitude, data) != 0)
-    {
-        return -1;
-    }
-
-    /* Reorder array dimensions from [num_vertical, num_latitude, num_longitude] to [num_latitude, num_longitude,
-     * num_vertical]. */
-    if (harp_array_transpose(harp_type_float, 2, dimension_transpose, data) != 0)
-    {
-        return -1;
-    }
-
-    return 0;
+    return read_and_reorder_dataset_3d(info, "/O3e_vmr", data);
 }
 
 static int verify_product_type(const harp_ingestion_module *module, coda_product *product)
