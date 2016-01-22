@@ -302,7 +302,8 @@ static int dimensions_add(netcdf_dimensions *dimensions, netcdf_dimension_type t
         if (new_type == NULL)
         {
             harp_set_error(HARP_ERROR_OUT_OF_MEMORY, "out of memory (could not allocate %lu bytes) (%s:%u)",
-                           (dimensions->num_dimensions + BLOCK_SIZE) * sizeof(netcdf_dimension_type), __FILE__, __LINE__);
+                           (dimensions->num_dimensions + BLOCK_SIZE) * sizeof(netcdf_dimension_type), __FILE__,
+                           __LINE__);
             return -1;
         }
         dimensions->type = new_type;

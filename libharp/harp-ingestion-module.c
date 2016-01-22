@@ -56,6 +56,7 @@ int harp_ingestion_module_tes_l2_init(void);
 #define NUM_INGESTION_MODULES 21
 
 typedef int (module_init_func_t) (void);
+
 static module_init_func_t *module_init_func[NUM_INGESTION_MODULES] = {
     harp_ingestion_module_cci_l2_o3_np_init,
     harp_ingestion_module_cci_l2_o3_tc_init,
@@ -77,7 +78,8 @@ static module_init_func_t *module_init_func[NUM_INGESTION_MODULES] = {
     harp_ingestion_module_omi_l3_init,
     harp_ingestion_module_s5p_l1b_init,
     harp_ingestion_module_s5p_l2_init,
-    harp_ingestion_module_tes_l2_init };
+    harp_ingestion_module_tes_l2_init
+};
 
 /* Forward declarations. */
 static void ingestion_option_definition_delete(harp_ingestion_option_definition *ingestion_option_definition);
@@ -1196,7 +1198,7 @@ int harp_ingestion_init(void)
 
     for (i = 0; i < NUM_INGESTION_MODULES; i++)
     {
-        if (module_init_func[i]() != 0)
+        if (module_init_func[i] () != 0)
         {
             return -1;
         }

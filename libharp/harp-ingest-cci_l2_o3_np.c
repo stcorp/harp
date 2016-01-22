@@ -179,7 +179,8 @@ static int read_dataset(ingest_info *info, const char *path, harp_data_type data
     }
     if (coda_num_elements != num_elements)
     {
-        harp_set_error(HARP_ERROR_INGESTION, "dataset has %ld elements (expected %ld)", coda_num_elements, num_elements);
+        harp_set_error(HARP_ERROR_INGESTION, "dataset has %ld elements (expected %ld)", coda_num_elements,
+                       num_elements);
         harp_add_coda_cursor_path_to_error_message(&cursor);
         harp_add_error_message(" (%s:%lu)", __FILE__, __LINE__);
         return -1;

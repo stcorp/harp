@@ -86,7 +86,7 @@ typedef struct ingest_info_struct
 static void calculate_corner_coordinates(long num_time, long num_xtrack, const double *longitude,
                                          const double *latitude, double *longitude_grid, double *latitude_grid)
 {
-    double center_longitude[4];        /* the four center coordinates needed to calculate a corner coordinate */
+    double center_longitude[4]; /* the four center coordinates needed to calculate a corner coordinate */
     double center_latitude[4];
     long i;
     long j;
@@ -309,8 +309,9 @@ static int verify_variable_dimensions(coda_cursor *cursor, int num_dimensions, c
     {
         if (coda_dimension[i] != dimension[i])
         {
-            harp_set_error(HARP_ERROR_INGESTION, "product error detected (dimension %d of variable '%s' has %ld elements,"
-                           " expected %ld)", i, get_variable_name_from_cursor(cursor), coda_dimension[i], dimension[i]);
+            harp_set_error(HARP_ERROR_INGESTION,
+                           "product error detected (dimension %d of variable '%s' has %ld elements," " expected %ld)",
+                           i, get_variable_name_from_cursor(cursor), coda_dimension[i], dimension[i]);
             return -1;
         }
     }
@@ -637,7 +638,8 @@ static int init_dimensions(ingest_info *info)
     }
     if (num_dims != 2)
     {
-        harp_set_error(HARP_ERROR_INGESTION, "product error detected (product has %d dimensions, expected 2)", num_dims);
+        harp_set_error(HARP_ERROR_INGESTION, "product error detected (product has %d dimensions, expected 2)",
+                       num_dims);
         return -1;
     }
 
@@ -666,7 +668,8 @@ static int init_dimensions_omaeruv(ingest_info *info)
     }
     if (num_dims != 3)
     {
-        harp_set_error(HARP_ERROR_INGESTION, "product error detected (product has %d dimensions, expected 3)", num_dims);
+        harp_set_error(HARP_ERROR_INGESTION, "product error detected (product has %d dimensions, expected 3)",
+                       num_dims);
         return -1;
     }
 
@@ -696,7 +699,8 @@ static int init_dimensions_omo3pr(ingest_info *info)
     }
     if (num_dims != 3)
     {
-        harp_set_error(HARP_ERROR_INGESTION, "product error detected (product has %d dimensions, expected 3)", num_dims);
+        harp_set_error(HARP_ERROR_INGESTION, "product error detected (product has %d dimensions, expected 3)",
+                       num_dims);
         return -1;
     }
 

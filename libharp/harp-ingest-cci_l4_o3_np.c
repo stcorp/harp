@@ -421,7 +421,7 @@ static int read_pressure(void *user_data, harp_array data)
 
     for (i = num_profiles - 1; i >= 0; i--)
     {
-        float *profile = data.float_data + i * info->num_vertical;   /* pressure profile for specific time, lat, lon */
+        float *profile = data.float_data + i * info->num_vertical;      /* pressure profile for specific time, lat, lon */
         float surface_pressure = data.float_data[i];    /* surface pressure at specific time, lat, lon */
         long j;
 
@@ -497,8 +497,8 @@ static int read_pressure_bounds(void *user_data, harp_array data)
         long j;
 
         bounds[(info->num_vertical - 1) * 2 + 1] =
-            hybride_coef_a.float_data[info->num_vertical] + hybride_coef_b.float_data[info->num_vertical]
-                * surface_pressure;
+            hybride_coef_a.float_data[info->num_vertical] +
+            hybride_coef_b.float_data[info->num_vertical] * surface_pressure;
 
         for (j = info->num_vertical - 1; j > 0; j--)
         {
@@ -586,7 +586,8 @@ int harp_ingestion_module_cci_l4_o3_np_init(void)
     harp_dimension_type longitude_dimension_type[1] = { harp_dimension_longitude };
     harp_dimension_type latitude_dimension_type[1] = { harp_dimension_latitude };
     harp_dimension_type dimension_type[5] = { harp_dimension_time, harp_dimension_latitude, harp_dimension_longitude,
-                                              harp_dimension_vertical, harp_dimension_independent };
+        harp_dimension_vertical, harp_dimension_independent
+    };
     long pressure_bounds_dimension[5] = { -1, -1, -1, -1, 2 };
     const char *description;
     const char *path;
@@ -608,7 +609,7 @@ int harp_ingestion_module_cci_l4_o3_np_init(void)
                                                    "seconds since 2000-01-01", NULL, read_datetime);
     path = "/@time_coverage_start, /time[]";
     description = "datetime converted from time in hours (time[]) since the start of the product in UTC "
-                  "(@time_coverage_start) to seconds since 2000-01-01 TAI";
+        "(@time_coverage_start) to seconds since 2000-01-01 TAI";
     harp_variable_definition_add_mapping(variable_definition, NULL, NULL, path, description);
 
     /* longitude */
@@ -653,7 +654,7 @@ int harp_ingestion_module_cci_l4_o3_np_init(void)
         harp_ingestion_register_variable_full_read(product_definition, "pressure", harp_type_float, 4, dimension_type,
                                                    NULL, description, "Pa", NULL, read_pressure);
     description = "pressure at the center of layer k is derived from surface air pressure as: Hybride_coef_fa[k] + "
-                  "Hybride_coef_fb[k] * Psurf[]";
+        "Hybride_coef_fb[k] * Psurf[]";
     path = "/Psurf[], /Hybride_coef_fa[], /Hybride_coef_fb[]";
     harp_variable_definition_add_mapping(variable_definition, NULL, NULL, path, description);
 
@@ -664,7 +665,7 @@ int harp_ingestion_module_cci_l4_o3_np_init(void)
                                                    dimension_type, pressure_bounds_dimension, description, "Pa", NULL,
                                                    read_pressure_bounds);
     description = "pressure at level m is derived from surface air pressure as: Hybride_coef_a[m] + Hybride_coef_b[m] "
-                  "* Psurf[]";
+        "* Psurf[]";
     path = "/Psurf[], /Hybride_coef_a[], /Hybride_coef_b[]";
     harp_variable_definition_add_mapping(variable_definition, NULL, NULL, path, description);
 

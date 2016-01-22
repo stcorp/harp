@@ -915,9 +915,9 @@ int harp_array_invert(harp_data_type data_type, int dim_id, int num_dimensions, 
 int harp_array_transpose(harp_data_type data_type, int num_dimensions, const long *dimension, const int *order,
                          harp_array data)
 {
-    long rindex[HARP_MAX_NUM_DIMS] = { 0 }; /* reversed index in multi-dimensional array */
-    long rdim[HARP_MAX_NUM_DIMS];   /* reversed order of dim[] */
-    long stride[HARP_MAX_NUM_DIMS]; /* stride in the destination array (in reverse order) */
+    long rindex[HARP_MAX_NUM_DIMS] = { 0 };     /* reversed index in multi-dimensional array */
+    long rdim[HARP_MAX_NUM_DIMS];       /* reversed order of dim[] */
+    long stride[HARP_MAX_NUM_DIMS];     /* stride in the destination array (in reverse order) */
     long num_elements;
     long element_size;
     long index = 0;

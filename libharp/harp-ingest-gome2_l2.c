@@ -115,7 +115,8 @@ static int init_window_info(ingest_info *info)
     }
     if (num_dims != 1)
     {
-        harp_set_error(HARP_ERROR_INGESTION, "dataset '/META_DATA/MainSpecies' has %d dimensions, expected 1)", num_dims);
+        harp_set_error(HARP_ERROR_INGESTION, "dataset '/META_DATA/MainSpecies' has %d dimensions, expected 1)",
+                       num_dims);
         return -1;
     }
 

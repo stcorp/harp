@@ -202,8 +202,9 @@ static int verify_variable_dimensions(coda_cursor *cursor, int num_dimensions, c
     {
         if (coda_dimension[i] != dimension[i])
         {
-            harp_set_error(HARP_ERROR_INGESTION, "product error detected (dimension %d of variable '%s' has %ld elements,"
-                           " expected %ld)", i, get_variable_name_from_cursor(cursor), coda_dimension[i], dimension[i]);
+            harp_set_error(HARP_ERROR_INGESTION,
+                           "product error detected (dimension %d of variable '%s' has %ld elements," " expected %ld)",
+                           i, get_variable_name_from_cursor(cursor), coda_dimension[i], dimension[i]);
             return -1;
         }
     }

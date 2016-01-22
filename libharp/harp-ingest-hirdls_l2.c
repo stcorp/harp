@@ -142,7 +142,8 @@ static int read_variable(coda_cursor *cursor, const char *name, int num_dimensio
     }
     if (dimension_0 != coda_dimension[0])
     {
-        harp_set_error(HARP_ERROR_INGESTION, "product error detected in HIRDLS L2 product (first dimension for variable "
+        harp_set_error(HARP_ERROR_INGESTION,
+                       "product error detected in HIRDLS L2 product (first dimension for variable "
                        "%s has %ld elements, expected %ld", name, coda_dimension[0], dimension_0);
         return -1;
     }
