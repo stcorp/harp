@@ -227,7 +227,8 @@ static int read_o3_number_density_error(void *user_data, harp_array data)
 {
     ingest_info *info = (ingest_info *)user_data;
 
-    return read_dataset(info, "/mole_concentration_of_ozone_in_air_standard_error", info->num_time * info->num_vertical, data);
+    return read_dataset(info, "/mole_concentration_of_ozone_in_air_standard_error", info->num_time * info->num_vertical,
+                        data);
 }
 
 static int verify_product_type(const harp_ingestion_module *module, coda_product *product)
@@ -270,59 +271,81 @@ int harp_ingestion_module_cci_l2_o3_lp_init(void)
     const char *description;
     const char *path;
 
-    module = harp_ingestion_register_module_coda("ESACCI_OZONE_L2_LP", NULL, NULL, "CCI (climate change initiative) L2 O3 limb profile products", verify_product_type, ingestion_init, ingestion_done);
+    module =
+        harp_ingestion_register_module_coda("ESACCI_OZONE_L2_LP", NULL, NULL,
+                                            "CCI (climate change initiative) L2 O3 limb profile products",
+                                            verify_product_type, ingestion_init, ingestion_done);
 
     /* ESACCI_OZONE_L2_LP product */
     product_definition = harp_ingestion_register_product(module, "ESACCI_OZONE_L2_LP", NULL, read_dimensions);
 
     /* datetime */
     description = "time of the measurement";
-    variable_definition = harp_ingestion_register_variable_full_read(product_definition, "datetime", harp_type_double, 1, dimension_type, NULL, description, "seconds since 2000-01-01", NULL, read_datetime);
+    variable_definition =
+        harp_ingestion_register_variable_full_read(product_definition, "datetime", harp_type_double, 1, dimension_type,
+                                                   NULL, description, "seconds since 2000-01-01", NULL, read_datetime);
     path = "/time[]";
     description = "datetime converted from hours since 1990-01-01 UTC to seconds since 2000-01-01 TAI";
     harp_variable_definition_add_mapping(variable_definition, NULL, NULL, path, description);
 
     /* longitude */
     description = "longitude of the ground pixel center";
-    variable_definition = harp_ingestion_register_variable_full_read(product_definition, "longitude", harp_type_double, 1, dimension_type, NULL, description, "degree_east", NULL, read_longitude);
+    variable_definition =
+        harp_ingestion_register_variable_full_read(product_definition, "longitude", harp_type_double, 1, dimension_type,
+                                                   NULL, description, "degree_east", NULL, read_longitude);
     harp_variable_definition_set_valid_range_double(variable_definition, -180.0f, 180.0f);
     path = "/longitude[]";
     harp_variable_definition_add_mapping(variable_definition, NULL, NULL, path, NULL);
 
     /* latitude */
     description = "latitude of the ground pixel center";
-    variable_definition = harp_ingestion_register_variable_full_read(product_definition, "latitude", harp_type_double, 1, dimension_type, NULL, description, "degree_north", NULL, read_latitude);
+    variable_definition =
+        harp_ingestion_register_variable_full_read(product_definition, "latitude", harp_type_double, 1, dimension_type,
+                                                   NULL, description, "degree_north", NULL, read_latitude);
     harp_variable_definition_set_valid_range_double(variable_definition, -90.0f, 90.0f);
     path = "/latitude[]";
     harp_variable_definition_add_mapping(variable_definition, NULL, NULL, path, NULL);
 
     /* altitude */
     description = "geometric altitude above mean sea-level";
-    variable_definition = harp_ingestion_register_variable_full_read(product_definition, "altitude", harp_type_double, 2, dimension_type, NULL, description, "km", NULL, read_altitude);
+    variable_definition =
+        harp_ingestion_register_variable_full_read(product_definition, "altitude", harp_type_double, 2, dimension_type,
+                                                   NULL, description, "km", NULL, read_altitude);
     path = "/altitude[]";
     harp_variable_definition_add_mapping(variable_definition, NULL, NULL, path, NULL);
 
     /* pressure */
     description = "pressure";
-    variable_definition = harp_ingestion_register_variable_full_read(product_definition, "pressure", harp_type_double, 1, pressure_dimension_type, NULL, description, "hPa", NULL, read_pressure);
+    variable_definition =
+        harp_ingestion_register_variable_full_read(product_definition, "pressure", harp_type_double, 1,
+                                                   pressure_dimension_type, NULL, description, "hPa", NULL,
+                                                   read_pressure);
     path = "/air_pressure[]";
     harp_variable_definition_add_mapping(variable_definition, NULL, NULL, path, NULL);
 
     /* temperature */
     description = "temperature";
-    variable_definition = harp_ingestion_register_variable_full_read(product_definition, "temperature", harp_type_double, 2, dimension_type, NULL, description, "K", NULL, read_temperature);
+    variable_definition =
+        harp_ingestion_register_variable_full_read(product_definition, "temperature", harp_type_double, 2,
+                                                   dimension_type, NULL, description, "K", NULL, read_temperature);
     path = "/air_temperature[]";
     harp_variable_definition_add_mapping(variable_definition, NULL, NULL, path, NULL);
 
     /* O3_number_density */
     description = "O3 number density";
-    variable_definition = harp_ingestion_register_variable_full_read(product_definition, "O3_number_density", harp_type_double, 2, dimension_type, NULL, description, "mol/cm^3", NULL, read_o3_number_density);
+    variable_definition =
+        harp_ingestion_register_variable_full_read(product_definition, "O3_number_density", harp_type_double, 2,
+                                                   dimension_type, NULL, description, "mol/cm^3", NULL,
+                                                   read_o3_number_density);
     path = "/mole_concentration_of_ozone_in_air[]";
     harp_variable_definition_add_mapping(variable_definition, NULL, NULL, path, NULL);
 
     /* O3_number_density_stdev */
     description = "uncertainty of the O3 number density";
-    variable_definition = harp_ingestion_register_variable_full_read(product_definition, "O3_number_density_stdev", harp_type_double, 2, dimension_type, NULL, description, "mol/cm^3", NULL, read_o3_number_density_error);
+    variable_definition =
+        harp_ingestion_register_variable_full_read(product_definition, "O3_number_density_stdev", harp_type_double, 2,
+                                                   dimension_type, NULL, description, "mol/cm^3", NULL,
+                                                   read_o3_number_density_error);
     path = "/mole_concentration_of_ozone_in_air_standard_error[]";
     harp_variable_definition_add_mapping(variable_definition, NULL, NULL, path, NULL);
 
