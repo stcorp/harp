@@ -30,6 +30,7 @@
 static harp_ingestion_module_register *module_register = NULL;
 
 /* Module initialization functions (forward declarations). */
+int harp_ingestion_module_cci_l2_o3_lp_init(void);
 int harp_ingestion_module_cci_l2_o3_np_init(void);
 int harp_ingestion_module_cci_l2_o3_tc_init(void);
 int harp_ingestion_module_cci_l3_o3_np_init(void);
@@ -53,11 +54,12 @@ int harp_ingestion_module_s5p_l2_init(void);
 int harp_ingestion_module_tes_l2_init(void);
 
 /* Module initialization functions. */
-#define NUM_INGESTION_MODULES 21
+#define NUM_INGESTION_MODULES 22
 
 typedef int (module_init_func_t) (void);
 
 static module_init_func_t *module_init_func[NUM_INGESTION_MODULES] = {
+    harp_ingestion_module_cci_l2_o3_lp_init,
     harp_ingestion_module_cci_l2_o3_np_init,
     harp_ingestion_module_cci_l2_o3_tc_init,
     harp_ingestion_module_cci_l3_o3_np_init,
