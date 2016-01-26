@@ -1086,11 +1086,10 @@ int harp_array_transpose(harp_data_type data_type, int num_dimensions, const lon
     return 0;
 }
 
-/** Remove leading directory components from \a path.
+/** Remove everything but the last pathname component from \a path.
  * \param path Path to compute the basename of.
- * \return Pointer to the first character in \a path that is not part of a
- *     leading directory component, or a null pointer if no such character
- *     exists.
+ * \return Pointer to the last pathname component of \a path, i.e. everything from the end of \a path up to the first
+ *   pathname component separation character ('\\' or '/' on Windows, '/' otherwise).
  */
 const char *harp_basename(const char *path)
 {
@@ -1100,23 +1099,31 @@ const char *harp_basename(const char *path)
     }
     else
     {
-        const char *basename = NULL;
+        const char *separator = NULL;
 
-        basename = strrchr(path, '/');
-        if (basename == NULL)
+#ifdef WIN32
+        const char *cursor = path;
+
+        while (*cursor != '\0')
         {
-            return path;
+            if (*cursor == '\\' || *cursor == '/')
+            {
+                separator = cursor;
+            }
+
+            cursor++;
         }
-        else
-        {
-            return basename + 1;
-        }
+#else
+        separator = strrchr(path, '/');
+#endif
+
+        return (separator == NULL ? path : separator + 1);
     }
 }
 
 /** Remove extension from \a path.
- * The last period '.' found in \a path will be replaced by a null termination
- * character '\0', thus effectively removing the extension.
+ * The last extension separation character, i.e. '.', found in \a path will be replaced by a null termination character
+ * '\0', thus effectively removing the extension.
  * \param path Path to remove extension from.
  */
 void harp_remove_extension(char *path)
