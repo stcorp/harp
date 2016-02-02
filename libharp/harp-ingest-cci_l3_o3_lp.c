@@ -313,7 +313,7 @@ static int read_as_stdev(ingest_info *info, const char *path, const char *path_r
     /* Convert relative error (in percent) to standard deviation (same unit as the associated quantity). */
     for (i = 0; i < num_elements; i++)
     {
-        data.double_data[i] *= relerr.double_data[i] * 0.01;     /* relative error is a percentage */
+        data.double_data[i] *= relerr.double_data[i] * 0.01;    /* relative error is a percentage */
     }
 
     free(relerr.ptr);
@@ -682,46 +682,67 @@ static void register_mzm_product(void)
     const char *description;
     const char *path;
 
-    module = harp_ingestion_register_module_coda("ESACCI_OZONE_L3_LP_MZM", NULL, NULL, "CCI O3 monthly zonal mean limb profile products", verify_product_type_mzm, ingestion_init_mzm, ingestion_done);
+    module =
+        harp_ingestion_register_module_coda("ESACCI_OZONE_L3_LP_MZM", NULL, NULL,
+                                            "CCI O3 monthly zonal mean limb profile products", verify_product_type_mzm,
+                                            ingestion_init_mzm, ingestion_done);
 
     /* ESACCI_OZONE_L3_LP_MZM product */
     product_definition = harp_ingestion_register_product(module, "ESACCI_OZONE_L3_LP_MZM", NULL, read_dimensions);
 
     /* datetime */
     description = "time of the measurement";
-    variable_definition = harp_ingestion_register_variable_full_read(product_definition, "datetime", harp_type_double, 1, dimension_type, NULL, description, "seconds since 2000-01-01", NULL, read_datetime);
+    variable_definition =
+        harp_ingestion_register_variable_full_read(product_definition, "datetime", harp_type_double, 1, dimension_type,
+                                                   NULL, description, "seconds since 2000-01-01", NULL, read_datetime);
     path = "/time[]";
     description = "datetime converted from days since 1990-01-01 UTC to seconds since 2000-01-01 TAI";
     harp_variable_definition_add_mapping(variable_definition, NULL, NULL, path, description);
 
     /* latitude */
     description = "latitude of the bin center";
-    variable_definition = harp_ingestion_register_variable_full_read(product_definition, "latitude", harp_type_double, 1, latitude_dimension_type, NULL, description, "degree_north", NULL, read_latitude);
+    variable_definition =
+        harp_ingestion_register_variable_full_read(product_definition, "latitude", harp_type_double, 1,
+                                                   latitude_dimension_type, NULL, description, "degree_north", NULL,
+                                                   read_latitude);
     harp_variable_definition_set_valid_range_double(variable_definition, -90.0, 90.0);
     path = "/latitude_centers[]";
     harp_variable_definition_add_mapping(variable_definition, NULL, NULL, path, NULL);
 
     /* altitude */
-    description = "approximate altitude at pressure levels computed as 16 * log10(1013 / pressure), with pressure in hPa";
-    variable_definition = harp_ingestion_register_variable_full_read(product_definition, "approximate_altitude", harp_type_double, 1, vertical_dimension_type, NULL, description, "km", NULL, read_altitude);
+    description =
+        "approximate altitude at pressure levels computed as 16 * log10(1013 / pressure), with pressure in hPa";
+    variable_definition =
+        harp_ingestion_register_variable_full_read(product_definition, "approximate_altitude", harp_type_double, 1,
+                                                   vertical_dimension_type, NULL, description, "km", NULL,
+                                                   read_altitude);
     path = "/approximate_altitude[]";
     harp_variable_definition_add_mapping(variable_definition, NULL, NULL, path, NULL);
 
     /* pressure */
     description = "pressure";
-    variable_definition = harp_ingestion_register_variable_full_read(product_definition, "pressure", harp_type_double, 1, vertical_dimension_type, NULL, description, "hPa", NULL, read_pressure);
+    variable_definition =
+        harp_ingestion_register_variable_full_read(product_definition, "pressure", harp_type_double, 1,
+                                                   vertical_dimension_type, NULL, description, "hPa", NULL,
+                                                   read_pressure);
     path = "/air_pressure[]";
     harp_variable_definition_add_mapping(variable_definition, NULL, NULL, path, NULL);
 
     /* O3_volume_mixing_ratio */
     description = "monthly zonal mean ozone mixing ratio vertical profiles";
-    variable_definition = harp_ingestion_register_variable_full_read(product_definition, "O3_volume_mixing_ratio", harp_type_double, 3, dimension_type, NULL, description, "1", NULL, read_o3_volume_mixing_ratio_mzm);
+    variable_definition =
+        harp_ingestion_register_variable_full_read(product_definition, "O3_volume_mixing_ratio", harp_type_double, 3,
+                                                   dimension_type, NULL, description, "1", NULL,
+                                                   read_o3_volume_mixing_ratio_mzm);
     path = "/ozone_mixing_ratio[]";
     harp_variable_definition_add_mapping(variable_definition, NULL, NULL, path, NULL);
 
     /* O3_number_density */
     description = "monthly zonal mean ozone mole concentration vertical profiles";
-    variable_definition = harp_ingestion_register_variable_full_read(product_definition, "O3_number_density", harp_type_double, 3, dimension_type, NULL, description, "mol/cm^3", NULL, read_o3_number_density_mzm);
+    variable_definition =
+        harp_ingestion_register_variable_full_read(product_definition, "O3_number_density", harp_type_double, 3,
+                                                   dimension_type, NULL, description, "mol/cm^3", NULL,
+                                                   read_o3_number_density_mzm);
     path = "/ozone_mole_concentation[]";
     harp_variable_definition_add_mapping(variable_definition, NULL, NULL, path, NULL);
 }
@@ -737,61 +758,95 @@ static void register_mmzm_product(void)
     const char *description;
     const char *path;
 
-    module = harp_ingestion_register_module_coda("ESACCI_OZONE_L3_LP_MMZM", NULL, NULL, "CCI O3 merged monthly zonal mean limb profile products", verify_product_type_mmzm, ingestion_init_mmzm, ingestion_done);
+    module =
+        harp_ingestion_register_module_coda("ESACCI_OZONE_L3_LP_MMZM", NULL, NULL,
+                                            "CCI O3 merged monthly zonal mean limb profile products",
+                                            verify_product_type_mmzm, ingestion_init_mmzm, ingestion_done);
 
     /* ESACCI_OZONE_L3_LP_MMZM product */
     product_definition = harp_ingestion_register_product(module, "ESACCI_OZONE_L3_LP_MMZM", NULL, read_dimensions);
 
     /* datetime */
     description = "time of the measurement";
-    variable_definition = harp_ingestion_register_variable_full_read(product_definition, "datetime", harp_type_double, 1, dimension_type, NULL, description, "seconds since 2000-01-01", NULL, read_datetime_mmzm);
+    variable_definition =
+        harp_ingestion_register_variable_full_read(product_definition, "datetime", harp_type_double, 1, dimension_type,
+                                                   NULL, description, "seconds since 2000-01-01", NULL,
+                                                   read_datetime_mmzm);
     path = "/@year, /@month";
-    description = "year and month are taken from the global attributes of the product; the start of the first day of the month is used as the time of the measurement";
+    description =
+        "year and month are taken from the global attributes of the product; the start of the first day of the month "
+        "is used as the time of the measurement";
     harp_variable_definition_add_mapping(variable_definition, NULL, NULL, path, description);
 
     /* latitude */
     description = "latitude of the bin center";
-    variable_definition = harp_ingestion_register_variable_full_read(product_definition, "latitude", harp_type_double, 1, latitude_dimension_type, NULL, description, "degree_north", NULL, read_latitude);
+    variable_definition =
+        harp_ingestion_register_variable_full_read(product_definition, "latitude", harp_type_double, 1,
+                                                   latitude_dimension_type, NULL, description, "degree_north", NULL,
+                                                   read_latitude);
     harp_variable_definition_set_valid_range_double(variable_definition, -90.0, 90.0);
     path = "/latitude_centers[]";
     harp_variable_definition_add_mapping(variable_definition, NULL, NULL, path, NULL);
 
     /* altitude */
-    description = "approximate altitude at pressure levels computed as 16 * log10(1013 / pressure), with pressure in hPa";
-    variable_definition = harp_ingestion_register_variable_full_read(product_definition, "approximate_altitude", harp_type_double, 1, vertical_dimension_type, NULL, description, "km", NULL, read_altitude);
+    description =
+        "approximate altitude at pressure levels computed as 16 * log10(1013 / pressure), with pressure in hPa";
+    variable_definition =
+        harp_ingestion_register_variable_full_read(product_definition, "approximate_altitude", harp_type_double, 1,
+                                                   vertical_dimension_type, NULL, description, "km", NULL,
+                                                   read_altitude);
     path = "/approximate_altitude[]";
     harp_variable_definition_add_mapping(variable_definition, NULL, NULL, path, NULL);
 
     /* pressure */
     description = "pressure";
-    variable_definition = harp_ingestion_register_variable_full_read(product_definition, "pressure", harp_type_double, 1, vertical_dimension_type, NULL, description, "hPa", NULL, read_pressure);
+    variable_definition =
+        harp_ingestion_register_variable_full_read(product_definition, "pressure", harp_type_double, 1,
+                                                   vertical_dimension_type, NULL, description, "hPa", NULL,
+                                                   read_pressure);
     path = "/air_pressure[]";
     harp_variable_definition_add_mapping(variable_definition, NULL, NULL, path, NULL);
 
     /* O3_volume_mixing_ratio */
     description = "merged monthly zonal mean ozone mixing ratio vertical profiles";
-    variable_definition = harp_ingestion_register_variable_full_read(product_definition, "O3_volume_mixing_ratio", harp_type_double, 3, dimension_type, NULL, description, "1", NULL, read_o3_volume_mixing_ratio_mmzm);
+    variable_definition =
+        harp_ingestion_register_variable_full_read(product_definition, "O3_volume_mixing_ratio", harp_type_double, 3,
+                                                   dimension_type, NULL, description, "1", NULL,
+                                                   read_o3_volume_mixing_ratio_mmzm);
     path = "/merged_ozone_vmr[]";
     harp_variable_definition_add_mapping(variable_definition, NULL, NULL, path, NULL);
 
     /* O3_volume_mixing_ratio_stdev */
     description = "uncertainty of the merged monthly zonal mean ozone mixing ratio vertical profiles";
-    variable_definition = harp_ingestion_register_variable_full_read(product_definition, "O3_volume_mixing_ratio_stdev", harp_type_double, 3, dimension_type, NULL, description, "1", NULL, read_o3_volume_mixing_ratio_stdev_mmzm);
+    variable_definition =
+        harp_ingestion_register_variable_full_read(product_definition, "O3_volume_mixing_ratio_stdev", harp_type_double,
+                                                   3, dimension_type, NULL, description, "1", NULL,
+                                                   read_o3_volume_mixing_ratio_stdev_mmzm);
     path = "/merged_ozone_vmr[], /uncertainty_of_merged_ozone[]";
-    description = "derived from the relative uncertainty in percent as: uncertainty_of_merged_ozone[] * 0.01 * merged_ozone_vmr[]";
+    description =
+        "derived from the relative uncertainty in percent as: uncertainty_of_merged_ozone[] * 0.01 * "
+        "merged_ozone_vmr[]";
     harp_variable_definition_add_mapping(variable_definition, NULL, NULL, path, description);
 
     /* O3_number_density */
     description = "merged monthly zonal mean ozone mole concentration vertical profiles";
-    variable_definition = harp_ingestion_register_variable_full_read(product_definition, "O3_number_density", harp_type_double, 3, dimension_type, NULL, description, "mol/cm^3", NULL, read_o3_number_density_mmzm);
+    variable_definition =
+        harp_ingestion_register_variable_full_read(product_definition, "O3_number_density", harp_type_double, 3,
+                                                   dimension_type, NULL, description, "mol/cm^3", NULL,
+                                                   read_o3_number_density_mmzm);
     path = "/merged_ozone_concentration[]";
     harp_variable_definition_add_mapping(variable_definition, NULL, NULL, path, NULL);
 
     /* O3_number_density_stdev */
     description = "uncertainty of the merged monthly zonal mean ozone mole concentration vertical profiles";
-    variable_definition = harp_ingestion_register_variable_full_read(product_definition, "O3_number_density_stdev", harp_type_double, 3, dimension_type, NULL, description, "mol/cm^3", NULL, read_o3_number_density_stdev_mmzm);
+    variable_definition =
+        harp_ingestion_register_variable_full_read(product_definition, "O3_number_density_stdev", harp_type_double, 3,
+                                                   dimension_type, NULL, description, "mol/cm^3", NULL,
+                                                   read_o3_number_density_stdev_mmzm);
     path = "/merged_ozone_concentration[], /uncertainty_of_merged_ozone[]";
-    description = "derived from the relative uncertainty in percent as: uncertainty_of_merged_ozone[] * 0.01 * merged_ozone_concentration[]";
+    description =
+        "derived from the relative uncertainty in percent as: uncertainty_of_merged_ozone[] * 0.01 * "
+        "merged_ozone_concentration[]";
     harp_variable_definition_add_mapping(variable_definition, NULL, NULL, path, description);
 }
 
@@ -800,75 +855,110 @@ static void register_smm_product(void)
     harp_ingestion_module *module;
     harp_product_definition *product_definition;
     harp_variable_definition *variable_definition;
-    harp_dimension_type dimension_type[4] = { harp_dimension_time, harp_dimension_latitude, harp_dimension_longitude, harp_dimension_vertical };
+    harp_dimension_type dimension_type[4] =
+        { harp_dimension_time, harp_dimension_latitude, harp_dimension_longitude, harp_dimension_vertical };
     harp_dimension_type latitude_dimension_type[1] = { harp_dimension_latitude };
     harp_dimension_type longitude_dimension_type[1] = { harp_dimension_longitude };
     harp_dimension_type vertical_dimension_type[1] = { harp_dimension_vertical };
     const char *description;
     const char *path;
 
-    module = harp_ingestion_register_module_coda("ESACCI_OZONE_L3_LP_SMM", NULL, NULL, "CCI O3 merged semi-monthly zonal mean limb profile products", verify_product_type_smm, ingestion_init_smm, ingestion_done);
+    module =
+        harp_ingestion_register_module_coda("ESACCI_OZONE_L3_LP_SMM", NULL, NULL,
+                                            "CCI O3 merged semi-monthly zonal mean limb profile products",
+                                            verify_product_type_smm, ingestion_init_smm, ingestion_done);
 
     /* ESACCI_OZONE_L3_LP_SMM product */
     product_definition = harp_ingestion_register_product(module, "ESACCI_OZONE_L3_LP_SMM", NULL, read_dimensions);
 
     /* datetime */
     description = "time of the measurement";
-    variable_definition = harp_ingestion_register_variable_full_read(product_definition, "datetime", harp_type_double, 1, dimension_type, NULL, description, "seconds since 2000-01-01", NULL, read_datetime);
+    variable_definition =
+        harp_ingestion_register_variable_full_read(product_definition, "datetime", harp_type_double, 1, dimension_type,
+                                                   NULL, description, "seconds since 2000-01-01", NULL, read_datetime);
     path = "/time[]";
     description = "datetime converted from days since 1990-01-01 UTC to seconds since 2000-01-01 TAI";
     harp_variable_definition_add_mapping(variable_definition, NULL, NULL, path, description);
 
     /* longitude */
     description = "longitude of the bin center";
-    variable_definition = harp_ingestion_register_variable_full_read(product_definition, "longitude", harp_type_double, 1, longitude_dimension_type, NULL, description, "degree_east", NULL, read_longitude);
+    variable_definition =
+        harp_ingestion_register_variable_full_read(product_definition, "longitude", harp_type_double, 1,
+                                                   longitude_dimension_type, NULL, description, "degree_east", NULL,
+                                                   read_longitude);
     harp_variable_definition_set_valid_range_double(variable_definition, -180.0, 180.0);
     path = "/longitude_centers[]";
     harp_variable_definition_add_mapping(variable_definition, NULL, NULL, path, NULL);
 
     /* latitude */
     description = "latitude of the bin center";
-    variable_definition = harp_ingestion_register_variable_full_read(product_definition, "latitude", harp_type_double, 1, latitude_dimension_type, NULL, description, "degree_north", NULL, read_latitude);
+    variable_definition =
+        harp_ingestion_register_variable_full_read(product_definition, "latitude", harp_type_double, 1,
+                                                   latitude_dimension_type, NULL, description, "degree_north", NULL,
+                                                   read_latitude);
     harp_variable_definition_set_valid_range_double(variable_definition, -90.0, 90.0);
     path = "/latitude_centers[]";
     harp_variable_definition_add_mapping(variable_definition, NULL, NULL, path, NULL);
 
     /* altitude */
-    description = "approximate altitude at pressure levels computed as 16 * log10(1013 / pressure), with pressure in hPa";
-    variable_definition = harp_ingestion_register_variable_full_read(product_definition, "approximate_altitude", harp_type_double, 1, vertical_dimension_type, NULL, description, "km", NULL, read_altitude);
+    description =
+        "approximate altitude at pressure levels computed as 16 * log10(1013 / pressure), with pressure in hPa";
+    variable_definition =
+        harp_ingestion_register_variable_full_read(product_definition, "approximate_altitude", harp_type_double, 1,
+                                                   vertical_dimension_type, NULL, description, "km", NULL,
+                                                   read_altitude);
     path = "/approximate_altitude[]";
     harp_variable_definition_add_mapping(variable_definition, NULL, NULL, path, NULL);
 
     /* pressure */
     description = "pressure";
-    variable_definition = harp_ingestion_register_variable_full_read(product_definition, "pressure", harp_type_double, 1, vertical_dimension_type, NULL, description, "hPa", NULL, read_pressure);
+    variable_definition =
+        harp_ingestion_register_variable_full_read(product_definition, "pressure", harp_type_double, 1,
+                                                   vertical_dimension_type, NULL, description, "hPa", NULL,
+                                                   read_pressure);
     path = "/air_pressure[]";
     harp_variable_definition_add_mapping(variable_definition, NULL, NULL, path, NULL);
 
     /* O3_volume_mixing_ratio */
     description = "merged semi-monthly zonal mean ozone mixing ratio vertical profiles";
-    variable_definition = harp_ingestion_register_variable_full_read(product_definition, "O3_volume_mixing_ratio", harp_type_double, 4, dimension_type, NULL, description, "1", NULL, read_o3_volume_mixing_ratio_smm);
+    variable_definition =
+        harp_ingestion_register_variable_full_read(product_definition, "O3_volume_mixing_ratio", harp_type_double, 4,
+                                                   dimension_type, NULL, description, "1", NULL,
+                                                   read_o3_volume_mixing_ratio_smm);
     path = "/merged_ozone_vmr[]";
     harp_variable_definition_add_mapping(variable_definition, NULL, NULL, path, NULL);
 
     /* O3_volume_mixing_ratio_stdev */
     description = "uncertainty of the merged semi-monthly zonal mean ozone mixing ratio vertical profiles";
-    variable_definition = harp_ingestion_register_variable_full_read(product_definition, "O3_volume_mixing_ratio_stdev", harp_type_double, 4, dimension_type, NULL, description, "1", NULL, read_o3_volume_mixing_ratio_stdev_smm);
+    variable_definition =
+        harp_ingestion_register_variable_full_read(product_definition, "O3_volume_mixing_ratio_stdev", harp_type_double,
+                                                   4, dimension_type, NULL, description, "1", NULL,
+                                                   read_o3_volume_mixing_ratio_stdev_smm);
     path = "/merged_ozone_vmr[], /uncertainty_of_merged_ozone[]";
-    description = "derived from the relative uncertainty in percent as: uncertainty_of_merged_ozone[] * 0.01 * merged_ozone_vmr[]";
+    description =
+        "derived from the relative uncertainty in percent as: uncertainty_of_merged_ozone[] * 0.01 * "
+        "merged_ozone_vmr[]";
     harp_variable_definition_add_mapping(variable_definition, NULL, NULL, path, description);
 
     /* O3_number_density */
     description = "merged semi-monthly zonal mean ozone mole concentration vertical profiles";
-    variable_definition = harp_ingestion_register_variable_full_read(product_definition, "O3_number_density", harp_type_double, 4, dimension_type, NULL, description, "mol/cm^3", NULL, read_o3_number_density_smm);
+    variable_definition =
+        harp_ingestion_register_variable_full_read(product_definition, "O3_number_density", harp_type_double, 4,
+                                                   dimension_type, NULL, description, "mol/cm^3", NULL,
+                                                   read_o3_number_density_smm);
     path = "/merged_ozone_concentration[]";
     harp_variable_definition_add_mapping(variable_definition, NULL, NULL, path, NULL);
 
     /* O3_number_density_stdev */
     description = "uncertainty of the merged semi-monthly zonal mean ozone mole concentration vertical profiles";
-    variable_definition = harp_ingestion_register_variable_full_read(product_definition, "O3_number_density_stdev", harp_type_double, 4, dimension_type, NULL, description, "mol/cm^3", NULL, read_o3_number_density_stdev_smm);
+    variable_definition =
+        harp_ingestion_register_variable_full_read(product_definition, "O3_number_density_stdev", harp_type_double, 4,
+                                                   dimension_type, NULL, description, "mol/cm^3", NULL,
+                                                   read_o3_number_density_stdev_smm);
     path = "/merged_ozone_concentration[], /uncertainty_of_merged_ozone[]";
-    description = "derived from the relative uncertainty in percent as: uncertainty_of_merged_ozone[] * 0.01 * merged_ozone_concentration[]";
+    description =
+        "derived from the relative uncertainty in percent as: uncertainty_of_merged_ozone[] * 0.01 * "
+        "merged_ozone_concentration[]";
     harp_variable_definition_add_mapping(variable_definition, NULL, NULL, path, description);
 }
 
