@@ -1,11 +1,21 @@
-* Added derived variable conversion from latitude {latitude} (mid-points) to
-  latitude_bounds {latitude} (bounds), and similar for longitude.
+* Added ingestion modules for the following product types:
+    - Ozone CCI L3 limb profile products
+    - Ozone CCI L2 limb profile products
+    - Ozone CCI L4 nadir profile products
+    - Ozone CCI L3 nadir profile products
+    - Ozone CCI L3 total column products
+
+* Added functions to verify the internal consistency as well as compliance to
+  HARP conventions of harp_product and harp_variable instances. Any instance
+  of harp_product returned by harp_import() or harp_ingest() has been verified
+  using these functions.
+
+* Added derived variable conversion from 'latitude {latitude}' (mid-points) to
+  'latitude_bounds {latitude, independent}' (bounds); similar for longitude.
 
 * Changed netCDF-3/HDF4/HDF5 backends to be more explicit about implicitly
   created dimensions (which are used to store scalars and strings for formats
   that do not support this natively).
-
-* Added ingestion module for ozone CCI L3 total column products.
 
 * Fixed handling of scalars and empty strings in netCDF-3/HDF4/HDF5 backends.
  
