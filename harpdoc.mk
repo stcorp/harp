@@ -43,8 +43,12 @@ HARP_DOCFILES = \
 	doc/html/harpdump.html \
 	doc/html/harpfilter.html \
 	doc/html/index.html \
+	doc/html/ingestions/ESACCI_OZONE_L2_LP.html \
 	doc/html/ingestions/ESACCI_OZONE_L2_NP.html \
 	doc/html/ingestions/ESACCI_OZONE_L2_TC.html \
+	doc/html/ingestions/ESACCI_OZONE_L3_LP_MMZM.html \
+	doc/html/ingestions/ESACCI_OZONE_L3_LP_MZM.html \
+	doc/html/ingestions/ESACCI_OZONE_L3_LP_SMM.html \
 	doc/html/ingestions/ESACCI_OZONE_L3_NP.html \
 	doc/html/ingestions/ESACCI_OZONE_L3_TC.html \
 	doc/html/ingestions/ESACCI_OZONE_L4_NP.html \
@@ -393,9 +397,17 @@ doc/html/harpfilter.html:
 	$(MAKE) harp_doc
 doc/html/index.html:
 	$(MAKE) harp_doc
+doc/html/ingestions/ESACCI_OZONE_L2_LP.html:
+	$(MAKE) harp_doc
 doc/html/ingestions/ESACCI_OZONE_L2_NP.html:
 	$(MAKE) harp_doc
 doc/html/ingestions/ESACCI_OZONE_L2_TC.html:
+	$(MAKE) harp_doc
+doc/html/ingestions/ESACCI_OZONE_L3_LP_MMZM.html:
+	$(MAKE) harp_doc
+doc/html/ingestions/ESACCI_OZONE_L3_LP_MZM.html:
+	$(MAKE) harp_doc
+doc/html/ingestions/ESACCI_OZONE_L3_LP_SMM.html:
 	$(MAKE) harp_doc
 doc/html/ingestions/ESACCI_OZONE_L3_NP.html:
 	$(MAKE) harp_doc
