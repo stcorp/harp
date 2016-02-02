@@ -149,6 +149,7 @@ set(LIBHARP_SOURCES
   libharp/harp-ingest-cci_l2_o3_lp.c
   libharp/harp-ingest-cci_l2_o3_np.c
   libharp/harp-ingest-cci_l2_o3_tc.c
+  libharp/harp-ingest-cci_l3_o3_lp.c
   libharp/harp-ingest-cci_l3_o3_np.c
   libharp/harp-ingest-cci_l3_o3_tc.c
   libharp/harp-ingest-cci_l4_o3_np.c
