@@ -1,5 +1,5 @@
 /*
- * Copyright (C) 2015 S[&]T, The Netherlands.
+ * Copyright (C) 2015-2016 S[&]T, The Netherlands.
  *
  * This file is part of HARP.
  *
@@ -35,7 +35,7 @@
 static void print_version()
 {
     printf("harpconvert version %s\n", libharp_version);
-    printf("Copyright (C) 2015 S[&]T, The Netherlands.\n\n");
+    printf("Copyright (C) 2015-2016 S[&]T, The Netherlands.\n\n");
 }
 
 static void print_help()

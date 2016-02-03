@@ -1,5 +1,5 @@
 /*
- * Copyright (C) 2015 S[&]T, The Netherlands.
+ * Copyright (C) 2015-2016 S[&]T, The Netherlands.
  *
  * This file is part of HARP.
  *
