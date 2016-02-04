@@ -1197,6 +1197,7 @@ int harp_ingestion_init(void)
 
     if (coda_init() != 0)
     {
+        harp_set_error(HARP_ERROR_CODA, NULL);
         return -1;
     }
 
