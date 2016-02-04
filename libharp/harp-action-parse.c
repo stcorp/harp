@@ -20,7 +20,6 @@
 
 #include "harp-internal.h"
 #include "harp-action-parse.h"
-#include "coda-ascii.h"
 
 #include <assert.h>
 #include <stdlib.h>
@@ -341,7 +340,7 @@ static int parse_number(harp_lexer *lexer, ast_node **result)
     }
 
     node->position = token.position;
-    if (coda_ascii_parse_double(token.root, token.length, &node->payload.number, 0) != token.length)
+    if (harp_parse_double(token.root, token.length, &node->payload.number, 0) != token.length)
     {
         harp_set_error(HARP_ERROR_SCRIPT_SYNTAX, "char %lu: invalid number (%s:%u)", token.position, __FILE__,
                        __LINE__);

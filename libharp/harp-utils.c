@@ -19,6 +19,7 @@
  */
 
 #include "harp-internal.h"
+#include "ipow.h"
 
 #include <sys/types.h>
 #include <sys/stat.h>
@@ -475,6 +476,178 @@ void harp_str64u(uint64_t a, char *s)
             sprintf(s, "%ld%08ld", a2, a1);
         }
     }
+}
+
+long harp_parse_double(const char *buffer, long buffer_length, double *dst, int ignore_trailing_bytes)
+{
+    long length;
+    int value_length;
+    int exponent_length;
+    int has_sign;
+    double value;
+    long exponent;
+    int negative = 0;
+
+    length = buffer_length;
+
+    while (length > 0 && *buffer == ' ')
+    {
+        buffer++;
+        length--;
+    }
+
+    has_sign = 0;
+    if (length > 0)
+    {
+        if (*buffer == '+' || *buffer == '-')
+        {
+            negative = (*buffer == '-');
+            has_sign = 1;
+            buffer++;
+            length--;
+        }
+    }
+
+    /* check for NaN/Inf */
+    if (length >= 3)
+    {
+        if ((buffer[0] == 'N' || buffer[0] == 'n') && (buffer[1] == 'A' || buffer[1] == 'a') &&
+            (buffer[2] == 'N' || buffer[2] == 'n') && !has_sign)
+        {
+            length -= 3;
+            if (!ignore_trailing_bytes && length != 0)
+            {
+                harp_set_error(HARP_ERROR_INVALID_FORMAT, "invalid format for ascii floating point value");
+                return -1;
+            }
+            *dst = harp_nan();
+            return buffer_length - length;
+        }
+        else if ((buffer[0] == 'I' || buffer[0] == 'i') && (buffer[1] == 'N' || buffer[1] == 'n') &&
+                 (buffer[2] == 'F' || buffer[2] == 'f'))
+        {
+            length -= 3;
+            if (!ignore_trailing_bytes && length != 0)
+            {
+                harp_set_error(HARP_ERROR_INVALID_FORMAT, "invalid format for ascii floating point value");
+                return -1;
+            }
+            *dst = negative ? harp_mininf() : harp_plusinf();
+            return buffer_length - length;
+        }
+    }
+
+    value = 0;
+    exponent = 0;
+    value_length = 0;
+    /* read mantissa part before the digit */
+    while (length > 0)
+    {
+        if (*buffer < '0' || *buffer > '9')
+        {
+            break;
+        }
+        value = 10 * value + (*buffer - '0');
+        value_length++;
+        buffer++;
+        length--;
+    }
+    /* read digit and mantissa part after the digit */
+    if (length > 0)
+    {
+        if (*buffer == '.')
+        {
+            buffer++;
+            length--;
+            while (length > 0)
+            {
+                if (*buffer < '0' || *buffer > '9')
+                {
+                    break;
+                }
+                value = 10 * value + (*buffer - '0');
+                exponent--;
+                value_length++;
+                buffer++;
+                length--;
+            }
+        }
+    }
+    if (value_length == 0)
+    {
+        harp_set_error(HARP_ERROR_INVALID_FORMAT, "invalid format for ascii floating point value (no digits)");
+        return -1;
+    }
+
+    if (negative)
+    {
+        value = -value;
+    }
+    /* read exponent part */
+    if (length > 0 && (*buffer == 'd' || *buffer == 'D' || *buffer == 'e' || *buffer == 'E'))
+    {
+        long exponent_value;
+
+        buffer++;
+        length--;
+        negative = 0;
+        if (length > 0)
+        {
+            if (*buffer == '+' || *buffer == '-')
+            {
+                negative = (*buffer == '-');
+                buffer++;
+                length--;
+            }
+        }
+        exponent_value = 0;
+        exponent_length = 0;
+        while (length > 0)
+        {
+            if (*buffer < '0' || *buffer > '9')
+            {
+                break;
+            }
+            exponent_value = 10 * exponent_value + (*buffer - '0');
+            exponent_length++;
+            buffer++;
+            length--;
+        }
+        if (exponent_length == 0)
+        {
+            harp_set_error(HARP_ERROR_INVALID_FORMAT,
+                           "invalid format for ascii floating point value (empty exponent value)");
+            return -1;
+        }
+        if (negative)
+        {
+            exponent_value = -exponent_value;
+        }
+        exponent += exponent_value;
+    }
+
+    if (!ignore_trailing_bytes && length != 0)
+    {
+        while (length > 0 && *buffer == ' ')
+        {
+            buffer++;
+            length--;
+        }
+        if (length != 0)
+        {
+            harp_set_error(HARP_ERROR_INVALID_FORMAT, "invalid format for ascii floating point value");
+            return -1;
+        }
+    }
+
+    if (exponent != 0)
+    {
+        value *= ipow(10, exponent);
+    }
+
+    *dst = value;
+
+    return buffer_length - length;
 }
 
 /** Compute the number of elements from a list of dimension lengths.

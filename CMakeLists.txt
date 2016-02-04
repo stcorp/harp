@@ -188,7 +188,10 @@ set(LIBHARP_SOURCES
   libharp/harp-vertical-profiles.h
   libharp/harp-vertical-profiles.c
   libharp/harp.c
-  libharp/harp.h)
+  libharp/harp.h
+  libharp/hashtable.c
+  libharp/hashtable.h
+  libharp/ipow.h)
 
 BISON_TARGET(utparser ${CMAKE_CURRENT_SOURCE_DIR}/udunits2/utparser.y ${CMAKE_CURRENT_BINARY_DIR}/utparser.c)
 FLEX_TARGET(utscanner ${CMAKE_CURRENT_SOURCE_DIR}/udunits2/utscanner.l ${CMAKE_CURRENT_SOURCE_DIR}/lex.yy.c)

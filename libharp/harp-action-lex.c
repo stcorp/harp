@@ -20,7 +20,6 @@
 
 #include "harp-internal.h"
 #include "harp-action-lex.h"
-#include "coda-ascii.h"
 
 #include <assert.h>
 #include <ctype.h>
@@ -98,7 +97,7 @@ static long match_double(const char *str, long length)
 {
     double value;
 
-    return coda_ascii_parse_double(str, length, &value, 1);
+    return harp_parse_double(str, length, &value, 1);
 }
 
 static int has_more_characters(harp_lexer *lexer)

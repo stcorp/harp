@@ -127,7 +127,10 @@ libharp_la_SOURCES = \
 	libharp/harp-variable.c \
 	libharp/harp-vertical-profiles.h \
 	libharp/harp-vertical-profiles.c \
-	libharp/harp.c
+	libharp/harp.c \
+	libharp/hashtable.h \
+	libharp/hashtable.c \
+	libharp/ipow.h
 libharp_la_CPPFLAGS = -Icoda -I$(srcdir)/coda -Icoda/libcoda -I$(srcdir)/coda/libcoda -Inetcdf -I$(srcdir)/netcdf -Iudunits2 -I$(srcdir)/udunits2
 libharp_la_LDFLAGS = -no-undefined -version-info $(LIBHARP_CURRENT):$(LIBHARP_REVISION):$(LIBHARP_AGE)
 libharp_la_LIBADD = @LTLIBOBJS@ coda/libcoda_internal.la libudunits2.la libnetcdf.la $(HDF4LIBS) $(HDF5LIBS)
