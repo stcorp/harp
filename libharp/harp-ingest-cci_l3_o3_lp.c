@@ -204,8 +204,8 @@ static int ingestion_init_mmzm(const harp_ingestion_module *module, coda_product
 }
 
 static int ingestion_init_msmm(const harp_ingestion_module *module, coda_product *product,
-                              const harp_ingestion_options *options, harp_product_definition **definition,
-                              void **user_data)
+                               const harp_ingestion_options *options, harp_product_definition **definition,
+                               void **user_data)
 {
     ingest_info *info;
 
