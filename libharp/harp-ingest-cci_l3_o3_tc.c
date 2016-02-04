@@ -279,13 +279,11 @@ int harp_ingestion_module_cci_l3_o3_tc_init(void)
     const char *description;
     const char *path;
 
-    module = harp_ingestion_register_module_coda("ESACCI_OZONE_L3_TC", NULL, NULL, "CCI (climate change initiative) L3 "
-                                                 "O3 total column products", verify_product_type, ingestion_init,
-                                                 ingestion_done);
+    module = harp_ingestion_register_module_coda("ESACCI_OZONE_L3_TC", NULL, NULL, "CCI L3 O3 total column",
+                                                 verify_product_type, ingestion_init, ingestion_done);
 
     /* ESACCI_OZONE_L3_TC product */
-    product_definition = harp_ingestion_register_product(module, "ESACCI_OZONE_L3_TC", "CCI L3 O3 total column product",
-                                                         read_dimensions);
+    product_definition = harp_ingestion_register_product(module, "ESACCI_OZONE_L3_TC", NULL, read_dimensions);
 
     /* datetime_start */
     description = "time coverage start";

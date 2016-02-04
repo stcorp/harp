@@ -105,7 +105,7 @@ static int init_dimensions_mmzm(ingest_info *info)
     return 0;
 }
 
-static int init_dimensions_smm(ingest_info *info)
+static int init_dimensions_msmm(ingest_info *info)
 {
     coda_cursor cursor;
     long coda_dim[CODA_MAX_NUM_DIMS];
@@ -203,7 +203,7 @@ static int ingestion_init_mmzm(const harp_ingestion_module *module, coda_product
     return 0;
 }
 
-static int ingestion_init_smm(const harp_ingestion_module *module, coda_product *product,
+static int ingestion_init_msmm(const harp_ingestion_module *module, coda_product *product,
                               const harp_ingestion_options *options, harp_product_definition **definition,
                               void **user_data)
 {
@@ -220,7 +220,7 @@ static int ingestion_init_smm(const harp_ingestion_module *module, coda_product 
 
     info->product = product;
 
-    if (init_dimensions_smm(info) != 0)
+    if (init_dimensions_msmm(info) != 0)
     {
         ingestion_done(info);
         return -1;
@@ -484,7 +484,7 @@ static int read_o3_volume_mixing_ratio_stdev_mmzm(void *user_data, harp_array da
     return harp_array_transpose(harp_type_double, 3, dimension, order, data);
 }
 
-static int read_o3_volume_mixing_ratio_smm(void *user_data, harp_array data)
+static int read_o3_volume_mixing_ratio_msmm(void *user_data, harp_array data)
 {
     ingest_info *info = (ingest_info *)user_data;
     long dimension[4] = { info->num_time, info->num_vertical, info->num_longitude, info->num_latitude };
@@ -493,7 +493,7 @@ static int read_o3_volume_mixing_ratio_smm(void *user_data, harp_array data)
     return read_reordered_dataset(info, "/merged_ozone_vmr", 4, dimension, order, data);
 }
 
-static int read_o3_volume_mixing_ratio_stdev_smm(void *user_data, harp_array data)
+static int read_o3_volume_mixing_ratio_stdev_msmm(void *user_data, harp_array data)
 {
     ingest_info *info = (ingest_info *)user_data;
     long dimension[4] = { info->num_time, info->num_vertical, info->num_longitude, info->num_latitude };
@@ -541,7 +541,7 @@ static int read_o3_number_density_stdev_mmzm(void *user_data, harp_array data)
     return harp_array_transpose(harp_type_double, 3, dimension, order, data);
 }
 
-static int read_o3_number_density_smm(void *user_data, harp_array data)
+static int read_o3_number_density_msmm(void *user_data, harp_array data)
 {
     ingest_info *info = (ingest_info *)user_data;
     long dimension[4] = { info->num_time, info->num_vertical, info->num_longitude, info->num_latitude };
@@ -550,7 +550,7 @@ static int read_o3_number_density_smm(void *user_data, harp_array data)
     return read_reordered_dataset(info, "/merged_ozone_concentration", 4, dimension, order, data);
 }
 
-static int read_o3_number_density_stdev_smm(void *user_data, harp_array data)
+static int read_o3_number_density_stdev_msmm(void *user_data, harp_array data)
 {
     ingest_info *info = (ingest_info *)user_data;
     long dimension[4] = { info->num_time, info->num_vertical, info->num_longitude, info->num_latitude };
@@ -639,7 +639,7 @@ static int verify_product_type_mmzm(const harp_ingestion_module *module, coda_pr
     return 0;
 }
 
-static int verify_product_type_smm(const harp_ingestion_module *module, coda_product *product)
+static int verify_product_type_msmm(const harp_ingestion_module *module, coda_product *product)
 {
     const char *filename;
     const char *basename;
@@ -683,8 +683,8 @@ static void register_mzm_product(void)
     const char *path;
 
     module =
-        harp_ingestion_register_module_coda("ESACCI_OZONE_L3_LP_MZM", NULL, NULL,
-                                            "CCI O3 monthly zonal mean limb profile products", verify_product_type_mzm,
+        harp_ingestion_register_module_coda("ESACCI_OZONE_L3_LP_MZM", NULL, NULL, "CCI O3 monthly zonal mean limb "
+                                            "profile on a 10 degree latitude grid", verify_product_type_mzm,
                                             ingestion_init_mzm, ingestion_done);
 
     /* ESACCI_OZONE_L3_LP_MZM product */
@@ -759,9 +759,9 @@ static void register_mmzm_product(void)
     const char *path;
 
     module =
-        harp_ingestion_register_module_coda("ESACCI_OZONE_L3_LP_MMZM", NULL, NULL,
-                                            "CCI O3 merged monthly zonal mean limb profile products",
-                                            verify_product_type_mmzm, ingestion_init_mmzm, ingestion_done);
+        harp_ingestion_register_module_coda("ESACCI_OZONE_L3_LP_MMZM", NULL, NULL, "CCI O3 merged monthly zonal mean "
+                                            "limb profile on a 10 degree latitude grid", verify_product_type_mmzm,
+                                            ingestion_init_mmzm, ingestion_done);
 
     /* ESACCI_OZONE_L3_LP_MMZM product */
     product_definition = harp_ingestion_register_product(module, "ESACCI_OZONE_L3_LP_MMZM", NULL, read_dimensions);
@@ -850,7 +850,7 @@ static void register_mmzm_product(void)
     harp_variable_definition_add_mapping(variable_definition, NULL, NULL, path, description);
 }
 
-static void register_smm_product(void)
+static void register_msmm_product(void)
 {
     harp_ingestion_module *module;
     harp_product_definition *product_definition;
@@ -864,12 +864,12 @@ static void register_smm_product(void)
     const char *path;
 
     module =
-        harp_ingestion_register_module_coda("ESACCI_OZONE_L3_LP_SMM", NULL, NULL,
-                                            "CCI O3 merged semi-monthly zonal mean limb profile products",
-                                            verify_product_type_smm, ingestion_init_smm, ingestion_done);
+        harp_ingestion_register_module_coda("ESACCI_OZONE_L3_LP_MSMM", NULL, NULL,
+                                            "CCI O3 merged semi-monthly zonal mean limb profile on a 10x20 degree grid",
+                                            verify_product_type_msmm, ingestion_init_msmm, ingestion_done);
 
-    /* ESACCI_OZONE_L3_LP_SMM product */
-    product_definition = harp_ingestion_register_product(module, "ESACCI_OZONE_L3_LP_SMM", NULL, read_dimensions);
+    /* ESACCI_OZONE_L3_LP_MSMM product */
+    product_definition = harp_ingestion_register_product(module, "ESACCI_OZONE_L3_LP_MSMM", NULL, read_dimensions);
 
     /* datetime */
     description = "time of the measurement";
@@ -924,7 +924,7 @@ static void register_smm_product(void)
     variable_definition =
         harp_ingestion_register_variable_full_read(product_definition, "O3_volume_mixing_ratio", harp_type_double, 4,
                                                    dimension_type, NULL, description, "1", NULL,
-                                                   read_o3_volume_mixing_ratio_smm);
+                                                   read_o3_volume_mixing_ratio_msmm);
     path = "/merged_ozone_vmr[]";
     harp_variable_definition_add_mapping(variable_definition, NULL, NULL, path, NULL);
 
@@ -933,7 +933,7 @@ static void register_smm_product(void)
     variable_definition =
         harp_ingestion_register_variable_full_read(product_definition, "O3_volume_mixing_ratio_stdev", harp_type_double,
                                                    4, dimension_type, NULL, description, "1", NULL,
-                                                   read_o3_volume_mixing_ratio_stdev_smm);
+                                                   read_o3_volume_mixing_ratio_stdev_msmm);
     path = "/merged_ozone_vmr[], /uncertainty_of_merged_ozone[]";
     description =
         "derived from the relative uncertainty in percent as: uncertainty_of_merged_ozone[] * 0.01 * "
@@ -945,7 +945,7 @@ static void register_smm_product(void)
     variable_definition =
         harp_ingestion_register_variable_full_read(product_definition, "O3_number_density", harp_type_double, 4,
                                                    dimension_type, NULL, description, "mol/cm^3", NULL,
-                                                   read_o3_number_density_smm);
+                                                   read_o3_number_density_msmm);
     path = "/merged_ozone_concentration[]";
     harp_variable_definition_add_mapping(variable_definition, NULL, NULL, path, NULL);
 
@@ -954,7 +954,7 @@ static void register_smm_product(void)
     variable_definition =
         harp_ingestion_register_variable_full_read(product_definition, "O3_number_density_stdev", harp_type_double, 4,
                                                    dimension_type, NULL, description, "mol/cm^3", NULL,
-                                                   read_o3_number_density_stdev_smm);
+                                                   read_o3_number_density_stdev_msmm);
     path = "/merged_ozone_concentration[], /uncertainty_of_merged_ozone[]";
     description =
         "derived from the relative uncertainty in percent as: uncertainty_of_merged_ozone[] * 0.01 * "
@@ -966,7 +966,7 @@ int harp_ingestion_module_cci_l3_o3_lp_init(void)
 {
     register_mzm_product();
     register_mmzm_product();
-    register_smm_product();
+    register_msmm_product();
 
     return 0;
 }
