@@ -165,7 +165,7 @@
 <td>double</td>
 <td>{<em>time</em>}</td>
 <td>seconds since 2000-01-01</td>
-<td>start time of the measurement</td>
+<td>time of the measurement</td>
 </tr>
 <tr class="row-even"><td><strong>latitude</strong></td>
 <td>float</td>
@@ -250,6 +250,87 @@
 <td>{<em>time</em>}</td>
 <td>&nbsp;</td>
 <td>zero-based index of the sample within the source product</td>
+</tr>
+</tbody>
+</table>
+</div>
+<div class="section" id="mapping-description">
+<h2>Mapping description</h2>
+<p>The table below details where and how each variable was retrieved from the input product.</p>
+<table border="1" class="docutils">
+<colgroup>
+<col width="10%" />
+<col width="6%" />
+<col width="84%" />
+</colgroup>
+<thead valign="bottom">
+<tr class="row-odd"><th class="head">field name</th>
+<th class="head" colspan="2">mapping description</th>
+</tr>
+</thead>
+<tbody valign="top">
+<tr class="row-even"><td><strong>scanline_pixel_index</strong></td>
+<td><em>description</em></td>
+<td>the scanline and ground pixel dimensions are collapsed into a single temporal dimension; the index of the pixel within the scanline is computed as the index on this temporal dimension modulo the number of scanlines</td>
+</tr>
+<tr class="row-odd"><td rowspan="2"><strong>datetime</strong></td>
+<td><em>path</em></td>
+<td><strong>/BAND1_RADIANCE/STANDARD_MODE/OBSERVATIONS/time, /BAND1_RADIANCE/STANDARD_MODE/OBSERVATIONS/delta_time[]</strong></td>
+</tr>
+<tr class="row-even"><td><em>description</em></td>
+<td>time converted from milliseconds since a reference time (given as seconds since 2010-01-01 UTC) to seconds since 2000-01-01 TAI</td>
+</tr>
+<tr class="row-odd"><td><strong>latitude</strong></td>
+<td><em>path</em></td>
+<td><strong>/BAND1_RADIANCE/STANDARD_MODE/GEODATA/latitude[]</strong></td>
+</tr>
+<tr class="row-even"><td><strong>longitude</strong></td>
+<td><em>path</em></td>
+<td><strong>/BAND1_RADIANCE/STANDARD_MODE/GEODATA/longitude[]</strong></td>
+</tr>
+<tr class="row-odd"><td><strong>latitude_bounds</strong></td>
+<td><em>path</em></td>
+<td><strong>/BAND1_RADIANCE/STANDARD_MODE/GEODATA/latitude_bounds[]</strong></td>
+</tr>
+<tr class="row-even"><td><strong>longitude_bounds</strong></td>
+<td><em>path</em></td>
+<td><strong>/BAND1_RADIANCE/STANDARD_MODE/GEODATA/longitude_bounds[]</strong></td>
+</tr>
+<tr class="row-odd"><td><strong>instrument_latitude</strong></td>
+<td><em>path</em></td>
+<td><strong>/BAND1_RADIANCE/STANDARD_MODE/GEODATA/satellite_latitude[]</strong></td>
+</tr>
+<tr class="row-even"><td><strong>instrument_longitude</strong></td>
+<td><em>path</em></td>
+<td><strong>/BAND1_RADIANCE/STANDARD_MODE/GEODATA/satellite_longitude[]</strong></td>
+</tr>
+<tr class="row-odd"><td><strong>instrument_altitude</strong></td>
+<td><em>path</em></td>
+<td><strong>/BAND1_RADIANCE/STANDARD_MODE/GEODATA/satellite_altitude[]</strong></td>
+</tr>
+<tr class="row-even"><td><strong>solar_zenith_angle</strong></td>
+<td><em>path</em></td>
+<td><strong>/BAND1_RADIANCE/STANDARD_MODE/GEODATA/solar_zenith_angle[]</strong></td>
+</tr>
+<tr class="row-odd"><td><strong>solar_azimuth_angle</strong></td>
+<td><em>path</em></td>
+<td><strong>/BAND1_RADIANCE/STANDARD_MODE/GEODATA/solar_azimuth_angle[]</strong></td>
+</tr>
+<tr class="row-even"><td><strong>viewing_zenith_angle</strong></td>
+<td><em>path</em></td>
+<td><strong>/BAND1_RADIANCE/STANDARD_MODE/GEODATA/viewing_zenith_angle[]</strong></td>
+</tr>
+<tr class="row-odd"><td><strong>viewing_azimuth_angle</strong></td>
+<td><em>path</em></td>
+<td><strong>/BAND1_RADIANCE/STANDARD_MODE/GEODATA/viewing_azimuth_angle[]</strong></td>
+</tr>
+<tr class="row-even"><td><strong>wavelength</strong></td>
+<td><em>path</em></td>
+<td><strong>/BAND1_RADIANCE/STANDARD_MODE/INSTRUMENT/nominal_wavelength[]</strong></td>
+</tr>
+<tr class="row-odd"><td><strong>photon_radiance</strong></td>
+<td><em>path</em></td>
+<td><strong>/BAND1_RADIANCE/STANDARD_MODE/OBSERVATIONS/radiance[]</strong></td>
 </tr>
 </tbody>
 </table>
