@@ -1038,7 +1038,7 @@ int harp_ingestion_module_validate_options(harp_ingestion_module *module, const 
         }
         if (j == module->option_definition[index]->num_allowed_values)
         {
-            harp_set_error(HARP_ERROR_INVALID_INGESTION_OPTION, "invalid value '%s' for option '%s' of ingestion "
+            harp_set_error(HARP_ERROR_INVALID_INGESTION_OPTION_VALUE, "invalid value '%s' for option '%s' of ingestion "
                            "module '%s'", option->value, option->name, module->name);
             return -1;
         }
