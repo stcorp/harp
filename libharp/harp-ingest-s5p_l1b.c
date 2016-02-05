@@ -401,13 +401,17 @@ static int ingestion_init_s5p_l1b_ir(const harp_ingestion_module *module, coda_p
     }
 
     /* Initialize cursors and fill values for datasets which will be read using partial reads. */
-    if (init_dataset(info->instrument_cursor, "calibrated_wavelength", info->num_pixels * info->num_channels, &info->wavelength_cursor, &info->wavelength_fill_value) != 0)
+    if (init_dataset
+        (info->instrument_cursor, "calibrated_wavelength", info->num_pixels * info->num_channels,
+         &info->wavelength_cursor, &info->wavelength_fill_value) != 0)
     {
         ingestion_done(info);
         return -1;
     }
 
-    if (init_dataset(info->observation_cursor, "irradiance", info->num_scanlines * info->num_pixels * info->num_channels, &info->observable_cursor, &info->observable_fill_value) != 0)
+    if (init_dataset
+        (info->observation_cursor, "irradiance", info->num_scanlines * info->num_pixels * info->num_channels,
+         &info->observable_cursor, &info->observable_fill_value) != 0)
     {
         ingestion_done(info);
         return -1;
@@ -450,13 +454,17 @@ static int ingestion_init_s5p_l1b_ra(const harp_ingestion_module *module, coda_p
     }
 
     /* Initialize cursors and fill values for datasets which will be read using partial reads. */
-    if (init_dataset(info->instrument_cursor, "nominal_wavelength", info->num_pixels * info->num_channels, &info->wavelength_cursor, &info->wavelength_fill_value) != 0)
+    if (init_dataset
+        (info->instrument_cursor, "nominal_wavelength", info->num_pixels * info->num_channels, &info->wavelength_cursor,
+         &info->wavelength_fill_value) != 0)
     {
         ingestion_done(info);
         return -1;
     }
 
-    if (init_dataset(info->observation_cursor, "radiance", info->num_scanlines * info->num_pixels * info->num_channels, &info->observable_cursor, &info->observable_fill_value) != 0)
+    if (init_dataset
+        (info->observation_cursor, "radiance", info->num_scanlines * info->num_pixels * info->num_channels,
+         &info->observable_cursor, &info->observable_fill_value) != 0)
     {
         ingestion_done(info);
         return -1;
@@ -854,28 +862,40 @@ static void register_irradiance_product_variables(harp_product_definition *produ
     char path[MAX_PATH_LENGTH];
 
     description = "zero-based index of the pixel within the scanline";
-    variable_definition = harp_ingestion_register_variable_sample_read(product_definition, "scanline_pixel_index", harp_type_int16, 1, dimension_type, NULL, description, NULL, NULL, read_scanline_pixel_index);
-    description = "the scanline and pixel dimensions are collapsed into a single temporal dimension; the index of the "
-                  "pixel within the scanline is computed as the index on this temporal dimension modulo the number of "
-                  "scanlines";
+    variable_definition =
+        harp_ingestion_register_variable_sample_read(product_definition, "scanline_pixel_index", harp_type_int16, 1,
+                                                     dimension_type, NULL, description, NULL, NULL,
+                                                     read_scanline_pixel_index);
+    description =
+        "the scanline and pixel dimensions are collapsed into a single temporal dimension; the index of the "
+        "pixel within the scanline is computed as the index on this temporal dimension modulo the number of "
+        "scanlines";
     harp_variable_definition_add_mapping(variable_definition, NULL, NULL, NULL, description);
 
     description = "time of the measurement";
-    variable_definition = harp_ingestion_register_variable_full_read(product_definition, "datetime", harp_type_double, 1, dimension_type, NULL, description, "seconds since 2000-01-01", NULL, read_datetime);
+    variable_definition =
+        harp_ingestion_register_variable_full_read(product_definition, "datetime", harp_type_double, 1, dimension_type,
+                                                   NULL, description, "seconds since 2000-01-01", NULL, read_datetime);
     snprintf(path, MAX_PATH_LENGTH, "/%s/STANDARD_MODE/OBSERVATIONS/time, /%s/STANDARD_MODE/OBSERVATIONS/delta_time[]",
              product_group_name, product_group_name);
-    description = "time converted from milliseconds since a reference time (given as seconds since 2010-01-01 UTC) to "
-                  "seconds since 2000-01-01 TAI";
+    description =
+        "time converted from milliseconds since a reference time (given as seconds since 2010-01-01 UTC) to "
+        "seconds since 2000-01-01 TAI";
     harp_variable_definition_add_mapping(variable_definition, NULL, NULL, path, description);
 
     /* Irradiance. */
     description = "calibrated wavelength";
-    variable_definition = harp_ingestion_register_variable_sample_read(product_definition, "wavelength", harp_type_float, 2, dimension_type, NULL, description, "nm", NULL, read_wavelength);
+    variable_definition =
+        harp_ingestion_register_variable_sample_read(product_definition, "wavelength", harp_type_float, 2,
+                                                     dimension_type, NULL, description, "nm", NULL, read_wavelength);
     snprintf(path, MAX_PATH_LENGTH, "/%s/STANDARD_MODE/INSTRUMENT/calibrated_wavelength[]", product_group_name);
     harp_variable_definition_add_mapping(variable_definition, NULL, NULL, path, NULL);
 
     description = "spectral photon irradiance";
-    variable_definition = harp_ingestion_register_variable_sample_read(product_definition, "photon_irradiance", harp_type_float, 2, dimension_type, NULL, description, "mol/(s.m^2.nm)", NULL, read_observable);
+    variable_definition =
+        harp_ingestion_register_variable_sample_read(product_definition, "photon_irradiance", harp_type_float, 2,
+                                                     dimension_type, NULL, description, "mol/(s.m^2.nm)", NULL,
+                                                     read_observable);
     snprintf(path, MAX_PATH_LENGTH, "/%s/STANDARD_MODE/OBSERVATIONS/irradiance[]", product_group_name);
     harp_variable_definition_add_mapping(variable_definition, NULL, NULL, path, NULL);
 }
@@ -891,20 +911,25 @@ static void register_radiance_product_variables(harp_product_definition *product
     char path[MAX_PATH_LENGTH];
 
     description = "zero-based index of the pixel within the scanline";
-    variable_definition = harp_ingestion_register_variable_sample_read(product_definition, "scanline_pixel_index", harp_type_int16, 1,
-                                                 dimension_type, NULL, description, NULL, NULL,
-                                                 read_scanline_pixel_index);
-    description = "the scanline and ground pixel dimensions are collapsed into a single temporal dimension; the index "
-                  "of the pixel within the scanline is computed as the index on this temporal dimension modulo the "
-                  "number of scanlines";
+    variable_definition =
+        harp_ingestion_register_variable_sample_read(product_definition, "scanline_pixel_index", harp_type_int16, 1,
+                                                     dimension_type, NULL, description, NULL, NULL,
+                                                     read_scanline_pixel_index);
+    description =
+        "the scanline and ground pixel dimensions are collapsed into a single temporal dimension; the index "
+        "of the pixel within the scanline is computed as the index on this temporal dimension modulo the "
+        "number of scanlines";
     harp_variable_definition_add_mapping(variable_definition, NULL, NULL, NULL, description);
 
     description = "time of the measurement";
-    variable_definition = harp_ingestion_register_variable_full_read(product_definition, "datetime", harp_type_double, 1, dimension_type, NULL, description, "seconds since 2000-01-01", NULL, read_datetime);
+    variable_definition =
+        harp_ingestion_register_variable_full_read(product_definition, "datetime", harp_type_double, 1, dimension_type,
+                                                   NULL, description, "seconds since 2000-01-01", NULL, read_datetime);
     snprintf(path, MAX_PATH_LENGTH, "/%s/STANDARD_MODE/OBSERVATIONS/time, /%s/STANDARD_MODE/OBSERVATIONS/delta_time[]",
              product_group_name, product_group_name);
-    description = "time converted from milliseconds since a reference time (given as seconds since 2010-01-01 UTC) to "
-                  "seconds since 2000-01-01 TAI";
+    description =
+        "time converted from milliseconds since a reference time (given as seconds since 2010-01-01 UTC) to "
+        "seconds since 2000-01-01 TAI";
     harp_variable_definition_add_mapping(variable_definition, NULL, NULL, path, description);
 
     /* Geographic. */
@@ -1006,15 +1031,17 @@ static void register_radiance_product_variables(harp_product_definition *product
 
     /* Radiance. */
     description = "nominal wavelength";
-    variable_definition = harp_ingestion_register_variable_sample_read(product_definition, "wavelength", harp_type_float, 2, dimension_type,
-                                                 NULL, description, "nm", NULL, read_wavelength);
+    variable_definition =
+        harp_ingestion_register_variable_sample_read(product_definition, "wavelength", harp_type_float, 2,
+                                                     dimension_type, NULL, description, "nm", NULL, read_wavelength);
     snprintf(path, MAX_PATH_LENGTH, "/%s/STANDARD_MODE/INSTRUMENT/nominal_wavelength[]", product_group_name);
     harp_variable_definition_add_mapping(variable_definition, NULL, NULL, path, NULL);
 
     description = "spectral photon radiance";
-    variable_definition = harp_ingestion_register_variable_sample_read(product_definition, "photon_radiance", harp_type_float, 2,
-                                                 dimension_type, NULL, description, "mol/(s.m^2.nm.sr)", NULL,
-                                                 read_observable);
+    variable_definition =
+        harp_ingestion_register_variable_sample_read(product_definition, "photon_radiance", harp_type_float, 2,
+                                                     dimension_type, NULL, description, "mol/(s.m^2.nm.sr)", NULL,
+                                                     read_observable);
     snprintf(path, MAX_PATH_LENGTH, "/%s/STANDARD_MODE/OBSERVATIONS/radiance[]", product_group_name);
     harp_variable_definition_add_mapping(variable_definition, NULL, NULL, path, NULL);
 }
