@@ -22,14 +22,11 @@
 #include "harp-ingestion.h"
 
 #include <assert.h>
+#include <ctype.h>
 #include <math.h>
 #include <stdio.h>
 #include <stdlib.h>
 #include <string.h>
-#include <ctype.h>
-
-/* Number of seconds between 2000/01/01 TAI and 2010/01/01 UTC. */
-#define SECONDS_FROM_2000_TAI_TO_2010_UTC (315619200 + 34)
 
 /* Default fill value taken from "Input/output data specification for the TROPOMI L-1b data processor",
  * S5P-KNMI-L01B-0012-SD.
@@ -141,12 +138,12 @@ static int get_product_group_availability(coda_product *product, const char *gro
     return 0;
 }
 
-static int read_dataset(coda_cursor cursor, const char *field, long num_elements, harp_array data)
+static int read_dataset(coda_cursor cursor, const char *dataset_name, long num_elements, harp_array data)
 {
     long coda_num_elements;
     harp_scalar fill_value;
 
-    if (coda_cursor_goto_record_field_by_name(&cursor, field) != 0)
+    if (coda_cursor_goto_record_field_by_name(&cursor, dataset_name) != 0)
     {
         harp_set_error(HARP_ERROR_CODA, NULL);
         return -1;
@@ -158,7 +155,7 @@ static int read_dataset(coda_cursor cursor, const char *field, long num_elements
     }
     if (coda_num_elements != num_elements)
     {
-        harp_set_error(HARP_ERROR_INGESTION, "dataset has %ld elements (expected %ld)", coda_num_elements,
+        harp_set_error(HARP_ERROR_INGESTION, "dataset has %ld elements; expected %ld", coda_num_elements,
                        num_elements);
         harp_add_coda_cursor_path_to_error_message(&cursor);
         return -1;
@@ -185,8 +182,8 @@ static int read_dataset(coda_cursor cursor, const char *field, long num_elements
     return 0;
 }
 
-static int read_partial_dataset(const coda_cursor *cursor, harp_scalar fill_value, long offset, long length,
-                                harp_array data)
+static int read_partial_dataset(const coda_cursor *cursor, long offset, long length, harp_array data,
+                                harp_scalar fill_value)
 {
     if (coda_cursor_read_float_partial_array(cursor, offset, length, data.float_data) != 0)
     {
@@ -273,13 +270,13 @@ static int init_dimensions(ingest_info *info, coda_cursor cursor, const char *na
     }
     if (num_coda_dims != 4)
     {
-        harp_set_error(HARP_ERROR_INGESTION, "dataset has %d dimensions, expected 4", num_coda_dims);
+        harp_set_error(HARP_ERROR_INGESTION, "dataset has %d dimensions; expected 4", num_coda_dims);
         harp_add_coda_cursor_path_to_error_message(&cursor);
         return -1;
     }
     if (coda_dim[0] != 1)
     {
-        harp_set_error(HARP_ERROR_INGESTION, "outermost dimension of dataset has length %ld, expected 1", coda_dim[0]);
+        harp_set_error(HARP_ERROR_INGESTION, "outermost dimension of dataset has length %ld; expected 1", coda_dim[0]);
         harp_add_coda_cursor_path_to_error_message(&cursor);
         return -1;
     }
@@ -308,8 +305,7 @@ static int init_dataset(coda_cursor cursor, const char *name, long num_elements,
     }
     if (coda_num_elements != num_elements)
     {
-        harp_set_error(HARP_ERROR_INGESTION, "dataset has %ld elements (expected %ld)", coda_num_elements,
-                       num_elements);
+        harp_set_error(HARP_ERROR_INGESTION, "dataset has %ld elements; expected %ld", coda_num_elements, num_elements);
         harp_add_coda_cursor_path_to_error_message(&cursor);
         return -1;
     }
@@ -501,6 +497,7 @@ static int read_datetime(void *user_data, harp_array data)
     ingest_info *info = (ingest_info *)user_data;
     coda_cursor cursor;
     harp_scalar fill_value;
+    double epoch;
     double time_reference;
     long coda_num_elements;
     long i;
@@ -521,6 +518,13 @@ static int read_datetime(void *user_data, harp_array data)
      * handling of leap seconds is: 146793601 (due to the leap second introduced on January 30, 2012).
      */
 
+    /* Convert the epoch 2010-01-01 00:00:00 UTC to seconds since 2000-01-01 00:00:00 TAI. */
+    if (coda_time_parts_to_double_utc(2010, 1, 1, 0, 0, 0, 0, &epoch) != 0)
+    {
+        harp_set_error(HARP_ERROR_CODA, NULL);
+        return -1;
+    }
+
     /* Read reference time in seconds since 2010-01-01 00:00:00 UTC (probably wrong, see above). */
     cursor = info->observation_cursor;
     if (coda_cursor_goto_record_field_by_name(&cursor, "time") != 0)
@@ -535,7 +539,7 @@ static int read_datetime(void *user_data, harp_array data)
     }
     if (coda_num_elements != 1)
     {
-        harp_set_error(HARP_ERROR_INGESTION, "dataset has %ld elements (expected %ld)", coda_num_elements, 1);
+        harp_set_error(HARP_ERROR_INGESTION, "dataset has %ld elements; expected 1", coda_num_elements);
         harp_add_coda_cursor_path_to_error_message(&cursor);
         return -1;
     }
@@ -568,7 +572,7 @@ static int read_datetime(void *user_data, harp_array data)
     }
     if (coda_num_elements != info->num_scanlines)
     {
-        harp_set_error(HARP_ERROR_INGESTION, "dataset has %ld elements (expected %ld)", coda_num_elements,
+        harp_set_error(HARP_ERROR_INGESTION, "dataset has %ld elements; expected %ld", coda_num_elements,
                        info->num_scanlines);
         harp_add_coda_cursor_path_to_error_message(&cursor);
         return -1;
@@ -595,7 +599,7 @@ static int read_datetime(void *user_data, harp_array data)
     /* Convert observation start time to seconds since 2000-01-01 00:00:00 TAI. */
     for (i = 0; i < info->num_scanlines; i++)
     {
-        data.double_data[i] = SECONDS_FROM_2000_TAI_TO_2010_UTC + time_reference + data.double_data[i] / 1e3;
+        data.double_data[i] = epoch + time_reference + data.double_data[i] / 1e3;
     }
 
     /* Broadcast the result along the pixel dimension. */
@@ -713,16 +717,16 @@ static int read_wavelength(void *user_data, long index, harp_array data)
      */
     offset = (index - (index / info->num_pixels) * info->num_pixels) * info->num_channels;
 
-    return read_partial_dataset(&info->wavelength_cursor, info->wavelength_fill_value, offset, info->num_channels,
-                                data);
+    return read_partial_dataset(&info->wavelength_cursor, offset, info->num_channels, data,
+                                info->wavelength_fill_value);
 }
 
 static int read_observable(void *user_data, long index, harp_array data)
 {
     ingest_info *info = (ingest_info *)user_data;
 
-    return read_partial_dataset(&info->observable_cursor, info->observable_fill_value, index * info->num_channels,
-                                info->num_channels, data);
+    return read_partial_dataset(&info->observable_cursor, index * info->num_channels, info->num_channels, data,
+                                info->observable_fill_value);
 }
 
 static int verify_s5p_l1b_ir(const harp_ingestion_module *module, coda_product *product)
@@ -867,9 +871,8 @@ static void register_irradiance_product_variables(harp_product_definition *produ
                                                      dimension_type, NULL, description, NULL, NULL,
                                                      read_scanline_pixel_index);
     description =
-        "the scanline and pixel dimensions are collapsed into a single temporal dimension; the index of the "
-        "pixel within the scanline is computed as the index on this temporal dimension modulo the number of "
-        "scanlines";
+        "the scanline and pixel dimensions are collapsed into a temporal dimension; the index of the pixel within the "
+        "scanline is computed as the index on the temporal dimension modulo the number of scanlines";
     harp_variable_definition_add_mapping(variable_definition, NULL, NULL, NULL, description);
 
     description = "time of the measurement";
@@ -879,8 +882,8 @@ static void register_irradiance_product_variables(harp_product_definition *produ
     snprintf(path, MAX_PATH_LENGTH, "/%s/STANDARD_MODE/OBSERVATIONS/time, /%s/STANDARD_MODE/OBSERVATIONS/delta_time[]",
              product_group_name, product_group_name);
     description =
-        "time converted from milliseconds since a reference time (given as seconds since 2010-01-01 UTC) to "
-        "seconds since 2000-01-01 TAI";
+        "time converted from milliseconds since a reference time (given as seconds since 2010-01-01 UTC) to seconds "
+        "since 2000-01-01 TAI; the time associated with a scanline is repeated for each pixel in the scanline";
     harp_variable_definition_add_mapping(variable_definition, NULL, NULL, path, description);
 
     /* Irradiance. */
@@ -928,8 +931,8 @@ static void register_radiance_product_variables(harp_product_definition *product
     snprintf(path, MAX_PATH_LENGTH, "/%s/STANDARD_MODE/OBSERVATIONS/time, /%s/STANDARD_MODE/OBSERVATIONS/delta_time[]",
              product_group_name, product_group_name);
     description =
-        "time converted from milliseconds since a reference time (given as seconds since 2010-01-01 UTC) to "
-        "seconds since 2000-01-01 TAI";
+        "time converted from milliseconds since a reference time (given as seconds since 2010-01-01 UTC) to seconds "
+        "since 2000-01-01 TAI; the time associated with a scanline is repeated for each pixel in the scanline";
     harp_variable_definition_add_mapping(variable_definition, NULL, NULL, path, description);
 
     /* Geographic. */
@@ -974,7 +977,8 @@ static void register_radiance_product_variables(harp_product_definition *product
                                                                      read_instrument_latitude);
     harp_variable_definition_set_valid_range_float(variable_definition, -90.0f, 90.0f);
     snprintf(path, MAX_PATH_LENGTH, "/%s/STANDARD_MODE/GEODATA/satellite_latitude[]", product_group_name);
-    harp_variable_definition_add_mapping(variable_definition, NULL, NULL, path, NULL);
+    description = "the satellite latitude associated with a scanline is repeated for each pixel in the scanline";
+    harp_variable_definition_add_mapping(variable_definition, NULL, NULL, path, description);
 
     description = "longitude of the sub-instrument point (WGS84)";
     variable_definition = harp_ingestion_register_variable_full_read(product_definition, "instrument_longitude",
@@ -983,14 +987,16 @@ static void register_radiance_product_variables(harp_product_definition *product
                                                                      read_instrument_longitude);
     harp_variable_definition_set_valid_range_float(variable_definition, -180.0f, 180.0f);
     snprintf(path, MAX_PATH_LENGTH, "/%s/STANDARD_MODE/GEODATA/satellite_longitude[]", product_group_name);
-    harp_variable_definition_add_mapping(variable_definition, NULL, NULL, path, NULL);
+    description = "the satellite longitude associated with a scanline is repeated for each pixel in the scanline";
+    harp_variable_definition_add_mapping(variable_definition, NULL, NULL, path, description);
 
     description = "altitude of the instrument (WGS84)";
     variable_definition = harp_ingestion_register_variable_full_read(product_definition, "instrument_altitude",
                                                                      harp_type_float, 1, dimension_type, NULL,
                                                                      description, "m", NULL, read_instrument_altitude);
     snprintf(path, MAX_PATH_LENGTH, "/%s/STANDARD_MODE/GEODATA/satellite_altitude[]", product_group_name);
-    harp_variable_definition_add_mapping(variable_definition, NULL, NULL, path, NULL);
+    description = "the satellite altitude associated with a scanline is repeated for each pixel in the scanline";
+    harp_variable_definition_add_mapping(variable_definition, NULL, NULL, path, description);
 
     /* Angles. */
     description = "zenith angle of the Sun at the ground pixel location (WGS84)";
