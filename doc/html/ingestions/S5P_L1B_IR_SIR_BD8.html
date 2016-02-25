@@ -205,14 +205,14 @@
 <tbody valign="top">
 <tr class="row-even"><td><strong>scanline_pixel_index</strong></td>
 <td><em>description</em></td>
-<td>the scanline and pixel dimensions are collapsed into a single temporal dimension; the index of the pixel within the scanline is computed as the index on this temporal dimension modulo the number of scanlines</td>
+<td>the scanline and pixel dimensions are collapsed into a temporal dimension; the index of the pixel within the scanline is computed as the index on the temporal dimension modulo the number of scanlines</td>
 </tr>
 <tr class="row-odd"><td rowspan="2"><strong>datetime</strong></td>
 <td><em>path</em></td>
 <td><strong>/BAND8_IRRADIANCE/STANDARD_MODE/OBSERVATIONS/time, /BAND8_IRRADIANCE/STANDARD_MODE/OBSERVATIONS/delta_time[]</strong></td>
 </tr>
 <tr class="row-even"><td><em>description</em></td>
-<td>time converted from milliseconds since a reference time (given as seconds since 2010-01-01 UTC) to seconds since 2000-01-01 TAI</td>
+<td>time converted from milliseconds since a reference time (given as seconds since 2010-01-01 UTC) to seconds since 2000-01-01 TAI; the time associated with a scanline is repeated for each pixel in the scanline</td>
 </tr>
 <tr class="row-odd"><td><strong>wavelength</strong></td>
 <td><em>path</em></td>

@@ -287,11 +287,13 @@ HARP_DOCFILES = \
 	doc/html/ingestions/S5P_L1B_RA_BD8.html \
 	doc/html/ingestions/S5P_L2_AER_AI.html \
 	doc/html/ingestions/S5P_L2_CH4.html \
+	doc/html/ingestions/S5P_L2_CLOUD.html \
 	doc/html/ingestions/S5P_L2_CO.html \
 	doc/html/ingestions/S5P_L2_FRESCO.html \
 	doc/html/ingestions/S5P_L2_HCHO.html \
 	doc/html/ingestions/S5P_L2_NO2.html \
 	doc/html/ingestions/S5P_L2_O3.html \
+	doc/html/ingestions/S5P_L2_O3_PR.html \
 	doc/html/ingestions/S5P_L2_SO2.html \
 	doc/html/ingestions/TES_L2_CH4_Nadir.html \
 	doc/html/ingestions/TES_L2_CO_Nadir.html \
@@ -885,6 +887,8 @@ doc/html/ingestions/S5P_L2_AER_AI.html:
 	$(MAKE) harp_doc
 doc/html/ingestions/S5P_L2_CH4.html:
 	$(MAKE) harp_doc
+doc/html/ingestions/S5P_L2_CLOUD.html:
+	$(MAKE) harp_doc
 doc/html/ingestions/S5P_L2_CO.html:
 	$(MAKE) harp_doc
 doc/html/ingestions/S5P_L2_FRESCO.html:
@@ -894,6 +898,8 @@ doc/html/ingestions/S5P_L2_HCHO.html:
 doc/html/ingestions/S5P_L2_NO2.html:
 	$(MAKE) harp_doc
 doc/html/ingestions/S5P_L2_O3.html:
+	$(MAKE) harp_doc
+doc/html/ingestions/S5P_L2_O3_PR.html:
 	$(MAKE) harp_doc
 doc/html/ingestions/S5P_L2_SO2.html:
 	$(MAKE) harp_doc

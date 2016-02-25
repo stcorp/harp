@@ -8,7 +8,7 @@
   
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
   
-  <title>S5P_L2_AER_AI &mdash; HARP 0.1b documentation</title>
+  <title>S5P_L2_O3_PR &mdash; HARP 0.1b documentation</title>
   
 
   
@@ -121,7 +121,7 @@
   <ul class="wy-breadcrumbs">
     <li><a href="../index.html">Docs</a> &raquo;</li>
       
-    <li>S5P_L2_AER_AI</li>
+    <li>S5P_L2_O3_PR</li>
       <li class="wy-breadcrumbs-aside">
         
           
@@ -133,11 +133,11 @@
           <div role="main" class="document" itemscope="itemscope" itemtype="http://schema.org/Article">
            <div itemprop="articleBody">
             
-  <div class="section" id="s5p-l2-aer-ai">
-<h1>S5P_L2_AER_AI</h1>
+  <div class="section" id="s5p-l2-o3-pr">
+<h1>S5P_L2_O3_PR</h1>
 <div class="section" id="variables">
 <h2>Variables</h2>
-<p>The table below lists the variables that are present in the HARP product that results from an ingestion of <code class="docutils literal"><span class="pre">S5P_L2_AER_AI</span></code> data.</p>
+<p>The table below lists the variables that are present in the HARP product that results from an ingestion of <code class="docutils literal"><span class="pre">S5P_L2_O3_PR</span></code> data.</p>
 <table border="1" class="docutils">
 <colgroup>
 <col width="25%" />
@@ -233,19 +233,85 @@
 <td>degree</td>
 <td>azimuth angle of the instrument at the ground pixel location (WGS84); angle measured East-of-North</td>
 </tr>
-<tr class="row-odd"><td><strong>aerosol_index</strong></td>
+<tr class="row-odd"><td><strong>pressure</strong></td>
+<td>float</td>
+<td>{<em>time</em>, <em>vertical</em>}</td>
+<td>hPa</td>
+<td>pressure</td>
+</tr>
+<tr class="row-even"><td><strong>altitude</strong></td>
+<td>float</td>
+<td>{<em>time</em>, <em>vertical</em>}</td>
+<td>m</td>
+<td>altitude</td>
+</tr>
+<tr class="row-odd"><td><strong>temperature</strong></td>
+<td>float</td>
+<td>{<em>time</em>, <em>vertical</em>}</td>
+<td>K</td>
+<td>temperature</td>
+</tr>
+<tr class="row-even"><td><strong>O3_volume_mixing_ratio</strong></td>
+<td>float</td>
+<td>{<em>time</em>, <em>vertical</em>}</td>
+<td>ppmv</td>
+<td>O3 volume mixing ratio</td>
+</tr>
+<tr class="row-odd"><td><strong>O3_volume_mixing_ratio_stdev</strong></td>
+<td>float</td>
+<td>{<em>time</em>, <em>vertical</em>}</td>
+<td>ppmv</td>
+<td>uncertainty of the O3 volume mixing ratio</td>
+</tr>
+<tr class="row-even"><td><strong>O3_volume_mixing_ratio_avk</strong></td>
+<td>float</td>
+<td>{<em>time</em>, <em>vertical</em>, <em>vertical</em>}</td>
+<td>1</td>
+<td>O3 volume mixing ratio averaging kernel</td>
+</tr>
+<tr class="row-odd"><td><strong>O3_volume_mixing_ratio_apriori</strong></td>
+<td>float</td>
+<td>{<em>time</em>, <em>vertical</em>}</td>
+<td>ppmv</td>
+<td>O3 volume mixing ratio apriori</td>
+</tr>
+<tr class="row-even"><td><strong>O3_volume_mixing_ratio_apriori_stdev</strong></td>
+<td>float</td>
+<td>{<em>time</em>, <em>vertical</em>}</td>
+<td>ppmv</td>
+<td>uncertainty of the O3 volume mixing ratio apriori</td>
+</tr>
+<tr class="row-odd"><td><strong>O3_volume_mixing_ratio_cov</strong></td>
+<td>float</td>
+<td>{<em>time</em>, <em>vertical</em>, <em>vertical</em>}</td>
+<td>pptv</td>
+<td>O3 volume mixing ratio covariance</td>
+</tr>
+<tr class="row-even"><td><strong>O3_column_number_density</strong></td>
 <td>float</td>
 <td>{<em>time</em>}</td>
-<td>1</td>
-<td>aerosol index</td>
+<td>mol/m^2</td>
+<td>O3 total column</td>
 </tr>
-<tr class="row-even"><td><strong>aerosol_index_stdev</strong></td>
+<tr class="row-odd"><td><strong>O3_column_number_density_stdev</strong></td>
 <td>float</td>
 <td>{<em>time</em>}</td>
-<td>1</td>
-<td>uncertainty of the aerosol index</td>
+<td>mol/m^2</td>
+<td>uncertainty of the O3 total column</td>
 </tr>
-<tr class="row-odd"><td><strong>index</strong></td>
+<tr class="row-even"><td><strong>troposheric_O3_column_number_density</strong></td>
+<td>float</td>
+<td>{<em>time</em>}</td>
+<td>mol/m^2</td>
+<td>O3 tropospheric column</td>
+</tr>
+<tr class="row-odd"><td><strong>troposheric_O3_column_number_density_stdev</strong></td>
+<td>float</td>
+<td>{<em>time</em>}</td>
+<td>mol/m^2</td>
+<td>uncertainty of the O3 tropospheric column</td>
+</tr>
+<tr class="row-even"><td><strong>index</strong></td>
 <td>int32</td>
 <td>{<em>time</em>}</td>
 <td>&nbsp;</td>
@@ -259,9 +325,9 @@
 <p>The table below details where and how each variable was retrieved from the input product.</p>
 <table border="1" class="docutils">
 <colgroup>
-<col width="11%" />
+<col width="18%" />
 <col width="6%" />
-<col width="83%" />
+<col width="77%" />
 </colgroup>
 <thead valign="bottom">
 <tr class="row-odd"><th class="head">field name</th>
@@ -333,31 +399,60 @@
 <td><em>path</em></td>
 <td><strong>/PRODUCT/SUPPORT_DATA/GEOLOCATIONS/viewing_azimuth_angle[]</strong></td>
 </tr>
-<tr class="row-odd"><td rowspan="4"><strong>aerosol_index</strong></td>
-<td><em>condition</em></td>
-<td>wavelength_ratio=354_388nm</td>
+<tr class="row-odd"><td><strong>pressure</strong></td>
+<td><em>path</em></td>
+<td><strong>/PRODUCT/SUPPORT_DATA/INPUT_DATA/pressure[]</strong></td>
 </tr>
-<tr class="row-even"><td><em>path</em></td>
-<td><strong>/PRODUCT/aerosol_index_354_388</strong></td>
+<tr class="row-even"><td><strong>altitude</strong></td>
+<td><em>path</em></td>
+<td><strong>/PRODUCT/SUPPORT_DATA/INPUT_DATA/altitude[]</strong></td>
 </tr>
-<tr class="row-odd"><td><em>condition</em></td>
-<td>wavelength_ratio=340_380nm</td>
+<tr class="row-odd"><td><strong>temperature</strong></td>
+<td><em>path</em></td>
+<td><strong>/PRODUCT/SUPPORT_DATA/INPUT_DATA/temperature[]</strong></td>
 </tr>
-<tr class="row-even"><td><em>path</em></td>
-<td><strong>/PRODUCT/aerosol_index_340_380</strong></td>
+<tr class="row-even"><td><strong>O3_volume_mixing_ratio</strong></td>
+<td><em>path</em></td>
+<td><strong>/PRODUCT/O3[]</strong></td>
 </tr>
-<tr class="row-odd"><td rowspan="4"><strong>aerosol_index_stdev</strong></td>
-<td><em>condition</em></td>
-<td>wavelength_ratio=354_388nm</td>
+<tr class="row-odd"><td><strong>O3_volume_mixing_ratio_stdev</strong></td>
+<td><em>path</em></td>
+<td><strong>/PRODUCT/O3_precision[]</strong></td>
 </tr>
-<tr class="row-even"><td><em>path</em></td>
-<td><strong>/PRODUCT/aerosol_index_354_388_precision</strong></td>
+<tr class="row-even"><td><strong>O3_volume_mixing_ratio_avk</strong></td>
+<td><em>path</em></td>
+<td><strong>/PRODUCT/SUPPORT_DATA/DETAILED_RESULTS/averaging_kernel[]</strong></td>
 </tr>
-<tr class="row-odd"><td><em>condition</em></td>
-<td>wavelength_ratio=340_380nm</td>
+<tr class="row-odd"><td><strong>O3_volume_mixing_ratio_apriori</strong></td>
+<td><em>path</em></td>
+<td><strong>/PRODUCT/SUPPORT_DATA/INPUT_DATA/O3_apriori[]</strong></td>
 </tr>
-<tr class="row-even"><td><em>path</em></td>
-<td><strong>/PRODUCT/aerosol_index_340_380_precision</strong></td>
+<tr class="row-even"><td rowspan="2"><strong>O3_volume_mixing_ratio_apriori_stdev</strong></td>
+<td><em>path</em></td>
+<td><strong>/PRODUCT/SUPPORT_DATA/INPUT_DATA/O3_apriori_error_covariance_matrix[]</strong></td>
+</tr>
+<tr class="row-odd"><td><em>description</em></td>
+<td>uncertainty derived from variance as: sqrt(O3_apriori_error_covariance_matrix[])</td>
+</tr>
+<tr class="row-even"><td><strong>O3_volume_mixing_ratio_cov</strong></td>
+<td><em>path</em></td>
+<td><strong>/PRODUCT/SUPPORT_DATA/DETAILED_RESULTS/O3_error_covariance_matrix[]</strong></td>
+</tr>
+<tr class="row-odd"><td><strong>O3_column_number_density</strong></td>
+<td><em>path</em></td>
+<td><strong>/PRODUCT/O3_total_column[]</strong></td>
+</tr>
+<tr class="row-even"><td><strong>O3_column_number_density_stdev</strong></td>
+<td><em>path</em></td>
+<td><strong>/PRODUCT/O3_total_column_precision[]</strong></td>
+</tr>
+<tr class="row-odd"><td><strong>troposheric_O3_column_number_density</strong></td>
+<td><em>path</em></td>
+<td><strong>/PRODUCT/O3_tropospheric_column[]</strong></td>
+</tr>
+<tr class="row-even"><td><strong>troposheric_O3_column_number_density_stdev</strong></td>
+<td><em>path</em></td>
+<td><strong>/PRODUCT/O3_tropospheric_column_precision[]</strong></td>
 </tr>
 </tbody>
 </table>

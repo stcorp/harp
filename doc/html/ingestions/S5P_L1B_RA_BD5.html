@@ -278,7 +278,7 @@
 <td><strong>/BAND5_RADIANCE/STANDARD_MODE/OBSERVATIONS/time, /BAND5_RADIANCE/STANDARD_MODE/OBSERVATIONS/delta_time[]</strong></td>
 </tr>
 <tr class="row-even"><td><em>description</em></td>
-<td>time converted from milliseconds since a reference time (given as seconds since 2010-01-01 UTC) to seconds since 2000-01-01 TAI</td>
+<td>time converted from milliseconds since a reference time (given as seconds since 2010-01-01 UTC) to seconds since 2000-01-01 TAI; the time associated with a scanline is repeated for each pixel in the scanline</td>
 </tr>
 <tr class="row-odd"><td><strong>latitude</strong></td>
 <td><em>path</em></td>
@@ -296,39 +296,48 @@
 <td><em>path</em></td>
 <td><strong>/BAND5_RADIANCE/STANDARD_MODE/GEODATA/longitude_bounds[]</strong></td>
 </tr>
-<tr class="row-odd"><td><strong>instrument_latitude</strong></td>
+<tr class="row-odd"><td rowspan="2"><strong>instrument_latitude</strong></td>
 <td><em>path</em></td>
 <td><strong>/BAND5_RADIANCE/STANDARD_MODE/GEODATA/satellite_latitude[]</strong></td>
 </tr>
-<tr class="row-even"><td><strong>instrument_longitude</strong></td>
+<tr class="row-even"><td><em>description</em></td>
+<td>the satellite latitude associated with a scanline is repeated for each pixel in the scanline</td>
+</tr>
+<tr class="row-odd"><td rowspan="2"><strong>instrument_longitude</strong></td>
 <td><em>path</em></td>
 <td><strong>/BAND5_RADIANCE/STANDARD_MODE/GEODATA/satellite_longitude[]</strong></td>
 </tr>
-<tr class="row-odd"><td><strong>instrument_altitude</strong></td>
+<tr class="row-even"><td><em>description</em></td>
+<td>the satellite longitude associated with a scanline is repeated for each pixel in the scanline</td>
+</tr>
+<tr class="row-odd"><td rowspan="2"><strong>instrument_altitude</strong></td>
 <td><em>path</em></td>
 <td><strong>/BAND5_RADIANCE/STANDARD_MODE/GEODATA/satellite_altitude[]</strong></td>
 </tr>
-<tr class="row-even"><td><strong>solar_zenith_angle</strong></td>
+<tr class="row-even"><td><em>description</em></td>
+<td>the satellite altitude associated with a scanline is repeated for each pixel in the scanline</td>
+</tr>
+<tr class="row-odd"><td><strong>solar_zenith_angle</strong></td>
 <td><em>path</em></td>
 <td><strong>/BAND5_RADIANCE/STANDARD_MODE/GEODATA/solar_zenith_angle[]</strong></td>
 </tr>
-<tr class="row-odd"><td><strong>solar_azimuth_angle</strong></td>
+<tr class="row-even"><td><strong>solar_azimuth_angle</strong></td>
 <td><em>path</em></td>
 <td><strong>/BAND5_RADIANCE/STANDARD_MODE/GEODATA/solar_azimuth_angle[]</strong></td>
 </tr>
-<tr class="row-even"><td><strong>viewing_zenith_angle</strong></td>
+<tr class="row-odd"><td><strong>viewing_zenith_angle</strong></td>
 <td><em>path</em></td>
 <td><strong>/BAND5_RADIANCE/STANDARD_MODE/GEODATA/viewing_zenith_angle[]</strong></td>
 </tr>
-<tr class="row-odd"><td><strong>viewing_azimuth_angle</strong></td>
+<tr class="row-even"><td><strong>viewing_azimuth_angle</strong></td>
 <td><em>path</em></td>
 <td><strong>/BAND5_RADIANCE/STANDARD_MODE/GEODATA/viewing_azimuth_angle[]</strong></td>
 </tr>
-<tr class="row-even"><td><strong>wavelength</strong></td>
+<tr class="row-odd"><td><strong>wavelength</strong></td>
 <td><em>path</em></td>
 <td><strong>/BAND5_RADIANCE/STANDARD_MODE/INSTRUMENT/nominal_wavelength[]</strong></td>
 </tr>
-<tr class="row-odd"><td><strong>photon_radiance</strong></td>
+<tr class="row-even"><td><strong>photon_radiance</strong></td>
 <td><em>path</em></td>
 <td><strong>/BAND5_RADIANCE/STANDARD_MODE/OBSERVATIONS/radiance[]</strong></td>
 </tr>
