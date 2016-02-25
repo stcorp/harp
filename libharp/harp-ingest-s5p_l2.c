@@ -155,11 +155,11 @@ static const char *get_product_type_name(s5p_product_type product_type)
         case s5p_type_fresco:
             return "L2__FRESCO";
         case s5p_type_so2:
-            return "SO2____";
+            return "L2__SO2____";
         case s5p_type_o3:
-            return "O3____";
+            return "L2__O3____";
         case s5p_type_hcho:
-            return "HCHO__";
+            return "L2__HCHO__";
     }
 
     assert(0);
