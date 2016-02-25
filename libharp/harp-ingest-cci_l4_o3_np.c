@@ -240,38 +240,32 @@ static int read_dataset(ingest_info *info, const char *path, harp_data_type data
     switch (data_type)
     {
         case harp_type_float:
+            if (coda_cursor_read_float_array(&cursor, data.float_data, coda_array_ordering_c) != 0)
             {
-                if (coda_cursor_read_float_array(&cursor, data.float_data, coda_array_ordering_c) != 0)
+                harp_set_error(HARP_ERROR_CODA, NULL);
+                return -1;
+            }
+            if (coda_cursor_goto(&cursor, "@FillValue") == 0)
+            {
+                if (coda_cursor_read_float(&cursor, &fill_value.float_data) != 0)
                 {
                     harp_set_error(HARP_ERROR_CODA, NULL);
                     return -1;
-                }
-                if (coda_cursor_goto(&cursor, "@FillValue") == 0)
-                {
-                    if (coda_cursor_read_float(&cursor, &fill_value.float_data) != 0)
-                    {
-                        harp_set_error(HARP_ERROR_CODA, NULL);
-                        return -1;
-                    }
-                    harp_array_replace_fill_value(data_type, num_elements, data, fill_value);
                 }
             }
             break;
         case harp_type_double:
+            if (coda_cursor_read_double_array(&cursor, data.double_data, coda_array_ordering_c) != 0)
             {
-                if (coda_cursor_read_double_array(&cursor, data.double_data, coda_array_ordering_c) != 0)
+                harp_set_error(HARP_ERROR_CODA, NULL);
+                return -1;
+            }
+            if (coda_cursor_goto(&cursor, "@FillValue") == 0)
+            {
+                if (coda_cursor_read_double(&cursor, &fill_value.double_data) != 0)
                 {
                     harp_set_error(HARP_ERROR_CODA, NULL);
                     return -1;
-                }
-                if (coda_cursor_goto(&cursor, "@FillValue") == 0)
-                {
-                    if (coda_cursor_read_double(&cursor, &fill_value.double_data) != 0)
-                    {
-                        harp_set_error(HARP_ERROR_CODA, NULL);
-                        return -1;
-                    }
-                    harp_array_replace_fill_value(data_type, num_elements, data, fill_value);
                 }
             }
             break;
@@ -279,6 +273,9 @@ static int read_dataset(ingest_info *info, const char *path, harp_data_type data
             assert(0);
             exit(1);
     }
+
+    /* Replace values equal to the _FillValue variable attribute by NaN. */
+    harp_array_replace_fill_value(data_type, num_elements, data, fill_value);
 
     return 0;
 }
