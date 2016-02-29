@@ -67,7 +67,7 @@ check_type_size(_Bool SIZEOF__BOOL)
 set(HAVE__BOOL ${SIZEOF__BOOL})
 
 include_directories(${HARP_BINARY_DIR} ${HARP_SOURCE_DIR}/libharp)
-include_directories(${CODA_BINARY_DIR} ${CODA_SOURCE_DIR}/expat)
+include_directories(${CODA_BINARY_DIR})
 
 # Some autoconf variables that CMake does not use itself, but
 # that are used in the config file substitutions.
