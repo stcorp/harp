@@ -18,6 +18,7 @@ set(HARP_FORMAT_VERSION_MINOR 0)
 set(HARP_CONVENTION \"HARP-${HARP_FORMAT_VERSION_MAJOR}.${HARP_FORMAT_VERSION_MINOR}\")
 
 
+include(CheckFunctionExists)
 include(CheckLibraryExists)
 include(CheckIncludeFile)
 include(CheckTypeSize)
@@ -26,8 +27,9 @@ set(CMAKE_MODULE_PATH
   ${HARP_SOURCE_DIR}/coda/CMakeModules
   ${CMAKE_MODULE_PATH}
   CACHE INTERNAL "Local CMake modules")
-include(FindHDF4)
-include(FindHDF5)
+
+find_package(HDF4)
+find_package(HDF5)
 
 include_directories(${HDF4_INCLUDE_DIR} ${HDF5_INCLUDE_DIR})
 
