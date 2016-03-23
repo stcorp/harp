@@ -349,9 +349,8 @@ double harp_number_density_from_partial_pressure_pressure_and_temperature(double
 double harp_number_density_from_volume_mixing_ratio_pressure_and_temperature(double volume_mixing_ratio,
                                                                              double pressure, double temperature)
 {
-    /* Convert [ppmv] to [1] */
-    return 1e-6 * volume_mixing_ratio * CONST_STD_AIR_DENSITY *
-        (CONST_STD_TEMPERATURE / temperature) * (pressure / CONST_STD_PRESSURE);
+    /* Convert [ppmv] to [1] and convert [hPa] to [Pa] */
+    return 1e-4 * volume_mixing_ratio * pressure * CONST_NUM_AVOGADRO / (CONST_MOLAR_GAS * temperature);
 }
 
 /** Convert a density to a partial column using the altitude boundaries
