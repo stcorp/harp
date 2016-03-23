@@ -64,24 +64,23 @@
  */
 
 /* Physical constants */
-#define CONST_NUM_AVOGADRO 6.02214199e23        /* [1/mol] */
+#define CONST_NUM_AVOGADRO 6.022140857e23       /* [1/mol] (CODATA 2014) */
 #define CONST_SPEED_OF_LIGHT 2.99792458e8       /* [m/s] */
-#define CONST_GRAVITATIONAL_CONSTANT 6.673e-11  /* [m3/kg s2] */
-#define CONST_PLANCKS_CONSTANT_H 6.62606896e-34 /* [kg.m2/s] */
-#define CONST_PLANCKS_CONSTANT_HBAR 1.05457162825e-34   /* [kg.m2/s] */
-#define CONST_ELECTRON_VOLT 1.602176487e-19     /* [kg.m2/s2] */
-#define CONST_MASS_ELECTRON 9.10938188e-31      /* [kg] */
-#define CONST_MASS_MUON 1.88353109e-28  /* [kg] */
-#define CONST_MASS_PROTON 1.67262158e-27        /* [kg] */
-#define CONST_MASS_NEUTRON 1.67492716e-27       /* [kg] */
-#define CONST_RYDBERG 2.17987196968e-18 /* [kg.m2/s2] */
-#define CONST_BOLTZMANN 1.3806504e-23   /* [kg.m2/K.s2] */
-#define CONST_BOHR_MAGNETON 9.27400899e-24      /* [A.m2] */
-#define CONST_NUCLEAR_MAGNETON 5.05078317e-27   /* [A.m2] */
-#define CONST_ELECTRON_MAGNETIC_MOMENT 9.28476362e-24   /* [A.m2] */
-#define CONST_PROTON_MAGNETIC_MOMENT 1.410606633e-26    /* [A.m2] */
-#define CONST_MOLAR_GAS 8.3144621       /* [kg.m2/K.mol.s2] = [J/K.mol] */
-#define CONST_STANDARD_GAS_VOLUME 2.2710981e-2  /* [m3/mol] */
+#define CONST_GRAVITATIONAL_CONSTANT 6.67408e-11        /* [m3/kg s2] (CODATA 2014) */
+#define CONST_PLANCKS_CONSTANT_H 6.626070040e-34        /* [kg.m2/s] (CODATA 2014) */
+#define CONST_PLANCKS_CONSTANT_HBAR 1.054571800e-34     /* [kg.m2/s] (CODATA 2014) */
+#define CONST_ELECTRON_VOLT 1.6021766208e-19    /* [kg.m2/s2] (CODATA 2014) */
+#define CONST_MASS_ELECTRON 9.10938356e-31      /* [kg] (CODATA 2014) */
+#define CONST_MASS_MUON 1.883531594e-28 /* [kg] (CODATA 2014) */
+#define CONST_MASS_PROTON 1.672621898e-27       /* [kg] (CODATA 2014) */
+#define CONST_MASS_NEUTRON 1.674927471e-27      /* [kg] (CODATA 2014) */
+#define CONST_RYDBERG 2.179872325e-18   /* [kg.m2/s2] (CODATA 2014) */
+#define CONST_BOLTZMANN 1.38064852e-23  /* [kg.m2/K.s2] (CODATA 2014) */
+#define CONST_BOHR_MAGNETON 9.274009994e-24     /* [A.m2] (CODATA 2014) */
+#define CONST_NUCLEAR_MAGNETON 5.050783699e-27  /* [A.m2] (CODATA 2014) */
+#define CONST_ELECTRON_MAGNETIC_MOMENT 9.284764620e-24  /* [A.m2] (CODATA 2014) */
+#define CONST_PROTON_MAGNETIC_MOMENT 1.4106067873e-26   /* [A.m2] (CODATA 2014) */
+#define CONST_MOLAR_GAS 8.3144598       /* [kg.m2/K.mol.s2] = [J/K.mol] (CODATA 2014) */
 #define CONST_MINUTE 6e1        /* [s] */
 #define CONST_HOUR 3.6e3        /* [s] */
 #define CONST_DAY 8.64e4        /* [s] */
@@ -120,7 +119,7 @@
 #define CONST_UK_TON 1.0160469088e3     /* [kg] */
 #define CONST_TROY_OUNCE 3.1103475e-2   /* [kg] */
 #define CONST_CARAT 2e-4        /* [kg] */
-#define CONST_UNIFIED_ATOMIC_MASS 1.660538782e-27       /* [kg] */
+#define CONST_UNIFIED_ATOMIC_MASS 1.660539040e-27       /* [kg] (CODATA 2014) */
 #define CONST_GRAM_FORCE 9.80665e-3     /* [kg.m/s2] */
 #define CONST_POUND_FORCE 4.44822161526e0       /* [kg.m/s2] */
 #define CONST_KILOPOUND_FORCE 4.44822161526e3   /* [kg.m/s2] */
@@ -138,8 +137,8 @@
 #define CONST_PSI 6.89475729317e3       /* [kg/m.s2] */
 #define CONST_POISE 1e-1        /* [kg/m/s] */
 #define CONST_STOKES 1e-4       /* [m2/s] */
-#define CONST_FARADAY 9.64853429775e4   /* [A.s/mol] */
-#define CONST_ELECTRON_CHARGE 1.602176487e-19   /* [A.s] */
+#define CONST_FARADAY 96485.33289       /* [A.s/mol] (CODATA 2014) */
+#define CONST_ELECTRON_CHARGE 1.6021766208e-19  /* [A.s] (CODATA 2014) */
 #define CONST_GAUSS 1e-4        /* [kg/A.s2] */
 #define CONST_STILB 1e4 /* [cd/m2] */
 #define CONST_LUMEN 1e0 /* [cd.sr] */
@@ -157,8 +156,8 @@
 #define CONST_DYNE 1e-5 /* [kg.m/s2] */
 #define CONST_JOULE 1e0 /* [kg.m2/s2] */
 #define CONST_ERG 1e-7  /* [kg.m2/s2] */
-#define CONST_STEFAN_BOLTZMANN_CONSTANT 5.67040047374e-8        /* [kg/K4.s3] */
-#define CONST_THOMSON_CROSS_SECTION 6.65245893699e-29   /* [m2] */
+#define CONST_STEFAN_BOLTZMANN_CONSTANT 5.670367e-8     /* [W/m2.K4] (CODATA 2014) */
+#define CONST_THOMSON_CROSS_SECTION 6.6524587158e-29    /* [m2] (CODATA 2014) */
 #define CONST_VACUUM_PERMITTIVITY 8.854187817e-12       /* [A2.s4/kg.m3] */
 #define CONST_VACUUM_PERMEABILITY 1.25663706144e-6      /* [kg.m/A2.s2] */
 #define CONST_DEBYE 3.33564095198e-30   /* [A.s2/m2] */
@@ -218,9 +217,10 @@
 
 /* Atmospheric physics constants */
 #define CONST_DOBSON_UNIT 2.6868e20     /* [molec/m2] */
-#define CONST_STD_AIR_DENSITY 2.6867774e25      /* [molec/m3] Loschmidt constant = air density at standard T and p */
-#define CONST_STD_PRESSURE 1.01325e3    /* [hPa] */
-#define CONST_STD_TEMPERATURE 273.15    /* [K] */
+#define CONST_STD_AIR_DENSITY 2.6867811e25      /* [molec/m3] Loschmidt constant = air density at standard T and p (CODATA 2014) */
+#define CONST_STD_PRESSURE 1.01325e3    /* [hPa] (standard pressure consistent with Loschmidt constant) */
+#define CONST_STD_TEMPERATURE 273.15    /* [K] (standard temperature consistent with Loschmidt constant)  */
+#define CONST_STANDARD_GAS_VOLUME 22.413962e-3  /* [m3/mol] (for standard temperature and pressure) (CODATA 2014) */
 #define CONST_GAS_SPECIFIC_WET_AIR 287.30       /* [J/kg/K] (= 1e3 * CONST_MOLAR_GAS / CONST_MEAN_MOLAR_MASS_WET_AIR) */
 #define CONST_GAS_SPECIFIC_DRY_AIR 287.058      /* [J/kg/K] (= 1e3 * CONST_MOLAR_GAS / CONST_MOLAR_MASS_DRY_AIR) */
 #define CONST_TOA_ALTITUDE 100.0e3      /* [m] altitude of the top of the atmosphere */
