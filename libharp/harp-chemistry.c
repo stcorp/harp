@@ -506,9 +506,8 @@ double harp_volume_mixing_ratio_from_mass_mixing_ratio_wet_and_humidity(double m
 double harp_volume_mixing_ratio_from_number_density_pressure_and_temperature(double number_density, double pressure,
                                                                              double temperature)
 {
-    /* Convert [1] to [ppmv] */
-    return 1e6 * (number_density / CONST_STD_AIR_DENSITY) * (temperature / CONST_STD_TEMPERATURE) *
-        (CONST_STD_PRESSURE / pressure);
+    /* Convert [1] to [ppmv] and convert [hPa] to [Pa] */
+    return 1e4 * number_density * temperature * CONST_MOLAR_GAS / (pressure * CONST_NUM_AVOGADRO);
 }
 
 /** Convert partial pressure to volume mixing ratio
