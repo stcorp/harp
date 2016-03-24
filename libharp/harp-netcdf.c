@@ -72,6 +72,7 @@ static const char *get_dimension_type_name(netcdf_dimension_type dimension_type)
 static int parse_dimension_type(const char *str, netcdf_dimension_type *dimension_type)
 {
     int num_consumed;
+    long length;
 
     if (strcmp(str, get_dimension_type_name(netcdf_dimension_time)) == 0)
     {
@@ -93,11 +94,11 @@ static int parse_dimension_type(const char *str, netcdf_dimension_type *dimensio
     {
         *dimension_type = netcdf_dimension_vertical;
     }
-    else if (sscanf(str, "independent_%*d%n", &num_consumed) == 0 && (size_t)num_consumed == strlen(str))
+    else if (sscanf(str, "independent_%ld%n", &length, &num_consumed) == 1 && (size_t)num_consumed == strlen(str))
     {
         *dimension_type = netcdf_dimension_independent;
     }
-    else if (sscanf(str, "string_%*d%n", &num_consumed) == 0 && (size_t)num_consumed == strlen(str))
+    else if (sscanf(str, "string_%ld%n", &length, &num_consumed) == 1 && (size_t)num_consumed == strlen(str))
     {
         *dimension_type = netcdf_dimension_string;
     }
@@ -281,6 +282,7 @@ static int dimensions_add(netcdf_dimensions *dimensions, netcdf_dimension_type t
                            "'%ld' '%ld'", get_dimension_type_name(type), dimensions->length[index], length);
             return -1;
         }
+
         return index;
     }
 
@@ -945,14 +947,14 @@ static int write_dimensions(int ncid, const netcdf_dimensions *dimensions)
 
         if (dimensions->type[i] == netcdf_dimension_independent)
         {
-            char name[32];
+            char name[64];
 
             sprintf(name, "independent_%ld", dimensions->length[i]);
             result = nc_def_dim(ncid, name, dimensions->length[i], &dim_id);
         }
         else if (dimensions->type[i] == netcdf_dimension_string)
         {
-            char name[32];
+            char name[64];
 
             sprintf(name, "string_%ld", dimensions->length[i]);
             result = nc_def_dim(ncid, name, dimensions->length[i], &dim_id);
