@@ -1,3 +1,7 @@
+
+* CODA is no longer included as part of HARP, but is treated as a separate
+  package, just like HDF4 and HDF5.
+
 * Added ingestion modules for the following product types:
     - Ozone CCI L3 limb profile products
     - Ozone CCI L2 limb profile products

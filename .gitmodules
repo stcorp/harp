@@ -1,6 +1,3 @@
-[submodule "coda"]
-	path = coda
-	url = https://github.com/stcorp/coda
 [submodule "definitions/ERS_GOME"]
 	path = definitions/ERS_GOME
 	url = https://github.com/stcorp/codadef-ers-gome

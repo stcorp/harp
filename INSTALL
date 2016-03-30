@@ -38,6 +38,10 @@ What you will need
     should not be a problem. For Mac OS X you should make sure you have
     installed the Developer Tools.
 
+  - A recent version of CODA. You will need a version of CODA that is compiled
+    using the same HDF4 and HDF5 libraries as you will use for building HARP.
+    CODA can be downloaded from https://github.com/stcorp/coda
+
   - A recent version of HDF4. You will also need the additional libraries
     libjpeg, zlib, and szlib depending on whether HDF4 was build against them.
     In order to prevent conflicts of the HDF4 library with the netCDF interface
@@ -95,6 +99,22 @@ library and executables:
         installation directory. For instance, you can use 
         ``--prefix=$HOME/harp`` to install the software in the subdirectory
         ``harp`` of your home directory.
+
+    ``CODA_LIB=<CODA library directory>`` :
+        The configure script will automatically try to locate the CODA library
+        in the default locations for libraries (``/usr/local/lib`` is usually
+        not considered a default location!).
+        If ``./configure`` complains that it can't find the ``coda`` library
+        files, pass this option to ``./configure`` with the location of this
+        library file.
+    
+    ``CODA_INCLUDE=<CODA include file directory>`` :
+        The configure script will automatically try to locate the CODA include
+        files in the default locations for include files
+        (``/usr/local/include`` is usually not considered a default location!).
+        If ``./configure`` complains that it can't find the ``coda.h`` include
+        file, pass this option to ``./configure`` with the location of this
+        include file.
 
     ``HDF4_LIB=<HDF4 library directory>`` :
         The configure script will automatically try to locate the HDF4 

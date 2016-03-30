@@ -1,6 +1,4 @@
-ACLOCAL_AMFLAGS = -I coda/m4
-
-SUBDIRS = coda
+ACLOCAL_AMFLAGS = -I m4
 
 # *** general build settings ****
 
@@ -131,10 +129,10 @@ libharp_la_SOURCES = \
 	libharp/hashtable.h \
 	libharp/hashtable.c \
 	libharp/ipow.h
-libharp_la_CPPFLAGS = -Icoda -I$(srcdir)/coda -Inetcdf -I$(srcdir)/netcdf -Iudunits2 -I$(srcdir)/udunits2
+libharp_la_CPPFLAGS = -Inetcdf -I$(srcdir)/netcdf -Iudunits2 -I$(srcdir)/udunits2
 libharp_la_LDFLAGS = -no-undefined -version-info $(LIBHARP_CURRENT):$(LIBHARP_REVISION):$(LIBHARP_AGE)
-libharp_la_LIBADD = @LTLIBOBJS@ coda/libcoda_internal.la libudunits2.la libnetcdf.la $(HDF4LIBS) $(HDF5LIBS)
-libharp_la_DEPENDENCIES = coda/libcoda_internal.la libudunits2.la libnetcdf.la coda/coda.h
+libharp_la_LIBADD = @LTLIBOBJS@ libudunits2.la libnetcdf.la $(CODALIBS) $(HDF4LIBS) $(HDF5LIBS)
+libharp_la_DEPENDENCIES = libudunits2.la libnetcdf.la
 INDENTFILES += $(libharp_la_SOURCES) libharp/harp.h.in
 
 # harpcheck
@@ -155,7 +153,6 @@ harpcollocate_SOURCES = \
 	tools/harpcollocate/harpcollocate-resample.c \
 	tools/harpcollocate/harpcollocate-result.c \
 	tools/harpcollocate/harpcollocate-update.c
-harpcollocate_CPPFLAGS = -Icoda -I$(srcdir)/coda $(AM_CPPFLAGS)
 harpcollocate_LDFLAGS = -static
 harpcollocate_LDADD = libharp.la
 INDENTFILES += $(harpcollocate_SOURCES)
@@ -163,7 +160,6 @@ INDENTFILES += $(harpcollocate_SOURCES)
 # harpconvert
 
 harpconvert_SOURCES = tools/harpconvert/harpconvert.c
-harpconvert_CPPFLAGS = -Icoda -I$(srcdir)/coda $(AM_CPPFLAGS)
 harpconvert_LDFLAGS = -static
 harpconvert_LDADD = libharp.la
 INDENTFILES += $(harpconvert_SOURCES)
@@ -171,7 +167,6 @@ INDENTFILES += $(harpconvert_SOURCES)
 # harpdump
 
 harpdump_SOURCES = tools/harpdump/harpdump.c
-harpdump_CPPFLAGS = -Icoda -I$(srcdir)/coda $(AM_CPPFLAGS)
 harpdump_LDFLAGS = -static
 harpdump_LDADD = libharp.la
 INDENTFILES += $(harpdump_SOURCES)
@@ -179,7 +174,6 @@ INDENTFILES += $(harpdump_SOURCES)
 # harpfilter
 
 harpfilter_SOURCES = tools/harpfilter/harpfilter.c
-harpfilter_CPPFLAGS = -Icoda -I$(srcdir)/coda $(AM_CPPFLAGS)
 harpfilter_LDFLAGS = -static
 harpfilter_LDADD = libharp.la
 INDENTFILES += $(harpfilter_SOURCES)
@@ -274,15 +268,6 @@ EXTRA_DIST += \
 	udunits2/LICENSE \
 	udunits2/README
 
-# coda
-
-coda/coda.h:
-	cd coda && $(MAKE) coda.h
-
-coda/libcoda_internal.la:
-	cd coda && $(MAKE) libcoda_internal.la
-
-
 # *** product definition files ***
 
 ENVISAT_GOMOS_DEFINITION_FILE = ENVISAT_GOMOS-@CODADEF_VERSION_ENVISAT_GOMOS@.codadef
@@ -305,7 +290,7 @@ nobase_pkgdata_DATA = $(DEFINITION_FILES)
 
 definitions/$(ENVISAT_GOMOS_DEFINITION_FILE):
 	test -d definitions || $(mkinstalldirs) definitions
-	@$(srcdir)/coda/codadef.sh $(srcdir)/definitions/ENVISAT_GOMOS definitions
+	@$(srcdir)/codadef.sh $(srcdir)/definitions/ENVISAT_GOMOS definitions
 	@if test ! -f definitions/$(ENVISAT_GOMOS_DEFINITION_FILE) ; then \
 	  echo definitions/$(ENVISAT_GOMOS_DEFINITION_FILE) not created. ; \
 	  echo run './config.status --recheck' to update the .codadef version reference. ; \
@@ -314,7 +299,7 @@ definitions/$(ENVISAT_GOMOS_DEFINITION_FILE):
 
 definitions/$(ENVISAT_MIPAS_DEFINITION_FILE):
 	test -d definitions || $(mkinstalldirs) definitions
-	@$(srcdir)/coda/codadef.sh $(srcdir)/definitions/ENVISAT_MIPAS definitions
+	@$(srcdir)/codadef.sh $(srcdir)/definitions/ENVISAT_MIPAS definitions
 	@if test ! -f definitions/$(ENVISAT_MIPAS_DEFINITION_FILE) ; then \
 	  echo definitions/$(ENVISAT_MIPAS_DEFINITION_FILE) not created. ; \
 	  echo run './config.status --recheck' to update the .codadef version reference. ; \
@@ -323,7 +308,7 @@ definitions/$(ENVISAT_MIPAS_DEFINITION_FILE):
 
 definitions/$(ENVISAT_SCIAMACHY_DEFINITION_FILE):
 	test -d definitions || $(mkinstalldirs) definitions
-	@$(srcdir)/coda/codadef.sh $(srcdir)/definitions/ENVISAT_SCIAMACHY definitions
+	@$(srcdir)/codadef.sh $(srcdir)/definitions/ENVISAT_SCIAMACHY definitions
 	@if test ! -f definitions/$(ENVISAT_SCIAMACHY_DEFINITION_FILE) ; then \
 	  echo definitions/$(ENVISAT_SCIAMACHY_DEFINITION_FILE) not created. ; \
 	  echo run './config.status --recheck' to update the .codadef version reference. ; \
@@ -332,7 +317,7 @@ definitions/$(ENVISAT_SCIAMACHY_DEFINITION_FILE):
 
 definitions/$(EPS_DEFINITION_FILE):
 	test -d definitions || $(mkinstalldirs) definitions
-	@$(srcdir)/coda/codadef.sh $(srcdir)/definitions/EPS definitions
+	@$(srcdir)/codadef.sh $(srcdir)/definitions/EPS definitions
 	@if test ! -f definitions/$(EPS_DEFINITION_FILE) ; then \
 	  echo definitions/$(EPS_DEFINITION_FILE) not created. ; \
 	  echo run './config.status --recheck' to update the .codadef version reference. ; \
@@ -341,7 +326,7 @@ definitions/$(EPS_DEFINITION_FILE):
 
 definitions/$(ERS_GOME_DEFINITION_FILE):
 	test -d definitions || $(mkinstalldirs) definitions
-	@$(srcdir)/coda/codadef.sh $(srcdir)/definitions/ERS_GOME definitions
+	@$(srcdir)/codadef.sh $(srcdir)/definitions/ERS_GOME definitions
 	@if test ! -f definitions/$(ERS_GOME_DEFINITION_FILE) ; then \
 	  echo definitions/$(ERS_GOME_DEFINITION_FILE) not created. ; \
 	  echo run './config.status --recheck' to update the .codadef version reference. ; \
@@ -471,7 +456,7 @@ EXTRA_DIST += \
 	config.h.cmake.in \
 	libharp/harp.h.cmake.in
 
-config.h.cmake.in: config.h.in coda/cmakeify-dot-infiles.pl
+config.h.cmake.in: config.h.in cmakeify-dot-infiles.pl
 	cat $(srcdir)/config.h.in | sed -e 's/#undef HARP_FORMAT_VERSION_MAJOR/#define HARP_FORMAT_VERSION_MAJOR @HARP_FORMAT_VERSION_MAJOR@/' -e 's/#undef HARP_FORMAT_VERSION_MINOR/#define HARP_FORMAT_VERSION_MINOR @HARP_FORMAT_VERSION_MINOR@/' -e 's/#undef \(.*\)/#cmakedefine \1 \$${\1}/' > config.h.cmake.in2
 	@if diff $(srcdir)/config.h.cmake.in config.h.cmake.in2 >/dev/null 2>&1 ; then \
 	  echo "config.h.cmake.in is unchanged" ; \
@@ -480,7 +465,7 @@ config.h.cmake.in: config.h.in coda/cmakeify-dot-infiles.pl
 	  mv config.h.cmake.in2 $(srcdir)/config.h.cmake.in ; \
 	fi
 
-libharp/harp.h.cmake.in: libharp/harp.h.in coda/cmakeify-dot-infiles.pl
+libharp/harp.h.cmake.in: libharp/harp.h.in cmakeify-dot-infiles.pl
 	cat $(srcdir)/libharp/harp.h.in | sed 's/#undef \(.*\)/#cmakedefine \1 \$${\1}/' > libharp/harp.h.cmake.in2
 	@if diff $(srcdir)/libharp/harp.h.cmake.in libharp/harp.h.cmake.in2 >/dev/null 2>&1 ; then \
 	  echo "libharp/harp.h.cmake.in is unchanged" ; \

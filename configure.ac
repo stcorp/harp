@@ -1,12 +1,11 @@
 # autoconf file for HARP
 AC_INIT([harp],[0.1])
-AC_CONFIG_AUX_DIR([coda])
+AC_CONFIG_AUX_DIR([.])
 AM_INIT_AUTOMAKE(foreign subdir-objects 1.10 -Wall)
 
 AC_PREREQ(2.63)
 
-AC_CONFIG_MACRO_DIR([coda/m4])
-AC_CONFIG_SUBDIRS([coda])
+AC_CONFIG_MACRO_DIR([m4])
 
 # set extra version variable
 AC_DEFINE_UNQUOTED(HARP_VERSION, ["$VERSION"], [This is the current version of HARP])
@@ -220,6 +219,17 @@ Try setting the HDF5_LIB and HDF5_INCLUDE environment variables to the
 location of your HDF5 library and include files.]))
 fi
 AC_SUBST(HDF5LIBS)
+
+# *** CODA ***
+
+# make sure to perform this check after checking for HDF4/HDF5
+ST_CHECK_CODA
+if test $st_cv_have_coda = no ; then
+  AC_MSG_ERROR(BOXED_TEXT([ERROR: CODA library and/or header file not found.
+Try setting the CODA_LIB and CODA_INCLUDE environment variables to the
+location of your CODA library and include file.]))
+fi
+AC_SUBST(CODALIBS)
 
 # *** extra ***
 

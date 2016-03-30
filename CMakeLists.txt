@@ -21,27 +21,27 @@ set(HARP_CONVENTION \"HARP-${HARP_FORMAT_VERSION_MAJOR}.${HARP_FORMAT_VERSION_MI
 include(CheckFunctionExists)
 include(CheckLibraryExists)
 include(CheckIncludeFile)
+include(CheckSymbolExists)
 include(CheckTypeSize)
+include(TestBigEndian)
 
 set(CMAKE_MODULE_PATH
-  ${HARP_SOURCE_DIR}/coda/CMakeModules
+  ${HARP_SOURCE_DIR}/CMakeModules
   ${CMAKE_MODULE_PATH}
   CACHE INTERNAL "Local CMake modules")
 
+find_package(BISON)
+find_package(FLEX)
+
 find_package(HDF4)
 find_package(HDF5)
+find_package(CODA)
 
 include_directories(${HDF4_INCLUDE_DIR} ${HDF5_INCLUDE_DIR})
 
 if(NOT MSVC)
 set(MATHLIB m)
 endif()
-
-# CODA
-set(CODA_BUILD_SUBPACKAGE_MODE ON CACHE STRING "Subpackage mode needs to be enabled for HARP")
-set(CODA_WITH_HDF4 ON CACHE STRING "HDF4 needs to be enabled for HARP")
-set(CODA_WITH_HDF5 ON CACHE STRING "HDF5 needs to be enabled for HARP")
-add_subdirectory(coda)
 
 
 set(INCLUDES "")
@@ -53,23 +53,59 @@ macro(find_include FILE VARIABLE)
   endif(${VARIABLE})
 endmacro(find_include)
 
+find_include(dlfcn.h HAVE_DLFCN_H)
 find_include(inttypes.h HAVE_INTTYPES_H)
 find_include(limits.h HAVE_LIMITS_H)
+find_include(memory.h HAVE_MEMORY_H)
 find_include(stdarg.h HAVE_STDARG_H)
 find_include(stdint.h HAVE_STDINT_H)
 find_include(stdlib.h HAVE_STDLIB_H)
 find_include(string.h HAVE_STRING_H)
 find_include(strings.h HAVE_STRINGS_H)
+find_include(sys/stat.h HAVE_SYS_STAT_H)
 find_include(sys/types.h HAVE_SYS_TYPES_H)
 find_include(unistd.h HAVE_UNISTD_H)
 
+check_function_exists(bcopy HAVE_BCOPY)
+check_function_exists(floor HAVE_FLOOR)
+check_function_exists(getpagesize HAVE_GETPAGESIZE)
+check_function_exists(malloc HAVE_MALLOC)
+check_function_exists(memmove HAVE_MEMMOVE)
+check_function_exists(mmap HAVE_MMAP)
+check_function_exists(pread HAVE_PREAD)
+check_function_exists(realloc HAVE_REALLOC)
+check_function_exists(stat HAVE_STAT)
+check_function_exists(strcasecmp HAVE_STRCASECMP)
+check_function_exists(strdup HAVE_STRDUP)
 check_function_exists(strerror HAVE_STRERROR)
+check_function_exists(strncasecmp HAVE_STRNCASECMP)
+check_function_exists(vsnprintf HAVE_VSNPRINTF)
+
+set(UCHAR "unsigned char")
+check_symbol_exists(size_t "${INCLUDES}" HAVE_SIZE_T)
+set(SIZE_T "long")
+check_symbol_exists(ptrdiff_t "${INCLUDES}" HAVE_PTRDIFF_T)
+set(PTRDIFF_T "int")
+
+check_type_size(size_t SIZEOF_SIZE_T)
+check_type_size(off_t SIZEOF_OFF_T)
+check_type_size(double SIZEOF_DOUBLE)
+check_type_size(float SIZEOF_FLOAT)
+check_type_size(int SIZEOF_INT)
+check_type_size(long SIZEOF_LONG)
+check_type_size(short SIZEOF_SHORT)
 
 check_type_size(_Bool SIZEOF__BOOL)
 set(HAVE__BOOL ${SIZEOF__BOOL})
 
+test_big_endian(WORDS_BIGENDIAN)
+
+if(HAVE_STDLIB_H AND HAVE_STDDEF_H)
+  set(STDC_HEADERS 1)
+endif(HAVE_STDLIB_H AND HAVE_STDDEF_H)
+
+
 include_directories(${HARP_BINARY_DIR} ${HARP_SOURCE_DIR}/libharp)
-include_directories(${CODA_BINARY_DIR})
 
 # Some autoconf variables that CMake does not use itself, but
 # that are used in the config file substitutions.
@@ -195,6 +231,7 @@ set(LIBHARP_SOURCES
   libharp/hashtable.h
   libharp/ipow.h)
 
+
 BISON_TARGET(utparser ${CMAKE_CURRENT_SOURCE_DIR}/udunits2/utparser.y ${CMAKE_CURRENT_BINARY_DIR}/utparser.c)
 FLEX_TARGET(utscanner ${CMAKE_CURRENT_SOURCE_DIR}/udunits2/utscanner.l ${CMAKE_CURRENT_SOURCE_DIR}/lex.yy.c)
 add_flex_bison_dependency(utscanner utparser)
@@ -273,7 +310,7 @@ install(FILES ${CMAKE_CURRENT_BINARY_DIR}/harp.h DESTINATION include)
 set(PKGDATADIR ${CMAKE_INSTALL_PREFIX}/share/harp)
 add_definitions(-DDEFAULT_UDUNITS2_XML_PATH='"${PKGDATADIR}/udunits2.xml"')
 add_library(harp SHARED ${LIBHARP_SOURCES} ${LIBUDUNITS2_SOURCES} ${LIBNETCDF_SOURCES})
-target_link_libraries(harp coda_static ${HDF4_LIBRARIES} ${HDF5_LIBRARIES})
+target_link_libraries(harp ${CODA_LIBRARIES} ${HDF4_LIBRARIES} ${HDF5_LIBRARIES})
 set_target_properties(harp PROPERTIES
   VERSION ${LIBHARP_MAJOR}.${LIBHARP_MINOR}.${LIBHARP_REVISION}
   SOVERSION ${LIBHARP_MAJOR})
@@ -292,5 +329,5 @@ install(TARGETS harp_static DESTINATION lib)
 
 #  harpconvert
 add_executable(harpconvert tools/harpconvert/harpconvert.c)
-target_link_libraries(harpconvert harp_static coda_static ${HDF4_LIBRARIES} ${HDF5_LIBRARIES} ${MATHLIB})
+target_link_libraries(harpconvert harp_static ${CODA_LIBRARIES} ${HDF4_LIBRARIES} ${HDF5_LIBRARIES} ${MATHLIB})
 install(TARGETS harpconvert DESTINATION bin)
