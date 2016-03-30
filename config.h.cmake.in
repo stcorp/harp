@@ -23,6 +23,12 @@
 /* Define to 1 if you have the `bcopy' function. */
 #cmakedefine HAVE_BCOPY ${HAVE_BCOPY}
 
+/* Define to 1 if CODA is available. */
+#cmakedefine HAVE_CODA ${HAVE_CODA}
+
+/* Define to 1 if you have the <coda.h> header file. */
+#cmakedefine HAVE_CODA_H ${HAVE_CODA_H}
+
 /* Define to 1 if you have the <dlfcn.h> header file. */
 #cmakedefine HAVE_DLFCN_H ${HAVE_DLFCN_H}
 
