@@ -453,6 +453,13 @@ indent:
 
 EXTRA_DIST += \
 	CMakeLists.txt \
+	CMakeModules/FindCODA.cmake \
+	CMakeModules/FindHDF4.cmake \
+	CMakeModules/FindHDF5.cmake \
+	CMakeModules/FindJPEG.cmake \
+	CMakeModules/FindSZIP.cmake \
+	CMakeModules/FindZLIB.cmake \
+	cmakeify-dot-infiles.pl \
 	config.h.cmake.in \
 	libharp/harp.h.cmake.in
 
