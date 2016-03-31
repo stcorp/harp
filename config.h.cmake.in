@@ -145,9 +145,6 @@
 /* Define to the version of this package. */
 #cmakedefine PACKAGE_VERSION ${PACKAGE_VERSION}
 
-/* Define to the compiler attribute to test for printf format compliance */
-#cmakedefine PRINTF_ATTR ${PRINTF_ATTR}
-
 /* The size of `double', as computed by sizeof. */
 #cmakedefine SIZEOF_DOUBLE ${SIZEOF_DOUBLE}
 

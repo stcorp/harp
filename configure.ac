@@ -255,19 +255,6 @@ location of your CODA library and include file.]))
 fi
 AC_SUBST(CODALIBS)
 
-# *** extra ***
-
-AC_ARG_ENABLE([printf-warnings],
-  [AS_HELP_STRING([--enable-printf-warnings],[enables compiler warnings for the printf-like functions in CODA. This only works if compiling with the GNU compiler. Don't use this option for official installations of CODA (since this will prevent coda.h being used by other compilers).])],
-  [ac_cv_enable_printf_warnings=$enableval],
-  [AC_CACHE_CHECK([enable printf warnings],ac_cv_enable_printf_warnings,ac_cv_enable_printf_warnings=no)])
-
-if test $ac_cv_enable_printf_warnings = yes && test "$GCC" = yes ; then
-  AC_DEFINE(PRINTF_ATTR,
-            [__attribute__ ((format(printf, 2, 3)))],
-            [Define to the compiler attribute to test for printf format compliance])
-fi
-
 # *** udunits2/xml ****
 
 AC_DEFINE([XML_NS], 1, [Define to make XML Namespaces functionality available.])
