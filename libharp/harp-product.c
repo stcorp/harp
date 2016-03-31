@@ -322,6 +322,82 @@ LIBHARP_API int harp_product_copy(const harp_product *other_product, harp_produc
     return 0;
 }
 
+/** Set the source product attribute of the specified product.
+ * Store a copy of \a source_product as the value of the source product attribute of the specified product. The previous
+ * value (if any) will be freed.
+ * \param product Product for which to set the source product attribute.
+ * \param source_product New value for the source product attribute.
+ * \return
+ *   \arg \c 0, Success.
+ *   \arg \c -1, Error occurred (check #harp_errno).
+ */
+LIBHARP_API int harp_product_set_source_product(harp_product *product, const char *source_product)
+{
+    char *source_product_copy;
+
+    if (source_product == NULL)
+    {
+        harp_set_error(HARP_ERROR_INVALID_ARGUMENT, "source_product is NULL (%s:%u)", __FILE__, __LINE__);
+        return -1;
+    }
+
+    source_product_copy = strdup(source_product);
+
+    if (source_product_copy == NULL)
+    {
+        harp_set_error(HARP_ERROR_OUT_OF_MEMORY, "out of memory (could not duplicate string) (%s:%u)", __FILE__,
+                       __LINE__);
+        return -1;
+    }
+
+    if (product->source_product != NULL)
+    {
+        free(product->source_product);
+    }
+
+    product->source_product = source_product_copy;
+
+    return 0;
+}
+
+/** Set the history attribute of the specified product.
+ * Store a copy of \a history as the value of the history attribute of the specified product. The previous value (if
+ * any) will be freed.
+ * \param product Product for which to set the history attribute.
+ * \param history New value for the history attribute.
+ * \return
+ *   \arg \c 0, Success.
+ *   \arg \c -1, Error occurred (check #harp_errno).
+ */
+LIBHARP_API int harp_product_set_history(harp_product *product, const char *history)
+{
+    char *history_copy;
+
+    if (history == NULL)
+    {
+        harp_set_error(HARP_ERROR_INVALID_ARGUMENT, "history is NULL (%s:%u)", __FILE__, __LINE__);
+        return -1;
+    }
+
+    history_copy = strdup(history);
+
+    if (history_copy == NULL)
+    {
+        harp_set_error(HARP_ERROR_OUT_OF_MEMORY, "out of memory (could not duplicate string) (%s:%u)", __FILE__,
+                       __LINE__);
+        return -1;
+    }
+
+    if (product->history != NULL)
+    {
+        free(product->history);
+    }
+
+    product->history = history_copy;
+
+    return 0;
+}
+
 /** Add a variable to a product.
  * \note The memory management of the variable will be handled via the product after you have added the variable.
  * \param product Product to which the variable should be added.

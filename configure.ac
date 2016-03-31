@@ -199,6 +199,30 @@ AC_FUNC_REALLOC
 AC_CHECK_FUNCS([floor pread stat memmove bcopy strerror])
 AC_REPLACE_FUNCS([strdup strcasecmp strncasecmp vsnprintf])
 
+# *** directories ***
+
+# Directories for optional components start empty and will be set later.
+harppythondir=
+
+AC_SUBST(harppythondir)
+
+# *** harp-python ***
+
+AC_ARG_ENABLE([python],
+  [AS_HELP_STRING([--enable-python],[build the Python interface])],
+  [ac_cv_enable_python=$enableval],
+  [AC_CACHE_CHECK([build Python interface], ac_cv_enable_python, ac_cv_enable_python=no)])
+
+if test $ac_cv_enable_python = yes ; then
+  AM_PATH_PYTHON
+  if test -z "$PYTHON" ; then
+    AC_MSG_ERROR(BOXED_TEXT([ERROR: Python is required to build the Python interface.
+Try setting the PYTHON environment variable to the location of your Python interpreter.]))
+  fi
+  harppythondir="$pyexecdir/harp"
+fi
+
+AM_CONDITIONAL(BUILD_PYTHON, test $ac_cv_enable_python = yes)
 
 # *** HDF4 ***
 

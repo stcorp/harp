@@ -34,6 +34,13 @@ noinst_PROGRAMS = findtypedef
 lib_LTLIBRARIES = libharp.la
 noinst_LTLIBRARIES = libnetcdf.la libudunits2.la
 
+if BUILD_PYTHON
+harppython_PYTHON = \
+	$(srcdir)/harp_python/__init__.py \
+	$(srcdir)/harp_python/_harppy.py \
+	harp_python/_harpc.py
+endif
+
 # headers
 
 include_HEADERS = libharp/harp.h
@@ -332,6 +339,16 @@ definitions/$(ERS_GOME_DEFINITION_FILE):
 	  echo run './config.status --recheck' to update the .codadef version reference. ; \
 	  exit 1 ; \
 	 fi
+
+# harp-python
+
+harp_python/_harpc.py: $(srcdir)/libharp/harp.h.in $(srcdir)/harp_python/build.py
+	@$(MKDIR_P) harp_python
+	$(PYTHON) $(srcdir)/harp_python/build.py $(srcdir)/libharp/harp.h.in harp_python/_harpc.py
+
+EXTRA_DIST += \
+	harp_python/_harpc.py \
+	harp_python/build.py
 
 # *** misc distribution files ***
 

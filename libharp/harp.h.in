@@ -98,10 +98,12 @@ extern "C"
 
 #endif /* HARP_CONFIG_H */
 
+/* *CFFI-ON* */
+
 LIBHARP_API extern const char *libharp_version;
 
 /** Maximum number of dimensions of a multidimensional array. */
-#define HARP_MAX_NUM_DIMS       8
+#define HARP_MAX_NUM_DIMS       (8)
 
 LIBHARP_API extern int harp_errno;
 
@@ -162,7 +164,7 @@ enum harp_data_type_enum
 };
 typedef enum harp_data_type_enum harp_data_type;
 
-#define HARP_NUM_DATA_TYPES (((int)harp_type_string) + 1)
+#define HARP_NUM_DATA_TYPES (6)
 
 union harp_scalar_union
 {
@@ -197,7 +199,7 @@ enum harp_dimension_type_enum
 };
 typedef enum harp_dimension_type_enum harp_dimension_type;
 
-#define HARP_NUM_DIM_TYPES  (((int)harp_dimension_spectral) + 1)
+#define HARP_NUM_DIM_TYPES  (5)
 
 /** @} */
 
@@ -292,6 +294,9 @@ LIBHARP_API int harp_variable_new(const char *name, harp_data_type data_type, in
 LIBHARP_API void harp_variable_delete(harp_variable *variable);
 LIBHARP_API int harp_variable_copy(const harp_variable *variable, harp_variable **new_variable);
 LIBHARP_API int harp_variable_rename(harp_variable *variable, const char *name);
+LIBHARP_API int harp_variable_set_description(harp_variable *variable, const char *description);
+LIBHARP_API int harp_variable_set_unit(harp_variable *variable, const char *unit);
+LIBHARP_API int harp_variable_set_string_data_element(harp_variable *variable, long index, const char *str);
 LIBHARP_API int harp_variable_convert_data_type(harp_variable *variable, harp_data_type target_data_type);
 LIBHARP_API int harp_variable_convert_unit(harp_variable *variable, const char *target_unit);
 LIBHARP_API int harp_variable_has_dimension_type(const harp_variable *variable, harp_dimension_type dimension_type);
@@ -304,6 +309,8 @@ LIBHARP_API int harp_variable_verify(const harp_variable *variable);
 LIBHARP_API int harp_product_new(harp_product **new_product);
 LIBHARP_API void harp_product_delete(harp_product *product);
 LIBHARP_API int harp_product_copy(const harp_product *product, harp_product **new_product);
+LIBHARP_API int harp_product_set_source_product(harp_product *product, const char *source_product);
+LIBHARP_API int harp_product_set_history(harp_product *product, const char *history);
 LIBHARP_API int harp_product_add_variable(harp_product *product, harp_variable *variable);
 LIBHARP_API int harp_product_detach_variable(harp_product *product, const harp_variable *variable);
 LIBHARP_API int harp_product_remove_variable(harp_product *product, harp_variable *variable);
@@ -331,6 +338,8 @@ LIBHARP_API int harp_import_global_attributes(const char *filename, double *date
 
 /* Export */
 LIBHARP_API int harp_export(const char *filename, const char *format, const harp_product *product);
+
+/* *CFFI-OFF* */
 
 /* *INDENT-OFF* */
 #ifdef __cplusplus

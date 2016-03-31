@@ -1,3 +1,4 @@
+* Added Python interface.
 
 * CODA is no longer included as part of HARP, but is treated as a separate
   package, just like HDF4 and HDF5.

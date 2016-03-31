@@ -1094,11 +1094,140 @@ LIBHARP_API int harp_variable_rename(harp_variable *variable, const char *name)
     {
         free(variable->name);
     }
+
     variable->name = strdup(name);
+
     if (variable->name == NULL)
     {
-        harp_set_error(HARP_ERROR_OUT_OF_MEMORY, "out of memory (could not duplicate string) (%s:%u)",
+        harp_set_error(HARP_ERROR_OUT_OF_MEMORY, "out of memory (could not duplicate string) (%s:%u)", __FILE__,
+                       __LINE__);
+        return -1;
+    }
+
+    return 0;
+}
+
+/** Set the unit attribute of the specified variable.
+ * Store a copy of \a unit as the value of the unit attribute of the specified variable. The previous value (if any)
+ * will be freed.
+ * \param variable Variable for which to set the unit attribute.
+ * \param unit New value for the unit attribute.
+ * \return
+ *   \arg \c 0, Success.
+ *   \arg \c -1, Error occurred (check #harp_errno).
+ */
+LIBHARP_API int harp_variable_set_unit(harp_variable *variable, const char *unit)
+{
+    char *unit_copy;
+
+    if (unit == NULL)
+    {
+        harp_set_error(HARP_ERROR_INVALID_ARGUMENT, "unit is NULL (%s:%u)", __FILE__, __LINE__);
+        return -1;
+    }
+
+    unit_copy = strdup(unit);
+
+    if (unit_copy == NULL)
+    {
+        harp_set_error(HARP_ERROR_OUT_OF_MEMORY, "out of memory (could not duplicate string) (%s:%u)", __FILE__,
+                       __LINE__);
+        return -1;
+    }
+
+    if (variable->unit != NULL)
+    {
+        free(variable->unit);
+    }
+
+    variable->unit = unit_copy;
+
+    return 0;
+}
+
+/** Set the description attribute of the specified variable.
+ * Store a copy of \a description as the value of the description attribute of the specified variable. The previous
+ * value (if any) will be freed.
+ * \param variable Variable for which to set the description attribute.
+ * \param description New value for the description attribute.
+ * \return
+ *   \arg \c 0, Success.
+ *   \arg \c -1, Error occurred (check #harp_errno).
+ */
+LIBHARP_API int harp_variable_set_description(harp_variable *variable, const char *description)
+{
+    char *description_copy;
+
+    if (description == NULL)
+    {
+        harp_set_error(HARP_ERROR_INVALID_ARGUMENT, "description is NULL (%s:%u)", __FILE__, __LINE__);
+        return -1;
+    }
+
+    description_copy = strdup(description);
+
+    if (description_copy == NULL)
+    {
+        harp_set_error(HARP_ERROR_OUT_OF_MEMORY, "out of memory (could not duplicate string) (%s:%u)", __FILE__,
+                       __LINE__);
+        return -1;
+    }
+
+    if (variable->description != NULL)
+    {
+        free(variable->description);
+    }
+
+    variable->description = description_copy;
+
+    return 0;
+}
+
+/** Store a copy of \a str at \a index into the flattened array of strings associated with \a variable.
+ * \warning No boundary checks are performed on \a index.
+ * \param variable Variable of type string.
+ * \param index Index into the flattened array of strings associated with the variable.
+ * \param str The string of which a copy should be stored.
+ * \return
+ *   \arg \c 0, Success.
+ *   \arg \c -1, Error occurred (check #harp_errno).
+ */
+LIBHARP_API int harp_variable_set_string_data_element(harp_variable *variable, long index, const char *str)
+{
+    if (variable == NULL)
+    {
+        harp_set_error(HARP_ERROR_INVALID_ARGUMENT, "variable is NULL (%s:%u)", __FILE__, __LINE__);
+        return -1;
+    }
+    if (variable->data_type != harp_type_string)
+    {
+        harp_set_error(HARP_ERROR_INVALID_ARGUMENT, "variable is of type '%s'; expected '%s' (%s:%u)",
+                       harp_get_data_type_name(variable->data_type), harp_get_data_type_name(harp_type_string),
                        __FILE__, __LINE__);
+        return -1;
+    }
+    if (index < 0)
+    {
+        harp_set_error(HARP_ERROR_INVALID_ARGUMENT, "index is negative (%s:%u)", __FILE__, __LINE__);
+        return -1;
+    }
+    if (str == NULL)
+    {
+        harp_set_error(HARP_ERROR_INVALID_ARGUMENT, "str is NULL (%s:%u)", __FILE__, __LINE__);
+        return -1;
+    }
+
+    if (variable->data.string_data[index] != NULL)
+    {
+        free(variable->data.string_data[index]);
+    }
+
+    variable->data.string_data[index] = strdup(str);
+
+    if (variable->data.string_data[index] == NULL)
+    {
+        harp_set_error(HARP_ERROR_OUT_OF_MEMORY, "out of memory (could not duplicate string) (%s:%u)", __FILE__,
+                       __LINE__);
         return -1;
     }
 
