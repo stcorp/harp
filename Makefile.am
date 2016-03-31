@@ -36,9 +36,9 @@ noinst_LTLIBRARIES = libnetcdf.la libudunits2.la
 
 if BUILD_PYTHON
 harppython_PYTHON = \
-	$(srcdir)/harp_python/__init__.py \
-	$(srcdir)/harp_python/_harppy.py \
-	harp_python/_harpc.py
+	$(srcdir)/python/__init__.py \
+	$(srcdir)/python/_harppy.py \
+	python/_harpc.py
 endif
 
 # headers
@@ -342,13 +342,13 @@ definitions/$(ERS_GOME_DEFINITION_FILE):
 
 # harp-python
 
-harp_python/_harpc.py: $(srcdir)/libharp/harp.h.in $(srcdir)/harp_python/build.py
-	@$(MKDIR_P) harp_python
-	$(PYTHON) $(srcdir)/harp_python/build.py $(srcdir)/libharp/harp.h.in harp_python/_harpc.py
+python/_harpc.py: $(srcdir)/libharp/harp.h.in $(srcdir)/python/build.py
+	@$(MKDIR_P) python
+	$(PYTHON) $(srcdir)/python/build.py $(srcdir)/libharp/harp.h.in python/_harpc.py
 
 EXTRA_DIST += \
-	harp_python/_harpc.py \
-	harp_python/build.py
+	python/_harpc.py \
+	python/build.py
 
 # *** misc distribution files ***
 
