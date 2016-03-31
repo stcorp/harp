@@ -11,6 +11,7 @@
 /install-sh
 /ltmain.sh
 /missing
+/py-compile
 /ylwrap
 /m4/libtool.m4
 /m4/ltoptions.m4
