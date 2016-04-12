@@ -8,6 +8,7 @@ INDENT = @INDENT@
 
 AM_CPPFLAGS = -Ilibharp -I$(srcdir)/libharp
 AM_YFLAGS = -d -v
+AM_LFLAGS = -o lex.yy.c
 
 BUILT_SOURCES =
 CLEANFILES =

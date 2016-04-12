@@ -9,7 +9,6 @@
  * lex(1) specification for tokens for the Unidata units package, UDUNITS2.
  */
 
-%option outfile="lex.yy.c"
 %option prefix="ut"
 %option noyywrap
 %option nounput
