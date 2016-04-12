@@ -107,6 +107,7 @@ pagesize(void)
 static size_t
 blksize(int fd)
 {
+    (void)fd;
 #if defined(HAVE_ST_BLKSIZE)
 	struct stat sb;
 	if (fstat(fd, &sb) > -1)
@@ -661,7 +662,8 @@ px_double_buffer(ncio *const nciop, off_t to, off_t from,
 	int status = ENOERR;
 	void *src;
 	void *dest;
-	
+
+    (void)rflags;
 #if INSTRUMENT
 fprintf(stderr, "\tdouble_buffr %ld %ld %ld\n",
 		 (long)to, (long)from, (long)nbytes);
@@ -1262,6 +1264,7 @@ ncio_spx_move(ncio *const nciop, off_t to, off_t from,
 static int
 ncio_spx_sync(ncio *const nciop)
 {
+    (void)nciop;
 	/* NOOP */
 	return ENOERR;
 }

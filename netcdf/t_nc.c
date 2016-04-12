@@ -369,6 +369,8 @@ main(int ac, char *av[])
 	size_t chunksz = 8192;
 	size_t align = 8192/32;
 
+    (void)ac;
+    (void)av;
 	ret = nc__create(fname,NC_NOCLOBBER, initialsz, &chunksz, &id);
 	if(ret != NC_NOERR) {
 		(void) fprintf(stderr, "trying again\n");

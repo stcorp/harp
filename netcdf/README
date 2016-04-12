@@ -3,3 +3,15 @@ These files are taken from netcdf 4.0.
 
 The source files are taken from the libsrc and include directories and
 only contain the code needed to support the classic netcdf3 format.
+
+The source files have been slightly modified in order to fit them into this
+build system. The changes that were made are:
+
+ - Added several casts to unsigned to eliminate 'comparison between signed
+   and unsigned' warnings.
+
+ - Added '(void)variable;' entries in many functions to eliminate
+  'unused parameter' warnings.
+
+ - Added missing initializer values to utf8proc_properties i
+   utf8proc_data.h.

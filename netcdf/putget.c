@@ -689,6 +689,7 @@ NCedgeck(const NC *ncp, const NC_var *varp,
 	const size_t *const end = start + varp->ndims;
 	const size_t *shp = varp->shape;
 
+    (void)ncp;
 	if(varp->ndims == 0)
 		return NC_NOERR;	/* 'scalar' variable */
 
@@ -11465,7 +11466,7 @@ nc_get_varm (
 		cvtmap = (ptrdiff_t *)calloc(varndims, sizeof(ptrdiff_t));
 		if(cvtmap == NULL)
 			return NC_ENOMEM;
-		for(ii = 0; ii < varndims; ii++)
+		for(ii = 0; ii < (size_t)varndims; ii++)
 		{
 			if(imapp[ii] % szof != 0)	
 			{
@@ -11562,7 +11563,7 @@ nc_put_varm (
 		cvtmap = (ptrdiff_t *)calloc(varndims, sizeof(ptrdiff_t));
 		if(cvtmap == NULL)
 			return NC_ENOMEM;
-		for(ii = 0; ii < varndims; ii++)
+		for(ii = 0; ii < (size_t)varndims; ii++)
 		{
 			if(imapp[ii] % szof != 0)	
 			{

@@ -1301,7 +1301,7 @@ nc_get_NC(NC *ncp)
 		        status = ncio_filesize(ncp->nciop, &filesize);
 			if(status)
 			    return status;
-			if(filesize < sizeof(ncmagic)) { /* too small, not netcdf */
+			if(filesize < (off_t)sizeof(ncmagic)) { /* too small, not netcdf */
 
 			    status = NC_ENOTNC;
 			    return status;
@@ -1312,7 +1312,7 @@ nc_get_NC(NC *ncp)
 			 * no need to read hugely. */
 	      		if(extent > 4096)
 				extent = 4096;
-			if(extent > filesize)
+			if((off_t)extent > filesize)
 			        extent = filesize;
 		}
 		else if(extent > ncp->chunk)

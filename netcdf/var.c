@@ -464,7 +464,7 @@ NC_check_vlen(NC_var *varp, size_t vlen_max) {
 
     int ii;
 
-    for(ii = IS_RECVAR(varp) ? 1 : 0; ii < varp->ndims; ii++) {
+    for(ii = IS_RECVAR(varp) ? 1 : 0; ii < (int)varp->ndims; ii++) {
 	if (varp->shape[ii] > vlen_max / prod) {
 	    return 0;		/* size in bytes won't fit in a 32-bit int */
 	}

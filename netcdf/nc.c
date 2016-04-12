@@ -239,12 +239,12 @@ NC_begins(NC *ncp,
 
 	/* only (re)calculate begin_var if there is not sufficient space in header
 	   or start of non-record variables is not aligned as requested by valign */
-	if (ncp->begin_var < ncp->xsz + h_minfree ||
+	if ((unsigned)ncp->begin_var < ncp->xsz + h_minfree ||
 	    ncp->begin_var != D_RNDUP(ncp->begin_var, v_align) ) 
 	{
 	  index = (off_t) ncp->xsz;
 	  ncp->begin_var = D_RNDUP(index, v_align);
-	  if(ncp->begin_var < index + h_minfree)
+	  if ((unsigned)ncp->begin_var < index + h_minfree)
 	  {
 	    ncp->begin_var = D_RNDUP(index + (off_t)h_minfree, v_align);
 	  }
@@ -274,11 +274,11 @@ fprintf(stderr, "    VAR %d %s: %ld\n", ii, (*vpp)->name->cp, (long)index);
 	/* only (re)calculate begin_rec if there is not sufficient
 	   space at end of non-record variables or if start of record
 	   variables is not aligned as requested by r_align */
-	if (ncp->begin_rec < index + v_minfree ||
+	if ((unsigned)ncp->begin_rec < index + v_minfree ||
 	    ncp->begin_rec != D_RNDUP(ncp->begin_rec, r_align) )
 	{
 	  ncp->begin_rec = D_RNDUP(index, r_align);
-	  if(ncp->begin_rec < index + v_minfree)
+	  if((unsigned)ncp->begin_rec < index + v_minfree)
 	  {
 	    ncp->begin_rec = D_RNDUP(index + (off_t)v_minfree, r_align);
 	  }
@@ -1549,6 +1549,8 @@ void NC_increase_numrecs(NC *ncp, size_t nrecs) {
 int
 nc_set_base_pe(int ncid, int pe)
 {
+    (void)ncid;
+    (void)pe;
 #if _CRAYMPP && defined(LOCKNUMREC)
 	int status;
 	NC *ncp;
@@ -1590,6 +1592,7 @@ nc_set_base_pe(int ncid, int pe)
 int
 nc_inq_base_pe(int ncid, int *pe)
 {
+    (void)ncid;
 #if _CRAYMPP && defined(LOCKNUMREC)
 	int status;
 	NC *ncp;

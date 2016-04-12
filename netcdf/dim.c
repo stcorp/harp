@@ -104,7 +104,7 @@ find_NC_Udim(const NC_dimarray *ncap, NC_dim **dimpp)
 	{
 		/*EMPTY*/
 	}
-	if(dimid >= ncap->nelems)
+	if((unsigned)dimid >= ncap->nelems)
 		return(-1); /* not found */
 	/* else, normal return */
 	if(dimpp != NULL)
@@ -152,7 +152,7 @@ NC_finddim(const NC_dimarray *ncap, const char *uname, NC_dim **dimpp)
 	 /*EMPTY*/
       }
       free(name);
-      if(dimid >= ncap->nelems)
+      if((unsigned)dimid >= ncap->nelems)
 	 return(-1); /* not found */
       /* else, normal return */
       if(dimpp != NULL)
