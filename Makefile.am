@@ -244,6 +244,7 @@ libudunits2_la_SOURCES = \
 	udunits2/idToUnitMap.h \
 	udunits2/utparser.y \
 	udunits2/prefix.c \
+	udunits2/prefix.h \
 	udunits2/utscanner.l \
 	udunits2/status.c \
 	udunits2/systemMap.c \

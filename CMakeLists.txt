@@ -260,6 +260,7 @@ set(LIBUDUNITS2_SOURCES
   udunits2/idToUnitMap.c
   udunits2/idToUnitMap.h
   udunits2/prefix.c
+  udunits2/prefix.h
   udunits2/status.c
   udunits2/systemMap.c
   udunits2/systemMap.h
