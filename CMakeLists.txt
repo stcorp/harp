@@ -308,7 +308,7 @@ include_directories(BEFORE ${CMAKE_CURRENT_SOURCE_DIR}/netcdf)
 install(FILES ${CMAKE_CURRENT_BINARY_DIR}/harp.h DESTINATION include)
 
 set(PKGDATADIR ${CMAKE_INSTALL_PREFIX}/share/harp)
-add_definitions(-DDEFAULT_UDUNITS2_XML_PATH='"${PKGDATADIR}/udunits2.xml"')
+add_definitions(-DDEFAULT_UDUNITS2_XML_PATH="${PKGDATADIR}/udunits2.xml")
 add_library(harp SHARED ${LIBHARP_SOURCES} ${LIBUDUNITS2_SOURCES} ${LIBNETCDF_SOURCES})
 target_link_libraries(harp ${CODA_LIBRARIES} ${HDF4_LIBRARIES} ${HDF5_LIBRARIES})
 set_target_properties(harp PROPERTIES
