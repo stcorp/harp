@@ -37,7 +37,7 @@ find_package(HDF4)
 find_package(HDF5)
 find_package(CODA)
 
-include_directories(${HDF4_INCLUDE_DIR} ${HDF5_INCLUDE_DIR})
+include_directories(${CODA_INCLUDE_DIR} ${HDF4_INCLUDE_DIR} ${HDF5_INCLUDE_DIR})
 
 if(NOT MSVC)
 set(MATHLIB m)
