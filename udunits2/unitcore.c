@@ -1,7 +1,7 @@
 /*
- * Copyright 2008, 2009 University Corporation for Atmospheric Research
+ * Copyright 2013 University Corporation for Atmospheric Research
  *
- * This file is part of the UDUNITS-2 package.  See the file LICENSE
+ * This file is part of the UDUNITS-2 package.  See the file COPYRIGHT
  * in the top-level source-directory of the package for copying and
  * redistribution conditions.
  */
@@ -36,22 +36,40 @@
 /*LINTLIBRARY*/
 
 #ifndef	_XOPEN_SOURCE
-#   define _XOPEN_SOURCE 500
+#   define _XOPEN_SOURCE 600
 #endif
 
 #include <assert.h>
 #include <ctype.h>
 #include <errno.h>
 #include <float.h>
+#ifndef _MSC_VER
 #include <inttypes.h>
+#else
+#define int32_t __int32
+#endif
+
+#ifdef _MSC_VER
+#define _USE_MATH_DEFINES
+#endif
+
 #include <limits.h>
 #include <math.h>
+
+#ifdef _MSC_VER
+#include "tsearch.h"
+#else
 #include <search.h>
+#endif
+
 #include <stddef.h>
 #include <stdio.h>
 #include <stdlib.h>
 #include <string.h>
+#ifndef _MSC_VER
+
 #include <strings.h>
+#endif
 
 #include "udunits2.h"		/* this module's API */
 #include "converter.h"
@@ -385,11 +403,11 @@ ut_encode_clock(
  */
 static void
 decompose(value, uncer, nbasis, basis, count)
-    double	value;
-    double	uncer;		/* >= 0 */
-    int		nbasis;
-    const double	*basis;		/* all values > 0 */
-    double	*count;
+    double        value;
+    double        uncer;		/* >= 0 */
+    int           nbasis;
+    const double *basis;		/* all values > 0 */
+    double       *count;
 {
     int		i;
 
@@ -535,13 +553,15 @@ ut_decode_time(
 
     if (seconds >= 60) {
 	seconds -= 60;
-	if (++minutes >= 60) {
-	    minutes -= 60;
-	    if (++hours >= 24) {
-		hours -= 24;
-		days++;
-	    }
-	}
+	++minutes;
+    }
+    if (minutes >= 60) {
+        minutes -= 60;
+        ++hours;
+    }
+    if (hours >= 24) {
+        hours -= 24;
+        ++days;
     }
 
     *second = seconds;
@@ -1009,9 +1029,9 @@ productCompare(
 	const ProductUnit* const	product1 = &unit1->product;
 	const ProductUnit* const	product2 = &unit2->product;
 
-	cmp = product1->count - product2->count;
+        cmp = product1->count - product2->count;
 
-	if (cmp == 0) {
+        if (cmp == 0) {
 	    const short* const	indexes1 = product1->indexes;
 	    const short* const	indexes2 = product2->indexes;
 	    const short* const	powers1	= product1->powers;
@@ -1479,7 +1499,7 @@ productAcceptVisitor(
     void* const			arg)
 {
     int		count = unit->product.count;
-    BasicUnit**	basicUnits = malloc(sizeof(BasicUnit)*count);
+    BasicUnit**	basicUnits = malloc(sizeof(BasicUnit*)*count);
 
     assert(unit != NULL);
     assert(IS_PRODUCT(unit));
@@ -1492,7 +1512,7 @@ productAcceptVisitor(
 	    "Couldn't allocate %d-element basic-unit array", count);
     }
     else {
-	int*	powers = malloc(sizeof(int)*count);
+        int*	powers = (count > 0 ? malloc(sizeof(int)*count) : NULL);
 
 	if (count != 0 && powers == NULL) {
 	    ut_set_status(UT_OS);
@@ -1513,7 +1533,8 @@ productAcceptVisitor(
 	    ut_set_status(visitor->visit_product(unit, count,
 		(const ut_unit**)basicUnits, powers, arg));
 
-	    free(powers);
+            if (powers)
+                free(powers);
 	}				/* "powers" allocated */
 
 	free(basicUnits);
@@ -1699,7 +1720,7 @@ galileanCompare(
 		? -1
 		: galilean1->offset == galilean2->offset
 		    ? 0
-		    : -1;
+		    : 1;
 
 	if (cmp == 0) {
 	    cmp =
@@ -1707,7 +1728,7 @@ galileanCompare(
 		    ? -1
 		    : galilean1->scale == galilean2->scale
 			? 0
-			: -1;
+			: 1;
 
 	    if (cmp == 0)
 		cmp = COMPARE(galilean1->unit, galilean2->unit);
@@ -2242,6 +2263,7 @@ static int
 timestampInitConverterToProduct(
     ut_unit* const	unit)
 {
+    (void)unit;
     /*
      * This function is never called.
      */
@@ -2264,6 +2286,7 @@ static int
 timestampInitConverterFromProduct(
     ut_unit* const	unit)
 {
+    (void)unit;
     /*
      * This function is never called.
      */
@@ -2720,6 +2743,7 @@ ut_new_system(void)
 	    ut_handle_error_message(
 		"ut_new_system(): Couldn't create dimensionless unit one");
 	    free(system);
+            system = NULL;
 	}
     }
 
@@ -3785,7 +3809,7 @@ ut_free(
  */
 ut_status
 ut_accept_visitor(
-    const ut_unit* const		unit,
+    const ut_unit* const	unit,
     const ut_visitor* const	visitor,
     void* const			arg)
 {

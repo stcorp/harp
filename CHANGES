@@ -5,6 +5,8 @@
 
 * Updated embedded expat library to version 2.1.1.
 
+* Updated embedded udunits2 library to version 2.2.20.
+
 * Added ingestion modules for the following product types:
     - Ozone CCI L3 limb profile products
     - Ozone CCI L2 limb profile products

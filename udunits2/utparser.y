@@ -1,8 +1,8 @@
 %{
 /*
- * Copyright 2008, 2009 University Corporation for Atmospheric Research
+ * Copyright 2013 University Corporation for Atmospheric Research
  *
- * This file is part of the UDUNITS-2 package.  See the file LICENSE
+ * This file is part of the UDUNITS-2 package.  See the file COPYRIGHT
  * in the top-level source-directory of the package for copying and
  * redistribution conditions.
  */
@@ -54,9 +54,9 @@
 #define yycheck		utyycheck
 #define yyname		utyyname
 #define yyrule		utyyrule
-    
+
 #ifndef	_XOPEN_SOURCE
-#   define _XOPEN_SOURCE 500
+#   define _XOPEN_SOURCE 600
 #endif
 
 #include <assert.h>
@@ -64,9 +64,10 @@
 #include <errno.h>
 #include <stdlib.h>
 #include <stdio.h>
+#ifndef _MSC_VER
 #include <string.h>
 #include <strings.h>
-
+#endif
 #include "udunits2.h"
 
 static ut_unit*		_finalUnit;	/* fully-parsed specification */
@@ -74,6 +75,7 @@ static ut_system*	_unitSystem;	/* The unit-system to use */
 static char*		_errorMessage;	/* last error-message */
 static ut_encoding	_encoding;	/* encoding of string to be parsed */
 extern int		utrestartScanner;/* restart scanner? */
+extern int		utisTime;        /* product_exp is time? */
 
 /* external function declarations */
 #define YY_BUFFER_STATE void *
@@ -148,6 +150,25 @@ uterror(
     if (_errorMessage == NULL)
 	_errorMessage = nomem;
 }
+
+/**
+ * Indicates if a unit is a (non-offset) time unit.
+ *
+ * @param[in] unit      The unit to be checked.
+ * @retval    0         If and only if the unit is not a time unit.
+ */
+static int isTime(
+    const ut_unit* const unit)
+{
+    ut_status   prev = ut_get_status();
+    ut_unit*    second = ut_get_unit_by_name(_unitSystem, "second");
+    int         isTime = ut_are_convertible(unit, second);
+    
+    ut_free(second);
+    ut_set_status(prev);
+    return isTime;
+}
+
 %}
 
 %union {
@@ -224,9 +245,11 @@ shift_exp:	product_exp {
 
 product_exp:	power_exp {
 		    $$ = $1;
+                    utisTime = isTime($$);
 		} |
 		product_exp power_exp	{
 		    $$ = ut_multiply($1, $2);
+                    utisTime = isTime($$);
 		    ut_free($1);
 		    ut_free($2);
 		    if ($$ == NULL)
@@ -240,6 +263,7 @@ product_exp:	power_exp {
 		} |
 		product_exp MULTIPLY power_exp	{
 		    $$ = ut_multiply($1, $3);
+                    utisTime = isTime($$);
 		    ut_free($1);
 		    ut_free($3);
 		    if ($$ == NULL)
@@ -253,6 +277,7 @@ product_exp:	power_exp {
 		} |
 		product_exp DIVIDE power_exp	{
 		    $$ = ut_divide($1, $3);
+                    utisTime = isTime($$);
 		    ut_free($1);
 		    ut_free($3);
 		    if ($$ == NULL)
@@ -386,19 +411,6 @@ timestamp:	DATE {
 		DATE CLOCK CLOCK {
 		    $$ = $1 + ($2 - $3);
 		} |
-		DATE CLOCK INT {
-		    int	mag = $3 >= 0 ? $3 : -$3;
-		    if (mag <= 24) {
-			$$ = $1 + ($2 - ut_encode_clock($3, 0, 0));
-		    }
-		    else if (mag >= 100 && mag <= 2400) {
-			$$ = $1 + ($2 - ut_encode_clock($3/100, $3%100, 0));
-		    }
-		    else {
-			ut_set_status(UT_SYNTAX);
-			YYERROR;
-		    }
-		} |
 		DATE CLOCK ID {
 		    int	error = 0;
 
@@ -423,19 +435,6 @@ timestamp:	DATE {
 		} |
 		TIMESTAMP CLOCK {
 		    $$ = $1 - $2;
-		} |
-		TIMESTAMP INT {
-		    int	mag = $2 >= 0 ? $2 : -$2;
-		    if (mag <= 24) {
-			$$ = $1 - ut_encode_clock($2, 0, 0);
-		    }
-		    else if (mag >= 100 && mag <= 2400) {
-			$$ = $1 - ut_encode_clock($2/100, $2%100, 0);
-		    }
-		    else {
-			ut_set_status(UT_SYNTAX);
-			YYERROR;
-		    }
 		} |
 		TIMESTAMP ID {
 		    int	error = 0;
@@ -496,25 +495,26 @@ latin1ToUtf8(
         else {
             ut_handle_error_message("Couldn't allocate %ld-byte buffer: %s",
                 (unsigned long)size, strerror(errno));
-
             return NULL;
         }
     }
 
-    for (in = (const unsigned char*)latin1String,
-            out = (unsigned char*)utf8String; *in; ++in) {
-#       define IS_ASCII(c) (((c) & 0x80) == 0)
+    if (utf8String) {
+        for (in = (const unsigned char*)latin1String,
+                out = (unsigned char*)utf8String; *in; ++in) {
+#           define IS_ASCII(c) (((c) & 0x80) == 0)
 
-        if (IS_ASCII(*in)) {
-            *out++ = *in;
+            if (IS_ASCII(*in)) {
+                *out++ = *in;
+            }
+            else {
+                *out++ = 0xC0 | ((0xC0 & *in) >> 6);
+                *out++ = 0x80 | (0x3F & *in);
+            }
         }
-        else {
-            *out++ = 0xC0 | ((0xC0 & *in) >> 6);
-            *out++ = 0x80 | (0x3F & *in);
-        }
+
+        *out = 0;
     }
-
-    *out = 0;
 
     return utf8String;
 }
@@ -581,18 +581,23 @@ ut_parse(
 
             _finalUnit = NULL;
 
-            if (yyparse() == 0) {
+            if (utparse() == 0) {
+                int     status;
                 int	n = ut_get_bufferpos(buf);
 
-                if (((unsigned)n) >= strlen(utf8String)) {
+                if (n >= (signed)strlen(utf8String)) {
                     unit = _finalUnit;	/* success */
+                    status = UT_SUCCESS;
                 }
                 else {
                     /*
                      * Parsing terminated before the end of the string.
                      */
                     ut_free(_finalUnit);
+                    status = UT_SYNTAX;
                 }
+
+                ut_set_status(status);
             }
 
             ut_delete_buffer(buf);

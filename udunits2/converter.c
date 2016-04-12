@@ -1,7 +1,7 @@
 /*
- * Copyright 2008, 2009 University Corporation for Atmospheric Research
+ * Copyright 2013 University Corporation for Atmospheric Research
  *
- * This file is part of the UDUNITS-2 package.  See the file LICENSE
+ * This file is part of the UDUNITS-2 package.  See the file COPYRIGHT
  * in the top-level source-directory of the package for copying and
  * redistribution conditions.
  */
@@ -12,7 +12,12 @@
 /*LINTLIBRARY*/
 
 #ifndef	_XOPEN_SOURCE
-#   define _XOPEN_SOURCE 500
+#   define _XOPEN_SOURCE 600
+#endif
+
+#ifdef _MSC_VER
+#define _USE_MATH_DEFINES
+#include "udunits2.h" /* For the MSVC-specific defines. */
 #endif
 
 #include <math.h>
@@ -20,7 +25,6 @@
 #include <stdio.h>
 #include <stdlib.h>
 #include <string.h>
-
 #include "converter.h"		/* this module's API */
 
 typedef struct {
@@ -96,6 +100,7 @@ static void
 nonFree(
     cv_converter* const conv)
 {
+    (void)conv;
 }
 
 
@@ -124,6 +129,7 @@ static cv_converter*
 trivialClone(
     cv_converter* const	conv)
 {
+    (void)conv;
     return cv_get_trivial();
 }
 
@@ -133,6 +139,7 @@ trivialConvertDouble(
     const cv_converter* const	conv,
     const double		value)
 {
+    (void)conv;
     return value;
 }
 
@@ -144,6 +151,7 @@ trivialConvertFloats(
     const size_t		count,
     float* 			out)
 {
+    (void)conv;
     if (in == NULL || out == NULL) {
 	out = NULL;
     }
@@ -162,6 +170,7 @@ trivialConvertDoubles(
     const size_t		count,
     double* 			out)
 {
+    (void)conv;
     if (in == NULL || out == NULL) {
 	out = NULL;
     }
@@ -180,6 +189,7 @@ trivialGetExpression(
     const size_t		max,
     const char* const		variable)
 {
+    (void)conv;
     return snprintf(buf, max, "%s", variable);
 }
 
@@ -203,6 +213,7 @@ static cv_converter*
 reciprocalClone(
     cv_converter* const	conv)
 {
+    (void)conv;
     return cv_get_inverse();
 }
 
@@ -211,6 +222,7 @@ reciprocalConvertDouble(
     const cv_converter* const	conv,
     const double		value)
 {
+    (void)conv;
     return 1.0 / value;
 }
 
@@ -222,6 +234,7 @@ reciprocalConvertFloats(
     const size_t		count,
     float* 			out)
 {
+    (void)conv;
     if (in == NULL || out == NULL) {
 	out = NULL;
     }
@@ -249,6 +262,7 @@ reciprocalConvertDoubles(
     const size_t		count,
     double* 			out)
 {
+    (void)conv;
     if (in == NULL || out == NULL) {
 	out = NULL;
     }
@@ -276,6 +290,7 @@ reciprocalGetExpression(
     const size_t		max,
     const char* const		variable)
 {
+    (void)conv;
     return
 	cvNeedsParentheses(variable)
 	? snprintf(buf, max, "1/(%s)", variable)
@@ -901,7 +916,7 @@ compositeGetExpression(
 	buf[max-1] = 0;
 
 	if (cvNeedsParentheses(buf)) {
-	    nchar = snprintf(tmpBuf, sizeof(tmpBuf), "(%s)", buf);
+	    (void)snprintf(tmpBuf, sizeof(tmpBuf), "(%s)", buf);
 	}
 	else {
 	    (void)strncpy(tmpBuf, buf, sizeof(tmpBuf));
@@ -1042,7 +1057,7 @@ cv_get_galilean(
     const double	slope,
     const double	intercept)
 {
-    cv_converter*	conv = NULL;
+    cv_converter*	conv;
 
     if (slope == 1) {
 	conv = cv_get_offset(intercept);
@@ -1051,13 +1066,12 @@ cv_get_galilean(
 	conv = cv_get_scale(slope);
     }
     else {
-	cv_converter*	tmp = malloc(sizeof(GalileanConverter));
+	conv = malloc(sizeof(GalileanConverter));
 
-	if (tmp != NULL) {
-	    tmp->ops = &galileanOps;
-	    tmp->galilean.slope = slope;
-	    tmp->galilean.intercept = intercept;
-	    conv = tmp;
+	if (conv != NULL) {
+	    conv->ops = &galileanOps;
+	    conv->galilean.slope = slope;
+	    conv->galilean.intercept = intercept;
 	}
     }
 

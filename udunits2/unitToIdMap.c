@@ -1,7 +1,7 @@
 /*
- * Copyright 2008, 2009 University Corporation for Atmospheric Research
+ * Copyright 2013 University Corporation for Atmospheric Research
  *
- * This file is part of the UDUNITS-2 package.  See the file LICENSE
+ * This file is part of the UDUNITS-2 package.  See the file COPYRIGHT
  * in the top-level source-directory of the package for copying and
  * redistribution conditions.
  */
@@ -12,13 +12,20 @@
 /*LINTLIBRARY*/
 
 #ifndef	_XOPEN_SOURCE
-#   define _XOPEN_SOURCE 500
+#   define _XOPEN_SOURCE 600
 #endif
 
 #include <assert.h>
 #include <errno.h>
+
+#ifdef _MSC_VER
+#include "tsearch.h"
+#else
 #include <search.h>
+#endif
+
 #include <stdlib.h>
+
 #include <string.h>
 
 #include "udunits2.h"
@@ -281,7 +288,10 @@ utimAdd(
     else {
 	UnitAndId*	targetEntry = uaiNew(unit, id);
 
-	if (targetEntry != NULL) {
+	if (targetEntry == NULL) {
+            status = ut_get_status();
+        }
+        else {
 	    void**	rootp = selectTree(map, encoding);
 
 	    UnitAndId**	treeEntry = tsearch(targetEntry, rootp, compareUnits);
@@ -308,9 +318,6 @@ utimAdd(
                     uaiFree(targetEntry);
 	    }
 	}				/* "targetEntry" allocated */
-    else {
-        return ut_get_status();
-    }
     }					/* valid arguments */
 
     return status;
@@ -333,7 +340,6 @@ utimRemove(
     const ut_unit*	unit,
     ut_encoding		encoding)
 {
-    ut_status		status = UT_SUCCESS;
     UnitAndId		targetEntry;
     UnitAndId**		treeEntry;
 
@@ -350,7 +356,7 @@ utimRemove(
 	uaiFree(uai);
     }
 
-    return status;
+    return UT_SUCCESS;
 }
 
 
@@ -502,7 +508,7 @@ mapUnitToId(
     const char* const		id,
     ut_encoding			encoding)
 {
-    ut_status		status = UT_SUCCESS;
+    ut_status		status;
 
     assert(systemMap != NULL);
 

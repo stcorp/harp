@@ -1,7 +1,7 @@
 /*
- * Copyright 2008, 2009 University Corporation for Atmospheric Research
+ * Copyright 2013 University Corporation for Atmospheric Research
  *
- * This file is part of the UDUNITS-2 package.  See the file LICENSE
+ * This file is part of the UDUNITS-2 package.  See the file COPYRIGHT
  * in the top-level source-directory of the package for copying and
  * redistribution conditions.
  */
@@ -20,7 +20,7 @@ extern "C" {
  *	system		Pointer to the unit-system to have its associated
  *			resources freed.
  */
-void
+EXTERNL void
 utimFreeSystem(
     ut_system*	system);
 

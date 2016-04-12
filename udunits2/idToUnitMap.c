@@ -1,7 +1,7 @@
 /*
- * Copyright 2008, 2009 University Corporation for Atmospheric Research
+ * Copyright 2013 University Corporation for Atmospheric Research
  *
- * This file is part of the UDUNITS-2 package.  See the file LICENSE
+ * This file is part of the UDUNITS-2 package.  See the file COPYRIGHT
  * in the top-level source-directory of the package for copying and
  * redistribution conditions.
  */
@@ -12,14 +12,22 @@
 /*LINTLIBRARY*/
 
 #ifndef	_XOPEN_SOURCE
-#   define _XOPEN_SOURCE 500
+#   define _XOPEN_SOURCE 600
 #endif
 
 #include <assert.h>
+#ifdef _MSC_VER
+#include "tsearch.h"
+#else
 #include <search.h>
+#endif
+
 #include <stdlib.h>
+
 #include <string.h>
+#ifndef _MSC_VER
 #include <strings.h>
+#endif
 
 #include "udunits2.h"
 #include "unitAndId.h"
@@ -113,7 +121,6 @@ itumAdd(
 {
     ut_status		status;
     UnitAndId*		targetEntry;
-    UnitAndId**		treeEntry;
 
     assert(map != NULL);
     assert(id != NULL);
@@ -122,10 +129,11 @@ itumAdd(
     targetEntry = uaiNew(unit, id);
 
     if (targetEntry == NULL) {
-        return ut_get_status();
+        status = ut_get_status();
     }
-
-    treeEntry = tsearch(targetEntry, &map->tree, map->compare);
+    else {
+	UnitAndId**	treeEntry = tsearch(targetEntry, &map->tree,
+	    map->compare);
 
 	if (treeEntry == NULL) {
 	    uaiFree(targetEntry);
@@ -145,6 +153,7 @@ itumAdd(
             if (targetEntry != *treeEntry)
                 uaiFree(targetEntry);
 	}				/* found entry */
+    }					/* "targetEntry" allocated */
 
     return status;
 }
@@ -338,6 +347,7 @@ ut_map_name_to_unit(
     const ut_encoding		encoding,
     const ut_unit* const	unit)
 {
+    (void)encoding;
     ut_set_status(
 	mapIdToUnit(&systemToNameToUnit, name, unit, insensitiveCompare));
 
@@ -363,6 +373,7 @@ ut_unmap_name_to_unit(
     const char* const	name,
     const ut_encoding   encoding)
 {
+    (void)encoding;
     ut_set_status(unmapId(systemToNameToUnit, name, system));
 
     return ut_get_status();
@@ -390,6 +401,7 @@ ut_map_symbol_to_unit(
     const ut_encoding		encoding,
     const ut_unit* const	unit)
 {
+    (void)encoding;
     ut_set_status(
 	mapIdToUnit(&systemToSymbolToUnit, symbol, unit, sensitiveCompare));
 
@@ -415,6 +427,7 @@ ut_unmap_symbol_to_unit(
     const char* const	symbol,
     const ut_encoding   encoding)
 {
+    (void)encoding;
     ut_set_status(unmapId(systemToSymbolToUnit, symbol, system));
 
     return ut_get_status();

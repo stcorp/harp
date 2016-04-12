@@ -1,7 +1,7 @@
 /*
- * Copyright 2008, 2009 University Corporation for Atmospheric Research
+ * Copyright 2013 University Corporation for Atmospheric Research
  *
- * This file is part of the UDUNITS-2 package.  See the file LICENSE
+ * This file is part of the UDUNITS-2 package.  See the file COPYRIGHT
  * in the top-level source-directory of the package for copying and
  * redistribution conditions.
  */
@@ -11,12 +11,66 @@
 #include <stdarg.h>
 #include <stddef.h>
 
+#ifdef _MSC_VER
+#include <stdlib.h>
+#include <stdio.h>
+#include <stdarg.h>
+#include <io.h>
+
+#define _USE_MATH_DEFINES
+
+/* Define a bunch of variables to use the ISO C++ conformant name instead
+   of the POSIX name. This quiets a lot of the warnings thrown by MSVC. */
+#define read _read
+#define open _open
+#define close _close
+#define strdup _strdup
+#define strcasecmp stricmp
+#define stricmp _stricmp
+#define isatty _isatty
+
+//We must accomodate the lack of snprintf in MSVC.
+//c99_snprintf is defined in c99_snprintf.c, in lib/.
+#define snprintf c99_snprintf
+
+int c99_snprintf(
+   char* str,
+     size_t size,
+     const char* format,
+     ...);
+
+int c99_vsnprintf(
+char* str,
+  size_t size,
+  const char* format,
+  va_list ap);
+  
+#endif
+
+/* If we are working in Visual Studio and have a
+   shared library, we will need to do some slight-of-hand
+   in order to make it generate a proper export library.
+*/
+
+#if defined(DLL_UDUNITS2) /* define when library is a DLL */
+#   if defined(DLL_EXPORT) /* defined when building the library */
+#     define MSC_EXTRA __declspec(dllexport)
+#   else
+#     define MSC_EXTRA __declspec(dllimport)
+#   endif
+#else
+# define MSC_EXTRA
+#endif /* defined(DLL_UDUNITS2) */
+
+#define EXTERNL MSC_EXTRA extern
+
+
 #include "converter.h"
 
 typedef struct ut_system	ut_system;
 typedef union ut_unit		ut_unit;
 
-typedef enum {
+enum utStatus {
     UT_SUCCESS = 0,	/* Success */
     UT_BAD_ARG,	        /* An argument violates the function's contract */
     UT_EXISTS,		/* Unit, prefix, or identifier already exists */
@@ -33,14 +87,16 @@ typedef enum {
     UT_OPEN_ENV,	/* Can't open environment-specified unit database */
     UT_OPEN_DEFAULT,	/* Can't open installed, default, unit database */
     UT_PARSE		/* Error parsing unit specification */
-} ut_status;
+};
+typedef enum utStatus          ut_status;
 
-typedef enum {
+enum utEncoding {
     UT_ASCII = 0,
     UT_ISO_8859_1 = 1,
     UT_LATIN1 = UT_ISO_8859_1,
     UT_UTF8 = 2
-} ut_encoding;
+};
+typedef enum utEncoding        ut_encoding;
 
 #define UT_NAMES	4
 #define UT_DEFINITION	8
@@ -49,7 +105,7 @@ typedef enum {
 /*
  * Data-structure for a visitor to a unit:
  */
-typedef struct {
+typedef struct ut_visitor {
     /*
      * Visits a basic-unit.  A basic-unit is a base unit like "meter" or a non-
      * dimensional but named unit like "radian".
@@ -137,7 +193,7 @@ typedef int (*ut_error_message_handler)(const char* fmt, va_list args);
 
 
 #ifdef __cplusplus
-extern "C" {
+EXTERNL "C" {
 #endif
 
 
@@ -145,6 +201,22 @@ extern "C" {
  * Unit System:
  ******************************************************************************/
 
+
+/**
+ * Returns the pathname of the XML database.
+ *
+ * @param path      The pathname of the XML file or NULL.
+ * @param status    Status. One of UT_OPEN_ARG, UT_OPEN_ENV, or UT_OPEN_DEFAULT.
+ * @return          If "path" is not NULL, then it is returned; otherwise, the
+ *                  pathname specified by the environment variable
+ *                  UDUNITS2_XML_PATH is returned if set; otherwise, the
+ *                  compile-time pathname of the installed, default, unit
+ *                  database is returned.
+ */
+EXTERNL const char*
+ut_get_path_xml(
+	const char*	path,
+	ut_status*  status);
 
 /*
  * Returns the unit-system corresponding to an XML file.  This is the usual way
@@ -172,7 +244,7 @@ extern "C" {
  *		    UT_OS		Operating-system error.  See "errno".
  *	else	Pointer to the unit-system defined by "path".
  */
-ut_system*
+EXTERNL ut_system*
 ut_read_xml(
     const char*	path);
 
@@ -186,7 +258,7 @@ ut_read_xml(
  *		    UT_OS	Operating-system error.  See "errno".
  *	else	Pointer to a new unit system.
  */
-ut_system*
+EXTERNL ut_system*
 ut_new_system(void);
 
 
@@ -198,7 +270,7 @@ ut_new_system(void);
  *	system		Pointer to the unit-system to be freed.  Use of "system"
  *			upon return results in undefined behavior.
  */
-void
+EXTERNL void
 ut_free_system(
     ut_system*	system);
 
@@ -213,7 +285,7 @@ ut_free_system(
  *		    UT_BAD_ARG	"unit" is NULL.
  *	else	Pointer to the unit-system to which "unit" belongs.
  */
-ut_system*
+EXTERNL ut_system*
 ut_get_system(
     const ut_unit* const	unit);
 
@@ -231,7 +303,7 @@ ut_get_system(
  *		While not necessary, the pointer may be passed to ut_free()
  *		when the unit is no longer needed by the client.
  */
-ut_unit*
+EXTERNL ut_unit*
 ut_get_dimensionless_unit_one(
     const ut_system* const	system);
 
@@ -252,7 +324,7 @@ ut_get_dimensionless_unit_one(
  *		The pointer should be passed to ut_free() when the unit is
  *		no longer needed.
  */
-ut_unit*
+EXTERNL ut_unit*
 ut_get_unit_by_name(
     const ut_system* const	system,
     const char* const		name);
@@ -275,7 +347,7 @@ ut_get_unit_by_name(
  *		The pointer should be passed to ut_free() when the unit is no
  *		longer needed.
  */
-ut_unit*
+EXTERNL ut_unit*
 ut_get_unit_by_symbol(
     const ut_system* const	system,
     const char* const		symbol);
@@ -294,7 +366,7 @@ ut_get_unit_by_symbol(
  *			belongs is set to a different unit.
  *	UT_SUCCESS	Success.
  */
-ut_status
+EXTERNL ut_status
 ut_set_second(
     const ut_unit* const	second);
 
@@ -319,7 +391,7 @@ ut_set_second(
  *	UT_EXISTS	"name" already maps to a different value.
  *	UT_OS		Operating-system failure.  See "errno".
  */
-ut_status
+EXTERNL ut_status
 ut_add_name_prefix(
     ut_system* const	system,
     const char* const	name,
@@ -342,7 +414,7 @@ ut_add_name_prefix(
  *	UT_EXISTS	"symbol" already maps to a different value.
  *	UT_OS		Operating-system failure.  See "errno".
  */
-ut_status
+EXTERNL ut_status
 ut_add_symbol_prefix(
     ut_system* const	system,
     const char* const	symbol,
@@ -368,7 +440,7 @@ ut_add_symbol_prefix(
  *		ut_free() when the unit is no longer needed by the client (the
  *		unit will remain in the unit-system).
  */
-ut_unit*
+EXTERNL ut_unit*
 ut_new_base_unit(
     ut_system* const	system);
 
@@ -389,7 +461,7 @@ ut_new_base_unit(
  *		passed to ut_free() when the unit is no longer needed by the
  *		client (the unit will remain in the unit-system).
  */
-ut_unit*
+EXTERNL ut_unit*
 ut_new_dimensionless_unit(
     ut_system* const	system);
 
@@ -407,7 +479,7 @@ ut_new_dimensionless_unit(
  *		passed to ut_free() when the unit is no longer needed by the
  *		client.
  */
-ut_unit*
+EXTERNL ut_unit*
 ut_clone(
     const ut_unit*	unit);
 
@@ -420,7 +492,7 @@ ut_clone(
  * Arguments:
  *	unit	Pointer to the unit to have its resources freed or NULL.
  */
-void
+EXTERNL void
 ut_free(
     ut_unit* const	unit);
 
@@ -444,7 +516,7 @@ ut_free(
  *	else		Pointer to the name in the given encoding to which
  *			"unit" maps.
  */
-const char*
+EXTERNL const char*
 ut_get_name(
     const ut_unit* const	unit,
     const ut_encoding		encoding);
@@ -465,7 +537,7 @@ ut_get_name(
  *	UT_EXISTS	"name" already maps to a different unit.
  *	UT_SUCCESS	Success.
  */
-ut_status
+EXTERNL ut_status
 ut_map_name_to_unit(
     const char* const		name,
     const ut_encoding		encoding,
@@ -484,7 +556,7 @@ ut_map_name_to_unit(
  *	UT_SUCCESS	Success.
  *	UT_BAD_ARG	"system" or "name" is NULL.
  */
-ut_status
+EXTERNL ut_status
 ut_unmap_name_to_unit(
     ut_system*		system,
     const char* const	name,
@@ -507,7 +579,7 @@ ut_unmap_name_to_unit(
  *	UT_OS		Operating-system error.  See "errno".
  *	UT_EXISTS	"unit" already maps to a name.
  */
-ut_status
+EXTERNL ut_status
 ut_map_unit_to_name(
     const ut_unit* const	unit,
     const char* const		name,
@@ -525,7 +597,7 @@ ut_map_unit_to_name(
  *	UT_BAD_ARG	"unit" is NULL.
  *	UT_SUCCESS	Success.
  */
-ut_status
+EXTERNL ut_status
 ut_unmap_unit_to_name(
     const ut_unit* const	unit,
     ut_encoding			encoding);
@@ -550,7 +622,7 @@ ut_unmap_unit_to_name(
  *	else		Pointer to the symbol in the given encoding to which
  *			"unit" maps.
  */
-const char*
+EXTERNL const char*
 ut_get_symbol(
     const ut_unit* const	unit,
     const ut_encoding	encoding);
@@ -571,7 +643,7 @@ ut_get_symbol(
  *	UT_EXISTS	"symbol" already maps to a different unit.
  *	UT_SUCCESS	Success.
  */
-ut_status
+EXTERNL ut_status
 ut_map_symbol_to_unit(
     const char* const		symbol,
     const ut_encoding		encoding,
@@ -590,7 +662,7 @@ ut_map_symbol_to_unit(
  *	UT_SUCCESS	Success.
  *	UT_BAD_ARG	"system" or "symbol" is NULL.
  */
-ut_status
+EXTERNL ut_status
 ut_unmap_symbol_to_unit(
     ut_system*		system,
     const char* const	symbol,
@@ -612,7 +684,7 @@ ut_unmap_symbol_to_unit(
  *	UT_OS		Operating-system error.  See "errno".
  *	UT_EXISTS	"unit" already maps to a symbol.
  */
-ut_status
+EXTERNL ut_status
 ut_map_unit_to_symbol(
     const ut_unit*		unit,
     const char* const		symbol,
@@ -631,7 +703,7 @@ ut_map_unit_to_symbol(
  *	UT_SUCCESS	Success.
  *	UT_BAD_ARG	"unit" is NULL.
  */
-ut_status
+EXTERNL ut_status
 ut_unmap_unit_to_symbol(
     const ut_unit* const	unit,
     ut_encoding			encoding);
@@ -655,7 +727,7 @@ ut_unmap_unit_to_symbol(
  *		    UT_SUCCESS		"unit" is dimensionfull.
  *	else	"unit" is dimensionless.
  */
-int
+EXTERNL int
 ut_is_dimensionless(
     const ut_unit* const	unit);
 
@@ -674,7 +746,7 @@ ut_is_dimensionless(
  *						unit-systems.
  *	else		The units belong to the same unit-system.
  */
-int
+EXTERNL int
 ut_same_system(
     const ut_unit* const	unit1,
     const ut_unit* const	unit2);
@@ -694,7 +766,7 @@ ut_same_system(
  *	 0	The first and second units are equal or both units are NULL.
  *	>0	The first unit is greater than the second unit.
  */
-int
+EXTERNL int
 ut_compare(
     const ut_unit* const	unit1,
     const ut_unit* const	unit2);
@@ -719,7 +791,7 @@ ut_compare(
  *						"kilogram").
  *	else	Numeric values can be converted between the units.
  */
-int
+EXTERNL int
 ut_are_convertible(
     const ut_unit* const	unit1,
     const ut_unit* const	unit2);
@@ -748,7 +820,7 @@ ut_are_convertible(
  *			should be passed to cv_free() when no longer needed by
  *			the client.
  */
-cv_converter*
+EXTERNL cv_converter*
 ut_get_converter(
     ut_unit* const	from,
     ut_unit* const	to);
@@ -777,7 +849,7 @@ ut_get_converter(
  *			passed to ut_free() when the unit is no longer needed by
  *			the client.
  */
-ut_unit*
+EXTERNL ut_unit*
 ut_scale(
     const double		factor,
     const ut_unit* const	unit);
@@ -801,7 +873,7 @@ ut_scale(
  *			passed to ut_free() when the unit is no longer needed by
  *			the client.
  */
-ut_unit*
+EXTERNL ut_unit*
 ut_offset(
     const ut_unit* const	unit,
     const double	offset);
@@ -829,7 +901,7 @@ ut_offset(
  *	else	Pointer to the resulting unit.  The pointer should be passed
  *		to ut_free() when the unit is no longer needed by the client.
  */
-ut_unit*
+EXTERNL ut_unit*
 ut_offset_by_time(
     const ut_unit* const	unit,
     const double	origin);
@@ -850,7 +922,7 @@ ut_offset_by_time(
  *	else	Pointer to the resulting unit.  The pointer should be passed
  *		to ut_free() when the unit is no longer needed by the client.
  */
-ut_unit*
+EXTERNL ut_unit*
 ut_multiply(
     const ut_unit* const	unit1,
     const ut_unit* const	unit2);
@@ -869,7 +941,7 @@ ut_multiply(
  *	else	Pointer to the resulting unit.  The pointer should be passed to
  *		ut_free() when the unit is no longer needed by the client.
  */
-ut_unit*
+EXTERNL ut_unit*
 ut_invert(
     const ut_unit* const	unit);
 
@@ -895,7 +967,7 @@ ut_invert(
  *	else	Pointer to the resulting unit.  The pointer should be passed to
  *		ut_free() when the unit is no longer needed by the client.
  */
-ut_unit*
+EXTERNL ut_unit*
 ut_divide(
     const ut_unit* const	numer,
     const ut_unit* const	denom);
@@ -915,7 +987,7 @@ ut_divide(
  *	else	Pointer to the resulting unit.  The pointer should be passed to
  *		ut_free() when the unit is no longer needed by the client.
  */
-ut_unit*
+EXTERNL ut_unit*
 ut_raise(
     const ut_unit* const	unit,
     const int			power);
@@ -938,7 +1010,7 @@ ut_raise(
  *	else	Pointer to the resulting unit.  The pointer should be passed to
  *		ut_free() when the unit is no longer needed by the client.
  */
-ut_unit*
+EXTERNL ut_unit*
 ut_root(
     const ut_unit* const	unit,
     const int			root);
@@ -983,7 +1055,7 @@ ut_root(
  *			passed to ut_free() when the unit is no longer needed by
  *			the client.
  */
-ut_unit*
+EXTERNL ut_unit*
 ut_log(
     const double		base,
     const ut_unit* const	reference);
@@ -1016,7 +1088,7 @@ ut_log(
  *						"errno".
  *	else		Pointer to the unit corresponding to "string".
  */
-ut_unit*
+EXTERNL ut_unit*
 ut_parse(
     const ut_system* const	system,
     const char* const		string,
@@ -1033,7 +1105,7 @@ ut_parse(
  * Returns:
  *      "string", with all leading and trailing whitespace removed.
  */
-char*
+EXTERNL char*
 ut_trim(
     char* const	        string,
     const ut_encoding	encoding);
@@ -1075,7 +1147,7 @@ ut_trim(
  *			the number is equal to the size of the buffer, then the
  *			buffer is too small to have a terminating NUL character.
  */
-int
+EXTERNL int
 ut_format(
     const ut_unit* const	unit,
     char*		buf,
@@ -1095,7 +1167,7 @@ ut_format(
  *	UT_VISIT_ERROR	A error occurred in "visitor" while visiting "unit".
  *	UT_SUCCESS	Success.
  */
-ut_status
+EXTERNL ut_status
 ut_accept_visitor(
     const ut_unit* const		unit,
     const ut_visitor* const	visitor,
@@ -1117,7 +1189,7 @@ ut_accept_visitor(
  * Returns:
  *	The date encoded as a scalar value.
  */
-double
+EXTERNL double
 ut_encode_date(
     int		year,
     int		month,
@@ -1134,7 +1206,7 @@ ut_encode_date(
  * Returns:
  *	The clock-time encoded as a scalar value.
  */
-double
+EXTERNL double
 ut_encode_clock(
     int		hours,
     int		minutes,
@@ -1156,7 +1228,7 @@ ut_encode_clock(
  * Returns:
  *	The time encoded as a scalar value.
  */
-double
+EXTERNL double
 ut_encode_time(
     const int		year,
     const int		month,
@@ -1180,7 +1252,7 @@ ut_encode_time(
  *      resolution      Pointer to the variable to be set to the resolution
  *                      of the decoded time in seconds.
  */
-void
+EXTERNL void
 ut_decode_time(
     double	value,
     int		*year,
@@ -1201,7 +1273,7 @@ ut_decode_time(
  * Returns the status of the last operation by the units module.  This function
  * will not change the status.
  */
-ut_status
+EXTERNL ut_status
 ut_get_status(void);
 
 
@@ -1212,7 +1284,7 @@ ut_get_status(void);
  * Arguments:
  *	status	The status of the units module.
  */
-void
+EXTERNL void
 ut_set_status(
     ut_status	status);
 
@@ -1228,7 +1300,7 @@ ut_set_status(
  *	else	The number of bytes of "fmt" and "arg" written excluding any
  *		terminating NUL.
  */
-int
+EXTERNL int
 ut_handle_error_message(
     const char* const	fmt,
     ...);
@@ -1245,7 +1317,7 @@ ut_handle_error_message(
  * Returns:
  *	Pointer to the previously-installed error-message handler.
  */
-ut_error_message_handler
+EXTERNL ut_error_message_handler
 ut_set_error_message_handler(
     ut_error_message_handler	handler);
 
@@ -1262,7 +1334,7 @@ ut_set_error_message_handler(
  *	else	The number of bytes of "fmt" and "arg" written excluding any
  *		terminating NUL.
  */
-int
+EXTERNL int
 ut_write_to_stderr(
     const char* const	fmt,
     va_list		args);
@@ -1277,7 +1349,7 @@ ut_write_to_stderr(
  * Returns:
  *	0	Always.
  */
-int
+EXTERNL int
 ut_ignore(
     const char* const	fmt,
     va_list		args);

@@ -2,7 +2,7 @@
 <!--
 Copyright 2008, 2009 University Corporation for Atmospheric Research
 
-This file is part of the UDUNITS-2 package.  See the file LICENSE
+This file is part of the UDUNITS-2 package.  See the file COPYRIGHT
 in the top-level source-directory of the package for copying and
 redistribution conditions.
 
@@ -51,8 +51,8 @@ SI prefixes
     <prefix>
         <value>1e-6</value>
         <name>micro</name>
-        <symbol>&#xB5;</symbol>         <!-- MICRO SIGN -->
-        <symbol>&#x3BC;</symbol>	<!-- Greek small letter "mu" -->
+        <symbol comment="MICRO SIGN">&#xB5;</symbol>
+        <symbol comment="Greek small letter 'mu'">&#x3BC;</symbol>
         <symbol>u</symbol>
     </prefix>
     <prefix>
