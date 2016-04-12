@@ -1,0 +1,5 @@
+
+These files are taken from netcdf 4.0.
+
+The source files are taken from the libsrc and include directories and
+only contain the code needed to support the classic netcdf3 format.
