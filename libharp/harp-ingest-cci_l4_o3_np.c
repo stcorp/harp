@@ -252,6 +252,8 @@ static int read_dataset(ingest_info *info, const char *path, harp_data_type data
                     harp_set_error(HARP_ERROR_CODA, NULL);
                     return -1;
                 }
+
+                harp_array_replace_fill_value(data_type, num_elements, data, fill_value);
             }
             break;
         case harp_type_double:
@@ -267,15 +269,14 @@ static int read_dataset(ingest_info *info, const char *path, harp_data_type data
                     harp_set_error(HARP_ERROR_CODA, NULL);
                     return -1;
                 }
+
+                harp_array_replace_fill_value(data_type, num_elements, data, fill_value);
             }
             break;
         default:
             assert(0);
             exit(1);
     }
-
-    /* Replace values equal to the _FillValue variable attribute by NaN. */
-    harp_array_replace_fill_value(data_type, num_elements, data, fill_value);
 
     return 0;
 }
