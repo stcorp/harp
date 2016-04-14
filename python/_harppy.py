@@ -1,76 +1,20 @@
-"""HARP Python interface
+from __future__ import print_function
 
-This module implements the HARP Python interface. The interface consists of a
-minimal set of methods to import and export HARP products, and to ingest
-non-HARP products.
-
-Imported or ingested products are returned as pure Python objects, that can be
-manipulated freely from within Python. It is also possible to build up a product
-from scratch directly in Python. All data is represented as NumPy ndarrays.
-
-HARP products are represented in Python by instances of the Product class. A
-Product instance contains a Variable instance for each HARP variable. A Variable
-instance contains both the data as well as the attributes (dimensions, unit,
-valid range, description) of the corresponding HARP variable.
-
-Variables can be accessed by name using either the attribute access '.' syntax,
-or the item access '[]' syntax. For example:
-
-    # Alternative ways to access the variable 'HCHO_column_number_density'.
-    product.HCHO_column_number_density
-    product["HCHO_column_number_density"]
-
-    # Iterate over all variables in the product. For imported or ingested
-    # products, the order of the variables is the same as the order in the
-    # source product.
-    for name in product:
-        print product[name].unit
-
-Product attributes can be accessed in the same way as variables, but are not
-included when iterating over the variables in a product. For example:
-
-    # Print product attributes.
-    print product.source_product
-    print product.history
-
-The names of product attributes are reserved and cannot be used for variables.
-
-A Product can be converted to an OrderedDict using the to_dict() module level
-method. The OrderedDict representation provides direct access to the data
-associated with each variable. All product attributes and all variable
-attributes except the unit attribute are discarded as part of the conversion.
-The unit attribute of a variable is represented by mapping the name of the
-corresponding variable suffxed with '_unit' to a string containing the unit.
-
-    # Accessing the variable 'HCHO_column_number_density'.
-    product["HCHO_column_number_density"]
-
-    # Accessing the unit attribute of the variable 'HCHO_column_number_density'.
-    product["HCHO_column_number_density_unit"]
-
-    # Iterate over all variables in the product. For imported or ingested
-    # products, the order of the variables is the same as the order in the
-    # source product.
-    for name, value in product.iteritems():
-        print name, value
-
-The OrderedDict representation can be convenient when there is a need to
-interface with existing code such as plotting libraries, or when the additional
-information provided by the Product representation is not needed.
-
-Note that only Product instances can be exported as a HARP product. The
-OrderedDict representation does not contain enough information.
-
-"""
-import collections
+from collections import OrderedDict
 import numpy
-import platform
-import StringIO
 
-from _harpc import ffi as _ffi
+try:
+    from cStringIO import StringIO
+except ImportError:
+    try:
+        from StringIO import StringIO
+    except ImportError:
+        from io import StringIO
+
+from harp._harpc import ffi as _ffi
 
 __all__ = ["Error", "CLibraryError", "UnsupportedTypeError", "UnsupportedDimensionError", "Variable", "Product",
-           "version", "ingest_product", "import_product", "export_product", "to_dict"]
+           "get_encoding", "set_encoding", "version", "ingest_product", "import_product", "export_product", "to_dict"]
 
 class Error(Exception):
     """Exception base class for all HARP Python interface errors."""
@@ -105,7 +49,7 @@ class CLibraryError(Error):
             errno = _lib.harp_errno
 
         if strerror is None:
-            strerror = _ffi.string(_lib.harp_errno_to_string(errno))
+            strerror = _decode_string(_ffi.string(_lib.harp_errno_to_string(errno)))
 
         super(CLibraryError, self).__init__(errno, strerror)
         self.errno = errno
@@ -122,9 +66,9 @@ class Variable(object):
     optional attributes: physical units, valid range (min, max), and a textual
     description.
     """
-    def __init__(self, data, dimensions=[], unit=None, valid_min=None, valid_max=None, description=None):
+    def __init__(self, data, dimension=[], unit=None, valid_min=None, valid_max=None, description=None):
         self.data = data
-        self.dimensions = dimensions
+        self.dimension = dimension
 
         if unit:
             self.unit = unit
@@ -136,48 +80,64 @@ class Variable(object):
             self.description = description
 
     def __repr__(self):
-        if not self.dimensions:
+        if not self.dimension:
             return "<Variable type=%s>" % _format_data_type(self.data)
 
-        return "<Variable type=%s dimensions=%s>" % (_format_data_type(self.data),
-                                                     _format_dimensions(self.dimensions, self.data))
+        return "<Variable type=%s dimension=%s>" % (_format_data_type(self.data),
+                                                    _format_dimensions(self.dimension, self.data))
 
     def __str__(self):
-        stream = StringIO.StringIO()
+        stream = StringIO()
 
-        print >> stream, "type =", _format_data_type(self.data)
+        print("type =", _format_data_type(self.data), file=stream)
 
-        if self.dimensions:
-            print >> stream, "dimensions =", _format_dimensions(self.dimensions, self.data)
+        if self.dimension:
+            print("dimension =", _format_dimensions(self.dimension, self.data), file=stream)
 
-        unit = getattr(self, "unit", None)
-        if unit:
-            print >> stream, "unit =", repr(unit) if isinstance(unit, str) else "<invalid>"
+        try:
+            unit = self.unit
+        except AttributeError:
+            pass
+        else:
+            if unit:
+                print("unit = %r" % unit, file=stream)
 
-        valid_min = getattr(self, "valid_min", None)
-        if valid_min is not None:
-            print >> stream, "valid_min =", repr(valid_min) if numpy.isscalar(valid_min) else "<invalid>"
+        try:
+            valid_min = self.valid_min
+        except AttributeError:
+            pass
+        else:
+            if valid_min is not None:
+                print("valid_min = %r" % valid_min, file=stream)
 
-        valid_max = getattr(self, "valid_max", None)
-        if valid_max is not None:
-            print >> stream, "valid_max =", repr(valid_max) if numpy.isscalar(valid_max) else "<invalid>"
+        try:
+            valid_max = self.valid_max
+        except AttributeError:
+            pass
+        else:
+            if valid_max is not None:
+                print("valid_max = %r" % valid_max, file=stream)
 
-        description = getattr(self, "description", None)
-        if description:
-            print >> stream, "description =", repr(description) if isinstance(description, str) else "<invalid>"
+        try:
+            description = self.description
+        except AttributeError:
+            pass
+        else:
+            if description:
+                print("description = %r" % description, file=stream)
 
         if self.data is not None:
             if not isinstance(self.data, numpy.ndarray) and not numpy.isscalar(self.data):
-                print >> stream, "data = <invalid>"
+                print("data = <invalid>", file=stream)
             elif numpy.isscalar(self.data):
-                print >> stream, "data = %r" % self.data
-            elif not self.dimensions and self.data.size == 1:
-                print >> stream, "data = %r" % numpy.asscalar(self.data)
+                print("data = %r" % self.data, file=stream)
+            elif not self.dimension and self.data.size == 1:
+                print("data = %r" % self.data.flat[0], file=stream)
             elif self.data.size == 0:
-                print >> stream, "data = <empty>"
+                print("data = <empty>", file=stream)
             else:
-                print >> stream, "data ="
-                print >> stream, str(self.data)
+                print("data =", file=stream)
+                print(str(self.data), file=stream)
 
         return stream.getvalue()
 
@@ -204,7 +164,7 @@ class Product(object):
             self.source_product = source_product
         if history:
             self.history = history
-        self._variable_dict = collections.OrderedDict()
+        self._variable_dict = OrderedDict()
 
     def _is_reserved_name(self, name):
         return name.startswith("_") or name in Product._reserved_names
@@ -261,50 +221,64 @@ class Product(object):
         return "<Product variables=%r>" % self._variable_dict.keys()
 
     def __str__(self):
-        stream = StringIO.StringIO()
+        stream = StringIO()
 
         # Attributes.
-        source_product = getattr(self, "source_product", None)
-        history = getattr(self, "history", None)
+        has_attributes = False
 
-        if source_product:
-            print >> stream, "source product =", \
-                             repr(source_product) if isinstance(source_product, str) else "<invalid>"
+        try:
+            source_product = self.source_product
+        except AttributeError:
+            pass
+        else:
+            if source_product:
+                print("source product = %r" % source_product, file=stream)
+                has_attributes = True
 
-        if history:
-            print >> stream, "history =", repr(history) if isinstance(history, str) else "<invalid>"
+        try:
+            history = self.history
+        except AttributeError:
+            pass
+        else:
+            if history:
+                print("history = %r" % history, file=stream)
+                has_attributes = True
 
         # Variables.
         if not self._variable_dict:
             return stream.getvalue()
 
-        if history or source_product:
+        if has_attributes:
             stream.write("\n")
 
-        for name, variable in self._variable_dict.iteritems():
+        for name, variable in _dict_iteritems(self._variable_dict):
             if not isinstance(variable, Variable):
-                print >> stream, "<non-compliant variable %r>" % name
+                print("<non-compliant variable %r>" % name, file=stream)
                 continue
 
             if not isinstance(variable.data, numpy.ndarray) and not numpy.isscalar(variable.data):
-                print >> stream, "<non-compliant variable %r>" % name
+                print("<non-compliant variable %r>" % name, file=stream)
                 continue
 
             if isinstance(variable.data, numpy.ndarray) and variable.data.size == 0:
-                print >> stream, "<empty variable %r>" % name
+                print("<empty variable %r>" % name, file=stream)
                 continue
 
             # Data type and variable name.
             stream.write(_format_data_type(variable.data) + " " + name)
 
             # Dimensions.
-            if variable.dimensions:
-                stream.write(" " + _format_dimensions(variable.dimensions, variable.data))
+            if variable.dimension:
+                stream.write(" " + _format_dimensions(variable.dimension, variable.data))
 
             # Unit.
-            unit = getattr(variable, "unit", None)
-            if unit:
-                stream.write(" [" + (unit if isinstance(unit, str) else "<invalid>") + "]")
+            try:
+                unit = variable.unit
+            except AttributeError:
+                pass
+            else:
+                if unit:
+                    stream.write(" [%s]" % unit)
 
             stream.write("\n")
 
@@ -319,15 +293,28 @@ def _get_c_library_filename():
 
     return "harp.dll" if _system() == "Windows" else "harp.dylib" if _system() == "Darwin" else "libharp.so"
 
+def _get_filesystem_encoding():
+    """Return the encoding used by the filesystem."""
+    from sys import getdefaultencoding as _getdefaultencoding, getfilesystemencoding as _getfilesystemencoding
+
+    encoding = _getfilesystemencoding()
+    if encoding is None:
+        encoding = _getdefaultencoding()
+
+    return encoding
+
 def _init():
     """Initialize the HARP Python interface."""
-    global _lib, _py_dimension_type, _c_dimension_type, _py_data_type, _c_data_type_name
+    global _lib, _encoding, _py_dimension_type, _c_dimension_type, _py_data_type, _c_data_type_name
 
     # Initialize the HARP C library
     _lib = _ffi.dlopen(_get_c_library_filename())
 
     if _lib.harp_init() != 0:
         raise CLibraryError()
+
+    # Set default encoding.
+    _encoding = "ascii"
 
     # Initialize various look-up tables used thoughout the HARP Python interface (i.e. this module).
     _py_dimension_type = \
@@ -370,18 +357,6 @@ def _init():
             _lib.harp_type_string: "string"
         }
 
-def _any(predicate, sequence):
-    """Return True if the predicate evaluates to True for any element in the
-    sequence, False otherwise.
-
-    Attributes:
-        predicate   --  Predicate to use; this should be a callable that takes a
-                        single argument and returns a bool.
-        sequence    --  Sequence to test.
-
-    """
-    return reduce(lambda x, y: x or predicate(y), sequence, False)
-
 def _all(predicate, sequence):
     """Return True if the predicate evaluates to True for all elements in the
     sequence, False otherwise.
@@ -393,6 +368,16 @@ def _all(predicate, sequence):
 
     """
     return reduce(lambda x, y: x and predicate(y), sequence, True)
+
+def _dict_iteritems(dictionary):
+    """Get an iterator or view on the items of the specified dictionary.
+
+    This method is Python 2 and Python 3 compatible.
+    """
+    try:
+        return dictionary.iteritems()
+    except AttributeError:
+        return dictionary.items()
 
 def _get_py_dimension_type(dimension_type):
     """Return the dimension name corresponding to the specified C dimension type
@@ -426,61 +411,43 @@ def _get_c_data_type(value):
     value.
 
     """
-    if isinstance(value, numpy.ndarray):
-        # For NumPy ndarrays determine the smallest HARP C data type that can safely contain elements of the ndarray's
-        # dtype.
+    if isinstance(value, numpy.ndarray) or isinstance(value, numpy.generic):
+        # For NumPy ndarrays and scalars, determine the smallest HARP C data type that can safely contain elements of
+        # the ndarray or scalar dtype.
         if numpy.issubdtype(value.dtype, numpy.object_):
             # NumPy object arrays are only used to contain variable length strings.
             if _all(lambda element: isinstance(element, str), value.flat):
                 return _lib.harp_type_string
-
-            raise UnsupportedTypeError("NumPy object array should only contain elements of type 'str'")
-
-        if numpy.issubdtype(value.dtype, numpy.str_):
+            else:
+                raise UnsupportedTypeError("NumPy object array should only contain elements of type 'str'")
+        elif numpy.issubdtype(value.dtype, numpy.str_):
             return _lib.harp_type_string
-
-        # Split tests for integer and floating point types, because numpy.can_cast() seems to accept casts from integer
-        # to float in "safe" mode that cannot preserve values. In particular, it accepts casts from numpy.int64 to
-        # numpy.float64.
-        if numpy.issubdtype(value.dtype, numpy.integer):
-            if numpy.can_cast(value.dtype, numpy.int8):
-                return _lib.harp_type_int8
-            if numpy.can_cast(value.dtype, numpy.int16):
-                return _lib.harp_type_int16
-            if numpy.can_cast(value.dtype, numpy.int32):
-                return _lib.harp_type_int32
-
-        if numpy.issubdtype(value.dtype, numpy.floating):
-            if numpy.can_cast(value.dtype, numpy.float32):
-                return _lib.harp_type_float
-            if numpy.can_cast(value.dtype, numpy.float64):
-                return _lib.harp_type_double
-
-        raise UnsupportedTypeError("unsupported NumPy dtype '%s'" % value.dtype)
-
-    if isinstance(value, numpy.generic):
-        # Convert NumPy array scalars to the corresponding Python scalar.
-        value = numpy.asscalar(value)
-
-    if isinstance(value, str):
-        return _lib.harp_type_string
-
-    if isinstance(value, int) or isinstance(value, long):
-        if value >= -2**7 and value <= 2**7 - 1:
+        elif numpy.can_cast(value.dtype, numpy.int8):
             return _lib.harp_type_int8
-        elif value >= -2**15 and value <= 2**15 - 1:
+        elif numpy.can_cast(value.dtype, numpy.int16):
             return _lib.harp_type_int16
-        elif value >= -2**31 and value <= 2**31 - 1:
+        elif numpy.can_cast(value.dtype, numpy.int32):
             return _lib.harp_type_int32
-
-        raise UnsupportedTypeError("integer value '%d' outside maximum supported range [%d, %d]" % (value, -2**31,
-                                                                                                    2**31 - 1))
-    if isinstance(value, float):
-        # Use the floating point type with the highest precision, since the precision to exactly represent the specified
-        # Python value is not trivial to determine.
+        elif numpy.can_cast(value.dtype, numpy.float32):
+            return _lib.harp_type_float
+        elif numpy.can_cast(value.dtype, numpy.float64):
+            return _lib.harp_type_double
+        else:
+            raise UnsupportedTypeError("unsupported NumPy dtype '%s'" % value.dtype)
+    elif isinstance(value, (str, bytes)):
+        return _lib.harp_type_string
+    elif numpy.can_cast(value, numpy.int8):
+        return _lib.harp_type_int8
+    elif numpy.can_cast(value, numpy.int16):
+        return _lib.harp_type_int16
+    elif numpy.can_cast(value, numpy.int32):
+        return _lib.harp_type_int32
+    elif numpy.can_cast(value, numpy.float32):
+        return _lib.harp_type_float
+    elif numpy.can_cast(value, numpy.float64):
         return _lib.harp_type_double
-
-    raise UnsupportedTypeError("unsupported type %r" % value.__class__.__name__)
+    else:
+        raise UnsupportedTypeError("unsupported type %r" % value.__class__.__name__)
 
 def _get_c_data_type_name(data_type):
     """Return the canonical name for the specified C data type code."""
@@ -489,39 +456,141 @@ def _get_c_data_type_name(data_type):
     except KeyError:
         raise UnsupportedTypeError("unsupported C data type code '%d'" % data_type)
 
-def _is_compatible_c_data_type(c_data_type_src, c_data_type_dst):
+def _c_can_cast(c_data_type_src, c_data_type_dst):
     """Returns True if the source C data type can be cast to the destination C data
     type while preserving values.
 
     """
     if c_data_type_dst == _lib.harp_type_int8:
-        return c_data_type_src == _lib.harp_type_int8
+        return (c_data_type_src == _lib.harp_type_int8)
     elif c_data_type_dst == _lib.harp_type_int16:
-        return c_data_type_src in (_lib.harp_type_int8, _lib.harp_type_int16)
+        return (c_data_type_src == _lib.harp_type_int8 or
+                c_data_type_src == _lib.harp_type_int16)
     elif c_data_type_dst == _lib.harp_type_int32:
-        return c_data_type_src in (_lib.harp_type_int8, _lib.harp_type_int16, _lib.harp_type_int32)
+        return (c_data_type_src == _lib.harp_type_int8 or
+                c_data_type_src == _lib.harp_type_int16 or
+                c_data_type_src == _lib.harp_type_int32)
     elif c_data_type_dst == _lib.harp_type_float:
-        return c_data_type_src in (_lib.harp_type_int8, _lib.harp_type_int16, _lib.harp_type_float)
+        return (c_data_type_src == _lib.harp_type_int8 or
+                c_data_type_src == _lib.harp_type_int16 or
+                c_data_type_src == _lib.harp_type_float)
     elif c_data_type_dst == _lib.harp_type_double:
-        return c_data_type_src in (_lib.harp_type_int8, _lib.harp_type_int16, _lib.harp_type_int32,
-                                   _lib.harp_type_float, _lib.harp_type_double)
+        return (c_data_type_src == _lib.harp_type_int8 or
+                c_data_type_src == _lib.harp_type_int16 or
+                c_data_type_src == _lib.harp_type_int32 or
+                c_data_type_src == _lib.harp_type_float or
+                c_data_type_src == _lib.harp_type_double)
     elif c_data_type_dst == _lib.harp_type_string:
-        return c_data_type_src == _lib.harp_type_string
+        return (c_data_type_src == _lib.harp_type_string)
+    else:
+        return False
 
-    return False
+def _encode_string_with_encoding(string, encoding="utf-8"):
+    """Encode a unicode string using the specified encoding.
 
-def _as_py_scalar(value):
-    """Return a Python scalar.
+    By default, use the "surrogateescape" error handler to deal with encoding
+    errors. This error handler ensures that invalid bytes encountered during
+    decoding are converted to the same bytes during encoding, by decoding them
+    to a special range of unicode code points.
 
-    If the input is a NumPy ndarray of a NumPy scalar, convert it to a Python
-    scalar using numpy.asscalar(). Otherwise, the input is passed straight
-    through.
+    The "surrogateescape" error handler is available since Python 3.1. For earlier
+    versions of Python 3, the "strict" error handler is used instead.
 
     """
-    if isinstance(value, numpy.ndarray) or isinstance(value, numpy.generic):
-        return numpy.asscalar(value)
+    try:
+        try:
+            return string.encode(encoding, "surrogateescape")
+        except LookupError:
+            # Either the encoding or the error handler is not supported; fall-through to the next try-block.
+            pass
 
-    return value
+        try:
+            return string.encode(encoding)
+        except LookupError:
+            # Here it is certain that the encoding is not supported.
+            raise Error("unknown encoding '%s'" % encoding)
+    except UnicodeEncodeError:
+        raise Error("cannot encode '%s' using encoding '%s'" % (string, encoding))
+
+def _decode_string_with_encoding(raw_bytes, encoding="utf-8"):
+    """Decode a byte string using the specified encoding.
+
+    By default, use the "surrogateescape" error handler to deal with encoding
+    errors. This error handler ensures that invalid bytes encountered during
+    decoding are converted to the same bytes during encoding, by decoding them
+    to a special range of unicode code points.
+
+    The "surrogateescape" error handler is available since Python 3.1. For earlier
+    versions of Python 3, the "strict" error handler is used instead. This may cause
+    decoding errors if the input byte string contains bytes that cannot be decoded
+    using the specified encoding. Since most HARP products use ASCII strings
+    exclusively, it is unlikely this will occur often in practice.
+
+    """
+    try:
+        try:
+            return raw_bytes.decode(encoding, "surrogateescape")
+        except LookupError:
+            # Either the encoding or the error handler is not supported; fall-through to the next try-block.
+            pass
+
+        try:
+            return raw_bytes.decode(encoding)
+        except LookupError:
+            # Here it is certain that the encoding is not supported.
+            raise Error("unknown encoding '%s'" % encoding)
+    except UnicodeEncodeError:
+        raise Error("cannot decode '%s' using encoding '%s'" % (raw_bytes, encoding))
+
+def _encode_path(path):
+    """Encode the input unicode path using the filesystem encoding.
+
+    On Python 2, this method returns the specified path unmodified.
+
+    """
+    if isinstance(path, bytes):
+        # This branch will be taken for instances of class str on Python 2 (since this is an alias for class bytes), and
+        # on Python 3 for instances of class bytes.
+        return path
+    elif isinstance(path, str):
+        # This branch will only be taken for instances of class str on Python 3. On Python 2 such instances will take
+        # the branch above.
+        return _encode_string_with_encoding(path, _get_filesystem_encoding())
+    else:
+        raise TypeError("path must be bytes or str, not %r" % key.__class__.__name__)
+
+def _encode_string(string):
+    """Encode the input unicode string using the package default encoding.
+
+    On Python 2, this method returns the specified string unmodified.
+
+    """
+    if isinstance(string, bytes):
+        # This branch will be taken for instances of class str on Python 2 (since this is an alias for class bytes), and
+        # on Python 3 for instances of class bytes.
+        return string
+    elif isinstance(string, str):
+        # This branch will only be taken for instances of class str on Python 3. On Python 2 such instances will take
+        # the branch above.
+        return _encode_string_with_encoding(string, get_encoding())
+    else:
+        raise TypeError("string must be bytes or str, not %r" % key.__class__.__name__)
+
+def _decode_string(string):
+    """Decode the input byte string using the package default encoding.
+
+    On Python 2, this method returns the specified byte string unmodified.
+
+    """
+    if isinstance(string, str):
+        # This branch will be taken for instances of class str on Python 2 and Python 3.
+        return string
+    elif isinstance(string, bytes):
+        # This branch will only be taken for instances of class bytes on Python 3. On Python 2 such instances will take
+        # the branch above.
+        return _decode_string_with_encoding(string, get_encoding())
+    else:
+        raise TypeError("string must be bytes or str, not %r" % key.__class__.__name__)
 
 def _format_data_type(data):
     """Return the string representation of the C data type that would be used to
@@ -534,21 +603,21 @@ def _format_data_type(data):
     except UnsupportedTypeError:
         return "<invalid>"
 
-def _format_dimensions(dimensions, data):
+def _format_dimensions(dimension, data):
     """Construct a formatted string from the specified dimensions and data that
     provides information about dimension types and lengths, or "<invalid>" if this
     information cannot be determined.
 
     """
-    if not isinstance(data, numpy.ndarray) or data.ndim != len(dimensions):
+    if not isinstance(data, numpy.ndarray) or data.ndim != len(dimension):
         return "{<invalid>}"
 
-    stream = StringIO.StringIO()
+    stream = StringIO()
 
     stream.write("{")
     for i in range(data.ndim):
-        if dimensions[i]:
-            stream.write(dimensions[i] + "=")
+        if dimension[i]:
+            stream.write(dimension[i] + "=")
         stream.write(str(data.shape[i]))
 
         if (i + 1) < data.ndim:
@@ -576,7 +645,7 @@ def _import_array(c_data_type, c_num_elements, c_data):
         data = numpy.empty((c_num_elements,), dtype=numpy.object)
         for i in range(c_num_elements):
             # NB. The _ffi.string() method returns a copy of the C string.
-            data[i] = _ffi.string(c_data.string_data[i])
+            data[i] = _decode_string(_ffi.string(c_data.string_data[i]))
 
         return data
 
@@ -591,24 +660,22 @@ def _import_variable(c_variable):
 
     num_dimensions = c_variable.num_dimensions
     if num_dimensions == 0:
-        # Scalar.
         variable = Variable(numpy.asscalar(data))
     else:
-        # N-dimensional array.
         data = data.reshape([c_variable.dimension[i] for i in range(num_dimensions)])
-        dimensions = [_get_py_dimension_type(c_variable.dimension_type[i]) for i in range(num_dimensions)]
-        variable = Variable(data, dimensions)
+        dimension = [_get_py_dimension_type(c_variable.dimension_type[i]) for i in range(num_dimensions)]
+        variable = Variable(data, dimension)
 
     # Import variable attributes.
     if c_variable.unit:
-        variable.unit = _ffi.string(c_variable.unit)
+        variable.unit = _decode_string(_ffi.string(c_variable.unit))
 
     if c_variable.data_type != _lib.harp_type_string:
         variable.valid_min = _import_scalar(c_variable.data_type, c_variable.valid_min)
         variable.valid_max = _import_scalar(c_variable.data_type, c_variable.valid_max)
 
     if c_variable.description:
-        variable.description = _ffi.string(c_variable.description)
+        variable.description = _decode_string(_ffi.string(c_variable.description))
 
     return variable
 
@@ -617,20 +684,20 @@ def _import_product(c_product):
 
     # Import product attributes.
     if c_product.source_product:
-        product.source_product = _ffi.string(c_product.source_product)
+        product.source_product = _decode_string(_ffi.string(c_product.source_product))
 
     if c_product.history:
-        product.history = _ffi.string(c_product.history)
+        product.history = _decode_string(_ffi.string(c_product.history))
 
     # Import variables.
     for i in range(c_product.num_variables):
         c_variable_ptr = c_product.variable[i]
         variable = _import_variable(c_variable_ptr[0])
-        setattr(product, _ffi.string(c_variable_ptr[0].name), variable)
+        setattr(product, _decode_string(_ffi.string(c_variable_ptr[0].name)), variable)
 
     return product
 
-def _export_scalar(c_data_type, c_data, data):
+def _export_scalar(data, c_data_type, c_data):
     if c_data_type == _lib.harp_type_int8:
         c_data.int8_data = data
     elif c_data_type == _lib.harp_type_int16:
@@ -644,34 +711,52 @@ def _export_scalar(c_data_type, c_data, data):
     else:
         raise UnsupportedTypeError("unsupported C data type code '%d'" % c_data_type)
 
+def _export_array(data, c_variable):
+    if c_variable.data_type != _lib.harp_type_string:
+        # NB. The _ffi.buffer() method as well as the numpy.frombuffer() method provide a view on the C array; neither
+        # method incurs a copy. The numpy.copyto() method also works if the source array is a scalar, i.e. not an
+        # instance of numpy.ndarray.
+        size = c_variable.num_elements * _lib.harp_get_size_for_type(c_variable.data_type)
+        c_data_buffer = _ffi.buffer(c_variable.data.ptr, size)
+        c_data = numpy.reshape(numpy.frombuffer(c_data_buffer, dtype=_get_py_data_type(c_variable.data_type)),
+                               data.shape)
+        numpy.copyto(c_data, data, casting="safe")
+    elif isinstance(data, numpy.ndarray):
+        for index, element in enumerate(data.flat):
+            if _lib.harp_variable_set_string_data_element(c_variable, index, _encode_string(element)) != 0:
+                raise CLibraryError()
+    else:
+        assert(c_variable.num_elements == 1)
+        if _lib.harp_variable_set_string_data_element(c_variable, 0, _encode_string(data)) != 0:
+            raise CLibraryError()
+
 def _export_variable(name, variable, c_product):
     data = getattr(variable, "data", None)
-    dimensions = getattr(variable, "dimensions", [])
-    scalar = not dimensions
-
     if data is None:
         raise Error("no data or data is None")
 
-    if not scalar and (not isinstance(data, numpy.ndarray) or data.ndim != len(dimensions)):
-        raise Error("incorrect dimension information")
+    dimension = getattr(variable, "dimension", [])
+    if not dimension and isinstance(data, numpy.ndarray) and data.size != 1:
+        raise Error("dimensions missing or incomplete")
 
-    if scalar and isinstance(data, numpy.ndarray):
-        if data.size == 1:
-            data = numpy.asscalar(data)
-        else:
-            raise Error("dimension information missing or incomplete")
+    if dimension and (not isinstance(data, numpy.ndarray) or data.ndim != len(dimension)):
+        raise Error("dimensions incorrect")
+
+    # Encode variable name.
+    c_name = _encode_string(name)
 
     # Determine C dimension types and lengths.
-    c_num_dimensions = len(dimensions)
-    c_dimension_type = [_get_c_dimension_type(dimension) for dimension in dimensions]
-    c_dimension = _ffi.NULL if scalar else data.shape
+    c_num_dimensions = len(dimension)
+    c_dimension_type = [_get_c_dimension_type(dimension_name) for dimension_name in dimension]
+    c_dimension = _ffi.NULL if not dimension else data.shape
 
     # Determine C data type.
     c_data_type = _get_c_data_type(data)
 
     # Create C variable of the proper size.
     c_variable_ptr = _ffi.new("harp_variable **")
-    if _lib.harp_variable_new(name, c_data_type, c_num_dimensions, c_dimension_type, c_dimension, c_variable_ptr) != 0:
+    if _lib.harp_variable_new(c_name, c_data_type, c_num_dimensions, c_dimension_type, c_dimension,
+                              c_variable_ptr) != 0:
         raise CLibraryError()
 
     # Add C variable to C product.
@@ -679,85 +764,85 @@ def _export_variable(name, variable, c_product):
         _lib.harp_variable_delete(c_variable_ptr[0])
         raise CLibraryError()
 
-    # The C variable has been successfully added to the C product. Thus, the memory management of the C variable is
-    # now tied to the life time of the C product and _lib.harp_variable_delete() should not be called. If an error
-    # occurs, the memory occupied by the C variable will be freed when the C product is deleted.
+    # The C variable has been successfully added to the C product. Therefore, the memory management of the C variable is
+    # tied to the life time of the C product. If an error occurs, the memory occupied by the C variable will be freed
+    # along with the C product.
     c_variable = c_variable_ptr[0]
-    c_data = c_variable.data
 
     # Copy data into the C variable.
-    if scalar:
-        if c_data_type == _lib.harp_type_int8:
-            c_data.int8_data = data
-        elif c_data_type == _lib.harp_type_int16:
-            c_data.int16_data = data
-        elif c_data_type == _lib.harp_type_int32:
-            c_data.int32_data = data
-        elif c_data_type == _lib.harp_type_float:
-            c_data.float_data = data
-        elif c_data_type == _lib.harp_type_double:
-            c_data.double_data = data
-        elif c_data_type == _lib.harp_type_string:
-            if _lib.harp_variable_set_string_data_element(c_variable, 0, data) != 0:
-                raise CLibraryError()
+    _export_array(data, c_variable)
+
+    # Variable attributes.
+    if c_data_type != _lib.harp_type_string:
+        try:
+            valid_min = variable.valid_min
+        except AttributeError:
+            pass
         else:
-            raise UnsupportedTypeError("unsupported C data type code '%d'" % c_data_type)
-    elif c_data_type == _lib.harp_type_string:
-        for index, value in enumerate(data.flat):
-            if _lib.harp_variable_set_string_data_element(c_variable, index, value) != 0:
-                raise CLibraryError()
+            if isinstance(valid_min, numpy.ndarray):
+                if valid_min.size == 1:
+                    valid_min = valid_min.flat[0]
+                else:
+                    raise Error("valid_min attribute should be scalar")
+
+            c_data_type_valid_min = _get_c_data_type(valid_min)
+            if _c_can_cast(c_data_type_valid_min, c_data_type):
+                _export_scalar(valid_min, c_data_type, c_variable.valid_min)
+            else:
+                raise Error("type '%s' of valid_min attribute incompatible with type '%s' of data"
+                            % (_get_c_data_type_name(c_data_type_valid_min), _get_c_data_type_name(c_data_type)))
+
+        try:
+            valid_max = variable.valid_max
+        except AttributeError:
+            pass
+        else:
+            if isinstance(valid_max, numpy.ndarray):
+                if valid_max.size == 1:
+                    valid_max = valid_max.flat[0]
+                else:
+                    raise Error("valid_max attribute should be scalar")
+
+            c_data_type_valid_max = _get_c_data_type(valid_max)
+            if _c_can_cast(c_data_type_valid_max, c_data_type):
+                _export_scalar(valid_max, c_data_type, c_variable.valid_max)
+            else:
+                raise Error("type '%s' of valid_max attribute incompatible with type '%s' of data"
+                            % (_get_c_data_type_name(c_data_type_valid_max), _get_c_data_type_name(c_data_type)))
+
+    try:
+        unit = variable.unit
+    except AttributeError:
+        pass
     else:
-        # NB. The _ffi.buffer() method as well as the numpy.frombuffer() method provide a view on the C array;
-        # neither method incurs a copy.
-        c_data_buffer = _ffi.buffer(c_data.ptr, c_variable.num_elements * _lib.harp_get_size_for_type(c_data_type))
-        c_data = numpy.reshape(numpy.frombuffer(c_data_buffer, dtype=_get_py_data_type(c_data_type)), data.shape)
-        numpy.copyto(c_data, data, casting="safe")
+        if unit and _lib.harp_variable_set_unit(c_variable, _encode_string(unit)) != 0:
+            raise CLibraryError()
 
-    valid_min = getattr(variable, "valid_min", None)
-    if valid_min is not None:
-        try:
-            valid_min = _as_py_scalar(valid_min)
-        except ValueError:
-            raise Error("valid_min attribute should be scalar")
-
-        c_data_type_valid_min = _get_c_data_type(valid_min)
-        if not _is_compatible_c_data_type(c_data_type_valid_min, c_data_type):
-            raise Error("C data type '%s' of valid_min attribute is incompatible with C data type '%s' of data"
-                        % (_get_c_data_type_name(c_data_type_valid_min), _get_c_data_type_name(c_data_type)))
-
-        _export_scalar(c_data_type, c_variable_ptr[0].valid_min, valid_min)
-
-    valid_max = getattr(variable, "valid_max", None)
-    if valid_max is not None:
-        try:
-            valid_max = _as_py_scalar(valid_max)
-        except ValueError:
-            raise Error("valid_max attribute should be scalar")
-
-        c_data_type_valid_max = _get_c_data_type(valid_max)
-        if not _is_compatible_c_data_type(c_data_type_valid_max, c_data_type):
-            raise Error("C data type '%s' of valid_max attribute is incompatible with C data type '%s' of data"
-                        % (_get_c_data_type_name(c_data_type_valid_max), _get_c_data_type_name(c_data_type)))
-
-        _export_scalar(c_data_type, c_variable_ptr[0].valid_max, valid_max)
-
-    unit = getattr(variable, "unit", None)
-    if unit and _lib.harp_variable_set_unit(c_variable_ptr[0], str(unit)) != 0:
-        raise CLibraryError()
-
-    description = getattr(variable, "description", None)
-    if description and _lib.harp_variable_set_description(c_variable_ptr[0], str(description)) != 0:
-        raise CLibraryError()
+    try:
+        description = variable.description
+    except AttributeError:
+        pass
+    else:
+        if description and _lib.harp_variable_set_description(c_variable, _encode_string(description)) != 0:
+            raise CLibraryError()
 
 def _export_product(product, c_product):
     # Export product attributes.
-    source_product = getattr(product, "source_product", None)
-    if source_product and _lib.harp_product_set_source_product(c_product, str(source_product)) != 0:
-        raise CLibraryError()
+    try:
+        source_product = product.source_product
+    except AttributeError:
+        pass
+    else:
+        if source_product and _lib.harp_product_set_source_product(c_product, _encode_string(source_product)) != 0:
+            raise CLibraryError()
 
-    history = getattr(product, "history", None)
-    if history and _lib.harp_product_set_history(c_product, str(history)) != 0:
-        raise CLibraryError()
+    try:
+        history = product.history
+    except AttributeError:
+        pass
+    else:
+        if history and _lib.harp_product_set_history(c_product, _encode_string(history)) != 0:
+            raise CLibraryError()
 
     # Export variables.
     for name in product:
@@ -767,33 +852,49 @@ def _export_product(product, c_product):
             _error.args = (_error.args[0] + " (variable %r)" % name,) + _error.args[1:]
             raise
 
+def get_encoding():
+    """Return the encoding used to convert between unicode strings and C strings
+    (only relevant when using Python 3).
+
+    """
+    return _encoding
+
+def set_encoding(encoding):
+    """Set the encoding used to convert between unicode strings and C strings
+    (only relevant when using Python 3).
+
+    """
+    global _encoding
+
+    _encoding = encoding
+
 def version():
     """Return HARP C library version."""
-    return _ffi.string(_lib.libharp_version)
+    return _decode_string(_ffi.string(_lib.libharp_version))
 
 def to_dict(product):
     """Convert a Product to an OrderedDict.
 
     Arguments:
-    product     --  Product to convert.
+    product -- Product to convert.
 
     """
     if not isinstance(product, Product):
-        raise Error("to_dict() argument must be Product, not %r" % product.__class__.__name__)
+        raise TypeError("product must be Product, not %r" % product.__class__.__name__)
 
-    dict_ = collections.OrderedDict()
+    dictionary = OrderedDict()
 
     for name in product:
         variable = product[name]
 
         try:
-            dict_[name] = variable.data
+            dictionary[name] = variable.data
             if variable.unit:
-                dict_[name + "_unit"] = variable.unit
+                dictionary[name + "_unit"] = variable.unit
         except AttributeError:
             pass
 
-    return dict_
+    return dictionary
 
 def import_product(filename):
     """Import a HARP compliant product.
@@ -801,11 +902,11 @@ def import_product(filename):
     The file format (NetCDF/HDF4/HDF5) of the product will be auto-detected.
 
     Arguments:
-    filename        --  Filename of the product to import.
+    filename -- Filename of the product to import.
 
     """
     c_product_ptr = _ffi.new("harp_product **")
-    if _lib.harp_import(filename, c_product_ptr) != 0:
+    if _lib.harp_import(_encode_path(filename), c_product_ptr) != 0:
         raise CLibraryError()
 
     try:
@@ -817,15 +918,15 @@ def ingest_product(filename, actions="", options=""):
     """Ingest a product of a type supported by HARP.
 
     Arguments:
-    filename        --  Filename of the product to ingest.
-    actions         --  Actions to apply as part of the ingestion; should be
-                        specified as a semi-colon separated string of actions.
-    options         --  Ingestion module specific options; should be specified as a
-                        semi-colon separated string of key=value pairs.
+    filename -- Filename of the product to ingest.
+    actions  -- Actions to apply as part of the ingestion; should be specified as a
+                semi-colon separated string of actions.
+    options  -- Ingestion module specific options; should be specified as a semi-
+                colon separated string of key=value pairs.
 
     """
     c_product_ptr = _ffi.new("harp_product **")
-    if _lib.harp_ingest(filename, actions, options, c_product_ptr) != 0:
+    if _lib.harp_ingest(_encode_path(filename), _encode_string(actions), _encode_string(options), c_product_ptr) != 0:
         raise CLibraryError()
 
     try:
@@ -837,13 +938,13 @@ def export_product(product, filename, file_format="netcdf"):
     """Export a HARP compliant product.
 
     Arguments:
-    product     --  Product to export.
-    filename    --  Filename of the exported product.
-    file_format --  File format to use; one of 'netcdf', 'hdf4', or 'hdf5'.
+    product     -- Product to export.
+    filename    -- Filename of the exported product.
+    file_format -- File format to use; one of 'netcdf', 'hdf4', or 'hdf5'.
 
     """
     if not isinstance(product, Product):
-        raise Error("export_product() argument must be Product, not %r" % product.__class__.__name__)
+        raise TypeError("product must be Product, not %r" % product.__class__.__name__)
 
     # Create C product.
     c_product_ptr = _ffi.new("harp_product **")
@@ -854,7 +955,7 @@ def export_product(product, filename, file_format="netcdf"):
         _export_product(product, c_product_ptr[0])
 
         # Call harp_export()
-        if _lib.harp_export(filename, file_format, c_product_ptr[0]) != 0:
+        if _lib.harp_export(_encode_path(filename), _encode_string(file_format), c_product_ptr[0]) != 0:
             raise CLibraryError()
     finally:
         _lib.harp_product_delete(c_product_ptr[0])

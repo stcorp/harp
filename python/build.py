@@ -1,20 +1,47 @@
+from __future__ import print_function
+
 import cffi
 import re
-import StringIO
 import sys
 
+# Import the StringIO class that uses the default str type on each major version
+# of Python.
+#
+# The StringIO.StringIO class is Python 2 specific and works with byte strings,
+# i.e. instances of class str.
+#
+# The io.StringIO class exists in both Python 2 and Python 3, and always uses
+# unicode strings, i.e. instances of class unicode on Python 2 and of class str
+# on Python 3.
+#
+try:
+    from cStringIO import StringIO
+except ImportError:
+    try:
+        from StringIO import StringIO
+    except ImportError:
+        from io import StringIO
+
+class Error(Exception):
+    pass
+
+class SyntaxError(Error):
+    pass
+
 def read_header_file(filename):
-    cdefs = StringIO.StringIO()
+    cdefs = StringIO()
     active = False
     with open(filename) as header_file:
-        for line in header_file:
+        for (line_no, line) in enumerate(header_file):
             if re.match(r"^\s*/\*\s*\*CFFI-ON\*\s*\*/\s*$", line) or re.match(r"^\s*//\s*\*CFFI-ON\*\s*$", line):
-                assert(not active)
+                if active:
+                    raise SyntaxError("%s:%lu: CFFI-ON marker inside CFFI block" % (filename, line_no))
                 active = True
                 continue
 
             if re.match(r"^\s*/\*\s*\*CFFI-OFF\*\s*\*/\s*$", line) or re.match(r"^\s*//\s*\*CFFI-OFF\*\s*$", line):
-                assert(active)
+                if not active:
+                    raise SyntaxError("%s:%lu: CFFI-OFF marker outside CFFI block" % (filename, line_no))
                 active = False
                 continue
 
@@ -44,7 +71,9 @@ def read_header_file(filename):
             if active:
                 cdefs.write(line)
 
-    assert(not active)
+    if active:
+        raise SyntaxError("%s:%lu: unterminated CFFI block; CFFI-OFF marker missing" % (filename, line_no))
+
     return cdefs.getvalue()
 
 def main(header_path, output_path):
@@ -55,8 +84,12 @@ def main(header_path, output_path):
 
 if __name__ == "__main__":
     if len(sys.argv) != 3:
-        print "usage: %s <path to harp.h.in> <output Python file>" % sys.argv[0]
-        print "generate Python wrapper for the HARP C library using cffi (ABI level, out-of-line)"
+        print("usage: %s <path to harp.h.in> <output Python file>" % sys.argv[0])
+        print("generate Python wrapper for the HARP C library using cffi (ABI level, out-of-line)")
         sys.exit(1)
 
-    main(sys.argv[1], sys.argv[2])
+    try:
+        main(sys.argv[1], sys.argv[2])
+    except Error as _error:
+        print("ERROR: %s" % _error)
+        sys.exit(1)
