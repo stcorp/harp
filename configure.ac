@@ -132,6 +132,8 @@ AC_PROG_INSTALL
 
 AC_PROG_AWK
 
+AM_PATH_PYTHON
+
 AC_ARG_VAR(DOXYGEN, [The documentation generation program Doxygen])
 if test "$DOXYGEN" = "" ; then
   AC_PATH_PROG([DOXYGEN], [doxygen])
@@ -214,7 +216,6 @@ AC_ARG_ENABLE([python],
   [AC_CACHE_CHECK([build Python interface], ac_cv_enable_python, ac_cv_enable_python=no)])
 
 if test $ac_cv_enable_python = yes ; then
-  AM_PATH_PYTHON
   if test -z "$PYTHON" ; then
     AC_MSG_ERROR(BOXED_TEXT([ERROR: Python is required to build the Python interface.
 Try setting the PYTHON environment variable to the location of your Python interpreter.]))
