@@ -738,9 +738,10 @@ def _export_array(data, c_variable):
         # method incurs a copy. The numpy.copyto() method also works if the source array is a scalar, i.e. not an
         # instance of numpy.ndarray.
         size = c_variable.num_elements * _lib.harp_get_size_for_type(c_variable.data_type)
+        shape = data.shape if isinstance(data, numpy.ndarray) else ()
+
         c_data_buffer = _ffi.buffer(c_variable.data.ptr, size)
-        c_data = numpy.reshape(numpy.frombuffer(c_data_buffer, dtype=_get_py_data_type(c_variable.data_type)),
-                               data.shape)
+        c_data = numpy.reshape(numpy.frombuffer(c_data_buffer, dtype=_get_py_data_type(c_variable.data_type)), shape)
         numpy.copyto(c_data, data, casting="safe")
     elif isinstance(data, numpy.ndarray):
         for index, element in enumerate(data.flat):
