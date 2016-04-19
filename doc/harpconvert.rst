@@ -1,9 +1,10 @@
 harpconvert
-=============
+===========
 
-The harpconvert program is used to convert data files into a HARP compliant HDF4/HDF5/netCDF file that can be further
-processed by the other HARP tools. See :doc:`Ingestion definitions <ingestions/index>` for the list of products that can
-be ingested.
+Convert a product from its original format to a HARP compliant netCDF/HDF4/HDF5
+file that can be processed further with other HARP command line tools. See the
+section :doc:`Ingestion definitions <ingestions/index>` for an overview of the
+product types supported by HARP.
 
 ::
 

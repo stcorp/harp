@@ -1,7 +1,8 @@
 harpcheck
 =========
 
-The harpcheck program attempts to read one or more input files. Any errors are reported to the console.
+Verify that a file complies with the HARP data format conventions and can be
+read by other HARP command line tools.
 
 ::
 

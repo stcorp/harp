@@ -369,6 +369,7 @@ DOCFILES = $(HARP_DOCFILES)
 
 RSTFILES = \
 	doc/dataformats.rst \
+	doc/examples.rst \
 	doc/harpcheck.rst \
 	doc/harpcollocate.rst \
 	doc/harpconvert.rst \
@@ -380,7 +381,9 @@ RSTFILES = \
 	doc/libharp_error.rst \
 	doc/libharp_general.rst \
 	doc/libharp_product.rst \
-	doc/libharp_variable.rst
+	doc/libharp_variable.rst \
+	doc/python.rst \
+	doc/tools.rst
 
 EXTRA_DIST += \
 	$(RSTFILES) \

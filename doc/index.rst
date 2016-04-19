@@ -3,7 +3,7 @@
    You can adapt this file completely to your liking, but it should at least
    contain the root `toctree` directive.
 
-HARP Manual
+HARP manual
 ===========
 
 Contents
@@ -16,66 +16,98 @@ Contents
    dataformats
    ingestions/index
    libharp
-   harpcheck
-   harpcollocate
-   harpconvert
-   harpdump
-   harpfilter
+   python
+   tools
+   examples
 
 What is HARP?
 -------------
 
-HARP is a toolkit for ingesting, processing and inter-comparing satellite remote sensing data against correlative data. Correlative data can be either in-situ data, ground based remote sensing data or other satellite remote sensing data.
+HARP is a toolkit for ingesting, processing and inter-comparing satellite remote
+sensing data against correlative data. Correlative data can be either in-situ
+data, ground based remote sensing data or other satellite remote sensing data.
 The toolkit is composed of:
 
-- A set of command line tools
+- A set of :ref:`command line tools <command-line-tools>`
 - A library of analysis functions
 
-The main goal of HARP is to assist in the inter-comparison of data sets. By appropriately chaining calls to HARP command line tools one can preprocess satellite and correlative data such that the two datasets that need to be compared end up having the same temporal/spatial grid, same data format/structure, and same physical unit. At the end of the toolchain you will have a set of data files that can be directly compared in e.g. Python, IDL or MATLAB.
+The main goal of HARP is to assist in the inter-comparison of data sets. By
+appropriately chaining calls to HARP command line tools one can pre-process
+satellite and correlative data such that the two datasets that need to be
+compared end up having the same temporal/spatial grid, same data
+format/structure, and same physical unit. At the end of the toolchain you will
+have a set of data files that can be directly compared in e.g. Python, IDL or
+MATLAB.
 
-In order for the HARP command line tools to handle each others output the toolset uses a its own <a href="#dataformats">data format conventions</a> for intermediate files. The use of this harmonized formatting means that satellite products need to be converted first to HARP compliant files. Once in this format, further processing can take place.
+In order for the HARP command line tools to handle each others output the
+toolkit uses a its own :ref:`data format conventions <data-formats>` for
+intermediate files. The use of this harmonized formatting means that satellite
+products need to be converted first to HARP compliant files. Once in this
+format, further processing can take place.
 
+.. _data-formats:
 
-Data Formats
+Data formats
 ------------
-In order for HARP command line tools to handle each others output the toolset makes uses of its own <a href="dataformats/index.html">data format conventions</a>. There is one standard for storing measurement data, which only prescribes a specific set of constraints to the data format and is still flexible enough to allow storing of data in either netCDF, HDF4, or HDF5 and include metadata from other standards such as netCDF-CF. The other data format convention is a standard for storing information on collocations, the <a href="dataformats/index.html#crf">Collocation Result File</a>, which is based on csv. Both data formats are described in more detail in the <a href="dataformats/index.html">Data Formats</a> section of the documentation.
 
-Overview of Command Line Tools
-------------------------------
+In order for HARP command line tools to handle each others output the toolkit
+makes uses of its own :doc:`data format conventions <dataformats>`.
 
-harpconvert
-    Convert a product from its original format into a HARP compliant HDF4/HDF5/netCDF file that can be processed further with other HARP tools. An overview of supported products can be found in the <a href="ingestions/index.html">HARP Ingestion Definition Overview</a> section.
+There is one standard for storing measurement data, which only prescribes a
+specific set of constraints to the data format and is still flexible enough to
+allow data storage using either netCDF, HDF4, or HDF5 and inclusion of metadata
+from other standards such as netCDF-CF.
 
-harpcheck
-    Verify that a files conforms to the HARP data format conventions and can be read by the other HARP tools.
+The other data format convention is a standard for storing information on
+collocations, the :ref:`Collocation Result File
+<collocation\-result\-file\-format>`, which is based on CSV.
 
-harpdump
-    Inspect the contents of a HARP compliant HDF4/HDF5/netCDF file.
+Both data formats are described in more detail in the :doc:`Data formats
+<dataformats>` section of the documentation.
 
-harpfilter
-    Apply several kinds of filtering and conversions on a HARP compliant HDF4/HDF5/netCDF file.
+C library
+---------
 
-harpcollocate
-    Find pairs of measurements that match in time and geolocation for two sets of HARP compliant HDF4/HDF5/netCDF files.
+Common parts that are used by the various HARP command line tools are gathered
+in a single :doc:`HARP C library <libharp>`. This library can be used to build
+custom applications or libraries that work with HARP compliant data products.
 
+Python interface
+----------------
 
-HARP C Library
---------------
-Common parts that are used by the various HARP command line tools are gathered in a single <a href="libharp/index.html">HARP C Library</a>.
-This library can be used to build your own building blocks.
+The :doc:`HARP Python interface <python>` provides a set of functions to import
+and export HARP products, and to ingest non-HARP products of a type supported by
+HARP from Python.
 
-A Typical Intercomparison
--------------------------
+.. _command-line-tools:
+
+Command line tools
+------------------
+
+The HARP command line tools perform various operations on HARP compliant data
+products. All command line tools except ``harpconvert`` expect one or more HARP
+data products as input. The ``harpconvert`` tool can be used to convert non-HARP
+products into HARP products.
+
+The available command line tools are described in more detail in the
+:doc:`Command line tools <tools>` section of the documentation.
+
+A typical inter-comparison
+--------------------------
 Typical sequence when comparing two datasets of measurements:
 
 harpconvert ...
-    Convert all products that do not already follow the HARP format conventions to a common data format.
+    Convert all products that do not already follow the HARP format conventions
+    to a common data format.
 
 harpfilter ...
-    Filter/convert the data in each file: remove unneeded parameters/measurements, add derived physical parameters, perform unit conversion, etc.
+    Filter/convert the data in each file: remove unneeded
+    parameters/measurements, add derived physical parameters, perform unit
+    conversion, etc.
 
 harpcollocate matchup ...
-    Find the measurement pairs that match within the specified collocation criteria and save the result into a collocation result file.
+    Find the measurement pairs that match within the specified collocation
+    criteria and save the result into a collocation result file.
 
 harpcollocate resample ...
     Apply resampling to the collocation result file.
@@ -90,10 +122,13 @@ Input files can be verified with
 
     harpcheck ...
 
-and after each stage, the contents of each file can be inspected from the command line using:
+and after each stage, the contents of each file can be inspected from the
+command line using:
 
     harpdump ...
 
 Examples
 --------
-Examples of executions of a full comparison can be found in the <a href="examples/index.html">Examples</a> section.
+
+Examples of executions of a full comparison can be found in the :doc:`Examples
+<examples>` section.

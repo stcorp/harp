@@ -1,7 +1,7 @@
 harpdump
 ========
 
-With harpdump you can view data from any HARP compliant netCDF/HDF4/HDF5 file.
+Inspect the contents of a HARP compliant netCDF/HDF4/HDF5 file.
 
 ::
 

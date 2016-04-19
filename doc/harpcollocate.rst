@@ -1,8 +1,8 @@
 harpcollocate
 =============
 
-The tool harpcollocate is used to derive a list of measurements that match in time, latitude and longitude for two sets
-of HARP compliant HDF4/HDF5/netCDF files.
+Find pairs of measurements that match in time and geolocation for two sets of
+HARP compliant netCDF/HDF4/HDF5 files.
 
 ::
 

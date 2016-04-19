@@ -492,6 +492,8 @@ stores a HARP variable of type string as an HDF5 dataset of fixed length strings
 length of the longest string, or 1 if the length of the longest string is zero. Shorter strings are padded with null-
 termination characters.
 
+.. _collocation-result-file-format:
+
 Collocation result file format
 ------------------------------
 The collocation result file is a simple comma separated (csv) file, containing the following columns:

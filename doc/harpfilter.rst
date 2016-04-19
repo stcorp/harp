@@ -1,6 +1,9 @@
 harpfilter
 ==========
 
+Apply various types of filtering and conversions to a HARP compliant
+netCDF/HDF4/HDF5 file.
+
 ::
 
   Usage:
