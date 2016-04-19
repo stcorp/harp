@@ -1,6 +1,6 @@
 """HARP Python interface
 
-This module implements the HARP Python interface. The interface consists of a
+This package implements the HARP Python interface. The interface consists of a
 minimal set of methods to import and export HARP products, and to ingest
 non-HARP products of a type supported by HARP.
 
@@ -43,8 +43,9 @@ A Product can be converted to an OrderedDict using the to_dict() package level
 method. The OrderedDict representation provides direct access to the data
 associated with each variable. All product attributes and all variable
 attributes except the unit attribute are discarded as part of the conversion.
-The unit attribute of a variable is represented by mapping the name of the
-corresponding variable suffxed with '_unit' to a string containing the unit.
+The unit attribute of a variable is represented by adding a scalar variable
+of type string with the name of the corresponding variable suffixed with
+'_unit' as name and the unit as value.
 
     from __future__ import print_function
 

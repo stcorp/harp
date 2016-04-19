@@ -61,10 +61,11 @@ class CLibraryError(Error):
 class Variable(object):
     """Python representation of a HARP variable.
 
-    A variable consists of data (either a scalar of an N-dimensional array), a list
-    of dimension types that describe the dimensions of the data, and a number of
-    optional attributes: physical units, valid range (min, max), and a textual
-    description.
+    A variable consists of data (either a scalar or NumPy array), a list of
+    dimension types that describe the dimensions of the data, and a number of
+    optional attributes: physical unit, minimum valid value, maximum valid
+    value, and a human-readable description.
+
     """
     def __init__(self, data, dimension=[], unit=None, valid_min=None, valid_max=None, description=None):
         self.data = data
@@ -411,16 +412,18 @@ def _get_c_data_type(value):
     value.
 
     """
-    if isinstance(value, numpy.ndarray) or isinstance(value, numpy.generic):
+    if isinstance(value, (numpy.ndarray, numpy.generic)):
         # For NumPy ndarrays and scalars, determine the smallest HARP C data type that can safely contain elements of
         # the ndarray or scalar dtype.
         if numpy.issubdtype(value.dtype, numpy.object_):
-            # NumPy object arrays are only used to contain variable length strings.
+            # NumPy object arrays are only used to contain variable length strings or byte strings.
             if _all(lambda element: isinstance(element, str), value.flat):
                 return _lib.harp_type_string
+            elif _all(lambda element: isinstance(element, bytes), value.flat):
+                return _lib.harp_type_string
             else:
-                raise UnsupportedTypeError("NumPy object array should only contain elements of type 'str'")
-        elif numpy.issubdtype(value.dtype, numpy.str_):
+                raise UnsupportedTypeError("elements of a NumPy object array must be all str or all bytes")
+        elif numpy.issubdtype(value.dtype, numpy.str_) or numpy.issubdtype(value.dtype, numpy.bytes_):
             return _lib.harp_type_string
         elif numpy.can_cast(value.dtype, numpy.int8):
             return _lib.harp_type_int8
@@ -512,7 +515,7 @@ def _encode_string_with_encoding(string, encoding="utf-8"):
     except UnicodeEncodeError:
         raise Error("cannot encode '%s' using encoding '%s'" % (string, encoding))
 
-def _decode_string_with_encoding(raw_bytes, encoding="utf-8"):
+def _decode_string_with_encoding(string, encoding="utf-8"):
     """Decode a byte string using the specified encoding.
 
     By default, use the "surrogateescape" error handler to deal with encoding
@@ -529,18 +532,18 @@ def _decode_string_with_encoding(raw_bytes, encoding="utf-8"):
     """
     try:
         try:
-            return raw_bytes.decode(encoding, "surrogateescape")
+            return string.decode(encoding, "surrogateescape")
         except LookupError:
             # Either the encoding or the error handler is not supported; fall-through to the next try-block.
             pass
 
         try:
-            return raw_bytes.decode(encoding)
+            return string.decode(encoding)
         except LookupError:
             # Here it is certain that the encoding is not supported.
             raise Error("unknown encoding '%s'" % encoding)
     except UnicodeEncodeError:
-        raise Error("cannot decode '%s' using encoding '%s'" % (raw_bytes, encoding))
+        raise Error("cannot decode '%s' using encoding '%s'" % (string, encoding))
 
 def _encode_path(path):
     """Encode the input unicode path using the filesystem encoding.
@@ -869,11 +872,19 @@ def set_encoding(encoding):
     _encoding = encoding
 
 def version():
-    """Return HARP C library version."""
+    """Return the version of the HARP C library."""
     return _decode_string(_ffi.string(_lib.libharp_version))
 
 def to_dict(product):
     """Convert a Product to an OrderedDict.
+
+    The OrderedDict representation provides direct access to the data associated
+    with each variable. All product attributes and all variable attributes
+    except the unit attribute are discarded as part of the conversion.
+
+    The unit attribute of a variable is represented by adding a scalar variable
+    of type string with the name of the corresponding variable suffixed with
+    '_unit' as name and the unit as value.
 
     Arguments:
     product -- Product to convert.
