@@ -68,8 +68,29 @@ The OrderedDict representation can be convenient when there is a need to
 interface with existing code such as plotting libraries, or when the additional
 information provided by the Product representation is not needed.
 
-Note that only Product instances can be exported as a HARP product. The
-OrderedDict representation does not contain enough information.
+Note that only Product instances can be exported. The OrderedDict representation
+does not contain enough information.
+
+Further information is available in the bundled documentation, and from
+
+    http://www.stcorp.nl/beat/
+
+
+Copyright (C) 2015-2016 S[&]T, The Netherlands.
+
+This file is part of HARP.
+
+HARP is free software; you can redistribute it and/or modify it under the terms
+of the GNU General Public License as published by the Free Software Foundation;
+either version 2 of the License, or (at your option) any later version.
+
+HARP is distributed in the hope that it will be useful, but WITHOUT ANY
+WARRANTY; without even the implied warranty of MERCHANTABILITY or FITNESS FOR A
+PARTICULAR PURPOSE. See the GNU General Public License for more details.
+
+You should have received a copy of the GNU General Public License along with
+HARP; if not, write to the Free Software Foundation, Inc., 59 Temple Place,
+Suite 330, Boston, MA  02111-1307  USA
 
 """
 
