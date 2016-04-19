@@ -17,32 +17,6 @@
         <aliases><name><singular>ppv</singular></name></aliases>
     </unit>
     <unit>
-        <def>1e-6 ppv</def>
-        <aliases><name><singular>ppmv</singular></name></aliases>
-    </unit>
-    <unit>
-        <def>1e-9 ppv</def>
-        <aliases><name><singular>ppbv</singular></name></aliases>
-    </unit>
-    <unit>
-        <def>1e-12 ppv</def>
-        <aliases><name><singular>pptv</singular></name></aliases>
-    </unit>
-    <unit>
-        <dimensionless/>
-        <name>
-            <singular>bit</singular>
-            <plural>bits</plural>
-        </name>
-    </unit>
-    <unit>
-        <def>8 bits</def>
-        <name>
-            <singular>byte</singular>
-            <plural>bytes</plural>
-        </name>
-    </unit>
-    <unit>
         <dimensionless/>
         <name>
             <singular>pixel</singular>
@@ -55,15 +29,5 @@
             <singular>photon</singular>
             <plural>photons</plural>
         </name>
-    </unit>
-    <unit>
-        <def>mol/6.02214179e23</def>
-        <name>
-            <singular>molecule</singular>
-            <plural>molecules</plural>
-        </name>
-        <aliases>
-            <name><singular>molec</singular></name>
-        </aliases>
     </unit>
 </unit-system>
