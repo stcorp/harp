@@ -34,7 +34,7 @@
   
     <link rel="top" title="HARP 0.1b documentation" href="index.html"/>
         <link rel="up" title="C library" href="libharp.html"/>
-        <link rel="next" title="harpcheck" href="harpcheck.html"/>
+        <link rel="next" title="Python interface" href="python.html"/>
         <link rel="prev" title="Product" href="libharp_product.html"/> 
 
   
@@ -95,16 +95,14 @@
 <li class="toctree-l3"><a class="reference internal" href="libharp_error.html">Error</a></li>
 <li class="toctree-l3"><a class="reference internal" href="libharp_general.html">General</a></li>
 <li class="toctree-l3"><a class="reference internal" href="libharp_product.html">Product</a></li>
-<li class="toctree-l3 current"><a class="current reference internal" href="">Variable</a></li>
+<li class="toctree-l3 current"><a class="current reference internal" href="#">Variable</a></li>
 </ul>
 </li>
 </ul>
 </li>
-<li class="toctree-l1"><a class="reference internal" href="harpcheck.html">harpcheck</a></li>
-<li class="toctree-l1"><a class="reference internal" href="harpcollocate.html">harpcollocate</a></li>
-<li class="toctree-l1"><a class="reference internal" href="harpconvert.html">harpconvert</a></li>
-<li class="toctree-l1"><a class="reference internal" href="harpdump.html">harpdump</a></li>
-<li class="toctree-l1"><a class="reference internal" href="harpfilter.html">harpfilter</a></li>
+<li class="toctree-l1"><a class="reference internal" href="python.html">Python interface</a></li>
+<li class="toctree-l1"><a class="reference internal" href="tools.html">Command line tools</a></li>
+<li class="toctree-l1"><a class="reference internal" href="examples.html">Examples</a></li>
 </ul>
 
             
@@ -127,7 +125,7 @@
         <div class="rst-content">
           
 
-
+ 
 
 
 
@@ -174,7 +172,7 @@
 <dt><strong>Return</strong></dt>
 <dd><ul class="simple">
 <li><code class="docutils literal"><span class="pre">0</span></code>, Success. </li>
-<li><code class="docutils literal"><span class="pre">-1</span></code>, Error occurred (check <a class="reference internal" href="libharp_error.html#libharpgroup__harp__error_1gab2eeb46528306c6799632d1e800c4c36"><span>harp_errno</span></a>). </li>
+<li><code class="docutils literal"><span class="pre">-1</span></code>, Error occurred (check <a class="reference internal" href="libharp_error.html#libharpgroup__harp__error_1gab2eeb46528306c6799632d1e800c4c36"><span class="std std-ref">harp_errno</span></a>). </li>
 </ul>
 </dd>
 <dt><strong>Parameters</strong></dt>
@@ -191,12 +189,12 @@
 
 <dl class="function">
 <dt id="_CPPv217harp_variable_newPKc14harp_data_typeiPK19harp_dimension_typePKlPP13harp_variable">
-<span id="harp_variable_new__cCP.harp_data_type.i.harp_dimension_typeCP.lCP.harp_variablePP"></span><span class="target" id="libharpgroup__harp__variable_1ga924d80d19cc952ad713a7a187d9296fa"></span>int <code class="descname">harp_variable_new</code><span class="sig-paren">(</span><em class="property">const</em> char *<em>name</em>, harp_data_type <em>data_type</em>, int <em>num_dimensions</em>, <em class="property">const</em> harp_dimension_type *<em>dimension_type</em>, <em class="property">const</em> long *<em>dimension</em>, <a class="reference internal" href="#_CPPv213harp_variable" title="harp_variable">harp_variable</a> **<em>new_variable</em><span class="sig-paren">)</span></dt>
+<span id="harp_variable_new__cCP.harp_data_type.i.harp_dimension_typeCP.lCP.harp_variablePP"></span><span class="target" id="libharpgroup__harp__variable_1ga924d80d19cc952ad713a7a187d9296fa"></span>int <code class="descname">harp_variable_new</code><span class="sig-paren">(</span><em class="property">const</em> char *<em>name</em>, <a class="reference internal" href="libharp_general.html#_CPPv214harp_data_type" title="harp_data_type">harp_data_type</a> <em>data_type</em>, int <em>num_dimensions</em>, <em class="property">const</em> <a class="reference internal" href="libharp_general.html#_CPPv219harp_dimension_type" title="harp_dimension_type">harp_dimension_type</a> *<em>dimension_type</em>, <em class="property">const</em> long *<em>dimension</em>, <a class="reference internal" href="#_CPPv213harp_variable" title="harp_variable">harp_variable</a> **<em>new_variable</em><span class="sig-paren">)</span></dt>
 <dd><p>Create new variable. <dl class="docutils">
 <dt><strong>Return</strong></dt>
 <dd><ul class="simple">
 <li><code class="docutils literal"><span class="pre">0</span></code>, Success. </li>
-<li><code class="docutils literal"><span class="pre">-1</span></code>, Error occurred (check <a class="reference internal" href="libharp_error.html#libharpgroup__harp__error_1gab2eeb46528306c6799632d1e800c4c36"><span>harp_errno</span></a>). </li>
+<li><code class="docutils literal"><span class="pre">-1</span></code>, Error occurred (check <a class="reference internal" href="libharp_error.html#libharpgroup__harp__error_1gab2eeb46528306c6799632d1e800c4c36"><span class="std std-ref">harp_errno</span></a>). </li>
 </ul>
 </dd>
 <dt><strong>Parameters</strong></dt>
@@ -240,7 +238,7 @@
 <dt><strong>Return</strong></dt>
 <dd><ul class="simple">
 <li><code class="docutils literal"><span class="pre">0</span></code>, Success. </li>
-<li><code class="docutils literal"><span class="pre">-1</span></code>, Error occurred (check <a class="reference internal" href="libharp_error.html#libharpgroup__harp__error_1gab2eeb46528306c6799632d1e800c4c36"><span>harp_errno</span></a>). </li>
+<li><code class="docutils literal"><span class="pre">-1</span></code>, Error occurred (check <a class="reference internal" href="libharp_error.html#libharpgroup__harp__error_1gab2eeb46528306c6799632d1e800c4c36"><span class="std std-ref">harp_errno</span></a>). </li>
 </ul>
 </dd>
 <dt><strong>Parameters</strong></dt>
@@ -262,7 +260,7 @@
 <dt><strong>Return</strong></dt>
 <dd><ul class="simple">
 <li><code class="docutils literal"><span class="pre">0</span></code>, Success. </li>
-<li><code class="docutils literal"><span class="pre">-1</span></code>, Error occurred (check <a class="reference internal" href="libharp_error.html#libharpgroup__harp__error_1gab2eeb46528306c6799632d1e800c4c36"><span>harp_errno</span></a>). </li>
+<li><code class="docutils literal"><span class="pre">-1</span></code>, Error occurred (check <a class="reference internal" href="libharp_error.html#libharpgroup__harp__error_1gab2eeb46528306c6799632d1e800c4c36"><span class="std std-ref">harp_errno</span></a>). </li>
 </ul>
 </dd>
 <dt><strong>Parameters</strong></dt>
@@ -278,13 +276,83 @@
 </dd></dl>
 
 <dl class="function">
+<dt id="_CPPv222harp_variable_set_unitP13harp_variablePKc">
+<span id="harp_variable_set_unit__harp_variableP.cCP"></span><span class="target" id="libharpgroup__harp__variable_1ga71f52dea2713943cc29cee353afe457e"></span>int <code class="descname">harp_variable_set_unit</code><span class="sig-paren">(</span><a class="reference internal" href="#_CPPv213harp_variable" title="harp_variable">harp_variable</a> *<em>variable</em>, <em class="property">const</em> char *<em>unit</em><span class="sig-paren">)</span></dt>
+<dd><p>Set the unit attribute of the specified variable. Store a copy of <em>unit</em> as the value of the unit attribute of the specified variable. The previous value (if any) will be freed. <dl class="docutils">
+<dt><strong>Return</strong></dt>
+<dd><ul class="simple">
+<li><code class="docutils literal"><span class="pre">0</span></code>, Success. </li>
+<li><code class="docutils literal"><span class="pre">-1</span></code>, Error occurred (check <a class="reference internal" href="libharp_error.html#libharpgroup__harp__error_1gab2eeb46528306c6799632d1e800c4c36"><span class="std std-ref">harp_errno</span></a>). </li>
+</ul>
+</dd>
+<dt><strong>Parameters</strong></dt>
+<dd><ul class="breatheparameterlist first last">
+<li><code class="first docutils literal"><span class="pre">variable</span></code> - <p>Variable for which to set the unit attribute. </p>
+</li>
+<li><code class="first docutils literal"><span class="pre">unit</span></code> - <p>New value for the unit attribute. </p>
+</li>
+</ul>
+</dd>
+</dl>
+</p>
+</dd></dl>
+
+<dl class="function">
+<dt id="_CPPv229harp_variable_set_descriptionP13harp_variablePKc">
+<span id="harp_variable_set_description__harp_variableP.cCP"></span><span class="target" id="libharpgroup__harp__variable_1ga16ffb681cdd99a9bc96a03b11b404afe"></span>int <code class="descname">harp_variable_set_description</code><span class="sig-paren">(</span><a class="reference internal" href="#_CPPv213harp_variable" title="harp_variable">harp_variable</a> *<em>variable</em>, <em class="property">const</em> char *<em>description</em><span class="sig-paren">)</span></dt>
+<dd><p>Set the description attribute of the specified variable. Store a copy of <em>description</em> as the value of the description attribute of the specified variable. The previous value (if any) will be freed. <dl class="docutils">
+<dt><strong>Return</strong></dt>
+<dd><ul class="simple">
+<li><code class="docutils literal"><span class="pre">0</span></code>, Success. </li>
+<li><code class="docutils literal"><span class="pre">-1</span></code>, Error occurred (check <a class="reference internal" href="libharp_error.html#libharpgroup__harp__error_1gab2eeb46528306c6799632d1e800c4c36"><span class="std std-ref">harp_errno</span></a>). </li>
+</ul>
+</dd>
+<dt><strong>Parameters</strong></dt>
+<dd><ul class="breatheparameterlist first last">
+<li><code class="first docutils literal"><span class="pre">variable</span></code> - <p>Variable for which to set the description attribute. </p>
+</li>
+<li><code class="first docutils literal"><span class="pre">description</span></code> - <p>New value for the description attribute. </p>
+</li>
+</ul>
+</dd>
+</dl>
+</p>
+</dd></dl>
+
+<dl class="function">
+<dt id="_CPPv237harp_variable_set_string_data_elementP13harp_variablelPKc">
+<span id="harp_variable_set_string_data_element__harp_variableP.l.cCP"></span><span class="target" id="libharpgroup__harp__variable_1ga87634436bf81efb1cc15e7641dcece20"></span>int <code class="descname">harp_variable_set_string_data_element</code><span class="sig-paren">(</span><a class="reference internal" href="#_CPPv213harp_variable" title="harp_variable">harp_variable</a> *<em>variable</em>, long <em>index</em>, <em class="property">const</em> char *<em>str</em><span class="sig-paren">)</span></dt>
+<dd><p>Store a copy of <em>str</em> at <em>index</em> into the flattened array of strings associated with <em>variable</em>. <dl class="docutils">
+<dt><strong>Warning</strong></dt>
+<dd>No boundary checks are performed on <em>index</em>. </dd>
+<dt><strong>Return</strong></dt>
+<dd><ul class="simple">
+<li><code class="docutils literal"><span class="pre">0</span></code>, Success. </li>
+<li><code class="docutils literal"><span class="pre">-1</span></code>, Error occurred (check <a class="reference internal" href="libharp_error.html#libharpgroup__harp__error_1gab2eeb46528306c6799632d1e800c4c36"><span class="std std-ref">harp_errno</span></a>). </li>
+</ul>
+</dd>
+<dt><strong>Parameters</strong></dt>
+<dd><ul class="breatheparameterlist first last">
+<li><code class="first docutils literal"><span class="pre">variable</span></code> - <p>Variable of type string. </p>
+</li>
+<li><code class="first docutils literal"><span class="pre">index</span></code> - <p>Index into the flattened array of strings associated with the variable. </p>
+</li>
+<li><code class="first docutils literal"><span class="pre">str</span></code> - <p>The string of which a copy should be stored. </p>
+</li>
+</ul>
+</dd>
+</dl>
+</p>
+</dd></dl>
+
+<dl class="function">
 <dt id="_CPPv231harp_variable_convert_data_typeP13harp_variable14harp_data_type">
-<span id="harp_variable_convert_data_type__harp_variableP.harp_data_type"></span><span class="target" id="libharpgroup__harp__variable_1ga36ccb73140dc74215a886b49a8949363"></span>int <code class="descname">harp_variable_convert_data_type</code><span class="sig-paren">(</span><a class="reference internal" href="#_CPPv213harp_variable" title="harp_variable">harp_variable</a> *<em>variable</em>, harp_data_type <em>target_data_type</em><span class="sig-paren">)</span></dt>
+<span id="harp_variable_convert_data_type__harp_variableP.harp_data_type"></span><span class="target" id="libharpgroup__harp__variable_1ga36ccb73140dc74215a886b49a8949363"></span>int <code class="descname">harp_variable_convert_data_type</code><span class="sig-paren">(</span><a class="reference internal" href="#_CPPv213harp_variable" title="harp_variable">harp_variable</a> *<em>variable</em>, <a class="reference internal" href="libharp_general.html#_CPPv214harp_data_type" title="harp_data_type">harp_data_type</a> <em>target_data_type</em><span class="sig-paren">)</span></dt>
 <dd><p>Convert the data for the variable such that it matches the given data type. The memory for the block holding the data for the attribute will be resized to match the new data type if needed. You cannot convert string data to numeric data or vice-versa. Conversion from floating point to integer data (or vice versa) is allowed though. <dl class="docutils">
 <dt><strong>Return</strong></dt>
 <dd><ul class="simple">
 <li><code class="docutils literal"><span class="pre">0</span></code>, Success. </li>
-<li><code class="docutils literal"><span class="pre">-1</span></code>, Error occurred (check <a class="reference internal" href="libharp_error.html#libharpgroup__harp__error_1gab2eeb46528306c6799632d1e800c4c36"><span>harp_errno</span></a>). </li>
+<li><code class="docutils literal"><span class="pre">-1</span></code>, Error occurred (check <a class="reference internal" href="libharp_error.html#libharpgroup__harp__error_1gab2eeb46528306c6799632d1e800c4c36"><span class="std std-ref">harp_errno</span></a>). </li>
 </ul>
 </dd>
 <dt><strong>Parameters</strong></dt>
@@ -301,7 +369,7 @@
 
 <dl class="function">
 <dt id="_CPPv232harp_variable_has_dimension_typePK13harp_variable19harp_dimension_type">
-<span id="harp_variable_has_dimension_type__harp_variableCP.harp_dimension_type"></span><span class="target" id="libharpgroup__harp__variable_1ga4dea9367f9781a38269c286d3173b77b"></span>int <code class="descname">harp_variable_has_dimension_type</code><span class="sig-paren">(</span><em class="property">const</em> <a class="reference internal" href="#_CPPv213harp_variable" title="harp_variable">harp_variable</a> *<em>variable</em>, harp_dimension_type <em>dimension_type</em><span class="sig-paren">)</span></dt>
+<span id="harp_variable_has_dimension_type__harp_variableCP.harp_dimension_type"></span><span class="target" id="libharpgroup__harp__variable_1ga4dea9367f9781a38269c286d3173b77b"></span>int <code class="descname">harp_variable_has_dimension_type</code><span class="sig-paren">(</span><em class="property">const</em> <a class="reference internal" href="#_CPPv213harp_variable" title="harp_variable">harp_variable</a> *<em>variable</em>, <a class="reference internal" href="libharp_general.html#_CPPv219harp_dimension_type" title="harp_dimension_type">harp_dimension_type</a> <em>dimension_type</em><span class="sig-paren">)</span></dt>
 <dd><p>Test if variable contains at least one dimension equal to the specified dimension type. <dl class="docutils">
 <dt><strong>Return</strong></dt>
 <dd><ul class="simple">
@@ -323,7 +391,7 @@
 
 <dl class="function">
 <dt id="_CPPv233harp_variable_has_dimension_typesPK13harp_variableiPK19harp_dimension_type">
-<span id="harp_variable_has_dimension_types__harp_variableCP.i.harp_dimension_typeCP"></span><span class="target" id="libharpgroup__harp__variable_1ga53a34b30f7afc8d9bcbb546c21884488"></span>int <code class="descname">harp_variable_has_dimension_types</code><span class="sig-paren">(</span><em class="property">const</em> <a class="reference internal" href="#_CPPv213harp_variable" title="harp_variable">harp_variable</a> *<em>variable</em>, int <em>num_dimensions</em>, <em class="property">const</em> harp_dimension_type *<em>dimension_type</em><span class="sig-paren">)</span></dt>
+<span id="harp_variable_has_dimension_types__harp_variableCP.i.harp_dimension_typeCP"></span><span class="target" id="libharpgroup__harp__variable_1ga53a34b30f7afc8d9bcbb546c21884488"></span>int <code class="descname">harp_variable_has_dimension_types</code><span class="sig-paren">(</span><em class="property">const</em> <a class="reference internal" href="#_CPPv213harp_variable" title="harp_variable">harp_variable</a> *<em>variable</em>, int <em>num_dimensions</em>, <em class="property">const</em> <a class="reference internal" href="libharp_general.html#_CPPv219harp_dimension_type" title="harp_dimension_type">harp_dimension_type</a> *<em>dimension_type</em><span class="sig-paren">)</span></dt>
 <dd><p>Test if variable has dimensions equal to the specified list of dimension types. <dl class="docutils">
 <dt><strong>Return</strong></dt>
 <dd><ul class="simple">
@@ -374,7 +442,7 @@
 <dt><strong>Return</strong></dt>
 <dd><ul class="simple">
 <li><code class="docutils literal"><span class="pre">0</span></code>, Variable verified successfully. </li>
-<li><code class="docutils literal"><span class="pre">-1</span></code>, Error occurred (check <a class="reference internal" href="libharp_error.html#libharpgroup__harp__error_1gab2eeb46528306c6799632d1e800c4c36"><span>harp_errno</span></a>). </li>
+<li><code class="docutils literal"><span class="pre">-1</span></code>, Error occurred (check <a class="reference internal" href="libharp_error.html#libharpgroup__harp__error_1gab2eeb46528306c6799632d1e800c4c36"><span class="std std-ref">harp_errno</span></a>). </li>
 </ul>
 </dd>
 <dt><strong>Parameters</strong></dt>
@@ -402,7 +470,7 @@
 
 <dl class="member">
 <dt id="_CPPv29data_type">
-<span id="data_type__harp_data_type"></span><span class="target" id="libharpstructharp__variable__struct_1ae23ad96b8e86b2dd28071bb83d20d65a"></span>harp_data_type <code class="descname">data_type</code></dt>
+<span id="data_type__harp_data_type"></span><span class="target" id="libharpstructharp__variable__struct_1ae23ad96b8e86b2dd28071bb83d20d65a"></span><a class="reference internal" href="libharp_general.html#_CPPv214harp_data_type" title="harp_data_type">harp_data_type</a> <code class="descname">data_type</code></dt>
 <dd><p>storage type of the data </p>
 </dd></dl>
 
@@ -414,7 +482,7 @@
 
 <dl class="member">
 <dt id="_CPPv214dimension_type">
-<span id="dimension_type__harp_dimension_typeA"></span><span class="target" id="libharpstructharp__variable__struct_1a1a7f4720ee5338bc757c90e190a46986"></span>harp_dimension_type <code class="descname">dimension_type</code>[HARP_MAX_NUM_DIMS]</dt>
+<span id="dimension_type__harp_dimension_typeA"></span><span class="target" id="libharpstructharp__variable__struct_1a1a7f4720ee5338bc757c90e190a46986"></span><a class="reference internal" href="libharp_general.html#_CPPv219harp_dimension_type" title="harp_dimension_type">harp_dimension_type</a> <code class="descname">dimension_type</code>[HARP_MAX_NUM_DIMS]</dt>
 <dd><p>type of each of the array dimensions </p>
 </dd></dl>
 
@@ -474,7 +542,7 @@
   
     <div class="rst-footer-buttons" role="navigation" aria-label="footer navigation">
       
-        <a href="harpcheck.html" class="btn btn-neutral float-right" title="harpcheck" accesskey="n">Next <span class="fa fa-arrow-circle-right"></span></a>
+        <a href="python.html" class="btn btn-neutral float-right" title="Python interface" accesskey="n">Next <span class="fa fa-arrow-circle-right"></span></a>
       
       
         <a href="libharp_product.html" class="btn btn-neutral" title="Product" accesskey="p"><span class="fa fa-arrow-circle-left"></span> Previous</a>

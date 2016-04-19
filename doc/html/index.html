@@ -8,7 +8,7 @@
   
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
   
-  <title>HARP Manual &mdash; HARP 0.1b documentation</title>
+  <title>HARP manual &mdash; HARP 0.1b documentation</title>
   
 
   
@@ -87,11 +87,9 @@
 <li class="toctree-l1"><a class="reference internal" href="dataformats.html">Data formats</a></li>
 <li class="toctree-l1"><a class="reference internal" href="ingestions/index.html">Ingestion definitions</a></li>
 <li class="toctree-l1"><a class="reference internal" href="libharp.html">C library</a></li>
-<li class="toctree-l1"><a class="reference internal" href="harpcheck.html">harpcheck</a></li>
-<li class="toctree-l1"><a class="reference internal" href="harpcollocate.html">harpcollocate</a></li>
-<li class="toctree-l1"><a class="reference internal" href="harpconvert.html">harpconvert</a></li>
-<li class="toctree-l1"><a class="reference internal" href="harpdump.html">harpdump</a></li>
-<li class="toctree-l1"><a class="reference internal" href="harpfilter.html">harpfilter</a></li>
+<li class="toctree-l1"><a class="reference internal" href="python.html">Python interface</a></li>
+<li class="toctree-l1"><a class="reference internal" href="tools.html">Command line tools</a></li>
+<li class="toctree-l1"><a class="reference internal" href="examples.html">Examples</a></li>
 </ul>
 
             
@@ -114,7 +112,7 @@
         <div class="rst-content">
           
 
-
+ 
 
 
 
@@ -122,7 +120,7 @@
   <ul class="wy-breadcrumbs">
     <li><a href="#">Docs</a> &raquo;</li>
       
-    <li>HARP Manual</li>
+    <li>HARP manual</li>
       <li class="wy-breadcrumbs-aside">
         
           
@@ -135,7 +133,7 @@
            <div itemprop="articleBody">
             
   <div class="section" id="harp-manual">
-<h1>HARP Manual</h1>
+<h1>HARP manual</h1>
 <div class="section" id="contents">
 <h2>Contents</h2>
 <div class="toctree-wrapper compound">
@@ -164,65 +162,96 @@
 <li class="toctree-l2"><a class="reference internal" href="libharp.html#modules">Modules</a></li>
 </ul>
 </li>
-<li class="toctree-l1"><a class="reference internal" href="harpcheck.html">harpcheck</a></li>
-<li class="toctree-l1"><a class="reference internal" href="harpcollocate.html">harpcollocate</a><ul>
-<li class="toctree-l2"><a class="reference internal" href="harpcollocate.html#collocation">Collocation</a></li>
-<li class="toctree-l2"><a class="reference internal" href="harpcollocate.html#obtaining-collocation-result-file">Obtaining collocation result file</a></li>
-<li class="toctree-l2"><a class="reference internal" href="harpcollocate.html#resampling-collocation-result-file">Resampling collocation result file</a></li>
-<li class="toctree-l2"><a class="reference internal" href="harpcollocate.html#updating-collocation-result-file">Updating collocation result file</a></li>
+<li class="toctree-l1"><a class="reference internal" href="python.html">Python interface</a><ul>
+<li class="toctree-l2"><a class="reference internal" href="python.html#dimension-types">Dimension types</a></li>
+<li class="toctree-l2"><a class="reference internal" href="python.html#data-types">Data types</a></li>
+<li class="toctree-l2"><a class="reference internal" href="python.html#unicode">Unicode</a></li>
+<li class="toctree-l2"><a class="reference internal" href="python.html#examples">Examples</a></li>
+<li class="toctree-l2"><a class="reference internal" href="python.html#api-reference">API reference</a></li>
 </ul>
 </li>
-<li class="toctree-l1"><a class="reference internal" href="harpconvert.html">harpconvert</a></li>
-<li class="toctree-l1"><a class="reference internal" href="harpdump.html">harpdump</a></li>
-<li class="toctree-l1"><a class="reference internal" href="harpfilter.html">harpfilter</a></li>
+<li class="toctree-l1"><a class="reference internal" href="tools.html">Command line tools</a><ul>
+<li class="toctree-l2"><a class="reference internal" href="harpconvert.html">harpconvert</a></li>
+<li class="toctree-l2"><a class="reference internal" href="harpcheck.html">harpcheck</a></li>
+<li class="toctree-l2"><a class="reference internal" href="harpdump.html">harpdump</a></li>
+<li class="toctree-l2"><a class="reference internal" href="harpfilter.html">harpfilter</a></li>
+<li class="toctree-l2"><a class="reference internal" href="harpcollocate.html">harpcollocate</a></li>
+</ul>
+</li>
+<li class="toctree-l1"><a class="reference internal" href="examples.html">Examples</a></li>
 </ul>
 </div>
 </div>
 <div class="section" id="what-is-harp">
 <h2>What is HARP?</h2>
-<p>HARP is a toolkit for ingesting, processing and inter-comparing satellite remote sensing data against correlative data. Correlative data can be either in-situ data, ground based remote sensing data or other satellite remote sensing data.
+<p>HARP is a toolkit for ingesting, processing and inter-comparing satellite remote
+sensing data against correlative data. Correlative data can be either in-situ
+data, ground based remote sensing data or other satellite remote sensing data.
 The toolkit is composed of:</p>
 <ul class="simple">
-<li>A set of command line tools</li>
+<li>A set of <a class="reference internal" href="#command-line-tools"><span class="std std-ref">command line tools</span></a></li>
 <li>A library of analysis functions</li>
 </ul>
-<p>The main goal of HARP is to assist in the inter-comparison of data sets. By appropriately chaining calls to HARP command line tools one can preprocess satellite and correlative data such that the two datasets that need to be compared end up having the same temporal/spatial grid, same data format/structure, and same physical unit. At the end of the toolchain you will have a set of data files that can be directly compared in e.g. Python, IDL or MATLAB.</p>
-<p>In order for the HARP command line tools to handle each others output the toolset uses a its own &lt;a href=&#8221;#dataformats&#8221;&gt;data format conventions&lt;/a&gt; for intermediate files. The use of this harmonized formatting means that satellite products need to be converted first to HARP compliant files. Once in this format, further processing can take place.</p>
+<p>The main goal of HARP is to assist in the inter-comparison of data sets. By
+appropriately chaining calls to HARP command line tools one can pre-process
+satellite and correlative data such that the two datasets that need to be
+compared end up having the same temporal/spatial grid, same data
+format/structure, and same physical unit. At the end of the toolchain you will
+have a set of data files that can be directly compared in e.g. Python, IDL or
+MATLAB.</p>
+<p>In order for the HARP command line tools to handle each others output the
+toolkit uses a its own <a class="reference internal" href="#data-formats"><span class="std std-ref">data format conventions</span></a> for
+intermediate files. The use of this harmonized formatting means that satellite
+products need to be converted first to HARP compliant files. Once in this
+format, further processing can take place.</p>
 </div>
 <div class="section" id="data-formats">
-<h2>Data Formats</h2>
-<p>In order for HARP command line tools to handle each others output the toolset makes uses of its own &lt;a href=&#8221;dataformats/index.html&#8221;&gt;data format conventions&lt;/a&gt;. There is one standard for storing measurement data, which only prescribes a specific set of constraints to the data format and is still flexible enough to allow storing of data in either netCDF, HDF4, or HDF5 and include metadata from other standards such as netCDF-CF. The other data format convention is a standard for storing information on collocations, the &lt;a href=&#8221;dataformats/index.html#crf&#8221;&gt;Collocation Result File&lt;/a&gt;, which is based on csv. Both data formats are described in more detail in the &lt;a href=&#8221;dataformats/index.html&#8221;&gt;Data Formats&lt;/a&gt; section of the documentation.</p>
+<span id="id1"></span><h2>Data formats</h2>
+<p>In order for HARP command line tools to handle each others output the toolkit
+makes uses of its own <a class="reference internal" href="dataformats.html"><span class="doc">data format conventions</span></a>.</p>
+<p>There is one standard for storing measurement data, which only prescribes a
+specific set of constraints to the data format and is still flexible enough to
+allow data storage using either netCDF, HDF4, or HDF5 and inclusion of metadata
+from other standards such as netCDF-CF.</p>
+<p>The other data format convention is a standard for storing information on
+collocations, the <a class="reference internal" href="dataformats.html#collocation-result-file-format"><span class="std std-ref">Collocation Result File</span></a>, which is based on CSV.</p>
+<p>Both data formats are described in more detail in the <a class="reference internal" href="dataformats.html"><span class="doc">Data formats</span></a> section of the documentation.</p>
 </div>
-<div class="section" id="overview-of-command-line-tools">
-<h2>Overview of Command Line Tools</h2>
-<dl class="docutils">
-<dt>harpconvert</dt>
-<dd>Convert a product from its original format into a HARP compliant HDF4/HDF5/netCDF file that can be processed further with other HARP tools. An overview of supported products can be found in the &lt;a href=&#8221;ingestions/index.html&#8221;&gt;HARP Ingestion Definition Overview&lt;/a&gt; section.</dd>
-<dt>harpcheck</dt>
-<dd>Verify that a files conforms to the HARP data format conventions and can be read by the other HARP tools.</dd>
-<dt>harpdump</dt>
-<dd>Inspect the contents of a HARP compliant HDF4/HDF5/netCDF file.</dd>
-<dt>harpfilter</dt>
-<dd>Apply several kinds of filtering and conversions on a HARP compliant HDF4/HDF5/netCDF file.</dd>
-<dt>harpcollocate</dt>
-<dd>Find pairs of measurements that match in time and geolocation for two sets of HARP compliant HDF4/HDF5/netCDF files.</dd>
-</dl>
+<div class="section" id="c-library">
+<h2>C library</h2>
+<p>Common parts that are used by the various HARP command line tools are gathered
+in a single <a class="reference internal" href="libharp.html"><span class="doc">HARP C library</span></a>. This library can be used to build
+custom applications or libraries that work with HARP compliant data products.</p>
 </div>
-<div class="section" id="harp-c-library">
-<h2>HARP C Library</h2>
-<p>Common parts that are used by the various HARP command line tools are gathered in a single &lt;a href=&#8221;libharp/index.html&#8221;&gt;HARP C Library&lt;/a&gt;.
-This library can be used to build your own building blocks.</p>
+<div class="section" id="python-interface">
+<h2>Python interface</h2>
+<p>The <a class="reference internal" href="python.html"><span class="doc">HARP Python interface</span></a> provides a set of functions to import
+and export HARP products, and to ingest non-HARP products of a type supported by
+HARP from Python.</p>
 </div>
-<div class="section" id="a-typical-intercomparison">
-<h2>A Typical Intercomparison</h2>
+<div class="section" id="command-line-tools">
+<span id="id2"></span><h2>Command line tools</h2>
+<p>The HARP command line tools perform various operations on HARP compliant data
+products. All command line tools except <code class="docutils literal"><span class="pre">harpconvert</span></code> expect one or more HARP
+data products as input. The <code class="docutils literal"><span class="pre">harpconvert</span></code> tool can be used to convert non-HARP
+products into HARP products.</p>
+<p>The available command line tools are described in more detail in the
+<a class="reference internal" href="tools.html"><span class="doc">Command line tools</span></a> section of the documentation.</p>
+</div>
+<div class="section" id="a-typical-inter-comparison">
+<h2>A typical inter-comparison</h2>
 <p>Typical sequence when comparing two datasets of measurements:</p>
 <dl class="docutils">
 <dt>harpconvert ...</dt>
-<dd>Convert all products that do not already follow the HARP format conventions to a common data format.</dd>
+<dd>Convert all products that do not already follow the HARP format conventions
+to a common data format.</dd>
 <dt>harpfilter ...</dt>
-<dd>Filter/convert the data in each file: remove unneeded parameters/measurements, add derived physical parameters, perform unit conversion, etc.</dd>
+<dd>Filter/convert the data in each file: remove unneeded
+parameters/measurements, add derived physical parameters, perform unit
+conversion, etc.</dd>
 <dt>harpcollocate matchup ...</dt>
-<dd>Find the measurement pairs that match within the specified collocation criteria and save the result into a collocation result file.</dd>
+<dd>Find the measurement pairs that match within the specified collocation
+criteria and save the result into a collocation result file.</dd>
 <dt>harpcollocate resample ...</dt>
 <dd>Apply resampling to the collocation result file.</dd>
 <dt>harpfilter -a &#8216;collocate-left(&lt;csvfile&gt;)&#8217; ...</dt>
@@ -233,13 +262,14 @@ This library can be used to build your own building blocks.</p>
 <p>Input files can be verified with</p>
 <blockquote>
 <div>harpcheck ...</div></blockquote>
-<p>and after each stage, the contents of each file can be inspected from the command line using:</p>
+<p>and after each stage, the contents of each file can be inspected from the
+command line using:</p>
 <blockquote>
 <div>harpdump ...</div></blockquote>
 </div>
 <div class="section" id="examples">
 <h2>Examples</h2>
-<p>Examples of executions of a full comparison can be found in the &lt;a href=&#8221;examples/index.html&#8221;&gt;Examples&lt;/a&gt; section.</p>
+<p>Examples of executions of a full comparison can be found in the <a class="reference internal" href="examples.html"><span class="doc">Examples</span></a> section.</p>
 </div>
 </div>
 

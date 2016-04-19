@@ -8,7 +8,7 @@
   
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
   
-  <title>C library &mdash; HARP 0.1b documentation</title>
+  <title>Command line tools &mdash; HARP 0.1b documentation</title>
   
 
   
@@ -33,8 +33,8 @@
 
   
     <link rel="top" title="HARP 0.1b documentation" href="index.html"/>
-        <link rel="next" title="Algorithms" href="libharp_algorithm.html"/>
-        <link rel="prev" title="Ingestion definitions" href="ingestions/index.html"/> 
+        <link rel="next" title="harpconvert" href="harpconvert.html"/>
+        <link rel="prev" title="Python interface" href="python.html"/> 
 
   
   <script src="_static/js/modernizr.min.js"></script>
@@ -87,20 +87,16 @@
 <li class="toctree-l1"><a class="reference internal" href="install.html">Installation</a></li>
 <li class="toctree-l1"><a class="reference internal" href="dataformats.html">Data formats</a></li>
 <li class="toctree-l1"><a class="reference internal" href="ingestions/index.html">Ingestion definitions</a></li>
-<li class="toctree-l1 current"><a class="current reference internal" href="#">C library</a><ul>
-<li class="toctree-l2"><a class="reference internal" href="#introduction">Introduction</a></li>
-<li class="toctree-l2"><a class="reference internal" href="#modules">Modules</a><ul>
-<li class="toctree-l3"><a class="reference internal" href="libharp_algorithm.html">Algorithms</a></li>
-<li class="toctree-l3"><a class="reference internal" href="libharp_error.html">Error</a></li>
-<li class="toctree-l3"><a class="reference internal" href="libharp_general.html">General</a></li>
-<li class="toctree-l3"><a class="reference internal" href="libharp_product.html">Product</a></li>
-<li class="toctree-l3"><a class="reference internal" href="libharp_variable.html">Variable</a></li>
-</ul>
-</li>
-</ul>
-</li>
+<li class="toctree-l1"><a class="reference internal" href="libharp.html">C library</a></li>
 <li class="toctree-l1"><a class="reference internal" href="python.html">Python interface</a></li>
-<li class="toctree-l1"><a class="reference internal" href="tools.html">Command line tools</a></li>
+<li class="toctree-l1 current"><a class="current reference internal" href="#">Command line tools</a><ul>
+<li class="toctree-l2"><a class="reference internal" href="harpconvert.html">harpconvert</a></li>
+<li class="toctree-l2"><a class="reference internal" href="harpcheck.html">harpcheck</a></li>
+<li class="toctree-l2"><a class="reference internal" href="harpdump.html">harpdump</a></li>
+<li class="toctree-l2"><a class="reference internal" href="harpfilter.html">harpfilter</a></li>
+<li class="toctree-l2"><a class="reference internal" href="harpcollocate.html">harpcollocate</a></li>
+</ul>
+</li>
 <li class="toctree-l1"><a class="reference internal" href="examples.html">Examples</a></li>
 </ul>
 
@@ -132,7 +128,7 @@
   <ul class="wy-breadcrumbs">
     <li><a href="index.html">Docs</a> &raquo;</li>
       
-    <li>C library</li>
+    <li>Command line tools</li>
       <li class="wy-breadcrumbs-aside">
         
           
@@ -144,25 +140,23 @@
           <div role="main" class="document" itemscope="itemscope" itemtype="http://schema.org/Article">
            <div itemprop="articleBody">
             
-  <div class="section" id="c-library">
-<h1>C library</h1>
-<div class="section" id="introduction">
-<h2>Introduction</h2>
-<p>This is the documentation that describes the Application Programmers Interface (API) for the HARP C Library.
-It contains a full description for each of the functions in the API and a general description for each of the modules mentioned below.</p>
-</div>
-<div class="section" id="modules">
-<h2>Modules</h2>
-<p>Each module has a separate section that contains its general description together with descriptions for all types, variables, functions, etc. that are part of this module.</p>
+  <div class="section" id="command-line-tools">
+<h1>Command line tools</h1>
+<p>The section describes the command line tools provided by the HARP toolkit.</p>
 <div class="toctree-wrapper compound">
 <ul>
-<li class="toctree-l1"><a class="reference internal" href="libharp_algorithm.html">Algorithms</a></li>
-<li class="toctree-l1"><a class="reference internal" href="libharp_error.html">Error</a></li>
-<li class="toctree-l1"><a class="reference internal" href="libharp_general.html">General</a></li>
-<li class="toctree-l1"><a class="reference internal" href="libharp_product.html">Product</a></li>
-<li class="toctree-l1"><a class="reference internal" href="libharp_variable.html">Variable</a></li>
+<li class="toctree-l1"><a class="reference internal" href="harpconvert.html">harpconvert</a></li>
+<li class="toctree-l1"><a class="reference internal" href="harpcheck.html">harpcheck</a></li>
+<li class="toctree-l1"><a class="reference internal" href="harpdump.html">harpdump</a></li>
+<li class="toctree-l1"><a class="reference internal" href="harpfilter.html">harpfilter</a></li>
+<li class="toctree-l1"><a class="reference internal" href="harpcollocate.html">harpcollocate</a><ul>
+<li class="toctree-l2"><a class="reference internal" href="harpcollocate.html#collocation">Collocation</a></li>
+<li class="toctree-l2"><a class="reference internal" href="harpcollocate.html#obtaining-collocation-result-file">Obtaining collocation result file</a></li>
+<li class="toctree-l2"><a class="reference internal" href="harpcollocate.html#resampling-collocation-result-file">Resampling collocation result file</a></li>
+<li class="toctree-l2"><a class="reference internal" href="harpcollocate.html#updating-collocation-result-file">Updating collocation result file</a></li>
 </ul>
-</div>
+</li>
+</ul>
 </div>
 </div>
 
@@ -173,10 +167,10 @@ It contains a full description for each of the functions in the API and a genera
   
     <div class="rst-footer-buttons" role="navigation" aria-label="footer navigation">
       
-        <a href="libharp_algorithm.html" class="btn btn-neutral float-right" title="Algorithms" accesskey="n">Next <span class="fa fa-arrow-circle-right"></span></a>
+        <a href="harpconvert.html" class="btn btn-neutral float-right" title="harpconvert" accesskey="n">Next <span class="fa fa-arrow-circle-right"></span></a>
       
       
-        <a href="ingestions/index.html" class="btn btn-neutral" title="Ingestion definitions" accesskey="p"><span class="fa fa-arrow-circle-left"></span> Previous</a>
+        <a href="python.html" class="btn btn-neutral" title="Python interface" accesskey="p"><span class="fa fa-arrow-circle-left"></span> Previous</a>
       
     </div>
   

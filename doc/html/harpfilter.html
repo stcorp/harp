@@ -33,6 +33,8 @@
 
   
     <link rel="top" title="HARP 0.1b documentation" href="index.html"/>
+        <link rel="up" title="Command line tools" href="tools.html"/>
+        <link rel="next" title="harpcollocate" href="harpcollocate.html"/>
         <link rel="prev" title="harpdump" href="harpdump.html"/> 
 
   
@@ -87,11 +89,16 @@
 <li class="toctree-l1"><a class="reference internal" href="dataformats.html">Data formats</a></li>
 <li class="toctree-l1"><a class="reference internal" href="ingestions/index.html">Ingestion definitions</a></li>
 <li class="toctree-l1"><a class="reference internal" href="libharp.html">C library</a></li>
-<li class="toctree-l1"><a class="reference internal" href="harpcheck.html">harpcheck</a></li>
-<li class="toctree-l1"><a class="reference internal" href="harpcollocate.html">harpcollocate</a></li>
-<li class="toctree-l1"><a class="reference internal" href="harpconvert.html">harpconvert</a></li>
-<li class="toctree-l1"><a class="reference internal" href="harpdump.html">harpdump</a></li>
-<li class="toctree-l1 current"><a class="current reference internal" href="">harpfilter</a></li>
+<li class="toctree-l1"><a class="reference internal" href="python.html">Python interface</a></li>
+<li class="toctree-l1 current"><a class="reference internal" href="tools.html">Command line tools</a><ul class="current">
+<li class="toctree-l2"><a class="reference internal" href="harpconvert.html">harpconvert</a></li>
+<li class="toctree-l2"><a class="reference internal" href="harpcheck.html">harpcheck</a></li>
+<li class="toctree-l2"><a class="reference internal" href="harpdump.html">harpdump</a></li>
+<li class="toctree-l2 current"><a class="current reference internal" href="#">harpfilter</a></li>
+<li class="toctree-l2"><a class="reference internal" href="harpcollocate.html">harpcollocate</a></li>
+</ul>
+</li>
+<li class="toctree-l1"><a class="reference internal" href="examples.html">Examples</a></li>
 </ul>
 
             
@@ -114,13 +121,15 @@
         <div class="rst-content">
           
 
-
+ 
 
 
 
 <div role="navigation" aria-label="breadcrumbs navigation">
   <ul class="wy-breadcrumbs">
     <li><a href="index.html">Docs</a> &raquo;</li>
+      
+          <li><a href="tools.html">Command line tools</a> &raquo;</li>
       
     <li>harpfilter</li>
       <li class="wy-breadcrumbs-aside">
@@ -136,136 +145,138 @@
             
   <div class="section" id="harpfilter">
 <h1>harpfilter</h1>
-<div class="highlight-python"><div class="highlight"><pre>Usage:
-    harpfilter [options] &lt;input product file&gt; [output product file]
-        Filter a HARP compliant netCDF/HDF4/HDF5 product.
+<p>Apply various types of filtering and conversions to a HARP compliant
+netCDF/HDF4/HDF5 file.</p>
+<div class="highlight-default"><div class="highlight"><pre><span></span><span class="n">Usage</span><span class="p">:</span>
+    <span class="n">harpfilter</span> <span class="p">[</span><span class="n">options</span><span class="p">]</span> <span class="o">&lt;</span><span class="nb">input</span> <span class="n">product</span> <span class="n">file</span><span class="o">&gt;</span> <span class="p">[</span><span class="n">output</span> <span class="n">product</span> <span class="n">file</span><span class="p">]</span>
+        <span class="n">Filter</span> <span class="n">a</span> <span class="n">HARP</span> <span class="n">compliant</span> <span class="n">netCDF</span><span class="o">/</span><span class="n">HDF4</span><span class="o">/</span><span class="n">HDF5</span> <span class="n">product</span><span class="o">.</span>
 
-        Options:
-            -a, --actions &lt;action list&gt;
-                List of actions to apply to the product.
-                An action list needs to be provided as a single expression.
+        <span class="n">Options</span><span class="p">:</span>
+            <span class="o">-</span><span class="n">a</span><span class="p">,</span> <span class="o">--</span><span class="n">actions</span> <span class="o">&lt;</span><span class="n">action</span> <span class="nb">list</span><span class="o">&gt;</span>
+                <span class="n">List</span> <span class="n">of</span> <span class="n">actions</span> <span class="n">to</span> <span class="n">apply</span> <span class="n">to</span> <span class="n">the</span> <span class="n">product</span><span class="o">.</span>
+                <span class="n">An</span> <span class="n">action</span> <span class="nb">list</span> <span class="n">needs</span> <span class="n">to</span> <span class="n">be</span> <span class="n">provided</span> <span class="k">as</span> <span class="n">a</span> <span class="n">single</span> <span class="n">expression</span><span class="o">.</span>
 
-            -f, --format &lt;format&gt;
-                Output format:
-                    netcdf (default)
-                    hdf4
-                    hdf5
+            <span class="o">-</span><span class="n">f</span><span class="p">,</span> <span class="o">--</span><span class="nb">format</span> <span class="o">&lt;</span><span class="nb">format</span><span class="o">&gt;</span>
+                <span class="n">Output</span> <span class="nb">format</span><span class="p">:</span>
+                    <span class="n">netcdf</span> <span class="p">(</span><span class="n">default</span><span class="p">)</span>
+                    <span class="n">hdf4</span>
+                    <span class="n">hdf5</span>
 
-        Action list:
-            Actions are separated by semi-colons. Each action is either
-            a comparison filter, a membership test filter, or a function
-            call. Strings used in actions should be quoted with double
-            quotes.
+        <span class="n">Action</span> <span class="nb">list</span><span class="p">:</span>
+            <span class="n">Actions</span> <span class="n">are</span> <span class="n">separated</span> <span class="n">by</span> <span class="n">semi</span><span class="o">-</span><span class="n">colons</span><span class="o">.</span> <span class="n">Each</span> <span class="n">action</span> <span class="ow">is</span> <span class="n">either</span>
+            <span class="n">a</span> <span class="n">comparison</span> <span class="nb">filter</span><span class="p">,</span> <span class="n">a</span> <span class="n">membership</span> <span class="n">test</span> <span class="nb">filter</span><span class="p">,</span> <span class="ow">or</span> <span class="n">a</span> <span class="n">function</span>
+            <span class="n">call</span><span class="o">.</span> <span class="n">Strings</span> <span class="n">used</span> <span class="ow">in</span> <span class="n">actions</span> <span class="n">should</span> <span class="n">be</span> <span class="n">quoted</span> <span class="k">with</span> <span class="n">double</span>
+            <span class="n">quotes</span><span class="o">.</span>
 
-            Comparison filter:
-                variable operator value [unit]
-                    Exclude measurements for which the comparison evaluates
-                    to false.
+            <span class="n">Comparison</span> <span class="nb">filter</span><span class="p">:</span>
+                <span class="n">variable</span> <span class="n">operator</span> <span class="n">value</span> <span class="p">[</span><span class="n">unit</span><span class="p">]</span>
+                    <span class="n">Exclude</span> <span class="n">measurements</span> <span class="k">for</span> <span class="n">which</span> <span class="n">the</span> <span class="n">comparison</span> <span class="n">evaluates</span>
+                    <span class="n">to</span> <span class="n">false</span><span class="o">.</span>
 
-                Supported operators:
-                    == !=
-                    &lt; &lt;= &gt;= &gt; (for numerical variables only)
+                <span class="n">Supported</span> <span class="n">operators</span><span class="p">:</span>
+                    <span class="o">==</span> <span class="o">!=</span>
+                    <span class="o">&lt;</span> <span class="o">&lt;=</span> <span class="o">&gt;=</span> <span class="o">&gt;</span> <span class="p">(</span><span class="k">for</span> <span class="n">numerical</span> <span class="n">variables</span> <span class="n">only</span><span class="p">)</span>
 
-                If a unit is specified, the comparison will be performed in
-                the specified unit. Otherwise, it will be performed in the
-                unit of the variable. Units can only be specified for
-                numerical variables.
+                <span class="n">If</span> <span class="n">a</span> <span class="n">unit</span> <span class="ow">is</span> <span class="n">specified</span><span class="p">,</span> <span class="n">the</span> <span class="n">comparison</span> <span class="n">will</span> <span class="n">be</span> <span class="n">performed</span> <span class="ow">in</span>
+                <span class="n">the</span> <span class="n">specified</span> <span class="n">unit</span><span class="o">.</span> <span class="n">Otherwise</span><span class="p">,</span> <span class="n">it</span> <span class="n">will</span> <span class="n">be</span> <span class="n">performed</span> <span class="ow">in</span> <span class="n">the</span>
+                <span class="n">unit</span> <span class="n">of</span> <span class="n">the</span> <span class="n">variable</span><span class="o">.</span> <span class="n">Units</span> <span class="n">can</span> <span class="n">only</span> <span class="n">be</span> <span class="n">specified</span> <span class="k">for</span>
+                <span class="n">numerical</span> <span class="n">variables</span><span class="o">.</span>
 
-            Membership test filter:
-                variable in (value, ...) [unit]
-                variable not in (value, ...) [unit]
-                    Exclude measurements that do not occur in the specified
-                    list.
+            <span class="n">Membership</span> <span class="n">test</span> <span class="nb">filter</span><span class="p">:</span>
+                <span class="n">variable</span> <span class="ow">in</span> <span class="p">(</span><span class="n">value</span><span class="p">,</span> <span class="o">...</span><span class="p">)</span> <span class="p">[</span><span class="n">unit</span><span class="p">]</span>
+                <span class="n">variable</span> <span class="ow">not</span> <span class="ow">in</span> <span class="p">(</span><span class="n">value</span><span class="p">,</span> <span class="o">...</span><span class="p">)</span> <span class="p">[</span><span class="n">unit</span><span class="p">]</span>
+                    <span class="n">Exclude</span> <span class="n">measurements</span> <span class="n">that</span> <span class="n">do</span> <span class="ow">not</span> <span class="n">occur</span> <span class="ow">in</span> <span class="n">the</span> <span class="n">specified</span>
+                    <span class="nb">list</span><span class="o">.</span>
 
-                If a unit is specified, the comparison will be performed in
-                the specified unit. Otherwise, it will be performed in the
-                unit of the variable. Units can only be specified for
-                numerical variables.
+                <span class="n">If</span> <span class="n">a</span> <span class="n">unit</span> <span class="ow">is</span> <span class="n">specified</span><span class="p">,</span> <span class="n">the</span> <span class="n">comparison</span> <span class="n">will</span> <span class="n">be</span> <span class="n">performed</span> <span class="ow">in</span>
+                <span class="n">the</span> <span class="n">specified</span> <span class="n">unit</span><span class="o">.</span> <span class="n">Otherwise</span><span class="p">,</span> <span class="n">it</span> <span class="n">will</span> <span class="n">be</span> <span class="n">performed</span> <span class="ow">in</span> <span class="n">the</span>
+                <span class="n">unit</span> <span class="n">of</span> <span class="n">the</span> <span class="n">variable</span><span class="o">.</span> <span class="n">Units</span> <span class="n">can</span> <span class="n">only</span> <span class="n">be</span> <span class="n">specified</span> <span class="k">for</span>
+                <span class="n">numerical</span> <span class="n">variables</span><span class="o">.</span>
 
-            Function call:
-                function(argument, ...)
+            <span class="n">Function</span> <span class="n">call</span><span class="p">:</span>
+                <span class="n">function</span><span class="p">(</span><span class="n">argument</span><span class="p">,</span> <span class="o">...</span><span class="p">)</span>
 
-            Supported functions:
-                collocate-left(collocation-result-file)
-                    Apply the specified collocation result file as an index
-                    filter assuming the product is part of dataset A.
+            <span class="n">Supported</span> <span class="n">functions</span><span class="p">:</span>
+                <span class="n">collocate</span><span class="o">-</span><span class="n">left</span><span class="p">(</span><span class="n">collocation</span><span class="o">-</span><span class="n">result</span><span class="o">-</span><span class="n">file</span><span class="p">)</span>
+                    <span class="n">Apply</span> <span class="n">the</span> <span class="n">specified</span> <span class="n">collocation</span> <span class="n">result</span> <span class="n">file</span> <span class="k">as</span> <span class="n">an</span> <span class="n">index</span>
+                    <span class="nb">filter</span> <span class="n">assuming</span> <span class="n">the</span> <span class="n">product</span> <span class="ow">is</span> <span class="n">part</span> <span class="n">of</span> <span class="n">dataset</span> <span class="n">A</span><span class="o">.</span>
 
-                collocate-right(collocation-result-file)
-                    Apply the specified collocation result file as an index
-                    filter assuming the product is part of dataset B.
+                <span class="n">collocate</span><span class="o">-</span><span class="n">right</span><span class="p">(</span><span class="n">collocation</span><span class="o">-</span><span class="n">result</span><span class="o">-</span><span class="n">file</span><span class="p">)</span>
+                    <span class="n">Apply</span> <span class="n">the</span> <span class="n">specified</span> <span class="n">collocation</span> <span class="n">result</span> <span class="n">file</span> <span class="k">as</span> <span class="n">an</span> <span class="n">index</span>
+                    <span class="nb">filter</span> <span class="n">assuming</span> <span class="n">the</span> <span class="n">product</span> <span class="ow">is</span> <span class="n">part</span> <span class="n">of</span> <span class="n">dataset</span> <span class="n">B</span><span class="o">.</span>
 
-                valid(variable)
-                    Exclude invalid values of the specified variable (values
-                    outside the valid range of the variable, or NaN).
+                <span class="n">valid</span><span class="p">(</span><span class="n">variable</span><span class="p">)</span>
+                    <span class="n">Exclude</span> <span class="n">invalid</span> <span class="n">values</span> <span class="n">of</span> <span class="n">the</span> <span class="n">specified</span> <span class="n">variable</span> <span class="p">(</span><span class="n">values</span>
+                    <span class="n">outside</span> <span class="n">the</span> <span class="n">valid</span> <span class="nb">range</span> <span class="n">of</span> <span class="n">the</span> <span class="n">variable</span><span class="p">,</span> <span class="ow">or</span> <span class="n">NaN</span><span class="p">)</span><span class="o">.</span>
 
-                longitude-range(minimum [unit], maximum [unit])
-                    Exclude measurements of which the longitude of the
-                    measurement location falls outside the specified range.
-                    This function correctly handles longitude ranges that
-                    cross the international date line.
+                <span class="n">longitude</span><span class="o">-</span><span class="nb">range</span><span class="p">(</span><span class="n">minimum</span> <span class="p">[</span><span class="n">unit</span><span class="p">],</span> <span class="n">maximum</span> <span class="p">[</span><span class="n">unit</span><span class="p">])</span>
+                    <span class="n">Exclude</span> <span class="n">measurements</span> <span class="n">of</span> <span class="n">which</span> <span class="n">the</span> <span class="n">longitude</span> <span class="n">of</span> <span class="n">the</span>
+                    <span class="n">measurement</span> <span class="n">location</span> <span class="n">falls</span> <span class="n">outside</span> <span class="n">the</span> <span class="n">specified</span> <span class="nb">range</span><span class="o">.</span>
+                    <span class="n">This</span> <span class="n">function</span> <span class="n">correctly</span> <span class="n">handles</span> <span class="n">longitude</span> <span class="n">ranges</span> <span class="n">that</span>
+                    <span class="n">cross</span> <span class="n">the</span> <span class="n">international</span> <span class="n">date</span> <span class="n">line</span><span class="o">.</span>
 
-                point-distance(longitude [unit], latitude [unit],
-                               distance [unit])
-                    Exclude measurements situated further than the specified
-                    distance from the specified location.
+                <span class="n">point</span><span class="o">-</span><span class="n">distance</span><span class="p">(</span><span class="n">longitude</span> <span class="p">[</span><span class="n">unit</span><span class="p">],</span> <span class="n">latitude</span> <span class="p">[</span><span class="n">unit</span><span class="p">],</span>
+                               <span class="n">distance</span> <span class="p">[</span><span class="n">unit</span><span class="p">])</span>
+                    <span class="n">Exclude</span> <span class="n">measurements</span> <span class="n">situated</span> <span class="n">further</span> <span class="n">than</span> <span class="n">the</span> <span class="n">specified</span>
+                    <span class="n">distance</span> <span class="kn">from</span> <span class="nn">the</span> <span class="n">specified</span> <span class="n">location</span><span class="o">.</span>
 
-                area-mask-covers-point(area-mask-file)
-                    Exclude measurements for which no area from the area
-                    mask file contains the measurement location.
+                <span class="n">area</span><span class="o">-</span><span class="n">mask</span><span class="o">-</span><span class="n">covers</span><span class="o">-</span><span class="n">point</span><span class="p">(</span><span class="n">area</span><span class="o">-</span><span class="n">mask</span><span class="o">-</span><span class="n">file</span><span class="p">)</span>
+                    <span class="n">Exclude</span> <span class="n">measurements</span> <span class="k">for</span> <span class="n">which</span> <span class="n">no</span> <span class="n">area</span> <span class="kn">from</span> <span class="nn">the</span> <span class="n">area</span>
+                    <span class="n">mask</span> <span class="n">file</span> <span class="n">contains</span> <span class="n">the</span> <span class="n">measurement</span> <span class="n">location</span><span class="o">.</span>
 
-                area-mask-covers-area(area-mask-file)
-                    Exclude measurements for which no area from the area
-                    mask file covers the measurement area completely.
+                <span class="n">area</span><span class="o">-</span><span class="n">mask</span><span class="o">-</span><span class="n">covers</span><span class="o">-</span><span class="n">area</span><span class="p">(</span><span class="n">area</span><span class="o">-</span><span class="n">mask</span><span class="o">-</span><span class="n">file</span><span class="p">)</span>
+                    <span class="n">Exclude</span> <span class="n">measurements</span> <span class="k">for</span> <span class="n">which</span> <span class="n">no</span> <span class="n">area</span> <span class="kn">from</span> <span class="nn">the</span> <span class="n">area</span>
+                    <span class="n">mask</span> <span class="n">file</span> <span class="n">covers</span> <span class="n">the</span> <span class="n">measurement</span> <span class="n">area</span> <span class="n">completely</span><span class="o">.</span>
 
-                area-mask-intersects-area(area-mask-file,
-                                          minimum-overlap-percentage)
-                    Exclude measurements for which no area from the area
-                    mask file overlaps at least the specified percentage of
-                    the measurement area.
+                <span class="n">area</span><span class="o">-</span><span class="n">mask</span><span class="o">-</span><span class="n">intersects</span><span class="o">-</span><span class="n">area</span><span class="p">(</span><span class="n">area</span><span class="o">-</span><span class="n">mask</span><span class="o">-</span><span class="n">file</span><span class="p">,</span>
+                                          <span class="n">minimum</span><span class="o">-</span><span class="n">overlap</span><span class="o">-</span><span class="n">percentage</span><span class="p">)</span>
+                    <span class="n">Exclude</span> <span class="n">measurements</span> <span class="k">for</span> <span class="n">which</span> <span class="n">no</span> <span class="n">area</span> <span class="kn">from</span> <span class="nn">the</span> <span class="n">area</span>
+                    <span class="n">mask</span> <span class="n">file</span> <span class="n">overlaps</span> <span class="n">at</span> <span class="n">least</span> <span class="n">the</span> <span class="n">specified</span> <span class="n">percentage</span> <span class="n">of</span>
+                    <span class="n">the</span> <span class="n">measurement</span> <span class="n">area</span><span class="o">.</span>
 
-                derive(variable {dimension-type, ...} [unit])
-                    Derive the specified variable from other variables found
-                    in the product. The --list-conversions option of
-                    harpfilter can be used to list available variable
-                    conversions.
+                <span class="n">derive</span><span class="p">(</span><span class="n">variable</span> <span class="p">{</span><span class="n">dimension</span><span class="o">-</span><span class="nb">type</span><span class="p">,</span> <span class="o">...</span><span class="p">}</span> <span class="p">[</span><span class="n">unit</span><span class="p">])</span>
+                    <span class="n">Derive</span> <span class="n">the</span> <span class="n">specified</span> <span class="n">variable</span> <span class="kn">from</span> <span class="nn">other</span> <span class="n">variables</span> <span class="n">found</span>
+                    <span class="ow">in</span> <span class="n">the</span> <span class="n">product</span><span class="o">.</span> <span class="n">The</span> <span class="o">--</span><span class="nb">list</span><span class="o">-</span><span class="n">conversions</span> <span class="n">option</span> <span class="n">of</span>
+                    <span class="n">harpfilter</span> <span class="n">can</span> <span class="n">be</span> <span class="n">used</span> <span class="n">to</span> <span class="nb">list</span> <span class="n">available</span> <span class="n">variable</span>
+                    <span class="n">conversions</span><span class="o">.</span>
 
-                include(variable, ...)
-                    Mark the specified variable(s) for inclusion in the
-                    filtered product. All variables marked for inclusion
-                    will be included in the filtered product, all other
-                    variables will be excluded. By default, all variables
-                    will be included.
+                <span class="n">include</span><span class="p">(</span><span class="n">variable</span><span class="p">,</span> <span class="o">...</span><span class="p">)</span>
+                    <span class="n">Mark</span> <span class="n">the</span> <span class="n">specified</span> <span class="n">variable</span><span class="p">(</span><span class="n">s</span><span class="p">)</span> <span class="k">for</span> <span class="n">inclusion</span> <span class="ow">in</span> <span class="n">the</span>
+                    <span class="n">filtered</span> <span class="n">product</span><span class="o">.</span> <span class="n">All</span> <span class="n">variables</span> <span class="n">marked</span> <span class="k">for</span> <span class="n">inclusion</span>
+                    <span class="n">will</span> <span class="n">be</span> <span class="n">included</span> <span class="ow">in</span> <span class="n">the</span> <span class="n">filtered</span> <span class="n">product</span><span class="p">,</span> <span class="nb">all</span> <span class="n">other</span>
+                    <span class="n">variables</span> <span class="n">will</span> <span class="n">be</span> <span class="n">excluded</span><span class="o">.</span> <span class="n">By</span> <span class="n">default</span><span class="p">,</span> <span class="nb">all</span> <span class="n">variables</span>
+                    <span class="n">will</span> <span class="n">be</span> <span class="n">included</span><span class="o">.</span>
 
-                exclude(variable, ...)
-                    Mark the specified variable(s) for exclusion from the
-                    filtered product. All variables marked for exclusion
-                    will be excluded from the filtered product, all other
-                    variables will be included. Variable exclusions will be
-                    evaluated after evaluating all variable inclusions (if
-                    any).
+                <span class="n">exclude</span><span class="p">(</span><span class="n">variable</span><span class="p">,</span> <span class="o">...</span><span class="p">)</span>
+                    <span class="n">Mark</span> <span class="n">the</span> <span class="n">specified</span> <span class="n">variable</span><span class="p">(</span><span class="n">s</span><span class="p">)</span> <span class="k">for</span> <span class="n">exclusion</span> <span class="kn">from</span> <span class="nn">the</span>
+                    <span class="n">filtered</span> <span class="n">product</span><span class="o">.</span> <span class="n">All</span> <span class="n">variables</span> <span class="n">marked</span> <span class="k">for</span> <span class="n">exclusion</span>
+                    <span class="n">will</span> <span class="n">be</span> <span class="n">excluded</span> <span class="kn">from</span> <span class="nn">the</span> <span class="n">filtered</span> <span class="n">product</span><span class="p">,</span> <span class="nb">all</span> <span class="n">other</span>
+                    <span class="n">variables</span> <span class="n">will</span> <span class="n">be</span> <span class="n">included</span><span class="o">.</span> <span class="n">Variable</span> <span class="n">exclusions</span> <span class="n">will</span> <span class="n">be</span>
+                    <span class="n">evaluated</span> <span class="n">after</span> <span class="n">evaluating</span> <span class="nb">all</span> <span class="n">variable</span> <span class="n">inclusions</span> <span class="p">(</span><span class="k">if</span>
+                    <span class="nb">any</span><span class="p">)</span><span class="o">.</span>
 
-                The unit qualifier is optional for all function arguments
-                that support it. If a unit is not specified, the unit of the
-                corresponding variable will be used.
+                <span class="n">The</span> <span class="n">unit</span> <span class="n">qualifier</span> <span class="ow">is</span> <span class="n">optional</span> <span class="k">for</span> <span class="nb">all</span> <span class="n">function</span> <span class="n">arguments</span>
+                <span class="n">that</span> <span class="n">support</span> <span class="n">it</span><span class="o">.</span> <span class="n">If</span> <span class="n">a</span> <span class="n">unit</span> <span class="ow">is</span> <span class="ow">not</span> <span class="n">specified</span><span class="p">,</span> <span class="n">the</span> <span class="n">unit</span> <span class="n">of</span> <span class="n">the</span>
+                <span class="n">corresponding</span> <span class="n">variable</span> <span class="n">will</span> <span class="n">be</span> <span class="n">used</span><span class="o">.</span>
 
-            Examples:
-                -a &#39;derive(altitude {time} [km]); pressure &gt; 3.0 [bar];&#39;
-                -a &#39;point-distance(-52.5 [degree], 1.0 [rad], 1e3 [km])&#39;
-                -a &#39;index in (0, 10, 20, 30, 40); valid(pressure)&#39;
+            <span class="n">Examples</span><span class="p">:</span>
+                <span class="o">-</span><span class="n">a</span> <span class="s1">&#39;derive(altitude </span><span class="si">{time}</span><span class="s1"> [km]); pressure &gt; 3.0 [bar];&#39;</span>
+                <span class="o">-</span><span class="n">a</span> <span class="s1">&#39;point-distance(-52.5 [degree], 1.0 [rad], 1e3 [km])&#39;</span>
+                <span class="o">-</span><span class="n">a</span> <span class="s1">&#39;index in (0, 10, 20, 30, 40); valid(pressure)&#39;</span>
 
-        If the filtered product is empty, a warning will be printed and the
-        tool will return with exit code 2 (without writing a file).
+        <span class="n">If</span> <span class="n">the</span> <span class="n">filtered</span> <span class="n">product</span> <span class="ow">is</span> <span class="n">empty</span><span class="p">,</span> <span class="n">a</span> <span class="n">warning</span> <span class="n">will</span> <span class="n">be</span> <span class="n">printed</span> <span class="ow">and</span> <span class="n">the</span>
+        <span class="n">tool</span> <span class="n">will</span> <span class="k">return</span> <span class="k">with</span> <span class="n">exit</span> <span class="n">code</span> <span class="mi">2</span> <span class="p">(</span><span class="n">without</span> <span class="n">writing</span> <span class="n">a</span> <span class="n">file</span><span class="p">)</span><span class="o">.</span>
 
-    harpfilter --list-conversions [input product file]
-        List all available variable conversions. If an input product file is
-        specified, limit the list to variable conversions that are possible
-        given the specified product.
+    <span class="n">harpfilter</span> <span class="o">--</span><span class="nb">list</span><span class="o">-</span><span class="n">conversions</span> <span class="p">[</span><span class="nb">input</span> <span class="n">product</span> <span class="n">file</span><span class="p">]</span>
+        <span class="n">List</span> <span class="nb">all</span> <span class="n">available</span> <span class="n">variable</span> <span class="n">conversions</span><span class="o">.</span> <span class="n">If</span> <span class="n">an</span> <span class="nb">input</span> <span class="n">product</span> <span class="n">file</span> <span class="ow">is</span>
+        <span class="n">specified</span><span class="p">,</span> <span class="n">limit</span> <span class="n">the</span> <span class="nb">list</span> <span class="n">to</span> <span class="n">variable</span> <span class="n">conversions</span> <span class="n">that</span> <span class="n">are</span> <span class="n">possible</span>
+        <span class="n">given</span> <span class="n">the</span> <span class="n">specified</span> <span class="n">product</span><span class="o">.</span>
 
-    harpfilter -h, --help
-        Show help (this text).
+    <span class="n">harpfilter</span> <span class="o">-</span><span class="n">h</span><span class="p">,</span> <span class="o">--</span><span class="n">help</span>
+        <span class="n">Show</span> <span class="n">help</span> <span class="p">(</span><span class="n">this</span> <span class="n">text</span><span class="p">)</span><span class="o">.</span>
 
-    harpfilter -v, --version
-        Print the version number of HARP and exit.
+    <span class="n">harpfilter</span> <span class="o">-</span><span class="n">v</span><span class="p">,</span> <span class="o">--</span><span class="n">version</span>
+        <span class="n">Print</span> <span class="n">the</span> <span class="n">version</span> <span class="n">number</span> <span class="n">of</span> <span class="n">HARP</span> <span class="ow">and</span> <span class="n">exit</span><span class="o">.</span>
 </pre></div>
 </div>
 </div>
@@ -276,6 +287,8 @@
           <footer>
   
     <div class="rst-footer-buttons" role="navigation" aria-label="footer navigation">
+      
+        <a href="harpcollocate.html" class="btn btn-neutral float-right" title="harpcollocate" accesskey="n">Next <span class="fa fa-arrow-circle-right"></span></a>
       
       
         <a href="harpdump.html" class="btn btn-neutral" title="harpdump" accesskey="p"><span class="fa fa-arrow-circle-left"></span> Previous</a>

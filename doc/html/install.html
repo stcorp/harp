@@ -34,7 +34,7 @@
   
     <link rel="top" title="HARP 0.1b documentation" href="index.html"/>
         <link rel="next" title="Data formats" href="dataformats.html"/>
-        <link rel="prev" title="HARP Manual" href="index.html"/> 
+        <link rel="prev" title="HARP manual" href="index.html"/> 
 
   
   <script src="_static/js/modernizr.min.js"></script>
@@ -84,7 +84,7 @@
             
             
                 <ul class="current">
-<li class="toctree-l1 current"><a class="current reference internal" href="">Installation</a><ul>
+<li class="toctree-l1 current"><a class="current reference internal" href="#">Installation</a><ul>
 <li class="toctree-l2"><a class="reference internal" href="#supported-platforms">Supported platforms</a></li>
 <li class="toctree-l2"><a class="reference internal" href="#what-you-will-need">What you will need</a></li>
 <li class="toctree-l2"><a class="reference internal" href="#building-the-source-package-unix">Building the source package (Unix)</a></li>
@@ -96,11 +96,9 @@
 <li class="toctree-l1"><a class="reference internal" href="dataformats.html">Data formats</a></li>
 <li class="toctree-l1"><a class="reference internal" href="ingestions/index.html">Ingestion definitions</a></li>
 <li class="toctree-l1"><a class="reference internal" href="libharp.html">C library</a></li>
-<li class="toctree-l1"><a class="reference internal" href="harpcheck.html">harpcheck</a></li>
-<li class="toctree-l1"><a class="reference internal" href="harpcollocate.html">harpcollocate</a></li>
-<li class="toctree-l1"><a class="reference internal" href="harpconvert.html">harpconvert</a></li>
-<li class="toctree-l1"><a class="reference internal" href="harpdump.html">harpdump</a></li>
-<li class="toctree-l1"><a class="reference internal" href="harpfilter.html">harpfilter</a></li>
+<li class="toctree-l1"><a class="reference internal" href="python.html">Python interface</a></li>
+<li class="toctree-l1"><a class="reference internal" href="tools.html">Command line tools</a></li>
+<li class="toctree-l1"><a class="reference internal" href="examples.html">Examples</a></li>
 </ul>
 
             
@@ -123,7 +121,7 @@
         <div class="rst-content">
           
 
-
+ 
 
 
 
@@ -180,12 +178,16 @@ website:</p>
 should not be a problem. For Mac OS X you should make sure you have
 installed the Developer Tools.</p>
 </li>
+<li><p class="first">A recent version of CODA. You will need a version of CODA that is compiled
+using the same HDF4 and HDF5 libraries as you will use for building HARP.
+CODA can be downloaded from <a class="reference external" href="https://github.com/stcorp/coda">https://github.com/stcorp/coda</a></p>
+</li>
 <li><p class="first">A recent version of HDF4. You will also need the additional libraries
 libjpeg, zlib, and szlib depending on whether HDF4 was build against them.
 In order to prevent conflicts of the HDF4 library with the netCDF interface
 that HARP uses, make sure you build the HDF4 software from source and use
 the following options when configuring the package:</p>
-<div class="highlight-python"><div class="highlight"><pre>./configure --enable-shared --disable-fortran --disable-netcdf
+<div class="highlight-default"><div class="highlight"><pre><span></span><span class="o">./</span><span class="n">configure</span> <span class="o">--</span><span class="n">enable</span><span class="o">-</span><span class="n">shared</span> <span class="o">--</span><span class="n">disable</span><span class="o">-</span><span class="n">fortran</span> <span class="o">--</span><span class="n">disable</span><span class="o">-</span><span class="n">netcdf</span>
 </pre></div>
 </div>
 <p>Make sure that after installation the location of the libraries is in your
@@ -210,14 +212,14 @@ library and executables:</p>
 <div><ol class="arabic">
 <li><p class="first">Go to the directory that contains the downloaded harp-x.y.z.tar.gz
 file and unpack this package:</p>
-<div class="highlight-python"><div class="highlight"><pre>% gzip -d harp-x.y.z.tar.gz
-% tar xf harp-x.y.z.tar
+<div class="highlight-default"><div class="highlight"><pre><span></span><span class="o">%</span> <span class="n">gzip</span> <span class="o">-</span><span class="n">d</span> <span class="n">harp</span><span class="o">-</span><span class="n">x</span><span class="o">.</span><span class="n">y</span><span class="o">.</span><span class="n">z</span><span class="o">.</span><span class="n">tar</span><span class="o">.</span><span class="n">gz</span>
+<span class="o">%</span> <span class="n">tar</span> <span class="n">xf</span> <span class="n">harp</span><span class="o">-</span><span class="n">x</span><span class="o">.</span><span class="n">y</span><span class="o">.</span><span class="n">z</span><span class="o">.</span><span class="n">tar</span>
 </pre></div>
 </div>
 <p>Make sure you replace <code class="docutils literal"><span class="pre">x.y.z</span></code> with the appropriate version number.</p>
 </li>
 <li><p class="first">You should now have a <code class="docutils literal"><span class="pre">harp-x.y.z</span></code> directory. Go to this directory:</p>
-<div class="highlight-python"><div class="highlight"><pre>% cd harp-x.y.z
+<div class="highlight-default"><div class="highlight"><pre><span></span><span class="o">%</span> <span class="n">cd</span> <span class="n">harp</span><span class="o">-</span><span class="n">x</span><span class="o">.</span><span class="n">y</span><span class="o">.</span><span class="n">z</span>
 </pre></div>
 </div>
 </li>
@@ -239,6 +241,22 @@ copy files to, you can use this option to provide a different
 installation directory. For instance, you can use
 <code class="docutils literal"><span class="pre">--prefix=$HOME/harp</span></code> to install the software in the subdirectory
 <code class="docutils literal"><span class="pre">harp</span></code> of your home directory.</p>
+</dd>
+<dt><code class="docutils literal"><span class="pre">CODA_LIB=&lt;CODA</span> <span class="pre">library</span> <span class="pre">directory&gt;</span></code> :</dt>
+<dd><p class="first last">The configure script will automatically try to locate the CODA library
+in the default locations for libraries (<code class="docutils literal"><span class="pre">/usr/local/lib</span></code> is usually
+not considered a default location!).
+If <code class="docutils literal"><span class="pre">./configure</span></code> complains that it can&#8217;t find the <code class="docutils literal"><span class="pre">coda</span></code> library
+files, pass this option to <code class="docutils literal"><span class="pre">./configure</span></code> with the location of this
+library file.</p>
+</dd>
+<dt><code class="docutils literal"><span class="pre">CODA_INCLUDE=&lt;CODA</span> <span class="pre">include</span> <span class="pre">file</span> <span class="pre">directory&gt;</span></code> :</dt>
+<dd><p class="first last">The configure script will automatically try to locate the CODA include
+files in the default locations for include files
+(<code class="docutils literal"><span class="pre">/usr/local/include</span></code> is usually not considered a default location!).
+If <code class="docutils literal"><span class="pre">./configure</span></code> complains that it can&#8217;t find the <code class="docutils literal"><span class="pre">coda.h</span></code> include
+file, pass this option to <code class="docutils literal"><span class="pre">./configure</span></code> with the location of this
+include file.</p>
 </dd>
 <dt><code class="docutils literal"><span class="pre">HDF4_LIB=&lt;HDF4</span> <span class="pre">library</span> <span class="pre">directory&gt;</span></code> :</dt>
 <dd><p class="first last">The configure script will automatically try to locate the HDF4
@@ -278,13 +296,13 @@ include file.</p>
 appropriate for you. For instance, if you want to install HARP in the
 <cite>harp</cite> subdirectory of your home directory then your invocation of
 configure would be:</p>
-<div class="highlight-python"><div class="highlight"><pre>% ./configure --prefix=$HOME/harp
+<div class="highlight-default"><div class="highlight"><pre><span></span>% ./configure --prefix=$HOME/harp
 </pre></div>
 </div>
 </li>
 <li><p class="first">If this completes successfully, you are now able to build the library by
 executing the <cite>make</cite> command:</p>
-<div class="highlight-python"><div class="highlight"><pre>% make
+<div class="highlight-default"><div class="highlight"><pre><span></span><span class="o">%</span> <span class="n">make</span>
 </pre></div>
 </div>
 <p>If everything was successful, you are now ready to install the package
@@ -304,7 +322,7 @@ installation directory option (<code class="docutils literal"><span class="pre">
 script, as explained in the previous section, if you do not want to install
 HARP in its default location <code class="docutils literal"><span class="pre">/usr/local</span></code>. After running the configure
 script, issue the following command:</p>
-<div class="highlight-python"><div class="highlight"><pre>% make install
+<div class="highlight-default"><div class="highlight"><pre><span></span><span class="o">%</span> <span class="n">make</span> <span class="n">install</span>
 </pre></div>
 </div>
 </div>
@@ -343,7 +361,7 @@ functionality of HARP.</p>
         <a href="dataformats.html" class="btn btn-neutral float-right" title="Data formats" accesskey="n">Next <span class="fa fa-arrow-circle-right"></span></a>
       
       
-        <a href="index.html" class="btn btn-neutral" title="HARP Manual" accesskey="p"><span class="fa fa-arrow-circle-left"></span> Previous</a>
+        <a href="index.html" class="btn btn-neutral" title="HARP manual" accesskey="p"><span class="fa fa-arrow-circle-left"></span> Previous</a>
       
     </div>
   

@@ -36,6 +36,7 @@ HARP_DOCFILES = \
 	doc/html/_static/up.png \
 	doc/html/_static/websupport.js \
 	doc/html/dataformats.html \
+	doc/html/examples.html \
 	doc/html/genindex.html \
 	doc/html/harpcheck.html \
 	doc/html/harpcollocate.html \
@@ -309,8 +310,10 @@ HARP_DOCFILES = \
 	doc/html/libharp_product.html \
 	doc/html/libharp_variable.html \
 	doc/html/objects.inv \
+	doc/html/python.html \
 	doc/html/search.html \
-	doc/html/searchindex.js
+	doc/html/searchindex.js \
+	doc/html/tools.html
 doc/html/.buildinfo:
 	$(MAKE) harp_doc
 doc/html/_static/ajax-loader.gif:
@@ -384,6 +387,8 @@ doc/html/_static/up.png:
 doc/html/_static/websupport.js:
 	$(MAKE) harp_doc
 doc/html/dataformats.html:
+	$(MAKE) harp_doc
+doc/html/examples.html:
 	$(MAKE) harp_doc
 doc/html/genindex.html:
 	$(MAKE) harp_doc
@@ -931,7 +936,11 @@ doc/html/libharp_variable.html:
 	$(MAKE) harp_doc
 doc/html/objects.inv:
 	$(MAKE) harp_doc
+doc/html/python.html:
+	$(MAKE) harp_doc
 doc/html/search.html:
 	$(MAKE) harp_doc
 doc/html/searchindex.js:
+	$(MAKE) harp_doc
+doc/html/tools.html:
 	$(MAKE) harp_doc

@@ -92,7 +92,7 @@
 <li class="toctree-l2"><a class="reference internal" href="libharp.html#introduction">Introduction</a></li>
 <li class="toctree-l2 current"><a class="reference internal" href="libharp.html#modules">Modules</a><ul class="current">
 <li class="toctree-l3"><a class="reference internal" href="libharp_algorithm.html">Algorithms</a></li>
-<li class="toctree-l3 current"><a class="current reference internal" href="">Error</a></li>
+<li class="toctree-l3 current"><a class="current reference internal" href="#">Error</a></li>
 <li class="toctree-l3"><a class="reference internal" href="libharp_general.html">General</a></li>
 <li class="toctree-l3"><a class="reference internal" href="libharp_product.html">Product</a></li>
 <li class="toctree-l3"><a class="reference internal" href="libharp_variable.html">Variable</a></li>
@@ -100,11 +100,9 @@
 </li>
 </ul>
 </li>
-<li class="toctree-l1"><a class="reference internal" href="harpcheck.html">harpcheck</a></li>
-<li class="toctree-l1"><a class="reference internal" href="harpcollocate.html">harpcollocate</a></li>
-<li class="toctree-l1"><a class="reference internal" href="harpconvert.html">harpconvert</a></li>
-<li class="toctree-l1"><a class="reference internal" href="harpdump.html">harpdump</a></li>
-<li class="toctree-l1"><a class="reference internal" href="harpfilter.html">harpfilter</a></li>
+<li class="toctree-l1"><a class="reference internal" href="python.html">Python interface</a></li>
+<li class="toctree-l1"><a class="reference internal" href="tools.html">Command line tools</a></li>
+<li class="toctree-l1"><a class="reference internal" href="examples.html">Examples</a></li>
 </ul>
 
             
@@ -127,7 +125,7 @@
         <div class="rst-content">
           
 
-
+ 
 
 
 
@@ -154,7 +152,7 @@
 <dl class="group">
 <dt>
 <span class="target" id="libharpgroup__harp__error"></span><em>group</em> <code class="descname">harp_error</code></dt>
-<dd><p>With a few exceptions almost all HARP functions return an integer that indicate whether the function was able to perform its operations successfully. The return value will be 0 on success and -1 otherwise. In case you get a -1 you can look at the global variable <a class="reference internal" href="#libharpgroup__harp__error_1gab2eeb46528306c6799632d1e800c4c36"><span>harp_errno</span></a> for a precise error code. Each error code and its meaning is described in this section. You will also be able to retrieve a character string with an error description via the <a class="reference internal" href="#libharpgroup__harp__error_1ga5c71395e78e526d21c422a436c9253e2"><span>harp_errno_to_string()</span></a> function. This function will return either the default error message for the error code, or a custom error message. A custom error message will only be returned if the error code you pass to <a class="reference internal" href="#libharpgroup__harp__error_1ga5c71395e78e526d21c422a436c9253e2"><span>harp_errno_to_string()</span></a> is equal to the last error that occurred and if this last error was set with a custom error message. The HARP error state can be set with the <a class="reference internal" href="#libharpgroup__harp__error_1ga4c4481ea12d137e0168fa578874cd13c"><span>harp_set_error()</span></a> function.</p>
+<dd><p>With a few exceptions almost all HARP functions return an integer that indicate whether the function was able to perform its operations successfully. The return value will be 0 on success and -1 otherwise. In case you get a -1 you can look at the global variable <a class="reference internal" href="#libharpgroup__harp__error_1gab2eeb46528306c6799632d1e800c4c36"><span class="std std-ref">harp_errno</span></a> for a precise error code. Each error code and its meaning is described in this section. You will also be able to retrieve a character string with an error description via the <a class="reference internal" href="#libharpgroup__harp__error_1ga5c71395e78e526d21c422a436c9253e2"><span class="std std-ref">harp_errno_to_string()</span></a> function. This function will return either the default error message for the error code, or a custom error message. A custom error message will only be returned if the error code you pass to <a class="reference internal" href="#libharpgroup__harp__error_1ga5c71395e78e526d21c422a436c9253e2"><span class="std std-ref">harp_errno_to_string()</span></a> is equal to the last error that occurred and if this last error was set with a custom error message. The HARP error state can be set with the <a class="reference internal" href="#libharpgroup__harp__error_1ga4c4481ea12d137e0168fa578874cd13c"><span class="std std-ref">harp_set_error()</span></a> function.</p>
 <div class="breathe-sectiondef container">
 <p class="breathe-sectiondef-title rubric">Error values</p>
 <dl class="macro">
@@ -360,7 +358,7 @@
 <dd><p>Set the error value and optionally set a custom error message. If <em>message</em> is NULL then the default error message for the error number will be used. <dl class="docutils">
 <dt><strong>Parameters</strong></dt>
 <dd><ul class="breatheparameterlist first last">
-<li><code class="first docutils literal"><span class="pre">err</span></code> - <p>Value of <a class="reference internal" href="#libharpgroup__harp__error_1gab2eeb46528306c6799632d1e800c4c36"><span>harp_errno</span></a>. </p>
+<li><code class="first docutils literal"><span class="pre">err</span></code> - <p>Value of <a class="reference internal" href="#libharpgroup__harp__error_1gab2eeb46528306c6799632d1e800c4c36"><span class="std std-ref">harp_errno</span></a>. </p>
 </li>
 <li><code class="first docutils literal"><span class="pre">message</span></code> - <p>Optional error message using printf() format. </p>
 </li>
@@ -373,12 +371,12 @@
 <dl class="function">
 <dt id="_CPPv220harp_errno_to_stringi">
 <span id="harp_errno_to_string__i"></span><span class="target" id="libharpgroup__harp__error_1ga5c71395e78e526d21c422a436c9253e2"></span><em class="property">const</em> char *<code class="descname">harp_errno_to_string</code><span class="sig-paren">(</span>int <em>err</em><span class="sig-paren">)</span></dt>
-<dd><p>Returns a string with the description of the HARP error. If <em>err</em> equals the current HARP error status then this function will return the error message that was last set using <a class="reference internal" href="#libharpgroup__harp__error_1ga4c4481ea12d137e0168fa578874cd13c"><span>harp_set_error()</span></a>. If the error message argument to <a class="reference internal" href="#libharpgroup__harp__error_1ga4c4481ea12d137e0168fa578874cd13c"><span>harp_set_error()</span></a> was NULL or if <em>err</em> does not equal the current HARP error status then the default error message for <em>err</em> will be returned. <dl class="docutils">
+<dd><p>Returns a string with the description of the HARP error. If <em>err</em> equals the current HARP error status then this function will return the error message that was last set using <a class="reference internal" href="#libharpgroup__harp__error_1ga4c4481ea12d137e0168fa578874cd13c"><span class="std std-ref">harp_set_error()</span></a>. If the error message argument to <a class="reference internal" href="#libharpgroup__harp__error_1ga4c4481ea12d137e0168fa578874cd13c"><span class="std std-ref">harp_set_error()</span></a> was NULL or if <em>err</em> does not equal the current HARP error status then the default error message for <em>err</em> will be returned. <dl class="docutils">
 <dt><strong>Return</strong></dt>
 <dd>String with a description of the HARP error. </dd>
 <dt><strong>Parameters</strong></dt>
 <dd><ul class="breatheparameterlist first last">
-<li><code class="first docutils literal"><span class="pre">err</span></code> - <p>Value of <a class="reference internal" href="#libharpgroup__harp__error_1gab2eeb46528306c6799632d1e800c4c36"><span>harp_errno</span></a>. </p>
+<li><code class="first docutils literal"><span class="pre">err</span></code> - <p>Value of <a class="reference internal" href="#libharpgroup__harp__error_1gab2eeb46528306c6799632d1e800c4c36"><span class="std std-ref">harp_errno</span></a>. </p>
 </li>
 </ul>
 </dd>
@@ -392,7 +390,7 @@
 <dl class="member">
 <dt id="_CPPv210harp_errno">
 <span id="harp_errno__i"></span><span class="target" id="libharpgroup__harp__error_1gab2eeb46528306c6799632d1e800c4c36"></span>int <code class="descname">harp_errno</code></dt>
-<dd><p>Variable that contains the error type. If no error has occurred the variable contains <a class="reference internal" href="#libharpgroup__harp__error_1ga68059cea92b0f401f970fe20e3e60760"><span>HARP_SUCCESS</span></a> (0). </p>
+<dd><p>Variable that contains the error type. If no error has occurred the variable contains <a class="reference internal" href="#libharpgroup__harp__error_1ga68059cea92b0f401f970fe20e3e60760"><span class="std std-ref">HARP_SUCCESS</span></a> (0). </p>
 </dd></dl>
 
 </div>
