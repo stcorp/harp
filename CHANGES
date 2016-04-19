@@ -7,12 +7,26 @@
 
 * Updated embedded udunits2 library to version 2.2.20.
 
+* Fixed parsing of dimension names; string dimension could be interpreted as
+  independent dimension.
+
+* Improved the efficiency of the conversion from volume mixing ratio to number
+  density and vice versa.
+
+* Update of S5P L2 ingestion module to the lastest version of the product format
+  specification (S5P-KNMI-L2-0009-SD and relevant DLR PUMs).
+
+* Update of S5P L1B ingestion module to the lastest version of the product
+  format specification (S5P-KNMI-L01B-0012-SD).
+
 * Added ingestion modules for the following product types:
-    - Ozone CCI L3 limb profile products
-    - Ozone CCI L2 limb profile products
-    - Ozone CCI L4 nadir profile products
-    - Ozone CCI L3 nadir profile products
-    - Ozone CCI L3 total column products
+    - Ozone CCI L3 limb profile
+    - Ozone CCI L2 limb profile
+    - Ozone CCI L2 nadir profile
+    - Ozone CCI L3 nadir profile
+    - Ozone CCI L4 nadir profile
+    - Ozone CCI L2 total column
+    - Ozone CCI L3 total column
 
 * Added functions to verify the internal consistency as well as compliance to
   HARP conventions of harp_product and harp_variable instances. Any instance
@@ -27,11 +41,10 @@
   that do not support this natively).
 
 * Fixed handling of scalars and empty strings in netCDF-3/HDF4/HDF5 backends.
- 
+
 * Fixed unit attribute name in HARP products ('unit' -> 'units').
 
 0.1 2015-11-09
 ~~~~~~~~~~~~~~
 
 * First beta release (using CODA 2.15).
-
