@@ -733,7 +733,7 @@ static void register_bro_product(void)
     description = "BrO volume mixing ratio";
     variable_definition =
         harp_ingestion_register_variable_full_read(product_definition, "BrO_volume_mixing_ratio", harp_type_double, 2,
-                                                   dimension_type, NULL, description, "ppv", NULL, read_value);
+                                                   dimension_type, NULL, description, "1e6 ppmv", NULL, read_value);
     path = "/HDFEOS/SWATHS/BrO/Data_Fields/L2gpValue[]";
     harp_variable_definition_add_mapping(variable_definition, NULL, NULL, path, NULL);
 
@@ -741,7 +741,7 @@ static void register_bro_product(void)
     description = "uncertainty of the BrO volume mixing ratio";
     variable_definition =
         harp_ingestion_register_variable_full_read(product_definition, "BrO_volume_mixing_ratio_stdev",
-                                                   harp_type_double, 2, dimension_type, NULL, description, "ppv", NULL,
+                                                   harp_type_double, 2, dimension_type, NULL, description, "1e6 ppmv", NULL,
                                                    read_error);
     path = "/HDFEOS/SWATHS/BrO/Data_Fields/L2gpPrecision[]";
     harp_variable_definition_add_mapping(variable_definition, NULL, NULL, path, NULL);
@@ -781,7 +781,7 @@ static void register_clo_product(void)
     description = "ClO volume mixing ratio";
     variable_definition =
         harp_ingestion_register_variable_full_read(product_definition, "ClO_volume_mixing_ratio", harp_type_double, 2,
-                                                   dimension_type, NULL, description, "ppv", NULL, read_value);
+                                                   dimension_type, NULL, description, "1e6 ppmv", NULL, read_value);
     path = "/HDFEOS/SWATHS/ClO/Data_Fields/L2gpValue[]";
     harp_variable_definition_add_mapping(variable_definition, NULL, NULL, path, NULL);
 
@@ -789,7 +789,7 @@ static void register_clo_product(void)
     description = "uncertainty of the ClO volume mixing ratio";
     variable_definition =
         harp_ingestion_register_variable_full_read(product_definition, "ClO_volume_mixing_ratio_stdev",
-                                                   harp_type_double, 2, dimension_type, NULL, description, "ppv", NULL,
+                                                   harp_type_double, 2, dimension_type, NULL, description, "1e6 ppmv", NULL,
                                                    read_error);
     path = "/HDFEOS/SWATHS/ClO/Data_Fields/L2gpPrecision[]";
     harp_variable_definition_add_mapping(variable_definition, NULL, NULL, path, NULL);
@@ -829,7 +829,7 @@ static void register_co_product(void)
     description = "CO volume mixing ratio";
     variable_definition =
         harp_ingestion_register_variable_full_read(product_definition, "CO_volume_mixing_ratio", harp_type_double, 2,
-                                                   dimension_type, NULL, description, "ppv", NULL, read_value);
+                                                   dimension_type, NULL, description, "1e6 ppmv", NULL, read_value);
     path = "/HDFEOS/SWATHS/CO/Data_Fields/L2gpValue[]";
     harp_variable_definition_add_mapping(variable_definition, NULL, NULL, path, NULL);
 
@@ -837,7 +837,7 @@ static void register_co_product(void)
     description = "uncertainty of the CO volume mixing ratio";
     variable_definition =
         harp_ingestion_register_variable_full_read(product_definition, "CO_volume_mixing_ratio_stdev", harp_type_double,
-                                                   2, dimension_type, NULL, description, "ppv", NULL, read_error);
+                                                   2, dimension_type, NULL, description, "1e6 ppmv", NULL, read_error);
     path = "/HDFEOS/SWATHS/CO/Data_Fields/L2gpPrecision[]";
     harp_variable_definition_add_mapping(variable_definition, NULL, NULL, path, NULL);
 }
@@ -923,7 +923,7 @@ static void register_h2o_product(void)
     description = "H2O volume mixing ratio";
     variable_definition =
         harp_ingestion_register_variable_full_read(product_definition, "H2O_volume_mixing_ratio", harp_type_double, 2,
-                                                   dimension_type, NULL, description, "ppv", NULL, read_value);
+                                                   dimension_type, NULL, description, "1e6 ppmv", NULL, read_value);
     path = "/HDFEOS/SWATHS/H2O/Data_Fields/L2gpValue[]";
     harp_variable_definition_add_mapping(variable_definition, NULL, NULL, path, NULL);
 
@@ -931,7 +931,7 @@ static void register_h2o_product(void)
     description = "uncertainty of the H2O volume mixing ratio";
     variable_definition =
         harp_ingestion_register_variable_full_read(product_definition, "H2O_volume_mixing_ratio_stdev",
-                                                   harp_type_double, 2, dimension_type, NULL, description, "ppv", NULL,
+                                                   harp_type_double, 2, dimension_type, NULL, description, "1e6 ppmv", NULL,
                                                    read_error);
     path = "/HDFEOS/SWATHS/H2O/Data_Fields/L2gpPrecision[]";
     harp_variable_definition_add_mapping(variable_definition, NULL, NULL, path, NULL);
@@ -971,7 +971,7 @@ static void register_hcl_product(void)
     description = "HCl volume mixing ratio";
     variable_definition =
         harp_ingestion_register_variable_full_read(product_definition, "HCl_volume_mixing_ratio", harp_type_double, 2,
-                                                   dimension_type, NULL, description, "ppv", NULL, read_value);
+                                                   dimension_type, NULL, description, "1e6 ppmv", NULL, read_value);
     path = "/HDFEOS/SWATHS/HCL/Data_Fields/L2gpValue[]";
     harp_variable_definition_add_mapping(variable_definition, NULL, NULL, path, NULL);
 
@@ -979,7 +979,7 @@ static void register_hcl_product(void)
     description = "uncertainty of the HCl volume mixing ratio";
     variable_definition =
         harp_ingestion_register_variable_full_read(product_definition, "HCl_volume_mixing_ratio_stdev",
-                                                   harp_type_double, 2, dimension_type, NULL, description, "ppv", NULL,
+                                                   harp_type_double, 2, dimension_type, NULL, description, "1e6 ppmv", NULL,
                                                    read_error);
     path = "/HDFEOS/SWATHS/HCL/Data_Fields/L2gpPrecision[]";
     harp_variable_definition_add_mapping(variable_definition, NULL, NULL, path, NULL);
@@ -1019,7 +1019,7 @@ static void register_hcn_product(void)
     description = "HCN volume mixing ratio";
     variable_definition =
         harp_ingestion_register_variable_full_read(product_definition, "HCN_volume_mixing_ratio", harp_type_double, 2,
-                                                   dimension_type, NULL, description, "ppv", NULL, read_value);
+                                                   dimension_type, NULL, description, "1e6 ppmv", NULL, read_value);
     path = "/HDFEOS/SWATHS/HCN/Data_Fields/L2gpValue[]";
     harp_variable_definition_add_mapping(variable_definition, NULL, NULL, path, NULL);
 
@@ -1027,7 +1027,7 @@ static void register_hcn_product(void)
     description = "uncertainty of the HCN volume mixing ratio";
     variable_definition =
         harp_ingestion_register_variable_full_read(product_definition, "HCN_volume_mixing_ratio_stdev",
-                                                   harp_type_double, 2, dimension_type, NULL, description, "ppv", NULL,
+                                                   harp_type_double, 2, dimension_type, NULL, description, "1e6 ppmv", NULL,
                                                    read_error);
     path = "/HDFEOS/SWATHS/HCN/Data_Fields/L2gpPrecision[]";
     harp_variable_definition_add_mapping(variable_definition, NULL, NULL, path, NULL);
@@ -1067,7 +1067,7 @@ static void register_hno3_product(void)
     description = "HNO3 volume mixing ratio";
     variable_definition =
         harp_ingestion_register_variable_full_read(product_definition, "HNO3_volume_mixing_ratio", harp_type_double, 2,
-                                                   dimension_type, NULL, description, "ppv", NULL, read_value);
+                                                   dimension_type, NULL, description, "1e6 ppmv", NULL, read_value);
     path = "/HDFEOS/SWATHS/HNO3/Data_Fields/L2gpValue[]";
     harp_variable_definition_add_mapping(variable_definition, NULL, NULL, path, NULL);
 
@@ -1075,7 +1075,7 @@ static void register_hno3_product(void)
     description = "uncertainty of the HNO3 volume mixing ratio";
     variable_definition =
         harp_ingestion_register_variable_full_read(product_definition, "HNO3_volume_mixing_ratio_stdev",
-                                                   harp_type_double, 2, dimension_type, NULL, description, "ppv", NULL,
+                                                   harp_type_double, 2, dimension_type, NULL, description, "1e6 ppmv", NULL,
                                                    read_error);
     path = "/HDFEOS/SWATHS/HNO3/Data_Fields/L2gpPrecision[]";
     harp_variable_definition_add_mapping(variable_definition, NULL, NULL, path, NULL);
@@ -1115,7 +1115,7 @@ static void register_ho2_product(void)
     description = "HO2 volume mixing ratio";
     variable_definition =
         harp_ingestion_register_variable_full_read(product_definition, "HO2_volume_mixing_ratio", harp_type_double, 2,
-                                                   dimension_type, NULL, description, "ppv", NULL, read_value);
+                                                   dimension_type, NULL, description, "1e6 ppmv", NULL, read_value);
     path = "/HDFEOS/SWATHS/HO2/Data_Fields/L2gpValue[]";
     harp_variable_definition_add_mapping(variable_definition, NULL, NULL, path, NULL);
 
@@ -1123,7 +1123,7 @@ static void register_ho2_product(void)
     description = "uncertainty of the HO2 volume mixing ratio";
     variable_definition =
         harp_ingestion_register_variable_full_read(product_definition, "HO2_volume_mixing_ratio_stdev",
-                                                   harp_type_double, 2, dimension_type, NULL, description, "ppv", NULL,
+                                                   harp_type_double, 2, dimension_type, NULL, description, "1e6 ppmv", NULL,
                                                    read_error);
     path = "/HDFEOS/SWATHS/HO2/Data_Fields/L2gpPrecision[]";
     harp_variable_definition_add_mapping(variable_definition, NULL, NULL, path, NULL);
@@ -1163,7 +1163,7 @@ static void register_hocl_product(void)
     description = "HOCl volume mixing ratio";
     variable_definition =
         harp_ingestion_register_variable_full_read(product_definition, "HOCl_volume_mixing_ratio", harp_type_double, 2,
-                                                   dimension_type, NULL, description, "ppv", NULL, read_value);
+                                                   dimension_type, NULL, description, "1e6 ppmv", NULL, read_value);
     path = "/HDFEOS/SWATHS/HOCL/Data_Fields/L2gpValue[]";
     harp_variable_definition_add_mapping(variable_definition, NULL, NULL, path, NULL);
 
@@ -1171,7 +1171,7 @@ static void register_hocl_product(void)
     description = "uncertainty of the HOCl volume mixing ratio";
     variable_definition =
         harp_ingestion_register_variable_full_read(product_definition, "HOCl_volume_mixing_ratio_stdev",
-                                                   harp_type_double, 2, dimension_type, NULL, description, "ppv", NULL,
+                                                   harp_type_double, 2, dimension_type, NULL, description, "1e6 ppmv", NULL,
                                                    read_error);
     path = "/HDFEOS/SWATHS/HOCL/Data_Fields/L2gpPrecision[]";
     harp_variable_definition_add_mapping(variable_definition, NULL, NULL, path, NULL);
@@ -1258,7 +1258,7 @@ static void register_n2o_product(void)
     description = "N2O volume mixing ratio";
     variable_definition =
         harp_ingestion_register_variable_full_read(product_definition, "N2O_volume_mixing_ratio", harp_type_double, 2,
-                                                   dimension_type, NULL, description, "ppv", NULL, read_value);
+                                                   dimension_type, NULL, description, "1e6 ppmv", NULL, read_value);
     path = "/HDFEOS/SWATHS/N2O/Data_Fields/L2gpValue[]";
     harp_variable_definition_add_mapping(variable_definition, NULL, NULL, path, NULL);
 
@@ -1266,7 +1266,7 @@ static void register_n2o_product(void)
     description = "uncertainty of the N2O volume mixing ratio";
     variable_definition =
         harp_ingestion_register_variable_full_read(product_definition, "N2O_volume_mixing_ratio_stdev",
-                                                   harp_type_double, 2, dimension_type, NULL, description, "ppv", NULL,
+                                                   harp_type_double, 2, dimension_type, NULL, description, "1e6 ppmv", NULL,
                                                    read_error);
     path = "/HDFEOS/SWATHS/N2O/Data_Fields/L2gpPrecision[]";
     harp_variable_definition_add_mapping(variable_definition, NULL, NULL, path, NULL);
@@ -1306,7 +1306,7 @@ static void register_o3_product(void)
     description = "O3 volume mixing ratio";
     variable_definition =
         harp_ingestion_register_variable_full_read(product_definition, "O3_volume_mixing_ratio", harp_type_double, 2,
-                                                   dimension_type, NULL, description, "ppv", NULL, read_value);
+                                                   dimension_type, NULL, description, "1e6 ppmv", NULL, read_value);
     path = "/HDFEOS/SWATHS/O3/Data_Fields/L2gpValue[]";
     harp_variable_definition_add_mapping(variable_definition, NULL, NULL, path, NULL);
 
@@ -1314,7 +1314,7 @@ static void register_o3_product(void)
     description = "uncertainty of the O3 volume mixing ratio";
     variable_definition =
         harp_ingestion_register_variable_full_read(product_definition, "O3_volume_mixing_ratio_stdev", harp_type_double,
-                                                   2, dimension_type, NULL, description, "ppv", NULL, read_error);
+                                                   2, dimension_type, NULL, description, "1e6 ppmv", NULL, read_error);
     path = "/HDFEOS/SWATHS/O3/Data_Fields/L2gpPrecision[]";
     harp_variable_definition_add_mapping(variable_definition, NULL, NULL, path, NULL);
 }
@@ -1353,7 +1353,7 @@ static void register_oh_product(void)
     description = "OH volume mixing ratio";
     variable_definition =
         harp_ingestion_register_variable_full_read(product_definition, "OH_volume_mixing_ratio", harp_type_double, 2,
-                                                   dimension_type, NULL, description, "ppv", NULL, read_value);
+                                                   dimension_type, NULL, description, "1e6 ppmv", NULL, read_value);
     path = "/HDFEOS/SWATHS/OH/Data_Fields/L2gpValue[]";
     harp_variable_definition_add_mapping(variable_definition, NULL, NULL, path, NULL);
 
@@ -1361,7 +1361,7 @@ static void register_oh_product(void)
     description = "uncertainty of the OH volume mixing ratio";
     variable_definition =
         harp_ingestion_register_variable_full_read(product_definition, "OH_volume_mixing_ratio_stdev", harp_type_double,
-                                                   2, dimension_type, NULL, description, "ppv", NULL, read_error);
+                                                   2, dimension_type, NULL, description, "1e6 ppmv", NULL, read_error);
     path = "/HDFEOS/SWATHS/OH/Data_Fields/L2gpPrecision[]";
     harp_variable_definition_add_mapping(variable_definition, NULL, NULL, path, NULL);
 }
@@ -1448,7 +1448,7 @@ static void register_so2_product(void)
     description = "SO2 volume mixing ratio";
     variable_definition =
         harp_ingestion_register_variable_full_read(product_definition, "SO2_volume_mixing_ratio", harp_type_double, 2,
-                                                   dimension_type, NULL, description, "ppv", NULL, read_value);
+                                                   dimension_type, NULL, description, "1e6 ppmv", NULL, read_value);
     path = "/HDFEOS/SWATHS/SO2/Data_Fields/L2gpValue[]";
     harp_variable_definition_add_mapping(variable_definition, NULL, NULL, path, NULL);
 
@@ -1456,7 +1456,7 @@ static void register_so2_product(void)
     description = "uncertainty of the SO2 volume mixing ratio";
     variable_definition =
         harp_ingestion_register_variable_full_read(product_definition, "SO2_volume_mixing_ratio_stdev",
-                                                   harp_type_double, 2, dimension_type, NULL, description, "ppv", NULL,
+                                                   harp_type_double, 2, dimension_type, NULL, description, "1e6 ppmv", NULL,
                                                    read_error);
     path = "/HDFEOS/SWATHS/SO2/Data_Fields/L2gpPrecision[]";
     harp_variable_definition_add_mapping(variable_definition, NULL, NULL, path, NULL);

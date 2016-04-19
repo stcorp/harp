@@ -261,8 +261,7 @@ libudunits2_la_CPPFLAGS = -Iudunits2 -I$(srcdir)/udunits2 -Iexpat -I$(srcdir)/ex
 libudunits2_la_LDFLAGS = -no-undefined
 BUILT_SOURCES += udunits2/utparser.h
 pkgdata_DATA = \
-	udunits2.xml \
-	udunits2-harp.xml \
+	udunits2/udunits2.xml \
 	udunits2/udunits2-accepted.xml \
 	udunits2/udunits2-base.xml \
 	udunits2/udunits2-common.xml \
