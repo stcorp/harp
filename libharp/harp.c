@@ -194,7 +194,7 @@ static int auxiliary_data_init(void)
  * \code{.c}
  * if (getenv("CODA_DEFINITION") == NULL)
  * {
- *     coda_set_definition_path("<your path>");
+ *     harp_set_definition_path("<your path>");
  * }
  * \endcode
  *
