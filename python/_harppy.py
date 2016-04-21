@@ -310,7 +310,7 @@ def _get_c_library_filename():
     """
     from platform import system as _system
 
-    return "harp.dll" if _system() == "Windows" else "harp.dylib" if _system() == "Darwin" else "libharp.so"
+    return "harp.dll" if _system() == "Windows" else "libharp.dylib" if _system() == "Darwin" else "libharp.so"
 
 def _get_filesystem_encoding():
     """Return the encoding used by the filesystem."""
