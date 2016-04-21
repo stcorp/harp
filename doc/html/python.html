@@ -456,49 +456,49 @@ default encoding is <code class="docutils literal"><span class="pre">'ascii'</sp
 </div>
 <div class="section" id="examples">
 <h2>Examples</h2>
-<div class="highlight-python"><div class="highlight"><pre><span></span><span class="kn">from</span> <span class="nn">__future__</span> <span class="kn">import</span> <span class="n">print_function</span>
+<div class="highlight-python"><div class="highlight"><pre><span class="kn">from</span> <span class="nn">__future__</span> <span class="kn">import</span> <span class="n">print_function</span>
 
 <span class="kn">import</span> <span class="nn">harp</span>
 <span class="kn">import</span> <span class="nn">numpy</span>
 
-<span class="c1"># Create a product in Python and export it as a NetCDF file.</span>
+<span class="c"># Create a product in Python and export it as a NetCDF file.</span>
 <span class="n">product</span> <span class="o">=</span> <span class="n">harp</span><span class="o">.</span><span class="n">Product</span><span class="p">()</span>
-<span class="n">harp</span><span class="o">.</span><span class="n">export_product</span><span class="p">(</span><span class="n">product</span><span class="p">,</span> <span class="s2">&quot;empty.nc&quot;</span><span class="p">)</span>
+<span class="n">harp</span><span class="o">.</span><span class="n">export_product</span><span class="p">(</span><span class="n">product</span><span class="p">,</span> <span class="s">&quot;empty.nc&quot;</span><span class="p">)</span>
 
-<span class="c1"># Add some variables to the product.</span>
-<span class="n">product</span><span class="o">.</span><span class="n">foo</span> <span class="o">=</span> <span class="n">harp</span><span class="o">.</span><span class="n">Variable</span><span class="p">(</span><span class="s2">&quot;foo&quot;</span><span class="p">)</span>
-<span class="n">product</span><span class="o">.</span><span class="n">strings</span> <span class="o">=</span> <span class="n">harp</span><span class="o">.</span><span class="n">Variable</span><span class="p">(</span><span class="n">numpy</span><span class="o">.</span><span class="n">array</span><span class="p">((</span><span class="s2">&quot;foo&quot;</span><span class="p">,</span> <span class="s2">&quot;bar&quot;</span><span class="p">,</span> <span class="s2">&quot;baz&quot;</span><span class="p">)),</span> <span class="p">[</span><span class="s2">&quot;time&quot;</span><span class="p">])</span>
+<span class="c"># Add some variables to the product.</span>
+<span class="n">product</span><span class="o">.</span><span class="n">foo</span> <span class="o">=</span> <span class="n">harp</span><span class="o">.</span><span class="n">Variable</span><span class="p">(</span><span class="s">&quot;foo&quot;</span><span class="p">)</span>
+<span class="n">product</span><span class="o">.</span><span class="n">strings</span> <span class="o">=</span> <span class="n">harp</span><span class="o">.</span><span class="n">Variable</span><span class="p">(</span><span class="n">numpy</span><span class="o">.</span><span class="n">array</span><span class="p">((</span><span class="s">&quot;foo&quot;</span><span class="p">,</span> <span class="s">&quot;bar&quot;</span><span class="p">,</span> <span class="s">&quot;baz&quot;</span><span class="p">)),</span> <span class="p">[</span><span class="s">&quot;time&quot;</span><span class="p">])</span>
 <span class="n">product</span><span class="o">.</span><span class="n">temperature</span> <span class="o">=</span> <span class="n">harp</span><span class="o">.</span><span class="n">Variable</span><span class="p">(</span><span class="n">numpy</span><span class="o">.</span><span class="n">ones</span><span class="p">((</span><span class="mi">3</span><span class="p">,</span> <span class="mi">5</span><span class="p">),</span> <span class="n">dtype</span><span class="o">=</span><span class="n">numpy</span><span class="o">.</span><span class="n">float32</span><span class="p">),</span>
-                                    <span class="p">[</span><span class="s2">&quot;time&quot;</span><span class="p">,</span> <span class="bp">None</span><span class="p">])</span>
-<span class="n">product</span><span class="o">.</span><span class="n">temperature</span><span class="o">.</span><span class="n">unit</span> <span class="o">=</span> <span class="s2">&quot;K&quot;</span>
-<span class="n">product</span><span class="o">.</span><span class="n">temperature</span><span class="o">.</span><span class="n">description</span> <span class="o">=</span> <span class="s2">&quot;temperature&quot;</span>
+                                    <span class="p">[</span><span class="s">&quot;time&quot;</span><span class="p">,</span> <span class="bp">None</span><span class="p">])</span>
+<span class="n">product</span><span class="o">.</span><span class="n">temperature</span><span class="o">.</span><span class="n">unit</span> <span class="o">=</span> <span class="s">&quot;K&quot;</span>
+<span class="n">product</span><span class="o">.</span><span class="n">temperature</span><span class="o">.</span><span class="n">description</span> <span class="o">=</span> <span class="s">&quot;temperature&quot;</span>
 
-<span class="c1"># Pretty print information about the product.</span>
+<span class="c"># Pretty print information about the product.</span>
 <span class="k">print</span><span class="p">(</span><span class="n">product</span><span class="p">)</span>
 
-<span class="c1"># Pretty print information about the variable &#39;temperature&#39;.</span>
+<span class="c"># Pretty print information about the variable &#39;temperature&#39;.</span>
 <span class="k">print</span><span class="p">(</span><span class="n">product</span><span class="o">.</span><span class="n">temperature</span><span class="p">)</span>
 
-<span class="c1"># Set valid minimum value of the variable &#39;temperature&#39;. Note the use of item</span>
-<span class="c1"># access syntax instead of attribute access syntax.</span>
-<span class="n">product</span><span class="p">[</span><span class="s2">&quot;temperature&quot;</span><span class="p">]</span><span class="o">.</span><span class="n">valid_min</span> <span class="o">=</span> <span class="mf">0.0</span>
+<span class="c"># Set valid minimum value of the variable &#39;temperature&#39;. Note the use of item</span>
+<span class="c"># access syntax instead of attribute access syntax.</span>
+<span class="n">product</span><span class="p">[</span><span class="s">&quot;temperature&quot;</span><span class="p">]</span><span class="o">.</span><span class="n">valid_min</span> <span class="o">=</span> <span class="mf">0.0</span>
 <span class="k">print</span><span class="p">(</span><span class="n">product</span><span class="o">.</span><span class="n">temperature</span><span class="p">)</span>
 
-<span class="c1"># Export the updated product as an HDF4 file.</span>
-<span class="n">harp</span><span class="o">.</span><span class="n">export_product</span><span class="p">(</span><span class="n">product</span><span class="p">,</span> <span class="s2">&quot;non-empty.hdf&quot;</span><span class="p">,</span> <span class="n">format</span><span class="o">=</span><span class="s2">&quot;hdf4&quot;</span><span class="p">)</span>
+<span class="c"># Export the updated product as an HDF4 file.</span>
+<span class="n">harp</span><span class="o">.</span><span class="n">export_product</span><span class="p">(</span><span class="n">product</span><span class="p">,</span> <span class="s">&quot;non-empty.hdf&quot;</span><span class="p">,</span> <span class="n">format</span><span class="o">=</span><span class="s">&quot;hdf4&quot;</span><span class="p">)</span>
 
-<span class="c1"># Convert the product to an OrderedDict.</span>
+<span class="c"># Convert the product to an OrderedDict.</span>
 <span class="n">dict_product</span> <span class="o">=</span> <span class="n">harp</span><span class="o">.</span><span class="n">to_dict</span><span class="p">(</span><span class="n">product</span><span class="p">)</span>
 
-<span class="c1"># Ingest an S5P L2 HCHO product.</span>
-<span class="n">hcho_product</span> <span class="o">=</span> <span class="n">harp</span><span class="o">.</span><span class="n">ingest_product</span><span class="p">(</span><span class="s2">&quot;S5P_NRTI_L2__HCHO___20080808T224727_20080808T234211_21635_01_021797_00000000T000000.nc&quot;</span><span class="p">,</span>
-                                   <span class="s2">&quot;solar_zenith_angle &lt; 60 [degree]; latitude &gt; 30 [degree_north]; latitude &lt; 60 [degree_north]&quot;</span><span class="p">)</span>
+<span class="c"># Ingest an S5P L2 HCHO product.</span>
+<span class="n">hcho_product</span> <span class="o">=</span> <span class="n">harp</span><span class="o">.</span><span class="n">ingest_product</span><span class="p">(</span><span class="s">&quot;S5P_NRTI_L2__HCHO___20080808T224727_20080808T234211_21635_01_021797_00000000T000000.nc&quot;</span><span class="p">,</span>
+                                   <span class="s">&quot;solar_zenith_angle &lt; 60 [degree]; latitude &gt; 30 [degree_north]; latitude &lt; 60 [degree_north]&quot;</span><span class="p">)</span>
 
-<span class="c1"># Pretty print information about the product.</span>
+<span class="c"># Pretty print information about the product.</span>
 <span class="k">print</span><span class="p">(</span><span class="n">hcho_product</span><span class="p">)</span>
 
-<span class="c1"># Export the product as a HARP compliant data product.</span>
-<span class="n">harp</span><span class="o">.</span><span class="n">export_product</span><span class="p">(</span><span class="n">hcho_product</span><span class="p">,</span> <span class="s2">&quot;hcho.h5&quot;</span><span class="p">,</span> <span class="n">format</span><span class="o">=</span><span class="s1">&#39;hdf5&#39;</span><span class="p">)</span>
+<span class="c"># Export the product as a HARP compliant data product.</span>
+<span class="n">harp</span><span class="o">.</span><span class="n">export_product</span><span class="p">(</span><span class="n">hcho_product</span><span class="p">,</span> <span class="s">&quot;hcho.h5&quot;</span><span class="p">,</span> <span class="n">format</span><span class="o">=</span><span class="s">&#39;hdf5&#39;</span><span class="p">)</span>
 </pre></div>
 </div>
 </div>
@@ -527,24 +527,24 @@ have been performed on the product.</dd>
 </dl>
 <p>Variables can be accessed by name using either the attribute access <code class="docutils literal"><span class="pre">'.'</span></code>
 syntax, or the item access <code class="docutils literal"><span class="pre">'[]'</span></code> syntax. For example:</p>
-<div class="highlight-python"><div class="highlight"><pre><span></span><span class="kn">from</span> <span class="nn">__future__</span> <span class="kn">import</span> <span class="n">print_function</span>
+<div class="highlight-python"><div class="highlight"><pre><span class="kn">from</span> <span class="nn">__future__</span> <span class="kn">import</span> <span class="n">print_function</span>
 
-<span class="c1"># Alternative ways to access the variable &#39;HCHO_column_number_density&#39;.</span>
+<span class="c"># Alternative ways to access the variable &#39;HCHO_column_number_density&#39;.</span>
 <span class="n">density</span> <span class="o">=</span> <span class="n">product</span><span class="o">.</span><span class="n">HCHO_column_number_density</span>
-<span class="n">density</span> <span class="o">=</span> <span class="n">product</span><span class="p">[</span><span class="s2">&quot;HCHO_column_number_density&quot;</span><span class="p">]</span>
+<span class="n">density</span> <span class="o">=</span> <span class="n">product</span><span class="p">[</span><span class="s">&quot;HCHO_column_number_density&quot;</span><span class="p">]</span>
 
-<span class="c1"># Iterate over all variables in the product. For imported or ingested</span>
-<span class="c1"># products, the order of the variables is the same as the order in the</span>
-<span class="c1"># source product.</span>
+<span class="c"># Iterate over all variables in the product. For imported or ingested</span>
+<span class="c"># products, the order of the variables is the same as the order in the</span>
+<span class="c"># source product.</span>
 <span class="k">for</span> <span class="n">name</span> <span class="ow">in</span> <span class="n">product</span><span class="p">:</span>
     <span class="k">print</span><span class="p">(</span><span class="n">product</span><span class="p">[</span><span class="n">name</span><span class="p">]</span><span class="o">.</span><span class="n">unit</span><span class="p">)</span>
 </pre></div>
 </div>
 <p>Product attributes can be accessed in the same way as variables, but are
 <em>not</em> included when iterating over the variables in a product. For example:</p>
-<div class="highlight-python"><div class="highlight"><pre><span></span><span class="kn">from</span> <span class="nn">__future__</span> <span class="kn">import</span> <span class="n">print_function</span>
+<div class="highlight-python"><div class="highlight"><pre><span class="kn">from</span> <span class="nn">__future__</span> <span class="kn">import</span> <span class="n">print_function</span>
 
-<span class="c1"># Print product attributes.</span>
+<span class="c"># Print product attributes.</span>
 <span class="k">print</span><span class="p">(</span><span class="n">product</span><span class="o">.</span><span class="n">source_product</span><span class="p">)</span>
 <span class="k">print</span><span class="p">(</span><span class="n">product</span><span class="o">.</span><span class="n">history</span><span class="p">)</span>
 </pre></div>
@@ -683,21 +683,21 @@ additional information provided by the Product representation is not needed.</p>
 product. The <code class="docutils literal"><span class="pre">OrderedDict</span></code> representation does not contain enough
 information.</p>
 <p>For example:</p>
-<div class="highlight-python"><div class="highlight"><pre><span></span><span class="kn">from</span> <span class="nn">__future__</span> <span class="kn">import</span> <span class="n">print_function</span>
+<div class="highlight-python"><div class="highlight"><pre><span class="kn">from</span> <span class="nn">__future__</span> <span class="kn">import</span> <span class="n">print_function</span>
 
-<span class="c1"># Convert input product to an OrderedDict.</span>
+<span class="c"># Convert input product to an OrderedDict.</span>
 <span class="n">product</span> <span class="o">=</span> <span class="n">to_dict</span><span class="p">(</span><span class="n">input_product</span><span class="p">)</span>
 
-<span class="c1"># Accessing the variable &#39;HCHO_column_number_density&#39;.</span>
-<span class="n">product</span><span class="p">[</span><span class="s2">&quot;HCHO_column_number_density&quot;</span><span class="p">]</span>
+<span class="c"># Accessing the variable &#39;HCHO_column_number_density&#39;.</span>
+<span class="n">product</span><span class="p">[</span><span class="s">&quot;HCHO_column_number_density&quot;</span><span class="p">]</span>
 
-<span class="c1"># Accessing the unit attribute of the variable</span>
-<span class="c1"># &#39;HCHO_column_number_density&#39;.</span>
-<span class="n">product</span><span class="p">[</span><span class="s2">&quot;HCHO_column_number_density_unit&quot;</span><span class="p">]</span>
+<span class="c"># Accessing the unit attribute of the variable</span>
+<span class="c"># &#39;HCHO_column_number_density&#39;.</span>
+<span class="n">product</span><span class="p">[</span><span class="s">&quot;HCHO_column_number_density_unit&quot;</span><span class="p">]</span>
 
-<span class="c1"># Iterate over all variables in the product. For imported or ingested</span>
-<span class="c1"># products, the order of the variables is the same as the order in the</span>
-<span class="c1"># source product.</span>
+<span class="c"># Iterate over all variables in the product. For imported or ingested</span>
+<span class="c"># products, the order of the variables is the same as the order in the</span>
+<span class="c"># source product.</span>
 <span class="k">for</span> <span class="n">name</span><span class="p">,</span> <span class="n">value</span> <span class="ow">in</span> <span class="n">product</span><span class="o">.</span><span class="n">items</span><span class="p">():</span>
     <span class="k">print</span> <span class="n">name</span><span class="p">,</span> <span class="n">value</span>
 </pre></div>

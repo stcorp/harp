@@ -187,7 +187,7 @@ libjpeg, zlib, and szlib depending on whether HDF4 was build against them.
 In order to prevent conflicts of the HDF4 library with the netCDF interface
 that HARP uses, make sure you build the HDF4 software from source and use
 the following options when configuring the package:</p>
-<div class="highlight-default"><div class="highlight"><pre><span></span><span class="o">./</span><span class="n">configure</span> <span class="o">--</span><span class="n">enable</span><span class="o">-</span><span class="n">shared</span> <span class="o">--</span><span class="n">disable</span><span class="o">-</span><span class="n">fortran</span> <span class="o">--</span><span class="n">disable</span><span class="o">-</span><span class="n">netcdf</span>
+<div class="highlight-default"><div class="highlight"><pre><span class="o">./</span><span class="n">configure</span> <span class="o">--</span><span class="n">enable</span><span class="o">-</span><span class="n">shared</span> <span class="o">--</span><span class="n">disable</span><span class="o">-</span><span class="n">fortran</span> <span class="o">--</span><span class="n">disable</span><span class="o">-</span><span class="n">netcdf</span>
 </pre></div>
 </div>
 <p>Make sure that after installation the location of the libraries is in your
@@ -212,14 +212,14 @@ library and executables:</p>
 <div><ol class="arabic">
 <li><p class="first">Go to the directory that contains the downloaded harp-x.y.z.tar.gz
 file and unpack this package:</p>
-<div class="highlight-default"><div class="highlight"><pre><span></span><span class="o">%</span> <span class="n">gzip</span> <span class="o">-</span><span class="n">d</span> <span class="n">harp</span><span class="o">-</span><span class="n">x</span><span class="o">.</span><span class="n">y</span><span class="o">.</span><span class="n">z</span><span class="o">.</span><span class="n">tar</span><span class="o">.</span><span class="n">gz</span>
+<div class="highlight-default"><div class="highlight"><pre><span class="o">%</span> <span class="n">gzip</span> <span class="o">-</span><span class="n">d</span> <span class="n">harp</span><span class="o">-</span><span class="n">x</span><span class="o">.</span><span class="n">y</span><span class="o">.</span><span class="n">z</span><span class="o">.</span><span class="n">tar</span><span class="o">.</span><span class="n">gz</span>
 <span class="o">%</span> <span class="n">tar</span> <span class="n">xf</span> <span class="n">harp</span><span class="o">-</span><span class="n">x</span><span class="o">.</span><span class="n">y</span><span class="o">.</span><span class="n">z</span><span class="o">.</span><span class="n">tar</span>
 </pre></div>
 </div>
 <p>Make sure you replace <code class="docutils literal"><span class="pre">x.y.z</span></code> with the appropriate version number.</p>
 </li>
 <li><p class="first">You should now have a <code class="docutils literal"><span class="pre">harp-x.y.z</span></code> directory. Go to this directory:</p>
-<div class="highlight-default"><div class="highlight"><pre><span></span><span class="o">%</span> <span class="n">cd</span> <span class="n">harp</span><span class="o">-</span><span class="n">x</span><span class="o">.</span><span class="n">y</span><span class="o">.</span><span class="n">z</span>
+<div class="highlight-default"><div class="highlight"><pre><span class="o">%</span> <span class="n">cd</span> <span class="n">harp</span><span class="o">-</span><span class="n">x</span><span class="o">.</span><span class="n">y</span><span class="o">.</span><span class="n">z</span>
 </pre></div>
 </div>
 </li>
@@ -296,13 +296,13 @@ include file.</p>
 appropriate for you. For instance, if you want to install HARP in the
 <cite>harp</cite> subdirectory of your home directory then your invocation of
 configure would be:</p>
-<div class="highlight-default"><div class="highlight"><pre><span></span>% ./configure --prefix=$HOME/harp
+<div class="highlight-default"><div class="highlight"><pre>% ./configure --prefix=$HOME/harp
 </pre></div>
 </div>
 </li>
 <li><p class="first">If this completes successfully, you are now able to build the library by
 executing the <cite>make</cite> command:</p>
-<div class="highlight-default"><div class="highlight"><pre><span></span><span class="o">%</span> <span class="n">make</span>
+<div class="highlight-default"><div class="highlight"><pre><span class="o">%</span> <span class="n">make</span>
 </pre></div>
 </div>
 <p>If everything was successful, you are now ready to install the package
@@ -322,7 +322,7 @@ installation directory option (<code class="docutils literal"><span class="pre">
 script, as explained in the previous section, if you do not want to install
 HARP in its default location <code class="docutils literal"><span class="pre">/usr/local</span></code>. After running the configure
 script, issue the following command:</p>
-<div class="highlight-default"><div class="highlight"><pre><span></span><span class="o">%</span> <span class="n">make</span> <span class="n">install</span>
+<div class="highlight-default"><div class="highlight"><pre><span class="o">%</span> <span class="n">make</span> <span class="n">install</span>
 </pre></div>
 </div>
 </div>
