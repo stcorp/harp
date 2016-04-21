@@ -194,7 +194,7 @@ static int auxiliary_data_init(void)
  * \code{.c}
  * if (getenv("CODA_DEFINITION") == NULL)
  * {
- *     harp_set_definition_path("<your path>");
+ *     harp_set_coda_definition_path("<your path>");
  * }
  * \endcode
  *
@@ -231,7 +231,7 @@ LIBHARP_API int harp_set_coda_definition_path(const char *path)
  * definition path (i.e. the CODA definition path will be taken from the CODA_DEFINITION variable).
  *
  * If you provide NULL for \a searchpath then the PATH environment variable will be used as searchpath.
- * For instance, you can use coda_set_definition_path_conditional(argv[0], NULL, "../somedir") to set the CODA
+ * For instance, you can use harp_set_coda_definition_path_conditional(argv[0], NULL, "../somedir") to set the CODA
  * definition path to a location relative to the location of your executable.
  *
  * The searchpath, if provided, should have a similar format as the PATH environment variable of your system. Path
@@ -240,7 +240,7 @@ LIBHARP_API int harp_set_coda_definition_path(const char *path)
  * The \a relative_location parameter can point either to a directory (in which case all .codadef files in this
  * directory will be used) or to a single .codadef file.
  *
- * Note that this function differs from coda_set_definition_path() in two important ways:
+ * Note that this function differs from harp_set_coda_definition_path() in two important ways:
  *  - it will not modify the definition path if the CODA_DEFINITION variable was set
  *  - it will set the definition path to just a single location (either a single file or a single directory)
  *
