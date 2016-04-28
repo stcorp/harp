@@ -57,7 +57,7 @@ static int get_air_nd_from_pressure_and_temperature(harp_variable *variable, con
 
 static int get_alt_bounds_from_alt(harp_variable *variable, const harp_variable **source_variable)
 {
-    if (variable->num_dimensions == 1)
+    if (variable->num_dimensions == 2)
     {
         harp_profile_altitude_bounds_from_altitude(source_variable[0]->num_elements,
                                                    source_variable[0]->data.double_data, variable->data.double_data);
