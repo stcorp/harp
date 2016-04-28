@@ -259,11 +259,11 @@ void harp_array_filter(harp_data_type data_type, int num_dimensions, const long 
     int dimension_index;
     int i;
 
-    /* Special case 0 remaining items. => DOESN'T MATTER */
-    /* At least one element remaining, so each mask has at least one non-zero element. => DOESN'T MATTER */
+    /* Special case for scalars. */
     if (num_dimensions == 0)
     {
         filter_array(data_type, 1, NULL, source, 1, target);
+        return;
     }
 
     if (num_dimensions == 1)
