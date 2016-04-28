@@ -77,7 +77,12 @@ Python interface
 
 The :doc:`HARP Python interface <python>` provides a set of functions to import
 and export HARP products, and to ingest non-HARP products of a type supported by
-HARP from Python.
+HARP from Python. The Python interface depends on the ``_cffi_backend`` module,
+which is part of the C foreign function interface (cffi) package. This package
+must be installed in order to be able to use the Python interface. See the `cffi
+documentation`_ for details on how to install the cffi package.
+
+.. _cffi documentation: http://cffi.readthedocs.org/en/latest/installation.html
 
 .. _command-line-tools:
 

@@ -1,14 +1,19 @@
 Python interface
 ================
 
-The HARP Python interface consists of a Python package ``'harp'`` that provides
-a set of functions to :py:func:`import <harp.import_product>` and
-:py:func:`export <harp.export_product>` HARP products, and to :py:func:`ingest
+The Python interface consists of a Python package ``'harp'`` that provides a set
+of functions to :py:func:`import <harp.import_product>` and :py:func:`export
+<harp.export_product>` HARP products, and to :py:func:`ingest
 <harp.ingest_product>` non-HARP products of a type :doc:`supported by HARP
-<ingestions/index>`. Products are represented in Python by instances of
-:py:class:`harp.Product`, which can be manipulated freely from within Python. A
-:py:class:`harp.Product` instance contains a :py:class:`harp.Variable` instance
-for each variable contained in the product.
+<ingestions/index>`. The Python interface depends on the ``_cffi_backend``
+module, which is part of the C foreign function interface (cffi) package. This
+package must be installed in order to be able to use the Python interface. See
+the `cffi documentation`_ for details on how to install the cffi package.
+
+Products are represented in Python by instances of :py:class:`harp.Product`,
+which can be manipulated freely from within Python. A :py:class:`harp.Product`
+instance contains a :py:class:`harp.Variable` instance for each variable
+contained in the product.
 
 Products can be :py:func:`exported <harp.export_product>` as HARP compliant
 products in any of the file formats supported by the HARP C library
@@ -18,6 +23,8 @@ using the :doc:`HARP command line tools <tools>`. Products can also be
 convenient when there is a need to interface with existing code such as plotting
 libraries, or when the additional information provided by the
 :py:class:`harp.Product` representation is not needed.
+
+.. _cffi documentation: http://cffi.readthedocs.org/en/latest/installation.html
 
 Dimension types
 ---------------
