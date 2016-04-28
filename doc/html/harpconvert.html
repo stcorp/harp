@@ -149,7 +149,7 @@
 file that can be processed further with other HARP command line tools. See the
 section <a class="reference internal" href="ingestions/index.html"><span class="doc">Ingestion definitions</span></a> for an overview of the
 product types supported by HARP.</p>
-<div class="highlight-default"><div class="highlight"><pre><span class="n">Usage</span><span class="p">:</span>
+<div class="highlight-default"><div class="highlight"><pre><span></span><span class="n">Usage</span><span class="p">:</span>
     <span class="n">harpconvert</span> <span class="p">[</span><span class="n">options</span><span class="p">]</span> <span class="o">&lt;</span><span class="nb">input</span> <span class="n">product</span> <span class="n">file</span><span class="o">&gt;</span> <span class="o">&lt;</span><span class="n">output</span> <span class="n">product</span> <span class="n">file</span><span class="o">&gt;</span>
         <span class="n">Convert</span> <span class="n">the</span> <span class="nb">input</span> <span class="n">product</span> <span class="n">to</span> <span class="n">a</span> <span class="n">HARP</span> <span class="n">netCDF</span><span class="o">/</span><span class="n">HDF4</span><span class="o">/</span><span class="n">HDF5</span> <span class="n">product</span><span class="o">.</span>
 
@@ -268,9 +268,9 @@ product types supported by HARP.</p>
                 <span class="n">corresponding</span> <span class="n">variable</span> <span class="n">will</span> <span class="n">be</span> <span class="n">used</span><span class="o">.</span>
 
             <span class="n">Examples</span><span class="p">:</span>
-                <span class="o">-</span><span class="n">a</span> <span class="s">&#39;derive(altitude {time} [km]); pressure &gt; 3.0 [bar];&#39;</span>
-                <span class="o">-</span><span class="n">a</span> <span class="s">&#39;point-distance(-52.5 [degree], 1.0 [rad], 1e3 [km])&#39;</span>
-                <span class="o">-</span><span class="n">a</span> <span class="s">&#39;index in (0, 10, 20, 30, 40); valid(pressure)&#39;</span>
+                <span class="o">-</span><span class="n">a</span> <span class="s1">&#39;derive(altitude </span><span class="si">{time}</span><span class="s1"> [km]); pressure &gt; 3.0 [bar];&#39;</span>
+                <span class="o">-</span><span class="n">a</span> <span class="s1">&#39;point-distance(-52.5 [degree], 1.0 [rad], 1e3 [km])&#39;</span>
+                <span class="o">-</span><span class="n">a</span> <span class="s1">&#39;index in (0, 10, 20, 30, 40); valid(pressure)&#39;</span>
 
         <span class="n">If</span> <span class="n">the</span> <span class="n">ingested</span> <span class="n">product</span> <span class="ow">is</span> <span class="n">empty</span><span class="p">,</span> <span class="n">a</span> <span class="n">warning</span> <span class="n">will</span> <span class="n">be</span> <span class="n">printed</span> <span class="ow">and</span> <span class="n">the</span>
         <span class="n">tool</span> <span class="n">will</span> <span class="k">return</span> <span class="k">with</span> <span class="n">exit</span> <span class="n">code</span> <span class="mi">2</span> <span class="p">(</span><span class="n">without</span> <span class="n">writing</span> <span class="n">a</span> <span class="n">file</span><span class="p">)</span><span class="o">.</span>

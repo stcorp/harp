@@ -227,7 +227,10 @@ custom applications or libraries that work with HARP compliant data products.</p
 <h2>Python interface</h2>
 <p>The <a class="reference internal" href="python.html"><span class="doc">HARP Python interface</span></a> provides a set of functions to import
 and export HARP products, and to ingest non-HARP products of a type supported by
-HARP from Python.</p>
+HARP from Python. The Python interface depends on the <code class="docutils literal"><span class="pre">_cffi_backend</span></code> module,
+which is part of the C foreign function interface (cffi) package. This package
+must be installed in order to be able to use the Python interface. See the <a class="reference external" href="http://cffi.readthedocs.org/en/latest/installation.html">cffi
+documentation</a> for details on how to install the cffi package.</p>
 </div>
 <div class="section" id="command-line-tools">
 <span id="id2"></span><h2>Command line tools</h2>
