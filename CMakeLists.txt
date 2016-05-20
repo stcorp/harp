@@ -232,9 +232,11 @@ set(LIBHARP_SOURCES
   libharp/ipow.h)
 
 
-BISON_TARGET(utparser ${CMAKE_CURRENT_SOURCE_DIR}/udunits2/utparser.y ${CMAKE_CURRENT_BINARY_DIR}/utparser.c)
+file(MAKE_DIRECTORY ${CMAKE_CURRENT_BINARY_DIR}/udunits2)
+BISON_TARGET(utparser ${CMAKE_CURRENT_SOURCE_DIR}/udunits2/utparser.y ${CMAKE_CURRENT_BINARY_DIR}/udunits2/utparser.c)
 FLEX_TARGET(utscanner ${CMAKE_CURRENT_SOURCE_DIR}/udunits2/utscanner.l ${CMAKE_CURRENT_BINARY_DIR}/lex.yy.c)
 add_flex_bison_dependency(utscanner utparser)
+include_directories(${CMAKE_CURRENT_BINARY_DIR}/udunits2)
 
 set(LIBUDUNITS2_SOURCES
   expat/xmlparse.c
