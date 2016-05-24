@@ -13,5 +13,5 @@ build system. The changes that were made are:
  - Added '(void)variable;' entries in many functions to eliminate
   'unused parameter' warnings.
 
- - Added missing initializer values to utf8proc_properties i
+ - Added missing initializer values to utf8proc_properties in
    utf8proc_data.h.
