@@ -47,8 +47,6 @@ if(NOT CODA_FOUND)
     message(FATAL_ERROR "CODA libraries and/or header files are not found. Try setting the CODA_LIBRARY_DIR and CODA_INCLUDE_DIR cmake variables to the location of your CODA library and include files.")
 endif(NOT CODA_FOUND)
 
-
-
 include_directories(${CODA_INCLUDE_DIR} ${HDF4_INCLUDE_DIR} ${HDF5_INCLUDE_DIR})
 
 if(NOT MSVC)
