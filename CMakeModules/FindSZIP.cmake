@@ -5,30 +5,28 @@
 # SZIP_LIBRARIES, the libraries to link against to use SZIP.
 # SZIP_FOUND, If false, do not try to use SZIP
 #
-# The user may specify SZIP_INCLUDE and SZIP_LIB environment
-# variables to locate include files and library directories
+# The user may specify SZIP_INCLUDE_DIR and SZIP_LIBRARY_DIR variables
+# to locate include and library files
 #
 include(CheckLibraryExists)
 include(CheckIncludeFile)
 
-find_path(SZIP_INCLUDE_DIR
-  NAMES szlib.h 
-  PATHS ${SZIP_INCLUDE} ENV SZIP_INCLUDE)
+set(SZIP_INCLUDE_DIR CACHE STRING "Location of SZIP include files")
+set(SZIP_LIBRARY_DIR CACHE STRING "Location of SZIP library files")
 
-set(SZIP_NAMES sz szlib)
-find_library(SZIP_LIBRARY NAMES 
-  NAMES ${SZIP_NAMES}
-  PATHS ${SZIP_LIB} ENV SZIP_LIB)
-if (SZIP_LIBRARY)
-  CHECK_LIBRARY_EXISTS(${SZIP_LIBRARY} SZ_Compress "" HAVE_SZIP)
-  if (HAVE_SZIP)
-    set(SZIP_LIBRARIES ${SZIP_LIBRARY})
-  endif(HAVE_SZIP)
-endif (SZIP_LIBRARY)
+if(SZIP_INCLUDE_DIR)
+  set(CMAKE_REQUIRED_INCLUDES ${SZIP_INCLUDE_DIR})
+endif(SZIP_INCLUDE_DIR)
 
-# handle the QUIETLY and REQUIRED arguments and set SZIP_FOUND to
-# TRUE if all listed variables are TRUE
-#
+check_include_file(szlib.h HAVE_SZIP_H)
+
+find_library(SZIP_LIBRARY NAMES sz szip libszip PATHS ${SZIP_LIBRARY_DIR})
+if(SZIP_LIBRARY)
+  check_library_exists(${SZIP_LIBRARY} SZ_Compress "" HAVE_SZIP_LIBRARY)
+endif(SZIP_LIBRARY)
+if(HAVE_SZIP_LIBRARY)
+  set(SZIP_LIBRARIES ${SZIP_LIBRARY})
+endif(HAVE_SZIP_LIBRARY)
+
 include(FindPackageHandleStandardArgs)
-find_package_handle_standard_args(SZIP DEFAULT_MSG SZIP_LIBRARIES SZIP_INCLUDE_DIR)
-mark_as_advanced(SZIP_LIBRARIES SZIP_INCLUDE_DIR)
+find_package_handle_standard_args(SZIP DEFAULT_MSG HAVE_SZIP_LIBRARY HAVE_SZIP_H)

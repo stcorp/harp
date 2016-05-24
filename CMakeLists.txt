@@ -37,6 +37,18 @@ find_package(HDF4)
 find_package(HDF5)
 find_package(CODA)
 
+if(NOT HDF4_FOUND)
+  message(FATAL_ERROR "HDF4 libraries and/or header files are not found. Try setting the HDF4_LIBRARY_DIR and HDF4_INCLUDE_DIR cmake variables to the location of your HDF4 library and include files.")
+endif(NOT HDF4_FOUND)
+if(NOT HDF5_FOUND)
+    message(FATAL_ERROR "HDF5 libraries and/or header files are not found. Try setting the HDF5_LIBRARY_DIR and HDF5_INCLUDE_DIR cmake variables to the location of your HDF5 library and include files.")
+endif(NOT HDF5_FOUND)
+if(NOT CODA_FOUND)
+    message(FATAL_ERROR "CODA libraries and/or header files are not found. Try setting the CODA_LIBRARY_DIR and CODA_INCLUDE_DIR cmake variables to the location of your CODA library and include files.")
+endif(NOT CODA_FOUND)
+
+
+
 include_directories(${CODA_INCLUDE_DIR} ${HDF4_INCLUDE_DIR} ${HDF5_INCLUDE_DIR})
 
 if(NOT MSVC)

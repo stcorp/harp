@@ -5,30 +5,28 @@
 # ZLIB_LIBRARIES, the libraries to link against to use Zlib.
 # ZLIB_FOUND, If false, do not try to use Zlib
 #
-# The user may specify ZLIB_INCLUDE and ZLIB_LIB environment
-# variables to locate include files and library directories
+# The user may specify ZLIB_INCLUDE_DIR and ZLIB_LIBRARY_DIR variables
+# to locate include and library files
 #
 include(CheckLibraryExists)
 include(CheckIncludeFile)
 
-find_path(ZLIB_INCLUDE_DIR
-  NAMES zlib.h
-  PATHS ${ZLIB_INCLUDE} ENV ZLIB_INCLUDE)
+set(ZLIB_INCLUDE_DIR CACHE STRING "Location of ZLIB include files")
+set(ZLIB_LIBRARY_DIR CACHE STRING "Location of ZLIB library files")
 
-set(ZLIB_NAMES z zlib1 zlib zdll)
-find_library(ZLIB_LIBRARY
-  NAMES ${ZLIB_NAMES}
-  PATHS ${ZLIB_LIB} ENV ZLIB_LIB)
-if (ZLIB_LIBRARY)
-  check_library_exists(${ZLIB_LIBRARY} deflate "" HAVE_ZLIB)
-  if (HAVE_ZLIB)
-    set(ZLIB_LIBRARIES ${ZLIB_LIBRARY})
-  endif(HAVE_ZLIB)
-endif (ZLIB_LIBRARY)
+if(ZLIB_INCLUDE_DIR)
+  set(CMAKE_REQUIRED_INCLUDES ${ZLIB_INCLUDE_DIR})
+endif(ZLIB_INCLUDE_DIR)
 
-# handle the QUIETLY and REQUIRED arguments and set ZLIB_FOUND to TRUE if
-# all listed variables are TRUE
-#
+check_include_file(zlib.h HAVE_ZLIB_H)
+
+find_library(ZLIB_LIBRARY NAMES z zlibdll zlib PATHS ${ZLIB_LIBRARY_DIR})
+if(ZLIB_LIBRARY)
+  check_library_exists(${ZLIB_LIBRARY} deflate "" HAVE_ZLIB_LIBRARY)
+endif(ZLIB_LIBRARY)
+if(HAVE_ZLIB_LIBRARY)
+  set(ZLIB_LIBRARIES ${ZLIB_LIBRARY})
+endif(HAVE_ZLIB_LIBRARY)
+
 include(FindPackageHandleStandardArgs)
-find_package_handle_standard_args(ZLIB DEFAULT_MSG ZLIB_LIBRARIES ZLIB_INCLUDE_DIR)
-mark_as_advanced(ZLIB_LIBRARY ZLIB_INCLUDE_DIR)
+find_package_handle_standard_args(ZLIB DEFAULT_MSG HAVE_ZLIB_LIBRARY HAVE_ZLIB_H)
