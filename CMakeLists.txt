@@ -119,7 +119,7 @@ if(HAVE_STDLIB_H AND HAVE_STDDEF_H)
   set(STDC_HEADERS 1)
 endif(HAVE_STDLIB_H AND HAVE_STDDEF_H)
 
-if((DEFINED MSVC) AND (MSVC_VERSION < 1600) AND (NOT DEFINED MINGW))
+if(MSVC AND MSVC_VERSION LESS 1600 AND NOT MINGW)
 # For Visual Studio > 2010 and MinGW we can use stdint.h
 # For earlier versions of Visual Studio we need to provide our own defines
 set(int8_t "signed char")
@@ -130,7 +130,7 @@ set(uint8_t "unsigned char")
 set(uint16_t "unsigned short")
 set(uint32_t "unsigned int")
 set(uint64_t "unsigned __int64")
-endif((DEFINED MSVC) AND (MSVC_VERSION < 1600) AND (NOT DEFINED MINGW))
+endif(MSVC AND MSVC_VERSION LESS 1600 AND NOT MINGW)
 
 
 include_directories(${HARP_BINARY_DIR} ${HARP_SOURCE_DIR}/libharp)
