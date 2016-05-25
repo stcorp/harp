@@ -91,7 +91,7 @@ static int determine_file_format(const char *filename, file_format *format)
     }
 
     /* Check that the file is a regular file. */
-    if (!S_ISREG(statbuf.st_mode))
+    if ((statbuf.st_mode & S_IFREG) == 0)
     {
         harp_set_error(HARP_ERROR_FILE_OPEN, "could not open %s (not a regular file)", filename);
         return -1;

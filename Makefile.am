@@ -273,6 +273,8 @@ EXTRA_DIST += \
 	expat/xmltok_ns.c \
 	expat/COPYING \
 	expat/README \
+	udunits2/tsearch.c \
+	udunits2/tsearch.h \
 	udunits2/LICENSE \
 	udunits2/README
 

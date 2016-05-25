@@ -181,8 +181,6 @@ static int read_datetime(void *user_data, harp_array data)
 {
     ingest_info *info = (ingest_info *)user_data;
 
-    (void)index;
-
     *data.double_data = info->granule_time;
 
     return 0;
