@@ -273,6 +273,8 @@ EXTRA_DIST += \
 	expat/xmltok_ns.c \
 	expat/COPYING \
 	expat/README \
+	udunits2/tsearch.c \
+	udunits2/tsearch.h \
 	udunits2/LICENSE \
 	udunits2/README
 
@@ -480,12 +482,11 @@ EXTRA_DIST += \
 	CMakeModules/FindJPEG.cmake \
 	CMakeModules/FindSZIP.cmake \
 	CMakeModules/FindZLIB.cmake \
-	cmakeify-dot-infiles.pl \
 	config.h.cmake.in \
 	libharp/harp.h.cmake.in
 
-config.h.cmake.in: config.h.in cmakeify-dot-infiles.pl
-	cat $(srcdir)/config.h.in | sed -e 's/#undef HARP_FORMAT_VERSION_MAJOR/#define HARP_FORMAT_VERSION_MAJOR @HARP_FORMAT_VERSION_MAJOR@/' -e 's/#undef HARP_FORMAT_VERSION_MINOR/#define HARP_FORMAT_VERSION_MINOR @HARP_FORMAT_VERSION_MINOR@/' -e 's/#undef \(.*\)/#cmakedefine \1 \$${\1}/' > config.h.cmake.in2
+config.h.cmake.in: config.h.in Makefile.am
+	cat $(srcdir)/config.h.in | sed -e 's/#undef HARP_FORMAT_VERSION_MAJOR/#define HARP_FORMAT_VERSION_MAJOR @HARP_FORMAT_VERSION_MAJOR@/' -e 's/#undef HARP_FORMAT_VERSION_MINOR/#define HARP_FORMAT_VERSION_MINOR @HARP_FORMAT_VERSION_MINOR@/' -e 's/#[ ]*undef \(.*\)/#cmakedefine \1 \$${\1}/' > config.h.cmake.in2
 	@if diff $(srcdir)/config.h.cmake.in config.h.cmake.in2 >/dev/null 2>&1 ; then \
 	  echo "config.h.cmake.in is unchanged" ; \
 	  rm -f config.h.cmake.in2 ; \
@@ -493,8 +494,8 @@ config.h.cmake.in: config.h.in cmakeify-dot-infiles.pl
 	  mv config.h.cmake.in2 $(srcdir)/config.h.cmake.in ; \
 	fi
 
-libharp/harp.h.cmake.in: libharp/harp.h.in cmakeify-dot-infiles.pl
-	cat $(srcdir)/libharp/harp.h.in | sed 's/#undef \(.*\)/#cmakedefine \1 \$${\1}/' > libharp/harp.h.cmake.in2
+libharp/harp.h.cmake.in: libharp/harp.h.in Makefile.am
+	cat $(srcdir)/libharp/harp.h.in | sed 's/#[ ]*undef \(.*\)/#cmakedefine \1 \$${\1}/' > libharp/harp.h.cmake.in2
 	@if diff $(srcdir)/libharp/harp.h.cmake.in libharp/harp.h.cmake.in2 >/dev/null 2>&1 ; then \
 	  echo "libharp/harp.h.cmake.in is unchanged" ; \
 	  rm -f libharp/harp.h.cmake.in2 ; \

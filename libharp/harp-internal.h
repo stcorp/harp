@@ -37,6 +37,9 @@
 
 #include <stdarg.h>
 
+/* make sure that math.h on Windows als includes the defines for e.g. M_PI */
+#define _USE_MATH_DEFINES
+
 /* This defines the amount of items that will be allocated per block for an auto-growing array (using realloc) */
 #define BLOCK_SIZE 16
 

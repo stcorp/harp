@@ -23,7 +23,6 @@
 #include <stdio.h>
 #include <stdlib.h>
 #include <stdarg.h>
-#include <strings.h>
 #include <string.h>
 
 #define MAX_ERROR_INFO_LENGTH	4096

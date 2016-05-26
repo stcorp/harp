@@ -183,7 +183,7 @@
 # endif
 #else
 # ifndef WORDS_BIGENDIAN
-#  undef WORDS_BIGENDIAN
+#cmakedefine WORDS_BIGENDIAN ${WORDS_BIGENDIAN}
 # endif
 #endif
 
@@ -318,5 +318,83 @@ int vsnprintf(const char *, size_t, const char *, va_list ap);
 /* Make sure we use the 1.6 compatibility API for HDF 1.8 */
 #define H5_USE_16_API
 
-#endif /* !defined(CODA_CONFIG_H) */
+#ifdef WIN32
+
+/* need to include this before we redefine lseek, etc. */
+#include <io.h>
+
+/* include sys/stat.h because we are going to override stat */
+#include <sys/stat.h>
+
+#if (_MSC_VER < 1600) && !defined(__MINGW32__)
+/* For Visual Studio > 2010 and MinGW we can use stdint.h
+ * For earlier versions of Visual Studio we need to provide our own defines
+ */
+#ifndef int8_t
+#define int8_t  signed char
+#endif
+#ifndef int16_t
+#define int16_t signed short
+#endif
+#ifndef int32_t
+#define int32_t int
+#endif
+#ifndef int64_t
+#define int64_t __int64
+#endif
+
+#ifndef uint8_t
+#define uint8_t  unsigned char
+#endif
+#ifndef uint16_t
+#define uint16_t unsigned short
+#endif
+#ifndef uint32_t
+#define uint32_t unsigned int
+#endif
+#ifndef uint64_t
+#define uint64_t unsigned __int64
+#endif
+#endif
+
+/* redefines for special string handling functions */
+#define strcasecmp _stricmp
+#define strncasecmp _strnicmp
+#define snprintf _snprintf
+#if defined(_MSC_VER) && _MSC_VER < 1500
+#define vsnprintf _vsnprintf
+#endif
+
+/* redefines for file handling functions */
+#define open(arg1,arg2) _open(arg1,arg2)
+#define close(arg1) _close(arg1)
+#define read(arg1,arg2,arg3) _read(arg1,arg2,arg3)
+#define lseek(arg1,arg2,arg3) _lseeki64(arg1,arg2,arg3)
+#define off_t __int64
+#define stat _stati64
+#define S_IFREG _S_IFREG
+
+/* define ssize_t */
+#ifdef _WIN64
+#define ssize_t __int64
+#else
+#define ssize_t long
+#endif
+
+/* prevent HDF5 header files from redefining the above types */
+#define H5_SIZEOF_INT64_T 8
+#define H5_SIZEOF_UINT32_T 4
+#define H5_SIZEOF_UINT64_T 8
+#ifdef _WIN64
+#define H5_SIZEOF_SSIZE_T 8
+#else
+#define H5_SIZEOF_SSIZE_T 4
+#endif
+
+#define YYMALLOC malloc
+#define YYFREE free
+
+#endif
+
+#endif /* !defined(HARP_CONFIG_H) */
 

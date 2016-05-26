@@ -21,6 +21,7 @@
 #include "harp-ingestion.h"
 
 #include <assert.h>
+#include <stdarg.h>
 #include <stdio.h>
 #include <stdlib.h>
 #include <string.h>
@@ -492,6 +493,9 @@ static int generate_definition_html(const char *filename, const harp_product_def
     return 0;
 }
 
+#ifdef max
+#undef max
+#endif
 static int max(int a, int b)
 {
     return (a > b ? a : b);

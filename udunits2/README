@@ -1,8 +1,11 @@
 
-These files are taken from udunits, version 2.1.17.
+These files are taken from udunits, version 2.2.20.
 
 The source files have been slightly modified in order to fit them into this
 build system. The changes that were made are:
+
+ - tsearch.h and tsearch.c were taken from github, since they were missing
+   from the official 2.2.20 source package.
 
  - scanner.l and parser.y have been renamed to utscanner.l and utparser.y
 

@@ -38,9 +38,15 @@
 #include <netcdf.h>
 #endif
 
+#ifndef MAXSHORT
 #define MAXSHORT	32767
+#endif
+#ifndef MAXINT
 #define MAXINT		2147483647
+#endif
+#ifndef MAXBYTE
 #define MAXBYTE		127
+#endif
 
 
 #define FNAME		"test.nc"

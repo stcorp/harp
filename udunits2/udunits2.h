@@ -21,17 +21,33 @@
 
 /* Define a bunch of variables to use the ISO C++ conformant name instead
    of the POSIX name. This quiets a lot of the warnings thrown by MSVC. */
+#ifndef read
 #define read _read
+#endif
+#ifndef open
 #define open _open
+#endif
+#ifndef close
 #define close _close
+#endif
+#ifndef strdup
 #define strdup _strdup
+#endif
+#ifndef strcasecmp
 #define strcasecmp stricmp
+#endif
+#ifndef stricmp
 #define stricmp _stricmp
+#endif
+#ifndef isatty
 #define isatty _isatty
+#endif
 
 //We must accomodate the lack of snprintf in MSVC.
 //c99_snprintf is defined in c99_snprintf.c, in lib/.
+#ifndef snprintf
 #define snprintf c99_snprintf
+#endif
 
 int c99_snprintf(
    char* str,

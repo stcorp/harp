@@ -49,9 +49,14 @@ endif(NOT CODA_FOUND)
 
 include_directories(${CODA_INCLUDE_DIR} ${HDF4_INCLUDE_DIR} ${HDF5_INCLUDE_DIR})
 
+if(MSVC)
+# Suppress warnings from VC on deprecated POSIX names and unsafe functions
+add_definitions(-D_CRT_NONSTDC_NO_DEPRECATE -D_CRT_SECURE_NO_WARNINGS)
+endif(MSVC)
+
 if(NOT MSVC)
 set(MATHLIB m)
-endif()
+endif(NOT MSVC)
 
 
 set(INCLUDES "")
@@ -113,6 +118,19 @@ test_big_endian(WORDS_BIGENDIAN)
 if(HAVE_STDLIB_H AND HAVE_STDDEF_H)
   set(STDC_HEADERS 1)
 endif(HAVE_STDLIB_H AND HAVE_STDDEF_H)
+
+if(MSVC AND MSVC_VERSION LESS 1600 AND NOT MINGW)
+# For Visual Studio > 2010 and MinGW we can use stdint.h
+# For earlier versions of Visual Studio we need to provide our own defines
+set(int8_t "signed char")
+set(int16_t "signed short")
+set(int32_t "int")
+set(int64_t "__int64")
+set(uint8_t "unsigned char")
+set(uint16_t "unsigned short")
+set(uint32_t "unsigned int")
+set(uint64_t "unsigned __int64")
+endif(MSVC AND MSVC_VERSION LESS 1600 AND NOT MINGW)
 
 
 include_directories(${HARP_BINARY_DIR} ${HARP_SOURCE_DIR}/libharp)
@@ -287,6 +305,13 @@ set(LIBUDUNITS2_SOURCES
   ${BISON_utparser_OUTPUTS}
   ${FLEX_utscanner_OUTPUTS})
 
+if(WIN32)
+set(LIBUDUNITS2_SOURCES
+  ${LIBUDUNITS2_SOURCES}
+  udunits2/tsearch.c
+  udunits2/tsearch.h)
+endif(WIN32)
+
 include_directories(BEFORE ${CMAKE_CURRENT_SOURCE_DIR}/udunits2)
 
 set(LIBNETCDF_SOURCES
@@ -316,7 +341,7 @@ set(LIBNETCDF_SOURCES
   netcdf/v2i.c
   netcdf/var.c)
 
-include_directories(BEFORE ${CMAKE_CURRENT_SOURCE_DIR}/netcdf)
+include_directories(BEFORE ${CMAKE_CURRENT_SOURCE_DIR}/expat ${CMAKE_CURRENT_SOURCE_DIR}/netcdf)
 
 install(FILES ${CMAKE_CURRENT_BINARY_DIR}/harp.h DESTINATION include)
 

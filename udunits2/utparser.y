@@ -59,13 +59,14 @@
 #   define _XOPEN_SOURCE 600
 #endif
 
+#include "config.h"
 #include <assert.h>
 #include <ctype.h>
 #include <errno.h>
 #include <stdlib.h>
 #include <stdio.h>
-#ifndef _MSC_VER
 #include <string.h>
+#ifndef _MSC_VER
 #include <strings.h>
 #endif
 #include "udunits2.h"
