@@ -584,7 +584,7 @@ def _encode_path(path):
         # the branch above.
         return _encode_string_with_encoding(path, _get_filesystem_encoding())
     else:
-        raise TypeError("path must be bytes or str, not %r" % key.__class__.__name__)
+        raise TypeError("path must be bytes or str, not %r" % path.__class__.__name__)
 
 def _encode_string(string):
     """Encode the input unicode string using the package default encoding.
@@ -601,7 +601,7 @@ def _encode_string(string):
         # the branch above.
         return _encode_string_with_encoding(string, get_encoding())
     else:
-        raise TypeError("string must be bytes or str, not %r" % key.__class__.__name__)
+        raise TypeError("string must be bytes or str, not %r" % string.__class__.__name__)
 
 def _decode_string(string):
     """Decode the input byte string using the package default encoding.
@@ -617,7 +617,7 @@ def _decode_string(string):
         # the branch above.
         return _decode_string_with_encoding(string, get_encoding())
     else:
-        raise TypeError("string must be bytes or str, not %r" % key.__class__.__name__)
+        raise TypeError("string must be bytes or str, not %r" % string.__class__.__name__)
 
 def _format_data_type(data):
     """Return the string representation of the C data type that would be used to
