@@ -66,11 +66,6 @@ int vsnprintf(const char *, size_t, const char *, va_list ap);
 
 #ifdef WIN32
 
-/* include windows specific headers */
-#include <windows.h>
-#include <io.h>
-#include <direct.h>
-
 /* include sys/stat.h because we are going to override stat */
 #include <sys/stat.h>
 
@@ -106,9 +101,6 @@ int vsnprintf(const char *, size_t, const char *, va_list ap);
 #define uint64_t unsigned __int64
 #endif
 #endif
-
-/* we need to redefine ELEMENT_TYPE because it conflicts with io.h contents */
-#define ELEMENT_TYPE ELEMENT_TYPE_RENAMED
 
 /* redefines for special string handling functions */
 #define strcasecmp _stricmp
