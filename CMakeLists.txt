@@ -51,8 +51,7 @@ include_directories(${CODA_INCLUDE_DIR} ${HDF4_INCLUDE_DIR} ${HDF5_INCLUDE_DIR})
 
 if(MSVC)
 # Suppress warnings from VC on deprecated POSIX names and unsafe functions
-# And make sure that #include of math.h includes definitions for constants
-add_definitions(-D_CRT_NONSTDC_NO_DEPRECATE -D_CRT_SECURE_NO_WARNINGS -D_USE_MATH_DEFINES)
+add_definitions(-D_CRT_NONSTDC_NO_DEPRECATE -D_CRT_SECURE_NO_WARNINGS)
 endif(MSVC)
 
 if(NOT MSVC)

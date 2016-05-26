@@ -213,14 +213,16 @@ static int parse_string(harp_lexer *lexer, ast_node **result)
     }
 
     node->position = token.position;
-    node->payload.string = strndup(token.root + 1, token.length - 2);
+    node->payload.string = malloc(token.length - 1);
     if (node->payload.string == NULL)
     {
-        harp_set_error(HARP_ERROR_OUT_OF_MEMORY, "out of memory (could not duplicate string) (%s:%u)", __FILE__,
-                       __LINE__);
+        harp_set_error(HARP_ERROR_OUT_OF_MEMORY, "out of memory (could not allocate %ld bytes) (%s:%u)",
+                       token.length - 1, __FILE__, __LINE__);
         harp_ast_node_delete(node);
         return -1;
     }
+    node->payload.string[token.length - 2] = '\0';
+    memcpy(node->payload.string, token.root + 1, token.length - 2);
 
     /* Decode escape sequences. */
     if (decode_escaped_string(node->payload.string) < 0)
@@ -253,13 +255,15 @@ static int parse_unit(harp_lexer *lexer, ast_node **result)
     }
     assert(token.length >= 2);
 
-    unit = strndup(token.root + 1, token.length - 2);
+    unit = malloc(token.length - 1);
     if (unit == NULL)
     {
-        harp_set_error(HARP_ERROR_OUT_OF_MEMORY, "out of memory (could not duplicate string) (%s:%u)", __FILE__,
-                       __LINE__);
+        harp_set_error(HARP_ERROR_OUT_OF_MEMORY, "out of memory (could not allocate %ld bytes) (%s:%u)",
+                       token.length - 1, __FILE__, __LINE__);
         return -1;
     }
+    unit[token.length - 2] = '\0';
+    memcpy(unit, token.root + 1, token.length - 2);
 
     if (!harp_unit_is_valid(unit))
     {
@@ -304,14 +308,16 @@ static int parse_name(harp_lexer *lexer, ast_node **result)
     }
 
     node->position = token.position;
-    node->payload.string = strndup(token.root, token.length);
+    node->payload.string = malloc(token.length - 1);
     if (node->payload.string == NULL)
     {
-        harp_set_error(HARP_ERROR_OUT_OF_MEMORY, "out of memory (could not duplicate string) (%s:%u)", __FILE__,
-                       __LINE__);
+        harp_set_error(HARP_ERROR_OUT_OF_MEMORY, "out of memory (could not allocate %ld bytes) (%s:%u)",
+                       token.length - 1, __FILE__, __LINE__);
         harp_ast_node_delete(node);
         return -1;
     }
+    node->payload.string[token.length - 2] = '\0';
+    memcpy(node->payload.string, token.root + 1, token.length - 2);
 
     *result = node;
     return 0;

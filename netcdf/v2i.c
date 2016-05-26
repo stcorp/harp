@@ -6,9 +6,8 @@
 
 #ifndef NO_NETCDF_2
 
-#include <config.h>
+#include "nc.h"
 #include <stdlib.h>
-#include "netcdf.h"
 
 #if SIZEOF_LONG == SIZEOF_SIZE_T
 /*

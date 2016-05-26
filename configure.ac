@@ -89,6 +89,8 @@ int vsnprintf(const char *, size_t, const char *, va_list ap);
 #endif
 #ifndef int64_t
 #define int64_t __int64
+/* prevent HDF5 header files from redefining int64_t */
+#define H5_SIZEOF_INT64_T 8
 #endif
 
 #ifndef uint8_t
