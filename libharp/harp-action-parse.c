@@ -308,7 +308,7 @@ static int parse_name(harp_lexer *lexer, ast_node **result)
     }
 
     node->position = token.position;
-    node->payload.string = malloc(token.length - 1);
+    node->payload.string = malloc(token.length + 1);
     if (node->payload.string == NULL)
     {
         harp_set_error(HARP_ERROR_OUT_OF_MEMORY, "out of memory (could not allocate %ld bytes) (%s:%u)",
@@ -316,8 +316,8 @@ static int parse_name(harp_lexer *lexer, ast_node **result)
         harp_ast_node_delete(node);
         return -1;
     }
-    node->payload.string[token.length - 2] = '\0';
-    memcpy(node->payload.string, token.root + 1, token.length - 2);
+    node->payload.string[token.length] = '\0';
+    memcpy(node->payload.string, token.root, token.length);
 
     *result = node;
     return 0;
