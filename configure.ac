@@ -66,6 +66,9 @@ int vsnprintf(const char *, size_t, const char *, va_list ap);
 
 #ifdef WIN32
 
+/* need to include this before we redefine lseek, etc. */
+#include <io.h>
+
 /* include sys/stat.h because we are going to override stat */
 #include <sys/stat.h>
 
@@ -84,8 +87,6 @@ int vsnprintf(const char *, size_t, const char *, va_list ap);
 #endif
 #ifndef int64_t
 #define int64_t __int64
-/* prevent HDF5 header files from redefining int64_t */
-#define H5_SIZEOF_INT64_T 8
 #endif
 
 #ifndef uint8_t
@@ -124,6 +125,16 @@ int vsnprintf(const char *, size_t, const char *, va_list ap);
 #define ssize_t __int64
 #else
 #define ssize_t long
+#endif
+
+/* prevent HDF5 header files from redefining the above types */
+#define H5_SIZEOF_INT64_T 8
+#define H5_SIZEOF_UINT32_T 4
+#define H5_SIZEOF_UINT64_T 8
+#ifdef _WIN64
+#define H5_SIZEOF_SSIZE_T 8
+#else
+#define H5_SIZEOF_SSIZE_T 4
 #endif
 
 #define YYMALLOC malloc
