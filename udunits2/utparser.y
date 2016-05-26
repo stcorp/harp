@@ -64,8 +64,8 @@
 #include <errno.h>
 #include <stdlib.h>
 #include <stdio.h>
-#ifndef _MSC_VER
 #include <string.h>
+#ifndef _MSC_VER
 #include <strings.h>
 #endif
 #include "udunits2.h"

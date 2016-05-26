@@ -380,7 +380,7 @@ int vsnprintf(const char *, size_t, const char *, va_list ap);
 #define S_IFREG _S_IFREG
 
 /* define ssize_t */
-#ifdef(_WIN64)
+#ifdef _WIN64
 #define ssize_t __int64
 #else
 #define ssize_t long
