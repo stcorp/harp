@@ -34,18 +34,27 @@ find_package(BISON)
 find_package(FLEX)
 
 find_package(HDF4)
-find_package(HDF5)
-find_package(CODA)
-
 if(NOT HDF4_FOUND)
   message(FATAL_ERROR "HDF4 libraries and/or header files are not found. Try setting the HDF4_LIBRARY_DIR and HDF4_INCLUDE_DIR cmake variables to the location of your HDF4 library and include files.")
 endif(NOT HDF4_FOUND)
+
+find_package(HDF5)
 if(NOT HDF5_FOUND)
     message(FATAL_ERROR "HDF5 libraries and/or header files are not found. Try setting the HDF5_LIBRARY_DIR and HDF5_INCLUDE_DIR cmake variables to the location of your HDF5 library and include files.")
 endif(NOT HDF5_FOUND)
-if(NOT CODA_FOUND)
+
+# We allow HARP to be build as part of a larger CMake build that also includes
+# CODA. It this is the case then CODA_SOURCE_DIR and CODA_BINARY_DIR will
+# already be set and we don't have to look for an installed version of CODA.
+if(DEFINED CODA_SOURCE_DIR AND DEFINED CODA_BINARY_DIR)
+  set(CODA_INCLUDE_DIR ${CODA_BINARY_DIR} ${CODA_SOURCE_DIR}/libcoda)
+  set(CODA_LIBRARIES coda)
+else(DEFINED CODA_SOURCE_DIR AND DEFINED CODA_BINARY_DIR)
+  find_package(CODA)
+  if(NOT CODA_FOUND)
     message(FATAL_ERROR "CODA libraries and/or header files are not found. Try setting the CODA_LIBRARY_DIR and CODA_INCLUDE_DIR cmake variables to the location of your CODA library and include files.")
-endif(NOT CODA_FOUND)
+  endif(NOT CODA_FOUND)
+endif(DEFINED CODA_SOURCE_DIR AND DEFINED CODA_BINARY_DIR)
 
 include_directories(${CODA_INCLUDE_DIR} ${HDF4_INCLUDE_DIR} ${HDF5_INCLUDE_DIR})
 
@@ -133,7 +142,7 @@ set(uint64_t "unsigned __int64")
 endif(MSVC AND MSVC_VERSION LESS 1600 AND NOT MINGW)
 
 
-include_directories(${HARP_BINARY_DIR} ${HARP_SOURCE_DIR}/libharp)
+include_directories(BEFORE ${HARP_BINARY_DIR} ${HARP_SOURCE_DIR}/libharp)
 
 # Some autoconf variables that CMake does not use itself, but
 # that are used in the config file substitutions.
