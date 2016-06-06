@@ -536,22 +536,17 @@ static void fnputc(long n, char c, FILE *stream)
 static void print_padded_string(FILE *f, int column_width, const char *format, ...)
 {
     va_list ap;
-    va_list ap_copy;
     int length;
 
     va_start(ap, format);
-    va_copy(ap_copy, ap);
 
-    length = vscprintf(format, ap);
+    length = vfprintf(f, format, ap);
     assert(length >= 0);
-
-    vfprintf(f, format, ap_copy);
     if (length < column_width)
     {
         fnputc(column_width - length, ' ', f);
     }
 
-    va_end(ap_copy);
     va_end(ap);
 }
 
