@@ -361,7 +361,9 @@ target_link_libraries(harp ${CODA_LIBRARIES} ${HDF4_LIBRARIES} ${HDF5_LIBRARIES}
 set_target_properties(harp PROPERTIES
   VERSION ${LIBHARP_MAJOR}.${LIBHARP_MINOR}.${LIBHARP_REVISION}
   SOVERSION ${LIBHARP_MAJOR})
-  install(TARGETS harp DESTINATION lib)
+# Also set DLL compile flags since we link against the dynamic libraries of CODA and HDF5
+set_target_properties(harp PROPERTIES COMPILE_FLAGS "-DH5_BUILT_AS_DYNAMIC_LIB -DLIBCODADLL")
+install(TARGETS harp DESTINATION lib)
 
 add_library(harp_static STATIC ${LIBHARP_SOURCES} ${LIBUDUNITS2_SOURCES} ${LIBNETCDF_SOURCES})
 
