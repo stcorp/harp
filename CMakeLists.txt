@@ -386,7 +386,55 @@ else(WIN32)
 endif(WIN32)
 install(TARGETS harp_static DESTINATION lib)
 
+#  harpcheck
+add_executable(harpcheck tools/harpcheck/harpcheck.c)
+target_link_libraries(harpcheck harp ${CODA_LIBRARIES} ${HDF4_LIBRARIES} ${HDF5_LIBRARIES} ${MATHLIB})
+if(WIN32)
+  # Also set DLL compile flags
+  set_target_properties(harpcheck PROPERTIES COMPILE_FLAGS "-DLIBHARPDLL")
+endif(WIN32)
+install(TARGETS harpcheck DESTINATION bin)
+
+#  harpcollocate
+set(HARPCOLLOCATE_SOURCES
+  tools/harpcollocate/harpcollocate.c
+  tools/harpcollocate/harpcollocate.h
+  tools/harpcollocate/harpcollocate-matchup.c
+  tools/harpcollocate/harpcollocate-parse.c
+  tools/harpcollocate/harpcollocate-resample.c
+  tools/harpcollocate/harpcollocate-result.c
+  tools/harpcollocate/harpcollocate-update.c)
+add_executable(harpcollocate ${HARPCOLLOCATE_SOURCES})
+target_link_libraries(harpcollocate harp ${CODA_LIBRARIES} ${HDF4_LIBRARIES} ${HDF5_LIBRARIES} ${MATHLIB})
+if(WIN32)
+  # Also set DLL compile flags
+  set_target_properties(harpcollocate PROPERTIES COMPILE_FLAGS "-DLIBHARPDLL")
+endif(WIN32)
+install(TARGETS harpcollocate DESTINATION bin)
+
 #  harpconvert
 add_executable(harpconvert tools/harpconvert/harpconvert.c)
 target_link_libraries(harpconvert harp ${CODA_LIBRARIES} ${HDF4_LIBRARIES} ${HDF5_LIBRARIES} ${MATHLIB})
+if(WIN32)
+  # Also set DLL compile flags
+  set_target_properties(harpconvert PROPERTIES COMPILE_FLAGS "-DLIBHARPDLL")
+endif(WIN32)
 install(TARGETS harpconvert DESTINATION bin)
+
+#  harpdump
+add_executable(harpdump tools/harpdump/harpdump.c)
+target_link_libraries(harpdump harp ${CODA_LIBRARIES} ${HDF4_LIBRARIES} ${HDF5_LIBRARIES} ${MATHLIB})
+if(WIN32)
+  # Also set DLL compile flags
+  set_target_properties(harpdump PROPERTIES COMPILE_FLAGS "-DLIBHARPDLL")
+endif(WIN32)
+install(TARGETS harpdump DESTINATION bin)
+
+#  harpfilter
+add_executable(harpfilter tools/harpfilter/harpfilter.c)
+target_link_libraries(harpfilter harp ${CODA_LIBRARIES} ${HDF4_LIBRARIES} ${HDF5_LIBRARIES} ${MATHLIB})
+if(WIN32)
+  # Also set DLL compile flags
+  set_target_properties(harpfilter PROPERTIES COMPILE_FLAGS "-DLIBHARPDLL")
+endif(WIN32)
+install(TARGETS harpdump DESTINATION bin)

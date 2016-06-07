@@ -146,7 +146,6 @@ INDENTFILES += $(libharp_la_SOURCES) libharp/harp.h.in
 # harpcheck
 
 harpcheck_SOURCES = tools/harpcheck/harpcheck.c
-harpcheck_LDFLAGS = -static
 harpcheck_LDADD = libharp.la
 harpcheck_DEPENDENCIES = libharp.la
 INDENTFILES += $(harpcheck_SOURCES)
@@ -161,28 +160,24 @@ harpcollocate_SOURCES = \
 	tools/harpcollocate/harpcollocate-resample.c \
 	tools/harpcollocate/harpcollocate-result.c \
 	tools/harpcollocate/harpcollocate-update.c
-harpcollocate_LDFLAGS = -static
 harpcollocate_LDADD = libharp.la
 INDENTFILES += $(harpcollocate_SOURCES)
 
 # harpconvert
 
 harpconvert_SOURCES = tools/harpconvert/harpconvert.c
-harpconvert_LDFLAGS = -static
 harpconvert_LDADD = libharp.la
 INDENTFILES += $(harpconvert_SOURCES)
 
 # harpdump
 
 harpdump_SOURCES = tools/harpdump/harpdump.c
-harpdump_LDFLAGS = -static
 harpdump_LDADD = libharp.la
 INDENTFILES += $(harpdump_SOURCES)
 
 # harpfilter
 
 harpfilter_SOURCES = tools/harpfilter/harpfilter.c
-harpfilter_LDFLAGS = -static
 harpfilter_LDADD = libharp.la
 INDENTFILES += $(harpfilter_SOURCES)
 
