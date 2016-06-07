@@ -33,6 +33,9 @@
 #ifdef HAVE_DIRENT_H
 #include <dirent.h>
 #endif
+#ifdef WIN32
+#include "windows.h"
+#endif
 
 #define DETECTION_BLOCK_SIZE 12
 
@@ -983,7 +986,7 @@ static int is_directory(const char *directoryname)
     }
 
     /* check that the file is a directory */
-    if (S_ISDIR(statbuf.st_mode))
+    if (statbuf.st_mode & S_IFDIR)
     {
         /* Return 'true' */
         return 1;
