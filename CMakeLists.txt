@@ -363,8 +363,13 @@ include_directories(BEFORE ${CMAKE_CURRENT_SOURCE_DIR}/expat ${CMAKE_CURRENT_SOU
 
 install(FILES ${CMAKE_CURRENT_BINARY_DIR}/harp.h DESTINATION include)
 
-set(PKGDATADIR ${CMAKE_INSTALL_PREFIX}/share/harp)
-add_definitions(-DDEFAULT_UDUNITS2_XML_PATH="${PKGDATADIR}/udunits2.xml")
+if(WIN32)
+set(UDUNITS2_XML_DIR_RELATIVE data)
+else(WIN32)
+set(UDUNITS2_XML_DIR_RELATIVE share/harp)
+endif(WIN32)
+set(UDUNITS2_XML_DIR ${CMAKE_INSTALL_PREFIX}/${UDUNITS2_XML_DIR_RELATIVE})
+add_definitions(-DDEFAULT_UDUNITS2_XML_PATH="${UDUNITS2_XML_DIR}/udunits2.xml")
 add_library(harp SHARED ${LIBHARP_SOURCES} ${LIBUDUNITS2_SOURCES} ${LIBNETCDF_SOURCES})
 target_link_libraries(harp ${CODA_LIBRARIES} ${HDF4_LIBRARIES} ${HDF5_LIBRARIES})
 set_target_properties(harp PROPERTIES
@@ -475,3 +480,20 @@ add_codadef(ENVISAT_MIPAS)
 add_codadef(ENVISAT_SCIAMACHY)
 add_codadef(EPS)
 add_codadef(ERS_GOME)
+
+# documentation
+if(WIN32)
+install(DIRECTORY ${CMAKE_CURRENT_SOURCE_DIR}/doc/html DESTINATION doc)
+else(WIN32)
+install(DIRECTORY ${CMAKE_CURRENT_SOURCE_DIR}/doc/html DESTINATION share/harp/doc)
+endif(WIN32)
+
+# udunits xml files
+install(FILES
+  ${CMAKE_CURRENT_SOURCE_DIR}/udunits2/udunits2-accepted.xml
+  ${CMAKE_CURRENT_SOURCE_DIR}/udunits2/udunits2-base.xml
+  ${CMAKE_CURRENT_SOURCE_DIR}/udunits2/udunits2-common.xml
+  ${CMAKE_CURRENT_SOURCE_DIR}/udunits2/udunits2-derived.xml
+  ${CMAKE_CURRENT_SOURCE_DIR}/udunits2/udunits2-prefixes.xml
+  ${CMAKE_CURRENT_SOURCE_DIR}/udunits2/udunits2.xml
+  DESTINATION ${UDUNITS2_XML_DIR_RELATIVE})
