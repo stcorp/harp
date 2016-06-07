@@ -27,8 +27,12 @@
 #include <stdio.h>
 #include <stdlib.h>
 #include <string.h>
+#ifdef HAVE_UNISTD_H
 #include <unistd.h>
+#endif
+#ifdef HAVE_DIRENT_H
 #include <dirent.h>
+#endif
 
 #define DETECTION_BLOCK_SIZE 12
 
@@ -1019,23 +1023,104 @@ static int check_file(const char *filename)
 
 static int expand_directory_name_into_file_names(const char *pathname, Dataset **dataset_dir)
 {
+    Dataset *dataset = NULL;
+
+#ifdef WIN32
+    WIN32_FIND_DATA FileData;
+    HANDLE hSearch;
+    BOOL fFinished;
+    char *pattern;
+
+    pattern = malloc(strlen(pathname) + 4 + 1);
+    if (pattern == NULL)
+    {
+        coda_set_error(CODA_ERROR_OUT_OF_MEMORY, "out of memory (could not allocate %lu bytes) (%s:%u)",
+                       (long)strlen(pathname) + 4 + 1, __FILE__, __LINE__);
+        return -1;
+    }
+    sprintf(pattern, "%s\\*.*", pathname);
+    hSearch = FindFirstFile(pattern, &FileData);
+    free(pattern);
+
+    if (hSearch == INVALID_HANDLE_VALUE)
+    {
+        if (GetLastError() == ERROR_FILE_NOT_FOUND || GetLastError() == ERROR_NO_MORE_FILES)
+        {
+            /* no files found */
+            continue;
+        }
+        coda_set_error(HARP_ERROR_INVALID_ARGUMENT, "could not access directory '%s'", pathname);
+        return -1;
+    }
+
+    /* Walk through files in directory and add filenames to 'dataset_dir' */
+    if (dataset_new(&dataset) != 0)
+    {
+        FindClose(hSearch);
+        return -1;
+    }
+
+    fFinished = FALSE;
+    while (!fFinished)
+    {
+        if (!(FileData.dwFileAttributes & FILE_ATTRIBUTE_DIRECTORY))
+        {
+            char *filepath;
+
+            filepath = malloc(strlen(pathname) + 1 + strlen(FileData.cFileName) + 1);
+            if (filepath == NULL)
+            {
+                harp_set_error(HARP_ERROR_OUT_OF_MEMORY, "out of memory (could not allocate %lu bytes) (%s:%u)",
+                               (long)strlen(pathname) + 1 + strlen(FileData.cFileName) + 1, __FILE__,__LINE__);
+                dataset_delete(dataset);
+                FindClose(hSearch);
+                return -1;
+            }
+            sprintf(filepath, "%s\\%s", pathname, FileData.cFileName);
+            if (check_file(filepath) == 0)
+            {
+                dataset_add_filename(dataset, filepath);
+            }
+            else
+            {
+                harp_set_error(HARP_ERROR_INVALID_ARGUMENT, "'%s' is not a valid HARP file", filepath);
+                free(filepath);
+                dataset_delete(dataset);
+                FindClose(hSearch);
+                return -1;
+            }
+            free(filepath);
+        }
+
+        if (!FindNextFile(hSearch, &FileData))
+        {
+            if (GetLastError() == ERROR_NO_MORE_FILES)
+            {
+                fFinished = TRUE;
+            }
+            else
+            {
+                HARP_set_error(HARP_ERROR_INVALID_ARGUMENT, "could not retrieve directory entry");
+                dataset_delete(dataset);
+                FindClose(hSearch);
+                return -1;
+            }
+        }
+    }
+    FindClose(hSearch);
+#else
     DIR *dirp = NULL;
     struct dirent *dp = NULL;
-    size_t stringlength_pathname = 0;
-    size_t stringlength_path_plus_filename = 0;
-    Dataset *dataset = NULL;
 
     /* Open the directory */
     dirp = opendir(pathname);
 
     if (dirp == NULL)
     {
-        harp_set_error(HARP_ERROR_INVALID_ARGUMENT, "Could not open directory %s", pathname);
+        harp_set_error(HARP_ERROR_INVALID_ARGUMENT, "could not open directory %s", pathname);
         closedir(dirp);
         return -1;
     }
-
-    stringlength_pathname = strlen(pathname) + 1 + 1;
 
     /* Walk through files in directory and add filenames to 'dataset_dir' */
     if (dataset_new(&dataset) != 0)
@@ -1046,7 +1131,7 @@ static int expand_directory_name_into_file_names(const char *pathname, Dataset *
 
     while ((dp = readdir(dirp)) != NULL)
     {
-        char *path_plus_filename = NULL;
+        char *filepath = NULL;
 
         /* Skip '.' and '..' */
         if (strcmp(dp->d_name, ".") == 0 || strcmp(dp->d_name, "..") == 0)
@@ -1055,49 +1140,42 @@ static int expand_directory_name_into_file_names(const char *pathname, Dataset *
         }
 
         /* Add path before filename */
-        stringlength_path_plus_filename = stringlength_pathname + strlen(dp->d_name);
-        path_plus_filename = calloc(stringlength_path_plus_filename, sizeof(char));
-        strcat(path_plus_filename, pathname);
-        strcat(path_plus_filename, "/");
-        strcat(path_plus_filename, dp->d_name);
-
-        /* Skip subdirectories */
-        if (is_directory(path_plus_filename))
+        filepath = malloc(strlen(pathname) + 1 + strlen(dp->d_name) + 1);
+        if (filepath == NULL)
         {
-            if (path_plus_filename != NULL)
-            {
-                free(path_plus_filename);
-            }
+            harp_set_error(HARP_ERROR_OUT_OF_MEMORY, "out of memory (could not allocate %lu bytes) (%s:%u)",
+                           (long)strlen(pathname) + 1 + strlen(dp->d_name) + 1, __FILE__, __LINE__);
+            closedir(dirp);
+            dataset_delete(dataset);
+            return -1;
+        }
+        sprintf(filepath, "%s/%s", pathname, dp->d_name);
+
+        if (is_directory(filepath))
+        {
+            /* Skip subdirectories */
+            free(filepath);
             continue;
         }
 
-        /* Add all files ... */
-        if (check_file(path_plus_filename) == 0)
+        if (check_file(filepath) == 0)
         {
-            dataset_add_filename(dataset, path_plus_filename);
+            dataset_add_filename(dataset, filepath);
         }
         else
         {
             /* Exit, file type is not supported */
-            harp_set_error(HARP_ERROR_INVALID_ARGUMENT, "'%s' is not a valid GDF file", path_plus_filename);
-
-            if (path_plus_filename != NULL)
-            {
-                free(path_plus_filename);
-            }
-            closedir(dirp);
-
+            harp_set_error(HARP_ERROR_INVALID_ARGUMENT, "'%s' is not a valid HARP file", filepath);
+            free(filepath);
             dataset_delete(dataset);
+            closedir(dirp);
             return -1;
         }
-
-        if (path_plus_filename != NULL)
-        {
-            free(path_plus_filename);
-        }
+        free(filepath);
     }
 
     closedir(dirp);
+#endif
 
     *dataset_dir = dataset;
     return 0;

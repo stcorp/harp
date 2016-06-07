@@ -234,7 +234,7 @@ ST_CHECK_LIB_M
 # *** checks for header files ***
 
 AC_HEADER_STDBOOL
-AC_CHECK_HEADERS([unistd.h strings.h])
+AC_CHECK_HEADERS([dirent.h unistd.h strings.h])
 
 # *** checks for types ***
 

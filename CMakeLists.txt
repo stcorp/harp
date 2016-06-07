@@ -85,6 +85,7 @@ macro(find_include FILE VARIABLE)
   endif(${VARIABLE})
 endmacro(find_include)
 
+find_include(dirent.h HAVE_DIRENT_H)
 find_include(dlfcn.h HAVE_DLFCN_H)
 find_include(inttypes.h HAVE_INTTYPES_H)
 find_include(limits.h HAVE_LIMITS_H)
