@@ -18,6 +18,11 @@ set(HARP_FORMAT_VERSION_MINOR 0)
 set(HARP_CONVENTION \"HARP-${HARP_FORMAT_VERSION_MAJOR}.${HARP_FORMAT_VERSION_MINOR}\")
 
 
+set(CMAKE_MODULE_PATH
+  ${HARP_SOURCE_DIR}/CMakeModules
+  ${CMAKE_MODULE_PATH}
+  CACHE INTERNAL "Local CMake modules")
+
 include(CheckFunctionExists)
 include(CheckLibraryExists)
 include(CheckIncludeFile)
@@ -25,10 +30,13 @@ include(CheckSymbolExists)
 include(CheckTypeSize)
 include(TestBigEndian)
 
-set(CMAKE_MODULE_PATH
-  ${HARP_SOURCE_DIR}/CMakeModules
-  ${CMAKE_MODULE_PATH}
-  CACHE INTERNAL "Local CMake modules")
+# Use RelWithDebInfo as default target 
+#
+IF(NOT CMAKE_BUILD_TYPE)
+  SET(CMAKE_BUILD_TYPE RelWithDebInfo CACHE STRING
+      "Choose the type of build, options are: None Debug Release RelWithDebInfo MinSizeRel."
+      FORCE)
+ENDIF(NOT CMAKE_BUILD_TYPE)
 
 find_package(BISON)
 find_package(FLEX)
@@ -362,8 +370,8 @@ set_target_properties(harp PROPERTIES
   VERSION ${LIBHARP_MAJOR}.${LIBHARP_MINOR}.${LIBHARP_REVISION}
   SOVERSION ${LIBHARP_MAJOR})
 if(WIN32)
-  # Also set DLL compile flags since we link against the dynamic libraries of CODA and HDF5
-  set_target_properties(harp PROPERTIES COMPILE_FLAGS "-DH5_BUILT_AS_DYNAMIC_LIB -DLIBCODADLL")
+  # Also set DLL compile flags
+  set_target_properties(harp PROPERTIES COMPILE_FLAGS "-DLIBHARPDLL -DLIBHARPDLL_EXPORTS -DH5_BUILT_AS_DYNAMIC_LIB -DLIBCODADLL")
 endif(WIN32)
 install(TARGETS harp DESTINATION lib)
 
