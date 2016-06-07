@@ -437,4 +437,4 @@ if(WIN32)
   # Also set DLL compile flags
   set_target_properties(harpfilter PROPERTIES COMPILE_FLAGS "-DLIBHARPDLL")
 endif(WIN32)
-install(TARGETS harpdump DESTINATION bin)
+install(TARGETS harpfilter DESTINATION bin)
