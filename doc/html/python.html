@@ -632,18 +632,26 @@ a semi-colon separated string of key=value pairs.</li>
 
 <dl class="function">
 <dt id="harp.import_product">
-<code class="descclassname">harp.</code><code class="descname">import_product</code><span class="sig-paren">(</span><em>filename</em><span class="sig-paren">)</span></dt>
+<code class="descclassname">harp.</code><code class="descname">import_product</code><span class="sig-paren">(</span><em>filename</em>, <em>actions=&quot;&quot;</em><span class="sig-paren">)</span></dt>
 <dd><p>Import a HARP compliant product.</p>
 <p>The file format (NetCDF/HDF4/HDF5) of the product will be auto-detected.</p>
 <table class="docutils field-list" frame="void" rules="none">
 <col class="field-name" />
 <col class="field-body" />
 <tbody valign="top">
-<tr class="field-odd field"><th class="field-name">Parameters:</th><td class="field-body"><strong>filename</strong> (<em>str</em>) &#8211; Filename of the product to import.</td>
+<tr class="field-odd field"><th class="field-name">Parameters:</th><td class="field-body"><ul class="first simple">
+<li><strong>filename</strong> (<em>str</em>) &#8211; Filename of the product to import.</li>
+<li><strong>actions</strong> (<em>str</em>) &#8211; Actions to execute on the product after it has been
+imported; should be specified as a semi-colon separated
+string of actions.</li>
+</ul>
+</td>
 </tr>
-<tr class="field-even field"><th class="field-name">Returns:</th><td class="field-body">Imported product.</td>
+<tr class="field-even field"><th class="field-name">Returns:</th><td class="field-body"><p class="first">Imported product.</p>
+</td>
 </tr>
-<tr class="field-odd field"><th class="field-name">Return type:</th><td class="field-body"><a class="reference internal" href="#harp.Product" title="harp.Product">harp.Product</a></td>
+<tr class="field-odd field"><th class="field-name">Return type:</th><td class="field-body"><p class="first last"><a class="reference internal" href="#harp.Product" title="harp.Product">harp.Product</a></p>
+</td>
 </tr>
 </tbody>
 </table>
@@ -807,6 +815,22 @@ retrieved from the HARP C library.</li>
 </dd></dl>
 
 <dl class="exception">
+<dt id="harp.UnsupportedTypeError">
+<em class="property">exception </em><code class="descclassname">harp.</code><code class="descname">UnsupportedTypeError</code><span class="sig-paren">(</span><em>*args</em><span class="sig-paren">)</span></dt>
+<dd><p>Exception raised when unsupported types are encountered, either on the Python
+or on the C side of the interface.</p>
+<table class="docutils field-list" frame="void" rules="none">
+<col class="field-name" />
+<col class="field-body" />
+<tbody valign="top">
+<tr class="field-odd field"><th class="field-name">Parameters:</th><td class="field-body"><strong>args</strong> (<em>tuple</em>) &#8211; Tuple of arguments passed to the constructor; usually a
+single string containing an error message.</td>
+</tr>
+</tbody>
+</table>
+</dd></dl>
+
+<dl class="exception">
 <dt id="harp.UnsupportedDimensionError">
 <em class="property">exception </em><code class="descclassname">harp.</code><code class="descname">UnsupportedDimensionError</code><span class="sig-paren">(</span><em>*args</em><span class="sig-paren">)</span></dt>
 <dd><p>Exception raised when unsupported dimensions are encountered, either on the
@@ -823,19 +847,10 @@ single string containing an error message.</td>
 </dd></dl>
 
 <dl class="exception">
-<dt id="harp.UnsupportedTypeError">
-<em class="property">exception </em><code class="descclassname">harp.</code><code class="descname">UnsupportedTypeError</code><span class="sig-paren">(</span><em>*args</em><span class="sig-paren">)</span></dt>
-<dd><p>Exception raised when unsupported types are encountered, either on the Python
-or on the C side of the interface.</p>
-<table class="docutils field-list" frame="void" rules="none">
-<col class="field-name" />
-<col class="field-body" />
-<tbody valign="top">
-<tr class="field-odd field"><th class="field-name">Parameters:</th><td class="field-body"><strong>args</strong> (<em>tuple</em>) &#8211; Tuple of arguments passed to the constructor; usually a
-single string containing an error message.</td>
-</tr>
-</tbody>
-</table>
+<dt id="harp.NoDataError">
+<em class="property">exception </em><code class="descclassname">harp.</code><code class="descname">NoDataError</code></dt>
+<dd><p>Exception raised when the product returned from an ingestion or import
+contains no variables, or variables without data.</p>
 </dd></dl>
 
 </div>
