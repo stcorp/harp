@@ -38,20 +38,6 @@ class Error(Exception):
     """Exception base class for all HARP Python interface errors."""
     pass
 
-class UnsupportedTypeError(Error):
-    """Exception raised when unsupported types are encountered, either on the Python
-    or on the C side of the interface.
-
-    """
-    pass
-
-class UnsupportedDimensionError(Error):
-    """Exception raised when unsupported dimensions are encountered, either on the
-    Python or on the C side of the interface.
-
-    """
-    pass
-
 class CLibraryError(Error):
     """Exception raised when an error occurs inside the HARP C library.
 
@@ -75,6 +61,28 @@ class CLibraryError(Error):
 
     def __str__(self):
         return self.strerror
+
+class UnsupportedTypeError(Error):
+    """Exception raised when unsupported types are encountered, either on the Python
+    or on the C side of the interface.
+
+    """
+    pass
+
+class UnsupportedDimensionError(Error):
+    """Exception raised when unsupported dimensions are encountered, either on the
+    Python or on the C side of the interface.
+
+    """
+    pass
+
+class NoDataError(Error):
+    """Exception raised when the product returned from an ingestion or import
+    contains no variables, or variables without data.
+
+    """
+    def __init__(self):
+        super(NoDataError, self).__init__("product contains no variables, or variables without data")
 
 class Variable(object):
     """Python representation of a HARP variable.
@@ -954,6 +962,10 @@ def import_product(filename, actions=""):
         if actions and _lib.harp_product_execute_actions(c_product_ptr[0], _encode_string(actions)) != 0:
             raise CLibraryError()
 
+        # Raise an exception if the imported C product contains no variables, or variables without data.
+        if _lib.harp_product_is_empty(c_product_ptr[0]) == 1:
+            raise NoDataError()
+
         # Convert the C product into its Python representation.
         return _import_product(c_product_ptr[0])
 
@@ -978,6 +990,10 @@ def ingest_product(filename, actions="", options=""):
         raise CLibraryError()
 
     try:
+        # Raise an exception if the ingested C product contains no variables, or variables without data.
+        if _lib.harp_product_is_empty(c_product_ptr[0]) == 1:
+            raise NoDataError()
+
         # Convert the C product into its Python representation.
         return _import_product(c_product_ptr[0])
 

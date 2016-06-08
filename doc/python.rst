@@ -461,6 +461,14 @@ This sections describes the exceptions defined by the HARP Python interface.
    :param str strerror: error message; if None, the error message will be
                         retrieved from the HARP C library.
 
+.. py:exception:: harp.UnsupportedTypeError(*args)
+
+   Exception raised when unsupported types are encountered, either on the Python
+   or on the C side of the interface.
+
+   :param tuple args: Tuple of arguments passed to the constructor; usually a
+                      single string containing an error message.
+
 .. py:exception:: harp.UnsupportedDimensionError(*args)
 
    Exception raised when unsupported dimensions are encountered, either on the
@@ -469,10 +477,7 @@ This sections describes the exceptions defined by the HARP Python interface.
    :param tuple args: Tuple of arguments passed to the constructor; usually a
                       single string containing an error message.
 
-.. py:exception:: harp.UnsupportedTypeError(*args)
+.. py:exception:: harp.NoDataError()
 
-   Exception raised when unsupported types are encountered, either on the Python
-   or on the C side of the interface.
-
-   :param tuple args: Tuple of arguments passed to the constructor; usually a
-                      single string containing an error message.
+   Exception raised when the product returned from an ingestion or import
+   contains no variables, or variables without data.
