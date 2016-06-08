@@ -1464,3 +1464,50 @@ int harp_action_get_variable_name(const harp_action *action, const char **variab
 
     return 0;
 }
+
+/** \addtogroup harp_product
+ * @{
+ */
+
+/**
+ * Execute one or more actions on a product.
+ * \param  product Product that the actions should be executed on.
+ * \param  actions Actions to execute; should be specified as a semi-colon
+ *                 separated string of actions.
+ * \return
+ *   \arg \c 0, Success.
+ *   \arg \c -1, Error occurred (check #harp_errno).
+ */
+LIBHARP_API int harp_product_execute_actions(harp_product *product, const char *actions)
+{
+    harp_action_list *action_list;
+
+    if (product == NULL)
+    {
+        harp_set_error(HARP_ERROR_INVALID_ARGUMENT, "product is NULL");
+        return -1;
+    }
+
+    if (actions == NULL)
+    {
+        harp_set_error(HARP_ERROR_INVALID_ARGUMENT, "actions is NULL");
+        return -1;
+    }
+
+    if (harp_action_list_from_string(actions, &action_list) != 0)
+    {
+        return -1;
+    }
+
+    if (harp_product_execute_action_list(product, action_list) != 0)
+    {
+        harp_action_list_delete(action_list);
+        return -1;
+    }
+
+    harp_action_list_delete(action_list);
+
+    return 0;
+}
+
+/** @} */

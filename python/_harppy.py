@@ -932,21 +932,31 @@ def to_dict(product):
 
     return dictionary
 
-def import_product(filename):
+def import_product(filename, actions=""):
     """Import a HARP compliant product.
 
     The file format (NetCDF/HDF4/HDF5) of the product will be auto-detected.
 
     Arguments:
     filename -- Filename of the product to import.
+    actions  -- Actions to execute on the product after it has been imported; should
+                be specified as a semi-colon separated string of actions.
 
     """
     c_product_ptr = _ffi.new("harp_product **")
+
+    # Import the product as a C product.
     if _lib.harp_import(_encode_path(filename), c_product_ptr) != 0:
         raise CLibraryError()
 
     try:
+        # Execute action list expression on the C product.
+        if actions and _lib.harp_product_execute_actions(c_product_ptr[0], _encode_string(actions)) != 0:
+            raise CLibraryError()
+
+        # Convert the C product into its Python representation.
         return _import_product(c_product_ptr[0])
+
     finally:
         _lib.harp_product_delete(c_product_ptr[0])
 
@@ -955,18 +965,22 @@ def ingest_product(filename, actions="", options=""):
 
     Arguments:
     filename -- Filename of the product to ingest.
-    actions  -- Actions to apply as part of the ingestion; should be specified as a
+    actions  -- Actions to execute as part of the ingestion; should be specified as a
                 semi-colon separated string of actions.
     options  -- Ingestion module specific options; should be specified as a semi-
                 colon separated string of key=value pairs.
 
     """
     c_product_ptr = _ffi.new("harp_product **")
+
+    # Ingest the product as a C product.
     if _lib.harp_ingest(_encode_path(filename), _encode_string(actions), _encode_string(options), c_product_ptr) != 0:
         raise CLibraryError()
 
     try:
+        # Convert the C product into its Python representation.
         return _import_product(c_product_ptr[0])
+
     finally:
         _lib.harp_product_delete(c_product_ptr[0])
 
@@ -988,11 +1002,13 @@ def export_product(product, filename, file_format="netcdf"):
         raise CLibraryError()
 
     try:
+        # Convert the Python product to its C representation.
         _export_product(product, c_product_ptr[0])
 
-        # Call harp_export()
+        # Export the C product to a file.
         if _lib.harp_export(_encode_path(filename), _encode_string(file_format), c_product_ptr[0]) != 0:
             raise CLibraryError()
+
     finally:
         _lib.harp_product_delete(c_product_ptr[0])
 

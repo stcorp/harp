@@ -350,13 +350,16 @@ This section describes the functions defined by the HARP Python library.
    :returns: Ingested product.
    :rtype: harp.Product
 
-.. py:function:: harp.import_product(filename)
+.. py:function:: harp.import_product(filename, actions="")
 
    Import a HARP compliant product.
 
    The file format (NetCDF/HDF4/HDF5) of the product will be auto-detected.
 
    :param str filename: Filename of the product to import.
+   :param str actions: Actions to execute on the product after it has been
+                       imported; should be specified as a semi-colon separated
+                       string of actions.
    :returns: Imported product.
    :rtype: harp.Product
 
