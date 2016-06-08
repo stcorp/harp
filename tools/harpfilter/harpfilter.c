@@ -19,7 +19,6 @@
  */
 
 #include "harp-internal.h"
-#include "harp-action.h"
 
 #include <stdio.h>
 #include <stdlib.h>
@@ -206,7 +205,6 @@ static int list_conversions(int argc, char *argv[])
 static int filter(int argc, char *argv[])
 {
     harp_product *product;
-    harp_action_list *action_list;
     const char *actions = NULL;
     const char *output_filename = NULL;
     const char *output_format = "netcdf";
@@ -264,20 +262,11 @@ static int filter(int argc, char *argv[])
 
     if (actions != NULL)
     {
-        if (harp_action_list_from_string(actions, &action_list) != 0)
+        if (harp_product_execute_actions(product, actions) != 0)
         {
             harp_product_delete(product);
             return -1;
         }
-
-        if (harp_product_execute_action_list(product, action_list) != 0)
-        {
-            harp_action_list_delete(action_list);
-            harp_product_delete(product);
-            return -1;
-        }
-
-        harp_action_list_delete(action_list);
     }
 
     if (harp_product_is_empty(product))
