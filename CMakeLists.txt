@@ -459,13 +459,13 @@ function(add_codadef name)
     if(WIN32)
       message(FATAL_ERROR Cannot create codadef files on Windows, use the official source package of HARP)
     else(WIN32)
-      execute_process(COMMAND "${CMAKE_SOURCE_DIR}/codadef.sh" "--date" "${CMAKE_CURRENT_SOURCE_DIR}/definitions/${name}"
+      execute_process(COMMAND "${CMAKE_CURRENT_SOURCE_DIR}/codadef.sh" "--date" "${CMAKE_CURRENT_SOURCE_DIR}/definitions/${name}"
         OUTPUT_VARIABLE "CODADEF_VERSION"
         OUTPUT_STRIP_TRAILING_WHITESPACE)
       set(CODADEF ${name}-${CODADEF_VERSION}.codadef)
       add_custom_command(OUTPUT "${CMAKE_CURRENT_BINARY_DIR}/${CODADEF}"
-        COMMAND "${CMAKE_SOURCE_DIR}/codadef.sh" "${CMAKE_CURRENT_SOURCE_DIR}/definitions/${name}"
-        DEPENDS "${CMAKE_SOURCE_DIR}/codadef.sh")
+        COMMAND "${CMAKE_CURRENT_SOURCE_DIR}/codadef.sh" "${CMAKE_CURRENT_SOURCE_DIR}/definitions/${name}"
+        DEPENDS "${CMAKE_CURRENT_SOURCE_DIR}/codadef.sh")
       install(FILES ${CMAKE_CURRENT_BINARY_DIR}/${CODADEF} DESTINATION ${CODADEF_INSTALL_DIR})
       add_custom_target(codadef_${name} ALL DEPENDS "${CMAKE_CURRENT_BINARY_DIR}/${CODADEF}")
     endif(WIN32)
