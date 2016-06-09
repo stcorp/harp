@@ -297,6 +297,8 @@ LIBHARP_API double harp_mininf(void);
 LIBHARP_API void harp_str64(int64_t a, char *s);
 LIBHARP_API void harp_str64u(uint64_t a, char *s);
 
+LIBHARP_API const char *harp_basename(const char *path);
+
 LIBHARP_API long harp_get_size_for_type(harp_data_type data_type);
 
 LIBHARP_API const char *harp_get_data_type_name(harp_data_type data_type);
@@ -314,6 +316,16 @@ LIBHARP_API int harp_set_option_enable_aux_usstd76(int enable);
 LIBHARP_API int harp_get_option_enable_aux_usstd76(void);
 
 LIBHARP_API int harp_convert_unit(const char *from_unit, const char *to_unit, long num_values, double *value);
+
+/* Geometry */
+LIBHARP_API int harp_geometry_get_point_distance(double longitude_a, double latitude_a, double longitude_b,
+                                                 double latitude_b, double *distance);
+LIBHARP_API int harp_geometry_has_point_in_area(double longitude_point, double latitude_point, int num_vertices,
+                                                double *longitude_bounds, double *latitude_bounds, int *in_area);
+LIBHARP_API int harp_geometry_has_area_overlap(int num_vertices_a, double *longitude_bounds_a,
+                                               double *latitude_bounds_a, int num_vertices_b,
+                                               double *longitude_bounds_b, double *latitude_bounds_b, int *has_overlap,
+                                               double *percentage);
 
 /* Error */
 LIBHARP_API void harp_set_error(int err, const char *message, ...);

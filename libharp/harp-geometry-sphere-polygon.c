@@ -1194,3 +1194,98 @@ double harp_spherical_polygon_spherical_point_distance_in_meters(const harp_sphe
 
     return d_nearest;
 }
+
+/** Determine whether a point is in an area on the surface of the Earth
+ * This function assumes a spherical earth
+ * \param longitude_point Longitude of the point
+ * \param latitude_point Latitude of the point
+ * \param num_vertices The number of vertices of the bounding polygon of the area
+ * \param longitude_bounds Longitude values of the bounds of the area polygon
+ * \param latitude_bounds Latitude values of the bounds of the area polygon
+ * \param in_area Pointer to the C variable where the result will be stored (1 if point is in the area, 0 otherwise).
+ * \return
+ *   \arg \c 0, Success.
+ *   \arg \c -1, Error occurred (check #harp_errno).
+ */
+LIBHARP_API int harp_geometry_has_point_in_area(double longitude_point, double latitude_point, int num_vertices,
+                                                double *longitude_bounds, double *latitude_bounds, int *in_area)
+{
+    harp_spherical_point point;
+    harp_spherical_polygon *polygon = NULL;
+
+    point.lat = latitude_point;
+    point.lon = longitude_point;
+    harp_spherical_point_rad_from_deg(&point);
+    harp_spherical_point_check(&point);
+
+    if (harp_spherical_polygon_from_longitude_latitude_bounds(0, num_vertices, longitude_bounds, latitude_bounds,
+                                                              &polygon) != 0)
+    {
+        return -1;
+    }
+
+    *in_area = harp_spherical_polygon_contains_point(polygon, &point);
+
+    harp_spherical_polygon_delete(polygon);
+
+    return 0;
+}
+
+/** Determine whether a point is in an area on the surface of the Earth
+ * This function assumes a spherical earth
+ * \param num_vertices_a The number of vertices of the bounding polygon of the first area
+ * \param longitude_bounds_a Longitude values of the bounds of the area of the first polygon
+ * \param latitude_bounds_a Latitude values of the bounds of the area of the first polygon
+ * \param num_vertices_b The number of vertices of the bounding polygon of the second area
+ * \param longitude_bounds_b Longitude values of the bounds of the area of the second polygon
+ * \param latitude_bounds_b Latitude values of the bounds of the area of the second polygon
+ * \param has_overlap Pointer to the C variable where the result will be stored (1 if there is overlap, 0 otherwise).
+ * \param percentage Pointer to the C variable where the overlap percentage will be stored (use NULL if not needed).
+ * \return
+ *   \arg \c 0, Success.
+ *   \arg \c -1, Error occurred (check #harp_errno).
+ */
+LIBHARP_API int harp_geometry_has_area_overlap(int num_vertices_a, double *longitude_bounds_a,
+                                               double *latitude_bounds_a, int num_vertices_b,
+                                               double *longitude_bounds_b, double *latitude_bounds_b, int *has_overlap,
+                                               double *percentage)
+{
+    harp_spherical_polygon *polygon_a = NULL;
+    harp_spherical_polygon *polygon_b = NULL;
+
+    if (harp_spherical_polygon_from_longitude_latitude_bounds(0, num_vertices_a, longitude_bounds_a, latitude_bounds_a,
+                                                              &polygon_a) != 0)
+    {
+        return -1;
+    }
+    if (harp_spherical_polygon_from_longitude_latitude_bounds(0, num_vertices_b, longitude_bounds_b, latitude_bounds_b,
+                                                              &polygon_b) != 0)
+    {
+        return -1;
+    }
+
+    if (percentage != NULL)
+    {
+        /* Determine overlapping percentage */
+        if (harp_spherical_polygon_overlapping_percentage(polygon_a, polygon_b, has_overlap, percentage) != 0)
+        {
+            harp_spherical_polygon_delete(polygon_a);
+            harp_spherical_polygon_delete(polygon_b);
+            return -1;
+        }
+    }
+    else
+    {
+        if (harp_spherical_polygon_overlapping(polygon_a, polygon_b, has_overlap) != 0)
+        {
+            harp_spherical_polygon_delete(polygon_a);
+            harp_spherical_polygon_delete(polygon_b);
+            return -1;
+        }
+    }
+
+    harp_spherical_polygon_delete(polygon_a);
+    harp_spherical_polygon_delete(polygon_b);
+
+    return 0;
+}

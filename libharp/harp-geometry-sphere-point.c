@@ -209,25 +209,6 @@ double harp_spherical_point_distance_in_meters(const harp_spherical_point *point
     return harp_spherical_point_distance(pointp, pointq) * CONST_EARTH_RADIUS_WGS84_SPHERE;
 }
 
-/* Return point distance in meters */
-int harp_spherical_point_distance_from_longitude_latitude(double longitude_a, double latitude_a,
-                                                          double longitude_b, double latitude_b, double *point_distance)
-{
-    harp_spherical_point point_a, point_b;
-
-    point_a.lat = latitude_a * (double)(CONST_DEG2RAD);
-    point_a.lon = longitude_a * (double)(CONST_DEG2RAD);
-    point_b.lat = latitude_b * (double)(CONST_DEG2RAD);
-    point_b.lon = longitude_b * (double)(CONST_DEG2RAD);
-
-    harp_spherical_point_check(&point_a);
-    harp_spherical_point_check(&point_b);
-
-    *point_distance = harp_spherical_point_distance_in_meters(&point_a, &point_b);
-
-    return 0;
-}
-
 /* Obtain a point b that is a distance 'radius' [m] away and with given azimuth angle from point a.
  * The azimuth angle is defined clockwise when looking downward. */
 int harp_spherical_point_at_distance_and_angle(const harp_spherical_point *point_a, double radius,
@@ -323,4 +304,35 @@ void harp_spherical_point_array_delete(harp_spherical_point_array *point_array)
         free(point_array->point);
     }
     free(point_array);
+}
+
+
+/** Calculate the distance between two points on the surface of the Earth meters
+ * This function assumes a spherical earth
+ * \param longitude_a Longitude of first point
+ * \param latitude_a Latitude of first point
+ * \param longitude_b Longitude of second point
+ * \param latitude_b Latitude of second point
+ * \param distance Pointer to the C variable where the surface distance in [m] between the two points will be stored.
+ * \return
+ *   \arg \c 0, Success.
+ *   \arg \c -1, Error occurred (check #harp_errno).
+ */
+LIBHARP_API int harp_geometry_get_point_distance(double longitude_a, double latitude_a, double longitude_b,
+                                                 double latitude_b, double *distance)
+
+{
+    harp_spherical_point point_a, point_b;
+
+    point_a.lat = longitude_a * (double)(CONST_DEG2RAD);
+    point_a.lon = latitude_a * (double)(CONST_DEG2RAD);
+    point_b.lat = longitude_b * (double)(CONST_DEG2RAD);
+    point_b.lon = latitude_b * (double)(CONST_DEG2RAD);
+
+    harp_spherical_point_check(&point_a);
+    harp_spherical_point_check(&point_b);
+
+    *distance = harp_spherical_point_distance_in_meters(&point_a, &point_b);
+
+    return 0;
 }

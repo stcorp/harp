@@ -38,7 +38,7 @@
  * \param data_type HARP basic data type
  * \return if the data type is known a string containing the name of the type, otherwise the string "unknown".
  */
-const char *harp_get_data_type_name(harp_data_type data_type)
+LIBHARP_API const char *harp_get_data_type_name(harp_data_type data_type)
 {
     switch (data_type)
     {
@@ -65,7 +65,7 @@ const char *harp_get_data_type_name(harp_data_type data_type)
  * \param data_type Data type for which to retrieve the size.
  * \return The size of the data type in bytes.
  */
-long harp_get_size_for_type(harp_data_type data_type)
+LIBHARP_API long harp_get_size_for_type(harp_data_type data_type)
 {
     switch (data_type)
     {
@@ -274,7 +274,7 @@ int harp_is_valid_max_for_type(harp_data_type data_type, harp_scalar value)
  *   \arg \c 1, The double value is a finite number.
  *   \arg \c 0, The double value is not a finite number.
  */
-int harp_isfinite(double x)
+LIBHARP_API int harp_isfinite(double x)
 {
     return (!harp_isnan(x) && !harp_isinf(x));
 }
@@ -286,7 +286,7 @@ int harp_isfinite(double x)
  *   \arg \c 1, The double value equals NaN.
  *   \arg \c 0, The double value does not equal NaN.
  */
-int harp_isnan(double x)
+LIBHARP_API int harp_isnan(double x)
 {
     uint64_t e_mask, f_mask;
 
@@ -316,7 +316,7 @@ int harp_isnan(double x)
  * \ingroup harp_general
  * \return The double value 'NaN'.
  */
-double harp_nan(void)
+LIBHARP_API double harp_nan(void)
 {
     union
     {
@@ -337,7 +337,7 @@ double harp_nan(void)
  *   \arg \c 1, The double value equals inf.
  *   \arg \c 0, The double value does not equal inf.
  */
-int harp_isinf(double x)
+LIBHARP_API int harp_isinf(double x)
 {
     return harp_isplusinf(x) || harp_ismininf(x);
 }
@@ -349,7 +349,7 @@ int harp_isinf(double x)
  *   \arg \c 1, The double value equals +inf.
  *   \arg \c 0, The double value does not equal +inf.
  */
-int harp_isplusinf(double x)
+LIBHARP_API int harp_isplusinf(double x)
 {
     uint64_t plusinf;
 
@@ -374,7 +374,7 @@ int harp_isplusinf(double x)
  *   \arg \c 1, The double value equals -inf.
  *   \arg \c 0, The double value does not equal -inf.
  */
-int harp_ismininf(double x)
+LIBHARP_API int harp_ismininf(double x)
 {
     uint64_t mininf;
 
@@ -396,7 +396,7 @@ int harp_ismininf(double x)
  * \ingroup harp_general
  * \return The double value '+inf'.
  */
-double harp_plusinf(void)
+LIBHARP_API double harp_plusinf(void)
 {
     union
     {
@@ -414,7 +414,7 @@ double harp_plusinf(void)
  * \ingroup harp_general
 * \return The double value '-inf'.
 */
-double harp_mininf(void)
+LIBHARP_API double harp_mininf(void)
 {
     union
     {
@@ -434,7 +434,7 @@ double harp_mininf(void)
  * \param a  A signed 64 bit integer value.
  * \param s  A character buffer that is at least 21 bytes long.
  */
-void harp_str64(int64_t a, char *s)
+LIBHARP_API void harp_str64(int64_t a, char *s)
 {
     if (a < 0)
     {
@@ -453,7 +453,7 @@ void harp_str64(int64_t a, char *s)
  * \param a  An unsigned 64 bit integer value.
  * \param s  A character buffer that is at least 21 bytes long.
  */
-void harp_str64u(uint64_t a, char *s)
+LIBHARP_API void harp_str64u(uint64_t a, char *s)
 {
     if (a <= 4294967295UL)
     {
@@ -1264,7 +1264,7 @@ int harp_array_transpose(harp_data_type data_type, int num_dimensions, const lon
  * \return Pointer to the last pathname component of \a path, i.e. everything from the end of \a path up to the first
  *   pathname component separation character ('\\' or '/' on Windows, '/' otherwise).
  */
-const char *harp_basename(const char *path)
+LIBHARP_API const char *harp_basename(const char *path)
 {
     if (path == NULL)
     {
@@ -1291,24 +1291,5 @@ const char *harp_basename(const char *path)
 #endif
 
         return (separator == NULL ? path : separator + 1);
-    }
-}
-
-/** Remove extension from \a path.
- * The last extension separation character, i.e. '.', found in \a path will be replaced by a null termination character
- * '\0', thus effectively removing the extension.
- * \param path Path to remove extension from.
- */
-void harp_remove_extension(char *path)
-{
-    if (path != NULL)
-    {
-        char *extension = NULL;
-
-        extension = strrchr(path, '.');
-        if (extension != NULL)
-        {
-            *extension = '\0';
-        }
     }
 }

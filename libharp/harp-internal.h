@@ -123,11 +123,6 @@ harp_scalar harp_get_valid_max_for_type(harp_data_type data_type);
 int harp_is_fill_value_for_type(harp_data_type data_type, harp_scalar value);
 int harp_is_valid_min_for_type(harp_data_type data_type, harp_scalar valid_min);
 int harp_is_valid_max_for_type(harp_data_type data_type, harp_scalar valid_max);
-const char *harp_basename(const char *path);
-void harp_remove_extension(char *path);
-void harp_strip_path_from_filename(const char *path_plus_filename, const char **filename);
-void harp_strip_extension_from_filename(char *filename);
-void harp_strip_descriptor_from_variable_name(char *variable_name);
 
 /* Auxiliary data sources */
 int harp_aux_afgl86_get_profile(const char *name, double datetime, double latitude, int *num_vertical,
