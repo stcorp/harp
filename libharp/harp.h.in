@@ -149,6 +149,7 @@ LIBHARP_API extern int harp_errno;
 
 #define HARP_ERROR_NO_DATA                                  (-900)
 
+/* *CFFI-OFF* */
 
 /** Default units used in HARP */
 #define HARP_UNIT_ACCELERATION "m/s2"
@@ -181,6 +182,7 @@ LIBHARP_API extern int harp_errno;
 #define HARP_UNIT_WAVELENGTH "nm"
 #define HARP_UNIT_WAVENUMBER "1/cm"
 
+/* *CFFI-ON* */
 
 /** \addtogroup harp_general
  * @{

@@ -149,6 +149,41 @@ LIBHARP_API extern int harp_errno;
 
 #define HARP_ERROR_NO_DATA                                  (-900)
 
+/* *CFFI-OFF* */
+
+/** Default units used in HARP */
+#define HARP_UNIT_ACCELERATION "m/s2"
+#define HARP_UNIT_ANGLE "degree"
+#define HARP_UNIT_AEROSOL_EXTINCTION "1/m"
+#define HARP_UNIT_AEROSOL_EXTINCTION_SQUARED "(1/m)^2"
+#define HARP_UNIT_COLUMN_NUMBER_DENSITY "molec/m2"
+#define HARP_UNIT_COLUMN_NUMBER_DENSITY_SQUARED "(molec/m2)^2"
+#define HARP_UNIT_DATETIME "s since 2000-01-01"
+#define HARP_UNIT_DIMENSIONLESS ""
+#define HARP_UNIT_FREQUENCY "Hz"
+#define HARP_UNIT_IRRADIANCE "mW/m2"
+#define HARP_UNIT_LATITUDE "degree_north"
+#define HARP_UNIT_LENGTH "m"
+#define HARP_UNIT_LONGITUDE "degree_east"
+#define HARP_UNIT_MASS_DENSITY "ug/m3"
+#define HARP_UNIT_MASS_MIXING_RATIO "ug/g"
+#define HARP_UNIT_MASS_MIXING_RATIO_SQUARED "(ug/g)^2"
+#define HARP_UNIT_MOLAR_MASS "g/mol"
+#define HARP_UNIT_NUMBER_DENSITY "molec/m3"
+#define HARP_UNIT_NUMBER_DENSITY_SQUARED "(molec/m3)^2"
+#define HARP_UNIT_PERCENT "%"
+#define HARP_UNIT_PRESSURE "hPa"
+#define HARP_UNIT_RADIANCE "mW/m2/sr"
+#define HARP_UNIT_SPEED "m/s"
+#define HARP_UNIT_TEMPERATURE "K"
+#define HARP_UNIT_TIME "s"
+#define HARP_UNIT_VOLUME_MIXING_RATIO "ppmv"
+#define HARP_UNIT_VOLUME_MIXING_RATIO_SQUARED "(ppmv)^2"
+#define HARP_UNIT_WAVELENGTH "nm"
+#define HARP_UNIT_WAVENUMBER "1/cm"
+
+/* *CFFI-ON* */
+
 /** \addtogroup harp_general
  * @{
  */
@@ -264,7 +299,16 @@ LIBHARP_API double harp_mininf(void);
 LIBHARP_API void harp_str64(int64_t a, char *s);
 LIBHARP_API void harp_str64u(uint64_t a, char *s);
 
+LIBHARP_API const char *harp_basename(const char *path);
+
 LIBHARP_API long harp_get_size_for_type(harp_data_type data_type);
+
+LIBHARP_API harp_scalar harp_get_fill_value_for_type(harp_data_type data_type);
+LIBHARP_API harp_scalar harp_get_valid_min_for_type(harp_data_type data_type);
+LIBHARP_API harp_scalar harp_get_valid_max_for_type(harp_data_type data_type);
+LIBHARP_API int harp_is_fill_value_for_type(harp_data_type data_type, harp_scalar value);
+LIBHARP_API int harp_is_valid_min_for_type(harp_data_type data_type, harp_scalar value);
+LIBHARP_API int harp_is_valid_max_for_type(harp_data_type data_type, harp_scalar value);
 
 LIBHARP_API const char *harp_get_data_type_name(harp_data_type data_type);
 LIBHARP_API const char *harp_get_dimension_type_name(harp_dimension_type dimension_type);
@@ -281,6 +325,20 @@ LIBHARP_API int harp_set_option_enable_aux_usstd76(int enable);
 LIBHARP_API int harp_get_option_enable_aux_usstd76(void);
 
 LIBHARP_API int harp_convert_unit(const char *from_unit, const char *to_unit, long num_values, double *value);
+
+/* Generated documentation */
+LIBHARP_API int harp_doc_list_conversions(const harp_product *product, int (*print) (const char *, ...));
+LIBHARP_API int harp_doc_export_ingestion_definitions(const char *path, const char *format);
+
+/* Geometry */
+LIBHARP_API int harp_geometry_get_point_distance(double longitude_a, double latitude_a, double longitude_b,
+                                                 double latitude_b, double *distance);
+LIBHARP_API int harp_geometry_has_point_in_area(double longitude_point, double latitude_point, int num_vertices,
+                                                double *longitude_bounds, double *latitude_bounds, int *in_area);
+LIBHARP_API int harp_geometry_has_area_overlap(int num_vertices_a, double *longitude_bounds_a,
+                                               double *latitude_bounds_a, int num_vertices_b,
+                                               double *longitude_bounds_b, double *latitude_bounds_b, int *has_overlap,
+                                               double *percentage);
 
 /* Error */
 LIBHARP_API void harp_set_error(int err, const char *message, ...);
@@ -331,6 +389,7 @@ LIBHARP_API int harp_product_execute_actions(harp_product *product, const char *
 
 /* Ingestion */
 LIBHARP_API int harp_ingest(const char *filename, const char *script, const char *options, harp_product **product);
+LIBHARP_API int harp_ingest_test(const char *filename);
 
 /* Import */
 LIBHARP_API int harp_import(const char *filename, harp_product **product);
@@ -339,6 +398,76 @@ LIBHARP_API int harp_import_global_attributes(const char *filename, double *date
 
 /* Export */
 LIBHARP_API int harp_export(const char *filename, const char *format, const harp_product *product);
+
+/** \addtogroup harp_collocation
+ * @{
+ */
+
+/** All possible calculated differences for a collocation pair */
+enum harp_collocation_difference_type_enum
+{
+    harp_collocation_difference_unknown = -1,
+    harp_collocation_difference_absolute_time,
+    harp_collocation_difference_absolute_latitude,
+    harp_collocation_difference_absolute_longitude,
+    harp_collocation_difference_point_distance,
+    harp_collocation_difference_overlapping_percentage,
+    harp_collocation_difference_absolute_sza,
+    harp_collocation_difference_absolute_saa,
+    harp_collocation_difference_absolute_vza,
+    harp_collocation_difference_absolute_vaa,
+    harp_collocation_difference_absolute_theta,
+    harp_collocation_difference_delta   /* weighted norm of difference */
+};
+typedef enum harp_collocation_difference_type_enum harp_collocation_difference_type;
+
+#define HARP_COLLOCATION_RESULT_MAX_NUM_DIFFERENCES 11
+
+/** Entry for a single matched pair for a collocation between a dataset A and dataset B */
+struct harp_collocation_pair_struct
+{
+    long collocation_index;
+    char *source_product_a;
+    long index_a;
+    char *source_product_b;
+    long index_b;
+    double difference[HARP_COLLOCATION_RESULT_MAX_NUM_DIFFERENCES];
+};
+typedef struct harp_collocation_pair_struct harp_collocation_pair;
+
+/** Full set of matched pairs for a collocation between a dataset A and dataset B */
+typedef struct harp_collocation_result_struct
+{
+    int difference_available[HARP_COLLOCATION_RESULT_MAX_NUM_DIFFERENCES];
+    char *difference_unit[HARP_COLLOCATION_RESULT_MAX_NUM_DIFFERENCES];
+    long num_pairs;
+    harp_collocation_pair **pair;
+} harp_collocation_result;
+
+/** @} */
+
+/* Collocation result functions */
+LIBHARP_API int harp_collocation_pair_new(long collocation_index, const char *source_product_a, long index_a,
+                                          const char *source_product_b, long index_b, const double *difference,
+                                          harp_collocation_pair **new_pair);
+LIBHARP_API void harp_collocation_pair_delete(harp_collocation_pair *pair);
+LIBHARP_API int harp_collocation_pair_copy(const harp_collocation_pair *input_pair, harp_collocation_pair **new_pair);
+
+LIBHARP_API int harp_collocation_result_new(harp_collocation_result **new_collocation_result);
+LIBHARP_API void harp_collocation_result_delete(harp_collocation_result *collocation_result);
+LIBHARP_API int harp_collocation_result_sort_by_a(harp_collocation_result *collocation_result);
+LIBHARP_API int harp_collocation_result_sort_by_b(harp_collocation_result *collocation_result);
+LIBHARP_API int harp_collocation_result_sort_by_collocation_index(harp_collocation_result *collocation_result);
+LIBHARP_API int harp_collocation_result_filter_for_source_product_a(harp_collocation_result *collocation_result,
+                                                                    const char *source_product);
+LIBHARP_API int harp_collocation_result_filter_for_source_product_b(harp_collocation_result *collocation_result,
+                                                                    const char *source_product);
+LIBHARP_API int harp_collocation_result_add_pair(harp_collocation_result *collocation_result,
+                                                 harp_collocation_pair *pair);
+LIBHARP_API int harp_collocation_result_read(const char *collocation_result_filename,
+                                             harp_collocation_result **new_collocation_result);
+LIBHARP_API int harp_collocation_result_write(const char *collocation_result_filename,
+                                              harp_collocation_result *collocation_result);
 
 /* *CFFI-OFF* */
 
