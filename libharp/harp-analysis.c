@@ -128,14 +128,14 @@ int harp_determine_overlapping_scenario(double xmin_a, double xmax_a, double xmi
     harp_overlapping_scenario overlapping_scenario = harp_overlapping_scenario_no_overlap_b_a;
 
     /* Make sure that elements in range A and B are in ascending order */
-    if (HARP_GEOMETRY_FPlt(xmax_a, xmin_a))
+    if (xmax_a < xmin_a)
     {
         harp_set_error(HARP_ERROR_INVALID_ARGUMENT,
                        "arguments 'xmin_a' (%g) and 'xmax_a' (%g) for overlapping scenario must be in ascending order",
                        xmin_a, xmax_a);
         return -1;
     }
-    if (HARP_GEOMETRY_FPlt(xmax_b, xmin_b))
+    if (xmax_b < xmin_b)
     {
         harp_set_error(HARP_ERROR_INVALID_ARGUMENT,
                        "arguments 'xmin_b' (%g) and 'xmax_b' (%g) for overlapping scenario must be in ascending order",
@@ -144,45 +144,43 @@ int harp_determine_overlapping_scenario(double xmin_a, double xmax_a, double xmi
     }
 
     /* Consider all overlapping cases ... */
-    if (HARP_GEOMETRY_FPlt(xmax_b, xmin_a))
+    if (xmax_b < xmin_a)
     {
         /* There is no overlap, because range A lies rightwards of range B */
         overlapping_scenario = harp_overlapping_scenario_no_overlap_b_a;
         /* overlapping_percentage = 0.0; */
     }
-    else if (HARP_GEOMETRY_FPlt(xmax_a, xmin_b))
+    else if (xmax_a < xmin_b)
     {
         /* There is no overlap, because range A lies leftwards of range B */
         overlapping_scenario = harp_overlapping_scenario_no_overlap_a_b;
         /* overlapping_percentage = 0.0; */
     }
-    else if (HARP_GEOMETRY_FPeq(xmin_a, xmin_b) && HARP_GEOMETRY_FPeq(xmax_a, xmax_b))
+    else if (xmin_a == xmin_b && xmax_a == xmax_b)
     {
         /* The two ranges are exactly the same */
         overlapping_scenario = harp_overlapping_scenario_overlap_a_equals_b;
         /* overlapping_percentage = 100.0; */
     }
-    else if (HARP_GEOMETRY_FPlt(xmin_a, xmin_b) && HARP_GEOMETRY_FPle(xmin_b, xmax_a) &&
-             HARP_GEOMETRY_FPle(xmin_b, xmax_a) && HARP_GEOMETRY_FPlt(xmax_a, xmax_b))
+    else if (xmin_a < xmin_b && xmin_b <= xmax_a && xmin_b <= xmax_a && xmax_a < xmax_b)
     {
         /* There is a partial overlap between range A and B (min range B lies outside range A) */
         overlapping_scenario = harp_overlapping_scenario_partial_overlap_a_b;
         /* overlapping_percentage = 0.0; */
     }
-    else if (HARP_GEOMETRY_FPlt(xmin_b, xmin_a) && HARP_GEOMETRY_FPle(xmin_a, xmax_b) &&
-             HARP_GEOMETRY_FPle(xmin_a, xmax_b) && HARP_GEOMETRY_FPlt(xmax_b, xmax_a))
+    else if (xmin_b < xmin_a && xmin_a <= xmax_b && xmin_a <= xmax_b && xmax_b < xmax_a)
     {
         /* There is a partial overlap between range A and B (min range A lies outside range B) */
         overlapping_scenario = harp_overlapping_scenario_partial_overlap_b_a;
         /* overlapping_percentage = 0.0; */
     }
-    else if (HARP_GEOMETRY_FPge(xmin_b, xmin_a) && HARP_GEOMETRY_FPle(xmax_b, xmax_a))
+    else if (xmin_b >= xmin_a && xmax_b <= xmax_a)
     {
         /* Range A contains range B */
         overlapping_scenario = harp_overlapping_scenario_overlap_a_contains_b;
         /* overlapping_percentage = 100.0; */
     }
-    else if (HARP_GEOMETRY_FPge(xmin_a, xmin_b) && HARP_GEOMETRY_FPle(xmax_a, xmax_b))
+    else if (xmin_a >= xmin_b && xmax_a <= xmax_b)
     {
         /* Range B contains range A */
         overlapping_scenario = harp_overlapping_scenario_overlap_b_contains_a;
