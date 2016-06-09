@@ -1037,7 +1037,7 @@ static int expand_directory_name_into_file_names(const char *pathname, Dataset *
     pattern = malloc(strlen(pathname) + 4 + 1);
     if (pattern == NULL)
     {
-        coda_set_error(CODA_ERROR_OUT_OF_MEMORY, "out of memory (could not allocate %lu bytes) (%s:%u)",
+        harp_set_error(HARP_ERROR_OUT_OF_MEMORY, "out of memory (could not allocate %lu bytes) (%s:%u)",
                        (long)strlen(pathname) + 4 + 1, __FILE__, __LINE__);
         return -1;
     }
@@ -1052,7 +1052,7 @@ static int expand_directory_name_into_file_names(const char *pathname, Dataset *
             /* no files found */
             continue;
         }
-        coda_set_error(HARP_ERROR_INVALID_ARGUMENT, "could not access directory '%s'", pathname);
+        harp_set_error(HARP_ERROR_INVALID_ARGUMENT, "could not access directory '%s'", pathname);
         return -1;
     }
 
@@ -1103,7 +1103,7 @@ static int expand_directory_name_into_file_names(const char *pathname, Dataset *
             }
             else
             {
-                HARP_set_error(HARP_ERROR_INVALID_ARGUMENT, "could not retrieve directory entry");
+                harp_set_error(HARP_ERROR_INVALID_ARGUMENT, "could not retrieve directory entry");
                 dataset_delete(dataset);
                 FindClose(hSearch);
                 return -1;
