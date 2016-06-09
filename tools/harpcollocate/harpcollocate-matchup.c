@@ -19,7 +19,8 @@
  */
 
 #include "harpcollocate.h"
-#include "harp-geometry.h"
+
+#include <assert.h>
 
 typedef enum Reduced_product_variable_type_enum
 {
@@ -654,23 +655,8 @@ static int dataset_b_determine_subset(Cache *cache_b, const Collocation_options 
 
     for (j = 0; j < cache_b->num_files; j++)
     {
-        harp_overlapping_scenario overlapping_scenario;
-        double datetime_start_b = cache_b->datetime_start[j];
-        double datetime_stop_b = cache_b->datetime_stop[j];
-
-        if (harp_determine_overlapping_scenario(datetime_start_a, datetime_stop_a, datetime_start_b, datetime_stop_b,
-                                                &overlapping_scenario) != 0)
-        {
-            return -1;
-        }
-
         /* When datetime ranges overlap, the file needs to be used for matchup */
-        if (overlapping_scenario == harp_overlapping_scenario_overlap_a_equals_b ||
-            overlapping_scenario == harp_overlapping_scenario_overlap_a_equals_b ||
-            overlapping_scenario == harp_overlapping_scenario_partial_overlap_a_b ||
-            overlapping_scenario == harp_overlapping_scenario_partial_overlap_b_a ||
-            overlapping_scenario == harp_overlapping_scenario_overlap_a_contains_b ||
-            overlapping_scenario == harp_overlapping_scenario_overlap_b_contains_a)
+        if (cache_b->datetime_stop[j] >= datetime_start_a && cache_b->datetime_start[j] <= datetime_stop_a)
         {
             cache_b->file_is_needed[j] = 1;
             cache_b->num_subset_files++;
@@ -927,8 +913,7 @@ static int matchup_two_measurements_in_point_distance(const Reduced_product *red
     longitude_b = reduced_product_b->longitude->data.double_data[index_b];
 
     /* Calculate the distance between two points on the surface of the Earth sphere in [m] */
-    if (harp_spherical_point_distance_from_longitude_latitude
-        (longitude_a, latitude_a, longitude_b, latitude_b, &point_distance) != 0)
+    if (harp_geometry_get_point_distance(longitude_a, latitude_a, longitude_b, latitude_b, &point_distance) != 0)
     {
         return -1;
     }
@@ -946,11 +931,9 @@ static int matchup_two_measurements_point_in_area(const Reduced_product *reduced
                                                   const Reduced_product *reduced_product_polygons,
                                                   const long index_point, const long index_polygon, int *match)
 {
-    harp_spherical_point point;
-    harp_spherical_polygon *polygon = NULL;
-    const double *longitude_bounds;
-    const double *latitude_bounds;
-    long num_bounds;
+    double *longitude_bounds;
+    double *latitude_bounds;
+    int num_vertices;
 
     if (reduced_product_points->latitude == NULL || reduced_product_points->longitude == NULL)
     {
@@ -970,27 +953,12 @@ static int matchup_two_measurements_point_in_area(const Reduced_product *reduced
         return -1;
     }
 
-    point.lat = reduced_product_points->latitude->data.double_data[index_point];
-    point.lon = reduced_product_points->longitude->data.double_data[index_point];
-    harp_spherical_point_rad_from_deg(&point);
-    harp_spherical_point_check(&point);
-
-    longitude_bounds = reduced_product_polygons->longitude_bounds->data.double_data;
-    latitude_bounds = reduced_product_polygons->latitude_bounds->data.double_data;
-    num_bounds = reduced_product_polygons->latitude_bounds->dimension[1];
-
-    if (harp_spherical_polygon_from_longitude_latitude_bounds(index_polygon, num_bounds, longitude_bounds,
-                                                              latitude_bounds, &polygon) != 0)
-    {
-        return -1;
-    }
-
-    /* Point in area? */
-    *match = harp_spherical_polygon_contains_point(polygon, &point);
-
-    harp_spherical_polygon_delete(polygon);
-
-    return 0;
+    num_vertices = reduced_product_polygons->latitude_bounds->dimension[1];
+    longitude_bounds = &reduced_product_polygons->longitude_bounds->data.double_data[index_polygon * num_vertices];
+    latitude_bounds = &reduced_product_polygons->latitude_bounds->data.double_data[index_polygon * num_vertices];
+    return harp_geometry_has_point_in_area(reduced_product_points->longitude->data.double_data[index_point],
+                                           reduced_product_points->latitude->data.double_data[index_point],
+                                           num_vertices, longitude_bounds, latitude_bounds, match);
 }
 
 /* Matchup: do areas overlap? */
@@ -998,13 +966,13 @@ static int matchup_two_measurements_areas_in_areas(const Reduced_product *reduce
                                                    const Reduced_product *reduced_product_b,
                                                    const long index_a, const long index_b, int *match)
 {
-    long num_vertices_a;
-    long num_vertices_b;
-    harp_spherical_polygon *polygon_a = NULL;
-    harp_spherical_polygon *polygon_b = NULL;
-    int polygons_are_overlapping = 0;
+    double *longitude_bounds_a;
+    double *latitude_bounds_a;
+    double *longitude_bounds_b;
+    double *latitude_bounds_b;
+    int num_vertices_a;
+    int num_vertices_b;
 
-    /* Grab latitude bounds and longitude bounds for polygon area A */
     if (reduced_product_a->latitude_bounds == NULL || reduced_product_a->longitude_bounds == NULL)
     {
         harp_set_error(HARP_ERROR_NO_DATA, "latitude bounds and longitude bounds not in product '%s' (dataset a)",
@@ -1019,16 +987,6 @@ static int matchup_two_measurements_areas_in_areas(const Reduced_product *reduce
         return -1;
     }
 
-    num_vertices_a = reduced_product_a->latitude_bounds->dimension[1];
-
-    if (harp_spherical_polygon_from_longitude_latitude_bounds
-        (index_a, num_vertices_a, reduced_product_a->longitude_bounds->data.double_data,
-         reduced_product_a->latitude_bounds->data.double_data, &polygon_a) != 0)
-    {
-        return -1;
-    }
-
-    /* Grab latitude bounds and longitude bounds for polygon area B */
     if (reduced_product_b->latitude_bounds == NULL || reduced_product_b->longitude_bounds == NULL)
     {
         harp_set_error(HARP_ERROR_NO_DATA, "latitude bounds and longitude bounds not in product '%s' (dataset b)",
@@ -1043,30 +1001,15 @@ static int matchup_two_measurements_areas_in_areas(const Reduced_product *reduce
         return -1;
     }
 
+    num_vertices_a = reduced_product_a->latitude_bounds->dimension[1];
+    longitude_bounds_a = &reduced_product_a->longitude_bounds->data.double_data[index_a * num_vertices_a];
+    latitude_bounds_a = &reduced_product_a->latitude_bounds->data.double_data[index_a * num_vertices_a];
     num_vertices_b = reduced_product_b->latitude_bounds->dimension[1];
+    longitude_bounds_b = &reduced_product_b->longitude_bounds->data.double_data[index_b * num_vertices_a];
+    latitude_bounds_b = &reduced_product_b->latitude_bounds->data.double_data[index_b * num_vertices_a];
 
-    if (harp_spherical_polygon_from_longitude_latitude_bounds
-        (index_b, num_vertices_b, reduced_product_b->longitude_bounds->data.double_data,
-         reduced_product_b->latitude_bounds->data.double_data, &polygon_b) != 0)
-    {
-        return -1;
-    }
-
-    /* Determine overlapping percentage */
-    if (harp_spherical_polygon_overlapping(polygon_a, polygon_b, &polygons_are_overlapping) != 0)
-    {
-        harp_spherical_polygon_delete(polygon_a);
-        harp_spherical_polygon_delete(polygon_b);
-        return -1;
-    }
-
-    harp_spherical_polygon_delete(polygon_a);
-    harp_spherical_polygon_delete(polygon_b);
-
-    /* Note: larger percentage corresponds to better match */
-    *match = polygons_are_overlapping;
-
-    return 0;
+    return harp_geometry_has_area_overlap(num_vertices_a, longitude_bounds_a, latitude_bounds_a, num_vertices_b,
+                                          longitude_bounds_b, latitude_bounds_b, match, NULL);
 }
 
 /* Matchup: do areas overlap with an overlapping percentage larger than the criterion? */
@@ -1075,15 +1018,15 @@ static int matchup_two_measurements_in_overlapping_percentage(const Reduced_prod
                                                               const Collocation_options *collocation_options,
                                                               const long index_a, const long index_b,
                                                               const Collocation_criterion_type criterion_type,
-                                                              double *new_overlapping_percentage, int *match)
+                                                              double *overlapping_percentage, int *match)
 {
-    long num_vertices_a;
-    long num_vertices_b;
-    harp_spherical_polygon *polygon_a = NULL;
-    harp_spherical_polygon *polygon_b = NULL;
-    double overlapping_percentage;
+    double *longitude_bounds_a;
+    double *latitude_bounds_a;
+    double *longitude_bounds_b;
+    double *latitude_bounds_b;
+    int num_vertices_a;
+    int num_vertices_b;
     double da;
-    int polygons_are_overlapping = 0;
 
     /* Make some checks */
     if (criterion_type != collocation_criterion_type_overlapping_percentage)
@@ -1101,7 +1044,6 @@ static int matchup_two_measurements_in_overlapping_percentage(const Reduced_prod
     /* Grab the overlapping percentage criterion */
     da = collocation_options->criterion[criterion_type]->value;
 
-    /* Grab latitude bounds and longitude bounds for polygon area A */
     if (reduced_product_a->latitude_bounds == NULL || reduced_product_a->longitude_bounds == NULL)
     {
         harp_set_error(HARP_ERROR_NO_DATA, "latitude bounds and longitude bounds not in product '%s' (dataset a)",
@@ -1116,16 +1058,6 @@ static int matchup_two_measurements_in_overlapping_percentage(const Reduced_prod
         return -1;
     }
 
-    num_vertices_a = reduced_product_a->latitude_bounds->dimension[1];
-
-    if (harp_spherical_polygon_from_longitude_latitude_bounds
-        (index_a, num_vertices_a, reduced_product_a->longitude_bounds->data.double_data,
-         reduced_product_a->latitude_bounds->data.double_data, &polygon_a) != 0)
-    {
-        return -1;
-    }
-
-    /* Grab latitude bounds and longitude bounds for polygon area B */
     if (reduced_product_b->latitude_bounds == NULL || reduced_product_b->longitude_bounds == NULL)
     {
         harp_set_error(HARP_ERROR_NO_DATA, "latitude bounds and longitude bounds not in product '%s' (dataset b)",
@@ -1140,32 +1072,24 @@ static int matchup_two_measurements_in_overlapping_percentage(const Reduced_prod
         return -1;
     }
 
+    num_vertices_a = reduced_product_a->latitude_bounds->dimension[1];
+    longitude_bounds_a = &reduced_product_a->longitude_bounds->data.double_data[index_a * num_vertices_a];
+    latitude_bounds_a = &reduced_product_a->latitude_bounds->data.double_data[index_a * num_vertices_a];
     num_vertices_b = reduced_product_b->latitude_bounds->dimension[1];
+    longitude_bounds_b = &reduced_product_b->longitude_bounds->data.double_data[index_b * num_vertices_a];
+    latitude_bounds_b = &reduced_product_b->latitude_bounds->data.double_data[index_b * num_vertices_a];
 
-    if (harp_spherical_polygon_from_longitude_latitude_bounds
-        (index_b, num_vertices_b, reduced_product_b->longitude_bounds->data.double_data,
-         reduced_product_b->latitude_bounds->data.double_data, &polygon_b) != 0)
+    if (harp_geometry_has_area_overlap(num_vertices_a, longitude_bounds_a, latitude_bounds_a, num_vertices_b,
+                                       longitude_bounds_b, latitude_bounds_b, match, overlapping_percentage) != 0)
     {
         return -1;
     }
 
-    /* Determine overlapping percentage */
-    if (harp_spherical_polygon_overlapping_percentage(polygon_a, polygon_b, &polygons_are_overlapping,
-                                                      &overlapping_percentage) != 0)
+    if (*match)
     {
-        harp_spherical_polygon_delete(polygon_a);
-        harp_spherical_polygon_delete(polygon_b);
-        return -1;
+        *match = (*overlapping_percentage >= da);
     }
 
-    harp_spherical_polygon_delete(polygon_a);
-    harp_spherical_polygon_delete(polygon_b);
-
-    overlapping_percentage = fabs(overlapping_percentage);
-
-    /* Note: larger percentage corresponds to better match */
-    *match = (overlapping_percentage >= da);
-    *new_overlapping_percentage = overlapping_percentage;
     return 0;
 }
 
