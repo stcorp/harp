@@ -421,7 +421,7 @@ enum harp_collocation_difference_type_enum
 };
 typedef enum harp_collocation_difference_type_enum harp_collocation_difference_type;
 
-#define HARP_COLLOCATION_RESULT_MAX_NUM_DIFFERENCES 11
+#define HARP_COLLOCATION_RESULT_MAX_NUM_DIFFERENCES (11)
 
 /** Entry for a single matched pair for a collocation between a dataset A and dataset B */
 struct harp_collocation_pair_struct

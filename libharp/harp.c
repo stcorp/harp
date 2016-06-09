@@ -37,7 +37,7 @@
 
 #define DETECTION_BLOCK_SIZE 12
 
-const char *libharp_version = HARP_VERSION;
+LIBHARP_API const char *libharp_version = HARP_VERSION;
 
 static int harp_init_counter = 0;
 
@@ -572,7 +572,7 @@ LIBHARP_API int harp_export(const char *filename, const char *export_format, con
 /**
  * Return a string describing the dimension type.
  */
-const char *harp_get_dimension_type_name(harp_dimension_type dimension_type)
+LIBHARP_API const char *harp_get_dimension_type_name(harp_dimension_type dimension_type)
 {
     switch (dimension_type)
     {
@@ -604,7 +604,7 @@ const char *harp_get_dimension_type_name(harp_dimension_type dimension_type)
  *   \arg \c 0, Success.
  *   \arg \c -1, Error occurred (check #harp_errno).
  */
-int harp_parse_dimension_type(const char *str, harp_dimension_type *dimension_type)
+LIBHARP_API int harp_parse_dimension_type(const char *str, harp_dimension_type *dimension_type)
 {
     if (strcmp(str, harp_get_dimension_type_name(harp_dimension_independent)) == 0)
     {

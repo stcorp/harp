@@ -2556,7 +2556,7 @@ static int ingest(const char *filename, harp_action_list *action_list, const har
  *   \arg \c 0, Success.
  *   \arg \c -1, Error occurred (check #harp_errno).
  */
-int harp_ingest(const char *filename, const char *actions, const char *options, harp_product **product)
+LIBHARP_API int harp_ingest(const char *filename, const char *actions, const char *options, harp_product **product)
 {
     harp_action_list *action_list;
     harp_ingestion_options *option_list;
