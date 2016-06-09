@@ -301,6 +301,13 @@ LIBHARP_API const char *harp_basename(const char *path);
 
 LIBHARP_API long harp_get_size_for_type(harp_data_type data_type);
 
+LIBHARP_API harp_scalar harp_get_fill_value_for_type(harp_data_type data_type);
+LIBHARP_API harp_scalar harp_get_valid_min_for_type(harp_data_type data_type);
+LIBHARP_API harp_scalar harp_get_valid_max_for_type(harp_data_type data_type);
+LIBHARP_API int harp_is_fill_value_for_type(harp_data_type data_type, harp_scalar value);
+LIBHARP_API int harp_is_valid_min_for_type(harp_data_type data_type, harp_scalar value);
+LIBHARP_API int harp_is_valid_max_for_type(harp_data_type data_type, harp_scalar value);
+
 LIBHARP_API const char *harp_get_data_type_name(harp_data_type data_type);
 LIBHARP_API const char *harp_get_dimension_type_name(harp_dimension_type dimension_type);
 

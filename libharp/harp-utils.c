@@ -91,7 +91,7 @@ LIBHARP_API long harp_get_size_for_type(harp_data_type data_type)
  * \param data_type Data type for which to retrieve the fill value.
  * \return The fill value for the data type.
  */
-harp_scalar harp_get_fill_value_for_type(harp_data_type data_type)
+LIBHARP_API harp_scalar harp_get_fill_value_for_type(harp_data_type data_type)
 {
     harp_scalar fill_value;
 
@@ -124,7 +124,7 @@ harp_scalar harp_get_fill_value_for_type(harp_data_type data_type)
  * \param data_type Data type for which to retrieve the minimum valid value.
  * \return The minimum valid value of the data type.
  */
-harp_scalar harp_get_valid_min_for_type(harp_data_type data_type)
+LIBHARP_API harp_scalar harp_get_valid_min_for_type(harp_data_type data_type)
 {
     harp_scalar valid_min;
 
@@ -157,7 +157,7 @@ harp_scalar harp_get_valid_min_for_type(harp_data_type data_type)
  * \param data_type Data type for which to retrieve the maximum valid value.
  * \return The maximum valid value of the data type.
  */
-harp_scalar harp_get_valid_max_for_type(harp_data_type data_type)
+LIBHARP_API harp_scalar harp_get_valid_max_for_type(harp_data_type data_type)
 {
     harp_scalar valid_max;
 
@@ -193,7 +193,7 @@ harp_scalar harp_get_valid_max_for_type(harp_data_type data_type)
  *   \arg \c 0, Value is not equal to the fill value.
  *   \arg \c 1, Value equals the fill value.
  */
-int harp_is_fill_value_for_type(harp_data_type data_type, harp_scalar value)
+LIBHARP_API int harp_is_fill_value_for_type(harp_data_type data_type, harp_scalar value)
 {
     switch (data_type)
     {
@@ -220,7 +220,7 @@ int harp_is_fill_value_for_type(harp_data_type data_type, harp_scalar value)
  *   \arg \c 0, Value is not equal to the minimum valid value.
  *   \arg \c 1, Value equals the minimum valid value.
  */
-int harp_is_valid_min_for_type(harp_data_type data_type, harp_scalar value)
+LIBHARP_API int harp_is_valid_min_for_type(harp_data_type data_type, harp_scalar value)
 {
     switch (data_type)
     {
@@ -247,7 +247,7 @@ int harp_is_valid_min_for_type(harp_data_type data_type, harp_scalar value)
  *   \arg \c 0, Value is not equal to the maximum valid value.
  *   \arg \c 1, Value equals the maximum valid value.
  */
-int harp_is_valid_max_for_type(harp_data_type data_type, harp_scalar value)
+LIBHARP_API int harp_is_valid_max_for_type(harp_data_type data_type, harp_scalar value)
 {
     switch (data_type)
     {
