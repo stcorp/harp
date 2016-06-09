@@ -30,7 +30,6 @@
 #include "harp.h"
 #include "harp-chemistry.h"
 #include "harp-dimension-mask.h"
-#include "harp-units.h"
 #include "harp-vertical-profiles.h"
 
 #include "coda.h"

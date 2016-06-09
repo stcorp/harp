@@ -23,7 +23,6 @@
 
 #include "harp-internal.h"
 #include "harp-action.h"
-#include "harp-collocation.h"
 #include "harp-predicate.h"
 
 int harp_predicate_update_mask_all_0d(const harp_predicate *predicate, const harp_variable *variable,

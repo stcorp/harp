@@ -104,48 +104,48 @@ const char *weighting_factor_command_line_option_from_difference_type(harp_collo
 {
     switch (difference_type)
     {
-        case difference_type_absolute_difference_in_time:
+        case harp_collocation_difference_absolute_time:
             return "-wft 'value [unit]'";
             break;
 
-        case difference_type_absolute_difference_in_latitude:
+        case harp_collocation_difference_absolute_latitude:
             return "-wflat 'value [unit]'";
             break;
 
-        case difference_type_absolute_difference_in_longitude:
+        case harp_collocation_difference_absolute_longitude:
             return "-wflon 'value [unit]'";
             break;
 
-        case difference_type_point_distance:
+        case harp_collocation_difference_point_distance:
             return "-wfdp 'value [unit]'";
             break;
 
-        case difference_type_overlapping_percentage:
+        case harp_collocation_difference_overlapping_percentage:
             return "-wfa 'value [unit]'";
             break;
 
-        case difference_type_absolute_difference_in_sza:
+        case harp_collocation_difference_absolute_sza:
             return "-wfsza 'value [unit]'";
             break;
 
-        case difference_type_absolute_difference_in_saa:
+        case harp_collocation_difference_absolute_saa:
             return "-wfsaa 'value [unit]'";
             break;
 
-        case difference_type_absolute_difference_in_vza:
+        case harp_collocation_difference_absolute_vza:
             return "-wfvza 'value [unit]'";
             break;
 
-        case difference_type_absolute_difference_in_vaa:
+        case harp_collocation_difference_absolute_vaa:
             return "-wfvaa 'value [unit]'";
             break;
 
-        case difference_type_absolute_difference_in_theta:
+        case harp_collocation_difference_absolute_theta:
             return "-wftheta 'value [unit]'";
             break;
 
-        case difference_type_delta:
-        case difference_type_unknown:
+        case harp_collocation_difference_delta:
+        case harp_collocation_difference_unknown:
             return "unknown";
             break;
     }
@@ -548,49 +548,49 @@ void get_difference_type_from_collocation_criterion_type(Collocation_criterion_t
     switch (criterion_type)
     {
         case collocation_criterion_type_time:
-            *difference_type = difference_type_absolute_difference_in_time;
+            *difference_type = harp_collocation_difference_absolute_time;
             break;
 
         case collocation_criterion_type_latitude:
-            *difference_type = difference_type_absolute_difference_in_latitude;
+            *difference_type = harp_collocation_difference_absolute_latitude;
             break;
 
         case collocation_criterion_type_longitude:
-            *difference_type = difference_type_absolute_difference_in_longitude;
+            *difference_type = harp_collocation_difference_absolute_longitude;
             break;
 
         case collocation_criterion_type_point_distance:
-            *difference_type = difference_type_point_distance;
+            *difference_type = harp_collocation_difference_point_distance;
             break;
 
         case collocation_criterion_type_point_a_in_area_b:
         case collocation_criterion_type_point_b_in_area_a:
         case collocation_criterion_type_overlapping:
-            *difference_type = difference_type_unknown;
+            *difference_type = harp_collocation_difference_unknown;
             break;
 
         case collocation_criterion_type_overlapping_percentage:
-            *difference_type = difference_type_overlapping_percentage;
+            *difference_type = harp_collocation_difference_overlapping_percentage;
             break;
 
         case collocation_criterion_type_sza:
-            *difference_type = difference_type_absolute_difference_in_sza;
+            *difference_type = harp_collocation_difference_absolute_sza;
             break;
 
         case collocation_criterion_type_saa:
-            *difference_type = difference_type_absolute_difference_in_saa;
+            *difference_type = harp_collocation_difference_absolute_saa;
             break;
 
         case collocation_criterion_type_vza:
-            *difference_type = difference_type_absolute_difference_in_vza;
+            *difference_type = harp_collocation_difference_absolute_vza;
             break;
 
         case collocation_criterion_type_vaa:
-            *difference_type = difference_type_absolute_difference_in_vaa;
+            *difference_type = harp_collocation_difference_absolute_vaa;
             break;
 
         case collocation_criterion_type_theta:
-            *difference_type = difference_type_absolute_difference_in_theta;
+            *difference_type = harp_collocation_difference_absolute_theta;
             break;
     }
 }
@@ -638,36 +638,36 @@ static int get_default_weighting_factor_unit_and_value_from_difference_type(harp
 
     switch (difference_type)
     {
-        case difference_type_absolute_difference_in_time:
+        case harp_collocation_difference_absolute_time:
             collocation_unit = HARP_UNIT_TIME;
             break;
 
-        case difference_type_absolute_difference_in_latitude:
+        case harp_collocation_difference_absolute_latitude:
             collocation_unit = HARP_UNIT_LATITUDE;
             break;
 
-        case difference_type_absolute_difference_in_longitude:
+        case harp_collocation_difference_absolute_longitude:
             collocation_unit = HARP_UNIT_LONGITUDE;
             break;
 
-        case difference_type_point_distance:
+        case harp_collocation_difference_point_distance:
             collocation_unit = HARP_UNIT_LENGTH;
             break;
 
-        case difference_type_overlapping_percentage:
+        case harp_collocation_difference_overlapping_percentage:
             collocation_unit = HARP_UNIT_PERCENT;
             break;
 
-        case difference_type_absolute_difference_in_sza:
-        case difference_type_absolute_difference_in_saa:
-        case difference_type_absolute_difference_in_vza:
-        case difference_type_absolute_difference_in_vaa:
-        case difference_type_absolute_difference_in_theta:
+        case harp_collocation_difference_absolute_sza:
+        case harp_collocation_difference_absolute_saa:
+        case harp_collocation_difference_absolute_vza:
+        case harp_collocation_difference_absolute_vaa:
+        case harp_collocation_difference_absolute_theta:
             collocation_unit = HARP_UNIT_ANGLE;
             break;
 
-        case difference_type_unknown:
-        case difference_type_delta:
+        case harp_collocation_difference_unknown:
+        case harp_collocation_difference_delta:
             collocation_unit = "";
             break;
     }
@@ -1512,36 +1512,36 @@ static void get_weighting_factor_collocation_unit_from_difference_type(harp_coll
 {
     switch (difference_type)
     {
-        case difference_type_absolute_difference_in_time:
-            *collocation_unit = strdup("1/s");
+        case harp_collocation_difference_absolute_time:
+            *collocation_unit = strdup("1/"HARP_UNIT_TIME);
             break;
 
-        case difference_type_absolute_difference_in_latitude:
-            *collocation_unit = strdup("1/degree_north");
+        case harp_collocation_difference_absolute_latitude:
+            *collocation_unit = strdup("1/"HARP_UNIT_LATITUDE);
             break;
 
-        case difference_type_absolute_difference_in_longitude:
-            *collocation_unit = strdup("1/degree_east");
+        case harp_collocation_difference_absolute_longitude:
+            *collocation_unit = strdup("1/"HARP_UNIT_LONGITUDE);
             break;
 
-        case difference_type_point_distance:
-            *collocation_unit = strdup("1/m");
+        case harp_collocation_difference_point_distance:
+            *collocation_unit = strdup("1/"HARP_UNIT_LENGTH);
             break;
 
-        case difference_type_overlapping_percentage:
-            *collocation_unit = strdup("1/percent");
+        case harp_collocation_difference_overlapping_percentage:
+            *collocation_unit = strdup("1/"HARP_UNIT_PERCENT);
             break;
 
-        case difference_type_absolute_difference_in_sza:
-        case difference_type_absolute_difference_in_saa:
-        case difference_type_absolute_difference_in_vza:
-        case difference_type_absolute_difference_in_vaa:
-        case difference_type_absolute_difference_in_theta:
-            *collocation_unit = strdup("1/degree");
+        case harp_collocation_difference_absolute_sza:
+        case harp_collocation_difference_absolute_saa:
+        case harp_collocation_difference_absolute_vza:
+        case harp_collocation_difference_absolute_vaa:
+        case harp_collocation_difference_absolute_theta:
+            *collocation_unit = strdup("1/"HARP_UNIT_ANGLE);
             break;
 
-        case difference_type_unknown:
-        case difference_type_delta:
+        case harp_collocation_difference_unknown:
+        case harp_collocation_difference_delta:
             *collocation_unit = strdup("");
             break;
     }
@@ -1997,7 +1997,7 @@ int parse_arguments(int argc, char *argv[], Collocation_mode *new_collocation_mo
         else if (strcmp(argv[i], "-wft") == 0 && i + 1 < argc && argv[i + 1][0] != '-')
         {
             if (grab_weighting_factor
-                (collocation_options, &i, difference_type_absolute_difference_in_time, argc, argv) != 0)
+                (collocation_options, &i, harp_collocation_difference_absolute_time, argc, argv) != 0)
             {
                 collocation_options_delete(collocation_options);
                 return -1;
@@ -2007,7 +2007,8 @@ int parse_arguments(int argc, char *argv[], Collocation_mode *new_collocation_mo
         /* Check for override of default value of point distance weight factor */
         else if (strcmp(argv[i], "-wfdp") == 0 && i + 1 < argc && argv[i + 1][0] != '-')
         {
-            if (grab_weighting_factor(collocation_options, &i, difference_type_point_distance, argc, argv) != 0)
+            if (grab_weighting_factor(collocation_options, &i, harp_collocation_difference_point_distance, argc, argv)
+                != 0)
             {
                 collocation_options_delete(collocation_options);
                 return -1;
@@ -2017,7 +2018,8 @@ int parse_arguments(int argc, char *argv[], Collocation_mode *new_collocation_mo
         /* Check for override of default value of overlapping percentage weight factor */
         else if (strcmp(argv[i], "-wfa") == 0 && i + 1 < argc && argv[i + 1][0] != '-')
         {
-            if (grab_weighting_factor(collocation_options, &i, difference_type_overlapping_percentage, argc, argv) != 0)
+            if (grab_weighting_factor(collocation_options, &i, harp_collocation_difference_overlapping_percentage, argc,
+                                      argv) != 0)
             {
                 collocation_options_delete(collocation_options);
                 return -1;
@@ -2028,7 +2030,7 @@ int parse_arguments(int argc, char *argv[], Collocation_mode *new_collocation_mo
         else if (strcmp(argv[i], "-wfsza") == 0 && i + 1 < argc && argv[i + 1][0] != '-')
         {
             if (grab_weighting_factor
-                (collocation_options, &i, difference_type_absolute_difference_in_sza, argc, argv) != 0)
+                (collocation_options, &i, harp_collocation_difference_absolute_sza, argc, argv) != 0)
             {
                 collocation_options_delete(collocation_options);
                 return -1;
@@ -2039,7 +2041,7 @@ int parse_arguments(int argc, char *argv[], Collocation_mode *new_collocation_mo
         else if (strcmp(argv[i], "-wfsaa") == 0 && i + 1 < argc && argv[i + 1][0] != '-')
         {
             if (grab_weighting_factor
-                (collocation_options, &i, difference_type_absolute_difference_in_saa, argc, argv) != 0)
+                (collocation_options, &i, harp_collocation_difference_absolute_saa, argc, argv) != 0)
             {
                 collocation_options_delete(collocation_options);
                 return -1;
@@ -2050,7 +2052,7 @@ int parse_arguments(int argc, char *argv[], Collocation_mode *new_collocation_mo
         else if (strcmp(argv[i], "-wfvza") == 0 && i + 1 < argc && argv[i + 1][0] != '-')
         {
             if (grab_weighting_factor
-                (collocation_options, &i, difference_type_absolute_difference_in_vza, argc, argv) != 0)
+                (collocation_options, &i, harp_collocation_difference_absolute_vza, argc, argv) != 0)
             {
                 collocation_options_delete(collocation_options);
                 return -1;
@@ -2061,7 +2063,7 @@ int parse_arguments(int argc, char *argv[], Collocation_mode *new_collocation_mo
         else if (strcmp(argv[i], "-wfvaa") == 0 && i + 1 < argc && argv[i + 1][0] != '-')
         {
             if (grab_weighting_factor
-                (collocation_options, &i, difference_type_absolute_difference_in_vaa, argc, argv) != 0)
+                (collocation_options, &i, harp_collocation_difference_absolute_vaa, argc, argv) != 0)
             {
                 collocation_options_delete(collocation_options);
                 return -1;
@@ -2072,7 +2074,7 @@ int parse_arguments(int argc, char *argv[], Collocation_mode *new_collocation_mo
         else if (strcmp(argv[i], "-wftheta") == 0 && i + 1 < argc && argv[i + 1][0] != '-')
         {
             if (grab_weighting_factor
-                (collocation_options, &i, difference_type_absolute_difference_in_theta, argc, argv) != 0)
+                (collocation_options, &i, harp_collocation_difference_absolute_theta, argc, argv) != 0)
             {
                 collocation_options_delete(collocation_options);
                 return -1;

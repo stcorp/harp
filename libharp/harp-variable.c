@@ -29,6 +29,10 @@
  * The HARP Variables module contains everything related to HARP variables.
  */
 
+/** \addtogroup harp_variable
+ * @{
+ */
+
 /** Rearrange the data of a variable in one dimension.
  * This function allows data of a variable to be rearranged according to the order of the indices in dim_element_id.
  * The number of indices (num_dim_elements) in dim_element_id does not have to correspond to the number of
@@ -815,10 +819,6 @@ int harp_variable_remove_dimension(harp_variable *variable, int dim_index, long 
 
     return 0;
 }
-
-/** \addtogroup harp_variable
- * @{
- */
 
 /** Create new variable.
  * \param name Name of the variable.

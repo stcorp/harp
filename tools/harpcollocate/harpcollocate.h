@@ -21,8 +21,11 @@
 #ifndef HARPCOLLOCATE_H
 #define HARPCOLLOCATE_H
 
-#include "harp-internal.h"
-#include "harp-collocation.h"
+#ifdef HAVE_CONFIG_H
+#include "config.h"
+#endif
+
+#include "harp.h"
 
 #include <ctype.h>
 #include <stdio.h>

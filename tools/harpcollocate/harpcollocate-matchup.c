@@ -720,14 +720,14 @@ static int collocation_result_init(harp_collocation_result *collocation_result,
 
         if (collocation_options->criterion_is_set[i])
         {
-            harp_collocation_difference_type difference_type = difference_type_unknown;
+            harp_collocation_difference_type difference_type = harp_collocation_difference_unknown;
 
             /* Determine the difference index k from the collocation criterion */
             Collocation_criterion_type criterion_type = collocation_options->criterion[i]->type;
 
             get_difference_type_from_collocation_criterion_type(criterion_type, &difference_type);
 
-            if (difference_type == difference_type_unknown)
+            if (difference_type == harp_collocation_difference_unknown)
             {
                 harp_set_error(HARP_ERROR_INVALID_ARGUMENT, "unable to derive difference type for collocation"
                                " criterion '%s'",
@@ -746,17 +746,17 @@ static int collocation_result_init(harp_collocation_result *collocation_result,
     {
         /* collocation_result_add_difference(collocation_result,
            collocation_options,
-           collocation_criterion_type_point_distance, difference_type_point_distance); */
+           collocation_criterion_type_point_distance, harp_collocation_difference_point_distance); */
     }
 
     /* Add the weighted norm of all the differences that are set */
-    collocation_result->difference_available[difference_type_delta] = 1;
-    if (collocation_result->difference_unit[difference_type_delta] != NULL)
+    collocation_result->difference_available[harp_collocation_difference_delta] = 1;
+    if (collocation_result->difference_unit[harp_collocation_difference_delta] != NULL)
     {
-        free(collocation_result->difference_unit[difference_type_delta]);
+        free(collocation_result->difference_unit[harp_collocation_difference_delta]);
     }
-    collocation_result->difference_unit[difference_type_delta] = strdup("");
-    assert(collocation_result->difference_unit[difference_type_delta] != NULL);
+    collocation_result->difference_unit[harp_collocation_difference_delta] = strdup("");
+    assert(collocation_result->difference_unit[harp_collocation_difference_delta] != NULL);
 
     return 0;
 }
@@ -794,10 +794,10 @@ int calculate_delta(const harp_collocation_result *collocation_result, const Col
         if (collocation_result->difference_available[k])
         {
             /* Normal behaviour differences */
-            if (k == difference_type_absolute_difference_in_time || k == difference_type_point_distance ||
-                k == difference_type_absolute_difference_in_sza || k == difference_type_absolute_difference_in_saa ||
-                k == difference_type_absolute_difference_in_vza || k == difference_type_absolute_difference_in_vaa ||
-                k == difference_type_absolute_difference_in_theta)
+            if (k == harp_collocation_difference_absolute_time || k == harp_collocation_difference_point_distance ||
+                k == harp_collocation_difference_absolute_sza || k == harp_collocation_difference_absolute_saa ||
+                k == harp_collocation_difference_absolute_vza || k == harp_collocation_difference_absolute_vaa ||
+                k == harp_collocation_difference_absolute_theta)
             {
                 if (collocation_options->weighting_factor[k] == NULL)
                 {
@@ -823,12 +823,12 @@ int calculate_delta(const harp_collocation_result *collocation_result, const Col
                 scaling_factor = collocation_options->weighting_factor[k]->value;
                 delta += (scaling_factor * pair->difference[k] * scaling_factor * pair->difference[k]);
                 count_num_differences++;
-                // if (k == difference_type_point_distance)
+                // if (k == harp_collocation_difference_point_distance)
                 // {
                 //     point_distance_has_been_used = 1;
                 // }
             }
-            else if (k == difference_type_overlapping_percentage)
+            else if (k == harp_collocation_difference_overlapping_percentage)
             {
                 if (collocation_options->weighting_factor[k] == NULL)
                 {
@@ -869,7 +869,7 @@ int calculate_delta(const harp_collocation_result *collocation_result, const Col
     }
 
     delta = sqrt(delta / count_num_differences);
-    pair->difference[difference_type_delta] = delta;
+    pair->difference[harp_collocation_difference_delta] = delta;
     *new_delta = delta;
 
     return 0;
@@ -1194,7 +1194,7 @@ static int matchup_two_measurements(harp_collocation_result *collocation_result,
             return 0;
         }
 
-        differences[difference_type_absolute_difference_in_time] = difference;
+        differences[harp_collocation_difference_absolute_time] = difference;
     }
 
     /* Matchup two measurements in latitude */
@@ -1207,7 +1207,7 @@ static int matchup_two_measurements(harp_collocation_result *collocation_result,
             *new_match = 0;
             return 0;
         }
-        differences[difference_type_absolute_difference_in_latitude] = difference;
+        differences[harp_collocation_difference_absolute_latitude] = difference;
     }
 
     /* Matchup two measurements in longitude */
@@ -1220,7 +1220,7 @@ static int matchup_two_measurements(harp_collocation_result *collocation_result,
             *new_match = 0;
             return 0;
         }
-        differences[difference_type_absolute_difference_in_longitude] = difference;
+        differences[harp_collocation_difference_absolute_longitude] = difference;
     }
 
     /* Matchup two measurements in SZA */
@@ -1233,7 +1233,7 @@ static int matchup_two_measurements(harp_collocation_result *collocation_result,
             *new_match = 0;
             return 0;
         }
-        differences[difference_type_absolute_difference_in_sza] = difference;
+        differences[harp_collocation_difference_absolute_sza] = difference;
     }
 
     /* Matchup two measurements in SAA */
@@ -1246,7 +1246,7 @@ static int matchup_two_measurements(harp_collocation_result *collocation_result,
             *new_match = 0;
             return 0;
         }
-        differences[difference_type_absolute_difference_in_saa] = difference;
+        differences[harp_collocation_difference_absolute_saa] = difference;
     }
 
     /* Matchup two measurements in VZA */
@@ -1259,7 +1259,7 @@ static int matchup_two_measurements(harp_collocation_result *collocation_result,
             *new_match = 0;
             return 0;
         }
-        differences[difference_type_absolute_difference_in_vza] = difference;
+        differences[harp_collocation_difference_absolute_vza] = difference;
     }
 
     /* Matchup two measurements in VAA */
@@ -1272,7 +1272,7 @@ static int matchup_two_measurements(harp_collocation_result *collocation_result,
             *new_match = 0;
             return 0;
         }
-        differences[difference_type_absolute_difference_in_vaa] = difference;
+        differences[harp_collocation_difference_absolute_vaa] = difference;
     }
 
     /* Matchup two measurements in scattering angle */
@@ -1285,7 +1285,7 @@ static int matchup_two_measurements(harp_collocation_result *collocation_result,
             *new_match = 0;
             return 0;
         }
-        differences[difference_type_absolute_difference_in_theta] = difference;
+        differences[harp_collocation_difference_absolute_theta] = difference;
     }
 
     /* Matchup two measurements in point distance */
@@ -1300,7 +1300,7 @@ static int matchup_two_measurements(harp_collocation_result *collocation_result,
             return -1;
         }
 
-        differences[difference_type_point_distance] = difference;
+        differences[harp_collocation_difference_point_distance] = difference;
         if (match == 0)
         {
             *new_match = 0;
@@ -1369,7 +1369,7 @@ static int matchup_two_measurements(harp_collocation_result *collocation_result,
             return -1;
         }
 
-        differences[difference_type_overlapping_percentage] = difference;
+        differences[harp_collocation_difference_overlapping_percentage] = difference;
 
         if (match == 0)
         {

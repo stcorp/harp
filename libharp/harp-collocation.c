@@ -19,7 +19,6 @@
  */
 
 #include "harp-internal.h"
-#include "harp-collocation.h"
 
 #include <assert.h>
 #include <stdio.h>
@@ -29,9 +28,35 @@
 #define LINE_LENGTH 1024
 #define COLLOCATION_RESULT_BLOCK_SIZE 1024
 
-int harp_collocation_pair_new(long collocation_index, const char *source_product_a, long index_a,
-                              const char *source_product_b, long index_b, const double *difference,
-                              harp_collocation_pair **new_pair)
+/** \defgroup harp_collocation HARP Collocation
+ * The HARP Collocation module contains the functionality that deals with collocation two datasets
+ * of products. The two datasets are refered to as dataset A (primary) and dataset B (secondary).
+ * The result of a collocation is a list of pairs. Each pair references a measurement from dataset A
+ * (using the source product name and measurement index within that product) and a measurement from dataset B.
+ * Each collocation pair also gets a unique collocation_index sequence number.
+ * For each collocation criteria used in the matchup the actual difference is stored as part of the pair as well.
+ * Collocation results can be written to and read from a csv file.
+ */
+
+/** \addtogroup harp_collocation
+ * @{
+ */
+
+/** Create a new collocation result entry
+ * \param collocation_index Unique index of the pair in the overall collocation result
+ * \param source_product_a Name of the source_product attribute of the product from dataset A
+ * \param index_a Value of the index variable for the matching sample in the product from dataset A
+ * \param source_product_b Name of the source_product attribute of the product from dataset B
+ * \param index_b Value of the index variable for the matching sample in the product from dataset B
+ * \param difference Array of difference values (should have length HARP_COLLOCATION_RESULT_MAX_NUM_DIFFERENCES)
+ * \param new_pair Pointer to the C variable where the new result entry will be stored.
+ * \return
+ *   \arg \c 0, Success.
+ *   \arg \c -1, Error occurred (check #harp_errno).
+ */
+LIBHARP_API int harp_collocation_pair_new(long collocation_index, const char *source_product_a, long index_a,
+                                          const char *source_product_b, long index_b, const double *difference,
+                                          harp_collocation_pair **new_pair)
 {
     harp_collocation_pair *pair;
     int k;
@@ -75,7 +100,10 @@ int harp_collocation_pair_new(long collocation_index, const char *source_product
     return 0;
 }
 
-void harp_collocation_pair_delete(harp_collocation_pair *pair)
+/** Remove a collocation result entry
+ * \param pair Record that will be removed
+ */
+LIBHARP_API void harp_collocation_pair_delete(harp_collocation_pair *pair)
 {
     if (pair == NULL)
     {
@@ -95,7 +123,14 @@ void harp_collocation_pair_delete(harp_collocation_pair *pair)
     free(pair);
 }
 
-int harp_collocation_pair_copy(const harp_collocation_pair *input_pair, harp_collocation_pair **new_pair)
+/** Create a duplicate of a collocation result entry
+ * \param input_pair Result entry that needs to duplicated
+ * \param new_pair Pointer to the C variable where the new result entry will be stored.
+ * \return
+ *   \arg \c 0, Success.
+ *   \arg \c -1, Error occurred (check #harp_errno).
+ */
+LIBHARP_API int harp_collocation_pair_copy(const harp_collocation_pair *input_pair, harp_collocation_pair **new_pair)
 {
     harp_collocation_pair *pair = NULL;
     int k;
@@ -150,7 +185,13 @@ int harp_collocation_pair_copy(const harp_collocation_pair *input_pair, harp_col
     return 0;
 }
 
-int harp_collocation_result_new(harp_collocation_result **new_collocation_result)
+/** Create a new collocation result set
+ * \param new_collocation_result Pointer to the C variable where the new result set will be stored.
+ * \return
+ *   \arg \c 0, Success.
+ *   \arg \c -1, Error occurred (check #harp_errno).
+ */
+LIBHARP_API int harp_collocation_result_new(harp_collocation_result **new_collocation_result)
 {
     harp_collocation_result *collocation_result = NULL;
     int i;
@@ -176,7 +217,13 @@ int harp_collocation_result_new(harp_collocation_result **new_collocation_result
     return 0;
 }
 
-void harp_collocation_result_delete(harp_collocation_result *collocation_result)
+/** Remove a collocation result set
+ * \param collocation_result Result set that will be removed.
+ * \return
+ *   \arg \c 0, Success.
+ *   \arg \c -1, Error occurred (check #harp_errno).
+ */
+LIBHARP_API void harp_collocation_result_delete(harp_collocation_result *collocation_result)
 {
     int k;
 
@@ -206,6 +253,10 @@ void harp_collocation_result_delete(harp_collocation_result *collocation_result)
 
     free(collocation_result);
 }
+
+/**
+ * @}
+ */
 
 static int compare_by_a(const void *a, const void *b)
 {
@@ -300,26 +351,58 @@ static int compare_by_collocation_index(const void *a, const void *b)
     return 0;
 }
 
-int harp_collocation_result_sort_by_a(harp_collocation_result *collocation_result)
+/** \addtogroup harp_collocation
+ * @{
+ */
+
+/** Sort the collocation result pairs by dataset A
+ * Results will be sorted first by product source name of A and then by sample index of A
+ * \param collocation_result Result set that will be sorted in place.
+ * \return
+ *   \arg \c 0, Success.
+ *   \arg \c -1, Error occurred (check #harp_errno).
+ */
+LIBHARP_API int harp_collocation_result_sort_by_a(harp_collocation_result *collocation_result)
 {
     qsort(collocation_result->pair, collocation_result->num_pairs, sizeof(harp_collocation_pair *), compare_by_a);
     return 0;
 }
 
-int harp_collocation_result_sort_by_b(harp_collocation_result *collocation_result)
+/** Sort the collocation result pairs by dataset B
+ * Results will be sorted first by product source name of B and then by sample index of B
+ * \param collocation_result Result set that will be sorted in place.
+ * \return
+ *   \arg \c 0, Success.
+ *   \arg \c -1, Error occurred (check #harp_errno).
+ */
+LIBHARP_API int harp_collocation_result_sort_by_b(harp_collocation_result *collocation_result)
 {
     qsort(collocation_result->pair, collocation_result->num_pairs, sizeof(harp_collocation_pair *), compare_by_b);
     return 0;
 }
 
-int harp_collocation_result_sort_by_collocation_index(harp_collocation_result *collocation_result)
+/** Sort the collocation result pairs by collocation index
+ * \param collocation_result Result set that will be sorted in place.
+ * \return
+ *   \arg \c 0, Success.
+ *   \arg \c -1, Error occurred (check #harp_errno).
+ */
+LIBHARP_API int harp_collocation_result_sort_by_collocation_index(harp_collocation_result *collocation_result)
 {
     qsort(collocation_result->pair, collocation_result->num_pairs, sizeof(harp_collocation_pair *),
           compare_by_collocation_index);
     return 0;
 }
 
-int harp_collocation_result_filter_for_source_product_a(harp_collocation_result *collocation_result,
+/** Filter collocation result set for a specific product from dataset A
+ * Only results that contain the referenced source product will be retained.
+ * \param collocation_result Result set that will be filtered in place.
+ * \param source_product source product reference from dataset A that should be filtered on.
+ * \return
+ *   \arg \c 0, Success.
+ *   \arg \c -1, Error occurred (check #harp_errno).
+ */
+LIBHARP_API int harp_collocation_result_filter_for_source_product_a(harp_collocation_result *collocation_result,
                                                         const char *source_product)
 {
     long i, j;
@@ -339,7 +422,15 @@ int harp_collocation_result_filter_for_source_product_a(harp_collocation_result 
     return 0;
 }
 
-int harp_collocation_result_filter_for_source_product_b(harp_collocation_result *collocation_result,
+/** Filter collocation result set for a specific product from dataset B
+ * Only results that contain the referenced source product will be retained.
+ * \param collocation_result Result set that will be filtered in place.
+ * \param source_product source product reference from dataset B that should be filtered on.
+ * \return
+ *   \arg \c 0, Success.
+ *   \arg \c -1, Error occurred (check #harp_errno).
+ */
+LIBHARP_API int harp_collocation_result_filter_for_source_product_b(harp_collocation_result *collocation_result,
                                                         const char *source_product)
 {
     long i, j;
@@ -359,7 +450,16 @@ int harp_collocation_result_filter_for_source_product_b(harp_collocation_result 
     return 0;
 }
 
-int harp_collocation_result_add_pair(harp_collocation_result *collocation_result, harp_collocation_pair *pair)
+/** Add collocation result entry to a result set
+ * \note this function will not check for uniqueness of the collocation_index values in the resulting set
+ * \param collocation_result Result set that will be extended
+ * \param pair Single collocation result entry that will be added.
+ * \return
+ *   \arg \c 0, Success.
+ *   \arg \c -1, Error occurred (check #harp_errno).
+ */
+LIBHARP_API int harp_collocation_result_add_pair(harp_collocation_result *collocation_result,
+                                                 harp_collocation_pair *pair)
 {
     if (collocation_result->num_pairs % COLLOCATION_RESULT_BLOCK_SIZE == 0)
     {
@@ -382,6 +482,10 @@ int harp_collocation_result_add_pair(harp_collocation_result *collocation_result
     collocation_result->num_pairs++;
     return 0;
 }
+
+/**
+ * @}
+ */
 
 static int get_num_lines(FILE *file, const char *filename, long *new_num_lines)
 {
@@ -526,43 +630,43 @@ static int parse_difference_type_and_unit(char **str, harp_collocation_differenc
 
     if (strcmp(cursor, "absolute difference in time") == 0)
     {
-        *difference_type = difference_type_absolute_difference_in_time;
+        *difference_type = harp_collocation_difference_absolute_time;
     }
     else if (strcmp(cursor, "absolute difference in latitude") == 0)
     {
-        *difference_type = difference_type_absolute_difference_in_latitude;
+        *difference_type = harp_collocation_difference_absolute_latitude;
     }
     else if (strcmp(cursor, "absolute difference in longitude") == 0)
     {
-        *difference_type = difference_type_absolute_difference_in_longitude;
+        *difference_type = harp_collocation_difference_absolute_longitude;
     }
     else if (strcmp(cursor, "point distance") == 0)
     {
-        *difference_type = difference_type_point_distance;
+        *difference_type = harp_collocation_difference_point_distance;
     }
     else if (strcmp(cursor, "overlapping percentage") == 0)
     {
-        *difference_type = difference_type_overlapping_percentage;
+        *difference_type = harp_collocation_difference_overlapping_percentage;
     }
     else if (strcmp(cursor, "absolute difference in SZA") == 0)
     {
-        *difference_type = difference_type_absolute_difference_in_sza;
+        *difference_type = harp_collocation_difference_absolute_sza;
     }
     else if (strcmp(cursor, "absolute difference in SAA") == 0)
     {
-        *difference_type = difference_type_absolute_difference_in_saa;
+        *difference_type = harp_collocation_difference_absolute_saa;
     }
     else if (strcmp(cursor, "absolute difference in VZA") == 0)
     {
-        *difference_type = difference_type_absolute_difference_in_vza;
+        *difference_type = harp_collocation_difference_absolute_vza;
     }
     else if (strcmp(cursor, "absolute difference in VAA") == 0)
     {
-        *difference_type = difference_type_absolute_difference_in_vaa;
+        *difference_type = harp_collocation_difference_absolute_vaa;
     }
     else if (strcmp(cursor, "absolute difference in Theta") == 0)
     {
-        *difference_type = difference_type_absolute_difference_in_theta;
+        *difference_type = harp_collocation_difference_absolute_theta;
     }
     else
     {
@@ -719,7 +823,7 @@ static int read_pair(FILE *file, const harp_collocation_result *collocation_resu
     parse_long(&cursor, &index_b);
     for (k = 0; k < HARP_COLLOCATION_RESULT_MAX_NUM_DIFFERENCES; k++)
     {
-        if (collocation_result->difference_available[k] && k != difference_type_delta)
+        if (collocation_result->difference_available[k] && k != harp_collocation_difference_delta)
         {
             parse_double(&cursor, &differences[k]);
         }
@@ -738,8 +842,20 @@ static int read_pair(FILE *file, const harp_collocation_result *collocation_resu
     return 0;
 }
 
-int harp_collocation_result_read(const char *collocation_result_filename,
-                                 harp_collocation_result **new_collocation_result)
+/** \addtogroup harp_collocation
+ * @{
+ */
+
+/** Read collocation result set from a csv file
+ * The csv file should follow the HARP format for collocation result files.
+ * \param collocation_result_filename Full file path to the csv file.
+ * \param new_collocation_result Pointer to the C variable where the new result set will be stored.
+ * \return
+ *   \arg \c 0, Success.
+ *   \arg \c -1, Error occurred (check #harp_errno).
+ */
+LIBHARP_API int harp_collocation_result_read(const char *collocation_result_filename,
+                                             harp_collocation_result **new_collocation_result)
 {
     harp_collocation_result *collocation_result = NULL;
     FILE *file;
@@ -827,12 +943,16 @@ int harp_collocation_result_read(const char *collocation_result_filename,
     return 0;
 }
 
+/**
+ * @}
+ */
+
 static void write_header(FILE *file, const harp_collocation_result *collocation_result)
 {
     int k;
 
     fprintf(file, "collocation_index,source_product_a,index_a,source_product_b,index_b");
-    /* don't write difference_type_delta, so go to HARP_COLLOCATION_RESULT_MAX_NUM_DIFFERENCES - 1 */
+    /* don't write harp_collocation_difference_delta, so stop at HARP_COLLOCATION_RESULT_MAX_NUM_DIFFERENCES - 1 */
     for (k = 0; k < HARP_COLLOCATION_RESULT_MAX_NUM_DIFFERENCES - 1; k++)
     {
         if (collocation_result->difference_available[k])
@@ -840,48 +960,48 @@ static void write_header(FILE *file, const harp_collocation_result *collocation_
             fprintf(file, ",");
             switch (k)
             {
-                case difference_type_absolute_difference_in_time:
+                case harp_collocation_difference_absolute_time:
                     fprintf(file, "absolute difference in time");
                     break;
 
-                case difference_type_absolute_difference_in_latitude:
+                case harp_collocation_difference_absolute_latitude:
                     fprintf(file, "absolute difference in latitude");
                     break;
 
-                case difference_type_absolute_difference_in_longitude:
+                case harp_collocation_difference_absolute_longitude:
                     fprintf(file, "absolute difference in longitude");
                     break;
 
-                case difference_type_point_distance:
+                case harp_collocation_difference_point_distance:
                     fprintf(file, "point distance");
                     break;
 
-                case difference_type_overlapping_percentage:
+                case harp_collocation_difference_overlapping_percentage:
                     fprintf(file, "overlapping percentage");
                     break;
 
-                case difference_type_absolute_difference_in_sza:
+                case harp_collocation_difference_absolute_sza:
                     fprintf(file, "absolute difference in SZA");
                     break;
 
-                case difference_type_absolute_difference_in_saa:
+                case harp_collocation_difference_absolute_saa:
                     fprintf(file, "absolute difference in SAA");
                     break;
 
-                case difference_type_absolute_difference_in_vza:
+                case harp_collocation_difference_absolute_vza:
                     fprintf(file, "absolute difference in VZA");
                     break;
 
-                case difference_type_absolute_difference_in_vaa:
+                case harp_collocation_difference_absolute_vaa:
                     fprintf(file, "absolute difference in VAA");
                     break;
 
-                case difference_type_absolute_difference_in_theta:
+                case harp_collocation_difference_absolute_theta:
                     fprintf(file, "absolute difference in Theta");
                     break;
 
-                case difference_type_unknown:
-                case difference_type_delta:
+                case harp_collocation_difference_unknown:
+                case harp_collocation_difference_delta:
                     assert(0);
                     exit(1);
             }
@@ -904,7 +1024,7 @@ static void write_pair(FILE *file, const harp_collocation_result *collocation_re
             collocation_result->pair[i]->source_product_b, collocation_result->pair[i]->index_b);
 
     /* Write differences */
-    /* don't write difference_type_delta, so go to HARP_COLLOCATION_RESULT_MAX_NUM_DIFFERENCES - 1 */
+    /* don't write harp_collocation_difference_delta, so stop at HARP_COLLOCATION_RESULT_MAX_NUM_DIFFERENCES - 1 */
     for (k = 0; k < HARP_COLLOCATION_RESULT_MAX_NUM_DIFFERENCES - 1; k++)
     {
         if (collocation_result->difference_available[k])
@@ -915,7 +1035,20 @@ static void write_pair(FILE *file, const harp_collocation_result *collocation_re
     fprintf(file, "\n");
 }
 
-int harp_collocation_result_write(const char *collocation_result_filename, harp_collocation_result *collocation_result)
+/** \addtogroup harp_collocation
+ * @{
+ */
+
+/** Read collocation result set to a csv file
+ * The csv file will follow the HARP format for collocation result files.
+ * \param collocation_result_filename Full file path to the csv file.
+ * \param collocation_result Collocation result set that will be written to file.
+ * \return
+ *   \arg \c 0, Success.
+ *   \arg \c -1, Error occurred (check #harp_errno).
+ */
+LIBHARP_API int harp_collocation_result_write(const char *collocation_result_filename,
+                                              harp_collocation_result *collocation_result)
 {
     FILE *file;
     long i;
@@ -957,3 +1090,7 @@ int harp_collocation_result_write(const char *collocation_result_filename, harp_
 
     return 0;
 }
+
+/**
+ * @}
+ */

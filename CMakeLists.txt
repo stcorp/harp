@@ -204,7 +204,6 @@ set(LIBHARP_SOURCES
   libharp/harp-aux-usstd76.c
   libharp/harp-chemistry.h
   libharp/harp-chemistry.c
-  libharp/harp-collocation.h
   libharp/harp-collocation.c
   libharp/harp-constants.h
   libharp/harp-derived-variable.c
@@ -265,7 +264,6 @@ set(LIBHARP_SOURCES
   libharp/harp-predicate.c
   libharp/harp-product.c
   libharp/harp-sea-surface.c
-  libharp/harp-units.h
   libharp/harp-units.c
   libharp/harp-utils.c
   libharp/harp-variable.c

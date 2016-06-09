@@ -24,30 +24,30 @@ static const char *collocation_unit_from_difference_type(const harp_collocation_
 {
     switch (difference_type)
     {
-        case difference_type_absolute_difference_in_time:
+        case harp_collocation_difference_absolute_time:
             return HARP_UNIT_TIME;
 
-        case difference_type_absolute_difference_in_latitude:
+        case harp_collocation_difference_absolute_latitude:
             return HARP_UNIT_LATITUDE;
 
-        case difference_type_absolute_difference_in_longitude:
+        case harp_collocation_difference_absolute_longitude:
             return HARP_UNIT_LONGITUDE;
 
-        case difference_type_point_distance:
+        case harp_collocation_difference_point_distance:
             return HARP_UNIT_LENGTH;
 
-        case difference_type_overlapping_percentage:
+        case harp_collocation_difference_overlapping_percentage:
             return HARP_UNIT_PERCENT;
 
-        case difference_type_absolute_difference_in_sza:
-        case difference_type_absolute_difference_in_saa:
-        case difference_type_absolute_difference_in_vza:
-        case difference_type_absolute_difference_in_vaa:
-        case difference_type_absolute_difference_in_theta:
+        case harp_collocation_difference_absolute_sza:
+        case harp_collocation_difference_absolute_saa:
+        case harp_collocation_difference_absolute_vza:
+        case harp_collocation_difference_absolute_vaa:
+        case harp_collocation_difference_absolute_theta:
             return HARP_UNIT_ANGLE;
 
-        case difference_type_unknown:
-        case difference_type_delta:
+        case harp_collocation_difference_unknown:
+        case harp_collocation_difference_delta:
             break;
     }
     return "";
