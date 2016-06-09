@@ -22,10 +22,7 @@
 #include "config.h"
 #endif
 
-/* Need to include harp-internal.h because of list_conversion() function. */
-#include "harp-internal.h"
-#include "harp-ingestion.h"
-#include "harp-action.h"
+#include "harp.h"
 
 #include <assert.h>
 #include <stdio.h>
@@ -211,7 +208,7 @@ static int list_conversions(int argc, char *argv[])
 
     if (argc == 2)
     {
-        return harp_list_conversions(NULL);
+        return harp_doc_list_conversions(NULL, printf);
     }
 
     for (i = 2; i < argc; i++)
@@ -246,7 +243,7 @@ static int list_conversions(int argc, char *argv[])
     }
 
     /* List possible conversions. */
-    if (harp_list_conversions(product) != 0)
+    if (harp_doc_list_conversions(product, printf) != 0)
     {
         harp_product_delete(product);
         return -1;

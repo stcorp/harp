@@ -216,10 +216,4 @@ harp_variable_definition *harp_ingestion_register_variable_sample_read
 int harp_ingestion_init(void);
 void harp_ingestion_done(void);
 
-/* Self-test */
-int harp_ingest_test(const char *filename);
-
-/* Documentation */
-int harp_doc_export_ingestion_definitions(const char *path, const char *format);
-
 #endif

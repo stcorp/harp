@@ -2641,7 +2641,7 @@ int harp_ingest(const char *filename, const char *actions, const char *options, 
  *   \arg \c 0, Success.
  *   \arg \c -1, Error occurred (check #harp_errno).
  */
-int harp_ingest_test(const char *filename)
+LIBHARP_API int harp_ingest_test(const char *filename)
 {
     coda_product *product = NULL;
     ingest_info *info;

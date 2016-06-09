@@ -18,7 +18,11 @@
  * Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307  USA
  */
 
-#include "harp-internal.h"
+#ifdef HAVE_CONFIG_H
+#include "config.h"
+#endif
+
+#include "harp.h"
 
 #include <stdio.h>
 #include <stdlib.h>
@@ -173,7 +177,7 @@ static int list_conversions(int argc, char *argv[])
 
     if (argc == 2)
     {
-        return harp_list_conversions(NULL);
+        return harp_doc_list_conversions(NULL, printf);
     }
 
     if (argc != 3)
@@ -192,7 +196,7 @@ static int list_conversions(int argc, char *argv[])
     }
 
     /* List possible conversions */
-    if (harp_list_conversions(product) != 0)
+    if (harp_doc_list_conversions(product, printf) != 0)
     {
         harp_product_delete(product);
         return -1;

@@ -179,7 +179,6 @@ int harp_variable_conversion_set_source_description(harp_variable_conversion *co
 void harp_variable_conversion_delete(harp_variable_conversion *conversion);
 
 /* Derived variables */
-int harp_list_conversions(const harp_product *product);
 int harp_derived_variable_list_init(void);
 int harp_derived_variable_list_add_conversion(harp_variable_conversion *conversion);
 void harp_derived_variable_list_done(void);

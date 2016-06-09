@@ -324,6 +324,10 @@ LIBHARP_API int harp_get_option_enable_aux_usstd76(void);
 
 LIBHARP_API int harp_convert_unit(const char *from_unit, const char *to_unit, long num_values, double *value);
 
+/* Generated documentation */
+LIBHARP_API int harp_doc_list_conversions(const harp_product *product, int (*print) (const char *, ...));
+LIBHARP_API int harp_doc_export_ingestion_definitions(const char *path, const char *format);
+
 /* Geometry */
 LIBHARP_API int harp_geometry_get_point_distance(double longitude_a, double latitude_a, double longitude_b,
                                                  double latitude_b, double *distance);
@@ -383,6 +387,7 @@ LIBHARP_API int harp_product_execute_actions(harp_product *product, const char *
 
 /* Ingestion */
 LIBHARP_API int harp_ingest(const char *filename, const char *script, const char *options, harp_product **product);
+LIBHARP_API int harp_ingest_test(const char *filename);
 
 /* Import */
 LIBHARP_API int harp_import(const char *filename, harp_product **product);

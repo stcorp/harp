@@ -1198,7 +1198,14 @@ static int generate_rst(const char *path)
     return 0;
 }
 
-int harp_doc_export_ingestion_definitions(const char *path, const char *format)
+/** Generate documentation for all ingestion definitions.
+ * \param path Path to directory in which the documentation files will be written.
+ * \param format Format in which to output the document. Either 'html' or 'rst'.
+ * \return
+ *   \arg \c 0, Success.
+ *   \arg \c -1, Error occurred (check #harp_errno).
+ */
+LIBHARP_API int harp_doc_export_ingestion_definitions(const char *path, const char *format)
 {
     if (path == NULL)
     {

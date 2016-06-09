@@ -408,9 +408,9 @@ static int find_and_execute_conversion(conversion_info *info)
     return -1;
 }
 
-static void print_conversion(conversion_info *info, int indent);
+static void print_conversion(conversion_info *info, int (*print) (const char *, ...), int indent);
 
-static int find_and_print_conversion(conversion_info *info, int indent)
+static int find_and_print_conversion(conversion_info *info, int (*print) (const char *, ...), int indent)
 {
     int index;
 
@@ -475,7 +475,7 @@ static int find_and_print_conversion(conversion_info *info, int indent)
             {
                 /* all source variables were found, conversion should be possible */
                 info->conversion = conversion;
-                print_conversion(info, indent + 1);
+                print_conversion(info, print, indent + 1);
                 info->skip[index] ^= 1 << conversion->num_dimensions;
                 return 0;
             }
@@ -488,104 +488,105 @@ static int find_and_print_conversion(conversion_info *info, int indent)
     return -1;
 }
 
-static int print_source_variable_conversion(conversion_info *info, int indent)
+static int print_source_variable_conversion(conversion_info *info, int (*print) (const char *, ...), int indent)
 {
     if (harp_product_get_variable_by_name(info->product, info->variable_name, &info->variable) == 0)
     {
         if (harp_variable_has_dimension_types(info->variable, info->num_dimensions, info->dimension_type))
         {
-            printf("\n");
+            print("\n");
             return 0;
         }
     }
-    return find_and_print_conversion(info, indent);
+    return find_and_print_conversion(info, print, indent);
 }
 
-static void print_conversion_variable(const harp_variable_conversion *conversion)
+static void print_conversion_variable(const harp_variable_conversion *conversion, int (*print) (const char *, ...))
 {
     int i;
 
-    printf("%s", conversion->variable_name);
+    print("%s", conversion->variable_name);
     if (conversion->num_dimensions > 0)
     {
-        printf(" {");
+        print(" {");
         for (i = 0; i < conversion->num_dimensions; i++)
         {
-            printf("%s", harp_get_dimension_type_name(conversion->dimension_type[i]));
+            print("%s", harp_get_dimension_type_name(conversion->dimension_type[i]));
             if (conversion->dimension_type[i] == harp_dimension_independent)
             {
-                printf("(%ld)", conversion->independent_dimension_length);
+                print("(%ld)", conversion->independent_dimension_length);
             }
             if (i < conversion->num_dimensions - 1)
             {
-                printf(",");
+                print(",");
             }
         }
-        printf("}");
+        print("}");
     }
     if (conversion->unit != NULL)
     {
-        printf(" [%s]", conversion->unit);
+        print(" [%s]", conversion->unit);
     }
-    printf(" (%s)", harp_get_data_type_name(conversion->data_type));
+    print(" (%s)", harp_get_data_type_name(conversion->data_type));
 }
 
-static void print_source_variable(const harp_source_variable_definition *source_definition, int indent)
+static void print_source_variable(const harp_source_variable_definition *source_definition,
+                                  int (*print) (const char *, ...), int indent)
 {
     int k;
 
     for (k = 0; k < indent; k++)
     {
-        printf("  ");
+        print("  ");
     }
-    printf("%s", source_definition->variable_name);
+    print("%s", source_definition->variable_name);
     if (source_definition->num_dimensions > 0)
     {
-        printf(" {");
+        print(" {");
         for (k = 0; k < source_definition->num_dimensions; k++)
         {
-            printf("%s", harp_get_dimension_type_name(source_definition->dimension_type[k]));
+            print("%s", harp_get_dimension_type_name(source_definition->dimension_type[k]));
             if (source_definition->dimension_type[k] == harp_dimension_independent &&
                 source_definition->independent_dimension_length >= 0)
             {
-                printf("(%ld)", source_definition->independent_dimension_length);
+                print("(%ld)", source_definition->independent_dimension_length);
             }
             if (k < source_definition->num_dimensions - 1)
             {
-                printf(",");
+                print(",");
             }
         }
-        printf("}");
+        print("}");
     }
     if (source_definition->unit != NULL)
     {
-        printf(" [%s]", source_definition->unit);
+        print(" [%s]", source_definition->unit);
     }
-    printf(" (%s)", harp_get_data_type_name(source_definition->data_type));
+    print(" (%s)", harp_get_data_type_name(source_definition->data_type));
 }
 
-static void print_conversion(conversion_info *info, int indent)
+static void print_conversion(conversion_info *info, int (*print) (const char *, ...), int indent)
 {
     int i, k;
 
     if (info->conversion->num_source_variables == 0)
     {
-        printf("\n");
+        print("\n");
         for (k = 0; k < indent; k++)
         {
-            printf("  ");
+            print("  ");
         }
-        printf("derived without input variables\n");
+        print("derived without input variables\n");
     }
     else
     {
-        printf(" from\n");
+        print(" from\n");
         for (i = 0; i < info->conversion->num_source_variables; i++)
         {
             conversion_info source_info = *info;
             harp_source_variable_definition *source_definition = &info->conversion->source_definition[i];
 
-            print_source_variable(source_definition, indent);
+            print_source_variable(source_definition, print, indent);
             source_info.conversion = NULL;
             source_info.variable_name = source_definition->variable_name;
             source_info.num_dimensions = source_definition->num_dimensions;
@@ -594,13 +595,13 @@ static void print_conversion(conversion_info *info, int indent)
                 source_info.dimension_type[k] = source_definition->dimension_type[k];
             }
             source_info.variable = NULL;
-            if (print_source_variable_conversion(&source_info, indent) != 0)
+            if (print_source_variable_conversion(&source_info, print, indent) != 0)
             {
                 for (k = 0; k < indent; k++)
                 {
-                    printf("  ");
+                    print("  ");
                 }
-                printf("ERROR: %s\n", harp_errno_to_string(harp_errno));
+                print("ERROR: %s\n", harp_errno_to_string(harp_errno));
             }
         }
     }
@@ -608,35 +609,35 @@ static void print_conversion(conversion_info *info, int indent)
     {
         for (k = 0; k < indent; k++)
         {
-            printf("  ");
+            print("  ");
         }
-        printf("note: %s\n", info->conversion->source_description);
+        print("note: %s\n", info->conversion->source_description);
     }
 }
 
-void harp_variable_conversion_print(const harp_variable_conversion *conversion)
+void harp_variable_conversion_print(const harp_variable_conversion *conversion, int (*print) (const char *, ...))
 {
     int i;
 
-    print_conversion_variable(conversion);
+    print_conversion_variable(conversion, print);
     if (conversion->num_source_variables > 0)
     {
-        printf(" from\n");
+        print(" from\n");
         for (i = 0; i < conversion->num_source_variables; i++)
         {
-            print_source_variable(&conversion->source_definition[i], 1);
-            printf("\n");
+            print_source_variable(&conversion->source_definition[i], print, 1);
+            print("\n");
         }
     }
     else
     {
-        printf("\n  derived without input variables\n");
+        print("\n  derived without input variables\n");
     }
     if (conversion->source_description != NULL)
     {
-        printf("  note: %s\n", conversion->source_description);
+        print("  note: %s\n", conversion->source_description);
     }
-    printf("\n");
+    print("\n");
 }
 
 void harp_variable_conversion_delete(harp_variable_conversion *conversion)
@@ -824,7 +825,21 @@ int harp_variable_conversion_set_source_description(harp_variable_conversion *co
     return 0;
 }
 
-int harp_list_conversions(const harp_product *product)
+/** Print the full listing of available variable conversions.
+ * If product is NULL then all possible conversions will be printed. If a product is provided then only conversions
+ * that can be made using the content of that product will be shown.
+ * The \a print function parameter should be a function that resembles printf().
+ * The most common case use is to just use printf() itself. For example:
+ * \code{.c}
+ * harp_doc_list_conversions(product, printf);
+ * \endcode
+ * \param product Pointer to a HARP product (can be NULL).
+ * \param print Reference to a printf compatible function.
+ * \return
+ *   \arg \c  0, Succes.
+ *   \arg \c -1, Error occurred (check #harp_errno).
+ */
+LIBHARP_API int harp_doc_list_conversions(const harp_product *product, int (*print) (const char *, ...))
 {
     conversion_info info;
     int i, j;
@@ -852,7 +867,7 @@ int harp_list_conversions(const harp_product *product)
 
                 if (first)
                 {
-                    printf("============================================================\n");
+                    print("============================================================\n");
                     first = 0;
                 }
 
@@ -860,7 +875,7 @@ int harp_list_conversions(const harp_product *product)
                 {
                     continue;
                 }
-                harp_variable_conversion_print(conversion);
+                harp_variable_conversion_print(conversion, print);
             }
         }
         return 0;
@@ -933,9 +948,9 @@ int harp_list_conversions(const harp_product *product)
                 /* all sources are found, conversion should be possible */
                 info.variable_name = conversion->variable_name;
                 info.conversion = conversion;
-                print_conversion_variable(conversion);
-                print_conversion(&info, 1);
-                printf("\n");
+                print_conversion_variable(conversion, print);
+                print_conversion(&info, print, 1);
+                print("\n");
                 /* don't show any remaining results */
                 info.skip[i] ^= 1 << conversion->num_dimensions;
                 break;
@@ -967,9 +982,9 @@ int harp_list_conversions(const harp_product *product)
  *   \arg \c 0, Success.
  *   \arg \c -1, Error occurred (check #harp_errno).
  */
-int harp_product_get_derived_variable(const harp_product *product, const char *name, const char *unit,
-                                      int num_dimensions, const harp_dimension_type *dimension_type,
-                                      harp_variable **variable)
+LIBHARP_API int harp_product_get_derived_variable(const harp_product *product, const char *name, const char *unit,
+                                                  int num_dimensions, const harp_dimension_type *dimension_type,
+                                                  harp_variable **variable)
 {
     conversion_info info;
     int i;
@@ -1069,8 +1084,8 @@ int harp_product_get_derived_variable(const harp_product *product, const char *n
  *   \arg \c 0, Success.
  *   \arg \c -1, Error occurred (check #harp_errno).
  */
-int harp_product_add_derived_variable(harp_product *product, const char *name, const char *unit,
-                                      int num_dimensions, const harp_dimension_type *dimension_type)
+LIBHARP_API int harp_product_add_derived_variable(harp_product *product, const char *name, const char *unit,
+                                                  int num_dimensions, const harp_dimension_type *dimension_type)
 {
     harp_variable *new_variable;
     harp_variable *variable = NULL;
