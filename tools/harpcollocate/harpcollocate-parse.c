@@ -1049,8 +1049,8 @@ static int expand_directory_name_into_file_names(const char *pathname, Dataset *
     {
         if (GetLastError() == ERROR_FILE_NOT_FOUND || GetLastError() == ERROR_NO_MORE_FILES)
         {
-            /* no files found */
-            continue;
+            /* no files found -> return empy dataset */
+            return dataset_new(dataset_dir);
         }
         harp_set_error(HARP_ERROR_INVALID_ARGUMENT, "could not access directory '%s'", pathname);
         return -1;
