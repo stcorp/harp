@@ -84,6 +84,17 @@ Installation instructions can be found in the HARP documentation or the
 INSTALL file.
 
 
+Documentation
+=============
+
+Full documentation in HTML is included with the HARP software.
+
+An online version of the documentation matching the latest development
+status on GitHub can be viewed at:
+
+    https://cdn.rawgit.com/stcorp/harp/master/doc/html/index.html
+
+
 Download
 ========
 
