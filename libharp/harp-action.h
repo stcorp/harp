@@ -28,6 +28,7 @@ typedef enum harp_action_type_enum
     harp_action_filter_collocation,
     harp_action_filter_comparison,
     harp_action_filter_string_comparison,
+    harp_action_filter_bit_mask,
     harp_action_filter_membership,
     harp_action_filter_string_membership,
     harp_action_filter_valid_range,
@@ -63,6 +64,12 @@ typedef enum harp_comparison_operator_type_enum
     harp_operator_ge
 } harp_comparison_operator_type;
 
+typedef enum harp_bit_mask_operator_type_enum
+{
+    harp_operator_bit_mask_any,
+    harp_operator_bit_mask_none
+} harp_bit_mask_operator_type;
+
 typedef enum harp_membership_operator_type_enum
 {
     harp_operator_in,
@@ -89,6 +96,13 @@ typedef struct harp_string_comparison_filter_args_struct
     harp_comparison_operator_type operator_type;
     char *value;
 } harp_string_comparison_filter_args;
+
+typedef struct harp_bit_mask_filter_args_struct
+{
+    char *variable_name;
+    harp_bit_mask_operator_type operator_type;
+    uint32_t bit_mask;
+} harp_bit_mask_filter_args;
 
 typedef struct harp_membership_filter_args_struct
 {
@@ -186,6 +200,9 @@ int harp_comparison_filter_new(const char *variable_name, harp_comparison_operat
 
 int harp_string_comparison_filter_new(const char *variable_name, harp_comparison_operator_type operator_type,
                                       const char *value, harp_action **new_action);
+
+int harp_bit_mask_filter_new(const char *variable_name, harp_bit_mask_operator_type operator_type, uint32_t bit_mask,
+                             harp_action **new_action);
 
 int harp_membership_filter_new(const char *variable_name, harp_membership_operator_type operator_type, int num_values,
                                const double *value, const char *unit, harp_action **new_action);

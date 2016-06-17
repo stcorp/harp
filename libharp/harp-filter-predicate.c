@@ -21,6 +21,7 @@
 #include "harp-filter.h"
 
 #define NUM_COMPARISON_OPERATORS 6
+#define NUM_BIT_MASK_OPERATORS 2
 #define NUM_MEMBERSHIP_OPERATORS 2
 
 #include <assert.h>
@@ -156,6 +157,38 @@ static uint8_t string_compare_ne(void *untyped_args, const void *untyped_value)
 /* *INDENT-OFF* */
 static harp_predicate_eval_func *string_comparison_func[NUM_COMPARISON_OPERATORS] =
     {string_compare_eq, string_compare_ne, NULL, NULL, NULL, NULL};
+/* *INDENT-ON* */
+
+/* Bit mask operators. */
+typedef struct bit_mask_test_args_struct
+{
+    uint32_t bit_mask;
+} bit_mask_test_args;
+
+/* *INDENT-OFF* */
+#define DEFINE_BIT_MASK_TEST_FUNCTION(TYPE_NAME, TYPE) \
+static uint8_t test_bit_mask_##TYPE_NAME(void *untyped_args, const void *untyped_value) \
+{ \
+    return (((uint32_t)*((TYPE *)untyped_value)) & ((bit_mask_test_args *)untyped_args)->bit_mask) != 0; \
+}
+
+DEFINE_BIT_MASK_TEST_FUNCTION(int8, int8_t)
+DEFINE_BIT_MASK_TEST_FUNCTION(int16, int16_t)
+DEFINE_BIT_MASK_TEST_FUNCTION(int32, int32_t)
+
+#define DEFINE_BIT_MASK_TEST_NOT_FUNCTION(TYPE_NAME, TYPE) \
+static uint8_t test_not_bit_mask_##TYPE_NAME(void *untyped_args, const void *untyped_value) \
+{ \
+    return (((uint32_t)*((TYPE *)untyped_value)) & ((bit_mask_test_args *)untyped_args)->bit_mask) == 0; \
+}
+
+DEFINE_BIT_MASK_TEST_NOT_FUNCTION(int8, int8_t)
+DEFINE_BIT_MASK_TEST_NOT_FUNCTION(int16, int16_t)
+DEFINE_BIT_MASK_TEST_NOT_FUNCTION(int32, int32_t)
+
+static harp_predicate_eval_func *bit_mask_test_func[NUM_BIT_MASK_OPERATORS][HARP_NUM_DATA_TYPES] =
+    {{test_bit_mask_int8, test_bit_mask_int16, test_bit_mask_int32, NULL, NULL, NULL},
+     {test_not_bit_mask_int8, test_not_bit_mask_int16, test_not_bit_mask_int32, NULL, NULL, NULL}};
 /* *INDENT-ON* */
 
 /* Set membership. */
@@ -393,6 +426,20 @@ static int get_comparision_operator_index(harp_comparison_operator_type operator
     }
 }
 
+static int get_bit_mask_operator_index(harp_bit_mask_operator_type operator_type)
+{
+    switch (operator_type)
+    {
+        case harp_operator_bit_mask_any:
+            return 0;
+        case harp_operator_bit_mask_none:
+            return 1;
+        default:
+            assert(0);
+            exit(1);
+    }
+}
+
 static int get_membership_operator_index(harp_membership_operator_type operator_type)
 {
     switch (operator_type)
@@ -426,6 +473,12 @@ static harp_predicate_eval_func *get_comparison_func(harp_comparison_operator_ty
 static harp_predicate_eval_func *get_string_comparison_func(harp_comparison_operator_type operator_type)
 {
     return string_comparison_func[get_comparision_operator_index(operator_type)];
+}
+
+static harp_predicate_eval_func *get_bit_mask_test_func(harp_bit_mask_operator_type operator_type,
+                                                        harp_data_type data_type)
+{
+    return bit_mask_test_func[get_bit_mask_operator_index(operator_type)][get_data_type_index(data_type)];
 }
 
 static harp_predicate_eval_func *get_membership_test_func(harp_membership_operator_type operator_type,
@@ -575,6 +628,24 @@ static int string_comparision_args_new(const char *value, string_comparision_arg
                        __LINE__);
         return -1;
     }
+
+    *new_args = args;
+    return 0;
+}
+
+static int bit_mask_test_args_new(uint32_t bit_mask, bit_mask_test_args **new_args)
+{
+    bit_mask_test_args *args;
+
+    args = (bit_mask_test_args *)malloc(sizeof(bit_mask_test_args));
+    if (args == NULL)
+    {
+        harp_set_error(HARP_ERROR_OUT_OF_MEMORY, "out of memory (could not allocate %lu bytes) (%s:%u)",
+                       sizeof(bit_mask_test_args), __FILE__, __LINE__);
+        return -1;
+    }
+
+    args->bit_mask = bit_mask;
 
     *new_args = args;
     return 0;
@@ -931,6 +1002,35 @@ int harp_string_comparison_filter_predicate_new(const harp_string_comparison_fil
     return 0;
 }
 
+int harp_bit_mask_filter_predicate_new(const harp_bit_mask_filter_args *args, harp_data_type data_type,
+                                       harp_predicate **new_predicate)
+{
+    harp_predicate *predicate;
+    bit_mask_test_args *predicate_args;
+
+    if (data_type == harp_type_float || data_type == harp_type_double || data_type == harp_type_string)
+    {
+        harp_set_error(HARP_ERROR_INVALID_ARGUMENT, "predicate not defined for data type: %s",
+                       harp_get_data_type_name(data_type));
+        return -1;
+    }
+
+    if (bit_mask_test_args_new(args->bit_mask, &predicate_args) != 0)
+    {
+        return -1;
+    }
+
+    if (harp_predicate_new(get_bit_mask_test_func(args->operator_type, data_type), predicate_args, NULL,
+                           &predicate) != 0)
+    {
+        free(predicate_args);
+        return -1;
+    }
+
+    *new_predicate = predicate;
+    return 0;
+}
+
 int harp_membership_filter_predicate_new(const harp_membership_filter_args *args, harp_data_type data_type,
                                          const char *unit, harp_predicate **new_predicate)
 {
@@ -1259,6 +1359,9 @@ int harp_get_filter_predicate_for_action(const harp_action *action, harp_data_ty
         case harp_action_filter_string_membership:
             return harp_string_membership_filter_predicate_new((harp_string_membership_filter_args *)action->args,
                                                                data_type, new_predicate);
+        case harp_action_filter_bit_mask:
+            return harp_bit_mask_filter_predicate_new((harp_bit_mask_filter_args *)action->args, data_type,
+                                                      new_predicate);
         case harp_action_filter_valid_range:
             return harp_valid_range_filter_predicate_new(data_type, valid_min, valid_max, new_predicate);
         case harp_action_filter_longitude_range:

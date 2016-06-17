@@ -840,6 +840,72 @@ static int parse_comparison(harp_lexer *lexer, ast_node **result)
     return 0;
 }
 
+static int parse_bit_mask_test(harp_lexer *lexer, ast_node **result)
+{
+    ast_node *node;
+    ast_node_type node_type;
+    ast_node *name;
+    ast_node *argument;
+    harp_token token;
+
+    if (parse_name(lexer, &name) != 0)
+    {
+        return -1;
+    }
+
+    if (harp_lexer_peek_token(lexer, &token) != 0)
+    {
+        harp_ast_node_delete(name);
+        return -1;
+    }
+
+    if (token.type == harp_token_bit_mask_any)
+    {
+        node_type = ast_bit_mask_any;
+    }
+    else if (token.type == harp_token_bit_mask_none)
+    {
+        node_type = ast_bit_mask_none;
+    }
+    else
+    {
+        harp_set_error(HARP_ERROR_SCRIPT_SYNTAX, "char %lu: expected bit mask test (%s:%u)", token.position, __FILE__,
+                       __LINE__);
+        return -1;
+    }
+    harp_lexer_consume_token(lexer);
+
+    if (ast_node_new(node_type, &node) != 0)
+    {
+        harp_ast_node_delete(name);
+        return -1;
+    }
+
+    if (ast_node_append_child_node(node, name) != 0)
+    {
+        harp_ast_node_delete(name);
+        harp_ast_node_delete(node);
+        return -1;
+    }
+    node->position = name->position;
+
+    if (parse_number(lexer, &argument) != 0)
+    {
+        harp_ast_node_delete(node);
+        return -1;
+    }
+
+    if (ast_node_append_child_node(node, argument) != 0)
+    {
+        harp_ast_node_delete(argument);
+        harp_ast_node_delete(node);
+        return -1;
+    }
+
+    *result = node;
+    return 0;
+}
+
 static int parse_membership_test(harp_lexer *lexer, ast_node **result)
 {
     ast_node *node;
@@ -1047,6 +1113,10 @@ static int parse_statement(harp_lexer *lexer, ast_node **result)
     {
         return parse_function_call(lexer, result);
     }
+    else if (token.type == harp_token_bit_mask_any || token.type == harp_token_bit_mask_none)
+    {
+        return parse_bit_mask_test(lexer, result);
+    }
     else if (token.type == harp_token_not || token.type == harp_token_in)
     {
         return parse_membership_test(lexer, result);
@@ -1056,8 +1126,8 @@ static int parse_statement(harp_lexer *lexer, ast_node **result)
         return parse_comparison(lexer, result);
     }
 
-    harp_set_error(HARP_ERROR_SCRIPT_SYNTAX, "char %lu: expected '(', comparison operator, or membership test (%s:%u)",
-                   token.position, __FILE__, __LINE__);
+    harp_set_error(HARP_ERROR_SCRIPT_SYNTAX, "char %lu: expected '(', comparison operator, bit mask test, or "
+                   "membership test (%s:%u)", token.position, __FILE__, __LINE__);
     return -1;
 }
 

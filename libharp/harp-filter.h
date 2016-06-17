@@ -51,6 +51,8 @@ int harp_comparison_filter_predicate_new(const harp_comparison_filter_args *args
                                          const char *unit, harp_predicate **new_predicate);
 int harp_string_comparison_filter_predicate_new(const harp_string_comparison_filter_args *args,
                                                 harp_data_type data_type, harp_predicate **new_predicate);
+int harp_bit_mask_filter_predicate_new(const harp_bit_mask_filter_args *args, harp_data_type data_type,
+                                       harp_predicate **new_predicate);
 int harp_membership_filter_predicate_new(const harp_membership_filter_args *args, harp_data_type data_type,
                                          const char *unit, harp_predicate **new_predicate);
 int harp_string_membership_filter_predicate_new(const harp_string_membership_filter_args *args,

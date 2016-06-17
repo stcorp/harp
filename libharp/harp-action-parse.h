@@ -38,6 +38,8 @@ typedef enum ast_node_type_enum
     ast_le,
     ast_gt,
     ast_ge,
+    ast_bit_mask_any,
+    ast_bit_mask_none,
     ast_in,
     ast_not_in,
     ast_function_call,

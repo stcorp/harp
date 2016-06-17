@@ -73,6 +73,19 @@ static void string_comparison_filter_args_delete(harp_string_comparison_filter_a
     }
 }
 
+static void bit_mask_filter_args_delete(harp_bit_mask_filter_args *args)
+{
+    if (args != NULL)
+    {
+        if (args->variable_name != NULL)
+        {
+            free(args->variable_name);
+        }
+
+        free(args);
+    }
+}
+
 static void membership_filter_args_delete(harp_membership_filter_args *args)
 {
     if (args != NULL)
@@ -390,6 +403,38 @@ static int string_comparison_filter_args_new(const char *variable_name, harp_com
         harp_set_error(HARP_ERROR_OUT_OF_MEMORY, "out of memory (could not duplicate string) (%s:%u)", __FILE__,
                        __LINE__);
         string_comparison_filter_args_delete(args);
+        return -1;
+    }
+
+    *new_args = args;
+    return 0;
+}
+
+static int bit_mask_filter_args_new(const char *variable_name, harp_bit_mask_operator_type operator_type,
+                                    uint32_t bit_mask, harp_bit_mask_filter_args **new_args)
+{
+    harp_bit_mask_filter_args *args;
+
+    assert(variable_name != NULL);
+
+    args = (harp_bit_mask_filter_args *)malloc(sizeof(harp_bit_mask_filter_args));
+    if (args == NULL)
+    {
+        harp_set_error(HARP_ERROR_OUT_OF_MEMORY, "out of memory (could not allocate %lu bytes) (%s:%u)",
+                       sizeof(harp_bit_mask_filter_args), __FILE__, __LINE__);
+        return -1;
+    }
+
+    args->variable_name = NULL;
+    args->operator_type = operator_type;
+    args->bit_mask = bit_mask;
+
+    args->variable_name = strdup(variable_name);
+    if (args->variable_name == NULL)
+    {
+        harp_set_error(HARP_ERROR_OUT_OF_MEMORY, "out of memory (could not duplicate string) (%s:%u)", __FILE__,
+                       __LINE__);
+        bit_mask_filter_args_delete(args);
         return -1;
     }
 
@@ -902,6 +947,12 @@ static int string_comparison_filter_args_copy(const harp_string_comparison_filte
     return string_comparison_filter_args_new(args->variable_name, args->operator_type, args->value, new_args);
 }
 
+static int bit_mask_filter_args_copy(const harp_bit_mask_filter_args *args, harp_bit_mask_filter_args **new_args)
+{
+    assert(args != NULL);
+    return bit_mask_filter_args_new(args->variable_name, args->operator_type, args->bit_mask, new_args);
+}
+
 static int membership_filter_args_copy(const harp_membership_filter_args *args, harp_membership_filter_args **new_args)
 {
     assert(args != NULL);
@@ -1014,6 +1065,9 @@ static void args_delete(harp_action_type action_type, void *args)
         case harp_action_filter_string_comparison:
             string_comparison_filter_args_delete((harp_string_comparison_filter_args *)args);
             break;
+        case harp_action_filter_bit_mask:
+            bit_mask_filter_args_delete((harp_bit_mask_filter_args *)args);
+            break;
         case harp_action_filter_membership:
             membership_filter_args_delete((harp_membership_filter_args *)args);
             break;
@@ -1079,6 +1133,9 @@ static int args_copy(harp_action_type action_type, const void *args, void **new_
         case harp_action_filter_string_comparison:
             return string_comparison_filter_args_copy((const harp_string_comparison_filter_args *)args,
                                                       (harp_string_comparison_filter_args **)new_args);
+        case harp_action_filter_bit_mask:
+            return bit_mask_filter_args_copy((const harp_bit_mask_filter_args *)args,
+                                             (harp_bit_mask_filter_args **)new_args);
         case harp_action_filter_membership:
             return membership_filter_args_copy((const harp_membership_filter_args *)args,
                                                (harp_membership_filter_args **)new_args);
@@ -1184,6 +1241,27 @@ int harp_string_comparison_filter_new(const char *variable_name, harp_comparison
     if (harp_action_new(harp_action_filter_string_comparison, args, &action) != 0)
     {
         string_comparison_filter_args_delete(args);
+        return -1;
+    }
+
+    *new_action = action;
+    return 0;
+}
+
+int harp_bit_mask_filter_new(const char *variable_name, harp_bit_mask_operator_type operator_type, uint32_t bit_mask,
+                         harp_action **new_action)
+{
+    harp_bit_mask_filter_args *args;
+    harp_action *action;
+
+    if (bit_mask_filter_args_new(variable_name, operator_type, bit_mask, &args) != 0)
+    {
+        return -1;
+    }
+
+    if (harp_action_new(harp_action_filter_bit_mask, args, &action) != 0)
+    {
+        bit_mask_filter_args_delete(args);
         return -1;
     }
 
@@ -1454,6 +1532,9 @@ int harp_action_get_variable_name(const harp_action *action, const char **variab
             break;
         case harp_action_filter_string_membership:
             *variable_name = ((harp_string_membership_filter_args *)action->args)->variable_name;
+            break;
+        case harp_action_filter_bit_mask:
+            *variable_name = ((harp_bit_mask_filter_args *)action->args)->variable_name;
             break;
         case harp_action_filter_longitude_range:
             *variable_name = "longitude";

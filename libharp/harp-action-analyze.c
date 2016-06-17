@@ -29,6 +29,7 @@
 typedef int create_func(const ast_node *argument_list, harp_action **new_action);
 
 #define MAX_NUM_FUNCTION_ARGUMENTS 5
+
 typedef struct function_prototype_struct
 {
     const char *name;
@@ -512,6 +513,36 @@ static int create_comparison(ast_node *node, harp_action **new_action)
     return 0;
 }
 
+static int create_bit_mask_test(ast_node *node, harp_action **new_action)
+{
+    harp_action *action;
+    harp_bit_mask_operator_type operator_type;
+    uint32_t bit_mask;
+
+    /* Get membership test operator type. */
+    assert(node->type == ast_bit_mask_any || node->type == ast_bit_mask_none);
+    if (node->type == ast_bit_mask_any)
+    {
+        operator_type = harp_operator_bit_mask_any;
+    }
+    else
+    {
+        operator_type = harp_operator_bit_mask_none;
+    }
+
+    assert(node->num_child_nodes == 2);
+    assert(node->child_node[1]->type == ast_number);
+    bit_mask = (uint32_t)node->child_node[1]->payload.number;
+
+    if (harp_bit_mask_filter_new(node->child_node[0]->payload.string, operator_type, bit_mask, &action) != 0)
+    {
+        return -1;
+    }
+
+    *new_action = action;
+    return 0;
+}
+
 static int create_membership_test(ast_node *node, harp_action **new_action)
 {
     harp_action *action;
@@ -692,6 +723,14 @@ static int create_action_list(ast_node *node, harp_action_list **new_action_list
         else if (node->child_node[i]->type == ast_in || node->child_node[i]->type == ast_not_in)
         {
             if (create_membership_test(node->child_node[i], &action) != 0)
+            {
+                harp_action_list_delete(action_list);
+                return -1;
+            }
+        }
+        else if (node->child_node[i]->type == ast_bit_mask_any || node->child_node[i]->type == ast_bit_mask_none)
+        {
+            if (create_bit_mask_test(node->child_node[i], &action) != 0)
             {
                 harp_action_list_delete(action_list);
                 return -1;

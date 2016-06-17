@@ -191,10 +191,15 @@ static int lex_token(harp_lexer *lexer, harp_token *next_token)
     else if (strchr("<>=!", *token.root) != NULL)
     {
         /* Operators. */
-        if (*token.root == '=' && *(token.root + 1) == '>')
+        if (strncmp("=&", token.root, 2) == 0)
         {
             token.length = 2;
-            token.type = harp_token_derive;
+            token.type = harp_token_bit_mask_any;
+        }
+        else if (strncmp("!&", token.root, 2) == 0)
+        {
+            token.length = 2;
+            token.type = harp_token_bit_mask_none;
         }
         else if (*(token.root + 1) == '=')
         {
@@ -328,6 +333,10 @@ const char *harp_get_token_type_name(harp_token_type type)
             return ">";
         case harp_token_ge:
             return ">=";
+        case harp_token_bit_mask_any:
+            return "=&";
+        case harp_token_bit_mask_none:
+            return "!&";
         case harp_token_not:
             return "not";
         case harp_token_in:

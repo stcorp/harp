@@ -41,7 +41,8 @@ typedef enum harp_token_type_enum
     harp_token_le,
     harp_token_gt,
     harp_token_ge,
-    harp_token_derive,
+    harp_token_bit_mask_any,
+    harp_token_bit_mask_none,
     harp_token_not,
     harp_token_in,
     harp_token_end
