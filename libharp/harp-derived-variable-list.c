@@ -919,7 +919,8 @@ static int get_sqrt_trace_from_matrix(harp_variable *variable, const harp_variab
     return 0;
 }
 
-static int get_stdev_from_systematic_and_random_stdev(harp_variable *variable, const harp_variable **source_variable)
+static int get_uncertainty_from_systematic_and_random_uncertainty(harp_variable *variable,
+                                                                  const harp_variable **source_variable)
 {
     long i;
 
@@ -1391,33 +1392,33 @@ static int add_uncertainty_conversions(const char *variable_name, const char *un
 {
     harp_variable_conversion *conversion;
     harp_dimension_type dimension_type[HARP_MAX_NUM_DIMS];
-    char name_stdev[MAX_NAME_LENGTH];
-    char name_stdev_sys[MAX_NAME_LENGTH];
-    char name_stdev_rnd[MAX_NAME_LENGTH];
+    char name_uncertainty[MAX_NAME_LENGTH];
+    char name_uncertainty_sys[MAX_NAME_LENGTH];
+    char name_uncertainty_rnd[MAX_NAME_LENGTH];
 
-    snprintf(name_stdev, MAX_NAME_LENGTH, "%s_stdev", variable_name);
-    snprintf(name_stdev_sys, MAX_NAME_LENGTH, "%s_stdev_systematic", variable_name);
-    snprintf(name_stdev_rnd, MAX_NAME_LENGTH, "%s_stdev_random", variable_name);
+    snprintf(name_uncertainty, MAX_NAME_LENGTH, "%s_uncertainty", variable_name);
+    snprintf(name_uncertainty_sys, MAX_NAME_LENGTH, "%s_uncertainty_systematic", variable_name);
+    snprintf(name_uncertainty_rnd, MAX_NAME_LENGTH, "%s_uncertainty_random", variable_name);
 
     dimension_type[0] = harp_dimension_time;
 
-    if (harp_variable_conversion_new(name_stdev, harp_type_double, unit, 1, dimension_type, 0,
-                                     get_stdev_from_systematic_and_random_stdev, &conversion) != 0)
+    if (harp_variable_conversion_new(name_uncertainty, harp_type_double, unit, 1, dimension_type, 0,
+                                     get_uncertainty_from_systematic_and_random_uncertainty, &conversion) != 0)
     {
         return -1;
     }
-    if (harp_variable_conversion_add_source(conversion, name_stdev_sys, harp_type_double, unit, 1, dimension_type, 0) !=
-        0)
+    if (harp_variable_conversion_add_source(conversion, name_uncertainty_sys, harp_type_double, unit, 1,
+                                            dimension_type, 0) != 0)
     {
         return -1;
     }
-    if (harp_variable_conversion_add_source(conversion, name_stdev_rnd, harp_type_double, unit, 1, dimension_type, 0) !=
-        0)
+    if (harp_variable_conversion_add_source(conversion, name_uncertainty_rnd, harp_type_double, unit, 1,
+                                            dimension_type, 0) != 0)
     {
         return -1;
     }
 
-    if (harp_variable_conversion_new(name_stdev, harp_type_double, unit, 1, dimension_type, 0, get_empty_double,
+    if (harp_variable_conversion_new(name_uncertainty, harp_type_double, unit, 1, dimension_type, 0, get_empty_double,
                                      &conversion) != 0)
     {
         return -1;
@@ -1439,38 +1440,38 @@ static int add_spectral_uncertainty_conversions(const char *variable_name, const
 {
     harp_variable_conversion *conversion;
     harp_dimension_type dimension_type[HARP_MAX_NUM_DIMS];
-    char name_stdev[MAX_NAME_LENGTH];
-    char name_stdev_sys[MAX_NAME_LENGTH];
-    char name_stdev_rnd[MAX_NAME_LENGTH];
+    char name_uncertainty[MAX_NAME_LENGTH];
+    char name_uncertainty_sys[MAX_NAME_LENGTH];
+    char name_uncertainty_rnd[MAX_NAME_LENGTH];
     int i;
 
-    snprintf(name_stdev, MAX_NAME_LENGTH, "%s_stdev", variable_name);
-    snprintf(name_stdev_sys, MAX_NAME_LENGTH, "%s_stdev_systematic", variable_name);
-    snprintf(name_stdev_rnd, MAX_NAME_LENGTH, "%s_stdev_random", variable_name);
+    snprintf(name_uncertainty, MAX_NAME_LENGTH, "%s_uncertainty", variable_name);
+    snprintf(name_uncertainty_sys, MAX_NAME_LENGTH, "%s_uncertainty_systematic", variable_name);
+    snprintf(name_uncertainty_rnd, MAX_NAME_LENGTH, "%s_uncertainty_random", variable_name);
 
     dimension_type[0] = harp_dimension_time;
     dimension_type[1] = harp_dimension_spectral;
 
     for (i = 1; i < 3; i++)
     {
-        if (harp_variable_conversion_new(name_stdev, harp_type_double, unit, i, dimension_type, 0,
-                                         get_stdev_from_systematic_and_random_stdev, &conversion) != 0)
+        if (harp_variable_conversion_new(name_uncertainty, harp_type_double, unit, i, dimension_type, 0,
+                                         get_uncertainty_from_systematic_and_random_uncertainty, &conversion) != 0)
         {
             return -1;
         }
-        if (harp_variable_conversion_add_source(conversion, name_stdev_sys, harp_type_double, unit, i, dimension_type,
-                                                0) != 0)
+        if (harp_variable_conversion_add_source(conversion, name_uncertainty_sys, harp_type_double, unit, i,
+                                                dimension_type, 0) != 0)
         {
             return -1;
         }
-        if (harp_variable_conversion_add_source(conversion, name_stdev_rnd, harp_type_double, unit, i, dimension_type,
-                                                0) != 0)
+        if (harp_variable_conversion_add_source(conversion, name_uncertainty_rnd, harp_type_double, unit, i,
+                                                dimension_type, 0) != 0)
         {
             return -1;
         }
 
-        if (harp_variable_conversion_new(name_stdev, harp_type_double, unit, i, dimension_type, 0, get_empty_double,
-                                         &conversion) != 0)
+        if (harp_variable_conversion_new(name_uncertainty, harp_type_double, unit, i, dimension_type, 0,
+                                         get_empty_double, &conversion) != 0)
         {
             return -1;
         }
@@ -1492,14 +1493,14 @@ static int add_vertical_uncertainty_conversions(const char *variable_name, const
 {
     harp_variable_conversion *conversion;
     harp_dimension_type dimension_type[HARP_MAX_NUM_DIMS];
-    char name_stdev[MAX_NAME_LENGTH];
-    char name_stdev_sys[MAX_NAME_LENGTH];
-    char name_stdev_rnd[MAX_NAME_LENGTH];
+    char name_uncertainty[MAX_NAME_LENGTH];
+    char name_uncertainty_sys[MAX_NAME_LENGTH];
+    char name_uncertainty_rnd[MAX_NAME_LENGTH];
     int i;
 
-    snprintf(name_stdev, MAX_NAME_LENGTH, "%s_stdev", variable_name);
-    snprintf(name_stdev_sys, MAX_NAME_LENGTH, "%s_stdev_systematic", variable_name);
-    snprintf(name_stdev_rnd, MAX_NAME_LENGTH, "%s_stdev_random", variable_name);
+    snprintf(name_uncertainty, MAX_NAME_LENGTH, "%s_uncertainty", variable_name);
+    snprintf(name_uncertainty_sys, MAX_NAME_LENGTH, "%s_uncertainty_systematic", variable_name);
+    snprintf(name_uncertainty_rnd, MAX_NAME_LENGTH, "%s_uncertainty_random", variable_name);
 
     dimension_type[0] = harp_dimension_time;
     dimension_type[1] = harp_dimension_vertical;
@@ -1532,7 +1533,7 @@ static int add_vertical_uncertainty_conversions(const char *variable_name, const
             return -1;
         }
 
-        if (harp_variable_conversion_new(name_stdev, harp_type_double, unit, 2, dimension_type, 0,
+        if (harp_variable_conversion_new(name_uncertainty, harp_type_double, unit, 2, dimension_type, 0,
                                          get_sqrt_trace_from_matrix, &conversion) != 0)
         {
             return -1;
@@ -1548,8 +1549,8 @@ static int add_vertical_uncertainty_conversions(const char *variable_name, const
         {
             return -1;
         }
-        if (harp_variable_conversion_add_source(conversion, name_stdev, harp_type_double, unit, 2, dimension_type, 0) !=
-            0)
+        if (harp_variable_conversion_add_source(conversion, name_uncertainty, harp_type_double, unit, 2,
+                                                dimension_type, 0) != 0)
         {
             return -1;
         }
@@ -1561,24 +1562,24 @@ static int add_vertical_uncertainty_conversions(const char *variable_name, const
     }
     for (i = 1; i < 3; i++)
     {
-        if (harp_variable_conversion_new(name_stdev, harp_type_double, unit, i, dimension_type, 0,
-                                         get_stdev_from_systematic_and_random_stdev, &conversion) != 0)
+        if (harp_variable_conversion_new(name_uncertainty, harp_type_double, unit, i, dimension_type, 0,
+                                         get_uncertainty_from_systematic_and_random_uncertainty, &conversion) != 0)
         {
             return -1;
         }
-        if (harp_variable_conversion_add_source(conversion, name_stdev_sys, harp_type_double, unit, i, dimension_type,
-                                                0) != 0)
+        if (harp_variable_conversion_add_source(conversion, name_uncertainty_sys, harp_type_double, unit, i,
+                                                dimension_type, 0) != 0)
         {
             return -1;
         }
-        if (harp_variable_conversion_add_source(conversion, name_stdev_rnd, harp_type_double, unit, i, dimension_type,
-                                                0) != 0)
+        if (harp_variable_conversion_add_source(conversion, name_uncertainty_rnd, harp_type_double, unit, i,
+                                                dimension_type, 0) != 0)
         {
             return -1;
         }
 
-        if (harp_variable_conversion_new(name_stdev, harp_type_double, unit, i, dimension_type, 0, get_empty_double,
-                                         &conversion) != 0)
+        if (harp_variable_conversion_new(name_uncertainty, harp_type_double, unit, i, dimension_type, 0,
+                                         get_empty_double, &conversion) != 0)
         {
             return -1;
         }
@@ -1602,19 +1603,19 @@ static int add_species_conversions(const char *species)
     harp_dimension_type dimension_type[HARP_MAX_NUM_DIMS];
     char name_column_nd[MAX_NAME_LENGTH];
     char name_column_nd_cov[MAX_NAME_LENGTH];
-    char name_column_nd_stdev[MAX_NAME_LENGTH];
+    char name_column_nd_uncertainty[MAX_NAME_LENGTH];
     char name_density[MAX_NAME_LENGTH];
     char name_mmr[MAX_NAME_LENGTH];
     char name_mmr_cov[MAX_NAME_LENGTH];
-    char name_mmr_stdev[MAX_NAME_LENGTH];
+    char name_mmr_uncertainty[MAX_NAME_LENGTH];
     char name_mmrw[MAX_NAME_LENGTH];
     char name_nd[MAX_NAME_LENGTH];
     char name_nd_cov[MAX_NAME_LENGTH];
-    char name_nd_stdev[MAX_NAME_LENGTH];
+    char name_nd_uncertainty[MAX_NAME_LENGTH];
     char name_pp[MAX_NAME_LENGTH];
     char name_vmr[MAX_NAME_LENGTH];
     char name_vmr_cov[MAX_NAME_LENGTH];
-    char name_vmr_stdev[MAX_NAME_LENGTH];
+    char name_vmr_uncertainty[MAX_NAME_LENGTH];
     int i;
 
     if (strcmp(species, "air") == 0)
@@ -1625,19 +1626,19 @@ static int add_species_conversions(const char *species)
 
     snprintf(name_column_nd, MAX_NAME_LENGTH, "%s_column_number_density", species);
     snprintf(name_column_nd_cov, MAX_NAME_LENGTH, "%s_column_number_density_cov", species);
-    snprintf(name_column_nd_stdev, MAX_NAME_LENGTH, "%s_column_number_density_stdev", species);
+    snprintf(name_column_nd_uncertainty, MAX_NAME_LENGTH, "%s_column_number_density_uncertainty", species);
     snprintf(name_density, MAX_NAME_LENGTH, "%s_density", species);
     snprintf(name_mmr, MAX_NAME_LENGTH, "%s_mass_mixing_ratio", species);
     snprintf(name_mmr_cov, MAX_NAME_LENGTH, "%s_mass_mixing_ratio_cov", species);
-    snprintf(name_mmr_stdev, MAX_NAME_LENGTH, "%s_mass_mixing_ratio_stdev", species);
+    snprintf(name_mmr_uncertainty, MAX_NAME_LENGTH, "%s_mass_mixing_ratio_uncertainty", species);
     snprintf(name_mmrw, MAX_NAME_LENGTH, "%s_mass_mixing_ratio_wet", species);
     snprintf(name_nd, MAX_NAME_LENGTH, "%s_number_density", species);
     snprintf(name_nd_cov, MAX_NAME_LENGTH, "%s_number_density_cov", species);
-    snprintf(name_nd_stdev, MAX_NAME_LENGTH, "%s_number_density_stdev", species);
+    snprintf(name_nd_uncertainty, MAX_NAME_LENGTH, "%s_number_density_uncertainty", species);
     snprintf(name_pp, MAX_NAME_LENGTH, "%s_partial_pressure", species);
     snprintf(name_vmr, MAX_NAME_LENGTH, "%s_volume_mixing_ratio", species);
     snprintf(name_vmr_cov, MAX_NAME_LENGTH, "%s_volume_mixing_ratio_cov", species);
-    snprintf(name_vmr_stdev, MAX_NAME_LENGTH, "%s_volume_mixing_ratio_stdev", species);
+    snprintf(name_vmr_uncertainty, MAX_NAME_LENGTH, "%s_volume_mixing_ratio_uncertainty", species);
 
     dimension_type[0] = harp_dimension_time;
     dimension_type[1] = harp_dimension_vertical;
@@ -1655,13 +1656,13 @@ static int add_species_conversions(const char *species)
     {
         return -1;
     }
-    if (harp_variable_conversion_new(name_column_nd_stdev, harp_type_double, HARP_UNIT_COLUMN_NUMBER_DENSITY, 1,
+    if (harp_variable_conversion_new(name_column_nd_uncertainty, harp_type_double, HARP_UNIT_COLUMN_NUMBER_DENSITY, 1,
                                      dimension_type, 0, get_column_uncertainty_from_partial_column_uncertainty,
                                      &conversion) != 0)
     {
         return -1;
     }
-    if (harp_variable_conversion_add_source(conversion, name_column_nd_stdev, harp_type_double,
+    if (harp_variable_conversion_add_source(conversion, name_column_nd_uncertainty, harp_type_double,
                                             HARP_UNIT_COLUMN_NUMBER_DENSITY, 2, dimension_type, 0) != 0)
     {
         return -1;
@@ -1684,14 +1685,14 @@ static int add_species_conversions(const char *species)
     {
         return -1;
     }
-    if (harp_variable_conversion_new(name_column_nd_stdev, harp_type_double, HARP_UNIT_COLUMN_NUMBER_DENSITY, 2,
+    if (harp_variable_conversion_new(name_column_nd_uncertainty, harp_type_double, HARP_UNIT_COLUMN_NUMBER_DENSITY, 2,
                                      dimension_type, 0, get_partial_column_from_density_and_alt_bounds, &conversion) !=
         0)
     {
         return -1;
     }
-    if (harp_variable_conversion_add_source(conversion, name_nd_stdev, harp_type_double, HARP_UNIT_NUMBER_DENSITY, 2,
-                                            dimension_type, 0) != 0)
+    if (harp_variable_conversion_add_source(conversion, name_nd_uncertainty, harp_type_double, HARP_UNIT_NUMBER_DENSITY,
+                                            2, dimension_type, 0) != 0)
     {
         return -1;
     }
@@ -1812,13 +1813,13 @@ static int add_species_conversions(const char *species)
         }
     }
 
-    if (harp_variable_conversion_new(name_nd_stdev, harp_type_double, HARP_UNIT_NUMBER_DENSITY, 2, dimension_type, 0,
-                                     get_nd_from_vmr_pressure_and_temperature, &conversion) != 0)
+    if (harp_variable_conversion_new(name_nd_uncertainty, harp_type_double, HARP_UNIT_NUMBER_DENSITY, 2, dimension_type,
+                                     0, get_nd_from_vmr_pressure_and_temperature, &conversion) != 0)
     {
         return -1;
     }
-    if (harp_variable_conversion_add_source(conversion, name_vmr_stdev, harp_type_double, HARP_UNIT_VOLUME_MIXING_RATIO,
-                                            2, dimension_type, 0) != 0)
+    if (harp_variable_conversion_add_source(conversion, name_vmr_uncertainty, harp_type_double,
+                                            HARP_UNIT_VOLUME_MIXING_RATIO, 2, dimension_type, 0) != 0)
     {
         return -1;
     }
@@ -1998,13 +1999,13 @@ static int add_species_conversions(const char *species)
         }
     }
 
-    if (harp_variable_conversion_new(name_vmr_stdev, harp_type_double, HARP_UNIT_VOLUME_MIXING_RATIO, 2, dimension_type,
-                                     0, get_vmr_from_nd_pressure_and_temperature, &conversion) != 0)
+    if (harp_variable_conversion_new(name_vmr_uncertainty, harp_type_double, HARP_UNIT_VOLUME_MIXING_RATIO, 2,
+                                     dimension_type, 0, get_vmr_from_nd_pressure_and_temperature, &conversion) != 0)
     {
         return -1;
     }
-    if (harp_variable_conversion_add_source(conversion, name_nd_stdev, harp_type_double, HARP_UNIT_NUMBER_DENSITY, 2,
-                                            dimension_type, 0) != 0)
+    if (harp_variable_conversion_add_source(conversion, name_nd_uncertainty, harp_type_double, HARP_UNIT_NUMBER_DENSITY,
+                                            2, dimension_type, 0) != 0)
     {
         return -1;
     }
@@ -2064,13 +2065,13 @@ static int init_conversions(void)
     {
         return -1;
     }
-    if (harp_variable_conversion_new("aerosol_extinction_coefficient_stdev", harp_type_double,
+    if (harp_variable_conversion_new("aerosol_extinction_coefficient_uncertainty", harp_type_double,
                                      HARP_UNIT_AEROSOL_EXTINCTION, 2, dimension_type, 0,
                                      get_density_from_partial_column_and_alt_bounds, &conversion) != 0)
     {
         return -1;
     }
-    if (harp_variable_conversion_add_source(conversion, "aerosol_optical_depth_stdev", harp_type_double,
+    if (harp_variable_conversion_add_source(conversion, "aerosol_optical_depth_uncertainty", harp_type_double,
                                             HARP_UNIT_DIMENSIONLESS, 2, dimension_type, 0) != 0)
     {
         return -1;
@@ -2098,13 +2099,13 @@ static int init_conversions(void)
     {
         return -1;
     }
-    if (harp_variable_conversion_new("aerosol_optical_depth_stdev", harp_type_double, HARP_UNIT_DIMENSIONLESS, 1,
+    if (harp_variable_conversion_new("aerosol_optical_depth_uncertainty", harp_type_double, HARP_UNIT_DIMENSIONLESS, 1,
                                      dimension_type, 0, get_column_uncertainty_from_partial_column_uncertainty,
                                      &conversion) != 0)
     {
         return -1;
     }
-    if (harp_variable_conversion_add_source(conversion, "aerosol_optical_depth_stdev", harp_type_double,
+    if (harp_variable_conversion_add_source(conversion, "aerosol_optical_depth_uncertainty", harp_type_double,
                                             HARP_UNIT_DIMENSIONLESS, 2, dimension_type, 0) != 0)
     {
         return -1;
@@ -2125,13 +2126,13 @@ static int init_conversions(void)
     {
         return -1;
     }
-    if (harp_variable_conversion_new("aerosol_optical_depth_stdev", harp_type_double, HARP_UNIT_DIMENSIONLESS, 2,
+    if (harp_variable_conversion_new("aerosol_optical_depth_uncertainty", harp_type_double, HARP_UNIT_DIMENSIONLESS, 2,
                                      dimension_type, 0, get_partial_column_from_density_and_alt_bounds,
                                      &conversion) != 0)
     {
         return -1;
     }
-    if (harp_variable_conversion_add_source(conversion, "aerosol_extinction_coefficient_stdev", harp_type_double,
+    if (harp_variable_conversion_add_source(conversion, "aerosol_extinction_coefficient_uncertainty", harp_type_double,
                                             HARP_UNIT_AEROSOL_EXTINCTION, 2, dimension_type, 0) != 0)
     {
         return -1;

@@ -20,6 +20,8 @@
   Also removed the HARP specific udunits XML configuration file since all
   HARP units are now included in udunits2.
 
+* Renamed all 'stdev' variables to 'uncertainty'.
+
 * Fixed parsing of dimension names; string dimension could be interpreted as
   independent dimension.
 

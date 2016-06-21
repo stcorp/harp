@@ -213,7 +213,7 @@
 <td>cm^-3</td>
 <td>O3 number density</td>
 </tr>
-<tr class="row-even"><td><strong>O3_number_density_stdev</strong></td>
+<tr class="row-even"><td><strong>O3_number_density_uncertainty</strong></td>
 <td>float</td>
 <td>{<em>time</em>, <em>vertical</em>}</td>
 <td>cm^-3</td>
@@ -243,7 +243,7 @@
 <td>1e6 ppmv</td>
 <td>O3 volume mixing ratio</td>
 </tr>
-<tr class="row-odd"><td><strong>O3_volume_mixing_ratio_stdev</strong></td>
+<tr class="row-odd"><td><strong>O3_volume_mixing_ratio_uncertainty</strong></td>
 <td>float</td>
 <td>{<em>time</em>, <em>vertical</em>}</td>
 <td>1e6 ppmv</td>
@@ -255,7 +255,7 @@
 <td>1e6 ppmv</td>
 <td>O3 volume mixing ratio apriori</td>
 </tr>
-<tr class="row-odd"><td><strong>O3_volume_mixing_ratio_apriori_stdev</strong></td>
+<tr class="row-odd"><td><strong>O3_volume_mixing_ratio_apriori_uncertainty</strong></td>
 <td>float</td>
 <td>{<em>time</em>, <em>vertical</em>}</td>
 <td>1e6 ppmv</td>
@@ -305,9 +305,9 @@
 <p>The table below details where and how each variable was retrieved from the input product.</p>
 <table border="1" class="docutils">
 <colgroup>
-<col width="16%" />
+<col width="18%" />
 <col width="6%" />
-<col width="79%" />
+<col width="77%" />
 </colgroup>
 <thead valign="bottom">
 <tr class="row-odd"><th class="head">field name</th>
@@ -364,7 +364,7 @@
 <td><em>path</em></td>
 <td><strong>/o3_nd[]</strong></td>
 </tr>
-<tr class="row-odd"><td rowspan="2"><strong>O3_number_density_stdev</strong></td>
+<tr class="row-odd"><td rowspan="2"><strong>O3_number_density_uncertainty</strong></td>
 <td><em>path</em></td>
 <td><strong>/o3_nd[], /o3_error[]</strong></td>
 </tr>
@@ -387,7 +387,7 @@
 <td><em>path</em></td>
 <td><strong>/o3_vmr[]</strong></td>
 </tr>
-<tr class="row-odd"><td rowspan="2"><strong>O3_volume_mixing_ratio_stdev</strong></td>
+<tr class="row-odd"><td rowspan="2"><strong>O3_volume_mixing_ratio_uncertainty</strong></td>
 <td><em>path</em></td>
 <td><strong>/o3_vmr[], /o3_error[]</strong></td>
 </tr>
@@ -398,7 +398,7 @@
 <td><em>path</em></td>
 <td><strong>/o3_ap[]</strong></td>
 </tr>
-<tr class="row-even"><td rowspan="2"><strong>O3_volume_mixing_ratio_apriori_stdev</strong></td>
+<tr class="row-even"><td rowspan="2"><strong>O3_volume_mixing_ratio_apriori_uncertainty</strong></td>
 <td><em>path</em></td>
 <td><strong>/o3_ap[], /o3_ap_error[]</strong></td>
 </tr>

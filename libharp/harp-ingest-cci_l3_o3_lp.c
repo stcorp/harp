@@ -285,8 +285,8 @@ static int read_reordered_dataset(ingest_info *info, const char *path, int num_d
     return 0;
 }
 
-static int read_as_stdev(ingest_info *info, const char *path, const char *path_relerr, long num_elements,
-                         harp_array data)
+static int read_as_uncertainty(ingest_info *info, const char *path, const char *path_relerr, long num_elements,
+                               harp_array data)
 {
     harp_array relerr;
     long i;
@@ -469,14 +469,14 @@ static int read_o3_volume_mixing_ratio_mmzm(void *user_data, harp_array data)
     return read_reordered_dataset(info, "/merged_ozone_vmr", 3, dimension, order, data);
 }
 
-static int read_o3_volume_mixing_ratio_stdev_mmzm(void *user_data, harp_array data)
+static int read_o3_volume_mixing_ratio_uncertainty_mmzm(void *user_data, harp_array data)
 {
     ingest_info *info = (ingest_info *)user_data;
     long dimension[3] = { info->num_time, info->num_vertical, info->num_latitude };
     int order[3] = { 0, 2, 1 };
 
-    if (read_as_stdev(info, "/merged_ozone_vmr", "/uncertainty_of_merged_ozone", harp_get_num_elements(3, dimension),
-                      data) != 0)
+    if (read_as_uncertainty(info, "/merged_ozone_vmr", "/uncertainty_of_merged_ozone",
+                            harp_get_num_elements(3, dimension), data) != 0)
     {
         return -1;
     }
@@ -493,14 +493,14 @@ static int read_o3_volume_mixing_ratio_msmm(void *user_data, harp_array data)
     return read_reordered_dataset(info, "/merged_ozone_vmr", 4, dimension, order, data);
 }
 
-static int read_o3_volume_mixing_ratio_stdev_msmm(void *user_data, harp_array data)
+static int read_o3_volume_mixing_ratio_uncertainty_msmm(void *user_data, harp_array data)
 {
     ingest_info *info = (ingest_info *)user_data;
     long dimension[4] = { info->num_time, info->num_vertical, info->num_longitude, info->num_latitude };
     int order[4] = { 0, 3, 2, 1 };
 
-    if (read_as_stdev(info, "/merged_ozone_vmr", "/uncertainty_of_merged_ozone", harp_get_num_elements(4, dimension),
-                      data) != 0)
+    if (read_as_uncertainty(info, "/merged_ozone_vmr", "/uncertainty_of_merged_ozone",
+                            harp_get_num_elements(4, dimension), data) != 0)
     {
         return -1;
     }
@@ -526,14 +526,14 @@ static int read_o3_number_density_mmzm(void *user_data, harp_array data)
     return read_reordered_dataset(info, "/merged_ozone_concentration", 3, dimension, order, data);
 }
 
-static int read_o3_number_density_stdev_mmzm(void *user_data, harp_array data)
+static int read_o3_number_density_uncertainty_mmzm(void *user_data, harp_array data)
 {
     ingest_info *info = (ingest_info *)user_data;
     long dimension[3] = { info->num_time, info->num_vertical, info->num_latitude };
     int order[3] = { 0, 2, 1 };
 
-    if (read_as_stdev(info, "/merged_ozone_concentration", "/uncertainty_of_merged_ozone",
-                      harp_get_num_elements(3, dimension), data) != 0)
+    if (read_as_uncertainty(info, "/merged_ozone_concentration", "/uncertainty_of_merged_ozone",
+                            harp_get_num_elements(3, dimension), data) != 0)
     {
         return -1;
     }
@@ -550,14 +550,14 @@ static int read_o3_number_density_msmm(void *user_data, harp_array data)
     return read_reordered_dataset(info, "/merged_ozone_concentration", 4, dimension, order, data);
 }
 
-static int read_o3_number_density_stdev_msmm(void *user_data, harp_array data)
+static int read_o3_number_density_uncertainty_msmm(void *user_data, harp_array data)
 {
     ingest_info *info = (ingest_info *)user_data;
     long dimension[4] = { info->num_time, info->num_vertical, info->num_longitude, info->num_latitude };
     int order[4] = { 0, 3, 2, 1 };
 
-    if (read_as_stdev(info, "/merged_ozone_concentration", "/uncertainty_of_merged_ozone",
-                      harp_get_num_elements(4, dimension), data) != 0)
+    if (read_as_uncertainty(info, "/merged_ozone_concentration", "/uncertainty_of_merged_ozone",
+                            harp_get_num_elements(4, dimension), data) != 0)
     {
         return -1;
     }
@@ -816,12 +816,12 @@ static void register_mmzm_product(void)
     path = "/merged_ozone_vmr[]";
     harp_variable_definition_add_mapping(variable_definition, NULL, NULL, path, NULL);
 
-    /* O3_volume_mixing_ratio_stdev */
+    /* O3_volume_mixing_ratio_uncertainty */
     description = "uncertainty of the merged monthly zonal mean ozone mixing ratio vertical profiles";
     variable_definition =
-        harp_ingestion_register_variable_full_read(product_definition, "O3_volume_mixing_ratio_stdev", harp_type_double,
-                                                   3, dimension_type, NULL, description, "1", NULL,
-                                                   read_o3_volume_mixing_ratio_stdev_mmzm);
+        harp_ingestion_register_variable_full_read(product_definition, "O3_volume_mixing_ratio_uncertainty",
+                                                   harp_type_double, 3, dimension_type, NULL, description, "1", NULL,
+                                                   read_o3_volume_mixing_ratio_uncertainty_mmzm);
     path = "/merged_ozone_vmr[], /uncertainty_of_merged_ozone[]";
     description =
         "derived from the relative uncertainty in percent as: uncertainty_of_merged_ozone[] * 0.01 * "
@@ -837,12 +837,12 @@ static void register_mmzm_product(void)
     path = "/merged_ozone_concentration[]";
     harp_variable_definition_add_mapping(variable_definition, NULL, NULL, path, NULL);
 
-    /* O3_number_density_stdev */
+    /* O3_number_density_uncertainty */
     description = "uncertainty of the merged monthly zonal mean ozone mole concentration vertical profiles";
     variable_definition =
-        harp_ingestion_register_variable_full_read(product_definition, "O3_number_density_stdev", harp_type_double, 3,
-                                                   dimension_type, NULL, description, "mol/cm^3", NULL,
-                                                   read_o3_number_density_stdev_mmzm);
+        harp_ingestion_register_variable_full_read(product_definition, "O3_number_density_uncertainty",
+                                                   harp_type_double, 3, dimension_type, NULL, description, "mol/cm^3",
+                                                   NULL, read_o3_number_density_uncertainty_mmzm);
     path = "/merged_ozone_concentration[], /uncertainty_of_merged_ozone[]";
     description =
         "derived from the relative uncertainty in percent as: uncertainty_of_merged_ozone[] * 0.01 * "
@@ -928,12 +928,12 @@ static void register_msmm_product(void)
     path = "/merged_ozone_vmr[]";
     harp_variable_definition_add_mapping(variable_definition, NULL, NULL, path, NULL);
 
-    /* O3_volume_mixing_ratio_stdev */
+    /* O3_volume_mixing_ratio_uncertainty */
     description = "uncertainty of the merged semi-monthly zonal mean ozone mixing ratio vertical profiles";
     variable_definition =
-        harp_ingestion_register_variable_full_read(product_definition, "O3_volume_mixing_ratio_stdev", harp_type_double,
-                                                   4, dimension_type, NULL, description, "1", NULL,
-                                                   read_o3_volume_mixing_ratio_stdev_msmm);
+        harp_ingestion_register_variable_full_read(product_definition, "O3_volume_mixing_ratio_uncertainty",
+                                                   harp_type_double, 4, dimension_type, NULL, description, "1", NULL,
+                                                   read_o3_volume_mixing_ratio_uncertainty_msmm);
     path = "/merged_ozone_vmr[], /uncertainty_of_merged_ozone[]";
     description =
         "derived from the relative uncertainty in percent as: uncertainty_of_merged_ozone[] * 0.01 * "
@@ -949,12 +949,12 @@ static void register_msmm_product(void)
     path = "/merged_ozone_concentration[]";
     harp_variable_definition_add_mapping(variable_definition, NULL, NULL, path, NULL);
 
-    /* O3_number_density_stdev */
+    /* O3_number_density_uncertainty */
     description = "uncertainty of the merged semi-monthly zonal mean ozone mole concentration vertical profiles";
     variable_definition =
-        harp_ingestion_register_variable_full_read(product_definition, "O3_number_density_stdev", harp_type_double, 4,
-                                                   dimension_type, NULL, description, "mol/cm^3", NULL,
-                                                   read_o3_number_density_stdev_msmm);
+        harp_ingestion_register_variable_full_read(product_definition, "O3_number_density_uncertainty",
+                                                   harp_type_double, 4, dimension_type, NULL, description, "mol/cm^3",
+                                                   NULL, read_o3_number_density_uncertainty_msmm);
     path = "/merged_ozone_concentration[], /uncertainty_of_merged_ozone[]";
     description =
         "derived from the relative uncertainty in percent as: uncertainty_of_merged_ozone[] * 0.01 * "

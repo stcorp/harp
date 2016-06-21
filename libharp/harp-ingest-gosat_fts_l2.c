@@ -798,10 +798,10 @@ void register_co2_product(void)
     path = "/Data/totalColumn/CO2TotalColumn";
     harp_variable_definition_add_mapping(variable_definition, NULL, NULL, path, NULL);
 
-    /* CO2_column_number_density_stdev */
+    /* CO2_column_number_density_uncertainty */
     description = "uncertainty of the CO2 column number density";
     variable_definition =
-        harp_ingestion_register_variable_sample_read(product_definition, "CO2_column_number_density_stdev",
+        harp_ingestion_register_variable_sample_read(product_definition, "CO2_column_number_density_uncertainty",
                                                      harp_type_double, 1, dimension_type, NULL, description,
                                                      "molec/cm^2", NULL, read_co2_column_error);
     path =
@@ -839,10 +839,10 @@ void register_ch4_product(void)
     path = "/Data/totalColumn/CH4TotalColumn";
     harp_variable_definition_add_mapping(variable_definition, NULL, NULL, path, NULL);
 
-    /* CH4_column_number_density_stdev */
+    /* CH4_column_number_density_uncertainty */
     description = "uncertainty of the CH4 column number density";
     variable_definition =
-        harp_ingestion_register_variable_sample_read(product_definition, "CH4_column_number_density_stdev",
+        harp_ingestion_register_variable_sample_read(product_definition, "CH4_column_number_density_uncertainty",
                                                      harp_type_double, 1, dimension_type, NULL, description,
                                                      "molec/cm^2", NULL, read_ch4_column_error);
     path =

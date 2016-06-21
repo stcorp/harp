@@ -732,9 +732,9 @@ static void register_omdoao3e_product(void)
     path = "/HDFEOS/GRIDS/ColumnAmountO3/Data_Fields/CloudFraction[]";
     harp_variable_definition_add_mapping(variable_definition, NULL, NULL, path, NULL);
 
-    /* cloud_fraction_stdev */
+    /* cloud_fraction_uncertainty */
     description = "Uncertainty of the cloud fraction";
-    variable_definition = harp_ingestion_register_variable_full_read(product_definition, "cloud_fraction_stdev",
+    variable_definition = harp_ingestion_register_variable_full_read(product_definition, "cloud_fraction_uncertainty",
                                                                      harp_type_double, 3, dimension_type, NULL,
                                                                      description, "1", NULL,
                                                                      read_cloud_fraction_precision);
@@ -749,9 +749,9 @@ static void register_omdoao3e_product(void)
     path = "/HDFEOS/GRIDS/ColumnAmountO3/Data_Fields/CloudPressure[]";
     harp_variable_definition_add_mapping(variable_definition, NULL, NULL, path, NULL);
 
-    /* cloud_pressure_stdev */
+    /* cloud_pressure_uncertainty */
     description = "Uncertainty of the cloud pressure";
-    variable_definition = harp_ingestion_register_variable_full_read(product_definition, "cloud_pressure_stdev",
+    variable_definition = harp_ingestion_register_variable_full_read(product_definition, "cloud_pressure_uncertainty",
                                                                      harp_type_double, 3, dimension_type, NULL,
                                                                      description, "hPa", NULL,
                                                                      read_cloud_pressure_precision);
@@ -766,11 +766,12 @@ static void register_omdoao3e_product(void)
     path = "/HDFEOS/GRIDS/ColumnAmountO3/Data_Fields/ColumnAmountO3[]";
     harp_variable_definition_add_mapping(variable_definition, NULL, NULL, path, NULL);
 
-    /* O3_column_number_density_stdev */
+    /* O3_column_number_density_uncertainty */
     description = "Uncertainty of the O3 column number density";
     variable_definition = harp_ingestion_register_variable_full_read(product_definition,
-                                                                     "O3_column_number_density_stdev", harp_type_double,
-                                                                     3, dimension_type, NULL, description, "DU", NULL,
+                                                                     "O3_column_number_density_uncertainty",
+                                                                     harp_type_double, 3, dimension_type, NULL,
+                                                                     description, "DU", NULL,
                                                                      read_column_amount_o3_precision);
     path = "/HDFEOS/GRIDS/ColumnAmountO3/Data_Fields/ColumnAmountO3Precision[]";
     harp_variable_definition_add_mapping(variable_definition, NULL, NULL, path, NULL);

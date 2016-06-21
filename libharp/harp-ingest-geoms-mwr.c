@@ -378,7 +378,7 @@ static int read_vmr_relerr_systematic(void *user_data, harp_array data)
     return read_variable_double_scaled(user_data, path, vmr_path, info->num_time * info->num_vertical, data);
 }
 
-static int read_vmr_stdev_random(void *user_data, harp_array data)
+static int read_vmr_uncertainty_random(void *user_data, harp_array data)
 {
     ingest_info *info = (ingest_info *)user_data;
     char path[MAX_PATH_LENGTH];
@@ -389,7 +389,7 @@ static int read_vmr_stdev_random(void *user_data, harp_array data)
     return read_variable_double(user_data, path, info->num_time * info->num_vertical, data);
 }
 
-static int read_vmr_stdev_systematic(void *user_data, harp_array data)
+static int read_vmr_uncertainty_systematic(void *user_data, harp_array data)
 {
     ingest_info *info = (ingest_info *)user_data;
     char path[MAX_PATH_LENGTH];
@@ -797,25 +797,25 @@ static int init_product_definition(harp_ingestion_module *module, mwr_gas gas, i
              version == 1 ? "" : ".VOLUME");
     harp_variable_definition_add_mapping(variable_definition, NULL, NULL, gas_mapping_path, NULL);
 
-    /* <gas>_volume_mixing_ratio_stdev_random */
-    snprintf(gas_var_name, MAX_NAME_LENGTH, "%s_volume_mixing_ratio_stdev_random", gas_name[gas]);
+    /* <gas>_volume_mixing_ratio_uncertainty_random */
+    snprintf(gas_var_name, MAX_NAME_LENGTH, "%s_volume_mixing_ratio_uncertainty_random", gas_name[gas]);
     snprintf(gas_description, MAX_DESCRIPTION_LENGTH, "random standard deviation of the %s volume mixing ratio",
              gas_name[gas]);
     variable_definition = harp_ingestion_register_variable_full_read
         (product_definition, gas_var_name, harp_type_double, 2, dimension_type, NULL, gas_description,
-         version == 1 ? "1e6 ppmv" : "ppmv", NULL, version == 1 ? read_vmr_relerr_random : read_vmr_stdev_random);
+         version == 1 ? "1e6 ppmv" : "ppmv", NULL, version == 1 ? read_vmr_relerr_random : read_vmr_uncertainty_random);
     snprintf(gas_mapping_path, MAX_PATH_LENGTH, "/%s.MIXING.RATIO%s_EMISSION_UNCERTAINTY.RANDOM%s", gas_name[gas],
              version == 1 ? "" : ".VOLUME", version == 1 ? "" : ".STANDARD");
     harp_variable_definition_add_mapping(variable_definition, NULL, NULL, gas_mapping_path, NULL);
 
-    /* <gas>_volume_mixing_ratio_stdev_systematic */
-    snprintf(gas_var_name, MAX_NAME_LENGTH, "%s_volume_mixing_ratio_stdev_systematic", gas_name[gas]);
+    /* <gas>_volume_mixing_ratio_uncertainty_systematic */
+    snprintf(gas_var_name, MAX_NAME_LENGTH, "%s_volume_mixing_ratio_uncertainty_systematic", gas_name[gas]);
     snprintf(gas_description, MAX_DESCRIPTION_LENGTH, "systematic standard deviation of the %s volume mixing ratio",
              gas_name[gas]);
     variable_definition = harp_ingestion_register_variable_full_read
         (product_definition, gas_var_name, harp_type_double, 3, dimension_type, NULL, gas_description,
          version == 1 ? "1e6 ppmv" : "ppmv", NULL,
-         version == 1 ? read_vmr_relerr_systematic : read_vmr_stdev_systematic);
+         version == 1 ? read_vmr_relerr_systematic : read_vmr_uncertainty_systematic);
     snprintf(gas_mapping_path, MAX_PATH_LENGTH, "/%s.MIXING.RATIO%s_EMISSION_UNCERTAINTY.SYSTEMATIC%s", gas_name[gas],
              version == 1 ? "" : ".VOLUME", version == 1 ? "" : ".STANDARD");
     harp_variable_definition_add_mapping(variable_definition, NULL, NULL, gas_mapping_path, NULL);

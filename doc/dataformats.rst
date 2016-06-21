@@ -326,10 +326,16 @@ Generic ancillary variables for the above variables are:
 - <variable>_cov
 - <variable>_cov_random
 - <variable>_cov_systematic
-- <variable>_stdev
-- <variable>_stdev_random
-- <variable>_stdev_systematic
+- <variable>_uncertainty
+- <variable>_uncertainty_random
+- <variable>_uncertainty_systematic
 - <variable>_validity
+
+Be aware that there are still several topics under discussion that may change the above naming convention:
+- 'cov' may be renamed to 'covariance'
+- split of random vs. systematic for covariance will likely be removed since any non-zero off-diagonal covariance element is by definition a systematic effect
+- (some) covariance aspects may be captured by correlation variables
+- split of random vs. systematic for uncertainty may be captured by a naming convention that captures the actual semantics, which is uncertainty with zero auto-correlation and uncertainty with full auto-correlation
 
 netCDF-3
 ~~~~~~~~

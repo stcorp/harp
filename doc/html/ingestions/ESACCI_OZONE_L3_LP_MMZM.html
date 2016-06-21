@@ -183,7 +183,7 @@
 <td>1</td>
 <td>merged monthly zonal mean ozone mixing ratio vertical profiles</td>
 </tr>
-<tr class="row-odd"><td><strong>O3_volume_mixing_ratio_stdev</strong></td>
+<tr class="row-odd"><td><strong>O3_volume_mixing_ratio_uncertainty</strong></td>
 <td>double</td>
 <td>{<em>time</em>, <em>latitude</em>, <em>vertical</em>}</td>
 <td>1</td>
@@ -195,7 +195,7 @@
 <td>mol/cm^3</td>
 <td>merged monthly zonal mean ozone mole concentration vertical profiles</td>
 </tr>
-<tr class="row-odd"><td><strong>O3_number_density_stdev</strong></td>
+<tr class="row-odd"><td><strong>O3_number_density_uncertainty</strong></td>
 <td>double</td>
 <td>{<em>time</em>, <em>latitude</em>, <em>vertical</em>}</td>
 <td>mol/cm^3</td>
@@ -215,9 +215,9 @@
 <p>The table below details where and how each variable was retrieved from the input product.</p>
 <table border="1" class="docutils">
 <colgroup>
-<col width="17%" />
-<col width="8%" />
-<col width="75%" />
+<col width="20%" />
+<col width="7%" />
+<col width="73%" />
 </colgroup>
 <thead valign="bottom">
 <tr class="row-odd"><th class="head">field name</th>
@@ -248,7 +248,7 @@
 <td><em>path</em></td>
 <td><strong>/merged_ozone_vmr[]</strong></td>
 </tr>
-<tr class="row-even"><td rowspan="2"><strong>O3_volume_mixing_ratio_stdev</strong></td>
+<tr class="row-even"><td rowspan="2"><strong>O3_volume_mixing_ratio_uncertainty</strong></td>
 <td><em>path</em></td>
 <td><strong>/merged_ozone_vmr[], /uncertainty_of_merged_ozone[]</strong></td>
 </tr>
@@ -259,7 +259,7 @@
 <td><em>path</em></td>
 <td><strong>/merged_ozone_concentration[]</strong></td>
 </tr>
-<tr class="row-odd"><td rowspan="2"><strong>O3_number_density_stdev</strong></td>
+<tr class="row-odd"><td rowspan="2"><strong>O3_number_density_uncertainty</strong></td>
 <td><em>path</em></td>
 <td><strong>/merged_ozone_concentration[], /uncertainty_of_merged_ozone[]</strong></td>
 </tr>

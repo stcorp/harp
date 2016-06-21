@@ -339,12 +339,12 @@ int harp_ingestion_module_cci_l2_o3_lp_init(void)
     path = "/mole_concentration_of_ozone_in_air[]";
     harp_variable_definition_add_mapping(variable_definition, NULL, NULL, path, NULL);
 
-    /* O3_number_density_stdev */
+    /* O3_number_density_uncertainty */
     description = "uncertainty of the O3 number density";
     variable_definition =
-        harp_ingestion_register_variable_full_read(product_definition, "O3_number_density_stdev", harp_type_double, 2,
-                                                   dimension_type, NULL, description, "mol/cm^3", NULL,
-                                                   read_o3_number_density_error);
+        harp_ingestion_register_variable_full_read(product_definition, "O3_number_density_uncertainty",
+                                                   harp_type_double, 2, dimension_type, NULL, description, "mol/cm^3",
+                                                   NULL, read_o3_number_density_error);
     path = "/mole_concentration_of_ozone_in_air_standard_error[]";
     harp_variable_definition_add_mapping(variable_definition, NULL, NULL, path, NULL);
 

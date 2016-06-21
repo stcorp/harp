@@ -520,7 +520,7 @@ static int read_O3_column_number_density(void *user_data, harp_array data)
     return read_and_reorder_dataset_4d(info, "/O3_dens", harp_type_float, data);
 }
 
-static int read_O3_column_number_density_stdev(void *user_data, harp_array data)
+static int read_O3_column_number_density_uncertainty(void *user_data, harp_array data)
 {
     ingest_info *info = (ingest_info *)user_data;
 
@@ -534,7 +534,7 @@ static int read_O3_volume_mixing_ratio(void *user_data, harp_array data)
     return read_and_reorder_dataset_4d(info, "/O3_vmr", harp_type_float, data);
 }
 
-static int read_O3_volume_mixing_ratio_stdev(void *user_data, harp_array data)
+static int read_O3_volume_mixing_ratio_uncertainty(void *user_data, harp_array data)
 {
     ingest_info *info = (ingest_info *)user_data;
 
@@ -673,12 +673,12 @@ int harp_ingestion_module_cci_l4_o3_np_init(void)
     path = "/O3_dens[]";
     harp_variable_definition_add_mapping(variable_definition, NULL, NULL, path, NULL);
 
-    /* O3_column_number_density_stdev */
+    /* O3_column_number_density_uncertainty */
     description = "uncertainty of the O3 column number density";
     variable_definition =
-        harp_ingestion_register_variable_full_read(product_definition, "O3_column_number_density_stdev",
+        harp_ingestion_register_variable_full_read(product_definition, "O3_column_number_density_uncertainty",
                                                    harp_type_float, 4, dimension_type, NULL, description, "molec/m^2",
-                                                   NULL, read_O3_column_number_density_stdev);
+                                                   NULL, read_O3_column_number_density_uncertainty);
     path = "/O3s_dens[]";
     harp_variable_definition_add_mapping(variable_definition, NULL, NULL, path, NULL);
 
@@ -692,12 +692,12 @@ int harp_ingestion_module_cci_l4_o3_np_init(void)
     path = "/O3_vmr[]";
     harp_variable_definition_add_mapping(variable_definition, NULL, NULL, path, NULL);
 
-    /* O3_volume_mixing_ratio_stdev */
+    /* O3_volume_mixing_ratio_uncertainty */
     description = "uncertainty of the O3 volume mixing ratio";
     variable_definition =
-        harp_ingestion_register_variable_full_read(product_definition, "O3_volume_mixing_ratio_stdev", harp_type_float,
-                                                   4, dimension_type, NULL, description, "1", NULL,
-                                                   read_O3_volume_mixing_ratio_stdev);
+        harp_ingestion_register_variable_full_read(product_definition, "O3_volume_mixing_ratio_uncertainty",
+                                                   harp_type_float, 4, dimension_type, NULL, description, "1", NULL,
+                                                   read_O3_volume_mixing_ratio_uncertainty);
     path = "/O3s_vmr[]";
     harp_variable_definition_add_mapping(variable_definition, NULL, NULL, path, NULL);
 

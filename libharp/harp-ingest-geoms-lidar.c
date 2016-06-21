@@ -184,7 +184,7 @@ static int read_o3_nd_ad(void *user_data, harp_array data)
                                 ((ingest_info *)user_data)->num_vertical, data);
 }
 
-static int read_o3_nd_ad_stdev(void *user_data, harp_array data)
+static int read_o3_nd_ad_uncertainty(void *user_data, harp_array data)
 {
     return read_variable_double(user_data, "O3_NUMBER_DENSITY_ABSORPTION_DIFFERENTIAL_UNCERTAINTY_COMBINED_STANDARD",
                                 ((ingest_info *)user_data)->num_vertical, data);
@@ -427,12 +427,12 @@ int harp_ingestion_module_geoms_lidar_init(void)
     harp_variable_definition_add_mapping(variable_definition, NULL, NULL, "/O3.NUMBER.DENSITY_ABSORPTION.DIFFERENTIAL",
                                          NULL);
 
-    /* O3_number_density_stdev */
+    /* O3_number_density_uncertainty */
     description = "standard deviation of the absorption differential O3 number density";
-    variable_definition = harp_ingestion_register_variable_full_read(product_definition, "O3_number_density_stdev",
-                                                                     harp_type_double, 2, dimension_type, NULL,
-                                                                     description, "molec/m3", NULL,
-                                                                     read_o3_nd_ad_stdev);
+    variable_definition = harp_ingestion_register_variable_full_read(product_definition,
+                                                                     "O3_number_density_uncertainty", harp_type_double,
+                                                                     2, dimension_type, NULL, description, "molec/m3",
+                                                                     NULL, read_o3_nd_ad_uncertainty);
     harp_variable_definition_add_mapping(variable_definition, NULL, NULL,
                                          "/O3.NUMBER.DENSITY_ABSORPTION.DIFFERENTIAL_UNCERTAINTY.COMBINED.STANDARD",
                                          NULL);

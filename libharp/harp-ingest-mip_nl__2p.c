@@ -724,8 +724,8 @@ static int get_profile_data(ingest_info *info, const coda_cursor *mds_cursor, co
     return 0;
 }
 
-static int get_profile_stdev_data(ingest_info *info, const coda_cursor *mds_cursor, const char *fieldname, long index,
-                                  uint8_t *lrv, harp_array data)
+static int get_profile_uncertainty_data(ingest_info *info, const coda_cursor *mds_cursor, const char *fieldname,
+                                        long index, uint8_t *lrv, harp_array data)
 {
     coda_cursor cursor;
     long num_altitudes;
@@ -761,7 +761,7 @@ static int get_profile_stdev_data(ingest_info *info, const coda_cursor *mds_curs
             return -1;
         }
 
-        /* stdev = sqrt(variance) */
+        /* uncertainty = sqrt(variance) */
         data.double_data[i] = sqrt(data.double_data[i]);
 
         if (i < num_pts - 1)
@@ -922,12 +922,12 @@ static int read_pressure(void *user_data, long index, harp_array data)
                             &info->lrv[index * (info->num_species + 1) * info->max_num_altitudes], data);
 }
 
-static int read_pressure_stdev(void *user_data, long index, harp_array data)
+static int read_pressure_uncertainty(void *user_data, long index, harp_array data)
 {
     ingest_info *info = (ingest_info *)user_data;
 
-    return get_profile_stdev_data(info, &info->pt_cursor[index], "tan_press_var_cov", index,
-                                  &info->lrv[index * (info->num_species + 1) * info->max_num_altitudes], data);
+    return get_profile_uncertainty_data(info, &info->pt_cursor[index], "tan_press_var_cov", index,
+                                        &info->lrv[index * (info->num_species + 1) * info->max_num_altitudes], data);
 }
 
 static int read_temperature(void *user_data, long index, harp_array data)
@@ -938,12 +938,12 @@ static int read_temperature(void *user_data, long index, harp_array data)
                             &info->lrv[index * (info->num_species + 1) * info->max_num_altitudes], data);
 }
 
-static int read_temperature_stdev(void *user_data, long index, harp_array data)
+static int read_temperature_uncertainty(void *user_data, long index, harp_array data)
 {
     ingest_info *info = (ingest_info *)user_data;
 
-    return get_profile_stdev_data(info, &info->pt_cursor[index], "temp_var_cov", index,
-                                  &info->lrv[index * (info->num_species + 1) * info->max_num_altitudes], data);
+    return get_profile_uncertainty_data(info, &info->pt_cursor[index], "temp_var_cov", index,
+                                        &info->lrv[index * (info->num_species + 1) * info->max_num_altitudes], data);
 }
 
 static int read_h2o(void *user_data, long index, harp_array data)
@@ -955,13 +955,13 @@ static int read_h2o(void *user_data, long index, harp_array data)
                             data);
 }
 
-static int read_h2o_stdev(void *user_data, long index, harp_array data)
+static int read_h2o_uncertainty(void *user_data, long index, harp_array data)
 {
     ingest_info *info = (ingest_info *)user_data;
 
-    return get_profile_stdev_data(info, &info->h2o_cursor[index], "conc_var_cov", index,
-                                  &info->lrv[(index * (info->num_species + 1) + info->h2o_id + 1) *
-                                             info->max_num_altitudes], data);
+    return get_profile_uncertainty_data(info, &info->h2o_cursor[index], "conc_var_cov", index,
+                                        &info->lrv[(index * (info->num_species + 1) + info->h2o_id + 1) *
+                                                   info->max_num_altitudes], data);
 }
 
 static int read_o3(void *user_data, long index, harp_array data)
@@ -973,13 +973,13 @@ static int read_o3(void *user_data, long index, harp_array data)
                             data);
 }
 
-static int read_o3_stdev(void *user_data, long index, harp_array data)
+static int read_o3_uncertainty(void *user_data, long index, harp_array data)
 {
     ingest_info *info = (ingest_info *)user_data;
 
-    return get_profile_stdev_data(info, &info->o3_cursor[index], "conc_var_cov", index,
-                                  &info->lrv[(index * (info->num_species + 1) + info->o3_id + 1) *
-                                             info->max_num_altitudes], data);
+    return get_profile_uncertainty_data(info, &info->o3_cursor[index], "conc_var_cov", index,
+                                        &info->lrv[(index * (info->num_species + 1) + info->o3_id + 1) *
+                                                   info->max_num_altitudes], data);
 }
 
 static int read_hno3(void *user_data, long index, harp_array data)
@@ -991,13 +991,13 @@ static int read_hno3(void *user_data, long index, harp_array data)
                             data);
 }
 
-static int read_hno3_stdev(void *user_data, long index, harp_array data)
+static int read_hno3_uncertainty(void *user_data, long index, harp_array data)
 {
     ingest_info *info = (ingest_info *)user_data;
 
-    return get_profile_stdev_data(info, &info->hno3_cursor[index], "conc_var_cov", index,
-                                  &info->lrv[(index * (info->num_species + 1) + info->hno3_id + 1) *
-                                             info->max_num_altitudes], data);
+    return get_profile_uncertainty_data(info, &info->hno3_cursor[index], "conc_var_cov", index,
+                                        &info->lrv[(index * (info->num_species + 1) + info->hno3_id + 1) *
+                                                   info->max_num_altitudes], data);
 }
 
 static int read_ch4(void *user_data, long index, harp_array data)
@@ -1009,13 +1009,13 @@ static int read_ch4(void *user_data, long index, harp_array data)
                             data);
 }
 
-static int read_ch4_stdev(void *user_data, long index, harp_array data)
+static int read_ch4_uncertainty(void *user_data, long index, harp_array data)
 {
     ingest_info *info = (ingest_info *)user_data;
 
-    return get_profile_stdev_data(info, &info->ch4_cursor[index], "conc_var_cov", index,
-                                  &info->lrv[(index * (info->num_species + 1) + info->ch4_id + 1) *
-                                             info->max_num_altitudes], data);
+    return get_profile_uncertainty_data(info, &info->ch4_cursor[index], "conc_var_cov", index,
+                                        &info->lrv[(index * (info->num_species + 1) + info->ch4_id + 1) *
+                                                   info->max_num_altitudes], data);
 }
 
 static int read_n2o(void *user_data, long index, harp_array data)
@@ -1027,13 +1027,13 @@ static int read_n2o(void *user_data, long index, harp_array data)
                             data);
 }
 
-static int read_n2o_stdev(void *user_data, long index, harp_array data)
+static int read_n2o_uncertainty(void *user_data, long index, harp_array data)
 {
     ingest_info *info = (ingest_info *)user_data;
 
-    return get_profile_stdev_data(info, &info->n2o_cursor[index], "conc_var_cov", index,
-                                  &info->lrv[(index * (info->num_species + 1) + info->n2o_id + 1) *
-                                             info->max_num_altitudes], data);
+    return get_profile_uncertainty_data(info, &info->n2o_cursor[index], "conc_var_cov", index,
+                                        &info->lrv[(index * (info->num_species + 1) + info->n2o_id + 1) *
+                                                   info->max_num_altitudes], data);
 }
 
 static int read_no2(void *user_data, long index, harp_array data)
@@ -1045,13 +1045,13 @@ static int read_no2(void *user_data, long index, harp_array data)
                             data);
 }
 
-static int read_no2_stdev(void *user_data, long index, harp_array data)
+static int read_no2_uncertainty(void *user_data, long index, harp_array data)
 {
     ingest_info *info = (ingest_info *)user_data;
 
-    return get_profile_stdev_data(info, &info->no2_cursor[index], "conc_var_cov", index,
-                                  &info->lrv[(index * (info->num_species + 1) + info->no2_id + 1) *
-                                             info->max_num_altitudes], data);
+    return get_profile_uncertainty_data(info, &info->no2_cursor[index], "conc_var_cov", index,
+                                        &info->lrv[(index * (info->num_species + 1) + info->no2_id + 1) *
+                                                   info->max_num_altitudes], data);
 }
 
 static int read_f11(void *user_data, long index, harp_array data)
@@ -1063,13 +1063,13 @@ static int read_f11(void *user_data, long index, harp_array data)
                             data);
 }
 
-static int read_f11_stdev(void *user_data, long index, harp_array data)
+static int read_f11_uncertainty(void *user_data, long index, harp_array data)
 {
     ingest_info *info = (ingest_info *)user_data;
 
-    return get_profile_stdev_data(info, &info->f11_cursor[index], "conc_var_cov", index,
-                                  &info->lrv[(index * (info->num_species + 1) + info->f11_id + 1) *
-                                             info->max_num_altitudes], data);
+    return get_profile_uncertainty_data(info, &info->f11_cursor[index], "conc_var_cov", index,
+                                        &info->lrv[(index * (info->num_species + 1) + info->f11_id + 1) *
+                                                   info->max_num_altitudes], data);
 }
 
 static int read_clno(void *user_data, long index, harp_array data)
@@ -1081,13 +1081,13 @@ static int read_clno(void *user_data, long index, harp_array data)
                             data);
 }
 
-static int read_clno_stdev(void *user_data, long index, harp_array data)
+static int read_clno_uncertainty(void *user_data, long index, harp_array data)
 {
     ingest_info *info = (ingest_info *)user_data;
 
-    return get_profile_stdev_data(info, &info->clno_cursor[index], "conc_var_cov", index,
-                                  &info->lrv[(index * (info->num_species + 1) + info->clno_id + 1) *
-                                             info->max_num_altitudes], data);
+    return get_profile_uncertainty_data(info, &info->clno_cursor[index], "conc_var_cov", index,
+                                        &info->lrv[(index * (info->num_species + 1) + info->clno_id + 1) *
+                                                   info->max_num_altitudes], data);
 }
 
 static int read_n2o5(void *user_data, long index, harp_array data)
@@ -1099,13 +1099,13 @@ static int read_n2o5(void *user_data, long index, harp_array data)
                             data);
 }
 
-static int read_n2o5_stdev(void *user_data, long index, harp_array data)
+static int read_n2o5_uncertainty(void *user_data, long index, harp_array data)
 {
     ingest_info *info = (ingest_info *)user_data;
 
-    return get_profile_stdev_data(info, &info->n2o5_cursor[index], "conc_var_cov", index,
-                                  &info->lrv[(index * (info->num_species + 1) + info->n2o5_id + 1) *
-                                             info->max_num_altitudes], data);
+    return get_profile_uncertainty_data(info, &info->n2o5_cursor[index], "conc_var_cov", index,
+                                        &info->lrv[(index * (info->num_species + 1) + info->n2o5_id + 1) *
+                                                   info->max_num_altitudes], data);
 }
 
 static int read_f12(void *user_data, long index, harp_array data)
@@ -1117,13 +1117,13 @@ static int read_f12(void *user_data, long index, harp_array data)
                             data);
 }
 
-static int read_f12_stdev(void *user_data, long index, harp_array data)
+static int read_f12_uncertainty(void *user_data, long index, harp_array data)
 {
     ingest_info *info = (ingest_info *)user_data;
 
-    return get_profile_stdev_data(info, &info->f12_cursor[index], "conc_var_cov", index,
-                                  &info->lrv[(index * (info->num_species + 1) + info->f12_id + 1) *
-                                             info->max_num_altitudes], data);
+    return get_profile_uncertainty_data(info, &info->f12_cursor[index], "conc_var_cov", index,
+                                        &info->lrv[(index * (info->num_species + 1) + info->f12_id + 1) *
+                                                   info->max_num_altitudes], data);
 }
 
 static int read_h2o_vmr(void *user_data, long index, harp_array data)
@@ -1135,13 +1135,13 @@ static int read_h2o_vmr(void *user_data, long index, harp_array data)
                             data);
 }
 
-static int read_h2o_vmr_stdev(void *user_data, long index, harp_array data)
+static int read_h2o_vmr_uncertainty(void *user_data, long index, harp_array data)
 {
     ingest_info *info = (ingest_info *)user_data;
 
-    return get_profile_stdev_data(info, &info->h2o_cursor[index], "vmr_var_cov", index,
-                                  &info->lrv[(index * (info->num_species + 1) + info->h2o_id + 1) *
-                                             info->max_num_altitudes], data);
+    return get_profile_uncertainty_data(info, &info->h2o_cursor[index], "vmr_var_cov", index,
+                                        &info->lrv[(index * (info->num_species + 1) + info->h2o_id + 1) *
+                                                   info->max_num_altitudes], data);
 }
 
 static int read_o3_vmr(void *user_data, long index, harp_array data)
@@ -1153,13 +1153,13 @@ static int read_o3_vmr(void *user_data, long index, harp_array data)
                             data);
 }
 
-static int read_o3_vmr_stdev(void *user_data, long index, harp_array data)
+static int read_o3_vmr_uncertainty(void *user_data, long index, harp_array data)
 {
     ingest_info *info = (ingest_info *)user_data;
 
-    return get_profile_stdev_data(info, &info->o3_cursor[index], "vmr_var_cov", index,
-                                  &info->lrv[(index * (info->num_species + 1) + info->o3_id + 1) *
-                                             info->max_num_altitudes], data);
+    return get_profile_uncertainty_data(info, &info->o3_cursor[index], "vmr_var_cov", index,
+                                        &info->lrv[(index * (info->num_species + 1) + info->o3_id + 1) *
+                                                   info->max_num_altitudes], data);
 }
 
 static int read_hno3_vmr(void *user_data, long index, harp_array data)
@@ -1171,13 +1171,13 @@ static int read_hno3_vmr(void *user_data, long index, harp_array data)
                                        info->max_num_altitudes], data);
 }
 
-static int read_hno3_vmr_stdev(void *user_data, long index, harp_array data)
+static int read_hno3_vmr_uncertainty(void *user_data, long index, harp_array data)
 {
     ingest_info *info = (ingest_info *)user_data;
 
-    return get_profile_stdev_data(info, &info->hno3_cursor[index], "vmr_var_cov", index,
-                                  &info->lrv[(index * (info->num_species + 1) + info->hno3_id + 1) *
-                                             info->max_num_altitudes], data);
+    return get_profile_uncertainty_data(info, &info->hno3_cursor[index], "vmr_var_cov", index,
+                                        &info->lrv[(index * (info->num_species + 1) + info->hno3_id + 1) *
+                                                   info->max_num_altitudes], data);
 }
 
 static int read_ch4_vmr(void *user_data, long index, harp_array data)
@@ -1189,13 +1189,13 @@ static int read_ch4_vmr(void *user_data, long index, harp_array data)
                             data);
 }
 
-static int read_ch4_vmr_stdev(void *user_data, long index, harp_array data)
+static int read_ch4_vmr_uncertainty(void *user_data, long index, harp_array data)
 {
     ingest_info *info = (ingest_info *)user_data;
 
-    return get_profile_stdev_data(info, &info->ch4_cursor[index], "vmr_var_cov", index,
-                                  &info->lrv[(index * (info->num_species + 1) + info->ch4_id + 1) *
-                                             info->max_num_altitudes], data);
+    return get_profile_uncertainty_data(info, &info->ch4_cursor[index], "vmr_var_cov", index,
+                                        &info->lrv[(index * (info->num_species + 1) + info->ch4_id + 1) *
+                                                   info->max_num_altitudes], data);
 }
 
 static int read_n2o_vmr(void *user_data, long index, harp_array data)
@@ -1207,13 +1207,13 @@ static int read_n2o_vmr(void *user_data, long index, harp_array data)
                                        info->max_num_altitudes], data);
 }
 
-static int read_n2o_vmr_stdev(void *user_data, long index, harp_array data)
+static int read_n2o_vmr_uncertainty(void *user_data, long index, harp_array data)
 {
     ingest_info *info = (ingest_info *)user_data;
 
-    return get_profile_stdev_data(info, &info->n2o_cursor[index], "vmr_var_cov", index,
-                                  &info->lrv[(index * (info->num_species + 1) + info->n2o_id + 1) *
-                                             info->max_num_altitudes], data);
+    return get_profile_uncertainty_data(info, &info->n2o_cursor[index], "vmr_var_cov", index,
+                                        &info->lrv[(index * (info->num_species + 1) + info->n2o_id + 1) *
+                                                   info->max_num_altitudes], data);
 }
 
 static int read_no2_vmr(void *user_data, long index, harp_array data)
@@ -1225,13 +1225,13 @@ static int read_no2_vmr(void *user_data, long index, harp_array data)
                             data);
 }
 
-static int read_no2_vmr_stdev(void *user_data, long index, harp_array data)
+static int read_no2_vmr_uncertainty(void *user_data, long index, harp_array data)
 {
     ingest_info *info = (ingest_info *)user_data;
 
-    return get_profile_stdev_data(info, &info->no2_cursor[index], "vmr_var_cov", index,
-                                  &info->lrv[(index * (info->num_species + 1) + info->no2_id + 1) *
-                                             info->max_num_altitudes], data);
+    return get_profile_uncertainty_data(info, &info->no2_cursor[index], "vmr_var_cov", index,
+                                        &info->lrv[(index * (info->num_species + 1) + info->no2_id + 1) *
+                                                   info->max_num_altitudes], data);
 }
 
 static int read_f11_vmr(void *user_data, long index, harp_array data)
@@ -1243,13 +1243,13 @@ static int read_f11_vmr(void *user_data, long index, harp_array data)
                             data);
 }
 
-static int read_f11_vmr_stdev(void *user_data, long index, harp_array data)
+static int read_f11_vmr_uncertainty(void *user_data, long index, harp_array data)
 {
     ingest_info *info = (ingest_info *)user_data;
 
-    return get_profile_stdev_data(info, &info->f11_cursor[index], "vmr_var_cov", index,
-                                  &info->lrv[(index * (info->num_species + 1) + info->f11_id + 1) *
-                                             info->max_num_altitudes], data);
+    return get_profile_uncertainty_data(info, &info->f11_cursor[index], "vmr_var_cov", index,
+                                        &info->lrv[(index * (info->num_species + 1) + info->f11_id + 1) *
+                                                   info->max_num_altitudes], data);
 }
 
 static int read_clno_vmr(void *user_data, long index, harp_array data)
@@ -1261,13 +1261,13 @@ static int read_clno_vmr(void *user_data, long index, harp_array data)
                             data);
 }
 
-static int read_clno_vmr_stdev(void *user_data, long index, harp_array data)
+static int read_clno_vmr_uncertainty(void *user_data, long index, harp_array data)
 {
     ingest_info *info = (ingest_info *)user_data;
 
-    return get_profile_stdev_data(info, &info->clno_cursor[index], "vmr_var_cov", index,
-                                  &info->lrv[(index * (info->num_species + 1) + info->clno_id + 1) *
-                                             info->max_num_altitudes], data);
+    return get_profile_uncertainty_data(info, &info->clno_cursor[index], "vmr_var_cov", index,
+                                        &info->lrv[(index * (info->num_species + 1) + info->clno_id + 1) *
+                                                   info->max_num_altitudes], data);
 }
 
 static int read_n2o5_vmr(void *user_data, long index, harp_array data)
@@ -1279,13 +1279,13 @@ static int read_n2o5_vmr(void *user_data, long index, harp_array data)
                             data);
 }
 
-static int read_n2o5_vmr_stdev(void *user_data, long index, harp_array data)
+static int read_n2o5_vmr_uncertainty(void *user_data, long index, harp_array data)
 {
     ingest_info *info = (ingest_info *)user_data;
 
-    return get_profile_stdev_data(info, &info->n2o5_cursor[index], "vmr_var_cov", index,
-                                  &info->lrv[(index * (info->num_species + 1) + info->n2o5_id + 1) *
-                                             info->max_num_altitudes], data);
+    return get_profile_uncertainty_data(info, &info->n2o5_cursor[index], "vmr_var_cov", index,
+                                        &info->lrv[(index * (info->num_species + 1) + info->n2o5_id + 1) *
+                                                   info->max_num_altitudes], data);
 }
 
 static int read_f12_vmr(void *user_data, long index, harp_array data)
@@ -1297,13 +1297,13 @@ static int read_f12_vmr(void *user_data, long index, harp_array data)
                             data);
 }
 
-static int read_f12_vmr_stdev(void *user_data, long index, harp_array data)
+static int read_f12_vmr_uncertainty(void *user_data, long index, harp_array data)
 {
     ingest_info *info = (ingest_info *)user_data;
 
-    return get_profile_stdev_data(info, &info->f12_cursor[index], "vmr_var_cov", index,
-                                  &info->lrv[(index * (info->num_species + 1) + info->f12_id + 1) *
-                                             info->max_num_altitudes], data);
+    return get_profile_uncertainty_data(info, &info->f12_cursor[index], "vmr_var_cov", index,
+                                        &info->lrv[(index * (info->num_species + 1) + info->f12_id + 1) *
+                                                   info->max_num_altitudes], data);
 }
 
 static int read_h2o_akm_vmr(void *user_data, long index, harp_array data)
@@ -1484,9 +1484,10 @@ int harp_ingestion_module_mip_nl__2p_init(void)
     harp_variable_definition_add_mapping(variable_definition, NULL, NULL, path, NULL);
 
     description = "pressure standard deviation";
-    variable_definition = harp_ingestion_register_variable_sample_read(product_definition, "pressure_stdev",
+    variable_definition = harp_ingestion_register_variable_sample_read(product_definition, "pressure_uncertainty",
                                                                        harp_type_double, 2, dimension_type, NULL,
-                                                                       description, "hPa", NULL, read_pressure_stdev);
+                                                                       description, "hPa", NULL,
+                                                                       read_pressure_uncertainty);
     path = "/pt_retrieval_mds[]/tan_press_var_cov[]";
     harp_variable_definition_add_mapping(variable_definition, NULL, NULL, path, NULL);
 
@@ -1498,9 +1499,10 @@ int harp_ingestion_module_mip_nl__2p_init(void)
     harp_variable_definition_add_mapping(variable_definition, NULL, NULL, path, NULL);
 
     description = "temperature standard deviation";
-    variable_definition = harp_ingestion_register_variable_sample_read(product_definition, "temperature_stdev",
+    variable_definition = harp_ingestion_register_variable_sample_read(product_definition, "temperature_uncertainty",
                                                                        harp_type_double, 2, dimension_type, NULL,
-                                                                       description, "K", NULL, read_temperature_stdev);
+                                                                       description, "K", NULL,
+                                                                       read_temperature_uncertainty);
     path = "/pt_retrieval_mds[]/temp_var_cov[]";
     harp_variable_definition_add_mapping(variable_definition, NULL, NULL, path, NULL);
 
@@ -1513,9 +1515,11 @@ int harp_ingestion_module_mip_nl__2p_init(void)
     harp_variable_definition_add_mapping(variable_definition, NULL, NULL, path, NULL);
 
     description = "standard deviation for the H2O number density";
-    variable_definition = harp_ingestion_register_variable_sample_read(product_definition, "H2O_number_density_stdev",
+    variable_definition = harp_ingestion_register_variable_sample_read(product_definition,
+                                                                       "H2O_number_density_uncertainty",
                                                                        harp_type_double, 2, dimension_type, NULL,
-                                                                       description, "molec/cm^3", NULL, read_h2o_stdev);
+                                                                       description, "molec/cm^3", NULL,
+                                                                       read_h2o_uncertainty);
     path = "/h2o_retrieval_mds[]/conc_var_cov[]";
     harp_variable_definition_add_mapping(variable_definition, NULL, NULL, path, NULL);
 
@@ -1527,9 +1531,11 @@ int harp_ingestion_module_mip_nl__2p_init(void)
     harp_variable_definition_add_mapping(variable_definition, NULL, NULL, path, NULL);
 
     description = "standard deviation for the O3 number density";
-    variable_definition = harp_ingestion_register_variable_sample_read(product_definition, "O3_number_density_stdev",
+    variable_definition = harp_ingestion_register_variable_sample_read(product_definition,
+                                                                       "O3_number_density_uncertainty",
                                                                        harp_type_double, 2, dimension_type, NULL,
-                                                                       description, "molec/cm^3", NULL, read_o3_stdev);
+                                                                       description, "molec/cm^3", NULL,
+                                                                       read_o3_uncertainty);
     path = "/o3_retrieval_mds[]/conc_var_cov[]";
     harp_variable_definition_add_mapping(variable_definition, NULL, NULL, path, NULL);
 
@@ -1541,10 +1547,11 @@ int harp_ingestion_module_mip_nl__2p_init(void)
     harp_variable_definition_add_mapping(variable_definition, NULL, NULL, path, NULL);
 
     description = "standard deviation for the HNO3 number density";
-    variable_definition = harp_ingestion_register_variable_sample_read(product_definition, "HNO3_number_density_stdev",
+    variable_definition = harp_ingestion_register_variable_sample_read(product_definition,
+                                                                       "HNO3_number_density_uncertainty",
                                                                        harp_type_double, 2, dimension_type, NULL,
                                                                        description, "molec/cm^3", NULL,
-                                                                       read_hno3_stdev);
+                                                                       read_hno3_uncertainty);
     path = "/hno3_retrieval_mds[]/conc_var_cov[]";
     harp_variable_definition_add_mapping(variable_definition, NULL, NULL, path, NULL);
 
@@ -1556,9 +1563,11 @@ int harp_ingestion_module_mip_nl__2p_init(void)
     harp_variable_definition_add_mapping(variable_definition, NULL, NULL, path, NULL);
 
     description = "standard deviation for the CH4 number density";
-    variable_definition = harp_ingestion_register_variable_sample_read(product_definition, "CH4_number_density_stdev",
+    variable_definition = harp_ingestion_register_variable_sample_read(product_definition,
+                                                                       "CH4_number_density_uncertainty",
                                                                        harp_type_double, 2, dimension_type, NULL,
-                                                                       description, "molec/cm^3", NULL, read_ch4_stdev);
+                                                                       description, "molec/cm^3", NULL,
+                                                                       read_ch4_uncertainty);
     path = "/ch4_retrieval_mds[]/conc_var_cov[]";
     harp_variable_definition_add_mapping(variable_definition, NULL, NULL, path, NULL);
 
@@ -1570,9 +1579,11 @@ int harp_ingestion_module_mip_nl__2p_init(void)
     harp_variable_definition_add_mapping(variable_definition, NULL, NULL, path, NULL);
 
     description = "standard deviation for the N2O number density";
-    variable_definition = harp_ingestion_register_variable_sample_read(product_definition, "N2O_number_density_stdev",
+    variable_definition = harp_ingestion_register_variable_sample_read(product_definition,
+                                                                       "N2O_number_density_uncertainty",
                                                                        harp_type_double, 2, dimension_type, NULL,
-                                                                       description, "molec/cm^3", NULL, read_n2o_stdev);
+                                                                       description, "molec/cm^3", NULL,
+                                                                       read_n2o_uncertainty);
     path = "/n2o_retrieval_mds[]/conc_var_cov[]";
     harp_variable_definition_add_mapping(variable_definition, NULL, NULL, path, NULL);
 
@@ -1584,9 +1595,11 @@ int harp_ingestion_module_mip_nl__2p_init(void)
     harp_variable_definition_add_mapping(variable_definition, NULL, NULL, path, NULL);
 
     description = "standard deviation for the NO2 number density";
-    variable_definition = harp_ingestion_register_variable_sample_read(product_definition, "NO2_number_density_stdev",
+    variable_definition = harp_ingestion_register_variable_sample_read(product_definition,
+                                                                       "NO2_number_density_uncertainty",
                                                                        harp_type_double, 2, dimension_type, NULL,
-                                                                       description, "molec/cm^3", NULL, read_no2_stdev);
+                                                                       description, "molec/cm^3", NULL,
+                                                                       read_no2_uncertainty);
     path = "/no2_retrieval_mds[]/conc_var_cov[]";
     harp_variable_definition_add_mapping(variable_definition, NULL, NULL, path, NULL);
 
@@ -1599,10 +1612,11 @@ int harp_ingestion_module_mip_nl__2p_init(void)
     harp_variable_definition_add_mapping(variable_definition, NULL, NULL, path, NULL);
 
     description = "standard deviation for the F11 number density";
-    variable_definition = harp_ingestion_register_variable_sample_read(product_definition, "F11_number_density_stdev",
+    variable_definition = harp_ingestion_register_variable_sample_read(product_definition,
+                                                                       "F11_number_density_uncertainty",
                                                                        harp_type_double, 2, dimension_type, NULL,
                                                                        description, "molec/cm^3", exclude_v3_species,
-                                                                       read_f11_stdev);
+                                                                       read_f11_uncertainty);
     path = "/f11_retrieval_mds[]/conc_var_cov[]";
     harp_variable_definition_add_mapping(variable_definition, NULL, NULL, path, NULL);
 
@@ -1615,10 +1629,11 @@ int harp_ingestion_module_mip_nl__2p_init(void)
     harp_variable_definition_add_mapping(variable_definition, NULL, NULL, path, NULL);
 
     description = "standard deviation for the ClNO number density";
-    variable_definition = harp_ingestion_register_variable_sample_read(product_definition, "ClNO_number_density_stdev",
+    variable_definition = harp_ingestion_register_variable_sample_read(product_definition,
+                                                                       "ClNO_number_density_uncertainty",
                                                                        harp_type_double, 2, dimension_type, NULL,
                                                                        description, "molec/cm^3", exclude_v3_species,
-                                                                       read_clno_stdev);
+                                                                       read_clno_uncertainty);
     path = "/clno_retrieval_mds[]/conc_var_cov[]";
     harp_variable_definition_add_mapping(variable_definition, NULL, NULL, path, NULL);
 
@@ -1631,10 +1646,11 @@ int harp_ingestion_module_mip_nl__2p_init(void)
     harp_variable_definition_add_mapping(variable_definition, NULL, NULL, path, NULL);
 
     description = "standard deviation for the N2O5 number density";
-    variable_definition = harp_ingestion_register_variable_sample_read(product_definition, "N2O5_number_density_stdev",
+    variable_definition = harp_ingestion_register_variable_sample_read(product_definition,
+                                                                       "N2O5_number_density_uncertainty",
                                                                        harp_type_double, 2, dimension_type, NULL,
                                                                        description, "molec/cm^3", exclude_v3_species,
-                                                                       read_n2o5_stdev);
+                                                                       read_n2o5_uncertainty);
     path = "/n2o5_retrieval_mds[]/conc_var_cov[]";
     harp_variable_definition_add_mapping(variable_definition, NULL, NULL, path, NULL);
 
@@ -1647,10 +1663,11 @@ int harp_ingestion_module_mip_nl__2p_init(void)
     harp_variable_definition_add_mapping(variable_definition, NULL, NULL, path, NULL);
 
     description = "standard deviation for the F12 number density";
-    variable_definition = harp_ingestion_register_variable_sample_read(product_definition, "F12_number_density_stdev",
+    variable_definition = harp_ingestion_register_variable_sample_read(product_definition,
+                                                                       "F12_number_density_uncertainty",
                                                                        harp_type_double, 2, dimension_type, NULL,
                                                                        description, "molec/cm^3", exclude_v3_species,
-                                                                       read_f12_stdev);
+                                                                       read_f12_uncertainty);
     path = "/f12_retrieval_mds[]/conc_var_cov[]";
     harp_variable_definition_add_mapping(variable_definition, NULL, NULL, path, NULL);
 
@@ -1664,9 +1681,10 @@ int harp_ingestion_module_mip_nl__2p_init(void)
 
     description = "standard deviation for the H2O volume mixing ratio";
     variable_definition = harp_ingestion_register_variable_sample_read(product_definition,
-                                                                       "H2O_volume_mixing_ratio_stdev",
+                                                                       "H2O_volume_mixing_ratio_uncertainty",
                                                                        harp_type_double, 2, dimension_type, NULL,
-                                                                       description, "ppmv", NULL, read_h2o_vmr_stdev);
+                                                                       description, "ppmv", NULL,
+                                                                       read_h2o_vmr_uncertainty);
     path = "/h2o_retrieval_mds[]/vmr_var_cov[]";
     harp_variable_definition_add_mapping(variable_definition, NULL, NULL, path, NULL);
 
@@ -1679,9 +1697,10 @@ int harp_ingestion_module_mip_nl__2p_init(void)
 
     description = "standard deviation for the O3 volume mixing ratio";
     variable_definition = harp_ingestion_register_variable_sample_read(product_definition,
-                                                                       "O3_volume_mixing_ratio_stdev", harp_type_double,
-                                                                       2, dimension_type, NULL, description, "ppmv",
-                                                                       NULL, read_o3_vmr_stdev);
+                                                                       "O3_volume_mixing_ratio_uncertainty",
+                                                                       harp_type_double, 2, dimension_type, NULL,
+                                                                       description, "ppmv", NULL,
+                                                                       read_o3_vmr_uncertainty);
     path = "/o3_retrieval_mds[]/vmr_var_cov[]";
     harp_variable_definition_add_mapping(variable_definition, NULL, NULL, path, NULL);
 
@@ -1694,9 +1713,10 @@ int harp_ingestion_module_mip_nl__2p_init(void)
 
     description = "standard deviation for the HNO3 volume mixing ratio";
     variable_definition = harp_ingestion_register_variable_sample_read(product_definition,
-                                                                       "HNO3_volume_mixing_ratio_stdev",
+                                                                       "HNO3_volume_mixing_ratio_uncertainty",
                                                                        harp_type_double, 2, dimension_type, NULL,
-                                                                       description, "ppmv", NULL, read_hno3_vmr_stdev);
+                                                                       description, "ppmv", NULL,
+                                                                       read_hno3_vmr_uncertainty);
     path = "/hno3_retrieval_mds[]/vmr_var_cov[]";
     harp_variable_definition_add_mapping(variable_definition, NULL, NULL, path, NULL);
 
@@ -1709,9 +1729,10 @@ int harp_ingestion_module_mip_nl__2p_init(void)
 
     description = "standard deviation for the CH4 volume mixing ratio";
     variable_definition = harp_ingestion_register_variable_sample_read(product_definition,
-                                                                       "CH4_volume_mixing_ratio_stdev",
+                                                                       "CH4_volume_mixing_ratio_uncertainty",
                                                                        harp_type_double, 2, dimension_type, NULL,
-                                                                       description, "ppmv", NULL, read_ch4_vmr_stdev);
+                                                                       description, "ppmv", NULL,
+                                                                       read_ch4_vmr_uncertainty);
     path = "/ch4_retrieval_mds[]/vmr_var_cov[]";
     harp_variable_definition_add_mapping(variable_definition, NULL, NULL, path, NULL);
 
@@ -1724,9 +1745,10 @@ int harp_ingestion_module_mip_nl__2p_init(void)
 
     description = "standard deviation for the N2O volume mixing ratio";
     variable_definition = harp_ingestion_register_variable_sample_read(product_definition,
-                                                                       "N2O_volume_mixing_ratio_stdev",
+                                                                       "N2O_volume_mixing_ratio_uncertainty",
                                                                        harp_type_double, 2, dimension_type, NULL,
-                                                                       description, "ppmv", NULL, read_n2o_vmr_stdev);
+                                                                       description, "ppmv", NULL,
+                                                                       read_n2o_vmr_uncertainty);
     path = "/n2o_retrieval_mds[]/vmr_var_cov[]";
     harp_variable_definition_add_mapping(variable_definition, NULL, NULL, path, NULL);
 
@@ -1739,9 +1761,10 @@ int harp_ingestion_module_mip_nl__2p_init(void)
 
     description = "standard deviation for the NO2 volume mixing ratio";
     variable_definition = harp_ingestion_register_variable_sample_read(product_definition,
-                                                                       "NO2_volume_mixing_ratio_stdev",
+                                                                       "NO2_volume_mixing_ratio_uncertainty",
                                                                        harp_type_double, 2, dimension_type, NULL,
-                                                                       description, "ppmv", NULL, read_no2_vmr_stdev);
+                                                                       description, "ppmv", NULL,
+                                                                       read_no2_vmr_uncertainty);
     path = "/no2_retrieval_mds[]/vmr_var_cov[]";
     harp_variable_definition_add_mapping(variable_definition, NULL, NULL, path, NULL);
 
@@ -1755,10 +1778,10 @@ int harp_ingestion_module_mip_nl__2p_init(void)
 
     description = "standard deviation for the F11 volume mixing ratio";
     variable_definition = harp_ingestion_register_variable_sample_read(product_definition,
-                                                                       "F11_volume_mixing_ratio_stdev",
+                                                                       "F11_volume_mixing_ratio_uncertainty",
                                                                        harp_type_double, 2, dimension_type, NULL,
                                                                        description, "ppmv", exclude_v3_species,
-                                                                       read_f11_vmr_stdev);
+                                                                       read_f11_vmr_uncertainty);
     path = "/f11_retrieval_mds[]/vmr_var_cov[]";
     harp_variable_definition_add_mapping(variable_definition, NULL, NULL, path, NULL);
 
@@ -1772,10 +1795,10 @@ int harp_ingestion_module_mip_nl__2p_init(void)
 
     description = "standard deviation for the ClNO volume mixing ratio";
     variable_definition = harp_ingestion_register_variable_sample_read(product_definition,
-                                                                       "ClNO_volume_mixing_ratio_stdev",
+                                                                       "ClNO_volume_mixing_ratio_uncertainty",
                                                                        harp_type_double, 2, dimension_type, NULL,
                                                                        description, "ppmv", exclude_v3_species,
-                                                                       read_clno_vmr_stdev);
+                                                                       read_clno_vmr_uncertainty);
     path = "/clno_retrieval_mds[]/vmr_var_cov[]";
     harp_variable_definition_add_mapping(variable_definition, NULL, NULL, path, NULL);
 
@@ -1789,10 +1812,10 @@ int harp_ingestion_module_mip_nl__2p_init(void)
 
     description = "standard deviation for the N2O5 volume mixing ratio";
     variable_definition = harp_ingestion_register_variable_sample_read(product_definition,
-                                                                       "N2O5_volume_mixing_ratio_stdev",
+                                                                       "N2O5_volume_mixing_ratio_uncertainty",
                                                                        harp_type_double, 2, dimension_type, NULL,
                                                                        description, "ppmv", exclude_v3_species,
-                                                                       read_n2o5_vmr_stdev);
+                                                                       read_n2o5_vmr_uncertainty);
     path = "/n2o5_retrieval_mds[]/vmr_var_cov[]";
     harp_variable_definition_add_mapping(variable_definition, NULL, NULL, path, NULL);
 
@@ -1806,10 +1829,10 @@ int harp_ingestion_module_mip_nl__2p_init(void)
 
     description = "standard deviation for the F12 volume mixing ratio";
     variable_definition = harp_ingestion_register_variable_sample_read(product_definition,
-                                                                       "F12_volume_mixing_ratio_stdev",
+                                                                       "F12_volume_mixing_ratio_uncertainty",
                                                                        harp_type_double, 2, dimension_type, NULL,
                                                                        description, "ppmv", exclude_v3_species,
-                                                                       read_f12_vmr_stdev);
+                                                                       read_f12_vmr_uncertainty);
     path = "/f12_retrieval_mds[]/vmr_var_cov[]";
     harp_variable_definition_add_mapping(variable_definition, NULL, NULL, path, NULL);
 

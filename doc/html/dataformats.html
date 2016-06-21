@@ -502,11 +502,16 @@ apply to the value of a variable attribute, such as <code class="docutils litera
 <li>&lt;variable&gt;_cov</li>
 <li>&lt;variable&gt;_cov_random</li>
 <li>&lt;variable&gt;_cov_systematic</li>
-<li>&lt;variable&gt;_stdev</li>
-<li>&lt;variable&gt;_stdev_random</li>
-<li>&lt;variable&gt;_stdev_systematic</li>
+<li>&lt;variable&gt;_uncertainty</li>
+<li>&lt;variable&gt;_uncertainty_random</li>
+<li>&lt;variable&gt;_uncertainty_systematic</li>
 <li>&lt;variable&gt;_validity</li>
 </ul>
+<p>Be aware that there are still several topics under discussion that may change the above naming convention:
+- &#8216;cov&#8217; may be renamed to &#8216;covariance&#8217;
+- split of random vs. systematic for covariance will likely be removed since any non-zero off-diagonal covariance element is by definition a systematic effect
+- (some) covariance aspects may be captured by correlation variables
+- split of random vs. systematic for uncertainty may be captured by a naming convention that captures the actual semantics, which is uncertainty with zero auto-correlation and uncertainty with full auto-correlation</p>
 </div>
 <div class="section" id="netcdf-3">
 <h3>netCDF-3</h3>

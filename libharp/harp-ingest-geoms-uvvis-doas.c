@@ -596,7 +596,7 @@ static int read_column_solar(void *user_data, harp_array data)
     return read_variable_double(user_data, path, info->num_time, data);
 }
 
-static int read_column_solar_stdev_random(void *user_data, harp_array data)
+static int read_column_solar_uncertainty_random(void *user_data, harp_array data)
 {
     ingest_info *info = (ingest_info *)user_data;
     char path[MAX_PATH_LENGTH];
@@ -605,7 +605,7 @@ static int read_column_solar_stdev_random(void *user_data, harp_array data)
     return read_variable_double(user_data, path, info->num_time, data);
 }
 
-static int read_column_solar_stdev_systematic(void *user_data, harp_array data)
+static int read_column_solar_uncertainty_systematic(void *user_data, harp_array data)
 {
     ingest_info *info = (ingest_info *)user_data;
     char path[MAX_PATH_LENGTH];
@@ -744,7 +744,7 @@ static int read_tropo_column_offaxis(void *user_data, harp_array data)
     return read_variable_double(user_data, path, info->num_time, data);
 }
 
-static int read_tropo_column_offaxis_stdev_random(void *user_data, harp_array data)
+static int read_tropo_column_offaxis_uncertainty_random(void *user_data, harp_array data)
 {
     ingest_info *info = (ingest_info *)user_data;
     char path[MAX_PATH_LENGTH];
@@ -754,7 +754,7 @@ static int read_tropo_column_offaxis_stdev_random(void *user_data, harp_array da
     return read_variable_double(user_data, path, info->num_time, data);
 }
 
-static int read_tropo_column_offaxis_stdev_systematic(void *user_data, harp_array data)
+static int read_tropo_column_offaxis_uncertainty_systematic(void *user_data, harp_array data)
 {
     ingest_info *info = (ingest_info *)user_data;
     char path[MAX_PATH_LENGTH];
@@ -903,7 +903,7 @@ static int read_tropo_column_zenith(void *user_data, harp_array data)
     return read_variable_double(user_data, path, info->num_time, data);
 }
 
-static int read_tropo_column_zenith_stdev_random(void *user_data, harp_array data)
+static int read_tropo_column_zenith_uncertainty_random(void *user_data, harp_array data)
 {
     ingest_info *info = (ingest_info *)user_data;
     char path[MAX_PATH_LENGTH];
@@ -913,7 +913,7 @@ static int read_tropo_column_zenith_stdev_random(void *user_data, harp_array dat
     return read_variable_double(user_data, path, info->num_time, data);
 }
 
-static int read_tropo_column_zenith_stdev_systematic(void *user_data, harp_array data)
+static int read_tropo_column_zenith_uncertainty_systematic(void *user_data, harp_array data)
 {
     ingest_info *info = (ingest_info *)user_data;
     char path[MAX_PATH_LENGTH];
@@ -950,7 +950,7 @@ static int read_strat_column_zenith(void *user_data, harp_array data)
     return read_variable_double(user_data, path, info->num_time, data);
 }
 
-static int read_strat_column_zenith_stdev_random(void *user_data, harp_array data)
+static int read_strat_column_zenith_uncertainty_random(void *user_data, harp_array data)
 {
     ingest_info *info = (ingest_info *)user_data;
     char path[MAX_PATH_LENGTH];
@@ -960,7 +960,7 @@ static int read_strat_column_zenith_stdev_random(void *user_data, harp_array dat
     return read_variable_double(user_data, path, info->num_time, data);
 }
 
-static int read_strat_column_zenith_stdev_systematic(void *user_data, harp_array data)
+static int read_strat_column_zenith_uncertainty_systematic(void *user_data, harp_array data)
 {
     ingest_info *info = (ingest_info *)user_data;
     char path[MAX_PATH_LENGTH];
@@ -1066,7 +1066,7 @@ static int read_tropo_aerosol_optical_depth(void *user_data, harp_array data)
     return read_variable_double(user_data, path, info->num_time * info->num_spectral, data);
 }
 
-static int read_tropo_aerosol_optical_depth_stdev_random(void *user_data, harp_array data)
+static int read_tropo_aerosol_optical_depth_uncertainty_random(void *user_data, harp_array data)
 {
     const char *path = "/AEROSOL_OPTICAL_DEPTH_TROPOSPHERIC_SCATTER_SOLAR_OFFAXIS_UNCERTAINTY_RANDOM_STANDARD";
     ingest_info *info = (ingest_info *)user_data;
@@ -1074,7 +1074,7 @@ static int read_tropo_aerosol_optical_depth_stdev_random(void *user_data, harp_a
     return read_variable_double(user_data, path, info->num_time * info->num_spectral, data);
 }
 
-static int read_tropo_aerosol_optical_depth_stdev_systematic(void *user_data, harp_array data)
+static int read_tropo_aerosol_optical_depth_uncertainty_systematic(void *user_data, harp_array data)
 {
     const char *path = "/AEROSOL_OPTICAL_DEPTH_TROPOSPHERIC_SCATTER_SOLAR_OFFAXIS_UNCERTAINTY_SYSTEMATIC_STANDARD";
     ingest_info *info = (ingest_info *)user_data;
@@ -1864,26 +1864,26 @@ static int init_product_definition(harp_ingestion_module *module, uvvis_doas_gas
              "Pmolec cm-2", NULL, read_column_solar);
         harp_variable_definition_add_mapping(variable_definition, NULL, NULL, gas_mapping_path, NULL);
 
-        /* <gas>_column_number_density_stdev_random */
-        snprintf(gas_var_name, MAX_NAME_LENGTH, "%s_column_number_density_stdev_random", gas_name[gas]);
+        /* <gas>_column_number_density_uncertainty_random */
+        snprintf(gas_var_name, MAX_NAME_LENGTH, "%s_column_number_density_uncertainty_random", gas_name[gas]);
         snprintf(gas_description, MAX_DESCRIPTION_LENGTH, "random uncertainty of the %s column number density",
                  gas_name[gas]);
         snprintf(gas_mapping_path, MAX_PATH_LENGTH, "/%s.COLUMN.ABSORPTION.SOLAR_UNCERTAINTY.RANDOM.STANDARD",
                  gas_name[gas]);
         variable_definition = harp_ingestion_register_variable_full_read
             (product_definition, gas_var_name, harp_type_double, 2, dimension_type, NULL, gas_description,
-             "Pmolec cm-2", NULL, read_column_solar_stdev_random);
+             "Pmolec cm-2", NULL, read_column_solar_uncertainty_random);
         harp_variable_definition_add_mapping(variable_definition, NULL, NULL, gas_mapping_path, NULL);
 
-        /* <gas>_column_number_density_stdev_systematic */
-        snprintf(gas_var_name, MAX_NAME_LENGTH, "%s_column_number_density_stdev_systematic", gas_name[gas]);
+        /* <gas>_column_number_density_uncertainty_systematic */
+        snprintf(gas_var_name, MAX_NAME_LENGTH, "%s_column_number_density_uncertainty_systematic", gas_name[gas]);
         snprintf(gas_description, MAX_DESCRIPTION_LENGTH, "systematic covariance of the %s column number density",
                  gas_name[gas]);
         snprintf(gas_mapping_path, MAX_PATH_LENGTH, "/%s.COLUMN.ABSORPTION.SOLAR_UNCERTAINTY.SYSTEMATIC.STANDARD",
                  gas_name[gas]);
         variable_definition = harp_ingestion_register_variable_full_read
             (product_definition, gas_var_name, harp_type_double, 2, dimension_type, NULL, gas_description,
-             "Pmolec cm-2", NULL, read_column_solar_stdev_systematic);
+             "Pmolec cm-2", NULL, read_column_solar_uncertainty_systematic);
         harp_variable_definition_add_mapping(variable_definition, NULL, NULL, gas_mapping_path, NULL);
 
         if (version < 5)
@@ -1981,19 +1981,20 @@ static int init_product_definition(harp_ingestion_module *module, uvvis_doas_gas
              "Pmolec cm-2", NULL, read_tropo_column_offaxis);
         harp_variable_definition_add_mapping(variable_definition, NULL, NULL, gas_mapping_path, NULL);
 
-        /* tropospheric_<gas>_column_number_density_stdev_random */
-        snprintf(gas_var_name, MAX_NAME_LENGTH, "tropospheric_%s_column_number_density_stdev_random", gas_name[gas]);
+        /* tropospheric_<gas>_column_number_density_uncertainty_random */
+        snprintf(gas_var_name, MAX_NAME_LENGTH, "tropospheric_%s_column_number_density_uncertainty_random",
+                 gas_name[gas]);
         snprintf(gas_description, MAX_DESCRIPTION_LENGTH,
                  "random uncertainty of the tropospheric %s column number density", gas_name[gas]);
         snprintf(gas_mapping_path, MAX_PATH_LENGTH,
                  "/%s.COLUMN.TROPOSPHERIC_SCATTER.SOLAR.OFFAXIS_UNCERTAINTY.RANDOM.STANDARD", gas_name[gas]);
         variable_definition = harp_ingestion_register_variable_full_read
             (product_definition, gas_var_name, harp_type_double, 2, dimension_type, NULL, gas_description,
-             "Pmolec cm-2", NULL, read_tropo_column_offaxis_stdev_random);
+             "Pmolec cm-2", NULL, read_tropo_column_offaxis_uncertainty_random);
         harp_variable_definition_add_mapping(variable_definition, NULL, NULL, gas_mapping_path, NULL);
 
-        /* tropospheric_<gas>_column_number_density_stdev_systematic */
-        snprintf(gas_var_name, MAX_NAME_LENGTH, "tropospheric_%s_column_number_density_stdev_systematic",
+        /* tropospheric_<gas>_column_number_density_uncertainty_systematic */
+        snprintf(gas_var_name, MAX_NAME_LENGTH, "tropospheric_%s_column_number_density_uncertainty_systematic",
                  gas_name[gas]);
         snprintf(gas_description, MAX_DESCRIPTION_LENGTH,
                  "systematic covariance of the tropospheric %s column number density", gas_name[gas]);
@@ -2001,7 +2002,7 @@ static int init_product_definition(harp_ingestion_module *module, uvvis_doas_gas
                  "/%s.COLUMN.TROPOSPHERIC_SCATTER.SOLAR.OFFAXIS_UNCERTAINTY.SYSTEMATIC.STANDARD", gas_name[gas]);
         variable_definition = harp_ingestion_register_variable_full_read
             (product_definition, gas_var_name, harp_type_double, 2, dimension_type, NULL, gas_description,
-             "Pmolec cm-2", NULL, read_tropo_column_offaxis_stdev_systematic);
+             "Pmolec cm-2", NULL, read_tropo_column_offaxis_uncertainty_systematic);
         harp_variable_definition_add_mapping(variable_definition, NULL, NULL, gas_mapping_path, NULL);
 
         /* tropospheric_<gas>_column_number_density_apriori */
@@ -2107,19 +2108,20 @@ static int init_product_definition(harp_ingestion_module *module, uvvis_doas_gas
              "Pmolec cm-2", exclude_tropo_column_zenith, read_tropo_column_zenith);
         harp_variable_definition_add_mapping(variable_definition, NULL, NULL, gas_mapping_path, NULL);
 
-        /* tropospheric_<gas>_column_number_density_stdev_random */
-        snprintf(gas_var_name, MAX_NAME_LENGTH, "tropospheric_%s_column_number_density_stdev_random", gas_name[gas]);
+        /* tropospheric_<gas>_column_number_density_uncertainty_random */
+        snprintf(gas_var_name, MAX_NAME_LENGTH, "tropospheric_%s_column_number_density_uncertainty_random",
+                 gas_name[gas]);
         snprintf(gas_description, MAX_DESCRIPTION_LENGTH,
                  "random uncertainty of the tropospheric %s column number density", gas_name[gas]);
         snprintf(gas_mapping_path, MAX_PATH_LENGTH,
                  "/%s.COLUMN.TROPOSPHERIC_SCATTER.SOLAR.ZENITH_UNCERTAINTY.RANDOM.STANDARD", gas_name[gas]);
         variable_definition = harp_ingestion_register_variable_full_read
             (product_definition, gas_var_name, harp_type_double, 2, dimension_type, NULL, gas_description,
-             "Pmolec cm-2", exclude_tropo_column_zenith, read_tropo_column_zenith_stdev_random);
+             "Pmolec cm-2", exclude_tropo_column_zenith, read_tropo_column_zenith_uncertainty_random);
         harp_variable_definition_add_mapping(variable_definition, NULL, NULL, gas_mapping_path, NULL);
 
-        /* tropospheric_<gas>_column_number_density_stdev_systematic */
-        snprintf(gas_var_name, MAX_NAME_LENGTH, "tropospheric_%s_column_number_density_stdev_systematic",
+        /* tropospheric_<gas>_column_number_density_uncertainty_systematic */
+        snprintf(gas_var_name, MAX_NAME_LENGTH, "tropospheric_%s_column_number_density_uncertainty_systematic",
                  gas_name[gas]);
         snprintf(gas_description, MAX_DESCRIPTION_LENGTH,
                  "systematic covariance of the tropospheric %s column number density", gas_name[gas]);
@@ -2127,7 +2129,7 @@ static int init_product_definition(harp_ingestion_module *module, uvvis_doas_gas
                  "/%s.COLUMN.TROPOSPHERIC_SCATTER.SOLAR.ZENITH_UNCERTAINTY.SYSTEMATIC.STANDARD", gas_name[gas]);
         variable_definition = harp_ingestion_register_variable_full_read
             (product_definition, gas_var_name, harp_type_double, 2, dimension_type, NULL, gas_description,
-             "Pmolec cm-2", exclude_tropo_column_zenith, read_tropo_column_zenith_stdev_systematic);
+             "Pmolec cm-2", exclude_tropo_column_zenith, read_tropo_column_zenith_uncertainty_systematic);
         harp_variable_definition_add_mapping(variable_definition, NULL, NULL, gas_mapping_path, NULL);
 
         /* tropospheric_<gas>_column_number_density_apriori */
@@ -2160,19 +2162,20 @@ static int init_product_definition(harp_ingestion_module *module, uvvis_doas_gas
              "Pmolec cm-2", NULL, read_strat_column_zenith);
         harp_variable_definition_add_mapping(variable_definition, NULL, NULL, gas_mapping_path, NULL);
 
-        /* stratospheric_<gas>_column_number_density_stdev_random */
-        snprintf(gas_var_name, MAX_NAME_LENGTH, "stratospheric_%s_column_number_density_stdev_random", gas_name[gas]);
+        /* stratospheric_<gas>_column_number_density_uncertainty_random */
+        snprintf(gas_var_name, MAX_NAME_LENGTH, "stratospheric_%s_column_number_density_uncertainty_random",
+                 gas_name[gas]);
         snprintf(gas_description, MAX_DESCRIPTION_LENGTH,
                  "random uncertainty of the stratospheric %s column number density", gas_name[gas]);
         snprintf(gas_mapping_path, MAX_PATH_LENGTH,
                  "/%s.COLUMN.STRATOSPHERIC_SCATTER.SOLAR.ZENITH_UNCERTAINTY.RANDOM.STANDARD", gas_name[gas]);
         variable_definition = harp_ingestion_register_variable_full_read
             (product_definition, gas_var_name, harp_type_double, 2, dimension_type, NULL, gas_description,
-             "Pmolec cm-2", NULL, read_strat_column_zenith_stdev_random);
+             "Pmolec cm-2", NULL, read_strat_column_zenith_uncertainty_random);
         harp_variable_definition_add_mapping(variable_definition, NULL, NULL, gas_mapping_path, NULL);
 
-        /* stratospheric_<gas>_column_number_density_stdev_systematic */
-        snprintf(gas_var_name, MAX_NAME_LENGTH, "stratospheric_%s_column_number_density_stdev_systematic",
+        /* stratospheric_<gas>_column_number_density_uncertainty_systematic */
+        snprintf(gas_var_name, MAX_NAME_LENGTH, "stratospheric_%s_column_number_density_uncertainty_systematic",
                  gas_name[gas]);
         snprintf(gas_description, MAX_DESCRIPTION_LENGTH,
                  "systematic covariance of the stratospheric %s column number density", gas_name[gas]);
@@ -2180,7 +2183,7 @@ static int init_product_definition(harp_ingestion_module *module, uvvis_doas_gas
                  "/%s.COLUMN.STRATOSPHERIC_SCATTER.SOLAR.ZENITH_UNCERTAINTY.SYSTEMATIC.STANDARD", gas_name[gas]);
         variable_definition = harp_ingestion_register_variable_full_read
             (product_definition, gas_var_name, harp_type_double, 2, dimension_type, NULL, gas_description,
-             "Pmolec cm-2", NULL, read_strat_column_zenith_stdev_systematic);
+             "Pmolec cm-2", NULL, read_strat_column_zenith_uncertainty_systematic);
         harp_variable_definition_add_mapping(variable_definition, NULL, NULL, gas_mapping_path, NULL);
 
         /* stratospheric_<gas>_column_number_density_apriori */
@@ -2287,19 +2290,19 @@ static int init_product_definition(harp_ingestion_module *module, uvvis_doas_gas
         mapping_path = "/AEROSOL.OPTICAL.DEPTH.TROPOSPHERIC_SCATTER.SOLAR.OFFAXIS";
         harp_variable_definition_add_mapping(variable_definition, NULL, NULL, mapping_path, NULL);
 
-        /* tropospheric_aerosol_optical_depth_stdev_random */
+        /* tropospheric_aerosol_optical_depth_uncertainty_random */
         variable_definition = harp_ingestion_register_variable_full_read
-            (product_definition, "tropospheric_aerosol_optical_depth_stdev_random", harp_type_double, 2, dimension_type,
-             NULL, "random uncertainty of the tropospheric aerosol optical depth", "1", NULL,
-             read_tropo_aerosol_optical_depth_stdev_random);
+            (product_definition, "tropospheric_aerosol_optical_depth_uncertainty_random", harp_type_double, 2,
+             dimension_type, NULL, "random uncertainty of the tropospheric aerosol optical depth", "1", NULL,
+             read_tropo_aerosol_optical_depth_uncertainty_random);
         mapping_path = "/AEROSOL.OPTICAL.DEPTH.TROPOSPHERIC_SCATTER.SOLAR.OFFAXIS_UNCERTAINTY.RANDOM.STANDARD";
         harp_variable_definition_add_mapping(variable_definition, NULL, NULL, mapping_path, NULL);
 
-        /* tropospheric_aerosol_optical_depth_stdev_systematic */
+        /* tropospheric_aerosol_optical_depth_uncertainty_systematic */
         variable_definition = harp_ingestion_register_variable_full_read
-            (product_definition, "tropospheric_aerosol_optical_depth_stdev_systematic", harp_type_double, 2,
+            (product_definition, "tropospheric_aerosol_optical_depth_uncertainty_systematic", harp_type_double, 2,
              dimension_type, NULL, "systematic uncertainty of the tropospheric aerosol optical depth", "1", NULL,
-             read_tropo_aerosol_optical_depth_stdev_systematic);
+             read_tropo_aerosol_optical_depth_uncertainty_systematic);
         mapping_path = "/AEROSOL.OPTICAL.DEPTH.TROPOSPHERIC_SCATTER.SOLAR.OFFAXIS_UNCERTAINTY.SYSTEMATIC.STANDARD";
         harp_variable_definition_add_mapping(variable_definition, NULL, NULL, mapping_path, NULL);
 

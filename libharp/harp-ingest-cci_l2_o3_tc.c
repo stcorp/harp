@@ -372,7 +372,7 @@ static int read_O3_column_number_density(void *user_data, harp_array data)
     return read_dataset(info, "/atmosphere_mole_content_of_ozone", harp_type_double, info->num_time, data);
 }
 
-static int read_O3_column_number_density_stdev_random(void *user_data, harp_array data)
+static int read_O3_column_number_density_uncertainty_random(void *user_data, harp_array data)
 {
     ingest_info *info = (ingest_info *)user_data;
 
@@ -606,12 +606,12 @@ int harp_ingestion_module_cci_l2_o3_tc_init(void)
     path = "/atmosphere_mole_content_of_ozone[]";
     harp_variable_definition_add_mapping(variable_definition, NULL, NULL, path, NULL);
 
-    /* O3_column_number_density_stdev_random */
+    /* O3_column_number_density_uncertainty_random */
     description = "random uncertainty of the O3 total column number density";
     variable_definition =
-        harp_ingestion_register_variable_full_read(product_definition, "O3_column_number_density_stdev_random",
+        harp_ingestion_register_variable_full_read(product_definition, "O3_column_number_density_uncertainty_random",
                                                    harp_type_double, 1, dimension_type, NULL, description, "DU", NULL,
-                                                   read_O3_column_number_density_stdev_random);
+                                                   read_O3_column_number_density_uncertainty_random);
     path = "/atmosphere_mole_content_of_ozone_random_error[]";
     harp_variable_definition_add_mapping(variable_definition, NULL, NULL, path, NULL);
 

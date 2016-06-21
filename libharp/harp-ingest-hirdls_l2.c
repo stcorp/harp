@@ -552,10 +552,10 @@ int harp_ingestion_module_hirdls_l2_init(void)
     path = "/HDFEOS/SWATHS/HIRDLS/Data_Fields/CFC11[]";
     harp_variable_definition_add_mapping(variable_definition, NULL, NULL, path, NULL);
 
-    /* CCl3F_volume_mixing_ratio_stdev */
+    /* CCl3F_volume_mixing_ratio_uncertainty */
     description = "uncertainty of the CCl3F (CFC-11) volume mixing ratio";
     variable_definition =
-        harp_ingestion_register_variable_full_read(product_definition, "CCl3F_volume_mixing_ratio_stdev",
+        harp_ingestion_register_variable_full_read(product_definition, "CCl3F_volume_mixing_ratio_uncertainty",
                                                    harp_type_double, 2, dimension_type, NULL, description, "1e6 ppmv",
                                                    NULL, read_cfc11_vmr_error);
     path = "/HDFEOS/SWATHS/HIRDLS/Data_Fields/CFC12Precision[]";
@@ -570,10 +570,10 @@ int harp_ingestion_module_hirdls_l2_init(void)
     path = "/HDFEOS/SWATHS/HIRDLS/Data_Fields/CFC12[]";
     harp_variable_definition_add_mapping(variable_definition, NULL, NULL, path, NULL);
 
-    /* CCl2F2_volume_mixing_ratio_stdev */
+    /* CCl2F2_volume_mixing_ratio_uncertainty */
     description = "uncertainty of the CCl2F2 (CFC-12) volume mixing ratio";
     variable_definition =
-        harp_ingestion_register_variable_full_read(product_definition, "CCl2F2_volume_mixing_ratio_stdev",
+        harp_ingestion_register_variable_full_read(product_definition, "CCl2F2_volume_mixing_ratio_uncertainty",
                                                    harp_type_double, 2, dimension_type, NULL, description, "1e6 ppmv",
                                                    NULL, read_cfc12_vmr_error);
     path = "/HDFEOS/SWATHS/HIRDLS/Data_Fields/CFC12Precision[]";
@@ -587,10 +587,10 @@ int harp_ingestion_module_hirdls_l2_init(void)
     path = "/HDFEOS/SWATHS/HIRDLS/Data_Fields/CH4[]";
     harp_variable_definition_add_mapping(variable_definition, NULL, NULL, path, NULL);
 
-    /* CH4_volume_mixing_ratio_stdev */
+    /* CH4_volume_mixing_ratio_uncertainty */
     description = "uncertainty of the CH4 volume mixing ratio";
     variable_definition =
-        harp_ingestion_register_variable_full_read(product_definition, "CH4_volume_mixing_ratio_stdev",
+        harp_ingestion_register_variable_full_read(product_definition, "CH4_volume_mixing_ratio_uncertainty",
                                                    harp_type_double, 2, dimension_type, NULL, description, "1e6 ppmv",
                                                    NULL, read_ch4_vmr_error);
     path = "/HDFEOS/SWATHS/HIRDLS/Data_Fields/CH4Precision[]";
@@ -605,10 +605,10 @@ int harp_ingestion_module_hirdls_l2_init(void)
     path = "/HDFEOS/SWATHS/HIRDLS/Data_Fields/ClONO2[]";
     harp_variable_definition_add_mapping(variable_definition, NULL, NULL, path, NULL);
 
-    /* ClONO2_volume_mixing_ratio_stdev */
+    /* ClONO2_volume_mixing_ratio_uncertainty */
     description = "uncertainty of the ClONO2 volume mixing ratio";
     variable_definition =
-        harp_ingestion_register_variable_full_read(product_definition, "ClONO2_volume_mixing_ratio_stdev",
+        harp_ingestion_register_variable_full_read(product_definition, "ClONO2_volume_mixing_ratio_uncertainty",
                                                    harp_type_double, 2, dimension_type, NULL, description, "1e6 ppmv",
                                                    NULL, read_clono2_vmr_error);
     path = "/HDFEOS/SWATHS/HIRDLS/Data_Fields/ClONO2Precision[]";
@@ -622,10 +622,10 @@ int harp_ingestion_module_hirdls_l2_init(void)
     path = "/HDFEOS/SWATHS/HIRDLS/Data_Fields/H2O[]";
     harp_variable_definition_add_mapping(variable_definition, NULL, NULL, path, NULL);
 
-    /* H2O_volume_mixing_ratio_stdev */
+    /* H2O_volume_mixing_ratio_uncertainty */
     description = "uncertainty of the H2O volume mixing ratio";
     variable_definition =
-        harp_ingestion_register_variable_full_read(product_definition, "H2O_volume_mixing_ratio_stdev",
+        harp_ingestion_register_variable_full_read(product_definition, "H2O_volume_mixing_ratio_uncertainty",
                                                    harp_type_double, 2, dimension_type, NULL, description, "1e6 ppmv",
                                                    NULL, read_h2o_vmr_error);
     path = "/HDFEOS/SWATHS/HIRDLS/Data_Fields/H2OPrecision[]";
@@ -639,10 +639,10 @@ int harp_ingestion_module_hirdls_l2_init(void)
     path = "/HDFEOS/SWATHS/HIRDLS/Data_Fields/HNO3Precision[]";
     harp_variable_definition_add_mapping(variable_definition, NULL, NULL, path, NULL);
 
-    /* HNO3_volume_mixing_ratio_stdev */
+    /* HNO3_volume_mixing_ratio_uncertainty */
     description = "uncertainty of the HNO3 volume mixing ratio";
     variable_definition =
-        harp_ingestion_register_variable_full_read(product_definition, "HNO3_volume_mixing_ratio_stdev",
+        harp_ingestion_register_variable_full_read(product_definition, "HNO3_volume_mixing_ratio_uncertainty",
                                                    harp_type_double, 2, dimension_type, NULL, description, "1e6 ppmv",
                                                    NULL, read_hno3_vmr_error);
     path = "/HDFEOS/SWATHS/HIRDLS/Data_Fields/HNO3Precision[]";
@@ -656,10 +656,10 @@ int harp_ingestion_module_hirdls_l2_init(void)
     path = "/HDFEOS/SWATHS/HIRDLS/Data_Fields/N2O[]";
     harp_variable_definition_add_mapping(variable_definition, NULL, NULL, path, NULL);
 
-    /* N2O_volume_mixing_ratio_stdev */
+    /* N2O_volume_mixing_ratio_uncertainty */
     description = "uncertainty of the N2O volume mixing ratio";
     variable_definition =
-        harp_ingestion_register_variable_full_read(product_definition, "N2O_volume_mixing_ratio_stdev",
+        harp_ingestion_register_variable_full_read(product_definition, "N2O_volume_mixing_ratio_uncertainty",
                                                    harp_type_double, 2, dimension_type, NULL, description, "1e6 ppmv",
                                                    NULL, read_n2o_vmr_error);
     path = "/HDFEOS/SWATHS/HIRDLS/Data_Fields/N2OPrecision[]";
@@ -673,10 +673,10 @@ int harp_ingestion_module_hirdls_l2_init(void)
     path = "/HDFEOS/SWATHS/HIRDLS/Data_Fields/N2O5[]";
     harp_variable_definition_add_mapping(variable_definition, NULL, NULL, path, NULL);
 
-    /* N2O5_volume_mixing_ratio_stdev */
+    /* N2O5_volume_mixing_ratio_uncertainty */
     description = "uncertainty of the N2O5 volume mixing ratio";
     variable_definition =
-        harp_ingestion_register_variable_full_read(product_definition, "N2O5_volume_mixing_ratio_stdev",
+        harp_ingestion_register_variable_full_read(product_definition, "N2O5_volume_mixing_ratio_uncertainty",
                                                    harp_type_double, 2, dimension_type, NULL, description, "1e6 ppmv",
                                                    NULL, read_n2o5_vmr_error);
     path = "/HDFEOS/SWATHS/HIRDLS/Data_Fields/N2O5Precision[]";
@@ -690,10 +690,10 @@ int harp_ingestion_module_hirdls_l2_init(void)
     path = "/HDFEOS/SWATHS/HIRDLS/Data_Fields/NO2[]";
     harp_variable_definition_add_mapping(variable_definition, NULL, NULL, path, NULL);
 
-    /* NO2_volume_mixing_ratio_stdev */
+    /* NO2_volume_mixing_ratio_uncertainty */
     description = "uncertainty of the NO2 volume mixing ratio";
     variable_definition =
-        harp_ingestion_register_variable_full_read(product_definition, "NO2_volume_mixing_ratio_stdev",
+        harp_ingestion_register_variable_full_read(product_definition, "NO2_volume_mixing_ratio_uncertainty",
                                                    harp_type_double, 2, dimension_type, NULL, description, "1e6 ppmv",
                                                    NULL, read_no2_vmr_error);
     path = "/HDFEOS/SWATHS/HIRDLS/Data_Fields/NO2Precision[]";
@@ -707,12 +707,12 @@ int harp_ingestion_module_hirdls_l2_init(void)
     path = "/HDFEOS/SWATHS/HIRDLS/Data_Fields/O3[]";
     harp_variable_definition_add_mapping(variable_definition, NULL, NULL, path, NULL);
 
-    /* O3_volume_mixing_ratio_stdev */
+    /* O3_volume_mixing_ratio_uncertainty */
     description = "uncertainty of the O3 volume mixing ratio";
     variable_definition =
-        harp_ingestion_register_variable_full_read(product_definition, "O3_volume_mixing_ratio_stdev", harp_type_double,
-                                                   2, dimension_type, NULL, description, "1e6 ppmv", NULL,
-                                                   read_o3_vmr_error);
+        harp_ingestion_register_variable_full_read(product_definition, "O3_volume_mixing_ratio_uncertainty",
+                                                   harp_type_double, 2, dimension_type, NULL, description, "1e6 ppmv",
+                                                   NULL, read_o3_vmr_error);
     path = "/HDFEOS/SWATHS/HIRDLS/Data_Fields/O3Precision[]";
     harp_variable_definition_add_mapping(variable_definition, NULL, NULL, path, NULL);
 
@@ -724,10 +724,10 @@ int harp_ingestion_module_hirdls_l2_init(void)
     path = "/HDFEOS/SWATHS/HIRDLS/Data_Fields/Temperature[]";
     harp_variable_definition_add_mapping(variable_definition, NULL, NULL, path, NULL);
 
-    /* temperature_stdev */
+    /* temperature_uncertainty */
     description = "uncertainty of the temperature";
     variable_definition =
-        harp_ingestion_register_variable_full_read(product_definition, "temperature_stdev", harp_type_double, 2,
+        harp_ingestion_register_variable_full_read(product_definition, "temperature_uncertainty", harp_type_double, 2,
                                                    dimension_type, NULL, description, "K", NULL,
                                                    read_temperature_error);
     path = "/HDFEOS/SWATHS/HIRDLS/Data_Fields/TemperaturePrecision[]";
