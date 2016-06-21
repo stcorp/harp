@@ -1,14 +1,24 @@
-* Renamed HARP_ERROR_SCRIPT and HARP_ERROR_SCRIPT_SYNTAX error codes to
-  HARP_ERROR_ACTION and HARP_ERROR_ACTION_SYNTAX.
-
 * Added Python interface.
 
 * CODA is no longer included as part of HARP, but is treated as a separate
   package, just like HDF4 and HDF5.
 
+* The CMake build system can now be used to build HARP on Windows.
+
+* Revised and renumbered error codes in C interface.
+  Renamed HARP_ERROR_SCRIPT and HARP_ERROR_SCRIPT_SYNTAX error codes to
+  HARP_ERROR_ACTION and HARP_ERROR_ACTION_SYNTAX. Changed HARP_ERROR_PRODUCT
+  to either HARP_ERROR_INGESTION or HARP_ERROR_IMPORT depending on context.
+  Added HARP_ERROR_INVALID_PRODUCT and HARP_ERROR_INVALID_VARIABLE.
+
+* The HARP command line tools now link against the dynamic HARP library
+  instead of the static version.
+
 * Updated embedded expat library to version 2.1.1.
 
 * Updated embedded udunits2 library to version 2.2.20.
+  Also removed the HARP specific udunits XML configuration file since all
+  HARP units are now included in udunits2.
 
 * Fixed parsing of dimension names; string dimension could be interpreted as
   independent dimension.
@@ -16,20 +26,40 @@
 * Improved the efficiency of the conversion from volume mixing ratio to number
   density and vice versa.
 
-* Update of S5P L2 ingestion module to the lastest version of the product format
-  specification (S5P-KNMI-L2-0009-SD and relevant DLR PUMs).
+* Update of S5P L2 ingestion module to the lastest version of the product
+  format specification (S5P-KNMI-L2-0009-SD and relevant DLR PUMs).
 
 * Update of S5P L1B ingestion module to the lastest version of the product
   format specification (S5P-KNMI-L01B-0012-SD).
 
 * Added ingestion modules for the following product types:
-    - Ozone CCI L3 limb profile
     - Ozone CCI L2 limb profile
+    - Ozone CCI L3 limb profile
     - Ozone CCI L2 nadir profile
     - Ozone CCI L3 nadir profile
     - Ozone CCI L4 nadir profile
     - Ozone CCI L2 total column
     - Ozone CCI L3 total column
+
+* Added public functions harp_get_fill_value_for_type(),
+  harp_get_valid_min_for_type(), harp_get_valid_max_for_type(),
+  harp_is_fill_value_for_type(), harp_is_valid_min_for_type(),
+  harp_is_valid_max_for_type(), harp_ingest_test(),
+  harp_doc_list_conversions(), harp_doc_export_ingestion_definitions(),
+  harp_geometry_get_point_distance(), harp_geometry_has_point_in_area(),
+  harp_geometry_has_area_overlap(), harp_basename(),
+  harp_product_execute_actions(), harp_variable_set_description(),
+  harp_variable_set_unit(), harp_variable_set_string_data_element(),
+  harp_variable_verify(), harp_product_set_source_product(),
+  harp_product_set_history(), harp_product_verify()
+
+* Added public functions for dealing with HARP collocations.
+
+* Moved defines for default harp units to harp.h.
+
+* Added operators =& and !& to the product actions to test integer variables
+  against a bit mask, where a =& mask is equivalent to (a & mask) != 0 and
+  a !& mask is equivalent to (a & mask) == 0.
 
 * Added functions to verify the internal consistency as well as compliance to
   HARP conventions of harp_product and harp_variable instances. Any instance
@@ -46,6 +76,8 @@
 * Fixed handling of scalars and empty strings in netCDF-3/HDF4/HDF5 backends.
 
 * Fixed unit attribute name in HARP products ('unit' -> 'units').
+
+* Changed all constants to be in line with CODATA 2014 as published by NIST.
 
 0.1 2015-11-09
 ~~~~~~~~~~~~~~
