@@ -499,4 +499,4 @@ libharp/harp.h.cmake.in: libharp/harp.h.in Makefile.am
 # *** cppcheck ***
 
 cppcheck:
-	cppcheck -q $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(libharp_la_CPPFLAGS) $(CPPFLAGS) libharp tools
+	cppcheck -q $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(libharp_la_CPPFLAGS) $(CPPFLAGS) $(srcdir)/libharp $(srcdir)/tools
