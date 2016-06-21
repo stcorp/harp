@@ -626,6 +626,7 @@ static int string_comparision_args_new(const char *value, string_comparision_arg
     {
         harp_set_error(HARP_ERROR_OUT_OF_MEMORY, "out of memory (could not duplicate string) (%s:%u)", __FILE__,
                        __LINE__);
+        free(args);
         return -1;
     }
 

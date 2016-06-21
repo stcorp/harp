@@ -451,11 +451,17 @@ int harp_bicubic_spline_interpolation(const double *xx, const double *yy, const 
         {
             harp_set_error(HARP_ERROR_OUT_OF_MEMORY, "out of memory (could not allocate %lu bytes) (%s:%u)",
                            n * sizeof(double), __FILE__, __LINE__);
+            free(second_derivatives_matrix);
             return -1;
         }
     }
     if (get_second_derivatives_matrix(xx, zz, m, n, second_derivatives_matrix) != 0)
     {
+        for (i = 0; i < m; i++)
+        {
+            free(second_derivatives_matrix[i]);
+        }
+        free(second_derivatives_matrix);
         return -1;
     }
 
