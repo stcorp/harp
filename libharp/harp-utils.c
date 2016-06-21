@@ -1289,4 +1289,3 @@ int harp_array_transpose(harp_data_type data_type, int num_dimensions, const lon
 
     return 0;
 }
-

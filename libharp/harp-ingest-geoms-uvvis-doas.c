@@ -1926,8 +1926,8 @@ static int init_product_definition(harp_ingestion_module *module, uvvis_doas_gas
         snprintf(gas_description, MAX_DESCRIPTION_LENGTH, "%s volume mixing ratio", gas_name[gas]);
         snprintf(gas_mapping_path, MAX_PATH_LENGTH, "/%s.MIXING.RATIO.VOLUME_SCATTER.SOLAR.OFFAXIS", gas_name[gas]);
         variable_definition = harp_ingestion_register_variable_full_read
-            (product_definition, gas_var_name, harp_type_double, 2, dimension_type, NULL, gas_description, "1e6 ppmv", NULL,
-             read_vmr_offaxis);
+            (product_definition, gas_var_name, harp_type_double, 2, dimension_type, NULL, gas_description, "1e6 ppmv",
+             NULL, read_vmr_offaxis);
         harp_variable_definition_add_mapping(variable_definition, NULL, NULL, gas_mapping_path, NULL);
 
         /* <gas>_volume_mixing_ratio_cov_random */
@@ -1937,8 +1937,8 @@ static int init_product_definition(harp_ingestion_module *module, uvvis_doas_gas
         snprintf(gas_mapping_path, MAX_PATH_LENGTH,
                  "/%s.MIXING.RATIO.VOLUME_SCATTER.SOLAR.OFFAXIS_UNCERTAINTY.RANDOM.COVARIANCE", gas_name[gas]);
         variable_definition = harp_ingestion_register_variable_full_read
-            (product_definition, gas_var_name, harp_type_double, 3, dimension_type, NULL, gas_description, "1e6 ppmv", NULL,
-             read_vmr_offaxis_cov_random);
+            (product_definition, gas_var_name, harp_type_double, 3, dimension_type, NULL, gas_description, "1e6 ppmv",
+             NULL, read_vmr_offaxis_cov_random);
         harp_variable_definition_add_mapping(variable_definition, NULL, NULL, gas_mapping_path, NULL);
 
         /* <gas>_volume_mixing_ratio_cov_systematic */
@@ -1948,8 +1948,8 @@ static int init_product_definition(harp_ingestion_module *module, uvvis_doas_gas
         snprintf(gas_mapping_path, MAX_PATH_LENGTH,
                  "/%s.MIXING.RATIO.VOLUME_SCATTER.SOLAR.OFFAXIS_UNCERTAINTY.SYSTEMATIC.COVARIANCE", gas_name[gas]);
         variable_definition = harp_ingestion_register_variable_full_read
-            (product_definition, gas_var_name, harp_type_double, 3, dimension_type, NULL, gas_description, "1e6 ppmv", NULL,
-             read_vmr_offaxis_cov_systematic);
+            (product_definition, gas_var_name, harp_type_double, 3, dimension_type, NULL, gas_description, "1e6 ppmv",
+             NULL, read_vmr_offaxis_cov_systematic);
         harp_variable_definition_add_mapping(variable_definition, NULL, NULL, gas_mapping_path, NULL);
 
         /* <gas>_volume_mixing_ratio_apriori */
@@ -1958,8 +1958,8 @@ static int init_product_definition(harp_ingestion_module *module, uvvis_doas_gas
         snprintf(gas_mapping_path, MAX_PATH_LENGTH, "/%s.MIXING.RATIO.VOLUME_SCATTER.SOLAR.OFFAXIS_APRIORI",
                  gas_name[gas]);
         variable_definition = harp_ingestion_register_variable_full_read
-            (product_definition, gas_var_name, harp_type_double, 2, dimension_type, NULL, gas_description, "1e6 ppmv", NULL,
-             read_vmr_offaxis_apriori);
+            (product_definition, gas_var_name, harp_type_double, 2, dimension_type, NULL, gas_description, "1e6 ppmv",
+             NULL, read_vmr_offaxis_apriori);
         harp_variable_definition_add_mapping(variable_definition, NULL, NULL, gas_mapping_path, NULL);
 
         /* <gas>_volume_mixing_ratio_avk */

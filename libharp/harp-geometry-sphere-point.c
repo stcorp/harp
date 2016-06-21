@@ -321,7 +321,6 @@ void harp_spherical_point_array_delete(harp_spherical_point_array *point_array)
  */
 LIBHARP_API int harp_geometry_get_point_distance(double longitude_a, double latitude_a, double longitude_b,
                                                  double latitude_b, double *distance)
-
 {
     harp_spherical_point point_a, point_b;
 

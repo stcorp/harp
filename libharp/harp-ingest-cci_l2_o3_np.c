@@ -838,8 +838,8 @@ int harp_ingestion_module_cci_l2_o3_np_init(void)
     description = "O3 volume mixing ratio apriori";
     variable_definition =
         harp_ingestion_register_variable_full_read(product_definition, "O3_volume_mixing_ratio_apriori",
-                                                   harp_type_float, 2, dimension_type, NULL, description, "1e6 ppmv", NULL,
-                                                   read_o3_volume_mixing_ratio_apriori);
+                                                   harp_type_float, 2, dimension_type, NULL, description, "1e6 ppmv",
+                                                   NULL, read_o3_volume_mixing_ratio_apriori);
     path = "/o3_ap[]";
     harp_variable_definition_add_mapping(variable_definition, NULL, NULL, path, NULL);
 
@@ -847,8 +847,8 @@ int harp_ingestion_module_cci_l2_o3_np_init(void)
     description = "uncertainty of the O3 volume mixing ratio apriori";
     variable_definition =
         harp_ingestion_register_variable_full_read(product_definition, "O3_volume_mixing_ratio_apriori_stdev",
-                                                   harp_type_float, 2, dimension_type, NULL, description, "1e6 ppmv", NULL,
-                                                   read_o3_volume_mixing_ratio_apriori_error);
+                                                   harp_type_float, 2, dimension_type, NULL, description, "1e6 ppmv",
+                                                   NULL, read_o3_volume_mixing_ratio_apriori_error);
     path = "/o3_ap[], /o3_ap_error[]";
     description = "derived from the relative error in percent as: o3_ap_error[] * 0.01 * o3_ap[]";
     harp_variable_definition_add_mapping(variable_definition, NULL, NULL, path, description);

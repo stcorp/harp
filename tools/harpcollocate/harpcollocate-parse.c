@@ -1074,7 +1074,7 @@ static int expand_directory_name_into_file_names(const char *pathname, Dataset *
             if (filepath == NULL)
             {
                 harp_set_error(HARP_ERROR_OUT_OF_MEMORY, "out of memory (could not allocate %lu bytes) (%s:%u)",
-                               (long)strlen(pathname) + 1 + strlen(FileData.cFileName) + 1, __FILE__,__LINE__);
+                               (long)strlen(pathname) + 1 + strlen(FileData.cFileName) + 1, __FILE__, __LINE__);
                 dataset_delete(dataset);
                 FindClose(hSearch);
                 return -1;
@@ -1513,23 +1513,23 @@ static void get_weighting_factor_collocation_unit_from_difference_type(harp_coll
     switch (difference_type)
     {
         case harp_collocation_difference_absolute_time:
-            *collocation_unit = strdup("1/"HARP_UNIT_TIME);
+            *collocation_unit = strdup("1/" HARP_UNIT_TIME);
             break;
 
         case harp_collocation_difference_absolute_latitude:
-            *collocation_unit = strdup("1/"HARP_UNIT_LATITUDE);
+            *collocation_unit = strdup("1/" HARP_UNIT_LATITUDE);
             break;
 
         case harp_collocation_difference_absolute_longitude:
-            *collocation_unit = strdup("1/"HARP_UNIT_LONGITUDE);
+            *collocation_unit = strdup("1/" HARP_UNIT_LONGITUDE);
             break;
 
         case harp_collocation_difference_point_distance:
-            *collocation_unit = strdup("1/"HARP_UNIT_LENGTH);
+            *collocation_unit = strdup("1/" HARP_UNIT_LENGTH);
             break;
 
         case harp_collocation_difference_overlapping_percentage:
-            *collocation_unit = strdup("1/"HARP_UNIT_PERCENT);
+            *collocation_unit = strdup("1/" HARP_UNIT_PERCENT);
             break;
 
         case harp_collocation_difference_absolute_sza:
@@ -1537,7 +1537,7 @@ static void get_weighting_factor_collocation_unit_from_difference_type(harp_coll
         case harp_collocation_difference_absolute_vza:
         case harp_collocation_difference_absolute_vaa:
         case harp_collocation_difference_absolute_theta:
-            *collocation_unit = strdup("1/"HARP_UNIT_ANGLE);
+            *collocation_unit = strdup("1/" HARP_UNIT_ANGLE);
             break;
 
         case harp_collocation_difference_unknown:

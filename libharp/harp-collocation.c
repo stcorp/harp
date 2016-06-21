@@ -403,7 +403,7 @@ LIBHARP_API int harp_collocation_result_sort_by_collocation_index(harp_collocati
  *   \arg \c -1, Error occurred (check #harp_errno).
  */
 LIBHARP_API int harp_collocation_result_filter_for_source_product_a(harp_collocation_result *collocation_result,
-                                                        const char *source_product)
+                                                                    const char *source_product)
 {
     long i, j;
 
@@ -431,7 +431,7 @@ LIBHARP_API int harp_collocation_result_filter_for_source_product_a(harp_colloca
  *   \arg \c -1, Error occurred (check #harp_errno).
  */
 LIBHARP_API int harp_collocation_result_filter_for_source_product_b(harp_collocation_result *collocation_result,
-                                                        const char *source_product)
+                                                                    const char *source_product)
 {
     long i, j;
 

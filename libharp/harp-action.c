@@ -1249,7 +1249,7 @@ int harp_string_comparison_filter_new(const char *variable_name, harp_comparison
 }
 
 int harp_bit_mask_filter_new(const char *variable_name, harp_bit_mask_operator_type operator_type, uint32_t bit_mask,
-                         harp_action **new_action)
+                             harp_action **new_action)
 {
     harp_bit_mask_filter_args *args;
     harp_action *action;

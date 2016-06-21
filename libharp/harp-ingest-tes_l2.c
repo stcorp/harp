@@ -619,8 +619,8 @@ static void register_ch4_nadir_product(void)
     description = "CH4 volume mixing ratio precision";
     variable_definition = harp_ingestion_register_variable_full_read(product_definition,
                                                                      "CH4_volume_mixing_ratio_stdev", harp_type_double,
-                                                                     2, dimension_type, NULL, description, "1e6 ppmv", NULL,
-                                                                     read_error);
+                                                                     2, dimension_type, NULL, description, "1e6 ppmv",
+                                                                     NULL, read_error);
     path = "/HDFEOS/SWATHS/CH4NadirSwath/Data_Fields/CH4Precision[]";
     harp_variable_definition_add_mapping(variable_definition, NULL, NULL, path, NULL);
 }
@@ -720,8 +720,8 @@ static void register_h2o_nadir_product(void)
     description = "H2O volume mixing ratio precision";
     variable_definition = harp_ingestion_register_variable_full_read(product_definition,
                                                                      "H2O_volume_mixing_ratio_stdev", harp_type_double,
-                                                                     2, dimension_type, NULL, description, "1e6 ppmv", NULL,
-                                                                     read_error);
+                                                                     2, dimension_type, NULL, description, "1e6 ppmv",
+                                                                     NULL, read_error);
     path = "/HDFEOS/SWATHS/H2ONadirSwath/Data_Fields/H2OPrecision[]";
     harp_variable_definition_add_mapping(variable_definition, NULL, NULL, path, NULL);
 }
