@@ -107,7 +107,7 @@ library and executables:
         If ``./configure`` complains that it can't find the ``coda`` library
         files, pass this option to ``./configure`` with the location of this
         library file.
-    
+
     ``CODA_INCLUDE=<CODA include file directory>`` :
         The configure script will automatically try to locate the CODA include
         files in the default locations for include files
