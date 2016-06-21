@@ -826,6 +826,7 @@ int harp_variable_conversion_set_source_description(harp_variable_conversion *co
 }
 
 /** Print the full listing of available variable conversions.
+ * \ingroup harp_documentation
  * If product is NULL then all possible conversions will be printed. If a product is provided then only conversions
  * that can be made using the content of that product will be shown.
  * The \a print function parameter should be a function that resembles printf().

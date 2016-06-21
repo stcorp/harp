@@ -14,7 +14,10 @@ Each module has a separate section that contains its general description togethe
    :maxdepth: 2
 
    libharp_algorithm
+   libharp_collocation
+   libharp_documentation
    libharp_error
    libharp_general
+   libharp_geometry
    libharp_product
    libharp_variable

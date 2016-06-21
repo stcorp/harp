@@ -2548,6 +2548,7 @@ static int ingest(const char *filename, harp_action_list *action_list, const har
 }
 
 /** Ingest a product.
+ * \ingroup harp_product
  * \param[in] filename Filename of the product to ingest.
  * \param[in] actions Script defining the actions to be performed as part of ingestion (for example, filtering).
  * \param[in] options Options to be passed to the ingestion module.
@@ -2635,6 +2636,7 @@ LIBHARP_API int harp_ingest(const char *filename, const char *actions, const cha
 }
 
 /** Test ingestion of a product using all possible ingestion option values.
+ * \ingroup harp_product
  * Results are printed to stdout.
  * \param[in] filename Filename of the product to ingest.
  * \return

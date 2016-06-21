@@ -34,7 +34,7 @@
   
     <link rel="top" title="HARP 0.1b documentation" href="index.html"/>
         <link rel="up" title="C library" href="libharp.html"/>
-        <link rel="next" title="Product" href="libharp_product.html"/>
+        <link rel="next" title="Geometry" href="libharp_geometry.html"/>
         <link rel="prev" title="Error" href="libharp_error.html"/> 
 
   
@@ -92,8 +92,11 @@
 <li class="toctree-l2"><a class="reference internal" href="libharp.html#introduction">Introduction</a></li>
 <li class="toctree-l2 current"><a class="reference internal" href="libharp.html#modules">Modules</a><ul class="current">
 <li class="toctree-l3"><a class="reference internal" href="libharp_algorithm.html">Algorithms</a></li>
+<li class="toctree-l3"><a class="reference internal" href="libharp_collocation.html">Collocation</a></li>
+<li class="toctree-l3"><a class="reference internal" href="libharp_documentation.html">Documentation</a></li>
 <li class="toctree-l3"><a class="reference internal" href="libharp_error.html">Error</a></li>
 <li class="toctree-l3 current"><a class="current reference internal" href="#">General</a></li>
+<li class="toctree-l3"><a class="reference internal" href="libharp_geometry.html">Geometry</a></li>
 <li class="toctree-l3"><a class="reference internal" href="libharp_product.html">Product</a></li>
 <li class="toctree-l3"><a class="reference internal" href="libharp_variable.html">Variable</a></li>
 </ul>
@@ -300,10 +303,25 @@
 </dd></dl>
 
 <dl class="function">
+<dt id="_CPPv213harp_basenamePKc">
+<span id="harp_basename__cCP"></span><span class="target" id="libharpgroup__harp__general_1ga96d2dcbea0ae2ee275bdb7113980ae92"></span><em class="property">const</em> char *<code class="descname">harp_basename</code><span class="sig-paren">(</span><em class="property">const</em> char *<em>path</em><span class="sig-paren">)</span></dt>
+<dd><p>Remove everything but the last pathname component from <em>path</em>. <dl class="docutils">
+<dt><strong>Return</strong></dt>
+<dd>Pointer to the last pathname component of <em>path</em>, i.e. everything from the end of <em>path</em> up to the first pathname component separation character (&#8216;\&#8217; or &#8216;/&#8217; on Windows, &#8216;/&#8217; otherwise). </dd>
+<dt><strong>Parameters</strong></dt>
+<dd><ul class="breatheparameterlist first last">
+<li><code class="first docutils literal"><span class="pre">path</span></code> - <p>Path to compute the basename of. </p>
+</li>
+</ul>
+</dd>
+</dl>
+</p>
+</dd></dl>
+
+<dl class="function">
 <dt id="_CPPv223harp_get_data_type_name14harp_data_type">
 <span id="harp_get_data_type_name__harp_data_type"></span><span class="target" id="libharpgroup__harp__general_1gaffceeeef4a5b49917a355539ffb18980"></span><em class="property">const</em> char *<code class="descname">harp_get_data_type_name</code><span class="sig-paren">(</span><a class="reference internal" href="#_CPPv214harp_data_type" title="harp_data_type">harp_data_type</a> <em>data_type</em><span class="sig-paren">)</span></dt>
-<dd><p>Returns the name of a data type.</p>
-<p><dl class="docutils">
+<dd><p>Returns the name of a data type. <dl class="docutils">
 <dt><strong>Return</strong></dt>
 <dd>if the data type is known a string containing the name of the type, otherwise the string &#8220;unknown&#8221;. </dd>
 <dt><strong>Parameters</strong></dt>
@@ -319,8 +337,7 @@
 <dl class="function">
 <dt id="_CPPv222harp_get_size_for_type14harp_data_type">
 <span id="harp_get_size_for_type__harp_data_type"></span><span class="target" id="libharpgroup__harp__general_1ga04e7afdfba69e2ee2596bfed9dc87355"></span>long <code class="descname">harp_get_size_for_type</code><span class="sig-paren">(</span><a class="reference internal" href="#_CPPv214harp_data_type" title="harp_data_type">harp_data_type</a> <em>data_type</em><span class="sig-paren">)</span></dt>
-<dd><p>Retrieve the byte size for a HARP data type.</p>
-<p><dl class="docutils">
+<dd><p>Retrieve the byte size for a HARP data type. <dl class="docutils">
 <dt><strong>Return</strong></dt>
 <dd>The size of the data type in bytes. </dd>
 <dt><strong>Parameters</strong></dt>
@@ -334,10 +351,123 @@
 </dd></dl>
 
 <dl class="function">
+<dt id="_CPPv228harp_get_fill_value_for_type14harp_data_type">
+<span id="harp_get_fill_value_for_type__harp_data_type"></span><span class="target" id="libharpgroup__harp__general_1ga00efcbd66b05ad34562435771e600341"></span><a class="reference internal" href="#_CPPv211harp_scalar" title="harp_scalar">harp_scalar</a> <code class="descname">harp_get_fill_value_for_type</code><span class="sig-paren">(</span><a class="reference internal" href="#_CPPv214harp_data_type" title="harp_data_type">harp_data_type</a> <em>data_type</em><span class="sig-paren">)</span></dt>
+<dd><p>Retrieve the fill value for a HARP data type. <dl class="docutils">
+<dt><strong>Return</strong></dt>
+<dd>The fill value for the data type. </dd>
+<dt><strong>Parameters</strong></dt>
+<dd><ul class="breatheparameterlist first last">
+<li><code class="first docutils literal"><span class="pre">data_type</span></code> - <p>Data type for which to retrieve the fill value. </p>
+</li>
+</ul>
+</dd>
+</dl>
+</p>
+</dd></dl>
+
+<dl class="function">
+<dt id="_CPPv227harp_get_valid_min_for_type14harp_data_type">
+<span id="harp_get_valid_min_for_type__harp_data_type"></span><span class="target" id="libharpgroup__harp__general_1ga854ceb4ea5b4953cfa94a0b738bdbee5"></span><a class="reference internal" href="#_CPPv211harp_scalar" title="harp_scalar">harp_scalar</a> <code class="descname">harp_get_valid_min_for_type</code><span class="sig-paren">(</span><a class="reference internal" href="#_CPPv214harp_data_type" title="harp_data_type">harp_data_type</a> <em>data_type</em><span class="sig-paren">)</span></dt>
+<dd><p>Retrieve the minimum valid value for a HARP data type. <dl class="docutils">
+<dt><strong>Return</strong></dt>
+<dd>The minimum valid value of the data type. </dd>
+<dt><strong>Parameters</strong></dt>
+<dd><ul class="breatheparameterlist first last">
+<li><code class="first docutils literal"><span class="pre">data_type</span></code> - <p>Data type for which to retrieve the minimum valid value. </p>
+</li>
+</ul>
+</dd>
+</dl>
+</p>
+</dd></dl>
+
+<dl class="function">
+<dt id="_CPPv227harp_get_valid_max_for_type14harp_data_type">
+<span id="harp_get_valid_max_for_type__harp_data_type"></span><span class="target" id="libharpgroup__harp__general_1ga0161b0bb8622db439ce702d125855de9"></span><a class="reference internal" href="#_CPPv211harp_scalar" title="harp_scalar">harp_scalar</a> <code class="descname">harp_get_valid_max_for_type</code><span class="sig-paren">(</span><a class="reference internal" href="#_CPPv214harp_data_type" title="harp_data_type">harp_data_type</a> <em>data_type</em><span class="sig-paren">)</span></dt>
+<dd><p>Retrieve the maximum valid value for a HARP data type. <dl class="docutils">
+<dt><strong>Return</strong></dt>
+<dd>The maximum valid value of the data type. </dd>
+<dt><strong>Parameters</strong></dt>
+<dd><ul class="breatheparameterlist first last">
+<li><code class="first docutils literal"><span class="pre">data_type</span></code> - <p>Data type for which to retrieve the maximum valid value. </p>
+</li>
+</ul>
+</dd>
+</dl>
+</p>
+</dd></dl>
+
+<dl class="function">
+<dt id="_CPPv227harp_is_fill_value_for_type14harp_data_type11harp_scalar">
+<span id="harp_is_fill_value_for_type__harp_data_type.harp_scalar"></span><span class="target" id="libharpgroup__harp__general_1gaffeedbea853fee203d4555664225e261"></span>int <code class="descname">harp_is_fill_value_for_type</code><span class="sig-paren">(</span><a class="reference internal" href="#_CPPv214harp_data_type" title="harp_data_type">harp_data_type</a> <em>data_type</em>, <a class="reference internal" href="#_CPPv211harp_scalar" title="harp_scalar">harp_scalar</a> <em>value</em><span class="sig-paren">)</span></dt>
+<dd><p>Test if <em>value</em> equals the fill value for the specified data type. <dl class="docutils">
+<dt><strong>Return</strong></dt>
+<dd><ul class="simple">
+<li><code class="docutils literal"><span class="pre">0</span></code>, Value is not equal to the fill value. </li>
+<li><code class="docutils literal"><span class="pre">1</span></code>, Value equals the fill value. </li>
+</ul>
+</dd>
+<dt><strong>Parameters</strong></dt>
+<dd><ul class="breatheparameterlist first last">
+<li><code class="first docutils literal"><span class="pre">data_type</span></code> - <p>Data type corresponding to the value of <em>value</em>. </p>
+</li>
+<li><code class="first docutils literal"><span class="pre">value</span></code> - <p>Value to test. </p>
+</li>
+</ul>
+</dd>
+</dl>
+</p>
+</dd></dl>
+
+<dl class="function">
+<dt id="_CPPv226harp_is_valid_min_for_type14harp_data_type11harp_scalar">
+<span id="harp_is_valid_min_for_type__harp_data_type.harp_scalar"></span><span class="target" id="libharpgroup__harp__general_1ga43fde638ad814bb4a88c2e63ab06deca"></span>int <code class="descname">harp_is_valid_min_for_type</code><span class="sig-paren">(</span><a class="reference internal" href="#_CPPv214harp_data_type" title="harp_data_type">harp_data_type</a> <em>data_type</em>, <a class="reference internal" href="#_CPPv211harp_scalar" title="harp_scalar">harp_scalar</a> <em>value</em><span class="sig-paren">)</span></dt>
+<dd><p>Test if <em>value</em> equals the minimum valid value for the specified data type. <dl class="docutils">
+<dt><strong>Return</strong></dt>
+<dd><ul class="simple">
+<li><code class="docutils literal"><span class="pre">0</span></code>, Value is not equal to the minimum valid value. </li>
+<li><code class="docutils literal"><span class="pre">1</span></code>, Value equals the minimum valid value. </li>
+</ul>
+</dd>
+<dt><strong>Parameters</strong></dt>
+<dd><ul class="breatheparameterlist first last">
+<li><code class="first docutils literal"><span class="pre">data_type</span></code> - <p>Data type corresponding to the value of <em>value</em>. </p>
+</li>
+<li><code class="first docutils literal"><span class="pre">value</span></code> - <p>Value to test. </p>
+</li>
+</ul>
+</dd>
+</dl>
+</p>
+</dd></dl>
+
+<dl class="function">
+<dt id="_CPPv226harp_is_valid_max_for_type14harp_data_type11harp_scalar">
+<span id="harp_is_valid_max_for_type__harp_data_type.harp_scalar"></span><span class="target" id="libharpgroup__harp__general_1gace82158c05757551242151c4cb8709f6"></span>int <code class="descname">harp_is_valid_max_for_type</code><span class="sig-paren">(</span><a class="reference internal" href="#_CPPv214harp_data_type" title="harp_data_type">harp_data_type</a> <em>data_type</em>, <a class="reference internal" href="#_CPPv211harp_scalar" title="harp_scalar">harp_scalar</a> <em>value</em><span class="sig-paren">)</span></dt>
+<dd><p>Test if <em>value</em> equals the maximum valid value for the specified data type. <dl class="docutils">
+<dt><strong>Return</strong></dt>
+<dd><ul class="simple">
+<li><code class="docutils literal"><span class="pre">0</span></code>, Value is not equal to the maximum valid value. </li>
+<li><code class="docutils literal"><span class="pre">1</span></code>, Value equals the maximum valid value. </li>
+</ul>
+</dd>
+<dt><strong>Parameters</strong></dt>
+<dd><ul class="breatheparameterlist first last">
+<li><code class="first docutils literal"><span class="pre">data_type</span></code> - <p>Data type corresponding to the value of <em>value</em>. </p>
+</li>
+<li><code class="first docutils literal"><span class="pre">value</span></code> - <p>Value to test. </p>
+</li>
+</ul>
+</dd>
+</dl>
+</p>
+</dd></dl>
+
+<dl class="function">
 <dt id="_CPPv213harp_isfinited">
 <span id="harp_isfinite__double"></span><span class="target" id="libharpgroup__harp__general_1gab2573bc2856e63bf0f13c342c97fcc74"></span>int <code class="descname">harp_isfinite</code><span class="sig-paren">(</span>double <em>x</em><span class="sig-paren">)</span></dt>
-<dd><p>Find out whether a double value is a finite number (i.e. not NaN and not infinite).</p>
-<p><dl class="docutils">
+<dd><p>Find out whether a double value is a finite number (i.e. not NaN and not infinite). <dl class="docutils">
 <dt><strong>Return</strong></dt>
 <dd><ul class="simple">
 <li><code class="docutils literal"><span class="pre">1</span></code>, The double value is a finite number. </li>
@@ -357,8 +487,7 @@
 <dl class="function">
 <dt id="_CPPv210harp_isnand">
 <span id="harp_isnan__double"></span><span class="target" id="libharpgroup__harp__general_1gabc115e3ba02afd21054b75ccb025a8a3"></span>int <code class="descname">harp_isnan</code><span class="sig-paren">(</span>double <em>x</em><span class="sig-paren">)</span></dt>
-<dd><p>Find out whether a double value equals NaN (Not a Number).</p>
-<p><dl class="docutils">
+<dd><p>Find out whether a double value equals NaN (Not a Number). <dl class="docutils">
 <dt><strong>Return</strong></dt>
 <dd><ul class="simple">
 <li><code class="docutils literal"><span class="pre">1</span></code>, The double value equals NaN. </li>
@@ -378,8 +507,7 @@
 <dl class="function">
 <dt id="_CPPv28harp_nanv">
 <span id="harp_nan__void"></span><span class="target" id="libharpgroup__harp__general_1ga10caef8ce343d5b5bec3b8240441ef86"></span>double <code class="descname">harp_nan</code><span class="sig-paren">(</span>void<span class="sig-paren">)</span></dt>
-<dd><p>Retrieve a double value that respresents NaN (Not a Number).</p>
-<p><dl class="docutils">
+<dd><p>Retrieve a double value that respresents NaN (Not a Number). <dl class="docutils">
 <dt><strong>Return</strong></dt>
 <dd>The double value &#8216;NaN&#8217;. </dd>
 </dl>
@@ -389,8 +517,7 @@
 <dl class="function">
 <dt id="_CPPv210harp_isinfd">
 <span id="harp_isinf__double"></span><span class="target" id="libharpgroup__harp__general_1ga29b220390a28440d8f4f8e50afcdbd0a"></span>int <code class="descname">harp_isinf</code><span class="sig-paren">(</span>double <em>x</em><span class="sig-paren">)</span></dt>
-<dd><p>Find out whether a double value equals inf (either positive or negative infinity).</p>
-<p><dl class="docutils">
+<dd><p>Find out whether a double value equals inf (either positive or negative infinity). <dl class="docutils">
 <dt><strong>Return</strong></dt>
 <dd><ul class="simple">
 <li><code class="docutils literal"><span class="pre">1</span></code>, The double value equals inf. </li>
@@ -410,8 +537,7 @@
 <dl class="function">
 <dt id="_CPPv214harp_isplusinfd">
 <span id="harp_isplusinf__double"></span><span class="target" id="libharpgroup__harp__general_1gae3a1e45bedf7743577d367ba7edb9f27"></span>int <code class="descname">harp_isplusinf</code><span class="sig-paren">(</span>double <em>x</em><span class="sig-paren">)</span></dt>
-<dd><p>Find out whether a double value equals +inf (positive infinity).</p>
-<p><dl class="docutils">
+<dd><p>Find out whether a double value equals +inf (positive infinity). <dl class="docutils">
 <dt><strong>Return</strong></dt>
 <dd><ul class="simple">
 <li><code class="docutils literal"><span class="pre">1</span></code>, The double value equals +inf. </li>
@@ -431,8 +557,7 @@
 <dl class="function">
 <dt id="_CPPv213harp_ismininfd">
 <span id="harp_ismininf__double"></span><span class="target" id="libharpgroup__harp__general_1gad3a45b9aefba353096685388531e7012"></span>int <code class="descname">harp_ismininf</code><span class="sig-paren">(</span>double <em>x</em><span class="sig-paren">)</span></dt>
-<dd><p>Find out whether a double value equals -inf (negative infinity).</p>
-<p><dl class="docutils">
+<dd><p>Find out whether a double value equals -inf (negative infinity). <dl class="docutils">
 <dt><strong>Return</strong></dt>
 <dd><ul class="simple">
 <li><code class="docutils literal"><span class="pre">1</span></code>, The double value equals -inf. </li>
@@ -452,8 +577,7 @@
 <dl class="function">
 <dt id="_CPPv212harp_plusinfv">
 <span id="harp_plusinf__void"></span><span class="target" id="libharpgroup__harp__general_1gadbfd3aa6ed1b7743899a67399971620f"></span>double <code class="descname">harp_plusinf</code><span class="sig-paren">(</span>void<span class="sig-paren">)</span></dt>
-<dd><p>Retrieve a double value that respresents +inf (positive infinity).</p>
-<p><dl class="docutils">
+<dd><p>Retrieve a double value that respresents +inf (positive infinity). <dl class="docutils">
 <dt><strong>Return</strong></dt>
 <dd>The double value &#8216;+inf&#8217;. </dd>
 </dl>
@@ -463,8 +587,7 @@
 <dl class="function">
 <dt id="_CPPv211harp_mininfv">
 <span id="harp_mininf__void"></span><span class="target" id="libharpgroup__harp__general_1ga0d6fdf4326a386b00e7f68851b450581"></span>double <code class="descname">harp_mininf</code><span class="sig-paren">(</span>void<span class="sig-paren">)</span></dt>
-<dd><p>Retrieve a double value that respresents -inf (negative infinity).</p>
-<p><dl class="docutils">
+<dd><p>Retrieve a double value that respresents -inf (negative infinity). <dl class="docutils">
 <dt><strong>Return</strong></dt>
 <dd>The double value &#8216;-inf&#8217;. </dd>
 </dl>
@@ -474,8 +597,7 @@
 <dl class="function">
 <dt id="_CPPv210harp_str647int64_tPc">
 <span id="harp_str64__int64_t.cP"></span><span class="target" id="libharpgroup__harp__general_1ga98bdd4f3fd3e7c913342fb4e781a375b"></span>void <code class="descname">harp_str64</code><span class="sig-paren">(</span>int64_t <em>a</em>, char *<em>s</em><span class="sig-paren">)</span></dt>
-<dd><p>Write 64 bit signed integer to a string.</p>
-<p>The string <em>s</em> will be 0 terminated. <dl class="docutils">
+<dd><p>Write 64 bit signed integer to a string. The string <em>s</em> will be 0 terminated. <dl class="docutils">
 <dt><strong>Parameters</strong></dt>
 <dd><ul class="breatheparameterlist first last">
 <li><code class="first docutils literal"><span class="pre">a</span></code> - <p>A signed 64 bit integer value. </p>
@@ -491,8 +613,7 @@
 <dl class="function">
 <dt id="_CPPv211harp_str64u8uint64_tPc">
 <span id="harp_str64u__uint64_t.cP"></span><span class="target" id="libharpgroup__harp__general_1gac156193e67edb52e1f940780c351f47c"></span>void <code class="descname">harp_str64u</code><span class="sig-paren">(</span>uint64_t <em>a</em>, char *<em>s</em><span class="sig-paren">)</span></dt>
-<dd><p>Write 64 bit unsigned integer to a string.</p>
-<p>The string <em>s</em> will be 0 terminated. <dl class="docutils">
+<dd><p>Write 64 bit unsigned integer to a string. The string <em>s</em> will be 0 terminated. <dl class="docutils">
 <dt><strong>Parameters</strong></dt>
 <dd><ul class="breatheparameterlist first last">
 <li><code class="first docutils literal"><span class="pre">a</span></code> - <p>An unsigned 64 bit integer value. </p>
@@ -793,7 +914,7 @@
   
     <div class="rst-footer-buttons" role="navigation" aria-label="footer navigation">
       
-        <a href="libharp_product.html" class="btn btn-neutral float-right" title="Product" accesskey="n">Next <span class="fa fa-arrow-circle-right"></span></a>
+        <a href="libharp_geometry.html" class="btn btn-neutral float-right" title="Geometry" accesskey="n">Next <span class="fa fa-arrow-circle-right"></span></a>
       
       
         <a href="libharp_error.html" class="btn btn-neutral" title="Error" accesskey="p"><span class="fa fa-arrow-circle-left"></span> Previous</a>

@@ -1196,6 +1196,7 @@ double harp_spherical_polygon_spherical_point_distance_in_meters(const harp_sphe
 }
 
 /** Determine whether a point is in an area on the surface of the Earth
+ * \ingroup harp_geometry
  * This function assumes a spherical earth
  * \param longitude_point Longitude of the point
  * \param latitude_point Latitude of the point
@@ -1232,6 +1233,7 @@ LIBHARP_API int harp_geometry_has_point_in_area(double longitude_point, double l
 }
 
 /** Determine whether a point is in an area on the surface of the Earth
+ * \ingroup harp_geometry
  * This function assumes a spherical earth
  * \param num_vertices_a The number of vertices of the bounding polygon of the first area
  * \param longitude_bounds_a Longitude values of the bounds of the area of the first polygon

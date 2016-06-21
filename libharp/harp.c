@@ -164,6 +164,11 @@ static int auxiliary_data_init(void)
  * The HARP General module contains all general and miscellaneous functions and procedures of HARP.
  */
 
+/** \defgroup harp_documentation HARP Generated documentation
+ * The HARP Generated documentation module contains public functions to output documentation that can be generated
+ * automatically by HARP. This includes the ingestion definitions and derived variable conversions.
+ */
+
 /** \addtogroup harp_general
  * @{
  */

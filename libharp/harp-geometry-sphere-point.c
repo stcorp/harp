@@ -308,6 +308,7 @@ void harp_spherical_point_array_delete(harp_spherical_point_array *point_array)
 
 
 /** Calculate the distance between two points on the surface of the Earth meters
+ * \ingroup harp_geometry
  * This function assumes a spherical earth
  * \param longitude_a Longitude of first point
  * \param latitude_a Latitude of first point

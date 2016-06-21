@@ -33,8 +33,46 @@
 #include <unistd.h>
 #endif
 
+/** \addtogroup harp_general
+ * @{
+ */
+
+/** Remove everything but the last pathname component from \a path.
+ * \param path Path to compute the basename of.
+ * \return Pointer to the last pathname component of \a path, i.e. everything from the end of \a path up to the first
+ *   pathname component separation character ('\\' or '/' on Windows, '/' otherwise).
+ */
+LIBHARP_API const char *harp_basename(const char *path)
+{
+    if (path == NULL)
+    {
+        return NULL;
+    }
+    else
+    {
+        const char *separator = NULL;
+
+#ifdef WIN32
+        const char *cursor = path;
+
+        while (*cursor != '\0')
+        {
+            if (*cursor == '\\' || *cursor == '/')
+            {
+                separator = cursor;
+            }
+
+            cursor++;
+        }
+#else
+        separator = strrchr(path, '/');
+#endif
+
+        return (separator == NULL ? path : separator + 1);
+    }
+}
+
 /** Returns the name of a data type.
- * \ingroup harp_general
  * \param data_type HARP basic data type
  * \return if the data type is known a string containing the name of the type, otherwise the string "unknown".
  */
@@ -61,7 +99,6 @@ LIBHARP_API const char *harp_get_data_type_name(harp_data_type data_type)
 }
 
 /** Retrieve the byte size for a HARP data type.
- * \ingroup harp_general
  * \param data_type Data type for which to retrieve the size.
  * \return The size of the data type in bytes.
  */
@@ -268,7 +305,6 @@ LIBHARP_API int harp_is_valid_max_for_type(harp_data_type data_type, harp_scalar
 }
 
 /** Find out whether a double value is a finite number (i.e. not NaN and not infinite).
- * \ingroup harp_general
  * \param x  A double value.
  * \return
  *   \arg \c 1, The double value is a finite number.
@@ -280,7 +316,6 @@ LIBHARP_API int harp_isfinite(double x)
 }
 
 /** Find out whether a double value equals NaN (Not a Number).
- * \ingroup harp_general
  * \param x  A double value.
  * \return
  *   \arg \c 1, The double value equals NaN.
@@ -313,7 +348,6 @@ LIBHARP_API int harp_isnan(double x)
 }
 
 /** Retrieve a double value that respresents NaN (Not a Number).
- * \ingroup harp_general
  * \return The double value 'NaN'.
  */
 LIBHARP_API double harp_nan(void)
@@ -331,7 +365,6 @@ LIBHARP_API double harp_nan(void)
 }
 
 /** Find out whether a double value equals inf (either positive or negative infinity).
- * \ingroup harp_general
  * \param x  A double value.
  * \return
  *   \arg \c 1, The double value equals inf.
@@ -343,7 +376,6 @@ LIBHARP_API int harp_isinf(double x)
 }
 
 /** Find out whether a double value equals +inf (positive infinity).
- * \ingroup harp_general
  * \param x  A double value.
  * \return
  *   \arg \c 1, The double value equals +inf.
@@ -368,7 +400,6 @@ LIBHARP_API int harp_isplusinf(double x)
 }
 
 /** Find out whether a double value equals -inf (negative infinity).
- * \ingroup harp_general
  * \param x  A double value.
  * \return
  *   \arg \c 1, The double value equals -inf.
@@ -393,7 +424,6 @@ LIBHARP_API int harp_ismininf(double x)
 }
 
 /** Retrieve a double value that respresents +inf (positive infinity).
- * \ingroup harp_general
  * \return The double value '+inf'.
  */
 LIBHARP_API double harp_plusinf(void)
@@ -411,9 +441,8 @@ LIBHARP_API double harp_plusinf(void)
 }
 
 /** Retrieve a double value that respresents -inf (negative infinity).
- * \ingroup harp_general
-* \return The double value '-inf'.
-*/
+ * \return The double value '-inf'.
+ */
 LIBHARP_API double harp_mininf(void)
 {
     union
@@ -429,7 +458,6 @@ LIBHARP_API double harp_mininf(void)
 }
 
 /** Write 64 bit signed integer to a string.
- * \ingroup harp_general
  * The string \a s will be 0 terminated.
  * \param a  A signed 64 bit integer value.
  * \param s  A character buffer that is at least 21 bytes long.
@@ -448,7 +476,6 @@ LIBHARP_API void harp_str64(int64_t a, char *s)
 }
 
 /** Write 64 bit unsigned integer to a string.
- * \ingroup harp_general
  * The string \a s will be 0 terminated.
  * \param a  An unsigned 64 bit integer value.
  * \param s  A character buffer that is at least 21 bytes long.
@@ -477,6 +504,10 @@ LIBHARP_API void harp_str64u(uint64_t a, char *s)
         }
     }
 }
+
+/**
+ * @}
+ */
 
 long harp_parse_double(const char *buffer, long buffer_length, double *dst, int ignore_trailing_bytes)
 {
@@ -1259,37 +1290,3 @@ int harp_array_transpose(harp_data_type data_type, int num_dimensions, const lon
     return 0;
 }
 
-/** Remove everything but the last pathname component from \a path.
- * \param path Path to compute the basename of.
- * \return Pointer to the last pathname component of \a path, i.e. everything from the end of \a path up to the first
- *   pathname component separation character ('\\' or '/' on Windows, '/' otherwise).
- */
-LIBHARP_API const char *harp_basename(const char *path)
-{
-    if (path == NULL)
-    {
-        return NULL;
-    }
-    else
-    {
-        const char *separator = NULL;
-
-#ifdef WIN32
-        const char *cursor = path;
-
-        while (*cursor != '\0')
-        {
-            if (*cursor == '\\' || *cursor == '/')
-            {
-                separator = cursor;
-            }
-
-            cursor++;
-        }
-#else
-        separator = strrchr(path, '/');
-#endif
-
-        return (separator == NULL ? path : separator + 1);
-    }
-}

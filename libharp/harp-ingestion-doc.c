@@ -1199,6 +1199,7 @@ static int generate_rst(const char *path)
 }
 
 /** Generate documentation for all ingestion definitions.
+ * \ingroup harp_documentation
  * \param path Path to directory in which the documentation files will be written.
  * \param format Format in which to output the document. Either 'html' or 'rst'.
  * \return

@@ -35,7 +35,7 @@
     <link rel="top" title="HARP 0.1b documentation" href="index.html"/>
         <link rel="up" title="C library" href="libharp.html"/>
         <link rel="next" title="Variable" href="libharp_variable.html"/>
-        <link rel="prev" title="General" href="libharp_general.html"/> 
+        <link rel="prev" title="Geometry" href="libharp_geometry.html"/> 
 
   
   <script src="_static/js/modernizr.min.js"></script>
@@ -92,8 +92,11 @@
 <li class="toctree-l2"><a class="reference internal" href="libharp.html#introduction">Introduction</a></li>
 <li class="toctree-l2 current"><a class="reference internal" href="libharp.html#modules">Modules</a><ul class="current">
 <li class="toctree-l3"><a class="reference internal" href="libharp_algorithm.html">Algorithms</a></li>
+<li class="toctree-l3"><a class="reference internal" href="libharp_collocation.html">Collocation</a></li>
+<li class="toctree-l3"><a class="reference internal" href="libharp_documentation.html">Documentation</a></li>
 <li class="toctree-l3"><a class="reference internal" href="libharp_error.html">Error</a></li>
 <li class="toctree-l3"><a class="reference internal" href="libharp_general.html">General</a></li>
+<li class="toctree-l3"><a class="reference internal" href="libharp_geometry.html">Geometry</a></li>
 <li class="toctree-l3 current"><a class="current reference internal" href="#">Product</a></li>
 <li class="toctree-l3"><a class="reference internal" href="libharp_variable.html">Variable</a></li>
 </ul>
@@ -243,6 +246,54 @@
 <li><code class="first docutils literal"><span class="pre">num_dimensions</span></code> - <p>Number of dimensions of the variable that should be created. </p>
 </li>
 <li><code class="first docutils literal"><span class="pre">dimension_type</span></code> - <p>Type of dimension for each of the dimensions of the variable that should be created. </p>
+</li>
+</ul>
+</dd>
+</dl>
+</p>
+</dd></dl>
+
+<dl class="function">
+<dt id="_CPPv211harp_ingestPKcPKcPKcPP12harp_product">
+<span id="harp_ingest__cCP.cCP.cCP.harp_productPP"></span><span class="target" id="libharpgroup__harp__product_1ga52c14210ce1b07f697af0142962c2685"></span>int <code class="descname">harp_ingest</code><span class="sig-paren">(</span><em class="property">const</em> char *<em>filename</em>, <em class="property">const</em> char *<em>actions</em>, <em class="property">const</em> char *<em>options</em>, <a class="reference internal" href="#_CPPv212harp_product" title="harp_product">harp_product</a> **<em>product</em><span class="sig-paren">)</span></dt>
+<dd><p>Ingest a product.</p>
+<p><dl class="docutils">
+<dt><strong>Return</strong></dt>
+<dd><ul class="simple">
+<li><code class="docutils literal"><span class="pre">0</span></code>, Success. </li>
+<li><code class="docutils literal"><span class="pre">-1</span></code>, Error occurred (check <a class="reference internal" href="libharp_error.html#libharpgroup__harp__error_1gab2eeb46528306c6799632d1e800c4c36"><span class="std std-ref">harp_errno</span></a>). </li>
+</ul>
+</dd>
+<dt><strong>Parameters</strong></dt>
+<dd><ul class="breatheparameterlist first last">
+<li><code class="first docutils literal"><span class="pre">filename</span></code> - <p>Filename of the product to ingest. </p>
+</li>
+<li><code class="first docutils literal"><span class="pre">actions</span></code> - <p>Script defining the actions to be performed as part of ingestion (for example, filtering). </p>
+</li>
+<li><code class="first docutils literal"><span class="pre">options</span></code> - <p>Options to be passed to the ingestion module. </p>
+</li>
+<li><code class="first docutils literal"><span class="pre">product</span></code> - <p>Pointer to a location where a pointer to the ingested product will be stored. </p>
+</li>
+</ul>
+</dd>
+</dl>
+</p>
+</dd></dl>
+
+<dl class="function">
+<dt id="_CPPv216harp_ingest_testPKc">
+<span id="harp_ingest_test__cCP"></span><span class="target" id="libharpgroup__harp__product_1gabb0c0eb1eed0228878d22bf47386b791"></span>int <code class="descname">harp_ingest_test</code><span class="sig-paren">(</span><em class="property">const</em> char *<em>filename</em><span class="sig-paren">)</span></dt>
+<dd><p>Test ingestion of a product using all possible ingestion option values.</p>
+<p>Results are printed to stdout. <dl class="docutils">
+<dt><strong>Return</strong></dt>
+<dd><ul class="simple">
+<li><code class="docutils literal"><span class="pre">0</span></code>, Success. </li>
+<li><code class="docutils literal"><span class="pre">-1</span></code>, Error occurred (check <a class="reference internal" href="libharp_error.html#libharpgroup__harp__error_1gab2eeb46528306c6799632d1e800c4c36"><span class="std std-ref">harp_errno</span></a>). </li>
+</ul>
+</dd>
+<dt><strong>Parameters</strong></dt>
+<dd><ul class="breatheparameterlist first last">
+<li><code class="first docutils literal"><span class="pre">filename</span></code> - <p>Filename of the product to ingest. </p>
 </li>
 </ul>
 </dd>
@@ -705,7 +756,7 @@
         <a href="libharp_variable.html" class="btn btn-neutral float-right" title="Variable" accesskey="n">Next <span class="fa fa-arrow-circle-right"></span></a>
       
       
-        <a href="libharp_general.html" class="btn btn-neutral" title="General" accesskey="p"><span class="fa fa-arrow-circle-left"></span> Previous</a>
+        <a href="libharp_geometry.html" class="btn btn-neutral" title="Geometry" accesskey="p"><span class="fa fa-arrow-circle-left"></span> Previous</a>
       
     </div>
   
