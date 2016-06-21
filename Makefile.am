@@ -351,6 +351,7 @@ EXTRA_DIST += \
 EXTRA_DIST += \
 	CHANGES \
 	COPYING \
+	DEVELOPER \
 	README \
 	INSTALL \
 	bootstrap
