@@ -1,3 +1,6 @@
+* Renamed HARP_ERROR_SCRIPT and HARP_ERROR_SCRIPT_SYNTAX error codes to
+  HARP_ERROR_ACTION and HARP_ERROR_ACTION_SYNTAX.
+
 * Added Python interface.
 
 * CODA is no longer included as part of HARP, but is treated as a separate

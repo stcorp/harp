@@ -1284,7 +1284,7 @@ static int evaluate_value_filters_1d(ingest_info *info)
         dimension_type = variable_def->dimension_type[0];
         if (dimension_type == harp_dimension_independent)
         {
-            harp_set_error(HARP_ERROR_SCRIPT, "variable '%s' has independent outer dimension", variable_def->name);
+            harp_set_error(HARP_ERROR_ACTION, "variable '%s' has independent outer dimension", variable_def->name);
             return -1;
         }
 
@@ -1402,7 +1402,7 @@ static int evaluate_value_filters_2d(ingest_info *info)
 
         if (variable_def->dimension_type[0] != harp_dimension_time)
         {
-            harp_set_error(HARP_ERROR_SCRIPT, "outer dimension of variable '%s' is of type '%s'; expected '%s'",
+            harp_set_error(HARP_ERROR_ACTION, "outer dimension of variable '%s' is of type '%s'; expected '%s'",
                            variable_def->name, harp_get_dimension_type_name(variable_def->dimension_type[0]),
                            harp_get_dimension_type_name(harp_dimension_time));
             return -1;
@@ -1411,7 +1411,7 @@ static int evaluate_value_filters_2d(ingest_info *info)
         dimension_type = variable_def->dimension_type[1];
         if (dimension_type == harp_dimension_independent)
         {
-            harp_set_error(HARP_ERROR_SCRIPT, "variable '%s' has independent inner dimension", variable_def->name);
+            harp_set_error(HARP_ERROR_ACTION, "variable '%s' has independent inner dimension", variable_def->name);
             return -1;
         }
 
@@ -1561,7 +1561,7 @@ static int evaluate_collocation_filter(ingest_info *info)
 
     if (variable_def->data_type != harp_type_int32)
     {
-        harp_set_error(HARP_ERROR_SCRIPT, "variable '%s' has data type '%s'; expected '%s'", variable_def->name,
+        harp_set_error(HARP_ERROR_ACTION, "variable '%s' has data type '%s'; expected '%s'", variable_def->name,
                        harp_get_data_type_name(variable_def->data_type), harp_get_data_type_name(harp_type_int32));
         return -1;
     }
@@ -2169,7 +2169,7 @@ static int evaluate_variable_filters(ingest_info *info)
             index = harp_product_definition_get_variable_index(info->product_definition, args->variable_name[j]);
             if (index < 0)
             {
-                harp_set_error(HARP_ERROR_SCRIPT, "cannot include variable '%s' (variable does not exist)",
+                harp_set_error(HARP_ERROR_ACTION, "cannot include variable '%s' (variable does not exist)",
                                args->variable_name[j]);
                 free(variable_mask);
                 return -1;
@@ -2177,7 +2177,7 @@ static int evaluate_variable_filters(ingest_info *info)
 
             if (!info->variable_mask[index])
             {
-                harp_set_error(HARP_ERROR_SCRIPT, "cannot include variable '%s' (variable unavailable)",
+                harp_set_error(HARP_ERROR_ACTION, "cannot include variable '%s' (variable unavailable)",
                                args->variable_name[j]);
                 free(variable_mask);
                 return -1;
@@ -2230,7 +2230,7 @@ static int evaluate_variable_filters(ingest_info *info)
             index = harp_product_definition_get_variable_index(info->product_definition, args->variable_name[j]);
             if (index < 0)
             {
-                harp_set_error(HARP_ERROR_SCRIPT, "cannot exclude variable '%s' (variable does not exist)",
+                harp_set_error(HARP_ERROR_ACTION, "cannot exclude variable '%s' (variable does not exist)",
                                args->variable_name[j]);
                 return -1;
             }

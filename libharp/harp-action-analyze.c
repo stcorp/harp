@@ -143,7 +143,7 @@ static int get_dimension_list(const ast_node *dimension_list, int *num_dimension
 
     if (dimension_list->num_child_nodes > HARP_MAX_NUM_DIMS)
     {
-        harp_set_error(HARP_ERROR_SCRIPT, "char %lu: maximum number of dimensions exceeded",
+        harp_set_error(HARP_ERROR_ACTION, "char %lu: maximum number of dimensions exceeded",
                        dimension_list->child_node[HARP_MAX_NUM_DIMS]->position);
         return -1;
     }
@@ -156,7 +156,7 @@ static int get_dimension_list(const ast_node *dimension_list, int *num_dimension
         child_node = dimension_list->child_node[i];
         if (harp_parse_dimension_type(child_node->payload.string, &dimension_type[i]) != 0)
         {
-            harp_set_error(HARP_ERROR_SCRIPT, "char %lu: unknown dimension type '%s'", child_node->position,
+            harp_set_error(HARP_ERROR_ACTION, "char %lu: unknown dimension type '%s'", child_node->position,
                            child_node->payload.string);
             return -1;
         }
@@ -178,13 +178,13 @@ static int verify_qualified_name_has_no_qualifiers(const ast_node *qualified_nam
 
     if (dimension_list != NULL)
     {
-        harp_set_error(HARP_ERROR_SCRIPT, "char %lu: unexpected dimension list", dimension_list->position);
+        harp_set_error(HARP_ERROR_ACTION, "char %lu: unexpected dimension list", dimension_list->position);
         return -1;
     }
 
     if (unit != NULL)
     {
-        harp_set_error(HARP_ERROR_SCRIPT, "char %lu: unexpected unit", unit->position);
+        harp_set_error(HARP_ERROR_ACTION, "char %lu: unexpected unit", unit->position);
         return -1;
     }
 
@@ -202,7 +202,7 @@ static int verify_quantity_has_no_unit(const ast_node *quantity)
 
     if (unit != NULL)
     {
-        harp_set_error(HARP_ERROR_SCRIPT, "char %lu: unexpected unit", unit->position);
+        harp_set_error(HARP_ERROR_ACTION, "char %lu: unexpected unit", unit->position);
         return -1;
     }
 
@@ -338,7 +338,7 @@ static int create_variable_derivation(const ast_node *argument_list, harp_action
     dimension_list = qualified_name->child_node[1];
     if (dimension_list == NULL)
     {
-        harp_set_error(HARP_ERROR_SCRIPT, "char %lu: expected dimension list", qualified_name->position);
+        harp_set_error(HARP_ERROR_ACTION, "char %lu: expected dimension list", qualified_name->position);
         return -1;
     }
 
@@ -359,7 +359,7 @@ static int create_variable_inclusion(const ast_node *argument_list, harp_action 
     /* Check variable argument list. */
     if (argument_list->num_child_nodes == 0)
     {
-        harp_set_error(HARP_ERROR_SCRIPT, "char %lu: function expects one or more arguments", argument_list->position);
+        harp_set_error(HARP_ERROR_ACTION, "char %lu: function expects one or more arguments", argument_list->position);
         return -1;
     }
 
@@ -370,7 +370,7 @@ static int create_variable_inclusion(const ast_node *argument_list, harp_action 
         argument = argument_list->child_node[i];
         if (argument->type != ast_qualified_name)
         {
-            harp_set_error(HARP_ERROR_SCRIPT, "char %lu: invalid argument type", argument->position);
+            harp_set_error(HARP_ERROR_ACTION, "char %lu: invalid argument type", argument->position);
             return -1;
         }
 
@@ -416,7 +416,7 @@ static int create_variable_exclusion(const ast_node *argument_list, harp_action 
     /* Check variable argument list. */
     if (argument_list->num_child_nodes == 0)
     {
-        harp_set_error(HARP_ERROR_SCRIPT, "char %lu: function expects one or more arguments", argument_list->position);
+        harp_set_error(HARP_ERROR_ACTION, "char %lu: function expects one or more arguments", argument_list->position);
         return -1;
     }
 
@@ -427,7 +427,7 @@ static int create_variable_exclusion(const ast_node *argument_list, harp_action 
         argument = argument_list->child_node[i];
         if (argument->type != ast_qualified_name)
         {
-            harp_set_error(HARP_ERROR_SCRIPT, "char %lu: invalid argument type", argument->position);
+            harp_set_error(HARP_ERROR_ACTION, "char %lu: invalid argument type", argument->position);
             return -1;
         }
 
@@ -474,7 +474,7 @@ static int create_comparison(ast_node *node, harp_action **new_action)
     {
         if (node->type != ast_eq && node->type != ast_ne)
         {
-            harp_set_error(HARP_ERROR_SCRIPT, "char %lu: operator not supported for strings", node->position);
+            harp_set_error(HARP_ERROR_ACTION, "char %lu: operator not supported for strings", node->position);
             return -1;
         }
 
@@ -578,14 +578,14 @@ static int create_membership_test(ast_node *node, harp_action **new_action)
     /* A string list cannot be qualified with a unit. */
     if (list->child_node[0]->type == ast_string && unit != NULL)
     {
-        harp_set_error(HARP_ERROR_SCRIPT, "char %lu: unexpected unit", unit->position);
+        harp_set_error(HARP_ERROR_ACTION, "char %lu: unexpected unit", unit->position);
         return -1;
     }
 
     /* All values in the value list should be of the same type. */
     if (!is_homogeneous_list(list))
     {
-        harp_set_error(HARP_ERROR_SCRIPT, "char %lu: values in list should be of the same type", list->position);
+        harp_set_error(HARP_ERROR_ACTION, "char %lu: values in list should be of the same type", list->position);
         return -1;
     }
 
@@ -668,7 +668,7 @@ static int action_from_function_call(ast_node *node, harp_action **new_action)
     prototype = get_function_prototype_by_name(function_name->payload.string);
     if (prototype == NULL)
     {
-        harp_set_error(HARP_ERROR_SCRIPT, "char %lu: undefined function '%s'", function_name->position,
+        harp_set_error(HARP_ERROR_ACTION, "char %lu: undefined function '%s'", function_name->position,
                        function_name->payload.string);
         return -1;
     }
@@ -677,7 +677,7 @@ static int action_from_function_call(ast_node *node, harp_action **new_action)
     {
         if (argument_list->num_child_nodes != prototype->num_arguments)
         {
-            harp_set_error(HARP_ERROR_SCRIPT, "char %lu: function expects %d argument(s)", argument_list->position,
+            harp_set_error(HARP_ERROR_ACTION, "char %lu: function expects %d argument(s)", argument_list->position,
                            prototype->num_arguments);
             return -1;
         }
@@ -689,7 +689,7 @@ static int action_from_function_call(ast_node *node, harp_action **new_action)
             argument = argument_list->child_node[i];
             if (argument->type != prototype->argument_type[i])
             {
-                harp_set_error(HARP_ERROR_SCRIPT, "char %lu: invalid argument type", argument->position);
+                harp_set_error(HARP_ERROR_ACTION, "char %lu: invalid argument type", argument->position);
                 return -1;
             }
         }

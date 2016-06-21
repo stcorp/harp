@@ -201,7 +201,7 @@ static int parse_string(harp_lexer *lexer, ast_node **result)
 
     if (token.type != harp_token_string)
     {
-        harp_set_error(HARP_ERROR_SCRIPT_SYNTAX, "char %lu: expected string (%s:%u)", token.position, __FILE__,
+        harp_set_error(HARP_ERROR_ACTION_SYNTAX, "char %lu: expected string (%s:%u)", token.position, __FILE__,
                        __LINE__);
         return -1;
     }
@@ -227,7 +227,7 @@ static int parse_string(harp_lexer *lexer, ast_node **result)
     /* Decode escape sequences. */
     if (decode_escaped_string(node->payload.string) < 0)
     {
-        harp_set_error(HARP_ERROR_SCRIPT_SYNTAX, "char %lu: string contains invalid escape sequence (%s:%u)",
+        harp_set_error(HARP_ERROR_ACTION_SYNTAX, "char %lu: string contains invalid escape sequence (%s:%u)",
                        token.position, __FILE__, __LINE__);
         harp_ast_node_delete(node);
         return -1;
@@ -250,7 +250,7 @@ static int parse_unit(harp_lexer *lexer, ast_node **result)
 
     if (token.type != harp_token_unit)
     {
-        harp_set_error(HARP_ERROR_SCRIPT_SYNTAX, "char %lu: expected unit (%s:%u)", token.position, __FILE__, __LINE__);
+        harp_set_error(HARP_ERROR_ACTION_SYNTAX, "char %lu: expected unit (%s:%u)", token.position, __FILE__, __LINE__);
         return -1;
     }
     assert(token.length >= 2);
@@ -267,7 +267,7 @@ static int parse_unit(harp_lexer *lexer, ast_node **result)
 
     if (!harp_unit_is_valid(unit))
     {
-        harp_set_error(HARP_ERROR_SCRIPT_SYNTAX, "char %lu: invalid unit '%s' (%s:%u)", token.position, unit, __FILE__,
+        harp_set_error(HARP_ERROR_ACTION_SYNTAX, "char %lu: invalid unit '%s' (%s:%u)", token.position, unit, __FILE__,
                        __LINE__);
         free(unit);
         return -1;
@@ -298,7 +298,7 @@ static int parse_name(harp_lexer *lexer, ast_node **result)
 
     if (token.type != harp_token_name)
     {
-        harp_set_error(HARP_ERROR_SCRIPT_SYNTAX, "char %lu: expected name (%s:%u)", token.position, __FILE__, __LINE__);
+        harp_set_error(HARP_ERROR_ACTION_SYNTAX, "char %lu: expected name (%s:%u)", token.position, __FILE__, __LINE__);
         return -1;
     }
 
@@ -335,7 +335,7 @@ static int parse_number(harp_lexer *lexer, ast_node **result)
 
     if (token.type != harp_token_number)
     {
-        harp_set_error(HARP_ERROR_SCRIPT_SYNTAX, "char %lu: expected number (%s:%u)", token.position, __FILE__,
+        harp_set_error(HARP_ERROR_ACTION_SYNTAX, "char %lu: expected number (%s:%u)", token.position, __FILE__,
                        __LINE__);
         return -1;
     }
@@ -348,7 +348,7 @@ static int parse_number(harp_lexer *lexer, ast_node **result)
     node->position = token.position;
     if (harp_parse_double(token.root, token.length, &node->payload.number, 0) != token.length)
     {
-        harp_set_error(HARP_ERROR_SCRIPT_SYNTAX, "char %lu: invalid number (%s:%u)", token.position, __FILE__,
+        harp_set_error(HARP_ERROR_ACTION_SYNTAX, "char %lu: invalid number (%s:%u)", token.position, __FILE__,
                        __LINE__);
         harp_ast_node_delete(node);
         return -1;
@@ -374,7 +374,7 @@ static int parse_literal(harp_lexer *lexer, ast_node **result)
         case harp_token_number:
             return parse_number(lexer, result);
         default:
-            harp_set_error(HARP_ERROR_SCRIPT_SYNTAX, "char %lu: expected number or string (%s:%u)", token.position,
+            harp_set_error(HARP_ERROR_ACTION_SYNTAX, "char %lu: expected number or string (%s:%u)", token.position,
                            __FILE__, __LINE__);
             return -1;
     }
@@ -392,7 +392,7 @@ static int parse_list(harp_lexer *lexer, ast_node **result)
 
     if (token.type != harp_token_left_parenthesis)
     {
-        harp_set_error(HARP_ERROR_SCRIPT_SYNTAX, "char %lu: expected '(' (%s:%u)", token.position, __FILE__, __LINE__);
+        harp_set_error(HARP_ERROR_ACTION_SYNTAX, "char %lu: expected '(' (%s:%u)", token.position, __FILE__, __LINE__);
         return -1;
     }
 
@@ -450,7 +450,7 @@ static int parse_list(harp_lexer *lexer, ast_node **result)
 
     if (token.type != harp_token_right_parenthesis)
     {
-        harp_set_error(HARP_ERROR_SCRIPT_SYNTAX, "char %lu: expected ')' (%s:%u)", token.position, __FILE__, __LINE__);
+        harp_set_error(HARP_ERROR_ACTION_SYNTAX, "char %lu: expected ')' (%s:%u)", token.position, __FILE__, __LINE__);
         harp_ast_node_delete(node);
         return -1;
     }
@@ -656,7 +656,7 @@ static int parse_qualified_name(harp_lexer *lexer, ast_node **result)
 
         if (token.type != harp_token_right_brace)
         {
-            harp_set_error(HARP_ERROR_SCRIPT_SYNTAX, "char %lu: expected '}' (%s:%u)", token.position, __FILE__,
+            harp_set_error(HARP_ERROR_ACTION_SYNTAX, "char %lu: expected '}' (%s:%u)", token.position, __FILE__,
                            __LINE__);
             harp_ast_node_delete(node);
             return -1;
@@ -723,7 +723,7 @@ static int parse_argument(harp_lexer *lexer, ast_node **result)
         case harp_token_number:
             return parse_quantity(lexer, result);
         default:
-            harp_set_error(HARP_ERROR_SCRIPT_SYNTAX, "char %lu: invalid argument (%s:%u)", token.position, __FILE__,
+            harp_set_error(HARP_ERROR_ACTION_SYNTAX, "char %lu: invalid argument (%s:%u)", token.position, __FILE__,
                            __LINE__);
             return -1;
     }
@@ -803,7 +803,7 @@ static int parse_comparison(harp_lexer *lexer, ast_node **result)
 
     if (get_ast_node_type(token.type, &node_type) != 0)
     {
-        harp_set_error(HARP_ERROR_SCRIPT_SYNTAX, "char %lu: expected comparison operator (%s:%u)", token.position,
+        harp_set_error(HARP_ERROR_ACTION_SYNTAX, "char %lu: expected comparison operator (%s:%u)", token.position,
                        __FILE__, __LINE__);
         return -1;
     }
@@ -869,7 +869,7 @@ static int parse_bit_mask_test(harp_lexer *lexer, ast_node **result)
     }
     else
     {
-        harp_set_error(HARP_ERROR_SCRIPT_SYNTAX, "char %lu: expected bit mask test (%s:%u)", token.position, __FILE__,
+        harp_set_error(HARP_ERROR_ACTION_SYNTAX, "char %lu: expected bit mask test (%s:%u)", token.position, __FILE__,
                        __LINE__);
         return -1;
     }
@@ -935,7 +935,7 @@ static int parse_membership_test(harp_lexer *lexer, ast_node **result)
 
         if (token.type != harp_token_in)
         {
-            harp_set_error(HARP_ERROR_SCRIPT_SYNTAX, "char %lu: expected 'in' (%s:%u)", token.position, __FILE__,
+            harp_set_error(HARP_ERROR_ACTION_SYNTAX, "char %lu: expected 'in' (%s:%u)", token.position, __FILE__,
                            __LINE__);
             harp_ast_node_delete(name);
             return -1;
@@ -949,7 +949,7 @@ static int parse_membership_test(harp_lexer *lexer, ast_node **result)
     }
     else
     {
-        harp_set_error(HARP_ERROR_SCRIPT_SYNTAX, "char %lu: expected 'in' or 'not in' (%s:%u)", token.position,
+        harp_set_error(HARP_ERROR_ACTION_SYNTAX, "char %lu: expected 'in' or 'not in' (%s:%u)", token.position,
                        __FILE__, __LINE__);
         harp_ast_node_delete(name);
         return -1;
@@ -1052,7 +1052,7 @@ static int parse_function_call(harp_lexer *lexer, ast_node **result)
 
     if (token.type != harp_token_left_parenthesis)
     {
-        harp_set_error(HARP_ERROR_SCRIPT_SYNTAX, "char %lu: expected '(' (%s:%u)", token.position, __FILE__, __LINE__);
+        harp_set_error(HARP_ERROR_ACTION_SYNTAX, "char %lu: expected '(' (%s:%u)", token.position, __FILE__, __LINE__);
         harp_ast_node_delete(node);
         return -1;
     }
@@ -1079,7 +1079,7 @@ static int parse_function_call(harp_lexer *lexer, ast_node **result)
 
     if (token.type != harp_token_right_parenthesis)
     {
-        harp_set_error(HARP_ERROR_SCRIPT_SYNTAX, "char %lu: expected ')' (%s:%u)", token.position, __FILE__, __LINE__);
+        harp_set_error(HARP_ERROR_ACTION_SYNTAX, "char %lu: expected ')' (%s:%u)", token.position, __FILE__, __LINE__);
         harp_ast_node_delete(node);
         return -1;
     }
@@ -1099,7 +1099,7 @@ static int parse_statement(harp_lexer *lexer, ast_node **result)
 
     if (token.type != harp_token_name)
     {
-        harp_set_error(HARP_ERROR_SCRIPT_SYNTAX, "char %lu: expected variable or function (%s:%u)", token.position,
+        harp_set_error(HARP_ERROR_ACTION_SYNTAX, "char %lu: expected variable or function (%s:%u)", token.position,
                        __FILE__, __LINE__);
         return -1;
     }
@@ -1126,7 +1126,7 @@ static int parse_statement(harp_lexer *lexer, ast_node **result)
         return parse_comparison(lexer, result);
     }
 
-    harp_set_error(HARP_ERROR_SCRIPT_SYNTAX, "char %lu: expected '(', comparison operator, bit mask test, or "
+    harp_set_error(HARP_ERROR_ACTION_SYNTAX, "char %lu: expected '(', comparison operator, bit mask test, or "
                    "membership test (%s:%u)", token.position, __FILE__, __LINE__);
     return -1;
 }
@@ -1212,7 +1212,7 @@ int harp_parse_actions(const char *actions, ast_node **result)
 
     if (token.type != harp_token_end)
     {
-        harp_set_error(HARP_ERROR_SCRIPT_SYNTAX, "char %lu: trailing characters (%s:%u)", token.position, __FILE__,
+        harp_set_error(HARP_ERROR_ACTION_SYNTAX, "char %lu: trailing characters (%s:%u)", token.position, __FILE__,
                        __LINE__);
         harp_ast_node_delete(node);
         harp_lexer_delete(lexer);

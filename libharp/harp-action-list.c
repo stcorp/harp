@@ -169,7 +169,7 @@ int harp_action_list_verify(const harp_action_list *action_list)
 
         if (count > 0)
         {
-            harp_set_error(HARP_ERROR_SCRIPT, "action list should not contain more than one collocation filter");
+            harp_set_error(HARP_ERROR_ACTION, "action list should not contain more than one collocation filter");
             return -1;
         }
 
@@ -301,7 +301,7 @@ static int evaluate_value_filters_1d(const harp_product *product, harp_action_li
         dimension_type = variable->dimension_type[0];
         if (dimension_type == harp_dimension_independent)
         {
-            harp_set_error(HARP_ERROR_SCRIPT, "variable '%s' has independent outer dimension", variable->name);
+            harp_set_error(HARP_ERROR_ACTION, "variable '%s' has independent outer dimension", variable->name);
             return -1;
         }
 
@@ -377,7 +377,7 @@ static int evaluate_value_filters_2d(const harp_product *product, harp_action_li
 
         if (variable->dimension_type[0] != harp_dimension_time)
         {
-            harp_set_error(HARP_ERROR_SCRIPT, "outer dimension of variable '%s' is of type '%s'; expected '%s'",
+            harp_set_error(HARP_ERROR_ACTION, "outer dimension of variable '%s' is of type '%s'; expected '%s'",
                            variable->name, harp_get_dimension_type_name(variable->dimension_type[0]),
                            harp_get_dimension_type_name(harp_dimension_time));
             return -1;
@@ -386,7 +386,7 @@ static int evaluate_value_filters_2d(const harp_product *product, harp_action_li
         dimension_type = variable->dimension_type[1];
         if (dimension_type == harp_dimension_independent)
         {
-            harp_set_error(HARP_ERROR_SCRIPT, "variable '%s' has independent inner dimension", variable->name);
+            harp_set_error(HARP_ERROR_ACTION, "variable '%s' has independent inner dimension", variable->name);
             return -1;
         }
 
@@ -476,14 +476,14 @@ static int evaluate_valid_range_filters(const harp_product *product, harp_action
 
         if (variable->num_dimensions < 1)
         {
-            harp_set_error(HARP_ERROR_SCRIPT, "variable '%s' has %d dimensions; expected 1 or more", variable->name,
+            harp_set_error(HARP_ERROR_ACTION, "variable '%s' has %d dimensions; expected 1 or more", variable->name,
                            variable->num_dimensions);
             return -1;
         }
 
         if (variable->dimension_type[0] != harp_dimension_time)
         {
-            harp_set_error(HARP_ERROR_SCRIPT, "outer dimension of variable '%s' is of type '%s'; expected '%s'",
+            harp_set_error(HARP_ERROR_ACTION, "outer dimension of variable '%s' is of type '%s'; expected '%s'",
                            variable->name, harp_get_dimension_type_name(variable->dimension_type[0]),
                            harp_get_dimension_type_name(harp_dimension_time));
             return -1;
@@ -566,13 +566,13 @@ static int evaluate_collocation_filter(const harp_product *product, harp_action_
         /* Neither the 'collocation_index' nor the 'index' variable exists in the product, which means the collocation
          * (index) filter cannot be applied.
          */
-        harp_set_error(HARP_ERROR_SCRIPT, "product does not contain a variable 'collocation_index' or 'index'");
+        harp_set_error(HARP_ERROR_ACTION, "product does not contain a variable 'collocation_index' or 'index'");
         return -1;
     }
 
     if (variable->data_type != harp_type_int32)
     {
-        harp_set_error(HARP_ERROR_SCRIPT, "variable '%s' has data type '%s'; expected '%s'", variable->name,
+        harp_set_error(HARP_ERROR_ACTION, "variable '%s' has data type '%s'; expected '%s'", variable->name,
                        harp_get_data_type_name(variable->data_type), harp_get_data_type_name(harp_type_int32));
         return -1;
     }
@@ -1083,7 +1083,7 @@ static int execute_variable_filters(harp_product *product, harp_action_list *act
         {
             if (harp_product_get_variable_id_by_name(product, args->variable_name[j], &variable_id) != 0)
             {
-                harp_set_error(HARP_ERROR_SCRIPT, "cannot include variable '%s'; no such variable",
+                harp_set_error(HARP_ERROR_ACTION, "cannot include variable '%s'; no such variable",
                                args->variable_name[j]);
                 free(variable_mask);
                 return -1;
@@ -1131,7 +1131,7 @@ static int execute_variable_filters(harp_product *product, harp_action_list *act
         {
             if (harp_product_get_variable_id_by_name(product, args->variable_name[j], &variable_id) != 0)
             {
-                harp_set_error(HARP_ERROR_SCRIPT, "cannot exclude variable '%s'; no such variable",
+                harp_set_error(HARP_ERROR_ACTION, "cannot exclude variable '%s'; no such variable",
                                args->variable_name[j]);
                 free(variable_mask);
                 return -1;
@@ -1426,7 +1426,7 @@ int harp_product_execute_action_list(harp_product *product, harp_action_list *ac
 
     if (action_list->num_actions != 0)
     {
-        harp_set_error(HARP_ERROR_SCRIPT, "unable to apply %d action(s) (%s:%u)", action_list->num_actions, __FILE__,
+        harp_set_error(HARP_ERROR_ACTION, "unable to apply %d action(s) (%s:%u)", action_list->num_actions, __FILE__,
                        __LINE__);
         return -1;
     }

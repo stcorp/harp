@@ -111,7 +111,7 @@ static int lex_token(harp_lexer *lexer, harp_token *next_token)
 
     if (!has_more_characters(lexer))
     {
-        harp_set_error(HARP_ERROR_SCRIPT_SYNTAX, "unexpected end of input (%s:%u)", __FILE__, __LINE__);
+        harp_set_error(HARP_ERROR_ACTION_SYNTAX, "unexpected end of input (%s:%u)", __FILE__, __LINE__);
         return -1;
     }
 
@@ -133,7 +133,7 @@ static int lex_token(harp_lexer *lexer, harp_token *next_token)
         assert(length < 0 || length >= 2);
         if (length < 0)
         {
-            harp_set_error(HARP_ERROR_SCRIPT_SYNTAX, "char %lu: unterminated string (%s:%u)", token.position, __FILE__,
+            harp_set_error(HARP_ERROR_ACTION_SYNTAX, "char %lu: unterminated string (%s:%u)", token.position, __FILE__,
                            __LINE__);
             return -1;
         }
@@ -150,7 +150,7 @@ static int lex_token(harp_lexer *lexer, harp_token *next_token)
         assert(length < 0 || length >= 2);
         if (length < 0)
         {
-            harp_set_error(HARP_ERROR_SCRIPT_SYNTAX, "char %lu: unterminated unit (%s:%u)", token.position, __FILE__,
+            harp_set_error(HARP_ERROR_ACTION_SYNTAX, "char %lu: unterminated unit (%s:%u)", token.position, __FILE__,
                            __LINE__);
             return -1;
         }
@@ -237,7 +237,7 @@ static int lex_token(harp_lexer *lexer, harp_token *next_token)
                     token.type = harp_token_gt;
                     break;
                 default:
-                    harp_set_error(HARP_ERROR_SCRIPT_SYNTAX, "char %lu: invalid operator '%c' (%s:%u)", token.position,
+                    harp_set_error(HARP_ERROR_ACTION_SYNTAX, "char %lu: invalid operator '%c' (%s:%u)", token.position,
                                    *token.root, __FILE__, __LINE__);
                     return -1;
             }
@@ -250,7 +250,7 @@ static int lex_token(harp_lexer *lexer, harp_token *next_token)
         length = match_double(token.root, lexer->length - (token.root - lexer->root));
         if (length < 0)
         {
-            harp_set_error(HARP_ERROR_SCRIPT_SYNTAX, "char %lu: invalid number (%s:%u)", token.position, __FILE__,
+            harp_set_error(HARP_ERROR_ACTION_SYNTAX, "char %lu: invalid number (%s:%u)", token.position, __FILE__,
                            __LINE__);
             return -1;
         }
@@ -282,7 +282,7 @@ static int lex_token(harp_lexer *lexer, harp_token *next_token)
     }
     else
     {
-        harp_set_error(HARP_ERROR_SCRIPT_SYNTAX, "char %lu: syntax error (%s:%u)", token.position, __FILE__, __LINE__);
+        harp_set_error(HARP_ERROR_ACTION_SYNTAX, "char %lu: syntax error (%s:%u)", token.position, __FILE__, __LINE__);
         return -1;
     }
 

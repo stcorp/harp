@@ -116,11 +116,11 @@ static char harp_error_message_buffer[MAX_ERROR_INFO_LENGTH + 1];
  * An error occured in the unit conversion.
  */
 
-/** \def HARP_ERROR_SCRIPT
- * There was an error detected in the script.
+/** \def HARP_ERROR_ACTION
+ * There was an error detected in the product actions.
  */
-/** \def HARP_ERROR_SCRIPT_SYNTAX
- * There is a syntax error in the script.
+/** \def HARP_ERROR_ACTION_SYNTAX
+ * There is a syntax error in the string defining the product actions.
  */
 
 /** \def HARP_ERROR_IMPORT
@@ -317,10 +317,10 @@ LIBHARP_API const char *harp_errno_to_string(int err)
             case HARP_ERROR_UNIT_CONVERSION:
                 return "unit conversion error";
 
-            case HARP_ERROR_SCRIPT:
-                return "script error";
-            case HARP_ERROR_SCRIPT_SYNTAX:
-                return "syntax error in script";
+            case HARP_ERROR_ACTION:
+                return "product action error";
+            case HARP_ERROR_ACTION_SYNTAX:
+                return "syntax error in product actions string";
 
             case HARP_ERROR_IMPORT:
                 return "import error";
