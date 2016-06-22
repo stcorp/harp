@@ -18,7 +18,6 @@ Contents
    libharp
    python
    tools
-   examples
 
 What is HARP?
 -------------
@@ -132,8 +131,3 @@ command line using:
 
     harpdump ...
 
-Examples
---------
-
-Examples of executions of a full comparison can be found in the :doc:`Examples
-<examples>` section.

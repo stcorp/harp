@@ -364,7 +364,6 @@ DOCFILES = $(HARP_DOCFILES)
 
 RSTFILES = \
 	doc/dataformats.rst \
-	doc/examples.rst \
 	doc/harpcheck.rst \
 	doc/harpcollocate.rst \
 	doc/harpconvert.rst \
