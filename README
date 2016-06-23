@@ -1,6 +1,6 @@
 Copyright (C) 2015-2016 S[&]T, The Netherlands
 
-                HARP 0.1 Release Notes
+                HARP 0.2 Release Notes
 
 
 HARP is a toolset for ingesting, processing and inter-comparing satellite or
@@ -27,7 +27,7 @@ The current version of HARP contains:
    - GOSAT FTS L1/L2
    - MIPAS L2
  - import/export of data from/into HARP-specific data format
-   The HARP data format standard is a convention on top of netCDF/HDF4/HDF5
+   The HARP data format standard is a convention on top of netCDF3/HDF4/HDF5
    similar to netCDF-CF (and can be used in conjunction with netCDF-CF).
  - advanced filtering of product data
  - automatic unit conversion of quantities using udunits2
@@ -37,6 +37,8 @@ The current version of HARP contains:
    product, HARP will automatically do all calculations for you
  - built-in AFGL86 and USSTD76 climatology data
  - C Library interface to all core functionality
+ - direct ingestion/import/export interfaces for:
+   - Python
  - command line tools harpconvert, harpfilter, harpdump, harpcheck
  - harpcollocate command line tool providing collocation of two datasets at
    individual measurement level
@@ -69,7 +71,6 @@ The following items are planned to be added in the coming year:
    - CAMS (Copernicus Atmospheric Monitoring Service)
    - ADM/Aeolus
  - direct ingestion/import/export interfaces for:
-   - Python
    - MATLAB
    - IDL
  - harpprofile command line tool to modify atmospheric profile data:

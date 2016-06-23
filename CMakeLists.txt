@@ -2,7 +2,7 @@ cmake_minimum_required(VERSION 2.8)
 
 project(HARP)
 
-set(VERSION 0.1)
+set(VERSION 0.2)
 set(HARP_VERSION \"${VERSION}\")
 
 # Set dynamic library version
