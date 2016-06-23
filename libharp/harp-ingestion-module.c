@@ -1201,6 +1201,12 @@ int harp_ingestion_init(void)
         return -1;
     }
 
+    /* Make sure that udunits gets initialized as well */
+    if (!harp_unit_is_valid(""))
+    {
+        return -1;
+    }
+
     for (i = 0; i < NUM_INGESTION_MODULES; i++)
     {
         if (module_init_func[i] () != 0)
