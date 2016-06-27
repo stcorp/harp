@@ -34,10 +34,10 @@ Release checklist
 - ensure automake and CMake builds are consistent
 - check compiler warnings
 - increase HARP version number in configure.ac + CMakeLists.txt + doc/conf.py
-  format version is x.y.z.
+  format version is x.y(.z).
   Increase x for big backward compatibility breaking changes.
   Otherwise, increase y if any features were introduced.
-  Only increase z for bug fix releases.
+  Only add/increase z for bug fix releases.
 - update HARP format version if needed (configure.ac + CMakeLists.txt)
   format version is x.y (major.minor version).
   major version increases are for changes in the structure:
