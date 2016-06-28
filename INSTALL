@@ -18,9 +18,10 @@ Linux, Windows, and Mac OS X.
 What you will need
 ------------------
 
-  - The HARP package : The package only comes in a source installation
-    (harp-x.y.z.tar.gz) or a binary installation (harp-x.y.z-Winxx.msi (Windows
-    only)). Note that x.y.z stands for the version number of the package.
+  - The HARP package : You can choose between a source installation
+    (harp-x.y.z.tar.gz) or a binary installation (harp-x.y.z-win32.msi or
+    harp-x.y.z-win64.msi (Windows only)).
+    Note that x.y.z stands for the version number of the package.
     The source package contains the source code for the HARP components (C
     Library and command line tools) together with all documentation.
     You will need this package if you want to use HARP on a Unix-based system.
