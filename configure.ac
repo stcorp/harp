@@ -106,8 +106,10 @@ int vsnprintf(const char *, size_t, const char *, va_list ap);
 /* redefines for special string handling functions */
 #define strcasecmp _stricmp
 #define strncasecmp _strnicmp
-#if defined(_MSC_VER) && _MSC_VER < 1500
+#if defined(_MSC_VER) && _MSC_VER < 1900
 #define snprintf _snprintf
+#endif
+#if defined(_MSC_VER) && _MSC_VER < 1500
 #define vsnprintf _vsnprintf
 #endif
 
