@@ -4,6 +4,10 @@ project(HARP)
 
 set(VERSION 0.2)
 set(HARP_VERSION \"${VERSION}\")
+set(CPACK_PACKAGE_VERSION_MAJOR 0)
+set(CPACK_PACKAGE_VERSION_MINOR 2)
+#set(CPACK_PACKAGE_VERSION_PATCH 0)
+set(CPACK_PACKAGE_VERSION ${VERSION})
 
 # Set dynamic library version
 set(LIBHARP_CURRENT 1)
@@ -153,7 +157,6 @@ set(uint16_t "unsigned short")
 set(uint32_t "unsigned int")
 set(uint64_t "unsigned __int64")
 endif(MSVC AND MSVC_VERSION LESS 1600 AND NOT MINGW)
-
 
 include_directories(BEFORE ${HARP_BINARY_DIR} ${HARP_SOURCE_DIR}/libharp)
 
@@ -380,8 +383,10 @@ set_target_properties(harp PROPERTIES
 if(WIN32)
   # Also set DLL compile flags
   set_target_properties(harp PROPERTIES COMPILE_FLAGS "-DLIBHARPDLL -DLIBHARPDLL_EXPORTS -DH5_BUILT_AS_DYNAMIC_LIB -DLIBCODADLL")
+  install(TARGETS harp RUNTIME DESTINATION bin ARCHIVE DESTINATION libs)
+else(WIN32)
+  install(TARGETS harp DESTINATION lib)
 endif(WIN32)
-install(TARGETS harp DESTINATION lib)
 
 add_library(harp_static STATIC ${LIBHARP_SOURCES} ${LIBUDUNITS2_SOURCES} ${LIBNETCDF_SOURCES})
 
@@ -389,10 +394,11 @@ add_library(harp_static STATIC ${LIBHARP_SOURCES} ${LIBUDUNITS2_SOURCES} ${LIBNE
 # On Unix, we want libharp.a and libharp.so
 if(WIN32)
   set_target_properties(harp_static PROPERTIES OUTPUT_NAME "libharp")
+  install(TARGETS harp_static DESTINATION libs)
 else(WIN32)
   set_target_properties(harp_static PROPERTIES OUTPUT_NAME "harp")
+  install(TARGETS harp_static DESTINATION lib)
 endif(WIN32)
-install(TARGETS harp_static DESTINATION lib)
 
 #  harpcheck
 add_executable(harpcheck tools/harpcheck/harpcheck.c)
@@ -515,3 +521,19 @@ install(FILES
   ${CMAKE_CURRENT_SOURCE_DIR}/udunits2/udunits2-prefixes.xml
   ${CMAKE_CURRENT_SOURCE_DIR}/udunits2/udunits2.xml
   DESTINATION ${UDUNITS2_XML_DIR_RELATIVE})
+
+# installer
+set(CPACK_PACKAGE_VENDOR "S&T")
+if(WIN32)
+install(FILES ${CODA_DLLS} ${HDF4_DLLS} ${HDF5_DLLS} DESTINATION bin)
+set(CPACK_GENERATOR "WIX")
+configure_file(COPYING copying.txt COPYONLY)
+set(CPACK_RESOURCE_FILE_LICENSE copying.txt)
+configure_file(README readme.txt COPYONLY)
+set(CPACK_RESOURCE_FILE_README readme.txt)
+set(CPACK_PACKAGE_INSTALL_DIRECTORY "HARP")
+set(CPACK_WIX_UPGRADE_GUID "9CF2DA32-201D-4557-BC59-B655216EAD6D")
+set(CPACK_WIX_PRODUCT_GUID "FA7592A4-D91C-4401-863D-CE52DA95EB11")
+endif(WIN32)
+
+include(CPack)
