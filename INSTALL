@@ -14,23 +14,24 @@ Supported platforms
 HARP is designed to run on most Unix-based operating systems (including Linux
 and Mac OS X) and Windows. The platforms that are supported include at least
 Linux, Windows, and Mac OS X.
-The current version of HARP does not support Windows yet, but this will be
-added in a later release.
 
 What you will need
 ------------------
 
   - The HARP package : The package only comes in a source installation
-    (harp-x.y.z.tar.gz) or a binary installation (Windows only; not yet
-    available). Note that x.y.z stands for the version number of the package.
+    (harp-x.y.z.tar.gz) or a binary installation (harp-x.y.z-Winxx.msi (Windows
+    only)). Note that x.y.z stands for the version number of the package.
     The source package contains the source code for the HARP components (C
     Library and command line tools) together with all documentation.
     You will need this package if you want to use HARP on a Unix-based system.
+    For Windows you will only need this package if you want to have access to
+    the HARP source (if, for instance, you want to extend/improve HARP).
+    The binary package, which is only available for Windows, contains pre-built
+    versions of everything from the source distribution (without the sources)
+    and all documentation.
+    If you do not have the HARP package, you can download it from GitHub:
 
-    If you do not have the HARP package, you can download it from the BEAT
-    website:
-
-        http://stcorp.nl/beat
+        https://github.com/stcorp/harp/releases/latest
 
   The following items are needed if you use the HARP source distribution:
 
@@ -40,7 +41,7 @@ What you will need
 
   - A recent version of CODA. You will need a version of CODA that is compiled
     using the same HDF4 and HDF5 libraries as you will use for building HARP.
-    CODA can be downloaded from https://github.com/stcorp/coda
+    CODA can be downloaded from https://github.com/stcorp/coda/releases/latest
 
   - A recent version of HDF4. You will also need the additional libraries
     libjpeg, zlib, and szlib depending on whether HDF4 was build against them.
@@ -57,14 +58,45 @@ What you will need
   - A recent version of HDF5. You will also need the additional libraries
     zlib, and szlib depending on whether HDF5 was build against them.
 
+  - If you plan on using the Python interface you need Python version 2.7 or
+    higher, the Python 'numpy' package (version 1.4 or higher), and the 'cffi'
+    package (version 1.5.2 or higher)
+
+
+Using GitHub
+------------
+
+HARP is also available as source code directly from GitHub, but this is only
+recommended to be used by users who want to co-develop HARP and it will only
+work on Unix-based systems.
+You will need to have additional software installed and need to peform
+additional steps if you want to build HARP from the GitHub git respository.
+
+Additional software that you will need:
+  - autoconf + automake + libtool
+  - flex + bison
+
+After you clone and checkout the HARP git repository first run the bootstrap
+script in the root of the source directory. After that you can follow the
+steps as usual for building the source package.
+
+Note that the CMake build scripts that come with HARP can also be used to
+build HARP, but they do not allow regeneration of automatically generated
+files (such as the documentation), so they are not recommended for performing
+co-development of HARP.
 
 Building the source package (Unix)
 ----------------------------------
 
+To build the source package, make sure to download the official HARP source
+package, which is named harp-x.y.z.tar.gz. Don't use the packages called
+'Source code' from GitHub as these are contents of the git respository (see
+'Using GitHub' above).
+
 The HARP source package comes with both an autotools and a CMake build system.
 For Unix-based systems the recommended approach is to use the autotools based
 system (using the configure script), which is what is described below.
-Building with CMake is nevertheless supported, although not documented here.
+Building with CMake is also supported, but not documented here.
 
 The following steps will guide you through the process of building the HARP
 library and executables:
@@ -167,17 +199,49 @@ library and executables:
     HARP and if you need help contact us (see the Feedback section at the
     bottom for contact information).
 
-Installing the source package (Unix)
-------------------------------------
-
-In order to make use of the HARP library and tools, you should install HARP as
-build in the previous step. Please make sure you have provided the appropriate
-installation directory option (``--prefix=<installdir>``) to the configure
-script, as explained in the previous section, if you do not want to install
-HARP in its default location ``/usr/local``. After running the configure
-script, issue the following command::
+ 5) In order to make use of the HARP library and tools, you should install
+    HARP as build in the previous step. Please make sure you have provided
+    the appropriate installation directory option (``--prefix=<installdir>``)
+    to the configure script, as explained in the previous section, if you do
+    not want to install HARP in its default location ``/usr/local``. After
+    running the configure script, issue the following command::
 
     % make install
+
+Installing the binary package (Windows)
+---------------------------------------
+
+To install the binary package of HARP for Windows just run the executable
+which will guide you through the installation process. Make sure to install
+HARP in a directory that does not have any spaces in its path. Otherwise
+you might encounter problems with e.g. the Python interface.
+
+For Python make sure that the 'bin' directory of your HARP installation is in
+your PATH setting. And then make sure to add the Lib/site-packages directory
+to your PYTHONPATH (or copy the harp python package that is inside it to a
+location that is already in your Python module path).
+
+Note: The binary installer for Windows comes with DLLs for all dependencies,
+which are CODA, HDF4, HDF5, and their dependencies.
+
+Building the source package (Windows)
+-------------------------------------
+
+To build the source package, make sure to download the official HARP source
+package, which is named harp-x.y.z.tar.gz. Don't use the packages called
+'Source code' from GitHub as these are contents of the git respository (see
+'Using GitHub' above).
+
+The official and only supported build system on Windows is CMake.
+You will need to have builds of CODA, HDF4, HDF5 (and their dependencies)
+available as well in order to build HARP. The locations of include files
+and libraries for the third-party dependencies can be set using
+<package>_INCLUDE_DIR and <package>_LIBRARY_DIR CMake options.
+
+The generation of the Windows binary installer is done using the CPack
+and WIX. So, in order to recreate the Windows binary installer, you will
+also have to make sure that you have CMake (3.0 or later) and WIX
+installed.
 
 Documentation location
 ----------------------

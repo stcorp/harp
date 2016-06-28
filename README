@@ -53,7 +53,6 @@ Restrictions
 
 Note that this version of HARP is not yet feature complete.
 The following items are planned to be added in the coming year:
- - Windows build support + binary packages for Windows 32bit/64bit
  - ingestion of product data for:
    - NPP Suomi (CrIS/ATMS/OMPS/VIIRS) L2
    - Cloud CCI
@@ -99,10 +98,9 @@ status on GitHub can be viewed at:
 Download
 ========
 
-The HARP software is distributed as part of the ESA Atmospheric Toolbox and
-can be downloaded from the BEAT website:
+The HARP software can be downloaded from GitHub:
 
-    http://stcorp.nl/beat
+    https://github.com/stcorp/harp/releases/latest
 
 
 If you encounter any issues with the toolkit or if you would like to see
