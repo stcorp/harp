@@ -1029,7 +1029,7 @@ static void write_pair(FILE *file, const harp_collocation_result *collocation_re
     {
         if (collocation_result->difference_available[k])
         {
-            fprintf(file, ",%.8e", collocation_result->pair[i]->difference[k]);
+            fprintf(file, ",%.8g", collocation_result->pair[i]->difference[k]);
         }
     }
     fprintf(file, "\n");
