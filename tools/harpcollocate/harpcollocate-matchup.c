@@ -1545,6 +1545,7 @@ static int dataset_add_start_stop_datetime(Dataset *dataset)
     {
         /* This function will not perform any unit conversion on the datetime start/stop values, but take the values as
          * is in the product.
+         * This means we have to convert from 'days since 2000-01-01' to HARP_UNIT_DATETIME
          */
         if (harp_import_global_attributes(dataset->filename[i], &datetime_start, &datetime_stop, NULL) != 0)
         {
@@ -1561,6 +1562,14 @@ static int dataset_add_start_stop_datetime(Dataset *dataset)
 
         dataset->datetime_start[i] = datetime_start;
         dataset->datetime_stop[i] = datetime_stop;
+    }
+    if (harp_convert_unit("days since 2000-01-01", HARP_UNIT_DATETIME, dataset->num_files,dataset->datetime_start) != 0)
+    {
+        return -1;
+    }
+    if (harp_convert_unit("days since 2000-01-01", HARP_UNIT_DATETIME, dataset->num_files,dataset->datetime_stop) != 0)
+    {
+        return -1;
     }
 
     return 0;
