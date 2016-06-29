@@ -498,9 +498,9 @@ LIBHARP_API int harp_import(const char *filename, harp_product **product)
  * \param  datetime_start Optional pointer to the variable where the start time of the product should be stored (use
  *   NULL if you are not interested in this value).
  * \param  datetime_stop  Optional pointer to the variable where the stop time of the porduct should be stored (use NULL
- *   if you are not interested in this value).
+ *   if you are not interested in this value). This value represents a time value as 'days since 2000-01-01'.
  * \param  source_product Optional pointer to the variable where the name of the source product should be stored (use
- *   NULL if you are not interested in this value).
+ *   NULL if you are not interested in this value). This value represents a time value as 'days since 2000-01-01'.
  * \return
  *   \arg \c 0, Succes.
  *   \arg \c -1, Error occurred (check #harp_errno).
