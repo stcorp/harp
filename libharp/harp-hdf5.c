@@ -139,8 +139,7 @@ static int dimensions_find(const hdf5_dimensions *dimensions, harp_dimension_typ
 }
 
 /* Returns the index of the new dimension scale on success, -1 otherwise. */
-static int dimensions_add(hdf5_dimensions *dimensions, harp_dimension_type type, long length,
-                                hid_t dataset_id)
+static int dimensions_add(hdf5_dimensions *dimensions, harp_dimension_type type, long length, hid_t dataset_id)
 {
     int index;
 
@@ -164,8 +163,7 @@ static int dimensions_add(hdf5_dimensions *dimensions, harp_dimension_type type,
         harp_dimension_type *new_type;
         hid_t *new_dataset_id;
 
-        new_length = realloc(dimensions->length,
-                             (dimensions->num_dimensions + BLOCK_SIZE) * sizeof(long));
+        new_length = realloc(dimensions->length, (dimensions->num_dimensions + BLOCK_SIZE) * sizeof(long));
         if (new_length == NULL)
         {
             harp_set_error(HARP_ERROR_OUT_OF_MEMORY, "out of memory (could not allocate %lu bytes) (%s:%u)",
@@ -174,19 +172,16 @@ static int dimensions_add(hdf5_dimensions *dimensions, harp_dimension_type type,
         }
         dimensions->length = new_length;
 
-        new_type = realloc(dimensions->type,
-                           (dimensions->num_dimensions + BLOCK_SIZE) * sizeof(harp_dimension_type));
+        new_type = realloc(dimensions->type, (dimensions->num_dimensions + BLOCK_SIZE) * sizeof(harp_dimension_type));
         if (new_type == NULL)
         {
             harp_set_error(HARP_ERROR_OUT_OF_MEMORY, "out of memory (could not allocate %lu bytes) (%s:%u)",
-                           (dimensions->num_dimensions + BLOCK_SIZE) * sizeof(harp_dimension_type),
-                           __FILE__, __LINE__);
+                           (dimensions->num_dimensions + BLOCK_SIZE) * sizeof(harp_dimension_type), __FILE__, __LINE__);
             return -1;
         }
         dimensions->type = new_type;
 
-        new_dataset_id = realloc(dimensions->dataset_id,
-                                 (dimensions->num_dimensions + BLOCK_SIZE) * sizeof(hid_t));
+        new_dataset_id = realloc(dimensions->dataset_id, (dimensions->num_dimensions + BLOCK_SIZE) * sizeof(hid_t));
         if (new_dataset_id == NULL)
         {
             harp_set_error(HARP_ERROR_OUT_OF_MEMORY, "out of memory (could not allocate %lu bytes) (%s:%u)",
@@ -291,7 +286,7 @@ static hid_t get_hdf5_type(harp_data_type data_type)
     }
 }
 
-static int get_link_iteration_index_type(hid_t group_id, H5_index_t *index_type)
+static int get_link_iteration_index_type(hid_t group_id, H5_index_t * index_type)
 {
     hid_t gcpl_id;
     unsigned int crt_order_flags;
@@ -868,7 +863,7 @@ static int read_variable(hid_t dataset_id, const char *name, const hdf5_dimensio
     return 0;
 }
 
-static herr_t hdf5_find_dimensions_func(hid_t group_id, const char *name, const H5L_info_t *info, void *user_data)
+static herr_t hdf5_find_dimensions_func(hid_t group_id, const char *name, const H5L_info_t * info, void *user_data)
 {
     H5O_info_t object_info;
     hdf5_dimension_ids *dimension_ids;
@@ -909,8 +904,7 @@ static herr_t hdf5_find_dimensions_func(hid_t group_id, const char *name, const 
 
     if (is_dimension_scale
         && harp_parse_dimension_type(name, &dimension_type) == 0
-        && dimension_type != harp_dimension_independent
-        && !dimension_ids->is_valid[dimension_type])
+        && dimension_type != harp_dimension_independent && !dimension_ids->is_valid[dimension_type])
     {
         dimension_ids->is_valid[dimension_type] = 1;
         dimension_ids->object_id[dimension_type].fileno = object_info.fileno;
@@ -946,7 +940,7 @@ typedef struct hdf5_read_variable_func_args_struct
     harp_product *product;
 } hdf5_read_variable_func_args;
 
-static herr_t hdf5_read_variable_func(hid_t group_id, const char *name, const H5L_info_t *info, void *user_data)
+static herr_t hdf5_read_variable_func(hid_t group_id, const char *name, const H5L_info_t * info, void *user_data)
 {
     hdf5_read_variable_func_args *args;
     H5O_info_t object_info;
@@ -1067,7 +1061,7 @@ static int read_attributes(hid_t group_id, harp_product *product)
 
 static int read_product(hid_t file_id, harp_product *product)
 {
-    hdf5_dimension_ids dimension_ids = { { 0 }, { { 0, 0 } } };
+    hdf5_dimension_ids dimension_ids = { {0}, {{0, 0}} };
     hid_t root_id;
 
     root_id = H5Gopen(file_id, "/");

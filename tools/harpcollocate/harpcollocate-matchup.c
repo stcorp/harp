@@ -1563,11 +1563,12 @@ static int dataset_add_start_stop_datetime(Dataset *dataset)
         dataset->datetime_start[i] = datetime_start;
         dataset->datetime_stop[i] = datetime_stop;
     }
-    if (harp_convert_unit("days since 2000-01-01", HARP_UNIT_DATETIME, dataset->num_files,dataset->datetime_start) != 0)
+    if (harp_convert_unit("days since 2000-01-01", HARP_UNIT_DATETIME, dataset->num_files, dataset->datetime_start) !=
+        0)
     {
         return -1;
     }
-    if (harp_convert_unit("days since 2000-01-01", HARP_UNIT_DATETIME, dataset->num_files,dataset->datetime_stop) != 0)
+    if (harp_convert_unit("days since 2000-01-01", HARP_UNIT_DATETIME, dataset->num_files, dataset->datetime_stop) != 0)
     {
         return -1;
     }
