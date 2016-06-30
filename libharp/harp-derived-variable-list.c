@@ -1667,6 +1667,10 @@ static int add_species_conversions(const char *species)
     {
         return -1;
     }
+    if (add_uncertainty_conversions(name_column_nd, HARP_UNIT_COLUMN_NUMBER_DENSITY) != 0)
+    {
+        return -1;
+    }
 
     if (harp_variable_conversion_new(name_column_nd, harp_type_double, HARP_UNIT_COLUMN_NUMBER_DENSITY, 2,
                                      dimension_type, 0, get_partial_column_from_density_and_alt_bounds, &conversion) !=
