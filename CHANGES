@@ -10,7 +10,8 @@
   Renamed HARP_ERROR_SCRIPT and HARP_ERROR_SCRIPT_SYNTAX error codes to
   HARP_ERROR_ACTION and HARP_ERROR_ACTION_SYNTAX. Changed HARP_ERROR_PRODUCT
   to either HARP_ERROR_INGESTION or HARP_ERROR_IMPORT depending on context.
-  Added HARP_ERROR_INVALID_PRODUCT and HARP_ERROR_INVALID_VARIABLE.
+  Added HARP_ERROR_EXPORT, HARP_ERROR_INVALID_PRODUCT and
+  HARP_ERROR_INVALID_VARIABLE.
 
 * The HARP command line tools now link against the dynamic HARP library
   instead of the static version.
@@ -71,6 +72,10 @@
 
 * Added derived variable conversion from 'latitude {latitude}' (mid-points) to
   'latitude_bounds {latitude, independent}' (bounds); similar for longitude.
+
+* Updated HDF5 data format such that HDF5 products written by HARP are
+  compatible with netCDF-4. HDF5 dimension scales are used to represent shared
+  dimensions. The "dims" dataset attribute has been deprecated.
 
 * Changed netCDF-3/HDF4/HDF5 backends to be more explicit about implicitly
   created dimensions (which are used to store scalars and strings for formats
