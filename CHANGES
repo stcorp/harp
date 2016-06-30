@@ -1,3 +1,6 @@
+0.2 2016-06-30
+~~~~~~~~~~~~~~
+
 * Added Python interface.
 
 * CODA is no longer included as part of HARP, but is treated as a separate
