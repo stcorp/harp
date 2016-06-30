@@ -51,13 +51,14 @@ What you will need
     the following options when configuring the package::
 
        ./configure --enable-shared --disable-fortran --disable-netcdf
-       
+
     Make sure that after installation the location of the libraries is in your
     shared library path (e.g. update your ``LD_LIBRARY_PATH`` environment
     variable).
 
-  - A recent version of HDF5. You will also need the additional libraries
-    zlib, and szlib depending on whether HDF5 was build against them.
+  - A recent version of HDF5 (version 1.8.0 or higher). You will also need the
+    additional libraries zlib, and szlib depending on whether HDF5 was build
+    against them.
 
   - If you plan on using the Python interface you need Python version 2.7 or
     higher, the Python 'numpy' package (version 1.4 or higher), and the 'cffi'
@@ -129,7 +130,7 @@ library and executables:
         have administrator privileges, which you may not have. In order to
         install HARP in a different location where you do have permission to
         copy files to, you can use this option to provide a different
-        installation directory. For instance, you can use 
+        installation directory. For instance, you can use
         ``--prefix=$HOME/harp`` to install the software in the subdirectory
         ``harp`` of your home directory.
 
@@ -150,13 +151,13 @@ library and executables:
         include file.
 
     ``HDF4_LIB=<HDF4 library directory>`` :
-        The configure script will automatically try to locate the HDF4 
+        The configure script will automatically try to locate the HDF4
         libraries in the default locations for libraries (``/usr/local/lib``
         is usually not considered a default location!).
         If ``./configure`` complains that it can't find the ``df`` or
         ``mfhdf`` library files, pass this option to ``./configure`` with the
         location of these library files.
-    
+
     ``HDF4_INCLUDE=<HDF4 include file directory>`` :
         The configure script will automatically try to locate the HDF4 include
         files in the default locations for include files
@@ -173,7 +174,7 @@ library and executables:
         If ``./configure`` complains that it can't find the ``hdf5`` library
         files, pass this option to ``./configure`` with the location of this
         library file.
-    
+
     ``HDF5_INCLUDE=<HDF5 include file directory>`` :
         The configure script will automatically try to locate the HDF5 include
         files in the default locations for include files
@@ -250,7 +251,7 @@ Documentation location
 Both the source and binary HARP packages come with documentation in HTML.
 For the source package you can access the documentation from within the
 unpacked HARP source package directory by going to the ``doc/html``
-subdirectory and opening the file index.html in your browser. If you perform 
+subdirectory and opening the file index.html in your browser. If you perform
 an install of the source package all documentation will also be installed. You
 can find the documentation under the subdirectory ``share/harp/doc/html`` of
 your installation directory (``/usr/local`` by default).
@@ -262,7 +263,7 @@ If you encounter any problems while trying to build, install or run one or more
 components of the HARP package you can send an e-mail to:
 
     harp@stcorp.nl
-    
+
 If you are using the source package on a Unix based system, please provide a
 copy of the config.log file that is created when you run ``./configure`` and a
 copy of the output of ``make`` with your e-mail.

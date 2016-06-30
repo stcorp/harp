@@ -47,6 +47,9 @@
 /* Define to 1 if you have the <hdf5.h> header file. */
 #cmakedefine HAVE_HDF5_H ${HAVE_HDF5_H}
 
+/* Define to 1 if you have the <hdf5_hl.h> header file. */
+#cmakedefine HAVE_HDF5_HL_H ${HAVE_HDF5_HL_H}
+
 /* Define to 1 if you have the <hdf.h> header file. */
 #cmakedefine HAVE_HDF_H ${HAVE_HDF_H}
 

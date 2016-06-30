@@ -355,11 +355,12 @@ double         NC_DOUBLE
 string         NC_CHAR
 ============== ==================
 
-The netCDF-3 data model defines the concept of a dimension. A netCDF-3 dimension has a name and a length. The name of a
-dimension should be unique. The shape of a netCDF-3 variable is specified as a list of dimensions (instead of a list of
-dimension *lengths*). This implies that to store a HARP product in netCDF-3 format, a netCDF-3 dimension should be
-defined for each dimension present in the product. This is straight-forward for all dimension types supported by HARP,
-except for independent dimensions (since HARP does not require that all independent dimensions have the same length).
+The netCDF-3 data model defines the concept of shared dimensions. A netCDF-3 dimension has a name and a length. The name
+of a dimension should be unique. The shape of a netCDF-3 variable is specified as a list of dimensions (instead of a
+list of dimension *lengths*). This implies that to store a HARP product in netCDF-3 format, a netCDF-3 dimension should
+be defined for each dimension present in the product. This is straight-forward for all dimension types supported by
+HARP, except for independent dimensions (since HARP does not require that all independent dimensions have the same
+length).
 
 For example, a variable may have an independent dimension of length 2, while another variable may have an independent
 dimension of length 4. However, it is not possible to create two netCDF-3 dimensions called 'independent' with different
@@ -412,7 +413,7 @@ double         DFNT_FLOAT64
 string         DFNT_CHAR
 ============== ==============
 
-The HDF4 data model does not define the concept of a dimension (unlike netCDF-3). The shape of an HDF4 dataset is
+In the HDF4 data model there is no concept of shared dimensions (unlike netCDF). The shape of an HDF4 dataset is
 specified as a list of dimensions lengths.
 
 When a HARP variable is stored as an HDF4 dataset, dimension lengths are preserved, but dimension types are lost. A
@@ -485,13 +486,48 @@ H5T_STRING                                                         string
 
 HDF5 data types not covered in this table are not supported by HARP.
 
-The HDF5 data model does not define the concept of a dimension (unlike netCDF-3). The shape of an HDF5 dataset is
-specified as a list of dimensions lengths.
+In the HDF5 data model there is no concept of shared dimensions (unlike netCDF). The shape of an HDF5 dataset is
+specified as a list of dimensions lengths. However, the netCDF-4 library uses HDF5 as its storage backend. It represents
+shared dimensions using HDF5 *dimension scales*.
 
-When a HARP variable is stored as an HDF5 dataset, dimension lengths are preserved, but dimension types are lost. A
-dataset attribute named 'dims' is used to store the type of each dimension of the associated dataset as a comma-
-separated list of dimension type names. The number of dimension types equals the number of dimensions of the HARP
-variable.
+Dimension scales were introduced in HDF5 version 1.8.0. A dimension scale is a special dataset that can be attached to
+one or more dimensions of other datasets. Multiple dimension scales can be attached to a single dimension, and the
+length of the dimension scale does not have to be the same as the length of the dimension it is attached to. There are
+no limitations on the shape or dimensionality of a dimension scale, since it is just a dataset with particular
+attributes attached.
+
+To represent shared dimensions, netCDF-4 creates dimension scales for each shared dimension and attaches these dimension
+scales to the corresponding dimensions of all variables. If a product contains a variable with the same name as a shared
+dimension, the dataset containing the values of the variable will be used as the dimension scale. Such a variable is
+called a *coordinate variable* in netCDF-4. Note that in a HARP product, due to the variable naming convention, only
+variables called ``latitude`` or ``longitude`` could possibly be coordinate variables. For shared dimensions for which a
+variable with the same name does not exist, a stub dataset containing fill values is created and used as the dimension
+scale. The optional ``NAME`` attribute of the dimension scale is set to ``This is a netCDF dimension but not a netCDF
+variable.``, which causes the netCDF-4 library to hide the stub dataset from the user. For more information about the
+netCDF-4 format, see the `NetCDF User's Guide`_.
+
+.. _`NetCDF User's Guide`: http://www.unidata.ucar.edu/software/netcdf/docs/file_format_specifications.html#netcdf_4_spec
+
+The HDF5 file format conventions used by HARP are designed to be compatible with netCDF-4. Like netCDF-4, HARP uses
+dimension scales to represent shared dimensions. For independent dimensions, the same approach is used as for the
+netCDF-3 backend. For each unique dimension length ``L``, a dimension scale named ``independent_L`` is created.
+
+To summarize, HARP dimensions types are mapped to HDF5 dimension scales as follows:
+
+=================== =====================
+HARP dimension type HDF5 dimension scale
+=================== =====================
+time                time
+latitude            latitude
+longitude           longitude
+vertical            vertical
+spectral            spectral
+independent         independent\_<length>
+=================== =====================
+
+The ``_nc3_strict`` attribute is attached to the root group of the HDF5 file such that it will be interpreted using the
+netCDF classic data model by the netCDF-4 library. Enhanced features of netCDF-4 beyond the classic data model, such as
+groups and user-defined types, are not supported by HARP.
 
 HDF5 can represent strings in several ways. Both fixed and variable length strings are supported. The HDF5 backend
 stores a HARP variable of type string as an HDF5 dataset of fixed length strings. The fixed string length equals the

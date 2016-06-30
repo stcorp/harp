@@ -127,6 +127,10 @@ static char harp_error_message_buffer[MAX_ERROR_INFO_LENGTH + 1];
  * An error occured during product import.
  */
 
+/** \def HARP_ERROR_EXPORT
+ * An error occured during product export.
+ */
+
 /** \def HARP_ERROR_INGESTION
  * There was an error in the ingestion of a data product.
  */
@@ -324,6 +328,8 @@ LIBHARP_API const char *harp_errno_to_string(int err)
 
             case HARP_ERROR_IMPORT:
                 return "import error";
+            case HARP_ERROR_EXPORT:
+                return "export error";
 
             case HARP_ERROR_INGESTION:
                 return "ingestion error";

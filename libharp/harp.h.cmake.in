@@ -139,6 +139,7 @@ LIBHARP_API extern int harp_errno;
 #define HARP_ERROR_ACTION_SYNTAX                            (-501)
 
 #define HARP_ERROR_IMPORT                                   (-600)
+#define HARP_ERROR_EXPORT                                   (-601)
 
 #define HARP_ERROR_INGESTION                                (-700)
 #define HARP_ERROR_INGESTION_OPTION_SYNTAX                  (-701)
