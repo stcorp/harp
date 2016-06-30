@@ -36,7 +36,6 @@ HARP_DOCFILES = \
 	doc/html/_static/up.png \
 	doc/html/_static/websupport.js \
 	doc/html/dataformats.html \
-	doc/html/examples.html \
 	doc/html/genindex.html \
 	doc/html/harpcheck.html \
 	doc/html/harpcollocate.html \
@@ -390,8 +389,6 @@ doc/html/_static/up.png:
 doc/html/_static/websupport.js:
 	$(MAKE) harp_doc
 doc/html/dataformats.html:
-	$(MAKE) harp_doc
-doc/html/examples.html:
 	$(MAKE) harp_doc
 doc/html/genindex.html:
 	$(MAKE) harp_doc
