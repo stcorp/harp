@@ -21,6 +21,8 @@ in line with config.h.in and harp.h.in.
 
 Make sure that python/_harpc.py gets updated with any change to harp.h.in.
 This should happen automatically using the Makefile dependencies.
+But, make sure to do this by performing an in-source build of HARP such that
+the _harpc.py file in the python subdirectory of the source tree gets replaced.
 Current version of cffi for generating the python interface is:
 - cffi 1.5.2
 
