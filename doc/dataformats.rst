@@ -414,7 +414,7 @@ string         DFNT_CHAR
 ============== ==============
 
 In the HDF4 data model there is no concept of shared dimensions (unlike netCDF). The shape of an HDF4 dataset is
-specified as a list of dimensions lengths.
+specified as a list of dimension lengths.
 
 When a HARP variable is stored as an HDF4 dataset, dimension lengths are preserved, but dimension types are lost. A
 dataset attribute named 'dims' is used to store the type of each dimension of the associated dataset as a comma-
@@ -487,7 +487,7 @@ H5T_STRING                                                         string
 HDF5 data types not covered in this table are not supported by HARP.
 
 In the HDF5 data model there is no concept of shared dimensions (unlike netCDF). The shape of an HDF5 dataset is
-specified as a list of dimensions lengths. However, the netCDF-4 library uses HDF5 as its storage backend. It represents
+specified as a list of dimension lengths. However, the netCDF-4 library uses HDF5 as its storage backend. It represents
 shared dimensions using HDF5 *dimension scales*.
 
 Dimension scales were introduced in HDF5 version 1.8.0. A dimension scale is a special dataset that can be attached to
