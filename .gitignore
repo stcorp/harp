@@ -21,6 +21,10 @@ stamp-*
 /definitions/*.codadef
 /depcomp
 /doc/Doxyfile
+/doc/ingestions
+/doc/install.rst
+/doc/xml
+/doctrees
 /findtypedef
 /findtypedef.c
 /install-sh
