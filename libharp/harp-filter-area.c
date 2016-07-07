@@ -150,7 +150,7 @@ static long update_mask(int num_predicates, harp_predicate **predicate, long num
     uint8_t *mask_end;
     long num_masked = 0;
 
-    for (mask_end = mask + num_areas; mask != mask_end; ++mask)
+    for (mask_end = mask + num_areas; mask != mask_end; mask++)
     {
         if (*mask)
         {
@@ -178,7 +178,7 @@ static long update_mask(int num_predicates, harp_predicate **predicate, long num
 
             if (*mask)
             {
-                ++num_masked;
+                num_masked++;
             }
         }
 

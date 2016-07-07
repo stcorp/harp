@@ -796,7 +796,7 @@ static void fill_int8(long num_elements, int8_t *data, int8_t value)
     while (data != last)
     {
         *data = value;
-        ++data;
+        data++;
     }
 }
 
@@ -808,7 +808,7 @@ static void fill_int16(long num_elements, int16_t *data, int16_t value)
     while (data != last)
     {
         *data = value;
-        ++data;
+        data++;
     }
 }
 
@@ -820,7 +820,7 @@ static void fill_int32(long num_elements, int32_t *data, int32_t value)
     while (data != last)
     {
         *data = value;
-        ++data;
+        data++;
     }
 }
 
@@ -832,7 +832,7 @@ static void fill_float(long num_elements, float *data, float value)
     while (data != last)
     {
         *data = value;
-        ++data;
+        data++;
     }
 }
 
@@ -844,7 +844,7 @@ static void fill_double(long num_elements, double *data, double value)
     while (data != last)
     {
         *data = value;
-        ++data;
+        data++;
     }
 }
 
@@ -860,8 +860,7 @@ static void null_string(long num_elements, char **data)
             free(*data);
             *data = NULL;
         }
-
-        ++data;
+        data++;
     }
 }
 

@@ -529,7 +529,7 @@ static void fnputc(long n, char c, FILE *stream)
     while (n > 0)
     {
         fputc(c, stream);
-        --n;
+        n--;
     }
 }
 

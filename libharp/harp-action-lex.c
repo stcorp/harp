@@ -30,7 +30,7 @@ static char *skip_white_space(char *str)
 {
     while (*str != '\0' && isspace(*str))
     {
-        ++str;
+        str++;
     }
 
     return str;

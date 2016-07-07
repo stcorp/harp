@@ -145,7 +145,7 @@ static int is_blank_line(const char *str)
 {
     while (*str != '\0' && isspace(*str))
     {
-        ++str;
+        str++;
     }
 
     return (*str == '\0');
@@ -169,7 +169,7 @@ static int parse_polygon(const char *str, harp_spherical_polygon **new_polygon)
 
         while (*str != '\0' && isspace(*str))
         {
-            ++str;
+            str++;
         }
 
         if (*str == '\0')
@@ -180,7 +180,7 @@ static int parse_polygon(const char *str, harp_spherical_polygon **new_polygon)
         mark = str;
         while (*str != ',' && !isspace(*str) && *str != '\0')
         {
-            ++str;
+            str++;
         }
 
         length = str - mark;
@@ -194,7 +194,7 @@ static int parse_polygon(const char *str, harp_spherical_polygon **new_polygon)
 
         while (*str != '\0' && isspace(*str))
         {
-            ++str;
+            str++;
         }
 
         if (*str != ',')
@@ -204,17 +204,17 @@ static int parse_polygon(const char *str, harp_spherical_polygon **new_polygon)
         }
 
         /* Skip the comma. */
-        ++str;
+        str++;
 
         while (*str != '\0' && isspace(*str))
         {
-            ++str;
+            str++;
         }
 
         mark = str;
         while (*str != ',' && !isspace(*str) && *str != '\0')
         {
-            ++str;
+            str++;
         }
 
         length = str - mark;
@@ -229,7 +229,7 @@ static int parse_polygon(const char *str, harp_spherical_polygon **new_polygon)
         /* Skip the comma, if there is one. */
         if (*str == ',')
         {
-            ++str;
+            str++;
         }
 
         harp_spherical_point_rad_from_deg(&point);

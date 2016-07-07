@@ -105,7 +105,7 @@ static void broadcast_array_float(long num_scanlines, long num_pixels, float *da
         float *pixel_end = pixel + num_pixels;
         const float scanline_value = data[i];
 
-        for (; pixel != pixel_end; ++pixel)
+        for (; pixel != pixel_end; pixel++)
         {
             *pixel = scanline_value;
         }
@@ -125,7 +125,7 @@ static void broadcast_array_double(long num_scanlines, long num_pixels, double *
         double *pixel_end = pixel + num_pixels;
         const double scanline_value = data[i];
 
-        for (; pixel != pixel_end; ++pixel)
+        for (; pixel != pixel_end; pixel++)
         {
             *pixel = scanline_value;
         }

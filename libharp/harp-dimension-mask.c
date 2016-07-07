@@ -229,11 +229,11 @@ static long count(long num_elements, const uint8_t *mask)
     long count;
 
     count = 0;
-    for (mask_end = mask + num_elements; mask != mask_end; ++mask)
+    for (mask_end = mask + num_elements; mask != mask_end; mask++)
     {
         if (*mask)
         {
-            ++count;
+            count++;
         }
     }
 
@@ -251,7 +251,7 @@ static long get_masked_dimension_length_2d(long num_rows, long num_cols, const u
     long i;
 
     max_masked_length = 0;
-    for (i = 0; i < num_rows; ++i)
+    for (i = 0; i < num_rows; i++)
     {
         long masked_length;
 
@@ -322,7 +322,7 @@ int harp_dimension_mask_outer_product(const harp_dimension_mask *row_mask, const
         return -1;
     }
 
-    for (i = 0; i < row_mask->num_elements; ++i)
+    for (i = 0; i < row_mask->num_elements; i++)
     {
         if (row_mask->mask[i])
         {
@@ -361,7 +361,7 @@ int harp_dimension_mask_prepend_dimension(harp_dimension_mask *dimension_mask, l
     }
     dimension_mask->mask = mask;
 
-    for (i = 1; i < length; ++i)
+    for (i = 1; i < length; i++)
     {
         memcpy(dimension_mask->mask + i * dimension_mask->num_elements, dimension_mask->mask,
                dimension_mask->num_elements * sizeof(uint8_t));

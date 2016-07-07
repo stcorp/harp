@@ -374,13 +374,13 @@ static long update_mask_1d(int num_predicates, harp_predicate **predicate, long 
     uint8_t *mask_end;
     long num_masked = 0;
 
-    for (mask_end = mask + num_elements; mask != mask_end; ++mask)
+    for (mask_end = mask + num_elements; mask != mask_end; mask++)
     {
         if (*mask)
         {
             int i;
 
-            for (i = 0; i < num_predicates; ++i)
+            for (i = 0; i < num_predicates; i++)
             {
                 if (!predicate[i]->eval(predicate[i]->args, data))
                 {
@@ -391,7 +391,7 @@ static long update_mask_1d(int num_predicates, harp_predicate **predicate, long 
 
             if (i == num_predicates)
             {
-                ++num_masked;
+                num_masked++;
             }
         }
 
@@ -709,7 +709,7 @@ static int predicate_update_mask_2d(ingest_info *info, int num_predicates, harp_
             }
             else
             {
-                ++primary_num_masked;
+                primary_num_masked++;
             }
         }
         else
@@ -889,7 +889,7 @@ static int get_variable(ingest_info *info, const harp_variable_definition *varia
                 read_buffer *buffer;
                 long num_buffer_elements;
 
-                for (i = 0; i < variable->num_dimensions; ++i)
+                for (i = 0; i < variable->num_dimensions; i++)
                 {
                     if (secondary_dimension_mask[i] == NULL)
                     {

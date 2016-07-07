@@ -157,7 +157,7 @@ static char *skip_white_space(char *str)
 {
     while (*str != '\0' && isspace(*str))
     {
-        ++str;
+        str++;
     }
 
     return str;
@@ -183,7 +183,7 @@ static char *skip_value(char *str)
 {
     while (*str != '\0' && *str != ';' && !isspace(*str))
     {
-        ++str;
+        str++;
     }
 
     return str;
@@ -229,7 +229,8 @@ static int split_option(char *str, char **name, char **value, char **tail)
 
     if (*str != '\0')
     {
-        *str++ = '\0';
+        *str = '\0';
+        str++;
     }
 
     *tail = str;
@@ -283,7 +284,8 @@ static int ingestion_options_from_string(char *str, harp_ingestion_options **new
 
         if (*str != '\0')
         {
-            *str++ = '\0';
+            *str = '\0';
+            str++;
         }
 
         if (ingestion_options_set_option_from_string(options, substr) != 0)

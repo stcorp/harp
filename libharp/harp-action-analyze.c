@@ -69,7 +69,7 @@ static function_prototype *get_function_prototype_by_name(const char *name)
 {
     int i;
 
-    for (i = 0; i < NUM_BUILTIN_FUNCTIONS; ++i)
+    for (i = 0; i < NUM_BUILTIN_FUNCTIONS; i++)
     {
         if (strcmp(builtin_function[i].name, name) == 0)
         {
@@ -708,7 +708,7 @@ static int create_action_list(ast_node *node, harp_action_list **new_action_list
         return -1;
     }
 
-    for (i = 0; i < node->num_child_nodes; ++i)
+    for (i = 0; i < node->num_child_nodes; i++)
     {
         harp_action *action;
 

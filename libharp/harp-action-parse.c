@@ -33,7 +33,7 @@ void harp_ast_node_delete(ast_node *node)
         {
             int i;
 
-            for (i = 0; i < node->num_child_nodes; ++i)
+            for (i = 0; i < node->num_child_nodes; i++)
             {
                 if (node->child_node[i] != NULL)
                 {

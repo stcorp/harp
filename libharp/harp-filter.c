@@ -26,7 +26,7 @@
 
 static void free_string_data(char **first, char **last)
 {
-    for (; first != last; ++first)
+    for (; first != last; first++)
     {
         if (*first != NULL)
         {
@@ -43,17 +43,17 @@ static void filter_array_int8(long num_source_elements, const uint8_t *mask, con
     int8_t *target_end;
 
     target_end = target + num_target_elements;
-    for (source_end = source + num_source_elements; source != source_end; ++source, ++mask)
+    for (source_end = source + num_source_elements; source != source_end; source++, mask++)
     {
         if (*mask)
         {
             *target = *source;
-            ++target;
-            --num_target_elements;
+            target++;
+            num_target_elements--;
         }
     }
 
-    for (; target != target_end; ++target)
+    for (; target != target_end; target++)
     {
         *target = 0;
     }
@@ -66,17 +66,17 @@ static void filter_array_int16(long num_source_elements, const uint8_t *mask, co
     int16_t *target_end;
 
     target_end = target + num_target_elements;
-    for (source_end = source + num_source_elements; source != source_end; ++source, ++mask)
+    for (source_end = source + num_source_elements; source != source_end; source++, mask++)
     {
         if (*mask)
         {
             *target = *source;
-            ++target;
-            --num_target_elements;
+            target++;
+            num_target_elements--;
         }
     }
 
-    for (; target != target_end; ++target)
+    for (; target != target_end; target++)
     {
         *target = 0;
     }
@@ -89,17 +89,17 @@ static void filter_array_int32(long num_source_elements, const uint8_t *mask, co
     int32_t *target_end;
 
     target_end = target + num_target_elements;
-    for (source_end = source + num_source_elements; source != source_end; ++source, ++mask)
+    for (source_end = source + num_source_elements; source != source_end; source++, mask++)
     {
         if (*mask)
         {
             *target = *source;
-            ++target;
-            --num_target_elements;
+            target++;
+            num_target_elements--;
         }
     }
 
-    for (; target != target_end; ++target)
+    for (; target != target_end; target++)
     {
         *target = 0;
     }
@@ -112,16 +112,16 @@ static void filter_array_float(long num_source_elements, const uint8_t *mask, co
     float *target_end;
 
     target_end = target + num_target_elements;
-    for (source_end = source + num_source_elements; source != source_end; ++source, ++mask)
+    for (source_end = source + num_source_elements; source != source_end; source++, mask++)
     {
         if (*mask)
         {
             *target = *source;
-            ++target;
+            target++;
         }
     }
 
-    for (; target != target_end; ++target)
+    for (; target != target_end; target++)
     {
         *target = harp_nan();
     }
@@ -134,16 +134,16 @@ static void filter_array_double(long num_source_elements, const uint8_t *mask, c
     double *target_end;
 
     target_end = target + num_target_elements;
-    for (source_end = source + num_source_elements; source != source_end; ++source, ++mask)
+    for (source_end = source + num_source_elements; source != source_end; source++, mask++)
     {
         if (*mask)
         {
             *target = *source;
-            ++target;
+            target++;
         }
     }
 
-    for (; target != target_end; ++target)
+    for (; target != target_end; target++)
     {
         *target = harp_nan();
     }
@@ -156,7 +156,7 @@ static void filter_array_string(long num_source_elements, const uint8_t *mask, c
     char **target_end;
 
     target_end = target + num_target_elements;
-    for (source_end = source + num_source_elements; source != source_end; ++source, ++mask)
+    for (source_end = source + num_source_elements; source != source_end; source++, mask++)
     {
         if (*mask)
         {
@@ -171,8 +171,8 @@ static void filter_array_string(long num_source_elements, const uint8_t *mask, c
                 *source = NULL;
             }
 
-            ++target;
-            --num_target_elements;
+            target++;
+            num_target_elements--;
         }
     }
 

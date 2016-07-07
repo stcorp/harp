@@ -204,7 +204,7 @@ static void transform_array_double(long num_elements, double *data, double missi
 {
     double *data_end;
 
-    for (data_end = data + num_elements; data != data_end; ++data)
+    for (data_end = data + num_elements; data != data_end; data++)
     {
         if (*data == missing_value)
         {
@@ -228,7 +228,7 @@ static void broadcast_array_double(long num_time, long num_xtrack, double *data)
         double *xtrack_end = xtrack + num_xtrack;
         const double value = data[i];
 
-        for (; xtrack != xtrack_end; ++xtrack)
+        for (; xtrack != xtrack_end; xtrack++)
         {
             *xtrack = value;
         }

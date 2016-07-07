@@ -205,7 +205,7 @@ static uint8_t test_membership_in_##TYPE_NAME(void *untyped_args, const void *un
     membership_test_args *args = (membership_test_args *)untyped_args; \
     double value = (double)*((TYPE *)untyped_value); \
     const double *first = args->value, *last = (args->value + args->num_values); \
-    for (; first != last; ++first) \
+    for (; first != last; first++) \
     { \
         if (value == *first) \
         { \
@@ -254,7 +254,7 @@ static uint8_t test_string_membership_in(void *untyped_args, const void *untyped
 
     char **first = args->value, **last = (args->value + args->num_values);
 
-    for (; first != last; ++first)
+    for (; first != last; first++)
     {
         if (strcmp(value, *first) == 0)
         {
@@ -1380,7 +1380,7 @@ static long update_mask_1d(const harp_predicate *predicate, long num_elements, l
     uint8_t *mask_end;
     long num_masked = 0;
 
-    for (mask_end = mask + num_elements; mask != mask_end; ++mask)
+    for (mask_end = mask + num_elements; mask != mask_end; mask++)
     {
         if (*mask)
         {
@@ -1390,7 +1390,7 @@ static long update_mask_1d(const harp_predicate *predicate, long num_elements, l
             }
             else
             {
-                ++num_masked;
+                num_masked++;
             }
         }
 
@@ -1408,7 +1408,7 @@ static void update_mask_2d(const harp_predicate *predicate, long num_primary, lo
     long primary_num_masked = 0;
     long max_secondary_num_masked = 0;
 
-    for (primary_mask_end = primary_mask + num_primary; primary_mask != primary_mask_end; ++primary_mask)
+    for (primary_mask_end = primary_mask + num_primary; primary_mask != primary_mask_end; primary_mask++)
     {
         if (*primary_mask)
         {
@@ -1416,7 +1416,7 @@ static void update_mask_2d(const harp_predicate *predicate, long num_primary, lo
             long secondary_num_masked = 0;
 
             for (secondary_mask_end = secondary_mask + num_secondary; secondary_mask != secondary_mask_end;
-                 ++secondary_mask)
+                 secondary_mask++)
             {
                 if (*secondary_mask)
                 {
@@ -1426,7 +1426,7 @@ static void update_mask_2d(const harp_predicate *predicate, long num_primary, lo
                     }
                     else
                     {
-                        ++secondary_num_masked;
+                        secondary_num_masked++;
                     }
                 }
 
@@ -1444,7 +1444,7 @@ static void update_mask_2d(const harp_predicate *predicate, long num_primary, lo
             }
             else
             {
-                ++primary_num_masked;
+                primary_num_masked++;
             }
         }
         else
@@ -1465,7 +1465,7 @@ static long update_mask_any(const harp_predicate *predicate, long num_primary, l
     uint8_t *mask_end;
     long num_masked = 0;
 
-    for (mask_end = mask + num_primary; mask != mask_end; ++mask)
+    for (mask_end = mask + num_primary; mask != mask_end; mask++)
     {
         if (*mask)
         {
@@ -1487,7 +1487,7 @@ static long update_mask_any(const harp_predicate *predicate, long num_primary, l
             }
             else
             {
-                ++num_masked;
+                num_masked++;
                 data = data_end;
             }
         }
