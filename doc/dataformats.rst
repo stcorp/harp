@@ -205,13 +205,11 @@ The core variables are:
 - cloud_top_albedo
 - cloud_top_height
 - cloud_top_pressure
-- surface_albedo
-- surface_pressure
 - collocation_index
 - datetime
+- datetime_length
 - datetime_start
 - datetime_stop
-- datetime_length
 - flag_am_pm
 - flag_day_twilight_night
 - frequency
@@ -230,8 +228,8 @@ The core variables are:
 - pressure
 - radiance
 - reflectance
-- relative_humidity
 - relative_azimuth_angle
+- relative_humidity
 - scan_direction
 - scan_subset_counter
 - scanline_pixel_index
@@ -241,6 +239,8 @@ The core variables are:
 - solar_elevation_angle
 - solar_irradiance
 - solar_zenith_angle
+- surface_albedo
+- surface_pressure
 - temperature
 - viewing_azimuth_angle
 - viewing_zenith_angle
@@ -268,37 +268,37 @@ with supported species:
 - CH4
 - CHF2Cl
 - ClNO
-- ClONO2
 - ClO
+- ClONO2
+- CO
 - CO2
 - COF2
-- CO
+- H2O
 - H2O_161
 - H2O_162
 - H2O_171
 - H2O_181
 - H2O2
-- H2O
 - HCl
 - HCN
 - HCOOH
 - HF
-- HO2NO2
-- HO2
-- HOCl
 - HNO3
+- HO2
+- HO2NO2
+- HOCl
+- N2
 - N2O
 - N2O5
-- N2
+- NO
 - NO2
 - NO3
-- NO
 - O2
+- O3
 - O3_666
 - O3_667
 - O3_668
 - O3_686
-- O3
 - O4
 - OBrO
 - OClO
@@ -317,8 +317,8 @@ Specific height variants of the above variables:
 
 Specific ancillary variables for the atmospheric variables are:
 
-- <variable>_apriori
 - <variable>_amf
+- <variable>_apriori
 - <variable>_avk
 
 Generic ancillary variables for the above variables are:
@@ -331,11 +331,8 @@ Generic ancillary variables for the above variables are:
 - <variable>_uncertainty_systematic
 - <variable>_validity
 
-Be aware that there are still several topics under discussion that may change the above naming convention:
-- 'cov' may be renamed to 'covariance'
-- split of random vs. systematic for covariance will likely be removed since any non-zero off-diagonal covariance element is by definition a systematic effect
-- (some) covariance aspects may be captured by correlation variables
-- split of random vs. systematic for uncertainty may be captured by a naming convention that captures the actual semantics, which is uncertainty with zero auto-correlation and uncertainty with full auto-correlation
+Be aware that there are still several topics under discussion that may change the above naming convention.
+See the HARP issues list on the GitHub website for more details.
 
 netCDF-3
 ~~~~~~~~

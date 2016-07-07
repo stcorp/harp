@@ -380,13 +380,11 @@ apply to the value of a variable attribute, such as <code class="docutils litera
 <li>cloud_top_albedo</li>
 <li>cloud_top_height</li>
 <li>cloud_top_pressure</li>
-<li>surface_albedo</li>
-<li>surface_pressure</li>
 <li>collocation_index</li>
 <li>datetime</li>
+<li>datetime_length</li>
 <li>datetime_start</li>
 <li>datetime_stop</li>
-<li>datetime_length</li>
 <li>flag_am_pm</li>
 <li>flag_day_twilight_night</li>
 <li>frequency</li>
@@ -405,8 +403,8 @@ apply to the value of a variable attribute, such as <code class="docutils litera
 <li>pressure</li>
 <li>radiance</li>
 <li>reflectance</li>
-<li>relative_humidity</li>
 <li>relative_azimuth_angle</li>
+<li>relative_humidity</li>
 <li>scan_direction</li>
 <li>scan_subset_counter</li>
 <li>scanline_pixel_index</li>
@@ -416,6 +414,8 @@ apply to the value of a variable attribute, such as <code class="docutils litera
 <li>solar_elevation_angle</li>
 <li>solar_irradiance</li>
 <li>solar_zenith_angle</li>
+<li>surface_albedo</li>
+<li>surface_pressure</li>
 <li>temperature</li>
 <li>viewing_azimuth_angle</li>
 <li>viewing_zenith_angle</li>
@@ -443,37 +443,37 @@ apply to the value of a variable attribute, such as <code class="docutils litera
 <li>CH4</li>
 <li>CHF2Cl</li>
 <li>ClNO</li>
-<li>ClONO2</li>
 <li>ClO</li>
+<li>ClONO2</li>
+<li>CO</li>
 <li>CO2</li>
 <li>COF2</li>
-<li>CO</li>
+<li>H2O</li>
 <li>H2O_161</li>
 <li>H2O_162</li>
 <li>H2O_171</li>
 <li>H2O_181</li>
 <li>H2O2</li>
-<li>H2O</li>
 <li>HCl</li>
 <li>HCN</li>
 <li>HCOOH</li>
 <li>HF</li>
-<li>HO2NO2</li>
-<li>HO2</li>
-<li>HOCl</li>
 <li>HNO3</li>
+<li>HO2</li>
+<li>HO2NO2</li>
+<li>HOCl</li>
+<li>N2</li>
 <li>N2O</li>
 <li>N2O5</li>
-<li>N2</li>
+<li>NO</li>
 <li>NO2</li>
 <li>NO3</li>
-<li>NO</li>
 <li>O2</li>
+<li>O3</li>
 <li>O3_666</li>
 <li>O3_667</li>
 <li>O3_668</li>
 <li>O3_686</li>
-<li>O3</li>
 <li>O4</li>
 <li>OBrO</li>
 <li>OClO</li>
@@ -492,8 +492,8 @@ apply to the value of a variable attribute, such as <code class="docutils litera
 </ul>
 <p>Specific ancillary variables for the atmospheric variables are:</p>
 <ul class="simple">
-<li>&lt;variable&gt;_apriori</li>
 <li>&lt;variable&gt;_amf</li>
+<li>&lt;variable&gt;_apriori</li>
 <li>&lt;variable&gt;_avk</li>
 </ul>
 <p>Generic ancillary variables for the above variables are:</p>
@@ -506,11 +506,8 @@ apply to the value of a variable attribute, such as <code class="docutils litera
 <li>&lt;variable&gt;_uncertainty_systematic</li>
 <li>&lt;variable&gt;_validity</li>
 </ul>
-<p>Be aware that there are still several topics under discussion that may change the above naming convention:
-- &#8216;cov&#8217; may be renamed to &#8216;covariance&#8217;
-- split of random vs. systematic for covariance will likely be removed since any non-zero off-diagonal covariance element is by definition a systematic effect
-- (some) covariance aspects may be captured by correlation variables
-- split of random vs. systematic for uncertainty may be captured by a naming convention that captures the actual semantics, which is uncertainty with zero auto-correlation and uncertainty with full auto-correlation</p>
+<p>Be aware that there are still several topics under discussion that may change the above naming convention.
+See the HARP issues list on the GitHub website for more details.</p>
 </div>
 <div class="section" id="netcdf-3">
 <h3>netCDF-3</h3>
