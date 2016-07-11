@@ -21,6 +21,8 @@
 #ifndef HARP_H
 #define HARP_H
 
+#include <stdarg.h>
+
 /** \file */
 
 /* *INDENT-OFF* */
@@ -345,6 +347,13 @@ LIBHARP_API int harp_geometry_has_area_overlap(int num_vertices_a, double *longi
 LIBHARP_API void harp_set_error(int err, const char *message, ...);
 LIBHARP_API void harp_add_error_message(const char *message, ...);
 LIBHARP_API const char *harp_errno_to_string(int err);
+LIBHARP_API int harp_report_warning(const char *message, ...);
+
+/* *CFFI-OFF* */
+LIBHARP_API int harp_get_warning_handler(int (**print) (const char *, va_list ap));
+LIBHARP_API int harp_set_warning_handler(int (*print) (const char *, va_list ap));
+
+/* *CFFI-ON* */
 
 /* Variables */
 LIBHARP_API int harp_variable_new(const char *name, harp_data_type data_type, int num_dimensions,

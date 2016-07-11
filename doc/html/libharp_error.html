@@ -392,6 +392,73 @@
 </p>
 </dd></dl>
 
+<dl class="function">
+<dt id="_CPPv219harp_report_warningPKcz">
+<span id="harp_report_warning__cCP.z"></span><span class="target" id="libharpgroup__harp__error_1gaff834a64542a617684269b9512d957f4"></span>int <code class="descname">harp_report_warning</code><span class="sig-paren">(</span><em class="property">const</em> char *<em>message</em>, ...<span class="sig-paren">)</span></dt>
+<dd><p>Report a warning message The warning message will be passed on to the current warning handler that was set by <a class="reference internal" href="#libharpgroup__harp__error_1ga88c982481989852993829a34cd310b7d"><span class="std std-ref">harp_set_warning_handler()</span></a>. If no warning handler was set, then this function will do nothing (and return the value 0). The convention is for warning messages to start with a non-capital letter and not contain end-of-line characters. This is similar to the error messages that can be set with <a class="reference internal" href="#libharpgroup__harp__error_1ga4c4481ea12d137e0168fa578874cd13c"><span class="std std-ref">harp_set_error()</span></a>. Printing of line endings, if these are needed, should be performed by the warning handler. <dl class="docutils">
+<dt><strong>Return</strong></dt>
+<dd>Return code from the warning handler. </dd>
+<dt><strong>Parameters</strong></dt>
+<dd><ul class="breatheparameterlist first last">
+<li><code class="first docutils literal"><span class="pre">message</span></code> - <p>Warning message using printf() format. </p>
+</li>
+</ul>
+</dd>
+</dl>
+</p>
+</dd></dl>
+
+<dl class="function">
+<dt>
+<span class="target" id="libharpgroup__harp__error_1ga81bc467879f19fd0083ae1c66b2552d0"></span><code class="descname">int harp_get_warning_handler(int(**)(const char *, va_list ap) print)</code></dt>
+<dd><p>Get a reference to the current handler for warning messages If no warning handler was set, the NULL pointer will be returned. <dl class="docutils">
+<dt><strong>Return</strong></dt>
+<dd><ul class="simple">
+<li><code class="docutils literal"><span class="pre">0</span></code>, Succes. </li>
+<li><code class="docutils literal"><span class="pre">-1</span></code>, Error occurred (check <a class="reference internal" href="#libharpgroup__harp__error_1gab2eeb46528306c6799632d1e800c4c36"><span class="std std-ref">harp_errno</span></a>). </li>
+</ul>
+</dd>
+<dt><strong>Parameters</strong></dt>
+<dd><ul class="breatheparameterlist first last">
+<li><code class="first docutils literal"><span class="pre">print</span></code> - <p>Pointer to the variable in which the reference to the vprintf compatible function will be stored </p>
+</li>
+</ul>
+</dd>
+</dl>
+</p>
+</dd></dl>
+
+<dl class="function">
+<dt>
+<span class="target" id="libharpgroup__harp__error_1ga88c982481989852993829a34cd310b7d"></span><code class="descname">int harp_set_warning_handler(int(*print)(const char *, va_list ap))</code></dt>
+<dd><p>Set handler for warning messages The <em>print</em> function parameter should be a function that resembles vprintf(). The most common case is to provide a function that prints a &#8216;WARNING&#8217; prefix, prints the message, and adds a newline. For example:  The handler function will get called whenever <a class="reference internal" href="#libharpgroup__harp__error_1gaff834a64542a617684269b9512d957f4"><span class="std std-ref">harp_report_warning()</span></a> is called (several functions inside the HARP library may call <a class="reference internal" href="#libharpgroup__harp__error_1gaff834a64542a617684269b9512d957f4"><span class="std std-ref">harp_report_warning()</span></a> to report on certain warning conditions). The warning handler can be set before a call to <a class="reference internal" href="libharp_general.html#libharpgroup__harp__general_1gad1f344feb3bea74322283efca649a045"><span class="std std-ref">harp_init()</span></a> is made. <div class="highlight-default"><div class="highlight"><pre><span></span><span class="n">static</span> <span class="nb">int</span> <span class="n">print_warning</span><span class="p">(</span><span class="n">const</span> <span class="n">char</span> <span class="o">*</span><span class="n">message</span><span class="p">,</span> <span class="n">va_list</span> <span class="n">ap</span><span class="p">)</span>
+<span class="p">{</span>
+   <span class="nb">int</span> <span class="n">result</span><span class="p">;</span>
+   <span class="n">printf</span><span class="p">(</span><span class="s2">&quot;WARNING: &quot;</span><span class="p">);</span>
+   <span class="n">result</span> <span class="o">=</span> <span class="n">vprintf</span><span class="p">(</span><span class="n">message</span><span class="p">,</span> <span class="n">ap</span><span class="p">);</span>
+   <span class="n">printf</span><span class="p">(</span><span class="s2">&quot;</span><span class="se">\n</span><span class="s2">&quot;</span><span class="p">);</span>
+   <span class="k">return</span> <span class="n">result</span><span class="p">;</span>
+<span class="p">}</span>
+<span class="n">harp_set_warning_handler</span><span class="p">(</span><span class="n">print_warning</span><span class="p">);</span>
+</pre></div>
+</div>
+<dl class="docutils">
+<dt><strong>Return</strong></dt>
+<dd><ul class="simple">
+<li><code class="docutils literal"><span class="pre">0</span></code>, Succes. </li>
+<li><code class="docutils literal"><span class="pre">-1</span></code>, Error occurred (check <a class="reference internal" href="#libharpgroup__harp__error_1gab2eeb46528306c6799632d1e800c4c36"><span class="std std-ref">harp_errno</span></a>). </li>
+</ul>
+</dd>
+<dt><strong>Parameters</strong></dt>
+<dd><ul class="breatheparameterlist first last">
+<li><code class="first docutils literal"><span class="pre">print</span></code> - <p>Reference to a vprintf compatible function. </p>
+</li>
+</ul>
+</dd>
+</dl>
+</p>
+</dd></dl>
+
 </div>
 <div class="breathe-sectiondef container">
 <p class="breathe-sectiondef-title rubric">Variables</p>

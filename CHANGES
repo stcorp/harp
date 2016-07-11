@@ -1,3 +1,6 @@
+* Added public functions harp_report_warning(), harp_get_warning_handler(),
+  harp_set_warning_handler().
+
 0.2 2016-06-30
 ~~~~~~~~~~~~~~
 

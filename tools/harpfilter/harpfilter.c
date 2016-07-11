@@ -28,6 +28,17 @@
 #include <stdlib.h>
 #include <string.h>
 
+static int print_warning(const char *message, va_list ap)
+{
+    int result;
+
+    printf("WARNING: ");
+    result = vprintf(message, ap);
+    printf("\n");
+
+    return result;
+}
+
 static void print_version()
 {
     printf("harpfilter version %s\n", libharp_version);
@@ -320,6 +331,8 @@ int main(int argc, char *argv[])
         print_help();
         return 1;
     }
+
+    harp_set_warning_handler(print_warning);
 
     if (harp_init() != 0)
     {

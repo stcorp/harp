@@ -27,6 +27,7 @@
 
 #define MAX_ERROR_INFO_LENGTH	4096
 
+static int (*harp_warning_handler) (const char *, va_list ap) = NULL;
 static char harp_error_message_buffer[MAX_ERROR_INFO_LENGTH + 1];
 
 /** \defgroup harp_error HARP Error
@@ -358,5 +359,73 @@ LIBHARP_API const char *harp_errno_to_string(int err)
         }
     }
 }
+
+/** Report a warning message
+ * The warning message will be passed on to the current warning handler that was set by harp_set_warning_handler().
+ * If no warning handler was set, then this function will do nothing (and return the value 0).
+ * The convention is for warning messages to start with a non-capital letter and not contain end-of-line characters.
+ * This is similar to the error messages that can be set with harp_set_error().
+ * Printing of line endings, if these are needed, should be performed by the warning handler.
+ * \param message Warning message using printf() format.
+ * \return Return code from the warning handler.
+ */
+LIBHARP_API int harp_report_warning(const char *message, ...)
+{
+    int result = 0;
+
+    if (harp_warning_handler != NULL)
+    {
+        va_list ap;
+
+        va_start(ap, message);
+        result = harp_warning_handler(message, ap);
+        va_end(ap);
+    }
+
+    return result;
+}
+
+/** Get a reference to the current handler for warning messages
+ * If no warning handler was set, the NULL pointer will be returned.
+ * \param print Pointer to the variable in which the reference to the vprintf compatible function will be stored
+ * \return
+ *   \arg \c  0, Succes.
+ *   \arg \c -1, Error occurred (check #harp_errno).
+ */
+LIBHARP_API int harp_get_warning_handler(int (**print) (const char *, va_list ap))
+{
+    *print = harp_warning_handler;
+    return 0;
+}
+
+/** Set handler for warning messages
+ * The \a print function parameter should be a function that resembles vprintf().
+ * The most common case is to provide a function that prints a 'WARNING' prefix, prints the message, and adds
+ * a newline. For example:
+ * \code{.c}
+ * static int print_warning(const char *message, va_list ap)
+ * {
+ *    int result;
+ *    printf("WARNING: ");
+ *    result = vprintf(message, ap);
+ *    printf("\n");
+ *    return result;
+ * }
+ * harp_set_warning_handler(print_warning);
+ * \endcode
+ * The handler function will get called whenever harp_report_warning() is called (several functions inside the HARP
+ * library may call harp_report_warning() to report on certain warning conditions).
+ * The warning handler can be set before a call to harp_init() is made.
+ * \param print Reference to a vprintf compatible function.
+ * \return
+ *   \arg \c  0, Succes.
+ *   \arg \c -1, Error occurred (check #harp_errno).
+ */
+LIBHARP_API int harp_set_warning_handler(int (*print) (const char *, va_list ap))
+{
+    harp_warning_handler = print;
+    return 0;
+}
+
 
 /** @} */

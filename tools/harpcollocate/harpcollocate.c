@@ -20,6 +20,17 @@
 
 #include "harpcollocate.h"
 
+static int print_warning(const char *message, va_list ap)
+{
+    int result;
+
+    printf("WARNING: ");
+    result = vprintf(message, ap);
+    printf("\n");
+
+    return result;
+}
+
 void print_version(void)
 {
     printf("harpcollocate version %s\n", libharp_version);
@@ -211,6 +222,8 @@ int main(int argc, char *argv[])
         fprintf(stderr, "ERROR: %s\n", harp_errno_to_string(harp_errno));
         exit(1);
     }
+
+    harp_set_warning_handler(print_warning);
 
     if (harp_init() != 0)
     {
