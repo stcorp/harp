@@ -343,7 +343,4 @@ AC_DEFINE([XML_DTD], 1, [Define to make parameter entity parsing functionality a
 AC_DEFINE([XML_LARGE_SIZE], 1, [Define to set the size of the XML_Size and XML_Index integer types to be at least 64 bits in size.])
 AC_DEFINE([XML_CONTEXT_BYTES], 1024, [Define to specify how much context to retain around the current parse point.])
 
-# *** make sure CODA is configured in sub-package mode ***
-ac_configure_args=" --enable-coda-subpackage-mode $ac_configure_args --with-hdf4 --with-hdf5"
-
 AC_OUTPUT
