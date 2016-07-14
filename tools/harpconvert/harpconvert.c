@@ -423,26 +423,26 @@ int main(int argc, char *argv[])
     if (argc == 1 || strcmp(argv[1], "-h") == 0 || strcmp(argv[1], "--help") == 0)
     {
         print_help();
-        return 0;
+        exit(0);
     }
 
     if (strcmp(argv[1], "-v") == 0 || strcmp(argv[1], "--version") == 0)
     {
         print_version();
-        return 0;
+        exit(0);
     }
 
     if (argc < 2)
     {
         fprintf(stderr, "ERROR: invalid arguments\n");
         print_help();
-        return 1;
+        exit(1);
     }
 
     if (harp_set_coda_definition_path_conditional(argv[0], NULL, definition_path) != 0)
     {
         fprintf(stderr, "ERROR: %s\n", harp_errno_to_string(harp_errno));
-        return 1;
+        exit(1);
     }
 
     harp_set_warning_handler(print_warning);
@@ -450,7 +450,7 @@ int main(int argc, char *argv[])
     if (harp_init() != 0)
     {
         fprintf(stderr, "ERROR: %s\n", harp_errno_to_string(harp_errno));
-        return 1;
+        exit(1);
     }
 
     if (strcmp(argv[1], "--list-conversions") == 0)
@@ -477,20 +477,20 @@ int main(int argc, char *argv[])
             fprintf(stderr, "ERROR: %s\n", harp_errno_to_string(harp_errno));
         }
         harp_done();
-        return 1;
+        exit(1);
     }
     else if (result == -2)
     {
-        fprintf(stderr, "WARNING: product is empty\n");
+        harp_report_warning("product is empty");
         harp_done();
-        return 2;
+        exit(2);
     }
     else if (result == 1)
     {
         fprintf(stderr, "ERROR: invalid arguments\n");
         print_help();
         harp_done();
-        return 1;
+        exit(1);
     }
 
     harp_done();
