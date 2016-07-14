@@ -210,6 +210,7 @@ The core variables are:
 - datetime_length
 - datetime_start
 - datetime_stop
+- density
 - flag_am_pm
 - flag_day_twilight_night
 - frequency
@@ -226,6 +227,7 @@ The core variables are:
 - normalized_radiance
 - number_density
 - pressure
+- pressure_bounds
 - radiance
 - reflectance
 - relative_azimuth_angle
@@ -247,6 +249,7 @@ The core variables are:
 - virtual_temperature
 - wavelength
 - wavenumber
+- <species>_column_density
 - <species>_column_number_density
 - <species>_density
 - <species>_mass_mixing_ratio
