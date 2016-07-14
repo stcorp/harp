@@ -508,9 +508,8 @@ LIBHARP_API int harp_product_detach_variable(harp_product *product, const harp_v
     return -1;
 }
 
-/** Remove a variable from a product. If it serves as an axis variable for other variables,
- * remove the variables that depend on it as well.
- * This function removes any link to the specified variable from the product and then removes the variable itself.
+/** Remove a variable from a product.
+ * This function removes the specified variable from the product and then deletes the variable itself.
  * \param product Product from which the variable should be removed.
  * \param variable Variable that should be removed.
  * \return
@@ -539,8 +538,6 @@ LIBHARP_API int harp_product_remove_variable(harp_product *product, harp_variabl
  * The product should already contain a variable with the same name as \a variable. This function searches in the list
  * of variables in the product for one with the same name, removes this variable and then adds the given \a variable in
  * its place. Note that if you try to replace a variable with itself the function does nothing (and returns success).
- * If the variable is an axis variable then the axis_variable property of all other variables (and of the new variable)
- * will be updated to point to the new variable.
  * \param product Product in which the variable should be replaced.
  * \param variable Variable that should be used to replace an existing variable.
  * \return

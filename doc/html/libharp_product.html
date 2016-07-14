@@ -451,7 +451,7 @@
 <dl class="function">
 <dt id="_CPPv228harp_product_remove_variableP12harp_productP13harp_variable">
 <span id="harp_product_remove_variable__harp_productP.harp_variableP"></span><span class="target" id="libharpgroup__harp__product_1ga88c38cc628718f06065e9160bf735057"></span>int <code class="descname">harp_product_remove_variable</code><span class="sig-paren">(</span><a class="reference internal" href="#_CPPv212harp_product" title="harp_product">harp_product</a> *<em>product</em>, <a class="reference internal" href="libharp_variable.html#_CPPv213harp_variable" title="harp_variable">harp_variable</a> *<em>variable</em><span class="sig-paren">)</span></dt>
-<dd><p>Remove a variable from a product. If it serves as an axis variable for other variables, remove the variables that depend on it as well. This function removes any link to the specified variable from the product and then removes the variable itself. <dl class="docutils">
+<dd><p>Remove a variable from a product. This function removes the specified variable from the product and then deletes the variable itself. <dl class="docutils">
 <dt><strong>Return</strong></dt>
 <dd><ul class="simple">
 <li><code class="docutils literal"><span class="pre">0</span></code>, Success. </li>
@@ -473,7 +473,7 @@
 <dl class="function">
 <dt id="_CPPv229harp_product_replace_variableP12harp_productP13harp_variable">
 <span id="harp_product_replace_variable__harp_productP.harp_variableP"></span><span class="target" id="libharpgroup__harp__product_1ga29283b1d2a2042fb164ade0b8b5be9e7"></span>int <code class="descname">harp_product_replace_variable</code><span class="sig-paren">(</span><a class="reference internal" href="#_CPPv212harp_product" title="harp_product">harp_product</a> *<em>product</em>, <a class="reference internal" href="libharp_variable.html#_CPPv213harp_variable" title="harp_variable">harp_variable</a> *<em>variable</em><span class="sig-paren">)</span></dt>
-<dd><p>Replaces an existing variable with the one provided. The product should already contain a variable with the same name as <em>variable</em>. This function searches in the list of variables in the product for one with the same name, removes this variable and then adds the given <em>variable</em> in its place. Note that if you try to replace a variable with itself the function does nothing (and returns success). If the variable is an axis variable then the axis_variable property of all other variables (and of the new variable) will be updated to point to the new variable. <dl class="docutils">
+<dd><p>Replaces an existing variable with the one provided. The product should already contain a variable with the same name as <em>variable</em>. This function searches in the list of variables in the product for one with the same name, removes this variable and then adds the given <em>variable</em> in its place. Note that if you try to replace a variable with itself the function does nothing (and returns success). <dl class="docutils">
 <dt><strong>Return</strong></dt>
 <dd><ul class="simple">
 <li><code class="docutils literal"><span class="pre">0</span></code>, Success. </li>
