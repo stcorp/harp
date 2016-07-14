@@ -24,9 +24,9 @@ static int print_warning(const char *message, va_list ap)
 {
     int result;
 
-    printf("WARNING: ");
-    result = vprintf(message, ap);
-    printf("\n");
+    fprintf(stderr, "WARNING: ");
+    result = vfprintf(stderr, message, ap);
+    fprintf(stderr, "\n");
 
     return result;
 }
