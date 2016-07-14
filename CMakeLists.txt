@@ -453,6 +453,14 @@ if(WIN32)
 endif(WIN32)
 install(TARGETS harpfilter DESTINATION bin)
 
+#  harpprofile
+add_executable(harpprofile tools/harpprofile/harpprofile.c)
+target_link_libraries(harpprofile harp ${CODA_LIBRARIES} ${HDF4_LIBRARIES} ${HDF5_LIBRARIES} ${MATHLIB})
+if(WIN32)
+  # Also set DLL compile flags
+  set_target_properties(harpprofile PROPERTIES COMPILE_FLAGS "-DLIBHARPDLL")
+endif(WIN32)
+install(TARGETS harpprofile DESTINATION bin)
 
 # python
 if(HARP_BUILD_PYTHON)

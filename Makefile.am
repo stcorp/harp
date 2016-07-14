@@ -27,7 +27,7 @@ uninstall-hook: $(UNINSTALL_HOOK_TARGETS)
 
 # programs
 
-bin_PROGRAMS = harpcheck harpcollocate harpconvert harpfilter harpdump
+bin_PROGRAMS = harpcheck harpcollocate harpconvert harpfilter harpprofile harpdump
 noinst_PROGRAMS = findtypedef
 
 # libraries (+ related files)
@@ -178,6 +178,12 @@ INDENTFILES += $(harpdump_SOURCES)
 harpfilter_SOURCES = tools/harpfilter/harpfilter.c
 harpfilter_LDADD = libharp.la
 INDENTFILES += $(harpfilter_SOURCES)
+
+# harpprofile
+
+harpprofile_SOURCES = tools/harpprofile/harpprofile.c
+harpprofile_LDADD = libharp.la
+INDENTFILES += $(harpprofile_SOURCES)
 
 # libnetcdf
 
