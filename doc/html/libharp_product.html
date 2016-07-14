@@ -280,10 +280,10 @@
 </dd></dl>
 
 <dl class="function">
-<dt id="_CPPv216harp_ingest_testPKc">
-<span id="harp_ingest_test__cCP"></span><span class="target" id="libharpgroup__harp__product_1gabb0c0eb1eed0228878d22bf47386b791"></span>int <code class="descname">harp_ingest_test</code><span class="sig-paren">(</span><em class="property">const</em> char *<em>filename</em><span class="sig-paren">)</span></dt>
+<dt id="_CPPv216harp_ingest_testPKcPFiPKczE">
+<span class="target" id="libharpgroup__harp__product_1ga1116b160ecb1cf9f4282c78ae720eb51"></span>int <code class="descname">harp_ingest_test</code><span class="sig-paren">(</span><em class="property">const</em> char *<em>filename</em>, int (*<em>print</em>)<span class="sig-paren">(</span><em class="property">const</em> char *, ...<span class="sig-paren">)</span><span class="sig-paren">)</span></dt>
 <dd><p>Test ingestion of a product using all possible ingestion option values.</p>
-<p>Results are printed to stdout. <dl class="docutils">
+<p>Results are printed using the provided <em>print</em> function. The <em>print</em> function parameter should be a function that resembles printf(). <dl class="docutils">
 <dt><strong>Return</strong></dt>
 <dd><ul class="simple">
 <li><code class="docutils literal"><span class="pre">0</span></code>, Success. </li>
@@ -293,6 +293,8 @@
 <dt><strong>Parameters</strong></dt>
 <dd><ul class="breatheparameterlist first last">
 <li><code class="first docutils literal"><span class="pre">filename</span></code> - <p>Filename of the product to ingest. </p>
+</li>
+<li><code class="first docutils literal"><span class="pre">print</span></code> - <p>Reference to a printf compatible function. </p>
 </li>
 </ul>
 </dd>

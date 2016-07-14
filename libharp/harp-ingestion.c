@@ -2637,13 +2637,15 @@ LIBHARP_API int harp_ingest(const char *filename, const char *actions, const cha
 
 /** Test ingestion of a product using all possible ingestion option values.
  * \ingroup harp_product
- * Results are printed to stdout.
+ * Results are printed using the provided \a print function.
+ * The \a print function parameter should be a function that resembles printf().
  * \param[in] filename Filename of the product to ingest.
+ * \param[in] print Reference to a printf compatible function.
  * \return
  *   \arg \c 0, Success.
  *   \arg \c -1, Error occurred (check #harp_errno).
  */
-LIBHARP_API int harp_ingest_test(const char *filename)
+LIBHARP_API int harp_ingest_test(const char *filename, int (*print) (const char *, ...))
 {
     coda_product *product = NULL;
     ingest_info *info;
@@ -2709,7 +2711,7 @@ LIBHARP_API int harp_ingest_test(const char *filename)
         }
     }
 
-    printf("product: %s\n", filename);
+    print("product: %s\n", filename);
 
     depth = num_options;
     while (status == 0 && depth >= 0)
@@ -2727,21 +2729,21 @@ LIBHARP_API int harp_ingest_test(const char *filename)
             info->module = module;
             info->action_list = action_list;
 
-            printf("ingestion:");
+            print("ingestion:");
             for (i = 0; i < num_options; i++)
             {
                 if (i > 0)
                 {
-                    printf(",");
+                    print(",");
                 }
-                printf(" %s ", module->option_definition[i]->name);
+                print(" %s ", module->option_definition[i]->name);
                 if (option_choice[i] >= 0)
                 {
-                    printf("= %s", module->option_definition[i]->allowed_value[option_choice[i]]);
+                    print("= %s", module->option_definition[i]->allowed_value[option_choice[i]]);
                 }
                 else
                 {
-                    printf("unset");
+                    print("unset");
                 }
             }
             fflush(stdout);
@@ -2762,21 +2764,21 @@ LIBHARP_API int harp_ingest_test(const char *filename)
                 assert(info->product_definition != NULL);
                 if (num_options > 0)
                 {
-                    printf(" =>");
+                    print(" =>");
                 }
-                printf(" %s", info->product_definition->name);
+                print(" %s", info->product_definition->name);
                 fflush(stdout);
 
                 status = get_product(info);
             }
             if (status == 0)
             {
-                printf(" [OK]\n");
+                print(" [OK]\n");
             }
             else
             {
-                printf(" [FAIL]\n");
-                printf("ERROR: %s\n", harp_errno_to_string(harp_errno));
+                print(" [FAIL]\n");
+                print("ERROR: %s\n", harp_errno_to_string(harp_errno));
             }
 
             info->cproduct = NULL;

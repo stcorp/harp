@@ -318,7 +318,7 @@ static int test_conversions(int argc, char *argv[])
 
     for (i = 2; i < argc; i++)
     {
-        if (harp_ingest_test(argv[i]) != 0)
+        if (harp_ingest_test(argv[i], printf) != 0)
         {
             fprintf(stderr, "ERROR: %s\n", harp_errno_to_string(harp_errno));
             result = -1;
