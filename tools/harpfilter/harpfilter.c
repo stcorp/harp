@@ -346,7 +346,7 @@ int main(int argc, char *argv[])
         {
             fprintf(stderr, "ERROR: %s\n", harp_errno_to_string(harp_errno));
             harp_done();
-            return -1;
+            return 1;
         }
     }
     else
@@ -366,8 +366,9 @@ int main(int argc, char *argv[])
         }
         else if (result == -2)
         {
+            fprintf(stderr, "WARNING: filtered product is empty\n");
             harp_done();
-            return 1;
+            return 2;
         }
     }
 
