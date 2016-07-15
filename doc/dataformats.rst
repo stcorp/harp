@@ -273,6 +273,7 @@ with supported species:
 - COS
 - CO2
 - C2H2
+- C2H2O2
 - C2H3NO5
 - C2H6
 - C3H8
@@ -284,6 +285,7 @@ with supported species:
 - HCN
 - HCl
 - HF
+- HNO2
 - HNO3
 - HNO4
 - HOCl
@@ -294,6 +296,7 @@ with supported species:
 - H2O_171
 - H2O_181
 - H2O2
+- IO
 - NO
 - NOCl
 - NO2

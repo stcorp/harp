@@ -1603,34 +1603,34 @@ int harp_ingestion_module_mip_nl__2p_init(void)
     path = "/no2_retrieval_mds[]/conc_var_cov[]";
     harp_variable_definition_add_mapping(variable_definition, NULL, NULL, path, NULL);
 
-    description = "F11 number density";
-    variable_definition = harp_ingestion_register_variable_sample_read(product_definition, "F11_number_density",
+    description = "CCl3F number density";
+    variable_definition = harp_ingestion_register_variable_sample_read(product_definition, "CCl3F_number_density",
                                                                        harp_type_double, 2, dimension_type, NULL,
                                                                        description, "molec/cm^3", exclude_v3_species,
                                                                        read_f11);
     path = "/f11_retrieval_mds[]/conc_alt[]";
     harp_variable_definition_add_mapping(variable_definition, NULL, NULL, path, NULL);
 
-    description = "standard deviation for the F11 number density";
+    description = "standard deviation for the CCl3F number density";
     variable_definition = harp_ingestion_register_variable_sample_read(product_definition,
-                                                                       "F11_number_density_uncertainty",
+                                                                       "CCl3F_number_density_uncertainty",
                                                                        harp_type_double, 2, dimension_type, NULL,
                                                                        description, "molec/cm^3", exclude_v3_species,
                                                                        read_f11_uncertainty);
     path = "/f11_retrieval_mds[]/conc_var_cov[]";
     harp_variable_definition_add_mapping(variable_definition, NULL, NULL, path, NULL);
 
-    description = "ClNO number density";
-    variable_definition = harp_ingestion_register_variable_sample_read(product_definition, "ClNO_number_density",
+    description = "NOCl number density";
+    variable_definition = harp_ingestion_register_variable_sample_read(product_definition, "NOCl_number_density",
                                                                        harp_type_double, 2, dimension_type, NULL,
                                                                        description, "molec/cm^3", exclude_v3_species,
                                                                        read_clno);
     path = "/clno_retrieval_mds[]/conc_alt[]";
     harp_variable_definition_add_mapping(variable_definition, NULL, NULL, path, NULL);
 
-    description = "standard deviation for the ClNO number density";
+    description = "standard deviation for the NOCl number density";
     variable_definition = harp_ingestion_register_variable_sample_read(product_definition,
-                                                                       "ClNO_number_density_uncertainty",
+                                                                       "NOCl_number_density_uncertainty",
                                                                        harp_type_double, 2, dimension_type, NULL,
                                                                        description, "molec/cm^3", exclude_v3_species,
                                                                        read_clno_uncertainty);
@@ -1654,17 +1654,17 @@ int harp_ingestion_module_mip_nl__2p_init(void)
     path = "/n2o5_retrieval_mds[]/conc_var_cov[]";
     harp_variable_definition_add_mapping(variable_definition, NULL, NULL, path, NULL);
 
-    description = "F12 number density";
-    variable_definition = harp_ingestion_register_variable_sample_read(product_definition, "F12_number_density",
+    description = "CCl2F2 number density";
+    variable_definition = harp_ingestion_register_variable_sample_read(product_definition, "CCl2F2_number_density",
                                                                        harp_type_double, 2, dimension_type, NULL,
                                                                        description, "molec/cm^3", exclude_v3_species,
                                                                        read_f12);
     path = "/f12_retrieval_mds[]/conc_alt[]";
     harp_variable_definition_add_mapping(variable_definition, NULL, NULL, path, NULL);
 
-    description = "standard deviation for the F12 number density";
+    description = "standard deviation for the CCl2F2 number density";
     variable_definition = harp_ingestion_register_variable_sample_read(product_definition,
-                                                                       "F12_number_density_uncertainty",
+                                                                       "CCl2F2_number_density_uncertainty",
                                                                        harp_type_double, 2, dimension_type, NULL,
                                                                        description, "molec/cm^3", exclude_v3_species,
                                                                        read_f12_uncertainty);
@@ -1768,34 +1768,34 @@ int harp_ingestion_module_mip_nl__2p_init(void)
     path = "/no2_retrieval_mds[]/vmr_var_cov[]";
     harp_variable_definition_add_mapping(variable_definition, NULL, NULL, path, NULL);
 
-    description = "F11 volume mixing ratio";
-    variable_definition = harp_ingestion_register_variable_sample_read(product_definition, "F11_volume_mixing_ratio",
+    description = "CCl3F volume mixing ratio";
+    variable_definition = harp_ingestion_register_variable_sample_read(product_definition, "CCl3F_volume_mixing_ratio",
                                                                        harp_type_double, 2, dimension_type, NULL,
                                                                        description, "ppmv", exclude_v3_species,
                                                                        read_f11_vmr);
     path = "/f11_retrieval_mds[]/vmr[]";
     harp_variable_definition_add_mapping(variable_definition, NULL, NULL, path, NULL);
 
-    description = "standard deviation for the F11 volume mixing ratio";
+    description = "standard deviation for the CCl3F volume mixing ratio";
     variable_definition = harp_ingestion_register_variable_sample_read(product_definition,
-                                                                       "F11_volume_mixing_ratio_uncertainty",
+                                                                       "CCl3F_volume_mixing_ratio_uncertainty",
                                                                        harp_type_double, 2, dimension_type, NULL,
                                                                        description, "ppmv", exclude_v3_species,
                                                                        read_f11_vmr_uncertainty);
     path = "/f11_retrieval_mds[]/vmr_var_cov[]";
     harp_variable_definition_add_mapping(variable_definition, NULL, NULL, path, NULL);
 
-    description = "ClNO volume mixing ratio";
-    variable_definition = harp_ingestion_register_variable_sample_read(product_definition, "ClNO_volume_mixing_ratio",
+    description = "NOCl volume mixing ratio";
+    variable_definition = harp_ingestion_register_variable_sample_read(product_definition, "NOCl_volume_mixing_ratio",
                                                                        harp_type_double, 2, dimension_type, NULL,
                                                                        description, "ppmv", exclude_v3_species,
                                                                        read_clno_vmr);
     path = "/clno_retrieval_mds[]/vmr[]";
     harp_variable_definition_add_mapping(variable_definition, NULL, NULL, path, NULL);
 
-    description = "standard deviation for the ClNO volume mixing ratio";
+    description = "standard deviation for the NOCl volume mixing ratio";
     variable_definition = harp_ingestion_register_variable_sample_read(product_definition,
-                                                                       "ClNO_volume_mixing_ratio_uncertainty",
+                                                                       "NOCl_volume_mixing_ratio_uncertainty",
                                                                        harp_type_double, 2, dimension_type, NULL,
                                                                        description, "ppmv", exclude_v3_species,
                                                                        read_clno_vmr_uncertainty);
@@ -1819,17 +1819,17 @@ int harp_ingestion_module_mip_nl__2p_init(void)
     path = "/n2o5_retrieval_mds[]/vmr_var_cov[]";
     harp_variable_definition_add_mapping(variable_definition, NULL, NULL, path, NULL);
 
-    description = "F12 volume mixing ratio";
-    variable_definition = harp_ingestion_register_variable_sample_read(product_definition, "F12_volume_mixing_ratio",
+    description = "CCl2F2 volume mixing ratio";
+    variable_definition = harp_ingestion_register_variable_sample_read(product_definition, "CCl2F2_volume_mixing_ratio",
                                                                        harp_type_double, 2, dimension_type, NULL,
                                                                        description, "ppmv", exclude_v3_species,
                                                                        read_f12_vmr);
     path = "/f12_retrieval_mds[]/vmr[]";
     harp_variable_definition_add_mapping(variable_definition, NULL, NULL, path, NULL);
 
-    description = "standard deviation for the F12 volume mixing ratio";
+    description = "standard deviation for the CCl2F2 volume mixing ratio";
     variable_definition = harp_ingestion_register_variable_sample_read(product_definition,
-                                                                       "F12_volume_mixing_ratio_uncertainty",
+                                                                       "CCl2F2_volume_mixing_ratio_uncertainty",
                                                                        harp_type_double, 2, dimension_type, NULL,
                                                                        description, "ppmv", exclude_v3_species,
                                                                        read_f12_vmr_uncertainty);
@@ -1884,15 +1884,15 @@ int harp_ingestion_module_mip_nl__2p_init(void)
     harp_variable_definition_add_mapping(variable_definition, NULL, NULL, path, NULL);
 
     variable_definition = harp_ingestion_register_variable_sample_read(product_definition,
-                                                                       "F11_volume_mixing_ratio_avk", harp_type_double,
-                                                                       3, dimension_type, NULL, description,
-                                                                       "ppmv/ppmv", exclude_v3_species,
+                                                                       "CCl3F_volume_mixing_ratio_avk",
+                                                                       harp_type_double, 3, dimension_type, NULL,
+                                                                       description, "ppmv/ppmv", exclude_v3_species,
                                                                        read_f11_akm_vmr);
     path = "/f11_retrieval_mds[]/avg_kernel[]";
     harp_variable_definition_add_mapping(variable_definition, NULL, NULL, path, NULL);
 
     variable_definition = harp_ingestion_register_variable_sample_read(product_definition,
-                                                                       "ClNO_volume_mixing_ratio_avk", harp_type_double,
+                                                                       "NOCl_volume_mixing_ratio_avk", harp_type_double,
                                                                        3, dimension_type, NULL, description,
                                                                        "ppmv/ppmv", exclude_v3_species,
                                                                        read_clno_akm_vmr);
@@ -1908,9 +1908,9 @@ int harp_ingestion_module_mip_nl__2p_init(void)
     harp_variable_definition_add_mapping(variable_definition, NULL, NULL, path, NULL);
 
     variable_definition = harp_ingestion_register_variable_sample_read(product_definition,
-                                                                       "F12_volume_mixing_ratio_avk", harp_type_double,
-                                                                       3, dimension_type, NULL, description,
-                                                                       "ppmv/ppmv", exclude_v3_species,
+                                                                       "CCl2F2_volume_mixing_ratio_avk",
+                                                                       harp_type_double, 3, dimension_type, NULL,
+                                                                       description, "ppmv/ppmv", exclude_v3_species,
                                                                        read_f12_akm_vmr);
     path = "/f12_retrieval_mds[]/avg_kernel[]";
     harp_variable_definition_add_mapping(variable_definition, NULL, NULL, path, NULL);
