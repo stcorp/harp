@@ -266,8 +266,6 @@ with supported species:
 - CCl3F
 - CF4
 - CHClF2
-- CH2O
-- CH2O2
 - CH3Cl
 - CH4
 - CO
@@ -282,6 +280,8 @@ with supported species:
 - ClNO3
 - ClO
 - ClO2
+- HCHO
+- HCOOH
 - HCN
 - HCl
 - HF

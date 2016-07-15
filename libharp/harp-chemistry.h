@@ -35,8 +35,6 @@ typedef enum harp_chemical_species_enum
     harp_chemical_species_CCl3F,        /* CFC-11 / F11 / Freon-11 */
     harp_chemical_species_CF4,
     harp_chemical_species_CHClF2,
-    harp_chemical_species_CH2O, /* HCHO */
-    harp_chemical_species_CH2O2,        /* HCOOH */
     harp_chemical_species_CH3Cl,
     harp_chemical_species_CH4,
     harp_chemical_species_CO,
@@ -51,6 +49,8 @@ typedef enum harp_chemical_species_enum
     harp_chemical_species_ClNO3,        /* ClONO2 */
     harp_chemical_species_ClO,
     harp_chemical_species_ClO2,
+    harp_chemical_species_HCHO,
+    harp_chemical_species_HCOOH,
     harp_chemical_species_HCN,
     harp_chemical_species_HCl,
     harp_chemical_species_HF,
