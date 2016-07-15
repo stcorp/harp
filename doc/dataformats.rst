@@ -279,7 +279,6 @@ with supported species:
 - C5H8
 - ClNO3
 - ClO
-- ClO2
 - HCHO
 - HCOOH
 - HCN
@@ -302,6 +301,7 @@ with supported species:
 - N2
 - N2O
 - N2O5
+- OClO
 - OH
 - O2
 - O3

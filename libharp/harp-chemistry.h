@@ -48,7 +48,6 @@ typedef enum harp_chemical_species_enum
     harp_chemical_species_C5H8,
     harp_chemical_species_ClNO3,        /* ClONO2 */
     harp_chemical_species_ClO,
-    harp_chemical_species_ClO2,
     harp_chemical_species_HCHO,
     harp_chemical_species_HCOOH,
     harp_chemical_species_HCN,
@@ -71,6 +70,7 @@ typedef enum harp_chemical_species_enum
     harp_chemical_species_N2,
     harp_chemical_species_N2O,
     harp_chemical_species_N2O5,
+    harp_chemical_species_OClO,
     harp_chemical_species_OH,
     harp_chemical_species_O2,
     harp_chemical_species_O3,
