@@ -262,7 +262,10 @@ with supported species:
 
 - BrO
 - C2H2
+- C2H3NO5
 - C2H6
+- C3H8
+- C5H8
 - CCl2F2
 - CCl3F
 - CF4
