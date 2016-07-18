@@ -2055,8 +2055,7 @@ static int init_product_definition(harp_ingestion_module *module, uvvis_doas_gas
         snprintf(gas_var_name, MAX_NAME_LENGTH, "%s_column_number_density", harp_gas_name[gas]);
         snprintf(gas_description, MAX_DESCRIPTION_LENGTH, "%s partial column number density profile",
                  harp_gas_name[gas]);
-        snprintf(gas_mapping_path, MAX_PATH_LENGTH, "/%s.COLUMN.PARTIAL_SCATTER.SOLAR.OFFAXIS",
-                 geoms_gas_name[gas]);
+        snprintf(gas_mapping_path, MAX_PATH_LENGTH, "/%s.COLUMN.PARTIAL_SCATTER.SOLAR.OFFAXIS", geoms_gas_name[gas]);
         variable_definition = harp_ingestion_register_variable_full_read
             (product_definition, gas_var_name, harp_type_double, 2, dimension_type, NULL, gas_description,
              "Pmolec cm-2", NULL, read_partial_column_offaxis);
