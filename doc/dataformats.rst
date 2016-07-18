@@ -214,6 +214,7 @@ The core variables are:
 - flag_am_pm
 - flag_day_twilight_night
 - frequency
+- geopotential
 - geopotential_height
 - index
 - instrument_altitude

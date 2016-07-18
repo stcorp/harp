@@ -395,6 +395,18 @@ static int get_frequency_from_wavenumber(harp_variable *variable, const harp_var
     return 0;
 }
 
+static int get_geopotential_from_gph(harp_variable *variable, const harp_variable **source_variable)
+{
+    long i;
+
+    for (i = 0; i < variable->num_elements; i++)
+    {
+        variable->data.double_data[i] = harp_geopotential_from_gph(source_variable[0]->data.double_data[i]);
+    }
+
+    return 0;
+}
+
 static int get_gph_from_altitude_and_latitude(harp_variable *variable, const harp_variable **source_variable)
 {
     long i;
@@ -403,6 +415,18 @@ static int get_gph_from_altitude_and_latitude(harp_variable *variable, const har
     {
         variable->data.double_data[i] = harp_gph_from_altitude_and_latitude(source_variable[0]->data.double_data[i],
                                                                             source_variable[1]->data.double_data[i]);
+    }
+
+    return 0;
+}
+
+static int get_gph_from_geopotential(harp_variable *variable, const harp_variable **source_variable)
+{
+    long i;
+
+    for (i = 0; i < variable->num_elements; i++)
+    {
+        variable->data.double_data[i] = harp_gph_from_geopotential(source_variable[0]->data.double_data[i]);
     }
 
     return 0;
@@ -2373,6 +2397,30 @@ static int init_conversions(void)
         }
     }
 
+    /* geopotential */
+    dimension_type[1] = harp_dimension_vertical;
+    for (i = 0; i < 3; i++)
+    {
+        if (i > 0)
+        {
+            if (add_time_indepedent_to_dependent_conversion("geopotential", harp_type_double, HARP_UNIT_GEOPOTENTIAL,
+                                                            i, dimension_type, 0) != 0)
+            {
+                return -1;
+            }
+        }
+        if (harp_variable_conversion_new("geopotential", harp_type_double, HARP_UNIT_GEOPOTENTIAL, i, dimension_type,
+                                         0, get_geopotential_from_gph, &conversion) != 0)
+        {
+            return -1;
+        }
+        if (harp_variable_conversion_add_source(conversion, "geopotential_height", harp_type_double, HARP_UNIT_LENGTH,
+                                                i, dimension_type, 0) != 0)
+        {
+            return -1;
+        }
+    }
+
     /* geopotential height */
     dimension_type[1] = harp_dimension_vertical;
     for (i = 0; i < 3; i++)
@@ -2384,6 +2432,16 @@ static int init_conversions(void)
             {
                 return -1;
             }
+        }
+        if (harp_variable_conversion_new("geopotential_height", harp_type_double, HARP_UNIT_LENGTH, i, dimension_type,
+                                         0, get_gph_from_geopotential, &conversion) != 0)
+        {
+            return -1;
+        }
+        if (harp_variable_conversion_add_source(conversion, "geopotential", harp_type_double, HARP_UNIT_GEOPOTENTIAL, i,
+                                                dimension_type, 0) != 0)
+        {
+            return -1;
         }
         if (harp_variable_conversion_new("geopotential_height", harp_type_double, HARP_UNIT_LENGTH, i, dimension_type,
                                          0, get_gph_from_altitude_and_latitude, &conversion) != 0)

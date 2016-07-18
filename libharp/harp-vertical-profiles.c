@@ -207,6 +207,28 @@ void harp_profile_altitude_from_pressure_temperature_h2o_mmr_and_latitude(long n
     }
 }
 
+/** Convert geopotential height to geopotential
+ * \param gph Geopotential height [m]
+ * \return the geopotential [m2/s2]
+ */
+double harp_geopotential_from_gph(double gph)
+{
+    double g0 = (double)CONST_GRAV_ACCEL_45LAT_WGS84_SPHERE;    /* gravitation accel. [m s-2] at latitude 45o32'33'' */
+
+    return g0 * gph;
+}
+
+/** Convert geopotential to geopotential height
+ * \param geopotential Geopotential [m2/s2]
+ * \return the geopotential height [m]
+ */
+double harp_gph_from_geopotential(double geopotential)
+{
+    double g0 = (double)CONST_GRAV_ACCEL_45LAT_WGS84_SPHERE;    /* gravitation accel. [m s-2] at latitude 45o32'33'' */
+
+    return geopotential / g0;
+}
+
 /** Convert geometric height (= altitude) to geopotential height
  * \param altitude  Altitude [m]
  * \param latitude   Latitude [degree_north]
