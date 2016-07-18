@@ -47,3 +47,4 @@ stamp-*
 /udunits2/utparser.h
 /udunits2/utscanner.c
 /ylwrap
+.idea/
