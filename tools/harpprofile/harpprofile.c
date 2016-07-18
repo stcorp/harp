@@ -690,7 +690,7 @@ static int resample_against_grid(harp_product *product, harp_variable* target_gr
     source_vertical_elements = source_grid->dimension[source_grid->num_dimensions-1];
 
     /* Resample all variables if we know how */
-    for (i = 0; i < product->num_variables; i++)
+    for (i = product->num_variables - 1; i >= 0; i--)
     {
         harp_variable *variable = product->variable[i];
 
