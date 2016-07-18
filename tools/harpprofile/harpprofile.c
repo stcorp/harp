@@ -372,8 +372,6 @@ int grid_import(const char *filename, harp_variable **new_vertical_axis)
     char *unit = NULL;
     double *values = NULL;
     double value;
-    int num_dimensions = 2;
-    long *dimension = NULL;
     harp_variable *vertical_axis = NULL;
 
     /* open the grid file */
@@ -507,24 +505,15 @@ void print_help_resample(void)
     printf("                      hdf5\n");
     printf("\n");
     printf("            One of the following:\n");
-    printf("            -gc, --grid-c  <input>\n");
-    printf("                    resample the vertical profiles to a common grid\n");
-    printf("                    defined in file C. <input> denotes the filename\n");
-    printf("            -ha, --harmonise-a <result_csv_file> <source_datasetdir_a> :\n");
-    printf("                    make sure that files in dataset A get the same vertical\n");
-    printf("                    dimension\n");
-    printf("            -hb, --harmonise-b <result_csv_file> <source_datasetdir_b> :\n");
-    printf("                    make sure that files in dataset B get the same vertical\n");
-    printf("                    dimension\n");
-    printf("            -ra, --resample-a-to-b <result_csv_file> <source_datasetdir_b> :\n");
+    printf("            -a, --a-to-b <result_csv_file> <source_datasetdir_b> :\n");
     printf("                    resample the vertical profiles of the input file (part of\n");
     printf("                    dataset A) to the vertical grid of the vertical profiles\n");
     printf("                    in dataset B\n");
-    printf("            -rb, --resample-b-to-a <result_csv_file> <source_datasetdir_a> :\n");
+    printf("            -b, --b-to-a <result_csv_file> <source_datasetdir_a> :\n");
     printf("                    resample the vertical profiles of the input file (part of\n");
     printf("                    dataset B) to the vertical grid of the vertical profiles\n");
     printf("                    in dataset A\n");
-    printf("            -rc, --resample-common <input>\n");
+    printf("            -c, --common <input>\n");
     printf("                    resample vertical profiles (in datasets A and B)\n");
     printf("                    to a common grid before calculating the columns.\n");
     printf("                    The common vertical grid is defined in file C.\n");
@@ -658,56 +647,47 @@ void print_help(void)
     printf("\n");
 }
 
-static int resample_common_grid(harp_product *product, const char *grid_input_filename)
+/* Resamples all variables in product against a specified grid.
+ * Target_grid is expected to be a variable of dimensions {vertical} or {time, vertical}.
+ * The source grid is determined by derivation of a matching vertical quantity on the specified product.
+ *
+ * Grid-dimension-wise we distinguish 4 cases:
+ *  - target 1D, source 1D: performs time independent vertical interpolation
+ *  - target 1D, source 2D: extends target dimensions & performs time dep. interpolation
+ *  - target 2D, source 1D: extends source dimensions & performs time dep. interpolation
+ *  - target 2D, source 2D: performs time dependent interpolation
+ */
+static int resample_against_grid(harp_product *product, harp_variable* target_grid)
 {
-    harp_variable *target_grid = NULL;
     harp_variable *source_grid = NULL;
-    long target_vertical_elements;
+    long target_vertical_elements = target_grid->dimension[target_grid->num_dimensions-1];
     long source_time_dim_length = 0; /* 0 indicates that we do time-independent regridding */
     long source_vertical_elements;
     int i;
 
-    if (grid_import(grid_input_filename, &target_grid) != 0)
-    {
-        printf("Failed to import grid from '%s'\n", grid_input_filename);
-        return -1;
-    }
-    target_vertical_elements = target_grid->num_elements;
-
-    /* TODO is this sensible or redundant? */
-    if(harp_variable_verify(target_grid) != 0)
-    {
-        printf("Common vertical axis loading failed: %s\n", harp_errno_to_string(harp_errno));
-        return -1;
-    }
-
-    /* Derive the source grid as doubles.
-     */
-    if(harp_product_get_derived_variable(product,
-                                      target_grid->name,
-                                      target_grid->unit,
-                                      1,
-                                      (const harp_dimension_type[]) {harp_dimension_vertical},
-                                      &source_grid) != 0)
+    /* Derive the source grid (will give doubles because unit is passed) */
+    if(harp_product_add_derived_variable(product,
+                                         target_grid->name,
+                                         target_grid->unit,
+                                         1,
+                                         (const harp_dimension_type[]) {harp_dimension_vertical}) != 0)
     {
         /* Failed to derive 1D source grid. Try 2D */
-        if(harp_product_get_derived_variable(product,
+        if(harp_product_add_derived_variable(product,
                                              target_grid->name,
                                              target_grid->unit,
                                              2,
-                                             (const harp_dimension_type[]) {harp_dimension_time, harp_dimension_vertical},
-                                             &source_grid) != 0)
+                                             (const harp_dimension_type[]) {harp_dimension_time,
+                                                                            harp_dimension_vertical}) != 0)
         {
             printf("Failed to derive source grid: %s\n", harp_errno_to_string(harp_errno));
-            harp_variable_delete(target_grid);
             return -1;
         }
 
+        harp_product_get_variable_by_name(product, target_grid->name, &source_grid);
         source_time_dim_length = source_grid->dimension[0];
     }
     source_vertical_elements = source_grid->dimension[source_grid->num_dimensions-1];
-    harp_variable_convert_data_type(source_grid, harp_type_double);
-
 
     /* Resample all variables if we know how */
     for (i = 0; i < product->num_variables; i++)
@@ -715,28 +695,28 @@ static int resample_common_grid(harp_product *product, const char *grid_input_fi
         harp_variable *variable = product->variable[i];
 
         long new_data_num_elements = variable->num_elements / source_vertical_elements * target_vertical_elements;
-        double *new_data = (double *) malloc((size_t) new_data_num_elements * sizeof(double));
-        long blocks = variable->num_elements / source_vertical_elements;
-        long time_blocks = blocks;
+        double *new_data = NULL;
+        long num_blocks = variable->num_elements / source_vertical_elements;
+        long time_blocks = num_blocks;
 
-        /* Calculate the number of blocks for which time is constant for time-dependent resampling */
+        int dim_id;
+        long time;
+        long block_id;
+        int skip = -1;
+
+        /* Calculate the number of num_blocks for which time is constant for time-dependent resampling */
         if (source_time_dim_length != 0)
         {
-            time_blocks = blocks / source_time_dim_length;
+            time_blocks = num_blocks / source_time_dim_length;
         }
 
-        int dim;
-        long time;
-        long block;
-
-        for (dim = 0; dim < variable->num_dimensions; dim++)
+        /* Ensure that there is only 1 vertical dimension, that it's the fastest running one and has scalar values */
+        for (dim_id = 0; dim_id < variable->num_dimensions; dim_id++)
         {
-            if (variable->dimension_type[dim] == harp_dimension_vertical)
+            if (variable->dimension_type[dim_id] == harp_dimension_vertical)
             {
-                /* Ensure that the vertical dimension is the fastest running one and scalar */
-                if (dim != variable->num_dimensions - 1) {
-                    printf("Removing variable %s; unresamplable dimensions\n", variable->name);
-                    harp_product_remove_variable(product, variable);
+                if (dim_id != variable->num_dimensions - 1) {
+                    skip = 0;
                 }
             }
         }
@@ -744,20 +724,23 @@ static int resample_common_grid(harp_product *product, const char *grid_input_fi
         /* We can't resample string-typed variables */
         if (variable->data_type == harp_type_string)
         {
-            printf("Cannot resample variable '%s' of type string\n", variable->name);
-            harp_variable_delete(target_grid);
-            free(new_data);
-            return -1;
+            skip = 0;
         }
 
         /* TODO skip based on name restrictions */
+
+        if (skip == 0)
+        {
+            printf("Removing variable %s; unresamplable dimensions\n", variable->name);
+            harp_product_remove_variable(product, variable);
+            continue;
+        }
 
         /* Ensure that the variable data consists of doubles */
         if (variable->data_type != harp_type_double && harp_variable_convert_data_type(variable, harp_type_double) != 0)
         {
             printf("Cannot resample variable '%s': '%s'\n", variable->name, harp_errno_to_string(harp_errno));
             harp_variable_delete(target_grid);
-            free(new_data);
             return -1;
         }
 
@@ -767,12 +750,22 @@ static int resample_common_grid(harp_product *product, const char *grid_input_fi
             harp_variable_add_dimension(variable, 0, harp_dimension_time, source_time_dim_length);
         }
 
+        /* Setup target array */
+        new_data = (double *) malloc((size_t) new_data_num_elements * sizeof(double));
+        if (new_data == NULL)
+        {
+            harp_variable_delete(target_grid);
+            harp_set_error(HARP_ERROR_OUT_OF_MEMORY, "out of memory (could not duplicate string) (%s:%u)",
+                           __FILE__, __LINE__);
+            return -1;
+        }
+
         /* Interpolate the data of the variable over the vertical axis */
         time = 0;
-        for (block = 0; block < blocks; block++)
+        for (block_id = 0; block_id < num_blocks; block_id++)
         {
             /* keep track of time for time-dependent vertical grids */
-            if (block % time_blocks == 0)
+            if (block_id % time_blocks == 0)
             {
                 time++;
             }
@@ -780,11 +773,11 @@ static int resample_common_grid(harp_product *product, const char *grid_input_fi
             harp_interpolate_array_linear(
                     source_vertical_elements,
                     source_grid->data.double_data + time * source_vertical_elements,
-                    variable->data.double_data + block * source_vertical_elements,
+                    variable->data.double_data + block_id * source_vertical_elements,
                     target_vertical_elements,
                     target_grid->data.double_data,
                     0, /* TODO: out_of_bound_flag set correctly? */
-                    new_data + block * target_vertical_elements
+                    new_data + block_id * target_vertical_elements
             );
         }
 
@@ -798,11 +791,37 @@ static int resample_common_grid(harp_product *product, const char *grid_input_fi
 
         /* Clean up the old data */
         free(old_data.double_data);
-
-        printf("Interpolated %s to grid with %i values\n", variable->name, target_grid->num_elements);
     }
 
-    // TODO update product->dimension properly
+    /* ensure consistent axis variable in product */
+    harp_product_replace_variable(product, target_grid);
+    product->dimension[harp_dimension_vertical] = target_vertical_elements;
+
+    return 0;
+}
+
+static int resample_common_grid(harp_product *product, const char *grid_input_filename)
+{
+    harp_variable *target_grid = NULL;
+
+    if (grid_import(grid_input_filename, &target_grid) != 0)
+    {
+        printf("Failed to import grid from '%s'\n", grid_input_filename);
+        return -1;
+    }
+
+    /* TODO is this sensible or redundant? */
+    if(harp_variable_verify(target_grid) != 0)
+    {
+        printf("Common vertical axis loading failed: %s\n", harp_errno_to_string(harp_errno));
+        harp_variable_delete(target_grid);
+        return -1;
+    }
+
+    resample_against_grid(product, target_grid);
+
+    // cleanup
+    harp_variable_delete(target_grid);
 
     return 0;
 }
@@ -833,7 +852,7 @@ static int resample(int argc, char *argv[])
             output_format = argv[i + 1];
             i++;
         }
-        else if ((strcmp(argv[i], "-gc") == 0 || strcmp(argv[i], "--grid-c") == 0)
+        else if ((strcmp(argv[i], "-c") == 0 || strcmp(argv[i], "--common") == 0)
                  && i + 1 < argc && argv[i + 1][0] != '-')
         {
             grid_input_filename = argv[i + 1];
