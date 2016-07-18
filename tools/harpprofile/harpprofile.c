@@ -762,7 +762,7 @@ static int resample_common_grid(harp_product *product, const char *grid_input_fi
         }
 
         /* time independent variables with a time-dependent source grid are time-extended */
-        if (source_grid->dimension[0] == harp_dimension_time)
+        if (variable->dimension_type[0] != harp_dimension_time && source_grid->dimension[0] == harp_dimension_time)
         {
             harp_variable_add_dimension(variable, 0, harp_dimension_time, source_time_dim_length);
         }
