@@ -371,7 +371,7 @@ int grid_import(const char *filename, harp_variable **new_vertical_axis)
     double value;
     harp_variable *vertical_axis = NULL;
     harp_dimension_type vertical_1d_dim_type[1] = { harp_dimension_vertical };
-    long vertical_1d_dim[1] = { num_vertical };
+    long vertical_1d_dim[1];
 
     /* open the grid file */
     file = fopen(filename, "r+");
@@ -444,6 +444,7 @@ int grid_import(const char *filename, harp_variable **new_vertical_axis)
     }
 
     /* create the axis variable */
+    vertical_1d_dim[0] = num_vertical;
     if (harp_variable_new(name, harp_type_double, 1, vertical_1d_dim_type, vertical_1d_dim, &vertical_axis) != 0)
     {
         free(values);
@@ -653,6 +654,7 @@ void print_help(void)
 static int resample_against_grid(harp_product *product, harp_variable *target_grid)
 {
     harp_variable *source_grid = NULL;
+    harp_variable *vertical_axis = NULL;
     long target_vertical_elements = target_grid->dimension[target_grid->num_dimensions - 1];
     long source_time_dim_length = 0;    /* 0 indicates that we do time-independent regridding */
     long source_vertical_elements;
@@ -788,8 +790,13 @@ static int resample_against_grid(harp_product *product, harp_variable *target_gr
     }
 
     /* ensure consistent axis variable in product */
-    harp_product_replace_variable(product, target_grid);
     product->dimension[harp_dimension_vertical] = target_vertical_elements;
+    harp_variable_copy(target_grid, &vertical_axis);
+    if (harp_product_replace_variable(product, vertical_axis) != 0)
+    {
+        printf("Error replacing vertical axis in product: %s\n", harp_errno_to_string(harp_errno));
+        return -1;
+    }
 
     return 0;
 }
@@ -804,17 +811,12 @@ static int resample_common_grid(harp_product *product, const char *grid_input_fi
         return -1;
     }
 
-    /* TODO is this sensible or redundant? */
-    if (harp_variable_verify(target_grid) != 0)
+    if (resample_against_grid(product, target_grid) != 0)
     {
-        printf("Common vertical axis loading failed: %s\n", harp_errno_to_string(harp_errno));
-        harp_variable_delete(target_grid);
+        printf("Failed to resample against common grid.\n");
         return -1;
     }
 
-    resample_against_grid(product, target_grid);
-
-    // cleanup
     harp_variable_delete(target_grid);
 
     return 0;
