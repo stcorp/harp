@@ -361,6 +361,12 @@ static int read_vertical_grid_line(FILE *file, const char *filename, double *new
     return 0;
 }
 
+/**
+ * Import vertical grid (altitude/pressure) from specified CSV file into target harp_variable.
+ * \return
+ *   \arg \c 0, Success.
+ *   \arg \c -1, Error occurred (check #harp_errno).
+ */
 int grid_import(const char *filename, harp_variable **new_vertical_axis)
 {
     FILE *file = NULL;
@@ -408,6 +414,12 @@ int grid_import(const char *filename, harp_variable **new_vertical_axis)
 
     /* Obtain the values */
     values = malloc((size_t)num_vertical * sizeof(double));
+    if (values == NULL)
+    {
+        harp_set_error(HARP_ERROR_OUT_OF_MEMORY, "out of memory (%s:%u)", __FILE__, __LINE__);
+        return -1;
+    }
+
     for (int i = 0; i < num_vertical; i++)
     {
         if (read_vertical_grid_line(file, filename, &value) != 0)
@@ -650,6 +662,10 @@ void print_help(void)
  *  - target 1D, source 2D: extends target dimensions & performs time dep. interpolation
  *  - target 2D, source 1D: extends source dimensions & performs time dep. interpolation
  *  - target 2D, source 2D: performs time dependent interpolation
+ *
+ * \return
+ *   \arg \c 0, Success.
+ *   \arg \c -1, Error occurred (check #harp_errno).
  */
 static int resample_against_grid(harp_product *product, harp_variable *target_grid)
 {
@@ -670,7 +686,6 @@ static int resample_against_grid(harp_product *product, harp_variable *target_gr
         if (harp_product_add_derived_variable(product,
                                               target_grid->name, target_grid->unit, 2, vertical_2d_dim_type) != 0)
         {
-            printf("Failed to derive source grid: %s\n", harp_errno_to_string(harp_errno));
             return -1;
         }
 
@@ -730,7 +745,7 @@ static int resample_against_grid(harp_product *product, harp_variable *target_gr
         }
         else if (skip > 0)
         {
-            printf("Removing variable %s; unresamplable dimensions\n", variable->name);
+            harp_report_warning("Removing variable %s; unresamplable dimensions\n", variable->name);
             harp_product_remove_variable(product, variable);
             continue;
         }
@@ -738,7 +753,6 @@ static int resample_against_grid(harp_product *product, harp_variable *target_gr
         /* Ensure that the variable data consists of doubles */
         if (variable->data_type != harp_type_double && harp_variable_convert_data_type(variable, harp_type_double) != 0)
         {
-            printf("Cannot resample variable '%s': '%s'\n", variable->name, harp_errno_to_string(harp_errno));
             harp_variable_delete(target_grid);
             return -1;
         }
@@ -794,26 +808,30 @@ static int resample_against_grid(harp_product *product, harp_variable *target_gr
     harp_variable_copy(target_grid, &vertical_axis);
     if (harp_product_replace_variable(product, vertical_axis) != 0)
     {
-        printf("Error replacing vertical axis in product: %s\n", harp_errno_to_string(harp_errno));
         return -1;
     }
 
     return 0;
 }
 
+/**
+ * Resample against grid as read from specified CSV file.
+ *
+ * \return
+ *   \arg \c 0, Success.
+ *   \arg \c -1, Error occurred (check #harp_errno).
+ */
 static int resample_common_grid(harp_product *product, const char *grid_input_filename)
 {
     harp_variable *target_grid = NULL;
 
     if (grid_import(grid_input_filename, &target_grid) != 0)
     {
-        printf("Failed to import grid from '%s'\n", grid_input_filename);
         return -1;
     }
 
     if (resample_against_grid(product, target_grid) != 0)
     {
-        printf("Failed to resample against common grid.\n");
         return -1;
     }
 
@@ -898,7 +916,7 @@ static int resample(int argc, char *argv[])
     {
         if (resample_common_grid(product, grid_input_filename) != 0)
         {
-            fprintf(stderr, "ERROR: failed resampling to common grid.\n");
+            fprintf(stderr, "ERROR: failed resampling to common grid: %s\n", harp_errno_to_string(harp_errno));
             return -1;
         }
 
