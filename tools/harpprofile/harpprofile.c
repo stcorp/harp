@@ -702,7 +702,7 @@ static int resample_against_grid(harp_product *product, harp_variable* target_gr
         int dim_id;
         long time;
         long block_id;
-        int skip = -1;
+        int skip; /* <0: don't skipt, 0: skip, >0: delete */
 
         /* Calculate the number of num_blocks for which time is constant for time-dependent resampling */
         if (source_time_dim_length != 0)
@@ -711,12 +711,16 @@ static int resample_against_grid(harp_product *product, harp_variable* target_gr
         }
 
         /* Ensure that there is only 1 vertical dimension, that it's the fastest running one and has scalar values */
+        skip = 0; /* assume that the variable has no vertical component */
         for (dim_id = 0; dim_id < variable->num_dimensions; dim_id++)
         {
             if (variable->dimension_type[dim_id] == harp_dimension_vertical)
             {
+                skip = -1; /* variable has vertical component */
                 if (dim_id != variable->num_dimensions - 1) {
-                    skip = 0;
+                    /* variable has vertical dimension but cannot be resampled */
+                    skip = 1;
+                    break;
                 }
             }
         }
@@ -724,12 +728,16 @@ static int resample_against_grid(harp_product *product, harp_variable* target_gr
         /* We can't resample string-typed variables */
         if (variable->data_type == harp_type_string)
         {
-            skip = 0;
+            skip = 1;
         }
 
         /* TODO skip based on name restrictions */
 
         if (skip == 0)
+        {
+            continue;
+        }
+        else if (skip > 0)
         {
             printf("Removing variable %s; unresamplable dimensions\n", variable->name);
             harp_product_remove_variable(product, variable);
