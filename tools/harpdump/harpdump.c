@@ -194,7 +194,7 @@ int main(int argc, char *argv[])
         exit(1);
     }
 
-    harp_product_print(product, !list, &printf);
+    harp_product_print(product, !list, printf);
 
     if (data && !list)
     {
