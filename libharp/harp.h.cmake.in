@@ -164,6 +164,7 @@ LIBHARP_API extern int harp_errno;
 #define HARP_UNIT_DATETIME "s since 2000-01-01"
 #define HARP_UNIT_DIMENSIONLESS ""
 #define HARP_UNIT_FREQUENCY "Hz"
+#define HARP_UNIT_GEOPOTENTIAL "m2/s2"
 #define HARP_UNIT_IRRADIANCE "mW/m2"
 #define HARP_UNIT_LATITUDE "degree_north"
 #define HARP_UNIT_LENGTH "m"
