@@ -66,62 +66,6 @@ static void print_help()
     printf("\n");
 }
 
-static void write_array(harp_array data, harp_data_type data_type, long num_elements)
-{
-    long i;
-
-    for (i = 0; i < num_elements; i++)
-    {
-        switch (data_type)
-        {
-            case harp_type_int8:
-                printf("%d", (int)data.int8_data[i]);
-                break;
-            case harp_type_int16:
-                printf("%d", (int)data.int16_data[i]);
-                break;
-            case harp_type_int32:
-                printf("%ld", (long)data.int32_data[i]);
-                break;
-            case harp_type_float:
-                printf("%.16g", (double)data.float_data[i]);
-                break;
-            case harp_type_double:
-                printf("%.16g", (double)data.double_data[i]);
-                break;
-            case harp_type_string:
-                printf("\"%s\"", data.string_data[i]);
-                break;
-        }
-        if (i < num_elements - 1)
-        {
-            printf(", ");
-        }
-    }
-}
-
-static void write_variable_data(harp_variable *variable)
-{
-    printf("%s", variable->name);
-    printf(" = ");
-    write_array(variable->data, variable->data_type, variable->num_elements);
-    printf("\n\n");
-}
-
-
-static int dump_data(const harp_product *product)
-{
-    int i;
-
-    printf("data:\n");
-    for (i = 0; i < product->num_variables; i++)
-    {
-        write_variable_data(product->variable[i]);
-    }
-
-    return 0;
-}
-
 int main(int argc, char *argv[])
 {
     harp_product *product;
@@ -194,18 +138,8 @@ int main(int argc, char *argv[])
         exit(1);
     }
 
-    harp_product_print(product, !list, printf);
+    harp_product_print(product, !list, data && !list, printf);
 
-    if (data && !list)
-    {
-        if (dump_data(product) != 0)
-        {
-            fprintf(stderr, "ERROR: %s\n", harp_errno_to_string(harp_errno));
-            harp_product_delete(product);
-            harp_done();
-            exit(1);
-        }
-    }
     harp_product_delete(product);
 
     harp_done();

@@ -54,6 +54,40 @@ static void write_scalar(harp_scalar data, harp_data_type data_type, int (*print
     }
 }
 
+static void write_array(harp_array data, harp_data_type data_type, long num_elements, int (*print) (const char *, ...))
+{
+    long i;
+
+    for (i = 0; i < num_elements; i++)
+    {
+        switch (data_type)
+        {
+            case harp_type_int8:
+                print("%d", (int)data.int8_data[i]);
+                break;
+            case harp_type_int16:
+                print("%d", (int)data.int16_data[i]);
+                break;
+            case harp_type_int32:
+                print("%ld", (long)data.int32_data[i]);
+                break;
+            case harp_type_float:
+                print("%.16g", (double)data.float_data[i]);
+                break;
+            case harp_type_double:
+                print("%.16g", (double)data.double_data[i]);
+                break;
+            case harp_type_string:
+                print("\"%s\"", data.string_data[i]);
+                break;
+        }
+        if (i < num_elements - 1)
+        {
+            print(", ");
+        }
+    }
+}
+
 
 /** \addtogroup harp_variable
  * @{
@@ -1840,5 +1874,19 @@ LIBHARP_API void harp_variable_print(harp_variable *variable, int show_attribute
     }
     print("\n");
 }
+
+/** Print the data of a harp_variable using the specified print function.
+ * \param variable Variable whose data to print.
+ * \param print Print function to use
+ */
+LIBHARP_API void harp_variable_print_data(harp_variable *variable, int (*print) (const char *, ...))
+{
+    print("%s", variable->name);
+    print(" = ");
+    write_array(variable->data, variable->data_type, variable->num_elements, print);
+    print("\n\n");
+}
+
+/** @} */
 
 /** @} */

@@ -1187,9 +1187,11 @@ int harp_product_get_datetime_range(const harp_product *product, double *datetim
 /** Print a harp_product struct using the specified print function.
  * \param product Product to print.
  * \param show_attributes Whether or not to print the attributes of variables.
+ * \param show_data Whether or not to print the data arrays of the variables
  * \param print Print function to use
  */
-LIBHARP_API void harp_product_print(const harp_product *product, int show_attributes, int (*print) (const char *, ...))
+LIBHARP_API void harp_product_print(const harp_product *product, int show_attributes, int show_data,
+                                    int (*print) (const char *, ...))
 {
     int i;
 
@@ -1220,6 +1222,15 @@ LIBHARP_API void harp_product_print(const harp_product *product, int show_attrib
         harp_variable_print(product->variable[i], show_attributes, print);
     }
     print("\n");
+
+    if (show_data)
+    {
+        print("data:\n");
+        for (i = 0; i < product->num_variables; i++)
+        {
+            harp_variable_print_data(product->variable[i], print);
+        }
+    }
 
     return;
 }
