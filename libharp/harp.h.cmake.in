@@ -164,6 +164,7 @@ LIBHARP_API extern int harp_errno;
 #define HARP_UNIT_DATETIME "s since 2000-01-01"
 #define HARP_UNIT_DIMENSIONLESS ""
 #define HARP_UNIT_FREQUENCY "Hz"
+#define HARP_UNIT_GEOPOTENTIAL "m2/s2"
 #define HARP_UNIT_IRRADIANCE "mW/m2"
 #define HARP_UNIT_LATITUDE "degree_north"
 #define HARP_UNIT_LENGTH "m"
@@ -372,6 +373,7 @@ LIBHARP_API int harp_variable_has_dimension_types(const harp_variable *variable,
                                                   const harp_dimension_type *dimension_type);
 LIBHARP_API int harp_variable_has_unit(const harp_variable *variable, const char *unit);
 LIBHARP_API int harp_variable_verify(const harp_variable *variable);
+LIBHARP_API void harp_variable_print(harp_variable *variable, int show_attributes, int (*print) (const char *, ...));
 
 /* Product */
 LIBHARP_API int harp_product_new(harp_product **new_product);
@@ -396,6 +398,7 @@ LIBHARP_API int harp_product_add_derived_variable(harp_product *product, const c
 LIBHARP_API int harp_product_update_history(harp_product *product, const char *executable, int argc, char *argv[]);
 LIBHARP_API int harp_product_verify(const harp_product *product);
 LIBHARP_API int harp_product_execute_actions(harp_product *product, const char *actions);
+LIBHARP_API void harp_product_print(const harp_product *product, int show_attributes, int (*print) (const char *, ...));
 
 /* Ingestion */
 LIBHARP_API int harp_ingest(const char *filename, const char *script, const char *options, harp_product **product);

@@ -1183,3 +1183,43 @@ int harp_product_get_datetime_range(const harp_product *product, double *datetim
 
     return 0;
 }
+
+/** Print a harp_product struct using the specified print function.
+ * \param product Product to print.
+ * \param show_attributes Whether or not to print the attributes of variables.
+ * \param print Print function to use
+ */
+LIBHARP_API void harp_product_print(const harp_product *product, int show_attributes, int (*print) (const char *, ...))
+{
+    int i;
+
+    print("dimensions:\n");
+    for (i = 0; i < HARP_NUM_DIM_TYPES; i++)
+    {
+        if (product->dimension[i] > 0)
+        {
+            print("    %s = %ld\n", harp_get_dimension_type_name(i), product->dimension[i]);
+        }
+    }
+    print("\n");
+
+    print("attributes:\n");
+    if (product->source_product != NULL)
+    {
+        print("    source_product = \"%s\"\n", product->source_product);
+    }
+    if (product->history != NULL)
+    {
+        print("    history = \"%s\"\n", product->history);
+    }
+    print("\n");
+
+    print("variables:\n");
+    for (i = 0; i < product->num_variables; i++)
+    {
+        harp_variable_print(product->variable[i], show_attributes, print);
+    }
+    print("\n");
+
+    return;
+}
