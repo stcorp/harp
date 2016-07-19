@@ -562,7 +562,7 @@ LIBHARP_API int harp_product_replace_variable(harp_product *product, harp_variab
         return -1;
     }
 
-    if (product->variable[variable_id] != variable)
+    if (product->variable[variable_id] == variable)
     {
         /* Attempt to replace variable by itself. */
         return 0;
