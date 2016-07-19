@@ -790,7 +790,7 @@ static int resample_against_grid(harp_product *product, harp_variable* target_gr
         }
 
         /* Update the vertical dimension length */
-        variable->dimension[variable->num_dimensions] = target_grid->num_elements;
+        variable->dimension[variable->num_dimensions-1] = target_vertical_elements;
 
         /* Set the new variable data */
         harp_array old_data = variable->data;
