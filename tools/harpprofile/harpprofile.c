@@ -737,6 +737,12 @@ static int resample_against_grid(harp_product *product, harp_variable *target_gr
             skip = 1;
         }
 
+        /* skip the source grid variable, we'll set that afterwards */
+        if (variable == source_grid)
+        {
+            skip = 0;
+        }
+
         /* TODO skip based on name restrictions */
 
         if (skip == 0)
@@ -774,7 +780,7 @@ static int resample_against_grid(harp_product *product, harp_variable *target_gr
         }
 
         /* Interpolate the data of the variable over the vertical axis */
-        time = 0;
+        time = -1;
         for (block_id = 0; block_id < num_blocks; block_id++)
         {
             /* keep track of time for time-dependent vertical grids */
