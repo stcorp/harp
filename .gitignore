@@ -5,6 +5,7 @@
 .dirstamp
 .libs
 stamp-*
+/.indent.pro
 /Makefile
 /Makefile.in
 /aclocal.m4

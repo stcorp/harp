@@ -1,3 +1,12 @@
+* Added public functions harp_report_warning(), harp_get_warning_handler(),
+  harp_set_warning_handler().
+
+* harp_ingest_test() now takes a 'print' parameter to specify a print
+  function where test status messages will be written.
+
+* Added 'geopotential' as a supported quantity with conversions from/to
+  'geopotential height'.
+
 0.2 2016-06-30
 ~~~~~~~~~~~~~~
 

@@ -369,7 +369,7 @@ LIBHARP_API int harp_get_option_enable_aux_usstd76(void)
 
 /** Initializes the HARP C library.
  * This function should be called before any other HARP C library function is called (except for
- * harp_set_coda_definition_path() and harp_set_coda_definition_path_conditional()).
+ * harp_set_coda_definition_path(), harp_set_coda_definition_path_conditional(), and harp_set_warning_handler()).
  *
  * HARP may at some point after calling harp_init() also initialize the underlying CODA C library that is used for
  * ingestion of products that are not using the HARP format.

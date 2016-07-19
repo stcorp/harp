@@ -500,8 +500,6 @@ int harp_variable_filter_dimension(harp_variable *variable, int dim_index, const
 /** Resize the dimension of a variable.
  * If the new dimension is shorter, the dimension is truncated.
  * If the new dimension is larger, new items will be filled with NaN (floating point), 0 (integer), or NULL (string).
- * Note that this function does not update the length of any corresponding axis variable. It is the responsibility of
- * the caller of this function to make sure that axis variables get resized if needed.
  * \param variable Pointer to variable that should have a dimension added.
  * \param dim_index The position in the list of dimensions that needs to be resized.
  * \param length The new length of the dimension

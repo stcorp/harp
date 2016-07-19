@@ -29,6 +29,17 @@
 #include <stdlib.h>
 #include <string.h>
 
+static int print_warning(const char *message, va_list ap)
+{
+    int result;
+
+    fprintf(stderr, "WARNING: ");
+    result = vfprintf(stderr, message, ap);
+    fprintf(stderr, "\n");
+
+    return result;
+}
+
 static void print_version()
 {
     printf("harpconvert version %s\n", libharp_version);
@@ -307,7 +318,7 @@ static int test_conversions(int argc, char *argv[])
 
     for (i = 2; i < argc; i++)
     {
-        if (harp_ingest_test(argv[i]) != 0)
+        if (harp_ingest_test(argv[i], printf) != 0)
         {
             fprintf(stderr, "ERROR: %s\n", harp_errno_to_string(harp_errno));
             result = -1;
@@ -412,32 +423,34 @@ int main(int argc, char *argv[])
     if (argc == 1 || strcmp(argv[1], "-h") == 0 || strcmp(argv[1], "--help") == 0)
     {
         print_help();
-        return 0;
+        exit(0);
     }
 
     if (strcmp(argv[1], "-v") == 0 || strcmp(argv[1], "--version") == 0)
     {
         print_version();
-        return 0;
+        exit(0);
     }
 
     if (argc < 2)
     {
         fprintf(stderr, "ERROR: invalid arguments\n");
         print_help();
-        return 1;
+        exit(1);
     }
 
     if (harp_set_coda_definition_path_conditional(argv[0], NULL, definition_path) != 0)
     {
         fprintf(stderr, "ERROR: %s\n", harp_errno_to_string(harp_errno));
-        return 1;
+        exit(1);
     }
+
+    harp_set_warning_handler(print_warning);
 
     if (harp_init() != 0)
     {
         fprintf(stderr, "ERROR: %s\n", harp_errno_to_string(harp_errno));
-        return 1;
+        exit(1);
     }
 
     if (strcmp(argv[1], "--list-conversions") == 0)
@@ -464,20 +477,20 @@ int main(int argc, char *argv[])
             fprintf(stderr, "ERROR: %s\n", harp_errno_to_string(harp_errno));
         }
         harp_done();
-        return 1;
+        exit(1);
     }
     else if (result == -2)
     {
-        fprintf(stderr, "WARNING: product is empty\n");
+        harp_report_warning("product is empty");
         harp_done();
-        return 2;
+        exit(2);
     }
     else if (result == 1)
     {
         fprintf(stderr, "ERROR: invalid arguments\n");
         print_help();
         harp_done();
-        return 1;
+        exit(1);
     }
 
     harp_done();

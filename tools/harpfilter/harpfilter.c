@@ -28,6 +28,17 @@
 #include <stdlib.h>
 #include <string.h>
 
+static int print_warning(const char *message, va_list ap)
+{
+    int result;
+
+    fprintf(stderr, "WARNING: ");
+    result = vfprintf(stderr, message, ap);
+    fprintf(stderr, "\n");
+
+    return result;
+}
+
 static void print_version()
 {
     printf("harpfilter version %s\n", libharp_version);
@@ -275,7 +286,6 @@ static int filter(int argc, char *argv[])
 
     if (harp_product_is_empty(product))
     {
-        fprintf(stderr, "WARNING: filtered product is empty\n");
         harp_product_delete(product);
         return -2;
     }
@@ -305,26 +315,28 @@ int main(int argc, char *argv[])
     if (argc == 1 || strcmp(argv[1], "-h") == 0 || strcmp(argv[1], "--help") == 0)
     {
         print_help();
-        return 0;
+        exit(0);
     }
 
     if (strcmp(argv[1], "-v") == 0 || strcmp(argv[1], "--version") == 0)
     {
         print_version();
-        return 0;
+        exit(0);
     }
 
     if (argc < 2)
     {
         fprintf(stderr, "ERROR: invalid arguments\n");
         print_help();
-        return 1;
+        exit(1);
     }
+
+    harp_set_warning_handler(print_warning);
 
     if (harp_init() != 0)
     {
         fprintf(stderr, "ERROR: %s\n", harp_errno_to_string(harp_errno));
-        return 1;
+        exit(1);
     }
 
     if (strcmp(argv[1], "--list-conversions") == 0)
@@ -333,7 +345,7 @@ int main(int argc, char *argv[])
         {
             fprintf(stderr, "ERROR: %s\n", harp_errno_to_string(harp_errno));
             harp_done();
-            return -1;
+            exit(1);
         }
     }
     else
@@ -349,12 +361,13 @@ int main(int argc, char *argv[])
                 fprintf(stderr, "ERROR: %s\n", harp_errno_to_string(harp_errno));
             }
             harp_done();
-            return 1;
+            exit(1);
         }
         else if (result == -2)
         {
+            harp_report_warning("filtered product is empty");
             harp_done();
-            return 1;
+            exit(2);
         }
     }
 

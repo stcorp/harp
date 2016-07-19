@@ -57,12 +57,25 @@ typedef enum uvvis_doas_gas_enum
     num_uvvis_doas_gas
 } uvvis_doas_gas;
 
-static const char *gas_name[num_uvvis_doas_gas] = {
+static const char *geoms_gas_name[num_uvvis_doas_gas] = {
     "BrO",
     "CHOCHO",
     "H2CO",
     "H2O",
     "HONO",
+    "IO",
+    "NO2",
+    "O3",
+    "OClO",
+    "SO2",
+};
+
+static const char *harp_gas_name[num_uvvis_doas_gas] = {
+    "BrO",
+    "C2H2O2",
+    "HCOH",
+    "H2O",
+    "HNO2",
     "IO",
     "NO2",
     "O3",
@@ -592,7 +605,7 @@ static int read_column_solar(void *user_data, harp_array data)
     ingest_info *info = (ingest_info *)user_data;
     char path[MAX_PATH_LENGTH];
 
-    snprintf(path, MAX_PATH_LENGTH, "/%s_COLUMN_ABSORPTION_SOLAR", gas_name[info->gas]);
+    snprintf(path, MAX_PATH_LENGTH, "/%s_COLUMN_ABSORPTION_SOLAR", geoms_gas_name[info->gas]);
     return read_variable_double(user_data, path, info->num_time, data);
 }
 
@@ -601,7 +614,8 @@ static int read_column_solar_uncertainty_random(void *user_data, harp_array data
     ingest_info *info = (ingest_info *)user_data;
     char path[MAX_PATH_LENGTH];
 
-    snprintf(path, MAX_PATH_LENGTH, "/%s_COLUMN_ABSORPTION_SOLAR_UNCERTAINTY_RANDOM_STANDARD", gas_name[info->gas]);
+    snprintf(path, MAX_PATH_LENGTH, "/%s_COLUMN_ABSORPTION_SOLAR_UNCERTAINTY_RANDOM_STANDARD",
+             geoms_gas_name[info->gas]);
     return read_variable_double(user_data, path, info->num_time, data);
 }
 
@@ -610,7 +624,8 @@ static int read_column_solar_uncertainty_systematic(void *user_data, harp_array 
     ingest_info *info = (ingest_info *)user_data;
     char path[MAX_PATH_LENGTH];
 
-    snprintf(path, MAX_PATH_LENGTH, "/%s_COLUMN_ABSORPTION_SOLAR_UNCERTAINTY_SYSTEMATIC_STANDARD", gas_name[info->gas]);
+    snprintf(path, MAX_PATH_LENGTH, "/%s_COLUMN_ABSORPTION_SOLAR_UNCERTAINTY_SYSTEMATIC_STANDARD",
+             geoms_gas_name[info->gas]);
     return read_variable_double(user_data, path, info->num_time, data);
 }
 
@@ -619,7 +634,7 @@ static int read_column_solar_apriori(void *user_data, harp_array data)
     ingest_info *info = (ingest_info *)user_data;
     char path[MAX_PATH_LENGTH];
 
-    snprintf(path, MAX_PATH_LENGTH, "/%s_COLUMN_ABSORPTION_SOLAR_APRIORI", gas_name[info->gas]);
+    snprintf(path, MAX_PATH_LENGTH, "/%s_COLUMN_ABSORPTION_SOLAR_APRIORI", geoms_gas_name[info->gas]);
     return read_variable_double(user_data, path, info->num_time, data);
 }
 
@@ -628,7 +643,7 @@ static int read_partial_column_solar_apriori(void *user_data, harp_array data)
     ingest_info *info = (ingest_info *)user_data;
     char path[MAX_PATH_LENGTH];
 
-    snprintf(path, MAX_PATH_LENGTH, "/%s_COLUMN_PARTIAL_ABSORPTION_SOLAR_APRIORI", gas_name[info->gas]);
+    snprintf(path, MAX_PATH_LENGTH, "/%s_COLUMN_PARTIAL_ABSORPTION_SOLAR_APRIORI", geoms_gas_name[info->gas]);
     return read_vertical_variable_double(user_data, path, info->num_time * info->num_vertical, data);
 }
 
@@ -637,7 +652,7 @@ static int read_column_solar_avk(void *user_data, harp_array data)
     ingest_info *info = (ingest_info *)user_data;
     char path[MAX_PATH_LENGTH];
 
-    snprintf(path, MAX_PATH_LENGTH, "/%s_COLUMN_ABSORPTION_SOLAR_AVK", gas_name[info->gas]);
+    snprintf(path, MAX_PATH_LENGTH, "/%s_COLUMN_ABSORPTION_SOLAR_AVK", geoms_gas_name[info->gas]);
     return read_vertical_variable_double(user_data, path, info->num_time * info->num_vertical, data);
 }
 
@@ -646,7 +661,7 @@ static int read_vmr_offaxis(void *user_data, harp_array data)
     ingest_info *info = (ingest_info *)user_data;
     char path[MAX_PATH_LENGTH];
 
-    snprintf(path, MAX_PATH_LENGTH, "/%s_MIXING_RATIO_VOLUME_SCATTER_SOLAR_OFFAXIS", gas_name[info->gas]);
+    snprintf(path, MAX_PATH_LENGTH, "/%s_MIXING_RATIO_VOLUME_SCATTER_SOLAR_OFFAXIS", geoms_gas_name[info->gas]);
     if (read_vertical_variable_double(user_data, path, info->num_time * info->num_vertical, data) != 0)
     {
         return -1;
@@ -667,7 +682,7 @@ static int read_vmr_offaxis_cov_random(void *user_data, harp_array data)
     char path[MAX_PATH_LENGTH];
 
     snprintf(path, MAX_PATH_LENGTH, "/%s_MIXING_RATIO_VOLUME_SCATTER_SOLAR_OFFAXIS_UNCERTAINTY_RANDOM_COVARIANCE",
-             gas_name[info->gas]);
+             geoms_gas_name[info->gas]);
     if (read_vertical2d_variable_double(user_data, path, info->num_time * info->num_vertical * info->num_vertical, data)
         != 0)
     {
@@ -689,7 +704,7 @@ static int read_vmr_offaxis_cov_systematic(void *user_data, harp_array data)
     char path[MAX_PATH_LENGTH];
 
     snprintf(path, MAX_PATH_LENGTH, "/%s_MIXING_RATIO_VOLUME_SCATTER_SOLAR_OFFAXIS_UNCERTAINTY_SYSTEMATIC_COVARIANCE",
-             gas_name[info->gas]);
+             geoms_gas_name[info->gas]);
     if (read_vertical2d_variable_double(user_data, path, info->num_time * info->num_vertical * info->num_vertical, data)
         != 0)
     {
@@ -710,7 +725,7 @@ static int read_vmr_offaxis_apriori(void *user_data, harp_array data)
     ingest_info *info = (ingest_info *)user_data;
     char path[MAX_PATH_LENGTH];
 
-    snprintf(path, MAX_PATH_LENGTH, "/%s_MIXING_RATIO_VOLUME_SCATTER_SOLAR_OFFAXIS_APRIORI", gas_name[info->gas]);
+    snprintf(path, MAX_PATH_LENGTH, "/%s_MIXING_RATIO_VOLUME_SCATTER_SOLAR_OFFAXIS_APRIORI", geoms_gas_name[info->gas]);
     if (read_vertical_variable_double(user_data, path, info->num_time * info->num_vertical, data) != 0)
     {
         return -1;
@@ -730,7 +745,7 @@ static int read_vmr_offaxis_avk(void *user_data, harp_array data)
     ingest_info *info = (ingest_info *)user_data;
     char path[MAX_PATH_LENGTH];
 
-    snprintf(path, MAX_PATH_LENGTH, "/%s_MIXING_RATIO_VOLUME_SCATTER_SOLAR_OFFAXIS_AVK", gas_name[info->gas]);
+    snprintf(path, MAX_PATH_LENGTH, "/%s_MIXING_RATIO_VOLUME_SCATTER_SOLAR_OFFAXIS_AVK", geoms_gas_name[info->gas]);
     return read_vertical2d_variable_double(user_data, path, info->num_time * info->num_vertical * info->num_vertical,
                                            data);
 }
@@ -740,7 +755,7 @@ static int read_tropo_column_offaxis(void *user_data, harp_array data)
     ingest_info *info = (ingest_info *)user_data;
     char path[MAX_PATH_LENGTH];
 
-    snprintf(path, MAX_PATH_LENGTH, "/%s_COLUMN_TROPOSPHERIC_SCATTER_SOLAR_OFFAXIS", gas_name[info->gas]);
+    snprintf(path, MAX_PATH_LENGTH, "/%s_COLUMN_TROPOSPHERIC_SCATTER_SOLAR_OFFAXIS", geoms_gas_name[info->gas]);
     return read_variable_double(user_data, path, info->num_time, data);
 }
 
@@ -750,7 +765,7 @@ static int read_tropo_column_offaxis_uncertainty_random(void *user_data, harp_ar
     char path[MAX_PATH_LENGTH];
 
     snprintf(path, MAX_PATH_LENGTH, "/%s_COLUMN_TROPOSPHERIC_SCATTER_SOLAR_OFFAXIS_UNCERTAINTY_RANDOM_STANDARD",
-             gas_name[info->gas]);
+             geoms_gas_name[info->gas]);
     return read_variable_double(user_data, path, info->num_time, data);
 }
 
@@ -760,7 +775,7 @@ static int read_tropo_column_offaxis_uncertainty_systematic(void *user_data, har
     char path[MAX_PATH_LENGTH];
 
     snprintf(path, MAX_PATH_LENGTH, "/%s_COLUMN_TROPOSPHERIC_SCATTER_SOLAR_OFFAXIS_UNCERTAINTY_SYSTEMATIC_STANDARD",
-             gas_name[info->gas]);
+             geoms_gas_name[info->gas]);
     return read_variable_double(user_data, path, info->num_time, data);
 }
 
@@ -769,7 +784,7 @@ static int read_tropo_column_offaxis_apriori(void *user_data, harp_array data)
     ingest_info *info = (ingest_info *)user_data;
     char path[MAX_PATH_LENGTH];
 
-    snprintf(path, MAX_PATH_LENGTH, "/%s_COLUMN_TROPOSPHERIC_SCATTER_SOLAR_OFFAXIS_APRIORI", gas_name[info->gas]);
+    snprintf(path, MAX_PATH_LENGTH, "/%s_COLUMN_TROPOSPHERIC_SCATTER_SOLAR_OFFAXIS_APRIORI", geoms_gas_name[info->gas]);
     return read_variable_double(user_data, path, info->num_time, data);
 }
 
@@ -778,7 +793,7 @@ static int read_tropo_column_offaxis_avk(void *user_data, harp_array data)
     ingest_info *info = (ingest_info *)user_data;
     char path[MAX_PATH_LENGTH];
 
-    snprintf(path, MAX_PATH_LENGTH, "/%s_COLUMN_TROPOSPHERIC_SCATTER_SOLAR_OFFAXIS_AVK", gas_name[info->gas]);
+    snprintf(path, MAX_PATH_LENGTH, "/%s_COLUMN_TROPOSPHERIC_SCATTER_SOLAR_OFFAXIS_AVK", geoms_gas_name[info->gas]);
     return read_vertical_variable_double(user_data, path, info->num_time * info->num_vertical, data);
 }
 
@@ -787,7 +802,7 @@ static int read_partial_column_offaxis(void *user_data, harp_array data)
     ingest_info *info = (ingest_info *)user_data;
     char path[MAX_PATH_LENGTH];
 
-    snprintf(path, MAX_PATH_LENGTH, "/%s_COLUMN_PARTIAL_SCATTER_SOLAR_OFFAXIS", gas_name[info->gas]);
+    snprintf(path, MAX_PATH_LENGTH, "/%s_COLUMN_PARTIAL_SCATTER_SOLAR_OFFAXIS", geoms_gas_name[info->gas]);
     return read_vertical_variable_double(user_data, path, info->num_time * info->num_vertical, data);
 }
 
@@ -796,7 +811,7 @@ static int read_partial_column_offaxis_apriori(void *user_data, harp_array data)
     ingest_info *info = (ingest_info *)user_data;
     char path[MAX_PATH_LENGTH];
 
-    snprintf(path, MAX_PATH_LENGTH, "/%s_COLUMN_PARTIAL_SCATTER_SOLAR_OFFAXIS_APRIORI", gas_name[info->gas]);
+    snprintf(path, MAX_PATH_LENGTH, "/%s_COLUMN_PARTIAL_SCATTER_SOLAR_OFFAXIS_APRIORI", geoms_gas_name[info->gas]);
     return read_vertical_variable_double(user_data, path, info->num_time * info->num_vertical, data);
 }
 
@@ -805,7 +820,7 @@ static int read_vmr_zenith(void *user_data, harp_array data)
     ingest_info *info = (ingest_info *)user_data;
     char path[MAX_PATH_LENGTH];
 
-    snprintf(path, MAX_PATH_LENGTH, "/%s_MIXING_RATIO_VOLUME_SCATTER_SOLAR_ZENITH", gas_name[info->gas]);
+    snprintf(path, MAX_PATH_LENGTH, "/%s_MIXING_RATIO_VOLUME_SCATTER_SOLAR_ZENITH", geoms_gas_name[info->gas]);
     if (read_vertical_variable_double(user_data, path, info->num_time * info->num_vertical, data) != 0)
     {
         return -1;
@@ -826,7 +841,7 @@ static int read_vmr_zenith_cov_random(void *user_data, harp_array data)
     char path[MAX_PATH_LENGTH];
 
     snprintf(path, MAX_PATH_LENGTH, "/%s_MIXING_RATIO_VOLUME_SCATTER_SOLAR_ZENITH_UNCERTAINTY_RANDOM_COVARIANCE",
-             gas_name[info->gas]);
+             geoms_gas_name[info->gas]);
     if (read_vertical2d_variable_double(user_data, path, info->num_time * info->num_vertical * info->num_vertical, data)
         != 0)
     {
@@ -848,7 +863,7 @@ static int read_vmr_zenith_cov_systematic(void *user_data, harp_array data)
     char path[MAX_PATH_LENGTH];
 
     snprintf(path, MAX_PATH_LENGTH, "/%s_MIXING_RATIO_VOLUME_SCATTER_SOLAR_ZENITH_UNCERTAINTY_SYSTEMATIC_COVARIANCE",
-             gas_name[info->gas]);
+             geoms_gas_name[info->gas]);
     if (read_vertical2d_variable_double(user_data, path, info->num_time * info->num_vertical * info->num_vertical, data)
         != 0)
     {
@@ -869,7 +884,7 @@ static int read_vmr_zenith_apriori(void *user_data, harp_array data)
     ingest_info *info = (ingest_info *)user_data;
     char path[MAX_PATH_LENGTH];
 
-    snprintf(path, MAX_PATH_LENGTH, "/%s_MIXING_RATIO_VOLUME_SCATTER_SOLAR_ZENITH_APRIORI", gas_name[info->gas]);
+    snprintf(path, MAX_PATH_LENGTH, "/%s_MIXING_RATIO_VOLUME_SCATTER_SOLAR_ZENITH_APRIORI", geoms_gas_name[info->gas]);
     if (read_vertical_variable_double(user_data, path, info->num_time * info->num_vertical, data) != 0)
     {
         return -1;
@@ -889,7 +904,7 @@ static int read_vmr_zenith_avk(void *user_data, harp_array data)
     ingest_info *info = (ingest_info *)user_data;
     char path[MAX_PATH_LENGTH];
 
-    snprintf(path, MAX_PATH_LENGTH, "/%s_MIXING_RATIO_VOLUME_SCATTER_SOLAR_ZENITH_AVK", gas_name[info->gas]);
+    snprintf(path, MAX_PATH_LENGTH, "/%s_MIXING_RATIO_VOLUME_SCATTER_SOLAR_ZENITH_AVK", geoms_gas_name[info->gas]);
     return read_vertical2d_variable_double(user_data, path, info->num_time * info->num_vertical * info->num_vertical,
                                            data);
 }
@@ -899,7 +914,7 @@ static int read_tropo_column_zenith(void *user_data, harp_array data)
     ingest_info *info = (ingest_info *)user_data;
     char path[MAX_PATH_LENGTH];
 
-    snprintf(path, MAX_PATH_LENGTH, "/%s_COLUMN_TROPOSPHERIC_SCATTER_SOLAR_ZENITH", gas_name[info->gas]);
+    snprintf(path, MAX_PATH_LENGTH, "/%s_COLUMN_TROPOSPHERIC_SCATTER_SOLAR_ZENITH", geoms_gas_name[info->gas]);
     return read_variable_double(user_data, path, info->num_time, data);
 }
 
@@ -909,7 +924,7 @@ static int read_tropo_column_zenith_uncertainty_random(void *user_data, harp_arr
     char path[MAX_PATH_LENGTH];
 
     snprintf(path, MAX_PATH_LENGTH, "/%s_COLUMN_TROPOSPHERIC_SCATTER_SOLAR_ZENITH_UNCERTAINTY_RANDOM_STANDARD",
-             gas_name[info->gas]);
+             geoms_gas_name[info->gas]);
     return read_variable_double(user_data, path, info->num_time, data);
 }
 
@@ -919,7 +934,7 @@ static int read_tropo_column_zenith_uncertainty_systematic(void *user_data, harp
     char path[MAX_PATH_LENGTH];
 
     snprintf(path, MAX_PATH_LENGTH, "/%s_COLUMN_TROPOSPHERIC_SCATTER_SOLAR_ZENITH_UNCERTAINTY_SYSTEMATIC_STANDARD",
-             gas_name[info->gas]);
+             geoms_gas_name[info->gas]);
     return read_variable_double(user_data, path, info->num_time, data);
 }
 
@@ -928,7 +943,7 @@ static int read_tropo_column_zenith_apriori(void *user_data, harp_array data)
     ingest_info *info = (ingest_info *)user_data;
     char path[MAX_PATH_LENGTH];
 
-    snprintf(path, MAX_PATH_LENGTH, "/%s_COLUMN_TROPOSPHERIC_SCATTER_SOLAR_ZENITH_APRIORI", gas_name[info->gas]);
+    snprintf(path, MAX_PATH_LENGTH, "/%s_COLUMN_TROPOSPHERIC_SCATTER_SOLAR_ZENITH_APRIORI", geoms_gas_name[info->gas]);
     return read_variable_double(user_data, path, info->num_time, data);
 }
 
@@ -937,7 +952,7 @@ static int read_tropo_column_zenith_avk(void *user_data, harp_array data)
     ingest_info *info = (ingest_info *)user_data;
     char path[MAX_PATH_LENGTH];
 
-    snprintf(path, MAX_PATH_LENGTH, "/%s_COLUMN_TROPOSPHERIC_SCATTER_SOLAR_ZENITH_AVK", gas_name[info->gas]);
+    snprintf(path, MAX_PATH_LENGTH, "/%s_COLUMN_TROPOSPHERIC_SCATTER_SOLAR_ZENITH_AVK", geoms_gas_name[info->gas]);
     return read_vertical_variable_double(user_data, path, info->num_time * info->num_vertical, data);
 }
 
@@ -946,7 +961,7 @@ static int read_strat_column_zenith(void *user_data, harp_array data)
     ingest_info *info = (ingest_info *)user_data;
     char path[MAX_PATH_LENGTH];
 
-    snprintf(path, MAX_PATH_LENGTH, "/%s_COLUMN_STRATOSPHERIC_SCATTER_SOLAR_ZENITH", gas_name[info->gas]);
+    snprintf(path, MAX_PATH_LENGTH, "/%s_COLUMN_STRATOSPHERIC_SCATTER_SOLAR_ZENITH", geoms_gas_name[info->gas]);
     return read_variable_double(user_data, path, info->num_time, data);
 }
 
@@ -956,7 +971,7 @@ static int read_strat_column_zenith_uncertainty_random(void *user_data, harp_arr
     char path[MAX_PATH_LENGTH];
 
     snprintf(path, MAX_PATH_LENGTH, "/%s_COLUMN_STRATOSPHERIC_SCATTER_SOLAR_ZENITH_UNCERTAINTY_RANDOM_STANDARD",
-             gas_name[info->gas]);
+             geoms_gas_name[info->gas]);
     return read_variable_double(user_data, path, info->num_time, data);
 }
 
@@ -966,7 +981,7 @@ static int read_strat_column_zenith_uncertainty_systematic(void *user_data, harp
     char path[MAX_PATH_LENGTH];
 
     snprintf(path, MAX_PATH_LENGTH, "/%s_COLUMN_STRATOSPHERIC_SCATTER_SOLAR_ZENITH_UNCERTAINTY_SYSTEMATIC_STANDARD",
-             gas_name[info->gas]);
+             geoms_gas_name[info->gas]);
     return read_variable_double(user_data, path, info->num_time, data);
 }
 
@@ -975,7 +990,7 @@ static int read_strat_column_zenith_apriori(void *user_data, harp_array data)
     ingest_info *info = (ingest_info *)user_data;
     char path[MAX_PATH_LENGTH];
 
-    snprintf(path, MAX_PATH_LENGTH, "/%s_COLUMN_STRATOSPHERIC_SCATTER_SOLAR_ZENITH_APRIORI", gas_name[info->gas]);
+    snprintf(path, MAX_PATH_LENGTH, "/%s_COLUMN_STRATOSPHERIC_SCATTER_SOLAR_ZENITH_APRIORI", geoms_gas_name[info->gas]);
     return read_variable_double(user_data, path, info->num_time, data);
 }
 
@@ -984,7 +999,7 @@ static int read_strat_column_zenith_avk(void *user_data, harp_array data)
     ingest_info *info = (ingest_info *)user_data;
     char path[MAX_PATH_LENGTH];
 
-    snprintf(path, MAX_PATH_LENGTH, "/%s_COLUMN_STRATOSPHERIC_SCATTER_SOLAR_ZENITH_AVK", gas_name[info->gas]);
+    snprintf(path, MAX_PATH_LENGTH, "/%s_COLUMN_STRATOSPHERIC_SCATTER_SOLAR_ZENITH_AVK", geoms_gas_name[info->gas]);
     return read_vertical_variable_double(user_data, path, info->num_time * info->num_vertical, data);
 }
 
@@ -993,7 +1008,7 @@ static int read_strat_column_zenith_amf(void *user_data, harp_array data)
     ingest_info *info = (ingest_info *)user_data;
     char path[MAX_PATH_LENGTH];
 
-    snprintf(path, MAX_PATH_LENGTH, "/%s_COLUMN_STRATOSPHERIC_SCATTER_SOLAR_ZENITH_AMF", gas_name[info->gas]);
+    snprintf(path, MAX_PATH_LENGTH, "/%s_COLUMN_STRATOSPHERIC_SCATTER_SOLAR_ZENITH_AMF", geoms_gas_name[info->gas]);
     return read_variable_double(user_data, path, info->num_time, data);
 }
 
@@ -1002,7 +1017,7 @@ static int read_partial_column_zenith(void *user_data, harp_array data)
     ingest_info *info = (ingest_info *)user_data;
     char path[MAX_PATH_LENGTH];
 
-    snprintf(path, MAX_PATH_LENGTH, "/%s_COLUMN_PARTIAL_SCATTER_SOLAR_ZENITH", gas_name[info->gas]);
+    snprintf(path, MAX_PATH_LENGTH, "/%s_COLUMN_PARTIAL_SCATTER_SOLAR_ZENITH", geoms_gas_name[info->gas]);
     return read_vertical_variable_double(user_data, path, info->num_time * info->num_vertical, data);
 }
 
@@ -1011,7 +1026,7 @@ static int read_partial_column_zenith_apriori(void *user_data, harp_array data)
     ingest_info *info = (ingest_info *)user_data;
     char path[MAX_PATH_LENGTH];
 
-    snprintf(path, MAX_PATH_LENGTH, "/%s_COLUMN_PARTIAL_SCATTER_SOLAR_ZENITH_APRIORI", gas_name[info->gas]);
+    snprintf(path, MAX_PATH_LENGTH, "/%s_COLUMN_PARTIAL_SCATTER_SOLAR_ZENITH_APRIORI", geoms_gas_name[info->gas]);
     return read_vertical_variable_double(user_data, path, info->num_time * info->num_vertical, data);
 }
 
@@ -1169,7 +1184,7 @@ static uvvis_doas_gas get_gas_from_string(const char *str)
 
     for (i = 0; i < num_uvvis_doas_gas; i++)
     {
-        if (strcmp(str, gas_name[i]) == 0)
+        if (strcmp(str, geoms_gas_name[i]) == 0)
         {
             return i;
         }
@@ -1448,10 +1463,10 @@ static int get_optional_variable_availability(ingest_info *info)
 
     if (info->template_type != uvvis_doas_aerosol)
     {
-        snprintf(path, MAX_PATH_LENGTH, "/%s_MIXING_RATIO_VOLUME_SCATTER_SOLAR_ZENITH", gas_name[info->gas]);
+        snprintf(path, MAX_PATH_LENGTH, "/%s_MIXING_RATIO_VOLUME_SCATTER_SOLAR_ZENITH", geoms_gas_name[info->gas]);
         info->has_vmr_zenith = (coda_cursor_goto(&cursor, path) == 0);
 
-        snprintf(path, MAX_PATH_LENGTH, "/%s_COLUMN_TROPOSPHERIC_SCATTER_SOLAR_ZENITH", gas_name[info->gas]);
+        snprintf(path, MAX_PATH_LENGTH, "/%s_COLUMN_TROPOSPHERIC_SCATTER_SOLAR_ZENITH", geoms_gas_name[info->gas]);
         info->has_tropo_column_zenith = (coda_cursor_goto(&cursor, path) == 0);
     }
 
@@ -1494,13 +1509,13 @@ static int get_dynamic_units(ingest_info *info)
     }
     if (info->template_type == uvvis_doas_offaxis)
     {
-        snprintf(path, MAX_PATH_LENGTH, "/%s_MIXING_RATIO_VOLUME_SCATTER_SOLAR_OFFAXIS", gas_name[info->gas]);
+        snprintf(path, MAX_PATH_LENGTH, "/%s_MIXING_RATIO_VOLUME_SCATTER_SOLAR_OFFAXIS", geoms_gas_name[info->gas]);
         if (read_unit(&cursor, path, info->vmr_unit) != 0)
         {
             return -1;
         }
         snprintf(path, MAX_PATH_LENGTH, "/%s_MIXING_RATIO_VOLUME_SCATTER_SOLAR_OFFAXIS_UNCERTAINTY_RANDOM_COVARIANCE",
-                 gas_name[info->gas]);
+                 geoms_gas_name[info->gas]);
         if (read_unit(&cursor, path, info->vmr_cov_unit) != 0)
         {
             return -1;
@@ -1510,13 +1525,14 @@ static int get_dynamic_units(ingest_info *info)
     {
         if (info->has_vmr_zenith)
         {
-            snprintf(path, MAX_PATH_LENGTH, "/%s_MIXING_RATIO_VOLUME_SCATTER_SOLAR_ZENITH", gas_name[info->gas]);
+            snprintf(path, MAX_PATH_LENGTH, "/%s_MIXING_RATIO_VOLUME_SCATTER_SOLAR_ZENITH", geoms_gas_name[info->gas]);
             if (read_unit(&cursor, path, info->vmr_unit) != 0)
             {
                 return -1;
             }
             snprintf(path, MAX_PATH_LENGTH,
-                     "/%s_MIXING_RATIO_VOLUME_SCATTER_SOLAR_ZENITH_UNCERTAINTY_RANDOM_COVARIANCE", gas_name[info->gas]);
+                     "/%s_MIXING_RATIO_VOLUME_SCATTER_SOLAR_ZENITH_UNCERTAINTY_RANDOM_COVARIANCE",
+                     geoms_gas_name[info->gas]);
             if (read_unit(&cursor, path, info->vmr_cov_unit) != 0)
             {
                 return -1;
@@ -1632,19 +1648,21 @@ static int init_product_definition(harp_ingestion_module *module, uvvis_doas_gas
     {
         case uvvis_doas_directsun:
             snprintf(product_name, MAX_NAME_LENGTH, "GEOMS-TE-UVVIS-DOAS-DIRECTSUN-GAS-%03d-%s", version,
-                     gas_name[gas]);
+                     geoms_gas_name[gas]);
             snprintf(product_description, MAX_NAME_LENGTH,
-                     "GEOMS template for UVVIS-DOAS direct-sun measurements v%03d - %s", version, gas_name[gas]);
+                     "GEOMS template for UVVIS-DOAS direct-sun measurements v%03d - %s", version, geoms_gas_name[gas]);
             break;
         case uvvis_doas_offaxis:
-            snprintf(product_name, MAX_NAME_LENGTH, "GEOMS-TE-UVVIS-DOAS-OFFAXIS-GAS-%03d-%s", version, gas_name[gas]);
+            snprintf(product_name, MAX_NAME_LENGTH, "GEOMS-TE-UVVIS-DOAS-OFFAXIS-GAS-%03d-%s", version,
+                     geoms_gas_name[gas]);
             snprintf(product_description, MAX_NAME_LENGTH,
-                     "GEOMS template for UVVIS-DOAS MAXDOAS measurements v%03d - %s", version, gas_name[gas]);
+                     "GEOMS template for UVVIS-DOAS MAXDOAS measurements v%03d - %s", version, geoms_gas_name[gas]);
             break;
         case uvvis_doas_zenith:
-            snprintf(product_name, MAX_NAME_LENGTH, "GEOMS-TE-UVVIS-DOAS-ZENITH-GAS-%03d-%s", version, gas_name[gas]);
+            snprintf(product_name, MAX_NAME_LENGTH, "GEOMS-TE-UVVIS-DOAS-ZENITH-GAS-%03d-%s", version,
+                     geoms_gas_name[gas]);
             snprintf(product_description, MAX_NAME_LENGTH,
-                     "GEOMS template for UVVIS-DOAS DOAS measurements v%03d - %s", version, gas_name[gas]);
+                     "GEOMS template for UVVIS-DOAS DOAS measurements v%03d - %s", version, geoms_gas_name[gas]);
             break;
         case uvvis_doas_aerosol:
             snprintf(product_name, MAX_NAME_LENGTH, "GEOMS-TE-UVVIS-DOAS-OFFAXIS-AEROSOL-%03d", version);
@@ -1856,31 +1874,31 @@ static int init_product_definition(harp_ingestion_module *module, uvvis_doas_gas
     if (template_type == uvvis_doas_directsun)
     {
         /* <gas>_column_number_density */
-        snprintf(gas_var_name, MAX_NAME_LENGTH, "%s_column_number_density", gas_name[gas]);
-        snprintf(gas_description, MAX_DESCRIPTION_LENGTH, "%s column number density", gas_name[gas]);
-        snprintf(gas_mapping_path, MAX_PATH_LENGTH, "/%s.COLUMN.ABSORPTION.SOLAR", gas_name[gas]);
+        snprintf(gas_var_name, MAX_NAME_LENGTH, "%s_column_number_density", harp_gas_name[gas]);
+        snprintf(gas_description, MAX_DESCRIPTION_LENGTH, "%s column number density", harp_gas_name[gas]);
+        snprintf(gas_mapping_path, MAX_PATH_LENGTH, "/%s.COLUMN.ABSORPTION.SOLAR", geoms_gas_name[gas]);
         variable_definition = harp_ingestion_register_variable_full_read
             (product_definition, gas_var_name, harp_type_double, 1, dimension_type, NULL, gas_description,
              "Pmolec cm-2", NULL, read_column_solar);
         harp_variable_definition_add_mapping(variable_definition, NULL, NULL, gas_mapping_path, NULL);
 
         /* <gas>_column_number_density_uncertainty_random */
-        snprintf(gas_var_name, MAX_NAME_LENGTH, "%s_column_number_density_uncertainty_random", gas_name[gas]);
+        snprintf(gas_var_name, MAX_NAME_LENGTH, "%s_column_number_density_uncertainty_random", harp_gas_name[gas]);
         snprintf(gas_description, MAX_DESCRIPTION_LENGTH, "random uncertainty of the %s column number density",
-                 gas_name[gas]);
+                 harp_gas_name[gas]);
         snprintf(gas_mapping_path, MAX_PATH_LENGTH, "/%s.COLUMN.ABSORPTION.SOLAR_UNCERTAINTY.RANDOM.STANDARD",
-                 gas_name[gas]);
+                 geoms_gas_name[gas]);
         variable_definition = harp_ingestion_register_variable_full_read
             (product_definition, gas_var_name, harp_type_double, 2, dimension_type, NULL, gas_description,
              "Pmolec cm-2", NULL, read_column_solar_uncertainty_random);
         harp_variable_definition_add_mapping(variable_definition, NULL, NULL, gas_mapping_path, NULL);
 
         /* <gas>_column_number_density_uncertainty_systematic */
-        snprintf(gas_var_name, MAX_NAME_LENGTH, "%s_column_number_density_uncertainty_systematic", gas_name[gas]);
+        snprintf(gas_var_name, MAX_NAME_LENGTH, "%s_column_number_density_uncertainty_systematic", harp_gas_name[gas]);
         snprintf(gas_description, MAX_DESCRIPTION_LENGTH, "systematic covariance of the %s column number density",
-                 gas_name[gas]);
+                 harp_gas_name[gas]);
         snprintf(gas_mapping_path, MAX_PATH_LENGTH, "/%s.COLUMN.ABSORPTION.SOLAR_UNCERTAINTY.SYSTEMATIC.STANDARD",
-                 gas_name[gas]);
+                 geoms_gas_name[gas]);
         variable_definition = harp_ingestion_register_variable_full_read
             (product_definition, gas_var_name, harp_type_double, 2, dimension_type, NULL, gas_description,
              "Pmolec cm-2", NULL, read_column_solar_uncertainty_systematic);
@@ -1889,9 +1907,9 @@ static int init_product_definition(harp_ingestion_module *module, uvvis_doas_gas
         if (version < 5)
         {
             /* <gas>_column_number_density_apriori */
-            snprintf(gas_var_name, MAX_NAME_LENGTH, "%s_column_number_density_apriori", gas_name[gas]);
-            snprintf(gas_description, MAX_DESCRIPTION_LENGTH, "a priori %s column number density", gas_name[gas]);
-            snprintf(gas_mapping_path, MAX_PATH_LENGTH, "/%s.COLUMN_ABSORPTION.SOLAR_APRIORI", gas_name[gas]);
+            snprintf(gas_var_name, MAX_NAME_LENGTH, "%s_column_number_density_apriori", harp_gas_name[gas]);
+            snprintf(gas_description, MAX_DESCRIPTION_LENGTH, "a priori %s column number density", harp_gas_name[gas]);
+            snprintf(gas_mapping_path, MAX_PATH_LENGTH, "/%s.COLUMN_ABSORPTION.SOLAR_APRIORI", geoms_gas_name[gas]);
             variable_definition = harp_ingestion_register_variable_full_read
                 (product_definition, gas_var_name, harp_type_double, 1, dimension_type, NULL, gas_description,
                  "Pmolec cm-2", NULL, read_column_solar_apriori);
@@ -1900,9 +1918,10 @@ static int init_product_definition(harp_ingestion_module *module, uvvis_doas_gas
         else
         {
             /* <gas>_column_number_density_apriori */
-            snprintf(gas_var_name, MAX_NAME_LENGTH, "%s_column_number_density_apriori", gas_name[gas]);
-            snprintf(gas_description, MAX_DESCRIPTION_LENGTH, "a priori %s column number density", gas_name[gas]);
-            snprintf(gas_mapping_path, MAX_PATH_LENGTH, "/%s.COLUMN.PARTIAL_ABSORPTION.SOLAR_APRIORI", gas_name[gas]);
+            snprintf(gas_var_name, MAX_NAME_LENGTH, "%s_column_number_density_apriori", harp_gas_name[gas]);
+            snprintf(gas_description, MAX_DESCRIPTION_LENGTH, "a priori %s column number density", harp_gas_name[gas]);
+            snprintf(gas_mapping_path, MAX_PATH_LENGTH, "/%s.COLUMN.PARTIAL_ABSORPTION.SOLAR_APRIORI",
+                     geoms_gas_name[gas]);
             variable_definition = harp_ingestion_register_variable_full_read
                 (product_definition, gas_var_name, harp_type_double, 2, dimension_type, NULL, gas_description,
                  "Pmolec cm-2", NULL, read_partial_column_solar_apriori);
@@ -1910,10 +1929,10 @@ static int init_product_definition(harp_ingestion_module *module, uvvis_doas_gas
         }
 
         /* <gas>_column_number_density_avk */
-        snprintf(gas_var_name, MAX_NAME_LENGTH, "%s_column_number_density_avk", gas_name[gas]);
+        snprintf(gas_var_name, MAX_NAME_LENGTH, "%s_column_number_density_avk", harp_gas_name[gas]);
         snprintf(gas_description, MAX_DESCRIPTION_LENGTH, "averaging kernel for the %s column number density",
-                 gas_name[gas]);
-        snprintf(gas_mapping_path, MAX_PATH_LENGTH, "/%s.COLUMN_ABSORPTION.SOLAR_AVK", gas_name[gas]);
+                 harp_gas_name[gas]);
+        snprintf(gas_mapping_path, MAX_PATH_LENGTH, "/%s.COLUMN_ABSORPTION.SOLAR_AVK", geoms_gas_name[gas]);
         variable_definition = harp_ingestion_register_variable_full_read
             (product_definition, gas_var_name, harp_type_double, 2, dimension_type, NULL, gas_description, "1", NULL,
              read_column_solar_avk);
@@ -1922,60 +1941,64 @@ static int init_product_definition(harp_ingestion_module *module, uvvis_doas_gas
     else if (template_type == uvvis_doas_offaxis)
     {
         /* <gas>_volume_mixing_ratio */
-        snprintf(gas_var_name, MAX_NAME_LENGTH, "%s_volume_mixing_ratio", gas_name[gas]);
-        snprintf(gas_description, MAX_DESCRIPTION_LENGTH, "%s volume mixing ratio", gas_name[gas]);
-        snprintf(gas_mapping_path, MAX_PATH_LENGTH, "/%s.MIXING.RATIO.VOLUME_SCATTER.SOLAR.OFFAXIS", gas_name[gas]);
+        snprintf(gas_var_name, MAX_NAME_LENGTH, "%s_volume_mixing_ratio", harp_gas_name[gas]);
+        snprintf(gas_description, MAX_DESCRIPTION_LENGTH, "%s volume mixing ratio", harp_gas_name[gas]);
+        snprintf(gas_mapping_path, MAX_PATH_LENGTH, "/%s.MIXING.RATIO.VOLUME_SCATTER.SOLAR.OFFAXIS",
+                 geoms_gas_name[gas]);
         variable_definition = harp_ingestion_register_variable_full_read
             (product_definition, gas_var_name, harp_type_double, 2, dimension_type, NULL, gas_description, "1e6 ppmv",
              NULL, read_vmr_offaxis);
         harp_variable_definition_add_mapping(variable_definition, NULL, NULL, gas_mapping_path, NULL);
 
         /* <gas>_volume_mixing_ratio_cov_random */
-        snprintf(gas_var_name, MAX_NAME_LENGTH, "%s_volume_mixing_ratio_cov_random", gas_name[gas]);
+        snprintf(gas_var_name, MAX_NAME_LENGTH, "%s_volume_mixing_ratio_cov_random", harp_gas_name[gas]);
         snprintf(gas_description, MAX_DESCRIPTION_LENGTH, "random covariance of the %s volume mixing ratio",
-                 gas_name[gas]);
+                 harp_gas_name[gas]);
         snprintf(gas_mapping_path, MAX_PATH_LENGTH,
-                 "/%s.MIXING.RATIO.VOLUME_SCATTER.SOLAR.OFFAXIS_UNCERTAINTY.RANDOM.COVARIANCE", gas_name[gas]);
+                 "/%s.MIXING.RATIO.VOLUME_SCATTER.SOLAR.OFFAXIS_UNCERTAINTY.RANDOM.COVARIANCE", geoms_gas_name[gas]);
         variable_definition = harp_ingestion_register_variable_full_read
             (product_definition, gas_var_name, harp_type_double, 3, dimension_type, NULL, gas_description, "1e6 ppmv",
              NULL, read_vmr_offaxis_cov_random);
         harp_variable_definition_add_mapping(variable_definition, NULL, NULL, gas_mapping_path, NULL);
 
         /* <gas>_volume_mixing_ratio_cov_systematic */
-        snprintf(gas_var_name, MAX_NAME_LENGTH, "%s_volume_mixing_ratio_cov_systematic", gas_name[gas]);
+        snprintf(gas_var_name, MAX_NAME_LENGTH, "%s_volume_mixing_ratio_cov_systematic", harp_gas_name[gas]);
         snprintf(gas_description, MAX_DESCRIPTION_LENGTH, "systematic covariance of the %s volume mixing ratio",
-                 gas_name[gas]);
+                 harp_gas_name[gas]);
         snprintf(gas_mapping_path, MAX_PATH_LENGTH,
-                 "/%s.MIXING.RATIO.VOLUME_SCATTER.SOLAR.OFFAXIS_UNCERTAINTY.SYSTEMATIC.COVARIANCE", gas_name[gas]);
+                 "/%s.MIXING.RATIO.VOLUME_SCATTER.SOLAR.OFFAXIS_UNCERTAINTY.SYSTEMATIC.COVARIANCE",
+                 geoms_gas_name[gas]);
         variable_definition = harp_ingestion_register_variable_full_read
             (product_definition, gas_var_name, harp_type_double, 3, dimension_type, NULL, gas_description, "1e6 ppmv",
              NULL, read_vmr_offaxis_cov_systematic);
         harp_variable_definition_add_mapping(variable_definition, NULL, NULL, gas_mapping_path, NULL);
 
         /* <gas>_volume_mixing_ratio_apriori */
-        snprintf(gas_var_name, MAX_NAME_LENGTH, "%s_volume_mixing_ratio_apriori", gas_name[gas]);
-        snprintf(gas_description, MAX_DESCRIPTION_LENGTH, "a priori %s volume mixing ratio", gas_name[gas]);
+        snprintf(gas_var_name, MAX_NAME_LENGTH, "%s_volume_mixing_ratio_apriori", harp_gas_name[gas]);
+        snprintf(gas_description, MAX_DESCRIPTION_LENGTH, "a priori %s volume mixing ratio", harp_gas_name[gas]);
         snprintf(gas_mapping_path, MAX_PATH_LENGTH, "/%s.MIXING.RATIO.VOLUME_SCATTER.SOLAR.OFFAXIS_APRIORI",
-                 gas_name[gas]);
+                 geoms_gas_name[gas]);
         variable_definition = harp_ingestion_register_variable_full_read
             (product_definition, gas_var_name, harp_type_double, 2, dimension_type, NULL, gas_description, "1e6 ppmv",
              NULL, read_vmr_offaxis_apriori);
         harp_variable_definition_add_mapping(variable_definition, NULL, NULL, gas_mapping_path, NULL);
 
         /* <gas>_volume_mixing_ratio_avk */
-        snprintf(gas_var_name, MAX_NAME_LENGTH, "%s_volume_mixing_ratio_avk", gas_name[gas]);
+        snprintf(gas_var_name, MAX_NAME_LENGTH, "%s_volume_mixing_ratio_avk", harp_gas_name[gas]);
         snprintf(gas_description, MAX_DESCRIPTION_LENGTH, "averaging kernel for the %s volume mixing ratio",
-                 gas_name[gas]);
-        snprintf(gas_mapping_path, MAX_PATH_LENGTH, "/%s.MIXING.RATIO.VOLUME_SCATTER.SOLAR.OFFAXIS_AVK", gas_name[gas]);
+                 harp_gas_name[gas]);
+        snprintf(gas_mapping_path, MAX_PATH_LENGTH, "/%s.MIXING.RATIO.VOLUME_SCATTER.SOLAR.OFFAXIS_AVK",
+                 geoms_gas_name[gas]);
         variable_definition = harp_ingestion_register_variable_full_read
             (product_definition, gas_var_name, harp_type_double, 3, dimension_type, NULL, gas_description, "1", NULL,
              read_vmr_offaxis_avk);
         harp_variable_definition_add_mapping(variable_definition, NULL, NULL, gas_mapping_path, NULL);
 
         /* tropospheric_<gas>_column_number_density */
-        snprintf(gas_var_name, MAX_NAME_LENGTH, "tropospheric_%s_column_number_density", gas_name[gas]);
-        snprintf(gas_description, MAX_DESCRIPTION_LENGTH, "tropospheric %s column number density", gas_name[gas]);
-        snprintf(gas_mapping_path, MAX_PATH_LENGTH, "/%s.COLUMN.TROPOSPHERIC_SCATTER.SOLAR.OFFAXIS", gas_name[gas]);
+        snprintf(gas_var_name, MAX_NAME_LENGTH, "tropospheric_%s_column_number_density", harp_gas_name[gas]);
+        snprintf(gas_description, MAX_DESCRIPTION_LENGTH, "tropospheric %s column number density", harp_gas_name[gas]);
+        snprintf(gas_mapping_path, MAX_PATH_LENGTH, "/%s.COLUMN.TROPOSPHERIC_SCATTER.SOLAR.OFFAXIS",
+                 geoms_gas_name[gas]);
         variable_definition = harp_ingestion_register_variable_full_read
             (product_definition, gas_var_name, harp_type_double, 1, dimension_type, NULL, gas_description,
              "Pmolec cm-2", NULL, read_tropo_column_offaxis);
@@ -1983,11 +2006,11 @@ static int init_product_definition(harp_ingestion_module *module, uvvis_doas_gas
 
         /* tropospheric_<gas>_column_number_density_uncertainty_random */
         snprintf(gas_var_name, MAX_NAME_LENGTH, "tropospheric_%s_column_number_density_uncertainty_random",
-                 gas_name[gas]);
+                 harp_gas_name[gas]);
         snprintf(gas_description, MAX_DESCRIPTION_LENGTH,
-                 "random uncertainty of the tropospheric %s column number density", gas_name[gas]);
+                 "random uncertainty of the tropospheric %s column number density", harp_gas_name[gas]);
         snprintf(gas_mapping_path, MAX_PATH_LENGTH,
-                 "/%s.COLUMN.TROPOSPHERIC_SCATTER.SOLAR.OFFAXIS_UNCERTAINTY.RANDOM.STANDARD", gas_name[gas]);
+                 "/%s.COLUMN.TROPOSPHERIC_SCATTER.SOLAR.OFFAXIS_UNCERTAINTY.RANDOM.STANDARD", geoms_gas_name[gas]);
         variable_definition = harp_ingestion_register_variable_full_read
             (product_definition, gas_var_name, harp_type_double, 2, dimension_type, NULL, gas_description,
              "Pmolec cm-2", NULL, read_tropo_column_offaxis_uncertainty_random);
@@ -1995,32 +2018,33 @@ static int init_product_definition(harp_ingestion_module *module, uvvis_doas_gas
 
         /* tropospheric_<gas>_column_number_density_uncertainty_systematic */
         snprintf(gas_var_name, MAX_NAME_LENGTH, "tropospheric_%s_column_number_density_uncertainty_systematic",
-                 gas_name[gas]);
+                 harp_gas_name[gas]);
         snprintf(gas_description, MAX_DESCRIPTION_LENGTH,
-                 "systematic covariance of the tropospheric %s column number density", gas_name[gas]);
+                 "systematic covariance of the tropospheric %s column number density", harp_gas_name[gas]);
         snprintf(gas_mapping_path, MAX_PATH_LENGTH,
-                 "/%s.COLUMN.TROPOSPHERIC_SCATTER.SOLAR.OFFAXIS_UNCERTAINTY.SYSTEMATIC.STANDARD", gas_name[gas]);
+                 "/%s.COLUMN.TROPOSPHERIC_SCATTER.SOLAR.OFFAXIS_UNCERTAINTY.SYSTEMATIC.STANDARD", geoms_gas_name[gas]);
         variable_definition = harp_ingestion_register_variable_full_read
             (product_definition, gas_var_name, harp_type_double, 2, dimension_type, NULL, gas_description,
              "Pmolec cm-2", NULL, read_tropo_column_offaxis_uncertainty_systematic);
         harp_variable_definition_add_mapping(variable_definition, NULL, NULL, gas_mapping_path, NULL);
 
         /* tropospheric_<gas>_column_number_density_apriori */
-        snprintf(gas_var_name, MAX_NAME_LENGTH, "tropospheric_%s_column_number_density_apriori", gas_name[gas]);
+        snprintf(gas_var_name, MAX_NAME_LENGTH, "tropospheric_%s_column_number_density_apriori", harp_gas_name[gas]);
         snprintf(gas_description, MAX_DESCRIPTION_LENGTH, "a priori tropospheric %s column number density",
-                 gas_name[gas]);
+                 harp_gas_name[gas]);
         snprintf(gas_mapping_path, MAX_PATH_LENGTH, "/%s.COLUMN.TROPOSPHERIC_SCATTER.SOLAR.OFFAXIS_APRIORI",
-                 gas_name[gas]);
+                 geoms_gas_name[gas]);
         variable_definition = harp_ingestion_register_variable_full_read
             (product_definition, gas_var_name, harp_type_double, 1, dimension_type, NULL, gas_description,
              "Pmolec cm-2", NULL, read_tropo_column_offaxis_apriori);
         harp_variable_definition_add_mapping(variable_definition, NULL, NULL, gas_mapping_path, NULL);
 
         /* tropospheric_<gas>_column_number_density_avk */
-        snprintf(gas_var_name, MAX_NAME_LENGTH, "tropospheric_%s_column_number_density_avk", gas_name[gas]);
+        snprintf(gas_var_name, MAX_NAME_LENGTH, "tropospheric_%s_column_number_density_avk", harp_gas_name[gas]);
         snprintf(gas_description, MAX_DESCRIPTION_LENGTH,
-                 "averaging kernel for the tropospheric %s column number density", gas_name[gas]);
-        snprintf(gas_mapping_path, MAX_PATH_LENGTH, "/%s.COLUMN.TROPOSPHERIC_SCATTER.SOLAR.OFFAXIS_AVK", gas_name[gas]);
+                 "averaging kernel for the tropospheric %s column number density", harp_gas_name[gas]);
+        snprintf(gas_mapping_path, MAX_PATH_LENGTH, "/%s.COLUMN.TROPOSPHERIC_SCATTER.SOLAR.OFFAXIS_AVK",
+                 geoms_gas_name[gas]);
         variable_definition = harp_ingestion_register_variable_full_read
             (product_definition, gas_var_name, harp_type_double, 2, dimension_type, NULL, gas_description, "1", NULL,
              read_tropo_column_offaxis_avk);
@@ -2028,19 +2052,21 @@ static int init_product_definition(harp_ingestion_module *module, uvvis_doas_gas
 
 
         /* <gas>_column_number_density */
-        snprintf(gas_var_name, MAX_NAME_LENGTH, "%s_column_number_density", gas_name[gas]);
-        snprintf(gas_description, MAX_DESCRIPTION_LENGTH, "%s partial column number density profile", gas_name[gas]);
-        snprintf(gas_mapping_path, MAX_PATH_LENGTH, "/%s.COLUMN.PARTIAL_SCATTER.SOLAR.OFFAXIS", gas_name[gas]);
+        snprintf(gas_var_name, MAX_NAME_LENGTH, "%s_column_number_density", harp_gas_name[gas]);
+        snprintf(gas_description, MAX_DESCRIPTION_LENGTH, "%s partial column number density profile",
+                 harp_gas_name[gas]);
+        snprintf(gas_mapping_path, MAX_PATH_LENGTH, "/%s.COLUMN.PARTIAL_SCATTER.SOLAR.OFFAXIS", geoms_gas_name[gas]);
         variable_definition = harp_ingestion_register_variable_full_read
             (product_definition, gas_var_name, harp_type_double, 2, dimension_type, NULL, gas_description,
              "Pmolec cm-2", NULL, read_partial_column_offaxis);
         harp_variable_definition_add_mapping(variable_definition, NULL, NULL, gas_mapping_path, NULL);
 
         /* <gas>_column_number_density_apriori */
-        snprintf(gas_var_name, MAX_NAME_LENGTH, "%s_column_number_density_apriori", gas_name[gas]);
+        snprintf(gas_var_name, MAX_NAME_LENGTH, "%s_column_number_density_apriori", harp_gas_name[gas]);
         snprintf(gas_description, MAX_DESCRIPTION_LENGTH, "a priori %s partial column number density profile",
-                 gas_name[gas]);
-        snprintf(gas_mapping_path, MAX_PATH_LENGTH, "/%s.COLUMN.PARTIAL_SCATTER.SOLAR.OFFAXIS_APRIORI", gas_name[gas]);
+                 harp_gas_name[gas]);
+        snprintf(gas_mapping_path, MAX_PATH_LENGTH, "/%s.COLUMN.PARTIAL_SCATTER.SOLAR.OFFAXIS_APRIORI",
+                 geoms_gas_name[gas]);
         variable_definition = harp_ingestion_register_variable_full_read
             (product_definition, gas_var_name, harp_type_double, 2, dimension_type, NULL, gas_description,
              "Pmolec cm-2", NULL, read_partial_column_offaxis_apriori);
@@ -2049,60 +2075,63 @@ static int init_product_definition(harp_ingestion_module *module, uvvis_doas_gas
     else if (template_type == uvvis_doas_zenith)
     {
         /* <gas>_volume_mixing_ratio */
-        snprintf(gas_var_name, MAX_NAME_LENGTH, "%s_volume_mixing_ratio", gas_name[gas]);
-        snprintf(gas_description, MAX_DESCRIPTION_LENGTH, "%s volume mixing ratio", gas_name[gas]);
-        snprintf(gas_mapping_path, MAX_PATH_LENGTH, "/%s.MIXING.RATIO.VOLUME_SCATTER.SOLAR.ZENITH", gas_name[gas]);
+        snprintf(gas_var_name, MAX_NAME_LENGTH, "%s_volume_mixing_ratio", harp_gas_name[gas]);
+        snprintf(gas_description, MAX_DESCRIPTION_LENGTH, "%s volume mixing ratio", harp_gas_name[gas]);
+        snprintf(gas_mapping_path, MAX_PATH_LENGTH, "/%s.MIXING.RATIO.VOLUME_SCATTER.SOLAR.ZENITH",
+                 geoms_gas_name[gas]);
         variable_definition = harp_ingestion_register_variable_full_read
             (product_definition, gas_var_name, harp_type_double, 2, dimension_type, NULL, gas_description, "1e6 ppmv",
              exclude_vmr_zenith, read_vmr_zenith);
         harp_variable_definition_add_mapping(variable_definition, NULL, NULL, gas_mapping_path, NULL);
 
         /* <gas>_volume_mixing_ratio_cov_random */
-        snprintf(gas_var_name, MAX_NAME_LENGTH, "%s_volume_mixing_ratio_cov_random", gas_name[gas]);
+        snprintf(gas_var_name, MAX_NAME_LENGTH, "%s_volume_mixing_ratio_cov_random", harp_gas_name[gas]);
         snprintf(gas_description, MAX_DESCRIPTION_LENGTH, "random covariance of the %s volume mixing ratio",
-                 gas_name[gas]);
+                 harp_gas_name[gas]);
         snprintf(gas_mapping_path, MAX_PATH_LENGTH,
-                 "/%s.MIXING.RATIO.VOLUME_SCATTER.SOLAR.ZENITH_UNCERTAINTY.RANDOM.COVARIANCE", gas_name[gas]);
+                 "/%s.MIXING.RATIO.VOLUME_SCATTER.SOLAR.ZENITH_UNCERTAINTY.RANDOM.COVARIANCE", geoms_gas_name[gas]);
         variable_definition = harp_ingestion_register_variable_full_read
             (product_definition, gas_var_name, harp_type_double, 3, dimension_type, NULL, gas_description, "1e6 ppmv",
              exclude_vmr_zenith, read_vmr_zenith_cov_random);
         harp_variable_definition_add_mapping(variable_definition, NULL, NULL, gas_mapping_path, NULL);
 
         /* <gas>_volume_mixing_ratio_cov_systematic */
-        snprintf(gas_var_name, MAX_NAME_LENGTH, "%s_volume_mixing_ratio_cov_systematic", gas_name[gas]);
+        snprintf(gas_var_name, MAX_NAME_LENGTH, "%s_volume_mixing_ratio_cov_systematic", harp_gas_name[gas]);
         snprintf(gas_description, MAX_DESCRIPTION_LENGTH, "systematic covariance of the %s volume mixing ratio",
-                 gas_name[gas]);
+                 harp_gas_name[gas]);
         snprintf(gas_mapping_path, MAX_PATH_LENGTH,
-                 "/%s.MIXING.RATIO.VOLUME_SCATTER.SOLAR.ZENITH_UNCERTAINTY.SYSTEMATIC.COVARIANCE", gas_name[gas]);
+                 "/%s.MIXING.RATIO.VOLUME_SCATTER.SOLAR.ZENITH_UNCERTAINTY.SYSTEMATIC.COVARIANCE", geoms_gas_name[gas]);
         variable_definition = harp_ingestion_register_variable_full_read
             (product_definition, gas_var_name, harp_type_double, 3, dimension_type, NULL, gas_description, "1e6 ppmv",
              exclude_vmr_zenith, read_vmr_zenith_cov_systematic);
         harp_variable_definition_add_mapping(variable_definition, NULL, NULL, gas_mapping_path, NULL);
 
         /* <gas>_volume_mixing_ratio_apriori */
-        snprintf(gas_var_name, MAX_NAME_LENGTH, "%s_volume_mixing_ratio_apriori", gas_name[gas]);
-        snprintf(gas_description, MAX_DESCRIPTION_LENGTH, "a priori %s volume mixing ratio", gas_name[gas]);
+        snprintf(gas_var_name, MAX_NAME_LENGTH, "%s_volume_mixing_ratio_apriori", harp_gas_name[gas]);
+        snprintf(gas_description, MAX_DESCRIPTION_LENGTH, "a priori %s volume mixing ratio", harp_gas_name[gas]);
         snprintf(gas_mapping_path, MAX_PATH_LENGTH, "/%s.MIXING.RATIO.VOLUME_SCATTER.SOLAR.ZENITH_APRIORI",
-                 gas_name[gas]);
+                 geoms_gas_name[gas]);
         variable_definition = harp_ingestion_register_variable_full_read
             (product_definition, gas_var_name, harp_type_double, 2, dimension_type, NULL, gas_description, "1e6 ppmv",
              version >= 7 ? NULL : exclude_vmr_zenith, read_vmr_zenith_apriori);
         harp_variable_definition_add_mapping(variable_definition, NULL, NULL, gas_mapping_path, NULL);
 
         /* <gas>_volume_mixing_ratio_avk */
-        snprintf(gas_var_name, MAX_NAME_LENGTH, "%s_volume_mixing_ratio_avk", gas_name[gas]);
+        snprintf(gas_var_name, MAX_NAME_LENGTH, "%s_volume_mixing_ratio_avk", harp_gas_name[gas]);
         snprintf(gas_description, MAX_DESCRIPTION_LENGTH, "averaging kernel for the %s volume mixing ratio",
-                 gas_name[gas]);
-        snprintf(gas_mapping_path, MAX_PATH_LENGTH, "/%s.MIXING.RATIO.VOLUME_SCATTER.SOLAR.ZENITH_AVK", gas_name[gas]);
+                 harp_gas_name[gas]);
+        snprintf(gas_mapping_path, MAX_PATH_LENGTH, "/%s.MIXING.RATIO.VOLUME_SCATTER.SOLAR.ZENITH_AVK",
+                 geoms_gas_name[gas]);
         variable_definition = harp_ingestion_register_variable_full_read
             (product_definition, gas_var_name, harp_type_double, 3, dimension_type, NULL, gas_description, "1",
              exclude_vmr_zenith, read_vmr_zenith_avk);
         harp_variable_definition_add_mapping(variable_definition, NULL, NULL, gas_mapping_path, NULL);
 
         /* tropospheric_<gas>_column_number_density */
-        snprintf(gas_var_name, MAX_NAME_LENGTH, "tropospheric_%s_column_number_density", gas_name[gas]);
-        snprintf(gas_description, MAX_DESCRIPTION_LENGTH, "tropospheric %s column number density", gas_name[gas]);
-        snprintf(gas_mapping_path, MAX_PATH_LENGTH, "/%s.COLUMN.TROPOSPHERIC_SCATTER.SOLAR.ZENITH", gas_name[gas]);
+        snprintf(gas_var_name, MAX_NAME_LENGTH, "tropospheric_%s_column_number_density", harp_gas_name[gas]);
+        snprintf(gas_description, MAX_DESCRIPTION_LENGTH, "tropospheric %s column number density", harp_gas_name[gas]);
+        snprintf(gas_mapping_path, MAX_PATH_LENGTH, "/%s.COLUMN.TROPOSPHERIC_SCATTER.SOLAR.ZENITH",
+                 geoms_gas_name[gas]);
         variable_definition = harp_ingestion_register_variable_full_read
             (product_definition, gas_var_name, harp_type_double, 1, dimension_type, NULL, gas_description,
              "Pmolec cm-2", exclude_tropo_column_zenith, read_tropo_column_zenith);
@@ -2110,11 +2139,11 @@ static int init_product_definition(harp_ingestion_module *module, uvvis_doas_gas
 
         /* tropospheric_<gas>_column_number_density_uncertainty_random */
         snprintf(gas_var_name, MAX_NAME_LENGTH, "tropospheric_%s_column_number_density_uncertainty_random",
-                 gas_name[gas]);
+                 harp_gas_name[gas]);
         snprintf(gas_description, MAX_DESCRIPTION_LENGTH,
-                 "random uncertainty of the tropospheric %s column number density", gas_name[gas]);
+                 "random uncertainty of the tropospheric %s column number density", harp_gas_name[gas]);
         snprintf(gas_mapping_path, MAX_PATH_LENGTH,
-                 "/%s.COLUMN.TROPOSPHERIC_SCATTER.SOLAR.ZENITH_UNCERTAINTY.RANDOM.STANDARD", gas_name[gas]);
+                 "/%s.COLUMN.TROPOSPHERIC_SCATTER.SOLAR.ZENITH_UNCERTAINTY.RANDOM.STANDARD", geoms_gas_name[gas]);
         variable_definition = harp_ingestion_register_variable_full_read
             (product_definition, gas_var_name, harp_type_double, 2, dimension_type, NULL, gas_description,
              "Pmolec cm-2", exclude_tropo_column_zenith, read_tropo_column_zenith_uncertainty_random);
@@ -2122,41 +2151,43 @@ static int init_product_definition(harp_ingestion_module *module, uvvis_doas_gas
 
         /* tropospheric_<gas>_column_number_density_uncertainty_systematic */
         snprintf(gas_var_name, MAX_NAME_LENGTH, "tropospheric_%s_column_number_density_uncertainty_systematic",
-                 gas_name[gas]);
+                 harp_gas_name[gas]);
         snprintf(gas_description, MAX_DESCRIPTION_LENGTH,
-                 "systematic covariance of the tropospheric %s column number density", gas_name[gas]);
+                 "systematic covariance of the tropospheric %s column number density", harp_gas_name[gas]);
         snprintf(gas_mapping_path, MAX_PATH_LENGTH,
-                 "/%s.COLUMN.TROPOSPHERIC_SCATTER.SOLAR.ZENITH_UNCERTAINTY.SYSTEMATIC.STANDARD", gas_name[gas]);
+                 "/%s.COLUMN.TROPOSPHERIC_SCATTER.SOLAR.ZENITH_UNCERTAINTY.SYSTEMATIC.STANDARD", geoms_gas_name[gas]);
         variable_definition = harp_ingestion_register_variable_full_read
             (product_definition, gas_var_name, harp_type_double, 2, dimension_type, NULL, gas_description,
              "Pmolec cm-2", exclude_tropo_column_zenith, read_tropo_column_zenith_uncertainty_systematic);
         harp_variable_definition_add_mapping(variable_definition, NULL, NULL, gas_mapping_path, NULL);
 
         /* tropospheric_<gas>_column_number_density_apriori */
-        snprintf(gas_var_name, MAX_NAME_LENGTH, "tropospheric_%s_column_number_density_apriori", gas_name[gas]);
+        snprintf(gas_var_name, MAX_NAME_LENGTH, "tropospheric_%s_column_number_density_apriori", harp_gas_name[gas]);
         snprintf(gas_description, MAX_DESCRIPTION_LENGTH, "a priori tropospheric %s column number density",
-                 gas_name[gas]);
+                 harp_gas_name[gas]);
         snprintf(gas_mapping_path, MAX_PATH_LENGTH, "/%s.COLUMN.TROPOSPHERIC_SCATTER.SOLAR.ZENITH_APRIORI",
-                 gas_name[gas]);
+                 geoms_gas_name[gas]);
         variable_definition = harp_ingestion_register_variable_full_read
             (product_definition, gas_var_name, harp_type_double, 1, dimension_type, NULL, gas_description,
              "Pmolec cm-2", exclude_tropo_column_zenith, read_tropo_column_zenith_apriori);
         harp_variable_definition_add_mapping(variable_definition, NULL, NULL, gas_mapping_path, NULL);
 
         /* tropospheric_<gas>_column_number_density_avk */
-        snprintf(gas_var_name, MAX_NAME_LENGTH, "tropospheric_%s_column_number_density_avk", gas_name[gas]);
+        snprintf(gas_var_name, MAX_NAME_LENGTH, "tropospheric_%s_column_number_density_avk", harp_gas_name[gas]);
         snprintf(gas_description, MAX_DESCRIPTION_LENGTH,
-                 "averaging kernel for the tropospheric %s column number density", gas_name[gas]);
-        snprintf(gas_mapping_path, MAX_PATH_LENGTH, "/%s.COLUMN.TROPOSPHERIC_SCATTER.SOLAR.ZENITH_AVK", gas_name[gas]);
+                 "averaging kernel for the tropospheric %s column number density", harp_gas_name[gas]);
+        snprintf(gas_mapping_path, MAX_PATH_LENGTH, "/%s.COLUMN.TROPOSPHERIC_SCATTER.SOLAR.ZENITH_AVK",
+                 geoms_gas_name[gas]);
         variable_definition = harp_ingestion_register_variable_full_read
             (product_definition, gas_var_name, harp_type_double, 2, dimension_type, NULL, gas_description, "1",
              exclude_tropo_column_zenith, read_tropo_column_zenith_avk);
         harp_variable_definition_add_mapping(variable_definition, NULL, NULL, gas_mapping_path, NULL);
 
         /* stratospheric_<gas>_column_number_density */
-        snprintf(gas_var_name, MAX_NAME_LENGTH, "stratospheric_%s_column_number_density", gas_name[gas]);
-        snprintf(gas_description, MAX_DESCRIPTION_LENGTH, "stratospheric %s column number density", gas_name[gas]);
-        snprintf(gas_mapping_path, MAX_PATH_LENGTH, "/%s.COLUMN.STRATOSPHERIC_SCATTER.SOLAR.ZENITH", gas_name[gas]);
+        snprintf(gas_var_name, MAX_NAME_LENGTH, "stratospheric_%s_column_number_density", harp_gas_name[gas]);
+        snprintf(gas_description, MAX_DESCRIPTION_LENGTH, "stratospheric %s column number density", harp_gas_name[gas]);
+        snprintf(gas_mapping_path, MAX_PATH_LENGTH, "/%s.COLUMN.STRATOSPHERIC_SCATTER.SOLAR.ZENITH",
+                 geoms_gas_name[gas]);
         variable_definition = harp_ingestion_register_variable_full_read
             (product_definition, gas_var_name, harp_type_double, 1, dimension_type, NULL, gas_description,
              "Pmolec cm-2", NULL, read_strat_column_zenith);
@@ -2164,11 +2195,11 @@ static int init_product_definition(harp_ingestion_module *module, uvvis_doas_gas
 
         /* stratospheric_<gas>_column_number_density_uncertainty_random */
         snprintf(gas_var_name, MAX_NAME_LENGTH, "stratospheric_%s_column_number_density_uncertainty_random",
-                 gas_name[gas]);
+                 harp_gas_name[gas]);
         snprintf(gas_description, MAX_DESCRIPTION_LENGTH,
-                 "random uncertainty of the stratospheric %s column number density", gas_name[gas]);
+                 "random uncertainty of the stratospheric %s column number density", harp_gas_name[gas]);
         snprintf(gas_mapping_path, MAX_PATH_LENGTH,
-                 "/%s.COLUMN.STRATOSPHERIC_SCATTER.SOLAR.ZENITH_UNCERTAINTY.RANDOM.STANDARD", gas_name[gas]);
+                 "/%s.COLUMN.STRATOSPHERIC_SCATTER.SOLAR.ZENITH_UNCERTAINTY.RANDOM.STANDARD", geoms_gas_name[gas]);
         variable_definition = harp_ingestion_register_variable_full_read
             (product_definition, gas_var_name, harp_type_double, 2, dimension_type, NULL, gas_description,
              "Pmolec cm-2", NULL, read_strat_column_zenith_uncertainty_random);
@@ -2176,61 +2207,65 @@ static int init_product_definition(harp_ingestion_module *module, uvvis_doas_gas
 
         /* stratospheric_<gas>_column_number_density_uncertainty_systematic */
         snprintf(gas_var_name, MAX_NAME_LENGTH, "stratospheric_%s_column_number_density_uncertainty_systematic",
-                 gas_name[gas]);
+                 harp_gas_name[gas]);
         snprintf(gas_description, MAX_DESCRIPTION_LENGTH,
-                 "systematic covariance of the stratospheric %s column number density", gas_name[gas]);
+                 "systematic covariance of the stratospheric %s column number density", harp_gas_name[gas]);
         snprintf(gas_mapping_path, MAX_PATH_LENGTH,
-                 "/%s.COLUMN.STRATOSPHERIC_SCATTER.SOLAR.ZENITH_UNCERTAINTY.SYSTEMATIC.STANDARD", gas_name[gas]);
+                 "/%s.COLUMN.STRATOSPHERIC_SCATTER.SOLAR.ZENITH_UNCERTAINTY.SYSTEMATIC.STANDARD", geoms_gas_name[gas]);
         variable_definition = harp_ingestion_register_variable_full_read
             (product_definition, gas_var_name, harp_type_double, 2, dimension_type, NULL, gas_description,
              "Pmolec cm-2", NULL, read_strat_column_zenith_uncertainty_systematic);
         harp_variable_definition_add_mapping(variable_definition, NULL, NULL, gas_mapping_path, NULL);
 
         /* stratospheric_<gas>_column_number_density_apriori */
-        snprintf(gas_var_name, MAX_NAME_LENGTH, "stratospheric_%s_column_number_density_apriori", gas_name[gas]);
+        snprintf(gas_var_name, MAX_NAME_LENGTH, "stratospheric_%s_column_number_density_apriori", harp_gas_name[gas]);
         snprintf(gas_description, MAX_DESCRIPTION_LENGTH, "a priori stratospheric %s column number density",
-                 gas_name[gas]);
+                 harp_gas_name[gas]);
         snprintf(gas_mapping_path, MAX_PATH_LENGTH, "/%s.COLUMN.STRATOSPHERIC_SCATTER.SOLAR.ZENITH_APRIORI",
-                 gas_name[gas]);
+                 geoms_gas_name[gas]);
         variable_definition = harp_ingestion_register_variable_full_read
             (product_definition, gas_var_name, harp_type_double, 1, dimension_type, NULL, gas_description,
              "Pmolec cm-2", NULL, read_strat_column_zenith_apriori);
         harp_variable_definition_add_mapping(variable_definition, NULL, NULL, gas_mapping_path, NULL);
 
         /* stratospheric_<gas>_column_number_density_avk */
-        snprintf(gas_var_name, MAX_NAME_LENGTH, "stratospheric_%s_column_number_density_avk", gas_name[gas]);
+        snprintf(gas_var_name, MAX_NAME_LENGTH, "stratospheric_%s_column_number_density_avk", harp_gas_name[gas]);
         snprintf(gas_description, MAX_DESCRIPTION_LENGTH,
-                 "averaging kernel for the stratospheric %s column number density", gas_name[gas]);
-        snprintf(gas_mapping_path, MAX_PATH_LENGTH, "/%s.COLUMN.STRATOSPHERIC_SCATTER.SOLAR.ZENITH_AVK", gas_name[gas]);
+                 "averaging kernel for the stratospheric %s column number density", harp_gas_name[gas]);
+        snprintf(gas_mapping_path, MAX_PATH_LENGTH, "/%s.COLUMN.STRATOSPHERIC_SCATTER.SOLAR.ZENITH_AVK",
+                 geoms_gas_name[gas]);
         variable_definition = harp_ingestion_register_variable_full_read
             (product_definition, gas_var_name, harp_type_double, 2, dimension_type, NULL, gas_description, "1", NULL,
              read_strat_column_zenith_avk);
         harp_variable_definition_add_mapping(variable_definition, NULL, NULL, gas_mapping_path, NULL);
 
         /* stratospheric_<gas>_column_number_density_amf */
-        snprintf(gas_var_name, MAX_NAME_LENGTH, "stratospheric_%s_column_number_density_amf", gas_name[gas]);
+        snprintf(gas_var_name, MAX_NAME_LENGTH, "stratospheric_%s_column_number_density_amf", harp_gas_name[gas]);
         snprintf(gas_description, MAX_DESCRIPTION_LENGTH,
-                 "air mass factor for the stratospheric %s column number density", gas_name[gas]);
-        snprintf(gas_mapping_path, MAX_PATH_LENGTH, "/%s.COLUMN.STRATOSPHERIC_SCATTER.SOLAR.ZENITH_AMF", gas_name[gas]);
+                 "air mass factor for the stratospheric %s column number density", harp_gas_name[gas]);
+        snprintf(gas_mapping_path, MAX_PATH_LENGTH, "/%s.COLUMN.STRATOSPHERIC_SCATTER.SOLAR.ZENITH_AMF",
+                 geoms_gas_name[gas]);
         variable_definition = harp_ingestion_register_variable_full_read
             (product_definition, gas_var_name, harp_type_double, 1, dimension_type, NULL, gas_description, "1", NULL,
              read_strat_column_zenith_amf);
         harp_variable_definition_add_mapping(variable_definition, NULL, NULL, gas_mapping_path, NULL);
 
         /* <gas>_column_number_density */
-        snprintf(gas_var_name, MAX_NAME_LENGTH, "%s_column_number_density", gas_name[gas]);
-        snprintf(gas_description, MAX_DESCRIPTION_LENGTH, "%s partial column number density profile", gas_name[gas]);
-        snprintf(gas_mapping_path, MAX_PATH_LENGTH, "/%s.COLUMN.PARTIAL_SCATTER.SOLAR.ZENITH", gas_name[gas]);
+        snprintf(gas_var_name, MAX_NAME_LENGTH, "%s_column_number_density", harp_gas_name[gas]);
+        snprintf(gas_description, MAX_DESCRIPTION_LENGTH, "%s partial column number density profile",
+                 harp_gas_name[gas]);
+        snprintf(gas_mapping_path, MAX_PATH_LENGTH, "/%s.COLUMN.PARTIAL_SCATTER.SOLAR.ZENITH", geoms_gas_name[gas]);
         variable_definition = harp_ingestion_register_variable_full_read
             (product_definition, gas_var_name, harp_type_double, 2, dimension_type, NULL, gas_description,
              "Pmolec cm-2", exclude_vmr_zenith, read_partial_column_zenith);
         harp_variable_definition_add_mapping(variable_definition, NULL, NULL, gas_mapping_path, NULL);
 
         /* <gas>_column_number_density_apriori */
-        snprintf(gas_var_name, MAX_NAME_LENGTH, "%s_column_number_density_apriori", gas_name[gas]);
+        snprintf(gas_var_name, MAX_NAME_LENGTH, "%s_column_number_density_apriori", harp_gas_name[gas]);
         snprintf(gas_description, MAX_DESCRIPTION_LENGTH, "a priori %s partial column number density profile",
-                 gas_name[gas]);
-        snprintf(gas_mapping_path, MAX_PATH_LENGTH, "/%s.COLUMN.PARTIAL_SCATTER.SOLAR.ZENITH_APRIORI", gas_name[gas]);
+                 harp_gas_name[gas]);
+        snprintf(gas_mapping_path, MAX_PATH_LENGTH, "/%s.COLUMN.PARTIAL_SCATTER.SOLAR.ZENITH_APRIORI",
+                 geoms_gas_name[gas]);
         variable_definition = harp_ingestion_register_variable_full_read
             (product_definition, gas_var_name, harp_type_double, 2, dimension_type, NULL, gas_description,
              "Pmolec cm-2", version >= 7 ? NULL : exclude_vmr_zenith, read_partial_column_zenith_apriori);

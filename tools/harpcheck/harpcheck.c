@@ -29,6 +29,17 @@
 #include <stdlib.h>
 #include <string.h>
 
+static int print_warning(const char *message, va_list ap)
+{
+    int result;
+
+    fprintf(stderr, "WARNING: ");
+    result = vfprintf(stderr, message, ap);
+    fprintf(stderr, "\n");
+
+    return result;
+}
+
 static void print_version()
 {
     printf("harpcheck version %s\n", libharp_version);
@@ -82,6 +93,8 @@ int main(int argc, char *argv[])
             exit(1);
         }
     }
+
+    harp_set_warning_handler(print_warning);
 
     if (harp_init() != 0)
     {

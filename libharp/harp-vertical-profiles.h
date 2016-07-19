@@ -24,6 +24,8 @@
 #include "harp-internal.h"
 
 /* Conversions */
+double harp_geopotential_from_gph(double gph);
+double harp_gph_from_geopotential(double geopotential);
 double harp_altitude_from_gph_and_latitude(double gph, double latitude);
 double harp_gph_from_altitude_and_latitude(double altitude, double latitude);
 double harp_gph_from_pressure(double pressure);

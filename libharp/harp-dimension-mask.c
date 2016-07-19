@@ -188,41 +188,6 @@ int harp_dimension_mask_fill_false(harp_dimension_mask *dimension_mask)
     return 0;
 }
 
-void harp_dimension_mask_dump(const harp_dimension_mask *mask, const char *indent)
-{
-    long i;
-    long num_secondary;
-
-    printf("%s", indent);
-    printf("dimensions: [ ");
-    for (i = 0; i < mask->num_dimensions; i++)
-    {
-        printf("%ld ", mask->dimension[i]);
-    }
-    printf("]\n");
-
-    printf("%s", indent);
-    printf("number of elements: %ld\n", mask->num_elements);
-    printf("%s", indent);
-    printf("masked dimension length: %ld\n", mask->masked_dimension_length);
-
-    printf("%s", indent);
-    printf("mask:\n");
-    num_secondary = (mask->num_dimensions == 2 ? mask->dimension[1] : 1);
-    for (i = num_secondary - 1; i >= 0; i--)
-    {
-        long j;
-
-        printf("%s%s", indent, indent);
-        printf("| ");
-        for (j = 0; j < mask->dimension[0]; j++)
-        {
-            printf("%d ", mask->mask[j * num_secondary + i]);
-        }
-        printf("|\n");
-    }
-}
-
 static long count(long num_elements, const uint8_t *mask)
 {
     const uint8_t *mask_end;
