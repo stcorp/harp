@@ -287,6 +287,38 @@ typedef struct harp_product_struct harp_product;
 
 /** @} */
 
+/** \addtogroup harp_product_metadat
+ * @{
+ */
+
+/** HARP Product Metadata struct */
+struct harp_product_metadata_struct {
+    char *filename;
+    double datetime_start;
+    double datetime_stop;
+    long **dimension;
+    char *source_product;
+};
+
+/** HARP Product Metadata typedef */
+typedef struct harp_product_metadata_struct harp_product_metadata;
+
+/** @} */
+
+/** \addtogroup harp_dataset
+ * @{
+ */
+
+/** HARP Dataset struct */
+struct harp_dataset_struct {
+    harp_product_metadata **metadata;
+};
+
+/** HARP Dataset typedef */
+typedef struct harp_dataset_struct harp_dataset;
+
+/** @} */
+
 /* General */
 LIBHARP_API int harp_init(void);
 LIBHARP_API void harp_done(void);
@@ -398,14 +430,20 @@ LIBHARP_API int harp_product_update_history(harp_product *product, const char *e
 LIBHARP_API int harp_product_verify(const harp_product *product);
 LIBHARP_API int harp_product_execute_actions(harp_product *product, const char *actions);
 
+/* Product Metadata */
+LIBHARP_API int harp_product_metadata_delete(harp_product_metadata *metadata);
+LIBHARP_API int harp_product_metadata_new(harp_product_metadata **new_metadata);
+LIBHARP_API int harp_import_product_metadata(const char *filename, harp_product_metadata **metadata);
+
+/* Dataset */
+LIBHARP_API int harp_import_dataset(const char *path, harp_dataset **dataset);
+
 /* Ingestion */
 LIBHARP_API int harp_ingest(const char *filename, const char *script, const char *options, harp_product **product);
 LIBHARP_API int harp_ingest_test(const char *filename, int (*print) (const char *, ...));
 
 /* Import */
 LIBHARP_API int harp_import(const char *filename, harp_product **product);
-LIBHARP_API int harp_import_global_attributes(const char *filename, double *datetime_start, double *datetime_stop,
-                                              char **source_product);
 
 /* Export */
 LIBHARP_API int harp_export(const char *filename, const char *format, const harp_product *product);

@@ -1511,8 +1511,6 @@ static void dataset_sort_by_datetime_start(Dataset *dataset)
 /* Determine start and stop time in the unit that is used for collocation */
 static int dataset_add_start_stop_datetime(Dataset *dataset)
 {
-    double datetime_start;
-    double datetime_stop;
     int i;
 
     if (dataset->datetime_start == NULL)
@@ -1543,11 +1541,13 @@ static int dataset_add_start_stop_datetime(Dataset *dataset)
 
     for (i = 0; i < dataset->num_files; i++)
     {
+        harp_product_metadata *metadata = NULL;
+
         /* This function will not perform any unit conversion on the datetime start/stop values, but take the values as
          * is in the product.
          * This means we have to convert from 'days since 2000-01-01' to HARP_UNIT_DATETIME
          */
-        if (harp_import_global_attributes(dataset->filename[i], &datetime_start, &datetime_stop, NULL) != 0)
+        if (harp_import_product_metadata(dataset->filename[i], &metadata) != 0)
         {
             if (dataset->datetime_start != NULL)
             {
@@ -1560,8 +1560,8 @@ static int dataset_add_start_stop_datetime(Dataset *dataset)
             return -1;
         }
 
-        dataset->datetime_start[i] = datetime_start;
-        dataset->datetime_stop[i] = datetime_stop;
+        dataset->datetime_start[i] = metadata->datetime_start;
+        dataset->datetime_stop[i] = metadata->datetime_stop;
     }
     if (harp_convert_unit("days since 2000-01-01", HARP_UNIT_DATETIME, dataset->num_files, dataset->datetime_start) !=
         0)

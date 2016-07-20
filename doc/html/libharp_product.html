@@ -652,10 +652,10 @@
 </dd></dl>
 
 <dl class="function">
-<dt id="_CPPv229harp_import_global_attributesPKcPdPdPPc">
-<span id="harp_import_global_attributes__cCP.doubleP.doubleP.cPP"></span><span class="target" id="libharpgroup__harp__product_1ga70613cb677f4348ad76665dc5cab00b4"></span>int <code class="descname">harp_import_global_attributes</code><span class="sig-paren">(</span><em class="property">const</em> char *<em>filename</em>, double *<em>datetime_start</em>, double *<em>datetime_stop</em>, char **<em>source_product</em><span class="sig-paren">)</span></dt>
+<dt id="_CPPv228harp_import_product_metadataPKcPP21harp_product_metadata">
+<span id="harp_import_product_metadata__cCP.harp_product_metadataPP"></span><span class="target" id="libharpgroup__harp__product_1ga5c633cf8880cd007c37ca385679a97d2"></span>int <code class="descname">harp_import_product_metadata</code><span class="sig-paren">(</span><em class="property">const</em> char *<em>filename</em>, harp_product_metadata **<em>new_metadata</em><span class="sig-paren">)</span></dt>
 <dd><p>Retrieve global attributes from a HARP product file.</p>
-<p>This function retrieves the datetime range covered by the a HARP product, as well as the name of the source product without performing a full import. This function is only supported for netCDF files. <dl class="docutils">
+<p>This function retrieves the product metadata * without performing a full import. This function is only supported for netCDF files. <dl class="docutils">
 <dt><strong>Return</strong></dt>
 <dd><ul class="simple">
 <li><code class="docutils literal"><span class="pre">0</span></code>, Succes. </li>
@@ -666,11 +666,7 @@
 <dd><ul class="breatheparameterlist first last">
 <li><code class="first docutils literal"><span class="pre">filename</span></code> - <p>Path to the file for which to retrieve global attributes. </p>
 </li>
-<li><code class="first docutils literal"><span class="pre">datetime_start</span></code> - <p>Optional pointer to the variable where the start time of the product should be stored (use NULL if you are not interested in this value). </p>
-</li>
-<li><code class="first docutils literal"><span class="pre">datetime_stop</span></code> - <p>Optional pointer to the variable where the stop time of the porduct should be stored (use NULL if you are not interested in this value). This value represents a time value as &#8216;days since 2000-01-01&#8217;. </p>
-</li>
-<li><code class="first docutils literal"><span class="pre">source_product</span></code> - <p>Optional pointer to the variable where the name of the source product should be stored (use NULL if you are not interested in this value). This value represents a time value as &#8216;days since 2000-01-01&#8217;. </p>
+<li><code class="first docutils literal"><span class="pre">new_metadata</span></code> - <p>Pointer to the variable where the metadata should be stored. </p>
 </li>
 </ul>
 </dd>

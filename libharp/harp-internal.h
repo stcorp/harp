@@ -153,7 +153,7 @@ int harp_export_hdf4(const char *filename, const harp_product *product);
 int harp_export_hdf5(const char *filename, const harp_product *product);
 int harp_export_netcdf(const char *filename, const harp_product *product);
 int harp_import_global_attributes_netcdf(const char *filename, double *datetime_start, double *datetime_stop,
-                                         char **source_product);
+                                         long *dimension[], char **source_product);
 int harp_parse_file_convention(const char *str, int *major, int *minor);
 
 /* Units */

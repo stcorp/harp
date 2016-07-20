@@ -492,44 +492,60 @@ LIBHARP_API int harp_import(const char *filename, harp_product **product)
 
 /** Retrieve global attributes from a HARP product file.
  * \ingroup harp_product
- * This function retrieves the datetime range covered by the a HARP product, as well as the name of the source product
- * without performing a full import. This function is only supported for netCDF files.
- * \param  filename       Path to the file for which to retrieve global attributes.
- * \param  datetime_start Optional pointer to the variable where the start time of the product should be stored (use
- *   NULL if you are not interested in this value).
- * \param  datetime_stop  Optional pointer to the variable where the stop time of the porduct should be stored (use NULL
- *   if you are not interested in this value). This value represents a time value as 'days since 2000-01-01'.
- * \param  source_product Optional pointer to the variable where the name of the source product should be stored (use
- *   NULL if you are not interested in this value). This value represents a time value as 'days since 2000-01-01'.
+ * This function retrieves the product metadata * without performing a full import.
+ * This function is only supported for netCDF files.
+ * \param  filename Path to the file for which to retrieve global attributes.
+ * \param  new_metadata Pointer to the variable where the metadata should be stored.
  * \return
  *   \arg \c 0, Succes.
  *   \arg \c -1, Error occurred (check #harp_errno).
  */
-LIBHARP_API int harp_import_global_attributes(const char *filename, double *datetime_start, double *datetime_stop,
-                                              char **source_product)
+LIBHARP_API int harp_import_product_metadata(const char *filename, harp_product_metadata **new_metadata)
 {
     file_format format;
+    harp_product_metadata *metadata = NULL;
 
     if (determine_file_format(filename, &format) != 0)
     {
         return -1;
     }
 
+    harp_product_metadata_new(&metadata);
+    if (!metadata)
+    {
+        return -1;
+    }
+
+    metadata->filename = strdup(filename);
+    if (!metadata->filename)
+    {
+        harp_product_metadata_delete(metadata);
+        harp_set_error(HARP_ERROR_OUT_OF_MEMORY, "out of memory (could not duplicate string) (%s:%u)",
+                       __FILE__, __LINE__);
+        return -1;
+    }
+
     switch (format)
     {
         case format_hdf4:
+            harp_product_metadata_delete(metadata);
             harp_set_error(HARP_ERROR_FILE_OPEN, "extraction of global attributes not yet supported for HDF4");
             return -1;
         case format_hdf5:
+            harp_product_metadata_delete(metadata);
             harp_set_error(HARP_ERROR_FILE_OPEN, "extraction of global attributes not yet supported for HDF5");
             return -1;
         case format_netcdf:
-            if (harp_import_global_attributes_netcdf(filename, datetime_start, datetime_stop, source_product) != 0)
+            if (harp_import_global_attributes_netcdf(filename,
+                                                     &(metadata->datetime_start), &(metadata->datetime_stop),
+                                                     &(metadata->dimension), &(metadata->source_product)) != 0)
             {
+                harp_product_metadata_delete(metadata);
                 return -1;
             }
             break;
         default:
+            harp_product_metadata_delete(metadata);
             harp_set_error(HARP_ERROR_FILE_OPEN, "unsupported file format for %s", filename);
             return -1;
     }
