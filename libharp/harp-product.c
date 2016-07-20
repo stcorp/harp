@@ -1231,6 +1231,4 @@ LIBHARP_API void harp_product_print(const harp_product *product, int show_attrib
             harp_variable_print_data(product->variable[i], print);
         }
     }
-
-    return;
 }
