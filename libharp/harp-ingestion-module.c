@@ -37,6 +37,7 @@ int harp_ingestion_module_cci_l3_o3_lp_init(void);
 int harp_ingestion_module_cci_l3_o3_np_init(void);
 int harp_ingestion_module_cci_l3_o3_tc_init(void);
 int harp_ingestion_module_cci_l4_o3_np_init(void);
+int harp_ingestion_module_ecmwf_grib_init(void);
 int harp_ingestion_module_geoms_mwr_init(void);
 int harp_ingestion_module_geoms_lidar_init(void);
 int harp_ingestion_module_geoms_ftir_init(void);
@@ -55,11 +56,9 @@ int harp_ingestion_module_s5p_l2_init(void);
 int harp_ingestion_module_tes_l2_init(void);
 
 /* Module initialization functions. */
-#define NUM_INGESTION_MODULES 23
-
 typedef int (module_init_func_t) (void);
 
-static module_init_func_t *module_init_func[NUM_INGESTION_MODULES] = {
+static module_init_func_t *module_init_func[] = {
     harp_ingestion_module_cci_l2_o3_lp_init,
     harp_ingestion_module_cci_l2_o3_np_init,
     harp_ingestion_module_cci_l2_o3_tc_init,
@@ -67,6 +66,7 @@ static module_init_func_t *module_init_func[NUM_INGESTION_MODULES] = {
     harp_ingestion_module_cci_l3_o3_np_init,
     harp_ingestion_module_cci_l3_o3_tc_init,
     harp_ingestion_module_cci_l4_o3_np_init,
+    harp_ingestion_module_ecmwf_grib_init,
     harp_ingestion_module_geoms_mwr_init,
     harp_ingestion_module_geoms_lidar_init,
     harp_ingestion_module_geoms_ftir_init,
@@ -84,6 +84,8 @@ static module_init_func_t *module_init_func[NUM_INGESTION_MODULES] = {
     harp_ingestion_module_s5p_l2_init,
     harp_ingestion_module_tes_l2_init
 };
+
+#define NUM_INGESTION_MODULES ((long)(sizeof(module_init_func)/sizeof(module_init_func[0])))
 
 /* Forward declarations. */
 static void ingestion_option_definition_delete(harp_ingestion_option_definition *ingestion_option_definition);
