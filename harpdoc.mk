@@ -43,6 +43,7 @@ HARP_DOCFILES = \
 	doc/html/harpdump.html \
 	doc/html/harpfilter.html \
 	doc/html/index.html \
+	doc/html/ingestions/ECMWF_GRIB.html \
 	doc/html/ingestions/ESACCI_OZONE_L2_LP.html \
 	doc/html/ingestions/ESACCI_OZONE_L2_NP.html \
 	doc/html/ingestions/ESACCI_OZONE_L2_TC.html \
@@ -403,6 +404,8 @@ doc/html/harpdump.html:
 doc/html/harpfilter.html:
 	$(MAKE) harp_doc
 doc/html/index.html:
+	$(MAKE) harp_doc
+doc/html/ingestions/ECMWF_GRIB.html:
 	$(MAKE) harp_doc
 doc/html/ingestions/ESACCI_OZONE_L2_LP.html:
 	$(MAKE) harp_doc
