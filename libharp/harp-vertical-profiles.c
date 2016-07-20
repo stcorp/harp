@@ -985,5 +985,203 @@ int harp_profile_vmr_cov_from_nd_cov_pressure_and_temperature(long num_levels,
 }
 
 /**
+ * Resamples all variables in product against a specified grid.
+ * Target_grid is expected to be a variable of dimensions {vertical} or {time, vertical}.
+ * The source grid is determined by derivation of a matching vertical quantity on the specified product.
+ *
+ * Grid-dimension-wise we distinguish 4 cases:
+ *  - target 1D, source 1D: performs time independent vertical interpolation
+ *  - target 1D, source 2D: extends target dimensions & performs time dep. interpolation
+ *  - target 2D, source 1D: extends source dimensions & performs time dep. interpolation
+ *  - target 2D, source 2D: performs time dependent interpolation
+ *
+ * \return
+ *   \arg \c 0, Success.
+ *   \arg \c -1, Error occurred (check #harp_errno).
+ */
+int harp_profile_resample(harp_product *product, harp_variable *target_grid)
+{
+    harp_variable *source_grid = NULL;
+    harp_variable *vertical_axis = NULL;
+    long target_vertical_elements = target_grid->dimension[target_grid->num_dimensions - 1];
+    long source_time_dim_length = 0;    /* 0 indicates that we do time-independent regridding */
+    long source_vertical_elements;
+    int i;
+
+    harp_dimension_type vertical_1d_dim_type[1] = { harp_dimension_vertical };
+    harp_dimension_type vertical_2d_dim_type[2] = { harp_dimension_time, harp_dimension_vertical };
+
+    /* Derive the source grid (will give doubles because unit is passed) */
+    if (harp_product_add_derived_variable(product, target_grid->name, target_grid->unit, 1, vertical_1d_dim_type) != 0)
+    {
+        /* Failed to derive 1D source grid. Try 2D */
+        if (harp_product_add_derived_variable(product,
+                                              target_grid->name, target_grid->unit, 2, vertical_2d_dim_type) != 0)
+        {
+            return -1;
+        }
+
+    }
+
+    /* Retrieve basic info about the source grid */
+    harp_product_get_variable_by_name(product, target_grid->name, &source_grid);
+    if(source_grid->num_dimensions > 1)
+    {
+        source_time_dim_length = source_grid->dimension[0];
+    }
+    source_vertical_elements = source_grid->dimension[source_grid->num_dimensions - 1];
+
+    /* Resample all variables if we know how */
+    for (i = product->num_variables - 1; i >= 0; i--)
+    {
+        harp_variable *variable = product->variable[i];
+
+        long new_data_num_elements = variable->num_elements / source_vertical_elements * target_vertical_elements;
+        double *new_data = NULL;
+        long num_blocks = variable->num_elements / source_vertical_elements;
+        long time_blocks = num_blocks;
+
+        int dim_id;
+        long time;
+        long block_id;
+        int skip;       /* <0: don't skipt, 0: skip, >0: delete */
+
+        /* Calculate the number of num_blocks for which time is constant for time-dependent resampling */
+        if (source_time_dim_length != 0)
+        {
+            time_blocks = num_blocks / source_time_dim_length;
+        }
+
+        /* Ensure that there is only 1 vertical dimension, that it's the fastest running one and has scalar values */
+        skip = 0;       /* assume that the variable has no vertical component */
+        for (dim_id = 0; dim_id < variable->num_dimensions; dim_id++)
+        {
+            if (variable->dimension_type[dim_id] == harp_dimension_vertical)
+            {
+                skip = -1;      /* variable has vertical component */
+                if (dim_id != variable->num_dimensions - 1)
+                {
+                    /* variable has vertical dimension but cannot be resampled */
+                    skip = 1;
+                    break;
+                }
+            }
+        }
+
+        /* We can't resample string-typed variables */
+        if (variable->data_type == harp_type_string)
+        {
+            skip = 1;
+        }
+
+        /* skip the source grid variable, we'll set that afterwards */
+        if (variable == source_grid)
+        {
+            skip = 0;
+        }
+
+        /* TODO skip based on name restrictions */
+
+        if (skip == 0)
+        {
+            continue;
+        }
+        else if (skip > 0)
+        {
+            harp_report_warning("Removing variable %s; unresamplable dimensions\n", variable->name);
+            harp_product_remove_variable(product, variable);
+            continue;
+        }
+
+        /* Ensure that the variable data consists of doubles */
+        if (variable->data_type != harp_type_double && harp_variable_convert_data_type(variable, harp_type_double) != 0)
+        {
+            harp_variable_delete(target_grid);
+            return -1;
+        }
+
+        /* time independent variables with a time-dependent source grid are time-extended */
+        if (variable->dimension_type[0] != harp_dimension_time && source_grid->dimension[0] == harp_dimension_time)
+        {
+            harp_variable_add_dimension(variable, 0, harp_dimension_time, source_time_dim_length);
+        }
+
+        /* Setup target array */
+        new_data = (double *)malloc((size_t)new_data_num_elements * sizeof(double));
+        if (new_data == NULL)
+        {
+            harp_variable_delete(target_grid);
+            harp_set_error(HARP_ERROR_OUT_OF_MEMORY, "out of memory (could not duplicate string) (%s:%u)",
+                           __FILE__, __LINE__);
+            return -1;
+        }
+
+        /* Interpolate the data of the variable over the vertical axis */
+        time = -1;
+        for (block_id = 0; block_id < num_blocks; block_id++)
+        {
+            /* keep track of time for time-dependent vertical grids */
+            if (block_id % time_blocks == 0)
+            {
+                time++;
+            }
+
+            harp_interpolate_array_linear(source_vertical_elements,
+                                          source_grid->data.double_data + time * source_vertical_elements,
+                                          variable->data.double_data + block_id * source_vertical_elements,
+                                          target_vertical_elements, target_grid->data.double_data, 0,
+                                          new_data + block_id * target_vertical_elements);
+        }
+
+        /* Update the vertical dimension length */
+        variable->dimension[variable->num_dimensions - 1] = target_vertical_elements;
+
+        /* Set the new variable data */
+        harp_array old_data = variable->data;
+
+        variable->data.double_data = new_data;
+        variable->num_elements = new_data_num_elements;
+
+        /* Clean up the old data */
+        free(old_data.double_data);
+    }
+
+    /* ensure consistent axis variable in product */
+    product->dimension[harp_dimension_vertical] = target_vertical_elements;
+    harp_variable_copy(target_grid, &vertical_axis);
+    if (harp_product_replace_variable(product, vertical_axis) != 0)
+    {
+        return -1;
+    }
+
+    return 0;
+}
+
+int harp_profile_smooth(harp_product *product, harp_collocation_result *collocation_result, const char *products_path)
+{
+    int i;
+
+    /* Make sure the
+    harp_collocation_result_filter_for_source_product_a(collocation_result, product->source_product);
+    harp_collocation_result_sort_by_a(collocation_result);
+    harp_collocation_result_sort_by_collocation_index(collocation_result);*/
+
+    for (i = product->num_variables - 1; i >= 0; i--)
+    {
+        harp_variable *variable = product->variable[i];
+        long time_id;
+
+        /* TODO Ensure that this variable has a time dimension */
+        /* Iterate over the time dimension */
+        for (time_id = 0; time_id < variable->dimension[0]; time_id++)
+        {
+        }
+
+    }
+
+    return 0;
+}
+
+/**
  * @}
  */
