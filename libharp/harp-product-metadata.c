@@ -27,6 +27,10 @@
 #include <stdlib.h>
 #include <string.h>
 
+/** \defgroup harp_product_metadata HARP Product Metadata
+ * The HARP Product Metadata module contains everything related to HARP product metadata.
+ */
+
 /** \addtogroup harp_product_metadata
  * @{
  */
@@ -36,7 +40,7 @@
  * Remove metadata and all attached variables and attributes.
  * \param metadata HARP metadata.
  */
-LIBHARP_API int harp_product_metadata_delete(harp_product_metadata *metadata)
+LIBHARP_API void harp_product_metadata_delete(harp_product_metadata *metadata)
 {
     free(metadata->source_product);
     free(metadata->filename);
@@ -75,5 +79,33 @@ LIBHARP_API int harp_product_metadata_new(harp_product_metadata **new_metadata)
     return 0;
 }
 
+/**
+ * Print product metadata.
+ * \param metadata Pointer to the metadata to print.
+ * \param print Pointer to the function that should be used for printing.
+ */
+LIBHARP_API void harp_product_metadata_print(harp_product_metadata *metadata, int (*print) (const char *, ...))
+{
+    int i;
+
+    print("filename: %s, ", metadata->filename);
+    print("source_product: %s, ", metadata->source_product);
+    print("date_start: %f, ", metadata->datetime_start);
+    print("date_stop: %f, ", metadata->datetime_stop);
+    print("dimension: {");
+    for (i = 0; i < HARP_NUM_DIM_TYPES; i++)
+    {
+        if (metadata->dimension[i] != NULL)
+        {
+            print("%s = ", harp_get_dimension_type_name(i));
+        }
+        print("%ld", metadata->dimension[i]);
+        if (i < HARP_NUM_DIM_TYPES - 1)
+        {
+            print(", ");
+        }
+    }
+    print("}");
+}
 
 /** @} */
