@@ -58,3 +58,13 @@ Release checklist
 - make sure all documentation is updated accordingly
 - update README (version number!)
 - update CHANGES
+
+Conventions
+-----------
+- Don't use a starting capital letter or terminating period for warning/error
+  messages. Treat messages as something that could be included between
+  parentheses as part of a larger sentence. Try to stick to a single sentence
+  for a message. If you have to use multiple sentences then separate them with
+  a semicolon.
+- The same capitalization/punctuation rule for messages also applies for
+  descriptions used in product ingestions.
