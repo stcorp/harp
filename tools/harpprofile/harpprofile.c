@@ -689,7 +689,12 @@ static int resample_against_grid(harp_product *product, harp_variable *target_gr
             return -1;
         }
 
-        harp_product_get_variable_by_name(product, target_grid->name, &source_grid);
+    }
+
+    /* Retrieve basic info about the source grid */
+    harp_product_get_variable_by_name(product, target_grid->name, &source_grid);
+    if(source_grid->num_dimensions > 1)
+    {
         source_time_dim_length = source_grid->dimension[0];
     }
     source_vertical_elements = source_grid->dimension[source_grid->num_dimensions - 1];
@@ -887,7 +892,7 @@ static int resample(int argc, char *argv[])
         else
         {
             fprintf(stderr, "ERROR: invalid argument: '%s'\n", argv[i]);
-            print_help();
+            print_help_resample();
             return -1;
         }
     }
