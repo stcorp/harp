@@ -98,6 +98,7 @@ libharp_la_SOURCES = \
 	libharp/harp-ingest-cci_l3_o3_np.c \
 	libharp/harp-ingest-cci_l3_o3_tc.c \
 	libharp/harp-ingest-cci_l4_o3_np.c \
+ 	libharp/harp-ingest-ecmwf-grib.c \
 	libharp/harp-ingest-geoms-lidar.c \
 	libharp/harp-ingest-geoms-mwr.c \
 	libharp/harp-ingest-geoms-ftir.c \
