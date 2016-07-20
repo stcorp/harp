@@ -8,7 +8,7 @@
   
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
   
-  <title>C library &mdash; HARP 0.2b documentation</title>
+  <title>Product Metadata &mdash; HARP 0.2b documentation</title>
   
 
   
@@ -33,8 +33,9 @@
 
   
     <link rel="top" title="HARP 0.2b documentation" href="index.html"/>
-        <link rel="next" title="Algorithms" href="libharp_algorithm.html"/>
-        <link rel="prev" title="Ingestion definitions" href="ingestions/index.html"/> 
+        <link rel="up" title="C library" href="libharp.html"/>
+        <link rel="next" title="Dataset" href="libharp_dataset.html"/>
+        <link rel="prev" title="Product" href="libharp_product.html"/> 
 
   
   <script src="_static/js/modernizr.min.js"></script>
@@ -87,9 +88,9 @@
 <li class="toctree-l1"><a class="reference internal" href="install.html">Installation</a></li>
 <li class="toctree-l1"><a class="reference internal" href="dataformats.html">Data formats</a></li>
 <li class="toctree-l1"><a class="reference internal" href="ingestions/index.html">Ingestion definitions</a></li>
-<li class="toctree-l1 current"><a class="current reference internal" href="#">C library</a><ul>
-<li class="toctree-l2"><a class="reference internal" href="#introduction">Introduction</a></li>
-<li class="toctree-l2"><a class="reference internal" href="#modules">Modules</a><ul>
+<li class="toctree-l1 current"><a class="reference internal" href="libharp.html">C library</a><ul class="current">
+<li class="toctree-l2"><a class="reference internal" href="libharp.html#introduction">Introduction</a></li>
+<li class="toctree-l2 current"><a class="reference internal" href="libharp.html#modules">Modules</a><ul class="current">
 <li class="toctree-l3"><a class="reference internal" href="libharp_algorithm.html">Algorithms</a></li>
 <li class="toctree-l3"><a class="reference internal" href="libharp_collocation.html">Collocation</a></li>
 <li class="toctree-l3"><a class="reference internal" href="libharp_documentation.html">Documentation</a></li>
@@ -97,7 +98,7 @@
 <li class="toctree-l3"><a class="reference internal" href="libharp_general.html">General</a></li>
 <li class="toctree-l3"><a class="reference internal" href="libharp_geometry.html">Geometry</a></li>
 <li class="toctree-l3"><a class="reference internal" href="libharp_product.html">Product</a></li>
-<li class="toctree-l3"><a class="reference internal" href="libharp_product_metadata.html">Product Metadata</a></li>
+<li class="toctree-l3 current"><a class="current reference internal" href="#">Product Metadata</a></li>
 <li class="toctree-l3"><a class="reference internal" href="libharp_dataset.html">Dataset</a></li>
 <li class="toctree-l3"><a class="reference internal" href="libharp_variable.html">Variable</a></li>
 </ul>
@@ -136,7 +137,9 @@
   <ul class="wy-breadcrumbs">
     <li><a href="index.html">Docs</a> &raquo;</li>
       
-    <li>C library</li>
+          <li><a href="libharp.html">C library</a> &raquo;</li>
+      
+    <li>Product Metadata</li>
       <li class="wy-breadcrumbs-aside">
         
           
@@ -148,31 +151,67 @@
           <div role="main" class="document" itemscope="itemscope" itemtype="http://schema.org/Article">
            <div itemprop="articleBody">
             
-  <div class="section" id="c-library">
-<h1>C library</h1>
-<div class="section" id="introduction">
-<h2>Introduction</h2>
-<p>This is the documentation that describes the Application Programmers Interface (API) for the HARP C Library.
-It contains a full description for each of the functions in the API and a general description for each of the modules mentioned below.</p>
-</div>
-<div class="section" id="modules">
-<h2>Modules</h2>
-<p>Each module has a separate section that contains its general description together with descriptions for all types, variables, functions, etc. that are part of this module.</p>
-<div class="toctree-wrapper compound">
-<ul>
-<li class="toctree-l1"><a class="reference internal" href="libharp_algorithm.html">Algorithms</a></li>
-<li class="toctree-l1"><a class="reference internal" href="libharp_collocation.html">Collocation</a></li>
-<li class="toctree-l1"><a class="reference internal" href="libharp_documentation.html">Documentation</a></li>
-<li class="toctree-l1"><a class="reference internal" href="libharp_error.html">Error</a></li>
-<li class="toctree-l1"><a class="reference internal" href="libharp_general.html">General</a></li>
-<li class="toctree-l1"><a class="reference internal" href="libharp_geometry.html">Geometry</a></li>
-<li class="toctree-l1"><a class="reference internal" href="libharp_product.html">Product</a></li>
-<li class="toctree-l1"><a class="reference internal" href="libharp_product_metadata.html">Product Metadata</a></li>
-<li class="toctree-l1"><a class="reference internal" href="libharp_dataset.html">Dataset</a></li>
-<li class="toctree-l1"><a class="reference internal" href="libharp_variable.html">Variable</a></li>
+  <div class="section" id="product-metadata">
+<h1>Product Metadata</h1>
+<dl class="group">
+<dt>
+<span class="target" id="libharpgroup__harp__product__metadata"></span><em>group</em> <code class="descname">harp_product_metadata</code></dt>
+<dd><p>The HARP Product Metadata module contains everything related to HARP product metadata. </p>
+<div class="breathe-sectiondef container">
+<p class="breathe-sectiondef-title rubric">Functions</p>
+<dl class="function">
+<dt id="_CPPv228harp_product_metadata_deleteP21harp_product_metadata">
+<span id="harp_product_metadata_delete__harp_product_metadataP"></span><span class="target" id="libharpgroup__harp__product__metadata_1ga0441223827f4d70bc6ded0cb8a727628"></span>void <code class="descname">harp_product_metadata_delete</code><span class="sig-paren">(</span>harp_product_metadata *<em>metadata</em><span class="sig-paren">)</span></dt>
+<dd><p>Delete product metadata. Remove metadata and all attached variables and attributes. <dl class="docutils">
+<dt><strong>Parameters</strong></dt>
+<dd><ul class="breatheparameterlist first last">
+<li><code class="first docutils literal"><span class="pre">metadata</span></code> - <p>HARP metadata. </p>
+</li>
 </ul>
+</dd>
+</dl>
+</p>
+</dd></dl>
+
+<dl class="function">
+<dt id="_CPPv225harp_product_metadata_newPP21harp_product_metadata">
+<span id="harp_product_metadata_new__harp_product_metadataPP"></span><span class="target" id="libharpgroup__harp__product__metadata_1gad7c2c009e17399ad72476548a498f7b0"></span>int <code class="descname">harp_product_metadata_new</code><span class="sig-paren">(</span>harp_product_metadata **<em>new_metadata</em><span class="sig-paren">)</span></dt>
+<dd><p>Create new product metadata. The metadata will be intialized with 0.0 datetime_start/end. <dl class="docutils">
+<dt><strong>Return</strong></dt>
+<dd><ul class="simple">
+<li><code class="docutils literal"><span class="pre">0</span></code>, Success. </li>
+<li><code class="docutils literal"><span class="pre">-1</span></code>, Error occurred (check <a class="reference internal" href="libharp_error.html#libharpgroup__harp__error_1gab2eeb46528306c6799632d1e800c4c36"><span class="std std-ref">harp_errno</span></a>). </li>
+</ul>
+</dd>
+<dt><strong>Parameters</strong></dt>
+<dd><ul class="breatheparameterlist first last">
+<li><code class="first docutils literal"><span class="pre">new_metadata</span></code> - <p>Pointer to the C variable where the new HARP product metadata will be stored. </p>
+</li>
+</ul>
+</dd>
+</dl>
+</p>
+</dd></dl>
+
+<dl class="function">
+<dt id="_CPPv227harp_product_metadata_printP21harp_product_metadataPFiPKczE">
+<span class="target" id="libharpgroup__harp__product__metadata_1gac0b6ff404a5d629b07dd65d6fa44fb76"></span>void <code class="descname">harp_product_metadata_print</code><span class="sig-paren">(</span>harp_product_metadata *<em>metadata</em>, int (*<em>print</em>)<span class="sig-paren">(</span><em class="property">const</em> char *, ...<span class="sig-paren">)</span><span class="sig-paren">)</span></dt>
+<dd><p>Print product metadata. <dl class="docutils">
+<dt><strong>Parameters</strong></dt>
+<dd><ul class="breatheparameterlist first last">
+<li><code class="first docutils literal"><span class="pre">metadata</span></code> - <p>Pointer to the metadata to print. </p>
+</li>
+<li><code class="first docutils literal"><span class="pre">print</span></code> - <p>Pointer to the function that should be used for printing. </p>
+</li>
+</ul>
+</dd>
+</dl>
+</p>
+</dd></dl>
+
 </div>
-</div>
+</dd></dl>
+
 </div>
 
 
@@ -182,10 +221,10 @@ It contains a full description for each of the functions in the API and a genera
   
     <div class="rst-footer-buttons" role="navigation" aria-label="footer navigation">
       
-        <a href="libharp_algorithm.html" class="btn btn-neutral float-right" title="Algorithms" accesskey="n">Next <span class="fa fa-arrow-circle-right"></span></a>
+        <a href="libharp_dataset.html" class="btn btn-neutral float-right" title="Dataset" accesskey="n">Next <span class="fa fa-arrow-circle-right"></span></a>
       
       
-        <a href="ingestions/index.html" class="btn btn-neutral" title="Ingestion definitions" accesskey="p"><span class="fa fa-arrow-circle-left"></span> Previous</a>
+        <a href="libharp_product.html" class="btn btn-neutral" title="Product" accesskey="p"><span class="fa fa-arrow-circle-left"></span> Previous</a>
       
     </div>
   

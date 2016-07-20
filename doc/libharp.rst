@@ -20,4 +20,6 @@ Each module has a separate section that contains its general description togethe
    libharp_general
    libharp_geometry
    libharp_product
+   libharp_product_metadata
+   libharp_dataset
    libharp_variable

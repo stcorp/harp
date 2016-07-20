@@ -8,7 +8,7 @@
   
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
   
-  <title>Geometry &mdash; HARP 0.2b documentation</title>
+  <title>Dataset &mdash; HARP 0.2b documentation</title>
   
 
   
@@ -34,8 +34,8 @@
   
     <link rel="top" title="HARP 0.2b documentation" href="index.html"/>
         <link rel="up" title="C library" href="libharp.html"/>
-        <link rel="next" title="Product" href="libharp_product.html"/>
-        <link rel="prev" title="General" href="libharp_general.html"/> 
+        <link rel="next" title="Variable" href="libharp_variable.html"/>
+        <link rel="prev" title="Product Metadata" href="libharp_product_metadata.html"/> 
 
   
   <script src="_static/js/modernizr.min.js"></script>
@@ -96,10 +96,10 @@
 <li class="toctree-l3"><a class="reference internal" href="libharp_documentation.html">Documentation</a></li>
 <li class="toctree-l3"><a class="reference internal" href="libharp_error.html">Error</a></li>
 <li class="toctree-l3"><a class="reference internal" href="libharp_general.html">General</a></li>
-<li class="toctree-l3 current"><a class="current reference internal" href="#">Geometry</a></li>
+<li class="toctree-l3"><a class="reference internal" href="libharp_geometry.html">Geometry</a></li>
 <li class="toctree-l3"><a class="reference internal" href="libharp_product.html">Product</a></li>
 <li class="toctree-l3"><a class="reference internal" href="libharp_product_metadata.html">Product Metadata</a></li>
-<li class="toctree-l3"><a class="reference internal" href="libharp_dataset.html">Dataset</a></li>
+<li class="toctree-l3 current"><a class="current reference internal" href="#">Dataset</a></li>
 <li class="toctree-l3"><a class="reference internal" href="libharp_variable.html">Variable</a></li>
 </ul>
 </li>
@@ -139,7 +139,7 @@
       
           <li><a href="libharp.html">C library</a> &raquo;</li>
       
-    <li>Geometry</li>
+    <li>Dataset</li>
       <li class="wy-breadcrumbs-aside">
         
           
@@ -151,19 +151,27 @@
           <div role="main" class="document" itemscope="itemscope" itemtype="http://schema.org/Article">
            <div itemprop="articleBody">
             
-  <div class="section" id="geometry">
-<h1>Geometry</h1>
+  <div class="section" id="dataset">
+<h1>Dataset</h1>
 <dl class="group">
 <dt>
-<span class="target" id="libharpgroup__harp__geometry"></span><em>group</em> <code class="descname">harp_geometry</code></dt>
-<dd><p>The HARP Geometry module contains a set of geometry functions for calculating distances and determining an overlap for points and areas </p>
+<span class="target" id="libharpgroup__harp__dataset"></span><em>group</em> <code class="descname">harp_dataset</code></dt>
+<dd><p>The HARP Dataset module contains everything regarding HARP datasets. </p>
+<div class="breathe-sectiondef container">
+<p class="breathe-sectiondef-title rubric">Typedefs</p>
+<dl class="type">
+<dt id="_CPPv212harp_dataset">
+<span id="harp_dataset"></span><span class="target" id="libharpgroup__harp__dataset_1gad68088d6c638ed1a84703b99773caa52"></span><em class="property">typedef </em><em class="property">struct</em> <a class="reference internal" href="#_CPPv219harp_dataset_struct" title="harp_dataset_struct">harp_dataset_struct</a> <code class="descname">harp_dataset</code></dt>
+<dd><p>HARP Dataset typedef </p>
+</dd></dl>
+
+</div>
 <div class="breathe-sectiondef container">
 <p class="breathe-sectiondef-title rubric">Functions</p>
 <dl class="function">
-<dt id="_CPPv232harp_geometry_get_point_distanceddddPd">
-<span id="harp_geometry_get_point_distance__double.double.double.double.doubleP"></span><span class="target" id="libharpgroup__harp__geometry_1gad57943cfc0c5a4ae794d9b147b659d04"></span>int <code class="descname">harp_geometry_get_point_distance</code><span class="sig-paren">(</span>double <em>longitude_a</em>, double <em>latitude_a</em>, double <em>longitude_b</em>, double <em>latitude_b</em>, double *<em>distance</em><span class="sig-paren">)</span></dt>
-<dd><p>Calculate the distance between two points on the surface of the Earth meters</p>
-<p>This function assumes a spherical earth <dl class="docutils">
+<dt id="_CPPv216harp_dataset_newPP12harp_dataset">
+<span id="harp_dataset_new__harp_datasetPP"></span><span class="target" id="libharpgroup__harp__dataset_1ga35ac46cdc9370a916fd14ef144051f3e"></span>int <code class="descname">harp_dataset_new</code><span class="sig-paren">(</span><a class="reference internal" href="#_CPPv212harp_dataset" title="harp_dataset">harp_dataset</a> **<em>new_dataset</em><span class="sig-paren">)</span></dt>
+<dd><p>Create new HARP dataset. The metadata will be intialized with zero product metadata elements. <dl class="docutils">
 <dt><strong>Return</strong></dt>
 <dd><ul class="simple">
 <li><code class="docutils literal"><span class="pre">0</span></code>, Success. </li>
@@ -172,15 +180,7 @@
 </dd>
 <dt><strong>Parameters</strong></dt>
 <dd><ul class="breatheparameterlist first last">
-<li><code class="first docutils literal"><span class="pre">longitude_a</span></code> - <p>Longitude of first point </p>
-</li>
-<li><code class="first docutils literal"><span class="pre">latitude_a</span></code> - <p>Latitude of first point </p>
-</li>
-<li><code class="first docutils literal"><span class="pre">longitude_b</span></code> - <p>Longitude of second point </p>
-</li>
-<li><code class="first docutils literal"><span class="pre">latitude_b</span></code> - <p>Latitude of second point </p>
-</li>
-<li><code class="first docutils literal"><span class="pre">distance</span></code> - <p>Pointer to the C variable where the surface distance in [m] between the two points will be stored. </p>
+<li><code class="first docutils literal"><span class="pre">new_dataset</span></code> - <p>Pointer to the C variable where the new HARP product metadata will be stored. </p>
 </li>
 </ul>
 </dd>
@@ -189,29 +189,12 @@
 </dd></dl>
 
 <dl class="function">
-<dt id="_CPPv231harp_geometry_has_point_in_areaddiPdPdPi">
-<span id="harp_geometry_has_point_in_area__double.double.i.doubleP.doubleP.iP"></span><span class="target" id="libharpgroup__harp__geometry_1ga641fb16093a8929a35aa4950f3ba4c60"></span>int <code class="descname">harp_geometry_has_point_in_area</code><span class="sig-paren">(</span>double <em>longitude_point</em>, double <em>latitude_point</em>, int <em>num_vertices</em>, double *<em>longitude_bounds</em>, double *<em>latitude_bounds</em>, int *<em>in_area</em><span class="sig-paren">)</span></dt>
-<dd><p>Determine whether a point is in an area on the surface of the Earth</p>
-<p>This function assumes a spherical earth <dl class="docutils">
-<dt><strong>Return</strong></dt>
-<dd><ul class="simple">
-<li><code class="docutils literal"><span class="pre">0</span></code>, Success. </li>
-<li><code class="docutils literal"><span class="pre">-1</span></code>, Error occurred (check <a class="reference internal" href="libharp_error.html#libharpgroup__harp__error_1gab2eeb46528306c6799632d1e800c4c36"><span class="std std-ref">harp_errno</span></a>). </li>
-</ul>
-</dd>
+<dt id="_CPPv219harp_dataset_deleteP12harp_dataset">
+<span id="harp_dataset_delete__harp_datasetP"></span><span class="target" id="libharpgroup__harp__dataset_1gabee5947f6968607661a761a5ac4c4ca7"></span>void <code class="descname">harp_dataset_delete</code><span class="sig-paren">(</span><a class="reference internal" href="#_CPPv212harp_dataset" title="harp_dataset">harp_dataset</a> *<em>dataset</em><span class="sig-paren">)</span></dt>
+<dd><p>Delete HARP dataset. <dl class="docutils">
 <dt><strong>Parameters</strong></dt>
 <dd><ul class="breatheparameterlist first last">
-<li><code class="first docutils literal"><span class="pre">longitude_point</span></code> - <p>Longitude of the point </p>
-</li>
-<li><code class="first docutils literal"><span class="pre">latitude_point</span></code> - <p>Latitude of the point </p>
-</li>
-<li><code class="first docutils literal"><span class="pre">num_vertices</span></code> - <p>The number of vertices of the bounding polygon of the area </p>
-</li>
-<li><code class="first docutils literal"><span class="pre">longitude_bounds</span></code> - <p>Longitude values of the bounds of the area polygon </p>
-</li>
-<li><code class="first docutils literal"><span class="pre">latitude_bounds</span></code> - <p>Latitude values of the bounds of the area polygon </p>
-</li>
-<li><code class="first docutils literal"><span class="pre">in_area</span></code> - <p>Pointer to the C variable where the result will be stored (1 if point is in the area, 0 otherwise). </p>
+<li><code class="first docutils literal"><span class="pre">dataset</span></code> - <p>Pointer to the dataset to free. </p>
 </li>
 </ul>
 </dd>
@@ -220,10 +203,25 @@
 </dd></dl>
 
 <dl class="function">
-<dt id="_CPPv230harp_geometry_has_area_overlapiPdPdiPdPdPiPd">
-<span id="harp_geometry_has_area_overlap__i.doubleP.doubleP.i.doubleP.doubleP.iP.doubleP"></span><span class="target" id="libharpgroup__harp__geometry_1gaa0bb75aefe5be8601eeb71a571172150"></span>int <code class="descname">harp_geometry_has_area_overlap</code><span class="sig-paren">(</span>int <em>num_vertices_a</em>, double *<em>longitude_bounds_a</em>, double *<em>latitude_bounds_a</em>, int <em>num_vertices_b</em>, double *<em>longitude_bounds_b</em>, double *<em>latitude_bounds_b</em>, int *<em>has_overlap</em>, double *<em>percentage</em><span class="sig-paren">)</span></dt>
-<dd><p>Determine whether a point is in an area on the surface of the Earth</p>
-<p>This function assumes a spherical earth <dl class="docutils">
+<dt id="_CPPv218harp_dataset_printP12harp_datasetPFiPKczE">
+<span class="target" id="libharpgroup__harp__dataset_1ga9b2f2eb09902c7416baeff016491cbd6"></span>void <code class="descname">harp_dataset_print</code><span class="sig-paren">(</span><a class="reference internal" href="#_CPPv212harp_dataset" title="harp_dataset">harp_dataset</a> *<em>dataset</em>, int (*<em>print</em>)<span class="sig-paren">(</span><em class="property">const</em> char *, ...<span class="sig-paren">)</span><span class="sig-paren">)</span></dt>
+<dd><p>Print HARP dataset. <dl class="docutils">
+<dt><strong>Parameters</strong></dt>
+<dd><ul class="breatheparameterlist first last">
+<li><code class="first docutils literal"><span class="pre">dataset</span></code> - <p>Pointer to the dataset to print. </p>
+</li>
+<li><code class="first docutils literal"><span class="pre">print</span></code> - <p>Pointer to the function that should be used for printing. </p>
+</li>
+</ul>
+</dd>
+</dl>
+</p>
+</dd></dl>
+
+<dl class="function">
+<dt id="_CPPv219harp_import_datasetPKcPP12harp_dataset">
+<span id="harp_import_dataset__cCP.harp_datasetPP"></span><span class="target" id="libharpgroup__harp__dataset_1ga7b548c8ae7035e66a09ab983deecde42"></span>int <code class="descname">harp_import_dataset</code><span class="sig-paren">(</span><em class="property">const</em> char *<em>directory</em>, <a class="reference internal" href="#_CPPv212harp_dataset" title="harp_dataset">harp_dataset</a> **<em>dataset</em><span class="sig-paren">)</span></dt>
+<dd><p>Import HARP dataset. <dl class="docutils">
 <dt><strong>Return</strong></dt>
 <dd><ul class="simple">
 <li><code class="docutils literal"><span class="pre">0</span></code>, Success. </li>
@@ -232,21 +230,9 @@
 </dd>
 <dt><strong>Parameters</strong></dt>
 <dd><ul class="breatheparameterlist first last">
-<li><code class="first docutils literal"><span class="pre">num_vertices_a</span></code> - <p>The number of vertices of the bounding polygon of the first area </p>
+<li><code class="first docutils literal"><span class="pre">directory</span></code> - <p>Name of directory to search for products to import as a HARP Dataset. </p>
 </li>
-<li><code class="first docutils literal"><span class="pre">longitude_bounds_a</span></code> - <p>Longitude values of the bounds of the area of the first polygon </p>
-</li>
-<li><code class="first docutils literal"><span class="pre">latitude_bounds_a</span></code> - <p>Latitude values of the bounds of the area of the first polygon </p>
-</li>
-<li><code class="first docutils literal"><span class="pre">num_vertices_b</span></code> - <p>The number of vertices of the bounding polygon of the second area </p>
-</li>
-<li><code class="first docutils literal"><span class="pre">longitude_bounds_b</span></code> - <p>Longitude values of the bounds of the area of the second polygon </p>
-</li>
-<li><code class="first docutils literal"><span class="pre">latitude_bounds_b</span></code> - <p>Latitude values of the bounds of the area of the second polygon </p>
-</li>
-<li><code class="first docutils literal"><span class="pre">has_overlap</span></code> - <p>Pointer to the C variable where the result will be stored (1 if there is overlap, 0 otherwise). </p>
-</li>
-<li><code class="first docutils literal"><span class="pre">percentage</span></code> - <p>Pointer to the C variable where the overlap percentage will be stored (use NULL if not needed). </p>
+<li><code class="first docutils literal"><span class="pre">dataset</span></code> - <p>Pointer to variable to store the imported dataset. </p>
 </li>
 </ul>
 </dd>
@@ -255,6 +241,12 @@
 </dd></dl>
 
 </div>
+<dl class="class">
+<dt id="_CPPv219harp_dataset_struct">
+<span id="harp_dataset_struct"></span><span class="target" id="libharpstructharp__dataset__struct"></span><em class="property">struct </em><code class="descname">harp_dataset_struct</code></dt>
+<dd><em>#include &lt;harp.h&gt;</em><p>HARP Dataset struct </p>
+</dd></dl>
+
 </dd></dl>
 
 </div>
@@ -266,10 +258,10 @@
   
     <div class="rst-footer-buttons" role="navigation" aria-label="footer navigation">
       
-        <a href="libharp_product.html" class="btn btn-neutral float-right" title="Product" accesskey="n">Next <span class="fa fa-arrow-circle-right"></span></a>
+        <a href="libharp_variable.html" class="btn btn-neutral float-right" title="Variable" accesskey="n">Next <span class="fa fa-arrow-circle-right"></span></a>
       
       
-        <a href="libharp_general.html" class="btn btn-neutral" title="General" accesskey="p"><span class="fa fa-arrow-circle-left"></span> Previous</a>
+        <a href="libharp_product_metadata.html" class="btn btn-neutral" title="Product Metadata" accesskey="p"><span class="fa fa-arrow-circle-left"></span> Previous</a>
       
     </div>
   
