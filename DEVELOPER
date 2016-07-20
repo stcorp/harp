@@ -10,11 +10,36 @@ get regenerated (all using the autotools build system):
 
 Run 'make doc' to regenerate the documentation.
 Current versions used for generating the documentation are:
-- Sphinx 1.4.3
+- Sphinx 1.4.5
 - sphinx-autobuild 0.6.0
 - sphinx-rtd-theme 0.1.9
 - breathe 4.1.0
 - doxygen 1.8.11
+With the following versions for third party dependencies:
+- Babel 2.3.4
+- Jinja2 2.8
+- MarkupSafe 0.23
+- PyYAML 3.11
+- Pygments 2.1.3
+- Sphinx 1.4.5
+- alabaster 0.7.8
+- argh 0.26.2
+- backports-abc 0.4
+- breathe 4.2.0
+- certifi 2016.02.28
+- docutils 0.12
+- imagesize 0.7.1
+- livereload 2.4.1
+- pathtools 0.1.2
+- port-for 0.3.1
+- pytz 2016.6.1
+- singledispatch 3.4.0.3
+- six 1.10.0
+- snowballstemmer 1.2.1
+- sphinx-autobuild 0.6.0
+- sphinx-rtd-theme 0.1.9
+- tornado 4.4
+- watchdog 0.8.3
 
 Run 'make dist' to have config.h.cmake.in and harp.h.cmake.in updated to be
 in line with config.h.in and harp.h.in.
@@ -23,8 +48,9 @@ Make sure that python/_harpc.py gets updated with any change to harp.h.in.
 This should happen automatically using the Makefile dependencies.
 But, make sure to do this by performing an in-source build of HARP such that
 the _harpc.py file in the python subdirectory of the source tree gets replaced.
-Current version of cffi for generating the python interface is:
-- cffi 1.5.2
+Current versions of cffi and pycparser for generating the python interface are:
+- cffi 1.7.0
+- pycparser 2.14
 
 Run 'make indent' using GNU indent (2.2.11) to update the indentation of the C
 code. You may have to run it twice to work around flipping indentation choices
