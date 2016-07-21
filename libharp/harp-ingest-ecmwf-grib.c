@@ -2790,7 +2790,7 @@ int harp_ingestion_module_ecmwf_grib_init(void)
     add_value_variable_mapping(variable_definition, "(table,indicator) = (210,211) [550nm]",
                                "(discipline,category,number) = (192,210,211) [550nm]");
 
-    /* suaod550: black_carbon_aerosol_optical_depth */
+    /* suaod550: sulphate_aerosol_optical_depth */
     description = "sulphate aerosol optical depth";
     variable_definition = harp_ingestion_register_variable_full_read(product_definition,
                                                                      "sulphate_aerosol_optical_depth",
