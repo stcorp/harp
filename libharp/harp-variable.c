@@ -29,6 +29,66 @@
  * The HARP Variables module contains everything related to HARP variables.
  */
 
+static void write_scalar(harp_scalar data, harp_data_type data_type, int (*print) (const char *, ...))
+{
+    switch (data_type)
+    {
+        case harp_type_int8:
+            print("%d", (int)data.int8_data);
+            break;
+        case harp_type_int16:
+            print("%d", (int)data.int16_data);
+            break;
+        case harp_type_int32:
+            print("%ld", (long)data.int32_data);
+            break;
+        case harp_type_float:
+            print("%.16g", (double)data.float_data);
+            break;
+        case harp_type_double:
+            print("%.16g", (double)data.double_data);
+            break;
+        default:
+            assert(0);
+            exit(1);
+    }
+}
+
+static void write_array(harp_array data, harp_data_type data_type, long num_elements, int (*print) (const char *, ...))
+{
+    long i;
+
+    for (i = 0; i < num_elements; i++)
+    {
+        switch (data_type)
+        {
+            case harp_type_int8:
+                print("%d", (int)data.int8_data[i]);
+                break;
+            case harp_type_int16:
+                print("%d", (int)data.int16_data[i]);
+                break;
+            case harp_type_int32:
+                print("%ld", (long)data.int32_data[i]);
+                break;
+            case harp_type_float:
+                print("%.16g", (double)data.float_data[i]);
+                break;
+            case harp_type_double:
+                print("%.16g", (double)data.double_data[i]);
+                break;
+            case harp_type_string:
+                print("\"%s\"", data.string_data[i]);
+                break;
+        }
+        if (i < num_elements - 1)
+        {
+            print(", ");
+        }
+    }
+}
+
+
 /** \addtogroup harp_variable
  * @{
  */
@@ -1732,5 +1792,101 @@ LIBHARP_API int harp_variable_verify(const harp_variable *variable)
 
     return 0;
 }
+
+/** Print a harp_variable struct using the specified print function.
+ * \param variable Variable to print.
+ * \param show_attributes Whether or not to print the attributes.
+ * \param print Print function to use
+ */
+LIBHARP_API void harp_variable_print(harp_variable *variable, int show_attributes, int (*print) (const char *, ...))
+{
+    int i;
+
+    print("    ");
+    switch (variable->data_type)
+    {
+        case harp_type_int8:
+            print("byte");
+            break;
+        case harp_type_int16:
+            print("int");
+            break;
+        case harp_type_int32:
+            print("long");
+            break;
+        case harp_type_float:
+            print("float");
+            break;
+        case harp_type_double:
+            print("double");
+            break;
+        case harp_type_string:
+            print("string");
+            break;
+    }
+    print(" %s", variable->name);
+    if (variable->num_dimensions > 0)
+    {
+        print(" {");
+        for (i = 0; i < variable->num_dimensions; i++)
+        {
+            if (variable->dimension_type[i] != harp_dimension_independent)
+            {
+                print("%s = ", harp_get_dimension_type_name(variable->dimension_type[i]));
+            }
+            print("%ld", variable->dimension[i]);
+            if (i < variable->num_dimensions - 1)
+            {
+                print(", ");
+            }
+        }
+        print("}");
+    }
+    if (variable->unit != NULL)
+    {
+        print(" [%s]", variable->unit);
+    }
+    print("\n");
+
+    if (!show_attributes)
+    {
+        return;
+    }
+
+    if (variable->description != NULL)
+    {
+        print("        description = \"%s\"\n", variable->description);
+    }
+    if (variable->data_type != harp_type_string)
+    {
+        if (!harp_is_valid_min_for_type(variable->data_type, variable->valid_min))
+        {
+            print("        valid min = ");
+            write_scalar(variable->valid_min, variable->data_type, print);
+            print("\n");
+        }
+        if (!harp_is_valid_max_for_type(variable->data_type, variable->valid_max))
+        {
+            print("        valid max = ");
+            write_scalar(variable->valid_max, variable->data_type, print);
+            print("\n");
+        }
+    }
+    print("\n");
+}
+
+/** Print the data of a harp_variable using the specified print function.
+ * \param variable Variable whose data to print.
+ * \param print Print function to use
+ */
+LIBHARP_API void harp_variable_print_data(harp_variable *variable, int (*print) (const char *, ...))
+{
+    print("%s", variable->name);
+    print(" = ");
+    write_array(variable->data, variable->data_type, variable->num_elements, print);
+    print("\n\n");
+}
+
+/** @} */
 
 /** @} */
