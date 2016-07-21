@@ -7,6 +7,8 @@
 * Added 'geopotential' as a supported quantity with conversions from/to
   'geopotential height'.
 
+* Renamed cloud optical thickness to cloud optical depth.
+
 0.2 2016-06-30
 ~~~~~~~~~~~~~~
 
