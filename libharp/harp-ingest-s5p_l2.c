@@ -2458,19 +2458,19 @@ static void register_cloud_product(void)
     path = "/PRODUCT/cloud_top_height_precision[]";
     harp_variable_definition_add_mapping(variable_definition, NULL, NULL, path, NULL);
 
-    /* cloud_optical_thickness */
-    description = "retrieved cloud optical thickness using the OCRA/ROCINN CAL model";
+    /* cloud_optical_depth */
+    description = "retrieved cloud optical depth using the OCRA/ROCINN CAL model";
     variable_definition =
-        harp_ingestion_register_variable_full_read(product_definition, "cloud_optical_thickness", harp_type_float, 1,
+        harp_ingestion_register_variable_full_read(product_definition, "cloud_optical_depth", harp_type_float, 1,
                                                    dimension_type, NULL, description, "m", NULL,
                                                    read_cloud_optical_thickness);
     path = "/PRODUCT/cloud_optical_thickness[]";
     harp_variable_definition_add_mapping(variable_definition, NULL, NULL, path, NULL);
 
-    /* cloud_optical_thickness_uncertainty */
-    description = "uncertainty of the retrieved cloud optical thickness using the OCRA/ROCINN CAL model";
+    /* cloud_optical_depth_uncertainty */
+    description = "uncertainty of the retrieved cloud optical depth using the OCRA/ROCINN CAL model";
     variable_definition =
-        harp_ingestion_register_variable_full_read(product_definition, "cloud_optical_thickness_uncertainty",
+        harp_ingestion_register_variable_full_read(product_definition, "cloud_optical_depth_uncertainty",
                                                    harp_type_float, 1, dimension_type, NULL, description, "m", NULL,
                                                    read_cloud_optical_thickness_precision);
     path = "/PRODUCT/cloud_optical_thickness_precision[]";
