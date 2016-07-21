@@ -293,10 +293,9 @@ typedef struct harp_product_struct harp_product;
 
 /** HARP Product Metadata struct */
 struct harp_product_metadata_struct {
-    char *filename;
     double datetime_start;
     double datetime_stop;
-    long **dimension;
+    long *dimension;
     char *source_product;
 };
 
@@ -309,10 +308,19 @@ typedef struct harp_product_metadata_struct harp_product_metadata;
  * @{
  */
 
+/** HARP Dataset Entry struct */
+struct harp_dataset_entry_struct {
+    char *filename;
+    harp_product_metadata *metadata;
+};
+
+/** HARP Dataset Entry typedef */
+typedef struct harp_dataset_entry_struct harp_dataset_entry;
+
 /** HARP Dataset struct */
 struct harp_dataset_struct {
-    int num_products;
-    harp_product_metadata **products;
+    int num_entries;
+    harp_dataset_entry **entries;
 };
 
 /** HARP Dataset typedef */
@@ -434,12 +442,20 @@ LIBHARP_API int harp_product_verify(const harp_product *product);
 LIBHARP_API int harp_product_execute_actions(harp_product *product, const char *actions);
 LIBHARP_API void harp_product_print(const harp_product *product, int show_attributes, int show_data,
                                     int (*print) (const char *, ...));
+LIBHARP_API int harp_product_get_metadata(harp_product *product, harp_product_metadata **new_metadata);
 
 /* Product Metadata */
 LIBHARP_API int harp_import_product_metadata(const char *filename, harp_product_metadata **metadata);
 LIBHARP_API int harp_product_metadata_new(harp_product_metadata **new_metadata);
 LIBHARP_API void harp_product_metadata_delete(harp_product_metadata *metadata);
 LIBHARP_API void harp_product_metadata_print(harp_product_metadata *metadata, int (*print) (const char *, ...));
+
+/* Dataset Entry*/
+LIBHARP_API int harp_dataset_entry_new(harp_dataset_entry **dataset_entry_new);
+LIBHARP_API int harp_dataset_entry_init(harp_dataset_entry *dataset_entry, const char *filename,
+                                        harp_product_metadata *metadata);
+LIBHARP_API void harp_dataset_entry_delete(harp_dataset_entry *dataset_entry);
+LIBHARP_API void harp_dataset_entry_print(harp_dataset_entry *dataset_entry, int (*print) (const char *, ...));
 
 /* Dataset */
 LIBHARP_API int harp_dataset_add_file(harp_dataset *dataset, const char *filename);
