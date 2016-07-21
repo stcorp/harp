@@ -311,7 +311,7 @@ typedef struct harp_product_metadata_struct harp_product_metadata;
 
 /** HARP Dataset struct */
 struct harp_dataset_struct {
-    long *num_products;
+    int num_products;
     harp_product_metadata **products;
 };
 
@@ -442,7 +442,8 @@ LIBHARP_API void harp_product_metadata_delete(harp_product_metadata *metadata);
 LIBHARP_API void harp_product_metadata_print(harp_product_metadata *metadata, int (*print) (const char *, ...));
 
 /* Dataset */
-LIBHARP_API int harp_import_dataset(const char *directory, harp_dataset **dataset);
+LIBHARP_API int harp_dataset_add_file(harp_dataset *dataset, const char *filename);
+LIBHARP_API int harp_dataset_add_directory(harp_dataset *dataset, const char *path);
 LIBHARP_API int harp_dataset_new(harp_dataset **dataset);
 LIBHARP_API void harp_dataset_delete(harp_dataset *dataset);
 LIBHARP_API void harp_dataset_print(harp_dataset *dataset, int (*print) (const char *, ...));
