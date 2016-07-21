@@ -1106,6 +1106,8 @@ static int matchup_two_measurements(harp_collocation_result *collocation_result,
     harp_collocation_pair *pair = NULL;
     long collocation_index;
     double delta;
+    int product_index_a;
+    int product_index_b;
 
     /* Matchup two measurements in time */
     if (collocation_options->criterion_is_set[collocation_criterion_type_time])
@@ -1308,8 +1310,12 @@ static int matchup_two_measurements(harp_collocation_result *collocation_result,
 
     /* If we have survived so far, we have a match */
     /* Write the original file and measurement ids */
-    if (harp_collocation_pair_new(collocation_index, reduced_product_a->source_product, original_index_a,
-                                  reduced_product_b->source_product, original_index_b, differences, &pair) != 0)
+    product_index_a = harp_dataset_get_index_from_source_product(collocation_result->dataset_a,
+                                                               reduced_product_a->source_product);
+    product_index_b = harp_dataset_get_index_from_source_product(collocation_result->dataset_b,
+                                                                 reduced_product_b->source_product);
+    if (harp_collocation_pair_new(collocation_index, product_index_a, original_index_a,
+                                  product_index_b, original_index_b, differences, &pair) != 0)
     {
         return -1;
     }

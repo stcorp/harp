@@ -124,16 +124,6 @@ static int collocation_index_slist_has_index(collocation_index_slist *index_slis
     return 0;
 }
 
-static const char *select_source_product_a(const harp_collocation_pair *pair)
-{
-    return pair->source_product_a;
-}
-
-static const char *select_source_product_b(const harp_collocation_pair *pair)
-{
-    return pair->source_product_b;
-}
-
 static void mask_logical_and(long num_elements, const uint8_t *source_mask_a, const uint8_t *source_mask_b,
                              uint8_t *target_mask)
 {
@@ -146,7 +136,7 @@ static void mask_logical_and(long num_elements, const uint8_t *source_mask_a, co
 }
 
 static int update_mask_for_product(const harp_collocation_result *collocation_result,
-                                   const char *(*key_func) (const harp_collocation_pair *pair),
+                                   dataset_selection selection,
                                    const char *product_path, uint8_t *mask)
 {
     harp_product *product;
@@ -191,10 +181,23 @@ static int update_mask_for_product(const harp_collocation_result *collocation_re
     for (i = 0; i < collocation_result->num_pairs; i++)
     {
         const harp_collocation_pair *pair = collocation_result->pair[i];
+        long index;
 
-        if (strcmp(key_func(pair), product->source_product) == 0)
+        if (selection == dataset_a)
         {
-            mask[i] = collocation_index_slist_has_index(index_slist, pair->collocation_index);
+            index = harp_dataset_get_index_from_source_product(collocation_result->dataset_a, product->source_product);
+            if (pair->product_index_a == index)
+            {
+                mask[i] = collocation_index_slist_has_index(index_slist, pair->collocation_index);
+            }
+        }
+        else
+        {
+            index = harp_dataset_get_index_from_source_product(collocation_result->dataset_b, product->source_product);
+            if (pair->product_index_b == index)
+            {
+                mask[i] = collocation_index_slist_has_index(index_slist, pair->collocation_index);
+            }
         }
     }
 
@@ -206,11 +209,8 @@ static int update_mask_for_product(const harp_collocation_result *collocation_re
 static int get_mask(const harp_collocation_result *collocation_result, dataset_selection selection,
                     const Dataset *dataset, uint8_t **new_mask)
 {
-    const char *(*key_func) (const harp_collocation_pair *pair);
     uint8_t *mask;
     int i;
-
-    key_func = (selection == dataset_a ? select_source_product_a : select_source_product_b);
 
     mask = calloc(collocation_result->num_pairs, sizeof(uint8_t));
     if (mask == NULL)
@@ -222,7 +222,7 @@ static int get_mask(const harp_collocation_result *collocation_result, dataset_s
 
     for (i = 0; i < dataset->num_files; i++)
     {
-        if (update_mask_for_product(collocation_result, key_func, dataset->filename[i], mask) != 0)
+        if (update_mask_for_product(collocation_result, selection, dataset->filename[i], mask) != 0)
         {
             free(mask);
             return -1;

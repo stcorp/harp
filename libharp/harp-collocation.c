@@ -54,8 +54,8 @@
  *   \arg \c 0, Success.
  *   \arg \c -1, Error occurred (check #harp_errno).
  */
-LIBHARP_API int harp_collocation_pair_new(long collocation_index, const char *source_product_a, long index_a,
-                                          const char *source_product_b, long index_b, const double *difference,
+LIBHARP_API int harp_collocation_pair_new(long collocation_index, long product_index_a, long sample_index_a,
+                                          long product_index_b, long sample_index_b, const double *difference,
                                           harp_collocation_pair **new_pair)
 {
     harp_collocation_pair *pair;
@@ -71,25 +71,11 @@ LIBHARP_API int harp_collocation_pair_new(long collocation_index, const char *so
 
     pair->collocation_index = collocation_index;
 
-    pair->source_product_a = strdup(source_product_a);
-    if (pair->source_product_a == NULL)
-    {
-        harp_collocation_pair_delete(pair);
-        harp_set_error(HARP_ERROR_OUT_OF_MEMORY, "out of memory (could not duplicate string) (%s:%u)", __FILE__,
-                       __LINE__);
-        return -1;
-    }
-    pair->index_a = index_a;
+    pair->product_index_a = product_index_a;
+    pair->sample_index_a = sample_index_a;
 
-    pair->source_product_b = strdup(source_product_b);
-    if (pair->source_product_b == NULL)
-    {
-        harp_collocation_pair_delete(pair);
-        harp_set_error(HARP_ERROR_OUT_OF_MEMORY, "out of memory (could not duplicate string) (%s:%u)", __FILE__,
-                       __LINE__);
-        return -1;
-    }
-    pair->index_b = index_b;
+    pair->product_index_b = product_index_b;
+    pair->sample_index_b = sample_index_b;
 
     for (k = 0; k < HARP_COLLOCATION_RESULT_MAX_NUM_DIFFERENCES; k++)
     {
@@ -110,16 +96,6 @@ LIBHARP_API void harp_collocation_pair_delete(harp_collocation_pair *pair)
         return;
     }
 
-    if (pair->source_product_a)
-    {
-        free(pair->source_product_a);
-    }
-
-    if (pair->source_product_b)
-    {
-        free(pair->source_product_b);
-    }
-
     free(pair);
 }
 
@@ -135,17 +111,6 @@ LIBHARP_API int harp_collocation_pair_copy(const harp_collocation_pair *input_pa
     harp_collocation_pair *pair = NULL;
     int k;
 
-    if (input_pair->source_product_a == NULL)
-    {
-        harp_set_error(HARP_ERROR_INVALID_ARGUMENT, "source_product_a in line is NULL (%s:%u)", __FILE__, __LINE__);
-        return -1;
-    }
-    if (input_pair->source_product_b == NULL)
-    {
-        harp_set_error(HARP_ERROR_INVALID_ARGUMENT, "source_product_b in line is NULL (%s:%u)", __FILE__, __LINE__);
-        return -1;
-    }
-
     pair = (harp_collocation_pair *)malloc(sizeof(harp_collocation_pair));
     if (pair == NULL)
     {
@@ -155,26 +120,11 @@ LIBHARP_API int harp_collocation_pair_copy(const harp_collocation_pair *input_pa
     }
 
     pair->collocation_index = input_pair->collocation_index;
-    pair->index_a = input_pair->index_a;
-    pair->index_b = input_pair->index_b;
+    pair->sample_index_a = input_pair->sample_index_a;
+    pair->sample_index_b = input_pair->sample_index_b;
 
-    pair->source_product_a = strdup(input_pair->source_product_a);
-    if (pair->source_product_a == NULL)
-    {
-        harp_collocation_pair_delete(pair);
-        harp_set_error(HARP_ERROR_OUT_OF_MEMORY, "out of memory (could not duplicate string) (%s:%u)", __FILE__,
-                       __LINE__);
-        return -1;
-    }
-
-    pair->source_product_b = strdup(input_pair->source_product_b);
-    if (pair->source_product_b == NULL)
-    {
-        harp_collocation_pair_delete(pair);
-        harp_set_error(HARP_ERROR_OUT_OF_MEMORY, "out of memory (could not duplicate string) (%s:%u)", __FILE__,
-                       __LINE__);
-        return -1;
-    }
+    pair->product_index_a = input_pair->product_index_a;
+    pair->product_index_b = input_pair->product_index_b;
 
     for (k = 0; k < HARP_COLLOCATION_RESULT_MAX_NUM_DIFFERENCES; k++)
     {
@@ -262,33 +212,30 @@ static int compare_by_a(const void *a, const void *b)
 {
     harp_collocation_pair *pair_a = *(harp_collocation_pair **)a;
     harp_collocation_pair *pair_b = *(harp_collocation_pair **)b;
-    int result;
 
-    result = strcmp(pair_a->source_product_a, pair_b->source_product_a);
-    if (result != 0)
-    {
-        return result;
-    }
-    if (pair_a->index_a < pair_b->index_a)
+    if (pair_a->product_index_a != pair_b->product_index_a)
     {
         return -1;
     }
-    if (pair_a->index_a > pair_b->index_a)
+    if (pair_a->sample_index_a < pair_b->sample_index_a)
+    {
+        return -1;
+    }
+    if (pair_a->sample_index_a > pair_b->sample_index_a)
     {
         return 1;
     }
 
     /* If a is equal, then further sort by b to get a fixed ordering. */
-    result = strcmp(pair_a->source_product_b, pair_b->source_product_b);
-    if (result != 0)
-    {
-        return result;
-    }
-    if (pair_a->index_b < pair_b->index_b)
+    if (pair_a->product_index_b != pair_b->product_index_b)
     {
         return -1;
     }
-    if (pair_a->index_b > pair_b->index_b)
+    if (pair_a->sample_index_b < pair_b->sample_index_b)
+    {
+        return -1;
+    }
+    if (pair_a->sample_index_b > pair_b->sample_index_b)
     {
         return 1;
     }
@@ -300,33 +247,30 @@ static int compare_by_b(const void *a, const void *b)
 {
     harp_collocation_pair *pair_a = *(harp_collocation_pair **)a;
     harp_collocation_pair *pair_b = *(harp_collocation_pair **)b;
-    int result;
 
-    result = strcmp(pair_a->source_product_b, pair_b->source_product_b);
-    if (result != 0)
-    {
-        return result;
-    }
-    if (pair_a->index_b < pair_b->index_b)
+    if (pair_a->product_index_b != pair_b->product_index_b)
     {
         return -1;
     }
-    if (pair_a->index_b > pair_b->index_b)
+    if (pair_a->sample_index_b < pair_b->sample_index_b)
+    {
+        return -1;
+    }
+    if (pair_a->sample_index_b > pair_b->sample_index_b)
     {
         return 1;
     }
 
     /* If b is equal, then further sort by a to get a fixed ordering. */
-    result = strcmp(pair_a->source_product_a, pair_b->source_product_a);
-    if (result != 0)
-    {
-        return result;
-    }
-    if (pair_a->index_a < pair_b->index_a)
+    if (pair_a->product_index_a != pair_b->product_index_a)
     {
         return -1;
     }
-    if (pair_a->index_a > pair_b->index_a)
+    if (pair_a->sample_index_a < pair_b->sample_index_a)
+    {
+        return -1;
+    }
+    if (pair_a->sample_index_a > pair_b->sample_index_a)
     {
         return 1;
     }
@@ -403,13 +347,13 @@ LIBHARP_API int harp_collocation_result_sort_by_collocation_index(harp_collocati
  *   \arg \c -1, Error occurred (check #harp_errno).
  */
 LIBHARP_API int harp_collocation_result_filter_for_source_product_a(harp_collocation_result *collocation_result,
-                                                                    const char *source_product)
+                                                                    int product_index)
 {
     long i, j;
 
     for (i = collocation_result->num_pairs - 1; i >= 0; i--)
     {
-        if (strcmp(collocation_result->pair[i]->source_product_a, source_product) != 0)
+        if (collocation_result->pair[i]->product_index_a != product_index)
         {
             harp_collocation_pair_delete(collocation_result->pair[i]);
             for (j = i + 1; j < collocation_result->num_pairs; j++)
@@ -431,13 +375,13 @@ LIBHARP_API int harp_collocation_result_filter_for_source_product_a(harp_colloca
  *   \arg \c -1, Error occurred (check #harp_errno).
  */
 LIBHARP_API int harp_collocation_result_filter_for_source_product_b(harp_collocation_result *collocation_result,
-                                                                    const char *source_product)
+                                                                    int product_index)
 {
     long i, j;
 
     for (i = collocation_result->num_pairs - 1; i >= 0; i--)
     {
-        if (strcmp(collocation_result->pair[i]->source_product_b, source_product) != 0)
+        if (collocation_result->pair[i]->product_index_b != product_index)
         {
             harp_collocation_pair_delete(collocation_result->pair[i]);
             for (j = i + 1; j < collocation_result->num_pairs; j++)
@@ -788,13 +732,16 @@ static int read_header(FILE *file, harp_collocation_result *collocation_result)
     return 0;
 }
 
-static int read_pair(FILE *file, const harp_collocation_result *collocation_result, harp_collocation_pair **pair)
+static int read_pair(FILE *file, harp_collocation_result *collocation_result)
 {
     char line[LINE_LENGTH];
     char *cursor = line;
     long collocation_index;
     char *source_product_a;
     char *source_product_b;
+    long product_index_a;
+    long product_index_b;
+    harp_collocation_pair *pair = NULL;
     long index_a;
     long index_b;
     double differences[HARP_COLLOCATION_RESULT_MAX_NUM_DIFFERENCES];
@@ -833,9 +780,25 @@ static int read_pair(FILE *file, const harp_collocation_result *collocation_resu
         }
     }
 
-    if (harp_collocation_pair_new(collocation_index, source_product_a, index_a, source_product_b,
-                                  index_b, differences, pair) != 0)
+    /* get the index of source_product_a in the result */
+    harp_dataset_add_product(collocation_result->dataset_a, source_product_a, NULL);
+    product_index_a = harp_dataset_get_index_from_source_product(collocation_result->dataset_a, source_product_a);
+
+    /* get the index of source_product_b in the result */
+    harp_dataset_add_product(collocation_result->dataset_b, source_product_b, NULL);
+    product_index_b = harp_dataset_get_index_from_source_product(collocation_result->dataset_b, source_product_b);
+
+    if (harp_collocation_pair_new(collocation_index, product_index_a, index_a, product_index_b,
+                                  index_b, differences, &pair) != 0)
     {
+        return -1;
+    }
+
+
+    if (harp_collocation_result_add_pair(collocation_result, pair) != 0)
+    {
+        harp_collocation_pair_delete(pair);
+        fclose(file);
         return -1;
     }
 
@@ -914,16 +877,7 @@ LIBHARP_API int harp_collocation_result_read(const char *collocation_result_file
     /* Read the matching pairs */
     for (i = 0; i < num_lines; i++)
     {
-        harp_collocation_pair *pair = NULL;
-
-        if (read_pair(file, collocation_result, &pair) != 0)
-        {
-            harp_collocation_result_delete(collocation_result);
-            fclose(file);
-            return -1;
-        }
-
-        if (harp_collocation_result_add_pair(collocation_result, pair) != 0)
+        if (read_pair(file, collocation_result) != 0)
         {
             harp_collocation_result_delete(collocation_result);
             fclose(file);
@@ -1020,8 +974,10 @@ static void write_pair(FILE *file, const harp_collocation_result *collocation_re
 
     /* Write filenames and measurement indices */
     fprintf(file, "%ld,%s,%ld,%s,%ld", collocation_result->pair[i]->collocation_index,
-            collocation_result->pair[i]->source_product_a, collocation_result->pair[i]->index_a,
-            collocation_result->pair[i]->source_product_b, collocation_result->pair[i]->index_b);
+            collocation_result->dataset_a->product_source[collocation_result->pair[i]->product_index_a],
+            collocation_result->pair[i]->sample_index_a,
+            collocation_result->dataset_b->product_source[collocation_result->pair[i]->product_index_b],
+            collocation_result->pair[i]->sample_index_b);
 
     /* Write differences */
     /* don't write harp_collocation_difference_delta, so stop at HARP_COLLOCATION_RESULT_MAX_NUM_DIFFERENCES - 1 */

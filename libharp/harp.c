@@ -528,8 +528,8 @@ LIBHARP_API int harp_import_product_metadata(const char *filename, harp_product_
             return -1;
         case format_netcdf:
             if (harp_import_global_attributes_netcdf(filename,
-                                                     &(metadata->datetime_start), &(metadata->datetime_stop),
-                                                     &(metadata->dimension), &(metadata->source_product)) != 0)
+                                                     &metadata->datetime_start, &metadata->datetime_stop,
+                                                     metadata->dimension, &metadata->source_product) != 0)
             {
                 harp_product_metadata_delete(metadata);
                 return -1;
@@ -540,6 +540,8 @@ LIBHARP_API int harp_import_product_metadata(const char *filename, harp_product_
             harp_set_error(HARP_ERROR_FILE_OPEN, "unsupported file format for %s", filename);
             return -1;
     }
+
+    *new_metadata = metadata;
 
     return 0;
 }

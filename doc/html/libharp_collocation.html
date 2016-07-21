@@ -179,9 +179,8 @@
 
 <dl class="type">
 <dt id="_CPPv223harp_collocation_result">
-<span id="harp_collocation_result"></span><span class="target" id="libharpgroup__harp__collocation_1gaf84e5e56cf05c5a50ffa96822ccb3251"></span><em class="property">typedef </em><em class="property">struct</em> <a class="reference internal" href="#_CPPv230harp_collocation_result_struct" title="harp_collocation_result_struct">harp_collocation_result_struct</a> <code class="descname">harp_collocation_result</code></dt>
-<dd><p>Full set of matched pairs for a collocation between a dataset A and dataset B </p>
-</dd></dl>
+<span id="harp_collocation_result"></span><span class="target" id="libharpgroup__harp__collocation_1gadce42cfa00c3c02cfdb339c3e825147e"></span><em class="property">typedef </em><em class="property">struct</em> <a class="reference internal" href="#_CPPv230harp_collocation_result_struct" title="harp_collocation_result_struct">harp_collocation_result_struct</a> <code class="descname">harp_collocation_result</code></dt>
+<dd></dd></dl>
 
 </div>
 <div class="breathe-sectiondef container">
@@ -257,8 +256,8 @@
 <div class="breathe-sectiondef container">
 <p class="breathe-sectiondef-title rubric">Functions</p>
 <dl class="function">
-<dt id="_CPPv225harp_collocation_pair_newlPKclPKclPKdPP21harp_collocation_pair">
-<span id="harp_collocation_pair_new__l.cCP.l.cCP.l.doubleCP.harp_collocation_pairPP"></span><span class="target" id="libharpgroup__harp__collocation_1ga285ff80c3691c1e0350816f1d1ba3034"></span>int <code class="descname">harp_collocation_pair_new</code><span class="sig-paren">(</span>long <em>collocation_index</em>, <em class="property">const</em> char *<em>source_product_a</em>, long <em>index_a</em>, <em class="property">const</em> char *<em>source_product_b</em>, long <em>index_b</em>, <em class="property">const</em> double *<em>difference</em>, <a class="reference internal" href="#_CPPv221harp_collocation_pair" title="harp_collocation_pair">harp_collocation_pair</a> **<em>new_pair</em><span class="sig-paren">)</span></dt>
+<dt id="_CPPv225harp_collocation_pair_newlllllPKdPP21harp_collocation_pair">
+<span id="harp_collocation_pair_new__l.l.l.l.l.doubleCP.harp_collocation_pairPP"></span><span class="target" id="libharpgroup__harp__collocation_1ga18aff72dc68706f4488cfddb59e1343a"></span>int <code class="descname">harp_collocation_pair_new</code><span class="sig-paren">(</span>long <em>collocation_index</em>, long <em>product_index_a</em>, long <em>sample_index_a</em>, long <em>product_index_b</em>, long <em>sample_index_b</em>, <em class="property">const</em> double *<em>difference</em>, <a class="reference internal" href="#_CPPv221harp_collocation_pair" title="harp_collocation_pair">harp_collocation_pair</a> **<em>new_pair</em><span class="sig-paren">)</span></dt>
 <dd><p>Create a new collocation result entry <dl class="docutils">
 <dt><strong>Return</strong></dt>
 <dd><ul class="simple">
@@ -425,8 +424,8 @@
 </dd></dl>
 
 <dl class="function">
-<dt id="_CPPv251harp_collocation_result_filter_for_source_product_aP23harp_collocation_resultPKc">
-<span id="harp_collocation_result_filter_for_source_product_a__harp_collocation_resultP.cCP"></span><span class="target" id="libharpgroup__harp__collocation_1gacbab6bf6d38980dec0a07f27d47dd874"></span>int <code class="descname">harp_collocation_result_filter_for_source_product_a</code><span class="sig-paren">(</span><a class="reference internal" href="#_CPPv223harp_collocation_result" title="harp_collocation_result">harp_collocation_result</a> *<em>collocation_result</em>, <em class="property">const</em> char *<em>source_product</em><span class="sig-paren">)</span></dt>
+<dt id="_CPPv251harp_collocation_result_filter_for_source_product_aP23harp_collocation_resulti">
+<span id="harp_collocation_result_filter_for_source_product_a__harp_collocation_resultP.i"></span><span class="target" id="libharpgroup__harp__collocation_1gaf9498454a3856dd2960168ea4910dc52"></span>int <code class="descname">harp_collocation_result_filter_for_source_product_a</code><span class="sig-paren">(</span><a class="reference internal" href="#_CPPv223harp_collocation_result" title="harp_collocation_result">harp_collocation_result</a> *<em>collocation_result</em>, int <em>product_index</em><span class="sig-paren">)</span></dt>
 <dd><p>Filter collocation result set for a specific product from dataset A Only results that contain the referenced source product will be retained. <dl class="docutils">
 <dt><strong>Return</strong></dt>
 <dd><ul class="simple">
@@ -447,8 +446,8 @@
 </dd></dl>
 
 <dl class="function">
-<dt id="_CPPv251harp_collocation_result_filter_for_source_product_bP23harp_collocation_resultPKc">
-<span id="harp_collocation_result_filter_for_source_product_b__harp_collocation_resultP.cCP"></span><span class="target" id="libharpgroup__harp__collocation_1gacc8a807955504326fb20f8d31b5fcf6f"></span>int <code class="descname">harp_collocation_result_filter_for_source_product_b</code><span class="sig-paren">(</span><a class="reference internal" href="#_CPPv223harp_collocation_result" title="harp_collocation_result">harp_collocation_result</a> *<em>collocation_result</em>, <em class="property">const</em> char *<em>source_product</em><span class="sig-paren">)</span></dt>
+<dt id="_CPPv251harp_collocation_result_filter_for_source_product_bP23harp_collocation_resulti">
+<span id="harp_collocation_result_filter_for_source_product_b__harp_collocation_resultP.i"></span><span class="target" id="libharpgroup__harp__collocation_1ga7850defe609e597ecf6f383efc887b91"></span>int <code class="descname">harp_collocation_result_filter_for_source_product_b</code><span class="sig-paren">(</span><a class="reference internal" href="#_CPPv223harp_collocation_result" title="harp_collocation_result">harp_collocation_result</a> *<em>collocation_result</em>, int <em>product_index</em><span class="sig-paren">)</span></dt>
 <dd><p>Filter collocation result set for a specific product from dataset B Only results that contain the referenced source product will be retained. <dl class="docutils">
 <dt><strong>Return</strong></dt>
 <dd><ul class="simple">
@@ -546,7 +545,7 @@
 <dl class="class">
 <dt id="_CPPv230harp_collocation_result_struct">
 <span id="harp_collocation_result_struct"></span><span class="target" id="libharpstructharp__collocation__result__struct"></span><em class="property">struct </em><code class="descname">harp_collocation_result_struct</code></dt>
-<dd><em>#include &lt;harp.h&gt;</em><p>Full set of matched pairs for a collocation between a dataset A and dataset B </p>
+<dd><em>#include &lt;harp.h&gt;</em><p>HARP Collocation result </p>
 </dd></dl>
 
 </dd></dl>

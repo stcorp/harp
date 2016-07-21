@@ -168,17 +168,12 @@ int harp_collocation_mask_from_result(const harp_collocation_result *collocation
                                       harp_collocation_mask **new_mask)
 {
     long i;
+    int product_index;
     harp_collocation_mask *mask;
 
     if (collocation_result == NULL)
     {
         harp_set_error(HARP_ERROR_INVALID_ARGUMENT, "collocation_result is NULL");
-        return -1;
-    }
-
-    if (source_product == NULL)
-    {
-        harp_set_error(HARP_ERROR_INVALID_ARGUMENT, "source_product is NULL");
         return -1;
     }
 
@@ -195,12 +190,13 @@ int harp_collocation_mask_from_result(const harp_collocation_result *collocation
         pair = collocation_result->pair[i];
         if (filter_type == harp_collocation_left)
         {
-            if (strcmp(pair->source_product_a, source_product) != 0)
+            product_index = harp_dataset_get_index_from_source_product(collocation_result->dataset_a, source_product);
+            if (pair->product_index_a == product_index)
             {
                 continue;
             }
 
-            if (harp_collocation_index_pair_new(pair->collocation_index, pair->index_a, &index_pair) != 0)
+            if (harp_collocation_index_pair_new(pair->collocation_index, pair->sample_index_a, &index_pair) != 0)
             {
                 harp_collocation_mask_delete(mask);
                 return -1;
@@ -208,12 +204,13 @@ int harp_collocation_mask_from_result(const harp_collocation_result *collocation
         }
         else
         {
-            if (strcmp(pair->source_product_b, source_product) != 0)
+            product_index = harp_dataset_get_index_from_source_product(collocation_result->dataset_a, source_product);
+            if (pair->product_index_b == product_index)
             {
                 continue;
             }
 
-            if (harp_collocation_index_pair_new(pair->collocation_index, pair->index_b, &index_pair) != 0)
+            if (harp_collocation_index_pair_new(pair->collocation_index, pair->sample_index_b, &index_pair) != 0)
             {
                 harp_collocation_mask_delete(mask);
                 return -1;

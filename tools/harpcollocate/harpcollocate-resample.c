@@ -27,8 +27,8 @@ static int pair_is_neighbour(const harp_collocation_pair *first_pair, const harp
     if (master_a)
     {
         /* Use source_product_a and index_a. */
-        if (strcmp(second_pair->source_product_a, first_pair->source_product_a) == 0
-            && second_pair->index_a == first_pair->index_a)
+        if (second_pair->product_index_a == first_pair->product_index_a
+            && second_pair->sample_index_a == first_pair->sample_index_a)
         {
             /* Yes, we found a neighbour. */
             return 1;
@@ -41,8 +41,8 @@ static int pair_is_neighbour(const harp_collocation_pair *first_pair, const harp
     else
     {
         /* Use source_product_b and index_b. */
-        if (strcmp(second_pair->source_product_b, first_pair->source_product_b) == 0
-            && second_pair->index_b == first_pair->index_b)
+        if (second_pair->product_index_b == first_pair->product_index_b
+            && second_pair->sample_index_b == first_pair->sample_index_b)
         {
             /* Yes, we found a neighbour. */
             return 1;

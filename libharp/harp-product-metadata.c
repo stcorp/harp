@@ -43,6 +43,7 @@
 LIBHARP_API void harp_product_metadata_delete(harp_product_metadata *metadata)
 {
     free(metadata->source_product);
+    free(metadata->filename);
     free(metadata->dimension);
     free(metadata);
 }
@@ -58,6 +59,7 @@ LIBHARP_API void harp_product_metadata_delete(harp_product_metadata *metadata)
 LIBHARP_API int harp_product_metadata_new(harp_product_metadata **new_metadata)
 {
     harp_product_metadata *metadata;
+    int i;
 
     metadata = (harp_product_metadata *)malloc(sizeof(harp_product_metadata));
     if (metadata == NULL)
@@ -67,8 +69,14 @@ LIBHARP_API int harp_product_metadata_new(harp_product_metadata **new_metadata)
         return -1;
     }
 
+    metadata->filename = NULL;
     metadata->source_product = NULL;
-    metadata->dimension = NULL;
+
+    for (i = 0; i < HARP_NUM_DIM_TYPES; i++)
+    {
+        metadata->dimension[i] = 0;
+    }
+
     metadata->datetime_start = 0.0;
     metadata->datetime_stop = 0.0;
 
@@ -86,13 +94,14 @@ LIBHARP_API void harp_product_metadata_print(harp_product_metadata *metadata, in
 {
     int i;
 
+    print("filename: %s, ", metadata->filename);
     print("source_product: %s, ", metadata->source_product);
     print("date_start: %f, ", metadata->datetime_start);
     print("date_stop: %f, ", metadata->datetime_stop);
     print("dimension: {");
     for (i = 0; i < HARP_NUM_DIM_TYPES; i++)
     {
-        if (metadata->dimension[i] != NULL)
+        if (metadata->dimension[i] != 0)
         {
             print("%s = ", harp_get_dimension_type_name(i));
         }
