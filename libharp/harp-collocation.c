@@ -984,9 +984,9 @@ static void write_pair(FILE *file, const harp_collocation_result *collocation_re
 
     /* Write filenames and measurement indices */
     fprintf(file, "%ld,%s,%ld,%s,%ld", collocation_result->pair[i]->collocation_index,
-            collocation_result->dataset_a->product_source[collocation_result->pair[i]->product_index_a],
+            collocation_result->dataset_a->source_product[collocation_result->pair[i]->product_index_a],
             collocation_result->pair[i]->sample_index_a,
-            collocation_result->dataset_b->product_source[collocation_result->pair[i]->product_index_b],
+            collocation_result->dataset_b->source_product[collocation_result->pair[i]->product_index_b],
             collocation_result->pair[i]->sample_index_b);
 
     /* Write differences */

@@ -52,10 +52,10 @@ static int grow_dataset(harp_dataset *dataset)
     /* Make space for new entry */
     if (dataset->num_products % DATASET_BLOCK_SIZE == 0)
     {
-        /* grow the product_source array by one block */
-        dataset->product_source = realloc(dataset->product_source,
+        /* grow the source_product array by one block */
+        dataset->source_product = realloc(dataset->source_product,
                                           (dataset->num_products + DATASET_BLOCK_SIZE) * sizeof(char **));
-        if (!dataset->product_source)
+        if (!dataset->source_product)
         {
             harp_set_error(HARP_ERROR_OUT_OF_MEMORY, "out of memory (could not allocate %lu bytes) (%s:%u)",
                            (long) (dataset->num_products + DATASET_BLOCK_SIZE) * sizeof(char **),
@@ -171,7 +171,7 @@ LIBHARP_API int harp_dataset_new(harp_dataset **new_dataset)
     dataset->product_to_index = hashtable_new(0);
     dataset->num_products = 0;
     dataset->metadata = NULL;
-    dataset->product_source = NULL;
+    dataset->source_product = NULL;
 
     *new_dataset = dataset;
 
@@ -409,8 +409,8 @@ LIBHARP_API int harp_dataset_add_product(harp_dataset *dataset, const char *sour
 
         dataset->num_products++;
 
-        dataset->product_source[dataset->num_products - 1] = strdup(source_product);
-        if(dataset->product_source[dataset->num_products - 1] == NULL)
+        dataset->source_product[dataset->num_products - 1] = strdup(source_product);
+        if(dataset->source_product[dataset->num_products - 1] == NULL)
         {
             harp_set_error(HARP_ERROR_OUT_OF_MEMORY, "Out of memory (failed to duplicate string) (%s:%u)",
                            __FILE__, __LINE__);

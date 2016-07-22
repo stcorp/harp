@@ -311,10 +311,10 @@ typedef struct harp_product_metadata_struct harp_product_metadata;
 
 /** HARP Dataset struct */
 struct harp_dataset_struct {
-    struct hashtable_struct *product_to_index; /* maps product_source names to indices */
-    char **product_source; /* set of product sources - every source appears only once */
+    struct hashtable_struct *product_to_index; /* maps source_product names to indices */
+    char **source_product; /* set of source products - every source appears only once */
     int num_products;
-    harp_product_metadata **metadata; /* stores metadata for source in product_source */
+    harp_product_metadata **metadata; /* stores metadata for source in source_product */
 };
 
 /** HARP Dataset typedef */
