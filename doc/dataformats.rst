@@ -193,145 +193,171 @@ apply to the value of a variable attribute, such as ``standard_name`` (as specif
 
 HARP defines the following variable names:
 
-The core variables are:
+============================================= =============== =============== ======= ==== ======= ==== =======================================================================
+Name                                          Prefixes        Postfixes       Quality Vert Lat/Lon Spec Comments
+============================================= =============== =============== ======= ==== ======= ==== =======================================================================
+absorbing_aerosol_index                                                       X            X
+aerosol_extinction_coefficient                surface                         X       X    X       X
+aerosol_optical_depth                                                         X            X       X    this is equal to 'aerosol optical thickness'
+<aerosol_type>_aerosol_extinction_coefficient surface                         X       X    X       X
+<aerosol_type>_aerosol_optical_depth                                          X       X    X       X    this is equal to 'aerosol optical thickness'
+altitude                                      surface,                        X       X    X            altitude in HARP is with respect to the WGS84 reference ellipsoid
+                                              instrument
+altitude_bounds                                                                       X    X
+cloud_fraction                                                                X            X
+cloud_optical_depth                                                           X            X            this is equal to 'cloud optical thickness'
+cloud_pressure                                                                X            X
+cloud_height                                                                  X            X
+cloud_top_albedo                                                              X            X
+cloud_top_height                                                              X            X
+cloud_top_pressure                                                            X            X
+collocation_index                                                                                       zero-based index as provided in the collocation result file
+datetime
+datetime_length
+datetime_start
+datetime_stop
+density                                                                       X       X    X            this is the mass density
+flag_am_pm                                                                                              string variable with either 'am' or 'pm'
+flag_day_twilight_night                                                                                 string variable with either 'day', 'twilight', or 'night'
+frequency                                                                     X
+geopotential                                                                  X       X    X
+geopotential_height                                                           X       X    X
+index                                                                                                   zero-based index of the sample within the source product
+instrument_name                                                                                         used mainly for ground based networks to provide a unique instrument id
+latitude                                      instrument                      X            (lat)
+latitude_bounds                                                                            (lat)
+longitude                                     instrument                      X            (lon)
+longitude_bounds                                                                           (lon)
+normalized_radiance                                                           X                    X
+number_density                                                                X       X    X            this is equal to 'volume density'
+pressure                                      surface                         X       X    X
+pressure_bounds                                                               X       X    X
+radiance                                                                      X                    X
+reflectance                                                                   X                    X
+relative_azimuth_angle                                                        X
+relative_humidity                                                             X       X    X
+scan_direction
+scan_subset_counter
+scanline_pixel_index
+scattering_angle                                                              X
+site_name                                                                                               used for data of a specific named geographical location
+solar_azimuth_angle                           surface, toa,                   X
+                                              instrument,
+solar_elevation_angle                         surface, toa,                   X
+                                              instrument,
+solar_irradiance                                                              X                    X
+solar_zenith_angle                            surface, toa,                   X
+                                              instrument,
+surface_albedo                                                                X            X       X
+temperature                                   surface                         X       X    X
+tropopause_pressure                                                           X            X            pressure level of the troposphere/stratosphere boundary location
+tropopause_height                                                             X            X            altitude of the troposphere/stratosphere boundary location
+viewing_azimuth_angle                                                         X
+viewing_zenith_angle                                                          X
+virtual_temperature                                                           X       X    X
+wavelength                                                                    X                    X
+wavenumber                                                                    X                    X
+<species>_column_density                      stratospheric,  amf, apriori,   X       X    X            this is the mass density
+                                              tropospheric    avk
+<species>_column_number_density               stratospheric,  amf, apriori,   X       X    X
+                                              tropospheric    avk
+<species>_column_mass_mixing_ratio            stratospheric,                  X            X
+                                              tropospheric
+<species>_column_mass_mixing_ratio_dry_air    stratospheric,                  X            X
+                                              tropospheric
+<species>_column_volume_mixing_ratio          stratospheric,                  X            X
+                                              tropospheric
+<species>_column_volume_mixing_ratio_dry_air  stratospheric,                  X            X
+                                              tropospheric
+<species>_density                                                             X       X    X            this is the mass density
+<species>_mass_mixing_ratio                                   apriori, avk    X       X    X
+<species>_mass_mixing_ratio_dry_air                           apriori, avk    X       X    X
+<species>_number_density                                      apriori, avk    X       X    X            this is equal to 'volume density'
+<species>_partial_pressure                                                    X       X    X
+<species>_partial_pressure_dry_air                                            X       X    X
+<species>_volume_mixing_ratio                                 apriori, avk    X       X    X
+<species>_volume_mixing_ratio_dry_air                         apriori, avk    X       X    X
+============================================= =============== =============== ======= ==== ======= ==== =======================================================================
 
-- absorbing_aerosol_index
-- aerosol_extinction_coefficient
-- aerosol_optical_depth
-- altitude
-- altitude_bounds
-- cloud_fraction
-- cloud_optical_thickness
-- cloud_top_albedo
-- cloud_top_height
-- cloud_top_pressure
-- collocation_index
-- datetime
-- datetime_length
-- datetime_start
-- datetime_stop
-- density
-- flag_am_pm
-- flag_day_twilight_night
-- frequency
-- geopotential
-- geopotential_height
-- index
-- instrument_altitude
-- instrument_latitude
-- instrument_longitude
-- instrument_name
-- latitude
-- latitude_bounds
-- longitude
-- longitude_bounds
-- normalized_radiance
-- number_density
-- pressure
-- pressure_bounds
-- radiance
-- reflectance
-- relative_azimuth_angle
-- relative_humidity
-- scan_direction
-- scan_subset_counter
-- scanline_pixel_index
-- scattering_angle
-- site_name
-- solar_azimuth_angle
-- solar_elevation_angle
-- solar_irradiance
-- solar_zenith_angle
-- surface_albedo
-- surface_pressure
-- temperature
-- viewing_azimuth_angle
-- viewing_zenith_angle
-- virtual_temperature
-- wavelength
-- wavenumber
-- <species>_column_density
-- <species>_column_number_density
-- <species>_density
-- <species>_mass_mixing_ratio
-- <species>_mass_mixing_ratio_wet
-- <species>_number_density
-- <species>_partial_pressure
-- <species>_volume_mixing_ratio
+The supported aersol types are:
 
-with supported species:
+============== =================
+Aerosol type   Description                 
+============== =================
+sea_salt       sea salt
+dust           dust
+organic_matter organic matter
+black_carbon   black carbon
+sulphate       sulphate
+============== =================
 
-- BrO
-- BrO2
-- CCl2F2
-- CCl3F
-- CF4
-- CHClF2
-- CH3Cl
-- CH4
-- CO
-- COF2
-- COS
-- CO2
-- C2H2
-- C2H2O2
-- C2H3NO5
-- C2H6
-- C3H8
-- C5H8
-- ClNO3
-- ClO
-- HCHO
-- HCOOH
-- HCN
-- HCl
-- HF
-- HNO2
-- HNO3
-- HNO4
-- HOCl
-- HO2
-- H2O
-- H2O_161
-- H2O_162
-- H2O_171
-- H2O_181
-- H2O2
-- IO
-- NO
-- NOCl
-- NO2
-- NO3
-- N2
-- N2O
-- N2O5
-- OClO
-- OH
-- O2
-- O3
-- O3_666
-- O3_667
-- O3_668
-- O3_686
-- O4
-- SF6
-- SO2
+The supported species are:
 
-Specific height variants of the above variables:
+======== ============================ ==========================
+Name     Description                  Aliases (not used by HARP)
+======== ============================ ==========================
+dry_air  dry air
+BrO      bromine oxide
+BrO2     bromine dioxide
+CCl2F2   dichlorodifluoromethane      freon-12, CFC-12, R-12
+CCl3F    trichlorofluoromethane       freon-11, CFC-11, R-11
+CF4      tetrafluoromethane
+CHClF2   chlorodifluoromethane        HCFC-22, R-22
+CH3Cl    chloromethane                HCC-40, R-40
+CH4      methane
+CO       carbon monoxide
+COF2     carbonyl fluoride
+COS      carbonyl sulfide             OCS
+CO2      carbon dioxide
+C2H2     acetylene                    HCCH
+C2H2O2   glyoxal                      OCHCHO, CHOCHO
+C2H3NO5  peroxyacetyl nitrate         PAN
+C2H6     ethane
+C3H8     propane
+C5H8     isoprene
+ClNO3    chlorine nitrate
+ClO      chlorine monoxide
+HCHO     formaldehyde                 CH2O
+HCOOH    formic acid                  HCO2H
+HCN      hydrogen cyanide
+HCl      hydrogen chloride
+HF       hydrogen fluoride
+HNO2     nitrous acid
+HNO3     nitric acid
+HNO4     peroxynitric acid
+HOCl     hypochlorous acid
+HO2      hydroperoxyl
+H2O      water
+H2O_161  water (H1/O16/H1 isotopes)
+H2O_162  water (H1/O16/H2 isotopes)   HDO
+H2O_171  water (H1/O17/H1 isotopes)
+H2O_181  water (H1/O18/H1 isotopes)
+H2O2     hydrogen peroxide
+IO       hypoiodite
+NO       nitric oxide
+NOCl     nitrosyl chloride
+NO2      nitrogen dioxide
+NO3      nitrate
+N2       nitrogen gas
+N2O      nitrous oxide                NOS
+N2O5     dinitrogen pentoxide
+OClO     chlorine dioxide             ClO2
+OH       hydroxyl
+O2       oxygen
+O3       ozone
+O3_666   ozone (O16/O16/O16 isotopes)
+O3_667   ozone (O16/O16/O17 isotopes)
+O3_668   ozone (O16/O16/O18 isotopes)
+O3_686   ozone (O16/O18/O16 isotopes)
+O4       tetraoxygen, oxozone
+SF6      sulfur hexafluoride
+SO2      sulfur dioxide
+======== ============================ ==========================
 
-- instrument_<variable>
-- stratospheric_<variable>
-- surface_<variable>
-- toa_<variable>
-- tropospheric_<variable>
-
-Specific ancillary variables for the atmospheric variables are:
-
-- <variable>_amf
-- <variable>_apriori
-- <variable>_avk
-
-Generic ancillary variables for the above variables are:
+Variables for which a prefix and/or postfix is provided can have any of the given prefixes and/or any of the given
+postfixes (separated by underscores). It is not allowed to provide more than one prefix or more than one postfix.
+Variables having an 'X' in the Quality column can have any of the following additional versions of the variable
+(where `<variable>` can include any of the allowed prefix and/or postfix combinations):
 
 - <variable>_cov
 - <variable>_cov_random
@@ -340,6 +366,13 @@ Generic ancillary variables for the above variables are:
 - <variable>_uncertainty_random
 - <variable>_uncertainty_systematic
 - <variable>_validity
+
+Some examples of valid variable names are: ``tropospheric_O3_column_number_density``,
+``tropospheric_O3_column_number_density_apriori``, ``O3_column_number_density_apriori``,
+``tropospheric_O3_column_number_density_uncertainty``, ``O3_column_number_density_apriori_uncertainty``.
+
+The `Vert`, `Lat/Lon`, and `Spec` columns indicate whether a variable can be dependent on the ``vertical``,
+``latitude`` & ``longitude``, and/or ``spectral`` dimensions (any variable can be dependent on the ``time`` dimension).
 
 Be aware that there are still several topics under discussion that may change the above naming convention.
 See the HARP issues list on the GitHub website for more details.
