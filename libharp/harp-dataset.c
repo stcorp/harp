@@ -53,9 +53,8 @@ static int grow_dataset(harp_dataset *dataset)
     if (dataset->num_products % DATASET_BLOCK_SIZE == 0)
     {
         /* grow the product_source array by one block */
-        dataset->product_source = (char **) realloc(dataset->product_source,
-                                                               (size_t) (dataset->num_products + DATASET_BLOCK_SIZE)
-                                                               * sizeof(char **));
+        dataset->product_source = realloc(dataset->product_source,
+                                          (dataset->num_products + DATASET_BLOCK_SIZE) * sizeof(char **));
         if (!dataset->product_source)
         {
             harp_set_error(HARP_ERROR_OUT_OF_MEMORY, "out of memory (could not allocate %lu bytes) (%s:%u)",
@@ -67,9 +66,8 @@ static int grow_dataset(harp_dataset *dataset)
         if (dataset->metadata != NULL)
         {
             /* grow the metadata array by one block */
-            dataset->metadata = (harp_product_metadata **) realloc(dataset->metadata,
-                                                                   (size_t) (dataset->num_products + DATASET_BLOCK_SIZE)
-                                                                   * sizeof(harp_product_metadata));
+            dataset->metadata = realloc(dataset->metadata,
+                                        (dataset->num_products + DATASET_BLOCK_SIZE) * sizeof(harp_product_metadata *));
             if (!dataset->metadata)
             {
                 harp_set_error(HARP_ERROR_OUT_OF_MEMORY, "out of memory (could not allocate %lu bytes) (%s:%u)",
@@ -170,7 +168,10 @@ LIBHARP_API int harp_dataset_new(harp_dataset **new_dataset)
         return -1;
     }
 
+    dataset->product_to_index = hashtable_new(0);
     dataset->num_products = 0;
+    dataset->metadata = NULL;
+    dataset->product_source = NULL;
 
     *new_dataset = dataset;
 
@@ -384,7 +385,7 @@ LIBHARP_API int harp_dataset_add_file(harp_dataset *dataset, const char *filenam
  */
 LIBHARP_API long harp_dataset_get_index_from_source_product(harp_dataset *dataset, const char *source_product)
 {
-    return harp_hashtable_get_index_from_name(dataset->product_to_index, source_product);
+    return hashtable_get_index_from_name(dataset->product_to_index, source_product);
 }
 
 /**
@@ -401,7 +402,10 @@ LIBHARP_API int harp_dataset_add_product(harp_dataset *dataset, const char *sour
     /* if source product does not already appear, add it */
     if (index < 0)
     {
-        grow_dataset(dataset);
+        if (grow_dataset(dataset) != 0)
+        {
+            return -1;
+        }
 
         dataset->num_products++;
 
@@ -426,7 +430,7 @@ LIBHARP_API int harp_dataset_add_product(harp_dataset *dataset, const char *sour
         }
 
         /* add it to the index */
-        assert(harp_hashtable_add_name(dataset->product_to_index, source_product) == 0);
+        assert(hashtable_add_name(dataset->product_to_index, source_product) == 0);
     }
 
     return 0;

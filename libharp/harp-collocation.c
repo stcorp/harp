@@ -154,6 +154,10 @@ LIBHARP_API int harp_collocation_result_new(harp_collocation_result **new_colloc
         return -1;
     }
 
+    /* create the datasets */
+    harp_dataset_new(&collocation_result->dataset_a);
+    harp_dataset_new(&collocation_result->dataset_b);
+
     for (i = 0; i < HARP_COLLOCATION_RESULT_MAX_NUM_DIFFERENCES; i++)
     {
         collocation_result->difference_available[i] = 0;
@@ -781,11 +785,17 @@ static int read_pair(FILE *file, harp_collocation_result *collocation_result)
     }
 
     /* get the index of source_product_a in the result */
-    harp_dataset_add_product(collocation_result->dataset_a, source_product_a, NULL);
+    if (harp_dataset_add_product(collocation_result->dataset_a, source_product_a, NULL) != 0)
+    {
+        return -1;
+    }
     product_index_a = harp_dataset_get_index_from_source_product(collocation_result->dataset_a, source_product_a);
 
     /* get the index of source_product_b in the result */
-    harp_dataset_add_product(collocation_result->dataset_b, source_product_b, NULL);
+    if (harp_dataset_add_product(collocation_result->dataset_b, source_product_b, NULL) != 0)
+    {
+        return -1;
+    }
     product_index_b = harp_dataset_get_index_from_source_product(collocation_result->dataset_b, source_product_b);
 
     if (harp_collocation_pair_new(collocation_index, product_index_a, index_a, product_index_b,
