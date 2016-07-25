@@ -25,8 +25,6 @@
 #include <sys/stat.h>
 #include <errno.h>
 
-#define DATASET_BLOCK_SIZE 16
-
 #include <stdlib.h>
 #include <string.h>
 #ifdef HAVE_DIRENT_H
@@ -42,44 +40,13 @@
 
 /** \defgroup harp_dataset HARP harp_dataset
  * The HARP harp_dataset module contains everything regarding HARP datasets.
+ *
+ * A Dataset contains a list of references to HARP products together with optional metadata on each product.
+ * The primary reference to a product is the value of the 'source_product' global attribute of a HARP product.
+ * A Dataset thus does not require that its HARP products have been read in memory.
+ * Availability of Product Metadata in a Dataset is optional, but metadata either has to be available for all entries
+ * or for none of them.
  */
-
-/**
- * Grow dataset with one block if necessary to accomodate another entry.
- */
-static int grow_dataset(harp_dataset *dataset)
-{
-    /* Make space for new entry */
-    if (dataset->num_products % DATASET_BLOCK_SIZE == 0)
-    {
-        /* grow the source_product array by one block */
-        dataset->source_product = realloc(dataset->source_product,
-                                          (dataset->num_products + DATASET_BLOCK_SIZE) * sizeof(char **));
-        if (!dataset->source_product)
-        {
-            harp_set_error(HARP_ERROR_OUT_OF_MEMORY, "out of memory (could not allocate %lu bytes) (%s:%u)",
-                           (long) (dataset->num_products + DATASET_BLOCK_SIZE) * sizeof(char **),
-                           __FILE__, __LINE__);
-            return -1;
-        }
-
-        if (dataset->metadata != NULL)
-        {
-            /* grow the metadata array by one block */
-            dataset->metadata = realloc(dataset->metadata,
-                                        (dataset->num_products + DATASET_BLOCK_SIZE) * sizeof(harp_product_metadata *));
-            if (!dataset->metadata)
-            {
-                harp_set_error(HARP_ERROR_OUT_OF_MEMORY, "out of memory (could not allocate %lu bytes) (%s:%u)",
-                               (long) (dataset->num_products + DATASET_BLOCK_SIZE) * sizeof(char *), __FILE__,
-                               __LINE__);
-                return -1;
-            }
-        }
-    }
-
-    return 0;
-}
 
 /**
  * Check that filename is a directory and can be read.
@@ -148,8 +115,7 @@ static int check_file(const char *filename)
  * @{
  */
 
-/**
- * Create new HARP dataset.
+/** Create new HARP dataset.
  * The metadata will be intialized with zero product metadata elements.
  * \param new_dataset Pointer to the C variable where the new HARP product metadata will be stored.
  * \return
@@ -178,8 +144,7 @@ LIBHARP_API int harp_dataset_new(harp_dataset **new_dataset)
     return 0;
 }
 
-/**
- * Delete HARP dataset.
+/** Delete HARP dataset.
  * \param dataset Pointer to the dataset to free.
  */
 LIBHARP_API void harp_dataset_delete(harp_dataset *dataset)
@@ -194,8 +159,7 @@ LIBHARP_API void harp_dataset_delete(harp_dataset *dataset)
     free(dataset);
 }
 
-/**
- * Print HARP dataset.
+/** Print HARP dataset.
  * \param dataset Pointer to the dataset to print.
  * \param print Pointer to the function that should be used for printing.
  */
@@ -208,8 +172,7 @@ LIBHARP_API void harp_dataset_print(harp_dataset *dataset, int (*print) (const c
     }
 }
 
-/**
- * Read metadata for all products found in the directory indicated by path.
+/** Read metadata for all products found in the directory indicated by path.
  * \param pathname Path of the directory to search for products to import as a HARP harp_dataset.
  * \param dataset Pointer to dataset to add the metadata to.
  * \return
@@ -262,17 +225,14 @@ LIBHARP_API int harp_dataset_add_directory(harp_dataset *dataset, const char *pa
                 return -1;
             }
             sprintf(filepath, "%s\\%s", pathname, FileData.cFileName);
-            if (check_file(filepath) == 0)
-            {
-                harp_dataset_add_file(dataset, filepath);
-            }
-            else
+            if (check_file(filepath) != 0)
             {
                 harp_set_error(HARP_ERROR_INVALID_ARGUMENT, "'%s' is not a valid HARP file", filepath);
                 free(filepath);
                 FindClose(hSearch);
                 return -1;
             }
+            harp_dataset_add_file(dataset, filepath);
             free(filepath);
         }
 
@@ -334,11 +294,7 @@ LIBHARP_API int harp_dataset_add_directory(harp_dataset *dataset, const char *pa
             continue;
         }
 
-        if (check_file(filepath) == 0)
-        {
-            harp_dataset_add_file(dataset, filepath);
-        }
-        else
+        if (check_file(filepath) != 0)
         {
             /* Exit, file type is not supported */
             harp_set_error(HARP_ERROR_INVALID_ARGUMENT, "'%s' is not a valid HARP file", filepath);
@@ -346,6 +302,7 @@ LIBHARP_API int harp_dataset_add_directory(harp_dataset *dataset, const char *pa
             closedir(dirp);
             return -1;
         }
+        harp_dataset_add_file(dataset, filepath);
         free(filepath);
     }
 
@@ -355,8 +312,7 @@ LIBHARP_API int harp_dataset_add_directory(harp_dataset *dataset, const char *pa
     return 0;
 }
 
-/**
- * Read metadata for product indicated by filename and add it to the dataset.
+/** Read metadata for product indicated by filename and add it to the dataset.
  * This will not check if filename already appears in the dataset.
  * \param filename Path of the directory to search for products to import as a HARP harp_dataset.
  * \param dataset Pointer to dataset to add the metadata to.
@@ -377,8 +333,7 @@ LIBHARP_API int harp_dataset_add_file(harp_dataset *dataset, const char *filenam
     return harp_dataset_add_product(dataset, metadata->source_product, metadata);
 }
 
-/**
- * Lookup the index of source_product in the given dataset.
+/** Lookup the index of source_product in the given dataset.
  * \param dataset Pointer to dataset to get index in.
  * \param dataset Pointer of product to get index of.
  * \return index of source_product in dataset or -1 if not found
@@ -388,8 +343,8 @@ LIBHARP_API long harp_dataset_get_index_from_source_product(harp_dataset *datase
     return hashtable_get_index_from_name(dataset->product_to_index, source_product);
 }
 
-/**
- * Add a product to a dataset. Metadata is only allowed to be NULL if the dataset does not track metadata.
+/** Add a product to a dataset.
+ * Metadata is only allowed to be NULL if the dataset does not track metadata.
  * \return
  *   \arg \c 0, Success.
  *   \arg \c -1, Error occurred (check #harp_errno).
@@ -402,9 +357,33 @@ LIBHARP_API int harp_dataset_add_product(harp_dataset *dataset, const char *sour
     /* if source product does not already appear, add it */
     if (index < 0)
     {
-        if (grow_dataset(dataset) != 0)
+        /* Make space for new entry */
+        if (dataset->num_products % BLOCK_SIZE == 0)
         {
-            return -1;
+            /* grow the source_product array by one block */
+            dataset->source_product = realloc(dataset->source_product,
+                                              (dataset->num_products + BLOCK_SIZE) * sizeof(char **));
+            if (dataset->source_product == NULL)
+            {
+                harp_set_error(HARP_ERROR_OUT_OF_MEMORY, "out of memory (could not allocate %lu bytes) (%s:%u)",
+                               (long) (dataset->num_products + BLOCK_SIZE) * sizeof(char **),
+                               __FILE__, __LINE__);
+                return -1;
+            }
+
+            if (dataset->metadata != NULL)
+            {
+                /* grow the metadata array by one block */
+                dataset->metadata = realloc(dataset->metadata,
+                                            (dataset->num_products + BLOCK_SIZE) * sizeof(harp_product_metadata *));
+                if (!dataset->metadata)
+                {
+                    harp_set_error(HARP_ERROR_OUT_OF_MEMORY, "out of memory (could not allocate %lu bytes) (%s:%u)",
+                                   (long) (dataset->num_products + BLOCK_SIZE) * sizeof(char *), __FILE__,
+                                   __LINE__);
+                    return -1;
+                }
+            }
         }
 
         dataset->num_products++;
@@ -430,7 +409,11 @@ LIBHARP_API int harp_dataset_add_product(harp_dataset *dataset, const char *sour
         }
 
         /* add it to the index */
-        assert(hashtable_add_name(dataset->product_to_index, source_product) == 0);
+        if (hashtable_add_name(dataset->product_to_index, source_product) != 0)
+        {
+            assert(0);
+            exit(1);
+        }
     }
 
     return 0;
