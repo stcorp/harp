@@ -93,13 +93,13 @@
 <li class="toctree-l2 current"><a class="reference internal" href="libharp.html#modules">Modules</a><ul class="current">
 <li class="toctree-l3"><a class="reference internal" href="libharp_algorithm.html">Algorithms</a></li>
 <li class="toctree-l3"><a class="reference internal" href="libharp_collocation.html">Collocation</a></li>
+<li class="toctree-l3"><a class="reference internal" href="libharp_dataset.html">Dataset</a></li>
 <li class="toctree-l3"><a class="reference internal" href="libharp_documentation.html">Documentation</a></li>
 <li class="toctree-l3 current"><a class="current reference internal" href="#">Error</a></li>
 <li class="toctree-l3"><a class="reference internal" href="libharp_general.html">General</a></li>
 <li class="toctree-l3"><a class="reference internal" href="libharp_geometry.html">Geometry</a></li>
 <li class="toctree-l3"><a class="reference internal" href="libharp_product.html">Product</a></li>
 <li class="toctree-l3"><a class="reference internal" href="libharp_product_metadata.html">Product Metadata</a></li>
-<li class="toctree-l3"><a class="reference internal" href="libharp_dataset.html">Dataset</a></li>
 <li class="toctree-l3"><a class="reference internal" href="libharp_variable.html">Variable</a></li>
 </ul>
 </li>
@@ -411,8 +411,8 @@
 </dd></dl>
 
 <dl class="function">
-<dt id="_CPPv224harp_get_warning_handlerPPFiPKc7va_listE">
-<span class="target" id="libharpgroup__harp__error_1ga81bc467879f19fd0083ae1c66b2552d0"></span>int <code class="descname">harp_get_warning_handler</code><span class="sig-paren">(</span>int (**<em>print</em>)<span class="sig-paren">(</span><em class="property">const</em> char *, va_list ap<span class="sig-paren">)</span><span class="sig-paren">)</span></dt>
+<dt>
+<span class="target" id="libharpgroup__harp__error_1ga81bc467879f19fd0083ae1c66b2552d0"></span><code class="descname">int harp_get_warning_handler(int(**)(const char *, va_list ap) print)</code></dt>
 <dd><p>Get a reference to the current handler for warning messages If no warning handler was set, the NULL pointer will be returned. <dl class="docutils">
 <dt><strong>Return</strong></dt>
 <dd><ul class="simple">

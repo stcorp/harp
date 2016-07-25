@@ -1103,11 +1103,8 @@ static int matchup_two_measurements(harp_collocation_result *collocation_result,
     int match;
     double difference;
     double differences[HARP_COLLOCATION_RESULT_MAX_NUM_DIFFERENCES];
-    harp_collocation_pair *pair = NULL;
     long collocation_index;
     double delta;
-    long product_index_a;
-    long product_index_b;
 
     /* Matchup two measurements in time */
     if (collocation_options->criterion_is_set[collocation_criterion_type_time])
@@ -1308,37 +1305,17 @@ static int matchup_two_measurements(harp_collocation_result *collocation_result,
      * the chronological order of the measurements in the re-sampled collocation result later on */
     collocation_index = collocation_result->num_pairs;
 
-    /* Ensure the products appear in the dataset */
-    if (harp_dataset_add_product(collocation_result->dataset_a, reduced_product_a->source_product, NULL) != 0)
-    {
-        return -1;
-    }
-    if (harp_dataset_add_product(collocation_result->dataset_b, reduced_product_b->source_product, NULL) != 0)
-    {
-        return -1;
-    }
-
-    /* If we have survived so far, we have a match */
-    /* Write the original file and measurement ids */
-    product_index_a = harp_dataset_get_index_from_source_product(collocation_result->dataset_a,
-                                                                 reduced_product_a->source_product);
-    product_index_b = harp_dataset_get_index_from_source_product(collocation_result->dataset_b,
-                                                                 reduced_product_b->source_product);
-    if (harp_collocation_pair_new(collocation_index, product_index_a, original_index_a,
-                                  product_index_b, original_index_b, differences, &pair) != 0)
+    if (harp_collocation_result_add_pair(collocation_result, collocation_index, reduced_product_a->source_product,
+                                         original_index_a, reduced_product_b->source_product, original_index_b,
+                                         differences) != 0)
     {
         return -1;
     }
 
     /* Calculate the weighted norm of the differences */
-    if (calculate_delta(collocation_result, collocation_options, pair, &delta) != 0)
+    if (calculate_delta(collocation_result, collocation_options,
+                        collocation_result->pair[collocation_result->num_pairs - 1], &delta) != 0)
     {
-        harp_collocation_pair_delete(pair);
-        return -1;
-    }
-    if (harp_collocation_result_add_pair(collocation_result, pair) != 0)
-    {
-        harp_collocation_pair_delete(pair);
         return -1;
     }
 
@@ -1564,19 +1541,13 @@ static int dataset_add_start_stop_datetime(Dataset *dataset)
          */
         if (harp_import_product_metadata(dataset->filename[i], &metadata) != 0)
         {
-            if (dataset->datetime_start != NULL)
-            {
-                free(dataset->datetime_start);
-            }
-            if (dataset->datetime_stop != NULL)
-            {
-                free(dataset->datetime_stop);
-            }
             return -1;
         }
 
         dataset->datetime_start[i] = metadata->datetime_start;
         dataset->datetime_stop[i] = metadata->datetime_stop;
+
+        harp_product_metadata_delete(metadata);
     }
     if (harp_convert_unit("days since 2000-01-01", HARP_UNIT_DATETIME, dataset->num_files, dataset->datetime_start) !=
         0)

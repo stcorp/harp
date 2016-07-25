@@ -93,13 +93,13 @@
 <li class="toctree-l2 current"><a class="reference internal" href="libharp.html#modules">Modules</a><ul class="current">
 <li class="toctree-l3"><a class="reference internal" href="libharp_algorithm.html">Algorithms</a></li>
 <li class="toctree-l3"><a class="reference internal" href="libharp_collocation.html">Collocation</a></li>
+<li class="toctree-l3"><a class="reference internal" href="libharp_dataset.html">Dataset</a></li>
 <li class="toctree-l3"><a class="reference internal" href="libharp_documentation.html">Documentation</a></li>
 <li class="toctree-l3"><a class="reference internal" href="libharp_error.html">Error</a></li>
 <li class="toctree-l3"><a class="reference internal" href="libharp_general.html">General</a></li>
 <li class="toctree-l3"><a class="reference internal" href="libharp_geometry.html">Geometry</a></li>
 <li class="toctree-l3 current"><a class="current reference internal" href="#">Product</a></li>
 <li class="toctree-l3"><a class="reference internal" href="libharp_product_metadata.html">Product Metadata</a></li>
-<li class="toctree-l3"><a class="reference internal" href="libharp_dataset.html">Dataset</a></li>
 <li class="toctree-l3"><a class="reference internal" href="libharp_variable.html">Variable</a></li>
 </ul>
 </li>
@@ -528,7 +528,7 @@
 </dd>
 <dt><strong>Parameters</strong></dt>
 <dd><ul class="breatheparameterlist first last">
-<li><code class="first docutils literal"><span class="pre">product</span></code> - <p>Product in which the find the variable. </p>
+<li><code class="first docutils literal"><span class="pre">product</span></code> - <p>Product in which to find the variable. </p>
 </li>
 <li><code class="first docutils literal"><span class="pre">name</span></code> - <p>Name of the variable. </p>
 </li>
@@ -655,7 +655,7 @@
 
 <dl class="function">
 <dt id="_CPPv228harp_import_product_metadataPKcPP21harp_product_metadata">
-<span id="harp_import_product_metadata__cCP.harp_product_metadataPP"></span><span class="target" id="libharpgroup__harp__product_1ga5c633cf8880cd007c37ca385679a97d2"></span>int <code class="descname">harp_import_product_metadata</code><span class="sig-paren">(</span><em class="property">const</em> char *<em>filename</em>, harp_product_metadata **<em>new_metadata</em><span class="sig-paren">)</span></dt>
+<span id="harp_import_product_metadata__cCP.harp_product_metadataPP"></span><span class="target" id="libharpgroup__harp__product_1ga5c633cf8880cd007c37ca385679a97d2"></span>int <code class="descname">harp_import_product_metadata</code><span class="sig-paren">(</span><em class="property">const</em> char *<em>filename</em>, <a class="reference internal" href="libharp_product_metadata.html#_CPPv221harp_product_metadata" title="harp_product_metadata">harp_product_metadata</a> **<em>new_metadata</em><span class="sig-paren">)</span></dt>
 <dd><p>Retrieve global attributes from a HARP product file.</p>
 <p>This function retrieves the product metadata * without performing a full import. This function is only supported for netCDF files. <dl class="docutils">
 <dt><strong>Return</strong></dt>

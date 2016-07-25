@@ -1265,13 +1265,20 @@ int harp_collocation_filter_predicate_new(const harp_collocation_result *colloca
 {
     harp_predicate *predicate;
     index_test_args *predicate_args;
-
-    int product_index_a;
-    int product_index_b;
+    long product_index_a;
+    long product_index_b;
 
     /* lookup the product indices that belongs with the source_product */
-    product_index_a = harp_dataset_get_index_from_source_product(collocation_result->dataset_a, source_product);
-    product_index_b = harp_dataset_get_index_from_source_product(collocation_result->dataset_b, source_product);
+    if (harp_dataset_get_index_from_source_product(collocation_result->dataset_a, source_product, &product_index_a) !=
+        0)
+    {
+        return -1;
+    }
+    if (harp_dataset_get_index_from_source_product(collocation_result->dataset_b, source_product, &product_index_b) !=
+        0)
+    {
+        return -1;
+    }
 
 
     if (collocation_result->num_pairs > 0)

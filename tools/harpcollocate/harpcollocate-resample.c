@@ -116,11 +116,13 @@ static int nearest_neighbour(const Collocation_options *collocation_options,
             }
         }
     }
-    for (i = target_id + 1; i < collocation_result->num_pairs; i++)
+    while (collocation_result->num_pairs - 1 > target_id)
     {
-        harp_collocation_pair_delete(collocation_result->pair[i]);
+        if (harp_collocation_result_remove_pair_at_index(collocation_result, collocation_result->num_pairs - 1) != 0)
+        {
+            return -1;
+        }
     }
-    collocation_result->num_pairs = target_id + 1;
 
     return 0;
 }

@@ -213,7 +213,10 @@ void dataset_delete(Dataset *dataset)
 
         for (i = 0; i < dataset->num_files; ++i)
         {
-            free(dataset->filename[i]);
+            if (dataset->filename[i] != NULL)
+            {
+                free(dataset->filename[i]);
+            }
         }
         free(dataset->filename);
     }

@@ -168,7 +168,7 @@ int harp_collocation_mask_from_result(const harp_collocation_result *collocation
                                       harp_collocation_mask **new_mask)
 {
     long i;
-    int product_index;
+    long product_index;
     harp_collocation_mask *mask;
 
     if (collocation_result == NULL)
@@ -190,7 +190,12 @@ int harp_collocation_mask_from_result(const harp_collocation_result *collocation
         pair = collocation_result->pair[i];
         if (filter_type == harp_collocation_left)
         {
-            product_index = harp_dataset_get_index_from_source_product(collocation_result->dataset_a, source_product);
+            if (harp_dataset_get_index_from_source_product(collocation_result->dataset_a, source_product,
+                                                           &product_index) != 0)
+            {
+                harp_collocation_mask_delete(mask);
+                return -1;
+            }
             if (pair->product_index_a == product_index)
             {
                 continue;
@@ -204,7 +209,12 @@ int harp_collocation_mask_from_result(const harp_collocation_result *collocation
         }
         else
         {
-            product_index = harp_dataset_get_index_from_source_product(collocation_result->dataset_a, source_product);
+            if (harp_dataset_get_index_from_source_product(collocation_result->dataset_b, source_product,
+                                                           &product_index) != 0)
+            {
+                harp_collocation_mask_delete(mask);
+                return -1;
+            }
             if (pair->product_index_b == product_index)
             {
                 continue;

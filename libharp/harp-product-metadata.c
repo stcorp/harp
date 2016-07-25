@@ -42,10 +42,18 @@
  */
 LIBHARP_API void harp_product_metadata_delete(harp_product_metadata *metadata)
 {
-    free(metadata->source_product);
-    free(metadata->filename);
-    free(metadata->dimension);
-    free(metadata);
+    if (metadata != NULL)
+    {
+        if (metadata->filename != NULL)
+        {
+            free(metadata->filename);
+        }
+        if (metadata->source_product != NULL)
+        {
+            free(metadata->source_product);
+        }
+        free(metadata);
+    }
 }
 
 /**
