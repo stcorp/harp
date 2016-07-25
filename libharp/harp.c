@@ -510,8 +510,7 @@ LIBHARP_API int harp_import_product_metadata(const char *filename, harp_product_
         return -1;
     }
 
-    harp_product_metadata_new(&metadata);
-    if (!metadata)
+    if (harp_product_metadata_new(&metadata) != 0)
     {
         return -1;
     }
