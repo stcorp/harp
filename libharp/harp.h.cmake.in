@@ -287,7 +287,7 @@ typedef struct harp_product_struct harp_product;
 
 /** @} */
 
-/** \addtogroup harp_product_metadat
+/** \addtogroup harp_product_metadata
  * @{
  */
 
@@ -296,7 +296,7 @@ struct harp_product_metadata_struct {
     char *filename;
     double datetime_start;
     double datetime_stop;
-    long **dimension;
+    long dimension[HARP_NUM_DIM_TYPES];
     char *source_product;
 };
 
@@ -311,12 +311,16 @@ typedef struct harp_product_metadata_struct harp_product_metadata;
 
 /** HARP Dataset struct */
 struct harp_dataset_struct {
-    long *num_products;
-    harp_product_metadata **products;
+    struct hashtable_struct *product_to_index; /* maps source_product names to indices */
+    char **source_product; /* set of source products - every source appears only once */
+    int num_products;
+    harp_product_metadata **metadata; /* stores metadata for source in source_product */
 };
 
 /** HARP Dataset typedef */
 typedef struct harp_dataset_struct harp_dataset;
+
+/** HARP Dataset typedef */
 
 /** @} */
 
@@ -434,6 +438,7 @@ LIBHARP_API int harp_product_verify(const harp_product *product);
 LIBHARP_API int harp_product_execute_actions(harp_product *product, const char *actions);
 LIBHARP_API void harp_product_print(const harp_product *product, int show_attributes, int show_data,
                                     int (*print) (const char *, ...));
+LIBHARP_API int harp_product_get_metadata(harp_product *product, harp_product_metadata **new_metadata);
 
 /* Product Metadata */
 LIBHARP_API int harp_import_product_metadata(const char *filename, harp_product_metadata **metadata);
@@ -442,10 +447,14 @@ LIBHARP_API void harp_product_metadata_delete(harp_product_metadata *metadata);
 LIBHARP_API void harp_product_metadata_print(harp_product_metadata *metadata, int (*print) (const char *, ...));
 
 /* Dataset */
-LIBHARP_API int harp_import_dataset(const char *directory, harp_dataset **dataset);
+LIBHARP_API int harp_dataset_add_file(harp_dataset *dataset, const char *filename);
+LIBHARP_API int harp_dataset_add_directory(harp_dataset *dataset, const char *path);
 LIBHARP_API int harp_dataset_new(harp_dataset **dataset);
 LIBHARP_API void harp_dataset_delete(harp_dataset *dataset);
 LIBHARP_API void harp_dataset_print(harp_dataset *dataset, int (*print) (const char *, ...));
+LIBHARP_API long harp_dataset_get_index_from_source_product(harp_dataset *dataset, const char *source_product);
+LIBHARP_API int harp_dataset_add_product(harp_dataset *dataset, const char *source_product,
+                                         harp_product_metadata *metadata);
 
 /* Ingestion */
 LIBHARP_API int harp_ingest(const char *filename, const char *script, const char *options, harp_product **product);
@@ -485,28 +494,32 @@ typedef enum harp_collocation_difference_type_enum harp_collocation_difference_t
 struct harp_collocation_pair_struct
 {
     long collocation_index;
-    char *source_product_a;
-    long index_a;
-    char *source_product_b;
-    long index_b;
+    long product_index_a;  /* index into dataset_a of associated collocation result */
+    long sample_index_a;
+    long product_index_b;  /* index into dataset_b of associated collocation result */
+    long sample_index_b;
     double difference[HARP_COLLOCATION_RESULT_MAX_NUM_DIFFERENCES];
 };
+
 typedef struct harp_collocation_pair_struct harp_collocation_pair;
 
-/** Full set of matched pairs for a collocation between a dataset A and dataset B */
-typedef struct harp_collocation_result_struct
-{
+/** HARP Collocation result */
+struct harp_collocation_result_struct {
+    harp_dataset *dataset_a;
+    harp_dataset *dataset_b;
     int difference_available[HARP_COLLOCATION_RESULT_MAX_NUM_DIFFERENCES];
     char *difference_unit[HARP_COLLOCATION_RESULT_MAX_NUM_DIFFERENCES];
-    long num_pairs;
+    int num_pairs;
     harp_collocation_pair **pair;
-} harp_collocation_result;
+};
+
+typedef struct harp_collocation_result_struct harp_collocation_result;
 
 /** @} */
 
 /* Collocation result functions */
-LIBHARP_API int harp_collocation_pair_new(long collocation_index, const char *source_product_a, long index_a,
-                                          const char *source_product_b, long index_b, const double *difference,
+LIBHARP_API int harp_collocation_pair_new(long collocation_index, long product_index_a, long sample_index_a,
+                                          long product_index_b, long sample_index_b, const double *difference,
                                           harp_collocation_pair **new_pair);
 LIBHARP_API void harp_collocation_pair_delete(harp_collocation_pair *pair);
 LIBHARP_API int harp_collocation_pair_copy(const harp_collocation_pair *input_pair, harp_collocation_pair **new_pair);
@@ -517,9 +530,9 @@ LIBHARP_API int harp_collocation_result_sort_by_a(harp_collocation_result *collo
 LIBHARP_API int harp_collocation_result_sort_by_b(harp_collocation_result *collocation_result);
 LIBHARP_API int harp_collocation_result_sort_by_collocation_index(harp_collocation_result *collocation_result);
 LIBHARP_API int harp_collocation_result_filter_for_source_product_a(harp_collocation_result *collocation_result,
-                                                                    const char *source_product);
+                                                                    int product_index_a);
 LIBHARP_API int harp_collocation_result_filter_for_source_product_b(harp_collocation_result *collocation_result,
-                                                                    const char *source_product);
+                                                                    int product_index_b);
 LIBHARP_API int harp_collocation_result_add_pair(harp_collocation_result *collocation_result,
                                                  harp_collocation_pair *pair);
 LIBHARP_API int harp_collocation_result_read(const char *collocation_result_filename,
