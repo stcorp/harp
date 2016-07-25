@@ -99,42 +99,6 @@ LIBHARP_API void harp_collocation_pair_delete(harp_collocation_pair *pair)
     free(pair);
 }
 
-/** Create a duplicate of a collocation result entry
- * \param input_pair Result entry that needs to duplicated
- * \param new_pair Pointer to the C variable where the new result entry will be stored.
- * \return
- *   \arg \c 0, Success.
- *   \arg \c -1, Error occurred (check #harp_errno).
- */
-LIBHARP_API int harp_collocation_pair_copy(const harp_collocation_pair *input_pair, harp_collocation_pair **new_pair)
-{
-    harp_collocation_pair *pair = NULL;
-    int k;
-
-    pair = (harp_collocation_pair *)malloc(sizeof(harp_collocation_pair));
-    if (pair == NULL)
-    {
-        harp_set_error(HARP_ERROR_OUT_OF_MEMORY, "out of memory (could not allocate %lu bytes) (%s:%u)",
-                       sizeof(harp_collocation_pair), __FILE__, __LINE__);
-        return -1;
-    }
-
-    pair->collocation_index = input_pair->collocation_index;
-    pair->sample_index_a = input_pair->sample_index_a;
-    pair->sample_index_b = input_pair->sample_index_b;
-
-    pair->product_index_a = input_pair->product_index_a;
-    pair->product_index_b = input_pair->product_index_b;
-
-    for (k = 0; k < HARP_COLLOCATION_RESULT_MAX_NUM_DIFFERENCES; k++)
-    {
-        pair->difference[k] = input_pair->difference[k];
-    }
-
-    *new_pair = pair;
-    return 0;
-}
-
 /** Create a new collocation result set
  * \param new_collocation_result Pointer to the C variable where the new result set will be stored.
  * \return

@@ -522,7 +522,6 @@ LIBHARP_API int harp_collocation_pair_new(long collocation_index, long product_i
                                           long product_index_b, long sample_index_b, const double *difference,
                                           harp_collocation_pair **new_pair);
 LIBHARP_API void harp_collocation_pair_delete(harp_collocation_pair *pair);
-LIBHARP_API int harp_collocation_pair_copy(const harp_collocation_pair *input_pair, harp_collocation_pair **new_pair);
 
 LIBHARP_API int harp_collocation_result_new(harp_collocation_result **new_collocation_result);
 LIBHARP_API void harp_collocation_result_delete(harp_collocation_result *collocation_result);
