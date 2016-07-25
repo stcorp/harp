@@ -947,13 +947,12 @@ int harp_import_global_attributes_netcdf(const char *filename, double *datetime_
             {
                 return -1;
             }
-            if (get_harp_dimension_type(netcdf_dim_type, &harp_dim_type) != 0)
+            if (netcdf_dim_type != netcdf_dimension_independent && netcdf_dim_type != netcdf_dimension_string)
             {
-                return -1;
-            }
-
-            if (harp_dim_type != harp_dimension_independent)
-            {
+                if (get_harp_dimension_type(netcdf_dim_type, &harp_dim_type) != 0)
+                {
+                    return -1;
+                }
                 attr_dimension[harp_dim_type] = length;
             }
         }
