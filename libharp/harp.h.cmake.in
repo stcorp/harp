@@ -320,9 +320,60 @@ struct harp_dataset_struct {
 /** HARP Dataset typedef */
 typedef struct harp_dataset_struct harp_dataset;
 
-/** HARP Dataset typedef */
+/** @} */
+
+/** \addtogroup harp_collocation
+ * @{
+ */
+
+/** All possible calculated differences for a collocation pair */
+enum harp_collocation_difference_type_enum
+{
+    harp_collocation_difference_unknown = -1,
+    harp_collocation_difference_absolute_time,
+    harp_collocation_difference_absolute_latitude,
+    harp_collocation_difference_absolute_longitude,
+    harp_collocation_difference_point_distance,
+    harp_collocation_difference_overlapping_percentage,
+    harp_collocation_difference_absolute_sza,
+    harp_collocation_difference_absolute_saa,
+    harp_collocation_difference_absolute_vza,
+    harp_collocation_difference_absolute_vaa,
+    harp_collocation_difference_absolute_theta,
+    harp_collocation_difference_delta   /* weighted norm of difference */
+};
+typedef enum harp_collocation_difference_type_enum harp_collocation_difference_type;
+
+#define HARP_COLLOCATION_RESULT_MAX_NUM_DIFFERENCES (11)
+
+/** Entry for a single matched pair for a collocation between a dataset A and dataset B */
+struct harp_collocation_pair_struct
+{
+    long collocation_index;
+    long product_index_a;  /* index into dataset_a of associated collocation result */
+    long sample_index_a;
+    long product_index_b;  /* index into dataset_b of associated collocation result */
+    long sample_index_b;
+    double difference[HARP_COLLOCATION_RESULT_MAX_NUM_DIFFERENCES];
+};
+
+typedef struct harp_collocation_pair_struct harp_collocation_pair;
+
+/** HARP Collocation result */
+struct harp_collocation_result_struct {
+    harp_dataset *dataset_a;
+    harp_dataset *dataset_b;
+    int difference_available[HARP_COLLOCATION_RESULT_MAX_NUM_DIFFERENCES];
+    char *difference_unit[HARP_COLLOCATION_RESULT_MAX_NUM_DIFFERENCES];
+    int num_pairs;
+    harp_collocation_pair **pair;
+};
+
+/** HARP Collocation result typedef */
+typedef struct harp_collocation_result_struct harp_collocation_result;
 
 /** @} */
+
 
 /* General */
 LIBHARP_API int harp_init(void);
@@ -465,57 +516,6 @@ LIBHARP_API int harp_import(const char *filename, harp_product **product);
 
 /* Export */
 LIBHARP_API int harp_export(const char *filename, const char *format, const harp_product *product);
-
-/** \addtogroup harp_collocation
- * @{
- */
-
-/** All possible calculated differences for a collocation pair */
-enum harp_collocation_difference_type_enum
-{
-    harp_collocation_difference_unknown = -1,
-    harp_collocation_difference_absolute_time,
-    harp_collocation_difference_absolute_latitude,
-    harp_collocation_difference_absolute_longitude,
-    harp_collocation_difference_point_distance,
-    harp_collocation_difference_overlapping_percentage,
-    harp_collocation_difference_absolute_sza,
-    harp_collocation_difference_absolute_saa,
-    harp_collocation_difference_absolute_vza,
-    harp_collocation_difference_absolute_vaa,
-    harp_collocation_difference_absolute_theta,
-    harp_collocation_difference_delta   /* weighted norm of difference */
-};
-typedef enum harp_collocation_difference_type_enum harp_collocation_difference_type;
-
-#define HARP_COLLOCATION_RESULT_MAX_NUM_DIFFERENCES (11)
-
-/** Entry for a single matched pair for a collocation between a dataset A and dataset B */
-struct harp_collocation_pair_struct
-{
-    long collocation_index;
-    long product_index_a;  /* index into dataset_a of associated collocation result */
-    long sample_index_a;
-    long product_index_b;  /* index into dataset_b of associated collocation result */
-    long sample_index_b;
-    double difference[HARP_COLLOCATION_RESULT_MAX_NUM_DIFFERENCES];
-};
-
-typedef struct harp_collocation_pair_struct harp_collocation_pair;
-
-/** HARP Collocation result */
-struct harp_collocation_result_struct {
-    harp_dataset *dataset_a;
-    harp_dataset *dataset_b;
-    int difference_available[HARP_COLLOCATION_RESULT_MAX_NUM_DIFFERENCES];
-    char *difference_unit[HARP_COLLOCATION_RESULT_MAX_NUM_DIFFERENCES];
-    int num_pairs;
-    harp_collocation_pair **pair;
-};
-
-typedef struct harp_collocation_result_struct harp_collocation_result;
-
-/** @} */
 
 /* Collocation result functions */
 LIBHARP_API int harp_collocation_pair_new(long collocation_index, long product_index_a, long sample_index_a,
