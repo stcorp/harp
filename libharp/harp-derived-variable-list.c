@@ -357,20 +357,6 @@ static int get_elevation_angle_from_zenith_angle(harp_variable *variable, const 
     return 0;
 }
 
-static int get_empty_double(harp_variable *variable, const harp_variable **source_variable)
-{
-    long i;
-
-    (void)source_variable;
-
-    for (i = 0; i < variable->num_elements; i++)
-    {
-        variable->data.double_data[i] = harp_nan();
-    }
-
-    return 0;
-}
-
 static int get_frequency_from_wavelength(harp_variable *variable, const harp_variable **source_variable)
 {
     long i;
@@ -1442,21 +1428,6 @@ static int add_uncertainty_conversions(const char *variable_name, const char *un
         return -1;
     }
 
-    if (harp_variable_conversion_new(name_uncertainty, harp_type_double, unit, 1, dimension_type, 0, get_empty_double,
-                                     &conversion) != 0)
-    {
-        return -1;
-    }
-    if (harp_variable_conversion_add_source(conversion, variable_name, harp_type_double, unit, 1, dimension_type, 0) !=
-        0)
-    {
-        return -1;
-    }
-    if (harp_variable_conversion_set_source_description(conversion, "all values will be set to NaN") != 0)
-    {
-        return -1;
-    }
-
     return 0;
 }
 
@@ -1490,21 +1461,6 @@ static int add_spectral_uncertainty_conversions(const char *variable_name, const
         }
         if (harp_variable_conversion_add_source(conversion, name_uncertainty_rnd, harp_type_double, unit, i,
                                                 dimension_type, 0) != 0)
-        {
-            return -1;
-        }
-
-        if (harp_variable_conversion_new(name_uncertainty, harp_type_double, unit, i, dimension_type, 0,
-                                         get_empty_double, &conversion) != 0)
-        {
-            return -1;
-        }
-        if (harp_variable_conversion_add_source(conversion, variable_name, harp_type_double, unit, i, dimension_type, 0)
-            != 0)
-        {
-            return -1;
-        }
-        if (harp_variable_conversion_set_source_description(conversion, "all values will be set to NaN") != 0)
         {
             return -1;
         }
@@ -1598,21 +1554,6 @@ static int add_vertical_uncertainty_conversions(const char *variable_name, const
         }
         if (harp_variable_conversion_add_source(conversion, name_uncertainty_rnd, harp_type_double, unit, i,
                                                 dimension_type, 0) != 0)
-        {
-            return -1;
-        }
-
-        if (harp_variable_conversion_new(name_uncertainty, harp_type_double, unit, i, dimension_type, 0,
-                                         get_empty_double, &conversion) != 0)
-        {
-            return -1;
-        }
-        if (harp_variable_conversion_add_source(conversion, variable_name, harp_type_double, unit, i, dimension_type, 0)
-            != 0)
-        {
-            return -1;
-        }
-        if (harp_variable_conversion_set_source_description(conversion, "all values will be set to NaN") != 0)
         {
             return -1;
         }
