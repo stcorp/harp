@@ -2012,7 +2012,7 @@ static int init_product_definition(harp_ingestion_module *module, uvvis_doas_gas
         snprintf(gas_mapping_path, MAX_PATH_LENGTH,
                  "/%s.COLUMN.TROPOSPHERIC_SCATTER.SOLAR.OFFAXIS_UNCERTAINTY.RANDOM.STANDARD", geoms_gas_name[gas]);
         variable_definition = harp_ingestion_register_variable_full_read
-            (product_definition, gas_var_name, harp_type_double, 2, dimension_type, NULL, gas_description,
+            (product_definition, gas_var_name, harp_type_double, 1, dimension_type, NULL, gas_description,
              "Pmolec cm-2", NULL, read_tropo_column_offaxis_uncertainty_random);
         harp_variable_definition_add_mapping(variable_definition, NULL, NULL, gas_mapping_path, NULL);
 
@@ -2024,7 +2024,7 @@ static int init_product_definition(harp_ingestion_module *module, uvvis_doas_gas
         snprintf(gas_mapping_path, MAX_PATH_LENGTH,
                  "/%s.COLUMN.TROPOSPHERIC_SCATTER.SOLAR.OFFAXIS_UNCERTAINTY.SYSTEMATIC.STANDARD", geoms_gas_name[gas]);
         variable_definition = harp_ingestion_register_variable_full_read
-            (product_definition, gas_var_name, harp_type_double, 2, dimension_type, NULL, gas_description,
+            (product_definition, gas_var_name, harp_type_double, 1, dimension_type, NULL, gas_description,
              "Pmolec cm-2", NULL, read_tropo_column_offaxis_uncertainty_systematic);
         harp_variable_definition_add_mapping(variable_definition, NULL, NULL, gas_mapping_path, NULL);
 
@@ -2145,7 +2145,7 @@ static int init_product_definition(harp_ingestion_module *module, uvvis_doas_gas
         snprintf(gas_mapping_path, MAX_PATH_LENGTH,
                  "/%s.COLUMN.TROPOSPHERIC_SCATTER.SOLAR.ZENITH_UNCERTAINTY.RANDOM.STANDARD", geoms_gas_name[gas]);
         variable_definition = harp_ingestion_register_variable_full_read
-            (product_definition, gas_var_name, harp_type_double, 2, dimension_type, NULL, gas_description,
+            (product_definition, gas_var_name, harp_type_double, 1, dimension_type, NULL, gas_description,
              "Pmolec cm-2", exclude_tropo_column_zenith, read_tropo_column_zenith_uncertainty_random);
         harp_variable_definition_add_mapping(variable_definition, NULL, NULL, gas_mapping_path, NULL);
 
@@ -2157,7 +2157,7 @@ static int init_product_definition(harp_ingestion_module *module, uvvis_doas_gas
         snprintf(gas_mapping_path, MAX_PATH_LENGTH,
                  "/%s.COLUMN.TROPOSPHERIC_SCATTER.SOLAR.ZENITH_UNCERTAINTY.SYSTEMATIC.STANDARD", geoms_gas_name[gas]);
         variable_definition = harp_ingestion_register_variable_full_read
-            (product_definition, gas_var_name, harp_type_double, 2, dimension_type, NULL, gas_description,
+            (product_definition, gas_var_name, harp_type_double, 1, dimension_type, NULL, gas_description,
              "Pmolec cm-2", exclude_tropo_column_zenith, read_tropo_column_zenith_uncertainty_systematic);
         harp_variable_definition_add_mapping(variable_definition, NULL, NULL, gas_mapping_path, NULL);
 
@@ -2201,7 +2201,7 @@ static int init_product_definition(harp_ingestion_module *module, uvvis_doas_gas
         snprintf(gas_mapping_path, MAX_PATH_LENGTH,
                  "/%s.COLUMN.STRATOSPHERIC_SCATTER.SOLAR.ZENITH_UNCERTAINTY.RANDOM.STANDARD", geoms_gas_name[gas]);
         variable_definition = harp_ingestion_register_variable_full_read
-            (product_definition, gas_var_name, harp_type_double, 2, dimension_type, NULL, gas_description,
+            (product_definition, gas_var_name, harp_type_double, 1, dimension_type, NULL, gas_description,
              "Pmolec cm-2", NULL, read_strat_column_zenith_uncertainty_random);
         harp_variable_definition_add_mapping(variable_definition, NULL, NULL, gas_mapping_path, NULL);
 
@@ -2213,7 +2213,7 @@ static int init_product_definition(harp_ingestion_module *module, uvvis_doas_gas
         snprintf(gas_mapping_path, MAX_PATH_LENGTH,
                  "/%s.COLUMN.STRATOSPHERIC_SCATTER.SOLAR.ZENITH_UNCERTAINTY.SYSTEMATIC.STANDARD", geoms_gas_name[gas]);
         variable_definition = harp_ingestion_register_variable_full_read
-            (product_definition, gas_var_name, harp_type_double, 2, dimension_type, NULL, gas_description,
+            (product_definition, gas_var_name, harp_type_double, 1, dimension_type, NULL, gas_description,
              "Pmolec cm-2", NULL, read_strat_column_zenith_uncertainty_systematic);
         harp_variable_definition_add_mapping(variable_definition, NULL, NULL, gas_mapping_path, NULL);
 
