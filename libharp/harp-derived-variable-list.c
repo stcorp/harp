@@ -1637,6 +1637,8 @@ static int add_species_conversions(const char *species)
     char name_nd_cov[MAX_NAME_LENGTH];
     char name_nd_uncertainty[MAX_NAME_LENGTH];
     char name_pp[MAX_NAME_LENGTH];
+    char name_strato_column_nd[MAX_NAME_LENGTH];
+    char name_tropo_column_nd[MAX_NAME_LENGTH];
     char name_vmr[MAX_NAME_LENGTH];
     char name_vmr_cov[MAX_NAME_LENGTH];
     char name_vmr_uncertainty[MAX_NAME_LENGTH];
@@ -1660,6 +1662,8 @@ static int add_species_conversions(const char *species)
     snprintf(name_nd_cov, MAX_NAME_LENGTH, "%s_number_density_cov", species);
     snprintf(name_nd_uncertainty, MAX_NAME_LENGTH, "%s_number_density_uncertainty", species);
     snprintf(name_pp, MAX_NAME_LENGTH, "%s_partial_pressure", species);
+    snprintf(name_strato_column_nd, MAX_NAME_LENGTH, "stratospheric_%s_column_number_density", species);
+    snprintf(name_tropo_column_nd, MAX_NAME_LENGTH, "tropospheric_%s_column_number_density", species);
     snprintf(name_vmr, MAX_NAME_LENGTH, "%s_volume_mixing_ratio", species);
     snprintf(name_vmr_cov, MAX_NAME_LENGTH, "%s_volume_mixing_ratio_cov", species);
     snprintf(name_vmr_uncertainty, MAX_NAME_LENGTH, "%s_volume_mixing_ratio_uncertainty", species);
@@ -1749,6 +1753,18 @@ static int add_species_conversions(const char *species)
 
     if (add_vertical_uncertainty_conversions(name_column_nd, HARP_UNIT_COLUMN_NUMBER_DENSITY,
                                              HARP_UNIT_COLUMN_NUMBER_DENSITY_SQUARED) != 0)
+    {
+        return -1;
+    }
+
+    /* stratpospheric column number density */
+    if (add_uncertainty_conversions(name_strato_column_nd, HARP_UNIT_COLUMN_NUMBER_DENSITY) != 0)
+    {
+        return -1;
+    }
+
+    /* tropospheric column number density */
+    if (add_uncertainty_conversions(name_tropo_column_nd, HARP_UNIT_COLUMN_NUMBER_DENSITY) != 0)
     {
         return -1;
     }
