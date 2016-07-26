@@ -2424,6 +2424,27 @@ static int init_conversions(void)
         return -1;
     }
 
+    /* instrument_altitude */
+    if (add_time_indepedent_to_dependent_conversion("instrument_altitude", harp_type_double, HARP_UNIT_LENGTH, 1,
+                                                    dimension_type, 0) != 0)
+    {
+        return -1;
+    }
+
+    /* instrument_latitude */
+    if (add_time_indepedent_to_dependent_conversion("instrument_latitude", harp_type_double, HARP_UNIT_LATITUDE, 1,
+                                                    dimension_type, 0) != 0)
+    {
+        return -1;
+    }
+
+    /* instrument_longitude */
+    if (add_time_indepedent_to_dependent_conversion("instrument_longitude", harp_type_double, HARP_UNIT_LONGITUDE, 1,
+                                                    dimension_type, 0) != 0)
+    {
+        return -1;
+    }
+
     /* latitude */
     if (add_time_indepedent_to_dependent_conversion("latitude", harp_type_double, HARP_UNIT_LATITUDE, 1,
                                                     dimension_type, 0) != 0)
