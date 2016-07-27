@@ -44,8 +44,7 @@
  * A Dataset contains a list of references to HARP products together with optional metadata on each product.
  * The primary reference to a product is the value of the 'source_product' global attribute of a HARP product.
  * A Dataset thus does not require that its HARP products have been read in memory.
- * Availability of Product Metadata in a Dataset is optional, but metadata either has to be available for all entries
- * or for none of them.
+ * The Product Metadata is not guaranteed to be available for every source_product in the dataset.
  */
 
 /**
@@ -404,10 +403,9 @@ LIBHARP_API int harp_dataset_has_product(harp_dataset *dataset, const char *sour
 }
 
 /** Add a product reference to a dataset.
- * Metadata is only allowed to be NULL if the dataset did not already contain metadata for its entries.
  * \param dataset Dataset in which to add a new entry.
  * \param source_product The source product reference of the new entry.
- * \param metadata The product metadata of the new entry (can be NULL).
+ * \param metadata The product metadata of the new entry (can be NULL); the dataset is the new owner of metadata.
  * \return
  *   \arg \c 0, Success.
  *   \arg \c -1, Error occurred (check #harp_errno).
@@ -431,17 +429,13 @@ LIBHARP_API int harp_dataset_add_product(harp_dataset *dataset, const char *sour
                 return -1;
             }
 
-            if (dataset->metadata != NULL || (metadata != NULL && dataset->num_products == 0))
+            dataset->metadata = realloc(dataset->metadata,
+                                        (dataset->num_products + BLOCK_SIZE) * sizeof(harp_product_metadata *));
+            if (!dataset->metadata)
             {
-                /* grow the metadata array by one block */
-                dataset->metadata = realloc(dataset->metadata,
-                                            (dataset->num_products + BLOCK_SIZE) * sizeof(harp_product_metadata *));
-                if (!dataset->metadata)
-                {
-                    harp_set_error(HARP_ERROR_OUT_OF_MEMORY, "out of memory (could not allocate %lu bytes) (%s:%u)",
-                                   (long)(dataset->num_products + BLOCK_SIZE) * sizeof(char *), __FILE__, __LINE__);
-                    return -1;
-                }
+                harp_set_error(HARP_ERROR_OUT_OF_MEMORY, "out of memory (could not allocate %lu bytes) (%s:%u)",
+                               (long)(dataset->num_products + BLOCK_SIZE) * sizeof(char *), __FILE__, __LINE__);
+                return -1;
             }
         }
 
@@ -455,17 +449,7 @@ LIBHARP_API int harp_dataset_add_product(harp_dataset *dataset, const char *sour
             return -1;
         }
 
-        if (dataset->metadata != NULL)
-        {
-            if (metadata == NULL)
-            {
-                harp_set_error(HARP_ERROR_INVALID_ARGUMENT, "metadata cannot be emtpy when adding an entry to a "
-                               "dataset that already contains product metadata for other entries");
-                return -1;
-            }
-
-            dataset->metadata[dataset->num_products - 1] = metadata;
-        }
+        dataset->metadata[dataset->num_products - 1] = metadata;
 
         /* add it to the index */
         if (hashtable_add_name(dataset->product_to_index, dataset->source_product[dataset->num_products - 1]) != 0)
