@@ -1265,6 +1265,31 @@ int harp_collocation_filter_predicate_new(const harp_collocation_result *colloca
 {
     harp_predicate *predicate;
     index_test_args *predicate_args;
+    long product_index = -1;
+
+    /* lookup the product index that belongs with the source_product */
+    if (filter_type == harp_collocation_left)
+    {
+        if (harp_dataset_has_product(collocation_result->dataset_a, source_product))
+        {
+            if (harp_dataset_get_index_from_source_product(collocation_result->dataset_a, source_product,
+                                                           &product_index) != 0)
+            {
+                return -1;
+            }
+        }
+    }
+    else
+    {
+        if (harp_dataset_has_product(collocation_result->dataset_b, source_product))
+        {
+            if (harp_dataset_get_index_from_source_product(collocation_result->dataset_b, source_product,
+                                                           &product_index) != 0)
+            {
+                return -1;
+            }
+        }
+    }
 
     if (collocation_result->num_pairs > 0)
     {
@@ -1290,15 +1315,15 @@ int harp_collocation_filter_predicate_new(const harp_collocation_result *colloca
             const harp_collocation_pair *pair;
 
             pair = collocation_result->pair[i];
-            if (filter_type == harp_collocation_left && strcmp(pair->source_product_a, source_product) == 0)
+            if (filter_type == harp_collocation_left && pair->product_index_a == product_index)
             {
-                index[num_indices] = (use_collocation_index ? pair->collocation_index : pair->index_a);
+                index[num_indices] = (int32_t)(use_collocation_index ? pair->collocation_index : pair->sample_index_a);
                 num_indices++;
             }
 
-            if (filter_type == harp_collocation_right && strcmp(pair->source_product_b, source_product) == 0)
+            if (filter_type == harp_collocation_right && pair->product_index_b == product_index)
             {
-                index[num_indices] = (use_collocation_index ? pair->collocation_index : pair->index_b);
+                index[num_indices] = (int32_t)(use_collocation_index ? pair->collocation_index : pair->sample_index_b);
                 num_indices++;
             }
         }

@@ -43,6 +43,7 @@ HARP_DOCFILES = \
 	doc/html/harpdump.html \
 	doc/html/harpfilter.html \
 	doc/html/index.html \
+	doc/html/ingestions/ECMWF_GRIB.html \
 	doc/html/ingestions/ESACCI_OZONE_L2_LP.html \
 	doc/html/ingestions/ESACCI_OZONE_L2_NP.html \
 	doc/html/ingestions/ESACCI_OZONE_L2_TC.html \
@@ -305,11 +306,13 @@ HARP_DOCFILES = \
 	doc/html/libharp.html \
 	doc/html/libharp_algorithm.html \
 	doc/html/libharp_collocation.html \
+	doc/html/libharp_dataset.html \
 	doc/html/libharp_documentation.html \
 	doc/html/libharp_error.html \
 	doc/html/libharp_general.html \
 	doc/html/libharp_geometry.html \
 	doc/html/libharp_product.html \
+	doc/html/libharp_product_metadata.html \
 	doc/html/libharp_variable.html \
 	doc/html/objects.inv \
 	doc/html/python.html \
@@ -403,6 +406,8 @@ doc/html/harpdump.html:
 doc/html/harpfilter.html:
 	$(MAKE) harp_doc
 doc/html/index.html:
+	$(MAKE) harp_doc
+doc/html/ingestions/ECMWF_GRIB.html:
 	$(MAKE) harp_doc
 doc/html/ingestions/ESACCI_OZONE_L2_LP.html:
 	$(MAKE) harp_doc
@@ -928,6 +933,8 @@ doc/html/libharp_algorithm.html:
 	$(MAKE) harp_doc
 doc/html/libharp_collocation.html:
 	$(MAKE) harp_doc
+doc/html/libharp_dataset.html:
+	$(MAKE) harp_doc
 doc/html/libharp_documentation.html:
 	$(MAKE) harp_doc
 doc/html/libharp_error.html:
@@ -937,6 +944,8 @@ doc/html/libharp_general.html:
 doc/html/libharp_geometry.html:
 	$(MAKE) harp_doc
 doc/html/libharp_product.html:
+	$(MAKE) harp_doc
+doc/html/libharp_product_metadata.html:
 	$(MAKE) harp_doc
 doc/html/libharp_variable.html:
 	$(MAKE) harp_doc

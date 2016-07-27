@@ -93,11 +93,13 @@
 <li class="toctree-l2 current"><a class="reference internal" href="libharp.html#modules">Modules</a><ul class="current">
 <li class="toctree-l3"><a class="reference internal" href="libharp_algorithm.html">Algorithms</a></li>
 <li class="toctree-l3"><a class="reference internal" href="libharp_collocation.html">Collocation</a></li>
+<li class="toctree-l3"><a class="reference internal" href="libharp_dataset.html">Dataset</a></li>
 <li class="toctree-l3"><a class="reference internal" href="libharp_documentation.html">Documentation</a></li>
 <li class="toctree-l3 current"><a class="current reference internal" href="#">Error</a></li>
 <li class="toctree-l3"><a class="reference internal" href="libharp_general.html">General</a></li>
 <li class="toctree-l3"><a class="reference internal" href="libharp_geometry.html">Geometry</a></li>
 <li class="toctree-l3"><a class="reference internal" href="libharp_product.html">Product</a></li>
+<li class="toctree-l3"><a class="reference internal" href="libharp_product_metadata.html">Product Metadata</a></li>
 <li class="toctree-l3"><a class="reference internal" href="libharp_variable.html">Variable</a></li>
 </ul>
 </li>
@@ -409,8 +411,8 @@
 </dd></dl>
 
 <dl class="function">
-<dt>
-<span class="target" id="libharpgroup__harp__error_1ga81bc467879f19fd0083ae1c66b2552d0"></span><code class="descname">int harp_get_warning_handler(int(**print)(const char *, va_list ap))</code></dt>
+<dt id="_CPPv224harp_get_warning_handlerPPFiPKc7va_listE">
+<span class="target" id="libharpgroup__harp__error_1ga81bc467879f19fd0083ae1c66b2552d0"></span>int <code class="descname">harp_get_warning_handler</code><span class="sig-paren">(</span>int (**<em>print</em>)<span class="sig-paren">(</span><em class="property">const</em> char *, va_list ap<span class="sig-paren">)</span><span class="sig-paren">)</span></dt>
 <dd><p>Get a reference to the current handler for warning messages If no warning handler was set, the NULL pointer will be returned. <dl class="docutils">
 <dt><strong>Return</strong></dt>
 <dd><ul class="simple">
@@ -429,8 +431,8 @@
 </dd></dl>
 
 <dl class="function">
-<dt>
-<span class="target" id="libharpgroup__harp__error_1ga88c982481989852993829a34cd310b7d"></span><code class="descname">int harp_set_warning_handler(int(*print)(const char *, va_list ap))</code></dt>
+<dt id="_CPPv224harp_set_warning_handlerPFiPKc7va_listE">
+<span class="target" id="libharpgroup__harp__error_1ga88c982481989852993829a34cd310b7d"></span>int <code class="descname">harp_set_warning_handler</code><span class="sig-paren">(</span>int (*<em>print</em>)<span class="sig-paren">(</span><em class="property">const</em> char *, va_list ap<span class="sig-paren">)</span><span class="sig-paren">)</span></dt>
 <dd><p>Set handler for warning messages The <em>print</em> function parameter should be a function that resembles vprintf(). The most common case is to provide a function that prints a &#8216;WARNING&#8217; prefix, prints the message, and adds a newline. For example:  The handler function will get called whenever <a class="reference internal" href="#libharpgroup__harp__error_1gaff834a64542a617684269b9512d957f4"><span class="std std-ref">harp_report_warning()</span></a> is called (several functions inside the HARP library may call <a class="reference internal" href="#libharpgroup__harp__error_1gaff834a64542a617684269b9512d957f4"><span class="std std-ref">harp_report_warning()</span></a> to report on certain warning conditions). The warning handler can be set before a call to <a class="reference internal" href="libharp_general.html#libharpgroup__harp__general_1gad1f344feb3bea74322283efca649a045"><span class="std std-ref">harp_init()</span></a> is made. <div class="highlight-default"><div class="highlight"><pre><span></span><span class="n">static</span> <span class="nb">int</span> <span class="n">print_warning</span><span class="p">(</span><span class="n">const</span> <span class="n">char</span> <span class="o">*</span><span class="n">message</span><span class="p">,</span> <span class="n">va_list</span> <span class="n">ap</span><span class="p">)</span>
 <span class="p">{</span>
    <span class="nb">int</span> <span class="n">result</span><span class="p">;</span>

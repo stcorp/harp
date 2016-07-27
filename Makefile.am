@@ -68,6 +68,7 @@ libharp_la_SOURCES = \
 	libharp/harp-chemistry.c \
 	libharp/harp-collocation.c \
 	libharp/harp-constants.h \
+	libharp/harp-dataset.c \
 	libharp/harp-derived-variable.c \
 	libharp/harp-derived-variable-list.c \
 	libharp/harp-dimension-mask.h \
@@ -98,6 +99,7 @@ libharp_la_SOURCES = \
 	libharp/harp-ingest-cci_l3_o3_np.c \
 	libharp/harp-ingest-cci_l3_o3_tc.c \
 	libharp/harp-ingest-cci_l4_o3_np.c \
+ 	libharp/harp-ingest-ecmwf-grib.c \
 	libharp/harp-ingest-geoms-lidar.c \
 	libharp/harp-ingest-geoms-mwr.c \
 	libharp/harp-ingest-geoms-ftir.c \
@@ -125,6 +127,7 @@ libharp_la_SOURCES = \
 	libharp/harp-predicate.h \
 	libharp/harp-predicate.c \
 	libharp/harp-product.c \
+	libharp/harp-product-metadata.c \
 	libharp/harp-sea-surface.c \
 	libharp/harp-units.c \
 	libharp/harp-utils.c \

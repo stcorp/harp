@@ -34,7 +34,7 @@
   
     <link rel="top" title="HARP 0.2b documentation" href="index.html"/>
         <link rel="up" title="C library" href="libharp.html"/>
-        <link rel="next" title="Documentation" href="libharp_documentation.html"/>
+        <link rel="next" title="Dataset" href="libharp_dataset.html"/>
         <link rel="prev" title="Algorithms" href="libharp_algorithm.html"/> 
 
   
@@ -93,11 +93,13 @@
 <li class="toctree-l2 current"><a class="reference internal" href="libharp.html#modules">Modules</a><ul class="current">
 <li class="toctree-l3"><a class="reference internal" href="libharp_algorithm.html">Algorithms</a></li>
 <li class="toctree-l3 current"><a class="current reference internal" href="#">Collocation</a></li>
+<li class="toctree-l3"><a class="reference internal" href="libharp_dataset.html">Dataset</a></li>
 <li class="toctree-l3"><a class="reference internal" href="libharp_documentation.html">Documentation</a></li>
 <li class="toctree-l3"><a class="reference internal" href="libharp_error.html">Error</a></li>
 <li class="toctree-l3"><a class="reference internal" href="libharp_general.html">General</a></li>
 <li class="toctree-l3"><a class="reference internal" href="libharp_geometry.html">Geometry</a></li>
 <li class="toctree-l3"><a class="reference internal" href="libharp_product.html">Product</a></li>
+<li class="toctree-l3"><a class="reference internal" href="libharp_product_metadata.html">Product Metadata</a></li>
 <li class="toctree-l3"><a class="reference internal" href="libharp_variable.html">Variable</a></li>
 </ul>
 </li>
@@ -177,8 +179,8 @@
 
 <dl class="type">
 <dt id="_CPPv223harp_collocation_result">
-<span id="harp_collocation_result"></span><span class="target" id="libharpgroup__harp__collocation_1gaf84e5e56cf05c5a50ffa96822ccb3251"></span><em class="property">typedef </em><em class="property">struct</em> <a class="reference internal" href="#_CPPv230harp_collocation_result_struct" title="harp_collocation_result_struct">harp_collocation_result_struct</a> <code class="descname">harp_collocation_result</code></dt>
-<dd><p>Full set of matched pairs for a collocation between a dataset A and dataset B </p>
+<span id="harp_collocation_result"></span><span class="target" id="libharpgroup__harp__collocation_1gadce42cfa00c3c02cfdb339c3e825147e"></span><em class="property">typedef </em><em class="property">struct</em> <a class="reference internal" href="#_CPPv230harp_collocation_result_struct" title="harp_collocation_result_struct">harp_collocation_result_struct</a> <code class="descname">harp_collocation_result</code></dt>
+<dd><p>HARP Collocation result typedef </p>
 </dd></dl>
 
 </div>
@@ -254,74 +256,6 @@
 </div>
 <div class="breathe-sectiondef container">
 <p class="breathe-sectiondef-title rubric">Functions</p>
-<dl class="function">
-<dt id="_CPPv225harp_collocation_pair_newlPKclPKclPKdPP21harp_collocation_pair">
-<span id="harp_collocation_pair_new__l.cCP.l.cCP.l.doubleCP.harp_collocation_pairPP"></span><span class="target" id="libharpgroup__harp__collocation_1ga285ff80c3691c1e0350816f1d1ba3034"></span>int <code class="descname">harp_collocation_pair_new</code><span class="sig-paren">(</span>long <em>collocation_index</em>, <em class="property">const</em> char *<em>source_product_a</em>, long <em>index_a</em>, <em class="property">const</em> char *<em>source_product_b</em>, long <em>index_b</em>, <em class="property">const</em> double *<em>difference</em>, <a class="reference internal" href="#_CPPv221harp_collocation_pair" title="harp_collocation_pair">harp_collocation_pair</a> **<em>new_pair</em><span class="sig-paren">)</span></dt>
-<dd><p>Create a new collocation result entry <dl class="docutils">
-<dt><strong>Return</strong></dt>
-<dd><ul class="simple">
-<li><code class="docutils literal"><span class="pre">0</span></code>, Success. </li>
-<li><code class="docutils literal"><span class="pre">-1</span></code>, Error occurred (check <a class="reference internal" href="libharp_error.html#libharpgroup__harp__error_1gab2eeb46528306c6799632d1e800c4c36"><span class="std std-ref">harp_errno</span></a>). </li>
-</ul>
-</dd>
-<dt><strong>Parameters</strong></dt>
-<dd><ul class="breatheparameterlist first last">
-<li><code class="first docutils literal"><span class="pre">collocation_index</span></code> - <p>Unique index of the pair in the overall collocation result </p>
-</li>
-<li><code class="first docutils literal"><span class="pre">source_product_a</span></code> - <p>Name of the source_product attribute of the product from dataset A </p>
-</li>
-<li><code class="first docutils literal"><span class="pre">index_a</span></code> - <p>Value of the index variable for the matching sample in the product from dataset A </p>
-</li>
-<li><code class="first docutils literal"><span class="pre">source_product_b</span></code> - <p>Name of the source_product attribute of the product from dataset B </p>
-</li>
-<li><code class="first docutils literal"><span class="pre">index_b</span></code> - <p>Value of the index variable for the matching sample in the product from dataset B </p>
-</li>
-<li><code class="first docutils literal"><span class="pre">difference</span></code> - <p>Array of difference values (should have length HARP_COLLOCATION_RESULT_MAX_NUM_DIFFERENCES) </p>
-</li>
-<li><code class="first docutils literal"><span class="pre">new_pair</span></code> - <p>Pointer to the C variable where the new result entry will be stored. </p>
-</li>
-</ul>
-</dd>
-</dl>
-</p>
-</dd></dl>
-
-<dl class="function">
-<dt id="_CPPv228harp_collocation_pair_deleteP21harp_collocation_pair">
-<span id="harp_collocation_pair_delete__harp_collocation_pairP"></span><span class="target" id="libharpgroup__harp__collocation_1ga7476fa3628e863a6a7a8cfbb7ca261ae"></span>void <code class="descname">harp_collocation_pair_delete</code><span class="sig-paren">(</span><a class="reference internal" href="#_CPPv221harp_collocation_pair" title="harp_collocation_pair">harp_collocation_pair</a> *<em>pair</em><span class="sig-paren">)</span></dt>
-<dd><p>Remove a collocation result entry <dl class="docutils">
-<dt><strong>Parameters</strong></dt>
-<dd><ul class="breatheparameterlist first last">
-<li><code class="first docutils literal"><span class="pre">pair</span></code> - <p>Record that will be removed </p>
-</li>
-</ul>
-</dd>
-</dl>
-</p>
-</dd></dl>
-
-<dl class="function">
-<dt id="_CPPv226harp_collocation_pair_copyPK21harp_collocation_pairPP21harp_collocation_pair">
-<span id="harp_collocation_pair_copy__harp_collocation_pairCP.harp_collocation_pairPP"></span><span class="target" id="libharpgroup__harp__collocation_1ga747a899f7748f02efd2a237001fdefd0"></span>int <code class="descname">harp_collocation_pair_copy</code><span class="sig-paren">(</span><em class="property">const</em> <a class="reference internal" href="#_CPPv221harp_collocation_pair" title="harp_collocation_pair">harp_collocation_pair</a> *<em>input_pair</em>, <a class="reference internal" href="#_CPPv221harp_collocation_pair" title="harp_collocation_pair">harp_collocation_pair</a> **<em>new_pair</em><span class="sig-paren">)</span></dt>
-<dd><p>Create a duplicate of a collocation result entry <dl class="docutils">
-<dt><strong>Return</strong></dt>
-<dd><ul class="simple">
-<li><code class="docutils literal"><span class="pre">0</span></code>, Success. </li>
-<li><code class="docutils literal"><span class="pre">-1</span></code>, Error occurred (check <a class="reference internal" href="libharp_error.html#libharpgroup__harp__error_1gab2eeb46528306c6799632d1e800c4c36"><span class="std std-ref">harp_errno</span></a>). </li>
-</ul>
-</dd>
-<dt><strong>Parameters</strong></dt>
-<dd><ul class="breatheparameterlist first last">
-<li><code class="first docutils literal"><span class="pre">input_pair</span></code> - <p>Result entry that needs to duplicated </p>
-</li>
-<li><code class="first docutils literal"><span class="pre">new_pair</span></code> - <p>Pointer to the C variable where the new result entry will be stored. </p>
-</li>
-</ul>
-</dd>
-</dl>
-</p>
-</dd></dl>
-
 <dl class="function">
 <dt id="_CPPv227harp_collocation_result_newPP23harp_collocation_result">
 <span id="harp_collocation_result_new__harp_collocation_resultPP"></span><span class="target" id="libharpgroup__harp__collocation_1gaeb776cb427980e1511101ac66055c8aa"></span>int <code class="descname">harp_collocation_result_new</code><span class="sig-paren">(</span><a class="reference internal" href="#_CPPv223harp_collocation_result" title="harp_collocation_result">harp_collocation_result</a> **<em>new_collocation_result</em><span class="sig-paren">)</span></dt>
@@ -467,8 +401,8 @@
 </dd></dl>
 
 <dl class="function">
-<dt id="_CPPv232harp_collocation_result_add_pairP23harp_collocation_resultP21harp_collocation_pair">
-<span id="harp_collocation_result_add_pair__harp_collocation_resultP.harp_collocation_pairP"></span><span class="target" id="libharpgroup__harp__collocation_1gae5a6a087a0727e3e1cece6de82c269fe"></span>int <code class="descname">harp_collocation_result_add_pair</code><span class="sig-paren">(</span><a class="reference internal" href="#_CPPv223harp_collocation_result" title="harp_collocation_result">harp_collocation_result</a> *<em>collocation_result</em>, <a class="reference internal" href="#_CPPv221harp_collocation_pair" title="harp_collocation_pair">harp_collocation_pair</a> *<em>pair</em><span class="sig-paren">)</span></dt>
+<dt id="_CPPv232harp_collocation_result_add_pairP23harp_collocation_resultlPKclPKclPKd">
+<span id="harp_collocation_result_add_pair__harp_collocation_resultP.l.cCP.l.cCP.l.doubleCP"></span><span class="target" id="libharpgroup__harp__collocation_1gaa9cd0fe4f098808ed86eb3f9eb24ed19"></span>int <code class="descname">harp_collocation_result_add_pair</code><span class="sig-paren">(</span><a class="reference internal" href="#_CPPv223harp_collocation_result" title="harp_collocation_result">harp_collocation_result</a> *<em>collocation_result</em>, long <em>collocation_index</em>, <em class="property">const</em> char *<em>source_product_a</em>, long <em>index_a</em>, <em class="property">const</em> char *<em>source_product_b</em>, long <em>index_b</em>, <em class="property">const</em> double *<em>difference</em><span class="sig-paren">)</span></dt>
 <dd><p>Add collocation result entry to a result set <dl class="docutils">
 <dt><strong>Note</strong></dt>
 <dd>this function will not check for uniqueness of the collocation_index values in the resulting set </dd>
@@ -482,7 +416,39 @@
 <dd><ul class="breatheparameterlist first last">
 <li><code class="first docutils literal"><span class="pre">collocation_result</span></code> - <p>Result set that will be extended </p>
 </li>
-<li><code class="first docutils literal"><span class="pre">pair</span></code> - <p>Single collocation result entry that will be added. </p>
+<li><code class="first docutils literal"><span class="pre">collocation_index</span></code> - <p>Unique index of the pair in the overall collocation result </p>
+</li>
+<li><code class="first docutils literal"><span class="pre">source_product_a</span></code> - <p>Name of the source_product attribute of the product from dataset A </p>
+</li>
+<li><code class="first docutils literal"><span class="pre">index_a</span></code> - <p>Value of the index variable for the matching sample in the product from dataset A </p>
+</li>
+<li><code class="first docutils literal"><span class="pre">source_product_b</span></code> - <p>Name of the source_product attribute of the product from dataset B </p>
+</li>
+<li><code class="first docutils literal"><span class="pre">index_b</span></code> - <p>Value of the index variable for the matching sample in the product from dataset B </p>
+</li>
+<li><code class="first docutils literal"><span class="pre">difference</span></code> - <p>Array of difference values (should have length HARP_COLLOCATION_RESULT_MAX_NUM_DIFFERENCES) </p>
+</li>
+</ul>
+</dd>
+</dl>
+</p>
+</dd></dl>
+
+<dl class="function">
+<dt id="_CPPv244harp_collocation_result_remove_pair_at_indexP23harp_collocation_resultl">
+<span id="harp_collocation_result_remove_pair_at_index__harp_collocation_resultP.l"></span><span class="target" id="libharpgroup__harp__collocation_1ga0ff0f268cbe8d1eda814a31bcc148a68"></span>int <code class="descname">harp_collocation_result_remove_pair_at_index</code><span class="sig-paren">(</span><a class="reference internal" href="#_CPPv223harp_collocation_result" title="harp_collocation_result">harp_collocation_result</a> *<em>collocation_result</em>, long <em>index</em><span class="sig-paren">)</span></dt>
+<dd><p>Remove collocation result entry from a result set <dl class="docutils">
+<dt><strong>Return</strong></dt>
+<dd><ul class="simple">
+<li><code class="docutils literal"><span class="pre">0</span></code>, Success. </li>
+<li><code class="docutils literal"><span class="pre">-1</span></code>, Error occurred (check <a class="reference internal" href="libharp_error.html#libharpgroup__harp__error_1gab2eeb46528306c6799632d1e800c4c36"><span class="std std-ref">harp_errno</span></a>). </li>
+</ul>
+</dd>
+<dt><strong>Parameters</strong></dt>
+<dd><ul class="breatheparameterlist first last">
+<li><code class="first docutils literal"><span class="pre">collocation_result</span></code> - <p>Result set from which to remove the entry </p>
+</li>
+<li><code class="first docutils literal"><span class="pre">index</span></code> - <p>Zero-based index in the collocation result set of the entry that should be removed </p>
 </li>
 </ul>
 </dd>
@@ -544,7 +510,7 @@
 <dl class="class">
 <dt id="_CPPv230harp_collocation_result_struct">
 <span id="harp_collocation_result_struct"></span><span class="target" id="libharpstructharp__collocation__result__struct"></span><em class="property">struct </em><code class="descname">harp_collocation_result_struct</code></dt>
-<dd><em>#include &lt;harp.h&gt;</em><p>Full set of matched pairs for a collocation between a dataset A and dataset B </p>
+<dd><em>#include &lt;harp.h&gt;</em><p>HARP Collocation result </p>
 </dd></dl>
 
 </dd></dl>
@@ -558,7 +524,7 @@
   
     <div class="rst-footer-buttons" role="navigation" aria-label="footer navigation">
       
-        <a href="libharp_documentation.html" class="btn btn-neutral float-right" title="Documentation" accesskey="n">Next <span class="fa fa-arrow-circle-right"></span></a>
+        <a href="libharp_dataset.html" class="btn btn-neutral float-right" title="Dataset" accesskey="n">Next <span class="fa fa-arrow-circle-right"></span></a>
       
       
         <a href="libharp_algorithm.html" class="btn btn-neutral" title="Algorithms" accesskey="p"><span class="fa fa-arrow-circle-left"></span> Previous</a>

@@ -2167,10 +2167,10 @@ static void register_common_variables(harp_product_definition *product_definitio
     path = "/CLOUD_PROPERTIES/CloudTopAlbedo_Error[], /CLOUD_PROPERTIES/CloudTopAlbedo[]";
     harp_variable_definition_add_mapping(variable_definition, NULL, "V2 product", path, description);
 
-    /* cloud_optical_thickness */
-    description = "cloud optical thickness";
+    /* cloud_optical_depth */
+    description = "cloud optical depth";
     variable_definition =
-        harp_ingestion_register_variable_full_read(product_definition, "cloud_optical_thickness", harp_type_double, 1,
+        harp_ingestion_register_variable_full_read(product_definition, "cloud_optical_depth", harp_type_double, 1,
                                                    dimension_type, NULL, description, "1",
                                                    exclude_cloud_optical_thickness, read_cloud_optical_thickness);
     path = "/DETAILED_RESULTS/CloudOpticalThickness[]";
@@ -2178,10 +2178,10 @@ static void register_common_variables(harp_product_definition *product_definitio
     path = "/CLOUD_PROPERTIES/CloudOpticalThickness[]";
     harp_variable_definition_add_mapping(variable_definition, NULL, "V2 product", path, NULL);
 
-    /* cloud_optical_thickness_uncertainty */
-    description = "uncertainty of the cloud optical thickness";
+    /* cloud_optical_depth_uncertainty */
+    description = "uncertainty of the cloud optical depth";
     variable_definition =
-        harp_ingestion_register_variable_full_read(product_definition, "cloud_optical_thickness_uncertainty",
+        harp_ingestion_register_variable_full_read(product_definition, "cloud_optical_depth_uncertainty",
                                                    harp_type_double, 1, dimension_type, NULL, description, "1",
                                                    exclude_cloud_optical_thickness_error,
                                                    read_cloud_optical_thickness_error);

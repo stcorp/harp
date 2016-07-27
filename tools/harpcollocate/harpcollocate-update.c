@@ -124,16 +124,6 @@ static int collocation_index_slist_has_index(collocation_index_slist *index_slis
     return 0;
 }
 
-static const char *select_source_product_a(const harp_collocation_pair *pair)
-{
-    return pair->source_product_a;
-}
-
-static const char *select_source_product_b(const harp_collocation_pair *pair)
-{
-    return pair->source_product_b;
-}
-
 static void mask_logical_and(long num_elements, const uint8_t *source_mask_a, const uint8_t *source_mask_b,
                              uint8_t *target_mask)
 {
@@ -146,8 +136,7 @@ static void mask_logical_and(long num_elements, const uint8_t *source_mask_a, co
 }
 
 static int update_mask_for_product(const harp_collocation_result *collocation_result,
-                                   const char *(*key_func) (const harp_collocation_pair *pair),
-                                   const char *product_path, uint8_t *mask)
+                                   dataset_selection selection, const char *product_path, uint8_t *mask)
 {
     harp_product *product;
     harp_variable *collocation_index;
@@ -191,10 +180,31 @@ static int update_mask_for_product(const harp_collocation_result *collocation_re
     for (i = 0; i < collocation_result->num_pairs; i++)
     {
         const harp_collocation_pair *pair = collocation_result->pair[i];
+        long index;
 
-        if (strcmp(key_func(pair), product->source_product) == 0)
+        if (selection == dataset_a)
         {
-            mask[i] = collocation_index_slist_has_index(index_slist, pair->collocation_index);
+            if (harp_dataset_get_index_from_source_product(collocation_result->dataset_a, product->source_product,
+                                                           &index) != 0)
+            {
+                return -1;
+            }
+            if (pair->product_index_a == index)
+            {
+                mask[i] = collocation_index_slist_has_index(index_slist, pair->collocation_index);
+            }
+        }
+        else
+        {
+            if (harp_dataset_get_index_from_source_product(collocation_result->dataset_b, product->source_product,
+                                                           &index) != 0)
+            {
+                return -1;
+            }
+            if (pair->product_index_b == index)
+            {
+                mask[i] = collocation_index_slist_has_index(index_slist, pair->collocation_index);
+            }
         }
     }
 
@@ -206,11 +216,8 @@ static int update_mask_for_product(const harp_collocation_result *collocation_re
 static int get_mask(const harp_collocation_result *collocation_result, dataset_selection selection,
                     const Dataset *dataset, uint8_t **new_mask)
 {
-    const char *(*key_func) (const harp_collocation_pair *pair);
     uint8_t *mask;
     int i;
-
-    key_func = (selection == dataset_a ? select_source_product_a : select_source_product_b);
 
     mask = calloc(collocation_result->num_pairs, sizeof(uint8_t));
     if (mask == NULL)
@@ -222,7 +229,7 @@ static int get_mask(const harp_collocation_result *collocation_result, dataset_s
 
     for (i = 0; i < dataset->num_files; i++)
     {
-        if (update_mask_for_product(collocation_result, key_func, dataset->filename[i], mask) != 0)
+        if (update_mask_for_product(collocation_result, selection, dataset->filename[i], mask) != 0)
         {
             free(mask);
             return -1;
@@ -233,40 +240,27 @@ static int get_mask(const harp_collocation_result *collocation_result, dataset_s
     return 0;
 }
 
-static void update_collocation_result(harp_collocation_result *collocation_result, const uint8_t *mask)
+static int update_collocation_result(harp_collocation_result *collocation_result, const uint8_t *mask)
 {
-    long new_num_pairs;
     long i;
-    long j;
 
     if (mask == NULL)
     {
-        return;
+        return 0;
     }
 
-    new_num_pairs = 0;
-    for (i = 0; i < collocation_result->num_pairs; i++)
+    for (i = collocation_result->num_pairs - 1; i >= 0; i--)
     {
-        if (mask[i])
+        if (!mask[i])
         {
-            new_num_pairs++;
+            if (harp_collocation_result_remove_pair_at_index(collocation_result, i) != 0)
+            {
+                return -1;
+            }
         }
     }
 
-    for (i = 0, j = 0; i < collocation_result->num_pairs; i++)
-    {
-        if (mask[i])
-        {
-            collocation_result->pair[j] = collocation_result->pair[i];
-            j++;
-        }
-        else
-        {
-            harp_collocation_pair_delete(collocation_result->pair[i]);
-        }
-    }
-
-    collocation_result->num_pairs = new_num_pairs;
+    return 0;
 }
 
 int update(const Collocation_options *collocation_options, harp_collocation_result *collocation_result)
@@ -320,7 +314,10 @@ int update(const Collocation_options *collocation_options, harp_collocation_resu
     }
 
     /* Update the collocation result (using the combined row mask). */
-    update_collocation_result(collocation_result, mask);
+    if (update_collocation_result(collocation_result, mask) != 0)
+    {
+        return -1;
+    }
 
     if (mask_a != NULL)
     {

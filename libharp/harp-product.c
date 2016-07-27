@@ -598,10 +598,9 @@ LIBHARP_API int harp_product_replace_variable(harp_product *product, harp_variab
     return 0;
 }
 
-/**
- * Test if product contains a variable with the specified name.
+/** Test if product contains a variable with the specified name.
  * \param  product Product to search.
- * \param  name    Name of the variable to search for.
+ * \param  name Name of the variable to search for.
  * \return
  *   \arg \c 0, Product does not contain a variable of the specified name.
  *   \arg \c 1, Product contains a variable of the specified name.
@@ -628,7 +627,7 @@ LIBHARP_API int harp_product_has_variable(const harp_product *product, const cha
 
 /** Find variable with a given name for a product.
  * If no variable with the given name can be found an error is returned.
- * \param product Product in which the find the variable.
+ * \param product Product in which to find the variable.
  * \param name Name of the variable.
  * \param variable Pointer to the C variable where the found HARP variable will be stored.
  * \return
@@ -1231,6 +1230,4 @@ LIBHARP_API void harp_product_print(const harp_product *product, int show_attrib
             harp_variable_print_data(product->variable[i], print);
         }
     }
-
-    return;
 }

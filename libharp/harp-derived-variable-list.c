@@ -357,20 +357,6 @@ static int get_elevation_angle_from_zenith_angle(harp_variable *variable, const 
     return 0;
 }
 
-static int get_empty_double(harp_variable *variable, const harp_variable **source_variable)
-{
-    long i;
-
-    (void)source_variable;
-
-    for (i = 0; i < variable->num_elements; i++)
-    {
-        variable->data.double_data[i] = harp_nan();
-    }
-
-    return 0;
-}
-
 static int get_frequency_from_wavelength(harp_variable *variable, const harp_variable **source_variable)
 {
     long i;
@@ -1442,21 +1428,6 @@ static int add_uncertainty_conversions(const char *variable_name, const char *un
         return -1;
     }
 
-    if (harp_variable_conversion_new(name_uncertainty, harp_type_double, unit, 1, dimension_type, 0, get_empty_double,
-                                     &conversion) != 0)
-    {
-        return -1;
-    }
-    if (harp_variable_conversion_add_source(conversion, variable_name, harp_type_double, unit, 1, dimension_type, 0) !=
-        0)
-    {
-        return -1;
-    }
-    if (harp_variable_conversion_set_source_description(conversion, "all values will be set to NaN") != 0)
-    {
-        return -1;
-    }
-
     return 0;
 }
 
@@ -1490,21 +1461,6 @@ static int add_spectral_uncertainty_conversions(const char *variable_name, const
         }
         if (harp_variable_conversion_add_source(conversion, name_uncertainty_rnd, harp_type_double, unit, i,
                                                 dimension_type, 0) != 0)
-        {
-            return -1;
-        }
-
-        if (harp_variable_conversion_new(name_uncertainty, harp_type_double, unit, i, dimension_type, 0,
-                                         get_empty_double, &conversion) != 0)
-        {
-            return -1;
-        }
-        if (harp_variable_conversion_add_source(conversion, variable_name, harp_type_double, unit, i, dimension_type, 0)
-            != 0)
-        {
-            return -1;
-        }
-        if (harp_variable_conversion_set_source_description(conversion, "all values will be set to NaN") != 0)
         {
             return -1;
         }
@@ -1601,21 +1557,6 @@ static int add_vertical_uncertainty_conversions(const char *variable_name, const
         {
             return -1;
         }
-
-        if (harp_variable_conversion_new(name_uncertainty, harp_type_double, unit, i, dimension_type, 0,
-                                         get_empty_double, &conversion) != 0)
-        {
-            return -1;
-        }
-        if (harp_variable_conversion_add_source(conversion, variable_name, harp_type_double, unit, i, dimension_type, 0)
-            != 0)
-        {
-            return -1;
-        }
-        if (harp_variable_conversion_set_source_description(conversion, "all values will be set to NaN") != 0)
-        {
-            return -1;
-        }
     }
 
     return 0;
@@ -1637,6 +1578,8 @@ static int add_species_conversions(const char *species)
     char name_nd_cov[MAX_NAME_LENGTH];
     char name_nd_uncertainty[MAX_NAME_LENGTH];
     char name_pp[MAX_NAME_LENGTH];
+    char name_strato_column_nd[MAX_NAME_LENGTH];
+    char name_tropo_column_nd[MAX_NAME_LENGTH];
     char name_vmr[MAX_NAME_LENGTH];
     char name_vmr_cov[MAX_NAME_LENGTH];
     char name_vmr_uncertainty[MAX_NAME_LENGTH];
@@ -1660,6 +1603,8 @@ static int add_species_conversions(const char *species)
     snprintf(name_nd_cov, MAX_NAME_LENGTH, "%s_number_density_cov", species);
     snprintf(name_nd_uncertainty, MAX_NAME_LENGTH, "%s_number_density_uncertainty", species);
     snprintf(name_pp, MAX_NAME_LENGTH, "%s_partial_pressure", species);
+    snprintf(name_strato_column_nd, MAX_NAME_LENGTH, "stratospheric_%s_column_number_density", species);
+    snprintf(name_tropo_column_nd, MAX_NAME_LENGTH, "tropospheric_%s_column_number_density", species);
     snprintf(name_vmr, MAX_NAME_LENGTH, "%s_volume_mixing_ratio", species);
     snprintf(name_vmr_cov, MAX_NAME_LENGTH, "%s_volume_mixing_ratio_cov", species);
     snprintf(name_vmr_uncertainty, MAX_NAME_LENGTH, "%s_volume_mixing_ratio_uncertainty", species);
@@ -1749,6 +1694,18 @@ static int add_species_conversions(const char *species)
 
     if (add_vertical_uncertainty_conversions(name_column_nd, HARP_UNIT_COLUMN_NUMBER_DENSITY,
                                              HARP_UNIT_COLUMN_NUMBER_DENSITY_SQUARED) != 0)
+    {
+        return -1;
+    }
+
+    /* stratpospheric column number density */
+    if (add_uncertainty_conversions(name_strato_column_nd, HARP_UNIT_COLUMN_NUMBER_DENSITY) != 0)
+    {
+        return -1;
+    }
+
+    /* tropospheric column number density */
+    if (add_uncertainty_conversions(name_tropo_column_nd, HARP_UNIT_COLUMN_NUMBER_DENSITY) != 0)
     {
         return -1;
     }
@@ -2463,6 +2420,27 @@ static int init_conversions(void)
 
     /* index */
     if (harp_variable_conversion_new("index", harp_type_int32, NULL, 1, dimension_type, 0, get_index, &conversion) != 0)
+    {
+        return -1;
+    }
+
+    /* instrument_altitude */
+    if (add_time_indepedent_to_dependent_conversion("instrument_altitude", harp_type_double, HARP_UNIT_LENGTH, 1,
+                                                    dimension_type, 0) != 0)
+    {
+        return -1;
+    }
+
+    /* instrument_latitude */
+    if (add_time_indepedent_to_dependent_conversion("instrument_latitude", harp_type_double, HARP_UNIT_LATITUDE, 1,
+                                                    dimension_type, 0) != 0)
+    {
+        return -1;
+    }
+
+    /* instrument_longitude */
+    if (add_time_indepedent_to_dependent_conversion("instrument_longitude", harp_type_double, HARP_UNIT_LONGITUDE, 1,
+                                                    dimension_type, 0) != 0)
     {
         return -1;
     }

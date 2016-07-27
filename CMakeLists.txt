@@ -52,11 +52,15 @@ find_package(FLEX)
 find_package(HDF4)
 if(NOT HDF4_FOUND)
   message(FATAL_ERROR "HDF4 libraries and/or header files are not found. Try setting the HDF4_LIBRARY_DIR and HDF4_INCLUDE_DIR cmake variables to the location of your HDF4 library and include files.")
+else(NOT HDF4_FOUND)
+  set(HAVE_HDF4 1)
 endif(NOT HDF4_FOUND)
 
 find_package(HDF5)
 if(NOT HDF5_FOUND)
     message(FATAL_ERROR "HDF5 libraries and/or header files are not found. Try setting the HDF5_LIBRARY_DIR and HDF5_INCLUDE_DIR cmake variables to the location of your HDF5 library and include files.")
+else(NOT HDF5_FOUND)
+  set(HAVE_HDF5 1)
 endif(NOT HDF5_FOUND)
 
 # We allow HARP to be build as part of a larger CMake build that also includes
@@ -213,6 +217,7 @@ set(LIBHARP_SOURCES
   libharp/harp-chemistry.c
   libharp/harp-collocation.c
   libharp/harp-constants.h
+  libharp/harp-dataset.c
   libharp/harp-derived-variable.c
   libharp/harp-derived-variable-list.c
   libharp/harp-dimension-mask.h
@@ -243,6 +248,7 @@ set(LIBHARP_SOURCES
   libharp/harp-ingest-cci_l3_o3_np.c
   libharp/harp-ingest-cci_l3_o3_tc.c
   libharp/harp-ingest-cci_l4_o3_np.c
+  libharp/harp-ingest-ecmwf-grib.c
   libharp/harp-ingest-geoms-lidar.c
   libharp/harp-ingest-geoms-mwr.c
   libharp/harp-ingest-geoms-ftir.c
@@ -270,6 +276,7 @@ set(LIBHARP_SOURCES
   libharp/harp-predicate.h
   libharp/harp-predicate.c
   libharp/harp-product.c
+  libharp/harp-product-metadata.c
   libharp/harp-sea-surface.c
   libharp/harp-units.c
   libharp/harp-utils.c
