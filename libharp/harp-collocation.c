@@ -261,7 +261,7 @@ static int compare_by_collocation_index(const void *a, const void *b)
  */
 
 /** Sort the collocation result pairs by dataset A
- * Results will be sorted first by product source name of A and then by sample index of A
+ * Results will be sorted first by product index of A and then by sample index of A
  * \param collocation_result Result set that will be sorted in place.
  * \return
  *   \arg \c 0, Success.
@@ -274,7 +274,7 @@ LIBHARP_API int harp_collocation_result_sort_by_a(harp_collocation_result *collo
 }
 
 /** Sort the collocation result pairs by dataset B
- * Results will be sorted first by product source name of B and then by sample index of B
+ * Results will be sorted first by product index of B and then by sample index of B
  * \param collocation_result Result set that will be sorted in place.
  * \return
  *   \arg \c 0, Success.
