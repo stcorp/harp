@@ -20,19 +20,18 @@
 
 #include "harp-internal.h"
 #include "hashtable.h"
+
 #include <sys/types.h>
 #include <sys/stat.h>
+#include <assert.h>
 #include <errno.h>
-
+#include <stdio.h>
 #include <stdlib.h>
 #include <string.h>
 #ifdef HAVE_DIRENT_H
 #include <dirent.h>
-#include <stdio.h>
-#include <harp.h>
-#include <assert.h>
-
 #endif
+
 #ifdef WIN32
 #include "windows.h"
 #endif
