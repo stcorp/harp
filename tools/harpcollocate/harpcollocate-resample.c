@@ -27,8 +27,8 @@ static int pair_is_neighbour(const harp_collocation_pair *first_pair, const harp
     if (master_a)
     {
         /* Use source_product_a and index_a. */
-        if (strcmp(second_pair->source_product_a, first_pair->source_product_a) == 0
-            && second_pair->index_a == first_pair->index_a)
+        if (second_pair->product_index_a == first_pair->product_index_a
+            && second_pair->sample_index_a == first_pair->sample_index_a)
         {
             /* Yes, we found a neighbour. */
             return 1;
@@ -41,8 +41,8 @@ static int pair_is_neighbour(const harp_collocation_pair *first_pair, const harp
     else
     {
         /* Use source_product_b and index_b. */
-        if (strcmp(second_pair->source_product_b, first_pair->source_product_b) == 0
-            && second_pair->index_b == first_pair->index_b)
+        if (second_pair->product_index_b == first_pair->product_index_b
+            && second_pair->sample_index_b == first_pair->sample_index_b)
         {
             /* Yes, we found a neighbour. */
             return 1;
@@ -116,11 +116,13 @@ static int nearest_neighbour(const Collocation_options *collocation_options,
             }
         }
     }
-    for (i = target_id + 1; i < collocation_result->num_pairs; i++)
+    while (collocation_result->num_pairs - 1 > target_id)
     {
-        harp_collocation_pair_delete(collocation_result->pair[i]);
+        if (harp_collocation_result_remove_pair_at_index(collocation_result, collocation_result->num_pairs - 1) != 0)
+        {
+            return -1;
+        }
     }
-    collocation_result->num_pairs = target_id + 1;
 
     return 0;
 }

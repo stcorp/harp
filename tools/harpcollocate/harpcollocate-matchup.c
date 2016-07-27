@@ -1103,7 +1103,6 @@ static int matchup_two_measurements(harp_collocation_result *collocation_result,
     int match;
     double difference;
     double differences[HARP_COLLOCATION_RESULT_MAX_NUM_DIFFERENCES];
-    harp_collocation_pair *pair = NULL;
     long collocation_index;
     double delta;
 
@@ -1306,24 +1305,17 @@ static int matchup_two_measurements(harp_collocation_result *collocation_result,
      * the chronological order of the measurements in the re-sampled collocation result later on */
     collocation_index = collocation_result->num_pairs;
 
-    /* If we have survived so far, we have a match */
-    /* Write the original file and measurement ids */
-    if (harp_collocation_pair_new(collocation_index, reduced_product_a->source_product, original_index_a,
-                                  reduced_product_b->source_product, original_index_b, differences, &pair) != 0)
+    if (harp_collocation_result_add_pair(collocation_result, collocation_index, reduced_product_a->source_product,
+                                         original_index_a, reduced_product_b->source_product, original_index_b,
+                                         differences) != 0)
     {
         return -1;
     }
 
     /* Calculate the weighted norm of the differences */
-    if (calculate_delta(collocation_result, collocation_options, pair, &delta) != 0)
+    if (calculate_delta(collocation_result, collocation_options,
+                        collocation_result->pair[collocation_result->num_pairs - 1], &delta) != 0)
     {
-        harp_collocation_pair_delete(pair);
-        return -1;
-    }
-
-    if (harp_collocation_result_add_pair(collocation_result, pair) != 0)
-    {
-        harp_collocation_pair_delete(pair);
         return -1;
     }
 
@@ -1511,8 +1503,6 @@ static void dataset_sort_by_datetime_start(Dataset *dataset)
 /* Determine start and stop time in the unit that is used for collocation */
 static int dataset_add_start_stop_datetime(Dataset *dataset)
 {
-    double datetime_start;
-    double datetime_stop;
     int i;
 
     if (dataset->datetime_start == NULL)
@@ -1543,25 +1533,21 @@ static int dataset_add_start_stop_datetime(Dataset *dataset)
 
     for (i = 0; i < dataset->num_files; i++)
     {
+        harp_product_metadata *metadata = NULL;
+
         /* This function will not perform any unit conversion on the datetime start/stop values, but take the values as
          * is in the product.
          * This means we have to convert from 'days since 2000-01-01' to HARP_UNIT_DATETIME
          */
-        if (harp_import_global_attributes(dataset->filename[i], &datetime_start, &datetime_stop, NULL) != 0)
+        if (harp_import_product_metadata(dataset->filename[i], &metadata) != 0)
         {
-            if (dataset->datetime_start != NULL)
-            {
-                free(dataset->datetime_start);
-            }
-            if (dataset->datetime_stop != NULL)
-            {
-                free(dataset->datetime_stop);
-            }
             return -1;
         }
 
-        dataset->datetime_start[i] = datetime_start;
-        dataset->datetime_stop[i] = datetime_stop;
+        dataset->datetime_start[i] = metadata->datetime_start;
+        dataset->datetime_stop[i] = metadata->datetime_stop;
+
+        harp_product_metadata_delete(metadata);
     }
     if (harp_convert_unit("days since 2000-01-01", HARP_UNIT_DATETIME, dataset->num_files, dataset->datetime_start) !=
         0)

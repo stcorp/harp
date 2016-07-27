@@ -68,6 +68,7 @@ libharp_la_SOURCES = \
 	libharp/harp-chemistry.c \
 	libharp/harp-collocation.c \
 	libharp/harp-constants.h \
+	libharp/harp-dataset.c \
 	libharp/harp-derived-variable.c \
 	libharp/harp-derived-variable-list.c \
 	libharp/harp-dimension-mask.h \
@@ -126,6 +127,7 @@ libharp_la_SOURCES = \
 	libharp/harp-predicate.h \
 	libharp/harp-predicate.c \
 	libharp/harp-product.c \
+	libharp/harp-product-metadata.c \
 	libharp/harp-sea-surface.c \
 	libharp/harp-units.c \
 	libharp/harp-utils.c \
