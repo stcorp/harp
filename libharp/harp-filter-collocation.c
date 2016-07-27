@@ -196,7 +196,7 @@ int harp_collocation_mask_from_result(const harp_collocation_result *collocation
                 harp_collocation_mask_delete(mask);
                 return -1;
             }
-            if (pair->product_index_a == product_index)
+            if (pair->product_index_a != product_index)
             {
                 continue;
             }
@@ -215,7 +215,7 @@ int harp_collocation_mask_from_result(const harp_collocation_result *collocation
                 harp_collocation_mask_delete(mask);
                 return -1;
             }
-            if (pair->product_index_b == product_index)
+            if (pair->product_index_b != product_index)
             {
                 continue;
             }
