@@ -1268,7 +1268,8 @@ int harp_collocation_filter_predicate_new(const harp_collocation_result *colloca
     long product_index = -1;
 
     /* lookup the product index that belongs with the source_product */
-    if (filter_type == harp_collocation_left) {
+    if (filter_type == harp_collocation_left)
+    {
         if (harp_dataset_has_product(collocation_result->dataset_a, source_product))
         {
             if (harp_dataset_get_index_from_source_product(collocation_result->dataset_a, source_product,
