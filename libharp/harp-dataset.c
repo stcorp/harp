@@ -419,6 +419,8 @@ LIBHARP_API int harp_dataset_add_product(harp_dataset *dataset, const char *sour
         /* Make space for new entry */
         if (dataset->num_products % BLOCK_SIZE == 0)
         {
+            int i;
+
             /* grow the source_product array by one block */
             dataset->source_product = realloc(dataset->source_product,
                                               (dataset->num_products + BLOCK_SIZE) * sizeof(char **));
@@ -437,6 +439,12 @@ LIBHARP_API int harp_dataset_add_product(harp_dataset *dataset, const char *sour
                                (long)(dataset->num_products + BLOCK_SIZE) * sizeof(char *), __FILE__, __LINE__);
                 return -1;
             }
+
+            /* zero-out metadata entries; as these are only optionally set in the future */
+            for (i = dataset->num_products; i < (dataset->num_products + BLOCK_SIZE); i++)
+            {
+                dataset->metadata[i] = NULL;
+            }
         }
 
         dataset->num_products++;
@@ -449,14 +457,31 @@ LIBHARP_API int harp_dataset_add_product(harp_dataset *dataset, const char *sour
             return -1;
         }
 
-        dataset->metadata[dataset->num_products - 1] = metadata;
-
         /* add it to the index */
         if (hashtable_add_name(dataset->product_to_index, dataset->source_product[dataset->num_products - 1]) != 0)
         {
             assert(0);
             exit(1);
         }
+    }
+
+    if (metadata)
+    {
+        long index;
+
+        if (harp_dataset_get_index_from_source_product(dataset, source_product, &index))
+        {
+            return -1;
+        }
+
+        /* Delete existing metadata for this product */
+        if (dataset->metadata[index] != NULL)
+        {
+            harp_product_metadata_delete(dataset->metadata[index]);
+        }
+
+        /* Set the metadata for this source_product */
+        dataset->metadata[index] = metadata;
     }
 
     return 0;
