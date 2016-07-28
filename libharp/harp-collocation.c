@@ -38,6 +38,16 @@
  * Collocation results can be written to and read from a csv file.
  */
 
+static void collocation_pair_swap_datasets(harp_collocation_pair *pair)
+{
+    long index_a = pair->product_index_a;
+    long sample_a = pair->sample_index_a;
+    pair->product_index_a = pair->product_index_b;
+    pair->sample_index_a = pair->sample_index_b;
+    pair->product_index_b = index_a;
+    pair->sample_index_b = sample_a;
+}
+
 static int collocation_pair_new(long collocation_index, long product_index_a, long sample_index_a, long product_index_b,
                                 long sample_index_b, const double *difference, harp_collocation_pair **new_pair)
 {
@@ -1062,6 +1072,22 @@ LIBHARP_API int harp_collocation_result_write(const char *collocation_result_fil
     }
 
     return 0;
+}
+
+/** Swap the columns of this collocation result inplace.
+ */
+LIBHARP_API void harp_collocation_result_swap_datasets(harp_collocation_result *collocation_result)
+{
+    int i;
+
+    for (i = 0; i < collocation_result->num_pairs; i++)
+    {
+        collocation_pair_swap_datasets(collocation_result->pair[i]);
+    }
+
+    harp_dataset *data_a = collocation_result->dataset_a;
+    collocation_result->dataset_a = collocation_result->dataset_b;
+    collocation_result->dataset_b = data_a;
 }
 
 /**

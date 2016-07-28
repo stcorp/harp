@@ -539,6 +539,7 @@ LIBHARP_API int harp_collocation_result_read(const char *collocation_result_file
                                              harp_collocation_result **new_collocation_result);
 LIBHARP_API int harp_collocation_result_write(const char *collocation_result_filename,
                                               harp_collocation_result *collocation_result);
+LIBHARP_API void harp_collocation_result_swap_datasets(harp_collocation_result *collocation_result);
 
 /* *CFFI-OFF* */
 
