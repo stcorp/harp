@@ -525,25 +525,6 @@ void print_help_resample(void)
     printf("                    The common vertical grid is defined in file C.\n");
     printf("                    <input> denotes the filename\n");
     printf("\n");
-    printf("        Optional options:\n");
-    printf("            -c, --convert-variable 'conv1; conv2; ...; convN' :\n");
-    printf("                    convert the unit of variables in the file.\n");
-    printf("                    Conversion expressions are semicolon separated and composed\n");
-    printf("                    of:\n");
-    printf("                       variablename [unit]\n");
-    printf("                    For example:\n");
-    printf("                     -c 'variablename1 [unit1]; variablename2 [unit2]'\n");
-    printf("\n");
-    printf("            -va, --vertical-axis <variable_name>\n");
-    printf("                    override the default vertical axis. <variable_name> can be\n");
-    printf("                    ALTITUDE, PRESSURE, or ALTITUDE.GPH. By default, ALTITUDE\n");
-    printf("                    is selected, if not available PRESSURE, otherwise\n");
-    printf("                    ALTITUDE.GPH.\n");
-    printf("\n");
-    printf("            -cd, --collapse-dimension <variable_name>\n");
-    printf("                    collapse the vertical dimension of this variable.\n");
-    printf("                    Take the midpoint.\n");
-    printf("\n");
     printf("        In case -ha/-hb is set, a generated averaging kernel matrix variable\n");
     printf("        can be added with:\n");
     printf("            -aga, --add-generated-akm 'value [unit]'\n");
@@ -611,15 +592,6 @@ void print_help_smooth(void)
     printf("                       triangle\n");
     printf("                       boxcar\n");
     printf("                    By default a Gaussian smoothing function is employed.\n");
-    printf("\n");
-    printf("        Optional options:\n");
-    printf("            -c, --convert-variable 'conv1; conv2; ...; convN' :\n");
-    printf("                    convert the unit of variables in the file.\n");
-    printf("                    Conversion expressions are semicolon separated and composed\n");
-    printf("                    of:\n");
-    printf("                       variablename [unit]\n");
-    printf("                    For example:\n");
-    printf("                     -c 'variablename1 [unit1]; variablename2 [unit2]'\n");
     printf("\n");
 }
 
@@ -759,7 +731,120 @@ static int resample(int argc, char *argv[])
 
 static int smooth(int argc, char *argv[])
 {
+    harp_product *product;
+    const char *output_filename = NULL;
+    const char *output_format = "netcdf";
+    const char *input_filename = NULL;
 
+    const char *result_csv_file = NULL;
+    const char *source_dataset_a = NULL;
+    const char *source_dataset_b = NULL;
+    harp_collocation_result *collocation_result = NULL;
+
+    /* parse arguments after the 'action' argument */
+    int i;
+
+    for (i = 2; i < argc; i++)
+    {
+        if ((strcmp(argv[i], "-h") == 0 || (strcmp(argv[i], "--help") == 0)))
+        {
+            print_help_smooth();
+            harp_done();
+            return 0;
+        }
+        else if ((strcmp(argv[i], "-of") == 0 || strcmp(argv[i], "--output-format") == 0)
+                 && i + 1 < argc && argv[i + 1][0] != '-')
+        {
+            output_format = argv[i + 1];
+            i++;
+        }
+        else if ((strcmp(argv[i], "-a") == 0 || strcmp(argv[i], "--a-with-b") == 0)
+                 && i + 2 < argc && argv[i + 1][0] != '-' && argv[i + 2][0] != '-')
+        {
+            if (source_dataset_b)
+            {
+                printf(stderr, "ERROR: you cannot specify both --b-with-a/-b and %s", argv[i]);
+                return -1;
+            }
+            result_csv_file = argv[i + 1];
+            source_dataset_b = argv[i + 2];
+            i += 2;
+        }
+        else if ((strcmp(argv[i], "-b") == 0 || strcmp(argv[i], "--b-with-a") == 0)
+                 && i + 2 < argc && argv[i + 1][0] != '-' && argv[i + 2][0] != '-')
+        {
+            if (source_dataset_a)
+            {
+                printf(stderr, "ERROR: you cannot specify both --a-with-b/-a and %s", argv[i]);
+                return -1;
+            }
+            result_csv_file = argv[i + 1];
+            source_dataset_a = argv[i + 2];
+            i += 2;
+        }
+        else if (argv[i][0] != '-')
+        {
+            /* positional arguments follow */
+            break;
+        }
+        else
+        {
+            fprintf(stderr, "ERROR: invalid argument: '%s'\n", argv[i]);
+            print_help_resample();
+            return -1;
+        }
+    }
+
+    /* positional argument parsing */
+    if (i == argc - 1)
+    {
+        input_filename = argv[argc - 1];
+        output_filename = input_filename;
+    }
+    else if (i == argc - 2)
+    {
+        input_filename = argv[argc - 2];
+        output_filename = argv[argc - 1];
+    }
+    else
+    {
+        fprintf(stderr, "ERROR: input product file not specified\n");
+        print_help_resample();
+        return -1;
+    }
+
+    /* import the input product */
+    if (harp_import(input_filename, &product) != 0)
+    {
+        fprintf(stderr, "ERROR: could not import product from '%s'", input_filename);
+        return -1;
+    }
+
+    if (result_csv_file)
+    {
+        if(harp_collocation_result_read(result_csv_file, &collocation_result) != 0)
+        {
+            fprintf(stderr, harp_errno_to_string(harp_errno));
+        }
+    }
+
+    if (source_dataset_b)
+    {
+        /* smooth the source product (from dataset a) against the avks in dataset b */
+        if (harp_profile_smooth(product, collocation_result, source_dataset_b) != 0)
+        {
+            fprintf(stderr, "ERROR: %s", harp_errno_to_string(harp_errno));
+        }
+    }
+    if (source_dataset_a)
+    {
+        /* smooth the source product (from dataset b) against the avks in dataset a */
+        harp_collocation_result_swap_datasets(collocation_result);
+        if (harp_profile_smooth(product, collocation_result, source_dataset_a) != 0)
+        {
+            fprintf(stderr, "ERROR: %s", harp_errno_to_string(harp_errno));
+        }
+    }
 }
 
 int main(int argc, char *argv[])

@@ -24,6 +24,7 @@
 #include <assert.h>
 #include <math.h>
 #include <stdlib.h>
+#include <string.h>
 
 /** \addtogroup harp_algorithm
  * @{
@@ -1157,11 +1158,74 @@ int harp_profile_resample(harp_product *product, harp_variable *target_grid)
     return 0;
 }
 
-int harp_profile_smooth(harp_product *product, harp_collocation_result *collocation_result, const char *products_path)
+/** Iterates over the product metadata of all the products in column b of the collocation result and
+ * determines the maximum vertical dimension size.
+ */
+static int get_maximum_vertical_dimension(harp_collocation_result *collocation_result, long *max_vertical)
 {
     int i;
+    long max = 0;
 
-    /* Make sure the
+    for (i = 0; i < collocation_result->num_pairs; i++)
+    {
+        harp_collocation_pair *pair = collocation_result->pair[i];
+        long matching_product_index = pair->product_index_b;
+        harp_product_metadata *match_metadata = collocation_result->dataset_b->metadata[matching_product_index];
+
+        if (!match_metadata)
+        {
+            /* TODO error type */
+            harp_set_error(HARP_ERROR_INVALID_ARGUMENT, "Metadata unavailable for match pair product %s.",
+                           collocation_result->dataset_b->source_product[matching_product_index]);
+            return -1;
+        }
+
+        long match_vertical_dim_size = match_metadata->dimension[harp_dimension_vertical];
+
+        if (match_vertical_dim_size > max)
+        {
+            max = match_vertical_dim_size;
+        }
+    }
+
+    *max_vertical = max;
+
+    return 0;
+}
+
+/**
+ * Smooth the product (from dataset a in the collocation result) using the avks in dataset b.
+ *
+ * \return
+ *   \arg \c 0, Success.
+ *   \arg \c -1, Error occurred (check #harp_errno).
+ */
+int harp_profile_smooth(harp_product *product, harp_collocation_result *collocation_result, const char *dataset_b_dir)
+{
+    int i; +    harp_variable *collocation_indices = NULL;
+    long max_vertical_dim;
+
+    /* Get the source product's collocation index variable */
+    for (i = product->num_variables - 1; i >= 0; i--)
+    {
+        harp_variable *variable = product->variable[i];
+
+        if (variable->num_dimensions == 1 && variable->dimension_type[0] == harp_dimension_time &&
+                variable->name != NULL && strcmp(variable->name, "collocation_index") == 0)
+        {
+            collocation_indices = variable;
+        }
+    }
+
+    if (!collocation_indices)
+    {
+        harp_set_error(HARP_ERROR_INVALID_ARGUMENT,
+                       "Smoothing requires a source product with a collocation index variable (%s:%u)",
+                       __FILE__, __LINE__);
+        return -1;
+    }
+
+    /* Prepare the collocation result for efficient iteration over the pairs */
     harp_collocation_result_filter_for_source_product_a(collocation_result, product->source_product);
     harp_collocation_result_sort_by_a(collocation_result);
     harp_collocation_result_sort_by_collocation_index(collocation_result);*/
