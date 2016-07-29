@@ -621,7 +621,6 @@ static int resample(int argc, char *argv[])
 
     const char *result_csv_file = NULL;
     char *vertical_axis_name = NULL;
-    char *vertical_axis_unit = NULL;
     const char *source_dataset_a = NULL;
     const char *source_dataset_b = NULL;
 
@@ -644,7 +643,7 @@ static int resample(int argc, char *argv[])
             i++;
         }
         else if ((strcmp(argv[i], "-a") == 0 || strcmp(argv[i], "--a-to-b") == 0)
-                 && i + 3 < argc && argv[i + 1][0] != '-' && argv[i + 2][0] != '-')
+                 && i + 3 < argc && argv[i + 1][0] != '-' && argv[i + 2][0] != '-' && argv[i + 3][0] != '-')
         {
             if (source_dataset_a)
             {
@@ -653,18 +652,12 @@ static int resample(int argc, char *argv[])
             }
             result_csv_file = argv[i + 1];
             source_dataset_b = argv[i + 2];
+            vertical_axis_name = argv[i + 3];
 
-            /* parse the vertical axis name and unit */
-            if (grab_name_and_unit_from_string(argv[i + 3], &vertical_axis_name, &vertical_axis_unit) != 0)
-            {
-                fprintf(stderr, "ERROR: could not parse axis name and unit from string '%s'\n", argv[i + 3]);
-                print_help_resample();
-                return -1;
-            }
             i += 3;
         }
         else if ((strcmp(argv[i], "-b") == 0 || strcmp(argv[i], "--b-to-a") == 0)
-                 && i + 2 < argc && argv[i + 1][0] != '-' && argv[i + 2][0] != '-')
+                 && i + 3 < argc && argv[i + 1][0] != '-' && argv[i + 2][0] != '-' && argv[i + 3][0] != '-')
         {
             if (source_dataset_b)
             {
@@ -673,14 +666,8 @@ static int resample(int argc, char *argv[])
             }
             result_csv_file = argv[i + 1];
             source_dataset_a = argv[i + 2];
+            vertical_axis_name = argv[i + 3];
 
-            /* parse the vertical axis name and unit */
-            if (grab_name_and_unit_from_string(argv[i + 3], &vertical_axis_name, &vertical_axis_unit) != 0)
-            {
-                fprintf(stderr, "ERROR: could not parse axis name and unit from string '%s'\n", argv[i + 3]);
-                print_help_resample();
-                return -1;
-            }
             i += 3;
         }
         else if ((strcmp(argv[i], "-c") == 0 || strcmp(argv[i], "--common") == 0)
