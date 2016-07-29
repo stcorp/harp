@@ -1375,12 +1375,15 @@ int harp_profile_resample_and_smooth_a_to_b(harp_product *product, harp_collocat
     /* Save the source product */
     if (harp_product_copy(product, &source_product) != 0)
     {
+        harp_variable_delete(source_grid);
         return -1;
     }
 
     /* Resize the vertical dimension in the target product to make room for the resampled data */
     if (resize_vertical_dimension(product, max_vertical_dim))
     {
+        harp_variable_delete(source_grid);
+        harp_product_delete(source_product);
         return -1;
     }
 
@@ -1400,6 +1403,8 @@ int harp_profile_resample_and_smooth_a_to_b(harp_product *product, harp_collocat
         {
             harp_set_error(HARP_ERROR_INVALID_ARGUMENT, "Missing product metadata for product %s.",
                            collocation_result->dataset_b->source_product[pair->product_index_b]);
+            harp_variable_delete(source_grid);
+            harp_product_delete(source_product);
             return -1;
         }
 
@@ -1414,6 +1419,8 @@ int harp_profile_resample_and_smooth_a_to_b(harp_product *product, harp_collocat
             if (!match)
             {
                 harp_set_error(HARP_ERROR_IMPORT, "Could not import file %s.", match_metadata->filename);
+                harp_variable_delete(source_grid);
+                harp_product_delete(source_product);
                 return -1;
             }
         }
@@ -1421,6 +1428,9 @@ int harp_profile_resample_and_smooth_a_to_b(harp_product *product, harp_collocat
         /* Find the datetime indices into our source and target product */
         if (get_datetime_index_by_collocation_index(source_product, pair->collocation_index, &datetime_index_a))
         {
+            harp_variable_delete(source_grid);
+            harp_product_delete(source_product);
+            harp_product_delete(match);
             return -1;
         }
         if (get_datetime_index_by_collocation_index(match, pair->collocation_index, &datetime_index_b))
@@ -1431,6 +1441,9 @@ int harp_profile_resample_and_smooth_a_to_b(harp_product *product, harp_collocat
         /* Derive the target grid */
         if (harp_product_get_derived_variable(match, "altitude", "m", 2, grid_dim_type, &target_grid) != 0)
         {
+            harp_variable_delete(source_grid);
+            harp_product_delete(source_product);
+            harp_product_delete(match);
             return -1;
         }
 
@@ -1450,6 +1463,10 @@ int harp_profile_resample_and_smooth_a_to_b(harp_product *product, harp_collocat
             {
                 if (harp_product_remove_variable(product, target_var))
                 {
+                    harp_variable_delete(source_grid);
+                    harp_variable_delete(target_grid);
+                    harp_product_delete(source_product);
+                    harp_product_delete(match);
                     return -1;
                 }
                 continue;
@@ -1470,6 +1487,10 @@ int harp_profile_resample_and_smooth_a_to_b(harp_product *product, harp_collocat
             if (source_var->data_type != harp_type_double &&
                 harp_variable_convert_data_type(source_var, harp_type_double) != 0)
             {
+                harp_variable_delete(source_grid);
+                harp_variable_delete(target_grid);
+                harp_product_delete(source_product);
+                harp_product_delete(match);
                 return -1;
             }
 
@@ -1495,7 +1516,15 @@ int harp_profile_resample_and_smooth_a_to_b(harp_product *product, harp_collocat
 
             }
         }
+
+        /* cleanup */
+        harp_variable_delete(target_grid);
     }
+
+    /* cleanup */
+    harp_variable_delete(source_grid);
+    harp_product_delete(source_product);
+    harp_product_delete(match);
 
     return 0;
 }

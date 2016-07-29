@@ -644,6 +644,8 @@ static int resample_common_grid(harp_product *product, const char *grid_input_fi
 static int resample(int argc, char *argv[])
 {
     harp_product *product;
+    harp_collocation_result *collocation_result = NULL;
+
     const char *output_filename = NULL;
     const char *output_format = "netcdf";
     const char *input_filename = NULL;
@@ -652,7 +654,6 @@ static int resample(int argc, char *argv[])
     const char *grid_input_filename = NULL;
 
     const char *result_csv_file = NULL;
-    harp_collocation_result *collocation_result = NULL;
     const char *source_dataset_a = NULL;
     const char *source_dataset_b = NULL;
 
@@ -789,12 +790,17 @@ static int resample(int argc, char *argv[])
         }
     }
 
+    if (collocation_result)
+    {
+        harp_collocation_result_delete(collocation_result);
+    }
+    harp_product_delete(product);
+
     return 0;
 }
 
 static int smooth(int argc, char *argv[])
 {
-    harp_product *product;
     const char *output_filename = NULL;
     const char *output_format = "netcdf";
     const char *input_filename = NULL;
@@ -802,6 +808,8 @@ static int smooth(int argc, char *argv[])
     const char *result_csv_file = NULL;
     const char *source_dataset_a = NULL;
     const char *source_dataset_b = NULL;
+
+    harp_product *product;
     harp_collocation_result *collocation_result = NULL;
 
     int export = 0;
@@ -913,6 +921,7 @@ static int smooth(int argc, char *argv[])
         export = 1;
     }
 
+
     if (export)
     {
         if (harp_export(output_filename, output_format, product) != 0)
@@ -921,6 +930,12 @@ static int smooth(int argc, char *argv[])
             return -1;
         }
     }
+
+    if (collocation_result)
+    {
+        harp_collocation_result_delete(collocation_result);
+    }
+    harp_product_delete(product);
 
     return 0;
 }
