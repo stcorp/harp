@@ -1193,7 +1193,7 @@ static int get_maximum_vertical_dimension(harp_collocation_result *collocation_r
     return 0;
 }
 
-int expand_1d_vertical_variables(harp_product *product)
+int expand_time_independent_vertical_variables(harp_product *product)
 {
     int i;
     harp_variable *datetime = NULL;
@@ -1207,7 +1207,9 @@ int expand_1d_vertical_variables(harp_product *product)
     {
         harp_variable *var = product->variable[i];
 
-        if (var->num_dimensions == 1 && var->dimension_type[harp_dimension_vertical])
+        /* expand if variable has a vertical dimension and does not depend on time */
+        if (var->num_dimensions > 0 && var->dimension_type[0] != harp_dimension_time
+            && var->dimension_type[var->num_dimensions - 1] == harp_dimension_vertical)
         {
             harp_variable_add_dimension(var, 0, harp_dimension_time, datetime->dimension[0]);
         }
@@ -1323,15 +1325,13 @@ int get_datetime_index_by_collocation_index(harp_product *product, long collocat
 /**
  * Smooth the product (from dataset a in the collocation result) using the avks in dataset b.
  *
- * TODO cleanup on error!!
- * TODO pass vertical variable name + unit to use for resampling.
- *
  * \return
  *   \arg \c 0, Success.
  *   \arg \c -1, Error occurred (check #harp_errno).
  */
 int harp_profile_resample_and_smooth_a_to_b(harp_product *product, harp_collocation_result *collocation_result,
-                                            const char *dataset_b_dir, int smooth)
+                                            const char *dataset_b_dir, const char *vertical_axis,
+                                            const char *vertical_unit, int smooth)
 {
     int i;
     harp_variable *source_collocation_index = NULL;
@@ -1360,14 +1360,14 @@ int harp_profile_resample_and_smooth_a_to_b(harp_product *product, harp_collocat
         return -1;
     }
 
-    /* Expand 1d vertical axis */
-    if (expand_1d_vertical_variables(product) != 0)
+    /* Expand time independent vertical profiles */
+    if (expand_time_independent_vertical_variables(product) != 0)
     {
         return -1;
     }
 
     /* Derive the source grid */
-    if (harp_product_get_derived_variable(product, "altitude", "m", 2, grid_dim_type, &source_grid) != 0)
+    if (harp_product_get_derived_variable(product, vertical_axis, vertical_unit, 2, grid_dim_type, &source_grid) != 0)
     {
         return -1;
     }
@@ -1439,7 +1439,7 @@ int harp_profile_resample_and_smooth_a_to_b(harp_product *product, harp_collocat
         }
 
         /* Derive the target grid */
-        if (harp_product_get_derived_variable(match, "altitude", "m", 2, grid_dim_type, &target_grid) != 0)
+        if (harp_product_get_derived_variable(match, vertical_axis, vertical_unit, 2, grid_dim_type, &target_grid) != 0)
         {
             harp_variable_delete(source_grid);
             harp_product_delete(source_product);

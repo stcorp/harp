@@ -511,18 +511,18 @@ void print_help_resample(void)
     printf("                      hdf5\n");
     printf("\n");
     printf("            One of the following:\n");
-    printf("            -a, --a-to-b <result_csv_file> <source_datasetdir_b> :\n");
+    printf("            -a, --a-to-b <result_csv_file> <source_datasetdir_b> <vertical_axis [unit]>:\n");
     printf("                    resample the vertical profiles of the input file (part of\n");
     printf("                    dataset A) to the vertical grid of the vertical profiles\n");
     printf("                    in dataset B\n");
-    printf("            -b, --b-to-a <result_csv_file> <source_datasetdir_a> :\n");
+    printf("            -b, --b-to-a <result_csv_file> <source_datasetdir_a> <vertical_axis [unit]>:\n");
     printf("                    resample the vertical profiles of the input file (part of\n");
-    printf("                    dataset B) to the vertical grid of the vertical profiles\n");
+    printf("                    dataset B) to the <vertical_axis> grid of the vertical profiles\n");
     printf("                    in dataset A\n");
     printf("            -c, --common <input>\n");
     printf("                    resample vertical profiles (in datasets A and B)\n");
     printf("                    to a common grid before calculating the columns.\n");
-    printf("                    The common vertical grid is defined in file C.\n");
+    printf("                    The common <vertical_axis> grid is defined in file C.\n");
     printf("                    <input> denotes the filename\n");
     printf("\n");
     printf("        In case -ha/-hb is set, a generated averaging kernel matrix variable\n");
@@ -563,13 +563,13 @@ void print_help_smooth(void)
     printf("                      hdf5\n");
     printf("\n");
     printf("            One of the following:\n");
-    printf("            -sa, --smooth-a-with-akm-b <result_csv_file> <source_datasetdir_b> :\n");
-    printf("                    smooth the vertical profiles of the input file (part of\n");
-    printf("                    dataset A) with the averaging kernel matrices and a priori\n");
+    printf("            -sa, --smooth-a-with-akm-b <result_csv_file> <source_datasetdir_b> <vertical_axis [unit]>:\n");
+    printf("                    resample and smooth the vertical profiles of the input file (part of\n");
+    printf("                    dataset A) with the <vertical_axis>, averaging kernel matrices and a priori\n");
     printf("                    in dataset B\n");
-    printf("            -sb, --smooth-b-with-akm-a <result_csv_file> <source_datasetdir_a> :\n");
-    printf("                    smooth the vertical profiles of the input file (part of\n");
-    printf("                    dataset B) with the averaging kernel matrices and a priori\n");
+    printf("            -sb, --smooth-b-with-akm-a <result_csv_file> <source_datasetdir_a> <vertical_axis [unit]>:\n");
+    printf("                    resample and smooth the vertical profiles of the input file (part of\n");
+    printf("                    dataset B) with the <vertical_axis>, averaging kernel matrices and a priori\n");
     printf("                    in dataset A\n");
     printf("\n");
     printf("            -sga, --smooth-a-with-generated-akm-b <result_csv_file>\n");
@@ -654,9 +654,10 @@ static int resample(int argc, char *argv[])
     const char *grid_input_filename = NULL;
 
     const char *result_csv_file = NULL;
+    char *vertical_axis_name = NULL;
+    char *vertical_axis_unit = NULL;
     const char *source_dataset_a = NULL;
     const char *source_dataset_b = NULL;
-
 
     int export = 0;
     int i;
@@ -686,7 +687,15 @@ static int resample(int argc, char *argv[])
             }
             result_csv_file = argv[i + 1];
             source_dataset_b = argv[i + 2];
-            i += 2;
+
+            /* parse the vertical axis name and unit */
+            if (grab_name_and_unit_from_string(argv[i + 3], &vertical_axis_name, &vertical_axis_unit) != 0)
+            {
+                fprintf(stderr, "ERROR: could not parse axis name and unit from string '%s'\n", argv[i + 3]);
+                print_help_resample();
+                return -1;
+            }
+            i += 3;
         }
         else if ((strcmp(argv[i], "-b") == 0 || strcmp(argv[i], "--b-to-a") == 0)
                  && i + 2 < argc && argv[i + 1][0] != '-' && argv[i + 2][0] != '-')
@@ -698,7 +707,15 @@ static int resample(int argc, char *argv[])
             }
             result_csv_file = argv[i + 1];
             source_dataset_a = argv[i + 2];
-            i += 2;
+
+            /* parse the vertical axis name and unit */
+            if (grab_name_and_unit_from_string(argv[i + 3], &vertical_axis_name, &vertical_axis_unit) != 0)
+            {
+                fprintf(stderr, "ERROR: could not parse axis name and unit from string '%s'\n", argv[i + 3]);
+                print_help_resample();
+                return -1;
+            }
+            i += 3;
         }
         else if ((strcmp(argv[i], "-c") == 0 || strcmp(argv[i], "--common") == 0)
                  && i + 1 < argc && argv[i + 1][0] != '-')
@@ -765,7 +782,8 @@ static int resample(int argc, char *argv[])
 
     if (source_dataset_b)
     {
-        if (harp_profile_resample_and_smooth_a_to_b(product, collocation_result, source_dataset_b, 1) != 0)
+        if (harp_profile_resample_and_smooth_a_to_b(product, collocation_result, source_dataset_b, vertical_axis_name,
+                                                    vertical_axis_unit, 1) != 0)
         {
             fprintf(stderr, harp_errno_to_string(harp_errno));
         }
@@ -774,7 +792,8 @@ static int resample(int argc, char *argv[])
     if (source_dataset_a)
     {
         harp_collocation_result_swap_datasets(collocation_result);
-        if (harp_profile_resample_and_smooth_a_to_b(product, collocation_result, source_dataset_a, 1) != 0)
+        if (harp_profile_resample_and_smooth_a_to_b(product, collocation_result, source_dataset_a, vertical_axis_name,
+                                                    vertical_axis_unit, 1) != 0)
         {
             fprintf(stderr, harp_errno_to_string(harp_errno));
         }
@@ -806,6 +825,8 @@ static int smooth(int argc, char *argv[])
     const char *input_filename = NULL;
 
     const char *result_csv_file = NULL;
+    char *vertical_axis_name = NULL;
+    char *vertical_axis_unit = NULL;
     const char *source_dataset_a = NULL;
     const char *source_dataset_b = NULL;
 
@@ -832,7 +853,7 @@ static int smooth(int argc, char *argv[])
             i++;
         }
         else if ((strcmp(argv[i], "-a") == 0 || strcmp(argv[i], "--a-with-b") == 0)
-                 && i + 2 < argc && argv[i + 1][0] != '-' && argv[i + 2][0] != '-')
+                 && i + 3 < argc && argv[i + 1][0] != '-' && argv[i + 2][0] != '-' && argv[i + 3][0] != '-')
         {
             if (source_dataset_a)
             {
@@ -841,10 +862,19 @@ static int smooth(int argc, char *argv[])
             }
             result_csv_file = argv[i + 1];
             source_dataset_b = argv[i + 2];
-            i += 2;
+
+            /* parse the vertical axis name and unit */
+            if (grab_name_and_unit_from_string(argv[i + 3], &vertical_axis_name, &vertical_axis_unit) != 0)
+            {
+                fprintf(stderr, "ERROR: could not parse axis name and unit from string '%s'\n", argv[i + 3]);
+                print_help_resample();
+                return -1;
+            }
+
+            i += 3;
         }
         else if ((strcmp(argv[i], "-b") == 0 || strcmp(argv[i], "--b-with-a") == 0)
-                 && i + 2 < argc && argv[i + 1][0] != '-' && argv[i + 2][0] != '-')
+                 && i + 3 < argc && argv[i + 1][0] != '-' && argv[i + 2][0] != '-' && argv[i + 3][0] != '-')
         {
             if (source_dataset_b)
             {
@@ -853,7 +883,16 @@ static int smooth(int argc, char *argv[])
             }
             result_csv_file = argv[i + 1];
             source_dataset_a = argv[i + 2];
-            i += 2;
+
+            /* parse the vertical axis name and unit */
+            if (grab_name_and_unit_from_string(argv[i + 3], &vertical_axis_name, &vertical_axis_unit) != 0)
+            {
+                fprintf(stderr, "ERROR: could not parse axis name and unit from string '%s'\n", argv[i + 3]);
+                print_help_resample();
+                return -1;
+            }
+
+            i += 3;
         }
         else if (argv[i][0] != '-')
         {
@@ -903,8 +942,10 @@ static int smooth(int argc, char *argv[])
 
     if (source_dataset_b)
     {
+
         /* smooth the source product (from dataset a) against the avks in dataset b */
-        if (harp_profile_resample_and_smooth_a_to_b(product, collocation_result, source_dataset_b, 1) != 0)
+        if (harp_profile_resample_and_smooth_a_to_b(product, collocation_result, source_dataset_b, vertical_axis_name,
+                                                    vertical_axis_unit, 1) != 0)
         {
             fprintf(stderr, "ERROR: %s", harp_errno_to_string(harp_errno));
         }
@@ -914,7 +955,8 @@ static int smooth(int argc, char *argv[])
     {
         /* smooth the source product (from dataset b) against the avks in dataset a */
         harp_collocation_result_swap_datasets(collocation_result);
-        if (harp_profile_resample_and_smooth_a_to_b(product, collocation_result, source_dataset_a, 1) != 0)
+        if (harp_profile_resample_and_smooth_a_to_b(product, collocation_result, source_dataset_a, vertical_axis_name,
+                                                    vertical_axis_unit, 1) != 0)
         {
             fprintf(stderr, "ERROR: %s", harp_errno_to_string(harp_errno));
         }
