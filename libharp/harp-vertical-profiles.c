@@ -1026,7 +1026,7 @@ int harp_profile_resample(harp_product *product, harp_variable *target_grid)
 
     /* Retrieve basic info about the source grid */
     harp_product_get_variable_by_name(product, target_grid->name, &source_grid);
-    if(source_grid->num_dimensions > 1)
+    if (source_grid->num_dimensions > 1)
     {
         source_time_dim_length = source_grid->dimension[0];
     }
@@ -1193,54 +1193,308 @@ static int get_maximum_vertical_dimension(harp_collocation_result *collocation_r
     return 0;
 }
 
+int expand_1d_vertical_variables(harp_product *product)
+{
+    int i;
+    harp_variable *datetime = NULL;
+
+    if (harp_product_get_variable_by_name(product, "datetime", &datetime) != 0)
+    {
+        return -1;
+    }
+
+    for (i = 0; i < product->num_variables; i++)
+    {
+        harp_variable *var = product->variable[i];
+
+        if (var->num_dimensions == 1 && var->dimension_type[harp_dimension_vertical])
+        {
+            harp_variable_add_dimension(var, 0, harp_dimension_time, datetime->dimension[0]);
+        }
+    }
+
+    return 0;
+}
+
+static int resize_vertical_dimension(harp_product *product, long max_vertical_dim)
+{
+    int i;
+
+    for (i = 0; i < product->num_variables; i++)
+    {
+        harp_variable *var = product->variable[i];
+        int j;
+
+        for (j = 0; j < var->num_dimensions; j++)
+        {
+            if (var->dimension_type[j] == harp_dimension_vertical)
+            {
+                if (harp_variable_resize_dimension(var, j, max_vertical_dim) != 0)
+                {
+                    return -1;
+                }
+            }
+        }
+    }
+
+    product->dimension[harp_dimension_vertical] = max_vertical_dim;
+
+    return 0;
+}
+
+vertical_profile_variable_type get_vertical_profile_variable_type(harp_variable *variable)
+{
+    int i;
+
+    /* assume it doesn't have a vertical dimension */
+    vertical_profile_variable_type variable_type = vertical_profile_variable_skip;
+
+    /* Ensure that there is only 1 vertical dimension, that it's the fastest running one and has scalar values */
+    for (i = 0; i < variable->num_dimensions; i++)
+    {
+
+        if (variable->dimension_type[i] == harp_dimension_vertical)
+        {
+            /* it has a vertical dimension, we need to resample */
+            variable_type = vertical_profile_variable_resample;
+
+            if (i != variable->num_dimensions - 1)
+            {
+                /* variable has vertical dimension but cannot be resampled */
+                return vertical_profile_variable_remove;
+            }
+        }
+    }
+
+    if (variable->data_type == harp_type_string)
+    {
+        return vertical_profile_variable_remove;
+    }
+
+    if (strstr(variable->name, "_uncertainty"))
+    {
+        return vertical_profile_variable_remove;
+    }
+
+    if (strstr(variable->name, "_column_"))
+    {
+        return vertical_profile_variable_remove;
+    }
+
+    if (strstr(variable->name, "_column_"))
+    {
+        return vertical_profile_variable_remove;
+    }
+
+    if (strstr(variable->name, "_bounds"))
+    {
+        return vertical_profile_variable_remove;
+    }
+
+    return variable_type;
+}
+
+int get_datetime_index_by_collocation_index(harp_product *product, long collocation_index, long *index)
+{
+    int k;
+    harp_variable *product_collocation_index;
+
+    /* Get the collocation variable from the product product */
+    if (harp_product_get_variable_by_name(product, "collocation_index", &product_collocation_index) != 0)
+    {
+        return -1;
+    }
+
+    /* Get the datetime index into product b using the collocation index */
+    for (k = 0; k < product->dimension[harp_dimension_time]; k++)
+    {
+        if (product_collocation_index->data.int32_data[k] == collocation_index)
+        {
+            *index = k;
+            return 0;
+        }
+    }
+
+    harp_set_error(HARP_ERROR_INVALID_ARGUMENT,
+                   "Couldn't locate collocation_index %li in product %s", collocation_index, product->source_product);
+    return -1;
+}
+
 /**
  * Smooth the product (from dataset a in the collocation result) using the avks in dataset b.
+ *
+ * TODO cleanup on error!!
+ * TODO pass vertical variable name + unit to use for resampling.
  *
  * \return
  *   \arg \c 0, Success.
  *   \arg \c -1, Error occurred (check #harp_errno).
  */
-int harp_profile_smooth(harp_product *product, harp_collocation_result *collocation_result, const char *dataset_b_dir)
+int harp_profile_resample_and_smooth_a_to_b(harp_product *product, harp_collocation_result *collocation_result,
+                                            const char *dataset_b_dir, int smooth)
 {
-    int i; +    harp_variable *collocation_indices = NULL;
+    int i;
+    harp_variable *source_collocation_index = NULL;
+    harp_product *source_product = NULL;
+    harp_dimension_type grid_dim_type[2] = { harp_dimension_time, harp_dimension_vertical };
+    harp_variable *source_grid = NULL;
+    harp_product *match = NULL;
     long max_vertical_dim;
 
     /* Get the source product's collocation index variable */
-    for (i = product->num_variables - 1; i >= 0; i--)
+    if (harp_product_get_variable_by_name(product, "collocation_index", &source_collocation_index) != 0)
     {
-        harp_variable *variable = product->variable[i];
-
-        if (variable->num_dimensions == 1 && variable->dimension_type[0] == harp_dimension_time &&
-                variable->name != NULL && strcmp(variable->name, "collocation_index") == 0)
-        {
-            collocation_indices = variable;
-        }
-    }
-
-    if (!collocation_indices)
-    {
-        harp_set_error(HARP_ERROR_INVALID_ARGUMENT,
-                       "Smoothing requires a source product with a collocation index variable (%s:%u)",
-                       __FILE__, __LINE__);
         return -1;
     }
 
     /* Prepare the collocation result for efficient iteration over the pairs */
     harp_collocation_result_filter_for_source_product_a(collocation_result, product->source_product);
-    harp_collocation_result_sort_by_a(collocation_result);
-    harp_collocation_result_sort_by_collocation_index(collocation_result);*/
+    harp_collocation_result_sort_by_collocation_index(collocation_result);
 
-    for (i = product->num_variables - 1; i >= 0; i--)
+    /* Import the dataset's metadata */
+    harp_dataset_import(collocation_result->dataset_b, dataset_b_dir);
+
+    /* Determine the maximum vertical dimensions size */
+    if (get_maximum_vertical_dimension(collocation_result, &max_vertical_dim) != 0)
     {
-        harp_variable *variable = product->variable[i];
-        long time_id;
+        return -1;
+    }
 
-        /* TODO Ensure that this variable has a time dimension */
-        /* Iterate over the time dimension */
-        for (time_id = 0; time_id < variable->dimension[0]; time_id++)
+    /* Expand 1d vertical axis */
+    if (expand_1d_vertical_variables(product) != 0)
+    {
+        return -1;
+    }
+
+    /* Derive the source grid */
+    if (harp_product_get_derived_variable(product, "altitude", "m", 2, grid_dim_type, &source_grid) != 0)
+    {
+        return -1;
+    }
+
+    /* Save the source product */
+    if (harp_product_copy(product, &source_product) != 0)
+    {
+        return -1;
+    }
+
+    /* Resize the vertical dimension in the target product to make room for the resampled data */
+    if (resize_vertical_dimension(product, max_vertical_dim))
+    {
+        return -1;
+    }
+
+    for (i = 0; i < collocation_result->num_pairs; i++)
+    {
+        harp_collocation_pair *pair;
+        harp_product_metadata *match_metadata;
+        harp_variable *target_grid = NULL;
+        long datetime_index_a, datetime_index_b = -1;
+        int j;
+
+        pair = collocation_result->pair[i];
+
+        /* Get metadata of the matching product */
+        match_metadata = collocation_result->dataset_b->metadata[pair->product_index_b];
+        if (match_metadata == NULL)
         {
+            harp_set_error(HARP_ERROR_INVALID_ARGUMENT, "Missing product metadata for product %s.",
+                           collocation_result->dataset_b->source_product[pair->product_index_b]);
+            return -1;
         }
 
+        /* load the matching product if necessary */
+        if (match == NULL || strcmp(match->source_product, match_metadata->source_product) != 0)
+        {
+            /* cleanup previous match product */
+            harp_product_delete(match);
+
+            /* import new product */
+            harp_import(match_metadata->filename, &match);
+            if (!match)
+            {
+                harp_set_error(HARP_ERROR_IMPORT, "Could not import file %s.", match_metadata->filename);
+                return -1;
+            }
+        }
+
+        /* Find the datetime indices into our source and target product */
+        if (get_datetime_index_by_collocation_index(source_product, pair->collocation_index, &datetime_index_a))
+        {
+            return -1;
+        }
+        if (get_datetime_index_by_collocation_index(match, pair->collocation_index, &datetime_index_b))
+        {
+            return -1;
+        }
+
+        /* Derive the target grid */
+        if (harp_product_get_derived_variable(match, "altitude", "m", 2, grid_dim_type, &target_grid) != 0)
+        {
+            return -1;
+        }
+
+        /* Resample & smooth variables */
+        for (j = product->num_variables - 1; j >= 0; j--)
+        {
+            harp_variable *target_var = product->variable[j];
+            harp_variable *source_var = source_product->variable[j];
+            long num_source_vertical_elements = source_grid->dimension[1];
+            long num_target_vertical_elements = target_grid->dimension[1];
+            long block, blocks;
+
+            /* Skip variables that do not have a vertical dimension type */
+            int var_type = get_vertical_profile_variable_type(target_var);
+
+            if (var_type == vertical_profile_variable_remove)
+            {
+                if (harp_product_remove_variable(product, target_var))
+                {
+                    return -1;
+                }
+                continue;
+            }
+            else if (var_type == vertical_profile_variable_skip)
+            {
+                continue;
+            }
+
+            /* Ensure that the variable has a time dimension */
+            if (source_var->dimension_type[0] != harp_dimension_time)
+            {
+                harp_variable_add_dimension(source_var, 0, harp_dimension_time,
+                                            source_product->dimension[harp_dimension_time]);
+            }
+
+            /* Ensure that the variable data to resample consists of doubles */
+            if (source_var->data_type != harp_type_double &&
+                harp_variable_convert_data_type(source_var, harp_type_double) != 0)
+            {
+                return -1;
+            }
+
+            /* Interpolate variable data */
+            blocks = source_var->num_elements / source_var->dimension[0] / num_source_vertical_elements;
+            for (block = 0; block < blocks; block++)
+            {
+                harp_interpolate_array_linear(num_source_vertical_elements,
+                                              source_grid->data.double_data + (i * num_source_vertical_elements),
+                                              source_var->data.double_data +
+                                              (i * blocks * num_source_vertical_elements) +
+                                              (block * num_source_vertical_elements), num_target_vertical_elements,
+                                              target_grid->data.double_data +
+                                              (datetime_index_b * num_target_vertical_elements), 0,
+                                              target_var->data.double_data +
+                                              (i * blocks * num_target_vertical_elements) +
+                                              (block * num_target_vertical_elements));
+            }
+
+            /* Smooth variable */
+            if (smooth)
+            {
+
+            }
+        }
     }
 
     return 0;

@@ -42,6 +42,7 @@ static void collocation_pair_swap_datasets(harp_collocation_pair *pair)
 {
     long index_a = pair->product_index_a;
     long sample_a = pair->sample_index_a;
+
     pair->product_index_a = pair->product_index_b;
     pair->sample_index_a = pair->sample_index_b;
     pair->product_index_b = index_a;
@@ -1086,6 +1087,7 @@ LIBHARP_API void harp_collocation_result_swap_datasets(harp_collocation_result *
     }
 
     harp_dataset *data_a = collocation_result->dataset_a;
+
     collocation_result->dataset_a = collocation_result->dataset_b;
     collocation_result->dataset_b = data_a;
 }

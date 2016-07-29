@@ -651,9 +651,16 @@ static int resample(int argc, char *argv[])
     /* valued option */
     const char *grid_input_filename = NULL;
 
-    /* parse arguments after the 'action' argument */
+    const char *result_csv_file = NULL;
+    harp_collocation_result *collocation_result = NULL;
+    const char *source_dataset_a = NULL;
+    const char *source_dataset_b = NULL;
+
+
+    int export = 0;
     int i;
 
+    /* parse arguments after the 'action' argument */
     for (i = 2; i < argc; i++)
     {
         if ((strcmp(argv[i], "-h") == 0 || (strcmp(argv[i], "--help") == 0)))
@@ -667,6 +674,30 @@ static int resample(int argc, char *argv[])
         {
             output_format = argv[i + 1];
             i++;
+        }
+        else if ((strcmp(argv[i], "-a") == 0 || strcmp(argv[i], "--a-to-b") == 0)
+                 && i + 2 < argc && argv[i + 1][0] != '-' && argv[i + 2][0] != '-')
+        {
+            if (source_dataset_a)
+            {
+                fprintf(stderr, "ERROR: you cannot specify both --b-with-a/-b and %s", argv[i]);
+                return -1;
+            }
+            result_csv_file = argv[i + 1];
+            source_dataset_b = argv[i + 2];
+            i += 2;
+        }
+        else if ((strcmp(argv[i], "-b") == 0 || strcmp(argv[i], "--b-to-a") == 0)
+                 && i + 2 < argc && argv[i + 1][0] != '-' && argv[i + 2][0] != '-')
+        {
+            if (source_dataset_b)
+            {
+                fprintf(stderr, "ERROR: you cannot specify both --b-with-a/-b and %s", argv[i]);
+                return -1;
+            }
+            result_csv_file = argv[i + 1];
+            source_dataset_a = argv[i + 2];
+            i += 2;
         }
         else if ((strcmp(argv[i], "-c") == 0 || strcmp(argv[i], "--common") == 0)
                  && i + 1 < argc && argv[i + 1][0] != '-')
@@ -720,13 +751,45 @@ static int resample(int argc, char *argv[])
             fprintf(stderr, "ERROR: failed resampling to common grid: %s\n", harp_errno_to_string(harp_errno));
             return -1;
         }
+        export = 1;
+    }
 
+    if (result_csv_file)
+    {
+        if (harp_collocation_result_read(result_csv_file, &collocation_result) != 0)
+        {
+            fprintf(stderr, harp_errno_to_string(harp_errno));
+        }
+    }
+
+    if (source_dataset_b)
+    {
+        if (harp_profile_resample_and_smooth_a_to_b(product, collocation_result, source_dataset_b, 1) != 0)
+        {
+            fprintf(stderr, harp_errno_to_string(harp_errno));
+        }
+        export = 1;
+    }
+    if (source_dataset_a)
+    {
+        harp_collocation_result_swap_datasets(collocation_result);
+        if (harp_profile_resample_and_smooth_a_to_b(product, collocation_result, source_dataset_a, 1) != 0)
+        {
+            fprintf(stderr, harp_errno_to_string(harp_errno));
+        }
+        export = 1;
+    }
+
+    if (export)
+    {
         if (harp_export(output_filename, output_format, product) != 0)
         {
             fprintf(stderr, "ERROR: failed to export resampled product: %s\n", harp_errno_to_string(harp_errno));
             return -1;
         }
     }
+
+    return 0;
 }
 
 static int smooth(int argc, char *argv[])
@@ -740,6 +803,8 @@ static int smooth(int argc, char *argv[])
     const char *source_dataset_a = NULL;
     const char *source_dataset_b = NULL;
     harp_collocation_result *collocation_result = NULL;
+
+    int export = 0;
 
     /* parse arguments after the 'action' argument */
     int i;
@@ -761,9 +826,9 @@ static int smooth(int argc, char *argv[])
         else if ((strcmp(argv[i], "-a") == 0 || strcmp(argv[i], "--a-with-b") == 0)
                  && i + 2 < argc && argv[i + 1][0] != '-' && argv[i + 2][0] != '-')
         {
-            if (source_dataset_b)
+            if (source_dataset_a)
             {
-                printf(stderr, "ERROR: you cannot specify both --b-with-a/-b and %s", argv[i]);
+                fprintf(stderr, "ERROR: you cannot specify both --b-with-a/-b and %s", argv[i]);
                 return -1;
             }
             result_csv_file = argv[i + 1];
@@ -773,9 +838,9 @@ static int smooth(int argc, char *argv[])
         else if ((strcmp(argv[i], "-b") == 0 || strcmp(argv[i], "--b-with-a") == 0)
                  && i + 2 < argc && argv[i + 1][0] != '-' && argv[i + 2][0] != '-')
         {
-            if (source_dataset_a)
+            if (source_dataset_b)
             {
-                printf(stderr, "ERROR: you cannot specify both --a-with-b/-a and %s", argv[i]);
+                fprintf(stderr, "ERROR: you cannot specify both --a-with-b/-a and %s", argv[i]);
                 return -1;
             }
             result_csv_file = argv[i + 1];
@@ -822,7 +887,7 @@ static int smooth(int argc, char *argv[])
 
     if (result_csv_file)
     {
-        if(harp_collocation_result_read(result_csv_file, &collocation_result) != 0)
+        if (harp_collocation_result_read(result_csv_file, &collocation_result) != 0)
         {
             fprintf(stderr, harp_errno_to_string(harp_errno));
         }
@@ -831,20 +896,33 @@ static int smooth(int argc, char *argv[])
     if (source_dataset_b)
     {
         /* smooth the source product (from dataset a) against the avks in dataset b */
-        if (harp_profile_smooth(product, collocation_result, source_dataset_b) != 0)
+        if (harp_profile_resample_and_smooth_a_to_b(product, collocation_result, source_dataset_b, 1) != 0)
         {
             fprintf(stderr, "ERROR: %s", harp_errno_to_string(harp_errno));
         }
+        export = 1;
     }
     if (source_dataset_a)
     {
         /* smooth the source product (from dataset b) against the avks in dataset a */
         harp_collocation_result_swap_datasets(collocation_result);
-        if (harp_profile_smooth(product, collocation_result, source_dataset_a) != 0)
+        if (harp_profile_resample_and_smooth_a_to_b(product, collocation_result, source_dataset_a, 1) != 0)
         {
             fprintf(stderr, "ERROR: %s", harp_errno_to_string(harp_errno));
         }
+        export = 1;
     }
+
+    if (export)
+    {
+        if (harp_export(output_filename, output_format, product) != 0)
+        {
+            fprintf(stderr, "ERROR: failed to export resampled product: %s\n", harp_errno_to_string(harp_errno));
+            return -1;
+        }
+    }
+
+    return 0;
 }
 
 int main(int argc, char *argv[])
@@ -874,7 +952,7 @@ int main(int argc, char *argv[])
         return 1;
     }
 
-    int result;
+    int result = 0;
 
     /* parse actions */
     if (strcmp(argv[1], "smooth") == 0)
@@ -902,5 +980,6 @@ int main(int argc, char *argv[])
     }
 
     harp_done();
+
     return 0;
 }
