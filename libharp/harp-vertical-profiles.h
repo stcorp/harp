@@ -93,9 +93,5 @@ double harp_profile_column_from_partial_column(long num_levels, const double *pa
 double harp_profile_column_uncertainty_from_partial_column_uncertainty
     (long num_levels, const double *partial_column_uncertainty_profile);
 
-int harp_profile_resample(harp_product *product, harp_variable *target_grid);
-int harp_profile_resample_and_smooth_a_to_b(harp_product *product, harp_collocation_result *collocation_result,
-                                            const char *dataset_b_dir, const char *vertical_axis,
-                                            const char *vertical_unit, int smooth);
 
 #endif

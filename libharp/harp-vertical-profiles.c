@@ -985,22 +985,485 @@ int harp_profile_vmr_cov_from_nd_cov_pressure_and_temperature(long num_levels,
     return 0;
 }
 
+static vertical_profile_variable_type get_vertical_profile_variable_type(harp_variable *variable)
+{
+    int i;
+
+    /* assume it doesn't have a vertical dimension */
+    vertical_profile_variable_type variable_type = vertical_profile_variable_skip;
+
+    /* Ensure that there is only 1 vertical dimension, that it's the fastest running one and has scalar values */
+    for (i = 0; i < variable->num_dimensions; i++)
+    {
+
+        if (variable->dimension_type[i] == harp_dimension_vertical)
+        {
+            /* it has a vertical dimension, we need to resample */
+            variable_type = vertical_profile_variable_resample;
+
+            if (i != variable->num_dimensions - 1)
+            {
+                /* variable has vertical dimension but cannot be resampled */
+                return vertical_profile_variable_remove;
+            }
+        }
+    }
+
+    if (variable->data_type == harp_type_string)
+    {
+        return vertical_profile_variable_remove;
+    }
+
+    if (strstr(variable->name, "_uncertainty"))
+    {
+        return vertical_profile_variable_remove;
+    }
+
+    if (strstr(variable->name, "_column_"))
+    {
+        return vertical_profile_variable_remove;
+    }
+
+    if (strstr(variable->name, "_column_"))
+    {
+        return vertical_profile_variable_remove;
+    }
+
+    if (strstr(variable->name, "_bounds"))
+    {
+        return vertical_profile_variable_remove;
+    }
+
+    return variable_type;
+}
+
+/** Iterates over the product metadata of all the products in column b of the collocation result and
+ * determines the maximum vertical dimension size.
+ */
+static int get_maximum_vertical_dimension(harp_collocation_result *collocation_result, long *max_vertical)
+{
+    int i;
+    long max = 0;
+
+    for (i = 0; i < collocation_result->num_pairs; i++)
+    {
+        harp_collocation_pair *pair = collocation_result->pair[i];
+        long matching_product_index = pair->product_index_b;
+        harp_product_metadata *match_metadata = collocation_result->dataset_b->metadata[matching_product_index];
+
+        if (!match_metadata)
+        {
+            harp_set_error(HARP_ERROR_INVALID_ARGUMENT, "Metadata unavailable for match pair product %s.",
+                           collocation_result->dataset_b->source_product[matching_product_index]);
+            return -1;
+        }
+
+        long match_vertical_dim_size = match_metadata->dimension[harp_dimension_vertical];
+
+        if (match_vertical_dim_size > max)
+        {
+            max = match_vertical_dim_size;
+        }
+    }
+
+    *max_vertical = max;
+
+    return 0;
+}
+
+int expand_time_independent_vertical_variables(harp_product *product)
+{
+    int i;
+    harp_variable *datetime = NULL;
+
+    if (harp_product_get_variable_by_name(product, "datetime", &datetime) != 0)
+    {
+        return -1;
+    }
+
+    for (i = 0; i < product->num_variables; i++)
+    {
+        harp_variable *var = product->variable[i];
+
+        /* expand if variable has a vertical dimension and does not depend on time */
+        if (var->num_dimensions > 0 && var->dimension_type[0] != harp_dimension_time
+            && var->dimension_type[var->num_dimensions - 1] == harp_dimension_vertical)
+        {
+            harp_variable_add_dimension(var, 0, harp_dimension_time, datetime->dimension[0]);
+        }
+    }
+
+    return 0;
+}
+
+static int resize_vertical_dimension(harp_product *product, long max_vertical_dim)
+{
+    int i;
+
+    for (i = 0; i < product->num_variables; i++)
+    {
+        harp_variable *var = product->variable[i];
+        int j;
+
+        for (j = 0; j < var->num_dimensions; j++)
+        {
+            if (var->dimension_type[j] == harp_dimension_vertical)
+            {
+                if (harp_variable_resize_dimension(var, j, max_vertical_dim) != 0)
+                {
+                    return -1;
+                }
+            }
+        }
+    }
+
+    product->dimension[harp_dimension_vertical] = max_vertical_dim;
+
+    return 0;
+}
+
+static int get_datetime_index_by_collocation_index(harp_product *product, long collocation_index, long *index)
+{
+    int k;
+    harp_variable *product_collocation_index;
+
+    /* Get the collocation variable from the product product */
+    if (harp_product_get_variable_by_name(product, "collocation_index", &product_collocation_index) != 0)
+    {
+        return -1;
+    }
+
+    /* Get the datetime index into product b using the collocation index */
+    for (k = 0; k < product->dimension[harp_dimension_time]; k++)
+    {
+        if (product_collocation_index->data.int32_data[k] == collocation_index)
+        {
+            *index = k;
+            return 0;
+        }
+    }
+
+    harp_set_error(HARP_ERROR_INVALID_ARGUMENT,
+                   "Couldn't locate collocation_index %li in product %s", collocation_index, product->source_product);
+    return -1;
+}
+
+static void matrix_delete(double **matrix, long dim_vertical)
+{
+    if (matrix != NULL)
+    {
+        long k;
+
+        for (k = 0; k < dim_vertical; k++)
+        {
+            if (matrix[k] != NULL)
+            {
+                free(matrix[k]);
+            }
+        }
+        free(matrix);
+    }
+}
+
+static int matrix_vector_product(double **matrix, const double *vector_in, long m, long n, double **new_vector_out)
+{
+    double *vector_out = NULL;
+    long i;
+    long j;
+    double sum;
+
+    vector_out = calloc((size_t)m, sizeof(double));
+    if (vector_out == NULL)
+    {
+        harp_set_error(HARP_ERROR_OUT_OF_MEMORY, "out of memory (could not allocate %lu bytes) (%s:%u)",
+                       m * sizeof(double), __FILE__, __LINE__);
+        return -1;
+    }
+
+    for (i = 0; i < m; i++)
+    {
+        sum = 0.0;
+        for (j = 0; j < n; j++)
+        {
+            if (!harp_isnan(vector_in[j]))
+            {
+                sum += matrix[i][j] * vector_in[j];
+            }
+        }
+        vector_out[i] = sum;
+    }
+
+    *new_vector_out = vector_out;
+
+    return 0;
+}
+
+static int get_vector_from_variable(const harp_variable *variable, long measurement_id, double **new_vector)
+{
+    double *vector = NULL;
+    long dim_vertical = variable->dimension[variable->num_dimensions - 1];
+    long k, ii;
+
+    vector = malloc((size_t)dim_vertical * sizeof(double));
+    if (vector == NULL)
+    {
+        harp_set_error(HARP_ERROR_OUT_OF_MEMORY, "out of memory (could not allocate %lu bytes) (%s:%u)",
+                       (size_t)dim_vertical * sizeof(double), __FILE__, __LINE__);
+        return -1;
+    }
+
+    for (k = 0; k < dim_vertical; k++)
+    {
+        ii = measurement_id * dim_vertical + k;
+
+        if (ii < 0 || ii >= variable->num_elements)
+        {
+            harp_set_error(HARP_ERROR_INVALID_ARGUMENT, "index %ld is not in the range [0,%ld) (%s:%u)",
+                           ii, variable->num_elements, __FILE__, __LINE__);
+            free(vector);
+            return -1;
+        }
+
+        vector[k] = variable->data.double_data[ii];
+    }
+
+    *new_vector = vector;
+
+    return 0;
+}
+
+static int get_matrix_from_avk_variable(const harp_variable *avk, long datetime_index, double ***new_matrix)
+{
+    long dim_vertical = avk->dimension[avk->num_dimensions - 1];
+    double **matrix = NULL;
+    long k, kk, ii;
+
+    matrix = calloc((size_t)dim_vertical, sizeof(double *));
+    if (matrix == NULL)
+    {
+        harp_set_error(HARP_ERROR_OUT_OF_MEMORY, "out of memory (could not allocate %lu bytes) (%s:%u)",
+                       dim_vertical * sizeof(double *), __FILE__, __LINE__);
+        return -1;
+    }
+
+    for (k = 0; k < dim_vertical; k++)
+    {
+        matrix[k] = calloc((size_t)dim_vertical, sizeof(double));
+        if (matrix[k] == NULL)
+        {
+            harp_set_error(HARP_ERROR_OUT_OF_MEMORY, "out of memory (could not allocate %lu bytes) (%s:%u)",
+                           dim_vertical * sizeof(double), __FILE__, __LINE__);
+            matrix_delete(matrix, dim_vertical);
+            return -1;
+        }
+    }
+
+    for (k = 0; k < dim_vertical; k++)
+    {
+        for (kk = 0; kk < dim_vertical; kk++)
+        {
+            ii = datetime_index * dim_vertical * dim_vertical + k * dim_vertical + kk;
+            assert(ii >= 0 && ii < avk->num_elements);
+            matrix[k][kk] = avk->data.double_data[ii];
+        }
+    }
+
+    *new_matrix = matrix;
+
+    return 0;
+}
+
+static int get_vertical_unit(const char *name, char **new_unit)
+{
+    char *unit = NULL;
+
+    if (strcmp(name, "altitude") == 0)
+    {
+        unit = strdup(HARP_UNIT_LENGTH);
+        if (!unit)
+        {
+            harp_set_error(HARP_ERROR_OUT_OF_MEMORY, "out of memory (could not duplicate string)"
+                    " (%s:%u)", __FILE__, __LINE__);
+        }
+    }
+    else if (strcmp(name, "pressure") == 0)
+    {
+        unit = strdup(HARP_UNIT_PRESSURE);
+        if (!unit)
+        {
+            harp_set_error(HARP_ERROR_OUT_OF_MEMORY, "out of memory (could not duplicate string)"
+                    " (%s:%u)", __FILE__, __LINE__);
+        }
+    }
+    else
+    {
+        harp_set_error(HARP_ERROR_INVALID_ARGUMENT, "Not a vertical axis variable: '%s'", name);
+        return -1;
+    }
+
+    *new_unit = unit;
+
+    return 0;
+}
+
+static int vertical_profile_smooth(harp_variable *target_var, harp_product *match, long datetime_index_a,
+                                   long datetime_index_b)
+{
+    double *vector_in = NULL;
+    double *vector_a_priori = NULL;
+    double *vector_out = NULL;
+    double **matrix = NULL;
+
+    char *apriori_name, *avk_name;
+    harp_variable *apriori, *avk = NULL;
+
+    int has_apriori = 0;
+    int i;
+    long block, blocks;
+    long target_vertical_elements = target_var->dimension[target_var->num_dimensions - 1];
+
+    /* get the avk and a priori variables */
+    avk_name = malloc(strlen(target_var->name) + 4 + 1);
+    apriori_name = malloc(strlen(target_var->name) + 8 + 1);
+    if (!avk_name || !apriori_name)
+    {
+        harp_set_error(HARP_ERROR_OUT_OF_MEMORY, "out of memory (could not duplicate string) (%s:%u)",
+                       __FILE__, __LINE__);
+        return -1;
+    }
+
+    strcpy(apriori_name, target_var->name);
+    strcat(apriori_name, "_apriori");
+    strcpy(avk_name, target_var->name);
+    strcat(avk_name, "_avk");
+
+    if (harp_product_has_variable(match, apriori_name))
+    {
+        has_apriori = 1;
+
+        if (harp_product_get_variable_by_name(match, apriori_name, &apriori) != 0)
+        {
+            return -1;
+        }
+    }
+
+    if (harp_product_get_variable_by_name(match, avk_name, &avk))
+    {
+        return -1;
+    }
+
+    /* check unit and data type */
+    if (has_apriori && strcmp(apriori->unit, target_var->unit) != 0)
+    {
+        if (harp_variable_convert_unit(apriori, target_var->unit) != 0)
+        {
+            return -1;
+        }
+    }
+    if (has_apriori && apriori->data_type != harp_type_double)
+    {
+        if (harp_variable_convert_data_type(target_var, harp_type_double) != 0)
+        {
+            return -1;
+        }
+    }
+
+    /* collect avk and a priori data vectors */
+    if (has_apriori && get_vector_from_variable(apriori, datetime_index_b, &vector_a_priori) != 0)
+    {
+        free(avk_name);
+        free(apriori_name);
+        return -1;
+    }
+    if (get_matrix_from_avk_variable(avk, datetime_index_b, &matrix) != 0)
+    {
+        free(avk_name);
+        free(apriori_name);
+        free(vector_a_priori);
+        return -1;
+    }
+
+    /* allocate memory for the vertical profile input vector */
+    vector_in = malloc((size_t) target_vertical_elements * sizeof(double));
+    if (!vector_in)
+    {
+        harp_set_error(HARP_ERROR_OUT_OF_MEMORY, "out of memory (could not allocate %lu bytes) (%s:%u)",
+                       target_vertical_elements * sizeof(double), __FILE__, __LINE__);
+        return -1;
+    }
+
+    /* calculate the number of blocks in this datetime slice of the variable */
+    blocks = target_var->num_elements / target_var->dimension[0] / target_vertical_elements;
+
+    for (block = 0; block < blocks; block++)
+    {
+        long blockoffset = datetime_index_a * blocks * target_vertical_elements + block * target_vertical_elements;
+
+        /* collect profile vector */
+        for (i = 0; i < target_vertical_elements; i++)
+        {
+            vector_in[i] = target_var->data.double_data[blockoffset + i];
+        }
+
+        /* subtract a priori */
+        if (has_apriori)
+        {
+            for (i = 0; i < target_vertical_elements; i++)
+            {
+                vector_in[i] -= vector_a_priori[i];
+            }
+        }
+
+        /* premultiply avk */
+        if (matrix_vector_product(matrix, vector_in, target_vertical_elements, target_vertical_elements, &vector_out)
+            != 0)
+        {
+            free(avk_name);
+            free(apriori_name);
+            free(vector_a_priori);
+            free(vector_in);
+            return -1;
+        }
+
+        /* add the apriori */
+        if (has_apriori)
+        {
+            for (i = 0; i < target_vertical_elements; i++)
+            {
+                vector_out[i] += vector_a_priori[i];
+            }
+        }
+
+        /* update the variable */
+        for (i = 0; i < target_vertical_elements; i++)
+        {
+            target_var->data.double_data[blockoffset + i] = vector_out[i];
+        }
+    }
+
+    /* cleanup */
+    free(avk_name);
+    free(apriori_name);
+    free(vector_in);
+    free(vector_a_priori);
+    matrix_delete(matrix, target_vertical_elements);
+
+    return 0;
+}
+
 /**
  * Resamples all variables in product against a specified grid.
- * Target_grid is expected to be a variable of dimensions {vertical} or {time, vertical}.
+ * Target_grid is expected to be a variable of dimensions {vertical}.
  * The source grid is determined by derivation of a matching vertical quantity on the specified product.
  *
- * Grid-dimension-wise we distinguish 4 cases:
- *  - target 1D, source 1D: performs time independent vertical interpolation
- *  - target 1D, source 2D: extends target dimensions & performs time dep. interpolation
- *  - target 2D, source 1D: extends source dimensions & performs time dep. interpolation
- *  - target 2D, source 2D: performs time dependent interpolation
+ * \param product Product to resample.
+ * \param target_grid Vertical grid to target.
  *
  * \return
  *   \arg \c 0, Success.
  *   \arg \c -1, Error occurred (check #harp_errno).
  */
-int harp_profile_resample(harp_product *product, harp_variable *target_grid)
+LIBHARP_API int harp_product_regrid_vertical_with_axis_variable(harp_product *product, harp_variable *target_grid)
 {
     harp_variable *source_grid = NULL;
     harp_variable *vertical_axis = NULL;
@@ -1021,7 +1484,6 @@ int harp_profile_resample(harp_product *product, harp_variable *target_grid)
         {
             return -1;
         }
-
     }
 
     /* Retrieve basic info about the source grid */
@@ -1041,11 +1503,10 @@ int harp_profile_resample(harp_product *product, harp_variable *target_grid)
         double *new_data = NULL;
         long num_blocks = variable->num_elements / source_vertical_elements;
         long time_blocks = num_blocks;
+        vertical_profile_variable_type variable_type;
 
-        int dim_id;
         long time;
         long block_id;
-        int skip;       /* <0: don't skipt, 0: skip, >0: delete */
 
         /* Calculate the number of num_blocks for which time is constant for time-dependent resampling */
         if (source_time_dim_length != 0)
@@ -1053,41 +1514,20 @@ int harp_profile_resample(harp_product *product, harp_variable *target_grid)
             time_blocks = num_blocks / source_time_dim_length;
         }
 
-        /* Ensure that there is only 1 vertical dimension, that it's the fastest running one and has scalar values */
-        skip = 0;       /* assume that the variable has no vertical component */
-        for (dim_id = 0; dim_id < variable->num_dimensions; dim_id++)
-        {
-            if (variable->dimension_type[dim_id] == harp_dimension_vertical)
-            {
-                skip = -1;      /* variable has vertical component */
-                if (dim_id != variable->num_dimensions - 1)
-                {
-                    /* variable has vertical dimension but cannot be resampled */
-                    skip = 1;
-                    break;
-                }
-            }
-        }
-
-        /* We can't resample string-typed variables */
-        if (variable->data_type == harp_type_string)
-        {
-            skip = 1;
-        }
+        /* Check if we can resample this kind of variable */
+        variable_type = get_vertical_profile_variable_type(variable);
 
         /* skip the source grid variable, we'll set that afterwards */
         if (variable == source_grid)
         {
-            skip = 0;
+            variable_type = vertical_profile_variable_skip;
         }
 
-        /* TODO skip based on name restrictions */
-
-        if (skip == 0)
+        if (variable_type == vertical_profile_variable_skip)
         {
             continue;
         }
-        else if (skip > 0)
+        else if (variable_type == vertical_profile_variable_remove)
         {
             harp_report_warning("Removing variable %s; unresamplable dimensions\n", variable->name);
             harp_product_remove_variable(product, variable);
@@ -1158,180 +1598,23 @@ int harp_profile_resample(harp_product *product, harp_variable *target_grid)
     return 0;
 }
 
-/** Iterates over the product metadata of all the products in column b of the collocation result and
- * determines the maximum vertical dimension size.
- */
-static int get_maximum_vertical_dimension(harp_collocation_result *collocation_result, long *max_vertical)
-{
-    int i;
-    long max = 0;
-
-    for (i = 0; i < collocation_result->num_pairs; i++)
-    {
-        harp_collocation_pair *pair = collocation_result->pair[i];
-        long matching_product_index = pair->product_index_b;
-        harp_product_metadata *match_metadata = collocation_result->dataset_b->metadata[matching_product_index];
-
-        if (!match_metadata)
-        {
-            /* TODO error type */
-            harp_set_error(HARP_ERROR_INVALID_ARGUMENT, "Metadata unavailable for match pair product %s.",
-                           collocation_result->dataset_b->source_product[matching_product_index]);
-            return -1;
-        }
-
-        long match_vertical_dim_size = match_metadata->dimension[harp_dimension_vertical];
-
-        if (match_vertical_dim_size > max)
-        {
-            max = match_vertical_dim_size;
-        }
-    }
-
-    *max_vertical = max;
-
-    return 0;
-}
-
-int expand_time_independent_vertical_variables(harp_product *product)
-{
-    int i;
-    harp_variable *datetime = NULL;
-
-    if (harp_product_get_variable_by_name(product, "datetime", &datetime) != 0)
-    {
-        return -1;
-    }
-
-    for (i = 0; i < product->num_variables; i++)
-    {
-        harp_variable *var = product->variable[i];
-
-        /* expand if variable has a vertical dimension and does not depend on time */
-        if (var->num_dimensions > 0 && var->dimension_type[0] != harp_dimension_time
-            && var->dimension_type[var->num_dimensions - 1] == harp_dimension_vertical)
-        {
-            harp_variable_add_dimension(var, 0, harp_dimension_time, datetime->dimension[0]);
-        }
-    }
-
-    return 0;
-}
-
-static int resize_vertical_dimension(harp_product *product, long max_vertical_dim)
-{
-    int i;
-
-    for (i = 0; i < product->num_variables; i++)
-    {
-        harp_variable *var = product->variable[i];
-        int j;
-
-        for (j = 0; j < var->num_dimensions; j++)
-        {
-            if (var->dimension_type[j] == harp_dimension_vertical)
-            {
-                if (harp_variable_resize_dimension(var, j, max_vertical_dim) != 0)
-                {
-                    return -1;
-                }
-            }
-        }
-    }
-
-    product->dimension[harp_dimension_vertical] = max_vertical_dim;
-
-    return 0;
-}
-
-vertical_profile_variable_type get_vertical_profile_variable_type(harp_variable *variable)
-{
-    int i;
-
-    /* assume it doesn't have a vertical dimension */
-    vertical_profile_variable_type variable_type = vertical_profile_variable_skip;
-
-    /* Ensure that there is only 1 vertical dimension, that it's the fastest running one and has scalar values */
-    for (i = 0; i < variable->num_dimensions; i++)
-    {
-
-        if (variable->dimension_type[i] == harp_dimension_vertical)
-        {
-            /* it has a vertical dimension, we need to resample */
-            variable_type = vertical_profile_variable_resample;
-
-            if (i != variable->num_dimensions - 1)
-            {
-                /* variable has vertical dimension but cannot be resampled */
-                return vertical_profile_variable_remove;
-            }
-        }
-    }
-
-    if (variable->data_type == harp_type_string)
-    {
-        return vertical_profile_variable_remove;
-    }
-
-    if (strstr(variable->name, "_uncertainty"))
-    {
-        return vertical_profile_variable_remove;
-    }
-
-    if (strstr(variable->name, "_column_"))
-    {
-        return vertical_profile_variable_remove;
-    }
-
-    if (strstr(variable->name, "_column_"))
-    {
-        return vertical_profile_variable_remove;
-    }
-
-    if (strstr(variable->name, "_bounds"))
-    {
-        return vertical_profile_variable_remove;
-    }
-
-    return variable_type;
-}
-
-int get_datetime_index_by_collocation_index(harp_product *product, long collocation_index, long *index)
-{
-    int k;
-    harp_variable *product_collocation_index;
-
-    /* Get the collocation variable from the product product */
-    if (harp_product_get_variable_by_name(product, "collocation_index", &product_collocation_index) != 0)
-    {
-        return -1;
-    }
-
-    /* Get the datetime index into product b using the collocation index */
-    for (k = 0; k < product->dimension[harp_dimension_time]; k++)
-    {
-        if (product_collocation_index->data.int32_data[k] == collocation_index)
-        {
-            *index = k;
-            return 0;
-        }
-    }
-
-    harp_set_error(HARP_ERROR_INVALID_ARGUMENT,
-                   "Couldn't locate collocation_index %li in product %s", collocation_index, product->source_product);
-    return -1;
-}
-
-/**
- * Smooth the product (from dataset a in the collocation result) using the avks in dataset b.
+/** Smooth the product's variables (from dataset a in the collocation result) using the vertical grids,
+ * avks and a apriori of matching products in dataset b and smooth the variables specified.
+ *
+ * \param product Product to smooth.
+ * \param num_smooth_variables length of smooth_variables.
+ * \param smooth_variables The names of the variables to smooth.
+ * \param vertical_axis The name of the variable to use as a vertical axis (pressure/altitude/etc).
+ * \param collocation_result The collocation result used to locate the matching vertical grids/avks/apriori.
+ *   The collocation result is assumed to have the appropriate metadata available for all matches (dataset b).
  *
  * \return
  *   \arg \c 0, Success.
  *   \arg \c -1, Error occurred (check #harp_errno).
  */
-int harp_profile_resample_and_smooth_a_to_b(harp_product *product, harp_collocation_result *collocation_result,
-                                            const char *dataset_b_dir, const char *vertical_axis,
-                                            const char *vertical_unit, int smooth)
+LIBHARP_API int harp_product_smooth_vertical(harp_product *product, int num_smooth_variables,
+                                             const char **smooth_variables, const char *vertical_axis,
+                                             harp_collocation_result *collocation_result)
 {
     int i;
     harp_variable *source_collocation_index = NULL;
@@ -1340,6 +1623,13 @@ int harp_profile_resample_and_smooth_a_to_b(harp_product *product, harp_collocat
     harp_variable *source_grid = NULL;
     harp_product *match = NULL;
     long max_vertical_dim;
+    char *vertical_unit;
+
+    /* get the default unit for the chosen vertical axis type */
+    if (get_vertical_unit(vertical_axis, &vertical_unit) != 0)
+    {
+        return -1;
+    }
 
     /* Get the source product's collocation index variable */
     if (harp_product_get_variable_by_name(product, "collocation_index", &source_collocation_index) != 0)
@@ -1350,9 +1640,6 @@ int harp_profile_resample_and_smooth_a_to_b(harp_product *product, harp_collocat
     /* Prepare the collocation result for efficient iteration over the pairs */
     harp_collocation_result_filter_for_source_product_a(collocation_result, product->source_product);
     harp_collocation_result_sort_by_collocation_index(collocation_result);
-
-    /* Import the dataset's metadata */
-    harp_dataset_import(collocation_result->dataset_b, dataset_b_dir);
 
     /* Determine the maximum vertical dimensions size */
     if (get_maximum_vertical_dimension(collocation_result, &max_vertical_dim) != 0)
@@ -1452,9 +1739,11 @@ int harp_profile_resample_and_smooth_a_to_b(harp_product *product, harp_collocat
         {
             harp_variable *target_var = product->variable[j];
             harp_variable *source_var = source_product->variable[j];
+
             long num_source_vertical_elements = source_grid->dimension[1];
             long num_target_vertical_elements = target_grid->dimension[1];
             long block, blocks;
+            int k;
 
             /* Skip variables that do not have a vertical dimension type */
             int var_type = get_vertical_profile_variable_type(target_var);
@@ -1510,10 +1799,16 @@ int harp_profile_resample_and_smooth_a_to_b(harp_product *product, harp_collocat
                                               (block * num_target_vertical_elements));
             }
 
-            /* Smooth variable */
-            if (smooth)
+            /* Smooth variable if it's index appears in smooth_variables */
+            for (k = 0; k < num_smooth_variables; k++)
             {
-
+                if (strcmp(smooth_variables[k], target_var->name) == 0)
+                {
+                    if (vertical_profile_smooth(target_var, match, datetime_index_a, datetime_index_b) != 0)
+                    {
+                        return -1;
+                    };
+                }
             }
         }
 
@@ -1527,6 +1822,24 @@ int harp_profile_resample_and_smooth_a_to_b(harp_product *product, harp_collocat
     harp_product_delete(match);
 
     return 0;
+}
+
+/** Regrid the product's variables (from dataset a in the collocation result) to the vertical grids,
+ * of matching products in dataset b and smooth the variables specified.
+ *
+ * \param product Product to regrid.
+ * \param vertical_axis The name of the variable to use as a vertical axis (pressure/altitude/etc).
+ * \param collocation_result The collocation result used to find matching variables.
+ *   The collocation result is assumed to have the appropriate metadata available for all matches (dataset b).
+ *
+ * \return
+ *   \arg \c 0, Success.
+ *   \arg \c -1, Error occurred (check #harp_errno).
+ */
+LIBHARP_API int harp_product_regrid_vertical_with_collocated_dataset(harp_product *product, const char *vertical_axis,
+                                                                     harp_collocation_result *collocation_result)
+{
+    return harp_product_smooth_vertical(product, 0, NULL, vertical_axis, collocation_result);
 }
 
 /**
