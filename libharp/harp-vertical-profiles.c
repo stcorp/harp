@@ -1694,10 +1694,13 @@ LIBHARP_API int harp_product_smooth_vertical(harp_product *product, int num_smoo
     }
 
     /* Resize the vertical dimension in the target product to make room for the resampled data */
-    if (resize_vertical_dimension(product, max_vertical_dim) != 0)
+    if (max_vertical_dim > product->dimension[harp_dimension_vertical])
     {
-        harp_variable_delete(source_grid);
-        return -1;
+        if (resize_vertical_dimension(product, max_vertical_dim) != 0)
+        {
+            harp_variable_delete(source_grid);
+            return -1;
+        }
     }
 
     for (i = 0; i < collocation_result->num_pairs; i++)
@@ -1766,7 +1769,7 @@ LIBHARP_API int harp_product_smooth_vertical(harp_product *product, int num_smoo
         {
             harp_variable *var = product->variable[j];
 
-            long num_source_vertical_elements = source_grid->dimension[1];
+            long num_source_vertical_elements = product->dimension[harp_dimension_vertical];
             long num_target_vertical_elements = target_grid->dimension[1];
             long block, blocks;
             int k;
@@ -1779,8 +1782,7 @@ LIBHARP_API int harp_product_smooth_vertical(harp_product *product, int num_smoo
             }
 
             /* Ensure that the variable data to resample consists of doubles */
-            if (var->data_type != harp_type_double &&
-                harp_variable_convert_data_type(var, harp_type_double) != 0)
+            if (var->data_type != harp_type_double && harp_variable_convert_data_type(var, harp_type_double) != 0)
             {
                 harp_variable_delete(source_grid);
                 harp_variable_delete(target_grid);
@@ -1792,13 +1794,13 @@ LIBHARP_API int harp_product_smooth_vertical(harp_product *product, int num_smoo
             blocks = var->num_elements / var->dimension[0] / num_source_vertical_elements;
             for (block = 0; block < blocks; block++)
             {
-                /*harp_interpolate_array_linear(num_source_vertical_elements,
+                harp_interpolate_array_linear(num_source_vertical_elements,
                                               &source_grid->data.double_data[time_index_a * num_source_vertical_elements],
                                               &var->data.double_data[(time_index_a * blocks + block) * num_source_vertical_elements],
                                               num_target_vertical_elements,
                                               &target_grid->data.double_data[time_index_b * num_target_vertical_elements],
                                               0,
-                                              &var->data.double_data[(time_index_a * blocks + block) * num_target_vertical_elements]);*/
+                                              &var->data.double_data[(time_index_a * blocks + block) * num_target_vertical_elements]);
             }
 
             /* Smooth variable if it's index appears in smooth_variables */
@@ -1819,6 +1821,16 @@ LIBHARP_API int harp_product_smooth_vertical(harp_product *product, int num_smoo
 
         /* cleanup */
         harp_variable_delete(target_grid);
+    }
+
+    /* Resize the vertical dimension in the target product to minimal size */
+    if (max_vertical_dim < product->dimension[harp_dimension_vertical])
+    {
+        if (resize_vertical_dimension(product, max_vertical_dim) != 0)
+        {
+            harp_variable_delete(source_grid);
+            return -1;
+        }
     }
 
     /* cleanup */
