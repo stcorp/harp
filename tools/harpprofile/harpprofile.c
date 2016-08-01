@@ -730,6 +730,7 @@ static int resample(int argc, char *argv[])
         if (harp_collocation_result_read(result_csv_file, &collocation_result) != 0)
         {
             fprintf(stderr, harp_errno_to_string(harp_errno));
+            return -1;
         }
     }
 
@@ -741,6 +742,8 @@ static int resample(int argc, char *argv[])
         if (harp_product_regrid_vertical_with_collocated_dataset(product, vertical_axis_name, collocation_result) != 0)
         {
             fprintf(stderr, harp_errno_to_string(harp_errno));
+            harp_collocation_result_delete(collocation_result);
+            return -1;
         }
         export = 1;
     }
@@ -753,6 +756,8 @@ static int resample(int argc, char *argv[])
         if (harp_product_regrid_vertical_with_collocated_dataset(product, vertical_axis_name, collocation_result) != 0)
         {
             fprintf(stderr, harp_errno_to_string(harp_errno));
+            harp_collocation_result_delete(collocation_result);
+            return -1;
         }
         export = 1;
     }
