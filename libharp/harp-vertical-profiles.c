@@ -1639,11 +1639,12 @@ LIBHARP_API int harp_product_smooth_vertical(harp_product *product, int num_smoo
                                              const char **smooth_variables, const char *vertical_axis,
                                              harp_collocation_result *collocation_result)
 {
-    int i;
+    int time_index_a, pair_id;
     harp_variable *source_collocation_index = NULL;
     harp_dimension_type grid_dim_type[2] = { harp_dimension_time, harp_dimension_vertical };
     harp_variable *source_grid = NULL;
     harp_product *match = NULL;
+    harp_collocation_pair **original_pairs;
     long max_vertical_dim;
     char *vertical_unit;
 
@@ -1703,15 +1704,35 @@ LIBHARP_API int harp_product_smooth_vertical(harp_product *product, int num_smoo
         }
     }
 
-    for (i = 0; i < collocation_result->num_pairs; i++)
+    for (pair_id = 0, time_index_a = 0; time_index_a < product->dimension[harp_dimension_time]; time_index_a++)
     {
-        harp_collocation_pair *pair;
+        harp_collocation_pair *pair = NULL;
         harp_product_metadata *match_metadata;
         harp_variable *target_grid = NULL;
-        long time_index_a, time_index_b = -1;
+        long time_index_b = -1;
         int j;
+        long coll_index;
 
-        pair = collocation_result->pair[i];
+        /* Get the collocation index */
+        coll_index = source_collocation_index->data.int32_data[time_index_a];
+
+        /* Get the pair for said collocation index; no need to rewind thanks to sorted collocation_result */
+        for (; pair_id < collocation_result->num_pairs; pair_id++)
+        {
+            if (collocation_result->pair[pair_id]->collocation_index == coll_index)
+            {
+                pair = collocation_result->pair[pair_id];
+                break;
+            }
+        }
+
+        /* Error if no collocation pair exists for this index */
+        if (!pair)
+        {
+            harp_set_error(HARP_ERROR_INVALID_ARGUMENT, "No collocation pair for collocation index %li.", coll_index);
+            harp_variable_delete(source_grid);
+            return -1;
+        }
 
         /* Get metadata of the matching product */
         match_metadata = collocation_result->dataset_b->metadata[pair->product_index_b];
@@ -1742,13 +1763,6 @@ LIBHARP_API int harp_product_smooth_vertical(harp_product *product, int num_smoo
             }
         }
 
-        /* Find the datetime indices into our source and target product */
-        if (get_time_index_by_collocation_index(product, pair->collocation_index, &time_index_a) != 0)
-        {
-            harp_variable_delete(source_grid);
-            harp_product_delete(match);
-            return -1;
-        }
         if (get_time_index_by_collocation_index(match, pair->collocation_index, &time_index_b) != 0)
         {
             harp_variable_delete(source_grid);
