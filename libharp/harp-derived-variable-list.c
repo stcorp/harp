@@ -1675,6 +1675,7 @@ static int add_species_conversions(const char *species)
     {
         return -1;
     }
+    dimension_type[2] = harp_dimension_vertical;
     if (harp_variable_conversion_new(name_column_nd_cov, harp_type_double, HARP_UNIT_COLUMN_NUMBER_DENSITY_SQUARED, 3,
                                      dimension_type, 0, get_partial_column_cov_from_density_cov_and_alt_bounds,
                                      &conversion) != 0)
@@ -1686,6 +1687,7 @@ static int add_species_conversions(const char *species)
     {
         return -1;
     }
+    dimension_type[2] = harp_dimension_independent;
     if (harp_variable_conversion_add_source(conversion, "altitude_bounds", harp_type_double, HARP_UNIT_LENGTH, 3,
                                             dimension_type, 2) != 0)
     {
@@ -1745,6 +1747,7 @@ static int add_species_conversions(const char *species)
             return -1;
         }
     }
+    dimension_type[2] = harp_dimension_vertical;
     if (harp_variable_conversion_new(name_nd_cov, harp_type_double, HARP_UNIT_NUMBER_DENSITY_SQUARED, 3, dimension_type,
                                      0, get_nd_cov_from_vmr_cov_pressure_and_temperature, &conversion) != 0)
     {
@@ -1778,7 +1781,7 @@ static int add_species_conversions(const char *species)
     }
     dimension_type[2] = harp_dimension_independent;
     if (harp_variable_conversion_add_source(conversion, "altitude_bounds", harp_type_double, HARP_UNIT_LENGTH, 3,
-                                            dimension_type, 0) != 0)
+                                            dimension_type, 2) != 0)
     {
         return -1;
     }
