@@ -3061,10 +3061,10 @@ int harp_derived_variable_list_add_conversion(harp_variable_conversion *conversi
     int index;
     int i;
 
-    index = hashtable_get_index_from_name(harp_derived_variable_conversions->hash_data, conversion->variable_name);
+    index = hashtable_get_index_from_name(harp_derived_variable_conversions->hash_data, conversion->dimsvar_name);
     if (index < 0)
     {
-        /* no conversions for this variable name exists -> create new conversion list */
+        /* no conversions for this variable name+dims exists -> create new conversion list */
         if (harp_derived_variable_conversions->num_variables % BLOCK_SIZE == 0)
         {
             harp_variable_conversion_list **new_list;
@@ -3092,7 +3092,7 @@ int harp_derived_variable_list_add_conversion(harp_variable_conversion *conversi
         conversion_list->num_conversions = 0;
         conversion_list->conversion = NULL;
 
-        hashtable_add_name(harp_derived_variable_conversions->hash_data, conversion->variable_name);
+        hashtable_add_name(harp_derived_variable_conversions->hash_data, conversion->dimsvar_name);
 
         harp_derived_variable_conversions->num_variables++;
         harp_derived_variable_conversions->conversions_for_variable[harp_derived_variable_conversions->num_variables -
