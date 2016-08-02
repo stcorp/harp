@@ -1080,13 +1080,14 @@ LIBHARP_API int harp_collocation_result_write(const char *collocation_result_fil
 LIBHARP_API void harp_collocation_result_swap_datasets(harp_collocation_result *collocation_result)
 {
     int i;
+    harp_dataset *data_a;
 
     for (i = 0; i < collocation_result->num_pairs; i++)
     {
         collocation_pair_swap_datasets(collocation_result->pair[i]);
     }
 
-    harp_dataset *data_a = collocation_result->dataset_a;
+    data_a = collocation_result->dataset_a;
 
     collocation_result->dataset_a = collocation_result->dataset_b;
     collocation_result->dataset_b = data_a;

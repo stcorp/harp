@@ -25,7 +25,6 @@
 #include <math.h>
 #include <stdlib.h>
 #include <string.h>
-#include <stdio.h>
 
 /** \addtogroup harp_algorithm
  * @{
@@ -1043,6 +1042,7 @@ static int get_maximum_vertical_dimension(harp_collocation_result *collocation_r
     {
         harp_collocation_pair *pair = collocation_result->pair[i];
         long matching_product_index = pair->product_index_b;
+        long match_vertical_dim_size;
         harp_product_metadata *match_metadata = collocation_result->dataset_b->metadata[matching_product_index];
 
         if (!match_metadata)
@@ -1052,7 +1052,7 @@ static int get_maximum_vertical_dimension(harp_collocation_result *collocation_r
             return -1;
         }
 
-        long match_vertical_dim_size = match_metadata->dimension[harp_dimension_vertical];
+        match_vertical_dim_size = match_metadata->dimension[harp_dimension_vertical];
 
         if (match_vertical_dim_size > max)
         {
@@ -1571,7 +1571,7 @@ LIBHARP_API int harp_product_regrid_vertical_with_axis_variable(harp_product *pr
         variable->dimension[variable->num_dimensions - 1] = target_vertical_elements;
 
         /* Set the new variable data */
-        harp_array old_data = variable->data;
+        old_data = variable->data;
 
         variable->data.double_data = new_data;
         variable->num_elements = new_data_num_elements;
