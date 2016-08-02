@@ -378,6 +378,7 @@ int grid_import(const char *filename, harp_variable **new_vertical_axis)
     harp_variable *vertical_axis = NULL;
     harp_dimension_type vertical_1d_dim_type[1] = { harp_dimension_vertical };
     long vertical_1d_dim[1];
+    int i;
 
     /* open the grid file */
     file = fopen(filename, "r+");
@@ -420,7 +421,7 @@ int grid_import(const char *filename, harp_variable **new_vertical_axis)
         return -1;
     }
 
-    for (int i = 0; i < num_vertical; i++)
+    for (i = 0; i < num_vertical; i++)
     {
         if (read_vertical_grid_line(file, filename, &value) != 0)
         {
@@ -477,7 +478,7 @@ int grid_import(const char *filename, harp_variable **new_vertical_axis)
     }
 
     /* Copy the axis data */
-    for (int i = 0; i < num_vertical; i++)
+    for (i = 0; i < num_vertical; i++)
     {
         vertical_axis->data.double_data[i] = values[i];
     }
