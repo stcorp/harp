@@ -1003,11 +1003,12 @@ static profile_resample_type get_profile_resample_type(harp_variable *variable)
         /* if the variable has no vertical dimension, we should always skip */
         return profile_resample_skip;
     }
-    else if (num_vertical_dims == 1 && variable->dimension_type[variable->num_dimensions - 1] == harp_dimension_vertical)
+    else if (num_vertical_dims == 1 &&
+             variable->dimension_type[variable->num_dimensions - 1] == harp_dimension_vertical)
     {
         /* exceptions that can't be resampled */
         if (variable->data_type == harp_type_string || strstr(variable->name, "_uncertainty") != NULL ||
-                strstr(variable->name, "_avk") != NULL)
+            strstr(variable->name, "_avk") != NULL)
         {
             return profile_resample_remove;
         }
