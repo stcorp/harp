@@ -848,7 +848,7 @@ static int smooth(int argc, char *argv[])
         else
         {
             fprintf(stderr, "ERROR: invalid argument: '%s'\n", argv[i]);
-            print_help_resample();
+            print_help_smooth();
             return -1;
         }
     }
@@ -870,7 +870,7 @@ static int smooth(int argc, char *argv[])
     else
     {
         fprintf(stderr, "ERROR: input product file not specified\n");
-        print_help_resample();
+        print_help_smooth();
         return -1;
     }
 

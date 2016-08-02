@@ -1306,7 +1306,7 @@ static int get_vertical_unit(const char *name, char **new_unit)
     return 0;
 }
 
-static int vertical_profile_smooth(harp_variable *target_var, harp_product *match, long time_index_a,
+static int vertical_profile_smooth(harp_variable *var, harp_product *match, long time_index_a,
                                    long time_index_b)
 {
     double *vector_in = NULL;
@@ -1320,11 +1320,11 @@ static int vertical_profile_smooth(harp_variable *target_var, harp_product *matc
     int has_apriori = 0;
     int i;
     long block, blocks;
-    long target_vertical_elements = target_var->dimension[target_var->num_dimensions - 1];
+    long target_vertical_elements = match->dimension[harp_dimension_vertical];
 
     /* get the avk and a priori variables */
-    avk_name = malloc(strlen(target_var->name) + 4 + 1);
-    apriori_name = malloc(strlen(target_var->name) + 8 + 1);
+    avk_name = malloc(strlen(var->name) + 4 + 1);
+    apriori_name = malloc(strlen(var->name) + 8 + 1);
     if (!avk_name || !apriori_name)
     {
         harp_set_error(HARP_ERROR_OUT_OF_MEMORY, "out of memory (could not duplicate string) (%s:%u)",
@@ -1332,9 +1332,9 @@ static int vertical_profile_smooth(harp_variable *target_var, harp_product *matc
         return -1;
     }
 
-    strcpy(apriori_name, target_var->name);
+    strcpy(apriori_name, var->name);
     strcat(apriori_name, "_apriori");
-    strcpy(avk_name, target_var->name);
+    strcpy(avk_name, var->name);
     strcat(avk_name, "_avk");
 
     if (harp_product_has_variable(match, apriori_name))
@@ -1353,16 +1353,16 @@ static int vertical_profile_smooth(harp_variable *target_var, harp_product *matc
     }
 
     /* check unit and data type */
-    if (has_apriori && strcmp(apriori->unit, target_var->unit) != 0)
+    if (has_apriori && strcmp(apriori->unit, var->unit) != 0)
     {
-        if (harp_variable_convert_unit(apriori, target_var->unit) != 0)
+        if (harp_variable_convert_unit(apriori, var->unit) != 0)
         {
             return -1;
         }
     }
     if (has_apriori && apriori->data_type != harp_type_double)
     {
-        if (harp_variable_convert_data_type(target_var, harp_type_double) != 0)
+        if (harp_variable_convert_data_type(var, harp_type_double) != 0)
         {
             return -1;
         }
@@ -1393,7 +1393,7 @@ static int vertical_profile_smooth(harp_variable *target_var, harp_product *matc
     }
 
     /* calculate the number of blocks in this datetime slice of the variable */
-    blocks = target_var->num_elements / target_var->dimension[0] / target_vertical_elements;
+    blocks = var->num_elements / var->dimension[0] / target_vertical_elements;
 
     for (block = 0; block < blocks; block++)
     {
@@ -1402,7 +1402,7 @@ static int vertical_profile_smooth(harp_variable *target_var, harp_product *matc
         /* collect profile vector */
         for (i = 0; i < target_vertical_elements; i++)
         {
-            vector_in[i] = target_var->data.double_data[blockoffset + i];
+            vector_in[i] = var->data.double_data[blockoffset + i];
         }
 
         /* subtract a priori */
@@ -1437,7 +1437,7 @@ static int vertical_profile_smooth(harp_variable *target_var, harp_product *matc
         /* update the variable */
         for (i = 0; i < target_vertical_elements; i++)
         {
-            target_var->data.double_data[blockoffset + i] = vector_out[i];
+            var->data.double_data[blockoffset + i] = vector_out[i];
         }
     }
 
