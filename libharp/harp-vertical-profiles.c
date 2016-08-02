@@ -1491,6 +1491,7 @@ LIBHARP_API int harp_product_regrid_vertical_with_axis_variable(harp_product *pr
     for (i = product->num_variables - 1; i >= 0; i--)
     {
         harp_variable *variable = product->variable[i];
+        harp_array old_data;
 
         long new_data_num_elements = variable->num_elements / source_vertical_elements * target_vertical_elements;
         double *new_data = NULL;
@@ -1729,8 +1730,8 @@ LIBHARP_API int harp_product_smooth_vertical(harp_product *product, int num_smoo
         /* Get the collocation index */
         coll_index = source_collocation_index->data.int32_data[time_index_a];
 
-        /* Get the pair for said collocation index; no need to rewind thanks to sorted collocation_result */
-        for (; pair_id < collocation_result->num_pairs; pair_id++)
+        /* Get the match-pair for said collocation index */
+        for (pair_id = 0; pair_id < collocation_result->num_pairs; pair_id++)
         {
             if (collocation_result->pair[pair_id]->collocation_index == coll_index)
             {
