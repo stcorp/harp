@@ -27,9 +27,9 @@ typedef enum vertical_profile_variable_type_enum
 {
     vertical_profile_variable_skip,
     vertical_profile_variable_remove,
-    vertical_profile_variable_resample_linlin,
-    vertical_profile_variable_resample_loglin,
-    vertical_profile_variable_resample_with_bounds
+    vertical_profile_variable_resample_linear,
+    vertical_profile_variable_resample_log,
+    vertical_profile_variable_resample_interval
 } vertical_profile_variable_type;
 
 /* Conversions */

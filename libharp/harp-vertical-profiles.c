@@ -986,63 +986,49 @@ int harp_profile_vmr_cov_from_nd_cov_pressure_and_temperature(long num_levels,
     return 0;
 }
 
-static vertical_profile_variable_type get_vertical_profile_variable_type(harp_variable *variable, const char *axis_name)
+static vertical_profile_variable_type get_vertical_profile_variable_type(harp_variable *variable)
 {
-    int i;
-
-    /* assume it doesn't have a vertical dimension */
-    vertical_profile_variable_type variable_type = vertical_profile_variable_skip;
+    int i, num_vertical_dims;
 
     /* Ensure that there is only 1 vertical dimension, that it's the fastest running one and has scalar values */
-    for (i = 0; i < variable->num_dimensions; i++)
+    for (i = 0, num_vertical_dims = 0; i < variable->num_dimensions; i++)
     {
-
         if (variable->dimension_type[i] == harp_dimension_vertical)
         {
-            /* it has a vertical dimension, we need to resample; determine how */
-            if (strcmp(axis_name, "pressure") == 0)
+            num_vertical_dims++;
+        }
+    }
+
+    if (num_vertical_dims == 0)
+    {
+        /* if the variable has no vertical dimension, we should always skip */
+        return vertical_profile_variable_skip;
+    }
+    else if (num_vertical_dims == 1)
+    {
+        if (variable->dimension_type[variable->num_dimensions - 1] == harp_dimension_vertical)
+        {
+            /* exceptions that can't be resampled */
+            if (variable->data_type == harp_type_string || strstr(variable->name, "_uncertainty") != NULL)
             {
-                variable_type = vertical_profile_variable_resample_loglin;
-            }
-            else
-            {
-                variable_type = vertical_profile_variable_resample_linlin;
+                return vertical_profile_variable_remove;
             }
 
-            if (i != variable->num_dimensions - 1)
+            /* if one vertical dimension and the fastest running one, resample linearly */
+            return vertical_profile_variable_resample_linear;
+        }
+        else
+        {
+            /* if one vertical dimension and not fastest running one, we may be able to use interval interpolation */
+            if (strstr(variable->name, "_column_") != NULL)
             {
-                /* variable has vertical dimension but cannot be resampled */
-                return vertical_profile_variable_remove;
+                return vertical_profile_variable_resample_interval;
             }
         }
     }
 
-    if (variable->data_type == harp_type_string)
-    {
-        return vertical_profile_variable_remove;
-    }
-
-    if (strstr(variable->name, "_uncertainty"))
-    {
-        return vertical_profile_variable_remove;
-    }
-
-    if (strstr(variable->name, "_column_"))
-    {
-        return vertical_profile_variable_remove;
-    }
-
-    if (strstr(variable->name, "_column_"))
-    {
-        return vertical_profile_variable_remove;
-    }
-
-    if (strstr(variable->name, "_bounds"))
-    {
-        return vertical_profile_variable_remove;
-    }
-
-    return variable_type;
+    /* remove all variables with more than one vertical dimension */
+    return vertical_profile_variable_remove;
 }
 
 /** Iterates over the product metadata of all the products in column b of the collocation result and
@@ -1522,7 +1508,7 @@ LIBHARP_API int harp_product_regrid_vertical_with_axis_variable(harp_product *pr
         }
 
         /* Check if we can resample this kind of variable */
-        variable_type = get_vertical_profile_variable_type(variable, vertical_axis->name);
+        variable_type = get_vertical_profile_variable_type(variable);
 
         /* skip the source grid variable, we'll set that afterwards */
         if (variable == source_grid)
@@ -1605,7 +1591,7 @@ LIBHARP_API int harp_product_regrid_vertical_with_axis_variable(harp_product *pr
     return 0;
 }
 
-static int product_filter_resamplable_variables(harp_product *product, const char *vertical_axis)
+static int product_filter_resamplable_variables(harp_product *product)
 {
     int i;
 
@@ -1613,7 +1599,7 @@ static int product_filter_resamplable_variables(harp_product *product, const cha
     {
         harp_variable *var = product->variable[i];
 
-        int var_type = get_vertical_profile_variable_type(var, vertical_axis);
+        int var_type = get_vertical_profile_variable_type(var);
 
         if (var_type == vertical_profile_variable_remove)
         {
@@ -1693,7 +1679,7 @@ LIBHARP_API int harp_product_smooth_vertical(harp_product *product, int num_smoo
     }
 
     /* Remove variables that can't be resampled */
-    if (product_filter_resamplable_variables(product, vertical_axis) != 0)
+    if (product_filter_resamplable_variables(product) != 0)
     {
         goto error;
     }
@@ -1708,6 +1694,16 @@ LIBHARP_API int harp_product_smooth_vertical(harp_product *product, int num_smoo
     if (harp_product_get_derived_variable(product, vertical_axis, vertical_unit, 2, grid_dim_type, &source_grid) != 0)
     {
         goto error;
+    }
+
+    /* Use loglin interpolation if pressure grid */
+    if (strcmp(source_grid->name, "pressure") != 0)
+    {
+        int i;
+        for (i = 0; i < source_grid->num_elements; i++)
+        {
+            source_grid->data.double_data[i] = log(source_grid->data.double_data[i]);
+        }
     }
 
     /* Resize the vertical dimension in the target product to make room for the resampled data */
@@ -1787,6 +1783,15 @@ LIBHARP_API int harp_product_smooth_vertical(harp_product *product, int num_smoo
         {
             goto error;
         }
+        /* Use loglin interpolation if pressure grid */
+        if (strcmp(target_grid->name, "pressure") != 0)
+        {
+            int i;
+            for (i = 0; i < target_grid->num_elements; i++)
+            {
+                target_grid->data.double_data[i] = log(target_grid->data.double_data[i]);
+            }
+        }
 
         /* Resample & smooth variables */
         for (j = product->num_variables - 1; j >= 0; j--)
@@ -1799,7 +1804,7 @@ LIBHARP_API int harp_product_smooth_vertical(harp_product *product, int num_smoo
             int k;
 
             /* Skip variables that don't need resampling */
-            vertical_profile_variable_type var_type = get_vertical_profile_variable_type(var, vertical_axis);
+            vertical_profile_variable_type var_type = get_vertical_profile_variable_type(var);
 
             if (var_type == vertical_profile_variable_skip)
             {
