@@ -931,6 +931,8 @@ static int smooth(int argc, char *argv[])
 
 int main(int argc, char *argv[])
 {
+    int result = 0;
+
     if (argc == 1 || strcmp(argv[1], "-h") == 0 || strcmp(argv[1], "--help") == 0)
     {
         print_help();
@@ -955,8 +957,6 @@ int main(int argc, char *argv[])
         fprintf(stderr, "ERROR: %s\n", harp_errno_to_string(harp_errno));
         return 1;
     }
-
-    int result = 0;
 
     /* parse actions */
     if (strcmp(argv[1], "smooth") == 0)
