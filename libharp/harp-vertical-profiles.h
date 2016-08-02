@@ -23,14 +23,14 @@
 
 #include "harp-internal.h"
 
-typedef enum vertical_profile_variable_type_enum
+typedef enum profile_resample_type_enum
 {
-    vertical_profile_variable_skip,
-    vertical_profile_variable_remove,
-    vertical_profile_variable_resample_linear,
-    vertical_profile_variable_resample_log,
-    vertical_profile_variable_resample_interval
-} vertical_profile_variable_type;
+    profile_resample_skip,
+    profile_resample_remove,
+    profile_resample_linear,
+    profile_resample_log,
+    profile_resample_interval
+} profile_resample_type;
 
 /* Conversions */
 double harp_geopotential_from_gph(double gph);
