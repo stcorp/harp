@@ -2629,6 +2629,144 @@
 </p>
 </dd></dl>
 
+<dl class="function">
+<dt id="_CPPv234get_vertical_profile_variable_typeP13harp_variable">
+<span id="get_vertical_profile_variable_type__harp_variableP"></span><span class="target" id="libharpgroup__harp__algorithm_1ga412ff811a41936f68e966daca0983339"></span><em class="property">static</em> vertical_profile_variable_type <code class="descname">get_vertical_profile_variable_type</code><span class="sig-paren">(</span><a class="reference internal" href="libharp_variable.html#_CPPv213harp_variable" title="harp_variable">harp_variable</a> *<em>variable</em><span class="sig-paren">)</span></dt>
+<dd></dd></dl>
+
+<dl class="function">
+<dt id="_CPPv230get_maximum_vertical_dimensionP23harp_collocation_resultPl">
+<span id="get_maximum_vertical_dimension__harp_collocation_resultP.lP"></span><span class="target" id="libharpgroup__harp__algorithm_1ga4394ea57abff8d4b01cc67b1abe5a48a"></span><em class="property">static</em> int <code class="descname">get_maximum_vertical_dimension</code><span class="sig-paren">(</span><a class="reference internal" href="libharp_collocation.html#_CPPv223harp_collocation_result" title="harp_collocation_result">harp_collocation_result</a> *<em>collocation_result</em>, long *<em>max_vertical</em><span class="sig-paren">)</span></dt>
+<dd><p>Iterates over the product metadata of all the products in column b of the collocation result and determines the maximum vertical dimension size. </p>
+</dd></dl>
+
+<dl class="function">
+<dt id="_CPPv242expand_time_independent_vertical_variablesP12harp_product">
+<span id="expand_time_independent_vertical_variables__harp_productP"></span><span class="target" id="libharpgroup__harp__algorithm_1ga876941232f37e58c153ef7c3c4f208cb"></span><em class="property">static</em> int <code class="descname">expand_time_independent_vertical_variables</code><span class="sig-paren">(</span><a class="reference internal" href="libharp_product.html#_CPPv212harp_product" title="harp_product">harp_product</a> *<em>product</em><span class="sig-paren">)</span></dt>
+<dd></dd></dl>
+
+<dl class="function">
+<dt id="_CPPv225resize_vertical_dimensionP12harp_productl">
+<span id="resize_vertical_dimension__harp_productP.l"></span><span class="target" id="libharpgroup__harp__algorithm_1ga4ff3470f6363225d4caeed3c758090af"></span><em class="property">static</em> int <code class="descname">resize_vertical_dimension</code><span class="sig-paren">(</span><a class="reference internal" href="libharp_product.html#_CPPv212harp_product" title="harp_product">harp_product</a> *<em>product</em>, long <em>max_vertical_dim</em><span class="sig-paren">)</span></dt>
+<dd></dd></dl>
+
+<dl class="function">
+<dt id="_CPPv235get_time_index_by_collocation_indexP12harp_productlPl">
+<span id="get_time_index_by_collocation_index__harp_productP.l.lP"></span><span class="target" id="libharpgroup__harp__algorithm_1ga3d8a5605652d2633cdff8f42a9aea843"></span><em class="property">static</em> int <code class="descname">get_time_index_by_collocation_index</code><span class="sig-paren">(</span><a class="reference internal" href="libharp_product.html#_CPPv212harp_product" title="harp_product">harp_product</a> *<em>product</em>, long <em>collocation_index</em>, long *<em>index</em><span class="sig-paren">)</span></dt>
+<dd></dd></dl>
+
+<dl class="function">
+<dt id="_CPPv213matrix_deletePPdl">
+<span id="matrix_delete__doublePP.l"></span><span class="target" id="libharpgroup__harp__algorithm_1ga35b6f4610b23e9df49c778f5d3d091a2"></span><em class="property">static</em> void <code class="descname">matrix_delete</code><span class="sig-paren">(</span>double **<em>matrix</em>, long <em>dim_vertical</em><span class="sig-paren">)</span></dt>
+<dd></dd></dl>
+
+<dl class="function">
+<dt id="_CPPv221matrix_vector_productPPdPKdllPPd">
+<span id="matrix_vector_product__doublePP.doubleCP.l.l.doublePP"></span><span class="target" id="libharpgroup__harp__algorithm_1gad10ff1cd6a4c1f5e148c13bef6da2f2d"></span><em class="property">static</em> int <code class="descname">matrix_vector_product</code><span class="sig-paren">(</span>double **<em>matrix</em>, <em class="property">const</em> double *<em>vector_in</em>, long <em>m</em>, long <em>n</em>, double **<em>new_vector_out</em><span class="sig-paren">)</span></dt>
+<dd></dd></dl>
+
+<dl class="function">
+<dt id="_CPPv224get_vector_from_variablePK13harp_variablelPPd">
+<span id="get_vector_from_variable__harp_variableCP.l.doublePP"></span><span class="target" id="libharpgroup__harp__algorithm_1ga93438664cbef64b2d5b13da68b8f5420"></span><em class="property">static</em> int <code class="descname">get_vector_from_variable</code><span class="sig-paren">(</span><em class="property">const</em> <a class="reference internal" href="libharp_variable.html#_CPPv213harp_variable" title="harp_variable">harp_variable</a> *<em>variable</em>, long <em>measurement_id</em>, double **<em>new_vector</em><span class="sig-paren">)</span></dt>
+<dd></dd></dl>
+
+<dl class="function">
+<dt id="_CPPv228get_matrix_from_avk_variablePK13harp_variablelPPPd">
+<span id="get_matrix_from_avk_variable__harp_variableCP.l.doublePPP"></span><span class="target" id="libharpgroup__harp__algorithm_1ga78df37829743445f34b741dd63b348bd"></span><em class="property">static</em> int <code class="descname">get_matrix_from_avk_variable</code><span class="sig-paren">(</span><em class="property">const</em> <a class="reference internal" href="libharp_variable.html#_CPPv213harp_variable" title="harp_variable">harp_variable</a> *<em>avk</em>, long <em>time_index</em>, double ***<em>new_matrix</em><span class="sig-paren">)</span></dt>
+<dd></dd></dl>
+
+<dl class="function">
+<dt id="_CPPv217get_vertical_unitPKcPPc">
+<span id="get_vertical_unit__cCP.cPP"></span><span class="target" id="libharpgroup__harp__algorithm_1ga1b609c8ba072be3c587c41426df9e79b"></span><em class="property">static</em> int <code class="descname">get_vertical_unit</code><span class="sig-paren">(</span><em class="property">const</em> char *<em>name</em>, char **<em>new_unit</em><span class="sig-paren">)</span></dt>
+<dd></dd></dl>
+
+<dl class="function">
+<dt id="_CPPv223vertical_profile_smoothP13harp_variableP12harp_productll">
+<span id="vertical_profile_smooth__harp_variableP.harp_productP.l.l"></span><span class="target" id="libharpgroup__harp__algorithm_1gad97d4610e78ed209ccc5537fd6526bf0"></span><em class="property">static</em> int <code class="descname">vertical_profile_smooth</code><span class="sig-paren">(</span><a class="reference internal" href="libharp_variable.html#_CPPv213harp_variable" title="harp_variable">harp_variable</a> *<em>var</em>, <a class="reference internal" href="libharp_product.html#_CPPv212harp_product" title="harp_product">harp_product</a> *<em>match</em>, long <em>time_index_a</em>, long <em>time_index_b</em><span class="sig-paren">)</span></dt>
+<dd></dd></dl>
+
+<dl class="function">
+<dt id="_CPPv247harp_product_regrid_vertical_with_axis_variableP12harp_productP13harp_variable">
+<span id="harp_product_regrid_vertical_with_axis_variable__harp_productP.harp_variableP"></span><span class="target" id="libharpgroup__harp__algorithm_1ga057036b6eb3f6d8e839c7657180c4a75"></span>int <code class="descname">harp_product_regrid_vertical_with_axis_variable</code><span class="sig-paren">(</span><a class="reference internal" href="libharp_product.html#_CPPv212harp_product" title="harp_product">harp_product</a> *<em>product</em>, <a class="reference internal" href="libharp_variable.html#_CPPv213harp_variable" title="harp_variable">harp_variable</a> *<em>target_grid</em><span class="sig-paren">)</span></dt>
+<dd><p>Resamples all variables in product against a specified grid. Target_grid is expected to be a variable of dimensions {vertical}. The source grid is determined by derivation of a matching vertical quantity on the specified product.</p>
+<p><dl class="docutils">
+<dt><strong>Return</strong></dt>
+<dd><ul class="simple">
+<li><code class="docutils literal"><span class="pre">0</span></code>, Success. </li>
+<li><code class="docutils literal"><span class="pre">-1</span></code>, Error occurred (check <a class="reference internal" href="libharp_error.html#libharpgroup__harp__error_1gab2eeb46528306c6799632d1e800c4c36"><span class="std std-ref">harp_errno</span></a>). </li>
+</ul>
+</dd>
+<dt><strong>Parameters</strong></dt>
+<dd><ul class="breatheparameterlist first last">
+<li><code class="first docutils literal"><span class="pre">product</span></code> - <p>Product to resample. </p>
+</li>
+<li><code class="first docutils literal"><span class="pre">target_grid</span></code> - <p>Vertical grid to target.</p>
+</li>
+</ul>
+</dd>
+</dl>
+</p>
+</dd></dl>
+
+<dl class="function">
+<dt id="_CPPv236product_filter_resamplable_variablesP12harp_product">
+<span id="product_filter_resamplable_variables__harp_productP"></span><span class="target" id="libharpgroup__harp__algorithm_1ga78f1292e4172f93a6c335d6c1b9433e3"></span><em class="property">static</em> int <code class="descname">product_filter_resamplable_variables</code><span class="sig-paren">(</span><a class="reference internal" href="libharp_product.html#_CPPv212harp_product" title="harp_product">harp_product</a> *<em>product</em><span class="sig-paren">)</span></dt>
+<dd></dd></dl>
+
+<dl class="function">
+<dt id="_CPPv228harp_product_smooth_verticalP12harp_productiPPKcPKcP23harp_collocation_result">
+<span id="harp_product_smooth_vertical__harp_productP.i.cCPP.cCP.harp_collocation_resultP"></span><span class="target" id="libharpgroup__harp__algorithm_1ga2885709fd974c74ec034b960bd0f9150"></span>int <code class="descname">harp_product_smooth_vertical</code><span class="sig-paren">(</span><a class="reference internal" href="libharp_product.html#_CPPv212harp_product" title="harp_product">harp_product</a> *<em>product</em>, int <em>num_smooth_variables</em>, <em class="property">const</em> char **<em>smooth_variables</em>, <em class="property">const</em> char *<em>vertical_axis</em>, <a class="reference internal" href="libharp_collocation.html#_CPPv223harp_collocation_result" title="harp_collocation_result">harp_collocation_result</a> *<em>collocation_result</em><span class="sig-paren">)</span></dt>
+<dd><p>Creates a shallow copy of a collocation result for filtering purposes Smooth the product&#8217;s variables (from dataset a in the collocation result) using the vertical grids, avks and a apriori of matching products in dataset b and smooth the variables specified.</p>
+<p><dl class="docutils">
+<dt><strong>Return</strong></dt>
+<dd><ul class="simple">
+<li><code class="docutils literal"><span class="pre">0</span></code>, Success. </li>
+<li><code class="docutils literal"><span class="pre">-1</span></code>, Error occurred (check <a class="reference internal" href="libharp_error.html#libharpgroup__harp__error_1gab2eeb46528306c6799632d1e800c4c36"><span class="std std-ref">harp_errno</span></a>). </li>
+</ul>
+</dd>
+<dt><strong>Parameters</strong></dt>
+<dd><ul class="breatheparameterlist first last">
+<li><code class="first docutils literal"><span class="pre">product</span></code> - <p>Product to smooth. </p>
+</li>
+<li><code class="first docutils literal"><span class="pre">num_smooth_variables</span></code> - <p>length of smooth_variables. </p>
+</li>
+<li><code class="first docutils literal"><span class="pre">smooth_variables</span></code> - <p>The names of the variables to smooth. </p>
+</li>
+<li><code class="first docutils literal"><span class="pre">vertical_axis</span></code> - <p>The name of the variable to use as a vertical axis (pressure/altitude/etc). </p>
+</li>
+<li><code class="first docutils literal"><span class="pre">collocation_result</span></code> - <p>The collocation result used to locate the matching vertical grids/avks/apriori. The collocation result is assumed to have the appropriate metadata available for all matches (dataset b).</p>
+</li>
+</ul>
+</dd>
+</dl>
+</p>
+</dd></dl>
+
+<dl class="function">
+<dt id="_CPPv252harp_product_regrid_vertical_with_collocated_datasetP12harp_productPKcP23harp_collocation_result">
+<span id="harp_product_regrid_vertical_with_collocated_dataset__harp_productP.cCP.harp_collocation_resultP"></span><span class="target" id="libharpgroup__harp__algorithm_1ga2002a5a28591072b41bdddb25570fd50"></span>int <code class="descname">harp_product_regrid_vertical_with_collocated_dataset</code><span class="sig-paren">(</span><a class="reference internal" href="libharp_product.html#_CPPv212harp_product" title="harp_product">harp_product</a> *<em>product</em>, <em class="property">const</em> char *<em>vertical_axis</em>, <a class="reference internal" href="libharp_collocation.html#_CPPv223harp_collocation_result" title="harp_collocation_result">harp_collocation_result</a> *<em>collocation_result</em><span class="sig-paren">)</span></dt>
+<dd><p>Regrid the product&#8217;s variables (from dataset a in the collocation result) to the vertical grids, of matching products in dataset b and smooth the variables specified.</p>
+<p><dl class="docutils">
+<dt><strong>Return</strong></dt>
+<dd><ul class="simple">
+<li><code class="docutils literal"><span class="pre">0</span></code>, Success. </li>
+<li><code class="docutils literal"><span class="pre">-1</span></code>, Error occurred (check <a class="reference internal" href="libharp_error.html#libharpgroup__harp__error_1gab2eeb46528306c6799632d1e800c4c36"><span class="std std-ref">harp_errno</span></a>). </li>
+</ul>
+</dd>
+<dt><strong>Parameters</strong></dt>
+<dd><ul class="breatheparameterlist first last">
+<li><code class="first docutils literal"><span class="pre">product</span></code> - <p>Product to regrid. </p>
+</li>
+<li><code class="first docutils literal"><span class="pre">vertical_axis</span></code> - <p>The name of the variable to use as a vertical axis (pressure/altitude/etc). </p>
+</li>
+<li><code class="first docutils literal"><span class="pre">collocation_result</span></code> - <p>The collocation result used to find matching variables. The collocation result is assumed to have the appropriate metadata available for all matches (dataset b).</p>
+</li>
+</ul>
+</dd>
+</dl>
+</p>
+</dd></dl>
+
 </div>
 </dd></dl>
 
