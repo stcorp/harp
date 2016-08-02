@@ -157,7 +157,7 @@
 <dt>
 <span class="target" id="libharpgroup__harp__dataset"></span><em>group</em> <code class="descname">harp_dataset</code></dt>
 <dd><p>The HARP harp_dataset module contains everything regarding HARP datasets.</p>
-<p>A Dataset contains a list of references to HARP products together with optional metadata on each product. The primary reference to a product is the value of the &#8216;source_product&#8217; global attribute of a HARP product. A Dataset thus does not require that its HARP products have been read in memory. Availability of Product Metadata in a Dataset is optional, but metadata either has to be available for all entries or for none of them. </p>
+<p>A Dataset contains a list of references to HARP products together with optional metadata on each product. The primary reference to a product is the value of the &#8216;source_product&#8217; global attribute of a HARP product. A Dataset thus does not require that its HARP products have been read in memory. The Product Metadata is not guaranteed to be available for every source_product in the dataset. </p>
 <div class="breathe-sectiondef container">
 <p class="breathe-sectiondef-title rubric">Typedefs</p>
 <dl class="type">
@@ -220,9 +220,9 @@
 </dd></dl>
 
 <dl class="function">
-<dt id="_CPPv226harp_dataset_add_directoryP12harp_datasetPKc">
-<span id="harp_dataset_add_directory__harp_datasetP.cCP"></span><span class="target" id="libharpgroup__harp__dataset_1ga509b090faba18d326569f9b7fb07baf7"></span>int <code class="descname">harp_dataset_add_directory</code><span class="sig-paren">(</span><a class="reference internal" href="#_CPPv212harp_dataset" title="harp_dataset">harp_dataset</a> *<em>dataset</em>, <em class="property">const</em> char *<em>pathname</em><span class="sig-paren">)</span></dt>
-<dd><p>Read metadata for all products found in the directory indicated by path. <dl class="docutils">
+<dt id="_CPPv219harp_dataset_importP12harp_datasetPKc">
+<span id="harp_dataset_import__harp_datasetP.cCP"></span><span class="target" id="libharpgroup__harp__dataset_1ga69067054ba9d27c1de7df0eb5f1a6f2f"></span>int <code class="descname">harp_dataset_import</code><span class="sig-paren">(</span><a class="reference internal" href="#_CPPv212harp_dataset" title="harp_dataset">harp_dataset</a> *<em>dataset</em>, <em class="property">const</em> char *<em>path</em><span class="sig-paren">)</span></dt>
+<dd><p>Import dataset from filesystem. If the dataset already contains a source_product, it&#8217;s metadata is set. <dl class="docutils">
 <dt><strong>Return</strong></dt>
 <dd><ul class="simple">
 <li><code class="docutils literal"><span class="pre">0</span></code>, Success. </li>
@@ -231,31 +231,9 @@
 </dd>
 <dt><strong>Parameters</strong></dt>
 <dd><ul class="breatheparameterlist first last">
-<li><code class="first docutils literal"><span class="pre">pathname</span></code> - <p>Path of the directory to search for products to import as a HARP harp_dataset. </p>
+<li><code class="first docutils literal"><span class="pre">dataset</span></code> - <p>Dataset to import the dataset metadata into. </p>
 </li>
-<li><code class="first docutils literal"><span class="pre">dataset</span></code> - <p>Pointer to dataset to add the metadata to. </p>
-</li>
-</ul>
-</dd>
-</dl>
-</p>
-</dd></dl>
-
-<dl class="function">
-<dt id="_CPPv221harp_dataset_add_fileP12harp_datasetPKc">
-<span id="harp_dataset_add_file__harp_datasetP.cCP"></span><span class="target" id="libharpgroup__harp__dataset_1gaa1372c2529263bbb4b75a5e16941da46"></span>int <code class="descname">harp_dataset_add_file</code><span class="sig-paren">(</span><a class="reference internal" href="#_CPPv212harp_dataset" title="harp_dataset">harp_dataset</a> *<em>dataset</em>, <em class="property">const</em> char *<em>filename</em><span class="sig-paren">)</span></dt>
-<dd><p>Read metadata for product indicated by filename and add it to the dataset. This will not check if filename already appears in the dataset. <dl class="docutils">
-<dt><strong>Return</strong></dt>
-<dd><ul class="simple">
-<li><code class="docutils literal"><span class="pre">0</span></code>, Success. </li>
-<li><code class="docutils literal"><span class="pre">-1</span></code>, Error occurred (check <a class="reference internal" href="libharp_error.html#libharpgroup__harp__error_1gab2eeb46528306c6799632d1e800c4c36"><span class="std std-ref">harp_errno</span></a>). </li>
-</ul>
-</dd>
-<dt><strong>Parameters</strong></dt>
-<dd><ul class="breatheparameterlist first last">
-<li><code class="first docutils literal"><span class="pre">filename</span></code> - <p>Path of the directory to search for products to import as a HARP harp_dataset. </p>
-</li>
-<li><code class="first docutils literal"><span class="pre">dataset</span></code> - <p>Pointer to dataset to add the metadata to. </p>
+<li><code class="first docutils literal"><span class="pre">path</span></code> - <p>Path to either a directory containing harp product files or * a single harp product filepath. </p>
 </li>
 </ul>
 </dd>
@@ -312,7 +290,7 @@
 <dl class="function">
 <dt id="_CPPv224harp_dataset_add_productP12harp_datasetPKcP21harp_product_metadata">
 <span id="harp_dataset_add_product__harp_datasetP.cCP.harp_product_metadataP"></span><span class="target" id="libharpgroup__harp__dataset_1gaeb9189ed0ccc571893ecf40d06566044"></span>int <code class="descname">harp_dataset_add_product</code><span class="sig-paren">(</span><a class="reference internal" href="#_CPPv212harp_dataset" title="harp_dataset">harp_dataset</a> *<em>dataset</em>, <em class="property">const</em> char *<em>source_product</em>, <a class="reference internal" href="libharp_product_metadata.html#_CPPv221harp_product_metadata" title="harp_product_metadata">harp_product_metadata</a> *<em>metadata</em><span class="sig-paren">)</span></dt>
-<dd><p>Add a product reference to a dataset. Metadata is only allowed to be NULL if the dataset did not already contain metadata for its entries. <dl class="docutils">
+<dd><p>Add a product reference to a dataset. <dl class="docutils">
 <dt><strong>Return</strong></dt>
 <dd><ul class="simple">
 <li><code class="docutils literal"><span class="pre">0</span></code>, Success. </li>
@@ -325,7 +303,7 @@
 </li>
 <li><code class="first docutils literal"><span class="pre">source_product</span></code> - <p>The source product reference of the new entry. </p>
 </li>
-<li><code class="first docutils literal"><span class="pre">metadata</span></code> - <p>The product metadata of the new entry (can be NULL). </p>
+<li><code class="first docutils literal"><span class="pre">metadata</span></code> - <p>The product metadata of the new entry (can be NULL); the dataset is the new owner of metadata. </p>
 </li>
 </ul>
 </dd>

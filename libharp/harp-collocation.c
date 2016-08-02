@@ -38,6 +38,17 @@
  * Collocation results can be written to and read from a csv file.
  */
 
+static void collocation_pair_swap_datasets(harp_collocation_pair *pair)
+{
+    long index_a = pair->product_index_a;
+    long sample_a = pair->sample_index_a;
+
+    pair->product_index_a = pair->product_index_b;
+    pair->sample_index_a = pair->sample_index_b;
+    pair->product_index_b = index_a;
+    pair->sample_index_b = sample_a;
+}
+
 static int collocation_pair_new(long collocation_index, long product_index_a, long sample_index_a, long product_index_b,
                                 long sample_index_b, const double *difference, harp_collocation_pair **new_pair)
 {
@@ -261,7 +272,7 @@ static int compare_by_collocation_index(const void *a, const void *b)
  */
 
 /** Sort the collocation result pairs by dataset A
- * Results will be sorted first by product source name of A and then by sample index of A
+ * Results will be sorted first by product index of A and then by sample index of A
  * \param collocation_result Result set that will be sorted in place.
  * \return
  *   \arg \c 0, Success.
@@ -274,7 +285,7 @@ LIBHARP_API int harp_collocation_result_sort_by_a(harp_collocation_result *collo
 }
 
 /** Sort the collocation result pairs by dataset B
- * Results will be sorted first by product source name of B and then by sample index of B
+ * Results will be sorted first by product index of B and then by sample index of B
  * \param collocation_result Result set that will be sorted in place.
  * \return
  *   \arg \c 0, Success.
@@ -1062,6 +1073,89 @@ LIBHARP_API int harp_collocation_result_write(const char *collocation_result_fil
     }
 
     return 0;
+}
+
+/** Swap the columns of this collocation result inplace.
+ */
+LIBHARP_API void harp_collocation_result_swap_datasets(harp_collocation_result *collocation_result)
+{
+    int i;
+
+    for (i = 0; i < collocation_result->num_pairs; i++)
+    {
+        collocation_pair_swap_datasets(collocation_result->pair[i]);
+    }
+
+    harp_dataset *data_a = collocation_result->dataset_a;
+
+    collocation_result->dataset_a = collocation_result->dataset_b;
+    collocation_result->dataset_b = data_a;
+}
+
+/** Creates a shallow copy of a collocation result for filtering purposes */
+int harp_collocation_result_shallow_copy(const harp_collocation_result *collocation_result,
+                                         harp_collocation_result **new_result)
+{
+    harp_collocation_result *result = NULL;
+    harp_collocation_pair **pairs = NULL;
+    int i;
+
+    /* allocate memory for the result struct */
+    result = (harp_collocation_result *)malloc(sizeof(harp_collocation_result));
+    if (result == NULL)
+    {
+        harp_set_error(HARP_ERROR_OUT_OF_MEMORY, "out of memory (could not allocate %lu bytes) (%s:%u)",
+                       sizeof(harp_collocation_result), __FILE__, __LINE__);
+        free(result);
+        return -1;
+    }
+
+    /* allocate memory for the pairs array */
+    pairs = malloc((size_t)collocation_result->num_pairs * sizeof(harp_collocation_pair));
+    if (!pairs)
+    {
+        harp_set_error(HARP_ERROR_OUT_OF_MEMORY, "out of memory (could not allocate %lu bytes) (%s:%u)",
+                       (size_t)collocation_result->num_pairs * sizeof(harp_collocation_pair), __FILE__, __LINE__);
+        return -1;
+    }
+    result->pair = pairs;
+
+    /* populate the pairs with copies */
+    for (i = 0; i < collocation_result->num_pairs; i++)
+    {
+        harp_collocation_pair *pair = collocation_result->pair[i];
+
+        collocation_pair_new(pair->collocation_index, pair->product_index_a, pair->sample_index_a,
+                             pair->product_index_b, pair->sample_index_b, pair->difference, &result->pair[i]);
+    }
+    result->num_pairs = collocation_result->num_pairs;
+
+    /* copy other attributes */
+    result->dataset_a = collocation_result->dataset_a;
+    result->dataset_b = collocation_result->dataset_b;
+    for (i = 0; i < HARP_COLLOCATION_RESULT_MAX_NUM_DIFFERENCES; i++)
+    {
+        result->difference_available[i] = collocation_result->difference_available[i];
+        result->difference_unit[i] = collocation_result->difference_unit[i];
+    }
+
+    *new_result = result;
+
+    return 0;
+}
+
+void harp_collocation_result_shallow_delete(harp_collocation_result *collocation_result)
+{
+    int i;
+
+    for (i = 0; i < collocation_result->num_pairs; i++)
+    {
+        collocation_pair_delete(collocation_result->pair[i]);
+        collocation_result->pair[i] = NULL;
+    }
+
+    free(collocation_result->pair);
+    free(collocation_result);
 }
 
 /**

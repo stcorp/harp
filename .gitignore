@@ -34,6 +34,7 @@ stamp-*
 /harpconvert
 /harpdump
 /harpfilter
+/harpprofile
 /libharp/harp.h
 /libtool
 /ltmain.sh

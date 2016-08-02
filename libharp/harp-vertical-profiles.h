@@ -23,6 +23,15 @@
 
 #include "harp-internal.h"
 
+typedef enum vertical_profile_variable_type_enum
+{
+    vertical_profile_variable_skip,
+    vertical_profile_variable_remove,
+    vertical_profile_variable_resample_linlin,
+    vertical_profile_variable_resample_loglin,
+    vertical_profile_variable_resample_with_bounds
+} vertical_profile_variable_type;
+
 /* Conversions */
 double harp_geopotential_from_gph(double gph);
 double harp_gph_from_geopotential(double geopotential);
@@ -85,5 +94,6 @@ int harp_partial_column_covariance_matrix_regridded_from_density_covariance_matr
 double harp_profile_column_from_partial_column(long num_levels, const double *partial_column_profile);
 double harp_profile_column_uncertainty_from_partial_column_uncertainty
     (long num_levels, const double *partial_column_uncertainty_profile);
+
 
 #endif

@@ -42,8 +42,7 @@
  * A Dataset contains a list of references to HARP products together with optional metadata on each product.
  * The primary reference to a product is the value of the 'source_product' global attribute of a HARP product.
  * A Dataset thus does not require that its HARP products have been read in memory.
- * Availability of Product Metadata in a Dataset is optional, but metadata either has to be available for all entries
- * or for none of them.
+ * The Product Metadata is not guaranteed to be available for every source_product in the dataset.
  */
 
 /**
@@ -105,6 +104,152 @@ static int check_file(const char *filename)
         harp_set_error(HARP_ERROR_FILE_OPEN, "could not open %s (not a regular file)", filename);
         return -1;
     }
+
+    return 0;
+}
+
+static int add_file(harp_dataset *dataset, const char *filename)
+{
+    harp_product_metadata *metadata = NULL;
+
+    /* Import the metadata */
+    if (harp_import_product_metadata(filename, &metadata) != 0)
+    {
+        return -1;
+    }
+
+    return harp_dataset_add_product(dataset, metadata->source_product, metadata);
+}
+
+static int add_directory(harp_dataset *dataset, const char *pathname)
+{
+#ifdef WIN32
+    WIN32_FIND_DATA FileData;
+    HANDLE hSearch;
+    BOOL fFinished;
+    char *pattern;
+
+    pattern = malloc(strlen(pathname) + 4 + 1);
+    if (pattern == NULL)
+    {
+        harp_set_error(HARP_ERROR_OUT_OF_MEMORY, "out of memory (could not allocate %lu bytes) (%s:%u)",
+                       (long)strlen(pathname) + 4 + 1, __FILE__, __LINE__);
+        return -1;
+    }
+    sprintf(pattern, "%s\\*.*", pathname);
+    hSearch = FindFirstFile(pattern, &FileData);
+    free(pattern);
+
+    if (hSearch == INVALID_HANDLE_VALUE)
+    {
+        if (GetLastError() == ERROR_FILE_NOT_FOUND || GetLastError() == ERROR_NO_MORE_FILES)
+        {
+            /* no files found */
+            return 0;
+        }
+        harp_set_error(HARP_ERROR_INVALID_ARGUMENT, "could not access directory '%s'", pathname);
+        return -1;
+    }
+
+    fFinished = FALSE;
+    while (!fFinished)
+    {
+        if (!(FileData.dwFileAttributes & FILE_ATTRIBUTE_DIRECTORY))
+        {
+            char *filepath;
+
+            filepath = malloc(strlen(pathname) + 1 + strlen(FileData.cFileName) + 1);
+            if (filepath == NULL)
+            {
+                harp_set_error(HARP_ERROR_OUT_OF_MEMORY, "out of memory (could not allocate %lu bytes) (%s:%u)",
+                               (long)strlen(pathname) + 1 + strlen(FileData.cFileName) + 1, __FILE__, __LINE__);
+                FindClose(hSearch);
+                return -1;
+            }
+            sprintf(filepath, "%s\\%s", pathname, FileData.cFileName);
+            if (check_file(filepath) != 0)
+            {
+                harp_set_error(HARP_ERROR_INVALID_ARGUMENT, "'%s' is not a valid HARP file", filepath);
+                free(filepath);
+                FindClose(hSearch);
+                return -1;
+            }
+            add_file(dataset, filepath);
+            free(filepath);
+        }
+
+        if (!FindNextFile(hSearch, &FileData))
+        {
+            if (GetLastError() == ERROR_NO_MORE_FILES)
+            {
+                fFinished = TRUE;
+            }
+            else
+            {
+                harp_set_error(HARP_ERROR_INVALID_ARGUMENT, "could not retrieve directory entry");
+                FindClose(hSearch);
+                return -1;
+            }
+        }
+    }
+    FindClose(hSearch);
+#else
+    DIR *dirp = NULL;
+    struct dirent *dp = NULL;
+
+    /* Open the directory */
+    dirp = opendir(pathname);
+
+    if (dirp == NULL)
+    {
+        harp_set_error(HARP_ERROR_INVALID_ARGUMENT, "could not open directory %s", pathname);
+        closedir(dirp);
+        return -1;
+    }
+
+    /* Walk through files in directory and add filenames to dataset */
+    while ((dp = readdir(dirp)) != NULL)
+    {
+        char *filepath = NULL;
+
+        /* Skip '.' and '..' */
+        if (strcmp(dp->d_name, ".") == 0 || strcmp(dp->d_name, "..") == 0)
+        {
+            continue;
+        }
+
+        /* Add path before filename */
+        filepath = malloc(strlen(pathname) + 1 + strlen(dp->d_name) + 1);
+        if (filepath == NULL)
+        {
+            harp_set_error(HARP_ERROR_OUT_OF_MEMORY, "out of memory (could not allocate %lu bytes) (%s:%u)",
+                           (long)strlen(pathname) + 1 + strlen(dp->d_name) + 1, __FILE__, __LINE__);
+            closedir(dirp);
+            return -1;
+        }
+        sprintf(filepath, "%s/%s", pathname, dp->d_name);
+
+        if (is_directory(filepath))
+        {
+            /* Skip subdirectories */
+            free(filepath);
+            continue;
+        }
+
+        if (check_file(filepath) != 0)
+        {
+            /* Exit, file type is not supported */
+            harp_set_error(HARP_ERROR_INVALID_ARGUMENT, "'%s' is not a valid HARP file", filepath);
+            free(filepath);
+            closedir(dirp);
+            return -1;
+        }
+        add_file(dataset, filepath);
+        free(filepath);
+    }
+
+    closedir(dirp);
+#endif
 
     return 0;
 }
@@ -198,165 +343,24 @@ LIBHARP_API void harp_dataset_print(harp_dataset *dataset, int (*print) (const c
     }
 }
 
-/** Read metadata for all products found in the directory indicated by path.
- * \param pathname Path of the directory to search for products to import as a HARP harp_dataset.
- * \param dataset Pointer to dataset to add the metadata to.
+/** Import dataset from filesystem.
+ * If the dataset already contains a source_product, it's metadata is set.
+ * \param dataset Dataset to import the dataset metadata into.
+ * \param path Path to either a directory containing harp product files or * a single harp product filepath.
  * \return
  *   \arg \c 0, Success.
  *   \arg \c -1, Error occurred (check #harp_errno).
  */
-LIBHARP_API int harp_dataset_add_directory(harp_dataset *dataset, const char *pathname)
+LIBHARP_API int harp_dataset_import(harp_dataset *dataset, const char *path)
 {
-#ifdef WIN32
-    WIN32_FIND_DATA FileData;
-    HANDLE hSearch;
-    BOOL fFinished;
-    char *pattern;
-
-    pattern = malloc(strlen(pathname) + 4 + 1);
-    if (pattern == NULL)
+    if (is_directory(path))
     {
-        harp_set_error(HARP_ERROR_OUT_OF_MEMORY, "out of memory (could not allocate %lu bytes) (%s:%u)",
-                       (long)strlen(pathname) + 4 + 1, __FILE__, __LINE__);
-        return -1;
+        return add_directory(dataset, path);
     }
-    sprintf(pattern, "%s\\*.*", pathname);
-    hSearch = FindFirstFile(pattern, &FileData);
-    free(pattern);
-
-    if (hSearch == INVALID_HANDLE_VALUE)
+    else
     {
-        if (GetLastError() == ERROR_FILE_NOT_FOUND || GetLastError() == ERROR_NO_MORE_FILES)
-        {
-            /* no files found */
-            return 0;
-        }
-        harp_set_error(HARP_ERROR_INVALID_ARGUMENT, "could not access directory '%s'", pathname);
-        return -1;
+        return add_file(dataset, path);
     }
-
-    fFinished = FALSE;
-    while (!fFinished)
-    {
-        if (!(FileData.dwFileAttributes & FILE_ATTRIBUTE_DIRECTORY))
-        {
-            char *filepath;
-
-            filepath = malloc(strlen(pathname) + 1 + strlen(FileData.cFileName) + 1);
-            if (filepath == NULL)
-            {
-                harp_set_error(HARP_ERROR_OUT_OF_MEMORY, "out of memory (could not allocate %lu bytes) (%s:%u)",
-                               (long)strlen(pathname) + 1 + strlen(FileData.cFileName) + 1, __FILE__, __LINE__);
-                FindClose(hSearch);
-                return -1;
-            }
-            sprintf(filepath, "%s\\%s", pathname, FileData.cFileName);
-            if (check_file(filepath) != 0)
-            {
-                harp_set_error(HARP_ERROR_INVALID_ARGUMENT, "'%s' is not a valid HARP file", filepath);
-                free(filepath);
-                FindClose(hSearch);
-                return -1;
-            }
-            harp_dataset_add_file(dataset, filepath);
-            free(filepath);
-        }
-
-        if (!FindNextFile(hSearch, &FileData))
-        {
-            if (GetLastError() == ERROR_NO_MORE_FILES)
-            {
-                fFinished = TRUE;
-            }
-            else
-            {
-                harp_set_error(HARP_ERROR_INVALID_ARGUMENT, "could not retrieve directory entry");
-                FindClose(hSearch);
-                return -1;
-            }
-        }
-    }
-    FindClose(hSearch);
-#else
-    DIR *dirp = NULL;
-    struct dirent *dp = NULL;
-
-    /* Open the directory */
-    dirp = opendir(pathname);
-
-    if (dirp == NULL)
-    {
-        harp_set_error(HARP_ERROR_INVALID_ARGUMENT, "could not open directory %s", pathname);
-        closedir(dirp);
-        return -1;
-    }
-
-    /* Walk through files in directory and add filenames to dataset */
-    while ((dp = readdir(dirp)) != NULL)
-    {
-        char *filepath = NULL;
-
-        /* Skip '.' and '..' */
-        if (strcmp(dp->d_name, ".") == 0 || strcmp(dp->d_name, "..") == 0)
-        {
-            continue;
-        }
-
-        /* Add path before filename */
-        filepath = malloc(strlen(pathname) + 1 + strlen(dp->d_name) + 1);
-        if (filepath == NULL)
-        {
-            harp_set_error(HARP_ERROR_OUT_OF_MEMORY, "out of memory (could not allocate %lu bytes) (%s:%u)",
-                           (long)strlen(pathname) + 1 + strlen(dp->d_name) + 1, __FILE__, __LINE__);
-            closedir(dirp);
-            return -1;
-        }
-        sprintf(filepath, "%s/%s", pathname, dp->d_name);
-
-        if (is_directory(filepath))
-        {
-            /* Skip subdirectories */
-            free(filepath);
-            continue;
-        }
-
-        if (check_file(filepath) != 0)
-        {
-            /* Exit, file type is not supported */
-            harp_set_error(HARP_ERROR_INVALID_ARGUMENT, "'%s' is not a valid HARP file", filepath);
-            free(filepath);
-            closedir(dirp);
-            return -1;
-        }
-        harp_dataset_add_file(dataset, filepath);
-        free(filepath);
-    }
-
-    closedir(dirp);
-#endif
-
-    return 0;
-}
-
-/** Read metadata for product indicated by filename and add it to the dataset.
- * This will not check if filename already appears in the dataset.
- * \param filename Path of the directory to search for products to import as a HARP harp_dataset.
- * \param dataset Pointer to dataset to add the metadata to.
- * \return
- *   \arg \c 0, Success.
- *   \arg \c -1, Error occurred (check #harp_errno).
- */
-LIBHARP_API int harp_dataset_add_file(harp_dataset *dataset, const char *filename)
-{
-    harp_product_metadata *metadata = NULL;
-
-    /* Import the metadata */
-    if (harp_import_product_metadata(filename, &metadata) != 0)
-    {
-        return -1;
-    }
-
-    return harp_dataset_add_product(dataset, metadata->source_product, metadata);
 }
 
 /** Lookup the index of source_product in the given dataset.
@@ -397,10 +401,9 @@ LIBHARP_API int harp_dataset_has_product(harp_dataset *dataset, const char *sour
 }
 
 /** Add a product reference to a dataset.
- * Metadata is only allowed to be NULL if the dataset did not already contain metadata for its entries.
  * \param dataset Dataset in which to add a new entry.
  * \param source_product The source product reference of the new entry.
- * \param metadata The product metadata of the new entry (can be NULL).
+ * \param metadata The product metadata of the new entry (can be NULL); the dataset is the new owner of metadata.
  * \return
  *   \arg \c 0, Success.
  *   \arg \c -1, Error occurred (check #harp_errno).
@@ -414,6 +417,8 @@ LIBHARP_API int harp_dataset_add_product(harp_dataset *dataset, const char *sour
         /* Make space for new entry */
         if (dataset->num_products % BLOCK_SIZE == 0)
         {
+            int i;
+
             /* grow the source_product array by one block */
             dataset->source_product = realloc(dataset->source_product,
                                               (dataset->num_products + BLOCK_SIZE) * sizeof(char **));
@@ -424,17 +429,19 @@ LIBHARP_API int harp_dataset_add_product(harp_dataset *dataset, const char *sour
                 return -1;
             }
 
-            if (dataset->metadata != NULL || (metadata != NULL && dataset->num_products == 0))
+            dataset->metadata = realloc(dataset->metadata,
+                                        (dataset->num_products + BLOCK_SIZE) * sizeof(harp_product_metadata *));
+            if (!dataset->metadata)
             {
-                /* grow the metadata array by one block */
-                dataset->metadata = realloc(dataset->metadata,
-                                            (dataset->num_products + BLOCK_SIZE) * sizeof(harp_product_metadata *));
-                if (!dataset->metadata)
-                {
-                    harp_set_error(HARP_ERROR_OUT_OF_MEMORY, "out of memory (could not allocate %lu bytes) (%s:%u)",
-                                   (long)(dataset->num_products + BLOCK_SIZE) * sizeof(char *), __FILE__, __LINE__);
-                    return -1;
-                }
+                harp_set_error(HARP_ERROR_OUT_OF_MEMORY, "out of memory (could not allocate %lu bytes) (%s:%u)",
+                               (long)(dataset->num_products + BLOCK_SIZE) * sizeof(char *), __FILE__, __LINE__);
+                return -1;
+            }
+
+            /* zero-out metadata entries; as these are only optionally set in the future */
+            for (i = dataset->num_products; i < (dataset->num_products + BLOCK_SIZE); i++)
+            {
+                dataset->metadata[i] = NULL;
             }
         }
 
@@ -448,24 +455,31 @@ LIBHARP_API int harp_dataset_add_product(harp_dataset *dataset, const char *sour
             return -1;
         }
 
-        if (dataset->metadata != NULL)
-        {
-            if (metadata == NULL)
-            {
-                harp_set_error(HARP_ERROR_INVALID_ARGUMENT, "metadata cannot be emtpy when adding an entry to a "
-                               "dataset that already contains product metadata for other entries");
-                return -1;
-            }
-
-            dataset->metadata[dataset->num_products - 1] = metadata;
-        }
-
         /* add it to the index */
         if (hashtable_add_name(dataset->product_to_index, dataset->source_product[dataset->num_products - 1]) != 0)
         {
             assert(0);
             exit(1);
         }
+    }
+
+    if (metadata)
+    {
+        long index;
+
+        if (harp_dataset_get_index_from_source_product(dataset, source_product, &index))
+        {
+            return -1;
+        }
+
+        /* Delete existing metadata for this product */
+        if (dataset->metadata[index] != NULL)
+        {
+            harp_product_metadata_delete(dataset->metadata[index]);
+        }
+
+        /* Set the metadata for this source_product */
+        dataset->metadata[index] = metadata;
     }
 
     return 0;

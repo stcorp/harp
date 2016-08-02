@@ -11,3 +11,4 @@ The section describes the command line tools provided by the HARP toolkit.
    harpdump
    harpfilter
    harpcollocate
+   harpprofile

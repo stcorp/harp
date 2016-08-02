@@ -515,6 +515,16 @@ LIBHARP_API int harp_import_product_metadata(const char *filename, harp_product_
         return -1;
     }
 
+    /* set the filename attr */
+    metadata->filename = strdup(filename);
+    if (!metadata->filename)
+    {
+        harp_set_error(HARP_ERROR_OUT_OF_MEMORY, "out of memory (could not duplicate string) (%s:%u)", __FILE__,
+                       __LINE__);
+        harp_product_metadata_delete(metadata);
+        return -1;
+    }
+
     switch (format)
     {
         case format_hdf4:

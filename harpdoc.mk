@@ -42,6 +42,7 @@ HARP_DOCFILES = \
 	doc/html/harpconvert.html \
 	doc/html/harpdump.html \
 	doc/html/harpfilter.html \
+	doc/html/harpprofile.html \
 	doc/html/index.html \
 	doc/html/ingestions/ECMWF_GRIB.html \
 	doc/html/ingestions/ESACCI_OZONE_L2_LP.html \
@@ -404,6 +405,8 @@ doc/html/harpconvert.html:
 doc/html/harpdump.html:
 	$(MAKE) harp_doc
 doc/html/harpfilter.html:
+	$(MAKE) harp_doc
+doc/html/harpprofile.html:
 	$(MAKE) harp_doc
 doc/html/index.html:
 	$(MAKE) harp_doc
