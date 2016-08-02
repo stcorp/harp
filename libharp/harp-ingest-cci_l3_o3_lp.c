@@ -732,7 +732,7 @@ static void register_mzm_product(void)
     description = "monthly zonal mean ozone mixing ratio vertical profiles";
     variable_definition =
         harp_ingestion_register_variable_full_read(product_definition, "O3_volume_mixing_ratio", harp_type_double, 3,
-                                                   dimension_type, NULL, description, "1", NULL,
+                                                   dimension_type, NULL, description, HARP_UNIT_DIMENSIONLESS, NULL,
                                                    read_o3_volume_mixing_ratio_mzm);
     path = "/ozone_mixing_ratio[]";
     harp_variable_definition_add_mapping(variable_definition, NULL, NULL, path, NULL);
@@ -811,7 +811,7 @@ static void register_mmzm_product(void)
     description = "merged monthly zonal mean ozone mixing ratio vertical profiles";
     variable_definition =
         harp_ingestion_register_variable_full_read(product_definition, "O3_volume_mixing_ratio", harp_type_double, 3,
-                                                   dimension_type, NULL, description, "1", NULL,
+                                                   dimension_type, NULL, description, HARP_UNIT_DIMENSIONLESS, NULL,
                                                    read_o3_volume_mixing_ratio_mmzm);
     path = "/merged_ozone_vmr[]";
     harp_variable_definition_add_mapping(variable_definition, NULL, NULL, path, NULL);
@@ -820,7 +820,8 @@ static void register_mmzm_product(void)
     description = "uncertainty of the merged monthly zonal mean ozone mixing ratio vertical profiles";
     variable_definition =
         harp_ingestion_register_variable_full_read(product_definition, "O3_volume_mixing_ratio_uncertainty",
-                                                   harp_type_double, 3, dimension_type, NULL, description, "1", NULL,
+                                                   harp_type_double, 3, dimension_type, NULL, description,
+                                                   HARP_UNIT_DIMENSIONLESS, NULL,
                                                    read_o3_volume_mixing_ratio_uncertainty_mmzm);
     path = "/merged_ozone_vmr[], /uncertainty_of_merged_ozone[]";
     description =
@@ -923,7 +924,7 @@ static void register_msmm_product(void)
     description = "merged semi-monthly zonal mean ozone mixing ratio vertical profiles";
     variable_definition =
         harp_ingestion_register_variable_full_read(product_definition, "O3_volume_mixing_ratio", harp_type_double, 4,
-                                                   dimension_type, NULL, description, "1", NULL,
+                                                   dimension_type, NULL, description, HARP_UNIT_DIMENSIONLESS, NULL,
                                                    read_o3_volume_mixing_ratio_msmm);
     path = "/merged_ozone_vmr[]";
     harp_variable_definition_add_mapping(variable_definition, NULL, NULL, path, NULL);
@@ -932,7 +933,8 @@ static void register_msmm_product(void)
     description = "uncertainty of the merged semi-monthly zonal mean ozone mixing ratio vertical profiles";
     variable_definition =
         harp_ingestion_register_variable_full_read(product_definition, "O3_volume_mixing_ratio_uncertainty",
-                                                   harp_type_double, 4, dimension_type, NULL, description, "1", NULL,
+                                                   harp_type_double, 4, dimension_type, NULL, description,
+                                                   HARP_UNIT_DIMENSIONLESS, NULL,
                                                    read_o3_volume_mixing_ratio_uncertainty_msmm);
     path = "/merged_ozone_vmr[], /uncertainty_of_merged_ozone[]";
     description =

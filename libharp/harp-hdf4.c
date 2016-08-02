@@ -568,6 +568,11 @@ static int read_variable(harp_product *product, int32 sds_id)
         {
             return -1;
         }
+        if (strcmp(variable->unit, "1") == 0)
+        {
+            /* convert "1" to "" */
+            variable->unit[0] = '\0';
+        }
     }
 
     hdf4_index = SDfindattr(sds_id, "valid_min");
@@ -928,9 +933,11 @@ static int write_variable(harp_variable *variable, int32 sd_id)
         }
     }
 
-    if (variable->unit != NULL && strcmp(variable->unit, "") != 0)
+    if (variable->unit != NULL)
     {
-        if (write_string_attribute(sds_id, "units", variable->unit) != 0)
+        const char *unit = variable->unit[0] == '\0' ? "1" : variable->unit;    /* convert "" to "1" */
+
+        if (write_string_attribute(sds_id, "units", unit) != 0)
         {
             SDendaccess(sds_id);
             return -1;

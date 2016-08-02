@@ -1864,7 +1864,7 @@ static int init_product_definition(harp_ingestion_module *module, uvvis_doas_gas
         description = "total stratospheric aerosol optical depth user for the retrieval ";
         variable_definition = harp_ingestion_register_variable_full_read
             (product_definition, "stratospheric_aerosol_optical_depth", harp_type_double, 1, dimension_type, NULL,
-             description, "1", exclude_stratospheric_aod, read_stratospheric_aod);
+             description, HARP_UNIT_DIMENSIONLESS, exclude_stratospheric_aod, read_stratospheric_aod);
         harp_variable_definition_add_mapping(variable_definition, "AOD=modeled", NULL,
                                              "/AEROSOL.OPTICAL.DEPTH.STRATOSPHERIC_INDEPENDENT", NULL);
         harp_variable_definition_add_mapping(variable_definition, "AOD=measured", NULL,
@@ -1934,8 +1934,8 @@ static int init_product_definition(harp_ingestion_module *module, uvvis_doas_gas
                  harp_gas_name[gas]);
         snprintf(gas_mapping_path, MAX_PATH_LENGTH, "/%s.COLUMN_ABSORPTION.SOLAR_AVK", geoms_gas_name[gas]);
         variable_definition = harp_ingestion_register_variable_full_read
-            (product_definition, gas_var_name, harp_type_double, 2, dimension_type, NULL, gas_description, "1", NULL,
-             read_column_solar_avk);
+            (product_definition, gas_var_name, harp_type_double, 2, dimension_type, NULL, gas_description,
+             HARP_UNIT_DIMENSIONLESS, NULL, read_column_solar_avk);
         harp_variable_definition_add_mapping(variable_definition, NULL, NULL, gas_mapping_path, NULL);
     }
     else if (template_type == uvvis_doas_offaxis)
@@ -1990,8 +1990,8 @@ static int init_product_definition(harp_ingestion_module *module, uvvis_doas_gas
         snprintf(gas_mapping_path, MAX_PATH_LENGTH, "/%s.MIXING.RATIO.VOLUME_SCATTER.SOLAR.OFFAXIS_AVK",
                  geoms_gas_name[gas]);
         variable_definition = harp_ingestion_register_variable_full_read
-            (product_definition, gas_var_name, harp_type_double, 3, dimension_type, NULL, gas_description, "1", NULL,
-             read_vmr_offaxis_avk);
+            (product_definition, gas_var_name, harp_type_double, 3, dimension_type, NULL, gas_description,
+             HARP_UNIT_DIMENSIONLESS, NULL, read_vmr_offaxis_avk);
         harp_variable_definition_add_mapping(variable_definition, NULL, NULL, gas_mapping_path, NULL);
 
         /* tropospheric_<gas>_column_number_density */
@@ -2046,8 +2046,8 @@ static int init_product_definition(harp_ingestion_module *module, uvvis_doas_gas
         snprintf(gas_mapping_path, MAX_PATH_LENGTH, "/%s.COLUMN.TROPOSPHERIC_SCATTER.SOLAR.OFFAXIS_AVK",
                  geoms_gas_name[gas]);
         variable_definition = harp_ingestion_register_variable_full_read
-            (product_definition, gas_var_name, harp_type_double, 2, dimension_type, NULL, gas_description, "1", NULL,
-             read_tropo_column_offaxis_avk);
+            (product_definition, gas_var_name, harp_type_double, 2, dimension_type, NULL, gas_description,
+             HARP_UNIT_DIMENSIONLESS, NULL, read_tropo_column_offaxis_avk);
         harp_variable_definition_add_mapping(variable_definition, NULL, NULL, gas_mapping_path, NULL);
 
 
@@ -2123,8 +2123,8 @@ static int init_product_definition(harp_ingestion_module *module, uvvis_doas_gas
         snprintf(gas_mapping_path, MAX_PATH_LENGTH, "/%s.MIXING.RATIO.VOLUME_SCATTER.SOLAR.ZENITH_AVK",
                  geoms_gas_name[gas]);
         variable_definition = harp_ingestion_register_variable_full_read
-            (product_definition, gas_var_name, harp_type_double, 3, dimension_type, NULL, gas_description, "1",
-             exclude_vmr_zenith, read_vmr_zenith_avk);
+            (product_definition, gas_var_name, harp_type_double, 3, dimension_type, NULL, gas_description,
+             HARP_UNIT_DIMENSIONLESS, exclude_vmr_zenith, read_vmr_zenith_avk);
         harp_variable_definition_add_mapping(variable_definition, NULL, NULL, gas_mapping_path, NULL);
 
         /* tropospheric_<gas>_column_number_density */
@@ -2179,8 +2179,8 @@ static int init_product_definition(harp_ingestion_module *module, uvvis_doas_gas
         snprintf(gas_mapping_path, MAX_PATH_LENGTH, "/%s.COLUMN.TROPOSPHERIC_SCATTER.SOLAR.ZENITH_AVK",
                  geoms_gas_name[gas]);
         variable_definition = harp_ingestion_register_variable_full_read
-            (product_definition, gas_var_name, harp_type_double, 2, dimension_type, NULL, gas_description, "1",
-             exclude_tropo_column_zenith, read_tropo_column_zenith_avk);
+            (product_definition, gas_var_name, harp_type_double, 2, dimension_type, NULL, gas_description,
+             HARP_UNIT_DIMENSIONLESS, exclude_tropo_column_zenith, read_tropo_column_zenith_avk);
         harp_variable_definition_add_mapping(variable_definition, NULL, NULL, gas_mapping_path, NULL);
 
         /* stratospheric_<gas>_column_number_density */
@@ -2235,8 +2235,8 @@ static int init_product_definition(harp_ingestion_module *module, uvvis_doas_gas
         snprintf(gas_mapping_path, MAX_PATH_LENGTH, "/%s.COLUMN.STRATOSPHERIC_SCATTER.SOLAR.ZENITH_AVK",
                  geoms_gas_name[gas]);
         variable_definition = harp_ingestion_register_variable_full_read
-            (product_definition, gas_var_name, harp_type_double, 2, dimension_type, NULL, gas_description, "1", NULL,
-             read_strat_column_zenith_avk);
+            (product_definition, gas_var_name, harp_type_double, 2, dimension_type, NULL, gas_description,
+             HARP_UNIT_DIMENSIONLESS, NULL, read_strat_column_zenith_avk);
         harp_variable_definition_add_mapping(variable_definition, NULL, NULL, gas_mapping_path, NULL);
 
         /* stratospheric_<gas>_column_number_density_amf */
@@ -2246,8 +2246,8 @@ static int init_product_definition(harp_ingestion_module *module, uvvis_doas_gas
         snprintf(gas_mapping_path, MAX_PATH_LENGTH, "/%s.COLUMN.STRATOSPHERIC_SCATTER.SOLAR.ZENITH_AMF",
                  geoms_gas_name[gas]);
         variable_definition = harp_ingestion_register_variable_full_read
-            (product_definition, gas_var_name, harp_type_double, 1, dimension_type, NULL, gas_description, "1", NULL,
-             read_strat_column_zenith_amf);
+            (product_definition, gas_var_name, harp_type_double, 1, dimension_type, NULL, gas_description,
+             HARP_UNIT_DIMENSIONLESS, NULL, read_strat_column_zenith_amf);
         harp_variable_definition_add_mapping(variable_definition, NULL, NULL, gas_mapping_path, NULL);
 
         /* <gas>_column_number_density */
@@ -2313,7 +2313,7 @@ static int init_product_definition(harp_ingestion_module *module, uvvis_doas_gas
         /* aerosol_extinction_coefficient_avk */
         variable_definition = harp_ingestion_register_variable_full_read
             (product_definition, "aerosol_extinction_coefficient_avk", harp_type_double, 4, dimension_type,
-             NULL, "averaging kernel of the aerosol extinction coefficient", "1", NULL,
+             NULL, "averaging kernel of the aerosol extinction coefficient", HARP_UNIT_DIMENSIONLESS, NULL,
              read_aerosol_extinction_coefficient_avk);
         mapping_path = "/AEROSOL.EXTINCTION.COEFFICIENT_SCATTER.SOLAR.OFFAXIS_AVK";
         harp_variable_definition_add_mapping(variable_definition, NULL, NULL, mapping_path, NULL);
@@ -2321,37 +2321,38 @@ static int init_product_definition(harp_ingestion_module *module, uvvis_doas_gas
         /* tropospheric_aerosol_optical_depth */
         variable_definition = harp_ingestion_register_variable_full_read
             (product_definition, "tropospheric_aerosol_optical_depth", harp_type_double, 2, dimension_type, NULL,
-             "tropospheric aerosol optical depth", "1", NULL, read_tropo_aerosol_optical_depth);
+             "tropospheric aerosol optical depth", HARP_UNIT_DIMENSIONLESS, NULL, read_tropo_aerosol_optical_depth);
         mapping_path = "/AEROSOL.OPTICAL.DEPTH.TROPOSPHERIC_SCATTER.SOLAR.OFFAXIS";
         harp_variable_definition_add_mapping(variable_definition, NULL, NULL, mapping_path, NULL);
 
         /* tropospheric_aerosol_optical_depth_uncertainty_random */
         variable_definition = harp_ingestion_register_variable_full_read
             (product_definition, "tropospheric_aerosol_optical_depth_uncertainty_random", harp_type_double, 2,
-             dimension_type, NULL, "random uncertainty of the tropospheric aerosol optical depth", "1", NULL,
-             read_tropo_aerosol_optical_depth_uncertainty_random);
+             dimension_type, NULL, "random uncertainty of the tropospheric aerosol optical depth",
+             HARP_UNIT_DIMENSIONLESS, NULL, read_tropo_aerosol_optical_depth_uncertainty_random);
         mapping_path = "/AEROSOL.OPTICAL.DEPTH.TROPOSPHERIC_SCATTER.SOLAR.OFFAXIS_UNCERTAINTY.RANDOM.STANDARD";
         harp_variable_definition_add_mapping(variable_definition, NULL, NULL, mapping_path, NULL);
 
         /* tropospheric_aerosol_optical_depth_uncertainty_systematic */
         variable_definition = harp_ingestion_register_variable_full_read
             (product_definition, "tropospheric_aerosol_optical_depth_uncertainty_systematic", harp_type_double, 2,
-             dimension_type, NULL, "systematic uncertainty of the tropospheric aerosol optical depth", "1", NULL,
-             read_tropo_aerosol_optical_depth_uncertainty_systematic);
+             dimension_type, NULL, "systematic uncertainty of the tropospheric aerosol optical depth",
+             HARP_UNIT_DIMENSIONLESS, NULL, read_tropo_aerosol_optical_depth_uncertainty_systematic);
         mapping_path = "/AEROSOL.OPTICAL.DEPTH.TROPOSPHERIC_SCATTER.SOLAR.OFFAXIS_UNCERTAINTY.SYSTEMATIC.STANDARD";
         harp_variable_definition_add_mapping(variable_definition, NULL, NULL, mapping_path, NULL);
 
         /* tropospheric_aerosol_optical_depth_apriori */
         variable_definition = harp_ingestion_register_variable_full_read
             (product_definition, "tropospheric_aerosol_optical_depth_apriori", harp_type_double, 2, dimension_type,
-             NULL, "a priori tropospheric aerosol optical depth", "1", NULL, read_tropo_aerosol_optical_depth_apriori);
+             NULL, "a priori tropospheric aerosol optical depth", HARP_UNIT_DIMENSIONLESS, NULL,
+             read_tropo_aerosol_optical_depth_apriori);
         mapping_path = "/AEROSOL.OPTICAL.DEPTH.TROPOSPHERIC_SCATTER.SOLAR.OFFAXIS_APRIORI";
         harp_variable_definition_add_mapping(variable_definition, NULL, NULL, mapping_path, NULL);
 
         /* tropospheric_aerosol_optical_depth_avk */
         variable_definition = harp_ingestion_register_variable_full_read
             (product_definition, "tropospheric_aerosol_optical_depth_avk", harp_type_double, 3, dimension_type,
-             NULL, "averaging kernel of the tropospheric aerosol optical depth", "1", NULL,
+             NULL, "averaging kernel of the tropospheric aerosol optical depth", HARP_UNIT_DIMENSIONLESS, NULL,
              read_tropo_aerosol_optical_depth_avk);
         mapping_path = "/AEROSOL.OPTICAL.DEPTH.TROPOSPHERIC_SCATTER.SOLAR.OFFAXIS_AVK";
         harp_variable_definition_add_mapping(variable_definition, NULL, NULL, mapping_path, NULL);

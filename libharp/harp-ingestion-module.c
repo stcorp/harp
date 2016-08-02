@@ -174,7 +174,7 @@ static int variable_definition_new(const char *name, harp_data_type data_type, i
     assert(name != NULL);
     assert(num_dimensions >= 0 && num_dimensions <= HARP_MAX_NUM_DIMS);
     assert(num_dimensions == 0 || dimension_type != NULL);
-    assert(unit == NULL || (strcmp(unit, "") != 0 && harp_unit_is_valid(unit)));
+    assert(unit == NULL || harp_unit_is_valid(unit));
     assert(read_all != NULL || read_range != NULL || read_sample != NULL);
 
     /* strings can only be read using read_all and read_range when there is no sample dimension */

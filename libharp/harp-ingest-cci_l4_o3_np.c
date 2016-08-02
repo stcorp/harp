@@ -687,7 +687,7 @@ int harp_ingestion_module_cci_l4_o3_np_init(void)
     description = "O3 volume mixing ratio";
     variable_definition =
         harp_ingestion_register_variable_full_read(product_definition, "O3_volume_mixing_ratio", harp_type_float, 4,
-                                                   dimension_type, NULL, description, "1", NULL,
+                                                   dimension_type, NULL, description, HARP_UNIT_DIMENSIONLESS, NULL,
                                                    read_O3_volume_mixing_ratio);
     path = "/O3_vmr[]";
     harp_variable_definition_add_mapping(variable_definition, NULL, NULL, path, NULL);
@@ -696,7 +696,8 @@ int harp_ingestion_module_cci_l4_o3_np_init(void)
     description = "uncertainty of the O3 volume mixing ratio";
     variable_definition =
         harp_ingestion_register_variable_full_read(product_definition, "O3_volume_mixing_ratio_uncertainty",
-                                                   harp_type_float, 4, dimension_type, NULL, description, "1", NULL,
+                                                   harp_type_float, 4, dimension_type, NULL, description,
+                                                   HARP_UNIT_DIMENSIONLESS, NULL,
                                                    read_O3_volume_mixing_ratio_uncertainty);
     path = "/O3s_vmr[]";
     harp_variable_definition_add_mapping(variable_definition, NULL, NULL, path, NULL);

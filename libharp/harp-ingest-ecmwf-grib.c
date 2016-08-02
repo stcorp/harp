@@ -2749,7 +2749,8 @@ int harp_ingestion_module_ecmwf_grib_init(void)
     description = "total aerosol optical depth";
     variable_definition = harp_ingestion_register_variable_full_read(product_definition, "aerosol_optical_depth",
                                                                      harp_type_float, 2, &dimension_type[1], NULL,
-                                                                     description, "1", exclude_aod, read_aod);
+                                                                     description, HARP_UNIT_DIMENSIONLESS, exclude_aod,
+                                                                     read_aod);
     add_value_variable_mapping(variable_definition, "Only one AOD wavelength is allowed; (table,indicator) = (210,207) "
                                "[550nm], (210,213) [469nm], (210,214) [670nm], (210,215) [865nm], or (210,216) "
                                "[1240nm]", "(discipline,category,number) = (192,210,207) [550nm], (192,210,213) "
@@ -2759,8 +2760,9 @@ int harp_ingestion_module_ecmwf_grib_init(void)
     description = "sea salt aerosol optical depth";
     variable_definition = harp_ingestion_register_variable_full_read(product_definition,
                                                                      "sea_salt_aerosol_optical_depth", harp_type_float,
-                                                                     2, &dimension_type[1], NULL, description, "1",
-                                                                     exclude_ssaod, read_ssaod);
+                                                                     2, &dimension_type[1], NULL, description,
+                                                                     HARP_UNIT_DIMENSIONLESS, exclude_ssaod,
+                                                                     read_ssaod);
     add_value_variable_mapping(variable_definition, "(table,indicator) = (210,208) [550nm]",
                                "(discipline,category,number) = (192,210,208) [550nm]");
 
@@ -2768,7 +2770,8 @@ int harp_ingestion_module_ecmwf_grib_init(void)
     description = "dust aerosol optical depth";
     variable_definition = harp_ingestion_register_variable_full_read(product_definition, "dust_aerosol_optical_depth",
                                                                      harp_type_float, 2, &dimension_type[1], NULL,
-                                                                     description, "1", exclude_duaod, read_duaod);
+                                                                     description, HARP_UNIT_DIMENSIONLESS,
+                                                                     exclude_duaod, read_duaod);
     add_value_variable_mapping(variable_definition, "(table,indicator) = (210,209) [550nm]",
                                "(discipline,category,number) = (192,210,209) [550nm]");
 
@@ -2777,7 +2780,8 @@ int harp_ingestion_module_ecmwf_grib_init(void)
     variable_definition = harp_ingestion_register_variable_full_read(product_definition,
                                                                      "organic_matter_aerosol_optical_depth",
                                                                      harp_type_float, 2, &dimension_type[1], NULL,
-                                                                     description, "1", exclude_omaod, read_omaod);
+                                                                     description, HARP_UNIT_DIMENSIONLESS,
+                                                                     exclude_omaod, read_omaod);
     add_value_variable_mapping(variable_definition, "(table,indicator) = (210,210) [550nm]",
                                "(discipline,category,number) = (192,210,210) [550nm]");
 
@@ -2786,7 +2790,8 @@ int harp_ingestion_module_ecmwf_grib_init(void)
     variable_definition = harp_ingestion_register_variable_full_read(product_definition,
                                                                      "black_carbon_aerosol_optical_depth",
                                                                      harp_type_float, 2, &dimension_type[1], NULL,
-                                                                     description, "1", exclude_bcaod, read_bcaod);
+                                                                     description, HARP_UNIT_DIMENSIONLESS,
+                                                                     exclude_bcaod, read_bcaod);
     add_value_variable_mapping(variable_definition, "(table,indicator) = (210,211) [550nm]",
                                "(discipline,category,number) = (192,210,211) [550nm]");
 
@@ -2795,7 +2800,8 @@ int harp_ingestion_module_ecmwf_grib_init(void)
     variable_definition = harp_ingestion_register_variable_full_read(product_definition,
                                                                      "sulphate_aerosol_optical_depth",
                                                                      harp_type_float, 2, &dimension_type[1], NULL,
-                                                                     description, "1", exclude_suaod, read_suaod);
+                                                                     description, HARP_UNIT_DIMENSIONLESS,
+                                                                     exclude_suaod, read_suaod);
     add_value_variable_mapping(variable_definition, "(table,indicator) = (210,212) [550nm]",
                                "(discipline,category,number) = (192,210,212) [550nm]");
 

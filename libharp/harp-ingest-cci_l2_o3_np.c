@@ -810,7 +810,7 @@ int harp_ingestion_module_cci_l2_o3_np_init(void)
     description = "O3 number density averaging kernel";
     variable_definition =
         harp_ingestion_register_variable_full_read(product_definition, "O3_number_density_avk", harp_type_float, 3,
-                                                   dimension_type, NULL, description, "1", NULL,
+                                                   dimension_type, NULL, description, HARP_UNIT_DIMENSIONLESS, NULL,
                                                    read_o3_number_density_avk);
     path = "/ak[]";
     harp_variable_definition_add_mapping(variable_definition, NULL, NULL, path, NULL);
@@ -857,7 +857,8 @@ int harp_ingestion_module_cci_l2_o3_np_init(void)
     description = "effective cloud fraction";
     variable_definition =
         harp_ingestion_register_variable_full_read(product_definition, "cloud_fraction", harp_type_double, 1,
-                                                   dimension_type, NULL, description, "1", NULL, read_cloud_fraction);
+                                                   dimension_type, NULL, description, HARP_UNIT_DIMENSIONLESS, NULL,
+                                                   read_cloud_fraction);
     path = "/cloudf[]";
     harp_variable_definition_add_mapping(variable_definition, NULL, NULL, path, NULL);
 
@@ -874,7 +875,8 @@ int harp_ingestion_module_cci_l2_o3_np_init(void)
     description = "cloud top albedo";
     variable_definition =
         harp_ingestion_register_variable_full_read(product_definition, "cloud_top_albedo", harp_type_double, 1,
-                                                   dimension_type, NULL, description, "1", NULL, read_cloud_top_albedo);
+                                                   dimension_type, NULL, description, HARP_UNIT_DIMENSIONLESS, NULL,
+                                                   read_cloud_top_albedo);
     path = "/clouda[]";
     harp_variable_definition_add_mapping(variable_definition, NULL, NULL, path, NULL);
 
@@ -882,7 +884,8 @@ int harp_ingestion_module_cci_l2_o3_np_init(void)
     description = "surface albedo";
     variable_definition =
         harp_ingestion_register_variable_full_read(product_definition, "surface_albedo", harp_type_float, 1,
-                                                   dimension_type, NULL, description, "1", NULL, read_surface_albedo);
+                                                   dimension_type, NULL, description, HARP_UNIT_DIMENSIONLESS, NULL,
+                                                   read_surface_albedo);
     path = "/salb[]";
     harp_variable_definition_add_mapping(variable_definition, NULL, NULL, path, NULL);
 

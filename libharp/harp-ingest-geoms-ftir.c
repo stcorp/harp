@@ -1225,8 +1225,8 @@ static int init_product_definition(harp_ingestion_module *module, ftir_gas gas, 
     snprintf(gas_description, MAX_DESCRIPTION_LENGTH, "averaging kernel for the total %s vertical column",
              harp_gas_name[gas]);
     variable_definition = harp_ingestion_register_variable_full_read
-        (product_definition, gas_var_name, harp_type_double, 2, dimension_type, NULL, gas_description, "1", NULL,
-         read_column_avk);
+        (product_definition, gas_var_name, harp_type_double, 2, dimension_type, NULL, gas_description,
+         HARP_UNIT_DIMENSIONLESS, NULL, read_column_avk);
     snprintf(gas_mapping_path, MAX_PATH_LENGTH, "/%s.COLUMN_ABSORPTION.SOLAR_AVK", geoms_gas_name[gas]);
     harp_variable_definition_add_mapping(variable_definition, NULL, "solar measurement", gas_mapping_path, NULL);
     snprintf(gas_mapping_path, MAX_PATH_LENGTH, "/%s.COLUMN_ABSORPTION.LUNAR_AVK", geoms_gas_name[gas]);
@@ -1345,8 +1345,8 @@ static int init_product_definition(harp_ingestion_module *module, ftir_gas gas, 
     snprintf(gas_description, MAX_DESCRIPTION_LENGTH, "averaging kernel for the %s volume mixing ratio",
              harp_gas_name[gas]);
     variable_definition = harp_ingestion_register_variable_full_read
-        (product_definition, gas_var_name, harp_type_double, 3, dimension_type, NULL, gas_description, "1",
-         exclude_vmr_absorption, read_vmr_avk);
+        (product_definition, gas_var_name, harp_type_double, 3, dimension_type, NULL, gas_description,
+         HARP_UNIT_DIMENSIONLESS, exclude_vmr_absorption, read_vmr_avk);
     if (version == 1)
     {
         snprintf(gas_mapping_path, MAX_PATH_LENGTH, "/%s.MIXING.RATIO_ABSORPTION.SOLAR_AVK", geoms_gas_name[gas]);

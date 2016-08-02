@@ -627,7 +627,8 @@ int harp_ingestion_module_cci_l2_o3_tc_init(void)
     description = "effective cloud fraction";
     variable_definition = harp_ingestion_register_variable_full_read(product_definition, "cloud_fraction",
                                                                      harp_type_double, 1, dimension_type, NULL,
-                                                                     description, "1", NULL, read_cloud_fraction);
+                                                                     description, HARP_UNIT_DIMENSIONLESS, NULL,
+                                                                     read_cloud_fraction);
     path = "/cloud_area_fraction[]";
     harp_variable_definition_add_mapping(variable_definition, NULL, NULL, path, NULL);
 
@@ -643,7 +644,8 @@ int harp_ingestion_module_cci_l2_o3_tc_init(void)
     description = "effective cloud top albedo";
     variable_definition = harp_ingestion_register_variable_full_read(product_definition, "cloud_top_albedo",
                                                                      harp_type_double, 1, dimension_type, NULL,
-                                                                     description, "1", NULL, read_cloud_top_albedo);
+                                                                     description, HARP_UNIT_DIMENSIONLESS, NULL,
+                                                                     read_cloud_top_albedo);
     path = "/cloud_albedo[]";
     harp_variable_definition_add_mapping(variable_definition, NULL, NULL, path, NULL);
 
@@ -659,7 +661,7 @@ int harp_ingestion_module_cci_l2_o3_tc_init(void)
     description = "retrieved effective albedo of the scene";
     variable_definition =
         harp_ingestion_register_variable_full_read(product_definition, "albedo", harp_type_double, 1, dimension_type,
-                                                   NULL, description, "1", NULL, read_albedo);
+                                                   NULL, description, HARP_UNIT_DIMENSIONLESS, NULL, read_albedo);
     path = "/effective_scene_albedo[]";
     harp_variable_definition_add_mapping(variable_definition, NULL, NULL, path, NULL);
 
@@ -667,7 +669,8 @@ int harp_ingestion_module_cci_l2_o3_tc_init(void)
     description = "minimum surface albedo at 335nm from OMI LER climatology";
     variable_definition =
         harp_ingestion_register_variable_full_read(product_definition, "surface_albedo", harp_type_double, 1,
-                                                   dimension_type, NULL, description, "1", NULL, read_surface_albedo);
+                                                   dimension_type, NULL, description, HARP_UNIT_DIMENSIONLESS, NULL,
+                                                   read_surface_albedo);
     path = "/surface_albedo[]";
     harp_variable_definition_add_mapping(variable_definition, NULL, NULL, path, NULL);
 
@@ -694,7 +697,7 @@ int harp_ingestion_module_cci_l2_o3_tc_init(void)
     description = "averaging kernels in the layers of the forward model";
     variable_definition =
         harp_ingestion_register_variable_full_read(product_definition, "O3_column_number_density_avk", harp_type_double,
-                                                   2, dimension_type, NULL, description, "1", NULL,
+                                                   2, dimension_type, NULL, description, HARP_UNIT_DIMENSIONLESS, NULL,
                                                    read_O3_column_number_density_avk);
     path = "/averaging_kernels[]";
     harp_variable_definition_add_mapping(variable_definition, NULL, NULL, path, NULL);

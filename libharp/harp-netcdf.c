@@ -1140,7 +1140,7 @@ static int write_variable_definition(int ncid, const harp_variable *variable, ne
         }
     }
 
-    if (variable->unit != NULL && strcmp(variable->unit, "") != 0)
+    if (variable->unit != NULL)
     {
         if (write_string_attribute(ncid, *varid, "units", variable->unit) != 0)
         {

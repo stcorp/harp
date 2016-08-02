@@ -2630,8 +2630,8 @@
 </dd></dl>
 
 <dl class="function">
-<dt id="_CPPv234get_vertical_profile_variable_typeP13harp_variable">
-<span id="get_vertical_profile_variable_type__harp_variableP"></span><span class="target" id="libharpgroup__harp__algorithm_1ga412ff811a41936f68e966daca0983339"></span><em class="property">static</em> vertical_profile_variable_type <code class="descname">get_vertical_profile_variable_type</code><span class="sig-paren">(</span><a class="reference internal" href="libharp_variable.html#_CPPv213harp_variable" title="harp_variable">harp_variable</a> *<em>variable</em><span class="sig-paren">)</span></dt>
+<dt id="_CPPv225get_profile_resample_typeP13harp_variable">
+<span id="get_profile_resample_type__harp_variableP"></span><span class="target" id="libharpgroup__harp__algorithm_1ga96006e3da83ae1a13f08bd80df3d7e24"></span><em class="property">static</em> profile_resample_type <code class="descname">get_profile_resample_type</code><span class="sig-paren">(</span><a class="reference internal" href="libharp_variable.html#_CPPv213harp_variable" title="harp_variable">harp_variable</a> *<em>variable</em><span class="sig-paren">)</span></dt>
 <dd></dd></dl>
 
 <dl class="function">
@@ -2714,9 +2714,9 @@
 <dd></dd></dl>
 
 <dl class="function">
-<dt id="_CPPv228harp_product_smooth_verticalP12harp_productiPPKcPKcP23harp_collocation_result">
-<span id="harp_product_smooth_vertical__harp_productP.i.cCPP.cCP.harp_collocation_resultP"></span><span class="target" id="libharpgroup__harp__algorithm_1ga2885709fd974c74ec034b960bd0f9150"></span>int <code class="descname">harp_product_smooth_vertical</code><span class="sig-paren">(</span><a class="reference internal" href="libharp_product.html#_CPPv212harp_product" title="harp_product">harp_product</a> *<em>product</em>, int <em>num_smooth_variables</em>, <em class="property">const</em> char **<em>smooth_variables</em>, <em class="property">const</em> char *<em>vertical_axis</em>, <a class="reference internal" href="libharp_collocation.html#_CPPv223harp_collocation_result" title="harp_collocation_result">harp_collocation_result</a> *<em>collocation_result</em><span class="sig-paren">)</span></dt>
-<dd><p>Creates a shallow copy of a collocation result for filtering purposes Smooth the product&#8217;s variables (from dataset a in the collocation result) using the vertical grids, avks and a apriori of matching products in dataset b and smooth the variables specified.</p>
+<dt id="_CPPv228harp_product_smooth_verticalP12harp_productiPPKcPKcPK23harp_collocation_result">
+<span id="harp_product_smooth_vertical__harp_productP.i.cCPP.cCP.harp_collocation_resultCP"></span><span class="target" id="libharpgroup__harp__algorithm_1gaa478c8991af66d85f209a86ba5e12e5a"></span>int <code class="descname">harp_product_smooth_vertical</code><span class="sig-paren">(</span><a class="reference internal" href="libharp_product.html#_CPPv212harp_product" title="harp_product">harp_product</a> *<em>product</em>, int <em>num_smooth_variables</em>, <em class="property">const</em> char **<em>smooth_variables</em>, <em class="property">const</em> char *<em>vertical_axis</em>, <em class="property">const</em> <a class="reference internal" href="libharp_collocation.html#_CPPv223harp_collocation_result" title="harp_collocation_result">harp_collocation_result</a> *<em>original_collocation_result</em><span class="sig-paren">)</span></dt>
+<dd><p>Smooth the product&#8217;s variables (from dataset a in the collocation result) using the vertical grids, avks and a apriori of matching products in dataset b and smooth the variables specified.</p>
 <p><dl class="docutils">
 <dt><strong>Return</strong></dt>
 <dd><ul class="simple">

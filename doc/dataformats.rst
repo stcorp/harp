@@ -162,7 +162,9 @@ Variable attributes
 
 ``units`` string (optional)
   This attribute is used for data that has a physical unit. It should provide the unit in a form compatible with the
-  ``udunits2`` software.
+  ``udunits2`` software. A ``units`` attribute is expected to be available for any variable defining a quantity.
+  If a variable represents a dimensionless quantity the ``units`` string should be an empty string (or have the value
+  ``1`` in case empty strings are not supported).
 
 ``valid_min`` [int8, int16, int32, float, double] (optional)
   Provides the minimum value below which the data is to be considered invalid. The data type of this attribute should
@@ -492,6 +494,11 @@ N/A                 scalar
 N/A                 string
 =================== ===================
 
+HARP uses empty strings to represent the unit of dimensionless quantities (to distinguish them from non-quantities,
+which will lack a unit attribute). However, HDF4 cannot store string attributes with length zero. For this reason
+an empty unit string will be written as a ``units`` attribute with value ``"1"`` when writing data to HDF4.
+When reading from HDF4 a unit string value ``"1"`` will be converted back again to an empty unit string.
+
 HDF5
 ~~~~
 This section details a set of additional conventions that are specific to the HDF5 file format.
@@ -573,6 +580,11 @@ HDF5 can represent strings in several ways. Both fixed and variable length strin
 stores a HARP variable of type string as an HDF5 dataset of fixed length strings. The fixed string length equals the
 length of the longest string, or 1 if the length of the longest string is zero. Shorter strings are padded with null-
 termination characters.
+
+HARP uses empty strings to represent the unit of dimensionless quantities (to distinguish them from non-quantities,
+which will lack a unit attribute). However, HDF5 cannot store string attributes with length zero. For this reason
+an empty unit string will be written as a ``units`` attribute with value ``"1"`` when writing data to HDF5.
+When reading from HDF5 a unit string value ``"1"`` will be converted back again to an empty unit string.
 
 .. _collocation-result-file-format:
 
