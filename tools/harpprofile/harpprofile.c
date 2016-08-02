@@ -785,7 +785,7 @@ static int smooth(int argc, char *argv[])
     char *vertical_axis_name = NULL;
     const char *source_dataset_a = NULL;
     const char *source_dataset_b = NULL;
-    const char *smooth_vars[1] = {NULL};
+    const char *smooth_vars[1] = { NULL };
 
     harp_product *product;
     harp_collocation_result *collocation_result = NULL;

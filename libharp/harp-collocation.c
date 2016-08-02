@@ -1111,11 +1111,11 @@ int harp_collocation_result_shallow_copy(const harp_collocation_result *collocat
     }
 
     /* allocate memory for the pairs array */
-    pairs = malloc((size_t) collocation_result->num_pairs * sizeof(harp_collocation_pair));
+    pairs = malloc((size_t)collocation_result->num_pairs * sizeof(harp_collocation_pair));
     if (!pairs)
     {
         harp_set_error(HARP_ERROR_OUT_OF_MEMORY, "out of memory (could not allocate %lu bytes) (%s:%u)",
-                       (size_t) collocation_result->num_pairs * sizeof(harp_collocation_pair), __FILE__, __LINE__);
+                       (size_t)collocation_result->num_pairs * sizeof(harp_collocation_pair), __FILE__, __LINE__);
         return -1;
     }
     result->pair = pairs;
@@ -1124,6 +1124,7 @@ int harp_collocation_result_shallow_copy(const harp_collocation_result *collocat
     for (i = 0; i < collocation_result->num_pairs; i++)
     {
         harp_collocation_pair *pair = collocation_result->pair[i];
+
         collocation_pair_new(pair->collocation_index, pair->product_index_a, pair->sample_index_a,
                              pair->product_index_b, pair->sample_index_b, pair->difference, &result->pair[i]);
     }
@@ -1146,6 +1147,7 @@ int harp_collocation_result_shallow_copy(const harp_collocation_result *collocat
 void harp_collocation_result_shallow_delete(harp_collocation_result *collocation_result)
 {
     int i;
+
     for (i = 0; i < collocation_result->num_pairs; i++)
     {
         collocation_pair_delete(collocation_result->pair[i]);
