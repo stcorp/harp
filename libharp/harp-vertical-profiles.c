@@ -25,6 +25,7 @@
 #include <math.h>
 #include <stdlib.h>
 #include <string.h>
+#include <stdio.h>
 
 /** \addtogroup harp_algorithm
  * @{
@@ -985,7 +986,7 @@ int harp_profile_vmr_cov_from_nd_cov_pressure_and_temperature(long num_levels,
     return 0;
 }
 
-static vertical_profile_variable_type get_vertical_profile_variable_type(harp_variable *variable)
+static vertical_profile_variable_type get_vertical_profile_variable_type(harp_variable *variable, const char *axis_name)
 {
     int i;
 
@@ -998,8 +999,15 @@ static vertical_profile_variable_type get_vertical_profile_variable_type(harp_va
 
         if (variable->dimension_type[i] == harp_dimension_vertical)
         {
-            /* it has a vertical dimension, we need to resample */
-            variable_type = vertical_profile_variable_resample;
+            /* it has a vertical dimension, we need to resample; determine how */
+            if (strcmp(axis_name, "pressure") == 0)
+            {
+                variable_type = vertical_profile_variable_resample_loglin;
+            }
+            else
+            {
+                variable_type = vertical_profile_variable_resample_linlin;
+            }
 
             if (i != variable->num_dimensions - 1)
             {
@@ -1515,7 +1523,7 @@ LIBHARP_API int harp_product_regrid_vertical_with_axis_variable(harp_product *pr
         }
 
         /* Check if we can resample this kind of variable */
-        variable_type = get_vertical_profile_variable_type(variable);
+        variable_type = get_vertical_profile_variable_type(variable, vertical_axis->name);
 
         /* skip the source grid variable, we'll set that afterwards */
         if (variable == source_grid)
@@ -1598,7 +1606,7 @@ LIBHARP_API int harp_product_regrid_vertical_with_axis_variable(harp_product *pr
     return 0;
 }
 
-static int product_filter_resamplable_variables(harp_product *product)
+static int product_filter_resamplable_variables(harp_product *product, const char *vertical_axis)
 {
     int i;
 
@@ -1606,7 +1614,7 @@ static int product_filter_resamplable_variables(harp_product *product)
     {
         harp_variable *var = product->variable[i];
 
-        int var_type = get_vertical_profile_variable_type(var);
+        int var_type = get_vertical_profile_variable_type(var, vertical_axis);
         if (var_type == vertical_profile_variable_remove)
         {
             if (harp_product_remove_variable(product, var) != 0)
@@ -1637,60 +1645,74 @@ static int product_filter_resamplable_variables(harp_product *product)
  */
 LIBHARP_API int harp_product_smooth_vertical(harp_product *product, int num_smooth_variables,
                                              const char **smooth_variables, const char *vertical_axis,
-                                             harp_collocation_result *collocation_result)
+                                             const harp_collocation_result *original_collocation_result)
 {
     int time_index_a, pair_id;
     harp_variable *source_collocation_index = NULL;
     harp_dimension_type grid_dim_type[2] = { harp_dimension_time, harp_dimension_vertical };
     harp_variable *source_grid = NULL;
     harp_product *match = NULL;
-    harp_collocation_pair **original_pairs;
+    harp_collocation_result *collocation_result;
     long max_vertical_dim;
     char *vertical_unit;
+
+    /* copy the collocation result for filtering */
+    if (harp_collocation_result_shallow_copy(original_collocation_result, &collocation_result) != 0)
+    {
+        return -1;
+    }
 
     /* get the default unit for the chosen vertical axis type */
     if (get_vertical_unit(vertical_axis, &vertical_unit) != 0)
     {
+        harp_collocation_result_shallow_delete(collocation_result);
         return -1;
     }
 
     /* Get the source product's collocation index variable */
     if (harp_product_get_variable_by_name(product, "collocation_index", &source_collocation_index) != 0)
     {
+        harp_collocation_result_shallow_delete(collocation_result);
         return -1;
     }
 
     /* Prepare the collocation result for efficient iteration over the pairs */
     if (harp_collocation_result_filter_for_source_product_a(collocation_result, product->source_product) != 0)
     {
+        harp_collocation_result_shallow_delete(collocation_result);
         return -1;
     }
     if (harp_collocation_result_sort_by_collocation_index(collocation_result) != 0)
     {
+        harp_collocation_result_shallow_delete(collocation_result);
         return -1;
     }
 
     /* Determine the maximum vertical dimensions size */
     if (get_maximum_vertical_dimension(collocation_result, &max_vertical_dim) != 0)
     {
+        harp_collocation_result_shallow_delete(collocation_result);
         return -1;
     }
 
     /* Remove variables that can't be resampled */
-    if (product_filter_resamplable_variables(product) != 0)
+    if (product_filter_resamplable_variables(product, vertical_axis) != 0)
     {
+        harp_collocation_result_shallow_delete(collocation_result);
         return -1;
     }
 
     /* Expand time independent vertical profiles */
     if (expand_time_independent_vertical_variables(product) != 0)
     {
+        harp_collocation_result_shallow_delete(collocation_result);
         return -1;
     }
 
     /* Derive the source grid */
     if (harp_product_get_derived_variable(product, vertical_axis, vertical_unit, 2, grid_dim_type, &source_grid) != 0)
     {
+        harp_collocation_result_shallow_delete(collocation_result);
         return -1;
     }
 
@@ -1700,6 +1722,7 @@ LIBHARP_API int harp_product_smooth_vertical(harp_product *product, int num_smoo
         if (resize_vertical_dimension(product, max_vertical_dim) != 0)
         {
             harp_variable_delete(source_grid);
+            harp_collocation_result_shallow_delete(collocation_result);
             return -1;
         }
     }
@@ -1731,6 +1754,7 @@ LIBHARP_API int harp_product_smooth_vertical(harp_product *product, int num_smoo
         {
             harp_set_error(HARP_ERROR_INVALID_ARGUMENT, "No collocation pair for collocation index %li.", coll_index);
             harp_variable_delete(source_grid);
+            harp_collocation_result_shallow_delete(collocation_result);
             return -1;
         }
 
@@ -1741,6 +1765,7 @@ LIBHARP_API int harp_product_smooth_vertical(harp_product *product, int num_smoo
             harp_set_error(HARP_ERROR_INVALID_ARGUMENT, "Missing product metadata for product %s.",
                            collocation_result->dataset_b->source_product[pair->product_index_b]);
             harp_variable_delete(source_grid);
+            harp_collocation_result_shallow_delete(collocation_result);
             return -1;
         }
 
@@ -1759,6 +1784,7 @@ LIBHARP_API int harp_product_smooth_vertical(harp_product *product, int num_smoo
             {
                 harp_set_error(HARP_ERROR_IMPORT, "Could not import file %s.", match_metadata->filename);
                 harp_variable_delete(source_grid);
+                harp_collocation_result_shallow_delete(collocation_result);
                 return -1;
             }
         }
@@ -1767,6 +1793,7 @@ LIBHARP_API int harp_product_smooth_vertical(harp_product *product, int num_smoo
         {
             harp_variable_delete(source_grid);
             harp_product_delete(match);
+            harp_collocation_result_shallow_delete(collocation_result);
             return -1;
         }
 
@@ -1775,6 +1802,7 @@ LIBHARP_API int harp_product_smooth_vertical(harp_product *product, int num_smoo
         {
             harp_variable_delete(source_grid);
             harp_product_delete(match);
+            harp_collocation_result_shallow_delete(collocation_result);
             return -1;
         }
 
@@ -1789,7 +1817,7 @@ LIBHARP_API int harp_product_smooth_vertical(harp_product *product, int num_smoo
             int k;
 
             /* Skip variables that don't need resampling */
-            vertical_profile_variable_type var_type = get_vertical_profile_variable_type(var);
+            vertical_profile_variable_type var_type = get_vertical_profile_variable_type(var, vertical_axis);
             if (var_type == vertical_profile_variable_skip)
             {
                 continue;
@@ -1801,6 +1829,7 @@ LIBHARP_API int harp_product_smooth_vertical(harp_product *product, int num_smoo
                 harp_variable_delete(source_grid);
                 harp_variable_delete(target_grid);
                 harp_product_delete(match);
+                harp_collocation_result_shallow_delete(collocation_result);
                 return -1;
             }
 
@@ -1826,6 +1855,7 @@ LIBHARP_API int harp_product_smooth_vertical(harp_product *product, int num_smoo
                     {
                         harp_variable_delete(source_grid);
                         harp_product_delete(match);
+                        harp_collocation_result_shallow_delete(collocation_result);
 
                         return -1;
                     };
@@ -1843,6 +1873,8 @@ LIBHARP_API int harp_product_smooth_vertical(harp_product *product, int num_smoo
         if (resize_vertical_dimension(product, max_vertical_dim) != 0)
         {
             harp_variable_delete(source_grid);
+            harp_product_delete(match);
+            harp_collocation_result_shallow_delete(collocation_result);
             return -1;
         }
     }
@@ -1850,6 +1882,7 @@ LIBHARP_API int harp_product_smooth_vertical(harp_product *product, int num_smoo
     /* cleanup */
     harp_variable_delete(source_grid);
     harp_product_delete(match);
+    harp_collocation_result_shallow_delete(collocation_result);
     free(vertical_unit);
 
     return 0;
