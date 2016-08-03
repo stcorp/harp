@@ -26,6 +26,37 @@
 #include <stdlib.h>
 #include <string.h>
 
+#define NUM_SPECIES_TYPES 10
+
+typedef enum species_type_enum {
+    species_h2o,
+    species_o3,
+    species_hno3,
+    species_ch4,
+    species_n2o,
+    species_no2,
+    species_f11,
+    species_clno,
+    species_n2o5,
+    species_f12
+} species_type;
+
+const char *species_name[] = { "H2O", "O3", "HNO3", "CH4", "N2O", "NO2", "F11", "ClNO", "N2O5", "F12" };
+
+const char *species_mds_name[] =
+{
+    "h2o_retrieval_mds",
+    "o3_retrieval_mds",
+    "hno3_retrieval_mds",
+    "ch4_retrieval_mds",
+    "n2o_retrieval_mds",
+    "no2_retrieval_mds",
+    "f11_retrieval_mds",
+    "clno_retrieval_mds",
+    "n2o5_retrieval_mds",
+    "f12_retrieval_mds"
+};
+
 typedef struct ingest_info_struct
 {
     coda_product *product;
@@ -34,29 +65,12 @@ typedef struct ingest_info_struct
     long *num_altitudes;
     long max_num_altitudes;
     int num_species;
+    int selected_species;
     coda_cursor *scan_cursor;
     coda_cursor *geo_cursor;
     coda_cursor *pt_cursor;
-    coda_cursor *h2o_cursor;
-    coda_cursor *o3_cursor;
-    coda_cursor *hno3_cursor;
-    coda_cursor *ch4_cursor;
-    coda_cursor *n2o_cursor;
-    coda_cursor *no2_cursor;
-    coda_cursor *f11_cursor;
-    coda_cursor *clno_cursor;
-    coda_cursor *n2o5_cursor;
-    coda_cursor *f12_cursor;
-    int h2o_id;
-    int o3_id;
-    int hno3_id;
-    int ch4_id;
-    int n2o_id;
-    int no2_id;
-    int f11_id;
-    int clno_id;
-    int n2o5_id;
-    int f12_id;
+    coda_cursor *mds_cursor[NUM_SPECIES_TYPES];
+    int species_index[NUM_SPECIES_TYPES];   /* species index for lrv and scan information ads */
     uint8_t *lrv;       /* logical retrieval vector; dim=[num_main, {pT, sp#1, sp#2, .., sp#n}, max_num_altitudes] */
 } ingest_info;
 
@@ -81,6 +95,7 @@ static int init_species_numbers(ingest_info *info)
     char *tail;
     long length;
     int species_number;
+    int i;
 
     if (coda_cursor_set_product(&sph_cursor, info->product) != 0)
     {
@@ -138,49 +153,74 @@ static int init_species_numbers(ingest_info *info)
 
         if (strcasecmp(head, "H2O") == 0)
         {
-            info->h2o_id = species_number;
+            info->species_index[species_h2o] = species_number;
         }
         else if (strcasecmp(head, "O3") == 0)
         {
-            info->o3_id = species_number;
+            info->species_index[species_o3] = species_number;
         }
         else if (strcasecmp(head, "HNO3") == 0)
         {
-            info->hno3_id = species_number;
+            info->species_index[species_hno3] = species_number;
         }
         else if (strcasecmp(head, "CH4") == 0)
         {
-            info->ch4_id = species_number;
+            info->species_index[species_ch4] = species_number;
         }
         else if (strcasecmp(head, "N2O") == 0)
         {
-            info->n2o_id = species_number;
+            info->species_index[species_n2o] = species_number;
         }
         else if (strcasecmp(head, "NO2") == 0)
         {
-            info->no2_id = species_number;
+            info->species_index[species_no2] = species_number;
         }
         else if (strcasecmp(head, "F11") == 0)
         {
-            info->f11_id = species_number;
+            info->species_index[species_f11] = species_number;
         }
         else if (strcasecmp(head, "CLNO") == 0)
         {
-            info->clno_id = species_number;
+            info->species_index[species_clno] = species_number;
         }
         else if (strcasecmp(head, "N2O5") == 0)
         {
-            info->n2o5_id = species_number;
+            info->species_index[species_n2o5] = species_number;
         }
         else if (strcasecmp(head, "F12") == 0)
         {
-            info->f12_id = species_number;
+            info->species_index[species_f12] = species_number;
         }
 
         species_number++;
         head = tail;
     }
     free(order_of_species);
+    if (species_number != info->num_species)
+    {
+        harp_set_error(HARP_ERROR_INGESTION, "number of species (%d) does not match expected number (%d)",
+                       species_number, info->num_species);
+        return -1;
+    }
+    for (i = species_h2o; i <= species_no2; i++)
+    {
+        if (info->species_index[i] < 0)
+        {
+            harp_set_error(HARP_ERROR_INGESTION, "missing %s in /sph/order_of_species", species_name[i]);
+            return -1;
+        }
+    }
+    if (info->product_version >= 3)
+    {
+        for (i = species_f11; i <= species_f12; i++)
+        {
+            if (info->species_index[i] < 0)
+            {
+                harp_set_error(HARP_ERROR_INGESTION, "missing %s in /sph/order_of_species", species_name[i]);
+                return -1;
+            }
+        }
+    }
 
     return 0;
 }
@@ -306,6 +346,8 @@ static int init_cursors(ingest_info *info)
 {
     if (info->num_main > 0)
     {
+        int i;
+
         if (init_cursors_for_dataset("scan_information_mds", info, &info->scan_cursor) != 0)
         {
             return -1;
@@ -318,78 +360,17 @@ static int init_cursors(ingest_info *info)
         {
             return -1;
         }
-        if (info->h2o_id != -1)
+        for (i = 0; i < NUM_SPECIES_TYPES; i++)
         {
-            if (init_cursors_for_dataset("h2o_retrieval_mds", info, &info->h2o_cursor) != 0)
+            if (info->species_index[i] >= 0)
             {
-                return -1;
-            }
-        }
-        if (info->o3_id != -1)
-        {
-            if (init_cursors_for_dataset("o3_retrieval_mds", info, &info->o3_cursor) != 0)
-            {
-                return -1;
-            }
-        }
-        if (info->hno3_id != -1)
-        {
-            if (init_cursors_for_dataset("hno3_retrieval_mds", info, &info->hno3_cursor) != 0)
-            {
-                return -1;
-            }
-        }
-        if (info->ch4_id != -1)
-        {
-            if (init_cursors_for_dataset("ch4_retrieval_mds", info, &info->ch4_cursor) != 0)
-            {
-                return -1;
-            }
-        }
-        if (info->n2o_id != -1)
-        {
-            if (init_cursors_for_dataset("n2o_retrieval_mds", info, &info->n2o_cursor) != 0)
-            {
-                return -1;
-            }
-        }
-        if (info->no2_id != -1)
-        {
-            if (init_cursors_for_dataset("no2_retrieval_mds", info, &info->no2_cursor) != 0)
-            {
-                return -1;
-            }
-        }
-        if (info->f11_id != -1)
-        {
-            if (init_cursors_for_dataset("f11_retrieval_mds", info, &info->f11_cursor) != 0)
-            {
-                return -1;
-            }
-        }
-        if (info->clno_id != -1)
-        {
-            if (init_cursors_for_dataset("clno_retrieval_mds", info, &info->clno_cursor) != 0)
-            {
-                return -1;
-            }
-        }
-        if (info->n2o5_id != -1)
-        {
-            if (init_cursors_for_dataset("n2o5_retrieval_mds", info, &info->n2o5_cursor) != 0)
-            {
-                return -1;
-            }
-        }
-        if (info->f12_id != -1)
-        {
-            if (init_cursors_for_dataset("f12_retrieval_mds", info, &info->f12_cursor) != 0)
-            {
-                return -1;
+                if (init_cursors_for_dataset(species_mds_name[i], info, &info->mds_cursor[i]) != 0)
+                {
+                    return -1;
+                }
             }
         }
     }
-
     return 0;
 }
 
@@ -479,6 +460,7 @@ static int init_logical_retrieval_vector(ingest_info *info)
 static void ingestion_done(void *user_data)
 {
     ingest_info *info = (ingest_info *)user_data;
+    int i;
 
     if (info->num_altitudes != NULL)
     {
@@ -496,29 +478,12 @@ static void ingestion_done(void *user_data)
     {
         free(info->pt_cursor);
     }
-    if (info->h2o_cursor != NULL)
+    for (i = 0; i < NUM_SPECIES_TYPES; i++)
     {
-        free(info->h2o_cursor);
-    }
-    if (info->o3_cursor != NULL)
-    {
-        free(info->o3_cursor);
-    }
-    if (info->hno3_cursor != NULL)
-    {
-        free(info->hno3_cursor);
-    }
-    if (info->ch4_cursor != NULL)
-    {
-        free(info->ch4_cursor);
-    }
-    if (info->n2o_cursor != NULL)
-    {
-        free(info->n2o_cursor);
-    }
-    if (info->no2_cursor != NULL)
-    {
-        free(info->no2_cursor);
+        if (info->mds_cursor[i] != NULL)
+        {
+            free(info->mds_cursor[i]);
+        }
     }
     if (info->lrv != NULL)
     {
@@ -531,7 +496,9 @@ static void ingestion_done(void *user_data)
 static int ingestion_init(const harp_ingestion_module *module, coda_product *product,
                           const harp_ingestion_options *options, harp_product_definition **definition, void **user_data)
 {
+    const char *option_value;
     ingest_info *info;
+    int i;
 
     (void)options;
 
@@ -545,32 +512,31 @@ static int ingestion_init(const harp_ingestion_module *module, coda_product *pro
     info->product = product;
     info->product_version = -1;
     info->num_main = -1;
-    info->max_num_altitudes = 0;
     info->num_altitudes = NULL;
+    info->max_num_altitudes = 0;
+    info->num_species = 0;
+    info->selected_species = -1;
     info->scan_cursor = NULL;
     info->geo_cursor = NULL;
     info->pt_cursor = NULL;
-    info->h2o_cursor = NULL;
-    info->o3_cursor = NULL;
-    info->hno3_cursor = NULL;
-    info->ch4_cursor = NULL;
-    info->n2o_cursor = NULL;
-    info->no2_cursor = NULL;
-    info->f11_cursor = NULL;
-    info->clno_cursor = NULL;
-    info->n2o5_cursor = NULL;
-    info->f12_cursor = NULL;
-    info->h2o_id = -1;
-    info->o3_id = -1;
-    info->hno3_id = -1;
-    info->ch4_id = -1;
-    info->n2o_id = -1;
-    info->no2_id = -1;
-    info->f11_id = -1;
-    info->clno_id = -1;
-    info->n2o5_id = -1;
-    info->f12_id = -1;
+    for (i = 0; i < NUM_SPECIES_TYPES; i++)
+    {
+        info->mds_cursor[i] = NULL;
+        info->species_index[i] = -1;
+    }
     info->lrv = NULL;
+
+    if (harp_ingestion_options_get_option(options, "species", &option_value) == 0)
+    {
+        for (i = 0; i < NUM_SPECIES_TYPES; i++)
+        {
+            if (strcmp(option_value, species_name[i]) == 0)
+            {
+                info->selected_species = i;
+                break;
+            }
+        }
+    }
 
     if (coda_get_product_version(info->product, &info->product_version) != 0)
     {
@@ -590,6 +556,16 @@ static int ingestion_init(const harp_ingestion_module *module, coda_product *pro
     {
         ingestion_done(info);
         return -1;
+    }
+    if (info->selected_species >= 0)
+    {
+        for (i = 0; i < NUM_SPECIES_TYPES; i++)
+        {
+            if (i != info->selected_species)
+            {
+                info->species_index[i] = -1;
+            }
+        }
     }
     if (init_profile_info(info) != 0)
     {
@@ -645,6 +621,7 @@ static int get_akm_data(ingest_info *info, const coda_cursor *mds_cursor, long i
     num_i = num_elements;
     for (i = num_altitudes - 1; i >= 0; i--)
     {
+        /* we need to reverse the lrv index, because we already reversed 'data' with reverse_array() */
         if (lrv[num_altitudes - i - 1])
         {
             long num_j = num_elements;
@@ -675,6 +652,43 @@ static int get_akm_data(ingest_info *info, const coda_cursor *mds_cursor, long i
         }
     }
     assert(num_i == 0);
+
+    if (info->selected_species != -1)
+    {
+        uint8_t *lrv_filter;
+
+        lrv_filter = &info->lrv[(index * (info->num_species + 1) + info->selected_species + 1) *
+                                info->max_num_altitudes];
+        for (i = 0; i < num_altitudes; i++)
+        {
+            if (lrv_filter[num_altitudes - i - 1])
+            {
+                long num_j = 0;
+
+                for (j = 0; j < num_altitudes; j++)
+                {
+                    if (lrv_filter[num_altitudes - j - 1])
+                    {
+
+                        data.double_data[num_i * num_altitudes + num_j] = data.double_data[i * num_altitudes + j];
+                        num_j++;
+                    }
+                }
+                for (j = num_j; j < num_altitudes; j++)
+                {
+                    data.double_data[num_i * num_altitudes + j] = harp_nan();
+                }
+                num_i++;
+            }
+        }
+        for (i = num_i; i < num_altitudes; i++)
+        {
+            for (j = 0; j < num_altitudes; j++)
+            {
+                data.double_data[i * num_altitudes + j] = harp_nan();
+            }
+        }
+    }
 
     return 0;
 }
@@ -708,6 +722,7 @@ static int get_profile_data(ingest_info *info, const coda_cursor *mds_cursor, co
     num_altitudes = info->num_altitudes[index];
     for (i = num_altitudes - 1; i >= 0; i--)
     {
+        /* we need to reverse the lrv index, because we already reversed 'data' with reverse_array() */
         if (lrv[num_altitudes - i - 1])
         {
             assert(num_elements > 0);
@@ -720,6 +735,26 @@ static int get_profile_data(ingest_info *info, const coda_cursor *mds_cursor, co
         }
     }
     assert(num_elements == 0);
+
+    if (info->selected_species != -1)
+    {
+        uint8_t *lrv_filter;
+
+        lrv_filter = &info->lrv[(index * (info->num_species + 1) + info->selected_species + 1) *
+                                info->max_num_altitudes];
+        for (i = 0; i < num_altitudes; i++)
+        {
+            if (lrv_filter[num_altitudes - i - 1])
+            {
+                data.double_data[num_elements] = data.double_data[i];
+                num_elements++;
+            }
+        }
+        for (i = num_elements; i < num_altitudes; i++)
+        {
+            data.double_data[i] = harp_nan();
+        }
+    }
 
     return 0;
 }
@@ -778,6 +813,7 @@ static int get_profile_uncertainty_data(ingest_info *info, const coda_cursor *md
     num_altitudes = info->num_altitudes[index];
     for (i = num_altitudes - 1; i >= 0; i--)
     {
+        /* we need to reverse the lrv index, because we already reversed 'data' with reverse_array() */
         if (lrv[num_altitudes - i - 1])
         {
             assert(num_pts > 0);
@@ -790,6 +826,26 @@ static int get_profile_uncertainty_data(ingest_info *info, const coda_cursor *md
         }
     }
     assert(num_pts == 0);
+
+    if (info->selected_species != -1)
+    {
+        uint8_t *lrv_filter;
+
+        lrv_filter = &info->lrv[(index * (info->num_species + 1) + info->selected_species + 1) *
+                                info->max_num_altitudes];
+        for (i = 0; i < num_altitudes; i++)
+        {
+            if (lrv_filter[num_altitudes - i - 1])
+            {
+                data.double_data[num_pts] = data.double_data[i];
+                num_pts++;
+            }
+        }
+        for (i = num_pts; i < num_altitudes; i++)
+        {
+            data.double_data[i] = harp_nan();
+        }
+    }
 
     return 0;
 }
@@ -833,14 +889,114 @@ static int exclude_angles(void *user_data)
     return ((ingest_info *)user_data)->product_version < 1;
 }
 
-static int exclude_akm(void *user_data)
+static int exclude_h2o_akm(void *user_data)
 {
-    return ((ingest_info *)user_data)->product_version < 2;
+    return ((ingest_info *)user_data)->product_version < 2 ||
+        ((ingest_info *)user_data)->species_index[species_h2o] < 0;
 }
 
-static int exclude_v3_species(void *user_data)
+static int exclude_o3_akm(void *user_data)
 {
-    return ((ingest_info *)user_data)->product_version < 3;
+    return ((ingest_info *)user_data)->product_version < 2 ||
+        ((ingest_info *)user_data)->species_index[species_o3] < 0;
+}
+
+static int exclude_hno3_akm(void *user_data)
+{
+    return ((ingest_info *)user_data)->product_version < 2 ||
+        ((ingest_info *)user_data)->species_index[species_hno3] < 0;
+}
+
+static int exclude_ch4_akm(void *user_data)
+{
+    return ((ingest_info *)user_data)->product_version < 2 ||
+        ((ingest_info *)user_data)->species_index[species_ch4] < 0;
+}
+
+static int exclude_n2o_akm(void *user_data)
+{
+    return ((ingest_info *)user_data)->product_version < 2 ||
+        ((ingest_info *)user_data)->species_index[species_n2o] < 0;
+}
+
+static int exclude_no2_akm(void *user_data)
+{
+    return ((ingest_info *)user_data)->product_version < 2 ||
+        ((ingest_info *)user_data)->species_index[species_no2] < 0;
+}
+
+static int exclude_f11_akm(void *user_data)
+{
+    return ((ingest_info *)user_data)->product_version < 2 ||
+        ((ingest_info *)user_data)->species_index[species_f11] < 0;
+}
+
+static int exclude_clno_akm(void *user_data)
+{
+    return ((ingest_info *)user_data)->product_version < 2 ||
+        ((ingest_info *)user_data)->species_index[species_clno] < 0;
+}
+
+static int exclude_n2o5_akm(void *user_data)
+{
+    return ((ingest_info *)user_data)->product_version < 2 ||
+        ((ingest_info *)user_data)->species_index[species_n2o5] < 0;
+}
+
+static int exclude_f12_akm(void *user_data)
+{
+    return ((ingest_info *)user_data)->product_version < 2 ||
+        ((ingest_info *)user_data)->species_index[species_f12] < 0;
+}
+
+static int exclude_h2o(void *user_data)
+{
+    return ((ingest_info *)user_data)->species_index[species_h2o] < 0;
+}
+
+static int exclude_o3(void *user_data)
+{
+    return ((ingest_info *)user_data)->species_index[species_o3] < 0;
+}
+
+static int exclude_hno3(void *user_data)
+{
+    return ((ingest_info *)user_data)->species_index[species_hno3] < 0;
+}
+
+static int exclude_ch4(void *user_data)
+{
+    return ((ingest_info *)user_data)->species_index[species_ch4] < 0;
+}
+
+static int exclude_n2o(void *user_data)
+{
+    return ((ingest_info *)user_data)->species_index[species_n2o] < 0;
+}
+
+static int exclude_no2(void *user_data)
+{
+    return ((ingest_info *)user_data)->species_index[species_no2] < 0;
+}
+
+static int exclude_f11(void *user_data)
+{
+    return ((ingest_info *)user_data)->species_index[species_f11] < 0;
+}
+
+static int exclude_clno(void *user_data)
+{
+    return ((ingest_info *)user_data)->species_index[species_clno] < 0;
+}
+
+static int exclude_n2o5(void *user_data)
+{
+    return ((ingest_info *)user_data)->species_index[species_n2o5] < 0;
+}
+
+static int exclude_f12(void *user_data)
+{
+    return ((ingest_info *)user_data)->species_index[species_f12] < 0;
 }
 
 static int read_datetime(void *user_data, long index, harp_array data)
@@ -875,6 +1031,28 @@ static int read_altitude(void *user_data, long index, harp_array data)
         return -1;
     }
     reverse_array(data.double_data, num_altitudes);
+
+    if (info->selected_species != -1)
+    {
+        uint8_t *lrv_filter;
+        long num_elements = 0;
+        long i;
+
+        lrv_filter = &info->lrv[(index * (info->num_species + 1) + info->selected_species + 1) *
+                                info->max_num_altitudes];
+        for (i = 0; i < num_altitudes; i++)
+        {
+            if (lrv_filter[num_altitudes - i - 1])
+            {
+                data.double_data[num_elements] = data.double_data[i];
+                num_elements++;
+            }
+        }
+        for (i = num_elements; i < num_altitudes; i++)
+        {
+            data.double_data[i] = harp_nan();
+        }
+    }
 
     return 0;
 }
@@ -949,455 +1127,506 @@ static int read_temperature_uncertainty(void *user_data, long index, harp_array 
 static int read_h2o(void *user_data, long index, harp_array data)
 {
     ingest_info *info = (ingest_info *)user_data;
+    int species_index = info->species_index[species_h2o];
 
-    return get_profile_data(info, &info->h2o_cursor[index], "conc_alt", index,
-                            &info->lrv[(index * (info->num_species + 1) + info->h2o_id + 1) * info->max_num_altitudes],
+    return get_profile_data(info, &info->mds_cursor[species_h2o][index], "conc_alt", index,
+                            &info->lrv[(index * (info->num_species + 1) + species_index + 1) * info->max_num_altitudes],
                             data);
 }
 
 static int read_h2o_uncertainty(void *user_data, long index, harp_array data)
 {
     ingest_info *info = (ingest_info *)user_data;
+    int species_index = info->species_index[species_h2o];
 
-    return get_profile_uncertainty_data(info, &info->h2o_cursor[index], "conc_var_cov", index,
-                                        &info->lrv[(index * (info->num_species + 1) + info->h2o_id + 1) *
+    return get_profile_uncertainty_data(info, &info->mds_cursor[species_h2o][index], "conc_var_cov", index,
+                                        &info->lrv[(index * (info->num_species + 1) + species_index + 1) *
                                                    info->max_num_altitudes], data);
 }
 
 static int read_o3(void *user_data, long index, harp_array data)
 {
     ingest_info *info = (ingest_info *)user_data;
+    int species_index = info->species_index[species_o3];
 
-    return get_profile_data(info, &info->o3_cursor[index], "conc_alt", index,
-                            &info->lrv[(index * (info->num_species + 1) + info->o3_id + 1) * info->max_num_altitudes],
+    return get_profile_data(info, &info->mds_cursor[species_o3][index], "conc_alt", index,
+                            &info->lrv[(index * (info->num_species + 1) + species_index + 1) * info->max_num_altitudes],
                             data);
 }
 
 static int read_o3_uncertainty(void *user_data, long index, harp_array data)
 {
     ingest_info *info = (ingest_info *)user_data;
+    int species_index = info->species_index[species_o3];
 
-    return get_profile_uncertainty_data(info, &info->o3_cursor[index], "conc_var_cov", index,
-                                        &info->lrv[(index * (info->num_species + 1) + info->o3_id + 1) *
+    return get_profile_uncertainty_data(info, &info->mds_cursor[species_o3][index], "conc_var_cov", index,
+                                        &info->lrv[(index * (info->num_species + 1) + species_index + 1) *
                                                    info->max_num_altitudes], data);
 }
 
 static int read_hno3(void *user_data, long index, harp_array data)
 {
     ingest_info *info = (ingest_info *)user_data;
+    int species_index = info->species_index[species_hno3];
 
-    return get_profile_data(info, &info->hno3_cursor[index], "conc_alt", index,
-                            &info->lrv[(index * (info->num_species + 1) + info->hno3_id + 1) * info->max_num_altitudes],
+    return get_profile_data(info, &info->mds_cursor[species_hno3][index], "conc_alt", index,
+                            &info->lrv[(index * (info->num_species + 1) + species_index + 1) * info->max_num_altitudes],
                             data);
 }
 
 static int read_hno3_uncertainty(void *user_data, long index, harp_array data)
 {
     ingest_info *info = (ingest_info *)user_data;
+    int species_index = info->species_index[species_hno3];
 
-    return get_profile_uncertainty_data(info, &info->hno3_cursor[index], "conc_var_cov", index,
-                                        &info->lrv[(index * (info->num_species + 1) + info->hno3_id + 1) *
+    return get_profile_uncertainty_data(info, &info->mds_cursor[species_hno3][index], "conc_var_cov", index,
+                                        &info->lrv[(index * (info->num_species + 1) + species_index + 1) *
                                                    info->max_num_altitudes], data);
 }
 
 static int read_ch4(void *user_data, long index, harp_array data)
 {
     ingest_info *info = (ingest_info *)user_data;
+    int species_index = info->species_index[species_ch4];
 
-    return get_profile_data(info, &info->ch4_cursor[index], "conc_alt", index,
-                            &info->lrv[(index * (info->num_species + 1) + info->ch4_id + 1) * info->max_num_altitudes],
+    return get_profile_data(info, &info->mds_cursor[species_ch4][index], "conc_alt", index,
+                            &info->lrv[(index * (info->num_species + 1) + species_index + 1) * info->max_num_altitudes],
                             data);
 }
 
 static int read_ch4_uncertainty(void *user_data, long index, harp_array data)
 {
     ingest_info *info = (ingest_info *)user_data;
+    int species_index = info->species_index[species_ch4];
 
-    return get_profile_uncertainty_data(info, &info->ch4_cursor[index], "conc_var_cov", index,
-                                        &info->lrv[(index * (info->num_species + 1) + info->ch4_id + 1) *
+    return get_profile_uncertainty_data(info, &info->mds_cursor[species_ch4][index], "conc_var_cov", index,
+                                        &info->lrv[(index * (info->num_species + 1) + species_index + 1) *
                                                    info->max_num_altitudes], data);
 }
 
 static int read_n2o(void *user_data, long index, harp_array data)
 {
     ingest_info *info = (ingest_info *)user_data;
+    int species_index = info->species_index[species_n2o];
 
-    return get_profile_data(info, &info->n2o_cursor[index], "conc_alt", index,
-                            &info->lrv[(index * (info->num_species + 1) + info->n2o_id + 1) * info->max_num_altitudes],
+    return get_profile_data(info, &info->mds_cursor[species_n2o][index], "conc_alt", index,
+                            &info->lrv[(index * (info->num_species + 1) + species_index + 1) * info->max_num_altitudes],
                             data);
 }
 
 static int read_n2o_uncertainty(void *user_data, long index, harp_array data)
 {
     ingest_info *info = (ingest_info *)user_data;
+    int species_index = info->species_index[species_n2o];
 
-    return get_profile_uncertainty_data(info, &info->n2o_cursor[index], "conc_var_cov", index,
-                                        &info->lrv[(index * (info->num_species + 1) + info->n2o_id + 1) *
+    return get_profile_uncertainty_data(info, &info->mds_cursor[species_n2o][index], "conc_var_cov", index,
+                                        &info->lrv[(index * (info->num_species + 1) + species_index + 1) *
                                                    info->max_num_altitudes], data);
 }
 
 static int read_no2(void *user_data, long index, harp_array data)
 {
     ingest_info *info = (ingest_info *)user_data;
+    int species_index = info->species_index[species_no2];
 
-    return get_profile_data(info, &info->no2_cursor[index], "conc_alt", index,
-                            &info->lrv[(index * (info->num_species + 1) + info->no2_id + 1) * info->max_num_altitudes],
+    return get_profile_data(info, &info->mds_cursor[species_no2][index], "conc_alt", index,
+                            &info->lrv[(index * (info->num_species + 1) + species_index + 1) * info->max_num_altitudes],
                             data);
 }
 
 static int read_no2_uncertainty(void *user_data, long index, harp_array data)
 {
     ingest_info *info = (ingest_info *)user_data;
+    int species_index = info->species_index[species_no2];
 
-    return get_profile_uncertainty_data(info, &info->no2_cursor[index], "conc_var_cov", index,
-                                        &info->lrv[(index * (info->num_species + 1) + info->no2_id + 1) *
+    return get_profile_uncertainty_data(info, &info->mds_cursor[species_no2][index], "conc_var_cov", index,
+                                        &info->lrv[(index * (info->num_species + 1) + species_index + 1) *
                                                    info->max_num_altitudes], data);
 }
 
 static int read_f11(void *user_data, long index, harp_array data)
 {
     ingest_info *info = (ingest_info *)user_data;
+    int species_index = info->species_index[species_f11];
 
-    return get_profile_data(info, &info->f11_cursor[index], "conc_alt", index,
-                            &info->lrv[(index * (info->num_species + 1) + info->f11_id + 1) * info->max_num_altitudes],
+    return get_profile_data(info, &info->mds_cursor[species_f11][index], "conc_alt", index,
+                            &info->lrv[(index * (info->num_species + 1) + species_index + 1) * info->max_num_altitudes],
                             data);
 }
 
 static int read_f11_uncertainty(void *user_data, long index, harp_array data)
 {
     ingest_info *info = (ingest_info *)user_data;
+    int species_index = info->species_index[species_f11];
 
-    return get_profile_uncertainty_data(info, &info->f11_cursor[index], "conc_var_cov", index,
-                                        &info->lrv[(index * (info->num_species + 1) + info->f11_id + 1) *
+    return get_profile_uncertainty_data(info, &info->mds_cursor[species_f11][index], "conc_var_cov", index,
+                                        &info->lrv[(index * (info->num_species + 1) + species_index + 1) *
                                                    info->max_num_altitudes], data);
 }
 
 static int read_clno(void *user_data, long index, harp_array data)
 {
     ingest_info *info = (ingest_info *)user_data;
+    int species_index = info->species_index[species_clno];
 
-    return get_profile_data(info, &info->clno_cursor[index], "conc_alt", index,
-                            &info->lrv[(index * (info->num_species + 1) + info->clno_id + 1) * info->max_num_altitudes],
+    return get_profile_data(info, &info->mds_cursor[species_clno][index], "conc_alt", index,
+                            &info->lrv[(index * (info->num_species + 1) + species_index + 1) * info->max_num_altitudes],
                             data);
 }
 
 static int read_clno_uncertainty(void *user_data, long index, harp_array data)
 {
     ingest_info *info = (ingest_info *)user_data;
+    int species_index = info->species_index[species_clno];
 
-    return get_profile_uncertainty_data(info, &info->clno_cursor[index], "conc_var_cov", index,
-                                        &info->lrv[(index * (info->num_species + 1) + info->clno_id + 1) *
+    return get_profile_uncertainty_data(info, &info->mds_cursor[species_clno][index], "conc_var_cov", index,
+                                        &info->lrv[(index * (info->num_species + 1) + species_index + 1) *
                                                    info->max_num_altitudes], data);
 }
 
 static int read_n2o5(void *user_data, long index, harp_array data)
 {
     ingest_info *info = (ingest_info *)user_data;
+    int species_index = info->species_index[species_n2o5];
 
-    return get_profile_data(info, &info->n2o5_cursor[index], "conc_alt", index,
-                            &info->lrv[(index * (info->num_species + 1) + info->n2o5_id + 1) * info->max_num_altitudes],
+    return get_profile_data(info, &info->mds_cursor[species_n2o5][index], "conc_alt", index,
+                            &info->lrv[(index * (info->num_species + 1) + species_index + 1) * info->max_num_altitudes],
                             data);
 }
 
 static int read_n2o5_uncertainty(void *user_data, long index, harp_array data)
 {
     ingest_info *info = (ingest_info *)user_data;
+    int species_index = info->species_index[species_n2o5];
 
-    return get_profile_uncertainty_data(info, &info->n2o5_cursor[index], "conc_var_cov", index,
-                                        &info->lrv[(index * (info->num_species + 1) + info->n2o5_id + 1) *
+    return get_profile_uncertainty_data(info, &info->mds_cursor[species_n2o5][index], "conc_var_cov", index,
+                                        &info->lrv[(index * (info->num_species + 1) + species_index + 1) *
                                                    info->max_num_altitudes], data);
 }
 
 static int read_f12(void *user_data, long index, harp_array data)
 {
     ingest_info *info = (ingest_info *)user_data;
+    int species_index = info->species_index[species_f12];
 
-    return get_profile_data(info, &info->f12_cursor[index], "conc_alt", index,
-                            &info->lrv[(index * (info->num_species + 1) + info->f12_id + 1) * info->max_num_altitudes],
+    return get_profile_data(info, &info->mds_cursor[species_f12][index], "conc_alt", index,
+                            &info->lrv[(index * (info->num_species + 1) + species_index + 1) * info->max_num_altitudes],
                             data);
 }
 
 static int read_f12_uncertainty(void *user_data, long index, harp_array data)
 {
     ingest_info *info = (ingest_info *)user_data;
+    int species_index = info->species_index[species_f12];
 
-    return get_profile_uncertainty_data(info, &info->f12_cursor[index], "conc_var_cov", index,
-                                        &info->lrv[(index * (info->num_species + 1) + info->f12_id + 1) *
+    return get_profile_uncertainty_data(info, &info->mds_cursor[species_f12][index], "conc_var_cov", index,
+                                        &info->lrv[(index * (info->num_species + 1) + species_index + 1) *
                                                    info->max_num_altitudes], data);
 }
 
 static int read_h2o_vmr(void *user_data, long index, harp_array data)
 {
     ingest_info *info = (ingest_info *)user_data;
+    int species_index = info->species_index[species_h2o];
 
-    return get_profile_data(info, &info->h2o_cursor[index], "vmr", index,
-                            &info->lrv[(index * (info->num_species + 1) + info->h2o_id + 1) * info->max_num_altitudes],
+    return get_profile_data(info, &info->mds_cursor[species_h2o][index], "vmr", index,
+                            &info->lrv[(index * (info->num_species + 1) + species_index + 1) * info->max_num_altitudes],
                             data);
 }
 
 static int read_h2o_vmr_uncertainty(void *user_data, long index, harp_array data)
 {
     ingest_info *info = (ingest_info *)user_data;
+    int species_index = info->species_index[species_h2o];
 
-    return get_profile_uncertainty_data(info, &info->h2o_cursor[index], "vmr_var_cov", index,
-                                        &info->lrv[(index * (info->num_species + 1) + info->h2o_id + 1) *
+    return get_profile_uncertainty_data(info, &info->mds_cursor[species_h2o][index], "vmr_var_cov", index,
+                                        &info->lrv[(index * (info->num_species + 1) + species_index + 1) *
                                                    info->max_num_altitudes], data);
 }
 
 static int read_o3_vmr(void *user_data, long index, harp_array data)
 {
     ingest_info *info = (ingest_info *)user_data;
+    int species_index = info->species_index[species_o3];
 
-    return get_profile_data(info, &info->o3_cursor[index], "vmr", index,
-                            &info->lrv[(index * (info->num_species + 1) + info->o3_id + 1) * info->max_num_altitudes],
+    return get_profile_data(info, &info->mds_cursor[species_o3][index], "vmr", index,
+                            &info->lrv[(index * (info->num_species + 1) + species_index + 1) * info->max_num_altitudes],
                             data);
 }
 
 static int read_o3_vmr_uncertainty(void *user_data, long index, harp_array data)
 {
     ingest_info *info = (ingest_info *)user_data;
+    int species_index = info->species_index[species_o3];
 
-    return get_profile_uncertainty_data(info, &info->o3_cursor[index], "vmr_var_cov", index,
-                                        &info->lrv[(index * (info->num_species + 1) + info->o3_id + 1) *
+    return get_profile_uncertainty_data(info, &info->mds_cursor[species_o3][index], "vmr_var_cov", index,
+                                        &info->lrv[(index * (info->num_species + 1) + species_index + 1) *
                                                    info->max_num_altitudes], data);
 }
 
 static int read_hno3_vmr(void *user_data, long index, harp_array data)
 {
     ingest_info *info = (ingest_info *)user_data;
+    int species_index = info->species_index[species_hno3];
 
-    return get_profile_data(info, &info->hno3_cursor[index], "vmr", index,
-                            &info->lrv[(index * (info->num_species + 1) + info->hno3_id + 1) *
+    return get_profile_data(info, &info->mds_cursor[species_hno3][index], "vmr", index,
+                            &info->lrv[(index * (info->num_species + 1) + species_index + 1) *
                                        info->max_num_altitudes], data);
 }
 
 static int read_hno3_vmr_uncertainty(void *user_data, long index, harp_array data)
 {
     ingest_info *info = (ingest_info *)user_data;
+    int species_index = info->species_index[species_hno3];
 
-    return get_profile_uncertainty_data(info, &info->hno3_cursor[index], "vmr_var_cov", index,
-                                        &info->lrv[(index * (info->num_species + 1) + info->hno3_id + 1) *
+    return get_profile_uncertainty_data(info, &info->mds_cursor[species_hno3][index], "vmr_var_cov", index,
+                                        &info->lrv[(index * (info->num_species + 1) + species_index + 1) *
                                                    info->max_num_altitudes], data);
 }
 
 static int read_ch4_vmr(void *user_data, long index, harp_array data)
 {
     ingest_info *info = (ingest_info *)user_data;
+    int species_index = info->species_index[species_ch4];
 
-    return get_profile_data(info, &info->ch4_cursor[index], "vmr", index,
-                            &info->lrv[(index * (info->num_species + 1) + info->ch4_id + 1) * info->max_num_altitudes],
+    return get_profile_data(info, &info->mds_cursor[species_ch4][index], "vmr", index,
+                            &info->lrv[(index * (info->num_species + 1) + species_index + 1) * info->max_num_altitudes],
                             data);
 }
 
 static int read_ch4_vmr_uncertainty(void *user_data, long index, harp_array data)
 {
     ingest_info *info = (ingest_info *)user_data;
+    int species_index = info->species_index[species_ch4];
 
-    return get_profile_uncertainty_data(info, &info->ch4_cursor[index], "vmr_var_cov", index,
-                                        &info->lrv[(index * (info->num_species + 1) + info->ch4_id + 1) *
+    return get_profile_uncertainty_data(info, &info->mds_cursor[species_ch4][index], "vmr_var_cov", index,
+                                        &info->lrv[(index * (info->num_species + 1) + species_index + 1) *
                                                    info->max_num_altitudes], data);
 }
 
 static int read_n2o_vmr(void *user_data, long index, harp_array data)
 {
     ingest_info *info = (ingest_info *)user_data;
+    int species_index = info->species_index[species_n2o];
 
-    return get_profile_data(info, &info->n2o_cursor[index], "vmr", index,
-                            &info->lrv[(index * (info->num_species + 1) + info->n2o_id + 1) *
+    return get_profile_data(info, &info->mds_cursor[species_n2o][index], "vmr", index,
+                            &info->lrv[(index * (info->num_species + 1) + species_index + 1) *
                                        info->max_num_altitudes], data);
 }
 
 static int read_n2o_vmr_uncertainty(void *user_data, long index, harp_array data)
 {
     ingest_info *info = (ingest_info *)user_data;
+    int species_index = info->species_index[species_n2o];
 
-    return get_profile_uncertainty_data(info, &info->n2o_cursor[index], "vmr_var_cov", index,
-                                        &info->lrv[(index * (info->num_species + 1) + info->n2o_id + 1) *
+    return get_profile_uncertainty_data(info, &info->mds_cursor[species_n2o][index], "vmr_var_cov", index,
+                                        &info->lrv[(index * (info->num_species + 1) + species_index + 1) *
                                                    info->max_num_altitudes], data);
 }
 
 static int read_no2_vmr(void *user_data, long index, harp_array data)
 {
     ingest_info *info = (ingest_info *)user_data;
+    int species_index = info->species_index[species_no2];
 
-    return get_profile_data(info, &info->no2_cursor[index], "vmr", index,
-                            &info->lrv[(index * (info->num_species + 1) + info->no2_id + 1) * info->max_num_altitudes],
+    return get_profile_data(info, &info->mds_cursor[species_no2][index], "vmr", index,
+                            &info->lrv[(index * (info->num_species + 1) + species_index + 1) * info->max_num_altitudes],
                             data);
 }
 
 static int read_no2_vmr_uncertainty(void *user_data, long index, harp_array data)
 {
     ingest_info *info = (ingest_info *)user_data;
+    int species_index = info->species_index[species_no2];
 
-    return get_profile_uncertainty_data(info, &info->no2_cursor[index], "vmr_var_cov", index,
-                                        &info->lrv[(index * (info->num_species + 1) + info->no2_id + 1) *
+    return get_profile_uncertainty_data(info, &info->mds_cursor[species_no2][index], "vmr_var_cov", index,
+                                        &info->lrv[(index * (info->num_species + 1) + species_index + 1) *
                                                    info->max_num_altitudes], data);
 }
 
 static int read_f11_vmr(void *user_data, long index, harp_array data)
 {
     ingest_info *info = (ingest_info *)user_data;
+    int species_index = info->species_index[species_f11];
 
-    return get_profile_data(info, &info->f11_cursor[index], "vmr", index,
-                            &info->lrv[(index * (info->num_species + 1) + info->f11_id + 1) * info->max_num_altitudes],
+    return get_profile_data(info, &info->mds_cursor[species_f11][index], "vmr", index,
+                            &info->lrv[(index * (info->num_species + 1) + species_index + 1) * info->max_num_altitudes],
                             data);
 }
 
 static int read_f11_vmr_uncertainty(void *user_data, long index, harp_array data)
 {
     ingest_info *info = (ingest_info *)user_data;
+    int species_index = info->species_index[species_f11];
 
-    return get_profile_uncertainty_data(info, &info->f11_cursor[index], "vmr_var_cov", index,
-                                        &info->lrv[(index * (info->num_species + 1) + info->f11_id + 1) *
+    return get_profile_uncertainty_data(info, &info->mds_cursor[species_f11][index], "vmr_var_cov", index,
+                                        &info->lrv[(index * (info->num_species + 1) + species_index + 1) *
                                                    info->max_num_altitudes], data);
 }
 
 static int read_clno_vmr(void *user_data, long index, harp_array data)
 {
     ingest_info *info = (ingest_info *)user_data;
+    int species_index = info->species_index[species_clno];
 
-    return get_profile_data(info, &info->clno_cursor[index], "vmr", index,
-                            &info->lrv[(index * (info->num_species + 1) + info->clno_id + 1) * info->max_num_altitudes],
+    return get_profile_data(info, &info->mds_cursor[species_clno][index], "vmr", index,
+                            &info->lrv[(index * (info->num_species + 1) + species_index + 1) * info->max_num_altitudes],
                             data);
 }
 
 static int read_clno_vmr_uncertainty(void *user_data, long index, harp_array data)
 {
     ingest_info *info = (ingest_info *)user_data;
+    int species_index = info->species_index[species_clno];
 
-    return get_profile_uncertainty_data(info, &info->clno_cursor[index], "vmr_var_cov", index,
-                                        &info->lrv[(index * (info->num_species + 1) + info->clno_id + 1) *
+    return get_profile_uncertainty_data(info, &info->mds_cursor[species_clno][index], "vmr_var_cov", index,
+                                        &info->lrv[(index * (info->num_species + 1) + species_index + 1) *
                                                    info->max_num_altitudes], data);
 }
 
 static int read_n2o5_vmr(void *user_data, long index, harp_array data)
 {
     ingest_info *info = (ingest_info *)user_data;
+    int species_index = info->species_index[species_n2o5];
 
-    return get_profile_data(info, &info->n2o5_cursor[index], "vmr", index,
-                            &info->lrv[(index * (info->num_species + 1) + info->n2o5_id + 1) * info->max_num_altitudes],
+    return get_profile_data(info, &info->mds_cursor[species_n2o5][index], "vmr", index,
+                            &info->lrv[(index * (info->num_species + 1) + species_index + 1) * info->max_num_altitudes],
                             data);
 }
 
 static int read_n2o5_vmr_uncertainty(void *user_data, long index, harp_array data)
 {
     ingest_info *info = (ingest_info *)user_data;
+    int species_index = info->species_index[species_n2o5];
 
-    return get_profile_uncertainty_data(info, &info->n2o5_cursor[index], "vmr_var_cov", index,
-                                        &info->lrv[(index * (info->num_species + 1) + info->n2o5_id + 1) *
+    return get_profile_uncertainty_data(info, &info->mds_cursor[species_n2o5][index], "vmr_var_cov", index,
+                                        &info->lrv[(index * (info->num_species + 1) + species_index + 1) *
                                                    info->max_num_altitudes], data);
 }
 
 static int read_f12_vmr(void *user_data, long index, harp_array data)
 {
     ingest_info *info = (ingest_info *)user_data;
+    int species_index = info->species_index[species_f12];
 
-    return get_profile_data(info, &info->f12_cursor[index], "vmr", index,
-                            &info->lrv[(index * (info->num_species + 1) + info->f12_id + 1) * info->max_num_altitudes],
+    return get_profile_data(info, &info->mds_cursor[species_f12][index], "vmr", index,
+                            &info->lrv[(index * (info->num_species + 1) + species_index + 1) * info->max_num_altitudes],
                             data);
 }
 
 static int read_f12_vmr_uncertainty(void *user_data, long index, harp_array data)
 {
     ingest_info *info = (ingest_info *)user_data;
+    int species_index = info->species_index[species_f12];
 
-    return get_profile_uncertainty_data(info, &info->f12_cursor[index], "vmr_var_cov", index,
-                                        &info->lrv[(index * (info->num_species + 1) + info->f12_id + 1) *
+    return get_profile_uncertainty_data(info, &info->mds_cursor[species_f12][index], "vmr_var_cov", index,
+                                        &info->lrv[(index * (info->num_species + 1) + species_index + 1) *
                                                    info->max_num_altitudes], data);
 }
 
 static int read_h2o_akm_vmr(void *user_data, long index, harp_array data)
 {
     ingest_info *info = (ingest_info *)user_data;
+    int species_index = info->species_index[species_h2o];
 
-    return get_akm_data(info, &info->h2o_cursor[index], index,
-                        &info->lrv[(index * (info->num_species + 1) + info->h2o_id + 1) * info->max_num_altitudes],
+    return get_akm_data(info, &info->mds_cursor[species_h2o][index], index,
+                        &info->lrv[(index * (info->num_species + 1) + species_index + 1) * info->max_num_altitudes],
                         data);
 }
 
 static int read_o3_akm_vmr(void *user_data, long index, harp_array data)
 {
     ingest_info *info = (ingest_info *)user_data;
+    int species_index = info->species_index[species_o3];
 
-    return get_akm_data(info, &info->o3_cursor[index], index,
-                        &info->lrv[(index * (info->num_species + 1) + info->o3_id + 1) * info->max_num_altitudes],
+    return get_akm_data(info, &info->mds_cursor[species_o3][index], index,
+                        &info->lrv[(index * (info->num_species + 1) + species_index + 1) * info->max_num_altitudes],
                         data);
 }
 
 static int read_hno3_akm_vmr(void *user_data, long index, harp_array data)
 {
     ingest_info *info = (ingest_info *)user_data;
+    int species_index = info->species_index[species_hno3];
 
-    return get_akm_data(info, &info->hno3_cursor[index], index,
-                        &info->lrv[(index * (info->num_species + 1) + info->hno3_id + 1) * info->max_num_altitudes],
+    return get_akm_data(info, &info->mds_cursor[species_hno3][index], index,
+                        &info->lrv[(index * (info->num_species + 1) + species_index + 1) * info->max_num_altitudes],
                         data);
 }
 
 static int read_ch4_akm_vmr(void *user_data, long index, harp_array data)
 {
     ingest_info *info = (ingest_info *)user_data;
+    int species_index = info->species_index[species_ch4];
 
-    return get_akm_data(info, &info->ch4_cursor[index], index,
-                        &info->lrv[(index * (info->num_species + 1) + info->ch4_id + 1) * info->max_num_altitudes],
+    return get_akm_data(info, &info->mds_cursor[species_ch4][index], index,
+                        &info->lrv[(index * (info->num_species + 1) + species_index + 1) * info->max_num_altitudes],
                         data);
 }
 
 static int read_n2o_akm_vmr(void *user_data, long index, harp_array data)
 {
     ingest_info *info = (ingest_info *)user_data;
+    int species_index = info->species_index[species_n2o];
 
-    return get_akm_data(info, &info->n2o_cursor[index], index,
-                        &info->lrv[(index * (info->num_species + 1) + info->n2o_id + 1) * info->max_num_altitudes],
+    return get_akm_data(info, &info->mds_cursor[species_n2o][index], index,
+                        &info->lrv[(index * (info->num_species + 1) + species_index + 1) * info->max_num_altitudes],
                         data);
 }
 
 static int read_no2_akm_vmr(void *user_data, long index, harp_array data)
 {
     ingest_info *info = (ingest_info *)user_data;
+    int species_index = info->species_index[species_no2];
 
-    return get_akm_data(info, &info->no2_cursor[index], index,
-                        &info->lrv[(index * (info->num_species + 1) + info->no2_id + 1) * info->max_num_altitudes],
+    return get_akm_data(info, &info->mds_cursor[species_no2][index], index,
+                        &info->lrv[(index * (info->num_species + 1) + species_index + 1) * info->max_num_altitudes],
                         data);
 }
 
 static int read_f11_akm_vmr(void *user_data, long index, harp_array data)
 {
     ingest_info *info = (ingest_info *)user_data;
+    int species_index = info->species_index[species_f11];
 
-    return get_akm_data(info, &info->f11_cursor[index], index,
-                        &info->lrv[(index * (info->num_species + 1) + info->f11_id + 1) * info->max_num_altitudes],
+    return get_akm_data(info, &info->mds_cursor[species_f11][index], index,
+                        &info->lrv[(index * (info->num_species + 1) + species_index + 1) * info->max_num_altitudes],
                         data);
 }
 
 static int read_clno_akm_vmr(void *user_data, long index, harp_array data)
 {
     ingest_info *info = (ingest_info *)user_data;
+    int species_index = info->species_index[species_clno];
 
-    return get_akm_data(info, &info->clno_cursor[index], index,
-                        &info->lrv[(index * (info->num_species + 1) + info->clno_id + 1) * info->max_num_altitudes],
+    return get_akm_data(info, &info->mds_cursor[species_clno][index], index,
+                        &info->lrv[(index * (info->num_species + 1) + species_index + 1) * info->max_num_altitudes],
                         data);
 }
 
 static int read_n2o5_akm_vmr(void *user_data, long index, harp_array data)
 {
     ingest_info *info = (ingest_info *)user_data;
+    int species_index = info->species_index[species_n2o5];
 
-    return get_akm_data(info, &info->n2o5_cursor[index], index,
-                        &info->lrv[(index * (info->num_species + 1) + info->n2o5_id + 1) * info->max_num_altitudes],
+    return get_akm_data(info, &info->mds_cursor[species_n2o5][index], index,
+                        &info->lrv[(index * (info->num_species + 1) + species_index + 1) * info->max_num_altitudes],
                         data);
 }
 
 static int read_f12_akm_vmr(void *user_data, long index, harp_array data)
 {
     ingest_info *info = (ingest_info *)user_data;
+    int species_index = info->species_index[species_f12];
 
-    return get_akm_data(info, &info->f12_cursor[index], index,
-                        &info->lrv[(index * (info->num_species + 1) + info->f12_id + 1) * info->max_num_altitudes],
+    return get_akm_data(info, &info->mds_cursor[species_f12][index], index,
+                        &info->lrv[(index * (info->num_species + 1) + species_index + 1) * info->max_num_altitudes],
                         data);
 }
 
 int harp_ingestion_module_mip_nl__2p_init(void)
 {
+    const char *species_options[] = { "all", "H2O", "O3", "HNO3", "CH4", "N2O", "NO2", "F11", "ClNO", "N2O5", "F12" };
     harp_ingestion_module *module;
     harp_product_definition *product_definition;
     harp_variable_definition *variable_definition;
@@ -1408,6 +1637,11 @@ int harp_ingestion_module_mip_nl__2p_init(void)
     description = "MIPAS Temperature, Pressure, and Atmospheric Constituents Profiles";
     module = harp_ingestion_register_module_coda("MIP_NL__2P", "ENVISAT_MIPAS", "MIP_NL__2P", description, NULL,
                                                  ingestion_init, ingestion_done);
+
+    harp_ingestion_register_option(module, "species", "if not set to 'all' then ingest only the specified species "
+                                   "(together with p and T) and remove all vertical levels for which the logical "
+                                   "retrieval vector (lrv) for the specified species is false", NUM_SPECIES_TYPES + 1,
+                                   species_options);
 
     description = "profile data";
     product_definition = harp_ingestion_register_product(module, "MIPAS_NL_L2", description, read_dimensions);
@@ -1510,7 +1744,8 @@ int harp_ingestion_module_mip_nl__2p_init(void)
     description = "H2O number density";
     variable_definition = harp_ingestion_register_variable_sample_read(product_definition, "H2O_number_density",
                                                                        harp_type_double, 2, dimension_type, NULL,
-                                                                       description, "molec/cm^3", NULL, read_h2o);
+                                                                       description, "molec/cm^3", exclude_h2o,
+                                                                       read_h2o);
     path = "/h2o_retrieval_mds[]/conc_alt[]";
     harp_variable_definition_add_mapping(variable_definition, NULL, NULL, path, NULL);
 
@@ -1518,7 +1753,7 @@ int harp_ingestion_module_mip_nl__2p_init(void)
     variable_definition = harp_ingestion_register_variable_sample_read(product_definition,
                                                                        "H2O_number_density_uncertainty",
                                                                        harp_type_double, 2, dimension_type, NULL,
-                                                                       description, "molec/cm^3", NULL,
+                                                                       description, "molec/cm^3", exclude_h2o,
                                                                        read_h2o_uncertainty);
     path = "/h2o_retrieval_mds[]/conc_var_cov[]";
     harp_variable_definition_add_mapping(variable_definition, NULL, NULL, path, NULL);
@@ -1526,7 +1761,7 @@ int harp_ingestion_module_mip_nl__2p_init(void)
     description = "O3 number density";
     variable_definition = harp_ingestion_register_variable_sample_read(product_definition, "O3_number_density",
                                                                        harp_type_double, 2, dimension_type, NULL,
-                                                                       description, "molec/cm^3", NULL, read_o3);
+                                                                       description, "molec/cm^3", exclude_o3, read_o3);
     path = "/o3_retrieval_mds[]/conc_alt[]";
     harp_variable_definition_add_mapping(variable_definition, NULL, NULL, path, NULL);
 
@@ -1534,7 +1769,7 @@ int harp_ingestion_module_mip_nl__2p_init(void)
     variable_definition = harp_ingestion_register_variable_sample_read(product_definition,
                                                                        "O3_number_density_uncertainty",
                                                                        harp_type_double, 2, dimension_type, NULL,
-                                                                       description, "molec/cm^3", NULL,
+                                                                       description, "molec/cm^3", exclude_o3,
                                                                        read_o3_uncertainty);
     path = "/o3_retrieval_mds[]/conc_var_cov[]";
     harp_variable_definition_add_mapping(variable_definition, NULL, NULL, path, NULL);
@@ -1542,7 +1777,8 @@ int harp_ingestion_module_mip_nl__2p_init(void)
     description = "HNO3 number density";
     variable_definition = harp_ingestion_register_variable_sample_read(product_definition, "HNO3_number_density",
                                                                        harp_type_double, 2, dimension_type, NULL,
-                                                                       description, "molec/cm^3", NULL, read_hno3);
+                                                                       description, "molec/cm^3", exclude_hno3,
+                                                                       read_hno3);
     path = "/hno3_retrieval_mds[]/conc_alt[]";
     harp_variable_definition_add_mapping(variable_definition, NULL, NULL, path, NULL);
 
@@ -1550,7 +1786,7 @@ int harp_ingestion_module_mip_nl__2p_init(void)
     variable_definition = harp_ingestion_register_variable_sample_read(product_definition,
                                                                        "HNO3_number_density_uncertainty",
                                                                        harp_type_double, 2, dimension_type, NULL,
-                                                                       description, "molec/cm^3", NULL,
+                                                                       description, "molec/cm^3", exclude_hno3,
                                                                        read_hno3_uncertainty);
     path = "/hno3_retrieval_mds[]/conc_var_cov[]";
     harp_variable_definition_add_mapping(variable_definition, NULL, NULL, path, NULL);
@@ -1558,7 +1794,8 @@ int harp_ingestion_module_mip_nl__2p_init(void)
     description = "CH4 number density";
     variable_definition = harp_ingestion_register_variable_sample_read(product_definition, "CH4_number_density",
                                                                        harp_type_double, 2, dimension_type, NULL,
-                                                                       description, "molec/cm^3", NULL, read_ch4);
+                                                                       description, "molec/cm^3", exclude_ch4,
+                                                                       read_ch4);
     path = "/ch4_retrieval_mds[]/conc_alt[]";
     harp_variable_definition_add_mapping(variable_definition, NULL, NULL, path, NULL);
 
@@ -1566,7 +1803,7 @@ int harp_ingestion_module_mip_nl__2p_init(void)
     variable_definition = harp_ingestion_register_variable_sample_read(product_definition,
                                                                        "CH4_number_density_uncertainty",
                                                                        harp_type_double, 2, dimension_type, NULL,
-                                                                       description, "molec/cm^3", NULL,
+                                                                       description, "molec/cm^3", exclude_ch4,
                                                                        read_ch4_uncertainty);
     path = "/ch4_retrieval_mds[]/conc_var_cov[]";
     harp_variable_definition_add_mapping(variable_definition, NULL, NULL, path, NULL);
@@ -1574,7 +1811,8 @@ int harp_ingestion_module_mip_nl__2p_init(void)
     description = "N2O number density";
     variable_definition = harp_ingestion_register_variable_sample_read(product_definition, "N2O_number_density",
                                                                        harp_type_double, 2, dimension_type, NULL,
-                                                                       description, "molec/cm^3", NULL, read_n2o);
+                                                                       description, "molec/cm^3", exclude_n2o,
+                                                                       read_n2o);
     path = "/n2o_retrieval_mds[]/conc_alt[]";
     harp_variable_definition_add_mapping(variable_definition, NULL, NULL, path, NULL);
 
@@ -1582,7 +1820,7 @@ int harp_ingestion_module_mip_nl__2p_init(void)
     variable_definition = harp_ingestion_register_variable_sample_read(product_definition,
                                                                        "N2O_number_density_uncertainty",
                                                                        harp_type_double, 2, dimension_type, NULL,
-                                                                       description, "molec/cm^3", NULL,
+                                                                       description, "molec/cm^3", exclude_n2o,
                                                                        read_n2o_uncertainty);
     path = "/n2o_retrieval_mds[]/conc_var_cov[]";
     harp_variable_definition_add_mapping(variable_definition, NULL, NULL, path, NULL);
@@ -1590,7 +1828,8 @@ int harp_ingestion_module_mip_nl__2p_init(void)
     description = "NO2 number density";
     variable_definition = harp_ingestion_register_variable_sample_read(product_definition, "NO2_number_density",
                                                                        harp_type_double, 2, dimension_type, NULL,
-                                                                       description, "molec/cm^3", NULL, read_no2);
+                                                                       description, "molec/cm^3", exclude_no2,
+                                                                       read_no2);
     path = "/no2_retrieval_mds[]/conc_alt[]";
     harp_variable_definition_add_mapping(variable_definition, NULL, NULL, path, NULL);
 
@@ -1598,7 +1837,7 @@ int harp_ingestion_module_mip_nl__2p_init(void)
     variable_definition = harp_ingestion_register_variable_sample_read(product_definition,
                                                                        "NO2_number_density_uncertainty",
                                                                        harp_type_double, 2, dimension_type, NULL,
-                                                                       description, "molec/cm^3", NULL,
+                                                                       description, "molec/cm^3", exclude_no2,
                                                                        read_no2_uncertainty);
     path = "/no2_retrieval_mds[]/conc_var_cov[]";
     harp_variable_definition_add_mapping(variable_definition, NULL, NULL, path, NULL);
@@ -1606,7 +1845,7 @@ int harp_ingestion_module_mip_nl__2p_init(void)
     description = "F11 number density";
     variable_definition = harp_ingestion_register_variable_sample_read(product_definition, "CCl3F_number_density",
                                                                        harp_type_double, 2, dimension_type, NULL,
-                                                                       description, "molec/cm^3", exclude_v3_species,
+                                                                       description, "molec/cm^3", exclude_f11,
                                                                        read_f11);
     path = "/f11_retrieval_mds[]/conc_alt[]";
     harp_variable_definition_add_mapping(variable_definition, NULL, NULL, path, NULL);
@@ -1615,7 +1854,7 @@ int harp_ingestion_module_mip_nl__2p_init(void)
     variable_definition = harp_ingestion_register_variable_sample_read(product_definition,
                                                                        "CCl3F_number_density_uncertainty",
                                                                        harp_type_double, 2, dimension_type, NULL,
-                                                                       description, "molec/cm^3", exclude_v3_species,
+                                                                       description, "molec/cm^3", exclude_f11,
                                                                        read_f11_uncertainty);
     path = "/f11_retrieval_mds[]/conc_var_cov[]";
     harp_variable_definition_add_mapping(variable_definition, NULL, NULL, path, NULL);
@@ -1623,7 +1862,7 @@ int harp_ingestion_module_mip_nl__2p_init(void)
     description = "NOCl number density";
     variable_definition = harp_ingestion_register_variable_sample_read(product_definition, "NOCl_number_density",
                                                                        harp_type_double, 2, dimension_type, NULL,
-                                                                       description, "molec/cm^3", exclude_v3_species,
+                                                                       description, "molec/cm^3", exclude_clno,
                                                                        read_clno);
     path = "/clno_retrieval_mds[]/conc_alt[]";
     harp_variable_definition_add_mapping(variable_definition, NULL, NULL, path, NULL);
@@ -1632,7 +1871,7 @@ int harp_ingestion_module_mip_nl__2p_init(void)
     variable_definition = harp_ingestion_register_variable_sample_read(product_definition,
                                                                        "NOCl_number_density_uncertainty",
                                                                        harp_type_double, 2, dimension_type, NULL,
-                                                                       description, "molec/cm^3", exclude_v3_species,
+                                                                       description, "molec/cm^3", exclude_clno,
                                                                        read_clno_uncertainty);
     path = "/clno_retrieval_mds[]/conc_var_cov[]";
     harp_variable_definition_add_mapping(variable_definition, NULL, NULL, path, NULL);
@@ -1640,7 +1879,7 @@ int harp_ingestion_module_mip_nl__2p_init(void)
     description = "N2O5 number density";
     variable_definition = harp_ingestion_register_variable_sample_read(product_definition, "N2O5_number_density",
                                                                        harp_type_double, 2, dimension_type, NULL,
-                                                                       description, "molec/cm^3", exclude_v3_species,
+                                                                       description, "molec/cm^3", exclude_n2o5,
                                                                        read_n2o5);
     path = "/n2o5_retrieval_mds[]/conc_alt[]";
     harp_variable_definition_add_mapping(variable_definition, NULL, NULL, path, NULL);
@@ -1649,7 +1888,7 @@ int harp_ingestion_module_mip_nl__2p_init(void)
     variable_definition = harp_ingestion_register_variable_sample_read(product_definition,
                                                                        "N2O5_number_density_uncertainty",
                                                                        harp_type_double, 2, dimension_type, NULL,
-                                                                       description, "molec/cm^3", exclude_v3_species,
+                                                                       description, "molec/cm^3", exclude_n2o5,
                                                                        read_n2o5_uncertainty);
     path = "/n2o5_retrieval_mds[]/conc_var_cov[]";
     harp_variable_definition_add_mapping(variable_definition, NULL, NULL, path, NULL);
@@ -1657,7 +1896,7 @@ int harp_ingestion_module_mip_nl__2p_init(void)
     description = "F12 number density";
     variable_definition = harp_ingestion_register_variable_sample_read(product_definition, "CCl2F2_number_density",
                                                                        harp_type_double, 2, dimension_type, NULL,
-                                                                       description, "molec/cm^3", exclude_v3_species,
+                                                                       description, "molec/cm^3", exclude_f12,
                                                                        read_f12);
     path = "/f12_retrieval_mds[]/conc_alt[]";
     harp_variable_definition_add_mapping(variable_definition, NULL, NULL, path, NULL);
@@ -1666,7 +1905,7 @@ int harp_ingestion_module_mip_nl__2p_init(void)
     variable_definition = harp_ingestion_register_variable_sample_read(product_definition,
                                                                        "CCl2F2_number_density_uncertainty",
                                                                        harp_type_double, 2, dimension_type, NULL,
-                                                                       description, "molec/cm^3", exclude_v3_species,
+                                                                       description, "molec/cm^3", exclude_f12,
                                                                        read_f12_uncertainty);
     path = "/f12_retrieval_mds[]/conc_var_cov[]";
     harp_variable_definition_add_mapping(variable_definition, NULL, NULL, path, NULL);
@@ -1675,7 +1914,7 @@ int harp_ingestion_module_mip_nl__2p_init(void)
     description = "H2O volume mixing ratio";
     variable_definition = harp_ingestion_register_variable_sample_read(product_definition, "H2O_volume_mixing_ratio",
                                                                        harp_type_double, 2, dimension_type, NULL,
-                                                                       description, "ppmv", NULL, read_h2o_vmr);
+                                                                       description, "ppmv", exclude_h2o, read_h2o_vmr);
     path = "/h2o_retrieval_mds[]/vmr[]";
     harp_variable_definition_add_mapping(variable_definition, NULL, NULL, path, NULL);
 
@@ -1683,7 +1922,7 @@ int harp_ingestion_module_mip_nl__2p_init(void)
     variable_definition = harp_ingestion_register_variable_sample_read(product_definition,
                                                                        "H2O_volume_mixing_ratio_uncertainty",
                                                                        harp_type_double, 2, dimension_type, NULL,
-                                                                       description, "ppmv", NULL,
+                                                                       description, "ppmv", exclude_h2o,
                                                                        read_h2o_vmr_uncertainty);
     path = "/h2o_retrieval_mds[]/vmr_var_cov[]";
     harp_variable_definition_add_mapping(variable_definition, NULL, NULL, path, NULL);
@@ -1691,7 +1930,7 @@ int harp_ingestion_module_mip_nl__2p_init(void)
     description = "O3 volume mixing ratio";
     variable_definition = harp_ingestion_register_variable_sample_read(product_definition, "O3_volume_mixing_ratio",
                                                                        harp_type_double, 2, dimension_type, NULL,
-                                                                       description, "ppmv", NULL, read_o3_vmr);
+                                                                       description, "ppmv", exclude_o3, read_o3_vmr);
     path = "/o3_retrieval_mds[]/vmr[]";
     harp_variable_definition_add_mapping(variable_definition, NULL, NULL, path, NULL);
 
@@ -1699,7 +1938,7 @@ int harp_ingestion_module_mip_nl__2p_init(void)
     variable_definition = harp_ingestion_register_variable_sample_read(product_definition,
                                                                        "O3_volume_mixing_ratio_uncertainty",
                                                                        harp_type_double, 2, dimension_type, NULL,
-                                                                       description, "ppmv", NULL,
+                                                                       description, "ppmv", exclude_o3,
                                                                        read_o3_vmr_uncertainty);
     path = "/o3_retrieval_mds[]/vmr_var_cov[]";
     harp_variable_definition_add_mapping(variable_definition, NULL, NULL, path, NULL);
@@ -1707,7 +1946,8 @@ int harp_ingestion_module_mip_nl__2p_init(void)
     description = "HNO3 volume mixing ratio";
     variable_definition = harp_ingestion_register_variable_sample_read(product_definition, "HNO3_volume_mixing_ratio",
                                                                        harp_type_double, 2, dimension_type, NULL,
-                                                                       description, "ppmv", NULL, read_hno3_vmr);
+                                                                       description, "ppmv", exclude_hno3,
+                                                                       read_hno3_vmr);
     path = "/hno3_retrieval_mds[]/vmr[]";
     harp_variable_definition_add_mapping(variable_definition, NULL, NULL, path, NULL);
 
@@ -1715,7 +1955,7 @@ int harp_ingestion_module_mip_nl__2p_init(void)
     variable_definition = harp_ingestion_register_variable_sample_read(product_definition,
                                                                        "HNO3_volume_mixing_ratio_uncertainty",
                                                                        harp_type_double, 2, dimension_type, NULL,
-                                                                       description, "ppmv", NULL,
+                                                                       description, "ppmv", exclude_hno3,
                                                                        read_hno3_vmr_uncertainty);
     path = "/hno3_retrieval_mds[]/vmr_var_cov[]";
     harp_variable_definition_add_mapping(variable_definition, NULL, NULL, path, NULL);
@@ -1723,7 +1963,7 @@ int harp_ingestion_module_mip_nl__2p_init(void)
     description = "CH4 volume mixing ratio";
     variable_definition = harp_ingestion_register_variable_sample_read(product_definition, "CH4_volume_mixing_ratio",
                                                                        harp_type_double, 2, dimension_type, NULL,
-                                                                       description, "ppmv", NULL, read_ch4_vmr);
+                                                                       description, "ppmv", exclude_ch4, read_ch4_vmr);
     path = "/ch4_retrieval_mds[]/vmr[]";
     harp_variable_definition_add_mapping(variable_definition, NULL, NULL, path, NULL);
 
@@ -1731,7 +1971,7 @@ int harp_ingestion_module_mip_nl__2p_init(void)
     variable_definition = harp_ingestion_register_variable_sample_read(product_definition,
                                                                        "CH4_volume_mixing_ratio_uncertainty",
                                                                        harp_type_double, 2, dimension_type, NULL,
-                                                                       description, "ppmv", NULL,
+                                                                       description, "ppmv", exclude_ch4,
                                                                        read_ch4_vmr_uncertainty);
     path = "/ch4_retrieval_mds[]/vmr_var_cov[]";
     harp_variable_definition_add_mapping(variable_definition, NULL, NULL, path, NULL);
@@ -1739,7 +1979,7 @@ int harp_ingestion_module_mip_nl__2p_init(void)
     description = "N2O volume mixing ratio";
     variable_definition = harp_ingestion_register_variable_sample_read(product_definition, "N2O_volume_mixing_ratio",
                                                                        harp_type_double, 2, dimension_type, NULL,
-                                                                       description, "ppmv", NULL, read_n2o_vmr);
+                                                                       description, "ppmv", exclude_n2o, read_n2o_vmr);
     path = "/n2o_retrieval_mds[]/vmr[]";
     harp_variable_definition_add_mapping(variable_definition, NULL, NULL, path, NULL);
 
@@ -1747,7 +1987,7 @@ int harp_ingestion_module_mip_nl__2p_init(void)
     variable_definition = harp_ingestion_register_variable_sample_read(product_definition,
                                                                        "N2O_volume_mixing_ratio_uncertainty",
                                                                        harp_type_double, 2, dimension_type, NULL,
-                                                                       description, "ppmv", NULL,
+                                                                       description, "ppmv", exclude_n2o,
                                                                        read_n2o_vmr_uncertainty);
     path = "/n2o_retrieval_mds[]/vmr_var_cov[]";
     harp_variable_definition_add_mapping(variable_definition, NULL, NULL, path, NULL);
@@ -1755,7 +1995,7 @@ int harp_ingestion_module_mip_nl__2p_init(void)
     description = "NO2 volume mixing ratio";
     variable_definition = harp_ingestion_register_variable_sample_read(product_definition, "NO2_volume_mixing_ratio",
                                                                        harp_type_double, 2, dimension_type, NULL,
-                                                                       description, "ppmv", NULL, read_no2_vmr);
+                                                                       description, "ppmv", exclude_no2, read_no2_vmr);
     path = "/no2_retrieval_mds[]/vmr[]";
     harp_variable_definition_add_mapping(variable_definition, NULL, NULL, path, NULL);
 
@@ -1763,7 +2003,7 @@ int harp_ingestion_module_mip_nl__2p_init(void)
     variable_definition = harp_ingestion_register_variable_sample_read(product_definition,
                                                                        "NO2_volume_mixing_ratio_uncertainty",
                                                                        harp_type_double, 2, dimension_type, NULL,
-                                                                       description, "ppmv", NULL,
+                                                                       description, "ppmv", exclude_no2,
                                                                        read_no2_vmr_uncertainty);
     path = "/no2_retrieval_mds[]/vmr_var_cov[]";
     harp_variable_definition_add_mapping(variable_definition, NULL, NULL, path, NULL);
@@ -1771,7 +2011,7 @@ int harp_ingestion_module_mip_nl__2p_init(void)
     description = "F11 volume mixing ratio";
     variable_definition = harp_ingestion_register_variable_sample_read(product_definition, "CCl3F_volume_mixing_ratio",
                                                                        harp_type_double, 2, dimension_type, NULL,
-                                                                       description, "ppmv", exclude_v3_species,
+                                                                       description, "ppmv", exclude_f11,
                                                                        read_f11_vmr);
     path = "/f11_retrieval_mds[]/vmr[]";
     harp_variable_definition_add_mapping(variable_definition, NULL, NULL, path, NULL);
@@ -1780,7 +2020,7 @@ int harp_ingestion_module_mip_nl__2p_init(void)
     variable_definition = harp_ingestion_register_variable_sample_read(product_definition,
                                                                        "CCl3F_volume_mixing_ratio_uncertainty",
                                                                        harp_type_double, 2, dimension_type, NULL,
-                                                                       description, "ppmv", exclude_v3_species,
+                                                                       description, "ppmv", exclude_f11,
                                                                        read_f11_vmr_uncertainty);
     path = "/f11_retrieval_mds[]/vmr_var_cov[]";
     harp_variable_definition_add_mapping(variable_definition, NULL, NULL, path, NULL);
@@ -1788,7 +2028,7 @@ int harp_ingestion_module_mip_nl__2p_init(void)
     description = "NOCl volume mixing ratio";
     variable_definition = harp_ingestion_register_variable_sample_read(product_definition, "NOCl_volume_mixing_ratio",
                                                                        harp_type_double, 2, dimension_type, NULL,
-                                                                       description, "ppmv", exclude_v3_species,
+                                                                       description, "ppmv", exclude_clno,
                                                                        read_clno_vmr);
     path = "/clno_retrieval_mds[]/vmr[]";
     harp_variable_definition_add_mapping(variable_definition, NULL, NULL, path, NULL);
@@ -1797,7 +2037,7 @@ int harp_ingestion_module_mip_nl__2p_init(void)
     variable_definition = harp_ingestion_register_variable_sample_read(product_definition,
                                                                        "NOCl_volume_mixing_ratio_uncertainty",
                                                                        harp_type_double, 2, dimension_type, NULL,
-                                                                       description, "ppmv", exclude_v3_species,
+                                                                       description, "ppmv", exclude_clno,
                                                                        read_clno_vmr_uncertainty);
     path = "/clno_retrieval_mds[]/vmr_var_cov[]";
     harp_variable_definition_add_mapping(variable_definition, NULL, NULL, path, NULL);
@@ -1805,7 +2045,7 @@ int harp_ingestion_module_mip_nl__2p_init(void)
     description = "N2O5 volume mixing ratio";
     variable_definition = harp_ingestion_register_variable_sample_read(product_definition, "N2O5_volume_mixing_ratio",
                                                                        harp_type_double, 2, dimension_type, NULL,
-                                                                       description, "ppmv", exclude_v3_species,
+                                                                       description, "ppmv", exclude_n2o5,
                                                                        read_n2o5_vmr);
     path = "/n2o5_retrieval_mds[]/vmr[]";
     harp_variable_definition_add_mapping(variable_definition, NULL, NULL, path, NULL);
@@ -1814,7 +2054,7 @@ int harp_ingestion_module_mip_nl__2p_init(void)
     variable_definition = harp_ingestion_register_variable_sample_read(product_definition,
                                                                        "N2O5_volume_mixing_ratio_uncertainty",
                                                                        harp_type_double, 2, dimension_type, NULL,
-                                                                       description, "ppmv", exclude_v3_species,
+                                                                       description, "ppmv", exclude_n2o5,
                                                                        read_n2o5_vmr_uncertainty);
     path = "/n2o5_retrieval_mds[]/vmr_var_cov[]";
     harp_variable_definition_add_mapping(variable_definition, NULL, NULL, path, NULL);
@@ -1822,7 +2062,7 @@ int harp_ingestion_module_mip_nl__2p_init(void)
     description = "F12 volume mixing ratio";
     variable_definition = harp_ingestion_register_variable_sample_read(product_definition, "CCl2F2_volume_mixing_ratio",
                                                                        harp_type_double, 2, dimension_type, NULL,
-                                                                       description, "ppmv", exclude_v3_species,
+                                                                       description, "ppmv", exclude_f12,
                                                                        read_f12_vmr);
     path = "/f12_retrieval_mds[]/vmr[]";
     harp_variable_definition_add_mapping(variable_definition, NULL, NULL, path, NULL);
@@ -1831,7 +2071,7 @@ int harp_ingestion_module_mip_nl__2p_init(void)
     variable_definition = harp_ingestion_register_variable_sample_read(product_definition,
                                                                        "CCl2F2_volume_mixing_ratio_uncertainty",
                                                                        harp_type_double, 2, dimension_type, NULL,
-                                                                       description, "ppmv", exclude_v3_species,
+                                                                       description, "ppmv", exclude_f12,
                                                                        read_f12_vmr_uncertainty);
     path = "/f12_retrieval_mds[]/vmr_var_cov[]";
     harp_variable_definition_add_mapping(variable_definition, NULL, NULL, path, NULL);
@@ -1841,14 +2081,14 @@ int harp_ingestion_module_mip_nl__2p_init(void)
     variable_definition = harp_ingestion_register_variable_sample_read(product_definition,
                                                                        "H2O_volume_mixing_ratio_avk",
                                                                        harp_type_double, 3, dimension_type, NULL,
-                                                                       description, "ppmv/ppmv", exclude_akm,
+                                                                       description, "ppmv/ppmv", exclude_h2o_akm,
                                                                        read_h2o_akm_vmr);
     path = "/h2o_retrieval_mds[]/avg_kernel[]";
     harp_variable_definition_add_mapping(variable_definition, NULL, NULL, path, NULL);
 
     variable_definition = harp_ingestion_register_variable_sample_read(product_definition, "O3_volume_mixing_ratio_avk",
                                                                        harp_type_double, 3, dimension_type, NULL,
-                                                                       description, "ppmv/ppmv", exclude_akm,
+                                                                       description, "ppmv/ppmv", exclude_o3_akm,
                                                                        read_o3_akm_vmr);
     path = "/o3_retrieval_mds[]/avg_kernel[]";
     harp_variable_definition_add_mapping(variable_definition, NULL, NULL, path, NULL);
@@ -1856,7 +2096,7 @@ int harp_ingestion_module_mip_nl__2p_init(void)
     variable_definition = harp_ingestion_register_variable_sample_read(product_definition,
                                                                        "HNO3_volume_mixing_ratio_avk",
                                                                        harp_type_double, 3, dimension_type, NULL,
-                                                                       description, "ppmv/ppmv", exclude_akm,
+                                                                       description, "ppmv/ppmv", exclude_hno3_akm,
                                                                        read_hno3_akm_vmr);
     path = "/hno3_retrieval_mds[]/avg_kernel[]";
     harp_variable_definition_add_mapping(variable_definition, NULL, NULL, path, NULL);
@@ -1864,21 +2104,21 @@ int harp_ingestion_module_mip_nl__2p_init(void)
     variable_definition = harp_ingestion_register_variable_sample_read(product_definition,
                                                                        "CH4_volume_mixing_ratio_avk", harp_type_double,
                                                                        3, dimension_type, NULL, description,
-                                                                       "ppmv/ppmv", exclude_akm, read_ch4_akm_vmr);
+                                                                       "ppmv/ppmv", exclude_ch4_akm, read_ch4_akm_vmr);
     path = "/ch4_retrieval_mds[]/avg_kernel[]";
     harp_variable_definition_add_mapping(variable_definition, NULL, NULL, path, NULL);
 
     variable_definition = harp_ingestion_register_variable_sample_read(product_definition,
                                                                        "N2O_volume_mixing_ratio_avk", harp_type_double,
                                                                        3, dimension_type, NULL, description,
-                                                                       "ppmv/ppmv", exclude_akm, read_n2o_akm_vmr);
+                                                                       "ppmv/ppmv", exclude_n2o_akm, read_n2o_akm_vmr);
     path = "/n2o_retrieval_mds[]/avg_kernel[]";
     harp_variable_definition_add_mapping(variable_definition, NULL, NULL, path, NULL);
 
     variable_definition = harp_ingestion_register_variable_sample_read(product_definition,
                                                                        "NO2_volume_mixing_ratio_avk",
                                                                        harp_type_double, 3, dimension_type, NULL,
-                                                                       description, "ppmv/ppmv", exclude_akm,
+                                                                       description, "ppmv/ppmv", exclude_no2_akm,
                                                                        read_no2_akm_vmr);
     path = "/no2_retrieval_mds[]/avg_kernel[]";
     harp_variable_definition_add_mapping(variable_definition, NULL, NULL, path, NULL);
@@ -1886,7 +2126,7 @@ int harp_ingestion_module_mip_nl__2p_init(void)
     variable_definition = harp_ingestion_register_variable_sample_read(product_definition,
                                                                        "CCl3F_volume_mixing_ratio_avk",
                                                                        harp_type_double, 3, dimension_type, NULL,
-                                                                       description, "ppmv/ppmv", exclude_v3_species,
+                                                                       description, "ppmv/ppmv", exclude_f11_akm,
                                                                        read_f11_akm_vmr);
     path = "/f11_retrieval_mds[]/avg_kernel[]";
     harp_variable_definition_add_mapping(variable_definition, NULL, NULL, path, NULL);
@@ -1894,7 +2134,7 @@ int harp_ingestion_module_mip_nl__2p_init(void)
     variable_definition = harp_ingestion_register_variable_sample_read(product_definition,
                                                                        "NOCl_volume_mixing_ratio_avk", harp_type_double,
                                                                        3, dimension_type, NULL, description,
-                                                                       "ppmv/ppmv", exclude_v3_species,
+                                                                       "ppmv/ppmv", exclude_clno_akm,
                                                                        read_clno_akm_vmr);
     path = "/clno_retrieval_mds[]/avg_kernel[]";
     harp_variable_definition_add_mapping(variable_definition, NULL, NULL, path, NULL);
@@ -1902,7 +2142,7 @@ int harp_ingestion_module_mip_nl__2p_init(void)
     variable_definition = harp_ingestion_register_variable_sample_read(product_definition,
                                                                        "N2O5_volume_mixing_ratio_avk", harp_type_double,
                                                                        3, dimension_type, NULL, description,
-                                                                       "ppmv/ppmv", exclude_v3_species,
+                                                                       "ppmv/ppmv", exclude_n2o5_akm,
                                                                        read_n2o5_akm_vmr);
     path = "/n2o5_retrieval_mds[]/avg_kernel[]";
     harp_variable_definition_add_mapping(variable_definition, NULL, NULL, path, NULL);
@@ -1910,7 +2150,7 @@ int harp_ingestion_module_mip_nl__2p_init(void)
     variable_definition = harp_ingestion_register_variable_sample_read(product_definition,
                                                                        "CCl2F2_volume_mixing_ratio_avk",
                                                                        harp_type_double, 3, dimension_type, NULL,
-                                                                       description, "ppmv/ppmv", exclude_v3_species,
+                                                                       description, "ppmv/ppmv", exclude_f12_akm,
                                                                        read_f12_akm_vmr);
     path = "/f12_retrieval_mds[]/avg_kernel[]";
     harp_variable_definition_add_mapping(variable_definition, NULL, NULL, path, NULL);
