@@ -1552,12 +1552,6 @@ static int add_species_conversions(const char *species)
     char name_vmr_uncertainty[MAX_NAME_LENGTH];
     int i;
 
-    if (strcmp(species, "air") == 0)
-    {
-        /* These conversions are not applicable to air */
-        return 0;
-    }
-
     snprintf(name_column_nd, MAX_NAME_LENGTH, "%s_column_number_density", species);
     snprintf(name_column_nd_covariance, MAX_NAME_LENGTH, "%s_column_number_density_covariance", species);
     snprintf(name_column_nd_uncertainty, MAX_NAME_LENGTH, "%s_column_number_density_uncertainty", species);
