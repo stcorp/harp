@@ -156,9 +156,9 @@ Variable attributes
   source of the data was (e.g. measured, climatology, derived, et cetera).
 
 ``dims`` string (optional)
-  This attribute stores the type of each dimension of the associated variable as a comma-separated list of dimension
-  type names. The number of dimension types should equal the number of dimensions of the variable. This attribute is
-  only present in HDF4 and HDF5 files, *not* in netCDF-3 files. See also sections `HDF4`_ and `HDF5`_.
+  This attribute is only applicable for `HDF4`_ files (`netCDF-3`_ uses named dimensions and `HDF5`_ uses dimension
+  scales). This attribute stores the type of each dimension of the associated variable as a comma-separated list of
+  dimension type names. The number of dimension types should equal the number of dimensions of the variable.
 
 ``units`` string (optional)
   This attribute is used for data that has a physical unit. It should provide the unit in a form compatible with the

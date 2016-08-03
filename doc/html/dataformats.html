@@ -337,9 +337,9 @@ day).</dd>
 <dd>This attribute provides a human readable description of the content of the variable. It should make clear what the
 source of the data was (e.g. measured, climatology, derived, et cetera).</dd>
 <dt><code class="docutils literal"><span class="pre">dims</span></code> string (optional)</dt>
-<dd>This attribute stores the type of each dimension of the associated variable as a comma-separated list of dimension
-type names. The number of dimension types should equal the number of dimensions of the variable. This attribute is
-only present in HDF4 and HDF5 files, <em>not</em> in netCDF-3 files. See also sections <a class="reference internal" href="#hdf4">HDF4</a> and <a class="reference internal" href="#hdf5">HDF5</a>.</dd>
+<dd>This attribute is only applicable for <a class="reference internal" href="#hdf4">HDF4</a> files (<a class="reference internal" href="#netcdf-3">netCDF-3</a> uses named dimensions and <a class="reference internal" href="#hdf5">HDF5</a> uses dimension
+scales). This attribute stores the type of each dimension of the associated variable as a comma-separated list of
+dimension type names. The number of dimension types should equal the number of dimensions of the variable.</dd>
 <dt><code class="docutils literal"><span class="pre">units</span></code> string (optional)</dt>
 <dd>This attribute is used for data that has a physical unit. It should provide the unit in a form compatible with the
 <code class="docutils literal"><span class="pre">udunits2</span></code> software. A <code class="docutils literal"><span class="pre">units</span></code> attribute is expected to be available for any variable defining a quantity.
