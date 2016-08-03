@@ -28,7 +28,7 @@
  */
 typedef enum harp_chemical_species_enum
 {
-    harp_chemical_species_air,
+    harp_chemical_species_dry_air,
     harp_chemical_species_BrO,
     harp_chemical_species_BrO2,
     harp_chemical_species_CCl2F2,       /* CFC-12 / F12 / Freon-12 */
