@@ -278,61 +278,67 @@
 <td>km^-1</td>
 <td>aerosol extinction coefficient</td>
 </tr>
-<tr class="row-odd"><td><strong>aerosol_extinction_coefficient_cov_random</strong></td>
+<tr class="row-odd"><td><strong>aerosol_extinction_coefficient_covariance</strong></td>
 <td>double</td>
 <td>{<em>time</em>, <em>spectral</em>, <em>vertical</em>, <em>vertical</em>}</td>
 <td>km^-2</td>
-<td>random covariance of the aerosol extinction coefficient</td>
+<td>covariance of the aerosol extinction coefficient</td>
 </tr>
-<tr class="row-even"><td><strong>aerosol_extinction_coefficient_cov_systematic</strong></td>
+<tr class="row-even"><td><strong>aerosol_extinction_coefficient_uncertainty_random</strong></td>
 <td>double</td>
-<td>{<em>time</em>, <em>spectral</em>, <em>vertical</em>, <em>vertical</em>}</td>
-<td>km^-2</td>
-<td>systematic covariance of the aerosol extinction coefficient</td>
+<td>{<em>time</em>, <em>spectral</em>, <em>vertical</em>}</td>
+<td>km^-1</td>
+<td>random uncertainty of the aerosol extinction coefficient</td>
 </tr>
-<tr class="row-odd"><td><strong>aerosol_extinction_coefficient_apriori</strong></td>
+<tr class="row-odd"><td><strong>aerosol_extinction_coefficient_uncertainty_systematic</strong></td>
+<td>double</td>
+<td>{<em>time</em>, <em>spectral</em>, <em>vertical</em>}</td>
+<td>km^-1</td>
+<td>systematic uncertainty of the aerosol extinction coefficient</td>
+</tr>
+<tr class="row-even"><td><strong>aerosol_extinction_coefficient_apriori</strong></td>
 <td>double</td>
 <td>{<em>time</em>, <em>spectral</em>, <em>vertical</em>}</td>
 <td>km^-1</td>
 <td>a priori aerosol extinction coefficient</td>
 </tr>
-<tr class="row-even"><td><strong>aerosol_extinction_coefficient_avk</strong></td>
+<tr class="row-odd"><td><strong>aerosol_extinction_coefficient_avk</strong></td>
 <td>double</td>
 <td>{<em>time</em>, <em>spectral</em>, <em>vertical</em>, <em>vertical</em>}</td>
 <td>&nbsp;</td>
 <td>averaging kernel of the aerosol extinction coefficient</td>
 </tr>
-<tr class="row-odd"><td><strong>tropospheric_aerosol_optical_depth</strong></td>
+<tr class="row-even"><td><strong>tropospheric_aerosol_optical_depth</strong></td>
 <td>double</td>
 <td>{<em>time</em>, <em>spectral</em>}</td>
 <td>&nbsp;</td>
 <td>tropospheric aerosol optical depth</td>
 </tr>
-<tr class="row-even"><td><strong>tropospheric_aerosol_optical_depth_uncertainty_random</strong></td>
+<tr class="row-odd"><td><strong>tropospheric_aerosol_optical_depth_uncertainty_random</strong></td>
 <td>double</td>
 <td>{<em>time</em>, <em>spectral</em>}</td>
 <td>&nbsp;</td>
 <td>random uncertainty of the tropospheric aerosol optical depth</td>
 </tr>
-<tr class="row-odd"><td><strong>tropospheric_aerosol_optical_depth_uncertainty_systematic</strong></td>
+<tr class="row-even"><td><strong>tropospheric_aerosol_optical_depth_uncertainty_systematic</strong></td>
 <td>double</td>
 <td>{<em>time</em>, <em>spectral</em>}</td>
 <td>&nbsp;</td>
 <td>systematic uncertainty of the tropospheric aerosol optical depth</td>
 </tr>
-<tr class="row-even"><td><strong>tropospheric_aerosol_optical_depth_apriori</strong></td>
+<tr class="row-odd"><td><strong>tropospheric_aerosol_optical_depth_apriori</strong></td>
 <td>double</td>
 <td>{<em>time</em>, <em>spectral</em>}</td>
 <td>&nbsp;</td>
 <td>a priori tropospheric aerosol optical depth</td>
 </tr>
-<tr class="row-odd"><td><strong>tropospheric_aerosol_optical_depth_avk</strong></td>
+<tr class="row-even"><td><strong>tropospheric_aerosol_optical_depth_avk</strong></td>
 <td>double</td>
 <td>{<em>time</em>, <em>spectral</em>, <em>vertical</em>}</td>
 <td>&nbsp;</td>
 <td>averaging kernel of the tropospheric aerosol optical depth</td>
 </tr>
-<tr class="row-even"><td><strong>index</strong></td>
+<tr class="row-odd"><td><strong>index</strong></td>
 <td>int32</td>
 <td>{<em>time</em>}</td>
 <td>&nbsp;</td>
@@ -346,9 +352,9 @@
 <p>The table below details where and how each variable was retrieved from the input product.</p>
 <table border="1" class="docutils">
 <colgroup>
-<col width="37%" />
-<col width="8%" />
-<col width="56%" />
+<col width="36%" />
+<col width="9%" />
+<col width="55%" />
 </colgroup>
 <thead valign="bottom">
 <tr class="row-odd"><th class="head">field name</th>
@@ -446,39 +452,49 @@
 <td><em>path</em></td>
 <td><strong>/AEROSOL.EXTINCTION.COEFFICIENT_SCATTER.SOLAR.OFFAXIS</strong></td>
 </tr>
-<tr class="row-odd"><td><strong>aerosol_extinction_coefficient_cov_random</strong></td>
+<tr class="row-odd"><td><strong>aerosol_extinction_coefficient_covariance</strong></td>
 <td><em>path</em></td>
 <td><strong>/AEROSOL.EXTINCTION.COEFFICIENT_SCATTER.SOLAR.OFFAXIS_UNCERTAINTY.RANDOM.COVARIANCE</strong></td>
 </tr>
-<tr class="row-even"><td><strong>aerosol_extinction_coefficient_cov_systematic</strong></td>
+<tr class="row-even"><td rowspan="2"><strong>aerosol_extinction_coefficient_uncertainty_random</strong></td>
+<td><em>path</em></td>
+<td><strong>/AEROSOL.EXTINCTION.COEFFICIENT_SCATTER.SOLAR.OFFAXIS_UNCERTAINTY.RANDOM.COVARIANCE</strong></td>
+</tr>
+<tr class="row-odd"><td><em>description</em></td>
+<td>the uncertainty is the square root of the trace of the covariance</td>
+</tr>
+<tr class="row-even"><td rowspan="2"><strong>aerosol_extinction_coefficient_uncertainty_systematic</strong></td>
 <td><em>path</em></td>
 <td><strong>/AEROSOL.EXTINCTION.COEFFICIENT_SCATTER.SOLAR.OFFAXIS_UNCERTAINTY.SYSTEMATIC.COVARIANCE</strong></td>
 </tr>
-<tr class="row-odd"><td><strong>aerosol_extinction_coefficient_apriori</strong></td>
+<tr class="row-odd"><td><em>description</em></td>
+<td>the uncertainty is the square root of the trace of the covariance</td>
+</tr>
+<tr class="row-even"><td><strong>aerosol_extinction_coefficient_apriori</strong></td>
 <td><em>path</em></td>
 <td><strong>/AEROSOL.EXTINCTION.COEFFICIENT_SCATTER.SOLAR.OFFAXIS_APRIORI</strong></td>
 </tr>
-<tr class="row-even"><td><strong>aerosol_extinction_coefficient_avk</strong></td>
+<tr class="row-odd"><td><strong>aerosol_extinction_coefficient_avk</strong></td>
 <td><em>path</em></td>
 <td><strong>/AEROSOL.EXTINCTION.COEFFICIENT_SCATTER.SOLAR.OFFAXIS_AVK</strong></td>
 </tr>
-<tr class="row-odd"><td><strong>tropospheric_aerosol_optical_depth</strong></td>
+<tr class="row-even"><td><strong>tropospheric_aerosol_optical_depth</strong></td>
 <td><em>path</em></td>
 <td><strong>/AEROSOL.OPTICAL.DEPTH.TROPOSPHERIC_SCATTER.SOLAR.OFFAXIS</strong></td>
 </tr>
-<tr class="row-even"><td><strong>tropospheric_aerosol_optical_depth_uncertainty_random</strong></td>
+<tr class="row-odd"><td><strong>tropospheric_aerosol_optical_depth_uncertainty_random</strong></td>
 <td><em>path</em></td>
 <td><strong>/AEROSOL.OPTICAL.DEPTH.TROPOSPHERIC_SCATTER.SOLAR.OFFAXIS_UNCERTAINTY.RANDOM.STANDARD</strong></td>
 </tr>
-<tr class="row-odd"><td><strong>tropospheric_aerosol_optical_depth_uncertainty_systematic</strong></td>
+<tr class="row-even"><td><strong>tropospheric_aerosol_optical_depth_uncertainty_systematic</strong></td>
 <td><em>path</em></td>
 <td><strong>/AEROSOL.OPTICAL.DEPTH.TROPOSPHERIC_SCATTER.SOLAR.OFFAXIS_UNCERTAINTY.SYSTEMATIC.STANDARD</strong></td>
 </tr>
-<tr class="row-even"><td><strong>tropospheric_aerosol_optical_depth_apriori</strong></td>
+<tr class="row-odd"><td><strong>tropospheric_aerosol_optical_depth_apriori</strong></td>
 <td><em>path</em></td>
 <td><strong>/AEROSOL.OPTICAL.DEPTH.TROPOSPHERIC_SCATTER.SOLAR.OFFAXIS_APRIORI</strong></td>
 </tr>
-<tr class="row-odd"><td><strong>tropospheric_aerosol_optical_depth_avk</strong></td>
+<tr class="row-even"><td><strong>tropospheric_aerosol_optical_depth_avk</strong></td>
 <td><em>path</em></td>
 <td><strong>/AEROSOL.OPTICAL.DEPTH.TROPOSPHERIC_SCATTER.SOLAR.OFFAXIS_AVK</strong></td>
 </tr>

@@ -361,9 +361,7 @@ postfixes (separated by underscores). It is not allowed to provide more than one
 Variables having an 'X' in the Quality column can have any of the following additional versions of the variable
 (where `<variable>` can include any of the allowed prefix and/or postfix combinations):
 
-- <variable>_cov
-- <variable>_cov_random
-- <variable>_cov_systematic
+- <variable>_covariance
 - <variable>_uncertainty
 - <variable>_uncertainty_random
 - <variable>_uncertainty_systematic

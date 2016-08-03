@@ -216,19 +216,19 @@
 <td>double</td>
 <td>{<em>time</em>, <em>vertical</em>}</td>
 <td>&nbsp;</td>
-<td>averaging kernel for the total HCN vertical colum</td>
+<td>averaging kernel for the total HCN vertical column</td>
 </tr>
 <tr class="row-odd"><td><strong>HCN_column_number_density_uncertainty_random</strong></td>
 <td>double</td>
 <td>{<em>time</em>}</td>
 <td>molec/m2</td>
-<td>random uncertainty of the total HCN vertical colu</td>
+<td>random uncertainty of the total HCN vertical column</td>
 </tr>
 <tr class="row-even"><td><strong>HCN_column_number_density_uncertainty_systematic</strong></td>
 <td>double</td>
 <td>{<em>time</em>}</td>
 <td>molec/m2</td>
-<td>systematic uncertainty of the total HCN vertical</td>
+<td>systematic uncertainty of the total HCN vertical column</td>
 </tr>
 <tr class="row-odd"><td><strong>H2O_column_number_density</strong></td>
 <td>double</td>
@@ -254,73 +254,79 @@
 <td>&nbsp;</td>
 <td>averaging kernel for the HCN volume mixing ratio</td>
 </tr>
-<tr class="row-odd"><td><strong>HCN_volume_mixing_ratio_cov_systematic</strong></td>
+<tr class="row-odd"><td><strong>HCN_volume_mixing_ratio_covariance</strong></td>
 <td>double</td>
 <td>{<em>time</em>, <em>vertical</em>, <em>vertical</em>}</td>
 <td>(ppmv)^2</td>
-<td>systematic covariance of the HCN volume mixing ra</td>
+<td>covariance of the HCN volume mixing ratio</td>
 </tr>
-<tr class="row-even"><td><strong>HCN_volume_mixing_ratio_cov_random</strong></td>
+<tr class="row-even"><td><strong>HCN_volume_mixing_ratio_uncertainty_random</strong></td>
 <td>double</td>
-<td>{<em>time</em>, <em>vertical</em>, <em>vertical</em>}</td>
-<td>(ppmv)^2</td>
-<td>random covariance of the HCN volume mixing ratio</td>
+<td>{<em>time</em>, <em>vertical</em>}</td>
+<td>ppmv</td>
+<td>random uncertainty of the HCN volume mixing ratio</td>
 </tr>
-<tr class="row-odd"><td><strong>H2O_volume_mixing_ratio</strong></td>
+<tr class="row-odd"><td><strong>HCN_volume_mixing_ratio_uncertainty_systematic</strong></td>
+<td>double</td>
+<td>{<em>time</em>, <em>vertical</em>}</td>
+<td>ppmv</td>
+<td>systematic uncertainty of the HCN volume mixing ratio</td>
+</tr>
+<tr class="row-even"><td><strong>H2O_volume_mixing_ratio</strong></td>
 <td>double</td>
 <td>{<em>time</em>, <em>vertical</em>}</td>
 <td>ppmv</td>
 <td>H2O volume mixing ratio</td>
 </tr>
-<tr class="row-even"><td><strong>altitude</strong></td>
+<tr class="row-odd"><td><strong>altitude</strong></td>
 <td>double</td>
 <td>{<em>time</em>, <em>vertical</em>}</td>
 <td>km</td>
 <td>retrieval effective altitude</td>
 </tr>
-<tr class="row-odd"><td><strong>altitude_bounds</strong></td>
+<tr class="row-even"><td><strong>altitude_bounds</strong></td>
 <td>double</td>
 <td>{<em>time</em>, <em>vertical</em>, 2}</td>
 <td>km</td>
 <td>lower and upper boundaries of the height layers</td>
 </tr>
-<tr class="row-even"><td><strong>pressure</strong></td>
+<tr class="row-odd"><td><strong>pressure</strong></td>
 <td>double</td>
 <td>{<em>time</em>, <em>vertical</em>}</td>
 <td>hPa</td>
 <td>independent pressure profile</td>
 </tr>
-<tr class="row-odd"><td><strong>temperature</strong></td>
+<tr class="row-even"><td><strong>temperature</strong></td>
 <td>double</td>
 <td>{<em>time</em>, <em>vertical</em>}</td>
 <td>K</td>
 <td>independent temperature profile</td>
 </tr>
-<tr class="row-even"><td><strong>surface_pressure</strong></td>
+<tr class="row-odd"><td><strong>surface_pressure</strong></td>
 <td>double</td>
 <td>{<em>time</em>}</td>
 <td>hPa</td>
 <td>independent surface pressure</td>
 </tr>
-<tr class="row-odd"><td><strong>surface_temperature</strong></td>
+<tr class="row-even"><td><strong>surface_temperature</strong></td>
 <td>double</td>
 <td>{<em>time</em>}</td>
 <td>K</td>
 <td>independent surface temperature</td>
 </tr>
-<tr class="row-even"><td><strong>solar_azimuth_angle</strong></td>
+<tr class="row-odd"><td><strong>solar_azimuth_angle</strong></td>
 <td>double</td>
 <td>{<em>time</em>}</td>
 <td>degree</td>
 <td>solar azimuth angle</td>
 </tr>
-<tr class="row-odd"><td><strong>solar_zenith_angle</strong></td>
+<tr class="row-even"><td><strong>solar_zenith_angle</strong></td>
 <td>double</td>
 <td>{<em>time</em>}</td>
 <td>degree</td>
 <td>solar zenith angle</td>
 </tr>
-<tr class="row-even"><td><strong>index</strong></td>
+<tr class="row-odd"><td><strong>index</strong></td>
 <td>int32</td>
 <td>{<em>time</em>}</td>
 <td>&nbsp;</td>
@@ -335,8 +341,8 @@
 <table border="1" class="docutils">
 <colgroup>
 <col width="36%" />
-<col width="9%" />
-<col width="55%" />
+<col width="10%" />
+<col width="54%" />
 </colgroup>
 <thead valign="bottom">
 <tr class="row-odd"><th class="head">field name</th>
@@ -505,7 +511,7 @@
 <tr class="row-odd"><td><em>path</em></td>
 <td><strong>/HCN.MIXING.RATIO.VOLUME_ABSORPTION.LUNAR_AVK</strong></td>
 </tr>
-<tr class="row-even"><td rowspan="5"><strong>HCN_volume_mixing_ratio_cov_systematic</strong></td>
+<tr class="row-even"><td rowspan="5"><strong>HCN_volume_mixing_ratio_covariance</strong></td>
 <td><em>available</em></td>
 <td>optional</td>
 </tr>
@@ -513,15 +519,15 @@
 <td>solar measurement</td>
 </tr>
 <tr class="row-even"><td><em>path</em></td>
-<td><strong>/HCN.MIXING.RATIO.VOLUME_ABSORPTION.SOLAR_UNCERTAINTY.SYSTEMATIC.COVARIANCE</strong></td>
+<td><strong>/HCN.MIXING.RATIO.VOLUME_ABSORPTION.SOLAR_UNCERTAINTY.RANDOM.COVARIANCE</strong></td>
 </tr>
 <tr class="row-odd"><td><em>condition</em></td>
 <td>lunar measurement</td>
 </tr>
 <tr class="row-even"><td><em>path</em></td>
-<td><strong>/HCN.MIXING.RATIO.VOLUME_ABSORPTION.LUNAR_UNCERTAINTY.SYSTEMATIC.COVARIANCE</strong></td>
+<td><strong>/HCN.MIXING.RATIO.VOLUME_ABSORPTION.LUNAR_UNCERTAINTY.RANDOM.COVARIANCE</strong></td>
 </tr>
-<tr class="row-odd"><td rowspan="5"><strong>HCN_volume_mixing_ratio_cov_random</strong></td>
+<tr class="row-odd"><td rowspan="7"><strong>HCN_volume_mixing_ratio_uncertainty_random</strong></td>
 <td><em>available</em></td>
 <td>optional</td>
 </tr>
@@ -531,73 +537,101 @@
 <tr class="row-odd"><td><em>path</em></td>
 <td><strong>/HCN.MIXING.RATIO.VOLUME_ABSORPTION.SOLAR_UNCERTAINTY.RANDOM.COVARIANCE</strong></td>
 </tr>
+<tr class="row-even"><td><em>description</em></td>
+<td>the uncertainty is the square root of the trace of the covariance</td>
+</tr>
+<tr class="row-odd"><td><em>condition</em></td>
+<td>lunar measurement</td>
+</tr>
+<tr class="row-even"><td><em>path</em></td>
+<td><strong>/HCN.MIXING.RATIO.VOLUME_ABSORPTION.LUNAR_UNCERTAINTY.RANDOM.COVARIANCE</strong></td>
+</tr>
+<tr class="row-odd"><td><em>description</em></td>
+<td>the uncertainty is the square root of the trace of the covariance</td>
+</tr>
+<tr class="row-even"><td rowspan="7"><strong>HCN_volume_mixing_ratio_uncertainty_systematic</strong></td>
+<td><em>available</em></td>
+<td>optional</td>
+</tr>
+<tr class="row-odd"><td><em>condition</em></td>
+<td>solar measurement</td>
+</tr>
+<tr class="row-even"><td><em>path</em></td>
+<td><strong>/HCN.MIXING.RATIO.VOLUME_ABSORPTION.SOLAR_UNCERTAINTY.SYSTEMATIC.COVARIANCE</strong></td>
+</tr>
+<tr class="row-odd"><td><em>description</em></td>
+<td>the uncertainty is the square root of the trace of the covariance</td>
+</tr>
 <tr class="row-even"><td><em>condition</em></td>
 <td>lunar measurement</td>
 </tr>
 <tr class="row-odd"><td><em>path</em></td>
-<td><strong>/HCN.MIXING.RATIO.VOLUME_ABSORPTION.LUNAR_UNCERTAINTY.RANDOM.COVARIANCE</strong></td>
+<td><strong>/HCN.MIXING.RATIO.VOLUME_ABSORPTION.LUNAR_UNCERTAINTY.SYSTEMATIC.COVARIANCE</strong></td>
 </tr>
-<tr class="row-even"><td rowspan="4"><strong>H2O_volume_mixing_ratio</strong></td>
+<tr class="row-even"><td><em>description</em></td>
+<td>the uncertainty is the square root of the trace of the covariance</td>
+</tr>
+<tr class="row-odd"><td rowspan="4"><strong>H2O_volume_mixing_ratio</strong></td>
 <td><em>condition</em></td>
 <td>solar measurement</td>
 </tr>
-<tr class="row-odd"><td><em>path</em></td>
+<tr class="row-even"><td><em>path</em></td>
 <td><strong>/H2O.MIXING.RATIO.VOLUME_ABSORPTION.SOLAR</strong></td>
 </tr>
-<tr class="row-even"><td><em>condition</em></td>
+<tr class="row-odd"><td><em>condition</em></td>
 <td>lunar measurement</td>
 </tr>
-<tr class="row-odd"><td><em>path</em></td>
+<tr class="row-even"><td><em>path</em></td>
 <td><strong>H2O.MIXING.RATIO.VOLUME_ABSORPTION.LUNAR</strong></td>
 </tr>
-<tr class="row-even"><td><strong>altitude</strong></td>
+<tr class="row-odd"><td><strong>altitude</strong></td>
 <td><em>path</em></td>
 <td><strong>/ALTITUDE</strong></td>
 </tr>
-<tr class="row-odd"><td><strong>altitude_bounds</strong></td>
+<tr class="row-even"><td><strong>altitude_bounds</strong></td>
 <td><em>path</em></td>
 <td><strong>/ALTITUDE.BOUNDS</strong></td>
 </tr>
-<tr class="row-even"><td><strong>pressure</strong></td>
+<tr class="row-odd"><td><strong>pressure</strong></td>
 <td><em>path</em></td>
 <td><strong>/PRESSURE_INDEPENDENT</strong></td>
 </tr>
-<tr class="row-odd"><td><strong>temperature</strong></td>
+<tr class="row-even"><td><strong>temperature</strong></td>
 <td><em>path</em></td>
 <td><strong>/TEMPERATURE_INDEPENDENT</strong></td>
 </tr>
-<tr class="row-even"><td><strong>surface_pressure</strong></td>
+<tr class="row-odd"><td><strong>surface_pressure</strong></td>
 <td><em>path</em></td>
 <td><strong>/SURFACE.PRESSURE_INDEPENDENT</strong></td>
 </tr>
-<tr class="row-odd"><td><strong>surface_temperature</strong></td>
+<tr class="row-even"><td><strong>surface_temperature</strong></td>
 <td><em>path</em></td>
 <td><strong>/SURFACE.TEMPERATURE_INDEPENDENT</strong></td>
 </tr>
-<tr class="row-even"><td rowspan="4"><strong>solar_azimuth_angle</strong></td>
+<tr class="row-odd"><td rowspan="4"><strong>solar_azimuth_angle</strong></td>
 <td><em>condition</em></td>
 <td>solar measurement</td>
 </tr>
-<tr class="row-odd"><td><em>path</em></td>
+<tr class="row-even"><td><em>path</em></td>
 <td><strong>/ANGLE.SOLAR_AZIMUTH</strong></td>
 </tr>
-<tr class="row-even"><td><em>condition</em></td>
+<tr class="row-odd"><td><em>condition</em></td>
 <td>lunar measurement</td>
 </tr>
-<tr class="row-odd"><td><em>path</em></td>
+<tr class="row-even"><td><em>path</em></td>
 <td><strong>/ANGLE.LUNAR_AZIMUTH</strong></td>
 </tr>
-<tr class="row-even"><td rowspan="4"><strong>solar_zenith_angle</strong></td>
+<tr class="row-odd"><td rowspan="4"><strong>solar_zenith_angle</strong></td>
 <td><em>condition</em></td>
 <td>solar measurement</td>
 </tr>
-<tr class="row-odd"><td><em>path</em></td>
+<tr class="row-even"><td><em>path</em></td>
 <td><strong>/ANGLE.SOLAR_ZENITH.ASTRONOMICAL</strong></td>
 </tr>
-<tr class="row-even"><td><em>condition</em></td>
+<tr class="row-odd"><td><em>condition</em></td>
 <td>lunar measurement</td>
 </tr>
-<tr class="row-odd"><td><em>path</em></td>
+<tr class="row-even"><td><em>path</em></td>
 <td><strong>/ANGLE.LUNAR_ZENITH.ASTRONOMICAL</strong></td>
 </tr>
 </tbody>

@@ -28,7 +28,8 @@
 
 #define NUM_SPECIES_TYPES 10
 
-typedef enum species_type_enum {
+typedef enum species_type_enum
+{
     species_h2o,
     species_o3,
     species_hno3,
@@ -43,8 +44,7 @@ typedef enum species_type_enum {
 
 const char *species_name[] = { "H2O", "O3", "HNO3", "CH4", "N2O", "NO2", "F11", "ClNO", "N2O5", "F12" };
 
-const char *species_mds_name[] =
-{
+const char *species_mds_name[] = {
     "h2o_retrieval_mds",
     "o3_retrieval_mds",
     "hno3_retrieval_mds",
@@ -70,7 +70,7 @@ typedef struct ingest_info_struct
     coda_cursor *geo_cursor;
     coda_cursor *pt_cursor;
     coda_cursor *mds_cursor[NUM_SPECIES_TYPES];
-    int species_index[NUM_SPECIES_TYPES];   /* species index for lrv and scan information ads */
+    int species_index[NUM_SPECIES_TYPES];       /* species index for lrv and scan information ads */
     uint8_t *lrv;       /* logical retrieval vector; dim=[num_main, {pT, sp#1, sp#2, .., sp#n}, max_num_altitudes] */
 } ingest_info;
 
@@ -897,8 +897,7 @@ static int exclude_h2o_akm(void *user_data)
 
 static int exclude_o3_akm(void *user_data)
 {
-    return ((ingest_info *)user_data)->product_version < 2 ||
-        ((ingest_info *)user_data)->species_index[species_o3] < 0;
+    return ((ingest_info *)user_data)->product_version < 2 || ((ingest_info *)user_data)->species_index[species_o3] < 0;
 }
 
 static int exclude_hno3_akm(void *user_data)
@@ -2011,8 +2010,7 @@ int harp_ingestion_module_mip_nl__2p_init(void)
     description = "F11 volume mixing ratio";
     variable_definition = harp_ingestion_register_variable_sample_read(product_definition, "CCl3F_volume_mixing_ratio",
                                                                        harp_type_double, 2, dimension_type, NULL,
-                                                                       description, "ppmv", exclude_f11,
-                                                                       read_f11_vmr);
+                                                                       description, "ppmv", exclude_f11, read_f11_vmr);
     path = "/f11_retrieval_mds[]/vmr[]";
     harp_variable_definition_add_mapping(variable_definition, NULL, NULL, path, NULL);
 
@@ -2062,8 +2060,7 @@ int harp_ingestion_module_mip_nl__2p_init(void)
     description = "F12 volume mixing ratio";
     variable_definition = harp_ingestion_register_variable_sample_read(product_definition, "CCl2F2_volume_mixing_ratio",
                                                                        harp_type_double, 2, dimension_type, NULL,
-                                                                       description, "ppmv", exclude_f12,
-                                                                       read_f12_vmr);
+                                                                       description, "ppmv", exclude_f12, read_f12_vmr);
     path = "/f12_retrieval_mds[]/vmr[]";
     harp_variable_definition_add_mapping(variable_definition, NULL, NULL, path, NULL);
 

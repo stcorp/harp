@@ -405,11 +405,9 @@ double harp_profile_column_uncertainty_from_partial_column_uncertainty(long num_
  * \param temperature_profile  Temperature [K]
  * \param number_density_covariance_matrix variable in which the number density covariance [(molec/m3)^2] will be stored
  */
-void harp_profile_nd_cov_from_vmr_cov_pressure_and_temperature(long num_levels,
-                                                               const double *volume_mixing_ratio_covariance_matrix,
-                                                               const double *pressure_profile,
-                                                               const double *temperature_profile,
-                                                               double *number_density_covariance_matrix)
+void harp_profile_nd_covariance_from_vmr_covariance_pressure_and_temperature
+    (long num_levels, const double *volume_mixing_ratio_covariance_matrix, const double *pressure_profile,
+     const double *temperature_profile, double *number_density_covariance_matrix)
 {
     long i, j;
 
@@ -440,10 +438,9 @@ void harp_profile_nd_cov_from_vmr_cov_pressure_and_temperature(long num_levels,
  *   \arg \c 0, Success.
  *   \arg \c -1, Error occurred (check #harp_errno).
  */
-int harp_profile_partial_column_cov_from_density_cov_and_altitude_bounds(long num_levels,
-                                                                         const double *altitude_boundaries,
-                                                                         const double *density_covariance_matrix,
-                                                                         double *partial_column_covariance_matrix)
+int harp_profile_partial_column_covariance_from_density_covariance_and_altitude_bounds
+    (long num_levels, const double *altitude_boundaries, const double *density_covariance_matrix,
+     double *partial_column_covariance_matrix)
 {
     long i, j;
 
@@ -934,11 +931,9 @@ int harp_profile_pressure_from_gph_temperature_and_h2o_mmr(long num_levels, cons
  *   \arg \c 0, Success.
  *   \arg \c -1, Error occurred (check #harp_errno).
  */
-int harp_profile_vmr_cov_from_nd_cov_pressure_and_temperature(long num_levels,
-                                                              const double *number_density_covariance_matrix,
-                                                              const double *pressure_profile,
-                                                              const double *temperature_profile,
-                                                              double *volume_mixing_ratio_covariance_matrix)
+int harp_profile_vmr_covariance_from_nd_covariance_pressure_and_temperature
+    (long num_levels, const double *number_density_covariance_matrix, const double *pressure_profile,
+     const double *temperature_profile, double *volume_mixing_ratio_covariance_matrix)
 {
     long i, j;
 

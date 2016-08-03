@@ -564,18 +564,11 @@ static int read_o3_number_density_error(void *user_data, harp_array data)
     return read_relerr_as_uncertainty_float(info, "/o3_nd", "/o3_error", info->num_time * info->num_levels, data);
 }
 
-static int read_o3_number_density_cov(void *user_data, harp_array data)
+static int read_o3_number_density_covariance(void *user_data, harp_array data)
 {
     ingest_info *info = (ingest_info *)user_data;
 
     return read_dataset(info, "/sx", harp_type_float, info->num_time * info->num_levels * info->num_levels, data);
-}
-
-static int read_o3_number_density_cov_random(void *user_data, harp_array data)
-{
-    ingest_info *info = (ingest_info *)user_data;
-
-    return read_dataset(info, "/sn", harp_type_float, info->num_time * info->num_levels * info->num_levels, data);
 }
 
 static int read_o3_volume_mixing_ratio(void *user_data, harp_array data)
@@ -788,22 +781,13 @@ int harp_ingestion_module_cci_l2_o3_np_init(void)
     description = "derived from the relative error in percent as: o3_error[] * 0.01 * o3_nd[]";
     harp_variable_definition_add_mapping(variable_definition, NULL, NULL, path, description);
 
-    /* O3_number_density_cov */
+    /* O3_number_density_covariance */
     description = "O3 number density solution covariance matrix";
     variable_definition =
-        harp_ingestion_register_variable_full_read(product_definition, "O3_number_density_cov", harp_type_float, 3,
-                                                   dimension_type, NULL, description, "cm^-6", NULL,
-                                                   read_o3_number_density_cov);
-    path = "/sx[]";
-    harp_variable_definition_add_mapping(variable_definition, NULL, NULL, path, NULL);
-
-    /* O3_number_density_cov_random */
-    description = "O3 number density measurement noise covariance matrix";
-    variable_definition =
-        harp_ingestion_register_variable_full_read(product_definition, "O3_number_density_cov_random", harp_type_float,
+        harp_ingestion_register_variable_full_read(product_definition, "O3_number_density_covariance", harp_type_float,
                                                    3, dimension_type, NULL, description, "cm^-6", NULL,
-                                                   read_o3_number_density_cov_random);
-    path = "/sn[]";
+                                                   read_o3_number_density_covariance);
+    path = "/sx[]";
     harp_variable_definition_add_mapping(variable_definition, NULL, NULL, path, NULL);
 
     /* O3_number_density_avk */

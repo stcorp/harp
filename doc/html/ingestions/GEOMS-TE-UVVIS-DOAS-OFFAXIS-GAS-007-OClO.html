@@ -290,73 +290,79 @@
 <td>1e6 ppmv</td>
 <td>OClO volume mixing ratio</td>
 </tr>
-<tr class="row-odd"><td><strong>OClO_volume_mixing_ratio_cov_random</strong></td>
+<tr class="row-odd"><td><strong>OClO_volume_mixing_ratio_covariance</strong></td>
 <td>double</td>
 <td>{<em>time</em>, <em>vertical</em>, <em>vertical</em>}</td>
-<td>1e6 ppmv</td>
-<td>random covariance of the OClO volume mixing ratio</td>
+<td>1e12 ppmv2</td>
+<td>covariance of the OClO volume mixing ratio</td>
 </tr>
-<tr class="row-even"><td><strong>OClO_volume_mixing_ratio_cov_systematic</strong></td>
+<tr class="row-even"><td><strong>OClO_volume_mixing_ratio_uncertainty_random</strong></td>
 <td>double</td>
-<td>{<em>time</em>, <em>vertical</em>, <em>vertical</em>}</td>
+<td>{<em>time</em>, <em>vertical</em>}</td>
 <td>1e6 ppmv</td>
-<td>systematic covariance of the OClO volume mixing ratio</td>
+<td>random uncertainty of the OClO volume mixing ratio</td>
 </tr>
-<tr class="row-odd"><td><strong>OClO_volume_mixing_ratio_apriori</strong></td>
+<tr class="row-odd"><td><strong>OClO_volume_mixing_ratio_uncertainty_systematic</strong></td>
+<td>double</td>
+<td>{<em>time</em>, <em>vertical</em>}</td>
+<td>1e6 ppmv</td>
+<td>systematic uncertainty of the OClO volume mixing ratio</td>
+</tr>
+<tr class="row-even"><td><strong>OClO_volume_mixing_ratio_apriori</strong></td>
 <td>double</td>
 <td>{<em>time</em>, <em>vertical</em>}</td>
 <td>1e6 ppmv</td>
 <td>a priori OClO volume mixing ratio</td>
 </tr>
-<tr class="row-even"><td><strong>OClO_volume_mixing_ratio_avk</strong></td>
+<tr class="row-odd"><td><strong>OClO_volume_mixing_ratio_avk</strong></td>
 <td>double</td>
 <td>{<em>time</em>, <em>vertical</em>, <em>vertical</em>}</td>
 <td>&nbsp;</td>
 <td>averaging kernel for the OClO volume mixing ratio</td>
 </tr>
-<tr class="row-odd"><td><strong>tropospheric_OClO_column_number_density</strong></td>
+<tr class="row-even"><td><strong>tropospheric_OClO_column_number_density</strong></td>
 <td>double</td>
 <td>{<em>time</em>}</td>
 <td>Pmolec cm-2</td>
 <td>tropospheric OClO column number density</td>
 </tr>
-<tr class="row-even"><td><strong>tropospheric_OClO_column_number_density_uncertainty_random</strong></td>
+<tr class="row-odd"><td><strong>tropospheric_OClO_column_number_density_uncertainty_random</strong></td>
 <td>double</td>
 <td>{<em>time</em>}</td>
 <td>Pmolec cm-2</td>
 <td>random uncertainty of the tropospheric OClO column number density</td>
 </tr>
-<tr class="row-odd"><td><strong>tropospheric_OClO_column_number_density_uncertainty_systematic</strong></td>
+<tr class="row-even"><td><strong>tropospheric_OClO_column_number_density_uncertainty_systematic</strong></td>
 <td>double</td>
 <td>{<em>time</em>}</td>
 <td>Pmolec cm-2</td>
-<td>systematic covariance of the tropospheric OClO column number density</td>
+<td>systematic uncertainty of the tropospheric OClO column number density</td>
 </tr>
-<tr class="row-even"><td><strong>tropospheric_OClO_column_number_density_apriori</strong></td>
+<tr class="row-odd"><td><strong>tropospheric_OClO_column_number_density_apriori</strong></td>
 <td>double</td>
 <td>{<em>time</em>}</td>
 <td>Pmolec cm-2</td>
 <td>a priori tropospheric OClO column number density</td>
 </tr>
-<tr class="row-odd"><td><strong>tropospheric_OClO_column_number_density_avk</strong></td>
+<tr class="row-even"><td><strong>tropospheric_OClO_column_number_density_avk</strong></td>
 <td>double</td>
 <td>{<em>time</em>, <em>vertical</em>}</td>
 <td>&nbsp;</td>
 <td>averaging kernel for the tropospheric OClO column number density</td>
 </tr>
-<tr class="row-even"><td><strong>OClO_column_number_density</strong></td>
+<tr class="row-odd"><td><strong>OClO_column_number_density</strong></td>
 <td>double</td>
 <td>{<em>time</em>, <em>vertical</em>}</td>
 <td>Pmolec cm-2</td>
 <td>OClO partial column number density profile</td>
 </tr>
-<tr class="row-odd"><td><strong>OClO_column_number_density_apriori</strong></td>
+<tr class="row-even"><td><strong>OClO_column_number_density_apriori</strong></td>
 <td>double</td>
 <td>{<em>time</em>, <em>vertical</em>}</td>
 <td>Pmolec cm-2</td>
 <td>a priori OClO partial column number density profile</td>
 </tr>
-<tr class="row-even"><td><strong>index</strong></td>
+<tr class="row-odd"><td><strong>index</strong></td>
 <td>int32</td>
 <td>{<em>time</em>}</td>
 <td>&nbsp;</td>
@@ -371,8 +377,8 @@
 <table border="1" class="docutils">
 <colgroup>
 <col width="40%" />
-<col width="8%" />
-<col width="52%" />
+<col width="9%" />
+<col width="51%" />
 </colgroup>
 <thead valign="bottom">
 <tr class="row-odd"><th class="head">field name</th>
@@ -496,47 +502,57 @@
 <td><em>path</em></td>
 <td><strong>/OClO.MIXING.RATIO.VOLUME_SCATTER.SOLAR.OFFAXIS</strong></td>
 </tr>
-<tr class="row-odd"><td><strong>OClO_volume_mixing_ratio_cov_random</strong></td>
+<tr class="row-odd"><td><strong>OClO_volume_mixing_ratio_covariance</strong></td>
 <td><em>path</em></td>
 <td><strong>/OClO.MIXING.RATIO.VOLUME_SCATTER.SOLAR.OFFAXIS_UNCERTAINTY.RANDOM.COVARIANCE</strong></td>
 </tr>
-<tr class="row-even"><td><strong>OClO_volume_mixing_ratio_cov_systematic</strong></td>
+<tr class="row-even"><td rowspan="2"><strong>OClO_volume_mixing_ratio_uncertainty_random</strong></td>
+<td><em>path</em></td>
+<td><strong>/OClO.MIXING.RATIO.VOLUME_SCATTER.SOLAR.OFFAXIS_UNCERTAINTY.RANDOM.COVARIANCE</strong></td>
+</tr>
+<tr class="row-odd"><td><em>description</em></td>
+<td>the uncertainty is the square root of the trace of the covariance</td>
+</tr>
+<tr class="row-even"><td rowspan="2"><strong>OClO_volume_mixing_ratio_uncertainty_systematic</strong></td>
 <td><em>path</em></td>
 <td><strong>/OClO.MIXING.RATIO.VOLUME_SCATTER.SOLAR.OFFAXIS_UNCERTAINTY.SYSTEMATIC.COVARIANCE</strong></td>
 </tr>
-<tr class="row-odd"><td><strong>OClO_volume_mixing_ratio_apriori</strong></td>
+<tr class="row-odd"><td><em>description</em></td>
+<td>the uncertainty is the square root of the trace of the covariance</td>
+</tr>
+<tr class="row-even"><td><strong>OClO_volume_mixing_ratio_apriori</strong></td>
 <td><em>path</em></td>
 <td><strong>/OClO.MIXING.RATIO.VOLUME_SCATTER.SOLAR.OFFAXIS_APRIORI</strong></td>
 </tr>
-<tr class="row-even"><td><strong>OClO_volume_mixing_ratio_avk</strong></td>
+<tr class="row-odd"><td><strong>OClO_volume_mixing_ratio_avk</strong></td>
 <td><em>path</em></td>
 <td><strong>/OClO.MIXING.RATIO.VOLUME_SCATTER.SOLAR.OFFAXIS_AVK</strong></td>
 </tr>
-<tr class="row-odd"><td><strong>tropospheric_OClO_column_number_density</strong></td>
+<tr class="row-even"><td><strong>tropospheric_OClO_column_number_density</strong></td>
 <td><em>path</em></td>
 <td><strong>/OClO.COLUMN.TROPOSPHERIC_SCATTER.SOLAR.OFFAXIS</strong></td>
 </tr>
-<tr class="row-even"><td><strong>tropospheric_OClO_column_number_density_uncertainty_random</strong></td>
+<tr class="row-odd"><td><strong>tropospheric_OClO_column_number_density_uncertainty_random</strong></td>
 <td><em>path</em></td>
 <td><strong>/OClO.COLUMN.TROPOSPHERIC_SCATTER.SOLAR.OFFAXIS_UNCERTAINTY.RANDOM.STANDARD</strong></td>
 </tr>
-<tr class="row-odd"><td><strong>tropospheric_OClO_column_number_density_uncertainty_systematic</strong></td>
+<tr class="row-even"><td><strong>tropospheric_OClO_column_number_density_uncertainty_systematic</strong></td>
 <td><em>path</em></td>
 <td><strong>/OClO.COLUMN.TROPOSPHERIC_SCATTER.SOLAR.OFFAXIS_UNCERTAINTY.SYSTEMATIC.STANDARD</strong></td>
 </tr>
-<tr class="row-even"><td><strong>tropospheric_OClO_column_number_density_apriori</strong></td>
+<tr class="row-odd"><td><strong>tropospheric_OClO_column_number_density_apriori</strong></td>
 <td><em>path</em></td>
 <td><strong>/OClO.COLUMN.TROPOSPHERIC_SCATTER.SOLAR.OFFAXIS_APRIORI</strong></td>
 </tr>
-<tr class="row-odd"><td><strong>tropospheric_OClO_column_number_density_avk</strong></td>
+<tr class="row-even"><td><strong>tropospheric_OClO_column_number_density_avk</strong></td>
 <td><em>path</em></td>
 <td><strong>/OClO.COLUMN.TROPOSPHERIC_SCATTER.SOLAR.OFFAXIS_AVK</strong></td>
 </tr>
-<tr class="row-even"><td><strong>OClO_column_number_density</strong></td>
+<tr class="row-odd"><td><strong>OClO_column_number_density</strong></td>
 <td><em>path</em></td>
 <td><strong>/OClO.COLUMN.PARTIAL_SCATTER.SOLAR.OFFAXIS</strong></td>
 </tr>
-<tr class="row-odd"><td><strong>OClO_column_number_density_apriori</strong></td>
+<tr class="row-even"><td><strong>OClO_column_number_density_apriori</strong></td>
 <td><em>path</em></td>
 <td><strong>/OClO.COLUMN.PARTIAL_SCATTER.SOLAR.OFFAXIS_APRIORI</strong></td>
 </tr>

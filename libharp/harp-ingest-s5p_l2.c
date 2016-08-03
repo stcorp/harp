@@ -905,7 +905,7 @@ static int read_o3_pr_volume_mixing_ratio_avk(void *user_data, harp_array data)
                         info->num_scanlines * info->num_pixels * info->num_levels * info->num_levels, data);
 }
 
-static int read_o3_pr_volume_mixing_ratio_cov(void *user_data, harp_array data)
+static int read_o3_pr_volume_mixing_ratio_covariance(void *user_data, harp_array data)
 {
     ingest_info *info = (ingest_info *)user_data;
 
@@ -2198,9 +2198,9 @@ static void register_o3_pr_product(void)
 
     description = "O3 volume mixing ratio covariance";
     variable_definition =
-        harp_ingestion_register_variable_full_read(product_definition, "O3_volume_mixing_ratio_cov", harp_type_float, 3,
-                                                   dimension_type, NULL, description, "pptv", NULL,
-                                                   read_o3_pr_volume_mixing_ratio_cov);
+        harp_ingestion_register_variable_full_read(product_definition, "O3_volume_mixing_ratio_covariance",
+                                                   harp_type_float, 3, dimension_type, NULL, description, "pptv", NULL,
+                                                   read_o3_pr_volume_mixing_ratio_covariance);
     path = "/PRODUCT/SUPPORT_DATA/DETAILED_RESULTS/O3_error_covariance_matrix[]";
     harp_variable_definition_add_mapping(variable_definition, NULL, NULL, path, NULL);
 
