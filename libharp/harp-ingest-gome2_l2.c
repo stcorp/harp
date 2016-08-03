@@ -2051,7 +2051,8 @@ static void register_common_variables(harp_product_definition *product_definitio
     variable_definition =
         harp_ingestion_register_variable_full_read(product_definition, "OClO_column_number_density_amf_uncertainty",
                                                    harp_type_double, 1, dimension_type, NULL, description,
-                                                   HARP_UNIT_DIMENSIONLESS, exclude_amf_oclo_error, read_amf_oclo_error);
+                                                   HARP_UNIT_DIMENSIONLESS, exclude_amf_oclo_error,
+                                                   read_amf_oclo_error);
     path = "/DETAILED_RESULTS/AMFTotal_Error[,window], /DETAILED_RESULTS/AMFTotal[,window], /META_DATA/MainSpecies[]";
     description = "derived from the relative error in percent as: AMFTotal_Error[,window] * 0.01 * AMFTotal[,window]; "
         "window is the index in MainSpecies[] that has the value 'OClO'";
