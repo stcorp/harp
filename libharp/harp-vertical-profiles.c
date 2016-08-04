@@ -1614,7 +1614,8 @@ static int product_filter_resamplable_variables(harp_product *product)
  * \param num_smooth_variables length of smooth_variables.
  * \param smooth_variables The names of the variables to smooth.
  * \param vertical_axis The name of the variable to use as a vertical axis (pressure/altitude/etc).
- * \param collocation_result The collocation result used to locate the matching vertical grids/avks/apriori.
+ * \param original_collocation_result The collocation result used to locate the matching vertical
+ *   grids/avks/apriori.
  *   The collocation result is assumed to have the appropriate metadata available for all matches (dataset b).
  *
  * \return
