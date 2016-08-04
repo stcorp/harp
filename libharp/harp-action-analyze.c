@@ -21,6 +21,7 @@
 #include "harp-internal.h"
 #include "harp-action.h"
 #include "harp-action-parse.h"
+#include "harp-program.h"
 
 #include <assert.h>
 #include <stdlib.h>
@@ -698,12 +699,12 @@ static int action_from_function_call(ast_node *node, harp_action **new_action)
     return prototype->create_func(argument_list, new_action);
 }
 
-static int create_action_list(ast_node *node, harp_action_list **new_action_list)
+static int create_program(ast_node *node, harp_program **new_program)
 {
-    harp_action_list *action_list;
+    harp_program *program;
     int i;
 
-    if (harp_action_list_new(&action_list) != 0)
+    if (harp_program_new(&program) != 0)
     {
         return -1;
     }
@@ -716,7 +717,7 @@ static int create_action_list(ast_node *node, harp_action_list **new_action_list
         {
             if (action_from_function_call(node->child_node[i], &action) != 0)
             {
-                harp_action_list_delete(action_list);
+                harp_program_delete(program);
                 return -1;
             }
         }
@@ -724,7 +725,7 @@ static int create_action_list(ast_node *node, harp_action_list **new_action_list
         {
             if (create_membership_test(node->child_node[i], &action) != 0)
             {
-                harp_action_list_delete(action_list);
+                harp_program_delete(program);
                 return -1;
             }
         }
@@ -732,7 +733,7 @@ static int create_action_list(ast_node *node, harp_action_list **new_action_list
         {
             if (create_bit_mask_test(node->child_node[i], &action) != 0)
             {
-                harp_action_list_delete(action_list);
+                harp_program_delete(program);
                 return -1;
             }
         }
@@ -740,40 +741,40 @@ static int create_action_list(ast_node *node, harp_action_list **new_action_list
         {
             if (create_comparison(node->child_node[i], &action) != 0)
             {
-                harp_action_list_delete(action_list);
+                harp_program_delete(program);
                 return -1;
             }
         }
 
-        if (harp_action_list_add_action(action_list, action) != 0)
+        if (harp_program_add_action(program, action) != 0)
         {
             harp_action_delete(action);
-            harp_action_list_delete(action_list);
+            harp_program_delete(program);
             return -1;
         }
     }
 
-    *new_action_list = action_list;
+    *new_program = program;
     return 0;
 }
 
-int harp_action_list_from_string(const char *str, harp_action_list **new_action_list)
+int harp_program_from_string(const char *str, harp_program **new_program)
 {
     ast_node *node;
-    harp_action_list *action_list;
+    harp_program *program;
 
     if (harp_parse_actions(str, &node) != 0)
     {
         return -1;
     }
 
-    if (create_action_list(node, &action_list) != 0)
+    if (create_program(node, &program) != 0)
     {
         harp_ast_node_delete(node);
         return -1;
     }
     harp_ast_node_delete(node);
 
-    *new_action_list = action_list;
+    *new_program = program;
     return 0;
 }

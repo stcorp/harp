@@ -180,12 +180,6 @@ typedef struct harp_variable_exclusion_args_struct
     char **variable_name;
 } harp_variable_exclusion_args;
 
-typedef struct harp_action_list_struct
-{
-    int num_actions;
-    harp_action **action;
-} harp_action_list;
-
 /* Generic action */
 int harp_action_new(harp_action_type type, void *args, harp_action **new_action);
 void harp_action_delete(harp_action *action);
@@ -234,17 +228,6 @@ int harp_variable_exclusion_new(int num_variables, const char **variable_name, h
 
 int harp_action_get_variable_name(const harp_action *action, const char **variable_name);
 
-/* List of actions */
-int harp_action_list_new(harp_action_list **new_action_list);
-void harp_action_list_delete(harp_action_list *action_list);
-int harp_action_list_add_action(harp_action_list *action_list, harp_action *action);
-int harp_action_list_remove_action_at_index(harp_action_list *action_list, int index);
-int harp_action_list_remove_action(harp_action_list *action_list, harp_action *action);
-int harp_action_list_verify(const harp_action_list *action_list);
-
-int harp_product_execute_action_list(harp_product *product, harp_action_list *action_list);
-
-/* Parse functions */
-int harp_action_list_from_string(const char *str, harp_action_list **new_action_list);
+int harp_action_is_filter(const harp_action *action);
 
 #endif
