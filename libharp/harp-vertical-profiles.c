@@ -1701,6 +1701,7 @@ LIBHARP_API int harp_product_smooth_vertical(harp_product *product, int num_smoo
     if (strcmp(source_grid->name, "pressure") != 0)
     {
         int i;
+
         for (i = 0; i < source_grid->num_elements; i++)
         {
             source_grid->data.double_data[i] = log(source_grid->data.double_data[i]);
@@ -1788,6 +1789,7 @@ LIBHARP_API int harp_product_smooth_vertical(harp_product *product, int num_smoo
         if (strcmp(target_grid->name, "pressure") != 0)
         {
             int i;
+
             for (i = 0; i < target_grid->num_elements; i++)
             {
                 target_grid->data.double_data[i] = log(target_grid->data.double_data[i]);

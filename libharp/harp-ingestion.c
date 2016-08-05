@@ -27,6 +27,8 @@
 #include "harp-filter-collocation.h"
 #include "harp-geometry.h"
 #include "harp-action.h"
+#include "harp-program.h"
+#include "harp-program-execute.h"
 
 #include <assert.h>
 
@@ -46,7 +48,7 @@ typedef struct ingest_info_struct
 
     void *user_data;    /* Ingestion module specific information. */
 
-    harp_action_list *action_list;      /* List of actions to apply. */
+    harp_program *action_list;  /* List of actions to apply. */
 
     long dimension[HARP_NUM_DIM_TYPES]; /* Length of each dimension (0 if not in use). */
     harp_dimension_mask_set *dimension_mask_set;        /* which indices along each dimension should be ingested. */
@@ -1151,7 +1153,7 @@ static int find_variable_definition(ingest_info *info, const char *name, int num
     return 0;
 }
 
-static int evaluate_value_filters_0d(ingest_info *info, harp_action_list *actions)
+static int evaluate_value_filters_0d(ingest_info *info, harp_program *actions)
 {
     int i;
 
@@ -1228,7 +1230,7 @@ static int evaluate_value_filters_0d(ingest_info *info, harp_action_list *action
                 return -1;
             }
 
-            if (harp_action_list_remove_action_at_index(actions, j) != 0)
+            if (harp_program_remove_action_at_index(actions, j) != 0)
             {
                 harp_predicate_set_delete(predicate_set);
                 return -1;
@@ -1250,7 +1252,7 @@ static int evaluate_value_filters_0d(ingest_info *info, harp_action_list *action
     return 0;
 }
 
-static int evaluate_value_filters_1d(ingest_info *info, harp_action_list *actions)
+static int evaluate_value_filters_1d(ingest_info *info, harp_program *actions)
 {
     int i;
 
@@ -1335,7 +1337,7 @@ static int evaluate_value_filters_1d(ingest_info *info, harp_action_list *action
                 return -1;
             }
 
-            if (harp_action_list_remove_action_at_index(actions, j) != 0)
+            if (harp_program_remove_action_at_index(actions, j) != 0)
             {
                 harp_predicate_set_delete(predicate_set);
                 return -1;
@@ -1368,7 +1370,7 @@ static int evaluate_value_filters_1d(ingest_info *info, harp_action_list *action
     return 0;
 }
 
-static int evaluate_value_filters_2d(ingest_info *info, harp_action_list *actions)
+static int evaluate_value_filters_2d(ingest_info *info, harp_program *actions)
 {
     int i;
 
@@ -1462,7 +1464,7 @@ static int evaluate_value_filters_2d(ingest_info *info, harp_action_list *action
                 return -1;
             }
 
-            if (harp_action_list_remove_action_at_index(actions, j) != 0)
+            if (harp_program_remove_action_at_index(actions, j) != 0)
             {
                 harp_predicate_set_delete(predicate_set);
                 return -1;
@@ -1516,7 +1518,7 @@ static int evaluate_value_filters_2d(ingest_info *info, harp_action_list *action
     return 0;
 }
 
-static int evaluate_collocation_filter(ingest_info *info, harp_action_list *actions)
+static int evaluate_collocation_filter(ingest_info *info, harp_program *actions)
 {
     harp_variable_definition *variable_def;
     const harp_collocation_filter_args *args;
@@ -1608,7 +1610,7 @@ static int evaluate_collocation_filter(ingest_info *info, harp_action_list *acti
     return 0;
 }
 
-static int evaluate_point_filters_0d(ingest_info *info, harp_action_list *actions)
+static int evaluate_point_filters_0d(ingest_info *info, harp_program *actions)
 {
     harp_variable_definition *longitude_def;
     harp_variable_definition *latitude_def;
@@ -1686,7 +1688,7 @@ static int evaluate_point_filters_0d(ingest_info *info, harp_action_list *action
             return -1;
         }
 
-        if (harp_action_list_remove_action_at_index(actions, i) != 0)
+        if (harp_program_remove_action_at_index(actions, i) != 0)
         {
             harp_predicate_set_delete(predicate_set);
             return -1;
@@ -1731,7 +1733,7 @@ static int evaluate_point_filters_0d(ingest_info *info, harp_action_list *action
     return 0;
 }
 
-static int evaluate_point_filters_1d(ingest_info *info, harp_action_list *actions)
+static int evaluate_point_filters_1d(ingest_info *info, harp_program *actions)
 {
     harp_variable_definition *longitude_def;
     harp_variable_definition *latitude_def;
@@ -1810,7 +1812,7 @@ static int evaluate_point_filters_1d(ingest_info *info, harp_action_list *action
             return -1;
         }
 
-        if (harp_action_list_remove_action_at_index(actions, i) != 0)
+        if (harp_program_remove_action_at_index(actions, i) != 0)
         {
             harp_predicate_set_delete(predicate_set);
             return -1;
@@ -1868,7 +1870,7 @@ static int evaluate_point_filters_1d(ingest_info *info, harp_action_list *action
     return 0;
 }
 
-static int evaluate_area_filters_0d(ingest_info *info, harp_action_list *actions)
+static int evaluate_area_filters_0d(ingest_info *info, harp_program *actions)
 {
     harp_variable_definition *longitude_bounds_def;
     harp_variable_definition *latitude_bounds_def;
@@ -1947,7 +1949,7 @@ static int evaluate_area_filters_0d(ingest_info *info, harp_action_list *actions
             return -1;
         }
 
-        if (harp_action_list_remove_action_at_index(actions, i) != 0)
+        if (harp_program_remove_action_at_index(actions, i) != 0)
         {
             harp_predicate_set_delete(predicate_set);
             return -1;
@@ -1991,7 +1993,7 @@ static int evaluate_area_filters_0d(ingest_info *info, harp_action_list *actions
     return 0;
 }
 
-static int evaluate_area_filters_1d(ingest_info *info, harp_action_list *actions)
+static int evaluate_area_filters_1d(ingest_info *info, harp_program *actions)
 {
     harp_variable_definition *longitude_bounds_def;
     harp_variable_definition *latitude_bounds_def;
@@ -2070,7 +2072,7 @@ static int evaluate_area_filters_1d(ingest_info *info, harp_action_list *actions
             return -1;
         }
 
-        if (harp_action_list_remove_action_at_index(actions, i) != 0)
+        if (harp_program_remove_action_at_index(actions, i) != 0)
         {
             harp_predicate_set_delete(predicate_set);
             return -1;
@@ -2128,7 +2130,7 @@ static int evaluate_area_filters_1d(ingest_info *info, harp_action_list *actions
     return 0;
 }
 
-static int evaluate_variable_filters(ingest_info *info, harp_action_list *actions)
+static int evaluate_variable_filters(ingest_info *info, harp_program *actions)
 {
     uint8_t *variable_mask = NULL;
     int i;
@@ -2186,7 +2188,7 @@ static int evaluate_variable_filters(ingest_info *info, harp_action_list *action
             variable_mask[index] = 1;
         }
 
-        if (harp_action_list_remove_action_at_index(actions, i) != 0)
+        if (harp_program_remove_action_at_index(actions, i) != 0)
         {
             free(variable_mask);
             return -1;
@@ -2238,7 +2240,7 @@ static int evaluate_variable_filters(ingest_info *info, harp_action_list *action
             info->variable_mask[index] = 0;
         }
 
-        if (harp_action_list_remove_action_at_index(actions, i) != 0)
+        if (harp_program_remove_action_at_index(actions, i) != 0)
         {
             return -1;
         }
@@ -2339,7 +2341,7 @@ static int dimension_mask_set_has_empty_masks(const harp_dimension_mask_set *dim
 /** Update the ingestion mask by performing the filtering actions in phase_actions.
  * The execution order of phase_actions is optimized for performance.
  */
-static int execute_masking_phase(ingest_info *info, harp_action_list *phase_actions, int *result_is_empty)
+static int execute_masking_phase(ingest_info *info, harp_program *phase_actions, int *result_is_empty)
 {
     /* First filter pass (0-D variables). */
     if (evaluate_value_filters_0d(info, phase_actions) != 0)
@@ -2460,7 +2462,7 @@ static int get_product(ingest_info *info)
     }
 
     /* Perform all actions that can be performed as part of product ingestion. */
-    if (harp_action_list_verify(info->action_list) != 0)
+    if (harp_program_verify(info->action_list) != 0)
     {
         return -1;
     }
@@ -2473,12 +2475,12 @@ static int get_product(ingest_info *info)
      */
     while (info->action_list->num_actions > 0 && !ingestion_mask_done)
     {
-        harp_action_list *phase_action_list;
+        harp_program *phase_action_list;
         int found_variable_filter = 0;
         int resulting_product_empty = 0;
 
         /* create the action list array for this phase */
-        if (harp_action_list_new(&phase_action_list) != 0)
+        if (harp_program_new(&phase_action_list) != 0)
         {
             return -1;
         }
@@ -2502,7 +2504,7 @@ static int get_product(ingest_info *info)
                 /* note that we're in the postfix of this phase's actions */
                 found_variable_filter = 1;
             }
-            else /* action type == filter */
+            else        /* action type == filter */
             {
                 if (found_variable_filter)
                 {
@@ -2516,17 +2518,17 @@ static int get_product(ingest_info *info)
             {
                 return -1;
             }
-            if (harp_action_list_add_action(phase_action_list, new_action))
+            if (harp_program_add_action(phase_action_list, new_action))
             {
-                harp_action_list_delete(phase_action_list);
+                harp_program_delete(phase_action_list);
                 harp_action_delete(new_action);
                 return -1;
             }
 
             /* remove the action from the post-ingestion action list */
-            if (harp_action_list_remove_action_at_index(info->action_list, 0) != 0)
+            if (harp_program_remove_action_at_index(info->action_list, 0) != 0)
             {
-                harp_action_list_delete(phase_action_list);
+                harp_program_delete(phase_action_list);
                 harp_action_delete(new_action);
                 return -1;
             }
@@ -2535,12 +2537,12 @@ static int get_product(ingest_info *info)
         /* execute the actions of this masking phase in optimal order */
         if (execute_masking_phase(info, phase_action_list, &resulting_product_empty) != 0)
         {
-            harp_action_list_delete(phase_action_list);
+            harp_program_delete(phase_action_list);
             return -1;
         }
 
         /* cleanup phase mem */
-        harp_action_list_delete(phase_action_list);
+        harp_program_delete(phase_action_list);
 
         /* exit early if product is empty */
         if (resulting_product_empty)
@@ -2579,7 +2581,7 @@ static int get_product(ingest_info *info)
     }
 
     /* Apply remaining actions. */
-    if (harp_product_execute_action_list(info->product, info->action_list) != 0)
+    if (harp_product_execute_program(info->product, info->action_list) != 0)
     {
         return -1;
     }
@@ -2587,7 +2589,7 @@ static int get_product(ingest_info *info)
     return 0;
 }
 
-static int ingest(const char *filename, harp_action_list *action_list, const harp_ingestion_options *option_list,
+static int ingest(const char *filename, harp_program *action_list, const harp_ingestion_options *option_list,
                   harp_product **product)
 {
     ingest_info *info;
@@ -2657,7 +2659,7 @@ static int ingest(const char *filename, harp_action_list *action_list, const har
  */
 LIBHARP_API int harp_ingest(const char *filename, const char *actions, const char *options, harp_product **product)
 {
-    harp_action_list *action_list;
+    harp_program *action_list;
     harp_ingestion_options *option_list;
     int perform_conversions;
     int perform_boundary_checks;
@@ -2682,14 +2684,14 @@ LIBHARP_API int harp_ingest(const char *filename, const char *actions, const cha
 
     if (actions == NULL)
     {
-        if (harp_action_list_new(&action_list) != 0)
+        if (harp_program_new(&action_list) != 0)
         {
             return -1;
         }
     }
     else
     {
-        if (harp_action_list_from_string(actions, &action_list) != 0)
+        if (harp_program_from_string(actions, &action_list) != 0)
         {
             return -1;
         }
@@ -2699,7 +2701,7 @@ LIBHARP_API int harp_ingest(const char *filename, const char *actions, const cha
     {
         if (harp_ingestion_options_new(&option_list) != 0)
         {
-            harp_action_list_delete(action_list);
+            harp_program_delete(action_list);
             return -1;
         }
     }
@@ -2707,7 +2709,7 @@ LIBHARP_API int harp_ingest(const char *filename, const char *actions, const cha
     {
         if (harp_ingestion_options_from_string(options, &option_list) != 0)
         {
-            harp_action_list_delete(action_list);
+            harp_program_delete(action_list);
             return -1;
         }
     }
@@ -2729,7 +2731,7 @@ LIBHARP_API int harp_ingest(const char *filename, const char *actions, const cha
     coda_set_option_perform_conversions(perform_conversions);
 
     harp_ingestion_options_delete(option_list);
-    harp_action_list_delete(action_list);
+    harp_program_delete(action_list);
     return status;
 }
 
@@ -2747,7 +2749,7 @@ LIBHARP_API int harp_ingest_test(const char *filename, int (*print) (const char 
 {
     coda_product *product = NULL;
     ingest_info *info;
-    harp_action_list *action_list;
+    harp_program *action_list;
     harp_ingestion_options *option_list;
     harp_ingestion_module *module;
     int perform_conversions;
@@ -2768,14 +2770,14 @@ LIBHARP_API int harp_ingest_test(const char *filename, int (*print) (const char 
         return -1;
     }
 
-    if (harp_action_list_new(&action_list) != 0)
+    if (harp_program_new(&action_list) != 0)
     {
         return -1;
     }
 
     if (harp_ingestion_options_new(&option_list) != 0)
     {
-        harp_action_list_delete(action_list);
+        harp_program_delete(action_list);
         return -1;
     }
 
@@ -2919,7 +2921,7 @@ LIBHARP_API int harp_ingest_test(const char *filename, int (*print) (const char 
     coda_set_option_perform_conversions(perform_conversions);
 
     harp_ingestion_options_delete(option_list);
-    harp_action_list_delete(action_list);
+    harp_program_delete(action_list);
 
     return status;
 }

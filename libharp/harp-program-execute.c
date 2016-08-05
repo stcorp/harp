@@ -383,6 +383,7 @@ static int evaluate_collocation_filter(const harp_product *product, harp_program
     int use_collocation_index;
     int i;
 
+    /* find the next collocation filter in the program */
     for (i = 0; i < program->num_actions; i++)
     {
         if (program->action[i]->type == harp_action_filter_collocation)
@@ -896,23 +897,14 @@ static int evaluate_area_filters_1d(const harp_product *product, harp_program *p
 /* execute 0..n variable filters (keep/exclude) from the head of program */
 static int execute_variable_filter_actions(harp_product *product, harp_program *program)
 {
-    int num_variables;
-    int i, j;
+    uint8_t *include_variable_mask;
 
-    uint8_t *variable_mask;
-
-    variable_mask = (uint8_t *)calloc(product->num_variables, sizeof(uint8_t));
-    if (variable_mask == NULL)
+    include_variable_mask = (uint8_t *)calloc(product->num_variables, sizeof(uint8_t));
+    if (include_variable_mask == NULL)
     {
         harp_set_error(HARP_ERROR_OUT_OF_MEMORY, "out of memory (could not allocate %lu bytes) (%s:%u)",
                        product->num_variables * sizeof(uint8_t), __FILE__, __LINE__);
         return -1;
-    }
-
-    /* Assume that all variables currently in the product are included */
-    for (i = 0; i < product->num_variables; i++)
-    {
-        variable_mask[i] = 1;
     }
 
     /* Process all include and exclude actions that follow in one go,
@@ -930,13 +922,13 @@ static int execute_variable_filter_actions(harp_product *product, harp_program *
         /* continue while we process include/excludes */
         if (action->type == harp_action_include_variable)
         {
-            /* assumes that all variables are removed */
+            /* assume all variables are excluded */
             for (j = 0; j < product->num_variables; j++)
             {
-                variable_mask[j] = 1;
+                include_variable_mask[j] = 0;
             }
 
-            /* mark the variables to keep */
+            /* set the 'keep' flags in the mask */
             in_args = (const harp_variable_inclusion_args *)action->args;
             for (j = 0; j < in_args->num_variables; j++)
             {
@@ -947,7 +939,19 @@ static int execute_variable_filter_actions(harp_product *product, harp_program *
                     goto error;
                 }
 
-                variable_mask[variable_id] = 1;
+                include_variable_mask[variable_id] = 1;
+            }
+
+            /* filter the variables using the mask */
+            for (j = product->num_variables - 1; j >= 0; j--)
+            {
+                if (!include_variable_mask[j])
+                {
+                    if (harp_product_remove_variable(product, product->variable[j]) != 0)
+                    {
+                        goto error;
+                    }
+                }
             }
         }
         else if (action->type == harp_action_exclude_variable)
@@ -958,12 +962,15 @@ static int execute_variable_filter_actions(harp_product *product, harp_program *
             {
                 if (harp_product_get_variable_id_by_name(product, ex_args->variable_name[j], &variable_id) != 0)
                 {
-                    harp_set_error(HARP_ERROR_ACTION, "cannot exclude non-existant variable '%s'",
-                                   ex_args->variable_name[j]);
-                    goto error;
+                    /* already removed, not an error */
+                    continue;
                 }
 
-                variable_mask[variable_id] = 0;
+                /* execute the actin: remove the variable */
+                if (harp_product_remove_variable(product, product->variable[variable_id]) != 0)
+                {
+                    goto error;
+                }
             }
         }
         else
@@ -973,80 +980,70 @@ static int execute_variable_filter_actions(harp_product *product, harp_program *
         }
 
         /* remove the action that we execute */
-        if (harp_program_remove_action_at_index(program, i) != 0)
+        if (harp_program_remove_action_at_index(program, 0) != 0)
         {
             goto error;
         }
     }
 
-    /* Apply variable mask to product. */
-    for (i = 0, j = 0, num_variables = product->num_variables; i < num_variables; i++)
-    {
-        if (!variable_mask[i])
-        {
-            if (harp_product_remove_variable(product, product->variable[j]) != 0)
-            {
-                goto error;
-            }
-        }
-        else
-        {
-            j++;
-        }
-    }
-
-    free(variable_mask);
+    free(include_variable_mask);
     return 0;
 
   error:
-    free(variable_mask);
+    free(include_variable_mask);
     return -1;
 }
 
 /* Execute the collocation filter action at the head of program */
 static int execute_collocation_filter(harp_product *product, harp_program *program)
 {
-    harp_action *action;
-    const harp_collocation_filter_args *args;
-    harp_collocation_mask *collocation_mask = NULL;
+    int i;
 
-    /* get the next action and check pre-conditions */
-    assert(program->num_actions != 0);
-    action = program->action[0];
-    assert(action->type == harp_action_filter_collocation);
-
-    if (product->source_product == NULL)
+    i = 0;
+    while (i < program->num_actions)
     {
-        harp_set_error(HARP_ERROR_INVALID_ARGUMENT, "product attribute 'source_product' is NULL");
-        goto error;
-    }
+        harp_action *action;
+        const harp_collocation_filter_args *args;
+        harp_collocation_mask *collocation_mask;
 
-    args = (const harp_collocation_filter_args *)action->args;
-    if (harp_collocation_mask_import(args->filename, args->filter_type, product->source_product,
-                                     &collocation_mask) != 0)
-    {
-        return -1;
-    }
+        action = program->action[i];
+        if (action->type != harp_action_filter_collocation)
+        {
+            /* Action is not a collocation filter action, skip it. */
+            i++;
+            continue;
+        }
 
-    if (harp_product_apply_collocation_mask(collocation_mask, product) != 0)
-    {
-        goto error;
-    }
+        if (product->source_product == NULL)
+        {
+            harp_set_error(HARP_ERROR_INVALID_ARGUMENT, "product attribute 'source_product' is NULL");
+            return -1;
+        }
 
-    if (harp_program_remove_action_at_index(program, 0) != 0)
-    {
-        goto error;
-    }
+        args = (const harp_collocation_filter_args *)action->args;
+        if (harp_collocation_mask_import(args->filename, args->filter_type, product->source_product,
+                                         &collocation_mask) != 0)
+        {
+            return -1;
+        }
 
-    /* cleanup */
-    harp_collocation_mask_delete(collocation_mask);
+        if (harp_product_apply_collocation_mask(collocation_mask, product) != 0)
+        {
+            harp_collocation_mask_delete(collocation_mask);
+            return -1;
+        }
+        else
+        {
+            harp_collocation_mask_delete(collocation_mask);
+        }
+
+        if (harp_program_remove_action_at_index(program, i) != 0)
+        {
+            return -1;
+        }
+    }
 
     return 0;
-
-  error:
-    harp_collocation_mask_delete(collocation_mask);
-
-    return -1;
 }
 
 static int action_is_dimension_filter(const harp_action *action)
@@ -1075,6 +1072,11 @@ static int execute_filter_actions(harp_product *product, harp_program *program)
     if (program->num_actions == 0)
     {
         return 0;
+    }
+
+    if (harp_program_new(&dimension_filters) != 0)
+    {
+        return -1;
     }
 
     /* pop the prefix of dimension-filters that we'll process into a subprogram */
