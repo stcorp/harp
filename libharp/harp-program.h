@@ -37,6 +37,7 @@ void harp_program_delete(harp_program *program);
 int harp_program_add_action(harp_program *program, harp_action *action);
 int harp_program_remove_action_at_index(harp_program *program, int index);
 int harp_program_remove_action(harp_program *program, harp_action *action);
+int harp_program_copy(const harp_program *other_program, harp_program **new_program);
 
 /* Parser */
 int harp_program_from_string(const char *str, harp_program **new_program);
