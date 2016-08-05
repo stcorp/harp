@@ -102,8 +102,7 @@ int harp_program_add_action(harp_program *program, harp_action *action)
     {
         harp_action **action;
 
-        action = (harp_action **)realloc(program->action,
-                                         (program->num_actions + BLOCK_SIZE) * sizeof(harp_action *));
+        action = (harp_action **)realloc(program->action, (program->num_actions + BLOCK_SIZE) * sizeof(harp_action *));
         if (action == NULL)
         {
             harp_set_error(HARP_ERROR_OUT_OF_MEMORY, "out of memory (could not allocate %lu bytes) (%s:%u)",

@@ -998,7 +998,7 @@ static int execute_variable_filter_actions(harp_product *product, harp_program *
     free(variable_mask);
     return 0;
 
-error:
+  error:
     free(variable_mask);
     return -1;
 }
@@ -1023,7 +1023,7 @@ static int execute_collocation_filter(harp_product *product, harp_program *progr
 
     args = (const harp_collocation_filter_args *)action->args;
     if (harp_collocation_mask_import(args->filename, args->filter_type, product->source_product,
-                                        &collocation_mask) != 0)
+                                     &collocation_mask) != 0)
     {
         return -1;
     }
@@ -1043,7 +1043,7 @@ static int execute_collocation_filter(harp_product *product, harp_program *progr
 
     return 0;
 
-error:
+  error:
     harp_collocation_mask_delete(collocation_mask);
 
     return -1;
@@ -1053,17 +1053,17 @@ static int action_is_dimension_filter(const harp_action *action)
 {
     switch (action->type)
     {
-    case harp_action_exclude_variable:
-    case harp_action_include_variable:
-    case harp_action_derive_variable:
-        return 0;
-    default:
-        return 1;
+        case harp_action_exclude_variable:
+        case harp_action_include_variable:
+        case harp_action_derive_variable:
+            return 0;
+        default:
+            return 1;
     }
 }
 
 /* execute the prefix of the passed program of 0..n dimension filter actions */
-int execute_filter_actions(harp_product *product, harp_program *program)
+static int execute_filter_actions(harp_product *product, harp_program *program)
 {
     uint8_t product_mask = 1;
     harp_dimension_type dimension_type[1] = { harp_dimension_independent };
@@ -1078,7 +1078,7 @@ int execute_filter_actions(harp_product *product, harp_program *program)
     }
 
     /* pop the prefix of dimension-filters that we'll process into a subprogram */
-    for(i = 0; i < program->num_actions; i++)
+    for (i = 0; i < program->num_actions; i++)
     {
         harp_action *copy = NULL;
 
@@ -1246,7 +1246,7 @@ int execute_filter_actions(harp_product *product, harp_program *program)
 
 static int execute_derivation(harp_product *product, harp_program *program)
 {
-    harp_variable_derivation_args *args = NULL;   
+    harp_variable_derivation_args *args = NULL;
     harp_action *action = program->action[0];
 
     if (action->type != harp_action_derive_variable)
@@ -1366,7 +1366,7 @@ int harp_product_execute_program(harp_product *product, harp_program *program)
 
     return 0;
 
-error:
+  error:
     harp_program_delete(program_copy);
 
     return -1;
