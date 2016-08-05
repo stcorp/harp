@@ -18,6 +18,8 @@
  * Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307  USA
  */
 
+#include "harp-internal.h"
+
 #ifndef HARP_DIMENSION_MASK_H
 #define HARP_DIMENSION_MASK_H
 
