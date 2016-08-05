@@ -824,7 +824,7 @@ static int execute_variable_exclude_filter_action(harp_product *product, harp_pr
             continue;
         }
 
-        /* execute the actin: remove the variable */
+        /* execute the action: remove the variable */
         if (harp_product_remove_variable(product, product->variable[variable_id]) != 0)
         {
             return -1;
@@ -876,8 +876,7 @@ static int execute_variable_include_filter_action(harp_product *product, harp_pr
     {
         if (harp_product_get_variable_id_by_name(product, in_args->variable_name[j], &variable_id) != 0)
         {
-            harp_set_error(HARP_ERROR_ACTION, "cannot keep non-existant variable '%s'",
-                            in_args->variable_name[j]);
+            harp_set_error(HARP_ERROR_ACTION, "cannot keep non-existant variable '%s'", in_args->variable_name[j]);
             goto error;
         }
 
@@ -933,7 +932,7 @@ static int execute_collocation_filter(harp_product *product, harp_program *progr
 
     args = (const harp_collocation_filter_args *)action->args;
     if (harp_collocation_mask_import(args->filename, args->filter_type, product->source_product,
-                                        &collocation_mask) != 0)
+                                     &collocation_mask) != 0)
     {
         return -1;
     }
@@ -1147,7 +1146,7 @@ static int execute_filter_actions(harp_product *product, harp_program *program)
     /* Verify that all dimension filters have been executed */
     if (dimension_filters->num_actions != 0)
     {
-        harp_set_error(HARP_ERROR_ACTION, "Invalid filter action '%s'", dimension_filters[0]);
+        harp_set_error(HARP_ERROR_ACTION, "Could not execute all filter actions.");
         return -1;
     }
 

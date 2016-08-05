@@ -48,8 +48,6 @@ typedef struct ingest_info_struct
 
     void *user_data;    /* Ingestion module specific information. */
 
-    harp_program *action_list;  /* List of actions to apply. */
-
     long dimension[HARP_NUM_DIM_TYPES]; /* Length of each dimension (0 if not in use). */
     harp_dimension_mask_set *dimension_mask_set;        /* which indices along each dimension should be ingested. */
     uint8_t product_mask;
@@ -208,7 +206,6 @@ static int ingestion_init(ingest_info **new_info)
     info->product_definition = NULL;
     info->cproduct = NULL;
     info->user_data = NULL;
-    info->action_list = NULL;
     memset(info->dimension, 0, HARP_NUM_DIM_TYPES * sizeof(long));
     info->dimension_mask_set = NULL;
     info->product_mask = 1;
@@ -1526,17 +1523,17 @@ static int evaluate_collocation_filter(ingest_info *info, harp_program *actions)
     harp_predicate *predicate = NULL;
     harp_dimension_type dimension_type[1] = { harp_dimension_time };
     int use_collocation_index;
-    int i;
+    int action_id;
 
-    for (i = 0; i < actions->num_actions; i++)
+    for (action_id = 0; action_id < actions->num_actions; action_id++)
     {
-        if (actions->action[i]->type == harp_action_filter_collocation)
+        if (actions->action[action_id]->type == harp_action_filter_collocation)
         {
             break;
         }
     }
 
-    if (i == actions->num_actions)
+    if (action_id == actions->num_actions)
     {
         /* No collocation filter action present in action list. */
         return 0;
@@ -1569,7 +1566,7 @@ static int evaluate_collocation_filter(ingest_info *info, harp_program *actions)
     }
 
     /* Create filter predicate. */
-    args = (const harp_collocation_filter_args *)actions->action[i]->args;
+    args = (const harp_collocation_filter_args *)actions->action[action_id]->args;
     if (harp_collocation_result_read(args->filename, &collocation_result) != 0)
     {
         return -1;
@@ -1605,6 +1602,12 @@ static int evaluate_collocation_filter(ingest_info *info, harp_program *actions)
     else
     {
         harp_predicate_delete(predicate);
+    }
+
+    /* remove the action from the program */
+    if (harp_program_remove_action_at_index(actions, action_id) != 0)
+    {
+        return -1;
     }
 
     return 0;
@@ -2130,125 +2133,6 @@ static int evaluate_area_filters_1d(ingest_info *info, harp_program *actions)
     return 0;
 }
 
-static int evaluate_variable_filters(ingest_info *info, harp_program *actions)
-{
-    uint8_t *variable_mask = NULL;
-    int i;
-
-    /* Process include actions. */
-    i = 0;
-    while (i < actions->num_actions)
-    {
-        const harp_action *action;
-        const harp_variable_inclusion_args *args;
-        int j;
-
-        action = actions->action[i];
-        if (action->type != harp_action_include_variable)
-        {
-            i++;
-            continue;
-        }
-
-        if (variable_mask == NULL)
-        {
-            /* Allocate the variable mask and initialize to zero. */
-            variable_mask = (uint8_t *)calloc(info->product_definition->num_variable_definitions, sizeof(uint8_t));
-            if (variable_mask == NULL)
-            {
-                harp_set_error(HARP_ERROR_OUT_OF_MEMORY, "out of memory (could not allocate %lu bytes) (%s:%u)",
-                               info->product_definition->num_variable_definitions * sizeof(uint8_t), __FILE__,
-                               __LINE__);
-                return -1;
-            }
-        }
-
-        args = (const harp_variable_inclusion_args *)action->args;
-        for (j = 0; j < args->num_variables; j++)
-        {
-            int index;
-
-            index = harp_product_definition_get_variable_index(info->product_definition, args->variable_name[j]);
-            if (index < 0)
-            {
-                harp_set_error(HARP_ERROR_ACTION, "cannot include variable '%s' (variable does not exist)",
-                               args->variable_name[j]);
-                free(variable_mask);
-                return -1;
-            }
-
-            if (!info->variable_mask[index])
-            {
-                harp_set_error(HARP_ERROR_ACTION, "cannot include variable '%s' (variable unavailable)",
-                               args->variable_name[j]);
-                free(variable_mask);
-                return -1;
-            }
-
-            variable_mask[index] = 1;
-        }
-
-        if (harp_program_remove_action_at_index(actions, i) != 0)
-        {
-            free(variable_mask);
-            return -1;
-        }
-    }
-
-    /* If variables were explicitly marked for inclusion, exclude all variables that were not marked for inclusion. */
-    if (variable_mask != NULL)
-    {
-        for (i = 0; i < info->product_definition->num_variable_definitions; i++)
-        {
-            if (!variable_mask[i])
-            {
-                info->variable_mask[i] = 0;
-            }
-        }
-
-        free(variable_mask);
-    }
-
-    /* Process exclude actions. */
-    i = 0;
-    while (i < actions->num_actions)
-    {
-        const harp_action *action;
-        const harp_variable_exclusion_args *args;
-        int j;
-
-        action = actions->action[i];
-        if (action->type != harp_action_exclude_variable)
-        {
-            i++;
-            continue;
-        }
-
-        args = (const harp_variable_exclusion_args *)action->args;
-        for (j = 0; j < args->num_variables; j++)
-        {
-            int index;
-
-            index = harp_product_definition_get_variable_index(info->product_definition, args->variable_name[j]);
-            if (index < 0)
-            {
-                harp_set_error(HARP_ERROR_ACTION, "cannot exclude variable '%s' (variable does not exist)",
-                               args->variable_name[j]);
-                return -1;
-            }
-
-            info->variable_mask[index] = 0;
-        }
-
-        if (harp_program_remove_action_at_index(actions, i) != 0)
-        {
-            return -1;
-        }
-    }
-
-    return 0;
-}
-
 static int init_product_dimensions(ingest_info *info)
 {
     memset(info->dimension, 0, HARP_NUM_DIM_TYPES * sizeof(long));
@@ -2341,7 +2225,7 @@ static int dimension_mask_set_has_empty_masks(const harp_dimension_mask_set *dim
 /** Update the ingestion mask by performing the filtering actions in phase_actions.
  * The execution order of phase_actions is optimized for performance.
  */
-static int execute_masking_phase(ingest_info *info, harp_program *phase_actions, int *result_is_empty)
+static int execute_masking_phase(ingest_info *info, harp_program *phase_actions)
 {
     /* First filter pass (0-D variables). */
     if (evaluate_value_filters_0d(info, phase_actions) != 0)
@@ -2359,7 +2243,6 @@ static int execute_masking_phase(ingest_info *info, harp_program *phase_actions,
     if (info->product_mask == 0)
     {
         /* Empty product is not considered an error. */
-        *result_is_empty = 1;
         return 0;
     }
 
@@ -2383,7 +2266,6 @@ static int execute_masking_phase(ingest_info *info, harp_program *phase_actions,
     if (dimension_mask_set_has_empty_masks(info->dimension_mask_set))
     {
         /* Empty product is not considered an error. */
-        *result_is_empty = 1;
         return 0;
     }
 
@@ -2404,29 +2286,261 @@ static int execute_masking_phase(ingest_info *info, harp_program *phase_actions,
     if (dimension_mask_set_has_empty_masks(info->dimension_mask_set))
     {
         /* Empty product is not considered an error. */
-        *result_is_empty = 1;
         return 0;
     }
 
-    /* Variable selection filters */
-    if (evaluate_variable_filters(info, phase_actions) != 0)
+    /* Verify that all dimension filters have been executed */
+    if (phase_actions->num_actions != 0)
     {
+        harp_set_error(HARP_ERROR_ACTION, "Could not execute all filter actions.");
         return -1;
-    }
-    if (!product_has_variables(info))
-    {
-        /* Empty product is not considered an error. */
-        *result_is_empty = 1;
-        return 0;
     }
 
     return 0;
 }
 
-static int get_product(ingest_info *info)
+/* execute the variable exclude filter from the head of program */
+static int execute_variable_exclude_filter_action(ingest_info *info, harp_program *program)
+{
+    const harp_variable_exclusion_args *ex_args;
+    int variable_id;
+    int j;
+    harp_action *action;
+
+    assert(program->num_actions != 0);
+    action = program->action[0];
+    if (action->type != harp_action_exclude_variable)
+    {
+        return 0;
+    }
+
+    /* unmark the variables to exclude */
+    ex_args = (const harp_variable_exclusion_args *)action->args;
+    for (j = 0; j < ex_args->num_variables; j++)
+    {
+
+        variable_id = harp_product_definition_get_variable_index(info->product_definition, ex_args->variable_name[j]);
+        if (variable_id < 0)
+        {
+            /* non-existant variable, not an error */
+            continue;
+        }
+
+        info->variable_mask[variable_id] = 0;
+    }
+
+    /* remove the action that we executed */
+    if (harp_program_remove_action_at_index(program, 0) != 0)
+    {
+        return -1;
+    }
+
+    return 0;
+}
+
+static int execute_variable_include_filter_action(ingest_info *info, harp_program *program)
+{
+    uint8_t *include_variable_mask;
+    harp_action *action;
+    const harp_variable_inclusion_args *in_args;
+    int variable_id;
+    int j;
+
+    assert(program->num_actions != 0);
+    action = program->action[0];
+    if (action->type != harp_action_include_variable)
+    {
+        return 0;
+    }
+
+    include_variable_mask = (uint8_t *)calloc(info->product_definition->num_variable_definitions, sizeof(uint8_t));
+    if (include_variable_mask == NULL)
+    {
+        harp_set_error(HARP_ERROR_OUT_OF_MEMORY, "out of memory (could not allocate %lu bytes) (%s:%u)",
+                       info->product_definition->num_variable_definitions * sizeof(uint8_t), __FILE__, __LINE__);
+        return -1;
+    }
+
+    /* assume all variables are excluded */
+    for (j = 0; j < info->product_definition->num_variable_definitions; j++)
+    {
+        include_variable_mask[j] = 0;
+    }
+
+    /* set the 'keep' flags in the mask */
+    in_args = (const harp_variable_inclusion_args *)action->args;
+    for (j = 0; j < in_args->num_variables; j++)
+    {
+
+        variable_id = harp_product_definition_get_variable_index(info->product_definition, in_args->variable_name[j]);
+        if (variable_id < 0 || info->variable_mask[variable_id] == 0)
+        {
+            harp_set_error(HARP_ERROR_ACTION, "cannot keep non-existant variable '%s'", in_args->variable_name[j]);
+        }
+
+        include_variable_mask[variable_id] = 1;
+    }
+
+    /* filter the variables using the mask */
+    for (j = info->product_definition->num_variable_definitions - 1; j >= 0; j--)
+    {
+        info->variable_mask[j] = info->variable_mask && include_variable_mask[j];
+    }
+
+    /* remove the action that we execute */
+    if (harp_program_remove_action_at_index(program, 0) != 0)
+    {
+        goto error;
+    }
+
+    free(include_variable_mask);
+    return 0;
+
+  error:
+    free(include_variable_mask);
+    return -1;
+}
+
+/* Perform performance optimized execution of filtering actions during ingestion.
+ * The prefix of the action list that solely consists of filters/includes/excludes
+ * is executed during the ingest.
+ * Within this prefix, masking phases are distinguished based on the available variable.
+ * Within a single phase, filters are reordered for optimal mask-creation performance.
+ */
+static int evaluate_ingestion_mask(ingest_info *info, harp_program *program)
+{
+    int ingest = 0;     /* whether or not we have to ingest first before continuing with the program */
+
+    while (program->num_actions > 0 && !ingest)
+    {
+        harp_program *phase_program;
+
+        /* create the action list array for this phase */
+        if (harp_program_new(&phase_program) != 0)
+        {
+            return -1;
+        }
+
+        /* collect the actions for this phase */
+        while (program->num_actions > 0)
+        {
+            harp_action *action = program->action[0];
+            harp_action *action_copy = NULL;
+
+            if (action->type == harp_action_derive_variable)
+            {
+                /* variable derivation can only be done in memory; ingest first */
+                ingest = 1;
+
+                /* done collecting actions for this phase */
+                break;
+            }
+            else if (action->type == harp_action_include_variable || action->type == harp_action_exclude_variable)
+            {
+                /* includes/excludes mark the next phase */
+                break;
+            }
+            else if (action->type == harp_action_filter_collocation)
+            {
+                /* collocation filters are tricky;
+                 * the 'collocation filter' is included during ingestion,
+                 * but the operation can only be completed in memory.
+                 * So the action is kept in the remaining program,
+                 * and we have to ingest here.
+                 */
+                if (harp_action_copy(action, &action_copy) != 0)
+                {
+                    return -1;
+                }
+                if (harp_program_add_action(phase_program, action_copy))
+                {
+                    harp_program_delete(phase_program);
+                    harp_action_delete(action_copy);
+                    return -1;
+                }
+
+                /* ingest next */
+                ingest = 1;
+
+                /* done collection actions for this phase */
+                break;
+            }
+            else
+            {
+                /* add the action at the cursor to the phase's action list */
+                if (harp_action_copy(action, &action_copy) != 0)
+                {
+                    return -1;
+                }
+                if (harp_program_add_action(phase_program, action_copy))
+                {
+                    harp_program_delete(phase_program);
+                    harp_action_delete(action_copy);
+                    return -1;
+                }
+
+                /* remove the action from the post-ingestion action list */
+                if (harp_program_remove_action_at_index(program, 0) != 0)
+                {
+                    harp_program_delete(phase_program);
+                    harp_action_delete(action_copy);
+                    return -1;
+                }
+            }
+        }
+
+        /* execute the actions of this masking phase in optimal order */
+        if (phase_program->num_actions > 0)
+        {
+            if (execute_masking_phase(info, phase_program) != 0)
+            {
+                harp_program_delete(phase_program);
+                return -1;
+            }
+        }
+
+        /* exit early if product is empty */
+        if (info->product_mask == 0)
+        {
+            return 0;
+        }
+
+        /* run include/exclude actions */
+        while (program->num_actions > 0)
+        {
+            harp_action *action = program->action[0];
+
+            if (action->type == harp_action_include_variable)
+            {
+                if (execute_variable_include_filter_action(info, program) != 0)
+                {
+                    return -1;
+                }
+            }
+            else if (action->type == harp_action_exclude_variable)
+            {
+                if (execute_variable_exclude_filter_action(info, program) != 0)
+                {
+                    return -1;
+                }
+            }
+            else
+            {
+                /* not an include / exclude action: end phase */
+                break;
+            }
+        }
+
+        /* cleanup phase mem */
+        harp_program_delete(phase_program);
+    }
+
+    return 0;
+}
+
+static int get_product(ingest_info *info, harp_program *program)
 {
     int i;
-    int ingestion_mask_done = 0;
 
     if (harp_product_new(&info->product) != 0)
     {
@@ -2461,94 +2575,14 @@ static int get_product(ingest_info *info)
         return 0;
     }
 
-    /* Perform all actions that can be performed as part of product ingestion. */
-    if (harp_program_verify(info->action_list) != 0)
+    if (harp_program_verify(program) != 0)
     {
         return -1;
     }
 
-    /* Perform performance optimized execution of filtering actions during ingestion.
-     * The prefix of the action list that solely consists of filters/includes/excludes is executed during the ingest
-     * by constructing masks.
-     * Within this prefix, masking phases are distinguished based on variable availability.
-     * Within a single masking-phase, filters are reordered for optimal mask-creation performance.
-     */
-    while (info->action_list->num_actions > 0 && !ingestion_mask_done)
+    if (evaluate_ingestion_mask(info, program))
     {
-        harp_program *phase_action_list;
-        int found_variable_filter = 0;
-        int resulting_product_empty = 0;
-
-        /* create the action list array for this phase */
-        if (harp_program_new(&phase_action_list) != 0)
-        {
-            return -1;
-        }
-
-        /* collect the actions of this phase */
-        while (info->action_list->num_actions > 0)
-        {
-            harp_action *action = info->action_list->action[0];
-            harp_action *new_action = NULL;
-
-            if (action->type == harp_action_derive_variable)
-            {
-                /* last ingestion mask building phase */
-                ingestion_mask_done = 1;
-
-                /* done collecting actions for this phase */
-                break;
-            }
-            else if (action->type == harp_action_include_variable || action->type == harp_action_exclude_variable)
-            {
-                /* note that we're in the postfix of this phase's actions */
-                found_variable_filter = 1;
-            }
-            else        /* action type == filter */
-            {
-                if (found_variable_filter)
-                {
-                    /* done collecting phase actions */
-                    break;
-                }
-            }
-
-            /* add the action at the cursor to the phase's action list */
-            if (harp_action_copy(action, &new_action) != 0)
-            {
-                return -1;
-            }
-            if (harp_program_add_action(phase_action_list, new_action))
-            {
-                harp_program_delete(phase_action_list);
-                harp_action_delete(new_action);
-                return -1;
-            }
-
-            /* remove the action from the post-ingestion action list */
-            if (harp_program_remove_action_at_index(info->action_list, 0) != 0)
-            {
-                harp_program_delete(phase_action_list);
-                harp_action_delete(new_action);
-                return -1;
-            }
-        }
-
-        /* execute the actions of this masking phase in optimal order */
-        if (execute_masking_phase(info, phase_action_list, &resulting_product_empty) != 0)
-        {
-            harp_program_delete(phase_action_list);
-            return -1;
-        }
-
-        /* cleanup phase mem */
-        harp_program_delete(phase_action_list);
-
-        /* exit early if product is empty */
-        if (resulting_product_empty)
-        {
-            return 0;
-        }
+        return -1;
     }
 
     /* Read all variables, applying dimension masks on the fly. */
@@ -2581,7 +2615,7 @@ static int get_product(ingest_info *info)
     }
 
     /* Apply remaining actions. */
-    if (harp_product_execute_program(info->product, info->action_list) != 0)
+    if (harp_product_execute_program(info->product, program) != 0)
     {
         return -1;
     }
@@ -2589,7 +2623,7 @@ static int get_product(ingest_info *info)
     return 0;
 }
 
-static int ingest(const char *filename, harp_program *action_list, const harp_ingestion_options *option_list,
+static int ingest(const char *filename, harp_program *program, const harp_ingestion_options *option_list,
                   harp_product **product)
 {
     ingest_info *info;
@@ -2630,10 +2664,9 @@ static int ingest(const char *filename, harp_program *action_list, const harp_in
     assert(info->product_definition != NULL);
 
     info->basename = harp_basename(filename);
-    info->action_list = action_list;
 
     /* Ingest the product. */
-    if (get_product(info) != 0)
+    if (get_product(info, program) != 0)
     {
         ingestion_done(info);
         return -1;
@@ -2659,7 +2692,7 @@ static int ingest(const char *filename, harp_program *action_list, const harp_in
  */
 LIBHARP_API int harp_ingest(const char *filename, const char *actions, const char *options, harp_product **product)
 {
-    harp_program *action_list;
+    harp_program *program;
     harp_ingestion_options *option_list;
     int perform_conversions;
     int perform_boundary_checks;
@@ -2684,14 +2717,14 @@ LIBHARP_API int harp_ingest(const char *filename, const char *actions, const cha
 
     if (actions == NULL)
     {
-        if (harp_program_new(&action_list) != 0)
+        if (harp_program_new(&program) != 0)
         {
             return -1;
         }
     }
     else
     {
-        if (harp_program_from_string(actions, &action_list) != 0)
+        if (harp_program_from_string(actions, &program) != 0)
         {
             return -1;
         }
@@ -2701,7 +2734,7 @@ LIBHARP_API int harp_ingest(const char *filename, const char *actions, const cha
     {
         if (harp_ingestion_options_new(&option_list) != 0)
         {
-            harp_program_delete(action_list);
+            harp_program_delete(program);
             return -1;
         }
     }
@@ -2709,7 +2742,7 @@ LIBHARP_API int harp_ingest(const char *filename, const char *actions, const cha
     {
         if (harp_ingestion_options_from_string(options, &option_list) != 0)
         {
-            harp_program_delete(action_list);
+            harp_program_delete(program);
             return -1;
         }
     }
@@ -2724,14 +2757,14 @@ LIBHARP_API int harp_ingest(const char *filename, const char *actions, const cha
     perform_boundary_checks = coda_get_option_perform_boundary_checks();
     coda_set_option_perform_boundary_checks(0);
 
-    status = ingest(filename, action_list, option_list, product);
+    status = ingest(filename, program, option_list, product);
 
     /* Set the libcoda options back to their original values. */
     coda_set_option_perform_boundary_checks(perform_boundary_checks);
     coda_set_option_perform_conversions(perform_conversions);
 
     harp_ingestion_options_delete(option_list);
-    harp_program_delete(action_list);
+    harp_program_delete(program);
     return status;
 }
 
@@ -2749,7 +2782,7 @@ LIBHARP_API int harp_ingest_test(const char *filename, int (*print) (const char 
 {
     coda_product *product = NULL;
     ingest_info *info;
-    harp_program *action_list;
+    harp_program *program;
     harp_ingestion_options *option_list;
     harp_ingestion_module *module;
     int perform_conversions;
@@ -2770,14 +2803,14 @@ LIBHARP_API int harp_ingest_test(const char *filename, int (*print) (const char 
         return -1;
     }
 
-    if (harp_program_new(&action_list) != 0)
+    if (harp_program_new(&program) != 0)
     {
         return -1;
     }
 
     if (harp_ingestion_options_new(&option_list) != 0)
     {
-        harp_program_delete(action_list);
+        harp_program_delete(program);
         return -1;
     }
 
@@ -2827,7 +2860,6 @@ LIBHARP_API int harp_ingest_test(const char *filename, int (*print) (const char 
             info->cproduct = product;
             info->basename = harp_basename(filename);
             info->module = module;
-            info->action_list = action_list;
 
             print("ingestion:");
             for (i = 0; i < num_options; i++)
@@ -2869,7 +2901,7 @@ LIBHARP_API int harp_ingest_test(const char *filename, int (*print) (const char 
                 print(" %s", info->product_definition->name);
                 fflush(stdout);
 
-                status = get_product(info);
+                status = get_product(info, program);
             }
             if (status == 0)
             {
@@ -2921,7 +2953,7 @@ LIBHARP_API int harp_ingest_test(const char *filename, int (*print) (const char 
     coda_set_option_perform_conversions(perform_conversions);
 
     harp_ingestion_options_delete(option_list);
-    harp_program_delete(action_list);
+    harp_program_delete(program);
 
     return status;
 }
