@@ -1545,14 +1545,3 @@ int harp_action_get_variable_name(const harp_action *action, const char **variab
 
     return 0;
 }
-
-int harp_action_is_filter(const harp_action *action)
-{
-    switch (action->type)
-    {
-    case harp_action_derive_variable:
-        return 0;
-    default:
-        return 1;
-    }
-}

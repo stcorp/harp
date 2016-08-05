@@ -228,6 +228,4 @@ int harp_variable_exclusion_new(int num_variables, const char **variable_name, h
 
 int harp_action_get_variable_name(const harp_action *action, const char **variable_name);
 
-int harp_action_is_filter(const harp_action *action);
-
 #endif
