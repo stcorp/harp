@@ -1373,5 +1373,46 @@ int harp_product_execute_program(harp_product *product, harp_program *program)
 }
 
 /**
+ * Execute one or more actions on a product.
+ * \param  product Product that the actions should be executed on.
+ * \param  actions Actions to execute; should be specified as a semi-colon
+ *                 separated string of actions.
+ * \return
+ *   \arg \c 0, Success.
+ *   \arg \c -1, Error occurred (check #harp_errno).
+ */
+LIBHARP_API int harp_product_execute_actions(harp_product *product, const char *actions)
+{
+    harp_program *program;
+
+    if (product == NULL)
+    {
+        harp_set_error(HARP_ERROR_INVALID_ARGUMENT, "product is NULL");
+        return -1;
+    }
+
+    if (actions == NULL)
+    {
+        harp_set_error(HARP_ERROR_INVALID_ARGUMENT, "actions is NULL");
+        return -1;
+    }
+
+    if (harp_program_from_string(actions, &program) != 0)
+    {
+        return -1;
+    }
+
+    if (harp_product_execute_program(product, program) != 0)
+    {
+        harp_program_delete(program);
+        return -1;
+    }
+
+    harp_program_delete(program);
+
+    return 0;
+}
+
+/**
  * }@
  */
