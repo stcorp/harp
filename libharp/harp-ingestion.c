@@ -411,24 +411,6 @@ static int predicate_update_mask_0d(ingest_info *info, int num_predicates, harp_
     {
         return 0;
     }
-    if (predicate == NULL)
-    {
-        harp_set_error(HARP_ERROR_INVALID_ARGUMENT, "predicate is NULL (%s:%lu)", __FILE__, __LINE__);
-        return -1;
-
-    }
-    if (variable_def == NULL)
-    {
-        harp_set_error(HARP_ERROR_INVALID_ARGUMENT, "variable_def is NULL (%s:%lu)", __FILE__, __LINE__);
-        return -1;
-
-    }
-    if (product_mask == NULL)
-    {
-        harp_set_error(HARP_ERROR_INVALID_ARGUMENT, "product_mask is NULL (%s:%lu)", __FILE__, __LINE__);
-        return -1;
-
-    }
     if (variable_def->num_dimensions != 0)
     {
         harp_set_error(HARP_ERROR_INVALID_ARGUMENT, "variable '%s' has %d dimensions; expected 0", variable_def->name,
@@ -471,25 +453,6 @@ static int predicate_update_mask_1d(ingest_info *info, int num_predicates, harp_
     {
         return 0;
     }
-    if (predicate == NULL)
-    {
-        harp_set_error(HARP_ERROR_INVALID_ARGUMENT, "predicate is NULL (%s:%lu)", __FILE__, __LINE__);
-        return -1;
-
-    }
-    if (variable_def == NULL)
-    {
-        harp_set_error(HARP_ERROR_INVALID_ARGUMENT, "variable is NULL (%s:%lu)", __FILE__, __LINE__);
-        return -1;
-
-    }
-    if (dimension_mask == NULL)
-    {
-        harp_set_error(HARP_ERROR_INVALID_ARGUMENT, "dimension_mask is NULL (%s:%lu)", __FILE__, __LINE__);
-        return -1;
-
-    }
-
     if (variable_def->num_dimensions != 1)
     {
         harp_set_error(HARP_ERROR_INVALID_ARGUMENT, "variable '%s' has %d dimensions; expected 1", variable_def->name,
@@ -590,30 +553,6 @@ static int predicate_update_mask_2d(ingest_info *info, int num_predicates, harp_
     long primary_num_masked = 0;
     long secondary_max_masked = 0;
     long i;
-
-    if (predicate == NULL)
-    {
-        harp_set_error(HARP_ERROR_INVALID_ARGUMENT, "predicate is NULL (%s:%lu)", __FILE__, __LINE__);
-        return -1;
-
-    }
-    if (variable_def == NULL)
-    {
-        harp_set_error(HARP_ERROR_INVALID_ARGUMENT, "variable_def is NULL (%s:%lu)", __FILE__, __LINE__);
-        return -1;
-
-    }
-    if (primary_dimension_mask == NULL)
-    {
-        harp_set_error(HARP_ERROR_INVALID_ARGUMENT, "primary_dimension_mask is NULL (%s:%lu)", __FILE__, __LINE__);
-        return -1;
-
-    }
-    if (secondary_dimension_mask == NULL)
-    {
-        harp_set_error(HARP_ERROR_INVALID_ARGUMENT, "secondary_dimension_mask is NULL (%s:%lu)", __FILE__, __LINE__);
-        return -1;
-    }
 
     if (variable_def->num_dimensions != 2)
     {
