@@ -32,6 +32,8 @@
 
 #include <assert.h>
 
+#define NON_EXISTANT_VARIABLE_FORMAT "Cannot filter on non-existant variable %s"
+
 typedef struct read_buffer_struct
 {
     harp_data_type data_type;
@@ -1107,11 +1109,9 @@ static int get_variable(ingest_info *info, const harp_variable_definition *varia
     return 0;
 }
 
-static int find_variable_definition(ingest_info *info, const char *name, int num_dimensions,
-                                    const harp_dimension_type *dimension_type, harp_variable_definition **variable_def)
+static int find_variable_definition(ingest_info *info, const char *name, harp_variable_definition **variable_def)
 {
     int index;
-    harp_variable_definition *candidate_def;
 
     index = harp_product_definition_get_variable_index(info->product_definition, name);
     if (index < 0)
@@ -1123,39 +1123,17 @@ static int find_variable_definition(ingest_info *info, const char *name, int num
         return -1;
     }
 
-    candidate_def = info->product_definition->variable_definition[index];
-    if (num_dimensions >= 0)
-    {
-        if (dimension_type == NULL)
-        {
-            if (candidate_def->num_dimensions != num_dimensions)
-            {
-                return -1;
-            }
-        }
-        else
-        {
-            if (!harp_variable_definition_has_dimension_types(candidate_def, num_dimensions, dimension_type))
-            {
-                return -1;
-            }
-        }
-    }
-
-    if (variable_def != NULL)
-    {
-        *variable_def = candidate_def;
-    }
+    *variable_def = info->product_definition->variable_definition[index];
 
     return 0;
 }
 
-static int evaluate_value_filters_0d(ingest_info *info, harp_program *actions)
+static int evaluate_value_filters_0d(ingest_info *info, harp_program *actions_0d)
 {
     int i;
 
     i = 0;
-    while (i < actions->num_actions)
+    while (i < actions_0d->num_actions)
     {
         const harp_action *action;
         const char *variable_name;
@@ -1163,7 +1141,7 @@ static int evaluate_value_filters_0d(ingest_info *info, harp_program *actions)
         harp_predicate_set *predicate_set;
         int j;
 
-        action = actions->action[i];
+        action = actions_0d->action[i];
         if (harp_action_get_variable_name(action, &variable_name) != 0)
         {
             /* Action is not a variable filter, skip it. */
@@ -1171,14 +1149,15 @@ static int evaluate_value_filters_0d(ingest_info *info, harp_program *actions)
             continue;
         }
 
-        if (find_variable_definition(info, variable_name, 0, NULL, &variable_def) != 0)
+        if (find_variable_definition(info, variable_name, &variable_def) != 0)
         {
-            /* It may still be possible to apply the filter if the variable can be derived. Derived variables can only
-             * be computed once the product has been ingested. Therefore, the filter is skipped here and another attempt
-             * to apply it will be made after ingestion. */
-            i++;
-            continue;
+            /* non existant variable is an error */
+            harp_set_error(HARP_ERROR_ACTION, NON_EXISTANT_VARIABLE_FORMAT, variable_name);
+            return -1;
         }
+
+        /* we were promised 0D actions */
+        assert(variable_def->num_dimensions == 0);
 
         /* Create filter predicates for all filters defined for this variable and collect them in a predicate set. The
          * variable is read, and filters are applied, per block (index on the outer dimension). The filter predicates
@@ -1191,11 +1170,11 @@ static int evaluate_value_filters_0d(ingest_info *info, harp_program *actions)
         }
 
         j = i;
-        while (j < actions->num_actions)
+        while (j < actions_0d->num_actions)
         {
             harp_predicate *predicate;
 
-            action = actions->action[j];
+            action = actions_0d->action[j];
             if (harp_action_get_variable_name(action, &variable_name) != 0)
             {
                 /* Action is not a variable filter, skip it. */
@@ -1227,7 +1206,7 @@ static int evaluate_value_filters_0d(ingest_info *info, harp_program *actions)
                 return -1;
             }
 
-            if (harp_program_remove_action_at_index(actions, j) != 0)
+            if (harp_program_remove_action_at_index(actions_0d, j) != 0)
             {
                 harp_predicate_set_delete(predicate_set);
                 return -1;
@@ -1249,12 +1228,12 @@ static int evaluate_value_filters_0d(ingest_info *info, harp_program *actions)
     return 0;
 }
 
-static int evaluate_value_filters_1d(ingest_info *info, harp_program *actions)
+static int evaluate_value_filters_1d(ingest_info *info, harp_program *actions_1d)
 {
     int i;
 
     i = 0;
-    while (i < actions->num_actions)
+    while (i < actions_1d->num_actions)
     {
         const harp_action *action;
         const char *variable_name;
@@ -1263,7 +1242,7 @@ static int evaluate_value_filters_1d(ingest_info *info, harp_program *actions)
         harp_dimension_type dimension_type;
         int j;
 
-        action = actions->action[i];
+        action = actions_1d->action[i];
         if (harp_action_get_variable_name(action, &variable_name) != 0)
         {
             /* Action is not a variable filter, skip it. */
@@ -1271,14 +1250,15 @@ static int evaluate_value_filters_1d(ingest_info *info, harp_program *actions)
             continue;
         }
 
-        if (find_variable_definition(info, variable_name, 1, NULL, &variable_def) != 0)
+        if (find_variable_definition(info, variable_name, &variable_def) != 0)
         {
-            /* It may still be possible to apply the filter if the variable can be derived. Derived variables can only
-             * be computed once the product has been ingested. Therefore, the filter is skipped here and another attempt
-             * to apply it will be made after ingestion. */
-            i++;
-            continue;
+            /* non existant variable is an error */
+            harp_set_error(HARP_ERROR_ACTION, NON_EXISTANT_VARIABLE_FORMAT, variable_name);
+            return -1;
         }
+
+        /* We were promised 1d actions */
+        assert(variable_def->num_dimensions == 1);
 
         dimension_type = variable_def->dimension_type[0];
         if (dimension_type == harp_dimension_independent)
@@ -1298,11 +1278,11 @@ static int evaluate_value_filters_1d(ingest_info *info, harp_program *actions)
         }
 
         j = i;
-        while (j < actions->num_actions)
+        while (j < actions_1d->num_actions)
         {
             harp_predicate *predicate;
 
-            action = actions->action[j];
+            action = actions_1d->action[j];
             if (harp_action_get_variable_name(action, &variable_name) != 0)
             {
                 /* Action is not a variable filter, skip it. */
@@ -1334,7 +1314,7 @@ static int evaluate_value_filters_1d(ingest_info *info, harp_program *actions)
                 return -1;
             }
 
-            if (harp_program_remove_action_at_index(actions, j) != 0)
+            if (harp_program_remove_action_at_index(actions_1d, j) != 0)
             {
                 harp_predicate_set_delete(predicate_set);
                 return -1;
@@ -1367,12 +1347,12 @@ static int evaluate_value_filters_1d(ingest_info *info, harp_program *actions)
     return 0;
 }
 
-static int evaluate_value_filters_2d(ingest_info *info, harp_program *actions)
+static int evaluate_value_filters_2d(ingest_info *info, harp_program *actions_2d)
 {
     int i;
 
     i = 0;
-    while (i < actions->num_actions)
+    while (i < actions_2d->num_actions)
     {
         const harp_action *action;
         const char *variable_name;
@@ -1382,7 +1362,7 @@ static int evaluate_value_filters_2d(ingest_info *info, harp_program *actions)
         int j;
 
         /* If not a variable filter, skip. */
-        action = actions->action[i];
+        action = actions_2d->action[i];
         if (harp_action_get_variable_name(action, &variable_name) != 0)
         {
             /* Action is not a variable filter, skip it. */
@@ -1390,14 +1370,15 @@ static int evaluate_value_filters_2d(ingest_info *info, harp_program *actions)
             continue;
         }
 
-        if (find_variable_definition(info, variable_name, 2, NULL, &variable_def) != 0)
+        if (find_variable_definition(info, variable_name, &variable_def) != 0)
         {
-            /* It may still be possible to apply the filter if the variable can be derived. Derived variables can only
-             * be computed once the product has been ingested. Therefore, the filter is skipped here and another attempt
-             * to apply it will be made after ingestion. */
-            i++;
-            continue;
+            /* non existant variable is an error */
+            harp_set_error(HARP_ERROR_ACTION, NON_EXISTANT_VARIABLE_FORMAT, variable_name);
+            return -1;
         }
+
+        /* We were promised 2D variables */
+        assert(variable_def->num_dimensions == 2);
 
         if (variable_def->dimension_type[0] != harp_dimension_time)
         {
@@ -1425,11 +1406,11 @@ static int evaluate_value_filters_2d(ingest_info *info, harp_program *actions)
         }
 
         j = i;
-        while (j < actions->num_actions)
+        while (j < actions_2d->num_actions)
         {
             harp_predicate *predicate;
 
-            action = actions->action[j];
+            action = actions_2d->action[j];
             if (harp_action_get_variable_name(action, &variable_name) != 0)
             {
                 /* Action is not a variable filter, skip it. */
@@ -1461,7 +1442,7 @@ static int evaluate_value_filters_2d(ingest_info *info, harp_program *actions)
                 return -1;
             }
 
-            if (harp_program_remove_action_at_index(actions, j) != 0)
+            if (harp_program_remove_action_at_index(actions_2d, j) != 0)
             {
                 harp_predicate_set_delete(predicate_set);
                 return -1;
@@ -1521,7 +1502,6 @@ static int evaluate_collocation_filter(ingest_info *info, harp_program *actions)
     const harp_collocation_filter_args *args;
     harp_collocation_result *collocation_result;
     harp_predicate *predicate = NULL;
-    harp_dimension_type dimension_type[1] = { harp_dimension_time };
     int use_collocation_index;
     int action_id;
 
@@ -1542,20 +1522,21 @@ static int evaluate_collocation_filter(ingest_info *info, harp_program *actions)
     /* Check for the presence of the 'collocation_index' or 'index' variable. Either variable should be 1-D and should
      * depend on the time dimension.
      */
-    if (find_variable_definition(info, "collocation_index", 1, dimension_type, &variable_def) == 0)
+    if (find_variable_definition(info, "collocation_index", &variable_def) == 0 && variable_def->num_dimensions == 1 && variable_def->dimension_type[0] == harp_dimension_time)
     {
         use_collocation_index = 1;
     }
-    else if (find_variable_definition(info, "index", 1, dimension_type, &variable_def) == 0)
+    else if (find_variable_definition(info, "index", &variable_def) == 0 && variable_def->num_dimensions == 1 && variable_def->dimension_type[0] == harp_dimension_time)
     {
         use_collocation_index = 0;
     }
     else
     {
         /* Neither the "collocation_index" nor the "index" variable exists in the product, which means collocation
-         * filters cannot be applied. Another attempt to apply these filters will be made after ingestion.
+         * filters cannot be applied.
          */
-        return 0;
+        harp_set_error(HARP_ERROR_ACTION, "Cannot apply collocation filter without (collocation-)index of dimension {time}.");
+        return -1;
     }
 
     if (variable_def->data_type != harp_type_int32)
@@ -1613,25 +1594,10 @@ static int evaluate_collocation_filter(ingest_info *info, harp_program *actions)
     return 0;
 }
 
-static int evaluate_point_filters_0d(ingest_info *info, harp_program *actions)
+static int evaluate_point_filters_0d(ingest_info *info, harp_program *actions_0d)
 {
-    harp_variable_definition *longitude_def;
-    harp_variable_definition *latitude_def;
     harp_predicate_set *predicate_set;
     int i;
-
-    /* It may still be possible to apply the filter if the variables can be derived. Derived variables can only be
-     * computed once the product has been ingested. Therefore, the filter is skipped here and another attempt to apply
-     * it will be made after ingestion.
-     */
-    if (find_variable_definition(info, "longitude", 0, NULL, &longitude_def) != 0)
-    {
-        return 0;
-    }
-    if (find_variable_definition(info, "latitude", 0, NULL, &latitude_def) != 0)
-    {
-        return 0;
-    }
 
     /* Create filter predicates for all point filters and collect them in a predicate set. The filter predicates
      * created here will be re-used for all points. Actions for which a predicate has been created are removed from
@@ -1643,7 +1609,7 @@ static int evaluate_point_filters_0d(ingest_info *info, harp_program *actions)
     }
 
     i = 0;
-    while (i < actions->num_actions)
+    while (i < actions_0d->num_actions)
     {
         const harp_action *action;
         harp_predicate *predicate;
@@ -1651,7 +1617,7 @@ static int evaluate_point_filters_0d(ingest_info *info, harp_program *actions)
         /* Create filter predicate and add it to the predicate set. Remove the action from the list of actions to
          * perform.
          */
-        action = actions->action[i];
+        action = actions_0d->action[i];
         switch (action->type)
         {
             case harp_action_filter_point_distance:
@@ -1691,7 +1657,7 @@ static int evaluate_point_filters_0d(ingest_info *info, harp_program *actions)
             return -1;
         }
 
-        if (harp_program_remove_action_at_index(actions, i) != 0)
+        if (harp_program_remove_action_at_index(actions_0d, i) != 0)
         {
             harp_predicate_set_delete(predicate_set);
             return -1;
@@ -1701,8 +1667,24 @@ static int evaluate_point_filters_0d(ingest_info *info, harp_program *actions)
     /* Update dimension mask. */
     if (predicate_set->num_predicates > 0)
     {
+        harp_variable_definition *longitude_def;
+        harp_variable_definition *latitude_def;
         harp_variable *longitude;
         harp_variable *latitude;
+
+        if (find_variable_definition(info, "longitude", &longitude_def) != 0)
+        {
+            harp_set_error(HARP_ERROR_ACTION, "Can't evaluate point filter without variable 'longitude'.");
+            return -1;
+        }
+        if (find_variable_definition(info, "latitude", &latitude_def) != 0)
+        {
+            harp_set_error(HARP_ERROR_ACTION, "Can't evaluate point filter without variable 'latitude'.");
+            return -1;
+        }
+
+        /* we were promised 0D filters */
+        assert(longitude_def->num_dimensions == 0 && latitude_def->num_dimensions == 0);
 
         if (get_variable(info, longitude_def, NULL, &longitude) != 0)
         {
@@ -1736,30 +1718,15 @@ static int evaluate_point_filters_0d(ingest_info *info, harp_program *actions)
     return 0;
 }
 
-static int evaluate_point_filters_1d(ingest_info *info, harp_program *actions)
+static int evaluate_point_filters_1d(ingest_info *info, harp_program *actions_1d)
 {
-    harp_variable_definition *longitude_def;
-    harp_variable_definition *latitude_def;
     harp_predicate_set *predicate_set;
     harp_dimension_type dimension_type[1] = { harp_dimension_time };
     int i;
 
-    /* It may still be possible to apply the filter if the variables can be derived. Derived variables can only be
-     * computed once the product has been ingested. Therefore, the filter is skipped here and another attempt to apply
-     * it will be made after ingestion.
-     */
-    if (find_variable_definition(info, "longitude", 1, dimension_type, &longitude_def) != 0)
-    {
-        return 0;
-    }
-    if (find_variable_definition(info, "latitude", 1, dimension_type, &latitude_def) != 0)
-    {
-        return 0;
-    }
-
     /* Create filter predicates for all point filters and collect them in a predicate set. The filter predicates
-     * created here will be re-used for all points. Actions for which a predicate has been created are removed from
-     * the list of actions to perform.
+     * created here will be re-used for all points. Actions_1d for which a predicate has been created are removed from
+     * the list of actions_1d to perform.
      */
     if (harp_predicate_set_new(&predicate_set) != 0)
     {
@@ -1767,15 +1734,15 @@ static int evaluate_point_filters_1d(ingest_info *info, harp_program *actions)
     }
 
     i = 0;
-    while (i < actions->num_actions)
+    while (i < actions_1d->num_actions)
     {
         const harp_action *action;
         harp_predicate *predicate;
 
-        /* Create filter predicate and add it to the predicate set. Remove the action from the list of actions to
+        /* Create filter predicate and add it to the predicate set. Remove the action from the list of actions_1d to
          * perform.
          */
-        action = actions->action[i];
+        action = actions_1d->action[i];
         switch (action->type)
         {
             case harp_action_filter_point_distance:
@@ -1815,7 +1782,7 @@ static int evaluate_point_filters_1d(ingest_info *info, harp_program *actions)
             return -1;
         }
 
-        if (harp_program_remove_action_at_index(actions, i) != 0)
+        if (harp_program_remove_action_at_index(actions_1d, i) != 0)
         {
             harp_predicate_set_delete(predicate_set);
             return -1;
@@ -1825,8 +1792,30 @@ static int evaluate_point_filters_1d(ingest_info *info, harp_program *actions)
     /* Update dimension mask. */
     if (predicate_set->num_predicates > 0)
     {
+        harp_variable_definition *longitude_def;
+        harp_variable_definition *latitude_def;
         harp_variable *longitude;
         harp_variable *latitude;
+
+        if (find_variable_definition(info, "longitude", &longitude_def) != 0)
+        {
+            harp_set_error(HARP_ERROR_ACTION, "Can't evaluate point filter without variable 'longitude'.");
+            return -1;
+        }
+        if (find_variable_definition(info, "latitude", &latitude_def) != 0)
+        {
+            harp_set_error(HARP_ERROR_ACTION, "Can't evaluate point filter without variable 'latitude'.");
+            return -1;
+        }
+
+        /* We were promised 1D filters */
+        assert(longitude_def->num_dimensions == 1 && latitude_def->num_dimensions == 1);
+        if (!harp_variable_definition_has_dimension_types(longitude_def, 1, dimension_type) ||
+            !harp_variable_definition_has_dimension_types(latitude_def, 1, dimension_type))
+        {
+            harp_set_error(HARP_ERROR_ACTION, "Point filter: expected lat/long of dimension {time}.");
+            return -1;
+        }
 
         if (get_variable(info, longitude_def, NULL, &longitude) != 0)
         {
@@ -1875,24 +1864,9 @@ static int evaluate_point_filters_1d(ingest_info *info, harp_program *actions)
 
 static int evaluate_area_filters_0d(ingest_info *info, harp_program *actions)
 {
-    harp_variable_definition *longitude_bounds_def;
-    harp_variable_definition *latitude_bounds_def;
     harp_dimension_type dimension_type[1] = { harp_dimension_independent };
     harp_predicate_set *predicate_set;
     int i;
-
-    /* It may still be possible to apply the filter if the variables can be derived. Derived variables can only be
-     * computed once the product has been ingested. Therefore, the filter is skipped here and another attempt to apply
-     * it will be made after ingestion.
-     */
-    if (find_variable_definition(info, "longitude_bounds", 1, dimension_type, &longitude_bounds_def) != 0)
-    {
-        return 0;
-    }
-    if (find_variable_definition(info, "latitude_bounds", 1, dimension_type, &latitude_bounds_def) != 0)
-    {
-        return 0;
-    }
 
     /* Create filter predicates for all area filters and collect them in a predicate set. The filter predicates created
      * here will be re-used for all points. Actions for which a predicate has been created are removed from the list of
@@ -1961,8 +1935,29 @@ static int evaluate_area_filters_0d(ingest_info *info, harp_program *actions)
 
     if (predicate_set->num_predicates > 0)
     {
+        harp_variable_definition *longitude_bounds_def;
+        harp_variable_definition *latitude_bounds_def;
         harp_variable *longitude_bounds;
         harp_variable *latitude_bounds;
+
+        if (find_variable_definition(info, "longitude_bounds", &longitude_bounds_def) != 0)
+        {
+            harp_set_error(HARP_ERROR_ACTION, "Can't evaluate point filter without variable 'longitude_bounds'.");
+            return -1;
+        }
+        if (find_variable_definition(info, "latitude_bounds", &latitude_bounds_def) != 0)
+        {
+            harp_set_error(HARP_ERROR_ACTION, "Can't evaluate point filter without variable 'latitude_bounds'.");
+            return -1;
+        }
+
+        /* We were promised 0D area filters */
+        assert(longitude_bounds_def->num_dimensions == 1 && latitude_bounds_def->num_dimensions == 1);
+        if (!harp_variable_definition_has_dimension_types(longitude_bounds_def, 1, dimension_type)
+            || !harp_variable_definition_has_dimension_types(longitude_bounds_def, 1, dimension_type))
+        {
+            harp_set_error(HARP_ERROR_ACTION, "Area filter: expected lat/lon-bounds of dimensions {independent}.");
+        }
 
         if (get_variable(info, longitude_bounds_def, NULL, &longitude_bounds) != 0)
         {
@@ -1996,30 +1991,15 @@ static int evaluate_area_filters_0d(ingest_info *info, harp_program *actions)
     return 0;
 }
 
-static int evaluate_area_filters_1d(ingest_info *info, harp_program *actions)
+static int evaluate_area_filters_1d(ingest_info *info, harp_program *actions_1d)
 {
-    harp_variable_definition *longitude_bounds_def;
-    harp_variable_definition *latitude_bounds_def;
     harp_dimension_type dimension_type[2] = { harp_dimension_time, harp_dimension_independent };
     harp_predicate_set *predicate_set;
     int i;
 
-    /* It may still be possible to apply the filter if the variables can be derived. Derived variables can only be
-     * computed once the product has been ingested. Therefore, the filter is skipped here and another attempt to apply
-     * it will be made after ingestion.
-     */
-    if (find_variable_definition(info, "longitude_bounds", 2, dimension_type, &longitude_bounds_def) != 0)
-    {
-        return 0;
-    }
-    if (find_variable_definition(info, "latitude_bounds", 2, dimension_type, &latitude_bounds_def) != 0)
-    {
-        return 0;
-    }
-
     /* Create filter predicates for all area filters and collect them in a predicate set. The filter predicates created
-     * here will be re-used for all points. Actions for which a predicate has been created are removed from the list of
-     * actions to perform.
+     * here will be re-used for all points. Actions_1d for which a predicate has been created are removed from the list of
+     * actions_1d to perform.
      */
     if (harp_predicate_set_new(&predicate_set) != 0)
     {
@@ -2027,15 +2007,15 @@ static int evaluate_area_filters_1d(ingest_info *info, harp_program *actions)
     }
 
     i = 0;
-    while (i < actions->num_actions)
+    while (i < actions_1d->num_actions)
     {
         const harp_action *action;
         harp_predicate *predicate;
 
-        /* Create filter predicate and add it to the predicate set. Remove the action from the list of actions to
+        /* Create filter predicate and add it to the predicate set. Remove the action from the list of actions_1d to
          * perform.
          */
-        action = actions->action[i];
+        action = actions_1d->action[i];
         switch (action->type)
         {
             case harp_action_filter_area_mask_covers_area:
@@ -2075,7 +2055,7 @@ static int evaluate_area_filters_1d(ingest_info *info, harp_program *actions)
             return -1;
         }
 
-        if (harp_program_remove_action_at_index(actions, i) != 0)
+        if (harp_program_remove_action_at_index(actions_1d, i) != 0)
         {
             harp_predicate_set_delete(predicate_set);
             return -1;
@@ -2084,8 +2064,31 @@ static int evaluate_area_filters_1d(ingest_info *info, harp_program *actions)
 
     if (predicate_set->num_predicates > 0)
     {
+        harp_variable_definition *longitude_bounds_def;
+        harp_variable_definition *latitude_bounds_def;
         harp_variable *longitude_bounds;
         harp_variable *latitude_bounds;
+
+        if (find_variable_definition(info, "longitude_bounds", &longitude_bounds_def) != 0)
+        {
+            harp_set_error(HARP_ERROR_ACTION, "Can't evaluate point filter without variable 'longitude_bounds'.");
+            return -1;
+        }
+        if (find_variable_definition(info, "latitude_bounds", &latitude_bounds_def) != 0)
+        {
+            harp_set_error(HARP_ERROR_ACTION, "Can't evaluate point filter without variable 'latitude_bounds'.");
+            return -1;
+        }
+
+        /* We were promised 1D area filters */
+        assert(longitude_bounds_def->num_dimensions == 2);
+        assert(latitude_bounds_def->num_dimensions == 2);
+        if (!harp_variable_definition_has_dimension_types(longitude_bounds_def, 2, dimension_type) ||
+            !harp_variable_definition_has_dimension_types(latitude_bounds_def, 2, dimension_type))
+        {
+            harp_set_error(HARP_ERROR_ACTION, "Area filter: expected lat/lon-bounds of dimensions {time, independent}.");
+            return -1;
+        }
 
         if (get_variable(info, longitude_bounds_def, NULL, &longitude_bounds) != 0)
         {
@@ -2222,56 +2225,169 @@ static int dimension_mask_set_has_empty_masks(const harp_dimension_mask_set *dim
     return 0;
 }
 
+static int get_action_dimensionality(ingest_info *info, harp_action *action, long *num_dimensions) {
+    const char *variable_name = NULL;
+    harp_variable_definition *variable_def = NULL;
+
+    /* collocation filters */
+    if (action->type == harp_action_filter_collocation)
+    {
+        *num_dimensions = 1L;
+    }
+
+    /* value filters */
+    if (harp_action_get_variable_name(action, &variable_name) == 0)
+    {
+        if (find_variable_definition(info, variable_name, &variable_def) != 0)
+        {
+            /* non existant variable is an error */
+            harp_set_error(HARP_ERROR_ACTION, NON_EXISTANT_VARIABLE_FORMAT, variable_name);
+            goto error;
+        }
+
+        *num_dimensions = variable_def->num_dimensions;
+    }
+    /* point filters */
+    else if (action->type == harp_action_filter_point_distance || action->type == harp_action_filter_area_mask_covers_point)
+    {
+        harp_variable_definition *longitude_def, *latitude_def = NULL;
+
+        if (find_variable_definition(info, "longitude", &longitude_def) != 0)
+        {
+            harp_set_error(HARP_ERROR_ACTION, "Can't evaluate point filter without variable 'longitude'.");
+            goto error;
+        }
+        if (find_variable_definition(info, "latitude", &latitude_def) != 0)
+        {
+            harp_set_error(HARP_ERROR_ACTION, "Can't evaluate point filter without variable 'latitude'.");
+            goto error;
+        }
+
+        /* dimensionality is the max of the lat/lon variables */
+        *num_dimensions = longitude_def->num_dimensions > latitude_def->num_dimensions ? longitude_def->num_dimensions : latitude_def->num_dimensions ;
+    }
+    else if (action->type == harp_action_filter_area_mask_covers_area ||
+             action->type == harp_action_filter_area_mask_intersects_area)
+    {
+        
+        harp_variable_definition *longitude_bounds_def;
+        harp_variable_definition *latitude_bounds_def;
+
+        if (find_variable_definition(info, "longitude_bounds", &longitude_bounds_def) != 0)
+        {
+            harp_set_error(HARP_ERROR_ACTION, "Can't evaluate area filter without variable 'longitude_bounds'.");
+            goto error;
+        }
+        if (find_variable_definition(info, "latitude_bounds", &latitude_bounds_def) != 0)
+        {
+            harp_set_error(HARP_ERROR_ACTION, "Can't evaluate area filter without variable 'latitude_bounds'.");
+            goto error;
+        }
+
+        *num_dimensions = longitude_bounds_def->num_dimensions > latitude_bounds_def->num_dimensions ? longitude_bounds_def->num_dimensions : latitude_bounds_def->num_dimensions ;
+    }
+    else
+    {
+        harp_set_error(HARP_ERROR_ACTION, "Encountered unsupported filter during ingestion.");
+        goto error;
+    }
+
+    return 0;
+
+error:
+    return -1;
+}
+
 /** Update the ingestion mask by performing the filtering actions in phase_actions.
  * The execution order of phase_actions is optimized for performance.
  */
 static int execute_masking_phase(ingest_info *info, harp_program *phase_actions)
 {
-    /* First filter pass (0-D variables). */
-    if (evaluate_value_filters_0d(info, phase_actions) != 0)
+    int i;
+    harp_program *actions_0d, *actions_1d, *actions_2d = NULL;
+    if (harp_program_new(&actions_0d) != 0 || harp_program_new(&actions_1d) != 0 || harp_program_new(&actions_2d) != 0)
     {
         return -1;
     }
-    if (evaluate_point_filters_0d(info, phase_actions) != 0)
+
+    /* Sort the filters into their dimensionality-houses */
+    for (i = phase_actions->num_actions - 1; i >= 0; i--)
+    {
+        long dim = -1;
+        harp_action *action;
+        if (harp_action_copy(phase_actions->action[i], &action) != 0)
+        {
+            return -1;
+        }
+        if (harp_program_remove_action_at_index(phase_actions, i) != 0)
+        {
+            return -1;
+        }
+        if (get_action_dimensionality(info, action, &dim) != 0)
+        {
+            return -1;
+        }
+
+        switch (dim)
+        {
+            case 0: harp_program_add_action(actions_0d, action); break;
+            case 1: harp_program_add_action(actions_1d, action); break;
+            case 2: harp_program_add_action(actions_2d, action); break;
+            default:
+                harp_set_error(HARP_ERROR_ACTION, "Can't run %liD filter.", dim);
+                return -1;
+        }
+    }
+
+    /*
+     * First filter pass: 0D variables
+     */
+
+    if (evaluate_value_filters_0d(info, actions_0d) != 0)
     {
         return -1;
     }
-    if (evaluate_area_filters_0d(info, phase_actions) != 0)
+    if (evaluate_point_filters_0d(info, actions_0d) != 0)
+    {
+        return -1;
+    }
+    if (evaluate_area_filters_0d(info, actions_0d) != 0)
     {
         return -1;
     }
     if (info->product_mask == 0)
     {
-        /* Empty product is not considered an error. */
         return 0;
     }
 
-    /* Second filter pass (1-D variables). */
-    if (evaluate_collocation_filter(info, phase_actions) != 0)
+    /*
+     * Second filter pass: 1D variables
+     */
+
+    if (evaluate_collocation_filter(info, actions_1d) != 0)
     {
         return -1;
     }
-    if (evaluate_value_filters_1d(info, phase_actions) != 0)
+    if (evaluate_value_filters_1d(info, actions_1d) != 0)
     {
         return -1;
     }
-    if (evaluate_point_filters_1d(info, phase_actions) != 0)
+    if (evaluate_point_filters_1d(info, actions_1d) != 0)
     {
         return -1;
     }
-    if (evaluate_area_filters_1d(info, phase_actions) != 0)
+    if (evaluate_area_filters_1d(info, actions_1d) != 0)
     {
         return -1;
     }
     if (dimension_mask_set_has_empty_masks(info->dimension_mask_set))
     {
-        /* Empty product is not considered an error. */
         info->product_mask = 0;
         return 0;
     }
 
-    /* Third filter pass (2-D variables). */
-    if (evaluate_value_filters_2d(info, phase_actions) != 0)
+    /* Third filter pass 2D variables */
+    if (evaluate_value_filters_2d(info, actions_2d) != 0)
     {
         return -1;
     }
@@ -2297,6 +2413,11 @@ static int execute_masking_phase(ingest_info *info, harp_program *phase_actions)
         harp_set_error(HARP_ERROR_ACTION, "Could not execute all filter actions.");
         return -1;
     }
+
+    /* the sorted actions should either all be executed or error'ed when evaluated */
+    assert(actions_0d->num_actions == 0);
+    assert(actions_1d->num_actions == 0);
+    assert(actions_2d->num_actions == 0);
 
     return 0;
 }
