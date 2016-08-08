@@ -2266,6 +2266,7 @@ static int execute_masking_phase(ingest_info *info, harp_program *phase_actions)
     if (dimension_mask_set_has_empty_masks(info->dimension_mask_set))
     {
         /* Empty product is not considered an error. */
+        info->product_mask = 0;
         return 0;
     }
 
@@ -2286,6 +2287,7 @@ static int execute_masking_phase(ingest_info *info, harp_program *phase_actions)
     if (dimension_mask_set_has_empty_masks(info->dimension_mask_set))
     {
         /* Empty product is not considered an error. */
+        info->product_mask = 0;
         return 0;
     }
 
@@ -2562,6 +2564,7 @@ static int get_product(ingest_info *info, harp_program *program)
     if (product_has_empty_dimensions(info))
     {
         /* Empty product is not considered an error. */
+        info->product_mask = 0;
         return 0;
     }
 
@@ -2572,6 +2575,7 @@ static int get_product(ingest_info *info, harp_program *program)
     if (!product_has_variables(info))
     {
         /* Empty product is not considered an error. */
+        info->product_mask = 0;
         return 0;
     }
 
@@ -2583,6 +2587,11 @@ static int get_product(ingest_info *info, harp_program *program)
     if (evaluate_ingestion_mask(info, program))
     {
         return -1;
+    }
+
+    if (info->product_mask == 0)
+    {
+        return 0;
     }
 
     /* Read all variables, applying dimension masks on the fly. */
