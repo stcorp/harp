@@ -32,8 +32,6 @@
 
 #include <assert.h>
 
-#define NON_EXISTANT_VARIABLE_FORMAT "Cannot filter on non-existant variable %s"
-
 typedef struct read_buffer_struct
 {
     harp_data_type data_type;
@@ -1091,7 +1089,7 @@ static int evaluate_value_filters_0d(ingest_info *info, harp_program *actions_0d
         if (find_variable_definition(info, variable_name, &variable_def) != 0)
         {
             /* non existant variable is an error */
-            harp_set_error(HARP_ERROR_ACTION, NON_EXISTANT_VARIABLE_FORMAT, variable_name);
+            harp_set_error(HARP_ERROR_ACTION, ACTION_FILTER_NON_EXISTANT_VARIABLE_FORMAT, variable_name);
             return -1;
         }
 
@@ -1192,7 +1190,7 @@ static int evaluate_value_filters_1d(ingest_info *info, harp_program *actions_1d
         if (find_variable_definition(info, variable_name, &variable_def) != 0)
         {
             /* non existant variable is an error */
-            harp_set_error(HARP_ERROR_ACTION, NON_EXISTANT_VARIABLE_FORMAT, variable_name);
+            harp_set_error(HARP_ERROR_ACTION, ACTION_FILTER_NON_EXISTANT_VARIABLE_FORMAT, variable_name);
             return -1;
         }
 
@@ -1312,7 +1310,7 @@ static int evaluate_value_filters_2d(ingest_info *info, harp_program *actions_2d
         if (find_variable_definition(info, variable_name, &variable_def) != 0)
         {
             /* non existant variable is an error */
-            harp_set_error(HARP_ERROR_ACTION, NON_EXISTANT_VARIABLE_FORMAT, variable_name);
+            harp_set_error(HARP_ERROR_ACTION, ACTION_FILTER_NON_EXISTANT_VARIABLE_FORMAT, variable_name);
             return -1;
         }
 
@@ -1613,12 +1611,12 @@ static int evaluate_point_filters_0d(ingest_info *info, harp_program *actions_0d
 
         if (find_variable_definition(info, "longitude", &longitude_def) != 0)
         {
-            harp_set_error(HARP_ERROR_ACTION, "Can't evaluate point filter without variable 'longitude'.");
+            harp_set_error(HARP_ERROR_ACTION, ACTION_FILTER_POINT_MISSING_LON);
             return -1;
         }
         if (find_variable_definition(info, "latitude", &latitude_def) != 0)
         {
-            harp_set_error(HARP_ERROR_ACTION, "Can't evaluate point filter without variable 'latitude'.");
+            harp_set_error(HARP_ERROR_ACTION, ACTION_FILTER_POINT_MISSING_LAT);
             return -1;
         }
 
@@ -1738,12 +1736,12 @@ static int evaluate_point_filters_1d(ingest_info *info, harp_program *actions_1d
 
         if (find_variable_definition(info, "longitude", &longitude_def) != 0)
         {
-            harp_set_error(HARP_ERROR_ACTION, "Can't evaluate point filter without variable 'longitude'.");
+            harp_set_error(HARP_ERROR_ACTION, ACTION_FILTER_POINT_MISSING_LON);
             return -1;
         }
         if (find_variable_definition(info, "latitude", &latitude_def) != 0)
         {
-            harp_set_error(HARP_ERROR_ACTION, "Can't evaluate point filter without variable 'latitude'.");
+            harp_set_error(HARP_ERROR_ACTION, ACTION_FILTER_POINT_MISSING_LAT);
             return -1;
         }
 
@@ -1752,7 +1750,7 @@ static int evaluate_point_filters_1d(ingest_info *info, harp_program *actions_1d
         if (!harp_variable_definition_has_dimension_types(longitude_def, 1, dimension_type) ||
             !harp_variable_definition_has_dimension_types(latitude_def, 1, dimension_type))
         {
-            harp_set_error(HARP_ERROR_ACTION, "Point filter: expected lat/long of dimension {time}.");
+            harp_set_error(HARP_ERROR_ACTION, ACTION_FILTER_POINT_WRONG_DIMENSION_FORMAT, "{time}");
             return -1;
         }
 
@@ -1881,12 +1879,12 @@ static int evaluate_area_filters_0d(ingest_info *info, harp_program *actions)
 
         if (find_variable_definition(info, "longitude_bounds", &longitude_bounds_def) != 0)
         {
-            harp_set_error(HARP_ERROR_ACTION, "Can't evaluate point filter without variable 'longitude_bounds'.");
+            harp_set_error(HARP_ERROR_ACTION, ACTION_FILTER_AREA_MISSING_LON_BOUNDS);
             return -1;
         }
         if (find_variable_definition(info, "latitude_bounds", &latitude_bounds_def) != 0)
         {
-            harp_set_error(HARP_ERROR_ACTION, "Can't evaluate point filter without variable 'latitude_bounds'.");
+            harp_set_error(HARP_ERROR_ACTION, ACTION_FILTER_AREA_MISSING_LAT_BOUNDS);
             return -1;
         }
 
@@ -1895,7 +1893,7 @@ static int evaluate_area_filters_0d(ingest_info *info, harp_program *actions)
         if (!harp_variable_definition_has_dimension_types(longitude_bounds_def, 1, dimension_type)
             || !harp_variable_definition_has_dimension_types(longitude_bounds_def, 1, dimension_type))
         {
-            harp_set_error(HARP_ERROR_ACTION, "Area filter: expected lat/lon-bounds of dimensions {independent}.");
+            harp_set_error(HARP_ERROR_ACTION, ACTION_FILTER_AREA_WRONG_DIMENSION_FORMAT, "{independent}");
         }
 
         if (get_variable(info, longitude_bounds_def, NULL, &longitude_bounds) != 0)
@@ -2010,12 +2008,12 @@ static int evaluate_area_filters_1d(ingest_info *info, harp_program *actions_1d)
 
         if (find_variable_definition(info, "longitude_bounds", &longitude_bounds_def) != 0)
         {
-            harp_set_error(HARP_ERROR_ACTION, "Can't evaluate point filter without variable 'longitude_bounds'.");
+            harp_set_error(HARP_ERROR_ACTION, ACTION_FILTER_AREA_MISSING_LON_BOUNDS);
             return -1;
         }
         if (find_variable_definition(info, "latitude_bounds", &latitude_bounds_def) != 0)
         {
-            harp_set_error(HARP_ERROR_ACTION, "Can't evaluate point filter without variable 'latitude_bounds'.");
+            harp_set_error(HARP_ERROR_ACTION, ACTION_FILTER_AREA_MISSING_LAT_BOUNDS);
             return -1;
         }
 
@@ -2025,7 +2023,7 @@ static int evaluate_area_filters_1d(ingest_info *info, harp_program *actions_1d)
         if (!harp_variable_definition_has_dimension_types(longitude_bounds_def, 2, dimension_type) ||
             !harp_variable_definition_has_dimension_types(latitude_bounds_def, 2, dimension_type))
         {
-            harp_set_error(HARP_ERROR_ACTION, "Area filter: expected lat/lon-bounds of dimensions {time, independent}.");
+            harp_set_error(HARP_ERROR_ACTION, ACTION_FILTER_AREA_WRONG_DIMENSION_FORMAT, "{time, independent}");
             return -1;
         }
 
@@ -2180,7 +2178,12 @@ static int get_action_dimensionality(ingest_info *info, harp_action *action, lon
         if (find_variable_definition(info, variable_name, &variable_def) != 0)
         {
             /* non existant variable is an error */
-            harp_set_error(HARP_ERROR_ACTION, NON_EXISTANT_VARIABLE_FORMAT, variable_name);
+            harp_set_error(HARP_ERROR_ACTION, ACTION_FILTER_NON_EXISTANT_VARIABLE_FORMAT, variable_name);
+            goto error;
+        }
+        if (variable_def->num_dimensions > 2)
+        {
+            harp_set_error(HARP_ERROR_ACTION, ACTION_FILTER_TOO_GREAT_DIMENSION_FORMAT, variable_name);
             goto error;
         }
 
@@ -2193,12 +2196,18 @@ static int get_action_dimensionality(ingest_info *info, harp_action *action, lon
 
         if (find_variable_definition(info, "longitude", &longitude_def) != 0)
         {
-            harp_set_error(HARP_ERROR_ACTION, "Can't evaluate point filter without variable 'longitude'.");
+            harp_set_error(HARP_ERROR_ACTION, ACTION_FILTER_POINT_MISSING_LON);
             goto error;
         }
         if (find_variable_definition(info, "latitude", &latitude_def) != 0)
         {
-            harp_set_error(HARP_ERROR_ACTION, "Can't evaluate point filter without variable 'latitude'.");
+            harp_set_error(HARP_ERROR_ACTION, ACTION_FILTER_POINT_MISSING_LAT);
+            goto error;
+        }
+        /* point filters must be 0D or 1D */
+        if (longitude_def->num_dimensions > 1 || latitude_def->num_dimensions > 1)
+        {
+            harp_set_error(HARP_ERROR_ACTION, ACTION_FILTER_POINT_WRONG_DIMENSION_FORMAT, "{time}");
             goto error;
         }
 
@@ -2214,12 +2223,19 @@ static int get_action_dimensionality(ingest_info *info, harp_action *action, lon
 
         if (find_variable_definition(info, "longitude_bounds", &longitude_bounds_def) != 0)
         {
-            harp_set_error(HARP_ERROR_ACTION, "Can't evaluate area filter without variable 'longitude_bounds'.");
+            harp_set_error(HARP_ERROR_ACTION, ACTION_FILTER_AREA_MISSING_LON_BOUNDS);
             goto error;
         }
         if (find_variable_definition(info, "latitude_bounds", &latitude_bounds_def) != 0)
         {
-            harp_set_error(HARP_ERROR_ACTION, "Can't evaluate area filter without variable 'latitude_bounds'.");
+            harp_set_error(HARP_ERROR_ACTION, ACTION_FILTER_AREA_MISSING_LAT_BOUNDS);
+            goto error;
+        }
+        /* area filters must be 0D or 1D, which means that the bounds are 1D or 2D resp. */
+        if (longitude_bounds_def->num_dimensions > 2 || latitude_bounds_def->num_dimensions > 2
+            || longitude_bounds_def->num_dimensions < 1 || latitude_bounds_def->num_dimensions < 1)
+        {
+            harp_set_error(HARP_ERROR_ACTION, ACTION_FILTER_POINT_WRONG_DIMENSION_FORMAT, "{time}");
             goto error;
         }
 
@@ -2273,8 +2289,7 @@ static int execute_masking_phase(ingest_info *info, harp_program *phase_actions)
             case 1: harp_program_add_action(actions_1d, action); break;
             case 2: harp_program_add_action(actions_2d, action); break;
             default:
-                harp_set_error(HARP_ERROR_ACTION, "Can't run %liD filter.", dim);
-                return -1;
+                assert(0);
         }
     }
 
