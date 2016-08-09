@@ -1515,8 +1515,7 @@ static int evaluate_collocation_filter(ingest_info *info, harp_program *operatio
         /* Neither the "collocation_index" nor the "index" variable exists in the product, which means collocation
          * filters cannot be applied.
          */
-        harp_set_error(HARP_ERROR_OPERATION,
-                       "Cannot apply collocation filter without (collocation-)index of dimension {time}.");
+        harp_set_error(HARP_ERROR_OPERATION, OPERATION_FILTER_COLLOCATION_MISSING_INDEX);
         return -1;
     }
 
@@ -2537,7 +2536,7 @@ static int execute_variable_include_filter_operation(ingest_info *info, harp_pro
         variable_id = harp_product_definition_get_variable_index(info->product_definition, in_args->variable_name[j]);
         if (variable_id < 0 || info->variable_mask[variable_id] == 0)
         {
-            harp_set_error(HARP_ERROR_OPERATION, OPERATION_INCLUDE_NON_EXISTANT_VARIABLE_FORMAT,
+            harp_set_error(HARP_ERROR_OPERATION, OPERATION_KEEP_NON_EXISTANT_VARIABLE_FORMAT,
                            in_args->variable_name[j]);
             goto error;
         }

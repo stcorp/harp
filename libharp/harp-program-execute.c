@@ -874,7 +874,8 @@ static int execute_variable_include_filter_operation(harp_product *product, harp
     {
         if (harp_product_get_variable_id_by_name(product, in_args->variable_name[j], &variable_id) != 0)
         {
-            harp_set_error(HARP_ERROR_OPERATION, "cannot keep non-existant variable '%s'", in_args->variable_name[j]);
+            harp_set_error(HARP_ERROR_OPERATION, OPERATION_KEEP_NON_EXISTANT_VARIABLE_FORMAT,
+                           in_args->variable_name[j]);
             goto error;
         }
 
@@ -925,6 +926,21 @@ static int execute_collocation_filter(harp_product *product, harp_program *progr
     if (product->source_product == NULL)
     {
         harp_set_error(HARP_ERROR_INVALID_ARGUMENT, "product attribute 'source_product' is NULL");
+        return -1;
+    }
+
+    /* Check for the presence of the 'collocation_index' or 'index' variable.
+     * Either variable should be 1-D and should depend on the time dimension.
+     * Even though subsequent functions will also verify this, this is important for the consistency of
+     * error messages with ingestion.
+     */
+    harp_variable *index = NULL;
+    if (!harp_product_has_variable(product, "collocation_index") && !harp_product_has_variable(product, "index"))
+    {
+        /* Neither the "collocation_index" nor the "index" variable exists in the product,
+         * which means collocation
+         * filters cannot be applied. */
+        harp_set_error(HARP_ERROR_OPERATION, OPERATION_FILTER_COLLOCATION_MISSING_INDEX);
         return -1;
     }
 
