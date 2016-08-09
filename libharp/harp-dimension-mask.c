@@ -22,7 +22,6 @@
 #include "harp-internal.h"
 
 #include <assert.h>
-#include <stdio.h>
 #include <stdlib.h>
 #include <string.h>
 
@@ -163,7 +162,7 @@ int harp_dimension_mask_fill_true(harp_dimension_mask *dimension_mask)
 
     assert(dimension_mask != NULL && dimension_mask->num_elements > 0 && dimension_mask->mask != NULL);
 
-    /* TODO: If it be assumed that sizeof(uint8_t) == 1, then we can use memset() here. */
+    /* TODO: If it can be assumed that sizeof(uint8_t) == 1, then we can use memset() here. */
     for (i = 0; i < dimension_mask->num_elements; i++)
     {
         dimension_mask->mask[i] = 1;
@@ -205,48 +204,32 @@ static long count(long num_elements, const uint8_t *mask)
     return count;
 }
 
-static long get_masked_dimension_length_1d(long num_elements, const uint8_t *mask)
+int harp_dimension_mask_update_masked_length(harp_dimension_mask *dimension_mask)
 {
-    return count(num_elements, mask);
-}
-
-static long get_masked_dimension_length_2d(long num_rows, long num_cols, const uint8_t *mask)
-{
+    long num_blocks;
+    long num_block_elements;
     long max_masked_length;
     long i;
 
+    assert(dimension_mask != NULL);
+    assert(dimension_mask->num_elements == 0 || dimension_mask->mask != NULL);
+
+    num_blocks = (dimension_mask->num_dimensions <= 1 ? 1 : dimension_mask->dimension[0]);
+    num_block_elements = dimension_mask->num_elements / num_blocks;
+
     max_masked_length = 0;
-    for (i = 0; i < num_rows; i++)
+    for (i = 0; i < num_blocks; i++)
     {
         long masked_length;
 
-        masked_length = count(num_cols, mask + i * num_cols);
+        masked_length = count(num_block_elements, &dimension_mask->mask[i * num_block_elements]);
         if (masked_length > max_masked_length)
         {
             max_masked_length = masked_length;
         }
     }
 
-    return max_masked_length;
-}
-
-int harp_dimension_mask_update_masked_length(harp_dimension_mask *mask)
-{
-    assert(mask != NULL);
-    assert(mask->num_elements == 0 || mask != NULL);
-
-    if (mask->num_dimensions == 1)
-    {
-        assert(mask->dimension[0] == mask->num_elements);
-        mask->masked_dimension_length = get_masked_dimension_length_1d(mask->num_elements, mask->mask);
-    }
-    else
-    {
-        assert(mask->num_dimensions == 2);
-        mask->masked_dimension_length = get_masked_dimension_length_2d(mask->dimension[0], mask->dimension[1],
-                                                                       mask->mask);
-    }
-
+    dimension_mask->masked_dimension_length = max_masked_length;
     return 0;
 }
 
@@ -381,7 +364,7 @@ int harp_dimension_mask_append_dimension(harp_dimension_mask *dimension_mask, lo
     dimension_mask->dimension[dimension_mask->num_dimensions] = length;
     dimension_mask->num_dimensions++;
 
-    /* Update the masked dimension length. If then original mask is zero everywhere, then the new mask will also be zero
+    /* Update the masked dimension length. If the original mask is zero everywhere, then the new mask will also be zero
      * everywhere and thus the masked dimension length equals zero for both the original and the new mask. Otherwise,
      * the masked dimension length of the new mask will be equal to the length of the appended dimension (independent of
      * the masked dimension length of the original mask). This is because any non-zero entry in the original mask will
@@ -477,33 +460,84 @@ int harp_dimension_mask_reduce(const harp_dimension_mask *dimension_mask, int di
         }
     }
 
-    assert(get_masked_dimension_length_1d(reduced_dimension_mask->num_elements, reduced_dimension_mask->mask)
+    assert(count(reduced_dimension_mask->num_elements, reduced_dimension_mask->mask)
            == reduced_dimension_mask->masked_dimension_length);
 
     *new_dimension_mask = reduced_dimension_mask;
     return 0;
 }
 
-int harp_dimension_mask_intersect(const harp_dimension_mask *left, harp_dimension_mask *right)
+int harp_dimension_mask_merge(const harp_dimension_mask *dimension_mask, int dim_index,
+                              harp_dimension_mask *merged_dimension_mask)
 {
     long i;
 
-    assert(left != NULL && (left->num_elements == 0 || left->mask != NULL));
-    assert(right != NULL && (right->num_elements == 0 || right->mask != NULL));
-    assert(left->num_elements == right->num_elements);
-    assert(left->num_dimensions == right->num_dimensions);
+    assert(dimension_mask != NULL);
+    assert(dimension_mask->num_elements == 0 || dimension_mask->mask != NULL);
+    assert(merged_dimension_mask != NULL);
+    assert(merged_dimension_mask->num_elements == 0 || merged_dimension_mask->mask != NULL);
 
-    for (i = 0; i < left->num_dimensions; i++)
+    if (dimension_mask->num_dimensions == merged_dimension_mask->num_dimensions)
     {
-        assert(left->dimension[i] == right->dimension[i]);
+        assert(dimension_mask->num_elements == merged_dimension_mask->num_elements);
+
+        for (i = 0; i < merged_dimension_mask->num_elements; i++)
+        {
+            merged_dimension_mask->mask[i] = dimension_mask->mask[i] && merged_dimension_mask->mask[i];
+        }
+    }
+    else
+    {
+        long num_groups;
+        long num_blocks;
+        long num_block_elements;
+
+        assert(dimension_mask->num_dimensions == 1);
+        assert(dim_index >= 0 && dim_index < merged_dimension_mask->num_dimensions);
+        assert(merged_dimension_mask->dimension[dim_index] == dimension_mask->num_elements);
+
+        /* The mask is split into three parts:
+         *     num_elements = num_groups * num_blocks * num_block_elements.
+         *
+         * Here, num_groups is the product of dimensions [0, dim_index), num_blocks is dimension[dim_index],
+         * and num_block_elements is the product of dimensions (dim_index, num_dimensions).
+         */
+
+        /* Calculate the number of times we have to filter the indices (i.e. the product of the higher dimensions) */
+        num_groups = 1;
+        for (i = 0; i < dim_index; i++)
+        {
+            num_groups *= merged_dimension_mask->dimension[i];
+        }
+
+        /* Calculate the number of blocks. */
+        num_blocks = merged_dimension_mask->dimension[dim_index];
+
+        /* Calculate the number of elements per block. */
+        num_block_elements = merged_dimension_mask->num_elements / (num_groups * num_blocks);
+
+        /* Reduce the mask along the specified dimension. For each index on the specified dimension, if any value in the
+         * sub mask corresponding to this index is set to true, set the corresponding value in the reduced mask to true and
+         * move to the next index.
+         */
+        for (i = 0; i < num_blocks; i++)
+        {
+            long j;
+
+            if (!dimension_mask->mask[i])
+            {
+                continue;
+            }
+
+            for (j = 0; j < num_groups; j++)
+            {
+                memset(merged_dimension_mask->mask + (j * num_blocks + i) * num_block_elements, 0,
+                       num_block_elements * sizeof(uint8_t));
+            }
+        }
     }
 
-    for (i = 0; i < right->num_elements; i++)
-    {
-        right->mask[i] = left->mask[i] && right->mask[i];
-    }
-
-    if (harp_dimension_mask_update_masked_length(right) != 0)
+    if (harp_dimension_mask_update_masked_length(merged_dimension_mask) != 0)
     {
         return -1;
     }
@@ -542,7 +576,7 @@ int harp_dimension_mask_set_simplify(harp_dimension_mask_set *dimension_mask_set
             return -1;
         }
 
-        if (harp_dimension_mask_intersect(reduced_dimension_mask, dimension_mask_set[harp_dimension_time]) != 0)
+        if (harp_dimension_mask_merge(reduced_dimension_mask, -1, dimension_mask_set[harp_dimension_time]) != 0)
         {
             harp_dimension_mask_delete(reduced_dimension_mask);
             return -1;
@@ -562,7 +596,10 @@ int harp_dimension_mask_set_simplify(harp_dimension_mask_set *dimension_mask_set
         assert(dimension_mask->num_dimensions == 2);
         assert(dimension_mask_set[harp_dimension_time] != NULL);
 
-        /* TODO: Implement intersection of 2-D with 1-D mask. */
+        if (harp_dimension_mask_merge(dimension_mask_set[harp_dimension_time], 0, dimension_mask) != 0)
+        {
+            return -1;
+        }
     }
 
     /* Remove dimensions masks that are always true. */

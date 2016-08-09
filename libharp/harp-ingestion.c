@@ -1177,6 +1177,7 @@ static int evaluate_value_filters_1d(ingest_info *info, harp_program *ops_1d)
         const char *variable_name;
         harp_variable_definition *variable_def;
         harp_predicate_set *predicate_set;
+        harp_dimension_mask *dimension_mask;
         harp_dimension_type dimension_type;
         int j;
 
@@ -1267,19 +1268,53 @@ static int evaluate_value_filters_1d(ingest_info *info, harp_program *ops_1d)
             /* Create dimension mask if necessary. */
             if (harp_dimension_mask_new(1, &dimension, &info->dimension_mask_set[dimension_type]) != 0)
             {
+                harp_predicate_set_delete(predicate_set);
                 return -1;
             }
         }
 
-        if (predicate_update_mask_1d(info, predicate_set->num_predicates, predicate_set->predicate, variable_def,
-                                     info->dimension_mask_set[dimension_type]) != 0)
+        if (info->dimension_mask_set[dimension_type]->num_dimensions == 2)
         {
+            /* Create a reduced (1-D) temporary dimension mask from the 2-D dimension mask. */
+            if (harp_dimension_mask_reduce(info->dimension_mask_set[dimension_type], 1, &dimension_mask) != 0)
+            {
+                harp_predicate_set_delete(predicate_set);
+                return -1;
+            }
+        }
+        else
+        {
+            dimension_mask = info->dimension_mask_set[dimension_type];
+        }
+
+        if (predicate_update_mask_1d(info, predicate_set->num_predicates, predicate_set->predicate, variable_def,
+                                     dimension_mask) != 0)
+        {
+            if (info->dimension_mask_set[dimension_type]->num_dimensions == 2)
+            {
+                /* Delete the temporary dimension mask. */
+                harp_dimension_mask_delete(dimension_mask);
+            }
             harp_predicate_set_delete(predicate_set);
             return -1;
         }
         else
         {
             harp_predicate_set_delete(predicate_set);
+        }
+
+        if (info->dimension_mask_set[dimension_type]->num_dimensions == 2)
+        {
+            /* Propagate the reduced (1-D) temporary dimension mask to the 2-D dimension mask. */
+            if (harp_dimension_mask_merge(dimension_mask, 1, info->dimension_mask_set[dimension_type]) != 0)
+            {
+                harp_dimension_mask_delete(dimension_mask);
+                return -1;
+            }
+            else
+            {
+                harp_dimension_mask_delete(dimension_mask);
+            }
         }
     }
 
@@ -1395,6 +1430,7 @@ static int evaluate_value_filters_2d(ingest_info *info, harp_program *ops_2d)
 
             if (harp_dimension_mask_new(1, &dimension, &info->dimension_mask_set[harp_dimension_time]) != 0)
             {
+                harp_predicate_set_delete(predicate_set);
                 return -1;
             }
         }
@@ -1406,6 +1442,7 @@ static int evaluate_value_filters_2d(ingest_info *info, harp_program *ops_2d)
 
             if (harp_dimension_mask_new(2, dimension, &info->dimension_mask_set[dimension_type]) != 0)
             {
+                harp_predicate_set_delete(predicate_set);
                 return -1;
             }
         }
@@ -1416,6 +1453,7 @@ static int evaluate_value_filters_2d(ingest_info *info, harp_program *ops_2d)
             if (harp_dimension_mask_prepend_dimension(info->dimension_mask_set[dimension_type],
                                                       info->dimension[harp_dimension_time]) != 0)
             {
+                harp_predicate_set_delete(predicate_set);
                 return -1;
             }
         }
