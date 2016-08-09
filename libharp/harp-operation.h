@@ -38,7 +38,7 @@ typedef enum harp_operation_type_enum
     harp_operation_filter_area_mask_covers_area,
     harp_operation_filter_area_mask_intersects_area,
     harp_operation_derive_variable,
-    harp_operation_include_variable,
+    harp_operation_keep_variable,
     harp_operation_exclude_variable
 } harp_operation_type;
 

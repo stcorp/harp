@@ -1095,7 +1095,7 @@ static void args_delete(harp_operation_type operation_type, void *args)
         case harp_operation_derive_variable:
             variable_derivation_args_delete((harp_variable_derivation_args *)args);
             break;
-        case harp_operation_include_variable:
+        case harp_operation_keep_variable:
             variable_inclusion_args_delete((harp_variable_inclusion_args *)args);
             break;
         case harp_operation_exclude_variable:
@@ -1163,7 +1163,7 @@ static int args_copy(harp_operation_type operation_type, const void *args, void 
         case harp_operation_derive_variable:
             return variable_derivation_args_copy((const harp_variable_derivation_args *)args,
                                                  (harp_variable_derivation_args **)new_args);
-        case harp_operation_include_variable:
+        case harp_operation_keep_variable:
             return variable_inclusion_args_copy((harp_variable_inclusion_args *)args,
                                                 (harp_variable_inclusion_args **)new_args);
         case harp_operation_exclude_variable:
@@ -1489,7 +1489,7 @@ int harp_variable_inclusion_new(int num_variables, const char **variable_name, h
         return -1;
     }
 
-    if (harp_operation_new(harp_operation_include_variable, args, &operation) != 0)
+    if (harp_operation_new(harp_operation_keep_variable, args, &operation) != 0)
     {
         variable_inclusion_args_delete(args);
         return -1;

@@ -839,7 +839,7 @@ static int execute_variable_exclude_filter_operation(harp_product *product, harp
 }
 
 /* execute the variable include filter from the head of program */
-static int execute_variable_include_filter_operation(harp_product *product, harp_program *program)
+static int execute_variable_keep_filter_operation(harp_product *product, harp_program *program)
 {
     uint8_t *include_variable_mask;
     harp_operation *operation;
@@ -849,7 +849,7 @@ static int execute_variable_include_filter_operation(harp_product *product, harp
 
     assert(program->num_operations != 0);
     operation = program->operation[0];
-    if (operation->type != harp_operation_include_variable)
+    if (operation->type != harp_operation_keep_variable)
     {
         return 0;
     }
@@ -934,7 +934,6 @@ static int execute_collocation_filter(harp_product *product, harp_program *progr
      * Even though subsequent functions will also verify this, this is important for the consistency of
      * error messages with ingestion.
      */
-    harp_variable *index = NULL;
     if (!harp_product_has_variable(product, "collocation_index") && !harp_product_has_variable(product, "index"))
     {
         /* Neither the "collocation_index" nor the "index" variable exists in the product,
@@ -1350,8 +1349,8 @@ static int execute_next_operation(harp_product *product, harp_program *program)
             }
 
             break;
-        case harp_operation_include_variable:
-            if (execute_variable_include_filter_operation(product, program))
+        case harp_operation_keep_variable:
+            if (execute_variable_keep_filter_operation(product, program))
             {
                 return -1;
             }

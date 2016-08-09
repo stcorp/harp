@@ -2499,7 +2499,7 @@ static int execute_variable_exclude_filter_operation(ingest_info *info, harp_pro
     return 0;
 }
 
-static int execute_variable_include_filter_operation(ingest_info *info, harp_program *program)
+static int execute_variable_keep_filter_operation(ingest_info *info, harp_program *program)
 {
     uint8_t *include_variable_mask;
     harp_operation *operation;
@@ -2509,7 +2509,7 @@ static int execute_variable_include_filter_operation(ingest_info *info, harp_pro
 
     assert(program->num_operations != 0);
     operation = program->operation[0];
-    if (operation->type != harp_operation_include_variable)
+    if (operation->type != harp_operation_keep_variable)
     {
         return 0;
     }
@@ -2604,7 +2604,7 @@ static int evaluate_ingestion_mask(ingest_info *info, harp_program *program)
                 /* done collecting operations for this phase */
                 break;
             }
-            else if (operation->type == harp_operation_include_variable ||
+            else if (operation->type == harp_operation_keep_variable ||
                      operation->type == harp_operation_exclude_variable)
             {
                 /* includes/excludes mark the next phase */
@@ -2682,9 +2682,9 @@ static int evaluate_ingestion_mask(ingest_info *info, harp_program *program)
         {
             harp_operation *operation = program->operation[0];
 
-            if (operation->type == harp_operation_include_variable)
+            if (operation->type == harp_operation_keep_variable)
             {
-                if (execute_variable_include_filter_operation(info, program) != 0)
+                if (execute_variable_keep_filter_operation(info, program) != 0)
                 {
                     return -1;
                 }

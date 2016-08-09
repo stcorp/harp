@@ -62,7 +62,7 @@ static function_prototype builtin_function[NUM_BUILTIN_FUNCTIONS] = {
     {"area-mask-covers-area", 1, {ast_string}, &create_area_mask_covers_area_filter},
     {"area-mask-intersects-area", 2, {ast_string, ast_quantity}, &create_area_mask_intersects_area_filter},
     {"derive", 1, {ast_qualified_name}, &create_variable_derivation},
-    {"include", -1, {0}, &create_variable_inclusion},
+    {"keep", -1, {0}, &create_variable_inclusion},
     {"exclude", -1, {0}, &create_variable_exclusion}
 };
 
