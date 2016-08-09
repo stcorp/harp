@@ -53,9 +53,9 @@ static void print_help()
     printf("        Convert the input product to a HARP netCDF/HDF4/HDF5 product.\n");
     printf("\n");
     printf("        Options:\n");
-    printf("            -a, --actions <action list>\n");
-    printf("                List of actions to apply to the product.\n");
-    printf("                An action list needs to be provided as a single expression.\n");
+    printf("            -a, --operations <operation list>\n");
+    printf("                List of operations to apply to the product.\n");
+    printf("                An operation list needs to be provided as a single expression.\n");
     printf("\n");
     printf("            -o, --options <option list>\n");
     printf("                List of options to pass to the ingestion module.\n");
@@ -69,10 +69,10 @@ static void print_help()
     printf("                    hdf4\n");
     printf("                    hdf5\n");
     printf("\n");
-    printf("        Action list:\n");
-    printf("            Actions are separated by semi-colons. Each action is either\n");
+    printf("        Operation list:\n");
+    printf("            Operations are separated by semi-colons. Each operation is either\n");
     printf("            a comparison filter, a membership test filter, or a function\n");
-    printf("            call. Strings used in actions should be quoted with double\n");
+    printf("            call. Strings used in operations should be quoted with double\n");
     printf("            quotes.\n");
     printf("\n");
     printf("            Comparison filter:\n");
@@ -147,20 +147,17 @@ static void print_help()
     printf("                    harpconvert can be used to list available variable\n");
     printf("                    conversions.\n");
     printf("\n");
-    printf("                include(variable, ...)\n");
+    printf("                keep(variable, ...)\n");
     printf("                    Mark the specified variable(s) for inclusion in the\n");
     printf("                    ingested product. All variables marked for inclusion\n");
-    printf("                    will be included in the ingested product, all other\n");
-    printf("                    variables will be excluded. By default, all variables\n");
-    printf("                    will be included.\n");
+    printf("                    will be kept in the ingested product, all other\n");
+    printf("                    variables will be excluded.\n");
     printf("\n");
     printf("                exclude(variable, ...)\n");
     printf("                    Mark the specified variable(s) for exclusion from the\n");
     printf("                    ingested product. All variables marked for exclusion\n");
     printf("                    will be excluded from the ingested product, all other\n");
-    printf("                    variables will be included. Variable exclusions will be\n");
-    printf("                    evaluated after evaluating all variable inclusions (if\n");
-    printf("                    any).\n");
+    printf("                    variables will be kept.\n");
     printf("\n");
     printf("                The unit qualifier is optional for all function arguments\n");
     printf("                that support it. If a unit is not specified, the unit of the\n");
@@ -333,7 +330,7 @@ static int test_conversions(int argc, char *argv[])
 static int convert(int argc, char *argv[])
 {
     harp_product *product;
-    const char *actions = NULL;
+    const char *operations = NULL;
     const char *options = NULL;
     const char *output_filename = NULL;
     const char *output_format = "netcdf";
@@ -342,9 +339,10 @@ static int convert(int argc, char *argv[])
 
     for (i = 1; i < argc; i++)
     {
-        if ((strcmp(argv[i], "-a") == 0 || strcmp(argv[i], "--actions") == 0) && i + 1 < argc && argv[i + 1][0] != '-')
+        if ((strcmp(argv[i], "-a") == 0 || strcmp(argv[i], "--operations") == 0) && i + 1 < argc &&
+            argv[i + 1][0] != '-')
         {
-            actions = argv[i + 1];
+            operations = argv[i + 1];
             i++;
         }
         else if ((strcmp(argv[i], "-f") == 0 || strcmp(argv[i], "--format") == 0) && i + 1 < argc
@@ -382,7 +380,7 @@ static int convert(int argc, char *argv[])
     input_filename = argv[argc - 2];
     output_filename = argv[argc - 1];
 
-    if (harp_ingest(input_filename, actions, options, &product) != 0)
+    if (harp_ingest(input_filename, operations, options, &product) != 0)
     {
         return -1;
     }

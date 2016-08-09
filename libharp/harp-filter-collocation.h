@@ -22,7 +22,7 @@
 #define HARP_FILTER_COLLOCATION_H
 
 #include "harp-internal.h"
-#include "harp-action.h"
+#include "harp-operation.h"
 
 typedef struct harp_collocation_index_pair_struct
 {

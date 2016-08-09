@@ -18,7 +18,7 @@
  * Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307  USA
  */
 
-#include "harp-action.h"
+#include "harp-operation.h"
 
 #include <assert.h>
 #include <stdlib.h>
@@ -1033,72 +1033,72 @@ static int variable_exclusion_args_copy(const harp_variable_exclusion_args *args
     return variable_exclusion_args_new(args->num_variables, (const char **)args->variable_name, new_args);
 }
 
-int harp_action_new(harp_action_type type, void *args, harp_action **new_action)
+int harp_operation_new(harp_operation_type type, void *args, harp_operation **new_operation)
 {
-    harp_action *action;
+    harp_operation *operation;
 
-    action = (harp_action *)malloc(sizeof(harp_action));
-    if (action == NULL)
+    operation = (harp_operation *)malloc(sizeof(harp_operation));
+    if (operation == NULL)
     {
         harp_set_error(HARP_ERROR_OUT_OF_MEMORY, "out of memory (could not allocate %lu bytes) (%s:%u)",
-                       sizeof(harp_action), __FILE__, __LINE__);
+                       sizeof(harp_operation), __FILE__, __LINE__);
         return -1;
     }
 
-    action->type = type;
-    action->args = args;
+    operation->type = type;
+    operation->args = args;
 
-    *new_action = action;
+    *new_operation = operation;
     return 0;
 }
 
-static void args_delete(harp_action_type action_type, void *args)
+static void args_delete(harp_operation_type operation_type, void *args)
 {
-    switch (action_type)
+    switch (operation_type)
     {
-        case harp_action_filter_collocation:
+        case harp_operation_filter_collocation:
             collocation_filter_args_delete((harp_collocation_filter_args *)args);
             break;
-        case harp_action_filter_comparison:
+        case harp_operation_filter_comparison:
             comparison_filter_args_delete((harp_comparison_filter_args *)args);
             break;
-        case harp_action_filter_string_comparison:
+        case harp_operation_filter_string_comparison:
             string_comparison_filter_args_delete((harp_string_comparison_filter_args *)args);
             break;
-        case harp_action_filter_bit_mask:
+        case harp_operation_filter_bit_mask:
             bit_mask_filter_args_delete((harp_bit_mask_filter_args *)args);
             break;
-        case harp_action_filter_membership:
+        case harp_operation_filter_membership:
             membership_filter_args_delete((harp_membership_filter_args *)args);
             break;
-        case harp_action_filter_string_membership:
+        case harp_operation_filter_string_membership:
             string_membership_filter_args_delete((harp_string_membership_filter_args *)args);
             break;
-        case harp_action_filter_valid_range:
+        case harp_operation_filter_valid_range:
             valid_range_filter_args_delete((harp_valid_range_filter_args *)args);
             break;
-        case harp_action_filter_longitude_range:
+        case harp_operation_filter_longitude_range:
             longitude_range_filter_args_delete((harp_longitude_range_filter_args *)args);
             break;
-        case harp_action_filter_point_distance:
+        case harp_operation_filter_point_distance:
             point_distance_filter_args_delete((harp_point_distance_filter_args *)args);
             break;
-        case harp_action_filter_area_mask_covers_point:
+        case harp_operation_filter_area_mask_covers_point:
             area_mask_covers_point_filter_args_delete((harp_area_mask_covers_point_filter_args *)args);
             break;
-        case harp_action_filter_area_mask_covers_area:
+        case harp_operation_filter_area_mask_covers_area:
             area_mask_covers_area_filter_args_delete((harp_area_mask_covers_area_filter_args *)args);
             break;
-        case harp_action_filter_area_mask_intersects_area:
+        case harp_operation_filter_area_mask_intersects_area:
             area_mask_intersects_area_filter_args_delete((harp_area_mask_intersects_area_filter_args *)args);
             break;
-        case harp_action_derive_variable:
+        case harp_operation_derive_variable:
             variable_derivation_args_delete((harp_variable_derivation_args *)args);
             break;
-        case harp_action_include_variable:
+        case harp_operation_keep_variable:
             variable_inclusion_args_delete((harp_variable_inclusion_args *)args);
             break;
-        case harp_action_exclude_variable:
+        case harp_operation_exclude_variable:
             variable_exclusion_args_delete((harp_variable_exclusion_args *)args);
             break;
         default:
@@ -1107,66 +1107,66 @@ static void args_delete(harp_action_type action_type, void *args)
     }
 }
 
-void harp_action_delete(harp_action *action)
+void harp_operation_delete(harp_operation *operation)
 {
-    if (action != NULL)
+    if (operation != NULL)
     {
-        if (action->args != NULL)
+        if (operation->args != NULL)
         {
-            args_delete(action->type, action->args);
+            args_delete(operation->type, operation->args);
         }
 
-        free(action);
+        free(operation);
     }
 }
 
-static int args_copy(harp_action_type action_type, const void *args, void **new_args)
+static int args_copy(harp_operation_type operation_type, const void *args, void **new_args)
 {
-    switch (action_type)
+    switch (operation_type)
     {
-        case harp_action_filter_collocation:
+        case harp_operation_filter_collocation:
             return collocation_filter_args_copy((const harp_collocation_filter_args *)args,
                                                 (harp_collocation_filter_args **)new_args);
-        case harp_action_filter_comparison:
+        case harp_operation_filter_comparison:
             return comparison_filter_args_copy((const harp_comparison_filter_args *)args,
                                                (harp_comparison_filter_args **)new_args);
-        case harp_action_filter_string_comparison:
+        case harp_operation_filter_string_comparison:
             return string_comparison_filter_args_copy((const harp_string_comparison_filter_args *)args,
                                                       (harp_string_comparison_filter_args **)new_args);
-        case harp_action_filter_bit_mask:
+        case harp_operation_filter_bit_mask:
             return bit_mask_filter_args_copy((const harp_bit_mask_filter_args *)args,
                                              (harp_bit_mask_filter_args **)new_args);
-        case harp_action_filter_membership:
+        case harp_operation_filter_membership:
             return membership_filter_args_copy((const harp_membership_filter_args *)args,
                                                (harp_membership_filter_args **)new_args);
-        case harp_action_filter_string_membership:
+        case harp_operation_filter_string_membership:
             return string_membership_filter_args_copy((const harp_string_membership_filter_args *)args,
                                                       (harp_string_membership_filter_args **)new_args);
-        case harp_action_filter_valid_range:
+        case harp_operation_filter_valid_range:
             return valid_range_filter_args_copy((const harp_valid_range_filter_args *)args,
                                                 (harp_valid_range_filter_args **)new_args);
-        case harp_action_filter_longitude_range:
+        case harp_operation_filter_longitude_range:
             return longitude_range_filter_args_copy((const harp_longitude_range_filter_args *)args,
                                                     (harp_longitude_range_filter_args **)new_args);
-        case harp_action_filter_point_distance:
+        case harp_operation_filter_point_distance:
             return point_distance_filter_args_copy((const harp_point_distance_filter_args *)args,
                                                    (harp_point_distance_filter_args **)new_args);
-        case harp_action_filter_area_mask_covers_point:
+        case harp_operation_filter_area_mask_covers_point:
             return area_mask_covers_point_filter_args_copy((const harp_area_mask_covers_point_filter_args *)args,
                                                            (harp_area_mask_covers_point_filter_args **)new_args);
-        case harp_action_filter_area_mask_covers_area:
+        case harp_operation_filter_area_mask_covers_area:
             return area_mask_covers_area_filter_args_copy((const harp_area_mask_covers_area_filter_args *)args,
                                                           (harp_area_mask_covers_area_filter_args **)new_args);
-        case harp_action_filter_area_mask_intersects_area:
+        case harp_operation_filter_area_mask_intersects_area:
             return area_mask_intersects_area_filter_args_copy((const harp_area_mask_intersects_area_filter_args *)args,
                                                               (harp_area_mask_intersects_area_filter_args **)new_args);
-        case harp_action_derive_variable:
+        case harp_operation_derive_variable:
             return variable_derivation_args_copy((const harp_variable_derivation_args *)args,
                                                  (harp_variable_derivation_args **)new_args);
-        case harp_action_include_variable:
+        case harp_operation_keep_variable:
             return variable_inclusion_args_copy((harp_variable_inclusion_args *)args,
                                                 (harp_variable_inclusion_args **)new_args);
-        case harp_action_exclude_variable:
+        case harp_operation_exclude_variable:
             return variable_exclusion_args_copy((harp_variable_exclusion_args *)args,
                                                 (harp_variable_exclusion_args **)new_args);
         default:
@@ -1177,208 +1177,208 @@ static int args_copy(harp_action_type action_type, const void *args, void **new_
     return -1;
 }
 
-int harp_action_copy(const harp_action *other_action, harp_action **new_action)
+int harp_operation_copy(const harp_operation *other_operation, harp_operation **new_operation)
 {
-    harp_action *action;
+    harp_operation *operation;
 
-    assert(other_action != NULL);
+    assert(other_operation != NULL);
 
-    action = (harp_action *)malloc(sizeof(harp_action));
-    if (action == NULL)
+    operation = (harp_operation *)malloc(sizeof(harp_operation));
+    if (operation == NULL)
     {
         harp_set_error(HARP_ERROR_OUT_OF_MEMORY, "out of memory (could not allocate %lu bytes) (%s:%u)",
-                       sizeof(harp_action), __FILE__, __LINE__);
+                       sizeof(harp_operation), __FILE__, __LINE__);
         return -1;
     }
-    action->type = other_action->type;
-    action->args = NULL;
+    operation->type = other_operation->type;
+    operation->args = NULL;
 
-    if (other_action->args != NULL)
+    if (other_operation->args != NULL)
     {
-        if (args_copy(other_action->type, other_action->args, &action->args) != 0)
+        if (args_copy(other_operation->type, other_operation->args, &operation->args) != 0)
         {
-            harp_action_delete(action);
+            harp_operation_delete(operation);
             return -1;
         }
     }
 
-    *new_action = action;
+    *new_operation = operation;
     return 0;
 }
 
 int harp_comparison_filter_new(const char *variable_name, harp_comparison_operator_type operator_type, double value,
-                               const char *unit, harp_action **new_action)
+                               const char *unit, harp_operation **new_operation)
 {
     harp_comparison_filter_args *args;
-    harp_action *action;
+    harp_operation *operation;
 
     if (comparison_filter_args_new(variable_name, operator_type, value, unit, &args) != 0)
     {
         return -1;
     }
 
-    if (harp_action_new(harp_action_filter_comparison, args, &action) != 0)
+    if (harp_operation_new(harp_operation_filter_comparison, args, &operation) != 0)
     {
         comparison_filter_args_delete(args);
         return -1;
     }
 
-    *new_action = action;
+    *new_operation = operation;
     return 0;
 }
 
 int harp_string_comparison_filter_new(const char *variable_name, harp_comparison_operator_type operator_type,
-                                      const char *value, harp_action **new_action)
+                                      const char *value, harp_operation **new_operation)
 {
     harp_string_comparison_filter_args *args;
-    harp_action *action;
+    harp_operation *operation;
 
     if (string_comparison_filter_args_new(variable_name, operator_type, value, &args) != 0)
     {
         return -1;
     }
 
-    if (harp_action_new(harp_action_filter_string_comparison, args, &action) != 0)
+    if (harp_operation_new(harp_operation_filter_string_comparison, args, &operation) != 0)
     {
         string_comparison_filter_args_delete(args);
         return -1;
     }
 
-    *new_action = action;
+    *new_operation = operation;
     return 0;
 }
 
 int harp_bit_mask_filter_new(const char *variable_name, harp_bit_mask_operator_type operator_type, uint32_t bit_mask,
-                             harp_action **new_action)
+                             harp_operation **new_operation)
 {
     harp_bit_mask_filter_args *args;
-    harp_action *action;
+    harp_operation *operation;
 
     if (bit_mask_filter_args_new(variable_name, operator_type, bit_mask, &args) != 0)
     {
         return -1;
     }
 
-    if (harp_action_new(harp_action_filter_bit_mask, args, &action) != 0)
+    if (harp_operation_new(harp_operation_filter_bit_mask, args, &operation) != 0)
     {
         bit_mask_filter_args_delete(args);
         return -1;
     }
 
-    *new_action = action;
+    *new_operation = operation;
     return 0;
 }
 
 int harp_membership_filter_new(const char *variable_name, harp_membership_operator_type operator_type, int num_values,
-                               const double *value, const char *unit, harp_action **new_action)
+                               const double *value, const char *unit, harp_operation **new_operation)
 {
     harp_membership_filter_args *args;
-    harp_action *action;
+    harp_operation *operation;
 
     if (membership_filter_args_new(variable_name, operator_type, num_values, value, unit, &args) != 0)
     {
         return -1;
     }
 
-    if (harp_action_new(harp_action_filter_membership, args, &action) != 0)
+    if (harp_operation_new(harp_operation_filter_membership, args, &operation) != 0)
     {
         membership_filter_args_delete(args);
         return -1;
     }
 
-    *new_action = action;
+    *new_operation = operation;
     return 0;
 }
 
 int harp_string_membership_filter_new(const char *variable_name, harp_membership_operator_type operator_type,
-                                      int num_values, const char **value, harp_action **new_action)
+                                      int num_values, const char **value, harp_operation **new_operation)
 {
     harp_string_membership_filter_args *args;
-    harp_action *action;
+    harp_operation *operation;
 
     if (string_membership_filter_args_new(variable_name, operator_type, num_values, value, &args) != 0)
     {
         return -1;
     }
 
-    if (harp_action_new(harp_action_filter_string_membership, args, &action) != 0)
+    if (harp_operation_new(harp_operation_filter_string_membership, args, &operation) != 0)
     {
         string_membership_filter_args_delete(args);
         return -1;
     }
 
-    *new_action = action;
+    *new_operation = operation;
     return 0;
 }
 
 int harp_collocation_filter_new(const char *filename, harp_collocation_filter_type filter_type,
-                                harp_action **new_action)
+                                harp_operation **new_operation)
 {
     harp_collocation_filter_args *args;
-    harp_action *action;
+    harp_operation *operation;
 
     if (collocation_filter_args_new(filename, filter_type, &args) != 0)
     {
         return -1;
     }
 
-    if (harp_action_new(harp_action_filter_collocation, args, &action) != 0)
+    if (harp_operation_new(harp_operation_filter_collocation, args, &operation) != 0)
     {
         collocation_filter_args_delete(args);
         return -1;
     }
 
-    *new_action = action;
+    *new_operation = operation;
     return 0;
 }
 
-int harp_valid_range_filter_new(const char *variable_name, harp_action **new_action)
+int harp_valid_range_filter_new(const char *variable_name, harp_operation **new_operation)
 {
     harp_valid_range_filter_args *args;
-    harp_action *action;
+    harp_operation *operation;
 
     if (valid_range_filter_args_new(variable_name, &args) != 0)
     {
         return -1;
     }
 
-    if (harp_action_new(harp_action_filter_valid_range, args, &action) != 0)
+    if (harp_operation_new(harp_operation_filter_valid_range, args, &operation) != 0)
     {
         valid_range_filter_args_delete(args);
         return -1;
     }
 
-    *new_action = action;
+    *new_operation = operation;
     return 0;
 }
 
 int harp_longitude_range_filter_new(double min, const char *min_unit, double max, const char *max_unit,
-                                    harp_action **new_action)
+                                    harp_operation **new_operation)
 {
     harp_longitude_range_filter_args *args;
-    harp_action *action;
+    harp_operation *operation;
 
     if (longitude_range_filter_args_new(min, min_unit, max, max_unit, &args) != 0)
     {
         return -1;
     }
 
-    if (harp_action_new(harp_action_filter_longitude_range, args, &action) != 0)
+    if (harp_operation_new(harp_operation_filter_longitude_range, args, &operation) != 0)
     {
         longitude_range_filter_args_delete(args);
         return -1;
     }
 
-    *new_action = action;
+    *new_operation = operation;
     return 0;
 }
 
 int harp_point_distance_filter_new(double longitude, const char *longitude_unit, double latitude,
                                    const char *latitude_unit, double distance, const char *distance_unit,
-                                   harp_action **new_action)
+                                   harp_operation **new_operation)
 {
     harp_point_distance_filter_args *args;
-    harp_action *action;
+    harp_operation *operation;
 
     if (point_distance_filter_args_new(longitude, longitude_unit, latitude, latitude_unit, distance, distance_unit,
                                        &args) != 0)
@@ -1386,157 +1386,159 @@ int harp_point_distance_filter_new(double longitude, const char *longitude_unit,
         return -1;
     }
 
-    if (harp_action_new(harp_action_filter_point_distance, args, &action) != 0)
+    if (harp_operation_new(harp_operation_filter_point_distance, args, &operation) != 0)
     {
         point_distance_filter_args_delete(args);
         return -1;
     }
 
-    *new_action = action;
+    *new_operation = operation;
     return 0;
 }
 
-int harp_area_mask_covers_point_filter_new(const char *filename, harp_action **new_action)
+int harp_area_mask_covers_point_filter_new(const char *filename, harp_operation **new_operation)
 {
     harp_area_mask_covers_point_filter_args *args;
-    harp_action *action;
+    harp_operation *operation;
 
     if (area_mask_covers_point_filter_args_new(filename, &args) != 0)
     {
         return -1;
     }
 
-    if (harp_action_new(harp_action_filter_area_mask_covers_point, args, &action) != 0)
+    if (harp_operation_new(harp_operation_filter_area_mask_covers_point, args, &operation) != 0)
     {
         area_mask_covers_point_filter_args_delete(args);
         return -1;
     }
 
-    *new_action = action;
+    *new_operation = operation;
     return 0;
 }
 
-int harp_area_mask_covers_area_filter_new(const char *filename, harp_action **new_action)
+int harp_area_mask_covers_area_filter_new(const char *filename, harp_operation **new_operation)
 {
     harp_area_mask_covers_area_filter_args *args;
-    harp_action *action;
+    harp_operation *operation;
 
     if (area_mask_covers_area_filter_args_new(filename, &args) != 0)
     {
         return -1;
     }
 
-    if (harp_action_new(harp_action_filter_area_mask_covers_area, args, &action) != 0)
+    if (harp_operation_new(harp_operation_filter_area_mask_covers_area, args, &operation) != 0)
     {
         area_mask_covers_area_filter_args_delete(args);
         return -1;
     }
 
-    *new_action = action;
+    *new_operation = operation;
     return 0;
 }
 
-int harp_area_mask_intersects_area_filter_new(const char *filename, double min_percentage, harp_action **new_action)
+int harp_area_mask_intersects_area_filter_new(const char *filename, double min_percentage,
+                                              harp_operation **new_operation)
 {
     harp_area_mask_intersects_area_filter_args *args;
-    harp_action *action;
+    harp_operation *operation;
 
     if (area_mask_intersects_area_filter_args_new(filename, min_percentage, &args) != 0)
     {
         return -1;
     }
 
-    if (harp_action_new(harp_action_filter_area_mask_intersects_area, args, &action) != 0)
+    if (harp_operation_new(harp_operation_filter_area_mask_intersects_area, args, &operation) != 0)
     {
         area_mask_intersects_area_filter_args_delete(args);
         return -1;
     }
 
-    *new_action = action;
+    *new_operation = operation;
     return 0;
 }
 
 int harp_variable_derivation_new(const char *variable_name, int num_dimensions,
-                                 const harp_dimension_type *dimension_type, const char *unit, harp_action **new_action)
+                                 const harp_dimension_type *dimension_type, const char *unit,
+                                 harp_operation **new_operation)
 {
     harp_variable_derivation_args *args;
-    harp_action *action;
+    harp_operation *operation;
 
     if (variable_derivation_args_new(variable_name, num_dimensions, dimension_type, unit, &args) != 0)
     {
         return -1;
     }
 
-    if (harp_action_new(harp_action_derive_variable, args, &action) != 0)
+    if (harp_operation_new(harp_operation_derive_variable, args, &operation) != 0)
     {
         variable_derivation_args_delete(args);
         return -1;
     }
 
-    *new_action = action;
+    *new_operation = operation;
     return 0;
 }
 
-int harp_variable_inclusion_new(int num_variables, const char **variable_name, harp_action **new_action)
+int harp_variable_inclusion_new(int num_variables, const char **variable_name, harp_operation **new_operation)
 {
     harp_variable_inclusion_args *args;
-    harp_action *action;
+    harp_operation *operation;
 
     if (variable_inclusion_args_new(num_variables, variable_name, &args) != 0)
     {
         return -1;
     }
 
-    if (harp_action_new(harp_action_include_variable, args, &action) != 0)
+    if (harp_operation_new(harp_operation_keep_variable, args, &operation) != 0)
     {
         variable_inclusion_args_delete(args);
         return -1;
     }
 
-    *new_action = action;
+    *new_operation = operation;
     return 0;
 }
 
-int harp_variable_exclusion_new(int num_variables, const char **variable_name, harp_action **new_action)
+int harp_variable_exclusion_new(int num_variables, const char **variable_name, harp_operation **new_operation)
 {
     harp_variable_exclusion_args *args;
-    harp_action *action;
+    harp_operation *operation;
 
     if (variable_exclusion_args_new(num_variables, variable_name, &args) != 0)
     {
         return -1;
     }
 
-    if (harp_action_new(harp_action_exclude_variable, args, &action) != 0)
+    if (harp_operation_new(harp_operation_exclude_variable, args, &operation) != 0)
     {
         variable_exclusion_args_delete(args);
         return -1;
     }
 
-    *new_action = action;
+    *new_operation = operation;
     return 0;
 }
 
-int harp_action_get_variable_name(const harp_action *action, const char **variable_name)
+int harp_operation_get_variable_name(const harp_operation *operation, const char **variable_name)
 {
-    switch (action->type)
+    switch (operation->type)
     {
-        case harp_action_filter_comparison:
-            *variable_name = ((harp_comparison_filter_args *)action->args)->variable_name;
+        case harp_operation_filter_comparison:
+            *variable_name = ((harp_comparison_filter_args *)operation->args)->variable_name;
             break;
-        case harp_action_filter_string_comparison:
-            *variable_name = ((harp_string_comparison_filter_args *)action->args)->variable_name;
+        case harp_operation_filter_string_comparison:
+            *variable_name = ((harp_string_comparison_filter_args *)operation->args)->variable_name;
             break;
-        case harp_action_filter_membership:
-            *variable_name = ((harp_membership_filter_args *)action->args)->variable_name;
+        case harp_operation_filter_membership:
+            *variable_name = ((harp_membership_filter_args *)operation->args)->variable_name;
             break;
-        case harp_action_filter_string_membership:
-            *variable_name = ((harp_string_membership_filter_args *)action->args)->variable_name;
+        case harp_operation_filter_string_membership:
+            *variable_name = ((harp_string_membership_filter_args *)operation->args)->variable_name;
             break;
-        case harp_action_filter_bit_mask:
-            *variable_name = ((harp_bit_mask_filter_args *)action->args)->variable_name;
+        case harp_operation_filter_bit_mask:
+            *variable_name = ((harp_bit_mask_filter_args *)operation->args)->variable_name;
             break;
-        case harp_action_filter_longitude_range:
+        case harp_operation_filter_longitude_range:
             *variable_name = "longitude";
             break;
         default:
@@ -1545,50 +1547,3 @@ int harp_action_get_variable_name(const harp_action *action, const char **variab
 
     return 0;
 }
-
-/** \addtogroup harp_product
- * @{
- */
-
-/**
- * Execute one or more actions on a product.
- * \param  product Product that the actions should be executed on.
- * \param  actions Actions to execute; should be specified as a semi-colon
- *                 separated string of actions.
- * \return
- *   \arg \c 0, Success.
- *   \arg \c -1, Error occurred (check #harp_errno).
- */
-LIBHARP_API int harp_product_execute_actions(harp_product *product, const char *actions)
-{
-    harp_action_list *action_list;
-
-    if (product == NULL)
-    {
-        harp_set_error(HARP_ERROR_INVALID_ARGUMENT, "product is NULL");
-        return -1;
-    }
-
-    if (actions == NULL)
-    {
-        harp_set_error(HARP_ERROR_INVALID_ARGUMENT, "actions is NULL");
-        return -1;
-    }
-
-    if (harp_action_list_from_string(actions, &action_list) != 0)
-    {
-        return -1;
-    }
-
-    if (harp_product_execute_action_list(product, action_list) != 0)
-    {
-        harp_action_list_delete(action_list);
-        return -1;
-    }
-
-    harp_action_list_delete(action_list);
-
-    return 0;
-}
-
-/** @} */

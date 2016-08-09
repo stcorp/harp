@@ -18,6 +18,8 @@
  * Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307  USA
  */
 
+#include "harp-internal.h"
+
 #ifndef HARP_DIMENSION_MASK_H
 #define HARP_DIMENSION_MASK_H
 
@@ -42,19 +44,18 @@ int harp_dimension_mask_copy(const harp_dimension_mask *other_dimension_mask, ha
 int harp_dimension_mask_set_new(harp_dimension_mask_set **new_dimension_mask_set);
 void harp_dimension_mask_set_delete(harp_dimension_mask_set *dimension_mask_set);
 
-void harp_dimension_mask_dump(const harp_dimension_mask *mask, const char *indent);
-
 int harp_dimension_mask_fill_true(harp_dimension_mask *dimension_mask);
 int harp_dimension_mask_fill_false(harp_dimension_mask *dimension_mask);
 
-int harp_dimension_mask_update_masked_length(harp_dimension_mask *mask);
+int harp_dimension_mask_update_masked_length(harp_dimension_mask *dimension_mask);
 int harp_dimension_mask_outer_product(const harp_dimension_mask *row_mask, const harp_dimension_mask *col_mask,
                                       harp_dimension_mask **new_dimension_mask);
 int harp_dimension_mask_prepend_dimension(harp_dimension_mask *dimension_mask, long length);
 int harp_dimension_mask_append_dimension(harp_dimension_mask *dimension_mask, long length);
 int harp_dimension_mask_reduce(const harp_dimension_mask *dimension_mask, int dim_index,
                                harp_dimension_mask **new_dimension_mask);
-int harp_dimension_mask_intersect(const harp_dimension_mask *left, harp_dimension_mask *right);
+int harp_dimension_mask_merge(const harp_dimension_mask *dimension_mask, int dim_index,
+                              harp_dimension_mask *merged_dimension_mask);
 int harp_dimension_mask_set_simplify(harp_dimension_mask_set *dimension_mask_set);
 
 #endif

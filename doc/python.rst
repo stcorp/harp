@@ -338,28 +338,28 @@ Functions
 
 This section describes the functions defined by the HARP Python library.
 
-.. py:function:: harp.ingest_product(filename, actions="", options="")
+.. py:function:: harp.ingest_product(filename, operations="", options="")
 
    Ingest a product of a type supported by HARP.
 
    :param str filename: Filename of the product to ingest.
-   :param str actions: Actions to apply as part of the ingestion; should be
-                       specified as a semi-colon separated string of actions.
+   :param str operations: Actions to apply as part of the ingestion; should be
+                       specified as a semi-colon separated string of operations.
    :param str options: Ingestion module specific options; should be specified as
                        a semi-colon separated string of key=value pairs.
    :returns: Ingested product.
    :rtype: harp.Product
 
-.. py:function:: harp.import_product(filename, actions="")
+.. py:function:: harp.import_product(filename, operations="")
 
    Import a HARP compliant product.
 
    The file format (NetCDF/HDF4/HDF5) of the product will be auto-detected.
 
    :param str filename: Filename of the product to import.
-   :param str actions: Actions to execute on the product after it has been
+   :param str operations: Actions to execute on the product after it has been
                        imported; should be specified as a semi-colon separated
-                       string of actions.
+                       string of operations.
    :returns: Imported product.
    :rtype: harp.Product
 

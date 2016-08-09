@@ -18,10 +18,10 @@
  * Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307  USA
  */
 
-#ifndef HARP_ACTION_PARSE_H
-#define HARP_ACTION_PARSE_H
+#ifndef HARP_OPERATION_PARSE_H
+#define HARP_OPERATION_PARSE_H
 
-#include "harp-action-lex.h"
+#include "harp-operation-lex.h"
 
 typedef enum ast_node_type_enum
 {
@@ -45,7 +45,7 @@ typedef enum ast_node_type_enum
     ast_function_call,
     ast_argument_list,
     ast_dimension_list,
-    ast_action_list
+    ast_operation_list
 } ast_node_type;
 
 struct ast_node_struct
@@ -66,6 +66,6 @@ typedef struct ast_node_struct ast_node;
 
 void harp_ast_node_delete(ast_node *node);
 
-int harp_parse_actions(const char *actions, ast_node **result);
+int harp_parse_operations(const char *operations, ast_node **result);
 
 #endif

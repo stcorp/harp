@@ -13,9 +13,9 @@ product types supported by HARP.
           Convert the input product to a HARP netCDF/HDF4/HDF5 product.
 
           Options:
-              -a, --actions <action list>
-                  List of actions to apply to the product.
-                  An action list needs to be provided as a single expression.
+              -a, --operations <operation list>
+                  List of operations to apply to the product.
+                  An operation list needs to be provided as a single expression.
 
               -o, --options <option list>
                   List of options to pass to the ingestion module.
@@ -30,9 +30,9 @@ product types supported by HARP.
                       hdf5
 
           Action list:
-              Actions are separated by semi-colons. Each action is either
+              Actions are separated by semi-colons. Each operation is either
               a comparison filter, a membership test filter, or a function
-              call. Strings used in actions should be quoted with double
+              call. Strings used in operations should be quoted with double
               quotes.
 
               Comparison filter:
@@ -107,20 +107,17 @@ product types supported by HARP.
                       harpconvert can be used to list available variable
                       conversions.
 
-                  include(variable, ...)
+                  keep(variable, ...)
                       Mark the specified variable(s) for inclusion in the
                       ingested product. All variables marked for inclusion
-                      will be included in the ingested product, all other
-                      variables will be excluded. By default, all variables
-                      will be included.
+                      will be kept in the ingested product, all other
+                      variables will be excluded.
 
                   exclude(variable, ...)
                       Mark the specified variable(s) for exclusion from the
                       ingested product. All variables marked for exclusion
                       will be excluded from the ingested product, all other
-                      variables will be included. Variable exclusions will be
-                      evaluated after evaluating all variable inclusions (if
-                      any).
+                      variables will be kept.
 
                   The unit qualifier is optional for all function arguments
                   that support it. If a unit is not specified, the unit of the

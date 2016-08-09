@@ -1368,33 +1368,34 @@ int harp_collocation_filter_predicate_new(const harp_collocation_result *colloca
     return 0;
 }
 
-int harp_get_filter_predicate_for_action(const harp_action *action, harp_data_type data_type, const char *unit,
-                                         harp_scalar valid_min, harp_scalar valid_max, harp_predicate **new_predicate)
+int harp_get_filter_predicate_for_operation(const harp_operation *operation, harp_data_type data_type, const char *unit,
+                                            harp_scalar valid_min, harp_scalar valid_max,
+                                            harp_predicate **new_predicate)
 {
-    switch (action->type)
+    switch (operation->type)
     {
-        case harp_action_filter_comparison:
-            return harp_comparison_filter_predicate_new((harp_comparison_filter_args *)action->args, data_type, unit,
+        case harp_operation_filter_comparison:
+            return harp_comparison_filter_predicate_new((harp_comparison_filter_args *)operation->args, data_type, unit,
                                                         new_predicate);
-        case harp_action_filter_string_comparison:
-            return harp_string_comparison_filter_predicate_new((harp_string_comparison_filter_args *)action->args,
+        case harp_operation_filter_string_comparison:
+            return harp_string_comparison_filter_predicate_new((harp_string_comparison_filter_args *)operation->args,
                                                                data_type, new_predicate);
-        case harp_action_filter_membership:
-            return harp_membership_filter_predicate_new((harp_membership_filter_args *)action->args, data_type, unit,
+        case harp_operation_filter_membership:
+            return harp_membership_filter_predicate_new((harp_membership_filter_args *)operation->args, data_type, unit,
                                                         new_predicate);
-        case harp_action_filter_string_membership:
-            return harp_string_membership_filter_predicate_new((harp_string_membership_filter_args *)action->args,
+        case harp_operation_filter_string_membership:
+            return harp_string_membership_filter_predicate_new((harp_string_membership_filter_args *)operation->args,
                                                                data_type, new_predicate);
-        case harp_action_filter_bit_mask:
-            return harp_bit_mask_filter_predicate_new((harp_bit_mask_filter_args *)action->args, data_type,
+        case harp_operation_filter_bit_mask:
+            return harp_bit_mask_filter_predicate_new((harp_bit_mask_filter_args *)operation->args, data_type,
                                                       new_predicate);
-        case harp_action_filter_valid_range:
+        case harp_operation_filter_valid_range:
             return harp_valid_range_filter_predicate_new(data_type, valid_min, valid_max, new_predicate);
-        case harp_action_filter_longitude_range:
-            return harp_longitude_range_filter_predicate_new((harp_longitude_range_filter_args *)action->args,
+        case harp_operation_filter_longitude_range:
+            return harp_longitude_range_filter_predicate_new((harp_longitude_range_filter_args *)operation->args,
                                                              data_type, unit, new_predicate);
         default:
-            harp_set_error(HARP_ERROR_INVALID_ARGUMENT, "no predicate defined for action");
+            harp_set_error(HARP_ERROR_INVALID_ARGUMENT, "no predicate defined for operation");
             return -1;
     }
 }

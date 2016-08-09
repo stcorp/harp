@@ -940,15 +940,15 @@ def to_dict(product):
 
     return dictionary
 
-def import_product(filename, actions=""):
+def import_product(filename, operations=""):
     """Import a HARP compliant product.
 
     The file format (NetCDF/HDF4/HDF5) of the product will be auto-detected.
 
     Arguments:
     filename -- Filename of the product to import.
-    actions  -- Actions to execute on the product after it has been imported; should
-                be specified as a semi-colon separated string of actions.
+    operations  -- Actions to execute on the product after it has been imported; should
+                be specified as a semi-colon separated string of operations.
 
     """
     c_product_ptr = _ffi.new("harp_product **")
@@ -958,8 +958,8 @@ def import_product(filename, actions=""):
         raise CLibraryError()
 
     try:
-        # Execute action list expression on the C product.
-        if actions and _lib.harp_product_execute_actions(c_product_ptr[0], _encode_string(actions)) != 0:
+        # Execute operation list expression on the C product.
+        if operations and _lib.harp_product_execute_operations(c_product_ptr[0], _encode_string(operations)) != 0:
             raise CLibraryError()
 
         # Raise an exception if the imported C product contains no variables, or variables without data.
@@ -972,13 +972,13 @@ def import_product(filename, actions=""):
     finally:
         _lib.harp_product_delete(c_product_ptr[0])
 
-def ingest_product(filename, actions="", options=""):
+def ingest_product(filename, operations="", options=""):
     """Ingest a product of a type supported by HARP.
 
     Arguments:
     filename -- Filename of the product to ingest.
-    actions  -- Actions to execute as part of the ingestion; should be specified as a
-                semi-colon separated string of actions.
+    operations  -- Actions to execute as part of the ingestion; should be specified as a
+                semi-colon separated string of operations.
     options  -- Ingestion module specific options; should be specified as a semi-
                 colon separated string of key=value pairs.
 
@@ -986,7 +986,7 @@ def ingest_product(filename, actions="", options=""):
     c_product_ptr = _ffi.new("harp_product **")
 
     # Ingest the product as a C product.
-    if _lib.harp_ingest(_encode_path(filename), _encode_string(actions), _encode_string(options), c_product_ptr) != 0:
+    if _lib.harp_ingest(_encode_path(filename), _encode_string(operations), _encode_string(options), c_product_ptr) != 0:
         raise CLibraryError()
 
     try:
