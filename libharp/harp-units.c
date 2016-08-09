@@ -186,8 +186,7 @@ int harp_unit_converter_new(const char *from_unit, const char *to_unit, harp_uni
 
     if (!ut_are_convertible(from_udunit, to_udunit))
     {
-        harp_set_error(HARP_ERROR_UNIT_CONVERSION, "unit '%s' cannot be converted to unit '%s'",
-                       (from_unit == NULL ? "\"\"" : from_unit), (to_unit == NULL ? "\"\"" : to_unit));
+        harp_set_error(HARP_ERROR_UNIT_CONVERSION, "unit '%s' cannot be converted to unit '%s'", from_unit, to_unit);
         ut_free(to_udunit);
         ut_free(from_udunit);
         return -1;
@@ -332,13 +331,9 @@ LIBHARP_API int harp_variable_convert_unit(harp_variable *variable, const char *
     /* Update valid_max */
     variable->valid_max.double_data = harp_unit_converter_convert(unit_converter, variable->valid_max.double_data);
 
-    if (variable->unit != NULL)
-    {
-        free(variable->unit);
-        variable->unit = NULL;
-    }
+    free(variable->unit);
 
-    variable->unit = strdup((target_unit == NULL ? "" : target_unit));
+    variable->unit = strdup(target_unit);
     if (variable->unit == NULL)
     {
         harp_set_error(HARP_ERROR_OUT_OF_MEMORY, "out of memory (could not duplicate string) (%s:%u)", __FILE__,

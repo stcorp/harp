@@ -728,7 +728,8 @@ static void register_omdoao3e_product(void)
     description = "Cloud fraction";
     variable_definition = harp_ingestion_register_variable_full_read(product_definition, "cloud_fraction",
                                                                      harp_type_double, 3, dimension_type, NULL,
-                                                                     description, "1", NULL, read_cloud_fraction);
+                                                                     description, HARP_UNIT_DIMENSIONLESS, NULL,
+                                                                     read_cloud_fraction);
     path = "/HDFEOS/GRIDS/ColumnAmountO3/Data_Fields/CloudFraction[]";
     harp_variable_definition_add_mapping(variable_definition, NULL, NULL, path, NULL);
 
@@ -736,7 +737,7 @@ static void register_omdoao3e_product(void)
     description = "Uncertainty of the cloud fraction";
     variable_definition = harp_ingestion_register_variable_full_read(product_definition, "cloud_fraction_uncertainty",
                                                                      harp_type_double, 3, dimension_type, NULL,
-                                                                     description, "1", NULL,
+                                                                     description, HARP_UNIT_DIMENSIONLESS, NULL,
                                                                      read_cloud_fraction_precision);
     path = "/HDFEOS/GRIDS/ColumnAmountO3/Data_Fields/CloudFractionPrecision[]";
     harp_variable_definition_add_mapping(variable_definition, NULL, NULL, path, NULL);
@@ -817,7 +818,7 @@ static void register_omto3d_product(void)
     description = "Cloud fraction";
     variable_definition = harp_ingestion_register_variable_full_read(product_definition, "cloud_fraction",
                                                                      harp_type_double, 3, dimension_type, NULL,
-                                                                     description, "1", NULL,
+                                                                     description, HARP_UNIT_DIMENSIONLESS, NULL,
                                                                      read_radiative_cloud_fraction);
     path = "/HDFEOS/GRIDS/OMI_Column_Amount_O3/Data_Fields/RadiativeCloudFraction[]";
     harp_variable_definition_add_mapping(variable_definition, NULL, NULL, path, NULL);
@@ -826,7 +827,8 @@ static void register_omto3d_product(void)
     description = "UV aerosol index";
     variable_definition = harp_ingestion_register_variable_full_read(product_definition, "uv_aerosol_index",
                                                                      harp_type_double, 3, dimension_type, NULL,
-                                                                     description, "1", NULL, read_uv_aerosol_index);
+                                                                     description, HARP_UNIT_DIMENSIONLESS, NULL,
+                                                                     read_uv_aerosol_index);
     path = "/HDFEOS/GRIDS/OMI_Column_Amount_O3/Data_Fields/UVAerosolIndex[]";
     harp_variable_definition_add_mapping(variable_definition, NULL, NULL, path, NULL);
 }
@@ -870,7 +872,7 @@ static void register_omto3e_product(void)
     description = "Cloud fraction";
     variable_definition = harp_ingestion_register_variable_full_read(product_definition, "cloud_fraction",
                                                                      harp_type_double, 3, dimension_type, NULL,
-                                                                     description, "1", NULL,
+                                                                     description, HARP_UNIT_DIMENSIONLESS, NULL,
                                                                      read_radiative_cloud_fraction);
     path = "/HDFEOS/GRIDS/OMI_Column_Amount_O3/Data_Fields/RadiativeCloudFraction[]";
     harp_variable_definition_add_mapping(variable_definition, NULL, NULL, path, NULL);

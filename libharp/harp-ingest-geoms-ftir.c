@@ -29,8 +29,8 @@
 
 #define MAX_UNIT_LENGTH 30
 
-#define MAX_NAME_LENGTH 50
-#define MAX_DESCRIPTION_LENGTH 50
+#define MAX_NAME_LENGTH 80
+#define MAX_DESCRIPTION_LENGTH 100
 #define MAX_PATH_LENGTH 100
 #define MAX_MAPPING_LENGTH 100
 
@@ -126,7 +126,7 @@ typedef struct ingest_info_struct
     int invert_vertical;        /* should all data long the vertical axis be inverted? */
     int has_vmr_absorption;
     char vmr_unit[MAX_UNIT_LENGTH];
-    char vmr_cov_unit[MAX_UNIT_LENGTH];
+    char vmr_covariance_unit[MAX_UNIT_LENGTH];
     char column_unit[MAX_UNIT_LENGTH];
     char h2o_vmr_unit[MAX_UNIT_LENGTH];
     char h2o_column_unit[MAX_UNIT_LENGTH];
@@ -274,6 +274,52 @@ static int read_vertical2d_variable_double(void *user_data, const char *path, lo
             return -1;
         }
         if (harp_array_invert(harp_type_double, 2, 3, dimension, data) != 0)
+        {
+            return -1;
+        }
+    }
+
+    return 0;
+}
+
+static int read_vertical_sqrt_2dtrace_variable_double(void *user_data, const char *path, long num_elements,
+                                                      harp_array data)
+{
+    ingest_info *info = (ingest_info *)user_data;
+    harp_array matrix_data;
+    long num_blocks = num_elements / info->num_vertical;
+    long i, j;
+
+    matrix_data.double_data = malloc(num_elements * info->num_vertical * sizeof(double));
+    if (matrix_data.double_data == NULL)
+    {
+        harp_set_error(HARP_ERROR_OUT_OF_MEMORY, "out of memory (could not allocate %lu bytes) (%s:%u)",
+                       num_elements * info->num_vertical * sizeof(double), __FILE__, __LINE__);
+        return -1;
+    }
+
+    if (read_variable_double(user_data, path, num_elements * info->num_vertical, matrix_data) != 0)
+    {
+        free(matrix_data.double_data);
+        return -1;
+    }
+    for (i = 0; i < num_blocks; i++)
+    {
+        for (j = 0; j < info->num_vertical; j++)
+        {
+            data.double_data[i * info->num_vertical + j] =
+                sqrt(matrix_data.double_data[(i * info->num_vertical + j) * info->num_vertical + j]);
+        }
+    }
+    free(matrix_data.double_data);
+
+    if (info->invert_vertical)
+    {
+        long dimension[2];
+
+        dimension[1] = info->num_vertical;
+        dimension[0] = num_elements / dimension[1];
+        if (harp_array_invert(harp_type_double, 1, 2, dimension, data) != 0)
         {
             return -1;
         }
@@ -513,7 +559,7 @@ static int read_vmr_avk(void *user_data, harp_array data)
                                            data);
 }
 
-static int read_vmr_cov_random(void *user_data, harp_array data)
+static int read_vmr_covariance(void *user_data, harp_array data)
 {
     ingest_info *info = (ingest_info *)user_data;
     char path[MAX_PATH_LENGTH];
@@ -527,7 +573,7 @@ static int read_vmr_cov_random(void *user_data, harp_array data)
         return -1;
     }
 
-    if (harp_convert_unit(info->vmr_cov_unit, HARP_UNIT_VOLUME_MIXING_RATIO_SQUARED,
+    if (harp_convert_unit(info->vmr_covariance_unit, HARP_UNIT_VOLUME_MIXING_RATIO_SQUARED,
                           info->num_time * info->num_vertical * info->num_vertical, data.double_data) != 0)
     {
         return -1;
@@ -536,7 +582,29 @@ static int read_vmr_cov_random(void *user_data, harp_array data)
     return 0;
 }
 
-static int read_vmr_cov_systematic(void *user_data, harp_array data)
+static int read_vmr_uncertainty_random(void *user_data, harp_array data)
+{
+    ingest_info *info = (ingest_info *)user_data;
+    char path[MAX_PATH_LENGTH];
+
+    snprintf(path, MAX_PATH_LENGTH, "/%s_MIXING_RATIO%s_ABSORPTION_%s_UNCERTAINTY_RANDOM%s",
+             geoms_gas_name[info->gas], info->product_version == 1 ? "" : "_VOLUME", info->lunar ? "LUNAR" : "SOLAR",
+             info->product_version == 1 ? "" : "_COVARIANCE");
+    if (read_vertical_sqrt_2dtrace_variable_double(user_data, path, info->num_time * info->num_vertical, data) != 0)
+    {
+        return -1;
+    }
+
+    if (harp_convert_unit(info->vmr_unit, HARP_UNIT_VOLUME_MIXING_RATIO, info->num_time * info->num_vertical,
+                          data.double_data) != 0)
+    {
+        return -1;
+    }
+
+    return 0;
+}
+
+static int read_vmr_uncertainty_systematic(void *user_data, harp_array data)
 {
     ingest_info *info = (ingest_info *)user_data;
     char path[MAX_PATH_LENGTH];
@@ -544,14 +612,13 @@ static int read_vmr_cov_systematic(void *user_data, harp_array data)
     snprintf(path, MAX_PATH_LENGTH, "/%s_MIXING_RATIO%s_ABSORPTION_%s_UNCERTAINTY_SYSTEMATIC%s",
              geoms_gas_name[info->gas], info->product_version == 1 ? "" : "_VOLUME", info->lunar ? "LUNAR" : "SOLAR",
              info->product_version == 1 ? "" : "_COVARIANCE");
-    if (read_vertical2d_variable_double(user_data, path, info->num_time * info->num_vertical * info->num_vertical, data)
-        != 0)
+    if (read_vertical_sqrt_2dtrace_variable_double(user_data, path, info->num_time * info->num_vertical, data) != 0)
     {
         return -1;
     }
 
-    if (harp_convert_unit(info->vmr_cov_unit, HARP_UNIT_VOLUME_MIXING_RATIO_SQUARED,
-                          info->num_time * info->num_vertical * info->num_vertical, data.double_data) != 0)
+    if (harp_convert_unit(info->vmr_unit, HARP_UNIT_VOLUME_MIXING_RATIO, info->num_time * info->num_vertical,
+                          data.double_data) != 0)
     {
         return -1;
     }
@@ -1013,7 +1080,7 @@ static int get_dynamic_units(ingest_info *info)
         snprintf(path, MAX_PATH_LENGTH, "/%s_MIXING_RATIO%s_ABSORPTION_%s_UNCERTAINTY_RANDOM%s",
                  geoms_gas_name[info->gas], info->product_version == 1 ? "" : "_VOLUME",
                  info->lunar ? "LUNAR" : "SOLAR", info->product_version == 1 ? "" : "_COVARIANCE");
-        if (read_unit(&cursor, path, info->vmr_cov_unit) != 0)
+        if (read_unit(&cursor, path, info->vmr_covariance_unit) != 0)
         {
             return -1;
         }
@@ -1225,8 +1292,8 @@ static int init_product_definition(harp_ingestion_module *module, ftir_gas gas, 
     snprintf(gas_description, MAX_DESCRIPTION_LENGTH, "averaging kernel for the total %s vertical column",
              harp_gas_name[gas]);
     variable_definition = harp_ingestion_register_variable_full_read
-        (product_definition, gas_var_name, harp_type_double, 2, dimension_type, NULL, gas_description, "1", NULL,
-         read_column_avk);
+        (product_definition, gas_var_name, harp_type_double, 2, dimension_type, NULL, gas_description,
+         HARP_UNIT_DIMENSIONLESS, NULL, read_column_avk);
     snprintf(gas_mapping_path, MAX_PATH_LENGTH, "/%s.COLUMN_ABSORPTION.SOLAR_AVK", geoms_gas_name[gas]);
     harp_variable_definition_add_mapping(variable_definition, NULL, "solar measurement", gas_mapping_path, NULL);
     snprintf(gas_mapping_path, MAX_PATH_LENGTH, "/%s.COLUMN_ABSORPTION.LUNAR_AVK", geoms_gas_name[gas]);
@@ -1345,8 +1412,8 @@ static int init_product_definition(harp_ingestion_module *module, ftir_gas gas, 
     snprintf(gas_description, MAX_DESCRIPTION_LENGTH, "averaging kernel for the %s volume mixing ratio",
              harp_gas_name[gas]);
     variable_definition = harp_ingestion_register_variable_full_read
-        (product_definition, gas_var_name, harp_type_double, 3, dimension_type, NULL, gas_description, "1",
-         exclude_vmr_absorption, read_vmr_avk);
+        (product_definition, gas_var_name, harp_type_double, 3, dimension_type, NULL, gas_description,
+         HARP_UNIT_DIMENSIONLESS, exclude_vmr_absorption, read_vmr_avk);
     if (version == 1)
     {
         snprintf(gas_mapping_path, MAX_PATH_LENGTH, "/%s.MIXING.RATIO_ABSORPTION.SOLAR_AVK", geoms_gas_name[gas]);
@@ -1364,39 +1431,12 @@ static int init_product_definition(harp_ingestion_module *module, ftir_gas gas, 
         harp_variable_definition_add_mapping(variable_definition, NULL, "lunar measurement", gas_mapping_path, NULL);
     }
 
-    /* <gas>_volume_mixing_ratio_cov_systematic */
-    snprintf(gas_var_name, MAX_NAME_LENGTH, "%s_volume_mixing_ratio_cov_systematic", harp_gas_name[gas]);
-    snprintf(gas_description, MAX_DESCRIPTION_LENGTH, "systematic covariance of the %s volume mixing ratio",
-             harp_gas_name[gas]);
+    /* <gas>_volume_mixing_ratio_covariance */
+    snprintf(gas_var_name, MAX_NAME_LENGTH, "%s_volume_mixing_ratio_covariance", harp_gas_name[gas]);
+    snprintf(gas_description, MAX_DESCRIPTION_LENGTH, "covariance of the %s volume mixing ratio", harp_gas_name[gas]);
     variable_definition = harp_ingestion_register_variable_full_read
         (product_definition, gas_var_name, harp_type_double, 3, dimension_type, NULL, gas_description,
-         HARP_UNIT_VOLUME_MIXING_RATIO_SQUARED, exclude_vmr_absorption, read_vmr_cov_systematic);
-    if (version == 1)
-    {
-        snprintf(gas_mapping_path, MAX_PATH_LENGTH, "/%s.MIXING.RATIO_ABSORPTION.SOLAR_UNCERTAINTY.SYSTEMATIC",
-                 geoms_gas_name[gas]);
-        harp_variable_definition_add_mapping(variable_definition, NULL, "solar measurement", gas_mapping_path, NULL);
-        snprintf(gas_mapping_path, MAX_PATH_LENGTH, "/%s.MIXING.RATIO_ABSORPTION.LUNAR_UNCERTAINTY.SYSTEMATIC",
-                 geoms_gas_name[gas]);
-        harp_variable_definition_add_mapping(variable_definition, NULL, "lunar measurement", gas_mapping_path, NULL);
-    }
-    else
-    {
-        snprintf(gas_mapping_path, MAX_PATH_LENGTH,
-                 "/%s.MIXING.RATIO.VOLUME_ABSORPTION.SOLAR_UNCERTAINTY.SYSTEMATIC.COVARIANCE", geoms_gas_name[gas]);
-        harp_variable_definition_add_mapping(variable_definition, NULL, "solar measurement", gas_mapping_path, NULL);
-        snprintf(gas_mapping_path, MAX_PATH_LENGTH,
-                 "/%s.MIXING.RATIO.VOLUME_ABSORPTION.LUNAR_UNCERTAINTY.SYSTEMATIC.COVARIANCE", geoms_gas_name[gas]);
-        harp_variable_definition_add_mapping(variable_definition, NULL, "lunar measurement", gas_mapping_path, NULL);
-    }
-
-    /* <gas>_volume_mixing_ratio_cov_random */
-    snprintf(gas_var_name, MAX_NAME_LENGTH, "%s_volume_mixing_ratio_cov_random", harp_gas_name[gas]);
-    snprintf(gas_description, MAX_DESCRIPTION_LENGTH, "random covariance of the %s volume mixing ratio",
-             harp_gas_name[gas]);
-    variable_definition = harp_ingestion_register_variable_full_read
-        (product_definition, gas_var_name, harp_type_double, 3, dimension_type, NULL, gas_description,
-         HARP_UNIT_VOLUME_MIXING_RATIO_SQUARED, exclude_vmr_absorption, read_vmr_cov_random);
+         HARP_UNIT_VOLUME_MIXING_RATIO_SQUARED, exclude_vmr_absorption, read_vmr_covariance);
     if (version == 1)
     {
         snprintf(gas_mapping_path, MAX_PATH_LENGTH, "/%s.MIXING.RATIO_ABSORPTION.SOLAR_UNCERTAINTY.RANDOM",
@@ -1415,6 +1455,68 @@ static int init_product_definition(harp_ingestion_module *module, ftir_gas gas, 
                  "/%s.MIXING.RATIO.VOLUME_ABSORPTION.LUNAR_UNCERTAINTY.RANDOM.COVARIANCE", geoms_gas_name[gas]);
         harp_variable_definition_add_mapping(variable_definition, NULL, "lunar measurement", gas_mapping_path, NULL);
     }
+
+    /* <gas>_volume_mixing_ratio_uncertainty_random */
+    snprintf(gas_var_name, MAX_NAME_LENGTH, "%s_volume_mixing_ratio_uncertainty_random", harp_gas_name[gas]);
+    snprintf(gas_description, MAX_DESCRIPTION_LENGTH, "random uncertainty of the %s volume mixing ratio",
+             harp_gas_name[gas]);
+    variable_definition = harp_ingestion_register_variable_full_read
+        (product_definition, gas_var_name, harp_type_double, 2, dimension_type, NULL, gas_description,
+         HARP_UNIT_VOLUME_MIXING_RATIO, exclude_vmr_absorption, read_vmr_uncertainty_random);
+    description = "the uncertainty is the square root of the trace of the covariance";
+    if (version == 1)
+    {
+        snprintf(gas_mapping_path, MAX_PATH_LENGTH, "/%s.MIXING.RATIO_ABSORPTION.SOLAR_UNCERTAINTY.RANDOM",
+                 geoms_gas_name[gas]);
+        harp_variable_definition_add_mapping(variable_definition, NULL, "solar measurement", gas_mapping_path,
+                                             description);
+        snprintf(gas_mapping_path, MAX_PATH_LENGTH, "/%s.MIXING.RATIO_ABSORPTION.LUNAR_UNCERTAINTY.RANDOM",
+                 geoms_gas_name[gas]);
+        harp_variable_definition_add_mapping(variable_definition, NULL, "lunar measurement", gas_mapping_path,
+                                             description);
+    }
+    else
+    {
+        snprintf(gas_mapping_path, MAX_PATH_LENGTH,
+                 "/%s.MIXING.RATIO.VOLUME_ABSORPTION.SOLAR_UNCERTAINTY.RANDOM.COVARIANCE", geoms_gas_name[gas]);
+        harp_variable_definition_add_mapping(variable_definition, NULL, "solar measurement", gas_mapping_path,
+                                             description);
+        snprintf(gas_mapping_path, MAX_PATH_LENGTH,
+                 "/%s.MIXING.RATIO.VOLUME_ABSORPTION.LUNAR_UNCERTAINTY.RANDOM.COVARIANCE", geoms_gas_name[gas]);
+        harp_variable_definition_add_mapping(variable_definition, NULL, "lunar measurement", gas_mapping_path,
+                                             description);
+    }
+
+    /* <gas>_volume_mixing_ratio_uncertainty_systematic */
+    snprintf(gas_var_name, MAX_NAME_LENGTH, "%s_volume_mixing_ratio_uncertainty_systematic", harp_gas_name[gas]);
+    snprintf(gas_description, MAX_DESCRIPTION_LENGTH, "systematic uncertainty of the %s volume mixing ratio",
+             harp_gas_name[gas]);
+    variable_definition = harp_ingestion_register_variable_full_read
+        (product_definition, gas_var_name, harp_type_double, 2, dimension_type, NULL, gas_description,
+         HARP_UNIT_VOLUME_MIXING_RATIO, exclude_vmr_absorption, read_vmr_uncertainty_systematic);
+    if (version == 1)
+    {
+        snprintf(gas_mapping_path, MAX_PATH_LENGTH, "/%s.MIXING.RATIO_ABSORPTION.SOLAR_UNCERTAINTY.SYSTEMATIC",
+                 geoms_gas_name[gas]);
+        harp_variable_definition_add_mapping(variable_definition, NULL, "solar measurement", gas_mapping_path,
+                                             description);
+        snprintf(gas_mapping_path, MAX_PATH_LENGTH, "/%s.MIXING.RATIO_ABSORPTION.LUNAR_UNCERTAINTY.SYSTEMATIC",
+                 geoms_gas_name[gas]);
+        harp_variable_definition_add_mapping(variable_definition, NULL, "lunar measurement", gas_mapping_path,
+                                             description);
+    }
+    else
+    {
+        snprintf(gas_mapping_path, MAX_PATH_LENGTH,
+                 "/%s.MIXING.RATIO.VOLUME_ABSORPTION.SOLAR_UNCERTAINTY.SYSTEMATIC.COVARIANCE", geoms_gas_name[gas]);
+        harp_variable_definition_add_mapping(variable_definition, NULL, "solar measurement", gas_mapping_path,
+                                             description);
+        snprintf(gas_mapping_path, MAX_PATH_LENGTH,
+                 "/%s.MIXING.RATIO.VOLUME_ABSORPTION.LUNAR_UNCERTAINTY.SYSTEMATIC.COVARIANCE", geoms_gas_name[gas]);
+        harp_variable_definition_add_mapping(variable_definition, NULL, "lunar measurement", gas_mapping_path,
+                                             description);
+    }
+
 
     if (gas != ftir_H2O)
     {

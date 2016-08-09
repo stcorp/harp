@@ -54,9 +54,16 @@ extern int harp_option_enable_aux_usstd76;
 typedef int (*harp_conversion_function) (harp_variable *variable, const harp_variable **source_variable);
 typedef int (*harp_conversion_enabled_function) (void);
 
+/* dimsvar_name is the variable name prefixed with HARP_MAX_NUM_DIMS characters defining the dimension types
+ * dimsvar_name is thus the unique name for the combination of variable name + dimension types
+ * the character code for a dimension type is: '0' + dimension_type, which gives:
+ * '/' = indepent, '0' = time, '1' = latitude, '2' = longitude, '3' = vertical, '4' = spectral
+ * unused dimensions use a space character.
+ */
 typedef struct harp_source_variable_struct
 {
-    char *variable_name;
+    char *dimsvar_name;
+    const char *variable_name;
     harp_data_type data_type;
     char *unit;
     int num_dimensions;
@@ -66,7 +73,8 @@ typedef struct harp_source_variable_struct
 
 typedef struct harp_variable_conversion_struct
 {
-    char *variable_name;
+    char *dimsvar_name;
+    const char *variable_name;
     harp_data_type data_type;
     char *unit;
     int num_dimensions;

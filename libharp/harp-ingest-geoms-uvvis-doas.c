@@ -105,7 +105,7 @@ typedef struct ingest_info_struct
     int has_wind_direction;
     int has_wind_speed;
     char vmr_unit[MAX_UNIT_LENGTH];
-    char vmr_cov_unit[MAX_UNIT_LENGTH];
+    char vmr_covariance_unit[MAX_UNIT_LENGTH];
 } ingest_info;
 
 static int read_dimensions(void *user_data, long dimension[HARP_NUM_DIM_TYPES])
@@ -251,6 +251,52 @@ static int read_vertical2d_variable_double(void *user_data, const char *path, lo
             return -1;
         }
         if (harp_array_invert(harp_type_double, 2, 3, dimension, data) != 0)
+        {
+            return -1;
+        }
+    }
+
+    return 0;
+}
+
+static int read_vertical_sqrt_2dtrace_variable_double(void *user_data, const char *path, long num_elements,
+                                                      harp_array data)
+{
+    ingest_info *info = (ingest_info *)user_data;
+    harp_array matrix_data;
+    long num_blocks = num_elements / info->num_vertical;
+    long i, j;
+
+    matrix_data.double_data = malloc(num_elements * info->num_vertical * sizeof(double));
+    if (matrix_data.double_data == NULL)
+    {
+        harp_set_error(HARP_ERROR_OUT_OF_MEMORY, "out of memory (could not allocate %lu bytes) (%s:%u)",
+                       num_elements * info->num_vertical * sizeof(double), __FILE__, __LINE__);
+        return -1;
+    }
+
+    if (read_variable_double(user_data, path, num_elements * info->num_vertical, matrix_data) != 0)
+    {
+        free(matrix_data.double_data);
+        return -1;
+    }
+    for (i = 0; i < num_blocks; i++)
+    {
+        for (j = 0; j < info->num_vertical; j++)
+        {
+            data.double_data[i * info->num_vertical + j] =
+                sqrt(matrix_data.double_data[(i * info->num_vertical + j) * info->num_vertical + j]);
+        }
+    }
+    free(matrix_data.double_data);
+
+    if (info->invert_vertical)
+    {
+        long dimension[2];
+
+        dimension[1] = info->num_vertical;
+        dimension[0] = num_elements / dimension[1];
+        if (harp_array_invert(harp_type_double, 1, 2, dimension, data) != 0)
         {
             return -1;
         }
@@ -676,7 +722,7 @@ static int read_vmr_offaxis(void *user_data, harp_array data)
     return 0;
 }
 
-static int read_vmr_offaxis_cov_random(void *user_data, harp_array data)
+static int read_vmr_offaxis_covariance(void *user_data, harp_array data)
 {
     ingest_info *info = (ingest_info *)user_data;
     char path[MAX_PATH_LENGTH];
@@ -689,7 +735,7 @@ static int read_vmr_offaxis_cov_random(void *user_data, harp_array data)
         return -1;
     }
 
-    if (harp_convert_unit(info->vmr_cov_unit, HARP_UNIT_VOLUME_MIXING_RATIO_SQUARED,
+    if (harp_convert_unit(info->vmr_covariance_unit, HARP_UNIT_VOLUME_MIXING_RATIO_SQUARED,
                           info->num_time * info->num_vertical * info->num_vertical, data.double_data) != 0)
     {
         return -1;
@@ -698,21 +744,41 @@ static int read_vmr_offaxis_cov_random(void *user_data, harp_array data)
     return 0;
 }
 
-static int read_vmr_offaxis_cov_systematic(void *user_data, harp_array data)
+static int read_vmr_offaxis_uncertainty_random(void *user_data, harp_array data)
+{
+    ingest_info *info = (ingest_info *)user_data;
+    char path[MAX_PATH_LENGTH];
+
+    snprintf(path, MAX_PATH_LENGTH, "/%s_MIXING_RATIO_VOLUME_SCATTER_SOLAR_OFFAXIS_UNCERTAINTY_RANDOM_COVARIANCE",
+             geoms_gas_name[info->gas]);
+    if (read_vertical_sqrt_2dtrace_variable_double(user_data, path, info->num_time * info->num_vertical, data) != 0)
+    {
+        return -1;
+    }
+
+    if (harp_convert_unit(info->vmr_unit, HARP_UNIT_VOLUME_MIXING_RATIO, info->num_time * info->num_vertical,
+                          data.double_data) != 0)
+    {
+        return -1;
+    }
+
+    return 0;
+}
+
+static int read_vmr_offaxis_uncertainty_systematic(void *user_data, harp_array data)
 {
     ingest_info *info = (ingest_info *)user_data;
     char path[MAX_PATH_LENGTH];
 
     snprintf(path, MAX_PATH_LENGTH, "/%s_MIXING_RATIO_VOLUME_SCATTER_SOLAR_OFFAXIS_UNCERTAINTY_SYSTEMATIC_COVARIANCE",
              geoms_gas_name[info->gas]);
-    if (read_vertical2d_variable_double(user_data, path, info->num_time * info->num_vertical * info->num_vertical, data)
-        != 0)
+    if (read_vertical_sqrt_2dtrace_variable_double(user_data, path, info->num_time * info->num_vertical, data) != 0)
     {
         return -1;
     }
 
-    if (harp_convert_unit(info->vmr_cov_unit, HARP_UNIT_VOLUME_MIXING_RATIO_SQUARED,
-                          info->num_time * info->num_vertical * info->num_vertical, data.double_data) != 0)
+    if (harp_convert_unit(info->vmr_unit, HARP_UNIT_VOLUME_MIXING_RATIO, info->num_time * info->num_vertical,
+                          data.double_data) != 0)
     {
         return -1;
     }
@@ -835,7 +901,7 @@ static int read_vmr_zenith(void *user_data, harp_array data)
     return 0;
 }
 
-static int read_vmr_zenith_cov_random(void *user_data, harp_array data)
+static int read_vmr_zenith_covariance(void *user_data, harp_array data)
 {
     ingest_info *info = (ingest_info *)user_data;
     char path[MAX_PATH_LENGTH];
@@ -848,7 +914,7 @@ static int read_vmr_zenith_cov_random(void *user_data, harp_array data)
         return -1;
     }
 
-    if (harp_convert_unit(info->vmr_cov_unit, HARP_UNIT_VOLUME_MIXING_RATIO_SQUARED,
+    if (harp_convert_unit(info->vmr_covariance_unit, HARP_UNIT_VOLUME_MIXING_RATIO_SQUARED,
                           info->num_time * info->num_vertical * info->num_vertical, data.double_data) != 0)
     {
         return -1;
@@ -857,21 +923,41 @@ static int read_vmr_zenith_cov_random(void *user_data, harp_array data)
     return 0;
 }
 
-static int read_vmr_zenith_cov_systematic(void *user_data, harp_array data)
+static int read_vmr_zenith_uncertainty_random(void *user_data, harp_array data)
+{
+    ingest_info *info = (ingest_info *)user_data;
+    char path[MAX_PATH_LENGTH];
+
+    snprintf(path, MAX_PATH_LENGTH, "/%s_MIXING_RATIO_VOLUME_SCATTER_SOLAR_ZENITH_UNCERTAINTY_RANDOM_COVARIANCE",
+             geoms_gas_name[info->gas]);
+    if (read_vertical_sqrt_2dtrace_variable_double(user_data, path, info->num_time * info->num_vertical, data) != 0)
+    {
+        return -1;
+    }
+
+    if (harp_convert_unit(info->vmr_unit, HARP_UNIT_VOLUME_MIXING_RATIO, info->num_time * info->num_vertical,
+                          data.double_data) != 0)
+    {
+        return -1;
+    }
+
+    return 0;
+}
+
+static int read_vmr_zenith_uncertainty_systematic(void *user_data, harp_array data)
 {
     ingest_info *info = (ingest_info *)user_data;
     char path[MAX_PATH_LENGTH];
 
     snprintf(path, MAX_PATH_LENGTH, "/%s_MIXING_RATIO_VOLUME_SCATTER_SOLAR_ZENITH_UNCERTAINTY_SYSTEMATIC_COVARIANCE",
              geoms_gas_name[info->gas]);
-    if (read_vertical2d_variable_double(user_data, path, info->num_time * info->num_vertical * info->num_vertical, data)
-        != 0)
+    if (read_vertical_sqrt_2dtrace_variable_double(user_data, path, info->num_time * info->num_vertical, data) != 0)
     {
         return -1;
     }
 
-    if (harp_convert_unit(info->vmr_cov_unit, HARP_UNIT_VOLUME_MIXING_RATIO_SQUARED,
-                          info->num_time * info->num_vertical * info->num_vertical, data.double_data) != 0)
+    if (harp_convert_unit(info->vmr_unit, HARP_UNIT_VOLUME_MIXING_RATIO, info->num_time * info->num_vertical,
+                          data.double_data) != 0)
     {
         return -1;
     }
@@ -1038,7 +1124,7 @@ static int read_aerosol_extinction_coefficient(void *user_data, harp_array data)
                                          info->num_time * info->num_spectral * info->num_vertical, data);
 }
 
-static int read_aerosol_extinction_coefficient_cov_random(void *user_data, harp_array data)
+static int read_aerosol_extinction_coefficient_covariance(void *user_data, harp_array data)
 {
     const char *path = "/AEROSOL_EXTINCTION_COEFFICIENT_SCATTER_SOLAR_OFFAXIS_UNCERTAINTY_RANDOM_COVARIANCE";
     ingest_info *info = (ingest_info *)user_data;
@@ -1047,13 +1133,22 @@ static int read_aerosol_extinction_coefficient_cov_random(void *user_data, harp_
                                            info->num_vertical, data);
 }
 
-static int read_aerosol_extinction_coefficient_cov_systematic(void *user_data, harp_array data)
+static int read_aerosol_extinction_coefficient_uncertainty_random(void *user_data, harp_array data)
+{
+    const char *path = "/AEROSOL_EXTINCTION_COEFFICIENT_SCATTER_SOLAR_OFFAXIS_UNCERTAINTY_RANDOM_COVARIANCE";
+    ingest_info *info = (ingest_info *)user_data;
+
+    return read_vertical_sqrt_2dtrace_variable_double(user_data, path, info->num_time * info->num_spectral *
+                                                      info->num_vertical, data);
+}
+
+static int read_aerosol_extinction_coefficient_uncertainty_systematic(void *user_data, harp_array data)
 {
     const char *path = "/AEROSOL_EXTINCTION_COEFFICIENT_SCATTER_SOLAR_OFFAXIS_UNCERTAINTY_SYSTEMATIC_COVARIANCE";
     ingest_info *info = (ingest_info *)user_data;
 
-    return read_vertical2d_variable_double(user_data, path, info->num_time * info->num_spectral * info->num_vertical *
-                                           info->num_vertical, data);
+    return read_vertical_sqrt_2dtrace_variable_double(user_data, path, info->num_time * info->num_spectral *
+                                                      info->num_vertical, data);
 }
 
 static int read_aerosol_extinction_coefficient_apriori(void *user_data, harp_array data)
@@ -1516,7 +1611,7 @@ static int get_dynamic_units(ingest_info *info)
         }
         snprintf(path, MAX_PATH_LENGTH, "/%s_MIXING_RATIO_VOLUME_SCATTER_SOLAR_OFFAXIS_UNCERTAINTY_RANDOM_COVARIANCE",
                  geoms_gas_name[info->gas]);
-        if (read_unit(&cursor, path, info->vmr_cov_unit) != 0)
+        if (read_unit(&cursor, path, info->vmr_covariance_unit) != 0)
         {
             return -1;
         }
@@ -1533,7 +1628,7 @@ static int get_dynamic_units(ingest_info *info)
             snprintf(path, MAX_PATH_LENGTH,
                      "/%s_MIXING_RATIO_VOLUME_SCATTER_SOLAR_ZENITH_UNCERTAINTY_RANDOM_COVARIANCE",
                      geoms_gas_name[info->gas]);
-            if (read_unit(&cursor, path, info->vmr_cov_unit) != 0)
+            if (read_unit(&cursor, path, info->vmr_covariance_unit) != 0)
             {
                 return -1;
             }
@@ -1864,7 +1959,7 @@ static int init_product_definition(harp_ingestion_module *module, uvvis_doas_gas
         description = "total stratospheric aerosol optical depth user for the retrieval ";
         variable_definition = harp_ingestion_register_variable_full_read
             (product_definition, "stratospheric_aerosol_optical_depth", harp_type_double, 1, dimension_type, NULL,
-             description, "1", exclude_stratospheric_aod, read_stratospheric_aod);
+             description, HARP_UNIT_DIMENSIONLESS, exclude_stratospheric_aod, read_stratospheric_aod);
         harp_variable_definition_add_mapping(variable_definition, "AOD=modeled", NULL,
                                              "/AEROSOL.OPTICAL.DEPTH.STRATOSPHERIC_INDEPENDENT", NULL);
         harp_variable_definition_add_mapping(variable_definition, "AOD=measured", NULL,
@@ -1934,8 +2029,8 @@ static int init_product_definition(harp_ingestion_module *module, uvvis_doas_gas
                  harp_gas_name[gas]);
         snprintf(gas_mapping_path, MAX_PATH_LENGTH, "/%s.COLUMN_ABSORPTION.SOLAR_AVK", geoms_gas_name[gas]);
         variable_definition = harp_ingestion_register_variable_full_read
-            (product_definition, gas_var_name, harp_type_double, 2, dimension_type, NULL, gas_description, "1", NULL,
-             read_column_solar_avk);
+            (product_definition, gas_var_name, harp_type_double, 2, dimension_type, NULL, gas_description,
+             HARP_UNIT_DIMENSIONLESS, NULL, read_column_solar_avk);
         harp_variable_definition_add_mapping(variable_definition, NULL, NULL, gas_mapping_path, NULL);
     }
     else if (template_type == uvvis_doas_offaxis)
@@ -1950,28 +2045,41 @@ static int init_product_definition(harp_ingestion_module *module, uvvis_doas_gas
              NULL, read_vmr_offaxis);
         harp_variable_definition_add_mapping(variable_definition, NULL, NULL, gas_mapping_path, NULL);
 
-        /* <gas>_volume_mixing_ratio_cov_random */
-        snprintf(gas_var_name, MAX_NAME_LENGTH, "%s_volume_mixing_ratio_cov_random", harp_gas_name[gas]);
-        snprintf(gas_description, MAX_DESCRIPTION_LENGTH, "random covariance of the %s volume mixing ratio",
+        /* <gas>_volume_mixing_ratio_covariance */
+        snprintf(gas_var_name, MAX_NAME_LENGTH, "%s_volume_mixing_ratio_covariance", harp_gas_name[gas]);
+        snprintf(gas_description, MAX_DESCRIPTION_LENGTH, "covariance of the %s volume mixing ratio",
                  harp_gas_name[gas]);
         snprintf(gas_mapping_path, MAX_PATH_LENGTH,
                  "/%s.MIXING.RATIO.VOLUME_SCATTER.SOLAR.OFFAXIS_UNCERTAINTY.RANDOM.COVARIANCE", geoms_gas_name[gas]);
         variable_definition = harp_ingestion_register_variable_full_read
-            (product_definition, gas_var_name, harp_type_double, 3, dimension_type, NULL, gas_description, "1e6 ppmv",
-             NULL, read_vmr_offaxis_cov_random);
+            (product_definition, gas_var_name, harp_type_double, 3, dimension_type, NULL, gas_description, "1e12 ppmv2",
+             NULL, read_vmr_offaxis_covariance);
         harp_variable_definition_add_mapping(variable_definition, NULL, NULL, gas_mapping_path, NULL);
 
-        /* <gas>_volume_mixing_ratio_cov_systematic */
-        snprintf(gas_var_name, MAX_NAME_LENGTH, "%s_volume_mixing_ratio_cov_systematic", harp_gas_name[gas]);
-        snprintf(gas_description, MAX_DESCRIPTION_LENGTH, "systematic covariance of the %s volume mixing ratio",
+        /* <gas>_volume_mixing_ratio_uncertainty_random */
+        snprintf(gas_var_name, MAX_NAME_LENGTH, "%s_volume_mixing_ratio_uncertainty_random", harp_gas_name[gas]);
+        snprintf(gas_description, MAX_DESCRIPTION_LENGTH, "random uncertainty of the %s volume mixing ratio",
+                 harp_gas_name[gas]);
+        snprintf(gas_mapping_path, MAX_PATH_LENGTH,
+                 "/%s.MIXING.RATIO.VOLUME_SCATTER.SOLAR.OFFAXIS_UNCERTAINTY.RANDOM.COVARIANCE", geoms_gas_name[gas]);
+        variable_definition = harp_ingestion_register_variable_full_read
+            (product_definition, gas_var_name, harp_type_double, 2, dimension_type, NULL, gas_description, "1e6 ppmv",
+             NULL, read_vmr_offaxis_uncertainty_random);
+        harp_variable_definition_add_mapping(variable_definition, NULL, NULL, gas_mapping_path,
+                                             "the uncertainty is the square root of the trace of the covariance");
+
+        /* <gas>_volume_mixing_ratio_uncertainty_systematic */
+        snprintf(gas_var_name, MAX_NAME_LENGTH, "%s_volume_mixing_ratio_uncertainty_systematic", harp_gas_name[gas]);
+        snprintf(gas_description, MAX_DESCRIPTION_LENGTH, "systematic uncertainty of the %s volume mixing ratio",
                  harp_gas_name[gas]);
         snprintf(gas_mapping_path, MAX_PATH_LENGTH,
                  "/%s.MIXING.RATIO.VOLUME_SCATTER.SOLAR.OFFAXIS_UNCERTAINTY.SYSTEMATIC.COVARIANCE",
                  geoms_gas_name[gas]);
         variable_definition = harp_ingestion_register_variable_full_read
-            (product_definition, gas_var_name, harp_type_double, 3, dimension_type, NULL, gas_description, "1e6 ppmv",
-             NULL, read_vmr_offaxis_cov_systematic);
-        harp_variable_definition_add_mapping(variable_definition, NULL, NULL, gas_mapping_path, NULL);
+            (product_definition, gas_var_name, harp_type_double, 2, dimension_type, NULL, gas_description, "1e6 ppmv",
+             NULL, read_vmr_offaxis_uncertainty_systematic);
+        harp_variable_definition_add_mapping(variable_definition, NULL, NULL, gas_mapping_path,
+                                             "the uncertainty is the square root of the trace of the covariance");
 
         /* <gas>_volume_mixing_ratio_apriori */
         snprintf(gas_var_name, MAX_NAME_LENGTH, "%s_volume_mixing_ratio_apriori", harp_gas_name[gas]);
@@ -1990,8 +2098,8 @@ static int init_product_definition(harp_ingestion_module *module, uvvis_doas_gas
         snprintf(gas_mapping_path, MAX_PATH_LENGTH, "/%s.MIXING.RATIO.VOLUME_SCATTER.SOLAR.OFFAXIS_AVK",
                  geoms_gas_name[gas]);
         variable_definition = harp_ingestion_register_variable_full_read
-            (product_definition, gas_var_name, harp_type_double, 3, dimension_type, NULL, gas_description, "1", NULL,
-             read_vmr_offaxis_avk);
+            (product_definition, gas_var_name, harp_type_double, 3, dimension_type, NULL, gas_description,
+             HARP_UNIT_DIMENSIONLESS, NULL, read_vmr_offaxis_avk);
         harp_variable_definition_add_mapping(variable_definition, NULL, NULL, gas_mapping_path, NULL);
 
         /* tropospheric_<gas>_column_number_density */
@@ -2020,7 +2128,7 @@ static int init_product_definition(harp_ingestion_module *module, uvvis_doas_gas
         snprintf(gas_var_name, MAX_NAME_LENGTH, "tropospheric_%s_column_number_density_uncertainty_systematic",
                  harp_gas_name[gas]);
         snprintf(gas_description, MAX_DESCRIPTION_LENGTH,
-                 "systematic covariance of the tropospheric %s column number density", harp_gas_name[gas]);
+                 "systematic uncertainty of the tropospheric %s column number density", harp_gas_name[gas]);
         snprintf(gas_mapping_path, MAX_PATH_LENGTH,
                  "/%s.COLUMN.TROPOSPHERIC_SCATTER.SOLAR.OFFAXIS_UNCERTAINTY.SYSTEMATIC.STANDARD", geoms_gas_name[gas]);
         variable_definition = harp_ingestion_register_variable_full_read
@@ -2046,8 +2154,8 @@ static int init_product_definition(harp_ingestion_module *module, uvvis_doas_gas
         snprintf(gas_mapping_path, MAX_PATH_LENGTH, "/%s.COLUMN.TROPOSPHERIC_SCATTER.SOLAR.OFFAXIS_AVK",
                  geoms_gas_name[gas]);
         variable_definition = harp_ingestion_register_variable_full_read
-            (product_definition, gas_var_name, harp_type_double, 2, dimension_type, NULL, gas_description, "1", NULL,
-             read_tropo_column_offaxis_avk);
+            (product_definition, gas_var_name, harp_type_double, 2, dimension_type, NULL, gas_description,
+             HARP_UNIT_DIMENSIONLESS, NULL, read_tropo_column_offaxis_avk);
         harp_variable_definition_add_mapping(variable_definition, NULL, NULL, gas_mapping_path, NULL);
 
 
@@ -2084,27 +2192,40 @@ static int init_product_definition(harp_ingestion_module *module, uvvis_doas_gas
              exclude_vmr_zenith, read_vmr_zenith);
         harp_variable_definition_add_mapping(variable_definition, NULL, NULL, gas_mapping_path, NULL);
 
-        /* <gas>_volume_mixing_ratio_cov_random */
-        snprintf(gas_var_name, MAX_NAME_LENGTH, "%s_volume_mixing_ratio_cov_random", harp_gas_name[gas]);
-        snprintf(gas_description, MAX_DESCRIPTION_LENGTH, "random covariance of the %s volume mixing ratio",
+        /* <gas>_volume_mixing_ratio_covariance */
+        snprintf(gas_var_name, MAX_NAME_LENGTH, "%s_volume_mixing_ratio_covariance", harp_gas_name[gas]);
+        snprintf(gas_description, MAX_DESCRIPTION_LENGTH, "covariance of the %s volume mixing ratio",
                  harp_gas_name[gas]);
         snprintf(gas_mapping_path, MAX_PATH_LENGTH,
                  "/%s.MIXING.RATIO.VOLUME_SCATTER.SOLAR.ZENITH_UNCERTAINTY.RANDOM.COVARIANCE", geoms_gas_name[gas]);
         variable_definition = harp_ingestion_register_variable_full_read
-            (product_definition, gas_var_name, harp_type_double, 3, dimension_type, NULL, gas_description, "1e6 ppmv",
-             exclude_vmr_zenith, read_vmr_zenith_cov_random);
+            (product_definition, gas_var_name, harp_type_double, 3, dimension_type, NULL, gas_description, "1e12 ppmv2",
+             exclude_vmr_zenith, read_vmr_zenith_covariance);
         harp_variable_definition_add_mapping(variable_definition, NULL, NULL, gas_mapping_path, NULL);
 
-        /* <gas>_volume_mixing_ratio_cov_systematic */
-        snprintf(gas_var_name, MAX_NAME_LENGTH, "%s_volume_mixing_ratio_cov_systematic", harp_gas_name[gas]);
-        snprintf(gas_description, MAX_DESCRIPTION_LENGTH, "systematic covariance of the %s volume mixing ratio",
+        /* <gas>_volume_mixing_ratio_uncertainty_random */
+        snprintf(gas_var_name, MAX_NAME_LENGTH, "%s_volume_mixing_ratio_uncertainty_random", harp_gas_name[gas]);
+        snprintf(gas_description, MAX_DESCRIPTION_LENGTH, "random uncertainty of the %s volume mixing ratio",
+                 harp_gas_name[gas]);
+        snprintf(gas_mapping_path, MAX_PATH_LENGTH,
+                 "/%s.MIXING.RATIO.VOLUME_SCATTER.SOLAR.ZENITH_UNCERTAINTY.RANDOM.COVARIANCE", geoms_gas_name[gas]);
+        variable_definition = harp_ingestion_register_variable_full_read
+            (product_definition, gas_var_name, harp_type_double, 2, dimension_type, NULL, gas_description, "1e6 ppmv",
+             exclude_vmr_zenith, read_vmr_zenith_uncertainty_random);
+        harp_variable_definition_add_mapping(variable_definition, NULL, NULL, gas_mapping_path,
+                                             "the uncertainty is the square root of the trace of the covariance");
+
+        /* <gas>_volume_mixing_ratio_uncertainty_systematic */
+        snprintf(gas_var_name, MAX_NAME_LENGTH, "%s_volume_mixing_ratio_uncertainty_systematic", harp_gas_name[gas]);
+        snprintf(gas_description, MAX_DESCRIPTION_LENGTH, "systematic uncertainty of the %s volume mixing ratio",
                  harp_gas_name[gas]);
         snprintf(gas_mapping_path, MAX_PATH_LENGTH,
                  "/%s.MIXING.RATIO.VOLUME_SCATTER.SOLAR.ZENITH_UNCERTAINTY.SYSTEMATIC.COVARIANCE", geoms_gas_name[gas]);
         variable_definition = harp_ingestion_register_variable_full_read
-            (product_definition, gas_var_name, harp_type_double, 3, dimension_type, NULL, gas_description, "1e6 ppmv",
-             exclude_vmr_zenith, read_vmr_zenith_cov_systematic);
-        harp_variable_definition_add_mapping(variable_definition, NULL, NULL, gas_mapping_path, NULL);
+            (product_definition, gas_var_name, harp_type_double, 2, dimension_type, NULL, gas_description, "1e6 ppmv",
+             exclude_vmr_zenith, read_vmr_zenith_uncertainty_systematic);
+        harp_variable_definition_add_mapping(variable_definition, NULL, NULL, gas_mapping_path,
+                                             "the uncertainty is the square root of the trace of the covariance");
 
         /* <gas>_volume_mixing_ratio_apriori */
         snprintf(gas_var_name, MAX_NAME_LENGTH, "%s_volume_mixing_ratio_apriori", harp_gas_name[gas]);
@@ -2123,8 +2244,8 @@ static int init_product_definition(harp_ingestion_module *module, uvvis_doas_gas
         snprintf(gas_mapping_path, MAX_PATH_LENGTH, "/%s.MIXING.RATIO.VOLUME_SCATTER.SOLAR.ZENITH_AVK",
                  geoms_gas_name[gas]);
         variable_definition = harp_ingestion_register_variable_full_read
-            (product_definition, gas_var_name, harp_type_double, 3, dimension_type, NULL, gas_description, "1",
-             exclude_vmr_zenith, read_vmr_zenith_avk);
+            (product_definition, gas_var_name, harp_type_double, 3, dimension_type, NULL, gas_description,
+             HARP_UNIT_DIMENSIONLESS, exclude_vmr_zenith, read_vmr_zenith_avk);
         harp_variable_definition_add_mapping(variable_definition, NULL, NULL, gas_mapping_path, NULL);
 
         /* tropospheric_<gas>_column_number_density */
@@ -2153,7 +2274,7 @@ static int init_product_definition(harp_ingestion_module *module, uvvis_doas_gas
         snprintf(gas_var_name, MAX_NAME_LENGTH, "tropospheric_%s_column_number_density_uncertainty_systematic",
                  harp_gas_name[gas]);
         snprintf(gas_description, MAX_DESCRIPTION_LENGTH,
-                 "systematic covariance of the tropospheric %s column number density", harp_gas_name[gas]);
+                 "systematic uncertainty of the tropospheric %s column number density", harp_gas_name[gas]);
         snprintf(gas_mapping_path, MAX_PATH_LENGTH,
                  "/%s.COLUMN.TROPOSPHERIC_SCATTER.SOLAR.ZENITH_UNCERTAINTY.SYSTEMATIC.STANDARD", geoms_gas_name[gas]);
         variable_definition = harp_ingestion_register_variable_full_read
@@ -2179,8 +2300,8 @@ static int init_product_definition(harp_ingestion_module *module, uvvis_doas_gas
         snprintf(gas_mapping_path, MAX_PATH_LENGTH, "/%s.COLUMN.TROPOSPHERIC_SCATTER.SOLAR.ZENITH_AVK",
                  geoms_gas_name[gas]);
         variable_definition = harp_ingestion_register_variable_full_read
-            (product_definition, gas_var_name, harp_type_double, 2, dimension_type, NULL, gas_description, "1",
-             exclude_tropo_column_zenith, read_tropo_column_zenith_avk);
+            (product_definition, gas_var_name, harp_type_double, 2, dimension_type, NULL, gas_description,
+             HARP_UNIT_DIMENSIONLESS, exclude_tropo_column_zenith, read_tropo_column_zenith_avk);
         harp_variable_definition_add_mapping(variable_definition, NULL, NULL, gas_mapping_path, NULL);
 
         /* stratospheric_<gas>_column_number_density */
@@ -2209,7 +2330,7 @@ static int init_product_definition(harp_ingestion_module *module, uvvis_doas_gas
         snprintf(gas_var_name, MAX_NAME_LENGTH, "stratospheric_%s_column_number_density_uncertainty_systematic",
                  harp_gas_name[gas]);
         snprintf(gas_description, MAX_DESCRIPTION_LENGTH,
-                 "systematic covariance of the stratospheric %s column number density", harp_gas_name[gas]);
+                 "systematic uncertainty of the stratospheric %s column number density", harp_gas_name[gas]);
         snprintf(gas_mapping_path, MAX_PATH_LENGTH,
                  "/%s.COLUMN.STRATOSPHERIC_SCATTER.SOLAR.ZENITH_UNCERTAINTY.SYSTEMATIC.STANDARD", geoms_gas_name[gas]);
         variable_definition = harp_ingestion_register_variable_full_read
@@ -2235,8 +2356,8 @@ static int init_product_definition(harp_ingestion_module *module, uvvis_doas_gas
         snprintf(gas_mapping_path, MAX_PATH_LENGTH, "/%s.COLUMN.STRATOSPHERIC_SCATTER.SOLAR.ZENITH_AVK",
                  geoms_gas_name[gas]);
         variable_definition = harp_ingestion_register_variable_full_read
-            (product_definition, gas_var_name, harp_type_double, 2, dimension_type, NULL, gas_description, "1", NULL,
-             read_strat_column_zenith_avk);
+            (product_definition, gas_var_name, harp_type_double, 2, dimension_type, NULL, gas_description,
+             HARP_UNIT_DIMENSIONLESS, NULL, read_strat_column_zenith_avk);
         harp_variable_definition_add_mapping(variable_definition, NULL, NULL, gas_mapping_path, NULL);
 
         /* stratospheric_<gas>_column_number_density_amf */
@@ -2246,8 +2367,8 @@ static int init_product_definition(harp_ingestion_module *module, uvvis_doas_gas
         snprintf(gas_mapping_path, MAX_PATH_LENGTH, "/%s.COLUMN.STRATOSPHERIC_SCATTER.SOLAR.ZENITH_AMF",
                  geoms_gas_name[gas]);
         variable_definition = harp_ingestion_register_variable_full_read
-            (product_definition, gas_var_name, harp_type_double, 1, dimension_type, NULL, gas_description, "1", NULL,
-             read_strat_column_zenith_amf);
+            (product_definition, gas_var_name, harp_type_double, 1, dimension_type, NULL, gas_description,
+             HARP_UNIT_DIMENSIONLESS, NULL, read_strat_column_zenith_amf);
         harp_variable_definition_add_mapping(variable_definition, NULL, NULL, gas_mapping_path, NULL);
 
         /* <gas>_column_number_density */
@@ -2287,21 +2408,31 @@ static int init_product_definition(harp_ingestion_module *module, uvvis_doas_gas
         mapping_path = "/AEROSOL.EXTINCTION.COEFFICIENT_SCATTER.SOLAR.OFFAXIS";
         harp_variable_definition_add_mapping(variable_definition, NULL, NULL, mapping_path, NULL);
 
-        /* aerosol_extinction_coefficient_cov_random */
+        /* aerosol_extinction_coefficient_covariance */
         variable_definition = harp_ingestion_register_variable_full_read
-            (product_definition, "aerosol_extinction_coefficient_cov_random", harp_type_double, 4, dimension_type, NULL,
-             "random covariance of the aerosol extinction coefficient", "km^-2", NULL,
-             read_aerosol_extinction_coefficient_cov_random);
+            (product_definition, "aerosol_extinction_coefficient_covariance", harp_type_double, 4, dimension_type, NULL,
+             "covariance of the aerosol extinction coefficient", "km^-2", NULL,
+             read_aerosol_extinction_coefficient_covariance);
         mapping_path = "/AEROSOL.EXTINCTION.COEFFICIENT_SCATTER.SOLAR.OFFAXIS_UNCERTAINTY.RANDOM.COVARIANCE";
         harp_variable_definition_add_mapping(variable_definition, NULL, NULL, mapping_path, NULL);
 
-        /* aerosol_extinction_coefficient_cov_systematic */
+        /* aerosol_extinction_coefficient_uncertainty_random */
         variable_definition = harp_ingestion_register_variable_full_read
-            (product_definition, "aerosol_extinction_coefficient_cov_systematic", harp_type_double, 4, dimension_type,
-             NULL, "systematic covariance of the aerosol extinction coefficient", "km^-2", NULL,
-             read_aerosol_extinction_coefficient_cov_systematic);
+            (product_definition, "aerosol_extinction_coefficient_uncertainty_random", harp_type_double, 3,
+             dimension_type, NULL, "random uncertainty of the aerosol extinction coefficient", "km^-1", NULL,
+             read_aerosol_extinction_coefficient_uncertainty_random);
+        mapping_path = "/AEROSOL.EXTINCTION.COEFFICIENT_SCATTER.SOLAR.OFFAXIS_UNCERTAINTY.RANDOM.COVARIANCE";
+        harp_variable_definition_add_mapping(variable_definition, NULL, NULL, mapping_path,
+                                             "the uncertainty is the square root of the trace of the covariance");
+
+        /* aerosol_extinction_coefficient_uncertainty_systematic */
+        variable_definition = harp_ingestion_register_variable_full_read
+            (product_definition, "aerosol_extinction_coefficient_uncertainty_systematic", harp_type_double, 3,
+             dimension_type, NULL, "systematic uncertainty of the aerosol extinction coefficient", "km^-1", NULL,
+             read_aerosol_extinction_coefficient_uncertainty_systematic);
         mapping_path = "/AEROSOL.EXTINCTION.COEFFICIENT_SCATTER.SOLAR.OFFAXIS_UNCERTAINTY.SYSTEMATIC.COVARIANCE";
-        harp_variable_definition_add_mapping(variable_definition, NULL, NULL, mapping_path, NULL);
+        harp_variable_definition_add_mapping(variable_definition, NULL, NULL, mapping_path,
+                                             "the uncertainty is the square root of the trace of the covariance");
 
         /* aerosol_extinction_coefficient_apriori */
         variable_definition = harp_ingestion_register_variable_full_read
@@ -2313,7 +2444,7 @@ static int init_product_definition(harp_ingestion_module *module, uvvis_doas_gas
         /* aerosol_extinction_coefficient_avk */
         variable_definition = harp_ingestion_register_variable_full_read
             (product_definition, "aerosol_extinction_coefficient_avk", harp_type_double, 4, dimension_type,
-             NULL, "averaging kernel of the aerosol extinction coefficient", "1", NULL,
+             NULL, "averaging kernel of the aerosol extinction coefficient", HARP_UNIT_DIMENSIONLESS, NULL,
              read_aerosol_extinction_coefficient_avk);
         mapping_path = "/AEROSOL.EXTINCTION.COEFFICIENT_SCATTER.SOLAR.OFFAXIS_AVK";
         harp_variable_definition_add_mapping(variable_definition, NULL, NULL, mapping_path, NULL);
@@ -2321,37 +2452,38 @@ static int init_product_definition(harp_ingestion_module *module, uvvis_doas_gas
         /* tropospheric_aerosol_optical_depth */
         variable_definition = harp_ingestion_register_variable_full_read
             (product_definition, "tropospheric_aerosol_optical_depth", harp_type_double, 2, dimension_type, NULL,
-             "tropospheric aerosol optical depth", "1", NULL, read_tropo_aerosol_optical_depth);
+             "tropospheric aerosol optical depth", HARP_UNIT_DIMENSIONLESS, NULL, read_tropo_aerosol_optical_depth);
         mapping_path = "/AEROSOL.OPTICAL.DEPTH.TROPOSPHERIC_SCATTER.SOLAR.OFFAXIS";
         harp_variable_definition_add_mapping(variable_definition, NULL, NULL, mapping_path, NULL);
 
         /* tropospheric_aerosol_optical_depth_uncertainty_random */
         variable_definition = harp_ingestion_register_variable_full_read
             (product_definition, "tropospheric_aerosol_optical_depth_uncertainty_random", harp_type_double, 2,
-             dimension_type, NULL, "random uncertainty of the tropospheric aerosol optical depth", "1", NULL,
-             read_tropo_aerosol_optical_depth_uncertainty_random);
+             dimension_type, NULL, "random uncertainty of the tropospheric aerosol optical depth",
+             HARP_UNIT_DIMENSIONLESS, NULL, read_tropo_aerosol_optical_depth_uncertainty_random);
         mapping_path = "/AEROSOL.OPTICAL.DEPTH.TROPOSPHERIC_SCATTER.SOLAR.OFFAXIS_UNCERTAINTY.RANDOM.STANDARD";
         harp_variable_definition_add_mapping(variable_definition, NULL, NULL, mapping_path, NULL);
 
         /* tropospheric_aerosol_optical_depth_uncertainty_systematic */
         variable_definition = harp_ingestion_register_variable_full_read
             (product_definition, "tropospheric_aerosol_optical_depth_uncertainty_systematic", harp_type_double, 2,
-             dimension_type, NULL, "systematic uncertainty of the tropospheric aerosol optical depth", "1", NULL,
-             read_tropo_aerosol_optical_depth_uncertainty_systematic);
+             dimension_type, NULL, "systematic uncertainty of the tropospheric aerosol optical depth",
+             HARP_UNIT_DIMENSIONLESS, NULL, read_tropo_aerosol_optical_depth_uncertainty_systematic);
         mapping_path = "/AEROSOL.OPTICAL.DEPTH.TROPOSPHERIC_SCATTER.SOLAR.OFFAXIS_UNCERTAINTY.SYSTEMATIC.STANDARD";
         harp_variable_definition_add_mapping(variable_definition, NULL, NULL, mapping_path, NULL);
 
         /* tropospheric_aerosol_optical_depth_apriori */
         variable_definition = harp_ingestion_register_variable_full_read
             (product_definition, "tropospheric_aerosol_optical_depth_apriori", harp_type_double, 2, dimension_type,
-             NULL, "a priori tropospheric aerosol optical depth", "1", NULL, read_tropo_aerosol_optical_depth_apriori);
+             NULL, "a priori tropospheric aerosol optical depth", HARP_UNIT_DIMENSIONLESS, NULL,
+             read_tropo_aerosol_optical_depth_apriori);
         mapping_path = "/AEROSOL.OPTICAL.DEPTH.TROPOSPHERIC_SCATTER.SOLAR.OFFAXIS_APRIORI";
         harp_variable_definition_add_mapping(variable_definition, NULL, NULL, mapping_path, NULL);
 
         /* tropospheric_aerosol_optical_depth_avk */
         variable_definition = harp_ingestion_register_variable_full_read
             (product_definition, "tropospheric_aerosol_optical_depth_avk", harp_type_double, 3, dimension_type,
-             NULL, "averaging kernel of the tropospheric aerosol optical depth", "1", NULL,
+             NULL, "averaging kernel of the tropospheric aerosol optical depth", HARP_UNIT_DIMENSIONLESS, NULL,
              read_tropo_aerosol_optical_depth_avk);
         mapping_path = "/AEROSOL.OPTICAL.DEPTH.TROPOSPHERIC_SCATTER.SOLAR.OFFAXIS_AVK";
         harp_variable_definition_add_mapping(variable_definition, NULL, NULL, mapping_path, NULL);

@@ -1912,8 +1912,8 @@ static void register_common_variables(harp_product_definition *product_definitio
     description = "BrO air mass factor";
     variable_definition =
         harp_ingestion_register_variable_full_read(product_definition, "BrO_column_number_density_amf",
-                                                   harp_type_double, 1, dimension_type, NULL, description, "1",
-                                                   exclude_amf_bro, read_amf_bro);
+                                                   harp_type_double, 1, dimension_type, NULL, description,
+                                                   HARP_UNIT_DIMENSIONLESS, exclude_amf_bro, read_amf_bro);
     path = "/DETAILED_RESULTS/AMFTotal[,window], /META_DATA/MainSpecies[]";
     description = "window is the index in MainSpecies[] that has the value 'BrO'";
     harp_variable_definition_add_mapping(variable_definition, NULL, NULL, path, description);
@@ -1922,8 +1922,8 @@ static void register_common_variables(harp_product_definition *product_definitio
     description = "uncertainty of the BrO air mass factor";
     variable_definition =
         harp_ingestion_register_variable_full_read(product_definition, "BrO_column_number_density_amf_uncertainty",
-                                                   harp_type_double, 1, dimension_type, NULL, description, "1",
-                                                   exclude_amf_bro_error, read_amf_bro_error);
+                                                   harp_type_double, 1, dimension_type, NULL, description,
+                                                   HARP_UNIT_DIMENSIONLESS, exclude_amf_bro_error, read_amf_bro_error);
     path = "/DETAILED_RESULTS/AMFTotal_Error[,window], /DETAILED_RESULTS/AMFTotal[,window], /META_DATA/MainSpecies[]";
     description = "derived from the relative error in percent as: AMFTotal_Error[,window] * 0.01 * AMFTotal[,window]; "
         "window is the index in MainSpecies[] that has the value 'BrO'";
@@ -1933,8 +1933,8 @@ static void register_common_variables(harp_product_definition *product_definitio
     description = "H2O air mass factor";
     variable_definition =
         harp_ingestion_register_variable_full_read(product_definition, "H2O_column_number_density_amf",
-                                                   harp_type_double, 1, dimension_type, NULL, description, "1",
-                                                   exclude_amf_h2o, read_amf_h2o);
+                                                   harp_type_double, 1, dimension_type, NULL, description,
+                                                   HARP_UNIT_DIMENSIONLESS, exclude_amf_h2o, read_amf_h2o);
     path = "/DETAILED_RESULTS/AMFTotal[,window], /META_DATA/MainSpecies[]";
     description = "window is the index in MainSpecies[] that has the value 'H2O'";
     harp_variable_definition_add_mapping(variable_definition, NULL, NULL, path, description);
@@ -1943,8 +1943,8 @@ static void register_common_variables(harp_product_definition *product_definitio
     description = "uncertainty of the H2O air mass factor";
     variable_definition =
         harp_ingestion_register_variable_full_read(product_definition, "H2O_column_number_density_amf_uncertainty",
-                                                   harp_type_double, 1, dimension_type, NULL, description, "1",
-                                                   exclude_amf_h2o_error, read_amf_h2o_error);
+                                                   harp_type_double, 1, dimension_type, NULL, description,
+                                                   HARP_UNIT_DIMENSIONLESS, exclude_amf_h2o_error, read_amf_h2o_error);
     path = "/DETAILED_RESULTS/AMFTotal_Error[,window], /DETAILED_RESULTS/AMFTotal[,window], /META_DATA/MainSpecies[]";
     description = "derived from the relative error in percent as: AMFTotal_Error[,window] * 0.01 * AMFTotal[,window]; "
         "window is the index in MainSpecies[] that has the value 'H2O'";
@@ -1954,8 +1954,8 @@ static void register_common_variables(harp_product_definition *product_definitio
     description = "HCHO air mass factor";
     variable_definition =
         harp_ingestion_register_variable_full_read(product_definition, "HCHO_column_number_density_amf",
-                                                   harp_type_double, 1, dimension_type, NULL, description, "1",
-                                                   exclude_amf_hcho, read_amf_hcho);
+                                                   harp_type_double, 1, dimension_type, NULL, description,
+                                                   HARP_UNIT_DIMENSIONLESS, exclude_amf_hcho, read_amf_hcho);
     path = "/DETAILED_RESULTS/AMFTotal[,window], /META_DATA/MainSpecies[]";
     description = "window is the index in MainSpecies[] that has the value 'HCHO'";
     harp_variable_definition_add_mapping(variable_definition, NULL, NULL, path, description);
@@ -1964,8 +1964,9 @@ static void register_common_variables(harp_product_definition *product_definitio
     description = "uncertainty of the HCHO air mass factor";
     variable_definition =
         harp_ingestion_register_variable_full_read(product_definition, "HCHO_column_number_density_amf_uncertainty",
-                                                   harp_type_double, 1, dimension_type, NULL, description, "1",
-                                                   exclude_amf_hcho_error, read_amf_hcho_error);
+                                                   harp_type_double, 1, dimension_type, NULL, description,
+                                                   HARP_UNIT_DIMENSIONLESS, exclude_amf_hcho_error,
+                                                   read_amf_hcho_error);
     path = "/DETAILED_RESULTS/AMFTotal_Error[,window], /DETAILED_RESULTS/AMFTotal[,window], /META_DATA/MainSpecies[]";
     description = "derived from the relative error in percent as: AMFTotal_Error[,window] * 0.01 * AMFTotal[,window]; "
         "window is the index in MainSpecies[] that has the value 'HCHO'";
@@ -1975,8 +1976,8 @@ static void register_common_variables(harp_product_definition *product_definitio
     description = "NO2 air mass factor";
     variable_definition =
         harp_ingestion_register_variable_full_read(product_definition, "NO2_column_number_density_amf",
-                                                   harp_type_double, 1, dimension_type, NULL, description, "1",
-                                                   exclude_amf_no2, read_amf_no2);
+                                                   harp_type_double, 1, dimension_type, NULL, description,
+                                                   HARP_UNIT_DIMENSIONLESS, exclude_amf_no2, read_amf_no2);
     path = "/DETAILED_RESULTS/AMFTotal[,window], /META_DATA/MainSpecies[]";
     description = "window is the index in MainSpecies[] that has the value 'NO2'";
     harp_variable_definition_add_mapping(variable_definition, NULL, NULL, path, description);
@@ -1985,8 +1986,8 @@ static void register_common_variables(harp_product_definition *product_definitio
     description = "uncertainty of the NO2 air mass factor";
     variable_definition =
         harp_ingestion_register_variable_full_read(product_definition, "NO2_column_number_density_amf_uncertainty",
-                                                   harp_type_double, 1, dimension_type, NULL, description, "1",
-                                                   exclude_amf_no2_error, read_amf_no2_error);
+                                                   harp_type_double, 1, dimension_type, NULL, description,
+                                                   HARP_UNIT_DIMENSIONLESS, exclude_amf_no2_error, read_amf_no2_error);
     path = "/DETAILED_RESULTS/AMFTotal_Error[,window], /DETAILED_RESULTS/AMFTotal[,window], /META_DATA/MainSpecies[]";
     description = "derived from the relative error in percent as: AMFTotal_Error[,window] * 0.01 * AMFTotal[,window]; "
         "window is the index in MainSpecies[] that has the value 'NO2'";
@@ -1996,8 +1997,9 @@ static void register_common_variables(harp_product_definition *product_definitio
     description = "tropospheric NO2 air mass factor";
     variable_definition =
         harp_ingestion_register_variable_full_read(product_definition, "tropospheric_NO2_column_number_density_amf",
-                                                   harp_type_double, 1, dimension_type, NULL, description, "1",
-                                                   exclude_amf_no2_tropospheric, read_amf_no2_tropospheric);
+                                                   harp_type_double, 1, dimension_type, NULL, description,
+                                                   HARP_UNIT_DIMENSIONLESS, exclude_amf_no2_tropospheric,
+                                                   read_amf_no2_tropospheric);
     path = "/DETAILED_RESULTS/NO2/AMFTropo[]";
     harp_variable_definition_add_mapping(variable_definition, NULL, NULL, path, NULL);
 
@@ -2006,8 +2008,9 @@ static void register_common_variables(harp_product_definition *product_definitio
     variable_definition =
         harp_ingestion_register_variable_full_read(product_definition,
                                                    "tropospheric_NO2_column_number_density_amf_uncertainty",
-                                                   harp_type_double, 1, dimension_type, NULL, description, "1",
-                                                   exclude_amf_no2_tropospheric_error, read_amf_no2_tropospheric_error);
+                                                   harp_type_double, 1, dimension_type, NULL, description,
+                                                   HARP_UNIT_DIMENSIONLESS, exclude_amf_no2_tropospheric_error,
+                                                   read_amf_no2_tropospheric_error);
     path = "/DETAILED_RESULTS/NO2/AMFTropo_Error[], /DETAILED_RESULTS/NO2/AMFTropo[]";
     description = "derived from the relative error in percent as: AMFTropo_Error[] * 0.01 * AMFTropo[]";
     harp_variable_definition_add_mapping(variable_definition, NULL, NULL, path, description);
@@ -2016,8 +2019,8 @@ static void register_common_variables(harp_product_definition *product_definitio
     description = "O3 air mass factor";
     variable_definition =
         harp_ingestion_register_variable_full_read(product_definition, "O3_column_number_density_amf", harp_type_double,
-                                                   1, dimension_type, NULL, description, "1", exclude_amf_o3,
-                                                   read_amf_o3);
+                                                   1, dimension_type, NULL, description, HARP_UNIT_DIMENSIONLESS,
+                                                   exclude_amf_o3, read_amf_o3);
     path = "/DETAILED_RESULTS/AMFTotal[,window], /META_DATA/MainSpecies[]";
     description = "window is the index in MainSpecies[] that has the value 'O3'";
     harp_variable_definition_add_mapping(variable_definition, NULL, NULL, path, description);
@@ -2026,8 +2029,8 @@ static void register_common_variables(harp_product_definition *product_definitio
     description = "uncertainty of the O3 air mass factor";
     variable_definition =
         harp_ingestion_register_variable_full_read(product_definition, "O3_column_number_density_amf_uncertainty",
-                                                   harp_type_double, 1, dimension_type, NULL, description, "1",
-                                                   exclude_amf_o3_error, read_amf_o3_error);
+                                                   harp_type_double, 1, dimension_type, NULL, description,
+                                                   HARP_UNIT_DIMENSIONLESS, exclude_amf_o3_error, read_amf_o3_error);
     path = "/DETAILED_RESULTS/AMFTotal_Error[,window], /DETAILED_RESULTS/AMFTotal[,window], /META_DATA/MainSpecies[]";
     description = "derived from the relative error in percent as: AMFTotal_Error[,window] * 0.01 * AMFTotal[,window]; "
         "window is the index in MainSpecies[] that has the value 'O3'";
@@ -2037,8 +2040,8 @@ static void register_common_variables(harp_product_definition *product_definitio
     description = "OClO air mass factor";
     variable_definition =
         harp_ingestion_register_variable_full_read(product_definition, "OClO_column_number_density_amf",
-                                                   harp_type_double, 1, dimension_type, NULL, description, "1",
-                                                   exclude_amf_oclo, read_amf_oclo);
+                                                   harp_type_double, 1, dimension_type, NULL, description,
+                                                   HARP_UNIT_DIMENSIONLESS, exclude_amf_oclo, read_amf_oclo);
     path = "/DETAILED_RESULTS/AMFTotal[,window], /META_DATA/MainSpecies[]";
     description = "window is the index in MainSpecies[] that has the value 'OClO'";
     harp_variable_definition_add_mapping(variable_definition, NULL, NULL, path, description);
@@ -2047,8 +2050,9 @@ static void register_common_variables(harp_product_definition *product_definitio
     description = "uncertainty of the OClO air mass factor";
     variable_definition =
         harp_ingestion_register_variable_full_read(product_definition, "OClO_column_number_density_amf_uncertainty",
-                                                   harp_type_double, 1, dimension_type, NULL, description, "1",
-                                                   exclude_amf_oclo_error, read_amf_oclo_error);
+                                                   harp_type_double, 1, dimension_type, NULL, description,
+                                                   HARP_UNIT_DIMENSIONLESS, exclude_amf_oclo_error,
+                                                   read_amf_oclo_error);
     path = "/DETAILED_RESULTS/AMFTotal_Error[,window], /DETAILED_RESULTS/AMFTotal[,window], /META_DATA/MainSpecies[]";
     description = "derived from the relative error in percent as: AMFTotal_Error[,window] * 0.01 * AMFTotal[,window]; "
         "window is the index in MainSpecies[] that has the value 'OClO'";
@@ -2058,8 +2062,8 @@ static void register_common_variables(harp_product_definition *product_definitio
     description = "SO2 air mass factor";
     variable_definition =
         harp_ingestion_register_variable_full_read(product_definition, "SO2_column_number_density_amf",
-                                                   harp_type_double, 1, dimension_type, NULL, description, "1",
-                                                   exclude_amf_so2, read_amf_so2);
+                                                   harp_type_double, 1, dimension_type, NULL, description,
+                                                   HARP_UNIT_DIMENSIONLESS, exclude_amf_so2, read_amf_so2);
     path = "/DETAILED_RESULTS/AMFTotal[,window], /META_DATA/MainSpecies[]";
     description = "window is the index in MainSpecies[] that has the value 'SO2'";
     harp_variable_definition_add_mapping(variable_definition, NULL, NULL, path, description);
@@ -2068,8 +2072,8 @@ static void register_common_variables(harp_product_definition *product_definitio
     description = "uncertainty of the SO2 air mass factor";
     variable_definition =
         harp_ingestion_register_variable_full_read(product_definition, "SO2_column_number_density_amf_uncertainty",
-                                                   harp_type_double, 1, dimension_type, NULL, description, "1",
-                                                   exclude_amf_so2_error, read_amf_so2_error);
+                                                   harp_type_double, 1, dimension_type, NULL, description,
+                                                   HARP_UNIT_DIMENSIONLESS, exclude_amf_so2_error, read_amf_so2_error);
     path = "/DETAILED_RESULTS/AMFTotal_Error[,window], /DETAILED_RESULTS/AMFTotal[,window], /META_DATA/MainSpecies[]";
     description = "derived from the relative error in percent as: AMFTotal_Error[,window] * 0.01 * AMFTotal[,window]; "
         "window is the index in MainSpecies[] that has the value 'SO2'";
@@ -2079,8 +2083,8 @@ static void register_common_variables(harp_product_definition *product_definitio
     description = "cloud fraction";
     variable_definition =
         harp_ingestion_register_variable_full_read(product_definition, "cloud_fraction", harp_type_double, 1,
-                                                   dimension_type, NULL, description, "1", exclude_cloud_fraction,
-                                                   read_cloud_fraction);
+                                                   dimension_type, NULL, description, HARP_UNIT_DIMENSIONLESS,
+                                                   exclude_cloud_fraction, read_cloud_fraction);
     path = "/DETAILED_RESULTS/CloudFraction[]";
     harp_variable_definition_add_mapping(variable_definition, NULL, "V1 product", path, NULL);
     path = "/CLOUD_PROPERTIES/CloudFraction[]";
@@ -2090,7 +2094,7 @@ static void register_common_variables(harp_product_definition *product_definitio
     description = "uncertainty of the cloud fraction";
     variable_definition =
         harp_ingestion_register_variable_full_read(product_definition, "cloud_fraction_uncertainty", harp_type_double,
-                                                   1, dimension_type, NULL, description, "1",
+                                                   1, dimension_type, NULL, description, HARP_UNIT_DIMENSIONLESS,
                                                    exclude_cloud_fraction_error, read_cloud_fraction_error);
     description = "derived from the relative error in percent as: CloudFraction_Error[] * 0.01 * CloudFraction[]";
     path = "/DETAILED_RESULTS/CloudFraction_Error[], /DETAILED_RESULTS/CloudFraction[]";
@@ -2148,8 +2152,8 @@ static void register_common_variables(harp_product_definition *product_definitio
     description = "cloud top albedo";
     variable_definition =
         harp_ingestion_register_variable_full_read(product_definition, "cloud_top_albedo", harp_type_double, 1,
-                                                   dimension_type, NULL, description, "1", exclude_albedo_cloud_top,
-                                                   read_albedo_cloud_top);
+                                                   dimension_type, NULL, description, HARP_UNIT_DIMENSIONLESS,
+                                                   exclude_albedo_cloud_top, read_albedo_cloud_top);
     path = "/DETAILED_RESULTS/CloudTopAlbedo[]";
     harp_variable_definition_add_mapping(variable_definition, NULL, "V1 product", path, NULL);
     path = "/CLOUD_PROPERTIES/CloudTopAlbedo[]";
@@ -2159,7 +2163,7 @@ static void register_common_variables(harp_product_definition *product_definitio
     description = "uncertainty of the cloud top albedo";
     variable_definition =
         harp_ingestion_register_variable_full_read(product_definition, "cloud_top_albedo_uncertainty", harp_type_double,
-                                                   1, dimension_type, NULL, description, "1",
+                                                   1, dimension_type, NULL, description, HARP_UNIT_DIMENSIONLESS,
                                                    exclude_albedo_cloud_top_error, read_albedo_cloud_top_error);
     description = "derived from the relative error in percent as: CloudTopAlbedo_Error[] * 0.01 * CloudTopAlbedo[]";
     path = "/DETAILED_RESULTS/CloudTopAlbedo_Error[], /DETAILED_RESULTS/CloudTopAlbedo[]";
@@ -2171,7 +2175,7 @@ static void register_common_variables(harp_product_definition *product_definitio
     description = "cloud optical depth";
     variable_definition =
         harp_ingestion_register_variable_full_read(product_definition, "cloud_optical_depth", harp_type_double, 1,
-                                                   dimension_type, NULL, description, "1",
+                                                   dimension_type, NULL, description, HARP_UNIT_DIMENSIONLESS,
                                                    exclude_cloud_optical_thickness, read_cloud_optical_thickness);
     path = "/DETAILED_RESULTS/CloudOpticalThickness[]";
     harp_variable_definition_add_mapping(variable_definition, NULL, "V1 product", path, NULL);
@@ -2182,8 +2186,8 @@ static void register_common_variables(harp_product_definition *product_definitio
     description = "uncertainty of the cloud optical depth";
     variable_definition =
         harp_ingestion_register_variable_full_read(product_definition, "cloud_optical_depth_uncertainty",
-                                                   harp_type_double, 1, dimension_type, NULL, description, "1",
-                                                   exclude_cloud_optical_thickness_error,
+                                                   harp_type_double, 1, dimension_type, NULL, description,
+                                                   HARP_UNIT_DIMENSIONLESS, exclude_cloud_optical_thickness_error,
                                                    read_cloud_optical_thickness_error);
     description = "derived from the relative error in percent as: CloudOpticalThickness_Error[] * 0.01 * "
         "CloudOpticalThickness[]";
@@ -2196,7 +2200,7 @@ static void register_common_variables(harp_product_definition *product_definitio
     description = "absorbing aerosol index";
     variable_definition =
         harp_ingestion_register_variable_full_read(product_definition, "absorbing_aerosol_index", harp_type_double, 1,
-                                                   dimension_type, NULL, description, "1",
+                                                   dimension_type, NULL, description, HARP_UNIT_DIMENSIONLESS,
                                                    exclude_absorbing_aerosol_index, read_absorbing_aerosol_index);
     path = "/DETAILED_RESULTS/AAI[]";
     harp_variable_definition_add_mapping(variable_definition, NULL, NULL, path, NULL);

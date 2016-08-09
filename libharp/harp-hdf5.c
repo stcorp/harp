@@ -809,6 +809,11 @@ static int read_variable(hid_t dataset_id, const char *name, const hdf5_dimensio
         {
             return -1;
         }
+        if (strcmp(variable->unit, "1") == 0)
+        {
+            /* convert "1" to "" */
+            variable->unit[0] = '\0';
+        }
     }
     else if (result < 0)
     {
@@ -1436,9 +1441,11 @@ static int write_variable(hid_t group_id, harp_variable *variable)
         }
     }
 
-    if (variable->unit != NULL && strcmp(variable->unit, "") != 0)
+    if (variable->unit != NULL)
     {
-        if (write_string_attribute(dataset_id, "units", variable->unit) != 0)
+        const char *unit = variable->unit[0] == '\0' ? "1" : variable->unit;    /* convert "" to "1" */
+
+        if (write_string_attribute(dataset_id, "units", unit) != 0)
         {
             H5Dclose(dataset_id);
             return -1;

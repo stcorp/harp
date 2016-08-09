@@ -29,8 +29,8 @@
 
 #define MAX_UNIT_LENGTH 30
 
-#define MAX_NAME_LENGTH 50
-#define MAX_DESCRIPTION_LENGTH 50
+#define MAX_NAME_LENGTH 80
+#define MAX_DESCRIPTION_LENGTH 100
 #define MAX_PATH_LENGTH 100
 #define MAX_MAPPING_LENGTH 100
 
@@ -834,8 +834,8 @@ static int init_product_definition(harp_ingestion_module *module, mwr_gas gas, i
     snprintf(gas_var_name, MAX_NAME_LENGTH, "%s_volume_mixing_ratio_avk", gas_name[gas]);
     snprintf(gas_description, MAX_DESCRIPTION_LENGTH, "averaging kernel for the %s volume mixing ratio", gas_name[gas]);
     variable_definition = harp_ingestion_register_variable_full_read
-        (product_definition, gas_var_name, harp_type_double, 3, dimension_type, NULL, gas_description, "1", NULL,
-         read_vmr_avk);
+        (product_definition, gas_var_name, harp_type_double, 3, dimension_type, NULL, gas_description,
+         HARP_UNIT_DIMENSIONLESS, NULL, read_vmr_avk);
     snprintf(gas_mapping_path, MAX_PATH_LENGTH, "/%s.MIXING.RATIO%s_EMISSION_AVK", gas_name[gas],
              version == 1 ? "" : ".VOLUME");
     harp_variable_definition_add_mapping(variable_definition, NULL, NULL, gas_mapping_path, NULL);

@@ -26,7 +26,7 @@
 #include <string.h>
 
 static const char *chemical_species_names[] = {
-    "air",
+    "dry_air",
     "BrO",
     "BrO2",
     "CCl2F2",

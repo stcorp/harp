@@ -905,7 +905,7 @@ static int read_o3_pr_volume_mixing_ratio_avk(void *user_data, harp_array data)
                         info->num_scanlines * info->num_pixels * info->num_levels * info->num_levels, data);
 }
 
-static int read_o3_pr_volume_mixing_ratio_cov(void *user_data, harp_array data)
+static int read_o3_pr_volume_mixing_ratio_covariance(void *user_data, harp_array data)
 {
     ingest_info *info = (ingest_info *)user_data;
 
@@ -1839,7 +1839,8 @@ static void register_aer_ai_product(void)
     description = "aerosol index";
     variable_definition =
         harp_ingestion_register_variable_full_read(product_definition, "aerosol_index", harp_type_float, 1,
-                                                   dimension_type, NULL, description, "1", NULL, read_aerosol_index);
+                                                   dimension_type, NULL, description, HARP_UNIT_DIMENSIONLESS, NULL,
+                                                   read_aerosol_index);
     harp_variable_definition_add_mapping(variable_definition, "wavelength_ratio=354_388nm", NULL,
                                          "/PRODUCT/aerosol_index_354_388", NULL);
     harp_variable_definition_add_mapping(variable_definition, "wavelength_ratio=340_380nm", NULL,
@@ -1848,7 +1849,7 @@ static void register_aer_ai_product(void)
     description = "uncertainty of the aerosol index";
     variable_definition =
         harp_ingestion_register_variable_full_read(product_definition, "aerosol_index_uncertainty", harp_type_float, 1,
-                                                   dimension_type, NULL, description, "1", NULL,
+                                                   dimension_type, NULL, description, HARP_UNIT_DIMENSIONLESS, NULL,
                                                    read_aerosol_index_uncertainty);
     harp_variable_definition_add_mapping(variable_definition, "wavelength_ratio=354_388nm", NULL,
                                          "/PRODUCT/aerosol_index_354_388_precision", NULL);
@@ -1936,8 +1937,8 @@ static void register_ch4_product(void)
     description = "column averaging kernel for methane retrieval";
     variable_definition =
         harp_ingestion_register_variable_full_read(product_definition, "CH4_column_volume_mixing_ratio_avk",
-                                                   harp_type_float, 2, dimension_type, NULL, description, "1", NULL,
-                                                   read_ch4_column_avk);
+                                                   harp_type_float, 2, dimension_type, NULL, description,
+                                                   HARP_UNIT_DIMENSIONLESS, NULL, read_ch4_column_avk);
     path = "/PRODUCT/SUPPORT_DATA/DETAILED_RESULTS/column_averaging_kernel[]";
     harp_variable_definition_add_mapping(variable_definition, NULL, NULL, path, NULL);
 }
@@ -2108,7 +2109,8 @@ static void register_o3_product(void)
     description = "averaging kernel for the O3 column number density";
     variable_definition =
         harp_ingestion_register_variable_full_read(product_definition, "O3_column_number_density_avk", harp_type_float,
-                                                   2, dimension_type, NULL, description, "1", NULL, read_o3_column_avk);
+                                                   2, dimension_type, NULL, description, HARP_UNIT_DIMENSIONLESS, NULL,
+                                                   read_o3_column_avk);
     path = "/PRODUCT/SUPPORT_DATA/DETAILED_RESULTS/averaging_kernels[]";
     harp_variable_definition_add_mapping(variable_definition, NULL, NULL, path, NULL);
 }
@@ -2172,7 +2174,7 @@ static void register_o3_pr_product(void)
     description = "O3 volume mixing ratio averaging kernel";
     variable_definition =
         harp_ingestion_register_variable_full_read(product_definition, "O3_volume_mixing_ratio_avk", harp_type_float, 3,
-                                                   dimension_type, NULL, description, "1", NULL,
+                                                   dimension_type, NULL, description, HARP_UNIT_DIMENSIONLESS, NULL,
                                                    read_o3_pr_volume_mixing_ratio_avk);
     path = "/PRODUCT/SUPPORT_DATA/DETAILED_RESULTS/averaging_kernel[]";
     harp_variable_definition_add_mapping(variable_definition, NULL, NULL, path, NULL);
@@ -2196,9 +2198,9 @@ static void register_o3_pr_product(void)
 
     description = "O3 volume mixing ratio covariance";
     variable_definition =
-        harp_ingestion_register_variable_full_read(product_definition, "O3_volume_mixing_ratio_cov", harp_type_float, 3,
-                                                   dimension_type, NULL, description, "pptv", NULL,
-                                                   read_o3_pr_volume_mixing_ratio_cov);
+        harp_ingestion_register_variable_full_read(product_definition, "O3_volume_mixing_ratio_covariance",
+                                                   harp_type_float, 3, dimension_type, NULL, description, "pptv", NULL,
+                                                   read_o3_pr_volume_mixing_ratio_covariance);
     path = "/PRODUCT/SUPPORT_DATA/DETAILED_RESULTS/O3_error_covariance_matrix[]";
     harp_variable_definition_add_mapping(variable_definition, NULL, NULL, path, NULL);
 
@@ -2304,8 +2306,8 @@ static void register_no2_product(void)
         "the atmospheric layers from the surface up to and including the layer with the tropopause";
     variable_definition =
         harp_ingestion_register_variable_full_read(product_definition, "tropospheric_NO2_column_number_density_amf",
-                                                   harp_type_float, 1, dimension_type, NULL, description, "1", NULL,
-                                                   read_no2_column_tropospheric_amf);
+                                                   harp_type_float, 1, dimension_type, NULL, description,
+                                                   HARP_UNIT_DIMENSIONLESS, NULL, read_no2_column_tropospheric_amf);
     path = "/PRODUCT/amf_trop[]";
     harp_variable_definition_add_mapping(variable_definition, NULL, NULL, path, NULL);
 
@@ -2329,7 +2331,7 @@ static void register_no2_product(void)
         "atmospheric layers from the surface to top-of-atmosphere";
     variable_definition =
         harp_ingestion_register_variable_full_read(product_definition, "NO2_column_number_density_amf", harp_type_float,
-                                                   1, dimension_type, NULL, description, "1", NULL,
+                                                   1, dimension_type, NULL, description, HARP_UNIT_DIMENSIONLESS, NULL,
                                                    read_no2_column_amf);
     path = "/PRODUCT/amf_total[]";
     harp_variable_definition_add_mapping(variable_definition, NULL, NULL, path, NULL);
@@ -2338,7 +2340,7 @@ static void register_no2_product(void)
         "vertical column density";
     variable_definition =
         harp_ingestion_register_variable_full_read(product_definition, "NO2_column_number_density_avk", harp_type_float,
-                                                   2, dimension_type, NULL, description, "1", NULL,
+                                                   2, dimension_type, NULL, description, HARP_UNIT_DIMENSIONLESS, NULL,
                                                    read_no2_column_avk);
     path = "/PRODUCT/averaging_kernel[]";
     harp_variable_definition_add_mapping(variable_definition, NULL, NULL, path, NULL);
@@ -2407,7 +2409,8 @@ static void register_cloud_product(void)
     description = "retrieved fraction of horizontal area occupied by clouds using the OCRA/ROCINN CAL model";
     variable_definition =
         harp_ingestion_register_variable_full_read(product_definition, "cloud_fraction", harp_type_float, 1,
-                                                   dimension_type, NULL, description, "1", NULL, read_cloud_fraction);
+                                                   dimension_type, NULL, description, HARP_UNIT_DIMENSIONLESS, NULL,
+                                                   read_cloud_fraction);
     path = "/PRODUCT/cloud_radiometric_fraction[]";
     harp_variable_definition_add_mapping(variable_definition, NULL, NULL, path, NULL);
 
@@ -2416,7 +2419,7 @@ static void register_cloud_product(void)
         "uncertainty of the retrieved fraction of horizontal area occupied by clouds using the OCRA/ROCINN CAL model";
     variable_definition =
         harp_ingestion_register_variable_full_read(product_definition, "cloud_fraction_uncertainty", harp_type_float, 1,
-                                                   dimension_type, NULL, description, "1", NULL,
+                                                   dimension_type, NULL, description, HARP_UNIT_DIMENSIONLESS, NULL,
                                                    read_cloud_fraction_precision);
     path = "/PRODUCT/cloud_radiometric_fraction_precision[]";
     harp_variable_definition_add_mapping(variable_definition, NULL, NULL, path, NULL);
@@ -2498,7 +2501,7 @@ static void register_fresco_product(void)
     description = "effective cloud fraction retrieved from the O2 A-band";
     variable_definition =
         harp_ingestion_register_variable_full_read(product_definition, "cloud_fraction", harp_type_float, 1,
-                                                   dimension_type, NULL, description, "1", NULL,
+                                                   dimension_type, NULL, description, HARP_UNIT_DIMENSIONLESS, NULL,
                                                    read_fresco_cloud_fraction);
     path = "/PRODUCT/cloud_fraction[]";
     harp_variable_definition_add_mapping(variable_definition, NULL, NULL, path, NULL);
@@ -2506,7 +2509,7 @@ static void register_fresco_product(void)
     description = "uncertainty of the effective cloud fraction";
     variable_definition =
         harp_ingestion_register_variable_full_read(product_definition, "cloud_fraction_uncertainty", harp_type_float, 1,
-                                                   dimension_type, NULL, description, "1", NULL,
+                                                   dimension_type, NULL, description, HARP_UNIT_DIMENSIONLESS, NULL,
                                                    read_fresco_cloud_fraction_precision);
     path = "/PRODUCT/cloud_fraction_precision[]";
     harp_variable_definition_add_mapping(variable_definition, NULL, NULL, path, NULL);
@@ -2546,7 +2549,7 @@ static void register_fresco_product(void)
     description = "cloud albedo; this is a fixed value for FRESCO";
     variable_definition =
         harp_ingestion_register_variable_full_read(product_definition, "cloud_albedo", harp_type_float, 1,
-                                                   dimension_type, NULL, description, "1", NULL,
+                                                   dimension_type, NULL, description, HARP_UNIT_DIMENSIONLESS, NULL,
                                                    read_fresco_cloud_albedo);
     path = "/PRODUCT/cloud_albedo[]";
     harp_variable_definition_add_mapping(variable_definition, NULL, NULL, path, NULL);
@@ -2554,7 +2557,7 @@ static void register_fresco_product(void)
     description = "cloud albedo error; since cloud albedo is fixed for FRESCO, this value is set to NaN";
     variable_definition =
         harp_ingestion_register_variable_full_read(product_definition, "cloud_albedo_uncertainty", harp_type_float, 1,
-                                                   dimension_type, NULL, description, "1", NULL,
+                                                   dimension_type, NULL, description, HARP_UNIT_DIMENSIONLESS, NULL,
                                                    read_fresco_cloud_albedo_precision);
     path = "/PRODUCT/cloud_albedo_precision[]";
     harp_variable_definition_add_mapping(variable_definition, NULL, NULL, path, NULL);

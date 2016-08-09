@@ -212,19 +212,6 @@ static int get_copy(harp_variable *variable, const harp_variable **source_variab
     return 0;
 }
 
-static int get_cov_from_systematic_and_random_cov(harp_variable *variable, const harp_variable **source_variable)
-{
-    long i;
-
-    memcpy(variable->data.ptr, source_variable[0]->data.ptr, variable->num_elements * sizeof(double));
-    for (i = 0; i < variable->num_elements; i++)
-    {
-        variable->data.double_data[i] += source_variable[1]->data.double_data[i];
-    }
-
-    return 0;
-}
-
 static int get_datetime_from_datetime_start_and_stop(harp_variable *variable, const harp_variable **source_variable)
 {
     long i;
@@ -593,15 +580,15 @@ static int get_midpoint_from_bounds_log(harp_variable *variable, const harp_vari
     return 0;
 }
 
-static int get_nd_cov_from_vmr_cov_pressure_and_temperature(harp_variable *variable,
-                                                            const harp_variable **source_variable)
+static int get_nd_covariance_from_vmr_covariance_pressure_and_temperature(harp_variable *variable,
+                                                                          const harp_variable **source_variable)
 {
     long length = variable->dimension[1];
     long i;
 
     for (i = 0; i < variable->dimension[0]; i++)
     {
-        harp_profile_nd_cov_from_vmr_cov_pressure_and_temperature
+        harp_profile_nd_covariance_from_vmr_covariance_pressure_and_temperature
             (length, &source_variable[1]->data.double_data[i * length * length],
              &source_variable[2]->data.double_data[i * length], &source_variable[3]->data.double_data[i * length],
              &variable->data.double_data[i * length * length]);
@@ -702,15 +689,15 @@ static int get_partial_column_from_density_and_alt_bounds(harp_variable *variabl
     return 0;
 }
 
-static int get_partial_column_cov_from_density_cov_and_alt_bounds(harp_variable *variable,
-                                                                  const harp_variable **source_variable)
+static int get_partial_column_covariance_from_density_covariance_and_alt_bounds(harp_variable *variable,
+                                                                                const harp_variable **source_variable)
 {
     long length = variable->dimension[1];
     long i;
 
     for (i = 0; i < variable->dimension[0]; i++)
     {
-        harp_profile_partial_column_cov_from_density_cov_and_altitude_bounds
+        harp_profile_partial_column_covariance_from_density_covariance_and_altitude_bounds
             (length, &source_variable[1]->data.double_data[i * length * length],
              &source_variable[2]->data.double_data[i * length * 2], &variable->data.double_data[i * length * length]);
     }
@@ -998,15 +985,15 @@ static int get_virtual_temperature_from_pressure_temperature_and_relative_humidi
 
 }
 
-static int get_vmr_cov_from_nd_cov_pressure_and_temperature(harp_variable *variable,
-                                                            const harp_variable **source_variable)
+static int get_vmr_covariance_from_nd_covariance_pressure_and_temperature(harp_variable *variable,
+                                                                          const harp_variable **source_variable)
 {
     long length = variable->dimension[1];
     long i;
 
     for (i = 0; i < variable->dimension[0]; i++)
     {
-        harp_profile_vmr_cov_from_nd_cov_pressure_and_temperature
+        harp_profile_vmr_covariance_from_nd_covariance_pressure_and_temperature
             (length, &source_variable[1]->data.double_data[i * length * length],
              &source_variable[2]->data.double_data[i * length], &source_variable[3]->data.double_data[i * length],
              &variable->data.double_data[i * length * length]);
@@ -1487,44 +1474,24 @@ static int add_vertical_uncertainty_conversions(const char *variable_name, const
 
     if (unit_squared != NULL)
     {
-        char name_cov[MAX_NAME_LENGTH];
-        char name_cov_sys[MAX_NAME_LENGTH];
-        char name_cov_rnd[MAX_NAME_LENGTH];
+        char name_covariance[MAX_NAME_LENGTH];
 
-        snprintf(name_cov, MAX_NAME_LENGTH, "%s_cov", variable_name);
-        snprintf(name_cov_sys, MAX_NAME_LENGTH, "%s_cov_systematic", variable_name);
-        snprintf(name_cov_rnd, MAX_NAME_LENGTH, "%s_cov_random", variable_name);
+        snprintf(name_covariance, MAX_NAME_LENGTH, "%s_covariance", variable_name);
 
         dimension_type[2] = harp_dimension_vertical;
-
-        if (harp_variable_conversion_new(name_cov, harp_type_double, unit, 3, dimension_type, 0,
-                                         get_cov_from_systematic_and_random_cov, &conversion) != 0)
-        {
-            return -1;
-        }
-        if (harp_variable_conversion_add_source(conversion, name_cov_sys, harp_type_double, unit, 3, dimension_type,
-                                                0) != 0)
-        {
-            return -1;
-        }
-        if (harp_variable_conversion_add_source(conversion, name_cov_rnd, harp_type_double, unit, 3, dimension_type,
-                                                0) != 0)
-        {
-            return -1;
-        }
 
         if (harp_variable_conversion_new(name_uncertainty, harp_type_double, unit, 2, dimension_type, 0,
                                          get_sqrt_trace_from_matrix, &conversion) != 0)
         {
             return -1;
         }
-        if (harp_variable_conversion_add_source(conversion, name_cov, harp_type_double, unit_squared, 3, dimension_type,
-                                                0) != 0)
+        if (harp_variable_conversion_add_source(conversion, name_covariance, harp_type_double, unit_squared, 3,
+                                                dimension_type, 0) != 0)
         {
             return -1;
         }
 
-        if (harp_variable_conversion_new(name_cov, harp_type_double, unit_squared, 3, dimension_type, 0,
+        if (harp_variable_conversion_new(name_covariance, harp_type_double, unit_squared, 3, dimension_type, 0,
                                          get_matrix_from_sqrt_trace, &conversion) != 0)
         {
             return -1;
@@ -1567,46 +1534,40 @@ static int add_species_conversions(const char *species)
     harp_variable_conversion *conversion;
     harp_dimension_type dimension_type[HARP_MAX_NUM_DIMS];
     char name_column_nd[MAX_NAME_LENGTH];
-    char name_column_nd_cov[MAX_NAME_LENGTH];
+    char name_column_nd_covariance[MAX_NAME_LENGTH];
     char name_column_nd_uncertainty[MAX_NAME_LENGTH];
     char name_density[MAX_NAME_LENGTH];
     char name_mmr[MAX_NAME_LENGTH];
-    char name_mmr_cov[MAX_NAME_LENGTH];
+    char name_mmr_covariance[MAX_NAME_LENGTH];
     char name_mmr_uncertainty[MAX_NAME_LENGTH];
     char name_mmrw[MAX_NAME_LENGTH];
     char name_nd[MAX_NAME_LENGTH];
-    char name_nd_cov[MAX_NAME_LENGTH];
+    char name_nd_covariance[MAX_NAME_LENGTH];
     char name_nd_uncertainty[MAX_NAME_LENGTH];
     char name_pp[MAX_NAME_LENGTH];
     char name_strato_column_nd[MAX_NAME_LENGTH];
     char name_tropo_column_nd[MAX_NAME_LENGTH];
     char name_vmr[MAX_NAME_LENGTH];
-    char name_vmr_cov[MAX_NAME_LENGTH];
+    char name_vmr_covariance[MAX_NAME_LENGTH];
     char name_vmr_uncertainty[MAX_NAME_LENGTH];
     int i;
 
-    if (strcmp(species, "air") == 0)
-    {
-        /* These conversions are not applicable to air */
-        return 0;
-    }
-
     snprintf(name_column_nd, MAX_NAME_LENGTH, "%s_column_number_density", species);
-    snprintf(name_column_nd_cov, MAX_NAME_LENGTH, "%s_column_number_density_cov", species);
+    snprintf(name_column_nd_covariance, MAX_NAME_LENGTH, "%s_column_number_density_covariance", species);
     snprintf(name_column_nd_uncertainty, MAX_NAME_LENGTH, "%s_column_number_density_uncertainty", species);
     snprintf(name_density, MAX_NAME_LENGTH, "%s_density", species);
     snprintf(name_mmr, MAX_NAME_LENGTH, "%s_mass_mixing_ratio", species);
-    snprintf(name_mmr_cov, MAX_NAME_LENGTH, "%s_mass_mixing_ratio_cov", species);
+    snprintf(name_mmr_covariance, MAX_NAME_LENGTH, "%s_mass_mixing_ratio_covariance", species);
     snprintf(name_mmr_uncertainty, MAX_NAME_LENGTH, "%s_mass_mixing_ratio_uncertainty", species);
     snprintf(name_mmrw, MAX_NAME_LENGTH, "%s_mass_mixing_ratio_wet", species);
     snprintf(name_nd, MAX_NAME_LENGTH, "%s_number_density", species);
-    snprintf(name_nd_cov, MAX_NAME_LENGTH, "%s_number_density_cov", species);
+    snprintf(name_nd_covariance, MAX_NAME_LENGTH, "%s_number_density_covariance", species);
     snprintf(name_nd_uncertainty, MAX_NAME_LENGTH, "%s_number_density_uncertainty", species);
     snprintf(name_pp, MAX_NAME_LENGTH, "%s_partial_pressure", species);
     snprintf(name_strato_column_nd, MAX_NAME_LENGTH, "stratospheric_%s_column_number_density", species);
     snprintf(name_tropo_column_nd, MAX_NAME_LENGTH, "tropospheric_%s_column_number_density", species);
     snprintf(name_vmr, MAX_NAME_LENGTH, "%s_volume_mixing_ratio", species);
-    snprintf(name_vmr_cov, MAX_NAME_LENGTH, "%s_volume_mixing_ratio_cov", species);
+    snprintf(name_vmr_covariance, MAX_NAME_LENGTH, "%s_volume_mixing_ratio_covariance", species);
     snprintf(name_vmr_uncertainty, MAX_NAME_LENGTH, "%s_volume_mixing_ratio_uncertainty", species);
 
     dimension_type[0] = harp_dimension_time;
@@ -1675,17 +1636,20 @@ static int add_species_conversions(const char *species)
     {
         return -1;
     }
-    if (harp_variable_conversion_new(name_column_nd_cov, harp_type_double, HARP_UNIT_COLUMN_NUMBER_DENSITY_SQUARED, 3,
-                                     dimension_type, 0, get_partial_column_cov_from_density_cov_and_alt_bounds,
-                                     &conversion) != 0)
+    dimension_type[2] = harp_dimension_vertical;
+    if (harp_variable_conversion_new(name_column_nd_covariance, harp_type_double,
+                                     HARP_UNIT_COLUMN_NUMBER_DENSITY_SQUARED, 3, dimension_type, 0,
+                                     get_partial_column_covariance_from_density_covariance_and_alt_bounds, &conversion)
+                                     != 0)
     {
         return -1;
     }
-    if (harp_variable_conversion_add_source(conversion, name_nd_cov, harp_type_double,
+    if (harp_variable_conversion_add_source(conversion, name_nd_covariance, harp_type_double,
                                             HARP_UNIT_NUMBER_DENSITY_SQUARED, 3, dimension_type, 0) != 0)
     {
         return -1;
     }
+    dimension_type[2] = harp_dimension_independent;
     if (harp_variable_conversion_add_source(conversion, "altitude_bounds", harp_type_double, HARP_UNIT_LENGTH, 3,
                                             dimension_type, 2) != 0)
     {
@@ -1745,12 +1709,14 @@ static int add_species_conversions(const char *species)
             return -1;
         }
     }
-    if (harp_variable_conversion_new(name_nd_cov, harp_type_double, HARP_UNIT_NUMBER_DENSITY_SQUARED, 3, dimension_type,
-                                     0, get_nd_cov_from_vmr_cov_pressure_and_temperature, &conversion) != 0)
+    dimension_type[2] = harp_dimension_vertical;
+    if (harp_variable_conversion_new(name_nd_covariance, harp_type_double, HARP_UNIT_NUMBER_DENSITY_SQUARED, 3,
+                                     dimension_type, 0, get_nd_covariance_from_vmr_covariance_pressure_and_temperature,
+                                     &conversion) != 0)
     {
         return -1;
     }
-    if (harp_variable_conversion_add_source(conversion, name_vmr_cov, harp_type_double,
+    if (harp_variable_conversion_add_source(conversion, name_vmr_covariance, harp_type_double,
                                             HARP_UNIT_VOLUME_MIXING_RATIO_SQUARED, 3, dimension_type, 0) != 0)
     {
         return -1;
@@ -1778,7 +1744,7 @@ static int add_species_conversions(const char *species)
     }
     dimension_type[2] = harp_dimension_independent;
     if (harp_variable_conversion_add_source(conversion, "altitude_bounds", harp_type_double, HARP_UNIT_LENGTH, 3,
-                                            dimension_type, 0) != 0)
+                                            dimension_type, 2) != 0)
     {
         return -1;
     }
@@ -1907,14 +1873,14 @@ static int add_species_conversions(const char *species)
             return -1;
         }
     }
-    if (harp_variable_conversion_new(name_vmr_cov, harp_type_double, HARP_UNIT_VOLUME_MIXING_RATIO_SQUARED, 3,
-                                     dimension_type, 0, get_vmr_cov_from_nd_cov_pressure_and_temperature, &conversion)
-        != 0)
+    if (harp_variable_conversion_new(name_vmr_covariance, harp_type_double, HARP_UNIT_VOLUME_MIXING_RATIO_SQUARED, 3,
+                                     dimension_type, 0,
+                                     get_vmr_covariance_from_nd_covariance_pressure_and_temperature, &conversion) != 0)
     {
         return -1;
     }
-    if (harp_variable_conversion_add_source(conversion, name_nd_cov, harp_type_double, HARP_UNIT_NUMBER_DENSITY_SQUARED,
-                                            3, dimension_type, 0) != 0)
+    if (harp_variable_conversion_add_source(conversion, name_nd_covariance, harp_type_double,
+                                            HARP_UNIT_NUMBER_DENSITY_SQUARED, 3, dimension_type, 0) != 0)
     {
         return -1;
     }
@@ -3061,10 +3027,10 @@ int harp_derived_variable_list_add_conversion(harp_variable_conversion *conversi
     int index;
     int i;
 
-    index = hashtable_get_index_from_name(harp_derived_variable_conversions->hash_data, conversion->variable_name);
+    index = hashtable_get_index_from_name(harp_derived_variable_conversions->hash_data, conversion->dimsvar_name);
     if (index < 0)
     {
-        /* no conversions for this variable name exists -> create new conversion list */
+        /* no conversions for this variable name+dims exists -> create new conversion list */
         if (harp_derived_variable_conversions->num_variables % BLOCK_SIZE == 0)
         {
             harp_variable_conversion_list **new_list;
@@ -3092,7 +3058,7 @@ int harp_derived_variable_list_add_conversion(harp_variable_conversion *conversi
         conversion_list->num_conversions = 0;
         conversion_list->conversion = NULL;
 
-        hashtable_add_name(harp_derived_variable_conversions->hash_data, conversion->variable_name);
+        hashtable_add_name(harp_derived_variable_conversions->hash_data, conversion->dimsvar_name);
 
         harp_derived_variable_conversions->num_variables++;
         harp_derived_variable_conversions->conversions_for_variable[harp_derived_variable_conversions->num_variables -
