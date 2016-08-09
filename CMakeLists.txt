@@ -205,7 +205,10 @@ set(LIBHARP_SOURCES
   libharp/harp-action-analyze.c
   libharp/harp-action-lex.h
   libharp/harp-action-lex.c
-  libharp/harp-action-list.c
+  libharp/harp-program.h
+  libharp/harp-program.c
+  libharp/harp-program-execute.h
+  libharp/harp-program-execute.c
   libharp/harp-action-parse.h
   libharp/harp-action-parse.c
   libharp/harp-analysis.c
