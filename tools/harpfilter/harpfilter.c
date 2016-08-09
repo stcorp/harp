@@ -53,9 +53,9 @@ static void print_help()
     printf("\n");
 
     printf("        Options:\n");
-    printf("            -a, --actions <action list>\n");
-    printf("                List of actions to apply to the product.\n");
-    printf("                An action list needs to be provided as a single expression.\n");
+    printf("            -a, --operations <operation list>\n");
+    printf("                List of operations to apply to the product.\n");
+    printf("                An operation list needs to be provided as a single expression.\n");
     printf("\n");
     printf("            -f, --format <format>\n");
     printf("                Output format:\n");
@@ -63,10 +63,10 @@ static void print_help()
     printf("                    hdf4\n");
     printf("                    hdf5\n");
     printf("\n");
-    printf("        Action list:\n");
-    printf("            Actions are separated by semi-colons. Each action is either\n");
+    printf("        Operation list:\n");
+    printf("            Operations are separated by semi-colons. Each operation is either\n");
     printf("            a comparison filter, a membership test filter, or a function\n");
-    printf("            call. Strings used in actions should be quoted with double\n");
+    printf("            call. Strings used in operations should be quoted with double\n");
     printf("            quotes.\n");
     printf("\n");
     printf("            Comparison filter:\n");
@@ -220,7 +220,7 @@ static int list_conversions(int argc, char *argv[])
 static int filter(int argc, char *argv[])
 {
     harp_product *product;
-    const char *actions = NULL;
+    const char *operations = NULL;
     const char *output_filename = NULL;
     const char *output_format = "netcdf";
     const char *input_filename = NULL;
@@ -229,9 +229,10 @@ static int filter(int argc, char *argv[])
     /* Parse arguments after list/'export format' */
     for (i = 1; i < argc; i++)
     {
-        if ((strcmp(argv[i], "-a") == 0 || strcmp(argv[i], "--actions") == 0) && i + 1 < argc && argv[i + 1][0] != '-')
+        if ((strcmp(argv[i], "-a") == 0 || strcmp(argv[i], "--operations") == 0) && i + 1 < argc &&
+            argv[i + 1][0] != '-')
         {
-            actions = argv[i + 1];
+            operations = argv[i + 1];
             i++;
         }
         else if ((strcmp(argv[i], "-f") == 0 || strcmp(argv[i], "--format") == 0) && i + 1 < argc
@@ -275,9 +276,9 @@ static int filter(int argc, char *argv[])
         return -1;
     }
 
-    if (actions != NULL)
+    if (operations != NULL)
     {
-        if (harp_product_execute_actions(product, actions) != 0)
+        if (harp_product_execute_operations(product, operations) != 0)
         {
             harp_product_delete(product);
             return -1;

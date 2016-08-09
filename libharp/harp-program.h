@@ -20,23 +20,23 @@
 #ifndef HARP_PROGRAM_H
 #define HARP_PROGRAM_H
 
-#include "harp-action.h"
+#include "harp-operation.h"
 
 #include <assert.h>
 #include <stdlib.h>
 
-/* HARP programs are list of harp_actions */
+/* HARP programs are list of harp_operations */
 typedef struct harp_program_struct
 {
-    int num_actions;
-    harp_action **action;
+    int num_operations;
+    harp_operation **operation;
 } harp_program;
 
 int harp_program_new(harp_program **new_program);
 void harp_program_delete(harp_program *program);
-int harp_program_add_action(harp_program *program, harp_action *action);
-int harp_program_remove_action_at_index(harp_program *program, int index);
-int harp_program_remove_action(harp_program *program, harp_action *action);
+int harp_program_add_operation(harp_program *program, harp_operation *operation);
+int harp_program_remove_operation_at_index(harp_program *program, int index);
+int harp_program_remove_operation(harp_program *program, harp_operation *operation);
 int harp_program_copy(const harp_program *other_program, harp_program **new_program);
 
 /* Parser */

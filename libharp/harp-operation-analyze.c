@@ -19,15 +19,15 @@
  */
 
 #include "harp-internal.h"
-#include "harp-action.h"
-#include "harp-action-parse.h"
+#include "harp-operation.h"
+#include "harp-operation-parse.h"
 #include "harp-program.h"
 
 #include <assert.h>
 #include <stdlib.h>
 #include <string.h>
 
-typedef int create_func(const ast_node *argument_list, harp_action **new_action);
+typedef int create_func(const ast_node *argument_list, harp_operation **new_operation);
 
 #define MAX_NUM_FUNCTION_ARGUMENTS 5
 
@@ -39,17 +39,17 @@ typedef struct function_prototype_struct
     create_func *create_func;
 } function_prototype;
 
-static int create_collocation_filter_left(const ast_node *argument_list, harp_action **new_action);
-static int create_collocation_filter_right(const ast_node *argument_list, harp_action **new_action);
-static int create_valid_range_filter(const ast_node *argument_list, harp_action **new_action);
-static int create_longitude_range_filter(const ast_node *argument_list, harp_action **new_action);
-static int create_point_distance_filter(const ast_node *argument_list, harp_action **new_action);
-static int create_area_mask_covers_point_filter(const ast_node *argument_list, harp_action **new_action);
-static int create_area_mask_covers_area_filter(const ast_node *argument_list, harp_action **new_action);
-static int create_area_mask_intersects_area_filter(const ast_node *argument_list, harp_action **new_action);
-static int create_variable_derivation(const ast_node *argument_list, harp_action **new_action);
-static int create_variable_inclusion(const ast_node *argument_list, harp_action **new_action);
-static int create_variable_exclusion(const ast_node *argument_list, harp_action **new_action);
+static int create_collocation_filter_left(const ast_node *argument_list, harp_operation **new_operation);
+static int create_collocation_filter_right(const ast_node *argument_list, harp_operation **new_operation);
+static int create_valid_range_filter(const ast_node *argument_list, harp_operation **new_operation);
+static int create_longitude_range_filter(const ast_node *argument_list, harp_operation **new_operation);
+static int create_point_distance_filter(const ast_node *argument_list, harp_operation **new_operation);
+static int create_area_mask_covers_point_filter(const ast_node *argument_list, harp_operation **new_operation);
+static int create_area_mask_covers_area_filter(const ast_node *argument_list, harp_operation **new_operation);
+static int create_area_mask_intersects_area_filter(const ast_node *argument_list, harp_operation **new_operation);
+static int create_variable_derivation(const ast_node *argument_list, harp_operation **new_operation);
+static int create_variable_inclusion(const ast_node *argument_list, harp_operation **new_operation);
+static int create_variable_exclusion(const ast_node *argument_list, harp_operation **new_operation);
 
 #define NUM_BUILTIN_FUNCTIONS 11
 static function_prototype builtin_function[NUM_BUILTIN_FUNCTIONS] = {
@@ -144,7 +144,7 @@ static int get_dimension_list(const ast_node *dimension_list, int *num_dimension
 
     if (dimension_list->num_child_nodes > HARP_MAX_NUM_DIMS)
     {
-        harp_set_error(HARP_ERROR_ACTION, "char %lu: maximum number of dimensions exceeded",
+        harp_set_error(HARP_ERROR_OPERATION, "char %lu: maximum number of dimensions exceeded",
                        dimension_list->child_node[HARP_MAX_NUM_DIMS]->position);
         return -1;
     }
@@ -157,7 +157,7 @@ static int get_dimension_list(const ast_node *dimension_list, int *num_dimension
         child_node = dimension_list->child_node[i];
         if (harp_parse_dimension_type(child_node->payload.string, &dimension_type[i]) != 0)
         {
-            harp_set_error(HARP_ERROR_ACTION, "char %lu: unknown dimension type '%s'", child_node->position,
+            harp_set_error(HARP_ERROR_OPERATION, "char %lu: unknown dimension type '%s'", child_node->position,
                            child_node->payload.string);
             return -1;
         }
@@ -179,13 +179,13 @@ static int verify_qualified_name_has_no_qualifiers(const ast_node *qualified_nam
 
     if (dimension_list != NULL)
     {
-        harp_set_error(HARP_ERROR_ACTION, "char %lu: unexpected dimension list", dimension_list->position);
+        harp_set_error(HARP_ERROR_OPERATION, "char %lu: unexpected dimension list", dimension_list->position);
         return -1;
     }
 
     if (unit != NULL)
     {
-        harp_set_error(HARP_ERROR_ACTION, "char %lu: unexpected unit", unit->position);
+        harp_set_error(HARP_ERROR_OPERATION, "char %lu: unexpected unit", unit->position);
         return -1;
     }
 
@@ -203,7 +203,7 @@ static int verify_quantity_has_no_unit(const ast_node *quantity)
 
     if (unit != NULL)
     {
-        harp_set_error(HARP_ERROR_ACTION, "char %lu: unexpected unit", unit->position);
+        harp_set_error(HARP_ERROR_OPERATION, "char %lu: unexpected unit", unit->position);
         return -1;
     }
 
@@ -226,23 +226,23 @@ static void split_quantity(const ast_node *quantity, double *value, const char *
     }
 }
 
-static int create_collocation_filter_left(const ast_node *argument_list, harp_action **new_action)
+static int create_collocation_filter_left(const ast_node *argument_list, harp_operation **new_operation)
 {
     const ast_node *name;
 
     name = argument_list->child_node[0];
-    return harp_collocation_filter_new(name->payload.string, harp_collocation_left, new_action);
+    return harp_collocation_filter_new(name->payload.string, harp_collocation_left, new_operation);
 }
 
-static int create_collocation_filter_right(const ast_node *argument_list, harp_action **new_action)
+static int create_collocation_filter_right(const ast_node *argument_list, harp_operation **new_operation)
 {
     const ast_node *name;
 
     name = argument_list->child_node[0];
-    return harp_collocation_filter_new(name->payload.string, harp_collocation_right, new_action);
+    return harp_collocation_filter_new(name->payload.string, harp_collocation_right, new_operation);
 }
 
-static int create_valid_range_filter(const ast_node *argument_list, harp_action **new_action)
+static int create_valid_range_filter(const ast_node *argument_list, harp_operation **new_operation)
 {
     const ast_node *qualified_name;
     const ast_node *name;
@@ -254,10 +254,10 @@ static int create_valid_range_filter(const ast_node *argument_list, harp_action 
     }
 
     name = qualified_name->child_node[0];
-    return harp_valid_range_filter_new(name->payload.string, new_action);
+    return harp_valid_range_filter_new(name->payload.string, new_operation);
 }
 
-static int create_longitude_range_filter(const ast_node *argument_list, harp_action **new_action)
+static int create_longitude_range_filter(const ast_node *argument_list, harp_operation **new_operation)
 {
     double longitude_min;
     const char *longitude_min_unit;
@@ -267,10 +267,10 @@ static int create_longitude_range_filter(const ast_node *argument_list, harp_act
     split_quantity(argument_list->child_node[0], &longitude_min, &longitude_min_unit);
     split_quantity(argument_list->child_node[1], &longitude_max, &longitude_max_unit);
     return harp_longitude_range_filter_new(longitude_min, longitude_min_unit, longitude_max, longitude_max_unit,
-                                           new_action);
+                                           new_operation);
 }
 
-static int create_point_distance_filter(const ast_node *argument_list, harp_action **new_action)
+static int create_point_distance_filter(const ast_node *argument_list, harp_operation **new_operation)
 {
     double longitude;
     const char *longitude_unit;
@@ -284,26 +284,26 @@ static int create_point_distance_filter(const ast_node *argument_list, harp_acti
     split_quantity(argument_list->child_node[2], &distance, &distance_unit);
 
     return harp_point_distance_filter_new(longitude, longitude_unit, latitude, latitude_unit, distance, distance_unit,
-                                          new_action);
+                                          new_operation);
 }
 
-static int create_area_mask_covers_point_filter(const ast_node *argument_list, harp_action **new_action)
+static int create_area_mask_covers_point_filter(const ast_node *argument_list, harp_operation **new_operation)
 {
     const ast_node *name;
 
     name = argument_list->child_node[0];
-    return harp_area_mask_covers_point_filter_new(name->payload.string, new_action);
+    return harp_area_mask_covers_point_filter_new(name->payload.string, new_operation);
 }
 
-static int create_area_mask_covers_area_filter(const ast_node *argument_list, harp_action **new_action)
+static int create_area_mask_covers_area_filter(const ast_node *argument_list, harp_operation **new_operation)
 {
     const ast_node *name;
 
     name = argument_list->child_node[0];
-    return harp_area_mask_covers_area_filter_new(name->payload.string, new_action);
+    return harp_area_mask_covers_area_filter_new(name->payload.string, new_operation);
 }
 
-static int create_area_mask_intersects_area_filter(const ast_node *argument_list, harp_action **new_action)
+static int create_area_mask_intersects_area_filter(const ast_node *argument_list, harp_operation **new_operation)
 {
     const ast_node *name;
     const ast_node *quantity;
@@ -319,10 +319,10 @@ static int create_area_mask_intersects_area_filter(const ast_node *argument_list
 
     percentage = quantity->child_node[0]->payload.number;
 
-    return harp_area_mask_intersects_area_filter_new(name->payload.string, percentage, new_action);
+    return harp_area_mask_intersects_area_filter_new(name->payload.string, percentage, new_operation);
 }
 
-static int create_variable_derivation(const ast_node *argument_list, harp_action **new_action)
+static int create_variable_derivation(const ast_node *argument_list, harp_operation **new_operation)
 {
     const ast_node *qualified_name;
     const ast_node *dimension_list;
@@ -339,7 +339,7 @@ static int create_variable_derivation(const ast_node *argument_list, harp_action
     dimension_list = qualified_name->child_node[1];
     if (dimension_list == NULL)
     {
-        harp_set_error(HARP_ERROR_ACTION, "char %lu: expected dimension list", qualified_name->position);
+        harp_set_error(HARP_ERROR_OPERATION, "char %lu: expected dimension list", qualified_name->position);
         return -1;
     }
 
@@ -349,10 +349,10 @@ static int create_variable_derivation(const ast_node *argument_list, harp_action
     }
 
     unit = get_unit(qualified_name->child_node[2]);
-    return harp_variable_derivation_new(variable_name, num_dimensions, dimension_type, unit, new_action);
+    return harp_variable_derivation_new(variable_name, num_dimensions, dimension_type, unit, new_operation);
 }
 
-static int create_variable_inclusion(const ast_node *argument_list, harp_action **new_action)
+static int create_variable_inclusion(const ast_node *argument_list, harp_operation **new_operation)
 {
     const char **name_list;
     int i;
@@ -360,7 +360,8 @@ static int create_variable_inclusion(const ast_node *argument_list, harp_action 
     /* Check variable argument list. */
     if (argument_list->num_child_nodes == 0)
     {
-        harp_set_error(HARP_ERROR_ACTION, "char %lu: function expects one or more arguments", argument_list->position);
+        harp_set_error(HARP_ERROR_OPERATION, "char %lu: function expects one or more arguments",
+                       argument_list->position);
         return -1;
     }
 
@@ -371,7 +372,7 @@ static int create_variable_inclusion(const ast_node *argument_list, harp_action 
         argument = argument_list->child_node[i];
         if (argument->type != ast_qualified_name)
         {
-            harp_set_error(HARP_ERROR_ACTION, "char %lu: invalid argument type", argument->position);
+            harp_set_error(HARP_ERROR_OPERATION, "char %lu: invalid argument type", argument->position);
             return -1;
         }
 
@@ -381,7 +382,7 @@ static int create_variable_inclusion(const ast_node *argument_list, harp_action 
         }
     }
 
-    /* Create variable inclusion action. */
+    /* Create variable inclusion operation. */
     name_list = (const char **)malloc(argument_list->num_child_nodes * sizeof(const char *));
     if (name_list == NULL)
     {
@@ -399,7 +400,7 @@ static int create_variable_inclusion(const ast_node *argument_list, harp_action 
         name_list[i] = name->payload.string;
     }
 
-    if (harp_variable_inclusion_new(argument_list->num_child_nodes, name_list, new_action) != 0)
+    if (harp_variable_inclusion_new(argument_list->num_child_nodes, name_list, new_operation) != 0)
     {
         free(name_list);
         return -1;
@@ -409,7 +410,7 @@ static int create_variable_inclusion(const ast_node *argument_list, harp_action 
     return 0;
 }
 
-static int create_variable_exclusion(const ast_node *argument_list, harp_action **new_action)
+static int create_variable_exclusion(const ast_node *argument_list, harp_operation **new_operation)
 {
     const char **name_list;
     int i;
@@ -417,7 +418,8 @@ static int create_variable_exclusion(const ast_node *argument_list, harp_action 
     /* Check variable argument list. */
     if (argument_list->num_child_nodes == 0)
     {
-        harp_set_error(HARP_ERROR_ACTION, "char %lu: function expects one or more arguments", argument_list->position);
+        harp_set_error(HARP_ERROR_OPERATION, "char %lu: function expects one or more arguments",
+                       argument_list->position);
         return -1;
     }
 
@@ -428,7 +430,7 @@ static int create_variable_exclusion(const ast_node *argument_list, harp_action 
         argument = argument_list->child_node[i];
         if (argument->type != ast_qualified_name)
         {
-            harp_set_error(HARP_ERROR_ACTION, "char %lu: invalid argument type", argument->position);
+            harp_set_error(HARP_ERROR_OPERATION, "char %lu: invalid argument type", argument->position);
             return -1;
         }
 
@@ -438,7 +440,7 @@ static int create_variable_exclusion(const ast_node *argument_list, harp_action 
         }
     }
 
-    /* Create variable exclusion action. */
+    /* Create variable exclusion operation. */
     name_list = (const char **)malloc(argument_list->num_child_nodes * sizeof(const char *));
     if (name_list == NULL)
     {
@@ -456,7 +458,7 @@ static int create_variable_exclusion(const ast_node *argument_list, harp_action 
         name_list[i] = name->payload.string;
     }
 
-    if (harp_variable_exclusion_new(argument_list->num_child_nodes, name_list, new_action) != 0)
+    if (harp_variable_exclusion_new(argument_list->num_child_nodes, name_list, new_operation) != 0)
     {
         free(name_list);
         return -1;
@@ -466,21 +468,21 @@ static int create_variable_exclusion(const ast_node *argument_list, harp_action 
     return 0;
 }
 
-static int create_comparison(ast_node *node, harp_action **new_action)
+static int create_comparison(ast_node *node, harp_operation **new_operation)
 {
-    harp_action *action;
+    harp_operation *operation;
 
     assert(node->num_child_nodes == 2);
     if (node->child_node[1]->type == ast_string)
     {
         if (node->type != ast_eq && node->type != ast_ne)
         {
-            harp_set_error(HARP_ERROR_ACTION, "char %lu: operator not supported for strings", node->position);
+            harp_set_error(HARP_ERROR_OPERATION, "char %lu: operator not supported for strings", node->position);
             return -1;
         }
 
         if (harp_string_comparison_filter_new(node->child_node[0]->payload.string, get_operator_type(node->type),
-                                              node->child_node[1]->payload.string, &action) != 0)
+                                              node->child_node[1]->payload.string, &operation) != 0)
         {
             return -1;
         }
@@ -504,19 +506,19 @@ static int create_comparison(ast_node *node, harp_action **new_action)
         }
 
         if (harp_comparison_filter_new(node->child_node[0]->payload.string, get_operator_type(node->type), value, unit,
-                                       &action) != 0)
+                                       &operation) != 0)
         {
             return -1;
         }
     }
 
-    *new_action = action;
+    *new_operation = operation;
     return 0;
 }
 
-static int create_bit_mask_test(ast_node *node, harp_action **new_action)
+static int create_bit_mask_test(ast_node *node, harp_operation **new_operation)
 {
-    harp_action *action;
+    harp_operation *operation;
     harp_bit_mask_operator_type operator_type;
     uint32_t bit_mask;
 
@@ -535,18 +537,18 @@ static int create_bit_mask_test(ast_node *node, harp_action **new_action)
     assert(node->child_node[1]->type == ast_number);
     bit_mask = (uint32_t)node->child_node[1]->payload.number;
 
-    if (harp_bit_mask_filter_new(node->child_node[0]->payload.string, operator_type, bit_mask, &action) != 0)
+    if (harp_bit_mask_filter_new(node->child_node[0]->payload.string, operator_type, bit_mask, &operation) != 0)
     {
         return -1;
     }
 
-    *new_action = action;
+    *new_operation = operation;
     return 0;
 }
 
-static int create_membership_test(ast_node *node, harp_action **new_action)
+static int create_membership_test(ast_node *node, harp_operation **new_operation)
 {
-    harp_action *action;
+    harp_operation *operation;
     harp_membership_operator_type operator_type;
     const ast_node *name;
     const ast_node *list;
@@ -579,14 +581,14 @@ static int create_membership_test(ast_node *node, harp_action **new_action)
     /* A string list cannot be qualified with a unit. */
     if (list->child_node[0]->type == ast_string && unit != NULL)
     {
-        harp_set_error(HARP_ERROR_ACTION, "char %lu: unexpected unit", unit->position);
+        harp_set_error(HARP_ERROR_OPERATION, "char %lu: unexpected unit", unit->position);
         return -1;
     }
 
     /* All values in the value list should be of the same type. */
     if (!is_homogeneous_list(list))
     {
-        harp_set_error(HARP_ERROR_ACTION, "char %lu: values in list should be of the same type", list->position);
+        harp_set_error(HARP_ERROR_OPERATION, "char %lu: values in list should be of the same type", list->position);
         return -1;
     }
 
@@ -610,7 +612,7 @@ static int create_membership_test(ast_node *node, harp_action **new_action)
         }
 
         if (harp_string_membership_filter_new(name->payload.string, operator_type, list->num_child_nodes, string_list,
-                                              &action) != 0)
+                                              &operation) != 0)
         {
             free(string_list);
             return -1;
@@ -640,7 +642,7 @@ static int create_membership_test(ast_node *node, harp_action **new_action)
         }
 
         if (harp_membership_filter_new(name->payload.string, operator_type, list->num_child_nodes, double_list,
-                                       get_unit(unit), &action) != 0)
+                                       get_unit(unit), &operation) != 0)
         {
             free(double_list);
             return -1;
@@ -649,11 +651,11 @@ static int create_membership_test(ast_node *node, harp_action **new_action)
         free(double_list);
     }
 
-    *new_action = action;
+    *new_operation = operation;
     return 0;
 }
 
-static int action_from_function_call(ast_node *node, harp_action **new_action)
+static int operation_from_function_call(ast_node *node, harp_operation **new_operation)
 {
     ast_node *function_name;
     ast_node *argument_list;
@@ -669,7 +671,7 @@ static int action_from_function_call(ast_node *node, harp_action **new_action)
     prototype = get_function_prototype_by_name(function_name->payload.string);
     if (prototype == NULL)
     {
-        harp_set_error(HARP_ERROR_ACTION, "char %lu: undefined function '%s'", function_name->position,
+        harp_set_error(HARP_ERROR_OPERATION, "char %lu: undefined function '%s'", function_name->position,
                        function_name->payload.string);
         return -1;
     }
@@ -678,7 +680,7 @@ static int action_from_function_call(ast_node *node, harp_action **new_action)
     {
         if (argument_list->num_child_nodes != prototype->num_arguments)
         {
-            harp_set_error(HARP_ERROR_ACTION, "char %lu: function expects %d argument(s)", argument_list->position,
+            harp_set_error(HARP_ERROR_OPERATION, "char %lu: function expects %d argument(s)", argument_list->position,
                            prototype->num_arguments);
             return -1;
         }
@@ -690,13 +692,13 @@ static int action_from_function_call(ast_node *node, harp_action **new_action)
             argument = argument_list->child_node[i];
             if (argument->type != prototype->argument_type[i])
             {
-                harp_set_error(HARP_ERROR_ACTION, "char %lu: invalid argument type", argument->position);
+                harp_set_error(HARP_ERROR_OPERATION, "char %lu: invalid argument type", argument->position);
                 return -1;
             }
         }
     }
 
-    return prototype->create_func(argument_list, new_action);
+    return prototype->create_func(argument_list, new_operation);
 }
 
 static int create_program(ast_node *node, harp_program **new_program)
@@ -711,11 +713,11 @@ static int create_program(ast_node *node, harp_program **new_program)
 
     for (i = 0; i < node->num_child_nodes; i++)
     {
-        harp_action *action;
+        harp_operation *operation;
 
         if (node->child_node[i]->type == ast_function_call)
         {
-            if (action_from_function_call(node->child_node[i], &action) != 0)
+            if (operation_from_function_call(node->child_node[i], &operation) != 0)
             {
                 harp_program_delete(program);
                 return -1;
@@ -723,7 +725,7 @@ static int create_program(ast_node *node, harp_program **new_program)
         }
         else if (node->child_node[i]->type == ast_in || node->child_node[i]->type == ast_not_in)
         {
-            if (create_membership_test(node->child_node[i], &action) != 0)
+            if (create_membership_test(node->child_node[i], &operation) != 0)
             {
                 harp_program_delete(program);
                 return -1;
@@ -731,7 +733,7 @@ static int create_program(ast_node *node, harp_program **new_program)
         }
         else if (node->child_node[i]->type == ast_bit_mask_any || node->child_node[i]->type == ast_bit_mask_none)
         {
-            if (create_bit_mask_test(node->child_node[i], &action) != 0)
+            if (create_bit_mask_test(node->child_node[i], &operation) != 0)
             {
                 harp_program_delete(program);
                 return -1;
@@ -739,16 +741,16 @@ static int create_program(ast_node *node, harp_program **new_program)
         }
         else
         {
-            if (create_comparison(node->child_node[i], &action) != 0)
+            if (create_comparison(node->child_node[i], &operation) != 0)
             {
                 harp_program_delete(program);
                 return -1;
             }
         }
 
-        if (harp_program_add_action(program, action) != 0)
+        if (harp_program_add_operation(program, operation) != 0)
         {
-            harp_action_delete(action);
+            harp_operation_delete(operation);
             harp_program_delete(program);
             return -1;
         }
@@ -763,7 +765,7 @@ int harp_program_from_string(const char *str, harp_program **new_program)
     ast_node *node;
     harp_program *program;
 
-    if (harp_parse_actions(str, &node) != 0)
+    if (harp_parse_operations(str, &node) != 0)
     {
         return -1;
     }

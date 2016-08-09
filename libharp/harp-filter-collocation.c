@@ -438,14 +438,14 @@ int harp_product_apply_collocation_mask(harp_collocation_mask *collocation_mask,
 
         if (index->num_dimensions != 1)
         {
-            harp_set_error(HARP_ERROR_ACTION, "variable '%s' has %d dimensions (expected 1)", index->name,
+            harp_set_error(HARP_ERROR_OPERATION, "variable '%s' has %d dimensions (expected 1)", index->name,
                            index->num_dimensions);
             return -1;
         }
 
         if (index->dimension_type[0] != harp_dimension_time)
         {
-            harp_set_error(HARP_ERROR_ACTION, "dimension 0 of variable '%s' is of type '%s' (expected '%s')",
+            harp_set_error(HARP_ERROR_OPERATION, "dimension 0 of variable '%s' is of type '%s' (expected '%s')",
                            index->name, harp_get_dimension_type_name(index->dimension_type[0]),
                            harp_get_dimension_type_name(harp_dimension_time));
             return -1;

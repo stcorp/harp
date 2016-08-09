@@ -135,7 +135,7 @@ static int generate_index_html(const char *filename, const harp_ingestion_module
     fputs("<p>For each ingestion, HARP will return a single HARP product. Each variable in a HARP product represents a "
           "specific quantity (e.g. O<sub>3</sub> number density, cloud fraction, altitude, longitude, latitude, time, "
           "<i>et cetera</i>). You can customize which variables you want to include using the <code>include()</code> "
-          "and <code>exclude()</code> actions that can be passed to the ingest function.</p>\n", f);
+          "and <code>exclude()</code> operations that can be passed to the ingest function.</p>\n", f);
     fputs("<p>Within a HARP product, dimensions of the same type (<i>time</i>, <i>latitude</i>, <i>longitude</i>, "
           "<i>vertical</i>, <i>spectral</i>) are linked together. This means that, within an ingested product, "
           "variables cannot have dimensions of the same type with different lengths.</p>\n", f);
@@ -153,9 +153,9 @@ static int generate_index_html(const char *filename, const harp_ingestion_module
           "example, to switch between different product conversions (usually when quantities defined on different "
           "grids are present within a single product), or to switch between different variants of a quantity. "
           "Ingestion options should be passed to the ingest function as a semi-colon separated string of "
-          "<code>option_name=value</code> pairs. These options are unrelated to <i>actions</i> (filtering, inclusion "
+          "<code>option_name=value</code> pairs. These options are unrelated to <i>operations</i> (filtering, inclusion "
           "and exclusion of variables, and adding derived variables). Ingestion options are only meaningful in the "
-          "context of an ingestion, while actions can be applied both on-the-fly during ingestion, as well as to "
+          "context of an ingestion, while operations can be applied both on-the-fly during ingestion, as well as to "
           "existing HARP products.</p>\n", f);
     fputs("<p>The list below gives an overview of the conversions and ingestion options available for each product "
           "type. For each conversion, there is a separate page that describes the resulting HARP product. This "
@@ -570,7 +570,7 @@ static int generate_index_rst(const char *filename, const harp_ingestion_module_
     fputs("For each ingestion, HARP will return a single HARP product. Each variable in a HARP product represents a "
           "specific quantity (e.g. O\\ :sub:`3` number density, cloud fraction, altitude, longitude, latitude, time, "
           "*et cetera*). You can customize which variables you want to include using the ``include()`` and "
-          "``exclude()`` actions that can be passed to the ingest function.\n\n", f);
+          "``exclude()`` operations that can be passed to the ingest function.\n\n", f);
     fputs("Within a HARP product, dimensions of the same type (*time*, *latitude*, *longitude*, *vertical*, "
           "*spectral*) are linked together. This means that, within an ingested product, variables cannot have "
           "dimensions of the same type with different lengths.\n\n", f);
@@ -588,8 +588,8 @@ static int generate_index_rst(const char *filename, const harp_ingestion_module_
           "switch between different product conversions (usually when quantities defined on different grids are "
           "present within a single product), or to switch between different variants of a quantity. Ingestion options "
           "should be passed to the ingest function as a semi-colon separated string of ``option_name=value`` pairs. "
-          "These options are unrelated to *actions* (filtering, inclusion and exclusion of variables, and adding "
-          "derived variables). Ingestion options are only meaningful in the context of an ingestion, while actions can "
+          "These options are unrelated to *operations* (filtering, inclusion and exclusion of variables, and adding "
+          "derived variables). Ingestion options are only meaningful in the context of an ingestion, while operations can "
           "be applied both on-the-fly during ingestion, as well as to existing HARP products.\n\n", f);
     fputs("The list below gives an overview of the conversions and ingestion options available for each product type. "
           "For each conversion, there is a separate page that describes the resulting HARP product. This includes a "

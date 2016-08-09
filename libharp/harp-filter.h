@@ -22,7 +22,7 @@
 #define HARP_FILTER_H
 
 #include "harp-internal.h"
-#include "harp-action.h"
+#include "harp-operation.h"
 #include "harp-predicate.h"
 
 int harp_predicate_update_mask_all_0d(const harp_predicate *predicate, const harp_variable *variable,
@@ -64,8 +64,9 @@ int harp_longitude_range_filter_predicate_new(const harp_longitude_range_filter_
 int harp_collocation_filter_predicate_new(const harp_collocation_result *collocation_result, const char *source_product,
                                           harp_collocation_filter_type filter_type, int use_collocation_index,
                                           harp_predicate **new_predicate);
-int harp_get_filter_predicate_for_action(const harp_action *action, harp_data_type data_type, const char *unit,
-                                         harp_scalar valid_min, harp_scalar valid_max, harp_predicate **new_predicate);
+int harp_get_filter_predicate_for_operation(const harp_operation *operation, harp_data_type data_type, const char *unit,
+                                            harp_scalar valid_min, harp_scalar valid_max,
+                                            harp_predicate **new_predicate);
 int harp_point_distance_filter_predicate_new(const harp_point_distance_filter_args *args,
                                              harp_predicate **new_predicate);
 int harp_area_mask_covers_point_filter_predicate_new(const harp_area_mask_covers_point_filter_args *args,

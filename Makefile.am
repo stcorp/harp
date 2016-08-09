@@ -51,17 +51,17 @@ include_HEADERS = libharp/harp.h
 # libharp
 
 libharp_la_SOURCES = \
-	libharp/harp-action.h \
-	libharp/harp-action.c \
-	libharp/harp-action-analyze.c \
-	libharp/harp-action-lex.h \
-	libharp/harp-action-lex.c \
+	libharp/harp-operation.h \
+	libharp/harp-operation.c \
+	libharp/harp-operation-analyze.c \
+	libharp/harp-operation-lex.h \
+	libharp/harp-operation-lex.c \
 	libharp/harp-program.h \
 	libharp/harp-program.c \
 	libharp/harp-program-execute.h \
 	libharp/harp-program-execute.c \
-	libharp/harp-action-parse.h \
-	libharp/harp-action-parse.c \
+	libharp/harp-operation-parse.h \
+	libharp/harp-operation-parse.c \
 	libharp/harp-analysis.c \
 	libharp/harp-area-mask.h \
 	libharp/harp-area-mask.c \

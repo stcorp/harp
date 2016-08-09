@@ -137,8 +137,8 @@ LIBHARP_API extern int harp_errno;
 
 #define HARP_ERROR_UNIT_CONVERSION                          (-400)
 
-#define HARP_ERROR_ACTION                                   (-500)
-#define HARP_ERROR_ACTION_SYNTAX                            (-501)
+#define HARP_ERROR_OPERATION                                (-500)
+#define HARP_ERROR_OPERATION_SYNTAX                         (-501)
 
 #define HARP_ERROR_IMPORT                                   (-600)
 #define HARP_ERROR_EXPORT                                   (-601)
@@ -489,7 +489,7 @@ LIBHARP_API int harp_product_add_derived_variable(harp_product *product, const c
                                                   int num_dimensions, const harp_dimension_type *dimension_type);
 LIBHARP_API int harp_product_update_history(harp_product *product, const char *executable, int argc, char *argv[]);
 LIBHARP_API int harp_product_verify(const harp_product *product);
-LIBHARP_API int harp_product_execute_actions(harp_product *product, const char *actions);
+LIBHARP_API int harp_product_execute_operations(harp_product *product, const char *operations);
 LIBHARP_API void harp_product_print(const harp_product *product, int show_attributes, int show_data,
                                     int (*print) (const char *, ...));
 LIBHARP_API int harp_product_get_metadata(harp_product *product, harp_product_metadata **new_metadata);

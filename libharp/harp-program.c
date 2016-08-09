@@ -19,7 +19,7 @@
  */
 
 #include "harp-program.h"
-#include "harp-action-parse.h"
+#include "harp-operation-parse.h"
 #include "harp-filter-collocation.h"
 #include "harp-filter.h"
 
@@ -38,8 +38,8 @@ int harp_program_new(harp_program **new_program)
         return -1;
     }
 
-    program->num_actions = 0;
-    program->action = NULL;
+    program->num_operations = 0;
+    program->operation = NULL;
 
     *new_program = program;
     return 0;
@@ -49,16 +49,16 @@ void harp_program_delete(harp_program *program)
 {
     if (program != NULL)
     {
-        if (program->action != NULL)
+        if (program->operation != NULL)
         {
             int i;
 
-            for (i = 0; i < program->num_actions; i++)
+            for (i = 0; i < program->num_operations; i++)
             {
-                harp_action_delete(program->action[i]);
+                harp_operation_delete(program->operation[i]);
             }
 
-            free(program->action);
+            free(program->operation);
         }
 
         free(program);
@@ -75,17 +75,17 @@ int harp_program_copy(const harp_program *other_program, harp_program **new_prog
         return -1;
     }
 
-    for (i = 0; i < other_program->num_actions; i++)
+    for (i = 0; i < other_program->num_operations; i++)
     {
-        harp_action *action;
+        harp_operation *operation;
 
-        if (harp_action_copy(other_program->action[i], &action) != 0)
+        if (harp_operation_copy(other_program->operation[i], &operation) != 0)
         {
             harp_program_delete(program);
             return -1;
         }
 
-        if (harp_program_add_action(program, action) != 0)
+        if (harp_program_add_operation(program, operation) != 0)
         {
             harp_program_delete(program);
             return -1;
@@ -96,55 +96,57 @@ int harp_program_copy(const harp_program *other_program, harp_program **new_prog
     return 0;
 }
 
-int harp_program_add_action(harp_program *program, harp_action *action)
+int harp_program_add_operation(harp_program *program, harp_operation *operation)
 {
-    if (program->num_actions % BLOCK_SIZE == 0)
+    if (program->num_operations % BLOCK_SIZE == 0)
     {
-        harp_action **action;
+        harp_operation **operation;
 
-        action = (harp_action **)realloc(program->action, (program->num_actions + BLOCK_SIZE) * sizeof(harp_action *));
-        if (action == NULL)
+        operation =
+            (harp_operation **)realloc(program->operation,
+                                       (program->num_operations + BLOCK_SIZE) * sizeof(harp_operation *));
+        if (operation == NULL)
         {
             harp_set_error(HARP_ERROR_OUT_OF_MEMORY, "out of memory (could not allocate %lu bytes) (%s:%u)",
-                           (program->num_actions + BLOCK_SIZE) * sizeof(harp_action *), __FILE__, __LINE__);
+                           (program->num_operations + BLOCK_SIZE) * sizeof(harp_operation *), __FILE__, __LINE__);
             return -1;
         }
 
-        program->action = action;
+        program->operation = operation;
     }
 
-    program->action[program->num_actions] = action;
-    program->num_actions++;
+    program->operation[program->num_operations] = operation;
+    program->num_operations++;
 
     return 0;
 }
 
-int harp_program_remove_action_at_index(harp_program *program, int index)
+int harp_program_remove_operation_at_index(harp_program *program, int index)
 {
     int i;
 
     assert(program != NULL);
-    assert(index >= 0 && index < program->num_actions);
+    assert(index >= 0 && index < program->num_operations);
 
-    harp_action_delete(program->action[index]);
-    for (i = index + 1; i < program->num_actions; i++)
+    harp_operation_delete(program->operation[index]);
+    for (i = index + 1; i < program->num_operations; i++)
     {
-        program->action[i - 1] = program->action[i];
+        program->operation[i - 1] = program->operation[i];
     }
-    program->num_actions--;
+    program->num_operations--;
 
     return 0;
 }
 
-int harp_program_remove_action(harp_program *program, harp_action *action)
+int harp_program_remove_operation(harp_program *program, harp_operation *operation)
 {
     int i;
 
-    for (i = 0; i < program->num_actions; i++)
+    for (i = 0; i < program->num_operations; i++)
     {
-        if (program->action[i] == action)
+        if (program->operation[i] == operation)
         {
-            harp_program_remove_action_at_index(program, i);
+            harp_program_remove_operation_at_index(program, i);
         }
     }
 
@@ -157,18 +159,18 @@ int harp_program_verify(const harp_program *program)
     int count;
 
     count = 0;
-    for (i = 0; i < program->num_actions; i++)
+    for (i = 0; i < program->num_operations; i++)
     {
-        const harp_action *action = program->action[i];
+        const harp_operation *operation = program->operation[i];
 
-        if (action->type != harp_action_filter_collocation)
+        if (operation->type != harp_operation_filter_collocation)
         {
             continue;
         }
 
         if (count > 0)
         {
-            harp_set_error(HARP_ERROR_ACTION, "program should not contain more than one collocation filter");
+            harp_set_error(HARP_ERROR_OPERATION, "program should not contain more than one collocation filter");
             return -1;
         }
 

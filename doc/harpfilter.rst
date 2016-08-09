@@ -11,9 +11,9 @@ netCDF/HDF4/HDF5 file.
           Filter a HARP compliant netCDF/HDF4/HDF5 product.
 
           Options:
-              -a, --actions <action list>
-                  List of actions to apply to the product.
-                  An action list needs to be provided as a single expression.
+              -a, --operations <operation list>
+                  List of operations to apply to the product.
+                  An operation list needs to be provided as a single expression.
 
               -f, --format <format>
                   Output format:
@@ -22,9 +22,9 @@ netCDF/HDF4/HDF5 file.
                       hdf5
 
           Action list:
-              Actions are separated by semi-colons. Each action is either
+              Actions are separated by semi-colons. Each operation is either
               a comparison filter, a membership test filter, or a function
-              call. Strings used in actions should be quoted with double
+              call. Strings used in operations should be quoted with double
               quotes.
 
               Comparison filter:
