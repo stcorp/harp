@@ -1073,7 +1073,17 @@ static int get_action_dimensionality(harp_product *product, harp_action *action,
     return -1;
 }
 
-/* execute the prefix of the program of 0..n dimension filter actions */
+/** Execute the prefix of the program of 0..n dimension filter actions.
+ *
+ * It only considers dimension-filters, because these can be executed out-of-order.
+ * This allows us to optimize filtering without the constraints of maintaining the
+ * semantics of the program.
+ *
+ * The most important optimization is that filters are executed in order of their
+ * 'dimensionality', i.e. based on the dimension of the masks that they update.
+ * This increases performance, because setting a 0 on a N-dim mask, allows us to skip an entire
+ * row in an N+1-dim mask.
+ */
 static int execute_filter_actions(harp_product *product, harp_program *program)
 {
     uint8_t product_mask = 1;
@@ -1093,8 +1103,8 @@ static int execute_filter_actions(harp_product *product, harp_program *program)
         goto error;
     }
 
-    /* Pop the prefix of dimension-filters that we'll process into a subprogram.
-       At the same time 
+    /* Pop the prefix of dimension-filters that we'll process into subprograms
+     * concerned with 0D, 1D and 2D filter actions respectively.
      */
     for (i = program->num_actions - 1; i >= 0; i--)
     {
@@ -1304,6 +1314,9 @@ static int execute_derivation(harp_product *product, harp_program *program)
     return 0;
 }
 
+/* Execute the next action in the specified program.
+ * Consecutive dimension-filters are treated as a single 'action' for optimization purposes.
+ */
 static int execute_next_action(harp_product *product, harp_program *program)
 {
     harp_action *action = NULL;

@@ -2520,8 +2520,14 @@ static int execute_variable_include_filter_action(ingest_info *info, harp_progra
 /* Perform performance optimized execution of filtering actions during ingestion.
  * The prefix of the action list that solely consists of filters/includes/excludes
  * is executed during the ingest.
- * Within this prefix, masking phases are distinguished based on the available variable.
- * Within a single phase, filters are reordered for optimal mask-creation performance.
+ * Within this prefix, masking phases are distinguished based on the available variables.
+ * Within a single phase, filters are reordered for optimal mask-creation performance similar to
+ * how this works in in-memory harp program execution.
+ *
+ * It's very important that it's transparent to the end user whether actions are performed during or
+ * after ingestion.
+ * This means for example that errors should be consistent between in-memory and during-ingestion
+ * filter execution.
  */
 static int evaluate_ingestion_mask(ingest_info *info, harp_program *program)
 {
@@ -2654,6 +2660,8 @@ static int evaluate_ingestion_mask(ingest_info *info, harp_program *program)
     return 0;
 }
 
+/* Ingest a product while taking into account filter actions at the head of program.
+ */
 static int get_product(ingest_info *info, harp_program *program)
 {
     int i;
