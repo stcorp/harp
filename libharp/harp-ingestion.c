@@ -2302,6 +2302,11 @@ static int get_operation_dimensionality(ingest_info *info, harp_operation *opera
             latitude_bounds_def->num_dimensions ? longitude_bounds_def->
             num_dimensions : latitude_bounds_def->num_dimensions;
     }
+    /* collocation filters */
+    else if (operation->type == harp_operation_filter_collocation)
+    {
+        *num_dimensions = 1;
+    }
     else
     {
         harp_set_error(HARP_ERROR_OPERATION, "Encountered unsupported filter during ingestion.");
@@ -2534,6 +2539,7 @@ static int execute_variable_include_filter_operation(ingest_info *info, harp_pro
         {
             harp_set_error(HARP_ERROR_OPERATION, OPERATION_INCLUDE_NON_EXISTANT_VARIABLE_FORMAT,
                            in_args->variable_name[j]);
+            goto error;
         }
 
         include_variable_mask[variable_id] = 1;
@@ -2615,6 +2621,7 @@ static int evaluate_ingestion_mask(ingest_info *info, harp_program *program)
                  */
                 if (harp_operation_copy(operation, &operation_copy) != 0)
                 {
+                    harp_program_delete(phase_program);
                     return -1;
                 }
                 if (harp_program_add_operation(phase_program, operation_copy))
@@ -2635,6 +2642,7 @@ static int evaluate_ingestion_mask(ingest_info *info, harp_program *program)
                 /* add the operation at the cursor to the phase's operation list */
                 if (harp_operation_copy(operation, &operation_copy) != 0)
                 {
+                    harp_program_delete(phase_program);
                     return -1;
                 }
                 if (harp_program_add_operation(phase_program, operation_copy))
