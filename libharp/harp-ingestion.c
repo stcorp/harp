@@ -2298,8 +2298,8 @@ static int get_operation_dimensionality(ingest_info *info, harp_operation *opera
 
         *num_dimensions =
             longitude_bounds_def->num_dimensions >
-            latitude_bounds_def->num_dimensions ? longitude_bounds_def->
-            num_dimensions : latitude_bounds_def->num_dimensions;
+            latitude_bounds_def->num_dimensions ? longitude_bounds_def->num_dimensions : latitude_bounds_def->
+            num_dimensions;
     }
     /* collocation filters */
     else if (operation->type == harp_operation_filter_collocation)

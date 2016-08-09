@@ -99,20 +99,17 @@ netCDF/HDF4/HDF5 file.
                       harpfilter can be used to list available variable
                       conversions.
 
-                  include(variable, ...)
+                  keep(variable, ...)
                       Mark the specified variable(s) for inclusion in the
                       filtered product. All variables marked for inclusion
-                      will be included in the filtered product, all other
-                      variables will be excluded. By default, all variables
-                      will be included.
+                      will be kept in the filtered product, all other
+                      variables will be excluded.
 
                   exclude(variable, ...)
                       Mark the specified variable(s) for exclusion from the
                       filtered product. All variables marked for exclusion
                       will be excluded from the filtered product, all other
-                      variables will be included. Variable exclusions will be
-                      evaluated after evaluating all variable inclusions (if
-                      any).
+                      variables will be kept.
 
                   The unit qualifier is optional for all function arguments
                   that support it. If a unit is not specified, the unit of the
