@@ -169,28 +169,6 @@
 <div class="breathe-sectiondef container">
 <p class="breathe-sectiondef-title rubric">Functions</p>
 <dl class="function">
-<dt id="_CPPv228harp_product_execute_actionsP12harp_productPKc">
-<span id="harp_product_execute_actions__harp_productP.cCP"></span><span class="target" id="libharpgroup__harp__product_1gadab3a6c53667a8c4be4cde4ca166f5e6"></span>int <code class="descname">harp_product_execute_actions</code><span class="sig-paren">(</span><a class="reference internal" href="#_CPPv212harp_product" title="harp_product">harp_product</a> *<em>product</em>, <em class="property">const</em> char *<em>actions</em><span class="sig-paren">)</span></dt>
-<dd><p>Execute one or more actions on a product. <dl class="docutils">
-<dt><strong>Return</strong></dt>
-<dd><ul class="simple">
-<li><code class="docutils literal"><span class="pre">0</span></code>, Success. </li>
-<li><code class="docutils literal"><span class="pre">-1</span></code>, Error occurred (check <a class="reference internal" href="libharp_error.html#libharpgroup__harp__error_1gab2eeb46528306c6799632d1e800c4c36"><span class="std std-ref">harp_errno</span></a>). </li>
-</ul>
-</dd>
-<dt><strong>Parameters</strong></dt>
-<dd><ul class="breatheparameterlist first last">
-<li><code class="first docutils literal"><span class="pre">product</span></code> - <p>Product that the actions should be executed on. </p>
-</li>
-<li><code class="first docutils literal"><span class="pre">actions</span></code> - <p>Actions to execute; should be specified as a semi-colon separated string of actions. </p>
-</li>
-</ul>
-</dd>
-</dl>
-</p>
-</dd></dl>
-
-<dl class="function">
 <dt id="_CPPv233harp_product_get_derived_variablePK12harp_productPKcPKciPK19harp_dimension_typePP13harp_variable">
 <span id="harp_product_get_derived_variable__harp_productCP.cCP.cCP.i.harp_dimension_typeCP.harp_variablePP"></span><span class="target" id="libharpgroup__harp__product_1ga22e16c228da1e922aac423537a52df71"></span>int <code class="descname">harp_product_get_derived_variable</code><span class="sig-paren">(</span><em class="property">const</em> <a class="reference internal" href="#_CPPv212harp_product" title="harp_product">harp_product</a> *<em>product</em>, <em class="property">const</em> char *<em>name</em>, <em class="property">const</em> char *<em>unit</em>, int <em>num_dimensions</em>, <em class="property">const</em> <a class="reference internal" href="libharp_general.html#_CPPv219harp_dimension_type" title="harp_dimension_type">harp_dimension_type</a> *<em>dimension_type</em>, <a class="reference internal" href="libharp_variable.html#_CPPv213harp_variable" title="harp_variable">harp_variable</a> **<em>variable</em><span class="sig-paren">)</span></dt>
 <dd><p>Retrieve a new variable based on the set of automatic conversions that are supported by HARP.</p>
@@ -256,7 +234,7 @@
 
 <dl class="function">
 <dt id="_CPPv211harp_ingestPKcPKcPKcPP12harp_product">
-<span id="harp_ingest__cCP.cCP.cCP.harp_productPP"></span><span class="target" id="libharpgroup__harp__product_1ga52c14210ce1b07f697af0142962c2685"></span>int <code class="descname">harp_ingest</code><span class="sig-paren">(</span><em class="property">const</em> char *<em>filename</em>, <em class="property">const</em> char *<em>actions</em>, <em class="property">const</em> char *<em>options</em>, <a class="reference internal" href="#_CPPv212harp_product" title="harp_product">harp_product</a> **<em>product</em><span class="sig-paren">)</span></dt>
+<span id="harp_ingest__cCP.cCP.cCP.harp_productPP"></span><span class="target" id="libharpgroup__harp__product_1ga281e3c9ff77268094289ecdb6e74eac1"></span>int <code class="descname">harp_ingest</code><span class="sig-paren">(</span><em class="property">const</em> char *<em>filename</em>, <em class="property">const</em> char *<em>operations</em>, <em class="property">const</em> char *<em>options</em>, <a class="reference internal" href="#_CPPv212harp_product" title="harp_product">harp_product</a> **<em>product</em><span class="sig-paren">)</span></dt>
 <dd><p>Ingest a product.</p>
 <p><dl class="docutils">
 <dt><strong>Return</strong></dt>
@@ -269,7 +247,7 @@
 <dd><ul class="breatheparameterlist first last">
 <li><code class="first docutils literal"><span class="pre">filename</span></code> - <p>Filename of the product to ingest. </p>
 </li>
-<li><code class="first docutils literal"><span class="pre">actions</span></code> - <p>Script defining the actions to be performed as part of ingestion (for example, filtering). </p>
+<li><code class="first docutils literal"><span class="pre">operations</span></code> - <p>Script defining the operations to be performed as part of ingestion (for example, filtering). </p>
 </li>
 <li><code class="first docutils literal"><span class="pre">options</span></code> - <p>Options to be passed to the ingestion module. </p>
 </li>
@@ -623,6 +601,51 @@
 <dt><strong>Parameters</strong></dt>
 <dd><ul class="breatheparameterlist first last">
 <li><code class="first docutils literal"><span class="pre">product</span></code> - <p>Product to verify. </p>
+</li>
+</ul>
+</dd>
+</dl>
+</p>
+</dd></dl>
+
+<dl class="function">
+<dt id="_CPPv228harp_product_execute_programP12harp_productP12harp_program">
+<span id="harp_product_execute_program__harp_productP.harp_programP"></span><span class="target" id="libharpgroup__harp__product_1ga77d14b2422bcbc891af8d5b0c18f9d38"></span>int <code class="descname">harp_product_execute_program</code><span class="sig-paren">(</span><a class="reference internal" href="#_CPPv212harp_product" title="harp_product">harp_product</a> *<em>product</em>, harp_program *<em>program</em><span class="sig-paren">)</span></dt>
+<dd><p>Execute a set of operations (the program) on a HARP product.</p>
+<p><dl class="docutils">
+<dt><strong>Return</strong></dt>
+<dd><ul class="simple">
+<li><code class="docutils literal"><span class="pre">0</span></code>, Success. </li>
+<li><code class="docutils literal"><span class="pre">-1</span></code>, Error occurred (check <a class="reference internal" href="libharp_error.html#libharpgroup__harp__error_1gab2eeb46528306c6799632d1e800c4c36"><span class="std std-ref">harp_errno</span></a>). </li>
+</ul>
+</dd>
+<dt><strong>Parameters</strong></dt>
+<dd><ul class="breatheparameterlist first last">
+<li><code class="first docutils literal"><span class="pre">product</span></code> - <p>Product that the operations should be executed on. </p>
+</li>
+<li><code class="first docutils literal"><span class="pre">program</span></code> - <p>Program to execute </p>
+</li>
+</ul>
+</dd>
+</dl>
+</p>
+</dd></dl>
+
+<dl class="function">
+<dt id="_CPPv231harp_product_execute_operationsP12harp_productPKc">
+<span id="harp_product_execute_operations__harp_productP.cCP"></span><span class="target" id="libharpgroup__harp__product_1gaac9e4b48ca9a060f53c1e2bb4f44d840"></span>int <code class="descname">harp_product_execute_operations</code><span class="sig-paren">(</span><a class="reference internal" href="#_CPPv212harp_product" title="harp_product">harp_product</a> *<em>product</em>, <em class="property">const</em> char *<em>operations</em><span class="sig-paren">)</span></dt>
+<dd><p>Execute one or more operations on a product. <dl class="docutils">
+<dt><strong>Return</strong></dt>
+<dd><ul class="simple">
+<li><code class="docutils literal"><span class="pre">0</span></code>, Success. </li>
+<li><code class="docutils literal"><span class="pre">-1</span></code>, Error occurred (check <a class="reference internal" href="libharp_error.html#libharpgroup__harp__error_1gab2eeb46528306c6799632d1e800c4c36"><span class="std std-ref">harp_errno</span></a>). </li>
+</ul>
+</dd>
+<dt><strong>Parameters</strong></dt>
+<dd><ul class="breatheparameterlist first last">
+<li><code class="first docutils literal"><span class="pre">product</span></code> - <p>Product that the operations should be executed on. </p>
+</li>
+<li><code class="first docutils literal"><span class="pre">operations</span></code> - <p>Operations to execute; should be specified as a semi-colon separated string of operations. </p>
 </li>
 </ul>
 </dd>

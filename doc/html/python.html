@@ -604,7 +604,7 @@ considered to be invalid.</li>
 <p>This section describes the functions defined by the HARP Python library.</p>
 <dl class="function">
 <dt id="harp.ingest_product">
-<code class="descclassname">harp.</code><code class="descname">ingest_product</code><span class="sig-paren">(</span><em>filename</em>, <em>actions=&quot;&quot;</em>, <em>options=&quot;&quot;</em><span class="sig-paren">)</span></dt>
+<code class="descclassname">harp.</code><code class="descname">ingest_product</code><span class="sig-paren">(</span><em>filename</em>, <em>operations=&quot;&quot;</em>, <em>options=&quot;&quot;</em><span class="sig-paren">)</span></dt>
 <dd><p>Ingest a product of a type supported by HARP.</p>
 <table class="docutils field-list" frame="void" rules="none">
 <col class="field-name" />
@@ -612,8 +612,8 @@ considered to be invalid.</li>
 <tbody valign="top">
 <tr class="field-odd field"><th class="field-name">Parameters:</th><td class="field-body"><ul class="first simple">
 <li><strong>filename</strong> (<em>str</em>) &#8211; Filename of the product to ingest.</li>
-<li><strong>actions</strong> (<em>str</em>) &#8211; Actions to apply as part of the ingestion; should be
-specified as a semi-colon separated string of actions.</li>
+<li><strong>operations</strong> (<em>str</em>) &#8211; Actions to apply as part of the ingestion; should be
+specified as a semi-colon separated string of operations.</li>
 <li><strong>options</strong> (<em>str</em>) &#8211; Ingestion module specific options; should be specified as
 a semi-colon separated string of key=value pairs.</li>
 </ul>
@@ -631,7 +631,7 @@ a semi-colon separated string of key=value pairs.</li>
 
 <dl class="function">
 <dt id="harp.import_product">
-<code class="descclassname">harp.</code><code class="descname">import_product</code><span class="sig-paren">(</span><em>filename</em>, <em>actions=&quot;&quot;</em><span class="sig-paren">)</span></dt>
+<code class="descclassname">harp.</code><code class="descname">import_product</code><span class="sig-paren">(</span><em>filename</em>, <em>operations=&quot;&quot;</em><span class="sig-paren">)</span></dt>
 <dd><p>Import a HARP compliant product.</p>
 <p>The file format (NetCDF/HDF4/HDF5) of the product will be auto-detected.</p>
 <table class="docutils field-list" frame="void" rules="none">
@@ -640,9 +640,9 @@ a semi-colon separated string of key=value pairs.</li>
 <tbody valign="top">
 <tr class="field-odd field"><th class="field-name">Parameters:</th><td class="field-body"><ul class="first simple">
 <li><strong>filename</strong> (<em>str</em>) &#8211; Filename of the product to import.</li>
-<li><strong>actions</strong> (<em>str</em>) &#8211; Actions to execute on the product after it has been
+<li><strong>operations</strong> (<em>str</em>) &#8211; Actions to execute on the product after it has been
 imported; should be specified as a semi-colon separated
-string of actions.</li>
+string of operations.</li>
 </ul>
 </td>
 </tr>
