@@ -1459,11 +1459,13 @@ static int evaluate_collocation_filter(ingest_info *info, harp_program *actions)
     /* Check for the presence of the 'collocation_index' or 'index' variable. Either variable should be 1-D and should
      * depend on the time dimension.
      */
-    if (find_variable_definition(info, "collocation_index", &variable_def) == 0 && variable_def->num_dimensions == 1 && variable_def->dimension_type[0] == harp_dimension_time)
+    if (find_variable_definition(info, "collocation_index", &variable_def) == 0 && variable_def->num_dimensions == 1 &&
+        variable_def->dimension_type[0] == harp_dimension_time)
     {
         use_collocation_index = 1;
     }
-    else if (find_variable_definition(info, "index", &variable_def) == 0 && variable_def->num_dimensions == 1 && variable_def->dimension_type[0] == harp_dimension_time)
+    else if (find_variable_definition(info, "index", &variable_def) == 0 && variable_def->num_dimensions == 1 &&
+             variable_def->dimension_type[0] == harp_dimension_time)
     {
         use_collocation_index = 0;
     }
@@ -1472,7 +1474,8 @@ static int evaluate_collocation_filter(ingest_info *info, harp_program *actions)
         /* Neither the "collocation_index" nor the "index" variable exists in the product, which means collocation
          * filters cannot be applied.
          */
-        harp_set_error(HARP_ERROR_ACTION, "Cannot apply collocation filter without (collocation-)index of dimension {time}.");
+        harp_set_error(HARP_ERROR_ACTION,
+                       "Cannot apply collocation filter without (collocation-)index of dimension {time}.");
         return -1;
     }
 
@@ -2162,7 +2165,8 @@ static int dimension_mask_set_has_empty_masks(const harp_dimension_mask_set *dim
     return 0;
 }
 
-static int get_action_dimensionality(ingest_info *info, harp_action *action, long *num_dimensions) {
+static int get_action_dimensionality(ingest_info *info, harp_action *action, long *num_dimensions)
+{
     const char *variable_name = NULL;
     harp_variable_definition *variable_def = NULL;
 
@@ -2190,7 +2194,8 @@ static int get_action_dimensionality(ingest_info *info, harp_action *action, lon
         *num_dimensions = variable_def->num_dimensions;
     }
     /* point filters */
-    else if (action->type == harp_action_filter_point_distance || action->type == harp_action_filter_area_mask_covers_point)
+    else if (action->type == harp_action_filter_point_distance ||
+             action->type == harp_action_filter_area_mask_covers_point)
     {
         harp_variable_definition *longitude_def, *latitude_def = NULL;
 
@@ -2212,12 +2217,14 @@ static int get_action_dimensionality(ingest_info *info, harp_action *action, lon
         }
 
         /* dimensionality is the max of the lat/lon variables */
-        *num_dimensions = longitude_def->num_dimensions > latitude_def->num_dimensions ? longitude_def->num_dimensions : latitude_def->num_dimensions ;
+        *num_dimensions =
+            longitude_def->num_dimensions >
+            latitude_def->num_dimensions ? longitude_def->num_dimensions : latitude_def->num_dimensions;
     }
     else if (action->type == harp_action_filter_area_mask_covers_area ||
              action->type == harp_action_filter_area_mask_intersects_area)
     {
-        
+
         harp_variable_definition *longitude_bounds_def;
         harp_variable_definition *latitude_bounds_def;
 
@@ -2239,7 +2246,10 @@ static int get_action_dimensionality(ingest_info *info, harp_action *action, lon
             goto error;
         }
 
-        *num_dimensions = longitude_bounds_def->num_dimensions > latitude_bounds_def->num_dimensions ? longitude_bounds_def->num_dimensions : latitude_bounds_def->num_dimensions ;
+        *num_dimensions =
+            longitude_bounds_def->num_dimensions >
+            latitude_bounds_def->num_dimensions ? longitude_bounds_def->num_dimensions : latitude_bounds_def->
+            num_dimensions;
     }
     else
     {
@@ -2249,7 +2259,7 @@ static int get_action_dimensionality(ingest_info *info, harp_action *action, lon
 
     return 0;
 
-error:
+  error:
     return -1;
 }
 
@@ -2260,6 +2270,7 @@ static int execute_masking_phase(ingest_info *info, harp_program *phase_actions)
 {
     int i;
     harp_program *actions_0d, *actions_1d, *actions_2d = NULL;
+
     if (harp_program_new(&actions_0d) != 0 || harp_program_new(&actions_1d) != 0 || harp_program_new(&actions_2d) != 0)
     {
         return -1;
@@ -2270,6 +2281,7 @@ static int execute_masking_phase(ingest_info *info, harp_program *phase_actions)
     {
         long dim = -1;
         harp_action *action;
+
         if (harp_action_copy(phase_actions->action[i], &action) != 0)
         {
             return -1;
@@ -2285,9 +2297,15 @@ static int execute_masking_phase(ingest_info *info, harp_program *phase_actions)
 
         switch (dim)
         {
-            case 0: harp_program_add_action(actions_0d, action); break;
-            case 1: harp_program_add_action(actions_1d, action); break;
-            case 2: harp_program_add_action(actions_2d, action); break;
+            case 0:
+                harp_program_add_action(actions_0d, action);
+                break;
+            case 1:
+                harp_program_add_action(actions_1d, action);
+                break;
+            case 2:
+                harp_program_add_action(actions_2d, action);
+                break;
             default:
                 assert(0);
         }
@@ -2299,15 +2317,15 @@ static int execute_masking_phase(ingest_info *info, harp_program *phase_actions)
 
     if (evaluate_value_filters_0d(info, actions_0d) != 0)
     {
-        return -1;
+        goto error;
     }
     if (evaluate_point_filters_0d(info, actions_0d) != 0)
     {
-        return -1;
+        goto error;
     }
     if (evaluate_area_filters_0d(info, actions_0d) != 0)
     {
-        return -1;
+        goto error;
     }
     if (info->product_mask == 0)
     {
@@ -2320,19 +2338,19 @@ static int execute_masking_phase(ingest_info *info, harp_program *phase_actions)
 
     if (evaluate_collocation_filter(info, actions_1d) != 0)
     {
-        return -1;
+        goto error;
     }
     if (evaluate_value_filters_1d(info, actions_1d) != 0)
     {
-        return -1;
+        goto error;
     }
     if (evaluate_point_filters_1d(info, actions_1d) != 0)
     {
-        return -1;
+        goto error;
     }
     if (evaluate_area_filters_1d(info, actions_1d) != 0)
     {
-        return -1;
+        goto error;
     }
     if (dimension_mask_set_has_empty_masks(info->dimension_mask_set))
     {
@@ -2343,7 +2361,7 @@ static int execute_masking_phase(ingest_info *info, harp_program *phase_actions)
     /* Third filter pass 2D variables */
     if (evaluate_value_filters_2d(info, actions_2d) != 0)
     {
-        return -1;
+        goto error;
     }
 
     /* If any 2-D masks are defined, mask each index on the primary dimension for which all mask values in the
@@ -2352,7 +2370,7 @@ static int execute_masking_phase(ingest_info *info, harp_program *phase_actions)
      */
     if (harp_dimension_mask_set_simplify(info->dimension_mask_set) != 0)
     {
-        return -1;
+        goto error;
     }
     if (dimension_mask_set_has_empty_masks(info->dimension_mask_set))
     {
@@ -2365,7 +2383,7 @@ static int execute_masking_phase(ingest_info *info, harp_program *phase_actions)
     if (phase_actions->num_actions != 0)
     {
         harp_set_error(HARP_ERROR_ACTION, "Could not execute all filter actions.");
-        return -1;
+        goto error;
     }
 
     /* the sorted actions should either all be executed or error'ed when evaluated */
@@ -2373,7 +2391,18 @@ static int execute_masking_phase(ingest_info *info, harp_program *phase_actions)
     assert(actions_1d->num_actions == 0);
     assert(actions_2d->num_actions == 0);
 
+    harp_program_delete(actions_0d);
+    harp_program_delete(actions_1d);
+    harp_program_delete(actions_2d);
+
     return 0;
+
+  error:
+    harp_program_delete(actions_0d);
+    harp_program_delete(actions_1d);
+    harp_program_delete(actions_2d);
+
+    return -1;
 }
 
 /* execute the variable exclude filter from the head of program */
@@ -2452,7 +2481,7 @@ static int execute_variable_include_filter_action(ingest_info *info, harp_progra
         variable_id = harp_product_definition_get_variable_index(info->product_definition, in_args->variable_name[j]);
         if (variable_id < 0 || info->variable_mask[variable_id] == 0)
         {
-            harp_set_error(HARP_ERROR_ACTION, "cannot keep non-existant variable '%s'", in_args->variable_name[j]);
+            harp_set_error(HARP_ERROR_ACTION, ACTION_INCLUDE_NON_EXISTANT_VARIABLE_FORMAT, in_args->variable_name[j]);
         }
 
         include_variable_mask[variable_id] = 1;

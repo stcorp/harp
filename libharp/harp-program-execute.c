@@ -26,34 +26,6 @@
 #include "harp-filter.h"
 #include "harp-filter-collocation.h"
 
-static int find_variable(const harp_product *product, const char *name, int num_dimensions,
-                         const harp_dimension_type *dimension_type, harp_variable **variable)
-{
-    harp_variable *candidate;
-
-    if (harp_product_get_variable_by_name(product, name, &candidate) != 0)
-    {
-        return -1;
-    }
-    if (num_dimensions >= 0)
-    {
-        if (dimension_type == NULL && candidate->num_dimensions != num_dimensions)
-        {
-            return -1;
-        }
-        if (dimension_type != NULL && !harp_variable_has_dimension_types(candidate, num_dimensions, dimension_type))
-        {
-            return -1;
-        }
-    }
-    if (variable != NULL)
-    {
-        *variable = candidate;
-    }
-
-    return 0;
-}
-
 static int evaluate_value_filters_0d(const harp_product *product, harp_program *program, uint8_t *product_mask)
 {
     int i;
@@ -76,6 +48,8 @@ static int evaluate_value_filters_0d(const harp_product *product, harp_program *
 
         if (harp_product_get_variable_by_name(product, variable_name, &variable) != 0)
         {
+            /* non existant variable is an error */
+            harp_set_error(HARP_ERROR_ACTION, ACTION_FILTER_NON_EXISTANT_VARIABLE_FORMAT, variable_name);
             return -1;
         }
 
@@ -976,13 +950,109 @@ static int action_is_dimension_filter(const harp_action *action)
     }
 }
 
+static int get_action_dimensionality(harp_product *product, harp_action *action, long *num_dimensions)
+{
+    const char *variable_name = NULL;
+
+    /* collocation filters */
+    if (action->type == harp_action_filter_collocation)
+    {
+        *num_dimensions = 1L;
+    }
+
+    /* value filters */
+    if (harp_action_get_variable_name(action, &variable_name) == 0)
+    {
+        harp_variable *variable = NULL;
+
+        if (harp_product_get_variable_by_name(product, variable_name, &variable) != 0)
+        {
+            /* non existant variable is an error */
+            harp_set_error(HARP_ERROR_ACTION, ACTION_FILTER_NON_EXISTANT_VARIABLE_FORMAT, variable_name);
+            goto error;
+        }
+        if (variable->num_dimensions > 2)
+        {
+            harp_set_error(HARP_ERROR_ACTION, ACTION_FILTER_TOO_GREAT_DIMENSION_FORMAT, variable_name);
+            goto error;
+        }
+
+        *num_dimensions = variable->num_dimensions;
+    }
+    /* point filters */
+    else if (action->type == harp_action_filter_point_distance ||
+             action->type == harp_action_filter_area_mask_covers_point)
+    {
+        harp_variable *longitude_def, *latitude_def = NULL;
+
+        if (harp_product_get_variable_by_name(product, "longitude", &longitude_def) != 0)
+        {
+            harp_set_error(HARP_ERROR_ACTION, ACTION_FILTER_POINT_MISSING_LON);
+            goto error;
+        }
+        if (harp_product_get_variable_by_name(product, "latitude", &latitude_def) != 0)
+        {
+            harp_set_error(HARP_ERROR_ACTION, ACTION_FILTER_POINT_MISSING_LAT);
+            goto error;
+        }
+        /* point filters must be 0D or 1D */
+        if (longitude_def->num_dimensions > 1 || latitude_def->num_dimensions > 1)
+        {
+            harp_set_error(HARP_ERROR_ACTION, ACTION_FILTER_POINT_WRONG_DIMENSION_FORMAT, "{time}");
+            goto error;
+        }
+
+        /* dimensionality is the max of the lat/lon variables */
+        *num_dimensions =
+            longitude_def->num_dimensions >
+            latitude_def->num_dimensions ? longitude_def->num_dimensions : latitude_def->num_dimensions;
+    }
+    else if (action->type == harp_action_filter_area_mask_covers_area ||
+             action->type == harp_action_filter_area_mask_intersects_area)
+    {
+        harp_variable *longitude_bounds;
+        harp_variable *latitude_bounds;
+
+        if (harp_product_get_variable_by_name(product, "longitude_bounds", &longitude_bounds) != 0)
+        {
+            harp_set_error(HARP_ERROR_ACTION, ACTION_FILTER_AREA_MISSING_LON_BOUNDS);
+            goto error;
+        }
+        if (harp_product_get_variable_by_name(product, "latitude_bounds", &latitude_bounds) != 0)
+        {
+            harp_set_error(HARP_ERROR_ACTION, ACTION_FILTER_AREA_MISSING_LAT_BOUNDS);
+            goto error;
+        }
+        /* area filters must be 0D or 1D, which means that the bounds are 1D or 2D resp. */
+        if (longitude_bounds->num_dimensions > 2 || latitude_bounds->num_dimensions > 2
+            || longitude_bounds->num_dimensions < 1 || latitude_bounds->num_dimensions < 1)
+        {
+            harp_set_error(HARP_ERROR_ACTION, ACTION_FILTER_POINT_WRONG_DIMENSION_FORMAT, "{time}");
+            goto error;
+        }
+
+        *num_dimensions =
+            longitude_bounds->num_dimensions >
+            latitude_bounds->num_dimensions ? longitude_bounds->num_dimensions : latitude_bounds->num_dimensions;
+    }
+    else
+    {
+        harp_set_error(HARP_ERROR_ACTION, "Encountered unsupported filter during ingestion.");
+        goto error;
+    }
+
+    return 0;
+
+  error:
+    return -1;
+}
+
 /* execute the prefix of the program of 0..n dimension filter actions */
 static int execute_filter_actions(harp_product *product, harp_program *program)
 {
     uint8_t product_mask = 1;
-    harp_dimension_type dimension_type[1] = { harp_dimension_independent };
     harp_dimension_mask_set *dimension_mask_set;
-    harp_program *dimension_filters = NULL;
+    harp_program *actions_0d, *actions_1d, *actions_2d;
     int i;
 
     /* greedily exit when program is trivial */
@@ -991,31 +1061,50 @@ static int execute_filter_actions(harp_product *product, harp_program *program)
         return 0;
     }
 
-    if (harp_program_new(&dimension_filters) != 0)
+    actions_0d = actions_1d = actions_2d = NULL;
+    if (harp_program_new(&actions_0d) != 0 || harp_program_new(&actions_1d) != 0 || harp_program_new(&actions_2d) != 0)
     {
-        return -1;
+        goto error;
     }
 
-    /* pop the prefix of dimension-filters that we'll process into a subprogram */
-    for (i = 0; i < program->num_actions; i++)
+    /* Pop the prefix of dimension-filters that we'll process into a subprogram.
+       At the same time 
+     */
+    for (i = program->num_actions - 1; i >= 0; i--)
     {
-        harp_action *copy = NULL;
+        harp_action *action = NULL;
+        long dim = -1;
 
         if (!action_is_dimension_filter(program->action[0]))
         {
+            /* done with this phase */
             break;
         }
-        if (harp_action_copy(program->action[0], &copy) != 0)
+        if (harp_action_copy(program->action[0], &action) != 0)
         {
-            return -1;
+            goto error;
         }
-        if (harp_program_add_action(dimension_filters, copy) != 0)
+        if (get_action_dimensionality(product, action, &dim) != 0)
         {
-            return -1;
+            goto error;
         }
-        if (harp_program_remove_action_at_index(program, 0) != 0)
+        switch (dim)
         {
-            return -1;
+            case 0:
+                harp_program_add_action(actions_0d, action);
+                break;
+            case 1:
+                harp_program_add_action(actions_1d, action);
+                break;
+            case 2:
+                harp_program_add_action(actions_2d, action);
+                break;
+            default:
+                assert(0);
+        }
+        if (harp_program_remove_action_at_index(program, i) != 0)
+        {
+            goto error;
         }
     }
 
@@ -1025,26 +1114,17 @@ static int execute_filter_actions(harp_product *product, harp_program *program)
      */
 
     /* First filter pass (0-D variables). */
-    if (evaluate_value_filters_0d(product, dimension_filters, &product_mask) != 0)
+    if (evaluate_value_filters_0d(product, actions_0d, &product_mask) != 0)
     {
-        return -1;
+        goto error;
     }
-    /* TODO Shouldn't point filters just raise errors when longitude/latitude is missing? */
-    if (find_variable(product, "longitude", 0, NULL, NULL) == 0
-        && find_variable(product, "latitude", 0, NULL, NULL) == 0)
+    if (evaluate_point_filters_0d(product, actions_0d, &product_mask) != 0)
     {
-        if (evaluate_point_filters_0d(product, dimension_filters, &product_mask) != 0)
-        {
-            return -1;
-        }
+        goto error;
     }
-    if (find_variable(product, "longitude_bounds", 1, dimension_type, NULL) == 0
-        && find_variable(product, "latitude_bounds", 1, dimension_type, NULL) == 0)
+    if (evaluate_area_filters_0d(product, actions_0d, &product_mask) != 0)
     {
-        if (evaluate_area_filters_0d(product, dimension_filters, &product_mask) != 0)
-        {
-            return -1;
-        }
+        goto error;
     }
 
     if (product_mask == 0)
@@ -1056,29 +1136,29 @@ static int execute_filter_actions(harp_product *product, harp_program *program)
     /* Second filter pass (1-D variables). */
     if (harp_dimension_mask_set_new(&dimension_mask_set) != 0)
     {
-        return -1;
+        goto error;
     }
-    if (evaluate_value_filters_1d(product, dimension_filters, dimension_mask_set) != 0)
+    if (evaluate_value_filters_1d(product, actions_1d, dimension_mask_set) != 0)
     {
         harp_dimension_mask_set_delete(dimension_mask_set);
-        return -1;
+        goto error;
     }
-    if (evaluate_point_filters_1d(product, dimension_filters, dimension_mask_set) != 0)
+    if (evaluate_point_filters_1d(product, actions_1d, dimension_mask_set) != 0)
     {
         harp_dimension_mask_set_delete(dimension_mask_set);
-        return -1;
+        goto error;
     }
-    if (evaluate_area_filters_1d(product, dimension_filters, dimension_mask_set) != 0)
+    if (evaluate_area_filters_1d(product, actions_1d, dimension_mask_set) != 0)
     {
         harp_dimension_mask_set_delete(dimension_mask_set);
-        return -1;
+        goto error;
     }
 
     /* Apply the dimension masks computed so far, to speed up subsequent filtering steps. */
     if (harp_product_filter(product, dimension_mask_set) != 0)
     {
         harp_dimension_mask_set_delete(dimension_mask_set);
-        return -1;
+        goto error;
     }
     harp_dimension_mask_set_delete(dimension_mask_set);
 
@@ -1090,17 +1170,17 @@ static int execute_filter_actions(harp_product *product, harp_program *program)
     /* Third filter pass (2-D variables). */
     if (harp_dimension_mask_set_new(&dimension_mask_set) != 0)
     {
-        return -1;
+        goto error;
     }
-    if (evaluate_value_filters_2d(product, dimension_filters, dimension_mask_set) != 0)
+    if (evaluate_value_filters_2d(product, actions_2d, dimension_mask_set) != 0)
     {
         harp_dimension_mask_set_delete(dimension_mask_set);
-        return -1;
+        goto error;
     }
     if (harp_dimension_mask_set_simplify(dimension_mask_set) != 0)
     {
         harp_dimension_mask_set_delete(dimension_mask_set);
-        return -1;
+        goto error;
     }
 
     /* Apply the dimension masks computed so far.
@@ -1110,7 +1190,7 @@ static int execute_filter_actions(harp_product *product, harp_program *program)
     if (harp_product_filter(product, dimension_mask_set) != 0)
     {
         harp_dimension_mask_set_delete(dimension_mask_set);
-        return -1;
+        goto error;
     }
     harp_dimension_mask_set_delete(dimension_mask_set);
 
@@ -1122,19 +1202,19 @@ static int execute_filter_actions(harp_product *product, harp_program *program)
     /* Valid range filters. */
     if (harp_dimension_mask_set_new(&dimension_mask_set) != 0)
     {
-        return -1;
+        goto error;
     }
-    if (evaluate_valid_range_filters(product, dimension_filters, dimension_mask_set) != 0)
+    if (evaluate_valid_range_filters(product, program, dimension_mask_set) != 0)
     {
         harp_dimension_mask_set_delete(dimension_mask_set);
-        return -1;
+        goto error;
     }
 
     /* Apply the dimension masks computed so far. */
     if (harp_product_filter(product, dimension_mask_set) != 0)
     {
         harp_dimension_mask_set_delete(dimension_mask_set);
-        return -1;
+        goto error;
     }
     harp_dimension_mask_set_delete(dimension_mask_set);
 
@@ -1144,13 +1224,29 @@ static int execute_filter_actions(harp_product *product, harp_program *program)
     }
 
     /* Verify that all dimension filters have been executed */
-    if (dimension_filters->num_actions != 0)
+    if (program->num_actions != 0)
     {
         harp_set_error(HARP_ERROR_ACTION, "Could not execute all filter actions.");
-        return -1;
+        goto error;
     }
 
+    /* the sorted actions should either all be executed or error'ed when evaluated */
+    assert(actions_0d->num_actions == 0);
+    assert(actions_1d->num_actions == 0);
+    assert(actions_2d->num_actions == 0);
+
+    harp_program_delete(actions_0d);
+    harp_program_delete(actions_1d);
+    harp_program_delete(actions_2d);
+
     return 0;
+
+  error:
+    harp_program_delete(actions_0d);
+    harp_program_delete(actions_1d);
+    harp_program_delete(actions_2d);
+
+    return -1;
 }
 
 static int execute_derivation(harp_product *product, harp_program *program)
@@ -1186,11 +1282,7 @@ static int execute_next_action(harp_product *product, harp_program *program)
 {
     harp_action *action = NULL;
 
-    if (program->num_actions == 0)
-    {
-        harp_set_error(HARP_ERROR_INVALID_ARGUMENT, "Can't execute next action of empty program.");
-        return -1;
-    }
+    assert(program->num_actions != 0);
 
     /* determine type of next action */
     action = program->action[0];
