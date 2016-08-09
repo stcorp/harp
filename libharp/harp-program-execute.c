@@ -26,19 +26,19 @@
 #include "harp-filter.h"
 #include "harp-filter-collocation.h"
 
-static int evaluate_value_filters_0d(const harp_product *product, harp_program *program, uint8_t *product_mask)
+static int evaluate_value_filters_0d(const harp_product *product, harp_program *actions_0d, uint8_t *product_mask)
 {
     int i;
 
     i = 0;
-    while (i < program->num_actions)
+    while (i < actions_0d->num_actions)
     {
         const harp_action *action;
         const char *variable_name;
         harp_variable *variable;
         harp_predicate *predicate;
 
-        action = program->action[i];
+        action = actions_0d->action[i];
         if (harp_action_get_variable_name(action, &variable_name) != 0)
         {
             /* Action is not a variable filter, skip it. */
@@ -53,12 +53,8 @@ static int evaluate_value_filters_0d(const harp_product *product, harp_program *
             return -1;
         }
 
-        if (variable->num_dimensions != 0)
-        {
-            /* Variable is not 0-D, skip. */
-            i++;
-            continue;
-        }
+        /* We were promised 0D actions */
+        assert(variable->num_dimensions == 0);
 
         if (harp_get_filter_predicate_for_action(action, variable->data_type, variable->unit, variable->valid_min,
                                                  variable->valid_max, &predicate) != 0)
@@ -76,7 +72,7 @@ static int evaluate_value_filters_0d(const harp_product *product, harp_program *
             harp_predicate_delete(predicate);
         }
 
-        if (harp_program_remove_action_at_index(program, i) != 0)
+        if (harp_program_remove_action_at_index(actions_0d, i) != 0)
         {
             return -1;
         }
@@ -85,13 +81,13 @@ static int evaluate_value_filters_0d(const harp_product *product, harp_program *
     return 0;
 }
 
-static int evaluate_value_filters_1d(const harp_product *product, harp_program *program,
+static int evaluate_value_filters_1d(const harp_product *product, harp_program *actions_1d,
                                      harp_dimension_mask_set *dimension_mask_set)
 {
     int i;
 
     i = 0;
-    while (i < program->num_actions)
+    while (i < actions_1d->num_actions)
     {
         const harp_action *action;
         const char *variable_name;
@@ -99,7 +95,7 @@ static int evaluate_value_filters_1d(const harp_product *product, harp_program *
         harp_dimension_type dimension_type;
         harp_predicate *predicate;
 
-        action = program->action[i];
+        action = actions_1d->action[i];
         if (harp_action_get_variable_name(action, &variable_name) != 0)
         {
             /* Action is not a variable filter, skip it. */
@@ -112,12 +108,8 @@ static int evaluate_value_filters_1d(const harp_product *product, harp_program *
             return -1;
         }
 
-        if (variable->num_dimensions != 1)
-        {
-            /* Variable is not 1-D, skip. */
-            i++;
-            continue;
-        }
+        /* We were promised 1D actions */
+        assert(variable->num_dimensions == 1);
 
         dimension_type = variable->dimension_type[0];
         if (dimension_type == harp_dimension_independent)
@@ -153,7 +145,7 @@ static int evaluate_value_filters_1d(const harp_product *product, harp_program *
             harp_predicate_delete(predicate);
         }
 
-        if (harp_program_remove_action_at_index(program, i) != 0)
+        if (harp_program_remove_action_at_index(actions_1d, i) != 0)
         {
             return -1;
         }
@@ -162,13 +154,13 @@ static int evaluate_value_filters_1d(const harp_product *product, harp_program *
     return 0;
 }
 
-static int evaluate_value_filters_2d(const harp_product *product, harp_program *program,
+static int evaluate_value_filters_2d(const harp_product *product, harp_program *actions_2d,
                                      harp_dimension_mask_set *dimension_mask_set)
 {
     int i;
 
     i = 0;
-    while (i < program->num_actions)
+    while (i < actions_2d->num_actions)
     {
         harp_action *action;
         const char *variable_name;
@@ -176,7 +168,7 @@ static int evaluate_value_filters_2d(const harp_product *product, harp_program *
         harp_dimension_type dimension_type;
         harp_predicate *predicate;
 
-        action = program->action[i];
+        action = actions_2d->action[i];
         if (harp_action_get_variable_name(action, &variable_name) != 0)
         {
             /* Action is not a variable filter, skip it. */
@@ -189,12 +181,8 @@ static int evaluate_value_filters_2d(const harp_product *product, harp_program *
             return -1;
         }
 
-        if (variable->num_dimensions != 2)
-        {
-            /* Variable is not 2-D, skip. */
-            i++;
-            continue;
-        }
+        /* We were promised 2D actions */
+        assert(variable->num_dimensions == 2);
 
         if (variable->dimension_type[0] != harp_dimension_time)
         {
@@ -259,7 +247,7 @@ static int evaluate_value_filters_2d(const harp_product *product, harp_program *
             harp_predicate_delete(predicate);
         }
 
-        if (harp_program_remove_action_at_index(program, i) != 0)
+        if (harp_program_remove_action_at_index(actions_2d, i) != 0)
         {
             return -1;
         }
@@ -346,7 +334,7 @@ static int evaluate_valid_range_filters(const harp_product *product, harp_progra
     return 0;
 }
 
-static int evaluate_point_filters_0d(const harp_product *product, harp_program *program, uint8_t *product_mask)
+static int evaluate_point_filters_0d(const harp_product *product, harp_program *actions_0d, uint8_t *product_mask)
 {
     harp_predicate_set *predicate_set;
     int i;
@@ -361,7 +349,7 @@ static int evaluate_point_filters_0d(const harp_product *product, harp_program *
     }
 
     i = 0;
-    while (i < program->num_actions)
+    while (i < actions_0d->num_actions)
     {
         const harp_action *action;
         harp_predicate *predicate;
@@ -369,7 +357,7 @@ static int evaluate_point_filters_0d(const harp_product *product, harp_program *
         /* Create filter predicate and add it to the predicate set. Remove the action from the list of actions to
          * perform.
          */
-        action = program->action[i];
+        action = actions_0d->action[i];
         switch (action->type)
         {
             case harp_action_filter_point_distance:
@@ -409,7 +397,7 @@ static int evaluate_point_filters_0d(const harp_product *product, harp_program *
             return -1;
         }
 
-        if (harp_program_remove_action_at_index(program, i) != 0)
+        if (harp_program_remove_action_at_index(actions_0d, i) != 0)
         {
             harp_predicate_set_delete(predicate_set);
             return -1;
@@ -425,14 +413,19 @@ static int evaluate_point_filters_0d(const harp_product *product, harp_program *
         if (harp_product_get_variable_by_name(product, "longitude", &longitude) != 0)
         {
             harp_predicate_set_delete(predicate_set);
+            harp_set_error(HARP_ERROR_ACTION, ACTION_FILTER_POINT_MISSING_LON);
             return -1;
         }
 
         if (harp_product_get_variable_by_name(product, "latitude", &latitude) != 0)
         {
             harp_predicate_set_delete(predicate_set);
+            harp_set_error(HARP_ERROR_ACTION, ACTION_FILTER_POINT_MISSING_LAT);
             return -1;
         }
+
+        /* we were promised 0D filters */
+        assert(longitude->num_dimensions == 0 && latitude->num_dimensions == 0);
 
         if (harp_point_predicate_update_mask_all_0d(predicate_set->num_predicates, predicate_set->predicate, longitude,
                                                     latitude, product_mask) != 0)
@@ -447,7 +440,7 @@ static int evaluate_point_filters_0d(const harp_product *product, harp_program *
     return 0;
 }
 
-static int evaluate_point_filters_1d(const harp_product *product, harp_program *program,
+static int evaluate_point_filters_1d(const harp_product *product, harp_program *actions_1d,
                                      harp_dimension_mask_set *dimension_mask_set)
 {
     harp_predicate_set *predicate_set = NULL;
@@ -463,7 +456,7 @@ static int evaluate_point_filters_1d(const harp_product *product, harp_program *
     }
 
     i = 0;
-    while (i < program->num_actions)
+    while (i < actions_1d->num_actions)
     {
         const harp_action *action;
         harp_predicate *predicate;
@@ -471,7 +464,7 @@ static int evaluate_point_filters_1d(const harp_product *product, harp_program *
         /* Create filter predicate and add it to the predicate set. Remove the action from the list of actions to
          * perform.
          */
-        action = program->action[i];
+        action = actions_1d->action[i];
         switch (action->type)
         {
             case harp_action_filter_point_distance:
@@ -511,7 +504,7 @@ static int evaluate_point_filters_1d(const harp_product *product, harp_program *
             return -1;
         }
 
-        if (harp_program_remove_action_at_index(program, i) != 0)
+        if (harp_program_remove_action_at_index(actions_1d, i) != 0)
         {
             harp_predicate_set_delete(predicate_set);
             return -1;
@@ -527,14 +520,19 @@ static int evaluate_point_filters_1d(const harp_product *product, harp_program *
         if (harp_product_get_variable_by_name(product, "longitude", &longitude) != 0)
         {
             harp_predicate_set_delete(predicate_set);
+            harp_set_error(HARP_ERROR_ACTION, ACTION_FILTER_POINT_MISSING_LON);
             return -1;
         }
 
         if (harp_product_get_variable_by_name(product, "latitude", &latitude) != 0)
         {
             harp_predicate_set_delete(predicate_set);
+            harp_set_error(HARP_ERROR_ACTION, ACTION_FILTER_POINT_MISSING_LAT);
             return -1;
         }
+
+        /* We were promised 1D filters */
+        assert(longitude->num_dimensions == 1 && latitude->num_dimensions == 1);
 
         if (dimension_mask_set[harp_dimension_time] == NULL)
         {
@@ -563,6 +561,7 @@ static int evaluate_point_filters_1d(const harp_product *product, harp_program *
 static int evaluate_area_filters_0d(const harp_product *product, harp_program *program, uint8_t *product_mask)
 {
     harp_predicate_set *predicate_set;
+    harp_dimension_type dimension_type[1] = { harp_dimension_independent };
     int i;
 
     /* Create filter predicates for all area filters and collect them in a predicate set. The filter predicates created
@@ -638,11 +637,22 @@ static int evaluate_area_filters_0d(const harp_product *product, harp_program *p
         if (harp_product_get_variable_by_name(product, "longitude_bounds", &longitude_bounds) != 0)
         {
             harp_predicate_set_delete(predicate_set);
+            harp_set_error(HARP_ERROR_ACTION, ACTION_FILTER_AREA_MISSING_LON_BOUNDS);
             return -1;
         }
 
         if (harp_product_get_variable_by_name(product, "latitude_bounds", &latitude_bounds) != 0)
         {
+            harp_predicate_set_delete(predicate_set);
+            harp_set_error(HARP_ERROR_ACTION, ACTION_FILTER_AREA_MISSING_LAT_BOUNDS);
+            return -1;
+        }
+
+        assert(longitude_bounds->num_dimensions == 1 && latitude_bounds->num_dimensions == 1);
+        if (!harp_variable_has_dimension_types(longitude_bounds, 1, dimension_type)
+            || !harp_variable_has_dimension_types(longitude_bounds, 1, dimension_type))
+        {
+            harp_set_error(HARP_ERROR_ACTION, ACTION_FILTER_AREA_WRONG_DIMENSION_FORMAT, "{independent}");
             harp_predicate_set_delete(predicate_set);
             return -1;
         }
@@ -660,10 +670,11 @@ static int evaluate_area_filters_0d(const harp_product *product, harp_program *p
     return 0;
 }
 
-static int evaluate_area_filters_1d(const harp_product *product, harp_program *program,
+static int evaluate_area_filters_1d(const harp_product *product, harp_program *actions_1d,
                                     harp_dimension_mask_set *dimension_mask_set)
 {
     harp_predicate_set *predicate_set;
+    harp_dimension_type dimension_type[2] = { harp_dimension_time, harp_dimension_independent };
     int i;
 
     /* Create filter predicates for all area filters and collect them in a predicate set. The filter predicates created
@@ -676,7 +687,7 @@ static int evaluate_area_filters_1d(const harp_product *product, harp_program *p
     }
 
     i = 0;
-    while (i < program->num_actions)
+    while (i < actions_1d->num_actions)
     {
         const harp_action *action;
         harp_predicate *predicate;
@@ -684,7 +695,7 @@ static int evaluate_area_filters_1d(const harp_product *product, harp_program *p
         /* Create filter predicate and add it to the predicate set. Remove the action from the list of actions to
          * perform.
          */
-        action = program->action[i];
+        action = actions_1d->action[i];
         switch (action->type)
         {
             case harp_action_filter_area_mask_covers_area:
@@ -724,7 +735,7 @@ static int evaluate_area_filters_1d(const harp_product *product, harp_program *p
             return -1;
         }
 
-        if (harp_program_remove_action_at_index(program, i) != 0)
+        if (harp_program_remove_action_at_index(actions_1d, i) != 0)
         {
             harp_predicate_set_delete(predicate_set);
             return -1;
@@ -739,11 +750,24 @@ static int evaluate_area_filters_1d(const harp_product *product, harp_program *p
         if (harp_product_get_variable_by_name(product, "longitude_bounds", &longitude_bounds) != 0)
         {
             harp_predicate_set_delete(predicate_set);
+            harp_set_error(HARP_ERROR_ACTION, ACTION_FILTER_AREA_MISSING_LON_BOUNDS);
             return -1;
         }
 
         if (harp_product_get_variable_by_name(product, "latitude_bounds", &latitude_bounds) != 0)
         {
+            harp_predicate_set_delete(predicate_set);
+            harp_set_error(HARP_ERROR_ACTION, ACTION_FILTER_AREA_MISSING_LAT_BOUNDS);
+            return -1;
+        }
+
+        /* We were promised 1D area filters, meaning lat/lon bounds are 2D */
+        assert(longitude_bounds->num_dimensions == 2);
+        assert(latitude_bounds->num_dimensions == 2);
+        if (!harp_variable_has_dimension_types(longitude_bounds, 2, dimension_type) ||
+            !harp_variable_has_dimension_types(latitude_bounds, 2, dimension_type))
+        {
+            harp_set_error(HARP_ERROR_ACTION, ACTION_FILTER_AREA_WRONG_DIMENSION_FORMAT, "{time, independent}");
             harp_predicate_set_delete(predicate_set);
             return -1;
         }
@@ -950,6 +974,8 @@ static int action_is_dimension_filter(const harp_action *action)
     }
 }
 
+/* Compute 'dimensionality' for filter actions; sets num_dimensions to either 0, 1 or 2.
+ */
 static int get_action_dimensionality(harp_product *product, harp_action *action, long *num_dimensions)
 {
     const char *variable_name = NULL;
