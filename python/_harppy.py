@@ -681,8 +681,7 @@ def _import_array(c_data_type, c_num_elements, c_data):
         for i in range(c_num_elements):
             # NB. The _ffi.string() method returns a copy of the C string.
             data[i] = _decode_string(_ffi.string(c_data.string_data[i]))
-        # We let numpy do the conversion of the object array of strings to a string array
-        return numpy.asarray(data, dtype='S')
+        return data
 
     # NB. The _ffi.buffer() method, as well as the numpy.frombuffer() method, provide a view on the C array; neither
     # method incurs a copy.
