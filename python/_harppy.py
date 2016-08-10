@@ -97,13 +97,13 @@ class Variable(object):
         self.data = data
         self.dimension = dimension
 
-        if unit:
+        if unit is not None:
             self.unit = unit
-        if valid_min:
+        if valid_min is not None:
             self.valid_min = valid_min
-        if valid_max:
+        if valid_max is not None:
             self.valid_max = valid_max
-        if description:
+        if description is not None:
             self.description = description
 
     def __repr__(self):
@@ -126,7 +126,7 @@ class Variable(object):
         except AttributeError:
             pass
         else:
-            if unit:
+            if unit is not None:
                 print("unit = %r" % unit, file=stream)
 
         try:
@@ -469,18 +469,21 @@ def _get_c_data_type(value):
             return _lib.harp_type_double
         else:
             raise UnsupportedTypeError("unsupported NumPy dtype '%s'" % value.dtype)
-    elif isinstance(value, (str, bytes)):
-        return _lib.harp_type_string
-    elif numpy.can_cast(value, numpy.int8):
-        return _lib.harp_type_int8
-    elif numpy.can_cast(value, numpy.int16):
-        return _lib.harp_type_int16
-    elif numpy.can_cast(value, numpy.int32):
-        return _lib.harp_type_int32
-    elif numpy.can_cast(value, numpy.float32):
-        return _lib.harp_type_float
-    elif numpy.can_cast(value, numpy.float64):
-        return _lib.harp_type_double
+    elif numpy.isscalar(value):
+        if isinstance(value, (str, bytes)):
+            return _lib.harp_type_string
+        elif numpy.can_cast(value, numpy.int8):
+            return _lib.harp_type_int8
+        elif numpy.can_cast(value, numpy.int16):
+            return _lib.harp_type_int16
+        elif numpy.can_cast(value, numpy.int32):
+            return _lib.harp_type_int32
+        elif numpy.can_cast(value, numpy.float32):
+            return _lib.harp_type_float
+        elif numpy.can_cast(value, numpy.float64):
+            return _lib.harp_type_double
+        else:
+            raise UnsupportedTypeError("unsupported type %r" % value.__class__.__name__)
     else:
         raise UnsupportedTypeError("unsupported type %r" % value.__class__.__name__)
 
@@ -770,6 +773,10 @@ def _export_variable(name, variable, c_product):
     if data is None:
         raise Error("no data or data is None")
 
+    # Determine C data type.
+    c_data_type = _get_c_data_type(data)
+
+    # Check dimensions
     dimension = getattr(variable, "dimension", [])
     if not dimension and isinstance(data, numpy.ndarray) and data.size != 1:
         raise Error("dimensions missing or incomplete")
@@ -784,9 +791,6 @@ def _export_variable(name, variable, c_product):
     c_num_dimensions = len(dimension)
     c_dimension_type = [_get_c_dimension_type(dimension_name) for dimension_name in dimension]
     c_dimension = _ffi.NULL if not dimension else data.shape
-
-    # Determine C data type.
-    c_data_type = _get_c_data_type(data)
 
     # Create C variable of the proper size.
     c_variable_ptr = _ffi.new("harp_variable **")
@@ -850,7 +854,7 @@ def _export_variable(name, variable, c_product):
     except AttributeError:
         pass
     else:
-        if unit and _lib.harp_variable_set_unit(c_variable, _encode_string(unit)) != 0:
+        if unit is not None and _lib.harp_variable_set_unit(c_variable, _encode_string(unit)) != 0:
             raise CLibraryError()
 
     try:
