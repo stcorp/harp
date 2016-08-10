@@ -304,7 +304,7 @@ class Product(object):
             except AttributeError:
                 pass
             else:
-                if unit:
+                if unit is not None:
                     stream.write(" [%s]" % unit)
 
             stream.write("\n")
@@ -704,7 +704,7 @@ def _import_variable(c_variable):
         variable = Variable(data, dimension)
 
     # Import variable attributes.
-    if c_variable.unit:
+    if c_variable.unit != _ffi.NULL:
         variable.unit = _decode_string(_ffi.string(c_variable.unit))
 
     if c_variable.data_type != _lib.harp_type_string:
@@ -936,7 +936,7 @@ def to_dict(product):
 
         try:
             dictionary[name] = variable.data
-            if variable.unit:
+            if variable.unit is not None:
                 dictionary[name + "_unit"] = variable.unit
         except AttributeError:
             pass
