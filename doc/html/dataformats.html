@@ -93,6 +93,10 @@
 <li class="toctree-l3"><a class="reference internal" href="#global-attributes">Global attributes</a></li>
 <li class="toctree-l3"><a class="reference internal" href="#variable-attributes">Variable attributes</a></li>
 <li class="toctree-l3"><a class="reference internal" href="#variables">Variables</a></li>
+<li class="toctree-l3"><a class="reference internal" href="#conventions">Conventions</a><ul>
+<li class="toctree-l4"><a class="reference internal" href="#datetime-values">Datetime values</a></li>
+</ul>
+</li>
 <li class="toctree-l3"><a class="reference internal" href="#netcdf-3">netCDF-3</a></li>
 <li class="toctree-l3"><a class="reference internal" href="#hdf4">HDF4</a></li>
 <li class="toctree-l3"><a class="reference internal" href="#hdf5">HDF5</a></li>
@@ -1333,6 +1337,26 @@ Variables having an &#8216;X&#8217; in the Quality column can have any of the fo
 <code class="docutils literal"><span class="pre">latitude</span></code> &amp; <code class="docutils literal"><span class="pre">longitude</span></code>, and/or <code class="docutils literal"><span class="pre">spectral</span></code> dimensions (any variable can be dependent on the <code class="docutils literal"><span class="pre">time</span></code> dimension).</p>
 <p>Be aware that there are still several topics under discussion that may change the above naming convention.
 See the HARP issues list on the GitHub website for more details.</p>
+</div>
+<div class="section" id="conventions">
+<h3>Conventions</h3>
+<p>In addition to the conventions above, there are a few more general conventions in HARP for quantities.</p>
+<div class="section" id="datetime-values">
+<h4>Datetime values</h4>
+<p>Datetime values are always represented as a number of days or seconds since a reference time. This is also reflected
+by the <code class="docutils literal"><span class="pre">unit</span></code> attribute for datetime values (e.g. <code class="docutils literal"><span class="pre">days</span> <span class="pre">since</span> <span class="pre">2000-01-01</span></code>). The reference time that is mentioned in
+these units should always use UTC as timezone (i.e none of the datetime values should reference a local time in HARP).</p>
+<p>In addition, HARP does not deal explicitly with leap seconds in its time calculations. Each day is just treated as
+having 24 * 60 * 60 = 86400 seconds (the udunits2 library, which HARP uses internally, has the same behaviour).
+In practice, datetime values should be chosen such that they are accurate with regard to the UTC epoch that they
+represent (and will thus introduce an error when calculating time differences between epochs if there were leap seconds
+introduced between those epochs). For instance when representing <code class="docutils literal"><span class="pre">2010-01-01T00:00:00</span></code> as an amount of seconds since
+2000, then this should be represented with <code class="docutils literal"><span class="pre">315619200</span> <span class="pre">[s</span> <span class="pre">since</span> <span class="pre">2000-01-01]</span></code> and not with
+<code class="docutils literal"><span class="pre">315619202</span> <span class="pre">[s</span> <span class="pre">since</span> <span class="pre">2000-01-01]</span></code>. For cases where it is needed to be interoperable with software that can properly
+deal with leap seconds, the recommended approach is to use a reference epoch in the unit such that the represented
+value is not impacted by leap seconds. For instance, by using the start of the day as reference epoch;
+<code class="docutils literal"><span class="pre">2001-02-03T04:05:06</span></code> would then be represented with <code class="docutils literal"><span class="pre">14706</span> <span class="pre">[s</span> <span class="pre">since</span> <span class="pre">2012-02-03]</span></code>.</p>
+</div>
 </div>
 <div class="section" id="netcdf-3">
 <h3>netCDF-3</h3>
