@@ -1772,8 +1772,6 @@ LIBHARP_API int harp_product_smooth_vertical(harp_product *product, int num_smoo
             {
                 harp_product_delete(match);
             }
-            harp_variable_delete(target_grid);
-            harp_variable_delete(target_bounds);
 
             /* import new product */
             harp_import(match_metadata->filename, &match);
@@ -1784,10 +1782,15 @@ LIBHARP_API int harp_product_smooth_vertical(harp_product *product, int num_smoo
             }
 
             /* Derive the target grid */
+            harp_variable_delete(target_grid);
             if (harp_product_get_derived_variable(match, vertical_axis, vertical_unit, 2, grid_dim_type, &target_grid) != 0)
             {
                 goto error;
             }
+
+            /* Cleanup the target bounds, they will get loaded again when necessary */
+            harp_variable_delete(target_bounds);
+            target_bounds = NULL;
         }
 
         if (get_time_index_by_collocation_index(match, pair->collocation_index, &time_index_b) != 0)
