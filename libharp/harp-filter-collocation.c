@@ -168,7 +168,7 @@ int harp_collocation_mask_from_result(const harp_collocation_result *collocation
                                       harp_collocation_mask **new_mask)
 {
     long i;
-    long product_index;
+    long product_index = -1;
     harp_collocation_mask *mask;
 
     if (collocation_result == NULL)
@@ -182,7 +182,28 @@ int harp_collocation_mask_from_result(const harp_collocation_result *collocation
         return -1;
     }
 
-    for (i = 0; i < collocation_result->num_pairs; i++)
+    /* get the dataset-index associated with the source_product */
+    if (filter_type == harp_collocation_left)
+    {
+        if (harp_dataset_get_index_from_source_product(collocation_result->dataset_a, source_product,
+                                                    &product_index) == 0)
+        {
+            /* source_product does not appear in the collocation result column */
+            product_index = -1;
+        }
+    }
+    else
+    {
+        if (harp_dataset_get_index_from_source_product(collocation_result->dataset_b, source_product,
+                                                       &product_index) == 0)
+        {
+            /* source_product does not appear in the collocation result column */
+            product_index = -1;
+        }
+    }
+
+    /* if product_index is -1, no match will be found */
+    for (i = 0; i < collocation_result->num_pairs && product_index >= 0; i++)
     {
         const harp_collocation_pair *pair;
         harp_collocation_index_pair *index_pair;
@@ -190,12 +211,6 @@ int harp_collocation_mask_from_result(const harp_collocation_result *collocation
         pair = collocation_result->pair[i];
         if (filter_type == harp_collocation_left)
         {
-            if (harp_dataset_get_index_from_source_product(collocation_result->dataset_a, source_product,
-                                                           &product_index) != 0)
-            {
-                harp_collocation_mask_delete(mask);
-                return -1;
-            }
             if (pair->product_index_a != product_index)
             {
                 continue;
@@ -209,12 +224,6 @@ int harp_collocation_mask_from_result(const harp_collocation_result *collocation
         }
         else
         {
-            if (harp_dataset_get_index_from_source_product(collocation_result->dataset_b, source_product,
-                                                           &product_index) != 0)
-            {
-                harp_collocation_mask_delete(mask);
-                return -1;
-            }
             if (pair->product_index_b != product_index)
             {
                 continue;
