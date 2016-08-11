@@ -1291,6 +1291,21 @@ static int get_vertical_unit(const char *name, char **new_unit)
     return 0;
 }
 
+static long get_unpadded_vector_length(double *vector, long vector_length)
+{
+    long i;
+
+    for (i = vector_length - 1; i >= 0; i--)
+    {
+        if (!harp_isnan(vector[i]))
+        {
+            return i + 1;
+        }
+    }
+
+    return 0;
+}
+
 static int vertical_profile_smooth(harp_variable *var, harp_product *match, long time_index_a, long time_index_b)
 {
     double *vector_in = NULL;
@@ -1304,7 +1319,7 @@ static int vertical_profile_smooth(harp_variable *var, harp_product *match, long
     int has_apriori = 0;
     int i;
     long block, blocks;
-    long target_vertical_elements = match->dimension[harp_dimension_vertical];
+    long target_max_vertical_elements = match->dimension[harp_dimension_vertical];
 
     /* get the avk and a priori variables */
     avk_name = malloc(strlen(var->name) + 4 + 1);
@@ -1368,20 +1383,24 @@ static int vertical_profile_smooth(harp_variable *var, harp_product *match, long
     }
 
     /* allocate memory for the vertical profile input vector */
-    vector_in = malloc((size_t)target_vertical_elements * sizeof(double));
+    vector_in = malloc((size_t)target_max_vertical_elements * sizeof(double));
     if (!vector_in)
     {
         harp_set_error(HARP_ERROR_OUT_OF_MEMORY, "out of memory (could not allocate %lu bytes) (%s:%u)",
-                       target_vertical_elements * sizeof(double), __FILE__, __LINE__);
+                       target_max_vertical_elements * sizeof(double), __FILE__, __LINE__);
         return -1;
     }
 
     /* calculate the number of blocks in this datetime slice of the variable */
-    blocks = var->num_elements / var->dimension[0] / target_vertical_elements;
+    blocks = var->num_elements / var->dimension[0] / target_max_vertical_elements;
 
     for (block = 0; block < blocks; block++)
     {
-        long blockoffset = time_index_a * blocks * target_vertical_elements + block * target_vertical_elements;
+        long blockoffset = (time_index_a * blocks + block) * target_max_vertical_elements;
+
+        /* figure out the actual unpadded length of the input vector */
+        long target_vertical_elements = get_unpadded_vector_length(&var->data.double_data[blockoffset],
+                                                                   target_max_vertical_elements);
 
         /* collect profile vector */
         for (i = 0; i < target_vertical_elements; i++)
@@ -1430,7 +1449,7 @@ static int vertical_profile_smooth(harp_variable *var, harp_product *match, long
     free(apriori_name);
     free(vector_in);
     free(vector_a_priori);
-    matrix_delete(matrix, target_vertical_elements);
+    matrix_delete(matrix, target_max_vertical_elements);
 
     return 0;
 }
@@ -1601,21 +1620,6 @@ static int product_filter_resamplable_variables(harp_product *product)
             }
 
             continue;
-        }
-    }
-
-    return 0;
-}
-
-static long get_unpadded_vector_length(double *vector, long vector_length)
-{
-    long i;
-
-    for (i = vector_length - 1; i >= 0; i--)
-    {
-        if (!harp_isnan(vector[i]))
-        {
-            return i + 1;
         }
     }
 
