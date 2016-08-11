@@ -467,6 +467,24 @@ int harp_dimension_mask_reduce(const harp_dimension_mask *dimension_mask, int di
     return 0;
 }
 
+/**
+ * Merge two dimension masks in place.
+ *
+ * Compute the intersection (logical and) of \p dimension_mask and \p merged_dimension_mask, storing the result in
+ * \p merged_dimension_mask. The masks should either have the same number of dimensions, in which case \p dim_index will
+ * be ignored, or \p dimension_mask should be one-dimensional, and \p merged_dimension_mask should have more two or more
+ * dimensions. In the latter case, \p dim_index determines the dimension of \p merged_dimension_mask along which
+ * \p dimension_mask is to be applied.
+ *
+ * \param  dimension_mask        Dimension mask to be merged into \p merged_dimension_mask.
+ * \param  dim_index             Dimension along which \p dimension_mask should be applied; ignored if \p dimension_mask
+ *                               and \p merged_dimension_mask have the same number of dimensions.
+ * \param  merged_dimension_mask Dimension mask into which \p dimension_mask will be merged; this masked will be updated
+ *                               in place.
+ * \return
+ *     \arg \c 0, Success.
+ *     \arg \c -1, Error occurred (check #harp_errno).
+ */
 int harp_dimension_mask_merge(const harp_dimension_mask *dimension_mask, int dim_index,
                               harp_dimension_mask *merged_dimension_mask)
 {
@@ -493,6 +511,7 @@ int harp_dimension_mask_merge(const harp_dimension_mask *dimension_mask, int dim
         long num_block_elements;
 
         assert(dimension_mask->num_dimensions == 1);
+        assert(merged_dimension_mask->num_dimensions > 1);
         assert(dim_index >= 0 && dim_index < merged_dimension_mask->num_dimensions);
         assert(merged_dimension_mask->dimension[dim_index] == dimension_mask->num_elements);
 
@@ -524,7 +543,7 @@ int harp_dimension_mask_merge(const harp_dimension_mask *dimension_mask, int dim
         {
             long j;
 
-            if (!dimension_mask->mask[i])
+            if (dimension_mask->mask[i])
             {
                 continue;
             }

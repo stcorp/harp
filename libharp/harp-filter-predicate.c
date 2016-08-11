@@ -1380,15 +1380,15 @@ int harp_get_filter_predicate_for_operation(const harp_operation *operation, har
         case harp_operation_filter_string_comparison:
             return harp_string_comparison_filter_predicate_new((harp_string_comparison_filter_args *)operation->args,
                                                                data_type, new_predicate);
+        case harp_operation_filter_bit_mask:
+            return harp_bit_mask_filter_predicate_new((harp_bit_mask_filter_args *)operation->args, data_type,
+                                                      new_predicate);
         case harp_operation_filter_membership:
             return harp_membership_filter_predicate_new((harp_membership_filter_args *)operation->args, data_type, unit,
                                                         new_predicate);
         case harp_operation_filter_string_membership:
             return harp_string_membership_filter_predicate_new((harp_string_membership_filter_args *)operation->args,
                                                                data_type, new_predicate);
-        case harp_operation_filter_bit_mask:
-            return harp_bit_mask_filter_predicate_new((harp_bit_mask_filter_args *)operation->args, data_type,
-                                                      new_predicate);
         case harp_operation_filter_valid_range:
             return harp_valid_range_filter_predicate_new(data_type, valid_min, valid_max, new_predicate);
         case harp_operation_filter_longitude_range:
@@ -1485,49 +1485,7 @@ static void update_mask_2d(const harp_predicate *predicate, long num_primary, lo
     *secondary_masked_length = max_secondary_num_masked;
 }
 
-static long update_mask_any(const harp_predicate *predicate, long num_primary, long num_secondary, long stride,
-                            const void *data, uint8_t *mask)
-{
-    uint8_t *mask_end;
-    long num_masked = 0;
-
-    for (mask_end = mask + num_primary; mask != mask_end; mask++)
-    {
-        if (*mask)
-        {
-            void *data_end = (void *)(((char *)data) + num_secondary * stride);
-
-            while (data != data_end)
-            {
-                if (predicate->eval(predicate->args, data))
-                {
-                    break;
-                }
-
-                data = (void *)(((char *)data) + stride);
-            }
-
-            if (data == data_end)
-            {
-                *mask = 0;
-            }
-            else
-            {
-                num_masked++;
-                data = data_end;
-            }
-        }
-        else
-        {
-            data = (void *)(((char *)data) + num_secondary * stride);
-        }
-    }
-
-    return num_masked;
-}
-
-int harp_predicate_update_mask_all_0d(const harp_predicate *predicate, const harp_variable *variable,
-                                      uint8_t *product_mask)
+int harp_predicate_update_mask_0d(const harp_predicate *predicate, const harp_variable *variable, uint8_t *product_mask)
 {
     if (predicate == NULL)
     {
@@ -1564,8 +1522,8 @@ int harp_predicate_update_mask_all_0d(const harp_predicate *predicate, const har
     return 0;
 }
 
-int harp_predicate_update_mask_all_1d(const harp_predicate *predicate, const harp_variable *variable,
-                                      harp_dimension_mask *dimension_mask)
+int harp_predicate_update_mask_1d(const harp_predicate *predicate, const harp_variable *variable,
+                                  harp_dimension_mask *dimension_mask)
 {
     if (predicate == NULL)
     {
@@ -1622,9 +1580,9 @@ int harp_predicate_update_mask_all_1d(const harp_predicate *predicate, const har
     return 0;
 }
 
-int harp_predicate_update_mask_all_2d(const harp_predicate *predicate, const harp_variable *variable,
-                                      harp_dimension_mask *primary_dimension_mask,
-                                      harp_dimension_mask *secondary_dimension_mask)
+int harp_predicate_update_mask_2d(const harp_predicate *predicate, const harp_variable *variable,
+                                  harp_dimension_mask *primary_dimension_mask,
+                                  harp_dimension_mask *secondary_dimension_mask)
 {
     if (predicate == NULL)
     {
@@ -1714,63 +1672,3 @@ int harp_predicate_update_mask_all_2d(const harp_predicate *predicate, const har
     return 0;
 }
 
-int harp_predicate_update_mask_any(const harp_predicate *predicate, const harp_variable *variable,
-                                   harp_dimension_mask *dimension_mask)
-{
-    if (predicate == NULL)
-    {
-        harp_set_error(HARP_ERROR_INVALID_ARGUMENT, "predicate is NULL (%s:%lu)", __FILE__, __LINE__);
-        return -1;
-
-    }
-    if (variable == NULL)
-    {
-        harp_set_error(HARP_ERROR_INVALID_ARGUMENT, "variable is NULL (%s:%lu)", __FILE__, __LINE__);
-        return -1;
-
-    }
-    if (dimension_mask == NULL)
-    {
-        harp_set_error(HARP_ERROR_INVALID_ARGUMENT, "dimension_mask is NULL (%s:%lu)", __FILE__, __LINE__);
-        return -1;
-
-    }
-    if (variable->num_dimensions < 1)
-    {
-        harp_set_error(HARP_ERROR_INVALID_ARGUMENT, "variable '%s' has %d dimensions; expected 1 or more",
-                       variable->name, variable->num_dimensions);
-        return -1;
-    }
-    if (variable->dimension_type[0] != harp_dimension_time)
-    {
-        harp_set_error(HARP_ERROR_INVALID_ARGUMENT, "outer dimension of variable '%s' is of type '%s'; expected '%s'",
-                       variable->name, harp_get_dimension_type_name(variable->dimension_type[0]),
-                       harp_get_dimension_type_name(harp_dimension_time));
-        return -1;
-    }
-    if (dimension_mask->num_dimensions != 1)
-    {
-        harp_set_error(HARP_ERROR_INVALID_ARGUMENT, "dimension mask has %d dimensions; expected 1",
-                       dimension_mask->num_dimensions);
-        return -1;
-    }
-    if (dimension_mask->num_elements != variable->dimension[0])
-    {
-        harp_set_error(HARP_ERROR_INVALID_ARGUMENT, "dimension mask has %ld elements, expected %ld",
-                       dimension_mask->num_elements, variable->dimension[0]);
-        return -1;
-    }
-    if (dimension_mask->masked_dimension_length == 0)
-    {
-        /* Dimension mask is false. */
-        return 0;
-    }
-    assert(dimension_mask->mask != NULL);
-
-    dimension_mask->masked_dimension_length = update_mask_any(predicate, dimension_mask->num_elements,
-                                                              variable->num_elements / dimension_mask->num_elements,
-                                                              harp_get_size_for_type(variable->data_type),
-                                                              variable->data.ptr, dimension_mask->mask);
-
-    return 0;
-}

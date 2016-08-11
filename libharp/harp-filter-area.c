@@ -189,9 +189,9 @@ static long update_mask(int num_predicates, harp_predicate **predicate, long num
     return num_masked;
 }
 
-int harp_area_predicate_update_mask_all_0d(int num_predicates, harp_predicate **predicate,
-                                           const harp_variable *longitude_bounds, const harp_variable *latitude_bounds,
-                                           uint8_t *product_mask)
+int harp_area_predicate_update_mask_0d(int num_predicates, harp_predicate **predicate,
+                                       const harp_variable *longitude_bounds, const harp_variable *latitude_bounds,
+                                       uint8_t *product_mask)
 {
     harp_variable *longitude_bounds_copy = NULL;
     harp_variable *latitude_bounds_copy = NULL;
@@ -285,9 +285,9 @@ int harp_area_predicate_update_mask_all_0d(int num_predicates, harp_predicate **
     return 0;
 }
 
-int harp_area_predicate_update_mask_all_1d(int num_predicates, harp_predicate **predicate,
-                                           const harp_variable *longitude_bounds, const harp_variable *latitude_bounds,
-                                           harp_dimension_mask *dimension_mask)
+int harp_area_predicate_update_mask_1d(int num_predicates, harp_predicate **predicate,
+                                       const harp_variable *longitude_bounds, const harp_variable *latitude_bounds,
+                                       harp_dimension_mask *dimension_mask)
 {
     harp_variable *longitude_bounds_copy = NULL;
     harp_variable *latitude_bounds_copy = NULL;

@@ -1680,8 +1680,8 @@ static int evaluate_point_filters_0d(ingest_info *info, harp_program *ops_0d)
             return -1;
         }
 
-        if (harp_point_predicate_update_mask_all_0d(predicate_set->num_predicates, predicate_set->predicate,
-                                                    longitude, latitude, &info->product_mask) != 0)
+        if (harp_point_predicate_update_mask_0d(predicate_set->num_predicates, predicate_set->predicate, longitude,
+                                                latitude, &info->product_mask) != 0)
         {
             harp_variable_delete(latitude);
             harp_variable_delete(longitude);
@@ -1824,8 +1824,8 @@ static int evaluate_point_filters_1d(ingest_info *info, harp_program *ops_1d)
             }
         }
 
-        if (harp_point_predicate_update_mask_all_1d(predicate_set->num_predicates, predicate_set->predicate, longitude,
-                                                    latitude, info->dimension_mask_set[harp_dimension_time]) != 0)
+        if (harp_point_predicate_update_mask_1d(predicate_set->num_predicates, predicate_set->predicate, longitude,
+                                                latitude, info->dimension_mask_set[harp_dimension_time]) != 0)
         {
             harp_variable_delete(latitude);
             harp_variable_delete(longitude);
@@ -1958,8 +1958,8 @@ static int evaluate_area_filters_0d(ingest_info *info, harp_program *operations)
             return -1;
         }
 
-        if (harp_area_predicate_update_mask_all_0d(predicate_set->num_predicates, predicate_set->predicate,
-                                                   longitude_bounds, latitude_bounds, &info->product_mask) != 0)
+        if (harp_area_predicate_update_mask_0d(predicate_set->num_predicates, predicate_set->predicate,
+                                               longitude_bounds, latitude_bounds, &info->product_mask) != 0)
         {
             harp_variable_delete(latitude_bounds);
             harp_variable_delete(longitude_bounds);
@@ -2105,9 +2105,9 @@ static int evaluate_area_filters_1d(ingest_info *info, harp_program *ops_1d)
             }
         }
 
-        if (harp_area_predicate_update_mask_all_1d(predicate_set->num_predicates, predicate_set->predicate,
-                                                   longitude_bounds, latitude_bounds,
-                                                   info->dimension_mask_set[harp_dimension_time]) != 0)
+        if (harp_area_predicate_update_mask_1d(predicate_set->num_predicates, predicate_set->predicate,
+                                               longitude_bounds, latitude_bounds,
+                                               info->dimension_mask_set[harp_dimension_time]) != 0)
         {
             harp_variable_delete(latitude_bounds);
             harp_variable_delete(longitude_bounds);

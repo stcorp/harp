@@ -1529,14 +1529,17 @@ int harp_operation_get_variable_name(const harp_operation *operation, const char
         case harp_operation_filter_string_comparison:
             *variable_name = ((harp_string_comparison_filter_args *)operation->args)->variable_name;
             break;
+        case harp_operation_filter_bit_mask:
+            *variable_name = ((harp_bit_mask_filter_args *)operation->args)->variable_name;
+            break;
         case harp_operation_filter_membership:
             *variable_name = ((harp_membership_filter_args *)operation->args)->variable_name;
             break;
         case harp_operation_filter_string_membership:
             *variable_name = ((harp_string_membership_filter_args *)operation->args)->variable_name;
             break;
-        case harp_operation_filter_bit_mask:
-            *variable_name = ((harp_bit_mask_filter_args *)operation->args)->variable_name;
+        case harp_operation_filter_valid_range:
+            *variable_name = ((harp_valid_range_filter_args *)operation->args)->variable_name;
             break;
         case harp_operation_filter_longitude_range:
             *variable_name = "longitude";

@@ -62,7 +62,7 @@ static int evaluate_value_filters_0d(const harp_product *product, harp_program *
             return -1;
         }
 
-        if (harp_predicate_update_mask_all_0d(predicate, variable, product_mask) != 0)
+        if (harp_predicate_update_mask_0d(predicate, variable, product_mask) != 0)
         {
             harp_predicate_delete(predicate);
             return -1;
@@ -135,7 +135,7 @@ static int evaluate_value_filters_1d(const harp_product *product, harp_program *
             return -1;
         }
 
-        if (harp_predicate_update_mask_all_1d(predicate, variable, dimension_mask_set[dimension_type]) != 0)
+        if (harp_predicate_update_mask_1d(predicate, variable, dimension_mask_set[dimension_type]) != 0)
         {
             harp_predicate_delete(predicate);
             return -1;
@@ -236,8 +236,8 @@ static int evaluate_value_filters_2d(const harp_product *product, harp_program *
             return -1;
         }
 
-        if (harp_predicate_update_mask_all_2d(predicate, variable, dimension_mask_set[harp_dimension_time],
-                                              dimension_mask_set[dimension_type]) != 0)
+        if (harp_predicate_update_mask_2d(predicate, variable, dimension_mask_set[harp_dimension_time],
+                                          dimension_mask_set[dimension_type]) != 0)
         {
             harp_predicate_delete(predicate);
             return -1;
@@ -248,84 +248,6 @@ static int evaluate_value_filters_2d(const harp_product *product, harp_program *
         }
 
         if (harp_program_remove_operation_at_index(ops_2d, i) != 0)
-        {
-            return -1;
-        }
-    }
-
-    return 0;
-}
-
-static int evaluate_valid_range_filters(const harp_product *product, harp_program *program,
-                                        harp_dimension_mask_set *dimension_mask_set)
-{
-    int i;
-
-    i = 0;
-    while (i < program->num_operations)
-    {
-        const harp_operation *operation;
-        const harp_valid_range_filter_args *args;
-        harp_variable *variable;
-        harp_predicate *predicate;
-
-        operation = program->operation[i];
-        if (operation->type != harp_operation_filter_valid_range)
-        {
-            /* Operation is not a valid value filter, skip it. */
-            i++;
-            continue;
-        }
-
-        args = (const harp_valid_range_filter_args *)operation->args;
-        if (harp_product_get_variable_by_name(product, args->variable_name, &variable) != 0)
-        {
-            return -1;
-        }
-
-        if (variable->num_dimensions < 1)
-        {
-            harp_set_error(HARP_ERROR_OPERATION, "variable '%s' has %d dimensions; expected 1 or more", variable->name,
-                           variable->num_dimensions);
-            return -1;
-        }
-
-        if (variable->dimension_type[0] != harp_dimension_time)
-        {
-            harp_set_error(HARP_ERROR_OPERATION, "outer dimension of variable '%s' is of type '%s'; expected '%s'",
-                           variable->name, harp_get_dimension_type_name(variable->dimension_type[0]),
-                           harp_get_dimension_type_name(harp_dimension_time));
-            return -1;
-        }
-
-        if (dimension_mask_set[harp_dimension_time] == NULL)
-        {
-            long dimension = product->dimension[harp_dimension_time];
-
-            /* Create dimension mask if necessary. */
-            if (harp_dimension_mask_new(1, &dimension, &dimension_mask_set[harp_dimension_time]) != 0)
-            {
-                return -1;
-            }
-        }
-
-        if (harp_valid_range_filter_predicate_new(variable->data_type, variable->valid_min, variable->valid_max,
-                                                  &predicate) != 0)
-        {
-            return -1;
-        }
-
-        if (harp_predicate_update_mask_any(predicate, variable, dimension_mask_set[harp_dimension_time]) != 0)
-        {
-            harp_predicate_delete(predicate);
-            return -1;
-        }
-        else
-        {
-            harp_predicate_delete(predicate);
-        }
-
-        if (harp_program_remove_operation_at_index(program, i) != 0)
         {
             return -1;
         }
@@ -427,8 +349,8 @@ static int evaluate_point_filters_0d(const harp_product *product, harp_program *
         /* we were promised 0D filters */
         assert(longitude->num_dimensions == 0 && latitude->num_dimensions == 0);
 
-        if (harp_point_predicate_update_mask_all_0d(predicate_set->num_predicates, predicate_set->predicate, longitude,
-                                                    latitude, product_mask) != 0)
+        if (harp_point_predicate_update_mask_0d(predicate_set->num_predicates, predicate_set->predicate, longitude,
+                                                latitude, product_mask) != 0)
         {
             harp_predicate_set_delete(predicate_set);
             return -1;
@@ -545,8 +467,8 @@ static int evaluate_point_filters_1d(const harp_product *product, harp_program *
             }
         }
 
-        if (harp_point_predicate_update_mask_all_1d(predicate_set->num_predicates, predicate_set->predicate,
-                                                    longitude, latitude, dimension_mask_set[harp_dimension_time]) != 0)
+        if (harp_point_predicate_update_mask_1d(predicate_set->num_predicates, predicate_set->predicate, longitude,
+                                                latitude, dimension_mask_set[harp_dimension_time]) != 0)
         {
             harp_predicate_set_delete(predicate_set);
             return -1;
@@ -657,8 +579,8 @@ static int evaluate_area_filters_0d(const harp_product *product, harp_program *p
             return -1;
         }
 
-        if (harp_area_predicate_update_mask_all_0d(predicate_set->num_predicates, predicate_set->predicate,
-                                                   longitude_bounds, latitude_bounds, product_mask) != 0)
+        if (harp_area_predicate_update_mask_0d(predicate_set->num_predicates, predicate_set->predicate,
+                                               longitude_bounds, latitude_bounds, product_mask) != 0)
         {
             harp_predicate_set_delete(predicate_set);
             return -1;
@@ -783,9 +705,9 @@ static int evaluate_area_filters_1d(const harp_product *product, harp_program *o
             }
         }
 
-        if (harp_area_predicate_update_mask_all_1d(predicate_set->num_predicates, predicate_set->predicate,
-                                                   longitude_bounds, latitude_bounds,
-                                                   dimension_mask_set[harp_dimension_time]) != 0)
+        if (harp_area_predicate_update_mask_1d(predicate_set->num_predicates, predicate_set->predicate,
+                                               longitude_bounds, latitude_bounds,
+                                               dimension_mask_set[harp_dimension_time]) != 0)
         {
             harp_predicate_set_delete(predicate_set);
             return -1;
@@ -1229,33 +1151,6 @@ static int execute_filter_operations(harp_product *product, harp_program *progra
         goto error;
     }
     if (harp_dimension_mask_set_simplify(dimension_mask_set) != 0)
-    {
-        harp_dimension_mask_set_delete(dimension_mask_set);
-        goto error;
-    }
-
-    /* Apply the dimension masks computed so far.
-     * This is required because the valid range filter implementation does
-     * not support secondary dimension masks.
-     */
-    if (harp_product_filter(product, dimension_mask_set) != 0)
-    {
-        harp_dimension_mask_set_delete(dimension_mask_set);
-        goto error;
-    }
-    harp_dimension_mask_set_delete(dimension_mask_set);
-
-    if (harp_product_is_empty(product))
-    {
-        return 0;
-    }
-
-    /* Valid range filters. */
-    if (harp_dimension_mask_set_new(&dimension_mask_set) != 0)
-    {
-        goto error;
-    }
-    if (evaluate_valid_range_filters(product, program, dimension_mask_set) != 0)
     {
         harp_dimension_mask_set_delete(dimension_mask_set);
         goto error;

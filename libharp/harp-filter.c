@@ -242,14 +242,14 @@ static void filter_array(harp_data_type data_type, long num_source_elements, con
  * \param data_type           Data type of source and target arrays
  * \param num_dimensions      Number of dimensions of source and target arrays
  * \param source_dimension    Dimension length for each source dimension
- * \param mask                Source mask; If NULL, all elements from the source array will be copied. Otherwise, the
+ * \param source_mask         Source mask; If NULL, all elements from the source array will be copied. Otherwise, the
  *     mask should have the same length as the source array.
  * \param source              Source array.
  * \param target_dimension    Resulting dimension length for each target dimension
  * \param target              Target array.
  */
 void harp_array_filter(harp_data_type data_type, int num_dimensions, const long *source_dimension,
-                       const uint8_t **mask, harp_array source, const long *target_dimension, harp_array target)
+                       const uint8_t **source_mask, harp_array source, const long *target_dimension, harp_array target)
 {
     long data_type_size;
     long source_stride[HARP_MAX_NUM_DIMS];
@@ -269,7 +269,7 @@ void harp_array_filter(harp_data_type data_type, int num_dimensions, const long 
     if (num_dimensions == 1)
     {
         /* Special case for 1-D arrays. */
-        filter_array(data_type, *source_dimension, *mask, source, *target_dimension, target);
+        filter_array(data_type, *source_dimension, *source_mask, source, *target_dimension, target);
         return;
     }
 
@@ -287,11 +287,11 @@ void harp_array_filter(harp_data_type data_type, int num_dimensions, const long 
     {
         while (dimension_index >= 0 && dimension_index < num_dimensions - 1)
         {
-            if (mask[dimension_index] != NULL)
+            if (source_mask[dimension_index] != NULL)
             {
                 /* Skip indices on the current dimension that should be discarded according to the mask. */
                 while (source_index[dimension_index] < source_dimension[dimension_index]
-                       && !mask[dimension_index][source_index[dimension_index]])
+                       && !source_mask[dimension_index][source_index[dimension_index]])
                 {
                     source_index[dimension_index]++;
                     source.ptr = (void *)(((char *)source.ptr) + source_stride[dimension_index]);
@@ -336,7 +336,7 @@ void harp_array_filter(harp_data_type data_type, int num_dimensions, const long 
         if (dimension_index > 0)
         {
             /* Filter the fastest running dimension. */
-            filter_array(data_type, source_dimension[dimension_index], mask[dimension_index], source,
+            filter_array(data_type, source_dimension[dimension_index], source_mask[dimension_index], source,
                          target_dimension[dimension_index], target);
 
             /* Move to the next index on the previous dimension. */
