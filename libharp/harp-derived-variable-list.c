@@ -1662,7 +1662,7 @@ static int add_species_conversions(const char *species)
         return -1;
     }
 
-    /* stratpospheric column number density */
+    /* stratospheric column number density */
     if (add_uncertainty_conversions(name_strato_column_nd, HARP_UNIT_COLUMN_NUMBER_DENSITY) != 0)
     {
         return -1;
