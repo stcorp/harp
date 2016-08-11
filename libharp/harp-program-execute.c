@@ -1378,5 +1378,5 @@ LIBHARP_API int harp_product_execute_operations(harp_product *product, const cha
 }
 
 /**
- * }@
+ * @}
  */
