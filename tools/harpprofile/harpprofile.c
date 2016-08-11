@@ -967,6 +967,10 @@ int main(int argc, char *argv[])
     {
         result = resample(argc, argv);
     }
+    else
+    {
+        printf("Invalid command '%s'.", argv[1]);
+    }
 
     if (result == -1)
     {
