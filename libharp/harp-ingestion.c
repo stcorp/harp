@@ -2596,15 +2596,7 @@ static int evaluate_ingestion_mask(ingest_info *info, harp_program *program)
             harp_operation *operation = program->operation[0];
             harp_operation *operation_copy = NULL;
 
-            if (operation->type == harp_operation_derive_variable)
-            {
-                /* variable derivation can only be done in memory; ingest first */
-                ingest = 1;
-
-                /* done collecting operations for this phase */
-                break;
-            }
-            else if (operation->type == harp_operation_keep_variable ||
+            if (operation->type == harp_operation_keep_variable ||
                      operation->type == harp_operation_exclude_variable)
             {
                 /* includes/excludes mark the next phase */
@@ -2636,7 +2628,8 @@ static int evaluate_ingestion_mask(ingest_info *info, harp_program *program)
                 /* done collection operations for this phase */
                 break;
             }
-            else
+            /* dimension filters */
+            else if (harp_operation_is_dimension_filter(operation))
             {
                 /* add the operation at the cursor to the phase's operation list */
                 if (harp_operation_copy(operation, &operation_copy) != 0)
@@ -2658,6 +2651,14 @@ static int evaluate_ingestion_mask(ingest_info *info, harp_program *program)
                     harp_operation_delete(operation_copy);
                     return -1;
                 }
+            }
+            else
+            {
+                /* other operations are only supported in-memory, ingest first */
+                ingest = 1;
+
+                /* done collecting operations for this phase */
+                break;
             }
         }
 

@@ -235,6 +235,8 @@ set(LIBHARP_SOURCES
   libharp/harp-derived-variable-list.c
   libharp/harp-dimension-mask.h
   libharp/harp-dimension-mask.c
+  libharp/harp-csv.h
+  libharp/harp-csv.c
   libharp/harp-errno.c
   libharp/harp-filter.h
   libharp/harp-filter.c

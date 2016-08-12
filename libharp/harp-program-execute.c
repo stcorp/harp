@@ -25,6 +25,7 @@
 #include "harp-predicate.h"
 #include "harp-filter.h"
 #include "harp-filter-collocation.h"
+#include "harp-vertical-profiles.h"
 
 static int evaluate_value_filters_0d(const harp_product *product, harp_program *ops_0d, uint8_t *product_mask)
 {
@@ -890,25 +891,45 @@ static int execute_collocation_filter(harp_product *product, harp_program *progr
     return 0;
 }
 
-static int operation_is_dimension_filter(const harp_operation *operation)
+/* run a collocation filter operation at the head of program */
+static int execute_regrid(harp_product *product, harp_program *program)
 {
-    switch (operation->type)
+    harp_operation *operation;
+    const harp_regrid_args *args;
+    harp_variable *target_grid = NULL;
+
+    assert(program->num_operations != 0);
+    operation = program->operation[0];
+    if (operation->type != harp_operation_regrid)
     {
-        case harp_operation_filter_comparison:
-        case harp_operation_filter_string_comparison:
-        case harp_operation_filter_bit_mask:
-        case harp_operation_filter_membership:
-        case harp_operation_filter_string_membership:
-        case harp_operation_filter_valid_range:
-        case harp_operation_filter_longitude_range:
-        case harp_operation_filter_point_distance:
-        case harp_operation_filter_area_mask_covers_point:
-        case harp_operation_filter_area_mask_covers_area:
-        case harp_operation_filter_area_mask_intersects_area:
-            return 1;
-        default:
-            return 0;
+        /* Operation is not a regrid operation, skip it. */
+        return 0;
     }
+
+    args = (const harp_regrid_args *)operation->args;
+
+    if (harp_profile_import_grid(args->grid_filename, &target_grid) != 0)
+    {
+        goto error;
+    }
+
+    if (harp_product_regrid_vertical_with_axis_variable(product, target_grid) != 0)
+    {
+        goto error;
+    }
+
+    if (harp_program_remove_operation_at_index(program, 0) != 0)
+    {
+        goto error;
+    }
+
+    /* cleanup */
+    harp_variable_delete(target_grid);
+    return 0;
+
+error:
+    harp_variable_delete(target_grid);
+    return -1;
 }
 
 /* Compute 'dimensionality' for filter operations; sets num_dimensions to either 0, 1 or 2.
@@ -1048,7 +1069,7 @@ static int execute_filter_operations(harp_product *product, harp_program *progra
         harp_operation *operation = NULL;
         long dim = -1;
 
-        if (!operation_is_dimension_filter(program->operation[0]))
+        if (!harp_operation_is_dimension_filter(program->operation[0]))
         {
             /* done with this phase */
             break;
@@ -1268,9 +1289,17 @@ static int execute_next_operation(harp_product *product, harp_program *program)
 
             break;
 
+        case harp_operation_regrid:
+            if (execute_regrid(product, program) != 0)
+            {
+                return -1;
+            }
+
+            break;
+
         default:
             /* all that's left should be dimension filters */
-            if (operation_is_dimension_filter(operation))
+            if (harp_operation_is_dimension_filter(operation))
             {
                 if (execute_filter_operations(product, program) != 0)
                 {

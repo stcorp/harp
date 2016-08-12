@@ -24,6 +24,19 @@
 #include <stdlib.h>
 #include <string.h>
 
+static void regrid_args_delete(harp_regrid_args *args)
+{
+    if (args != NULL)
+    {
+        if (args->grid_filename != NULL)
+        {
+            free(args->grid_filename);
+        }
+
+        free(args);
+    }
+}
+
 static void collocation_filter_args_delete(harp_collocation_filter_args *args)
 {
     if (args != NULL)
@@ -927,6 +940,26 @@ static int variable_exclusion_args_new(int num_variables, const char **variable_
     return 0;
 }
 
+static int regrid_args_new(const char *grid_filename, harp_regrid_args **new_args)
+{
+    harp_regrid_args *args;
+
+    assert(grid_filename != NULL);
+
+    args = (harp_regrid_args *)malloc(sizeof(harp_variable_exclusion_args));
+    if (args == NULL)
+    {
+        harp_set_error(HARP_ERROR_OUT_OF_MEMORY, "out of memory (could not allocate %lu bytes) (%s:%u)",
+                       sizeof(harp_variable_exclusion_args), __FILE__, __LINE__);
+        return -1;
+    }
+
+    args->grid_filename = strdup(grid_filename);
+
+    *new_args = args;
+    return 0;
+}
+
 static int collocation_filter_args_copy(const harp_collocation_filter_args *args,
                                         harp_collocation_filter_args **new_args)
 {
@@ -1033,6 +1066,12 @@ static int variable_exclusion_args_copy(const harp_variable_exclusion_args *args
     return variable_exclusion_args_new(args->num_variables, (const char **)args->variable_name, new_args);
 }
 
+static int regrid_args_copy(const harp_regrid_args *args, harp_regrid_args **new_args)
+{
+    assert(args != NULL);
+    return regrid_args_new(args->grid_filename, new_args);
+}
+
 int harp_operation_new(harp_operation_type type, void *args, harp_operation **new_operation)
 {
     harp_operation *operation;
@@ -1100,6 +1139,9 @@ static void args_delete(harp_operation_type operation_type, void *args)
             break;
         case harp_operation_exclude_variable:
             variable_exclusion_args_delete((harp_variable_exclusion_args *)args);
+            break;
+        case harp_operation_regrid:
+            regrid_args_delete((harp_regrid_args *)args);
             break;
         default:
             assert(0);
@@ -1169,6 +1211,9 @@ static int args_copy(harp_operation_type operation_type, const void *args, void 
         case harp_operation_exclude_variable:
             return variable_exclusion_args_copy((harp_variable_exclusion_args *)args,
                                                 (harp_variable_exclusion_args **)new_args);
+        case harp_operation_regrid:
+            return regrid_args_copy((harp_regrid_args *)args,
+                                                (harp_regrid_args **)new_args);
         default:
             assert(0);
             exit(1);
@@ -1519,6 +1564,26 @@ int harp_variable_exclusion_new(int num_variables, const char **variable_name, h
     return 0;
 }
 
+int harp_regrid_new(const char *grid_filename, harp_operation **new_operation)
+{
+    harp_regrid_args *args;
+    harp_operation *operation;
+
+    if (regrid_args_new(grid_filename, &args) != 0)
+    {
+        return -1;
+    }
+
+    if (harp_operation_new(harp_operation_regrid, args, &operation) != 0)
+    {
+        regrid_args_delete(args);
+        return -1;
+    }
+
+    *new_operation = operation;
+    return 0;
+}
+
 int harp_operation_get_variable_name(const harp_operation *operation, const char **variable_name)
 {
     switch (operation->type)
@@ -1549,4 +1614,25 @@ int harp_operation_get_variable_name(const harp_operation *operation, const char
     }
 
     return 0;
+}
+
+int harp_operation_is_dimension_filter(const harp_operation *operation)
+{
+    switch (operation->type)
+    {
+    case harp_operation_filter_comparison:
+    case harp_operation_filter_string_comparison:
+    case harp_operation_filter_bit_mask:
+    case harp_operation_filter_membership:
+    case harp_operation_filter_string_membership:
+    case harp_operation_filter_valid_range:
+    case harp_operation_filter_longitude_range:
+    case harp_operation_filter_point_distance:
+    case harp_operation_filter_area_mask_covers_point:
+    case harp_operation_filter_area_mask_covers_area:
+    case harp_operation_filter_area_mask_intersects_area:
+        return 1;
+    default:
+        return 0;
+    }
 }
