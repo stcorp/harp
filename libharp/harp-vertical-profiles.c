@@ -20,6 +20,7 @@
 
 #include "harp-internal.h"
 #include "harp-constants.h"
+#include "harp-csv.h"
 
 #include <assert.h>
 #include <math.h>
@@ -1287,6 +1288,237 @@ static int get_vertical_unit(const char *name, char **new_unit)
     }
 
     *new_unit = unit;
+
+    return 0;
+}
+
+static int read_vertical_grid_line(FILE *file, const char *filename, double *new_value)
+{
+    char line[HARP_CSV_LINE_LENGTH];
+    char *cursor = line;
+    double value;
+
+    if (fgets(line, HARP_CSV_LINE_LENGTH, file) == NULL)
+    {
+        harp_set_error(HARP_ERROR_INVALID_ARGUMENT, "error reading line of '%s'", filename);
+        return -1;
+    }
+
+    harp_csv_parse_double(&cursor, &value);
+
+    *new_value = value;
+
+    return 0;
+}
+
+static int read_vertical_grid_header(FILE *file, const char *filename, char **new_name, char **new_unit)
+{
+    char line[HARP_CSV_LINE_LENGTH];
+    char *original_cursor, *cursor;
+    int length = 0;
+    char *name = NULL;
+    char *unit = NULL;
+
+    if (fgets(line, HARP_CSV_LINE_LENGTH, file) == NULL)
+    {
+        harp_set_error(HARP_ERROR_INVALID_ARGUMENT, "error reading line of file '%s'", filename);
+        goto error;
+    }
+
+    /* remove trailing whitespace */
+    harp_csv_rtrim(line);
+
+    /* skip leading whitespace */
+    original_cursor = cursor = harp_csv_ltrim(line);
+
+    /* Grab name */
+    while (*cursor != '[' && *cursor != ',' && *cursor != '\0' && !isspace(cursor))
+    {
+        cursor++;
+        length++;
+    }
+    cursor = original_cursor;
+
+    name = calloc((length + 1), sizeof(char));
+    if (name == NULL)
+    {
+        harp_set_error(HARP_ERROR_OUT_OF_MEMORY, "out of memory (could not allocate %lu bytes) (%s:%u)",
+                       (length + 1) * sizeof(char), __FILE__, __LINE__);
+
+        return -1;
+    }
+    strncpy(name, cursor, length);
+
+    /* Skip white space between name and unit */
+    cursor = harp_csv_ltrim(cursor);
+
+    if (*cursor != '[')
+    {
+        /* No unit is found */
+        harp_set_error(HARP_ERROR_INVALID_ARGUMENT, "No unit in header of '%s'", filename);
+        goto error;
+    }
+    else
+    {
+        cursor++;
+    }
+
+    /* find unit length */
+    length = 0;
+    original_cursor = cursor;
+    while (*cursor != ']' && *cursor != '\0')
+    {
+        cursor++;
+        length++;
+    }
+    cursor = original_cursor;
+    
+    /* copy unit */
+    unit = calloc((length + 1), sizeof(char));
+    if (unit == NULL)
+    {
+        harp_set_error(HARP_ERROR_OUT_OF_MEMORY, "out of memory (could not allocate %lu bytes) (%s:%u)",
+                       (length + 1) * sizeof(char), __FILE__, __LINE__);
+        goto error;
+    }
+    strncpy(unit, cursor, length);
+
+    /* done, return result */
+    *new_name = name;
+    *new_unit = unit;
+
+    return 0;
+
+error:
+    free(name);
+    free(unit);
+
+    return -1;
+}
+
+/**
+ * Import vertical grid (altitude/pressure) from specified CSV file into target harp_variable.
+ * \return
+ *   \arg \c 0, Success.
+ *   \arg \c -1, Error occurred (check #harp_errno).
+ */
+int harp_profile_import_grid(const char *filename, harp_variable **new_vertical_axis)
+{
+    FILE *file = NULL;
+    long num_vertical;
+    char *name = NULL;
+    char *unit = NULL;
+    double *values = NULL;
+    double value;
+    harp_variable *vertical_axis = NULL;
+    harp_dimension_type vertical_1d_dim_type[1] = { harp_dimension_vertical };
+    long vertical_1d_dim[1];
+    int i;
+
+    /* open the grid file */
+    file = fopen(filename, "r+");
+    if (file == NULL)
+    {
+        harp_set_error(HARP_ERROR_FILE_OPEN, "Error opening vertical grid file '%s'", filename);
+        return -1;
+    }
+
+    /* Determine number of values */
+    if (harp_csv_get_num_lines(file, filename, &num_vertical) != 0)
+    {
+        fclose(file);
+        return -1;
+    }
+
+    /* Exclude the header line */
+    num_vertical--;
+
+    if (num_vertical < 1)
+    {
+        /* No lines to read */
+        harp_set_error(HARP_ERROR_FILE_READ, "Vertical grid file '%s' has no values", filename);
+        fclose(file);
+        return -1;
+    }
+
+    /* Obtain the name and unit of the quantity */
+    if (read_vertical_grid_header(file, filename, &name, &unit) != 0)
+    {
+        fclose(file);
+        return -1;
+    }
+
+    /* Obtain the values */
+    values = malloc((size_t)num_vertical * sizeof(double));
+    if (values == NULL)
+    {
+        harp_set_error(HARP_ERROR_OUT_OF_MEMORY, "out of memory (%s:%u)", __FILE__, __LINE__);
+        return -1;
+    }
+
+    for (i = 0; i < num_vertical; i++)
+    {
+        if (read_vertical_grid_line(file, filename, &value) != 0)
+        {
+            fclose(file);
+            free(values);
+            free(name);
+            free(unit);
+            return -1;
+        }
+
+        values[i] = value;
+    }
+
+    /* io cleanup */
+    if (fclose(file) != 0)
+    {
+        harp_set_error(HARP_ERROR_FILE_READ, "Error closing vertical grid definition file '%s'", filename);
+        free(values);
+        free(name);
+        free(unit);
+        return -1;
+    }
+
+    /* validate the axis variable name */
+    if ((strcmp(name, "altitude") == 0 || strcmp(name, "pressure") == 0) != 1)
+    {
+        harp_set_error(HARP_ERROR_INVALID_NAME,
+                       "Invalid vertical axis name '%s' in header of csv file '%s'", name, filename);
+        free(values);
+        free(name);
+        free(unit);
+        return -1;
+    }
+
+    /* create the axis variable */
+    vertical_1d_dim[0] = num_vertical;
+    if (harp_variable_new(name, harp_type_double, 1, vertical_1d_dim_type, vertical_1d_dim, &vertical_axis) != 0)
+    {
+        free(values);
+        free(name);
+        free(unit);
+        return -1;
+    }
+
+    /* Set the axis unit */
+    vertical_axis->unit = strdup(unit);
+    if (vertical_axis->unit == NULL)
+    {
+        harp_variable_delete(vertical_axis);
+        free(values);
+        free(name);
+        free(unit);
+        return -1;
+    }
+
+    /* Copy the axis data */
+    for (i = 0; i < num_vertical; i++)
+    {
+        vertical_axis->data.double_data[i] = values[i];
+    }
+
+    *new_vertical_axis = vertical_axis;
 
     return 0;
 }

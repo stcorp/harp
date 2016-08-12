@@ -890,6 +890,47 @@ static int execute_collocation_filter(harp_product *product, harp_program *progr
     return 0;
 }
 
+/* run a collocation filter operation at the head of program */
+static int execute_regrid(harp_product *product, harp_program *program)
+{
+    harp_operation *operation;
+    const harp_regrid_args *args;
+    harp_variable *target_grid = NULL;
+
+    assert(program->num_operations != 0);
+    operation = program->operation[0];
+    if (operation->type != harp_operation_regrid)
+    {
+        /* Operation is not a regrid operation, skip it. */
+        return 0;
+    }
+
+    args = (const harp_regrid_args *)operation->args;
+
+    if (harp_profile_import_grid(args->grid_filename, &target_grid) != 0)
+    {
+        goto error;
+    }
+
+    if (harp_product_regrid_vertical_with_axis_variable(product, target_grid) != 0)
+    {
+        goto error;
+    }
+
+    if (harp_program_remove_operation_at_index(program, 0) != 0)
+    {
+        goto error;
+    }
+
+    /* cleanup */
+    harp_variable_delete(target_grid);
+    return 0;
+
+error:
+    harp_variable_delete(target_grid);
+    return -1;
+}
+
 static int operation_is_dimension_filter(const harp_operation *operation)
 {
     switch (operation->type)
@@ -1262,6 +1303,14 @@ static int execute_next_operation(harp_product *product, harp_program *program)
 
         case harp_operation_filter_collocation:
             if (execute_collocation_filter(product, program) != 0)
+            {
+                return -1;
+            }
+
+            break;
+
+        case harp_operation_regrid:
+            if (execute_regrid(product, program) != 0)
             {
                 return -1;
             }

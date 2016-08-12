@@ -18,6 +18,7 @@
  * Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307  USA
  */
 #include <stdio.h>
+#include <ctype.h>
 
 #ifndef HARP_CSV_H
 #define HARP_CSV_H
@@ -28,5 +29,7 @@ void harp_csv_parse_double(char **str, double *value);
 void harp_csv_parse_long(char **str, long *value);
 void harp_csv_parse_string(char **str, char **value);
 int harp_csv_get_num_lines(FILE *file, const char *filename, long *new_num_lines);
+void harp_csv_rtrim(char *str);
+char *harp_csv_ltrim(char *str);
 
 #endif

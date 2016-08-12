@@ -4,6 +4,7 @@
 #include <assert.h>
 #include <stdio.h>
 #include <string.h>
+#include <ctype.h>
 
 void harp_csv_parse_double(char **str, double *value)
 {
@@ -121,4 +122,27 @@ int harp_csv_get_num_lines(FILE *file, const char *filename, long *new_num_lines
 
     *new_num_lines = num_lines;
     return 0;
+}
+
+/* Modifies the string end */
+void harp_csv_rtrim(char *str)
+{
+    size_t length = strlen(str);
+    while (length > 0 && (str[length - 1] == '\r' || str[length - 1] == '\n' || str[length - 1] == '\t' ||
+                          str[length - 1] == ' '))
+    {
+        length--;
+    }
+    str[length] = '\0';
+}
+
+/* Returns a pointer to a substring */
+char *harp_csv_ltrim(char *str)
+{
+    while (isspace(str))
+    {
+        str++;
+    }
+
+    return str;
 }

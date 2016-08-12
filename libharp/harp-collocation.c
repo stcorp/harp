@@ -483,10 +483,7 @@ static int parse_difference_type_and_unit(char **str, harp_collocation_differenc
     int stringlength = 0;
 
     /* Skip leading white space */
-    while (*cursor == ' ')
-    {
-        cursor++;
-    }
+    cursor = harp_csv_ltrim(cursor);
 
     /* Grab difference string */
     while (cursor[stringlength] != '[' && cursor[stringlength] != ',' && cursor[stringlength] != '\0')
@@ -670,7 +667,6 @@ static int read_pair(FILE *file, harp_collocation_result *collocation_result)
     long index_a;
     long index_b;
     double differences[HARP_COLLOCATION_RESULT_MAX_NUM_DIFFERENCES];
-    size_t length;
     int k;
 
     if (fgets(line, HARP_CSV_LINE_LENGTH, file) == NULL)
@@ -679,13 +675,7 @@ static int read_pair(FILE *file, harp_collocation_result *collocation_result)
         return -1;
     }
 
-    /* trim end-of-line */
-    length = strlen(line);
-    while (length > 0 && (line[length - 1] == '\r' || line[length - 1] == '\n'))
-    {
-        length--;
-    }
-    line[length] = '\0';
+    harp_csv_rtrim(line);
 
     /* Parse line */
     harp_csv_parse_long(&cursor, &collocation_index);
