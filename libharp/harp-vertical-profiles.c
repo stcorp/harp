@@ -1315,9 +1315,11 @@ static int read_vertical_grid_header(FILE *file, const char *filename, char **ne
 {
     char line[HARP_CSV_LINE_LENGTH];
     char *original_cursor, *cursor;
-    int length = 0;
+    int length;
     char *name = NULL;
     char *unit = NULL;
+
+    rewind(file);
 
     if (fgets(line, HARP_CSV_LINE_LENGTH, file) == NULL)
     {
@@ -1332,12 +1334,12 @@ static int read_vertical_grid_header(FILE *file, const char *filename, char **ne
     original_cursor = cursor = harp_csv_ltrim(line);
 
     /* Grab name */
-    while (*cursor != '[' && *cursor != ',' && *cursor != '\0' && !isspace(cursor))
+    length = 0;
+    while (*cursor != '[' && *cursor != ',' && *cursor != '\0' && !isspace(*cursor))
     {
         cursor++;
         length++;
     }
-    cursor = original_cursor;
 
     name = calloc((length + 1), sizeof(char));
     if (name == NULL)
@@ -1347,7 +1349,7 @@ static int read_vertical_grid_header(FILE *file, const char *filename, char **ne
 
         return -1;
     }
-    strncpy(name, cursor, length);
+    strncpy(name, original_cursor, length);
 
     /* Skip white space between name and unit */
     cursor = harp_csv_ltrim(cursor);
@@ -1371,7 +1373,6 @@ static int read_vertical_grid_header(FILE *file, const char *filename, char **ne
         cursor++;
         length++;
     }
-    cursor = original_cursor;
     
     /* copy unit */
     unit = calloc((length + 1), sizeof(char));
@@ -1381,7 +1382,7 @@ static int read_vertical_grid_header(FILE *file, const char *filename, char **ne
                        (length + 1) * sizeof(char), __FILE__, __LINE__);
         goto error;
     }
-    strncpy(unit, cursor, length);
+    strncpy(unit, original_cursor, length);
 
     /* done, return result */
     *new_name = name;

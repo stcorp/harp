@@ -139,7 +139,7 @@ void harp_csv_rtrim(char *str)
 /* Returns a pointer to a substring */
 char *harp_csv_ltrim(char *str)
 {
-    while (isspace(str))
+    while (isspace(str[0]))
     {
         str++;
     }
