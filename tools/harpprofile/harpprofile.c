@@ -31,6 +31,260 @@
 
 #define LINE_LENGTH 1024
 
+static int grab_name_and_unit_from_string(char *string, char **new_name, char **new_unit)
+{
+    char *name = NULL;
+    char *unit = NULL;
+    char *cursor = NULL;
+    size_t stringlength = 0;
+    int original_cursor_position = 0;
+    int cursor_position = 0;
+
+    cursor = string + cursor_position;
+
+    /* Skip commas and white space */
+    while (*cursor == ',' || *cursor == ' ')
+    {
+        cursor++;
+        cursor_position++;
+    }
+    original_cursor_position = cursor_position;
+
+    /* Grab name */
+    stringlength = 0;
+    while (*cursor != '[' && *cursor != ',' && *cursor != '\0')
+    {
+        cursor++;
+        cursor_position++;
+        stringlength++;
+    }
+    cursor = string + original_cursor_position;
+    name = calloc((stringlength + 1), sizeof(char));
+    if (name == NULL)
+    {
+        harp_set_error(HARP_ERROR_OUT_OF_MEMORY, "out of memory (could not allocate %lu bytes) (%s:%u)",
+                       (stringlength + 1) * sizeof(char), __FILE__, __LINE__);
+
+        return -1;
+    }
+    strncpy(name, cursor, stringlength);
+
+    /* Trim end of difference string */
+    rtrim_string(name);
+
+    /* Skip leading white space */
+    cursor = string + cursor_position;
+    while (*cursor == ' ')
+    {
+        cursor++;
+        cursor_position++;
+    }
+    original_cursor_position = cursor_position;
+
+    if (*cursor == ',')
+    {
+        /* No unit is found */
+        harp_set_error(HARP_ERROR_INVALID_ARGUMENT, "No unit in header", string);
+        free(name);
+        return -1;
+    }
+    if (*cursor != '[')
+    {
+        /* No unit is found */
+        harp_set_error(HARP_ERROR_INVALID_ARGUMENT, "No unit in header", string);
+        free(name);
+        return -1;
+    }
+
+    /* Grab the unit */
+    if (*cursor == '[')
+    {
+        cursor++;
+        cursor_position++;
+        original_cursor_position = cursor_position;
+    }
+    stringlength = 0;
+    while (*cursor != ']' && *cursor != ';' && *cursor != '\0')
+    {
+        cursor++;
+        cursor_position++;
+        stringlength++;
+    }
+    cursor = string + original_cursor_position;
+    unit = calloc((stringlength + 1), sizeof(char));
+    if (unit == NULL)
+    {
+        harp_set_error(HARP_ERROR_OUT_OF_MEMORY, "out of memory (could not allocate %lu bytes) (%s:%u)",
+                       (stringlength + 1) * sizeof(char), __FILE__, __LINE__);
+        free(name);
+        return -1;
+    }
+    strncpy(unit, cursor, stringlength);
+
+    /* Done, return result */
+    *new_name = name;
+    *new_unit = unit;
+
+    return 0;
+}
+
+static int read_vertical_grid_line(FILE *file, const char *filename, double *new_value)
+{
+    char LINE[LINE_LENGTH];
+    double value;
+    size_t length;
+
+    if (fgets(LINE, LINE_LENGTH, file) == NULL)
+    {
+        harp_set_error(HARP_ERROR_FILE_READ, "Error reading line in vertical grid '%s'", filename);
+        return -1;
+    }
+
+    /* Trim end-of-line */
+    length = strlen(LINE);
+    while (length > 0 && (LINE[length - 1] == '\r' || LINE[length - 1] == '\n'))
+    {
+        length--;
+    }
+    LINE[length] = '\0';
+
+    /* Parse line */
+    if (parse_vertical_grid_line(LINE, &value) != 0)
+    {
+        return -1;
+    }
+
+    *new_value = value;
+    return 0;
+}
+
+/**
+ * Import vertical grid (altitude/pressure) from specified CSV file into target harp_variable.
+ * \return
+ *   \arg \c 0, Success.
+ *   \arg \c -1, Error occurred (check #harp_errno).
+ */
+int grid_import(const char *filename, harp_variable **new_vertical_axis)
+{
+    FILE *file = NULL;
+    long num_vertical;
+    char *name = NULL;
+    char *unit = NULL;
+    double *values = NULL;
+    double value;
+    harp_variable *vertical_axis = NULL;
+    harp_dimension_type vertical_1d_dim_type[1] = { harp_dimension_vertical };
+    long vertical_1d_dim[1];
+    int i;
+
+    /* open the grid file */
+    file = fopen(filename, "r+");
+    if (file == NULL)
+    {
+        harp_set_error(HARP_ERROR_FILE_OPEN, "Error opening vertical grid file '%s'", filename);
+        return -1;
+    }
+
+    /* Determine number of values */
+    if (get_num_lines(filename, file, &num_vertical) != 0)
+    {
+        fclose(file);
+        return -1;
+    }
+
+    /* Exclude the header line */
+    num_vertical--;
+
+    if (num_vertical < 1)
+    {
+        /* No lines to read */
+        harp_set_error(HARP_ERROR_FILE_READ, "Vertical grid file '%s' has no values", filename);
+        fclose(file);
+        return -1;
+    }
+
+    /* Obtain the name and unit of the quantity */
+    if (read_vertical_grid_header(file, filename, &name, &unit) != 0)
+    {
+        fclose(file);
+        return -1;
+    }
+
+    /* Obtain the values */
+    values = malloc((size_t)num_vertical * sizeof(double));
+    if (values == NULL)
+    {
+        harp_set_error(HARP_ERROR_OUT_OF_MEMORY, "out of memory (%s:%u)", __FILE__, __LINE__);
+        return -1;
+    }
+
+    for (i = 0; i < num_vertical; i++)
+    {
+        if (read_vertical_grid_line(file, filename, &value) != 0)
+        {
+            fclose(file);
+            free(values);
+            free(name);
+            free(unit);
+            return -1;
+        }
+
+        values[i] = value;
+    }
+
+    /* io cleanup */
+    if (fclose(file) != 0)
+    {
+        harp_set_error(HARP_ERROR_FILE_READ, "Error closing vertical grid definition file '%s'", filename);
+        free(values);
+        free(name);
+        free(unit);
+        return -1;
+    }
+
+    /* validate the axis variable name */
+    if ((strcmp(name, "altitude") == 0 || strcmp(name, "pressure") == 0) != 1)
+    {
+        harp_set_error(HARP_ERROR_INVALID_NAME,
+                       "Invalid vertical axis name '%s' in header of csv file '%s'", name, filename);
+        free(values);
+        free(name);
+        free(unit);
+        return -1;
+    }
+
+    /* create the axis variable */
+    vertical_1d_dim[0] = num_vertical;
+    if (harp_variable_new(name, harp_type_double, 1, vertical_1d_dim_type, vertical_1d_dim, &vertical_axis) != 0)
+    {
+        free(values);
+        free(name);
+        free(unit);
+        return -1;
+    }
+
+    /* Set the axis unit */
+    vertical_axis->unit = strdup(unit);
+    if (vertical_axis->unit == NULL)
+    {
+        harp_variable_delete(vertical_axis);
+        free(values);
+        free(name);
+        free(unit);
+        return -1;
+    }
+
+    /* Copy the axis data */
+    for (i = 0; i < num_vertical; i++)
+    {
+        vertical_axis->data.double_data[i] = values[i];
+    }
+
+    *new_vertical_axis = vertical_axis;
+
+    return 0;
+}
+
 static void print_version()
 {
     printf("harpprofile version %s\n", libharp_version);
@@ -63,6 +317,11 @@ void print_help_resample(void)
     printf("                    resample the vertical profiles of the input file (part of\n");
     printf("                    dataset B) to the <vertical_axis> grid of the vertical profiles\n");
     printf("                    in dataset A\n");
+    printf("            -c, --common <input>\n");
+    printf("                    resample vertical profiles (in datasets A and B)\n");
+    printf("                    to a common grid before calculating the columns.\n");
+    printf("                    The common <vertical_axis> grid is defined in file C.\n");
+    printf("                    <input> denotes the filename\n");
     printf("\n");
 }
 
@@ -120,6 +379,32 @@ void print_help(void)
     printf("\n");
 }
 
+/**
+ * Resample against grid as read from specified CSV file.
+ *
+ * \return
+ *   \arg \c 0, Success.
+ *   \arg \c -1, Error occurred (check #harp_errno).
+ */
+static int resample_common_grid(harp_product *product, const char *grid_input_filename)
+{
+    harp_variable *target_grid = NULL;
+
+    if (grid_import(grid_input_filename, &target_grid) != 0)
+    {
+        return -1;
+    }
+
+    if (harp_product_regrid_vertical_with_axis_variable(product, target_grid) != 0)
+    {
+        return -1;
+    }
+
+    harp_variable_delete(target_grid);
+
+    return 0;
+}
+
 static int resample(int argc, char *argv[])
 {
     harp_product *product;
@@ -130,6 +415,8 @@ static int resample(int argc, char *argv[])
     const char *input_filename = NULL;
 
     /* valued option */
+    const char *grid_input_filename = NULL;
+
     const char *result_csv_file = NULL;
     char *vertical_axis_name = NULL;
     const char *source_dataset_a = NULL;
@@ -181,6 +468,12 @@ static int resample(int argc, char *argv[])
 
             i += 3;
         }
+        else if ((strcmp(argv[i], "-c") == 0 || strcmp(argv[i], "--common") == 0)
+                 && i + 1 < argc && argv[i + 1][0] != '-')
+        {
+            grid_input_filename = argv[i + 1];
+            i++;
+        }
         else if (argv[i][0] != '-')
         {
             /* positional arguments follow */
@@ -217,6 +510,16 @@ static int resample(int argc, char *argv[])
     {
         fprintf(stderr, "ERROR: could not import product from '%s'", input_filename);
         return -1;
+    }
+
+    /* perform the resampling */
+    if (grid_input_filename != NULL)
+    {
+        if (resample_common_grid(product, grid_input_filename) != 0)
+        {
+            return -1;
+        }
+        export = 1;
     }
 
     if (result_csv_file)
