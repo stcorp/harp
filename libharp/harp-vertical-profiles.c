@@ -1900,7 +1900,8 @@ LIBHARP_API int harp_product_smooth_vertical(harp_product *product, int num_smoo
     harp_variable *target_bounds = NULL;
     harp_collocation_result *collocation_result = NULL;
     char *vertical_unit = NULL;
-    char *bounds_name;
+    char *bounds_name = NULL;
+    double *interpolation_buffer = NULL;
 
     /* derive the name of the bounds variable for the vertical axis */
     bounds_name = malloc(strlen(vertical_axis) + 7 + 1);
@@ -1986,6 +1987,16 @@ LIBHARP_API int harp_product_smooth_vertical(harp_product *product, int num_smoo
         {
             goto error;
         }
+    }
+
+    /* allocate the buffer for the interpolation */
+    interpolation_buffer = (double *)malloc(max_vertical_dim * (size_t)sizeof(double));
+    if (interpolation_buffer == NULL)
+    {
+        harp_set_error(HARP_ERROR_OUT_OF_MEMORY,
+                       "out of memory (could not allocate %lu bytes) (%s:%u)",
+                       max_vertical_dim * (size_t)sizeof(double), __FILE__, __LINE__);
+        goto error;
     }
 
     for (pair_id = 0, time_index_a = 0; time_index_a < product->dimension[harp_dimension_time]; time_index_a++)
@@ -2129,18 +2140,20 @@ LIBHARP_API int harp_product_smooth_vertical(harp_product *product, int num_smoo
             blocks = var->num_elements / var->dimension[0] / num_source_max_vertical_elements;
             for (block = 0; block < blocks; block++)
             {
+                int l;
+                long target_block_index = (time_index_a * blocks + block) * num_target_max_vertical_elements;
+                long source_block_index = (time_index_a * blocks + block) * num_source_max_vertical_elements;
+
                 if (var_type == profile_resample_linear)
                 {
                     harp_interpolate_array_linear(num_source_vertical_elements,
                                                   &source_grid->data.double_data[time_index_a *
                                                                                  num_source_max_vertical_elements],
-                                                  &var->data.double_data[(time_index_a * blocks + block) *
-                                                                         num_source_max_vertical_elements],
+                                                  &var->data.double_data[source_block_index],
                                                   num_target_vertical_elements,
                                                   &target_grid->data.double_data[time_index_b *
                                                                                  num_target_max_vertical_elements], 0,
-                                                  &var->data.double_data[(time_index_a * blocks + block) *
-                                                                         num_target_max_vertical_elements]);
+                                                  interpolation_buffer);
                 }
                 else if (var_type == profile_resample_interval)
                 {
@@ -2154,14 +2167,19 @@ LIBHARP_API int harp_product_smooth_vertical(harp_product *product, int num_smoo
                                                            &target_bounds->data.double_data[time_index_b *
                                                                                             num_target_max_vertical_elements
                                                                                             * 2],
-                                                           &var->data.double_data[(time_index_a * blocks + block) *
-                                                                                  num_target_max_vertical_elements]);
+                                                           interpolation_buffer);
                 }
                 else
                 {
                     /* other resampling methods are not supported, but should also never be set */
                     assert(0);
                     exit(1);
+                }
+
+                /* copy the buffer to the target var */
+                for (l = 0; l < num_target_vertical_elements; l++)
+                {
+                    var->data.double_data[target_block_index + l] = interpolation_buffer[l];
                 }
             }
 
@@ -2197,6 +2215,7 @@ LIBHARP_API int harp_product_smooth_vertical(harp_product *product, int num_smoo
     harp_collocation_result_shallow_delete(collocation_result);
     free(vertical_unit);
     free(bounds_name);
+    free(interpolation_buffer);
 
     return 0;
 
@@ -2209,6 +2228,7 @@ LIBHARP_API int harp_product_smooth_vertical(harp_product *product, int num_smoo
     harp_collocation_result_shallow_delete(collocation_result);
     free(vertical_unit);
     free(bounds_name);
+    free(interpolation_buffer);
 
     return -1;
 }
