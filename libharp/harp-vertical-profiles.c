@@ -1884,6 +1884,7 @@ LIBHARP_API int harp_product_smooth_vertical(harp_product *product, int num_smoo
                                              const harp_collocation_result *original_collocation_result)
 {
     int time_index_a, pair_id;
+    long num_source_max_vertical_elements;  /* actual elems + NaN padding */
     harp_variable *source_collocation_index = NULL;
     harp_dimension_type grid_dim_type[2] = { harp_dimension_time, harp_dimension_vertical };
     harp_dimension_type bounds_dim_type[3] = { harp_dimension_time, harp_dimension_vertical,
@@ -1965,7 +1966,7 @@ LIBHARP_API int harp_product_smooth_vertical(harp_product *product, int num_smoo
     }
 
     /* Use loglin interpolation if pressure grid */
-    if (strcmp(source_grid->name, "pressure") != 0)
+    if (strcmp(source_grid->name, "pressure") == 0)
     {
         int i;
 
@@ -1974,6 +1975,9 @@ LIBHARP_API int harp_product_smooth_vertical(harp_product *product, int num_smoo
             source_grid->data.double_data[i] = log(source_grid->data.double_data[i]);
         }
     }
+
+    /* Save the length of the original vertical dimension */
+    num_source_max_vertical_elements = product->dimension[harp_dimension_vertical];
 
     /* Resize the vertical dimension in the target product to make room for the resampled data */
     if (max_vertical_dim > product->dimension[harp_dimension_vertical])
@@ -1991,10 +1995,9 @@ LIBHARP_API int harp_product_smooth_vertical(harp_product *product, int num_smoo
         long time_index_b = -1;
         int j;
         long coll_index;
-        long num_source_vertical_elements;
         long num_target_vertical_elements;
-        long num_source_max_vertical_elements;  /* actual elems + NaN padding */
         long num_target_max_vertical_elements;
+        long num_source_vertical_elements;
 
         /* Get the collocation index */
         coll_index = source_collocation_index->data.int32_data[time_index_a];
@@ -2049,6 +2052,16 @@ LIBHARP_API int harp_product_smooth_vertical(harp_product *product, int num_smoo
             {
                 goto error;
             }
+            /* Use loglin interpolation if pressure grid */
+            if (strcmp(target_grid->name, "pressure") == 0)
+            {
+                int i;
+
+                for (i = 0; i < target_grid->num_elements; i++)
+                {
+                    target_grid->data.double_data[i] = log(target_grid->data.double_data[i]);
+                }
+            }
 
             /* Cleanup the target bounds, they will get loaded again when necessary */
             harp_variable_delete(target_bounds);
@@ -2061,26 +2074,13 @@ LIBHARP_API int harp_product_smooth_vertical(harp_product *product, int num_smoo
         }
 
         /* find the source and target grid lengths */
-        num_source_max_vertical_elements = product->dimension[harp_dimension_vertical];
-        num_target_max_vertical_elements = target_grid->dimension[1];
         num_source_vertical_elements =
             get_unpadded_vector_length(&source_grid->data.double_data[time_index_a * num_source_max_vertical_elements],
                                        num_source_max_vertical_elements);
+        num_target_max_vertical_elements = target_grid->dimension[1];
         num_target_vertical_elements =
             get_unpadded_vector_length(&target_grid->data.double_data[time_index_a * num_target_max_vertical_elements],
                                        num_target_max_vertical_elements);
-
-        /* Use loglin interpolation if pressure grid */
-        /* TODO only take logs of the grid values at time time_index_b */
-        if (strcmp(target_grid->name, "pressure") != 0)
-        {
-            int i;
-
-            for (i = 0; i < target_grid->num_elements; i++)
-            {
-                target_grid->data.double_data[i] = log(target_grid->data.double_data[i]);
-            }
-        }
 
         /* Resample & smooth variables */
         for (j = product->num_variables - 1; j >= 0; j--)
