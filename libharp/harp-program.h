@@ -42,7 +42,4 @@ int harp_program_copy(const harp_program *other_program, harp_program **new_prog
 /* Parser */
 int harp_program_from_string(const char *str, harp_program **new_program);
 
-/* "static analysis" */
-int harp_program_verify(const harp_program *program);
-
 #endif

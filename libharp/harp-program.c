@@ -152,30 +152,3 @@ int harp_program_remove_operation(harp_program *program, harp_operation *operati
 
     return 0;
 }
-
-int harp_program_verify(const harp_program *program)
-{
-    int i;
-    int count;
-
-    count = 0;
-    for (i = 0; i < program->num_operations; i++)
-    {
-        const harp_operation *operation = program->operation[i];
-
-        if (operation->type != harp_operation_filter_collocation)
-        {
-            continue;
-        }
-
-        if (count > 0)
-        {
-            harp_set_error(HARP_ERROR_OPERATION, "program should not contain more than one collocation filter");
-            return -1;
-        }
-
-        count++;
-    }
-
-    return 0;
-}

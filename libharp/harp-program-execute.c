@@ -1306,11 +1306,6 @@ int harp_product_execute_program(harp_product *product, harp_program *program)
 {
     harp_program *program_copy = NULL;
 
-    if (harp_program_verify(program) != 0)
-    {
-        goto error;
-    }
-
     if (harp_program_copy(program, &program_copy) != 0)
     {
         goto error;

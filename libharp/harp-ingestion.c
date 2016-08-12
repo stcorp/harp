@@ -2751,11 +2751,6 @@ static int get_product(ingest_info *info, harp_program *program)
         return 0;
     }
 
-    if (harp_program_verify(program) != 0)
-    {
-        return -1;
-    }
-
     if (evaluate_ingestion_mask(info, program))
     {
         return -1;
