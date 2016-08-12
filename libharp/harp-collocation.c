@@ -19,13 +19,13 @@
  */
 
 #include "harp-internal.h"
+#include "harp-csv.h"
 
 #include <assert.h>
 #include <stdio.h>
 #include <stdlib.h>
 #include <string.h>
 
-#define LINE_LENGTH 1024
 #define COLLOCATION_RESULT_BLOCK_SIZE 1024
 
 /** \defgroup harp_collocation HARP Collocation
@@ -477,124 +477,6 @@ LIBHARP_API int harp_collocation_result_remove_pair_at_index(harp_collocation_re
  * @}
  */
 
-static int get_num_lines(FILE *file, const char *filename, long *new_num_lines)
-{
-    long length;
-    char LINE[LINE_LENGTH];
-    long num_lines = 0;
-
-    while (fgets(LINE, LINE_LENGTH, file) != NULL)
-    {
-        /* Trim the line */
-        length = (long)strlen(LINE);
-        while (length > 0 && (LINE[length - 1] == '\r' || LINE[length - 1] == '\n'))
-        {
-            length--;
-        }
-        LINE[length] = '\0';
-
-        /* Do not allow empty lines */
-        if (length == 1)
-        {
-            harp_set_error(HARP_ERROR_INVALID_ARGUMENT, "empty line in file '%s'", filename);
-            return -1;
-        }
-
-        num_lines++;
-    }
-
-    *new_num_lines = num_lines;
-    return 0;
-}
-
-static void parse_double(char **str, double *value)
-{
-    char *cursor = *str;
-    int stringlength = 0;
-
-    *value = harp_nan();
-
-    /* Skip leading white space */
-    while (*cursor == ' ')
-    {
-        cursor++;
-    }
-
-    /* Grab string */
-    while (cursor[stringlength] != ',' && cursor[stringlength] != '\0')
-    {
-        stringlength++;
-    }
-    if (cursor[stringlength] == '\0')
-    {
-        *str = &cursor[stringlength];
-    }
-    else
-    {
-        cursor[stringlength] = '\0';
-        *str = &cursor[stringlength + 1];
-    }
-    sscanf(cursor, "%lf", value);
-}
-
-static void parse_long(char **str, long *value)
-{
-    char *cursor = *str;
-    size_t stringlength = 0;
-
-    *value = 0;
-
-    /* Skip leading white space */
-    while (*cursor == ' ')
-    {
-        cursor++;
-    }
-
-    /* Grab string */
-    while (cursor[stringlength] != ',' && cursor[stringlength] != '\0')
-    {
-        stringlength++;
-    }
-    if (cursor[stringlength] == '\0')
-    {
-        *str = &cursor[stringlength];
-    }
-    else
-    {
-        cursor[stringlength] = '\0';
-        *str = &cursor[stringlength + 1];
-    }
-    sscanf(cursor, "%ld", value);
-}
-
-static void parse_string(char **str, char **value)
-{
-    char *cursor = *str;
-    int stringlength = 0;
-
-    /* Skip leading white space */
-    while (*cursor == ' ')
-    {
-        cursor++;
-    }
-
-    /* Grab string */
-    while (cursor[stringlength] != ',' && cursor[stringlength] != '\0')
-    {
-        stringlength++;
-    }
-    if (cursor[stringlength] == '\0')
-    {
-        *str = &cursor[stringlength];
-    }
-    else
-    {
-        cursor[stringlength] = '\0';
-        *str = &cursor[stringlength + 1];
-    }
-    *value = cursor;
-}
-
 static int parse_difference_type_and_unit(char **str, harp_collocation_difference_type *difference_type, char **unit)
 {
     char *cursor = *str;
@@ -706,14 +588,14 @@ static int parse_difference_type_and_unit(char **str, harp_collocation_differenc
 
 static int read_header(FILE *file, harp_collocation_result *collocation_result)
 {
-    char line[LINE_LENGTH];
+    char line[HARP_CSV_LINE_LENGTH];
     char *cursor = line;
     char *string = NULL;
     size_t length;
 
     rewind(file);
 
-    if (fgets(line, LINE_LENGTH, file) == NULL)
+    if (fgets(line, HARP_CSV_LINE_LENGTH, file) == NULL)
     {
         harp_set_error(HARP_ERROR_INVALID_ARGUMENT, "error reading header");
         return -1;
@@ -727,31 +609,31 @@ static int read_header(FILE *file, harp_collocation_result *collocation_result)
     }
     line[length] = '\0';
 
-    parse_string(&cursor, &string);
+    harp_csv_parse_string(&cursor, &string);
     if (strcmp(string, "collocation_index") != 0)
     {
         harp_set_error(HARP_ERROR_INVALID_ARGUMENT, "error reading 'collocation_index' in header");
         return -1;
     }
-    parse_string(&cursor, &string);
+    harp_csv_parse_string(&cursor, &string);
     if (strcmp(string, "source_product_a") != 0)
     {
         harp_set_error(HARP_ERROR_INVALID_ARGUMENT, "error reading 'source_product_a' in header");
         return -1;
     }
-    parse_string(&cursor, &string);
+    harp_csv_parse_string(&cursor, &string);
     if (strcmp(string, "index_a") != 0)
     {
         harp_set_error(HARP_ERROR_INVALID_ARGUMENT, "error reading 'index_a' in header");
         return -1;
     }
-    parse_string(&cursor, &string);
+    harp_csv_parse_string(&cursor, &string);
     if (strcmp(string, "source_product_b") != 0)
     {
         harp_set_error(HARP_ERROR_INVALID_ARGUMENT, "error reading 'source_product_b' in header");
         return -1;
     }
-    parse_string(&cursor, &string);
+    harp_csv_parse_string(&cursor, &string);
     if (strcmp(string, "index_b") != 0)
     {
         harp_set_error(HARP_ERROR_INVALID_ARGUMENT, "error reading 'index_b' in header");
@@ -780,7 +662,7 @@ static int read_header(FILE *file, harp_collocation_result *collocation_result)
 
 static int read_pair(FILE *file, harp_collocation_result *collocation_result)
 {
-    char line[LINE_LENGTH];
+    char line[HARP_CSV_LINE_LENGTH];
     char *cursor = line;
     long collocation_index;
     char *source_product_a;
@@ -791,7 +673,7 @@ static int read_pair(FILE *file, harp_collocation_result *collocation_result)
     size_t length;
     int k;
 
-    if (fgets(line, LINE_LENGTH, file) == NULL)
+    if (fgets(line, HARP_CSV_LINE_LENGTH, file) == NULL)
     {
         harp_set_error(HARP_ERROR_INVALID_ARGUMENT, "error reading line");
         return -1;
@@ -806,16 +688,16 @@ static int read_pair(FILE *file, harp_collocation_result *collocation_result)
     line[length] = '\0';
 
     /* Parse line */
-    parse_long(&cursor, &collocation_index);
-    parse_string(&cursor, &source_product_a);
-    parse_long(&cursor, &index_a);
-    parse_string(&cursor, &source_product_b);
-    parse_long(&cursor, &index_b);
+    harp_csv_parse_long(&cursor, &collocation_index);
+    harp_csv_parse_string(&cursor, &source_product_a);
+    harp_csv_parse_long(&cursor, &index_a);
+    harp_csv_parse_string(&cursor, &source_product_b);
+    harp_csv_parse_long(&cursor, &index_b);
     for (k = 0; k < HARP_COLLOCATION_RESULT_MAX_NUM_DIFFERENCES; k++)
     {
         if (collocation_result->difference_available[k] && k != harp_collocation_difference_delta)
         {
-            parse_double(&cursor, &differences[k]);
+            harp_csv_parse_double(&cursor, &differences[k]);
         }
         else
         {
@@ -868,7 +750,7 @@ LIBHARP_API int harp_collocation_result_read(const char *collocation_result_file
     }
 
     /* Get number of lines */
-    if (get_num_lines(file, collocation_result_filename, &num_lines) != 0)
+    if (harp_csv_get_num_lines(file, collocation_result_filename, &num_lines) != 0)
     {
         fclose(file);
         return -1;
