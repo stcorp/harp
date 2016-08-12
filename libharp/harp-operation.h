@@ -39,7 +39,8 @@ typedef enum harp_operation_type_enum
     harp_operation_filter_area_mask_intersects_area,
     harp_operation_derive_variable,
     harp_operation_keep_variable,
-    harp_operation_exclude_variable
+    harp_operation_exclude_variable,
+    harp_operation_regrid
 } harp_operation_type;
 
 typedef struct harp_operation_struct
@@ -180,6 +181,11 @@ typedef struct harp_variable_exclusion_args_struct
     char **variable_name;
 } harp_variable_exclusion_args;
 
+typedef struct harp_regrid_args_struct
+{
+    char *grid_filename;
+} harp_regrid_args;
+
 /* Generic operation */
 int harp_operation_new(harp_operation_type type, void *args, harp_operation **new_operation);
 void harp_operation_delete(harp_operation *operation);
@@ -227,6 +233,8 @@ int harp_variable_derivation_new(const char *variable_name, int num_dimensions,
 int harp_variable_inclusion_new(int num_variables, const char **variable_name, harp_operation **new_operation);
 
 int harp_variable_exclusion_new(int num_variables, const char **variable_name, harp_operation **new_operation);
+
+int harp_regrid_new(const char *grid_filename, harp_operation **new_operation);
 
 int harp_operation_get_variable_name(const harp_operation *operation, const char **variable_name);
 

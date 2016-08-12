@@ -50,8 +50,9 @@ static int create_area_mask_intersects_area_filter(const ast_node *argument_list
 static int create_variable_derivation(const ast_node *argument_list, harp_operation **new_operation);
 static int create_variable_inclusion(const ast_node *argument_list, harp_operation **new_operation);
 static int create_variable_exclusion(const ast_node *argument_list, harp_operation **new_operation);
+static int create_regrid(const ast_node *argument_list, harp_operation **new_operation);
 
-#define NUM_BUILTIN_FUNCTIONS 11
+#define NUM_BUILTIN_FUNCTIONS 12
 static function_prototype builtin_function[NUM_BUILTIN_FUNCTIONS] = {
     {"collocate-left", 1, {ast_string}, &create_collocation_filter_left},
     {"collocate-right", 1, {ast_string}, &create_collocation_filter_right},
@@ -63,7 +64,8 @@ static function_prototype builtin_function[NUM_BUILTIN_FUNCTIONS] = {
     {"area-mask-intersects-area", 2, {ast_string, ast_quantity}, &create_area_mask_intersects_area_filter},
     {"derive", 1, {ast_qualified_name}, &create_variable_derivation},
     {"keep", -1, {0}, &create_variable_inclusion},
-    {"exclude", -1, {0}, &create_variable_exclusion}
+    {"exclude", -1, {0}, &create_variable_exclusion},
+    {"regrid", 1, {ast_string}, &create_regrid}
 };
 
 static function_prototype *get_function_prototype_by_name(const char *name)
@@ -653,6 +655,15 @@ static int create_membership_test(ast_node *node, harp_operation **new_operation
 
     *new_operation = operation;
     return 0;
+}
+
+static int create_regrid(const ast_node *argument_list, harp_operation **new_operation)
+{
+    const ast_node *name;
+
+    name = argument_list->child_node[0];
+
+    return harp_regrid_new(name->payload.string, new_operation);
 }
 
 static int operation_from_function_call(ast_node *node, harp_operation **new_operation)
