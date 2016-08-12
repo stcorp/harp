@@ -42,6 +42,12 @@ IF(NOT CMAKE_BUILD_TYPE)
       FORCE)
 ENDIF(NOT CMAKE_BUILD_TYPE)
 
+# -DNDEBUG purposely omitted because we want assertions in RelWithDebInfo mode
+#
+set(CMAKE_C_FLAGS_RELWITHDEBINFO "-Og -g" CACHE STRING 
+	"Flags used by the compiler during release builds with debug info." 
+	FORCE)
+
 # Option handling
 #
 option(HARP_BUILD_PYTHON "build Python interface" OFF)
