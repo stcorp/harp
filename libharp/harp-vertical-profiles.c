@@ -1341,7 +1341,7 @@ static int read_vertical_grid_header(FILE *file, const char *filename, char **ne
         length++;
     }
 
-    name = calloc((length + 1), sizeof(char));
+    name = malloc((length + 1) * sizeof(char));
     if (name == NULL)
     {
         harp_set_error(HARP_ERROR_OUT_OF_MEMORY, "out of memory (could not allocate %lu bytes) (%s:%u)",
@@ -1375,7 +1375,7 @@ static int read_vertical_grid_header(FILE *file, const char *filename, char **ne
     }
     
     /* copy unit */
-    unit = calloc((length + 1), sizeof(char));
+    unit = malloc((length + 1) * sizeof(char));
     if (unit == NULL)
     {
         harp_set_error(HARP_ERROR_OUT_OF_MEMORY, "out of memory (could not allocate %lu bytes) (%s:%u)",
@@ -1520,6 +1520,11 @@ int harp_profile_import_grid(const char *filename, harp_variable **new_vertical_
     }
 
     *new_vertical_axis = vertical_axis;
+
+    /* cleanup */
+    free(values);
+    free(name);
+    free(unit);
 
     return 0;
 }
