@@ -44,6 +44,14 @@ ENDIF(NOT CMAKE_BUILD_TYPE)
 
 # -DNDEBUG purposely omitted because we want assertions in RelWithDebInfo mode
 #
+if(CMAKE_COMPILER_IS_GNUCC)
+  set(CMAKE_C_FLAGS_RELWITHDEBINFO "-Og -g"
+	  CACHE STRING "Flags used by the compiler during release builds with debug info.")
+else()
+  set(CMAKE_C_FLAGS_RELWITHDEBINFO "-O2 -g"
+	  CACHE STRING "Flags used by the compiler during release builds with debug info.")
+endif()
+
 set(CMAKE_C_FLAGS_RELWITHDEBINFO "-Og -g" CACHE STRING 
 	"Flags used by the compiler during release builds with debug info." 
 	FORCE)
