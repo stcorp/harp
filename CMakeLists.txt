@@ -493,7 +493,7 @@ if(HARP_BUILD_PYTHON)
     message(FATAL_ERROR "PYTHON interpreter not found.")
   endif(NOT PYTHONINTERP_FOUND)
   execute_process(COMMAND ${PYTHON_EXECUTABLE} -c "import sys; from distutils import sysconfig; sys.stdout.write(sysconfig.get_python_lib(1,0,prefix=''))" OUTPUT_VARIABLE PYTHON_INSTALL_DIR)
-  set(HARP_PYTHON_INSTALL_DIR "${PYTHON_INSTALL_DIR}" CACHE PATH "Install location for HARP Python package")
+  set(HARP_PYTHON_INSTALL_DIR "${PYTHON_INSTALL_DIR}" CACHE STRING "Install location for HARP Python package")
   install(FILES
     python/__init__.py
     python/_harpc.py
