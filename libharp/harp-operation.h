@@ -238,4 +238,6 @@ int harp_regrid_new(const char *grid_filename, harp_operation **new_operation);
 
 int harp_operation_get_variable_name(const harp_operation *operation, const char **variable_name);
 
+int harp_operation_is_dimension_filter(const harp_operation *operation);
+
 #endif

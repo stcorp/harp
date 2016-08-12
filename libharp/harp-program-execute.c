@@ -25,6 +25,7 @@
 #include "harp-predicate.h"
 #include "harp-filter.h"
 #include "harp-filter-collocation.h"
+#include "harp-vertical-profiles.h"
 
 static int evaluate_value_filters_0d(const harp_product *product, harp_program *ops_0d, uint8_t *product_mask)
 {
@@ -931,27 +932,6 @@ error:
     return -1;
 }
 
-static int operation_is_dimension_filter(const harp_operation *operation)
-{
-    switch (operation->type)
-    {
-        case harp_operation_filter_comparison:
-        case harp_operation_filter_string_comparison:
-        case harp_operation_filter_bit_mask:
-        case harp_operation_filter_membership:
-        case harp_operation_filter_string_membership:
-        case harp_operation_filter_valid_range:
-        case harp_operation_filter_longitude_range:
-        case harp_operation_filter_point_distance:
-        case harp_operation_filter_area_mask_covers_point:
-        case harp_operation_filter_area_mask_covers_area:
-        case harp_operation_filter_area_mask_intersects_area:
-            return 1;
-        default:
-            return 0;
-    }
-}
-
 /* Compute 'dimensionality' for filter operations; sets num_dimensions to either 0, 1 or 2.
  */
 static int get_operation_dimensionality(harp_product *product, harp_operation *operation, long *num_dimensions)
@@ -1089,7 +1069,7 @@ static int execute_filter_operations(harp_product *product, harp_program *progra
         harp_operation *operation = NULL;
         long dim = -1;
 
-        if (!operation_is_dimension_filter(program->operation[0]))
+        if (!harp_operation_is_dimension_filter(program->operation[0]))
         {
             /* done with this phase */
             break;
@@ -1319,7 +1299,7 @@ static int execute_next_operation(harp_product *product, harp_program *program)
 
         default:
             /* all that's left should be dimension filters */
-            if (operation_is_dimension_filter(operation))
+            if (harp_operation_is_dimension_filter(operation))
             {
                 if (execute_filter_operations(product, program) != 0)
                 {

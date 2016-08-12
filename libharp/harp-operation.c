@@ -1615,3 +1615,24 @@ int harp_operation_get_variable_name(const harp_operation *operation, const char
 
     return 0;
 }
+
+int harp_operation_is_dimension_filter(const harp_operation *operation)
+{
+    switch (operation->type)
+    {
+    case harp_operation_filter_comparison:
+    case harp_operation_filter_string_comparison:
+    case harp_operation_filter_bit_mask:
+    case harp_operation_filter_membership:
+    case harp_operation_filter_string_membership:
+    case harp_operation_filter_valid_range:
+    case harp_operation_filter_longitude_range:
+    case harp_operation_filter_point_distance:
+    case harp_operation_filter_area_mask_covers_point:
+    case harp_operation_filter_area_mask_covers_area:
+    case harp_operation_filter_area_mask_intersects_area:
+        return 1;
+    default:
+        return 0;
+    }
+}
