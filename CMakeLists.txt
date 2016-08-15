@@ -273,7 +273,7 @@ set(LIBHARP_SOURCES
   libharp/harp-ingest-gosat_fts_l2.c
   libharp/harp-ingest-hirdls_l2.c
   libharp/harp-ingest-iasi_l2.c
-  libharp/harp-ingest-mip_nl__2p.c
+  libharp/harp-ingest-mipas_l2.c
   libharp/harp-ingest-mls_l2.c
   libharp/harp-ingest-omi_l2.c
   libharp/harp-ingest-omi_l3.c

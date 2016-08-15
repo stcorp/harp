@@ -1623,7 +1623,7 @@ static int read_f12_akm_vmr(void *user_data, long index, harp_array data)
                         data);
 }
 
-int harp_ingestion_module_mip_nl__2p_init(void)
+int harp_ingestion_module_mipas_l2_init(void)
 {
     const char *species_options[] = { "all", "H2O", "O3", "HNO3", "CH4", "N2O", "NO2", "F11", "ClNO", "N2O5", "F12" };
     harp_ingestion_module *module;
@@ -1634,7 +1634,7 @@ int harp_ingestion_module_mip_nl__2p_init(void)
     const char *path;
 
     description = "MIPAS Temperature, Pressure, and Atmospheric Constituents Profiles";
-    module = harp_ingestion_register_module_coda("MIP_NL__2P", "ENVISAT_MIPAS", "MIP_NL__2P", description, NULL,
+    module = harp_ingestion_register_module_coda("MIPAS_L2", "ENVISAT_MIPAS", "MIP_NL__2P", description, NULL,
                                                  ingestion_init, ingestion_done);
 
     harp_ingestion_register_option(module, "species", "if not set to 'all' then ingest only the specified species "

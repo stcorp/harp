@@ -2681,6 +2681,35 @@
 <dd></dd></dl>
 
 <dl class="function">
+<dt id="_CPPv223read_vertical_grid_lineP4FILEPKcPd">
+<span id="read_vertical_grid_line__FILEP.cCP.doubleP"></span><span class="target" id="libharpgroup__harp__algorithm_1ga0eb643cb4c86f26347fad1981f7c55ff"></span><em class="property">static</em> int <code class="descname">read_vertical_grid_line</code><span class="sig-paren">(</span>FILE *<em>file</em>, <em class="property">const</em> char *<em>filename</em>, double *<em>new_value</em><span class="sig-paren">)</span></dt>
+<dd></dd></dl>
+
+<dl class="function">
+<dt id="_CPPv225read_vertical_grid_headerP4FILEPKcPPcPPc">
+<span id="read_vertical_grid_header__FILEP.cCP.cPP.cPP"></span><span class="target" id="libharpgroup__harp__algorithm_1ga066c94c6b57edcc41de39cdae8b22436"></span><em class="property">static</em> int <code class="descname">read_vertical_grid_header</code><span class="sig-paren">(</span>FILE *<em>file</em>, <em class="property">const</em> char *<em>filename</em>, char **<em>new_name</em>, char **<em>new_unit</em><span class="sig-paren">)</span></dt>
+<dd></dd></dl>
+
+<dl class="function">
+<dt id="_CPPv224harp_profile_import_gridPKcPP13harp_variable">
+<span id="harp_profile_import_grid__cCP.harp_variablePP"></span><span class="target" id="libharpgroup__harp__algorithm_1ga56aea92275c529fe2c1a9c3a6bf29c0a"></span>int <code class="descname">harp_profile_import_grid</code><span class="sig-paren">(</span><em class="property">const</em> char *<em>filename</em>, <a class="reference internal" href="libharp_variable.html#_CPPv213harp_variable" title="harp_variable">harp_variable</a> **<em>new_vertical_axis</em><span class="sig-paren">)</span></dt>
+<dd><p>Import vertical grid (altitude/pressure) from specified CSV file into target harp_variable. <dl class="docutils">
+<dt><strong>Return</strong></dt>
+<dd><ul class="simple">
+<li><code class="docutils literal"><span class="pre">0</span></code>, Success. </li>
+<li><code class="docutils literal"><span class="pre">-1</span></code>, Error occurred (check <a class="reference internal" href="libharp_error.html#libharpgroup__harp__error_1gab2eeb46528306c6799632d1e800c4c36"><span class="std std-ref">harp_errno</span></a>). </li>
+</ul>
+</dd>
+</dl>
+</p>
+</dd></dl>
+
+<dl class="function">
+<dt id="_CPPv226get_unpadded_vector_lengthPdl">
+<span id="get_unpadded_vector_length__doubleP.l"></span><span class="target" id="libharpgroup__harp__algorithm_1ga2cee0b11142da76dae7435ab2639a26c"></span><em class="property">static</em> long <code class="descname">get_unpadded_vector_length</code><span class="sig-paren">(</span>double *<em>vector</em>, long <em>vector_length</em><span class="sig-paren">)</span></dt>
+<dd></dd></dl>
+
+<dl class="function">
 <dt id="_CPPv223vertical_profile_smoothP13harp_variableP12harp_productll">
 <span id="vertical_profile_smooth__harp_variableP.harp_productP.l.l"></span><span class="target" id="libharpgroup__harp__algorithm_1gad97d4610e78ed209ccc5537fd6526bf0"></span><em class="property">static</em> int <code class="descname">vertical_profile_smooth</code><span class="sig-paren">(</span><a class="reference internal" href="libharp_variable.html#_CPPv213harp_variable" title="harp_variable">harp_variable</a> *<em>var</em>, <a class="reference internal" href="libharp_product.html#_CPPv212harp_product" title="harp_product">harp_product</a> *<em>match</em>, long <em>time_index_a</em>, long <em>time_index_b</em><span class="sig-paren">)</span></dt>
 <dd></dd></dl>
