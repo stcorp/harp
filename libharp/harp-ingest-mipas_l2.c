@@ -1002,12 +1002,7 @@ static int read_datetime(void *user_data, long index, harp_array data)
 {
     ingest_info *info = (ingest_info *)user_data;
 
-    if (get_data(&info->geo_cursor[index], "dsr_time", NULL, data) != 0)
-    {
-        return -1;
-    }
-    *data.double_data = *data.double_data / 86400;      /* Convert seconds to days */
-    return 0;
+    return get_data(&info->geo_cursor[index], "dsr_time", NULL, data);
 }
 
 static int read_altitude(void *user_data, long index, harp_array data)
@@ -1652,7 +1647,7 @@ int harp_ingestion_module_mipas_l2_init(void)
     description = "start time of the measurement";
     variable_definition = harp_ingestion_register_variable_sample_read(product_definition, "datetime", harp_type_double,
                                                                        1, dimension_type, NULL, description,
-                                                                       "days since 2000-01-01", NULL, read_datetime);
+                                                                       "seconds since 2000-01-01", NULL, read_datetime);
     path = "/scan_geolocation_ads[]/dsr_time[]";
     harp_variable_definition_add_mapping(variable_definition, NULL, NULL, path, NULL);
 
