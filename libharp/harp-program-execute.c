@@ -801,7 +801,8 @@ static int execute_variable_keep_filter_operation(harp_product *product, harp_pr
         {
             harp_set_error(HARP_ERROR_OPERATION, OPERATION_KEEP_NON_EXISTANT_VARIABLE_FORMAT,
                            in_args->variable_name[j]);
-            goto error;
+            free(include_variable_mask);
+            return -1;
         }
 
         include_variable_mask[variable_id] = 1;
@@ -814,23 +815,21 @@ static int execute_variable_keep_filter_operation(harp_product *product, harp_pr
         {
             if (harp_product_remove_variable(product, product->variable[j]) != 0)
             {
-                goto error;
+                free(include_variable_mask);
+                return -1;
             }
         }
     }
 
+    free(include_variable_mask);
+
     /* remove the operation that we execute */
     if (harp_program_remove_operation_at_index(program, 0) != 0)
     {
-        goto error;
+        return -1;
     }
 
-    free(include_variable_mask);
     return 0;
-
-  error:
-    free(include_variable_mask);
-    return -1;
 }
 
 /* run a collocation filter operation at the head of program */
@@ -912,26 +911,23 @@ static int execute_regrid(harp_product *product, harp_program *program)
 
     if (harp_profile_import_grid(args->grid_filename, &target_grid) != 0)
     {
-        goto error;
+        return -1;
     }
 
     if (harp_product_regrid_vertical_with_axis_variable(product, target_grid) != 0)
     {
-        goto error;
+        harp_variable_delete(target_grid);
+        return -1;
     }
+
+    harp_variable_delete(target_grid);
 
     if (harp_program_remove_operation_at_index(program, 0) != 0)
     {
-        goto error;
+        return -1;
     }
 
-    /* cleanup */
-    harp_variable_delete(target_grid);
     return 0;
-
-error:
-    harp_variable_delete(target_grid);
-    return -1;
 }
 
 /* Compute 'dimensionality' for filter operations; sets num_dimensions to either 0, 1 or 2.

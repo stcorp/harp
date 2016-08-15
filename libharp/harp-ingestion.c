@@ -2233,12 +2233,12 @@ static int get_operation_dimensionality(ingest_info *info, harp_operation *opera
         {
             /* non existant variable is an error */
             harp_set_error(HARP_ERROR_OPERATION, OPERATION_FILTER_NON_EXISTANT_VARIABLE_FORMAT, variable_name);
-            goto error;
+            return -1;
         }
         if (variable_def->num_dimensions > 2)
         {
             harp_set_error(HARP_ERROR_OPERATION, OPERATION_FILTER_TOO_GREAT_DIMENSION_FORMAT, variable_name);
-            goto error;
+            return -1;
         }
 
         *num_dimensions = variable_def->num_dimensions;
@@ -2252,18 +2252,18 @@ static int get_operation_dimensionality(ingest_info *info, harp_operation *opera
         if (find_variable_definition(info, "longitude", &longitude_def) != 0)
         {
             harp_set_error(HARP_ERROR_OPERATION, OPERATION_FILTER_POINT_MISSING_LON);
-            goto error;
+            return -1;
         }
         if (find_variable_definition(info, "latitude", &latitude_def) != 0)
         {
             harp_set_error(HARP_ERROR_OPERATION, OPERATION_FILTER_POINT_MISSING_LAT);
-            goto error;
+            return -1;
         }
         /* point filters must be 0D or 1D */
         if (longitude_def->num_dimensions > 1 || latitude_def->num_dimensions > 1)
         {
             harp_set_error(HARP_ERROR_OPERATION, OPERATION_FILTER_POINT_WRONG_DIMENSION_FORMAT, "{time}");
-            goto error;
+            return -1;
         }
 
         /* dimensionality is the max of the lat/lon variables */
@@ -2281,19 +2281,19 @@ static int get_operation_dimensionality(ingest_info *info, harp_operation *opera
         if (find_variable_definition(info, "longitude_bounds", &longitude_bounds_def) != 0)
         {
             harp_set_error(HARP_ERROR_OPERATION, OPERATION_FILTER_AREA_MISSING_LON_BOUNDS);
-            goto error;
+            return -1;
         }
         if (find_variable_definition(info, "latitude_bounds", &latitude_bounds_def) != 0)
         {
             harp_set_error(HARP_ERROR_OPERATION, OPERATION_FILTER_AREA_MISSING_LAT_BOUNDS);
-            goto error;
+            return -1;
         }
         /* area filters must be 0D or 1D, which means that the bounds are 1D or 2D resp. */
         if (longitude_bounds_def->num_dimensions > 2 || latitude_bounds_def->num_dimensions > 2
             || longitude_bounds_def->num_dimensions < 1 || latitude_bounds_def->num_dimensions < 1)
         {
             harp_set_error(HARP_ERROR_OPERATION, OPERATION_FILTER_POINT_WRONG_DIMENSION_FORMAT, "{time}");
-            goto error;
+            return -1;
         }
 
         *num_dimensions =
@@ -2309,13 +2309,10 @@ static int get_operation_dimensionality(ingest_info *info, harp_operation *opera
     else
     {
         harp_set_error(HARP_ERROR_OPERATION, "Encountered unsupported filter during ingestion.");
-        goto error;
+        return -1;
     }
 
     return 0;
-
-  error:
-    return -1;
 }
 
 /** Update the ingestion mask by performing the filtering operations in phase_operations.
@@ -2538,7 +2535,8 @@ static int execute_variable_keep_filter_operation(ingest_info *info, harp_progra
         {
             harp_set_error(HARP_ERROR_OPERATION, OPERATION_KEEP_NON_EXISTANT_VARIABLE_FORMAT,
                            in_args->variable_name[j]);
-            goto error;
+            free(include_variable_mask);
+            return -1;
         }
 
         include_variable_mask[variable_id] = 1;
@@ -2550,18 +2548,15 @@ static int execute_variable_keep_filter_operation(ingest_info *info, harp_progra
         info->variable_mask[j] = info->variable_mask && include_variable_mask[j];
     }
 
+    free(include_variable_mask);
+
     /* remove the operation that we execute */
     if (harp_program_remove_operation_at_index(program, 0) != 0)
     {
-        goto error;
+        return -1;
     }
 
-    free(include_variable_mask);
     return 0;
-
-  error:
-    free(include_variable_mask);
-    return -1;
 }
 
 /* Perform performance optimized execution of filtering operations during ingestion.

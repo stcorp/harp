@@ -1324,7 +1324,7 @@ static int read_vertical_grid_header(FILE *file, const char *filename, char **ne
     if (fgets(line, HARP_CSV_LINE_LENGTH, file) == NULL)
     {
         harp_set_error(HARP_ERROR_INVALID_ARGUMENT, "error reading line of file '%s'", filename);
-        goto error;
+        return -1;
     }
 
     /* remove trailing whitespace */
@@ -1358,7 +1358,8 @@ static int read_vertical_grid_header(FILE *file, const char *filename, char **ne
     {
         /* No unit is found */
         harp_set_error(HARP_ERROR_INVALID_ARGUMENT, "No unit in header of '%s'", filename);
-        goto error;
+        free(name);
+        return -1;
     }
     else
     {
@@ -1380,7 +1381,9 @@ static int read_vertical_grid_header(FILE *file, const char *filename, char **ne
     {
         harp_set_error(HARP_ERROR_OUT_OF_MEMORY, "out of memory (could not allocate %lu bytes) (%s:%u)",
                        (length + 1) * sizeof(char), __FILE__, __LINE__);
-        goto error;
+        free(name);
+        free(unit);
+        return -1;
     }
     strncpy(unit, original_cursor, length);
 
@@ -1389,12 +1392,6 @@ static int read_vertical_grid_header(FILE *file, const char *filename, char **ne
     *new_unit = unit;
 
     return 0;
-
-error:
-    free(name);
-    free(unit);
-
-    return -1;
 }
 
 /**
@@ -2046,6 +2043,7 @@ LIBHARP_API int harp_product_smooth_vertical(harp_product *product, int num_smoo
             if (match != NULL)
             {
                 harp_product_delete(match);
+                match = NULL;
             }
 
             /* import new product */
@@ -2191,7 +2189,7 @@ LIBHARP_API int harp_product_smooth_vertical(harp_product *product, int num_smoo
                     if (vertical_profile_smooth(var, match, time_index_a, time_index_b) != 0)
                     {
                         goto error;
-                    };
+                    }
                 }
             }
         }
