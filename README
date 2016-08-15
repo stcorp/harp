@@ -26,6 +26,7 @@ The current version of HARP contains:
    - TES/MLS/HIRDLS L2
    - GOSAT FTS L1/L2
    - MIPAS L2
+   - ECMF GRIB (includes Copernicus Atmospheric Monitoring Service (CAMS))
  - import/export of data from/into HARP-specific data format
    The HARP data format standard is a convention on top of netCDF3/HDF4/HDF5
    similar to netCDF-CF (and can be used in conjunction with netCDF-CF).
@@ -67,7 +68,6 @@ The following items are planned to be added in the coming year:
    - OSIRIS L2
    - SMR L2
    - ACE-FTS
-   - CAMS (Copernicus Atmospheric Monitoring Service)
    - ADM/Aeolus
  - direct ingestion/import/export interfaces for:
    - MATLAB
