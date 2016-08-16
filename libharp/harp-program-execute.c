@@ -1196,6 +1196,8 @@ static int execute_filter_operations(harp_product *product, harp_program *progra
     assert(ops_1d->num_operations == 0);
     assert(ops_2d->num_operations == 0);
 
+    status = 0;
+
   cleanup:
     harp_dimension_mask_set_delete(dimension_mask_set);
     harp_program_delete(ops_0d);
@@ -1248,60 +1250,47 @@ static int execute_next_operation(harp_product *product, harp_program *program)
     switch (operation->type)
     {
         case harp_operation_exclude_variable:
-            if (execute_variable_exclude_filter_operation(product, program))
+            if (execute_variable_exclude_filter_operation(product, program) != 0)
             {
                 return -1;
             }
-
             break;
         case harp_operation_keep_variable:
-            if (execute_variable_keep_filter_operation(product, program))
+            if (execute_variable_keep_filter_operation(product, program) != 0)
             {
                 return -1;
             }
-
             break;
-
         case harp_operation_derive_variable:
             if (execute_derivation(product, program) != 0)
             {
                 return -1;
             }
-
             break;
-
         case harp_operation_filter_collocation:
             if (execute_collocation_filter(product, program) != 0)
             {
                 return -1;
             }
-
             break;
-
         case harp_operation_regrid:
             if (execute_regrid(product, program) != 0)
             {
                 return -1;
             }
-
             break;
-
         default:
             /* all that's left should be dimension filters */
-            if (harp_operation_is_dimension_filter(operation))
-            {
-                if (execute_filter_operations(product, program) != 0)
-                {
-                    return -1;
-                }
-            }
-            else
+            if (!harp_operation_is_dimension_filter(operation))
             {
                 /* Don't know how to run this operation type */
                 assert(0);
+                exit(1);
             }
-
-            break;
+            if (execute_filter_operations(product, program) != 0)
+            {
+                return -1;
+            }
     }
 
     return 0;
