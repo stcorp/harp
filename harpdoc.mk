@@ -226,6 +226,7 @@ HARP_DOCFILES = \
 	doc/html/ingestions/GOME2_L2_O3MOTO.html \
 	doc/html/ingestions/GOME_L2_ERSNTO.html \
 	doc/html/ingestions/GOME_L2_ERSOTO.html \
+	doc/html/ingestions/GOMOS_NL_L2.html \
 	doc/html/ingestions/GOSAT_FTS_L1b_band1p.html \
 	doc/html/ingestions/GOSAT_FTS_L1b_band1s.html \
 	doc/html/ingestions/GOSAT_FTS_L1b_band2p.html \
@@ -773,6 +774,8 @@ doc/html/ingestions/GOME2_L2_O3MOTO.html:
 doc/html/ingestions/GOME_L2_ERSNTO.html:
 	$(MAKE) harp_doc
 doc/html/ingestions/GOME_L2_ERSOTO.html:
+	$(MAKE) harp_doc
+doc/html/ingestions/GOMOS_NL_L2.html:
 	$(MAKE) harp_doc
 doc/html/ingestions/GOSAT_FTS_L1b_band1p.html:
 	$(MAKE) harp_doc
