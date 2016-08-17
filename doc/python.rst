@@ -235,7 +235,7 @@ Examples
    print(product.temperature)
 
    # Export the updated product as an HDF4 file.
-   harp.export_product(product, "non-empty.hdf", format="hdf4")
+   harp.export_product(product, "non-empty.hdf", file_format="hdf4")
 
    # Convert the product to an OrderedDict.
    dict_product = harp.to_dict(product)
@@ -248,7 +248,7 @@ Examples
    print(hcho_product)
 
    # Export the product as a HARP compliant data product.
-   harp.export_product(hcho_product, "hcho.h5", format='hdf5')
+   harp.export_product(hcho_product, "hcho.h5", file_format='hdf5')
 
 API reference
 -------------

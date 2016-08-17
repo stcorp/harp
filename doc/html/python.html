@@ -487,7 +487,7 @@ default encoding is <code class="docutils literal"><span class="pre">'ascii'</sp
 <span class="k">print</span><span class="p">(</span><span class="n">product</span><span class="o">.</span><span class="n">temperature</span><span class="p">)</span>
 
 <span class="c1"># Export the updated product as an HDF4 file.</span>
-<span class="n">harp</span><span class="o">.</span><span class="n">export_product</span><span class="p">(</span><span class="n">product</span><span class="p">,</span> <span class="s2">&quot;non-empty.hdf&quot;</span><span class="p">,</span> <span class="n">format</span><span class="o">=</span><span class="s2">&quot;hdf4&quot;</span><span class="p">)</span>
+<span class="n">harp</span><span class="o">.</span><span class="n">export_product</span><span class="p">(</span><span class="n">product</span><span class="p">,</span> <span class="s2">&quot;non-empty.hdf&quot;</span><span class="p">,</span> <span class="n">file_format</span><span class="o">=</span><span class="s2">&quot;hdf4&quot;</span><span class="p">)</span>
 
 <span class="c1"># Convert the product to an OrderedDict.</span>
 <span class="n">dict_product</span> <span class="o">=</span> <span class="n">harp</span><span class="o">.</span><span class="n">to_dict</span><span class="p">(</span><span class="n">product</span><span class="p">)</span>
@@ -500,7 +500,7 @@ default encoding is <code class="docutils literal"><span class="pre">'ascii'</sp
 <span class="k">print</span><span class="p">(</span><span class="n">hcho_product</span><span class="p">)</span>
 
 <span class="c1"># Export the product as a HARP compliant data product.</span>
-<span class="n">harp</span><span class="o">.</span><span class="n">export_product</span><span class="p">(</span><span class="n">hcho_product</span><span class="p">,</span> <span class="s2">&quot;hcho.h5&quot;</span><span class="p">,</span> <span class="n">format</span><span class="o">=</span><span class="s1">&#39;hdf5&#39;</span><span class="p">)</span>
+<span class="n">harp</span><span class="o">.</span><span class="n">export_product</span><span class="p">(</span><span class="n">hcho_product</span><span class="p">,</span> <span class="s2">&quot;hcho.h5&quot;</span><span class="p">,</span> <span class="n">file_format</span><span class="o">=</span><span class="s1">&#39;hdf5&#39;</span><span class="p">)</span>
 </pre></div>
 </div>
 </div>
