@@ -195,43 +195,43 @@ apply to the value of a variable attribute, such as ``standard_name`` (as specif
 
 HARP defines the following variable names:
 
-============================================= =============== =============== ======= ==== ======= ==== =======================================================================
-Name                                          Prefixes        Postfixes       Quality Vert Lat/Lon Spec Comments
-============================================= =============== =============== ======= ==== ======= ==== =======================================================================
+============================================= =============== =============== ======= ==== ======= ===== =======================================================================
+Name                                          Prefixes        Postfixes       Quality Vert Lat/Lon Spect Comments
+============================================= =============== =============== ======= ==== ======= ===== =======================================================================
 absorbing_aerosol_index                                                       X            X
 aerosol_extinction_coefficient                surface                         X       X    X       X
-aerosol_optical_depth                                                         X            X       X    this is equal to 'aerosol optical thickness'
+aerosol_optical_depth                                                         X       X    X       X     this is equal to 'aerosol optical thickness'
 <aerosol_type>_aerosol_extinction_coefficient surface                         X       X    X       X
-<aerosol_type>_aerosol_optical_depth                                          X       X    X       X    this is equal to 'aerosol optical thickness'
-altitude                                      surface,                        X       X    X            altitude in HARP is with respect to the WGS84 reference ellipsoid
+<aerosol_type>_aerosol_optical_depth                                          X       X    X       X     this is equal to 'aerosol optical thickness'
+altitude                                      surface,                        X       X    X             altitude in HARP is with respect to the WGS84 reference ellipsoid
                                               instrument
 altitude_bounds                                                                       X    X
 cloud_fraction                                                                X            X
-cloud_optical_depth                                                           X            X            this is equal to 'cloud optical thickness'
+cloud_optical_depth                                                           X            X             this is equal to 'cloud optical thickness'
 cloud_pressure                                                                X            X
 cloud_height                                                                  X            X
 cloud_top_albedo                                                              X            X
 cloud_top_height                                                              X            X
 cloud_top_pressure                                                            X            X
-collocation_index                                                                                       zero-based index as provided in the collocation result file
+collocation_index                                                                                        zero-based index as provided in the collocation result file
 datetime
 datetime_length
 datetime_start
 datetime_stop
-density                                                                       X       X    X            this is the mass density
-flag_am_pm                                                                                              string variable with either 'am' or 'pm'
-flag_day_twilight_night                                                                                 string variable with either 'day', 'twilight', or 'night'
+density                                                                       X       X    X             this is the mass density
+flag_am_pm                                                                                               string variable with either 'am' or 'pm'
+flag_day_twilight_night                                                                                  string variable with either 'day', 'twilight', or 'night'
 frequency                                                                     X
 geopotential                                                                  X       X    X
 geopotential_height                                                           X       X    X
-index                                                                                                   zero-based index of the sample within the source product
-instrument_name                                                                                         used mainly for ground based networks to provide a unique instrument id
+index                                                                                                    zero-based index of the sample within the source product
+instrument_name                                                                                          used mainly for ground based networks to provide a unique instrument id
 latitude                                      instrument                      X            (lat)
 latitude_bounds                                                                            (lat)
 longitude                                     instrument                      X            (lon)
 longitude_bounds                                                                           (lon)
 normalized_radiance                                                           X                    X
-number_density                                                                X       X    X            this is equal to 'volume density'
+number_density                                                                X       X    X             this is equal to 'volume density'
 pressure                                      surface                         X       X    X
 pressure_bounds                                                               X       X    X
 radiance                                                                      X                    X
@@ -242,7 +242,7 @@ scan_direction
 scan_subset_counter
 scanline_pixel_index
 scattering_angle                                                              X
-site_name                                                                                               used for data of a specific named geographical location
+site_name                                                                                                used for data of a specific named geographical location
 solar_azimuth_angle                           surface, toa,                   X
                                               instrument,
 solar_elevation_angle                         surface, toa,                   X
@@ -252,14 +252,14 @@ solar_zenith_angle                            surface, toa,                   X
                                               instrument,
 surface_albedo                                                                X            X       X
 temperature                                   surface                         X       X    X
-tropopause_pressure                                                           X            X            pressure level of the troposphere/stratosphere boundary location
-tropopause_height                                                             X            X            altitude of the troposphere/stratosphere boundary location
+tropopause_pressure                                                           X            X             pressure level of the troposphere/stratosphere boundary location
+tropopause_height                                                             X            X             altitude of the troposphere/stratosphere boundary location
 viewing_azimuth_angle                                                         X
 viewing_zenith_angle                                                          X
 virtual_temperature                                                           X       X    X
 wavelength                                                                    X                    X
 wavenumber                                                                    X                    X
-<species>_column_density                      stratospheric,  amf, apriori,   X       X    X            this is the mass density
+<species>_column_density                      stratospheric,  amf, apriori,   X       X    X             this is the mass density
                                               tropospheric    avk
 <species>_column_number_density               stratospheric,  amf, apriori,   X       X    X
                                               tropospheric    avk
@@ -271,15 +271,15 @@ wavenumber                                                                    X 
                                               tropospheric
 <species>_column_volume_mixing_ratio_dry_air  stratospheric,                  X            X
                                               tropospheric
-<species>_density                                                             X       X    X            this is the mass density
+<species>_density                                                             X       X    X             this is the mass density
 <species>_mass_mixing_ratio                                   apriori, avk    X       X    X
 <species>_mass_mixing_ratio_dry_air                           apriori, avk    X       X    X
-<species>_number_density                                      apriori, avk    X       X    X            this is equal to 'volume density'
+<species>_number_density                                      apriori, avk    X       X    X             this is equal to 'volume density'
 <species>_partial_pressure                                                    X       X    X
 <species>_partial_pressure_dry_air                                            X       X    X
 <species>_volume_mixing_ratio                                 apriori, avk    X       X    X
 <species>_volume_mixing_ratio_dry_air                         apriori, avk    X       X    X
-============================================= =============== =============== ======= ==== ======= ==== =======================================================================
+============================================= =============== =============== ======= ==== ======= ===== =======================================================================
 
 The supported aersol types are:
 
