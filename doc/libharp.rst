@@ -16,13 +16,11 @@ Most operations in HARP work in these Products and Variables.
 .. toctree::
    :maxdepth: 2
 
-   libharp_algorithm
    libharp_collocation
    libharp_dataset
    libharp_documentation
    libharp_error
    libharp_general
-   libharp_geometry
    libharp_product
    libharp_product_metadata
    libharp_variable

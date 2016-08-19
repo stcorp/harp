@@ -22,10 +22,6 @@
 #include "harp-constants.h"
 #include "harp-geometry.h"
 
-/** \defgroup harp_algorithm HARP Algorithms
- * The collection of scientific/mathematical algorithms as used internally by HARP.
- */
-
 /* Define the angles [degrees] for day-twilight and twilight-night (use 'atronomical' twilight) */
 #define HARP_SOLAR_ZENITH_ANGLE_LIMIT_DAY_TWILIGHT  (90.0)
 #define HARP_SOLAR_ZENITH_ANGLE_LIMIT_TWILIGHT_NIGHT (108.0)
@@ -197,10 +193,6 @@ int harp_determine_overlapping_scenario(double xmin_a, double xmax_a, double xmi
     *new_overlapping_scenario = overlapping_scenario;
     return 0;
 }
-
-/** \addtogroup harp_algorithm
- * @{
- */
 
 /** Calculate the fraction of the day
  * \param datetime   Datetime [s since 2000-01-01]
@@ -866,7 +858,3 @@ double harp_wavenumber_from_wavelength(double wavelength)
     /* Convert wavelength [1/nm] to [1/cm] */
     return 1.0e7 / wavelength;
 }
-
-/**
- * @}
- */

@@ -386,12 +386,10 @@ RSTFILES = \
 	doc/harpfilter.rst \
 	doc/index.rst \
 	doc/libharp.rst \
-	doc/libharp_algorithm.rst \
 	doc/libharp_collocation.rst \
 	doc/libharp_documentation.rst \
 	doc/libharp_error.rst \
 	doc/libharp_general.rst \
-	doc/libharp_geometry.rst \
 	doc/libharp_product.rst \
 	doc/libharp_variable.rst \
 	doc/python.rst \

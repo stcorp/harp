@@ -35,7 +35,7 @@
     <link rel="top" title="HARP 0.2b documentation" href="index.html"/>
         <link rel="up" title="C library" href="libharp.html"/>
         <link rel="next" title="Product Metadata" href="libharp_product_metadata.html"/>
-        <link rel="prev" title="Geometry" href="libharp_geometry.html"/> 
+        <link rel="prev" title="General" href="libharp_general.html"/> 
 
   
   <script src="_static/js/modernizr.min.js"></script>
@@ -91,13 +91,11 @@
 <li class="toctree-l1 current"><a class="reference internal" href="libharp.html">C library</a><ul class="current">
 <li class="toctree-l2"><a class="reference internal" href="libharp.html#introduction">Introduction</a></li>
 <li class="toctree-l2 current"><a class="reference internal" href="libharp.html#modules">Modules</a><ul class="current">
-<li class="toctree-l3"><a class="reference internal" href="libharp_algorithm.html">Algorithms</a></li>
 <li class="toctree-l3"><a class="reference internal" href="libharp_collocation.html">Collocation</a></li>
 <li class="toctree-l3"><a class="reference internal" href="libharp_dataset.html">Dataset</a></li>
 <li class="toctree-l3"><a class="reference internal" href="libharp_documentation.html">Documentation</a></li>
 <li class="toctree-l3"><a class="reference internal" href="libharp_error.html">Error</a></li>
 <li class="toctree-l3"><a class="reference internal" href="libharp_general.html">General</a></li>
-<li class="toctree-l3"><a class="reference internal" href="libharp_geometry.html">Geometry</a></li>
 <li class="toctree-l3 current"><a class="current reference internal" href="#">Product</a></li>
 <li class="toctree-l3"><a class="reference internal" href="libharp_product_metadata.html">Product Metadata</a></li>
 <li class="toctree-l3"><a class="reference internal" href="libharp_variable.html">Variable</a></li>
@@ -654,6 +652,83 @@
 </dd></dl>
 
 <dl class="function">
+<dt id="_CPPv247harp_product_regrid_vertical_with_axis_variableP12harp_productP13harp_variable">
+<span id="harp_product_regrid_vertical_with_axis_variable__harp_productP.harp_variableP"></span><span class="target" id="libharpgroup__harp__product_1ga057036b6eb3f6d8e839c7657180c4a75"></span>int <code class="descname">harp_product_regrid_vertical_with_axis_variable</code><span class="sig-paren">(</span><a class="reference internal" href="#_CPPv212harp_product" title="harp_product">harp_product</a> *<em>product</em>, <a class="reference internal" href="libharp_variable.html#_CPPv213harp_variable" title="harp_variable">harp_variable</a> *<em>target_grid</em><span class="sig-paren">)</span></dt>
+<dd><p>Resamples all variables in product against a specified grid. Target_grid is expected to be a variable of dimensions {vertical}. The source grid is determined by derivation of a matching vertical quantity on the specified product.</p>
+<p><dl class="docutils">
+<dt><strong>Return</strong></dt>
+<dd><ul class="simple">
+<li><code class="docutils literal"><span class="pre">0</span></code>, Success. </li>
+<li><code class="docutils literal"><span class="pre">-1</span></code>, Error occurred (check <a class="reference internal" href="libharp_error.html#libharpgroup__harp__error_1gab2eeb46528306c6799632d1e800c4c36"><span class="std std-ref">harp_errno</span></a>). </li>
+</ul>
+</dd>
+<dt><strong>Parameters</strong></dt>
+<dd><ul class="breatheparameterlist first last">
+<li><code class="first docutils literal"><span class="pre">product</span></code> - <p>Product to resample. </p>
+</li>
+<li><code class="first docutils literal"><span class="pre">target_grid</span></code> - <p>Vertical grid to target.</p>
+</li>
+</ul>
+</dd>
+</dl>
+</p>
+</dd></dl>
+
+<dl class="function">
+<dt id="_CPPv228harp_product_smooth_verticalP12harp_productiPPKcPKcPK23harp_collocation_result">
+<span id="harp_product_smooth_vertical__harp_productP.i.cCPP.cCP.harp_collocation_resultCP"></span><span class="target" id="libharpgroup__harp__product_1gaa478c8991af66d85f209a86ba5e12e5a"></span>int <code class="descname">harp_product_smooth_vertical</code><span class="sig-paren">(</span><a class="reference internal" href="#_CPPv212harp_product" title="harp_product">harp_product</a> *<em>product</em>, int <em>num_smooth_variables</em>, <em class="property">const</em> char **<em>smooth_variables</em>, <em class="property">const</em> char *<em>vertical_axis</em>, <em class="property">const</em> <a class="reference internal" href="libharp_collocation.html#_CPPv223harp_collocation_result" title="harp_collocation_result">harp_collocation_result</a> *<em>original_collocation_result</em><span class="sig-paren">)</span></dt>
+<dd><p>Smooth the product&#8217;s variables (from dataset a in the collocation result) using the vertical grids, avks and a apriori of matching products in dataset b and smooth the variables specified.</p>
+<p><dl class="docutils">
+<dt><strong>Return</strong></dt>
+<dd><ul class="simple">
+<li><code class="docutils literal"><span class="pre">0</span></code>, Success. </li>
+<li><code class="docutils literal"><span class="pre">-1</span></code>, Error occurred (check <a class="reference internal" href="libharp_error.html#libharpgroup__harp__error_1gab2eeb46528306c6799632d1e800c4c36"><span class="std std-ref">harp_errno</span></a>). </li>
+</ul>
+</dd>
+<dt><strong>Parameters</strong></dt>
+<dd><ul class="breatheparameterlist first last">
+<li><code class="first docutils literal"><span class="pre">product</span></code> - <p>Product to smooth. </p>
+</li>
+<li><code class="first docutils literal"><span class="pre">num_smooth_variables</span></code> - <p>length of smooth_variables. </p>
+</li>
+<li><code class="first docutils literal"><span class="pre">smooth_variables</span></code> - <p>The names of the variables to smooth. </p>
+</li>
+<li><code class="first docutils literal"><span class="pre">vertical_axis</span></code> - <p>The name of the variable to use as a vertical axis (pressure/altitude/etc). </p>
+</li>
+<li><code class="first docutils literal"><span class="pre">original_collocation_result</span></code> - <p>The collocation result used to locate the matching vertical grids/avks/apriori. The collocation result is assumed to have the appropriate metadata available for all matches (dataset b).</p>
+</li>
+</ul>
+</dd>
+</dl>
+</p>
+</dd></dl>
+
+<dl class="function">
+<dt id="_CPPv252harp_product_regrid_vertical_with_collocated_datasetP12harp_productPKcP23harp_collocation_result">
+<span id="harp_product_regrid_vertical_with_collocated_dataset__harp_productP.cCP.harp_collocation_resultP"></span><span class="target" id="libharpgroup__harp__product_1ga2002a5a28591072b41bdddb25570fd50"></span>int <code class="descname">harp_product_regrid_vertical_with_collocated_dataset</code><span class="sig-paren">(</span><a class="reference internal" href="#_CPPv212harp_product" title="harp_product">harp_product</a> *<em>product</em>, <em class="property">const</em> char *<em>vertical_axis</em>, <a class="reference internal" href="libharp_collocation.html#_CPPv223harp_collocation_result" title="harp_collocation_result">harp_collocation_result</a> *<em>collocation_result</em><span class="sig-paren">)</span></dt>
+<dd><p>Regrid the product&#8217;s variables (from dataset a in the collocation result) to the vertical grids, of matching products in dataset b and smooth the variables specified.</p>
+<p><dl class="docutils">
+<dt><strong>Return</strong></dt>
+<dd><ul class="simple">
+<li><code class="docutils literal"><span class="pre">0</span></code>, Success. </li>
+<li><code class="docutils literal"><span class="pre">-1</span></code>, Error occurred (check <a class="reference internal" href="libharp_error.html#libharpgroup__harp__error_1gab2eeb46528306c6799632d1e800c4c36"><span class="std std-ref">harp_errno</span></a>). </li>
+</ul>
+</dd>
+<dt><strong>Parameters</strong></dt>
+<dd><ul class="breatheparameterlist first last">
+<li><code class="first docutils literal"><span class="pre">product</span></code> - <p>Product to regrid. </p>
+</li>
+<li><code class="first docutils literal"><span class="pre">vertical_axis</span></code> - <p>The name of the variable to use as a vertical axis (pressure/altitude/etc). </p>
+</li>
+<li><code class="first docutils literal"><span class="pre">collocation_result</span></code> - <p>The collocation result used to find matching variables. The collocation result is assumed to have the appropriate metadata available for all matches (dataset b).</p>
+</li>
+</ul>
+</dd>
+</dl>
+</p>
+</dd></dl>
+
+<dl class="function">
 <dt id="_CPPv211harp_importPKcPP12harp_product">
 <span id="harp_import__cCP.harp_productPP"></span><span class="target" id="libharpgroup__harp__product_1ga5e316f710ae07a76c30447070f3cff6f"></span>int <code class="descname">harp_import</code><span class="sig-paren">(</span><em class="property">const</em> char *<em>filename</em>, <a class="reference internal" href="#_CPPv212harp_product" title="harp_product">harp_product</a> **<em>product</em><span class="sig-paren">)</span></dt>
 <dd><p>Import HARP product from file.</p>
@@ -778,7 +853,7 @@
         <a href="libharp_product_metadata.html" class="btn btn-neutral float-right" title="Product Metadata" accesskey="n">Next <span class="fa fa-arrow-circle-right"></span></a>
       
       
-        <a href="libharp_geometry.html" class="btn btn-neutral" title="Geometry" accesskey="p"><span class="fa fa-arrow-circle-left"></span> Previous</a>
+        <a href="libharp_general.html" class="btn btn-neutral" title="General" accesskey="p"><span class="fa fa-arrow-circle-left"></span> Previous</a>
       
     </div>
   

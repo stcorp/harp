@@ -145,10 +145,6 @@ double chemical_species_molar_mass[] = {
     0   /* value for 'unknown' */
 };
 
-/** \addtogroup harp_algorithm
- * @{
- */
-
 /** Calculate water vapour saturation pressure.
  * Formula from Bolton 1980.
  * \param temperature  Temperature [K]

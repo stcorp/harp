@@ -23,10 +23,6 @@
 
 #include <math.h>
 
-/** \addtogroup harp_algorithm
- * @{
- */
-
 /** Convert ocean wave period to ocean wave frequency
  * \param ocean_period      Ocean wave period [s]
  * \return the ocean frequency [Hz]
@@ -217,7 +213,3 @@ double harp_sea_surface_temperature_subskin_from_skin_wind_speed_and_solar_zenit
 
     return sst_subskin;
 }
-
-/**
- * @}
- */

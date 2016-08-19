@@ -306,13 +306,11 @@ HARP_DOCFILES = \
 	doc/html/ingestions/index.html \
 	doc/html/install.html \
 	doc/html/libharp.html \
-	doc/html/libharp_algorithm.html \
 	doc/html/libharp_collocation.html \
 	doc/html/libharp_dataset.html \
 	doc/html/libharp_documentation.html \
 	doc/html/libharp_error.html \
 	doc/html/libharp_general.html \
-	doc/html/libharp_geometry.html \
 	doc/html/libharp_product.html \
 	doc/html/libharp_product_metadata.html \
 	doc/html/libharp_variable.html \
@@ -935,8 +933,6 @@ doc/html/install.html:
 	$(MAKE) harp_doc
 doc/html/libharp.html:
 	$(MAKE) harp_doc
-doc/html/libharp_algorithm.html:
-	$(MAKE) harp_doc
 doc/html/libharp_collocation.html:
 	$(MAKE) harp_doc
 doc/html/libharp_dataset.html:
@@ -946,8 +942,6 @@ doc/html/libharp_documentation.html:
 doc/html/libharp_error.html:
 	$(MAKE) harp_doc
 doc/html/libharp_general.html:
-	$(MAKE) harp_doc
-doc/html/libharp_geometry.html:
 	$(MAKE) harp_doc
 doc/html/libharp_product.html:
 	$(MAKE) harp_doc

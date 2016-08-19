@@ -27,10 +27,6 @@
 #include <stdlib.h>
 #include <string.h>
 
-/** \addtogroup harp_algorithm
- * @{
- */
-
 /** Construct an altitude boundaries profile from an altitude profile
  * \param num_levels Number of levels
  * \param altitude_profile Altitude vertical profile
@@ -1689,6 +1685,34 @@ static int vertical_profile_smooth(harp_variable *var, harp_product *match, long
     return 0;
 }
 
+static int product_filter_resamplable_variables(harp_product *product)
+{
+    int i;
+
+    for (i = product->num_variables - 1; i >= 0; i--)
+    {
+        harp_variable *var = product->variable[i];
+
+        int var_type = get_profile_resample_type(var);
+
+        if (var_type == profile_resample_remove)
+        {
+            if (harp_product_remove_variable(product, var) != 0)
+            {
+                return -1;
+            }
+
+            continue;
+        }
+    }
+
+    return 0;
+}
+
+/** \addtogroup harp_product
+ * @{
+ */
+
 /**
  * Resamples all variables in product against a specified grid.
  * Target_grid is expected to be a variable of dimensions {vertical}.
@@ -1832,30 +1856,6 @@ LIBHARP_API int harp_product_regrid_vertical_with_axis_variable(harp_product *pr
     if (harp_product_replace_variable(product, vertical_axis) != 0)
     {
         return -1;
-    }
-
-    return 0;
-}
-
-static int product_filter_resamplable_variables(harp_product *product)
-{
-    int i;
-
-    for (i = product->num_variables - 1; i >= 0; i--)
-    {
-        harp_variable *var = product->variable[i];
-
-        int var_type = get_profile_resample_type(var);
-
-        if (var_type == profile_resample_remove)
-        {
-            if (harp_product_remove_variable(product, var) != 0)
-            {
-                return -1;
-            }
-
-            continue;
-        }
     }
 
     return 0;

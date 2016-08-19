@@ -1,5 +1,5 @@
 harpprofile
-==========
+===========
 
 Apply various transformations to vertical profile data.
 

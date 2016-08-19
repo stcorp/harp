@@ -59,10 +59,6 @@
 #define CONST_RAD2DEG 57.29577951308232311024   /* 360/(2*pi) */
 #define CONST_DEG2RAD 0.01745329251994329547437 /* (2*pi)/360 */
 
-/** \addtogroup harp_algorithm
- * @{
- */
-
 /* Physical constants */
 #define CONST_NUM_AVOGADRO 6.022140857e23       /* [1/mol] (CODATA 2014) */
 #define CONST_SPEED_OF_LIGHT 2.99792458e8       /* [m/s] */
@@ -253,7 +249,3 @@
 #define CONST_GRAV_ACCEL_EQUATOR_WGS84_ELLIPSOID 9.7803253359e0 /* ge [m/s2] */
 #define CONST_SOMIGLIANA_WGS84_ELLIPSOID 1.93853e-3     /* ks (b/a) * (gp/ge)-1 [1] */
 #define CONST_GRAV_RATIO_WGS84_ELLIPSOID 0.003449787e0  /* Gravity ratio mr w^2 a^2 b/ GM_earth [1] */
-
-/**
- * @}
- */
