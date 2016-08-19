@@ -653,7 +653,7 @@ static void interpolate_loglinear(long source_length, const double *source_grid,
     }
 }
 
-/* Interpolate single value from source grid to target point using log linear interpolation
+/* Interpolate single value from source grid to target point using log linear interpolation of the axis
  * source_grid needs to be strict monotonic.
  * out_of_bound_flag:
  *  0: set value outside source_grid to NaN
@@ -669,7 +669,7 @@ void harp_interpolate_value_loglinear(long source_length, const double *source_g
                           target_value);
 }
 
-/* Interpolate array from source grid to target grid using log linear interpolation
+/* Interpolate array from source grid to target grid using log linear interpolation of the axis
  * Both source_grid and target_grid need to be strict monotonic.
  * This function will do 'the right thing' depending on whether a grid is increasing or decreasing.
  * out_of_bound_flag:
@@ -762,4 +762,66 @@ int harp_interval_interpolate_array_linear(long source_length, const double *sou
     }
 
     return 0;
+}
+
+/* Determine boundary intervals based on linear inter-/extrapolation of mid points.
+ * The bounds array will be treated as a [num_midpoints,2] array and should thus be allocated
+ * to hold '2 * num_midpoints' values.
+ * if num_midpoints equals 1, the two bounds values will be set equal to the midpoint value.
+ */
+void harp_bounds_from_midpoints_linear(long num_midpoints, const double *midpoints, double *bounds)
+{
+    long i;
+
+    if (num_midpoints < 1)
+    {
+        return;
+    }
+    if (num_midpoints == 1)
+    {
+        bounds[0] = midpoints[0];
+        bounds[1] = midpoints[0];
+        return;
+    }
+
+    bounds[0] = 0.5 * (3.0 * midpoints[0] - midpoints[1]);
+    for (i = 0; i < num_midpoints - 1; i++)
+    {
+        double average = 0.5 * (midpoints[i] + midpoints[i + 1]);
+
+        bounds[2 * i + 1] = average;
+        bounds[2 * (i + 1)] = average;
+    }
+    bounds[2 * (num_midpoints - 1) + 1] = 0.5 * (3.0 * midpoints[num_midpoints - 1] - midpoints[num_midpoints - 2]);
+}
+
+/* Determine boundary intervals based on loglinear inter-/extrapolation of mid points.
+ * The bounds array will be treated as a [num_midpoints,2] array and should thus be allocated
+ * to hold '2 * num_midpoints' values.
+ * if num_midpoints equals 1, the two bounds values will be set equal to the midpoint value.
+ */
+void harp_bounds_from_midpoints_loglinear(long num_midpoints, const double *midpoints, double *bounds)
+{
+    long i;
+
+    if (num_midpoints < 1)
+    {
+        return;
+    }
+    if (num_midpoints == 1)
+    {
+        bounds[0] = midpoints[0];
+        bounds[1] = midpoints[0];
+        return;
+    }
+
+    bounds[0] = exp(0.5 * (3.0 * log(midpoints[0]) - log(midpoints[1])));
+    for (i = 0; i < num_midpoints - 1; i++)
+    {
+        double average = exp(0.5 * (log(midpoints[i]) + log(midpoints[i + 1])));
+
+        bounds[2 * i + 1] = average;
+        bounds[2 * (i + 1)] = average;
+    }
+    bounds[2 * (num_midpoints - 1) + 1] = exp(0.5 * (3.0 * log(midpoints[num_midpoints - 1]) - log(midpoints[num_midpoints - 2])));
 }

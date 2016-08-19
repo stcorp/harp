@@ -39,9 +39,6 @@ double harp_altitude_from_gph_and_latitude(double gph, double latitude);
 double harp_gph_from_altitude_and_latitude(double altitude, double latitude);
 double harp_gph_from_pressure(double pressure);
 
-int harp_profile_altitude_bounds_from_altitude(long num_levels, const double *altitude_profile,
-                                               double *altitude_bounds_profile);
-
 void harp_profile_altitude_from_pressure_temperature_h2o_mmr_and_latitude(long num_levels,
                                                                           const double *pressure_profile,
                                                                           const double *temperature_profile,

@@ -316,4 +316,8 @@ void harp_geographic_intersection(double longitude_p1, double latitude_p1, doubl
 void harp_geographic_extrapolation(double longitude_p, double latitude_p, double longitude_q, double latitude_q,
                                    double *longitude_u, double *latitude_u);
 
+int harp_geographic_center_from_bounds(long num_vertices, const double *longitude_bounds,
+                                       const double *latitude_bounds, double *center_longitude,
+                                       double *center_latitude);
+
 #endif

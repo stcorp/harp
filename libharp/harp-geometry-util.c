@@ -263,3 +263,36 @@ void harp_geographic_extrapolation(double longitude_p, double latitude_p, double
     *longitude_u = pu * CONST_RAD2DEG;
     *latitude_u = tu * CONST_RAD2DEG;
 }
+
+int harp_geographic_center_from_bounds(long num_vertices, const double *longitude_bounds,
+                                       const double *latitude_bounds, double *center_longitude,
+                                       double *center_latitude)
+{
+    harp_spherical_polygon *polygon = NULL;
+    harp_vector3d vector_center;
+    harp_spherical_point point;
+
+    /* Convert to a spherical polygon */
+    if (harp_spherical_polygon_from_longitude_latitude_bounds(0, num_vertices, longitude_bounds, latitude_bounds,
+                                                              &polygon) != 0)
+    {
+        return -1;
+    }
+
+    /* Derive the centre point coordinates */
+    if (harp_spherical_polygon_centre(&vector_center, polygon) != 0)
+    {
+        free(polygon);
+        return -1;
+    }
+
+    harp_spherical_point_from_vector3d(&point, &vector_center);
+    harp_spherical_point_check(&point);
+    harp_spherical_point_deg_from_rad(&point);
+    *center_longitude = point.lon;
+    *center_latitude = point.lat;
+    free(polygon);
+
+    return 0;
+}
+

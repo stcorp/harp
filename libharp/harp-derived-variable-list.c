@@ -55,28 +55,6 @@ static int get_air_nd_from_pressure_and_temperature(harp_variable *variable, con
     return 0;
 }
 
-static int get_alt_bounds_from_alt(harp_variable *variable, const harp_variable **source_variable)
-{
-    if (variable->num_dimensions == 2)
-    {
-        harp_profile_altitude_bounds_from_altitude(source_variable[0]->num_elements,
-                                                   source_variable[0]->data.double_data, variable->data.double_data);
-    }
-    else
-    {
-        long length = variable->dimension[1];
-        long i;
-
-        for (i = 0; i < variable->dimension[0]; i++)
-        {
-            harp_profile_altitude_bounds_from_altitude(length, &source_variable[0]->data.double_data[i * length],
-                                                       &variable->data.double_data[i * length * 2]);
-        }
-    }
-
-    return 0;
-}
-
 static int get_aux_variable_afgl86(harp_variable *variable, const harp_variable **source_variable)
 {
     int i;
@@ -134,38 +112,45 @@ static int get_aux_variable_usstd76(harp_variable *variable, const harp_variable
     return 0;
 }
 
-static int get_bounds_from_midpoints(harp_variable *variable, const harp_variable **source_variable)
+static int get_begin_from_midpoint_and_length(harp_variable *variable, const harp_variable **source_variable)
 {
-    long num_elements;
     long i;
 
-    num_elements = source_variable[0]->num_elements;
-    if (num_elements < 2)
+    for (i = 0; i < variable->num_elements; i++)
     {
-        harp_set_error(HARP_ERROR_INVALID_ARGUMENT, "need >= 2 midpoints to compute bounds (%s:%u)", __FILE__,
-                       __LINE__);
-        return -1;
+        variable->data.double_data[i] =
+            source_variable[0]->data.double_data[i] - source_variable[1]->data.double_data[i] / 2;
     }
 
-    /* Lower boundary of [0]. */
-    variable->data.double_data[0] =
-        0.5 * (3.0 * source_variable[0]->data.double_data[0] - source_variable[0]->data.double_data[1]);
+    return 0;
+}
 
-    for (i = 0; i < num_elements - 1; i++)
+static int get_bounds_from_midpoints(harp_variable *variable, const harp_variable **source_variable)
+{
+    long length = source_variable[0]->dimension[source_variable[0]->num_dimensions - 1];
+    long num_blocks = source_variable[0]->num_elements / length;
+    long i;
+
+    for (i = 0; i < num_blocks; i++)
     {
-        double bound = 0.5 * (source_variable[0]->data.double_data[i] + source_variable[0]->data.double_data[i + 1]);
-
-        /* Upper boundary of [i]. */
-        variable->data.double_data[i * 2 + 1] = bound;
-
-        /* Lower boundary of [i + 1]. */
-        variable->data.double_data[(i + 1) * 2] = bound;
+        harp_bounds_from_midpoints_linear(length, &source_variable[0]->data.double_data[i * length],
+                                          &variable->data.double_data[i * length * 2]);
     }
 
-    /* Upper boundary of [num_elements - 1]. */
-    variable->data.double_data[(num_elements - 1) * 2 + 1] =
-        0.5 * (3.0 * source_variable[0]->data.double_data[num_elements - 1] -
-               source_variable[0]->data.double_data[num_elements - 2]);
+    return 0;
+}
+
+static int get_bounds_from_midpoints_log(harp_variable *variable, const harp_variable **source_variable)
+{
+    long length = source_variable[0]->dimension[source_variable[0]->num_dimensions - 1];
+    long num_blocks = source_variable[0]->num_elements / length;
+    long i;
+
+    for (i = 0; i < num_blocks; i++)
+    {
+        harp_bounds_from_midpoints_loglinear(length, &source_variable[0]->data.double_data[i * length],
+                                             &variable->data.double_data[i * length * 2]);
+    }
 
     return 0;
 }
@@ -208,60 +193,6 @@ static int get_copy(harp_variable *variable, const harp_variable **source_variab
 
     memcpy(variable->data.ptr, source_variable[0]->data.ptr,
            (size_t)variable->num_elements * harp_get_size_for_type(variable->data_type));
-
-    return 0;
-}
-
-static int get_datetime_from_datetime_start_and_stop(harp_variable *variable, const harp_variable **source_variable)
-{
-    long i;
-
-    for (i = 0; i < variable->num_elements; i++)
-    {
-        variable->data.double_data[i] = (source_variable[0]->data.double_data[i] +
-                                         source_variable[1]->data.double_data[i]) / 2;
-    }
-
-    return 0;
-}
-
-static int get_datetime_length_from_datetime_start_and_stop(harp_variable *variable,
-                                                            const harp_variable **source_variable)
-{
-    long i;
-
-    for (i = 0; i < variable->num_elements; i++)
-    {
-        variable->data.double_data[i] =
-            source_variable[1]->data.double_data[i] - source_variable[0]->data.double_data[i];
-    }
-
-    return 0;
-}
-
-static int get_datetime_start_from_datetime_and_length(harp_variable *variable, const harp_variable **source_variable)
-{
-    long i;
-
-    for (i = 0; i < variable->num_elements; i++)
-    {
-        variable->data.double_data[i] =
-            source_variable[0]->data.double_data[i] - source_variable[1]->data.double_data[i] / 2;
-    }
-
-    return 0;
-}
-
-static int get_datetime_stop_from_datetime_start_and_length(harp_variable *variable,
-                                                            const harp_variable **source_variable)
-{
-    long i;
-
-    for (i = 0; i < variable->num_elements; i++)
-    {
-        variable->data.double_data[i] =
-            source_variable[0]->data.double_data[i] + source_variable[1]->data.double_data[i];
-    }
 
     return 0;
 }
@@ -339,6 +270,19 @@ static int get_elevation_angle_from_zenith_angle(harp_variable *variable, const 
     for (i = 0; i < variable->num_elements; i++)
     {
         variable->data.double_data[i] = harp_elevation_angle_from_zenith_angle(source_variable[0]->data.double_data[i]);
+    }
+
+    return 0;
+}
+
+static int get_end_from_begin_and_length(harp_variable *variable, const harp_variable **source_variable)
+{
+    long i;
+
+    for (i = 0; i < variable->num_elements; i++)
+    {
+        variable->data.double_data[i] =
+            source_variable[0]->data.double_data[i] + source_variable[1]->data.double_data[i];
     }
 
     return 0;
@@ -451,29 +395,29 @@ static int get_latitude_from_latlon_bounds(harp_variable *variable, const harp_v
 
     for (i = 0; i < variable->num_elements; i++)
     {
-        harp_spherical_polygon *polygon = NULL;
-        harp_vector3d vector_center;
-        harp_spherical_point point;
+        double latitude, longitude;
 
-        /* Convert to a spherical polygon */
-        if (harp_spherical_polygon_from_longitude_latitude_bounds(i, num_vertices, source_variable[1]->data.double_data,
-                                                                  source_variable[0]->data.double_data, &polygon) != 0)
+        if (harp_geographic_center_from_bounds(num_vertices, &source_variable[1]->data.double_data[i * num_vertices],
+                                               &source_variable[0]->data.double_data[i * num_vertices], &longitude,
+                                               &latitude) != 0)
         {
             return -1;
         }
 
-        /* Derive the centre point coordinates */
-        if (harp_spherical_polygon_centre(&vector_center, polygon) != 0)
-        {
-            free(polygon);
-            return -1;
-        }
+        variable->data.double_data[i] = latitude;
+    }
 
-        harp_spherical_point_from_vector3d(&point, &vector_center);
-        harp_spherical_point_check(&point);
-        harp_spherical_point_deg_from_rad(&point);
-        variable->data.double_data[i] = point.lat;
-        free(polygon);
+    return 0;
+}
+
+static int get_length_from_begin_and_end(harp_variable *variable, const harp_variable **source_variable)
+{
+    long i;
+
+    for (i = 0; i < variable->num_elements; i++)
+    {
+        variable->data.double_data[i] =
+            source_variable[1]->data.double_data[i] - source_variable[0]->data.double_data[i];
     }
 
     return 0;
@@ -488,29 +432,29 @@ static int get_longitude_from_latlon_bounds(harp_variable *variable, const harp_
 
     for (i = 0; i < variable->num_elements; i++)
     {
-        harp_spherical_polygon *polygon = NULL;
-        harp_vector3d vector_center;
-        harp_spherical_point point;
+        double latitude, longitude;
 
-        /* Convert to a spherical polygon */
-        if (harp_spherical_polygon_from_longitude_latitude_bounds(i, num_vertices, source_variable[1]->data.double_data,
-                                                                  source_variable[0]->data.double_data, &polygon) != 0)
+        if (harp_geographic_center_from_bounds(num_vertices, &source_variable[1]->data.double_data[i * num_vertices],
+                                               &source_variable[0]->data.double_data[i * num_vertices], &longitude,
+                                               &latitude) != 0)
         {
             return -1;
         }
 
-        /* Derive the centre point coordinates */
-        if (harp_spherical_polygon_centre(&vector_center, polygon) != 0)
-        {
-            free(polygon);
-            return -1;
-        }
+        variable->data.double_data[i] = longitude;
+    }
 
-        harp_spherical_point_from_vector3d(&point, &vector_center);
-        harp_spherical_point_check(&point);
-        harp_spherical_point_deg_from_rad(&point);
-        variable->data.double_data[i] = point.lon;
-        free(polygon);
+    return 0;
+}
+
+static int get_midpoint_from_begin_and_end(harp_variable *variable, const harp_variable **source_variable)
+{
+    long i;
+
+    for (i = 0; i < variable->num_elements; i++)
+    {
+        variable->data.double_data[i] = (source_variable[0]->data.double_data[i] +
+                                         source_variable[1]->data.double_data[i]) / 2;
     }
 
     return 0;
@@ -527,28 +471,6 @@ static int get_mmr_from_vmr(harp_variable *variable, const harp_variable **sourc
     {
         variable->data.double_data[i] =
             harp_mass_mixing_ratio_from_volume_mixing_ratio(source_variable[0]->data.double_data[i], species);
-    }
-
-    return 0;
-}
-
-static int get_matrix_from_sqrt_trace(harp_variable *variable, const harp_variable **source_variable)
-{
-    long length = variable->dimension[1];
-    int i, j;
-
-    for (i = 0; i < variable->num_elements; i++)
-    {
-        variable->data.double_data[i] = 0;
-    }
-    for (i = 0; i < variable->dimension[0]; i++)
-    {
-        for (j = 0; j < length; j++)
-        {
-            variable->data.double_data[(i * length + j) * length + j] =
-                source_variable[0]->data.double_data[i * length + j] *
-                source_variable[0]->data.double_data[i * length + j];
-        }
     }
 
     return 0;
@@ -583,10 +505,11 @@ static int get_midpoint_from_bounds_log(harp_variable *variable, const harp_vari
 static int get_nd_covariance_from_vmr_covariance_pressure_and_temperature(harp_variable *variable,
                                                                           const harp_variable **source_variable)
 {
-    long length = variable->dimension[1];
+    long length = variable->dimension[variable->num_dimensions - 1];
+    long num_blocks = variable->num_elements / (length * length);
     long i;
 
-    for (i = 0; i < variable->dimension[0]; i++)
+    for (i = 0; i < num_blocks; i++)
     {
         harp_profile_nd_covariance_from_vmr_covariance_pressure_and_temperature
             (length, &source_variable[1]->data.double_data[i * length * length],
@@ -637,6 +560,7 @@ static int get_normalized_radiance_from_radiance_and_solar_irradiance(harp_varia
             harp_normalized_radiance_from_radiance_and_solar_irradiance(source_variable[0]->data.double_data[i],
                                                                         source_variable[1]->data.double_data[i]);
     }
+
     return 0;
 }
 
@@ -659,7 +583,7 @@ static int get_normalized_radiance_from_reflectance_and_solar_zenith_angle(harp_
         long length = variable->dimension[0];
         long j;
 
-        /* num_dimensions == 2 */
+        assert(variable->num_dimensions == 2);
         for (i = 0; i < length; i++)
         {
             for (j = 0; j < variable->dimension[1]; j++)
@@ -671,6 +595,7 @@ static int get_normalized_radiance_from_reflectance_and_solar_zenith_angle(harp_
         }
 
     }
+
     return 0;
 }
 
@@ -692,10 +617,11 @@ static int get_partial_column_from_density_and_alt_bounds(harp_variable *variabl
 static int get_partial_column_covariance_from_density_covariance_and_alt_bounds(harp_variable *variable,
                                                                                 const harp_variable **source_variable)
 {
-    long length = variable->dimension[1];
+    long length = variable->dimension[variable->num_dimensions - 1];
+    long num_blocks = variable->num_elements / (length * length);
     long i;
 
-    for (i = 0; i < variable->dimension[0]; i++)
+    for (i = 0; i < num_blocks; i++)
     {
         harp_profile_partial_column_covariance_from_density_covariance_and_altitude_bounds
             (length, &source_variable[1]->data.double_data[i * length * length],
@@ -835,7 +761,7 @@ static int get_reflectance_from_normalized_radiance_and_solar_zenith_angle(harp_
         long length = variable->dimension[0];
         long j;
 
-        /* num_dimensions == 2 */
+        assert(variable->num_dimensions == 2);
         for (i = 0; i < length; i++)
         {
             for (j = 0; j < variable->dimension[1]; j++)
@@ -988,16 +914,18 @@ static int get_virtual_temperature_from_pressure_temperature_and_relative_humidi
 static int get_vmr_covariance_from_nd_covariance_pressure_and_temperature(harp_variable *variable,
                                                                           const harp_variable **source_variable)
 {
-    long length = variable->dimension[1];
+    long length = variable->dimension[variable->num_dimensions - 1];
+    long num_blocks = variable->num_elements / (length * length);
     long i;
 
-    for (i = 0; i < variable->dimension[0]; i++)
+    for (i = 0; i < num_blocks; i++)
     {
         harp_profile_vmr_covariance_from_nd_covariance_pressure_and_temperature
             (length, &source_variable[1]->data.double_data[i * length * length],
              &source_variable[2]->data.double_data[i * length], &source_variable[3]->data.double_data[i * length],
              &variable->data.double_data[i * length * length]);
     }
+
     return 0;
 }
 
@@ -1122,13 +1050,18 @@ static int get_zenith_angle_from_elevation_angle(harp_variable *variable, const 
     return 0;
 }
 
-/* the provided dimension information should be the one that is already time dependent */
 static int add_time_indepedent_to_dependent_conversion(const char *variable_name, harp_data_type data_type,
                                                        const char *unit, int num_dimensions,
                                                        harp_dimension_type dimension_type[HARP_MAX_NUM_DIMS],
                                                        long independent_dimension_length)
 {
     harp_variable_conversion *conversion;
+
+    /* if the target dimension is not time dependent then don't add a conversion */
+    if (num_dimensions == 0 || dimension_type[0] != harp_dimension_time)
+    {
+        return 0;
+    }
 
     if (harp_variable_conversion_new(variable_name, data_type, unit, num_dimensions, dimension_type,
                                      independent_dimension_length, get_time_dependent_from_time_independent,
@@ -1215,6 +1148,45 @@ static int add_aux_usstd76_conversion(const char *variable_name, const char *uni
     return 0;
 }
 
+static int add_model_conversions()
+{
+    const char *items[] = {
+        "number_density", "CH4_number_density", "CO_number_density", "CO2_number_density", "H2O_number_density",
+        "N2O_number_density", "NO2_number_density", "O2_number_density", "O3_number_density"
+    };
+    int i;
+
+    if (add_aux_afgl86_conversion("pressure", HARP_UNIT_PRESSURE) != 0)
+    {
+        return -1;
+    }
+    if (add_aux_usstd76_conversion("pressure", HARP_UNIT_PRESSURE) != 0)
+    {
+        return -1;
+    }
+    if (add_aux_afgl86_conversion("temperature", HARP_UNIT_TEMPERATURE) != 0)
+    {
+        return -1;
+    }
+    if (add_aux_usstd76_conversion("temperature", HARP_UNIT_TEMPERATURE) != 0)
+    {
+        return -1;
+    }
+    for (i = 0; i < 9; i++)
+    {
+        if (add_aux_afgl86_conversion(items[i], HARP_UNIT_NUMBER_DENSITY) != 0)
+        {
+            return -1;
+        }
+        if (add_aux_usstd76_conversion(items[i], HARP_UNIT_NUMBER_DENSITY) != 0)
+        {
+            return -1;
+        }
+    }
+
+    return 0;
+}
+
 static int add_bounds_to_midpoint_conversion(const char *variable_name, harp_data_type data_type, const char *unit,
                                              harp_dimension_type axis_dimension_type,
                                              harp_conversion_function conversion_function)
@@ -1225,6 +1197,7 @@ static int add_bounds_to_midpoint_conversion(const char *variable_name, harp_dat
 
     snprintf(name_bounds, MAX_NAME_LENGTH, "%s_bounds", variable_name);
 
+    /* scalar (time independent and axis independent) */
     dimension_type[0] = harp_dimension_independent;
     if (harp_variable_conversion_new(variable_name, data_type, unit, 0, dimension_type, 0, conversion_function,
                                      &conversion) != 0)
@@ -1236,6 +1209,7 @@ static int add_bounds_to_midpoint_conversion(const char *variable_name, harp_dat
         return -1;
     }
 
+    /* time independent and axis dependent */
     dimension_type[0] = axis_dimension_type;
     dimension_type[1] = harp_dimension_independent;
     if (harp_variable_conversion_new(variable_name, data_type, unit, 1, dimension_type, 0, conversion_function,
@@ -1248,6 +1222,7 @@ static int add_bounds_to_midpoint_conversion(const char *variable_name, harp_dat
         return -1;
     }
 
+    /* time dependent and axis independent */
     dimension_type[0] = harp_dimension_time;
     if (harp_variable_conversion_new(variable_name, data_type, unit, 1, dimension_type, 0, conversion_function,
                                      &conversion) != 0)
@@ -1259,6 +1234,7 @@ static int add_bounds_to_midpoint_conversion(const char *variable_name, harp_dat
         return -1;
     }
 
+    /* time dependent and axis dependent */
     dimension_type[1] = axis_dimension_type;
     dimension_type[2] = harp_dimension_independent;
     if (harp_variable_conversion_new(variable_name, data_type, unit, 2, dimension_type, 0, conversion_function,
@@ -1280,6 +1256,7 @@ static int add_latlon_bounds_to_midpoint_conversion(const char *variable_name, h
     harp_variable_conversion *conversion;
     harp_dimension_type dimension_type[HARP_MAX_NUM_DIMS];
 
+    /* time independent */
     dimension_type[0] = harp_dimension_independent;
     if (harp_variable_conversion_new(variable_name, data_type, unit, 0, dimension_type, 0, conversion_function,
                                      &conversion) != 0)
@@ -1297,6 +1274,7 @@ static int add_latlon_bounds_to_midpoint_conversion(const char *variable_name, h
         return -1;
     }
 
+    /* time dependent */
     dimension_type[0] = harp_dimension_time;
     dimension_type[1] = harp_dimension_independent;
     if (harp_variable_conversion_new(variable_name, data_type, unit, 1, dimension_type, 0, conversion_function,
@@ -1328,6 +1306,7 @@ static int add_midpoint_to_bounds_conversion(const char *variable_name, harp_dat
 
     snprintf(name_bounds, MAX_NAME_LENGTH, "%s_bounds", variable_name);
 
+    /* time independent */
     dimension_type[0] = axis_dimension_type;
     dimension_type[1] = harp_dimension_independent;
     if (harp_variable_conversion_new(name_bounds, data_type, unit, 2, dimension_type, 2, conversion_function,
@@ -1340,6 +1319,7 @@ static int add_midpoint_to_bounds_conversion(const char *variable_name, harp_dat
         return -1;
     }
 
+    /* time dependent */
     dimension_type[0] = harp_dimension_time;
     dimension_type[1] = axis_dimension_type;
     dimension_type[2] = harp_dimension_independent;
@@ -1360,35 +1340,10 @@ static int add_midpoint_to_bounds_conversion(const char *variable_name, harp_dat
     return 0;
 }
 
-static int add_latlon_midpoints_to_bounds_conversion(const char *variable_name, harp_data_type data_type,
-                                                     const char *unit, harp_dimension_type axis_dimension_type,
-                                                     harp_conversion_function conversion_function)
+static int add_uncertainty_conversions(const char *variable_name, const char *unit, int num_dimensions,
+                                       harp_dimension_type dimension_type[HARP_MAX_NUM_DIMS])
 {
     harp_variable_conversion *conversion;
-    harp_dimension_type dimension_type[HARP_MAX_NUM_DIMS];
-    char name_bounds[MAX_NAME_LENGTH];
-
-    snprintf(name_bounds, MAX_NAME_LENGTH, "%s_bounds", variable_name);
-
-    dimension_type[0] = axis_dimension_type;
-    dimension_type[1] = harp_dimension_independent;
-    if (harp_variable_conversion_new(name_bounds, data_type, unit, 2, dimension_type, 2, conversion_function,
-                                     &conversion) != 0)
-    {
-        return -1;
-    }
-    if (harp_variable_conversion_add_source(conversion, variable_name, data_type, unit, 1, dimension_type, 0) != 0)
-    {
-        return -1;
-    }
-
-    return 0;
-}
-
-static int add_uncertainty_conversions(const char *variable_name, const char *unit)
-{
-    harp_variable_conversion *conversion;
-    harp_dimension_type dimension_type[HARP_MAX_NUM_DIMS];
     char name_uncertainty[MAX_NAME_LENGTH];
     char name_uncertainty_sys[MAX_NAME_LENGTH];
     char name_uncertainty_rnd[MAX_NAME_LENGTH];
@@ -1397,139 +1352,70 @@ static int add_uncertainty_conversions(const char *variable_name, const char *un
     snprintf(name_uncertainty_sys, MAX_NAME_LENGTH, "%s_uncertainty_systematic", variable_name);
     snprintf(name_uncertainty_rnd, MAX_NAME_LENGTH, "%s_uncertainty_random", variable_name);
 
-    dimension_type[0] = harp_dimension_time;
-
-    if (harp_variable_conversion_new(name_uncertainty, harp_type_double, unit, 1, dimension_type, 0,
+    if (harp_variable_conversion_new(name_uncertainty, harp_type_double, unit, num_dimensions, dimension_type, 0,
                                      get_uncertainty_from_systematic_and_random_uncertainty, &conversion) != 0)
     {
         return -1;
     }
-    if (harp_variable_conversion_add_source(conversion, name_uncertainty_sys, harp_type_double, unit, 1,
+    if (harp_variable_conversion_add_source(conversion, name_uncertainty_sys, harp_type_double, unit, num_dimensions,
                                             dimension_type, 0) != 0)
     {
         return -1;
     }
-    if (harp_variable_conversion_add_source(conversion, name_uncertainty_rnd, harp_type_double, unit, 1,
+    if (harp_variable_conversion_add_source(conversion, name_uncertainty_rnd, harp_type_double, unit, num_dimensions,
                                             dimension_type, 0) != 0)
     {
         return -1;
     }
 
-    return 0;
-}
-
-static int add_spectral_uncertainty_conversions(const char *variable_name, const char *unit)
-{
-    harp_variable_conversion *conversion;
-    harp_dimension_type dimension_type[HARP_MAX_NUM_DIMS];
-    char name_uncertainty[MAX_NAME_LENGTH];
-    char name_uncertainty_sys[MAX_NAME_LENGTH];
-    char name_uncertainty_rnd[MAX_NAME_LENGTH];
-    int i;
-
-    snprintf(name_uncertainty, MAX_NAME_LENGTH, "%s_uncertainty", variable_name);
-    snprintf(name_uncertainty_sys, MAX_NAME_LENGTH, "%s_uncertainty_systematic", variable_name);
-    snprintf(name_uncertainty_rnd, MAX_NAME_LENGTH, "%s_uncertainty_random", variable_name);
-
-    dimension_type[0] = harp_dimension_time;
-    dimension_type[1] = harp_dimension_spectral;
-
-    for (i = 1; i < 3; i++)
+    /* derive uncertainty from covariance matrix trace if the last dimension is the vertical dimension */
+    if (num_dimensions > 0 && dimension_type[num_dimensions - 1] == harp_dimension_vertical)
     {
-        if (harp_variable_conversion_new(name_uncertainty, harp_type_double, unit, i, dimension_type, 0,
-                                         get_uncertainty_from_systematic_and_random_uncertainty, &conversion) != 0)
-        {
-            return -1;
-        }
-        if (harp_variable_conversion_add_source(conversion, name_uncertainty_sys, harp_type_double, unit, i,
-                                                dimension_type, 0) != 0)
-        {
-            return -1;
-        }
-        if (harp_variable_conversion_add_source(conversion, name_uncertainty_rnd, harp_type_double, unit, i,
-                                                dimension_type, 0) != 0)
-        {
-            return -1;
-        }
-    }
-
-    return 0;
-}
-
-static int add_vertical_uncertainty_conversions(const char *variable_name, const char *unit, const char *unit_squared)
-{
-    harp_variable_conversion *conversion;
-    harp_dimension_type dimension_type[HARP_MAX_NUM_DIMS];
-    char name_uncertainty[MAX_NAME_LENGTH];
-    char name_uncertainty_sys[MAX_NAME_LENGTH];
-    char name_uncertainty_rnd[MAX_NAME_LENGTH];
-    int i;
-
-    snprintf(name_uncertainty, MAX_NAME_LENGTH, "%s_uncertainty", variable_name);
-    snprintf(name_uncertainty_sys, MAX_NAME_LENGTH, "%s_uncertainty_systematic", variable_name);
-    snprintf(name_uncertainty_rnd, MAX_NAME_LENGTH, "%s_uncertainty_random", variable_name);
-
-    dimension_type[0] = harp_dimension_time;
-    dimension_type[1] = harp_dimension_vertical;
-
-    if (unit_squared != NULL)
-    {
+        harp_dimension_type covar_dimension_type[HARP_MAX_NUM_DIMS];
         char name_covariance[MAX_NAME_LENGTH];
+        int i;
 
         snprintf(name_covariance, MAX_NAME_LENGTH, "%s_covariance", variable_name);
 
-        dimension_type[2] = harp_dimension_vertical;
+        for (i = 0; i < num_dimensions; i++)
+        {
+            covar_dimension_type[i] = dimension_type[i];
+        }
+        covar_dimension_type[num_dimensions] = covar_dimension_type[num_dimensions - 1];
 
-        if (harp_variable_conversion_new(name_uncertainty, harp_type_double, unit, 2, dimension_type, 0,
+        if (harp_variable_conversion_new(name_uncertainty, harp_type_double, unit, num_dimensions, dimension_type, 0,
                                          get_sqrt_trace_from_matrix, &conversion) != 0)
         {
             return -1;
         }
-        if (harp_variable_conversion_add_source(conversion, name_covariance, harp_type_double, unit_squared, 3,
-                                                dimension_type, 0) != 0)
+        if (unit == NULL || unit[0] == '\0')
         {
-            return -1;
+            if (harp_variable_conversion_add_source(conversion, name_covariance, harp_type_double, unit,
+                                                    num_dimensions + 1, covar_dimension_type, 0) != 0)
+            {
+                return -1;
+            }
         }
+        else
+        {
+            char unit_squared[MAX_NAME_LENGTH];
 
-        if (harp_variable_conversion_new(name_covariance, harp_type_double, unit_squared, 3, dimension_type, 0,
-                                         get_matrix_from_sqrt_trace, &conversion) != 0)
-        {
-            return -1;
-        }
-        if (harp_variable_conversion_add_source(conversion, name_uncertainty, harp_type_double, unit, 2,
-                                                dimension_type, 0) != 0)
-        {
-            return -1;
-        }
-        if (harp_variable_conversion_set_source_description(conversion, "all off-diagonal values will be set to 0") !=
-            0)
-        {
-            return -1;
-        }
-    }
-    for (i = 1; i < 3; i++)
-    {
-        if (harp_variable_conversion_new(name_uncertainty, harp_type_double, unit, i, dimension_type, 0,
-                                         get_uncertainty_from_systematic_and_random_uncertainty, &conversion) != 0)
-        {
-            return -1;
-        }
-        if (harp_variable_conversion_add_source(conversion, name_uncertainty_sys, harp_type_double, unit, i,
-                                                dimension_type, 0) != 0)
-        {
-            return -1;
-        }
-        if (harp_variable_conversion_add_source(conversion, name_uncertainty_rnd, harp_type_double, unit, i,
-                                                dimension_type, 0) != 0)
-        {
-            return -1;
+            assert(strlen(unit) < MAX_NAME_LENGTH - 4);
+            snprintf(unit_squared, MAX_NAME_LENGTH, "(%s)2", unit);
+
+            if (harp_variable_conversion_add_source(conversion, name_covariance, harp_type_double, unit_squared,
+                                                    num_dimensions + 1, covar_dimension_type, 0) != 0)
+            {
+                return -1;
+            }
         }
     }
 
     return 0;
 }
 
-static int add_species_conversions(const char *species)
+static int add_species_conversions_for_grid(const char *species, int num_dimensions,
+                                            harp_dimension_type target_dimension_type[HARP_MAX_NUM_DIMS])
 {
     harp_variable_conversion *conversion;
     harp_dimension_type dimension_type[HARP_MAX_NUM_DIMS];
@@ -1552,6 +1438,14 @@ static int add_species_conversions(const char *species)
     char name_vmr_uncertainty[MAX_NAME_LENGTH];
     int i;
 
+    /* we need to be able to add at least one dimension of our own */
+    assert(num_dimensions < HARP_MAX_NUM_DIMS);
+
+    for (i = 0; i < num_dimensions; i++)
+    {
+        dimension_type[i] = target_dimension_type[i];
+    }
+
     snprintf(name_column_nd, MAX_NAME_LENGTH, "%s_column_number_density", species);
     snprintf(name_column_nd_covariance, MAX_NAME_LENGTH, "%s_column_number_density_covariance", species);
     snprintf(name_column_nd_uncertainty, MAX_NAME_LENGTH, "%s_column_number_density_uncertainty", species);
@@ -1570,409 +1464,474 @@ static int add_species_conversions(const char *species)
     snprintf(name_vmr_covariance, MAX_NAME_LENGTH, "%s_volume_mixing_ratio_covariance", species);
     snprintf(name_vmr_uncertainty, MAX_NAME_LENGTH, "%s_volume_mixing_ratio_uncertainty", species);
 
-    dimension_type[0] = harp_dimension_time;
-    dimension_type[1] = harp_dimension_vertical;
-    dimension_type[2] = harp_dimension_vertical;
+    /*** column number density ***/
 
-
-    /* column number density */
-    if (harp_variable_conversion_new(name_column_nd, harp_type_double, HARP_UNIT_COLUMN_NUMBER_DENSITY, 1,
-                                     dimension_type, 0, get_column_from_partial_column, &conversion) != 0)
+    /* time dependent from independent */
+    if (add_time_indepedent_to_dependent_conversion(name_column_nd, harp_type_double, HARP_UNIT_COLUMN_NUMBER_DENSITY,
+                                                    num_dimensions, dimension_type, 0) != 0)
     {
         return -1;
     }
-    if (harp_variable_conversion_add_source(conversion, name_column_nd, harp_type_double,
-                                            HARP_UNIT_COLUMN_NUMBER_DENSITY, 2, dimension_type, 0) != 0)
+
+    /* uncertainties */
+    if (add_uncertainty_conversions(name_column_nd, HARP_UNIT_COLUMN_NUMBER_DENSITY, num_dimensions, dimension_type) !=
+        0)
     {
         return -1;
     }
-    if (harp_variable_conversion_new(name_column_nd_uncertainty, harp_type_double, HARP_UNIT_COLUMN_NUMBER_DENSITY, 1,
-                                     dimension_type, 0, get_column_uncertainty_from_partial_column_uncertainty,
+
+    /* column from partial column profile */
+    if (num_dimensions == 0 || dimension_type[num_dimensions - 1] != harp_dimension_vertical)
+    {
+        if (harp_variable_conversion_new(name_column_nd, harp_type_double, HARP_UNIT_COLUMN_NUMBER_DENSITY,
+                                         num_dimensions, dimension_type, 0, get_column_from_partial_column,
+                                         &conversion) != 0)
+        {
+            return -1;
+        }
+        dimension_type[num_dimensions] = harp_dimension_vertical;
+        if (harp_variable_conversion_add_source(conversion, name_column_nd, harp_type_double,
+                                                HARP_UNIT_COLUMN_NUMBER_DENSITY, num_dimensions + 1, dimension_type, 0)
+            != 0)
+        {
+            return -1;
+        }
+        /* uncertainty propagation */
+        if (harp_variable_conversion_new(name_column_nd_uncertainty, harp_type_double, HARP_UNIT_COLUMN_NUMBER_DENSITY,
+                                         num_dimensions, dimension_type, 0,
+                                         get_column_uncertainty_from_partial_column_uncertainty, &conversion) != 0)
+        {
+            return -1;
+        }
+        if (harp_variable_conversion_add_source(conversion, name_column_nd_uncertainty, harp_type_double,
+                                                HARP_UNIT_COLUMN_NUMBER_DENSITY, num_dimensions + 1, dimension_type, 0)
+            != 0)
+        {
+            return -1;
+        }
+    }
+
+    /* create partial column profile from densities */
+    dimension_type[num_dimensions] = harp_dimension_independent;
+    if (harp_variable_conversion_new(name_column_nd, harp_type_double, HARP_UNIT_COLUMN_NUMBER_DENSITY, num_dimensions,
+                                     dimension_type, 0, get_partial_column_from_density_and_alt_bounds, &conversion) !=
+        0)
+    {
+        return -1;
+    }
+    if (harp_variable_conversion_add_source(conversion, name_nd, harp_type_double, HARP_UNIT_NUMBER_DENSITY,
+                                            num_dimensions, dimension_type, 0) != 0)
+    {
+        return -1;
+    }
+    if (harp_variable_conversion_add_source(conversion, "altitude_bounds", harp_type_double, HARP_UNIT_LENGTH,
+                                            num_dimensions + 1, dimension_type, 2) != 0)
+    {
+        return -1;
+    }
+    /* uncertainty propagation */
+    if (harp_variable_conversion_new(name_column_nd_uncertainty, harp_type_double, HARP_UNIT_COLUMN_NUMBER_DENSITY,
+                                     num_dimensions, dimension_type, 0, get_partial_column_from_density_and_alt_bounds,
                                      &conversion) != 0)
     {
         return -1;
     }
-    if (harp_variable_conversion_add_source(conversion, name_column_nd_uncertainty, harp_type_double,
-                                            HARP_UNIT_COLUMN_NUMBER_DENSITY, 2, dimension_type, 0) != 0)
-    {
-        return -1;
-    }
-    if (add_uncertainty_conversions(name_column_nd, HARP_UNIT_COLUMN_NUMBER_DENSITY) != 0)
-    {
-        return -1;
-    }
-
-    if (harp_variable_conversion_new(name_column_nd, harp_type_double, HARP_UNIT_COLUMN_NUMBER_DENSITY, 2,
-                                     dimension_type, 0, get_partial_column_from_density_and_alt_bounds, &conversion) !=
-        0)
-    {
-        return -1;
-    }
-    if (harp_variable_conversion_add_source(conversion, name_nd, harp_type_double, HARP_UNIT_NUMBER_DENSITY, 2,
-                                            dimension_type, 0) != 0)
-    {
-        return -1;
-    }
-    dimension_type[2] = harp_dimension_independent;
-    if (harp_variable_conversion_add_source(conversion, "altitude_bounds", harp_type_double, HARP_UNIT_LENGTH, 3,
-                                            dimension_type, 2) != 0)
-    {
-        return -1;
-    }
-    if (harp_variable_conversion_new(name_column_nd_uncertainty, harp_type_double, HARP_UNIT_COLUMN_NUMBER_DENSITY, 2,
-                                     dimension_type, 0, get_partial_column_from_density_and_alt_bounds, &conversion) !=
-        0)
-    {
-        return -1;
-    }
     if (harp_variable_conversion_add_source(conversion, name_nd_uncertainty, harp_type_double, HARP_UNIT_NUMBER_DENSITY,
-                                            2, dimension_type, 0) != 0)
+                                            num_dimensions, dimension_type, 0) != 0)
     {
         return -1;
     }
-    dimension_type[2] = harp_dimension_independent;
-    if (harp_variable_conversion_add_source(conversion, "altitude_bounds", harp_type_double, HARP_UNIT_LENGTH, 3,
-                                            dimension_type, 2) != 0)
+    if (harp_variable_conversion_add_source(conversion, "altitude_bounds", harp_type_double, HARP_UNIT_LENGTH,
+                                            num_dimensions + 1, dimension_type, 2) != 0)
     {
         return -1;
     }
-    dimension_type[2] = harp_dimension_vertical;
+    /* covariance propagation */
+    dimension_type[num_dimensions] = harp_dimension_vertical;
     if (harp_variable_conversion_new(name_column_nd_covariance, harp_type_double,
-                                     HARP_UNIT_COLUMN_NUMBER_DENSITY_SQUARED, 3, dimension_type, 0,
+                                     HARP_UNIT_COLUMN_NUMBER_DENSITY_SQUARED, num_dimensions + 1, dimension_type, 0,
                                      get_partial_column_covariance_from_density_covariance_and_alt_bounds, &conversion)
         != 0)
     {
         return -1;
     }
     if (harp_variable_conversion_add_source(conversion, name_nd_covariance, harp_type_double,
-                                            HARP_UNIT_NUMBER_DENSITY_SQUARED, 3, dimension_type, 0) != 0)
+                                            HARP_UNIT_NUMBER_DENSITY_SQUARED, num_dimensions + 1, dimension_type, 0) !=
+        0)
     {
         return -1;
     }
-    dimension_type[2] = harp_dimension_independent;
-    if (harp_variable_conversion_add_source(conversion, "altitude_bounds", harp_type_double, HARP_UNIT_LENGTH, 3,
-                                            dimension_type, 2) != 0)
-    {
-        return -1;
-    }
-
-    if (add_vertical_uncertainty_conversions(name_column_nd, HARP_UNIT_COLUMN_NUMBER_DENSITY,
-                                             HARP_UNIT_COLUMN_NUMBER_DENSITY_SQUARED) != 0)
+    dimension_type[num_dimensions] = harp_dimension_independent;
+    if (harp_variable_conversion_add_source(conversion, "altitude_bounds", harp_type_double, HARP_UNIT_LENGTH,
+                                            num_dimensions + 1, dimension_type, 2) != 0)
     {
         return -1;
     }
 
-    /* stratospheric column number density */
-    if (add_uncertainty_conversions(name_strato_column_nd, HARP_UNIT_COLUMN_NUMBER_DENSITY) != 0)
-    {
-        return -1;
-    }
+    /*** stratospheric column number density ***/
 
-    /* tropospheric column number density */
-    if (add_uncertainty_conversions(name_tropo_column_nd, HARP_UNIT_COLUMN_NUMBER_DENSITY) != 0)
-    {
-        return -1;
-    }
-
-    /* number density */
-    for (i = 1; i < 3; i++)
-    {
-        if (harp_variable_conversion_new(name_nd, harp_type_double, HARP_UNIT_NUMBER_DENSITY, i, dimension_type, 0,
-                                         get_nd_from_density, &conversion) != 0)
-        {
-            return -1;
-        }
-        if (harp_variable_conversion_add_source(conversion, name_density, harp_type_double, HARP_UNIT_MASS_DENSITY, i,
-                                                dimension_type, 0) != 0)
-        {
-            return -1;
-        }
-
-        if (harp_variable_conversion_new(name_nd, harp_type_double, HARP_UNIT_NUMBER_DENSITY, i, dimension_type, 0,
-                                         get_nd_from_vmr_pressure_and_temperature, &conversion) != 0)
-        {
-            return -1;
-        }
-        if (harp_variable_conversion_add_source(conversion, name_vmr, harp_type_double, HARP_UNIT_VOLUME_MIXING_RATIO,
-                                                i, dimension_type, 0) != 0)
-        {
-            return -1;
-        }
-        if (harp_variable_conversion_add_source(conversion, "pressure", harp_type_double, HARP_UNIT_PRESSURE, i,
-                                                dimension_type, 0) != 0)
-        {
-            return -1;
-        }
-        if (harp_variable_conversion_add_source(conversion, "temperature", harp_type_double, HARP_UNIT_TEMPERATURE, i,
-                                                dimension_type, 0) != 0)
-        {
-            return -1;
-        }
-    }
-    dimension_type[2] = harp_dimension_vertical;
-    if (harp_variable_conversion_new(name_nd_covariance, harp_type_double, HARP_UNIT_NUMBER_DENSITY_SQUARED, 3,
-                                     dimension_type, 0, get_nd_covariance_from_vmr_covariance_pressure_and_temperature,
-                                     &conversion) != 0)
-    {
-        return -1;
-    }
-    if (harp_variable_conversion_add_source(conversion, name_vmr_covariance, harp_type_double,
-                                            HARP_UNIT_VOLUME_MIXING_RATIO_SQUARED, 3, dimension_type, 0) != 0)
-    {
-        return -1;
-    }
-    if (harp_variable_conversion_add_source(conversion, "pressure", harp_type_double, HARP_UNIT_PRESSURE, 2,
-                                            dimension_type, 0) != 0)
-    {
-        return -1;
-    }
-    if (harp_variable_conversion_add_source(conversion, "temperature", harp_type_double, HARP_UNIT_TEMPERATURE, 2,
-                                            dimension_type, 0) != 0)
-    {
-        return -1;
-    }
-
-    if (harp_variable_conversion_new(name_nd, harp_type_double, HARP_UNIT_NUMBER_DENSITY, 2, dimension_type, 0,
-                                     get_density_from_partial_column_and_alt_bounds, &conversion) != 0)
-    {
-        return -1;
-    }
-    if (harp_variable_conversion_add_source(conversion, name_column_nd, harp_type_double,
-                                            HARP_UNIT_COLUMN_NUMBER_DENSITY, 2, dimension_type, 0) != 0)
-    {
-        return -1;
-    }
-    dimension_type[2] = harp_dimension_independent;
-    if (harp_variable_conversion_add_source(conversion, "altitude_bounds", harp_type_double, HARP_UNIT_LENGTH, 3,
-                                            dimension_type, 2) != 0)
-    {
-        return -1;
-    }
-    dimension_type[2] = harp_dimension_vertical;
-
-    if (strcmp(species, "CH4") == 0 || strcmp(species, "CO") == 0 || strcmp(species, "CO2") == 0 ||
-        strcmp(species, "H2O") == 0 || strcmp(species, "N2O") == 0 || strcmp(species, "NO2") == 0 ||
-        strcmp(species, "O2") == 0 || strcmp(species, "O3") == 0)
-    {
-        if (add_aux_afgl86_conversion(name_nd, HARP_UNIT_NUMBER_DENSITY) != 0)
-        {
-            return -1;
-        }
-        if (add_aux_usstd76_conversion(name_nd, HARP_UNIT_NUMBER_DENSITY) != 0)
-        {
-            return -1;
-        }
-    }
-
-    if (harp_variable_conversion_new(name_nd_uncertainty, harp_type_double, HARP_UNIT_NUMBER_DENSITY, 2, dimension_type,
-                                     0, get_nd_from_vmr_pressure_and_temperature, &conversion) != 0)
-    {
-        return -1;
-    }
-    if (harp_variable_conversion_add_source(conversion, name_vmr_uncertainty, harp_type_double,
-                                            HARP_UNIT_VOLUME_MIXING_RATIO, 2, dimension_type, 0) != 0)
-    {
-        return -1;
-    }
-    if (harp_variable_conversion_add_source(conversion, "pressure", harp_type_double, HARP_UNIT_PRESSURE, 2,
-                                            dimension_type, 0) != 0)
-    {
-        return -1;
-    }
-    if (harp_variable_conversion_add_source(conversion, "temperature", harp_type_double, HARP_UNIT_TEMPERATURE, 2,
-                                            dimension_type, 0) != 0)
-    {
-        return -1;
-    }
-
-    if (add_vertical_uncertainty_conversions(name_nd, HARP_UNIT_NUMBER_DENSITY, HARP_UNIT_NUMBER_DENSITY_SQUARED) != 0)
-    {
-        return -1;
-    }
-
-    /* mass density */
-    dimension_type[0] = harp_dimension_time;
-    dimension_type[1] = harp_dimension_vertical;
-    dimension_type[2] = harp_dimension_vertical;
-    for (i = 1; i < 3; i++)
-    {
-        if (harp_variable_conversion_new(name_density, harp_type_double, HARP_UNIT_MASS_DENSITY, i, dimension_type, 0,
-                                         get_density_from_nd, &conversion) != 0)
-        {
-            return -1;
-        }
-        if (harp_variable_conversion_add_source(conversion, name_nd, harp_type_double, HARP_UNIT_NUMBER_DENSITY,
-                                                i, dimension_type, 0) != 0)
-        {
-            return -1;
-        }
-    }
-
-    /* mass mixing ratio */
-    for (i = 1; i < 3; i++)
-    {
-        if (harp_variable_conversion_new(name_mmr, harp_type_double, HARP_UNIT_MASS_MIXING_RATIO, i, dimension_type, 0,
-                                         get_mmr_from_vmr, &conversion) != 0)
-        {
-            return -1;
-        }
-        if (harp_variable_conversion_add_source(conversion, name_vmr, harp_type_double, HARP_UNIT_VOLUME_MIXING_RATIO,
-                                                i, dimension_type, 0) != 0)
-        {
-            return -1;
-        }
-    }
-
-    if (add_vertical_uncertainty_conversions(name_mmr, HARP_UNIT_MASS_MIXING_RATIO, HARP_UNIT_MASS_MIXING_RATIO_SQUARED)
+    /* time dependent from independent */
+    if (add_time_indepedent_to_dependent_conversion(name_strato_column_nd, harp_type_double,
+                                                    HARP_UNIT_COLUMN_NUMBER_DENSITY, num_dimensions, dimension_type, 0)
         != 0)
     {
         return -1;
     }
 
-    /* partial pressure */
-    for (i = 1; i < 3; i++)
+    /* uncertainties */
+    if (add_uncertainty_conversions(name_strato_column_nd, HARP_UNIT_COLUMN_NUMBER_DENSITY, num_dimensions,
+                                    dimension_type) != 0)
     {
-        if (harp_variable_conversion_new(name_pp, harp_type_double, HARP_UNIT_PRESSURE, i, dimension_type, 0,
-                                         get_partial_pressure_from_vmr_and_pressure, &conversion) != 0)
-        {
-            return -1;
-        }
-        if (harp_variable_conversion_add_source(conversion, name_vmr, harp_type_double, HARP_UNIT_VOLUME_MIXING_RATIO,
-                                                i, dimension_type, 0) != 0)
-        {
-            return -1;
-        }
-        if (harp_variable_conversion_add_source(conversion, "pressure", harp_type_double, HARP_UNIT_PRESSURE, i,
-                                                dimension_type, 0) != 0)
-        {
-            return -1;
-        }
+        return -1;
     }
 
-    /* volume mixing ratio */
-    for (i = 1; i < 3; i++)
+    /*** tropospheric column number density ***/
+
+    /* time dependent from independent */
+    if (add_time_indepedent_to_dependent_conversion(name_tropo_column_nd, harp_type_double,
+                                                    HARP_UNIT_COLUMN_NUMBER_DENSITY, num_dimensions, dimension_type, 0)
+        != 0)
     {
-        if (harp_variable_conversion_new(name_vmr, harp_type_double, HARP_UNIT_VOLUME_MIXING_RATIO, i, dimension_type,
-                                         0, get_vmr_from_nd_pressure_and_temperature, &conversion) != 0)
-        {
-            return -1;
-        }
-        if (harp_variable_conversion_add_source(conversion, name_nd, harp_type_double, HARP_UNIT_NUMBER_DENSITY, i,
-                                                dimension_type, 0) != 0)
-        {
-            return -1;
-        }
-        if (harp_variable_conversion_add_source(conversion, "pressure", harp_type_double, HARP_UNIT_PRESSURE, i,
-                                                dimension_type, 0) != 0)
-        {
-            return -1;
-        }
-        if (harp_variable_conversion_add_source(conversion, "temperature", harp_type_double, HARP_UNIT_TEMPERATURE, i,
-                                                dimension_type, 0) != 0)
-        {
-            return -1;
-        }
+        return -1;
     }
-    if (harp_variable_conversion_new(name_vmr_covariance, harp_type_double, HARP_UNIT_VOLUME_MIXING_RATIO_SQUARED, 3,
-                                     dimension_type, 0,
+
+    /* uncertainties */
+    if (add_uncertainty_conversions(name_tropo_column_nd, HARP_UNIT_COLUMN_NUMBER_DENSITY, num_dimensions,
+                                    dimension_type) != 0)
+    {
+        return -1;
+    }
+
+    /*** number density ***/
+
+    /* time dependent from independent */
+    if (add_time_indepedent_to_dependent_conversion(name_nd, harp_type_double, HARP_UNIT_NUMBER_DENSITY, num_dimensions,
+                                                    dimension_type, 0) != 0)
+    {
+        return -1;
+    }
+
+    /* uncertainties */
+    if (add_uncertainty_conversions(name_nd, HARP_UNIT_NUMBER_DENSITY, num_dimensions, dimension_type) != 0)
+    {
+        return -1;
+    }
+
+    /* number density from mass density */
+    if (harp_variable_conversion_new(name_nd, harp_type_double, HARP_UNIT_NUMBER_DENSITY, num_dimensions,
+                                     dimension_type, 0, get_nd_from_density, &conversion) != 0)
+    {
+        return -1;
+    }
+    if (harp_variable_conversion_add_source(conversion, name_density, harp_type_double, HARP_UNIT_MASS_DENSITY,
+                                            num_dimensions, dimension_type, 0) != 0)
+    {
+        return -1;
+    }
+
+    /* number density from vmr/p/T */
+    if (harp_variable_conversion_new(name_nd, harp_type_double, HARP_UNIT_NUMBER_DENSITY, num_dimensions,
+                                     dimension_type, 0, get_nd_from_vmr_pressure_and_temperature, &conversion) != 0)
+    {
+        return -1;
+    }
+    if (harp_variable_conversion_add_source(conversion, name_vmr, harp_type_double, HARP_UNIT_VOLUME_MIXING_RATIO,
+                                            num_dimensions, dimension_type, 0) != 0)
+    {
+        return -1;
+    }
+    if (harp_variable_conversion_add_source(conversion, "pressure", harp_type_double, HARP_UNIT_PRESSURE,
+                                            num_dimensions, dimension_type, 0) != 0)
+    {
+        return -1;
+    }
+    if (harp_variable_conversion_add_source(conversion, "temperature", harp_type_double, HARP_UNIT_TEMPERATURE,
+                                            num_dimensions, dimension_type, 0) != 0)
+    {
+        return -1;
+    }
+    /* uncertainty propagation */
+    if (harp_variable_conversion_new(name_nd_uncertainty, harp_type_double, HARP_UNIT_NUMBER_DENSITY, num_dimensions,
+                                     dimension_type, 0, get_nd_from_vmr_pressure_and_temperature, &conversion) != 0)
+    {
+        return -1;
+    }
+    if (harp_variable_conversion_add_source(conversion, name_vmr_uncertainty, harp_type_double,
+                                            HARP_UNIT_VOLUME_MIXING_RATIO, num_dimensions, dimension_type, 0) != 0)
+    {
+        return -1;
+    }
+    if (harp_variable_conversion_add_source(conversion, "pressure", harp_type_double, HARP_UNIT_PRESSURE,
+                                            num_dimensions, dimension_type, 0) != 0)
+    {
+        return -1;
+    }
+    if (harp_variable_conversion_add_source(conversion, "temperature", harp_type_double, HARP_UNIT_TEMPERATURE,
+                                            num_dimensions, dimension_type, 0) != 0)
+    {
+        return -1;
+    }
+    /* covariance propagation */
+    dimension_type[num_dimensions] = harp_dimension_vertical;
+    if (harp_variable_conversion_new(name_nd_covariance, harp_type_double, HARP_UNIT_NUMBER_DENSITY_SQUARED,
+                                     num_dimensions + 1, dimension_type, 0,
+                                     get_nd_covariance_from_vmr_covariance_pressure_and_temperature, &conversion) != 0)
+    {
+        return -1;
+    }
+    if (harp_variable_conversion_add_source(conversion, name_vmr_covariance, harp_type_double,
+                                            HARP_UNIT_VOLUME_MIXING_RATIO_SQUARED, num_dimensions + 1, dimension_type,
+                                            0) != 0)
+    {
+        return -1;
+    }
+    if (harp_variable_conversion_add_source(conversion, "pressure", harp_type_double, HARP_UNIT_PRESSURE,
+                                            num_dimensions, dimension_type, 0) != 0)
+    {
+        return -1;
+    }
+    if (harp_variable_conversion_add_source(conversion, "temperature", harp_type_double, HARP_UNIT_TEMPERATURE,
+                                            num_dimensions, dimension_type, 0) != 0)
+    {
+        return -1;
+    }
+
+    /* number density from partial column profile */
+    if (harp_variable_conversion_new(name_nd, harp_type_double, HARP_UNIT_NUMBER_DENSITY, num_dimensions,
+                                     dimension_type, 0, get_density_from_partial_column_and_alt_bounds, &conversion) !=
+        0)
+    {
+        return -1;
+    }
+    if (harp_variable_conversion_add_source(conversion, name_column_nd, harp_type_double,
+                                            HARP_UNIT_COLUMN_NUMBER_DENSITY, num_dimensions, dimension_type, 0) != 0)
+    {
+        return -1;
+    }
+    dimension_type[num_dimensions] = harp_dimension_independent;
+    if (harp_variable_conversion_add_source(conversion, "altitude_bounds", harp_type_double, HARP_UNIT_LENGTH,
+                                            num_dimensions + 1, dimension_type, 2) != 0)
+    {
+        return -1;
+    }
+
+
+    /*** mass density ***/
+
+    /* time dependent from independent */
+    if (add_time_indepedent_to_dependent_conversion(name_density, harp_type_double, HARP_UNIT_MASS_DENSITY,
+                                                    num_dimensions, dimension_type, 0) != 0)
+    {
+        return -1;
+    }
+
+    /* uncertainties */
+    if (add_uncertainty_conversions(name_density, HARP_UNIT_NUMBER_DENSITY, num_dimensions, dimension_type) != 0)
+    {
+        return -1;
+    }
+
+    /* mass density from number density */
+    if (harp_variable_conversion_new(name_density, harp_type_double, HARP_UNIT_MASS_DENSITY, num_dimensions,
+                                     dimension_type, 0, get_density_from_nd, &conversion) != 0)
+    {
+        return -1;
+    }
+    if (harp_variable_conversion_add_source(conversion, name_nd, harp_type_double, HARP_UNIT_NUMBER_DENSITY,
+                                            num_dimensions, dimension_type, 0) != 0)
+    {
+        return -1;
+    }
+
+    /*** mass mixing ratio ***/
+
+    /* time dependent from independent */
+    if (add_time_indepedent_to_dependent_conversion(name_mmr, harp_type_double, HARP_UNIT_MASS_MIXING_RATIO,
+                                                    num_dimensions, dimension_type, 0) != 0)
+    {
+        return -1;
+    }
+
+    /* uncertainties */
+    if (add_uncertainty_conversions(name_mmr, HARP_UNIT_MASS_MIXING_RATIO, num_dimensions, dimension_type) != 0)
+    {
+        return -1;
+    }
+
+    /* mmr from vmr */
+    if (harp_variable_conversion_new(name_mmr, harp_type_double, HARP_UNIT_MASS_MIXING_RATIO, num_dimensions,
+                                     dimension_type, 0, get_mmr_from_vmr, &conversion) != 0)
+    {
+        return -1;
+    }
+    if (harp_variable_conversion_add_source(conversion, name_vmr, harp_type_double, HARP_UNIT_VOLUME_MIXING_RATIO,
+                                            num_dimensions, dimension_type, 0) != 0)
+    {
+        return -1;
+    }
+
+    /*** partial pressure ***/
+
+    /* time dependent from independent */
+    if (add_time_indepedent_to_dependent_conversion(name_pp, harp_type_double, HARP_UNIT_PRESSURE, num_dimensions,
+                                                    dimension_type, 0) != 0)
+    {
+        return -1;
+    }
+
+    /* uncertainties */
+    if (add_uncertainty_conversions(name_pp, HARP_UNIT_PRESSURE, num_dimensions, dimension_type) != 0)
+    {
+        return -1;
+    }
+
+    /* pp from vmr/p */
+    if (harp_variable_conversion_new(name_pp, harp_type_double, HARP_UNIT_PRESSURE, num_dimensions, dimension_type, 0,
+                                     get_partial_pressure_from_vmr_and_pressure, &conversion) != 0)
+    {
+        return -1;
+    }
+    if (harp_variable_conversion_add_source(conversion, name_vmr, harp_type_double, HARP_UNIT_VOLUME_MIXING_RATIO,
+                                            num_dimensions, dimension_type, 0) != 0)
+    {
+        return -1;
+    }
+    if (harp_variable_conversion_add_source(conversion, "pressure", harp_type_double, HARP_UNIT_PRESSURE,
+                                            num_dimensions, dimension_type, 0) != 0)
+    {
+        return -1;
+    }
+
+    /*** volume mixing ratio ****/
+
+    /* time dependent from independent */
+    if (add_time_indepedent_to_dependent_conversion(name_vmr, harp_type_double, HARP_UNIT_VOLUME_MIXING_RATIO,
+                                                    num_dimensions, dimension_type, 0) != 0)
+    {
+        return -1;
+    }
+
+    /* uncertainties */
+    if (add_uncertainty_conversions(name_vmr, HARP_UNIT_VOLUME_MIXING_RATIO, num_dimensions, dimension_type) != 0)
+    {
+        return -1;
+    }
+
+    /* vmr from nd/p/T */
+    if (harp_variable_conversion_new(name_vmr, harp_type_double, HARP_UNIT_VOLUME_MIXING_RATIO, num_dimensions,
+                                     dimension_type, 0, get_vmr_from_nd_pressure_and_temperature, &conversion) != 0)
+    {
+        return -1;
+    }
+    if (harp_variable_conversion_add_source(conversion, name_nd, harp_type_double, HARP_UNIT_NUMBER_DENSITY,
+                                            num_dimensions, dimension_type, 0) != 0)
+    {
+        return -1;
+    }
+    if (harp_variable_conversion_add_source(conversion, "pressure", harp_type_double, HARP_UNIT_PRESSURE,
+                                            num_dimensions, dimension_type, 0) != 0)
+    {
+        return -1;
+    }
+    if (harp_variable_conversion_add_source(conversion, "temperature", harp_type_double, HARP_UNIT_TEMPERATURE,
+                                            num_dimensions, dimension_type, 0) != 0)
+    {
+        return -1;
+    }
+    /* uncertainty propagation */
+    if (harp_variable_conversion_new(name_vmr_uncertainty, harp_type_double, HARP_UNIT_VOLUME_MIXING_RATIO,
+                                     num_dimensions, dimension_type, 0, get_vmr_from_nd_pressure_and_temperature,
+                                     &conversion) != 0)
+    {
+        return -1;
+    }
+    if (harp_variable_conversion_add_source(conversion, name_nd_uncertainty, harp_type_double, HARP_UNIT_NUMBER_DENSITY,
+                                            num_dimensions, dimension_type, 0) != 0)
+    {
+        return -1;
+    }
+    if (harp_variable_conversion_add_source(conversion, "pressure", harp_type_double, HARP_UNIT_PRESSURE,
+                                            num_dimensions, dimension_type, 0) != 0)
+    {
+        return -1;
+    }
+    if (harp_variable_conversion_add_source(conversion, "temperature", harp_type_double, HARP_UNIT_TEMPERATURE,
+                                            num_dimensions, dimension_type, 0) != 0)
+    {
+        return -1;
+    }
+    /* covariance propagation */
+    dimension_type[num_dimensions] = harp_dimension_vertical;
+    if (harp_variable_conversion_new(name_vmr_covariance, harp_type_double, HARP_UNIT_VOLUME_MIXING_RATIO_SQUARED,
+                                     num_dimensions + 1, dimension_type, 0,
                                      get_vmr_covariance_from_nd_covariance_pressure_and_temperature, &conversion) != 0)
     {
         return -1;
     }
     if (harp_variable_conversion_add_source(conversion, name_nd_covariance, harp_type_double,
-                                            HARP_UNIT_NUMBER_DENSITY_SQUARED, 3, dimension_type, 0) != 0)
+                                            HARP_UNIT_NUMBER_DENSITY_SQUARED, num_dimensions + 1, dimension_type, 0) !=
+        0)
     {
         return -1;
     }
-    if (harp_variable_conversion_add_source(conversion, "pressure", harp_type_double, HARP_UNIT_PRESSURE, 2,
-                                            dimension_type, 0) != 0)
+    if (harp_variable_conversion_add_source(conversion, "pressure", harp_type_double, HARP_UNIT_PRESSURE,
+                                            num_dimensions, dimension_type, 0) != 0)
     {
         return -1;
     }
-    if (harp_variable_conversion_add_source(conversion, "temperature", harp_type_double, HARP_UNIT_TEMPERATURE, 2,
-                                            dimension_type, 0) != 0)
+    if (harp_variable_conversion_add_source(conversion, "temperature", harp_type_double, HARP_UNIT_TEMPERATURE,
+                                            num_dimensions, dimension_type, 0) != 0)
     {
         return -1;
     }
-    for (i = 1; i < 3; i++)
+
+
+    /* vmr from mmr */
+    if (harp_variable_conversion_new(name_vmr, harp_type_double, HARP_UNIT_VOLUME_MIXING_RATIO, num_dimensions,
+                                     dimension_type, 0, get_vmr_from_mmr, &conversion) != 0)
     {
-        if (harp_variable_conversion_new(name_vmr, harp_type_double, HARP_UNIT_VOLUME_MIXING_RATIO, i, dimension_type,
-                                         0, get_vmr_from_mmr, &conversion) != 0)
-        {
-            return -1;
-        }
-        if (harp_variable_conversion_add_source(conversion, name_mmr, harp_type_double, HARP_UNIT_MASS_MIXING_RATIO, i,
-                                                dimension_type, 0) != 0)
-        {
-            return -1;
-        }
+        return -1;
+    }
+    if (harp_variable_conversion_add_source(conversion, name_mmr, harp_type_double, HARP_UNIT_MASS_MIXING_RATIO,
+                                            num_dimensions, dimension_type, 0) != 0)
+    {
+        return -1;
     }
 
     if (strcmp(species, "H2O") != 0)
     {
-        for (i = 1; i < 3; i++)
-        {
-            if (harp_variable_conversion_new
-                (name_vmr, harp_type_double, HARP_UNIT_VOLUME_MIXING_RATIO, i, dimension_type, 0,
-                 get_vmr_from_mmrw_and_humidity, &conversion) != 0)
-            {
-                return -1;
-            }
-            if (harp_variable_conversion_add_source
-                (conversion, name_mmrw, harp_type_double, HARP_UNIT_MASS_MIXING_RATIO, i, dimension_type, 0) != 0)
-            {
-                return -1;
-            }
-            if (harp_variable_conversion_add_source(conversion, "H2O_mass_mixing_ratio", harp_type_double,
-                                                    HARP_UNIT_MASS_MIXING_RATIO, i, dimension_type, 0) != 0)
-            {
-                return -1;
-            }
-        }
-    }
-
-    for (i = 1; i < 3; i++)
-    {
-        if (harp_variable_conversion_new(name_vmr, harp_type_double, HARP_UNIT_VOLUME_MIXING_RATIO, i, dimension_type,
-                                         0, get_vmr_from_partial_pressure_and_pressure, &conversion) != 0)
+        /* vmr from mmr(wet)/Q */
+        if (harp_variable_conversion_new(name_vmr, harp_type_double, HARP_UNIT_VOLUME_MIXING_RATIO, num_dimensions,
+                                         dimension_type, 0, get_vmr_from_mmrw_and_humidity, &conversion) != 0)
         {
             return -1;
         }
-        if (harp_variable_conversion_add_source(conversion, name_pp, harp_type_double, HARP_UNIT_PRESSURE, i,
-                                                dimension_type, 0) != 0)
+        if (harp_variable_conversion_add_source(conversion, name_mmrw, harp_type_double, HARP_UNIT_MASS_MIXING_RATIO,
+                                                num_dimensions, dimension_type, 0) != 0)
         {
             return -1;
         }
-        if (harp_variable_conversion_add_source(conversion, "pressure", harp_type_double, HARP_UNIT_PRESSURE, i,
-                                                dimension_type, 0) != 0)
+        if (harp_variable_conversion_add_source(conversion, "H2O_mass_mixing_ratio", harp_type_double,
+                                                HARP_UNIT_MASS_MIXING_RATIO, num_dimensions, dimension_type, 0) != 0)
         {
             return -1;
         }
     }
 
-    if (harp_variable_conversion_new(name_vmr_uncertainty, harp_type_double, HARP_UNIT_VOLUME_MIXING_RATIO, 2,
-                                     dimension_type, 0, get_vmr_from_nd_pressure_and_temperature, &conversion) != 0)
+
+    /* vmr from pp/p */
+    if (harp_variable_conversion_new(name_vmr, harp_type_double, HARP_UNIT_VOLUME_MIXING_RATIO, num_dimensions,
+                                     dimension_type, 0, get_vmr_from_partial_pressure_and_pressure, &conversion) != 0)
     {
         return -1;
     }
-    if (harp_variable_conversion_add_source(conversion, name_nd_uncertainty, harp_type_double, HARP_UNIT_NUMBER_DENSITY,
-                                            2, dimension_type, 0) != 0)
-    {
-        return -1;
-    }
-    if (harp_variable_conversion_add_source(conversion, "pressure", harp_type_double, HARP_UNIT_PRESSURE, 2,
+    if (harp_variable_conversion_add_source(conversion, name_pp, harp_type_double, HARP_UNIT_PRESSURE, num_dimensions,
                                             dimension_type, 0) != 0)
     {
         return -1;
     }
-    if (harp_variable_conversion_add_source(conversion, "temperature", harp_type_double, HARP_UNIT_TEMPERATURE, 2,
-                                            dimension_type, 0) != 0)
-    {
-        return -1;
-    }
-
-    if (add_vertical_uncertainty_conversions(name_vmr, HARP_UNIT_VOLUME_MIXING_RATIO,
-                                             HARP_UNIT_VOLUME_MIXING_RATIO_SQUARED) != 0)
+    if (harp_variable_conversion_add_source(conversion, "pressure", harp_type_double, HARP_UNIT_PRESSURE,
+                                            num_dimensions, dimension_type, 0) != 0)
     {
         return -1;
     }
@@ -1980,501 +1939,560 @@ static int add_species_conversions(const char *species)
     return 0;
 }
 
-static int init_conversions(void)
+static int add_aerosol_conversions_for_grid(int num_dimensions, harp_dimension_type dimension_type[HARP_MAX_NUM_DIMS])
 {
-    harp_variable_conversion *conversion;
+    const char *prefix[] = {"", "sea_salt_", "dust_", "organic_matter_", "black_carbon_", "sulphate_"};
+    int i;
+
+    for (i = 0; i < 6; i++)
+    {
+        harp_variable_conversion *conversion;
+        char name_aod[MAX_NAME_LENGTH];
+        char name_aod_uncertainty[MAX_NAME_LENGTH];
+        char name_ext[MAX_NAME_LENGTH];
+        char name_ext_uncertainty[MAX_NAME_LENGTH];
+
+        snprintf(name_aod, MAX_NAME_LENGTH, "%saerosol_optical_depth", prefix[i]);
+        snprintf(name_aod_uncertainty, MAX_NAME_LENGTH, "%saerosol_optical_depth_uncertainty", prefix[i]);
+        snprintf(name_ext, MAX_NAME_LENGTH, "%saerosol_extinction_coefficient", prefix[i]);
+        snprintf(name_ext_uncertainty, MAX_NAME_LENGTH, "%saerosol_extinction_coefficient_uncertainty", prefix[i]);
+
+        /*** aerosol extinction coefficient ***/
+
+        /* time dependent from independent */
+        if (add_time_indepedent_to_dependent_conversion(name_ext, harp_type_double, HARP_UNIT_AEROSOL_EXTINCTION,
+                                                        num_dimensions, dimension_type, 0) != 0)
+        {
+            return -1;
+        }
+
+        /* uncertainties */
+        if (add_uncertainty_conversions(name_ext, HARP_UNIT_AEROSOL_EXTINCTION, num_dimensions,
+                                        dimension_type) != 0)
+        {
+            return -1;
+        }
+
+        /* ext from aod */
+        if (harp_variable_conversion_new(name_ext, harp_type_double, HARP_UNIT_AEROSOL_EXTINCTION,
+                                         num_dimensions, dimension_type, 0,
+                                         get_density_from_partial_column_and_alt_bounds, &conversion) != 0)
+        {
+            return -1;
+        }
+        if (harp_variable_conversion_add_source(conversion, name_aod, harp_type_double, HARP_UNIT_DIMENSIONLESS,
+                                                num_dimensions, dimension_type, 0) != 0)
+        {
+            return -1;
+        }
+        dimension_type[num_dimensions] = harp_dimension_independent;
+        if (harp_variable_conversion_add_source(conversion, "altitude_bounds", harp_type_double, HARP_UNIT_LENGTH,
+                                                num_dimensions + 1, dimension_type, 2) != 0)
+        {
+            return -1;
+        }
+        /* uncertainty propagation */
+        if (harp_variable_conversion_new(name_ext_uncertainty, harp_type_double, HARP_UNIT_AEROSOL_EXTINCTION,
+                                         num_dimensions, dimension_type, 0,
+                                         get_density_from_partial_column_and_alt_bounds, &conversion) != 0)
+        {
+            return -1;
+        }
+        if (harp_variable_conversion_add_source(conversion, name_aod_uncertainty, harp_type_double,
+                                                HARP_UNIT_DIMENSIONLESS, num_dimensions, dimension_type, 0) != 0)
+        {
+            return -1;
+        }
+        if (harp_variable_conversion_add_source(conversion, "altitude_bounds", harp_type_double, HARP_UNIT_LENGTH,
+                                                num_dimensions + 1, dimension_type, 2) != 0)
+        {
+            return -1;
+        }
+
+        /*** aerosol optical depth ***/
+
+        /* time dependent from independent */
+        if (add_time_indepedent_to_dependent_conversion(name_aod, harp_type_double, HARP_UNIT_DIMENSIONLESS,
+                                                        num_dimensions, dimension_type, 0) != 0)
+        {
+            return -1;
+        }
+
+        /* uncertainties */
+        if (add_uncertainty_conversions(name_aod, HARP_UNIT_DIMENSIONLESS, num_dimensions, dimension_type) != 0)
+        {
+            return -1;
+        }
+
+        /* aod from partial aod profile */
+        if (num_dimensions == 0 || dimension_type[num_dimensions - 1] != harp_dimension_vertical)
+        {
+            if (harp_variable_conversion_new(name_aod, harp_type_double, HARP_UNIT_DIMENSIONLESS, num_dimensions,
+                                             dimension_type, 0, get_column_from_partial_column, &conversion) != 0)
+            {
+                return -1;
+            }
+            dimension_type[num_dimensions] = harp_dimension_vertical;
+            if (harp_variable_conversion_add_source(conversion, name_aod, harp_type_double, HARP_UNIT_DIMENSIONLESS,
+                                                    num_dimensions + 1, dimension_type, 0) != 0)
+            {
+                return -1;
+            }
+            /* uncertainty propagation */
+            if (harp_variable_conversion_new(name_aod_uncertainty, harp_type_double, HARP_UNIT_DIMENSIONLESS,
+                                             num_dimensions, dimension_type, 0,
+                                             get_column_uncertainty_from_partial_column_uncertainty, &conversion) != 0)
+            {
+                return -1;
+            }
+            if (harp_variable_conversion_add_source(conversion, name_aod_uncertainty, harp_type_double,
+                                                    HARP_UNIT_DIMENSIONLESS, num_dimensions, dimension_type, 0) != 0)
+            {
+                return -1;
+            }
+
+        }
+
+        /* aod from ext */
+        if (harp_variable_conversion_new(name_aod, harp_type_double, HARP_UNIT_DIMENSIONLESS, num_dimensions,
+                                         dimension_type, 0, get_partial_column_from_density_and_alt_bounds, &conversion)
+            != 0)
+        {
+            return -1;
+        }
+        if (harp_variable_conversion_add_source(conversion, name_ext, harp_type_double, HARP_UNIT_AEROSOL_EXTINCTION,
+                                                num_dimensions, dimension_type, 0) != 0)
+        {
+            return -1;
+        }
+        dimension_type[num_dimensions] = harp_dimension_independent;
+        if (harp_variable_conversion_add_source(conversion, "altitude_bounds", harp_type_double, HARP_UNIT_LENGTH,
+                                                num_dimensions + 1, dimension_type, 2) != 0)
+        {
+            return -1;
+        }
+        /* uncertainty propagation */
+        if (harp_variable_conversion_new(name_aod_uncertainty, harp_type_double, HARP_UNIT_DIMENSIONLESS,
+                                         num_dimensions, dimension_type, 0,
+                                         get_partial_column_from_density_and_alt_bounds, &conversion) != 0)
+        {
+            return -1;
+        }
+        if (harp_variable_conversion_add_source(conversion, name_ext_uncertainty, harp_type_double,
+                                                HARP_UNIT_AEROSOL_EXTINCTION, num_dimensions, dimension_type, 0) != 0)
+        {
+            return -1;
+        }
+        if (harp_variable_conversion_add_source(conversion, "altitude_bounds", harp_type_double, HARP_UNIT_LENGTH,
+                                                num_dimensions + 1, dimension_type, 2) != 0)
+        {
+            return -1;
+        }
+    }
+
+    return 0;
+}
+
+static int add_spectral_grouping_conversions_for_grid(int num_dimensions,
+                                                      harp_dimension_type target_dimension_type[HARP_MAX_NUM_DIMS])
+{
     harp_dimension_type dimension_type[HARP_MAX_NUM_DIMS];
     int i;
 
-    /* Append conversions for variables that start with a species name */
+    if (add_aerosol_conversions_for_grid(num_dimensions, target_dimension_type) != 0)
+    {
+        return -1;
+    }
+
+    /* the spectral dimension comes right after the time dimension (if it is present) */
+    if (num_dimensions == 0)
+    {
+        dimension_type[0] = harp_dimension_spectral;
+    }
+    else if (target_dimension_type[0] == harp_dimension_time)
+    {
+        dimension_type[0] = harp_dimension_time;
+        dimension_type[1] = harp_dimension_spectral;
+        for (i = 1; i < num_dimensions; i++)
+        {
+            dimension_type[i + 1] = target_dimension_type[i];
+        }
+    }
+    else
+    {
+        dimension_type[0] = harp_dimension_spectral;
+        for (i = 0; i < num_dimensions; i++)
+        {
+            dimension_type[i + 1] = target_dimension_type[i];
+        }
+    }
+    if (add_aerosol_conversions_for_grid(num_dimensions + 1, dimension_type) != 0)
+    {
+        return -1;
+    }
+
+    return 0;
+}
+
+static int add_conversions_for_grid(int num_dimensions, harp_dimension_type dimension_type[HARP_MAX_NUM_DIMS],
+                                    int has_latlon)
+{
+    harp_variable_conversion *conversion;
+    int i;
+
+    /* Add conversions for variables that start with a species name */
     for (i = 0; i < harp_num_chemical_species; i++)
     {
-        if (add_species_conversions(harp_chemical_species_name(i)) != 0)
+        if (add_species_conversions_for_grid(harp_chemical_species_name(i), num_dimensions, dimension_type) != 0)
         {
             return -1;
         }
     }
 
-    dimension_type[0] = harp_dimension_time;
-    dimension_type[1] = harp_dimension_vertical;
-    dimension_type[2] = harp_dimension_vertical;
-
-    /* aerosol extinction coefficient */
-    if (harp_variable_conversion_new("aerosol_extinction_coefficient", harp_type_double, HARP_UNIT_AEROSOL_EXTINCTION,
-                                     2, dimension_type, 0, get_density_from_partial_column_and_alt_bounds,
-                                     &conversion) != 0)
-    {
-        return -1;
-    }
-    if (harp_variable_conversion_add_source(conversion, "aerosol_optical_depth", harp_type_double,
-                                            HARP_UNIT_DIMENSIONLESS, 2, dimension_type, 0) != 0)
-    {
-        return -1;
-    }
-    if (harp_variable_conversion_add_source(conversion, "altitude_bounds", harp_type_double, HARP_UNIT_LENGTH, 3,
-                                            dimension_type, 2) != 0)
-    {
-        return -1;
-    }
-    if (harp_variable_conversion_new("aerosol_extinction_coefficient_uncertainty", harp_type_double,
-                                     HARP_UNIT_AEROSOL_EXTINCTION, 2, dimension_type, 0,
-                                     get_density_from_partial_column_and_alt_bounds, &conversion) != 0)
-    {
-        return -1;
-    }
-    if (harp_variable_conversion_add_source(conversion, "aerosol_optical_depth_uncertainty", harp_type_double,
-                                            HARP_UNIT_DIMENSIONLESS, 2, dimension_type, 0) != 0)
-    {
-        return -1;
-    }
-    if (harp_variable_conversion_add_source(conversion, "altitude_bounds", harp_type_double, HARP_UNIT_LENGTH, 3,
-                                            dimension_type, 2) != 0)
+    /* Add conversions for variables that can be spectral dependent (with spectral dimension used for grouping) */
+    if (add_spectral_grouping_conversions_for_grid(num_dimensions, dimension_type) != 0)
     {
         return -1;
     }
 
-    if (add_vertical_uncertainty_conversions("aerosol_extinction_coefficient", HARP_UNIT_AEROSOL_EXTINCTION,
-                                             HARP_UNIT_AEROSOL_EXTINCTION_SQUARED) != 0)
+    /*** number density ***/
+
+    /* time dependent from independent */
+    if (add_time_indepedent_to_dependent_conversion("number_density", harp_type_double, HARP_UNIT_NUMBER_DENSITY,
+                                                    num_dimensions, dimension_type, 0) != 0)
     {
         return -1;
     }
 
-    /* aerosol optical depth */
-    if (harp_variable_conversion_new("aerosol_optical_depth", harp_type_double, HARP_UNIT_DIMENSIONLESS, 1,
-                                     dimension_type, 0, get_column_from_partial_column, &conversion) != 0)
-    {
-        return -1;
-    }
-    if (harp_variable_conversion_add_source(conversion, "aerosol_optical_depth", harp_type_double,
-                                            HARP_UNIT_DIMENSIONLESS, 2, dimension_type, 0) != 0)
-    {
-        return -1;
-    }
-    if (harp_variable_conversion_new("aerosol_optical_depth_uncertainty", harp_type_double, HARP_UNIT_DIMENSIONLESS, 1,
-                                     dimension_type, 0, get_column_uncertainty_from_partial_column_uncertainty,
-                                     &conversion) != 0)
-    {
-        return -1;
-    }
-    if (harp_variable_conversion_add_source(conversion, "aerosol_optical_depth_uncertainty", harp_type_double,
-                                            HARP_UNIT_DIMENSIONLESS, 2, dimension_type, 0) != 0)
-    {
-        return -1;
-    }
-    if (harp_variable_conversion_new("aerosol_optical_depth", harp_type_double, HARP_UNIT_DIMENSIONLESS, 2,
-                                     dimension_type, 0, get_partial_column_from_density_and_alt_bounds,
-                                     &conversion) != 0)
-    {
-        return -1;
-    }
-    if (harp_variable_conversion_add_source(conversion, "aerosol_extinction_coefficient", harp_type_double,
-                                            HARP_UNIT_AEROSOL_EXTINCTION, 2, dimension_type, 0) != 0)
-    {
-        return -1;
-    }
-    if (harp_variable_conversion_add_source(conversion, "altitude_bounds", harp_type_double, HARP_UNIT_LENGTH, 3,
-                                            dimension_type, 2) != 0)
-    {
-        return -1;
-    }
-    if (harp_variable_conversion_new("aerosol_optical_depth_uncertainty", harp_type_double, HARP_UNIT_DIMENSIONLESS, 2,
-                                     dimension_type, 0, get_partial_column_from_density_and_alt_bounds,
-                                     &conversion) != 0)
-    {
-        return -1;
-    }
-    if (harp_variable_conversion_add_source(conversion, "aerosol_extinction_coefficient_uncertainty", harp_type_double,
-                                            HARP_UNIT_AEROSOL_EXTINCTION, 2, dimension_type, 0) != 0)
-    {
-        return -1;
-    }
-    if (harp_variable_conversion_add_source(conversion, "altitude_bounds", harp_type_double, HARP_UNIT_LENGTH, 3,
-                                            dimension_type, 2) != 0)
+    /* uncertainties */
+    if (add_uncertainty_conversions("number_density", HARP_UNIT_NUMBER_DENSITY, num_dimensions, dimension_type) != 0)
     {
         return -1;
     }
 
-    if (add_vertical_uncertainty_conversions("aerosol_optical_depth", HARP_UNIT_DIMENSIONLESS, HARP_UNIT_DIMENSIONLESS)
-        != 0)
+    /* nd from p/T */
+    if (harp_variable_conversion_new("number_density", harp_type_double, HARP_UNIT_NUMBER_DENSITY, num_dimensions,
+                                     dimension_type, 0, get_air_nd_from_pressure_and_temperature, &conversion) != 0)
+    {
+        return -1;
+    }
+    if (harp_variable_conversion_add_source(conversion, "pressure", harp_type_double, HARP_UNIT_PRESSURE,
+                                            num_dimensions, dimension_type, 0) != 0)
+    {
+        return -1;
+    }
+    if (harp_variable_conversion_add_source(conversion, "temperature", harp_type_double, HARP_UNIT_TEMPERATURE,
+                                            num_dimensions, dimension_type, 0) != 0)
     {
         return -1;
     }
 
-    /* altitude */
-    for (i = 1; i < 3; i++)
-    {
-        if (add_time_indepedent_to_dependent_conversion("altitude", harp_type_double, HARP_UNIT_LENGTH, i,
-                                                        dimension_type, 0) != 0)
-        {
-            return -1;
-        }
-    }
-    if (add_bounds_to_midpoint_conversion("altitude", harp_type_double, HARP_UNIT_LENGTH, harp_dimension_vertical,
-                                          get_midpoint_from_bounds) != 0)
+    /*** altitude ***/
+
+    /* time dependent from independent */
+    if (add_time_indepedent_to_dependent_conversion("altitude", harp_type_double, HARP_UNIT_LENGTH, num_dimensions,
+                                                    dimension_type, 0) != 0)
     {
         return -1;
     }
-    for (i = 0; i < 3; i++)
+
+    if (!has_latlon)
     {
-        if (harp_variable_conversion_new("altitude", harp_type_double, HARP_UNIT_LENGTH, i, dimension_type, 0,
+        /* altitude from gph */
+        if (harp_variable_conversion_new("altitude", harp_type_double, HARP_UNIT_LENGTH, num_dimensions, dimension_type, 0,
                                          get_altitude_from_gph_and_latitude, &conversion) != 0)
         {
             return -1;
         }
         if (harp_variable_conversion_add_source(conversion, "geopotential_heigth", harp_type_double, HARP_UNIT_LENGTH,
-                                                i, dimension_type, 0) != 0)
+                                                num_dimensions, dimension_type, 0) != 0)
         {
             return -1;
         }
-        if (harp_variable_conversion_add_source(conversion, "latitude", harp_type_double, HARP_UNIT_LATITUDE, i,
+        if (harp_variable_conversion_add_source(conversion, "latitude", harp_type_double, HARP_UNIT_LATITUDE,
+                                                num_dimensions, dimension_type, 0) != 0)
+        {
+            return -1;
+        }
+    }
+
+    /*** altitude_bounds ***/
+
+    /* time dependent from independent */
+    dimension_type[num_dimensions] = harp_dimension_independent;
+    if (add_time_indepedent_to_dependent_conversion("altitude_bounds", harp_type_double, HARP_UNIT_LENGTH,
+                                                    num_dimensions + 1, dimension_type, 2) != 0)
+    {
+        return -1;
+    }
+
+    /*** geopotential ***/
+
+    /* time dependent from independent */
+    if (add_time_indepedent_to_dependent_conversion("geopotential", harp_type_double, HARP_UNIT_GEOPOTENTIAL,
+                                                    num_dimensions, dimension_type, 0) != 0)
+    {
+        return -1;
+    }
+
+    /* uncertainties */
+    if (add_uncertainty_conversions("geopotential", HARP_UNIT_GEOPOTENTIAL, num_dimensions, dimension_type) != 0)
+    {
+        return -1;
+    }
+
+    /* geopotential from gph */
+    if (harp_variable_conversion_new("geopotential", harp_type_double, HARP_UNIT_GEOPOTENTIAL, num_dimensions,
+                                     dimension_type, 0, get_geopotential_from_gph, &conversion) != 0)
+    {
+        return -1;
+    }
+    if (harp_variable_conversion_add_source(conversion, "geopotential_height", harp_type_double, HARP_UNIT_LENGTH,
+                                            num_dimensions, dimension_type, 0) != 0)
+    {
+        return -1;
+    }
+
+    /*** geopotential_height ***/
+
+    /* time dependent from independent */
+    if (add_time_indepedent_to_dependent_conversion("geopotential_height", harp_type_double, HARP_UNIT_LENGTH,
+                                                    num_dimensions, dimension_type, 0) != 0)
+    {
+        return -1;
+    }
+
+    /* gph from geopotential */
+    if (harp_variable_conversion_new("geopotential_height", harp_type_double, HARP_UNIT_LENGTH, num_dimensions,
+                                     dimension_type, 0, get_gph_from_geopotential, &conversion) != 0)
+    {
+        return -1;
+    }
+    if (harp_variable_conversion_add_source(conversion, "geopotential", harp_type_double, HARP_UNIT_GEOPOTENTIAL,
+                                            num_dimensions, dimension_type, 0) != 0)
+    {
+        return -1;
+    }
+
+    if (!has_latlon)
+    {
+        /* gph from altitude */
+        if (harp_variable_conversion_new("geopotential_height", harp_type_double, HARP_UNIT_LENGTH, num_dimensions,
+                                         dimension_type, 0, get_gph_from_altitude_and_latitude, &conversion) != 0)
+        {
+            return -1;
+        }
+        if (harp_variable_conversion_add_source(conversion, "altitude", harp_type_double, HARP_UNIT_LENGTH, num_dimensions,
                                                 dimension_type, 0) != 0)
         {
             return -1;
         }
-    }
-
-    for (i = 0; i < 2; i++)
-    {
-        if (harp_variable_conversion_new("altitude", harp_type_double, HARP_UNIT_LENGTH, i, dimension_type, 0, get_copy,
-                                         &conversion) != 0)
-        {
-            return -1;
-        }
-        if (harp_variable_conversion_add_source(conversion, "instrument_altitude", harp_type_double, HARP_UNIT_LENGTH,
-                                                i, dimension_type, 0) != 0)
+        if (harp_variable_conversion_add_source(conversion, "latitude", harp_type_double, HARP_UNIT_LATITUDE,
+                                                num_dimensions, dimension_type, 0) != 0)
         {
             return -1;
         }
     }
 
-    /* altitude boundaries */
-    if (add_midpoint_to_bounds_conversion("altitude", harp_type_double, HARP_UNIT_LENGTH, harp_dimension_vertical,
-                                          get_alt_bounds_from_alt) != 0)
-    {
-        return -1;
-    }
+    /*** pressure ***/
 
-    /* datetime */
-    if (harp_variable_conversion_new("datetime", harp_type_double, HARP_UNIT_DATETIME, 1, dimension_type, 0,
-                                     get_datetime_from_datetime_start_and_stop, &conversion) != 0)
-    {
-        return -1;
-    }
-    if (harp_variable_conversion_add_source(conversion, "datetime_start", harp_type_double, HARP_UNIT_DATETIME, 1,
-                                            dimension_type, 0) != 0)
-    {
-        return -1;
-    }
-    if (harp_variable_conversion_add_source(conversion, "datetime_stop", harp_type_double, HARP_UNIT_DATETIME, 1,
-                                            dimension_type, 0) != 0)
-    {
-        return -1;
-    }
-
-    /* datetime_length */
-    if (harp_variable_conversion_new("datetime_length", harp_type_double, HARP_UNIT_TIME, 1, dimension_type, 0,
-                                     get_datetime_length_from_datetime_start_and_stop, &conversion) != 0)
-    {
-        return -1;
-    }
-    if (harp_variable_conversion_add_source(conversion, "datetime_start", harp_type_double, HARP_UNIT_DATETIME, 1,
-                                            dimension_type, 0) != 0)
-    {
-        return -1;
-    }
-    if (harp_variable_conversion_add_source(conversion, "datetime_stop", harp_type_double, HARP_UNIT_DATETIME, 1,
-                                            dimension_type, 0) != 0)
-    {
-        return -1;
-    }
-
-    /* datetime_start */
-    if (harp_variable_conversion_new("datetime_start", harp_type_double, HARP_UNIT_DATETIME, 1, dimension_type, 0,
-                                     get_datetime_start_from_datetime_and_length, &conversion) != 0)
-    {
-        return -1;
-    }
-    if (harp_variable_conversion_add_source(conversion, "datetime", harp_type_double, HARP_UNIT_DATETIME, 1,
-                                            dimension_type, 0) != 0)
-    {
-        return -1;
-    }
-    if (harp_variable_conversion_add_source(conversion, "datetime_length", harp_type_double, HARP_UNIT_TIME, 1,
-                                            dimension_type, 0) != 0)
-    {
-        return -1;
-    }
-
-    /* datetime_stop */
-    if (harp_variable_conversion_new("datetime_stop", harp_type_double, HARP_UNIT_DATETIME, 1, dimension_type, 0,
-                                     get_datetime_stop_from_datetime_start_and_length, &conversion) != 0)
-    {
-        return -1;
-    }
-    if (harp_variable_conversion_add_source(conversion, "datetime_start", harp_type_double, HARP_UNIT_DATETIME, 1,
-                                            dimension_type, 0) != 0)
-    {
-        return -1;
-    }
-    if (harp_variable_conversion_add_source(conversion, "datetime_length", harp_type_double, HARP_UNIT_TIME, 1,
-                                            dimension_type, 0) != 0)
-    {
-        return -1;
-    }
-
-    /* flag_am_pm */
-    if (add_time_indepedent_to_dependent_conversion("flag_am_pm", harp_type_string, NULL, 1, dimension_type, 0) != 0)
-    {
-        return -1;
-    }
-    for (i = 0; i < 2; i++)
-    {
-        if (harp_variable_conversion_new("flag_am_pm", harp_type_string, NULL, i, dimension_type, 0,
-                                         get_daytime_ampm_from_longitude, &conversion) != 0)
-        {
-            return -1;
-        }
-        if (harp_variable_conversion_add_source(conversion, "datetime", harp_type_double, HARP_UNIT_DATETIME, i,
-                                                dimension_type, 0) != 0)
-        {
-            return -1;
-        }
-        if (harp_variable_conversion_add_source(conversion, "longitude", harp_type_double, HARP_UNIT_LONGITUDE, i,
-                                                dimension_type, 0) != 0)
-        {
-            return -1;
-        }
-    }
-
-    /* flag_day_twilight_night */
-    if (add_time_indepedent_to_dependent_conversion("flag_day_twilight_night", harp_type_string, NULL, 1,
+    /* time dependent from independent */
+    if (add_time_indepedent_to_dependent_conversion("pressure", harp_type_double, HARP_UNIT_PRESSURE, num_dimensions,
                                                     dimension_type, 0) != 0)
     {
         return -1;
     }
-    for (i = 0; i < 2; i++)
-    {
-        if (harp_variable_conversion_new("flag_day_twilight_night", harp_type_string, NULL, i, dimension_type, 0,
-                                         get_illumination_condition_from_solar_zenith_angle, &conversion) != 0)
-        {
-            return -1;
-        }
-        if (harp_variable_conversion_add_source(conversion, "solar_zenith_angle", harp_type_double, HARP_UNIT_ANGLE, i,
-                                                dimension_type, 0) != 0)
-        {
-            return -1;
-        }
-    }
 
-    /* flag_daytime */
-    if (add_time_indepedent_to_dependent_conversion("flag_daytime", harp_type_string, NULL, 1, dimension_type, 0) != 0)
+    /* uncertainties */
+    if (add_uncertainty_conversions("pressure", HARP_UNIT_PRESSURE, num_dimensions, dimension_type) != 0)
     {
         return -1;
     }
-    for (i = 0; i < 2; i++)
+
+    /*** pressure_bounds ***/
+
+    /* time dependent from independent */
+    dimension_type[num_dimensions] = harp_dimension_independent;
+    if (add_time_indepedent_to_dependent_conversion("pressure", harp_type_double, HARP_UNIT_PRESSURE,
+                                                    num_dimensions + 1, dimension_type, 2) != 0)
     {
-        if (harp_variable_conversion_new("flag_daytime", harp_type_int8, NULL, i, dimension_type, 0,
-                                         get_daytime_from_solar_zenith_angle, &conversion) != 0)
-        {
-            return -1;
-        }
-        if (harp_variable_conversion_add_source(conversion, "solar_zenith_angle", harp_type_double, HARP_UNIT_ANGLE, i,
-                                                dimension_type, 0) != 0)
-        {
-            return -1;
-        }
+        return -1;
     }
 
-    /* frequency */
+    /*** relative humidity ***/
+
+    /* time dependent from independent */
+    if (add_time_indepedent_to_dependent_conversion("relative_humidity", harp_type_double, HARP_UNIT_DIMENSIONLESS,
+                                                    num_dimensions, dimension_type, 0) != 0)
+    {
+        return -1;
+    }
+
+    /* uncertainties */
+    if (add_uncertainty_conversions("relative_humidity", HARP_UNIT_DIMENSIONLESS, num_dimensions, dimension_type) != 0)
+    {
+        return -1;
+    }
+
+    /* humidity from H2O/T */
+    if (harp_variable_conversion_new("relative_humidity", harp_type_double, HARP_UNIT_DIMENSIONLESS, num_dimensions,
+                                     dimension_type, 0, get_relative_humidity_from_h2o_nd_and_temperature,
+                                     &conversion) != 0)
+    {
+        return -1;
+    }
+    if (harp_variable_conversion_add_source(conversion, "H2O_number_density", harp_type_double,
+                                            HARP_UNIT_NUMBER_DENSITY, num_dimensions, dimension_type, 0) != 0)
+    {
+        return -1;
+    }
+    if (harp_variable_conversion_add_source(conversion, "temperature", harp_type_double, HARP_UNIT_TEMPERATURE,
+                                            num_dimensions, dimension_type, 0) != 0)
+    {
+        return -1;
+    }
+
+    /*** temperature ***/
+
+    /* time dependent from independent */
+    if (add_time_indepedent_to_dependent_conversion("temperature", harp_type_double, HARP_UNIT_TEMPERATURE,
+                                                    num_dimensions, dimension_type, 0) != 0)
+    {
+        return -1;
+    }
+
+    /* uncertainties */
+    if (add_uncertainty_conversions("temperature", HARP_UNIT_TEMPERATURE, num_dimensions, dimension_type) != 0)
+    {
+        return -1;
+    }
+
+    /*** virtual temperature ***/
+
+    /* time dependent from independent */
+    if (add_time_indepedent_to_dependent_conversion("virtual_temperature", harp_type_double, HARP_UNIT_TEMPERATURE,
+                                                    num_dimensions, dimension_type, 0) != 0)
+    {
+        return -1;
+    }
+
+    /* uncertainties */
+    if (add_uncertainty_conversions("virtual_temperature", HARP_UNIT_TEMPERATURE, num_dimensions, dimension_type) != 0)
+    {
+        return -1;
+    }
+
+    /* virtual temp from p/T/humidity */
+    if (harp_variable_conversion_new("virtual_temperature", harp_type_double, HARP_UNIT_TEMPERATURE, num_dimensions,
+                                     dimension_type, 0,
+                                     get_virtual_temperature_from_pressure_temperature_and_relative_humidity,
+                                     &conversion) != 0)
+    {
+        return -1;
+    }
+    if (harp_variable_conversion_add_source(conversion, "pressure", harp_type_double, HARP_UNIT_PRESSURE,
+                                            num_dimensions, dimension_type, 0) != 0)
+    {
+        return -1;
+    }
+    if (harp_variable_conversion_add_source(conversion, "temperature", harp_type_double, HARP_UNIT_TEMPERATURE,
+                                            num_dimensions, dimension_type, 0) != 0)
+    {
+        return -1;
+    }
+    if (harp_variable_conversion_add_source(conversion, "relative_humidity", harp_type_double, HARP_UNIT_DIMENSIONLESS,
+                                            num_dimensions, dimension_type, 0) != 0)
+    {
+        return -1;
+    }
+
+    return 0;
+}
+
+/* grid conversions are for variables that can have a latitude, longitude, and/or vertical dimension */
+static int add_grid_conversions(void)
+{
+    harp_dimension_type dimension_type[HARP_MAX_NUM_DIMS];
+
+    /* {} */
+    if (add_conversions_for_grid(0, dimension_type, 0) != 0)
+    {
+        return -1;
+    }
+
+    /* {vertical} */
+    dimension_type[0] = harp_dimension_vertical;
+    if (add_conversions_for_grid(1, dimension_type, 0) != 0)
+    {
+        return -1;
+    }
+
+    /* {latitude,longitude} */
+    dimension_type[0] = harp_dimension_latitude;
+    dimension_type[1] = harp_dimension_longitude;
+    if (add_conversions_for_grid(2, dimension_type, 1) != 0)
+    {
+        return -1;
+    }
+
+    /* {latitude,longitude,vertical} */
+    dimension_type[2] = harp_dimension_vertical;
+    if (add_conversions_for_grid(3, dimension_type, 1) != 0)
+    {
+        return -1;
+    }
+
+    /* {time} */
+    dimension_type[0] = harp_dimension_time;
+    if (add_conversions_for_grid(1, dimension_type, 0) != 0)
+    {
+        return -1;
+    }
+
+    /* {time,vertical} */
+    dimension_type[1] = harp_dimension_vertical;
+    if (add_conversions_for_grid(2, dimension_type, 0) != 0)
+    {
+        return -1;
+    }
+
+    /* {time,latitude,longitude} */
+    dimension_type[1] = harp_dimension_latitude;
+    dimension_type[2] = harp_dimension_longitude;
+    if (add_conversions_for_grid(3, dimension_type, 1) != 0)
+    {
+        return -1;
+    }
+
+    /* {time,latitude,longitude,vertical} */
+    dimension_type[3] = harp_dimension_vertical;
+    if (add_conversions_for_grid(4, dimension_type, 1) != 0)
+    {
+        return -1;
+    }
+
+    return 0;
+}
+
+static int add_radiance_conversions(void)
+{
+    harp_variable_conversion *conversion;
+    harp_dimension_type dimension_type[HARP_MAX_NUM_DIMS];
+    int i;
+
+    dimension_type[0] = harp_dimension_time;
     dimension_type[1] = harp_dimension_spectral;
-    for (i = 0; i < 3; i++)
-    {
-        if (i > 0)
-        {
-            if (add_time_indepedent_to_dependent_conversion("frequency", harp_type_double, HARP_UNIT_FREQUENCY, i,
-                                                            dimension_type, 0) != 0)
-            {
-                return -1;
-            }
-        }
-        if (harp_variable_conversion_new("frequency", harp_type_double, HARP_UNIT_FREQUENCY, i, dimension_type, 0,
-                                         get_frequency_from_wavelength, &conversion) != 0)
-        {
-            return -1;
-        }
-        if (harp_variable_conversion_add_source(conversion, "wavelength", harp_type_double, HARP_UNIT_WAVELENGTH, i,
-                                                dimension_type, 0) != 0)
-        {
-            return -1;
-        }
 
-        if (harp_variable_conversion_new("frequency", harp_type_double, HARP_UNIT_FREQUENCY, i, dimension_type, 0,
-                                         get_frequency_from_wavenumber, &conversion) != 0)
-        {
-            return -1;
-        }
-        if (harp_variable_conversion_add_source(conversion, "wavenumber", harp_type_double, HARP_UNIT_WAVENUMBER, i,
-                                                dimension_type, 0) != 0)
-        {
-            return -1;
-        }
-    }
+    /*** normalized radiance ***/
 
-    /* geopotential */
-    dimension_type[1] = harp_dimension_vertical;
-    for (i = 0; i < 3; i++)
-    {
-        if (i > 0)
-        {
-            if (add_time_indepedent_to_dependent_conversion("geopotential", harp_type_double, HARP_UNIT_GEOPOTENTIAL,
-                                                            i, dimension_type, 0) != 0)
-            {
-                return -1;
-            }
-        }
-        if (harp_variable_conversion_new("geopotential", harp_type_double, HARP_UNIT_GEOPOTENTIAL, i, dimension_type,
-                                         0, get_geopotential_from_gph, &conversion) != 0)
-        {
-            return -1;
-        }
-        if (harp_variable_conversion_add_source(conversion, "geopotential_height", harp_type_double, HARP_UNIT_LENGTH,
-                                                i, dimension_type, 0) != 0)
-        {
-            return -1;
-        }
-    }
-
-    /* geopotential height */
-    dimension_type[1] = harp_dimension_vertical;
-    for (i = 0; i < 3; i++)
-    {
-        if (i > 0)
-        {
-            if (add_time_indepedent_to_dependent_conversion("geopotential_height", harp_type_double, HARP_UNIT_LENGTH,
-                                                            i, dimension_type, 0) != 0)
-            {
-                return -1;
-            }
-        }
-        if (harp_variable_conversion_new("geopotential_height", harp_type_double, HARP_UNIT_LENGTH, i, dimension_type,
-                                         0, get_gph_from_geopotential, &conversion) != 0)
-        {
-            return -1;
-        }
-        if (harp_variable_conversion_add_source(conversion, "geopotential", harp_type_double, HARP_UNIT_GEOPOTENTIAL, i,
-                                                dimension_type, 0) != 0)
-        {
-            return -1;
-        }
-        if (harp_variable_conversion_new("geopotential_height", harp_type_double, HARP_UNIT_LENGTH, i, dimension_type,
-                                         0, get_gph_from_altitude_and_latitude, &conversion) != 0)
-        {
-            return -1;
-        }
-        if (harp_variable_conversion_add_source(conversion, "altitude", harp_type_double, HARP_UNIT_LENGTH, i,
-                                                dimension_type, 0) != 0)
-        {
-            return -1;
-        }
-        if (harp_variable_conversion_add_source(conversion, "latitude", harp_type_double, HARP_UNIT_LATITUDE, i,
-                                                dimension_type, 0) != 0)
-        {
-            return -1;
-        }
-
-    }
-
-    /* index */
-    if (harp_variable_conversion_new("index", harp_type_int32, NULL, 1, dimension_type, 0, get_index, &conversion) != 0)
-    {
-        return -1;
-    }
-
-    /* instrument_altitude */
-    if (add_time_indepedent_to_dependent_conversion("instrument_altitude", harp_type_double, HARP_UNIT_LENGTH, 1,
-                                                    dimension_type, 0) != 0)
-    {
-        return -1;
-    }
-
-    /* instrument_latitude */
-    if (add_time_indepedent_to_dependent_conversion("instrument_latitude", harp_type_double, HARP_UNIT_LATITUDE, 1,
-                                                    dimension_type, 0) != 0)
-    {
-        return -1;
-    }
-
-    /* instrument_longitude */
-    if (add_time_indepedent_to_dependent_conversion("instrument_longitude", harp_type_double, HARP_UNIT_LONGITUDE, 1,
-                                                    dimension_type, 0) != 0)
-    {
-        return -1;
-    }
-
-    /* latitude */
-    if (add_time_indepedent_to_dependent_conversion("latitude", harp_type_double, HARP_UNIT_LATITUDE, 1,
-                                                    dimension_type, 0) != 0)
-    {
-        return -1;
-    }
-    if (add_latlon_bounds_to_midpoint_conversion("latitude", harp_type_double, HARP_UNIT_LATITUDE,
-                                                 get_latitude_from_latlon_bounds) != 0)
-    {
-        return -1;
-    }
-    for (i = 0; i < 2; i++)
-    {
-        if (harp_variable_conversion_new("latitude", harp_type_double, HARP_UNIT_LATITUDE, i, dimension_type, 0,
-                                         get_copy, &conversion) != 0)
-        {
-            return -1;
-        }
-        if (harp_variable_conversion_add_source(conversion, "instrument_latitude", harp_type_double,
-                                                HARP_UNIT_LATITUDE, i, dimension_type, 0) != 0)
-        {
-            return -1;
-        }
-    }
-    if (add_latlon_midpoints_to_bounds_conversion("latitude", harp_type_double, HARP_UNIT_LATITUDE,
-                                                  harp_dimension_latitude, get_bounds_from_midpoints) != 0)
-    {
-        return -1;
-    }
-
-    /* longitude */
-    if (add_time_indepedent_to_dependent_conversion("longitude", harp_type_double, HARP_UNIT_LONGITUDE, 1,
-                                                    dimension_type, 0) != 0)
-    {
-        return -1;
-    }
-    if (add_latlon_bounds_to_midpoint_conversion("longitude", harp_type_double, HARP_UNIT_LONGITUDE,
-                                                 get_longitude_from_latlon_bounds) != 0)
-    {
-        return -1;
-    }
-    for (i = 0; i < 2; i++)
-    {
-        if (harp_variable_conversion_new("longitude", harp_type_double, HARP_UNIT_LONGITUDE, i, dimension_type, 0,
-                                         get_copy, &conversion) != 0)
-        {
-            return -1;
-        }
-        if (harp_variable_conversion_add_source(conversion, "instrument_longitude", harp_type_double,
-                                                HARP_UNIT_LONGITUDE, i, dimension_type, 0) != 0)
-        {
-            return -1;
-        }
-    }
-    if (add_latlon_midpoints_to_bounds_conversion("longitude", harp_type_double, HARP_UNIT_LONGITUDE,
-                                                  harp_dimension_longitude, get_bounds_from_midpoints) != 0)
-    {
-        return -1;
-    }
-
-    /* normalized radiance */
     dimension_type[1] = harp_dimension_spectral;
     for (i = 1; i < 3; i++)
     {
+        if (add_uncertainty_conversions("normalized_radiance", HARP_UNIT_DIMENSIONLESS, i, dimension_type) != 0)
+        {
+            return -1;
+        }
+
         if (harp_variable_conversion_new("normalized_radiance", harp_type_double, HARP_UNIT_DIMENSIONLESS, i,
                                          dimension_type, 0, get_normalized_radiance_from_radiance_and_solar_irradiance,
                                          &conversion) != 0)
@@ -2511,165 +2529,16 @@ static int init_conversions(void)
         }
     }
 
-    if (add_spectral_uncertainty_conversions("normalized_radiance", HARP_UNIT_DIMENSIONLESS) != 0)
-    {
-        return -1;
-    }
+    /*** radiance ***/
 
-    /* number density */
-    dimension_type[1] = harp_dimension_vertical;
-    for (i = 1; i < 3; i++)
-    {
-        if (harp_variable_conversion_new("number_density", harp_type_double, HARP_UNIT_NUMBER_DENSITY, i,
-                                         dimension_type, 0, get_air_nd_from_pressure_and_temperature, &conversion) != 0)
-        {
-            return -1;
-        }
-        if (harp_variable_conversion_add_source(conversion, "pressure", harp_type_double, HARP_UNIT_PRESSURE, i,
-                                                dimension_type, 0) != 0)
-        {
-            return -1;
-        }
-        if (harp_variable_conversion_add_source(conversion, "temperature", harp_type_double, HARP_UNIT_TEMPERATURE, i,
-                                                dimension_type, 0) != 0)
-        {
-            return -1;
-        }
-    }
-
-    if (add_aux_afgl86_conversion("number_density", HARP_UNIT_NUMBER_DENSITY) != 0)
-    {
-        return -1;
-    }
-    if (add_aux_usstd76_conversion("number_density", HARP_UNIT_NUMBER_DENSITY) != 0)
-    {
-        return -1;
-    }
-
-    if (add_uncertainty_conversions("number_density", HARP_UNIT_NUMBER_DENSITY) != 0)
-    {
-        return -1;
-    }
-
-    /* pressure */
-    for (i = 1; i < 3; i++)
-    {
-        if (add_time_indepedent_to_dependent_conversion("pressure", harp_type_double, HARP_UNIT_PRESSURE, i,
-                                                        dimension_type, 0) != 0)
-        {
-            return -1;
-        }
-    }
-
-    if (add_bounds_to_midpoint_conversion("pressure", harp_type_double, HARP_UNIT_PRESSURE, harp_dimension_vertical,
-                                          get_midpoint_from_bounds_log) != 0)
-    {
-        return -1;
-    }
-
-    if (harp_variable_conversion_new("pressure", harp_type_double, HARP_UNIT_PRESSURE, 2, dimension_type, 0,
-                                     get_pressure_from_altitude_temperature_h2o_mmr_and_latitude, &conversion) != 0)
-    {
-        return -1;
-    }
-    if (harp_variable_conversion_add_source(conversion, "altitude", harp_type_double, HARP_UNIT_LENGTH, 2,
-                                            dimension_type, 0) != 0)
-    {
-        return -1;
-    }
-    if (harp_variable_conversion_add_source(conversion, "temperature", harp_type_double, HARP_UNIT_TEMPERATURE, 2,
-                                            dimension_type, 0) != 0)
-    {
-        return -1;
-    }
-    if (harp_variable_conversion_add_source(conversion, "H2O_mass_mixing_ratio", harp_type_double,
-                                            HARP_UNIT_MASS_MIXING_RATIO, 2, dimension_type, 0) != 0)
-    {
-        return -1;
-    }
-    if (harp_variable_conversion_add_source(conversion, "latitude", harp_type_double, HARP_UNIT_LATITUDE, 1,
-                                            dimension_type, 0) != 0)
-    {
-        return -1;
-    }
-
-    if (harp_variable_conversion_new("pressure", harp_type_double, HARP_UNIT_PRESSURE, 2, dimension_type, 0,
-                                     get_pressure_from_gph_temperature_and_h2o_mmr, &conversion) != 0)
-    {
-        return -1;
-    }
-    if (harp_variable_conversion_add_source(conversion, "geopotential_height", harp_type_double, HARP_UNIT_LENGTH, 2,
-                                            dimension_type, 0) != 0)
-    {
-        return -1;
-    }
-    if (harp_variable_conversion_add_source(conversion, "temperature", harp_type_double, HARP_UNIT_TEMPERATURE, 2,
-                                            dimension_type, 0) != 0)
-    {
-        return -1;
-    }
-    if (harp_variable_conversion_add_source(conversion, "H2O_mass_mixing_ratio", harp_type_double,
-                                            HARP_UNIT_MASS_MIXING_RATIO, 2, dimension_type, 0) != 0)
-    {
-        return -1;
-    }
-
-    if (harp_variable_conversion_new("pressure", harp_type_double, HARP_UNIT_PRESSURE, 2, dimension_type, 0,
-                                     get_pressure_from_altitude_temperature_and_latitude, &conversion) != 0)
-    {
-        return -1;
-    }
-    if (harp_variable_conversion_add_source(conversion, "pressure", harp_type_double, HARP_UNIT_PRESSURE, 2,
-                                            dimension_type, 0) != 0)
-    {
-        return -1;
-    }
-    if (harp_variable_conversion_add_source(conversion, "temperature", harp_type_double, HARP_UNIT_TEMPERATURE, 2,
-                                            dimension_type, 0) != 0)
-    {
-        return -1;
-    }
-    if (harp_variable_conversion_add_source(conversion, "latitude", harp_type_double, HARP_UNIT_LATITUDE, 1,
-                                            dimension_type, 0) != 0)
-    {
-        return -1;
-    }
-
-    if (harp_variable_conversion_new("pressure", harp_type_double, HARP_UNIT_PRESSURE, 2, dimension_type, 0,
-                                     get_pressure_from_gph_and_temperature, &conversion) != 0)
-    {
-        return -1;
-    }
-    if (harp_variable_conversion_add_source(conversion, "geopotential_height", harp_type_double, HARP_UNIT_LENGTH, 2,
-                                            dimension_type, 0) != 0)
-    {
-        return -1;
-    }
-    if (harp_variable_conversion_add_source(conversion, "temperature", harp_type_double, HARP_UNIT_TEMPERATURE, 2,
-                                            dimension_type, 0) != 0)
-    {
-        return -1;
-    }
-
-
-    if (add_aux_afgl86_conversion("pressure", HARP_UNIT_PRESSURE) != 0)
-    {
-        return -1;
-    }
-    if (add_aux_usstd76_conversion("pressure", HARP_UNIT_PRESSURE) != 0)
-    {
-        return -1;
-    }
-
-    if (add_vertical_uncertainty_conversions("pressure", HARP_UNIT_PRESSURE, NULL) != 0)
-    {
-        return -1;
-    }
-
-    /* radiance */
     dimension_type[1] = harp_dimension_spectral;
     for (i = 1; i < 3; i++)
     {
+        if (add_uncertainty_conversions("radiance", HARP_UNIT_RADIANCE, i, dimension_type) != 0)
+        {
+            return -1;
+        }
+
         if (harp_variable_conversion_new("radiance", harp_type_double, HARP_UNIT_RADIANCE, i, dimension_type, 0,
                                          get_radiance_from_normalized_radiance_and_solar_irradiance, &conversion) != 0)
         {
@@ -2687,16 +2556,16 @@ static int init_conversions(void)
         }
     }
 
-    dimension_type[1] = harp_dimension_spectral;
-    if (add_uncertainty_conversions("radiance", HARP_UNIT_RADIANCE) != 0)
-    {
-        return -1;
-    }
+    /*** reflectance ***/
 
-    /* reflectance */
     dimension_type[1] = harp_dimension_spectral;
     for (i = 1; i < 3; i++)
     {
+        if (add_uncertainty_conversions("reflectance", HARP_UNIT_DIMENSIONLESS, i, dimension_type) != 0)
+        {
+            return -1;
+        }
+
         if (harp_variable_conversion_new("reflectance", harp_type_double, HARP_UNIT_DIMENSIONLESS, i, dimension_type, 0,
                                          get_reflectance_from_normalized_radiance_and_solar_zenith_angle, &conversion)
             != 0)
@@ -2715,39 +2584,30 @@ static int init_conversions(void)
         }
     }
 
-    if (add_uncertainty_conversions("reflectance", HARP_UNIT_DIMENSIONLESS) != 0)
-    {
-        return -1;
-    }
+    /*** solar irradiance ***/
 
-    /* relative humidity */
-    dimension_type[1] = harp_dimension_vertical;
+    dimension_type[1] = harp_dimension_spectral;
     for (i = 1; i < 3; i++)
     {
-        if (harp_variable_conversion_new("relative_humidity", harp_type_double, HARP_UNIT_DIMENSIONLESS, i,
-                                         dimension_type, 0, get_relative_humidity_from_h2o_nd_and_temperature,
-                                         &conversion) != 0)
-        {
-            return -1;
-        }
-        if (harp_variable_conversion_add_source(conversion, "H2O_number_density", harp_type_double,
-                                                HARP_UNIT_NUMBER_DENSITY, i, dimension_type, 0) != 0)
-        {
-            return -1;
-        }
-        if (harp_variable_conversion_add_source(conversion, "temperature", harp_type_double, HARP_UNIT_TEMPERATURE, i,
-                                                dimension_type, 0) != 0)
+        if (add_uncertainty_conversions("solar_irradiance", HARP_UNIT_IRRADIANCE, i, dimension_type) != 0)
         {
             return -1;
         }
     }
 
-    if (add_uncertainty_conversions("relative_humidity", HARP_UNIT_DIMENSIONLESS) != 0)
-    {
-        return -1;
-    }
+    return 0;
+}
 
-    /* scattering angle */
+static int add_angle_conversions(void)
+{
+    harp_variable_conversion *conversion;
+    harp_dimension_type dimension_type[HARP_MAX_NUM_DIMS];
+    int i;
+
+    dimension_type[0] = harp_dimension_time;
+
+    /*** scattering angle ***/
+
     for (i = 0; i < 2; i++)
     {
         if (harp_variable_conversion_new("scattering_angle", harp_type_double, HARP_UNIT_ANGLE, i, dimension_type, 0,
@@ -2777,7 +2637,8 @@ static int init_conversions(void)
         }
     }
 
-    /* solar elevation angle */
+    /*** solar elevation angle ***/
+
     if (add_time_indepedent_to_dependent_conversion("solar_elevation_angle", harp_type_double, HARP_UNIT_ANGLE, 1,
                                                     dimension_type, 0) != 0)
     {
@@ -2820,15 +2681,8 @@ static int init_conversions(void)
         }
     }
 
-    /* solar irradiance */
-    dimension_type[1] = harp_dimension_spectral;
-    if (add_uncertainty_conversions("solar_irradiance", HARP_UNIT_IRRADIANCE) != 0)
-    {
-        return -1;
-    }
+    /*** solar zenith angle ***/
 
-
-    /* solar zenith angle */
     if (add_time_indepedent_to_dependent_conversion("solar_zenith_angle", harp_type_double, HARP_UNIT_ANGLE, 1,
                                                     dimension_type, 0) != 0)
     {
@@ -2848,77 +2702,428 @@ static int init_conversions(void)
         }
     }
 
-    /* temperature */
-    dimension_type[1] = harp_dimension_vertical;
-    for (i = 1; i < 3; i++)
-    {
-        if (add_time_indepedent_to_dependent_conversion("temperature", harp_type_double, HARP_UNIT_TEMPERATURE, i,
-                                                        dimension_type, 0) != 0)
-        {
-            return -1;
-        }
-    }
-    if (add_aux_afgl86_conversion("temperature", HARP_UNIT_TEMPERATURE) != 0)
-    {
-        return -1;
-    }
-    if (add_aux_usstd76_conversion("temperature", HARP_UNIT_TEMPERATURE) != 0)
-    {
-        return -1;
-    }
+    /*** viewing azimuth angle ***/
 
-    if (add_vertical_uncertainty_conversions("temperature", HARP_UNIT_TEMPERATURE, NULL) != 0)
-    {
-        return -1;
-    }
-
-    /* viewing azimuth angle */
     if (add_time_indepedent_to_dependent_conversion("viewing_azimuth_angle", harp_type_double, HARP_UNIT_ANGLE, 1,
                                                     dimension_type, 0) != 0)
     {
         return -1;
     }
 
-    /* viewing zenith angle */
+    /*** viewing zenith angle ***/
+
     if (add_time_indepedent_to_dependent_conversion("viewing_zenith_angle", harp_type_double, HARP_UNIT_ANGLE, 1,
                                                     dimension_type, 0) != 0)
     {
         return -1;
     }
 
-    /* virtual temperature */
-    for (i = 1; i < 3; i++)
+    return 0;
+}
+
+static int add_axis_conversions(void)
+{
+    harp_variable_conversion *conversion;
+    harp_dimension_type dimension_type[HARP_MAX_NUM_DIMS];
+    int i;
+
+    dimension_type[0] = harp_dimension_time;
+
+    /*** datetime ***/
+
+    if (add_time_indepedent_to_dependent_conversion("datetime", harp_type_double, HARP_UNIT_DATETIME, 1,
+                                                    dimension_type, 0) != 0)
     {
-        if (add_time_indepedent_to_dependent_conversion("virtual_temperature", harp_type_double, HARP_UNIT_TEMPERATURE,
-                                                        i, dimension_type, 0) != 0)
+        return -1;
+    }
+
+    /* midpoint from start/top */
+    if (harp_variable_conversion_new("datetime", harp_type_double, HARP_UNIT_DATETIME, 1, dimension_type, 0,
+                                     get_midpoint_from_begin_and_end, &conversion) != 0)
+    {
+        return -1;
+    }
+    if (harp_variable_conversion_add_source(conversion, "datetime_start", harp_type_double, HARP_UNIT_DATETIME, 1,
+                                            dimension_type, 0) != 0)
+    {
+        return -1;
+    }
+    if (harp_variable_conversion_add_source(conversion, "datetime_stop", harp_type_double, HARP_UNIT_DATETIME, 1,
+                                            dimension_type, 0) != 0)
+    {
+        return -1;
+    }
+
+    /*** datetime_length ***/
+
+    if (add_time_indepedent_to_dependent_conversion("datetime_length", harp_type_double, HARP_UNIT_TIME, 1,
+                                                    dimension_type, 0) != 0)
+    {
+        return -1;
+    }
+
+    /* length from start/top */
+    if (harp_variable_conversion_new("datetime_length", harp_type_double, HARP_UNIT_TIME, 1, dimension_type, 0,
+                                     get_length_from_begin_and_end, &conversion) != 0)
+    {
+        return -1;
+    }
+    if (harp_variable_conversion_add_source(conversion, "datetime_start", harp_type_double, HARP_UNIT_DATETIME, 1,
+                                            dimension_type, 0) != 0)
+    {
+        return -1;
+    }
+    if (harp_variable_conversion_add_source(conversion, "datetime_stop", harp_type_double, HARP_UNIT_DATETIME, 1,
+                                            dimension_type, 0) != 0)
+    {
+        return -1;
+    }
+
+    /*** datetime_start ***/
+
+    if (add_time_indepedent_to_dependent_conversion("datetime_start", harp_type_double, HARP_UNIT_DATETIME, 1,
+                                                    dimension_type, 0) != 0)
+    {
+        return -1;
+    }
+
+    /* start from mid/length */
+    if (harp_variable_conversion_new("datetime_start", harp_type_double, HARP_UNIT_DATETIME, 1, dimension_type, 0,
+                                     get_begin_from_midpoint_and_length, &conversion) != 0)
+    {
+        return -1;
+    }
+    if (harp_variable_conversion_add_source(conversion, "datetime", harp_type_double, HARP_UNIT_DATETIME, 1,
+                                            dimension_type, 0) != 0)
+    {
+        return -1;
+    }
+    if (harp_variable_conversion_add_source(conversion, "datetime_length", harp_type_double, HARP_UNIT_TIME, 1,
+                                            dimension_type, 0) != 0)
+    {
+        return -1;
+    }
+
+    /*** datetime_stop ***/
+
+    if (add_time_indepedent_to_dependent_conversion("datetime_stop", harp_type_double, HARP_UNIT_DATETIME, 1,
+                                                    dimension_type, 0) != 0)
+    {
+        return -1;
+    }
+
+    /* stop from start/length */
+    if (harp_variable_conversion_new("datetime_stop", harp_type_double, HARP_UNIT_DATETIME, 1, dimension_type, 0,
+                                     get_end_from_begin_and_length, &conversion) != 0)
+    {
+        return -1;
+    }
+    if (harp_variable_conversion_add_source(conversion, "datetime_start", harp_type_double, HARP_UNIT_DATETIME, 1,
+                                            dimension_type, 0) != 0)
+    {
+        return -1;
+    }
+    if (harp_variable_conversion_add_source(conversion, "datetime_length", harp_type_double, HARP_UNIT_TIME, 1,
+                                            dimension_type, 0) != 0)
+    {
+        return -1;
+    }
+
+    /*** latitude ***/
+
+    /* TODO: add conversion to {[time,]lat,lon[,vertical]} */
+
+    if (add_time_indepedent_to_dependent_conversion("latitude", harp_type_double, HARP_UNIT_LATITUDE, 1,
+                                                    dimension_type, 0) != 0)
+    {
+        return -1;
+    }
+
+    /* midpoint from polygon */
+    if (add_latlon_bounds_to_midpoint_conversion("latitude", harp_type_double, HARP_UNIT_LATITUDE,
+                                                 get_latitude_from_latlon_bounds) != 0)
+    {
+        return -1;
+    }
+
+    /* midpoint from range */
+    if (add_bounds_to_midpoint_conversion("latitude", harp_type_double, HARP_UNIT_LATITUDE, harp_dimension_latitude,
+                                          get_midpoint_from_bounds) != 0)
+    {
+        return -1;
+    }
+
+    /* latitude from instrument latitude */
+    for (i = 0; i < 2; i++)
+    {
+        if (harp_variable_conversion_new("latitude", harp_type_double, HARP_UNIT_LATITUDE, i, dimension_type, 0,
+                                         get_copy, &conversion) != 0)
         {
             return -1;
         }
-        if (harp_variable_conversion_new("virtual_temperature", harp_type_double, HARP_UNIT_TEMPERATURE, i,
-                                         dimension_type, 0,
-                                         get_virtual_temperature_from_pressure_temperature_and_relative_humidity,
-                                         &conversion) != 0)
-        {
-            return -1;
-        }
-        if (harp_variable_conversion_add_source(conversion, "pressure", harp_type_double, HARP_UNIT_PRESSURE, i,
-                                                dimension_type, 0) != 0)
-        {
-            return -1;
-        }
-        if (harp_variable_conversion_add_source(conversion, "temperature", harp_type_double, HARP_UNIT_TEMPERATURE, i,
-                                                dimension_type, 0) != 0)
-        {
-            return -1;
-        }
-        if (harp_variable_conversion_add_source(conversion, "relative_humidity", harp_type_double,
-                                                HARP_UNIT_DIMENSIONLESS, i, dimension_type, 0) != 0)
+        if (harp_variable_conversion_add_source(conversion, "instrument_latitude", harp_type_double,
+                                                HARP_UNIT_LATITUDE, i, dimension_type, 0) != 0)
         {
             return -1;
         }
     }
 
-    /* wavelength */
+
+    /*** latitude_bounds ***/
+
+    if (add_time_indepedent_to_dependent_conversion("latitude_bounds", harp_type_double, HARP_UNIT_DATETIME, 1,
+                                                    dimension_type, 0) != 0)
+    {
+        return -1;
+    }
+
+    /* range from midpoints */
+    if (add_midpoint_to_bounds_conversion("latitude", harp_type_double, HARP_UNIT_LATITUDE, harp_dimension_latitude,
+                                          get_bounds_from_midpoints) != 0)
+    {
+        return -1;
+    }
+
+    /*** longitude ***/
+
+    /* TODO: add conversion to {[time,]lat,lon[,vertical]} */
+
+    if (add_time_indepedent_to_dependent_conversion("longitude", harp_type_double, HARP_UNIT_LONGITUDE, 1,
+                                                    dimension_type, 0) != 0)
+    {
+        return -1;
+    }
+
+    /* midpoint from polygon */
+    if (add_latlon_bounds_to_midpoint_conversion("longitude", harp_type_double, HARP_UNIT_LONGITUDE,
+                                                 get_longitude_from_latlon_bounds) != 0)
+    {
+        return -1;
+    }
+
+    /* midpoint from range */
+    if (add_bounds_to_midpoint_conversion("longitude", harp_type_double, HARP_UNIT_LONGITUDE, harp_dimension_longitude,
+                                          get_midpoint_from_bounds) != 0)
+    {
+        return -1;
+    }
+
+    /* longitude from instrument longitude */
+    for (i = 0; i < 2; i++)
+    {
+        if (harp_variable_conversion_new("longitude", harp_type_double, HARP_UNIT_LONGITUDE, i, dimension_type, 0,
+                                         get_copy, &conversion) != 0)
+        {
+            return -1;
+        }
+        if (harp_variable_conversion_add_source(conversion, "instrument_longitude", harp_type_double,
+                                                HARP_UNIT_LONGITUDE, i, dimension_type, 0) != 0)
+        {
+            return -1;
+        }
+    }
+
+    /*** longitude_bounds ***/
+
+    if (add_time_indepedent_to_dependent_conversion("longitude_bounds", harp_type_double, HARP_UNIT_LONGITUDE, 1,
+                                                    dimension_type, 0) != 0)
+    {
+        return -1;
+    }
+
+    /* range from midpoints */
+    if (add_midpoint_to_bounds_conversion("longitude", harp_type_double, HARP_UNIT_LONGITUDE, harp_dimension_longitude,
+                                          get_bounds_from_midpoints) != 0)
+    {
+        return -1;
+    }
+
+    /*** altitude ***/
+
+    dimension_type[1] = harp_dimension_vertical;
+
+    /* TODO: add conversion from {[time,]vertical} to {[time,],lat,lon,vertical} */
+
+    /* midpoint from bounds */
+    if (add_bounds_to_midpoint_conversion("altitude", harp_type_double, HARP_UNIT_LENGTH, harp_dimension_vertical,
+                                          get_midpoint_from_bounds) != 0)
+    {
+        return -1;
+    }
+
+    /* altitude from instrument altitude */
+    for (i = 0; i < 2; i++)
+    {
+        if (harp_variable_conversion_new("altitude", harp_type_double, HARP_UNIT_LENGTH, i, dimension_type, 0, get_copy,
+                                         &conversion) != 0)
+        {
+            return -1;
+        }
+        if (harp_variable_conversion_add_source(conversion, "instrument_altitude", harp_type_double, HARP_UNIT_LENGTH,
+                                                i, dimension_type, 0) != 0)
+        {
+            return -1;
+        }
+    }
+
+    /*** altitude_bounds ***/
+
+    /* range from midpoints */
+    if (add_midpoint_to_bounds_conversion("altitude", harp_type_double, HARP_UNIT_LENGTH, harp_dimension_vertical,
+                                          get_bounds_from_midpoints) != 0)
+    {
+        return -1;
+    }
+
+    /*** pressure ***/
+
+    /* TODO: add conversion from {[time,]vertical} to {[time,],lat,lon,vertical} */
+
+    /* midpoint from bounds */
+    if (add_bounds_to_midpoint_conversion("pressure", harp_type_double, HARP_UNIT_PRESSURE, harp_dimension_vertical,
+                                          get_midpoint_from_bounds_log) != 0)
+    {
+        return -1;
+    }
+
+    /* pressure from alt/T/Q */
+    if (harp_variable_conversion_new("pressure", harp_type_double, HARP_UNIT_PRESSURE, 2, dimension_type, 0,
+                                     get_pressure_from_altitude_temperature_h2o_mmr_and_latitude, &conversion) != 0)
+    {
+        return -1;
+    }
+    if (harp_variable_conversion_add_source(conversion, "altitude", harp_type_double, HARP_UNIT_LENGTH, 2,
+                                            dimension_type, 0) != 0)
+    {
+        return -1;
+    }
+    if (harp_variable_conversion_add_source(conversion, "temperature", harp_type_double, HARP_UNIT_TEMPERATURE, 2,
+                                            dimension_type, 0) != 0)
+    {
+        return -1;
+    }
+    if (harp_variable_conversion_add_source(conversion, "H2O_mass_mixing_ratio", harp_type_double,
+                                            HARP_UNIT_MASS_MIXING_RATIO, 2, dimension_type, 0) != 0)
+    {
+        return -1;
+    }
+    if (harp_variable_conversion_add_source(conversion, "latitude", harp_type_double, HARP_UNIT_LATITUDE, 1,
+                                            dimension_type, 0) != 0)
+    {
+        return -1;
+    }
+
+    /* pressure from gph/T/Q */
+    if (harp_variable_conversion_new("pressure", harp_type_double, HARP_UNIT_PRESSURE, 2, dimension_type, 0,
+                                     get_pressure_from_gph_temperature_and_h2o_mmr, &conversion) != 0)
+    {
+        return -1;
+    }
+    if (harp_variable_conversion_add_source(conversion, "geopotential_height", harp_type_double, HARP_UNIT_LENGTH, 2,
+                                            dimension_type, 0) != 0)
+    {
+        return -1;
+    }
+    if (harp_variable_conversion_add_source(conversion, "temperature", harp_type_double, HARP_UNIT_TEMPERATURE, 2,
+                                            dimension_type, 0) != 0)
+    {
+        return -1;
+    }
+    if (harp_variable_conversion_add_source(conversion, "H2O_mass_mixing_ratio", harp_type_double,
+                                            HARP_UNIT_MASS_MIXING_RATIO, 2, dimension_type, 0) != 0)
+    {
+        return -1;
+    }
+
+    /* pressure from alt/T */
+    if (harp_variable_conversion_new("pressure", harp_type_double, HARP_UNIT_PRESSURE, 2, dimension_type, 0,
+                                     get_pressure_from_altitude_temperature_and_latitude, &conversion) != 0)
+    {
+        return -1;
+    }
+    if (harp_variable_conversion_add_source(conversion, "altitude", harp_type_double, HARP_UNIT_LENGTH, 2,
+                                            dimension_type, 0) != 0)
+    {
+        return -1;
+    }
+    if (harp_variable_conversion_add_source(conversion, "temperature", harp_type_double, HARP_UNIT_TEMPERATURE, 2,
+                                            dimension_type, 0) != 0)
+    {
+        return -1;
+    }
+    if (harp_variable_conversion_add_source(conversion, "latitude", harp_type_double, HARP_UNIT_LATITUDE, 1,
+                                            dimension_type, 0) != 0)
+    {
+        return -1;
+    }
+
+    /* pressure from gph/T */
+    if (harp_variable_conversion_new("pressure", harp_type_double, HARP_UNIT_PRESSURE, 2, dimension_type, 0,
+                                     get_pressure_from_gph_and_temperature, &conversion) != 0)
+    {
+        return -1;
+    }
+    if (harp_variable_conversion_add_source(conversion, "geopotential_height", harp_type_double, HARP_UNIT_LENGTH, 2,
+                                            dimension_type, 0) != 0)
+    {
+        return -1;
+    }
+    if (harp_variable_conversion_add_source(conversion, "temperature", harp_type_double, HARP_UNIT_TEMPERATURE, 2,
+                                            dimension_type, 0) != 0)
+    {
+        return -1;
+    }
+
+    /*** pressure_bounds ***/
+
+    /* range from midpoints */
+    if (add_midpoint_to_bounds_conversion("pressure", harp_type_double, HARP_UNIT_PRESSURE, harp_dimension_vertical,
+                                          get_bounds_from_midpoints_log) != 0)
+    {
+        return -1;
+    }
+
+
+    /*** frequency ***/
+
+    for (i = 0; i < 3; i++)
+    {
+        if (i > 0)
+        {
+            if (add_time_indepedent_to_dependent_conversion("frequency", harp_type_double, HARP_UNIT_FREQUENCY, i,
+                                                            dimension_type, 0) != 0)
+            {
+                return -1;
+            }
+        }
+
+        /* frequency from wavelength */
+        if (harp_variable_conversion_new("frequency", harp_type_double, HARP_UNIT_FREQUENCY, i, dimension_type, 0,
+                                         get_frequency_from_wavelength, &conversion) != 0)
+        {
+            return -1;
+        }
+        if (harp_variable_conversion_add_source(conversion, "wavelength", harp_type_double, HARP_UNIT_WAVELENGTH, i,
+                                                dimension_type, 0) != 0)
+        {
+            return -1;
+        }
+
+        /* frequency from wavenumber */
+        if (harp_variable_conversion_new("frequency", harp_type_double, HARP_UNIT_FREQUENCY, i, dimension_type, 0,
+                                         get_frequency_from_wavenumber, &conversion) != 0)
+        {
+            return -1;
+        }
+        if (harp_variable_conversion_add_source(conversion, "wavenumber", harp_type_double, HARP_UNIT_WAVENUMBER, i,
+                                                dimension_type, 0) != 0)
+        {
+            return -1;
+        }
+    }
+
+    /*** wavelength ***/
+
     dimension_type[1] = harp_dimension_spectral;
     for (i = 0; i < 3; i++)
     {
@@ -2930,6 +3135,8 @@ static int init_conversions(void)
                 return -1;
             }
         }
+
+        /* wavelength from frequency */
         if (harp_variable_conversion_new("wavelength", harp_type_double, HARP_UNIT_WAVELENGTH, i, dimension_type, 0,
                                          get_wavelength_from_frequency, &conversion) != 0)
         {
@@ -2941,6 +3148,7 @@ static int init_conversions(void)
             return -1;
         }
 
+        /* wavelength from wavenumber */
         if (harp_variable_conversion_new("wavelength", harp_type_double, HARP_UNIT_WAVELENGTH, i, dimension_type, 0,
                                          get_wavelength_from_wavenumber, &conversion) != 0)
         {
@@ -2953,7 +3161,8 @@ static int init_conversions(void)
         }
     }
 
-    /* wavenumber */
+    /*** wavenumber ***/
+
     for (i = 0; i < 3; i++)
     {
         if (i > 0)
@@ -2964,6 +3173,8 @@ static int init_conversions(void)
                 return -1;
             }
         }
+
+        /* wavenumber from frequency */
         if (harp_variable_conversion_new("wavenumber", harp_type_double, HARP_UNIT_WAVENUMBER, i, dimension_type, 0,
                                          get_wavenumber_from_frequency, &conversion) != 0)
         {
@@ -2975,6 +3186,7 @@ static int init_conversions(void)
             return -1;
         }
 
+        /* wavenumber from wavelength */
         if (harp_variable_conversion_new("wavenumber", harp_type_double, HARP_UNIT_WAVENUMBER, i, dimension_type, 0,
                                          get_wavenumber_from_wavelength, &conversion) != 0)
         {
@@ -2985,6 +3197,197 @@ static int init_conversions(void)
         {
             return -1;
         }
+    }
+
+    return 0;
+}
+
+static int add_misc_conversions(void)
+{
+    harp_variable_conversion *conversion;
+    harp_dimension_type dimension_type[HARP_MAX_NUM_DIMS];
+    int i;
+
+    dimension_type[0] = harp_dimension_time;
+
+    /*** index ***/
+
+    if (harp_variable_conversion_new("index", harp_type_int32, NULL, 1, dimension_type, 0, get_index, &conversion) != 0)
+    {
+        return -1;
+    }
+
+    /*** flag_am_pm ***/
+
+    if (add_time_indepedent_to_dependent_conversion("flag_am_pm", harp_type_string, NULL, 1, dimension_type, 0) != 0)
+    {
+        return -1;
+    }
+    for (i = 0; i < 2; i++)
+    {
+        if (harp_variable_conversion_new("flag_am_pm", harp_type_string, NULL, i, dimension_type, 0,
+                                         get_daytime_ampm_from_longitude, &conversion) != 0)
+        {
+            return -1;
+        }
+        if (harp_variable_conversion_add_source(conversion, "datetime", harp_type_double, HARP_UNIT_DATETIME, i,
+                                                dimension_type, 0) != 0)
+        {
+            return -1;
+        }
+        if (harp_variable_conversion_add_source(conversion, "longitude", harp_type_double, HARP_UNIT_LONGITUDE, i,
+                                                dimension_type, 0) != 0)
+        {
+            return -1;
+        }
+    }
+
+    /*** flag_day_twilight_night ***/
+
+    if (add_time_indepedent_to_dependent_conversion("flag_day_twilight_night", harp_type_string, NULL, 1,
+                                                    dimension_type, 0) != 0)
+    {
+        return -1;
+    }
+    for (i = 0; i < 2; i++)
+    {
+        if (harp_variable_conversion_new("flag_day_twilight_night", harp_type_string, NULL, i, dimension_type, 0,
+                                         get_illumination_condition_from_solar_zenith_angle, &conversion) != 0)
+        {
+            return -1;
+        }
+        if (harp_variable_conversion_add_source(conversion, "solar_zenith_angle", harp_type_double, HARP_UNIT_ANGLE, i,
+                                                dimension_type, 0) != 0)
+        {
+            return -1;
+        }
+    }
+
+    /*** flag_daytime ***/
+
+    if (add_time_indepedent_to_dependent_conversion("flag_daytime", harp_type_string, NULL, 1, dimension_type, 0) != 0)
+    {
+        return -1;
+    }
+    for (i = 0; i < 2; i++)
+    {
+        if (harp_variable_conversion_new("flag_daytime", harp_type_string, NULL, i, dimension_type, 0,
+                                         get_daytime_from_solar_zenith_angle, &conversion) != 0)
+        {
+            return -1;
+        }
+        if (harp_variable_conversion_add_source(conversion, "solar_zenith_angle", harp_type_double, HARP_UNIT_ANGLE, i,
+                                                dimension_type, 0) != 0)
+        {
+            return -1;
+        }
+    }
+
+    /*** instrument_altitude ***/
+
+    if (add_time_indepedent_to_dependent_conversion("instrument_altitude", harp_type_double, HARP_UNIT_LENGTH, 1,
+                                                    dimension_type, 0) != 0)
+    {
+        return -1;
+    }
+
+    /*** instrument_latitude ***/
+
+    if (add_time_indepedent_to_dependent_conversion("instrument_latitude", harp_type_double, HARP_UNIT_LATITUDE, 1,
+                                                    dimension_type, 0) != 0)
+    {
+        return -1;
+    }
+
+    /*** instrument_longitude ***/
+
+    if (add_time_indepedent_to_dependent_conversion("instrument_longitude", harp_type_double, HARP_UNIT_LONGITUDE, 1,
+                                                    dimension_type, 0) != 0)
+    {
+        return -1;
+    }
+
+    return 0;
+}
+
+static int init_conversions(void)
+{
+    if (add_axis_conversions() != 0)
+    {
+        return -1;
+    }
+
+    if (add_angle_conversions() != 0)
+    {
+        return -1;
+    }
+
+    if (add_radiance_conversions() != 0)
+    {
+        return -1;
+    }
+
+    if (add_grid_conversions() != 0)
+    {
+        return -1;
+    }
+
+    if (add_radiance_conversions() != 0)
+    {
+        return -1;
+    }
+
+    if (add_model_conversions() != 0)
+    {
+        return -1;
+    }
+
+    if (add_misc_conversions() != 0)
+    {
+        return -1;
+    }
+
+    return 0;
+}
+
+static int compare_conversion_lists(const void *a, const void *b)
+{
+    harp_variable_conversion *conv_a = (*(harp_variable_conversion_list **)a)->conversion[0];
+    harp_variable_conversion *conv_b = (*(harp_variable_conversion_list **)b)->conversion[0];
+    int result;
+
+    /* first compare based on the actual variable name of the first conversion */
+    result = strcmp(conv_a->variable_name, conv_b->variable_name);
+    if (result == 0)
+    {
+        /* if variable names are equal, compare based on the dimensions (using the dimsvar name) */
+        result = strcmp(conv_a->dimsvar_name, conv_b->dimsvar_name);
+    }
+
+    return result;
+}
+
+int harp_derived_variable_list_sort(void)
+{
+    long i;
+
+    qsort(harp_derived_variable_conversions->conversions_for_variable,
+          harp_derived_variable_conversions->num_variables, sizeof(harp_variable_conversion_list *),
+          compare_conversion_lists);
+
+    /* recreate the hash table for the new ordering */
+    hashtable_delete(harp_derived_variable_conversions->hash_data);
+    harp_derived_variable_conversions->hash_data = hashtable_new(1);
+    if (harp_derived_variable_conversions->hash_data == NULL)
+    {
+        harp_set_error(HARP_ERROR_OUT_OF_MEMORY, "out of memory (could not create hashtable) (%s:%u)", __FILE__,
+                       __LINE__);
+        return -1;
+    }
+    for (i = 0; i < harp_derived_variable_conversions->num_variables; i++)
+    {
+        hashtable_add_name(harp_derived_variable_conversions->hash_data,
+                           harp_derived_variable_conversions->conversions_for_variable[i]->conversion[0]->dimsvar_name);
     }
 
     return 0;
@@ -3018,6 +3421,8 @@ int harp_derived_variable_list_init(void)
         return -1;
     }
 
+    harp_derived_variable_list_sort();
+
     return 0;
 }
 
@@ -3025,7 +3430,6 @@ int harp_derived_variable_list_add_conversion(harp_variable_conversion *conversi
 {
     harp_variable_conversion_list *conversion_list;
     int index;
-    int i;
 
     index = hashtable_get_index_from_name(harp_derived_variable_conversions->hash_data, conversion->dimsvar_name);
     if (index < 0)
@@ -3085,32 +3489,7 @@ int harp_derived_variable_list_add_conversion(harp_variable_conversion *conversi
         conversion_list->conversion = new_conversion;
     }
 
-    for (index = 0; index < conversion_list->num_conversions; index++)
-    {
-        if (conversion_list->conversion[index]->num_dimensions > conversion->num_dimensions)
-        {
-            break;
-        }
-        if (conversion_list->conversion[index]->num_dimensions == conversion->num_dimensions)
-        {
-            for (i = 0; i < conversion->num_dimensions; i++)
-            {
-                if (conversion_list->conversion[index]->dimension_type[i] > conversion->dimension_type[i])
-                {
-                    break;
-                }
-            }
-            if (i != conversion->num_dimensions)
-            {
-                break;
-            }
-        }
-    }
-    for (i = conversion_list->num_conversions; i > index; i--)
-    {
-        conversion_list->conversion[i] = conversion_list->conversion[i - 1];
-    }
-    conversion_list->conversion[index] = conversion;
+    conversion_list->conversion[conversion_list->num_conversions] = conversion;
     conversion_list->num_conversions++;
 
     return 0;
