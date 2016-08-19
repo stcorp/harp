@@ -1671,4 +1671,3 @@ int harp_predicate_update_mask_2d(const harp_predicate *predicate, const harp_va
 
     return 0;
 }
-

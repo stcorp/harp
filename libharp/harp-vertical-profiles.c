@@ -1374,7 +1374,7 @@ static int read_vertical_grid_header(FILE *file, const char *filename, char **ne
         cursor++;
         length++;
     }
-    
+
     /* copy unit */
     unit = malloc((length + 1) * sizeof(char));
     if (unit == NULL)
@@ -1881,7 +1881,7 @@ LIBHARP_API int harp_product_smooth_vertical(harp_product *product, int num_smoo
                                              const harp_collocation_result *original_collocation_result)
 {
     int time_index_a, pair_id;
-    long num_source_max_vertical_elements;  /* actual elems + NaN padding */
+    long num_source_max_vertical_elements;      /* actual elems + NaN padding */
     harp_variable *source_collocation_index = NULL;
     harp_dimension_type grid_dim_type[2] = { harp_dimension_time, harp_dimension_vertical };
     harp_dimension_type bounds_dim_type[3] = { harp_dimension_time, harp_dimension_vertical,
@@ -2164,8 +2164,7 @@ LIBHARP_API int harp_product_smooth_vertical(harp_product *product, int num_smoo
                                                            num_target_vertical_elements,
                                                            &target_bounds->data.double_data[time_index_b *
                                                                                             num_target_max_vertical_elements
-                                                                                            * 2],
-                                                           interpolation_buffer);
+                                                                                            * 2], interpolation_buffer);
                 }
                 else
                 {

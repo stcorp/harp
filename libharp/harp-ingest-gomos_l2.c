@@ -275,7 +275,7 @@ static int read_illumination_condition(void *user_data, long index, harp_array d
     coda_cursor cursor;
     int32_t condition;
 
-    (void)index;    /* prevent unused warning */
+    (void)index;        /* prevent unused warning */
 
     if (coda_cursor_set_product(&cursor, info->product) != 0)
     {
@@ -650,7 +650,7 @@ static int exclude_temperature_std(void *user_data)
 
 int harp_ingestion_module_gomos_l2_init(void)
 {
-    const char *model_options[] = {"local", "model"};
+    const char *model_options[] = { "local", "model" };
     harp_ingestion_module *module;
     harp_product_definition *product_definition;
     harp_variable_definition *variable_definition;
@@ -733,8 +733,7 @@ int harp_ingestion_module_gomos_l2_init(void)
     description = "longitude";
     variable_definition = harp_ingestion_register_variable_full_read(product_definition, "longitude",
                                                                      harp_type_double, 2, dimension_type, NULL,
-                                                                     description, "degree_east", NULL,
-                                                                     read_longitude);
+                                                                     description, "degree_east", NULL, read_longitude);
     harp_variable_definition_set_valid_range_double(variable_definition, -180.0, 180.0);
     path = "/nl_geolocation[]/tangent_long";
     harp_variable_definition_add_mapping(variable_definition, NULL, NULL, path, NULL);
@@ -743,8 +742,7 @@ int harp_ingestion_module_gomos_l2_init(void)
     description = "Ozone local density";
     variable_definition = harp_ingestion_register_variable_full_read(product_definition, "O3_number_density",
                                                                      harp_type_double, 2, dimension_type, NULL,
-                                                                     description, "molec/cm3", NULL,
-                                                                     read_o3);
+                                                                     description, "molec/cm3", NULL, read_o3);
     path = "/nl_local_species_density[]/o3";
     harp_variable_definition_add_mapping(variable_definition, NULL, NULL, path, NULL);
 
@@ -773,8 +771,7 @@ int harp_ingestion_module_gomos_l2_init(void)
     description = "NO2 local density";
     variable_definition = harp_ingestion_register_variable_full_read(product_definition, "NO2_number_density",
                                                                      harp_type_double, 2, dimension_type, NULL,
-                                                                     description, "molec/cm3", NULL,
-                                                                     read_no2);
+                                                                     description, "molec/cm3", NULL, read_no2);
     path = "/nl_local_species_density[]/no2";
     harp_variable_definition_add_mapping(variable_definition, NULL, NULL, path, NULL);
 
@@ -803,8 +800,7 @@ int harp_ingestion_module_gomos_l2_init(void)
     description = "NO3 local density";
     variable_definition = harp_ingestion_register_variable_full_read(product_definition, "NO3_number_density",
                                                                      harp_type_double, 2, dimension_type, NULL,
-                                                                     description, "molec/cm3", NULL,
-                                                                     read_no3);
+                                                                     description, "molec/cm3", NULL, read_no3);
     path = "/nl_local_species_density[]/no3";
     harp_variable_definition_add_mapping(variable_definition, NULL, NULL, path, NULL);
 
@@ -833,8 +829,7 @@ int harp_ingestion_module_gomos_l2_init(void)
     description = "O2 local density";
     variable_definition = harp_ingestion_register_variable_full_read(product_definition, "O2_number_density",
                                                                      harp_type_double, 2, dimension_type, NULL,
-                                                                     description, "molec/cm3", NULL,
-                                                                     read_o2);
+                                                                     description, "molec/cm3", NULL, read_o2);
     path = "/nl_local_species_density[]/o2";
     harp_variable_definition_add_mapping(variable_definition, NULL, NULL, path, NULL);
 
@@ -863,8 +858,7 @@ int harp_ingestion_module_gomos_l2_init(void)
     description = "H2O local density";
     variable_definition = harp_ingestion_register_variable_full_read(product_definition, "H2O_number_density",
                                                                      harp_type_double, 2, dimension_type, NULL,
-                                                                     description, "molec/cm3", NULL,
-                                                                     read_h2o);
+                                                                     description, "molec/cm3", NULL, read_h2o);
     path = "/nl_local_species_density[]/h2o";
     harp_variable_definition_add_mapping(variable_definition, NULL, NULL, path, NULL);
 
@@ -893,8 +887,7 @@ int harp_ingestion_module_gomos_l2_init(void)
     description = "OClO local density";
     variable_definition = harp_ingestion_register_variable_full_read(product_definition, "OClO_number_density",
                                                                      harp_type_double, 2, dimension_type, NULL,
-                                                                     description, "molec/cm3", NULL,
-                                                                     read_oclo);
+                                                                     description, "molec/cm3", NULL, read_oclo);
     path = "/nl_local_species_density[]/oclo";
     harp_variable_definition_add_mapping(variable_definition, NULL, NULL, path, NULL);
 
@@ -942,8 +935,7 @@ int harp_ingestion_module_gomos_l2_init(void)
     description = "atmospheric pressure from external model";
     variable_definition = harp_ingestion_register_variable_full_read(product_definition, "pressure",
                                                                      harp_type_double, 2, dimension_type, NULL,
-                                                                     description, "Pa", NULL,
-                                                                     read_pressure);
+                                                                     description, "Pa", NULL, read_pressure);
     path = "/nl_geolocation[]/tangent_atm_p";
     harp_variable_definition_add_mapping(variable_definition, NULL, NULL, path, NULL);
 
@@ -951,8 +943,7 @@ int harp_ingestion_module_gomos_l2_init(void)
     description = "temperature";
     variable_definition = harp_ingestion_register_variable_full_read(product_definition, "temperature",
                                                                      harp_type_double, 2, dimension_type, NULL,
-                                                                     description, "K", NULL,
-                                                                     read_temperature);
+                                                                     description, "K", NULL, read_temperature);
     path = "/nl_geolocation[]/local_temp";
     harp_variable_definition_add_mapping(variable_definition, "temperature=local", NULL, path, NULL);
     path = "/nl_geolocation[]/tangent_temp";
@@ -971,8 +962,7 @@ int harp_ingestion_module_gomos_l2_init(void)
     description = "air density";
     variable_definition = harp_ingestion_register_variable_full_read(product_definition, "number_density",
                                                                      harp_type_double, 2, dimension_type, NULL,
-                                                                     description, "molec/cm3", exclude_air,
-                                                                     read_air);
+                                                                     description, "molec/cm3", exclude_air, read_air);
     path = "/nl_local_species_density[]/air";
     harp_variable_definition_add_mapping(variable_definition, "air=local", NULL, path, NULL);
     path = "/nl_geolocation[]/tangent_density";

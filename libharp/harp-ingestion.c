@@ -2298,8 +2298,8 @@ static int get_operation_dimensionality(ingest_info *info, harp_operation *opera
 
         *num_dimensions =
             longitude_bounds_def->num_dimensions >
-            latitude_bounds_def->num_dimensions ? longitude_bounds_def->num_dimensions : latitude_bounds_def->
-            num_dimensions;
+            latitude_bounds_def->num_dimensions ? longitude_bounds_def->
+            num_dimensions : latitude_bounds_def->num_dimensions;
     }
     /* collocation filters */
     else if (operation->type == harp_operation_filter_collocation)
@@ -2594,8 +2594,7 @@ static int evaluate_ingestion_mask(ingest_info *info, harp_program *program)
             harp_operation *operation = program->operation[0];
             harp_operation *operation_copy = NULL;
 
-            if (operation->type == harp_operation_keep_variable ||
-                     operation->type == harp_operation_exclude_variable)
+            if (operation->type == harp_operation_keep_variable || operation->type == harp_operation_exclude_variable)
             {
                 /* includes/excludes mark the next phase */
                 break;

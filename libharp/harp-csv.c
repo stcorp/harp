@@ -128,6 +128,7 @@ int harp_csv_get_num_lines(FILE *file, const char *filename, long *new_num_lines
 void harp_csv_rtrim(char *str)
 {
     size_t length = strlen(str);
+
     while (length > 0 && (str[length - 1] == '\r' || str[length - 1] == '\n' || str[length - 1] == '\t' ||
                           str[length - 1] == ' '))
     {

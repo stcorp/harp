@@ -186,7 +186,7 @@ int harp_collocation_mask_from_result(const harp_collocation_result *collocation
     if (filter_type == harp_collocation_left)
     {
         if (harp_dataset_get_index_from_source_product(collocation_result->dataset_a, source_product,
-                                                    &product_index) != 0)
+                                                       &product_index) != 0)
         {
             /* source_product does not appear in the collocation result column */
             product_index = -1;

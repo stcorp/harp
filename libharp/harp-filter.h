@@ -37,11 +37,11 @@ int harp_point_predicate_update_mask_0d(int num_predicates, harp_predicate **pre
 int harp_point_predicate_update_mask_1d(int num_predicates, harp_predicate **predicate, const harp_variable *longitude,
                                         const harp_variable *latitude, harp_dimension_mask *dimension_mask);
 int harp_area_predicate_update_mask_0d(int num_predicates, harp_predicate **predicate,
-                                           const harp_variable *latitude_bounds, const harp_variable *longitude_bounds,
-                                           uint8_t *product_mask);
+                                       const harp_variable *latitude_bounds, const harp_variable *longitude_bounds,
+                                       uint8_t *product_mask);
 int harp_area_predicate_update_mask_1d(int num_predicates, harp_predicate **predicate,
-                                           const harp_variable *latitude_bounds, const harp_variable *longitude_bounds,
-                                           harp_dimension_mask *dimension_mask);
+                                       const harp_variable *latitude_bounds, const harp_variable *longitude_bounds,
+                                       harp_dimension_mask *dimension_mask);
 
 int harp_comparison_filter_predicate_new(const harp_comparison_filter_args *args, harp_data_type data_type,
                                          const char *unit, harp_predicate **new_predicate);

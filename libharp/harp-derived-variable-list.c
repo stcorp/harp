@@ -1640,7 +1640,7 @@ static int add_species_conversions(const char *species)
     if (harp_variable_conversion_new(name_column_nd_covariance, harp_type_double,
                                      HARP_UNIT_COLUMN_NUMBER_DENSITY_SQUARED, 3, dimension_type, 0,
                                      get_partial_column_covariance_from_density_covariance_and_alt_bounds, &conversion)
-                                     != 0)
+        != 0)
     {
         return -1;
     }

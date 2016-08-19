@@ -1041,11 +1041,12 @@ static int execute_filter_operations(harp_product *product, harp_program *progra
 {
     uint8_t product_mask = 1;
     int i;
-    int status = -1; /* assume error */
+    int status = -1;    /* assume error */
 
     /* owned memory */
     harp_dimension_mask_set *dimension_mask_set = NULL;
     harp_program *ops_0d, *ops_1d, *ops_2d;
+
     ops_0d = ops_1d = ops_2d = NULL;
 
     /* greedily exit when program is trivial */
