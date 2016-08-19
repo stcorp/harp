@@ -20,12 +20,6 @@
 
 #include "harp-geometry.h"
 
-/** \defgroup harp_geometry HARP Geometry
- * The HARP Geometry module contains a set of geometry functions for calculating distances and determining an overlap
- * for points and areas
- */
-
-
 /** Calculate the point u on the greatcircle through p and q such that u is the average of p and q.
  *
  *        q
