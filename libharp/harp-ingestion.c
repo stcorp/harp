@@ -2320,12 +2320,15 @@ static int get_operation_dimensionality(ingest_info *info, harp_operation *opera
  */
 static int execute_masking_phase(ingest_info *info, harp_program *phase_operations)
 {
+    harp_program *ops_0d = NULL;
+    harp_program *ops_1d = NULL;
+    harp_program *ops_2d = NULL;
+    int status = -1;
     int i;
-    harp_program *ops_0d, *ops_1d, *ops_2d = NULL;
 
     if (harp_program_new(&ops_0d) != 0 || harp_program_new(&ops_1d) != 0 || harp_program_new(&ops_2d) != 0)
     {
-        return -1;
+        goto cleanup;
     }
 
     /* Sort the filters into their dimensionality-houses */
@@ -2336,15 +2339,15 @@ static int execute_masking_phase(ingest_info *info, harp_program *phase_operatio
 
         if (harp_operation_copy(phase_operations->operation[i], &operation) != 0)
         {
-            return -1;
+            goto cleanup;
         }
         if (harp_program_remove_operation_at_index(phase_operations, i) != 0)
         {
-            return -1;
+            goto cleanup;
         }
         if (get_operation_dimensionality(info, operation, &dim) != 0)
         {
-            return -1;
+            goto cleanup;
         }
 
         switch (dim)
@@ -2360,6 +2363,7 @@ static int execute_masking_phase(ingest_info *info, harp_program *phase_operatio
                 break;
             default:
                 assert(0);
+                exit(1);
         }
     }
 
@@ -2369,19 +2373,20 @@ static int execute_masking_phase(ingest_info *info, harp_program *phase_operatio
 
     if (evaluate_value_filters_0d(info, ops_0d) != 0)
     {
-        goto error;
+        goto cleanup;
     }
     if (evaluate_point_filters_0d(info, ops_0d) != 0)
     {
-        goto error;
+        goto cleanup;
     }
     if (evaluate_area_filters_0d(info, ops_0d) != 0)
     {
-        goto error;
+        goto cleanup;
     }
     if (info->product_mask == 0)
     {
-        return 0;
+        status = 0;
+        goto cleanup;
     }
 
     /*
@@ -2390,30 +2395,31 @@ static int execute_masking_phase(ingest_info *info, harp_program *phase_operatio
 
     if (evaluate_collocation_filter(info, ops_1d) != 0)
     {
-        goto error;
+        goto cleanup;
     }
     if (evaluate_value_filters_1d(info, ops_1d) != 0)
     {
-        goto error;
+        goto cleanup;
     }
     if (evaluate_point_filters_1d(info, ops_1d) != 0)
     {
-        goto error;
+        goto cleanup;
     }
     if (evaluate_area_filters_1d(info, ops_1d) != 0)
     {
-        goto error;
+        goto cleanup;
     }
     if (dimension_mask_set_has_empty_masks(info->dimension_mask_set))
     {
         info->product_mask = 0;
-        return 0;
+        status = 0;
+        goto cleanup;
     }
 
     /* Third filter pass 2D variables */
     if (evaluate_value_filters_2d(info, ops_2d) != 0)
     {
-        goto error;
+        goto cleanup;
     }
 
     /* If any 2-D masks are defined, mask each index on the primary dimension for which all mask values in the
@@ -2422,20 +2428,20 @@ static int execute_masking_phase(ingest_info *info, harp_program *phase_operatio
      */
     if (harp_dimension_mask_set_simplify(info->dimension_mask_set) != 0)
     {
-        goto error;
+        goto cleanup;
     }
     if (dimension_mask_set_has_empty_masks(info->dimension_mask_set))
     {
-        /* Empty product is not considered an error. */
         info->product_mask = 0;
-        return 0;
+        status = 0;
+        goto cleanup;
     }
 
     /* Verify that all dimension filters have been executed */
     if (phase_operations->num_operations != 0)
     {
         harp_set_error(HARP_ERROR_OPERATION, "Could not execute all filter operations.");
-        goto error;
+        goto cleanup;
     }
 
     /* the sorted operations should either all be executed or error'ed when evaluated */
@@ -2443,18 +2449,15 @@ static int execute_masking_phase(ingest_info *info, harp_program *phase_operatio
     assert(ops_1d->num_operations == 0);
     assert(ops_2d->num_operations == 0);
 
+    status = 0;
+
+  cleanup:
+
     harp_program_delete(ops_0d);
     harp_program_delete(ops_1d);
     harp_program_delete(ops_2d);
 
-    return 0;
-
-  error:
-    harp_program_delete(ops_0d);
-    harp_program_delete(ops_1d);
-    harp_program_delete(ops_2d);
-
-    return -1;
+    return status;
 }
 
 /* execute the variable exclude filter from the head of program */
