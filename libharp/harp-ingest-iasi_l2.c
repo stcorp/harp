@@ -698,44 +698,44 @@ int harp_ingestion_module_iasi_l2_init(void)
     path = "/MDR[]/MDR/ANGULAR_RELATION[,1]";
     harp_variable_definition_add_mapping(variable_definition, NULL, NULL, path, NULL);
 
-    /* CH4_column_mass_density */
+    /* CH4_column_density */
     description = "CH4 column mass density";
     variable_definition =
-        harp_ingestion_register_variable_sample_read(product_definition, "CH4_column_mass_density", harp_type_double, 1,
+        harp_ingestion_register_variable_sample_read(product_definition, "CH4_column_density", harp_type_double, 1,
                                                      dimension_type, NULL, description, "kg/m^2", NULL,
                                                      read_ch4_column);
     path = "/MDR[]/MDR/INTEGRATED_CH4[]";
     harp_variable_definition_add_mapping(variable_definition, NULL, NULL, path, NULL);
 
-    /* CO_column_mass_density */
+    /* CO_column_density */
     description = "CO column mass density";
     variable_definition =
-        harp_ingestion_register_variable_sample_read(product_definition, "CO_column_mass_density", harp_type_double, 1,
+        harp_ingestion_register_variable_sample_read(product_definition, "CO_column_density", harp_type_double, 1,
                                                      dimension_type, NULL, description, "kg/m^2", NULL, read_co_column);
     path = "/MDR[]/MDR/INTEGRATED_CO[]";
     harp_variable_definition_add_mapping(variable_definition, NULL, NULL, path, NULL);
 
-    /* CO2_column_mass_density */
+    /* CO2_column_density */
     description = "CO2 column mass density";
     variable_definition =
-        harp_ingestion_register_variable_sample_read(product_definition, "CO2_column_mass_density", harp_type_double, 1,
+        harp_ingestion_register_variable_sample_read(product_definition, "CO2_column_density", harp_type_double, 1,
                                                      dimension_type, NULL, description, "kg/m^2", NULL,
                                                      read_co2_column);
     path = "/MDR[]/MDR/INTEGRATED_CO2[]";
     harp_variable_definition_add_mapping(variable_definition, NULL, NULL, path, NULL);
 
-    /* O3_column_mass_density */
+    /* O3_column_density */
     description = "O3 column mass density";
     variable_definition =
-        harp_ingestion_register_variable_sample_read(product_definition, "O3_column_mass_density", harp_type_double, 1,
+        harp_ingestion_register_variable_sample_read(product_definition, "O3_column_density", harp_type_double, 1,
                                                      dimension_type, NULL, description, "kg/m^2", NULL, read_o3_column);
     path = "/MDR[]/MDR/INTEGRATED_OZONE[]";
     harp_variable_definition_add_mapping(variable_definition, NULL, NULL, path, NULL);
 
-    /* N2O_column_mass_density */
+    /* N2O_column_density */
     description = "N2O column mass density";
     variable_definition =
-        harp_ingestion_register_variable_sample_read(product_definition, "N2O_column_mass_density", harp_type_double, 1,
+        harp_ingestion_register_variable_sample_read(product_definition, "N2O_column_density", harp_type_double, 1,
                                                      dimension_type, NULL, description, "kg/m^2", NULL,
                                                      read_n2o_column);
     path = "/MDR[]/MDR/INTEGRATED_N2O[]";

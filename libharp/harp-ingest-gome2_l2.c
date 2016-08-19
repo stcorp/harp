@@ -1779,19 +1779,19 @@ static void register_common_variables(harp_product_definition *product_definitio
     description = "derived from the relative error in percent as: BrO_Error[] * 0.01 * BrO[]";
     harp_variable_definition_add_mapping(variable_definition, NULL, NULL, path, description);
 
-    /* H2O_column_mass_density */
+    /* H2O_column_density */
     description = "H2O column mass density";
     variable_definition =
-        harp_ingestion_register_variable_full_read(product_definition, "H2O_column_mass_density", harp_type_double, 1,
+        harp_ingestion_register_variable_full_read(product_definition, "H2O_column_density", harp_type_double, 1,
                                                    dimension_type, NULL, description, "kg/m^2", exclude_h2o_column,
                                                    read_h2o_column);
     path = "/TOTAL_COLUMNS/H2O[]";
     harp_variable_definition_add_mapping(variable_definition, NULL, NULL, path, NULL);
 
-    /* H2O_column_mass_density_uncertainty */
+    /* H2O_column_density_uncertainty */
     description = "uncertainty of the H2O column mass density";
     variable_definition =
-        harp_ingestion_register_variable_full_read(product_definition, "H2O_column_mass_density_uncertainty",
+        harp_ingestion_register_variable_full_read(product_definition, "H2O_column_density_uncertainty",
                                                    harp_type_double, 1, dimension_type, NULL, description, "kg/m^2",
                                                    exclude_h2o_column_error, read_h2o_column_error);
     path = "/TOTAL_COLUMNS/H2O_Error[], /TOTAL_COLUMNS/H2O[]";
