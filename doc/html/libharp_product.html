@@ -632,7 +632,8 @@
 <dl class="function">
 <dt id="_CPPv231harp_product_execute_operationsP12harp_productPKc">
 <span id="harp_product_execute_operations__harp_productP.cCP"></span><span class="target" id="libharpgroup__harp__product_1gaac9e4b48ca9a060f53c1e2bb4f44d840"></span>int <code class="descname">harp_product_execute_operations</code><span class="sig-paren">(</span><a class="reference internal" href="#_CPPv212harp_product" title="harp_product">harp_product</a> *<em>product</em>, <em class="property">const</em> char *<em>operations</em><span class="sig-paren">)</span></dt>
-<dd><p>Execute one or more operations on a product. <dl class="docutils">
+<dd><p>Execute one or more operations on a product.</p>
+<p>if one of the operations results in an empty product then the function will immediately return with the empty product (and return code 0) and will not execute any of the remaining actions anymore. <dl class="docutils">
 <dt><strong>Return</strong></dt>
 <dd><ul class="simple">
 <li><code class="docutils literal"><span class="pre">0</span></code>, Success. </li>

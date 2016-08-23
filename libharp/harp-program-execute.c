@@ -1327,6 +1327,12 @@ int harp_product_execute_program(harp_product *product, harp_program *program)
             harp_program_delete(program_copy);
             return -1;
         }
+        if (harp_product_is_empty(product))
+        {
+            /* don't perform any of the remaining actions; just return the empty product */
+            harp_program_delete(program_copy);
+            return 0;
+        }
     }
 
     /* Assert post-condition; we must be done with the program */
@@ -1338,6 +1344,9 @@ int harp_product_execute_program(harp_product *product, harp_program *program)
 
 /**
  * Execute one or more operations on a product.
+ *
+ * if one of the operations results in an empty product then the function will immediately return with
+ * the empty product (and return code 0) and will not execute any of the remaining actions anymore.
  * \param  product Product that the operations should be executed on.
  * \param  operations Operations to execute; should be specified as a semi-colon
  *                 separated string of operations.
