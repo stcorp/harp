@@ -823,5 +823,6 @@ void harp_bounds_from_midpoints_loglinear(long num_midpoints, const double *midp
         bounds[2 * i + 1] = average;
         bounds[2 * (i + 1)] = average;
     }
-    bounds[2 * (num_midpoints - 1) + 1] = exp(0.5 * (3.0 * log(midpoints[num_midpoints - 1]) - log(midpoints[num_midpoints - 2])));
+    bounds[2 * (num_midpoints - 1) + 1] =
+        exp(0.5 * (3.0 * log(midpoints[num_midpoints - 1]) - log(midpoints[num_midpoints - 2])));
 }

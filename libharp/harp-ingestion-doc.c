@@ -520,7 +520,8 @@ static int generate_product_group(FILE *fout, const char *product_group, int num
 
         if (module->num_option_definitions > 0)
         {
-            fprintf(fout, "The table below lists the available ingestion options for ``%s`` products.\n\n", module->name);
+            fprintf(fout, "The table below lists the available ingestion options for ``%s`` products.\n\n",
+                    module->name);
             fputs(".. csv-table::\n", fout);
             fputs("   :widths: 15 25 60\n", fout);
             fputs("   :header-rows: 1\n\n", fout);

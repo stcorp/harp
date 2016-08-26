@@ -634,8 +634,9 @@ static void register_co_nadir_product(void)
     const char *description;
     const char *path;
 
-    module = harp_ingestion_register_module_coda("TES_L2_CO_Nadir", "TES", NULL, NULL, "TES CO nadir profile", verify_co_nadir,
-                                                 ingestion_init_co_nadir, ingestion_done);
+    module =
+        harp_ingestion_register_module_coda("TES_L2_CO_Nadir", "TES", NULL, NULL, "TES CO nadir profile",
+                                            verify_co_nadir, ingestion_init_co_nadir, ingestion_done);
 
     /* CO_Nadir product */
     product_definition = harp_ingestion_register_product(module, "TES_L2_CO_Nadir", NULL, read_dimensions);
@@ -736,8 +737,9 @@ static void register_o3_nadir_product(void)
     const char *description;
     const char *path;
 
-    module = harp_ingestion_register_module_coda("TES_L2_O3_Nadir", "TES", NULL, NULL, "TES O3 nadir profile", verify_o3_nadir,
-                                                 ingestion_init_o3_nadir, ingestion_done);
+    module =
+        harp_ingestion_register_module_coda("TES_L2_O3_Nadir", "TES", NULL, NULL, "TES O3 nadir profile",
+                                            verify_o3_nadir, ingestion_init_o3_nadir, ingestion_done);
 
     /* O3_Nadir product */
     product_definition = harp_ingestion_register_product(module, "TES_L2_O3_Nadir", NULL, read_dimensions);

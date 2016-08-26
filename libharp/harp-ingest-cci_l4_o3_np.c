@@ -590,8 +590,9 @@ int harp_ingestion_module_cci_l4_o3_np_init(void)
     const char *description;
     const char *path;
 
-    module = harp_ingestion_register_module_coda("ESACCI_OZONE_L4_NP", "Ozone CCI", NULL, NULL, "CCI L4 O3 nadir profile",
-                                                 verify_product_type, ingestion_init, ingestion_done);
+    module =
+        harp_ingestion_register_module_coda("ESACCI_OZONE_L4_NP", "Ozone CCI", NULL, NULL, "CCI L4 O3 nadir profile",
+                                            verify_product_type, ingestion_init, ingestion_done);
 
     /* ESACCI_OZONE_L4_NP product */
     product_definition = harp_ingestion_register_product(module, "ESACCI_OZONE_L4_NP", NULL, read_dimensions);

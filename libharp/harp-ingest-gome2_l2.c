@@ -2317,8 +2317,9 @@ static void register_ersoto_product(void)
     harp_product_definition *product_definition;
 
     module =
-        harp_ingestion_register_module_coda("GOME_L2_ERSOTO", "GOME", NULL, NULL, "GOME offline total column trace gas product",
-                                            verify_ersoto, ingestion_init, ingestion_done);
+        harp_ingestion_register_module_coda("GOME_L2_ERSOTO", "GOME", NULL, NULL,
+                                            "GOME offline total column trace gas product", verify_ersoto,
+                                            ingestion_init, ingestion_done);
     register_common_options(module);
 
     /* ERSOTO product */

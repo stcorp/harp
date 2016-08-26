@@ -2289,7 +2289,7 @@ static int add_species_conversions_for_grid(const char *species, int num_dimensi
 
 static int add_aerosol_conversions_for_grid(int num_dimensions, harp_dimension_type dimension_type[HARP_MAX_NUM_DIMS])
 {
-    const char *prefix[] = {"", "sea_salt_", "dust_", "organic_matter_", "black_carbon_", "sulphate_"};
+    const char *prefix[] = { "", "sea_salt_", "dust_", "organic_matter_", "black_carbon_", "sulphate_" };
     int i;
 
     for (i = 0; i < 6; i++)
@@ -2311,8 +2311,7 @@ static int add_aerosol_conversions_for_grid(int num_dimensions, harp_dimension_t
         }
 
         /* uncertainties */
-        if (add_uncertainty_conversions(name_ext, HARP_UNIT_AEROSOL_EXTINCTION, num_dimensions,
-                                        dimension_type) != 0)
+        if (add_uncertainty_conversions(name_ext, HARP_UNIT_AEROSOL_EXTINCTION, num_dimensions, dimension_type) != 0)
         {
             return -1;
         }
@@ -2496,8 +2495,9 @@ static int add_conversions_for_grid(int num_dimensions, harp_dimension_type dime
     if (!has_latlon)
     {
         /* altitude from gph */
-        if (harp_variable_conversion_new("altitude", harp_type_double, HARP_UNIT_LENGTH, num_dimensions, dimension_type, 0,
-                                         get_altitude_from_gph_and_latitude, &conversion) != 0)
+        if (harp_variable_conversion_new
+            ("altitude", harp_type_double, HARP_UNIT_LENGTH, num_dimensions, dimension_type, 0,
+             get_altitude_from_gph_and_latitude, &conversion) != 0)
         {
             return -1;
         }
@@ -2579,8 +2579,8 @@ static int add_conversions_for_grid(int num_dimensions, harp_dimension_type dime
         {
             return -1;
         }
-        if (harp_variable_conversion_add_source(conversion, "altitude", harp_type_double, HARP_UNIT_LENGTH, num_dimensions,
-                                                dimension_type, 0) != 0)
+        if (harp_variable_conversion_add_source
+            (conversion, "altitude", harp_type_double, HARP_UNIT_LENGTH, num_dimensions, dimension_type, 0) != 0)
         {
             return -1;
         }

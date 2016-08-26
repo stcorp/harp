@@ -693,17 +693,17 @@ static int read_index(void *user_data, long index, harp_array data)
     return 0;
 }
 
-harp_ingestion_module *harp_ingestion_register_module_coda(
-    const char *name,
-    const char *product_group,
-    const char *product_class,
-    const char *product_type,
-    const char *description,
-    int (*verify_product_type) (const harp_ingestion_module *module, coda_product *product),
-    int (*ingestion_init) (const harp_ingestion_module *module, coda_product *product,
-                           const harp_ingestion_options *options, harp_product_definition **definition,
-                           void **user_data),
-    void (*ingestion_done) (void *user_data))
+harp_ingestion_module *harp_ingestion_register_module_coda(const char *name, const char *product_group,
+                                                           const char *product_class, const char *product_type,
+                                                           const char *description,
+                                                           int (*verify_product_type) (const harp_ingestion_module
+                                                                                       *module, coda_product *product),
+                                                           int (*ingestion_init) (const harp_ingestion_module *module,
+                                                                                  coda_product *product,
+                                                                                  const harp_ingestion_options *options,
+                                                                                  harp_product_definition **definition,
+                                                                                  void **user_data),
+                                                           void (*ingestion_done) (void *user_data))
 {
     harp_ingestion_module *module;
 
@@ -721,15 +721,17 @@ harp_ingestion_module *harp_ingestion_register_module_coda(
     return module;
 }
 
-harp_ingestion_module *harp_ingestion_register_module_custom(
-    const char *name,
-    const char *product_group,
-    const char *description,
-    int (*verify_product_type) (const harp_ingestion_module *module, const char *filename),
-    int (*ingestion_init) (const harp_ingestion_module *module, const char *filename,
-                           const harp_ingestion_options *options, harp_product_definition **definition,
-                           void **user_data),
-    void (*ingestion_done) (void *user_data))
+harp_ingestion_module *harp_ingestion_register_module_custom(const char *name, const char *product_group,
+                                                             const char *description,
+                                                             int (*verify_product_type) (const harp_ingestion_module
+                                                                                         *module, const char *filename),
+                                                             int (*ingestion_init) (const harp_ingestion_module *module,
+                                                                                    const char *filename,
+                                                                                    const harp_ingestion_options
+                                                                                    *options,
+                                                                                    harp_product_definition
+                                                                                    **definition, void **user_data),
+                                                             void (*ingestion_done) (void *user_data))
 {
     harp_ingestion_module *module;
 

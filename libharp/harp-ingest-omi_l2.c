@@ -2303,8 +2303,10 @@ static void register_omaeruv_product(void)
     const char *description;
     const char *path;
 
-    module = harp_ingestion_register_module_coda("OMI_L2_OMAERUV", "OMI", NULL, NULL, "OMI L2 aerosol product (AOD and AAOD)",
-                                                 verify_omaeruv, ingestion_init_omaeruv, ingestion_done);
+    module =
+        harp_ingestion_register_module_coda("OMI_L2_OMAERUV", "OMI", NULL, NULL,
+                                            "OMI L2 aerosol product (AOD and AAOD)", verify_omaeruv,
+                                            ingestion_init_omaeruv, ingestion_done);
 
     /* OMAERUV product */
     product_definition = harp_ingestion_register_product(module, "OMI_L2_OMAERUV", NULL, read_dimensions_omaeruv);
@@ -2382,8 +2384,9 @@ static void register_ombro_product(void)
     const char *description;
     const char *path;
 
-    module = harp_ingestion_register_module_coda("OMI_L2_OMBRO", "OMI", NULL, NULL, "OMI L2 BrO total column", verify_ombro,
-                                                 ingestion_init_ombro, ingestion_done);
+    module =
+        harp_ingestion_register_module_coda("OMI_L2_OMBRO", "OMI", NULL, NULL, "OMI L2 BrO total column", verify_ombro,
+                                            ingestion_init_ombro, ingestion_done);
 
     /* destriped ingestion option */
     description = "ingest column densities with destriping correction";
@@ -2851,8 +2854,9 @@ static void register_omhcho_product(void)
     const char *description;
     const char *path;
 
-    module = harp_ingestion_register_module_coda("OMI_L2_OMHCHO", "OMI", NULL, NULL, "OMI L2 HCHO total column", verify_omhcho,
-                                                 ingestion_init_omhcho, ingestion_done);
+    module =
+        harp_ingestion_register_module_coda("OMI_L2_OMHCHO", "OMI", NULL, NULL, "OMI L2 HCHO total column",
+                                            verify_omhcho, ingestion_init_omhcho, ingestion_done);
 
     /* destriped ingestion option */
     description = "ingest column densities with destriping correction";
@@ -2905,8 +2909,10 @@ static void register_omno2_product(void)
     const char *description;
     const char *path;
 
-    module = harp_ingestion_register_module_coda("OMI_L2_OMNO2", "OMI", NULL, NULL, "OMI L2 NO2 total and tropospheric column",
-                                                 verify_omno2, ingestion_init, ingestion_done);
+    module =
+        harp_ingestion_register_module_coda("OMI_L2_OMNO2", "OMI", NULL, NULL,
+                                            "OMI L2 NO2 total and tropospheric column", verify_omno2, ingestion_init,
+                                            ingestion_done);
 
     /* OMNO2 product */
     product_definition = harp_ingestion_register_product(module, "OMI_L2_OMNO2", NULL, read_dimensions);
@@ -3102,8 +3108,9 @@ static void register_omoclo_product(void)
     const char *description;
     const char *path;
 
-    module = harp_ingestion_register_module_coda("OMI_L2_OMOCLO", "OMI", NULL, NULL, "OMI L2 OClO slant column", verify_omoclo,
-                                                 ingestion_init_omoclo, ingestion_done);
+    module =
+        harp_ingestion_register_module_coda("OMI_L2_OMOCLO", "OMI", NULL, NULL, "OMI L2 OClO slant column",
+                                            verify_omoclo, ingestion_init_omoclo, ingestion_done);
 
     /* destriped ingestion option */
     description = "ingest column densities with destriping correction";
@@ -3157,8 +3164,9 @@ static void register_omso2_product(void)
     const char *description;
     const char *path;
 
-    module = harp_ingestion_register_module_coda("OMI_L2_OMSO2", "OMI", NULL, NULL, "OMI L2 SO2 total column", verify_omso2,
-                                                 ingestion_init_omso2, ingestion_done);
+    module =
+        harp_ingestion_register_module_coda("OMI_L2_OMSO2", "OMI", NULL, NULL, "OMI L2 SO2 total column", verify_omso2,
+                                            ingestion_init_omso2, ingestion_done);
 
     /* so2_column_variant ingestion option */
     description = "for V2 products: 'pbl' (anthropogenic SO2 pollution at the planet boundary layer), '5km' (showing"

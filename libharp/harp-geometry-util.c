@@ -265,8 +265,7 @@ void harp_geographic_extrapolation(double longitude_p, double latitude_p, double
 }
 
 int harp_geographic_center_from_bounds(long num_vertices, const double *longitude_bounds,
-                                       const double *latitude_bounds, double *center_longitude,
-                                       double *center_latitude)
+                                       const double *latitude_bounds, double *center_longitude, double *center_latitude)
 {
     harp_spherical_polygon *polygon = NULL;
     harp_vector3d vector_center;
@@ -295,4 +294,3 @@ int harp_geographic_center_from_bounds(long num_vertices, const double *longitud
 
     return 0;
 }
-
