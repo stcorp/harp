@@ -425,7 +425,7 @@ LIBHARP_API int harp_convert_unit(const char *from_unit, const char *to_unit, lo
 
 /* Generated documentation */
 LIBHARP_API int harp_doc_list_conversions(const harp_product *product, int (*print) (const char *, ...));
-LIBHARP_API int harp_doc_export_ingestion_definitions(const char *path, const char *format);
+LIBHARP_API int harp_doc_export_ingestion_definitions(const char *path);
 
 /* Geometry */
 LIBHARP_API int harp_geometry_get_point_distance(double longitude_a, double latitude_a, double longitude_b,

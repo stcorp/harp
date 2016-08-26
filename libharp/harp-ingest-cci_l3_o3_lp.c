@@ -683,7 +683,7 @@ static void register_mzm_product(void)
     const char *path;
 
     module =
-        harp_ingestion_register_module_coda("ESACCI_OZONE_L3_LP_MZM", NULL, NULL, "CCI O3 monthly zonal mean limb "
+        harp_ingestion_register_module_coda("ESACCI_OZONE_L3_LP_MZM", "Ozone CCI", NULL, NULL, "CCI O3 monthly zonal mean limb "
                                             "profile on a 10 degree latitude grid", verify_product_type_mzm,
                                             ingestion_init_mzm, ingestion_done);
 
@@ -759,7 +759,7 @@ static void register_mmzm_product(void)
     const char *path;
 
     module =
-        harp_ingestion_register_module_coda("ESACCI_OZONE_L3_LP_MMZM", NULL, NULL, "CCI O3 merged monthly zonal mean "
+        harp_ingestion_register_module_coda("ESACCI_OZONE_L3_LP_MMZM", "Ozone CCI", NULL, NULL, "CCI O3 merged monthly zonal mean "
                                             "limb profile on a 10 degree latitude grid", verify_product_type_mmzm,
                                             ingestion_init_mmzm, ingestion_done);
 
@@ -865,7 +865,7 @@ static void register_msmm_product(void)
     const char *path;
 
     module =
-        harp_ingestion_register_module_coda("ESACCI_OZONE_L3_LP_MSMM", NULL, NULL,
+        harp_ingestion_register_module_coda("ESACCI_OZONE_L3_LP_MSMM", "Ozone CCI", NULL, NULL,
                                             "CCI O3 merged semi-monthly zonal mean limb profile on a 10x20 degree grid",
                                             verify_product_type_msmm, ingestion_init_msmm, ingestion_done);
 

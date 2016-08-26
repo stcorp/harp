@@ -583,7 +583,7 @@ static void register_ch4_nadir_product(void)
     const char *description;
     const char *path;
 
-    module = harp_ingestion_register_module_coda("TES_L2_CH4_Nadir", NULL, NULL, "TES CH4 nadir profile",
+    module = harp_ingestion_register_module_coda("TES_L2_CH4_Nadir", "TES", NULL, NULL, "TES CH4 nadir profile",
                                                  verify_ch4_nadir, ingestion_init_ch4_nadir, ingestion_done);
 
     /* CH4_Nadir product */
@@ -634,7 +634,7 @@ static void register_co_nadir_product(void)
     const char *description;
     const char *path;
 
-    module = harp_ingestion_register_module_coda("TES_L2_CO_Nadir", NULL, NULL, "TES CO nadir profile", verify_co_nadir,
+    module = harp_ingestion_register_module_coda("TES_L2_CO_Nadir", "TES", NULL, NULL, "TES CO nadir profile", verify_co_nadir,
                                                  ingestion_init_co_nadir, ingestion_done);
 
     /* CO_Nadir product */
@@ -685,7 +685,7 @@ static void register_h2o_nadir_product(void)
     const char *description;
     const char *path;
 
-    module = harp_ingestion_register_module_coda("TES_L2_H2O_Nadir", NULL, NULL, "TES H2O nadir profile",
+    module = harp_ingestion_register_module_coda("TES_L2_H2O_Nadir", "TES", NULL, NULL, "TES H2O nadir profile",
                                                  verify_h2o_nadir, ingestion_init_h2o_nadir, ingestion_done);
 
     /* H2O_Nadir product */
@@ -736,7 +736,7 @@ static void register_o3_nadir_product(void)
     const char *description;
     const char *path;
 
-    module = harp_ingestion_register_module_coda("TES_L2_O3_Nadir", NULL, NULL, "TES O3 nadir profile", verify_o3_nadir,
+    module = harp_ingestion_register_module_coda("TES_L2_O3_Nadir", "TES", NULL, NULL, "TES O3 nadir profile", verify_o3_nadir,
                                                  ingestion_init_o3_nadir, ingestion_done);
 
     /* O3_Nadir product */
@@ -787,7 +787,7 @@ static void register_tatm_nadir_product(void)
     const char *description;
     const char *path;
 
-    module = harp_ingestion_register_module_coda("TES_L2_Temperature_Nadir", NULL, NULL,
+    module = harp_ingestion_register_module_coda("TES_L2_Temperature_Nadir", "TES", NULL, NULL,
                                                  "TES atmospheric temperature nadir profile", verify_tatm_nadir,
                                                  ingestion_init_tatm_nadir, ingestion_done);
 

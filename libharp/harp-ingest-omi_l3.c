@@ -708,7 +708,7 @@ static void register_omdoao3e_product(void)
     const char *description;
     const char *path;
 
-    module = harp_ingestion_register_module_coda("OMI_L3_OMDOAO3e", NULL, NULL, "OMI L3 daily O3 total column (DOAS) "
+    module = harp_ingestion_register_module_coda("OMI_L3_OMDOAO3e", "OMI", NULL, NULL, "OMI L3 daily O3 total column (DOAS) "
                                                  "on a global 0.25x0.25 degree grid", verify_omdoao3e,
                                                  ingestion_init_omdoao3e, ingestion_done);
 
@@ -788,7 +788,7 @@ static void register_omto3d_product(void)
     const char *description;
     const char *path;
 
-    module = harp_ingestion_register_module_coda("OMI_L3_OMTO3d", NULL, NULL, "OMI L3 daily O3, aerosol index, and "
+    module = harp_ingestion_register_module_coda("OMI_L3_OMTO3d", "OMI", NULL, NULL, "OMI L3 daily O3, aerosol index, and "
                                                  "radiative cloud fraction on a global 1x1 degree grid", verify_omto3d,
                                                  ingestion_init_omto3, ingestion_done);
 
@@ -842,7 +842,7 @@ static void register_omto3e_product(void)
     const char *description;
     const char *path;
 
-    module = harp_ingestion_register_module_coda("OMI_L3_OMTO3e", NULL, NULL, "OMI L3 daily O3 and radiative cloud  "
+    module = harp_ingestion_register_module_coda("OMI_L3_OMTO3e", "OMI", NULL, NULL, "OMI L3 daily O3 and radiative cloud  "
                                                  "fraction on a global 0.25x0.25 degree grid", verify_omto3e,
                                                  ingestion_init_omto3, ingestion_done);
 

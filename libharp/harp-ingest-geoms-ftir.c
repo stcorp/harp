@@ -1614,7 +1614,7 @@ int harp_ingestion_module_geoms_ftir_init(void)
     harp_ingestion_module *module;
     int i;
 
-    module = harp_ingestion_register_module_coda("GEOMS-TE-FTIR", NULL, NULL, "GEOMS template for FTIR",
+    module = harp_ingestion_register_module_coda("GEOMS-TE-FTIR", "GEOMS", NULL, NULL, "GEOMS template for FTIR",
                                                  verify_template, ingestion_init, ingestion_done);
 
     for (i = 0; i < num_ftir_gas; i++)

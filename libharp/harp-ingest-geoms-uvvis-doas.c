@@ -2498,7 +2498,7 @@ int harp_ingestion_module_geoms_uvvis_doas_init()
     harp_ingestion_module *module;
     int i;
 
-    module = harp_ingestion_register_module_coda("GEOMS-TE-UVVIS-DOAS-DIRECTSUN", NULL, NULL,
+    module = harp_ingestion_register_module_coda("GEOMS-TE-UVVIS-DOAS-DIRECTSUN", "GEOMS", NULL, NULL,
                                                  "GEOMS template for UVVIS-DOAS direct sun measurements",
                                                  verify_template, ingestion_init, ingestion_done);
 
@@ -2513,7 +2513,7 @@ int harp_ingestion_module_geoms_uvvis_doas_init()
         init_product_definition(module, i, uvvis_doas_directsun, 7);
     }
 
-    module = harp_ingestion_register_module_coda("GEOMS-TE-UVVIS-DOAS-OFFAXIS", NULL, NULL,
+    module = harp_ingestion_register_module_coda("GEOMS-TE-UVVIS-DOAS-OFFAXIS", "GEOMS", NULL, NULL,
                                                  "GEOMS template for UVVIS-DOAS off-axis measurements", verify_template,
                                                  ingestion_init, ingestion_done);
 
@@ -2531,7 +2531,7 @@ int harp_ingestion_module_geoms_uvvis_doas_init()
         init_product_definition(module, i, uvvis_doas_offaxis, 7);
     }
 
-    module = harp_ingestion_register_module_coda("GEOMS-TE-UVVIS-DOAS-ZENITH", NULL, NULL,
+    module = harp_ingestion_register_module_coda("GEOMS-TE-UVVIS-DOAS-ZENITH", "GEOMS", NULL, NULL,
                                                  "GEOMS template for UVVIS-DOAS zenith measurements", verify_template,
                                                  ingestion_init, ingestion_done);
 

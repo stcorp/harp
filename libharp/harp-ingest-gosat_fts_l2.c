@@ -780,7 +780,7 @@ void register_co2_product(void)
     const char *path;
 
     module =
-        harp_ingestion_register_module_coda("GOSAT_FTS_L2_CO2_TC", NULL, NULL, "GOSAT FTS L2 CO2 total column density",
+        harp_ingestion_register_module_coda("GOSAT_FTS_L2_CO2_TC", "FTS", NULL, NULL, "GOSAT FTS L2 CO2 total column density",
                                             verify_co2, ingestion_init, ingestion_done);
 
     /* GOSAT_FTS_L2_CO2_TC product */
@@ -821,7 +821,7 @@ void register_ch4_product(void)
     const char *path;
 
     module =
-        harp_ingestion_register_module_coda("GOSAT_FTS_L2_CH4_TC", NULL, NULL, "GOSAT FTS L2 CH4 total column density",
+        harp_ingestion_register_module_coda("GOSAT_FTS_L2_CH4_TC", "FTS", NULL, NULL, "GOSAT FTS L2 CH4 total column density",
                                             verify_ch4, ingestion_init, ingestion_done);
 
     /* GOSAT_FTS_L2_CH4_TC */

@@ -2303,7 +2303,7 @@ static void register_omaeruv_product(void)
     const char *description;
     const char *path;
 
-    module = harp_ingestion_register_module_coda("OMI_L2_OMAERUV", NULL, NULL, "OMI L2 aerosol product (AOD and AAOD)",
+    module = harp_ingestion_register_module_coda("OMI_L2_OMAERUV", "OMI", NULL, NULL, "OMI L2 aerosol product (AOD and AAOD)",
                                                  verify_omaeruv, ingestion_init_omaeruv, ingestion_done);
 
     /* OMAERUV product */
@@ -2382,7 +2382,7 @@ static void register_ombro_product(void)
     const char *description;
     const char *path;
 
-    module = harp_ingestion_register_module_coda("OMI_L2_OMBRO", NULL, NULL, "OMI L2 BrO total column", verify_ombro,
+    module = harp_ingestion_register_module_coda("OMI_L2_OMBRO", "OMI", NULL, NULL, "OMI L2 BrO total column", verify_ombro,
                                                  ingestion_init_ombro, ingestion_done);
 
     /* destriped ingestion option */
@@ -2437,7 +2437,7 @@ static void register_omcldo2_product(void)
     const char *description;
     const char *path;
 
-    module = harp_ingestion_register_module_coda("OMI_L2_OMCLDO2", NULL, NULL,
+    module = harp_ingestion_register_module_coda("OMI_L2_OMCLDO2", "OMI", NULL, NULL,
                                                  "OMI L2 cloud pressure and cloud fraction (O2-O2 absorbtion)",
                                                  verify_omcldo2, ingestion_init_omcldo2, ingestion_done);
 
@@ -2525,7 +2525,7 @@ static void register_omcldrr_product(void)
     const char *description;
     const char *path;
 
-    module = harp_ingestion_register_module_coda("OMI_L2_OMCLDRR", NULL, NULL,
+    module = harp_ingestion_register_module_coda("OMI_L2_OMCLDRR", "OMI", NULL, NULL,
                                                  "OMI L2 cloud pressure and cloud fraction (Raman scattering)",
                                                  verify_omcldrr, ingestion_init, ingestion_done);
 
@@ -2592,7 +2592,7 @@ static void register_omdoao3_product(void)
     const char *description;
     const char *path;
 
-    module = harp_ingestion_register_module_coda("OMI_L2_OMDOAO3", NULL, NULL, "OMI L2 O3 total column (DOAS)",
+    module = harp_ingestion_register_module_coda("OMI_L2_OMDOAO3", "OMI", NULL, NULL, "OMI L2 O3 total column (DOAS)",
                                                  verify_omdoao3, ingestion_init, ingestion_done);
 
     /* OMDOAO3 product */
@@ -2693,7 +2693,7 @@ static void register_omdomino_product(void)
     const char *description;
     const char *path;
 
-    module = harp_ingestion_register_module_coda("OMI_L2_OMDOMINO", NULL, NULL, "OMI L2 DOMINO NO2 product",
+    module = harp_ingestion_register_module_coda("OMI_L2_OMDOMINO", "OMI", NULL, NULL, "OMI L2 DOMINO NO2 product",
                                                  verify_omdomino, ingestion_init_omdomino, ingestion_done);
 
     /* OMDOMINO product */
@@ -2851,7 +2851,7 @@ static void register_omhcho_product(void)
     const char *description;
     const char *path;
 
-    module = harp_ingestion_register_module_coda("OMI_L2_OMHCHO", NULL, NULL, "OMI L2 HCHO total column", verify_omhcho,
+    module = harp_ingestion_register_module_coda("OMI_L2_OMHCHO", "OMI", NULL, NULL, "OMI L2 HCHO total column", verify_omhcho,
                                                  ingestion_init_omhcho, ingestion_done);
 
     /* destriped ingestion option */
@@ -2905,7 +2905,7 @@ static void register_omno2_product(void)
     const char *description;
     const char *path;
 
-    module = harp_ingestion_register_module_coda("OMI_L2_OMNO2", NULL, NULL, "OMI L2 NO2 total and tropospheric column",
+    module = harp_ingestion_register_module_coda("OMI_L2_OMNO2", "OMI", NULL, NULL, "OMI L2 NO2 total and tropospheric column",
                                                  verify_omno2, ingestion_init, ingestion_done);
 
     /* OMNO2 product */
@@ -3022,7 +3022,7 @@ static void register_omo3pr_product(void)
     const char *description;
     const char *path;
 
-    module = harp_ingestion_register_module_coda("OMI_L2_OMO3PR", NULL, NULL, "OMI L2 O3 profile", verify_omo3pr,
+    module = harp_ingestion_register_module_coda("OMI_L2_OMO3PR", "OMI", NULL, NULL, "OMI L2 O3 profile", verify_omo3pr,
                                                  ingestion_init_omo3pr, ingestion_done);
 
     /* OMO3PR product */
@@ -3102,7 +3102,7 @@ static void register_omoclo_product(void)
     const char *description;
     const char *path;
 
-    module = harp_ingestion_register_module_coda("OMI_L2_OMOCLO", NULL, NULL, "OMI L2 OClO slant column", verify_omoclo,
+    module = harp_ingestion_register_module_coda("OMI_L2_OMOCLO", "OMI", NULL, NULL, "OMI L2 OClO slant column", verify_omoclo,
                                                  ingestion_init_omoclo, ingestion_done);
 
     /* destriped ingestion option */
@@ -3157,7 +3157,7 @@ static void register_omso2_product(void)
     const char *description;
     const char *path;
 
-    module = harp_ingestion_register_module_coda("OMI_L2_OMSO2", NULL, NULL, "OMI L2 SO2 total column", verify_omso2,
+    module = harp_ingestion_register_module_coda("OMI_L2_OMSO2", "OMI", NULL, NULL, "OMI L2 SO2 total column", verify_omso2,
                                                  ingestion_init_omso2, ingestion_done);
 
     /* so2_column_variant ingestion option */
@@ -3258,7 +3258,7 @@ static void register_omto3_product(void)
     const char *description;
     const char *path;
 
-    module = harp_ingestion_register_module_coda("OMI_L2_OMTO3", NULL, NULL, "OMI L2 O3 total column (TOMS)",
+    module = harp_ingestion_register_module_coda("OMI_L2_OMTO3", "OMI", NULL, NULL, "OMI L2 O3 total column (TOMS)",
                                                  verify_omto3, ingestion_init_omto3, ingestion_done);
 
     /* cloud_fraction_variant ingestion option */
@@ -3360,7 +3360,7 @@ static void register_omuvb_product(void)
     const char *description;
     const char *path;
 
-    module = harp_ingestion_register_module_coda("OMI_L2_OMUVB", NULL, NULL,
+    module = harp_ingestion_register_module_coda("OMI_L2_OMUVB", "OMI", NULL, NULL,
                                                  "OMI L2 UV-B surface irradiance and erythemal dose rate",
                                                  verify_omuvb, ingestion_init_omuvb, ingestion_done);
 

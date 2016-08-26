@@ -187,17 +187,11 @@ static void print_help()
     printf("                of an <option name>=<value> pair. An option list needs to be\n");
     printf("                provided as a single expression.\n");
     printf("\n");
-    printf("    harpconvert --generate-documentation [options] [output directory]\n");
+    printf("    harpconvert --generate-documentation [output directory]\n");
     printf("        Generate a series of documentation files in the specified output\n");
     printf("        directory. The documentation describes the set of supported product\n");
     printf("        types and the details of the HARP product(s) that can be produced\n");
     printf("        from them.\n");
-    printf("\n");
-    printf("        Options:\n");
-    printf("            -f, --format <format>\n");
-    printf("                Output format:\n");
-    printf("                    html (default)\n");
-    printf("                    rst\n");
     printf("\n");
     printf("    harpconvert -h, --help\n");
     printf("        Show help (this text).\n");
@@ -263,19 +257,12 @@ static int list_conversions(int argc, char *argv[])
 
 static int generate_doc(int argc, char *argv[])
 {
-
-    const char *format = "html";
     const char *output_directory = ".";
     int i;
 
     for (i = 2; i < argc; i++)
     {
-        if ((strcmp(argv[i], "-f") == 0 || strcmp(argv[i], "--format") == 0) && i + 1 < argc && *argv[i + 1] != '-')
-        {
-            format = argv[i + 1];
-            i++;
-        }
-        else if (argv[i][0] != '-' && i == argc - 1)
+        if (*argv[i] != '-' && i == argc - 1)
         {
             output_directory = argv[i];
         }
@@ -287,7 +274,7 @@ static int generate_doc(int argc, char *argv[])
         }
     }
 
-    if (harp_doc_export_ingestion_definitions(output_directory, format) != 0)
+    if (harp_doc_export_ingestion_definitions(output_directory) != 0)
     {
         return -1;
     }

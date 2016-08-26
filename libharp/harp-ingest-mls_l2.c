@@ -709,7 +709,7 @@ static void register_bro_product(void)
     const char *path;
 
     module =
-        harp_ingestion_register_module_coda("MLS_L2_BRO", NULL, NULL, "MLS BrO profile", verify_bro, ingestion_init_bro,
+        harp_ingestion_register_module_coda("MLS_L2_BRO", "MLS", NULL, NULL, "MLS BrO profile", verify_bro, ingestion_init_bro,
                                             ingestion_done);
 
     /* BRO product */
@@ -757,7 +757,7 @@ static void register_clo_product(void)
     const char *path;
 
     module =
-        harp_ingestion_register_module_coda("MLS_L2_CLO", NULL, NULL, "MLS ClO profile", verify_clo, ingestion_init_clo,
+        harp_ingestion_register_module_coda("MLS_L2_CLO", "MLS", NULL, NULL, "MLS ClO profile", verify_clo, ingestion_init_clo,
                                             ingestion_done);
 
     /* CLO product */
@@ -805,7 +805,7 @@ static void register_co_product(void)
     const char *path;
 
     module =
-        harp_ingestion_register_module_coda("MLS_L2_CO", NULL, NULL, "MLS CO profile", verify_co, ingestion_init_co,
+        harp_ingestion_register_module_coda("MLS_L2_CO", "MLS", NULL, NULL, "MLS CO profile", verify_co, ingestion_init_co,
                                             ingestion_done);
 
     /* CO product */
@@ -853,7 +853,7 @@ static void register_gph_product(void)
     const char *path;
 
     module =
-        harp_ingestion_register_module_coda("MLS_L2_GPH", NULL, NULL, "MLS GPH profile", verify_gph, ingestion_init_gph,
+        harp_ingestion_register_module_coda("MLS_L2_GPH", "MLS", NULL, NULL, "MLS GPH profile", verify_gph, ingestion_init_gph,
                                             ingestion_done);
 
     /* GPH product */
@@ -900,7 +900,7 @@ static void register_h2o_product(void)
     const char *path;
 
     module =
-        harp_ingestion_register_module_coda("MLS_L2_H2O", NULL, NULL, "MLS H2O profile", verify_h2o, ingestion_init_h2o,
+        harp_ingestion_register_module_coda("MLS_L2_H2O", "MLS", NULL, NULL, "MLS H2O profile", verify_h2o, ingestion_init_h2o,
                                             ingestion_done);
 
     /* H2O product */
@@ -948,7 +948,7 @@ static void register_hcl_product(void)
     const char *path;
 
     module =
-        harp_ingestion_register_module_coda("MLS_L2_HCL", NULL, NULL, "MLS HCl profile", verify_hcl, ingestion_init_hcl,
+        harp_ingestion_register_module_coda("MLS_L2_HCL", "MLS", NULL, NULL, "MLS HCl profile", verify_hcl, ingestion_init_hcl,
                                             ingestion_done);
 
     /* HCL product */
@@ -996,7 +996,7 @@ static void register_hcn_product(void)
     const char *path;
 
     module =
-        harp_ingestion_register_module_coda("MLS_L2_HCN", NULL, NULL, "MLS HCN profile", verify_hcn, ingestion_init_hcn,
+        harp_ingestion_register_module_coda("MLS_L2_HCN", "MLS", NULL, NULL, "MLS HCN profile", verify_hcn, ingestion_init_hcn,
                                             ingestion_done);
 
     /* HCN product */
@@ -1044,7 +1044,7 @@ static void register_hno3_product(void)
     const char *path;
 
     module =
-        harp_ingestion_register_module_coda("MLS_L2_HNO3", NULL, NULL, "MLS HNO3 profile", verify_hno3,
+        harp_ingestion_register_module_coda("MLS_L2_HNO3", "MLS", NULL, NULL, "MLS HNO3 profile", verify_hno3,
                                             ingestion_init_hno3, ingestion_done);
 
     /* HNO3 product */
@@ -1092,7 +1092,7 @@ static void register_ho2_product(void)
     const char *path;
 
     module =
-        harp_ingestion_register_module_coda("MLS_L2_HO2", NULL, NULL, "MLS HO2 profile", verify_ho2, ingestion_init_ho2,
+        harp_ingestion_register_module_coda("MLS_L2_HO2", "MLS", NULL, NULL, "MLS HO2 profile", verify_ho2, ingestion_init_ho2,
                                             ingestion_done);
 
     /* HO2 product */
@@ -1140,7 +1140,7 @@ static void register_hocl_product(void)
     const char *path;
 
     module =
-        harp_ingestion_register_module_coda("MLS_L2_HOCL", NULL, NULL, "MLS HOCl profile", verify_hocl,
+        harp_ingestion_register_module_coda("MLS_L2_HOCL", "MLS", NULL, NULL, "MLS HOCl profile", verify_hocl,
                                             ingestion_init_hocl, ingestion_done);
 
     /* HOCL product */
@@ -1188,7 +1188,7 @@ static void register_iwc_product(void)
     const char *path;
 
     module =
-        harp_ingestion_register_module_coda("MLS_L2_IWC", NULL, NULL, "MLS ice water content profile", verify_iwc,
+        harp_ingestion_register_module_coda("MLS_L2_IWC", "MLS", NULL, NULL, "MLS ice water content profile", verify_iwc,
                                             ingestion_init_iwc, ingestion_done);
 
     /* IWC product */
@@ -1236,7 +1236,7 @@ static void register_n2o_product(void)
     const char *path;
 
     module =
-        harp_ingestion_register_module_coda("MLS_L2_N2O", NULL, NULL, "MLS N2O profile", verify_n2o, ingestion_init_n2o,
+        harp_ingestion_register_module_coda("MLS_L2_N2O", "MLS", NULL, NULL, "MLS N2O profile", verify_n2o, ingestion_init_n2o,
                                             ingestion_done);
 
     /* N2O product */
@@ -1284,7 +1284,7 @@ static void register_o3_product(void)
     const char *path;
 
     module =
-        harp_ingestion_register_module_coda("MLS_L2_O3", NULL, NULL, "MLS O3 profile", verify_o3, ingestion_init_o3,
+        harp_ingestion_register_module_coda("MLS_L2_O3", "MLS", NULL, NULL, "MLS O3 profile", verify_o3, ingestion_init_o3,
                                             ingestion_done);
 
     /* O3 product */
@@ -1332,7 +1332,7 @@ static void register_oh_product(void)
     const char *path;
 
     module =
-        harp_ingestion_register_module_coda("MLS_L2_OH", NULL, NULL, "MLS OH profile", verify_oh, ingestion_init_oh,
+        harp_ingestion_register_module_coda("MLS_L2_OH", "MLS", NULL, NULL, "MLS OH profile", verify_oh, ingestion_init_oh,
                                             ingestion_done);
 
     /* OH product */
@@ -1380,7 +1380,7 @@ static void register_rhi_product(void)
     const char *path;
 
     module =
-        harp_ingestion_register_module_coda("MLS_L2_RHI", NULL, NULL,
+        harp_ingestion_register_module_coda("MLS_L2_RHI", "MLS", NULL, NULL,
                                             "MLS relative humidity with respect to ice profile", verify_rhi,
                                             ingestion_init_rhi, ingestion_done);
 
@@ -1429,7 +1429,7 @@ static void register_so2_product(void)
     const char *path;
 
     module =
-        harp_ingestion_register_module_coda("MLS_L2_SO2", NULL, NULL, "MLS SO2 profile", verify_so2, ingestion_init_so2,
+        harp_ingestion_register_module_coda("MLS_L2_SO2", "MLS", NULL, NULL, "MLS SO2 profile", verify_so2, ingestion_init_so2,
                                             ingestion_done);
 
     /* SO2 product */
@@ -1477,7 +1477,7 @@ static void register_t_product(void)
     const char *path;
 
     module =
-        harp_ingestion_register_module_coda("MLS_L2_T", NULL, NULL, "MLS temperature profile", verify_t,
+        harp_ingestion_register_module_coda("MLS_L2_T", "MLS", NULL, NULL, "MLS temperature profile", verify_t,
                                             ingestion_init_t, ingestion_done);
 
     /* T product */

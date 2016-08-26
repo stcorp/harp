@@ -708,7 +708,7 @@ int harp_ingestion_module_gosat_fts_l1b_init(void)
     int i;
 
     module =
-        harp_ingestion_register_module_coda("GOSAT_FTS_L1b", NULL, NULL, "GOSAT FTS Level 1b radiance spectra",
+        harp_ingestion_register_module_coda("GOSAT_FTS_L1b", "FTS", NULL, NULL, "GOSAT FTS Level 1b radiance spectra",
                                             verify_product_type, ingestion_init, ingestion_done);
     harp_ingestion_register_option(module, "band", "spectral band to ingest", ARRAY_SIZE(band_option_values),
                                    band_option_values);

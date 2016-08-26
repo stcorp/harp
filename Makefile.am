@@ -76,8 +76,8 @@ libharp_la_SOURCES = \
 	libharp/harp-derived-variable-list.c \
 	libharp/harp-dimension-mask.h \
 	libharp/harp-dimension-mask.c \
-  libharp/harp-csv.h \
-  libharp/harp-csv.c \
+	libharp/harp-csv.h \
+	libharp/harp-csv.c \
 	libharp/harp-errno.c \
 	libharp/harp-filter.h \
 	libharp/harp-filter.c \
@@ -384,13 +384,16 @@ RSTFILES = \
 	doc/harpconvert.rst \
 	doc/harpdump.rst \
 	doc/harpfilter.rst \
+	doc/harpprofile.rst \
 	doc/index.rst \
 	doc/libharp.rst \
 	doc/libharp_collocation.rst \
+	doc/libharp_dataset.rst \
 	doc/libharp_documentation.rst \
 	doc/libharp_error.rst \
 	doc/libharp_general.rst \
 	doc/libharp_product.rst \
+	doc/libharp_product_metadata.rst \
 	doc/libharp_variable.rst \
 	doc/python.rst \
 	doc/tools.rst
@@ -417,7 +420,7 @@ harp_doc: harpconvert libharp/harp.h
 	  $(DOXYGEN) Doxyfile ; \
 	  cd .. ; \
 	  $(mkinstalldirs) doc/ingestions ; \
-	  ./harpconvert --generate-documentation -f rst doc/ingestions ; \
+	  ./harpconvert --generate-documentation doc/ingestions ; \
 	  cp $(srcdir)/INSTALL doc/install.rst ; \
 	  if test "x$(srcdir)" != "x$(builddir)" ; then \
 	    cp $(srcdir)/doc/conf.py doc ; \
