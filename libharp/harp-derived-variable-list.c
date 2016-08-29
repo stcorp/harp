@@ -2486,18 +2486,6 @@ static int add_conversions_for_grid(int num_dimensions, harp_dimension_type dime
         return -1;
     }
 
-    /* mass density from number density */
-    if (harp_variable_conversion_new("column_density", harp_type_double, HARP_UNIT_COLUMN_MASS_DENSITY, num_dimensions,
-                                     dimension_type, 0, get_density_from_nd, &conversion) != 0)
-    {
-        return -1;
-    }
-    if (harp_variable_conversion_add_source(conversion, "column_number_density", harp_type_double,
-                                            HARP_UNIT_COLUMN_NUMBER_DENSITY, num_dimensions, dimension_type, 0) != 0)
-    {
-        return -1;
-    }
-
     /*** stratospheric column (mass) density ***/
 
     /* time dependent from independent */
@@ -2635,18 +2623,6 @@ static int add_conversions_for_grid(int num_dimensions, harp_dimension_type dime
         return -1;
     }
 
-    /* mass density from number density */
-    if (harp_variable_conversion_new("density", harp_type_double, HARP_UNIT_MASS_DENSITY, num_dimensions,
-                                     dimension_type, 0, get_density_from_nd, &conversion) != 0)
-    {
-        return -1;
-    }
-    if (harp_variable_conversion_add_source(conversion, "number_density", harp_type_double, HARP_UNIT_NUMBER_DENSITY,
-                                            num_dimensions, dimension_type, 0) != 0)
-    {
-        return -1;
-    }
-
     /* mass density from partial column profile */
     if (harp_variable_conversion_new("density", harp_type_double, HARP_UNIT_NUMBER_DENSITY, num_dimensions,
                                      dimension_type, 0, get_density_from_partial_column_and_alt_bounds, &conversion) !=
@@ -2677,18 +2653,6 @@ static int add_conversions_for_grid(int num_dimensions, harp_dimension_type dime
 
     /* uncertainties */
     if (add_uncertainty_conversions("number_density", HARP_UNIT_NUMBER_DENSITY, num_dimensions, dimension_type) != 0)
-    {
-        return -1;
-    }
-
-    /* number density from mass density */
-    if (harp_variable_conversion_new("number_density", harp_type_double, HARP_UNIT_NUMBER_DENSITY, num_dimensions,
-                                     dimension_type, 0, get_nd_from_density, &conversion) != 0)
-    {
-        return -1;
-    }
-    if (harp_variable_conversion_add_source(conversion, "density", harp_type_double, HARP_UNIT_MASS_DENSITY,
-                                            num_dimensions, dimension_type, 0) != 0)
     {
         return -1;
     }
