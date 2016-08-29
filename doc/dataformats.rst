@@ -214,6 +214,10 @@ cloud_top_albedo                                                              X 
 cloud_top_height                                                              X            X
 cloud_top_pressure                                                            X            X
 collocation_index                                                                                        zero-based index as provided in the collocation result file
+column_density                                stratospheric,  amf, apriori,   X       X    X             this is the mass density
+                                              tropospheric    avk
+column_number_density                         stratospheric,  amf, apriori,   X       X    X
+                                              tropospheric    avk
 datetime
 datetime_length
 datetime_start
