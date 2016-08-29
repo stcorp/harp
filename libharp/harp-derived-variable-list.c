@@ -1455,14 +1455,14 @@ static int add_species_conversions_for_grid(const char *species, int num_dimensi
         return -1;
     }
 
-    /* mass density from number density */
-    if (harp_variable_conversion_new(name_density, harp_type_double, HARP_UNIT_COLUMN_MASS_DENSITY, num_dimensions,
-                                     dimension_type, 0, get_density_from_nd, &conversion) != 0)
+    /* column mass density from column number density */
+    if (harp_variable_conversion_new(name_column_density, harp_type_double, HARP_UNIT_COLUMN_MASS_DENSITY,
+                                     num_dimensions, dimension_type, 0, get_density_from_nd, &conversion) != 0)
     {
         return -1;
     }
-    if (harp_variable_conversion_add_source(conversion, name_nd, harp_type_double, HARP_UNIT_COLUMN_NUMBER_DENSITY,
-                                            num_dimensions, dimension_type, 0) != 0)
+    if (harp_variable_conversion_add_source(conversion, name_column_nd, harp_type_double,
+                                            HARP_UNIT_COLUMN_NUMBER_DENSITY, num_dimensions, dimension_type, 0) != 0)
     {
         return -1;
     }
@@ -1550,6 +1550,18 @@ static int add_species_conversions_for_grid(const char *species, int num_dimensi
     }
     if (harp_variable_conversion_add_source(conversion, "altitude_bounds", harp_type_double, HARP_UNIT_LENGTH,
                                             num_dimensions + 1, dimension_type, 2) != 0)
+    {
+        return -1;
+    }
+
+    /* column number density from column mass density */
+    if (harp_variable_conversion_new(name_column_nd, harp_type_double, HARP_UNIT_COLUMN_NUMBER_DENSITY,
+                                     num_dimensions, dimension_type, 0, get_nd_from_density, &conversion) != 0)
+    {
+        return -1;
+    }
+    if (harp_variable_conversion_add_source(conversion, name_column_density, harp_type_double,
+                                            HARP_UNIT_COLUMN_MASS_DENSITY, num_dimensions, dimension_type, 0) != 0)
     {
         return -1;
     }
