@@ -1535,7 +1535,7 @@ static int add_species_conversions_for_grid(const char *species, int num_dimensi
         }
     }
 
-    /* create partial column profile from densities */
+    /* create column from density */
     dimension_type[num_dimensions] = harp_dimension_independent;
     if (harp_variable_conversion_new(name_column_nd, harp_type_double, HARP_UNIT_COLUMN_NUMBER_DENSITY, num_dimensions,
                                      dimension_type, 0, get_partial_column_from_density_and_alt_bounds, &conversion) !=
