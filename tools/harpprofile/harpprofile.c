@@ -82,11 +82,7 @@ void print_help_smooth(void)
     printf("        Smooth the vertical profile <varname> in the <product file> with averaging kernel\n");
     printf("        matrices and add a priori. Resampling is done beforehand against the specified vertical axis.\n");
     printf("\n");
-    printf("        Mandatory options:\n");
-    printf("            -o, --output <filename> :\n");
-    printf("                    write output to specified file\n");
-    printf("                    (by default the input file will be replaced)\n");
-    printf("\n");
+    printf("        Options:\n");
     printf("            -of, --output-format <format> :\n");
     printf("                    Possible values for <format> (the output format) are:\n");
     printf("                      netcdf (the default)\n");
