@@ -146,7 +146,7 @@ double chemical_species_molar_mass[] = {
 };
 
 /** Calculate water vapour saturation pressure.
- * Formula from Bolton 1980.
+ * Use August-Roche-Magnus formula.
  * \param temperature  Temperature [K]
  * \return the water vapour saturation pressure [hPa]
  */
@@ -159,7 +159,7 @@ static double get_water_vapour_saturation_pressure_from_temperature(double tempe
     temperature_C = temperature - 273.15;       /* [degreeC] */
 
     /* Calculate the water vapour saturation pressure */
-    e_sat = 6.112 * exp(17.67 * temperature_C / (temperature_C + 243.5));       /* [hPa] */
+    e_sat = 6.1094 * exp(17.625 * temperature_C / (temperature_C + 243.04));       /* [hPa] */
     return e_sat;
 }
 
