@@ -71,11 +71,7 @@ Smoothing
           Smooth the vertical profile <varname> in the <product file> with averaging kernel
           matrices and add a priori. Resampling is done beforehand against the specified vertical axis.
 
-          Mandatory options:
-              -o, --output <filename> :
-                      write output to specified file
-                      (by default the input file will be replaced)
-
+          Options:
               -of, --output-format <format> :
                       Possible values for <format> (the output format) are:
                         netcdf (the default)
