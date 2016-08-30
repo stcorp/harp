@@ -3281,7 +3281,7 @@ static int add_axis_conversions(void)
         return -1;
     }
 
-    /* length from start/top */
+    /* length from start/stop */
     if (harp_variable_conversion_new("datetime_length", harp_type_double, HARP_UNIT_TIME, 1, dimension_type, 0,
                                      get_length_from_begin_and_end, &conversion) != 0)
     {
