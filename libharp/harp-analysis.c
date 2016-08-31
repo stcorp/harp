@@ -200,14 +200,9 @@ int harp_determine_overlapping_scenario(double xmin_a, double xmax_a, double xmi
  */
 double harp_fraction_of_day_from_datetime(double datetime)
 {
-    double fraction_of_day;
-    double seconds2days = 1.15740740740741e-05;
-    double datetime_in_days = datetime * seconds2days;
-    double integer_part = floor(datetime_in_days);
-    double decimal_part = datetime_in_days - integer_part;
+    double datetime_in_days = datetime / 86400.0;
 
-    fraction_of_day = decimal_part;
-    return fraction_of_day;
+    return datetime_in_days - floor(datetime_in_days);
 }
 
 /** Calculate the fraction of the year
@@ -216,14 +211,9 @@ double harp_fraction_of_day_from_datetime(double datetime)
  */
 double harp_fraction_of_year_from_datetime(double datetime)
 {
-    double fraction_of_year;
-    double seconds2years = 3.16887385068114e-08;
-    double datetime_in_years = datetime * seconds2years;
-    double integer_part = floor(datetime_in_years);
-    double decimal_part = datetime_in_years - integer_part;
+    double datetime_in_years = datetime / (365.2422 * 86400.0);
 
-    fraction_of_year = decimal_part;
-    return fraction_of_year;
+    return datetime_in_years - floor(datetime_in_years);
 }
 
 /** Calculate the equation of time (EOT) angle
