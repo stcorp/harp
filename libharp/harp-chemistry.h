@@ -117,7 +117,8 @@ double harp_partial_pressure_from_number_density_pressure_and_temperature(double
                                                                           double temperature);
 double harp_partial_pressure_from_volume_mixing_ratio_and_pressure(double volume_mixing_ratio, double pressure);
 double harp_pressure_from_gph(double gph);
-double harp_relative_humidity_from_h2o_number_density_and_temperature(double number_density_h2o, double temperature);
+double harp_relative_humidity_from_h2o_partial_pressure_and_temperature(double partial_pressure_h2o,
+                                                                        double temperature);
 
 double harp_virtual_temperature_from_pressure_temperature_and_relative_humidity(double temperature, double pressure,
                                                                                 double relative_humidity);

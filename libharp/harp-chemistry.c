@@ -152,33 +152,13 @@ double chemical_species_molar_mass[] = {
  */
 static double get_water_vapour_saturation_pressure_from_temperature(double temperature)
 {
-    double e_sat;       /* Water vapour saturation pressure [hPa] */
     double temperature_C;       /* Temperature [degreeC] */
 
     /* Convert to degrees Celsius */
     temperature_C = temperature - 273.15;       /* [degreeC] */
 
     /* Calculate the water vapour saturation pressure */
-    e_sat = 6.1094 * exp(17.625 * temperature_C / (temperature_C + 243.04));       /* [hPa] */
-    return e_sat;
-}
-
-/** Calculate water water vapour saturation density
- * \param temperature  Temperature [K]
- * \return the water vapour saturation density [molec/m3]
- */
-static double get_saturation_density_from_temperature(double temperature)
-{
-    double rg = (double)CONST_MOLAR_GAS;        /* Molar gas constant [kg m2/(K mol s2)] */
-    double na = (double)CONST_NUM_AVOGADRO;     /* Number of avogadro [1/mol] */
-
-    /* Water vapour saturation pressure [Pa] */
-    double e_sat = 100 * get_water_vapour_saturation_pressure_from_temperature(temperature);
-
-    /* Saturation density [molec/m3] */
-    double n_sat = e_sat * na / (rg * temperature);
-
-    return n_sat;
+    return 6.1094 * exp(17.625 * temperature_C / (temperature_C + 243.04));       /* [hPa] */
 }
 
 /** Return species name
@@ -441,23 +421,16 @@ double harp_pressure_from_gph(double gph)
                                     gph * 1.0e-3 / (CONST_STD_TEMPERATURE * CONST_MOLAR_GAS));
 }
 
-/** Calculate the relative humidity from the given water vapour number density and temperature.
+/** Calculate the relative humidity from the given temperature and water vapour partial pressure.
  * The relative humidity is the ratio of the partial pressure of water vapour in a
  * gaseous mixture of air and water vapour to the saturated vapour pressure of water at a given temperature.
- * \param number_density_h2o  Water vapour number density [molec/m3]
+ * \param partial_pressure_h2o  Water vapour partial pressure [hPa]
  * \param temperature  Temperature [K]
  * \return the relative humidity [%]
  */
-double harp_relative_humidity_from_h2o_number_density_and_temperature(double number_density_h2o, double temperature)
+double harp_relative_humidity_from_h2o_partial_pressure_and_temperature(double partial_pressure_h2o, double temperature)
 {
-    double relative_humidity;   /* Relative humidity [%] */
-    double n_sat;       /* water vapour saturation density [molec/m3] */
-
-    /* Calculate water vapour saturation density [molec/m3] */
-    n_sat = get_saturation_density_from_temperature(temperature);
-    /* Relative humidity [%] */
-    relative_humidity = number_density_h2o / n_sat * 100.0;
-    return relative_humidity;
+    return partial_pressure_h2o / get_water_vapour_saturation_pressure_from_temperature(temperature);
 }
 
 /** Calculate the virtual temperature

@@ -726,7 +726,7 @@ static int get_reflectance_from_normalized_radiance_and_solar_zenith_angle(harp_
     return 0;
 }
 
-static int get_relative_humidity_from_h2o_nd_and_temperature(harp_variable *variable,
+static int get_relative_humidity_from_h2o_pp_and_temperature(harp_variable *variable,
                                                              const harp_variable **source_variable)
 {
     long i;
@@ -734,8 +734,8 @@ static int get_relative_humidity_from_h2o_nd_and_temperature(harp_variable *vari
     for (i = 0; i < variable->num_elements; i++)
     {
         variable->data.double_data[i] =
-            harp_relative_humidity_from_h2o_number_density_and_temperature(source_variable[0]->data.double_data[i],
-                                                                           source_variable[1]->data.double_data[i]);
+            harp_relative_humidity_from_h2o_partial_pressure_and_temperature(source_variable[0]->data.double_data[i],
+                                                                             source_variable[1]->data.double_data[i]);
     }
 
     return 0;
@@ -2873,15 +2873,15 @@ static int add_conversions_for_grid(int num_dimensions, harp_dimension_type dime
         return -1;
     }
 
-    /* humidity from H2O/T */
+    /* humidity from H2O partial pressure */
     if (harp_variable_conversion_new("relative_humidity", harp_type_double, HARP_UNIT_DIMENSIONLESS, num_dimensions,
-                                     dimension_type, 0, get_relative_humidity_from_h2o_nd_and_temperature,
+                                     dimension_type, 0, get_relative_humidity_from_h2o_pp_and_temperature,
                                      &conversion) != 0)
     {
         return -1;
     }
-    if (harp_variable_conversion_add_source(conversion, "H2O_number_density", harp_type_double,
-                                            HARP_UNIT_NUMBER_DENSITY, num_dimensions, dimension_type, 0) != 0)
+    if (harp_variable_conversion_add_source(conversion, "H2O_partial_pressure", harp_type_double,
+                                            HARP_UNIT_PRESSURE, num_dimensions, dimension_type, 0) != 0)
     {
         return -1;
     }
