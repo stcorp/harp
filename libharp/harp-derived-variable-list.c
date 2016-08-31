@@ -765,10 +765,12 @@ static int get_solar_azimuth_angle_from_datetime_and_latlon(harp_variable *varia
 
     for (i = 0; i < variable->num_elements; i++)
     {
-        variable->data.double_data[i] =
-            harp_solar_azimuth_angle_from_datetime_longitude_and_latitude(source_variable[0]->data.double_data[i],
-                                                                          source_variable[2]->data.double_data[i],
-                                                                          source_variable[1]->data.double_data[i]);
+        double solar_elevation_angle;
+
+        harp_solar_angles_from_datetime_longitude_and_latitude(source_variable[0]->data.double_data[i],
+                                                               source_variable[2]->data.double_data[i],
+                                                               source_variable[1]->data.double_data[i],
+                                                               &solar_elevation_angle, &variable->data.double_data[i]);
     }
 
     return 0;
@@ -781,10 +783,12 @@ static int get_solar_elevation_angle_from_datetime_and_latlon(harp_variable *var
 
     for (i = 0; i < variable->num_elements; i++)
     {
-        variable->data.double_data[i] =
-            harp_solar_elevation_angle_from_datetime_longitude_and_latitude(source_variable[0]->data.double_data[i],
-                                                                            source_variable[2]->data.double_data[i],
-                                                                            source_variable[1]->data.double_data[i]);
+        double solar_azimuth_angle;
+
+        harp_solar_angles_from_datetime_longitude_and_latitude(source_variable[0]->data.double_data[i],
+                                                               source_variable[2]->data.double_data[i],
+                                                               source_variable[1]->data.double_data[i],
+                                                               &variable->data.double_data[i], &solar_azimuth_angle);
     }
 
     return 0;
