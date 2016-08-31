@@ -758,6 +758,22 @@ static int get_scattering_angle_from_solar_angles_and_viewing_angles(harp_variab
     return 0;
 }
 
+static int get_solar_azimuth_angle_from_datetime_and_latlon(harp_variable *variable,
+                                                            const harp_variable **source_variable)
+{
+    long i;
+
+    for (i = 0; i < variable->num_elements; i++)
+    {
+        variable->data.double_data[i] =
+            harp_solar_azimuth_angle_from_datetime_longitude_and_latitude(source_variable[0]->data.double_data[i],
+                                                                          source_variable[2]->data.double_data[i],
+                                                                          source_variable[1]->data.double_data[i]);
+    }
+
+    return 0;
+}
+
 static int get_solar_elevation_angle_from_datetime_and_latlon(harp_variable *variable,
                                                               const harp_variable **source_variable)
 {
@@ -3151,6 +3167,37 @@ static int add_angle_conversions(void)
         }
         if (harp_variable_conversion_add_source(conversion, "viewing_azimuth_angle", harp_type_double, HARP_UNIT_ANGLE,
                                                 i, dimension_type, 0) != 0)
+        {
+            return -1;
+        }
+    }
+
+    /*** solar azimuth angle ***/
+
+    if (add_time_indepedent_to_dependent_conversion("solar_azimuth_angle", harp_type_double, HARP_UNIT_ANGLE, 1,
+                                                    dimension_type, 0) != 0)
+    {
+        return -1;
+    }
+    for (i = 0; i < 2; i++)
+    {
+        if (harp_variable_conversion_new("solar_azimuth_angle", harp_type_double, HARP_UNIT_ANGLE, i, dimension_type,
+                                         0, get_solar_azimuth_angle_from_datetime_and_latlon, &conversion) != 0)
+        {
+            return -1;
+        }
+        if (harp_variable_conversion_add_source(conversion, "datetime", harp_type_double, HARP_UNIT_DATETIME, i,
+                                                dimension_type, 0) != 0)
+        {
+            return -1;
+        }
+        if (harp_variable_conversion_add_source(conversion, "latitude", harp_type_double, HARP_UNIT_LATITUDE, i,
+                                                dimension_type, 0) != 0)
+        {
+            return -1;
+        }
+        if (harp_variable_conversion_add_source(conversion, "longitude", harp_type_double, HARP_UNIT_LONGITUDE, i,
+                                                dimension_type, 0) != 0)
         {
             return -1;
         }
