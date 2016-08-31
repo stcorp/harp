@@ -234,6 +234,8 @@ latitude                                      instrument                      X 
 latitude_bounds                                                                            (lat)
 longitude                                     instrument                      X            (lon)
 longitude_bounds                                                                           (lon)
+molar_mass                                                                    X       X    X             this is the molar mass of the total substance (it is defined by the
+                                                                                                         relation between the variables 'density' and 'number_density')
 normalized_radiance                                                           X                    X
 number_density                                                                X       X    X
 pressure                                      surface                         X       X    X
