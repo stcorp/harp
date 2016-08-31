@@ -235,7 +235,7 @@ latitude_bounds                                                                 
 longitude                                     instrument                      X            (lon)
 longitude_bounds                                                                           (lon)
 normalized_radiance                                                           X                    X
-number_density                                                                X       X    X             this is equal to 'volume density'
+number_density                                                                X       X    X
 pressure                                      surface                         X       X    X
 pressure_bounds                                                               X       X    X
 radiance                                                                      X                    X
@@ -278,10 +278,10 @@ wavenumber                                                                    X 
 <species>_density                                                             X       X    X             this is the mass density
 <species>_mass_mixing_ratio                                   apriori, avk    X       X    X
 <species>_mass_mixing_ratio_dry_air                           apriori, avk    X       X    X
-<species>_number_density                                      apriori, avk    X       X    X             this is equal to 'volume density'
+<species>_number_density                                      apriori, avk    X       X    X
 <species>_partial_pressure                                                    X       X    X
 <species>_partial_pressure_dry_air                                            X       X    X
-<species>_volume_mixing_ratio                                 apriori, avk    X       X    X
+<species>_volume_mixing_ratio                                 apriori, avk    X       X    X             this is equal to 'number mixing ratio'
 <species>_volume_mixing_ratio_dry_air                         apriori, avk    X       X    X
 ============================================= =============== =============== ======= ==== ======= ===== =======================================================================
 
