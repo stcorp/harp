@@ -339,10 +339,10 @@ double harp_gravity_at_surface_from_latitude(double latitude)
 {
     double g_e = 9.7803253359;
     double k = 0.00193185265241;
-    double e = 0.081819190842622;
+    double e2 = 0.00669437999013;
     double sinphi = sin(latitude * CONST_DEG2RAD);
 
-    return g_e * (1 + k * sinphi * sinphi) / sqrt(1 - e * e * sinphi * sinphi);
+    return g_e * (1 + k * sinphi * sinphi) / sqrt(1 - e2 * sinphi * sinphi);
 }
 
 /* Calculate the gravitational acceleration gsurf at the Earth's surface for a given latitude and height.
