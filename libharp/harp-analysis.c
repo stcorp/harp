@@ -345,12 +345,12 @@ double harp_gravity_at_surface_from_latitude(double latitude)
     return g_e * (1 + k * sinphi * sinphi) / sqrt(1 - e2 * sinphi * sinphi);
 }
 
-/* Calculate the gravitational acceleration gsurf at the Earth's surface for a given latitude and height.
+/* Calculate the gravitational acceleration g for a given latitude and height.
  * Using WGS84 Gravity formula
  * \param latitude  Latitude [degree_north]
  * \param height    Height [m]
  * \return the gravitational acceleration at the Earth's surface gsurf [m/s2] */
-double harp_gravity_at_surface_from_latitude_and_height(double latitude, double height)
+double harp_gravity_from_latitude_and_height(double latitude, double height)
 {
     double a = 6378137.0;
     double f = 1 / 298.257223563;

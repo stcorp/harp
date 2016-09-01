@@ -203,7 +203,7 @@ int harp_daytime_from_solar_zenith_angle(double solar_zenith_angle);
 double harp_frequency_from_wavelength(double wavelength);
 double harp_frequency_from_wavenumber(double wavenumber);
 double harp_gravity_at_surface_from_latitude(double latitude);
-double harp_gravity_at_surface_from_latitude_and_height(double latitude, double height);
+double harp_gravity_from_latitude_and_height(double latitude, double height);
 const char *harp_illumination_condition_from_solar_zenith_angle(double solar_zenith_angle);
 double harp_local_curvature_radius_at_surface_from_latitude(double latitude);
 double harp_normalized_radiance_from_radiance_and_solar_irradiance(double radiance, double solar_irradiance);

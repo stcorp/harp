@@ -116,7 +116,7 @@ void harp_profile_altitude_from_pressure_temperature_h2o_mmr_and_latitude(long n
         else
         {
             z = prev_z + ((prev_T + T) / (molar_mass_air + prev_molar_mass_air)) *
-                (CONST_MOLAR_GAS / harp_gravity_at_surface_from_latitude_and_height(latitude, prev_z)) *
+                (CONST_MOLAR_GAS / harp_gravity_from_latitude_and_height(latitude, prev_z)) *
                 log(prev_p / p);
         }
 
@@ -727,7 +727,7 @@ int harp_profile_pressure_from_altitude_temperature_h2o_mmr_and_latitude(long nu
             molar_mass_air = CONST_MEAN_MOLAR_MASS_WET_AIR;
         }
 
-        g = harp_gravity_at_surface_from_latitude_and_height(latitude, z);
+        g = harp_gravity_from_latitude_and_height(latitude, z);
         if (i == 0)
         {
             prev_g = harp_gravity_at_surface_from_latitude(latitude);
