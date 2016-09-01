@@ -226,8 +226,8 @@ density                                                                       X 
 flag_am_pm                                                                                               string variable with either 'am' or 'pm'
 flag_day_twilight_night                                                                                  string variable with either 'day', 'twilight', or 'night'
 frequency                                                                     X
-geopotential                                                                  X       X    X
-geopotential_height                                                           X       X    X
+geopotential                                  surface                         X       X    X
+geopotential_height                           surface                         X       X    X
 index                                                                                                    zero-based index of the sample within the source product
 instrument_name                                                                                          used mainly for ground based networks to provide a unique instrument id
 latitude                                      instrument                      X            (lat)
