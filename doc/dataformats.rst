@@ -236,7 +236,6 @@ longitude                                     instrument                      X 
 longitude_bounds                                                                           (lon)
 molar_mass                                                                    X       X    X             this is the molar mass of the total substance (it is defined by the
                                                                                                          relation between the variables 'density' and 'number_density')
-normalized_radiance                                                           X                    X
 number_density                                                                X       X    X
 pressure                                      surface                         X       X    X
 pressure_bounds                                                               X       X    X
@@ -256,6 +255,7 @@ solar_elevation_angle                         surface, toa,                   X
 solar_irradiance                                                              X                    X
 solar_zenith_angle                            surface, toa,                   X
                                               instrument,
+sun_normalized_radiance                                                       X                    X
 surface_albedo                                                                X            X       X
 temperature                                   surface                         X       X    X
 tropopause_pressure                                                           X            X             pressure level of the troposphere/stratosphere boundary location
