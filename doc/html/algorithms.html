@@ -237,7 +237,7 @@ algorithm will contain a description of which combination of dimensions are supp
 <tr class="row-odd"><th class="head">symbol</th>
 <th class="head">name</th>
 <th class="head">unit</th>
-<th class="head">description</th>
+<th class="head">value</th>
 </tr>
 </thead>
 <tbody valign="top">
@@ -524,16 +524,16 @@ constant</td>
 <td>eccentricity</td>
 <td><span class="math">\(m\)</span></td>
 </tr>
-<tr class="row-odd"><td><span class="math">\(g_{surf}\)</span></td>
-<td>gravity at surface</td>
-<td><span class="math">\(\frac{m}{s^2}\)</span></td>
-</tr>
-<tr class="row-even"><td><span class="math">\(g_{e}\)</span></td>
+<tr class="row-odd"><td><span class="math">\(g_{e}\)</span></td>
 <td>gravity at equator</td>
 <td><span class="math">\(\frac{m}{s^2}\)</span></td>
 </tr>
-<tr class="row-odd"><td><span class="math">\(g_{p}\)</span></td>
+<tr class="row-even"><td><span class="math">\(g_{p}\)</span></td>
 <td>gravity at poles</td>
+<td><span class="math">\(\frac{m}{s^2}\)</span></td>
+</tr>
+<tr class="row-odd"><td><span class="math">\(g_{surf}\)</span></td>
+<td>gravity at surface</td>
 <td><span class="math">\(\frac{m}{s^2}\)</span></td>
 </tr>
 <tr class="row-even"><td><span class="math">\(\phi\)</span></td>
@@ -546,8 +546,8 @@ constant</td>
 \begin{eqnarray}
    e^2 &amp; = &amp; \frac{a^2-b^2}{a^2} \\
    k &amp; = &amp; \frac{bg_{p} - ag_{e}}{ag_{e}} \\
-   g &amp; = &amp; g_{e}\frac{1 + k {sin}^2(\frac{\pi}{180}\phi)}{\sqrt{1 - e^2{sin}^2(\frac{\pi}{180}\phi)}} \\
-   g &amp; = &amp; 9.7803253359 \frac{1 + 0.00193185265241{sin}^2(\frac{\pi}{180}\phi)}
+   g_{surf} &amp; = &amp; g_{e}\frac{1 + k {sin}^2(\frac{\pi}{180}\phi)}{\sqrt{1 - e^2{sin}^2(\frac{\pi}{180}\phi)}} \\
+   g_{surf} &amp; = &amp; 9.7803253359 \frac{1 + 0.00193185265241{sin}^2(\frac{\pi}{180}\phi)}
       {\sqrt{1 - 0.00669437999013{sin}^2(\frac{\pi}{180}\phi)}}
 \end{eqnarray}</div></li>
 <li><p class="first">normal gravity above ellipsoid surface</p>
@@ -581,8 +581,7 @@ constant</td>
 <td><span class="math">\(\frac{m}{s^2}\)</span></td>
 </tr>
 <tr class="row-even"><td><span class="math">\(g_{surf}\)</span></td>
-<td>gravity at the
-ellipsoid surface</td>
+<td>gravity at the ellipsoid surface</td>
 <td><span class="math">\(\frac{m}{s^2}\)</span></td>
 </tr>
 <tr class="row-odd"><td><span class="math">\(GM\)</span></td>

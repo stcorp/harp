@@ -25,7 +25,7 @@ Constants
 ~~~~~~~~~
 
 =================== ============================ ================================ ===============================
-symbol              name                         unit                             description
+symbol              name                         unit                             value
 =================== ============================ ================================ ===============================
 :math:`a`           WGS84 semi-major axis        :math:`m`                        :math:`6378137.0`
 :math:`b`           WGS84 semi-minor axis        :math:`m`                        :math:`6356752.314245`
@@ -128,9 +128,9 @@ These are the WGS84 ellipsoidal gravity formula as taken from NIMA TR8350.2
    :math:`a`        WGS84 semi-major axis :math:`m`
    :math:`b`        WGS84 semi-minor axis :math:`m`
    :math:`e`        eccentricity          :math:`m`
-   :math:`g_{surf}` gravity at surface    :math:`\frac{m}{s^2}`
    :math:`g_{e}`    gravity at equator    :math:`\frac{m}{s^2}`
    :math:`g_{p}`    gravity at poles      :math:`\frac{m}{s^2}`
+   :math:`g_{surf}` gravity at surface    :math:`\frac{m}{s^2}`
    :math:`\phi`     latitude              :math:`degN`
    ================ ===================== =====================
 
@@ -140,8 +140,8 @@ These are the WGS84 ellipsoidal gravity formula as taken from NIMA TR8350.2
       \begin{eqnarray}
          e^2 & = & \frac{a^2-b^2}{a^2} \\
          k & = & \frac{bg_{p} - ag_{e}}{ag_{e}} \\
-         g & = & g_{e}\frac{1 + k {sin}^2(\frac{\pi}{180}\phi)}{\sqrt{1 - e^2{sin}^2(\frac{\pi}{180}\phi)}} \\
-         g & = & 9.7803253359 \frac{1 + 0.00193185265241{sin}^2(\frac{\pi}{180}\phi)}
+         g_{surf} & = & g_{e}\frac{1 + k {sin}^2(\frac{\pi}{180}\phi)}{\sqrt{1 - e^2{sin}^2(\frac{\pi}{180}\phi)}} \\
+         g_{surf} & = & 9.7803253359 \frac{1 + 0.00193185265241{sin}^2(\frac{\pi}{180}\phi)}
             {\sqrt{1 - 0.00669437999013{sin}^2(\frac{\pi}{180}\phi)}}
       \end{eqnarray}
 
@@ -155,8 +155,7 @@ These are the WGS84 ellipsoidal gravity formula as taken from NIMA TR8350.2
    :math:`b`        WGS84 semi-minor axis                :math:`m`
    :math:`f`        WGS84 flattening                     :math:`m`
    :math:`g`        gravity                              :math:`\frac{m}{s^2}`
-   :math:`g_{surf}` gravity at the                       :math:`\frac{m}{s^2}`
-                    ellipsoid surface
+   :math:`g_{surf}` gravity at the ellipsoid surface     :math:`\frac{m}{s^2}`
    :math:`GM`       WGS84 earth's gravitational constant :math:`\frac{m^3}{s^2}`
    :math:`z`        altitude                             :math:`m`
    :math:`\phi`     latitude                             :math:`degN`
