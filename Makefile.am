@@ -378,6 +378,7 @@ include harpdoc.mk
 DOCFILES = $(HARP_DOCFILES)
 
 RSTFILES = \
+	doc/algorithms.rst \
 	doc/dataformats.rst \
 	doc/harpcheck.rst \
 	doc/harpcollocate.rst \
