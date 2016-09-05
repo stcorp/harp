@@ -746,12 +746,6 @@ int harp_viewing_geometry_angle_profiles_from_viewing_geometry_angles(double alt
 }
 
 /** Convert (electromagnetic wave) frequency to (electromagnetic wave) wavelength
- * \li \f$\lambda\f$ : wavelength [1/cm]
- * \li \f$f\f$ : frequency [Hz]
- * \li \f$c\f$ : speed of light [m/s]
- *
- * \f$\lambda = 10^9 c / f\f$
- *
  * \param frequency Frequency [Hz]
  * \return Wavelength [nm]
  */
@@ -762,11 +756,6 @@ double harp_wavelength_from_frequency(double frequency)
 }
 
 /** Convert (electromagnetic wave) wavenumber to (electromagnetic wave) wavelength
- * \li \f$\nu\f$ : wavenumber [1/cm]
- * \li \f$\lambda\f$ : wavelength [nm]
- *
- * \f$\lambda = 10^{-7} / \nu\f$
- *
  * \param wavenumber Wavenumber [1/cm]
  * \return Wavelength [nm]
  */
@@ -777,12 +766,6 @@ double harp_wavelength_from_wavenumber(double wavenumber)
 }
 
 /** Convert (electromagnetic wave) frequency to (electromagnetic wave) wavenumber
- * \li \f$\nu\f$ : wavenumber [1/cm]
- * \li \f$f\f$ : frequency [Hz]
- * \li \f$c\f$ : speed of light [m/s]
- *
- * \f$\nu = 10^{-2} f / c\f$
- *
  * \param frequency Frequency [Hz]
  * \return Wavenumber [1/cm]
  */
@@ -793,11 +776,6 @@ double harp_wavenumber_from_frequency(double frequency)
 }
 
 /** Convert (electromagnetic wave) wavelength to (electromagnetic wave) wavenumber
- * \li \f$\nu\f$ : wavenumber [1/cm]
- * \li \f$\lambda\f$ : wavelength [nm]
- *
- * \f$\nu = 10^7 / \lambda\f$
- *
  * \param wavelength Wavelength [nm]
  * \return Wavenumber [1/cm]
  */
