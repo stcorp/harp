@@ -679,7 +679,7 @@ latitude
    ====================== =========== ============ ========================
 
    Convert all polygon corner coordinates defined by :math:`\phi^{B}(i)` and
-   :math:`\lambda^{B}(i)` into unit circle points :math:`\mathbf{p}(i) = [x_{i}, y_{i}, z_{i}]`
+   :math:`\lambda^{B}(i)` into unit sphere points :math:`\mathbf{p}(i) = [x_{i}, y_{i}, z_{i}]`
    
    :math:`x_{min} = min(x_{i}), y_{min} = min(y_{i}), z_{min} = min(z_{i})`
    
@@ -841,7 +841,7 @@ scattering angle
          \mu_{0} & = & cos\left(\frac{\pi}{180}\theta_{0}\right) \\
          \mu_{V} & = & cos\left(\frac{\pi}{180}\theta_{V}\right) \\
          \theta_{s} & = & \frac{180}{\pi}acos\left(\mu_{0}\mu_{V}\sqrt{1-\mu_{0}^{2}}\sqrt{1-\mu_{V}^{2}}
-            cos\left(\frac{\pi}{180}(\alpha_{V}-\alpha_{0})\right)\right)
+            cos\left(\frac{\pi}{180}(\varphi_{V}-\varphi_{0})\right)\right)
       \end{eqnarray}
 
 
