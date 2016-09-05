@@ -468,7 +468,7 @@ static int read_solar_zenith_angle(void *user_data, long index, harp_array data)
     return get_angle_data(user_data, index, 0, data);
 }
 
-static int read_los_zenith_angle(void *user_data, long index, harp_array data)
+static int read_sensor_zenith_angle(void *user_data, long index, harp_array data)
 {
     return get_angle_data(user_data, index, 1, data);
 }
@@ -478,7 +478,7 @@ static int read_solar_azimuth_angle(void *user_data, long index, harp_array data
     return get_angle_data(user_data, index, 2, data);
 }
 
-static int read_los_azimuth_angle(void *user_data, long index, harp_array data)
+static int read_sensor_azimuth_angle(void *user_data, long index, harp_array data)
 {
     return get_angle_data(user_data, index, 3, data);
 }
@@ -658,42 +658,42 @@ int harp_ingestion_module_iasi_l2_init(void)
         "from a scan element to its nearest neigbouring scan element";
     harp_variable_definition_add_mapping(variable_definition, NULL, NULL, path, description);
 
-    /* surface_solar_azimuth_angle */
+    /* solar_azimuth_angle */
     description = "solar azimuth angle at the surface";
     variable_definition =
-        harp_ingestion_register_variable_sample_read(product_definition, "surface_solar_azimuth_angle",
-                                                     harp_type_double, 1, dimension_type, NULL, description, "degree",
-                                                     NULL, read_solar_azimuth_angle);
+        harp_ingestion_register_variable_sample_read(product_definition, "solar_azimuth_angle", harp_type_double, 1,
+                                                     dimension_type, NULL, description, "degree", NULL,
+                                                     read_solar_azimuth_angle);
     harp_variable_definition_set_valid_range_double(variable_definition, 0.0, 360.0);
     path = "/MDR[]/MDR/ANGULAR_RELATION[,2]";
     harp_variable_definition_add_mapping(variable_definition, NULL, NULL, path, NULL);
 
-    /* surface_solar_zenith_angle */
+    /* solar_zenith_angle */
     description = "solar zenith angle at the surface";
     variable_definition =
-        harp_ingestion_register_variable_sample_read(product_definition, "surface_solar_zenith_angle", harp_type_double,
+        harp_ingestion_register_variable_sample_read(product_definition, "solar_zenith_angle", harp_type_double,
                                                      1, dimension_type, NULL, description, "degree", NULL,
                                                      read_solar_zenith_angle);
     harp_variable_definition_set_valid_range_double(variable_definition, 0.0, 180.0);
     path = "/MDR[]/MDR/ANGULAR_RELATION[,0]";
     harp_variable_definition_add_mapping(variable_definition, NULL, NULL, path, NULL);
 
-    /* surface_viewing_azimuth_angle */
-    description = "viewing azimuth angle at the surface";
+    /* sensor_azimuth_angle */
+    description = "sensor azimuth angle at the surface";
     variable_definition =
-        harp_ingestion_register_variable_sample_read(product_definition, "surface_viewing_azimuth_angle",
-                                                     harp_type_double, 1, dimension_type, NULL, description, "degree",
-                                                     NULL, read_los_azimuth_angle);
+        harp_ingestion_register_variable_sample_read(product_definition, "sensor_azimuth_angle", harp_type_double, 1,
+                                                     dimension_type, NULL, description, "degree", NULL,
+                                                     read_sensor_azimuth_angle);
     harp_variable_definition_set_valid_range_double(variable_definition, 0.0, 360.0);
     path = "/MDR[]/MDR/ANGULAR_RELATION[,3]";
     harp_variable_definition_add_mapping(variable_definition, NULL, NULL, path, NULL);
 
-    /* surface_viewing_zenith_angle */
-    description = "viewing zenith angle at the surface";
+    /* sensor_zenith_angle */
+    description = "sensor angle at the surface";
     variable_definition =
-        harp_ingestion_register_variable_sample_read(product_definition, "surface_viewing_zenith_angle",
-                                                     harp_type_double, 1, dimension_type, NULL, description, "degree",
-                                                     NULL, read_los_zenith_angle);
+        harp_ingestion_register_variable_sample_read(product_definition, "sensor_zenith_angle", harp_type_double, 1,
+                                                     dimension_type, NULL, description, "degree", NULL,
+                                                     read_sensor_zenith_angle);
     harp_variable_definition_set_valid_range_double(variable_definition, 0.0, 180.0);
     path = "/MDR[]/MDR/ANGULAR_RELATION[,1]";
     harp_variable_definition_add_mapping(variable_definition, NULL, NULL, path, NULL);

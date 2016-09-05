@@ -529,7 +529,7 @@ static int read_solar_zenith_angle(void *user_data, harp_array data)
     return read_dataset(info, "/sza", harp_type_float, info->num_time, data);
 }
 
-static int read_viewing_zenith_angle(void *user_data, harp_array data)
+static int read_sensor_zenith_angle(void *user_data, harp_array data)
 {
     ingest_info *info = (ingest_info *)user_data;
 
@@ -734,6 +734,16 @@ int harp_ingestion_module_cci_l2_o3_np_init(void)
         "as [ll[,0], ll[,2], ll[,6], ll[,4]]; note the reordering of the last two values to ensure a simple polygon";
     harp_variable_definition_add_mapping(variable_definition, NULL, NULL, path, description);
 
+    /* sensor_zenith_angle */
+    description = "zenith angle of the sensor at the ground pixel center";
+    variable_definition =
+        harp_ingestion_register_variable_full_read(product_definition, "sensor_zenith_angle", harp_type_float, 1,
+                                                   dimension_type, NULL, description, "degree", NULL,
+                                                   read_sensor_zenith_angle);
+    harp_variable_definition_set_valid_range_float(variable_definition, 0.0, 180.0);
+    path = "/lza[]";
+    harp_variable_definition_add_mapping(variable_definition, NULL, NULL, path, NULL);
+
     /* solar_zenith_angle */
     description = "zenith angle of the Sun at the ground pixel center";
     variable_definition =
@@ -742,16 +752,6 @@ int harp_ingestion_module_cci_l2_o3_np_init(void)
                                                    read_solar_zenith_angle);
     harp_variable_definition_set_valid_range_float(variable_definition, 0.0, 180.0);
     path = "/sza[]";
-    harp_variable_definition_add_mapping(variable_definition, NULL, NULL, path, NULL);
-
-    /* viewing_zenith_angle */
-    description = "zenith angle of the instrument at the ground pixel center";
-    variable_definition =
-        harp_ingestion_register_variable_full_read(product_definition, "viewing_zenith_angle", harp_type_float, 1,
-                                                   dimension_type, NULL, description, "degree", NULL,
-                                                   read_viewing_zenith_angle);
-    harp_variable_definition_set_valid_range_float(variable_definition, 0.0, 180.0);
-    path = "/lza[]";
     harp_variable_definition_add_mapping(variable_definition, NULL, NULL, path, NULL);
 
     /* pressure */

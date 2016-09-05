@@ -195,17 +195,17 @@
 <td>degree</td>
 <td>solar zenith angle at the observation point</td>
 </tr>
-<tr class="row-odd"><td><strong>viewing_azimuth_angle</strong></td>
+<tr class="row-odd"><td><strong>sensor_azimuth_angle</strong></td>
 <td>double</td>
 <td>{<em>time</em>}</td>
 <td>degree</td>
-<td>viewing azimuth angle at the surface</td>
+<td>sensor azimuth angle at the surface</td>
 </tr>
-<tr class="row-even"><td><strong>viewing_zenith_angle</strong></td>
+<tr class="row-even"><td><strong>sensor_zenith_angle</strong></td>
 <td>double</td>
 <td>{<em>time</em>}</td>
 <td>degree</td>
-<td>viewing zenith angle at the observation point</td>
+<td>sensor zenith angle at the observation point</td>
 </tr>
 <tr class="row-odd"><td><strong>CO2_column_number_density</strong></td>
 <td>double</td>
@@ -277,19 +277,13 @@
 <td><em>path</em></td>
 <td><strong>/Data/geolocation/solarZenith[]</strong></td>
 </tr>
-<tr class="row-odd"><td rowspan="2"><strong>viewing_azimuth_angle</strong></td>
+<tr class="row-odd"><td><strong>sensor_azimuth_angle</strong></td>
 <td><em>path</em></td>
 <td><strong>/Data/geolocation/satelliteAzimuth[]</strong></td>
 </tr>
-<tr class="row-even"><td><em>description</em></td>
-<td>the viewing angle is the opposite of the satellite angle; the returned angle is thus angle + 180 (mapped to [0,360])</td>
-</tr>
-<tr class="row-odd"><td rowspan="2"><strong>viewing_zenith_angle</strong></td>
+<tr class="row-even"><td><strong>sensor_zenith_angle</strong></td>
 <td><em>path</em></td>
 <td><strong>/Data/geolocation/satelliteZenith[]</strong></td>
-</tr>
-<tr class="row-even"><td><em>description</em></td>
-<td>the viewing angle is the opposite of the satellite angle; the returned angle is thus 180 - angle</td>
 </tr>
 <tr class="row-odd"><td><strong>CO2_column_number_density</strong></td>
 <td><em>path</em></td>

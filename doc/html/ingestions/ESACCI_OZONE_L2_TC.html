@@ -189,17 +189,17 @@
 <td>degree_north</td>
 <td>latitudes of the ground pixel corners</td>
 </tr>
-<tr class="row-even"><td><strong>solar_zenith_angle</strong></td>
+<tr class="row-even"><td><strong>sensor_zenith_angle</strong></td>
+<td>double</td>
+<td>{<em>time</em>}</td>
+<td>degree</td>
+<td>zenith angle of the sensor at the ground pixel center (&lt; 0 for Eastern, &gt; 0 for Western pixels)</td>
+</tr>
+<tr class="row-odd"><td><strong>solar_zenith_angle</strong></td>
 <td>double</td>
 <td>{<em>time</em>}</td>
 <td>degree</td>
 <td>zenith angle of the Sun at the ground pixel center</td>
-</tr>
-<tr class="row-odd"><td><strong>viewing_zenith_angle</strong></td>
-<td>double</td>
-<td>{<em>time</em>}</td>
-<td>degree</td>
-<td>zenith angle of the instrument at the ground pixel center (&lt; 0 for Eastern, &gt; 0 for Western pixels)</td>
 </tr>
 <tr class="row-even"><td><strong>relative_azimuth_angle</strong></td>
 <td>double</td>
@@ -336,13 +336,13 @@
 <td><em>path</em></td>
 <td><strong>/latitude_corner[]</strong></td>
 </tr>
-<tr class="row-odd"><td><strong>solar_zenith_angle</strong></td>
+<tr class="row-odd"><td><strong>sensor_zenith_angle</strong></td>
+<td><em>path</em></td>
+<td><strong>/sensor_zenith_angle[]</strong></td>
+</tr>
+<tr class="row-even"><td><strong>solar_zenith_angle</strong></td>
 <td><em>path</em></td>
 <td><strong>/solar_zenith_angle[]</strong></td>
-</tr>
-<tr class="row-even"><td><strong>viewing_zenith_angle</strong></td>
-<td><em>path</em></td>
-<td><strong>/viewing_zenith_angle[]</strong></td>
 </tr>
 <tr class="row-odd"><td><strong>relative_azimuth_angle</strong></td>
 <td><em>path</em></td>

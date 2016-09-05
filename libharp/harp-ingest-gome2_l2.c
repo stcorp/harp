@@ -651,42 +651,28 @@ static int read_latitude_bounds(void *user_data, harp_array data)
     return 0;
 }
 
-static int read_solar_zenith_angle(void *user_data, harp_array data)
+static int read_solar_zenith_angle_instrument(void *user_data, harp_array data)
 {
     ingest_info *info = (ingest_info *)user_data;
 
     return read_dataset(info, "GEOLOCATION/SolarZenithAngleSatCentre", harp_type_double, info->num_main, data);
 }
 
-static int read_los_zenith_angle(void *user_data, harp_array data)
-{
-    ingest_info *info = (ingest_info *)user_data;
-
-    return read_dataset(info, "GEOLOCATION/LineOfSightZenithAngleSatCentre", harp_type_double, info->num_main, data);
-}
-
-static int read_relative_azimuth_angle(void *user_data, harp_array data)
-{
-    ingest_info *info = (ingest_info *)user_data;
-
-    return read_dataset(info, "GEOLOCATION/RelativeAzimuthSatCentre", harp_type_double, info->num_main, data);
-}
-
-static int read_solar_zenith_angle_toa(void *user_data, harp_array data)
+static int read_solar_zenith_angle(void *user_data, harp_array data)
 {
     ingest_info *info = (ingest_info *)user_data;
 
     return read_dataset(info, "GEOLOCATION/SolarZenithAngleCentre", harp_type_double, info->num_main, data);
 }
 
-static int read_los_zenith_angle_toa(void *user_data, harp_array data)
+static int read_viewing_zenith_angle(void *user_data, harp_array data)
 {
     ingest_info *info = (ingest_info *)user_data;
 
     return read_dataset(info, "GEOLOCATION/LineOfSightZenithAngleCentre", harp_type_double, info->num_main, data);
 }
 
-static int read_relative_azimuth_angle_toa(void *user_data, harp_array data)
+static int read_relative_azimuth_angle(void *user_data, harp_array data)
 {
     ingest_info *info = (ingest_info *)user_data;
 
@@ -1705,57 +1691,37 @@ static void register_common_variables(harp_product_definition *product_definitio
     variable_definition =
         harp_ingestion_register_variable_full_read(product_definition, "instrument_solar_zenith_angle",
                                                    harp_type_double, 1, dimension_type, NULL, description, "degree",
-                                                   NULL, read_solar_zenith_angle);
+                                                   NULL, read_solar_zenith_angle_instrument);
     harp_variable_definition_set_valid_range_double(variable_definition, 0.0, 180.0);
     path = "/GEOLOCATION/SolarZenithAngleSatCentre[]";
     harp_variable_definition_add_mapping(variable_definition, NULL, NULL, path, NULL);
 
-    /* instrument_viewing_zenith_angle */
-    description = "viewing zenith angle at the instrument";
-    variable_definition =
-        harp_ingestion_register_variable_full_read(product_definition, "instrument_viewing_zenith_angle",
-                                                   harp_type_double, 1, dimension_type, NULL, description, "degree",
-                                                   NULL, read_los_zenith_angle);
-    harp_variable_definition_set_valid_range_double(variable_definition, 0.0, 180.0);
-    path = "/GEOLOCATION/LineOfSightZenithAngleSatCentre[]";
-    harp_variable_definition_add_mapping(variable_definition, NULL, NULL, path, NULL);
-
-    /* instrument_relative_azimuth_angle */
-    description = "relative azimuth angle at the instrument";
-    variable_definition =
-        harp_ingestion_register_variable_full_read(product_definition, "instrument_relative_azimuth_angle",
-                                                   harp_type_double, 1, dimension_type, NULL, description, "degree",
-                                                   NULL, read_relative_azimuth_angle);
-    harp_variable_definition_set_valid_range_double(variable_definition, 0.0, 360.0);
-    path = "/GEOLOCATION/RelativeAzimuthSatCentre[]";
-    harp_variable_definition_add_mapping(variable_definition, NULL, NULL, path, NULL);
-
-    /* toa_solar_zenith_angle */
+    /* solar_zenith_angle */
     description = "solar zenith angle at top of atmosphere";
     variable_definition =
-        harp_ingestion_register_variable_full_read(product_definition, "toa_solar_zenith_angle", harp_type_double, 1,
+        harp_ingestion_register_variable_full_read(product_definition, "solar_zenith_angle", harp_type_double, 1,
                                                    dimension_type, NULL, description, "degree", NULL,
-                                                   read_solar_zenith_angle_toa);
+                                                   read_solar_zenith_angle);
     harp_variable_definition_set_valid_range_double(variable_definition, 0.0, 180.0);
     path = "/GEOLOCATION/SolarZenithAngleCentre[]";
     harp_variable_definition_add_mapping(variable_definition, NULL, NULL, path, NULL);
 
-    /* toa_viewing_zenith_angle */
+    /* viewing_zenith_angle */
     description = "viewing zenith angle at top of atmosphere";
     variable_definition =
-        harp_ingestion_register_variable_full_read(product_definition, "toa_viewing_zenith_angle", harp_type_double, 1,
+        harp_ingestion_register_variable_full_read(product_definition, "viewing_zenith_angle", harp_type_double, 1,
                                                    dimension_type, NULL, description, "degree", NULL,
-                                                   read_los_zenith_angle_toa);
+                                                   read_viewing_zenith_angle);
     harp_variable_definition_set_valid_range_double(variable_definition, 0.0, 180.0);
     path = "/GEOLOCATION/LineOfSightZenithAngleCentre[]";
     harp_variable_definition_add_mapping(variable_definition, NULL, NULL, path, NULL);
 
-    /* toa_relative_azimuth_angle */
+    /* relative_azimuth_angle */
     description = "relative azimuth angle at top of atmosphere";
     variable_definition =
-        harp_ingestion_register_variable_full_read(product_definition, "toa_relative_azimuth_angle", harp_type_double,
+        harp_ingestion_register_variable_full_read(product_definition, "relative_azimuth_angle", harp_type_double,
                                                    1, dimension_type, NULL, description, "degree", NULL,
-                                                   read_relative_azimuth_angle_toa);
+                                                   read_relative_azimuth_angle);
     harp_variable_definition_set_valid_range_double(variable_definition, 0.0, 360.0);
     path = "/GEOLOCATION/RelativeAzimuthCentre[]";
     harp_variable_definition_add_mapping(variable_definition, NULL, NULL, path, NULL);

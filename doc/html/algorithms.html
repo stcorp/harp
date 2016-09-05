@@ -122,10 +122,17 @@
 </ul>
 </li>
 <li class="toctree-l2"><a class="reference internal" href="#angle-variable-conversions">Angle variable conversions</a><ul>
+<li class="toctree-l3"><a class="reference internal" href="#relative-azimuth-angle">relative azimuth angle</a></li>
 <li class="toctree-l3"><a class="reference internal" href="#scattering-angle">scattering angle</a></li>
+<li class="toctree-l3"><a class="reference internal" href="#sensor-azimuth-angle">sensor azimuth angle</a></li>
+<li class="toctree-l3"><a class="reference internal" href="#sensor-elevation-angle">sensor elevation angle</a></li>
+<li class="toctree-l3"><a class="reference internal" href="#sensor-zenith-angle">sensor zenith angle</a></li>
 <li class="toctree-l3"><a class="reference internal" href="#solar-azimuth-angle">solar azimuth angle</a></li>
 <li class="toctree-l3"><a class="reference internal" href="#solar-elevation-angle">solar elevation angle</a></li>
 <li class="toctree-l3"><a class="reference internal" href="#solar-zenith-angle">solar zenith angle</a></li>
+<li class="toctree-l3"><a class="reference internal" href="#viewing-azimuth-angle">viewing azimuth angle</a></li>
+<li class="toctree-l3"><a class="reference internal" href="#viewing-elevation-angle">viewing elevation angle</a></li>
+<li class="toctree-l3"><a class="reference internal" href="#viewing-zenith-angle">viewing zenith angle</a></li>
 </ul>
 </li>
 <li class="toctree-l2"><a class="reference internal" href="#atmospheric-variable-conversions">Atmospheric variable conversions</a><ul>
@@ -546,9 +553,9 @@ constant</td>
 \begin{eqnarray}
    e^2 &amp; = &amp; \frac{a^2-b^2}{a^2} \\
    k &amp; = &amp; \frac{bg_{p} - ag_{e}}{ag_{e}} \\
-   g_{surf} &amp; = &amp; g_{e}\frac{1 + k {sin}^2(\frac{\pi}{180}\phi)}{\sqrt{1 - e^2{sin}^2(\frac{\pi}{180}\phi)}} \\
-   g_{surf} &amp; = &amp; 9.7803253359 \frac{1 + 0.00193185265241{sin}^2(\frac{\pi}{180}\phi)}
-      {\sqrt{1 - 0.00669437999013{sin}^2(\frac{\pi}{180}\phi)}}
+   g_{surf} &amp; = &amp; g_{e}\frac{1 + k {\sin}^2(\frac{\pi}{180}\phi)}{\sqrt{1 - e^2{\sin}^2(\frac{\pi}{180}\phi)}} \\
+   g_{surf} &amp; = &amp; 9.7803253359 \frac{1 + 0.00193185265241{\sin}^2(\frac{\pi}{180}\phi)}
+      {\sqrt{1 - 0.00669437999013{\sin}^2(\frac{\pi}{180}\phi)}}
 \end{eqnarray}</div></li>
 <li><p class="first">normal gravity above ellipsoid surface</p>
 <table border="1" class="docutils">
@@ -606,7 +613,7 @@ constant</td>
 <div class="math">
 \begin{eqnarray}
    m &amp; = &amp; \frac{\omega^2a^2b}{GM} \\
-   g &amp; = &amp; g_{surf} \left[ 1 - \frac{2}{a}\left(1+f+m-2f{sin}^2(\frac{\pi}{180}\phi)\right)z + \frac{3}{a^2}z^2 \right] \\
+   g &amp; = &amp; g_{surf} \left[ 1 - \frac{2}{a}\left(1+f+m-2f{\sin}^2(\frac{\pi}{180}\phi)\right)z + \frac{3}{a^2}z^2 \right] \\
 \end{eqnarray}</div></li>
 </ol>
 </div>
@@ -1845,14 +1852,63 @@ can be found in the Atmospheric variable conversions section.</p>
 </div>
 <div class="section" id="angle-variable-conversions">
 <h2>Angle variable conversions</h2>
-<div class="section" id="scattering-angle">
-<h3>scattering angle</h3>
+<div class="section" id="relative-azimuth-angle">
+<h3>relative azimuth angle</h3>
 <ol class="arabic">
-<li><p class="first">scattering angle from solar and viewing angles</p>
+<li><p class="first">relative azimuth angle from sensor and solar azimuth angle</p>
 <table border="1" class="docutils">
 <colgroup>
 <col width="24%" />
-<col width="27%" />
+<col width="28%" />
+<col width="14%" />
+<col width="35%" />
+</colgroup>
+<thead valign="bottom">
+<tr class="row-odd"><th class="head">symbol</th>
+<th class="head">description</th>
+<th class="head">unit</th>
+<th class="head">variable name</th>
+</tr>
+</thead>
+<tbody valign="top">
+<tr class="row-even"><td><span class="math">\(\varphi_{0}\)</span></td>
+<td>solar azimuth angle</td>
+<td><span class="math">\(deg\)</span></td>
+<td><cite>solar_azimuth_angle {:}</cite></td>
+</tr>
+<tr class="row-odd"><td><span class="math">\(\varphi_{r}\)</span></td>
+<td>relative azimuth angle</td>
+<td><span class="math">\(deg\)</span></td>
+<td><cite>relative_azimuth_angle {:}</cite></td>
+</tr>
+<tr class="row-even"><td><span class="math">\(\varphi_{S}\)</span></td>
+<td>sensor azimuth angle</td>
+<td><span class="math">\(deg\)</span></td>
+<td><cite>sensor_azimuth_angle {:}</cite></td>
+</tr>
+</tbody>
+</table>
+<p>The pattern <cite>:</cite> for the dimensions can represent <cite>{time}</cite>, or no dimensions at all.</p>
+<div class="math">
+\begin{eqnarray}
+  \Delta\varphi &amp; = &amp; \varphi_{0} - \varphi_{S} \\
+  \Delta\varphi &amp; = &amp; \begin{cases}
+      \Delta\varphi \geq 360, &amp; \Delta\varphi - 360 \\
+      0 \leq \Delta\varphi &lt; 360, &amp; \Delta\varphi \\
+      \Delta\varphi &lt; 0, &amp; \Delta\varphi + 360
+   \end{cases} \\
+  \varphi_{r} &amp; = &amp; \left|\Delta\varphi - 180 \right|
+\end{eqnarray}</div></li>
+</ol>
+</div>
+<div class="section" id="scattering-angle">
+<h3>scattering angle</h3>
+<ol class="arabic">
+<li><p class="first">scattering angle from sensor and solar angles</p>
+<table border="1" class="docutils">
+<colgroup>
+<col width="24%" />
+<col width="28%" />
 <col width="14%" />
 <col width="35%" />
 </colgroup>
@@ -1869,22 +1925,55 @@ can be found in the Atmospheric variable conversions section.</p>
 <td><span class="math">\(deg\)</span></td>
 <td><cite>solar_zenith_angle {:}</cite></td>
 </tr>
-<tr class="row-odd"><td><span class="math">\(\theta_{s}\)</span></td>
+<tr class="row-odd"><td><span class="math">\(\Theta_{s}\)</span></td>
 <td>scattering angle</td>
 <td><span class="math">\(deg\)</span></td>
 <td><cite>scattering_angle {:}</cite></td>
 </tr>
-<tr class="row-even"><td><span class="math">\(\theta_{V}\)</span></td>
-<td>viewing zenith angle</td>
+<tr class="row-even"><td><span class="math">\(\theta_{S}\)</span></td>
+<td>sensor zenith angle</td>
 <td><span class="math">\(deg\)</span></td>
-<td><cite>viewing_zenith_angle {:}</cite></td>
+<td><cite>sensor_zenith_angle {:}</cite></td>
 </tr>
-<tr class="row-odd"><td><span class="math">\(\varphi_{0}\)</span></td>
-<td>solar azimuth angle</td>
+<tr class="row-odd"><td><span class="math">\(\varphi_{r}\)</span></td>
+<td>relative azimuth angle</td>
 <td><span class="math">\(deg\)</span></td>
-<td><cite>solar_azimuth_angle {:}</cite></td>
+<td><cite>relative_azimuth_angle {:}</cite></td>
 </tr>
-<tr class="row-even"><td><span class="math">\(\varphi_{V}\)</span></td>
+</tbody>
+</table>
+<p>The pattern <cite>:</cite> for the dimensions can represent <cite>{time}</cite>, or no dimensions at all.</p>
+<div class="math">
+\[\Theta_{s} = \frac{180}{\pi}\arccos\left(-\cos\left(\frac{\pi}{180}\theta_{0}\right)\cos\left(\frac{\pi}{180}\theta_{S}\right) -
+      \sin\left(\frac{\pi}{180}\theta_{0}\right)\sin\left(\frac{\pi}{180}\theta_{S}\right)\cos\left(\frac{\pi}{180}\varphi_{r}\right)\right)\]</div>
+</li>
+</ol>
+</div>
+<div class="section" id="sensor-azimuth-angle">
+<h3>sensor azimuth angle</h3>
+<ol class="arabic">
+<li><p class="first">sensor azimuth angle from viewing azimuth angle</p>
+<table border="1" class="docutils">
+<colgroup>
+<col width="24%" />
+<col width="27%" />
+<col width="14%" />
+<col width="35%" />
+</colgroup>
+<thead valign="bottom">
+<tr class="row-odd"><th class="head">symbol</th>
+<th class="head">description</th>
+<th class="head">unit</th>
+<th class="head">variable name</th>
+</tr>
+</thead>
+<tbody valign="top">
+<tr class="row-even"><td><span class="math">\(\varphi_{S}\)</span></td>
+<td>sensor azimuth angle</td>
+<td><span class="math">\(deg\)</span></td>
+<td><cite>sensor_azimuth_angle {:}</cite></td>
+</tr>
+<tr class="row-odd"><td><span class="math">\(\varphi_{V}\)</span></td>
 <td>viewing azimuth angle</td>
 <td><span class="math">\(deg\)</span></td>
 <td><cite>viewing_azimuth_angle {:}</cite></td>
@@ -1893,12 +1982,114 @@ can be found in the Atmospheric variable conversions section.</p>
 </table>
 <p>The pattern <cite>:</cite> for the dimensions can represent <cite>{time}</cite>, or no dimensions at all.</p>
 <div class="math">
-\begin{eqnarray}
-   \mu_{0} &amp; = &amp; cos\left(\frac{\pi}{180}\theta_{0}\right) \\
-   \mu_{V} &amp; = &amp; cos\left(\frac{\pi}{180}\theta_{V}\right) \\
-   \theta_{s} &amp; = &amp; \frac{180}{\pi}acos\left(\mu_{0}\mu_{V}\sqrt{1-\mu_{0}^{2}}\sqrt{1-\mu_{V}^{2}}
-      cos\left(\frac{\pi}{180}(\varphi_{V}-\varphi_{0})\right)\right)
-\end{eqnarray}</div></li>
+\[\varphi_{S} = 180 - \varphi_{V}\]</div>
+</li>
+</ol>
+</div>
+<div class="section" id="sensor-elevation-angle">
+<h3>sensor elevation angle</h3>
+<ol class="arabic">
+<li><p class="first">sensor elevation angle from sensor zenith angle</p>
+<table border="1" class="docutils">
+<colgroup>
+<col width="23%" />
+<col width="28%" />
+<col width="14%" />
+<col width="35%" />
+</colgroup>
+<thead valign="bottom">
+<tr class="row-odd"><th class="head">symbol</th>
+<th class="head">description</th>
+<th class="head">unit</th>
+<th class="head">variable name</th>
+</tr>
+</thead>
+<tbody valign="top">
+<tr class="row-even"><td><span class="math">\(\alpha_{S}\)</span></td>
+<td>sensor elevation angle</td>
+<td><span class="math">\(deg\)</span></td>
+<td><cite>sensor_elevation_angle {:}</cite></td>
+</tr>
+<tr class="row-odd"><td><span class="math">\(\theta_{S}\)</span></td>
+<td>sensor zenith angle</td>
+<td><span class="math">\(deg\)</span></td>
+<td><cite>sensor_zenith_angle {:}</cite></td>
+</tr>
+</tbody>
+</table>
+<p>The pattern <cite>:</cite> for the dimensions can represent <cite>{time}</cite>, or no dimensions at all.</p>
+<div class="math">
+\[\alpha_{S} = 90 - \theta_{S}\]</div>
+</li>
+</ol>
+</div>
+<div class="section" id="sensor-zenith-angle">
+<h3>sensor zenith angle</h3>
+<ol class="arabic">
+<li><p class="first">sensor zenith angle from sensor elevation angle</p>
+<table border="1" class="docutils">
+<colgroup>
+<col width="23%" />
+<col width="28%" />
+<col width="14%" />
+<col width="35%" />
+</colgroup>
+<thead valign="bottom">
+<tr class="row-odd"><th class="head">symbol</th>
+<th class="head">description</th>
+<th class="head">unit</th>
+<th class="head">variable name</th>
+</tr>
+</thead>
+<tbody valign="top">
+<tr class="row-even"><td><span class="math">\(\alpha_{S}\)</span></td>
+<td>sensor elevation angle</td>
+<td><span class="math">\(deg\)</span></td>
+<td><cite>sensor_elevation_angle {:}</cite></td>
+</tr>
+<tr class="row-odd"><td><span class="math">\(\theta_{S}\)</span></td>
+<td>sensor zenith angle</td>
+<td><span class="math">\(deg\)</span></td>
+<td><cite>sensor_zenith_angle {:}</cite></td>
+</tr>
+</tbody>
+</table>
+<p>The pattern <cite>:</cite> for the dimensions can represent <cite>{time}</cite>, or no dimensions at all.</p>
+<div class="math">
+\[\theta_{S} = 90 - \alpha_{S}\]</div>
+</li>
+<li><p class="first">sensor zenith angle from viewing zenith angle</p>
+<table border="1" class="docutils">
+<colgroup>
+<col width="24%" />
+<col width="27%" />
+<col width="15%" />
+<col width="35%" />
+</colgroup>
+<thead valign="bottom">
+<tr class="row-odd"><th class="head">symbol</th>
+<th class="head">description</th>
+<th class="head">unit</th>
+<th class="head">variable name</th>
+</tr>
+</thead>
+<tbody valign="top">
+<tr class="row-even"><td><span class="math">\(\theta_{S}\)</span></td>
+<td>sensor zenith angle</td>
+<td><span class="math">\(deg\)</span></td>
+<td><cite>sensor_zenith_angle {:}</cite></td>
+</tr>
+<tr class="row-odd"><td><span class="math">\(\theta_{V}\)</span></td>
+<td>viewing zenith angle</td>
+<td><span class="math">\(deg\)</span></td>
+<td><cite>viewing_zenith_angle {:}</cite></td>
+</tr>
+</tbody>
+</table>
+<p>The pattern <cite>:</cite> for the dimensions can represent <cite>{time}</cite>, or no dimensions at all.</p>
+<div class="math">
+\[\theta_{S} = 180 - \theta_{V}\]</div>
+</li>
 </ol>
 </div>
 <div class="section" id="solar-azimuth-angle">
@@ -1967,19 +2158,19 @@ earth around the sun</td>
 <div class="math">
 \begin{eqnarray}
    \eta &amp; = &amp; 2\pi \left( \frac{t}{365.2422 \cdot 86400} - \lvert \frac{t}{365.2422 \cdot 86400} \rvert \right) \\
-   \delta &amp; = &amp; 0.006918 - 0.399912 cos(\eta) - 0.006758 cos(2\eta) - 0.002697 cos(3\eta) + \\
-      &amp; &amp; 0.070257 sin(\eta) + 0.000907 sin(2\eta) + 0.001480 sin(3\eta) \\
-   EOT &amp; = &amp; 0.0072 cos(\eta) - 0.0528 cos(2\eta) - 0.0012 cos(3\eta) - \\
-      &amp; &amp; 0.1229 sin(\eta) - 0.1565 sin(2\eta) - 0.0041 sin(3\eta) \\
+   \delta &amp; = &amp; 0.006918 - 0.399912 \cos(\eta) - 0.006758 \cos(2\eta) - 0.002697 \cos(3\eta) + \\
+      &amp; &amp; 0.070257 \sin(\eta) + 0.000907 \sin(2\eta) + 0.001480 \sin(3\eta) \\
+   EOT &amp; = &amp; 0.0072 \cos(\eta) - 0.0528 \cos(2\eta) - 0.0012 \cos(3\eta) - \\
+      &amp; &amp; 0.1229 \sin(\eta) - 0.1565 \sin(2\eta) - 0.0041 \sin(3\eta) \\
    f_{day} &amp; = &amp; \frac{t}{86400} - \lvert \frac{t}{86400} \rvert \\
    \Omega &amp; = &amp; 2\pi\left(f_{day} + \frac{\lambda}{360} + \frac{EOT-12}{24}\right) \\
-   \alpha_{0} &amp; = &amp; \frac{180}{\pi}asin(sin(\delta)sin(\frac{\pi}{180}\phi) +
-      cos(\delta)cos(\frac{\pi}{180}\phi)cos(\Omega)) \\
+   \alpha_{0} &amp; = &amp; \frac{180}{\pi}\arcsin(\sin(\delta)\sin(\frac{\pi}{180}\phi) +
+      \cos(\delta)\cos(\frac{\pi}{180}\phi)\cos(\Omega)) \\
    \varphi_{0} &amp; = &amp; \begin{cases}
       \alpha_{0} = 0, &amp; 0 \\
-      \alpha_{0} \neq 0, &amp; \frac{180}{\pi}atan2(\frac{cos(\delta)sin(\Omega)}{cos(\frac{\pi}{180}\alpha_{0})},
-         \frac{-sin(\delta)cos(\frac{\pi}{180}\phi) +
-         cos(\delta)sin(\frac{\pi}{180}\phi)cos(\Omega)}{cos(\frac{\pi}{180}\alpha_{0})})
+      \alpha_{0} \neq 0, &amp; \frac{180}{\pi}\arctan(\frac{\cos(\delta)\sin(\Omega)}{\cos(\frac{\pi}{180}\alpha_{0})},
+         \frac{-\sin(\delta)\cos(\frac{\pi}{180}\phi) +
+         \cos(\delta)\sin(\frac{\pi}{180}\phi)\cos(\Omega)}{\cos(\frac{\pi}{180}\alpha_{0})})
    \end{cases}
 \end{eqnarray}</div></li>
 </ol>
@@ -2061,6 +2252,149 @@ earth around the sun</td>
 <p>The pattern <cite>:</cite> for the dimensions can represent <cite>{time}</cite>, or no dimensions at all.</p>
 <div class="math">
 \[\theta_{0} = 90 - \alpha_{0}\]</div>
+</li>
+</ol>
+</div>
+<div class="section" id="viewing-azimuth-angle">
+<h3>viewing azimuth angle</h3>
+<ol class="arabic">
+<li><p class="first">viewing azimuth angle from sensor azimuth angle</p>
+<table border="1" class="docutils">
+<colgroup>
+<col width="24%" />
+<col width="27%" />
+<col width="14%" />
+<col width="35%" />
+</colgroup>
+<thead valign="bottom">
+<tr class="row-odd"><th class="head">symbol</th>
+<th class="head">description</th>
+<th class="head">unit</th>
+<th class="head">variable name</th>
+</tr>
+</thead>
+<tbody valign="top">
+<tr class="row-even"><td><span class="math">\(\varphi_{S}\)</span></td>
+<td>sensor azimuth angle</td>
+<td><span class="math">\(deg\)</span></td>
+<td><cite>sensor_azimuth_angle {:}</cite></td>
+</tr>
+<tr class="row-odd"><td><span class="math">\(\varphi_{V}\)</span></td>
+<td>viewing azimuth angle</td>
+<td><span class="math">\(deg\)</span></td>
+<td><cite>viewing_azimuth_angle {:}</cite></td>
+</tr>
+</tbody>
+</table>
+<p>The pattern <cite>:</cite> for the dimensions can represent <cite>{time}</cite>, or no dimensions at all.</p>
+<div class="math">
+\[\varphi_{V} = 180 - \varphi_{S}\]</div>
+</li>
+</ol>
+</div>
+<div class="section" id="viewing-elevation-angle">
+<h3>viewing elevation angle</h3>
+<ol class="arabic">
+<li><p class="first">viewing elevation angle from viewing zenith angle</p>
+<table border="1" class="docutils">
+<colgroup>
+<col width="22%" />
+<col width="28%" />
+<col width="14%" />
+<col width="36%" />
+</colgroup>
+<thead valign="bottom">
+<tr class="row-odd"><th class="head">symbol</th>
+<th class="head">description</th>
+<th class="head">unit</th>
+<th class="head">variable name</th>
+</tr>
+</thead>
+<tbody valign="top">
+<tr class="row-even"><td><span class="math">\(\alpha_{V}\)</span></td>
+<td>viewing elevation angle</td>
+<td><span class="math">\(deg\)</span></td>
+<td><cite>viewing_elevation_angle {:}</cite></td>
+</tr>
+<tr class="row-odd"><td><span class="math">\(\theta_{V}\)</span></td>
+<td>viewing zenith angle</td>
+<td><span class="math">\(deg\)</span></td>
+<td><cite>viewing_zenith_angle {:}</cite></td>
+</tr>
+</tbody>
+</table>
+<p>The pattern <cite>:</cite> for the dimensions can represent <cite>{time}</cite>, or no dimensions at all.</p>
+<div class="math">
+\[\alpha_{V} = 90 - \theta_{V}\]</div>
+</li>
+</ol>
+</div>
+<div class="section" id="viewing-zenith-angle">
+<h3>viewing zenith angle</h3>
+<ol class="arabic">
+<li><p class="first">viewing zenith angle from sensor zenith angle</p>
+<table border="1" class="docutils">
+<colgroup>
+<col width="24%" />
+<col width="27%" />
+<col width="15%" />
+<col width="35%" />
+</colgroup>
+<thead valign="bottom">
+<tr class="row-odd"><th class="head">symbol</th>
+<th class="head">description</th>
+<th class="head">unit</th>
+<th class="head">variable name</th>
+</tr>
+</thead>
+<tbody valign="top">
+<tr class="row-even"><td><span class="math">\(\theta_{S}\)</span></td>
+<td>sensor zenith angle</td>
+<td><span class="math">\(deg\)</span></td>
+<td><cite>sensor_zenith_angle {:}</cite></td>
+</tr>
+<tr class="row-odd"><td><span class="math">\(\theta_{V}\)</span></td>
+<td>viewing zenith angle</td>
+<td><span class="math">\(deg\)</span></td>
+<td><cite>viewing_zenith_angle {:}</cite></td>
+</tr>
+</tbody>
+</table>
+<p>The pattern <cite>:</cite> for the dimensions can represent <cite>{time}</cite>, or no dimensions at all.</p>
+<div class="math">
+\[\theta_{V} = 180 - \theta_{S}\]</div>
+</li>
+<li><p class="first">viewing zenith angle from viewing elevation angle</p>
+<table border="1" class="docutils">
+<colgroup>
+<col width="22%" />
+<col width="28%" />
+<col width="14%" />
+<col width="36%" />
+</colgroup>
+<thead valign="bottom">
+<tr class="row-odd"><th class="head">symbol</th>
+<th class="head">description</th>
+<th class="head">unit</th>
+<th class="head">variable name</th>
+</tr>
+</thead>
+<tbody valign="top">
+<tr class="row-even"><td><span class="math">\(\alpha_{V}\)</span></td>
+<td>viewing elevation angle</td>
+<td><span class="math">\(deg\)</span></td>
+<td><cite>viewing_elevation_angle {:}</cite></td>
+</tr>
+<tr class="row-odd"><td><span class="math">\(\theta_{V}\)</span></td>
+<td>viewing zenith angle</td>
+<td><span class="math">\(deg\)</span></td>
+<td><cite>viewing_zenith_angle {:}</cite></td>
+</tr>
+</tbody>
+</table>
+<p>The pattern <cite>:</cite> for the dimensions can represent <cite>{time}</cite>, or no dimensions at all.</p>
+<div class="math">
+\[\theta_{V} = 90 - \alpha_{V}\]</div>
 </li>
 </ol>
 </div>
@@ -2240,10 +2574,10 @@ or no dimensions at all.</p>
 <p>The pattern <cite>:</cite> for the dimensions can represent <cite>{vertical}</cite>, <cite>{time}</cite>, <cite>{time,vertical}</cite>, or no dimensions at all.</p>
 <div class="math">
 \begin{eqnarray}
-   g_{surf} &amp; = &amp; 9.7803253359 \frac{1 + 0.00193185265241{sin}^2(\frac{\pi}{180}\phi)}
-      {\sqrt{1 - 0.00669437999013{sin}^2(\frac{\pi}{180}\phi)}} \\
-   R_{surf} &amp; = &amp; \frac{1}{\sqrt{\left(\frac{cos(\frac{\pi}{180}\phi)}{6356752.0}\right)^2 +
-      \left(\frac{sin(\frac{\pi}{180}\phi)}{6378137.0}\right)^2}} \\
+   g_{surf} &amp; = &amp; 9.7803253359 \frac{1 + 0.00193185265241{\sin}^2(\frac{\pi}{180}\phi)}
+      {\sqrt{1 - 0.00669437999013{\sin}^2(\frac{\pi}{180}\phi)}} \\
+   R_{surf} &amp; = &amp; \frac{1}{\sqrt{\left(\frac{\cos(\frac{\pi}{180}\phi)}{6356752.0}\right)^2 +
+      \left(\frac{\sin(\frac{\pi}{180}\phi)}{6378137.0}\right)^2}} \\
    z &amp; = &amp; \frac{g_{0}R_{surf}z_{g}}{g_{surf}R_{surf} - g_{0}z_{g}}
 \end{eqnarray}</div></li>
 <li><p class="first">altitude from bounds</p>
@@ -2899,10 +3233,10 @@ with regard to dry air</td>
 <p>The pattern <cite>:</cite> for the dimensions can represent <cite>{vertical}</cite>, <cite>{time}</cite>, <cite>{time,vertical}</cite>, or no dimensions at all.</p>
 <div class="math">
 \begin{eqnarray}
-   g_{surf} &amp; = &amp; 9.7803253359 \frac{1 + 0.00193185265241{sin}^2(\frac{\pi}{180}\phi)}
-      {\sqrt{1 - 0.00669437999013{sin}^2(\frac{\pi}{180}\phi)}} \\
-   R_{surf} &amp; = &amp; \frac{1}{\sqrt{\left(\frac{cos(\frac{\pi}{180}\phi)}{6356752.0}\right)^2 +
-      \left(\frac{sin(\frac{\pi}{180}\phi)}{6378137.0}\right)^2}} \\
+   g_{surf} &amp; = &amp; 9.7803253359 \frac{1 + 0.00193185265241{\sin}^2(\frac{\pi}{180}\phi)}
+      {\sqrt{1 - 0.00669437999013{\sin}^2(\frac{\pi}{180}\phi)}} \\
+   R_{surf} &amp; = &amp; \frac{1}{\sqrt{\left(\frac{\cos(\frac{\pi}{180}\phi)}{6356752.0}\right)^2 +
+      \left(\frac{\sin(\frac{\pi}{180}\phi)}{6378137.0}\right)^2}} \\
    z_{g} &amp; = &amp; \frac{g_{surf}}{g_{0}}\frac{R_{surf}z}{z + R_{surf}}
 \end{eqnarray}</div></li>
 </ol>
@@ -3707,11 +4041,11 @@ since even for altitude grids that start at the surface, <span class="math">\(z_
 (which is generally not equal to <span class="math">\(z^{B}(1,1)\)</span>).</p>
 <div class="math">
 \begin{eqnarray}
-   g_{surf} &amp; = &amp; 9.7803253359 \frac{1 + 0.00193185265241{sin}^2(\frac{\pi}{180}\phi)}
-      {1 - 0.00669437999013 {sin}^2(\frac{\pi}{180}\phi)} \\
+   g_{surf} &amp; = &amp; 9.7803253359 \frac{1 + 0.00193185265241{\sin}^2(\frac{\pi}{180}\phi)}
+      {1 - 0.00669437999013 {\sin}^2(\frac{\pi}{180}\phi)} \\
    m &amp; = &amp; \frac{\omega^2a^2b}{GM} \\
-   g(1) &amp; = &amp; g_{surf} \left(1 - \frac{2}{a}\left(1+f+m-2f{sin}^2(\frac{\pi}{180}\phi)\right)\frac{z_{surf}+z(1)}{2} + \frac{3}{a^2}\left(\frac{z_{surf}+z(1)}{2}\right)^2\right) \\
-   g(i) &amp; = &amp; g_{surf} \left(1 - \frac{2}{a}\left(1+f+m-2f{sin}^2(\frac{\pi}{180}\phi)\right)\frac{z(i-1)+z(i)}{2} + \frac{3}{a^2}\left(\frac{z(i-1)+z(i)}{2}\right)^2\right), 1 &lt; i \leq N \\
+   g(1) &amp; = &amp; g_{surf} \left(1 - \frac{2}{a}\left(1+f+m-2f{\sin}^2(\frac{\pi}{180}\phi)\right)\frac{z_{surf}+z(1)}{2} + \frac{3}{a^2}\left(\frac{z_{surf}+z(1)}{2}\right)^2\right) \\
+   g(i) &amp; = &amp; g_{surf} \left(1 - \frac{2}{a}\left(1+f+m-2f{\sin}^2(\frac{\pi}{180}\phi)\right)\frac{z(i-1)+z(i)}{2} + \frac{3}{a^2}\left(\frac{z(i-1)+z(i)}{2}\right)^2\right), 1 &lt; i \leq N \\
    p(1) &amp; = &amp; p_{surf}e^{-\frac{M_{air}(1)}{T(1)}\frac{g(1)}{R}\left(z(i)-z_{surf}\right)} \\
    p(i) &amp; = &amp; p(i-1)e^{-\frac{M_{air}(i-1)+M_{air}(i)}{T(i-1)+T(i)}\frac{g(i)}{R}\left(z(i)-z(i-1)\right)}, 1 &lt; i \leq N
 \end{eqnarray}</div></li>

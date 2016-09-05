@@ -140,9 +140,9 @@ These are the WGS84 ellipsoidal gravity formula as taken from NIMA TR8350.2
       \begin{eqnarray}
          e^2 & = & \frac{a^2-b^2}{a^2} \\
          k & = & \frac{bg_{p} - ag_{e}}{ag_{e}} \\
-         g_{surf} & = & g_{e}\frac{1 + k {sin}^2(\frac{\pi}{180}\phi)}{\sqrt{1 - e^2{sin}^2(\frac{\pi}{180}\phi)}} \\
-         g_{surf} & = & 9.7803253359 \frac{1 + 0.00193185265241{sin}^2(\frac{\pi}{180}\phi)}
-            {\sqrt{1 - 0.00669437999013{sin}^2(\frac{\pi}{180}\phi)}}
+         g_{surf} & = & g_{e}\frac{1 + k {\sin}^2(\frac{\pi}{180}\phi)}{\sqrt{1 - e^2{\sin}^2(\frac{\pi}{180}\phi)}} \\
+         g_{surf} & = & 9.7803253359 \frac{1 + 0.00193185265241{\sin}^2(\frac{\pi}{180}\phi)}
+            {\sqrt{1 - 0.00669437999013{\sin}^2(\frac{\pi}{180}\phi)}}
       \end{eqnarray}
 
 
@@ -169,7 +169,7 @@ These are the WGS84 ellipsoidal gravity formula as taken from NIMA TR8350.2
 
       \begin{eqnarray}
          m & = & \frac{\omega^2a^2b}{GM} \\
-         g & = & g_{surf} \left[ 1 - \frac{2}{a}\left(1+f+m-2f{sin}^2(\frac{\pi}{180}\phi)\right)z + \frac{3}{a^2}z^2 \right] \\
+         g & = & g_{surf} \left[ 1 - \frac{2}{a}\left(1+f+m-2f{\sin}^2(\frac{\pi}{180}\phi)\right)z + \frac{3}{a^2}z^2 \right] \\
       \end{eqnarray}
 
 
@@ -817,20 +817,18 @@ longitude bounds
 Angle variable conversions
 --------------------------
 
-scattering angle
-~~~~~~~~~~~~~~~~
+relative azimuth angle
+~~~~~~~~~~~~~~~~~~~~~~
 
-#. scattering angle from solar and viewing angles
+#. relative azimuth angle from sensor and solar azimuth angle
 
-   =================== ===================== =========== ===========================
-   symbol              description           unit         variable name
-   =================== ===================== =========== ===========================
-   :math:`\theta_{0}`  solar zenith angle    :math:`deg` `solar_zenith_angle {:}`
-   :math:`\theta_{s}`  scattering angle      :math:`deg` `scattering_angle {:}`
-   :math:`\theta_{V}`  viewing zenith angle  :math:`deg` `viewing_zenith_angle {:}`
-   :math:`\varphi_{0}` solar azimuth angle   :math:`deg` `solar_azimuth_angle {:}`
-   :math:`\varphi_{V}` viewing azimuth angle :math:`deg` `viewing_azimuth_angle {:}`
-   =================== ===================== =========== ===========================
+   =================== ====================== =========== ============================
+   symbol              description            unit        variable name
+   =================== ====================== =========== ============================
+   :math:`\varphi_{0}` solar azimuth angle    :math:`deg` `solar_azimuth_angle {:}`
+   :math:`\varphi_{r}` relative azimuth angle :math:`deg` `relative_azimuth_angle {:}`
+   :math:`\varphi_{S}` sensor azimuth angle   :math:`deg` `sensor_azimuth_angle {:}`
+   =================== ====================== =========== ============================
 
    The pattern `:` for the dimensions can represent `{time}`, or no dimensions at all.
 
@@ -838,11 +836,108 @@ scattering angle
       :nowrap:
 
       \begin{eqnarray}
-         \mu_{0} & = & cos\left(\frac{\pi}{180}\theta_{0}\right) \\
-         \mu_{V} & = & cos\left(\frac{\pi}{180}\theta_{V}\right) \\
-         \theta_{s} & = & \frac{180}{\pi}acos\left(\mu_{0}\mu_{V}\sqrt{1-\mu_{0}^{2}}\sqrt{1-\mu_{V}^{2}}
-            cos\left(\frac{\pi}{180}(\varphi_{V}-\varphi_{0})\right)\right)
+        \Delta\varphi & = & \varphi_{0} - \varphi_{S} \\
+        \Delta\varphi & = & \begin{cases}
+            \Delta\varphi \geq 360, & \Delta\varphi - 360 \\
+            0 \leq \Delta\varphi < 360, & \Delta\varphi \\
+            \Delta\varphi < 0, & \Delta\varphi + 360
+         \end{cases} \\
+        \varphi_{r} & = & \left|\Delta\varphi - 180 \right|
       \end{eqnarray}
+
+
+scattering angle
+~~~~~~~~~~~~~~~~
+
+#. scattering angle from sensor and solar angles
+
+   =================== ====================== =========== ==========================
+   symbol              description            unit        variable name
+   =================== ====================== =========== ==========================
+   :math:`\theta_{0}`  solar zenith angle     :math:`deg` `solar_zenith_angle {:}`
+   :math:`\Theta_{s}`  scattering angle       :math:`deg` `scattering_angle {:}`
+   :math:`\theta_{S}`  sensor zenith angle    :math:`deg` `sensor_zenith_angle {:}`
+   :math:`\varphi_{r}` relative azimuth angle :math:`deg` `relative_azimuth_angle {:}`
+   =================== ====================== =========== ==========================
+
+   The pattern `:` for the dimensions can represent `{time}`, or no dimensions at all.
+
+   .. math::
+      \Theta_{s} = \frac{180}{\pi}\arccos\left(-\cos\left(\frac{\pi}{180}\theta_{0}\right)\cos\left(\frac{\pi}{180}\theta_{S}\right) - 
+            \sin\left(\frac{\pi}{180}\theta_{0}\right)\sin\left(\frac{\pi}{180}\theta_{S}\right)\cos\left(\frac{\pi}{180}\varphi_{r}\right)\right)
+
+
+sensor azimuth angle
+~~~~~~~~~~~~~~~~~~~~
+
+#. sensor azimuth angle from viewing azimuth angle
+
+   =================== ===================== =========== ===========================
+   symbol              description           unit        variable name
+   =================== ===================== =========== ===========================
+   :math:`\varphi_{S}` sensor azimuth angle  :math:`deg` `sensor_azimuth_angle {:}`
+   :math:`\varphi_{V}` viewing azimuth angle :math:`deg` `viewing_azimuth_angle {:}`
+   =================== ===================== =========== ===========================
+
+   The pattern `:` for the dimensions can represent `{time}`, or no dimensions at all.
+
+   .. math::
+
+      \varphi_{S} = 180 - \varphi_{V}
+
+
+sensor elevation angle
+~~~~~~~~~~~~~~~~~~~~~~
+
+#. sensor elevation angle from sensor zenith angle
+
+   ================== ====================== =========== ============================
+   symbol             description            unit        variable name
+   ================== ====================== =========== ============================
+   :math:`\alpha_{S}` sensor elevation angle :math:`deg` `sensor_elevation_angle {:}`
+   :math:`\theta_{S}` sensor zenith angle    :math:`deg` `sensor_zenith_angle {:}`
+   ================== ====================== =========== ============================
+
+   The pattern `:` for the dimensions can represent `{time}`, or no dimensions at all.
+
+   .. math::
+
+      \alpha_{S} = 90 - \theta_{S}
+
+
+sensor zenith angle
+~~~~~~~~~~~~~~~~~~~
+
+#. sensor zenith angle from sensor elevation angle
+
+   ================== ====================== =========== ============================
+   symbol             description            unit        variable name
+   ================== ====================== =========== ============================
+   :math:`\alpha_{S}` sensor elevation angle :math:`deg` `sensor_elevation_angle {:}`
+   :math:`\theta_{S}` sensor zenith angle    :math:`deg` `sensor_zenith_angle {:}`
+   ================== ====================== =========== ============================
+
+   The pattern `:` for the dimensions can represent `{time}`, or no dimensions at all.
+
+   .. math::
+
+      \theta_{S} = 90 - \alpha_{S}
+
+
+#. sensor zenith angle from viewing zenith angle
+
+   ================== ==================== =========== ==========================
+   symbol             description          unit        variable name
+   ================== ==================== =========== ==========================
+   :math:`\theta_{S}` sensor zenith angle  :math:`deg` `sensor_zenith_angle {:}`
+   :math:`\theta_{V}` viewing zenith angle :math:`deg` `viewing_zenith_angle {:}`
+   ================== ==================== =========== ==========================
+
+   The pattern `:` for the dimensions can represent `{time}`, or no dimensions at all.
+
+   .. math::
+
+      \theta_{S} = 180 - \theta_{V}
 
 
 solar azimuth angle
@@ -873,19 +968,19 @@ solar azimuth angle
 
       \begin{eqnarray}
          \eta & = & 2\pi \left( \frac{t}{365.2422 \cdot 86400} - \lvert \frac{t}{365.2422 \cdot 86400} \rvert \right) \\
-         \delta & = & 0.006918 - 0.399912 cos(\eta) - 0.006758 cos(2\eta) - 0.002697 cos(3\eta) + \\
-            & & 0.070257 sin(\eta) + 0.000907 sin(2\eta) + 0.001480 sin(3\eta) \\
-         EOT & = & 0.0072 cos(\eta) - 0.0528 cos(2\eta) - 0.0012 cos(3\eta) - \\
-            & & 0.1229 sin(\eta) - 0.1565 sin(2\eta) - 0.0041 sin(3\eta) \\
+         \delta & = & 0.006918 - 0.399912 \cos(\eta) - 0.006758 \cos(2\eta) - 0.002697 \cos(3\eta) + \\
+            & & 0.070257 \sin(\eta) + 0.000907 \sin(2\eta) + 0.001480 \sin(3\eta) \\
+         EOT & = & 0.0072 \cos(\eta) - 0.0528 \cos(2\eta) - 0.0012 \cos(3\eta) - \\
+            & & 0.1229 \sin(\eta) - 0.1565 \sin(2\eta) - 0.0041 \sin(3\eta) \\
          f_{day} & = & \frac{t}{86400} - \lvert \frac{t}{86400} \rvert \\
          \Omega & = & 2\pi\left(f_{day} + \frac{\lambda}{360} + \frac{EOT-12}{24}\right) \\
-         \alpha_{0} & = & \frac{180}{\pi}asin(sin(\delta)sin(\frac{\pi}{180}\phi) +
-            cos(\delta)cos(\frac{\pi}{180}\phi)cos(\Omega)) \\
+         \alpha_{0} & = & \frac{180}{\pi}\arcsin(\sin(\delta)\sin(\frac{\pi}{180}\phi) +
+            \cos(\delta)\cos(\frac{\pi}{180}\phi)\cos(\Omega)) \\
          \varphi_{0} & = & \begin{cases}
             \alpha_{0} = 0, & 0 \\
-            \alpha_{0} \neq 0, & \frac{180}{\pi}atan2(\frac{cos(\delta)sin(\Omega)}{cos(\frac{\pi}{180}\alpha_{0})},
-               \frac{-sin(\delta)cos(\frac{\pi}{180}\phi) +
-               cos(\delta)sin(\frac{\pi}{180}\phi)cos(\Omega)}{cos(\frac{\pi}{180}\alpha_{0})}) 
+            \alpha_{0} \neq 0, & \frac{180}{\pi}\arctan(\frac{\cos(\delta)\sin(\Omega)}{\cos(\frac{\pi}{180}\alpha_{0})},
+               \frac{-\sin(\delta)\cos(\frac{\pi}{180}\phi) +
+               \cos(\delta)\sin(\frac{\pi}{180}\phi)\cos(\Omega)}{\cos(\frac{\pi}{180}\alpha_{0})}) 
          \end{cases}
       \end{eqnarray}
 
@@ -905,7 +1000,7 @@ solar elevation angle
    The pattern `:` for the dimensions can represent `{time}`, or no dimensions at all.
 
    .. math::
-   
+
       \alpha_{0} = 90 - \theta_{0}
 
 
@@ -930,8 +1025,81 @@ solar zenith angle
    The pattern `:` for the dimensions can represent `{time}`, or no dimensions at all.
 
    .. math::
-   
+
       \theta_{0} = 90 - \alpha_{0}
+
+
+viewing azimuth angle
+~~~~~~~~~~~~~~~~~~~~~
+
+#. viewing azimuth angle from sensor azimuth angle
+
+   =================== ===================== =========== ===========================
+   symbol              description           unit        variable name
+   =================== ===================== =========== ===========================
+   :math:`\varphi_{S}` sensor azimuth angle  :math:`deg` `sensor_azimuth_angle {:}`
+   :math:`\varphi_{V}` viewing azimuth angle :math:`deg` `viewing_azimuth_angle {:}`
+   =================== ===================== =========== ===========================
+
+   The pattern `:` for the dimensions can represent `{time}`, or no dimensions at all.
+
+   .. math::
+
+      \varphi_{V} = 180 - \varphi_{S}
+
+
+viewing elevation angle
+~~~~~~~~~~~~~~~~~~~~~~~
+
+#. viewing elevation angle from viewing zenith angle
+
+   ================== ======================= =========== =============================
+   symbol             description             unit        variable name
+   ================== ======================= =========== =============================
+   :math:`\alpha_{V}` viewing elevation angle :math:`deg` `viewing_elevation_angle {:}`
+   :math:`\theta_{V}` viewing zenith angle    :math:`deg` `viewing_zenith_angle {:}`
+   ================== ======================= =========== =============================
+
+   The pattern `:` for the dimensions can represent `{time}`, or no dimensions at all.
+
+   .. math::
+
+      \alpha_{V} = 90 - \theta_{V}
+
+
+viewing zenith angle
+~~~~~~~~~~~~~~~~~~~~
+
+#. viewing zenith angle from sensor zenith angle
+
+   ================== ==================== =========== ==========================
+   symbol             description          unit        variable name
+   ================== ==================== =========== ==========================
+   :math:`\theta_{S}` sensor zenith angle  :math:`deg` `sensor_zenith_angle {:}`
+   :math:`\theta_{V}` viewing zenith angle :math:`deg` `viewing_zenith_angle {:}`
+   ================== ==================== =========== ==========================
+
+   The pattern `:` for the dimensions can represent `{time}`, or no dimensions at all.
+
+   .. math::
+
+      \theta_{V} = 180 - \theta_{S}
+
+
+#. viewing zenith angle from viewing elevation angle
+
+   ================== ======================= =========== =============================
+   symbol             description             unit        variable name
+   ================== ======================= =========== =============================
+   :math:`\alpha_{V}` viewing elevation angle :math:`deg` `viewing_elevation_angle {:}`
+   :math:`\theta_{V}` viewing zenith angle    :math:`deg` `viewing_zenith_angle {:}`
+   ================== ======================= =========== =============================
+
+   The pattern `:` for the dimensions can represent `{time}`, or no dimensions at all.
+
+   .. math::
+
+      \theta_{V} = 90 - \alpha_{V}
 
 
 Atmospheric variable conversions
@@ -1018,10 +1186,10 @@ altitude
       :nowrap:
 
       \begin{eqnarray}
-         g_{surf} & = & 9.7803253359 \frac{1 + 0.00193185265241{sin}^2(\frac{\pi}{180}\phi)}
-            {\sqrt{1 - 0.00669437999013{sin}^2(\frac{\pi}{180}\phi)}} \\
-         R_{surf} & = & \frac{1}{\sqrt{\left(\frac{cos(\frac{\pi}{180}\phi)}{6356752.0}\right)^2 +
-            \left(\frac{sin(\frac{\pi}{180}\phi)}{6378137.0}\right)^2}} \\
+         g_{surf} & = & 9.7803253359 \frac{1 + 0.00193185265241{\sin}^2(\frac{\pi}{180}\phi)}
+            {\sqrt{1 - 0.00669437999013{\sin}^2(\frac{\pi}{180}\phi)}} \\
+         R_{surf} & = & \frac{1}{\sqrt{\left(\frac{\cos(\frac{\pi}{180}\phi)}{6356752.0}\right)^2 +
+            \left(\frac{\sin(\frac{\pi}{180}\phi)}{6378137.0}\right)^2}} \\
          z & = & \frac{g_{0}R_{surf}z_{g}}{g_{surf}R_{surf} - g_{0}z_{g}}
       \end{eqnarray}
 
@@ -1353,10 +1521,10 @@ geopotential height
       :nowrap:
 
       \begin{eqnarray}
-         g_{surf} & = & 9.7803253359 \frac{1 + 0.00193185265241{sin}^2(\frac{\pi}{180}\phi)}
-            {\sqrt{1 - 0.00669437999013{sin}^2(\frac{\pi}{180}\phi)}} \\
-         R_{surf} & = & \frac{1}{\sqrt{\left(\frac{cos(\frac{\pi}{180}\phi)}{6356752.0}\right)^2 +
-            \left(\frac{sin(\frac{\pi}{180}\phi)}{6378137.0}\right)^2}} \\
+         g_{surf} & = & 9.7803253359 \frac{1 + 0.00193185265241{\sin}^2(\frac{\pi}{180}\phi)}
+            {\sqrt{1 - 0.00669437999013{\sin}^2(\frac{\pi}{180}\phi)}} \\
+         R_{surf} & = & \frac{1}{\sqrt{\left(\frac{\cos(\frac{\pi}{180}\phi)}{6356752.0}\right)^2 +
+            \left(\frac{\sin(\frac{\pi}{180}\phi)}{6378137.0}\right)^2}} \\
          z_{g} & = & \frac{g_{surf}}{g_{0}}\frac{R_{surf}z}{z + R_{surf}}
       \end{eqnarray}
 
@@ -1733,11 +1901,11 @@ pressure
       :nowrap:
 
       \begin{eqnarray}
-         g_{surf} & = & 9.7803253359 \frac{1 + 0.00193185265241{sin}^2(\frac{\pi}{180}\phi)}
-            {1 - 0.00669437999013 {sin}^2(\frac{\pi}{180}\phi)} \\
+         g_{surf} & = & 9.7803253359 \frac{1 + 0.00193185265241{\sin}^2(\frac{\pi}{180}\phi)}
+            {1 - 0.00669437999013 {\sin}^2(\frac{\pi}{180}\phi)} \\
          m & = & \frac{\omega^2a^2b}{GM} \\
-         g(1) & = & g_{surf} \left(1 - \frac{2}{a}\left(1+f+m-2f{sin}^2(\frac{\pi}{180}\phi)\right)\frac{z_{surf}+z(1)}{2} + \frac{3}{a^2}\left(\frac{z_{surf}+z(1)}{2}\right)^2\right) \\
-         g(i) & = & g_{surf} \left(1 - \frac{2}{a}\left(1+f+m-2f{sin}^2(\frac{\pi}{180}\phi)\right)\frac{z(i-1)+z(i)}{2} + \frac{3}{a^2}\left(\frac{z(i-1)+z(i)}{2}\right)^2\right), 1 < i \leq N \\
+         g(1) & = & g_{surf} \left(1 - \frac{2}{a}\left(1+f+m-2f{\sin}^2(\frac{\pi}{180}\phi)\right)\frac{z_{surf}+z(1)}{2} + \frac{3}{a^2}\left(\frac{z_{surf}+z(1)}{2}\right)^2\right) \\
+         g(i) & = & g_{surf} \left(1 - \frac{2}{a}\left(1+f+m-2f{\sin}^2(\frac{\pi}{180}\phi)\right)\frac{z(i-1)+z(i)}{2} + \frac{3}{a^2}\left(\frac{z(i-1)+z(i)}{2}\right)^2\right), 1 < i \leq N \\
          p(1) & = & p_{surf}e^{-\frac{M_{air}(1)}{T(1)}\frac{g(1)}{R}\left(z(i)-z_{surf}\right)} \\
          p(i) & = & p(i-1)e^{-\frac{M_{air}(i-1)+M_{air}(i)}{T(i-1)+T(i)}\frac{g(i)}{R}\left(z(i)-z(i-1)\right)}, 1 < i \leq N
       \end{eqnarray}

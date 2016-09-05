@@ -230,7 +230,8 @@ double harp_reflectance_from_radiance_solar_irradiance_and_solar_zenith_angle(do
                                                                               double solar_zenith_angle);
 double harp_reflectance_from_normalized_radiance_and_solar_zenith_angle(double normalized_radiance,
                                                                         double solar_zenith_angle);
-double harp_scattering_angle_from_solar_angles_and_viewing_angles(double sza, double saa, double vza, double vaa);
+double harp_scattering_angle_from_sensor_and_solar_angles(double sensor_zenith_angle, double solar_zenith_angle,
+                                                          double relative_azimuth_angle);
 double harp_sea_surface_temperature_skin_from_subskin_wind_speed_and_solar_zenith_angle(double sst_skin,
                                                                                         double wind_speed,
                                                                                         double solar_zenith_angle);
@@ -239,25 +240,29 @@ double harp_sea_surface_temperature_subskin_from_skin_wind_speed_and_solar_zenit
                                                                                         double solar_zenith_angle);
 void harp_solar_angles_from_datetime_longitude_and_latitude(double datetime, double longitude, double latitude,
                                                             double *solar_elevation_angle, double *solar_azimuth_angle);
+double harp_relative_azimuth_angle_from_sensor_and_solar_azimuth_angles(double sensor_azimuth_angle,
+                                                                        double solar_azimuth_angle);
 double harp_elevation_angle_from_zenith_angle(double zenith_angle);
 double harp_zenith_angle_from_elevation_angle(double elevation_angle);
-int harp_viewing_geometry_angles_at_altitude_from_other_altitude(double source_altitude,
-                                                                 double source_solar_zenith_angle,
-                                                                 double source_viewing_zenith_angle,
-                                                                 double source_relative_azimuth_angle,
-                                                                 double target_altitude,
-                                                                 double *new_target_solar_zenith_angle,
-                                                                 double *new_target_viewing_zenith_angle,
-                                                                 double *new_target_relative_azimuth_angle);
-int harp_viewing_geometry_angle_profiles_from_viewing_geometry_angles(double altitude,
-                                                                      double solar_zenith_angle,
-                                                                      double viewing_zenith_angle,
-                                                                      double relative_azimuth_angle,
-                                                                      long num_levels,
-                                                                      const double *altitude_profile,
-                                                                      double *solar_zenith_angle_profile,
-                                                                      double *viewing_zenith_angle_profile,
-                                                                      double *relative_azimuth_angle_profile);
+double harp_sensor_angle_from_viewing_angle(double viewing_angle);
+double harp_viewing_angle_from_sensor_angle(double sensor_angle);
+int harp_sensor_geometry_angles_at_altitude_from_other_altitude(double source_altitude,
+                                                                double source_solar_zenith_angle,
+                                                                double source_sensor_zenith_angle,
+                                                                double source_relative_azimuth_angle,
+                                                                double target_altitude,
+                                                                double *new_target_solar_zenith_angle,
+                                                                double *new_target_sensor_zenith_angle,
+                                                                double *new_target_relative_azimuth_angle);
+int harp_sensor_geometry_angle_profiles_from_sensor_geometry_angles(double altitude,
+                                                                    double solar_zenith_angle,
+                                                                    double sensor_zenith_angle,
+                                                                    double relative_azimuth_angle,
+                                                                    long num_levels,
+                                                                    const double *altitude_profile,
+                                                                    double *solar_zenith_angle_profile,
+                                                                    double *sensor_zenith_angle_profile,
+                                                                    double *relative_azimuth_angle_profile);
 double harp_wavelength_from_frequency(double frequency);
 double harp_wavelength_from_wavenumber(double wavenumber);
 double harp_wavenumber_from_frequency(double frequency);

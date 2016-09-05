@@ -183,29 +183,29 @@
 <td>degree_north</td>
 <td>corner latitudes of the measurement</td>
 </tr>
-<tr class="row-odd"><td><strong>surface_solar_azimuth_angle</strong></td>
+<tr class="row-odd"><td><strong>solar_azimuth_angle</strong></td>
 <td>double</td>
 <td>{<em>time</em>}</td>
 <td>degree</td>
 <td>solar azimuth angle at the surface</td>
 </tr>
-<tr class="row-even"><td><strong>surface_solar_zenith_angle</strong></td>
+<tr class="row-even"><td><strong>solar_zenith_angle</strong></td>
 <td>double</td>
 <td>{<em>time</em>}</td>
 <td>degree</td>
 <td>solar zenith angle at the surface</td>
 </tr>
-<tr class="row-odd"><td><strong>surface_viewing_azimuth_angle</strong></td>
+<tr class="row-odd"><td><strong>sensor_azimuth_angle</strong></td>
 <td>double</td>
 <td>{<em>time</em>}</td>
 <td>degree</td>
-<td>viewing azimuth angle at the surface</td>
+<td>sensor azimuth angle at the surface</td>
 </tr>
-<tr class="row-even"><td><strong>surface_viewing_zenith_angle</strong></td>
+<tr class="row-even"><td><strong>sensor_zenith_angle</strong></td>
 <td>double</td>
 <td>{<em>time</em>}</td>
 <td>degree</td>
-<td>viewing zenith angle at the surface</td>
+<td>sensor angle at the surface</td>
 </tr>
 <tr class="row-odd"><td><strong>CH4_column_density</strong></td>
 <td>double</td>
@@ -257,9 +257,9 @@
 <p>The table below details where and how each variable was retrieved from the input product.</p>
 <table border="1" class="docutils">
 <colgroup>
-<col width="11%" />
+<col width="9%" />
 <col width="5%" />
-<col width="84%" />
+<col width="86%" />
 </colgroup>
 <thead valign="bottom">
 <tr class="row-odd"><th class="head">field name</th>
@@ -296,19 +296,19 @@
 <tr class="row-odd"><td><em>description</em></td>
 <td>the corner coordinates are rough estimates of the circle areas for the scan elements; the size of a scan element (in a certain direction) is taken to be half the distance, from center to center, from a scan element to its nearest neigbouring scan element</td>
 </tr>
-<tr class="row-even"><td><strong>surface_solar_azimuth_angle</strong></td>
+<tr class="row-even"><td><strong>solar_azimuth_angle</strong></td>
 <td><em>path</em></td>
 <td><strong>/MDR[]/MDR/ANGULAR_RELATION[,2]</strong></td>
 </tr>
-<tr class="row-odd"><td><strong>surface_solar_zenith_angle</strong></td>
+<tr class="row-odd"><td><strong>solar_zenith_angle</strong></td>
 <td><em>path</em></td>
 <td><strong>/MDR[]/MDR/ANGULAR_RELATION[,0]</strong></td>
 </tr>
-<tr class="row-even"><td><strong>surface_viewing_azimuth_angle</strong></td>
+<tr class="row-even"><td><strong>sensor_azimuth_angle</strong></td>
 <td><em>path</em></td>
 <td><strong>/MDR[]/MDR/ANGULAR_RELATION[,3]</strong></td>
 </tr>
-<tr class="row-odd"><td><strong>surface_viewing_zenith_angle</strong></td>
+<tr class="row-odd"><td><strong>sensor_zenith_angle</strong></td>
 <td><em>path</em></td>
 <td><strong>/MDR[]/MDR/ANGULAR_RELATION[,1]</strong></td>
 </tr>

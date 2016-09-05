@@ -746,28 +746,25 @@ static void register_common_variables(harp_product_definition *product_definitio
     path = "/Data/geolocation/solarZenith[]";
     harp_variable_definition_add_mapping(variable_definition, NULL, NULL, path, NULL);
 
-    /* viewing_azimuth_angle */
-    description = "viewing azimuth angle at the surface";
+    /* sensor_azimuth_angle */
+    description = "sensor azimuth angle at the surface";
     variable_definition =
-        harp_ingestion_register_variable_sample_read(product_definition, "viewing_azimuth_angle", harp_type_double, 1,
+        harp_ingestion_register_variable_sample_read(product_definition, "sensor_azimuth_angle", harp_type_double, 1,
                                                      dimension_type, NULL, description, "degree", NULL,
                                                      read_los_azimuth_angle);
     harp_variable_definition_set_valid_range_double(variable_definition, 0.0, 360.0);
     path = "/Data/geolocation/satelliteAzimuth[]";
-    description = "the viewing angle is the opposite of the satellite angle; the returned angle is thus angle + 180 "
-        "(mapped to [0,360])";
-    harp_variable_definition_add_mapping(variable_definition, NULL, NULL, path, description);
+    harp_variable_definition_add_mapping(variable_definition, NULL, NULL, path, NULL);
 
-    /* viewing_zenith_angle */
-    description = "viewing zenith angle at the observation point";
+    /* sensor_zenith_angle */
+    description = "sensor zenith angle at the observation point";
     variable_definition =
-        harp_ingestion_register_variable_sample_read(product_definition, "viewing_zenith_angle", harp_type_double, 1,
+        harp_ingestion_register_variable_sample_read(product_definition, "sensor_zenith_angle", harp_type_double, 1,
                                                      dimension_type, NULL, description, "degree", NULL,
                                                      read_los_zenith_angle);
     harp_variable_definition_set_valid_range_double(variable_definition, 0.0, 180.0);
     path = "/Data/geolocation/satelliteZenith[]";
-    description = "the viewing angle is the opposite of the satellite angle; the returned angle is thus 180 - angle";
-    harp_variable_definition_add_mapping(variable_definition, NULL, NULL, path, description);
+    harp_variable_definition_add_mapping(variable_definition, NULL, NULL, path, NULL);
 }
 
 void register_co2_product(void)

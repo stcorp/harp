@@ -241,12 +241,15 @@ pressure                                      surface                         X 
 pressure_bounds                                                               X       X    X
 radiance                                                                      X                    X
 reflectance                                                                   X                    X
-relative_azimuth_angle                                                        X
+relative_azimuth_angle                                                        X                          absolute difference between sensor and solar azimuth angles
 relative_humidity                                                             X       X    X
 scan_direction
 scan_subset_counter
 scanline_pixel_index
 scattering_angle                                                              X
+sensor_azimuth_angle                                                          X
+sensor_elevation_angle                                                        X
+sensor_zenith_angle                                                           X
 site_name                                                                                                used for data of a specific named geographical location
 solar_azimuth_angle                           surface, toa,                   X
                                               instrument,
@@ -261,6 +264,7 @@ temperature                                   surface                         X 
 tropopause_pressure                                                           X            X             pressure level of the troposphere/stratosphere boundary location
 tropopause_height                                                             X            X             altitude of the troposphere/stratosphere boundary location
 viewing_azimuth_angle                                                         X
+viewing_elevation_angle                                                       X
 viewing_zenith_angle                                                          X
 virtual_temperature                                                           X       X    X
 wavelength                                                                    X                    X

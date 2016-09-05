@@ -626,6 +626,21 @@ static int get_pressure_from_gph_and_temperature(harp_variable *variable, const 
     return 0;
 }
 
+static int get_relative_azimuth_angle_from_sensor_and_solar_azimuth_angles(harp_variable *variable,
+                                                                           const harp_variable **source_variable)
+{
+    long i;
+
+    for (i = 0; i < variable->num_elements; i++)
+    {
+        variable->data.double_data[i] =
+            harp_relative_azimuth_angle_from_sensor_and_solar_azimuth_angles(source_variable[0]->data.double_data[i],
+                                                                             source_variable[1]->data.double_data[i]);
+    }
+
+    return 0;
+}
+
 static int get_relative_humidity_from_h2o_pp_and_temperature(harp_variable *variable,
                                                              const harp_variable **source_variable)
 {
@@ -641,18 +656,29 @@ static int get_relative_humidity_from_h2o_pp_and_temperature(harp_variable *vari
     return 0;
 }
 
-static int get_scattering_angle_from_solar_angles_and_viewing_angles(harp_variable *variable,
-                                                                     const harp_variable **source_variable)
+static int get_scattering_angle_from_sensor_and_solar_angles(harp_variable *variable,
+                                                             const harp_variable **source_variable)
 {
     long i;
 
     for (i = 0; i < variable->num_elements; i++)
     {
         variable->data.double_data[i] =
-            harp_scattering_angle_from_solar_angles_and_viewing_angles(source_variable[0]->data.double_data[i],
-                                                                       source_variable[1]->data.double_data[i],
-                                                                       source_variable[2]->data.double_data[i],
-                                                                       source_variable[3]->data.double_data[i]);
+            harp_scattering_angle_from_sensor_and_solar_angles(source_variable[0]->data.double_data[i],
+                                                               source_variable[1]->data.double_data[i],
+                                                               source_variable[2]->data.double_data[i]);
+    }
+
+    return 0;
+}
+
+static int get_sensor_angle_from_viewing_angle(harp_variable *variable, const harp_variable **source_variable)
+{
+    long i;
+
+    for (i = 0; i < variable->num_elements; i++)
+    {
+        variable->data.double_data[i] = harp_sensor_angle_from_viewing_angle(source_variable[0]->data.double_data[i]);
     }
 
     return 0;
@@ -758,6 +784,18 @@ static int get_time_dependent_from_time_independent(harp_variable *variable, con
         {
             memcpy(&variable->data.int8_data[i * block_size], source_variable[0]->data.ptr, block_size);
         }
+    }
+
+    return 0;
+}
+
+static int get_viewing_angle_from_sensor_angle(harp_variable *variable, const harp_variable **source_variable)
+{
+    long i;
+
+    for (i = 0; i < variable->num_elements; i++)
+    {
+        variable->data.double_data[i] = harp_viewing_angle_from_sensor_angle(source_variable[0]->data.double_data[i]);
     }
 
     return 0;
@@ -2976,17 +3014,24 @@ static int add_angle_conversions(void)
 
     dimension_type[0] = harp_dimension_time;
 
-    /*** scattering angle ***/
+    /*** relative azimuth angle ***/
+
+    if (add_time_indepedent_to_dependent_conversion("relative_azimuth_angle", harp_type_double, HARP_UNIT_ANGLE, 1,
+                                                    dimension_type, 0) != 0)
+    {
+        return -1;
+    }
 
     for (i = 0; i < 2; i++)
     {
-        if (harp_variable_conversion_new("scattering_angle", harp_type_double, HARP_UNIT_ANGLE, i, dimension_type, 0,
-                                         get_scattering_angle_from_solar_angles_and_viewing_angles, &conversion) != 0)
+        if (harp_variable_conversion_new("relative_azimuth_angle", harp_type_double, HARP_UNIT_ANGLE, i, dimension_type,
+                                         0, get_relative_azimuth_angle_from_sensor_and_solar_azimuth_angles,
+                                         &conversion) != 0)
         {
             return -1;
         }
-        if (harp_variable_conversion_add_source(conversion, "solar_zenith_angle", harp_type_double, HARP_UNIT_ANGLE, i,
-                                                dimension_type, 0) != 0)
+        if (harp_variable_conversion_add_source(conversion, "sensor_azimuth_angle", harp_type_double, HARP_UNIT_ANGLE,
+                                                i, dimension_type, 0) != 0)
         {
             return -1;
         }
@@ -2995,12 +3040,111 @@ static int add_angle_conversions(void)
         {
             return -1;
         }
-        if (harp_variable_conversion_add_source(conversion, "viewing_zenith_angle", harp_type_double, HARP_UNIT_ANGLE,
+    }
+
+    /*** scattering angle ***/
+
+    if (add_time_indepedent_to_dependent_conversion("scattering_angle", harp_type_double, HARP_UNIT_ANGLE, 1,
+                                                    dimension_type, 0) != 0)
+    {
+        return -1;
+    }
+
+    for (i = 0; i < 2; i++)
+    {
+        if (harp_variable_conversion_new("scattering_angle", harp_type_double, HARP_UNIT_ANGLE, i, dimension_type, 0,
+                                         get_scattering_angle_from_sensor_and_solar_angles, &conversion) != 0)
+        {
+            return -1;
+        }
+        if (harp_variable_conversion_add_source(conversion, "sensor_zenith_angle", harp_type_double, HARP_UNIT_ANGLE, i,
+                                                dimension_type, 0) != 0)
+        {
+            return -1;
+        }
+        if (harp_variable_conversion_add_source(conversion, "solar_zenith_angle", harp_type_double, HARP_UNIT_ANGLE, i,
+                                                dimension_type, 0) != 0)
+        {
+            return -1;
+        }
+        if (harp_variable_conversion_add_source(conversion, "relative_azimuth_angle", harp_type_double, HARP_UNIT_ANGLE,
                                                 i, dimension_type, 0) != 0)
         {
             return -1;
         }
+    }
+
+    /*** sensor azimuth angle ***/
+
+    if (add_time_indepedent_to_dependent_conversion("sensor_azimuth_angle", harp_type_double, HARP_UNIT_ANGLE, 1,
+                                                    dimension_type, 0) != 0)
+    {
+        return -1;
+    }
+
+    for (i = 0; i < 2; i++)
+    {
+        if (harp_variable_conversion_new("sensor_azimuth_angle", harp_type_double, HARP_UNIT_ANGLE, i, dimension_type,
+                                         0, get_sensor_angle_from_viewing_angle, &conversion) != 0)
+        {
+            return -1;
+        }
         if (harp_variable_conversion_add_source(conversion, "viewing_azimuth_angle", harp_type_double, HARP_UNIT_ANGLE,
+                                                i, dimension_type, 0) != 0)
+        {
+            return -1;
+        }
+    }
+
+    /*** sensor elevation angle ***/
+
+    if (add_time_indepedent_to_dependent_conversion("sensor_elevation_angle", harp_type_double, HARP_UNIT_ANGLE, 1,
+                                                    dimension_type, 0) != 0)
+    {
+        return -1;
+    }
+
+    for (i = 0; i < 2; i++)
+    {
+        if (harp_variable_conversion_new("sensor_elevation_angle", harp_type_double, HARP_UNIT_ANGLE, i, dimension_type,
+                                         0, get_elevation_angle_from_zenith_angle, &conversion) != 0)
+        {
+            return -1;
+        }
+        if (harp_variable_conversion_add_source(conversion, "sensor_zenith_angle", harp_type_double, HARP_UNIT_ANGLE,
+                                                i, dimension_type, 0) != 0)
+        {
+            return -1;
+        }
+    }
+
+    /*** sensor zenith angle ***/
+
+    if (add_time_indepedent_to_dependent_conversion("sensor_zenith_angle", harp_type_double, HARP_UNIT_ANGLE, 1,
+                                                    dimension_type, 0) != 0)
+    {
+        return -1;
+    }
+
+    for (i = 0; i < 2; i++)
+    {
+        if (harp_variable_conversion_new("sensor_zenith_angle", harp_type_double, HARP_UNIT_ANGLE, i, dimension_type,
+                                         0, get_zenith_angle_from_elevation_angle, &conversion) != 0)
+        {
+            return -1;
+        }
+        if (harp_variable_conversion_add_source(conversion, "sensor_elevation_angle", harp_type_double, HARP_UNIT_ANGLE,
+                                                i, dimension_type, 0) != 0)
+        {
+            return -1;
+        }
+
+        if (harp_variable_conversion_new("sensor_zenith_angle", harp_type_double, HARP_UNIT_ANGLE, i, dimension_type, 0,
+                                         get_sensor_angle_from_viewing_angle, &conversion) != 0)
+        {
+            return -1;
+        }
+        if (harp_variable_conversion_add_source(conversion, "viewing_zenith_angle", harp_type_double, HARP_UNIT_ANGLE,
                                                 i, dimension_type, 0) != 0)
         {
             return -1;
@@ -3057,9 +3201,7 @@ static int add_angle_conversions(void)
         {
             return -1;
         }
-    }
-    for (i = 0; i < 2; i++)
-    {
+
         if (harp_variable_conversion_new("solar_elevation_angle", harp_type_double, HARP_UNIT_ANGLE, i, dimension_type,
                                          0, get_solar_elevation_angle_from_datetime_and_latlon, &conversion) != 0)
         {
@@ -3111,12 +3253,73 @@ static int add_angle_conversions(void)
         return -1;
     }
 
+    for (i = 0; i < 2; i++)
+    {
+        if (harp_variable_conversion_new("viewing_azimuth_angle", harp_type_double, HARP_UNIT_ANGLE, i, dimension_type,
+                                         0, get_viewing_angle_from_sensor_angle, &conversion) != 0)
+        {
+            return -1;
+        }
+        if (harp_variable_conversion_add_source(conversion, "sensor_azimuth_angle", harp_type_double, HARP_UNIT_ANGLE,
+                                                i, dimension_type, 0) != 0)
+        {
+            return -1;
+        }
+    }
+
+    /*** viewing elevation angle ***/
+
+    if (add_time_indepedent_to_dependent_conversion("viewing_elevation_angle", harp_type_double, HARP_UNIT_ANGLE, 1,
+                                                    dimension_type, 0) != 0)
+    {
+        return -1;
+    }
+
+    for (i = 0; i < 2; i++)
+    {
+        if (harp_variable_conversion_new("viewing_elevation_angle", harp_type_double, HARP_UNIT_ANGLE, i,
+                                         dimension_type, 0, get_elevation_angle_from_zenith_angle, &conversion) != 0)
+        {
+            return -1;
+        }
+        if (harp_variable_conversion_add_source(conversion, "viewing_zenith_angle", harp_type_double, HARP_UNIT_ANGLE,
+                                                i, dimension_type, 0) != 0)
+        {
+            return -1;
+        }
+    }
+
     /*** viewing zenith angle ***/
 
     if (add_time_indepedent_to_dependent_conversion("viewing_zenith_angle", harp_type_double, HARP_UNIT_ANGLE, 1,
                                                     dimension_type, 0) != 0)
     {
         return -1;
+    }
+
+    for (i = 0; i < 2; i++)
+    {
+        if (harp_variable_conversion_new("viewing_zenith_angle", harp_type_double, HARP_UNIT_ANGLE, i, dimension_type,
+                                         0, get_viewing_angle_from_sensor_angle, &conversion) != 0)
+        {
+            return -1;
+        }
+        if (harp_variable_conversion_add_source(conversion, "sensor_zenith_angle", harp_type_double, HARP_UNIT_ANGLE,
+                                                i, dimension_type, 0) != 0)
+        {
+            return -1;
+        }
+
+        if (harp_variable_conversion_new("viewing_zenith_angle", harp_type_double, HARP_UNIT_ANGLE, i, dimension_type,
+                                         0, get_zenith_angle_from_elevation_angle, &conversion) != 0)
+        {
+            return -1;
+        }
+        if (harp_variable_conversion_add_source(conversion, "viewing_elevation_angle", harp_type_double,
+                                                HARP_UNIT_ANGLE, i, dimension_type, 0) != 0)
+        {
+            return -1;
+        }
     }
 
     return 0;

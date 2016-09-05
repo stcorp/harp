@@ -485,27 +485,24 @@ double harp_reflectance_from_normalized_radiance_and_solar_zenith_angle(double n
     return reflectance;
 }
 
-/** Convert viewing and solar angles into scattering angle
- * \param sza Solar Zenith Angle [degree]
- * \param saa Solar Azimuth Angle [degree]
- * \param vza Viewing Zenith Angle [degree]
- * \param vaa Viewing Azimuth Angle [degree]
+/** Convert sensor and solar angles into scattering angle
+ * \param sensor_zenith_angle Sensor Zenith Angle [degree]
+ * \param solar_zenith_angle Solar Zenith Angle [degree]
+ * \param relative_azimuth_angle Relative Azimuth Angle [degree]
  * \return the scattering angle [degree]
  */
-double harp_scattering_angle_from_solar_angles_and_viewing_angles(double sza, double saa, double vza, double vaa)
+double harp_scattering_angle_from_sensor_and_solar_angles(double sensor_zenith_angle, double solar_zenith_angle,
+                                                          double relative_azimuth_angle)
 {
-    double mu0 = cos(sza * CONST_DEG2RAD);
-    double muV = cos(vza * CONST_DEG2RAD);
-    double cos_delta_phi = cos((vaa - saa) * CONST_DEG2RAD);
-    double cos_theta = mu0 * muV * sqrt(1.0 - mu0 * mu0) * sqrt(1.0 - muV * muV) * cos_delta_phi;
-
-    return CONST_RAD2DEG * acos(cos_theta);
+    return CONST_RAD2DEG * acos(-cos(sensor_zenith_angle * CONST_DEG2RAD) * cos(solar_zenith_angle * CONST_DEG2RAD) -
+                                sin(sensor_zenith_angle * CONST_DEG2RAD) * sin(solar_zenith_angle * CONST_DEG2RAD) *
+                                cos(relative_azimuth_angle * CONST_DEG2RAD));
 }
 
 /** Calculate the solar azimuth angle for the given time and location
- * \param datetime  Datetime [s since 2000-01-01]
- * \param longitude  Longitude [degree_east]
- * \param latitude  Latitude [degree_north]
+ * \param datetime Datetime [s since 2000-01-01]
+ * \param longitude Longitude [degree_east]
+ * \param latitude Latitude [degree_north]
  * \param solar_elevation_angle Pointer to the variable where the solar elevation angle [degree] will be stored
  * \param solar_azimuth_angle Pointer to the variable where the solar elevation angle [degree] will be stored
  */
@@ -559,6 +556,33 @@ void harp_solar_angles_from_datetime_longitude_and_latitude(double datetime, dou
     *solar_elevation_angle = rad2deg * (*solar_elevation_angle);
 }
 
+/** Convert sensor and solar azimuth angles to relative azimuth angle
+ * \param sensor_azimuth_angle Sensor azimuth angle[degree]
+ * \param solar_azimuth_angle Solar azimuth angle[degree]
+ * \return the relative azimuth angle [degree]
+ */
+double harp_relative_azimuth_angle_from_sensor_and_solar_azimuth_angles(double sensor_azimuth_angle,
+                                                                        double solar_azimuth_angle)
+{
+    double angle = sensor_azimuth_angle - solar_azimuth_angle;
+
+    while (angle < 0)
+    {
+        angle += 360;
+    }
+    while (angle >= 360)
+    {
+        angle -= 360;
+    }
+
+    if (angle > 180)
+    {
+        return 360 - angle;
+    }
+
+    return angle;
+}
+
 /** Convert zenith angle to elevation angle
  * \param zenith_angle Zenith angle[degree]
  * \return the elevation angle [degree]
@@ -577,33 +601,51 @@ double harp_zenith_angle_from_elevation_angle(double elevation_angle)
     return 90.0 - elevation_angle;
 }
 
-/** Convert the solar zenith angle, the viewing zenith angle and relative azimuth angle at one height to another height
+/** Convert viewing angle (zenith, elevation, or azimuth) to sensor angle
+ * \param viewing_angle Viewing angle[degree]
+ * \return the sensor angle [degree]
+ */
+double harp_sensor_angle_from_viewing_angle(double viewing_angle)
+{
+    return 180.0 - viewing_angle;
+}
+
+/** Convert sensor angle (zenith, elevation, or azimuth) to viewing angle
+ * \param sensor_angle  sensor angle [degree]
+ * \return the viewing angle [degree]
+ */
+double harp_viewing_angle_from_sensor_angle(double sensor_angle)
+{
+    return 180.0 - sensor_angle;
+}
+
+/** Convert the solar zenith angle, the sensor zenith angle and relative azimuth angle at one height to another height
  * \param source_altitude  Source altitude [m]
  * \param source_solar_zenith_angle  Solar zenith angle at source altitude [degree]
- * \param source_viewing_zenith_angle  Viewing zenith angle at source altitude [degree]
+ * \param source_sensor_zenith_angle  Sensor zenith angle at source altitude [degree]
  * \param source_relative_azimuth_angle  Relative azimuth angle at source altitude [degree]
  * \param target_altitude  Target altitude [m]
  * \param new_target_solar_zenith_angle  Solar zenith angle at target altitude [degree]
- * \param new_target_viewing_zenith_angle  Viewing zenith angle at target altitude [degree]
+ * \param new_target_sensor_zenith_angle  Sensor zenith angle at target altitude [degree]
  * \param new_target_relative_azimuth_angle  Relative azimuth angle at target altitude [degree]
  */
-int harp_viewing_geometry_angles_at_altitude_from_other_altitude(double source_altitude,
-                                                                 double source_solar_zenith_angle,
-                                                                 double source_viewing_zenith_angle,
-                                                                 double source_relative_azimuth_angle,
-                                                                 double target_altitude,
-                                                                 double *new_target_solar_zenith_angle,
-                                                                 double *new_target_viewing_zenith_angle,
-                                                                 double *new_target_relative_azimuth_angle)
+int harp_sensor_geometry_angles_at_altitude_from_other_altitude(double source_altitude,
+                                                                double source_solar_zenith_angle,
+                                                                double source_sensor_zenith_angle,
+                                                                double source_relative_azimuth_angle,
+                                                                double target_altitude,
+                                                                double *new_target_solar_zenith_angle,
+                                                                double *new_target_sensor_zenith_angle,
+                                                                double *new_target_relative_azimuth_angle)
 {
     double target_solar_zenith_angle;
-    double target_viewing_zenith_angle;
+    double target_sensor_zenith_angle;
     double target_relative_azimuth_angle;
     double Earth_radius = (double)(CONST_EARTH_RADIUS_WGS84_SPHERE);
     double deg2rad = (double)(CONST_DEG2RAD);
     double rad2deg = (double)(CONST_RAD2DEG);
     double theta0 = source_solar_zenith_angle * deg2rad;        /* Solar zenith angle [rad] */
-    double thetaV = source_viewing_zenith_angle * deg2rad;      /* Viewing zenith angle [rad] */
+    double thetaV = source_sensor_zenith_angle * deg2rad;       /* Sensor zenith angle [rad] */
     double deltaphi = source_relative_azimuth_angle * deg2rad;  /* Relative azimuth angle [rad] */
     double sintheta0 = sin(theta0);
     double costheta0 = cos(theta0);
@@ -621,13 +663,13 @@ int harp_viewing_geometry_angles_at_altitude_from_other_altitude(double source_a
     double fk;
     int nadir;
 
-    nadir = (source_viewing_zenith_angle == 0.0);
+    nadir = (source_sensor_zenith_angle == 0.0);
 
     if (nadir || (target_altitude == source_altitude))
     {
         /*  The output angles are identical to the input angles */
         target_solar_zenith_angle = source_solar_zenith_angle;
-        target_viewing_zenith_angle = source_viewing_zenith_angle;
+        target_sensor_zenith_angle = source_sensor_zenith_angle;
         if (source_relative_azimuth_angle > 180.0)
         {
             target_relative_azimuth_angle = 360.0 - source_relative_azimuth_angle;
@@ -639,7 +681,7 @@ int harp_viewing_geometry_angles_at_altitude_from_other_altitude(double source_a
     }
     else
     {
-        /* Calculate the viewing zenith angles */
+        /* Calculate the sensor zenith angles */
         fk = (Earth_radius + source_altitude) / (Earth_radius + target_altitude);
         sinthetaVk = fk * sinthetaV;
         thetaVk = asin(sinthetaVk);
@@ -654,7 +696,7 @@ int harp_viewing_geometry_angles_at_altitude_from_other_altitude(double source_a
         theta0k = acos(costheta0k);
         sintheta0k = sqrt(1.0 - costheta0k * costheta0k);
 
-        /* Calculate the viewing azimuth angles */
+        /* Calculate the sensor azimuth angles */
         if (sintheta0k == 0.0)
         {
             /* The sun is in zenith, so the azimuth angle is arbitrary. Set to zero. */
@@ -671,36 +713,36 @@ int harp_viewing_geometry_angles_at_altitude_from_other_altitude(double source_a
         }
 
         target_solar_zenith_angle = theta0k * rad2deg;
-        target_viewing_zenith_angle = thetaVk * rad2deg;
+        target_sensor_zenith_angle = thetaVk * rad2deg;
         target_relative_azimuth_angle = deltaphik * rad2deg;
     }
 
     *new_target_solar_zenith_angle = target_solar_zenith_angle;
-    *new_target_viewing_zenith_angle = target_viewing_zenith_angle;
+    *new_target_sensor_zenith_angle = target_sensor_zenith_angle;
     *new_target_relative_azimuth_angle = target_relative_azimuth_angle;
     return 0;
 }
 
-/** Calculate the solar zenith angle, the viewing zenith angle, and the relative azimuth angle for the requested altitudes
+/** Calculate the solar zenith angle, the sensor zenith angle, and the relative azimuth angle for the requested altitudes
  * \param altitude  Height corresponding to the input angles (reference altitude) [m]
  * \param solar_zenith_angle  Solar zenith angle at reference altitude [degree]
- * \param viewing_zenith_angle  Viewing zenith angle at reference altitude [degree]
+ * \param sensor_zenith_angle  Sensor zenith angle at reference altitude [degree]
  * \param relative_azimuth_angle  Relative azimuth angle at reference altitude [degree]
  * \param num_levels Number of levels
  * \param altitude_profile  Altitude profile [m]
  * \param solar_zenith_angle_profile  Solar zenith angles at profile altitudes [degree]
- * \param viewing_zenith_angle_profile  Viewing zenith angles at profile altitudes [degree]
+ * \param sensor_zenith_angle_profile  Sensor zenith angles at profile altitudes [degree]
  * \param relative_azimuth_angle_profile  Relative azimuth angles at profile altitudes [degree]
  */
-int harp_viewing_geometry_angle_profiles_from_viewing_geometry_angles(double altitude,
-                                                                      double solar_zenith_angle,
-                                                                      double viewing_zenith_angle,
-                                                                      double relative_azimuth_angle,
-                                                                      long num_levels,
-                                                                      const double *altitude_profile,
-                                                                      double *solar_zenith_angle_profile,
-                                                                      double *viewing_zenith_angle_profile,
-                                                                      double *relative_azimuth_angle_profile)
+int harp_sensor_geometry_angle_profiles_from_sensor_geometry_angles(double altitude,
+                                                                    double solar_zenith_angle,
+                                                                    double sensor_zenith_angle,
+                                                                    double relative_azimuth_angle,
+                                                                    long num_levels,
+                                                                    const double *altitude_profile,
+                                                                    double *solar_zenith_angle_profile,
+                                                                    double *sensor_zenith_angle_profile,
+                                                                    double *relative_azimuth_angle_profile)
 {
     long k;
 
@@ -714,9 +756,9 @@ int harp_viewing_geometry_angle_profiles_from_viewing_geometry_angles(double alt
         harp_set_error(HARP_ERROR_INVALID_ARGUMENT, "solar zenith angle profile is empty (%s:%u)", __FILE__, __LINE__);
         return -1;
     }
-    if (viewing_zenith_angle_profile == NULL)
+    if (sensor_zenith_angle_profile == NULL)
     {
-        harp_set_error(HARP_ERROR_INVALID_ARGUMENT, "viewing zenith angle profile is empty (%s:%u)", __FILE__,
+        harp_set_error(HARP_ERROR_INVALID_ARGUMENT, "sensor zenith angle profile is empty (%s:%u)", __FILE__,
                        __LINE__);
         return -1;
     }
@@ -729,14 +771,14 @@ int harp_viewing_geometry_angle_profiles_from_viewing_geometry_angles(double alt
 
     for (k = 0; k < num_levels; k++)
     {
-        if (harp_viewing_geometry_angles_at_altitude_from_other_altitude(altitude,
-                                                                         solar_zenith_angle,
-                                                                         viewing_zenith_angle,
-                                                                         relative_azimuth_angle,
-                                                                         altitude_profile[k],
-                                                                         &(solar_zenith_angle_profile[k]),
-                                                                         &(viewing_zenith_angle_profile[k]),
-                                                                         &(relative_azimuth_angle_profile[k])) != 0)
+        if (harp_sensor_geometry_angles_at_altitude_from_other_altitude(altitude,
+                                                                        solar_zenith_angle,
+                                                                        sensor_zenith_angle,
+                                                                        relative_azimuth_angle,
+                                                                        altitude_profile[k],
+                                                                        &(solar_zenith_angle_profile[k]),
+                                                                        &(sensor_zenith_angle_profile[k]),
+                                                                        &(relative_azimuth_angle_profile[k])) != 0)
         {
             return -1;
         }
