@@ -1113,7 +1113,7 @@ aerosol extinction coefficient
    ================ =========================================== =================== ====================================
    symbol           description                                 unit                variable name
    ================ =========================================== =================== ====================================
-   :math:`z_{x}(l)` altitude boundaries (:math:`l \in \{1,2\}`) :math:`m`           `altitude_bounds {:,2}`
+   :math:`z^{B}(l)` altitude boundaries (:math:`l \in \{1,2\}`) :math:`m`           `altitude_bounds {:,2}`
    :math:`\sigma`   aerosol extinction coefficient              :math:`\frac{1}{m}` `aerosol_extinction_coefficient {:}`
    :math:`\tau`     aerosol optical depth                       :math:`-`           `aerosol_optical_depth {:}`
    ================ =========================================== =================== ====================================
@@ -1123,7 +1123,7 @@ aerosol extinction coefficient
 
    .. math::
 
-      \sigma = \frac{\tau}{\lvert z_{x}(2) - z_{x}(1) \rvert}
+      \sigma = \frac{\tau}{\lvert z^{B}(2) - z^{B}(1) \rvert}
 
 
 aerosol optical depth
@@ -1151,7 +1151,7 @@ aerosol optical depth
    ================ =========================================== =================== ====================================
    symbol           description                                 unit                variable name
    ================ =========================================== =================== ====================================
-   :math:`z_{x}(l)` altitude boundaries (:math:`l \in \{1,2\}`) :math:`m`           `altitude_bounds {:,2}`
+   :math:`z^{B}(l)` altitude boundaries (:math:`l \in \{1,2\}`) :math:`m`           `altitude_bounds {:,2}`
    :math:`\sigma`   aerosol extinction coefficient              :math:`\frac{1}{m}` `aerosol_extinction_coefficient {:}`
    :math:`\tau`     aerosol optical depth                       :math:`-`           `aerosol_optical_depth {:}`
    ================ =========================================== =================== ====================================
@@ -1161,7 +1161,7 @@ aerosol optical depth
 
    .. math::
 
-      \tau = \sigma \lvert z_{x}(2) - z_{x}(1) \rvert
+      \tau = \sigma \lvert z^{B}(2) - z^{B}(1) \rvert
 
 
 altitude
@@ -1254,27 +1254,45 @@ altitude bounds
 column mass density
 ~~~~~~~~~~~~~~~~~~~
 
-#. column mass density from mass density:
+#. column mass density for air component from mass density:
 
-   ================== =========================================== ====================== =====================================
+   ================== =========================================== ====================== ==============================
    symbol             description                                 unit                   variable name
-   ================== =========================================== ====================== =====================================
-   :math:`z_{x}(l)`   altitude boundaries (:math:`l \in \{1,2\}`) :math:`m`              `altitude_bounds {:,2}`
+   ================== =========================================== ====================== ==============================
+   :math:`z^{B}(l)`   altitude boundaries (:math:`l \in \{1,2\}`) :math:`m`              `altitude_bounds {:,2}`
    :math:`\rho_{x}`   mass density for air component x            :math:`\frac{ug}{m^3}` `<species>_density {:}`
                       (e.g. :math:`\rho_{O_{3}}`)
    :math:`\sigma_{x}` column mass density for air component x     :math:`\frac{ug}{m^2}` `<species>_column_density {:}`
                       (e.g. :math:`c_{O_{3}}`)
-   ================== =========================================== ====================== =====================================
+   ================== =========================================== ====================== ==============================
 
    The pattern `:` for the dimensions can represent `{vertical}`, `{latitude,longitude}`, `{latitude,longitude,vertical}`,
    `{time}`, `{time,vertical}`, `{time,latitude,longitude}`, `{time,latitude,longitude,vertical}`, or no dimensions at all.
 
    .. math::
 
-     \sigma_{x} = \rho_{x} \lvert z_{x}(2) - z_{x}(1) \rvert
+     \sigma_{x} = \rho_{x} \lvert z^{B}(2) - z^{B}(1) \rvert
 
 
-#. column mass density from column number density:
+#. column mass density for total air from mass density:
+
+   ================ =========================================== ====================== =======================
+   symbol           description                                 unit                   variable name
+   ================ =========================================== ====================== =======================
+   :math:`z^{B}(l)` altitude boundaries (:math:`l \in \{1,2\}`) :math:`m`              `altitude_bounds {:,2}`
+   :math:`\rho`     mass density for total air                  :math:`\frac{ug}{m^3}` `density {:}`
+   :math:`\sigma`   column mass density for total air           :math:`\frac{ug}{m^2}` `column_density {:}`
+   ================ =========================================== ====================== =======================
+
+   The pattern `:` for the dimensions can represent `{vertical}`, `{latitude,longitude}`, `{latitude,longitude,vertical}`,
+   `{time}`, `{time,vertical}`, `{time,latitude,longitude}`, `{time,latitude,longitude,vertical}`, or no dimensions at all.
+
+   .. math::
+
+     \sigma = \rho \lvert z^{B}(2) - z^{B}(1) \rvert
+
+
+#. column mass density for air component from column number density:
 
    This conversion applies to both total columns as well as partial column profiles.
 
@@ -1297,13 +1315,32 @@ column mass density
       \sigma_{x} = \frac{10^{6}c_{x}M_{x}}{N_{A}}
 
 
+#. column mass density for total air from column number density:
+
+   This conversion applies to both total columns as well as partial column profiles.
+
+   =============== =================================== ========================= ===========================
+   symbol          description                         unit                      variable name
+   =============== =================================== ========================= ===========================
+   :math:`c`       column number density for total air :math:`\frac{molec}{m^2}` `column_number_density {:}`
+   :math:`M_{air}` molar mass for total air            :math:`\frac{g}{mol}`     `molar_mass {:}`
+   :math:`N_A`     Avogadro constant                   :math:`\frac{1}{mol}`
+   :math:`\sigma`  column mass density for total air   :math:`\frac{ug}{m^2}`    `column_density {:}`
+   =============== =================================== ========================= ===========================
+
+   The pattern `:` for the dimensions can represent `{vertical}`, `{latitude,longitude}`, `{latitude,longitude,vertical}`,
+   `{time}`, `{time,vertical}`, `{time,latitude,longitude}`, `{time,latitude,longitude,vertical}`, or no dimensions at all.
+
+   .. math::
+
+      \sigma = \frac{10^{6}c M_{air}}{N_{A}}
+
+
 column mass mixing ratio
 ~~~~~~~~~~~~~~~~~~~~~~~~
 
 #. column mass mixing ratio from column volume mixing ratio
    
-   This conversion also applies to tropospheric and stratospheric columns
-
    =============== ======================================== ======================== ==========================================
    symbol          description                              unit                     variable name
    =============== ======================================== ======================== ==========================================
@@ -1315,8 +1352,8 @@ column mass mixing ratio
                    with regard to total air
    =============== ======================================== ======================== ==========================================
 
-   The pattern `:` for the dimensions can represent `{vertical}`, `{latitude,longitude}`, `{latitude,longitude,vertical}`,
-   `{time}`, `{time,vertical}`, `{time,latitude,longitude}`, `{time,latitude,longitude,vertical}`, or no dimensions at all.
+   The pattern `:` for the dimensions can represent `{latitude,longitude}`, `{time}`, `{time,latitude,longitude}`,
+   or no dimensions at all.
 
    .. math::
 
@@ -1325,8 +1362,6 @@ column mass mixing ratio
 
 #. column mass mixing ratio dry air from column volume mixing ratio dry air
    
-   This conversion also applies to tropospheric and stratospheric columns
-
    ===================== ======================================== ======================== ==================================================
    symbol                description                              unit                     variable name
    ===================== ======================================== ======================== ==================================================
@@ -1338,8 +1373,50 @@ column mass mixing ratio
                          with regard to dry air
    ===================== ======================================== ======================== ==================================================
 
-   The pattern `:` for the dimensions can represent `{vertical}`, `{latitude,longitude}`, `{latitude,longitude,vertical}`,
-   `{time}`, `{time,vertical}`, `{time,latitude,longitude}`, `{time,latitude,longitude,vertical}`, or no dimensions at all.
+   The pattern `:` for the dimensions can represent `{latitude,longitude}`, `{time}`, `{time,latitude,longitude}`,
+   or no dimensions at all.
+
+   .. math::
+
+      \bar{q}_{x} = \bar{\nu}_{x}\frac{M_{x}}{M_{dry\_air}}
+
+
+#. stratospheric column mass mixing ratio dry air from stratospheric column volume mixing ratio dry air
+   
+   ===================== ======================================== ======================== ================================================================
+   symbol                description                              unit                     variable name
+   ===================== ======================================== ======================== ================================================================
+   :math:`M_{dry\_air}`  molar mass for dry air                   :math:`\frac{g}{mol}`
+   :math:`M_{x}`         molar mass for air component x           :math:`\frac{g}{mol}`
+   :math:`\bar{q}_{x}`   stratospheric column mass mixing ratio   :math:`\frac{{\mu}g}{g}` `stratospheric_<species>_column_mass_mixing_ratio_dry_air {:}`
+                         of quantity x with regard to dry air
+   :math:`\bar{\nu}_{x}` stratospheric column volume mixing ratio :math:`ppmv`             `stratospheric_<species>_column_volume_mixing_ratio_dry_air {:}`
+                         of quantity x with regard to dry air
+   ===================== ======================================== ======================== ================================================================
+
+   The pattern `:` for the dimensions can represent `{latitude,longitude}`, `{time}`, `{time,latitude,longitude}`,
+   or no dimensions at all.
+
+   .. math::
+
+      \bar{q}_{x} = \bar{\nu}_{x}\frac{M_{x}}{M_{dry\_air}}
+
+
+#. tropospheric column mass mixing ratio dry air from tropospheric column volume mixing ratio dry air
+   
+   ===================== ======================================= ======================== ===============================================================
+   symbol                description                             unit                     variable name
+   ===================== ======================================= ======================== ===============================================================
+   :math:`M_{dry\_air}`  molar mass for dry air                  :math:`\frac{g}{mol}`
+   :math:`M_{x}`         molar mass for air component x          :math:`\frac{g}{mol}`
+   :math:`\bar{q}_{x}`   tropospheric column mass mixing ratio   :math:`\frac{{\mu}g}{g}` `tropospheric_<species>_column_mass_mixing_ratio_dry_air {:}`
+                         of quantity x with regard to dry air
+   :math:`\bar{\nu}_{x}` tropospheric column volume mixing ratio :math:`ppmv`             `tropospheric_<species>_column_volume_mixing_ratio_dry_air {:}`
+                         of quantity x with regard to dry air
+   ===================== ======================================= ======================== ===============================================================
+
+   The pattern `:` for the dimensions can represent `{latitude,longitude}`, `{time}`, `{time,latitude,longitude}`,
+   or no dimensions at all.
 
    .. math::
 
@@ -1349,7 +1426,7 @@ column mass mixing ratio
 column number density
 ~~~~~~~~~~~~~~~~~~~~~
 
-#. total column number density from partial column number density profile:
+#. total column number density for air component from partial column number density profile:
 
    ================ ======================================= ========================= ==============================================
    symbol           description                             unit                      variable name
@@ -1368,7 +1445,24 @@ column number density
       c_{x} = \sum_{i}{c_{x}(i)}
 
 
-#. column number density from number density:
+#. total column number density for total air from partial column number density profile:
+
+   ============ =========================================== ========================= ====================================
+   symbol       description                                 unit                      variable name
+   ============ =========================================== ========================= ====================================
+   :math:`c`    total column number density for total air   :math:`\frac{molec}{m^2}` `column_number_density {:}`
+   :math:`c(i)` column number density profile for total air :math:`\frac{molec}{m^2}` `column_number_density {:,vertical}`
+   ============ =========================================== ========================= ====================================
+
+   The pattern `:` for the first dimensions can represent `{latitude,longitude}`, `{time}`, `{time,latitude,longitude}`,
+   or no dimensions at all.
+
+   .. math::
+
+      c_{x} = \sum_{i}{c_{x}(i)}
+
+
+#. column number density for air component from number density:
 
    ================ =========================================== ========================= =====================================
    symbol           description                                 unit                      variable name
@@ -1377,7 +1471,7 @@ column number density
                     (e.g. :math:`c_{O_{3}}`)
    :math:`n_{x}`    number density for air component x          :math:`\frac{molec}{m^3}` `<species>_number_density {:}`
                     (e.g. :math:`n_{O_{3}}`)
-   :math:`z_{x}(l)` altitude boundaries (:math:`l \in \{1,2\}`) :math:`m`                 `altitude_bounds {:,2}`
+   :math:`z^{B}(l)` altitude boundaries (:math:`l \in \{1,2\}`) :math:`m`                 `altitude_bounds {:,2}`
    ================ =========================================== ========================= =====================================
 
    The pattern `:` for the dimensions can represent `{vertical}`, `{latitude,longitude}`, `{latitude,longitude,vertical}`,
@@ -1385,10 +1479,28 @@ column number density
 
    .. math::
 
-      c_{x} = n_{x} \lvert z_{x}(2) - z_{x}(1) \rvert
+      c_{x} = n_{x} \lvert z^{B}(2) - z^{B}(1) \rvert
 
 
-#. column number density from column mass density:
+#. column number density for total air from number density:
+
+   ================ =========================================== ========================= ===========================
+   symbol           description                                 unit                      variable name
+   ================ =========================================== ========================= ===========================
+   :math:`c`        column number density for total air         :math:`\frac{molec}{m^2}` `column_number_density {:}`
+   :math:`n`        number density for total air                :math:`\frac{molec}{m^3}` `number_density {:}`
+   :math:`z^{B}(l)` altitude boundaries (:math:`l \in \{1,2\}`) :math:`m`                 `altitude_bounds {:,2}`
+   ================ =========================================== ========================= ===========================
+
+   The pattern `:` for the dimensions can represent `{vertical}`, `{latitude,longitude}`, `{latitude,longitude,vertical}`,
+   `{time}`, `{time,vertical}`, `{time,latitude,longitude}`, `{time,latitude,longitude,vertical}`, or no dimensions at all.
+
+   .. math::
+
+      c = n \lvert z^{B}(2) - z^{B}(1) \rvert
+
+
+#. column number density for air component from column mass density:
 
    This conversion applies to both total columns as well as partial column profiles.
 
@@ -1411,12 +1523,31 @@ column number density
       c_{x} = \frac{\sigma_{x}N_{A}}{10^{6}M_{x}}
 
 
+#. column number density for total air from column mass density:
+
+   This conversion applies to both total columns as well as partial column profiles.
+
+   =============== =================================== ========================= ===========================
+   symbol          description                         unit                      variable name
+   =============== =================================== ========================= ===========================
+   :math:`c`       column number density for total air :math:`\frac{molec}{m^2}` `column_number_density {:}`
+   :math:`M_{air}` molar mass for total air            :math:`\frac{g}{mol}`     `molar_mass {:}`
+   :math:`N_A`     Avogadro constant                   :math:`\frac{1}{mol}`
+   :math:`\sigma`  column mass density for total air   :math:`\frac{ug}{m^2}`    `column_density {:}`
+   =============== =================================== ========================= ===========================
+
+   The pattern `:` for the dimensions can represent `{vertical}`, `{latitude,longitude}`, `{latitude,longitude,vertical}`,
+   `{time}`, `{time,vertical}`, `{time,latitude,longitude}`, `{time,latitude,longitude,vertical}`, or no dimensions at all.
+
+   .. math::
+
+      c = \frac{\sigma N_{A}}{10^{6}M_{air}}
+
+
 column volume mixing ratio
 ~~~~~~~~~~~~~~~~~~~~~~~~~~
 
 #. column volume mixing ratio from column mass mixing ratio
-
-   This conversion also applies to tropospheric and stratospheric columns
 
    =============== ======================================== ======================== ==========================================
    symbol          description                              unit                     variable name
@@ -1429,8 +1560,8 @@ column volume mixing ratio
                    with regard to total air
    =============== ======================================== ======================== ==========================================
 
-   The pattern `:` for the dimensions can represent `{vertical}`, `{latitude,longitude}`, `{latitude,longitude,vertical}`,
-   `{time}`, `{time,vertical}`, `{time,latitude,longitude}`, `{time,latitude,longitude,vertical}`, or no dimensions at all.
+   The pattern `:` for the dimensions can represent `{latitude,longitude}`, `{time}`, `{time,latitude,longitude}`,
+   or no dimensions at all.
 
    .. math::
 
@@ -1438,8 +1569,6 @@ column volume mixing ratio
 
 
 #. column volume mixing ratio dry air from column mass mixing ratio dry air
-
-   This conversion also applies to tropospheric and stratospheric columns
 
    ===================== ======================================== ======================== ==================================================
    symbol                description                              unit                     variable name
@@ -1452,8 +1581,50 @@ column volume mixing ratio
                          with regard to dry air
    ===================== ======================================== ======================== ==================================================
 
-   The pattern `:` for the dimensions can represent `{vertical}`, `{latitude,longitude}`, `{latitude,longitude,vertical}`,
-   `{time}`, `{time,vertical}`, `{time,latitude,longitude}`, `{time,latitude,longitude,vertical}`, or no dimensions at all.
+   The pattern `:` for the dimensions can represent `{latitude,longitude}`, `{time}`, `{time,latitude,longitude}`,
+   or no dimensions at all.
+
+   .. math::
+
+      \bar{\nu}_{x} = \bar{q}_{x}\frac{M_{dry\_air}}{M_{x}}
+
+
+#. stratospheric column volume mixing ratio dry air from stratospheric column mass mixing ratio dry air
+
+   ===================== ======================================== ======================== ================================================================
+   symbol                description                              unit                     variable name
+   ===================== ======================================== ======================== ================================================================
+   :math:`M_{dry\_air}`  molar mass for dry air                   :math:`\frac{g}{mol}`
+   :math:`M_{x}`         molar mass for air component x           :math:`\frac{g}{mol}`
+   :math:`\bar{q}_{x}`   stratospheric column mass mixing ratio   :math:`\frac{{\mu}g}{g}` `stratospheric_<species>_column_mass_mixing_ratio_dry_air {:}`
+                         of quantity x with regard to dry air
+   :math:`\bar{\nu}_{x}` stratospheric column volume mixing ratio :math:`ppmv`             `stratospheric_<species>_column_volume_mixing_ratio_dry_air {:}`
+                         of quantity x with regard to dry air
+   ===================== ======================================== ======================== ================================================================
+
+   The pattern `:` for the dimensions can represent `{latitude,longitude}`, `{time}`, `{time,latitude,longitude}`,
+   or no dimensions at all.
+
+   .. math::
+
+      \bar{\nu}_{x} = \bar{q}_{x}\frac{M_{dry\_air}}{M_{x}}
+
+
+#. tropospheric column volume mixing ratio dry air from tropospheric column mass mixing ratio dry air
+
+   ===================== ======================================= ======================== ===============================================================
+   symbol                description                             unit                     variable name
+   ===================== ======================================= ======================== ===============================================================
+   :math:`M_{dry\_air}`  molar mass for dry air                  :math:`\frac{g}{mol}`
+   :math:`M_{x}`         molar mass for air component x          :math:`\frac{g}{mol}`
+   :math:`\bar{q}_{x}`   tropospheric column mass mixing ratio   :math:`\frac{{\mu}g}{g}` `tropospheric_<species>_column_mass_mixing_ratio_dry_air {:}`
+                         of quantity x with regard to dry air
+   :math:`\bar{\nu}_{x}` tropospheric column volume mixing ratio :math:`ppmv`             `tropospheric_<species>_column_volume_mixing_ratio_dry_air {:}`
+                         of quantity x with regard to dry air
+   ===================== ======================================= ======================== ===============================================================
+
+   The pattern `:` for the dimensions can represent `{latitude,longitude}`, `{time}`, `{time,latitude,longitude}`,
+   or no dimensions at all.
 
    .. math::
 
@@ -1532,7 +1703,7 @@ geopotential height
 mass density
 ~~~~~~~~~~~~
 
-#. mass density from number density:
+#. mass density for air component from number density:
 
    ================ ================================== ========================= ==============================
    symbol           description                        unit                      variable name
@@ -1553,12 +1724,31 @@ mass density
       \rho_{x} = \frac{10^{6}n_{x}M_{x}}{N_{A}}
 
 
-#. mass density from column mass density:
+#. mass density for total air from number density:
+
+   ================ ============================ ========================= ====================
+   symbol           description                  unit                      variable name
+   ================ ============================ ========================= ====================
+   :math:`M_{air}`  molar mass for total air     :math:`\frac{g}{mol}`     `molar_mass {:}`
+   :math:`n`        number density for total air :math:`\frac{molec}{m^3}` `number_density {:}`
+   :math:`N_A`      Avogadro constant            :math:`\frac{1}{mol}`
+   :math:`\rho`     mass density for total air   :math:`\frac{ug}{m^3}`    `density {:}`
+   ================ ============================ ========================= ====================
+
+   The pattern `:` for the dimensions can represent `{vertical}`, `{latitude,longitude}`, `{latitude,longitude,vertical}`,
+   `{time}`, `{time,vertical}`, `{time,latitude,longitude}`, `{time,latitude,longitude,vertical}`, or no dimensions at all.
+
+   .. math::
+
+      \rho = \frac{10^{6}n M_{air}}{N_{A}}
+
+
+#. mass density for air component from column mass density:
 
    ================== =========================================== ====================== =====================================
    symbol             description                                 unit                   variable name
    ================== =========================================== ====================== =====================================
-   :math:`z_{x}(l)`   altitude boundaries (:math:`l \in \{1,2\}`) :math:`m`              `altitude_bounds {:,2}`
+   :math:`z^{B}(l)`   altitude boundaries (:math:`l \in \{1,2\}`) :math:`m`              `altitude_bounds {:,2}`
    :math:`\rho_{x}`   mass density for air component x            :math:`\frac{ug}{m^3}` `<species>_density {:}`
                       (e.g. :math:`\rho_{O_{3}}`)
    :math:`\sigma_{x}` column mass density for air component x     :math:`\frac{ug}{m^2}` `<species>_column_density {:}`
@@ -1570,7 +1760,25 @@ mass density
 
    .. math::
 
-     \rho_{x} = \frac{\sigma_{x}}{\lvert z_{x}(2) - z_{x}(1) \rvert}
+     \rho_{x} = \frac{\sigma_{x}}{\lvert z^{B}(2) - z^{B}(1) \rvert}
+
+
+#. mass density for total air from column mass density:
+
+   ================ =========================================== ====================== =======================
+   symbol           description                                 unit                   variable name
+   ================ =========================================== ====================== =======================
+   :math:`z^{B}(l)` altitude boundaries (:math:`l \in \{1,2\}`) :math:`m`              `altitude_bounds {:,2}`
+   :math:`\rho`     mass density for total air                  :math:`\frac{ug}{m^3}` `density {:}`
+   :math:`\sigma`   column mass density for total air           :math:`\frac{ug}{m^2}` `column_density {:}`
+   ================ =========================================== ====================== =======================
+
+   The pattern `:` for the dimensions can represent `{vertical}`, `{latitude,longitude}`, `{latitude,longitude,vertical}`,
+   `{time}`, `{time,vertical}`, `{time,latitude,longitude}`, `{time,latitude,longitude,vertical}`, or no dimensions at all.
+
+   .. math::
+
+     \rho = \frac{\sigma}{\lvert z^{B}(2) - z^{B}(1) \rvert}
 
 
 mass mixing ratio
@@ -1621,16 +1829,16 @@ mass mixing ratio
 molar mass
 ~~~~~~~~~~
 
-#. molar mass from density and number density
+#. molar mass of total air from density and number density
 
-   ============ ================= ========================= ====================
-   symbol       description       unit                      variable name
-   ============ ================= ========================= ====================
-   :math:`M`    molar mass        :math:`\frac{g}{mol}`     `molar_mass {:}`
-   :math:`n`    number density    :math:`\frac{molec}{m^3}` `number_density {:}`
-   :math:`N_A`  Avogadro constant :math:`\frac{1}{mol}`
-   :math:`\rho` mass density      :math:`\frac{ug}{m^3}`    `density {:}`
-   ============ ================= ========================= ====================
+   =============== ======================= ========================= ====================
+   symbol          description             unit                      variable name
+   =============== ======================= ========================= ====================
+   :math:`M_{air}` molar mass of total air :math:`\frac{g}{mol}`     `molar_mass {:}`
+   :math:`n`       number density          :math:`\frac{molec}{m^3}` `number_density {:}`
+   :math:`N_A`     Avogadro constant       :math:`\frac{1}{mol}`
+   :math:`\rho`    mass density            :math:`\frac{ug}{m^3}`    `density {:}`
+   =============== ======================= ========================= ====================
 
    The pattern `:` for the dimensions can represent `{vertical}`, `{latitude,longitude}`, `{latitude,longitude,vertical}`,
    `{time}`, `{time,vertical}`, `{time,latitude,longitude}`, `{time,latitude,longitude,vertical}`, or no dimensions at all.
@@ -1681,7 +1889,7 @@ molar mass
 number density
 ~~~~~~~~~~~~~~
 
-#. number density from mass density:
+#. number density for air component from mass density:
 
    ================ ================================== ========================= ==============================
    symbol           description                        unit                      variable name
@@ -1700,6 +1908,25 @@ number density
    .. math::
 
       n_{x} = \frac{\rho_{x}N_{A}}{10^{6}M_{x}}
+
+
+#. number density for total air from mass density:
+
+   =============== ============================ ========================= ====================
+   symbol          description                  unit                      variable name
+   =============== ============================ ========================= ====================
+   :math:`M_{air}` molar mass for total air     :math:`\frac{g}{mol}`     `molar_mass {:}`
+   :math:`n    `   number density for total air :math:`\frac{molec}{m^3}` `number_density {:}`
+   :math:`N_A`     Avogadro constant            :math:`\frac{1}{mol}`
+   :math:`\rho`    mass density for total air   :math:`\frac{ug}{m^3}`    `density {:}`
+   =============== ============================ ========================= ====================
+
+   The pattern `:` for the dimensions can represent `{vertical}`, `{latitude,longitude}`, `{latitude,longitude,vertical}`,
+   `{time}`, `{time,vertical}`, `{time,latitude,longitude}`, `{time,latitude,longitude,vertical}`, or no dimensions at all.
+
+   .. math::
+
+      n = \frac{\rho N_{A}}{10^{6}M_{air}}
 
 
 #. number density from volume mixing ratio
@@ -1742,7 +1969,7 @@ number density
       n_{x} = 10^{-6}\bar{\nu}_{x}n_{dry\_air}
 
 
-#. number density from column number density
+#. number density for air component from column number density
 
    ================ =========================================== ========================= =====================================
    symbol           description                                 unit                      variable name
@@ -1751,7 +1978,7 @@ number density
                     (e.g. :math:`c_{O_{3}}`)
    :math:`n_{x}`    number density for air component x          :math:`\frac{molec}{m^3}` `<species>_number_density {:}`
                     (e.g. :math:`n_{O_{3}}`)
-   :math:`z_{x}(l)` altitude boundaries (:math:`l \in \{1,2\}`) :math:`m`                 `altitude_bounds {:,2}`
+   :math:`z^{B}(l)` altitude boundaries (:math:`l \in \{1,2\}`) :math:`m`                 `altitude_bounds {:,2}`
    ================ =========================================== ========================= =====================================
 
    The pattern `:` for the dimensions can represent `{vertical}`, `{latitude,longitude}`, `{latitude,longitude,vertical}`,
@@ -1759,10 +1986,28 @@ number density
 
    .. math::
 
-     n_{x} = \frac{c_{x}}{\lvert z_{x}(2) - z_{x}(1) \rvert}
+     n_{x} = \frac{c_{x}}{\lvert z^{B}(2) - z^{B}(1) \rvert}
 
 
-#. number density from partial pressure and temperature
+#. number density for total air column number density
+
+   ================ =========================================== ========================= ===========================
+   symbol           description                                 unit                      variable name
+   ================ =========================================== ========================= ===========================
+   :math:`c`        column number density for air component x   :math:`\frac{molec}{m^2}` `column_number_density {:}`
+   :math:`n`        number density for air component x          :math:`\frac{molec}{m^3}` `number_density {:}`
+   :math:`z^{B}(l)` altitude boundaries (:math:`l \in \{1,2\}`) :math:`m`                 `altitude_bounds {:,2}`
+   ================ =========================================== ========================= ===========================
+
+   The pattern `:` for the dimensions can represent `{vertical}`, `{latitude,longitude}`, `{latitude,longitude,vertical}`,
+   `{time}`, `{time,vertical}`, `{time,latitude,longitude}`, `{time,latitude,longitude,vertical}`, or no dimensions at all.
+
+   .. math::
+
+     n = \frac{c}{\lvert z^{B}(2) - z^{B}(1) \rvert}
+
+
+#. number density for air component from partial pressure and temperature
 
    ============= ==================================== ============================ ================================
    symbol        description                          unit                         variable name
@@ -1785,63 +2030,84 @@ number density
 
 #. number density for total air from pressure and temperature
 
-   =============== ================== ============================ ====================
-   symbol          description        unit                         variable name
-   =============== ================== ============================ ====================
-   :math:`k`       Boltzmann constant :math:`\frac{kg m^2}{K s^2}`
-   :math:`n_{air}` number density     :math:`\frac{molec}{m^3}`    `number_density {:}`
-   :math:`p`       pressure           :math:`hPa`                  `pressure {:}`
-   :math:`T`       temperature        :math:`K`                    `temperature {:}`
-   =============== ================== ============================ ====================
+   ========= ================== ============================ ====================
+   symbol    description        unit                         variable name
+   ========= ================== ============================ ====================
+   :math:`k` Boltzmann constant :math:`\frac{kg m^2}{K s^2}`
+   :math:`n` number density     :math:`\frac{molec}{m^3}`    `number_density {:}`
+   :math:`p` pressure           :math:`hPa`                  `pressure {:}`
+   :math:`T` temperature        :math:`K`                    `temperature {:}`
+   ========= ================== ============================ ====================
 
    The pattern `:` for the dimensions can represent `{vertical}`, `{latitude,longitude}`, `{latitude,longitude,vertical}`,
    `{time}`, `{time,vertical}`, `{time,latitude,longitude}`, `{time,latitude,longitude,vertical}`, or no dimensions at all.
 
    .. math::
 
-      n_{air} = 10^{-2}\frac{p}{kT}
+      n = 10^{-2}\frac{p}{kT}
 
 
 partial pressure
 ~~~~~~~~~~~~~~~~
 
-#. partial pressure from volume mixing ratio
+#. partial pressure from number density and temperature
 
-   =============== ======================================= ========================= ===================================
-   symbol          description                             unit                      variable name
-   =============== ======================================= ========================= ===================================
-   :math:`p`       pressure                                :math:`hPa`               `pressure {:}`
-   :math:`p_{x}`   partial pressure for air component x    :math:`hPa`               `<species>_partial_pressure {:}`
-                   (e.g. :math:`p_{O_{3}}`)
-   :math:`\nu_{x}` volume mixing ratio for air component x :math:`\frac{molec}{m^3}` `<species>_volume_mixing_ratio {:}`
-                   (e.g. :math:`\nu_{O_{3}}`)
-   =============== ======================================= ========================= ===================================
+   ============= ==================================== ============================ ================================
+   symbol        description                          unit                         variable name
+   ============= ==================================== ============================ ================================
+   :math:`k`     Boltzmann constant                   :math:`\frac{kg m^2}{K s^2}`
+   :math:`n_{x}` number density for air component x   :math:`\frac{molec}{m^3}`    `<species>_number_density {:}`
+                 (e.g. :math:`n_{O_{3}}`)
+   :math:`p_{x}` partial pressure for air component x :math:`hPa`                  `<species>_partial_pressure {:}`
+                 (e.g. :math:`p_{O_{3}}`)
+   :math:`T`     temperature                          :math:`K`                    `temperature {:}`
+   ============= ==================================== ============================ ================================
 
    The pattern `:` for the dimensions can represent `{vertical}`, `{latitude,longitude}`, `{latitude,longitude,vertical}`,
    `{time}`, `{time,vertical}`, `{time,latitude,longitude}`, `{time,latitude,longitude,vertical}`, or no dimensions at all.
 
    .. math::
 
-      p_{x} = \nu_{x}p
+      p_{x} = 10^{2}n_{x}kT
+
+
+#. partial pressure from volume mixing ratio
+
+   =============== ======================================= ============ ===================================
+   symbol          description                             unit         variable name
+   =============== ======================================= ============ ===================================
+   :math:`p`       pressure                                :math:`hPa`  `pressure {:}`
+   :math:`p_{x}`   partial pressure for air component x    :math:`hPa`  `<species>_partial_pressure {:}`
+                   (e.g. :math:`p_{O_{3}}`)
+   :math:`\nu_{x}` volume mixing ratio for air component x :math:`ppmv` `<species>_volume_mixing_ratio {:}`
+                   (e.g. :math:`\nu_{O_{3}}`)
+   =============== ======================================= ============ ===================================
+
+   The pattern `:` for the dimensions can represent `{vertical}`, `{latitude,longitude}`, `{latitude,longitude,vertical}`,
+   `{time}`, `{time,vertical}`, `{time,latitude,longitude}`, `{time,latitude,longitude,vertical}`, or no dimensions at all.
+
+   .. math::
+
+      p_{x} = 10^{-6}\nu_{x}p
 
 
 #. partial pressure from volume mixing ratio dry air
 
-   ===================== ======================================= ========================= ===========================================
-   symbol                description                             unit                      variable name
-   ===================== ======================================= ========================= ===========================================
-   :math:`p_{x}`         partial pressure for air component x    :math:`hPa`               `<species>_partial_pressure {:}`
+   ===================== ======================================= ============ ===========================================
+   symbol                description                             unit         variable name
+   ===================== ======================================= ============ ===========================================
+   :math:`p_{x}`         partial pressure for air component x    :math:`hPa`  `<species>_partial_pressure {:}`
                          (e.g. :math:`p_{O_{3}}`)
-   :math:`\bar{\nu}_{x}` volume mixing ratio for air component x :math:`\frac{molec}{m^3}` `<species>_volume_mixing_ratio_dry_air {:}`
+   :math:`\bar{\nu}_{x}` volume mixing ratio for air component x :math:`ppmv` `<species>_volume_mixing_ratio_dry_air {:}`
                          (e.g. :math:`\nu_{O_{3}}`)
-   ===================== ======================================= ========================= ===========================================
+   ===================== ======================================= ============ ===========================================
 
    The pattern `:` for the dimensions can represent `{vertical}`, `{latitude,longitude}`, `{latitude,longitude,vertical}`,
    `{time}`, `{time,vertical}`, `{time,latitude,longitude}`, `{time,latitude,longitude,vertical}`, or no dimensions at all.
 
    .. math::
 
-      p_{x} = \bar{\nu}_{x}p_{dry\_air}
+      p_{x} = 10^{-6}\bar{\nu}_{x}p_{dry\_air}
 
 
 pressure
@@ -1943,6 +2209,25 @@ pressure
          p(1) & = & p_{surf}e^{-\frac{M_{air}(1)}{T(1)}\frac{g_{0}}{R}\left(z_{g}(i)-z_{g,surf}\right)} \\
          p(i) & = & p(i-1)e^{-\frac{M_{air}(i-1)+M_{air}(i)}{T(i-1)+T(i)}\frac{g_{0}}{R}\left(z_{g}(i)-z_{g}(i-1)\right)}, 1 < i \leq N
       \end{eqnarray}
+
+
+#. pressure from number density and temperature
+
+   ========= ================== ============================ ====================
+   symbol    description        unit                         variable name
+   ========= ================== ============================ ====================
+   :math:`k` Boltzmann constant :math:`\frac{kg m^2}{K s^2}`
+   :math:`n` number density     :math:`\frac{molec}{m^3}`    `number_density {:}`
+   :math:`p` pressure           :math:`hPa`                  `pressure {:}`
+   :math:`T` temperature        :math:`K`                    `temperature {:}`
+   ========= ================== ============================ ====================
+
+   The pattern `:` for the dimensions can represent `{vertical}`, `{latitude,longitude}`, `{latitude,longitude,vertical}`,
+   `{time}`, `{time,vertical}`, `{time,latitude,longitude}`, `{time,latitude,longitude,vertical}`, or no dimensions at all.
+
+   .. math::
+
+      p = 10^{2}nkT
 
 
 pressure bounds
@@ -2086,22 +2371,22 @@ volume mixing ratio
 
 #. volume mixing ratio from partial pressure
 
-   =============== ======================================= ========================= ===================================
-   symbol          description                             unit                      variable name
-   =============== ======================================= ========================= ===================================
-   :math:`p`       pressure                                :math:`hPa`               `pressure {:}`
-   :math:`p_{x}`   partial pressure for air component x    :math:`hPa`               `<species>_partial_pressure {:}`
+   =============== ======================================= ============ ===================================
+   symbol          description                             unit         variable name
+   =============== ======================================= ============ ===================================
+   :math:`p`       pressure                                :math:`hPa`  `pressure {:}`
+   :math:`p_{x}`   partial pressure for air component x    :math:`hPa`  `<species>_partial_pressure {:}`
                    (e.g. :math:`p_{O_{3}}`)
-   :math:`\nu_{x}` volume mixing ratio for air component x :math:`\frac{molec}{m^3}` `<species>_volume_mixing_ratio {:}`
+   :math:`\nu_{x}` volume mixing ratio for air component x :math:`ppmv` `<species>_volume_mixing_ratio {:}`
                    (e.g. :math:`\nu_{O_{3}}`)
-   =============== ======================================= ========================= ===================================
+   =============== ======================================= ============ ===================================
 
    The pattern `:` for the dimensions can represent `{vertical}`, `{latitude,longitude}`, `{latitude,longitude,vertical}`,
    `{time}`, `{time,vertical}`, `{time,latitude,longitude}`, `{time,latitude,longitude,vertical}`, or no dimensions at all.
 
    .. math::
 
-      \nu_{x} = \frac{p_{x}}{p}
+      \nu_{x} = 10^{6}\frac{p_{x}}{p}
 
 
 #. volume mixing ratio dry air from number density
@@ -2147,21 +2432,21 @@ volume mixing ratio
 
 #. volume mixing ratio dry air from partial pressure
 
-   ===================== ======================================= ========================= ===========================================
-   symbol                description                             unit                      variable name
-   ===================== ======================================= ========================= ===========================================
-   :math:`p_{x}`         partial pressure for air component x    :math:`hPa`               `<species>_partial_pressure {:}`
+   ===================== ======================================= ============ ===========================================
+   symbol                description                             unit         variable name
+   ===================== ======================================= ============ ===========================================
+   :math:`p_{x}`         partial pressure for air component x    :math:`hPa`  `<species>_partial_pressure {:}`
                          (e.g. :math:`p_{O_{3}}`)
-   :math:`\bar{\nu}_{x}` volume mixing ratio for air component x :math:`\frac{molec}{m^3}` `<species>_volume_mixing_ratio_dry_air {:}`
+   :math:`\bar{\nu}_{x}` volume mixing ratio for air component x :math:`ppmv` `<species>_volume_mixing_ratio_dry_air {:}`
                          (e.g. :math:`\nu_{O_{3}}`)
-   ===================== ======================================= ========================= ===========================================
+   ===================== ======================================= ============ ===========================================
 
    The pattern `:` for the dimensions can represent `{vertical}`, `{latitude,longitude}`, `{latitude,longitude,vertical}`,
    `{time}`, `{time,vertical}`, `{time,latitude,longitude}`, `{time,latitude,longitude,vertical}`, or no dimensions at all.
 
    .. math::
 
-      \bar{\nu}_{x} = \frac{p_{x}}{p_{dry\_air}}
+      \bar{\nu}_{x} = 10^{6}\frac{p_{x}}{p_{dry\_air}}
 
 
 Optical variable conversions

@@ -94,43 +94,28 @@ harp_chemical_species harp_chemical_species_from_variable_name(const char *varia
 
 double harp_density_from_partial_column_and_altitude_bounds(double partial_column, const double *altitude_bounds);
 
-double harp_mass_density_from_number_density(double number_density, harp_chemical_species species);
-double harp_mass_mixing_ratio_from_volume_mixing_ratio(double volume_mixing_ratio, harp_chemical_species species);
-double harp_mass_mixing_ratio_wet_from_volume_mixing_ratio_and_humidity(double volume_mixing_ratio,
-                                                                        double h2o_mass_mixing_ratio,
-                                                                        harp_chemical_species species);
+double harp_mass_density_from_number_density(double number_density, double molar_mass);
+double harp_mass_mixing_ratio_from_volume_mixing_ratio(double volume_mixing_ratio, double molar_mass_species,
+                                                       double molar_mass_air);
+double harp_molar_mass_air_from_density_and_number_density(double density, double number_density);
+double harp_molar_mass_air_from_h2o_mass_mixing_ratio(double h2o_mass_mixing_ratio);
+double harp_molar_mass_air_from_h2o_volume_mixing_ratio(double h2o_volume_mixing_ratio);
 double harp_molar_mass_for_species(harp_chemical_species species);
-double harp_molar_mass_for_wet_air(double h2o_mass_mixing_ratio);
 
-double harp_number_density_from_mass_density(double mass_density, harp_chemical_species species);
-double harp_number_density_from_mass_mixing_ratio_pressure_and_temperature(double mass_mixing_ratio, double pressure,
-                                                                           double temperature,
-                                                                           harp_chemical_species species);
-double harp_number_density_from_partial_pressure_pressure_and_temperature(double partial_pressure, double pressure,
-                                                                          double temperature);
-double harp_number_density_from_volume_mixing_ratio_pressure_and_temperature(double volume_mixing_ratio,
-                                                                             double pressure, double temperature);
+double harp_number_density_from_mass_density(double mass_density, double molar_mass);
+double harp_number_density_from_pressure_and_temperature(double pressure, double temperature);
+double harp_number_density_from_volume_mixing_ratio(double volume_mixing_ratio, double number_density_air);
 double harp_partial_column_from_density_and_altitude_bounds(double density, const double *altitude_bounds);
-double harp_partial_pressure_from_mass_mixing_ratio_and_pressure(double mass_mixing_ratio, double pressure,
-                                                                 harp_chemical_species species);
-double harp_partial_pressure_from_number_density_pressure_and_temperature(double number_density, double pressure,
-                                                                          double temperature);
 double harp_partial_pressure_from_volume_mixing_ratio_and_pressure(double volume_mixing_ratio, double pressure);
-double harp_pressure_from_gph(double gph);
+double harp_pressure_from_number_density_and_temperature(double number_density, double temperature);
 double harp_relative_humidity_from_h2o_partial_pressure_and_temperature(double partial_pressure_h2o,
                                                                         double temperature);
 
-double harp_virtual_temperature_from_pressure_temperature_and_relative_humidity(double temperature, double pressure,
-                                                                                double relative_humidity);
-double harp_volume_mixing_ratio_from_mass_density_pressure_and_temperature(double mass_density, double pressure,
-                                                                           double temperature,
-                                                                           harp_chemical_species species);
-double harp_volume_mixing_ratio_from_mass_mixing_ratio(double mass_mixing_ratio, harp_chemical_species species);
-double harp_volume_mixing_ratio_from_mass_mixing_ratio_wet_and_humidity(double mass_mixing_ratio,
-                                                                        double h2o_mass_mixing_ratio,
-                                                                        harp_chemical_species species);
-double harp_volume_mixing_ratio_from_number_density_pressure_and_temperature(double number_density, double pressure,
-                                                                             double temperature);
+double harp_temperature_from_virtual_temperature(double virtual_temperature, double molar_mass_air);
+double harp_virtual_temperature_from_temperature(double virtual_temperature, double molar_mass_air);
+double harp_volume_mixing_ratio_from_mass_mixing_ratio(double mass_mixing_ratio, double molar_mass_species,
+                                                       double molar_mass_air);
+double harp_volume_mixing_ratio_from_number_density(double number_density, double number_density_air);
 double harp_volume_mixing_ratio_from_partial_pressure_and_pressure(double partial_pressure, double pressure);
 
 #endif

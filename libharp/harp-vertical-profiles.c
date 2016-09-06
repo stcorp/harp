@@ -99,7 +99,7 @@ void harp_profile_altitude_from_pressure_temperature_h2o_mmr_and_latitude(long n
         if (h2o_mmr_profile != NULL)
         {
             /* determine molar mass of humid air */
-            molar_mass_air = harp_molar_mass_for_wet_air(h2o_mmr_profile[k]);
+            molar_mass_air = harp_molar_mass_air_from_h2o_mass_mixing_ratio(h2o_mmr_profile[k]);
         }
         else
         {
@@ -230,7 +230,7 @@ void harp_profile_gph_from_pressure_temperature_and_h2o_mmr(long num_levels, con
         if (h2o_mmr_profile != NULL)
         {
             /* determine molar mass of humid air */
-            molar_mass_air = harp_molar_mass_for_wet_air(h2o_mmr_profile[k]);
+            molar_mass_air = harp_molar_mass_air_from_h2o_mass_mixing_ratio(h2o_mmr_profile[k]);
         }
         else
         {
@@ -719,7 +719,7 @@ int harp_profile_pressure_from_altitude_temperature_h2o_mmr_and_latitude(long nu
         if (h2o_mmr_profile != NULL)
         {
             /* determine molar mass of humid air */
-            molar_mass_air = harp_molar_mass_for_wet_air(h2o_mmr_profile[k]);
+            molar_mass_air = harp_molar_mass_air_from_h2o_mass_mixing_ratio(h2o_mmr_profile[k]);
         }
         else
         {
@@ -810,7 +810,7 @@ int harp_profile_pressure_from_gph_temperature_and_h2o_mmr(long num_levels, cons
         if (h2o_mmr_profile != NULL)
         {
             /* determine molar mass of humid air */
-            molar_mass_air = harp_molar_mass_for_wet_air(h2o_mmr_profile[k]);
+            molar_mass_air = harp_molar_mass_air_from_h2o_mass_mixing_ratio(h2o_mmr_profile[k]);
         }
         else
         {

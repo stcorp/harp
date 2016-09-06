@@ -150,13 +150,13 @@
 <li class="toctree-l3"><a class="reference internal" href="#id2">mass mixing ratio</a></li>
 <li class="toctree-l3"><a class="reference internal" href="#id3">molar mass</a></li>
 <li class="toctree-l3"><a class="reference internal" href="#id4">number density</a></li>
-<li class="toctree-l3"><a class="reference internal" href="#id5">partial pressure</a></li>
+<li class="toctree-l3"><a class="reference internal" href="#id7">partial pressure</a></li>
 <li class="toctree-l3"><a class="reference internal" href="#pressure">pressure</a></li>
 <li class="toctree-l3"><a class="reference internal" href="#pressure-bounds">pressure bounds</a></li>
 <li class="toctree-l3"><a class="reference internal" href="#relative-humidity">relative humidity</a></li>
 <li class="toctree-l3"><a class="reference internal" href="#temperature">temperature</a></li>
-<li class="toctree-l3"><a class="reference internal" href="#id6">virtual temperature</a></li>
-<li class="toctree-l3"><a class="reference internal" href="#id7">volume mixing ratio</a></li>
+<li class="toctree-l3"><a class="reference internal" href="#id8">virtual temperature</a></li>
+<li class="toctree-l3"><a class="reference internal" href="#id9">volume mixing ratio</a></li>
 </ul>
 </li>
 <li class="toctree-l2"><a class="reference internal" href="#optical-variable-conversions">Optical variable conversions</a><ul>
@@ -2420,7 +2420,7 @@ earth around the sun</td>
 </tr>
 </thead>
 <tbody valign="top">
-<tr class="row-even"><td><span class="math">\(z_{x}(l)\)</span></td>
+<tr class="row-even"><td><span class="math">\(z^{B}(l)\)</span></td>
 <td>altitude boundaries (<span class="math">\(l \in \{1,2\}\)</span>)</td>
 <td><span class="math">\(m\)</span></td>
 <td><cite>altitude_bounds {:,2}</cite></td>
@@ -2440,7 +2440,7 @@ earth around the sun</td>
 <p>The pattern <cite>:</cite> for the dimensions can represent <cite>{vertical}</cite>, <cite>{latitude,longitude}</cite>, <cite>{latitude,longitude,vertical}</cite>,
 <cite>{time}</cite>, <cite>{time,vertical}</cite>, <cite>{time,latitude,longitude}</cite>, <cite>{time,latitude,longitude,vertical}</cite>, or no dimensions at all.</p>
 <div class="math">
-\[\sigma = \frac{\tau}{\lvert z_{x}(2) - z_{x}(1) \rvert}\]</div>
+\[\sigma = \frac{\tau}{\lvert z^{B}(2) - z^{B}(1) \rvert}\]</div>
 </li>
 </ol>
 </div>
@@ -2496,7 +2496,7 @@ or no dimensions at all.</p>
 </tr>
 </thead>
 <tbody valign="top">
-<tr class="row-even"><td><span class="math">\(z_{x}(l)\)</span></td>
+<tr class="row-even"><td><span class="math">\(z^{B}(l)\)</span></td>
 <td>altitude boundaries (<span class="math">\(l \in \{1,2\}\)</span>)</td>
 <td><span class="math">\(m\)</span></td>
 <td><cite>altitude_bounds {:,2}</cite></td>
@@ -2516,7 +2516,7 @@ or no dimensions at all.</p>
 <p>The pattern <cite>:</cite> for the dimensions can represent <cite>{vertical}</cite>, <cite>{latitude,longitude}</cite>, <cite>{latitude,longitude,vertical}</cite>,
 <cite>{time}</cite>, <cite>{time,vertical}</cite>, <cite>{time,latitude,longitude}</cite>, <cite>{time,latitude,longitude,vertical}</cite>, or no dimensions at all.</p>
 <div class="math">
-\[\tau = \sigma \lvert z_{x}(2) - z_{x}(1) \rvert\]</div>
+\[\tau = \sigma \lvert z^{B}(2) - z^{B}(1) \rvert\]</div>
 </li>
 </ol>
 </div>
@@ -2690,13 +2690,13 @@ or no dimensions at all.</p>
 <div class="section" id="column-mass-density">
 <h3>column mass density</h3>
 <ol class="arabic">
-<li><p class="first">column mass density from mass density:</p>
+<li><p class="first">column mass density for air component from mass density:</p>
 <table border="1" class="docutils">
 <colgroup>
-<col width="15%" />
-<col width="36%" />
-<col width="18%" />
-<col width="31%" />
+<col width="16%" />
+<col width="38%" />
+<col width="19%" />
+<col width="27%" />
 </colgroup>
 <thead valign="bottom">
 <tr class="row-odd"><th class="head">symbol</th>
@@ -2706,7 +2706,7 @@ or no dimensions at all.</p>
 </tr>
 </thead>
 <tbody valign="top">
-<tr class="row-even"><td><span class="math">\(z_{x}(l)\)</span></td>
+<tr class="row-even"><td><span class="math">\(z^{B}(l)\)</span></td>
 <td>altitude boundaries (<span class="math">\(l \in \{1,2\}\)</span>)</td>
 <td><span class="math">\(m\)</span></td>
 <td><cite>altitude_bounds {:,2}</cite></td>
@@ -2728,9 +2728,47 @@ or no dimensions at all.</p>
 <p>The pattern <cite>:</cite> for the dimensions can represent <cite>{vertical}</cite>, <cite>{latitude,longitude}</cite>, <cite>{latitude,longitude,vertical}</cite>,
 <cite>{time}</cite>, <cite>{time,vertical}</cite>, <cite>{time,latitude,longitude}</cite>, <cite>{time,latitude,longitude,vertical}</cite>, or no dimensions at all.</p>
 <div class="math">
-\[\sigma_{x} = \rho_{x} \lvert z_{x}(2) - z_{x}(1) \rvert\]</div>
+\[\sigma_{x} = \rho_{x} \lvert z^{B}(2) - z^{B}(1) \rvert\]</div>
 </li>
-<li><p class="first">column mass density from column number density:</p>
+<li><p class="first">column mass density for total air from mass density:</p>
+<table border="1" class="docutils">
+<colgroup>
+<col width="15%" />
+<col width="41%" />
+<col width="21%" />
+<col width="22%" />
+</colgroup>
+<thead valign="bottom">
+<tr class="row-odd"><th class="head">symbol</th>
+<th class="head">description</th>
+<th class="head">unit</th>
+<th class="head">variable name</th>
+</tr>
+</thead>
+<tbody valign="top">
+<tr class="row-even"><td><span class="math">\(z^{B}(l)\)</span></td>
+<td>altitude boundaries (<span class="math">\(l \in \{1,2\}\)</span>)</td>
+<td><span class="math">\(m\)</span></td>
+<td><cite>altitude_bounds {:,2}</cite></td>
+</tr>
+<tr class="row-odd"><td><span class="math">\(\rho\)</span></td>
+<td>mass density for total air</td>
+<td><span class="math">\(\frac{ug}{m^3}\)</span></td>
+<td><cite>density {:}</cite></td>
+</tr>
+<tr class="row-even"><td><span class="math">\(\sigma\)</span></td>
+<td>column mass density for total air</td>
+<td><span class="math">\(\frac{ug}{m^2}\)</span></td>
+<td><cite>column_density {:}</cite></td>
+</tr>
+</tbody>
+</table>
+<p>The pattern <cite>:</cite> for the dimensions can represent <cite>{vertical}</cite>, <cite>{latitude,longitude}</cite>, <cite>{latitude,longitude,vertical}</cite>,
+<cite>{time}</cite>, <cite>{time,vertical}</cite>, <cite>{time,latitude,longitude}</cite>, <cite>{time,latitude,longitude,vertical}</cite>, or no dimensions at all.</p>
+<div class="math">
+\[\sigma = \rho \lvert z^{B}(2) - z^{B}(1) \rvert\]</div>
+</li>
+<li><p class="first">column mass density for air component from column number density:</p>
 <p>This conversion applies to both total columns as well as partial column profiles.</p>
 <table border="1" class="docutils">
 <colgroup>
@@ -2776,13 +2814,56 @@ or no dimensions at all.</p>
 <div class="math">
 \[\sigma_{x} = \frac{10^{6}c_{x}M_{x}}{N_{A}}\]</div>
 </li>
+<li><p class="first">column mass density for total air from column number density:</p>
+<p>This conversion applies to both total columns as well as partial column profiles.</p>
+<table border="1" class="docutils">
+<colgroup>
+<col width="15%" />
+<col width="34%" />
+<col width="25%" />
+<col width="26%" />
+</colgroup>
+<thead valign="bottom">
+<tr class="row-odd"><th class="head">symbol</th>
+<th class="head">description</th>
+<th class="head">unit</th>
+<th class="head">variable name</th>
+</tr>
+</thead>
+<tbody valign="top">
+<tr class="row-even"><td><span class="math">\(c\)</span></td>
+<td>column number density for total air</td>
+<td><span class="math">\(\frac{molec}{m^2}\)</span></td>
+<td><cite>column_number_density {:}</cite></td>
+</tr>
+<tr class="row-odd"><td><span class="math">\(M_{air}\)</span></td>
+<td>molar mass for total air</td>
+<td><span class="math">\(\frac{g}{mol}\)</span></td>
+<td><cite>molar_mass {:}</cite></td>
+</tr>
+<tr class="row-even"><td><span class="math">\(N_A\)</span></td>
+<td>Avogadro constant</td>
+<td><span class="math">\(\frac{1}{mol}\)</span></td>
+<td>&nbsp;</td>
+</tr>
+<tr class="row-odd"><td><span class="math">\(\sigma\)</span></td>
+<td>column mass density for total air</td>
+<td><span class="math">\(\frac{ug}{m^2}\)</span></td>
+<td><cite>column_density {:}</cite></td>
+</tr>
+</tbody>
+</table>
+<p>The pattern <cite>:</cite> for the dimensions can represent <cite>{vertical}</cite>, <cite>{latitude,longitude}</cite>, <cite>{latitude,longitude,vertical}</cite>,
+<cite>{time}</cite>, <cite>{time,vertical}</cite>, <cite>{time,latitude,longitude}</cite>, <cite>{time,latitude,longitude,vertical}</cite>, or no dimensions at all.</p>
+<div class="math">
+\[\sigma = \frac{10^{6}c M_{air}}{N_{A}}\]</div>
+</li>
 </ol>
 </div>
 <div class="section" id="column-mass-mixing-ratio">
 <h3>column mass mixing ratio</h3>
 <ol class="arabic">
 <li><p class="first">column mass mixing ratio from column volume mixing ratio</p>
-<p>This conversion also applies to tropospheric and stratospheric columns</p>
 <table border="1" class="docutils">
 <colgroup>
 <col width="12%" />
@@ -2822,13 +2903,12 @@ with regard to total air</td>
 </tr>
 </tbody>
 </table>
-<p>The pattern <cite>:</cite> for the dimensions can represent <cite>{vertical}</cite>, <cite>{latitude,longitude}</cite>, <cite>{latitude,longitude,vertical}</cite>,
-<cite>{time}</cite>, <cite>{time,vertical}</cite>, <cite>{time,latitude,longitude}</cite>, <cite>{time,latitude,longitude,vertical}</cite>, or no dimensions at all.</p>
+<p>The pattern <cite>:</cite> for the dimensions can represent <cite>{latitude,longitude}</cite>, <cite>{time}</cite>, <cite>{time,latitude,longitude}</cite>,
+or no dimensions at all.</p>
 <div class="math">
 \[q_{x} = \nu_{x}\frac{M_{x}}{M_{air}}\]</div>
 </li>
 <li><p class="first">column mass mixing ratio dry air from column volume mixing ratio dry air</p>
-<p>This conversion also applies to tropospheric and stratospheric columns</p>
 <table border="1" class="docutils">
 <colgroup>
 <col width="16%" />
@@ -2868,8 +2948,98 @@ with regard to dry air</td>
 </tr>
 </tbody>
 </table>
-<p>The pattern <cite>:</cite> for the dimensions can represent <cite>{vertical}</cite>, <cite>{latitude,longitude}</cite>, <cite>{latitude,longitude,vertical}</cite>,
-<cite>{time}</cite>, <cite>{time,vertical}</cite>, <cite>{time,latitude,longitude}</cite>, <cite>{time,latitude,longitude,vertical}</cite>, or no dimensions at all.</p>
+<p>The pattern <cite>:</cite> for the dimensions can represent <cite>{latitude,longitude}</cite>, <cite>{time}</cite>, <cite>{time,latitude,longitude}</cite>,
+or no dimensions at all.</p>
+<div class="math">
+\[\bar{q}_{x} = \bar{\nu}_{x}\frac{M_{x}}{M_{dry\_air}}\]</div>
+</li>
+<li><p class="first">stratospheric column mass mixing ratio dry air from stratospheric column volume mixing ratio dry air</p>
+<table border="1" class="docutils">
+<colgroup>
+<col width="14%" />
+<col width="27%" />
+<col width="16%" />
+<col width="43%" />
+</colgroup>
+<thead valign="bottom">
+<tr class="row-odd"><th class="head">symbol</th>
+<th class="head">description</th>
+<th class="head">unit</th>
+<th class="head">variable name</th>
+</tr>
+</thead>
+<tbody valign="top">
+<tr class="row-even"><td><span class="math">\(M_{dry\_air}\)</span></td>
+<td>molar mass for dry air</td>
+<td><span class="math">\(\frac{g}{mol}\)</span></td>
+<td>&nbsp;</td>
+</tr>
+<tr class="row-odd"><td><span class="math">\(M_{x}\)</span></td>
+<td>molar mass for air component x</td>
+<td><span class="math">\(\frac{g}{mol}\)</span></td>
+<td>&nbsp;</td>
+</tr>
+<tr class="row-even"><td><span class="math">\(\bar{q}_{x}\)</span></td>
+<td>stratospheric column mass mixing ratio
+of quantity x with regard to dry air</td>
+<td><span class="math">\(\frac{{\mu}g}{g}\)</span></td>
+<td><cite>stratospheric_&lt;species&gt;_column_mass_mixing_ratio_dry_air {:}</cite></td>
+</tr>
+<tr class="row-odd"><td><span class="math">\(\bar{\nu}_{x}\)</span></td>
+<td>stratospheric column volume mixing ratio
+of quantity x with regard to dry air</td>
+<td><span class="math">\(ppmv\)</span></td>
+<td><cite>stratospheric_&lt;species&gt;_column_volume_mixing_ratio_dry_air {:}</cite></td>
+</tr>
+</tbody>
+</table>
+<p>The pattern <cite>:</cite> for the dimensions can represent <cite>{latitude,longitude}</cite>, <cite>{time}</cite>, <cite>{time,latitude,longitude}</cite>,
+or no dimensions at all.</p>
+<div class="math">
+\[\bar{q}_{x} = \bar{\nu}_{x}\frac{M_{x}}{M_{dry\_air}}\]</div>
+</li>
+<li><p class="first">tropospheric column mass mixing ratio dry air from tropospheric column volume mixing ratio dry air</p>
+<table border="1" class="docutils">
+<colgroup>
+<col width="14%" />
+<col width="27%" />
+<col width="16%" />
+<col width="43%" />
+</colgroup>
+<thead valign="bottom">
+<tr class="row-odd"><th class="head">symbol</th>
+<th class="head">description</th>
+<th class="head">unit</th>
+<th class="head">variable name</th>
+</tr>
+</thead>
+<tbody valign="top">
+<tr class="row-even"><td><span class="math">\(M_{dry\_air}\)</span></td>
+<td>molar mass for dry air</td>
+<td><span class="math">\(\frac{g}{mol}\)</span></td>
+<td>&nbsp;</td>
+</tr>
+<tr class="row-odd"><td><span class="math">\(M_{x}\)</span></td>
+<td>molar mass for air component x</td>
+<td><span class="math">\(\frac{g}{mol}\)</span></td>
+<td>&nbsp;</td>
+</tr>
+<tr class="row-even"><td><span class="math">\(\bar{q}_{x}\)</span></td>
+<td>tropospheric column mass mixing ratio
+of quantity x with regard to dry air</td>
+<td><span class="math">\(\frac{{\mu}g}{g}\)</span></td>
+<td><cite>tropospheric_&lt;species&gt;_column_mass_mixing_ratio_dry_air {:}</cite></td>
+</tr>
+<tr class="row-odd"><td><span class="math">\(\bar{\nu}_{x}\)</span></td>
+<td>tropospheric column volume mixing ratio
+of quantity x with regard to dry air</td>
+<td><span class="math">\(ppmv\)</span></td>
+<td><cite>tropospheric_&lt;species&gt;_column_volume_mixing_ratio_dry_air {:}</cite></td>
+</tr>
+</tbody>
+</table>
+<p>The pattern <cite>:</cite> for the dimensions can represent <cite>{latitude,longitude}</cite>, <cite>{time}</cite>, <cite>{time,latitude,longitude}</cite>,
+or no dimensions at all.</p>
 <div class="math">
 \[\bar{q}_{x} = \bar{\nu}_{x}\frac{M_{x}}{M_{dry\_air}}\]</div>
 </li>
@@ -2878,7 +3048,7 @@ with regard to dry air</td>
 <div class="section" id="column-number-density">
 <h3>column number density</h3>
 <ol class="arabic">
-<li><p class="first">total column number density from partial column number density profile:</p>
+<li><p class="first">total column number density for air component from partial column number density profile:</p>
 <table border="1" class="docutils">
 <colgroup>
 <col width="13%" />
@@ -2913,7 +3083,40 @@ or no dimensions at all.</p>
 <div class="math">
 \[c_{x} = \sum_{i}{c_{x}(i)}\]</div>
 </li>
-<li><p class="first">column number density from number density:</p>
+<li><p class="first">total column number density for total air from partial column number density profile:</p>
+<table border="1" class="docutils">
+<colgroup>
+<col width="10%" />
+<col width="37%" />
+<col width="22%" />
+<col width="31%" />
+</colgroup>
+<thead valign="bottom">
+<tr class="row-odd"><th class="head">symbol</th>
+<th class="head">description</th>
+<th class="head">unit</th>
+<th class="head">variable name</th>
+</tr>
+</thead>
+<tbody valign="top">
+<tr class="row-even"><td><span class="math">\(c\)</span></td>
+<td>total column number density for total air</td>
+<td><span class="math">\(\frac{molec}{m^2}\)</span></td>
+<td><cite>column_number_density {:}</cite></td>
+</tr>
+<tr class="row-odd"><td><span class="math">\(c(i)\)</span></td>
+<td>column number density profile for total air</td>
+<td><span class="math">\(\frac{molec}{m^2}\)</span></td>
+<td><cite>column_number_density {:,vertical}</cite></td>
+</tr>
+</tbody>
+</table>
+<p>The pattern <cite>:</cite> for the first dimensions can represent <cite>{latitude,longitude}</cite>, <cite>{time}</cite>, <cite>{time,latitude,longitude}</cite>,
+or no dimensions at all.</p>
+<div class="math">
+\[c_{x} = \sum_{i}{c_{x}(i)}\]</div>
+</li>
+<li><p class="first">column number density for air component from number density:</p>
 <table border="1" class="docutils">
 <colgroup>
 <col width="13%" />
@@ -2941,7 +3144,7 @@ or no dimensions at all.</p>
 <td><span class="math">\(\frac{molec}{m^3}\)</span></td>
 <td><cite>&lt;species&gt;_number_density {:}</cite></td>
 </tr>
-<tr class="row-even"><td><span class="math">\(z_{x}(l)\)</span></td>
+<tr class="row-even"><td><span class="math">\(z^{B}(l)\)</span></td>
 <td>altitude boundaries (<span class="math">\(l \in \{1,2\}\)</span>)</td>
 <td><span class="math">\(m\)</span></td>
 <td><cite>altitude_bounds {:,2}</cite></td>
@@ -2951,9 +3154,47 @@ or no dimensions at all.</p>
 <p>The pattern <cite>:</cite> for the dimensions can represent <cite>{vertical}</cite>, <cite>{latitude,longitude}</cite>, <cite>{latitude,longitude,vertical}</cite>,
 <cite>{time}</cite>, <cite>{time,vertical}</cite>, <cite>{time,latitude,longitude}</cite>, <cite>{time,latitude,longitude,vertical}</cite>, or no dimensions at all.</p>
 <div class="math">
-\[c_{x} = n_{x} \lvert z_{x}(2) - z_{x}(1) \rvert\]</div>
+\[c_{x} = n_{x} \lvert z^{B}(2) - z^{B}(1) \rvert\]</div>
 </li>
-<li><p class="first">column number density from column mass density:</p>
+<li><p class="first">column number density for total air from number density:</p>
+<table border="1" class="docutils">
+<colgroup>
+<col width="14%" />
+<col width="39%" />
+<col width="23%" />
+<col width="24%" />
+</colgroup>
+<thead valign="bottom">
+<tr class="row-odd"><th class="head">symbol</th>
+<th class="head">description</th>
+<th class="head">unit</th>
+<th class="head">variable name</th>
+</tr>
+</thead>
+<tbody valign="top">
+<tr class="row-even"><td><span class="math">\(c\)</span></td>
+<td>column number density for total air</td>
+<td><span class="math">\(\frac{molec}{m^2}\)</span></td>
+<td><cite>column_number_density {:}</cite></td>
+</tr>
+<tr class="row-odd"><td><span class="math">\(n\)</span></td>
+<td>number density for total air</td>
+<td><span class="math">\(\frac{molec}{m^3}\)</span></td>
+<td><cite>number_density {:}</cite></td>
+</tr>
+<tr class="row-even"><td><span class="math">\(z^{B}(l)\)</span></td>
+<td>altitude boundaries (<span class="math">\(l \in \{1,2\}\)</span>)</td>
+<td><span class="math">\(m\)</span></td>
+<td><cite>altitude_bounds {:,2}</cite></td>
+</tr>
+</tbody>
+</table>
+<p>The pattern <cite>:</cite> for the dimensions can represent <cite>{vertical}</cite>, <cite>{latitude,longitude}</cite>, <cite>{latitude,longitude,vertical}</cite>,
+<cite>{time}</cite>, <cite>{time,vertical}</cite>, <cite>{time,latitude,longitude}</cite>, <cite>{time,latitude,longitude,vertical}</cite>, or no dimensions at all.</p>
+<div class="math">
+\[c = n \lvert z^{B}(2) - z^{B}(1) \rvert\]</div>
+</li>
+<li><p class="first">column number density for air component from column mass density:</p>
 <p>This conversion applies to both total columns as well as partial column profiles.</p>
 <table border="1" class="docutils">
 <colgroup>
@@ -2999,13 +3240,56 @@ or no dimensions at all.</p>
 <div class="math">
 \[c_{x} = \frac{\sigma_{x}N_{A}}{10^{6}M_{x}}\]</div>
 </li>
+<li><p class="first">column number density for total air from column mass density:</p>
+<p>This conversion applies to both total columns as well as partial column profiles.</p>
+<table border="1" class="docutils">
+<colgroup>
+<col width="15%" />
+<col width="34%" />
+<col width="25%" />
+<col width="26%" />
+</colgroup>
+<thead valign="bottom">
+<tr class="row-odd"><th class="head">symbol</th>
+<th class="head">description</th>
+<th class="head">unit</th>
+<th class="head">variable name</th>
+</tr>
+</thead>
+<tbody valign="top">
+<tr class="row-even"><td><span class="math">\(c\)</span></td>
+<td>column number density for total air</td>
+<td><span class="math">\(\frac{molec}{m^2}\)</span></td>
+<td><cite>column_number_density {:}</cite></td>
+</tr>
+<tr class="row-odd"><td><span class="math">\(M_{air}\)</span></td>
+<td>molar mass for total air</td>
+<td><span class="math">\(\frac{g}{mol}\)</span></td>
+<td><cite>molar_mass {:}</cite></td>
+</tr>
+<tr class="row-even"><td><span class="math">\(N_A\)</span></td>
+<td>Avogadro constant</td>
+<td><span class="math">\(\frac{1}{mol}\)</span></td>
+<td>&nbsp;</td>
+</tr>
+<tr class="row-odd"><td><span class="math">\(\sigma\)</span></td>
+<td>column mass density for total air</td>
+<td><span class="math">\(\frac{ug}{m^2}\)</span></td>
+<td><cite>column_density {:}</cite></td>
+</tr>
+</tbody>
+</table>
+<p>The pattern <cite>:</cite> for the dimensions can represent <cite>{vertical}</cite>, <cite>{latitude,longitude}</cite>, <cite>{latitude,longitude,vertical}</cite>,
+<cite>{time}</cite>, <cite>{time,vertical}</cite>, <cite>{time,latitude,longitude}</cite>, <cite>{time,latitude,longitude,vertical}</cite>, or no dimensions at all.</p>
+<div class="math">
+\[c = \frac{\sigma N_{A}}{10^{6}M_{air}}\]</div>
+</li>
 </ol>
 </div>
 <div class="section" id="column-volume-mixing-ratio">
 <h3>column volume mixing ratio</h3>
 <ol class="arabic">
 <li><p class="first">column volume mixing ratio from column mass mixing ratio</p>
-<p>This conversion also applies to tropospheric and stratospheric columns</p>
 <table border="1" class="docutils">
 <colgroup>
 <col width="12%" />
@@ -3045,13 +3329,12 @@ with regard to total air</td>
 </tr>
 </tbody>
 </table>
-<p>The pattern <cite>:</cite> for the dimensions can represent <cite>{vertical}</cite>, <cite>{latitude,longitude}</cite>, <cite>{latitude,longitude,vertical}</cite>,
-<cite>{time}</cite>, <cite>{time,vertical}</cite>, <cite>{time,latitude,longitude}</cite>, <cite>{time,latitude,longitude,vertical}</cite>, or no dimensions at all.</p>
+<p>The pattern <cite>:</cite> for the dimensions can represent <cite>{latitude,longitude}</cite>, <cite>{time}</cite>, <cite>{time,latitude,longitude}</cite>,
+or no dimensions at all.</p>
 <div class="math">
 \[\nu_{x} = q_{x}\frac{M_{air}}{M_{x}}\]</div>
 </li>
 <li><p class="first">column volume mixing ratio dry air from column mass mixing ratio dry air</p>
-<p>This conversion also applies to tropospheric and stratospheric columns</p>
 <table border="1" class="docutils">
 <colgroup>
 <col width="16%" />
@@ -3091,8 +3374,98 @@ with regard to dry air</td>
 </tr>
 </tbody>
 </table>
-<p>The pattern <cite>:</cite> for the dimensions can represent <cite>{vertical}</cite>, <cite>{latitude,longitude}</cite>, <cite>{latitude,longitude,vertical}</cite>,
-<cite>{time}</cite>, <cite>{time,vertical}</cite>, <cite>{time,latitude,longitude}</cite>, <cite>{time,latitude,longitude,vertical}</cite>, or no dimensions at all.</p>
+<p>The pattern <cite>:</cite> for the dimensions can represent <cite>{latitude,longitude}</cite>, <cite>{time}</cite>, <cite>{time,latitude,longitude}</cite>,
+or no dimensions at all.</p>
+<div class="math">
+\[\bar{\nu}_{x} = \bar{q}_{x}\frac{M_{dry\_air}}{M_{x}}\]</div>
+</li>
+<li><p class="first">stratospheric column volume mixing ratio dry air from stratospheric column mass mixing ratio dry air</p>
+<table border="1" class="docutils">
+<colgroup>
+<col width="14%" />
+<col width="27%" />
+<col width="16%" />
+<col width="43%" />
+</colgroup>
+<thead valign="bottom">
+<tr class="row-odd"><th class="head">symbol</th>
+<th class="head">description</th>
+<th class="head">unit</th>
+<th class="head">variable name</th>
+</tr>
+</thead>
+<tbody valign="top">
+<tr class="row-even"><td><span class="math">\(M_{dry\_air}\)</span></td>
+<td>molar mass for dry air</td>
+<td><span class="math">\(\frac{g}{mol}\)</span></td>
+<td>&nbsp;</td>
+</tr>
+<tr class="row-odd"><td><span class="math">\(M_{x}\)</span></td>
+<td>molar mass for air component x</td>
+<td><span class="math">\(\frac{g}{mol}\)</span></td>
+<td>&nbsp;</td>
+</tr>
+<tr class="row-even"><td><span class="math">\(\bar{q}_{x}\)</span></td>
+<td>stratospheric column mass mixing ratio
+of quantity x with regard to dry air</td>
+<td><span class="math">\(\frac{{\mu}g}{g}\)</span></td>
+<td><cite>stratospheric_&lt;species&gt;_column_mass_mixing_ratio_dry_air {:}</cite></td>
+</tr>
+<tr class="row-odd"><td><span class="math">\(\bar{\nu}_{x}\)</span></td>
+<td>stratospheric column volume mixing ratio
+of quantity x with regard to dry air</td>
+<td><span class="math">\(ppmv\)</span></td>
+<td><cite>stratospheric_&lt;species&gt;_column_volume_mixing_ratio_dry_air {:}</cite></td>
+</tr>
+</tbody>
+</table>
+<p>The pattern <cite>:</cite> for the dimensions can represent <cite>{latitude,longitude}</cite>, <cite>{time}</cite>, <cite>{time,latitude,longitude}</cite>,
+or no dimensions at all.</p>
+<div class="math">
+\[\bar{\nu}_{x} = \bar{q}_{x}\frac{M_{dry\_air}}{M_{x}}\]</div>
+</li>
+<li><p class="first">tropospheric column volume mixing ratio dry air from tropospheric column mass mixing ratio dry air</p>
+<table border="1" class="docutils">
+<colgroup>
+<col width="14%" />
+<col width="27%" />
+<col width="16%" />
+<col width="43%" />
+</colgroup>
+<thead valign="bottom">
+<tr class="row-odd"><th class="head">symbol</th>
+<th class="head">description</th>
+<th class="head">unit</th>
+<th class="head">variable name</th>
+</tr>
+</thead>
+<tbody valign="top">
+<tr class="row-even"><td><span class="math">\(M_{dry\_air}\)</span></td>
+<td>molar mass for dry air</td>
+<td><span class="math">\(\frac{g}{mol}\)</span></td>
+<td>&nbsp;</td>
+</tr>
+<tr class="row-odd"><td><span class="math">\(M_{x}\)</span></td>
+<td>molar mass for air component x</td>
+<td><span class="math">\(\frac{g}{mol}\)</span></td>
+<td>&nbsp;</td>
+</tr>
+<tr class="row-even"><td><span class="math">\(\bar{q}_{x}\)</span></td>
+<td>tropospheric column mass mixing ratio
+of quantity x with regard to dry air</td>
+<td><span class="math">\(\frac{{\mu}g}{g}\)</span></td>
+<td><cite>tropospheric_&lt;species&gt;_column_mass_mixing_ratio_dry_air {:}</cite></td>
+</tr>
+<tr class="row-odd"><td><span class="math">\(\bar{\nu}_{x}\)</span></td>
+<td>tropospheric column volume mixing ratio
+of quantity x with regard to dry air</td>
+<td><span class="math">\(ppmv\)</span></td>
+<td><cite>tropospheric_&lt;species&gt;_column_volume_mixing_ratio_dry_air {:}</cite></td>
+</tr>
+</tbody>
+</table>
+<p>The pattern <cite>:</cite> for the dimensions can represent <cite>{latitude,longitude}</cite>, <cite>{time}</cite>, <cite>{time,latitude,longitude}</cite>,
+or no dimensions at all.</p>
 <div class="math">
 \[\bar{\nu}_{x} = \bar{q}_{x}\frac{M_{dry\_air}}{M_{x}}\]</div>
 </li>
@@ -3244,7 +3617,7 @@ with regard to dry air</td>
 <div class="section" id="id1">
 <h3>mass density</h3>
 <ol class="arabic">
-<li><p class="first">mass density from number density:</p>
+<li><p class="first">mass density for air component from number density:</p>
 <table border="1" class="docutils">
 <colgroup>
 <col width="15%" />
@@ -3289,7 +3662,50 @@ with regard to dry air</td>
 <div class="math">
 \[\rho_{x} = \frac{10^{6}n_{x}M_{x}}{N_{A}}\]</div>
 </li>
-<li><p class="first">mass density from column mass density:</p>
+<li><p class="first">mass density for total air from number density:</p>
+<table border="1" class="docutils">
+<colgroup>
+<col width="18%" />
+<col width="31%" />
+<col width="28%" />
+<col width="22%" />
+</colgroup>
+<thead valign="bottom">
+<tr class="row-odd"><th class="head">symbol</th>
+<th class="head">description</th>
+<th class="head">unit</th>
+<th class="head">variable name</th>
+</tr>
+</thead>
+<tbody valign="top">
+<tr class="row-even"><td><span class="math">\(M_{air}\)</span></td>
+<td>molar mass for total air</td>
+<td><span class="math">\(\frac{g}{mol}\)</span></td>
+<td><cite>molar_mass {:}</cite></td>
+</tr>
+<tr class="row-odd"><td><span class="math">\(n\)</span></td>
+<td>number density for total air</td>
+<td><span class="math">\(\frac{molec}{m^3}\)</span></td>
+<td><cite>number_density {:}</cite></td>
+</tr>
+<tr class="row-even"><td><span class="math">\(N_A\)</span></td>
+<td>Avogadro constant</td>
+<td><span class="math">\(\frac{1}{mol}\)</span></td>
+<td>&nbsp;</td>
+</tr>
+<tr class="row-odd"><td><span class="math">\(\rho\)</span></td>
+<td>mass density for total air</td>
+<td><span class="math">\(\frac{ug}{m^3}\)</span></td>
+<td><cite>density {:}</cite></td>
+</tr>
+</tbody>
+</table>
+<p>The pattern <cite>:</cite> for the dimensions can represent <cite>{vertical}</cite>, <cite>{latitude,longitude}</cite>, <cite>{latitude,longitude,vertical}</cite>,
+<cite>{time}</cite>, <cite>{time,vertical}</cite>, <cite>{time,latitude,longitude}</cite>, <cite>{time,latitude,longitude,vertical}</cite>, or no dimensions at all.</p>
+<div class="math">
+\[\rho = \frac{10^{6}n M_{air}}{N_{A}}\]</div>
+</li>
+<li><p class="first">mass density for air component from column mass density:</p>
 <table border="1" class="docutils">
 <colgroup>
 <col width="15%" />
@@ -3305,7 +3721,7 @@ with regard to dry air</td>
 </tr>
 </thead>
 <tbody valign="top">
-<tr class="row-even"><td><span class="math">\(z_{x}(l)\)</span></td>
+<tr class="row-even"><td><span class="math">\(z^{B}(l)\)</span></td>
 <td>altitude boundaries (<span class="math">\(l \in \{1,2\}\)</span>)</td>
 <td><span class="math">\(m\)</span></td>
 <td><cite>altitude_bounds {:,2}</cite></td>
@@ -3327,7 +3743,45 @@ with regard to dry air</td>
 <p>The pattern <cite>:</cite> for the dimensions can represent <cite>{vertical}</cite>, <cite>{latitude,longitude}</cite>, <cite>{latitude,longitude,vertical}</cite>,
 <cite>{time}</cite>, <cite>{time,vertical}</cite>, <cite>{time,latitude,longitude}</cite>, <cite>{time,latitude,longitude,vertical}</cite>, or no dimensions at all.</p>
 <div class="math">
-\[\rho_{x} = \frac{\sigma_{x}}{\lvert z_{x}(2) - z_{x}(1) \rvert}\]</div>
+\[\rho_{x} = \frac{\sigma_{x}}{\lvert z^{B}(2) - z^{B}(1) \rvert}\]</div>
+</li>
+<li><p class="first">mass density for total air from column mass density:</p>
+<table border="1" class="docutils">
+<colgroup>
+<col width="15%" />
+<col width="41%" />
+<col width="21%" />
+<col width="22%" />
+</colgroup>
+<thead valign="bottom">
+<tr class="row-odd"><th class="head">symbol</th>
+<th class="head">description</th>
+<th class="head">unit</th>
+<th class="head">variable name</th>
+</tr>
+</thead>
+<tbody valign="top">
+<tr class="row-even"><td><span class="math">\(z^{B}(l)\)</span></td>
+<td>altitude boundaries (<span class="math">\(l \in \{1,2\}\)</span>)</td>
+<td><span class="math">\(m\)</span></td>
+<td><cite>altitude_bounds {:,2}</cite></td>
+</tr>
+<tr class="row-odd"><td><span class="math">\(\rho\)</span></td>
+<td>mass density for total air</td>
+<td><span class="math">\(\frac{ug}{m^3}\)</span></td>
+<td><cite>density {:}</cite></td>
+</tr>
+<tr class="row-even"><td><span class="math">\(\sigma\)</span></td>
+<td>column mass density for total air</td>
+<td><span class="math">\(\frac{ug}{m^2}\)</span></td>
+<td><cite>column_density {:}</cite></td>
+</tr>
+</tbody>
+</table>
+<p>The pattern <cite>:</cite> for the dimensions can represent <cite>{vertical}</cite>, <cite>{latitude,longitude}</cite>, <cite>{latitude,longitude,vertical}</cite>,
+<cite>{time}</cite>, <cite>{time,vertical}</cite>, <cite>{time,latitude,longitude}</cite>, <cite>{time,latitude,longitude,vertical}</cite>, or no dimensions at all.</p>
+<div class="math">
+\[\rho = \frac{\sigma}{\lvert z^{B}(2) - z^{B}(1) \rvert}\]</div>
 </li>
 </ol>
 </div>
@@ -3429,13 +3883,13 @@ with regard to dry air</td>
 <div class="section" id="id3">
 <h3>molar mass</h3>
 <ol class="arabic">
-<li><p class="first">molar mass from density and number density</p>
+<li><p class="first">molar mass of total air from density and number density</p>
 <table border="1" class="docutils">
 <colgroup>
-<col width="16%" />
-<col width="23%" />
-<col width="34%" />
-<col width="27%" />
+<col width="18%" />
+<col width="28%" />
+<col width="30%" />
+<col width="24%" />
 </colgroup>
 <thead valign="bottom">
 <tr class="row-odd"><th class="head">symbol</th>
@@ -3445,8 +3899,8 @@ with regard to dry air</td>
 </tr>
 </thead>
 <tbody valign="top">
-<tr class="row-even"><td><span class="math">\(M\)</span></td>
-<td>molar mass</td>
+<tr class="row-even"><td><span class="math">\(M_{air}\)</span></td>
+<td>molar mass of total air</td>
 <td><span class="math">\(\frac{g}{mol}\)</span></td>
 <td><cite>molar_mass {:}</cite></td>
 </tr>
@@ -3563,7 +4017,7 @@ with regard to dry air</td>
 <div class="section" id="id4">
 <h3>number density</h3>
 <ol class="arabic">
-<li><p class="first">number density from mass density:</p>
+<li><p class="first">number density for air component from mass density:</p>
 <table border="1" class="docutils">
 <colgroup>
 <col width="15%" />
@@ -3607,6 +4061,49 @@ with regard to dry air</td>
 <cite>{time}</cite>, <cite>{time,vertical}</cite>, <cite>{time,latitude,longitude}</cite>, <cite>{time,latitude,longitude,vertical}</cite>, or no dimensions at all.</p>
 <div class="math">
 \[n_{x} = \frac{\rho_{x}N_{A}}{10^{6}M_{x}}\]</div>
+</li>
+<li><p class="first">number density for total air from mass density:</p>
+<table border="1" class="docutils">
+<colgroup>
+<col width="17%" />
+<col width="32%" />
+<col width="28%" />
+<col width="23%" />
+</colgroup>
+<thead valign="bottom">
+<tr class="row-odd"><th class="head">symbol</th>
+<th class="head">description</th>
+<th class="head">unit</th>
+<th class="head">variable name</th>
+</tr>
+</thead>
+<tbody valign="top">
+<tr class="row-even"><td><span class="math">\(M_{air}\)</span></td>
+<td>molar mass for total air</td>
+<td><span class="math">\(\frac{g}{mol}\)</span></td>
+<td><cite>molar_mass {:}</cite></td>
+</tr>
+<tr class="row-odd"><td>:math:<a href="#id5"><span class="problematic" id="id6">`</span></a>n    `</td>
+<td>number density for total air</td>
+<td><span class="math">\(\frac{molec}{m^3}\)</span></td>
+<td><cite>number_density {:}</cite></td>
+</tr>
+<tr class="row-even"><td><span class="math">\(N_A\)</span></td>
+<td>Avogadro constant</td>
+<td><span class="math">\(\frac{1}{mol}\)</span></td>
+<td>&nbsp;</td>
+</tr>
+<tr class="row-odd"><td><span class="math">\(\rho\)</span></td>
+<td>mass density for total air</td>
+<td><span class="math">\(\frac{ug}{m^3}\)</span></td>
+<td><cite>density {:}</cite></td>
+</tr>
+</tbody>
+</table>
+<p>The pattern <cite>:</cite> for the dimensions can represent <cite>{vertical}</cite>, <cite>{latitude,longitude}</cite>, <cite>{latitude,longitude,vertical}</cite>,
+<cite>{time}</cite>, <cite>{time,vertical}</cite>, <cite>{time,latitude,longitude}</cite>, <cite>{time,latitude,longitude,vertical}</cite>, or no dimensions at all.</p>
+<div class="math">
+\[n = \frac{\rho N_{A}}{10^{6}M_{air}}\]</div>
 </li>
 <li><p class="first">number density from volume mixing ratio</p>
 <table border="1" class="docutils">
@@ -3688,7 +4185,7 @@ with regard to dry air</td>
 <div class="math">
 \[n_{x} = 10^{-6}\bar{\nu}_{x}n_{dry\_air}\]</div>
 </li>
-<li><p class="first">number density from column number density</p>
+<li><p class="first">number density for air component from column number density</p>
 <table border="1" class="docutils">
 <colgroup>
 <col width="13%" />
@@ -3716,7 +4213,7 @@ with regard to dry air</td>
 <td><span class="math">\(\frac{molec}{m^3}\)</span></td>
 <td><cite>&lt;species&gt;_number_density {:}</cite></td>
 </tr>
-<tr class="row-even"><td><span class="math">\(z_{x}(l)\)</span></td>
+<tr class="row-even"><td><span class="math">\(z^{B}(l)\)</span></td>
 <td>altitude boundaries (<span class="math">\(l \in \{1,2\}\)</span>)</td>
 <td><span class="math">\(m\)</span></td>
 <td><cite>altitude_bounds {:,2}</cite></td>
@@ -3726,9 +4223,47 @@ with regard to dry air</td>
 <p>The pattern <cite>:</cite> for the dimensions can represent <cite>{vertical}</cite>, <cite>{latitude,longitude}</cite>, <cite>{latitude,longitude,vertical}</cite>,
 <cite>{time}</cite>, <cite>{time,vertical}</cite>, <cite>{time,latitude,longitude}</cite>, <cite>{time,latitude,longitude,vertical}</cite>, or no dimensions at all.</p>
 <div class="math">
-\[n_{x} = \frac{c_{x}}{\lvert z_{x}(2) - z_{x}(1) \rvert}\]</div>
+\[n_{x} = \frac{c_{x}}{\lvert z^{B}(2) - z^{B}(1) \rvert}\]</div>
 </li>
-<li><p class="first">number density from partial pressure and temperature</p>
+<li><p class="first">number density for total air column number density</p>
+<table border="1" class="docutils">
+<colgroup>
+<col width="14%" />
+<col width="39%" />
+<col width="23%" />
+<col width="24%" />
+</colgroup>
+<thead valign="bottom">
+<tr class="row-odd"><th class="head">symbol</th>
+<th class="head">description</th>
+<th class="head">unit</th>
+<th class="head">variable name</th>
+</tr>
+</thead>
+<tbody valign="top">
+<tr class="row-even"><td><span class="math">\(c\)</span></td>
+<td>column number density for air component x</td>
+<td><span class="math">\(\frac{molec}{m^2}\)</span></td>
+<td><cite>column_number_density {:}</cite></td>
+</tr>
+<tr class="row-odd"><td><span class="math">\(n\)</span></td>
+<td>number density for air component x</td>
+<td><span class="math">\(\frac{molec}{m^3}\)</span></td>
+<td><cite>number_density {:}</cite></td>
+</tr>
+<tr class="row-even"><td><span class="math">\(z^{B}(l)\)</span></td>
+<td>altitude boundaries (<span class="math">\(l \in \{1,2\}\)</span>)</td>
+<td><span class="math">\(m\)</span></td>
+<td><cite>altitude_bounds {:,2}</cite></td>
+</tr>
+</tbody>
+</table>
+<p>The pattern <cite>:</cite> for the dimensions can represent <cite>{vertical}</cite>, <cite>{latitude,longitude}</cite>, <cite>{latitude,longitude,vertical}</cite>,
+<cite>{time}</cite>, <cite>{time,vertical}</cite>, <cite>{time,latitude,longitude}</cite>, <cite>{time,latitude,longitude,vertical}</cite>, or no dimensions at all.</p>
+<div class="math">
+\[n = \frac{c}{\lvert z^{B}(2) - z^{B}(1) \rvert}\]</div>
+</li>
+<li><p class="first">number density for air component from partial pressure and temperature</p>
 <table border="1" class="docutils">
 <colgroup>
 <col width="12%" />
@@ -3776,10 +4311,10 @@ with regard to dry air</td>
 <li><p class="first">number density for total air from pressure and temperature</p>
 <table border="1" class="docutils">
 <colgroup>
-<col width="19%" />
-<col width="22%" />
-<col width="35%" />
-<col width="25%" />
+<col width="12%" />
+<col width="24%" />
+<col width="37%" />
+<col width="27%" />
 </colgroup>
 <thead valign="bottom">
 <tr class="row-odd"><th class="head">symbol</th>
@@ -3794,7 +4329,7 @@ with regard to dry air</td>
 <td><span class="math">\(\frac{kg m^2}{K s^2}\)</span></td>
 <td>&nbsp;</td>
 </tr>
-<tr class="row-odd"><td><span class="math">\(n_{air}\)</span></td>
+<tr class="row-odd"><td><span class="math">\(n\)</span></td>
 <td>number density</td>
 <td><span class="math">\(\frac{molec}{m^3}\)</span></td>
 <td><cite>number_density {:}</cite></td>
@@ -3814,20 +4349,65 @@ with regard to dry air</td>
 <p>The pattern <cite>:</cite> for the dimensions can represent <cite>{vertical}</cite>, <cite>{latitude,longitude}</cite>, <cite>{latitude,longitude,vertical}</cite>,
 <cite>{time}</cite>, <cite>{time,vertical}</cite>, <cite>{time,latitude,longitude}</cite>, <cite>{time,latitude,longitude,vertical}</cite>, or no dimensions at all.</p>
 <div class="math">
-\[n_{air} = 10^{-2}\frac{p}{kT}\]</div>
+\[n = 10^{-2}\frac{p}{kT}\]</div>
 </li>
 </ol>
 </div>
-<div class="section" id="id5">
+<div class="section" id="id7">
 <h3>partial pressure</h3>
 <ol class="arabic">
+<li><p class="first">partial pressure from number density and temperature</p>
+<table border="1" class="docutils">
+<colgroup>
+<col width="12%" />
+<col width="33%" />
+<col width="26%" />
+<col width="29%" />
+</colgroup>
+<thead valign="bottom">
+<tr class="row-odd"><th class="head">symbol</th>
+<th class="head">description</th>
+<th class="head">unit</th>
+<th class="head">variable name</th>
+</tr>
+</thead>
+<tbody valign="top">
+<tr class="row-even"><td><span class="math">\(k\)</span></td>
+<td>Boltzmann constant</td>
+<td><span class="math">\(\frac{kg m^2}{K s^2}\)</span></td>
+<td>&nbsp;</td>
+</tr>
+<tr class="row-odd"><td><span class="math">\(n_{x}\)</span></td>
+<td>number density for air component x
+(e.g. <span class="math">\(n_{O_{3}}\)</span>)</td>
+<td><span class="math">\(\frac{molec}{m^3}\)</span></td>
+<td><cite>&lt;species&gt;_number_density {:}</cite></td>
+</tr>
+<tr class="row-even"><td><span class="math">\(p_{x}\)</span></td>
+<td>partial pressure for air component x
+(e.g. <span class="math">\(p_{O_{3}}\)</span>)</td>
+<td><span class="math">\(hPa\)</span></td>
+<td><cite>&lt;species&gt;_partial_pressure {:}</cite></td>
+</tr>
+<tr class="row-odd"><td><span class="math">\(T\)</span></td>
+<td>temperature</td>
+<td><span class="math">\(K\)</span></td>
+<td><cite>temperature {:}</cite></td>
+</tr>
+</tbody>
+</table>
+<p>The pattern <cite>:</cite> for the dimensions can represent <cite>{vertical}</cite>, <cite>{latitude,longitude}</cite>, <cite>{latitude,longitude,vertical}</cite>,
+<cite>{time}</cite>, <cite>{time,vertical}</cite>, <cite>{time,latitude,longitude}</cite>, <cite>{time,latitude,longitude,vertical}</cite>, or no dimensions at all.</p>
+<div class="math">
+\[p_{x} = 10^{2}n_{x}kT\]</div>
+</li>
 <li><p class="first">partial pressure from volume mixing ratio</p>
 <table border="1" class="docutils">
 <colgroup>
-<col width="13%" />
-<col width="34%" />
-<col width="22%" />
-<col width="31%" />
+<col width="15%" />
+<col width="39%" />
+<col width="12%" />
+<col width="35%" />
 </colgroup>
 <thead valign="bottom">
 <tr class="row-odd"><th class="head">symbol</th>
@@ -3851,7 +4431,7 @@ with regard to dry air</td>
 <tr class="row-even"><td><span class="math">\(\nu_{x}\)</span></td>
 <td>volume mixing ratio for air component x
 (e.g. <span class="math">\(\nu_{O_{3}}\)</span>)</td>
-<td><span class="math">\(\frac{molec}{m^3}\)</span></td>
+<td><span class="math">\(ppmv\)</span></td>
 <td><cite>&lt;species&gt;_volume_mixing_ratio {:}</cite></td>
 </tr>
 </tbody>
@@ -3859,15 +4439,15 @@ with regard to dry air</td>
 <p>The pattern <cite>:</cite> for the dimensions can represent <cite>{vertical}</cite>, <cite>{latitude,longitude}</cite>, <cite>{latitude,longitude,vertical}</cite>,
 <cite>{time}</cite>, <cite>{time,vertical}</cite>, <cite>{time,latitude,longitude}</cite>, <cite>{time,latitude,longitude,vertical}</cite>, or no dimensions at all.</p>
 <div class="math">
-\[p_{x} = \nu_{x}p\]</div>
+\[p_{x} = 10^{-6}\nu_{x}p\]</div>
 </li>
 <li><p class="first">partial pressure from volume mixing ratio dry air</p>
 <table border="1" class="docutils">
 <colgroup>
-<col width="16%" />
-<col width="30%" />
-<col width="20%" />
+<col width="18%" />
 <col width="34%" />
+<col width="10%" />
+<col width="37%" />
 </colgroup>
 <thead valign="bottom">
 <tr class="row-odd"><th class="head">symbol</th>
@@ -3886,7 +4466,7 @@ with regard to dry air</td>
 <tr class="row-odd"><td><span class="math">\(\bar{\nu}_{x}\)</span></td>
 <td>volume mixing ratio for air component x
 (e.g. <span class="math">\(\nu_{O_{3}}\)</span>)</td>
-<td><span class="math">\(\frac{molec}{m^3}\)</span></td>
+<td><span class="math">\(ppmv\)</span></td>
 <td><cite>&lt;species&gt;_volume_mixing_ratio_dry_air {:}</cite></td>
 </tr>
 </tbody>
@@ -3894,7 +4474,7 @@ with regard to dry air</td>
 <p>The pattern <cite>:</cite> for the dimensions can represent <cite>{vertical}</cite>, <cite>{latitude,longitude}</cite>, <cite>{latitude,longitude,vertical}</cite>,
 <cite>{time}</cite>, <cite>{time,vertical}</cite>, <cite>{time,latitude,longitude}</cite>, <cite>{time,latitude,longitude,vertical}</cite>, or no dimensions at all.</p>
 <div class="math">
-\[p_{x} = \bar{\nu}_{x}p_{dry\_air}\]</div>
+\[p_{x} = 10^{-6}\bar{\nu}_{x}p_{dry\_air}\]</div>
 </li>
 </ol>
 </div>
@@ -4119,6 +4699,49 @@ equal the lower altitude boundary <span class="math">\(z^{B}_{g}(1,1)\)</span>, 
    p(1) &amp; = &amp; p_{surf}e^{-\frac{M_{air}(1)}{T(1)}\frac{g_{0}}{R}\left(z_{g}(i)-z_{g,surf}\right)} \\
    p(i) &amp; = &amp; p(i-1)e^{-\frac{M_{air}(i-1)+M_{air}(i)}{T(i-1)+T(i)}\frac{g_{0}}{R}\left(z_{g}(i)-z_{g}(i-1)\right)}, 1 &lt; i \leq N
 \end{eqnarray}</div></li>
+<li><p class="first">pressure from number density and temperature</p>
+<table border="1" class="docutils">
+<colgroup>
+<col width="12%" />
+<col width="24%" />
+<col width="37%" />
+<col width="27%" />
+</colgroup>
+<thead valign="bottom">
+<tr class="row-odd"><th class="head">symbol</th>
+<th class="head">description</th>
+<th class="head">unit</th>
+<th class="head">variable name</th>
+</tr>
+</thead>
+<tbody valign="top">
+<tr class="row-even"><td><span class="math">\(k\)</span></td>
+<td>Boltzmann constant</td>
+<td><span class="math">\(\frac{kg m^2}{K s^2}\)</span></td>
+<td>&nbsp;</td>
+</tr>
+<tr class="row-odd"><td><span class="math">\(n\)</span></td>
+<td>number density</td>
+<td><span class="math">\(\frac{molec}{m^3}\)</span></td>
+<td><cite>number_density {:}</cite></td>
+</tr>
+<tr class="row-even"><td><span class="math">\(p\)</span></td>
+<td>pressure</td>
+<td><span class="math">\(hPa\)</span></td>
+<td><cite>pressure {:}</cite></td>
+</tr>
+<tr class="row-odd"><td><span class="math">\(T\)</span></td>
+<td>temperature</td>
+<td><span class="math">\(K\)</span></td>
+<td><cite>temperature {:}</cite></td>
+</tr>
+</tbody>
+</table>
+<p>The pattern <cite>:</cite> for the dimensions can represent <cite>{vertical}</cite>, <cite>{latitude,longitude}</cite>, <cite>{latitude,longitude,vertical}</cite>,
+<cite>{time}</cite>, <cite>{time,vertical}</cite>, <cite>{time,latitude,longitude}</cite>, <cite>{time,latitude,longitude,vertical}</cite>, or no dimensions at all.</p>
+<div class="math">
+\[p = 10^{2}nkT\]</div>
+</li>
 </ol>
 </div>
 <div class="section" id="pressure-bounds">
@@ -4260,7 +4883,7 @@ equal the lower altitude boundary <span class="math">\(z^{B}_{g}(1,1)\)</span>, 
 </li>
 </ol>
 </div>
-<div class="section" id="id6">
+<div class="section" id="id8">
 <h3>virtual temperature</h3>
 <ol class="arabic">
 <li><p class="first">virtual temperature from temperature</p>
@@ -4308,7 +4931,7 @@ equal the lower altitude boundary <span class="math">\(z^{B}_{g}(1,1)\)</span>, 
 </li>
 </ol>
 </div>
-<div class="section" id="id7">
+<div class="section" id="id9">
 <h3>volume mixing ratio</h3>
 <ol class="arabic">
 <li><p class="first">volume mixing ratio from number density</p>
@@ -4399,10 +5022,10 @@ with regard to total air</td>
 <li><p class="first">volume mixing ratio from partial pressure</p>
 <table border="1" class="docutils">
 <colgroup>
-<col width="13%" />
-<col width="34%" />
-<col width="22%" />
-<col width="31%" />
+<col width="15%" />
+<col width="39%" />
+<col width="12%" />
+<col width="35%" />
 </colgroup>
 <thead valign="bottom">
 <tr class="row-odd"><th class="head">symbol</th>
@@ -4426,7 +5049,7 @@ with regard to total air</td>
 <tr class="row-even"><td><span class="math">\(\nu_{x}\)</span></td>
 <td>volume mixing ratio for air component x
 (e.g. <span class="math">\(\nu_{O_{3}}\)</span>)</td>
-<td><span class="math">\(\frac{molec}{m^3}\)</span></td>
+<td><span class="math">\(ppmv\)</span></td>
 <td><cite>&lt;species&gt;_volume_mixing_ratio {:}</cite></td>
 </tr>
 </tbody>
@@ -4434,7 +5057,7 @@ with regard to total air</td>
 <p>The pattern <cite>:</cite> for the dimensions can represent <cite>{vertical}</cite>, <cite>{latitude,longitude}</cite>, <cite>{latitude,longitude,vertical}</cite>,
 <cite>{time}</cite>, <cite>{time,vertical}</cite>, <cite>{time,latitude,longitude}</cite>, <cite>{time,latitude,longitude,vertical}</cite>, or no dimensions at all.</p>
 <div class="math">
-\[\nu_{x} = \frac{p_{x}}{p}\]</div>
+\[\nu_{x} = 10^{6}\frac{p_{x}}{p}\]</div>
 </li>
 <li><p class="first">volume mixing ratio dry air from number density</p>
 <table border="1" class="docutils">
@@ -4524,10 +5147,10 @@ with regard to dry air</td>
 <li><p class="first">volume mixing ratio dry air from partial pressure</p>
 <table border="1" class="docutils">
 <colgroup>
-<col width="16%" />
-<col width="30%" />
-<col width="20%" />
+<col width="18%" />
 <col width="34%" />
+<col width="10%" />
+<col width="37%" />
 </colgroup>
 <thead valign="bottom">
 <tr class="row-odd"><th class="head">symbol</th>
@@ -4546,7 +5169,7 @@ with regard to dry air</td>
 <tr class="row-odd"><td><span class="math">\(\bar{\nu}_{x}\)</span></td>
 <td>volume mixing ratio for air component x
 (e.g. <span class="math">\(\nu_{O_{3}}\)</span>)</td>
-<td><span class="math">\(\frac{molec}{m^3}\)</span></td>
+<td><span class="math">\(ppmv\)</span></td>
 <td><cite>&lt;species&gt;_volume_mixing_ratio_dry_air {:}</cite></td>
 </tr>
 </tbody>
@@ -4554,7 +5177,7 @@ with regard to dry air</td>
 <p>The pattern <cite>:</cite> for the dimensions can represent <cite>{vertical}</cite>, <cite>{latitude,longitude}</cite>, <cite>{latitude,longitude,vertical}</cite>,
 <cite>{time}</cite>, <cite>{time,vertical}</cite>, <cite>{time,latitude,longitude}</cite>, <cite>{time,latitude,longitude,vertical}</cite>, or no dimensions at all.</p>
 <div class="math">
-\[\bar{\nu}_{x} = \frac{p_{x}}{p_{dry\_air}}\]</div>
+\[\bar{\nu}_{x} = 10^{6}\frac{p_{x}}{p_{dry\_air}}\]</div>
 </li>
 </ol>
 </div>
