@@ -152,7 +152,7 @@ double chemical_species_molar_mass[] = {
  */
 static double get_water_vapour_saturation_pressure_from_temperature(double temperature)
 {
-    double temperature_C = temperature - 273.15;    /* Temperature [degreeC] */
+    double temperature_C = temperature - 273.15;        /* Temperature [degreeC] */
 
     return 6.1094 * exp(17.625 * temperature_C / (temperature_C + 243.04));
 }
@@ -251,7 +251,7 @@ double harp_molar_mass_air_from_h2o_mass_mixing_ratio(double h2o_mass_mixing_rat
  */
 double harp_molar_mass_air_from_h2o_volume_mixing_ratio(double h2o_volume_mixing_ratio)
 {
-    h2o_volume_mixing_ratio *= 1e-6;      /* convert from [ppmv] to [ppv] */
+    h2o_volume_mixing_ratio *= 1e-6;    /* convert from [ppmv] to [ppv] */
     return CONST_MOLAR_MASS_DRY_AIR * (1 - h2o_volume_mixing_ratio) + CONST_MOLAR_MASS_H2O * h2o_volume_mixing_ratio;
 }
 

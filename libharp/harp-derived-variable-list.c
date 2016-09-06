@@ -40,6 +40,7 @@ static int get_altitude_from_gph_and_latitude(harp_variable *variable, const har
 
     return 0;
 }
+
 static int get_aux_variable_afgl86(harp_variable *variable, const harp_variable **source_variable)
 {
     int i;
@@ -1534,8 +1535,8 @@ static int add_species_conversions_for_grid(const char *species, int num_dimensi
     {
         /* time dependent from independent */
         if (add_time_indepedent_to_dependent_conversion(name_strato_column_density, harp_type_double,
-                                                        HARP_UNIT_COLUMN_MASS_DENSITY, num_dimensions, dimension_type, 0)
-            != 0)
+                                                        HARP_UNIT_COLUMN_MASS_DENSITY, num_dimensions, dimension_type,
+                                                        0) != 0)
         {
             return -1;
         }
@@ -1554,8 +1555,8 @@ static int add_species_conversions_for_grid(const char *species, int num_dimensi
     {
         /* time dependent from independent */
         if (add_time_indepedent_to_dependent_conversion(name_tropo_column_density, harp_type_double,
-                                                        HARP_UNIT_COLUMN_MASS_DENSITY, num_dimensions, dimension_type, 0)
-            != 0)
+                                                        HARP_UNIT_COLUMN_MASS_DENSITY, num_dimensions, dimension_type,
+                                                        0) != 0)
         {
             return -1;
         }
@@ -1640,8 +1641,8 @@ static int add_species_conversions_for_grid(const char *species, int num_dimensi
     {
         /* time dependent from independent */
         if (add_time_indepedent_to_dependent_conversion(name_strato_column_nd, harp_type_double,
-                                                        HARP_UNIT_COLUMN_NUMBER_DENSITY, num_dimensions, dimension_type, 0)
-            != 0)
+                                                        HARP_UNIT_COLUMN_NUMBER_DENSITY, num_dimensions, dimension_type,
+                                                        0) != 0)
         {
             return -1;
         }
@@ -1660,8 +1661,8 @@ static int add_species_conversions_for_grid(const char *species, int num_dimensi
     {
         /* time dependent from independent */
         if (add_time_indepedent_to_dependent_conversion(name_tropo_column_nd, harp_type_double,
-                                                        HARP_UNIT_COLUMN_NUMBER_DENSITY, num_dimensions, dimension_type, 0)
-            != 0)
+                                                        HARP_UNIT_COLUMN_NUMBER_DENSITY, num_dimensions, dimension_type,
+                                                        0) != 0)
         {
             return -1;
         }
@@ -2561,8 +2562,7 @@ static int add_conversions_for_grid(int num_dimensions, harp_dimension_type dime
         /* time dependent from independent */
         if (add_time_indepedent_to_dependent_conversion("stratospheric_column_density", harp_type_double,
                                                         HARP_UNIT_COLUMN_MASS_DENSITY, num_dimensions, dimension_type,
-                                                        0)
-            != 0)
+                                                        0) != 0)
         {
             return -1;
         }
@@ -2582,8 +2582,7 @@ static int add_conversions_for_grid(int num_dimensions, harp_dimension_type dime
         /* time dependent from independent */
         if (add_time_indepedent_to_dependent_conversion("tropospheric_column_density", harp_type_double,
                                                         HARP_UNIT_COLUMN_MASS_DENSITY, num_dimensions, dimension_type,
-                                                        0)
-            != 0)
+                                                        0) != 0)
         {
             return -1;
         }
@@ -2652,8 +2651,7 @@ static int add_conversions_for_grid(int num_dimensions, harp_dimension_type dime
 
     /* column number density from column mass density */
     if (harp_variable_conversion_new("column_number_density", harp_type_double, HARP_UNIT_COLUMN_NUMBER_DENSITY,
-                                     num_dimensions, dimension_type, 0, get_nd_from_density_for_air, &conversion) !=
-        0)
+                                     num_dimensions, dimension_type, 0, get_nd_from_density_for_air, &conversion) != 0)
     {
         return -1;
     }
@@ -2674,8 +2672,8 @@ static int add_conversions_for_grid(int num_dimensions, harp_dimension_type dime
     {
         /* time dependent from independent */
         if (add_time_indepedent_to_dependent_conversion("stratospheric_column_number_density", harp_type_double,
-                                                        HARP_UNIT_COLUMN_NUMBER_DENSITY, num_dimensions, dimension_type, 0)
-            != 0)
+                                                        HARP_UNIT_COLUMN_NUMBER_DENSITY, num_dimensions, dimension_type,
+                                                        0) != 0)
         {
             return -1;
         }
@@ -2694,8 +2692,8 @@ static int add_conversions_for_grid(int num_dimensions, harp_dimension_type dime
     {
         /* time dependent from independent */
         if (add_time_indepedent_to_dependent_conversion("tropoospheric_column_number_density", harp_type_double,
-                                                        HARP_UNIT_COLUMN_NUMBER_DENSITY, num_dimensions, dimension_type, 0)
-            != 0)
+                                                        HARP_UNIT_COLUMN_NUMBER_DENSITY, num_dimensions, dimension_type,
+                                                        0) != 0)
         {
             return -1;
         }

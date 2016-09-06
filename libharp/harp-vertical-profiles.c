@@ -116,8 +116,7 @@ void harp_profile_altitude_from_pressure_temperature_h2o_mmr_and_latitude(long n
         else
         {
             z = prev_z + ((prev_T + T) / (molar_mass_air + prev_molar_mass_air)) *
-                (CONST_MOLAR_GAS / harp_gravity_from_latitude_and_height(latitude, prev_z)) *
-                log(prev_p / p);
+                (CONST_MOLAR_GAS / harp_gravity_from_latitude_and_height(latitude, prev_z)) * log(prev_p / p);
         }
 
         altitude_profile[k] = z * 1.0e3;        /* convert from [km] to [m] */

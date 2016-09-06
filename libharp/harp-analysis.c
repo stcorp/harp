@@ -536,7 +536,7 @@ void harp_solar_angles_from_datetime_longitude_and_latitude(double datetime, dou
 
     /* Calculate solar elevation angle [rad] */
     *solar_elevation_angle = asin(sin(solar_declination_angle) * sin(phi) +
-        cos(solar_declination_angle) * cos(phi) * cos(omega));
+                                  cos(solar_declination_angle) * cos(phi) * cos(omega));
 
     /* Calculate the solar azimuth angle [degree] */
     if (*solar_elevation_angle == 0.0)
@@ -758,8 +758,7 @@ int harp_sensor_geometry_angle_profiles_from_sensor_geometry_angles(double altit
     }
     if (sensor_zenith_angle_profile == NULL)
     {
-        harp_set_error(HARP_ERROR_INVALID_ARGUMENT, "sensor zenith angle profile is empty (%s:%u)", __FILE__,
-                       __LINE__);
+        harp_set_error(HARP_ERROR_INVALID_ARGUMENT, "sensor zenith angle profile is empty (%s:%u)", __FILE__, __LINE__);
         return -1;
     }
     if (relative_azimuth_angle_profile == NULL)
