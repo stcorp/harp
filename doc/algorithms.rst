@@ -1998,7 +1998,7 @@ number density
    symbol          description                  unit                      variable name
    =============== ============================ ========================= ====================
    :math:`M_{air}` molar mass for total air     :math:`\frac{g}{mol}`     `molar_mass {:}`
-   :math:`n    `   number density for total air :math:`\frac{molec}{m^3}` `number_density {:}`
+   :math:`n`       number density for total air :math:`\frac{molec}{m^3}` `number_density {:}`
    :math:`N_A`     Avogadro constant            :math:`\frac{1}{mol}`
    :math:`\rho`    mass density for total air   :math:`\frac{ug}{m^3}`    `density {:}`
    =============== ============================ ========================= ====================
