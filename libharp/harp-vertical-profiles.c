@@ -167,7 +167,7 @@ void harp_profile_gph_from_pressure(long num_levels, const double *pressure_prof
 
         if (i == 0)
         {
-            z = surface_height + (T/M) * (CONST_MOLAR_GAS/CONST_GRAV_ACCEL_45LAT_WGS84_SPHERE) *
+            z = surface_height + (T / M) * (CONST_MOLAR_GAS / CONST_GRAV_ACCEL_45LAT_WGS84_SPHERE) *
                 log(surface_pressure / p);
         }
         else
