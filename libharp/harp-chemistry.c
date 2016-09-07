@@ -340,6 +340,16 @@ double harp_relative_humidity_from_h2o_partial_pressure_and_temperature(double p
     return partial_pressure_h2o / get_water_vapour_saturation_pressure_from_temperature(temperature);
 }
 
+/** Convert number density to temperature
+ * \param number_density Number density [molec/m3]
+ * \param pressure (partial) Pressure [hPa]
+ * \return the temperature [K]
+ */
+double harp_temperature_from_number_density_and_pressure(double number_density, double pressure)
+{
+    return 1e-2 * pressure / (number_density * CONST_BOLTZMANN);
+}
+
 /** Calculate temperature from virtual temperature
  * \param virtual_temperature Virtual temperature [K]
  * \param molar_mass_air Molar mass of air [g/mol]

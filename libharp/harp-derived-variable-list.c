@@ -710,6 +710,21 @@ static int get_pressure_from_gph(harp_variable *variable, const harp_variable **
     return 0;
 }
 
+static int get_pressure_from_nd_and_temperature(harp_variable *variable, const harp_variable **source_variable)
+{
+    long i;
+
+    for (i = 0; i < variable->num_elements; i++)
+    {
+        variable->data.double_data[i] =
+            harp_pressure_from_number_density_and_temperature(source_variable[0]->data.double_data[i],
+                                                              source_variable[1]->data.double_data[i]);
+    }
+
+    return 0;
+}
+
+
 static int get_relative_azimuth_angle_from_sensor_and_solar_azimuth_angles(harp_variable *variable,
                                                                            const harp_variable **source_variable)
 {
@@ -801,6 +816,20 @@ static int get_sqrt_trace_from_matrix(harp_variable *variable, const harp_variab
             variable->data.double_data[i * length + j] =
                 sqrt(source_variable[0]->data.double_data[(i * length + j) * length + j]);
         }
+    }
+
+    return 0;
+}
+
+static int get_temperature_from_nd_and_pressure(harp_variable *variable, const harp_variable **source_variable)
+{
+    long i;
+
+    for (i = 0; i < variable->num_elements; i++)
+    {
+        variable->data.double_data[i] =
+            harp_temperature_from_number_density_and_pressure(source_variable[0]->data.double_data[i],
+                                                              source_variable[1]->data.double_data[i]);
     }
 
     return 0;
@@ -2965,6 +2994,23 @@ static int add_conversions_for_grid(int num_dimensions, harp_dimension_type dime
         return -1;
     }
 
+    /* pressure from number density and temperature */
+    if (harp_variable_conversion_new("pressure", harp_type_double, HARP_UNIT_PRESSURE, num_dimensions, dimension_type,
+                                     0, get_pressure_from_nd_and_temperature, &conversion) != 0)
+    {
+        return -1;
+    }
+    if (harp_variable_conversion_add_source(conversion, "number_density", harp_type_double, HARP_UNIT_NUMBER_DENSITY,
+                                            num_dimensions, dimension_type, 0) != 0)
+    {
+        return -1;
+    }
+    if (harp_variable_conversion_add_source(conversion, "temperature", harp_type_double, HARP_UNIT_TEMPERATURE,
+                                            num_dimensions, dimension_type, 0) != 0)
+    {
+        return -1;
+    }
+
     if (has_vertical)
     {
         /* pressure from altitude */
@@ -3088,6 +3134,23 @@ static int add_conversions_for_grid(int num_dimensions, harp_dimension_type dime
 
     /* uncertainties */
     if (add_uncertainty_conversions("temperature", HARP_UNIT_TEMPERATURE, num_dimensions, dimension_type) != 0)
+    {
+        return -1;
+    }
+
+    /* temperature from number density and pressure  */
+    if (harp_variable_conversion_new("temperature", harp_type_double, HARP_UNIT_TEMPERATURE, num_dimensions,
+                                     dimension_type, 0, get_temperature_from_nd_and_pressure, &conversion) != 0)
+    {
+        return -1;
+    }
+    if (harp_variable_conversion_add_source(conversion, "number_density", harp_type_double, HARP_UNIT_NUMBER_DENSITY,
+                                            num_dimensions, dimension_type, 0) != 0)
+    {
+        return -1;
+    }
+    if (harp_variable_conversion_add_source(conversion, "pressure", harp_type_double, HARP_UNIT_PRESSURE,
+                                            num_dimensions, dimension_type, 0) != 0)
     {
         return -1;
     }

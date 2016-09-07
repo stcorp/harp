@@ -2011,6 +2011,25 @@ number density
       n = \frac{\rho N_{A}}{10^{6}M_{air}}
 
 
+#. number density for total air from pressure and temperature
+
+   ========= ================== ============================ ====================
+   symbol    description        unit                         variable name
+   ========= ================== ============================ ====================
+   :math:`k` Boltzmann constant :math:`\frac{kg m^2}{K s^2}`
+   :math:`n` number density     :math:`\frac{molec}{m^3}`    `number_density {:}`
+   :math:`p` pressure           :math:`hPa`                  `pressure {:}`
+   :math:`T` temperature        :math:`K`                    `temperature {:}`
+   ========= ================== ============================ ====================
+
+   The pattern `:` for the dimensions can represent `{vertical}`, `{latitude,longitude}`, `{latitude,longitude,vertical}`,
+   `{time}`, `{time,vertical}`, `{time,latitude,longitude}`, `{time,latitude,longitude,vertical}`, or no dimensions at all.
+
+   .. math::
+
+      n = 10^{-2}\frac{p}{kT}
+
+
 #. number density from volume mixing ratio
 
    =============== ======================================= ========================= ==================================
@@ -2108,25 +2127,6 @@ number density
    .. math::
 
       n_{x} = 10^{-2}\frac{p_{x}}{kT}
-
-
-#. number density for total air from pressure and temperature
-
-   ========= ================== ============================ ====================
-   symbol    description        unit                         variable name
-   ========= ================== ============================ ====================
-   :math:`k` Boltzmann constant :math:`\frac{kg m^2}{K s^2}`
-   :math:`n` number density     :math:`\frac{molec}{m^3}`    `number_density {:}`
-   :math:`p` pressure           :math:`hPa`                  `pressure {:}`
-   :math:`T` temperature        :math:`K`                    `temperature {:}`
-   ========= ================== ============================ ====================
-
-   The pattern `:` for the dimensions can represent `{vertical}`, `{latitude,longitude}`, `{latitude,longitude,vertical}`,
-   `{time}`, `{time,vertical}`, `{time,latitude,longitude}`, `{time,latitude,longitude,vertical}`, or no dimensions at all.
-
-   .. math::
-
-      n = 10^{-2}\frac{p}{kT}
 
 
 partial pressure
@@ -2365,6 +2365,25 @@ relative humidity
 
 temperature
 ~~~~~~~~~~~
+
+#. temperature from from pressure and number density
+
+   ========= ================== ============================ ====================
+   symbol    description        unit                         variable name
+   ========= ================== ============================ ====================
+   :math:`k` Boltzmann constant :math:`\frac{kg m^2}{K s^2}`
+   :math:`n` number density     :math:`\frac{molec}{m^3}`    `number_density {:}`
+   :math:`p` pressure           :math:`hPa`                  `pressure {:}`
+   :math:`T` temperature        :math:`K`                    `temperature {:}`
+   ========= ================== ============================ ====================
+
+   The pattern `:` for the dimensions can represent `{vertical}`, `{latitude,longitude}`, `{latitude,longitude,vertical}`,
+   `{time}`, `{time,vertical}`, `{time,latitude,longitude}`, `{time,latitude,longitude,vertical}`, or no dimensions at all.
+
+   .. math::
+
+      T = 10^{-2}\frac{p}{kn}
+
 
 #. temperature from virtual temperature
 

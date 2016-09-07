@@ -111,6 +111,7 @@ double harp_pressure_from_number_density_and_temperature(double number_density, 
 double harp_relative_humidity_from_h2o_partial_pressure_and_temperature(double partial_pressure_h2o,
                                                                         double temperature);
 
+double harp_temperature_from_number_density_and_pressure(double number_density, double pressure);
 double harp_temperature_from_virtual_temperature(double virtual_temperature, double molar_mass_air);
 double harp_virtual_temperature_from_temperature(double virtual_temperature, double molar_mass_air);
 double harp_volume_mixing_ratio_from_mass_mixing_ratio(double mass_mixing_ratio, double molar_mass_species,
