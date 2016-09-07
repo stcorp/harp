@@ -41,6 +41,26 @@ static int get_altitude_from_gph_and_latitude(harp_variable *variable, const har
     return 0;
 }
 
+static int get_altitude_from_pressure(harp_variable *variable, const harp_variable **source_variable)
+{
+    long length = variable->dimension[variable->num_dimensions - 1];
+    long num_profiles = variable->num_elements / length;
+    long i;
+
+    for (i = 0; i < num_profiles; i++)
+    {
+        harp_profile_altitude_from_pressure(length, &source_variable[0]->data.double_data[i * length],
+                                            &source_variable[1]->data.double_data[i * length],
+                                            &source_variable[2]->data.double_data[i * length],
+                                            source_variable[3]->data.double_data[i],
+                                            source_variable[4]->data.double_data[i],
+                                            source_variable[5]->data.double_data[i],
+                                            &variable->data.double_data[i * length]);
+    }
+
+    return 0;
+}
+
 static int get_aux_variable_afgl86(harp_variable *variable, const harp_variable **source_variable)
 {
     int i;
@@ -315,6 +335,24 @@ static int get_gph_from_altitude_and_latitude(harp_variable *variable, const har
     {
         variable->data.double_data[i] = harp_gph_from_altitude_and_latitude(source_variable[0]->data.double_data[i],
                                                                             source_variable[1]->data.double_data[i]);
+    }
+
+    return 0;
+}
+
+static int get_gph_from_pressure(harp_variable *variable, const harp_variable **source_variable)
+{
+    long length = variable->dimension[variable->num_dimensions - 1];
+    long num_profiles = variable->num_elements / length;
+    long i;
+
+    for (i = 0; i < num_profiles; i++)
+    {
+        harp_profile_gph_from_pressure(length, &source_variable[0]->data.double_data[i * length],
+                                       &source_variable[1]->data.double_data[i * length],
+                                       &source_variable[2]->data.double_data[i * length],
+                                       source_variable[3]->data.double_data[i], source_variable[4]->data.double_data[i],
+                                       &variable->data.double_data[i * length]);
     }
 
     return 0;
@@ -634,83 +672,39 @@ static int get_partial_pressure_from_vmr_and_pressure(harp_variable *variable, c
     return 0;
 }
 
-static int get_pressure_from_altitude_temperature_h2o_mmr_and_latitude(harp_variable *variable,
-                                                                       const harp_variable **source_variable)
+static int get_pressure_from_altitude(harp_variable *variable, const harp_variable **source_variable)
 {
-    long length = variable->dimension[1];
+    long length = variable->dimension[variable->num_dimensions - 1];
+    long num_profiles = variable->num_elements / length;
     long i;
 
-    for (i = 0; i < variable->dimension[0]; i++)
+    for (i = 0; i < num_profiles; i++)
     {
-        if (harp_profile_pressure_from_altitude_temperature_h2o_mmr_and_latitude
-            (length, &source_variable[0]->data.double_data[i * length],
-             &source_variable[1]->data.double_data[i * length], &source_variable[2]->data.double_data[i * length],
-             CONST_STD_PRESSURE, 0, source_variable[3]->data.double_data[i],
-             &variable->data.double_data[i * length]) != 0)
-        {
-            return -1;
-        }
+        harp_profile_pressure_from_altitude(length, &source_variable[0]->data.double_data[i * length],
+                                            &source_variable[1]->data.double_data[i * length],
+                                            &source_variable[2]->data.double_data[i * length],
+                                            source_variable[3]->data.double_data[i],
+                                            source_variable[4]->data.double_data[i],
+                                            source_variable[5]->data.double_data[i],
+                                            &variable->data.double_data[i * length]);
     }
 
     return 0;
 }
 
-static int get_pressure_from_altitude_temperature_and_latitude(harp_variable *variable,
-                                                               const harp_variable **source_variable)
+static int get_pressure_from_gph(harp_variable *variable, const harp_variable **source_variable)
 {
-    long length = variable->dimension[1];
+    long length = variable->dimension[variable->num_dimensions - 1];
+    long num_profiles = variable->num_elements / length;
     long i;
 
-    for (i = 0; i < variable->dimension[0]; i++)
+    for (i = 0; i < num_profiles; i++)
     {
-        if (harp_profile_pressure_from_altitude_temperature_h2o_mmr_and_latitude
-            (length, &source_variable[0]->data.double_data[i * length],
-             &source_variable[1]->data.double_data[i * length], NULL, CONST_STD_PRESSURE, 0,
-             source_variable[2]->data.double_data[i], &variable->data.double_data[i * length]) != 0)
-        {
-            return -1;
-        }
-    }
-
-    return 0;
-}
-
-static int get_pressure_from_gph_temperature_and_h2o_mmr(harp_variable *variable, const harp_variable **source_variable)
-{
-    long length = variable->dimension[1];
-    long i;
-
-    for (i = 0; i < variable->dimension[0]; i++)
-    {
-        if (harp_profile_pressure_from_gph_temperature_and_h2o_mmr(length,
-                                                                   &source_variable[0]->data.double_data[i * length],
-                                                                   &source_variable[1]->data.double_data[i * length],
-                                                                   &source_variable[2]->data.double_data[i * length],
-                                                                   CONST_STD_PRESSURE, 0,
-                                                                   &variable->data.double_data[i * length]) != 0)
-        {
-            return -1;
-        }
-    }
-
-    return 0;
-}
-
-static int get_pressure_from_gph_and_temperature(harp_variable *variable, const harp_variable **source_variable)
-{
-    long length = variable->dimension[1];
-    long i;
-
-    for (i = 0; i < variable->dimension[0]; i++)
-    {
-        if (harp_profile_pressure_from_gph_temperature_and_h2o_mmr(length,
-                                                                   &source_variable[0]->data.double_data[i * length],
-                                                                   &source_variable[1]->data.double_data[i * length],
-                                                                   NULL, CONST_STD_PRESSURE, 0,
-                                                                   &variable->data.double_data[i * length]) != 0)
-        {
-            return -1;
-        }
+        harp_profile_pressure_from_gph(length, &source_variable[0]->data.double_data[i * length],
+                                       &source_variable[1]->data.double_data[i * length],
+                                       &source_variable[2]->data.double_data[i * length],
+                                       source_variable[3]->data.double_data[i], source_variable[4]->data.double_data[i],
+                                       &variable->data.double_data[i * length]);
     }
 
     return 0;
@@ -725,21 +719,6 @@ static int get_relative_azimuth_angle_from_sensor_and_solar_azimuth_angles(harp_
     {
         variable->data.double_data[i] =
             harp_relative_azimuth_angle_from_sensor_and_solar_azimuth_angles(source_variable[0]->data.double_data[i],
-                                                                             source_variable[1]->data.double_data[i]);
-    }
-
-    return 0;
-}
-
-static int get_relative_humidity_from_h2o_pp_and_temperature(harp_variable *variable,
-                                                             const harp_variable **source_variable)
-{
-    long i;
-
-    for (i = 0; i < variable->num_elements; i++)
-    {
-        variable->data.double_data[i] =
-            harp_relative_humidity_from_h2o_partial_pressure_and_temperature(source_variable[0]->data.double_data[i],
                                                                              source_variable[1]->data.double_data[i]);
     }
 
@@ -2539,6 +2518,85 @@ static int add_conversions_for_grid(int num_dimensions, harp_dimension_type dime
         return -1;
     }
 
+    /*** altitude ***/
+
+    /* time dependent from independent */
+    if (add_time_indepedent_to_dependent_conversion("altitude", harp_type_double, HARP_UNIT_LENGTH, num_dimensions,
+                                                    dimension_type, 0) != 0)
+    {
+        return -1;
+    }
+
+    if (!has_latlon)
+    {
+        /* altitude from gph */
+        if (harp_variable_conversion_new("altitude", harp_type_double, HARP_UNIT_LENGTH, num_dimensions, dimension_type,
+                                         0, get_altitude_from_gph_and_latitude, &conversion) != 0)
+        {
+            return -1;
+        }
+        if (harp_variable_conversion_add_source(conversion, "geopotential_heigth", harp_type_double, HARP_UNIT_LENGTH,
+                                                num_dimensions, dimension_type, 0) != 0)
+        {
+            return -1;
+        }
+        if (harp_variable_conversion_add_source(conversion, "latitude", harp_type_double, HARP_UNIT_LATITUDE,
+                                                num_dimensions, dimension_type, 0) != 0)
+        {
+            return -1;
+        }
+    }
+
+    if (has_vertical)
+    {
+        /* altitude from pressure */
+        if (harp_variable_conversion_new("altitude", harp_type_double, HARP_UNIT_LENGTH, num_dimensions, dimension_type,
+                                         0, get_altitude_from_pressure, &conversion) != 0)
+        {
+            return -1;
+        }
+        if (harp_variable_conversion_add_source(conversion, "pressure", harp_type_double, HARP_UNIT_PRESSURE,
+                                                num_dimensions, dimension_type, 0) != 0)
+        {
+            return -1;
+        }
+        if (harp_variable_conversion_add_source(conversion, "temperature", harp_type_double, HARP_UNIT_TEMPERATURE,
+                                                num_dimensions, dimension_type, 0) != 0)
+        {
+            return -1;
+        }
+        if (harp_variable_conversion_add_source(conversion, "molar_mass", harp_type_double, HARP_UNIT_MOLAR_MASS,
+                                                num_dimensions, dimension_type, 0) != 0)
+        {
+            return -1;
+        }
+        if (harp_variable_conversion_add_source(conversion, "surface_pressure", harp_type_double, HARP_UNIT_PRESSURE,
+                                                num_dimensions - 1, dimension_type, 0) != 0)
+        {
+            return -1;
+        }
+        if (harp_variable_conversion_add_source(conversion, "surface_altitude", harp_type_double, HARP_UNIT_LENGTH,
+                                                num_dimensions - 1, dimension_type, 0) != 0)
+        {
+            return -1;
+        }
+        if (harp_variable_conversion_add_source(conversion, "latitude", harp_type_double, HARP_UNIT_LATITUDE,
+                                                num_dimensions - 1, dimension_type, 0) != 0)
+        {
+            return -1;
+        }
+    }
+
+    /*** altitude_bounds ***/
+
+    /* time dependent from independent */
+    dimension_type[num_dimensions] = harp_dimension_independent;
+    if (add_time_indepedent_to_dependent_conversion("altitude_bounds", harp_type_double, HARP_UNIT_LENGTH,
+                                                    num_dimensions + 1, dimension_type, 2) != 0)
+    {
+        return -1;
+    }
+
     /*** column (mass) density ***/
 
     /* time dependent from independent */
@@ -2553,46 +2611,6 @@ static int add_conversions_for_grid(int num_dimensions, harp_dimension_type dime
         0)
     {
         return -1;
-    }
-
-    /*** stratospheric column (mass) density ***/
-
-    if (!has_vertical)
-    {
-        /* time dependent from independent */
-        if (add_time_indepedent_to_dependent_conversion("stratospheric_column_density", harp_type_double,
-                                                        HARP_UNIT_COLUMN_MASS_DENSITY, num_dimensions, dimension_type,
-                                                        0) != 0)
-        {
-            return -1;
-        }
-
-        /* uncertainties */
-        if (add_uncertainty_conversions("stratospheric_column_density", HARP_UNIT_COLUMN_MASS_DENSITY, num_dimensions,
-                                        dimension_type) != 0)
-        {
-            return -1;
-        }
-    }
-
-    /*** tropospheric column (mass) density ***/
-
-    if (!has_vertical)
-    {
-        /* time dependent from independent */
-        if (add_time_indepedent_to_dependent_conversion("tropospheric_column_density", harp_type_double,
-                                                        HARP_UNIT_COLUMN_MASS_DENSITY, num_dimensions, dimension_type,
-                                                        0) != 0)
-        {
-            return -1;
-        }
-
-        /* uncertainties */
-        if (add_uncertainty_conversions("tropospheric_column_density", HARP_UNIT_COLUMN_MASS_DENSITY, num_dimensions,
-                                        dimension_type) != 0)
-        {
-            return -1;
-        }
     }
 
     /*** column number density ***/
@@ -2666,46 +2684,6 @@ static int add_conversions_for_grid(int num_dimensions, harp_dimension_type dime
         return -1;
     }
 
-    /*** stratospheric column number density ***/
-
-    if (!has_vertical)
-    {
-        /* time dependent from independent */
-        if (add_time_indepedent_to_dependent_conversion("stratospheric_column_number_density", harp_type_double,
-                                                        HARP_UNIT_COLUMN_NUMBER_DENSITY, num_dimensions, dimension_type,
-                                                        0) != 0)
-        {
-            return -1;
-        }
-
-        /* uncertainties */
-        if (add_uncertainty_conversions("stratospheric_column_number_density", HARP_UNIT_COLUMN_NUMBER_DENSITY,
-                                        num_dimensions, dimension_type) != 0)
-        {
-            return -1;
-        }
-    }
-
-    /*** tropospheric column number density ***/
-
-    if (!has_vertical)
-    {
-        /* time dependent from independent */
-        if (add_time_indepedent_to_dependent_conversion("tropoospheric_column_number_density", harp_type_double,
-                                                        HARP_UNIT_COLUMN_NUMBER_DENSITY, num_dimensions, dimension_type,
-                                                        0) != 0)
-        {
-            return -1;
-        }
-
-        /* uncertainties */
-        if (add_uncertainty_conversions("tropoospheric_column_number_density", HARP_UNIT_COLUMN_NUMBER_DENSITY,
-                                        num_dimensions, dimension_type) != 0)
-        {
-            return -1;
-        }
-    }
-
     /*** (mass) density ***/
 
     /* time dependent from independent */
@@ -2755,6 +2733,109 @@ static int add_conversions_for_grid(int num_dimensions, harp_dimension_type dime
                                             num_dimensions + 1, dimension_type, 2) != 0)
     {
         return -1;
+    }
+
+    /*** geopotential ***/
+
+    /* time dependent from independent */
+    if (add_time_indepedent_to_dependent_conversion("geopotential", harp_type_double, HARP_UNIT_GEOPOTENTIAL,
+                                                    num_dimensions, dimension_type, 0) != 0)
+    {
+        return -1;
+    }
+
+    /* uncertainties */
+    if (add_uncertainty_conversions("geopotential", HARP_UNIT_GEOPOTENTIAL, num_dimensions, dimension_type) != 0)
+    {
+        return -1;
+    }
+
+    /* geopotential from gph */
+    if (harp_variable_conversion_new("geopotential", harp_type_double, HARP_UNIT_GEOPOTENTIAL, num_dimensions,
+                                     dimension_type, 0, get_geopotential_from_gph, &conversion) != 0)
+    {
+        return -1;
+    }
+    if (harp_variable_conversion_add_source(conversion, "geopotential_height", harp_type_double, HARP_UNIT_LENGTH,
+                                            num_dimensions, dimension_type, 0) != 0)
+    {
+        return -1;
+    }
+
+    /*** geopotential_height ***/
+
+    /* time dependent from independent */
+    if (add_time_indepedent_to_dependent_conversion("geopotential_height", harp_type_double, HARP_UNIT_LENGTH,
+                                                    num_dimensions, dimension_type, 0) != 0)
+    {
+        return -1;
+    }
+
+    /* gph from geopotential */
+    if (harp_variable_conversion_new("geopotential_height", harp_type_double, HARP_UNIT_LENGTH, num_dimensions,
+                                     dimension_type, 0, get_gph_from_geopotential, &conversion) != 0)
+    {
+        return -1;
+    }
+    if (harp_variable_conversion_add_source(conversion, "geopotential", harp_type_double, HARP_UNIT_GEOPOTENTIAL,
+                                            num_dimensions, dimension_type, 0) != 0)
+    {
+        return -1;
+    }
+
+    if (!has_latlon)
+    {
+        /* gph from altitude */
+        if (harp_variable_conversion_new("geopotential_height", harp_type_double, HARP_UNIT_LENGTH, num_dimensions,
+                                         dimension_type, 0, get_gph_from_altitude_and_latitude, &conversion) != 0)
+        {
+            return -1;
+        }
+        if (harp_variable_conversion_add_source
+            (conversion, "altitude", harp_type_double, HARP_UNIT_LENGTH, num_dimensions, dimension_type, 0) != 0)
+        {
+            return -1;
+        }
+        if (harp_variable_conversion_add_source(conversion, "latitude", harp_type_double, HARP_UNIT_LATITUDE,
+                                                num_dimensions, dimension_type, 0) != 0)
+        {
+            return -1;
+        }
+    }
+
+    if (has_vertical)
+    {
+        /* gph from pressure */
+        if (harp_variable_conversion_new("geopotential_height", harp_type_double, HARP_UNIT_LENGTH, num_dimensions,
+                                         dimension_type, 0, get_gph_from_pressure, &conversion) != 0)
+        {
+            return -1;
+        }
+        if (harp_variable_conversion_add_source(conversion, "pressure", harp_type_double, HARP_UNIT_PRESSURE,
+                                                num_dimensions, dimension_type, 0) != 0)
+        {
+            return -1;
+        }
+        if (harp_variable_conversion_add_source(conversion, "temperature", harp_type_double, HARP_UNIT_TEMPERATURE,
+                                                num_dimensions, dimension_type, 0) != 0)
+        {
+            return -1;
+        }
+        if (harp_variable_conversion_add_source(conversion, "molar_mass", harp_type_double, HARP_UNIT_MOLAR_MASS,
+                                                num_dimensions, dimension_type, 0) != 0)
+        {
+            return -1;
+        }
+        if (harp_variable_conversion_add_source(conversion, "surface_pressure", harp_type_double, HARP_UNIT_PRESSURE,
+                                                num_dimensions - 1, dimension_type, 0) != 0)
+        {
+            return -1;
+        }
+        if (harp_variable_conversion_add_source(conversion, "surface_altitude", harp_type_double, HARP_UNIT_LENGTH,
+                                                num_dimensions - 1, dimension_type, 0) != 0)
+        {
+            return -1;
+        }
     }
 
     /*** molar mass (of total air) ***/
@@ -2875,114 +2956,6 @@ static int add_conversions_for_grid(int num_dimensions, harp_dimension_type dime
         return -1;
     }
 
-    /*** altitude ***/
-
-    /* time dependent from independent */
-    if (add_time_indepedent_to_dependent_conversion("altitude", harp_type_double, HARP_UNIT_LENGTH, num_dimensions,
-                                                    dimension_type, 0) != 0)
-    {
-        return -1;
-    }
-
-    if (!has_latlon)
-    {
-        /* altitude from gph */
-        if (harp_variable_conversion_new
-            ("altitude", harp_type_double, HARP_UNIT_LENGTH, num_dimensions, dimension_type, 0,
-             get_altitude_from_gph_and_latitude, &conversion) != 0)
-        {
-            return -1;
-        }
-        if (harp_variable_conversion_add_source(conversion, "geopotential_heigth", harp_type_double, HARP_UNIT_LENGTH,
-                                                num_dimensions, dimension_type, 0) != 0)
-        {
-            return -1;
-        }
-        if (harp_variable_conversion_add_source(conversion, "latitude", harp_type_double, HARP_UNIT_LATITUDE,
-                                                num_dimensions, dimension_type, 0) != 0)
-        {
-            return -1;
-        }
-    }
-
-    /*** altitude_bounds ***/
-
-    /* time dependent from independent */
-    dimension_type[num_dimensions] = harp_dimension_independent;
-    if (add_time_indepedent_to_dependent_conversion("altitude_bounds", harp_type_double, HARP_UNIT_LENGTH,
-                                                    num_dimensions + 1, dimension_type, 2) != 0)
-    {
-        return -1;
-    }
-
-    /*** geopotential ***/
-
-    /* time dependent from independent */
-    if (add_time_indepedent_to_dependent_conversion("geopotential", harp_type_double, HARP_UNIT_GEOPOTENTIAL,
-                                                    num_dimensions, dimension_type, 0) != 0)
-    {
-        return -1;
-    }
-
-    /* uncertainties */
-    if (add_uncertainty_conversions("geopotential", HARP_UNIT_GEOPOTENTIAL, num_dimensions, dimension_type) != 0)
-    {
-        return -1;
-    }
-
-    /* geopotential from gph */
-    if (harp_variable_conversion_new("geopotential", harp_type_double, HARP_UNIT_GEOPOTENTIAL, num_dimensions,
-                                     dimension_type, 0, get_geopotential_from_gph, &conversion) != 0)
-    {
-        return -1;
-    }
-    if (harp_variable_conversion_add_source(conversion, "geopotential_height", harp_type_double, HARP_UNIT_LENGTH,
-                                            num_dimensions, dimension_type, 0) != 0)
-    {
-        return -1;
-    }
-
-    /*** geopotential_height ***/
-
-    /* time dependent from independent */
-    if (add_time_indepedent_to_dependent_conversion("geopotential_height", harp_type_double, HARP_UNIT_LENGTH,
-                                                    num_dimensions, dimension_type, 0) != 0)
-    {
-        return -1;
-    }
-
-    /* gph from geopotential */
-    if (harp_variable_conversion_new("geopotential_height", harp_type_double, HARP_UNIT_LENGTH, num_dimensions,
-                                     dimension_type, 0, get_gph_from_geopotential, &conversion) != 0)
-    {
-        return -1;
-    }
-    if (harp_variable_conversion_add_source(conversion, "geopotential", harp_type_double, HARP_UNIT_GEOPOTENTIAL,
-                                            num_dimensions, dimension_type, 0) != 0)
-    {
-        return -1;
-    }
-
-    if (!has_latlon)
-    {
-        /* gph from altitude */
-        if (harp_variable_conversion_new("geopotential_height", harp_type_double, HARP_UNIT_LENGTH, num_dimensions,
-                                         dimension_type, 0, get_gph_from_altitude_and_latitude, &conversion) != 0)
-        {
-            return -1;
-        }
-        if (harp_variable_conversion_add_source
-            (conversion, "altitude", harp_type_double, HARP_UNIT_LENGTH, num_dimensions, dimension_type, 0) != 0)
-        {
-            return -1;
-        }
-        if (harp_variable_conversion_add_source(conversion, "latitude", harp_type_double, HARP_UNIT_LATITUDE,
-                                                num_dimensions, dimension_type, 0) != 0)
-        {
-            return -1;
-        }
-    }
-
     /*** pressure ***/
 
     /* time dependent from independent */
@@ -2992,53 +2965,116 @@ static int add_conversions_for_grid(int num_dimensions, harp_dimension_type dime
         return -1;
     }
 
-    /* uncertainties */
-    if (add_uncertainty_conversions("pressure", HARP_UNIT_PRESSURE, num_dimensions, dimension_type) != 0)
+    if (has_vertical)
     {
-        return -1;
+        /* pressure from altitude */
+        if (harp_variable_conversion_new("pressure", harp_type_double, HARP_UNIT_PRESSURE, num_dimensions,
+                                         dimension_type, 0, get_pressure_from_altitude, &conversion) != 0)
+        {
+            return -1;
+        }
+        if (harp_variable_conversion_add_source(conversion, "altitude", harp_type_double, HARP_UNIT_LENGTH,
+                                                num_dimensions, dimension_type, 0) != 0)
+        {
+            return -1;
+        }
+        if (harp_variable_conversion_add_source(conversion, "temperature", harp_type_double, HARP_UNIT_TEMPERATURE,
+                                                num_dimensions, dimension_type, 0) != 0)
+        {
+            return -1;
+        }
+        if (harp_variable_conversion_add_source(conversion, "molar_mass", harp_type_double, HARP_UNIT_MOLAR_MASS,
+                                                num_dimensions, dimension_type, 0) != 0)
+        {
+            return -1;
+        }
+        if (harp_variable_conversion_add_source(conversion, "surface_pressure", harp_type_double, HARP_UNIT_PRESSURE,
+                                                num_dimensions - 1, dimension_type, 0) != 0)
+        {
+            return -1;
+        }
+        if (harp_variable_conversion_add_source(conversion, "surface_altitude", harp_type_double, HARP_UNIT_LENGTH,
+                                                num_dimensions - 1, dimension_type, 0) != 0)
+        {
+            return -1;
+        }
+        if (harp_variable_conversion_add_source(conversion, "latitude", harp_type_double, HARP_UNIT_LATITUDE,
+                                                num_dimensions - 1, dimension_type, 0) != 0)
+        {
+            return -1;
+        }
+
+        /* pressure from geopotential height */
+        if (harp_variable_conversion_new("pressure", harp_type_double, HARP_UNIT_PRESSURE, num_dimensions,
+                                         dimension_type, 0, get_pressure_from_gph, &conversion) != 0)
+        {
+            return -1;
+        }
+        if (harp_variable_conversion_add_source(conversion, "geopotential_height", harp_type_double, HARP_UNIT_LENGTH,
+                                                num_dimensions, dimension_type, 0) != 0)
+        {
+            return -1;
+        }
+        if (harp_variable_conversion_add_source(conversion, "temperature", harp_type_double, HARP_UNIT_TEMPERATURE,
+                                                num_dimensions, dimension_type, 0) != 0)
+        {
+            return -1;
+        }
+        if (harp_variable_conversion_add_source(conversion, "molar_mass", harp_type_double, HARP_UNIT_MOLAR_MASS,
+                                                num_dimensions, dimension_type, 0) != 0)
+        {
+            return -1;
+        }
+        if (harp_variable_conversion_add_source(conversion, "surface_pressure", harp_type_double, HARP_UNIT_PRESSURE,
+                                                num_dimensions - 1, dimension_type, 0) != 0)
+        {
+            return -1;
+        }
+        if (harp_variable_conversion_add_source(conversion, "surface_altitude", harp_type_double, HARP_UNIT_LENGTH,
+                                                num_dimensions - 1, dimension_type, 0) != 0)
+        {
+            return -1;
+        }
     }
 
-    /*** pressure_bounds ***/
+    /*** stratospheric column (mass) density ***/
 
-    /* time dependent from independent */
-    dimension_type[num_dimensions] = harp_dimension_independent;
-    if (add_time_indepedent_to_dependent_conversion("pressure_bounds", harp_type_double, HARP_UNIT_PRESSURE,
-                                                    num_dimensions + 1, dimension_type, 2) != 0)
+    if (!has_vertical)
     {
-        return -1;
+        /* time dependent from independent */
+        if (add_time_indepedent_to_dependent_conversion("stratospheric_column_density", harp_type_double,
+                                                        HARP_UNIT_COLUMN_MASS_DENSITY, num_dimensions, dimension_type,
+                                                        0) != 0)
+        {
+            return -1;
+        }
+
+        /* uncertainties */
+        if (add_uncertainty_conversions("stratospheric_column_density", HARP_UNIT_COLUMN_MASS_DENSITY, num_dimensions,
+                                        dimension_type) != 0)
+        {
+            return -1;
+        }
     }
 
-    /*** relative humidity ***/
+    /*** stratospheric column number density ***/
 
-    /* time dependent from independent */
-    if (add_time_indepedent_to_dependent_conversion("relative_humidity", harp_type_double, HARP_UNIT_DIMENSIONLESS,
-                                                    num_dimensions, dimension_type, 0) != 0)
+    if (!has_vertical)
     {
-        return -1;
-    }
+        /* time dependent from independent */
+        if (add_time_indepedent_to_dependent_conversion("stratospheric_column_number_density", harp_type_double,
+                                                        HARP_UNIT_COLUMN_NUMBER_DENSITY, num_dimensions, dimension_type,
+                                                        0) != 0)
+        {
+            return -1;
+        }
 
-    /* uncertainties */
-    if (add_uncertainty_conversions("relative_humidity", HARP_UNIT_DIMENSIONLESS, num_dimensions, dimension_type) != 0)
-    {
-        return -1;
-    }
-
-    /* humidity from H2O partial pressure */
-    if (harp_variable_conversion_new("relative_humidity", harp_type_double, HARP_UNIT_DIMENSIONLESS, num_dimensions,
-                                     dimension_type, 0, get_relative_humidity_from_h2o_pp_and_temperature,
-                                     &conversion) != 0)
-    {
-        return -1;
-    }
-    if (harp_variable_conversion_add_source(conversion, "H2O_partial_pressure", harp_type_double,
-                                            HARP_UNIT_PRESSURE, num_dimensions, dimension_type, 0) != 0)
-    {
-        return -1;
-    }
-    if (harp_variable_conversion_add_source(conversion, "temperature", harp_type_double, HARP_UNIT_TEMPERATURE,
-                                            num_dimensions, dimension_type, 0) != 0)
-    {
-        return -1;
+        /* uncertainties */
+        if (add_uncertainty_conversions("stratospheric_column_number_density", HARP_UNIT_COLUMN_NUMBER_DENSITY,
+                                        num_dimensions, dimension_type) != 0)
+        {
+            return -1;
+        }
     }
 
     /*** temperature ***/
@@ -3071,6 +3107,46 @@ static int add_conversions_for_grid(int num_dimensions, harp_dimension_type dime
                                             num_dimensions, dimension_type, 0) != 0)
     {
         return -1;
+    }
+
+    /*** tropospheric column (mass) density ***/
+
+    if (!has_vertical)
+    {
+        /* time dependent from independent */
+        if (add_time_indepedent_to_dependent_conversion("tropospheric_column_density", harp_type_double,
+                                                        HARP_UNIT_COLUMN_MASS_DENSITY, num_dimensions, dimension_type,
+                                                        0) != 0)
+        {
+            return -1;
+        }
+
+        /* uncertainties */
+        if (add_uncertainty_conversions("tropospheric_column_density", HARP_UNIT_COLUMN_MASS_DENSITY, num_dimensions,
+                                        dimension_type) != 0)
+        {
+            return -1;
+        }
+    }
+
+    /*** tropospheric column number density ***/
+
+    if (!has_vertical)
+    {
+        /* time dependent from independent */
+        if (add_time_indepedent_to_dependent_conversion("tropoospheric_column_number_density", harp_type_double,
+                                                        HARP_UNIT_COLUMN_NUMBER_DENSITY, num_dimensions, dimension_type,
+                                                        0) != 0)
+        {
+            return -1;
+        }
+
+        /* uncertainties */
+        if (add_uncertainty_conversions("tropoospheric_column_number_density", HARP_UNIT_COLUMN_NUMBER_DENSITY,
+                                        num_dimensions, dimension_type) != 0)
+        {
+            return -1;
+        }
     }
 
     /*** virtual temperature ***/
@@ -3694,7 +3770,6 @@ static int add_axis_conversions(void)
         }
     }
 
-
     /*** latitude_bounds ***/
 
     if (add_time_indepedent_to_dependent_conversion("latitude_bounds", harp_type_double, HARP_UNIT_DATETIME, 1,
@@ -3812,94 +3887,6 @@ static int add_axis_conversions(void)
         return -1;
     }
 
-    /* pressure from alt/T/Q */
-    if (harp_variable_conversion_new("pressure", harp_type_double, HARP_UNIT_PRESSURE, 2, dimension_type, 0,
-                                     get_pressure_from_altitude_temperature_h2o_mmr_and_latitude, &conversion) != 0)
-    {
-        return -1;
-    }
-    if (harp_variable_conversion_add_source(conversion, "altitude", harp_type_double, HARP_UNIT_LENGTH, 2,
-                                            dimension_type, 0) != 0)
-    {
-        return -1;
-    }
-    if (harp_variable_conversion_add_source(conversion, "temperature", harp_type_double, HARP_UNIT_TEMPERATURE, 2,
-                                            dimension_type, 0) != 0)
-    {
-        return -1;
-    }
-    if (harp_variable_conversion_add_source(conversion, "H2O_mass_mixing_ratio", harp_type_double,
-                                            HARP_UNIT_MASS_MIXING_RATIO, 2, dimension_type, 0) != 0)
-    {
-        return -1;
-    }
-    if (harp_variable_conversion_add_source(conversion, "latitude", harp_type_double, HARP_UNIT_LATITUDE, 1,
-                                            dimension_type, 0) != 0)
-    {
-        return -1;
-    }
-
-    /* pressure from gph/T/Q */
-    if (harp_variable_conversion_new("pressure", harp_type_double, HARP_UNIT_PRESSURE, 2, dimension_type, 0,
-                                     get_pressure_from_gph_temperature_and_h2o_mmr, &conversion) != 0)
-    {
-        return -1;
-    }
-    if (harp_variable_conversion_add_source(conversion, "geopotential_height", harp_type_double, HARP_UNIT_LENGTH, 2,
-                                            dimension_type, 0) != 0)
-    {
-        return -1;
-    }
-    if (harp_variable_conversion_add_source(conversion, "temperature", harp_type_double, HARP_UNIT_TEMPERATURE, 2,
-                                            dimension_type, 0) != 0)
-    {
-        return -1;
-    }
-    if (harp_variable_conversion_add_source(conversion, "H2O_mass_mixing_ratio", harp_type_double,
-                                            HARP_UNIT_MASS_MIXING_RATIO, 2, dimension_type, 0) != 0)
-    {
-        return -1;
-    }
-
-    /* pressure from alt/T */
-    if (harp_variable_conversion_new("pressure", harp_type_double, HARP_UNIT_PRESSURE, 2, dimension_type, 0,
-                                     get_pressure_from_altitude_temperature_and_latitude, &conversion) != 0)
-    {
-        return -1;
-    }
-    if (harp_variable_conversion_add_source(conversion, "altitude", harp_type_double, HARP_UNIT_LENGTH, 2,
-                                            dimension_type, 0) != 0)
-    {
-        return -1;
-    }
-    if (harp_variable_conversion_add_source(conversion, "temperature", harp_type_double, HARP_UNIT_TEMPERATURE, 2,
-                                            dimension_type, 0) != 0)
-    {
-        return -1;
-    }
-    if (harp_variable_conversion_add_source(conversion, "latitude", harp_type_double, HARP_UNIT_LATITUDE, 1,
-                                            dimension_type, 0) != 0)
-    {
-        return -1;
-    }
-
-    /* pressure from gph/T */
-    if (harp_variable_conversion_new("pressure", harp_type_double, HARP_UNIT_PRESSURE, 2, dimension_type, 0,
-                                     get_pressure_from_gph_and_temperature, &conversion) != 0)
-    {
-        return -1;
-    }
-    if (harp_variable_conversion_add_source(conversion, "geopotential_height", harp_type_double, HARP_UNIT_LENGTH, 2,
-                                            dimension_type, 0) != 0)
-    {
-        return -1;
-    }
-    if (harp_variable_conversion_add_source(conversion, "temperature", harp_type_double, HARP_UNIT_TEMPERATURE, 2,
-                                            dimension_type, 0) != 0)
-    {
-        return -1;
-    }
-
     /*** pressure_bounds ***/
 
     /* range from midpoints */
@@ -3908,7 +3895,6 @@ static int add_axis_conversions(void)
     {
         return -1;
     }
-
 
     /*** frequency ***/
 

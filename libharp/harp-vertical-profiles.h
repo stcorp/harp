@@ -39,51 +39,20 @@ double harp_altitude_from_gph_and_latitude(double gph, double latitude);
 double harp_gph_from_altitude_and_latitude(double altitude, double latitude);
 double harp_gph_from_pressure(double pressure);
 
-void harp_profile_altitude_from_pressure_temperature_h2o_mmr_and_latitude(long num_levels,
-                                                                          const double *pressure_profile,
-                                                                          const double *temperature_profile,
-                                                                          const double *h2o_mmr_profile,
-                                                                          double surface_pressure,
-                                                                          double surface_height, double latitude,
-                                                                          double *altitude_profile);
-void harp_profile_gph_from_pressure_temperature_and_h2o_mmr(long num_levels, const double *pressure_profile,
-                                                            const double *temperature_profile,
-                                                            const double *h2o_mmr_profile, double surface_pressure,
-                                                            double surface_height, double *gph_profile);
-
-int harp_profile_pressure_from_altitude_temperature_h2o_mmr_and_latitude(long num_levels,
-                                                                         const double *altitude_profile,
-                                                                         const double *temperature_profile,
-                                                                         const double *h2o_mmr_profile,
-                                                                         double surface_pressure, double surface_height,
-                                                                         double latitude, double *pressure_profile);
-
-int harp_profile_pressure_from_gph_temperature_and_h2o_mmr(long num_levels, const double *gph_profile,
-                                                           const double *temperature_profile,
-                                                           const double *h2o_mmr_profile, double surface_pressure,
-                                                           double surface_height, double *pressure_profile);
-int harp_profile_vmr_covariance_from_nd_covariance_pressure_and_temperature
-    (long num_levels, const double *number_density_covariance_matrix, const double *pressure_profile,
-     const double *temperature_profile, double *volume_mixing_ratio_covariance_matrix);
-
-void harp_profile_nd_covariance_from_vmr_covariance_pressure_and_temperature
-    (long num_levels, const double *volume_mixing_ratio_covariance_matrix, const double *pressure_profile,
-     const double *temperature_profile, double *number_density_covariance_matrix);
-
-int harp_profile_partial_column_covariance_from_density_covariance_and_altitude_bounds
-    (long num_levels, const double *altitude_boundaries, const double *density_covariance_matrix,
-     double *partial_column_covariance_matrix);
-
-
-int harp_partial_column_profile_regridded_from_density_profile_and_altitude_boundaries
-    (long source_num_levels, const double *source_altitude_boundaries,
-     const double *source_number_density_profile,
-     long target_num_levels, const double *target_altitude_boundaries, double *target_partial_column_profile);
-int harp_partial_column_covariance_matrix_regridded_from_density_covariance_matrix_and_altitude_boundaries
-    (long source_num_levels, const double *source_altitude_boundaries,
-     const double *source_density_covariance_matrix,
-     long target_num_levels, const double *target_altitude_boundaries, double *target_partial_column_covariance_matrix);
-
+void harp_profile_altitude_from_pressure(long num_levels, const double *pressure_profile,
+                                         const double *temperature_profile, const double *molar_mass_air,
+                                         double surface_pressure, double surface_height, double latitude,
+                                         double *altitude_profile);
+void harp_profile_gph_from_pressure(long num_levels, const double *pressure_profile, const double *temperature_profile,
+                                    const double *molar_mass_air, double surface_pressure, double surface_height,
+                                    double *gph_profile);
+void harp_profile_pressure_from_altitude(long num_levels, const double *altitude_profile,
+                                         const double *temperature_profile, const double *molar_mass_air,
+                                         double surface_pressure, double surface_height, double latitude,
+                                         double *pressure_profile);
+void harp_profile_pressure_from_gph(long num_levels, const double *gph_profile, const double *temperature_profile,
+                                    const double *molar_mass_air, double surface_pressure, double surface_height,
+                                    double *pressure_profile);
 
 double harp_profile_column_from_partial_column(long num_levels, const double *partial_column_profile);
 double harp_profile_column_uncertainty_from_partial_column_uncertainty
