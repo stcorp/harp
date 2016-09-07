@@ -37,6 +37,8 @@ typedef enum grib_parameter_enum
 {
     grib_param_unknown = -1,
     grib_param_z,       /* 129: Geopotential [m2/s2] (at the surface: orography) */
+    grib_param_t,       /* 130: Temperature [K] */
+    grib_param_q,       /* 133: Specific humidity [kg/kg] */
     grib_param_lnsp,    /* 152: Logarithm of surface pressure [-] */
     grib_param_lsm,     /* 172: Land-sea mask [(0-1)] */
     grib_param_ch4,     /* 210062/217004: Methane [kg/kg] */
@@ -84,6 +86,8 @@ typedef enum grib_parameter_enum
 
 const char *param_name[NUM_GRIB_PARAMETERS] = {
     "z",
+    "t",
+    "q",
     "lnsp",
     "lsm",
     "ch4",
@@ -129,6 +133,8 @@ const char *param_name[NUM_GRIB_PARAMETERS] = {
 
 int param_is_profile[NUM_GRIB_PARAMETERS] = {
     0,  /* z */
+    1,  /* t */
+    1,  /* q */
     0,  /* lnsp */
     0,  /* lsm */
     1,  /* ch4 */
@@ -181,6 +187,7 @@ typedef struct ingest_info_struct
     /* GRIB1 grid_data_parameter_ref = table2Version * 256 + indicatorOfParameter
      * GRIB2 grid_data_parameter_ref = (discipline * 256 + parameterCategory) * 256 + parameterNumber */
     int *grid_data_parameter_ref;       /* [num_grid_data] */
+    int ignore_duplicates;
     coda_cursor *parameter_cursor;      /* [num_grid_data], array of cursors to /[]/data([])/values for each param */
     double *level;      /* [num_grid_data] */
     double wavelength;
@@ -188,6 +195,7 @@ typedef struct ingest_info_struct
     double datetime;
     double reference_datetime;
     int is_forecast_datetime;
+    int ignore_time_for_z;
 
     /* original grid definition */
     uint32_t Ni;        /* num_longitudes */
@@ -310,6 +318,10 @@ static grib_parameter get_grib1_parameter(int parameter_ref)
             {
                 case 129:
                     return grib_param_z;
+                case 130:
+                    return grib_param_t;
+                case 133:
+                    return grib_param_q;
                 case 152:
                     return grib_param_lnsp;
                 case 172:
@@ -321,6 +333,10 @@ static grib_parameter get_grib1_parameter(int parameter_ref)
             {
                 case 129:
                     return grib_param_z;
+                case 130:
+                    return grib_param_t;
+                case 133:
+                    return grib_param_q;
                 case 152:
                     return grib_param_lnsp;
                 case 172:
@@ -332,6 +348,10 @@ static grib_parameter get_grib1_parameter(int parameter_ref)
             {
                 case 129:
                     return grib_param_z;
+                case 130:
+                    return grib_param_t;
+                case 133:
+                    return grib_param_q;
             }
             break;
         case 171:
@@ -360,6 +380,10 @@ static grib_parameter get_grib1_parameter(int parameter_ref)
             {
                 case 129:
                     return grib_param_z;
+                case 130:
+                    return grib_param_t;
+                case 133:
+                    return grib_param_q;
                 case 172:
                     return grib_param_lsm;
             }
@@ -369,6 +393,10 @@ static grib_parameter get_grib1_parameter(int parameter_ref)
             {
                 case 129:
                     return grib_param_z;
+                case 130:
+                    return grib_param_t;
+                case 133:
+                    return grib_param_q;
                 case 172:
                     return grib_param_lsm;
             }
@@ -484,6 +512,20 @@ static grib_parameter get_grib2_parameter(int parameter_ref)
         case 0:
             switch (parameterCategory)
             {
+                case 0:
+                    switch (parameterNumber)
+                    {
+                        case 0:
+                            return grib_param_t;
+                    }
+                    break;
+                case 1:
+                    switch (parameterNumber)
+                    {
+                        case 0:
+                            return grib_param_q;
+                    }
+                    break;
                 case 3:
                     switch (parameterNumber)
                     {
@@ -720,6 +762,16 @@ static int read_wavelength(void *user_data, harp_array data)
 static int read_z(void *user_data, harp_array data)
 {
     return read_2d_grid_data((ingest_info *)user_data, grib_param_z, data);
+}
+
+static int read_t(void *user_data, harp_array data)
+{
+    return read_3d_grid_data((ingest_info *)user_data, grib_param_t, data);
+}
+
+static int read_q(void *user_data, harp_array data)
+{
+    return read_3d_grid_data((ingest_info *)user_data, grib_param_q, data);
 }
 
 static int read_lnsp(void *user_data, harp_array data)
@@ -1215,6 +1267,11 @@ static int get_reference_datetime(coda_cursor *cursor, ingest_info *info)
         {
             harp_set_error(HARP_ERROR_CODA, NULL);
             return -1;
+        }
+        if (yearOfCentury > 0)
+        {
+            /* The 20th century ends at 1 Jan 2001, so (20,00) -> 2000 and (21,01) -> 2001 */
+            centuryOfReferenceTimeOfData -= 1;
         }
         year = 100 * centuryOfReferenceTimeOfData + yearOfCentury;
     }
@@ -1877,6 +1934,7 @@ static int init_cursors_and_grid(ingest_info *info)
                     uint8_t typeOfFirstFixedSurface;
                     uint8_t parameterCategory;
                     uint8_t parameterNumber;
+                    grib_parameter parameter;
                     long num_coordinate_values;
                     double datetime;
 
@@ -1906,6 +1964,7 @@ static int init_cursors_and_grid(ingest_info *info)
                     coda_cursor_goto_parent(&cursor);
                     parameter_ref += parameterNumber;
                     info->grid_data_parameter_ref[parameter_index] = parameter_ref;
+                    parameter = get_grib2_parameter(parameter_ref);
 
                     if (get_datetime(&cursor, info, &datetime) != 0)
                     {
@@ -1913,8 +1972,11 @@ static int init_cursors_and_grid(ingest_info *info)
                     }
                     if (!datetime_initialised)
                     {
-                        info->datetime = datetime;
-                        datetime_initialised = 1;
+                        if (!(info->ignore_time_for_z && parameter == grib_param_z))
+                        {
+                            info->datetime = datetime;
+                            datetime_initialised = 1;
+                        }
                     }
                     else if (info->datetime != datetime)
                     {
@@ -1922,7 +1984,7 @@ static int init_cursors_and_grid(ingest_info *info)
                         return -1;
                     }
 
-                    if (get_grib2_parameter(parameter_ref) != grib_param_unknown)
+                    if (parameter != grib_param_unknown)
                     {
                         if (coda_cursor_goto_record_field_by_name(&cursor, "typeOfFirstFixedSurface") != 0)
                         {
@@ -2018,6 +2080,7 @@ static int init_cursors_and_grid(ingest_info *info)
                 uint8_t table2Version;
                 uint8_t indicatorOfParameter;
                 uint8_t indicatorOfTypeOfLevel;
+                grib_parameter parameter;
                 uint16_t level;
 
                 if (coda_cursor_goto(&cursor, "table2Version") != 0)
@@ -2044,8 +2107,22 @@ static int init_cursors_and_grid(ingest_info *info)
                 }
                 coda_cursor_goto_parent(&cursor);
                 parameter_ref += indicatorOfParameter;
-
                 info->grid_data_parameter_ref[parameter_index] = parameter_ref;
+                parameter = get_grib1_parameter(parameter_ref);
+
+                if (!datetime_initialised)
+                {
+                    if (!(info->ignore_time_for_z && parameter == grib_param_z))
+                    {
+                        info->datetime = info->reference_datetime;
+                        datetime_initialised = 1;
+                    }
+                }
+                else if (info->datetime != info->reference_datetime)
+                {
+                    harp_set_error(HARP_ERROR_INGESTION, "not all data in the GRIB file is for the same time");
+                    return -1;
+                }
 
                 if (coda_cursor_goto(&cursor, "indicatorOfTypeOfLevel") != 0)
                 {
@@ -2189,11 +2266,17 @@ static int init_cursors_and_grid(ingest_info *info)
             info->has_parameter[param] = 1;
             if (info->grid_data_index[param * info->num_levels + level - 1] != -1)
             {
-                harp_set_error(HARP_ERROR_INGESTION, "parameter %s and level (%lf) occur more than once in file",
-                               param_name[param], info->level[i]);
-                return -1;
+                if (!info->ignore_duplicates)
+                {
+                    harp_set_error(HARP_ERROR_INGESTION, "parameter %s and level (%lf) occur more than once in file",
+                                   param_name[param], info->level[i]);
+                    return -1;
+                }
             }
-            info->grid_data_index[param * info->num_levels + level - 1] = i;
+            else
+            {
+                info->grid_data_index[param * info->num_levels + level - 1] = i;
+            }
         }
     }
 
@@ -2254,12 +2337,14 @@ static int ingest_info_new(coda_product *product, ingest_info **new_info)
     info->num_messages = 0;
     info->num_grid_data = 0;
     info->grid_data_parameter_ref = NULL;
+    info->ignore_duplicates = 0;
     info->parameter_cursor = NULL;
     info->level = NULL;
     info->wavelength = harp_nan();
     info->datetime = 0;
     info->reference_datetime = 0;
     info->is_forecast_datetime = 0;
+    info->ignore_time_for_z = 0;
     info->Ni = 0;
     info->Nj = 0;
     info->latitudeOfFirstGridPoint = 0;
@@ -2298,12 +2383,22 @@ static int ingestion_init(const harp_ingestion_module *module, coda_product *pro
                           const harp_ingestion_options *options, harp_product_definition **definition, void **user_data)
 {
     ingest_info *info;
+    const char *value;
     coda_format format;
 
     (void)options;
     if (ingest_info_new(product, &info) != 0)
     {
         return -1;
+    }
+
+    if (harp_ingestion_options_get_option(options, "ignore_time_for_z", &value) == 0)
+    {
+        info->ignore_time_for_z = (strcmp(value, "true") == 0);
+    }
+    if (harp_ingestion_options_get_option(options, "ignore_duplicates", &value) == 0)
+    {
+        info->ignore_duplicates = (strcmp(value, "true") == 0);
     }
 
     if (coda_get_product_format(product, &format) != 0)
@@ -2333,6 +2428,16 @@ int exclude_wavelength(void *user_data)
 int exclude_z(void *user_data)
 {
     return !((ingest_info *)user_data)->has_parameter[grib_param_z];
+}
+
+int exclude_t(void *user_data)
+{
+    return !((ingest_info *)user_data)->has_parameter[grib_param_t];
+}
+
+int exclude_q(void *user_data)
+{
+    return !((ingest_info *)user_data)->has_parameter[grib_param_q];
 }
 
 int exclude_lnsp(void *user_data)
@@ -2557,12 +2662,22 @@ int harp_ingestion_module_ecmwf_grib_init(void)
     harp_ingestion_module *module;
     harp_product_definition *product_definition;
     harp_variable_definition *variable_definition;
+    const char *ignore_option_values[] = { "false", "true" };
     const char *description;
     const char *path;
 
     module = harp_ingestion_register_module_coda("ECMWF_GRIB", "ECMWF GRIB", NULL, NULL,
                                                  "ECMWF model data in GRIB format", verify_product_type, ingestion_init,
                                                  ingestion_done);
+
+    /* option to ignore the time value of the geopotential parameter */
+    description = "ignore time for the geopotential parameter";
+    harp_ingestion_register_option(module, "ignore_time_for_z", description, 2, ignore_option_values);
+
+    /* option to ignore any duplicates  time check of geopotential parameter */
+    description = "ignore duplicate GRIB messages (only first message occurence will be used)";
+    harp_ingestion_register_option(module, "ignore_duplicates", description, 2, ignore_option_values);
+
 
     /* ECMWF GRIB product */
     description = "The file can use either the GRIB1 or GRIB2 format. "
@@ -2623,6 +2738,22 @@ int harp_ingestion_module_ecmwf_grib_init(void)
                                                                      description, "m2/s2", exclude_z, read_z);
     add_value_variable_mapping(variable_definition, "(table,indicator) = (128,129), (160,129), (170,129), (180,129), "
                                "or (190,129)", "(discipline,category,number) = (0,3,4)");
+
+    /* t: temperature */
+    description = "temperature";
+    variable_definition = harp_ingestion_register_variable_full_read(product_definition, "temperature",
+                                                                     harp_type_float, 3, &dimension_type[1], NULL,
+                                                                     description, "K", exclude_t, read_t);
+    add_value_variable_mapping(variable_definition, "(table,indicator) = (128,130), (160,130), (170,130), (180,130), "
+                               "or (190,130)", "(discipline,category,number) = (0,0,0)");
+
+    /* q: Specificy humidity */
+    description = "specific humidity";
+    variable_definition = harp_ingestion_register_variable_full_read(product_definition, "H2O_mass_mixing_ratio",
+                                                                     harp_type_float, 3, &dimension_type[1], NULL,
+                                                                     description, "kg/kg", exclude_q, read_q);
+    add_value_variable_mapping(variable_definition, "(table,indicator) = (128,133), (160,133), (170,133), (180,133), "
+                               "or (190,133)", "(discipline,category,number) = (0,1,0)");
 
     /* lnsp: surface_pressure */
     description = "pressure at the surface";

@@ -183,6 +183,18 @@
 <td>m2/s2</td>
 <td>geopotential at the surface</td>
 </tr>
+<tr class="row-odd"><td><strong>temperature</strong></td>
+<td>float</td>
+<td>{<em>latitude</em>, <em>longitude</em>, <em>vertical</em>}</td>
+<td>K</td>
+<td>temperature</td>
+</tr>
+<tr class="row-even"><td><strong>H2O_mass_mixing_ratio</strong></td>
+<td>float</td>
+<td>{<em>latitude</em>, <em>longitude</em>, <em>vertical</em>}</td>
+<td>kg/kg</td>
+<td>specific humidity</td>
+</tr>
 <tr class="row-odd"><td><strong>surface_pressure</strong></td>
 <td>float</td>
 <td>{<em>latitude</em>, <em>longitude</em>}</td>
@@ -511,6 +523,50 @@
 </tr>
 <tr class="row-odd"><td><em>description</em></td>
 <td>(discipline,category,number) = (0,3,4)</td>
+</tr>
+<tr class="row-even"><td rowspan="7"><strong>temperature</strong></td>
+<td><em>available</em></td>
+<td>optional</td>
+</tr>
+<tr class="row-odd"><td><em>condition</em></td>
+<td>GRIB1</td>
+</tr>
+<tr class="row-even"><td><em>path</em></td>
+<td><strong>/[]/data/values[]</strong></td>
+</tr>
+<tr class="row-odd"><td><em>description</em></td>
+<td>(table,indicator) = (128,130), (160,130), (170,130), (180,130), or (190,130)</td>
+</tr>
+<tr class="row-even"><td><em>condition</em></td>
+<td>GRIB2</td>
+</tr>
+<tr class="row-odd"><td><em>path</em></td>
+<td><strong>/[]/data[]/values[]</strong></td>
+</tr>
+<tr class="row-even"><td><em>description</em></td>
+<td>(discipline,category,number) = (0,0,0)</td>
+</tr>
+<tr class="row-odd"><td rowspan="7"><strong>H2O_mass_mixing_ratio</strong></td>
+<td><em>available</em></td>
+<td>optional</td>
+</tr>
+<tr class="row-even"><td><em>condition</em></td>
+<td>GRIB1</td>
+</tr>
+<tr class="row-odd"><td><em>path</em></td>
+<td><strong>/[]/data/values[]</strong></td>
+</tr>
+<tr class="row-even"><td><em>description</em></td>
+<td>(table,indicator) = (128,133), (160,133), (170,133), (180,133), or (190,133)</td>
+</tr>
+<tr class="row-odd"><td><em>condition</em></td>
+<td>GRIB2</td>
+</tr>
+<tr class="row-even"><td><em>path</em></td>
+<td><strong>/[]/data[]/values[]</strong></td>
+</tr>
+<tr class="row-odd"><td><em>description</em></td>
+<td>(discipline,category,number) = (0,1,0)</td>
 </tr>
 <tr class="row-even"><td rowspan="7"><strong>surface_pressure</strong></td>
 <td><em>available</em></td>
