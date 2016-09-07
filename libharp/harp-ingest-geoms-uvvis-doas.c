@@ -1771,15 +1771,15 @@ static int init_product_definition(harp_ingestion_module *module, uvvis_doas_gas
     dimension_type[1] = harp_dimension_vertical;
     dimension_type[2] = harp_dimension_vertical;
 
-    /* instrument_name */
-    description = "name of the instrument";
-    variable_definition = harp_ingestion_register_variable_full_read(product_definition, "instrument_name",
+    /* sensor_name */
+    description = "name of the sensor";
+    variable_definition = harp_ingestion_register_variable_full_read(product_definition, "sensor_name",
                                                                      harp_type_string, 0, NULL, NULL, description, NULL,
                                                                      NULL, read_data_source);
     harp_variable_definition_add_mapping(variable_definition, NULL, NULL, "/@DATA.SOURCE", NULL);
 
     /* site_name */
-    description = "name of the site at which the instrument is located";
+    description = "name of the site at which the sensor is located";
     variable_definition = harp_ingestion_register_variable_full_read(product_definition, "site_name", harp_type_string,
                                                                      0, NULL, NULL, description, NULL, NULL,
                                                                      read_data_location);
@@ -1808,25 +1808,25 @@ static int init_product_definition(harp_ingestion_module *module, uvvis_doas_gas
                                                                      read_datetime_stop);
     harp_variable_definition_add_mapping(variable_definition, NULL, NULL, "/DATETIME.STOP", NULL);
 
-    /* instrument_latitude */
-    description = "latitude of the instrument";
-    variable_definition = harp_ingestion_register_variable_full_read(product_definition, "instrument_latitude",
+    /* sensor_latitude */
+    description = "latitude of the sensor";
+    variable_definition = harp_ingestion_register_variable_full_read(product_definition, "sensor_latitude",
                                                                      harp_type_double, 0, NULL, NULL, description,
                                                                      "degree_north", NULL, read_instrument_latitude);
     harp_variable_definition_set_valid_range_double(variable_definition, -90.0, 90.0);
     harp_variable_definition_add_mapping(variable_definition, NULL, NULL, "/LATITUDE.INSTRUMENT", NULL);
 
-    /* instrument_longitude */
-    description = "longitude of the instrument";
-    variable_definition = harp_ingestion_register_variable_full_read(product_definition, "instrument_longitude",
+    /* sensor_longitude */
+    description = "longitude of the sensor";
+    variable_definition = harp_ingestion_register_variable_full_read(product_definition, "sensor_longitude",
                                                                      harp_type_double, 0, NULL, NULL, description,
                                                                      "degree_east", NULL, read_instrument_longitude);
     harp_variable_definition_set_valid_range_double(variable_definition, -180.0, 180.0);
     harp_variable_definition_add_mapping(variable_definition, NULL, NULL, "/LONGITUDE.INSTRUMENT", NULL);
 
-    /* instrument_altitude */
-    description = "altitude of the instrument relative to the location site";
-    variable_definition = harp_ingestion_register_variable_full_read(product_definition, "instrument_altitude",
+    /* sensor_altitude */
+    description = "altitude of the sensor relative to the location site";
+    variable_definition = harp_ingestion_register_variable_full_read(product_definition, "sensor_altitude",
                                                                      harp_type_double, 0, NULL, NULL, description, "m",
                                                                      NULL, read_instrument_altitude);
     harp_variable_definition_add_mapping(variable_definition, NULL, NULL, "/ALTITUDE.INSTRUMENT", NULL);
@@ -1912,7 +1912,7 @@ static int init_product_definition(harp_ingestion_module *module, uvvis_doas_gas
     harp_variable_definition_add_mapping(variable_definition, NULL, NULL, "/ANGLE.SOLAR_AZIMUTH", NULL);
 
     /* viewing_azimuth_angle */
-    description = "viewing azimuth angle of the instrument";
+    description = "viewing azimuth angle of the sensor";
     variable_definition = harp_ingestion_register_variable_full_read(product_definition, "viewing_azimuth_angle",
                                                                      harp_type_double, 1, dimension_type, NULL,
                                                                      description, "degree", NULL,
@@ -1920,7 +1920,7 @@ static int init_product_definition(harp_ingestion_module *module, uvvis_doas_gas
     harp_variable_definition_add_mapping(variable_definition, NULL, NULL, "/ANGLE.VIEW_AZIMUTH", NULL);
 
     /* viewing_zenith_angle */
-    description = "viewing zenith angle of the instrument";
+    description = "viewing zenith angle of the sensor";
     variable_definition = harp_ingestion_register_variable_full_read(product_definition, "viewing_zenith_angle",
                                                                      harp_type_double, 1, dimension_type, NULL,
                                                                      description, "degree", NULL,

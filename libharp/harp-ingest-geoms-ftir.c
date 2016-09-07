@@ -1205,15 +1205,15 @@ static int init_product_definition(harp_ingestion_module *module, ftir_gas gas, 
     dimension[1] = -1;
     dimension[2] = 2;
 
-    /* instrument_name */
-    description = "name of the instrument";
-    variable_definition = harp_ingestion_register_variable_full_read(product_definition, "instrument_name",
+    /* sensor_name */
+    description = "name of the sensor";
+    variable_definition = harp_ingestion_register_variable_full_read(product_definition, "sensor_name",
                                                                      harp_type_string, 0, NULL, NULL, description, NULL,
                                                                      NULL, read_data_source);
     harp_variable_definition_add_mapping(variable_definition, NULL, NULL, "/@DATA.SOURCE", NULL);
 
     /* site_name */
-    description = "name of the site at which the instrument is located";
+    description = "name of the site at which the sensor is located";
     variable_definition = harp_ingestion_register_variable_full_read(product_definition, "site_name", harp_type_string,
                                                                      0, NULL, NULL, description, NULL, NULL,
                                                                      read_data_location);
@@ -1227,25 +1227,25 @@ static int init_product_definition(harp_ingestion_module *module, ftir_gas gas, 
     harp_variable_definition_add_mapping(variable_definition, NULL,
                                          "determined from 'variable mode' part of variable names", NULL, NULL);
 
-    /* instrument_latitude */
-    description = "latitude of the instrument";
-    variable_definition = harp_ingestion_register_variable_full_read(product_definition, "instrument_latitude",
+    /* sensor_latitude */
+    description = "latitude of the sensor";
+    variable_definition = harp_ingestion_register_variable_full_read(product_definition, "sensor_latitude",
                                                                      harp_type_double, 0, NULL, NULL, description,
                                                                      "degree_north", NULL, read_instrument_latitude);
     harp_variable_definition_set_valid_range_double(variable_definition, -90.0, 90.0);
     harp_variable_definition_add_mapping(variable_definition, NULL, NULL, "/LATITUDE.INSTRUMENT", NULL);
 
-    /* instrument_longitude */
-    description = "longitude of the instrument";
-    variable_definition = harp_ingestion_register_variable_full_read(product_definition, "instrument_longitude",
+    /* sensor_longitude */
+    description = "longitude of the sensor";
+    variable_definition = harp_ingestion_register_variable_full_read(product_definition, "sensor_longitude",
                                                                      harp_type_double, 0, NULL, NULL, description,
                                                                      "degree_east", NULL, read_instrument_longitude);
     harp_variable_definition_set_valid_range_double(variable_definition, -180.0, 180.0);
     harp_variable_definition_add_mapping(variable_definition, NULL, NULL, "/LONGITUDE.INSTRUMENT", NULL);
 
-    /* instrument_altitude */
-    description = "altitude of the instrument";
-    variable_definition = harp_ingestion_register_variable_full_read(product_definition, "instrument_altitude",
+    /* sensor_altitude */
+    description = "altitude of the sensor";
+    variable_definition = harp_ingestion_register_variable_full_read(product_definition, "sensor_altitude",
                                                                      harp_type_double, 0, NULL, NULL, description, "km",
                                                                      NULL, read_instrument_altitude);
     harp_variable_definition_add_mapping(variable_definition, NULL, NULL, "/ALTITUDE.INSTRUMENT", NULL);

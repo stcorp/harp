@@ -521,17 +521,17 @@ static int read_temperature_std(void *user_data, harp_array data)
     return get_std_profile((ingest_info *)user_data, "nl_geolocation", "local_temp", "local_temp_std", data);
 }
 
-static int read_instrument_altitude(void *user_data, harp_array data)
+static int read_sensor_altitude(void *user_data, harp_array data)
 {
     return get_profile((ingest_info *)user_data, "nl_geolocation", "alt", data);
 }
 
-static int read_instrument_latitude(void *user_data, harp_array data)
+static int read_sensor_latitude(void *user_data, harp_array data)
 {
     return get_profile((ingest_info *)user_data, "nl_geolocation", "lat", data);
 }
 
-static int read_instrument_longitude(void *user_data, harp_array data)
+static int read_sensor_longitude(void *user_data, harp_array data)
 {
     return get_profile((ingest_info *)user_data, "nl_geolocation", "longit", data);
 }
@@ -989,30 +989,30 @@ int harp_ingestion_module_gomos_l2_init(void)
     path = "/nl_local_species_density[]/pcd[3]";
     harp_variable_definition_add_mapping(variable_definition, "air=local", NULL, path, NULL);
 
-    /* instrument_altitude */
+    /* sensor_altitude */
     description = "altitude of the satellite";
-    variable_definition = harp_ingestion_register_variable_full_read(product_definition, "instrument_altitude",
+    variable_definition = harp_ingestion_register_variable_full_read(product_definition, "sensor_altitude",
                                                                      harp_type_double, 2, dimension_type, NULL,
-                                                                     description, "m", NULL, read_instrument_altitude);
+                                                                     description, "m", NULL, read_sensor_altitude);
     path = "/nl_geolocation[]/tangent_alt";
     harp_variable_definition_add_mapping(variable_definition, NULL, NULL, path, NULL);
 
-    /* instrument_latitude */
+    /* sensor_latitude */
     description = "latitude of the satellite position";
-    variable_definition = harp_ingestion_register_variable_full_read(product_definition, "instrument_latitude",
+    variable_definition = harp_ingestion_register_variable_full_read(product_definition, "sensor_latitude",
                                                                      harp_type_double, 2, dimension_type, NULL,
                                                                      description, "degree_north", NULL,
-                                                                     read_instrument_latitude);
+                                                                     read_sensor_latitude);
     harp_variable_definition_set_valid_range_double(variable_definition, -90.0, 90.0);
     path = "/nl_geolocation[]/lat";
     harp_variable_definition_add_mapping(variable_definition, NULL, NULL, path, NULL);
 
-    /* instrument_longitude */
+    /* sensor_longitude */
     description = "longitude of the satellite position";
-    variable_definition = harp_ingestion_register_variable_full_read(product_definition, "instrument_longitude",
+    variable_definition = harp_ingestion_register_variable_full_read(product_definition, "sensor_longitude",
                                                                      harp_type_double, 2, dimension_type, NULL,
                                                                      description, "degree_east", NULL,
-                                                                     read_instrument_longitude);
+                                                                     read_sensor_longitude);
     harp_variable_definition_set_valid_range_double(variable_definition, -180.0, 180.0);
     path = "/nl_geolocation[]/longit";
     harp_variable_definition_add_mapping(variable_definition, NULL, NULL, path, NULL);

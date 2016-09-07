@@ -203,8 +203,8 @@ aerosol_extinction_coefficient                surface                         X 
 aerosol_optical_depth                                                         X       X    X       X     this is equal to 'aerosol optical thickness'
 <aerosol_type>_aerosol_extinction_coefficient surface                         X       X    X       X
 <aerosol_type>_aerosol_optical_depth                                          X       X    X       X     this is equal to 'aerosol optical thickness'
-altitude                                      surface,                        X       X    X             altitude in HARP is with respect to the WGS84 reference ellipsoid
-                                              instrument
+altitude                                      sensor,                         X       X    X             altitude in HARP is with respect to the WGS84 reference ellipsoid
+                                              surface
 altitude_bounds                                                                       X    X
 cloud_fraction                                                                X            X
 cloud_optical_depth                                                           X            X             this is equal to 'cloud optical thickness'
@@ -229,10 +229,10 @@ frequency                                                                     X
 geopotential                                  surface                         X       X    X
 geopotential_height                           surface                         X       X    X
 index                                                                                                    zero-based index of the sample within the source product
-instrument_name                                                                                          used mainly for ground based networks to provide a unique instrument id
-latitude                                      instrument                      X            (lat)
+sensor_name                                                                                              used mainly for ground based networks to provide a unique sensor id
+latitude                                      sensor                          X            (lat)
 latitude_bounds                                                                            (lat)
-longitude                                     instrument                      X            (lon)
+longitude                                     sensor                          X            (lon)
 longitude_bounds                                                                           (lon)
 molar_mass                                                                    X       X    X             this is the molar mass of the total substance (it is defined by the
                                                                                                          relation between the variables 'density' and 'number_density')
@@ -251,13 +251,13 @@ sensor_azimuth_angle                                                          X
 sensor_elevation_angle                                                        X
 sensor_zenith_angle                                                           X
 site_name                                                                                                used for data of a specific named geographical location
-solar_azimuth_angle                           surface, toa,                   X
-                                              instrument,
-solar_elevation_angle                         surface, toa,                   X
-                                              instrument,
+solar_azimuth_angle                           sensor,                         X
+                                              surface, toa
+solar_elevation_angle                         sensor,                         X
+                                              surface, toa
 solar_irradiance                                                              X                    X
-solar_zenith_angle                            surface, toa,                   X
-                                              instrument,
+solar_zenith_angle                            sensor,                         X
+                                              surface, toa,
 sun_normalized_radiance                                                       X                    X
 surface_albedo                                                                X            X       X
 temperature                                   surface                         X       X    X

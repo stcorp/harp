@@ -3679,7 +3679,7 @@ static int add_axis_conversions(void)
         return -1;
     }
 
-    /* latitude from instrument latitude */
+    /* latitude from sensor latitude */
     for (i = 0; i < 2; i++)
     {
         if (harp_variable_conversion_new("latitude", harp_type_double, HARP_UNIT_LATITUDE, i, dimension_type, 0,
@@ -3687,8 +3687,8 @@ static int add_axis_conversions(void)
         {
             return -1;
         }
-        if (harp_variable_conversion_add_source(conversion, "instrument_latitude", harp_type_double,
-                                                HARP_UNIT_LATITUDE, i, dimension_type, 0) != 0)
+        if (harp_variable_conversion_add_source(conversion, "sensor_latitude", harp_type_double, HARP_UNIT_LATITUDE, i,
+                                                dimension_type, 0) != 0)
         {
             return -1;
         }
@@ -3734,7 +3734,7 @@ static int add_axis_conversions(void)
         return -1;
     }
 
-    /* longitude from instrument longitude */
+    /* longitude from sensor longitude */
     for (i = 0; i < 2; i++)
     {
         if (harp_variable_conversion_new("longitude", harp_type_double, HARP_UNIT_LONGITUDE, i, dimension_type, 0,
@@ -3742,8 +3742,8 @@ static int add_axis_conversions(void)
         {
             return -1;
         }
-        if (harp_variable_conversion_add_source(conversion, "instrument_longitude", harp_type_double,
-                                                HARP_UNIT_LONGITUDE, i, dimension_type, 0) != 0)
+        if (harp_variable_conversion_add_source(conversion, "sensor_longitude", harp_type_double, HARP_UNIT_LONGITUDE,
+                                                i, dimension_type, 0) != 0)
         {
             return -1;
         }
@@ -3777,7 +3777,7 @@ static int add_axis_conversions(void)
         return -1;
     }
 
-    /* altitude from instrument altitude */
+    /* altitude from sensor altitude */
     for (i = 0; i < 2; i++)
     {
         if (harp_variable_conversion_new("altitude", harp_type_double, HARP_UNIT_LENGTH, i, dimension_type, 0, get_copy,
@@ -3785,8 +3785,8 @@ static int add_axis_conversions(void)
         {
             return -1;
         }
-        if (harp_variable_conversion_add_source(conversion, "instrument_altitude", harp_type_double, HARP_UNIT_LENGTH,
-                                                i, dimension_type, 0) != 0)
+        if (harp_variable_conversion_add_source(conversion, "sensor_altitude", harp_type_double, HARP_UNIT_LENGTH, i,
+                                                dimension_type, 0) != 0)
         {
             return -1;
         }
@@ -4109,25 +4109,25 @@ static int add_misc_conversions(void)
         }
     }
 
-    /*** instrument_altitude ***/
+    /*** sensor_altitude ***/
 
-    if (add_time_indepedent_to_dependent_conversion("instrument_altitude", harp_type_double, HARP_UNIT_LENGTH, 1,
+    if (add_time_indepedent_to_dependent_conversion("sensor_altitude", harp_type_double, HARP_UNIT_LENGTH, 1,
                                                     dimension_type, 0) != 0)
     {
         return -1;
     }
 
-    /*** instrument_latitude ***/
+    /*** sensor_latitude ***/
 
-    if (add_time_indepedent_to_dependent_conversion("instrument_latitude", harp_type_double, HARP_UNIT_LATITUDE, 1,
+    if (add_time_indepedent_to_dependent_conversion("sensor_latitude", harp_type_double, HARP_UNIT_LATITUDE, 1,
                                                     dimension_type, 0) != 0)
     {
         return -1;
     }
 
-    /*** instrument_longitude ***/
+    /*** sensor_longitude ***/
 
-    if (add_time_indepedent_to_dependent_conversion("instrument_longitude", harp_type_double, HARP_UNIT_LONGITUDE, 1,
+    if (add_time_indepedent_to_dependent_conversion("sensor_longitude", harp_type_double, HARP_UNIT_LONGITUDE, 1,
                                                     dimension_type, 0) != 0)
     {
         return -1;

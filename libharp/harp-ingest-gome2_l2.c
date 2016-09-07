@@ -651,7 +651,7 @@ static int read_latitude_bounds(void *user_data, harp_array data)
     return 0;
 }
 
-static int read_solar_zenith_angle_instrument(void *user_data, harp_array data)
+static int read_solar_zenith_angle_sensor(void *user_data, harp_array data)
 {
     ingest_info *info = (ingest_info *)user_data;
 
@@ -1686,12 +1686,12 @@ static void register_common_variables(harp_product_definition *product_definitio
     description = "the corner coordinates are re-arranged in the order B-D-C-A";
     harp_variable_definition_add_mapping(variable_definition, NULL, NULL, path, description);
 
-    /* instrument_solar_zenith_angle */
-    description = "solar zenith angle at the instrument";
+    /* sensor_solar_zenith_angle */
+    description = "solar zenith angle at the sensor";
     variable_definition =
-        harp_ingestion_register_variable_full_read(product_definition, "instrument_solar_zenith_angle",
+        harp_ingestion_register_variable_full_read(product_definition, "sensor_solar_zenith_angle",
                                                    harp_type_double, 1, dimension_type, NULL, description, "degree",
-                                                   NULL, read_solar_zenith_angle_instrument);
+                                                   NULL, read_solar_zenith_angle_sensor);
     harp_variable_definition_set_valid_range_double(variable_definition, 0.0, 180.0);
     path = "/GEOLOCATION/SolarZenithAngleSatCentre[]";
     harp_variable_definition_add_mapping(variable_definition, NULL, NULL, path, NULL);

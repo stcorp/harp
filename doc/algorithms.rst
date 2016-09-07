@@ -707,14 +707,14 @@ latitude
       \phi = \frac{\phi^{B}(2) + \phi^{B}(1)}{2}
 
 
-#. latitude from instrument latitude
+#. latitude from sensor latitude
 
-   ==================== =================== ============ =========================
-   symbol               description         unit         variable name
-   ==================== =================== ============ =========================
-   :math:`\phi`         latitude            :math:`degN` `latitude {:}`
-   :math:`\phi_{instr}` instrument latitude :math:`degN` `instrument_latitude {:}`
-   ==================== =================== ============ =========================
+   ==================== ====================== ============ =========================
+   symbol               description            unit         variable name
+   ==================== ====================== ============ =========================
+   :math:`\phi`         latitude               :math:`degN` `latitude {:}`
+   :math:`\phi_{instr}` latitude of the sensor :math:`degN` `sensor_latitude {:}`
+   ==================== ====================== ============ =========================
 
    The pattern `:` for the dimensions can represent `{time}`, or no dimensions at all.
 
@@ -773,14 +773,14 @@ longitude
       \lambda = \frac{\lambda^{B}(2) + \lambda^{B}(1)}{2}
 
 
-#. longitude from instrument longitude
+#. longitude from sensor longitude
 
-   ======================= ==================== ============ ==========================
-   symbol                  description          unit         variable name
-   ======================= ==================== ============ ==========================
-   :math:`\lambda`         longitude            :math:`degE` `longitude {:}`
-   :math:`\lambda_{instr}` instrument longitude :math:`degE` `instrument_longitude {:}`
-   ======================= ==================== ============ ==========================
+   ======================= ======================= ============ ==========================
+   symbol                  description             unit         variable name
+   ======================= ======================= ============ ==========================
+   :math:`\lambda`         longitude               :math:`degE` `longitude {:}`
+   :math:`\lambda_{instr}` longitude of the sensor :math:`degE` `sensor_longitude {:}`
+   ======================= ======================= ============ ==========================
 
    The pattern `:` for the dimensions can represent `{time}`, or no dimensions at all.
 
@@ -1210,14 +1210,14 @@ altitude
       z = \frac{z^{B}(2) + z^{B}(1)}{2}
 
 
-#. altitude from instrument altitude
+#. altitude from sensor altitude
 
-   ================= =================== ========= =========================
-   symbol            description         unit      variable name
-   ================= =================== ========= =========================
-   :math:`z`         altitude            :math:`m` `altitude {:}`
-   :math:`z_{instr}` instrument altitude :math:`m` `instrument_altitude {:}`
-   ================= =================== ========= =========================
+   ================= ====================== ========= =====================
+   symbol            description            unit      variable name
+   ================= ====================== ========= =====================
+   :math:`z`         altitude               :math:`m` `altitude {:}`
+   :math:`z_{instr}` altitude of the sensor :math:`m` `sensor_altitude {:}`
+   ================= ====================== ========= =====================
 
    The pattern `:` for the dimensions can represent `{time}`, or no dimensions at all.
 

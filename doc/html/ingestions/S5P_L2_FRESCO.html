@@ -189,23 +189,23 @@
 <td>degree_north</td>
 <td>latitudes of the ground pixel corners (WGS84)</td>
 </tr>
-<tr class="row-even"><td><strong>instrument_longitude</strong></td>
+<tr class="row-even"><td><strong>sensor_longitude</strong></td>
 <td>float</td>
 <td>{<em>time</em>}</td>
 <td>degree_east</td>
-<td>longitude of the goedetic sub-instrument point (WGS84)</td>
+<td>longitude of the goedetic sub-satellite point (WGS84)</td>
 </tr>
-<tr class="row-odd"><td><strong>instrument_latitude</strong></td>
+<tr class="row-odd"><td><strong>sensor_latitude</strong></td>
 <td>float</td>
 <td>{<em>time</em>}</td>
 <td>degree_north</td>
-<td>latitude of the geodetic sub-instrument point (WGS84)</td>
+<td>latitude of the geodetic sub-satellite point (WGS84)</td>
 </tr>
-<tr class="row-even"><td><strong>instrument_altitude</strong></td>
+<tr class="row-even"><td><strong>sensor_altitude</strong></td>
 <td>float</td>
 <td>{<em>time</em>}</td>
 <td>m</td>
-<td>altitude of the instrument with respect to the geodetic sub-instrument point (WGS84)</td>
+<td>altitude of the satellite with respect to the geodetic sub-satellite point (WGS84)</td>
 </tr>
 <tr class="row-odd"><td><strong>solar_zenith_angle</strong></td>
 <td>float</td>
@@ -219,17 +219,17 @@
 <td>degree</td>
 <td>azimuth angle of the Sun at the ground pixel location (WGS84); angle measured East-of-North</td>
 </tr>
-<tr class="row-odd"><td><strong>viewing_zenith_angle</strong></td>
+<tr class="row-odd"><td><strong>sensor_zenith_angle</strong></td>
 <td>float</td>
 <td>{<em>time</em>}</td>
 <td>degree</td>
-<td>zenith angle of the instrument at the ground pixel location (WGS84); angle measured away from the vertical</td>
+<td>zenith angle of the satellite at the ground pixel location (WGS84); angle measured away from the vertical</td>
 </tr>
-<tr class="row-even"><td><strong>viewing_azimuth_angle</strong></td>
+<tr class="row-even"><td><strong>sensor_azimuth_angle</strong></td>
 <td>float</td>
 <td>{<em>time</em>}</td>
 <td>degree</td>
-<td>azimuth angle of the instrument at the ground pixel location (WGS84); angle measured East-of-North</td>
+<td>azimuth angle of the satellite at the ground pixel location (WGS84); angle measured East-of-North</td>
 </tr>
 <tr class="row-odd"><td><strong>cloud_fraction</strong></td>
 <td>float</td>
@@ -330,21 +330,21 @@
 <td><em>path</em></td>
 <td><strong>/PRODUCT/SUPPORT_DATA/GEOLOCATIONS/latitude_bounds[]</strong></td>
 </tr>
-<tr class="row-odd"><td rowspan="2"><strong>instrument_longitude</strong></td>
+<tr class="row-odd"><td rowspan="2"><strong>sensor_longitude</strong></td>
 <td><em>path</em></td>
 <td><strong>/PRODUCT/SUPPORT_DATA/GEOLOCATIONS/satellite_longitude[]</strong></td>
 </tr>
 <tr class="row-even"><td><em>description</em></td>
 <td>the satellite longitude associated with a scanline is repeated for each pixel in the scanline</td>
 </tr>
-<tr class="row-odd"><td rowspan="2"><strong>instrument_latitude</strong></td>
+<tr class="row-odd"><td rowspan="2"><strong>sensor_latitude</strong></td>
 <td><em>path</em></td>
 <td><strong>/PRODUCT/SUPPORT_DATA/GEOLOCATIONS/satellite_latitude[]</strong></td>
 </tr>
 <tr class="row-even"><td><em>description</em></td>
 <td>the satellite latitude associated with a scanline is repeated for each pixel in the scanline</td>
 </tr>
-<tr class="row-odd"><td rowspan="2"><strong>instrument_altitude</strong></td>
+<tr class="row-odd"><td rowspan="2"><strong>sensor_altitude</strong></td>
 <td><em>path</em></td>
 <td><strong>/PRODUCT/SUPPORT_DATA/GEOLOCATIONS/satellite_altitude[]</strong></td>
 </tr>
@@ -359,11 +359,11 @@
 <td><em>path</em></td>
 <td><strong>/PRODUCT/SUPPORT_DATA/GEOLOCATIONS/solar_azimuth_angle[]</strong></td>
 </tr>
-<tr class="row-odd"><td><strong>viewing_zenith_angle</strong></td>
+<tr class="row-odd"><td><strong>sensor_zenith_angle</strong></td>
 <td><em>path</em></td>
 <td><strong>/PRODUCT/SUPPORT_DATA/GEOLOCATIONS/viewing_zenith_angle[]</strong></td>
 </tr>
-<tr class="row-even"><td><strong>viewing_azimuth_angle</strong></td>
+<tr class="row-even"><td><strong>sensor_azimuth_angle</strong></td>
 <td><em>path</em></td>
 <td><strong>/PRODUCT/SUPPORT_DATA/GEOLOCATIONS/viewing_azimuth_angle[]</strong></td>
 </tr>

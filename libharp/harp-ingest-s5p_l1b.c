@@ -635,7 +635,7 @@ static int read_latitude_bounds(void *user_data, harp_array data)
     return read_dataset(info->geo_data_cursor, "latitude_bounds", info->num_scanlines * info->num_pixels * 4, data);
 }
 
-static int read_instrument_longitude(void *user_data, harp_array data)
+static int read_sensor_longitude(void *user_data, harp_array data)
 {
     ingest_info *info = (ingest_info *)user_data;
 
@@ -649,7 +649,7 @@ static int read_instrument_longitude(void *user_data, harp_array data)
     return 0;
 }
 
-static int read_instrument_latitude(void *user_data, harp_array data)
+static int read_sensor_latitude(void *user_data, harp_array data)
 {
     ingest_info *info = (ingest_info *)user_data;
 
@@ -663,7 +663,7 @@ static int read_instrument_latitude(void *user_data, harp_array data)
     return 0;
 }
 
-static int read_instrument_altitude(void *user_data, harp_array data)
+static int read_sensor_altitude(void *user_data, harp_array data)
 {
     ingest_info *info = (ingest_info *)user_data;
 
@@ -969,30 +969,30 @@ static void register_radiance_product_variables(harp_product_definition *product
     snprintf(path, MAX_PATH_LENGTH, "/%s/STANDARD_MODE/GEODATA/longitude_bounds[]", product_group_name);
     harp_variable_definition_add_mapping(variable_definition, NULL, NULL, path, NULL);
 
-    description = "latitude of the sub-instrument point (WGS84)";
-    variable_definition = harp_ingestion_register_variable_full_read(product_definition, "instrument_latitude",
+    description = "latitude of the sub-satellite point (WGS84)";
+    variable_definition = harp_ingestion_register_variable_full_read(product_definition, "sensor_latitude",
                                                                      harp_type_float, 1, dimension_type, NULL,
                                                                      description, "degree_north", NULL,
-                                                                     read_instrument_latitude);
+                                                                     read_sensor_latitude);
     harp_variable_definition_set_valid_range_float(variable_definition, -90.0f, 90.0f);
     snprintf(path, MAX_PATH_LENGTH, "/%s/STANDARD_MODE/GEODATA/satellite_latitude[]", product_group_name);
     description = "the satellite latitude associated with a scanline is repeated for each pixel in the scanline";
     harp_variable_definition_add_mapping(variable_definition, NULL, NULL, path, description);
 
-    description = "longitude of the sub-instrument point (WGS84)";
-    variable_definition = harp_ingestion_register_variable_full_read(product_definition, "instrument_longitude",
+    description = "longitude of the sub-satellite point (WGS84)";
+    variable_definition = harp_ingestion_register_variable_full_read(product_definition, "sensor_longitude",
                                                                      harp_type_float, 1, dimension_type, NULL,
                                                                      description, "degree_east", NULL,
-                                                                     read_instrument_longitude);
+                                                                     read_sensor_longitude);
     harp_variable_definition_set_valid_range_float(variable_definition, -180.0f, 180.0f);
     snprintf(path, MAX_PATH_LENGTH, "/%s/STANDARD_MODE/GEODATA/satellite_longitude[]", product_group_name);
     description = "the satellite longitude associated with a scanline is repeated for each pixel in the scanline";
     harp_variable_definition_add_mapping(variable_definition, NULL, NULL, path, description);
 
-    description = "altitude of the instrument (WGS84)";
-    variable_definition = harp_ingestion_register_variable_full_read(product_definition, "instrument_altitude",
+    description = "altitude of the satellite (WGS84)";
+    variable_definition = harp_ingestion_register_variable_full_read(product_definition, "sensor_altitude",
                                                                      harp_type_float, 1, dimension_type, NULL,
-                                                                     description, "m", NULL, read_instrument_altitude);
+                                                                     description, "m", NULL, read_sensor_altitude);
     snprintf(path, MAX_PATH_LENGTH, "/%s/STANDARD_MODE/GEODATA/satellite_altitude[]", product_group_name);
     description = "the satellite altitude associated with a scanline is repeated for each pixel in the scanline";
     harp_variable_definition_add_mapping(variable_definition, NULL, NULL, path, description);
@@ -1016,8 +1016,8 @@ static void register_radiance_product_variables(harp_product_definition *product
     snprintf(path, MAX_PATH_LENGTH, "/%s/STANDARD_MODE/GEODATA/solar_azimuth_angle[]", product_group_name);
     harp_variable_definition_add_mapping(variable_definition, NULL, NULL, path, NULL);
 
-    description = "zenith angle of the instrument at the ground pixel location (WGS84)";
-    variable_definition = harp_ingestion_register_variable_full_read(product_definition, "viewing_zenith_angle",
+    description = "zenith angle of the satellite at the ground pixel location (WGS84)";
+    variable_definition = harp_ingestion_register_variable_full_read(product_definition, "sensor_zenith_angle",
                                                                      harp_type_float, 1, dimension_type, NULL,
                                                                      description, "degree", NULL,
                                                                      read_viewing_zenith_angle);
@@ -1025,8 +1025,8 @@ static void register_radiance_product_variables(harp_product_definition *product
     snprintf(path, MAX_PATH_LENGTH, "/%s/STANDARD_MODE/GEODATA/viewing_zenith_angle[]", product_group_name);
     harp_variable_definition_add_mapping(variable_definition, NULL, NULL, path, NULL);
 
-    description = "azimuth angle of the instrument at the ground pixel location (WGS84), measured East-of-North";
-    variable_definition = harp_ingestion_register_variable_full_read(product_definition, "viewing_azimuth_angle",
+    description = "azimuth angle of the satellite at the ground pixel location (WGS84), measured East-of-North";
+    variable_definition = harp_ingestion_register_variable_full_read(product_definition, "sensor_azimuth_angle",
                                                                      harp_type_float, 1, dimension_type, NULL,
                                                                      description, "degree", NULL,
                                                                      read_viewing_azimuth_angle);
