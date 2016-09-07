@@ -201,6 +201,18 @@
 <td>Pa</td>
 <td>pressure at the surface</td>
 </tr>
+<tr class="row-even"><td><strong>pressure</strong></td>
+<td>float</td>
+<td>{<em>latitude</em>, <em>longitude</em>, <em>vertical</em>}</td>
+<td>Pa</td>
+<td>pressure</td>
+</tr>
+<tr class="row-odd"><td><strong>pressure_bounds</strong></td>
+<td>float</td>
+<td>{<em>latitude</em>, <em>longitude</em>, <em>vertical</em>, 2}</td>
+<td>Pa</td>
+<td>pressure_bounds</td>
+</tr>
 <tr class="row-even"><td><strong>CH4_mass_mixing_ratio</strong></td>
 <td>float</td>
 <td>{<em>latitude</em>, <em>longitude</em>, <em>vertical</em>}</td>
@@ -425,9 +437,9 @@
 <p>The table below details where and how each variable was retrieved from the input product.</p>
 <table border="1" class="docutils">
 <colgroup>
-<col width="20%" />
-<col width="7%" />
-<col width="73%" />
+<col width="18%" />
+<col width="6%" />
+<col width="76%" />
 </colgroup>
 <thead valign="bottom">
 <tr class="row-odd"><th class="head">field name</th>
@@ -589,6 +601,26 @@
 </tr>
 <tr class="row-even"><td><em>description</em></td>
 <td>(discipline,category,number) = (0,3,25); returned value = exp(lnsp)</td>
+</tr>
+<tr class="row-odd"><td rowspan="3"><strong>pressure</strong></td>
+<td><em>available</em></td>
+<td>optional</td>
+</tr>
+<tr class="row-even"><td><em>path</em></td>
+<td><strong>..../coordinateValues[]</strong></td>
+</tr>
+<tr class="row-odd"><td><em>description</em></td>
+<td>the coordinateValues contain [a(1), ..., a(N+1), b(1), ..., b(N+1)] coefficients for the N+1 vertical layer boundaries; p(N-i) = (a(i) + a(i+1) + (b(i) + b(i+1))lnsp)/2</td>
+</tr>
+<tr class="row-even"><td rowspan="3"><strong>pressure_bounds</strong></td>
+<td><em>available</em></td>
+<td>optional</td>
+</tr>
+<tr class="row-odd"><td><em>path</em></td>
+<td><strong>..../coordinateValues[]</strong></td>
+</tr>
+<tr class="row-even"><td><em>description</em></td>
+<td>the coordinateValues contain [a(1), ..., a(N+1), b(1), ..., b(N+1)] coefficients for the N+1 vertical layer boundaries; p(N-i,1) = a(i) + b(i)lnsp; p(N-i,2) = a(i+1) + b(i+1)lnsp</td>
 </tr>
 <tr class="row-odd"><td rowspan="7"><strong>CH4_mass_mixing_ratio</strong></td>
 <td><em>available</em></td>

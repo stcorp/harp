@@ -793,6 +793,58 @@ static int read_lnsp(void *user_data, harp_array data)
     return 0;
 }
 
+static int read_pressure(void *user_data, harp_array data)
+{
+    ingest_info *info = (ingest_info *)user_data;
+    double *ap = info->coordinate_values;
+    double *bp = &info->coordinate_values[info->num_levels + 1];
+    long i, k;
+
+    if (read_lnsp(user_data, data) != 0)
+    {
+        return -1;
+    }
+
+    for (k = info->num_latitudes * info->num_longitudes - 1; k >= 0; k--)
+    {
+        double surface_pressure = data.float_data[k];
+
+        for (i = 0; i < info->num_levels; i++)
+        {
+            data.float_data[((k + 1) * info->num_levels - 1 - i)] =
+                0.5 * (ap[i] + ap[i + 1] + (bp[i] + bp[i + 1]) * surface_pressure);
+        }
+    }
+
+    return 0;
+}
+
+static int read_pressure_bounds(void *user_data, harp_array data)
+{
+    ingest_info *info = (ingest_info *)user_data;
+    double *ap = info->coordinate_values;
+    double *bp = &info->coordinate_values[info->num_levels + 1];
+    long i, k;
+
+    if (read_lnsp(user_data, data) != 0)
+    {
+        return -1;
+    }
+
+    for (k = info->num_latitudes * info->num_longitudes - 1; k >= 0; k--)
+    {
+        double surface_pressure = data.float_data[k];
+
+        for (i = 0; i < info->num_levels; i++)
+        {
+            data.float_data[2 * ((k + 1) * info->num_levels - 1 - i)] = ap[i + 1] + bp[i + 1] * surface_pressure;
+            data.float_data[2 * ((k + 1) * info->num_levels - 1 - i) + 1] = ap[i] + bp[i] * surface_pressure;
+        }
+    }
+
+    return 0;
+}
+
 static int read_ch4(void *user_data, harp_array data)
 {
     return read_3d_grid_data((ingest_info *)user_data, grib_param_ch4, data);
@@ -2445,6 +2497,12 @@ int exclude_lnsp(void *user_data)
     return !((ingest_info *)user_data)->has_parameter[grib_param_lnsp];
 }
 
+int exclude_pressure(void *user_data)
+{
+    ingest_info *info = (ingest_info *)user_data;
+    return !info->has_parameter[grib_param_lnsp] || info->coordinate_values == NULL;
+}
+
 int exclude_lsm(void *user_data)
 {
     return !((ingest_info *)user_data)->has_parameter[grib_param_lsm];
@@ -2657,8 +2715,10 @@ static void add_value_variable_mapping(harp_variable_definition *variable_defini
 
 int harp_ingestion_module_ecmwf_grib_init(void)
 {
-    harp_dimension_type dimension_type[4] =
-        { harp_dimension_time, harp_dimension_latitude, harp_dimension_longitude, harp_dimension_vertical };
+    harp_dimension_type dimension_type[5] =
+        { harp_dimension_time, harp_dimension_latitude, harp_dimension_longitude, harp_dimension_vertical,
+          harp_dimension_independent };
+    long bounds_dimension[5] = { -1, -1, -1, -1, 2 };
     harp_ingestion_module *module;
     harp_product_definition *product_definition;
     harp_variable_definition *variable_definition;
@@ -2763,6 +2823,26 @@ int harp_ingestion_module_ecmwf_grib_init(void)
     add_value_variable_mapping(variable_definition,
                                "(table,indicator) = (128,152) or (190,152); returned value = exp(lnsp)",
                                "(discipline,category,number) = (0,3,25); returned value = exp(lnsp)");
+
+    /* pressure */
+    description = "pressure";
+    variable_definition = harp_ingestion_register_variable_full_read(product_definition, "pressure",
+                                                                     harp_type_float, 3, &dimension_type[1], NULL,
+                                                                     description, "Pa", exclude_pressure,
+                                                                     read_pressure);
+    description = "the coordinateValues contain [a(1), ..., a(N+1), b(1), ..., b(N+1)] coefficients for the N+1 "
+        "vertical layer boundaries; p(N-i) = (a(i) + a(i+1) + (b(i) + b(i+1))lnsp)/2";
+    harp_variable_definition_add_mapping(variable_definition, NULL, NULL, "..../coordinateValues[]", description);
+
+    /* pressure_bounds */
+    description = "pressure_bounds";
+    variable_definition = harp_ingestion_register_variable_full_read(product_definition, "pressure_bounds",
+                                                                     harp_type_float, 4, &dimension_type[1],
+                                                                     &bounds_dimension[1], description, "Pa",
+                                                                     exclude_pressure, read_pressure_bounds);
+    description = "the coordinateValues contain [a(1), ..., a(N+1), b(1), ..., b(N+1)] coefficients for the N+1 "
+        "vertical layer boundaries; p(N-i,1) = a(i) + b(i)lnsp; p(N-i,2) = a(i+1) + b(i+1)lnsp";
+    harp_variable_definition_add_mapping(variable_definition, NULL, NULL, "..../coordinateValues[]", description);
 
     /* ch4: CH4_mass_mixing_ratio */
     description = "methane mass mixing ratio";
