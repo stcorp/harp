@@ -2644,6 +2644,122 @@ or no dimensions at all.</p>
 <div class="math">
 \[z = z_{instr}\]</div>
 </li>
+<li><p class="first">altitude from pressure</p>
+<table border="1" class="docutils">
+<colgroup>
+<col width="17%" />
+<col width="27%" />
+<col width="31%" />
+<col width="25%" />
+</colgroup>
+<thead valign="bottom">
+<tr class="row-odd"><th class="head">symbol</th>
+<th class="head">description</th>
+<th class="head">unit</th>
+<th class="head">variable name</th>
+</tr>
+</thead>
+<tbody valign="top">
+<tr class="row-even"><td><span class="math">\(a\)</span></td>
+<td>WGS84 semi-major axis</td>
+<td><span class="math">\(m\)</span></td>
+<td>&nbsp;</td>
+</tr>
+<tr class="row-odd"><td><span class="math">\(b\)</span></td>
+<td>WGS84 semi-minor axis</td>
+<td><span class="math">\(m\)</span></td>
+<td>&nbsp;</td>
+</tr>
+<tr class="row-even"><td><span class="math">\(f\)</span></td>
+<td>WGS84 flattening</td>
+<td><span class="math">\(m\)</span></td>
+<td>&nbsp;</td>
+</tr>
+<tr class="row-odd"><td><span class="math">\(g\)</span></td>
+<td>gravity</td>
+<td><span class="math">\(\frac{m}{s^2}\)</span></td>
+<td>&nbsp;</td>
+</tr>
+<tr class="row-even"><td><span class="math">\(g_{0}\)</span></td>
+<td>mean earth gravity</td>
+<td><span class="math">\(\frac{m}{s^2}\)</span></td>
+<td>&nbsp;</td>
+</tr>
+<tr class="row-odd"><td><span class="math">\(g_{surf}\)</span></td>
+<td>gravity at surface</td>
+<td><span class="math">\(\frac{m}{s^2}\)</span></td>
+<td>&nbsp;</td>
+</tr>
+<tr class="row-even"><td><span class="math">\(GM\)</span></td>
+<td>WGS84 earth&#8217;s gravitational
+constant</td>
+<td><span class="math">\(\frac{m^3}{s^2}\)</span></td>
+<td>&nbsp;</td>
+</tr>
+<tr class="row-odd"><td><span class="math">\(M_{air}(i)\)</span></td>
+<td>molar mass of total air</td>
+<td><span class="math">\(\frac{g}{mol}\)</span></td>
+<td><cite>molar_mass {:,vertical}</cite></td>
+</tr>
+<tr class="row-even"><td><span class="math">\(p(i)\)</span></td>
+<td>pressure</td>
+<td><span class="math">\(hPa\)</span></td>
+<td><cite>pressure {:,vertical}</cite></td>
+</tr>
+<tr class="row-odd"><td><span class="math">\(p_{surf}\)</span></td>
+<td>surface pressure</td>
+<td><span class="math">\(hPa\)</span></td>
+<td><cite>surface_pressure {:}</cite></td>
+</tr>
+<tr class="row-even"><td><span class="math">\(R\)</span></td>
+<td>universal gas constant</td>
+<td><span class="math">\(\frac{kg m^2}{K mol s^2}\)</span></td>
+<td>&nbsp;</td>
+</tr>
+<tr class="row-odd"><td><span class="math">\(T(i)\)</span></td>
+<td>temperature</td>
+<td><span class="math">\(K\)</span></td>
+<td><cite>temperature {:,vertical}</cite></td>
+</tr>
+<tr class="row-even"><td><span class="math">\(z(i)\)</span></td>
+<td>altitude</td>
+<td><span class="math">\(m\)</span></td>
+<td><cite>altitude {:,vertical}</cite></td>
+</tr>
+<tr class="row-odd"><td><span class="math">\(z_{surf}\)</span></td>
+<td>surface height</td>
+<td><span class="math">\(m\)</span></td>
+<td><cite>surface_altitude {:}</cite></td>
+</tr>
+<tr class="row-even"><td><span class="math">\(\phi\)</span></td>
+<td>latitude</td>
+<td><span class="math">\(degN\)</span></td>
+<td><cite>latitude {:}</cite></td>
+</tr>
+<tr class="row-odd"><td><span class="math">\(\omega\)</span></td>
+<td>WGS84 earth angular velocity</td>
+<td><span class="math">\(rad/s\)</span></td>
+<td>&nbsp;</td>
+</tr>
+</tbody>
+</table>
+<p>The pattern <cite>:</cite> for the dimensions can represent <cite>{latitude,longitude}</cite>, <cite>{time}</cite>, <cite>{time,latitude,longitude}</cite>,
+or no dimensions at all.</p>
+<p>The surface pressure <span class="math">\(p_{surf}\)</span> and surface height <span class="math">\(z_{surf}\)</span> need to use the same definition of &#8216;surface&#8217;.</p>
+<p>The pressures <span class="math">\(p(i)\)</span> are expected to be at higher levels than the surface pressure (i.e. lower values).
+This should normally be the case since even for pressure grids that start at the surface, <span class="math">\(p_{surf}\)</span> should
+equal the lower pressure boundary <span class="math">\(p^{B}(1,1)\)</span>, whereas <span class="math">\(p(1)\)</span> should then be between <span class="math">\(p^{B}(1,1)\)</span>
+and <span class="math">\(p^{B}(1,2)\)</span> (which is generally not equal to <span class="math">\(p^{B}(1,1)\)</span>).</p>
+<div class="math">
+\begin{eqnarray}
+   g_{surf} &amp; = &amp; 9.7803253359 \frac{1 + 0.00193185265241{\sin}^2(\frac{\pi}{180}\phi)}
+      {1 - 0.00669437999013 {\sin}^2(\frac{\pi}{180}\phi)} \\
+   m &amp; = &amp; \frac{\omega^2a^2b}{GM} \\
+   g(1) &amp; = &amp; g_{surf} \left(1 - \frac{2}{a}\left(1+f+m-2f{\sin}^2(\frac{\pi}{180}\phi)\right)z_{surf} + \frac{3}{a^2}z_{surf}^2\right) \\
+   g(i) &amp; = &amp; g_{surf} \left(1 - \frac{2}{a}\left(1+f+m-2f{\sin}^2(\frac{\pi}{180}\phi)\right)z(i-1) + \frac{3}{a^2}z(i-1)^2\right), 1 &lt; i \leq N \\
+   z(1) &amp; = &amp; z_{surf} + \frac{T(1)}{M_{air}(1)}\frac{R}{g(1)}\ln\left(\frac{p_{surf}}{p(i)}\right) \\
+   z(i) &amp; = &amp; z(i-1) + \frac{T(i-1)+T(i)}{M_{air}(i-1)+M_{air}(i)}\frac{R}{g(i)}\ln\left(\frac{p(i-1)}{p(i)}\right), 1 &lt; i \leq N
+\end{eqnarray}</div></li>
 </ol>
 </div>
 <div class="section" id="altitude-bounds">
@@ -3611,6 +3727,76 @@ or no dimensions at all.</p>
    R_{surf} &amp; = &amp; \frac{1}{\sqrt{\left(\frac{\cos(\frac{\pi}{180}\phi)}{6356752.0}\right)^2 +
       \left(\frac{\sin(\frac{\pi}{180}\phi)}{6378137.0}\right)^2}} \\
    z_{g} &amp; = &amp; \frac{g_{surf}}{g_{0}}\frac{R_{surf}z}{z + R_{surf}}
+\end{eqnarray}</div></li>
+<li><p class="first">geopotential height from pressure</p>
+<table border="1" class="docutils">
+<colgroup>
+<col width="16%" />
+<col width="25%" />
+<col width="29%" />
+<col width="30%" />
+</colgroup>
+<thead valign="bottom">
+<tr class="row-odd"><th class="head">symbol</th>
+<th class="head">description</th>
+<th class="head">unit</th>
+<th class="head">variable name</th>
+</tr>
+</thead>
+<tbody valign="top">
+<tr class="row-even"><td><span class="math">\(g_{0}\)</span></td>
+<td>mean earth gravity</td>
+<td><span class="math">\(\frac{m}{s^2}\)</span></td>
+<td>&nbsp;</td>
+</tr>
+<tr class="row-odd"><td><span class="math">\(M_{air}(i)\)</span></td>
+<td>molar mass of total air</td>
+<td><span class="math">\(\frac{g}{mol}\)</span></td>
+<td><cite>molar_mass {:,vertical}</cite></td>
+</tr>
+<tr class="row-even"><td><span class="math">\(p(i)\)</span></td>
+<td>pressure</td>
+<td><span class="math">\(hPa\)</span></td>
+<td><cite>pressure {:,vertical}</cite></td>
+</tr>
+<tr class="row-odd"><td><span class="math">\(p_{surf}\)</span></td>
+<td>surface pressure</td>
+<td><span class="math">\(hPa\)</span></td>
+<td><cite>surface_pressure {:}</cite></td>
+</tr>
+<tr class="row-even"><td><span class="math">\(R\)</span></td>
+<td>universal gas constant</td>
+<td><span class="math">\(\frac{kg m^2}{K mol s^2}\)</span></td>
+<td>&nbsp;</td>
+</tr>
+<tr class="row-odd"><td><span class="math">\(T(i)\)</span></td>
+<td>temperature</td>
+<td><span class="math">\(K\)</span></td>
+<td><cite>temperature {:,vertical}</cite></td>
+</tr>
+<tr class="row-even"><td><span class="math">\(z_{g}(i)\)</span></td>
+<td>geopotential height</td>
+<td><span class="math">\(m\)</span></td>
+<td><cite>geopotential_height {:,vertical}</cite></td>
+</tr>
+<tr class="row-odd"><td><span class="math">\(z_{g,surf}\)</span></td>
+<td>surface geopotential height</td>
+<td><span class="math">\(m\)</span></td>
+<td><cite>surface_geopotential_height {:}</cite></td>
+</tr>
+</tbody>
+</table>
+<p>The pattern <cite>:</cite> for the dimensions can represent <cite>{latitude,longitude}</cite>, <cite>{time}</cite>, <cite>{time,latitude,longitude}</cite>,
+or no dimensions at all.</p>
+<p>The surface pressure <span class="math">\(p_{surf}\)</span> and surface height <span class="math">\(z_{g,surf}\)</span> need to use the same definition of &#8216;surface&#8217;.</p>
+<p>The pressures <span class="math">\(p(i)\)</span> are expected to be at higher levels than the surface pressure (i.e. lower values).
+This should normally be the case since even for pressure grids that start at the surface, <span class="math">\(p_{surf}\)</span> should
+equal the lower pressure boundary <span class="math">\(p^{B}(1,1)\)</span>, whereas <span class="math">\(p(1)\)</span> should then be between <span class="math">\(p^{B}(1,1)\)</span>
+and <span class="math">\(p^{B}(1,2)\)</span> (which is generally not equal to <span class="math">\(p^{B}(1,1)\)</span>).</p>
+<div class="math">
+\begin{eqnarray}
+   z_{g}(1) &amp; = &amp; z_{g,surf} + \frac{T(1)}{M_{air}(1)}\frac{R}{g_{0}}\ln\left(\frac{p_{surf}}{p(i)}\right) \\
+   z_{g}(i) &amp; = &amp; z_{g}(i-1) + \frac{T(i-1)+T(i)}{M_{air}(i-1)+M_{air}(i)}\frac{R}{g_{0}}\ln\left(\frac{p(i-1)}{p(i)}\right), 1 &lt; i \leq N
 \end{eqnarray}</div></li>
 </ol>
 </div>

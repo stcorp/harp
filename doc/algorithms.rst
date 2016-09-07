@@ -1226,6 +1226,54 @@ altitude
       z = z_{instr}
 
 
+#. altitude from pressure
+
+   ================== ============================ ================================ ==========================
+   symbol             description                  unit                             variable name
+   ================== ============================ ================================ ==========================
+   :math:`a`          WGS84 semi-major axis        :math:`m`
+   :math:`b`          WGS84 semi-minor axis        :math:`m`
+   :math:`f`          WGS84 flattening             :math:`m`
+   :math:`g`          gravity                      :math:`\frac{m}{s^2}`
+   :math:`g_{0}`      mean earth gravity           :math:`\frac{m}{s^2}`
+   :math:`g_{surf}`   gravity at surface           :math:`\frac{m}{s^2}`
+   :math:`GM`         WGS84 earth's gravitational  :math:`\frac{m^3}{s^2}`
+                      constant
+   :math:`M_{air}(i)` molar mass of total air      :math:`\frac{g}{mol}`            `molar_mass {:,vertical}`
+   :math:`p(i)`       pressure                     :math:`hPa`                      `pressure {:,vertical}`
+   :math:`p_{surf}`   surface pressure             :math:`hPa`                      `surface_pressure {:}`
+   :math:`R`          universal gas constant       :math:`\frac{kg m^2}{K mol s^2}`
+   :math:`T(i)`       temperature                  :math:`K`                        `temperature {:,vertical}`
+   :math:`z(i)`       altitude                     :math:`m`                        `altitude {:,vertical}`
+   :math:`z_{surf}`   surface height               :math:`m`                        `surface_altitude {:}`
+   :math:`\phi`       latitude                     :math:`degN`                     `latitude {:}`
+   :math:`\omega`     WGS84 earth angular velocity :math:`rad/s`
+   ================== ============================ ================================ ==========================
+
+   The pattern `:` for the dimensions can represent `{latitude,longitude}`, `{time}`, `{time,latitude,longitude}`,
+   or no dimensions at all.
+
+   The surface pressure :math:`p_{surf}` and surface height :math:`z_{surf}` need to use the same definition of 'surface'.
+
+   The pressures :math:`p(i)` are expected to be at higher levels than the surface pressure (i.e. lower values).
+   This should normally be the case since even for pressure grids that start at the surface, :math:`p_{surf}` should
+   equal the lower pressure boundary :math:`p^{B}(1,1)`, whereas :math:`p(1)` should then be between :math:`p^{B}(1,1)`
+   and :math:`p^{B}(1,2)` (which is generally not equal to :math:`p^{B}(1,1)`).
+   
+   .. math::
+      :nowrap:
+
+      \begin{eqnarray}
+         g_{surf} & = & 9.7803253359 \frac{1 + 0.00193185265241{\sin}^2(\frac{\pi}{180}\phi)}
+            {1 - 0.00669437999013 {\sin}^2(\frac{\pi}{180}\phi)} \\
+         m & = & \frac{\omega^2a^2b}{GM} \\
+         g(1) & = & g_{surf} \left(1 - \frac{2}{a}\left(1+f+m-2f{\sin}^2(\frac{\pi}{180}\phi)\right)z_{surf} + \frac{3}{a^2}z_{surf}^2\right) \\
+         g(i) & = & g_{surf} \left(1 - \frac{2}{a}\left(1+f+m-2f{\sin}^2(\frac{\pi}{180}\phi)\right)z(i-1) + \frac{3}{a^2}z(i-1)^2\right), 1 < i \leq N \\
+         z(1) & = & z_{surf} + \frac{T(1)}{M_{air}(1)}\frac{R}{g(1)}\ln\left(\frac{p_{surf}}{p(i)}\right) \\
+         z(i) & = & z(i-1) + \frac{T(i-1)+T(i)}{M_{air}(i-1)+M_{air}(i)}\frac{R}{g(i)}\ln\left(\frac{p(i-1)}{p(i)}\right), 1 < i \leq N
+      \end{eqnarray}
+
+
 altitude bounds
 ~~~~~~~~~~~~~~~
 
@@ -1697,6 +1745,40 @@ geopotential height
          R_{surf} & = & \frac{1}{\sqrt{\left(\frac{\cos(\frac{\pi}{180}\phi)}{6356752.0}\right)^2 +
             \left(\frac{\sin(\frac{\pi}{180}\phi)}{6378137.0}\right)^2}} \\
          z_{g} & = & \frac{g_{surf}}{g_{0}}\frac{R_{surf}z}{z + R_{surf}}
+      \end{eqnarray}
+
+
+#. geopotential height from pressure
+
+   ================== ============================ ================================ ==================================
+   symbol             description                  unit                             variable name
+   ================== ============================ ================================ ==================================
+   :math:`g_{0}`      mean earth gravity           :math:`\frac{m}{s^2}`
+   :math:`M_{air}(i)` molar mass of total air      :math:`\frac{g}{mol}`            `molar_mass {:,vertical}`
+   :math:`p(i)`       pressure                     :math:`hPa`                      `pressure {:,vertical}`
+   :math:`p_{surf}`   surface pressure             :math:`hPa`                      `surface_pressure {:}`
+   :math:`R`          universal gas constant       :math:`\frac{kg m^2}{K mol s^2}`
+   :math:`T(i)`       temperature                  :math:`K`                        `temperature {:,vertical}`
+   :math:`z_{g}(i)`   geopotential height          :math:`m`                        `geopotential_height {:,vertical}`
+   :math:`z_{g,surf}` surface geopotential height  :math:`m`                        `surface_geopotential_height {:}`
+   ================== ============================ ================================ ==================================
+
+   The pattern `:` for the dimensions can represent `{latitude,longitude}`, `{time}`, `{time,latitude,longitude}`,
+   or no dimensions at all.
+
+   The surface pressure :math:`p_{surf}` and surface height :math:`z_{g,surf}` need to use the same definition of 'surface'.
+
+   The pressures :math:`p(i)` are expected to be at higher levels than the surface pressure (i.e. lower values).
+   This should normally be the case since even for pressure grids that start at the surface, :math:`p_{surf}` should
+   equal the lower pressure boundary :math:`p^{B}(1,1)`, whereas :math:`p(1)` should then be between :math:`p^{B}(1,1)`
+   and :math:`p^{B}(1,2)` (which is generally not equal to :math:`p^{B}(1,1)`).
+   
+   .. math::
+      :nowrap:
+
+      \begin{eqnarray}
+         z_{g}(1) & = & z_{g,surf} + \frac{T(1)}{M_{air}(1)}\frac{R}{g_{0}}\ln\left(\frac{p_{surf}}{p(i)}\right) \\
+         z_{g}(i) & = & z_{g}(i-1) + \frac{T(i-1)+T(i)}{M_{air}(i-1)+M_{air}(i)}\frac{R}{g_{0}}\ln\left(\frac{p(i-1)}{p(i)}\right), 1 < i \leq N
       \end{eqnarray}
 
 
