@@ -2560,9 +2560,9 @@ int harp_ingestion_module_ecmwf_grib_init(void)
     const char *description;
     const char *path;
 
-    module =
-        harp_ingestion_register_module_coda("ECMWF_GRIB", "ECMWF GRIB", NULL, NULL, "ECMWF model data in GRIB format",
-                                            verify_product_type, ingestion_init, ingestion_done);
+    module = harp_ingestion_register_module_coda("ECMWF_GRIB", "ECMWF GRIB", NULL, NULL,
+                                                 "ECMWF model data in GRIB format", verify_product_type, ingestion_init,
+                                                 ingestion_done);
 
     /* ECMWF GRIB product */
     description = "The file can use either the GRIB1 or GRIB2 format. "

@@ -2384,9 +2384,8 @@ static void register_ombro_product(void)
     const char *description;
     const char *path;
 
-    module =
-        harp_ingestion_register_module_coda("OMI_L2_OMBRO", "OMI", NULL, NULL, "OMI L2 BrO total column", verify_ombro,
-                                            ingestion_init_ombro, ingestion_done);
+    module = harp_ingestion_register_module_coda("OMI_L2_OMBRO", "OMI", NULL, NULL, "OMI L2 BrO total column",
+                                                 verify_ombro, ingestion_init_ombro, ingestion_done);
 
     /* destriped ingestion option */
     description = "ingest column densities with destriping correction";
