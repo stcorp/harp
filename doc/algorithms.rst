@@ -238,6 +238,10 @@ geopotential height
 
       h_{g} = \frac{g_{surf}}{g_{0}}\frac{R_{surf}h}{R_{surf} + h}
 
+   .. math::
+
+      h = \frac{g_{0}R_{surf}h_{g}}{g_{surf}R_{surf}-g_{0}h_{g}}
+
 
 gas constant
 ~~~~~~~~~~~~
@@ -1235,28 +1239,31 @@ altitude
 
 #. altitude from geopotential height
 
-   ================ ============================ ===================== =========================
-   symbol           description                  unit                  variable name
-   ================ ============================ ===================== =========================
-   :math:`g_{0}`    mean earth gravity           :math:`\frac{m}{s^2}`
-   :math:`g_{surf}` gravity at earth surface     :math:`\frac{m}{s^2}`
-   :math:`R_{surf}` local earth curvature radius :math:`m`
-   :math:`z`        altitude                     :math:`m`             `altitude {:}`
-   :math:`z_{g}`    geopotential height          :math:`m`             `geopotential_height {:}`
-   :math:`\phi`     latitude                     :math:`degN`          `latitude {:}`
-   ================ ============================ ===================== =========================
+   ================= ============================ ===================== =========================
+   symbol            description                  unit                  variable name
+   ================= ============================ ===================== =========================
+   :math:`g_{0}`     mean earth gravity           :math:`\frac{m}{s^2}`
+   :math:`g_{wgs84}` gravity at WGS84 ellipsoid   :math:`\frac{m}{s^2}`
+   :math:`R_{wgs84}` local earth curvature radius :math:`m`
+                     at WGS84 ellipsoid
+   :math:`z`         altitude                     :math:`m`             `altitude {:}`
+   :math:`z_{g}`     geopotential height          :math:`m`             `geopotential_height {:}`
+   :math:`\phi`      latitude                     :math:`degN`          `latitude {:}`
+   ================= ============================ ===================== =========================
 
    The pattern `:` for the dimensions can represent `{vertical}`, `{time}`, `{time,vertical}`, or no dimensions at all.
+
+   This equation approximates the mean sea level gravity and radius by that of the reference ellipsoid.
 
    .. math::
       :nowrap:
 
       \begin{eqnarray}
-         g_{surf} & = & 9.7803253359 \frac{1 + 0.00193185265241{\sin}^2(\frac{\pi}{180}\phi)}
+         g_{wgs84} & = & 9.7803253359 \frac{1 + 0.00193185265241{\sin}^2(\frac{\pi}{180}\phi)}
             {\sqrt{1 - 0.00669437999013{\sin}^2(\frac{\pi}{180}\phi)}} \\
-         R_{surf} & = & \frac{1}{\sqrt{\left(\frac{\cos(\frac{\pi}{180}\phi)}{6356752.0}\right)^2 +
+         R_{wgs84} & = & \frac{1}{\sqrt{\left(\frac{\cos(\frac{\pi}{180}\phi)}{6356752.0}\right)^2 +
             \left(\frac{\sin(\frac{\pi}{180}\phi)}{6378137.0}\right)^2}} \\
-         z & = & \frac{g_{0}R_{surf}z_{g}}{g_{surf}R_{surf} - g_{0}z_{g}}
+         z & = & \frac{g_{0}R_{wgs84}z_{g}}{g_{wgs84}R_{wgs84} - g_{0}z_{g}}
       \end{eqnarray}
 
 
@@ -1337,6 +1344,38 @@ altitude
          g(i) & = & g_{surf} \left(1 - \frac{2}{a}\left(1+f+m-2f{\sin}^2(\frac{\pi}{180}\phi)\right)z(i-1) + \frac{3}{a^2}z(i-1)^2\right), 1 < i \leq N \\
          z(1) & = & z_{surf} + \frac{T(1)}{M_{air}(1)}\frac{R}{g(1)}\ln\left(\frac{p_{surf}}{p(i)}\right) \\
          z(i) & = & z(i-1) + \frac{T(i-1)+T(i)}{M_{air}(i-1)+M_{air}(i)}\frac{R}{g(i)}\ln\left(\frac{p(i-1)}{p(i)}\right), 1 < i \leq N
+      \end{eqnarray}
+
+
+#. surface altitude from surface geopotential height
+
+   ================== ============================ ===================== =================================
+   symbol             description                  unit                  variable name
+   ================== ============================ ===================== =================================
+   :math:`g_{0}`      mean earth gravity           :math:`\frac{m}{s^2}`
+   :math:`g_{wgs84}`  gravity at WGS84 ellipsoid   :math:`\frac{m}{s^2}`
+   :math:`R_{wgs84}`  local earth curvature radius :math:`m`
+                      at WGS84 ellipsoid
+   :math:`z_{surf}`   surface altitude             :math:`m`             `surface_altitude {:}`
+                      (relative to mean sea level)
+   :math:`z_{g,surf}` surface geopotential height  :math:`m`             `surface_geopotential_height {:}`
+                      (relative to mean sea level)
+   :math:`\phi`       latitude                     :math:`degN`          `latitude {:}`
+   ================== ============================ ===================== =================================
+
+   The pattern `:` for the dimensions can represent `{vertical}`, `{time}`, `{time,vertical}`, or no dimensions at all.
+
+   This equation approximates the mean sea level gravity and radius by that of the reference ellipsoid.
+
+   .. math::
+      :nowrap:
+
+      \begin{eqnarray}
+         g_{wgs84} & = & 9.7803253359 \frac{1 + 0.00193185265241{\sin}^2(\frac{\pi}{180}\phi)}
+            {\sqrt{1 - 0.00669437999013{\sin}^2(\frac{\pi}{180}\phi)}} \\
+         R_{wgs84} & = & \frac{1}{\sqrt{\left(\frac{\cos(\frac{\pi}{180}\phi)}{6356752.0}\right)^2 +
+            \left(\frac{\sin(\frac{\pi}{180}\phi)}{6378137.0}\right)^2}} \\
+         z_{surf} & = & \frac{g_{0}R_{wgs84}z_{g,surf}}{g_{wgs84}R_{wgs84} - g_{0}z_{g,surf}}
       \end{eqnarray}
 
 
@@ -1789,28 +1828,31 @@ geopotential height
 
 #. geopotential height from altitude
 
-   ================ ============================ ===================== =========================
-   symbol           description                  unit                  variable name
-   ================ ============================ ===================== =========================
-   :math:`g_{0}`    mean earth gravity           :math:`\frac{m}{s^2}`
-   :math:`g_{surf}` gravity at earth surface     :math:`\frac{m}{s^2}`
-   :math:`R_{surf}` local earth curvature radius :math:`m`
-   :math:`z`        altitude                     :math:`m`             `altitude {:}`
-   :math:`z_{g}`    geopotential height          :math:`m`             `geopotential_height {:}`
-   :math:`\phi`     latitude                     :math:`degN`          `latitude {:}`
-   ================ ============================ ===================== =========================
+   ================= ============================ ===================== =========================
+   symbol            description                  unit                  variable name
+   ================= ============================ ===================== =========================
+   :math:`g_{0}`     mean earth gravity           :math:`\frac{m}{s^2}`
+   :math:`g_{wgs84}` gravity at WGS84 ellipsoid   :math:`\frac{m}{s^2}`
+   :math:`R_{wgs84}` local earth curvature radius :math:`m`
+                     at WGS84 ellipsoid
+   :math:`z`         altitude                     :math:`m`             `altitude {:}`
+   :math:`z_{g}`     geopotential height          :math:`m`             `geopotential_height {:}`
+   :math:`\phi`      latitude                     :math:`degN`          `latitude {:}`
+   ================= ============================ ===================== =========================
 
    The pattern `:` for the dimensions can represent `{vertical}`, `{time}`, `{time,vertical}`, or no dimensions at all.
+
+   This equation approximates the mean sea level gravity and radius by that of the reference ellipsoid.
 
    .. math::
       :nowrap:
 
       \begin{eqnarray}
-         g_{surf} & = & 9.7803253359 \frac{1 + 0.00193185265241{\sin}^2(\frac{\pi}{180}\phi)}
+         g_{wgs84} & = & 9.7803253359 \frac{1 + 0.00193185265241{\sin}^2(\frac{\pi}{180}\phi)}
             {\sqrt{1 - 0.00669437999013{\sin}^2(\frac{\pi}{180}\phi)}} \\
-         R_{surf} & = & \frac{1}{\sqrt{\left(\frac{\cos(\frac{\pi}{180}\phi)}{6356752.0}\right)^2 +
+         R_{wgs84} & = & \frac{1}{\sqrt{\left(\frac{\cos(\frac{\pi}{180}\phi)}{6356752.0}\right)^2 +
             \left(\frac{\sin(\frac{\pi}{180}\phi)}{6378137.0}\right)^2}} \\
-         z_{g} & = & \frac{g_{surf}}{g_{0}}\frac{R_{surf}z}{z + R_{surf}}
+         z_{g} & = & \frac{g_{wgs84}}{g_{0}}\frac{R_{wgs84}z}{z + R_{wgs84}}
       \end{eqnarray}
 
 

@@ -2820,8 +2820,8 @@ static int add_conversions_for_grid(int num_dimensions, harp_dimension_type dime
         {
             return -1;
         }
-        if (harp_variable_conversion_add_source
-            (conversion, "altitude", harp_type_double, HARP_UNIT_LENGTH, num_dimensions, dimension_type, 0) != 0)
+        if (harp_variable_conversion_add_source(conversion, "altitude", harp_type_double, HARP_UNIT_LENGTH,
+                                                num_dimensions, dimension_type, 0) != 0)
         {
             return -1;
         }
@@ -3118,6 +3118,51 @@ static int add_conversions_for_grid(int num_dimensions, harp_dimension_type dime
         /* uncertainties */
         if (add_uncertainty_conversions("stratospheric_column_number_density", HARP_UNIT_COLUMN_NUMBER_DENSITY,
                                         num_dimensions, dimension_type) != 0)
+        {
+            return -1;
+        }
+    }
+
+    /*** surface altitude ***/
+
+    if (!has_vertical)
+    {
+        /* surface altitude from surface gph */
+        if (harp_variable_conversion_new("surface_altitude", harp_type_double, HARP_UNIT_LENGTH, num_dimensions,
+                                         dimension_type, 0, get_altitude_from_gph_and_latitude, &conversion) != 0)
+        {
+            return -1;
+        }
+        if (harp_variable_conversion_add_source(conversion, "surface_geopotential_heigth", harp_type_double,
+                                                HARP_UNIT_LENGTH, num_dimensions, dimension_type, 0) != 0)
+        {
+            return -1;
+        }
+        if (harp_variable_conversion_add_source(conversion, "latitude", harp_type_double, HARP_UNIT_LATITUDE,
+                                                num_dimensions, dimension_type, 0) != 0)
+        {
+            return -1;
+        }
+    }
+
+    /*** surface geopotential height ***/
+
+    if (!has_vertical)
+    {
+        /* surface gph from surface altitude */
+        if (harp_variable_conversion_new("surface_geopotential_height", harp_type_double, HARP_UNIT_LENGTH,
+                                         num_dimensions, dimension_type, 0, get_gph_from_altitude_and_latitude,
+                                         &conversion) != 0)
+        {
+            return -1;
+        }
+        if (harp_variable_conversion_add_source(conversion, "surface_altitude", harp_type_double, HARP_UNIT_LENGTH,
+                                                num_dimensions, dimension_type, 0) != 0)
+        {
+            return -1;
+        }
+        if (harp_variable_conversion_add_source(conversion, "latitude", harp_type_double, HARP_UNIT_LATITUDE,
+                                                num_dimensions, dimension_type, 0) != 0)
         {
             return -1;
         }
