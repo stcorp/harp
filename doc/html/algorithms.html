@@ -95,6 +95,7 @@
 </li>
 <li class="toctree-l2"><a class="reference internal" href="#common-formula">Common formula</a><ul>
 <li class="toctree-l3"><a class="reference internal" href="#gravity">gravity</a></li>
+<li class="toctree-l3"><a class="reference internal" href="#geopotential-height">geopotential height</a></li>
 <li class="toctree-l3"><a class="reference internal" href="#gas-constant">gas constant</a></li>
 <li class="toctree-l3"><a class="reference internal" href="#ideal-gas-law">ideal gas law</a></li>
 <li class="toctree-l3"><a class="reference internal" href="#barometric-formula">barometric formula</a></li>
@@ -145,18 +146,18 @@
 <li class="toctree-l3"><a class="reference internal" href="#column-number-density">column number density</a></li>
 <li class="toctree-l3"><a class="reference internal" href="#column-volume-mixing-ratio">column volume mixing ratio</a></li>
 <li class="toctree-l3"><a class="reference internal" href="#geopotential">geopotential</a></li>
-<li class="toctree-l3"><a class="reference internal" href="#geopotential-height">geopotential height</a></li>
-<li class="toctree-l3"><a class="reference internal" href="#id1">mass density</a></li>
-<li class="toctree-l3"><a class="reference internal" href="#id2">mass mixing ratio</a></li>
-<li class="toctree-l3"><a class="reference internal" href="#id3">molar mass</a></li>
-<li class="toctree-l3"><a class="reference internal" href="#id4">number density</a></li>
-<li class="toctree-l3"><a class="reference internal" href="#id5">partial pressure</a></li>
+<li class="toctree-l3"><a class="reference internal" href="#id1">geopotential height</a></li>
+<li class="toctree-l3"><a class="reference internal" href="#id2">mass density</a></li>
+<li class="toctree-l3"><a class="reference internal" href="#id3">mass mixing ratio</a></li>
+<li class="toctree-l3"><a class="reference internal" href="#id4">molar mass</a></li>
+<li class="toctree-l3"><a class="reference internal" href="#id5">number density</a></li>
+<li class="toctree-l3"><a class="reference internal" href="#id6">partial pressure</a></li>
 <li class="toctree-l3"><a class="reference internal" href="#pressure">pressure</a></li>
 <li class="toctree-l3"><a class="reference internal" href="#pressure-bounds">pressure bounds</a></li>
 <li class="toctree-l3"><a class="reference internal" href="#relative-humidity">relative humidity</a></li>
 <li class="toctree-l3"><a class="reference internal" href="#temperature">temperature</a></li>
-<li class="toctree-l3"><a class="reference internal" href="#id6">virtual temperature</a></li>
-<li class="toctree-l3"><a class="reference internal" href="#id7">volume mixing ratio</a></li>
+<li class="toctree-l3"><a class="reference internal" href="#id7">virtual temperature</a></li>
+<li class="toctree-l3"><a class="reference internal" href="#id8">volume mixing ratio</a></li>
 </ul>
 </li>
 <li class="toctree-l2"><a class="reference internal" href="#optical-variable-conversions">Optical variable conversions</a><ul>
@@ -503,9 +504,44 @@ constant</td>
 <h2>Common formula</h2>
 <div class="section" id="gravity">
 <h3>gravity</h3>
-<p>These are the WGS84 ellipsoidal gravity formula as taken from NIMA TR8350.2</p>
 <ol class="arabic">
+<li><p class="first">Newton&#8217;s gravitational law</p>
+<table border="1" class="docutils">
+<colgroup>
+<col width="24%" />
+<col width="42%" />
+<col width="33%" />
+</colgroup>
+<thead valign="bottom">
+<tr class="row-odd"><th class="head">symbol</th>
+<th class="head">description</th>
+<th class="head">unit</th>
+</tr>
+</thead>
+<tbody valign="top">
+<tr class="row-even"><td><span class="math">\(g\)</span></td>
+<td>gravity</td>
+<td><span class="math">\(\frac{m}{s^2}\)</span></td>
+</tr>
+<tr class="row-odd"><td><span class="math">\(g_{surf}\)</span></td>
+<td>gravity at earth surface</td>
+<td><span class="math">\(\frac{m}{s^2}\)</span></td>
+</tr>
+<tr class="row-even"><td><span class="math">\(h\)</span></td>
+<td>height above surface</td>
+<td><span class="math">\(m\)</span></td>
+</tr>
+<tr class="row-odd"><td><span class="math">\(R_{surf}\)</span></td>
+<td>earth radius at surface</td>
+<td><span class="math">\(m\)</span></td>
+</tr>
+</tbody>
+</table>
+<div class="math">
+\[g = g_{surf}\left(\frac{R_{surf}}{R_{surf} + h}\right)^2\]</div>
+</li>
 <li><p class="first">normal gravity at ellipsoid surface</p>
+<p>This is the WGS84 ellipsoidal gravity formula as taken from NIMA TR8350.2</p>
 <table border="1" class="docutils">
 <colgroup>
 <col width="28%" />
@@ -558,6 +594,7 @@ constant</td>
       {\sqrt{1 - 0.00669437999013{\sin}^2(\frac{\pi}{180}\phi)}}
 \end{eqnarray}</div></li>
 <li><p class="first">normal gravity above ellipsoid surface</p>
+<p>This is the WGS84 ellipsoidal gravity formula as taken from NIMA TR8350.2</p>
 <table border="1" class="docutils">
 <colgroup>
 <col width="21%" />
@@ -616,6 +653,77 @@ constant</td>
    g &amp; = &amp; g_{surf} \left[ 1 - \frac{2}{a}\left(1+f+m-2f{\sin}^2(\frac{\pi}{180}\phi)\right)z + \frac{3}{a^2}z^2 \right] \\
 \end{eqnarray}</div></li>
 </ol>
+</div>
+<div class="section" id="geopotential-height">
+<h3>geopotential height</h3>
+<blockquote>
+<div><table border="1" class="docutils">
+<colgroup>
+<col width="24%" />
+<col width="42%" />
+<col width="33%" />
+</colgroup>
+<thead valign="bottom">
+<tr class="row-odd"><th class="head">symbol</th>
+<th class="head">description</th>
+<th class="head">unit</th>
+</tr>
+</thead>
+<tbody valign="top">
+<tr class="row-even"><td><span class="math">\(g\)</span></td>
+<td>gravity</td>
+<td><span class="math">\(\frac{m}{s^2}\)</span></td>
+</tr>
+<tr class="row-odd"><td><span class="math">\(g_{0}\)</span></td>
+<td>mean earth gravity</td>
+<td><span class="math">\(\frac{m}{s^2}\)</span></td>
+</tr>
+<tr class="row-even"><td><span class="math">\(g_{surf}\)</span></td>
+<td>gravity at earth surface</td>
+<td><span class="math">\(\frac{m}{s^2}\)</span></td>
+</tr>
+<tr class="row-odd"><td><span class="math">\(p\)</span></td>
+<td>pressure</td>
+<td><span class="math">\(hPa\)</span></td>
+</tr>
+<tr class="row-even"><td><span class="math">\(R_{surf}\)</span></td>
+<td>earth radius at surface</td>
+<td><span class="math">\(m\)</span></td>
+</tr>
+<tr class="row-odd"><td><span class="math">\(h\)</span></td>
+<td>height above surface</td>
+<td><span class="math">\(m\)</span></td>
+</tr>
+<tr class="row-even"><td><span class="math">\(h_{g}\)</span></td>
+<td>geopotential height</td>
+<td><span class="math">\(m\)</span></td>
+</tr>
+<tr class="row-odd"><td><span class="math">\(\phi\)</span></td>
+<td>latitude</td>
+<td><span class="math">\(degN\)</span></td>
+</tr>
+<tr class="row-even"><td><span class="math">\(\rho\)</span></td>
+<td>mass density</td>
+<td><span class="math">\(\frac{ug}{m^3}\)</span></td>
+</tr>
+</tbody>
+</table>
+<p>The geopotential height allows the gravity in the hydrostatic equation</p>
+<div class="math">
+\[dp = - 10^{-8}\rho g dh\]</div>
+<p>to be replaced by a constant gravity</p>
+<div class="math">
+\[dp = - 10^{-8}\rho g_{0} dh_{g}\]</div>
+<p>providing</p>
+<div class="math">
+\[dh_{g} = \frac{g}{g_{0}}dh\]</div>
+<p>With Newton&#8217;s gravitational law this becomes</p>
+<div class="math">
+\[dh_{g} = \frac{g_{surf}}{g_{0}}\left(\frac{R_{surf}}{R_{surf} + h}\right)^2dh\]</div>
+<p>And integrating this, considering that <span class="math">\(h=0\)</span> and <span class="math">\(h_{g}=0\)</span> at the surface, results in</p>
+<div class="math">
+\[h_{g} = \frac{g_{surf}}{g_{0}}\frac{R_{surf}h}{R_{surf} + h}\]</div>
+</div></blockquote>
 </div>
 <div class="section" id="gas-constant">
 <h3>gas constant</h3>
@@ -3630,7 +3738,7 @@ or no dimensions at all.</p>
 </li>
 </ol>
 </div>
-<div class="section" id="geopotential-height">
+<div class="section" id="id1">
 <h3>geopotential height</h3>
 <ol class="arabic">
 <li><p class="first">geopotential height from geopotential</p>
@@ -3800,7 +3908,7 @@ and <span class="math">\(p^{B}(1,2)\)</span> (which is generally not equal to <s
 \end{eqnarray}</div></li>
 </ol>
 </div>
-<div class="section" id="id1">
+<div class="section" id="id2">
 <h3>mass density</h3>
 <ol class="arabic">
 <li><p class="first">mass density for air component from number density:</p>
@@ -3971,7 +4079,7 @@ and <span class="math">\(p^{B}(1,2)\)</span> (which is generally not equal to <s
 </li>
 </ol>
 </div>
-<div class="section" id="id2">
+<div class="section" id="id3">
 <h3>mass mixing ratio</h3>
 <ol class="arabic">
 <li><p class="first">mass mixing ratio from volume mixing ratio</p>
@@ -4066,7 +4174,7 @@ with regard to dry air</td>
 </li>
 </ol>
 </div>
-<div class="section" id="id3">
+<div class="section" id="id4">
 <h3>molar mass</h3>
 <ol class="arabic">
 <li><p class="first">molar mass of total air from density and number density</p>
@@ -4200,7 +4308,7 @@ with regard to dry air</td>
 </li>
 </ol>
 </div>
-<div class="section" id="id4">
+<div class="section" id="id5">
 <h3>number density</h3>
 <ol class="arabic">
 <li><p class="first">number density for air component from mass density:</p>
@@ -4539,7 +4647,7 @@ with regard to dry air</td>
 </li>
 </ol>
 </div>
-<div class="section" id="id5">
+<div class="section" id="id6">
 <h3>partial pressure</h3>
 <ol class="arabic">
 <li><p class="first">partial pressure from number density and temperature</p>
@@ -5112,7 +5220,7 @@ equal the lower altitude boundary <span class="math">\(z^{B}_{g}(1,1)\)</span>, 
 </li>
 </ol>
 </div>
-<div class="section" id="id6">
+<div class="section" id="id7">
 <h3>virtual temperature</h3>
 <ol class="arabic">
 <li><p class="first">virtual temperature from temperature</p>
@@ -5160,7 +5268,7 @@ equal the lower altitude boundary <span class="math">\(z^{B}_{g}(1,1)\)</span>, 
 </li>
 </ol>
 </div>
-<div class="section" id="id7">
+<div class="section" id="id8">
 <h3>volume mixing ratio</h3>
 <ol class="arabic">
 <li><p class="first">volume mixing ratio from number density</p>

@@ -118,12 +118,28 @@ Common formula
 gravity
 ~~~~~~~
 
-These are the WGS84 ellipsoidal gravity formula as taken from NIMA TR8350.2
+#. Newton's gravitational law
+
+   ================ ============================ ======================
+   symbol           description                  unit
+   ================ ============================ ======================
+   :math:`g`        gravity                      :math:`\frac{m}{s^2}`
+   :math:`g_{surf}` gravity at earth surface     :math:`\frac{m}{s^2}`
+   :math:`h`        height above surface         :math:`m`
+   :math:`R_{surf}` earth radius at surface      :math:`m`
+   ================ ============================ ======================
+
+   .. math::
+
+      g = g_{surf}\left(\frac{R_{surf}}{R_{surf} + h}\right)^2
+
 
 #. normal gravity at ellipsoid surface
 
+   This is the WGS84 ellipsoidal gravity formula as taken from NIMA TR8350.2
+
    ================ ===================== =====================
-   symbol           name                  unit                            
+   symbol           name                  unit
    ================ ===================== =====================
    :math:`a`        WGS84 semi-major axis :math:`m`
    :math:`b`        WGS84 semi-minor axis :math:`m`
@@ -148,8 +164,10 @@ These are the WGS84 ellipsoidal gravity formula as taken from NIMA TR8350.2
 
 #. normal gravity above ellipsoid surface
 
+   This is the WGS84 ellipsoidal gravity formula as taken from NIMA TR8350.2
+
    ================ ==================================== =======================
-   symbol           name                                 unit                            
+   symbol           name                                 unit
    ================ ==================================== =======================
    :math:`a`        WGS84 semi-major axis                :math:`m`
    :math:`b`        WGS84 semi-minor axis                :math:`m`
@@ -173,11 +191,59 @@ These are the WGS84 ellipsoidal gravity formula as taken from NIMA TR8350.2
       \end{eqnarray}
 
 
+geopotential height
+~~~~~~~~~~~~~~~~~~~
+
+   ================ ============================ ======================
+   symbol           description                  unit
+   ================ ============================ ======================
+   :math:`g`        gravity                      :math:`\frac{m}{s^2}`
+   :math:`g_{0}`    mean earth gravity           :math:`\frac{m}{s^2}`
+   :math:`g_{surf}` gravity at earth surface     :math:`\frac{m}{s^2}`
+   :math:`p`        pressure                     :math:`hPa`
+   :math:`R_{surf}` earth radius at surface      :math:`m`
+   :math:`h`        height above surface         :math:`m`
+   :math:`h_{g}`    geopotential height          :math:`m`
+   :math:`\phi`     latitude                     :math:`degN`
+   :math:`\rho`     mass density                 :math:`\frac{ug}{m^3}`
+   ================ ============================ ======================
+
+   The geopotential height allows the gravity in the hydrostatic equation
+
+   .. math::
+
+      dp = - 10^{-8}\rho g dh
+
+   to be replaced by a constant gravity
+
+   .. math::
+
+      dp = - 10^{-8}\rho g_{0} dh_{g}
+
+   providing
+
+   .. math::
+
+      dh_{g} = \frac{g}{g_{0}}dh
+
+   With Newton's gravitational law this becomes
+
+   .. math::
+
+      dh_{g} = \frac{g_{surf}}{g_{0}}\left(\frac{R_{surf}}{R_{surf} + h}\right)^2dh
+
+   And integrating this, considering that :math:`h=0` and :math:`h_{g}=0` at the surface, results in
+
+   .. math::
+
+      h_{g} = \frac{g_{surf}}{g_{0}}\frac{R_{surf}h}{R_{surf} + h}
+
+
 gas constant
 ~~~~~~~~~~~~
 
    =========== ====================== ================================
-   symbol      name                   unit                            
+   symbol      name                   unit
    =========== ====================== ================================
    :math:`k`   Boltzmann constant     :math:`\frac{kg m^2}{K s^2}`
    :math:`N_A` Avogadro constant      :math:`\frac{1}{mol}`
@@ -195,7 +261,7 @@ ideal gas law
 ~~~~~~~~~~~~~
 
    ========= ====================== ================================
-   symbol    name                   unit                            
+   symbol    name                   unit
    ========= ====================== ================================
    :math:`k` Boltzmann constant     :math:`\frac{kg m^2}{K s^2}`
    :math:`N` amount of substance    :math:`molec`
@@ -214,7 +280,7 @@ barometric formula
 ~~~~~~~~~~~~~~~~~~
 
    =============== ======================= ================================
-   symbol          name                    unit                            
+   symbol          name                    unit
    =============== ======================= ================================
    :math:`g`       gravity                 :math:`\frac{m}{s^2}`
    :math:`g_{0}`   mean earth gravity      :math:`\frac{m}{s^2}`
@@ -280,7 +346,7 @@ mass density
 ~~~~~~~~~~~~
 
    =============== ======================= ======================
-   symbol          name                    unit                     
+   symbol          name                    unit
    =============== ======================= ======================
    :math:`N`       amount of substance     :math:`molec`
    :math:`N_A`     Avogadro constant       :math:`\frac{1}{mol}`
@@ -298,7 +364,7 @@ number density
 ~~~~~~~~~~~~~~
 
    ========= =================== =========================
-   symbol    name                unit                     
+   symbol    name                unit
    ========= =================== =========================
    :math:`n` number density      :math:`\frac{molec}{m^3}`
    :math:`N` amount of substance :math:`molec`
@@ -314,7 +380,7 @@ dry air vs. total air
 ~~~~~~~~~~~~~~~~~~~~~
 
    ==================== =========================== =========================
-   symbol               name                        unit                     
+   symbol               name                        unit
    ==================== =========================== =========================
    :math:`n_{air}`      number density of total air :math:`\frac{molec}{m^3}`
    :math:`n_{dry\_air}` number density of dry air   :math:`\frac{molec}{m^3}`
@@ -337,7 +403,7 @@ virtual temperature
 ~~~~~~~~~~~~~~~~~~~
 
    ==================== ======================== ================================
-   symbol               name                     unit                     
+   symbol               name                     unit
    ==================== ======================== ================================
    :math:`k`            Boltzmann constant       :math:`\frac{kg m^2}{K s^2}`
    :math:`M_{air}`      molar mass of total air  :math:`\frac{g}{mol}`
@@ -365,7 +431,7 @@ virtual temperature
    .. math::
 
       p = \rho\frac{10^{-8}RT_{v}}{M_{dry\_air}}
-      
+
    This gives:
 
    .. math::
@@ -377,7 +443,7 @@ volume mixing ratio
 ~~~~~~~~~~~~~~~~~~~
 
    ====================== =============================== =========================
-   symbol                 name                            unit                     
+   symbol                 name                            unit
    ====================== =============================== =========================
    :math:`n_{air}`        number density of total air     :math:`\frac{molec}{m^3}`
    :math:`n_{dry\_air}`   number density of dry air       :math:`\frac{molec}{m^3}`
@@ -409,7 +475,7 @@ mass mixing ratio
 ~~~~~~~~~~~~~~~~~
 
    ===================== =============================== =========================
-   symbol                name                            unit                     
+   symbol                name                            unit
    ===================== =============================== =========================
    :math:`M_{air}`       molar mass of total air         :math:`\frac{g}{mol}`
    :math:`M_{dry\_air}`  molar mass of dry air           :math:`\frac{g}{mol}`
@@ -450,7 +516,7 @@ molar mass of total air
 #. molar mass of total air from H2O volume mixing ratio
 
    ==================== =========================== =========================
-   symbol               name                        unit                     
+   symbol               name                        unit
    ==================== =========================== =========================
    :math:`M_{air}`      molar mass of total air     :math:`\frac{g}{mol}`
    :math:`M_{dry\_air}` molar mass of dry air       :math:`\frac{g}{mol}`
@@ -473,7 +539,7 @@ molar mass of total air
 #. molar mass of total air from H2O mass mixing ratio
 
    ==================== =========================== =========================
-   symbol               name                        unit                     
+   symbol               name                        unit
    ==================== =========================== =========================
    :math:`M_{air}`      molar mass of total air     :math:`\frac{g}{mol}`
    :math:`M_{dry\_air}` molar mass of dry air       :math:`\frac{g}{mol}`
@@ -501,7 +567,7 @@ partial pressure
 ~~~~~~~~~~~~~~~~
 
    ===================== =============================== ============
-   symbol                name                            unit                     
+   symbol                name                            unit
    ===================== =============================== ============
    :math:`p`             total pressure                  :math:`hPa`
    :math:`p_{x}`         partial pressure of quantity    :math:`hPa`
@@ -525,7 +591,7 @@ saturated water vapor pressure
 ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 
    ============= =============================== ===========
-   symbol        name                            unit                     
+   symbol        name                            unit
    ============= =============================== ===========
    :math:`e_{w}` saturated water vapor pressure  :math:`hPa`
    :math:`T`     temperature                     :math:`K`
@@ -680,9 +746,9 @@ latitude
 
    Convert all polygon corner coordinates defined by :math:`\phi^{B}(i)` and
    :math:`\lambda^{B}(i)` into unit sphere points :math:`\mathbf{p}(i) = [x_{i}, y_{i}, z_{i}]`
-   
+
    :math:`x_{min} = min(x_{i}), y_{min} = min(y_{i}), z_{min} = min(z_{i})`
-   
+
    :math:`x_{max} = max(x_{i}), y_{max} = max(y_{i}), z_{max} = max(z_{i})`
 
    :math:`\mathbf{p}_{center} = [\frac{x_{min} + x_{max}}{2}, \frac{y_{min} + y_{max}}{2}, \frac{z_{min} + z_{max}}{2}]`
@@ -1259,7 +1325,7 @@ altitude
    This should normally be the case since even for pressure grids that start at the surface, :math:`p_{surf}` should
    equal the lower pressure boundary :math:`p^{B}(1,1)`, whereas :math:`p(1)` should then be between :math:`p^{B}(1,1)`
    and :math:`p^{B}(1,2)` (which is generally not equal to :math:`p^{B}(1,1)`).
-   
+
    .. math::
       :nowrap:
 
@@ -1388,7 +1454,7 @@ column mass mixing ratio
 ~~~~~~~~~~~~~~~~~~~~~~~~
 
 #. column mass mixing ratio from column volume mixing ratio
-   
+
    =============== ======================================== ======================== ==========================================
    symbol          description                              unit                     variable name
    =============== ======================================== ======================== ==========================================
@@ -1409,7 +1475,7 @@ column mass mixing ratio
 
 
 #. column mass mixing ratio dry air from column volume mixing ratio dry air
-   
+
    ===================== ======================================== ======================== ==================================================
    symbol                description                              unit                     variable name
    ===================== ======================================== ======================== ==================================================
@@ -1430,7 +1496,7 @@ column mass mixing ratio
 
 
 #. stratospheric column mass mixing ratio dry air from stratospheric column volume mixing ratio dry air
-   
+
    ===================== ======================================== ======================== ================================================================
    symbol                description                              unit                     variable name
    ===================== ======================================== ======================== ================================================================
@@ -1451,7 +1517,7 @@ column mass mixing ratio
 
 
 #. tropospheric column mass mixing ratio dry air from tropospheric column volume mixing ratio dry air
-   
+
    ===================== ======================================= ======================== ===============================================================
    symbol                description                             unit                     variable name
    ===================== ======================================= ======================== ===============================================================
