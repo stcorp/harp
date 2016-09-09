@@ -3134,13 +3134,20 @@ static int add_conversions_for_grid(int num_dimensions, harp_dimension_type dime
 
     if (!has_vertical)
     {
+        /* time dependent from independent */
+        if (add_time_indepedent_to_dependent_conversion("surface_altitude", harp_type_double, HARP_UNIT_LENGTH,
+                                                        num_dimensions, dimension_type, 0) != 0)
+        {
+            return -1;
+        }
+
         /* surface altitude from surface gph */
         if (harp_variable_conversion_new("surface_altitude", harp_type_double, HARP_UNIT_LENGTH, num_dimensions,
                                          dimension_type, 0, get_altitude_from_gph_and_latitude, &conversion) != 0)
         {
             return -1;
         }
-        if (harp_variable_conversion_add_source(conversion, "surface_geopotential_heigth", harp_type_double,
+        if (harp_variable_conversion_add_source(conversion, "surface_geopotential_height", harp_type_double,
                                                 HARP_UNIT_LENGTH, num_dimensions, dimension_type, 0) != 0)
         {
             return -1;
@@ -3152,10 +3159,54 @@ static int add_conversions_for_grid(int num_dimensions, harp_dimension_type dime
         }
     }
 
+    /*** surface geopotential ***/
+
+    if (!has_vertical)
+    {
+        /* time dependent from independent */
+        if (add_time_indepedent_to_dependent_conversion("surface_geopotential", harp_type_double,
+                                                        HARP_UNIT_GEOPOTENTIAL, num_dimensions, dimension_type, 0) != 0)
+        {
+            return -1;
+        }
+
+        /* surface geopotential from surface gph  */
+        if (harp_variable_conversion_new("surface_geopotential", harp_type_double, HARP_UNIT_GEOPOTENTIAL,
+                                         num_dimensions, dimension_type, 0, get_geopotential_from_gph, &conversion) !=
+            0)
+        {
+            return -1;
+        }
+        if (harp_variable_conversion_add_source(conversion, "surface_geopotential_height", harp_type_double,
+                                                HARP_UNIT_LENGTH, num_dimensions, dimension_type, 0) != 0)
+        {
+            return -1;
+        }
+    }
+
     /*** surface geopotential height ***/
 
     if (!has_vertical)
     {
+        /* time dependent from independent */
+        if (add_time_indepedent_to_dependent_conversion("surface_geopotential_height", harp_type_double, HARP_UNIT_LENGTH,
+                                                        num_dimensions, dimension_type, 0) != 0)
+        {
+            return -1;
+        }
+
+        /* surface gph from surface geopotential */
+        if (harp_variable_conversion_new("surface_geopotential_height", harp_type_double, HARP_UNIT_LENGTH,
+                                         num_dimensions, dimension_type, 0, get_gph_from_geopotential, &conversion) != 0)
+        {
+            return -1;
+        }
+        if (harp_variable_conversion_add_source(conversion, "surface_geopotential", harp_type_double,
+                                                HARP_UNIT_GEOPOTENTIAL, num_dimensions, dimension_type, 0) != 0)
+        {
+            return -1;
+        }
+
         /* surface gph from surface altitude */
         if (harp_variable_conversion_new("surface_geopotential_height", harp_type_double, HARP_UNIT_LENGTH,
                                          num_dimensions, dimension_type, 0, get_gph_from_altitude_and_latitude,
@@ -4052,16 +4103,16 @@ static int add_axis_conversions(void)
     /* time dependent from independent is already done in add_conversions_for_grid() */
 
     /* {latitude,longitude,vertical} from {vertical} */
-    dimension_type[1] = harp_dimension_vertical;
-    if (harp_variable_conversion_new("altitude", harp_type_double, HARP_UNIT_LENGTH, 1, &dimension_type[1], 0,
+    dimension_type[1] = harp_dimension_latitude;
+    dimension_type[2] = harp_dimension_longitude;
+    dimension_type[3] = harp_dimension_vertical;
+    if (harp_variable_conversion_new("altitude", harp_type_double, HARP_UNIT_LENGTH, 3, &dimension_type[1], 0,
                                      get_expanded_dimension, &conversion) != 0)
     {
         return -1;
     }
-    dimension_type[1] = harp_dimension_latitude;
-    dimension_type[2] = harp_dimension_longitude;
-    dimension_type[3] = harp_dimension_vertical;
-    if (harp_variable_conversion_add_source(conversion, "altitude", harp_type_double, HARP_UNIT_LENGTH, 3,
+    dimension_type[1] = harp_dimension_vertical;
+    if (harp_variable_conversion_add_source(conversion, "altitude", harp_type_double, HARP_UNIT_LENGTH, 1,
                                             &dimension_type[1], 0) != 0)
     {
         return -1;
@@ -4083,15 +4134,15 @@ static int add_axis_conversions(void)
 
     /* {time,latitude,longitude,vertical} from {time,vertical} */
     dimension_type[1] = harp_dimension_latitude;
-    if (harp_variable_conversion_new("altitude", harp_type_double, HARP_UNIT_LENGTH, 2, dimension_type, 0,
+    dimension_type[2] = harp_dimension_longitude;
+    dimension_type[3] = harp_dimension_vertical;
+    if (harp_variable_conversion_new("altitude", harp_type_double, HARP_UNIT_LENGTH, 4, dimension_type, 0,
                                      get_expanded_dimension, &conversion) != 0)
     {
         return -1;
     }
-    dimension_type[1] = harp_dimension_latitude;
-    dimension_type[2] = harp_dimension_longitude;
-    dimension_type[3] = harp_dimension_vertical;
-    if (harp_variable_conversion_add_source(conversion, "altitude", harp_type_double, HARP_UNIT_LENGTH, 4,
+    dimension_type[1] = harp_dimension_vertical;
+    if (harp_variable_conversion_add_source(conversion, "altitude", harp_type_double, HARP_UNIT_LENGTH, 2,
                                             dimension_type, 0) != 0)
     {
         return -1;
@@ -4148,16 +4199,16 @@ static int add_axis_conversions(void)
     /* time dependent from independent is already done in add_conversions_for_grid() */
 
     /* {latitude,longitude,vertical} from {vertical} */
-    dimension_type[1] = harp_dimension_vertical;
-    if (harp_variable_conversion_new("pressure", harp_type_double, HARP_UNIT_PRESSURE, 1, &dimension_type[1], 0,
+    dimension_type[1] = harp_dimension_latitude;
+    dimension_type[2] = harp_dimension_longitude;
+    dimension_type[3] = harp_dimension_vertical;
+    if (harp_variable_conversion_new("pressure", harp_type_double, HARP_UNIT_PRESSURE, 3, &dimension_type[1], 0,
                                      get_expanded_dimension, &conversion) != 0)
     {
         return -1;
     }
-    dimension_type[1] = harp_dimension_latitude;
-    dimension_type[2] = harp_dimension_longitude;
-    dimension_type[3] = harp_dimension_vertical;
-    if (harp_variable_conversion_add_source(conversion, "pressure", harp_type_double, HARP_UNIT_PRESSURE, 3,
+    dimension_type[1] = harp_dimension_vertical;
+    if (harp_variable_conversion_add_source(conversion, "pressure", harp_type_double, HARP_UNIT_PRESSURE, 1,
                                             &dimension_type[1], 0) != 0)
     {
         return -1;
@@ -4179,14 +4230,14 @@ static int add_axis_conversions(void)
 
     /* {time,latitude,longitude,vertical} from {time,vertical} */
     dimension_type[1] = harp_dimension_latitude;
+    dimension_type[2] = harp_dimension_longitude;
+    dimension_type[3] = harp_dimension_vertical;
     if (harp_variable_conversion_new("pressure", harp_type_double, HARP_UNIT_PRESSURE, 2, dimension_type, 0,
                                      get_expanded_dimension, &conversion) != 0)
     {
         return -1;
     }
-    dimension_type[1] = harp_dimension_latitude;
-    dimension_type[2] = harp_dimension_longitude;
-    dimension_type[3] = harp_dimension_vertical;
+    dimension_type[1] = harp_dimension_vertical;
     if (harp_variable_conversion_add_source(conversion, "pressure", harp_type_double, HARP_UNIT_PRESSURE, 4,
                                             dimension_type, 0) != 0)
     {
