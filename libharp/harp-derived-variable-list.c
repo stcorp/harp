@@ -291,6 +291,51 @@ static int get_end_from_begin_and_length(harp_variable *variable, const harp_var
     return 0;
 }
 
+static int get_expanded_dimension(harp_variable *variable, const harp_variable **source_variable)
+{
+    harp_dimension_type dimension_type[HARP_MAX_NUM_DIMS];
+    long dimension[HARP_MAX_NUM_DIMS];
+    int num_dimensions;
+    int i;
+
+    /* store target dimensions */
+    num_dimensions = variable->num_dimensions;
+    for (i = 0; i < num_dimensions; i++)
+    {
+        dimension_type[i] = variable->dimension_type[i];
+        dimension[i] = variable->dimension[i];
+    }
+
+    /* initialize target variable with data and dimensions of source variable */
+    assert(variable->num_elements >= source_variable[0]->num_elements);
+    assert(variable->data_type == source_variable[0]->data_type);
+    assert(variable->data_type != harp_type_string);
+
+    variable->num_elements = source_variable[0]->num_elements;
+    variable->num_dimensions = source_variable[0]->num_dimensions;
+    for (i = 0; i < variable->num_dimensions; i++)
+    {
+        variable->dimension_type[i] = source_variable[0]->dimension_type[i];
+        variable->dimension[i] = source_variable[0]->dimension[i];
+    }
+    memcpy(variable->data.ptr, source_variable[0]->data.ptr,
+           (size_t)variable->num_elements * harp_get_size_for_type(variable->data_type));
+
+    /* expand dimensions */
+    for (i = 0; i < num_dimensions; i++)
+    {
+        if (i == variable->num_dimensions || variable->dimension_type[i] != dimension_type[i])
+        {
+            if (harp_variable_add_dimension(variable, i, dimension_type[i], dimension[i]) != 0)
+            {
+                return -1;
+            }
+        }
+    }
+
+    return 0;
+}
+
 static int get_frequency_from_wavelength(harp_variable *variable, const harp_variable **source_variable)
 {
     long i;
@@ -850,43 +895,6 @@ static int get_temperature_from_virtual_temperature(harp_variable *variable, con
 
 }
 
-static int get_time_dependent_from_time_independent(harp_variable *variable, const harp_variable **source_variable)
-{
-    int i;
-
-    if (source_variable[0]->data_type == harp_type_string)
-    {
-        long num_block_elements = source_variable[0]->num_elements;
-        int j;
-
-        for (i = 0; i < variable->dimension[0]; i++)
-        {
-            for (j = 0; j < num_block_elements; j++)
-            {
-                variable->data.string_data[i * num_block_elements + j] =
-                    strdup(source_variable[0]->data.string_data[j]);
-                if (variable->data.string_data[i * num_block_elements + j] == NULL)
-                {
-                    harp_set_error(HARP_ERROR_OUT_OF_MEMORY, "out of memory (could not duplicate string) (%s:%u)",
-                                   __FILE__, __LINE__);
-                    return -1;
-                }
-            }
-        }
-    }
-    else
-    {
-        size_t block_size = source_variable[0]->num_elements * harp_get_size_for_type(source_variable[0]->data_type);
-
-        for (i = 0; i < variable->dimension[0]; i++)
-        {
-            memcpy(&variable->data.int8_data[i * block_size], source_variable[0]->data.ptr, block_size);
-        }
-    }
-
-    return 0;
-}
-
 static int get_uncertainty_from_systematic_and_random_uncertainty(harp_variable *variable,
                                                                   const harp_variable **source_variable)
 {
@@ -1067,8 +1075,7 @@ static int add_time_indepedent_to_dependent_conversion(const char *variable_name
     }
 
     if (harp_variable_conversion_new(variable_name, data_type, unit, num_dimensions, dimension_type,
-                                     independent_dimension_length, get_time_dependent_from_time_independent,
-                                     &conversion) != 0)
+                                     independent_dimension_length, get_expanded_dimension, &conversion) != 0)
     {
         return -1;
     }
@@ -3841,10 +3848,55 @@ static int add_axis_conversions(void)
 
     /*** latitude ***/
 
-    /* TODO: add conversion to {[time,]lat,lon[,vertical]} */
-
     if (add_time_indepedent_to_dependent_conversion("latitude", harp_type_double, HARP_UNIT_LATITUDE, 1,
                                                     dimension_type, 0) != 0)
+    {
+        return -1;
+    }
+
+    dimension_type[1] = harp_dimension_latitude;
+    if (add_time_indepedent_to_dependent_conversion("latitude", harp_type_double, HARP_UNIT_LATITUDE, 2,
+                                                    dimension_type, 0) != 0)
+    {
+        return -1;
+    }
+
+    /* {latitude,longitude} from {latitude} */
+    dimension_type[2] = harp_dimension_longitude;
+    if (harp_variable_conversion_new("latitude", harp_type_double, HARP_UNIT_LATITUDE, 2, &dimension_type[1], 0,
+                                     get_expanded_dimension, &conversion) != 0)
+    {
+        return -1;
+    }
+    if (harp_variable_conversion_add_source(conversion, "latitude", harp_type_double, HARP_UNIT_LATITUDE, 1,
+                                            &dimension_type[1], 0) != 0)
+    {
+        return -1;
+    }
+    /* add 'longitude {longitude}' as a pre-requisite to make sure we have a longitude dimension */
+    dimension_type[1] = harp_dimension_longitude;
+    if (harp_variable_conversion_add_source(conversion, "longitude", harp_type_double, HARP_UNIT_LONGITUDE, 1,
+                                            &dimension_type[1], 0) != 0)
+    {
+        return -1;
+    }
+
+    /* {time,latitude,longitude} from {time,latitude} */
+    dimension_type[1] = harp_dimension_latitude;
+    if (harp_variable_conversion_new("latitude", harp_type_double, HARP_UNIT_LATITUDE, 3, dimension_type, 0,
+                                     get_expanded_dimension, &conversion) != 0)
+    {
+        return -1;
+    }
+    if (harp_variable_conversion_add_source(conversion, "latitude", harp_type_double, HARP_UNIT_LATITUDE, 2,
+                                            dimension_type, 0) != 0)
+    {
+        return -1;
+    }
+    /* add 'longitude {time,longitude}' as a pre-requisite to make sure we have a longitude dimension */
+    dimension_type[1] = harp_dimension_longitude;
+    if (harp_variable_conversion_add_source(conversion, "longitude", harp_type_double, HARP_UNIT_LONGITUDE, 2,
+                                            dimension_type, 0) != 0)
     {
         return -1;
     }
@@ -3895,10 +3947,58 @@ static int add_axis_conversions(void)
 
     /*** longitude ***/
 
-    /* TODO: add conversion to {[time,]lat,lon[,vertical]} */
-
     if (add_time_indepedent_to_dependent_conversion("longitude", harp_type_double, HARP_UNIT_LONGITUDE, 1,
                                                     dimension_type, 0) != 0)
+    {
+        return -1;
+    }
+    dimension_type[1] = harp_dimension_longitude;
+    if (add_time_indepedent_to_dependent_conversion("longitude", harp_type_double, HARP_UNIT_LONGITUDE, 2,
+                                                    dimension_type, 0) != 0)
+    {
+        return -1;
+    }
+
+    /* {latitude,longitude} from {longitude} */
+    dimension_type[1] = harp_dimension_latitude;
+    dimension_type[2] = harp_dimension_longitude;
+    if (harp_variable_conversion_new("longitude", harp_type_double, HARP_UNIT_LONGITUDE, 2, &dimension_type[1], 0,
+                                     get_expanded_dimension, &conversion) != 0)
+    {
+        return -1;
+    }
+    dimension_type[1] = harp_dimension_longitude;
+    if (harp_variable_conversion_add_source(conversion, "longitude", harp_type_double, HARP_UNIT_LONGITUDE, 1,
+                                            &dimension_type[1], 0) != 0)
+    {
+        return -1;
+    }
+    /* add 'latitude {latitude}' as a pre-requisite to make sure we have a longitude dimension */
+    dimension_type[1] = harp_dimension_latitude;
+    if (harp_variable_conversion_add_source(conversion, "latitude", harp_type_double, HARP_UNIT_LATITUDE, 1,
+                                            &dimension_type[1], 0) != 0)
+    {
+        return -1;
+    }
+
+    /* {time,latitude,longitude} from {time,longitude} */
+    dimension_type[1] = harp_dimension_latitude;
+    dimension_type[2] = harp_dimension_longitude;
+    if (harp_variable_conversion_new("longitude", harp_type_double, HARP_UNIT_LONGITUDE, 3, dimension_type, 0,
+                                     get_expanded_dimension, &conversion) != 0)
+    {
+        return -1;
+    }
+    dimension_type[1] = harp_dimension_longitude;
+    if (harp_variable_conversion_add_source(conversion, "longitude", harp_type_double, HARP_UNIT_LONGITUDE, 2,
+                                            dimension_type, 0) != 0)
+    {
+        return -1;
+    }
+    /* add 'latitude {latitude}' as a pre-requisite to make sure we have a longitude dimension */
+    dimension_type[1] = harp_dimension_latitude;
+    if (harp_variable_conversion_add_source(conversion, "latitude", harp_type_double, HARP_UNIT_LATITUDE, 2,
+                                            dimension_type, 0) != 0)
     {
         return -1;
     }
@@ -3949,9 +4049,67 @@ static int add_axis_conversions(void)
 
     /*** altitude ***/
 
-    dimension_type[1] = harp_dimension_vertical;
+    /* time dependent from independent is already done in add_conversions_for_grid() */
 
-    /* TODO: add conversion from {[time,]vertical} to {[time,],lat,lon,vertical} */
+    /* {latitude,longitude,vertical} from {vertical} */
+    dimension_type[1] = harp_dimension_vertical;
+    if (harp_variable_conversion_new("altitude", harp_type_double, HARP_UNIT_LENGTH, 1, &dimension_type[1], 0,
+                                     get_expanded_dimension, &conversion) != 0)
+    {
+        return -1;
+    }
+    dimension_type[1] = harp_dimension_latitude;
+    dimension_type[2] = harp_dimension_longitude;
+    dimension_type[3] = harp_dimension_vertical;
+    if (harp_variable_conversion_add_source(conversion, "altitude", harp_type_double, HARP_UNIT_LENGTH, 3,
+                                            &dimension_type[1], 0) != 0)
+    {
+        return -1;
+    }
+    /* add 'latitude {latitude}' as a pre-requisite to make sure we have a latitude dimension */
+    dimension_type[1] = harp_dimension_latitude;
+    if (harp_variable_conversion_add_source(conversion, "latitude", harp_type_double, HARP_UNIT_LATITUDE, 1,
+                                            &dimension_type[1], 0) != 0)
+    {
+        return -1;
+    }
+    /* add 'longitude {longitude}' as a pre-requisite to make sure we have a longitude dimension */
+    dimension_type[1] = harp_dimension_longitude;
+    if (harp_variable_conversion_add_source(conversion, "longitude", harp_type_double, HARP_UNIT_LONGITUDE, 1,
+                                            &dimension_type[1], 0) != 0)
+    {
+        return -1;
+    }
+
+    /* {time,latitude,longitude,vertical} from {time,vertical} */
+    dimension_type[1] = harp_dimension_latitude;
+    if (harp_variable_conversion_new("altitude", harp_type_double, HARP_UNIT_LENGTH, 2, dimension_type, 0,
+                                     get_expanded_dimension, &conversion) != 0)
+    {
+        return -1;
+    }
+    dimension_type[1] = harp_dimension_latitude;
+    dimension_type[2] = harp_dimension_longitude;
+    dimension_type[3] = harp_dimension_vertical;
+    if (harp_variable_conversion_add_source(conversion, "altitude", harp_type_double, HARP_UNIT_LENGTH, 4,
+                                            dimension_type, 0) != 0)
+    {
+        return -1;
+    }
+    /* add 'latitude {time,latitude}' as a pre-requisite to make sure we have a latitude dimension */
+    dimension_type[1] = harp_dimension_latitude;
+    if (harp_variable_conversion_add_source(conversion, "latitude", harp_type_double, HARP_UNIT_LATITUDE, 2,
+                                            dimension_type, 0) != 0)
+    {
+        return -1;
+    }
+    /* add 'longitude {time,longitude}' as a pre-requisite to make sure we have a longitude dimension */
+    dimension_type[1] = harp_dimension_longitude;
+    if (harp_variable_conversion_add_source(conversion, "longitude", harp_type_double, HARP_UNIT_LONGITUDE, 2,
+                                            dimension_type, 0) != 0)
+    {
+        return -1;
+    }
 
     /* midpoint from bounds */
     if (add_bounds_to_midpoint_conversion("altitude", harp_type_double, HARP_UNIT_LENGTH, harp_dimension_vertical,
@@ -3961,6 +4119,7 @@ static int add_axis_conversions(void)
     }
 
     /* altitude from sensor altitude */
+    dimension_type[1] = harp_dimension_vertical;
     for (i = 0; i < 2; i++)
     {
         if (harp_variable_conversion_new("altitude", harp_type_double, HARP_UNIT_LENGTH, i, dimension_type, 0, get_copy,
@@ -3986,7 +4145,67 @@ static int add_axis_conversions(void)
 
     /*** pressure ***/
 
-    /* TODO: add conversion from {[time,]vertical} to {[time,],lat,lon,vertical} */
+    /* time dependent from independent is already done in add_conversions_for_grid() */
+
+    /* {latitude,longitude,vertical} from {vertical} */
+    dimension_type[1] = harp_dimension_vertical;
+    if (harp_variable_conversion_new("pressure", harp_type_double, HARP_UNIT_PRESSURE, 1, &dimension_type[1], 0,
+                                     get_expanded_dimension, &conversion) != 0)
+    {
+        return -1;
+    }
+    dimension_type[1] = harp_dimension_latitude;
+    dimension_type[2] = harp_dimension_longitude;
+    dimension_type[3] = harp_dimension_vertical;
+    if (harp_variable_conversion_add_source(conversion, "pressure", harp_type_double, HARP_UNIT_PRESSURE, 3,
+                                            &dimension_type[1], 0) != 0)
+    {
+        return -1;
+    }
+    /* add 'latitude {latitude}' as a pre-requisite to make sure we have a latitude dimension */
+    dimension_type[1] = harp_dimension_latitude;
+    if (harp_variable_conversion_add_source(conversion, "latitude", harp_type_double, HARP_UNIT_LATITUDE, 1,
+                                            &dimension_type[1], 0) != 0)
+    {
+        return -1;
+    }
+    /* add 'longitude {longitude}' as a pre-requisite to make sure we have a longitude dimension */
+    dimension_type[1] = harp_dimension_longitude;
+    if (harp_variable_conversion_add_source(conversion, "longitude", harp_type_double, HARP_UNIT_LONGITUDE, 1,
+                                            &dimension_type[1], 0) != 0)
+    {
+        return -1;
+    }
+
+    /* {time,latitude,longitude,vertical} from {time,vertical} */
+    dimension_type[1] = harp_dimension_latitude;
+    if (harp_variable_conversion_new("pressure", harp_type_double, HARP_UNIT_PRESSURE, 2, dimension_type, 0,
+                                     get_expanded_dimension, &conversion) != 0)
+    {
+        return -1;
+    }
+    dimension_type[1] = harp_dimension_latitude;
+    dimension_type[2] = harp_dimension_longitude;
+    dimension_type[3] = harp_dimension_vertical;
+    if (harp_variable_conversion_add_source(conversion, "pressure", harp_type_double, HARP_UNIT_PRESSURE, 4,
+                                            dimension_type, 0) != 0)
+    {
+        return -1;
+    }
+    /* add 'latitude {time,latitude}' as a pre-requisite to make sure we have a latitude dimension */
+    dimension_type[1] = harp_dimension_latitude;
+    if (harp_variable_conversion_add_source(conversion, "latitude", harp_type_double, HARP_UNIT_LATITUDE, 2,
+                                            dimension_type, 0) != 0)
+    {
+        return -1;
+    }
+    /* add 'longitude {time,longitude}' as a pre-requisite to make sure we have a longitude dimension */
+    dimension_type[1] = harp_dimension_longitude;
+    if (harp_variable_conversion_add_source(conversion, "longitude", harp_type_double, HARP_UNIT_LONGITUDE, 2,
+                                            dimension_type, 0) != 0)
+    {
+        return -1;
+    }
 
     /* midpoint from bounds */
     if (add_bounds_to_midpoint_conversion("pressure", harp_type_double, HARP_UNIT_PRESSURE, harp_dimension_vertical,
