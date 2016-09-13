@@ -320,11 +320,14 @@ def _get_c_library_filename():
 
     if _system() == "Windows":
         return "harp.dll"
+
+    import os.path
+    path = os.path.join(os.path.dirname(__file__), "../../..")
+
     if _system() == "Darwin":
-        import os.path
-        path = os.path.join(os.path.dirname(__file__), "../../..")
         return os.path.join(os.path.normpath(path), "libharp.dylib")
-    return "libharp.so"
+
+    return os.path.join(os.path.normpath(path), "libharp.so")
 
 def _get_filesystem_encoding():
     """Return the encoding used by the filesystem."""
