@@ -294,7 +294,7 @@ static int grib_get_gaussian_latitudes(long trunc, double *lats)
         }
 
         /* Set North and South values using symmetry. */
-        lats[jlat] = asin(root) * rad2deg;
+        lats[jlat] = -asin(root) * rad2deg;
         lats[nlat - 1 - jlat] = -lats[jlat];
     }
 
