@@ -945,6 +945,7 @@ static int read_longitude_bounds_domino(void *user_data, harp_array data)
     ingest_info *info = (ingest_info *)user_data;
     long dimension[3] = { 4, info->dimension[omi_dim_time], info->dimension[omi_dim_xtrack] };
     long dimension_transpose[2] = { 4, info->dimension[omi_dim_time] * info->dimension[omi_dim_xtrack] };
+    long i;
 
     if (read_variable_double(info, &info->geo_cursor, "LongitudeCornerpoints", 3, dimension, data) != 0)
     {
@@ -957,6 +958,15 @@ static int read_longitude_bounds_domino(void *user_data, harp_array data)
         return -1;
     }
 
+    /* reorder corner coordinates from {a,b,c,d} to {d,b,a,c} */
+    for (i = 0; i < info->dimension[omi_dim_time] * info->dimension[omi_dim_xtrack]; i++)
+    {
+        double temp = data.double_data[i * 4];
+        data.double_data[i * 4] = data.double_data[i * 4 + 3];
+        data.double_data[i * 4 + 3] = data.double_data[i * 4 + 2];
+        data.double_data[i * 4 + 2] = temp;
+    }
+
     return 0;
 }
 
@@ -965,6 +975,7 @@ static int read_latitude_bounds_domino(void *user_data, harp_array data)
     ingest_info *info = (ingest_info *)user_data;
     long dimension[3] = { 4, info->dimension[omi_dim_time], info->dimension[omi_dim_xtrack] };
     long dimension_transpose[2] = { 4, info->dimension[omi_dim_time] * info->dimension[omi_dim_xtrack] };
+    long i;
 
     if (read_variable_double(info, &info->geo_cursor, "LatitudeCornerpoints", 3, dimension, data) != 0)
     {
@@ -975,6 +986,15 @@ static int read_latitude_bounds_domino(void *user_data, harp_array data)
     if (harp_array_transpose(harp_type_double, 2, dimension_transpose, NULL, data) != 0)
     {
         return -1;
+    }
+
+    /* reorder corner coordinates from {a,b,c,d} to {d,b,a,c} */
+    for (i = 0; i < info->dimension[omi_dim_time] * info->dimension[omi_dim_xtrack]; i++)
+    {
+        double temp = data.double_data[i * 4];
+        data.double_data[i * 4] = data.double_data[i * 4 + 3];
+        data.double_data[i * 4 + 3] = data.double_data[i * 4 + 2];
+        data.double_data[i * 4 + 2] = temp;
     }
 
     return 0;
@@ -2730,7 +2750,8 @@ static void register_omdomino_product(void)
                                                                      NULL, read_longitude_bounds_domino);
     harp_variable_definition_set_valid_range_double(variable_definition, -180.0, 180.0);
     path = "/HDFEOS/SWATHS/DominoNO2/Geolocation_Fields/LongitudeCornerpoints[]";
-    harp_variable_definition_add_mapping(variable_definition, NULL, NULL, path, NULL);
+    description = "coorners are reordered from {a,b,c,d} to {d,b,a,c}";
+    harp_variable_definition_add_mapping(variable_definition, NULL, NULL, path, description);
 
     /* latitude_bounds */
     description = "latitudes of the ground pixel corners";
@@ -2740,7 +2761,8 @@ static void register_omdomino_product(void)
                                                                      NULL, read_latitude_bounds_domino);
     harp_variable_definition_set_valid_range_double(variable_definition, -90.0, 90.0);
     path = "/HDFEOS/SWATHS/DominoNO2/Geolocation_Fields/LatitudeCornerpoints[]";
-    harp_variable_definition_add_mapping(variable_definition, NULL, NULL, path, NULL);
+    description = "coorners are reordered from {a,b,c,d} to {d,b,a,c}";
+    harp_variable_definition_add_mapping(variable_definition, NULL, NULL, path, description);
 
     /* solar_zenith_angle */
     path = "/HDFEOS/SWATHS/DominoNO2/Geolocation_Fields/SolarZenithAngle[]";
