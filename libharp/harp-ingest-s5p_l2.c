@@ -1923,7 +1923,7 @@ static void register_ch4_product(void)
 
     description = "column averaged dry air mixing ratio of methane";
     variable_definition =
-        harp_ingestion_register_variable_full_read(product_definition, "CH4_column_volume_mixing_ratio",
+        harp_ingestion_register_variable_full_read(product_definition, "CH4_column_volume_mixing_ratio_dry_air",
                                                    harp_type_float, 1, dimension_type, NULL, description, "ppbv", NULL,
                                                    read_ch4_column);
     path = "/PRODUCT/XCH4[]";
@@ -1931,7 +1931,8 @@ static void register_ch4_product(void)
 
     description = "uncertainty of the column averaged dry air mixing ratio of methane (1 sigma error)";
     variable_definition =
-        harp_ingestion_register_variable_full_read(product_definition, "CH4_column_volume_mixing_ratio_uncertainty",
+        harp_ingestion_register_variable_full_read(product_definition,
+                                                   "CH4_column_volume_mixing_ratio_dry_air_uncertainty",
                                                    harp_type_float, 1, dimension_type, NULL, description, "ppbv", NULL,
                                                    read_ch4_column_precision);
     path = "/PRODUCT/XCH4_precision[]";
@@ -1939,7 +1940,7 @@ static void register_ch4_product(void)
 
     description = "column averaging kernel for methane retrieval";
     variable_definition =
-        harp_ingestion_register_variable_full_read(product_definition, "CH4_column_volume_mixing_ratio_avk",
+        harp_ingestion_register_variable_full_read(product_definition, "CH4_column_volume_mixing_ratio_dry_air_avk",
                                                    harp_type_float, 2, dimension_type, NULL, description,
                                                    HARP_UNIT_DIMENSIONLESS, NULL, read_ch4_column_avk);
     path = "/PRODUCT/SUPPORT_DATA/DETAILED_RESULTS/column_averaging_kernel[]";

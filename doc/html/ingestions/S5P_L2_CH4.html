@@ -236,19 +236,19 @@
 <td>hPa</td>
 <td>pressure bounds per profile layer</td>
 </tr>
-<tr class="row-odd"><td><strong>CH4_column_volume_mixing_ratio</strong></td>
+<tr class="row-odd"><td><strong>CH4_column_volume_mixing_ratio_dry_air</strong></td>
 <td>float</td>
 <td>{<em>time</em>}</td>
 <td>ppbv</td>
 <td>column averaged dry air mixing ratio of methane</td>
 </tr>
-<tr class="row-even"><td><strong>CH4_column_volume_mixing_ratio_uncertainty</strong></td>
+<tr class="row-even"><td><strong>CH4_column_volume_mixing_ratio_dry_air_uncertainty</strong></td>
 <td>float</td>
 <td>{<em>time</em>}</td>
 <td>ppbv</td>
 <td>uncertainty of the column averaged dry air mixing ratio of methane (1 sigma error)</td>
 </tr>
-<tr class="row-odd"><td><strong>CH4_column_volume_mixing_ratio_avk</strong></td>
+<tr class="row-odd"><td><strong>CH4_column_volume_mixing_ratio_dry_air_avk</strong></td>
 <td>float</td>
 <td>{<em>time</em>, <em>vertical</em>}</td>
 <td>&nbsp;</td>
@@ -268,9 +268,9 @@
 <p>The table below details where and how each variable was retrieved from the input product.</p>
 <table border="1" class="docutils">
 <colgroup>
-<col width="13%" />
+<col width="15%" />
 <col width="4%" />
-<col width="83%" />
+<col width="82%" />
 </colgroup>
 <thead valign="bottom">
 <tr class="row-odd"><th class="head">field name</th>
@@ -356,15 +356,15 @@
 <tr class="row-even"><td><em>description</em></td>
 <td>derived from surface pressure and pressure difference between retrieval levels (the pressure grid is equidistant between the surface pressure and a fixed top pressure); given a zero-based layer index k, the pressure bounds for layer k are derived as: (surface_pressure - k * dp, surface_pressure - (k + 1) * dp)</td>
 </tr>
-<tr class="row-odd"><td><strong>CH4_column_volume_mixing_ratio</strong></td>
+<tr class="row-odd"><td><strong>CH4_column_volume_mixing_ratio_dry_air</strong></td>
 <td><em>path</em></td>
 <td><strong>/PRODUCT/XCH4[]</strong></td>
 </tr>
-<tr class="row-even"><td><strong>CH4_column_volume_mixing_ratio_uncertainty</strong></td>
+<tr class="row-even"><td><strong>CH4_column_volume_mixing_ratio_dry_air_uncertainty</strong></td>
 <td><em>path</em></td>
 <td><strong>/PRODUCT/XCH4_precision[]</strong></td>
 </tr>
-<tr class="row-odd"><td><strong>CH4_column_volume_mixing_ratio_avk</strong></td>
+<tr class="row-odd"><td><strong>CH4_column_volume_mixing_ratio_dry_air_avk</strong></td>
 <td><em>path</em></td>
 <td><strong>/PRODUCT/SUPPORT_DATA/DETAILED_RESULTS/column_averaging_kernel[]</strong></td>
 </tr>
