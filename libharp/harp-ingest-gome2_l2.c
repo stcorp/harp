@@ -2232,7 +2232,7 @@ static void register_o3mnto_product(void)
     harp_product_definition *product_definition;
 
     module =
-        harp_ingestion_register_module_coda("GOME2_L2_O3MNTO", "GOME2", NULL, NULL,
+        harp_ingestion_register_module_coda("GOME2_L2_O3MNTO", "GOME-2", NULL, NULL,
                                             "GOME2 near-real-time total column trace gas product", verify_o3mnto,
                                             ingestion_init, ingestion_done);
     register_common_options(module);
@@ -2249,7 +2249,7 @@ static void register_o3moto_product(void)
     harp_product_definition *product_definition;
 
     module =
-        harp_ingestion_register_module_coda("GOME2_L2_O3MOTO", "GOME2", NULL, NULL,
+        harp_ingestion_register_module_coda("GOME2_L2_O3MOTO", "GOME-2", NULL, NULL,
                                             "GOME2 offline total column trace gas product", verify_o3moto,
                                             ingestion_init, ingestion_done);
     register_common_options(module);
