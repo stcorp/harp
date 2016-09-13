@@ -317,8 +317,6 @@ HARP_DOCFILES = \
 	doc/html/libharp_variable.html \
 	doc/html/objects.inv \
 	doc/html/python.html \
-	doc/html/search.html \
-	doc/html/searchindex.js \
 	doc/html/tools.html
 doc/html/.buildinfo:
 	$(MAKE) harp_doc
@@ -955,10 +953,6 @@ doc/html/libharp_variable.html:
 doc/html/objects.inv:
 	$(MAKE) harp_doc
 doc/html/python.html:
-	$(MAKE) harp_doc
-doc/html/search.html:
-	$(MAKE) harp_doc
-doc/html/searchindex.js:
 	$(MAKE) harp_doc
 doc/html/tools.html:
 	$(MAKE) harp_doc

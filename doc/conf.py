@@ -39,6 +39,7 @@ breathe_default_projects = "libharp"
 
 # Add any paths that contain templates here, relative to this directory.
 #templates_path = ['_templates']
+templates_path = ['templates']
 
 # The suffix(es) of source filenames.
 # You can specify multiple suffix as a list of string:
@@ -160,6 +161,13 @@ html_static_path = ['static']
 
 # Custom sidebar templates, maps document names to template names.
 #html_sidebars = {}
+# == Explicitly define the contents of the sidebars (to exclude searchbox.html)
+html_sidebars = {
+    '**': [
+       'about.html',
+       'navigation.html',
+    ]
+}
 
 # Additional templates that should be rendered to pages, maps page names to
 # template names.
@@ -213,9 +221,16 @@ html_show_sphinx = False
 # Output file base name for HTML help builder.
 htmlhelp_basename = 'HARPdoc'
 
+# == Disable search functionality for html
+def on_builder_inited(app):
+    if app.builder.name == 'html':
+        app.builder.search = False
+
 # Register custom CSS files.
 def setup(app):
    app.add_stylesheet("custom.css")
+   # == disable search functionality for html
+   app.connect('builder-inited', on_builder_inited)
 
 # -- Options for LaTeX output ---------------------------------------------
 
