@@ -2068,42 +2068,45 @@ static int init_cursors_and_grid(ingest_info *info)
                             return -1;
                         }
                         coda_cursor_goto_parent(&cursor);
-                        if (coda_cursor_goto_record_field_by_name(&cursor, "coordinateValues") != 0)
+                        if (info->level[parameter_index] != 1)
                         {
-                            harp_set_error(HARP_ERROR_CODA, NULL);
-                            return -1;
-                        }
-                        if (coda_cursor_get_num_elements(&cursor, &num_coordinate_values) != 0)
-                        {
-                            harp_set_error(HARP_ERROR_CODA, NULL);
-                            return -1;
-                        }
-                        if (info->coordinate_values == NULL)
-                        {
-                            info->num_grib_levels = (num_coordinate_values / 2) - 1;
-                            info->coordinate_values = malloc(num_coordinate_values * sizeof(double));
-                            if (info->coordinate_values == NULL)
-                            {
-                                harp_set_error(HARP_ERROR_OUT_OF_MEMORY, "out of memory (could not allocate %lu bytes) "
-                                               "(%s:%u)", num_coordinate_values * sizeof(double), __FILE__, __LINE__);
-                                return -1;
-                            }
-                            if (coda_cursor_read_double_array(&cursor, info->coordinate_values, coda_array_ordering_c)
-                                != 0)
+                            if (coda_cursor_goto_record_field_by_name(&cursor, "coordinateValues") != 0)
                             {
                                 harp_set_error(HARP_ERROR_CODA, NULL);
                                 return -1;
                             }
+                            if (coda_cursor_get_num_elements(&cursor, &num_coordinate_values) != 0)
+                            {
+                                harp_set_error(HARP_ERROR_CODA, NULL);
+                                return -1;
+                            }
+                            if (info->coordinate_values == NULL)
+                            {
+                                info->num_grib_levels = (num_coordinate_values / 2) - 1;
+                                info->coordinate_values = malloc(num_coordinate_values * sizeof(double));
+                                if (info->coordinate_values == NULL)
+                                {
+                                    harp_set_error(HARP_ERROR_OUT_OF_MEMORY, "out of memory (could not allocate %lu bytes) "
+                                                   "(%s:%u)", num_coordinate_values * sizeof(double), __FILE__, __LINE__);
+                                    return -1;
+                                }
+                                if (coda_cursor_read_double_array(&cursor, info->coordinate_values, coda_array_ordering_c)
+                                    != 0)
+                                {
+                                    harp_set_error(HARP_ERROR_CODA, NULL);
+                                    return -1;
+                                }
+                            }
+                            else if (num_coordinate_values != 2 * (info->num_grib_levels + 1))
+                            {
+                                /* we only check for the number of vertical levels. currently no check is performed to
+                                 * verify that the coordinate values are actually the same */
+                                harp_set_error(HARP_ERROR_INGESTION,
+                                               "not all data in the GRIB file has the same number of vertical levels");
+                                return -1;
+                            }
+                            coda_cursor_goto_parent(&cursor);
                         }
-                        else if (num_coordinate_values != 2 * (info->num_grib_levels + 1))
-                        {
-                            /* we only check for the number of vertical levels. currently no check is performed to
-                             * verify that the coordinate values are actually the same */
-                            harp_set_error(HARP_ERROR_INGESTION,
-                                           "not all data in the GRIB file has the same number of vertical levels");
-                            return -1;
-                        }
-                        coda_cursor_goto_parent(&cursor);
                     }
 
                     if (coda_cursor_goto_record_field_by_name(&cursor, "values") != 0)
