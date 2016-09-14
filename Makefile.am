@@ -95,8 +95,6 @@ libharp_la_SOURCES = \
 	libharp/harp-geometry-util.c \
 	libharp/harp-geometry-wgs84.c \
 	libharp/harp-geometry.h \
-	libharp/harp-hdf4.c \
-	libharp/harp-hdf5.c \
 	libharp/harp-ingest-cci_l2_o3_lp.c \
 	libharp/harp-ingest-cci_l2_o3_np.c \
 	libharp/harp-ingest-cci_l2_o3_tc.c \
@@ -144,6 +142,18 @@ libharp_la_SOURCES = \
 	libharp/hashtable.h \
 	libharp/hashtable.c \
 	libharp/ipow.h
+libharp_hdf4_files = libharp/harp-hdf4.c
+libharp_hdf5_files = libharp/harp-hdf5.c
+if WITH_HDF4
+libharp_la_SOURCES += $(libharp_hdf4_files)
+else
+INDENTFILES += $(libharp_hdf4_files)
+endif
+if WITH_HDF5
+libharp_la_SOURCES += $(libharp_hdf5_files)
+else
+INDENTFILES += $(libharp_hdf5_files)
+endif
 libharp_la_CPPFLAGS = -Inetcdf -I$(srcdir)/netcdf -Iudunits2 -I$(srcdir)/udunits2
 libharp_la_LDFLAGS = -no-undefined -version-info $(LIBHARP_CURRENT):$(LIBHARP_REVISION):$(LIBHARP_AGE)
 libharp_la_LIBADD = @LTLIBOBJS@ libudunits2.la libnetcdf.la $(CODALIBS) $(HDF4LIBS) $(HDF5LIBS)

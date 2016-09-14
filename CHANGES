@@ -1,6 +1,9 @@
 * Added harpprofile command line tool that allows regridding and smoothing
   of vertical gridded data.
 
+* Support for HDF4 and HDF5 (for import/export) is now optional when building
+  HARP, but still enabled by default.
+
 * Added harp_product_regrid_vertical_with_axis_variable(),
   harp_product_regrid_vertical_with_collocated_dataset(), and
   harp_product_smooth_vertical().

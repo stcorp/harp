@@ -457,17 +457,27 @@ LIBHARP_API int harp_import(const char *filename, harp_product **product)
     switch (format)
     {
         case format_hdf4:
+#ifdef HAVE_HDF4
             if (harp_import_hdf4(filename, &imported_product) != 0)
             {
                 return -1;
             }
             break;
+#else
+            coda_set_error(HARP_ERROR_NO_HDF4_SUPPORT, NULL);
+            return -1;
+#endif
         case format_hdf5:
+#ifdef HAVE_HDF5
             if (harp_import_hdf5(filename, &imported_product) != 0)
             {
                 return -1;
             }
             break;
+#else
+            coda_set_error(HARP_ERROR_NO_HDF5_SUPPORT, NULL);
+            return -1;
+#endif
         case format_netcdf:
             if (harp_import_netcdf(filename, &imported_product) != 0)
             {
@@ -528,13 +538,23 @@ LIBHARP_API int harp_import_product_metadata(const char *filename, harp_product_
     switch (format)
     {
         case format_hdf4:
+#ifdef HAVE_HDF4
             harp_product_metadata_delete(metadata);
             harp_set_error(HARP_ERROR_FILE_OPEN, "extraction of global attributes not yet supported for HDF4");
             return -1;
+#else
+            coda_set_error(HARP_ERROR_NO_HDF4_SUPPORT, NULL);
+            return -1;
+#endif
         case format_hdf5:
+#ifdef HAVE_HDF5
             harp_product_metadata_delete(metadata);
             harp_set_error(HARP_ERROR_FILE_OPEN, "extraction of global attributes not yet supported for HDF5");
             return -1;
+#else
+            coda_set_error(HARP_ERROR_NO_HDF5_SUPPORT, NULL);
+            return -1;
+#endif
         case format_netcdf:
             if (harp_import_global_attributes_netcdf(filename,
                                                      &metadata->datetime_start, &metadata->datetime_stop,
@@ -579,9 +599,19 @@ LIBHARP_API int harp_export(const char *filename, const char *export_format, con
     switch (format)
     {
         case format_hdf4:
+#ifdef HAVE_HDF4
             return harp_export_hdf4(filename, product);
+#else
+            coda_set_error(HARP_ERROR_NO_HDF4_SUPPORT, NULL);
+            return -1;
+#endif
         case format_hdf5:
+#ifdef HAVE_HDF5
             return harp_export_hdf5(filename, product);
+#else
+            coda_set_error(HARP_ERROR_NO_HDF5_SUPPORT, NULL);
+            return -1;
+#endif
         case format_netcdf:
             return harp_export_netcdf(filename, product);
         default:

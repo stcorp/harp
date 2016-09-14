@@ -55,23 +55,31 @@ endif()
 # Option handling
 #
 option(HARP_BUILD_PYTHON "build Python interface" OFF)
+option(HARP_WITH_HDF4 "use HDF4" ON)
+option(HARP_WITH_HDF5 "use HDF5" ON)
 
 find_package(BISON)
 find_package(FLEX)
 
-find_package(HDF4)
-if(NOT HDF4_FOUND)
-  message(FATAL_ERROR "HDF4 libraries and/or header files are not found. Try setting the HDF4_LIBRARY_DIR and HDF4_INCLUDE_DIR cmake variables to the location of your HDF4 library and include files.")
-else(NOT HDF4_FOUND)
-  set(HAVE_HDF4 1)
-endif(NOT HDF4_FOUND)
+if(HARP_WITH_HDF4)
+  find_package(HDF4)
+  if(NOT HDF4_FOUND)
+    message(FATAL_ERROR "HDF4 libraries and/or header files are not found. Try setting the HDF4_LIBRARY_DIR and HDF4_INCLUDE_DIR cmake variables to the location of your HDF4 library and include files.")
+  else(NOT HDF4_FOUND)
+    set(HAVE_HDF4 1)
+    include_directories(${HDF4_INCLUDE_DIR})
+  endif(NOT HDF4_FOUND)
+endif(HARP_WITH_HDF4)
 
-find_package(HDF5)
-if(NOT HDF5_FOUND)
-    message(FATAL_ERROR "HDF5 libraries and/or header files are not found. Try setting the HDF5_LIBRARY_DIR and HDF5_INCLUDE_DIR cmake variables to the location of your HDF5 library and include files.")
-else(NOT HDF5_FOUND)
-  set(HAVE_HDF5 1)
-endif(NOT HDF5_FOUND)
+if(HARP_WITH_HDF5)
+  find_package(HDF5)
+  if(NOT HDF5_FOUND)
+      message(FATAL_ERROR "HDF5 libraries and/or header files are not found. Try setting the HDF5_LIBRARY_DIR and HDF5_INCLUDE_DIR cmake variables to the location of your HDF5 library and include files.")
+  else(NOT HDF5_FOUND)
+    set(HAVE_HDF5 1)
+    include_directories(${HDF5_INCLUDE_DIR})
+  endif(NOT HDF5_FOUND)
+endif(HARP_WITH_HDF5)
 
 # We allow HARP to be build as part of a larger CMake build that also includes
 # CODA. It this is the case then CODA_SOURCE_DIR and CODA_BINARY_DIR will
@@ -86,7 +94,7 @@ else(DEFINED CODA_SOURCE_DIR AND DEFINED CODA_BINARY_DIR)
   endif(NOT CODA_FOUND)
 endif(DEFINED CODA_SOURCE_DIR AND DEFINED CODA_BINARY_DIR)
 
-include_directories(${CODA_INCLUDE_DIR} ${HDF4_INCLUDE_DIR} ${HDF5_INCLUDE_DIR})
+include_directories(${CODA_INCLUDE_DIR})
 
 if(MSVC)
 # Suppress warnings from VC on deprecated POSIX names and unsafe functions
@@ -254,8 +262,6 @@ set(LIBHARP_SOURCES
   libharp/harp-geometry-util.c
   libharp/harp-geometry-wgs84.c
   libharp/harp-geometry.h
-  libharp/harp-hdf4.c
-  libharp/harp-hdf5.c
   libharp/harp-ingest-cci_l2_o3_lp.c
   libharp/harp-ingest-cci_l2_o3_np.c
   libharp/harp-ingest-cci_l2_o3_tc.c
@@ -304,6 +310,16 @@ set(LIBHARP_SOURCES
   libharp/hashtable.c
   libharp/hashtable.h
   libharp/ipow.h)
+
+set(LIBHARP_HDF4_FILES libharp/harp-hdf4.c)
+if(HARP_WITH_HDF4)
+  set(LIBHARP_SOURCES ${LIBHARP_SOURCES} ${LIBHARP_HDF4_FILES})
+endif(HARP_WITH_HDF4)
+
+set(LIBHARP_HDF5_FILES libharp/harp-hdf5.c)
+if(HARP_WITH_HDF5)
+  set(LIBHARP_SOURCES ${LIBHARP_SOURCES} ${LIBHARP_HDF5_FILES})
+endif(HARP_WITH_HDF5)
 
 
 file(MAKE_DIRECTORY ${CMAKE_CURRENT_BINARY_DIR}/udunits2)

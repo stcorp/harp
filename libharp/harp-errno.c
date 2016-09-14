@@ -59,8 +59,14 @@ static char harp_error_message_buffer[MAX_ERROR_INFO_LENGTH + 1];
 /** \def HARP_ERROR_HDF4
  * An error occurred in the HDF4 library.
  */
+/** \def HARP_ERROR_NO_HDF4_SUPPORT
+ * No HDF4 support built into HARP.
+ */
 /** \def HARP_ERROR_HDF5
  * An error occurred in the HDF5 library.
+ */
+/** \def HARP_ERROR_NO_HDF5_SUPPORT
+ * No HDF5 support built into HARP.
  */
 /** \def HARP_ERROR_NETCDF
  * An error occurred in the netCDF library.
@@ -243,14 +249,18 @@ LIBHARP_API void harp_set_error(int err, const char *message, ...)
     set_error_message_vargs(message, ap);
     va_end(ap);
 
+#ifdef HAVE_HDF4
     if (err == HARP_ERROR_HDF4 && message == NULL)
     {
         harp_hdf4_add_error_message();
     }
+#endif
+#ifdef HAVE_HDF5
     if (err == HARP_ERROR_HDF5 && message == NULL)
     {
         harp_hdf5_add_error_message();
     }
+#endif
     if (err == HARP_ERROR_CODA && message == NULL)
     {
         harp_add_error_message("%s", coda_errno_to_string(coda_errno));
@@ -282,8 +292,12 @@ LIBHARP_API const char *harp_errno_to_string(int err)
 
             case HARP_ERROR_HDF4:
                 return "HDF4 error";
+            case HARP_ERROR_NO_HDF4_SUPPORT:
+                return "HDF4 is not supported (this version of HARP was not built with HDF4 support)";
             case HARP_ERROR_HDF5:
                 return "HDF5 error";
+            case HARP_ERROR_NO_HDF5_SUPPORT:
+                return "HDF5 is not supported (this version of HARP was not built with HDF5 support)";
             case HARP_ERROR_NETCDF:
                 return "netCDF error";
             case HARP_ERROR_CODA:

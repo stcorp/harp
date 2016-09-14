@@ -307,23 +307,39 @@ AM_CONDITIONAL(BUILD_PYTHON, test $ac_cv_enable_python = yes)
 
 # *** HDF4 ***
 
-ST_CHECK_HDF4
-if test $st_cv_have_hdf4 = no ; then
-  AC_MSG_ERROR(BOXED_TEXT([ERROR: HDF4 libraries and/or header files are not found.
+AC_ARG_WITH([hdf4],
+  [AS_HELP_STRING([--with-hdf4],[build HDF4 support into HARP])],
+  [ac_cv_with_hdf4=$withval],
+  [AC_CACHE_CHECK([use HDF4], ac_cv_with_hdf4, ac_cv_with_hdf4=yes)])
+
+if test $ac_cv_with_hdf4 = yes ; then
+  ST_CHECK_HDF4
+  if test $st_cv_have_hdf4 = no ; then
+    AC_MSG_ERROR(BOXED_TEXT([ERROR: HDF4 libraries and/or header files are not found.
 Try setting the HDF4_LIB and HDF4_INCLUDE environment variables to the
 location of your HDF4 library and include files.]))
+  fi
 fi
 AC_SUBST(HDF4LIBS)
+AM_CONDITIONAL(WITH_HDF4, test $ac_cv_with_hdf4 = yes)
 
 # *** HDF5 ***
 
-ST_CHECK_HDF5
-if test $st_cv_have_hdf5 = no ; then
-  AC_MSG_ERROR(BOXED_TEXT([ERROR: HDF5 libraries and/or header files are not found.
+AC_ARG_WITH([hdf5],
+  [AS_HELP_STRING([--with-hdf5],[build HDF5 support into HARP])],
+  [ac_cv_with_hdf5=$withval],
+  [AC_CACHE_CHECK([use HDF5],ac_cv_with_hdf5,ac_cv_with_hdf5=yes)])
+
+if test $ac_cv_with_hdf5 = yes ; then
+  ST_CHECK_HDF5
+  if test $st_cv_have_hdf5 = no ; then
+    AC_MSG_ERROR(BOXED_TEXT([ERROR: HDF5 libraries and/or header files are not found.
 Try setting the HDF5_LIB and HDF5_INCLUDE environment variables to the
 location of your HDF5 library and include files.]))
+  fi
 fi
 AC_SUBST(HDF5LIBS)
+AM_CONDITIONAL(WITH_HDF5, test $ac_cv_with_hdf5 = yes)
 
 # *** CODA ***
 

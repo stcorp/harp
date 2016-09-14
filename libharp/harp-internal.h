@@ -132,8 +132,12 @@ int harp_aux_afgl86_get_profile(const char *name, double datetime, double latitu
 int harp_aux_usstd76_get_profile(const char *name, int *num_vertical, const double **values);
 
 /* Error messaging */
+#ifdef HAVE_HDF4
 void harp_hdf4_add_error_message(void);
+#endif
+#ifdef HAVE_HDF5
 void harp_hdf5_add_error_message(void);
+#endif
 void harp_add_coda_cursor_path_to_error_message(const coda_cursor *cursor);
 
 /* Variables */
@@ -154,11 +158,19 @@ void harp_product_remove_all_variables(harp_product *product);
 int harp_product_get_datetime_range(const harp_product *product, double *datetime_start, double *datetime_stop);
 
 /* Import */
+#ifdef HAVE_HDF4
 int harp_import_hdf4(const char *filename, harp_product **product);
+#endif
+#ifdef HAVE_HDF5
 int harp_import_hdf5(const char *filename, harp_product **product);
+#endif
 int harp_import_netcdf(const char *filename, harp_product **product);
+#ifdef HAVE_HDF4
 int harp_export_hdf4(const char *filename, const harp_product *product);
+#endif
+#ifdef HAVE_HDF5
 int harp_export_hdf5(const char *filename, const harp_product *product);
+#endif
 int harp_export_netcdf(const char *filename, const harp_product *product);
 int harp_import_global_attributes_netcdf(const char *filename, double *datetime_start, double *datetime_stop,
                                          long dimension[], char **source_product);

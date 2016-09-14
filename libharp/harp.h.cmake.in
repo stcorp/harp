@@ -113,9 +113,11 @@ LIBHARP_API extern int harp_errno;
 #define HARP_ERROR_OUT_OF_MEMORY                              (-1)
 
 #define HARP_ERROR_HDF4                                     (-100)
-#define HARP_ERROR_HDF5                                     (-101)
-#define HARP_ERROR_NETCDF                                   (-102)
-#define HARP_ERROR_CODA                                     (-103)
+#define HARP_ERROR_NO_HDF4_SUPPORT                          (-101)
+#define HARP_ERROR_HDF5                                     (-102)
+#define HARP_ERROR_NO_HDF5_SUPPORT                          (-103)
+#define HARP_ERROR_NETCDF                                   (-104)
+#define HARP_ERROR_CODA                                     (-105)
 
 #define HARP_ERROR_FILE_NOT_FOUND                           (-200)
 #define HARP_ERROR_FILE_OPEN                                (-201)
