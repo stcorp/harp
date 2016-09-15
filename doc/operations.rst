@@ -115,11 +115,12 @@ A comma separated (csv) file is used as input for area filters.
 It has the following format:
 
 ::
-    longitude0[degree_north],latitude0[degree_north],longitude1[degree_north],latitude1[degree_north],longitude2[degree_north],latitude2[degree_north],longitude3[degree_north],latitude3[degree_north],longitude4[degree_north],latitude4[degree_north]
-    -60.0,40.0,60.0,40.0,60.0,0.0,-60.0,0.0,-60.0,40.0
+    lon0,lat0,lon1,lat1,lon2,lat2,lon3,lat3
+    -60.0,40.0,60.0,40.0,60.0,0.0,-60.0,0.0
     ...
 
-It starts with a header with longitude, latitude for each polygon point with the units in square brackets. This examples show the coordinates of four vertices plus a duplicate point connecting the first and the last point of the polygon area. Thus, each line in the comma separated file specifies one polygon area.
+It starts with a header with longitude, latitude column headers (this header will be skipped by HARP).
+Then, each further line defines a polygon. Each polygon consists of the vertices as defined on that line.
 
 Examples
 --------
