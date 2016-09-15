@@ -150,111 +150,14 @@ netCDF/HDF4/HDF5 file.</p>
             <span class="o">-</span><span class="n">a</span><span class="p">,</span> <span class="o">--</span><span class="n">operations</span> <span class="o">&lt;</span><span class="n">operation</span> <span class="nb">list</span><span class="o">&gt;</span>
                 <span class="n">List</span> <span class="n">of</span> <span class="n">operations</span> <span class="n">to</span> <span class="n">apply</span> <span class="n">to</span> <span class="n">the</span> <span class="n">product</span><span class="o">.</span>
                 <span class="n">An</span> <span class="n">operation</span> <span class="nb">list</span> <span class="n">needs</span> <span class="n">to</span> <span class="n">be</span> <span class="n">provided</span> <span class="k">as</span> <span class="n">a</span> <span class="n">single</span> <span class="n">expression</span><span class="o">.</span>
+                <span class="n">See</span> <span class="n">the</span> <span class="s1">&#39;operations&#39;</span> <span class="n">section</span> <span class="n">of</span> <span class="n">the</span> <span class="n">HARP</span> <span class="n">documentation</span> <span class="k">for</span>
+                <span class="n">more</span> <span class="n">details</span><span class="o">.</span>
 
             <span class="o">-</span><span class="n">f</span><span class="p">,</span> <span class="o">--</span><span class="nb">format</span> <span class="o">&lt;</span><span class="nb">format</span><span class="o">&gt;</span>
                 <span class="n">Output</span> <span class="nb">format</span><span class="p">:</span>
                     <span class="n">netcdf</span> <span class="p">(</span><span class="n">default</span><span class="p">)</span>
                     <span class="n">hdf4</span>
                     <span class="n">hdf5</span>
-
-        <span class="n">Action</span> <span class="nb">list</span><span class="p">:</span>
-            <span class="n">Actions</span> <span class="n">are</span> <span class="n">separated</span> <span class="n">by</span> <span class="n">semi</span><span class="o">-</span><span class="n">colons</span><span class="o">.</span> <span class="n">Each</span> <span class="n">operation</span> <span class="ow">is</span> <span class="n">either</span>
-            <span class="n">a</span> <span class="n">comparison</span> <span class="nb">filter</span><span class="p">,</span> <span class="n">a</span> <span class="n">membership</span> <span class="n">test</span> <span class="nb">filter</span><span class="p">,</span> <span class="ow">or</span> <span class="n">a</span> <span class="n">function</span>
-            <span class="n">call</span><span class="o">.</span> <span class="n">Strings</span> <span class="n">used</span> <span class="ow">in</span> <span class="n">operations</span> <span class="n">should</span> <span class="n">be</span> <span class="n">quoted</span> <span class="k">with</span> <span class="n">double</span>
-            <span class="n">quotes</span><span class="o">.</span>
-
-            <span class="n">Comparison</span> <span class="nb">filter</span><span class="p">:</span>
-                <span class="n">variable</span> <span class="n">operator</span> <span class="n">value</span> <span class="p">[</span><span class="n">unit</span><span class="p">]</span>
-                    <span class="n">Exclude</span> <span class="n">measurements</span> <span class="k">for</span> <span class="n">which</span> <span class="n">the</span> <span class="n">comparison</span> <span class="n">evaluates</span>
-                    <span class="n">to</span> <span class="n">false</span><span class="o">.</span>
-
-                <span class="n">Supported</span> <span class="n">operators</span><span class="p">:</span>
-                    <span class="o">==</span> <span class="o">!=</span>
-                    <span class="o">&lt;</span> <span class="o">&lt;=</span> <span class="o">&gt;=</span> <span class="o">&gt;</span> <span class="p">(</span><span class="k">for</span> <span class="n">numerical</span> <span class="n">variables</span> <span class="n">only</span><span class="p">)</span>
-
-                <span class="n">If</span> <span class="n">a</span> <span class="n">unit</span> <span class="ow">is</span> <span class="n">specified</span><span class="p">,</span> <span class="n">the</span> <span class="n">comparison</span> <span class="n">will</span> <span class="n">be</span> <span class="n">performed</span> <span class="ow">in</span>
-                <span class="n">the</span> <span class="n">specified</span> <span class="n">unit</span><span class="o">.</span> <span class="n">Otherwise</span><span class="p">,</span> <span class="n">it</span> <span class="n">will</span> <span class="n">be</span> <span class="n">performed</span> <span class="ow">in</span> <span class="n">the</span>
-                <span class="n">unit</span> <span class="n">of</span> <span class="n">the</span> <span class="n">variable</span><span class="o">.</span> <span class="n">Units</span> <span class="n">can</span> <span class="n">only</span> <span class="n">be</span> <span class="n">specified</span> <span class="k">for</span>
-                <span class="n">numerical</span> <span class="n">variables</span><span class="o">.</span>
-
-            <span class="n">Membership</span> <span class="n">test</span> <span class="nb">filter</span><span class="p">:</span>
-                <span class="n">variable</span> <span class="ow">in</span> <span class="p">(</span><span class="n">value</span><span class="p">,</span> <span class="o">...</span><span class="p">)</span> <span class="p">[</span><span class="n">unit</span><span class="p">]</span>
-                <span class="n">variable</span> <span class="ow">not</span> <span class="ow">in</span> <span class="p">(</span><span class="n">value</span><span class="p">,</span> <span class="o">...</span><span class="p">)</span> <span class="p">[</span><span class="n">unit</span><span class="p">]</span>
-                    <span class="n">Exclude</span> <span class="n">measurements</span> <span class="n">that</span> <span class="n">do</span> <span class="ow">not</span> <span class="n">occur</span> <span class="ow">in</span> <span class="n">the</span> <span class="n">specified</span>
-                    <span class="nb">list</span><span class="o">.</span>
-
-                <span class="n">If</span> <span class="n">a</span> <span class="n">unit</span> <span class="ow">is</span> <span class="n">specified</span><span class="p">,</span> <span class="n">the</span> <span class="n">comparison</span> <span class="n">will</span> <span class="n">be</span> <span class="n">performed</span> <span class="ow">in</span>
-                <span class="n">the</span> <span class="n">specified</span> <span class="n">unit</span><span class="o">.</span> <span class="n">Otherwise</span><span class="p">,</span> <span class="n">it</span> <span class="n">will</span> <span class="n">be</span> <span class="n">performed</span> <span class="ow">in</span> <span class="n">the</span>
-                <span class="n">unit</span> <span class="n">of</span> <span class="n">the</span> <span class="n">variable</span><span class="o">.</span> <span class="n">Units</span> <span class="n">can</span> <span class="n">only</span> <span class="n">be</span> <span class="n">specified</span> <span class="k">for</span>
-                <span class="n">numerical</span> <span class="n">variables</span><span class="o">.</span>
-
-            <span class="n">Function</span> <span class="n">call</span><span class="p">:</span>
-                <span class="n">function</span><span class="p">(</span><span class="n">argument</span><span class="p">,</span> <span class="o">...</span><span class="p">)</span>
-
-            <span class="n">Supported</span> <span class="n">functions</span><span class="p">:</span>
-                <span class="n">collocate</span><span class="o">-</span><span class="n">left</span><span class="p">(</span><span class="n">collocation</span><span class="o">-</span><span class="n">result</span><span class="o">-</span><span class="n">file</span><span class="p">)</span>
-                    <span class="n">Apply</span> <span class="n">the</span> <span class="n">specified</span> <span class="n">collocation</span> <span class="n">result</span> <span class="n">file</span> <span class="k">as</span> <span class="n">an</span> <span class="n">index</span>
-                    <span class="nb">filter</span> <span class="n">assuming</span> <span class="n">the</span> <span class="n">product</span> <span class="ow">is</span> <span class="n">part</span> <span class="n">of</span> <span class="n">dataset</span> <span class="n">A</span><span class="o">.</span>
-
-                <span class="n">collocate</span><span class="o">-</span><span class="n">right</span><span class="p">(</span><span class="n">collocation</span><span class="o">-</span><span class="n">result</span><span class="o">-</span><span class="n">file</span><span class="p">)</span>
-                    <span class="n">Apply</span> <span class="n">the</span> <span class="n">specified</span> <span class="n">collocation</span> <span class="n">result</span> <span class="n">file</span> <span class="k">as</span> <span class="n">an</span> <span class="n">index</span>
-                    <span class="nb">filter</span> <span class="n">assuming</span> <span class="n">the</span> <span class="n">product</span> <span class="ow">is</span> <span class="n">part</span> <span class="n">of</span> <span class="n">dataset</span> <span class="n">B</span><span class="o">.</span>
-
-                <span class="n">valid</span><span class="p">(</span><span class="n">variable</span><span class="p">)</span>
-                    <span class="n">Exclude</span> <span class="n">invalid</span> <span class="n">values</span> <span class="n">of</span> <span class="n">the</span> <span class="n">specified</span> <span class="n">variable</span> <span class="p">(</span><span class="n">values</span>
-                    <span class="n">outside</span> <span class="n">the</span> <span class="n">valid</span> <span class="nb">range</span> <span class="n">of</span> <span class="n">the</span> <span class="n">variable</span><span class="p">,</span> <span class="ow">or</span> <span class="n">NaN</span><span class="p">)</span><span class="o">.</span>
-
-                <span class="n">longitude</span><span class="o">-</span><span class="nb">range</span><span class="p">(</span><span class="n">minimum</span> <span class="p">[</span><span class="n">unit</span><span class="p">],</span> <span class="n">maximum</span> <span class="p">[</span><span class="n">unit</span><span class="p">])</span>
-                    <span class="n">Exclude</span> <span class="n">measurements</span> <span class="n">of</span> <span class="n">which</span> <span class="n">the</span> <span class="n">longitude</span> <span class="n">of</span> <span class="n">the</span>
-                    <span class="n">measurement</span> <span class="n">location</span> <span class="n">falls</span> <span class="n">outside</span> <span class="n">the</span> <span class="n">specified</span> <span class="nb">range</span><span class="o">.</span>
-                    <span class="n">This</span> <span class="n">function</span> <span class="n">correctly</span> <span class="n">handles</span> <span class="n">longitude</span> <span class="n">ranges</span> <span class="n">that</span>
-                    <span class="n">cross</span> <span class="n">the</span> <span class="n">international</span> <span class="n">date</span> <span class="n">line</span><span class="o">.</span>
-
-                <span class="n">point</span><span class="o">-</span><span class="n">distance</span><span class="p">(</span><span class="n">longitude</span> <span class="p">[</span><span class="n">unit</span><span class="p">],</span> <span class="n">latitude</span> <span class="p">[</span><span class="n">unit</span><span class="p">],</span>
-                               <span class="n">distance</span> <span class="p">[</span><span class="n">unit</span><span class="p">])</span>
-                    <span class="n">Exclude</span> <span class="n">measurements</span> <span class="n">situated</span> <span class="n">further</span> <span class="n">than</span> <span class="n">the</span> <span class="n">specified</span>
-                    <span class="n">distance</span> <span class="kn">from</span> <span class="nn">the</span> <span class="n">specified</span> <span class="n">location</span><span class="o">.</span>
-
-                <span class="n">area</span><span class="o">-</span><span class="n">mask</span><span class="o">-</span><span class="n">covers</span><span class="o">-</span><span class="n">point</span><span class="p">(</span><span class="n">area</span><span class="o">-</span><span class="n">mask</span><span class="o">-</span><span class="n">file</span><span class="p">)</span>
-                    <span class="n">Exclude</span> <span class="n">measurements</span> <span class="k">for</span> <span class="n">which</span> <span class="n">no</span> <span class="n">area</span> <span class="kn">from</span> <span class="nn">the</span> <span class="n">area</span>
-                    <span class="n">mask</span> <span class="n">file</span> <span class="n">contains</span> <span class="n">the</span> <span class="n">measurement</span> <span class="n">location</span><span class="o">.</span>
-
-                <span class="n">area</span><span class="o">-</span><span class="n">mask</span><span class="o">-</span><span class="n">covers</span><span class="o">-</span><span class="n">area</span><span class="p">(</span><span class="n">area</span><span class="o">-</span><span class="n">mask</span><span class="o">-</span><span class="n">file</span><span class="p">)</span>
-                    <span class="n">Exclude</span> <span class="n">measurements</span> <span class="k">for</span> <span class="n">which</span> <span class="n">no</span> <span class="n">area</span> <span class="kn">from</span> <span class="nn">the</span> <span class="n">area</span>
-                    <span class="n">mask</span> <span class="n">file</span> <span class="n">covers</span> <span class="n">the</span> <span class="n">measurement</span> <span class="n">area</span> <span class="n">completely</span><span class="o">.</span>
-
-                <span class="n">area</span><span class="o">-</span><span class="n">mask</span><span class="o">-</span><span class="n">intersects</span><span class="o">-</span><span class="n">area</span><span class="p">(</span><span class="n">area</span><span class="o">-</span><span class="n">mask</span><span class="o">-</span><span class="n">file</span><span class="p">,</span>
-                                          <span class="n">minimum</span><span class="o">-</span><span class="n">overlap</span><span class="o">-</span><span class="n">percentage</span><span class="p">)</span>
-                    <span class="n">Exclude</span> <span class="n">measurements</span> <span class="k">for</span> <span class="n">which</span> <span class="n">no</span> <span class="n">area</span> <span class="kn">from</span> <span class="nn">the</span> <span class="n">area</span>
-                    <span class="n">mask</span> <span class="n">file</span> <span class="n">overlaps</span> <span class="n">at</span> <span class="n">least</span> <span class="n">the</span> <span class="n">specified</span> <span class="n">percentage</span> <span class="n">of</span>
-                    <span class="n">the</span> <span class="n">measurement</span> <span class="n">area</span><span class="o">.</span>
-
-                <span class="n">derive</span><span class="p">(</span><span class="n">variable</span> <span class="p">{</span><span class="n">dimension</span><span class="o">-</span><span class="nb">type</span><span class="p">,</span> <span class="o">...</span><span class="p">}</span> <span class="p">[</span><span class="n">unit</span><span class="p">])</span>
-                    <span class="n">Derive</span> <span class="n">the</span> <span class="n">specified</span> <span class="n">variable</span> <span class="kn">from</span> <span class="nn">other</span> <span class="n">variables</span> <span class="n">found</span>
-                    <span class="ow">in</span> <span class="n">the</span> <span class="n">product</span><span class="o">.</span> <span class="n">The</span> <span class="o">--</span><span class="nb">list</span><span class="o">-</span><span class="n">conversions</span> <span class="n">option</span> <span class="n">of</span>
-                    <span class="n">harpfilter</span> <span class="n">can</span> <span class="n">be</span> <span class="n">used</span> <span class="n">to</span> <span class="nb">list</span> <span class="n">available</span> <span class="n">variable</span>
-                    <span class="n">conversions</span><span class="o">.</span>
-
-                <span class="n">keep</span><span class="p">(</span><span class="n">variable</span><span class="p">,</span> <span class="o">...</span><span class="p">)</span>
-                    <span class="n">Mark</span> <span class="n">the</span> <span class="n">specified</span> <span class="n">variable</span><span class="p">(</span><span class="n">s</span><span class="p">)</span> <span class="k">for</span> <span class="n">inclusion</span> <span class="ow">in</span> <span class="n">the</span>
-                    <span class="n">filtered</span> <span class="n">product</span><span class="o">.</span> <span class="n">All</span> <span class="n">variables</span> <span class="n">marked</span> <span class="k">for</span> <span class="n">inclusion</span>
-                    <span class="n">will</span> <span class="n">be</span> <span class="n">kept</span> <span class="ow">in</span> <span class="n">the</span> <span class="n">filtered</span> <span class="n">product</span><span class="p">,</span> <span class="nb">all</span> <span class="n">other</span>
-                    <span class="n">variables</span> <span class="n">will</span> <span class="n">be</span> <span class="n">excluded</span><span class="o">.</span>
-
-                <span class="n">exclude</span><span class="p">(</span><span class="n">variable</span><span class="p">,</span> <span class="o">...</span><span class="p">)</span>
-                    <span class="n">Mark</span> <span class="n">the</span> <span class="n">specified</span> <span class="n">variable</span><span class="p">(</span><span class="n">s</span><span class="p">)</span> <span class="k">for</span> <span class="n">exclusion</span> <span class="kn">from</span> <span class="nn">the</span>
-                    <span class="n">filtered</span> <span class="n">product</span><span class="o">.</span> <span class="n">All</span> <span class="n">variables</span> <span class="n">marked</span> <span class="k">for</span> <span class="n">exclusion</span>
-                    <span class="n">will</span> <span class="n">be</span> <span class="n">excluded</span> <span class="kn">from</span> <span class="nn">the</span> <span class="n">filtered</span> <span class="n">product</span><span class="p">,</span> <span class="nb">all</span> <span class="n">other</span>
-                    <span class="n">variables</span> <span class="n">will</span> <span class="n">be</span> <span class="n">kept</span><span class="o">.</span>
-
-                <span class="n">The</span> <span class="n">unit</span> <span class="n">qualifier</span> <span class="ow">is</span> <span class="n">optional</span> <span class="k">for</span> <span class="nb">all</span> <span class="n">function</span> <span class="n">arguments</span>
-                <span class="n">that</span> <span class="n">support</span> <span class="n">it</span><span class="o">.</span> <span class="n">If</span> <span class="n">a</span> <span class="n">unit</span> <span class="ow">is</span> <span class="ow">not</span> <span class="n">specified</span><span class="p">,</span> <span class="n">the</span> <span class="n">unit</span> <span class="n">of</span> <span class="n">the</span>
-                <span class="n">corresponding</span> <span class="n">variable</span> <span class="n">will</span> <span class="n">be</span> <span class="n">used</span><span class="o">.</span>
-
-            <span class="n">Examples</span><span class="p">:</span>
-                <span class="o">-</span><span class="n">a</span> <span class="s1">&#39;derive(altitude </span><span class="si">{time}</span><span class="s1"> [km]); pressure &gt; 3.0 [bar];&#39;</span>
-                <span class="o">-</span><span class="n">a</span> <span class="s1">&#39;point-distance(-52.5 [degree], 1.0 [rad], 1e3 [km])&#39;</span>
-                <span class="o">-</span><span class="n">a</span> <span class="s1">&#39;index in (0, 10, 20, 30, 40); valid(pressure)&#39;</span>
 
         <span class="n">If</span> <span class="n">the</span> <span class="n">filtered</span> <span class="n">product</span> <span class="ow">is</span> <span class="n">empty</span><span class="p">,</span> <span class="n">a</span> <span class="n">warning</span> <span class="n">will</span> <span class="n">be</span> <span class="n">printed</span> <span class="ow">and</span> <span class="n">the</span>
         <span class="n">tool</span> <span class="n">will</span> <span class="k">return</span> <span class="k">with</span> <span class="n">exit</span> <span class="n">code</span> <span class="mi">2</span> <span class="p">(</span><span class="n">without</span> <span class="n">writing</span> <span class="n">a</span> <span class="n">file</span><span class="p">)</span><span class="o">.</span>
