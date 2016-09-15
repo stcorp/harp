@@ -234,12 +234,11 @@ variables will be kept.</dd>
 <h2>Area mask file</h2>
 <p>A comma separated (csv) file is used as input for area filters.</p>
 <p>It has the following format:</p>
-<dl class="docutils">
-<dt>::</dt>
-<dd>lon0,lat0,lon1,lat1,lon2,lat2,lon3,lat3
--60.0,40.0,60.0,40.0,60.0,0.0,-60.0,0.0
-...</dd>
-</dl>
+<div class="highlight-default"><div class="highlight"><pre><span></span><span class="n">lon0</span><span class="p">,</span><span class="n">lat0</span><span class="p">,</span><span class="n">lon1</span><span class="p">,</span><span class="n">lat1</span><span class="p">,</span><span class="n">lon2</span><span class="p">,</span><span class="n">lat2</span><span class="p">,</span><span class="n">lon3</span><span class="p">,</span><span class="n">lat3</span>
+<span class="mf">60.0</span><span class="p">,</span><span class="mf">0.0</span><span class="p">,</span><span class="mf">60.0</span><span class="p">,</span><span class="mf">40.0</span><span class="p">,</span><span class="o">-</span><span class="mf">60.0</span><span class="p">,</span><span class="mf">40.0</span><span class="p">,</span><span class="o">-</span><span class="mf">60.0</span><span class="p">,</span><span class="mf">0.0</span>
+<span class="o">...</span>
+</pre></div>
+</div>
 <p>It starts with a header with longitude, latitude column headers (this header will be skipped by HARP).
 Then, each further line defines a polygon. Each polygon consists of the vertices as defined on that line.</p>
 </div>

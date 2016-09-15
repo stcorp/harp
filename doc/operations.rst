@@ -115,8 +115,9 @@ A comma separated (csv) file is used as input for area filters.
 It has the following format:
 
 ::
+
     lon0,lat0,lon1,lat1,lon2,lat2,lon3,lat3
-    -60.0,40.0,60.0,40.0,60.0,0.0,-60.0,0.0
+    60.0,0.0,60.0,40.0,-60.0,40.0,-60.0,0.0
     ...
 
 It starts with a header with longitude, latitude column headers (this header will be skipped by HARP).
