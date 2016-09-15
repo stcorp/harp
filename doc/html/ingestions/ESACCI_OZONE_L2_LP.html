@@ -150,7 +150,7 @@
 <tr class="row-even"><td><strong>datetime</strong></td>
 <td>double</td>
 <td>{<em>time</em>}</td>
-<td>seconds since 2000-01-01</td>
+<td>days since 1900-01-01</td>
 <td>time of the measurement</td>
 </tr>
 <tr class="row-odd"><td><strong>longitude</strong></td>
@@ -209,9 +209,9 @@
 <p>The table below details where and how each variable was retrieved from the input product.</p>
 <table border="1" class="docutils">
 <colgroup>
-<col width="22%" />
-<col width="10%" />
-<col width="68%" />
+<col width="35%" />
+<col width="8%" />
+<col width="57%" />
 </colgroup>
 <thead valign="bottom">
 <tr class="row-odd"><th class="head">field name</th>
@@ -219,38 +219,35 @@
 </tr>
 </thead>
 <tbody valign="top">
-<tr class="row-even"><td rowspan="2"><strong>datetime</strong></td>
+<tr class="row-even"><td><strong>datetime</strong></td>
 <td><em>path</em></td>
 <td><strong>/time[]</strong></td>
 </tr>
-<tr class="row-odd"><td><em>description</em></td>
-<td>datetime converted from hours since 1990-01-01 to seconds since 2000-01-01 (using 86400 seconds per day)</td>
-</tr>
-<tr class="row-even"><td><strong>longitude</strong></td>
+<tr class="row-odd"><td><strong>longitude</strong></td>
 <td><em>path</em></td>
 <td><strong>/longitude[]</strong></td>
 </tr>
-<tr class="row-odd"><td><strong>latitude</strong></td>
+<tr class="row-even"><td><strong>latitude</strong></td>
 <td><em>path</em></td>
 <td><strong>/latitude[]</strong></td>
 </tr>
-<tr class="row-even"><td><strong>altitude</strong></td>
+<tr class="row-odd"><td><strong>altitude</strong></td>
 <td><em>path</em></td>
 <td><strong>/altitude[]</strong></td>
 </tr>
-<tr class="row-odd"><td><strong>pressure</strong></td>
+<tr class="row-even"><td><strong>pressure</strong></td>
 <td><em>path</em></td>
 <td><strong>/air_pressure[]</strong></td>
 </tr>
-<tr class="row-even"><td><strong>temperature</strong></td>
+<tr class="row-odd"><td><strong>temperature</strong></td>
 <td><em>path</em></td>
 <td><strong>/air_temperature[]</strong></td>
 </tr>
-<tr class="row-odd"><td><strong>O3_number_density</strong></td>
+<tr class="row-even"><td><strong>O3_number_density</strong></td>
 <td><em>path</em></td>
 <td><strong>/mole_concentration_of_ozone_in_air[]</strong></td>
 </tr>
-<tr class="row-even"><td><strong>O3_number_density_uncertainty</strong></td>
+<tr class="row-odd"><td><strong>O3_number_density_uncertainty</strong></td>
 <td><em>path</em></td>
 <td><strong>/mole_concentration_of_ozone_in_air_standard_error[]</strong></td>
 </tr>

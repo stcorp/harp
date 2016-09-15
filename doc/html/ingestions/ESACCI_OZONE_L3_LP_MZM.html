@@ -150,7 +150,7 @@
 <tr class="row-even"><td><strong>datetime</strong></td>
 <td>double</td>
 <td>{<em>time</em>}</td>
-<td>seconds since 2000-01-01</td>
+<td>days since 1990-01-01</td>
 <td>time of the measurement</td>
 </tr>
 <tr class="row-odd"><td><strong>latitude</strong></td>
@@ -197,9 +197,9 @@
 <p>The table below details where and how each variable was retrieved from the input product.</p>
 <table border="1" class="docutils">
 <colgroup>
-<col width="22%" />
+<col width="41%" />
 <col width="12%" />
-<col width="66%" />
+<col width="47%" />
 </colgroup>
 <thead valign="bottom">
 <tr class="row-odd"><th class="head">field name</th>
@@ -207,30 +207,27 @@
 </tr>
 </thead>
 <tbody valign="top">
-<tr class="row-even"><td rowspan="2"><strong>datetime</strong></td>
+<tr class="row-even"><td><strong>datetime</strong></td>
 <td><em>path</em></td>
 <td><strong>/time[]</strong></td>
 </tr>
-<tr class="row-odd"><td><em>description</em></td>
-<td>datetime converted from days since 1990-01-01 UTC to seconds since 2000-01-01 TAI</td>
-</tr>
-<tr class="row-even"><td><strong>latitude</strong></td>
+<tr class="row-odd"><td><strong>latitude</strong></td>
 <td><em>path</em></td>
 <td><strong>/latitude_centers[]</strong></td>
 </tr>
-<tr class="row-odd"><td><strong>approximate_altitude</strong></td>
+<tr class="row-even"><td><strong>approximate_altitude</strong></td>
 <td><em>path</em></td>
 <td><strong>/approximate_altitude[]</strong></td>
 </tr>
-<tr class="row-even"><td><strong>pressure</strong></td>
+<tr class="row-odd"><td><strong>pressure</strong></td>
 <td><em>path</em></td>
 <td><strong>/air_pressure[]</strong></td>
 </tr>
-<tr class="row-odd"><td><strong>O3_volume_mixing_ratio</strong></td>
+<tr class="row-even"><td><strong>O3_volume_mixing_ratio</strong></td>
 <td><em>path</em></td>
 <td><strong>/ozone_mixing_ratio[]</strong></td>
 </tr>
-<tr class="row-even"><td><strong>O3_number_density</strong></td>
+<tr class="row-odd"><td><strong>O3_number_density</strong></td>
 <td><em>path</em></td>
 <td><strong>/ozone_mole_concentation[]</strong></td>
 </tr>

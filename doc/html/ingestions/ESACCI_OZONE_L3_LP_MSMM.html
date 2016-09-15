@@ -150,7 +150,7 @@
 <tr class="row-even"><td><strong>datetime</strong></td>
 <td>double</td>
 <td>{<em>time</em>}</td>
-<td>seconds since 2000-01-01</td>
+<td>seconds since 1990-01-01</td>
 <td>time of the measurement</td>
 </tr>
 <tr class="row-odd"><td><strong>longitude</strong></td>
@@ -225,49 +225,46 @@
 </tr>
 </thead>
 <tbody valign="top">
-<tr class="row-even"><td rowspan="2"><strong>datetime</strong></td>
+<tr class="row-even"><td><strong>datetime</strong></td>
 <td><em>path</em></td>
 <td><strong>/time[]</strong></td>
 </tr>
-<tr class="row-odd"><td><em>description</em></td>
-<td>datetime converted from days since 1990-01-01 UTC to seconds since 2000-01-01 TAI</td>
-</tr>
-<tr class="row-even"><td><strong>longitude</strong></td>
+<tr class="row-odd"><td><strong>longitude</strong></td>
 <td><em>path</em></td>
 <td><strong>/longitude_centers[]</strong></td>
 </tr>
-<tr class="row-odd"><td><strong>latitude</strong></td>
+<tr class="row-even"><td><strong>latitude</strong></td>
 <td><em>path</em></td>
 <td><strong>/latitude_centers[]</strong></td>
 </tr>
-<tr class="row-even"><td><strong>approximate_altitude</strong></td>
+<tr class="row-odd"><td><strong>approximate_altitude</strong></td>
 <td><em>path</em></td>
 <td><strong>/approximate_altitude[]</strong></td>
 </tr>
-<tr class="row-odd"><td><strong>pressure</strong></td>
+<tr class="row-even"><td><strong>pressure</strong></td>
 <td><em>path</em></td>
 <td><strong>/air_pressure[]</strong></td>
 </tr>
-<tr class="row-even"><td><strong>O3_volume_mixing_ratio</strong></td>
+<tr class="row-odd"><td><strong>O3_volume_mixing_ratio</strong></td>
 <td><em>path</em></td>
 <td><strong>/merged_ozone_vmr[]</strong></td>
 </tr>
-<tr class="row-odd"><td rowspan="2"><strong>O3_volume_mixing_ratio_uncertainty</strong></td>
+<tr class="row-even"><td rowspan="2"><strong>O3_volume_mixing_ratio_uncertainty</strong></td>
 <td><em>path</em></td>
 <td><strong>/merged_ozone_vmr[], /uncertainty_of_merged_ozone[]</strong></td>
 </tr>
-<tr class="row-even"><td><em>description</em></td>
+<tr class="row-odd"><td><em>description</em></td>
 <td>derived from the relative uncertainty in percent as: uncertainty_of_merged_ozone[] * 0.01 * merged_ozone_vmr[]</td>
 </tr>
-<tr class="row-odd"><td><strong>O3_number_density</strong></td>
+<tr class="row-even"><td><strong>O3_number_density</strong></td>
 <td><em>path</em></td>
 <td><strong>/merged_ozone_concentration[]</strong></td>
 </tr>
-<tr class="row-even"><td rowspan="2"><strong>O3_number_density_uncertainty</strong></td>
+<tr class="row-odd"><td rowspan="2"><strong>O3_number_density_uncertainty</strong></td>
 <td><em>path</em></td>
 <td><strong>/merged_ozone_concentration[], /uncertainty_of_merged_ozone[]</strong></td>
 </tr>
-<tr class="row-odd"><td><em>description</em></td>
+<tr class="row-even"><td><em>description</em></td>
 <td>derived from the relative uncertainty in percent as: uncertainty_of_merged_ozone[] * 0.01 * merged_ozone_concentration[]</td>
 </tr>
 </tbody>

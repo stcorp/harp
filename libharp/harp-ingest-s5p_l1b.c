@@ -496,35 +496,17 @@ static int read_datetime(void *user_data, harp_array data)
     ingest_info *info = (ingest_info *)user_data;
     coda_cursor cursor;
     harp_scalar fill_value;
-    double epoch;
     double time_reference;
     long coda_num_elements;
     long i;
 
-    /* NB. It seems that leap seconds are not handled properly in the product. The product specification "Input/output
-     * data specification for the TROPOMI L01b data processor" [S5P-KNMI-L01B-0012-SD], issue 4.0.0, date 2014-12-09,
-     * page 38, section 8.5 "Variable: time" states that the UTC time defined by the variable 'time' (stored as a number
-     * of seconds since 2010-01-01) corresponds to the UTC time defined by the global attribute 'time_reference' (stored
-     * as text).
-     *
-     * The sample product S5P_TEST_L1B_IR_SIR_20140827T114200_20140827T115800_53811_01_000800_20141209T120000.nc,
-     * however, yields the following:
-     *
-     *     time_reference = 2014-08-27T00:00:00Z
-     *     time = 146793600
-     *
-     * Yet, the number of seconds since 2010-01-01 00:00:00 UTC for 2014-08-27 00:00:00 UTC computed with proper
-     * handling of leap seconds is: 146793601 (due to the leap second introduced on January 30, 2012).
+    /* Even though the product specification may not accurately describe this, S5P treats all days as having 86400
+     * seconds (as does HARP). The time value is thus the sum of:
+     * - the S5P time reference as seconds since 2010 (using 86400 seconds per day)
+     * - the number of seconds since the S5P time reference
      */
 
-    /* Convert the epoch 2010-01-01 00:00:00 UTC to seconds since 2000-01-01 00:00:00 TAI. */
-    if (coda_time_parts_to_double_utc(2010, 1, 1, 0, 0, 0, 0, &epoch) != 0)
-    {
-        harp_set_error(HARP_ERROR_CODA, NULL);
-        return -1;
-    }
-
-    /* Read reference time in seconds since 2010-01-01 00:00:00 UTC (probably wrong, see above). */
+    /* Read reference time in seconds since 2010-01-01 */
     cursor = info->observation_cursor;
     if (coda_cursor_goto_record_field_by_name(&cursor, "time") != 0)
     {
@@ -595,10 +577,10 @@ static int read_datetime(void *user_data, harp_array data)
     /* Replace values equal to the _FillValue variable attribute by NaN. */
     harp_array_replace_fill_value(harp_type_double, info->num_scanlines, data, fill_value);
 
-    /* Convert observation start time to seconds since 2000-01-01 00:00:00 TAI. */
+    /* Convert observation start time to seconds since 2010-01-01 */
     for (i = 0; i < info->num_scanlines; i++)
     {
-        data.double_data[i] = epoch + time_reference + data.double_data[i] / 1e3;
+        data.double_data[i] = time_reference + data.double_data[i] / 1e3;
     }
 
     /* Broadcast the result along the pixel dimension. */
@@ -877,12 +859,13 @@ static void register_irradiance_product_variables(harp_product_definition *produ
     description = "time of the measurement";
     variable_definition =
         harp_ingestion_register_variable_full_read(product_definition, "datetime", harp_type_double, 1, dimension_type,
-                                                   NULL, description, "seconds since 2000-01-01", NULL, read_datetime);
+                                                   NULL, description, "seconds since 2010-01-01", NULL, read_datetime);
     snprintf(path, MAX_PATH_LENGTH, "/%s/STANDARD_MODE/OBSERVATIONS/time, /%s/STANDARD_MODE/OBSERVATIONS/delta_time[]",
              product_group_name, product_group_name);
     description =
-        "time converted from milliseconds since a reference time (given as seconds since 2010-01-01 UTC) to seconds "
-        "since 2000-01-01 TAI; the time associated with a scanline is repeated for each pixel in the scanline";
+        "time converted from milliseconds since a reference time (given as seconds since 2010-01-01) to seconds since "
+        "2010-01-01 (using 86400 seconds per day); the time associated with a scanline is repeated for each pixel in "
+        "the scanline";
     harp_variable_definition_add_mapping(variable_definition, NULL, NULL, path, description);
 
     /* Irradiance. */
@@ -926,12 +909,13 @@ static void register_radiance_product_variables(harp_product_definition *product
     description = "time of the measurement";
     variable_definition =
         harp_ingestion_register_variable_full_read(product_definition, "datetime", harp_type_double, 1, dimension_type,
-                                                   NULL, description, "seconds since 2000-01-01", NULL, read_datetime);
+                                                   NULL, description, "seconds since 2010-01-01", NULL, read_datetime);
     snprintf(path, MAX_PATH_LENGTH, "/%s/STANDARD_MODE/OBSERVATIONS/time, /%s/STANDARD_MODE/OBSERVATIONS/delta_time[]",
              product_group_name, product_group_name);
     description =
-        "time converted from milliseconds since a reference time (given as seconds since 2010-01-01 UTC) to seconds "
-        "since 2000-01-01 TAI; the time associated with a scanline is repeated for each pixel in the scanline";
+        "time converted from milliseconds since a reference time (given as seconds since 2010-01-01) to seconds since "
+        "2010-01-01 (using 86400 seconds per day); the time associated with a scanline is repeated for each pixel in "
+        "the scanline";
     harp_variable_definition_add_mapping(variable_definition, NULL, NULL, path, description);
 
     /* Geographic. */

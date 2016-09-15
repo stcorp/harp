@@ -334,13 +334,13 @@ static int read_datetime(void *user_data, harp_array data)
         harp_set_error(HARP_ERROR_CODA, NULL);
         return -1;
     }
-    if (coda_time_string_to_double_utc("yyyy-MM-dd", date, &epoch) != 0)
+    if (coda_time_string_to_double("yyyy-MM-dd", date, &epoch) != 0)
     {
         harp_set_error(HARP_ERROR_CODA, NULL);
         return -1;
     }
 
-    /* Convert epoch to hours since 2000/01/01 TAI. */
+    /* Convert epoch to hours since 2000-01-01 */
     epoch /= CONST_HOUR;
 
     if (read_dataset(info, "/time", harp_type_double, info->num_time, data) != 0)
@@ -688,7 +688,7 @@ int harp_ingestion_module_cci_l2_o3_np_init(void)
                                                    NULL, description, "hours since 2000-01-01", NULL, read_datetime);
     path = "/@Data_date, /time[]";
     description =
-        "datetime converted from the UTC epoch of the product and an offset in hours to hours since 2000-01-01";
+        "datetime converted from the epoch of the product and an offset in hours to hours since 2000-01-01";
     harp_variable_definition_add_mapping(variable_definition, NULL, NULL, path, description);
 
     /* longitude */

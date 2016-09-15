@@ -159,26 +159,8 @@ static int read_dimensions(void *user_data, long dimension[HARP_NUM_DIM_TYPES])
 static int read_datetime(void *user_data, harp_array data)
 {
     ingest_info *info = (ingest_info *)user_data;
-    double epoch;
-    long i;
 
-    /* Convert the epoch used for CCI OZONE L2 products, i.e. 1900/01/01 UTC, to seconds since 2000/01/01 TAI. */
-    if (coda_time_parts_to_double_utc(1900, 1, 1, 0, 0, 0, 0, &epoch) != 0)
-    {
-        return -1;
-    }
-
-    if (read_dataset(info, "/time", info->num_time, data) != 0)
-    {
-        return -1;
-    }
-
-    for (i = 0; i < info->num_time; i++)
-    {
-        data.double_data[i] += epoch + data.double_data[i] * CONST_HOUR;
-    }
-
-    return 0;
+    return read_dataset(info, "/time", info->num_time, data);
 }
 
 static int read_longitude(void *user_data, harp_array data)
@@ -282,10 +264,9 @@ int harp_ingestion_module_cci_l2_o3_lp_init(void)
     description = "time of the measurement";
     variable_definition =
         harp_ingestion_register_variable_full_read(product_definition, "datetime", harp_type_double, 1, dimension_type,
-                                                   NULL, description, "seconds since 2000-01-01", NULL, read_datetime);
+                                                   NULL, description, "days since 1900-01-01", NULL, read_datetime);
     path = "/time[]";
-    description = "datetime converted from hours since 1990-01-01 UTC to seconds since 2000-01-01 TAI";
-    harp_variable_definition_add_mapping(variable_definition, NULL, NULL, path, description);
+    harp_variable_definition_add_mapping(variable_definition, NULL, NULL, path, NULL);
 
     /* longitude */
     description = "longitude of the ground pixel center";

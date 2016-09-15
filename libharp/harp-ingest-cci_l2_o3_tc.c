@@ -29,9 +29,6 @@
 #include <stdlib.h>
 #include <string.h>
 
-/* Fractional number of days between 1995/01/01 UTC and 2000/01/01 TAI. */
-static const double DAYS_FROM_1995_UTC_TO_2000_TAI = (157766400 - 29) / CONST_DAY;
-
 typedef struct ingest_info_struct
 {
     coda_product *product;
@@ -207,18 +204,8 @@ static int read_dimensions(void *user_data, long dimension[HARP_NUM_DIM_TYPES])
 static int read_datetime(void *user_data, harp_array data)
 {
     ingest_info *info = (ingest_info *)user_data;
-    long i;
 
-    if (read_dataset(info, "/time", harp_type_double, info->num_time, data) != 0)
-    {
-        return -1;
-    }
-    for (i = 0; i < info->num_time; i++)
-    {
-        data.double_data[i] -= DAYS_FROM_1995_UTC_TO_2000_TAI;
-    }
-
-    return 0;
+    return read_dataset(info, "/time", harp_type_double, info->num_time, data);
 }
 
 static int read_scanline_pixel_index(void *user_data, harp_array data)
@@ -526,10 +513,9 @@ int harp_ingestion_module_cci_l2_o3_tc_init(void)
     description = "time of the measurement";
     variable_definition =
         harp_ingestion_register_variable_full_read(product_definition, "datetime", harp_type_double, 1, dimension_type,
-                                                   NULL, description, "days since 2000-01-01", NULL, read_datetime);
+                                                   NULL, description, "days since 1995-01-01", NULL, read_datetime);
     path = "/time[]";
-    description = "datetime converted from days since 1995-01-01 UTC to days since 2000-01-01 TAI";
-    harp_variable_definition_add_mapping(variable_definition, NULL, NULL, path, description);
+    harp_variable_definition_add_mapping(variable_definition, NULL, NULL, path, NULL);
 
     /* longitude */
     description = "longitude of the ground pixel center";

@@ -66,7 +66,7 @@ static int read_datetime(ingest_info *info, const char *path, double *datetime)
         harp_set_error(HARP_ERROR_CODA, NULL);
         return -1;
     }
-    if (coda_time_string_to_double_utc("yyyyMMdd", buffer, datetime) != 0)
+    if (coda_time_string_to_double("yyyyMMdd", buffer, datetime) != 0)
     {
         harp_set_error(HARP_ERROR_CODA, NULL);
         harp_add_coda_cursor_path_to_error_message(&cursor);
@@ -293,7 +293,7 @@ int harp_ingestion_module_cci_l3_o3_tc_init(void)
                                                    datetime_dimension_type, NULL, description,
                                                    "seconds since 2000-01-01", NULL, read_datetime_start);
     path = "/@time_coverage_start";
-    description = "datetime converted from a UTC start date to seconds since 2000-01-01 TAI";
+    description = "datetime converted from a start date to seconds since 2000-01-01";
     harp_variable_definition_add_mapping(variable_definition, NULL, NULL, path, description);
 
     /* datetime_start */
@@ -303,7 +303,7 @@ int harp_ingestion_module_cci_l3_o3_tc_init(void)
                                                    datetime_dimension_type, NULL, description,
                                                    "seconds since 2000-01-01", NULL, read_datetime_stop);
     path = "/@time_coverage_end";
-    description = "datetime converted from a UTC end date to seconds since 2000-01-01 TAI";
+    description = "datetime converted from an end date to seconds since 2000-01-01";
     harp_variable_definition_add_mapping(variable_definition, NULL, NULL, path, description);
 
     /* longitude */
