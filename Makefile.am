@@ -406,6 +406,7 @@ RSTFILES = \
 	doc/libharp_product.rst \
 	doc/libharp_product_metadata.rst \
 	doc/libharp_variable.rst \
+	doc/operations.rst \
 	doc/python.rst \
 	doc/tools.rst
 

@@ -78,6 +78,7 @@
 <li class="toctree-l1"><a class="reference internal" href="../install.html">Installation</a></li>
 <li class="toctree-l1"><a class="reference internal" href="../dataformats.html">Data formats</a></li>
 <li class="toctree-l1"><a class="reference internal" href="../algorithms.html">Algorithms</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../operations.html">Operations</a></li>
 <li class="toctree-l1"><a class="reference internal" href="index.html">Ingestion definitions</a></li>
 <li class="toctree-l1"><a class="reference internal" href="../libharp.html">C library</a></li>
 <li class="toctree-l1"><a class="reference internal" href="../python.html">Python interface</a></li>
@@ -286,9 +287,9 @@
 <p>The table below details where and how each variable was retrieved from the input product.</p>
 <table border="1" class="docutils">
 <colgroup>
-<col width="20%" />
+<col width="19%" />
 <col width="5%" />
-<col width="75%" />
+<col width="76%" />
 </colgroup>
 <thead valign="bottom">
 <tr class="row-odd"><th class="head">field name</th>
@@ -305,7 +306,7 @@
 <td><strong>/PRODUCT/time, /PRODUCT/delta_time[]</strong></td>
 </tr>
 <tr class="row-even"><td><em>description</em></td>
-<td>time converted from milliseconds since a reference time (given as seconds since 2010-01-01 UTC) to seconds since 2000-01-01 TAI; the time associated with a scanline is repeated for each pixel in the scanline</td>
+<td>time converted from milliseconds since a reference time (given as seconds since 2010-01-01) to seconds since 2000-01-01 (using 86400 seconds per day); the time associated with a scanline is repeated for each pixel in the scanline</td>
 </tr>
 <tr class="row-odd"><td><strong>longitude</strong></td>
 <td><em>path</em></td>

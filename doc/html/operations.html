@@ -1,0 +1,405 @@
+
+
+<!DOCTYPE html>
+<!--[if IE 8]><html class="no-js lt-ie9" lang="en" > <![endif]-->
+<!--[if gt IE 8]><!--> <html class="no-js" lang="en" > <!--<![endif]-->
+<head>
+  <meta charset="utf-8">
+  
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  
+  <title>Operations &mdash; HARP 0.2b documentation</title>
+  
+
+  
+  
+
+  
+
+  
+  
+    
+
+  
+
+  
+  
+    <link rel="stylesheet" href="_static/css/theme.css" type="text/css" />
+  
+
+  
+    <link rel="stylesheet" href="_static/custom.css" type="text/css" />
+  
+
+  
+    <link rel="top" title="HARP 0.2b documentation" href="index.html"/>
+        <link rel="next" title="Ingestion definitions" href="ingestions/index.html"/>
+        <link rel="prev" title="Algorithms" href="algorithms.html"/> 
+
+  
+  <script src="_static/js/modernizr.min.js"></script>
+
+</head>
+
+<body class="wy-body-for-nav" role="document">
+
+  <div class="wy-grid-for-nav">
+
+    
+    <nav data-toggle="wy-nav-shift" class="wy-nav-side">
+      <div class="wy-side-scroll">
+        <div class="wy-side-nav-search">
+          
+
+          
+            <a href="index.html" class="icon icon-home"> HARP
+          
+
+          
+          </a>
+
+          
+            
+            
+              <div class="version">
+                0.2
+              </div>
+            
+          
+
+          
+
+          
+        </div>
+
+        <div class="wy-menu wy-menu-vertical" data-spy="affix" role="navigation" aria-label="main navigation">
+          
+            
+            
+                <ul class="current">
+<li class="toctree-l1"><a class="reference internal" href="install.html">Installation</a></li>
+<li class="toctree-l1"><a class="reference internal" href="dataformats.html">Data formats</a></li>
+<li class="toctree-l1"><a class="reference internal" href="algorithms.html">Algorithms</a></li>
+<li class="toctree-l1 current"><a class="current reference internal" href="#">Operations</a><ul>
+<li class="toctree-l2"><a class="reference internal" href="#comparison-filter">Comparison filter</a></li>
+<li class="toctree-l2"><a class="reference internal" href="#membership-test-filter">Membership test filter</a></li>
+<li class="toctree-l2"><a class="reference internal" href="#function-call">Function call</a></li>
+<li class="toctree-l2"><a class="reference internal" href="#collocation-result-file">Collocation result file</a></li>
+<li class="toctree-l2"><a class="reference internal" href="#area-mask-file">Area mask file</a></li>
+<li class="toctree-l2"><a class="reference internal" href="#examples">Examples</a></li>
+<li class="toctree-l2"><a class="reference internal" href="#formal-definition">Formal definition</a></li>
+</ul>
+</li>
+<li class="toctree-l1"><a class="reference internal" href="ingestions/index.html">Ingestion definitions</a></li>
+<li class="toctree-l1"><a class="reference internal" href="libharp.html">C library</a></li>
+<li class="toctree-l1"><a class="reference internal" href="python.html">Python interface</a></li>
+<li class="toctree-l1"><a class="reference internal" href="tools.html">Command line tools</a></li>
+</ul>
+
+            
+          
+        </div>
+      </div>
+    </nav>
+
+    <section data-toggle="wy-nav-shift" class="wy-nav-content-wrap">
+
+      
+      <nav class="wy-nav-top" role="navigation" aria-label="top navigation">
+        <i data-toggle="wy-nav-top" class="fa fa-bars"></i>
+        <a href="index.html">HARP</a>
+      </nav>
+
+
+      
+      <div class="wy-nav-content">
+        <div class="rst-content">
+          
+
+ 
+
+
+
+<div role="navigation" aria-label="breadcrumbs navigation">
+  <ul class="wy-breadcrumbs">
+    <li><a href="index.html">Docs</a> &raquo;</li>
+      
+    <li>Operations</li>
+      <li class="wy-breadcrumbs-aside">
+        
+          
+        
+      </li>
+  </ul>
+  <hr/>
+</div>
+          <div role="main" class="document" itemscope="itemscope" itemtype="http://schema.org/Article">
+           <div itemprop="articleBody">
+            
+  <div class="section" id="operations">
+<h1>Operations</h1>
+<p>HARP provides a simple expression syntax with which one can specify operations that need to be performed on a product.
+A list of operations is always provided as a single string where individual operations are separated by a semi-colon (<cite>;</cite>).
+Each operation can be either a comparison filter, a membership test filter, or a function call.
+Strings used in operations should be quoted with double quotes.</p>
+<div class="section" id="comparison-filter">
+<h2>Comparison filter</h2>
+<blockquote>
+<div><code class="docutils literal"><span class="pre">variable</span> <span class="pre">operator</span> <span class="pre">value</span> <span class="pre">[unit]</span></code></div></blockquote>
+<p>Exclude measurements for which the comparison evaluates to false.</p>
+<p>Supported operators are:</p>
+<blockquote>
+<div><div class="line-block">
+<div class="line"><code class="docutils literal"><span class="pre">==</span></code> <code class="docutils literal"><span class="pre">!=</span></code></div>
+<div class="line"><code class="docutils literal"><span class="pre">&lt;</span></code> <code class="docutils literal"><span class="pre">&lt;=</span></code> <code class="docutils literal"><span class="pre">&gt;=</span></code> <code class="docutils literal"><span class="pre">&gt;</span></code> (for numerical values only)</div>
+<div class="line"><code class="docutils literal"><span class="pre">=&amp;</span></code> <code class="docutils literal"><span class="pre">!&amp;</span></code> (bitfield operators, for integer values only)</div>
+</div>
+</div></blockquote>
+<p>Bitfield operators work such that <code class="docutils literal"><span class="pre">a</span> <span class="pre">=&amp;</span> <span class="pre">5</span></code> returns true if both bits 1 and 3 in <code class="docutils literal"><span class="pre">a</span></code> are set
+and <code class="docutils literal"><span class="pre">a</span> <span class="pre">!&amp;</span> <span class="pre">5</span></code> returns true if neither bits 1 and 3 in <code class="docutils literal"><span class="pre">a</span></code> are set.</p>
+<p>If a unit is specified, the comparison will be performed in the specified unit.
+Otherwise, it will be performed in the unit that the variable currently has.
+Units can only be specified for numerical values.</p>
+</div>
+<div class="section" id="membership-test-filter">
+<h2>Membership test filter</h2>
+<blockquote>
+<div><div class="line-block">
+<div class="line"><code class="docutils literal"><span class="pre">variable</span> <span class="pre">in</span> <span class="pre">(value,</span> <span class="pre">...)</span> <span class="pre">[unit]</span></code></div>
+<div class="line"><code class="docutils literal"><span class="pre">variable</span> <span class="pre">not</span> <span class="pre">in</span> <span class="pre">(value,</span> <span class="pre">...)</span> <span class="pre">[unit]</span></code></div>
+</div>
+</div></blockquote>
+<p>Exclude measurements that occur or do not occur in the specified list.</p>
+<p>If a unit is specified, the comparison will be performed in the specified unit.
+Otherwise, it will be performed in the unit that the variable currently has.
+Units can only be specified for numerical variables.</p>
+</div>
+<div class="section" id="function-call">
+<h2>Function call</h2>
+<blockquote>
+<div><code class="docutils literal"><span class="pre">function(argument,</span> <span class="pre">...)</span></code></div></blockquote>
+<p>Supported functions:</p>
+<blockquote>
+<div><dl class="docutils">
+<dt><code class="docutils literal"><span class="pre">collocate-left(collocation-result-file)</span></code></dt>
+<dd>Apply the specified collocation result file as an index
+filter assuming the product is part of dataset A.</dd>
+<dt><code class="docutils literal"><span class="pre">collocate-right(collocation-result-file)</span></code></dt>
+<dd>Apply the specified collocation result file as an index
+filter assuming the product is part of dataset B.</dd>
+<dt><code class="docutils literal"><span class="pre">valid(variable)</span></code></dt>
+<dd>Exclude invalid values of the specified variable (values
+outside the valid range of the variable, or NaN).</dd>
+<dt><code class="docutils literal"><span class="pre">longitude-range(minimum</span> <span class="pre">[unit],</span> <span class="pre">maximum</span> <span class="pre">[unit])</span></code></dt>
+<dd>Exclude measurements of which the longitude of the
+measurement location falls outside the specified range.
+This function correctly handles longitude ranges that
+cross the international date line.</dd>
+<dt><code class="docutils literal"><span class="pre">point-distance(longitude</span> <span class="pre">[unit],</span> <span class="pre">latitude</span> <span class="pre">[unit],</span> <span class="pre">distance</span> <span class="pre">[unit])</span></code></dt>
+<dd>Exclude measurements situated further than the specified
+distance from the specified location.</dd>
+<dt><code class="docutils literal"><span class="pre">area-mask-covers-point(area-mask-file)</span></code></dt>
+<dd>Exclude measurements for which no area from the area
+mask file contains the measurement location.</dd>
+<dt><code class="docutils literal"><span class="pre">area-mask-covers-area(area-mask-file)</span></code></dt>
+<dd>Exclude measurements for which no area from the area
+mask file covers the measurement area completely.</dd>
+<dt><code class="docutils literal"><span class="pre">area-mask-intersects-area(area-mask-file,</span> <span class="pre">minimum-overlap-percentage)</span></code></dt>
+<dd>Exclude measurements for which no area from the area
+mask file overlaps at least the specified percentage of
+the measurement area.</dd>
+<dt><code class="docutils literal"><span class="pre">derive(variable</span> <span class="pre">{dimension-type,</span> <span class="pre">...}</span> <span class="pre">[unit])</span></code></dt>
+<dd>Derive the specified variable from other variables found
+in the product. The <code class="docutils literal"><span class="pre">--list-conversions</span></code> option of
+harpconvert and harpfilter can be used to list available
+variable conversions.</dd>
+<dt><code class="docutils literal"><span class="pre">keep(variable,</span> <span class="pre">...)</span></code></dt>
+<dd>Mark the specified variable(s) for inclusion in the
+ingested product. All variables marked for inclusion
+will be kept in the ingested product, all other
+variables will be excluded.</dd>
+<dt><code class="docutils literal"><span class="pre">exclude(variable,</span> <span class="pre">...)</span></code></dt>
+<dd>Mark the specified variable(s) for exclusion from the
+ingested product. All variables marked for exclusion
+will be excluded from the ingested product, all other
+variables will be kept.</dd>
+</dl>
+</div></blockquote>
+</div>
+<div class="section" id="collocation-result-file">
+<h2>Collocation result file</h2>
+<p>The format of the collocation result file is described in the <a class="reference internal" href="dataformats.html#collocation-result-file-format"><span class="std std-ref">data formats</span></a> documentation.</p>
+</div>
+<div class="section" id="area-mask-file">
+<h2>Area mask file</h2>
+<p>A comma separated (csv) file is used as input for area filters.</p>
+<p>It has the following format:</p>
+<dl class="docutils">
+<dt>::</dt>
+<dd>longitude0[degree_north],latitude0[degree_north],longitude1[degree_north],latitude1[degree_north],longitude2[degree_north],latitude2[degree_north],longitude3[degree_north],latitude3[degree_north],longitude4[degree_north],latitude4[degree_north]
+-60.0,40.0,60.0,40.0,60.0,0.0,-60.0,0.0,-60.0,40.0
+...</dd>
+</dl>
+<p>It starts with a header with longitude, latitude for each polygon point with the units in square brackets. This examples show the coordinates of four vertices plus a duplicate point connecting the first and the last point of the polygon area. Thus, each line in the comma separated file specifies one polygon area.</p>
+</div>
+<div class="section" id="examples">
+<h2>Examples</h2>
+<blockquote>
+<div><div class="line-block">
+<div class="line"><code class="docutils literal"><span class="pre">derive(altitude</span> <span class="pre">{time}</span> <span class="pre">[km]);</span> <span class="pre">pressure</span> <span class="pre">&gt;</span> <span class="pre">3.0</span> <span class="pre">[bar]</span></code></div>
+<div class="line"><code class="docutils literal"><span class="pre">point-distance(-52.5</span> <span class="pre">[degree],</span> <span class="pre">1.0</span> <span class="pre">[rad],</span> <span class="pre">1e3</span> <span class="pre">[km])</span></code></div>
+<div class="line"><code class="docutils literal"><span class="pre">index</span> <span class="pre">in</span> <span class="pre">(0,</span> <span class="pre">10,</span> <span class="pre">20,</span> <span class="pre">30,</span> <span class="pre">40);</span> <span class="pre">valid(pressure)</span></code></div>
+</div>
+</div></blockquote>
+</div>
+<div class="section" id="formal-definition">
+<h2>Formal definition</h2>
+<div class="highlight-default"><div class="highlight"><pre><span></span><span class="n">digit</span> <span class="o">=</span> <span class="s1">&#39;0&#39;</span><span class="o">|</span><span class="s1">&#39;1&#39;</span><span class="o">|</span><span class="s1">&#39;2&#39;</span><span class="o">|</span><span class="s1">&#39;3&#39;</span><span class="o">|</span><span class="s1">&#39;4&#39;</span><span class="o">|</span><span class="s1">&#39;5&#39;</span><span class="o">|</span><span class="s1">&#39;6&#39;</span><span class="o">|</span><span class="s1">&#39;7&#39;</span><span class="o">|</span><span class="s1">&#39;8&#39;</span><span class="o">|</span><span class="s1">&#39;9&#39;</span> <span class="p">;</span>
+<span class="n">sign</span> <span class="o">=</span> <span class="s1">&#39;+&#39;</span><span class="o">|</span><span class="s1">&#39;-&#39;</span> <span class="p">;</span>
+
+<span class="n">alpha</span> <span class="o">=</span>
+   <span class="s1">&#39;a&#39;</span><span class="o">|</span><span class="s1">&#39;b&#39;</span><span class="o">|</span><span class="s1">&#39;c&#39;</span><span class="o">|</span><span class="s1">&#39;d&#39;</span><span class="o">|</span><span class="s1">&#39;e&#39;</span><span class="o">|</span><span class="s1">&#39;f&#39;</span><span class="o">|</span><span class="s1">&#39;g&#39;</span><span class="o">|</span><span class="s1">&#39;h&#39;</span><span class="o">|</span><span class="s1">&#39;i&#39;</span><span class="o">|</span><span class="s1">&#39;j&#39;</span><span class="o">|</span><span class="s1">&#39;k&#39;</span><span class="o">|</span><span class="s1">&#39;l&#39;</span><span class="o">|</span><span class="s1">&#39;m&#39;</span><span class="o">|</span>
+   <span class="s1">&#39;n&#39;</span><span class="o">|</span><span class="s1">&#39;o&#39;</span><span class="o">|</span><span class="s1">&#39;p&#39;</span><span class="o">|</span><span class="s1">&#39;q&#39;</span><span class="o">|</span><span class="s1">&#39;r&#39;</span><span class="o">|</span><span class="s1">&#39;s&#39;</span><span class="o">|</span><span class="s1">&#39;t&#39;</span><span class="o">|</span><span class="s1">&#39;u&#39;</span><span class="o">|</span><span class="s1">&#39;v&#39;</span><span class="o">|</span><span class="s1">&#39;w&#39;</span><span class="o">|</span><span class="s1">&#39;x&#39;</span><span class="o">|</span><span class="s1">&#39;y&#39;</span><span class="o">|</span><span class="s1">&#39;z&#39;</span><span class="o">|</span>
+   <span class="s1">&#39;A&#39;</span><span class="o">|</span><span class="s1">&#39;B&#39;</span><span class="o">|</span><span class="s1">&#39;C&#39;</span><span class="o">|</span><span class="s1">&#39;D&#39;</span><span class="o">|</span><span class="s1">&#39;E&#39;</span><span class="o">|</span><span class="s1">&#39;F&#39;</span><span class="o">|</span><span class="s1">&#39;G&#39;</span><span class="o">|</span><span class="s1">&#39;H&#39;</span><span class="o">|</span><span class="s1">&#39;I&#39;</span><span class="o">|</span><span class="s1">&#39;J&#39;</span><span class="o">|</span><span class="s1">&#39;K&#39;</span><span class="o">|</span><span class="s1">&#39;L&#39;</span><span class="o">|</span><span class="s1">&#39;M&#39;</span><span class="o">|</span>
+   <span class="s1">&#39;N&#39;</span><span class="o">|</span><span class="s1">&#39;O&#39;</span><span class="o">|</span><span class="s1">&#39;P&#39;</span><span class="o">|</span><span class="s1">&#39;Q&#39;</span><span class="o">|</span><span class="s1">&#39;R&#39;</span><span class="o">|</span><span class="s1">&#39;S&#39;</span><span class="o">|</span><span class="s1">&#39;T&#39;</span><span class="o">|</span><span class="s1">&#39;U&#39;</span><span class="o">|</span><span class="s1">&#39;V&#39;</span><span class="o">|</span><span class="s1">&#39;W&#39;</span><span class="o">|</span><span class="s1">&#39;X&#39;</span><span class="o">|</span><span class="s1">&#39;Y&#39;</span><span class="o">|</span><span class="s1">&#39;Z&#39;</span> <span class="p">;</span>
+
+<span class="n">character</span> <span class="o">=</span> <span class="n">alpha</span> <span class="o">|</span> <span class="n">digit</span> <span class="o">|</span>
+   <span class="s1">&#39; &#39;</span><span class="o">|</span><span class="s1">&#39;!&#39;</span><span class="o">|</span><span class="s1">&#39;&quot;&#39;</span><span class="o">|</span><span class="s1">&#39;#&#39;</span><span class="o">|</span><span class="s1">&#39;$&#39;</span><span class="o">|</span><span class="s1">&#39;%&#39;</span><span class="o">|</span><span class="s1">&#39;&amp;&#39;</span><span class="o">|</span><span class="s2">&quot;&#39;&quot;</span><span class="o">|</span><span class="s1">&#39;(&#39;</span><span class="o">|</span><span class="s1">&#39;)&#39;</span><span class="o">|</span><span class="s1">&#39;*&#39;</span><span class="o">|</span><span class="s1">&#39;+&#39;</span><span class="o">|</span><span class="s1">&#39;,&#39;</span><span class="o">|</span>
+   <span class="s1">&#39;-&#39;</span><span class="o">|</span><span class="s1">&#39;.&#39;</span><span class="o">|</span><span class="s1">&#39;/&#39;</span><span class="o">|</span><span class="s1">&#39;:&#39;</span><span class="o">|</span><span class="s1">&#39;;&#39;</span><span class="o">|</span><span class="s1">&#39;&lt;&#39;</span><span class="o">|</span><span class="s1">&#39;=&#39;</span><span class="o">|</span><span class="s1">&#39;&gt;&#39;</span><span class="o">|</span><span class="s1">&#39;?&#39;</span><span class="o">|</span><span class="s1">&#39;@&#39;</span><span class="o">|</span><span class="s1">&#39;[&#39;</span><span class="o">|</span><span class="s1">&#39;</span><span class="se">\&#39;</span><span class="s1">|&#39;</span><span class="p">]</span><span class="s1">&#39;|</span>
+   <span class="s1">&#39;^&#39;</span><span class="o">|</span><span class="s1">&#39;_&#39;</span><span class="o">|</span><span class="s1">&#39;`&#39;</span><span class="o">|</span><span class="s1">&#39;{&#39;</span><span class="o">|</span><span class="s1">&#39;|&#39;</span><span class="o">|</span><span class="s1">&#39;}&#39;</span><span class="o">|</span><span class="s1">&#39;~&#39;</span> <span class="p">;</span>
+
+<span class="n">identifier</span> <span class="o">=</span> <span class="n">alpha</span><span class="p">,</span> <span class="p">[{</span><span class="n">alpha</span> <span class="o">|</span> <span class="n">digit</span> <span class="o">|</span> <span class="s1">&#39;_&#39;</span><span class="p">}]</span> <span class="p">;</span>
+
+<span class="n">variable</span> <span class="o">=</span> <span class="n">identifier</span> <span class="p">;</span>
+
+<span class="n">variablelist</span> <span class="o">=</span>
+   <span class="n">variable</span> <span class="o">|</span>
+   <span class="n">variablelist</span><span class="p">,</span> <span class="s1">&#39;,&#39;</span><span class="p">,</span> <span class="n">variable</span> <span class="p">;</span>
+
+<span class="n">intvalue</span> <span class="o">=</span> <span class="p">[</span><span class="n">sign</span><span class="p">],</span> <span class="p">{</span><span class="n">digit</span><span class="p">}</span> <span class="p">;</span>
+
+<span class="n">floatvalue</span> <span class="o">=</span>
+   <span class="p">[</span><span class="n">sign</span><span class="p">],</span> <span class="p">(</span><span class="s1">&#39;N&#39;</span> <span class="o">|</span> <span class="s1">&#39;n&#39;</span><span class="p">),</span> <span class="p">(</span><span class="s1">&#39;A&#39;</span><span class="p">,</span> <span class="s1">&#39;a&#39;</span><span class="p">),</span> <span class="p">(</span><span class="s1">&#39;N&#39;</span><span class="p">,</span> <span class="s1">&#39;n&#39;</span><span class="p">)</span> <span class="o">|</span>
+   <span class="p">[</span><span class="n">sign</span><span class="p">],</span> <span class="p">(</span><span class="s1">&#39;I&#39;</span> <span class="o">|</span> <span class="s1">&#39;i&#39;</span><span class="p">),</span> <span class="p">(</span><span class="s1">&#39;N&#39;</span><span class="p">,</span> <span class="s1">&#39;n&#39;</span><span class="p">),</span> <span class="p">(</span><span class="s1">&#39;F&#39;</span><span class="p">,</span> <span class="s1">&#39;f&#39;</span><span class="p">)</span> <span class="o">|</span>
+   <span class="p">(</span><span class="n">intvalue</span><span class="p">,</span> <span class="s1">&#39;.&#39;</span><span class="p">,</span> <span class="p">[{</span><span class="n">digit</span><span class="p">}]</span> <span class="o">|</span> <span class="s1">&#39;.&#39;</span><span class="p">,</span> <span class="p">{</span><span class="n">digit</span><span class="p">}),</span> <span class="p">[(</span><span class="s1">&#39;D&#39;</span> <span class="o">|</span> <span class="s1">&#39;d&#39;</span> <span class="o">|</span> <span class="s1">&#39;E&#39;</span> <span class="o">|</span> <span class="s1">&#39;e&#39;</span><span class="p">),</span> <span class="n">intvalue</span><span class="p">]</span> <span class="p">;</span>
+
+<span class="n">stringvalue</span> <span class="o">=</span> <span class="s1">&#39;&quot;&#39;</span><span class="p">,</span> <span class="p">[{</span><span class="n">character</span><span class="o">-</span><span class="p">(</span><span class="s1">&#39;</span><span class="se">\&#39;</span><span class="s1">, &#39;</span><span class="s2">&quot;&#39;) | &#39;</span><span class="se">\&#39;</span><span class="s2"> character}], &#39;&quot;</span><span class="s1">&#39; ;</span>
+
+<span class="n">value</span> <span class="o">=</span> <span class="n">intvalue</span> <span class="o">|</span> <span class="n">floatvalue</span> <span class="o">|</span> <span class="n">stringvalue</span> <span class="p">;</span>
+
+<span class="n">intvaluelist</span> <span class="o">=</span>
+   <span class="n">intvalue</span> <span class="o">|</span>
+   <span class="n">intvaluelist</span><span class="p">,</span> <span class="s1">&#39;,&#39;</span><span class="p">,</span> <span class="n">intvalue</span><span class="p">;</span>
+
+<span class="n">floatvaluelist</span> <span class="o">=</span>
+   <span class="n">floatvalue</span> <span class="o">|</span>
+   <span class="n">floatvaluelist</span><span class="p">,</span> <span class="s1">&#39;,&#39;</span><span class="p">,</span> <span class="n">floatvalue</span><span class="p">;</span>
+
+<span class="n">stringvaluelist</span> <span class="o">=</span>
+   <span class="n">stringvalue</span> <span class="o">|</span>
+   <span class="n">stringvaluelist</span><span class="p">,</span> <span class="s1">&#39;,&#39;</span><span class="p">,</span> <span class="n">stringvalue</span><span class="p">;</span>
+
+<span class="n">valuelist</span> <span class="o">=</span> <span class="n">intvaluelist</span> <span class="o">|</span> <span class="n">floatvaluelist</span> <span class="o">|</span> <span class="n">stringvaluelist</span> <span class="p">;</span>
+
+<span class="n">unit</span> <span class="o">=</span> <span class="s1">&#39;[&#39;</span><span class="p">,</span> <span class="p">[{</span><span class="n">character</span><span class="o">-</span><span class="p">(</span><span class="s1">&#39;]&#39;</span><span class="p">)}],</span> <span class="s1">&#39;]&#39;</span> <span class="p">;</span>
+
+<span class="n">dimension</span> <span class="o">=</span> <span class="s1">&#39;time&#39;</span> <span class="o">|</span> <span class="s1">&#39;latitude&#39;</span> <span class="o">|</span> <span class="s1">&#39;longitude&#39;</span> <span class="o">|</span> <span class="s1">&#39;vertical&#39;</span> <span class="o">|</span> <span class="s1">&#39;spectral&#39;</span> <span class="o">|</span> <span class="s1">&#39;independent&#39;</span> <span class="p">;</span>
+
+<span class="n">dimensionlist</span> <span class="o">=</span>
+   <span class="n">dimension</span> <span class="o">|</span>
+   <span class="n">dimensionlist</span><span class="p">,</span> <span class="s1">&#39;,&#39;</span><span class="p">,</span> <span class="n">dimension</span> <span class="p">;</span>
+
+<span class="n">dimensionspec</span> <span class="o">=</span> <span class="s1">&#39;{&#39;</span> <span class="n">dimensionlist</span> <span class="s1">&#39;}&#39;</span> <span class="p">;</span>
+
+<span class="n">functioncall</span> <span class="o">=</span>
+   <span class="s1">&#39;collocate-left&#39;</span><span class="p">,</span> <span class="s1">&#39;(&#39;</span><span class="p">,</span> <span class="n">stringvalue</span><span class="p">,</span> <span class="s1">&#39;)&#39;</span> <span class="o">|</span>
+   <span class="s1">&#39;collocate-right&#39;</span><span class="p">,</span> <span class="s1">&#39;(&#39;</span><span class="p">,</span> <span class="n">stringvalue</span><span class="p">,</span> <span class="s1">&#39;)&#39;</span> <span class="o">|</span>
+   <span class="s1">&#39;valid&#39;</span><span class="p">,</span> <span class="s1">&#39;(&#39;</span><span class="p">,</span> <span class="n">variable</span><span class="p">,</span> <span class="s1">&#39;)&#39;</span> <span class="o">|</span>
+   <span class="s1">&#39;longitude-range&#39;</span><span class="p">,</span> <span class="s1">&#39;(&#39;</span><span class="p">,</span> <span class="n">floatvalue</span><span class="p">,</span> <span class="p">[</span><span class="n">unit</span><span class="p">],</span> <span class="s1">&#39;,&#39;</span><span class="p">,</span> <span class="n">floatvalue</span><span class="p">,</span> <span class="p">[</span><span class="n">unit</span><span class="p">],</span> <span class="s1">&#39;)&#39;</span> <span class="o">|</span>
+   <span class="s1">&#39;point-distance&#39;</span><span class="p">,</span> <span class="s1">&#39;(&#39;</span><span class="p">,</span> <span class="n">floatvalue</span><span class="p">,</span> <span class="p">[</span><span class="n">unit</span><span class="p">],</span> <span class="s1">&#39;,&#39;</span><span class="p">,</span> <span class="n">floatvalue</span><span class="p">,</span> <span class="p">[</span><span class="n">unit</span><span class="p">],</span> <span class="s1">&#39;,&#39;</span><span class="p">,</span> <span class="n">floatvalue</span><span class="p">,</span> <span class="p">[</span><span class="n">unit</span><span class="p">],</span> <span class="s1">&#39;)&#39;</span> <span class="o">|</span>
+   <span class="s1">&#39;area-mask-covers-point&#39;</span><span class="p">,</span> <span class="s1">&#39;(&#39;</span><span class="p">,</span> <span class="n">stringvalue</span><span class="p">,</span> <span class="s1">&#39;)&#39;</span> <span class="o">|</span>
+   <span class="s1">&#39;area-mask-covers-area&#39;</span><span class="p">,</span> <span class="s1">&#39;(&#39;</span><span class="p">,</span> <span class="n">stringvalue</span><span class="p">,</span> <span class="s1">&#39;)&#39;</span> <span class="o">|</span>
+   <span class="s1">&#39;area-mask-intersects-area&#39;</span><span class="p">,</span> <span class="s1">&#39;(&#39;</span><span class="p">,</span> <span class="n">stringvalue</span><span class="p">,</span> <span class="s1">&#39;,&#39;</span><span class="p">,</span> <span class="n">floatvalue</span><span class="p">,</span> <span class="s1">&#39;)&#39;</span> <span class="o">|</span>
+   <span class="s1">&#39;derive&#39;</span><span class="p">,</span> <span class="s1">&#39;(&#39;</span><span class="p">,</span> <span class="n">variable</span><span class="p">,</span> <span class="n">dimensionspec</span><span class="p">,</span> <span class="p">[</span><span class="n">unit</span><span class="p">],</span> <span class="s1">&#39;)&#39;</span> <span class="o">|</span>
+   <span class="s1">&#39;keep&#39;</span><span class="p">,</span> <span class="s1">&#39;(&#39;</span><span class="p">,</span> <span class="n">variablelist</span><span class="p">,</span> <span class="s1">&#39;)&#39;</span> <span class="o">|</span>
+   <span class="s1">&#39;exclude&#39;</span><span class="p">,</span> <span class="s1">&#39;(&#39;</span><span class="p">,</span> <span class="n">variablelist</span><span class="p">,</span> <span class="s1">&#39;)&#39;</span> <span class="p">;</span>
+
+<span class="n">operationexpr</span> <span class="o">=</span>
+   <span class="n">variable</span><span class="p">,</span> <span class="n">operator</span><span class="p">,</span> <span class="n">value</span><span class="p">,</span> <span class="p">[</span><span class="n">unit</span><span class="p">]</span> <span class="o">|</span>
+   <span class="n">variable</span><span class="p">,</span> <span class="p">[</span><span class="s1">&#39;not&#39;</span><span class="p">],</span> <span class="s1">&#39;in&#39;</span><span class="p">,</span> <span class="s1">&#39;(&#39;</span><span class="p">,</span> <span class="n">valuelist</span><span class="p">,</span> <span class="s1">&#39;)&#39;</span><span class="p">,</span> <span class="p">[</span><span class="n">unit</span><span class="p">]</span> <span class="o">|</span>
+   <span class="n">functioncall</span> <span class="o">|</span>
+   <span class="n">operationexpr</span><span class="p">,</span> <span class="s1">&#39;;&#39;</span><span class="p">,</span> <span class="n">operationexpr</span> <span class="p">;</span>
+</pre></div>
+</div>
+</div>
+</div>
+
+
+           </div>
+          </div>
+          <footer>
+  
+    <div class="rst-footer-buttons" role="navigation" aria-label="footer navigation">
+      
+        <a href="ingestions/index.html" class="btn btn-neutral float-right" title="Ingestion definitions" accesskey="n">Next <span class="fa fa-arrow-circle-right"></span></a>
+      
+      
+        <a href="algorithms.html" class="btn btn-neutral" title="Algorithms" accesskey="p"><span class="fa fa-arrow-circle-left"></span> Previous</a>
+      
+    </div>
+  
+
+  <hr/>
+
+  <div role="contentinfo">
+    <p>
+        &copy; Copyright 2015-2016 S&amp;T, The Netherlands.
+
+    </p>
+  </div> 
+
+</footer>
+
+        </div>
+      </div>
+
+    </section>
+
+  </div>
+  
+
+
+  
+
+    <script type="text/javascript">
+        var DOCUMENTATION_OPTIONS = {
+            URL_ROOT:'./',
+            VERSION:'0.2b',
+            COLLAPSE_INDEX:false,
+            FILE_SUFFIX:'.html',
+            HAS_SOURCE:  false
+        };
+    </script>
+      <script type="text/javascript" src="_static/jquery.js"></script>
+      <script type="text/javascript" src="_static/underscore.js"></script>
+      <script type="text/javascript" src="_static/doctools.js"></script>
+      <script type="text/javascript" src="https://cdn.mathjax.org/mathjax/latest/MathJax.js?config=TeX-AMS-MML_HTMLorMML"></script>
+
+  
+
+  
+  
+    <script type="text/javascript" src="_static/js/theme.js"></script>
+  
+
+  
+  
+  <script type="text/javascript">
+      jQuery(function () {
+          SphinxRtdTheme.StickyNav.enable();
+      });
+  </script>
+   
+
+</body>
+</html>

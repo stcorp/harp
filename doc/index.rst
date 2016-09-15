@@ -15,6 +15,7 @@ Contents
    install
    dataformats
    algorithms
+   operations
    ingestions/index
    libharp
    python
@@ -71,6 +72,14 @@ Algorithms
 HARP can perform a wide variety of operations on the data. A description of
 the algorithms as used in HARP can be found in the :doc:`Algorithms
 <algorithms>` section of the documentation.
+
+Operations
+----------
+
+Several HARP functions and tools can take a sequence of operations, such as
+filters or regridding operations, which are then performed on a product.
+A description of the operations expressions is provided in the :doc:`Operations
+<operations>` section of the documentation.
 
 C library
 ---------

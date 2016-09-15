@@ -78,6 +78,7 @@
 <li class="toctree-l1"><a class="reference internal" href="../install.html">Installation</a></li>
 <li class="toctree-l1"><a class="reference internal" href="../dataformats.html">Data formats</a></li>
 <li class="toctree-l1"><a class="reference internal" href="../algorithms.html">Algorithms</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../operations.html">Operations</a></li>
 <li class="toctree-l1"><a class="reference internal" href="index.html">Ingestion definitions</a></li>
 <li class="toctree-l1"><a class="reference internal" href="../libharp.html">C library</a></li>
 <li class="toctree-l1"><a class="reference internal" href="../python.html">Python interface</a></li>
@@ -252,7 +253,7 @@
 <colgroup>
 <col width="10%" />
 <col width="6%" />
-<col width="84%" />
+<col width="85%" />
 </colgroup>
 <thead valign="bottom">
 <tr class="row-odd"><th class="head">field name</th>
@@ -269,7 +270,7 @@
 <td><strong>/BAND5_RADIANCE/STANDARD_MODE/OBSERVATIONS/time, /BAND5_RADIANCE/STANDARD_MODE/OBSERVATIONS/delta_time[]</strong></td>
 </tr>
 <tr class="row-even"><td><em>description</em></td>
-<td>time converted from milliseconds since a reference time (given as seconds since 2010-01-01 UTC) to seconds since 2000-01-01 TAI; the time associated with a scanline is repeated for each pixel in the scanline</td>
+<td>time converted from milliseconds since a reference time (given as seconds since 2010-01-01) to seconds since 2000-01-01 (using 86400 seconds per day); the time associated with a scanline is repeated for each pixel in the scanline</td>
 </tr>
 <tr class="row-odd"><td><strong>latitude</strong></td>
 <td><em>path</em></td>
