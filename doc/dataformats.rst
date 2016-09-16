@@ -319,7 +319,11 @@ CCl2F2   dichlorodifluoromethane      freon-12, CFC-12, R-12
 CCl3F    trichlorofluoromethane       freon-11, CFC-11, R-11
 CF4      tetrafluoromethane
 CHClF2   chlorodifluoromethane        HCFC-22, R-22
-CH3Cl    chloromethane                HCC-40, R-40
+CH3Cl    chloromethane,               HCC-40, R-40
+         methyl chloride
+CH3CN    acetonitrile,
+         methyl cyanide
+CH3OH    methanol
 CH4      methane
 CO       carbon monoxide
 COF2     carbonyl fluoride
