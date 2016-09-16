@@ -1,6 +1,144 @@
 <?xml version="1.0"?>
 <cd:ProductClass name="Sentinel5P" last-modified="2016-09-16" xmlns:cd="http://www.stcorp.nl/coda/definition/2008/07">
   <cd:Description>Sentinel-5P products</cd:Description>
+  <cd:ProductType name="L1B_RA_BD1">
+    <cd:Description>Sentinel 5P L1b Radiance product band 1 (UV detector)</cd:Description>
+    <cd:ProductDefinition id="L1B_RA_BD1" format="hdf5" version="0">
+      <cd:Description>The format definition for this product is taken from the netCDF4 file itself.</cd:Description>
+      <cd:DetectionRule>
+        <cd:MatchExpression>substr(0,3,filename())=="S5P"</cd:MatchExpression>
+        <cd:MatchExpression>substr(9,10,filename())=="L1B_RA_BD1"</cd:MatchExpression>
+        <cd:MatchExpression path="/BAND1_RADIANCE">true</cd:MatchExpression>
+      </cd:DetectionRule>
+    </cd:ProductDefinition>
+  </cd:ProductType>
+  <cd:ProductType name="L1B_RA_BD2">
+    <cd:Description>Sentinel 5P L1b Radiance product band 2 (UV detector)</cd:Description>
+    <cd:ProductDefinition id="L1B_RA_BD2" format="hdf5" version="0">
+      <cd:Description>The format definition for this product is taken from the netCDF4 file itself.</cd:Description>
+      <cd:DetectionRule>
+        <cd:MatchExpression>substr(0,3,filename())=="S5P"</cd:MatchExpression>
+        <cd:MatchExpression>substr(9,10,filename())=="L1B_RA_BD2"</cd:MatchExpression>
+        <cd:MatchExpression path="/BAND2_RADIANCE">true</cd:MatchExpression>
+      </cd:DetectionRule>
+    </cd:ProductDefinition>
+  </cd:ProductType>
+  <cd:ProductType name="L1B_RA_BD3">
+    <cd:Description>Sentinel 5P L1b Radiance product band 3 (UV detector)</cd:Description>
+    <cd:ProductDefinition id="L1B_RA_BD3" format="hdf5" version="0">
+      <cd:Description>The format definition for this product is taken from the netCDF4 file itself.</cd:Description>
+      <cd:DetectionRule>
+        <cd:MatchExpression>substr(0,3,filename())=="S5P"</cd:MatchExpression>
+        <cd:MatchExpression>substr(9,10,filename())=="L1B_RA_BD3"</cd:MatchExpression>
+        <cd:MatchExpression path="/BAND3_RADIANCE">true</cd:MatchExpression>
+      </cd:DetectionRule>
+    </cd:ProductDefinition>
+  </cd:ProductType>
+  <cd:ProductType name="L1B_RA_BD4">
+    <cd:Description>Sentinel 5P L1b Radiance product band 4 (UV detector)</cd:Description>
+    <cd:ProductDefinition id="L1B_RA_BD4" format="hdf5" version="0">
+      <cd:Description>The format definition for this product is taken from the netCDF4 file itself.</cd:Description>
+      <cd:DetectionRule>
+        <cd:MatchExpression>substr(0,3,filename())=="S5P"</cd:MatchExpression>
+        <cd:MatchExpression>substr(9,10,filename())=="L1B_RA_BD4"</cd:MatchExpression>
+        <cd:MatchExpression path="/BAND4_RADIANCE">true</cd:MatchExpression>
+      </cd:DetectionRule>
+    </cd:ProductDefinition>
+  </cd:ProductType>
+  <cd:ProductType name="L1B_RA_BD5">
+    <cd:Description>Sentinel 5P L1b Radiance product band 5 (UV detector)</cd:Description>
+    <cd:ProductDefinition id="L1B_RA_BD5" format="hdf5" version="0">
+      <cd:Description>The format definition for this product is taken from the netCDF4 file itself.</cd:Description>
+      <cd:DetectionRule>
+        <cd:MatchExpression>substr(0,3,filename())=="S5P"</cd:MatchExpression>
+        <cd:MatchExpression>substr(9,10,filename())=="L1B_RA_BD5"</cd:MatchExpression>
+        <cd:MatchExpression path="/BAND5_RADIANCE">true</cd:MatchExpression>
+      </cd:DetectionRule>
+    </cd:ProductDefinition>
+  </cd:ProductType>
+  <cd:ProductType name="L1B_RA_BD6">
+    <cd:Description>Sentinel 5P L1b Radiance product band 6 (UV detector)</cd:Description>
+    <cd:ProductDefinition id="L1B_RA_BD6" format="hdf5" version="0">
+      <cd:Description>The format definition for this product is taken from the netCDF4 file itself.</cd:Description>
+      <cd:DetectionRule>
+        <cd:MatchExpression>substr(0,3,filename())=="S5P"</cd:MatchExpression>
+        <cd:MatchExpression>substr(9,10,filename())=="L1B_RA_BD6"</cd:MatchExpression>
+        <cd:MatchExpression path="/BAND6_RADIANCE">true</cd:MatchExpression>
+      </cd:DetectionRule>
+    </cd:ProductDefinition>
+  </cd:ProductType>
+  <cd:ProductType name="L1B_RA_BD7">
+    <cd:Description>Sentinel 5P L1b Radiance product band 7 (SWIR detector)</cd:Description>
+    <cd:ProductDefinition id="L1B_RA_BD7" format="hdf5" version="0">
+      <cd:Description>The format definition for this product is taken from the netCDF4 file itself.</cd:Description>
+      <cd:DetectionRule>
+        <cd:MatchExpression>substr(0,3,filename())=="S5P"</cd:MatchExpression>
+        <cd:MatchExpression>substr(9,10,filename())=="L1B_RA_BD7"</cd:MatchExpression>
+        <cd:MatchExpression path="/BAND7_RADIANCE">true</cd:MatchExpression>
+      </cd:DetectionRule>
+    </cd:ProductDefinition>
+  </cd:ProductType>
+  <cd:ProductType name="L1B_RA_BD8">
+    <cd:Description>Sentinel 5P L1b Radiance product band 8 (SWIR detector)</cd:Description>
+    <cd:ProductDefinition id="L1B_RA_BD8" format="hdf5" version="0">
+      <cd:Description>The format definition for this product is taken from the netCDF4 file itself.</cd:Description>
+      <cd:DetectionRule>
+        <cd:MatchExpression>substr(0,3,filename())=="S5P"</cd:MatchExpression>
+        <cd:MatchExpression>substr(9,10,filename())=="L1B_RA_BD8"</cd:MatchExpression>
+        <cd:MatchExpression path="/BAND8_RADIANCE">true</cd:MatchExpression>
+      </cd:DetectionRule>
+    </cd:ProductDefinition>
+  </cd:ProductType>
+  <cd:ProductType name="L1B_IR_UVN">
+    <cd:Description>Sentinel 5P L1b Irradiance product UVN module</cd:Description>
+    <cd:ProductDefinition id="L1B_IR_UVN" format="hdf5" version="0">
+      <cd:Description>The format definition for this product is taken from the netCDF4 file itself.</cd:Description>
+      <cd:DetectionRule>
+        <cd:MatchExpression>substr(0,3,filename())=="S5P"</cd:MatchExpression>
+        <cd:MatchExpression>substr(9,10,filename())=="L1B_IR_UVN"</cd:MatchExpression>
+      </cd:DetectionRule>
+    </cd:ProductDefinition>
+  </cd:ProductType>
+  <cd:ProductType name="L1B_IR_SIR">
+    <cd:Description>Sentinel 5P L1b Irradiance product SWIR module</cd:Description>
+    <cd:ProductDefinition id="L1B_IR_SIR" format="hdf5" version="0">
+      <cd:Description>The format definition for this product is taken from the netCDF4 file itself.</cd:Description>
+      <cd:DetectionRule>
+        <cd:MatchExpression>substr(0,3,filename())=="S5P"</cd:MatchExpression>
+        <cd:MatchExpression>substr(9,10,filename())=="L1B_IR_SIR"</cd:MatchExpression>
+      </cd:DetectionRule>
+    </cd:ProductDefinition>
+  </cd:ProductType>
+  <cd:ProductType name="L1B_CA_UVN">
+    <cd:Description>Sentinel 5P L1b Calibration product UVN module</cd:Description>
+    <cd:ProductDefinition id="L1B_CA_UVN" format="hdf5" version="0">
+      <cd:Description>The format definition for this product is taken from the netCDF4 file itself.</cd:Description>
+      <cd:DetectionRule>
+        <cd:MatchExpression>substr(0,3,filename())=="S5P"</cd:MatchExpression>
+        <cd:MatchExpression>substr(9,10,filename())=="L1B_CA_UVN"</cd:MatchExpression>
+      </cd:DetectionRule>
+    </cd:ProductDefinition>
+  </cd:ProductType>
+  <cd:ProductType name="L1B_CA_SIR">
+    <cd:Description>Sentinel 5P L1b Calibration product SIR module</cd:Description>
+    <cd:ProductDefinition id="L1B_CA_SIR" format="hdf5" version="0">
+      <cd:Description>The format definition for this product is taken from the netCDF4 file itself.</cd:Description>
+      <cd:DetectionRule>
+        <cd:MatchExpression>substr(0,3,filename())=="S5P"</cd:MatchExpression>
+        <cd:MatchExpression>substr(9,10,filename())=="L1B_CA_SIR"</cd:MatchExpression>
+      </cd:DetectionRule>
+    </cd:ProductDefinition>
+  </cd:ProductType>
+  <cd:ProductType name="L1B_ENG_DB">
+    <cd:Description>Sentinel 5P L1b Engineering product</cd:Description>
+    <cd:ProductDefinition id="L1B_ENG_DB" format="hdf5" version="0">
+      <cd:Description>The format definition for this product is taken from the netCDF4 file itself.</cd:Description>
+      <cd:DetectionRule>
+        <cd:MatchExpression>substr(0,3,filename())=="S5P"</cd:MatchExpression>
+        <cd:MatchExpression>substr(9,10,filename())=="L1B_ENG_DB"</cd:MatchExpression>
+      </cd:DetectionRule>
+    </cd:ProductDefinition>
+  </cd:ProductType>
   <cd:ProductType name="L2__O3__PR">
     <cd:Description>Sentinel 5P L2 O3 profile</cd:Description>
     <cd:ProductDefinition id="L2__O3__PR" format="hdf5" version="0">

@@ -413,7 +413,14 @@ static int ingestion_init_s5p_l1b_ir(const harp_ingestion_module *module, coda_p
     }
 
     assert(info->band >= 1 && info->band <= 8);
-    *definition = module->product_definition[info->band - 1];
+    if (info->band < 7)
+    {
+        *definition = module->product_definition[info->band - 1];
+    }
+    else
+    {
+        *definition = module->product_definition[info->band - 7];
+    }
     *user_data = info;
 
     return 0;
@@ -710,134 +717,6 @@ static int read_observable(void *user_data, long index, harp_array data)
                                 info->observable_fill_value);
 }
 
-static int verify_s5p_l1b_ir(const harp_ingestion_module *module, coda_product *product)
-{
-    coda_type *root_type;
-    long num_fields;
-    long i;
-
-    (void)module;
-
-    /* TODO: Use more information from the product itself (e.g. from the METADATA section?) to make this check more
-     * strict.
-     */
-    if (coda_get_product_root_type(product, &root_type) != 0)
-    {
-        harp_set_error(HARP_ERROR_UNSUPPORTED_PRODUCT, NULL);
-        return -1;
-    }
-    if (coda_type_get_num_record_fields(root_type, &num_fields) != 0)
-    {
-        harp_set_error(HARP_ERROR_UNSUPPORTED_PRODUCT, NULL);
-        return -1;
-    }
-
-    for (i = 0; i < num_fields; i++)
-    {
-        const char *field_name;
-
-        if (coda_type_get_record_field_real_name(root_type, i, &field_name) != 0)
-        {
-            harp_set_error(HARP_ERROR_UNSUPPORTED_PRODUCT, NULL);
-            return -1;
-        }
-        if (strlen(field_name) != 16)
-        {
-            continue;
-        }
-        if (strncmp(field_name, "BAND", 4) != 0 || strncmp(&field_name[5], "_IRRADIANCE", 9) != 0)
-        {
-            continue;
-        }
-        if (isdigit(field_name[4]) && field_name[4] != '0' && field_name[4] != '9')
-        {
-            break;
-        }
-    }
-
-    if (i == num_fields)
-    {
-        harp_set_error(HARP_ERROR_UNSUPPORTED_PRODUCT, NULL);
-        return -1;
-    }
-
-    return 0;
-}
-
-static int verify_s5p_l1b_ra(coda_product *product, const char *band_name)
-{
-    coda_cursor cursor;
-
-    if (coda_cursor_set_product(&cursor, product) != 0)
-    {
-        harp_set_error(HARP_ERROR_UNSUPPORTED_PRODUCT, NULL);
-        return -1;
-    }
-    if (coda_cursor_goto_record_field_by_name(&cursor, band_name) != 0)
-    {
-        harp_set_error(HARP_ERROR_UNSUPPORTED_PRODUCT, NULL);
-        return -1;
-    }
-
-    return 0;
-}
-
-static int verify_s5p_l1b_ra_bd1(const harp_ingestion_module *module, coda_product *product)
-{
-    (void)module;
-
-    return verify_s5p_l1b_ra(product, "BAND1_RADIANCE");
-}
-
-static int verify_s5p_l1b_ra_bd2(const harp_ingestion_module *module, coda_product *product)
-{
-    (void)module;
-
-    return verify_s5p_l1b_ra(product, "BAND2_RADIANCE");
-}
-
-static int verify_s5p_l1b_ra_bd3(const harp_ingestion_module *module, coda_product *product)
-{
-    (void)module;
-
-    return verify_s5p_l1b_ra(product, "BAND3_RADIANCE");
-}
-
-static int verify_s5p_l1b_ra_bd4(const harp_ingestion_module *module, coda_product *product)
-{
-    (void)module;
-
-    return verify_s5p_l1b_ra(product, "BAND4_RADIANCE");
-}
-
-static int verify_s5p_l1b_ra_bd5(const harp_ingestion_module *module, coda_product *product)
-{
-    (void)module;
-
-    return verify_s5p_l1b_ra(product, "BAND5_RADIANCE");
-}
-
-static int verify_s5p_l1b_ra_bd6(const harp_ingestion_module *module, coda_product *product)
-{
-    (void)module;
-
-    return verify_s5p_l1b_ra(product, "BAND6_RADIANCE");
-}
-
-static int verify_s5p_l1b_ra_bd7(const harp_ingestion_module *module, coda_product *product)
-{
-    (void)module;
-
-    return verify_s5p_l1b_ra(product, "BAND7_RADIANCE");
-}
-
-static int verify_s5p_l1b_ra_bd8(const harp_ingestion_module *module, coda_product *product)
-{
-    (void)module;
-
-    return verify_s5p_l1b_ra(product, "BAND8_RADIANCE");
-}
-
 static void register_irradiance_product_variables(harp_product_definition *product_definition,
                                                   const char *product_group_name)
 {
@@ -1042,12 +921,11 @@ int harp_ingestion_module_s5p_l1b_init(void)
     const char *band_option_values[] = { "1", "2", "3", "4", "5", "6", "7", "8" };
     const char *description;
 
-    /* S5P_L1B_IR products. */
-    description = "Sentinel-5P L1b irradiance spectra";
-    module =
-        harp_ingestion_register_module_coda("S5P_L1B_IR", "Sentinel-5P", NULL, NULL, description, verify_s5p_l1b_ir,
-                                            ingestion_init_s5p_l1b_ir, ingestion_done);
-    harp_ingestion_register_option(module, "band", "spectral band to ingest", 8, band_option_values);
+    /* S5P_L1B_IR_UVN products. */
+    description = "Sentinel-5P L1b UVN irradiance spectra";
+    module = harp_ingestion_register_module_coda("S5P_L1B_IR_UVN", "Sentinel-5P", "Sentinel5P", "L1B_IR_UVN",
+                                                 description, NULL, ingestion_init_s5p_l1b_ir, ingestion_done);
+    harp_ingestion_register_option(module, "band", "spectral band to ingest", 6, band_option_values);
 
     product_definition =
         harp_ingestion_register_product(module, "S5P_L1B_IR_UVN_BD1", "irradiance spectra (band 1, UVN module)",
@@ -1085,6 +963,12 @@ int harp_ingestion_module_s5p_l1b_init(void)
     harp_product_definition_add_mapping(product_definition, NULL, "band=6");
     register_irradiance_product_variables(product_definition, "BAND6_IRRADIANCE");
 
+    /* S5P_L1B_IR_SIR products. */
+    description = "Sentinel-5P L1b SWIR irradiance spectra";
+    module = harp_ingestion_register_module_coda("S5P_L1B_IR_SIR", "Sentinel-5P", "Sentinel5P", "L1B_IR_SIR",
+                                                 description, NULL, ingestion_init_s5p_l1b_ir, ingestion_done);
+    harp_ingestion_register_option(module, "band", "spectral band to ingest", 2, &band_option_values[6]);
+
     product_definition =
         harp_ingestion_register_product(module, "S5P_L1B_IR_SIR_BD7", "irradiance spectra (band 7, SWIR module)",
                                         read_dimensions);
@@ -1099,65 +983,57 @@ int harp_ingestion_module_s5p_l1b_init(void)
 
     /* S5P_L1B_RA products. */
     description = "Sentinel-5P L1b photon radiance spectra (band 1, UV detector)";
-    module =
-        harp_ingestion_register_module_coda("S5P_L1B_RA_BD1", "Sentinel-5P", NULL, NULL, description,
-                                            verify_s5p_l1b_ra_bd1, ingestion_init_s5p_l1b_ra, ingestion_done);
+    module = harp_ingestion_register_module_coda("S5P_L1B_RA_BD1", "Sentinel-5P", "Sentinel5P", "L1B_RA_BD1",
+                                                 description, NULL, ingestion_init_s5p_l1b_ra, ingestion_done);
 
     product_definition = harp_ingestion_register_product(module, "S5P_L1B_RA_BD1", NULL, read_dimensions);
     register_radiance_product_variables(product_definition, "BAND1_RADIANCE");
 
     description = "Sentinel-5P L1b photon radiance spectra (band 2, UV detector)";
-    module =
-        harp_ingestion_register_module_coda("S5P_L1B_RA_BD2", "Sentinel-5P", NULL, NULL, description,
-                                            verify_s5p_l1b_ra_bd2, ingestion_init_s5p_l1b_ra, ingestion_done);
+    module = harp_ingestion_register_module_coda("S5P_L1B_RA_BD2", "Sentinel-5P", "Sentinel5P", "L1B_RA_BD2",
+                                                 description, NULL, ingestion_init_s5p_l1b_ra, ingestion_done);
 
     product_definition = harp_ingestion_register_product(module, "S5P_L1B_RA_BD2", NULL, read_dimensions);
     register_radiance_product_variables(product_definition, "BAND2_RADIANCE");
 
     description = "Sentinel-5P L1b photon radiance spectra (band 3, UVIS detector)";
-    module =
-        harp_ingestion_register_module_coda("S5P_L1B_RA_BD3", "Sentinel-5P", NULL, NULL, description,
-                                            verify_s5p_l1b_ra_bd3, ingestion_init_s5p_l1b_ra, ingestion_done);
+    module = harp_ingestion_register_module_coda("S5P_L1B_RA_BD3", "Sentinel-5P", "Sentinel5P", "L1B_RA_BD3",
+                                                 description, NULL, ingestion_init_s5p_l1b_ra, ingestion_done);
 
     product_definition = harp_ingestion_register_product(module, "S5P_L1B_RA_BD3", NULL, read_dimensions);
     register_radiance_product_variables(product_definition, "BAND3_RADIANCE");
 
     description = "Sentinel-5P L1b photon radiance spectra (band 4, UVIS detector)";
-    module =
-        harp_ingestion_register_module_coda("S5P_L1B_RA_BD4", "Sentinel-5P", NULL, NULL, description,
-                                            verify_s5p_l1b_ra_bd4, ingestion_init_s5p_l1b_ra, ingestion_done);
+    module = harp_ingestion_register_module_coda("S5P_L1B_RA_BD4", "Sentinel-5P", "Sentinel5P", "L1B_RA_BD4",
+                                                 description, NULL, ingestion_init_s5p_l1b_ra, ingestion_done);
 
     product_definition = harp_ingestion_register_product(module, "S5P_L1B_RA_BD4", NULL, read_dimensions);
     register_radiance_product_variables(product_definition, "BAND4_RADIANCE");
 
     description = "Sentinel-5P L1b photon radiance spectra (band 5, NIR detector)";
-    module =
-        harp_ingestion_register_module_coda("S5P_L1B_RA_BD5", "Sentinel-5P", NULL, NULL, description,
-                                            verify_s5p_l1b_ra_bd5, ingestion_init_s5p_l1b_ra, ingestion_done);
+    module = harp_ingestion_register_module_coda("S5P_L1B_RA_BD5", "Sentinel-5P", "Sentinel5P", "L1B_RA_BD5",
+                                                 description, NULL, ingestion_init_s5p_l1b_ra, ingestion_done);
 
     product_definition = harp_ingestion_register_product(module, "S5P_L1B_RA_BD5", NULL, read_dimensions);
     register_radiance_product_variables(product_definition, "BAND5_RADIANCE");
 
     description = "Sentinel-5P L1b photon radiance spectra (band 6, NIR detector)";
-    module =
-        harp_ingestion_register_module_coda("S5P_L1B_RA_BD6", "Sentinel-5P", NULL, NULL, description,
-                                            verify_s5p_l1b_ra_bd6, ingestion_init_s5p_l1b_ra, ingestion_done);
+    module = harp_ingestion_register_module_coda("S5P_L1B_RA_BD6", "Sentinel-5P", "Sentinel5P", "L1B_RA_BD6",
+                                                 description, NULL, ingestion_init_s5p_l1b_ra, ingestion_done);
 
     product_definition = harp_ingestion_register_product(module, "S5P_L1B_RA_BD6", NULL, read_dimensions);
     register_radiance_product_variables(product_definition, "BAND6_RADIANCE");
 
     description = "Sentinel-5P L1b photon radiance spectra (band 7, SWIR detector)";
-    module =
-        harp_ingestion_register_module_coda("S5P_L1B_RA_BD7", "Sentinel-5P", NULL, NULL, description,
-                                            verify_s5p_l1b_ra_bd7, ingestion_init_s5p_l1b_ra, ingestion_done);
+    module = harp_ingestion_register_module_coda("S5P_L1B_RA_BD7", "Sentinel-5P", "Sentinel5P", "L1B_RA_BD7",
+                                                 description, NULL, ingestion_init_s5p_l1b_ra, ingestion_done);
 
     product_definition = harp_ingestion_register_product(module, "S5P_L1B_RA_BD7", NULL, read_dimensions);
     register_radiance_product_variables(product_definition, "BAND7_RADIANCE");
 
     description = "Sentinel-5P L1b photon radiance spectra (band 8, SWIR detector)";
-    module =
-        harp_ingestion_register_module_coda("S5P_L1B_RA_BD8", "Sentinel-5P", NULL, NULL, description,
-                                            verify_s5p_l1b_ra_bd8, ingestion_init_s5p_l1b_ra, ingestion_done);
+    module = harp_ingestion_register_module_coda("S5P_L1B_RA_BD8", "Sentinel-5P", "Sentinel5P", "L1B_RA_BD8",
+                                                 description, NULL, ingestion_init_s5p_l1b_ra, ingestion_done);
 
     product_definition = harp_ingestion_register_product(module, "S5P_L1B_RA_BD8", NULL, read_dimensions);
     register_radiance_product_variables(product_definition, "BAND8_RADIANCE");
