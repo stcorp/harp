@@ -13,7 +13,12 @@ the `cffi documentation`_ for details on how to install the cffi package.
 Products are represented in Python by instances of :py:class:`harp.Product`,
 which can be manipulated freely from within Python. A :py:class:`harp.Product`
 instance contains a :py:class:`harp.Variable` instance for each variable
-contained in the product.
+contained in the product. A :py:class:`harp.Product` also contains special
+entries for the global attributes `source_product` and `history`
+(a :py:class:`harp.Product` will thus not be able to contain variables with
+these names). Note that the `Conventions`, `datetime_start` and `datetime_stop`
+global attributes are not included in a :py:class:`harp.Product` as these are
+automatically handled by the import/export functions of HARP.
 
 Products can be :py:func:`exported <harp.export_product>` as HARP compliant
 products in any of the file formats supported by the HARP C library

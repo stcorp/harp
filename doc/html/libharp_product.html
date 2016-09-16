@@ -149,7 +149,16 @@
 <dl class="group">
 <dt>
 <span class="target" id="libharpgroup__harp__product"></span><em>group</em> <code class="descname">harp_product</code></dt>
-<dd><p>The HARP Products module contains everything related to HARP products. </p>
+<dd><p>The HARP Products module contains everything related to HARP products.</p>
+<p>The representation of a HARP product in C is a structure containing:<ul class="simple">
+<li>an array of variables</li>
+<li>an array of dimension lengths for each dimension type (unvailable dimensions have length -1)</li>
+<li>the <code class="docutils literal"><span class="pre">source_product</span></code> global attribute (can be NULL)</li>
+<li>the <code class="docutils literal"><span class="pre">history</span></code> global attribute (can be NULL)</li>
+</ul>
+</p>
+<p>Note that the <code class="docutils literal"><span class="pre">Conventions</span></code> global attribute is not included as this is automatically handled by the import/export functions of HARP. Similar, the <code class="docutils literal"><span class="pre">datetime_start</span></code> and <code class="docutils literal"><span class="pre">datetime_stop</span></code> attributes are handled by the export function. They are set to the minimum and maximum values of the variables <code class="docutils literal"><span class="pre">datetime</span></code>, <code class="docutils literal"><span class="pre">datetime_start</span></code> and <code class="docutils literal"><span class="pre">datetime_end</span></code> (if available).</p>
+<p>For each variable in the HARP product the dimensions need to match the length of their type as defined in the dimension array of the HARP product (for all dimension types except &#8216;independent&#8217;). </p>
 <div class="breathe-sectiondef container">
 <p class="breathe-sectiondef-title rubric">Typedefs</p>
 <dl class="type">

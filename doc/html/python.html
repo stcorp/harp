@@ -149,7 +149,12 @@ the <a class="reference external" href="http://cffi.readthedocs.org/en/latest/in
 <p>Products are represented in Python by instances of <a class="reference internal" href="#harp.Product" title="harp.Product"><code class="xref py py-class docutils literal"><span class="pre">harp.Product</span></code></a>,
 which can be manipulated freely from within Python. A <a class="reference internal" href="#harp.Product" title="harp.Product"><code class="xref py py-class docutils literal"><span class="pre">harp.Product</span></code></a>
 instance contains a <a class="reference internal" href="#harp.Variable" title="harp.Variable"><code class="xref py py-class docutils literal"><span class="pre">harp.Variable</span></code></a> instance for each variable
-contained in the product.</p>
+contained in the product. A <a class="reference internal" href="#harp.Product" title="harp.Product"><code class="xref py py-class docutils literal"><span class="pre">harp.Product</span></code></a> also contains special
+entries for the global attributes <cite>source_product</cite> and <cite>history</cite>
+(a <a class="reference internal" href="#harp.Product" title="harp.Product"><code class="xref py py-class docutils literal"><span class="pre">harp.Product</span></code></a> will thus not be able to contain variables with
+these names). Note that the <cite>Conventions</cite>, <cite>datetime_start</cite> and <cite>datetime_stop</cite>
+global attributes are not included in a <a class="reference internal" href="#harp.Product" title="harp.Product"><code class="xref py py-class docutils literal"><span class="pre">harp.Product</span></code></a> as these are
+automatically handled by the import/export functions of HARP.</p>
 <p>Products can be <a class="reference internal" href="#harp.export_product" title="harp.export_product"><code class="xref py py-func docutils literal"><span class="pre">exported</span></code></a> as HARP compliant
 products in any of the file formats supported by the HARP C library
 (NetCDF/HDF4/HDF5). Such exported products can subsequently be processed further

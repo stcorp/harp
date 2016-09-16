@@ -13,6 +13,10 @@ can be compliant with both netCDF-CF and the HARP data format conventions at the
 In order for a product to be compliant with the HARP data format conventions it will need to have the ``HARP-1.0`` value
 in the ``Conventions`` global attribute and follow the restrictions described in this section.
 
+Note that the representation of HARP data in memory by the HARP software may differ from the file format described here
+(although there should always be a straightforward mapping between the two). Check the documentation for the HARP
+software interfaces for a description of the differences.
+
 File naming
 ~~~~~~~~~~~
 HARP puts no restrictions on the filename.

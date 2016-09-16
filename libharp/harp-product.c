@@ -28,6 +28,20 @@
 
 /** \defgroup harp_product HARP Products
  * The HARP Products module contains everything related to HARP products.
+ *
+ * The representation of a HARP product in C is a structure containing:
+ * - an array of variables
+ * - an array of dimension lengths for each dimension type (unvailable dimensions have length -1)
+ * - the `source_product` global attribute (can be NULL)
+ * - the `history` global attribute (can be NULL)
+ *
+ * Note that the `Conventions` global attribute is not included as this is automatically handled by the import/export
+ * functions of HARP. Similar, the `datetime_start` and `datetime_stop` attributes are handled by the export function.
+ * They are set to the minimum and maximum values of the variables `datetime`, `datetime_start` and `datetime_end`
+ * (if available).
+ *
+ * For each variable in the HARP product the dimensions need to match the length of their type as defined in the
+ * dimension array of the HARP product (for all dimension types except 'independent').
  */
 
 static int get_arguments(int argc, char *argv[], char **new_arguments)
