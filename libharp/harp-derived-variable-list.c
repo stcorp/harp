@@ -3159,6 +3159,35 @@ static int add_conversions_for_grid(int num_dimensions, harp_dimension_type dime
         }
     }
 
+    /*** surface pressure ***/
+
+    if (!has_vertical)
+    {
+        /* time dependent from independent */
+        if (add_time_indepedent_to_dependent_conversion("surface_pressure", harp_type_double, HARP_UNIT_PRESSURE,
+                                                        num_dimensions, dimension_type, 0) != 0)
+        {
+            return -1;
+        }
+
+        /* surface pressure from surface number density and surface temperature */
+        if (harp_variable_conversion_new("surface_pressure", harp_type_double, HARP_UNIT_PRESSURE, num_dimensions,
+                                         dimension_type, 0, get_pressure_from_nd_and_temperature, &conversion) != 0)
+        {
+            return -1;
+        }
+        if (harp_variable_conversion_add_source(conversion, "surface_number_density", harp_type_double,
+                                                HARP_UNIT_NUMBER_DENSITY, num_dimensions, dimension_type, 0) != 0)
+        {
+            return -1;
+        }
+        if (harp_variable_conversion_add_source(conversion, "surface_temperature", harp_type_double,
+                                                HARP_UNIT_TEMPERATURE, num_dimensions, dimension_type, 0) != 0)
+        {
+            return -1;
+        }
+    }
+
     /*** surface geopotential ***/
 
     if (!has_vertical)
@@ -3220,6 +3249,79 @@ static int add_conversions_for_grid(int num_dimensions, harp_dimension_type dime
             return -1;
         }
         if (harp_variable_conversion_add_source(conversion, "latitude", harp_type_double, HARP_UNIT_LATITUDE,
+                                                num_dimensions, dimension_type, 0) != 0)
+        {
+            return -1;
+        }
+    }
+
+    /*** surface number density ***/
+
+    if (!has_vertical)
+    {
+        /* time dependent from independent */
+        if (add_time_indepedent_to_dependent_conversion("surface_number_density", harp_type_double,
+                                                        HARP_UNIT_NUMBER_DENSITY, num_dimensions, dimension_type, 0) !=
+            0)
+        {
+            return -1;
+        }
+
+        /* uncertainties */
+        if (add_uncertainty_conversions("surface_number_density", HARP_UNIT_NUMBER_DENSITY, num_dimensions,
+                                        dimension_type) != 0)
+        {
+            return -1;
+        }
+
+        /* surface number density from surface pressure and surface temperature */
+        if (harp_variable_conversion_new("surface_number_density", harp_type_double, HARP_UNIT_NUMBER_DENSITY,
+                                         num_dimensions, dimension_type, 0, get_nd_from_pressure_and_temperature,
+                                         &conversion) != 0)
+        {
+            return -1;
+        }
+        if (harp_variable_conversion_add_source(conversion, "surface_pressure", harp_type_double, HARP_UNIT_PRESSURE,
+                                                num_dimensions, dimension_type, 0) != 0)
+        {
+            return -1;
+        }
+        if (harp_variable_conversion_add_source(conversion, "surface_temperature", harp_type_double,
+                                                HARP_UNIT_TEMPERATURE, num_dimensions, dimension_type, 0) != 0)
+        {
+            return -1;
+        }
+    }
+
+    /*** surface temperature ***/
+
+    if (!has_vertical)
+    {
+        /* time dependent from independent */
+        if (add_time_indepedent_to_dependent_conversion("surface_temperature", harp_type_double, HARP_UNIT_TEMPERATURE,
+                                                        num_dimensions, dimension_type, 0) != 0)
+        {
+            return -1;
+        }
+
+        /* uncertainties */
+        if (add_uncertainty_conversions("surface_temperature", HARP_UNIT_TEMPERATURE, num_dimensions, dimension_type) != 0)
+        {
+            return -1;
+        }
+
+        /* surface temperature from surface number density and surface pressure  */
+        if (harp_variable_conversion_new("surface_temperature", harp_type_double, HARP_UNIT_TEMPERATURE, num_dimensions,
+                                         dimension_type, 0, get_temperature_from_nd_and_pressure, &conversion) != 0)
+        {
+            return -1;
+        }
+        if (harp_variable_conversion_add_source(conversion, "surface_number_density", harp_type_double,
+                                                HARP_UNIT_NUMBER_DENSITY, num_dimensions, dimension_type, 0) != 0)
+        {
+            return -1;
+        }
+        if (harp_variable_conversion_add_source(conversion, "surface_pressure", harp_type_double, HARP_UNIT_PRESSURE,
                                                 num_dimensions, dimension_type, 0) != 0)
         {
             return -1;

@@ -240,7 +240,7 @@ longitude                                     sensor                          X 
 longitude_bounds                                                                           (lon)
 molar_mass                                                                    X       X    X             this is the molar mass of the total substance (it is defined by the
                                                                                                          relation between the variables 'density' and 'number_density')
-number_density                                                                X       X    X
+number_density                                surface                         X       X    X
 pressure                                      surface                         X       X    X
 pressure_bounds                                                               X       X    X
 radiance                                                                      X                    X
@@ -391,6 +391,11 @@ Some examples of valid variable names are: ``tropospheric_O3_column_number_densi
 
 The `Vert`, `Lat/Lon`, and `Spec` columns indicate whether a variable can be dependent on the ``vertical``,
 ``latitude`` & ``longitude``, and/or ``spectral`` dimensions (any variable can be dependent on the ``time`` dimension).
+
+The 'surface' prefix should only be used when quantities are combined together with quantites that have a vertical dimension.
+If a product just contains surface quantities then don't use a 'surface' prefix but just omit the vertical dimension and
+indicate the vertical level (i.e. location of the surface) using a 'pressure', 'altitude', and/or 'geopotential_height' variable.
+
 
 Be aware that there are still several topics under discussion that may change the above naming convention.
 See the HARP issues list on the GitHub website for more details.

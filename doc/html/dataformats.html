@@ -708,7 +708,7 @@ avk</td>
 relation between the variables &#8216;density&#8217; and &#8216;number_density&#8217;)</td>
 </tr>
 <tr class="row-even"><td>number_density</td>
-<td>&nbsp;</td>
+<td>surface</td>
 <td>&nbsp;</td>
 <td>X</td>
 <td>X</td>
@@ -1411,6 +1411,9 @@ Variables having an &#8216;X&#8217; in the Quality column can have any of the fo
 <code class="docutils literal"><span class="pre">tropospheric_O3_column_number_density_uncertainty</span></code>, <code class="docutils literal"><span class="pre">O3_column_number_density_apriori_uncertainty</span></code>.</p>
 <p>The <cite>Vert</cite>, <cite>Lat/Lon</cite>, and <cite>Spec</cite> columns indicate whether a variable can be dependent on the <code class="docutils literal"><span class="pre">vertical</span></code>,
 <code class="docutils literal"><span class="pre">latitude</span></code> &amp; <code class="docutils literal"><span class="pre">longitude</span></code>, and/or <code class="docutils literal"><span class="pre">spectral</span></code> dimensions (any variable can be dependent on the <code class="docutils literal"><span class="pre">time</span></code> dimension).</p>
+<p>The &#8216;surface&#8217; prefix should only be used when quantities are combined together with quantites that have a vertical dimension.
+If a product just contains surface quantities then don&#8217;t use a &#8216;surface&#8217; prefix but just omit the vertical dimension and
+indicate the vertical level (i.e. location of the surface) using a &#8216;pressure&#8217;, &#8216;altitude&#8217;, and/or &#8216;geopotential_height&#8217; variable.</p>
 <p>Be aware that there are still several topics under discussion that may change the above naming convention.
 See the HARP issues list on the GitHub website for more details.</p>
 </div>

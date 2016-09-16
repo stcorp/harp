@@ -1804,6 +1804,23 @@ geopotential
 
       \Phi = g_{0}z_{g}
 
+#. surface geopotential from surface geopotential height
+
+   =================== =========================== ======================= =================================
+   symbol              description                 unit                    variable name
+   =================== =========================== ======================= =================================
+   :math:`g_{0}`       mean earth gravity          :math:`\frac{m}{s^2}`
+   :math:`z_{g,surf}`  surface geopotential height :math:`m`               `surface_geopotential_height {:}`
+   :math:`\Phi_{surf}` surface geopotential        :math:`\frac{m^2}{s^2}` `surface_geopotential {:}`
+   =================== =========================== ======================= =================================
+
+   The pattern `:` for the dimensions can represent `{vertical}`, `{latitude,longitude}`, `{latitude,longitude,vertical}`,
+   `{time}`, `{time,vertical}`, `{time,latitude,longitude}`, `{time,latitude,longitude,vertical}`, or no dimensions at all.
+
+   .. math::
+
+      \Phi_{surf} = g_{0}z_{g,surf}
+
 
 geopotential height
 ~~~~~~~~~~~~~~~~~~~
@@ -1888,6 +1905,55 @@ geopotential height
          z_{g}(1) & = & z_{g,surf} + \frac{T(1)}{M_{air}(1)}\frac{R}{g_{0}}\ln\left(\frac{p_{surf}}{p(i)}\right) \\
          z_{g}(i) & = & z_{g}(i-1) + \frac{T(i-1)+T(i)}{M_{air}(i-1)+M_{air}(i)}\frac{R}{g_{0}}\ln\left(\frac{p(i-1)}{p(i)}\right), 1 < i \leq N
       \end{eqnarray}
+
+
+#. surface geopotential height from surface geopotential
+
+   =================== =========================== ======================= =================================
+   symbol              description                 unit                    variable name
+   =================== =========================== ======================= =================================
+   :math:`g_{0}`       mean earth gravity          :math:`\frac{m}{s^2}`
+   :math:`z_{g,surf}`  surface geopotential height :math:`m`               `surface_geopotential_height {:}`
+   :math:`\Phi_{surf}` surface geopotential        :math:`\frac{m^2}{s^2}` `surface_geopotential {:}`
+   =================== =========================== ======================= =================================
+
+   The pattern `:` for the dimensions can represent `{vertical}`, `{latitude,longitude}`, `{latitude,longitude,vertical}`,
+   `{time}`, `{time,vertical}`, `{time,latitude,longitude}`, `{time,latitude,longitude,vertical}`, or no dimensions at all.
+
+   .. math::
+
+      z_{g,surf} = \frac{\Phi_{surf}}{g_{0}}
+
+
+#. surface geopotential height from surface altitude
+
+   ================== ============================ ===================== =================================
+   symbol             description                  unit                  variable name
+   ================== ============================ ===================== =================================
+   :math:`g_{0}`      mean earth gravity           :math:`\frac{m}{s^2}`
+   :math:`g_{wgs84}`  gravity at WGS84 ellipsoid   :math:`\frac{m}{s^2}`
+   :math:`R_{wgs84}`  local earth curvature radius :math:`m`
+                      at WGS84 ellipsoid
+   :math:`z_{surf}`   surface altitude             :math:`m`             `surface_altitude {:}`
+   :math:`z_{g,surf}` surface geopotential height  :math:`m`             `surface_geopotential_height {:}`
+   :math:`\phi`       latitude                     :math:`degN`          `latitude {:}`
+   =================  ============================ ===================== =================================
+
+   The pattern `:` for the dimensions can represent `{vertical}`, `{time}`, `{time,vertical}`, or no dimensions at all.
+
+   This equation approximates the mean sea level gravity and radius by that of the reference ellipsoid.
+
+   .. math::
+      :nowrap:
+
+      \begin{eqnarray}
+         g_{wgs84} & = & 9.7803253359 \frac{1 + 0.00193185265241{\sin}^2(\frac{\pi}{180}\phi)}
+            {\sqrt{1 - 0.00669437999013{\sin}^2(\frac{\pi}{180}\phi)}} \\
+         R_{wgs84} & = & \frac{1}{\sqrt{\left(\frac{\cos(\frac{\pi}{180}\phi)}{6356752.0}\right)^2 +
+            \left(\frac{\sin(\frac{\pi}{180}\phi)}{6378137.0}\right)^2}} \\
+         z_{g,surf} & = & \frac{g_{wgs84}}{g_{0}}\frac{R_{wgs84}z_{surf}}{z_{surf} + R_{wgs84}}
+      \end{eqnarray}
+
 
 
 mass density
@@ -2237,6 +2303,25 @@ number density
       n_{x} = 10^{-2}\frac{p_{x}}{kT}
 
 
+#. surface number density for total air from surface pressure and surface temperature
+
+   ================ ====================== ============================ ============================
+   symbol           description            unit                         variable name
+   ================ ====================== ============================ ============================
+   :math:`k`        Boltzmann constant     :math:`\frac{kg m^2}{K s^2}`
+   :math:`n_{surf}` surface number density :math:`\frac{molec}{m^3}`    `surface_number_density {:}`
+   :math:`p_{surf}` surface pressure       :math:`hPa`                  `surface_pressure {:}`
+   :math:`T_{surf}` surface temperature    :math:`K`                    `surface_temperature {:}`
+   ================ ====================== ============================ ============================
+
+   The pattern `:` for the dimensions can represent `{vertical}`, `{latitude,longitude}`, `{latitude,longitude,vertical}`,
+   `{time}`, `{time,vertical}`, `{time,latitude,longitude}`, `{time,latitude,longitude,vertical}`, or no dimensions at all.
+
+   .. math::
+
+      n_{surf}= 10^{-2}\frac{p_{surf}}{kT_{surf}}
+
+
 partial pressure
 ~~~~~~~~~~~~~~~~
 
@@ -2420,6 +2505,25 @@ pressure
       p = 10^{2}nkT
 
 
+#. surface pressure from surface number density and surface temperature
+
+   ================ ====================== ============================ ============================
+   symbol           description            unit                         variable name
+   ================ ====================== ============================ ============================
+   :math:`k`        Boltzmann constant     :math:`\frac{kg m^2}{K s^2}`
+   :math:`n_{surf}` surface number density :math:`\frac{molec}{m^3}`    `surface_number_density {:}`
+   :math:`p_{surf}` surface pressure       :math:`hPa`                  `surface_pressure {:}`
+   :math:`T_{surf}` surface temperature    :math:`K`                    `surface_temperature {:}`
+   ================ ====================== ============================ ============================
+
+   The pattern `:` for the dimensions can represent `{vertical}`, `{latitude,longitude}`, `{latitude,longitude,vertical}`,
+   `{time}`, `{time,vertical}`, `{time,latitude,longitude}`, `{time,latitude,longitude,vertical}`, or no dimensions at all.
+
+   .. math::
+
+      p_{surf} = 10^{2}n_{surf}kT_{surf}
+
+
 pressure bounds
 ~~~~~~~~~~~~~~~
 
@@ -2474,7 +2578,7 @@ relative humidity
 temperature
 ~~~~~~~~~~~
 
-#. temperature from from pressure and number density
+#. temperature from pressure and number density
 
    ========= ================== ============================ ====================
    symbol    description        unit                         variable name
@@ -2510,6 +2614,25 @@ temperature
    .. math::
 
       T = \frac{M_{air}}{M_{dry\_air}}T_{v}
+
+
+#. surface temperature from surface pressure and surface number density
+
+   ================ ====================== ============================ ============================
+   symbol           description            unit                         variable name
+   ================ ====================== ============================ ============================
+   :math:`k`        Boltzmann constant     :math:`\frac{kg m^2}{K s^2}`
+   :math:`n_{surf}` surface number density :math:`\frac{molec}{m^3}`    `surface_number_density {:}`
+   :math:`p_{surf}` surface pressure       :math:`hPa`                  `surface_pressure {:}`
+   :math:`T_{surf}` surface temperature    :math:`K`                    `surface_temperature {:}`
+   ================ ====================== ============================ ============================
+
+   The pattern `:` for the dimensions can represent `{vertical}`, `{latitude,longitude}`, `{latitude,longitude,vertical}`,
+   `{time}`, `{time,vertical}`, `{time,latitude,longitude}`, `{time,latitude,longitude,vertical}`, or no dimensions at all.
+
+   .. math::
+
+      T_{surf} = 10^{-2}\frac{p_{surf}}{kn_{surf}}
 
 
 virtual temperature
