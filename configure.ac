@@ -189,6 +189,7 @@ ST_CODADEF_VERSION([$srcdir/definitions],[ENVISAT_MIPAS])
 ST_CODADEF_VERSION([$srcdir/definitions],[ENVISAT_SCIAMACHY])
 ST_CODADEF_VERSION([$srcdir/definitions],[EPS])
 ST_CODADEF_VERSION([$srcdir/definitions],[ERS_GOME])
+ST_CODADEF_VERSION([$srcdir/definitions],[Sentinel5P])
 
 # *** checks for programs ***
 

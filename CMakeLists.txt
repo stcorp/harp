@@ -551,6 +551,7 @@ add_codadef(ENVISAT_MIPAS)
 add_codadef(ENVISAT_SCIAMACHY)
 add_codadef(EPS)
 add_codadef(ERS_GOME)
+add_codadef(Sentinel5P)
 
 # documentation
 if(WIN32)
