@@ -241,6 +241,9 @@ HARP_DOCFILES = \
 	doc/html/ingestions/IASI_L2.html \
 	doc/html/ingestions/MIPAS_NL_L2.html \
 	doc/html/ingestions/MLS_L2_BRO.html \
+	doc/html/ingestions/MLS_L2_CH3CN.html \
+	doc/html/ingestions/MLS_L2_CH3Cl.html \
+	doc/html/ingestions/MLS_L2_CH3OH.html \
 	doc/html/ingestions/MLS_L2_CLO.html \
 	doc/html/ingestions/MLS_L2_CO.html \
 	doc/html/ingestions/MLS_L2_GPH.html \
@@ -802,6 +805,12 @@ doc/html/ingestions/IASI_L2.html:
 doc/html/ingestions/MIPAS_NL_L2.html:
 	$(MAKE) harp_doc
 doc/html/ingestions/MLS_L2_BRO.html:
+	$(MAKE) harp_doc
+doc/html/ingestions/MLS_L2_CH3CN.html:
+	$(MAKE) harp_doc
+doc/html/ingestions/MLS_L2_CH3Cl.html:
+	$(MAKE) harp_doc
+doc/html/ingestions/MLS_L2_CH3OH.html:
 	$(MAKE) harp_doc
 doc/html/ingestions/MLS_L2_CLO.html:
 	$(MAKE) harp_doc

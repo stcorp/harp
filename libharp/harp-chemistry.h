@@ -36,6 +36,8 @@ typedef enum harp_chemical_species_enum
     harp_chemical_species_CF4,
     harp_chemical_species_CHClF2,
     harp_chemical_species_CH3Cl,
+    harp_chemical_species_CH3CN,
+    harp_chemical_species_CH3OH,
     harp_chemical_species_CH4,
     harp_chemical_species_CO,
     harp_chemical_species_COF2,
