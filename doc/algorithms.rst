@@ -1937,7 +1937,7 @@ geopotential height
    :math:`z_{surf}`   surface altitude             :math:`m`             `surface_altitude {:}`
    :math:`z_{g,surf}` surface geopotential height  :math:`m`             `surface_geopotential_height {:}`
    :math:`\phi`       latitude                     :math:`degN`          `latitude {:}`
-   =================  ============================ ===================== =================================
+   ================== ============================ ===================== =================================
 
    The pattern `:` for the dimensions can represent `{vertical}`, `{time}`, `{time,vertical}`, or no dimensions at all.
 
