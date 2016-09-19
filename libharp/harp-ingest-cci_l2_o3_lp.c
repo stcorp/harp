@@ -213,36 +213,6 @@ static int read_o3_number_density_error(void *user_data, harp_array data)
                         data);
 }
 
-static int verify_product_type(const harp_ingestion_module *module, coda_product *product)
-{
-    const char *filename;
-    coda_cursor cursor;
-
-    (void)module;
-    if (coda_get_product_filename(product, &filename) != 0)
-    {
-        harp_set_error(HARP_ERROR_UNSUPPORTED_PRODUCT, NULL);
-        return -1;
-    }
-    if (strncmp(harp_basename(filename), "ESACCI-OZONE-L2-LP", 18) != 0)
-    {
-        harp_set_error(HARP_ERROR_UNSUPPORTED_PRODUCT, NULL);
-        return -1;
-    }
-    if (coda_cursor_set_product(&cursor, product) != 0)
-    {
-        harp_set_error(HARP_ERROR_UNSUPPORTED_PRODUCT, NULL);
-        return -1;
-    }
-    if (coda_cursor_goto(&cursor, "/mole_concentration_of_ozone_in_air") != 0)
-    {
-        harp_set_error(HARP_ERROR_UNSUPPORTED_PRODUCT, NULL);
-        return -1;
-    }
-
-    return 0;
-}
-
 int harp_ingestion_module_cci_l2_o3_lp_init(void)
 {
     harp_ingestion_module *module;
@@ -253,9 +223,8 @@ int harp_ingestion_module_cci_l2_o3_lp_init(void)
     const char *description;
     const char *path;
 
-    module =
-        harp_ingestion_register_module_coda("ESACCI_OZONE_L2_LP", "Ozone CCI", NULL, NULL, "CCI L2 O3 limb profile",
-                                            verify_product_type, ingestion_init, ingestion_done);
+    module = harp_ingestion_register_module_coda("ESACCI_OZONE_L2_LP", "Ozone CCI", "ESACCI_OZONE", "L2_LP",
+                                                 "CCI L2 O3 limb profile", NULL, ingestion_init, ingestion_done);
 
     /* ESACCI_OZONE_L2_LP product */
     product_definition = harp_ingestion_register_product(module, "ESACCI_OZONE_L2_LP", NULL, read_dimensions);

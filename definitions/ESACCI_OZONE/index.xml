@@ -1,0 +1,183 @@
+<?xml version="1.0"?>
+<cd:ProductClass name="ESACCI_OZONE" last-modified="2016-09-19" xmlns:cd="http://www.stcorp.nl/coda/definition/2008/07">
+  <cd:Description>ESA Ozone CCI products</cd:Description>
+  <cd:ProductType name="L2_LP">
+    <cd:Description>CCI L2 O3 limb profile</cd:Description>
+    <cd:ProductDefinition id="L2_LP_nc3" format="netcdf" version="3">
+      <cd:Description>The format definition for this product is taken from the netcdf file itself.</cd:Description>
+      <cd:DetectionRule>
+        <cd:MatchExpression>substr(0, 12, filename()) == "ESACCI-OZONE"</cd:MatchExpression>
+        <cd:MatchExpression>substr(13, 5, filename()) == "L2-LP"</cd:MatchExpression>
+        <cd:MatchExpression path="/mole_concentration_of_ozone_in_air">true</cd:MatchExpression>
+      </cd:DetectionRule>
+    </cd:ProductDefinition>
+    <cd:ProductDefinition id="L2_LP_nc4" format="hdf5" version="4">
+      <cd:Description>The format definition for this product is taken from the netcdf file itself.</cd:Description>
+      <cd:DetectionRule>
+        <cd:MatchExpression>substr(0, 12, filename()) == "ESACCI-OZONE"</cd:MatchExpression>
+        <cd:MatchExpression>substr(13, 5, filename()) == "L2-LP"</cd:MatchExpression>
+        <cd:MatchExpression path="/mole_concentration_of_ozone_in_air">true</cd:MatchExpression>
+      </cd:DetectionRule>
+    </cd:ProductDefinition>
+  </cd:ProductType>
+  <cd:ProductType name="L2_NP">
+    <cd:Description>CCI L2 O3 nadir profile</cd:Description>
+    <cd:ProductDefinition id="L2_NP_nc3" format="netcdf" version="3">
+      <cd:Description>The format definition for this product is taken from the netcdf file itself.</cd:Description>
+      <cd:DetectionRule>
+        <cd:MatchExpression>substr(0, 12, filename()) == "ESACCI-OZONE"</cd:MatchExpression>
+        <cd:MatchExpression>substr(13, 5, filename()) == "L2-NP"</cd:MatchExpression>
+        <cd:MatchExpression path="/o3_nd">true</cd:MatchExpression>
+      </cd:DetectionRule>
+    </cd:ProductDefinition>
+    <cd:ProductDefinition id="L2_NP_nc4" format="hdf5" version="4">
+      <cd:Description>The format definition for this product is taken from the netcdf file itself.</cd:Description>
+      <cd:DetectionRule>
+        <cd:MatchExpression>substr(0, 12, filename()) == "ESACCI-OZONE"</cd:MatchExpression>
+        <cd:MatchExpression>substr(13, 5, filename()) == "L2-NP"</cd:MatchExpression>
+        <cd:MatchExpression path="/o3_nd">true</cd:MatchExpression>
+      </cd:DetectionRule>
+    </cd:ProductDefinition>
+  </cd:ProductType>
+  <cd:ProductType name="L2_TC">
+    <cd:Description>CCI L2 O3 total column</cd:Description>
+    <cd:ProductDefinition id="L2_TC_nc3" format="netcdf" version="3">
+      <cd:Description>The format definition for this product is taken from the netcdf file itself.</cd:Description>
+      <cd:DetectionRule>
+        <cd:MatchExpression>substr(0, 12, filename()) == "ESACCI-OZONE"</cd:MatchExpression>
+        <cd:MatchExpression>substr(13, 5, filename()) == "L2-TC"</cd:MatchExpression>
+        <cd:MatchExpression path="/atmosphere_mole_content_of_ozone">true</cd:MatchExpression>
+      </cd:DetectionRule>
+    </cd:ProductDefinition>
+    <cd:ProductDefinition id="L2_TC_nc4" format="hdf5" version="4">
+      <cd:Description>The format definition for this product is taken from the netcdf file itself.</cd:Description>
+      <cd:DetectionRule>
+        <cd:MatchExpression>substr(0, 12, filename()) == "ESACCI-OZONE"</cd:MatchExpression>
+        <cd:MatchExpression>substr(13, 5, filename()) == "L2-TC"</cd:MatchExpression>
+        <cd:MatchExpression path="/atmosphere_mole_content_of_ozone">true</cd:MatchExpression>
+      </cd:DetectionRule>
+    </cd:ProductDefinition>
+  </cd:ProductType>
+  <cd:ProductType name="L3_LP_MMZM">
+    <cd:Description>CCI O3 merged monthly zonal mean limb profile on a 10 degree latitude grid</cd:Description>
+    <cd:ProductDefinition id="L3_LP_MMZM_nc3" format="netcdf" version="3">
+      <cd:Description>The format definition for this product is taken from the netcdf file itself.</cd:Description>
+      <cd:DetectionRule>
+        <cd:MatchExpression>substr(0, 12, filename()) == "ESACCI-OZONE"</cd:MatchExpression>
+        <cd:MatchExpression>substr(13, 5, filename()) == "L3-LP"</cd:MatchExpression>
+        <cd:MatchExpression>regex("MZM", filename())</cd:MatchExpression>
+        <cd:MatchExpression>regex("MERGED", filename())</cd:MatchExpression>
+        <cd:MatchExpression path="/merged_ozone_concentration">true</cd:MatchExpression>
+      </cd:DetectionRule>
+    </cd:ProductDefinition>
+    <cd:ProductDefinition id="L3_LP_MMZM_nc4" format="hdf5" version="4">
+      <cd:Description>The format definition for this product is taken from the netcdf file itself.</cd:Description>
+      <cd:DetectionRule>
+        <cd:MatchExpression>substr(0, 12, filename()) == "ESACCI-OZONE"</cd:MatchExpression>
+        <cd:MatchExpression>substr(13, 5, filename()) == "L3-LP"</cd:MatchExpression>
+        <cd:MatchExpression>regex("MZM", filename())</cd:MatchExpression>
+        <cd:MatchExpression>regex("MERGED", filename())</cd:MatchExpression>
+        <cd:MatchExpression path="/merged_ozone_concentration">true</cd:MatchExpression>
+      </cd:DetectionRule>
+    </cd:ProductDefinition>
+  </cd:ProductType>
+  <cd:ProductType name="L3_LP_MSMM">
+    <cd:Description>CCI O3 merged semi-monthly zonal mean limb profile on a 10x20 degree grid</cd:Description>
+    <cd:ProductDefinition id="L3_LP_MSMM_nc3" format="netcdf" version="3">
+      <cd:Description>The format definition for this product is taken from the netcdf file itself.</cd:Description>
+      <cd:DetectionRule>
+        <cd:MatchExpression>substr(0, 12, filename()) == "ESACCI-OZONE"</cd:MatchExpression>
+        <cd:MatchExpression>substr(13, 5, filename()) == "L3-LP"</cd:MatchExpression>
+        <cd:MatchExpression>regex("SMM", filename())</cd:MatchExpression>
+        <cd:MatchExpression path="/merged_ozone_concentration">true</cd:MatchExpression>
+      </cd:DetectionRule>
+    </cd:ProductDefinition>
+    <cd:ProductDefinition id="L3_LP_MSMM_nc4" format="hdf5" version="4">
+      <cd:Description>The format definition for this product is taken from the netcdf file itself.</cd:Description>
+      <cd:DetectionRule>
+        <cd:MatchExpression>substr(0, 12, filename()) == "ESACCI-OZONE"</cd:MatchExpression>
+        <cd:MatchExpression>substr(13, 5, filename()) == "L3-LP"</cd:MatchExpression>
+        <cd:MatchExpression>regex("SMM", filename())</cd:MatchExpression>
+        <cd:MatchExpression path="/merged_ozone_concentration">true</cd:MatchExpression>
+      </cd:DetectionRule>
+    </cd:ProductDefinition>
+  </cd:ProductType>
+  <cd:ProductType name="L3_LP_MZM">
+    <cd:Description>CCI O3 monthly zonal mean limb profile on a 10 degree latitude grid</cd:Description>
+    <cd:ProductDefinition id="L3_LP_MZM_nc3" format="netcdf" version="3">
+      <cd:Description>The format definition for this product is taken from the netcdf file itself.</cd:Description>
+      <cd:DetectionRule>
+        <cd:MatchExpression>substr(0, 12, filename()) == "ESACCI-OZONE"</cd:MatchExpression>
+        <cd:MatchExpression>substr(13, 5, filename()) == "L3-LP"</cd:MatchExpression>
+        <cd:MatchExpression>regex("MZM", filename())</cd:MatchExpression>
+        <cd:MatchExpression path="/ozone_mole_concentation">true</cd:MatchExpression>
+      </cd:DetectionRule>
+    </cd:ProductDefinition>
+    <cd:ProductDefinition id="L3_LP_MZM_nc4" format="hdf5" version="4">
+      <cd:Description>The format definition for this product is taken from the netcdf file itself.</cd:Description>
+      <cd:DetectionRule>
+        <cd:MatchExpression>substr(0, 12, filename()) == "ESACCI-OZONE"</cd:MatchExpression>
+        <cd:MatchExpression>substr(13, 5, filename()) == "L3-LP"</cd:MatchExpression>
+        <cd:MatchExpression>regex("MZM", filename())</cd:MatchExpression>
+        <cd:MatchExpression path="/ozone_mole_concentation">true</cd:MatchExpression>
+      </cd:DetectionRule>
+    </cd:ProductDefinition>
+  </cd:ProductType>
+  <cd:ProductType name="L3_NP">
+    <cd:Description>CCI L3 O3 nadir profile products</cd:Description>
+    <cd:ProductDefinition id="L3_NP_nc3" format="netcdf" version="3">
+      <cd:Description>The format definition for this product is taken from the netcdf file itself.</cd:Description>
+      <cd:DetectionRule>
+        <cd:MatchExpression>substr(0, 12, filename()) == "ESACCI-OZONE"</cd:MatchExpression>
+        <cd:MatchExpression>substr(13, 5, filename()) == "L3-NP"</cd:MatchExpression>
+        <cd:MatchExpression path="/O3_ndens">true</cd:MatchExpression>
+      </cd:DetectionRule>
+    </cd:ProductDefinition>
+    <cd:ProductDefinition id="L3_NP_nc4" format="hdf5" version="4">
+      <cd:Description>The format definition for this product is taken from the netcdf file itself.</cd:Description>
+      <cd:DetectionRule>
+        <cd:MatchExpression>substr(0, 12, filename()) == "ESACCI-OZONE"</cd:MatchExpression>
+        <cd:MatchExpression>substr(13, 5, filename()) == "L3-NP"</cd:MatchExpression>
+        <cd:MatchExpression path="/O3_ndens">true</cd:MatchExpression>
+      </cd:DetectionRule>
+    </cd:ProductDefinition>
+  </cd:ProductType>
+  <cd:ProductType name="L3_TC">
+    <cd:Description>CCI L3 O3 total column</cd:Description>
+    <cd:ProductDefinition id="L3_TC_nc3" format="netcdf" version="3">
+      <cd:Description>The format definition for this product is taken from the netcdf file itself.</cd:Description>
+      <cd:DetectionRule>
+        <cd:MatchExpression>substr(0, 12, filename()) == "ESACCI-OZONE"</cd:MatchExpression>
+        <cd:MatchExpression>substr(13, 5, filename()) == "L3-TC"</cd:MatchExpression>
+        <cd:MatchExpression path="/atmosphere_mole_content_of_ozone">true</cd:MatchExpression>
+      </cd:DetectionRule>
+    </cd:ProductDefinition>
+    <cd:ProductDefinition id="L3_TC_nc4" format="hdf5" version="4">
+      <cd:Description>The format definition for this product is taken from the netcdf file itself.</cd:Description>
+      <cd:DetectionRule>
+        <cd:MatchExpression>substr(0, 12, filename()) == "ESACCI-OZONE"</cd:MatchExpression>
+        <cd:MatchExpression>substr(13, 5, filename()) == "L3-TC"</cd:MatchExpression>
+        <cd:MatchExpression path="/atmosphere_mole_content_of_ozone">true</cd:MatchExpression>
+      </cd:DetectionRule>
+    </cd:ProductDefinition>
+  </cd:ProductType>
+  <cd:ProductType name="L4_NP">
+    <cd:Description>CCI L4 O3 nadir profile</cd:Description>
+    <cd:ProductDefinition id="L4_NP_nc3" format="netcdf" version="3">
+      <cd:Description>The format definition for this product is taken from the netcdf file itself.</cd:Description>
+      <cd:DetectionRule>
+        <cd:MatchExpression>substr(0, 12, filename()) == "ESACCI-OZONE"</cd:MatchExpression>
+        <cd:MatchExpression>substr(13, 5, filename()) == "L4-NP"</cd:MatchExpression>
+        <cd:MatchExpression path="/O3_dens">true</cd:MatchExpression>
+      </cd:DetectionRule>
+    </cd:ProductDefinition>
+    <cd:ProductDefinition id="L4_NP_nc4" format="hdf5" version="4">
+      <cd:Description>The format definition for this product is taken from the netcdf file itself.</cd:Description>
+      <cd:DetectionRule>
+        <cd:MatchExpression>substr(0, 12, filename()) == "ESACCI-OZONE"</cd:MatchExpression>
+        <cd:MatchExpression>substr(13, 5, filename()) == "L4-NP"</cd:MatchExpression>
+        <cd:MatchExpression path="/O3_dens">true</cd:MatchExpression>
+      </cd:DetectionRule>
+    </cd:ProductDefinition>
+  </cd:ProductType>
+</cd:ProductClass>

@@ -392,25 +392,6 @@ static int read_O3_volume_mixing_ratio_uncertainty(void *user_data, harp_array d
     return read_and_reorder_dataset_3d(info, "/O3e_vmr", data);
 }
 
-static int verify_product_type(const harp_ingestion_module *module, coda_product *product)
-{
-    coda_cursor cursor;
-
-    (void)module;
-    if (coda_cursor_set_product(&cursor, product) != 0)
-    {
-        harp_set_error(HARP_ERROR_UNSUPPORTED_PRODUCT, NULL);
-        return -1;
-    }
-    if (coda_cursor_goto(&cursor, "/O3_ndens") != 0)
-    {
-        harp_set_error(HARP_ERROR_UNSUPPORTED_PRODUCT, NULL);
-        return -1;
-    }
-
-    return 0;
-}
-
 int harp_ingestion_module_cci_l3_o3_np_init(void)
 {
     harp_ingestion_module *module;
@@ -426,10 +407,9 @@ int harp_ingestion_module_cci_l3_o3_np_init(void)
     const char *description;
     const char *path;
 
-    module =
-        harp_ingestion_register_module_coda("ESACCI_OZONE_L3_NP", "Ozone CCI", NULL, NULL,
-                                            "CCI L3 O3 nadir profile products", verify_product_type, ingestion_init,
-                                            ingestion_done);
+    module = harp_ingestion_register_module_coda("ESACCI_OZONE_L3_NP", "Ozone CCI", "ESACCI_OZONE", "L3_NP",
+                                                 "CCI L3 O3 nadir profile products", NULL, ingestion_init,
+                                                 ingestion_done);
 
     /* ESACCI_OZONE_L3_NP product */
     product_definition = harp_ingestion_register_product(module, "ESACCI_OZONE_L3_NP", NULL, read_dimensions);

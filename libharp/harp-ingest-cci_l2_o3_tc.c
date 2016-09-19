@@ -454,30 +454,6 @@ static int read_surface_altitude(void *user_data, harp_array data)
     return read_dataset(info, "/surface_altitude", harp_type_double, info->num_time, data);
 }
 
-static int verify_product_type(const harp_ingestion_module *module, coda_product *product)
-{
-    coda_cursor cursor;
-
-    (void)module;
-    if (coda_cursor_set_product(&cursor, product) != 0)
-    {
-        harp_set_error(HARP_ERROR_UNSUPPORTED_PRODUCT, NULL);
-        return -1;
-    }
-    if (coda_cursor_goto(&cursor, "/atmosphere_mole_content_of_ozone") != 0)
-    {
-        harp_set_error(HARP_ERROR_UNSUPPORTED_PRODUCT, NULL);
-        return -1;
-    }
-    if (coda_cursor_goto(&cursor, "/averaging_kernels") != 0)
-    {
-        harp_set_error(HARP_ERROR_UNSUPPORTED_PRODUCT, NULL);
-        return -1;
-    }
-
-    return 0;
-}
-
 int harp_ingestion_module_cci_l2_o3_tc_init(void)
 {
     harp_ingestion_module *module;
@@ -493,9 +469,8 @@ int harp_ingestion_module_cci_l2_o3_tc_init(void)
     const char *description;
     const char *path;
 
-    module =
-        harp_ingestion_register_module_coda("ESACCI_OZONE_L2_TC", "Ozone CCI", NULL, NULL, "CCI L2 O3 total column",
-                                            verify_product_type, ingestion_init, ingestion_done);
+    module = harp_ingestion_register_module_coda("ESACCI_OZONE_L2_TC", "Ozone CCI", "ESACCI_OZONE", "L2_TC",
+                                                 "CCI L2 O3 total column", NULL, ingestion_init, ingestion_done);
 
     /* ESACCI_OZONE_L2_TC product */
     product_definition = harp_ingestion_register_product(module, "ESACCI_OZONE_L2_TC", NULL, read_dimensions);

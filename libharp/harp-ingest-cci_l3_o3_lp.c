@@ -547,112 +547,6 @@ static int read_o3_number_density_uncertainty_msmm(void *user_data, harp_array d
     return harp_array_transpose(harp_type_double, 4, dimension, order, data);
 }
 
-static int verify_product_type_mzm(const harp_ingestion_module *module, coda_product *product)
-{
-    const char *filename;
-    const char *basename;
-    coda_cursor cursor;
-
-    (void)module;
-    if (coda_get_product_filename(product, &filename) != 0)
-    {
-        harp_set_error(HARP_ERROR_UNSUPPORTED_PRODUCT, NULL);
-        return -1;
-    }
-    basename = harp_basename(filename);
-    if (strncmp(basename, "ESACCI-OZONE-L3-LP", 18) != 0)
-    {
-        harp_set_error(HARP_ERROR_UNSUPPORTED_PRODUCT, NULL);
-        return -1;
-    }
-    if (strstr(basename, "MZM") == NULL)
-    {
-        harp_set_error(HARP_ERROR_UNSUPPORTED_PRODUCT, NULL);
-        return -1;
-    }
-    if (coda_cursor_set_product(&cursor, product) != 0)
-    {
-        harp_set_error(HARP_ERROR_UNSUPPORTED_PRODUCT, NULL);
-        return -1;
-    }
-    if (coda_cursor_goto(&cursor, "/ozone_mole_concentation") != 0)
-    {
-        harp_set_error(HARP_ERROR_UNSUPPORTED_PRODUCT, NULL);
-        return -1;
-    }
-    if (coda_cursor_goto(&cursor, "/inhomogeneity_in_time") != 0)
-    {
-        harp_set_error(HARP_ERROR_UNSUPPORTED_PRODUCT, NULL);
-        return -1;
-    }
-
-    return 0;
-}
-
-static int verify_product_type_mmzm(const harp_ingestion_module *module, coda_product *product)
-{
-    const char *filename;
-    const char *basename;
-    coda_cursor cursor;
-
-    (void)module;
-    if (coda_get_product_filename(product, &filename) != 0)
-    {
-        harp_set_error(HARP_ERROR_UNSUPPORTED_PRODUCT, NULL);
-        return -1;
-    }
-    basename = harp_basename(filename);
-    if (strncmp(basename, "ESACCI-OZONE-L3-LP-MERGED-MZM", 29) != 0)
-    {
-        harp_set_error(HARP_ERROR_UNSUPPORTED_PRODUCT, NULL);
-        return -1;
-    }
-    if (coda_cursor_set_product(&cursor, product) != 0)
-    {
-        harp_set_error(HARP_ERROR_UNSUPPORTED_PRODUCT, NULL);
-        return -1;
-    }
-    if (coda_cursor_goto(&cursor, "/merged_ozone_concentration") != 0)
-    {
-        harp_set_error(HARP_ERROR_UNSUPPORTED_PRODUCT, NULL);
-        return -1;
-    }
-
-    return 0;
-}
-
-static int verify_product_type_msmm(const harp_ingestion_module *module, coda_product *product)
-{
-    const char *filename;
-    const char *basename;
-    coda_cursor cursor;
-
-    (void)module;
-    if (coda_get_product_filename(product, &filename) != 0)
-    {
-        harp_set_error(HARP_ERROR_UNSUPPORTED_PRODUCT, NULL);
-        return -1;
-    }
-    basename = harp_basename(filename);
-    if (strncmp(basename, "ESACCI-OZONE-L3-LP-SMM", 22) != 0)
-    {
-        harp_set_error(HARP_ERROR_UNSUPPORTED_PRODUCT, NULL);
-        return -1;
-    }
-    if (coda_cursor_set_product(&cursor, product) != 0)
-    {
-        harp_set_error(HARP_ERROR_UNSUPPORTED_PRODUCT, NULL);
-        return -1;
-    }
-    if (coda_cursor_goto(&cursor, "/merged_ozone_concentration") != 0)
-    {
-        harp_set_error(HARP_ERROR_UNSUPPORTED_PRODUCT, NULL);
-        return -1;
-    }
-
-    return 0;
-}
-
 static void register_mzm_product(void)
 {
     harp_ingestion_module *module;
@@ -664,10 +558,9 @@ static void register_mzm_product(void)
     const char *description;
     const char *path;
 
-    module =
-        harp_ingestion_register_module_coda("ESACCI_OZONE_L3_LP_MZM", "Ozone CCI", NULL, NULL,
-                                            "CCI O3 monthly zonal mean limb " "profile on a 10 degree latitude grid",
-                                            verify_product_type_mzm, ingestion_init_mzm, ingestion_done);
+    module = harp_ingestion_register_module_coda("ESACCI_OZONE_L3_LP_MZM", "Ozone CCI", "ESACCI_OZONE", "L3_LP_MZM",
+                                                 "CCI O3 monthly zonal mean limb " "profile on a 10 degree latitude "
+                                                 "grid", NULL, ingestion_init_mzm, ingestion_done);
 
     /* ESACCI_OZONE_L3_LP_MZM product */
     product_definition = harp_ingestion_register_product(module, "ESACCI_OZONE_L3_LP_MZM", NULL, read_dimensions);
@@ -739,11 +632,9 @@ static void register_mmzm_product(void)
     const char *description;
     const char *path;
 
-    module =
-        harp_ingestion_register_module_coda("ESACCI_OZONE_L3_LP_MMZM", "Ozone CCI", NULL, NULL,
-                                            "CCI O3 merged monthly zonal mean "
-                                            "limb profile on a 10 degree latitude grid", verify_product_type_mmzm,
-                                            ingestion_init_mmzm, ingestion_done);
+    module = harp_ingestion_register_module_coda("ESACCI_OZONE_L3_LP_MMZM", "Ozone CCI", "ESACCI_OZONE", "L3_LP_MMZM",
+                                                 "CCI O3 merged monthly zonal mean limb profile on a 10 degree "
+                                                 "latitude grid", NULL, ingestion_init_mmzm, ingestion_done);
 
     /* ESACCI_OZONE_L3_LP_MMZM product */
     product_definition = harp_ingestion_register_product(module, "ESACCI_OZONE_L3_LP_MMZM", NULL, read_dimensions);
@@ -846,10 +737,9 @@ static void register_msmm_product(void)
     const char *description;
     const char *path;
 
-    module =
-        harp_ingestion_register_module_coda("ESACCI_OZONE_L3_LP_MSMM", "Ozone CCI", NULL, NULL,
-                                            "CCI O3 merged semi-monthly zonal mean limb profile on a 10x20 degree grid",
-                                            verify_product_type_msmm, ingestion_init_msmm, ingestion_done);
+    module = harp_ingestion_register_module_coda("ESACCI_OZONE_L3_LP_MSMM", "Ozone CCI", "ESACCI_OZONE", "L3_LP_MSMM",
+                                                 "CCI O3 merged semi-monthly zonal mean limb profile on a 10x20 "
+                                                 "degree grid", NULL, ingestion_init_msmm, ingestion_done);
 
     /* ESACCI_OZONE_L3_LP_MSMM product */
     product_definition = harp_ingestion_register_product(module, "ESACCI_OZONE_L3_LP_MSMM", NULL, read_dimensions);
