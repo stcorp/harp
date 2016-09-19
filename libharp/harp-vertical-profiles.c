@@ -1434,7 +1434,6 @@ LIBHARP_API int harp_product_smooth_vertical(harp_product *product, int num_smoo
         num_target_max_vertical_elements = target_grid->dimension[1];
         for (num_target_offset = 0; num_target_offset < num_target_max_vertical_elements; num_target_offset++)
         {
-            printf("Offset %li", num_target_offset);
             long block_offset = time_index_a * num_target_max_vertical_elements;
             if (target_grid->data.double_data[block_offset + num_target_offset] >= source_grid->data.double_data[time_index_a * num_source_max_vertical_elements])
             {
