@@ -969,7 +969,7 @@ static int vertical_profile_smooth(harp_variable *var, harp_product *match, long
     {
         long blockoffset = (time_index_a * blocks + block) * max_vertical_elements;
 
-        /* figure out the actual unpadded length of the input vector */
+        /* figure out the actual unpadded length of the input vector. */
         long vertical_elements = get_unpadded_vector_length(&var->data.double_data[blockoffset], max_vertical_elements);
 
         /* collect profile vector */
@@ -1344,6 +1344,7 @@ LIBHARP_API int harp_product_smooth_vertical(harp_product *product, int num_smoo
         long coll_index;
         long num_target_vertical_elements;
         long num_target_max_vertical_elements;
+        long num_target_offset;
         long num_source_vertical_elements;
 
         /* Get the collocation index */
@@ -1421,14 +1422,30 @@ LIBHARP_API int harp_product_smooth_vertical(harp_product *product, int num_smoo
             goto error;
         }
 
-        /* find the source and target grid lengths */
+        /* find the source grid lengths */
         num_source_vertical_elements =
             get_unpadded_vector_length(&source_grid->data.double_data[time_index_a * num_source_max_vertical_elements],
                                        num_source_max_vertical_elements);
+
+
+        /* figure out the target offset to use: i.e. the number of vertical profile elements that fall
+         * below the first source profile elements
+         */
         num_target_max_vertical_elements = target_grid->dimension[1];
+        for (num_target_offset = 0; num_target_offset < num_target_max_vertical_elements; num_target_offset++)
+        {
+            printf("Offset %li", num_target_offset);
+            long block_offset = time_index_a * num_target_max_vertical_elements;
+            if (target_grid->data.double_data[block_offset + num_target_offset] >= source_grid->data.double_data[time_index_a * num_source_max_vertical_elements])
+            {
+                break;
+            }
+        }
+
+        /* find the target grid length */
         num_target_vertical_elements =
             get_unpadded_vector_length(&target_grid->data.double_data[time_index_a * num_target_max_vertical_elements],
-                                       num_target_max_vertical_elements);
+                                       num_target_max_vertical_elements) - num_target_offset;
 
         /* Resample & smooth variables */
         for (j = product->num_variables - 1; j >= 0; j--)
@@ -1489,7 +1506,7 @@ LIBHARP_API int harp_product_smooth_vertical(harp_product *product, int num_smoo
                                                   &var->data.double_data[source_block_index],
                                                   num_target_vertical_elements,
                                                   &target_grid->data.double_data[time_index_b *
-                                                                                 num_target_max_vertical_elements], 0,
+                                                                                 num_target_max_vertical_elements + num_target_offset], 0,
                                                   interpolation_buffer);
                 }
                 else if (var_type == profile_resample_interval)
@@ -1501,9 +1518,8 @@ LIBHARP_API int harp_product_smooth_vertical(harp_product *product, int num_smoo
                                                            &var->data.double_data[(time_index_a * blocks + block) *
                                                                                   num_source_max_vertical_elements],
                                                            num_target_vertical_elements,
-                                                           &target_bounds->data.double_data[time_index_b *
-                                                                                            num_target_max_vertical_elements
-                                                                                            * 2], interpolation_buffer);
+                                                           &target_bounds->data.double_data[(time_index_b *
+                                                                                             num_target_max_vertical_elements + num_target_offset) * 2], interpolation_buffer);
                 }
                 else
                 {
