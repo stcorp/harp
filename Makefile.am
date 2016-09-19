@@ -298,6 +298,7 @@ EXTRA_DIST += \
 
 # *** product definition files ***
 
+ECMWF_DEFINITION_FILE = ECMWF-@CODADEF_VERSION_ECMWF@.codadef
 ENVISAT_GOMOS_DEFINITION_FILE = ENVISAT_GOMOS-@CODADEF_VERSION_ENVISAT_GOMOS@.codadef
 ENVISAT_MIPAS_DEFINITION_FILE = ENVISAT_MIPAS-@CODADEF_VERSION_ENVISAT_MIPAS@.codadef
 ENVISAT_SCIAMACHY_DEFINITION_FILE = ENVISAT_SCIAMACHY-@CODADEF_VERSION_ENVISAT_SCIAMACHY@.codadef
@@ -306,6 +307,7 @@ ERS_GOME_DEFINITION_FILE = ERS_GOME-@CODADEF_VERSION_ERS_GOME@.codadef
 SENTINEL5P_DEFINITION_FILE = Sentinel5P-@CODADEF_VERSION_Sentinel5P@.codadef
 
 DEFINITION_FILES = \
+	definitions/$(ECMWF_DEFINITION_FILE) \
 	definitions/$(ENVISAT_GOMOS_DEFINITION_FILE) \
 	definitions/$(ENVISAT_MIPAS_DEFINITION_FILE) \
 	definitions/$(ENVISAT_SCIAMACHY_DEFINITION_FILE) \
@@ -317,6 +319,15 @@ EXTRA_DIST += $(DEFINITION_FILES) codadef.sh
 MAINTAINERCLEANFILES += $(DEFINITION_FILES)
 
 nobase_pkgdata_DATA = $(DEFINITION_FILES)
+
+definitions/$(ECMWF_DEFINITION_FILE):
+	test -d definitions || $(mkinstalldirs) definitions
+	@$(srcdir)/codadef.sh $(srcdir)/definitions/ECMWF definitions
+	@if test ! -f definitions/$(ECMWF_DEFINITION_FILE) ; then \
+	  echo definitions/$(ECMWF_DEFINITION_FILE) not created. ; \
+	  echo run './config.status --recheck' to update the .codadef version reference. ; \
+	  exit 1 ; \
+	 fi
 
 definitions/$(ENVISAT_GOMOS_DEFINITION_FILE):
 	test -d definitions || $(mkinstalldirs) definitions

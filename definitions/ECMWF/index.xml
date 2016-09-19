@@ -1,0 +1,36 @@
+<?xml version="1.0"?>
+<cd:ProductClass name="ECMWF" last-modified="2016-09-19" xmlns:cd="http://www.stcorp.nl/coda/definition/2008/07">
+  <cd:Description>ECMWF GRIB product</cd:Description>
+  <cd:ProductType name="GRIB">
+    <cd:Description>ECMWF GRIB model outputs</cd:Description>
+    <cd:ProductDefinition id="GRIB1" format="grib1" version="1">
+      <cd:Description>The format definition for this product is taken from the GRIB file itself.</cd:Description>
+      <cd:DetectionRule>
+      	<!-- centre 98 -> ECMWF -->
+        <cd:MatchExpression><![CDATA[all(/, int(./centre) == 98)]]></cd:MatchExpression>
+      	<!-- the 'local' section is 12 bytes in ECMWF products (even for GRIB1 products) -->
+      	<!-- gribLocalSectionNumber of the 'local' section (byte 0, uint8) should be 1 -->
+        <cd:MatchExpression><![CDATA[all(/, bytesize(./local) == 12 && bytes(./local, 1) == "\001")]]></cd:MatchExpression>
+        <!-- marsClass (bytes 1, uint8) -> CAMS: 19, zsurf: 1 -->
+        <!-- marsType (bytes 2, uint8) -> forecast: 2, analysis: 9 -->
+        <!-- marsStream (bytes 3, uint8) -> CAMS: 1025 -->
+        <!-- experimentVersionNumber (bytes 5-9, char(4)) -> CAMS: '0001' -->
+      </cd:DetectionRule>
+    </cd:ProductDefinition>
+    <cd:ProductDefinition id="GRIB2" format="grib2" version="2">
+      <cd:Description>The format definition for this product is taken from the GRIB file itself.</cd:Description>
+      <cd:DetectionRule>
+      	<!-- centre 98 -> ECMWF -->
+      	<!-- curret master tables version is 5 -->
+        <cd:MatchExpression><![CDATA[all(/, int(./centre) == 98 && int(./masterTablesVersion) == 5)]]></cd:MatchExpression>
+      	<!-- the 'local' section is 12 bytes in ECMWF products -->
+      	<!-- grib2LocalSectionNumber of the 'local' section (bytes 0-1, uint16) should be 1 -->
+        <cd:MatchExpression><![CDATA[all(/, all(./local, bytesize(.) == 12 && bytes(., 2) == "\000\001"))]]></cd:MatchExpression>
+        <!-- marsClass (bytes 2-3, uint16) -> CAMS: 19, zsurf: 1 -->
+        <!-- marsType (bytes 4-5, uint16) -> forecast: 2, analysis: 9 -->
+        <!-- marsStream (bytes 6-7, uint16) -> CAMS: 1025 -->
+        <!-- experimentVersionNumber (bytes 8-11, char(4)) -> CAMS: '0001' -->
+      </cd:DetectionRule>
+    </cd:ProductDefinition>
+  </cd:ProductType>
+</cd:ProductClass>

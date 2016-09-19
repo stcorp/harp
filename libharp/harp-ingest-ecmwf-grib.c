@@ -1044,181 +1044,6 @@ static int read_tc_c3h8(void *user_data, harp_array data)
     return read_2d_grid_data((ingest_info *)user_data, grib_param_tc_c3h8, data);
 }
 
-static int is_ecmf_grib_message(coda_cursor *cursor, int grib_version, int *is_ecmwf)
-{
-    uint16_t centre;
-    uint8_t local[12];
-    int64_t byte_size;
-
-    /* centre */
-    if (coda_cursor_goto_record_field_by_name(cursor, "centre") != 0)
-    {
-        harp_set_error(HARP_ERROR_CODA, NULL);
-        return -1;
-    }
-    if (coda_cursor_read_uint16(cursor, &centre) != 0)
-    {
-        harp_set_error(HARP_ERROR_CODA, NULL);
-        return -1;
-    }
-    coda_cursor_goto_parent(cursor);
-    /* 98 -> ECMWF */
-    if (centre != 98)
-    {
-        *is_ecmwf = 0;
-        return 0;
-    }
-
-    if (grib_version == 2)
-    {
-        uint8_t masterTablesVersion;
-
-        if (coda_cursor_goto(cursor, "masterTablesVersion") != 0)
-        {
-            harp_set_error(HARP_ERROR_CODA, NULL);
-            return -1;
-        }
-        if (coda_cursor_read_uint8(cursor, &masterTablesVersion) != 0)
-        {
-            harp_set_error(HARP_ERROR_CODA, NULL);
-            return -1;
-        }
-        coda_cursor_goto_parent(cursor);
-        /* 5 -> Current master tables version */
-        if (masterTablesVersion != 5)
-        {
-            harp_set_error(HARP_ERROR_CODA, NULL);
-            return -1;
-        }
-    }
-
-    /* local */
-    if (coda_cursor_goto_record_field_by_name(cursor, "local") != 0)
-    {
-        harp_set_error(HARP_ERROR_CODA, NULL);
-        return -1;
-    }
-    if (grib_version == 2)
-    {
-        if (coda_cursor_goto_first_array_element(cursor) != 0)
-        {
-            harp_set_error(HARP_ERROR_CODA, NULL);
-            return -1;
-        }
-    }
-    if (coda_cursor_get_byte_size(cursor, &byte_size) != 0)
-    {
-        harp_set_error(HARP_ERROR_CODA, NULL);
-        return -1;
-    }
-    /* the 'local' section should be 12 bytes in ECMWF products for both GRIB1 and GRIB2 */
-    if (byte_size != 12)
-    {
-        harp_set_error(HARP_ERROR_INGESTION, "invalid size (%ld) for local section", (long)byte_size);
-        return -1;
-    }
-    if (coda_cursor_read_bytes(cursor, local, 0, 12) != 0)
-    {
-        harp_set_error(HARP_ERROR_CODA, NULL);
-        return -1;
-    }
-    if (grib_version == 2)
-    {
-        coda_cursor_goto_parent(cursor);
-    }
-    coda_cursor_goto_parent(cursor);
-    if (grib_version == 1)
-    {
-        /* bytes 0 uint8 : grib2LocalSectionNumber -> should be 1 */
-        if (local[0] != 1)
-        {
-            *is_ecmwf = 0;
-            return 0;
-        }
-    }
-    else
-    {
-        /* bytes 0-1 uint16 : grib2LocalSectionNumber -> should be 1 */
-        if (local[0] != 0 || local[1] != 1)
-        {
-            *is_ecmwf = 0;
-            return 0;
-        }
-    }
-    /* marsClass */
-    /*   grib1: bytes 1 uint8 */
-    /*   grib2: bytes 2-3 uint16 : marsClass */
-    /*     ECMWF classification (od, rd, e4,  ) */
-    /*     CAMS: 19 */
-    /*     zsurf: 1 */
-    /* marsType */
-    /*   grib1: bytes 2 uint8 */
-    /*   grib2: bytes 4-5 uint16 */
-    /*     not to be confused with typeOfGeneratingProcess field */
-    /*     forecast: 2 */
-    /*     analysis: 9 */
-    /* marsStream */
-    /*   grib1: bytes 3-4 uint16 */
-    /*   grib2: bytes 6-7 uint16  */
-    /*     originatingforecastingsystem (oper,wave,enfo,seas, ) */
-    /*     CAMS: 1025 */
-    /* experimentVersionNumber */
-    /*   grib1: bytes 5-9 char(4) */
-    /*   grib2: bytes 8-11 char(4) */
-    /*     version of the experiment (01 operational, 11, aaaa) */
-    /*     CAMS: '0001' (ascii coding!) */
-
-    *is_ecmwf = 1;
-
-    return 0;
-}
-
-static int verify_product_type(const harp_ingestion_module *module, coda_product *product)
-{
-    coda_format format;
-    coda_cursor cursor;
-    int is_ecmwf;
-
-    (void)module;
-
-    if (coda_get_product_format(product, &format) != 0)
-    {
-        harp_set_error(HARP_ERROR_UNSUPPORTED_PRODUCT, NULL);
-        return -1;
-    }
-    if (format != coda_format_grib1 && format != coda_format_grib2)
-    {
-        harp_set_error(HARP_ERROR_UNSUPPORTED_PRODUCT, NULL);
-        return -1;
-    }
-    /* note that CODA already checked that all GRIB messages in the same file are of the same GRIB format */
-
-    if (coda_cursor_set_product(&cursor, product) != 0)
-    {
-        harp_set_error(HARP_ERROR_UNSUPPORTED_PRODUCT, NULL);
-        return -1;
-    }
-
-    /* we detect the product based on the first GRIB message */
-    if (coda_cursor_goto_first_array_element(&cursor) != 0)
-    {
-        harp_set_error(HARP_ERROR_UNSUPPORTED_PRODUCT, NULL);
-        return -1;
-    }
-    if (is_ecmf_grib_message(&cursor, format == coda_format_grib1 ? 1 : 2, &is_ecmwf) != 0)
-    {
-        harp_set_error(HARP_ERROR_UNSUPPORTED_PRODUCT, NULL);
-        return -1;
-    }
-    if (!is_ecmwf)
-    {
-        harp_set_error(HARP_ERROR_UNSUPPORTED_PRODUCT, NULL);
-        return -1;
-    }
-
-    return 0;
-}
-
 static int get_datetime(coda_cursor *cursor, ingest_info *info, double *datetime)
 {
     uint8_t unit_indicator;
@@ -1866,8 +1691,8 @@ static int init_cursors_and_grid(ingest_info *info)
     }
     for (i = 0; i < info->num_messages; i++)
     {
+        int parameter_ref = 0;
         long num_data = 1;
-        int is_ecmwf = 0;
 
         if (info->grib_version == 2)
         {
@@ -1884,353 +1709,334 @@ static int init_cursors_and_grid(ingest_info *info)
             coda_cursor_goto_parent(&cursor);
         }
 
-        if (is_ecmf_grib_message(&cursor, info->grib_version, &is_ecmwf) != 0)
+        if (get_reference_datetime(&cursor, info) != 0)
         {
             return -1;
         }
-        /* we ignore non-ecmwf grib messages */
-        if (is_ecmwf)
-        {
-            int parameter_ref = 0;
 
-            if (get_reference_datetime(&cursor, info) != 0)
+        if (info->grib_version == 2)
+        {
+            uint8_t discipline = 0;
+
+            if (coda_cursor_goto(&cursor, "discipline") != 0)
             {
+                harp_set_error(HARP_ERROR_UNSUPPORTED_PRODUCT, NULL);
                 return -1;
             }
-
-            if (info->grib_version == 2)
+            if (coda_cursor_read_uint8(&cursor, &discipline) != 0)
             {
-                uint8_t discipline = 0;
-
-                if (coda_cursor_goto(&cursor, "discipline") != 0)
-                {
-                    harp_set_error(HARP_ERROR_UNSUPPORTED_PRODUCT, NULL);
-                    return -1;
-                }
-                if (coda_cursor_read_uint8(&cursor, &discipline) != 0)
-                {
-                    harp_set_error(HARP_ERROR_UNSUPPORTED_PRODUCT, NULL);
-                    return -1;
-                }
-                coda_cursor_goto_parent(&cursor);
-                parameter_ref += discipline * 256 * 256;
+                harp_set_error(HARP_ERROR_UNSUPPORTED_PRODUCT, NULL);
+                return -1;
             }
+            coda_cursor_goto_parent(&cursor);
+            parameter_ref += discipline * 256 * 256;
+        }
 
-            if (coda_cursor_goto_record_field_by_name(&cursor, "grid") != 0)
+        if (coda_cursor_goto_record_field_by_name(&cursor, "grid") != 0)
+        {
+            harp_set_error(HARP_ERROR_CODA, NULL);
+            return -1;
+        }
+        if (info->grib_version == 2)
+        {
+            long num_grids;
+            long j;
+
+            if (coda_cursor_get_num_elements(&cursor, &num_grids) != 0)
             {
                 harp_set_error(HARP_ERROR_CODA, NULL);
                 return -1;
             }
-            if (info->grib_version == 2)
+            if (num_grids == 0)
             {
-                long num_grids;
-                long j;
-
-                if (coda_cursor_get_num_elements(&cursor, &num_grids) != 0)
-                {
-                    harp_set_error(HARP_ERROR_CODA, NULL);
-                    return -1;
-                }
-                if (num_grids == 0)
-                {
-                    harp_set_error(HARP_ERROR_INGESTION, "missing grid section for GRIB message %ld", i);
-                    return -1;
-                }
-                if (coda_cursor_goto_first_array_element(&cursor) != 0)
-                {
-                    harp_set_error(HARP_ERROR_CODA, NULL);
-                    return -1;
-                }
-                for (j = 0; j < num_grids; j++)
-                {
-                    if (get_lat_lon_grid(&cursor, info, i == 0 && j == 0) != 0)
-                    {
-                        return -1;
-                    }
-                }
-                if (j < num_grids - 1)
-                {
-                    if (coda_cursor_goto_next_array_element(&cursor) != 0)
-                    {
-                        harp_set_error(HARP_ERROR_CODA, NULL);
-                        return -1;
-                    }
-                }
-                coda_cursor_goto_parent(&cursor);
+                harp_set_error(HARP_ERROR_INGESTION, "missing grid section for GRIB message %ld", i);
+                return -1;
             }
-            else
+            if (coda_cursor_goto_first_array_element(&cursor) != 0)
             {
-                if (get_lat_lon_grid(&cursor, info, i == 0) != 0)
+                harp_set_error(HARP_ERROR_CODA, NULL);
+                return -1;
+            }
+            for (j = 0; j < num_grids; j++)
+            {
+                if (get_lat_lon_grid(&cursor, info, i == 0 && j == 0) != 0)
                 {
+                    return -1;
+                }
+            }
+            if (j < num_grids - 1)
+            {
+                if (coda_cursor_goto_next_array_element(&cursor) != 0)
+                {
+                    harp_set_error(HARP_ERROR_CODA, NULL);
                     return -1;
                 }
             }
             coda_cursor_goto_parent(&cursor);
-
-            if (info->grib_version == 2)
+        }
+        else
+        {
+            if (get_lat_lon_grid(&cursor, info, i == 0) != 0)
             {
-                long j;
-
-                if (coda_cursor_goto_record_field_by_name(&cursor, "data") != 0)
-                {
-                    harp_set_error(HARP_ERROR_CODA, NULL);
-                    return -1;
-                }
-                if (coda_cursor_goto_first_array_element(&cursor) != 0)
-                {
-                    harp_set_error(HARP_ERROR_CODA, NULL);
-                    return -1;
-                }
-                for (j = 0; j < num_data; j++)
-                {
-                    uint8_t typeOfFirstFixedSurface;
-                    uint8_t parameterCategory;
-                    uint8_t parameterNumber;
-                    grib_parameter parameter;
-                    long num_coordinate_values;
-                    double datetime;
-
-                    if (coda_cursor_goto(&cursor, "parameterCategory") != 0)
-                    {
-                        harp_set_error(HARP_ERROR_UNSUPPORTED_PRODUCT, NULL);
-                        return -1;
-                    }
-                    if (coda_cursor_read_uint8(&cursor, &parameterCategory) != 0)
-                    {
-                        harp_set_error(HARP_ERROR_UNSUPPORTED_PRODUCT, NULL);
-                        return -1;
-                    }
-                    coda_cursor_goto_parent(&cursor);
-                    parameter_ref += parameterCategory * 256;
-
-                    if (coda_cursor_goto(&cursor, "parameterNumber") != 0)
-                    {
-                        harp_set_error(HARP_ERROR_UNSUPPORTED_PRODUCT, NULL);
-                        return -1;
-                    }
-                    if (coda_cursor_read_uint8(&cursor, &parameterNumber) != 0)
-                    {
-                        harp_set_error(HARP_ERROR_UNSUPPORTED_PRODUCT, NULL);
-                        return -1;
-                    }
-                    coda_cursor_goto_parent(&cursor);
-                    parameter_ref += parameterNumber;
-                    info->grid_data_parameter_ref[parameter_index] = parameter_ref;
-                    parameter = get_grib2_parameter(parameter_ref);
-
-                    if (get_datetime(&cursor, info, &datetime) != 0)
-                    {
-                        return -1;
-                    }
-                    if (!datetime_initialised)
-                    {
-                        if (!(info->ignore_time_for_z && parameter == grib_param_z))
-                        {
-                            info->datetime = datetime;
-                            datetime_initialised = 1;
-                        }
-                    }
-                    else if (info->datetime != datetime)
-                    {
-                        harp_set_error(HARP_ERROR_INGESTION, "not all data in the GRIB file is for the same time");
-                        return -1;
-                    }
-
-                    if (parameter != grib_param_unknown)
-                    {
-                        if (coda_cursor_goto_record_field_by_name(&cursor, "typeOfFirstFixedSurface") != 0)
-                        {
-                            harp_set_error(HARP_ERROR_CODA, NULL);
-                            return -1;
-                        }
-                        if (coda_cursor_read_uint8(&cursor, &typeOfFirstFixedSurface) != 0)
-                        {
-                            harp_set_error(HARP_ERROR_CODA, NULL);
-                            return -1;
-                        }
-                        /* we only know how to deal with hybrid levels */
-                        /* even surface properties are expected to be provided at level=1 using hybrid levels */
-                        if (typeOfFirstFixedSurface != 105)
-                        {
-                            harp_set_error(HARP_ERROR_INGESTION, "unsupported value for 'type of first fixed surface' "
-                                           "(%d) for vertical axis", typeOfFirstFixedSurface);
-                            return -1;
-                        }
-                        if (coda_cursor_goto_next_record_field(&cursor) != 0)
-                        {
-                            harp_set_error(HARP_ERROR_CODA, NULL);
-                            return -1;
-                        }
-                        /* firstFixedSurface -> hybrid level value for vertical axis */
-                        if (coda_cursor_read_double(&cursor, &info->level[parameter_index]) != 0)
-                        {
-                            harp_set_error(HARP_ERROR_CODA, NULL);
-                            return -1;
-                        }
-                        coda_cursor_goto_parent(&cursor);
-                        if (info->level[parameter_index] != 1)
-                        {
-                            if (coda_cursor_goto_record_field_by_name(&cursor, "coordinateValues") != 0)
-                            {
-                                harp_set_error(HARP_ERROR_CODA, NULL);
-                                return -1;
-                            }
-                            if (coda_cursor_get_num_elements(&cursor, &num_coordinate_values) != 0)
-                            {
-                                harp_set_error(HARP_ERROR_CODA, NULL);
-                                return -1;
-                            }
-                            if (info->coordinate_values == NULL)
-                            {
-                                info->num_grib_levels = (num_coordinate_values / 2) - 1;
-                                info->coordinate_values = malloc(num_coordinate_values * sizeof(double));
-                                if (info->coordinate_values == NULL)
-                                {
-                                    harp_set_error(HARP_ERROR_OUT_OF_MEMORY, "out of memory (could not allocate %lu bytes) "
-                                                   "(%s:%u)", num_coordinate_values * sizeof(double), __FILE__, __LINE__);
-                                    return -1;
-                                }
-                                if (coda_cursor_read_double_array(&cursor, info->coordinate_values, coda_array_ordering_c)
-                                    != 0)
-                                {
-                                    harp_set_error(HARP_ERROR_CODA, NULL);
-                                    return -1;
-                                }
-                            }
-                            else if (num_coordinate_values != 2 * (info->num_grib_levels + 1))
-                            {
-                                /* we only check for the number of vertical levels. currently no check is performed to
-                                 * verify that the coordinate values are actually the same */
-                                harp_set_error(HARP_ERROR_INGESTION,
-                                               "not all data in the GRIB file has the same number of vertical levels");
-                                return -1;
-                            }
-                            coda_cursor_goto_parent(&cursor);
-                        }
-                    }
-
-                    if (coda_cursor_goto_record_field_by_name(&cursor, "values") != 0)
-                    {
-                        harp_set_error(HARP_ERROR_CODA, NULL);
-                        return -1;
-                    }
-                    info->parameter_cursor[parameter_index] = cursor;
-                    coda_cursor_goto_parent(&cursor);
-
-                    if (j < num_data - 1)
-                    {
-                        parameter_index++;
-                        if (coda_cursor_goto_next_array_element(&cursor) != 0)
-                        {
-                            harp_set_error(HARP_ERROR_CODA, NULL);
-                            return -1;
-                        }
-                    }
-                }
-                coda_cursor_goto_parent(&cursor);
-                coda_cursor_goto_parent(&cursor);
+                return -1;
             }
-            else
+        }
+        coda_cursor_goto_parent(&cursor);
+
+        if (info->grib_version == 2)
+        {
+            long j;
+
+            if (coda_cursor_goto_record_field_by_name(&cursor, "data") != 0)
             {
-                uint8_t table2Version;
-                uint8_t indicatorOfParameter;
-                uint8_t indicatorOfTypeOfLevel;
+                harp_set_error(HARP_ERROR_CODA, NULL);
+                return -1;
+            }
+            if (coda_cursor_goto_first_array_element(&cursor) != 0)
+            {
+                harp_set_error(HARP_ERROR_CODA, NULL);
+                return -1;
+            }
+            for (j = 0; j < num_data; j++)
+            {
+                uint8_t typeOfFirstFixedSurface;
+                uint8_t parameterCategory;
+                uint8_t parameterNumber;
                 grib_parameter parameter;
-                uint16_t level;
+                long num_coordinate_values;
+                double datetime;
 
-                if (coda_cursor_goto(&cursor, "table2Version") != 0)
+                if (coda_cursor_goto(&cursor, "parameterCategory") != 0)
                 {
-                    harp_set_error(HARP_ERROR_CODA, NULL);
+                    harp_set_error(HARP_ERROR_UNSUPPORTED_PRODUCT, NULL);
                     return -1;
                 }
-                if (coda_cursor_read_uint8(&cursor, &table2Version) != 0)
+                if (coda_cursor_read_uint8(&cursor, &parameterCategory) != 0)
                 {
-                    harp_set_error(HARP_ERROR_CODA, NULL);
-                    return -1;
-                }
-                coda_cursor_goto_parent(&cursor);
-                parameter_ref = table2Version * 256;
-                if (coda_cursor_goto(&cursor, "indicatorOfParameter") != 0)
-                {
-                    harp_set_error(HARP_ERROR_CODA, NULL);
-                    return -1;
-                }
-                if (coda_cursor_read_uint8(&cursor, &indicatorOfParameter) != 0)
-                {
-                    harp_set_error(HARP_ERROR_CODA, NULL);
+                    harp_set_error(HARP_ERROR_UNSUPPORTED_PRODUCT, NULL);
                     return -1;
                 }
                 coda_cursor_goto_parent(&cursor);
-                parameter_ref += indicatorOfParameter;
+                parameter_ref += parameterCategory * 256;
+
+                if (coda_cursor_goto(&cursor, "parameterNumber") != 0)
+                {
+                    harp_set_error(HARP_ERROR_UNSUPPORTED_PRODUCT, NULL);
+                    return -1;
+                }
+                if (coda_cursor_read_uint8(&cursor, &parameterNumber) != 0)
+                {
+                    harp_set_error(HARP_ERROR_UNSUPPORTED_PRODUCT, NULL);
+                    return -1;
+                }
+                coda_cursor_goto_parent(&cursor);
+                parameter_ref += parameterNumber;
                 info->grid_data_parameter_ref[parameter_index] = parameter_ref;
-                parameter = get_grib1_parameter(parameter_ref);
+                parameter = get_grib2_parameter(parameter_ref);
 
+                if (get_datetime(&cursor, info, &datetime) != 0)
+                {
+                    return -1;
+                }
                 if (!datetime_initialised)
                 {
                     if (!(info->ignore_time_for_z && parameter == grib_param_z))
                     {
-                        info->datetime = info->reference_datetime;
+                        info->datetime = datetime;
                         datetime_initialised = 1;
                     }
                 }
-                else if (info->datetime != info->reference_datetime)
+                else if (info->datetime != datetime)
                 {
                     harp_set_error(HARP_ERROR_INGESTION, "not all data in the GRIB file is for the same time");
                     return -1;
                 }
 
-                if (coda_cursor_goto(&cursor, "indicatorOfTypeOfLevel") != 0)
+                if (parameter != grib_param_unknown)
                 {
-                    harp_set_error(HARP_ERROR_CODA, NULL);
-                    return -1;
+                    if (coda_cursor_goto_record_field_by_name(&cursor, "typeOfFirstFixedSurface") != 0)
+                    {
+                        harp_set_error(HARP_ERROR_CODA, NULL);
+                        return -1;
+                    }
+                    if (coda_cursor_read_uint8(&cursor, &typeOfFirstFixedSurface) != 0)
+                    {
+                        harp_set_error(HARP_ERROR_CODA, NULL);
+                        return -1;
+                    }
+                    /* we only know how to deal with hybrid levels */
+                    /* even surface properties are expected to be provided at level=1 using hybrid levels */
+                    if (typeOfFirstFixedSurface != 105)
+                    {
+                        harp_set_error(HARP_ERROR_INGESTION, "unsupported value for 'type of first fixed surface' "
+                                       "(%d) for vertical axis", typeOfFirstFixedSurface);
+                        return -1;
+                    }
+                    if (coda_cursor_goto_next_record_field(&cursor) != 0)
+                    {
+                        harp_set_error(HARP_ERROR_CODA, NULL);
+                        return -1;
+                    }
+                    /* firstFixedSurface -> hybrid level value for vertical axis */
+                    if (coda_cursor_read_double(&cursor, &info->level[parameter_index]) != 0)
+                    {
+                        harp_set_error(HARP_ERROR_CODA, NULL);
+                        return -1;
+                    }
+                    coda_cursor_goto_parent(&cursor);
+                    if (info->level[parameter_index] != 1)
+                    {
+                        if (coda_cursor_goto_record_field_by_name(&cursor, "coordinateValues") != 0)
+                        {
+                            harp_set_error(HARP_ERROR_CODA, NULL);
+                            return -1;
+                        }
+                        if (coda_cursor_get_num_elements(&cursor, &num_coordinate_values) != 0)
+                        {
+                            harp_set_error(HARP_ERROR_CODA, NULL);
+                            return -1;
+                        }
+                        if (info->coordinate_values == NULL)
+                        {
+                            info->num_grib_levels = (num_coordinate_values / 2) - 1;
+                            info->coordinate_values = malloc(num_coordinate_values * sizeof(double));
+                            if (info->coordinate_values == NULL)
+                            {
+                                harp_set_error(HARP_ERROR_OUT_OF_MEMORY, "out of memory (could not allocate %lu bytes) "
+                                               "(%s:%u)", num_coordinate_values * sizeof(double), __FILE__, __LINE__);
+                                return -1;
+                            }
+                            if (coda_cursor_read_double_array(&cursor, info->coordinate_values, coda_array_ordering_c)
+                                != 0)
+                            {
+                                harp_set_error(HARP_ERROR_CODA, NULL);
+                                return -1;
+                            }
+                        }
+                        else if (num_coordinate_values != 2 * (info->num_grib_levels + 1))
+                        {
+                            /* we only check for the number of vertical levels. currently no check is performed to
+                             * verify that the coordinate values are actually the same */
+                            harp_set_error(HARP_ERROR_INGESTION,
+                                           "not all data in the GRIB file has the same number of vertical levels");
+                            return -1;
+                        }
+                        coda_cursor_goto_parent(&cursor);
+                    }
                 }
-                if (coda_cursor_read_uint8(&cursor, &indicatorOfTypeOfLevel) != 0)
-                {
-                    harp_set_error(HARP_ERROR_CODA, NULL);
-                    return -1;
-                }
-                coda_cursor_goto_parent(&cursor);
-                /* we currently only support surface level properties for GRIB1 data */
-                if (indicatorOfTypeOfLevel != 1)
-                {
-                    harp_set_error(HARP_ERROR_INGESTION, "unsupported value for 'type of level' (%d) for vertical axis",
-                                   indicatorOfTypeOfLevel);
-                    return -1;
-                }
-                if (coda_cursor_goto(&cursor, "level") != 0)
-                {
-                    harp_set_error(HARP_ERROR_CODA, NULL);
-                    return -1;
-                }
-                if (coda_cursor_read_uint16(&cursor, &level) != 0)
-                {
-                    harp_set_error(HARP_ERROR_CODA, NULL);
-                    return -1;
-                }
-                coda_cursor_goto_parent(&cursor);
 
-                if (coda_cursor_goto(&cursor, "data/values") != 0)
+                if (coda_cursor_goto_record_field_by_name(&cursor, "values") != 0)
                 {
                     harp_set_error(HARP_ERROR_CODA, NULL);
                     return -1;
                 }
                 info->parameter_cursor[parameter_index] = cursor;
                 coda_cursor_goto_parent(&cursor);
-                coda_cursor_goto_parent(&cursor);
 
-                info->level[parameter_index] = (double)level;
+                if (j < num_data - 1)
+                {
+                    parameter_index++;
+                    if (coda_cursor_goto_next_array_element(&cursor) != 0)
+                    {
+                        harp_set_error(HARP_ERROR_CODA, NULL);
+                        return -1;
+                    }
+                }
             }
-            parameter_index++;
+            coda_cursor_goto_parent(&cursor);
+            coda_cursor_goto_parent(&cursor);
         }
         else
         {
-            for (j = 0; j < num_data; j++)
+            uint8_t table2Version;
+            uint8_t indicatorOfParameter;
+            uint8_t indicatorOfTypeOfLevel;
+            grib_parameter parameter;
+            uint16_t level;
+
+            if (coda_cursor_goto(&cursor, "table2Version") != 0)
             {
-                /* set to an invalid value */
-                info->grid_data_parameter_ref[parameter_index] = 0xFFFFFFFF;
-                parameter_index++;
+                harp_set_error(HARP_ERROR_CODA, NULL);
+                return -1;
             }
+            if (coda_cursor_read_uint8(&cursor, &table2Version) != 0)
+            {
+                harp_set_error(HARP_ERROR_CODA, NULL);
+                return -1;
+            }
+            coda_cursor_goto_parent(&cursor);
+            parameter_ref = table2Version * 256;
+            if (coda_cursor_goto(&cursor, "indicatorOfParameter") != 0)
+            {
+                harp_set_error(HARP_ERROR_CODA, NULL);
+                return -1;
+            }
+            if (coda_cursor_read_uint8(&cursor, &indicatorOfParameter) != 0)
+            {
+                harp_set_error(HARP_ERROR_CODA, NULL);
+                return -1;
+            }
+            coda_cursor_goto_parent(&cursor);
+            parameter_ref += indicatorOfParameter;
+            info->grid_data_parameter_ref[parameter_index] = parameter_ref;
+            parameter = get_grib1_parameter(parameter_ref);
+
+            if (!datetime_initialised)
+            {
+                if (!(info->ignore_time_for_z && parameter == grib_param_z))
+                {
+                    info->datetime = info->reference_datetime;
+                    datetime_initialised = 1;
+                }
+            }
+            else if (info->datetime != info->reference_datetime)
+            {
+                harp_set_error(HARP_ERROR_INGESTION, "not all data in the GRIB file is for the same time");
+                return -1;
+            }
+
+            if (coda_cursor_goto(&cursor, "indicatorOfTypeOfLevel") != 0)
+            {
+                harp_set_error(HARP_ERROR_CODA, NULL);
+                return -1;
+            }
+            if (coda_cursor_read_uint8(&cursor, &indicatorOfTypeOfLevel) != 0)
+            {
+                harp_set_error(HARP_ERROR_CODA, NULL);
+                return -1;
+            }
+            coda_cursor_goto_parent(&cursor);
+            /* we currently only support surface level properties for GRIB1 data */
+            if (indicatorOfTypeOfLevel != 1)
+            {
+                harp_set_error(HARP_ERROR_INGESTION, "unsupported value for 'type of level' (%d) for vertical axis",
+                               indicatorOfTypeOfLevel);
+                return -1;
+            }
+            if (coda_cursor_goto(&cursor, "level") != 0)
+            {
+                harp_set_error(HARP_ERROR_CODA, NULL);
+                return -1;
+            }
+            if (coda_cursor_read_uint16(&cursor, &level) != 0)
+            {
+                harp_set_error(HARP_ERROR_CODA, NULL);
+                return -1;
+            }
+            coda_cursor_goto_parent(&cursor);
+
+            if (coda_cursor_goto(&cursor, "data/values") != 0)
+            {
+                harp_set_error(HARP_ERROR_CODA, NULL);
+                return -1;
+            }
+            info->parameter_cursor[parameter_index] = cursor;
+            coda_cursor_goto_parent(&cursor);
+            coda_cursor_goto_parent(&cursor);
+
+            info->level[parameter_index] = (double)level;
         }
+        parameter_index++;
 
         if (i < info->num_messages - 1)
         {
@@ -2729,8 +2535,8 @@ int harp_ingestion_module_ecmwf_grib_init(void)
     const char *description;
     const char *path;
 
-    module = harp_ingestion_register_module_coda("ECMWF_GRIB", "ECMWF GRIB", NULL, NULL,
-                                                 "ECMWF model data in GRIB format", verify_product_type, ingestion_init,
+    module = harp_ingestion_register_module_coda("ECMWF_GRIB", "ECMWF GRIB", "ECMWF", "GRIB",
+                                                 "ECMWF model data in GRIB format", NULL, ingestion_init,
                                                  ingestion_done);
 
     /* option to ignore the time value of the geopotential parameter */

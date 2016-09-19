@@ -546,6 +546,7 @@ function(add_codadef name)
   endif(CODADEF_DIR)
 endfunction(add_codadef)
 
+add_codadef(ECMWF)
 add_codadef(ENVISAT_GOMOS)
 add_codadef(ENVISAT_MIPAS)
 add_codadef(ENVISAT_SCIAMACHY)
