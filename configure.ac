@@ -184,6 +184,8 @@ AC_DEFINE_UNQUOTED(HARP_FORMAT_VERSION_MINOR, [$HARP_FORMAT_VERSION_MINOR], [Cur
 AC_DEFINE_UNQUOTED(HARP_CONVENTION, ["HARP-$HARP_FORMAT_VERSION_MAJOR.$HARP_FORMAT_VERSION_MINOR"], [String to use in netCDF Conventions attribute])
 
 # codadef versions
+ST_CODADEF_VERSION([$srcdir/definitions],[AURA_OMI])
+ST_CODADEF_VERSION([$srcdir/definitions],[AURA_TES])
 ST_CODADEF_VERSION([$srcdir/definitions],[ECMWF])
 ST_CODADEF_VERSION([$srcdir/definitions],[ENVISAT_GOMOS])
 ST_CODADEF_VERSION([$srcdir/definitions],[ENVISAT_MIPAS])

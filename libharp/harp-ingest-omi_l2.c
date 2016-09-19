@@ -1452,205 +1452,6 @@ static int exclude_cloud_top_pressure(void *user_data)
     return (has_swath_variable((ingest_info *)user_data, "CloudTopPressure") == 0);
 }
 
-static int verify_product_type(coda_product *product, const char *swath_name)
-{
-    coda_cursor cursor;
-    char buffer[100];
-    long string_length;
-    long num_elements;
-
-    if (coda_cursor_set_product(&cursor, product) != 0)
-    {
-        harp_set_error(HARP_ERROR_UNSUPPORTED_PRODUCT, NULL);
-        return -1;
-    }
-
-    if (coda_cursor_goto(&cursor, "/HDFEOS/ADDITIONAL/FILE_ATTRIBUTES@InstrumentName") != 0)
-    {
-        harp_set_error(HARP_ERROR_UNSUPPORTED_PRODUCT, NULL);
-        return -1;
-    }
-    if (coda_cursor_get_string_length(&cursor, &string_length) != 0)
-    {
-        harp_set_error(HARP_ERROR_UNSUPPORTED_PRODUCT, NULL);
-        return -1;
-    }
-    if (string_length != 3)
-    {
-        harp_set_error(HARP_ERROR_UNSUPPORTED_PRODUCT, NULL);
-        return -1;
-    }
-    if (coda_cursor_read_string(&cursor, buffer, 4) != 0)
-    {
-        harp_set_error(HARP_ERROR_UNSUPPORTED_PRODUCT, NULL);
-        return -1;
-    }
-    if (strcmp(buffer, "OMI") != 0)
-    {
-        harp_set_error(HARP_ERROR_UNSUPPORTED_PRODUCT, NULL);
-        return -1;
-    }
-
-    if (coda_cursor_goto(&cursor, "../ProcessLevel") != 0)
-    {
-        harp_set_error(HARP_ERROR_UNSUPPORTED_PRODUCT, NULL);
-        return -1;
-    }
-    if (coda_cursor_get_string_length(&cursor, &string_length) != 0)
-    {
-        harp_set_error(HARP_ERROR_UNSUPPORTED_PRODUCT, NULL);
-        return -1;
-    }
-    if (string_length > 99)
-    {
-        harp_set_error(HARP_ERROR_UNSUPPORTED_PRODUCT, NULL);
-        return -1;
-    }
-    if (coda_cursor_read_string(&cursor, buffer, 100) != 0)
-    {
-        harp_set_error(HARP_ERROR_UNSUPPORTED_PRODUCT, NULL);
-        return -1;
-    }
-    if (strncmp(buffer, "2", 1) != 0 && strncmp(buffer, "L2", 2) != 0)
-    {
-        harp_set_error(HARP_ERROR_UNSUPPORTED_PRODUCT, NULL);
-        return -1;
-    }
-
-    if (coda_cursor_goto(&cursor, "/HDFEOS/SWATHS") != 0)
-    {
-        harp_set_error(HARP_ERROR_UNSUPPORTED_PRODUCT, NULL);
-        return -1;
-    }
-    if (coda_cursor_get_num_elements(&cursor, &num_elements) != 0)
-    {
-        harp_set_error(HARP_ERROR_UNSUPPORTED_PRODUCT, NULL);
-        return -1;
-    }
-    if (num_elements != 1)
-    {
-        /* we only support products that have just 1 type of swath data */
-        harp_set_error(HARP_ERROR_UNSUPPORTED_PRODUCT, NULL);
-        return -1;
-    }
-    if (coda_cursor_goto_record_field_by_name(&cursor, swath_name) != 0)
-    {
-        harp_set_error(HARP_ERROR_UNSUPPORTED_PRODUCT, NULL);
-        return -1;
-    }
-
-    return 0;
-}
-
-static int verify_omaeruv(const harp_ingestion_module *module, coda_product *product)
-{
-    (void)module;
-    return verify_product_type(product, "Aerosol_NearUV_Swath");
-}
-
-static int verify_ombro(const harp_ingestion_module *module, coda_product *product)
-{
-    (void)module;
-    return verify_product_type(product, "OMI_Total_Column_Amount_BrO");
-}
-
-static int verify_omcldo2(const harp_ingestion_module *module, coda_product *product)
-{
-    (void)module;
-    return verify_product_type(product, "CloudFractionAndPressure");
-}
-
-static int verify_omcldrr(const harp_ingestion_module *module, coda_product *product)
-{
-    (void)module;
-    return verify_product_type(product, "Cloud_Product");
-}
-
-static int verify_omdoao3(const harp_ingestion_module *module, coda_product *product)
-{
-    (void)module;
-    return verify_product_type(product, "ColumnAmountO3");
-}
-
-static int verify_omdomino(const harp_ingestion_module *module, coda_product *product)
-{
-    coda_cursor cursor;
-    long num_elements;
-
-    (void)module;
-
-    if (coda_cursor_set_product(&cursor, product) != 0)
-    {
-        harp_set_error(HARP_ERROR_UNSUPPORTED_PRODUCT, NULL);
-        return -1;
-    }
-    if (coda_cursor_goto(&cursor, "HDFEOS/SWATHS") != 0)
-    {
-        harp_set_error(HARP_ERROR_UNSUPPORTED_PRODUCT, NULL);
-        return -1;
-    }
-    if (coda_cursor_get_num_elements(&cursor, &num_elements) != 0)
-    {
-        harp_set_error(HARP_ERROR_UNSUPPORTED_PRODUCT, NULL);
-        return -1;
-    }
-    if (num_elements != 1)
-    {
-        /* we only support products that have just 1 type of swath data */
-        harp_set_error(HARP_ERROR_UNSUPPORTED_PRODUCT, NULL);
-        return -1;
-    }
-    if (coda_cursor_goto_record_field_by_name(&cursor, "DominoNO2") != 0)
-    {
-        harp_set_error(HARP_ERROR_UNSUPPORTED_PRODUCT, NULL);
-        return -1;
-    }
-
-    return 0;
-}
-
-static int verify_omhcho(const harp_ingestion_module *module, coda_product *product)
-{
-    (void)module;
-    return verify_product_type(product, "OMI_Total_Column_Amount_HCHO");
-}
-
-static int verify_omno2(const harp_ingestion_module *module, coda_product *product)
-{
-    (void)module;
-    return verify_product_type(product, "ColumnAmountNO2");
-}
-
-static int verify_omo3pr(const harp_ingestion_module *module, coda_product *product)
-{
-    (void)module;
-    return verify_product_type(product, "O3Profile");
-}
-
-static int verify_omoclo(const harp_ingestion_module *module, coda_product *product)
-{
-    (void)module;
-    return verify_product_type(product, "OMI_Slant_Column_Amount_OClO");
-}
-
-static int verify_omso2(const harp_ingestion_module *module, coda_product *product)
-{
-    (void)module;
-    return verify_product_type(product, "OMI_Total_Column_Amount_SO2");
-}
-
-static int verify_omto3(const harp_ingestion_module *module, coda_product *product)
-{
-    (void)module;
-    return verify_product_type(product, "OMI_Column_Amount_O3");
-}
-
-static int verify_omuvb(const harp_ingestion_module *module, coda_product *product)
-{
-    (void)module;
-    return verify_product_type(product, "UVB");
-}
-
 static int parse_option_clipped_cloud_fraction(ingest_info *info, const harp_ingestion_options *options)
 {
     const char *value;
@@ -2323,9 +2124,9 @@ static void register_omaeruv_product(void)
     const char *description;
     const char *path;
 
-    module = harp_ingestion_register_module_coda("OMI_L2_OMAERUV", "OMI", NULL, NULL,
-                                                 "OMI L2 aerosol product (AOD and AAOD)", verify_omaeruv,
-                                                 ingestion_init_omaeruv, ingestion_done);
+    module = harp_ingestion_register_module_coda("OMI_L2_OMAERUV", "OMI", "AURA_OMI", "OMAERUV",
+                                                 "OMI L2 aerosol product (AOD and AAOD)", NULL, ingestion_init_omaeruv,
+                                                 ingestion_done);
 
     /* OMAERUV product */
     product_definition = harp_ingestion_register_product(module, "OMI_L2_OMAERUV", NULL, read_dimensions_omaeruv);
@@ -2403,8 +2204,8 @@ static void register_ombro_product(void)
     const char *description;
     const char *path;
 
-    module = harp_ingestion_register_module_coda("OMI_L2_OMBRO", "OMI", NULL, NULL, "OMI L2 BrO total column",
-                                                 verify_ombro, ingestion_init_ombro, ingestion_done);
+    module = harp_ingestion_register_module_coda("OMI_L2_OMBRO", "OMI", "AURA_OMI", "OMBRO", "OMI L2 BrO total column",
+                                                 NULL, ingestion_init_ombro, ingestion_done);
 
     /* destriped ingestion option */
     description = "ingest column densities with destriping correction";
@@ -2458,9 +2259,9 @@ static void register_omcldo2_product(void)
     const char *description;
     const char *path;
 
-    module = harp_ingestion_register_module_coda("OMI_L2_OMCLDO2", "OMI", NULL, NULL,
-                                                 "OMI L2 cloud pressure and cloud fraction (O2-O2 absorbtion)",
-                                                 verify_omcldo2, ingestion_init_omcldo2, ingestion_done);
+    module = harp_ingestion_register_module_coda("OMI_L2_OMCLDO2", "OMI", "AURA_OMI", "OMCLDO2",
+                                                 "OMI L2 cloud pressure and cloud fraction (O2-O2 absorbtion)", NULL,
+                                                 ingestion_init_omcldo2, ingestion_done);
 
     /* clipped_cloud_fraction ingestion option */
     description = "ingest clipped (to the range [0.0, 1.0]) cloud fractions";
@@ -2546,9 +2347,9 @@ static void register_omcldrr_product(void)
     const char *description;
     const char *path;
 
-    module = harp_ingestion_register_module_coda("OMI_L2_OMCLDRR", "OMI", NULL, NULL,
-                                                 "OMI L2 cloud pressure and cloud fraction (Raman scattering)",
-                                                 verify_omcldrr, ingestion_init, ingestion_done);
+    module = harp_ingestion_register_module_coda("OMI_L2_OMCLDRR", "OMI", "AURA-OMI", "OMCLDRR",
+                                                 "OMI L2 cloud pressure and cloud fraction (Raman scattering)", NULL,
+                                                 ingestion_init, ingestion_done);
 
     /* OMCLDRR product */
     product_definition = harp_ingestion_register_product(module, "OMI_L2_OMCLDRR", NULL, read_dimensions);
@@ -2613,8 +2414,8 @@ static void register_omdoao3_product(void)
     const char *description;
     const char *path;
 
-    module = harp_ingestion_register_module_coda("OMI_L2_OMDOAO3", "OMI", NULL, NULL, "OMI L2 O3 total column (DOAS)",
-                                                 verify_omdoao3, ingestion_init, ingestion_done);
+    module = harp_ingestion_register_module_coda("OMI_L2_OMDOAO3", "OMI", "AURA_OMI", "OMDOAO3",
+                                                 "OMI L2 O3 total column (DOAS)", NULL, ingestion_init, ingestion_done);
 
     /* OMDOAO3 product */
     product_definition = harp_ingestion_register_product(module, "OMI_L2_OMDOAO3", NULL, read_dimensions);
@@ -2714,8 +2515,9 @@ static void register_omdomino_product(void)
     const char *description;
     const char *path;
 
-    module = harp_ingestion_register_module_coda("OMI_L2_OMDOMINO", "OMI", NULL, NULL, "OMI L2 DOMINO NO2 product",
-                                                 verify_omdomino, ingestion_init_omdomino, ingestion_done);
+    module = harp_ingestion_register_module_coda("OMI_L2_OMDOMINO", "OMI", "AURA_OMI", "OMDOMINO",
+                                                 "OMI L2 DOMINO NO2 product", NULL, ingestion_init_omdomino,
+                                                 ingestion_done);
 
     /* OMDOMINO product */
     product_definition = harp_ingestion_register_product(module, "OMI_L2_OMDOMINO", NULL, read_dimensions);
@@ -2874,8 +2676,9 @@ static void register_omhcho_product(void)
     const char *description;
     const char *path;
 
-    module = harp_ingestion_register_module_coda("OMI_L2_OMHCHO", "OMI", NULL, NULL, "OMI L2 HCHO total column",
-                                                 verify_omhcho, ingestion_init_omhcho, ingestion_done);
+    module = harp_ingestion_register_module_coda("OMI_L2_OMHCHO", "OMI", "AURA_OMI", "OMHCHO",
+                                                 "OMI L2 HCHO total column", NULL, ingestion_init_omhcho,
+                                                 ingestion_done);
 
     /* destriped ingestion option */
     description = "ingest column densities with destriping correction";
@@ -2928,9 +2731,9 @@ static void register_omno2_product(void)
     const char *description;
     const char *path;
 
-    module = harp_ingestion_register_module_coda("OMI_L2_OMNO2", "OMI", NULL, NULL,
-                                                 "OMI L2 NO2 total and tropospheric column", verify_omno2,
-                                                 ingestion_init, ingestion_done);
+    module = harp_ingestion_register_module_coda("OMI_L2_OMNO2", "OMI", "AURA_OMI", "OMNO2",
+                                                 "OMI L2 NO2 total and tropospheric column", NULL, ingestion_init,
+                                                 ingestion_done);
 
     /* OMNO2 product */
     product_definition = harp_ingestion_register_product(module, "OMI_L2_OMNO2", NULL, read_dimensions);
@@ -3046,8 +2849,8 @@ static void register_omo3pr_product(void)
     const char *description;
     const char *path;
 
-    module = harp_ingestion_register_module_coda("OMI_L2_OMO3PR", "OMI", NULL, NULL, "OMI L2 O3 profile", verify_omo3pr,
-                                                 ingestion_init_omo3pr, ingestion_done);
+    module = harp_ingestion_register_module_coda("OMI_L2_OMO3PR", "OMI", "AURA_OMI", "OMO3PR", "OMI L2 O3 profile",
+                                                 NULL, ingestion_init_omo3pr, ingestion_done);
 
     /* OMO3PR product */
     product_definition = harp_ingestion_register_product(module, "OMI_L2_OMO3PR", NULL, read_dimensions_omo3pr);
@@ -3126,8 +2929,9 @@ static void register_omoclo_product(void)
     const char *description;
     const char *path;
 
-    module = harp_ingestion_register_module_coda("OMI_L2_OMOCLO", "OMI", NULL, NULL, "OMI L2 OClO slant column",
-                                                 verify_omoclo, ingestion_init_omoclo, ingestion_done);
+    module = harp_ingestion_register_module_coda("OMI_L2_OMOCLO", "OMI", "AURA_OMI", "OMOCLO",
+                                                 "OMI L2 OClO slant column", NULL, ingestion_init_omoclo,
+                                                 ingestion_done);
 
     /* destriped ingestion option */
     description = "ingest column densities with destriping correction";
@@ -3181,8 +2985,8 @@ static void register_omso2_product(void)
     const char *description;
     const char *path;
 
-    module = harp_ingestion_register_module_coda("OMI_L2_OMSO2", "OMI", NULL, NULL, "OMI L2 SO2 total column",
-                                                 verify_omso2, ingestion_init_omso2, ingestion_done);
+    module = harp_ingestion_register_module_coda("OMI_L2_OMSO2", "OMI", "AURA_OMI", "OMSO2", "OMI L2 SO2 total column",
+                                                 NULL, ingestion_init_omso2, ingestion_done);
 
     /* so2_column_variant ingestion option */
     description = "for V2 products: 'pbl' (anthropogenic SO2 pollution at the planet boundary layer), '5km' (showing"
@@ -3282,8 +3086,9 @@ static void register_omto3_product(void)
     const char *description;
     const char *path;
 
-    module = harp_ingestion_register_module_coda("OMI_L2_OMTO3", "OMI", NULL, NULL, "OMI L2 O3 total column (TOMS)",
-                                                 verify_omto3, ingestion_init_omto3, ingestion_done);
+    module = harp_ingestion_register_module_coda("OMI_L2_OMTO3", "OMI", "AURA_OMI", "OMTO3",
+                                                 "OMI L2 O3 total column (TOMS)", NULL, ingestion_init_omto3,
+                                                 ingestion_done);
 
     /* cloud_fraction_variant ingestion option */
     description = "ingest effective or radiative cloud fraction (only applicable for V3 products)";
@@ -3384,9 +3189,9 @@ static void register_omuvb_product(void)
     const char *description;
     const char *path;
 
-    module = harp_ingestion_register_module_coda("OMI_L2_OMUVB", "OMI", NULL, NULL,
+    module = harp_ingestion_register_module_coda("OMI_L2_OMUVB", "OMI", "AURA_OMI", "OMUVB",
                                                  "OMI L2 UV-B surface irradiance and erythemal dose rate",
-                                                 verify_omuvb, ingestion_init_omuvb, ingestion_done);
+                                                 NULL, ingestion_init_omuvb, ingestion_done);
 
     /* clear_sky ingestion option */
     description = "ingest clear sky surface UV irradiance";

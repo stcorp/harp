@@ -308,114 +308,6 @@ static int read_uv_aerosol_index(void *user_data, harp_array data)
     return 0;
 }
 
-static int verify_product_type(coda_product *product, const char *grid_name, const char *process_level)
-{
-    coda_cursor cursor;
-    char buffer[100];
-    long string_length;
-    long num_elements;
-
-    if (coda_cursor_set_product(&cursor, product) != 0)
-    {
-        harp_set_error(HARP_ERROR_UNSUPPORTED_PRODUCT, NULL);
-        return -1;
-    }
-
-    if (coda_cursor_goto(&cursor, "/HDFEOS/ADDITIONAL/FILE_ATTRIBUTES@InstrumentName") != 0)
-    {
-        harp_set_error(HARP_ERROR_UNSUPPORTED_PRODUCT, NULL);
-        return -1;
-    }
-    if (coda_cursor_get_string_length(&cursor, &string_length) != 0)
-    {
-        harp_set_error(HARP_ERROR_UNSUPPORTED_PRODUCT, NULL);
-        return -1;
-    }
-    if (string_length != 3)
-    {
-        harp_set_error(HARP_ERROR_UNSUPPORTED_PRODUCT, NULL);
-        return -1;
-    }
-    if (coda_cursor_read_string(&cursor, buffer, 4) != 0)
-    {
-        harp_set_error(HARP_ERROR_UNSUPPORTED_PRODUCT, NULL);
-        return -1;
-    }
-    if (strcmp(buffer, "OMI") != 0)
-    {
-        harp_set_error(HARP_ERROR_UNSUPPORTED_PRODUCT, NULL);
-        return -1;
-    }
-
-    if (coda_cursor_goto(&cursor, "../ProcessLevel") != 0)
-    {
-        harp_set_error(HARP_ERROR_UNSUPPORTED_PRODUCT, NULL);
-        return -1;
-    }
-    if (coda_cursor_get_string_length(&cursor, &string_length) != 0)
-    {
-        harp_set_error(HARP_ERROR_UNSUPPORTED_PRODUCT, NULL);
-        return -1;
-    }
-    if (string_length > 99)
-    {
-        harp_set_error(HARP_ERROR_UNSUPPORTED_PRODUCT, NULL);
-        return -1;
-    }
-    if (coda_cursor_read_string(&cursor, buffer, 100) != 0)
-    {
-        harp_set_error(HARP_ERROR_UNSUPPORTED_PRODUCT, NULL);
-        return -1;
-    }
-    if (strcmp(buffer, process_level) != 0)
-    {
-        harp_set_error(HARP_ERROR_UNSUPPORTED_PRODUCT, NULL);
-        return -1;
-    }
-
-    if (coda_cursor_goto(&cursor, "/HDFEOS/GRIDS") != 0)
-    {
-        harp_set_error(HARP_ERROR_UNSUPPORTED_PRODUCT, NULL);
-        return -1;
-    }
-    if (coda_cursor_get_num_elements(&cursor, &num_elements) != 0)
-    {
-        harp_set_error(HARP_ERROR_UNSUPPORTED_PRODUCT, NULL);
-        return -1;
-    }
-    if (num_elements != 1)
-    {
-        /* we only support products that have just 1 type of grid data */
-        harp_set_error(HARP_ERROR_UNSUPPORTED_PRODUCT, NULL);
-        return -1;
-    }
-    if (coda_cursor_goto_record_field_by_name(&cursor, grid_name) != 0)
-    {
-        harp_set_error(HARP_ERROR_UNSUPPORTED_PRODUCT, NULL);
-        return -1;
-    }
-
-    return 0;
-}
-
-static int verify_omdoao3e(const harp_ingestion_module *module, coda_product *product)
-{
-    (void)module;
-    return verify_product_type(product, "ColumnAmountO3", "3e");
-}
-
-static int verify_omto3d(const harp_ingestion_module *module, coda_product *product)
-{
-    (void)module;
-    return verify_product_type(product, "OMI_Column_Amount_O3", "3d");
-}
-
-static int verify_omto3e(const harp_ingestion_module *module, coda_product *product)
-{
-    (void)module;
-    return verify_product_type(product, "OMI_Column_Amount_O3", "3e");
-}
-
 static int init_cursors_and_grid(ingest_info *info, const char *data_group_name)
 {
     coda_cursor cursor;
@@ -708,10 +600,9 @@ static void register_omdoao3e_product(void)
     const char *description;
     const char *path;
 
-    module =
-        harp_ingestion_register_module_coda("OMI_L3_OMDOAO3e", "OMI", NULL, NULL,
-                                            "OMI L3 daily O3 total column (DOAS) " "on a global 0.25x0.25 degree grid",
-                                            verify_omdoao3e, ingestion_init_omdoao3e, ingestion_done);
+    module = harp_ingestion_register_module_coda("OMI_L3_OMDOAO3e", "OMI", "AURA_OMI", "OMDOAO3e", "OMI L3 daily O3 "
+                                                 "total column (DOAS) on a global 0.25x0.25 degree grid", NULL,
+                                                 ingestion_init_omdoao3e, ingestion_done);
 
     /* OMDOAO3e product */
     product_definition = harp_ingestion_register_product(module, "OMI_L3_OMDOAO3e", NULL, read_dimensions);
@@ -789,11 +680,9 @@ static void register_omto3d_product(void)
     const char *description;
     const char *path;
 
-    module =
-        harp_ingestion_register_module_coda("OMI_L3_OMTO3d", "OMI", NULL, NULL,
-                                            "OMI L3 daily O3, aerosol index, and "
-                                            "radiative cloud fraction on a global 1x1 degree grid", verify_omto3d,
-                                            ingestion_init_omto3, ingestion_done);
+    module = harp_ingestion_register_module_coda("OMI_L3_OMTO3d", "OMI", "AURA_OMI", "OMTO3d", "OMI L3 daily O3, "
+                                                 "aerosol index, and radiative cloud fraction on a global 1x1 degree "
+                                                 "grid", NULL, ingestion_init_omto3, ingestion_done);
 
     /* OMTO3d product */
     product_definition = harp_ingestion_register_product(module, "OMI_L3_OMTO3d", NULL, read_dimensions);
@@ -845,11 +734,9 @@ static void register_omto3e_product(void)
     const char *description;
     const char *path;
 
-    module =
-        harp_ingestion_register_module_coda("OMI_L3_OMTO3e", "OMI", NULL, NULL,
-                                            "OMI L3 daily O3 and radiative cloud  "
-                                            "fraction on a global 0.25x0.25 degree grid", verify_omto3e,
-                                            ingestion_init_omto3, ingestion_done);
+    module = harp_ingestion_register_module_coda("OMI_L3_OMTO3e", "OMI", "AURA_OMI", "OMTO3e", "OMI L3 daily O3 and "
+                                                 "radiative cloud fraction on a global 0.25x0.25 degree grid", NULL,
+                                                 ingestion_init_omto3, ingestion_done);
 
     /* OMTO3e product */
     product_definition = harp_ingestion_register_product(module, "OMI_L3_OMTO3e", NULL, read_dimensions);

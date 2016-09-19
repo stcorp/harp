@@ -398,113 +398,6 @@ static int ingestion_init_tatm_nadir(const harp_ingestion_module *module, coda_p
     return ingestion_init(module, product, options, definition, user_data, "TATMNadirSwath", "TATM", "TATMPrecision");
 }
 
-static int verify_product_type(coda_product *product, const char *swath_name)
-{
-    coda_cursor cursor;
-    char buffer[100];
-    long string_length;
-
-    if (coda_cursor_set_product(&cursor, product) != 0)
-    {
-        harp_set_error(HARP_ERROR_UNSUPPORTED_PRODUCT, NULL);
-        return -1;
-    }
-    if (coda_cursor_goto(&cursor, "/HDFEOS/ADDITIONAL/FILE_ATTRIBUTES@InstrumentName") != 0)
-    {
-        harp_set_error(HARP_ERROR_UNSUPPORTED_PRODUCT, NULL);
-        return -1;
-    }
-    if (coda_cursor_get_string_length(&cursor, &string_length) != 0)
-    {
-        harp_set_error(HARP_ERROR_UNSUPPORTED_PRODUCT, NULL);
-        return -1;
-    }
-    if (string_length != 3)
-    {
-        harp_set_error(HARP_ERROR_UNSUPPORTED_PRODUCT, NULL);
-        return -1;
-    }
-    if (coda_cursor_read_string(&cursor, buffer, 4) != 0)
-    {
-        harp_set_error(HARP_ERROR_UNSUPPORTED_PRODUCT, NULL);
-        return -1;
-    }
-    if (strcmp(buffer, "TES") != 0)
-    {
-        harp_set_error(HARP_ERROR_UNSUPPORTED_PRODUCT, NULL);
-        return -1;
-    }
-
-    if (coda_cursor_goto(&cursor, "../ProcessLevel") != 0)
-    {
-        harp_set_error(HARP_ERROR_UNSUPPORTED_PRODUCT, NULL);
-        return -1;
-    }
-    if (coda_cursor_get_string_length(&cursor, &string_length) != 0)
-    {
-        harp_set_error(HARP_ERROR_UNSUPPORTED_PRODUCT, NULL);
-        return -1;
-    }
-    if (string_length > 99)
-    {
-        harp_set_error(HARP_ERROR_UNSUPPORTED_PRODUCT, NULL);
-        return -1;
-    }
-    if (coda_cursor_read_string(&cursor, buffer, 100) != 0)
-    {
-        harp_set_error(HARP_ERROR_UNSUPPORTED_PRODUCT, NULL);
-        return -1;
-    }
-    if (strncmp(buffer, "2", 1) != 0 && strncmp(buffer, "L2", 2) != 0)
-    {
-        harp_set_error(HARP_ERROR_UNSUPPORTED_PRODUCT, NULL);
-        return -1;
-    }
-
-    if (coda_cursor_goto(&cursor, "/HDFEOS/SWATHS") != 0)
-    {
-        harp_set_error(HARP_ERROR_UNSUPPORTED_PRODUCT, NULL);
-        return -1;
-    }
-    if (coda_cursor_goto_record_field_by_name(&cursor, swath_name) != 0)
-    {
-        harp_set_error(HARP_ERROR_UNSUPPORTED_PRODUCT, NULL);
-        return -1;
-    }
-
-    return 0;
-}
-
-static int verify_ch4_nadir(const harp_ingestion_module *module, coda_product *product)
-{
-    (void)module;
-    return verify_product_type(product, "CH4NadirSwath");
-}
-
-static int verify_co_nadir(const harp_ingestion_module *module, coda_product *product)
-{
-    (void)module;
-    return verify_product_type(product, "CONadirSwath");
-}
-
-static int verify_h2o_nadir(const harp_ingestion_module *module, coda_product *product)
-{
-    (void)module;
-    return verify_product_type(product, "H2ONadirSwath");
-}
-
-static int verify_o3_nadir(const harp_ingestion_module *module, coda_product *product)
-{
-    (void)module;
-    return verify_product_type(product, "O3NadirSwath");
-}
-
-static int verify_tatm_nadir(const harp_ingestion_module *module, coda_product *product)
-{
-    (void)module;
-    return verify_product_type(product, "TATMNadirSwath");
-}
-
 static void register_datetime_variable(harp_product_definition *product_definition, const char *path)
 {
     harp_variable_definition *variable_definition;
@@ -583,8 +476,9 @@ static void register_ch4_nadir_product(void)
     const char *description;
     const char *path;
 
-    module = harp_ingestion_register_module_coda("TES_L2_CH4_Nadir", "TES", NULL, NULL, "TES CH4 nadir profile",
-                                                 verify_ch4_nadir, ingestion_init_ch4_nadir, ingestion_done);
+    module = harp_ingestion_register_module_coda("TES_L2_CH4_Nadir", "TES", "AURA_TES", "TL2CH4N",
+                                                 "TES CH4 nadir profile", NULL, ingestion_init_ch4_nadir,
+                                                 ingestion_done);
 
     /* CH4_Nadir product */
     product_definition = harp_ingestion_register_product(module, "TES_L2_CH4_Nadir", NULL, read_dimensions);
@@ -634,9 +528,8 @@ static void register_co_nadir_product(void)
     const char *description;
     const char *path;
 
-    module =
-        harp_ingestion_register_module_coda("TES_L2_CO_Nadir", "TES", NULL, NULL, "TES CO nadir profile",
-                                            verify_co_nadir, ingestion_init_co_nadir, ingestion_done);
+    module = harp_ingestion_register_module_coda("TES_L2_CO_Nadir", "TES", "AURA_TES", "TL2CON", "TES CO nadir profile",
+                                                 NULL, ingestion_init_co_nadir, ingestion_done);
 
     /* CO_Nadir product */
     product_definition = harp_ingestion_register_product(module, "TES_L2_CO_Nadir", NULL, read_dimensions);
@@ -686,8 +579,9 @@ static void register_h2o_nadir_product(void)
     const char *description;
     const char *path;
 
-    module = harp_ingestion_register_module_coda("TES_L2_H2O_Nadir", "TES", NULL, NULL, "TES H2O nadir profile",
-                                                 verify_h2o_nadir, ingestion_init_h2o_nadir, ingestion_done);
+    module = harp_ingestion_register_module_coda("TES_L2_H2O_Nadir", "TES", "AURA_TES", "TL2H2ON",
+                                                 "TES H2O nadir profile", NULL, ingestion_init_h2o_nadir,
+                                                 ingestion_done);
 
     /* H2O_Nadir product */
     product_definition = harp_ingestion_register_product(module, "TES_L2_H2O_Nadir", NULL, read_dimensions);
@@ -737,9 +631,8 @@ static void register_o3_nadir_product(void)
     const char *description;
     const char *path;
 
-    module =
-        harp_ingestion_register_module_coda("TES_L2_O3_Nadir", "TES", NULL, NULL, "TES O3 nadir profile",
-                                            verify_o3_nadir, ingestion_init_o3_nadir, ingestion_done);
+    module = harp_ingestion_register_module_coda("TES_L2_O3_Nadir", "TES", "AURA_TES", "TL2O3N", "TES O3 nadir profile",
+                                                 NULL, ingestion_init_o3_nadir, ingestion_done);
 
     /* O3_Nadir product */
     product_definition = harp_ingestion_register_product(module, "TES_L2_O3_Nadir", NULL, read_dimensions);
@@ -789,8 +682,8 @@ static void register_tatm_nadir_product(void)
     const char *description;
     const char *path;
 
-    module = harp_ingestion_register_module_coda("TES_L2_Temperature_Nadir", "TES", NULL, NULL,
-                                                 "TES atmospheric temperature nadir profile", verify_tatm_nadir,
+    module = harp_ingestion_register_module_coda("TES_L2_Temperature_Nadir", "TES", "AURA_TES", "TL2ATMTN",
+                                                 "TES atmospheric temperature nadir profile", NULL,
                                                  ingestion_init_tatm_nadir, ingestion_done);
 
     /* Temperature_Nadir product */
