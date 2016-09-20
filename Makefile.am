@@ -298,6 +298,7 @@ EXTRA_DIST += \
 
 # *** product definition files ***
 
+AURA_MLS_DEFINITION_FILE = AURA_MLS-@CODADEF_VERSION_AURA_MLS@.codadef
 AURA_OMI_DEFINITION_FILE = AURA_OMI-@CODADEF_VERSION_AURA_OMI@.codadef
 AURA_TES_DEFINITION_FILE = AURA_TES-@CODADEF_VERSION_AURA_TES@.codadef
 ECMWF_DEFINITION_FILE = ECMWF-@CODADEF_VERSION_ECMWF@.codadef
@@ -310,6 +311,7 @@ ESACCI_OZONE_DEFINITION_FILE = ESACCI_OZONE-@CODADEF_VERSION_ESACCI_OZONE@.codad
 SENTINEL5P_DEFINITION_FILE = Sentinel5P-@CODADEF_VERSION_Sentinel5P@.codadef
 
 DEFINITION_FILES = \
+	definitions/$(AURA_MLS_DEFINITION_FILE) \
 	definitions/$(AURA_OMI_DEFINITION_FILE) \
 	definitions/$(AURA_TES_DEFINITION_FILE) \
 	definitions/$(ECMWF_DEFINITION_FILE) \
@@ -325,6 +327,15 @@ EXTRA_DIST += $(DEFINITION_FILES) codadef.sh
 MAINTAINERCLEANFILES += $(DEFINITION_FILES)
 
 nobase_pkgdata_DATA = $(DEFINITION_FILES)
+
+definitions/$(AURA_MLS_DEFINITION_FILE):
+	test -d definitions || $(mkinstalldirs) definitions
+	@$(srcdir)/codadef.sh $(srcdir)/definitions/AURA_MLS definitions
+	@if test ! -f definitions/$(AURA_MLS_DEFINITION_FILE) ; then \
+	  echo definitions/$(AURA_MLS_DEFINITION_FILE) not created. ; \
+	  echo run './config.status --recheck' to update the .codadef version reference. ; \
+	  exit 1 ; \
+	 fi
 
 definitions/$(AURA_OMI_DEFINITION_FILE):
 	test -d definitions || $(mkinstalldirs) definitions

@@ -1,0 +1,224 @@
+<?xml version="1.0"?>
+<cd:ProductClass name="AURA_MLS" last-modified="2016-09-20" xmlns:cd="http://www.stcorp.nl/coda/definition/2008/07">
+  <cd:Description>Aura MLS products</cd:Description>
+  <cd:ProductType name="ML2BRO">
+    <cd:Description>L2 BrO</cd:Description>
+    <cd:ProductDefinition id="ML2BRO" format="hdf5" version="0">
+      <cd:Description>The format definition for this product is taken from the HDF5 file itself.</cd:Description>
+      <cd:DetectionRule>
+        <cd:MatchExpression path="/HDFEOS/ADDITIONAL/FILE_ATTRIBUTES">str(.@InstrumentName,3) == "MLS"</cd:MatchExpression>
+        <cd:MatchExpression path="/HDFEOS/ADDITIONAL/FILE_ATTRIBUTES">str(.@ProcessLevel,1) == "2" || str(.@ProcessLevel,2) == "L2"</cd:MatchExpression>
+        <cd:MatchExpression path="/HDFEOS/SWATHS/BrO">true</cd:MatchExpression>
+      </cd:DetectionRule>
+    </cd:ProductDefinition>
+  </cd:ProductType>
+  <cd:ProductType name="ML2CH3CL">
+    <cd:Description>L2 CH3Cl</cd:Description>
+    <cd:ProductDefinition id="ML2CH3CL" format="hdf5" version="0">
+      <cd:Description>The format definition for this product is taken from the HDF5 file itself.</cd:Description>
+      <cd:DetectionRule>
+        <cd:MatchExpression path="/HDFEOS/ADDITIONAL/FILE_ATTRIBUTES">str(.@InstrumentName,3) == "MLS"</cd:MatchExpression>
+        <cd:MatchExpression path="/HDFEOS/ADDITIONAL/FILE_ATTRIBUTES">str(.@ProcessLevel,1) == "2" || str(.@ProcessLevel,2) == "L2"</cd:MatchExpression>
+        <cd:MatchExpression path="/HDFEOS/SWATHS/CH3Cl">true</cd:MatchExpression>
+      </cd:DetectionRule>
+    </cd:ProductDefinition>
+  </cd:ProductType>
+  <cd:ProductType name="ML2CH3CN">
+    <cd:Description>L2 CH3CN</cd:Description>
+    <cd:ProductDefinition id="ML2CH3CN" format="hdf5" version="0">
+      <cd:Description>The format definition for this product is taken from the HDF5 file itself.</cd:Description>
+      <cd:DetectionRule>
+        <cd:MatchExpression path="/HDFEOS/ADDITIONAL/FILE_ATTRIBUTES">str(.@InstrumentName,3) == "MLS"</cd:MatchExpression>
+        <cd:MatchExpression path="/HDFEOS/ADDITIONAL/FILE_ATTRIBUTES">str(.@ProcessLevel,1) == "2" || str(.@ProcessLevel,2) == "L2"</cd:MatchExpression>
+        <cd:MatchExpression path="/HDFEOS/SWATHS/CH3CN">true</cd:MatchExpression>
+      </cd:DetectionRule>
+    </cd:ProductDefinition>
+  </cd:ProductType>
+  <cd:ProductType name="ML2CH3OH">
+    <cd:Description>L2 CH3OH</cd:Description>
+    <cd:ProductDefinition id="ML2CH3OH" format="hdf5" version="0">
+      <cd:Description>The format definition for this product is taken from the HDF5 file itself.</cd:Description>
+      <cd:DetectionRule>
+        <cd:MatchExpression path="/HDFEOS/ADDITIONAL/FILE_ATTRIBUTES">str(.@InstrumentName,3) == "MLS"</cd:MatchExpression>
+        <cd:MatchExpression path="/HDFEOS/ADDITIONAL/FILE_ATTRIBUTES">str(.@ProcessLevel,1) == "2" || str(.@ProcessLevel,2) == "L2"</cd:MatchExpression>
+        <cd:MatchExpression path="/HDFEOS/SWATHS/CH3OH">true</cd:MatchExpression>
+      </cd:DetectionRule>
+    </cd:ProductDefinition>
+  </cd:ProductType>
+  <cd:ProductType name="ML2CLO">
+    <cd:Description>L2 ClO</cd:Description>
+    <cd:ProductDefinition id="ML2CLO" format="hdf5" version="0">
+      <cd:Description>The format definition for this product is taken from the HDF5 file itself.</cd:Description>
+      <cd:DetectionRule>
+        <cd:MatchExpression path="/HDFEOS/ADDITIONAL/FILE_ATTRIBUTES">str(.@InstrumentName,3) == "MLS"</cd:MatchExpression>
+        <cd:MatchExpression path="/HDFEOS/ADDITIONAL/FILE_ATTRIBUTES">str(.@ProcessLevel,1) == "2" || str(.@ProcessLevel,2) == "L2"</cd:MatchExpression>
+        <cd:MatchExpression path="/HDFEOS/SWATHS/ClO">true</cd:MatchExpression>
+      </cd:DetectionRule>
+    </cd:ProductDefinition>
+  </cd:ProductType>
+  <cd:ProductType name="ML2CO">
+    <cd:Description>L2 CO</cd:Description>
+    <cd:ProductDefinition id="ML2CO" format="hdf5" version="0">
+      <cd:Description>The format definition for this product is taken from the HDF5 file itself.</cd:Description>
+      <cd:DetectionRule>
+        <cd:MatchExpression path="/HDFEOS/ADDITIONAL/FILE_ATTRIBUTES">str(.@InstrumentName,3) == "MLS"</cd:MatchExpression>
+        <cd:MatchExpression path="/HDFEOS/ADDITIONAL/FILE_ATTRIBUTES">str(.@ProcessLevel,1) == "2" || str(.@ProcessLevel,2) == "L2"</cd:MatchExpression>
+        <cd:MatchExpression path="/HDFEOS/SWATHS/CO">true</cd:MatchExpression>
+      </cd:DetectionRule>
+    </cd:ProductDefinition>
+  </cd:ProductType>
+  <cd:ProductType name="ML2GPH">
+    <cd:Description>L2 Geopotential Height</cd:Description>
+    <cd:ProductDefinition id="ML2GPH" format="hdf5" version="0">
+      <cd:Description>The format definition for this product is taken from the HDF5 file itself.</cd:Description>
+      <cd:DetectionRule>
+        <cd:MatchExpression path="/HDFEOS/ADDITIONAL/FILE_ATTRIBUTES">str(.@InstrumentName,3) == "MLS"</cd:MatchExpression>
+        <cd:MatchExpression path="/HDFEOS/ADDITIONAL/FILE_ATTRIBUTES">str(.@ProcessLevel,1) == "2" || str(.@ProcessLevel,2) == "L2"</cd:MatchExpression>
+        <cd:MatchExpression path="/HDFEOS/SWATHS/GPH">true</cd:MatchExpression>
+      </cd:DetectionRule>
+    </cd:ProductDefinition>
+  </cd:ProductType>
+  <cd:ProductType name="ML2H2O">
+    <cd:Description>L2 H2O</cd:Description>
+    <cd:ProductDefinition id="ML2H2O" format="hdf5" version="0">
+      <cd:Description>The format definition for this product is taken from the HDF5 file itself.</cd:Description>
+      <cd:DetectionRule>
+        <cd:MatchExpression path="/HDFEOS/ADDITIONAL/FILE_ATTRIBUTES">str(.@InstrumentName,3) == "MLS"</cd:MatchExpression>
+        <cd:MatchExpression path="/HDFEOS/ADDITIONAL/FILE_ATTRIBUTES">str(.@ProcessLevel,1) == "2" || str(.@ProcessLevel,2) == "L2"</cd:MatchExpression>
+        <cd:MatchExpression path="/HDFEOS/SWATHS/H2O">true</cd:MatchExpression>
+      </cd:DetectionRule>
+    </cd:ProductDefinition>
+  </cd:ProductType>
+  <cd:ProductType name="ML2HCL">
+    <cd:Description>L2 HCl</cd:Description>
+    <cd:ProductDefinition id="ML2HCL" format="hdf5" version="0">
+      <cd:Description>The format definition for this product is taken from the HDF5 file itself.</cd:Description>
+      <cd:DetectionRule>
+        <cd:MatchExpression path="/HDFEOS/ADDITIONAL/FILE_ATTRIBUTES">str(.@InstrumentName,3) == "MLS"</cd:MatchExpression>
+        <cd:MatchExpression path="/HDFEOS/ADDITIONAL/FILE_ATTRIBUTES">str(.@ProcessLevel,1) == "2" || str(.@ProcessLevel,2) == "L2"</cd:MatchExpression>
+        <cd:MatchExpression path="/HDFEOS/SWATHS/HCl">true</cd:MatchExpression>
+      </cd:DetectionRule>
+    </cd:ProductDefinition>
+  </cd:ProductType>
+  <cd:ProductType name="ML2HCN">
+    <cd:Description>L2 HCN</cd:Description>
+    <cd:ProductDefinition id="ML2HCN" format="hdf5" version="0">
+      <cd:Description>The format definition for this product is taken from the HDF5 file itself.</cd:Description>
+      <cd:DetectionRule>
+        <cd:MatchExpression path="/HDFEOS/ADDITIONAL/FILE_ATTRIBUTES">str(.@InstrumentName,3) == "MLS"</cd:MatchExpression>
+        <cd:MatchExpression path="/HDFEOS/ADDITIONAL/FILE_ATTRIBUTES">str(.@ProcessLevel,1) == "2" || str(.@ProcessLevel,2) == "L2"</cd:MatchExpression>
+        <cd:MatchExpression path="/HDFEOS/SWATHS/HCN">true</cd:MatchExpression>
+      </cd:DetectionRule>
+    </cd:ProductDefinition>
+  </cd:ProductType>
+  <cd:ProductType name="ML2HNO3">
+    <cd:Description>L2 HNO3</cd:Description>
+    <cd:ProductDefinition id="ML2HNO3" format="hdf5" version="0">
+      <cd:Description>The format definition for this product is taken from the HDF5 file itself.</cd:Description>
+      <cd:DetectionRule>
+        <cd:MatchExpression path="/HDFEOS/ADDITIONAL/FILE_ATTRIBUTES">str(.@InstrumentName,3) == "MLS"</cd:MatchExpression>
+        <cd:MatchExpression path="/HDFEOS/ADDITIONAL/FILE_ATTRIBUTES">str(.@ProcessLevel,1) == "2" || str(.@ProcessLevel,2) == "L2"</cd:MatchExpression>
+        <cd:MatchExpression path="/HDFEOS/SWATHS/HNO3">true</cd:MatchExpression>
+      </cd:DetectionRule>
+    </cd:ProductDefinition>
+  </cd:ProductType>
+  <cd:ProductType name="ML2HO2">
+    <cd:Description>L2 HO2</cd:Description>
+    <cd:ProductDefinition id="ML2HO2" format="hdf5" version="0">
+      <cd:Description>The format definition for this product is taken from the HDF5 file itself.</cd:Description>
+      <cd:DetectionRule>
+        <cd:MatchExpression path="/HDFEOS/ADDITIONAL/FILE_ATTRIBUTES">str(.@InstrumentName,3) == "MLS"</cd:MatchExpression>
+        <cd:MatchExpression path="/HDFEOS/ADDITIONAL/FILE_ATTRIBUTES">str(.@ProcessLevel,1) == "2" || str(.@ProcessLevel,2) == "L2"</cd:MatchExpression>
+        <cd:MatchExpression path="/HDFEOS/SWATHS/HO2">true</cd:MatchExpression>
+      </cd:DetectionRule>
+    </cd:ProductDefinition>
+  </cd:ProductType>
+  <cd:ProductType name="ML2HOCL">
+    <cd:Description>L2 HOCl</cd:Description>
+    <cd:ProductDefinition id="ML2HOCL" format="hdf5" version="0">
+      <cd:Description>The format definition for this product is taken from the HDF5 file itself.</cd:Description>
+      <cd:DetectionRule>
+        <cd:MatchExpression path="/HDFEOS/ADDITIONAL/FILE_ATTRIBUTES">str(.@InstrumentName,3) == "MLS"</cd:MatchExpression>
+        <cd:MatchExpression path="/HDFEOS/ADDITIONAL/FILE_ATTRIBUTES">str(.@ProcessLevel,1) == "2" || str(.@ProcessLevel,2) == "L2"</cd:MatchExpression>
+        <cd:MatchExpression path="/HDFEOS/SWATHS/HOCl">true</cd:MatchExpression>
+      </cd:DetectionRule>
+    </cd:ProductDefinition>
+  </cd:ProductType>
+  <cd:ProductType name="ML2IWC">
+    <cd:Description>L2 Ice Water Content</cd:Description>
+    <cd:ProductDefinition id="ML2IWC" format="hdf5" version="0">
+      <cd:Description>The format definition for this product is taken from the HDF5 file itself.</cd:Description>
+      <cd:DetectionRule>
+        <cd:MatchExpression path="/HDFEOS/ADDITIONAL/FILE_ATTRIBUTES">str(.@InstrumentName,3) == "MLS"</cd:MatchExpression>
+        <cd:MatchExpression path="/HDFEOS/ADDITIONAL/FILE_ATTRIBUTES">str(.@ProcessLevel,1) == "2" || str(.@ProcessLevel,2) == "L2"</cd:MatchExpression>
+        <cd:MatchExpression path="/HDFEOS/SWATHS/IWC">true</cd:MatchExpression>
+      </cd:DetectionRule>
+    </cd:ProductDefinition>
+  </cd:ProductType>
+  <cd:ProductType name="ML2N2O">
+    <cd:Description>L2 N2O</cd:Description>
+    <cd:ProductDefinition id="ML2N2O" format="hdf5" version="0">
+      <cd:Description>The format definition for this product is taken from the HDF5 file itself.</cd:Description>
+      <cd:DetectionRule>
+        <cd:MatchExpression path="/HDFEOS/ADDITIONAL/FILE_ATTRIBUTES">str(.@InstrumentName,3) == "MLS"</cd:MatchExpression>
+        <cd:MatchExpression path="/HDFEOS/ADDITIONAL/FILE_ATTRIBUTES">str(.@ProcessLevel,1) == "2" || str(.@ProcessLevel,2) == "L2"</cd:MatchExpression>
+        <cd:MatchExpression path="/HDFEOS/SWATHS/N2O">true</cd:MatchExpression>
+      </cd:DetectionRule>
+    </cd:ProductDefinition>
+  </cd:ProductType>
+  <cd:ProductType name="ML2O3">
+    <cd:Description>L2 O3</cd:Description>
+    <cd:ProductDefinition id="ML2O3" format="hdf5" version="0">
+      <cd:Description>The format definition for this product is taken from the HDF5 file itself.</cd:Description>
+      <cd:DetectionRule>
+        <cd:MatchExpression path="/HDFEOS/ADDITIONAL/FILE_ATTRIBUTES">str(.@InstrumentName,3) == "MLS"</cd:MatchExpression>
+        <cd:MatchExpression path="/HDFEOS/ADDITIONAL/FILE_ATTRIBUTES">str(.@ProcessLevel,1) == "2" || str(.@ProcessLevel,2) == "L2"</cd:MatchExpression>
+        <cd:MatchExpression path="/HDFEOS/SWATHS/O3">true</cd:MatchExpression>
+      </cd:DetectionRule>
+    </cd:ProductDefinition>
+  </cd:ProductType>
+  <cd:ProductType name="ML2OH">
+    <cd:Description>L2 OH</cd:Description>
+    <cd:ProductDefinition id="ML2OH" format="hdf5" version="0">
+      <cd:Description>The format definition for this product is taken from the HDF5 file itself.</cd:Description>
+      <cd:DetectionRule>
+        <cd:MatchExpression path="/HDFEOS/ADDITIONAL/FILE_ATTRIBUTES">str(.@InstrumentName,3) == "MLS"</cd:MatchExpression>
+        <cd:MatchExpression path="/HDFEOS/ADDITIONAL/FILE_ATTRIBUTES">str(.@ProcessLevel,1) == "2" || str(.@ProcessLevel,2) == "L2"</cd:MatchExpression>
+        <cd:MatchExpression path="/HDFEOS/SWATHS/OH">true</cd:MatchExpression>
+      </cd:DetectionRule>
+    </cd:ProductDefinition>
+  </cd:ProductType>
+  <cd:ProductType name="ML2RHI">
+    <cd:Description>L2 Relative Humidity with respect to Ice</cd:Description>
+    <cd:ProductDefinition id="ML2RHI" format="hdf5" version="0">
+      <cd:Description>The format definition for this product is taken from the HDF5 file itself.</cd:Description>
+      <cd:DetectionRule>
+        <cd:MatchExpression path="/HDFEOS/ADDITIONAL/FILE_ATTRIBUTES">str(.@InstrumentName,3) == "MLS"</cd:MatchExpression>
+        <cd:MatchExpression path="/HDFEOS/ADDITIONAL/FILE_ATTRIBUTES">str(.@ProcessLevel,1) == "2" || str(.@ProcessLevel,2) == "L2"</cd:MatchExpression>
+        <cd:MatchExpression path="/HDFEOS/SWATHS/RHI">true</cd:MatchExpression>
+      </cd:DetectionRule>
+    </cd:ProductDefinition>
+  </cd:ProductType>
+  <cd:ProductType name="ML2SO2">
+    <cd:Description>L2 SO2</cd:Description>
+    <cd:ProductDefinition id="ML2SO2" format="hdf5" version="0">
+      <cd:Description>The format definition for this product is taken from the HDF5 file itself.</cd:Description>
+      <cd:DetectionRule>
+        <cd:MatchExpression path="/HDFEOS/ADDITIONAL/FILE_ATTRIBUTES">str(.@InstrumentName,3) == "MLS"</cd:MatchExpression>
+        <cd:MatchExpression path="/HDFEOS/ADDITIONAL/FILE_ATTRIBUTES">str(.@ProcessLevel,1) == "2" || str(.@ProcessLevel,2) == "L2"</cd:MatchExpression>
+        <cd:MatchExpression path="/HDFEOS/SWATHS/SO2">true</cd:MatchExpression>
+      </cd:DetectionRule>
+    </cd:ProductDefinition>
+  </cd:ProductType>
+  <cd:ProductType name="ML2T">
+    <cd:Description>L2 Temperature</cd:Description>
+    <cd:ProductDefinition id="ML2T" format="hdf5" version="0">
+      <cd:Description>The format definition for this product is taken from the HDF5 file itself.</cd:Description>
+      <cd:DetectionRule>
+        <cd:MatchExpression path="/HDFEOS/ADDITIONAL/FILE_ATTRIBUTES">str(.@InstrumentName,3) == "MLS"</cd:MatchExpression>
+        <cd:MatchExpression path="/HDFEOS/ADDITIONAL/FILE_ATTRIBUTES">str(.@ProcessLevel,1) == "2" || str(.@ProcessLevel,2) == "L2"</cd:MatchExpression>
+        <cd:MatchExpression path="/HDFEOS/SWATHS/Temperature">true</cd:MatchExpression>
+      </cd:DetectionRule>
+    </cd:ProductDefinition>
+  </cd:ProductType>
+</cd:ProductClass>
