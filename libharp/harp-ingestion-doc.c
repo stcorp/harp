@@ -118,6 +118,7 @@ static int generate_product_definition(const char *filename, const harp_product_
         return -1;
     }
 
+    fputs(":orphan: true\n\n", fout);
     fputs(product_definition->name, fout);
     fputc('\n', fout);
     fnputc(strlen(product_definition->name), '=', fout);
@@ -577,20 +578,18 @@ static int generate_product_group(FILE *fout, const char *product_group, int num
     return 0;
 }
 
-static int compare_by_name(const void *a, const void *b)
+static int compare_by_product_group_and_name(const void *a, const void *b)
 {
     harp_ingestion_module *module_a = *(harp_ingestion_module **)a;
     harp_ingestion_module *module_b = *(harp_ingestion_module **)b;
+    int result;
 
-    return strcmp(module_a->name, module_b->name);
-}
-
-static int compare_by_product_group(const void *a, const void *b)
-{
-    harp_ingestion_module *module_a = *(harp_ingestion_module **)a;
-    harp_ingestion_module *module_b = *(harp_ingestion_module **)b;
-
-    return strcmp(module_a->product_group, module_b->product_group);
+    result = strcmp(module_a->product_group, module_b->product_group);
+    if (result == 0)
+    {
+        result = strcmp(module_a->name, module_b->name);
+    }
+    return result;
 }
 
 static int generate_index(const char *filename, int num_ingestion_modules, harp_ingestion_module **ingestion_module)
@@ -651,8 +650,8 @@ static int generate_index(const char *filename, int num_ingestion_modules, harp_
     }
     memcpy(sorted_module, ingestion_module, num_ingestion_modules * sizeof(harp_ingestion_module *));
 
-    /* Sort ingestion module list based on product group name (ascending). */
-    qsort(sorted_module, num_ingestion_modules, sizeof(harp_ingestion_module *), compare_by_product_group);
+    /* Sort ingestion module list based on product group name (ascending) and module name within group (ascending) */
+    qsort(sorted_module, num_ingestion_modules, sizeof(harp_ingestion_module *), compare_by_product_group_and_name);
 
     for (i = 0, j = 0; i < num_ingestion_modules; i++)
     {
@@ -662,9 +661,6 @@ static int generate_index(const char *filename, int num_ingestion_modules, harp_
             /* The next ingestion module is part of the same product group as the ingestion modules before it. */
             continue;
         }
-
-        /* Sort ingestion modules within the same product group based on ingestion module name (ascending). */
-        qsort(&sorted_module[j], i - j + 1, sizeof(harp_ingestion_module *), compare_by_name);
 
         if (generate_product_group(fout, sorted_module[j]->product_group, i - j + 1, &sorted_module[j]) != 0)
         {
