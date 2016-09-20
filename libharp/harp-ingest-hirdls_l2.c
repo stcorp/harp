@@ -493,9 +493,8 @@ int harp_ingestion_module_hirdls_l2_init(void)
     const char *description;
     const char *path;
 
-    module =
-        harp_ingestion_register_module_coda("HIRDLS_L2", "HIRDLS", NULL, NULL, "HIRDLS L2 product", verify_product_type,
-                                            ingestion_init, ingestion_done);
+    module = harp_ingestion_register_module_coda("HIRDLS_L2", "HIRDLS", "AURA_HIRDLS", "HIRDLSL2", "HIRDLS L2 product",
+                                                 NULL, ingestion_init, ingestion_done);
 
     /* HIRDLS product */
     product_definition = harp_ingestion_register_product(module, "HIRDLS_L2", NULL, read_dimensions);

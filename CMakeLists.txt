@@ -546,6 +546,7 @@ function(add_codadef name)
   endif(CODADEF_DIR)
 endfunction(add_codadef)
 
+add_codadef(AURA_HIRDLS)
 add_codadef(AURA_MLS)
 add_codadef(AURA_OMI)
 add_codadef(AURA_TES)
