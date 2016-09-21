@@ -38,8 +38,8 @@ typedef enum uvvis_doas_type_enum
 {
     uvvis_doas_directsun,
     uvvis_doas_offaxis,
+    uvvis_doas_offaxis_aerosol,
     uvvis_doas_zenith,
-    uvvis_doas_aerosol
 } uvvis_doas_type;
 
 typedef enum uvvis_doas_gas_enum
@@ -1258,7 +1258,7 @@ static uvvis_doas_type get_template_type_from_string(const char *str)
     }
     if (strncmp(str, "OFFAXIS-AEROSOL", 15) == 0)
     {
-        return uvvis_doas_aerosol;
+        return uvvis_doas_offaxis_aerosol;
     }
     if (strncmp(str, "OFFAXIS", 7) == 0)
     {
@@ -1327,7 +1327,7 @@ static int get_product_definition(const harp_ingestion_module *module, coda_prod
     }
     else if (length == 39)
     {
-        expected_type = uvvis_doas_aerosol;
+        expected_type = uvvis_doas_offaxis_aerosol;
     }
     else if (length == 34)
     {
@@ -1349,7 +1349,7 @@ static int get_product_definition(const harp_ingestion_module *module, coda_prod
         return -1;
     }
 
-    if (expected_type == uvvis_doas_aerosol)
+    if (expected_type == uvvis_doas_offaxis_aerosol)
     {
         for (i = 0; i < module->num_product_definitions; i++)
         {
@@ -1393,7 +1393,7 @@ static int get_product_definition(const harp_ingestion_module *module, coda_prod
                 result = strncmp(&data_source[11], "ZENITH.", 7);
                 i = 18;
                 break;
-            case uvvis_doas_aerosol:
+            case uvvis_doas_offaxis_aerosol:
                 assert(0);
                 exit(1);
         }
@@ -1469,7 +1469,7 @@ static int get_dimensions(ingest_info *info)
     }
 
     info->num_spectral = 0;
-    if (info->template_type == uvvis_doas_aerosol)
+    if (info->template_type == uvvis_doas_offaxis_aerosol)
     {
         if (coda_cursor_set_product(&cursor, info->product) != 0)
         {
@@ -1556,7 +1556,7 @@ static int get_optional_variable_availability(ingest_info *info)
              "/AEROSOL_OPTICAL_DEPTH_STRATOSPHERIC_SCATTER_SOLAR_ZENITH");
     info->has_stratospheric_aod = (coda_cursor_goto(&cursor, path) == 0);
 
-    if (info->template_type != uvvis_doas_aerosol)
+    if (info->template_type != uvvis_doas_offaxis_aerosol)
     {
         snprintf(path, MAX_PATH_LENGTH, "/%s_MIXING_RATIO_VOLUME_SCATTER_SOLAR_ZENITH", geoms_gas_name[info->gas]);
         info->has_vmr_zenith = (coda_cursor_goto(&cursor, path) == 0);
@@ -1655,6 +1655,14 @@ static int ingestion_init(const harp_ingestion_module *module, coda_product *pro
     info->definition = NULL;
     info->product = product;
 
+    if (coda_get_product_version(product, &info->product_version) != 0)
+    {
+        ingestion_done(info);
+        return -1;
+    }
+    /* the lower 3 digits provide the template version number */
+    info->product_version = info->product_version % 1000;
+
     if (get_product_definition(module, info->product, definition) != 0)
     {
         ingestion_done(info);
@@ -1666,19 +1674,15 @@ static int ingestion_init(const harp_ingestion_module *module, coda_product *pro
     {
         case uvvis_doas_directsun:
             info->gas = get_gas_from_string(&info->definition->name[38]);
-            info->product_version = info->definition->name[36] - '0';
             break;
         case uvvis_doas_offaxis:
             info->gas = get_gas_from_string(&info->definition->name[36]);
-            info->product_version = info->definition->name[34] - '0';
             break;
         case uvvis_doas_zenith:
             info->gas = get_gas_from_string(&info->definition->name[35]);
-            info->product_version = info->definition->name[33] - '0';
             break;
-        case uvvis_doas_aerosol:
+        case uvvis_doas_offaxis_aerosol:
             info->gas = -1;
-            info->product_version = info->definition->name[38] - '0';
             break;
     }
 
@@ -1718,13 +1722,6 @@ static int ingestion_init(const harp_ingestion_module *module, coda_product *pro
     return 0;
 }
 
-static int verify_template(const harp_ingestion_module *module, coda_product *product)
-{
-    harp_product_definition *definition;
-
-    return get_product_definition(module, product, &definition);
-}
-
 static int init_product_definition(harp_ingestion_module *module, uvvis_doas_gas gas,
                                    uvvis_doas_type template_type, int version)
 {
@@ -1759,7 +1756,7 @@ static int init_product_definition(harp_ingestion_module *module, uvvis_doas_gas
             snprintf(product_description, MAX_NAME_LENGTH,
                      "GEOMS template for UVVIS-DOAS DOAS measurements v%03d - %s", version, geoms_gas_name[gas]);
             break;
-        case uvvis_doas_aerosol:
+        case uvvis_doas_offaxis_aerosol:
             snprintf(product_name, MAX_NAME_LENGTH, "GEOMS-TE-UVVIS-DOAS-OFFAXIS-AEROSOL-%03d", version);
             snprintf(product_description, MAX_NAME_LENGTH,
                      "GEOMS template for UVVIS-DOAS MAXDOAS measurements v%03d - Aerosol", version);
@@ -1831,7 +1828,7 @@ static int init_product_definition(harp_ingestion_module *module, uvvis_doas_gas
                                                                      NULL, read_instrument_altitude);
     harp_variable_definition_add_mapping(variable_definition, NULL, NULL, "/ALTITUDE.INSTRUMENT", NULL);
 
-    if (template_type == uvvis_doas_aerosol)
+    if (template_type == uvvis_doas_offaxis_aerosol)
     {
         /* wavelength */
         dimension_type[0] = harp_dimension_spectral;
@@ -1953,7 +1950,7 @@ static int init_product_definition(harp_ingestion_module *module, uvvis_doas_gas
         harp_variable_definition_add_mapping(variable_definition, NULL, NULL, "/CLOUD.CONDITIONS", NULL);
     }
 
-    if (template_type != uvvis_doas_aerosol)
+    if (template_type != uvvis_doas_offaxis_aerosol)
     {
         /* stratospheric_aerosol_optical_depth */
         description = "total stratospheric aerosol optical depth user for the retrieval ";
@@ -2392,7 +2389,7 @@ static int init_product_definition(harp_ingestion_module *module, uvvis_doas_gas
              "Pmolec cm-2", version >= 7 ? NULL : exclude_vmr_zenith, read_partial_column_zenith_apriori);
         harp_variable_definition_add_mapping(variable_definition, NULL, NULL, gas_mapping_path, NULL);
     }
-    else if (template_type == uvvis_doas_aerosol)
+    else if (template_type == uvvis_doas_offaxis_aerosol)
     {
         const char *mapping_path;
 
@@ -2498,9 +2495,10 @@ int harp_ingestion_module_geoms_uvvis_doas_init()
     harp_ingestion_module *module;
     int i;
 
-    module = harp_ingestion_register_module_coda("GEOMS-TE-UVVIS-DOAS-DIRECTSUN", "GEOMS", NULL, NULL,
-                                                 "GEOMS template for UVVIS-DOAS direct sun measurements",
-                                                 verify_template, ingestion_init, ingestion_done);
+    module = harp_ingestion_register_module_coda("GEOMS-TE-UVVIS-DOAS-DIRECTSUN", "GEOMS", "GEOMS",
+                                                 "UVVIS_DOAS_DIRECTSUN_GAS",
+                                                 "GEOMS template for UVVIS-DOAS direct sun measurements", NULL,
+                                                 ingestion_init, ingestion_done);
 
     harp_ingestion_register_option(module, "AOD", "ingest the modeled or measured aerosol optical depth properties", 2,
                                    aod_option_values);
@@ -2513,16 +2511,10 @@ int harp_ingestion_module_geoms_uvvis_doas_init()
         init_product_definition(module, i, uvvis_doas_directsun, 7);
     }
 
-    module = harp_ingestion_register_module_coda("GEOMS-TE-UVVIS-DOAS-OFFAXIS", "GEOMS", NULL, NULL,
-                                                 "GEOMS template for UVVIS-DOAS off-axis measurements", verify_template,
+    module = harp_ingestion_register_module_coda("GEOMS-TE-UVVIS-DOAS-OFFAXIS", "GEOMS", "GEOMS",
+                                                 "UVVIS_DOAS_OFFAXIS_GAS",
+                                                 "GEOMS template for UVVIS-DOAS off-axis gas measurements", NULL,
                                                  ingestion_init, ingestion_done);
-
-
-    harp_ingestion_register_option(module, "AOD", "ingest the modeled or measured aerosol optical depth properties", 2,
-                                   aod_option_values);
-
-    init_product_definition(module, -1, uvvis_doas_aerosol, 4);
-    init_product_definition(module, -1, uvvis_doas_aerosol, 6);
 
     for (i = 0; i < num_uvvis_doas_gas; i++)
     {
@@ -2531,8 +2523,20 @@ int harp_ingestion_module_geoms_uvvis_doas_init()
         init_product_definition(module, i, uvvis_doas_offaxis, 7);
     }
 
-    module = harp_ingestion_register_module_coda("GEOMS-TE-UVVIS-DOAS-ZENITH", "GEOMS", NULL, NULL,
-                                                 "GEOMS template for UVVIS-DOAS zenith measurements", verify_template,
+    module = harp_ingestion_register_module_coda("GEOMS-TE-UVVIS-DOAS-OFFAXIS-AEROSOL", "GEOMS", "GEOMS",
+                                                 "UVVIS_DOAS_OFFAXIS_AEROSOL",
+                                                 "GEOMS template for UVVIS-DOAS off-axis aerosol measurements", NULL,
+                                                 ingestion_init, ingestion_done);
+
+    harp_ingestion_register_option(module, "AOD", "ingest the modeled or measured aerosol optical depth properties", 2,
+                                   aod_option_values);
+
+    init_product_definition(module, -1, uvvis_doas_offaxis_aerosol, 4);
+    init_product_definition(module, -1, uvvis_doas_offaxis_aerosol, 6);
+
+    module = harp_ingestion_register_module_coda("GEOMS-TE-UVVIS-DOAS-ZENITH", "GEOMS", "GEOMS",
+                                                 "UVVIS_DOAS_ZENITH_GAS",
+                                                 "GEOMS template for UVVIS-DOAS zenith measurements", NULL,
                                                  ingestion_init, ingestion_done);
 
     harp_ingestion_register_option(module, "AOD", "ingest the modeled or measured aerosol optical depth properties", 2,

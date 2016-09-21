@@ -334,13 +334,6 @@ static int ingestion_init(const harp_ingestion_module *module, coda_product *pro
     return 0;
 }
 
-static int verify_template(const harp_ingestion_module *module, coda_product *product)
-{
-    harp_product_definition *definition;
-
-    return get_product_definition(module, product, &definition);
-}
-
 int harp_ingestion_module_geoms_lidar_init(void)
 {
     harp_ingestion_module *module;
@@ -350,7 +343,7 @@ int harp_ingestion_module_geoms_lidar_init(void)
     const char *description;
 
     description = "GEOMS template for LIDAR ozone";
-    module = harp_ingestion_register_module_coda("GEOMS-TE-LIDAR-O3", "GEOMS", NULL, NULL, description, verify_template,
+    module = harp_ingestion_register_module_coda("GEOMS-TE-LIDAR-O3", "GEOMS", "GEOMS", "LIDAR_O3", description, NULL,
                                                  ingestion_init, ingestion_done);
 
     description = "GEOMS template for LIDAR ozone v003";

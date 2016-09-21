@@ -1170,13 +1170,6 @@ static int ingestion_init(const harp_ingestion_module *module, coda_product *pro
     return 0;
 }
 
-static int verify_template(const harp_ingestion_module *module, coda_product *product)
-{
-    harp_product_definition *definition;
-
-    return get_product_definition(module, product, &definition);
-}
-
 static int init_product_definition(harp_ingestion_module *module, ftir_gas gas, int version)
 {
     harp_variable_definition *variable_definition;
@@ -1614,8 +1607,8 @@ int harp_ingestion_module_geoms_ftir_init(void)
     harp_ingestion_module *module;
     int i;
 
-    module = harp_ingestion_register_module_coda("GEOMS-TE-FTIR", "GEOMS", NULL, NULL, "GEOMS template for FTIR",
-                                                 verify_template, ingestion_init, ingestion_done);
+    module = harp_ingestion_register_module_coda("GEOMS-TE-FTIR", "GEOMS", "GEOMS", "FTIR", "GEOMS template for FTIR",
+                                                 NULL, ingestion_init, ingestion_done);
 
     for (i = 0; i < num_ftir_gas; i++)
     {
