@@ -2536,8 +2536,7 @@ int harp_ingestion_module_ecmwf_grib_init(void)
     const char *path;
 
     module = harp_ingestion_register_module_coda("ECMWF_GRIB", "ECMWF GRIB", "ECMWF", "GRIB",
-                                                 "ECMWF model data in GRIB format", NULL, ingestion_init,
-                                                 ingestion_done);
+                                                 "ECMWF model data in GRIB format", ingestion_init, ingestion_done);
 
     /* option to ignore the time value of the geopotential parameter */
     description = "ignore time for the geopotential parameter";

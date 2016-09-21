@@ -477,8 +477,7 @@ static void register_ch4_nadir_product(void)
     const char *path;
 
     module = harp_ingestion_register_module_coda("TES_L2_CH4_Nadir", "TES", "AURA_TES", "TL2CH4N",
-                                                 "TES CH4 nadir profile", NULL, ingestion_init_ch4_nadir,
-                                                 ingestion_done);
+                                                 "TES CH4 nadir profile", ingestion_init_ch4_nadir, ingestion_done);
 
     /* CH4_Nadir product */
     product_definition = harp_ingestion_register_product(module, "TES_L2_CH4_Nadir", NULL, read_dimensions);
@@ -529,7 +528,7 @@ static void register_co_nadir_product(void)
     const char *path;
 
     module = harp_ingestion_register_module_coda("TES_L2_CO_Nadir", "TES", "AURA_TES", "TL2CON", "TES CO nadir profile",
-                                                 NULL, ingestion_init_co_nadir, ingestion_done);
+                                                 ingestion_init_co_nadir, ingestion_done);
 
     /* CO_Nadir product */
     product_definition = harp_ingestion_register_product(module, "TES_L2_CO_Nadir", NULL, read_dimensions);
@@ -580,8 +579,7 @@ static void register_h2o_nadir_product(void)
     const char *path;
 
     module = harp_ingestion_register_module_coda("TES_L2_H2O_Nadir", "TES", "AURA_TES", "TL2H2ON",
-                                                 "TES H2O nadir profile", NULL, ingestion_init_h2o_nadir,
-                                                 ingestion_done);
+                                                 "TES H2O nadir profile", ingestion_init_h2o_nadir, ingestion_done);
 
     /* H2O_Nadir product */
     product_definition = harp_ingestion_register_product(module, "TES_L2_H2O_Nadir", NULL, read_dimensions);
@@ -632,7 +630,7 @@ static void register_o3_nadir_product(void)
     const char *path;
 
     module = harp_ingestion_register_module_coda("TES_L2_O3_Nadir", "TES", "AURA_TES", "TL2O3N", "TES O3 nadir profile",
-                                                 NULL, ingestion_init_o3_nadir, ingestion_done);
+                                                 ingestion_init_o3_nadir, ingestion_done);
 
     /* O3_Nadir product */
     product_definition = harp_ingestion_register_product(module, "TES_L2_O3_Nadir", NULL, read_dimensions);
@@ -683,7 +681,7 @@ static void register_tatm_nadir_product(void)
     const char *path;
 
     module = harp_ingestion_register_module_coda("TES_L2_Temperature_Nadir", "TES", "AURA_TES", "TL2ATMTN",
-                                                 "TES atmospheric temperature nadir profile", NULL,
+                                                 "TES atmospheric temperature nadir profile",
                                                  ingestion_init_tatm_nadir, ingestion_done);
 
     /* Temperature_Nadir product */

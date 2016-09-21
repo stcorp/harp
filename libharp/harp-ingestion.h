@@ -111,8 +111,7 @@ struct harp_ingestion_module_struct
     int num_option_definitions;
     harp_ingestion_option_definition **option_definition;
 
-    int (*verify_product_type_coda) (const harp_ingestion_module *module, coda_product *product);
-    int (*verify_product_type_custom) (const harp_ingestion_module *module, const char *filename);
+    int (*verify_product_type) (const harp_ingestion_module *module, const char *filename);
     int (*ingestion_init_coda) (const harp_ingestion_module *module, coda_product *product,
                                 const harp_ingestion_options *options, harp_product_definition **definition,
                                 void **user_data);
@@ -182,7 +181,6 @@ harp_ingestion_module_register *harp_ingestion_get_module_register(void);
 harp_ingestion_module *harp_ingestion_register_module_coda
     (const char *name, const char *product_group, const char *product_class, const char *product_type,
      const char *description,
-     int (*verify_product_type) (const harp_ingestion_module *module, coda_product *product),
      int (*ingestion_init) (const harp_ingestion_module *module, coda_product *product,
                             const harp_ingestion_options *options, harp_product_definition **definition,
                             void **user_data), void (*ingestion_done) (void *user_data));

@@ -462,13 +462,10 @@ static void ingestion_option_definition_delete(harp_ingestion_option_definition 
 
 static int ingestion_module_new(const char *name, const char *product_group, const char *product_class,
                                 const char *product_type, const char *description,
-                                int (*verify_product_type_coda) (const harp_ingestion_module *module,
-                                                                 coda_product *product),
                                 int (*ingestion_init_coda) (const harp_ingestion_module *module, coda_product *product,
                                                             const harp_ingestion_options *options,
                                                             harp_product_definition **definition, void **user_data),
-                                int (*verify_product_type_custom) (const harp_ingestion_module *module,
-                                                                   const char *filename),
+                                int (*verify_product_type) (const harp_ingestion_module *module, const char *filename),
                                 int (*ingestion_init_custom) (const harp_ingestion_module *module, const char *filename,
                                                               const harp_ingestion_options *options,
                                                               harp_product_definition **definition, void **user_data),
@@ -478,9 +475,10 @@ static int ingestion_module_new(const char *name, const char *product_group, con
 
     assert(name != NULL);
     assert(product_group != NULL);
-    assert((product_class != NULL && product_type != NULL) !=
-           ((verify_product_type_coda != NULL) != (verify_product_type_custom != NULL)));
     assert((ingestion_init_coda != NULL) != (ingestion_init_custom != NULL));
+    assert((ingestion_init_coda != NULL) == (product_class != NULL && product_type != NULL));
+    assert((product_class != NULL) == (product_type != NULL));
+    assert((ingestion_init_custom != NULL) == (verify_product_type != NULL));
     assert(ingestion_done != NULL);
 
     module = (harp_ingestion_module *)malloc(sizeof(harp_ingestion_module));
@@ -517,9 +515,8 @@ static int ingestion_module_new(const char *name, const char *product_group, con
     module->product_definition = NULL;
     module->num_option_definitions = 0;
     module->option_definition = NULL;
-    module->verify_product_type_coda = verify_product_type_coda;
     module->ingestion_init_coda = ingestion_init_coda;
-    module->verify_product_type_custom = verify_product_type_custom;
+    module->verify_product_type = verify_product_type;
     module->ingestion_init_custom = ingestion_init_custom;
     module->ingestion_done = ingestion_done;
 
@@ -696,8 +693,6 @@ static int read_index(void *user_data, long index, harp_array data)
 harp_ingestion_module *harp_ingestion_register_module_coda(const char *name, const char *product_group,
                                                            const char *product_class, const char *product_type,
                                                            const char *description,
-                                                           int (*verify_product_type) (const harp_ingestion_module
-                                                                                       *module, coda_product *product),
                                                            int (*ingestion_init) (const harp_ingestion_module *module,
                                                                                   coda_product *product,
                                                                                   const harp_ingestion_options *options,
@@ -707,8 +702,8 @@ harp_ingestion_module *harp_ingestion_register_module_coda(const char *name, con
 {
     harp_ingestion_module *module;
 
-    if (ingestion_module_new(name, product_group, product_class, product_type, description, verify_product_type,
-                             ingestion_init, NULL, NULL, ingestion_done, &module) != 0)
+    if (ingestion_module_new(name, product_group, product_class, product_type, description, ingestion_init, NULL, NULL,
+                             ingestion_done, &module) != 0)
     {
         assert(0);
     }
@@ -735,8 +730,8 @@ harp_ingestion_module *harp_ingestion_register_module_custom(const char *name, c
 {
     harp_ingestion_module *module;
 
-    if (ingestion_module_new(name, product_group, NULL, NULL, description, NULL, NULL, verify_product_type,
-                             ingestion_init, ingestion_done, &module) != 0)
+    if (ingestion_module_new(name, product_group, NULL, NULL, description, NULL, verify_product_type, ingestion_init,
+                             ingestion_done, &module) != 0)
     {
         assert(0);
     }
@@ -1142,26 +1137,6 @@ int harp_ingestion_find_module(const char *filename, harp_ingestion_module **mod
             return -1;
         }
 
-        /* Could not identify product based on product_class and product_type => try verify_product_type_coda(). */
-        for (i = 0; i < module_register->num_ingestion_modules; i++)
-        {
-            harp_ingestion_module *ingestion_module;
-
-            ingestion_module = module_register->ingestion_module[i];
-            if (ingestion_module->verify_product_type_coda == NULL)
-            {
-                continue;
-            }
-            if (ingestion_module->verify_product_type_coda(ingestion_module, product) != 0)
-            {
-                continue;
-            }
-
-            *module = ingestion_module;
-            *cproduct = product;
-            return 0;
-        }
-
         coda_close(product);
     }
     else
@@ -1172,17 +1147,17 @@ int harp_ingestion_find_module(const char *filename, harp_ingestion_module **mod
             return -1;
         }
 
-        /* Could not identify product using CODA => try verify_product_type_custom(). */
+        /* Could not identify product using CODA => try verify_product_type() for custom modules */
         for (i = 0; i < module_register->num_ingestion_modules; i++)
         {
             harp_ingestion_module *ingestion_module;
 
             ingestion_module = module_register->ingestion_module[i];
-            if (ingestion_module->verify_product_type_custom == NULL)
+            if (ingestion_module->verify_product_type == NULL)
             {
                 continue;
             }
-            if (ingestion_module->verify_product_type_custom(ingestion_module, filename) != 0)
+            if (ingestion_module->verify_product_type(ingestion_module, filename) != 0)
             {
                 continue;
             }

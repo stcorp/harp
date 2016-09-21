@@ -343,7 +343,7 @@ int harp_ingestion_module_geoms_lidar_init(void)
     const char *description;
 
     description = "GEOMS template for LIDAR ozone";
-    module = harp_ingestion_register_module_coda("GEOMS-TE-LIDAR-O3", "GEOMS", "GEOMS", "LIDAR_O3", description, NULL,
+    module = harp_ingestion_register_module_coda("GEOMS-TE-LIDAR-O3", "GEOMS", "GEOMS", "LIDAR_O3", description,
                                                  ingestion_init, ingestion_done);
 
     description = "GEOMS template for LIDAR ozone v003";
