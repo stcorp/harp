@@ -1,0 +1,48 @@
+<?xml version="1.0"?>
+<cd:ProductClass name="O3MSAF" last-modified="2016-09-21" xmlns:cd="http://www.stcorp.nl/coda/definition/2008/07">
+  <cd:Description>Products from EUMETSAT SAF for Atmospheric Composition and UV Radiation</cd:Description>
+  <cd:ProductType name="O3MNTO">
+    <cd:Description>GOME2 near-real-time total column trace gas product</cd:Description>
+    <cd:ProductDefinition id="O3MNTO" format="hdf5" version="0">
+      <cd:Description>The format definition for this product is taken from the HDF5 file itself.</cd:Description>
+      <cd:DetectionRule>
+        <cd:MatchExpression path="/META_DATA">str(.@InstrumentID[0]) == "GOME"</cd:MatchExpression>
+        <cd:MatchExpression path="/META_DATA">str(.@ProcessingLevel[0]) == "02"</cd:MatchExpression>
+        <cd:MatchExpression path="/META_DATA">str(.@ProductType[0]) == "O3MNTO"</cd:MatchExpression>
+      </cd:DetectionRule>
+    </cd:ProductDefinition>
+  </cd:ProductType>
+  <cd:ProductType name="O3MOTO">
+    <cd:Description>GOME2 offline total column trace gas product</cd:Description>
+    <cd:ProductDefinition id="O3MOTO" format="hdf5" version="0">
+      <cd:Description>The format definition for this product is taken from the HDF5 file itself.</cd:Description>
+      <cd:DetectionRule>
+        <cd:MatchExpression path="/META_DATA">str(.@InstrumentID[0]) == "GOME"</cd:MatchExpression>
+        <cd:MatchExpression path="/META_DATA">str(.@ProcessingLevel[0]) == "02"</cd:MatchExpression>
+        <cd:MatchExpression path="/META_DATA">str(.@ProductType[0]) == "O3MOTO"</cd:MatchExpression>
+      </cd:DetectionRule>
+    </cd:ProductDefinition>
+  </cd:ProductType>
+  <cd:ProductType name="ERSNTO">
+    <cd:Description>GOME near-real-time total column trace gas product</cd:Description>
+    <cd:ProductDefinition id="ERSNTO" format="hdf5" version="0">
+      <cd:Description>The format definition for this product is taken from the HDF5 file itself.</cd:Description>
+      <cd:DetectionRule>
+        <cd:MatchExpression path="/META_DATA">str(.@InstrumentID[0]) == "GOME"</cd:MatchExpression>
+        <cd:MatchExpression path="/META_DATA">str(.@ProcessingLevel[0]) == "02"</cd:MatchExpression>
+        <cd:MatchExpression path="/META_DATA">str(.@ProductType[0]) == "ERSNTO"</cd:MatchExpression>
+      </cd:DetectionRule>
+    </cd:ProductDefinition>
+  </cd:ProductType>
+  <cd:ProductType name="ERSOTO">
+    <cd:Description>GOME offline total column trace gas product</cd:Description>
+    <cd:ProductDefinition id="ERSOTO" format="hdf5" version="0">
+      <cd:Description>The format definition for this product is taken from the HDF5 file itself.</cd:Description>
+      <cd:DetectionRule>
+        <cd:MatchExpression path="/META_DATA">str(.@InstrumentID[0]) == "GOME"</cd:MatchExpression>
+        <cd:MatchExpression path="/META_DATA">str(.@ProcessingLevel[0]) == "02"</cd:MatchExpression>
+        <cd:MatchExpression path="/META_DATA">str(.@ProductType[0]) == "ERSOTO"</cd:MatchExpression>
+      </cd:DetectionRule>
+    </cd:ProductDefinition>
+  </cd:ProductType>
+</cd:ProductClass>

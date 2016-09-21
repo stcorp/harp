@@ -1225,91 +1225,6 @@ static int ingestion_init(const harp_ingestion_module *module, coda_product *pro
     return 0;
 }
 
-static int verify_product_type(coda_product *product, const char *product_type)
-{
-    coda_cursor cursor;
-    char buffer[100];
-
-    if (coda_cursor_set_product(&cursor, product) != 0)
-    {
-        harp_set_error(HARP_ERROR_UNSUPPORTED_PRODUCT, NULL);
-        return -1;
-    }
-    if (coda_cursor_goto(&cursor, "/META_DATA@InstrumentID[0]") != 0)
-    {
-        harp_set_error(HARP_ERROR_UNSUPPORTED_PRODUCT, NULL);
-        return -1;
-    }
-    if (coda_cursor_read_string(&cursor, buffer, 100) != 0)
-    {
-        harp_set_error(HARP_ERROR_UNSUPPORTED_PRODUCT, NULL);
-        return -1;
-    }
-    if (strcmp(buffer, "GOME") != 0)
-    {
-        harp_set_error(HARP_ERROR_UNSUPPORTED_PRODUCT, NULL);
-        return -1;
-    }
-
-    if (coda_cursor_goto(&cursor, "/META_DATA@ProcessingLevel[0]") != 0)
-    {
-        harp_set_error(HARP_ERROR_UNSUPPORTED_PRODUCT, NULL);
-        return -1;
-    }
-    if (coda_cursor_read_string(&cursor, buffer, 100) != 0)
-    {
-        harp_set_error(HARP_ERROR_UNSUPPORTED_PRODUCT, NULL);
-        return -1;
-    }
-    if (strcmp(buffer, "02") != 0)
-    {
-        harp_set_error(HARP_ERROR_UNSUPPORTED_PRODUCT, NULL);
-        return -1;
-    }
-
-    if (coda_cursor_goto(&cursor, "/META_DATA@ProductType[0]") != 0)
-    {
-        harp_set_error(HARP_ERROR_UNSUPPORTED_PRODUCT, NULL);
-        return -1;
-    }
-    if (coda_cursor_read_string(&cursor, buffer, 100) != 0)
-    {
-        harp_set_error(HARP_ERROR_UNSUPPORTED_PRODUCT, NULL);
-        return -1;
-    }
-    if (strcmp(buffer, product_type) != 0)
-    {
-        harp_set_error(HARP_ERROR_UNSUPPORTED_PRODUCT, NULL);
-        return -1;
-    }
-
-    return 0;
-}
-
-static int verify_o3mnto(const harp_ingestion_module *module, coda_product *product)
-{
-    (void)module;
-    return verify_product_type(product, "O3MNTO");
-}
-
-static int verify_o3moto(const harp_ingestion_module *module, coda_product *product)
-{
-    (void)module;
-    return verify_product_type(product, "O3MOTO");
-}
-
-static int verify_ersnto(const harp_ingestion_module *module, coda_product *product)
-{
-    (void)module;
-    return verify_product_type(product, "ERSNTO");
-}
-
-static int verify_ersoto(const harp_ingestion_module *module, coda_product *product)
-{
-    (void)module;
-    return verify_product_type(product, "ERSOTO");
-}
-
 static int dataset_unavailable(ingest_info *info, const char *path)
 {
     coda_cursor cursor;
@@ -2231,10 +2146,9 @@ static void register_o3mnto_product(void)
     harp_ingestion_module *module;
     harp_product_definition *product_definition;
 
-    module =
-        harp_ingestion_register_module_coda("GOME2_L2_O3MNTO", "GOME-2", NULL, NULL,
-                                            "GOME2 near-real-time total column trace gas product", verify_o3mnto,
-                                            ingestion_init, ingestion_done);
+    module = harp_ingestion_register_module_coda("GOME2_L2_O3MNTO", "GOME-2", "O3MSAF", "O3MNTO",
+                                                 "GOME2 near-real-time total column trace gas product", NULL,
+                                                 ingestion_init, ingestion_done);
     register_common_options(module);
 
     /* O3MNTO product */
@@ -2248,10 +2162,9 @@ static void register_o3moto_product(void)
     harp_ingestion_module *module;
     harp_product_definition *product_definition;
 
-    module =
-        harp_ingestion_register_module_coda("GOME2_L2_O3MOTO", "GOME-2", NULL, NULL,
-                                            "GOME2 offline total column trace gas product", verify_o3moto,
-                                            ingestion_init, ingestion_done);
+    module = harp_ingestion_register_module_coda("GOME2_L2_O3MOTO", "GOME-2", "O3MSAF", "O3MOTO",
+                                                 "GOME2 offline total column trace gas product", NULL, ingestion_init,
+                                                 ingestion_done);
     register_common_options(module);
 
     /* O3MOTO product */
@@ -2265,10 +2178,9 @@ static void register_ersnto_product(void)
     harp_ingestion_module *module;
     harp_product_definition *product_definition;
 
-    module =
-        harp_ingestion_register_module_coda("GOME_L2_ERSNTO", "GOME", NULL, NULL,
-                                            "GOME near-real-time total column trace gas product", verify_ersnto,
-                                            ingestion_init, ingestion_done);
+    module = harp_ingestion_register_module_coda("GOME_L2_ERSNTO", "GOME", "O3MSAF", "ERSNTO",
+                                                 "GOME near-real-time total column trace gas product", NULL,
+                                                 ingestion_init, ingestion_done);
     register_common_options(module);
 
     /* ERSNTO product */
@@ -2282,10 +2194,9 @@ static void register_ersoto_product(void)
     harp_ingestion_module *module;
     harp_product_definition *product_definition;
 
-    module =
-        harp_ingestion_register_module_coda("GOME_L2_ERSOTO", "GOME", NULL, NULL,
-                                            "GOME offline total column trace gas product", verify_ersoto,
-                                            ingestion_init, ingestion_done);
+    module = harp_ingestion_register_module_coda("GOME_L2_ERSOTO", "GOME", "O3MSAF", "ERSOTO",
+                                                 "GOME offline total column trace gas product", NULL, ingestion_init,
+                                                 ingestion_done);
     register_common_options(module);
 
     /* ERSOTO product */
