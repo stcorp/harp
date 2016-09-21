@@ -557,6 +557,7 @@ add_codadef(ENVISAT_SCIAMACHY)
 add_codadef(EPS)
 add_codadef(ERS_GOME)
 add_codadef(ESACCI_OZONE)
+add_codadef(GOSAT)
 add_codadef(O3MSAF)
 add_codadef(Sentinel5P)
 

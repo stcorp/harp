@@ -467,100 +467,6 @@ static int ingestion_init(const harp_ingestion_module *module, coda_product *pro
     return 0;
 }
 
-static int verify_product_type(const harp_ingestion_module *module, coda_product *product)
-{
-    coda_cursor cursor;
-    int8_t buffer[100];
-    long string_length;
-
-    (void)module;
-
-    if (coda_cursor_set_product(&cursor, product) != 0)
-    {
-        harp_set_error(HARP_ERROR_UNSUPPORTED_PRODUCT, NULL);
-        return -1;
-    }
-    if (coda_cursor_goto(&cursor, "Global/metadata/satelliteName") != 0)
-    {
-        harp_set_error(HARP_ERROR_UNSUPPORTED_PRODUCT, NULL);
-        return -1;
-    }
-    if (coda_cursor_get_num_elements(&cursor, &string_length) != 0)
-    {
-        harp_set_error(HARP_ERROR_UNSUPPORTED_PRODUCT, NULL);
-        return -1;
-    }
-    if (string_length != 5)
-    {
-        harp_set_error(HARP_ERROR_UNSUPPORTED_PRODUCT, NULL);
-        return -1;
-    }
-    if (coda_cursor_read_int8_array(&cursor, buffer, coda_array_ordering_c) != 0)
-    {
-        harp_set_error(HARP_ERROR_UNSUPPORTED_PRODUCT, NULL);
-        return -1;
-    }
-    if (memcmp(buffer, "GOSAT", 5) != 0)
-    {
-        harp_set_error(HARP_ERROR_UNSUPPORTED_PRODUCT, NULL);
-        return -1;
-    }
-
-    if (coda_cursor_goto(&cursor, "../sensorName") != 0)
-    {
-        harp_set_error(HARP_ERROR_UNSUPPORTED_PRODUCT, NULL);
-        return -1;
-    }
-    if (coda_cursor_get_num_elements(&cursor, &string_length) != 0)
-    {
-        harp_set_error(HARP_ERROR_UNSUPPORTED_PRODUCT, NULL);
-        return -1;
-    }
-    if (string_length != 9)
-    {
-        harp_set_error(HARP_ERROR_UNSUPPORTED_PRODUCT, NULL);
-        return -1;
-    }
-    if (coda_cursor_read_int8_array(&cursor, buffer, coda_array_ordering_c) != 0)
-    {
-        harp_set_error(HARP_ERROR_UNSUPPORTED_PRODUCT, NULL);
-        return -1;
-    }
-    if (memcmp(buffer, "TANSO-FTS", 9) != 0)
-    {
-        harp_set_error(HARP_ERROR_UNSUPPORTED_PRODUCT, NULL);
-        return -1;
-    }
-
-    if (coda_cursor_goto(&cursor, "../operationLevel") != 0)
-    {
-        harp_set_error(HARP_ERROR_UNSUPPORTED_PRODUCT, NULL);
-        return -1;
-    }
-    if (coda_cursor_get_num_elements(&cursor, &string_length) != 0)
-    {
-        harp_set_error(HARP_ERROR_UNSUPPORTED_PRODUCT, NULL);
-        return -1;
-    }
-    if (string_length != 3)
-    {
-        harp_set_error(HARP_ERROR_UNSUPPORTED_PRODUCT, NULL);
-        return -1;
-    }
-    if (coda_cursor_read_int8_array(&cursor, buffer, coda_array_ordering_c) != 0)
-    {
-        harp_set_error(HARP_ERROR_UNSUPPORTED_PRODUCT, NULL);
-        return -1;
-    }
-    if (memcmp(buffer, "L1B", 3) != 0)
-    {
-        harp_set_error(HARP_ERROR_UNSUPPORTED_PRODUCT, NULL);
-        return -1;
-    }
-
-    return 0;
-}
-
 static harp_product_definition *register_radiance_product(harp_ingestion_module *module, int band_id)
 {
     harp_product_definition *product_definition;
@@ -707,9 +613,9 @@ int harp_ingestion_module_gosat_fts_l1b_init(void)
     harp_ingestion_module *module;
     int i;
 
-    module = harp_ingestion_register_module_coda("GOSAT_FTS_L1b", "GOSAT FTS", NULL, NULL,
-                                                 "GOSAT FTS Level 1b radiance spectra", verify_product_type,
-                                                 ingestion_init, ingestion_done);
+    module = harp_ingestion_register_module_coda("GOSAT_FTS_L1b", "GOSAT FTS", "GOSAT", "L1B_FTS",
+                                                 "GOSAT FTS Level 1b radiance spectra", NULL, ingestion_init,
+                                                 ingestion_done);
     harp_ingestion_register_option(module, "band", "spectral band to ingest", ARRAY_SIZE(band_option_values),
                                    band_option_values);
 

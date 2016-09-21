@@ -1,0 +1,44 @@
+<?xml version="1.0"?>
+<cd:ProductClass name="GOSAT" last-modified="2016-09-21" xmlns:cd="http://www.stcorp.nl/coda/definition/2008/07">
+  <cd:Description>GOSAT products</cd:Description>
+  <cd:ProductType name="L1B_FTS">
+    <cd:Description>FTS L1B data</cd:Description>
+    <cd:ProductDefinition id="L1B_FTS" format="hdf5" version="0">
+      <cd:Description>The format definition for this product is taken from the HDF5 file itself.</cd:Description>
+      <cd:DetectionRule>
+        <cd:MatchExpression path="/Global/metadata"><![CDATA[at(./satelliteName,int(.[0]) == 71 && int(.[1]) == 79 && int(.[2]) == 83 && int(.[3]) == 65 && int(.[4]) == 84)]]></cd:MatchExpression>
+        <cd:MatchExpression path="/Global/metadata"><![CDATA[at(./sensorName,int(.[0]) == 84 && int(.[1]) == 65 && int(.[2]) == 78 && int(.[3]) == 83 && int(.[4]) == 79 && int(.[5]) == 45 && int(.[6]) == 70 && int(.[7]) == 84 && int(.[8]) == 83)]]></cd:MatchExpression>
+        <cd:MatchExpression path="/Global/metadata"><![CDATA[at(./operationLevel,int(.[0]) == 76 && int(.[1]) == 49 && int(.[2]) == 66)]]></cd:MatchExpression>
+      </cd:DetectionRule>
+      <cd:DetectionRule>
+        <cd:MatchExpression path="/globalAttribute/extensionMetadata">str(./satelliteName[0]) == "GOSAT"</cd:MatchExpression>
+        <cd:MatchExpression path="/globalAttribute/extensionMetadata">str(./sensorName[0]) == "TANSO-FTS"</cd:MatchExpression>
+        <cd:MatchExpression path="/globalAttribute/extensionMetadata">str(./processingLevel[0]) == "L1B"</cd:MatchExpression>
+      </cd:DetectionRule>
+    </cd:ProductDefinition>
+  </cd:ProductType>
+  <cd:ProductType name="L2_FTS_C01S">
+    <cd:Description>FTS L2 CO2 column amount (SWIR)</cd:Description>
+    <cd:ProductDefinition id="L2_FTS_C01S" format="hdf5" version="0">
+      <cd:Description>The format definition for this product is taken from the HDF5 file itself.</cd:Description>
+      <cd:DetectionRule>
+        <cd:MatchExpression path="/Global/metadata">str(./satelliteName[0]) == "GOSAT"</cd:MatchExpression>
+        <cd:MatchExpression path="/Global/metadata">str(./sensorName[0]) == "TANSO-FTS"</cd:MatchExpression>
+        <cd:MatchExpression path="/Global/metadata">str(./operationLevel[0]) == "L2"</cd:MatchExpression>
+        <cd:MatchExpression path="/Global/metadata">str(./productCode[0]) == "C01S"</cd:MatchExpression>
+      </cd:DetectionRule>
+    </cd:ProductDefinition>
+  </cd:ProductType>
+  <cd:ProductType name="L2_FTS_C02S">
+    <cd:Description>FTS L2 CH4 column amount (SWIR)</cd:Description>
+    <cd:ProductDefinition id="L2_FTS_C02S" format="hdf5" version="0">
+      <cd:Description>The format definition for this product is taken from the HDF5 file itself.</cd:Description>
+      <cd:DetectionRule>
+        <cd:MatchExpression path="/Global/metadata">str(./satelliteName[0]) == "GOSAT"</cd:MatchExpression>
+        <cd:MatchExpression path="/Global/metadata">str(./sensorName[0]) == "TANSO-FTS"</cd:MatchExpression>
+        <cd:MatchExpression path="/Global/metadata">str(./operationLevel[0]) == "L2"</cd:MatchExpression>
+        <cd:MatchExpression path="/Global/metadata">str(./productCode[0]) == "C02S"</cd:MatchExpression>
+      </cd:DetectionRule>
+    </cd:ProductDefinition>
+  </cd:ProductType>
+</cd:ProductClass>

@@ -534,138 +534,6 @@ static int ingestion_init(const harp_ingestion_module *module, coda_product *pro
     return 0;
 }
 
-static int verify_product_type(coda_product *product, const char *product_code)
-{
-    coda_cursor cursor;
-    char buffer[100];
-    long string_length;
-
-    if (coda_cursor_set_product(&cursor, product) != 0)
-    {
-        harp_set_error(HARP_ERROR_UNSUPPORTED_PRODUCT, NULL);
-        return -1;
-    }
-    if (coda_cursor_goto(&cursor, "Global/metadata/satelliteName[0]") != 0)
-    {
-        harp_set_error(HARP_ERROR_UNSUPPORTED_PRODUCT, NULL);
-        return -1;
-    }
-    if (coda_cursor_get_string_length(&cursor, &string_length) != 0)
-    {
-        harp_set_error(HARP_ERROR_UNSUPPORTED_PRODUCT, NULL);
-        return -1;
-    }
-    if (string_length != 5)
-    {
-        harp_set_error(HARP_ERROR_UNSUPPORTED_PRODUCT, NULL);
-        return -1;
-    }
-    if (coda_cursor_read_string(&cursor, buffer, 6) != 0)
-    {
-        harp_set_error(HARP_ERROR_UNSUPPORTED_PRODUCT, NULL);
-        return -1;
-    }
-    if (strcmp(buffer, "GOSAT") != 0)
-    {
-        harp_set_error(HARP_ERROR_UNSUPPORTED_PRODUCT, NULL);
-        return -1;
-    }
-
-    if (coda_cursor_goto(&cursor, "../../sensorName[0]") != 0)
-    {
-        harp_set_error(HARP_ERROR_UNSUPPORTED_PRODUCT, NULL);
-        return -1;
-    }
-    if (coda_cursor_get_string_length(&cursor, &string_length) != 0)
-    {
-        harp_set_error(HARP_ERROR_UNSUPPORTED_PRODUCT, NULL);
-        return -1;
-    }
-    if (string_length != 9)
-    {
-        harp_set_error(HARP_ERROR_UNSUPPORTED_PRODUCT, NULL);
-        return -1;
-    }
-    if (coda_cursor_read_string(&cursor, buffer, 10) != 0)
-    {
-        harp_set_error(HARP_ERROR_UNSUPPORTED_PRODUCT, NULL);
-        return -1;
-    }
-    if (strcmp(buffer, "TANSO-FTS") != 0)
-    {
-        harp_set_error(HARP_ERROR_UNSUPPORTED_PRODUCT, NULL);
-        return -1;
-    }
-
-    if (coda_cursor_goto(&cursor, "../../operationLevel[0]") != 0)
-    {
-        harp_set_error(HARP_ERROR_UNSUPPORTED_PRODUCT, NULL);
-        return -1;
-    }
-    if (coda_cursor_get_string_length(&cursor, &string_length) != 0)
-    {
-        harp_set_error(HARP_ERROR_UNSUPPORTED_PRODUCT, NULL);
-        return -1;
-    }
-    if (string_length != 2)
-    {
-        harp_set_error(HARP_ERROR_UNSUPPORTED_PRODUCT, NULL);
-        return -1;
-    }
-    if (coda_cursor_read_string(&cursor, buffer, 3) != 0)
-    {
-        harp_set_error(HARP_ERROR_UNSUPPORTED_PRODUCT, NULL);
-        return -1;
-    }
-    if (strcmp(buffer, "L2") != 0)
-    {
-        harp_set_error(HARP_ERROR_UNSUPPORTED_PRODUCT, NULL);
-        return -1;
-    }
-
-    if (coda_cursor_goto(&cursor, "../../productCode[0]") != 0)
-    {
-        harp_set_error(HARP_ERROR_UNSUPPORTED_PRODUCT, NULL);
-        return -1;
-    }
-    if (coda_cursor_get_string_length(&cursor, &string_length) != 0)
-    {
-        harp_set_error(HARP_ERROR_UNSUPPORTED_PRODUCT, NULL);
-        return -1;
-    }
-    if (string_length != (long)strlen(product_code))
-    {
-        harp_set_error(HARP_ERROR_UNSUPPORTED_PRODUCT, NULL);
-        return -1;
-    }
-    if (coda_cursor_read_string(&cursor, buffer, strlen(product_code) + 1) != 0)
-    {
-        harp_set_error(HARP_ERROR_UNSUPPORTED_PRODUCT, NULL);
-        return -1;
-    }
-    if (strcmp(buffer, product_code) != 0)
-    {
-        harp_set_error(HARP_ERROR_UNSUPPORTED_PRODUCT, NULL);
-        return -1;
-    }
-
-    return 0;
-}
-
-static int verify_co2(const harp_ingestion_module *module, coda_product *product)
-{
-    (void)module;
-
-    return verify_product_type(product, "C01S");
-}
-
-static int verify_ch4(const harp_ingestion_module *module, coda_product *product)
-{
-    (void)module;
-
-    return verify_product_type(product, "C02S");
-}
-
 static void register_common_variables(harp_product_definition *product_definition)
 {
     harp_variable_definition *variable_definition;
@@ -776,8 +644,8 @@ void register_co2_product(void)
     const char *description;
     const char *path;
 
-    module = harp_ingestion_register_module_coda("GOSAT_FTS_L2_CO2_TC", "GOSAT FTS", NULL, NULL,
-                                                 "GOSAT FTS L2 CO2 total column density", verify_co2, ingestion_init,
+    module = harp_ingestion_register_module_coda("GOSAT_FTS_L2_CO2_TC", "GOSAT FTS", "GOSAT", "L2_FTS_C01S",
+                                                 "GOSAT FTS L2 CO2 total column density", NULL, ingestion_init,
                                                  ingestion_done);
 
     /* GOSAT_FTS_L2_CO2_TC product */
@@ -817,8 +685,8 @@ void register_ch4_product(void)
     const char *description;
     const char *path;
 
-    module = harp_ingestion_register_module_coda("GOSAT_FTS_L2_CH4_TC", "GOSAT FTS", NULL, NULL,
-                                                 "GOSAT FTS L2 CH4 total column density", verify_ch4, ingestion_init,
+    module = harp_ingestion_register_module_coda("GOSAT_FTS_L2_CH4_TC", "GOSAT FTS", "GOSAT", "L2_FTS_C02S",
+                                                 "GOSAT FTS L2 CH4 total column density", NULL, ingestion_init,
                                                  ingestion_done);
 
     /* GOSAT_FTS_L2_CH4_TC */

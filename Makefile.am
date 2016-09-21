@@ -309,7 +309,8 @@ ENVISAT_SCIAMACHY_DEFINITION_FILE = ENVISAT_SCIAMACHY-@CODADEF_VERSION_ENVISAT_S
 EPS_DEFINITION_FILE = EPS-@CODADEF_VERSION_EPS@.codadef
 ERS_GOME_DEFINITION_FILE = ERS_GOME-@CODADEF_VERSION_ERS_GOME@.codadef
 ESACCI_OZONE_DEFINITION_FILE = ESACCI_OZONE-@CODADEF_VERSION_ESACCI_OZONE@.codadef
-O3MSAF_DEFINITION_FILE =O3MSAF-@CODADEF_VERSION_O3MSAF@.codadef
+GOSAT_DEFINITION_FILE = GOSAT-@CODADEF_VERSION_GOSAT@.codadef
+O3MSAF_DEFINITION_FILE = O3MSAF-@CODADEF_VERSION_O3MSAF@.codadef
 SENTINEL5P_DEFINITION_FILE = Sentinel5P-@CODADEF_VERSION_Sentinel5P@.codadef
 
 DEFINITION_FILES = \
@@ -324,6 +325,7 @@ DEFINITION_FILES = \
 	definitions/$(EPS_DEFINITION_FILE) \
 	definitions/$(ERS_GOME_DEFINITION_FILE) \
 	definitions/$(ESACCI_OZONE_DEFINITION_FILE) \
+	definitions/$(GOSAT_DEFINITION_FILE) \
 	definitions/$(O3MSAF_DEFINITION_FILE) \
 	definitions/$(SENTINEL5P_DEFINITION_FILE)
 
@@ -427,6 +429,15 @@ definitions/$(ESACCI_OZONE_DEFINITION_FILE):
 	@$(srcdir)/codadef.sh $(srcdir)/definitions/ESACCI_OZONE definitions
 	@if test ! -f definitions/$(ESACCI_OZONE_DEFINITION_FILE) ; then \
 	  echo definitions/$(ESACCI_OZONE_DEFINITION_FILE) not created. ; \
+	  echo run './config.status --recheck' to update the .codadef version reference. ; \
+	  exit 1 ; \
+	 fi
+
+definitions/$(GOSAT_DEFINITION_FILE):
+	test -d definitions || $(mkinstalldirs) definitions
+	@$(srcdir)/codadef.sh $(srcdir)/definitions/GOSAT definitions
+	@if test ! -f definitions/$(GOSAT_DEFINITION_FILE) ; then \
+	  echo definitions/$(GOSAT_DEFINITION_FILE) not created. ; \
 	  echo run './config.status --recheck' to update the .codadef version reference. ; \
 	  exit 1 ; \
 	 fi
