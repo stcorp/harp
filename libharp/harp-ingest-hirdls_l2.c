@@ -436,53 +436,6 @@ static int ingestion_init(const harp_ingestion_module *module, coda_product *pro
     return 0;
 }
 
-static int verify_product_type(const harp_ingestion_module *module, coda_product *product)
-{
-    coda_cursor cursor;
-    char buffer[100];
-
-    (void)module;
-
-    if (coda_cursor_set_product(&cursor, product) != 0)
-    {
-        harp_set_error(HARP_ERROR_UNSUPPORTED_PRODUCT, NULL);
-        return -1;
-    }
-    if (coda_cursor_goto(&cursor, "/HDFEOS/ADDITIONAL/FILE_ATTRIBUTES@InstrumentName") != 0)
-    {
-        harp_set_error(HARP_ERROR_UNSUPPORTED_PRODUCT, NULL);
-        return -1;
-    }
-    if (coda_cursor_read_string(&cursor, buffer, 100) != 0)
-    {
-        harp_set_error(HARP_ERROR_UNSUPPORTED_PRODUCT, NULL);
-        return -1;
-    }
-    if (strcmp(buffer, "HIRDLS") != 0)
-    {
-        harp_set_error(HARP_ERROR_UNSUPPORTED_PRODUCT, NULL);
-        return -1;
-    }
-
-    if (coda_cursor_goto(&cursor, "../HIRDLSFileType") != 0)
-    {
-        harp_set_error(HARP_ERROR_UNSUPPORTED_PRODUCT, NULL);
-        return -1;
-    }
-    if (coda_cursor_read_string(&cursor, buffer, 100) != 0)
-    {
-        harp_set_error(HARP_ERROR_UNSUPPORTED_PRODUCT, NULL);
-        return -1;
-    }
-    if (strncmp(buffer, "HIRDLS2", 7) != 0)
-    {
-        harp_set_error(HARP_ERROR_UNSUPPORTED_PRODUCT, NULL);
-        return -1;
-    }
-
-    return 0;
-}
-
 int harp_ingestion_module_hirdls_l2_init(void)
 {
     harp_ingestion_module *module;
@@ -493,7 +446,7 @@ int harp_ingestion_module_hirdls_l2_init(void)
     const char *description;
     const char *path;
 
-    module = harp_ingestion_register_module_coda("HIRDLS_L2", "HIRDLS", "AURA_HIRDLS", "HIRDLSL2", "HIRDLS L2 product",
+    module = harp_ingestion_register_module_coda("HIRDLS_L2", "HIRDLS", "AURA_HIRDLS", "HIRDLS2", "HIRDLS L2 product",
                                                  NULL, ingestion_init, ingestion_done);
 
     /* HIRDLS product */
