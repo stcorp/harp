@@ -1,5 +1,5 @@
 <?xml version="1.0"?>
-<cd:ProductClass name="AURA_OMI" last-modified="2016-09-19" xmlns:cd="http://www.stcorp.nl/coda/definition/2008/07">
+<cd:ProductClass name="AURA_OMI" last-modified="2016-09-22" xmlns:cd="http://www.stcorp.nl/coda/definition/2008/07">
   <cd:Description>Aura OMI products</cd:Description>
   <cd:ProductType name="OMAERUV">
     <cd:Description>OMI Aerosol Optical Depth and Single Scattering Albedo (Near-UV Algorithm) - Level 2</cd:Description>
@@ -7,13 +7,13 @@
       <cd:Description>The format definition for this product is taken from the HDF5 file itself.</cd:Description>
       <cd:DetectionRule>
         <cd:MatchExpression path="/HDFEOS/ADDITIONAL/FILE_ATTRIBUTES">str(.@InstrumentName) == "OMI"</cd:MatchExpression>
-        <cd:MatchExpression path="/HDFEOS/ADDITIONAL/FILE_ATTRIBUTES">str(.@ProcessLevel,1) == "2"</cd:MatchExpression>
-        <cd:MatchExpression path="/HDFEOS/SWATHS/Aerosol_NearUV_Swath">true</cd:MatchExpression>
+        <cd:MatchExpression>str(.@ProcessLevel,1) == "2"</cd:MatchExpression>
+        <cd:MatchExpression path="/HDFEOS/SWATHS">exists(./Aerosol_NearUV_Swath)</cd:MatchExpression>
       </cd:DetectionRule>
       <cd:DetectionRule>
         <cd:MatchExpression path="/HDFEOS/ADDITIONAL/FILE_ATTRIBUTES">str(.@InstrumentName) == "OMI"</cd:MatchExpression>
-        <cd:MatchExpression path="/HDFEOS/ADDITIONAL/FILE_ATTRIBUTES">str(.@ProcessLevel,2) == "L2"</cd:MatchExpression>
-        <cd:MatchExpression path="/HDFEOS/SWATHS/Aerosol_NearUV_Swath">true</cd:MatchExpression>
+        <cd:MatchExpression>str(.@ProcessLevel,2) == "L2"</cd:MatchExpression>
+        <cd:MatchExpression path="/HDFEOS/SWATHS">exists(./Aerosol_NearUV_Swath)</cd:MatchExpression>
       </cd:DetectionRule>
     </cd:ProductDefinition>
   </cd:ProductType>
@@ -23,13 +23,13 @@
       <cd:Description>The format definition for this product is taken from the HDF5 file itself.</cd:Description>
       <cd:DetectionRule>
         <cd:MatchExpression path="/HDFEOS/ADDITIONAL/FILE_ATTRIBUTES">str(.@InstrumentName) == "OMI"</cd:MatchExpression>
-        <cd:MatchExpression path="/HDFEOS/ADDITIONAL/FILE_ATTRIBUTES">str(.@ProcessLevel,1) == "2"</cd:MatchExpression>
-        <cd:MatchExpression path="/HDFEOS/SWATHS/OMI_Total_Column_Amount_BrO">true</cd:MatchExpression>
+        <cd:MatchExpression>str(.@ProcessLevel,1) == "2"</cd:MatchExpression>
+        <cd:MatchExpression path="/HDFEOS/SWATHS">exists(./OMI_Total_Column_Amount_BrO)</cd:MatchExpression>
       </cd:DetectionRule>
       <cd:DetectionRule>
         <cd:MatchExpression path="/HDFEOS/ADDITIONAL/FILE_ATTRIBUTES">str(.@InstrumentName) == "OMI"</cd:MatchExpression>
-        <cd:MatchExpression path="/HDFEOS/ADDITIONAL/FILE_ATTRIBUTES">str(.@ProcessLevel,2) == "L2"</cd:MatchExpression>
-        <cd:MatchExpression path="/HDFEOS/SWATHS/OMI_Total_Column_Amount_BrO">true</cd:MatchExpression>
+        <cd:MatchExpression>str(.@ProcessLevel,2) == "L2"</cd:MatchExpression>
+        <cd:MatchExpression path="/HDFEOS/SWATHS">exists(./OMI_Total_Column_Amount_BrO)</cd:MatchExpression>
       </cd:DetectionRule>
     </cd:ProductDefinition>
   </cd:ProductType>
@@ -39,13 +39,13 @@
       <cd:Description>The format definition for this product is taken from the HDF5 file itself.</cd:Description>
       <cd:DetectionRule>
         <cd:MatchExpression path="/HDFEOS/ADDITIONAL/FILE_ATTRIBUTES">str(.@InstrumentName) == "OMI"</cd:MatchExpression>
-        <cd:MatchExpression path="/HDFEOS/ADDITIONAL/FILE_ATTRIBUTES">str(.@ProcessLevel,1) == "2"</cd:MatchExpression>
-        <cd:MatchExpression path="/HDFEOS/SWATHS/CloudFractionAndPressure">true</cd:MatchExpression>
+        <cd:MatchExpression>str(.@ProcessLevel,1) == "2"</cd:MatchExpression>
+        <cd:MatchExpression path="/HDFEOS/SWATHS">exists(./CloudFractionAndPressure)</cd:MatchExpression>
       </cd:DetectionRule>
       <cd:DetectionRule>
         <cd:MatchExpression path="/HDFEOS/ADDITIONAL/FILE_ATTRIBUTES">str(.@InstrumentName) == "OMI"</cd:MatchExpression>
-        <cd:MatchExpression path="/HDFEOS/ADDITIONAL/FILE_ATTRIBUTES">str(.@ProcessLevel,2) == "L2"</cd:MatchExpression>
-        <cd:MatchExpression path="/HDFEOS/SWATHS/CloudFractionAndPressure">true</cd:MatchExpression>
+        <cd:MatchExpression>str(.@ProcessLevel,2) == "L2"</cd:MatchExpression>
+        <cd:MatchExpression path="/HDFEOS/SWATHS">exists(./CloudFractionAndPressure)</cd:MatchExpression>
       </cd:DetectionRule>
     </cd:ProductDefinition>
   </cd:ProductType>
@@ -55,13 +55,13 @@
       <cd:Description>The format definition for this product is taken from the HDF5 file itself.</cd:Description>
       <cd:DetectionRule>
         <cd:MatchExpression path="/HDFEOS/ADDITIONAL/FILE_ATTRIBUTES">str(.@InstrumentName) == "OMI"</cd:MatchExpression>
-        <cd:MatchExpression path="/HDFEOS/ADDITIONAL/FILE_ATTRIBUTES">str(.@ProcessLevel,1) == "2"</cd:MatchExpression>
-        <cd:MatchExpression path="/HDFEOS/SWATHS/Cloud_Product">true</cd:MatchExpression>
+        <cd:MatchExpression>str(.@ProcessLevel,1) == "2"</cd:MatchExpression>
+        <cd:MatchExpression path="/HDFEOS/SWATHS">exists(./Cloud_Product)</cd:MatchExpression>
       </cd:DetectionRule>
       <cd:DetectionRule>
         <cd:MatchExpression path="/HDFEOS/ADDITIONAL/FILE_ATTRIBUTES">str(.@InstrumentName) == "OMI"</cd:MatchExpression>
-        <cd:MatchExpression path="/HDFEOS/ADDITIONAL/FILE_ATTRIBUTES">str(.@ProcessLevel,2) == "L2"</cd:MatchExpression>
-        <cd:MatchExpression path="/HDFEOS/SWATHS/Cloud_Product">true</cd:MatchExpression>
+        <cd:MatchExpression>str(.@ProcessLevel,2) == "L2"</cd:MatchExpression>
+        <cd:MatchExpression path="/HDFEOS/SWATHS">exists(./Cloud_Product)</cd:MatchExpression>
       </cd:DetectionRule>
     </cd:ProductDefinition>
   </cd:ProductType>
@@ -71,13 +71,13 @@
       <cd:Description>The format definition for this product is taken from the HDF5 file itself.</cd:Description>
       <cd:DetectionRule>
         <cd:MatchExpression path="/HDFEOS/ADDITIONAL/FILE_ATTRIBUTES">str(.@InstrumentName) == "OMI"</cd:MatchExpression>
-        <cd:MatchExpression path="/HDFEOS/ADDITIONAL/FILE_ATTRIBUTES">str(.@ProcessLevel,1) == "2"</cd:MatchExpression>
-        <cd:MatchExpression path="/HDFEOS/SWATHS/ColumnAmountO3">true</cd:MatchExpression>
+        <cd:MatchExpression>str(.@ProcessLevel,1) == "2"</cd:MatchExpression>
+        <cd:MatchExpression path="/HDFEOS/SWATHS">exists(./ColumnAmountO3)</cd:MatchExpression>
       </cd:DetectionRule>
       <cd:DetectionRule>
         <cd:MatchExpression path="/HDFEOS/ADDITIONAL/FILE_ATTRIBUTES">str(.@InstrumentName) == "OMI"</cd:MatchExpression>
-        <cd:MatchExpression path="/HDFEOS/ADDITIONAL/FILE_ATTRIBUTES">str(.@ProcessLevel,2) == "L2"</cd:MatchExpression>
-        <cd:MatchExpression path="/HDFEOS/SWATHS/ColumnAmountO3">true</cd:MatchExpression>
+        <cd:MatchExpression>str(.@ProcessLevel,2) == "L2"</cd:MatchExpression>
+        <cd:MatchExpression path="/HDFEOS/SWATHS">exists(./ColumnAmountO3)</cd:MatchExpression>
       </cd:DetectionRule>
     </cd:ProductDefinition>
   </cd:ProductType>
@@ -87,8 +87,8 @@
       <cd:Description>The format definition for this product is taken from the HDF5 file itself.</cd:Description>
       <cd:DetectionRule>
         <cd:MatchExpression path="/HDFEOS/ADDITIONAL/FILE_ATTRIBUTES">str(.@InstrumentName) == "OMI"</cd:MatchExpression>
-        <cd:MatchExpression path="/HDFEOS/ADDITIONAL/FILE_ATTRIBUTES">str(.@ProcessLevel,2) == "3e"</cd:MatchExpression>
-        <cd:MatchExpression path="/HDFEOS/GRIDS/ColumnAmountO3">true</cd:MatchExpression>
+        <cd:MatchExpression>str(.@ProcessLevel,2) == "3e"</cd:MatchExpression>
+        <cd:MatchExpression path="/HDFEOS/GRIDS">exists(./ColumnAmountO3)</cd:MatchExpression>
       </cd:DetectionRule>
     </cd:ProductDefinition>
   </cd:ProductType>
@@ -97,7 +97,7 @@
     <cd:ProductDefinition id="OMDOMINO" format="hdf5" version="0">
       <cd:Description>The format definition for this product is taken from the HDF5 file itself.</cd:Description>
       <cd:DetectionRule>
-        <cd:MatchExpression path="/HDFEOS/SWATHS/DominoNO2">true</cd:MatchExpression>
+        <cd:MatchExpression path="/HDFEOS/SWATHS">exists(./DominoNO2)</cd:MatchExpression>
       </cd:DetectionRule>
     </cd:ProductDefinition>
   </cd:ProductType>
@@ -107,13 +107,13 @@
       <cd:Description>The format definition for this product is taken from the HDF5 file itself.</cd:Description>
       <cd:DetectionRule>
         <cd:MatchExpression path="/HDFEOS/ADDITIONAL/FILE_ATTRIBUTES">str(.@InstrumentName) == "OMI"</cd:MatchExpression>
-        <cd:MatchExpression path="/HDFEOS/ADDITIONAL/FILE_ATTRIBUTES">str(.@ProcessLevel,1) == "2"</cd:MatchExpression>
-        <cd:MatchExpression path="/HDFEOS/SWATHS/OMI_Total_Column_Amount_HCHO">true</cd:MatchExpression>
+        <cd:MatchExpression>str(.@ProcessLevel,1) == "2"</cd:MatchExpression>
+        <cd:MatchExpression path="/HDFEOS/SWATHS">exists(./OMI_Total_Column_Amount_HCHO)</cd:MatchExpression>
       </cd:DetectionRule>
       <cd:DetectionRule>
         <cd:MatchExpression path="/HDFEOS/ADDITIONAL/FILE_ATTRIBUTES">str(.@InstrumentName) == "OMI"</cd:MatchExpression>
-        <cd:MatchExpression path="/HDFEOS/ADDITIONAL/FILE_ATTRIBUTES">str(.@ProcessLevel,2) == "L2"</cd:MatchExpression>
-        <cd:MatchExpression path="/HDFEOS/SWATHS/OMI_Total_Column_Amount_HCHO">true</cd:MatchExpression>
+        <cd:MatchExpression>str(.@ProcessLevel,2) == "L2"</cd:MatchExpression>
+        <cd:MatchExpression path="/HDFEOS/SWATHS">exists(./OMI_Total_Column_Amount_HCHO)</cd:MatchExpression>
       </cd:DetectionRule>
     </cd:ProductDefinition>
   </cd:ProductType>
@@ -123,13 +123,13 @@
       <cd:Description>The format definition for this product is taken from the HDF5 file itself.</cd:Description>
       <cd:DetectionRule>
         <cd:MatchExpression path="/HDFEOS/ADDITIONAL/FILE_ATTRIBUTES">str(.@InstrumentName) == "OMI"</cd:MatchExpression>
-        <cd:MatchExpression path="/HDFEOS/ADDITIONAL/FILE_ATTRIBUTES">str(.@ProcessLevel,1) == "2"</cd:MatchExpression>
-        <cd:MatchExpression path="/HDFEOS/SWATHS/ColumnAmountNO2">true</cd:MatchExpression>
+        <cd:MatchExpression>str(.@ProcessLevel,1) == "2"</cd:MatchExpression>
+        <cd:MatchExpression path="/HDFEOS/SWATHS">exists(./ColumnAmountNO2)</cd:MatchExpression>
       </cd:DetectionRule>
       <cd:DetectionRule>
         <cd:MatchExpression path="/HDFEOS/ADDITIONAL/FILE_ATTRIBUTES">str(.@InstrumentName) == "OMI"</cd:MatchExpression>
-        <cd:MatchExpression path="/HDFEOS/ADDITIONAL/FILE_ATTRIBUTES">str(.@ProcessLevel,2) == "L2"</cd:MatchExpression>
-        <cd:MatchExpression path="/HDFEOS/SWATHS/ColumnAmountNO2">true</cd:MatchExpression>
+        <cd:MatchExpression>str(.@ProcessLevel,2) == "L2"</cd:MatchExpression>
+        <cd:MatchExpression path="/HDFEOS/SWATHS">exists(./ColumnAmountNO2)</cd:MatchExpression>
       </cd:DetectionRule>
     </cd:ProductDefinition>
   </cd:ProductType>
@@ -139,13 +139,13 @@
       <cd:Description>The format definition for this product is taken from the HDF5 file itself.</cd:Description>
       <cd:DetectionRule>
         <cd:MatchExpression path="/HDFEOS/ADDITIONAL/FILE_ATTRIBUTES">str(.@InstrumentName) == "OMI"</cd:MatchExpression>
-        <cd:MatchExpression path="/HDFEOS/ADDITIONAL/FILE_ATTRIBUTES">str(.@ProcessLevel,1) == "2"</cd:MatchExpression>
-        <cd:MatchExpression path="/HDFEOS/SWATHS/O3Profile">true</cd:MatchExpression>
+        <cd:MatchExpression>str(.@ProcessLevel,1) == "2"</cd:MatchExpression>
+        <cd:MatchExpression path="/HDFEOS/SWATHS">exists(./O3Profile)</cd:MatchExpression>
       </cd:DetectionRule>
       <cd:DetectionRule>
         <cd:MatchExpression path="/HDFEOS/ADDITIONAL/FILE_ATTRIBUTES">str(.@InstrumentName) == "OMI"</cd:MatchExpression>
-        <cd:MatchExpression path="/HDFEOS/ADDITIONAL/FILE_ATTRIBUTES">str(.@ProcessLevel,2) == "L2"</cd:MatchExpression>
-        <cd:MatchExpression path="/HDFEOS/SWATHS/O3Profile">true</cd:MatchExpression>
+        <cd:MatchExpression>str(.@ProcessLevel,2) == "L2"</cd:MatchExpression>
+        <cd:MatchExpression path="/HDFEOS/SWATHS">exists(./O3Profile)</cd:MatchExpression>
       </cd:DetectionRule>
     </cd:ProductDefinition>
   </cd:ProductType>
@@ -155,13 +155,13 @@
       <cd:Description>The format definition for this product is taken from the HDF5 file itself.</cd:Description>
       <cd:DetectionRule>
         <cd:MatchExpression path="/HDFEOS/ADDITIONAL/FILE_ATTRIBUTES">str(.@InstrumentName) == "OMI"</cd:MatchExpression>
-        <cd:MatchExpression path="/HDFEOS/ADDITIONAL/FILE_ATTRIBUTES">str(.@ProcessLevel,1) == "2"</cd:MatchExpression>
-        <cd:MatchExpression path="/HDFEOS/SWATHS/OMI_Slant_Column_Amount_OClO">true</cd:MatchExpression>
+        <cd:MatchExpression>str(.@ProcessLevel,1) == "2"</cd:MatchExpression>
+        <cd:MatchExpression path="/HDFEOS/SWATHS">exists(./OMI_Slant_Column_Amount_OClO)</cd:MatchExpression>
       </cd:DetectionRule>
       <cd:DetectionRule>
         <cd:MatchExpression path="/HDFEOS/ADDITIONAL/FILE_ATTRIBUTES">str(.@InstrumentName) == "OMI"</cd:MatchExpression>
-        <cd:MatchExpression path="/HDFEOS/ADDITIONAL/FILE_ATTRIBUTES">str(.@ProcessLevel,2) == "L2"</cd:MatchExpression>
-        <cd:MatchExpression path="/HDFEOS/SWATHS/OMI_Slant_Column_Amount_OClO">true</cd:MatchExpression>
+        <cd:MatchExpression>str(.@ProcessLevel,2) == "L2"</cd:MatchExpression>
+        <cd:MatchExpression path="/HDFEOS/SWATHS">exists(./OMI_Slant_Column_Amount_OClO)</cd:MatchExpression>
       </cd:DetectionRule>
     </cd:ProductDefinition>
   </cd:ProductType>
@@ -171,13 +171,13 @@
       <cd:Description>The format definition for this product is taken from the HDF5 file itself.</cd:Description>
       <cd:DetectionRule>
         <cd:MatchExpression path="/HDFEOS/ADDITIONAL/FILE_ATTRIBUTES">str(.@InstrumentName) == "OMI"</cd:MatchExpression>
-        <cd:MatchExpression path="/HDFEOS/ADDITIONAL/FILE_ATTRIBUTES">str(.@ProcessLevel,1) == "2"</cd:MatchExpression>
-        <cd:MatchExpression path="/HDFEOS/SWATHS/OMI_Total_Column_Amount_SO2">true</cd:MatchExpression>
+        <cd:MatchExpression>str(.@ProcessLevel,1) == "2"</cd:MatchExpression>
+        <cd:MatchExpression path="/HDFEOS/SWATHS">exists(./OMI_Total_Column_Amount_SO2)</cd:MatchExpression>
       </cd:DetectionRule>
       <cd:DetectionRule>
         <cd:MatchExpression path="/HDFEOS/ADDITIONAL/FILE_ATTRIBUTES">str(.@InstrumentName) == "OMI"</cd:MatchExpression>
-        <cd:MatchExpression path="/HDFEOS/ADDITIONAL/FILE_ATTRIBUTES">str(.@ProcessLevel,2) == "L2"</cd:MatchExpression>
-        <cd:MatchExpression path="/HDFEOS/SWATHS/OMI_Total_Column_Amount_SO2">true</cd:MatchExpression>
+        <cd:MatchExpression>str(.@ProcessLevel,2) == "L2"</cd:MatchExpression>
+        <cd:MatchExpression path="/HDFEOS/SWATHS">exists(./OMI_Total_Column_Amount_SO2)</cd:MatchExpression>
       </cd:DetectionRule>
     </cd:ProductDefinition>
   </cd:ProductType>
@@ -187,13 +187,13 @@
       <cd:Description>The format definition for this product is taken from the HDF5 file itself.</cd:Description>
       <cd:DetectionRule>
         <cd:MatchExpression path="/HDFEOS/ADDITIONAL/FILE_ATTRIBUTES">str(.@InstrumentName) == "OMI"</cd:MatchExpression>
-        <cd:MatchExpression path="/HDFEOS/ADDITIONAL/FILE_ATTRIBUTES">str(.@ProcessLevel,1) == "2"</cd:MatchExpression>
-        <cd:MatchExpression path="/HDFEOS/SWATHS/OMI_Column_Amount_O3">true</cd:MatchExpression>
+        <cd:MatchExpression>str(.@ProcessLevel,1) == "2"</cd:MatchExpression>
+        <cd:MatchExpression path="/HDFEOS/SWATHS">exists(./OMI_Column_Amount_O3)</cd:MatchExpression>
       </cd:DetectionRule>
       <cd:DetectionRule>
         <cd:MatchExpression path="/HDFEOS/ADDITIONAL/FILE_ATTRIBUTES">str(.@InstrumentName) == "OMI"</cd:MatchExpression>
-        <cd:MatchExpression path="/HDFEOS/ADDITIONAL/FILE_ATTRIBUTES">str(.@ProcessLevel,2) == "L2"</cd:MatchExpression>
-        <cd:MatchExpression path="/HDFEOS/SWATHS/OMI_Column_Amount_O3">true</cd:MatchExpression>
+        <cd:MatchExpression>str(.@ProcessLevel,2) == "L2"</cd:MatchExpression>
+        <cd:MatchExpression path="/HDFEOS/SWATHS">exists(./OMI_Column_Amount_O3)</cd:MatchExpression>
       </cd:DetectionRule>
     </cd:ProductDefinition>
   </cd:ProductType>
@@ -203,8 +203,8 @@
       <cd:Description>The format definition for this product is taken from the HDF5 file itself.</cd:Description>
       <cd:DetectionRule>
         <cd:MatchExpression path="/HDFEOS/ADDITIONAL/FILE_ATTRIBUTES">str(.@InstrumentName) == "OMI"</cd:MatchExpression>
-        <cd:MatchExpression path="/HDFEOS/ADDITIONAL/FILE_ATTRIBUTES">str(.@ProcessLevel,2) == "3d"</cd:MatchExpression>
-        <cd:MatchExpression path="/HDFEOS/GRIDS/OMI_Column_Amount_O3">true</cd:MatchExpression>
+        <cd:MatchExpression>str(.@ProcessLevel,2) == "3d"</cd:MatchExpression>
+        <cd:MatchExpression path="/HDFEOS/GRIDS">exists(./OMI_Column_Amount_O3)</cd:MatchExpression>
       </cd:DetectionRule>
     </cd:ProductDefinition>
   </cd:ProductType>
@@ -214,8 +214,8 @@
       <cd:Description>The format definition for this product is taken from the HDF5 file itself.</cd:Description>
       <cd:DetectionRule>
         <cd:MatchExpression path="/HDFEOS/ADDITIONAL/FILE_ATTRIBUTES">str(.@InstrumentName) == "OMI"</cd:MatchExpression>
-        <cd:MatchExpression path="/HDFEOS/ADDITIONAL/FILE_ATTRIBUTES">str(.@ProcessLevel,2) == "3e"</cd:MatchExpression>
-        <cd:MatchExpression path="/HDFEOS/GRIDS/OMI_Column_Amount_O3">true</cd:MatchExpression>
+        <cd:MatchExpression>str(.@ProcessLevel,2) == "3e"</cd:MatchExpression>
+        <cd:MatchExpression path="/HDFEOS/GRIDS">exists(./OMI_Column_Amount_O3)</cd:MatchExpression>
       </cd:DetectionRule>
     </cd:ProductDefinition>
   </cd:ProductType>
@@ -225,13 +225,13 @@
       <cd:Description>The format definition for this product is taken from the HDF5 file itself.</cd:Description>
       <cd:DetectionRule>
         <cd:MatchExpression path="/HDFEOS/ADDITIONAL/FILE_ATTRIBUTES">str(.@InstrumentName) == "OMI"</cd:MatchExpression>
-        <cd:MatchExpression path="/HDFEOS/ADDITIONAL/FILE_ATTRIBUTES">str(.@ProcessLevel,1) == "2"</cd:MatchExpression>
-        <cd:MatchExpression path="/HDFEOS/SWATHS/UVB">true</cd:MatchExpression>
+        <cd:MatchExpression>str(.@ProcessLevel,1) == "2"</cd:MatchExpression>
+        <cd:MatchExpression path="/HDFEOS/SWATHS">exists(./UVB)</cd:MatchExpression>
       </cd:DetectionRule>
       <cd:DetectionRule>
         <cd:MatchExpression path="/HDFEOS/ADDITIONAL/FILE_ATTRIBUTES">str(.@InstrumentName) == "OMI"</cd:MatchExpression>
-        <cd:MatchExpression path="/HDFEOS/ADDITIONAL/FILE_ATTRIBUTES">str(.@ProcessLevel,2) == "L2"</cd:MatchExpression>
-        <cd:MatchExpression path="/HDFEOS/SWATHS/UVB">true</cd:MatchExpression>
+        <cd:MatchExpression>str(.@ProcessLevel,2) == "L2"</cd:MatchExpression>
+        <cd:MatchExpression path="/HDFEOS/SWATHS">exists(./UVB)</cd:MatchExpression>
       </cd:DetectionRule>
     </cd:ProductDefinition>
   </cd:ProductType>

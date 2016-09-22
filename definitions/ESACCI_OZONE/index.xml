@@ -8,7 +8,7 @@
       <cd:DetectionRule>
         <cd:MatchExpression>substr(0, 12, filename()) == "ESACCI-OZONE"</cd:MatchExpression>
         <cd:MatchExpression>substr(13, 5, filename()) == "L2-LP"</cd:MatchExpression>
-        <cd:MatchExpression path="/mole_concentration_of_ozone_in_air">true</cd:MatchExpression>
+        <cd:MatchExpression>exists(/mole_concentration_of_ozone_in_air)</cd:MatchExpression>
       </cd:DetectionRule>
     </cd:ProductDefinition>
     <cd:ProductDefinition id="L2_LP_nc4" format="hdf5" version="4">
@@ -16,7 +16,7 @@
       <cd:DetectionRule>
         <cd:MatchExpression>substr(0, 12, filename()) == "ESACCI-OZONE"</cd:MatchExpression>
         <cd:MatchExpression>substr(13, 5, filename()) == "L2-LP"</cd:MatchExpression>
-        <cd:MatchExpression path="/mole_concentration_of_ozone_in_air">true</cd:MatchExpression>
+        <cd:MatchExpression>exists(/mole_concentration_of_ozone_in_air)</cd:MatchExpression>
       </cd:DetectionRule>
     </cd:ProductDefinition>
   </cd:ProductType>
@@ -27,7 +27,7 @@
       <cd:DetectionRule>
         <cd:MatchExpression>substr(0, 12, filename()) == "ESACCI-OZONE"</cd:MatchExpression>
         <cd:MatchExpression>substr(13, 5, filename()) == "L2-NP"</cd:MatchExpression>
-        <cd:MatchExpression path="/o3_nd">true</cd:MatchExpression>
+        <cd:MatchExpression>exists(/o3_nd)</cd:MatchExpression>
       </cd:DetectionRule>
     </cd:ProductDefinition>
     <cd:ProductDefinition id="L2_NP_nc4" format="hdf5" version="4">
@@ -35,7 +35,7 @@
       <cd:DetectionRule>
         <cd:MatchExpression>substr(0, 12, filename()) == "ESACCI-OZONE"</cd:MatchExpression>
         <cd:MatchExpression>substr(13, 5, filename()) == "L2-NP"</cd:MatchExpression>
-        <cd:MatchExpression path="/o3_nd">true</cd:MatchExpression>
+        <cd:MatchExpression>exists(/o3_nd)</cd:MatchExpression>
       </cd:DetectionRule>
     </cd:ProductDefinition>
   </cd:ProductType>
@@ -46,7 +46,7 @@
       <cd:DetectionRule>
         <cd:MatchExpression>substr(0, 12, filename()) == "ESACCI-OZONE"</cd:MatchExpression>
         <cd:MatchExpression>substr(13, 5, filename()) == "L2-TC"</cd:MatchExpression>
-        <cd:MatchExpression path="/atmosphere_mole_content_of_ozone">true</cd:MatchExpression>
+        <cd:MatchExpression>exists(/atmosphere_mole_content_of_ozone)</cd:MatchExpression>
       </cd:DetectionRule>
     </cd:ProductDefinition>
     <cd:ProductDefinition id="L2_TC_nc4" format="hdf5" version="4">
@@ -54,7 +54,7 @@
       <cd:DetectionRule>
         <cd:MatchExpression>substr(0, 12, filename()) == "ESACCI-OZONE"</cd:MatchExpression>
         <cd:MatchExpression>substr(13, 5, filename()) == "L2-TC"</cd:MatchExpression>
-        <cd:MatchExpression path="/atmosphere_mole_content_of_ozone">true</cd:MatchExpression>
+        <cd:MatchExpression>exists(/atmosphere_mole_content_of_ozone)</cd:MatchExpression>
       </cd:DetectionRule>
     </cd:ProductDefinition>
   </cd:ProductType>
@@ -67,7 +67,7 @@
         <cd:MatchExpression>substr(13, 5, filename()) == "L3-LP"</cd:MatchExpression>
         <cd:MatchExpression>regex("MZM", filename())</cd:MatchExpression>
         <cd:MatchExpression>regex("MERGED", filename())</cd:MatchExpression>
-        <cd:MatchExpression path="/merged_ozone_concentration">true</cd:MatchExpression>
+        <cd:MatchExpression>exists(/merged_ozone_concentration)</cd:MatchExpression>
       </cd:DetectionRule>
     </cd:ProductDefinition>
     <cd:ProductDefinition id="L3_LP_MMZM_nc4" format="hdf5" version="4">
@@ -77,7 +77,7 @@
         <cd:MatchExpression>substr(13, 5, filename()) == "L3-LP"</cd:MatchExpression>
         <cd:MatchExpression>regex("MZM", filename())</cd:MatchExpression>
         <cd:MatchExpression>regex("MERGED", filename())</cd:MatchExpression>
-        <cd:MatchExpression path="/merged_ozone_concentration">true</cd:MatchExpression>
+        <cd:MatchExpression>exists(/merged_ozone_concentration)</cd:MatchExpression>
       </cd:DetectionRule>
     </cd:ProductDefinition>
   </cd:ProductType>
@@ -89,7 +89,7 @@
         <cd:MatchExpression>substr(0, 12, filename()) == "ESACCI-OZONE"</cd:MatchExpression>
         <cd:MatchExpression>substr(13, 5, filename()) == "L3-LP"</cd:MatchExpression>
         <cd:MatchExpression>regex("SMM", filename())</cd:MatchExpression>
-        <cd:MatchExpression path="/merged_ozone_concentration">true</cd:MatchExpression>
+        <cd:MatchExpression>exists(/merged_ozone_concentration)</cd:MatchExpression>
       </cd:DetectionRule>
     </cd:ProductDefinition>
     <cd:ProductDefinition id="L3_LP_MSMM_nc4" format="hdf5" version="4">
@@ -98,7 +98,7 @@
         <cd:MatchExpression>substr(0, 12, filename()) == "ESACCI-OZONE"</cd:MatchExpression>
         <cd:MatchExpression>substr(13, 5, filename()) == "L3-LP"</cd:MatchExpression>
         <cd:MatchExpression>regex("SMM", filename())</cd:MatchExpression>
-        <cd:MatchExpression path="/merged_ozone_concentration">true</cd:MatchExpression>
+        <cd:MatchExpression>exists(/merged_ozone_concentration)</cd:MatchExpression>
       </cd:DetectionRule>
     </cd:ProductDefinition>
   </cd:ProductType>
@@ -110,7 +110,7 @@
         <cd:MatchExpression>substr(0, 12, filename()) == "ESACCI-OZONE"</cd:MatchExpression>
         <cd:MatchExpression>substr(13, 5, filename()) == "L3-LP"</cd:MatchExpression>
         <cd:MatchExpression>regex("MZM", filename())</cd:MatchExpression>
-        <cd:MatchExpression path="/ozone_mole_concentation">true</cd:MatchExpression>
+        <cd:MatchExpression>exists(/ozone_mole_concentation)</cd:MatchExpression>
       </cd:DetectionRule>
     </cd:ProductDefinition>
     <cd:ProductDefinition id="L3_LP_MZM_nc4" format="hdf5" version="4">
@@ -119,7 +119,7 @@
         <cd:MatchExpression>substr(0, 12, filename()) == "ESACCI-OZONE"</cd:MatchExpression>
         <cd:MatchExpression>substr(13, 5, filename()) == "L3-LP"</cd:MatchExpression>
         <cd:MatchExpression>regex("MZM", filename())</cd:MatchExpression>
-        <cd:MatchExpression path="/ozone_mole_concentation">true</cd:MatchExpression>
+        <cd:MatchExpression>exists(/ozone_mole_concentation)</cd:MatchExpression>
       </cd:DetectionRule>
     </cd:ProductDefinition>
   </cd:ProductType>
@@ -130,7 +130,7 @@
       <cd:DetectionRule>
         <cd:MatchExpression>substr(0, 12, filename()) == "ESACCI-OZONE"</cd:MatchExpression>
         <cd:MatchExpression>substr(13, 5, filename()) == "L3-NP"</cd:MatchExpression>
-        <cd:MatchExpression path="/O3_ndens">true</cd:MatchExpression>
+        <cd:MatchExpression>exists(/O3_ndens)</cd:MatchExpression>
       </cd:DetectionRule>
     </cd:ProductDefinition>
     <cd:ProductDefinition id="L3_NP_nc4" format="hdf5" version="4">
@@ -138,7 +138,7 @@
       <cd:DetectionRule>
         <cd:MatchExpression>substr(0, 12, filename()) == "ESACCI-OZONE"</cd:MatchExpression>
         <cd:MatchExpression>substr(13, 5, filename()) == "L3-NP"</cd:MatchExpression>
-        <cd:MatchExpression path="/O3_ndens">true</cd:MatchExpression>
+        <cd:MatchExpression>exists(/O3_ndens)</cd:MatchExpression>
       </cd:DetectionRule>
     </cd:ProductDefinition>
   </cd:ProductType>
@@ -149,7 +149,7 @@
       <cd:DetectionRule>
         <cd:MatchExpression>substr(0, 12, filename()) == "ESACCI-OZONE"</cd:MatchExpression>
         <cd:MatchExpression>substr(13, 5, filename()) == "L3-TC"</cd:MatchExpression>
-        <cd:MatchExpression path="/atmosphere_mole_content_of_ozone">true</cd:MatchExpression>
+        <cd:MatchExpression>exists(/atmosphere_mole_content_of_ozone)</cd:MatchExpression>
       </cd:DetectionRule>
     </cd:ProductDefinition>
     <cd:ProductDefinition id="L3_TC_nc4" format="hdf5" version="4">
@@ -157,7 +157,7 @@
       <cd:DetectionRule>
         <cd:MatchExpression>substr(0, 12, filename()) == "ESACCI-OZONE"</cd:MatchExpression>
         <cd:MatchExpression>substr(13, 5, filename()) == "L3-TC"</cd:MatchExpression>
-        <cd:MatchExpression path="/atmosphere_mole_content_of_ozone">true</cd:MatchExpression>
+        <cd:MatchExpression>exists(/atmosphere_mole_content_of_ozone)</cd:MatchExpression>
       </cd:DetectionRule>
     </cd:ProductDefinition>
   </cd:ProductType>
@@ -168,7 +168,7 @@
       <cd:DetectionRule>
         <cd:MatchExpression>substr(0, 12, filename()) == "ESACCI-OZONE"</cd:MatchExpression>
         <cd:MatchExpression>substr(13, 5, filename()) == "L4-NP"</cd:MatchExpression>
-        <cd:MatchExpression path="/O3_dens">true</cd:MatchExpression>
+        <cd:MatchExpression>exists(/O3_dens)</cd:MatchExpression>
       </cd:DetectionRule>
     </cd:ProductDefinition>
     <cd:ProductDefinition id="L4_NP_nc4" format="hdf5" version="4">
@@ -176,7 +176,7 @@
       <cd:DetectionRule>
         <cd:MatchExpression>substr(0, 12, filename()) == "ESACCI-OZONE"</cd:MatchExpression>
         <cd:MatchExpression>substr(13, 5, filename()) == "L4-NP"</cd:MatchExpression>
-        <cd:MatchExpression path="/O3_dens">true</cd:MatchExpression>
+        <cd:MatchExpression>exists(/O3_dens)</cd:MatchExpression>
       </cd:DetectionRule>
     </cd:ProductDefinition>
   </cd:ProductType>
