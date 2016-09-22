@@ -1136,62 +1136,118 @@ void harp_product_remove_all_variables(harp_product *product)
 int harp_product_get_datetime_range(const harp_product *product, double *datetime_start, double *datetime_stop)
 {
     harp_dimension_type dimension_type[1] = { harp_dimension_time };
+    harp_variable *mid_datetime = NULL;
     harp_variable *datetime;
-    double start;
-    double stop;
     long i;
-
-    if (harp_product_get_derived_variable(product, "datetime", "days since 2000-01-01", 1, dimension_type, &datetime)
-        != 0)
-    {
-        return -1;
-    }
-
-    if (harp_variable_convert_data_type(datetime, harp_type_double) != 0)
-    {
-        harp_variable_delete(datetime);
-        return -1;
-    }
-
-    start = harp_plusinf();
-    stop = harp_mininf();
-    for (i = 0; i < datetime->num_elements; i++)
-    {
-        const double value = datetime->data.double_data[i];
-
-        if (harp_isnan(value) || value < datetime->valid_min.double_data || value > datetime->valid_max.double_data)
-        {
-            continue;
-        }
-
-        if (value < start)
-        {
-            start = value;
-        }
-
-        if (value > stop)
-        {
-            stop = value;
-        }
-    }
-
-    if (harp_isnan(start) || start < datetime->valid_min.double_data || start > datetime->valid_max.double_data
-        || harp_isnan(stop) || stop < datetime->valid_min.double_data || stop > datetime->valid_max.double_data)
-    {
-        harp_set_error(HARP_ERROR_INVALID_ARGUMENT, "cannot determine valid datetime range");
-        return -1;
-    }
-
-    harp_variable_delete(datetime);
 
     if (datetime_start != NULL)
     {
+        double start = harp_plusinf();
+
+        if (harp_product_get_derived_variable(product, "datetime_start", "days since 2000-01-01", 1, dimension_type,
+                                              &datetime) != 0)
+        {
+            if (harp_product_get_derived_variable(product, "datetime", "days since 2000-01-01", 1, dimension_type,
+                                                  &datetime) != 0)
+            {
+                return -1;
+            }
+            mid_datetime = datetime;
+        }
+        if (harp_variable_convert_data_type(datetime, harp_type_double) != 0)
+        {
+            harp_variable_delete(datetime);
+            return -1;
+        }
+
+        start = harp_plusinf();
+        for (i = 0; i < datetime->num_elements; i++)
+        {
+            const double value = datetime->data.double_data[i];
+
+            if (harp_isnan(value) || value < datetime->valid_min.double_data || value > datetime->valid_max.double_data)
+            {
+                continue;
+            }
+
+            if (value < start)
+            {
+                start = value;
+            }
+        }
+
+        if (harp_isnan(start) || start < datetime->valid_min.double_data || start > datetime->valid_max.double_data)
+        {
+            harp_variable_delete(datetime);
+            harp_set_error(HARP_ERROR_INVALID_ARGUMENT, "cannot determine valid start value for datetime range");
+            return -1;
+        }
+
         *datetime_start = start;
+
+        if (mid_datetime == NULL)
+        {
+            harp_variable_delete(datetime);
+        }
     }
 
     if (datetime_stop != NULL)
     {
+        double stop = harp_mininf();
+
+        if (harp_product_get_derived_variable(product, "datetime_stop", "days since 2000-01-01", 1, dimension_type,
+                                              &datetime) != 0)
+        {
+            if (mid_datetime != NULL)
+            {
+                datetime = mid_datetime;
+            }
+            else if (harp_product_get_derived_variable(product, "datetime", "days since 2000-01-01", 1, dimension_type,
+                                                       &datetime) != 0)
+            {
+                return -1;
+            }
+        }
+        if (harp_variable_convert_data_type(datetime, harp_type_double) != 0)
+        {
+            harp_variable_delete(datetime);
+            return -1;
+        }
+
+        stop = harp_mininf();
+        for (i = 0; i < datetime->num_elements; i++)
+        {
+            const double value = datetime->data.double_data[i];
+
+            if (harp_isnan(value) || value < datetime->valid_min.double_data || value > datetime->valid_max.double_data)
+            {
+                continue;
+            }
+
+            if (value > stop)
+            {
+                stop = value;
+            }
+        }
+
+        if (harp_isnan(stop) || stop < datetime->valid_min.double_data || stop > datetime->valid_max.double_data)
+        {
+            harp_variable_delete(datetime);
+            harp_set_error(HARP_ERROR_INVALID_ARGUMENT, "cannot determine valid stop value for datetime range");
+            return -1;
+        }
+
         *datetime_stop = stop;
+
+        if (mid_datetime == NULL)
+        {
+            harp_variable_delete(datetime);
+        }
+    }
+
+    if (mid_datetime != NULL)
+    {
+        harp_variable_delete(mid_datetime);
     }
 
     return 0;
