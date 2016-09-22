@@ -22,10 +22,6 @@
 #include "harp-constants.h"
 #include "harp-geometry.h"
 
-/* Define the angles [degrees] for day-twilight and twilight-night (use 'atronomical' twilight) */
-#define HARP_SOLAR_ZENITH_ANGLE_LIMIT_DAY_TWILIGHT  (90.0)
-#define HARP_SOLAR_ZENITH_ANGLE_LIMIT_TWILIGHT_NIGHT (108.0)
-
 /** Check whether two ranges overlap, and if this is the case an overlapping percentage is returned.
  * The ranges must consist of a positive minimum and maximum.
  *
@@ -273,42 +269,6 @@ static double get_solar_declination_angle_from_datetime(double datetime)
     return solar_declination_angle;
 }
 
-/** Determine whether measurement was taken during day or during night based on solar zenith angle.
- * \param datetime  Datetime [s since 2000-01-01] (using UTC timezone)
- * \param longitude  Longitude [degree_east]
- * \return
- *   \arg \c AM, The measurement was taken between 00:00 and 12:00.
- *   \arg \c PM, The measurement was taken between 12:00 and 24:00.
- */
-const char *harp_daytime_ampm_from_datetime_and_longitude(double datetime, double longitude)
-{
-    while (longitude < 180)
-    {
-        longitude += 360;
-    }
-    while (longitude > 180)
-    {
-        longitude -= 360;
-    }
-
-    /* convert UTC to localtime */
-    datetime += longitude * 24 * 60 * 60 / 360.0;
-
-    /* determine day fraction by rounding to 12 hours and checking whether result is even/odd */
-    return (((long)(datetime / (12 * 60 * 60))) % 2 == 0) ? "AM" : "PM";
-}
-
-/** Determine whether measurement was taken during day or during night based on solar zenith angle.
- * \param solar_zenith_angle  Solar zenith angle [degree]
- * \return
- *   \arg \c 1, The measurement was taken during the day.
- *   \arg \c 0, The measurement was taken during the night.
- */
-int harp_daytime_from_solar_zenith_angle(double solar_zenith_angle)
-{
-    return (solar_zenith_angle <= HARP_SOLAR_ZENITH_ANGLE_LIMIT_DAY_TWILIGHT);
-}
-
 /** Convert (electromagnetic wave) wavelength to (electromagnetic wave) frequency
  * \param wavelength      Wavelength [nm]
  * \return the frequency [Hz]
@@ -359,27 +319,6 @@ double harp_gravity_from_latitude_and_height(double latitude, double height)
 
     return harp_gravity_at_surface_from_latitude(latitude) *
         (1 - (2 * (1 + f + m - 2 * f * sinphi * sinphi) * height + 3 * height / a) * height / a);
-}
-
-/** Determine whether measurement was taken during day, during twilight or during night based on solar zenith angle.
- * \param solar_zenith_angle  Solar zenith angle [degree]
- * \return the illumination condition as string "day", "twilight", or "night"
- */
-const char *harp_illumination_condition_from_solar_zenith_angle(double solar_zenith_angle)
-{
-    if (solar_zenith_angle < HARP_SOLAR_ZENITH_ANGLE_LIMIT_DAY_TWILIGHT)
-    {
-        return "day";
-    }
-    else if (solar_zenith_angle >= HARP_SOLAR_ZENITH_ANGLE_LIMIT_DAY_TWILIGHT &&
-             solar_zenith_angle < HARP_SOLAR_ZENITH_ANGLE_LIMIT_TWILIGHT_NIGHT)
-    {
-        return "twilight";
-    }
-    else
-    {
-        return "night";
-    }
 }
 
 /* Calculate the local curvature radius Rsurf at the Earth's surface for a given latitude

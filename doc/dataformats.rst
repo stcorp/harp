@@ -227,8 +227,6 @@ datetime_length
 datetime_start
 datetime_stop
 density                                                                       X       X    X             this is the mass density
-flag_am_pm                                                                                               string variable with either 'am' or 'pm'
-flag_day_twilight_night                                                                                  string variable with either 'day', 'twilight', or 'night'
 frequency                                                                     X
 geopotential                                  surface                         X       X    X
 geopotential_height                           surface                         X       X    X

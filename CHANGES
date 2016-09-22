@@ -52,6 +52,10 @@
 * Added derived variable conversion from time independent to time dependent
   for instrument_latitude, instrument_longitude, and instrument_altitude.
 
+* Removed variables flag_am_pm and flag_day_twilight_night and the conversions
+  for flag_am_pm, flag_day_twilight_night, and flag_daytime. These conditions
+  can all be determined by directly comparing against the solar angles.
+
 * Added support for ingestion of ECMF GRIB data.
 
 * Added 'species' ingestion option to the MIPAS L2 ingestion.

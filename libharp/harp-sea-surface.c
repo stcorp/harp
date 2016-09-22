@@ -171,13 +171,9 @@ double harp_sea_surface_temperature_skin_from_subskin_wind_speed_and_solar_zenit
                                                                                         double solar_zenith_angle)
 {
     double sst_skin;
-    int daytime;
-
-    /* Determine whether measurement was taken during day or night */
-    daytime = harp_daytime_from_solar_zenith_angle(solar_zenith_angle);
 
     /* Impose limit */
-    if (daytime && wind_speed < 6.0)
+    if (solar_zenith_angle <= 90.0 && wind_speed < 6.0)
     {
         wind_speed = 6.0;
     }
@@ -198,12 +194,9 @@ double harp_sea_surface_temperature_subskin_from_skin_wind_speed_and_solar_zenit
     (double sst_skin, double wind_speed, double solar_zenith_angle)
 {
     double sst_subskin; /* Skin sea surface temperature [K] */
-    int daytime;
 
-    /* Determine whether measurement was taken during day or night */
-    daytime = harp_daytime_from_solar_zenith_angle(solar_zenith_angle);
     /* Impose limit */
-    if (daytime && wind_speed < 6.0)
+    if (solar_zenith_angle <= 90.0 && wind_speed < 6.0)
     {
         wind_speed = 6.0;
     }

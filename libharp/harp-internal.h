@@ -209,14 +209,11 @@ int harp_determine_overlapping_scenario(double xmin_a, double xmax_a,
                                         harp_overlapping_scenario *new_overlapping_scenario);
 double harp_fraction_of_day_from_datetime(double datetime);
 double harp_fraction_of_year_from_datetime(double datetime);
-const char *harp_daytime_ampm_from_datetime_and_longitude(double datetime, double longitude);
-int harp_daytime_from_solar_zenith_angle(double solar_zenith_angle);
 
 double harp_frequency_from_wavelength(double wavelength);
 double harp_frequency_from_wavenumber(double wavenumber);
 double harp_gravity_at_surface_from_latitude(double latitude);
 double harp_gravity_from_latitude_and_height(double latitude, double height);
-const char *harp_illumination_condition_from_solar_zenith_angle(double solar_zenith_angle);
 double harp_local_curvature_radius_at_surface_from_latitude(double latitude);
 double harp_normalized_radiance_from_radiance_and_solar_irradiance(double radiance, double solar_irradiance);
 double harp_normalized_radiance_from_reflectance_and_solar_zenith_angle(double reflectance, double solar_zenith_angle);

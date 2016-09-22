@@ -186,40 +186,6 @@ static int get_copy(harp_variable *variable, const harp_variable **source_variab
     return 0;
 }
 
-static int get_daytime_ampm_from_longitude(harp_variable *variable, const harp_variable **source_variable)
-{
-    long i;
-
-    for (i = 0; i < variable->num_elements; i++)
-    {
-        const char *flag;
-
-        flag = harp_daytime_ampm_from_datetime_and_longitude(source_variable[0]->data.double_data[i],
-                                                             source_variable[1]->data.double_data[i]);
-        variable->data.string_data[i] = strdup(flag);
-        if (variable->data.string_data[i] == NULL)
-        {
-            harp_set_error(HARP_ERROR_OUT_OF_MEMORY, "out of memory (could not duplicate string) (%s:%u)", __FILE__,
-                           __LINE__);
-            return -1;
-        }
-    }
-
-    return 0;
-}
-
-static int get_daytime_from_solar_zenith_angle(harp_variable *variable, const harp_variable **source_variable)
-{
-    long i;
-
-    for (i = 0; i < variable->num_elements; i++)
-    {
-        variable->data.int8_data[i] = harp_daytime_from_solar_zenith_angle(source_variable[0]->data.double_data[i]);
-    }
-
-    return 0;
-}
-
 static int get_density_from_nd_for_air(harp_variable *variable, const harp_variable **source_variable)
 {
     long i;
@@ -410,29 +376,6 @@ static int get_gph_from_geopotential(harp_variable *variable, const harp_variabl
     for (i = 0; i < variable->num_elements; i++)
     {
         variable->data.double_data[i] = harp_gph_from_geopotential(source_variable[0]->data.double_data[i]);
-    }
-
-    return 0;
-}
-
-static int get_illumination_condition_from_solar_zenith_angle(harp_variable *variable,
-                                                              const harp_variable **source_variable)
-{
-    int i;
-
-    for (i = 0; i < variable->num_elements; i++)
-    {
-        const char *illumination_condition;
-
-        illumination_condition =
-            harp_illumination_condition_from_solar_zenith_angle(source_variable[0]->data.double_data[i]);
-        variable->data.string_data[i] = strdup(illumination_condition);
-        if (variable->data.string_data[i] == NULL)
-        {
-            harp_set_error(HARP_ERROR_OUT_OF_MEMORY, "out of memory (could not duplicate string) (%s:%u)", __FILE__,
-                           __LINE__);
-            return -1;
-        }
     }
 
     return 0;
@@ -4507,72 +4450,6 @@ static int add_misc_conversions(void)
     if (harp_variable_conversion_new("index", harp_type_int32, NULL, 1, dimension_type, 0, get_index, &conversion) != 0)
     {
         return -1;
-    }
-
-    /*** flag_am_pm ***/
-
-    if (add_time_indepedent_to_dependent_conversion("flag_am_pm", harp_type_string, NULL, 1, dimension_type, 0) != 0)
-    {
-        return -1;
-    }
-    for (i = 0; i < 2; i++)
-    {
-        if (harp_variable_conversion_new("flag_am_pm", harp_type_string, NULL, i, dimension_type, 0,
-                                         get_daytime_ampm_from_longitude, &conversion) != 0)
-        {
-            return -1;
-        }
-        if (harp_variable_conversion_add_source(conversion, "datetime", harp_type_double, HARP_UNIT_DATETIME, i,
-                                                dimension_type, 0) != 0)
-        {
-            return -1;
-        }
-        if (harp_variable_conversion_add_source(conversion, "longitude", harp_type_double, HARP_UNIT_LONGITUDE, i,
-                                                dimension_type, 0) != 0)
-        {
-            return -1;
-        }
-    }
-
-    /*** flag_day_twilight_night ***/
-
-    if (add_time_indepedent_to_dependent_conversion("flag_day_twilight_night", harp_type_string, NULL, 1,
-                                                    dimension_type, 0) != 0)
-    {
-        return -1;
-    }
-    for (i = 0; i < 2; i++)
-    {
-        if (harp_variable_conversion_new("flag_day_twilight_night", harp_type_string, NULL, i, dimension_type, 0,
-                                         get_illumination_condition_from_solar_zenith_angle, &conversion) != 0)
-        {
-            return -1;
-        }
-        if (harp_variable_conversion_add_source(conversion, "solar_zenith_angle", harp_type_double, HARP_UNIT_ANGLE, i,
-                                                dimension_type, 0) != 0)
-        {
-            return -1;
-        }
-    }
-
-    /*** flag_daytime ***/
-
-    if (add_time_indepedent_to_dependent_conversion("flag_daytime", harp_type_string, NULL, 1, dimension_type, 0) != 0)
-    {
-        return -1;
-    }
-    for (i = 0; i < 2; i++)
-    {
-        if (harp_variable_conversion_new("flag_daytime", harp_type_string, NULL, i, dimension_type, 0,
-                                         get_daytime_from_solar_zenith_angle, &conversion) != 0)
-        {
-            return -1;
-        }
-        if (harp_variable_conversion_add_source(conversion, "solar_zenith_angle", harp_type_double, HARP_UNIT_ANGLE, i,
-                                                dimension_type, 0) != 0)
-        {
-            return -1;
-        }
     }
 
     /*** sensor_altitude ***/
