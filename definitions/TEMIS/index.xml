@@ -1,0 +1,24 @@
+<?xml version="1.0"?>
+<cd:ProductClass name="TEMIS" last-modified="2016-09-23" xmlns:cd="http://www.stcorp.nl/coda/definition/2008/07">
+  <cd:Description>TEMIS products</cd:Description>
+  <cd:ProductType name="o3field">
+    <cd:Description>Assimilated Ozone Field</cd:Description>
+    <cd:ProductDefinition id="o3field" format="hdf4" version="0">
+      <cd:Description>The format definition for this product is taken from the HDF4 file itself.</cd:Description>
+      <cd:DetectionRule>
+        <cd:MatchExpression>str(/@Data_created_by,7) == "TM3-DAM"</cd:MatchExpression>
+        <cd:MatchExpression>exists(/O3_column)</cd:MatchExpression>
+      </cd:DetectionRule>
+    </cd:ProductDefinition>
+  </cd:ProductType>
+  <cd:ProductType name="o3mean">
+    <cd:Description>Monthly Mean Ozone</cd:Description>
+    <cd:ProductDefinition id="o3mean" format="hdf4" version="0">
+      <cd:Description>The format definition for this product is taken from the HDF4 file itself.</cd:Description>
+      <cd:DetectionRule>
+        <cd:MatchExpression>str(/@Data_created_by,7) == "TM3-DAM"</cd:MatchExpression>
+        <cd:MatchExpression>exists(/Average_O3_column)</cd:MatchExpression>
+      </cd:DetectionRule>
+    </cd:ProductDefinition>
+  </cd:ProductType>
+</cd:ProductClass>

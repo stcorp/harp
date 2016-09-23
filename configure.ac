@@ -199,6 +199,7 @@ ST_CODADEF_VERSION([$srcdir/definitions],[GEOMS])
 ST_CODADEF_VERSION([$srcdir/definitions],[GOSAT])
 ST_CODADEF_VERSION([$srcdir/definitions],[O3MSAF])
 ST_CODADEF_VERSION([$srcdir/definitions],[Sentinel5P])
+ST_CODADEF_VERSION([$srcdir/definitions],[TEMIS])
 
 # *** checks for programs ***
 

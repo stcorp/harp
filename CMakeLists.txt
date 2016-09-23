@@ -561,6 +561,7 @@ add_codadef(GEOMS)
 add_codadef(GOSAT)
 add_codadef(O3MSAF)
 add_codadef(Sentinel5P)
+add_codadef(TEMIS)
 
 # documentation
 if(WIN32)
