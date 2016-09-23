@@ -7,13 +7,13 @@
       <cd:Description>The format definition for this product is taken from the HDF5 file itself.</cd:Description>
       <cd:DetectionRule>
         <cd:MatchExpression path="/HDFEOS/ADDITIONAL/FILE_ATTRIBUTES">str(.@InstrumentName) == "TES"</cd:MatchExpression>
-        <cd:MatchExpression path="/HDFEOS/ADDITIONAL/FILE_ATTRIBUTES">str(.@ProcessLevel,1) == "2"</cd:MatchExpression>
-        <cd:MatchExpression path="/HDFEOS/SWATHS/CH4NadirSwath">true</cd:MatchExpression>
+        <cd:MatchExpression>str(.@ProcessLevel,1) == "2"</cd:MatchExpression>
+        <cd:MatchExpression path="/HDFEOS/SWATHS">exists(./CH4NadirSwath)</cd:MatchExpression>
       </cd:DetectionRule>
       <cd:DetectionRule>
         <cd:MatchExpression path="/HDFEOS/ADDITIONAL/FILE_ATTRIBUTES">str(.@InstrumentName) == "TES"</cd:MatchExpression>
-        <cd:MatchExpression path="/HDFEOS/ADDITIONAL/FILE_ATTRIBUTES">str(.@ProcessLevel,2) == "L2"</cd:MatchExpression>
-        <cd:MatchExpression path="/HDFEOS/SWATHS/CH4NadirSwath">true</cd:MatchExpression>
+        <cd:MatchExpression>str(.@ProcessLevel,2) == "L2"</cd:MatchExpression>
+        <cd:MatchExpression path="/HDFEOS/SWATHS">exists(./CH4NadirSwath)</cd:MatchExpression>
       </cd:DetectionRule>
     </cd:ProductDefinition>
   </cd:ProductType>
@@ -23,13 +23,13 @@
       <cd:Description>The format definition for this product is taken from the HDF5 file itself.</cd:Description>
       <cd:DetectionRule>
         <cd:MatchExpression path="/HDFEOS/ADDITIONAL/FILE_ATTRIBUTES">str(.@InstrumentName) == "TES"</cd:MatchExpression>
-        <cd:MatchExpression path="/HDFEOS/ADDITIONAL/FILE_ATTRIBUTES">str(.@ProcessLevel,1) == "2"</cd:MatchExpression>
-        <cd:MatchExpression path="/HDFEOS/SWATHS/CONadirSwath">true</cd:MatchExpression>
+        <cd:MatchExpression>str(.@ProcessLevel,1) == "2"</cd:MatchExpression>
+        <cd:MatchExpression path="/HDFEOS/SWATHS">exists(./CONadirSwath)</cd:MatchExpression>
       </cd:DetectionRule>
       <cd:DetectionRule>
         <cd:MatchExpression path="/HDFEOS/ADDITIONAL/FILE_ATTRIBUTES">str(.@InstrumentName) == "TES"</cd:MatchExpression>
-        <cd:MatchExpression path="/HDFEOS/ADDITIONAL/FILE_ATTRIBUTES">str(.@ProcessLevel,2) == "L2"</cd:MatchExpression>
-        <cd:MatchExpression path="/HDFEOS/SWATHS/CONadirSwath">true</cd:MatchExpression>
+        <cd:MatchExpression>str(.@ProcessLevel,2) == "L2"</cd:MatchExpression>
+        <cd:MatchExpression path="/HDFEOS/SWATHS">exists(./CONadirSwath)</cd:MatchExpression>
       </cd:DetectionRule>
     </cd:ProductDefinition>
   </cd:ProductType>
@@ -39,13 +39,13 @@
       <cd:Description>The format definition for this product is taken from the HDF5 file itself.</cd:Description>
       <cd:DetectionRule>
         <cd:MatchExpression path="/HDFEOS/ADDITIONAL/FILE_ATTRIBUTES">str(.@InstrumentName) == "TES"</cd:MatchExpression>
-        <cd:MatchExpression path="/HDFEOS/ADDITIONAL/FILE_ATTRIBUTES">str(.@ProcessLevel,1) == "2"</cd:MatchExpression>
-        <cd:MatchExpression path="/HDFEOS/SWATHS/H2ONadirSwath">true</cd:MatchExpression>
+        <cd:MatchExpression>str(.@ProcessLevel,1) == "2"</cd:MatchExpression>
+        <cd:MatchExpression path="/HDFEOS/SWATHS">exists(./H2ONadirSwath)</cd:MatchExpression>
       </cd:DetectionRule>
       <cd:DetectionRule>
         <cd:MatchExpression path="/HDFEOS/ADDITIONAL/FILE_ATTRIBUTES">str(.@InstrumentName) == "TES"</cd:MatchExpression>
-        <cd:MatchExpression path="/HDFEOS/ADDITIONAL/FILE_ATTRIBUTES">str(.@ProcessLevel,2) == "L2"</cd:MatchExpression>
-        <cd:MatchExpression path="/HDFEOS/SWATHS/H2ONadirSwath">true</cd:MatchExpression>
+        <cd:MatchExpression>str(.@ProcessLevel,2) == "L2"</cd:MatchExpression>
+        <cd:MatchExpression path="/HDFEOS/SWATHS">exists(./H2ONadirSwath)</cd:MatchExpression>
       </cd:DetectionRule>
     </cd:ProductDefinition>
   </cd:ProductType>
@@ -55,13 +55,13 @@
       <cd:Description>The format definition for this product is taken from the HDF5 file itself.</cd:Description>
       <cd:DetectionRule>
         <cd:MatchExpression path="/HDFEOS/ADDITIONAL/FILE_ATTRIBUTES">str(.@InstrumentName) == "TES"</cd:MatchExpression>
-        <cd:MatchExpression path="/HDFEOS/ADDITIONAL/FILE_ATTRIBUTES">str(.@ProcessLevel,1) == "2"</cd:MatchExpression>
-        <cd:MatchExpression path="/HDFEOS/SWATHS/O3NadirSwath">true</cd:MatchExpression>
+        <cd:MatchExpression>str(.@ProcessLevel,1) == "2"</cd:MatchExpression>
+        <cd:MatchExpression path="/HDFEOS/SWATHS">exists(./O3NadirSwath)</cd:MatchExpression>
       </cd:DetectionRule>
       <cd:DetectionRule>
         <cd:MatchExpression path="/HDFEOS/ADDITIONAL/FILE_ATTRIBUTES">str(.@InstrumentName) == "TES"</cd:MatchExpression>
-        <cd:MatchExpression path="/HDFEOS/ADDITIONAL/FILE_ATTRIBUTES">str(.@ProcessLevel,2) == "L2"</cd:MatchExpression>
-        <cd:MatchExpression path="/HDFEOS/SWATHS/O3NadirSwath">true</cd:MatchExpression>
+        <cd:MatchExpression>str(.@ProcessLevel,2) == "L2"</cd:MatchExpression>
+        <cd:MatchExpression path="/HDFEOS/SWATHS">exists(./O3NadirSwath)</cd:MatchExpression>
       </cd:DetectionRule>
     </cd:ProductDefinition>
   </cd:ProductType>
@@ -71,13 +71,13 @@
       <cd:Description>The format definition for this product is taken from the HDF5 file itself.</cd:Description>
       <cd:DetectionRule>
         <cd:MatchExpression path="/HDFEOS/ADDITIONAL/FILE_ATTRIBUTES">str(.@InstrumentName) == "TES"</cd:MatchExpression>
-        <cd:MatchExpression path="/HDFEOS/ADDITIONAL/FILE_ATTRIBUTES">str(.@ProcessLevel,1) == "2"</cd:MatchExpression>
-        <cd:MatchExpression path="/HDFEOS/SWATHS/TATMNadirSwath">true</cd:MatchExpression>
+        <cd:MatchExpression>str(.@ProcessLevel,1) == "2"</cd:MatchExpression>
+        <cd:MatchExpression path="/HDFEOS/SWATHS">exists(./TATMNadirSwath)</cd:MatchExpression>
       </cd:DetectionRule>
       <cd:DetectionRule>
         <cd:MatchExpression path="/HDFEOS/ADDITIONAL/FILE_ATTRIBUTES">str(.@InstrumentName) == "TES"</cd:MatchExpression>
-        <cd:MatchExpression path="/HDFEOS/ADDITIONAL/FILE_ATTRIBUTES">str(.@ProcessLevel,2) == "L2"</cd:MatchExpression>
-        <cd:MatchExpression path="/HDFEOS/SWATHS/TATMNadirSwath">true</cd:MatchExpression>
+        <cd:MatchExpression>str(.@ProcessLevel,2) == "L2"</cd:MatchExpression>
+        <cd:MatchExpression path="/HDFEOS/SWATHS">exists(./TATMNadirSwath)</cd:MatchExpression>
       </cd:DetectionRule>
     </cd:ProductDefinition>
   </cd:ProductType>

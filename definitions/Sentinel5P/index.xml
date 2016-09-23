@@ -1,5 +1,5 @@
 <?xml version="1.0"?>
-<cd:ProductClass name="Sentinel5P" last-modified="2016-09-16" xmlns:cd="http://www.stcorp.nl/coda/definition/2008/07">
+<cd:ProductClass name="Sentinel5P" last-modified="2016-09-22" xmlns:cd="http://www.stcorp.nl/coda/definition/2008/07">
   <cd:Description>Sentinel-5P products</cd:Description>
   <cd:ProductType name="L1B_RA_BD1">
     <cd:Description>Sentinel 5P L1b Radiance product band 1 (UV detector)</cd:Description>
@@ -8,7 +8,7 @@
       <cd:DetectionRule>
         <cd:MatchExpression>substr(0,3,filename())=="S5P"</cd:MatchExpression>
         <cd:MatchExpression>substr(9,10,filename())=="L1B_RA_BD1"</cd:MatchExpression>
-        <cd:MatchExpression path="/BAND1_RADIANCE">true</cd:MatchExpression>
+        <cd:MatchExpression>exists(/BAND1_RADIANCE)</cd:MatchExpression>
       </cd:DetectionRule>
     </cd:ProductDefinition>
   </cd:ProductType>
@@ -19,7 +19,7 @@
       <cd:DetectionRule>
         <cd:MatchExpression>substr(0,3,filename())=="S5P"</cd:MatchExpression>
         <cd:MatchExpression>substr(9,10,filename())=="L1B_RA_BD2"</cd:MatchExpression>
-        <cd:MatchExpression path="/BAND2_RADIANCE">true</cd:MatchExpression>
+        <cd:MatchExpression>exists(/BAND2_RADIANCE)</cd:MatchExpression>
       </cd:DetectionRule>
     </cd:ProductDefinition>
   </cd:ProductType>
@@ -30,7 +30,7 @@
       <cd:DetectionRule>
         <cd:MatchExpression>substr(0,3,filename())=="S5P"</cd:MatchExpression>
         <cd:MatchExpression>substr(9,10,filename())=="L1B_RA_BD3"</cd:MatchExpression>
-        <cd:MatchExpression path="/BAND3_RADIANCE">true</cd:MatchExpression>
+        <cd:MatchExpression>exists(/BAND3_RADIANCE)</cd:MatchExpression>
       </cd:DetectionRule>
     </cd:ProductDefinition>
   </cd:ProductType>
@@ -41,7 +41,7 @@
       <cd:DetectionRule>
         <cd:MatchExpression>substr(0,3,filename())=="S5P"</cd:MatchExpression>
         <cd:MatchExpression>substr(9,10,filename())=="L1B_RA_BD4"</cd:MatchExpression>
-        <cd:MatchExpression path="/BAND4_RADIANCE">true</cd:MatchExpression>
+        <cd:MatchExpression>exists(/BAND4_RADIANCE)</cd:MatchExpression>
       </cd:DetectionRule>
     </cd:ProductDefinition>
   </cd:ProductType>
@@ -52,7 +52,7 @@
       <cd:DetectionRule>
         <cd:MatchExpression>substr(0,3,filename())=="S5P"</cd:MatchExpression>
         <cd:MatchExpression>substr(9,10,filename())=="L1B_RA_BD5"</cd:MatchExpression>
-        <cd:MatchExpression path="/BAND5_RADIANCE">true</cd:MatchExpression>
+        <cd:MatchExpression>exists(/BAND5_RADIANCE)</cd:MatchExpression>
       </cd:DetectionRule>
     </cd:ProductDefinition>
   </cd:ProductType>
@@ -63,7 +63,7 @@
       <cd:DetectionRule>
         <cd:MatchExpression>substr(0,3,filename())=="S5P"</cd:MatchExpression>
         <cd:MatchExpression>substr(9,10,filename())=="L1B_RA_BD6"</cd:MatchExpression>
-        <cd:MatchExpression path="/BAND6_RADIANCE">true</cd:MatchExpression>
+        <cd:MatchExpression>exists(/BAND6_RADIANCE)</cd:MatchExpression>
       </cd:DetectionRule>
     </cd:ProductDefinition>
   </cd:ProductType>
@@ -74,7 +74,7 @@
       <cd:DetectionRule>
         <cd:MatchExpression>substr(0,3,filename())=="S5P"</cd:MatchExpression>
         <cd:MatchExpression>substr(9,10,filename())=="L1B_RA_BD7"</cd:MatchExpression>
-        <cd:MatchExpression path="/BAND7_RADIANCE">true</cd:MatchExpression>
+        <cd:MatchExpression>exists(/BAND7_RADIANCE)</cd:MatchExpression>
       </cd:DetectionRule>
     </cd:ProductDefinition>
   </cd:ProductType>
@@ -85,7 +85,7 @@
       <cd:DetectionRule>
         <cd:MatchExpression>substr(0,3,filename())=="S5P"</cd:MatchExpression>
         <cd:MatchExpression>substr(9,10,filename())=="L1B_RA_BD8"</cd:MatchExpression>
-        <cd:MatchExpression path="/BAND8_RADIANCE">true</cd:MatchExpression>
+        <cd:MatchExpression>exists(/BAND8_RADIANCE)</cd:MatchExpression>
       </cd:DetectionRule>
     </cd:ProductDefinition>
   </cd:ProductType>
@@ -144,9 +144,9 @@
     <cd:ProductDefinition id="L2__O3__PR" format="hdf5" version="0">
       <cd:Description>The format definition for this product is taken from the netCDF4 file itself.</cd:Description>
       <cd:DetectionRule>
-        <cd:MatchExpression path="/METADATA/GRANULE_DESCRIPTION@InstrumentName">str(.)=="TROPOMI"</cd:MatchExpression>
-        <cd:MatchExpression path="/METADATA/GRANULE_DESCRIPTION@MissionShortName">str(.)=="S5P"</cd:MatchExpression>
-        <cd:MatchExpression path="/METADATA/GRANULE_DESCRIPTION@ProductShortName">str(.)=="L2__O3__PR"</cd:MatchExpression>
+        <cd:MatchExpression path="/METADATA/GRANULE_DESCRIPTION">str(.@InstrumentName)=="TROPOMI"</cd:MatchExpression>
+        <cd:MatchExpression>str(.@MissionShortName)=="S5P"</cd:MatchExpression>
+        <cd:MatchExpression>str(.@ProductShortName)=="L2__O3__PR"</cd:MatchExpression>
       </cd:DetectionRule>
     </cd:ProductDefinition>
   </cd:ProductType>
@@ -155,9 +155,9 @@
     <cd:ProductDefinition id="L2__O3_TPR" format="hdf5" version="0">
       <cd:Description>The format definition for this product is taken from the netCDF4 file itself.</cd:Description>
       <cd:DetectionRule>
-        <cd:MatchExpression path="/METADATA/GRANULE_DESCRIPTION@InstrumentName">str(.)=="Tropomi"</cd:MatchExpression>
-        <cd:MatchExpression path="/METADATA/GRANULE_DESCRIPTION@MissionShortName">str(.)=="S5P"</cd:MatchExpression>
-        <cd:MatchExpression path="/METADATA/GRANULE_DESCRIPTION@ProductShortName">str(.)=="L2__O3_TCL"</cd:MatchExpression>
+        <cd:MatchExpression path="/METADATA/GRANULE_DESCRIPTION">str(.@InstrumentName)=="Tropomi"</cd:MatchExpression>
+        <cd:MatchExpression>str(.@MissionShortName)=="S5P"</cd:MatchExpression>
+        <cd:MatchExpression>str(.@ProductShortName)=="L2__O3_TCL"</cd:MatchExpression>
       </cd:DetectionRule>
     </cd:ProductDefinition>
   </cd:ProductType>
@@ -166,9 +166,9 @@
     <cd:ProductDefinition id="L2__O3_TPR" format="hdf5" version="0">
       <cd:Description>The format definition for this product is taken from the netCDF4 file itself.</cd:Description>
       <cd:DetectionRule>
-        <cd:MatchExpression path="/METADATA/GRANULE_DESCRIPTION@InstrumentName">str(.)=="TROPOMI"</cd:MatchExpression>
-        <cd:MatchExpression path="/METADATA/GRANULE_DESCRIPTION@MissionShortName">str(.)=="S5P"</cd:MatchExpression>
-        <cd:MatchExpression path="/METADATA/GRANULE_DESCRIPTION@ProductShortName">str(.)=="L2__O3_TPR"</cd:MatchExpression>
+        <cd:MatchExpression path="/METADATA/GRANULE_DESCRIPTION">str(.@InstrumentName)=="TROPOMI"</cd:MatchExpression>
+        <cd:MatchExpression>str(.@MissionShortName)=="S5P"</cd:MatchExpression>
+        <cd:MatchExpression>str(.@ProductShortName)=="L2__O3_TPR"</cd:MatchExpression>
       </cd:DetectionRule>
     </cd:ProductDefinition>
   </cd:ProductType>
@@ -177,9 +177,9 @@
     <cd:ProductDefinition id="L2__NO2___" format="hdf5" version="0">
       <cd:Description>The format definition for this product is taken from the netCDF4 file itself.</cd:Description>
       <cd:DetectionRule>
-        <cd:MatchExpression path="/METADATA/GRANULE_DESCRIPTION@InstrumentName">str(.)=="TROPOMI"</cd:MatchExpression>
-        <cd:MatchExpression path="/METADATA/GRANULE_DESCRIPTION@MissionShortName">str(.)=="S5P"</cd:MatchExpression>
-        <cd:MatchExpression path="/METADATA/GRANULE_DESCRIPTION@ProductShortName">str(.)=="L2__NO2___"</cd:MatchExpression>
+        <cd:MatchExpression path="/METADATA/GRANULE_DESCRIPTION">str(.@InstrumentName)=="TROPOMI"</cd:MatchExpression>
+        <cd:MatchExpression>str(.@MissionShortName)=="S5P"</cd:MatchExpression>
+        <cd:MatchExpression>str(.@ProductShortName)=="L2__NO2___"</cd:MatchExpression>
       </cd:DetectionRule>
     </cd:ProductDefinition>
   </cd:ProductType>
@@ -188,9 +188,9 @@
     <cd:ProductDefinition id="L2__CO____" format="hdf5" version="0">
       <cd:Description>The format definition for this product is taken from the netCDF4 file itself.</cd:Description>
       <cd:DetectionRule>
-        <cd:MatchExpression path="/METADATA/GRANULE_DESCRIPTION@InstrumentName">str(.)=="TROPOMI"</cd:MatchExpression>
-        <cd:MatchExpression path="/METADATA/GRANULE_DESCRIPTION@MissionShortName">str(.)=="S5P"</cd:MatchExpression>
-        <cd:MatchExpression path="/METADATA/GRANULE_DESCRIPTION@ProductShortName">str(.)=="L2__CO____"</cd:MatchExpression>
+        <cd:MatchExpression path="/METADATA/GRANULE_DESCRIPTION">str(.@InstrumentName)=="TROPOMI"</cd:MatchExpression>
+        <cd:MatchExpression>str(.@MissionShortName)=="S5P"</cd:MatchExpression>
+        <cd:MatchExpression>str(.@ProductShortName)=="L2__CO____"</cd:MatchExpression>
       </cd:DetectionRule>
     </cd:ProductDefinition>
   </cd:ProductType>
@@ -199,9 +199,9 @@
     <cd:ProductDefinition id="L2__CH4___" format="hdf5" version="0">
       <cd:Description>The format definition for this product is taken from the netCDF4 file itself.</cd:Description>
       <cd:DetectionRule>
-        <cd:MatchExpression path="/METADATA/GRANULE_DESCRIPTION@InstrumentName">str(.)=="TROPOMI"</cd:MatchExpression>
-        <cd:MatchExpression path="/METADATA/GRANULE_DESCRIPTION@MissionShortName">str(.)=="S5P"</cd:MatchExpression>
-        <cd:MatchExpression path="/METADATA/GRANULE_DESCRIPTION@ProductShortName">str(.)=="L2__CH4___"</cd:MatchExpression>
+        <cd:MatchExpression path="/METADATA/GRANULE_DESCRIPTION">str(.@InstrumentName)=="TROPOMI"</cd:MatchExpression>
+        <cd:MatchExpression>str(.@MissionShortName)=="S5P"</cd:MatchExpression>
+        <cd:MatchExpression>str(.@ProductShortName)=="L2__CH4___"</cd:MatchExpression>
       </cd:DetectionRule>
     </cd:ProductDefinition>
   </cd:ProductType>
@@ -210,9 +210,9 @@
     <cd:ProductDefinition id="L2__AER_LH" format="hdf5" version="0">
       <cd:Description>The format definition for this product is taken from the netCDF4 file itself.</cd:Description>
       <cd:DetectionRule>
-        <cd:MatchExpression path="/METADATA/GRANULE_DESCRIPTION@InstrumentName">str(.)=="TROPOMI"</cd:MatchExpression>
-        <cd:MatchExpression path="/METADATA/GRANULE_DESCRIPTION@MissionShortName">str(.)=="S5P"</cd:MatchExpression>
-        <cd:MatchExpression path="/METADATA/GRANULE_DESCRIPTION@ProductShortName">str(.)=="L2__AER_LH"</cd:MatchExpression>
+        <cd:MatchExpression path="/METADATA/GRANULE_DESCRIPTION">str(.@InstrumentName)=="TROPOMI"</cd:MatchExpression>
+        <cd:MatchExpression>str(.@MissionShortName)=="S5P"</cd:MatchExpression>
+        <cd:MatchExpression>str(.@ProductShortName)=="L2__AER_LH"</cd:MatchExpression>
       </cd:DetectionRule>
     </cd:ProductDefinition>
   </cd:ProductType>
@@ -221,9 +221,9 @@
     <cd:ProductDefinition id="L2__AER_AI" format="hdf5" version="0">
       <cd:Description>The format definition for this product is taken from the netCDF4 file itself.</cd:Description>
       <cd:DetectionRule>
-        <cd:MatchExpression path="/METADATA/GRANULE_DESCRIPTION@InstrumentName">str(.)=="TROPOMI"</cd:MatchExpression>
-        <cd:MatchExpression path="/METADATA/GRANULE_DESCRIPTION@MissionShortName">str(.)=="S5P"</cd:MatchExpression>
-        <cd:MatchExpression path="/METADATA/GRANULE_DESCRIPTION@ProductShortName">str(.)=="L2__AER_AI"</cd:MatchExpression>
+        <cd:MatchExpression path="/METADATA/GRANULE_DESCRIPTION">str(.@InstrumentName)=="TROPOMI"</cd:MatchExpression>
+        <cd:MatchExpression>str(.@MissionShortName)=="S5P"</cd:MatchExpression>
+        <cd:MatchExpression>str(.@ProductShortName)=="L2__AER_AI"</cd:MatchExpression>
       </cd:DetectionRule>
     </cd:ProductDefinition>
   </cd:ProductType>
@@ -232,9 +232,9 @@
     <cd:ProductDefinition id="L2__CLOUD_" format="hdf5" version="0">
       <cd:Description>The format definition for this product is taken from the netCDF4 file itself.</cd:Description>
       <cd:DetectionRule>
-        <cd:MatchExpression path="/METADATA/GRANULE_DESCRIPTION@InstrumentName">str(.)=="TROPOMI"</cd:MatchExpression>
-        <cd:MatchExpression path="/METADATA/GRANULE_DESCRIPTION@MissionShortName">str(.)=="S5P"</cd:MatchExpression>
-        <cd:MatchExpression path="/METADATA/GRANULE_DESCRIPTION@ProductShortName">str(.)=="L2__CLOUD_"</cd:MatchExpression>
+        <cd:MatchExpression path="/METADATA/GRANULE_DESCRIPTION">str(.@InstrumentName)=="TROPOMI"</cd:MatchExpression>
+        <cd:MatchExpression>str(.@MissionShortName)=="S5P"</cd:MatchExpression>
+        <cd:MatchExpression>str(.@ProductShortName)=="L2__CLOUD_"</cd:MatchExpression>
       </cd:DetectionRule>
     </cd:ProductDefinition>
   </cd:ProductType>
@@ -243,9 +243,9 @@
     <cd:ProductDefinition id="L2__FRESCO" format="hdf5" version="0">
       <cd:Description>The format definition for this product is taken from the netCDF4 file itself.</cd:Description>
       <cd:DetectionRule>
-        <cd:MatchExpression path="/METADATA/GRANULE_DESCRIPTION@InstrumentName">str(.)=="TROPOMI"</cd:MatchExpression>
-        <cd:MatchExpression path="/METADATA/GRANULE_DESCRIPTION@MissionShortName">str(.)=="S5P"</cd:MatchExpression>
-        <cd:MatchExpression path="/METADATA/GRANULE_DESCRIPTION@ProductShortName">str(.)=="L2__FRESCO"</cd:MatchExpression>
+        <cd:MatchExpression path="/METADATA/GRANULE_DESCRIPTION">str(.@InstrumentName)=="TROPOMI"</cd:MatchExpression>
+        <cd:MatchExpression>str(.@MissionShortName)=="S5P"</cd:MatchExpression>
+        <cd:MatchExpression>str(.@ProductShortName)=="L2__FRESCO"</cd:MatchExpression>
       </cd:DetectionRule>
     </cd:ProductDefinition>
   </cd:ProductType>
@@ -254,15 +254,15 @@
     <cd:ProductDefinition id="L2__SO2___" format="hdf5" version="0">
       <cd:Description>The format definition for this product is taken from the netCDF4 file itself.</cd:Description>
       <cd:DetectionRule>
-        <cd:MatchExpression path="/METADATA/GRANULE_DESCRIPTION@InstrumentName">str(.)=="TROPOMI"</cd:MatchExpression>
-        <cd:MatchExpression path="/METADATA/GRANULE_DESCRIPTION@MissionShortName">str(.)=="S5P"</cd:MatchExpression>
-        <cd:MatchExpression path="/METADATA/GRANULE_DESCRIPTION@ProductShortName">str(.)=="L2__SO2___"</cd:MatchExpression>
+        <cd:MatchExpression path="/METADATA/GRANULE_DESCRIPTION">str(.@InstrumentName)=="TROPOMI"</cd:MatchExpression>
+        <cd:MatchExpression>str(.@MissionShortName)=="S5P"</cd:MatchExpression>
+        <cd:MatchExpression>str(.@ProductShortName)=="L2__SO2___"</cd:MatchExpression>
       </cd:DetectionRule>
       <cd:DetectionRule>
         <!-- For now, also support the sample product that had a wrong attribute value -->
-        <cd:MatchExpression path="/METADATA/GRANULE_DESCRIPTION@InstrumentName">str(.)=="TROPOMI"</cd:MatchExpression>
-        <cd:MatchExpression path="/METADATA/GRANULE_DESCRIPTION@MissionShortName">str(.)=="S5P"</cd:MatchExpression>
-        <cd:MatchExpression path="/METADATA/GRANULE_DESCRIPTION@ProductShortName">str(.)=="L2__SO2____"</cd:MatchExpression>
+        <cd:MatchExpression path="/METADATA/GRANULE_DESCRIPTION">str(.@InstrumentName)=="TROPOMI"</cd:MatchExpression>
+        <cd:MatchExpression>str(.@MissionShortName)=="S5P"</cd:MatchExpression>
+        <cd:MatchExpression>str(.@ProductShortName)=="L2__SO2____"</cd:MatchExpression>
       </cd:DetectionRule>
     </cd:ProductDefinition>
   </cd:ProductType>
@@ -271,9 +271,9 @@
     <cd:ProductDefinition id="L2__O3____" format="hdf5" version="0">
       <cd:Description>The format definition for this product is taken from the netCDF4 file itself.</cd:Description>
       <cd:DetectionRule>
-        <cd:MatchExpression path="/METADATA/GRANULE_DESCRIPTION@InstrumentName">str(.)=="TROPOMI"</cd:MatchExpression>
-        <cd:MatchExpression path="/METADATA/GRANULE_DESCRIPTION@MissionShortName">str(.)=="S5P"</cd:MatchExpression>
-        <cd:MatchExpression path="/METADATA/GRANULE_DESCRIPTION@ProductShortName">str(.)=="L2__O3____"</cd:MatchExpression>
+        <cd:MatchExpression path="/METADATA/GRANULE_DESCRIPTION">str(.@InstrumentName)=="TROPOMI"</cd:MatchExpression>
+        <cd:MatchExpression>str(.@MissionShortName)=="S5P"</cd:MatchExpression>
+        <cd:MatchExpression>str(.@ProductShortName)=="L2__O3____"</cd:MatchExpression>
       </cd:DetectionRule>
     </cd:ProductDefinition>
   </cd:ProductType>
@@ -282,9 +282,9 @@
     <cd:ProductDefinition id="L2__HCHO__" format="hdf5" version="0">
       <cd:Description>The format definition for this product is taken from the netCDF4 file itself.</cd:Description>
       <cd:DetectionRule>
-        <cd:MatchExpression path="/METADATA/GRANULE_DESCRIPTION@InstrumentName">str(.)=="TROPOMI"</cd:MatchExpression>
-        <cd:MatchExpression path="/METADATA/GRANULE_DESCRIPTION@MissionShortName">str(.)=="S5P"</cd:MatchExpression>
-        <cd:MatchExpression path="/METADATA/GRANULE_DESCRIPTION@ProductShortName">str(.)=="L2__HCHO__"</cd:MatchExpression>
+        <cd:MatchExpression path="/METADATA/GRANULE_DESCRIPTION">str(.@InstrumentName)=="TROPOMI"</cd:MatchExpression>
+        <cd:MatchExpression>str(.@MissionShortName)=="S5P"</cd:MatchExpression>
+        <cd:MatchExpression>str(.@ProductShortName)=="L2__HCHO__"</cd:MatchExpression>
       </cd:DetectionRule>
     </cd:ProductDefinition>
   </cd:ProductType>
