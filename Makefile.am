@@ -119,6 +119,7 @@ libharp_la_SOURCES = \
 	libharp/harp-ingest-omi_l3.c \
 	libharp/harp-ingest-s5p_l1b.c \
 	libharp/harp-ingest-s5p_l2.c \
+	libharp/harp-ingest-temis.c \
 	libharp/harp-ingest-tes_l2.c \
 	libharp/harp-ingestion.h \
 	libharp/harp-ingestion.c \

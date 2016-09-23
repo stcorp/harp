@@ -302,6 +302,8 @@ HARP_DOCFILES = \
 	doc/html/ingestions/S5P_L2_O3.html \
 	doc/html/ingestions/S5P_L2_O3_PR.html \
 	doc/html/ingestions/S5P_L2_SO2.html \
+	doc/html/ingestions/TEMIS_o3field.html \
+	doc/html/ingestions/TEMIS_o3mean.html \
 	doc/html/ingestions/TES_L2_CH4_Nadir.html \
 	doc/html/ingestions/TES_L2_CO_Nadir.html \
 	doc/html/ingestions/TES_L2_H2O_Nadir.html \
@@ -927,6 +929,10 @@ doc/html/ingestions/S5P_L2_O3.html:
 doc/html/ingestions/S5P_L2_O3_PR.html:
 	$(MAKE) harp_doc
 doc/html/ingestions/S5P_L2_SO2.html:
+	$(MAKE) harp_doc
+doc/html/ingestions/TEMIS_o3field.html:
+	$(MAKE) harp_doc
+doc/html/ingestions/TEMIS_o3mean.html:
 	$(MAKE) harp_doc
 doc/html/ingestions/TES_L2_CH4_Nadir.html:
 	$(MAKE) harp_doc

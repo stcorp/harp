@@ -56,7 +56,7 @@
   for flag_am_pm, flag_day_twilight_night, and flag_daytime. These conditions
   can all be determined by directly comparing against the solar angles.
 
-* Added support for ingestion of ECMF GRIB data.
+* Added support for ingestion of ECMF GRIB and TEMIS assimilated ozone data.
 
 * Added 'species' ingestion option to the MIPAS L2 ingestion.
 
