@@ -4441,7 +4441,6 @@ static int add_misc_conversions(void)
 {
     harp_variable_conversion *conversion;
     harp_dimension_type dimension_type[HARP_MAX_NUM_DIMS];
-    int i;
 
     dimension_type[0] = harp_dimension_time;
 
