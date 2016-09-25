@@ -385,6 +385,7 @@ int harp_ingestion_options_get_option(const harp_ingestion_options *options, con
         return 0;
     }
 
+    harp_set_error(HARP_ERROR_INVALID_ARGUMENT, "ingestion option '%s' is not set", name);
     return -1;
 }
 
@@ -414,6 +415,7 @@ int harp_ingestion_options_remove_option(harp_ingestion_options *options, const 
     index = ingestion_options_get_option_index(options, name);
     if (index == -1)
     {
+        harp_set_error(HARP_ERROR_INVALID_ARGUMENT, "ingestion option %s does not exist", name);
         return -1;
     }
 
