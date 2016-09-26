@@ -3161,15 +3161,16 @@ static int add_conversions_for_grid(int num_dimensions, harp_dimension_type dime
     if (!has_vertical)
     {
         /* time dependent from independent */
-        if (add_time_indepedent_to_dependent_conversion("surface_geopotential_height", harp_type_double, HARP_UNIT_LENGTH,
-                                                        num_dimensions, dimension_type, 0) != 0)
+        if (add_time_indepedent_to_dependent_conversion("surface_geopotential_height", harp_type_double,
+                                                        HARP_UNIT_LENGTH, num_dimensions, dimension_type, 0) != 0)
         {
             return -1;
         }
 
         /* surface gph from surface geopotential */
         if (harp_variable_conversion_new("surface_geopotential_height", harp_type_double, HARP_UNIT_LENGTH,
-                                         num_dimensions, dimension_type, 0, get_gph_from_geopotential, &conversion) != 0)
+                                         num_dimensions, dimension_type, 0, get_gph_from_geopotential,
+                                         &conversion) != 0)
         {
             return -1;
         }
@@ -3248,7 +3249,8 @@ static int add_conversions_for_grid(int num_dimensions, harp_dimension_type dime
         }
 
         /* uncertainties */
-        if (add_uncertainty_conversions("surface_temperature", HARP_UNIT_TEMPERATURE, num_dimensions, dimension_type) != 0)
+        if (add_uncertainty_conversions("surface_temperature", HARP_UNIT_TEMPERATURE, num_dimensions, dimension_type) !=
+            0)
         {
             return -1;
         }

@@ -35,7 +35,7 @@ typedef struct ingest_info_struct
     int format_version;
     long num_time;
     long *coadding_factor;      /* number of geo pixels per mdsr for each mdsr (only for nadir data) */
-    long *num_vertical;         /* (only for profile data) */
+    long *num_vertical; /* (only for profile data) */
 
     int *n_stvec;       /* state vector in partial columns, usually 54 */
     int *n_1;   /* number of fitted main gas species, usually 2 */
@@ -121,7 +121,7 @@ static int init_cursor(ingest_info *info, const char *dsname, coda_cursor **mds_
             }
         }
     }
-    
+
     return 0;
 }
 
@@ -509,7 +509,7 @@ static int init_has_extended_diag(ingest_info *info)
         /* the add_diag field is long enough, so assume it contains the number densities and AKM */
         info->has_extended_diag = 1;
     }
-    
+
     return 0;
 }
 
@@ -646,7 +646,7 @@ static int get_avk_from_add_diag(void *user_data, long index, harp_array data, i
     long i, j, reversed_i, reversed_j, num_elements, conv_position;
     ingest_info *info = (ingest_info *)user_data;
     int avk_position = 2 + info->n_stvec[index] + 2 * info->num_vertical[index] * info->n_1[index] +
-    2 * info->num_vertical[index];
+        2 * info->num_vertical[index];
 
     /* The AVK is given in the add_diag field in partial columns (AVK_pc).
      * To convert these into number density units (scaling), a transformation is done:
@@ -662,7 +662,7 @@ static int get_avk_from_add_diag(void *user_data, long index, harp_array data, i
     {
         /* position of number density conversion factors */
         conv_position = 2 + info->n_stvec[index] + 2 * info->num_vertical[index] * info->n_1[index] +
-        info->num_vertical[index];
+            info->num_vertical[index];
     }
     else
     {
@@ -712,7 +712,7 @@ static int get_avk_from_add_diag(void *user_data, long index, harp_array data, i
         for (j = 0, reversed_j = info->max_num_vertical - 1; j < info->num_vertical[index]; j++, reversed_j--)
         {
             data.double_data[reversed_i * info->max_num_vertical + reversed_j] = add_diag[conv_position + i] /
-            add_diag[conv_position + j] * add_diag[avk_position + i * info->num_vertical[index] + j];
+                add_diag[conv_position + j] * add_diag[avk_position + i * info->num_vertical[index] + j];
         }
         for (j = info->num_vertical[index], reversed_j = info->max_num_vertical - info->num_vertical[index] - 1;
              j < info->max_num_vertical; j++, reversed_j--)
@@ -734,7 +734,7 @@ static int get_avk_from_add_diag(void *user_data, long index, harp_array data, i
             data.double_data[reversed_i * info->max_num_vertical + reversed_j] = coda_NaN();
         }
     }
-    
+
     return 0;
 }
 
@@ -939,7 +939,7 @@ static int get_angle_data(void *user_data, long index, const char *field_name, h
         /* take average */
         *data.double_data = (*data.double_data + value) / 2;
     }
-    
+
     return 0;
 }
 
@@ -1077,7 +1077,7 @@ static int read_latitude(void *user_data, long index, harp_array data)
     }
 
     *data.double_data = latitude[0];
-    
+
     return 0;
 }
 
@@ -1159,7 +1159,7 @@ static int read_longitude(void *user_data, long index, harp_array data)
     }
 
     *data.double_data = longitude[0];
-    
+
     return 0;
 }
 
@@ -1435,7 +1435,7 @@ static int read_longitude_bounds(void *user_data, long index, harp_array data)
             return -1;
         }
     }
-    
+
     return 0;
 }
 
@@ -1650,7 +1650,7 @@ static int read_scan_direction(void *user_data, long index, harp_array data)
             *data.string_data = strdup("forward");
         }
     }
-    
+
     return 0;
 }
 
@@ -1804,7 +1804,7 @@ static int read_nd(void *user_data, long index, harp_array data)
     {
         data.double_data[reversed_i] = coda_NaN();
     }
-    
+
     return 0;
 }
 
@@ -2099,7 +2099,7 @@ static void register_common_nadir_cloud_variables(harp_product_definition *produ
 {
     const char *condition_no_coadding = "No co-adding needed";
     const char *condition_single_scan = "Co-adding needed and all N geolocations are within a single scan (N is not "
-    "divisible by 5)";
+        "divisible by 5)";
     const char *condition_mixed = "Co-adding needed of both forward and backward scan pixels (N is divisible by 5)";
     harp_variable_definition *variable_definition;
     harp_dimension_type dimension_type[2];
@@ -2116,7 +2116,7 @@ static void register_common_nadir_cloud_variables(harp_product_definition *produ
                                                                        harp_type_double, 1, dimension_type, NULL,
                                                                        description, "seconds since 2000-01-01", NULL,
                                                                        read_datetime);
-    snprintf(path, MAX_PATH_LENGTH ,"/%s[]/dsr_time", dataset);
+    snprintf(path, MAX_PATH_LENGTH, "/%s[]/dsr_time", dataset);
     harp_variable_definition_add_mapping(variable_definition, NULL, NULL, path, NULL);
 
     /* datetime_length */
@@ -2124,7 +2124,7 @@ static void register_common_nadir_cloud_variables(harp_product_definition *produ
     variable_definition = harp_ingestion_register_variable_sample_read(product_definition, "datetime_length",
                                                                        harp_type_double, 1, dimension_type, NULL,
                                                                        description, "s", NULL, read_integration_time);
-    snprintf(path, MAX_PATH_LENGTH ,"/%s[]/integr_time", dataset);
+    snprintf(path, MAX_PATH_LENGTH, "/%s[]/integr_time", dataset);
     harp_variable_definition_add_mapping(variable_definition, NULL, NULL, path, NULL);
 
     /* latitude */
@@ -2132,9 +2132,9 @@ static void register_common_nadir_cloud_variables(harp_product_definition *produ
     variable_definition = harp_ingestion_register_variable_sample_read(product_definition, "latitude", harp_type_double,
                                                                        1, dimension_type, NULL, description,
                                                                        "degree_north", NULL, read_latitude);
-    snprintf(path, MAX_PATH_LENGTH ,"/geolocation_nadir[]/cen_coor_nad/latitude");
+    snprintf(path, MAX_PATH_LENGTH, "/geolocation_nadir[]/cen_coor_nad/latitude");
     harp_variable_definition_add_mapping(variable_definition, NULL, condition_no_coadding, path, description);
-    snprintf(path, MAX_PATH_LENGTH ,"/geolocation_nadir[]/cor_coor_nad[]");
+    snprintf(path, MAX_PATH_LENGTH, "/geolocation_nadir[]/cor_coor_nad[]");
     description = "the latitude of the geographic average of cor_coor_nad[2] and cor_coor_nad[3] of the N/2-th pixel";
     harp_variable_definition_add_mapping(variable_definition, NULL, condition_single_scan, path, description);
     snprintf(path, MAX_PATH_LENGTH, "/geolocation_nadir[]/cen_coor_nad, /geolocation_nadir[]/cor_coor_nad[]");
@@ -2148,9 +2148,9 @@ static void register_common_nadir_cloud_variables(harp_product_definition *produ
                                                                        harp_type_double, 1, dimension_type, NULL,
                                                                        description, "degree_east", NULL,
                                                                        read_longitude);
-    snprintf(path, MAX_PATH_LENGTH ,"/geolocation_nadir[]/cen_coor_nad/longitude");
+    snprintf(path, MAX_PATH_LENGTH, "/geolocation_nadir[]/cen_coor_nad/longitude");
     harp_variable_definition_add_mapping(variable_definition, NULL, condition_no_coadding, path, description);
-    snprintf(path, MAX_PATH_LENGTH ,"/geolocation_nadir[]/cor_coor_nad[]");
+    snprintf(path, MAX_PATH_LENGTH, "/geolocation_nadir[]/cor_coor_nad[]");
     description = "the longitude of the geographic average of cor_coor_nad[2] and cor_coor_nad[3] of the N/2-th pixel";
     harp_variable_definition_add_mapping(variable_definition, NULL, condition_single_scan, path, description);
     snprintf(path, MAX_PATH_LENGTH, "/geolocation_nadir[]/cen_coor_nad, /geolocation_nadir[]/cor_coor_nad[]");
@@ -2200,7 +2200,7 @@ static void register_common_nadir_cloud_variables(harp_product_definition *produ
                                                                        harp_type_double, 1, dimension_type, NULL,
                                                                        description, "degree", NULL,
                                                                        read_solar_zenith_angle);
-    snprintf(path, MAX_PATH_LENGTH ,"/geolocation_nadir[]/sol_zen_angle_toa[1]");
+    snprintf(path, MAX_PATH_LENGTH, "/geolocation_nadir[]/sol_zen_angle_toa[1]");
     harp_variable_definition_add_mapping(variable_definition, NULL, condition_no_coadding, path, NULL);
     snprintf(path, MAX_PATH_LENGTH, "/geolocation_nadir[]/sol_zen_angle_toa[2]");
     description = "the value at end of integration time of the N/2-th geolocation";
@@ -2208,7 +2208,7 @@ static void register_common_nadir_cloud_variables(harp_product_definition *produ
     snprintf(path, MAX_PATH_LENGTH,
              "/geolocation_nadir[]/sol_zen_angle_toa[1], /geolocation_nadir[]/sol_zen_angle_toa[2]");
     description = "the average of the value at end of integration time of the second record and the value at middle of "
-    "integration time of the N-th record";
+        "integration time of the N-th record";
     harp_variable_definition_add_mapping(variable_definition, NULL, condition_mixed, path, description);
 
     /* viewing_zenith_angle */
@@ -2217,7 +2217,7 @@ static void register_common_nadir_cloud_variables(harp_product_definition *produ
                                                                        harp_type_double, 1, dimension_type, NULL,
                                                                        description, "degree", NULL,
                                                                        read_los_zenith_angle);
-    snprintf(path, MAX_PATH_LENGTH ,"/geolocation_nadir[]/los_zen_angle_toa[1]");
+    snprintf(path, MAX_PATH_LENGTH, "/geolocation_nadir[]/los_zen_angle_toa[1]");
     harp_variable_definition_add_mapping(variable_definition, NULL, condition_no_coadding, path, NULL);
     snprintf(path, MAX_PATH_LENGTH, "/geolocation_nadir[]/los_zen_angle_toa[2]");
     description = "the value at end of integration time of the N/2-th geolocation";
@@ -2225,7 +2225,7 @@ static void register_common_nadir_cloud_variables(harp_product_definition *produ
     snprintf(path, MAX_PATH_LENGTH,
              "/geolocation_nadir[]/los_zen_angle_toa[1], /geolocation_nadir[]/los_zen_angle_toa[2]");
     description = "the average of the value at end of integration time of the second record and the value at middle of "
-    "integration time of the N-th record";
+        "integration time of the N-th record";
     harp_variable_definition_add_mapping(variable_definition, NULL, condition_mixed, path, description);
 
     /* relative_azimuth_angle */
@@ -2234,7 +2234,7 @@ static void register_common_nadir_cloud_variables(harp_product_definition *produ
                                                                        harp_type_double, 1, dimension_type, NULL,
                                                                        description, "degree", NULL,
                                                                        read_rel_azimuth_angle);
-    snprintf(path, MAX_PATH_LENGTH ,"/geolocation_nadir[]/rel_azi_angle_toa[1]");
+    snprintf(path, MAX_PATH_LENGTH, "/geolocation_nadir[]/rel_azi_angle_toa[1]");
     harp_variable_definition_add_mapping(variable_definition, NULL, condition_no_coadding, path, NULL);
     snprintf(path, MAX_PATH_LENGTH, "/geolocation_nadir[]/rel_azi_angle_toa[2]");
     description = "the value at end of integration time of the N/2-th geolocation";
@@ -2242,7 +2242,7 @@ static void register_common_nadir_cloud_variables(harp_product_definition *produ
     snprintf(path, MAX_PATH_LENGTH,
              "/geolocation_nadir[]/rel_azi_angle_toa[1], /geolocation_nadir[]/rel_azi_angle_toa[2]");
     description = "the average of the value at end of integration time of the second record and the value at middle of "
-    "integration time of the N-th record";
+        "integration time of the N-th record";
     harp_variable_definition_add_mapping(variable_definition, NULL, condition_mixed, path, description);
 
     /* scan_direction */
@@ -2287,7 +2287,7 @@ static void register_common_limb_variables(harp_product_definition *product_defi
                                                                        harp_type_double, 1, dimension_type, NULL,
                                                                        description, "seconds since 2000-01-01", NULL,
                                                                        read_datetime_profile);
-    snprintf(path, MAX_PATH_LENGTH ,"/geolocation_limb[]/dsr_time");
+    snprintf(path, MAX_PATH_LENGTH, "/geolocation_limb[]/dsr_time");
     harp_variable_definition_add_mapping(variable_definition, NULL, NULL, path, NULL);
 
     /* datetime_length */
@@ -2295,7 +2295,7 @@ static void register_common_limb_variables(harp_product_definition *product_defi
     variable_definition = harp_ingestion_register_variable_sample_read(product_definition, "datetime_length",
                                                                        harp_type_double, 1, dimension_type, NULL,
                                                                        description, "s", NULL, read_integration_time);
-    snprintf(path, MAX_PATH_LENGTH ,"/%s[]/integr_time", dataset);
+    snprintf(path, MAX_PATH_LENGTH, "/%s[]/integr_time", dataset);
     harp_variable_definition_add_mapping(variable_definition, NULL, NULL, path, NULL);
 
     /* altitude_bounds */
@@ -2306,7 +2306,7 @@ static void register_common_limb_variables(harp_product_definition *product_defi
                                                                        read_altitude_bounds);
     description = "the tangent heights are the lower bound altitudes; for the top of the heighest layer a TOA value "
         "of 100km is used";
-    snprintf(path, MAX_PATH_LENGTH ,"/%s[]/tangent_height[]", dataset);
+    snprintf(path, MAX_PATH_LENGTH, "/%s[]/tangent_height[]", dataset);
     harp_variable_definition_add_mapping(variable_definition, NULL, NULL, path, description);
 
     /* pressure_bounds */
@@ -2315,7 +2315,7 @@ static void register_common_limb_variables(harp_product_definition *product_defi
                                                                        harp_type_double, 3, dimension_type,
                                                                        bounds_dimension, description, "hPa", NULL,
                                                                        read_pressure_bounds);
-    snprintf(path, MAX_PATH_LENGTH ,"/%s[]/tangent_pressure[]", dataset);
+    snprintf(path, MAX_PATH_LENGTH, "/%s[]/tangent_pressure[]", dataset);
     description = "the tangent pressures are the lower bound pressures; for the top of the heighest layer a pressure "
         "value of 3.2e-4 hPa is used";
     harp_variable_definition_add_mapping(variable_definition, NULL, NULL, path, description);
@@ -2325,7 +2325,7 @@ static void register_common_limb_variables(harp_product_definition *product_defi
     variable_definition = harp_ingestion_register_variable_sample_read(product_definition, "latitude", harp_type_double,
                                                                        1, dimension_type, NULL, description,
                                                                        "degree_north", NULL, read_latitude_profile);
-    snprintf(path, MAX_PATH_LENGTH ,"/geolocation_limb[]/tangent_coord[1]/latitude");
+    snprintf(path, MAX_PATH_LENGTH, "/geolocation_limb[]/tangent_coord[1]/latitude");
     harp_variable_definition_add_mapping(variable_definition, NULL, NULL, path, NULL);
 
     /* longitude */
@@ -2334,7 +2334,7 @@ static void register_common_limb_variables(harp_product_definition *product_defi
                                                                        harp_type_double, 1, dimension_type, NULL,
                                                                        description, "degree_east", NULL,
                                                                        read_longitude_profile);
-    snprintf(path, MAX_PATH_LENGTH ,"/geolocation_limb[]/tangent_coord[1]/longitude");
+    snprintf(path, MAX_PATH_LENGTH, "/geolocation_limb[]/tangent_coord[1]/longitude");
     harp_variable_definition_add_mapping(variable_definition, NULL, NULL, path, NULL);
 
     /* solar_zenith_angle */
@@ -2343,7 +2343,7 @@ static void register_common_limb_variables(harp_product_definition *product_defi
                                                                        harp_type_double, 1, dimension_type, NULL,
                                                                        description, "degree", NULL,
                                                                        read_solar_zenith_angle_profile);
-    snprintf(path, MAX_PATH_LENGTH ,"/geolocation_limb[]/sol_zen_angle_toa[1]");
+    snprintf(path, MAX_PATH_LENGTH, "/geolocation_limb[]/sol_zen_angle_toa[1]");
     harp_variable_definition_add_mapping(variable_definition, NULL, NULL, path, NULL);
 
     /* viewing_zenith_angle */
@@ -2352,7 +2352,7 @@ static void register_common_limb_variables(harp_product_definition *product_defi
                                                                        harp_type_double, 1, dimension_type, NULL,
                                                                        description, "degree", NULL,
                                                                        read_los_zenith_angle_profile);
-    snprintf(path, MAX_PATH_LENGTH ,"/geolocation_limb[]/los_zen_angle_toa[1]");
+    snprintf(path, MAX_PATH_LENGTH, "/geolocation_limb[]/los_zen_angle_toa[1]");
     harp_variable_definition_add_mapping(variable_definition, NULL, NULL, path, NULL);
 
     /* relative_azimuth_angle */
@@ -2361,7 +2361,7 @@ static void register_common_limb_variables(harp_product_definition *product_defi
                                                                        harp_type_double, 1, dimension_type, NULL,
                                                                        description, "degree", NULL,
                                                                        read_rel_azimuth_angle_profile);
-    snprintf(path, MAX_PATH_LENGTH ,"/geolocation_limb[]/rel_azi_angle_toa[1]");
+    snprintf(path, MAX_PATH_LENGTH, "/geolocation_limb[]/rel_azi_angle_toa[1]");
     harp_variable_definition_add_mapping(variable_definition, NULL, NULL, path, NULL);
 
     /* temperature */
@@ -2370,7 +2370,7 @@ static void register_common_limb_variables(harp_product_definition *product_defi
                                                                        harp_type_double, 2, dimension_type,
                                                                        bounds_dimension, description, "K", NULL,
                                                                        read_temperature);
-    snprintf(path, MAX_PATH_LENGTH ,"/%s[]/tangent_temp[]", dataset);
+    snprintf(path, MAX_PATH_LENGTH, "/%s[]/tangent_temp[]", dataset);
     harp_variable_definition_add_mapping(variable_definition, NULL, NULL, path, NULL);
 
 
@@ -2378,8 +2378,7 @@ static void register_common_limb_variables(harp_product_definition *product_defi
 
 int harp_ingestion_module_sciamachy_l2_init(void)
 {
-    const char *dataset_options[] =
-    {
+    const char *dataset_options[] = {
         "nad_uv0_o3", "nad_uv1_no2", "nad_uv3_bro", "nad_uv4_h2co", "nad_uv5_so2", "nad_uv6_oclo", "nad_uv7_so2",
         "nad_uv8_h2o", "nad_uv9_chocho", "nad_ir0_h2o", "nad_ir1_ch4", "nad_ir2_n2o", "nad_ir3_co", "nad_ir4_co2",
         "lim_uv0_o3", "lim_uv1_no2", "lim_uv3_bro", "clouds_aerosol"
@@ -2942,8 +2941,7 @@ int harp_ingestion_module_sciamachy_l2_init(void)
     variable_definition = harp_ingestion_register_variable_sample_read(product_definition,
                                                                        "O3_volume_mixing_ratio_avk",
                                                                        harp_type_double, 3, dimension_type, NULL,
-                                                                       description, "",
-                                                                       exclude_add_diag, read_vmr_avk);
+                                                                       description, "", exclude_add_diag, read_vmr_avk);
     path = "/lim_uv0_o3[]/main_species[,0]/add_diag[0..n]";
     harp_variable_definition_add_mapping(variable_definition, NULL, condition_add_diag, path, vmr_avk_mapping);
 
@@ -3006,8 +3004,7 @@ int harp_ingestion_module_sciamachy_l2_init(void)
     variable_definition = harp_ingestion_register_variable_sample_read(product_definition,
                                                                        "NO2_volume_mixing_ratio_avk",
                                                                        harp_type_double, 3, dimension_type, NULL,
-                                                                       description, "",
-                                                                       exclude_add_diag, read_vmr_avk);
+                                                                       description, "", exclude_add_diag, read_vmr_avk);
     path = "/lim_uv1_no2[]/main_species[,0]/add_diag[0..n]";
     harp_variable_definition_add_mapping(variable_definition, NULL, condition_add_diag, path, vmr_avk_mapping);
 
@@ -3070,8 +3067,7 @@ int harp_ingestion_module_sciamachy_l2_init(void)
     variable_definition = harp_ingestion_register_variable_sample_read(product_definition,
                                                                        "BrO_volume_mixing_ratio_avk",
                                                                        harp_type_double, 3, dimension_type, NULL,
-                                                                       description, "",
-                                                                       exclude_add_diag, read_vmr_avk);
+                                                                       description, "", exclude_add_diag, read_vmr_avk);
     path = "/lim_uv3_bro[]/main_species[,0]/add_diag[0..n]";
     harp_variable_definition_add_mapping(variable_definition, NULL, condition_add_diag, path, vmr_avk_mapping);
 

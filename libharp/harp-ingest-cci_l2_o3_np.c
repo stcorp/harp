@@ -667,8 +667,7 @@ int harp_ingestion_module_cci_l2_o3_np_init(void)
         harp_ingestion_register_variable_full_read(product_definition, "datetime", harp_type_double, 1, dimension_type,
                                                    NULL, description, "hours since 2000-01-01", NULL, read_datetime);
     path = "/@Data_date, /time[]";
-    description =
-        "datetime converted from the epoch of the product and an offset in hours to hours since 2000-01-01";
+    description = "datetime converted from the epoch of the product and an offset in hours to hours since 2000-01-01";
     harp_variable_definition_add_mapping(variable_definition, NULL, NULL, path, description);
 
     /* longitude */

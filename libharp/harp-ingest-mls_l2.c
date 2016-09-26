@@ -968,8 +968,8 @@ static void register_gph_product(void)
     /* geopotential_height */
     description = "retrieved geopotential height";
     variable_definition =
-        harp_ingestion_register_variable_full_read(product_definition, "geopotential_height", harp_type_double, 2, dimension_type,
-                                                   NULL, description, "m", NULL, read_value);
+        harp_ingestion_register_variable_full_read(product_definition, "geopotential_height", harp_type_double, 2,
+                                                   dimension_type, NULL, description, "m", NULL, read_value);
     path = "/HDFEOS/SWATHS/GPH/Data_Fields/L2gpValue[]";
     harp_variable_definition_add_mapping(variable_definition, NULL, NULL, path, NULL);
 

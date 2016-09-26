@@ -962,6 +962,7 @@ static int read_longitude_bounds_domino(void *user_data, harp_array data)
     for (i = 0; i < info->dimension[omi_dim_time] * info->dimension[omi_dim_xtrack]; i++)
     {
         double temp = data.double_data[i * 4];
+
         data.double_data[i * 4] = data.double_data[i * 4 + 3];
         data.double_data[i * 4 + 3] = data.double_data[i * 4 + 2];
         data.double_data[i * 4 + 2] = temp;
@@ -992,6 +993,7 @@ static int read_latitude_bounds_domino(void *user_data, harp_array data)
     for (i = 0; i < info->dimension[omi_dim_time] * info->dimension[omi_dim_xtrack]; i++)
     {
         double temp = data.double_data[i * 4];
+
         data.double_data[i * 4] = data.double_data[i * 4 + 3];
         data.double_data[i * 4 + 3] = data.double_data[i * 4 + 2];
         data.double_data[i * 4 + 2] = temp;

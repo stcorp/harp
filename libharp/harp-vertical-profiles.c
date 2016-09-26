@@ -988,8 +988,7 @@ static int vertical_profile_smooth(harp_variable *var, harp_product *match, long
         }
 
         /* premultiply avk */
-        if (matrix_vector_product(matrix, vector_in, vertical_elements, vertical_elements, &vector_out)
-            != 0)
+        if (matrix_vector_product(matrix, vector_in, vertical_elements, vertical_elements, &vector_out) != 0)
         {
             free(avk_name);
             free(apriori_name);
@@ -1435,7 +1434,9 @@ LIBHARP_API int harp_product_smooth_vertical(harp_product *product, int num_smoo
         for (num_target_offset = 0; num_target_offset < num_target_max_vertical_elements; num_target_offset++)
         {
             long block_offset = time_index_a * num_target_max_vertical_elements;
-            if (target_grid->data.double_data[block_offset + num_target_offset] >= source_grid->data.double_data[time_index_a * num_source_max_vertical_elements])
+
+            if (target_grid->data.double_data[block_offset + num_target_offset] >=
+                source_grid->data.double_data[time_index_a * num_source_max_vertical_elements])
             {
                 break;
             }
@@ -1499,26 +1500,22 @@ LIBHARP_API int harp_product_smooth_vertical(harp_product *product, int num_smoo
 
                 if (var_type == profile_resample_linear)
                 {
-                    harp_interpolate_array_linear(num_source_vertical_elements,
-                                                  &source_grid->data.double_data[time_index_a *
-                                                                                 num_source_max_vertical_elements],
-                                                  &var->data.double_data[source_block_index],
-                                                  num_target_vertical_elements,
-                                                  &target_grid->data.double_data[time_index_b *
-                                                                                 num_target_max_vertical_elements + num_target_offset], 0,
-                                                  interpolation_buffer);
+                    harp_interpolate_array_linear
+                        (num_source_vertical_elements,
+                         &source_grid->data.double_data[time_index_a * num_source_max_vertical_elements],
+                         &var->data.double_data[source_block_index], num_target_vertical_elements,
+                         &target_grid->data.double_data[time_index_b * num_target_max_vertical_elements +
+                                                        num_target_offset], 0, interpolation_buffer);
                 }
                 else if (var_type == profile_resample_interval)
                 {
-                    harp_interval_interpolate_array_linear(num_source_vertical_elements,
-                                                           &source_bounds->data.double_data[time_index_a *
-                                                                                            num_source_max_vertical_elements
-                                                                                            * 2],
-                                                           &var->data.double_data[(time_index_a * blocks + block) *
-                                                                                  num_source_max_vertical_elements],
-                                                           num_target_vertical_elements,
-                                                           &target_bounds->data.double_data[(time_index_b *
-                                                                                             num_target_max_vertical_elements + num_target_offset) * 2], interpolation_buffer);
+                    harp_interval_interpolate_array_linear
+                        (num_source_vertical_elements,
+                         &source_bounds->data.double_data[time_index_a * num_source_max_vertical_elements * 2],
+                         &var->data.double_data[(time_index_a * blocks + block) * num_source_max_vertical_elements],
+                         num_target_vertical_elements,
+                         &target_bounds->data.double_data[(time_index_b * num_target_max_vertical_elements +
+                                                           num_target_offset) * 2], interpolation_buffer);
                 }
                 else
                 {

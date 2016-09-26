@@ -2536,7 +2536,7 @@ int harp_ingestion_module_geoms_uvvis_doas_init()
 
     module = harp_ingestion_register_module_coda("GEOMS-TE-UVVIS-DOAS-ZENITH", "GEOMS", "GEOMS",
                                                  "UVVIS_DOAS_ZENITH_GAS",
-                                                 "GEOMS template for UVVIS-DOAS zenith measurements",  ingestion_init,
+                                                 "GEOMS template for UVVIS-DOAS zenith measurements", ingestion_init,
                                                  ingestion_done);
 
     harp_ingestion_register_option(module, "AOD", "ingest the modeled or measured aerosol optical depth properties", 2,

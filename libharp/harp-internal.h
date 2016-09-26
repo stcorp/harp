@@ -165,6 +165,7 @@ int harp_import_hdf4(const char *filename, harp_product **product);
 int harp_import_hdf5(const char *filename, harp_product **product);
 #endif
 int harp_import_netcdf(const char *filename, harp_product **product);
+
 #ifdef HAVE_HDF4
 int harp_export_hdf4(const char *filename, const harp_product *product);
 #endif
