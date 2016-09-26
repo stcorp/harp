@@ -313,8 +313,8 @@ static void ingestion_done(void *user_data)
 }
 
 static int ingestion_init(const harp_ingestion_module *module, coda_product *product,
-                                const harp_ingestion_options *options, harp_product_definition **definition,
-                                void **user_data, int is_mean)
+                          const harp_ingestion_options *options, harp_product_definition **definition,
+                          void **user_data, int is_mean)
 {
     ingest_info *info;
 
@@ -339,8 +339,8 @@ static int ingestion_init(const harp_ingestion_module *module, coda_product *pro
 }
 
 static int ingestion_init_o3field(const harp_ingestion_module *module, coda_product *product,
-                                 const harp_ingestion_options *options, harp_product_definition **definition,
-                                 void **user_data)
+                                  const harp_ingestion_options *options, harp_product_definition **definition,
+                                  void **user_data)
 {
     return ingestion_init(module, product, options, definition, user_data, 0);
 }

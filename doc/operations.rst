@@ -100,6 +100,17 @@ Supported functions:
        will be excluded from the ingested product, all other
        variables will be kept.
 
+    ``flatten(dimension)``
+       Flatten a product for a certain dimension by collapsing the
+       given dimension into the time dimension. The time dimension
+       will thus grow by a factor equal to the length of the given
+       dimension and none of the variables in the product will
+       depend on the given dimension anymore. Variables that depend
+       more than once on the given dimension will be removed. The
+       index and collocation_index variables will also be removed.
+       Independent dimensions cannot be flattened.
+
+
 Collocation result file
 -----------------------
 
@@ -203,7 +214,8 @@ Formal definition
        'area-mask-intersects-area', '(', stringvalue, ',', floatvalue, ')' |
        'derive', '(', variable, dimensionspec, [unit], ')' |
        'keep', '(', variablelist, ')' |
-       'exclude', '(', variablelist, ')' ;
+       'exclude', '(', variablelist, ')' |
+       'flatten', '(', dimension, ')' ;
 
     operationexpr = 
        variable, operator, value, [unit] |

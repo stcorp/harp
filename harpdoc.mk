@@ -302,6 +302,24 @@ HARP_DOCFILES = \
 	doc/html/ingestions/S5P_L2_O3.html \
 	doc/html/ingestions/S5P_L2_O3_PR.html \
 	doc/html/ingestions/S5P_L2_SO2.html \
+	doc/html/ingestions/SCIAMACHY_L2_CLOUDS_AEROSOL.html \
+	doc/html/ingestions/SCIAMACHY_L2_LIMB_UV0_O3.html \
+	doc/html/ingestions/SCIAMACHY_L2_LIMB_UV1_NO2.html \
+	doc/html/ingestions/SCIAMACHY_L2_LIMB_UV3_BRO.html \
+	doc/html/ingestions/SCIAMACHY_L2_NADIR_IR0_H2O.html \
+	doc/html/ingestions/SCIAMACHY_L2_NADIR_IR1_CH4.html \
+	doc/html/ingestions/SCIAMACHY_L2_NADIR_IR2_N2O.html \
+	doc/html/ingestions/SCIAMACHY_L2_NADIR_IR3_CO.html \
+	doc/html/ingestions/SCIAMACHY_L2_NADIR_IR4_CO2.html \
+	doc/html/ingestions/SCIAMACHY_L2_NADIR_UV0_O3.html \
+	doc/html/ingestions/SCIAMACHY_L2_NADIR_UV1_NO2.html \
+	doc/html/ingestions/SCIAMACHY_L2_NADIR_UV3_BRO.html \
+	doc/html/ingestions/SCIAMACHY_L2_NADIR_UV4_H2CO.html \
+	doc/html/ingestions/SCIAMACHY_L2_NADIR_UV5_SO2.html \
+	doc/html/ingestions/SCIAMACHY_L2_NADIR_UV6_OCLO.html \
+	doc/html/ingestions/SCIAMACHY_L2_NADIR_UV7_SO2.html \
+	doc/html/ingestions/SCIAMACHY_L2_NADIR_UV8_H2O.html \
+	doc/html/ingestions/SCIAMACHY_L2_NADIR_UV9_CHOCHO.html \
 	doc/html/ingestions/TEMIS_o3field.html \
 	doc/html/ingestions/TEMIS_o3mean.html \
 	doc/html/ingestions/TES_L2_CH4_Nadir.html \
@@ -929,6 +947,42 @@ doc/html/ingestions/S5P_L2_O3.html:
 doc/html/ingestions/S5P_L2_O3_PR.html:
 	$(MAKE) harp_doc
 doc/html/ingestions/S5P_L2_SO2.html:
+	$(MAKE) harp_doc
+doc/html/ingestions/SCIAMACHY_L2_CLOUDS_AEROSOL.html:
+	$(MAKE) harp_doc
+doc/html/ingestions/SCIAMACHY_L2_LIMB_UV0_O3.html:
+	$(MAKE) harp_doc
+doc/html/ingestions/SCIAMACHY_L2_LIMB_UV1_NO2.html:
+	$(MAKE) harp_doc
+doc/html/ingestions/SCIAMACHY_L2_LIMB_UV3_BRO.html:
+	$(MAKE) harp_doc
+doc/html/ingestions/SCIAMACHY_L2_NADIR_IR0_H2O.html:
+	$(MAKE) harp_doc
+doc/html/ingestions/SCIAMACHY_L2_NADIR_IR1_CH4.html:
+	$(MAKE) harp_doc
+doc/html/ingestions/SCIAMACHY_L2_NADIR_IR2_N2O.html:
+	$(MAKE) harp_doc
+doc/html/ingestions/SCIAMACHY_L2_NADIR_IR3_CO.html:
+	$(MAKE) harp_doc
+doc/html/ingestions/SCIAMACHY_L2_NADIR_IR4_CO2.html:
+	$(MAKE) harp_doc
+doc/html/ingestions/SCIAMACHY_L2_NADIR_UV0_O3.html:
+	$(MAKE) harp_doc
+doc/html/ingestions/SCIAMACHY_L2_NADIR_UV1_NO2.html:
+	$(MAKE) harp_doc
+doc/html/ingestions/SCIAMACHY_L2_NADIR_UV3_BRO.html:
+	$(MAKE) harp_doc
+doc/html/ingestions/SCIAMACHY_L2_NADIR_UV4_H2CO.html:
+	$(MAKE) harp_doc
+doc/html/ingestions/SCIAMACHY_L2_NADIR_UV5_SO2.html:
+	$(MAKE) harp_doc
+doc/html/ingestions/SCIAMACHY_L2_NADIR_UV6_OCLO.html:
+	$(MAKE) harp_doc
+doc/html/ingestions/SCIAMACHY_L2_NADIR_UV7_SO2.html:
+	$(MAKE) harp_doc
+doc/html/ingestions/SCIAMACHY_L2_NADIR_UV8_H2O.html:
+	$(MAKE) harp_doc
+doc/html/ingestions/SCIAMACHY_L2_NADIR_UV9_CHOCHO.html:
 	$(MAKE) harp_doc
 doc/html/ingestions/TEMIS_o3field.html:
 	$(MAKE) harp_doc

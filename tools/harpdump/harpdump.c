@@ -53,10 +53,15 @@ static void print_help()
     printf("        Print the contents of a HARP compliant netCDF/HDF4/HDF5 product.\n");
     printf("\n");
     printf("        Options:\n");
+    printf("            -a, --operations <operation list>\n");
+    printf("                List of operations to apply to the product before printing.\n");
+    printf("                An operation list needs to be provided as a single expression.\n");
+    printf("                See the 'operations' section of the HARP documentation for\n");
+    printf("                more details.\n");
     printf("            -l, --list:\n");
-    printf("                    Only show list of variables (no attributes).\n");
+    printf("                Only show list of variables (no attributes).\n");
     printf("            -d, --data:\n");
-    printf("                    Show data values for each variable.\n");
+    printf("                Show data values for each variable.\n");
     printf("\n");
     printf("    harpdump -h, --help\n");
     printf("        Show help (this text).\n");
@@ -69,6 +74,7 @@ static void print_help()
 int main(int argc, char *argv[])
 {
     harp_product *product;
+    const char *operations = NULL;
     int data = 0;
     int list = 0;
     int i;
@@ -95,7 +101,13 @@ int main(int argc, char *argv[])
     /* parse argumenst */
     for (i = 1; i < argc; i++)
     {
-        if (strcmp(argv[i], "-l") == 0 || strcmp(argv[i], "--list") == 0)
+        if ((strcmp(argv[i], "-a") == 0 || strcmp(argv[i], "--operations") == 0) && i + 1 < argc &&
+            argv[i + 1][0] != '-')
+        {
+            operations = argv[i + 1];
+            i++;
+        }
+        else if (strcmp(argv[i], "-l") == 0 || strcmp(argv[i], "--list") == 0)
         {
             list = 1;
         }
@@ -136,6 +148,17 @@ int main(int argc, char *argv[])
         fprintf(stderr, "ERROR: %s\n", harp_errno_to_string(harp_errno));
         harp_done();
         exit(1);
+    }
+
+    if (operations != NULL)
+    {
+        if (harp_product_execute_operations(product, operations) != 0)
+        {
+            fprintf(stderr, "ERROR: %s\n", harp_errno_to_string(harp_errno));
+            harp_product_delete(product);
+            harp_done();
+            exit(1);
+        }
     }
 
     harp_product_print(product, !list, data && !list, printf);

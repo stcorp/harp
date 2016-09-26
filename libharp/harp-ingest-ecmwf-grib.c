@@ -2049,8 +2049,7 @@ static int init_cursors_and_grid(ingest_info *info)
                                        "(%s:%u)", num_coordinate_values * sizeof(double), __FILE__, __LINE__);
                         return -1;
                     }
-                    if (coda_cursor_read_double_array(&cursor, info->coordinate_values, coda_array_ordering_c)
-                        != 0)
+                    if (coda_cursor_read_double_array(&cursor, info->coordinate_values, coda_array_ordering_c) != 0)
                     {
                         harp_set_error(HARP_ERROR_CODA, NULL);
                         return -1;
@@ -2352,6 +2351,7 @@ int exclude_lnsp(void *user_data)
 int exclude_pressure(void *user_data)
 {
     ingest_info *info = (ingest_info *)user_data;
+
     return !info->has_parameter[grib_param_lnsp] || info->coordinate_values == NULL;
 }
 
@@ -2567,9 +2567,10 @@ static void add_value_variable_mapping(harp_variable_definition *variable_defini
 
 int harp_ingestion_module_ecmwf_grib_init(void)
 {
-    harp_dimension_type dimension_type[5] =
-        { harp_dimension_time, harp_dimension_latitude, harp_dimension_longitude, harp_dimension_vertical,
-          harp_dimension_independent };
+    harp_dimension_type dimension_type[5] = {
+        harp_dimension_time, harp_dimension_latitude, harp_dimension_longitude, harp_dimension_vertical,
+        harp_dimension_independent
+    };
     long bounds_dimension[5] = { -1, -1, -1, -1, 2 };
     harp_ingestion_module *module;
     harp_product_definition *product_definition;
