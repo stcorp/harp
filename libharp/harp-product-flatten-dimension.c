@@ -27,24 +27,55 @@
 #include <stdlib.h>
 #include <string.h>
 
+/** Collapse a given dimension into the time dimension
+ * 
+ * Flattening a product for a certain dimension collapses the dimension into the time dimension (i.e. the time
+ * dimension and the provided dimension are flattened together).
+ * For instance, if a product contains a variable with [num_time,num_longitude,num_latitudes,num_vertical] as
+ * dimensions, then flattening for the vertical dimension will result in a variable with
+ * [num_time*num_vertical,num_longitudes,num_latitudes] as dimensions.
+ *
+ * The end result of this function is the time dimension will have grown by a factor equal to the length of the given
+ * dimension type and that none of the variables in the product will depend on the given dimension type anymore.
+ *
+ * Any variables that depend more than once on the given dimension type will be removed from the product.
+ * The index and collocation_index variables will be removed if present.
+ * Variables that had the given dimension type but were time independent are first made time dependent before
+ * flattening the dimension.
+ *
+ * Independent dimensions cannot be flattened.
+ * \param product HARP product.
+ * \param dimension_type Dimension to use for the flattening.
+ * \return
+ *   \arg \c 0, Success.
+ *   \arg \c -1, Error occurred (check #harp_errno).
+ */
 LIBHARP_API int harp_product_flatten_dimension(harp_product *product, harp_dimension_type dimension_type)
 {
-    int i;
     harp_variable *var;
     long dim_length = product->dimension[dimension_type];
-    if (!dim_length)
+    int i;
+
+    if (dimension_type == harp_dimension_independent)
+    {
+        harp_set_error(HARP_ERROR_INVALID_ARGUMENT, "cannot flatten independent dimension");
+        return -1;
+    }
+    if (dim_length == 0 || dimension_type == harp_dimension_time)
     {
         return 0;
     }
 
     /* remove index and collocation_index variables if they exist */
-    if (harp_product_get_variable_by_name(product, "index", &var) != -1) {
+    if (harp_product_get_variable_by_name(product, "index", &var) != -1)
+    {
         if (harp_product_remove_variable(product, var) != 0)
         {
             return -1;
         }
     }
-    if (harp_product_get_variable_by_name(product, "collocation_index", &var) != -1) {
+    if (harp_product_get_variable_by_name(product, "collocation_index", &var) != -1)
+    {
         if (harp_product_remove_variable(product, var) != 0)
         {
             return -1;
@@ -90,7 +121,7 @@ LIBHARP_API int harp_product_flatten_dimension(harp_product *product, harp_dimen
         }
         else if (count >= 2)
         {
-            /* remove variables that depend on the dimension to be flattened twice */
+            /* remove variables that depend more than once on the specified dimension */
             harp_product_remove_variable(product, var);
             continue;
         }
@@ -123,7 +154,7 @@ LIBHARP_API int harp_product_flatten_dimension(harp_product *product, harp_dimen
                 }
             }
 
-            /* reorden dimensions */
+            /* reorder dimensions */
             if (harp_array_transpose(var->data_type, var->num_dimensions, var->dimension, order, var->data) != 0)
             {
                 return -1;

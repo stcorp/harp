@@ -223,6 +223,15 @@ variables will be excluded.</dd>
 ingested product. All variables marked for exclusion
 will be excluded from the ingested product, all other
 variables will be kept.</dd>
+<dt><code class="docutils literal"><span class="pre">flatten(dimension)</span></code></dt>
+<dd>Flatten a product for a certain dimension by collapsing the
+given dimension into the time dimension. The time dimension
+will thus grow by a factor equal to the length of the given
+dimension and none of the variables in the product will
+depend on the given dimension anymore. Variables that depend
+more than once on the given dimension will be removed. The
+index and collocation_index variables will also be removed.
+Independent dimensions cannot be flattened.</dd>
 </dl>
 </div></blockquote>
 </div>
@@ -322,7 +331,8 @@ Then, each further line defines a polygon. Each polygon consists of the vertices
    <span class="s1">&#39;area-mask-intersects-area&#39;</span><span class="p">,</span> <span class="s1">&#39;(&#39;</span><span class="p">,</span> <span class="n">stringvalue</span><span class="p">,</span> <span class="s1">&#39;,&#39;</span><span class="p">,</span> <span class="n">floatvalue</span><span class="p">,</span> <span class="s1">&#39;)&#39;</span> <span class="o">|</span>
    <span class="s1">&#39;derive&#39;</span><span class="p">,</span> <span class="s1">&#39;(&#39;</span><span class="p">,</span> <span class="n">variable</span><span class="p">,</span> <span class="n">dimensionspec</span><span class="p">,</span> <span class="p">[</span><span class="n">unit</span><span class="p">],</span> <span class="s1">&#39;)&#39;</span> <span class="o">|</span>
    <span class="s1">&#39;keep&#39;</span><span class="p">,</span> <span class="s1">&#39;(&#39;</span><span class="p">,</span> <span class="n">variablelist</span><span class="p">,</span> <span class="s1">&#39;)&#39;</span> <span class="o">|</span>
-   <span class="s1">&#39;exclude&#39;</span><span class="p">,</span> <span class="s1">&#39;(&#39;</span><span class="p">,</span> <span class="n">variablelist</span><span class="p">,</span> <span class="s1">&#39;)&#39;</span> <span class="p">;</span>
+   <span class="s1">&#39;exclude&#39;</span><span class="p">,</span> <span class="s1">&#39;(&#39;</span><span class="p">,</span> <span class="n">variablelist</span><span class="p">,</span> <span class="s1">&#39;)&#39;</span> <span class="o">|</span>
+   <span class="s1">&#39;flatten&#39;</span><span class="p">,</span> <span class="s1">&#39;(&#39;</span><span class="p">,</span> <span class="n">dimension</span><span class="p">,</span> <span class="s1">&#39;)&#39;</span> <span class="p">;</span>
 
 <span class="n">operationexpr</span> <span class="o">=</span>
    <span class="n">variable</span><span class="p">,</span> <span class="n">operator</span><span class="p">,</span> <span class="n">value</span><span class="p">,</span> <span class="p">[</span><span class="n">unit</span><span class="p">]</span> <span class="o">|</span>
