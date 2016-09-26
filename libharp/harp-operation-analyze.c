@@ -51,8 +51,9 @@ static int create_variable_derivation(const ast_node *argument_list, harp_operat
 static int create_variable_inclusion(const ast_node *argument_list, harp_operation **new_operation);
 static int create_variable_exclusion(const ast_node *argument_list, harp_operation **new_operation);
 static int create_regrid(const ast_node *argument_list, harp_operation **new_operation);
+static int create_flatten(const ast_node *argument_list, harp_operation **new_operation);
 
-#define NUM_BUILTIN_FUNCTIONS 12
+#define NUM_BUILTIN_FUNCTIONS 13
 static function_prototype builtin_function[NUM_BUILTIN_FUNCTIONS] = {
     {"collocate-left", 1, {ast_string}, &create_collocation_filter_left},
     {"collocate-right", 1, {ast_string}, &create_collocation_filter_right},
@@ -65,7 +66,8 @@ static function_prototype builtin_function[NUM_BUILTIN_FUNCTIONS] = {
     {"derive", 1, {ast_qualified_name}, &create_variable_derivation},
     {"keep", -1, {0}, &create_variable_inclusion},
     {"exclude", -1, {0}, &create_variable_exclusion},
-    {"regrid", 1, {ast_string}, &create_regrid}
+    {"regrid", 1, {ast_string}, &create_regrid},
+    {"flatten", 1, {ast_qualified_name}, &create_flatten},
 };
 
 static function_prototype *get_function_prototype_by_name(const char *name)
@@ -664,6 +666,29 @@ static int create_regrid(const ast_node *argument_list, harp_operation **new_ope
     name = argument_list->child_node[0];
 
     return harp_regrid_new(name->payload.string, new_operation);
+}
+
+static int create_flatten(const ast_node *argument_list, harp_operation **new_operation)
+{
+    const ast_node *argument, *name;
+
+    argument = argument_list->child_node[0];
+
+    if (argument->type != ast_qualified_name)
+    {
+        harp_set_error(HARP_ERROR_OPERATION, "char %lu: invalid argument type", argument->position);
+        return -1;
+    }
+
+    if (verify_qualified_name_has_no_qualifiers(argument) != 0)
+    {
+        return -1;
+    }
+
+    name = argument->child_node[0];
+    assert(name->type == ast_name);
+
+    return harp_flatten_new(name->payload.string, new_operation);
 }
 
 static int operation_from_function_call(ast_node *node, harp_operation **new_operation)

@@ -27,6 +27,8 @@
 #include "harp-filter-collocation.h"
 #include "harp-vertical-profiles.h"
 
+#include <stdio.h>
+
 static int evaluate_value_filters_0d(const harp_product *product, harp_program *ops_0d, uint8_t *product_mask)
 {
     int i;
@@ -930,6 +932,34 @@ static int execute_regrid(harp_product *product, harp_program *program)
     return 0;
 }
 
+/* run a collocation filter operation at the head of program */
+static int execute_flatten(harp_product *product, harp_program *program)
+{
+    harp_operation *operation;
+    const harp_flatten_args *args;
+
+    assert(program->num_operations != 0);
+    operation = program->operation[0];
+    if (operation->type != harp_operation_flatten)
+    {
+        /* Operation is not a regrid operation, skip it. */
+        return 0;
+    }
+
+    args = (const harp_flatten_args *)operation->args;
+
+    printf("Flattened dimension %s\n", args->dimension_name);
+
+    if (harp_program_remove_operation_at_index(program, 0) != 0)
+    {
+        return -1;
+    }
+
+    return 0;
+
+    return 0;
+}
+
 /* Compute 'dimensionality' for filter operations; sets num_dimensions to either 0, 1 or 2.
  */
 static int get_operation_dimensionality(harp_product *product, harp_operation *operation, long *num_dimensions)
@@ -1276,6 +1306,12 @@ static int execute_next_operation(harp_product *product, harp_program *program)
             break;
         case harp_operation_regrid:
             if (execute_regrid(product, program) != 0)
+            {
+                return -1;
+            }
+            break;
+        case harp_operation_flatten:
+            if (execute_flatten(product, program) != 0)
             {
                 return -1;
             }
