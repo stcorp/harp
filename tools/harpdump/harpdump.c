@@ -154,8 +154,10 @@ int main(int argc, char *argv[])
     {
         if (harp_product_execute_operations(product, operations) != 0)
         {
+            fprintf(stderr, "ERROR: %s\n", harp_errno_to_string(harp_errno));
             harp_product_delete(product);
-            return -1;
+            harp_done();
+            exit(1);
         }
     }
 
