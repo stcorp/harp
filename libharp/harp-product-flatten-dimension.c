@@ -143,8 +143,7 @@ LIBHARP_API int harp_product_flatten_dimension(harp_product *product, harp_dimen
 
     /* update the dimension info of the product */
     product->dimension[harp_dimension_time] *= dim_length;
-    product->dimension[dimension_type] = NULL;
-
+    product->dimension[dimension_type] = 0;
 
     return 0;
 }
