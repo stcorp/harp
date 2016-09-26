@@ -972,8 +972,6 @@ static int flatten_args_new(const harp_dimension_type dimension_type, harp_flatt
 {
     harp_flatten_args *args;
 
-    assert(dimension_type != NULL);
-
     args = (harp_flatten_args *)malloc(sizeof(harp_flatten_args));
     if (args == NULL)
     {
