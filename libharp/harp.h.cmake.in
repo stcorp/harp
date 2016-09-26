@@ -505,6 +505,7 @@ LIBHARP_API int harp_product_regrid_vertical_with_collocated_dataset(harp_produc
 LIBHARP_API int harp_product_smooth_vertical(harp_product *product, int num_smooth_variables,
                                              const char **smooth_variables, const char *vertical_axis,
                                              const harp_collocation_result *collocation_result);
+LIBHARP_API int harp_product_flatten_dimension(harp_product *product, harp_dimension_type dimension_name);
 
 /* Product Metadata */
 LIBHARP_API int harp_import_product_metadata(const char *filename, harp_product_metadata **metadata);
