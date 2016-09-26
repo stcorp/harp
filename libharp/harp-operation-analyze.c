@@ -67,7 +67,7 @@ static function_prototype builtin_function[NUM_BUILTIN_FUNCTIONS] = {
     {"keep", -1, {0}, &create_variable_inclusion},
     {"exclude", -1, {0}, &create_variable_exclusion},
     {"regrid", 1, {ast_string}, &create_regrid},
-    {"flatten", 1, {ast_qualified_name}, &create_flatten},
+    {"flatten", 1, {ast_string}, &create_flatten},
 };
 
 static function_prototype *get_function_prototype_by_name(const char *name)
@@ -670,25 +670,17 @@ static int create_regrid(const ast_node *argument_list, harp_operation **new_ope
 
 static int create_flatten(const ast_node *argument_list, harp_operation **new_operation)
 {
-    const ast_node *argument, *name;
+    const ast_node *name;
+    harp_dimension_type dim_type;
 
-    argument = argument_list->child_node[0];
+    name = argument_list->child_node[0];
 
-    if (argument->type != ast_qualified_name)
-    {
-        harp_set_error(HARP_ERROR_OPERATION, "char %lu: invalid argument type", argument->position);
-        return -1;
-    }
-
-    if (verify_qualified_name_has_no_qualifiers(argument) != 0)
+    if (harp_parse_dimension_type(name->payload.string, &dim_type) != 0)
     {
         return -1;
     }
 
-    name = argument->child_node[0];
-    assert(name->type == ast_name);
-
-    return harp_flatten_new(name->payload.string, new_operation);
+    return harp_flatten_new(dim_type, new_operation);
 }
 
 static int operation_from_function_call(ast_node *node, harp_operation **new_operation)

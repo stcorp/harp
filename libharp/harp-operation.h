@@ -189,7 +189,7 @@ typedef struct harp_regrid_args_struct
 
 typedef struct harp_flatten_args_struct
 {
-    char *dimension_name;
+    harp_dimension_type dimension_type;
 } harp_flatten_args;
 
 /* Generic operation */
@@ -242,7 +242,7 @@ int harp_variable_exclusion_new(int num_variables, const char **variable_name, h
 
 int harp_regrid_new(const char *grid_filename, harp_operation **new_operation);
 
-int harp_flatten_new(const char *dimension_name, harp_operation **new_operation);
+int harp_flatten_new(const harp_dimension_type dimension_type, harp_operation **new_operation);
 
 int harp_operation_get_variable_name(const harp_operation *operation, const char **variable_name);
 

@@ -140,6 +140,7 @@ libharp_la_SOURCES = \
 	libharp/harp-variable.c \
 	libharp/harp-vertical-profiles.h \
 	libharp/harp-vertical-profiles.c \
+	libharp/harp-product-flatten-dimension.c \
 	libharp/harp.c \
 	libharp/hashtable.h \
 	libharp/hashtable.c \

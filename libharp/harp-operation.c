@@ -41,11 +41,6 @@ static void flatten_args_delete(harp_flatten_args *args)
 {
     if (args != NULL)
     {
-        if (args->dimension_name != NULL)
-        {
-            free(args->dimension_name);
-        }
-
         free(args);
     }
 }
@@ -973,11 +968,11 @@ static int regrid_args_new(const char *grid_filename, harp_regrid_args **new_arg
     return 0;
 }
 
-static int flatten_args_new(const char *dimension_name, harp_flatten_args **new_args)
+static int flatten_args_new(const harp_dimension_type dimension_type, harp_flatten_args **new_args)
 {
     harp_flatten_args *args;
 
-    assert(dimension_name != NULL);
+    assert(dimension_type != NULL);
 
     args = (harp_flatten_args *)malloc(sizeof(harp_flatten_args));
     if (args == NULL)
@@ -987,7 +982,7 @@ static int flatten_args_new(const char *dimension_name, harp_flatten_args **new_
         return -1;
     }
 
-    args->dimension_name = strdup(dimension_name);
+    args->dimension_type = dimension_type;
 
     *new_args = args;
     return 0;
@@ -1108,7 +1103,7 @@ static int regrid_args_copy(const harp_regrid_args *args, harp_regrid_args **new
 static int flatten_args_copy(const harp_flatten_args *args, harp_flatten_args **new_args)
 {
     assert(args != NULL);
-    return flatten_args_new(args->dimension_name, new_args);
+    return flatten_args_new(args->dimension_type, new_args);
 }
 
 int harp_operation_new(harp_operation_type type, void *args, harp_operation **new_operation)
@@ -1629,12 +1624,12 @@ int harp_regrid_new(const char *grid_filename, harp_operation **new_operation)
     return 0;
 }
 
-int harp_flatten_new(const char *dimension_name, harp_operation **new_operation)
+int harp_flatten_new(const harp_dimension_type dimension_type, harp_operation **new_operation)
 {
     harp_flatten_args *args;
     harp_operation *operation;
 
-    if (flatten_args_new(dimension_name, &args) != 0)
+    if (flatten_args_new(dimension_type, &args) != 0)
     {
         return -1;
     }

@@ -27,8 +27,6 @@
 #include "harp-filter-collocation.h"
 #include "harp-vertical-profiles.h"
 
-#include <stdio.h>
-
 static int evaluate_value_filters_0d(const harp_product *product, harp_program *ops_0d, uint8_t *product_mask)
 {
     int i;
@@ -948,7 +946,10 @@ static int execute_flatten(harp_product *product, harp_program *program)
 
     args = (const harp_flatten_args *)operation->args;
 
-    printf("Flattened dimension %s\n", args->dimension_name);
+    if (harp_product_flatten_dimension(product, args->dimension_type) != 0)
+    {
+        return -1;
+    }
 
     if (harp_program_remove_operation_at_index(program, 0) != 0)
     {
