@@ -37,6 +37,19 @@ static void regrid_args_delete(harp_regrid_args *args)
     }
 }
 
+static void flatten_args_delete(harp_flatten_args *args)
+{
+    if (args != NULL)
+    {
+        if (args->dimension_name != NULL)
+        {
+            free(args->dimension_name);
+        }
+
+        free(args);
+    }
+}
+
 static void collocation_filter_args_delete(harp_collocation_filter_args *args)
 {
     if (args != NULL)
@@ -946,15 +959,35 @@ static int regrid_args_new(const char *grid_filename, harp_regrid_args **new_arg
 
     assert(grid_filename != NULL);
 
-    args = (harp_regrid_args *)malloc(sizeof(harp_variable_exclusion_args));
+    args = (harp_regrid_args *)malloc(sizeof(harp_regrid_args));
     if (args == NULL)
     {
         harp_set_error(HARP_ERROR_OUT_OF_MEMORY, "out of memory (could not allocate %lu bytes) (%s:%u)",
-                       sizeof(harp_variable_exclusion_args), __FILE__, __LINE__);
+                       sizeof(harp_regrid_args), __FILE__, __LINE__);
         return -1;
     }
 
     args->grid_filename = strdup(grid_filename);
+
+    *new_args = args;
+    return 0;
+}
+
+static int flatten_args_new(const char *dimension_name, harp_flatten_args **new_args)
+{
+    harp_flatten_args *args;
+
+    assert(dimension_name != NULL);
+
+    args = (harp_flatten_args *)malloc(sizeof(harp_flatten_args));
+    if (args == NULL)
+    {
+        harp_set_error(HARP_ERROR_OUT_OF_MEMORY, "out of memory (could not allocate %lu bytes) (%s:%u)",
+                       sizeof(harp_flatten_args), __FILE__, __LINE__);
+        return -1;
+    }
+
+    args->dimension_name = strdup(dimension_name);
 
     *new_args = args;
     return 0;
@@ -1072,6 +1105,12 @@ static int regrid_args_copy(const harp_regrid_args *args, harp_regrid_args **new
     return regrid_args_new(args->grid_filename, new_args);
 }
 
+static int flatten_args_copy(const harp_flatten_args *args, harp_flatten_args **new_args)
+{
+    assert(args != NULL);
+    return flatten_args_new(args->dimension_name, new_args);
+}
+
 int harp_operation_new(harp_operation_type type, void *args, harp_operation **new_operation)
 {
     harp_operation *operation;
@@ -1143,6 +1182,9 @@ static void args_delete(harp_operation_type operation_type, void *args)
         case harp_operation_regrid:
             regrid_args_delete((harp_regrid_args *)args);
             break;
+        case harp_operation_flatten:
+            flatten_args_delete((harp_flatten_args *)args);
+            break;
         default:
             assert(0);
             exit(1);
@@ -1213,6 +1255,10 @@ static int args_copy(harp_operation_type operation_type, const void *args, void 
                                                 (harp_variable_exclusion_args **)new_args);
         case harp_operation_regrid:
             return regrid_args_copy((harp_regrid_args *)args, (harp_regrid_args **)new_args);
+
+        case harp_operation_flatten:
+            return flatten_args_copy((harp_flatten_args *)args, (harp_flatten_args **)new_args);
+
         default:
             assert(0);
             exit(1);
@@ -1576,6 +1622,26 @@ int harp_regrid_new(const char *grid_filename, harp_operation **new_operation)
     if (harp_operation_new(harp_operation_regrid, args, &operation) != 0)
     {
         regrid_args_delete(args);
+        return -1;
+    }
+
+    *new_operation = operation;
+    return 0;
+}
+
+int harp_flatten_new(const char *dimension_name, harp_operation **new_operation)
+{
+    harp_flatten_args *args;
+    harp_operation *operation;
+
+    if (flatten_args_new(dimension_name, &args) != 0)
+    {
+        return -1;
+    }
+
+    if (harp_operation_new(harp_operation_flatten, args, &operation) != 0)
+    {
+        flatten_args_delete(args);
         return -1;
     }
 
