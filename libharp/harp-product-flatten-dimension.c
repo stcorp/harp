@@ -26,7 +26,6 @@
 #include <math.h>
 #include <stdlib.h>
 #include <string.h>
-#include <stdio.h>
 
 LIBHARP_API int harp_product_flatten_dimension(harp_product *product, harp_dimension_type dimension_type)
 {
@@ -60,7 +59,6 @@ LIBHARP_API int harp_product_flatten_dimension(harp_product *product, harp_dimen
         int order[HARP_NUM_DIM_TYPES];
 
         var = product->variable[i];
-        printf("Var %s\n", var->name);
 
         for (j = 0; j < var->num_dimensions; j++)
         {
@@ -98,7 +96,6 @@ LIBHARP_API int harp_product_flatten_dimension(harp_product *product, harp_dimen
         }
 
         /* the variable must be time-dependend */
-        printf("Time der\n");
         if (var->dimension_type[0] != harp_dimension_time)
         {
             if (harp_variable_add_dimension(var, 0, harp_dimension_time, product->dimension[harp_dimension_time]))
@@ -108,7 +105,6 @@ LIBHARP_API int harp_product_flatten_dimension(harp_product *product, harp_dimen
 
             dim_index++;
         }
-        printf("Time der done\n");
 
         /* derive the new order of dimensions, splicing in dim_index at position 1 *if necessary* */
         if (dim_index != 1)
@@ -128,16 +124,11 @@ LIBHARP_API int harp_product_flatten_dimension(harp_product *product, harp_dimen
             }
 
             /* reorden dimensions */
-            for (j = 0; j < var->num_dimensions; j++)
-            {
-                printf("%i\n", order[j]);
-            }
             if (harp_array_transpose(var->data_type, var->num_dimensions, var->dimension, order, var->data) != 0)
             {
                 return -1;
             }
         }
-        printf("Transp. done\n");
 
         /* update the dimension info */
         var->dimension[harp_dimension_time] *= var->dimension[dim_index];
