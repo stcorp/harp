@@ -32,7 +32,8 @@ except ImportError:
 from harp._harpc import ffi as _ffi
 
 __all__ = ["Error", "CLibraryError", "UnsupportedTypeError", "UnsupportedDimensionError", "Variable", "Product",
-           "get_encoding", "set_encoding", "version", "ingest_product", "import_product", "export_product", "to_dict"]
+           "get_encoding", "set_encoding", "version", "ingest_product", "import_product", "export_product",
+           "concatenate", "to_dict"]
 
 class Error(Exception):
     """Exception base class for all HARP Python interface errors."""
@@ -1033,6 +1034,94 @@ def export_product(product, filename, file_format="netcdf"):
 
     finally:
         _lib.harp_product_delete(c_product_ptr[0])
+
+
+def _get_time_length(product):
+    time_length = None
+    for name in product:
+        variable = product[name]
+        dimension = getattr(variable, "dimension", [])
+        data = numpy.asarray(variable.data)
+        if dimension and len(data.shape) != len(dimension):
+            raise Error("dimensions incorrect")
+        for i in range(len(dimension)):
+            if dimension[i] == "time":
+                if time_length is None:
+                    time_length = data.shape[i]
+                elif time_length != data.shape[i]:
+                    raise Error("inconsistent dimension lengths for 'time'")
+    return time_length
+
+
+def _extend_variable_for_dim(variable, dim_index, new_length):
+    shape = list(variable.data.shape)
+    shape[dim_index] = new_length - shape[dim_index]
+    filler = numpy.empty(shape, dtype=variable.data.dtype)
+    filler[:] = numpy.NAN
+    variable.data = numpy.concatenate([variable.data, filler], axis=dim_index)
+
+
+def make_time_dependent(product):
+    time_length = _get_time_length(product)
+    if time_length is None:
+        raise Error("product has no time dimension")
+    for name in product:
+        variable = product[name]
+        dimension = getattr(variable, "dimension", [])
+        if len(dimension) == 0 or dimension[0] != 'time':
+            # add time dimension
+            data = numpy.asarray(variable.data)
+            data.reshape([1] + list(data.shape))
+            variable.data = numpy.repeat(data, time_length, axis=0)
+            variable.dimension = ['time'] + dimension
+    return product
+
+
+def concatenate(products):
+    if len(products) == 0:
+        raise Error("product list is empty")
+
+    variable_names = []
+    for product in products:
+        for name in product:
+            if not name in variable_names and name != "index":
+                variable_names.append(name)
+    for name in variable_names:
+        for product in products:
+            if not name in product:
+                raise Error("not all products contain variable '%s'" % (name,))
+
+    for product in products:
+        make_time_dependent(product)
+    target_product = Product()
+    for name in variable_names:
+        for product in products:
+            source_variable = product[name]
+            if not name in target_product:
+                target_variable = Variable(source_variable.data, source_variable.dimension)
+                if hasattr(source_variable, 'unit'):
+                    target_variable.unit = source_variable.unit
+                if hasattr(source_variable, 'valid_min'):
+                    target_variable.valid_min = source_variable.valid_min
+                if hasattr(source_variable, 'valid_max'):
+                    target_variable.valid_max = source_variable.valid_max
+                if hasattr(source_variable, 'description'):
+                    target_variable.description = source_variable.description
+                target_product[name] = target_variable
+            else:
+                target_variable = target_product[name]
+                if hasattr(target_variable, 'unit'):
+                    if not hasattr(source_variable, 'unit') or target_variable.unit != source_variable.unit:
+                        raise Error("inconsistent units in appending variable '%s'" % (name,))
+                if len(target_variable.data.shape) != len(source_variable.data.shape):
+                    raise Error("inconsistent number of dimensions for appending variable '%s'" % (name,))
+                for i in range(len(target_variable.data.shape))[1:]:
+                    if target_variable.data.shape[i] < source_variable.data.shape[i]:
+                        _extend_variable_for_dim(target_variable, i, source_variable.data.shape[i])
+                    if source_variable.data.shape[i] < target_variable.data.shape[i]:
+                        _extend_variable_for_dim(source_variable, i, target_variable.data.shape[i])
+                target_variable.data = numpy.append(target_variable.data, source_variable.data, axis=0)
+    return target_product
 
 #
 # Initialize the HARP Python interface.

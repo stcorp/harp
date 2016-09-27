@@ -16,8 +16,6 @@ range, description).
 Variables can be accessed by name using either the attribute access '.' syntax,
 or the item access '[]' syntax. For example:
 
-    from __future__ import print_function
-
     # Alternative ways to access the variable 'HCHO_column_number_density'.
     density = product.HCHO_column_number_density
     density = product["HCHO_column_number_density"]
@@ -30,8 +28,6 @@ or the item access '[]' syntax. For example:
 
 Product attributes can be accessed in the same way as variables, but are *not*
 included when iterating over the variables in a product. For example:
-
-    from __future__ import print_function
 
     # Print product attributes.
     print(product.source_product)
@@ -46,8 +42,6 @@ attributes except the unit attribute are discarded as part of the conversion.
 The unit attribute of a variable is represented by adding a scalar variable
 of type string with the name of the corresponding variable suffixed with
 '_unit' as name and the unit as value.
-
-    from __future__ import print_function
 
     # Convert input product to an OrderedDict.
     product = to_dict(input_product)
@@ -71,10 +65,7 @@ information provided by the Product representation is not needed.
 Note that only Product instances can be exported. The OrderedDict representation
 does not contain enough information.
 
-Further information is available in the bundled documentation, and from
-
-    http://www.stcorp.nl/beat/
-
+Further information is available in the HARP documentation.
 
 Copyright (C) 2015-2016 S[&]T, The Netherlands.
 

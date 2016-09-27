@@ -211,8 +211,6 @@ Examples
 
 .. code-block:: python
 
-   from __future__ import print_function
-
    import harp
    import numpy
 
@@ -376,6 +374,25 @@ This section describes the functions defined by the HARP Python library.
    :param str filename: Filename of the exported product.
    :param str file_format: File format to use; one of 'netcdf', 'hdf4', or
                            'hdf5'.
+
+.. py:function:: harp.concatenate(productlist)
+
+   Combines all HARP products in the list into a single HARP output product.
+
+   All non-time dependent variables from the input products are made time
+   dependent before concatenating them.
+
+   Trying to merge input products that do not have the same types of variables
+   will result in an error.
+
+   The 'index' variable will not be included in the concatenated product.
+
+   The resulting product will not have a 'source_product' or 'history' global
+   attribute set.
+
+   :param list productlist: List of harp.Product objects.
+   :returns: Single product containing concatenated content.
+   :rtype: harp.Product
 
 .. py:function:: harp.to_dict(product)
 

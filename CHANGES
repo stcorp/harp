@@ -34,6 +34,8 @@
 * Fixed issue in the HARP Python interface where using the value 0 for
   valid_min or valid_max did not work.
 
+* Added concatenate() function to HARP Python interface.
+
 * HARP operations (formerly 'actions') are now executed in a strict sequence.
   This means that you can now do things like:
     'derive(var); var < 10; exclude(var)'
