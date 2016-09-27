@@ -1223,13 +1223,6 @@ static int execute_filter_operations(harp_product *product, harp_program *progra
         goto cleanup;
     }
 
-    /* post condition */
-    if (program->num_operations != 0)
-    {
-        harp_set_error(HARP_ERROR_OPERATION, "Could not execute all filter operations.");
-        goto cleanup;
-    }
-
     assert(ops_0d->num_operations == 0);
     assert(ops_1d->num_operations == 0);
     assert(ops_2d->num_operations == 0);
