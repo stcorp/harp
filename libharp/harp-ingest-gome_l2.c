@@ -522,7 +522,7 @@ int harp_ingestion_module_gome_l2_init(void)
 
     /* datetime_stop */
     description = "time of the measurement at end of integration time";
-    variable_definition = harp_ingestion_register_variable_sample_read(product_definition, "datetime_end",
+    variable_definition = harp_ingestion_register_variable_sample_read(product_definition, "datetime_stop",
                                                                        harp_type_double, 1, dimension_type, NULL,
                                                                        description, "seconds since 2000-01-01", NULL,
                                                                        read_datetime);
