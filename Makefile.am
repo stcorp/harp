@@ -107,6 +107,7 @@ libharp_la_SOURCES = \
 	libharp/harp-ingest-geoms-mwr.c \
 	libharp/harp-ingest-geoms-ftir.c \
 	libharp/harp-ingest-geoms-uvvis-doas.c \
+	libharp/harp-ingest-gome_l2.c \
 	libharp/harp-ingest-gome2_l2.c \
 	libharp/harp-ingest-gomos_l2.c \
 	libharp/harp-ingest-gosat_fts_l1b.c \
