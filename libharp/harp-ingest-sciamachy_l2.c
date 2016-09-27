@@ -2266,7 +2266,6 @@ static void register_common_nadir_cloud_variables(harp_product_definition *produ
                                                                        description, NULL, NULL, read_cloud_fraction);
     snprintf(path, MAX_PATH_LENGTH, "/clouds_aerosol[]/cl_frac");
     harp_variable_definition_add_mapping(variable_definition, NULL, NULL, path, NULL);
-
 }
 
 static void register_common_limb_variables(harp_product_definition *product_definition, const char *dataset)
@@ -2372,8 +2371,6 @@ static void register_common_limb_variables(harp_product_definition *product_defi
                                                                        read_temperature);
     snprintf(path, MAX_PATH_LENGTH, "/%s[]/tangent_temp[]", dataset);
     harp_variable_definition_add_mapping(variable_definition, NULL, NULL, path, NULL);
-
-
 }
 
 int harp_ingestion_module_sciamachy_l2_init(void)
