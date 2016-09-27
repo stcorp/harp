@@ -131,6 +131,19 @@ static int get_begin_from_midpoint_and_length(harp_variable *variable, const har
     return 0;
 }
 
+static int get_begin_from_end_and_length(harp_variable *variable, const harp_variable **source_variable)
+{
+    long i;
+
+    for (i = 0; i < variable->num_elements; i++)
+    {
+        variable->data.double_data[i] =
+            source_variable[0]->data.double_data[i] - source_variable[1]->data.double_data[i];
+    }
+
+    return 0;
+}
+
 static int get_bounds_from_midpoints(harp_variable *variable, const harp_variable **source_variable)
 {
     long length = source_variable[0]->dimension[source_variable[0]->num_dimensions - 1];
@@ -252,6 +265,19 @@ static int get_end_from_begin_and_length(harp_variable *variable, const harp_var
     {
         variable->data.double_data[i] =
             source_variable[0]->data.double_data[i] + source_variable[1]->data.double_data[i];
+    }
+
+    return 0;
+}
+
+static int get_end_from_midpoint_and_length(harp_variable *variable, const harp_variable **source_variable)
+{
+    long i;
+
+    for (i = 0; i < variable->num_elements; i++)
+    {
+        variable->data.double_data[i] =
+            source_variable[0]->data.double_data[i] + source_variable[1]->data.double_data[i] / 2;
     }
 
     return 0;
@@ -3919,10 +3945,44 @@ static int add_axis_conversions(void)
         return -1;
     }
 
+    /* start from stop/length */
+    if (harp_variable_conversion_new("datetime_start", harp_type_double, HARP_UNIT_DATETIME, 1, dimension_type, 0,
+                                     get_begin_from_end_and_length, &conversion) != 0)
+    {
+        return -1;
+    }
+    if (harp_variable_conversion_add_source(conversion, "datetime_stop", harp_type_double, HARP_UNIT_DATETIME, 1,
+                                            dimension_type, 0) != 0)
+    {
+        return -1;
+    }
+    if (harp_variable_conversion_add_source(conversion, "datetime_length", harp_type_double, HARP_UNIT_TIME, 1,
+                                            dimension_type, 0) != 0)
+    {
+        return -1;
+    }
+
     /*** datetime_stop ***/
 
     if (add_time_indepedent_to_dependent_conversion("datetime_stop", harp_type_double, HARP_UNIT_DATETIME, 1,
                                                     dimension_type, 0) != 0)
+    {
+        return -1;
+    }
+
+    /* stop from mid/length */
+    if (harp_variable_conversion_new("datetime_stop", harp_type_double, HARP_UNIT_DATETIME, 1, dimension_type, 0,
+                                     get_end_from_midpoint_and_length, &conversion) != 0)
+    {
+        return -1;
+    }
+    if (harp_variable_conversion_add_source(conversion, "datetime", harp_type_double, HARP_UNIT_DATETIME, 1,
+                                            dimension_type, 0) != 0)
+    {
+        return -1;
+    }
+    if (harp_variable_conversion_add_source(conversion, "datetime_length", harp_type_double, HARP_UNIT_TIME, 1,
+                                            dimension_type, 0) != 0)
     {
         return -1;
     }
