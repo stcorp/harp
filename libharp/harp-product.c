@@ -37,7 +37,7 @@
  *
  * Note that the `Conventions` global attribute is not included as this is automatically handled by the import/export
  * functions of HARP. Similar, the `datetime_start` and `datetime_stop` attributes are handled by the export function.
- * They are set to the minimum and maximum values of the variables `datetime`, `datetime_start` and `datetime_end`
+ * They are set to the minimum and maximum values of the variables `datetime`, `datetime_start` and `datetime_stop`
  * (if available).
  *
  * For each variable in the HARP product the dimensions need to match the length of their type as defined in the
