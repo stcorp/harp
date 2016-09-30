@@ -1,72 +1,22 @@
-* Added harpprofile command line tool that allows regridding and smoothing
-  of vertical gridded data.
+0.3 2016-09-30
+~~~~~~~~~~~~~~
 
-* Support for HDF4 and HDF5 (for import/export) is now optional when building
-  HARP, but still enabled by default.
+* The changes between 0.2 and 0.3 are extensive. The list below provides the
+  most important aspects, but there are many more smaller changes that are not
+  listed.
 
-* Added harp_product_regrid_vertical_with_axis_variable(),
-  harp_product_regrid_vertical_with_collocated_dataset(), and
-  harp_product_smooth_vertical().
-
-* Added functionality to deal with HARP Datasets and Product Metadata to the
-  public C library interface.
-
-* harp_import_global_attributes() has been removed (its functionality is
-  now captured by the new Product Metadata interface).
-
-* The collocation result interface in the C library interface has been reworked
-  to now work with the new HARP Datasets.
-
-* Renamed 'actions' to 'operations'. HARP_ERROR_ACTION and
-  HARP_ERROR_ACTION_SYNTAX have been renamed to HARP_ERROR_OPERATION and
-  HARP_ERROR_OPERATION_SYNTAX. harp_product_execute_actions() has been renamed
-  to harp_product_execute_operations().
-
-* Added public functions to allow raising/capturing of warnings in HARP:
-  harp_report_warning(), harp_get_warning_handler(), harp_set_warning_handler()
-
-* Added public functions to print product/variable structure and content:
-  harp_product_print(), harp_variable_print(), harp_variable_print_data()
-
-* harp_ingest_test() now takes a 'print' parameter to specify a print
-  function where test status messages will be written.
-
-* Fixed issue in the HARP Python interface where using the value 0 for
-  valid_min or valid_max did not work.
-
-* Added concatenate() function to HARP Python interface.
-
-* HARP operations (formerly 'actions') are now executed in a strict sequence.
-  This means that you can now do things like:
+* HARP 'actions' are now called 'operations' and are now executed in a strict
+  sequence. This means that you can now do things like:
     'derive(var); var < 10; exclude(var)'
 
-* The 'include()' action/operation has been renamed to 'keep()'.
+* Added harpprofile command line tool that allows regridding and smoothing
+  of vertical gridded data. 
+  Also added harp_product_regrid_vertical_with_axis_variable(),
+  harp_product_regrid_vertical_with_collocated_dataset(), and
+  harp_product_smooth_vertical() to C interface.
 
-* The derived variable conversions are now properly split according to the
-  dimension types of a variable. This also solves a problem where certain
-  valid conversions where not included in a '--list-conversions' print.
-
-* The derived variable conversions that produce uncertainty and covariance
-  variables filled with NaNs from scratch have been removed.
-
-* Fixed several derived variable conversions for covariances.
-
-* Added derived variable conversion from time independent to time dependent
-  for instrument_latitude, instrument_longitude, and instrument_altitude.
-
-* Removed variables flag_am_pm and flag_day_twilight_night and the conversions
-  for flag_am_pm, flag_day_twilight_night, and flag_daytime. These conditions
-  can all be determined by directly comparing against the solar angles.
-
-* Added support for ingestion of ECMF GRIB and TEMIS assimilated ozone data.
-
-* Added 'species' ingestion option to the MIPAS L2 ingestion.
-
-* Fixed issue in GEOMS ingestion where long variable names were truncated.
-
-* Introduced convention that dimensionless quantities should have an empty
-  'units' attribute string value. Only non-quantities should omit the 'units'
-  attribute.
+* Added algorithm descriptions for the derived variable conversions to the
+  HARP documentation.
 
 * Introduced a more strict definition of variable names for the HARP data
   format. As part of this the list of supported species and associated naming
@@ -77,6 +27,69 @@
   should now be annotated as such in the variable name. As a result, 'dry_air'
   is now introduced as a species, and for mixing ratios the '_wet' postfix is
   removed and the '_dry_air' postfix is introduced.
+  Derived variable conversions have been added for dry/wet conversion and for
+  retrieving the needed 'molar mass' of total air.
+
+* Added functionality to deal with HARP Datasets and Product Metadata to the
+  public C library interface. The collocation result interface in the C
+  libraryinterface has also been reworked to now work with HARP Datasets.
+
+* HARP_ERROR_ACTION and HARP_ERROR_ACTION_SYNTAX have been renamed to
+  HARP_ERROR_OPERATION and HARP_ERROR_OPERATION_SYNTAX.
+  harp_product_execute_actions() has been renamed to
+  harp_product_execute_operations().
+
+* Added operation to flatten data in a certain dimension and added
+  harp_product_flatten_dimension().
+
+* Automatic detection of a product type when ingesting products now happens
+  using CODA (using included codadef files with detection rules) for all
+  products.
+
+* harp_import_global_attributes() has been removed (its functionality is
+  now captured by the new Product Metadata interface).
+
+* Added public functions to allow raising/capturing of warnings in HARP:
+  harp_report_warning(), harp_get_warning_handler(), harp_set_warning_handler()
+
+* Added public functions to print product/variable structure and content:
+  harp_product_print(), harp_variable_print(), harp_variable_print_data()
+
+* Fixed issue in the HARP Python interface where using the value 0 for
+  valid_min or valid_max did not work.
+
+* Added concatenate() function to HARP Python interface.
+
+* The 'include()' action/operation has been renamed to 'keep()'.
+
+* The derived variable conversions are now properly split according to the
+  dimension types of a variable. This also solves a problem where certain
+  valid conversions where not included in a '--list-conversions' print.
+
+* The derived variable conversions that produce uncertainty and covariance
+  variables filled with NaNs from scratch have been removed.
+
+* Added derived variable conversions for gridded data (i.e. variables that
+  depend on the latitude and longitude dimensions).
+
+* Removed variables flag_am_pm and flag_day_twilight_night and the conversions
+  for flag_am_pm, flag_day_twilight_night, and flag_daytime. These conditions
+  can all be determined by directly comparing against the solar angles.
+
+* Added support for ingestion of GOMOS L2, SCIAMACHY L2, ECMF GRIB and TEMIS
+  assimilated ozone data.
+
+* Added 'species' ingestion option to the MIPAS L2 ingestion.
+
+* Added support for MLS CH3Cl, CH3CN, and CH3OH products.
+
+* Fixed issue in GEOMS ingestion where long variable names were truncated.
+
+* Introduced convention that dimensionless quantities should have an empty
+  'units' attribute string value. Only non-quantities should omit the 'units'
+  attribute.
+
+* Resolved incorrect correction for leap seconds in product ingestions.
 
 * Covariance variables have been renamed from '*_cov' to '*_covariance'.
 
@@ -89,6 +102,11 @@
   'geopotential height'. Added HARP_UNIT_GEOPOTENTIAL.
 
 * Renamed cloud optical thickness to cloud optical depth.
+
+* Added '-a/--operations' option to harpdump.
+
+* Support for HDF4 and HDF5 (for import/export) is now optional when building
+  HARP, but still enabled by default.
 
 0.2 2016-06-30
 ~~~~~~~~~~~~~~
