@@ -1071,7 +1071,7 @@ def make_time_dependent(product):
         if len(dimension) == 0 or dimension[0] != 'time':
             # add time dimension
             data = numpy.asarray(variable.data)
-            data.reshape([1] + list(data.shape))
+            data = data.reshape([1] + list(data.shape))
             variable.data = numpy.repeat(data, time_length, axis=0)
             variable.dimension = ['time'] + dimension
     return product
