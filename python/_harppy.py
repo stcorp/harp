@@ -515,7 +515,8 @@ def _c_can_cast(c_data_type_src, c_data_type_dst):
     elif c_data_type_dst == _lib.harp_type_float:
         return (c_data_type_src == _lib.harp_type_int8 or
                 c_data_type_src == _lib.harp_type_int16 or
-                c_data_type_src == _lib.harp_type_float)
+                c_data_type_src == _lib.harp_type_float or
+                c_data_type_src == _lib.harp_type_double)
     elif c_data_type_dst == _lib.harp_type_double:
         return (c_data_type_src == _lib.harp_type_int8 or
                 c_data_type_src == _lib.harp_type_int16 or

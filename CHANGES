@@ -1,3 +1,7 @@
+
+* Fixed issue where -inf/+inf valid_min/valid_max attributes could not be
+  exported as float values in the Python harp.export_product() interface.
+
 0.3 2016-09-30
 ~~~~~~~~~~~~~~
 
