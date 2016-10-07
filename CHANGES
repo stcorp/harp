@@ -1,3 +1,6 @@
+* Variable conversions for altitude and pressure bounds now also work when
+  they are dependend on latitude and longitude dimensions.
+
 * Fixed crash in derived variable conversion for volume mixing ratio from
   mass mixing ratio (for total air).
 

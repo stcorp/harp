@@ -2602,12 +2602,37 @@ static int add_conversions_for_grid(int num_dimensions, harp_dimension_type dime
         }
     }
 
+    /* midpoint from bounds */
+    dimension_type[num_dimensions] = harp_dimension_independent;
+    if (harp_variable_conversion_new("altitude", harp_type_double, HARP_UNIT_LENGTH, num_dimensions,
+                                     dimension_type, 0, get_midpoint_from_bounds_log, &conversion) != 0)
+    {
+        return -1;
+    }
+    if (harp_variable_conversion_add_source(conversion, "altitude_bounds", harp_type_double, HARP_UNIT_LENGTH,
+                                            num_dimensions + 1, dimension_type, 2) != 0)
+    {
+        return -1;
+    }
+
     /*** altitude_bounds ***/
 
     /* time dependent from independent */
     dimension_type[num_dimensions] = harp_dimension_independent;
     if (add_time_indepedent_to_dependent_conversion("altitude_bounds", harp_type_double, HARP_UNIT_LENGTH,
                                                     num_dimensions + 1, dimension_type, 2) != 0)
+    {
+        return -1;
+    }
+
+    /* range from midpoints */
+    if (harp_variable_conversion_new("altitude_bounds", harp_type_double, HARP_UNIT_LENGTH, num_dimensions + 1,
+                                     dimension_type, 2, get_bounds_from_midpoints, &conversion) != 0)
+    {
+        return -1;
+    }
+    if (harp_variable_conversion_add_source(conversion, "altitude", harp_type_double, HARP_UNIT_LENGTH, num_dimensions,
+                                            dimension_type, 0) != 0)
     {
         return -1;
     }
@@ -3067,6 +3092,41 @@ static int add_conversions_for_grid(int num_dimensions, harp_dimension_type dime
         {
             return -1;
         }
+    }
+
+    /* midpoint from bounds */
+    dimension_type[num_dimensions] = harp_dimension_independent;
+    if (harp_variable_conversion_new("presure", harp_type_double, HARP_UNIT_PRESSURE, num_dimensions,
+                                     dimension_type, 0, get_midpoint_from_bounds_log, &conversion) != 0)
+    {
+        return -1;
+    }
+    if (harp_variable_conversion_add_source(conversion, "pressure_bounds", harp_type_double, HARP_UNIT_PRESSURE,
+                                            num_dimensions + 1, dimension_type, 2) != 0)
+    {
+        return -1;
+    }
+
+    /*** pressure_bounds ***/
+
+    /* time dependent from independent */
+    dimension_type[num_dimensions] = harp_dimension_independent;
+    if (add_time_indepedent_to_dependent_conversion("presure_bounds", harp_type_double, HARP_UNIT_PRESSURE,
+                                                    num_dimensions + 1, dimension_type, 2) != 0)
+    {
+        return -1;
+    }
+
+    /* range from midpoints */
+    if (harp_variable_conversion_new("presure_bounds", harp_type_double, HARP_UNIT_PRESSURE, num_dimensions + 1,
+                                     dimension_type, 2, get_bounds_from_midpoints_log, &conversion) != 0)
+    {
+        return -1;
+    }
+    if (harp_variable_conversion_add_source(conversion, "pressure", harp_type_double, HARP_UNIT_PRESSURE,
+                                            num_dimensions, dimension_type, 0) != 0)
+    {
+        return -1;
     }
 
     /*** stratospheric column (mass) density ***/
@@ -4100,7 +4160,7 @@ static int add_axis_conversions(void)
 
     /*** latitude_bounds ***/
 
-    if (add_time_indepedent_to_dependent_conversion("latitude_bounds", harp_type_double, HARP_UNIT_DATETIME, 1,
+    if (add_time_indepedent_to_dependent_conversion("latitude_bounds", harp_type_double, HARP_UNIT_LATITUDE, 1,
                                                     dimension_type, 0) != 0)
     {
         return -1;
@@ -4209,7 +4269,7 @@ static int add_axis_conversions(void)
     }
 
     /* range from midpoints */
-    if (add_midpoint_to_bounds_conversion("longitude", harp_type_double, HARP_UNIT_LONGITUDE, harp_dimension_longitude,
+    if (add_midpoint_to_bounds_conversion("longitude", harp_type_double, HARP_UNIT_LONGITUDE, harp_dimension_latitude,
                                           get_bounds_from_midpoints) != 0)
     {
         return -1;
@@ -4279,13 +4339,6 @@ static int add_axis_conversions(void)
         return -1;
     }
 
-    /* midpoint from bounds */
-    if (add_bounds_to_midpoint_conversion("altitude", harp_type_double, HARP_UNIT_LENGTH, harp_dimension_vertical,
-                                          get_midpoint_from_bounds) != 0)
-    {
-        return -1;
-    }
-
     /* altitude from sensor altitude */
     dimension_type[1] = harp_dimension_vertical;
     for (i = 0; i < 2; i++)
@@ -4300,15 +4353,6 @@ static int add_axis_conversions(void)
         {
             return -1;
         }
-    }
-
-    /*** altitude_bounds ***/
-
-    /* range from midpoints */
-    if (add_midpoint_to_bounds_conversion("altitude", harp_type_double, HARP_UNIT_LENGTH, harp_dimension_vertical,
-                                          get_bounds_from_midpoints) != 0)
-    {
-        return -1;
     }
 
     /*** pressure ***/
@@ -4371,22 +4415,6 @@ static int add_axis_conversions(void)
     dimension_type[1] = harp_dimension_longitude;
     if (harp_variable_conversion_add_source(conversion, "longitude", harp_type_double, HARP_UNIT_LONGITUDE, 2,
                                             dimension_type, 0) != 0)
-    {
-        return -1;
-    }
-
-    /* midpoint from bounds */
-    if (add_bounds_to_midpoint_conversion("pressure", harp_type_double, HARP_UNIT_PRESSURE, harp_dimension_vertical,
-                                          get_midpoint_from_bounds_log) != 0)
-    {
-        return -1;
-    }
-
-    /*** pressure_bounds ***/
-
-    /* range from midpoints */
-    if (add_midpoint_to_bounds_conversion("pressure", harp_type_double, HARP_UNIT_PRESSURE, harp_dimension_vertical,
-                                          get_bounds_from_midpoints_log) != 0)
     {
         return -1;
     }
