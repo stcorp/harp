@@ -891,6 +891,27 @@ static int get_viewing_angle_from_sensor_angle(harp_variable *variable, const ha
     return 0;
 }
 
+static int get_vertical_mid_point(harp_variable *variable, const harp_variable **source_variable)
+{
+    long max_length = source_variable[0]->dimension[source_variable[0]->num_dimensions - 1];
+    long i;
+
+    for (i = 0; i < variable->num_elements; i++)
+    {
+        long length = max_length;
+
+        /* find top valid element */
+        while (length > 0 && harp_isnan(source_variable[0]->data.double_data[i * max_length + length - 1]))
+        {
+            length--;
+        }
+        /* use mid point of valid elements */
+        variable->data.double_data[i] = source_variable[0]->data.double_data[i * max_length + length / 2];
+    }
+
+    return 0;
+}
+
 static int get_virtual_temperature_from_temperature(harp_variable *variable, const harp_variable **source_variable)
 {
     long i;
@@ -4158,6 +4179,22 @@ static int add_axis_conversions(void)
         }
     }
 
+    /* {[time]} from {[time],vertical} */
+    dimension_type[1] = harp_dimension_vertical;
+    for (i = 0; i < 2; i++)
+    {
+        if (harp_variable_conversion_new("latitude", harp_type_double, HARP_UNIT_LATITUDE, i, dimension_type, 0,
+                                         get_vertical_mid_point, &conversion) != 0)
+        {
+            return -1;
+        }
+        if (harp_variable_conversion_add_source(conversion, "latitude", harp_type_double, HARP_UNIT_LATITUDE, i + 1,
+                                                &dimension_type[1 - i], 0) != 0)
+        {
+            return -1;
+        }
+    }
+
     /*** latitude_bounds ***/
 
     if (add_time_indepedent_to_dependent_conversion("latitude_bounds", harp_type_double, HARP_UNIT_LATITUDE, 1,
@@ -4255,6 +4292,22 @@ static int add_axis_conversions(void)
         }
         if (harp_variable_conversion_add_source(conversion, "sensor_longitude", harp_type_double, HARP_UNIT_LONGITUDE,
                                                 i, dimension_type, 0) != 0)
+        {
+            return -1;
+        }
+    }
+
+    /* {[time]} from {[time],vertical} */
+    dimension_type[1] = harp_dimension_vertical;
+    for (i = 0; i < 2; i++)
+    {
+        if (harp_variable_conversion_new("longitude", harp_type_double, HARP_UNIT_LONGITUDE, i, dimension_type, 0,
+                                         get_vertical_mid_point, &conversion) != 0)
+        {
+            return -1;
+        }
+        if (harp_variable_conversion_add_source(conversion, "longitude", harp_type_double, HARP_UNIT_LONGITUDE, i + 1,
+                                                &dimension_type[1 - i], 0) != 0)
         {
             return -1;
         }
