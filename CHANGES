@@ -1,3 +1,6 @@
+* Fixed crash in derived variable conversion for volume mixing ratio from
+  mass mixing ratio (for total air).
+
 * Changed dimension argument of 'flatten()' operation from string to
   identifier.
 

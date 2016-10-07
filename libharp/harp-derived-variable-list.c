@@ -1861,6 +1861,11 @@ static int add_species_conversions_for_grid(const char *species, int num_dimensi
         {
             return -1;
         }
+        if (harp_variable_conversion_add_source(conversion, "molar_mass", harp_type_double, HARP_UNIT_MOLAR_MASS,
+                                                num_dimensions, dimension_type, 0) != 0)
+        {
+            return -1;
+        }
     }
 
     /*** column volume mixing ratio dry air ***/
@@ -2272,6 +2277,11 @@ static int add_species_conversions_for_grid(const char *species, int num_dimensi
         return -1;
     }
     if (harp_variable_conversion_add_source(conversion, name_mmr, harp_type_double, HARP_UNIT_MASS_MIXING_RATIO,
+                                            num_dimensions, dimension_type, 0) != 0)
+    {
+        return -1;
+    }
+    if (harp_variable_conversion_add_source(conversion, "molar_mass", harp_type_double, HARP_UNIT_MOLAR_MASS,
                                             num_dimensions, dimension_type, 0) != 0)
     {
         return -1;
