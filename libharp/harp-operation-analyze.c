@@ -51,9 +51,10 @@ static int create_variable_derivation(const ast_node *argument_list, harp_operat
 static int create_variable_inclusion(const ast_node *argument_list, harp_operation **new_operation);
 static int create_variable_exclusion(const ast_node *argument_list, harp_operation **new_operation);
 static int create_regrid(const ast_node *argument_list, harp_operation **new_operation);
+static int create_regrid_collocated(const ast_node *argument_list, harp_operation **new_operation);
 static int create_flatten(const ast_node *argument_list, harp_operation **new_operation);
 
-#define NUM_BUILTIN_FUNCTIONS 13
+#define NUM_BUILTIN_FUNCTIONS 14
 static function_prototype builtin_function[NUM_BUILTIN_FUNCTIONS] = {
     {"collocate-left", 1, {ast_string}, &create_collocation_filter_left},
     {"collocate-right", 1, {ast_string}, &create_collocation_filter_right},
@@ -67,6 +68,8 @@ static function_prototype builtin_function[NUM_BUILTIN_FUNCTIONS] = {
     {"keep", -1, {0}, &create_variable_inclusion},
     {"exclude", -1, {0}, &create_variable_exclusion},
     {"regrid", 1, {ast_string}, &create_regrid},
+    {"regrid_collocated", 4, {ast_string, ast_string, ast_qualified_name, ast_qualified_name},
+     &create_regrid_collocated},
     {"flatten", 1, {ast_string}, &create_flatten},
 };
 
@@ -666,6 +669,35 @@ static int create_regrid(const ast_node *argument_list, harp_operation **new_ope
     name = argument_list->child_node[0];
 
     return harp_regrid_new(name->payload.string, new_operation);
+}
+
+static int create_regrid_collocated(const ast_node *argument_list, harp_operation **new_operation)
+{
+    const ast_node *collocation_result = argument_list->child_node[0];
+    const ast_node *dataset_dir = argument_list->child_node[1];
+    const ast_node *target_dataset = argument_list->child_node[2];
+    const ast_node *vertical_axis = argument_list->child_node[3];
+
+    verify_qualified_name_has_no_qualifiers(target_dataset);
+    verify_qualified_name_has_no_qualifiers(vertical_axis);
+
+    target_dataset = target_dataset->child_node[0];
+    vertical_axis = vertical_axis->child_node[0];
+
+    if (strlen(target_dataset->payload.string) > 1)
+    {
+        harp_set_error(HARP_ERROR_OPERATION,
+                       "char %lu: expected 'a' or 'b' for target_dataset argument, got %s",
+                       target_dataset->payload.string,
+                       target_dataset->position);
+        return -1;
+    }
+
+    return harp_regrid_collocated_new(collocation_result->payload.string,
+                                      dataset_dir->payload.string,
+                                      target_dataset->payload.string[0],
+                                      vertical_axis->payload.string,
+                                      new_operation);
 }
 
 static int create_flatten(const ast_node *argument_list, harp_operation **new_operation)

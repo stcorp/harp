@@ -37,6 +37,28 @@ static void regrid_args_delete(harp_regrid_args *args)
     }
 }
 
+static void regrid_collocated_args_delete(harp_regrid_collocated_args *args)
+{
+    if (args != NULL)
+    {
+        if (args->collocation_result != NULL)
+        {
+            free(args->collocation_result);
+        }
+        if (args->dataset_dir != NULL)
+        {
+            free(args->dataset_dir);
+        }
+        if (args->vertical_axis != NULL)
+        {
+            free(args->vertical_axis);
+        }
+
+        free(args);
+    }
+}
+
+
 static void flatten_args_delete(harp_flatten_args *args)
 {
     if (args != NULL)
@@ -968,6 +990,33 @@ static int regrid_args_new(const char *grid_filename, harp_regrid_args **new_arg
     return 0;
 }
 
+static int regrid_collocated_args_new(const char *collocation_result, const char *dataset_dir,
+                                      const char target_dataset, const char *vertical_axis,
+                                      harp_regrid_collocated_args **new_args)
+{
+    harp_regrid_collocated_args *args;
+
+    assert(collocation_result != NULL);
+    assert(dataset_dir != NULL);
+    assert(vertical_axis != NULL);
+
+    args = (harp_regrid_collocated_args *)malloc(sizeof(harp_regrid_collocated_args));
+    if (args == NULL)
+    {
+        harp_set_error(HARP_ERROR_OUT_OF_MEMORY, "out of memory (could not allocate %lu bytes) (%s:%u)",
+                       sizeof(harp_regrid_collocated_args), __FILE__, __LINE__);
+        return -1;
+    }
+
+    args->collocation_result = strdup(collocation_result);
+    args->dataset_dir = strdup(dataset_dir);
+    args->vertical_axis = strdup(vertical_axis);
+    args->target_dataset = target_dataset;
+
+    *new_args = args;
+    return 0;
+}
+
 static int flatten_args_new(const harp_dimension_type dimension_type, harp_flatten_args **new_args)
 {
     harp_flatten_args *args;
@@ -1098,6 +1147,13 @@ static int regrid_args_copy(const harp_regrid_args *args, harp_regrid_args **new
     return regrid_args_new(args->grid_filename, new_args);
 }
 
+static int regrid_collocated_args_copy(const harp_regrid_collocated_args *args, harp_regrid_collocated_args **new_args)
+{
+    assert(args != NULL);
+    return regrid_collocated_args_new(args->collocation_result, args->dataset_dir, args->target_dataset,
+                                      args->vertical_axis, new_args);
+}
+
 static int flatten_args_copy(const harp_flatten_args *args, harp_flatten_args **new_args)
 {
     assert(args != NULL);
@@ -1175,6 +1231,9 @@ static void args_delete(harp_operation_type operation_type, void *args)
         case harp_operation_regrid:
             regrid_args_delete((harp_regrid_args *)args);
             break;
+        case harp_operation_regrid_collocated:
+            regrid_collocated_args_delete((harp_regrid_collocated_args *)args);
+            break;
         case harp_operation_flatten:
             flatten_args_delete((harp_flatten_args *)args);
             break;
@@ -1248,6 +1307,10 @@ static int args_copy(harp_operation_type operation_type, const void *args, void 
                                                 (harp_variable_exclusion_args **)new_args);
         case harp_operation_regrid:
             return regrid_args_copy((harp_regrid_args *)args, (harp_regrid_args **)new_args);
+
+        case harp_operation_regrid_collocated:
+            return regrid_collocated_args_copy((harp_regrid_collocated_args *)args,
+                                               (harp_regrid_collocated_args **)new_args);
 
         case harp_operation_flatten:
             return flatten_args_copy((harp_flatten_args *)args, (harp_flatten_args **)new_args);
@@ -1615,6 +1678,27 @@ int harp_regrid_new(const char *grid_filename, harp_operation **new_operation)
     if (harp_operation_new(harp_operation_regrid, args, &operation) != 0)
     {
         regrid_args_delete(args);
+        return -1;
+    }
+
+    *new_operation = operation;
+    return 0;
+}
+
+int harp_regrid_collocated_new(const char *collocation_result, const char *dataset_dir, const char target_dataset,
+                               const char *vertical_axis, harp_operation **new_operation)
+{
+    harp_regrid_collocated_args *args;
+    harp_operation *operation;
+
+    if (regrid_collocated_args_new(collocation_result, dataset_dir, target_dataset, vertical_axis, &args) != 0)
+    {
+        return -1;
+    }
+
+    if (harp_operation_new(harp_operation_regrid_collocated, args, &operation) != 0)
+    {
+        regrid_collocated_args_delete(args);
         return -1;
     }
 

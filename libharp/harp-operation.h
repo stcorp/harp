@@ -41,6 +41,7 @@ typedef enum harp_operation_type_enum
     harp_operation_keep_variable,
     harp_operation_exclude_variable,
     harp_operation_regrid,
+    harp_operation_regrid_collocated,
     harp_operation_flatten,
 } harp_operation_type;
 
@@ -187,6 +188,14 @@ typedef struct harp_regrid_args_struct
     char *grid_filename;
 } harp_regrid_args;
 
+typedef struct harp_regrid_collocated_args_struct
+{
+    char *dataset_dir;
+    char *collocation_result;
+    char target_dataset;
+    char *vertical_axis;
+} harp_regrid_collocated_args;
+
 typedef struct harp_flatten_args_struct
 {
     harp_dimension_type dimension_type;
@@ -241,6 +250,9 @@ int harp_variable_inclusion_new(int num_variables, const char **variable_name, h
 int harp_variable_exclusion_new(int num_variables, const char **variable_name, harp_operation **new_operation);
 
 int harp_regrid_new(const char *grid_filename, harp_operation **new_operation);
+
+int harp_regrid_collocated_new(const char *collocation_result, const char *dataset_dir, const char target_dataset,
+                               const char *vertical_axis, harp_operation **new_operation);
 
 int harp_flatten_new(const harp_dimension_type dimension_type, harp_operation **new_operation);
 
