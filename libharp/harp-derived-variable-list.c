@@ -820,10 +820,14 @@ static int get_solar_elevation_angle_from_datetime_and_latlon(harp_variable *var
 
 static int get_sqrt_trace_from_matrix(harp_variable *variable, const harp_variable **source_variable)
 {
-    long length = variable->dimension[1];
+    long num_elements;
+    long length;
     int i, j;
 
-    for (i = 0; i < variable->dimension[0]; i++)
+    length = variable->dimension[variable->num_dimensions - 1];
+    num_elements = variable->num_elements / length;
+
+    for (i = 0; i < num_elements; i++)
     {
         for (j = 0; j < length; j++)
         {
