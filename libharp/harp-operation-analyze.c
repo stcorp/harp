@@ -70,7 +70,7 @@ static function_prototype builtin_function[NUM_BUILTIN_FUNCTIONS] = {
     {"regrid", 1, {ast_string}, &create_regrid},
     {"regrid_collocated", 4, {ast_string, ast_string, ast_qualified_name, ast_qualified_name},
      &create_regrid_collocated},
-    {"flatten", 1, {ast_string}, &create_flatten},
+    {"flatten", 1, {ast_qualified_name}, &create_flatten},
 };
 
 static function_prototype *get_function_prototype_by_name(const char *name)
@@ -702,12 +702,22 @@ static int create_regrid_collocated(const ast_node *argument_list, harp_operatio
 
 static int create_flatten(const ast_node *argument_list, harp_operation **new_operation)
 {
-    const ast_node *name;
+    const ast_node *argument;
     harp_dimension_type dim_type;
 
-    name = argument_list->child_node[0];
+    argument = argument_list->child_node[0];
+    if (argument->type != ast_qualified_name)
+    {
+        harp_set_error(HARP_ERROR_OPERATION, "char %lu: invalid argument type", argument->position);
+        return -1;
+    }
 
-    if (harp_parse_dimension_type(name->payload.string, &dim_type) != 0)
+    if (verify_qualified_name_has_no_qualifiers(argument) != 0)
+    {
+        return -1;
+    }
+
+    if (harp_parse_dimension_type(argument->child_node[0]->payload.string, &dim_type) != 0)
     {
         return -1;
     }

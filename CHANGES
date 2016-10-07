@@ -1,3 +1,5 @@
+* Changed dimension argument of 'flatten()' operation from string to
+  identifier.
 
 * Fixed issue where -inf/+inf valid_min/valid_max attributes could not be
   exported as float values in the Python harp.export_product() interface.
