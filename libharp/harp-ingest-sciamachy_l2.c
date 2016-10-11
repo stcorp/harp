@@ -2272,7 +2272,7 @@ static void register_common_limb_variables(harp_product_definition *product_defi
 {
     harp_variable_definition *variable_definition;
     harp_dimension_type dimension_type[3];
-    long bounds_dimension[3] = { -1, -1, 4 };
+    long bounds_dimension[3] = { -1, -1, 2 };
     const char *description;
     char path[MAX_PATH_LENGTH];
 
