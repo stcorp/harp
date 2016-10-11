@@ -3121,7 +3121,7 @@ static int add_conversions_for_grid(int num_dimensions, harp_dimension_type dime
 
     /* midpoint from bounds */
     dimension_type[num_dimensions] = harp_dimension_independent;
-    if (harp_variable_conversion_new("presure", harp_type_double, HARP_UNIT_PRESSURE, num_dimensions,
+    if (harp_variable_conversion_new("pressure", harp_type_double, HARP_UNIT_PRESSURE, num_dimensions,
                                      dimension_type, 0, get_midpoint_from_bounds_log, &conversion) != 0)
     {
         return -1;
@@ -3136,14 +3136,14 @@ static int add_conversions_for_grid(int num_dimensions, harp_dimension_type dime
 
     /* time dependent from independent */
     dimension_type[num_dimensions] = harp_dimension_independent;
-    if (add_time_indepedent_to_dependent_conversion("presure_bounds", harp_type_double, HARP_UNIT_PRESSURE,
+    if (add_time_indepedent_to_dependent_conversion("pressure_bounds", harp_type_double, HARP_UNIT_PRESSURE,
                                                     num_dimensions + 1, dimension_type, 2) != 0)
     {
         return -1;
     }
 
     /* range from midpoints */
-    if (harp_variable_conversion_new("presure_bounds", harp_type_double, HARP_UNIT_PRESSURE, num_dimensions + 1,
+    if (harp_variable_conversion_new("pressure_bounds", harp_type_double, HARP_UNIT_PRESSURE, num_dimensions + 1,
                                      dimension_type, 2, get_bounds_from_midpoints_log, &conversion) != 0)
     {
         return -1;
