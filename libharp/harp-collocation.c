@@ -180,6 +180,9 @@ LIBHARP_API void harp_collocation_result_delete(harp_collocation_result *colloca
  * @}
  */
 
+static harp_dataset *sort_dataset_a = NULL;
+static harp_dataset *sort_dataset_b = NULL;
+
 static int compare_by_a(const void *a, const void *b)
 {
     harp_collocation_pair *pair_a = *(harp_collocation_pair **)a;
@@ -187,7 +190,8 @@ static int compare_by_a(const void *a, const void *b)
 
     if (pair_a->product_index_a != pair_b->product_index_a)
     {
-        return -1;
+        return strcmp(sort_dataset_a->source_product[pair_a->product_index_a],
+                      sort_dataset_a->source_product[pair_b->product_index_a]);
     }
     if (pair_a->sample_index_a < pair_b->sample_index_a)
     {
@@ -201,7 +205,8 @@ static int compare_by_a(const void *a, const void *b)
     /* If a is equal, then further sort by b to get a fixed ordering. */
     if (pair_a->product_index_b != pair_b->product_index_b)
     {
-        return -1;
+        return strcmp(sort_dataset_b->source_product[pair_a->product_index_b],
+                      sort_dataset_b->source_product[pair_b->product_index_b]);
     }
     if (pair_a->sample_index_b < pair_b->sample_index_b)
     {
@@ -222,7 +227,8 @@ static int compare_by_b(const void *a, const void *b)
 
     if (pair_a->product_index_b != pair_b->product_index_b)
     {
-        return -1;
+        return strcmp(sort_dataset_b->source_product[pair_a->product_index_b],
+                      sort_dataset_b->source_product[pair_b->product_index_b]);
     }
     if (pair_a->sample_index_b < pair_b->sample_index_b)
     {
@@ -236,7 +242,8 @@ static int compare_by_b(const void *a, const void *b)
     /* If b is equal, then further sort by a to get a fixed ordering. */
     if (pair_a->product_index_a != pair_b->product_index_a)
     {
-        return -1;
+        return strcmp(sort_dataset_a->source_product[pair_a->product_index_b],
+                      sort_dataset_a->source_product[pair_b->product_index_b]);
     }
     if (pair_a->sample_index_a < pair_b->sample_index_a)
     {
@@ -280,7 +287,11 @@ static int compare_by_collocation_index(const void *a, const void *b)
  */
 LIBHARP_API int harp_collocation_result_sort_by_a(harp_collocation_result *collocation_result)
 {
+    sort_dataset_a = collocation_result->dataset_a;
+    sort_dataset_b = collocation_result->dataset_b;
     qsort(collocation_result->pair, collocation_result->num_pairs, sizeof(harp_collocation_pair *), compare_by_a);
+    sort_dataset_a = NULL;
+    sort_dataset_b = NULL;
     return 0;
 }
 
@@ -293,7 +304,11 @@ LIBHARP_API int harp_collocation_result_sort_by_a(harp_collocation_result *collo
  */
 LIBHARP_API int harp_collocation_result_sort_by_b(harp_collocation_result *collocation_result)
 {
+    sort_dataset_a = collocation_result->dataset_a;
+    sort_dataset_b = collocation_result->dataset_b;
     qsort(collocation_result->pair, collocation_result->num_pairs, sizeof(harp_collocation_pair *), compare_by_b);
+    sort_dataset_a = NULL;
+    sort_dataset_b = NULL;
     return 0;
 }
 
