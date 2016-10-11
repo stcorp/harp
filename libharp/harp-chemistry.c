@@ -287,7 +287,7 @@ double harp_number_density_from_mass_density(double mass_density, double molar_m
  */
 double harp_number_density_from_pressure_and_temperature(double pressure, double temperature)
 {
-    return 1e-2 * pressure / (CONST_BOLTZMANN * temperature);
+    return 1e2 * pressure / (CONST_BOLTZMANN * temperature);
 }
 
 /** Convert volume mixing ratio to number_density
@@ -329,7 +329,7 @@ double harp_partial_pressure_from_volume_mixing_ratio_and_pressure(double volume
  */
 double harp_pressure_from_number_density_and_temperature(double number_density, double temperature)
 {
-    return 1e2 * number_density * CONST_BOLTZMANN * temperature;
+    return 1e-2 * number_density * CONST_BOLTZMANN * temperature;
 }
 
 /** Calculate the relative humidity from the given temperature and water vapour partial pressure.
@@ -351,7 +351,7 @@ double harp_relative_humidity_from_h2o_partial_pressure_and_temperature(double p
  */
 double harp_temperature_from_number_density_and_pressure(double number_density, double pressure)
 {
-    return 1e-2 * pressure / (number_density * CONST_BOLTZMANN);
+    return 1e2 * pressure / (number_density * CONST_BOLTZMANN);
 }
 
 /** Calculate temperature from virtual temperature

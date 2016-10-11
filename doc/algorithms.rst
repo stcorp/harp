@@ -2201,7 +2201,7 @@ number density
 
    .. math::
 
-      n = 10^{-2}\frac{p}{kT}
+      n = 10^{2}\frac{p}{kT}
 
 
 #. number density from volume mixing ratio
@@ -2300,7 +2300,7 @@ number density
 
    .. math::
 
-      n_{x} = 10^{-2}\frac{p_{x}}{kT}
+      n_{x} = 10^{2}\frac{p_{x}}{kT}
 
 
 #. surface number density for total air from surface pressure and surface temperature
@@ -2319,7 +2319,7 @@ number density
 
    .. math::
 
-      n_{surf}= 10^{-2}\frac{p_{surf}}{kT_{surf}}
+      n_{surf}= 10^{2}\frac{p_{surf}}{kT_{surf}}
 
 
 partial pressure
@@ -2343,7 +2343,7 @@ partial pressure
 
    .. math::
 
-      p_{x} = 10^{2}n_{x}kT
+      p_{x} = 10^{-2}n_{x}kT
 
 
 #. partial pressure from volume mixing ratio
@@ -2502,7 +2502,7 @@ pressure
 
    .. math::
 
-      p = 10^{2}nkT
+      p = 10^{-2}nkT
 
 
 #. surface pressure from surface number density and surface temperature
@@ -2521,7 +2521,7 @@ pressure
 
    .. math::
 
-      p_{surf} = 10^{2}n_{surf}kT_{surf}
+      p_{surf} = 10^{-2}n_{surf}kT_{surf}
 
 
 pressure bounds
@@ -2594,7 +2594,7 @@ temperature
 
    .. math::
 
-      T = 10^{-2}\frac{p}{kn}
+      T = 10^{2}\frac{p}{kn}
 
 
 #. temperature from virtual temperature
@@ -2632,7 +2632,7 @@ temperature
 
    .. math::
 
-      T_{surf} = 10^{-2}\frac{p_{surf}}{kn_{surf}}
+      T_{surf} = 10^{2}\frac{p_{surf}}{kn_{surf}}
 
 
 virtual temperature
