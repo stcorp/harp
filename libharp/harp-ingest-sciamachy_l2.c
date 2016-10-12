@@ -1808,6 +1808,71 @@ static int read_nd(void *user_data, long index, harp_array data)
     return 0;
 }
 
+static int read_nd_apriori(void *user_data, long index, harp_array data)
+{
+    ingest_info *info = (ingest_info *)user_data;
+    coda_cursor cursor;
+    long i, reversed_i, num_elements;
+    double *add_diag;
+    int nd_ap_position = 2 + info->n_stvec[index] + info->num_vertical[index] * info->n_1[index];
+
+    /* the initial number density profile is found in add_diag at position 2+nstvec+n1*numvert
+     * (see e.g. ENV-TN-DLR-SCIA-0077 document)
+     */
+
+    assert(info->has_extended_diag == 1);
+    cursor = info->mds_cursor[index];
+
+    if (coda_cursor_goto_record_field_by_name(&cursor, "add_diag") != 0)
+    {
+        harp_set_error(HARP_ERROR_CODA, NULL);
+        return -1;
+    }
+
+    if (coda_cursor_get_num_elements(&cursor, &num_elements) != 0)
+    {
+        harp_set_error(HARP_ERROR_CODA, NULL);
+        return -1;
+    }
+
+    if (num_elements < 2 + info->n_stvec[index] + 2 * info->num_vertical[index] * info->n_1[index] +
+        2 * info->num_vertical[index] + info->n_1[index] * info->num_vertical[index] * info->num_vertical[index])
+    {
+        harp_set_error(HARP_ERROR_INGESTION, "size of add_diag array (%ld) is too small", num_elements);
+        return -1;
+    }
+    add_diag = malloc(num_elements * sizeof(double));
+    if (add_diag == NULL)
+    {
+        harp_set_error(HARP_ERROR_OUT_OF_MEMORY, "out of memory (could not allocate %lu bytes) (%s:%u)",
+                       num_elements * sizeof(double), __FILE__, __LINE__);
+        return -1;
+    }
+
+    if (coda_cursor_read_double_array(&cursor, add_diag, coda_array_ordering_c) != 0)
+    {
+        free(add_diag);
+        harp_set_error(HARP_ERROR_CODA, NULL);
+        return -1;
+    }
+
+    /* store in reversed order */
+    for (i = 0, reversed_i = info->num_vertical[index] - 1; i < info->num_vertical[index]; i++, reversed_i--)
+    {
+        data.double_data[reversed_i] = add_diag[nd_ap_position + i];
+    }
+    free(add_diag);
+
+    /* fill remaining elements with NaNs */
+    for (i = info->num_vertical[index], reversed_i = info->max_num_vertical - info->num_vertical[index] - 1;
+         i < info->max_num_vertical; i++, reversed_i--)
+    {
+        data.double_data[reversed_i] = coda_NaN();
+    }
+    
+    return 0;
+}
+
 static int read_nd_error(void *user_data, long index, harp_array data)
 {
     ingest_info *info = (ingest_info *)user_data;
@@ -2961,6 +3026,15 @@ int harp_ingestion_module_sciamachy_l2_init(void)
     path = "/lim_uv0_o3[]/main_species[,0]/err_tang_vmr, /lim_uv0_o3[]/main_species[,0]/add_diag[0..n]";
     harp_variable_definition_add_mapping(variable_definition, NULL, condition_add_diag, path, error_mapping);
 
+    /* O3_number_density_apriori */
+    description = "a priori ozone number density profile";
+    variable_definition = harp_ingestion_register_variable_sample_read(product_definition, "O3_number_density_apriori",
+                                                                       harp_type_double, 2, dimension_type, NULL,
+                                                                       description, "molec/cm^3",
+                                                                       exclude_add_diag, read_nd_apriori);
+    path = "/lim_uv0_o3[]/main_species[,0]/add_diag[0..n]";
+    harp_variable_definition_add_mapping(variable_definition, NULL, condition_add_diag, path, NULL);
+
     /* O3_number_density_avk */
     description = "averaging kernel on the ozone number density";
     variable_definition = harp_ingestion_register_variable_sample_read(product_definition,
@@ -3024,6 +3098,15 @@ int harp_ingestion_module_sciamachy_l2_init(void)
     path = "/lim_uv1_no2[]/main_species[,0]/err_tang_vmr, /lim_uv1_no2[]/main_species[,0]/add_diag[0..n]";
     harp_variable_definition_add_mapping(variable_definition, NULL, condition_add_diag, path, error_mapping);
 
+    /* NO2_number_density_apriori */
+    description = "a priori NO2 number density profile";
+    variable_definition = harp_ingestion_register_variable_sample_read(product_definition, "NO2_number_density_apriori",
+                                                                       harp_type_double, 2, dimension_type, NULL,
+                                                                       description, "molec/cm^3",
+                                                                       exclude_add_diag, read_nd_apriori);
+    path = "/lim_uv1_no2[]/main_species[,0]/add_diag[0..n]";
+    harp_variable_definition_add_mapping(variable_definition, NULL, condition_add_diag, path, NULL);
+
     /* NO2_number_density_avk */
     description = "averaging kernel on the NO2 number density";
     variable_definition = harp_ingestion_register_variable_sample_read(product_definition,
@@ -3086,6 +3169,15 @@ int harp_ingestion_module_sciamachy_l2_init(void)
                                                                        exclude_add_diag, read_nd_error);
     path = "/lim_uv3_bro[]/main_species[,0]/err_tang_vmr, /lim_uv3_bro[]/main_species[,0]/add_diag[0..n]";
     harp_variable_definition_add_mapping(variable_definition, NULL, condition_add_diag, path, error_mapping);
+
+    /* BrO_number_density_apriori */
+    description = "a priori BrO number density profile";
+    variable_definition = harp_ingestion_register_variable_sample_read(product_definition, "BrO_number_density_apriori",
+                                                                       harp_type_double, 2, dimension_type, NULL,
+                                                                       description, "molec/cm^3",
+                                                                       exclude_add_diag, read_nd_apriori);
+    path = "/lim_uv3_bro[]/main_species[,0]/add_diag[0..n]";
+    harp_variable_definition_add_mapping(variable_definition, NULL, condition_add_diag, path, NULL);
 
     /* BrO_number_density_avk */
     description = "averaging kernel on the BrO number density";

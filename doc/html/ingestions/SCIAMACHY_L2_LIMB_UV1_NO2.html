@@ -237,13 +237,19 @@
 <td>molec/cm^3</td>
 <td>error on the NO2 number density</td>
 </tr>
-<tr class="row-odd"><td><strong>NO2_number_density_avk</strong></td>
+<tr class="row-odd"><td><strong>NO2_number_density_apriori</strong></td>
+<td>double</td>
+<td>{<em>time</em>, <em>vertical</em>}</td>
+<td>molec/cm^3</td>
+<td>a priori NO2 number density profile</td>
+</tr>
+<tr class="row-even"><td><strong>NO2_number_density_avk</strong></td>
 <td>double</td>
 <td>{<em>time</em>, <em>vertical</em>, <em>vertical</em>}</td>
 <td>(molec/cm^3)/(molec/cm^3)</td>
 <td>averaging kernel on the NO2 number density</td>
 </tr>
-<tr class="row-even"><td><strong>index</strong></td>
+<tr class="row-odd"><td><strong>index</strong></td>
 <td>int32</td>
 <td>{<em>time</em>}</td>
 <td>&nbsp;</td>
@@ -360,7 +366,7 @@
 <tr class="row-odd"><td><em>description</em></td>
 <td>relative error is converted to absolute error by multiplying with measured value</td>
 </tr>
-<tr class="row-even"><td rowspan="4"><strong>NO2_number_density_avk</strong></td>
+<tr class="row-even"><td rowspan="3"><strong>NO2_number_density_apriori</strong></td>
 <td><em>available</em></td>
 <td>optional</td>
 </tr>
@@ -370,7 +376,17 @@
 <tr class="row-even"><td><em>path</em></td>
 <td><strong>/lim_uv1_no2[]/main_species[,0]/add_diag[0..n]</strong></td>
 </tr>
-<tr class="row-odd"><td><em>description</em></td>
+<tr class="row-odd"><td rowspan="4"><strong>NO2_number_density_avk</strong></td>
+<td><em>available</em></td>
+<td>optional</td>
+</tr>
+<tr class="row-even"><td><em>condition</em></td>
+<td>additional diagnostics vector in limb DSR is long enough to contain number density and AKM information</td>
+</tr>
+<tr class="row-odd"><td><em>path</em></td>
+<td><strong>/lim_uv1_no2[]/main_species[,0]/add_diag[0..n]</strong></td>
+</tr>
+<tr class="row-even"><td><em>description</em></td>
 <td>the AVK for partial columns as given in the add_diag vector at position 2+stvec+2*n1*num_altitudes+2*num_altitudes is converted to number density units by multiplying each element with conv_nd_i/conv_nd_j, where conv_nd is found in add_diag at position 2+stvec+2*n1*num_altitudes+num_altitudes; the vertical axis of the AVK are reversed</td>
 </tr>
 </tbody>

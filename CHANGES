@@ -7,6 +7,8 @@
 * Fixed wrong independent dimension length for altitude/pressure bounds for
   SCIAMACHY Level2 ingestion.
 
+* Added apriori number density variables to SCIAMACHY Level2 ingestion.
+
 * Added variable conversion from latitude/longitude per vertical profile point
   to single (mid-point) latitude/longitude for profile.
 
