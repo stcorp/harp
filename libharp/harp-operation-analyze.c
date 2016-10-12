@@ -686,18 +686,13 @@ static int create_regrid_collocated(const ast_node *argument_list, harp_operatio
 
     if (strlen(target_dataset->payload.string) > 1)
     {
-        harp_set_error(HARP_ERROR_OPERATION,
-                       "char %lu: expected 'a' or 'b' for target_dataset argument, got %s",
-                       target_dataset->payload.string,
-                       target_dataset->position);
+        harp_set_error(HARP_ERROR_OPERATION, "char %lu: expected 'a' or 'b' for target_dataset argument, got %s",
+                       target_dataset->payload.string, target_dataset->position);
         return -1;
     }
 
-    return harp_regrid_collocated_new(collocation_result->payload.string,
-                                      dataset_dir->payload.string,
-                                      target_dataset->payload.string[0],
-                                      vertical_axis->payload.string,
-                                      new_operation);
+    return harp_regrid_collocated_new(collocation_result->payload.string, dataset_dir->payload.string,
+                                      target_dataset->payload.string[0], vertical_axis->payload.string, new_operation);
 }
 
 static int create_flatten(const ast_node *argument_list, harp_operation **new_operation)

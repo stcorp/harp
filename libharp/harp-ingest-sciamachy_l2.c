@@ -1869,7 +1869,7 @@ static int read_nd_apriori(void *user_data, long index, harp_array data)
     {
         data.double_data[reversed_i] = coda_NaN();
     }
-    
+
     return 0;
 }
 

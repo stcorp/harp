@@ -1385,7 +1385,7 @@ LIBHARP_API int harp_product_flatten_dimension(harp_product *product, harp_dimen
             else
             {
                 /* add the dimension to be flattened in the right place;
-                 this effectively extends time appropriately */
+                   this effectively extends time appropriately */
                 if (harp_variable_add_dimension(var, 1, dimension_type, dim_length) != 0)
                 {
                     return -1;
@@ -1450,6 +1450,6 @@ LIBHARP_API int harp_product_flatten_dimension(harp_product *product, harp_dimen
     /* update the dimension info of the product */
     product->dimension[harp_dimension_time] *= dim_length;
     product->dimension[dimension_type] = 0;
-    
+
     return 0;
 }

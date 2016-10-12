@@ -84,7 +84,7 @@ static int init_ddr_cursor(ingest_info *info)
             }
         }
     }
-    
+
     return 0;
 }
 
