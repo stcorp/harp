@@ -686,6 +686,7 @@ static int read_vertical_grid_header(FILE *file, const char *filename, char **ne
         return -1;
     }
     strncpy(name, original_cursor, length);
+    name[length] = '\0';
 
     /* Skip white space between name and unit */
     cursor = harp_csv_ltrim(cursor);
@@ -722,6 +723,7 @@ static int read_vertical_grid_header(FILE *file, const char *filename, char **ne
         return -1;
     }
     strncpy(unit, original_cursor, length);
+    unit[length] = '\0';
 
     /* done, return result */
     *new_name = name;
