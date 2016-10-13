@@ -506,7 +506,9 @@ int main(int argc, char *argv[])
     }
     else
     {
-        printf("Invalid command '%s'.", argv[1]);
+        fprintf(stderr, "ERROR: invalid command '%s'\n", argv[1]);
+        harp_done();
+        return 1;
     }
 
     if (result == -1)
