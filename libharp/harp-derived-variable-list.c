@@ -4201,8 +4201,9 @@ static int add_axis_conversions(void)
 
     /*** latitude_bounds ***/
 
-    if (add_time_indepedent_to_dependent_conversion("latitude_bounds", harp_type_double, HARP_UNIT_LATITUDE, 1,
-                                                    dimension_type, 0) != 0)
+    dimension_type[1] = harp_dimension_independent;
+    if (add_time_indepedent_to_dependent_conversion("latitude_bounds", harp_type_double, HARP_UNIT_LATITUDE, 2,
+                                                    dimension_type, 2) != 0)
     {
         return -1;
     }
@@ -4319,14 +4320,15 @@ static int add_axis_conversions(void)
 
     /*** longitude_bounds ***/
 
-    if (add_time_indepedent_to_dependent_conversion("longitude_bounds", harp_type_double, HARP_UNIT_LONGITUDE, 1,
-                                                    dimension_type, 0) != 0)
+    dimension_type[1] = harp_dimension_independent;
+    if (add_time_indepedent_to_dependent_conversion("longitude_bounds", harp_type_double, HARP_UNIT_LONGITUDE, 2,
+                                                    dimension_type, 2) != 0)
     {
         return -1;
     }
 
     /* range from midpoints */
-    if (add_midpoint_to_bounds_conversion("longitude", harp_type_double, HARP_UNIT_LONGITUDE, harp_dimension_latitude,
+    if (add_midpoint_to_bounds_conversion("longitude", harp_type_double, HARP_UNIT_LONGITUDE, harp_dimension_longitude,
                                           get_bounds_from_midpoints) != 0)
     {
         return -1;
