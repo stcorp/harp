@@ -421,6 +421,31 @@ static int get_index(harp_variable *variable, const harp_variable **source_varia
     return 0;
 }
 
+static int get_latitude_bounds_from_midpoints(harp_variable *variable, const harp_variable **source_variable)
+{
+    long i;
+
+    if (get_bounds_from_midpoints(variable, source_variable) != 0)
+    {
+        return -1;
+    }
+
+    /* clamp values to [-90,90] */
+    for (i = 0; i < variable->num_elements; i++)
+    {
+        if (variable->data.double_data[i] > 90)
+        {
+            variable->data.double_data[i] = 90;
+        }
+        if (variable->data.double_data[i] < -90)
+        {
+            variable->data.double_data[i] = -90;
+        }
+    }
+
+    return 0;
+}
+
 static int get_latitude_from_latlon_bounds(harp_variable *variable, const harp_variable **source_variable)
 {
     long num_vertices;
@@ -453,6 +478,31 @@ static int get_length_from_begin_and_end(harp_variable *variable, const harp_var
     {
         variable->data.double_data[i] =
             source_variable[1]->data.double_data[i] - source_variable[0]->data.double_data[i];
+    }
+
+    return 0;
+}
+
+static int get_longitude_bounds_from_midpoints(harp_variable *variable, const harp_variable **source_variable)
+{
+    long i;
+
+    if (get_bounds_from_midpoints(variable, source_variable) != 0)
+    {
+        return -1;
+    }
+
+    /* wrap values to [-180,180] */
+    for (i = 0; i < variable->num_elements; i++)
+    {
+        while (variable->data.double_data[i] < -180)
+        {
+            variable->data.double_data[i] += 360;
+        }
+        while (variable->data.double_data[i] > 180)
+        {
+            variable->data.double_data[i] -= 360;
+        }
     }
 
     return 0;
@@ -4210,7 +4260,7 @@ static int add_axis_conversions(void)
 
     /* range from midpoints */
     if (add_midpoint_to_bounds_conversion("latitude", harp_type_double, HARP_UNIT_LATITUDE, harp_dimension_latitude,
-                                          get_bounds_from_midpoints) != 0)
+                                          get_latitude_bounds_from_midpoints) != 0)
     {
         return -1;
     }
@@ -4329,7 +4379,7 @@ static int add_axis_conversions(void)
 
     /* range from midpoints */
     if (add_midpoint_to_bounds_conversion("longitude", harp_type_double, HARP_UNIT_LONGITUDE, harp_dimension_longitude,
-                                          get_bounds_from_midpoints) != 0)
+                                          get_longitude_bounds_from_midpoints) != 0)
     {
         return -1;
     }

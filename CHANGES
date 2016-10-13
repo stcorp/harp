@@ -24,6 +24,9 @@
 * Fixed issue where -inf/+inf valid_min/valid_max attributes could not be
   exported as float values in the Python harp.export_product() interface.
 
+* When deriving latitude/longitude bounds from mid points latitude is now
+  clamped to [-90,90] and longitude is wrapped to [-180,180].
+
 0.3 2016-09-30
 ~~~~~~~~~~~~~~
 
