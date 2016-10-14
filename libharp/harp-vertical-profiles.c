@@ -304,8 +304,8 @@ void harp_profile_pressure_from_gph(long num_levels, const double *gph_profile, 
         }
         else
         {
-            p = prev_p * exp(-1e-3 * ((prev_M + M) / (prev_T + T)) * (CONST_GRAV_ACCEL_45LAT_WGS84_SPHERE / CONST_MOLAR_GAS) *
-                             (z - prev_z));
+            p = prev_p * exp(-1e-3 * ((prev_M + M) / (prev_T + T)) *
+                             (CONST_GRAV_ACCEL_45LAT_WGS84_SPHERE / CONST_MOLAR_GAS) * (z - prev_z));
         }
 
         pressure_profile[k] = p;
