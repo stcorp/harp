@@ -1,5 +1,7 @@
 * Fixed wrong scaling factor in conversions related to the ideal gas law
-  (10^2 vs. 10^-2).
+  (10^2 vs. 10^-2) and barometric formula (10^-9 vs. 10^-6).
+
+* Fixed error in algorithm to derive gravity from latitude and height.
 
 * Fixed invalid sorting of collocation result file (which resulted in wrong
   results when performing a collocation resampling).

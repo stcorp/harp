@@ -704,10 +704,10 @@ constant</td>
 </table>
 <p>The geopotential height allows the gravity in the hydrostatic equation</p>
 <div class="math">
-\[dp = - 10^{-8}\rho g dh\]</div>
+\[dp = - 10^{-11}\rho g dh\]</div>
 <p>to be replaced by a constant gravity</p>
 <div class="math">
-\[dp = - 10^{-8}\rho g_{0} dh_{g}\]</div>
+\[dp = - 10^{-11}\rho g_{0} dh_{g}\]</div>
 <p>providing</p>
 <div class="math">
 \[dh_{g} = \frac{g}{g_{0}}dh\]</div>
@@ -881,24 +881,24 @@ constant</td>
 \[p = \frac{10^{-2}NkT}{V} = \frac{10^6NM_{air}}{VN_{a}}\frac{10^{-8}kTN_{a}}{M_{air}} = \rho \frac{10^{-8}RT}{M_{air}}\]</div>
 <p>And from the hydrostatic assumption we get:</p>
 <div class="math">
-\[10^{2}dp = - 10^{-6}\rho g dz\]</div>
+\[10^{2}dp = - 10^{-9}\rho g dz\]</div>
 <p>Dividing <span class="math">\(dp\)</span> by <cite>p</cite> we get:</p>
 <div class="math">
-\[\frac{dp}{p} = -\frac{M_{air}10^{-8}\rho g dz}{\rho10^{-8}RT} = -\frac{M_{air}gdz}{RT}\]</div>
+\[\frac{dp}{p} = -\frac{M_{air}10^{-11}\rho g dz}{\rho10^{-8}RT} = -\frac{M_{air}gdz}{RT}\]</div>
 <p>Integrating this expression from one pressure level to the next we get:</p>
 <div class="math">
-\[p(i+1) = p(i)e^{-\int^{z(i+1)}_{z(i)}\frac{M_{air}g}{RT}dz}\]</div>
+\[p(i+1) = p(i)e^{-\int^{z(i+1)}_{z(i)}\frac{10^{-2}M_{air}g}{RT}dz}\]</div>
 <p>We can approximate this further by using an average value of the height dependent quantities
 <span class="math">\(M_{air}\)</span>, <span class="math">\(g\)</span> and <span class="math">\(T\)</span> for the integration over the range <span class="math">\([z(i),z(i+1)]\)</span>.
 This gives:</p>
 <div class="math">
 \begin{eqnarray}
    g &amp; = &amp; g(\phi,\frac{z(i)+z(i+1)}{2}) \\
-   p(i+1) &amp; = &amp; p(i)e^{-\frac{M_{air}(i)+M_{air}(i+1)}{2}\frac{2}{T(i)+T(i+1)}\frac{g}{R}\left(z(i+1)-z(i)\right)} \\
-          &amp; = &amp; p(i)e^{-\frac{M_{air}(i)+M_{air}(i+1)}{T(i)+T(i+1)}\frac{g}{R}\left(z(i+1)-z(i)\right)}
+   p(i+1) &amp; = &amp; p(i)e^{-10^{-3}\frac{M_{air}(i)+M_{air}(i+1)}{2}\frac{2}{T(i)+T(i+1)}\frac{g}{R}\left(z(i+1)-z(i)\right)} \\
+          &amp; = &amp; p(i)e^{-10^{-3}\frac{M_{air}(i)+M_{air}(i+1)}{T(i)+T(i+1)}\frac{g}{R}\left(z(i+1)-z(i)\right)}
 \end{eqnarray}</div><p>When using geopotential height the formula is the same except that <span class="math">\(g=g_{0}\)</span> at all levels:</p>
 <div class="math">
-\[p(i+1) = p(i)e^{-\frac{M_{air}(i)+M_{air}(i+1)}{T(i)+T(i+1)}\frac{g_{0}}{R}\left(z_{g}(i+1)-z_{g}(i)\right)}\]</div>
+\[p(i+1) = p(i)e^{-10^{-3}\frac{M_{air}(i)+M_{air}(i+1)}{T(i)+T(i+1)}\frac{g_{0}}{R}\left(z_{g}(i+1)-z_{g}(i)\right)}\]</div>
 </div></blockquote>
 </div>
 <div class="section" id="mass-density">
@@ -2859,12 +2859,12 @@ and <span class="math">\(p^{B}(1,2)\)</span> (which is generally not equal to <s
 <div class="math">
 \begin{eqnarray}
    g_{surf} &amp; = &amp; 9.7803253359 \frac{1 + 0.00193185265241{\sin}^2(\frac{\pi}{180}\phi)}
-      {1 - 0.00669437999013 {\sin}^2(\frac{\pi}{180}\phi)} \\
+      {\sqrt{1 - 0.00669437999013 {\sin}^2(\frac{\pi}{180}\phi)}} \\
    m &amp; = &amp; \frac{\omega^2a^2b}{GM} \\
    g(1) &amp; = &amp; g_{surf} \left(1 - \frac{2}{a}\left(1+f+m-2f{\sin}^2(\frac{\pi}{180}\phi)\right)z_{surf} + \frac{3}{a^2}z_{surf}^2\right) \\
    g(i) &amp; = &amp; g_{surf} \left(1 - \frac{2}{a}\left(1+f+m-2f{\sin}^2(\frac{\pi}{180}\phi)\right)z(i-1) + \frac{3}{a^2}z(i-1)^2\right), 1 &lt; i \leq N \\
-   z(1) &amp; = &amp; z_{surf} + \frac{T(1)}{M_{air}(1)}\frac{R}{g(1)}\ln\left(\frac{p_{surf}}{p(i)}\right) \\
-   z(i) &amp; = &amp; z(i-1) + \frac{T(i-1)+T(i)}{M_{air}(i-1)+M_{air}(i)}\frac{R}{g(i)}\ln\left(\frac{p(i-1)}{p(i)}\right), 1 &lt; i \leq N
+   z(1) &amp; = &amp; z_{surf} + 10^{3}\frac{T(1)}{M_{air}(1)}\frac{R}{g(1)}\ln\left(\frac{p_{surf}}{p(i)}\right) \\
+   z(i) &amp; = &amp; z(i-1) + 10^{3}\frac{T(i-1)+T(i)}{M_{air}(i-1)+M_{air}(i)}\frac{R}{g(i)}\ln\left(\frac{p(i-1)}{p(i)}\right), 1 &lt; i \leq N
 \end{eqnarray}</div></li>
 <li><p class="first">surface altitude from surface geopotential height</p>
 <table border="1" class="docutils">
@@ -4002,8 +4002,8 @@ equal the lower pressure boundary <span class="math">\(p^{B}(1,1)\)</span>, wher
 and <span class="math">\(p^{B}(1,2)\)</span> (which is generally not equal to <span class="math">\(p^{B}(1,1)\)</span>).</p>
 <div class="math">
 \begin{eqnarray}
-   z_{g}(1) &amp; = &amp; z_{g,surf} + \frac{T(1)}{M_{air}(1)}\frac{R}{g_{0}}\ln\left(\frac{p_{surf}}{p(i)}\right) \\
-   z_{g}(i) &amp; = &amp; z_{g}(i-1) + \frac{T(i-1)+T(i)}{M_{air}(i-1)+M_{air}(i)}\frac{R}{g_{0}}\ln\left(\frac{p(i-1)}{p(i)}\right), 1 &lt; i \leq N
+   z_{g}(1) &amp; = &amp; z_{g,surf} + 10^{3}\frac{T(1)}{M_{air}(1)}\frac{R}{g_{0}}\ln\left(\frac{p_{surf}}{p(i)}\right) \\
+   z_{g}(i) &amp; = &amp; z_{g}(i-1) + 10^{3}\frac{T(i-1)+T(i)}{M_{air}(i-1)+M_{air}(i)}\frac{R}{g_{0}}\ln\left(\frac{p(i-1)}{p(i)}\right), 1 &lt; i \leq N
 \end{eqnarray}</div></li>
 <li><p class="first">surface geopotential height from surface geopotential</p>
 <table border="1" class="docutils">
@@ -5155,12 +5155,12 @@ since even for altitude grids that start at the surface, <span class="math">\(z_
 <div class="math">
 \begin{eqnarray}
    g_{surf} &amp; = &amp; 9.7803253359 \frac{1 + 0.00193185265241{\sin}^2(\frac{\pi}{180}\phi)}
-      {1 - 0.00669437999013 {\sin}^2(\frac{\pi}{180}\phi)} \\
+      {\sqrt{1 - 0.00669437999013 {\sin}^2(\frac{\pi}{180}\phi)}} \\
    m &amp; = &amp; \frac{\omega^2a^2b}{GM} \\
    g(1) &amp; = &amp; g_{surf} \left(1 - \frac{2}{a}\left(1+f+m-2f{\sin}^2(\frac{\pi}{180}\phi)\right)\frac{z_{surf}+z(1)}{2} + \frac{3}{a^2}\left(\frac{z_{surf}+z(1)}{2}\right)^2\right) \\
    g(i) &amp; = &amp; g_{surf} \left(1 - \frac{2}{a}\left(1+f+m-2f{\sin}^2(\frac{\pi}{180}\phi)\right)\frac{z(i-1)+z(i)}{2} + \frac{3}{a^2}\left(\frac{z(i-1)+z(i)}{2}\right)^2\right), 1 &lt; i \leq N \\
-   p(1) &amp; = &amp; p_{surf}e^{-\frac{M_{air}(1)}{T(1)}\frac{g(1)}{R}\left(z(i)-z_{surf}\right)} \\
-   p(i) &amp; = &amp; p(i-1)e^{-\frac{M_{air}(i-1)+M_{air}(i)}{T(i-1)+T(i)}\frac{g(i)}{R}\left(z(i)-z(i-1)\right)}, 1 &lt; i \leq N
+   p(1) &amp; = &amp; p_{surf}e^{-10^{-3}\frac{M_{air}(1)}{T(1)}\frac{g(1)}{R}\left(z(i)-z_{surf}\right)} \\
+   p(i) &amp; = &amp; p(i-1)e^{-10^{-3}\frac{M_{air}(i-1)+M_{air}(i)}{T(i-1)+T(i)}\frac{g(i)}{R}\left(z(i)-z(i-1)\right)}, 1 &lt; i \leq N
 \end{eqnarray}</div></li>
 <li><p class="first">pressure from geopotential height</p>
 <table border="1" class="docutils">
@@ -5229,8 +5229,8 @@ equal the lower altitude boundary <span class="math">\(z^{B}_{g}(1,1)\)</span>, 
 <span class="math">\(z^{B}_{g}(1,1)\)</span> and <span class="math">\(z^{B}_{g}(1,2)\)</span> (which is generally not equal to <span class="math">\(z^{B}_{g}(1,1)\)</span>).</p>
 <div class="math">
 \begin{eqnarray}
-   p(1) &amp; = &amp; p_{surf}e^{-\frac{M_{air}(1)}{T(1)}\frac{g_{0}}{R}\left(z_{g}(i)-z_{g,surf}\right)} \\
-   p(i) &amp; = &amp; p(i-1)e^{-\frac{M_{air}(i-1)+M_{air}(i)}{T(i-1)+T(i)}\frac{g_{0}}{R}\left(z_{g}(i)-z_{g}(i-1)\right)}, 1 &lt; i \leq N
+   p(1) &amp; = &amp; p_{surf}e^{-10^{-3}\frac{M_{air}(1)}{T(1)}\frac{g_{0}}{R}\left(z_{g}(i)-z_{g,surf}\right)} \\
+   p(i) &amp; = &amp; p(i-1)e^{-10^{-3}\frac{M_{air}(i-1)+M_{air}(i)}{T(i-1)+T(i)}\frac{g_{0}}{R}\left(z_{g}(i)-z_{g}(i-1)\right)}, 1 &lt; i \leq N
 \end{eqnarray}</div></li>
 <li><p class="first">pressure from number density and temperature</p>
 <table border="1" class="docutils">

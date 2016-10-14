@@ -84,12 +84,12 @@ void harp_profile_altitude_from_pressure(long num_levels, const double *pressure
         if (i == 0)
         {
             g = harp_gravity_at_surface_from_latitude(latitude);
-            z = surface_height + (T / M) * (CONST_MOLAR_GAS / g) * log(surface_pressure / p);
+            z = surface_height + 1e3 * (T / M) * (CONST_MOLAR_GAS / g) * log(surface_pressure / p);
         }
         else
         {
             g = harp_gravity_from_latitude_and_height(latitude, prev_z);
-            z = prev_z + ((prev_T + T) / (prev_M + M)) * (CONST_MOLAR_GAS / g) * log(prev_p / p);
+            z = prev_z + 1e3 * ((prev_T + T) / (prev_M + M)) * (CONST_MOLAR_GAS / g) * log(prev_p / p);
         }
 
         altitude_profile[k] = z;
@@ -167,12 +167,12 @@ void harp_profile_gph_from_pressure(long num_levels, const double *pressure_prof
 
         if (i == 0)
         {
-            z = surface_height + (T / M) * (CONST_MOLAR_GAS / CONST_GRAV_ACCEL_45LAT_WGS84_SPHERE) *
+            z = surface_height + 1e3 * (T / M) * (CONST_MOLAR_GAS / CONST_GRAV_ACCEL_45LAT_WGS84_SPHERE) *
                 log(surface_pressure / p);
         }
         else
         {
-            z = prev_z + ((prev_T + T) / (prev_M + M)) * (CONST_MOLAR_GAS / CONST_GRAV_ACCEL_45LAT_WGS84_SPHERE) *
+            z = prev_z + 1e3 * ((prev_T + T) / (prev_M + M)) * (CONST_MOLAR_GAS / CONST_GRAV_ACCEL_45LAT_WGS84_SPHERE) *
                 log(prev_p / p);
         }
 
@@ -250,12 +250,12 @@ void harp_profile_pressure_from_altitude(long num_levels, const double *altitude
         if (i == 0)
         {
             g = harp_gravity_from_latitude_and_height(latitude, (z + surface_height) / 2);
-            p = surface_pressure * exp(-(M / T) * (g / CONST_MOLAR_GAS) * (z - surface_height));
+            p = surface_pressure * exp(-1e-3 * (M / T) * (g / CONST_MOLAR_GAS) * (z - surface_height));
         }
         else
         {
             g = harp_gravity_from_latitude_and_height(latitude, (prev_z + z) / 2);
-            p = prev_p * exp(-((prev_M + M) / (prev_T + T)) * (g / CONST_MOLAR_GAS) * (z - prev_z));
+            p = prev_p * exp(-1e-3 * ((prev_M + M) / (prev_T + T)) * (g / CONST_MOLAR_GAS) * (z - prev_z));
         }
 
         pressure_profile[k] = p;
@@ -299,12 +299,12 @@ void harp_profile_pressure_from_gph(long num_levels, const double *gph_profile, 
 
         if (i == 0)
         {
-            p = surface_pressure * exp(-(M / T) * (CONST_GRAV_ACCEL_45LAT_WGS84_SPHERE / CONST_MOLAR_GAS) *
+            p = surface_pressure * exp(-1e-3 * (M / T) * (CONST_GRAV_ACCEL_45LAT_WGS84_SPHERE / CONST_MOLAR_GAS) *
                                        (z - surface_height));
         }
         else
         {
-            p = prev_p * exp(-((prev_M + M) / (prev_T + T)) * (CONST_GRAV_ACCEL_45LAT_WGS84_SPHERE / CONST_MOLAR_GAS) *
+            p = prev_p * exp(-1e-3 * ((prev_M + M) / (prev_T + T)) * (CONST_GRAV_ACCEL_45LAT_WGS84_SPHERE / CONST_MOLAR_GAS) *
                              (z - prev_z));
         }
 

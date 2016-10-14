@@ -212,13 +212,13 @@ geopotential height
 
    .. math::
 
-      dp = - 10^{-8}\rho g dh
+      dp = - 10^{-11}\rho g dh
 
    to be replaced by a constant gravity
 
    .. math::
 
-      dp = - 10^{-8}\rho g_{0} dh_{g}
+      dp = - 10^{-11}\rho g_{0} dh_{g}
 
    providing
 
@@ -312,19 +312,19 @@ barometric formula
 
    .. math::
 
-      10^{2}dp = - 10^{-6}\rho g dz
+      10^{2}dp = - 10^{-9}\rho g dz
 
    Dividing :math:`dp` by `p` we get:
 
    .. math::
 
-      \frac{dp}{p} = -\frac{M_{air}10^{-8}\rho g dz}{\rho10^{-8}RT} = -\frac{M_{air}gdz}{RT}
+      \frac{dp}{p} = -\frac{M_{air}10^{-11}\rho g dz}{\rho10^{-8}RT} = -\frac{M_{air}gdz}{RT}
 
    Integrating this expression from one pressure level to the next we get:
 
    .. math::
 
-      p(i+1) = p(i)e^{-\int^{z(i+1)}_{z(i)}\frac{M_{air}g}{RT}dz}
+      p(i+1) = p(i)e^{-\int^{z(i+1)}_{z(i)}\frac{10^{-2}M_{air}g}{RT}dz}
 
    We can approximate this further by using an average value of the height dependent quantities
    :math:`M_{air}`, :math:`g` and :math:`T` for the integration over the range :math:`[z(i),z(i+1)]`.
@@ -335,15 +335,15 @@ barometric formula
 
       \begin{eqnarray}
          g & = & g(\phi,\frac{z(i)+z(i+1)}{2}) \\
-         p(i+1) & = & p(i)e^{-\frac{M_{air}(i)+M_{air}(i+1)}{2}\frac{2}{T(i)+T(i+1)}\frac{g}{R}\left(z(i+1)-z(i)\right)} \\
-                & = & p(i)e^{-\frac{M_{air}(i)+M_{air}(i+1)}{T(i)+T(i+1)}\frac{g}{R}\left(z(i+1)-z(i)\right)}
+         p(i+1) & = & p(i)e^{-10^{-3}\frac{M_{air}(i)+M_{air}(i+1)}{2}\frac{2}{T(i)+T(i+1)}\frac{g}{R}\left(z(i+1)-z(i)\right)} \\
+                & = & p(i)e^{-10^{-3}\frac{M_{air}(i)+M_{air}(i+1)}{T(i)+T(i+1)}\frac{g}{R}\left(z(i+1)-z(i)\right)}
       \end{eqnarray}
 
    When using geopotential height the formula is the same except that :math:`g=g_{0}` at all levels:
 
    .. math::
 
-       p(i+1) = p(i)e^{-\frac{M_{air}(i)+M_{air}(i+1)}{T(i)+T(i+1)}\frac{g_{0}}{R}\left(z_{g}(i+1)-z_{g}(i)\right)}
+       p(i+1) = p(i)e^{-10^{-3}\frac{M_{air}(i)+M_{air}(i+1)}{T(i)+T(i+1)}\frac{g_{0}}{R}\left(z_{g}(i+1)-z_{g}(i)\right)}
 
    
 mass density
@@ -1338,12 +1338,12 @@ altitude
 
       \begin{eqnarray}
          g_{surf} & = & 9.7803253359 \frac{1 + 0.00193185265241{\sin}^2(\frac{\pi}{180}\phi)}
-            {1 - 0.00669437999013 {\sin}^2(\frac{\pi}{180}\phi)} \\
+            {\sqrt{1 - 0.00669437999013 {\sin}^2(\frac{\pi}{180}\phi)}} \\
          m & = & \frac{\omega^2a^2b}{GM} \\
          g(1) & = & g_{surf} \left(1 - \frac{2}{a}\left(1+f+m-2f{\sin}^2(\frac{\pi}{180}\phi)\right)z_{surf} + \frac{3}{a^2}z_{surf}^2\right) \\
          g(i) & = & g_{surf} \left(1 - \frac{2}{a}\left(1+f+m-2f{\sin}^2(\frac{\pi}{180}\phi)\right)z(i-1) + \frac{3}{a^2}z(i-1)^2\right), 1 < i \leq N \\
-         z(1) & = & z_{surf} + \frac{T(1)}{M_{air}(1)}\frac{R}{g(1)}\ln\left(\frac{p_{surf}}{p(i)}\right) \\
-         z(i) & = & z(i-1) + \frac{T(i-1)+T(i)}{M_{air}(i-1)+M_{air}(i)}\frac{R}{g(i)}\ln\left(\frac{p(i-1)}{p(i)}\right), 1 < i \leq N
+         z(1) & = & z_{surf} + 10^{3}\frac{T(1)}{M_{air}(1)}\frac{R}{g(1)}\ln\left(\frac{p_{surf}}{p(i)}\right) \\
+         z(i) & = & z(i-1) + 10^{3}\frac{T(i-1)+T(i)}{M_{air}(i-1)+M_{air}(i)}\frac{R}{g(i)}\ln\left(\frac{p(i-1)}{p(i)}\right), 1 < i \leq N
       \end{eqnarray}
 
 
@@ -1902,8 +1902,8 @@ geopotential height
       :nowrap:
 
       \begin{eqnarray}
-         z_{g}(1) & = & z_{g,surf} + \frac{T(1)}{M_{air}(1)}\frac{R}{g_{0}}\ln\left(\frac{p_{surf}}{p(i)}\right) \\
-         z_{g}(i) & = & z_{g}(i-1) + \frac{T(i-1)+T(i)}{M_{air}(i-1)+M_{air}(i)}\frac{R}{g_{0}}\ln\left(\frac{p(i-1)}{p(i)}\right), 1 < i \leq N
+         z_{g}(1) & = & z_{g,surf} + 10^{3}\frac{T(1)}{M_{air}(1)}\frac{R}{g_{0}}\ln\left(\frac{p_{surf}}{p(i)}\right) \\
+         z_{g}(i) & = & z_{g}(i-1) + 10^{3}\frac{T(i-1)+T(i)}{M_{air}(i-1)+M_{air}(i)}\frac{R}{g_{0}}\ln\left(\frac{p(i-1)}{p(i)}\right), 1 < i \leq N
       \end{eqnarray}
 
 
@@ -2443,12 +2443,12 @@ pressure
 
       \begin{eqnarray}
          g_{surf} & = & 9.7803253359 \frac{1 + 0.00193185265241{\sin}^2(\frac{\pi}{180}\phi)}
-            {1 - 0.00669437999013 {\sin}^2(\frac{\pi}{180}\phi)} \\
+            {\sqrt{1 - 0.00669437999013 {\sin}^2(\frac{\pi}{180}\phi)}} \\
          m & = & \frac{\omega^2a^2b}{GM} \\
          g(1) & = & g_{surf} \left(1 - \frac{2}{a}\left(1+f+m-2f{\sin}^2(\frac{\pi}{180}\phi)\right)\frac{z_{surf}+z(1)}{2} + \frac{3}{a^2}\left(\frac{z_{surf}+z(1)}{2}\right)^2\right) \\
          g(i) & = & g_{surf} \left(1 - \frac{2}{a}\left(1+f+m-2f{\sin}^2(\frac{\pi}{180}\phi)\right)\frac{z(i-1)+z(i)}{2} + \frac{3}{a^2}\left(\frac{z(i-1)+z(i)}{2}\right)^2\right), 1 < i \leq N \\
-         p(1) & = & p_{surf}e^{-\frac{M_{air}(1)}{T(1)}\frac{g(1)}{R}\left(z(i)-z_{surf}\right)} \\
-         p(i) & = & p(i-1)e^{-\frac{M_{air}(i-1)+M_{air}(i)}{T(i-1)+T(i)}\frac{g(i)}{R}\left(z(i)-z(i-1)\right)}, 1 < i \leq N
+         p(1) & = & p_{surf}e^{-10^{-3}\frac{M_{air}(1)}{T(1)}\frac{g(1)}{R}\left(z(i)-z_{surf}\right)} \\
+         p(i) & = & p(i-1)e^{-10^{-3}\frac{M_{air}(i-1)+M_{air}(i)}{T(i-1)+T(i)}\frac{g(i)}{R}\left(z(i)-z(i-1)\right)}, 1 < i \leq N
       \end{eqnarray}
 
 
@@ -2481,8 +2481,8 @@ pressure
       :nowrap:
 
       \begin{eqnarray}
-         p(1) & = & p_{surf}e^{-\frac{M_{air}(1)}{T(1)}\frac{g_{0}}{R}\left(z_{g}(i)-z_{g,surf}\right)} \\
-         p(i) & = & p(i-1)e^{-\frac{M_{air}(i-1)+M_{air}(i)}{T(i-1)+T(i)}\frac{g_{0}}{R}\left(z_{g}(i)-z_{g}(i-1)\right)}, 1 < i \leq N
+         p(1) & = & p_{surf}e^{-10^{-3}\frac{M_{air}(1)}{T(1)}\frac{g_{0}}{R}\left(z_{g}(i)-z_{g,surf}\right)} \\
+         p(i) & = & p(i-1)e^{-10^{-3}\frac{M_{air}(i-1)+M_{air}(i)}{T(i-1)+T(i)}\frac{g_{0}}{R}\left(z_{g}(i)-z_{g}(i-1)\right)}, 1 < i \leq N
       \end{eqnarray}
 
 

@@ -318,7 +318,7 @@ double harp_gravity_from_latitude_and_height(double latitude, double height)
     double sinphi = sin(latitude * CONST_DEG2RAD);
 
     return harp_gravity_at_surface_from_latitude(latitude) *
-        (1 - (2 * (1 + f + m - 2 * f * sinphi * sinphi) * height + 3 * height / a) * height / a);
+        (1 - (2 * (1 + f + m - 2 * f * sinphi * sinphi) + 3 * height / a) * height / a);
 }
 
 /* Calculate the local curvature radius Rsurf at the Earth's surface for a given latitude
