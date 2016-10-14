@@ -50,7 +50,7 @@ double harp_altitude_from_gph_and_latitude(double gph, double latitude)
  * \param num_levels Length of vertical axis
  * \param pressure_profile Pressure vertical profile [hPa]
  * \param temperature_profile Temperature vertical profile [K]
- * \param molar_mass_air Molar mass of total air [ug/g]
+ * \param molar_mass_air Molar mass of total air [g/mol]
  * \param surface_pressure Surface pressure [hPa]
  * \param surface_height Surface height [m]
  * \param latitude Latitude [degree_north]
@@ -139,7 +139,7 @@ double harp_gph_from_altitude_and_latitude(double altitude, double latitude)
  * \param num_levels Length of vertical axis
  * \param pressure_profile Pressure vertical profile [hPa]
  * \param temperature_profile Temperature vertical profile [K]
- * \param molar_mass_air Molar mass of total air [ug/g]
+ * \param molar_mass_air Molar mass of total air [g/mol]
  * \param surface_pressure Surface pressure [hPa]
  * \param surface_height Surface height [m]
  * \param gph_profile Variable in which the vertical profile will be stored [m]
@@ -219,7 +219,7 @@ double harp_profile_column_from_partial_column(long num_levels, const double *pa
  * \param num_levels Length of vertical axis
  * \param altitude_profile Altitude profile [m]
  * \param temperature_profile Temperature vertical profile [K]
- * \param molar_mass_air Molar mass of total air [ug/g]
+ * \param molar_mass_air Molar mass of total air [g/mol]
  * \param surface_pressure Surface pressure [hPa]
  * \param surface_height Surface height [m]
  * \param latitude Latitude [degree_north]
@@ -271,7 +271,7 @@ void harp_profile_pressure_from_altitude(long num_levels, const double *altitude
  * \param num_levels Length of vertical axis
  * \param gph_profile Geopotential height profile [m]
  * \param temperature_profile Temperature vertical profile [K]
- * \param molar_mass_air Molar mass of total air [ug/g]
+ * \param molar_mass_air Molar mass of total air [g/mol]
  * \param surface_pressure Surface pressure [hPa]
  * \param surface_height Surface height [m]
  * \param pressure_profile Variable in which the vertical profile will be stored [hPa]
