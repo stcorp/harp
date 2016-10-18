@@ -1,3 +1,5 @@
+* Fixed issue with flatten() operation providing wrong results.
+
 0.4 2016-10-16
 ~~~~~~~~~~~~~~
 
