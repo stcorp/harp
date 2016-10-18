@@ -1359,10 +1359,10 @@ LIBHARP_API int harp_product_flatten_dimension(harp_product *product, harp_dimen
 
     for (i = product->num_variables - 1; i >= 0; i--)
     {
+        int order[HARP_MAX_NUM_DIMS];
+        int dim_index = -1;
         int count = 0;
         int j;
-        int dim_index = -1;
-        int order[HARP_NUM_DIM_TYPES];
 
         var = product->variable[i];
 
@@ -1377,21 +1377,20 @@ LIBHARP_API int harp_product_flatten_dimension(harp_product *product, harp_dimen
 
         if (count == 0)
         {
-            if (var->dimension_type[0] != harp_dimension_time)
+            if (var->dimension_type[0] == harp_dimension_time)
             {
-                /* skip variables that don't depend on the relevant dim AND not on time */
-                continue;
-            }
-            else
-            {
-                /* add the dimension to be flattened in the right place;
-                   this effectively extends time appropriately */
+                /* add the dimension to be flattened in the right place; this effectively extends time appropriately */
                 if (harp_variable_add_dimension(var, 1, dimension_type, dim_length) != 0)
                 {
                     return -1;
                 }
                 dim_index = 1;
                 count = 1;
+            }
+            else
+            {
+                /* skip variables that don't depend on the relevant dim AND not on time */
+                continue;
             }
         }
         else if (count >= 2)
