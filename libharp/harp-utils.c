@@ -1185,10 +1185,15 @@ int harp_array_transpose(harp_data_type data_type, int num_dimensions, const lon
          * example, stride[0] is the stride in the destination array when moving along the fastest running dimension of
          * the source array (i.e. the dimension with index num_dimensions - 1).
          */
-        stride[num_dimensions - 1 - iorder[num_dimensions - 1]] = 1;
-        for (i = num_dimensions - 1; i > 0; i--)
+        for (i = 0; i < num_dimensions; i++)
         {
-            stride[num_dimensions - 1 - iorder[i - 1]] = stride[num_dimensions - 1 - iorder[i]] * dimension[iorder[i]];
+            long j;
+
+            stride[num_dimensions - 1 - i] = 1;
+            for (j = iorder[i] + 1; j < num_dimensions; j++)
+            {
+                stride[num_dimensions - 1 - i] *= dimension[order[j]];
+            }
         }
     }
 
