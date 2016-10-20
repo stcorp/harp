@@ -862,9 +862,25 @@ int harp_program_from_string(const char *str, harp_program **new_program)
 
     if (-1 == lexCode) {
         fprintf(stderr, "The scanner encountered an error.\n");
+
+        // Cleanup the scanner and parser
+        yy_delete_buffer(buf, scanner);
+        yylex_destroy(scanner);
+        ParseFree(operationParser, free);
+        harp_parser_state_delete(state);
+
+        return -1;
     }
     if (state->hasError) {
         fprintf(stderr, "The parser encountered an error: %s\n", state->error);
+
+        // Cleanup the scanner and parser
+        yy_delete_buffer(buf, scanner);
+        yylex_destroy(scanner);
+        ParseFree(operationParser, free);
+        harp_parser_state_delete(state);
+
+        return -1;
     }
 
     for(i = 0; i < state->result->num_operations; i++)
@@ -872,8 +888,10 @@ int harp_program_from_string(const char *str, harp_program **new_program)
         harp_operation_print_debug(state->result->operation[i], printf);
     }
 
-    *new_program = state->result;
-    return -1;
+    if (harp_program_copy(state->result, new_program) != 0)
+    {
+        return -1;
+    }
 
     // Cleanup the scanner and parser
     yy_delete_buffer(buf, scanner);

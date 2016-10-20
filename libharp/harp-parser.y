@@ -100,7 +100,15 @@
     functioncall(F) ::= F_AREA_MASK_COVERS_AREA LEFT_PAREN stringvalue RIGHT_PAREN. {F = NULL;}
     functioncall(F) ::= F_AREA_MASK_INTERSECTS_AREA LEFT_PAREN stringvalue COMMA floatvalue RIGHT_PAREN. {F = NULL;}
     functioncall(F) ::= F_DERIVE LEFT_PAREN ID COMMA dimensionspec unit_opt RIGHT_PAREN. {F = NULL;}
-    functioncall(F) ::= F_KEEP LEFT_PAREN ID RIGHT_PAREN. {F = NULL;}
+    functioncall(F) ::= F_KEEP LEFT_PAREN id(i) RIGHT_PAREN. {
+        char **varnames = (char **)malloc(1);
+        varnames[0] = i;
+
+        if (harp_variable_inclusion_new(1, varnames, &F))
+        {
+            harp_parser_state_set_error(state, harp_errno_to_string(harp_errno));
+        }
+    }
     functioncall(F) ::= F_EXCLUDE LEFT_PAREN ID RIGHT_PAREN. {F = NULL;}
     functioncall(F) ::= F_FLATTEN LEFT_PAREN dimension RIGHT_PAREN. {F = NULL;}
 
