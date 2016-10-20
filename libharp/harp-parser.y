@@ -186,6 +186,10 @@
         }
     }
 
+    /*
+     * dimensions
+     */
+
     dimension ::= DIM_TIME.
     dimension ::= DIM_LAT.
     dimension ::= DIM_LON.
@@ -193,10 +197,30 @@
     dimension ::= DIM_SPECTRAL.
     dimension ::= DIM_INDEP.
 
-    dimensionlist ::= dimensionlist COMMA dimension.
-    dimensionlist ::= dimension.
+    %type dimensionlist {harp_sized_array *}
+    dimensionlist(l) ::= dimensionlist(m) COMMA dimension(d). {
+        if (harp_sized_array_add_string(m, d) != 0)
+        {
+            harp_parser_state_set_error(state, harp_errno_to_string(harp_errno));
+            return -1;
+        }
 
-    dimensionspec ::= LEFT_CURLY dimensionlist RIGHT_CURLY.
+        l = m;
+    }
+    dimensionlist(l) ::= dimension(s). {
+        if (harp_sized_array_new(&l) != 0 || harp_sized_array_add_string(l, s) != 0)
+        {
+            harp_parser_state_set_error(state, harp_errno_to_string(harp_errno));
+            return -1;
+        }
+    }
+
+    %type dimensionspec {harp_sized_array *}
+    dimensionspec(l) ::= LEFT_CURLY dimensionlist(m) RIGHT_CURLY. { l = m; }
+
+    /*
+     * values
+     */
 
     %type stringvalue {const char*}
     stringvalue(s) ::= STRING(t). {
@@ -208,8 +232,11 @@
       v = atoi(i);
     }
 
-    %type functioncall {harp_operation*}
+    /*
+     * functions
+     */
 
+    %type functioncall {harp_operation*}
     functioncall(F) ::= F_COLLOCATE_LEFT LEFT_PAREN stringvalue(s) RIGHT_PAREN. {
         if (harp_collocation_filter_new(s, harp_collocation_left, &F) != 0) {
             harp_parser_state_set_error(state, harp_errno_to_string(harp_errno));
@@ -226,7 +253,35 @@
     functioncall(F) ::= F_AREA_MASK_COVERS_POINT LEFT_PAREN stringvalue RIGHT_PAREN. {F = NULL;}
     functioncall(F) ::= F_AREA_MASK_COVERS_AREA LEFT_PAREN stringvalue RIGHT_PAREN. {F = NULL;}
     functioncall(F) ::= F_AREA_MASK_INTERSECTS_AREA LEFT_PAREN stringvalue COMMA floatvalue RIGHT_PAREN. {F = NULL;}
-    functioncall(F) ::= F_DERIVE LEFT_PAREN ID COMMA dimensionspec unit_opt RIGHT_PAREN. {F = NULL;}
+    functioncall(F) ::= F_DERIVE LEFT_PAREN id(var) dimensionspec(dims) unit_opt RIGHT_PAREN. {
+        harp_dimension_type *dimspec;
+        int i;
+
+        dimspec = (harp_dimension_type *)malloc(dims->num_elements * sizeof(harp_dimension_type));
+        if (dimspec == NULL)
+        {
+            harp_parser_state_set_error(HARP_ERROR_OUT_OF_MEMORY,
+                                        "out of memory (could not allocate %lu bytes) (%s:%u)",
+                                        (dims->num_elements * sizeof(harp_dimension_type)),
+                                        __FILE__, __LINE__);
+            return -1;
+        }
+
+        /* parse the dimspec */
+        for (i = 0; i < dims->num_elements; i++)
+        {
+            if (harp_parse_dimension_type(dims->array.string_data[i], &dimspec[i]) != 0)
+            {
+                harp_parser_state_set_error(state, harp_errno_to_string(harp_errno));
+                return -1;
+            }
+        }
+
+        if (harp_variable_derivation_new(var, dims->num_elements, dimspec, NULL, &F) != 0)
+        {
+            harp_parser_state_set_error(state, harp_errno_to_string(harp_errno));
+        }
+    }
     functioncall(F) ::= F_KEEP LEFT_PAREN ids(i) RIGHT_PAREN. {
         if (harp_variable_inclusion_new(i->num_elements, i->array.string_data, &F) != 0)
         {
@@ -246,6 +301,10 @@
             harp_parser_state_set_error(state, harp_errno_to_string(harp_errno));
         }
     }
+
+    /*
+     * operations
+     */
 
     %type comparison_operator {harp_comparison_operator_type}
     comparison_operator(OP) ::= OP_EQ. {OP = harp_operator_eq;}
