@@ -171,8 +171,8 @@ Formal definition
     intvalue = [sign], {digit} ;
 
     floatvalue =
-       [sign], ('N' | 'n'), ('A', 'a'), ('N', 'n') |
-       [sign], ('I' | 'i'), ('N', 'n'), ('F', 'f') |
+       [sign], ('N' | 'n'), ('A' | 'a'), ('N' | 'n') |
+       [sign], ('I' | 'i'), ('N' | 'n'), ('F' | 'f') |
        (intvalue, '.', [{digit}] | '.', {digit}), [('D' | 'd' | 'E' | 'e'), intvalue] ;
 
     stringvalue = '"', [{character-('\', '"') | '\' character}], '"' ;
