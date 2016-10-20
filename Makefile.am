@@ -10,7 +10,10 @@ AM_CPPFLAGS = -Ilibharp -I$(srcdir)/libharp
 AM_YFLAGS = -d -v
 AM_LFLAGS = -o lex.yy.c
 
-BUILT_SOURCES =
+BUILT_SOURCES = \
+	libharp/harp-parser.h \
+	libharp/harp-parser.c \
+	libharp/harp-scanner.h
 CLEANFILES =
 EXTRA_DIST =
 INDENTFILES =
@@ -48,14 +51,32 @@ include_HEADERS = libharp/harp.h
 
 # *** build rules ***
 
-# libharp
+# lex and lemon files
+libharp/harp-scanner.h: libharp/harp-scanner.l
+	flex --outfile=libharp/harp-scanner.c --header-file=libharp/harp-scanner.h libharp/harp-scanner.l
 
+libharp/harp-scanner.c: libharp/harp-scanner.l
+	flex --outfile=libharp/harp-scanner.c --header-file=libharp/harp-scanner.h libharp/harp-scanner.l
+
+libharp/harp-parser.c: libharp/harp-parser.y
+	cd libharp && lemon harp-parser.y
+
+libharp/harp-parser.h: libharp/harp-parser.y
+	cd libharp && lemon harp-parser.y
+
+# libharp
 libharp_la_SOURCES = \
+	libharp/harp-parser-state.h \
+	libharp/harp-parser-state.c \
 	libharp/harp-operation.h \
 	libharp/harp-operation.c \
 	libharp/harp-operation-analyze.c \
 	libharp/harp-operation-lex.h \
 	libharp/harp-operation-lex.c \
+	libharp/harp-parser.h \
+	libharp/harp-parser.c \
+	libharp/harp-scanner.h \
+	libharp/harp-scanner.c \
 	libharp/harp-program.h \
 	libharp/harp-program.c \
 	libharp/harp-program-execute.h \
@@ -102,7 +123,7 @@ libharp_la_SOURCES = \
 	libharp/harp-ingest-cci_l3_o3_np.c \
 	libharp/harp-ingest-cci_l3_o3_tc.c \
 	libharp/harp-ingest-cci_l4_o3_np.c \
- 	libharp/harp-ingest-ecmwf-grib.c \
+	libharp/harp-ingest-ecmwf-grib.c \
 	libharp/harp-ingest-geoms-lidar.c \
 	libharp/harp-ingest-geoms-mwr.c \
 	libharp/harp-ingest-geoms-ftir.c \
@@ -160,7 +181,7 @@ endif
 libharp_la_CPPFLAGS = -Inetcdf -I$(srcdir)/netcdf -Iudunits2 -I$(srcdir)/udunits2
 libharp_la_LDFLAGS = -no-undefined -version-info $(LIBHARP_CURRENT):$(LIBHARP_REVISION):$(LIBHARP_AGE)
 libharp_la_LIBADD = @LTLIBOBJS@ libudunits2.la libnetcdf.la $(CODALIBS) $(HDF4LIBS) $(HDF5LIBS)
-libharp_la_DEPENDENCIES = libudunits2.la libnetcdf.la
+libharp_la_DEPENDENCIES = libudunits2.la libnetcdf.la libharp/harp-parser.h libharp/harp-scanner.h
 INDENTFILES += $(libharp_la_SOURCES) libharp/harp.h.in
 
 # harpcheck
