@@ -4,6 +4,62 @@
     #include "harp-operation.h"
     #include "harp-program.h"
     #include "harp-parser-state.h"
+
+    typedef union element_union {
+        double double_element;
+        char *string_element;
+    } element;
+
+    typedef struct list_struct {
+        int num_elements;
+        int room;
+        element **element;
+    } list;
+
+    int list_new(list **new_list)
+    {
+        list *l;
+        l = (list *)malloc(sizeof(list));
+        if (l == NULL)
+        {
+            harp_set_error(HARP_ERROR_OUT_OF_MEMORY, "out of memory (could not allocate %lu bytes) (%s:%u)",
+            sizeof(list), __FILE__, __LINE__);
+            return -1;
+        }
+
+        *new_list = l;
+        return 0;
+    }
+
+    void list_delete(list *l)
+    {
+        free(l->element);
+        free(l);
+    }
+
+    int list_add_element(list *list, element *e)
+    {
+        if (list->num_elements % BLOCK_SIZE == 0)
+        {
+            element **elements;
+            int new_num = (list->num_elements + BLOCK_SIZE);
+
+            elements = (element **)realloc(list->element, new_num * sizeof(element *));
+            if (elements == NULL)
+            {
+                harp_set_error(HARP_ERROR_OUT_OF_MEMORY, "out of memory (could not allocate %lu bytes) (%s:%u)",
+                new_num * sizeof(element *), __FILE__, __LINE__);
+                return -1;
+            }
+
+            list->element = elements;
+        }
+
+        list->element[list->num_elements] = e;
+        list->num_elements++;
+
+        return 0;
+    }
 }
 
 %syntax_error
@@ -25,6 +81,9 @@
     //variablelist ::= ID.
 
     %token_class id ID.
+
+    ids ::= ids COMMA id.
+    ids ::= id.
 
     unit_opt ::= UNIT.
     unit_opt ::= .
@@ -60,8 +119,22 @@
     floatvaluelist ::= floatvaluelist COMMA float.
     floatvaluelist ::= float.
 
-    stringvaluelist ::= stringvaluelist COMMA STRING.
-    stringvaluelist ::= STRING.
+    stringvaluelist(l) ::= stringvaluelist(m) COMMA STRING(s). {
+        if (list_add_element(m, s) != 0)
+        {
+            harp_parser_state_set_error(state, harp_errno_to_string(harp_errno));
+            return -1;
+        }
+
+        l = m;
+    }
+    stringvaluelist(l) ::= STRING(s). {
+        if (list_new(&l) != 0 || list_add_element(l, s) != 0)
+        {
+            harp_parser_state_set_error(state, harp_errno_to_string(harp_errno));
+            return -1;
+        }
+    }
 
     dimension ::= DIM_TIME.
     dimension ::= DIM_LAT.
@@ -104,7 +177,7 @@
     functioncall(F) ::= F_AREA_MASK_COVERS_AREA LEFT_PAREN stringvalue RIGHT_PAREN. {F = NULL;}
     functioncall(F) ::= F_AREA_MASK_INTERSECTS_AREA LEFT_PAREN stringvalue COMMA floatvalue RIGHT_PAREN. {F = NULL;}
     functioncall(F) ::= F_DERIVE LEFT_PAREN ID COMMA dimensionspec unit_opt RIGHT_PAREN. {F = NULL;}
-    functioncall(F) ::= F_KEEP LEFT_PAREN id(i) RIGHT_PAREN. {
+    functioncall(F) ::= F_KEEP LEFT_PAREN ids(i) RIGHT_PAREN. {
         char **varnames = (char **)malloc(1);
         varnames[0] = i;
 
