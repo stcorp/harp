@@ -53,6 +53,7 @@ letter        [a-zA-Z]
 "not"                 {return NOT;}
 "in"                  {return IN;}
 {letter}({letter}|{digit})* { return ID; }
+[ \t]+
 
 ["]                    {BEGIN(DOUBLE_QUOTED);}
 <DOUBLE_QUOTED>[^"\\]+ {}

@@ -8,7 +8,9 @@
 
 %syntax_error
 {
-    harp_parser_state_set_error(state, "Syntax error");
+    char msg[100];
+    sprintf(msg, "Syntax error near '%s'", TOKEN);
+    harp_parser_state_set_error(state, strdup(msg));
 }
 
 %extra_argument { harp_parser_state* state }
@@ -29,9 +31,6 @@
     unit_opt ::= UNIT.
     unit_opt ::= .
 
-    not_opt ::= NOT.
-    not_opt ::= .
-
     %type float {double}
     float(A) ::= FLOAT(F). {
         if(harp_parse_double(F, strlen(F), &A, 0) != strlen(F))
@@ -47,18 +46,14 @@
         }
     }*/
 
-    intvaluelist ::= intvaluelist COMMA INT.
-    intvaluelist ::= INT.
+    /*intvaluelist ::= intvaluelist COMMA INT.
+    intvaluelist ::= INT.*/
 
     floatvaluelist ::= floatvaluelist COMMA float.
     floatvaluelist ::= float.
 
     stringvaluelist ::= stringvaluelist COMMA STRING.
     stringvaluelist ::= STRING.
-
-    valuelist ::= intvaluelist.
-    valuelist ::= floatvaluelist.
-    valuelist ::= stringvaluelist.
 
     dimension ::= DIM_TIME.
     dimension ::= DIM_LAT.
@@ -82,8 +77,8 @@
     floatvalue(v) ::= INF unit_opt. {v = harp_nan();} /* TODO */
 
     %type intvalue {int}
-    intvalue(v) ::= INT unit_opt. {
-      v = 0;
+    intvalue(v) ::= INT(i) unit_opt. {
+      v = atoi(i);
     }
 
     %type functioncall {harp_operation*}
@@ -121,6 +116,10 @@
     bitmask_operator(O) ::= OP_BIT_NAND. {O = harp_operator_bit_mask_none;}
     bitmask_operator(O) ::= OP_BIT_AND. {O = harp_operator_bit_mask_any;}
 
+    %type membership_operator {harp_membership_operator_type}
+    membership_operator(O) ::= NOT IN. {O = harp_operator_not_in;}
+    membership_operator(O) ::= IN. {O = harp_operator_in;}
+
     %type operation {harp_operation*}
     operation(O) ::= functioncall(F). {
       O = F;
@@ -131,12 +130,28 @@
         }
     }
     operation(O) ::= id(V) comparison_operator(OP) floatvalue(E). {
+        /* TODO unit */
         if(harp_comparison_filter_new(V, OP, E, NULL, &O) != 0) {
             harp_parser_state_set_error(state, harp_errno_to_string(harp_errno));
         }
     }
-    operation(O) ::= id not_opt IN LEFT_PAREN valuelist RIGHT_PAREN unit_opt. {
-      O = NULL;
+    operation(O) ::= id(V) comparison_operator(OP) stringvalue(E). {
+        /* TODO unit */
+        if(harp_string_comparison_filter_new(V, OP, E, &O) != 0) {
+            harp_parser_state_set_error(state, harp_errno_to_string(harp_errno));
+        }
+    }
+    operation(O) ::= id(V) membership_operator(OP) LEFT_PAREN floatvaluelist RIGHT_PAREN unit_opt. {
+        if(harp_membership_filter_new(V, OP, 0, NULL, NULL, &O) != 0)
+        {
+            harp_parser_state_set_error(state, harp_errno_to_string(harp_errno));
+        }
+    }
+    operation(O) ::= id(V) membership_operator(OP) LEFT_PAREN stringvaluelist RIGHT_PAREN unit_opt. {
+    if(harp_string_membership_filter_new(V, OP, 0, NULL, &O) != 0)
+        {
+            harp_parser_state_set_error(state, harp_errno_to_string(harp_errno));
+        }
     }
 
     operations ::= operations SEMICOLON operation(O). {
