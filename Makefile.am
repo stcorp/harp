@@ -10,7 +10,10 @@ AM_CPPFLAGS = -Ilibharp -I$(srcdir)/libharp
 AM_YFLAGS = -d -v
 AM_LFLAGS = -o lex.yy.c
 
+LEMON=lemon/lemon
+
 BUILT_SOURCES = \
+	$(LEMON) \
 	libharp/harp-parser.h \
 	libharp/harp-parser.c \
 	libharp/harp-scanner.h
@@ -51,6 +54,10 @@ include_HEADERS = libharp/harp.h
 
 # *** build rules ***
 
+$(LEMON): lemon/lemon.c lemon/lempar.c
+	cd lemon; \
+	$(CC) lemon.c -o lemon
+
 # lex and lemon files
 libharp/harp-scanner.h: libharp/harp-scanner.l
 	flex --outfile=libharp/harp-scanner.c --header-file=libharp/harp-scanner.h libharp/harp-scanner.l
@@ -59,10 +66,10 @@ libharp/harp-scanner.c: libharp/harp-scanner.l
 	flex --outfile=libharp/harp-scanner.c --header-file=libharp/harp-scanner.h libharp/harp-scanner.l
 
 libharp/harp-parser.c: libharp/harp-parser.y
-	cd libharp && lemon harp-parser.y
+	cd libharp && $(LEMON) harp-parser.y
 
 libharp/harp-parser.h: libharp/harp-parser.y
-	cd libharp && lemon harp-parser.y
+	cd libharp && $(LEMON) harp-parser.y
 
 # libharp
 libharp_la_SOURCES = \
