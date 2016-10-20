@@ -38,13 +38,17 @@
             harp_parser_state_set_error(state, "Could not parse double from string");
         }
     }
-    /* TODO resolve this parsing conflict
-    float(A) ::= INT(I). {
-        if(harp_parse_double(I, strlen(I), &A, 0) != 0)
-        {
-            harp_parser_state_set_error(state, "Could not parse double from string");
+    float(v) ::= NAN. {v = harp_nan();}
+    float(v) ::= INF(s). {
+    if (s[0] == '-') {
+            v = harp_mininf();
+        } else {
+            v = harp_plusinf();
         }
-    }*/
+    }
+
+    %type floatvalue {double}
+    floatvalue ::= float unit_opt.
 
     /*intvaluelist ::= intvaluelist COMMA INT.
     intvaluelist ::= INT.*/
@@ -71,10 +75,6 @@
     stringvalue(s) ::= STRING(t). {
       s = t;
     }
-    %type floatvalue {double}
-    floatvalue(v) ::= float(n) unit_opt. {v = n;}
-    floatvalue(v) ::= NAN unit_opt. {v = harp_nan();}
-    floatvalue(v) ::= INF unit_opt. {v = harp_nan();} /* TODO */
 
     %type intvalue {int}
     intvalue(v) ::= INT(i) unit_opt. {
@@ -98,7 +98,7 @@
     functioncall(F) ::= F_POINT_DIST LEFT_PAREN floatvalue COMMA floatvalue COMMA floatvalue RIGHT_PAREN. {F = NULL;}
     functioncall(F) ::= F_AREA_MASK_COVERS_POINT LEFT_PAREN stringvalue RIGHT_PAREN. {F = NULL;}
     functioncall(F) ::= F_AREA_MASK_COVERS_AREA LEFT_PAREN stringvalue RIGHT_PAREN. {F = NULL;}
-    functioncall(F) ::= F_AREA_MASK_INTERSECTS_AREA LEFT_PAREN stringvalue COMMA FLOAT RIGHT_PAREN. {F = NULL;}
+    functioncall(F) ::= F_AREA_MASK_INTERSECTS_AREA LEFT_PAREN stringvalue COMMA floatvalue RIGHT_PAREN. {F = NULL;}
     functioncall(F) ::= F_DERIVE LEFT_PAREN ID COMMA dimensionspec unit_opt RIGHT_PAREN. {F = NULL;}
     functioncall(F) ::= F_KEEP LEFT_PAREN ID RIGHT_PAREN. {F = NULL;}
     functioncall(F) ::= F_EXCLUDE LEFT_PAREN ID RIGHT_PAREN. {F = NULL;}
