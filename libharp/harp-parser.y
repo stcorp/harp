@@ -228,13 +228,24 @@
     functioncall(F) ::= F_AREA_MASK_INTERSECTS_AREA LEFT_PAREN stringvalue COMMA floatvalue RIGHT_PAREN. {F = NULL;}
     functioncall(F) ::= F_DERIVE LEFT_PAREN ID COMMA dimensionspec unit_opt RIGHT_PAREN. {F = NULL;}
     functioncall(F) ::= F_KEEP LEFT_PAREN ids(i) RIGHT_PAREN. {
-        if (harp_variable_inclusion_new(i->num_elements, i->array.string_data, &F))
+        if (harp_variable_inclusion_new(i->num_elements, i->array.string_data, &F) != 0)
         {
             harp_parser_state_set_error(state, harp_errno_to_string(harp_errno));
         }
     }
-    functioncall(F) ::= F_EXCLUDE LEFT_PAREN ID RIGHT_PAREN. {F = NULL;}
-    functioncall(F) ::= F_FLATTEN LEFT_PAREN dimension RIGHT_PAREN. {F = NULL;}
+    functioncall(F) ::= F_EXCLUDE LEFT_PAREN ids(i) RIGHT_PAREN. {
+        if (harp_variable_exclusion_new(i->num_elements, i->array.string_data, &F) != 0)
+        {
+            harp_parser_state_set_error(state, harp_errno_to_string(harp_errno));
+        }
+    }
+    functioncall(F) ::= F_FLATTEN LEFT_PAREN dimension(d) RIGHT_PAREN. {
+        harp_dimension_type dimtype;
+        if (harp_parse_dimension_type(d, &dimtype) != 0 || harp_flatten_new(dimtype, &F) != 0)
+        {
+            harp_parser_state_set_error(state, harp_errno_to_string(harp_errno));
+        }
+    }
 
     %type comparison_operator {harp_comparison_operator_type}
     comparison_operator(OP) ::= OP_EQ. {OP = harp_operator_eq;}

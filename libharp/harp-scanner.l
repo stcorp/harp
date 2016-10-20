@@ -26,9 +26,9 @@ letter        [a-zA-Z]
 [-+]?[0-9]+.[0-9]+    {return FLOAT;}
 [-+]?[0-9]+(.[0-9]+)?[dDeE][+-]?[0-9]+ {return FLOAT;}
 "time"                {return DIM_TIME;}
-"lat"                 {return DIM_LAT;}
+"latitude"            {return DIM_LAT;}
 "longitude"           {return DIM_LON;}
-"latitude"            {return DIM_VERTICAL;}
+"vertical"            {return DIM_VERTICAL;}
 "spectral"            {return DIM_SPECTRAL;}
 "independent"         {return DIM_INDEP;}
 "{"                   {return LEFT_CURLY;}

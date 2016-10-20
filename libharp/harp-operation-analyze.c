@@ -885,11 +885,6 @@ int harp_program_from_string(const char *str, harp_program **new_program)
         return -1;
     }
 
-    for(i = 0; i < state->result->num_operations; i++)
-    {
-        harp_operation_print_debug(state->result->operation[i], printf);
-    }
-
     if (harp_program_copy(state->result, new_program) != 0)
     {
         return -1;
