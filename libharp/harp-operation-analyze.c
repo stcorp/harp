@@ -22,6 +22,9 @@
 #include "harp-operation.h"
 #include "harp-operation-parse.h"
 #include "harp-program.h"
+#include "harp-parser.h"
+#include "harp-parser-state.h"
+#include "harp-scanner.h"
 
 #include <assert.h>
 #include <stdlib.h>
@@ -827,21 +830,56 @@ static int create_program(ast_node *node, harp_program **new_program)
 
 int harp_program_from_string(const char *str, harp_program **new_program)
 {
-    ast_node *node;
     harp_program *program;
+    harp_parser_state *state;
+    YY_BUFFER_STATE buf;
+    yyscan_t scanner;
+    void* operationParser;
+    int lexCode;
+    char *text;
+    int i;
 
-    if (harp_parse_operations(str, &node) != 0)
+    // set up the parser state
+    if (harp_parser_state_new(&state))
     {
         return -1;
     }
 
-    if (create_program(node, &program) != 0)
-    {
-        harp_ast_node_delete(node);
-        return -1;
-    }
-    harp_ast_node_delete(node);
+    // Set up the scanner
+    yylex_init(&scanner);
+    // yyset_in(stdin, scanner);
+    buf = yy_scan_string(str, scanner);
 
-    *new_program = program;
+    // Set up the parser
+    operationParser = ParseAlloc(malloc);
+
+    // Do it!
+    do {
+        lexCode = yylex(scanner);
+        text = strdup(yyget_text(scanner));
+        Parse(operationParser, lexCode, text, state);
+    } while (lexCode > 0 && !state->hasError);
+
+    if (-1 == lexCode) {
+        fprintf(stderr, "The scanner encountered an error.\n");
+    }
+    if (state->hasError) {
+        fprintf(stderr, "The parser encountered an error: %s\n", state->error);
+    }
+
+    for(i = 0; i < state->result->num_operations; i++)
+    {
+        harp_operation_print_debug(state->result->operation[i], printf);
+    }
+
+    *new_program = state->result;
+    return -1;
+
+    // Cleanup the scanner and parser
+    yy_delete_buffer(buf, scanner);
+    yylex_destroy(scanner);
+    ParseFree(operationParser, free);
+    harp_parser_state_delete(state);
+
     return 0;
 }
