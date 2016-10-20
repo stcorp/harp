@@ -836,7 +836,7 @@ int harp_program_from_string(const char *str, harp_program **new_program)
     yyscan_t scanner;
     void* operationParser;
     int lexCode;
-    char *text;
+    char *last_token, *text = NULL;
     int i;
 
     // set up the parser state
@@ -855,13 +855,14 @@ int harp_program_from_string(const char *str, harp_program **new_program)
 
     // Do it!
     do {
+        last_token = text;
         lexCode = yylex(scanner);
         text = strdup(yyget_text(scanner));
         Parse(operationParser, lexCode, text, state);
     } while (lexCode > 0 && !state->hasError);
 
     if (-1 == lexCode) {
-        fprintf(stderr, "The scanner encountered an error.\n");
+        fprintf(stderr, "The scanner encountered an error after '%s'\n", last_token);
 
         // Cleanup the scanner and parser
         yy_delete_buffer(buf, scanner);
@@ -872,7 +873,7 @@ int harp_program_from_string(const char *str, harp_program **new_program)
         return -1;
     }
     if (state->hasError) {
-        fprintf(stderr, "The parser encountered an error: %s\n", state->error);
+        fprintf(stderr, "Parser error: %s\n", state->error);
 
         // Cleanup the scanner and parser
         yy_delete_buffer(buf, scanner);

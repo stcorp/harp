@@ -1,5 +1,10 @@
 %{
   #include "harp-parser.h"
+
+  int yyerror(const char *str)
+  {
+  printf("Supr!\n");
+  }
 %}
 
 %option reentrant

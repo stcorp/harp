@@ -9,7 +9,7 @@
 %syntax_error
 {
     char msg[100];
-    sprintf(msg, "Syntax error near '%s'", TOKEN);
+    sprintf(msg, "syntax error near '%s'", TOKEN);
     harp_parser_state_set_error(state, strdup(msg));
 }
 
