@@ -36,6 +36,7 @@
 
 typedef enum ftir_gas_enum
 {
+    ftir_C2H2,
     ftir_C2H6,
     ftir_CCl2F2,
     ftir_CCl3F,
@@ -62,6 +63,7 @@ typedef enum ftir_gas_enum
 } ftir_gas;
 
 static const char *geoms_gas_name[num_ftir_gas] = {
+    "C2H2",
     "C2H6",
     "CCl2F2",
     "CCl3F",
@@ -87,6 +89,7 @@ static const char *geoms_gas_name[num_ftir_gas] = {
 };
 
 static const char *harp_gas_name[num_ftir_gas] = {
+    "C2H2",
     "C2H6",
     "CCl2F2",
     "CCl3F",
