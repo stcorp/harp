@@ -5,58 +5,80 @@
     #include "harp-program.h"
     #include "harp-parser-state.h"
 
-    typedef union element_union {
-        double double_element;
-        char *string_element;
-    } element;
-
-    typedef struct list_struct {
+    typedef struct harp_sized_array_struct {
         int num_elements;
-        int room;
-        element **element;
-    } list;
+        harp_array array;
+    } harp_sized_array;
 
-    int list_new(list **new_list)
+    static int harp_sized_array_new(harp_sized_array **new_array)
     {
-        list *l;
-        l = (list *)malloc(sizeof(list));
+        harp_sized_array *l;
+        l = (harp_sized_array *)malloc(sizeof(harp_sized_array));
         if (l == NULL)
         {
             harp_set_error(HARP_ERROR_OUT_OF_MEMORY, "out of memory (could not allocate %lu bytes) (%s:%u)",
-            sizeof(list), __FILE__, __LINE__);
+            sizeof(harp_sized_array), __FILE__, __LINE__);
             return -1;
         }
 
-        *new_list = l;
+        l->num_elements = 0;
+        l->array.ptr = NULL;
+
+        *new_array = l;
+
         return 0;
     }
 
-    void list_delete(list *l)
+    static void harp_sized_array_delete(harp_sized_array *l)
     {
-        free(l->element);
+        free(l->array.ptr);
         free(l);
     }
 
-    int list_add_element(list *list, element *e)
+    static int harp_sized_array_add_string(harp_sized_array *harp_sized_array, char *str)
     {
-        if (list->num_elements % BLOCK_SIZE == 0)
+        if (harp_sized_array->num_elements % BLOCK_SIZE == 0)
         {
-            element **elements;
-            int new_num = (list->num_elements + BLOCK_SIZE);
+            char **string_data;
+            int new_num = (harp_sized_array->num_elements + BLOCK_SIZE);
 
-            elements = (element **)realloc(list->element, new_num * sizeof(element *));
-            if (elements == NULL)
+            string_data = (char **)realloc(harp_sized_array->array.string_data, new_num * sizeof(char *));
+            if (string_data == NULL)
             {
                 harp_set_error(HARP_ERROR_OUT_OF_MEMORY, "out of memory (could not allocate %lu bytes) (%s:%u)",
-                new_num * sizeof(element *), __FILE__, __LINE__);
+                new_num * sizeof(char *), __FILE__, __LINE__);
                 return -1;
             }
 
-            list->element = elements;
+            harp_sized_array->array.string_data = string_data;
         }
 
-        list->element[list->num_elements] = e;
-        list->num_elements++;
+        harp_sized_array->array.string_data[harp_sized_array->num_elements] = str;
+        harp_sized_array->num_elements++;
+
+        return 0;
+    }
+
+    static int harp_sized_array_add_double(harp_sized_array *harp_sized_array, double d)
+    {
+        if (harp_sized_array->num_elements % BLOCK_SIZE == 0)
+        {
+            double *double_data;
+            int new_num = (harp_sized_array->num_elements + BLOCK_SIZE);
+
+            double_data = (double *)realloc(harp_sized_array->array.double_data, new_num * sizeof(double));
+            if (double_data == NULL)
+            {
+                harp_set_error(HARP_ERROR_OUT_OF_MEMORY, "out of memory (could not allocate %lu bytes) (%s:%u)",
+                new_num * sizeof(double), __FILE__, __LINE__);
+                return -1;
+            }
+
+            harp_sized_array->array.double_data = double_data;
+        }
+
+        harp_sized_array->array.double_data[harp_sized_array->num_elements] = d;
+        harp_sized_array->num_elements++;
 
         return 0;
     }
@@ -77,13 +99,25 @@
 
     start ::= operations.
 
-    //variablelist ::= variablelist COMMA ID.
-    //variablelist ::= ID.
-
     %token_class id ID.
 
-    ids ::= ids COMMA id.
-    ids ::= id.
+    %type ids {harp_sized_array *}
+    ids(l) ::= ids(m) COMMA id(i). {
+        if (harp_sized_array_add_string(m, i) != 0)
+        {
+            harp_parser_state_set_error(state, harp_errno_to_string(harp_errno));
+            return -1;
+        }
+
+        l = m;
+    }
+    ids(l) ::= id(i). {
+        if (harp_sized_array_new(&l) != 0 || harp_sized_array_add_string(l, i) != 0)
+        {
+            harp_parser_state_set_error(state, harp_errno_to_string(harp_errno));
+            return -1;
+        }
+    }
 
     unit_opt ::= UNIT.
     unit_opt ::= .
@@ -116,11 +150,27 @@
     /*intvaluelist ::= intvaluelist COMMA INT.
     intvaluelist ::= INT.*/
 
-    floatvaluelist ::= floatvaluelist COMMA float.
-    floatvaluelist ::= float.
+    %type floatvaluelist {harp_sized_array *}
+    floatvaluelist(l) ::= floatvaluelist(m) COMMA float(d). {
+        if (harp_sized_array_add_double(m, d) != 0)
+        {
+            harp_parser_state_set_error(state, harp_errno_to_string(harp_errno));
+            return -1;
+        }
 
+        l = m;
+    }
+    floatvaluelist(l) ::= float(d). {
+        if (harp_sized_array_new(&l) != 0 || harp_sized_array_add_double(l, d) != 0)
+        {
+            harp_parser_state_set_error(state, harp_errno_to_string(harp_errno));
+            return -1;
+        }
+    }
+
+    %type stringvaluelist {harp_sized_array *}
     stringvaluelist(l) ::= stringvaluelist(m) COMMA STRING(s). {
-        if (list_add_element(m, s) != 0)
+        if (harp_sized_array_add_string(m, s) != 0)
         {
             harp_parser_state_set_error(state, harp_errno_to_string(harp_errno));
             return -1;
@@ -129,7 +179,7 @@
         l = m;
     }
     stringvaluelist(l) ::= STRING(s). {
-        if (list_new(&l) != 0 || list_add_element(l, s) != 0)
+        if (harp_sized_array_new(&l) != 0 || harp_sized_array_add_string(l, s) != 0)
         {
             harp_parser_state_set_error(state, harp_errno_to_string(harp_errno));
             return -1;
@@ -178,10 +228,7 @@
     functioncall(F) ::= F_AREA_MASK_INTERSECTS_AREA LEFT_PAREN stringvalue COMMA floatvalue RIGHT_PAREN. {F = NULL;}
     functioncall(F) ::= F_DERIVE LEFT_PAREN ID COMMA dimensionspec unit_opt RIGHT_PAREN. {F = NULL;}
     functioncall(F) ::= F_KEEP LEFT_PAREN ids(i) RIGHT_PAREN. {
-        char **varnames = (char **)malloc(1);
-        varnames[0] = i;
-
-        if (harp_variable_inclusion_new(1, varnames, &F))
+        if (harp_variable_inclusion_new(i->num_elements, i->array.string_data, &F))
         {
             harp_parser_state_set_error(state, harp_errno_to_string(harp_errno));
         }

@@ -857,6 +857,7 @@ int harp_program_from_string(const char *str, harp_program **new_program)
     do {
         last_token = text;
         lexCode = yylex(scanner);
+        /* TODO cleanup memory leak */
         text = strdup(yyget_text(scanner));
         Parse(operationParser, lexCode, text, state);
     } while (lexCode > 0 && !state->hasError);
