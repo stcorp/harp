@@ -247,12 +247,42 @@
             harp_parser_state_set_error(state, harp_errno_to_string(harp_errno));
         }
     }
-    functioncall(F) ::= F_VALID LEFT_PAREN ID RIGHT_PAREN. {F = NULL;}
-    functioncall(F) ::= F_LON_RANGE LEFT_PAREN floatvalue COMMA floatvalue RIGHT_PAREN. {F = NULL;}
-    functioncall(F) ::= F_POINT_DIST LEFT_PAREN floatvalue COMMA floatvalue COMMA floatvalue RIGHT_PAREN. {F = NULL;}
-    functioncall(F) ::= F_AREA_MASK_COVERS_POINT LEFT_PAREN stringvalue RIGHT_PAREN. {F = NULL;}
-    functioncall(F) ::= F_AREA_MASK_COVERS_AREA LEFT_PAREN stringvalue RIGHT_PAREN. {F = NULL;}
-    functioncall(F) ::= F_AREA_MASK_INTERSECTS_AREA LEFT_PAREN stringvalue COMMA floatvalue RIGHT_PAREN. {F = NULL;}
+    functioncall(F) ::= F_VALID LEFT_PAREN id(i) RIGHT_PAREN. {
+        if (harp_valid_range_filter_new(i, &F) != 0)
+        {
+            harp_parser_state_set_error(state, harp_errno_to_string(harp_errno));
+        }
+    }
+    functioncall(F) ::= F_LON_RANGE LEFT_PAREN floatvalue(min) COMMA floatvalue(max) RIGHT_PAREN. {
+        if (harp_longitude_range_filter_new(min, NULL, max, NULL, &F) != 0)
+        {
+            harp_parser_state_set_error(state, harp_errno_to_string(harp_errno));
+        }
+    }
+    functioncall(F) ::= F_POINT_DIST LEFT_PAREN floatvalue(lon) COMMA floatvalue(lat) COMMA floatvalue(dist) RIGHT_PAREN. {
+        if (harp_point_distance_filter_new(lon, NULL, lat, NULL, dist, NULL, &F) != 0)
+        {
+            harp_parser_state_set_error(state, harp_errno_to_string(harp_errno));
+        }
+    }
+    functioncall(F) ::= F_AREA_MASK_COVERS_POINT LEFT_PAREN stringvalue(file) RIGHT_PAREN. {
+        if (harp_area_mask_covers_point(file, &F) != 0)
+        {
+            harp_parser_state_set_error(state, harp_errno_to_string(harp_errno));
+        }
+    }
+    functioncall(F) ::= F_AREA_MASK_COVERS_AREA LEFT_PAREN stringvalue(file) RIGHT_PAREN. {
+        if (harp_area_mask_covers_area_filter_new(file, &F) != 0)
+        {
+            harp_parser_state_set_error(state, harp_errno_to_string(harp_errno));
+        }
+    }
+    functioncall(F) ::= F_AREA_MASK_INTERSECTS_AREA LEFT_PAREN stringvalue(file) COMMA floatvalue(p) RIGHT_PAREN. {
+        if (harp_area_mask_intersects_area_filter_new(file, p, &F) != 0)
+        {
+            harp_parser_state_set_error(state, harp_errno_to_string(harp_errno));
+        }
+    }
     functioncall(F) ::= F_DERIVE LEFT_PAREN id(var) dimensionspec(dims) unit_opt RIGHT_PAREN. {
         harp_dimension_type *dimspec;
         int i;
