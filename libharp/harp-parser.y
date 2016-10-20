@@ -24,9 +24,7 @@
     //variablelist ::= variablelist COMMA ID.
     //variablelist ::= ID.
 
-    id(i) ::= ID(v). {
-      i = strdup(v);
-    }
+    %token_class id ID.
 
     unit_opt ::= UNIT.
     unit_opt ::= .
@@ -34,6 +32,12 @@
     %type float {double}
     float(A) ::= FLOAT(F). {
         if(harp_parse_double(F, strlen(F), &A, 0) != strlen(F))
+        {
+            harp_parser_state_set_error(state, "Could not parse double from string");
+        }
+    }
+    float(A) ::= INT(I). {
+        if(harp_parse_double(I, strlen(I), &A, 0) != strlen(I))
         {
             harp_parser_state_set_error(state, "Could not parse double from string");
         }
