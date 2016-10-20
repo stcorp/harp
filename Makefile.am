@@ -10,7 +10,7 @@ AM_CPPFLAGS = -Ilibharp -I$(srcdir)/libharp
 AM_YFLAGS = -d -v
 AM_LFLAGS = -o lex.yy.c
 
-LEMON=lemon/lemon
+LEMON=$(srcdir)/lemon/lemon
 
 BUILT_SOURCES = \
 	$(LEMON) \
@@ -66,10 +66,10 @@ libharp/harp-scanner.c: libharp/harp-scanner.l
 	flex --outfile=libharp/harp-scanner.c --header-file=libharp/harp-scanner.h libharp/harp-scanner.l
 
 libharp/harp-parser.c: libharp/harp-parser.y
-	cd libharp && $(LEMON) harp-parser.y
+	$(LEMON) libharp/harp-parser.y
 
 libharp/harp-parser.h: libharp/harp-parser.y
-	cd libharp && $(LEMON) harp-parser.y
+	$(LEMON) libharp/harp-parser.y
 
 # libharp
 libharp_la_SOURCES = \
