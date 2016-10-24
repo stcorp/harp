@@ -265,6 +265,7 @@ HARP_DOCFILES = \
 	doc/html/ingestions/MLS_L2_T.html \
 	doc/html/ingestions/OMI_L2_OMAERUV.html \
 	doc/html/ingestions/OMI_L2_OMBRO.html \
+	doc/html/ingestions/OMI_L2_OMCHOCHO.html \
 	doc/html/ingestions/OMI_L2_OMCLDO2.html \
 	doc/html/ingestions/OMI_L2_OMCLDRR.html \
 	doc/html/ingestions/OMI_L2_OMDOAO3.html \
@@ -876,6 +877,8 @@ doc/html/ingestions/MLS_L2_T.html:
 doc/html/ingestions/OMI_L2_OMAERUV.html:
 	$(MAKE) harp_doc
 doc/html/ingestions/OMI_L2_OMBRO.html:
+	$(MAKE) harp_doc
+doc/html/ingestions/OMI_L2_OMCHOCHO.html:
 	$(MAKE) harp_doc
 doc/html/ingestions/OMI_L2_OMCLDO2.html:
 	$(MAKE) harp_doc

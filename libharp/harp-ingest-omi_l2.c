@@ -1183,6 +1183,30 @@ static int read_bro_column_error(void *user_data, harp_array data)
     return read_variable_double(info, &info->swath_cursor, "ColumnUncertainty", 2, NULL, data);
 }
 
+static int read_chocho_column(void *user_data, harp_array data)
+{
+    ingest_info *info = (ingest_info *)user_data;
+    int status = -1;
+
+    if (info->destriped)
+    {
+        status = read_variable_double(info, &info->swath_cursor, "ColumnAmountDestriped", 2, NULL, data);
+    }
+    else
+    {
+        status = read_variable_double(info, &info->swath_cursor, "ColumnAmount", 2, NULL, data);
+    }
+
+    return status;
+}
+
+static int read_chocho_column_error(void *user_data, harp_array data)
+{
+    ingest_info *info = (ingest_info *)user_data;
+
+    return read_variable_double(info, &info->swath_cursor, "ColumnUncertainty", 2, NULL, data);
+}
+
 static int read_hcho_column(void *user_data, harp_array data)
 {
     ingest_info *info = (ingest_info *)user_data;
@@ -1416,21 +1440,7 @@ static int read_relative_azimuth_angle_wgs84(void *user_data, harp_array data)
     return read_variable_double(info, &info->geo_cursor, "RelativeAzimuthAngle", 2, NULL, data);
 }
 
-static int exclude_bro_column_error(void *user_data)
-{
-    ingest_info *info = (ingest_info *)user_data;
-
-    return info->destriped;
-}
-
-static int exclude_hcho_column_error(void *user_data)
-{
-    ingest_info *info = (ingest_info *)user_data;
-
-    return info->destriped;
-}
-
-static int exclude_oclo_column_error(void *user_data)
+static int exclude_destriped(void *user_data)
 {
     ingest_info *info = (ingest_info *)user_data;
 
@@ -1698,6 +1708,29 @@ static int ingestion_init_omaeruv(const harp_ingestion_module *module, coda_prod
 static int ingestion_init_ombro(const harp_ingestion_module *module, coda_product *product,
                                 const harp_ingestion_options *options, harp_product_definition **definition,
                                 void **user_data)
+{
+    ingest_info *info;
+
+    if (ingestion_init_helper(product, &info) != 0)
+    {
+        return -1;
+    }
+
+    if (parse_option_destriped(info, options) != 0)
+    {
+        ingest_info_delete(info);
+        return -1;
+    }
+
+    *definition = *module->product_definition;
+    *user_data = info;
+
+    return 0;
+}
+
+static int ingestion_init_omchocho(const harp_ingestion_module *module, coda_product *product,
+                                   const harp_ingestion_options *options, harp_product_definition **definition,
+                                   void **user_data)
 {
     ingest_info *info;
 
@@ -2244,10 +2277,66 @@ static void register_ombro_product(void)
     variable_definition = harp_ingestion_register_variable_full_read(product_definition,
                                                                      "BrO_column_number_density_uncertainty",
                                                                      harp_type_double, 1, dimension_type, NULL,
-                                                                     description, "molec/cm^2",
-                                                                     exclude_bro_column_error, read_bro_column_error);
+                                                                     description, "molec/cm^2", exclude_destriped,
+                                                                     read_bro_column_error);
     description = "will only be ingested if destriped=false (default)";
     path = "/HDFEOS/SWATHS/OMI_Total_Column_Amount_BRO/Data_Fields/ColumnUncertainty[]";
+    harp_variable_definition_add_mapping(variable_definition, "destriped=false", NULL, path, description);
+}
+
+static void register_omchocho_product(void)
+{
+    harp_ingestion_module *module;
+    harp_product_definition *product_definition;
+    harp_variable_definition *variable_definition;
+    harp_dimension_type dimension_type[1] = { harp_dimension_time };
+    const char *destriped_option_values[] = { "false", "true" };
+    const char *description;
+    const char *path;
+
+    module = harp_ingestion_register_module_coda("OMI_L2_OMCHOCHO", "OMI", "AURA_OMI", "OMCHOCHO", "OMI L2 Glyoxal total column",
+                                                 ingestion_init_omchocho, ingestion_done);
+
+    /* destriped ingestion option */
+    description = "ingest column densities with destriping correction";
+    harp_ingestion_register_option(module, "destriped", description, 2, destriped_option_values);
+
+    /* OMCHOCHO product */
+    product_definition = harp_ingestion_register_product(module, "OMI_L2_OMCHOCHO", NULL, read_dimensions);
+
+    /* datetime */
+    path = "/HDFEOS/SWATHS/OMI_Total_Column_Amount_CHOCHO/Geolocation_Fields/Time[]";
+    register_datetime_variable(product_definition, path);
+
+    /* longitude and latitude */
+    path = "/HDFEOS/SWATHS/OMI_Total_Column_Amount_CHOCHO/Geolocation_Fields/Longitude[]";
+    register_longitude_variable(product_definition, path);
+    path = "/HDFEOS/SWATHS/OMI_Total_Column_Amount_CHOCHO/Geolocation_Fields/Latitude[]";
+    register_latitude_variable(product_definition, path);
+
+    /* longitude_bounds and latitude_bounds */
+    register_footprint_variables(product_definition);
+
+    /* C2H2O2_column_number_density */
+    description = "CHOCHO vertical column density";
+    variable_definition = harp_ingestion_register_variable_full_read(product_definition, "C2H2O2_column_number_density",
+                                                                     harp_type_double, 1, dimension_type, NULL,
+                                                                     description, "molec/cm^2", NULL,
+                                                                     read_chocho_column);
+    path = "/HDFEOS/SWATHS/OMI_Total_Column_Amount_CHOCHO/Data_Fields/ColumnAmount[]";
+    harp_variable_definition_add_mapping(variable_definition, "destriped=false", NULL, path, NULL);
+    path = "/HDFEOS/SWATHS/OMI_Total_Column_Amount_CHOCHO/Data_Fields/ColumnAmountDestriped[]";
+    harp_variable_definition_add_mapping(variable_definition, "destriped=true", NULL, path, NULL);
+
+    /* BrO_column_number_density_uncertainty */
+    description = "uncertainty of the CHOCHO vertical column density";
+    variable_definition = harp_ingestion_register_variable_full_read(product_definition,
+                                                                     "C2H2O2_column_number_density_uncertainty",
+                                                                     harp_type_double, 1, dimension_type, NULL,
+                                                                     description, "molec/cm^2", exclude_destriped,
+                                                                     read_chocho_column_error);
+    description = "will only be ingested if destriped=false (default)";
+    path = "/HDFEOS/SWATHS/OMI_Total_Column_Amount_CHOCHO/Data_Fields/ColumnUncertainty[]";
     harp_variable_definition_add_mapping(variable_definition, "destriped=false", NULL, path, description);
 }
 
@@ -2715,8 +2804,8 @@ static void register_omhcho_product(void)
     variable_definition = harp_ingestion_register_variable_full_read(product_definition,
                                                                      "HCHO_column_number_density_uncertainty",
                                                                      harp_type_double, 1, dimension_type, NULL,
-                                                                     description, "molec/cm^2",
-                                                                     exclude_hcho_column_error, read_hcho_column_error);
+                                                                     description, "molec/cm^2", exclude_destriped,
+                                                                     read_hcho_column_error);
     description = "will only be ingested if destriped=false (default)";
     path = "/HDFEOS/SWATHS/OMI_Total_Column_Amount_HCHO/Data_Fields/ColumnUncertainty[]";
     harp_variable_definition_add_mapping(variable_definition, "destriped=false", NULL, path, description);
@@ -2967,8 +3056,8 @@ static void register_omoclo_product(void)
     variable_definition = harp_ingestion_register_variable_full_read(product_definition,
                                                                      "OClO_column_number_density_uncertainty",
                                                                      harp_type_double, 1, dimension_type, NULL,
-                                                                     description, "molec/cm^2",
-                                                                     exclude_oclo_column_error, read_oclo_column_error);
+                                                                     description, "molec/cm^2", exclude_destriped,
+                                                                     read_oclo_column_error);
     description = "will only be ingested if destriped=false (default)";
     path = "/HDFEOS/SWATHS/OMI_Total_Column_Amount_OClO/Data_Fields/ColumnUncertainty[]";
     harp_variable_definition_add_mapping(variable_definition, "destriped=false", NULL, path, description);
@@ -3248,6 +3337,7 @@ int harp_ingestion_module_omi_l2_init(void)
 {
     register_omaeruv_product();
     register_ombro_product();
+    register_omchocho_product();
     register_omcldo2_product();
     register_omcldrr_product();
     register_omdoao3_product();
