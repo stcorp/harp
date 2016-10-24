@@ -2715,7 +2715,7 @@ static void register_omdomino_product(void)
     description = "flags describing the NO2 tropospheric column processing quality";
     variable_definition = harp_ingestion_register_variable_full_read(product_definition,
                                                                      "tropospheric_NO2_column_number_density_validity",
-                                                                     harp_type_int8, 1, dimension_type, NULL,
+                                                                     harp_type_int16, 1, dimension_type, NULL,
                                                                      description, NULL, NULL,
                                                                      read_no2_column_tropospheric_validity_domino);
     path = "/HDFEOS/SWATHS/DominoNO2/Data_Fields/TroposphericColumnFlag[]";
