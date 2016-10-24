@@ -970,7 +970,7 @@ def import_product(filename, operations=""):
     filename = _encode_path(filename)
     if '*' in filename or '?' in filename:
         # This is a globbing pattern
-        filenames = glob.glob(filename)
+        filenames = sorted(glob.glob(filename))
         if len(filenames) == 0:
             raise Error("no files matching '%s'" % (filename))
         return concatenate([import_product(file, operations) for file in filenames])
@@ -1017,7 +1017,7 @@ def ingest_product(filename, operations="", options=""):
     filename = _encode_path(filename)
     if '*' in filename or '?' in filename:
         # This is a globbing pattern
-        filenames = glob.glob(filename)
+        filenames = sorted(glob.glob(filename))
         if len(filenames) == 0:
             raise Error("no files matching '%s'" % (filename))
         return concatenate([ingest_product(file, operations, options) for file in filenames])
