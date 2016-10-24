@@ -33,6 +33,17 @@
       </cd:DetectionRule>
     </cd:ProductDefinition>
   </cd:ProductType>
+  <cd:ProductType name="OMCHOCHO">
+    <cd:Description>OMI Glyoxal (CHOCHO) Total Column - Level 2</cd:Description>
+    <cd:ProductDefinition id="OMCHOCHO" format="hdf5" version="0">
+      <cd:Description>The format definition for this product is taken from the HDF5 file itself.</cd:Description>
+      <cd:DetectionRule>
+        <cd:MatchExpression path="/HDFEOS/ADDITIONAL/FILE_ATTRIBUTES">str(.@InstrumentName) == "OMI"</cd:MatchExpression>
+        <cd:MatchExpression>str(.@ProcessLevel,1) == "2"</cd:MatchExpression>
+        <cd:MatchExpression path="/HDFEOS/SWATHS">exists(./OMI_Total_Column_Amount_CHOCHO)</cd:MatchExpression>
+      </cd:DetectionRule>
+    </cd:ProductDefinition>
+  </cd:ProductType>
   <cd:ProductType name="OMCLDO2">
     <cd:Description>OMI Cloud Pressure and Fraction (O2-O2 Absorption Algorithm) - Level 2</cd:Description>
     <cd:ProductDefinition id="OMCLDO2" format="hdf5" version="0">
