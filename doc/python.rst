@@ -345,7 +345,13 @@ This section describes the functions defined by the HARP Python library.
 
    Ingest a product of a type supported by HARP.
 
-   :param str filename: Filename of the product to ingest.
+   If the filename argument is a list of filenames or a globbing (glob.glob())
+   pattern then the harp.ingest_product() function will be called on each
+   individual file and the result of harp.concatenate() on the ingested products
+   will be returned.
+
+   :param str filename: Filename, list of filenames or file pattern of the
+                       product(s) to ingest
    :param str operations: Actions to apply as part of the ingestion; should be
                        specified as a semi-colon separated string of operations.
    :param str options: Ingestion module specific options; should be specified as
@@ -359,7 +365,13 @@ This section describes the functions defined by the HARP Python library.
 
    The file format (NetCDF/HDF4/HDF5) of the product will be auto-detected.
 
-   :param str filename: Filename of the product to import.
+   If the filename argument is a list of filenames or a globbing (glob.glob())
+   pattern then the harp.import_product() function will be called on each
+   individual file and the result of harp.concatenate() on the imported products
+   will be returned.
+
+   :param str filename: Filename, list of filenames or file pattern of the
+                       product(s) to import
    :param str operations: Actions to execute on the product after it has been
                        imported; should be specified as a semi-colon separated
                        string of operations.

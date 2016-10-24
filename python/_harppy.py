@@ -19,6 +19,7 @@ Suite 330, Boston, MA  02111-1307  USA
 from __future__ import print_function
 
 from collections import OrderedDict
+import glob
 import numpy
 
 try:
@@ -953,12 +954,27 @@ def import_product(filename, operations=""):
 
     The file format (NetCDF/HDF4/HDF5) of the product will be auto-detected.
 
+    If the filename argument is a list of filenames or a globbing (glob.glob()) pattern
+    then the harp.import_product() function will be called on each individual file and
+    the result of harp.concatenate() on the imported products will be returned.
+
     Arguments:
-    filename -- Filename of the product to import.
+    filename -- Filename, list of filenames or file pattern of the product(s) to import
     operations  -- Actions to execute on the product after it has been imported; should
                 be specified as a semi-colon separated string of operations.
 
     """
+    if not (isinstance(filename, bytes) or isinstance(filename, str)):
+        # Assume this is a list of filenames or patterns
+        return concatenate([import_product(file, operations) for file in filename])
+    filename = _encode_path(filename)
+    if '*' in filename or '?' in filename:
+        # This is a globbing pattern
+        filenames = glob.glob(filename)
+        if len(filenames) == 0:
+            raise Error("no files matching '%s'" % (filename))
+        return concatenate([import_product(file, operations) for file in filenames])
+
     c_product_ptr = _ffi.new("harp_product **")
 
     # Import the product as a C product.
@@ -983,14 +999,29 @@ def import_product(filename, operations=""):
 def ingest_product(filename, operations="", options=""):
     """Ingest a product of a type supported by HARP.
 
+    If the filename argument is a list of filenames or a globbing (glob.glob()) pattern
+    then the harp.ingest_product() function will be called on each individual file and
+    the result of harp.concatenate() on the ingested products will be returned.
+
     Arguments:
-    filename -- Filename of the product to ingest.
+    filename -- Filename, list of filenames or file pattern of the product(s) to ingest
     operations  -- Actions to execute as part of the ingestion; should be specified as a
                 semi-colon separated string of operations.
     options  -- Ingestion module specific options; should be specified as a semi-
                 colon separated string of key=value pairs.
 
     """
+    if not (isinstance(filename, bytes) or isinstance(filename, str)):
+        # Assume this is a list of filenames or patterns
+        return concatenate([ingest_product(file, operations, options) for file in filename])
+    filename = _encode_path(filename)
+    if '*' in filename or '?' in filename:
+        # This is a globbing pattern
+        filenames = glob.glob(filename)
+        if len(filenames) == 0:
+            raise Error("no files matching '%s'" % (filename))
+        return concatenate([ingest_product(file, operations, options) for file in filenames])
+
     c_product_ptr = _ffi.new("harp_product **")
 
     # Ingest the product as a C product.
