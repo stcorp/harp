@@ -423,7 +423,7 @@ static int variable_descriptor_init(coda_cursor *cursor, const char *name, int n
     return 0;
 }
 
-static int read_variable_int8(ingest_info *info, coda_cursor *cursor, const char *name, harp_array data)
+static int read_variable_int16(ingest_info *info, coda_cursor *cursor, const char *name, harp_array data)
 {
     long dimension[2] = { info->dimension[omi_dim_time], info->dimension[omi_dim_xtrack] };
 
@@ -436,7 +436,7 @@ static int read_variable_int8(ingest_info *info, coda_cursor *cursor, const char
     {
         return -1;
     }
-    if (coda_cursor_read_int8_array(cursor, data.int8_data, coda_array_ordering_c) != 0)
+    if (coda_cursor_read_int16_array(cursor, data.int16_data, coda_array_ordering_c) != 0)
     {
         harp_set_error(HARP_ERROR_CODA, NULL);
         return -1;
@@ -1156,7 +1156,7 @@ static int read_no2_column_tropospheric_validity_domino(void *user_data, harp_ar
 {
     ingest_info *info = (ingest_info *)user_data;
 
-    return read_variable_int8(info, &info->swath_cursor, "TroposphericColumnFlag", data);
+    return read_variable_int16(info, &info->swath_cursor, "TroposphericColumnFlag", data);
 }
 
 static int read_bro_column(void *user_data, harp_array data)
@@ -2719,7 +2719,8 @@ static void register_omdomino_product(void)
                                                                      description, NULL, NULL,
                                                                      read_no2_column_tropospheric_validity_domino);
     path = "/HDFEOS/SWATHS/DominoNO2/Data_Fields/TroposphericColumnFlag[]";
-    harp_variable_definition_add_mapping(variable_definition, NULL, NULL, path, NULL);
+    harp_variable_definition_add_mapping(variable_definition, NULL, NULL, path,
+                                         "data is converted from uint8 to int16");
 
     /* cloud_fraction */
     description = "effective cloud fraction";
