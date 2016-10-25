@@ -1433,16 +1433,8 @@ LIBHARP_API int harp_product_smooth_vertical(harp_product *product, int num_smoo
          * below the first source profile elements
          */
         num_target_max_vertical_elements = target_grid->dimension[1];
-        for (num_target_offset = 0; num_target_offset < num_target_max_vertical_elements; num_target_offset++)
-        {
-            long block_offset = time_index_a * num_target_max_vertical_elements;
-
-            if (target_grid->data.double_data[block_offset + num_target_offset] >=
-                source_grid->data.double_data[time_index_a * num_source_max_vertical_elements])
-            {
-                break;
-            }
-        }
+        /* do not offset the target grid, see github issue #95 */
+        num_target_offset = 0;
 
         /* find the target grid length */
         num_target_vertical_elements =
@@ -1465,71 +1457,82 @@ LIBHARP_API int harp_product_smooth_vertical(harp_product *product, int num_smoo
                 continue;
             }
 
-            /* derive bounds variables if necessary for resampling */
-            if (var_type == profile_resample_interval)
+            /* do not interpolate the grid variable; this might produce nans at the bottom */
+            if (strcmp(var->name, vertical_axis) == 0)
             {
-                if (target_bounds == NULL)
+                /* instead just copy it directly */
+                harp_variable_delete(var);
+                if (harp_variable_copy(target_grid, &product->variable[j]) != 0)
                 {
-                    if (harp_product_get_derived_variable(match, bounds_name, vertical_unit, 3, bounds_dim_type,
-                                                          &target_bounds) != 0)
+                    return -1;
+                }
+            } else {
+                /* derive bounds variables if necessary for resampling */
+                if (var_type == profile_resample_interval)
+                {
+                    if (target_bounds == NULL)
                     {
-                        goto error;
+                        if (harp_product_get_derived_variable(match, bounds_name, vertical_unit, 3, bounds_dim_type,
+                                                            &target_bounds) != 0)
+                        {
+                            goto error;
+                        }
+                    }
+                    if (source_bounds == NULL)
+                    {
+                        if (harp_product_get_derived_variable(product, bounds_name, vertical_unit, 3, bounds_dim_type,
+                                                            &source_bounds) != 0)
+                        {
+                            goto error;
+                        }
                     }
                 }
-                if (source_bounds == NULL)
+
+                /* Ensure that the variable data to resample consists of doubles */
+                if (var->data_type != harp_type_double && harp_variable_convert_data_type(var, harp_type_double) != 0)
                 {
-                    if (harp_product_get_derived_variable(product, bounds_name, vertical_unit, 3, bounds_dim_type,
-                                                          &source_bounds) != 0)
+                    goto error;
+                }
+
+                /* Interpolate variable data */
+                blocks = var->num_elements / var->dimension[0] / num_source_max_vertical_elements;
+                for (block = 0; block < blocks; block++)
+                {
+                    int l;
+                    long target_block_index = (time_index_a * blocks + block) * num_target_max_vertical_elements;
+                    long source_block_index = (time_index_a * blocks + block) * num_source_max_vertical_elements;
+
+                    if (var_type == profile_resample_linear)
                     {
-                        goto error;
+                        harp_interpolate_array_linear
+                            (num_source_vertical_elements,
+                            &source_grid->data.double_data[time_index_a * num_source_max_vertical_elements],
+                            &var->data.double_data[source_block_index], num_target_vertical_elements,
+                            &target_grid->data.double_data[time_index_b * num_target_max_vertical_elements +
+                                                            num_target_offset], 0, interpolation_buffer);
                     }
-                }
-            }
+                    else if (var_type == profile_resample_interval)
+                    {
+                        harp_interval_interpolate_array_linear
+                            (num_source_vertical_elements,
+                            &source_bounds->data.double_data[time_index_a * num_source_max_vertical_elements * 2],
+                            &var->data.double_data[(time_index_a * blocks + block) * num_source_max_vertical_elements],
+                            num_target_vertical_elements,
+                            &target_bounds->data.double_data[(time_index_b * num_target_max_vertical_elements +
+                                                            num_target_offset) * 2], interpolation_buffer);
+                    }
+                    else
+                    {
+                        /* other resampling methods are not supported, but should also never be set */
+                        assert(0);
+                        exit(1);
+                    }
 
-            /* Ensure that the variable data to resample consists of doubles */
-            if (var->data_type != harp_type_double && harp_variable_convert_data_type(var, harp_type_double) != 0)
-            {
-                goto error;
-            }
-
-            /* Interpolate variable data */
-            blocks = var->num_elements / var->dimension[0] / num_source_max_vertical_elements;
-            for (block = 0; block < blocks; block++)
-            {
-                int l;
-                long target_block_index = (time_index_a * blocks + block) * num_target_max_vertical_elements;
-                long source_block_index = (time_index_a * blocks + block) * num_source_max_vertical_elements;
-
-                if (var_type == profile_resample_linear)
-                {
-                    harp_interpolate_array_linear
-                        (num_source_vertical_elements,
-                         &source_grid->data.double_data[time_index_a * num_source_max_vertical_elements],
-                         &var->data.double_data[source_block_index], num_target_vertical_elements,
-                         &target_grid->data.double_data[time_index_b * num_target_max_vertical_elements +
-                                                        num_target_offset], 0, interpolation_buffer);
-                }
-                else if (var_type == profile_resample_interval)
-                {
-                    harp_interval_interpolate_array_linear
-                        (num_source_vertical_elements,
-                         &source_bounds->data.double_data[time_index_a * num_source_max_vertical_elements * 2],
-                         &var->data.double_data[(time_index_a * blocks + block) * num_source_max_vertical_elements],
-                         num_target_vertical_elements,
-                         &target_bounds->data.double_data[(time_index_b * num_target_max_vertical_elements +
-                                                           num_target_offset) * 2], interpolation_buffer);
-                }
-                else
-                {
-                    /* other resampling methods are not supported, but should also never be set */
-                    assert(0);
-                    exit(1);
-                }
-
-                /* copy the buffer to the target var */
-                for (l = 0; l < num_target_vertical_elements; l++)
-                {
-                    var->data.double_data[target_block_index + l] = interpolation_buffer[l];
+                    /* copy the buffer to the target var */
+                    for (l = 0; l < num_target_vertical_elements; l++)
+                    {
+                        var->data.double_data[target_block_index + l] = interpolation_buffer[l];
+                    }
                 }
             }
 
