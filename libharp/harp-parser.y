@@ -107,6 +107,7 @@
 
 %token_type {const char*}
 
+start ::= operations SEMICOLON.
 start ::= operations.
 
 %token_class id ID.
@@ -241,9 +242,20 @@ floatvalue(v) ::= float(f) unit_opt(u). {
   v.unit = u;
 }
 
-%type stringvalue {const char *}
-stringvalue(s) ::= STRING(t). {
-    s = t;
+%type stringvalue {char *}
+stringvalue(x) ::= STRING(t). {
+    int len = strlen(t) - 2;
+
+    x = malloc((len + 1) * sizeof(char));
+    if (x == NULL)
+    {
+        harp_parser_state_set_error(state, "out of memory (could not memory for unit string)");
+        return;
+    }
+
+    /* copy the unit and null terminate the string */
+    memcpy(x, &t[1], len);
+    x[len] = '\0';
 }
 
 /*
@@ -341,6 +353,18 @@ functioncall(F) ::= F_EXCLUDE LEFT_PAREN ids(i) RIGHT_PAREN. {
 functioncall(F) ::= F_FLATTEN LEFT_PAREN dimension(d) RIGHT_PAREN. {
     harp_dimension_type dimtype;
     if (harp_parse_dimension_type(d, &dimtype) != 0 || harp_flatten_new(dimtype, &F) != 0)
+    {
+        harp_parser_state_set_error(state, harp_errno_to_string(harp_errno));
+    }
+}
+functioncall(F) ::= F_REGRID_COLLOCATED LEFT_PAREN stringvalue(csv) COMMA stringvalue(d) COMMA COLLOCATION_COLUMN(c) id(axis) RIGHT_PAREN. {
+    if (harp_regrid_collocated_new(csv, d, c, axis, &F) != 0)
+    {
+        harp_parser_state_set_error(state, harp_errno_to_string(harp_errno));
+    }
+}
+functioncall(F) ::= F_REGRID LEFT_PAREN stringvalue(s) RIGHT_PAREN. {
+    if (harp_regrid_new(s, &F) != 0)
     {
         harp_parser_state_set_error(state, harp_errno_to_string(harp_errno));
     }

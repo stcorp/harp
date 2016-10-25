@@ -10,14 +10,12 @@
 %option reentrant
 %option noyywrap
 
-%x DOUBLE_QUOTED
-
 digit         [0-9]
 letter        [a-zA-Z]
 
 %%
 
-[\[][a-zA-Z0-9._-]+[\]]  {return UNIT;}
+[\[][^\]]+[\]]  {return UNIT;}
 ","                   {return COMMA;}
 ";"                   {return SEMICOLON;}
 [-+]?[Nn][aA][Nn]     {return NAN;}
@@ -47,6 +45,8 @@ letter        [a-zA-Z]
 "keep"                {return F_KEEP;}
 "exclude"             {return F_EXCLUDE;}
 "flatten"             {return F_FLATTEN;}
+"regrid"              {return F_REGRID;}
+"regrid-collocated"   {return F_REGRID_COLLOCATED;}
 "=="                  {return OP_EQ;}
 "!="                  {return OP_NE;}
 ">="                  {return OP_GE;}
@@ -57,11 +57,7 @@ letter        [a-zA-Z]
 "!&"                  {return OP_BIT_NAND;}
 "not"                 {return NOT;}
 "in"                  {return IN;}
-{letter}({letter}|{digit})* { return ID; }
+[ab]                  {return COLLOCATION_COLUMN;}
+{letter}({letter}|_|{digit})* {return ID;}
+\"(\\.|[^"])*\"       {return STRING;}
 [ \t]+
-
-["]                    {BEGIN(DOUBLE_QUOTED);}
-<DOUBLE_QUOTED>[^"\\]+ {}
-<DOUBLE_QUOTED>[\\].   {}
-<DOUBLE_QUOTED><<EOF>> {return -1;}
-<DOUBLE_QUOTED>["]     {BEGIN(INITIAL); return STRING;}
