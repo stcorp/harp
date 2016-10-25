@@ -17,7 +17,7 @@ letter        [a-zA-Z]
 
 %%
 
-"["[a-zA-Z0-9._-]"]"  {return UNIT;}
+[\[][a-zA-Z0-9._-]+[\]]  {return UNIT;}
 ","                   {return COMMA;}
 ";"                   {return SEMICOLON;}
 [-+]?[Nn][aA][Nn]     {return NAN;}

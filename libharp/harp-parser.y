@@ -5,6 +5,16 @@
     #include "harp-program.h"
     #include "harp-parser-state.h"
 
+    typedef struct float_with_unit_struct {
+        float value;
+        char *unit;
+    } float_with_unit;
+
+    typedef struct int_with_unit_struct {
+        int value;
+        char *unit;
+    } int_with_unit;
+
     typedef struct harp_sized_array_struct {
         int num_elements;
         harp_array array;
@@ -117,8 +127,22 @@ ids(l) ::= id(i). {
     }
 }
 
-unit_opt ::= UNIT.
-unit_opt ::= .
+%type unit_opt {char *}
+unit_opt(u) ::= UNIT(s). {
+  int len = strlen(s) - 2;
+
+  u = malloc((len + 1) * sizeof(char));
+  if (u == NULL)
+  {
+    harp_parser_state_set_error(state, "out of memory (could not memory for unit string)");
+    return;
+  }
+
+  /* copy the unit and null terminate the string */
+  memcpy(u, &s[1], len);
+  u[len] = '\0';
+}
+unit_opt(u) ::= . {u = NULL;}
 
 %type float {double}
 float(A) ::= FLOAT(F). {
@@ -142,11 +166,8 @@ if (s[0] == '-') {
     }
 }
 
-%type floatvalue {double}
-floatvalue ::= float unit_opt.
-
-/*intvaluelist ::= intvaluelist COMMA INT.
-intvaluelist ::= INT.*/
+%type int {int}
+int(i) ::= INT(s). { i = atoi(s); }
 
 %type floatvaluelist {harp_sized_array *}
 floatvaluelist(l) ::= floatvaluelist(m) COMMA float(d). {
@@ -211,17 +232,18 @@ dimensionlist(l) ::= dimension(s). {
 dimensionspec(l) ::= LEFT_CURLY dimensionlist(m) RIGHT_CURLY. { l = m; }
 
 /*
-    * values
-    */
+ * values
+ */
 
-%type stringvalue {const char*}
-stringvalue(s) ::= STRING(t). {
-    s = t;
+%type floatvalue { float_with_unit }
+floatvalue(v) ::= float(f) unit_opt(u). {
+  v.value = f;
+  v.unit = u;
 }
 
-%type intvalue {int}
-intvalue(v) ::= INT(i) unit_opt. {
-    v = atoi(i);
+%type stringvalue {const char *}
+stringvalue(s) ::= STRING(t). {
+    s = t;
 }
 
 /*
@@ -246,13 +268,13 @@ functioncall(F) ::= F_VALID LEFT_PAREN id(i) RIGHT_PAREN. {
     }
 }
 functioncall(F) ::= F_LON_RANGE LEFT_PAREN floatvalue(min) COMMA floatvalue(max) RIGHT_PAREN. {
-    if (harp_longitude_range_filter_new(min, NULL, max, NULL, &F) != 0)
+    if (harp_longitude_range_filter_new(min.value, min.unit, max.value, max.unit, &F) != 0)
     {
         harp_parser_state_set_error(state, harp_errno_to_string(harp_errno));
     }
 }
 functioncall(F) ::= F_POINT_DIST LEFT_PAREN floatvalue(lon) COMMA floatvalue(lat) COMMA floatvalue(dist) RIGHT_PAREN. {
-    if (harp_point_distance_filter_new(lon, NULL, lat, NULL, dist, NULL, &F) != 0)
+    if (harp_point_distance_filter_new(lon.value, lon.unit, lat.value, lat.unit, dist.value, dist.unit, &F) != 0)
     {
         harp_parser_state_set_error(state, harp_errno_to_string(harp_errno));
     }
@@ -269,13 +291,13 @@ functioncall(F) ::= F_AREA_MASK_COVERS_AREA LEFT_PAREN stringvalue(file) RIGHT_P
         harp_parser_state_set_error(state, harp_errno_to_string(harp_errno));
     }
 }
-functioncall(F) ::= F_AREA_MASK_INTERSECTS_AREA LEFT_PAREN stringvalue(file) COMMA floatvalue(p) RIGHT_PAREN. {
-    if (harp_area_mask_intersects_area_filter_new(file, p, &F) != 0)
+functioncall(F) ::= F_AREA_MASK_INTERSECTS_AREA LEFT_PAREN stringvalue(file) COMMA float(f) RIGHT_PAREN. {
+    if (harp_area_mask_intersects_area_filter_new(file, f, &F) != 0)
     {
         harp_parser_state_set_error(state, harp_errno_to_string(harp_errno));
     }
 }
-functioncall(F) ::= F_DERIVE LEFT_PAREN id(var) dimensionspec(dims) unit_opt RIGHT_PAREN. {
+functioncall(F) ::= F_DERIVE LEFT_PAREN id(var) dimensionspec(dims) unit_opt(u) RIGHT_PAREN. {
     harp_dimension_type *dimspec;
     int i;
 
@@ -299,7 +321,7 @@ functioncall(F) ::= F_DERIVE LEFT_PAREN id(var) dimensionspec(dims) unit_opt RIG
         }
     }
 
-    if (harp_variable_derivation_new(var, dims->num_elements, dimspec, NULL, &F) != 0)
+    if (harp_variable_derivation_new(var, dims->num_elements, dimspec, u, &F) != 0)
     {
         harp_parser_state_set_error(state, harp_errno_to_string(harp_errno));
     }
@@ -325,8 +347,8 @@ functioncall(F) ::= F_FLATTEN LEFT_PAREN dimension(d) RIGHT_PAREN. {
 }
 
 /*
-    * operations
-    */
+ * operations
+ */
 
 %type comparison_operator {harp_comparison_operator_type}
 comparison_operator(OP) ::= OP_EQ. {OP = harp_operator_eq;}
@@ -348,31 +370,29 @@ membership_operator(O) ::= IN. {O = harp_operator_in;}
 operation(O) ::= functioncall(F). {
     O = F;
 }
-operation(O) ::= id(V) bitmask_operator(OP) intvalue(E). {
+operation(O) ::= id(V) bitmask_operator(OP) int(E). {
     if(harp_bit_mask_filter_new(V, OP, E, &O) != 0) {
         harp_parser_state_set_error(state, harp_errno_to_string(harp_errno));
     }
 }
 operation(O) ::= id(V) comparison_operator(OP) floatvalue(E). {
-    /* TODO unit */
-    if(harp_comparison_filter_new(V, OP, E, NULL, &O) != 0) {
+    if(harp_comparison_filter_new(V, OP, E.value, E.unit, &O) != 0) {
         harp_parser_state_set_error(state, harp_errno_to_string(harp_errno));
     }
 }
 operation(O) ::= id(V) comparison_operator(OP) stringvalue(E). {
-    /* TODO unit */
     if(harp_string_comparison_filter_new(V, OP, E, &O) != 0) {
         harp_parser_state_set_error(state, harp_errno_to_string(harp_errno));
     }
 }
-operation(O) ::= id(V) membership_operator(OP) LEFT_PAREN floatvaluelist RIGHT_PAREN unit_opt. {
-    if(harp_membership_filter_new(V, OP, 0, NULL, NULL, &O) != 0)
+operation(O) ::= id(V) membership_operator(OP) LEFT_PAREN floatvaluelist(l) RIGHT_PAREN unit_opt(u). {
+    if(harp_membership_filter_new(V, OP, l->num_elements, l->array.float_data, u, &O) != 0)
     {
         harp_parser_state_set_error(state, harp_errno_to_string(harp_errno));
     }
 }
-operation(O) ::= id(V) membership_operator(OP) LEFT_PAREN stringvaluelist RIGHT_PAREN unit_opt. {
-if(harp_string_membership_filter_new(V, OP, 0, NULL, &O) != 0)
+operation(O) ::= id(V) membership_operator(OP) LEFT_PAREN stringvaluelist(l) RIGHT_PAREN. {
+if(harp_string_membership_filter_new(V, OP, l->num_elements, l->array.string_data, &O) != 0)
     {
         harp_parser_state_set_error(state, harp_errno_to_string(harp_errno));
     }
