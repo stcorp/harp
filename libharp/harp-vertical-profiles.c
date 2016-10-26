@@ -1459,10 +1459,23 @@ LIBHARP_API int harp_product_smooth_vertical(harp_product *product, int num_smoo
             {
                 int fid;
 
+                /* Ensure that the variable data to resample consists of doubles */
+                if (var->data_type != harp_type_double && harp_variable_convert_data_type(var, harp_type_double) != 0)
+                {
+                    goto error;
+                }
+
                 /* copy the time slice to the target variable */
                 memcpy(&var->data.double_data[time_index_a * num_target_max_vertical_elements],
                        &target_grid->data.double_data[time_index_b * num_target_max_vertical_elements],
                        num_target_max_vertical_elements * sizeof(double));
+
+                /* make sure the data is using the unit associated with the variable */
+                if (harp_convert_unit(vertical_unit, var->unit, num_target_max_vertical_elements,
+                                      &var->data.double_data[time_index_a * num_target_max_vertical_elements]) != 0)
+                {
+                    goto error;
+                }
 
                 /* nan fill */
                 for (fid = num_target_max_vertical_elements; fid < max_vertical_dim; fid++)
