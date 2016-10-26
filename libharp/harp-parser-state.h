@@ -26,7 +26,8 @@
 #include <assert.h>
 #include <stdlib.h>
 
-typedef struct harp_parser_state_struct {
+typedef struct harp_parser_state_struct
+{
     int hasError;
     char *error;
     harp_program *result;
@@ -34,5 +35,6 @@ typedef struct harp_parser_state_struct {
 
 int harp_parser_state_new(harp_parser_state **new_state);
 void harp_parser_state_delete(harp_parser_state *state);
+void harp_parser_state_set_error(harp_parser_state *state, const char *error);
 
 #endif

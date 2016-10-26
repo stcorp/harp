@@ -54,12 +54,16 @@ void harp_parser_state_delete(harp_parser_state *state)
     {
         harp_program_delete(state->result);
     }
+    if (state->error)
+    {
+        free(state->error);
+    }
 
     free(state);
 }
 
-void harp_parser_state_set_error(harp_parser_state *state, char *error)
+void harp_parser_state_set_error(harp_parser_state *state, const char *error)
 {
     state->hasError = 1;
-    state->error = error;
+    state->error = strdup(error);
 }
