@@ -1345,7 +1345,6 @@ LIBHARP_API int harp_product_smooth_vertical(harp_product *product, int num_smoo
         long coll_index;
         long num_target_vertical_elements;
         long num_target_max_vertical_elements;
-        long num_target_offset;
         long num_source_vertical_elements;
 
         /* Get the collocation index */
@@ -1433,13 +1432,11 @@ LIBHARP_API int harp_product_smooth_vertical(harp_product *product, int num_smoo
          * below the first source profile elements
          */
         num_target_max_vertical_elements = target_grid->dimension[1];
-        /* do not offset the target grid, see github issue #95 */
-        num_target_offset = 0;
 
         /* find the target grid length */
         num_target_vertical_elements =
             get_unpadded_vector_length(&target_grid->data.double_data[time_index_a * num_target_max_vertical_elements],
-                                       num_target_max_vertical_elements) - num_target_offset;
+                                       num_target_max_vertical_elements);
 
         /* Resample & smooth variables */
         for (j = product->num_variables - 1; j >= 0; j--)
@@ -1466,7 +1463,9 @@ LIBHARP_API int harp_product_smooth_vertical(harp_product *product, int num_smoo
                 {
                     return -1;
                 }
-            } else {
+            }
+            else
+            {
                 /* derive bounds variables if necessary for resampling */
                 if (var_type == profile_resample_interval)
                 {
@@ -1508,8 +1507,8 @@ LIBHARP_API int harp_product_smooth_vertical(harp_product *product, int num_smoo
                             (num_source_vertical_elements,
                             &source_grid->data.double_data[time_index_a * num_source_max_vertical_elements],
                             &var->data.double_data[source_block_index], num_target_vertical_elements,
-                            &target_grid->data.double_data[time_index_b * num_target_max_vertical_elements +
-                                                            num_target_offset], 0, interpolation_buffer);
+                            &target_grid->data.double_data[time_index_b * num_target_max_vertical_elements], 0,
+                            interpolation_buffer);
                     }
                     else if (var_type == profile_resample_interval)
                     {
@@ -1518,8 +1517,8 @@ LIBHARP_API int harp_product_smooth_vertical(harp_product *product, int num_smoo
                             &source_bounds->data.double_data[time_index_a * num_source_max_vertical_elements * 2],
                             &var->data.double_data[(time_index_a * blocks + block) * num_source_max_vertical_elements],
                             num_target_vertical_elements,
-                            &target_bounds->data.double_data[(time_index_b * num_target_max_vertical_elements +
-                                                            num_target_offset) * 2], interpolation_buffer);
+                            &target_bounds->data.double_data[(time_index_b * num_target_max_vertical_elements) * 2],
+                            interpolation_buffer);
                     }
                     else
                     {
