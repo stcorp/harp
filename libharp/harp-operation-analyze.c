@@ -21,8 +21,8 @@
 #include "harp-internal.h"
 #include "harp-operation.h"
 #include "harp-program.h"
-#include "harp-parser.h"
-#include "harp-parser-state.h"
+#include "harp-operation-parser.h"
+#include "harp-operation-parser-state.h"
 #include "harp-scanner.h"
 
 #include <assert.h>

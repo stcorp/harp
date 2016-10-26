@@ -88,8 +88,6 @@ libharp_la_SOURCES = \
 	libharp/harp-program.c \
 	libharp/harp-program-execute.h \
 	libharp/harp-program-execute.c \
-	libharp/harp-operation-parse.h \
-	libharp/harp-operation-parse.c \
 	libharp/harp-analysis.c \
 	libharp/harp-area-mask.h \
 	libharp/harp-area-mask.c \
