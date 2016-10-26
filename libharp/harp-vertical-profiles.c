@@ -1457,11 +1457,17 @@ LIBHARP_API int harp_product_smooth_vertical(harp_product *product, int num_smoo
             /* do not interpolate the grid variable; this might produce nans at the bottom */
             if (strcmp(var->name, vertical_axis) == 0)
             {
-                /* instead just copy it directly */
-                harp_variable_delete(var);
-                if (harp_variable_copy(target_grid, &product->variable[j]) != 0)
+                int fid;
+
+                /* copy the time slice to the target variable */
+                memcpy(&var->data.double_data[time_index_a * num_target_max_vertical_elements],
+                       &target_grid->data.double_data[time_index_b * num_target_max_vertical_elements],
+                       num_target_max_vertical_elements * sizeof(double));
+
+                /* nan fill */
+                for (fid = num_target_max_vertical_elements; fid < max_vertical_dim; fid++)
                 {
-                    return -1;
+                    var->data.double_data[fid] = harp_nan();
                 }
             }
             else
@@ -1472,7 +1478,7 @@ LIBHARP_API int harp_product_smooth_vertical(harp_product *product, int num_smoo
                     if (target_bounds == NULL)
                     {
                         if (harp_product_get_derived_variable(match, bounds_name, vertical_unit, 3, bounds_dim_type,
-                                                            &target_bounds) != 0)
+                                                              &target_bounds) != 0)
                         {
                             goto error;
                         }
@@ -1480,7 +1486,7 @@ LIBHARP_API int harp_product_smooth_vertical(harp_product *product, int num_smoo
                     if (source_bounds == NULL)
                     {
                         if (harp_product_get_derived_variable(product, bounds_name, vertical_unit, 3, bounds_dim_type,
-                                                            &source_bounds) != 0)
+                                                              &source_bounds) != 0)
                         {
                             goto error;
                         }
@@ -1505,20 +1511,20 @@ LIBHARP_API int harp_product_smooth_vertical(harp_product *product, int num_smoo
                     {
                         harp_interpolate_array_linear
                             (num_source_vertical_elements,
-                            &source_grid->data.double_data[time_index_a * num_source_max_vertical_elements],
-                            &var->data.double_data[source_block_index], num_target_vertical_elements,
-                            &target_grid->data.double_data[time_index_b * num_target_max_vertical_elements], 0,
-                            interpolation_buffer);
+                             &source_grid->data.double_data[time_index_a * num_source_max_vertical_elements],
+                             &var->data.double_data[source_block_index], num_target_vertical_elements,
+                             &target_grid->data.double_data[time_index_b * num_target_max_vertical_elements +
+                                                            num_target_offset], 0, interpolation_buffer);
                     }
                     else if (var_type == profile_resample_interval)
                     {
                         harp_interval_interpolate_array_linear
                             (num_source_vertical_elements,
-                            &source_bounds->data.double_data[time_index_a * num_source_max_vertical_elements * 2],
-                            &var->data.double_data[(time_index_a * blocks + block) * num_source_max_vertical_elements],
-                            num_target_vertical_elements,
-                            &target_bounds->data.double_data[(time_index_b * num_target_max_vertical_elements) * 2],
-                            interpolation_buffer);
+                             &source_bounds->data.double_data[time_index_a * num_source_max_vertical_elements * 2],
+                             &var->data.double_data[(time_index_a * blocks + block) * num_source_max_vertical_elements],
+                             num_target_vertical_elements,
+                             &target_bounds->data.double_data[(time_index_b * num_target_max_vertical_elements +
+                                                               num_target_offset) * 2], interpolation_buffer);
                     }
                     else
                     {

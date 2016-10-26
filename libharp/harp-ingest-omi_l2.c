@@ -2294,8 +2294,9 @@ static void register_omchocho_product(void)
     const char *description;
     const char *path;
 
-    module = harp_ingestion_register_module_coda("OMI_L2_OMCHOCHO", "OMI", "AURA_OMI", "OMCHOCHO", "OMI L2 Glyoxal total column",
-                                                 ingestion_init_omchocho, ingestion_done);
+    module =
+        harp_ingestion_register_module_coda("OMI_L2_OMCHOCHO", "OMI", "AURA_OMI", "OMCHOCHO",
+                                            "OMI L2 Glyoxal total column", ingestion_init_omchocho, ingestion_done);
 
     /* destriped ingestion option */
     description = "ingest column densities with destriping correction";
