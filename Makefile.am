@@ -10,13 +10,7 @@ AM_CPPFLAGS = -Ilibharp -I$(srcdir)/libharp
 AM_YFLAGS = -d -v
 AM_LFLAGS = -o lex.yy.c
 
-LEMON=$(srcdir)/lemon/lemon
-
-BUILT_SOURCES = \
-	$(LEMON) \
-	libharp/harp-parser.h \
-	libharp/harp-parser.c \
-	libharp/harp-scanner.h
+BUILT_SOURCES =
 CLEANFILES =
 EXTRA_DIST =
 INDENTFILES =
@@ -34,7 +28,7 @@ uninstall-hook: $(UNINSTALL_HOOK_TARGETS)
 # programs
 
 bin_PROGRAMS = harpcheck harpcollocate harpconvert harpfilter harpprofile harpdump
-noinst_PROGRAMS = findtypedef
+noinst_PROGRAMS = findtypedef lemon
 
 # libraries (+ related files)
 
@@ -54,40 +48,20 @@ include_HEADERS = libharp/harp.h
 
 # *** build rules ***
 
-$(LEMON): lemon/lemon.c lemon/lempar.c
-	cd lemon; \
-	$(CC) lemon.c -o lemon
+# parser generator
 
-# lex and lemon files
-libharp/harp-scanner.h: libharp/harp-scanner.l
-	flex --outfile=libharp/harp-scanner.c --header-file=libharp/harp-scanner.h libharp/harp-scanner.l
+lemon_SOURCES = lemon.c
+EXTRA_DIST += lempar.c
 
-libharp/harp-scanner.c: libharp/harp-scanner.l
-	flex --outfile=libharp/harp-scanner.c --header-file=libharp/harp-scanner.h libharp/harp-scanner.l
-
-libharp/harp-parser.c: libharp/harp-parser.y
-	$(LEMON) libharp/harp-parser.y
-
-libharp/harp-parser.h: libharp/harp-parser.y
-	$(LEMON) libharp/harp-parser.y
+libharp/harp-operation-parser.h: libharp/harp-operation-parser.c
+	@if test ! -f $@; then rm -f libharp/harp-operation-parser.c; else :; fi
+	@if test ! -f $@; then $(MAKE) $(AM_MAKEFLAGS) harp-operation-parser.c; else :; fi
+libharp/harp-operation-parser.c: libharp/harp-operation-parser.y lemon
+	./lemon -T$(srcdir)/lempar.c $(srcdir)/libharp/harp-operation-parser.y
+EXTRA_DIST += libharp/harp-operation-parser.y
 
 # libharp
 libharp_la_SOURCES = \
-	libharp/harp-parser-state.h \
-	libharp/harp-parser-state.c \
-	libharp/harp-operation.h \
-	libharp/harp-operation.c \
-	libharp/harp-operation-analyze.c \
-	libharp/harp-operation-lex.h \
-	libharp/harp-operation-lex.c \
-	libharp/harp-parser.h \
-	libharp/harp-parser.c \
-	libharp/harp-scanner.h \
-	libharp/harp-scanner.c \
-	libharp/harp-program.h \
-	libharp/harp-program.c \
-	libharp/harp-program-execute.h \
-	libharp/harp-program-execute.c \
 	libharp/harp-analysis.c \
 	libharp/harp-area-mask.h \
 	libharp/harp-area-mask.c \
@@ -157,10 +131,22 @@ libharp_la_SOURCES = \
 	libharp/harp-internal.h \
 	libharp/harp-interpolation.c \
 	libharp/harp-netcdf.c \
+	libharp/harp-operation-analyze.c \
+	libharp/harp-operation-parser.h \
+	libharp/harp-operation-parser.c \
+	libharp/harp-operation-parser-state.h \
+	libharp/harp-operation-parser-state.c \
+	libharp/harp-operation-scanner.c \
+	libharp/harp-operation.h \
+	libharp/harp-operation.c \
 	libharp/harp-predicate.h \
 	libharp/harp-predicate.c \
 	libharp/harp-product.c \
 	libharp/harp-product-metadata.c \
+	libharp/harp-program.h \
+	libharp/harp-program.c \
+	libharp/harp-program-execute.h \
+	libharp/harp-program-execute.c \
 	libharp/harp-sea-surface.c \
 	libharp/harp-units.c \
 	libharp/harp-utils.c \
@@ -186,8 +172,9 @@ endif
 libharp_la_CPPFLAGS = -Inetcdf -I$(srcdir)/netcdf -Iudunits2 -I$(srcdir)/udunits2
 libharp_la_LDFLAGS = -no-undefined -version-info $(LIBHARP_CURRENT):$(LIBHARP_REVISION):$(LIBHARP_AGE)
 libharp_la_LIBADD = @LTLIBOBJS@ libudunits2.la libnetcdf.la $(CODALIBS) $(HDF4LIBS) $(HDF5LIBS)
-libharp_la_DEPENDENCIES = libudunits2.la libnetcdf.la libharp/harp-parser.h libharp/harp-scanner.h
+libharp_la_DEPENDENCIES = libudunits2.la libnetcdf.la
 INDENTFILES += $(libharp_la_SOURCES) libharp/harp.h.in
+BUILT_SOURCES += libharp/harp-operation-parser.h
 
 # harpcheck
 

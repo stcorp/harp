@@ -23,7 +23,6 @@
 #include "harp-program.h"
 #include "harp-operation-parser.h"
 #include "harp-operation-parser-state.h"
-#include "harp-scanner.h"
 
 #include <assert.h>
 #include <stdlib.h>
@@ -31,15 +30,26 @@
 
 #define MAX_NUM_FUNCTION_ARGUMENTS 5
 
-int harp_program_from_string(const char *str, harp_program **new_program)
+typedef struct yy_buffer_state *YY_BUFFER_STATE;
+typedef void* yyscan_t;
+
+int harp_operation_lex(yyscan_t yyscanner);
+int harp_operation_lex_init(yyscan_t *scanner);
+int harp_operation_lex_destroy(yyscan_t yyscanner);
+YY_BUFFER_STATE harp_operation__scan_string (const char *yy_str, yyscan_t yyscanner);
+void *ParseAlloc(void *(*mallocProc)(size_t));
+void *ParseFree(void *p, void (*freeProc)(void*));
+void Parse(void *yyp, int yymajor, const char* yyminor, harp_parser_state* state);
+char *harp_operation_get_text(yyscan_t yyscanner);
+void harp_operation__delete_buffer(YY_BUFFER_STATE b, yyscan_t yyscanner);
+
+int harp_program_from_string(const char *str, harp_program **program)
 {
-    harp_program *program;
     harp_parser_state *state;
     YY_BUFFER_STATE buf;
     yyscan_t scanner;
     void *operationParser;
     int lexCode;
-    int i;
 
     // set up the parser state
     if (harp_parser_state_new(&state))
@@ -48,9 +58,9 @@ int harp_program_from_string(const char *str, harp_program **new_program)
     }
 
     // Set up the scanner
-    yylex_init(&scanner);
+    harp_operation_lex_init(&scanner);
     // yyset_in(stdin, scanner);
-    buf = yy_scan_string(str, scanner);
+    buf = harp_operation__scan_string(str, scanner);
 
     // Set up the parser
     operationParser = ParseAlloc(malloc);
@@ -58,43 +68,41 @@ int harp_program_from_string(const char *str, harp_program **new_program)
     // Do it!
     do
     {
-        lexCode = yylex(scanner);
-        Parse(operationParser, lexCode, strdup(yyget_text(scanner)), state);
+        lexCode = harp_operation_lex(scanner);
+        Parse(operationParser, lexCode, strdup(harp_operation_get_text(scanner)), state);
     } while (lexCode > 0 && !state->hasError);
 
     if (-1 == lexCode)
     {
-        fprintf(stderr, "The scanner encountered an error\n");
-
         // Cleanup the scanner and parser
-        yy_delete_buffer(buf, scanner);
-        yylex_destroy(scanner);
+        harp_operation__delete_buffer(buf, scanner);
+        harp_operation_lex_destroy(scanner);
         ParseFree(operationParser, free);
         harp_parser_state_delete(state);
 
+        harp_set_error(HARP_ERROR_OPERATION_SYNTAX, "the scanner encountered an error");
         return -1;
     }
     if (state->hasError)
     {
-        fprintf(stderr, "Parser error: %s\n", state->error);
-
         // Cleanup the scanner and parser
-        yy_delete_buffer(buf, scanner);
-        yylex_destroy(scanner);
+        harp_operation__delete_buffer(buf, scanner);
+        harp_operation_lex_destroy(scanner);
         ParseFree(operationParser, free);
         harp_parser_state_delete(state);
 
+        harp_set_error(HARP_ERROR_OPERATION_SYNTAX, "parser error: %s", state->error);
         return -1;
     }
 
-    if (harp_program_copy(state->result, new_program) != 0)
+    if (harp_program_copy(state->result, program) != 0)
     {
         return -1;
     }
 
     // Cleanup the scanner and parser
-    yy_delete_buffer(buf, scanner);
-    yylex_destroy(scanner);
+    harp_operation__delete_buffer(buf, scanner);
+    harp_operation_lex_destroy(scanner);
     ParseFree(operationParser, free);
     harp_parser_state_delete(state);
 

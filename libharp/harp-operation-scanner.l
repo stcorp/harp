@@ -1,9 +1,12 @@
 %{
-  #include "harp-parser.h"
+  #include "harp-operation-parser.h"
 %}
 
+%option prefix="harp_operation_"
 %option reentrant
 %option noyywrap
+%option noinput
+%option nounput
 
 digit         [0-9]
 letter        [a-zA-Z]

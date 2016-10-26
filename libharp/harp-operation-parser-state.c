@@ -19,7 +19,7 @@
  */
 #include <stdio.h>
 
-#include "harp-parser-state.h"
+#include "harp-operation-parser-state.h"
 #include "harp-program.h"
 
 int harp_parser_state_new(harp_parser_state **new_state)

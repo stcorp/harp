@@ -4,7 +4,7 @@
     #include <assert.h>
     #include "harp-operation.h"
     #include "harp-program.h"
-    #include "harp-parser-state.h"
+    #include "harp-operation-parser-state.h"
 
     typedef struct float_with_unit_struct {
         float value;
@@ -61,10 +61,10 @@
                 return -1;
             }
 
-            harp_sized_array->array.string_data = strdup(string_data);
+            harp_sized_array->array.string_data = string_data;
         }
 
-        harp_sized_array->array.string_data[harp_sized_array->num_elements] = str;
+        harp_sized_array->array.string_data[harp_sized_array->num_elements] = strdup(str);
         harp_sized_array->num_elements++;
 
         return 0;
