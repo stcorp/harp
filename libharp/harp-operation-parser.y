@@ -1,3 +1,5 @@
+%name harp_operation_parser_
+%token_prefix OPERATION_
 %include {
     #include <stdio.h>
     #include <string.h>
@@ -275,7 +277,12 @@ floatvalue(v) ::= float(f) unit_opt(u). {
 }
 
 %type collocation_column { char }
-collocation_column(col) ::= COLLOCATION_COLUMN(s). { col = s[0]; }
+collocation_column(col) ::= COLLOCATION_COLUMN(s). {
+    col = s[0];
+
+    /* cleanup the token */
+    free(s);
+}
 
 %type stringvalue {char *}
 stringvalue(x) ::= STRING(t). {
