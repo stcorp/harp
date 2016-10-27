@@ -33,8 +33,27 @@ typedef struct harp_parser_state_struct
     harp_program *result;
 } harp_parser_state;
 
+typedef struct float_with_unit_struct {
+    float value;
+    char *unit;
+} float_with_unit;
+
+typedef struct int_with_unit_struct {
+    int value;
+    char *unit;
+} int_with_unit;
+
+typedef struct harp_sized_array_struct {
+    int num_elements;
+    harp_array array;
+} harp_sized_array;
+
 int harp_parser_state_new(harp_parser_state **new_state);
 void harp_parser_state_delete(harp_parser_state *state);
 void harp_parser_state_set_error(harp_parser_state *state, const char *error);
+int harp_sized_array_new(harp_sized_array **new_array);
+void harp_sized_array_delete(harp_sized_array *l);
+int harp_sized_array_add_string(harp_sized_array *harp_sized_array, const char *str);
+int harp_sized_array_add_double(harp_sized_array *harp_sized_array, const double d);
 
 #endif
