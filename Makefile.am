@@ -155,7 +155,7 @@ libharp_la_SOURCES += $(libharp_hdf5_files)
 else
 INDENTFILES += $(libharp_hdf5_files)
 endif
-libharp_la_CPPFLAGS = -Inetcdf -I$(srcdir)/netcdf -Iudunits2 -I$(srcdir)/udunits2
+libharp_la_CPPFLAGS = -Inetcdf -I$(srcdir)/netcdf -Iudunits2 -I$(srcdir)/udunits2 $(AM_CPPFLAGS)
 libharp_la_LDFLAGS = -no-undefined -version-info $(LIBHARP_CURRENT):$(LIBHARP_REVISION):$(LIBHARP_AGE)
 libharp_la_LIBADD = @LTLIBOBJS@ libudunits2.la libnetcdf.la $(CODALIBS) $(HDF4LIBS) $(HDF5LIBS)
 libharp_la_DEPENDENCIES = libudunits2.la libnetcdf.la
