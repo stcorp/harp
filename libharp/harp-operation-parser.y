@@ -227,12 +227,12 @@ int harp_sized_array_add_int32(harp_sized_array *sized_array, int32_t value)
 %type   <double_val>            double_value
 %type   <string_val>            identifier
 %type   <const_string_val>      reserved_identifier
-%type   <array>                 double_array string_array dimension_array dimensionspec
+%type   <array>                 double_array string_array identifier_array dimension_array dimensionspec
 %type   <membership_operator>   membership_operator;
 %type   <comparison_operator>   comparison_operator;
 %type   <bit_mask_operator>     bit_mask_operator;
 
-%destructor { harp_sized_array_delete($$); } double_array string_array dimension_array dimensionspec
+%destructor { harp_sized_array_delete($$); } double_array string_array identifier_array dimension_array dimensionspec
 %destructor { harp_operation_delete($$); } operation
 %destructor { harp_program_delete($$); } program
 %destructor { free($$); } STRING_VALUE INTEGER_VALUE DOUBLE_VALUE NAME UNIT identifier
@@ -305,6 +305,19 @@ string_array:
         }
     ;
 
+identifier_array:
+      identifier_array ',' identifier {
+            if (harp_sized_array_add_string($1, $3) != 0) YYERROR;
+            $$ = $1;
+            free($3);
+        }
+    | identifier {
+            if (harp_sized_array_new(&$$, harp_type_string) != 0) YYERROR;
+            if (harp_sized_array_add_string($$, $1) != 0) YYERROR;
+            free($1);
+        }
+    ;
+
 dimension_array:
       dimension_array ',' DIMENSION {
             if (harp_sized_array_add_int32($1, $3) != 0) YYERROR;
@@ -320,116 +333,6 @@ dimensionspec:
       '{' dimension_array '}' { $$ = $2; }
     | '{' '}' { if (harp_sized_array_new(&$$, harp_type_int32) != 0) YYERROR; }
     ;
-
-/* %type  functioncall {harp_operation*} */
-/*functioncall(F) ::= F_COLLOCATE_LEFT LEFT_PAREN stringvalue(s) RIGHT_PAREN. {
-    if (harp_collocation_filter_new(s, harp_collocation_left, &F) != 0) {
-        harp_parser_state_set_error(state, harp_errno_to_string(harp_errno));
-    }
-}
-functioncall(F) ::= F_COLLOCATE_RIGHT LEFT_PAREN stringvalue(s) RIGHT_PAREN. {
-    if (harp_collocation_filter_new(s, harp_collocation_right, &F) != 0) {
-        harp_parser_state_set_error(state, harp_errno_to_string(harp_errno));
-    }
-}
-functioncall(F) ::= F_VALID LEFT_PAREN id(i) RIGHT_PAREN. {
-    if (harp_valid_range_filter_new(i, &F) != 0)
-    {
-        harp_parser_state_set_error(state, harp_errno_to_string(harp_errno));
-    }
-}
-functioncall(F) ::= F_LON_RANGE LEFT_PAREN floatvalue(min) COMMA floatvalue(max) RIGHT_PAREN. {
-    if (harp_longitude_range_filter_new(min.value, min.unit, max.value, max.unit, &F) != 0)
-    {
-        harp_parser_state_set_error(state, harp_errno_to_string(harp_errno));
-    }
-}
-functioncall(F) ::= F_POINT_DIST LEFT_PAREN floatvalue(lon) COMMA floatvalue(lat) COMMA floatvalue(dist) RIGHT_PAREN. {
-    if (harp_point_distance_filter_new(lon.value, lon.unit, lat.value, lat.unit, dist.value, dist.unit, &F) != 0)
-    {
-        harp_parser_state_set_error(state, harp_errno_to_string(harp_errno));
-    }
-}
-functioncall(F) ::= F_AREA_MASK_COVERS_POINT LEFT_PAREN stringvalue(file) RIGHT_PAREN. {
-    if (harp_area_mask_covers_point_filter_new(file, &F) != 0)
-    {
-        harp_parser_state_set_error(state, harp_errno_to_string(harp_errno));
-    }
-}
-functioncall(F) ::= F_AREA_MASK_COVERS_AREA LEFT_PAREN stringvalue(file) RIGHT_PAREN. {
-    if (harp_area_mask_covers_area_filter_new(file, &F) != 0)
-    {
-        harp_parser_state_set_error(state, harp_errno_to_string(harp_errno));
-    }
-}
-functioncall(F) ::= F_AREA_MASK_INTERSECTS_AREA LEFT_PAREN stringvalue(file) COMMA float(f) RIGHT_PAREN. {
-    if (harp_area_mask_intersects_area_filter_new(file, f, &F) != 0)
-    {
-        harp_parser_state_set_error(state, harp_errno_to_string(harp_errno));
-    }
-}
-functioncall(F) ::= F_DERIVE LEFT_PAREN id(var) dimensionspec(dims) unit_opt(u) RIGHT_PAREN. {
-    harp_dimension_type *dimspec;
-    int i;
-
-    dimspec = (harp_dimension_type *)malloc(dims->num_elements * sizeof(harp_dimension_type));
-    if (dimspec == NULL)
-    {
-        harp_parser_state_set_error(state, "out of memory");
-        return;
-    }
-
-    for (i = 0; i < dims->num_elements; i++)
-    {
-        if (harp_parse_dimension_type(dims->array.string_data[i], &dimspec[i]) != 0)
-        {
-            harp_parser_state_set_error(state, harp_errno_to_string(harp_errno));
-            return;
-        }
-    }
-
-    if (harp_variable_derivation_new(var, dims->num_elements, dimspec, u, &F) != 0)
-    {
-        harp_parser_state_set_error(state, harp_errno_to_string(harp_errno));
-    }
-}
-functioncall(F) ::= F_KEEP LEFT_PAREN ids(i) RIGHT_PAREN. {
-    if (harp_variable_inclusion_new(i->num_elements, i->array.string_data, &F) != 0)
-    {
-        harp_parser_state_set_error(state, harp_errno_to_string(harp_errno));
-    }
-    harp_sized_array_delete(i);
-}
-functioncall(F) ::= F_EXCLUDE LEFT_PAREN ids(i) RIGHT_PAREN. {
-    if (harp_variable_exclusion_new(i->num_elements, i->array.string_data, &F) != 0)
-    {
-        harp_parser_state_set_error(state, harp_errno_to_string(harp_errno));
-    }
-}
-functioncall(F) ::= F_FLATTEN LEFT_PAREN dimension(d) RIGHT_PAREN. {
-    harp_dimension_type dimtype;
-    if (harp_parse_dimension_type(d, &dimtype) != 0 || harp_flatten_new(dimtype, &F) != 0)
-    {
-        harp_parser_state_set_error(state, harp_errno_to_string(harp_errno));
-    }
-}
-functioncall(F) ::= F_REGRID_COLLOCATED LEFT_PAREN stringvalue(csv) COMMA stringvalue(d) COMMA collocation_column(c) id(axis) RIGHT_PAREN. {
-    if (harp_regrid_collocated_new(csv, d, c, axis, &F) != 0)
-    {
-        harp_parser_state_set_error(state, harp_errno_to_string(harp_errno));
-    }
-}
-functioncall(F) ::= F_REGRID LEFT_PAREN stringvalue(s) RIGHT_PAREN. {
-    if (harp_regrid_new(s, &F) != 0)
-    {
-        harp_parser_state_set_error(state, harp_errno_to_string(harp_errno));
-    }
-    free(s);
-}*/
-
-/*
- * operations
- */
 
 comparison_operator:
       EQUAL { $$ = harp_operator_eq; }
@@ -488,6 +391,83 @@ operation:
             if (harp_collocation_filter_new($3, harp_collocation_left, &$$) != 0) YYERROR;
             free($3);
         }
+    | FUNC_COLLOCATE_RIGHT '(' STRING_VALUE ')' {
+            if (harp_collocation_filter_new($3, harp_collocation_right, &$$) != 0) YYERROR;
+            free($3);
+        }
+    | FUNC_VALID '(' identifier ')' {
+            if (harp_valid_range_filter_new($3, &$$) != 0) YYERROR;
+            free($3);
+        }
+    | FUNC_LONGITUDE_RANGE '(' double_value ',' double_value ')' {
+            if (harp_longitude_range_filter_new($3, NULL, $5, NULL, &$$) != 0) YYERROR;
+    }
+    | FUNC_LONGITUDE_RANGE '(' double_value ',' double_value UNIT ')' {
+            if (harp_longitude_range_filter_new($3, NULL, $5, $6, &$$) != 0) YYERROR;
+        }
+    | FUNC_LONGITUDE_RANGE '(' double_value UNIT ',' double_value ')' {
+            if (harp_longitude_range_filter_new($3, $4, $6, NULL, &$$) != 0) YYERROR;
+        }
+    | FUNC_LONGITUDE_RANGE '(' double_value UNIT ',' double_value UNIT ')' {
+            if (harp_longitude_range_filter_new($3, $4, $6, $7, &$$) != 0) YYERROR;
+        }
+    | FUNC_POINT_DISTANCE '(' double_value ',' double_value ',' double_value ')' {
+            if (harp_point_distance_filter_new($3, NULL, $5, NULL, $7, NULL, &$$) != 0) YYERROR;
+        }
+    | FUNC_POINT_DISTANCE '(' double_value ',' double_value ',' double_value UNIT ')' {
+            if (harp_point_distance_filter_new($3, NULL, $5, NULL, $7, $8, &$$) != 0) YYERROR;
+        }
+    | FUNC_POINT_DISTANCE '(' double_value ',' double_value UNIT ',' double_value ')' {
+            if (harp_point_distance_filter_new($3, NULL, $5, $6, $8, NULL, &$$) != 0) YYERROR;
+        }
+    | FUNC_POINT_DISTANCE '(' double_value ',' double_value UNIT ',' double_value UNIT ')' {
+            if (harp_point_distance_filter_new($3, NULL, $5, $6, $8, $9, &$$) != 0) YYERROR;
+        }
+    | FUNC_POINT_DISTANCE '(' double_value UNIT ',' double_value ',' double_value ')' {
+            if (harp_point_distance_filter_new($3, $4, $6, NULL, $8, NULL, &$$) != 0) YYERROR;
+        }
+    | FUNC_POINT_DISTANCE '(' double_value UNIT ',' double_value ',' double_value UNIT ')' {
+            if (harp_point_distance_filter_new($3, $4, $6, NULL, $8, $9, &$$) != 0) YYERROR;
+        }
+    | FUNC_POINT_DISTANCE '(' double_value UNIT ',' double_value UNIT ',' double_value ')' {
+            if (harp_point_distance_filter_new($3, $4, $6, $7, $9, NULL, &$$) != 0) YYERROR;
+        }
+    | FUNC_POINT_DISTANCE '(' double_value UNIT ',' double_value UNIT ',' double_value UNIT ')' {
+            if (harp_point_distance_filter_new($3, $4, $6, $7, $9, $10, &$$) != 0) YYERROR;
+        }
+    | FUNC_AREA_MASK_COVERS_POINT '(' STRING_VALUE ')' {
+            if (harp_area_mask_covers_point_filter_new($3, &$$) != 0) YYERROR;
+        }
+    | FUNC_AREA_MASK_COVERS_AREA '(' STRING_VALUE ')' {
+            if (harp_area_mask_covers_area_filter_new($3, &$$) != 0) YYERROR;
+        }
+    | FUNC_AREA_MASK_INTERSECTS_AREA '(' STRING_VALUE ',' double_value ')' {
+            if (harp_area_mask_intersects_area_filter_new($3, $5, &$$) != 0) YYERROR;
+        }
+    | FUNC_DERIVE '(' identifier dimensionspec ')' {
+            if (harp_variable_derivation_new($3, $4->num_elements, $4->array.int32_data, NULL, &$$) != 0) YYERROR;
+        }
+    | FUNC_DERIVE '(' identifier dimensionspec UNIT ')' {
+            if (harp_variable_derivation_new($3, $4->num_elements, $4->array.int32_data, $5, &$$) != 0) YYERROR;
+        }
+    | FUNC_KEEP '(' identifier_array ')' {
+            if (harp_variable_inclusion_new($3->num_elements, (const char **)$3->array.string_data, &$$) != 0) YYERROR;
+        }
+    | FUNC_EXCLUDE '(' identifier_array ')' {
+            if (harp_variable_exclusion_new($3->num_elements, (const char **)$3->array.string_data, &$$) != 0) YYERROR;
+        }
+    | FUNC_FLATTEN '(' DIMENSION ')' {
+            if (harp_flatten_new($3, &$$) != 0) YYERROR;
+        }
+    | FUNC_REGRID_COLLOCATED '(' STRING_VALUE ',' STRING_VALUE ',' 'a' ',' identifier ')' {
+            if (harp_regrid_collocated_new($3, $5, 'a', $9, &$$) != 0) YYERROR;
+        }
+    | FUNC_REGRID_COLLOCATED '(' STRING_VALUE ',' STRING_VALUE ',' 'b' ',' identifier ')' {
+            if (harp_regrid_collocated_new($3, $5, 'b', $9, &$$) != 0) YYERROR;
+        }
+    | FUNC_REGRID '(' STRING_VALUE ')' {
+            if (harp_regrid_new($3, &$$) != 0) YYERROR;
+        }
     ;
 
 program:
@@ -508,6 +488,9 @@ program:
 int harp_program_from_string(const char *str, harp_program **program)
 {
     void *bufstate;
+
+    /* if this doesn't hold we need to introduce a separate harp_sized_array for enums */
+    assert(sizeof(int32_t) == sizeof(harp_dimension_type));
 
     harp_errno = 0;
     parsed_program = NULL;
