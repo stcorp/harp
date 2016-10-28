@@ -46,7 +46,8 @@ int harp_operation_parser_lex(void);
 void *harp_operation_parser__scan_string(const char *yy_str);
 void harp_operation_parser__delete_buffer(void *);
 
-typedef struct harp_sized_array_struct {
+typedef struct harp_sized_array_struct
+{
     harp_data_type data_type;
     int num_elements;
     harp_array array;
@@ -60,6 +61,7 @@ static void harp_operation_parser_error(const char *error)
 int harp_sized_array_new(harp_sized_array **new_array, harp_data_type data_type)
 {
     harp_sized_array *sized_array;
+
     sized_array = (harp_sized_array *)malloc(sizeof(harp_sized_array));
     if (sized_array == NULL)
     {
@@ -111,7 +113,7 @@ int harp_sized_array_add_string(harp_sized_array *sized_array, const char *str)
         if (string_data == NULL)
         {
             harp_set_error(HARP_ERROR_OUT_OF_MEMORY, "out of memory (could not allocate %lu bytes) (%s:%u)",
-            new_num * sizeof(char *), __FILE__, __LINE__);
+                           new_num * sizeof(char *), __FILE__, __LINE__);
             return -1;
         }
 
@@ -137,7 +139,7 @@ int harp_sized_array_add_double(harp_sized_array *sized_array, double value)
         if (double_data == NULL)
         {
             harp_set_error(HARP_ERROR_OUT_OF_MEMORY, "out of memory (could not allocate %lu bytes) (%s:%u)",
-            new_num * sizeof(double), __FILE__, __LINE__);
+                           new_num * sizeof(double), __FILE__, __LINE__);
             return -1;
         }
 
@@ -146,7 +148,7 @@ int harp_sized_array_add_double(harp_sized_array *sized_array, double value)
 
     sized_array->array.double_data[sized_array->num_elements] = value;
     sized_array->num_elements++;
-    
+
     return 0;
 }
 
@@ -163,7 +165,7 @@ int harp_sized_array_add_int32(harp_sized_array *sized_array, int32_t value)
         if (int32_data == NULL)
         {
             harp_set_error(HARP_ERROR_OUT_OF_MEMORY, "out of memory (could not allocate %lu bytes) (%s:%u)",
-            new_num * sizeof(int32_t), __FILE__, __LINE__);
+                           new_num * sizeof(int32_t), __FILE__, __LINE__);
             return -1;
         }
 
