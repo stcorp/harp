@@ -221,7 +221,7 @@ int harp_sized_array_add_int32(harp_sized_array *sized_array, int32_t value)
 %left                   BIT_NAND BIT_AND
 %nonassoc               NOT
 
-%type   <program>               program input
+%type   <program>               program
 %type   <operation>             operation
 %type   <int32_val>             int32_value
 %type   <double_val>            double_value
@@ -234,7 +234,7 @@ int harp_sized_array_add_int32(harp_sized_array *sized_array, int32_t value)
 
 %destructor { harp_sized_array_delete($$); } double_array string_array dimension_array dimensionspec
 %destructor { harp_operation_delete($$); } operation
-%destructor { harp_program_delete($$); } program input
+%destructor { harp_program_delete($$); } program
 %destructor { free($$); } STRING_VALUE INTEGER_VALUE DOUBLE_VALUE NAME UNIT identifier
 
 %error-verbose
@@ -242,7 +242,7 @@ int harp_sized_array_add_int32(harp_sized_array *sized_array, int32_t value)
 %%
 
 input:
-    program { $$ = $1; }
+    program { parsed_program = $1; }
 
 reserved_identifier:
       NAN { $$ = "nan"; }
@@ -256,7 +256,6 @@ reserved_identifier:
     | FUNC_EXCLUDE { $$ = "exclude"; }
     | FUNC_FLATTEN { $$ = "flatten"; }
     | FUNC_REGRID { $$ = "regrid"; }
-    | IN { $$ = "in"; }
     ;
 
 identifier:
@@ -270,6 +269,7 @@ double_value:
             if (harp_parse_double($1, length, &$$, 0) != length) YYERROR;
             free($1);
         }
+    | int32_value { $$ = (double)$1; }
     | NAN { $$ = harp_nan(); }
     | '+' NAN { $$ = harp_nan(); }
     | '-' NAN { $$ = harp_nan(); }
@@ -316,7 +316,6 @@ dimension_array:
         }
     ;
 
-/* %type  dimensionspec {harp_sized_array *} */
 dimensionspec:
       '{' dimension_array '}' { $$ = $2; }
     | '{' '}' { if (harp_sized_array_new(&$$, harp_type_int32) != 0) YYERROR; }
