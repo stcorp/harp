@@ -19,7 +19,6 @@
  */
 
 #include "harp-program.h"
-#include "harp-operation-parse.h"
 #include "harp-filter-collocation.h"
 #include "harp-filter.h"
 

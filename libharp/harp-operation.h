@@ -205,6 +205,7 @@ typedef struct harp_flatten_args_struct
 int harp_operation_new(harp_operation_type type, void *args, harp_operation **new_operation);
 void harp_operation_delete(harp_operation *operation);
 int harp_operation_copy(const harp_operation *other_operation, harp_operation **new_operation);
+void harp_operation_print_debug(const harp_operation *op, int (*print) (const char *, ...));
 
 /* Specific operations */
 int harp_collocation_filter_new(const char *filename, harp_collocation_filter_type filter_type,

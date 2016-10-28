@@ -7,8 +7,8 @@ SPHINXBUILD = @SPHINXBUILD@
 INDENT = @INDENT@
 
 AM_CPPFLAGS = -Ilibharp -I$(srcdir)/libharp
-AM_YFLAGS = -d -v
-AM_LFLAGS = -o lex.yy.c
+AM_YFLAGS = -d
+AM_LFLAGS = -olex.yy.c
 
 BUILT_SOURCES =
 CLEANFILES =
@@ -48,20 +48,10 @@ include_HEADERS = libharp/harp.h
 
 # *** build rules ***
 
-# libharp
+# parser generator
 
+# libharp
 libharp_la_SOURCES = \
-	libharp/harp-operation.h \
-	libharp/harp-operation.c \
-	libharp/harp-operation-analyze.c \
-	libharp/harp-operation-lex.h \
-	libharp/harp-operation-lex.c \
-	libharp/harp-program.h \
-	libharp/harp-program.c \
-	libharp/harp-program-execute.h \
-	libharp/harp-program-execute.c \
-	libharp/harp-operation-parse.h \
-	libharp/harp-operation-parse.c \
 	libharp/harp-analysis.c \
 	libharp/harp-area-mask.h \
 	libharp/harp-area-mask.c \
@@ -102,7 +92,7 @@ libharp_la_SOURCES = \
 	libharp/harp-ingest-cci_l3_o3_np.c \
 	libharp/harp-ingest-cci_l3_o3_tc.c \
 	libharp/harp-ingest-cci_l4_o3_np.c \
- 	libharp/harp-ingest-ecmwf-grib.c \
+	libharp/harp-ingest-ecmwf-grib.c \
 	libharp/harp-ingest-geoms-lidar.c \
 	libharp/harp-ingest-geoms-mwr.c \
 	libharp/harp-ingest-geoms-ftir.c \
@@ -131,10 +121,18 @@ libharp_la_SOURCES = \
 	libharp/harp-internal.h \
 	libharp/harp-interpolation.c \
 	libharp/harp-netcdf.c \
+	libharp/harp-operation-parser.y \
+	libharp/harp-operation-scanner.l \
+	libharp/harp-operation.h \
+	libharp/harp-operation.c \
 	libharp/harp-predicate.h \
 	libharp/harp-predicate.c \
 	libharp/harp-product.c \
 	libharp/harp-product-metadata.c \
+	libharp/harp-program.h \
+	libharp/harp-program.c \
+	libharp/harp-program-execute.h \
+	libharp/harp-program-execute.c \
 	libharp/harp-sea-surface.c \
 	libharp/harp-units.c \
 	libharp/harp-utils.c \
@@ -162,6 +160,7 @@ libharp_la_LDFLAGS = -no-undefined -version-info $(LIBHARP_CURRENT):$(LIBHARP_RE
 libharp_la_LIBADD = @LTLIBOBJS@ libudunits2.la libnetcdf.la $(CODALIBS) $(HDF4LIBS) $(HDF5LIBS)
 libharp_la_DEPENDENCIES = libudunits2.la libnetcdf.la
 INDENTFILES += $(libharp_la_SOURCES) libharp/harp.h.in
+BUILT_SOURCES += libharp/harp-operation-parser.h
 
 # harpcheck
 

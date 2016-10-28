@@ -1778,3 +1778,66 @@ int harp_operation_is_dimension_filter(const harp_operation *operation)
             return 0;
     }
 }
+
+void harp_operation_print_debug(const harp_operation *op, int (*print) (const char *, ...))
+{
+    switch (op->type)
+    {
+        case harp_operation_filter_collocation:
+            print("filter-collocation\n");
+            break;
+        case harp_operation_filter_comparison:
+            print("filter-comparison\n");
+            break;
+        case harp_operation_filter_string_comparison:
+            print("filter-string-comparison\n");
+            break;
+        case harp_operation_filter_bit_mask:
+            print("filter-bit-mask");
+            break;
+        case harp_operation_filter_membership:
+            print("filter-membership");
+            break;
+        case harp_operation_filter_string_membership:
+            print("filter-string-membership");
+            break;
+        case harp_operation_filter_valid_range:
+            print("filter-valid-range");
+            break;
+        case harp_operation_filter_longitude_range:
+            print("filter-lon-range");
+            break;
+        case harp_operation_filter_point_distance:
+            print("filter-point-dist");
+            break;
+        case harp_operation_filter_area_mask_covers_point:
+            print("filter-area-mask-covers-point");
+            break;
+        case harp_operation_filter_area_mask_covers_area:
+            print("filter-area-mask-covers-area");
+            break;
+        case harp_operation_filter_area_mask_intersects_area:
+            print("filter-area-mask-intersects-area");
+            break;
+        case harp_operation_derive_variable:
+            print("derive");
+            break;
+        case harp_operation_keep_variable:
+            print("keep");
+            break;
+        case harp_operation_exclude_variable:
+            print("exclude");
+            break;
+        case harp_operation_regrid:
+            print("regrid");
+            break;
+        case harp_operation_regrid_collocated:
+            print("regrid-collocated");
+            break;
+        case harp_operation_flatten:
+            print("flatten");
+            break;
+        default:
+            print("Unknown op");
+    }
+}

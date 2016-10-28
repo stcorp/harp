@@ -217,18 +217,12 @@ configure_file(
 
 # libharp sources
 #
+
+BISON_TARGET(harp-operation-parser ${CMAKE_CURRENT_SOURCE_DIR}/libharp/harp-operation-parser.y ${CMAKE_CURRENT_BINARY_DIR}/harp-operation-parser.c)
+FLEX_TARGET(harp-operation-scanner ${CMAKE_CURRENT_SOURCE_DIR}/libharp/harp-operation-scanner.l ${CMAKE_CURRENT_BINARY_DIR}/harp-operation-scanner.c)
+add_flex_bison_dependency(harp-operation-scanner harp-operation-parser)
+
 set(LIBHARP_SOURCES
-  libharp/harp-operation.h
-  libharp/harp-operation.c
-  libharp/harp-operation-analyze.c
-  libharp/harp-operation-lex.h
-  libharp/harp-operation-lex.c
-  libharp/harp-program.h
-  libharp/harp-program.c
-  libharp/harp-program-execute.h
-  libharp/harp-program-execute.c
-  libharp/harp-operation-parse.h
-  libharp/harp-operation-parse.c
   libharp/harp-analysis.c
   libharp/harp-area-mask.h
   libharp/harp-area-mask.c
@@ -298,10 +292,16 @@ set(LIBHARP_SOURCES
   libharp/harp-internal.h
   libharp/harp-interpolation.c
   libharp/harp-netcdf.c
+  libharp/harp-operation.h
+  libharp/harp-operation.c
   libharp/harp-predicate.h
   libharp/harp-predicate.c
   libharp/harp-product.c
   libharp/harp-product-metadata.c
+  libharp/harp-program.h
+  libharp/harp-program.c
+  libharp/harp-program-execute.h
+  libharp/harp-program-execute.c
   libharp/harp-sea-surface.c
   libharp/harp-units.c
   libharp/harp-utils.c
@@ -312,7 +312,9 @@ set(LIBHARP_SOURCES
   libharp/harp.h
   libharp/hashtable.c
   libharp/hashtable.h
-  libharp/ipow.h)
+  libharp/ipow.h
+  ${BISON_harp-operation-parser_OUTPUTS}
+  ${FLEX_harp-operation-scanner_OUTPUTS})
 
 set(LIBHARP_HDF4_FILES libharp/harp-hdf4.c)
 if(HARP_WITH_HDF4)
@@ -327,7 +329,7 @@ endif(HARP_WITH_HDF5)
 
 file(MAKE_DIRECTORY ${CMAKE_CURRENT_BINARY_DIR}/udunits2)
 BISON_TARGET(utparser ${CMAKE_CURRENT_SOURCE_DIR}/udunits2/utparser.y ${CMAKE_CURRENT_BINARY_DIR}/udunits2/utparser.c)
-FLEX_TARGET(utscanner ${CMAKE_CURRENT_SOURCE_DIR}/udunits2/utscanner.l ${CMAKE_CURRENT_BINARY_DIR}/lex.yy.c)
+FLEX_TARGET(utscanner ${CMAKE_CURRENT_SOURCE_DIR}/udunits2/utscanner.l ${CMAKE_CURRENT_BINARY_DIR}/utscanner.c)
 add_flex_bison_dependency(utscanner utparser)
 include_directories(${CMAKE_CURRENT_BINARY_DIR}/udunits2)
 

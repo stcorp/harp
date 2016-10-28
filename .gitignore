@@ -35,6 +35,9 @@ stamp-*
 /harpdump
 /harpfilter
 /harpprofile
+/libharp/harp-operation-parser.c
+/libharp/harp-operation-parser.h
+/libharp/harp-operation-scanner.c
 /libharp/harp.h
 /libtool
 /ltmain.sh
