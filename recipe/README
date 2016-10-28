@@ -1,0 +1,20 @@
+# Conda recipe for building the latest release
+
+The HARP conda package depends on the CODA conda package,
+which is available via the stcorp channel:
+
+```
+conda add --channels stcorp
+```
+
+You can now build the conda package for your platform:
+
+```
+cd .. && conda build harp
+```
+
+And install it from your local package cache:
+
+```
+conda install --use-local harp
+```
