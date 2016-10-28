@@ -1,4 +1,13 @@
+
+* Python harp.import_product() and harp.ingest_product() functions now accept
+  a list of filenames or a globbing pattern as parameter (which will return
+  the result of harp.concatenate() on the imported/ingested products).
+
 * Fixed issue with flatten() operation providing wrong results.
+
+* Added support for GEOMS FTIR C2H2 ingestion.
+
+* Added support for OMI OMCHOCHO ingestion.
 
 0.4 2016-10-16
 ~~~~~~~~~~~~~~

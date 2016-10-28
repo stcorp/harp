@@ -226,7 +226,7 @@
 <td>uncertainty of the NO2 tropospheric column density</td>
 </tr>
 <tr class="row-odd"><td><strong>tropospheric_NO2_column_number_density_validity</strong></td>
-<td>int8</td>
+<td>int16</td>
 <td>{<em>time</em>}</td>
 <td>&nbsp;</td>
 <td>flags describing the NO2 tropospheric column processing quality</td>
@@ -340,23 +340,26 @@
 <td><em>path</em></td>
 <td><strong>/HDFEOS/SWATHS/DominoNO2/Data_Fields/TroposphericVerticalColumnError[]</strong></td>
 </tr>
-<tr class="row-even"><td><strong>tropospheric_NO2_column_number_density_validity</strong></td>
+<tr class="row-even"><td rowspan="2"><strong>tropospheric_NO2_column_number_density_validity</strong></td>
 <td><em>path</em></td>
 <td><strong>/HDFEOS/SWATHS/DominoNO2/Data_Fields/TroposphericColumnFlag[]</strong></td>
 </tr>
-<tr class="row-odd"><td><strong>cloud_fraction</strong></td>
+<tr class="row-odd"><td><em>description</em></td>
+<td>data is converted from uint8 to int16</td>
+</tr>
+<tr class="row-even"><td><strong>cloud_fraction</strong></td>
 <td><em>path</em></td>
 <td><strong>/HDFEOS/SWATHS/DominoNO2/Data_Fields/CloudFraction[]</strong></td>
 </tr>
-<tr class="row-even"><td><strong>cloud_fraction_uncertainty</strong></td>
+<tr class="row-odd"><td><strong>cloud_fraction_uncertainty</strong></td>
 <td><em>path</em></td>
 <td><strong>/HDFEOS/SWATHS/DominoNO2/Data_Fields/CloudFractionStd[]</strong></td>
 </tr>
-<tr class="row-odd"><td><strong>cloud_pressure</strong></td>
+<tr class="row-even"><td><strong>cloud_pressure</strong></td>
 <td><em>path</em></td>
 <td><strong>/HDFEOS/SWATHS/DominoNO2/Data_Fields/CloudPressure[]</strong></td>
 </tr>
-<tr class="row-even"><td><strong>cloud_pressure_uncertainty</strong></td>
+<tr class="row-odd"><td><strong>cloud_pressure_uncertainty</strong></td>
 <td><em>path</em></td>
 <td><strong>/HDFEOS/SWATHS/DominoNO2/Data_Fields/CloudPressureStd[]</strong></td>
 </tr>

@@ -55,6 +55,7 @@ HARP_DOCFILES = \
 	doc/html/ingestions/ESACCI_OZONE_L3_NP.html \
 	doc/html/ingestions/ESACCI_OZONE_L3_TC.html \
 	doc/html/ingestions/ESACCI_OZONE_L4_NP.html \
+	doc/html/ingestions/GEOMS-TE-FTIR-001-C2H2.html \
 	doc/html/ingestions/GEOMS-TE-FTIR-001-C2H6.html \
 	doc/html/ingestions/GEOMS-TE-FTIR-001-CCl2F2.html \
 	doc/html/ingestions/GEOMS-TE-FTIR-001-CCl3F.html \
@@ -77,6 +78,7 @@ HARP_DOCFILES = \
 	doc/html/ingestions/GEOMS-TE-FTIR-001-O3.html \
 	doc/html/ingestions/GEOMS-TE-FTIR-001-OCS.html \
 	doc/html/ingestions/GEOMS-TE-FTIR-001-SF6.html \
+	doc/html/ingestions/GEOMS-TE-FTIR-002-C2H2.html \
 	doc/html/ingestions/GEOMS-TE-FTIR-002-C2H6.html \
 	doc/html/ingestions/GEOMS-TE-FTIR-002-CCl2F2.html \
 	doc/html/ingestions/GEOMS-TE-FTIR-002-CCl3F.html \
@@ -263,6 +265,7 @@ HARP_DOCFILES = \
 	doc/html/ingestions/MLS_L2_T.html \
 	doc/html/ingestions/OMI_L2_OMAERUV.html \
 	doc/html/ingestions/OMI_L2_OMBRO.html \
+	doc/html/ingestions/OMI_L2_OMCHOCHO.html \
 	doc/html/ingestions/OMI_L2_OMCLDO2.html \
 	doc/html/ingestions/OMI_L2_OMCLDRR.html \
 	doc/html/ingestions/OMI_L2_OMDOAO3.html \
@@ -455,6 +458,8 @@ doc/html/ingestions/ESACCI_OZONE_L3_TC.html:
 	$(MAKE) harp_doc
 doc/html/ingestions/ESACCI_OZONE_L4_NP.html:
 	$(MAKE) harp_doc
+doc/html/ingestions/GEOMS-TE-FTIR-001-C2H2.html:
+	$(MAKE) harp_doc
 doc/html/ingestions/GEOMS-TE-FTIR-001-C2H6.html:
 	$(MAKE) harp_doc
 doc/html/ingestions/GEOMS-TE-FTIR-001-CCl2F2.html:
@@ -498,6 +503,8 @@ doc/html/ingestions/GEOMS-TE-FTIR-001-O3.html:
 doc/html/ingestions/GEOMS-TE-FTIR-001-OCS.html:
 	$(MAKE) harp_doc
 doc/html/ingestions/GEOMS-TE-FTIR-001-SF6.html:
+	$(MAKE) harp_doc
+doc/html/ingestions/GEOMS-TE-FTIR-002-C2H2.html:
 	$(MAKE) harp_doc
 doc/html/ingestions/GEOMS-TE-FTIR-002-C2H6.html:
 	$(MAKE) harp_doc
@@ -870,6 +877,8 @@ doc/html/ingestions/MLS_L2_T.html:
 doc/html/ingestions/OMI_L2_OMAERUV.html:
 	$(MAKE) harp_doc
 doc/html/ingestions/OMI_L2_OMBRO.html:
+	$(MAKE) harp_doc
+doc/html/ingestions/OMI_L2_OMCHOCHO.html:
 	$(MAKE) harp_doc
 doc/html/ingestions/OMI_L2_OMCLDO2.html:
 	$(MAKE) harp_doc

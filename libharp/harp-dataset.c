@@ -203,7 +203,6 @@ static int add_directory(harp_dataset *dataset, const char *pathname)
     if (dirp == NULL)
     {
         harp_set_error(HARP_ERROR_INVALID_ARGUMENT, "could not open directory %s", pathname);
-        closedir(dirp);
         return -1;
     }
 

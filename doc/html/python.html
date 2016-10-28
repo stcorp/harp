@@ -604,12 +604,17 @@ considered to be invalid.</li>
 <dt id="harp.ingest_product">
 <code class="descclassname">harp.</code><code class="descname">ingest_product</code><span class="sig-paren">(</span><em>filename</em>, <em>operations=&quot;&quot;</em>, <em>options=&quot;&quot;</em><span class="sig-paren">)</span></dt>
 <dd><p>Ingest a product of a type supported by HARP.</p>
+<p>If the filename argument is a list of filenames or a globbing (glob.glob())
+pattern then the harp.ingest_product() function will be called on each
+individual file and the result of harp.concatenate() on the ingested products
+will be returned.</p>
 <table class="docutils field-list" frame="void" rules="none">
 <col class="field-name" />
 <col class="field-body" />
 <tbody valign="top">
 <tr class="field-odd field"><th class="field-name">Parameters:</th><td class="field-body"><ul class="first simple">
-<li><strong>filename</strong> (<em>str</em>) &#8211; Filename of the product to ingest.</li>
+<li><strong>filename</strong> (<em>str</em>) &#8211; Filename, list of filenames or file pattern of the
+product(s) to ingest</li>
 <li><strong>operations</strong> (<em>str</em>) &#8211; Actions to apply as part of the ingestion; should be
 specified as a semi-colon separated string of operations.</li>
 <li><strong>options</strong> (<em>str</em>) &#8211; Ingestion module specific options; should be specified as
@@ -632,12 +637,17 @@ a semi-colon separated string of key=value pairs.</li>
 <code class="descclassname">harp.</code><code class="descname">import_product</code><span class="sig-paren">(</span><em>filename</em>, <em>operations=&quot;&quot;</em><span class="sig-paren">)</span></dt>
 <dd><p>Import a HARP compliant product.</p>
 <p>The file format (NetCDF/HDF4/HDF5) of the product will be auto-detected.</p>
+<p>If the filename argument is a list of filenames or a globbing (glob.glob())
+pattern then the harp.import_product() function will be called on each
+individual file and the result of harp.concatenate() on the imported products
+will be returned.</p>
 <table class="docutils field-list" frame="void" rules="none">
 <col class="field-name" />
 <col class="field-body" />
 <tbody valign="top">
 <tr class="field-odd field"><th class="field-name">Parameters:</th><td class="field-body"><ul class="first simple">
-<li><strong>filename</strong> (<em>str</em>) &#8211; Filename of the product to import.</li>
+<li><strong>filename</strong> (<em>str</em>) &#8211; Filename, list of filenames or file pattern of the
+product(s) to import</li>
 <li><strong>operations</strong> (<em>str</em>) &#8211; Actions to execute on the product after it has been
 imported; should be specified as a semi-colon separated
 string of operations.</li>

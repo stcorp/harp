@@ -690,7 +690,8 @@ static int read_3d_grid_data(ingest_info *info, grib_parameter parameter, harp_a
         harp_array subgrid;
 
         subgrid.float_data = &data.float_data[i * info->num_latitudes * info->num_longitudes];
-        if (read_grid_data(info, info->grid_data_index[parameter * info->num_levels + i], subgrid) != 0)
+        /* invert the loop because level 0 = TOA */
+        if (read_grid_data(info, info->grid_data_index[(parameter + 1) * info->num_levels - 1 - i], subgrid) != 0)
         {
             return -1;
         }
@@ -811,6 +812,7 @@ static int read_pressure(void *user_data, harp_array data)
 
         for (i = 0; i < info->num_levels; i++)
         {
+            /* invert the loop because level 0 = TOA */
             data.float_data[((k + 1) * info->num_levels - 1 - i)] =
                 0.5 * (ap[i] + ap[i + 1] + (bp[i] + bp[i + 1]) * surface_pressure);
         }
@@ -837,6 +839,7 @@ static int read_pressure_bounds(void *user_data, harp_array data)
 
         for (i = 0; i < info->num_levels; i++)
         {
+            /* invert the loop because level 0 = TOA */
             data.float_data[2 * ((k + 1) * info->num_levels - 1 - i)] = ap[i + 1] + bp[i + 1] * surface_pressure;
             data.float_data[2 * ((k + 1) * info->num_levels - 1 - i) + 1] = ap[i] + bp[i] * surface_pressure;
         }
