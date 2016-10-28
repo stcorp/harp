@@ -1,318 +1,326 @@
-%define api.pure full
-%define api.token.prefix {HARP_OP_TOK_}
-%define api.prefix {harp_operation_parser_}
+/*
+ * Copyright (C) 2015-2016 S[&]T, The Netherlands.
+ *
+ * This file is part of HARP.
+ *
+ * HARP is free software; you can redistribute it and/or modify
+ * it under the terms of the GNU General Public License as published by
+ * the Free Software Foundation; either version 2 of the License, or
+ * (at your option) any later version.
+ *
+ * HARP is distributed in the hope that it will be useful,
+ * but WITHOUT ANY WARRANTY; without even the implied warranty of
+ * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+ * GNU General Public License for more details.
+ *
+ * You should have received a copy of the GNU General Public License
+ * along with HARP; if not, write to the Free Software
+ * Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307  USA
+ */
 
-%code requires {
+/* *INDENT-OFF* */
+
+%{
+
+/* *INDENT-ON* */
+
+/* Make parser independent from other parsers */
+#define yyerror harp_operation_parser_error
+#define yylex   harp_operation_parser_lex
+#define yyparse harp_operation_parser_parse
+
+#ifdef HAVE_CONFIG_H
+#include "config.h"
+#endif
+
 #include <stdio.h>
 #include <string.h>
 #include <assert.h>
 #include "harp-operation.h"
 #include "harp-program.h"
-#include "harp-operation-parser-state.h"
+
+static harp_program *parsed_program;
+
+/* tokenizer declarations */
+int harp_operation_parser_lex(void);
+void *harp_operation_parser__scan_string(const char *yy_str);
+void harp_operation_parser__delete_buffer(void *);
+
+typedef struct harp_sized_array_struct {
+    harp_data_type data_type;
+    int num_elements;
+    harp_array array;
+} harp_sized_array;
+
+static void harp_operation_parser_error(const char *error)
+{
+    harp_set_error(HARP_ERROR_OPERATION_SYNTAX, "%s", error);
 }
+
+int harp_sized_array_new(harp_sized_array **new_array, harp_data_type data_type)
+{
+    harp_sized_array *sized_array;
+    sized_array = (harp_sized_array *)malloc(sizeof(harp_sized_array));
+    if (sized_array == NULL)
+    {
+        harp_set_error(HARP_ERROR_OUT_OF_MEMORY, "out of memory (could not allocate %lu bytes) (%s:%u)",
+                       sizeof(harp_sized_array), __FILE__, __LINE__);
+        return -1;
+    }
+
+    sized_array->data_type = data_type;
+    sized_array->num_elements = 0;
+    sized_array->array.ptr = NULL;
+
+    *new_array = sized_array;
+
+    return 0;
+}
+
+void harp_sized_array_delete(harp_sized_array *sized_array)
+{
+    if (sized_array->array.ptr != NULL)
+    {
+        if (sized_array->data_type == harp_type_string)
+        {
+            long i;
+
+            for (i = 0; i < sized_array->num_elements; i++)
+            {
+                if (sized_array->array.string_data[i] != NULL)
+                {
+                    free(sized_array->array.string_data[i]);
+                }
+            }
+        }
+        free(sized_array->array.ptr);
+    }
+    free(sized_array);
+}
+
+int harp_sized_array_add_string(harp_sized_array *sized_array, const char *str)
+{
+    assert(sized_array->data_type == harp_type_string);
+
+    if (sized_array->num_elements % BLOCK_SIZE == 0)
+    {
+        char **string_data;
+        int new_num = (sized_array->num_elements + BLOCK_SIZE);
+
+        string_data = (char **)realloc(sized_array->array.string_data, new_num * sizeof(char *));
+        if (string_data == NULL)
+        {
+            harp_set_error(HARP_ERROR_OUT_OF_MEMORY, "out of memory (could not allocate %lu bytes) (%s:%u)",
+            new_num * sizeof(char *), __FILE__, __LINE__);
+            return -1;
+        }
+
+        sized_array->array.string_data = string_data;
+    }
+
+    sized_array->array.string_data[sized_array->num_elements] = strdup(str);
+    sized_array->num_elements++;
+
+    return 0;
+}
+
+int harp_sized_array_add_double(harp_sized_array *sized_array, double value)
+{
+    assert(sized_array->data_type == harp_type_double);
+
+    if (sized_array->num_elements % BLOCK_SIZE == 0)
+    {
+        double *double_data;
+        int new_num = (sized_array->num_elements + BLOCK_SIZE);
+
+        double_data = (double *)realloc(sized_array->array.double_data, new_num * sizeof(double));
+        if (double_data == NULL)
+        {
+            harp_set_error(HARP_ERROR_OUT_OF_MEMORY, "out of memory (could not allocate %lu bytes) (%s:%u)",
+            new_num * sizeof(double), __FILE__, __LINE__);
+            return -1;
+        }
+
+        sized_array->array.double_data = double_data;
+    }
+
+    sized_array->array.double_data[sized_array->num_elements] = value;
+    sized_array->num_elements++;
+    
+    return 0;
+}
+
+int harp_sized_array_add_int32(harp_sized_array *sized_array, int32_t value)
+{
+    assert(sized_array->data_type == harp_type_int32);
+
+    if (sized_array->num_elements % BLOCK_SIZE == 0)
+    {
+        int32_t *int32_data;
+        int new_num = (sized_array->num_elements + BLOCK_SIZE);
+
+        int32_data = (int32_t *)realloc(sized_array->array.int32_data, new_num * sizeof(int32_t));
+        if (int32_data == NULL)
+        {
+            harp_set_error(HARP_ERROR_OUT_OF_MEMORY, "out of memory (could not allocate %lu bytes) (%s:%u)",
+            new_num * sizeof(int32_t), __FILE__, __LINE__);
+            return -1;
+        }
+
+        sized_array->array.int32_data = int32_data;
+    }
+
+    sized_array->array.int32_data[sized_array->num_elements] = value;
+    sized_array->num_elements++;
+
+    return 0;
+}
+
+/* *INDENT-OFF* */
+
+%}
 
 %union {
     double double_val;
-    int int_val;
-    char *string;
-    char char_val;
+    int32_t int32_val;
+    char *string_val;
+    const char *const_string_val;
     harp_operation *operation;
     harp_sized_array *array;
-    float_with_unit float_with_unit_val;
-    int_with_unit int_with_unit_val;
-    harp_comparison_operator_type operator;
-    harp_bit_mask_operator_type bitmask_operator;
-    harp_membership_operator_type membership_operator;
     harp_program *program;
 
-    /* raw pointer access */
-    void *ptr;
-
-    /* error flag */
-    int error;
+    harp_comparison_operator_type comparison_operator;
+    harp_bit_mask_operator_type bit_mask_operator;
+    harp_membership_operator_type membership_operator;
 }
 
-%start start
+%token  <string_val>    NAME
+%token  <string_val>    STRING_VALUE
+%token  <string_val>    INTEGER_VALUE
+%token  <string_val>    DOUBLE_VALUE
+%token  <int32_val>     DIMENSION
+%token  <string_val>    UNIT
+%token                  FUNC_COLLOCATE_LEFT
+%token                  FUNC_COLLOCATE_RIGHT
+%token                  FUNC_VALID
+%token                  FUNC_LONGITUDE_RANGE
+%token                  FUNC_POINT_DISTANCE
+%token                  FUNC_AREA_MASK_COVERS_POINT
+%token                  FUNC_AREA_MASK_COVERS_AREA
+%token                  FUNC_AREA_MASK_INTERSECTS_AREA
+%token                  FUNC_DERIVE
+%token                  FUNC_KEEP
+%token                  FUNC_EXCLUDE
+%token                  FUNC_FLATTEN
+%token                  FUNC_REGRID_COLLOCATED
+%token                  FUNC_REGRID
+%token                  IN
+%token                  NAN
+%token                  INF
+%left                   EQUAL NOT_EQUAL GREATER_EQUAL LESS_EQUAL
+%left                   BIT_NAND BIT_AND
+%nonassoc               NOT
 
-%token ID
-%token STRING
-%token COLLOCATION_COLUMN
-%token INT
-%token FLOAT
-%token NAN
-%token INF
-%token DIM_INDEP
-%token DIM_TIME
-%token DIM_LAT
-%token DIM_LON
-%token DIM_SPECTRAL
-%token DIM_VERTICAL
-%token UNIT
-%token COMMA
-%token SEMICOLON
-%token LEFT_CURLY
-%token RIGHT_CURLY
-%token LEFT_PAREN
-%token RIGHT_PAREN
-%token F_COLLOCATE_LEFT
-%token F_COLLOCATE_RIGHT
-%token F_VALID
-%token F_LON_RANGE
-%token F_POINT_DIST
-%token F_AREA_MASK_COVERS_POINT
-%token F_AREA_MASK_COVERS_AREA
-%token F_AREA_MASK_INTERSECTS_AREA
-%token F_DERIVE
-%token F_KEEP
-%token F_EXCLUDE
-%token F_FLATTEN
-%token F_REGRID_COLLOCATED
-%token F_REGRID
-%token OP_EQ
-%token OP_NE
-%token OP_GE
-%token OP_LE
-%token OP_GT
-%token OP_LT
-%token OP_BIT_NAND
-%token OP_BIT_AND
-%token NOT
-%token IN
+%type   <program>               program input
+%type   <operation>             operation
+%type   <int32_val>             int32_value
+%type   <double_val>            double_value
+%type   <string_val>            identifier
+%type   <const_string_val>      reserved_identifier
+%type   <array>                 double_array string_array dimension_array dimensionspec
+%type   <membership_operator>   membership_operator;
+%type   <comparison_operator>   comparison_operator;
+%type   <bit_mask_operator>     bit_mask_operator;
 
-%type<program> start operations
-%type<operation> operation
-%type<string> id unit_opt stringvalue ID STRING FLOAT COLLOCATION_COLUMN dimension INT
-%type<string> DIM_TIME DIM_VERTICAL DIM_LAT DIM_LON DIM_SPECTRAL DIM_INDEP INF UNIT
-%type<char_val> collocation_column
-%type<int_val> intval
-%type<float_with_unit_val> floatvalue
-%type<array> ids floatlist dimensionlist stringlist dimensionspec
-%type<double_val> floatval
-%type<membership_operator> membership_operator;
-%type<operator> comparison_operator;
-%type<bitmask_operator> bitmask_operator;
+%destructor { harp_sized_array_delete($$); } double_array string_array dimension_array dimensionspec
+%destructor { harp_operation_delete($$); } operation
+%destructor { harp_program_delete($$); } program input
+%destructor { free($$); } STRING_VALUE INTEGER_VALUE DOUBLE_VALUE NAME UNIT identifier
+
+%error-verbose
 
 %%
 
-start:
-    operations SEMICOLON { $$ = $1; }
-    | operations { $$ = $1; }
+input:
+    program { $$ = $1; }
 
-/* %type  id {char *} */
-id:
-    ID {
-        $$ = $1;
-    }
+reserved_identifier:
+      NAN { $$ = "nan"; }
+    | INF { $$ = "inf"; }
+    | NOT { $$ = "not"; }
+    | IN { $$ = "in"; }
+    | DIMENSION { $$ = harp_get_dimension_type_name($1); }
+    | FUNC_VALID { $$ = "valid"; }
+    | FUNC_DERIVE { $$ = "derive"; }
+    | FUNC_KEEP { $$ = "keep"; }
+    | FUNC_EXCLUDE { $$ = "exclude"; }
+    | FUNC_FLATTEN { $$ = "flatten"; }
+    | FUNC_REGRID { $$ = "regrid"; }
+    | IN { $$ = "in"; }
+    ;
 
-/* %type  ids {harp_sized_array *} */
-ids:
-    ids COMMA id {
-        if (harp_sized_array_add_string($1, $3) != 0)
-        {
-            YYERROR;
-            harp_set_error(HARP_ERROR_OPERATION_SYNTAX, harp_errno_to_string(harp_errno));
+identifier:
+      NAME
+    | reserved_identifier { $$ = strdup($1); }
+    ;
+
+double_value:
+      DOUBLE_VALUE {
+            long length = strlen($1);
+            if (harp_parse_double($1, length, &$$, 0) != length) YYERROR;
+            free($1);
         }
+    | NAN { $$ = harp_nan(); }
+    | '+' NAN { $$ = harp_nan(); }
+    | '-' NAN { $$ = harp_nan(); }
+    | '+' INF { $$ = harp_plusinf(); }
+    | '-' INF { $$ = harp_mininf(); }
+    ;
 
-        $$ = $1;
+int32_value:
+    INTEGER_VALUE { $$ = (int32_t)atol($1); free($1); }
+    ;
 
-        free($3);
-    }
-    | id {
-        if (harp_sized_array_new(&$$) != 0 || harp_sized_array_add_string($$, $1) != 0)
-        {
-            YYERROR;
-            harp_set_error(HARP_ERROR_OPERATION_SYNTAX, harp_errno_to_string(harp_errno));
+double_array:
+      double_array ',' double_value {
+            if (harp_sized_array_add_double($1, $3) != 0) YYERROR;
+            $$ = $1;
         }
-
-        free($1);
-    }
-
-/* %type  float {double} */
-floatval:
-    FLOAT {
-        if(harp_parse_double($1, strlen($1), &$$, 0) != strlen($1))
-        {
-            YYERROR;
-            // TODO
+    | double_value {
+            if (harp_sized_array_new(&$$, harp_type_int32) != 0) YYERROR;
+            if (harp_sized_array_add_double($$, $1) != 0) YYERROR;
         }
+    ;
 
-        free($1);
-    }
-    | INT {
-        if(harp_parse_double($1, strlen($1), &$$, 0) != strlen($1))
-        {
-            // harp_parser_state_set_error(state, "Could not parse double from string");
-            YYERROR;
+string_array:
+      string_array ',' STRING_VALUE {
+            if (harp_sized_array_add_string($1, $3) != 0) YYERROR;
+            $$ = $1;
+            free($3);
         }
-
-        free($1);
-    }
-    | NAN {
-        $$ = harp_nan();
-    }
-    | INF {
-        if ($1[0] == '-') {
-            $$ = harp_mininf();
-        } else {
-            $$ = harp_plusinf();
+    | STRING_VALUE {
+            if (harp_sized_array_new(&$$, harp_type_string) != 0) YYERROR;
+            if (harp_sized_array_add_string($$, $1) != 0) YYERROR;
+            free($1);
         }
+    ;
 
-        free($1);
-    }
-
-/* %type  int {int} */
-intval:
-    INT {
-        $$ = atoi($1);
-        free($1);
-    }
-
-/* %type  unit_opt {char *} */
-unit_opt:
-    UNIT {
-        int len = strlen($1) - 2;
-
-        $$ = malloc((len + 1) * sizeof(char));
-        if ($$ == NULL)
-        {
-            YYERROR;
-            // harp_parser_state_set_error(state, "out of memory (could not memory for unit string)");
-            return;
+dimension_array:
+      dimension_array ',' DIMENSION {
+            if (harp_sized_array_add_int32($1, $3) != 0) YYERROR;
+            $$ = $1;
         }
-
-        /* copy the unit and null terminate the string */
-        memcpy($$, &$1[1], len);
-        $$[len] = '\0';
-
-        /* free the now deprecated token */
-        free($1);
-    }
-    | %empty {$$ = NULL;}
-
-/* %type  floatlist {harp_sized_array *} */
-floatlist:
-    floatlist COMMA floatval {
-        if (harp_sized_array_add_double($1, $3) != 0)
-        {
-            // harp_parser_state_set_error(state, harp_errno_to_string(harp_errno));
-            YYERROR;
+    | DIMENSION {
+            if (harp_sized_array_new(&$$, harp_type_int32) != 0) YYERROR;
+            if (harp_sized_array_add_int32($$, $1) != 0) YYERROR;
         }
-
-        $$ = $1;
-    }
-    | floatval {
-        if (harp_sized_array_new(&$$) != 0 || harp_sized_array_add_double($$, $1) != 0)
-        {
-            // harp_parser_state_set_error(state, harp_errno_to_string(harp_errno));
-            YYERROR;
-        }
-    }
-
-/* %type  stringlist {harp_sized_array *} */
-stringlist:
-    stringlist COMMA stringvalue {
-        if (harp_sized_array_add_string($1, $3) != 0)
-        {
-            // harp_parser_state_set_error(state, harp_errno_to_string(harp_errno));
-            YYERROR;
-        }
-
-        $$ = $3;
-
-        free($3);
-    }
-    | stringvalue {
-        if (harp_sized_array_new(&$$) != 0 || harp_sized_array_add_string($$, $1) != 0)
-        {
-            // harp_parser_state_set_error(state, harp_errno_to_string(harp_errno));
-            YYERROR;
-        }
-
-        free($1);
-    }
-
-/*
- * dimensions
- */
-
-dimension:
-    DIM_TIME {$$ = $1;}
-    | DIM_LAT {$$ = $1;}
-    | DIM_LON {$$ = $1;}
-    | DIM_VERTICAL {$$ = $1;}
-    | DIM_SPECTRAL {$$ = $1;}
-    | DIM_INDEP {$$ = $1;}
-
-/* %type  dimensionlist {harp_sized_array *} */
-dimensionlist:
-    dimensionlist COMMA dimension {
-        if (harp_sized_array_add_string($1, $3) != 0)
-        {
-            // harp_parser_state_set_error(state, harp_errno_to_string(harp_errno));
-            YYERROR;
-        }
-
-        $$ = $1;
-
-        free($3);
-    }
-    | dimension {
-        if (harp_sized_array_new(&$$) != 0 || harp_sized_array_add_string($$, $1) != 0)
-        {
-            // harp_parser_state_set_error(state, harp_errno_to_string(harp_errno));
-            YYERROR;
-        }
-
-        free($1);
-    }
+    ;
 
 /* %type  dimensionspec {harp_sized_array *} */
 dimensionspec:
-    LEFT_CURLY dimensionlist RIGHT_CURLY { $$ = $2; }
-
-/*
- * values
- */
-
-/* %type  floatvalue { float_with_unit } */
-floatvalue:
-    floatval unit_opt {
-        $$.value = $1;
-        $$.unit = $2;
-    }
-
-/* %type  collocation_column { char } */
-collocation_column:
-    COLLOCATION_COLUMN {
-        $$ = $1[0];
-        free($1);
-    }
-
-/* %type  stringvalue {char *} */
-stringvalue:
-    STRING {
-        char *t = $1;
-        int len = strlen(t) - 2;
-
-        $$ = malloc((len + 1) * sizeof(char));
-        if ($$ == NULL)
-        {
-            // harp_parser_state_set_error(state, "out of memory (could not memory for unit string)");
-            YYERROR;
-            return;
-        }
-
-        /* copy the string without the quotes and null terminate the string */
-        memcpy($$, &t[1], len);
-        $$[len] = '\0';
-
-        /* destroy the unused original */
-        free(t);
-    }
-
-/*
- * functions
- */
+      '{' dimension_array '}' { $$ = $2; }
+    | '{' '}' { if (harp_sized_array_new(&$$, harp_type_int32) != 0) YYERROR; }
+    ;
 
 /* %type  functioncall {harp_operation*} */
 /*functioncall(F) ::= F_COLLOCATE_LEFT LEFT_PAREN stringvalue(s) RIGHT_PAREN. {
@@ -424,81 +432,98 @@ functioncall(F) ::= F_REGRID LEFT_PAREN stringvalue(s) RIGHT_PAREN. {
  * operations
  */
 
-/* %type  comparison_operator {harp_comparison_operator_type} */
 comparison_operator:
-    OP_EQ { $$ = harp_operator_eq; }
-    | OP_NE { $$ = harp_operator_ne; }
-    | OP_GE { $$ = harp_operator_ge; }
-    | OP_LE { $$ = harp_operator_le; }
-    | OP_GT { $$ = harp_operator_gt; }
-    | OP_LT { $$ = harp_operator_lt; }
+      EQUAL { $$ = harp_operator_eq; }
+    | NOT_EQUAL { $$ = harp_operator_ne; }
+    | GREATER_EQUAL { $$ = harp_operator_ge; }
+    | LESS_EQUAL { $$ = harp_operator_le; }
+    | '>' { $$ = harp_operator_gt; }
+    | '<' { $$ = harp_operator_lt; }
+    ;
 
-/* %type  bitmask_operator {harp_bit_mask_operator_type} */
-bitmask_operator:
-    OP_BIT_NAND { $$ = harp_operator_bit_mask_none; }
-    | OP_BIT_AND { $$ = harp_operator_bit_mask_any; }
+bit_mask_operator:
+      BIT_NAND { $$ = harp_operator_bit_mask_none; }
+    | BIT_AND { $$ = harp_operator_bit_mask_any; }
+    ;
 
-/* %type  membership_operator {harp_membership_operator_type} */
 membership_operator:
-    NOT IN { $$ = harp_operator_not_in; }
+      NOT IN { $$ = harp_operator_not_in; }
     | IN { $$ = harp_operator_in; }
+    ;
 
-/* %type  operation {harp_operation*} */
-/*operation(O) ::= functioncall(F). {
-    O = F;
-    }*/
 operation:
-    id bitmask_operator intval {
-        if(harp_bit_mask_filter_new($1, $2, $3, &$$) != 0) {
-            //harp_parser_state_set_error(state, harp_errno_to_string(harp_errno));
-            YYERROR;
+      identifier bit_mask_operator int32_value {
+            if (harp_bit_mask_filter_new($1, $2, $3, &$$) != 0) YYERROR;
         }
-        free($1);
-    }
-    | id comparison_operator floatvalue {
-        if(harp_comparison_filter_new($1, $2, $3.value, $3.unit, &$$) != 0) {
-            // harp_parser_state_set_error(state, harp_errno_to_string(harp_errno));
-            YYERROR;
+    | identifier comparison_operator double_value {
+            if (harp_comparison_filter_new($1, $2, $3, NULL, &$$) != 0) YYERROR;
+            free($1);
         }
-        free($1);
-    }
-    | id comparison_operator stringvalue {
-        if(harp_string_comparison_filter_new($1, $2, $3, &$$) != 0) {
-            // harp_parser_state_set_error(state, harp_errno_to_string(harp_errno));
-            YYERROR;
+    | identifier comparison_operator double_value UNIT {
+            if (harp_comparison_filter_new($1, $2, $3, $4, &$$) != 0) YYERROR;
+            free($1);
+            free($4);
         }
+    | identifier comparison_operator STRING_VALUE {
+            if (harp_string_comparison_filter_new($1, $2, $3, &$$) != 0) YYERROR;
+            free($1);
+            free($3);
+        }
+    | identifier membership_operator '(' double_array ')' UNIT {
+            if (harp_membership_filter_new($1, $2, $4->num_elements, $4->array.double_data, $6, &$$) != 0) YYERROR;
+            free($1);
+            harp_sized_array_delete($4);
+        }
+    | identifier membership_operator '(' double_array ')' {
+            if (harp_membership_filter_new($1, $2, $4->num_elements, $4->array.double_data, NULL, &$$) != 0) YYERROR;
+            free($1);
+            harp_sized_array_delete($4);
+        }
+    | identifier membership_operator '(' string_array ')' {
+            if (harp_string_membership_filter_new($1, $2, $4->num_elements, (const char **)$4->array.string_data, &$$)
+                != 0) YYERROR;
+            free($1);
+            harp_sized_array_delete($4);
+        }
+    | FUNC_COLLOCATE_LEFT '(' STRING_VALUE ')' {
+            if (harp_collocation_filter_new($3, harp_collocation_left, &$$) != 0) YYERROR;
+            free($3);
+        }
+    ;
 
-        free($1);
-        free($3);
-    }
-    | id membership_operator LEFT_PAREN floatlist RIGHT_PAREN unit_opt {
-        if(harp_membership_filter_new($1, $2, $4->num_elements, $4->array.double_data, $6, &$$) != 0)
-        {
-            // harp_parser_state_set_error(state, harp_errno_to_string(harp_errno));
-            YYERROR;
+program:
+      program ';' operation {
+            if (harp_program_add_operation($1, $3) != 0) YYERROR;
+            $$ = $1;
         }
-        free($1);
-        free($6);
-    }
-    | id membership_operator LEFT_PAREN stringlist RIGHT_PAREN {
-        if(harp_string_membership_filter_new($1, $2, $4->num_elements, $4->array.string_data, &$$) != 0)
-        {
-            // harp_parser_state_set_error(state, harp_errno_to_string(harp_errno));
-            YYERROR;
-        }
-        free($1);
-    }
-
-operations:
-    operations SEMICOLON operation {
-        if (harp_program_add_operation($1, $3) != 0)
-        {
-            YYERROR;
-        }
-    }
     | operation {
-        if (harp_program_new(&$$) != 0 && harp_program_add_operation($$, $1) != 0)
-        {
-            YYERROR;
+            if (harp_program_new(&$$) != 0) YYERROR;
+            if (harp_program_add_operation($$, $1) != 0) YYERROR;
         }
+    ;
+
+%%
+
+/* *INDENT-ON* */
+
+int harp_program_from_string(const char *str, harp_program **program)
+{
+    void *bufstate;
+
+    harp_errno = 0;
+    parsed_program = NULL;
+    bufstate = (void *)harp_operation_parser__scan_string(str);
+    if (harp_operation_parser_parse() != 0)
+    {
+        if (harp_errno == 0)
+        {
+            harp_set_error(HARP_ERROR_OPERATION_SYNTAX, NULL);
+        }
+        harp_operation_parser__delete_buffer(bufstate);
+        return -1;
     }
+    harp_operation_parser__delete_buffer(bufstate);
+    *program = parsed_program;
+
+    return 0;
+}

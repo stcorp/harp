@@ -1,66 +1,128 @@
-%{
-#include "harp-operation-parser.h"
-#define YYSTYPE HARP_OPERATION_PARSER_STYPE
-%}
+/*
+ * Copyright (C) 2015-2016 S[&]T, The Netherlands.
+ *
+ * This file is part of HARP.
+ *
+ * HARP is free software; you can redistribute it and/or modify
+ * it under the terms of the GNU General Public License as published by
+ * the Free Software Foundation; either version 2 of the License, or
+ * (at your option) any later version.
+ *
+ * HARP is distributed in the hope that it will be useful,
+ * but WITHOUT ANY WARRANTY; without even the implied warranty of
+ * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+ * GNU General Public License for more details.
+ *
+ * You should have received a copy of the GNU General Public License
+ * along with HARP; if not, write to the Free Software
+ * Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307  USA
+ */
+
+/* *INDENT-OFF* */
 
 %option prefix="harp_operation_parser_"
-%option reentrant
 %option noyywrap
 %option noinput
 %option nounput
-%option bison-bridge
+%option always-interactive
 
-digit         [0-9]
-letter        [a-zA-Z]
+%{
+#include <stdlib.h>
+#include <string.h>
+
+#include "harp-operation.h"
+#include "harp-program.h"
+
+typedef struct harp_sized_array_struct harp_sized_array;
+
+#include "harp-operation-parser.h"
+
+%}
+
+INTEGER      [0-9]+
+SIGN         [+-]
+FL_MANTISSA  ({INTEGER}".")|("."{INTEGER})|({INTEGER}"."{INTEGER})
+FL_EXPONENT  [Ee]{SIGN}?{INTEGER}
+FLOAT        ({FL_MANTISSA}{FL_EXPONENT}?)|({INTEGER}{FL_EXPONENT})
+IDENTIFIER   [[:alpha:]][[:alnum:]_]*
+WHITESPACE   [[:space:]]+
 
 %%
 
-[\[][^\]]+[\]]  {
-  yylval->string = strdup(yytext);
-  return HARP_OP_TOK_UNIT;
-}
-","                   {return HARP_OP_TOK_COMMA;}
-";"                   {return HARP_OP_TOK_SEMICOLON;}
-[-+]?[Nn][aA][Nn]     {return HARP_OP_TOK_NAN;}
-[-+]?[Ii][nN][fF]     {return HARP_OP_TOK_INF;}
-[-+]?[0-9]+           {return HARP_OP_TOK_INT;}
-[-+]?[0-9]+.[0-9]+    {return HARP_OP_TOK_FLOAT;}
-[-+]?[0-9]+(.[0-9]+)?[dDeE][+-]?[0-9]+ {return HARP_OP_TOK_FLOAT;}
-"time"                {return HARP_OP_TOK_DIM_TIME;}
-"latitude"            {return HARP_OP_TOK_DIM_LAT;}
-"longitude"           {return HARP_OP_TOK_DIM_LON;}
-"vertical"            {return HARP_OP_TOK_DIM_VERTICAL;}
-"spectral"            {return HARP_OP_TOK_DIM_SPECTRAL;}
-"independent"         {return HARP_OP_TOK_DIM_INDEP;}
-"{"                   {return HARP_OP_TOK_LEFT_CURLY;}
-"}"                   {return HARP_OP_TOK_RIGHT_CURLY;}
-"("                   {return HARP_OP_TOK_LEFT_PAREN;}
-")"                   {return HARP_OP_TOK_RIGHT_PAREN;}
-"collocate-left"      {return HARP_OP_TOK_F_COLLOCATE_LEFT;}
-"collocate-right"     {return HARP_OP_TOK_F_COLLOCATE_RIGHT;}
-"valid"               {return HARP_OP_TOK_F_VALID;}
-"longitude-range"     {return HARP_OP_TOK_F_LON_RANGE;}
-"point-distance"      {return HARP_OP_TOK_F_POINT_DIST;}
-"area-mask-covers-point" {return HARP_OP_TOK_F_AREA_MASK_COVERS_POINT;}
-"area-mask-covers-area"  {return HARP_OP_TOK_F_AREA_MASK_COVERS_AREA;}
-"area-mask-intersects-area" {return HARP_OP_TOK_F_AREA_MASK_INTERSECTS_AREA;}
-"derive"              {return HARP_OP_TOK_F_DERIVE;}
-"keep"                {return HARP_OP_TOK_F_KEEP;}
-"exclude"             {return HARP_OP_TOK_F_EXCLUDE;}
-"flatten"             {return HARP_OP_TOK_F_FLATTEN;}
-"regrid"              {return HARP_OP_TOK_F_REGRID;}
-"regrid-collocated"   {return HARP_OP_TOK_F_REGRID_COLLOCATED;}
-"=="                  {return HARP_OP_TOK_OP_EQ;}
-"!="                  {return HARP_OP_TOK_OP_NE;}
-">="                  {return HARP_OP_TOK_OP_GE;}
-"<="                  {return HARP_OP_TOK_OP_LE;}
-"<"                   {return HARP_OP_TOK_OP_LT;}
-">"                   {return HARP_OP_TOK_OP_GT;}
-"=&"                  {return HARP_OP_TOK_OP_BIT_AND;}
-"!&"                  {return HARP_OP_TOK_OP_BIT_NAND;}
-"not"                 {return HARP_OP_TOK_NOT;}
-"in"                  {return HARP_OP_TOK_IN;}
-[ab]                  {return HARP_OP_TOK_COLLOCATION_COLUMN;}
-{letter}({letter}|_|{digit})* {return HARP_OP_TOK_ID;}
-\"(\\.|[^"])*\"       {return HARP_OP_TOK_STRING;}
-[ \t]+
+"\""([^\"\\]|\\.)*"\"" {
+                            yylval.string_val = (char *)malloc(yyleng - 1);
+                            memcpy(yylval.string_val, yytext + 1, yyleng - 2);
+                            yylval.string_val[yyleng - 2] = '\0';
+                            return STRING_VALUE;
+                        }
+"[""([^\[])*""]"        {
+                            yylval.string_val = (char *)malloc(yyleng - 1);
+                            memcpy(yylval.string_val, yytext + 1, yyleng - 2);
+                            yylval.string_val[yyleng - 2] = '\0';
+                            return UNIT;
+                        }
+
+"=="                    return EQUAL;
+"!="                    return NOT_EQUAL;
+">="                    return GREATER_EQUAL;
+"<="                    return LESS_EQUAL;
+"=&"                    return BIT_AND;
+"!&"                    return BIT_NAND;
+
+"nan"                   return NAN;
+"inf"                   return INF;
+"not"                   return NOT;
+"in"                    return IN;
+"collocate-left"        return FUNC_COLLOCATE_LEFT;
+"collocate-right"       return FUNC_COLLOCATE_RIGHT;
+"valid"                 return FUNC_VALID;
+"longitude-range"       return FUNC_LONGITUDE_RANGE;
+"point-distance"        return FUNC_POINT_DISTANCE;
+"area-mask-covers-point"    return FUNC_AREA_MASK_COVERS_POINT;
+"area-mask-covers-area" return FUNC_AREA_MASK_COVERS_AREA;
+"area-mask-intersects-area" return FUNC_AREA_MASK_INTERSECTS_AREA;
+"derive"                return FUNC_DERIVE;
+"keep"                  return FUNC_KEEP;
+"exclude"               return FUNC_EXCLUDE;
+"flatten"               return FUNC_FLATTEN;
+"regrid"                return FUNC_REGRID;
+"regrid-collocated"     return FUNC_REGRID_COLLOCATED;
+
+"time"                  {
+                            yylval.int32_val = harp_dimension_time;
+                            return DIMENSION;
+                        }
+"latitude"              {
+                            yylval.int32_val = harp_dimension_latitude;
+                            return DIMENSION;
+                        }
+"longitude"             {
+                            yylval.int32_val = harp_dimension_longitude;
+                            return DIMENSION;
+                        }
+"vertical"              {
+                            yylval.int32_val = harp_dimension_vertical;
+                            return DIMENSION;
+                        }
+"spectral"              {
+                            yylval.int32_val = harp_dimension_spectral;
+                            return DIMENSION;
+                        }
+"independent"           {
+                            yylval.int32_val = harp_dimension_independent;
+                            return DIMENSION;
+                        }
+{IDENTIFIER}            {
+                            yylval.string_val = strdup(yytext);
+                            return NAME;
+                        }
+{INTEGER}               {
+                            yylval.string_val = strdup(yytext);
+                            return INTEGER_VALUE;
+                        }
+{FLOAT}                 {
+                            yylval.string_val = strdup(yytext);
+                            return DOUBLE_VALUE;
+                        }
+{WHITESPACE}            /* eat whitespace */
+.                       return (*yytext);

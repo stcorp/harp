@@ -28,7 +28,7 @@ uninstall-hook: $(UNINSTALL_HOOK_TARGETS)
 # programs
 
 bin_PROGRAMS = harpcheck harpcollocate harpconvert harpfilter harpprofile harpdump
-noinst_PROGRAMS = findtypedef lemon
+noinst_PROGRAMS = findtypedef
 
 # libraries (+ related files)
 
@@ -49,16 +49,6 @@ include_HEADERS = libharp/harp.h
 # *** build rules ***
 
 # parser generator
-
-lemon_SOURCES = lemon.c
-EXTRA_DIST += lempar.c
-
-libharp/harp-operation-parser.h: libharp/harp-operation-parser.c
-	@if test ! -f $@; then rm -f libharp/harp-operation-parser.c; else :; fi
-	@if test ! -f $@; then $(MAKE) $(AM_MAKEFLAGS) harp-operation-parser.c; else :; fi
-libharp/harp-operation-parser.c: libharp/harp-operation-parser.y lemon
-	./lemon -T$(srcdir)/lempar.c $(srcdir)/libharp/harp-operation-parser.y
-EXTRA_DIST += libharp/harp-operation-parser.y
 
 # libharp
 libharp_la_SOURCES = \
@@ -131,12 +121,8 @@ libharp_la_SOURCES = \
 	libharp/harp-internal.h \
 	libharp/harp-interpolation.c \
 	libharp/harp-netcdf.c \
-	libharp/harp-operation-analyze.c \
-	libharp/harp-operation-parser.h \
-	libharp/harp-operation-parser.c \
-	libharp/harp-operation-parser-state.h \
-	libharp/harp-operation-parser-state.c \
-	libharp/harp-operation-scanner.c \
+	libharp/harp-operation-parser.y \
+	libharp/harp-operation-scanner.l \
 	libharp/harp-operation.h \
 	libharp/harp-operation.c \
 	libharp/harp-predicate.h \
