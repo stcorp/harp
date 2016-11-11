@@ -244,7 +244,9 @@ int harp_sized_array_add_int32(harp_sized_array *sized_array, int32_t value)
 %%
 
 input:
-    program { parsed_program = $1; }
+      program ';' { parsed_program = $1; }
+    | program     { parsed_program = $1; }
+    ;
 
 reserved_identifier:
       NAN { $$ = "nan"; }
