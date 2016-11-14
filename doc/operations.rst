@@ -222,3 +222,7 @@ Formal definition
        variable, ['not'], 'in', '(', valuelist, ')', [unit] |
        functioncall |
        operationexpr, ';', operationexpr ;
+
+    operations =
+       operationexpr ';' |
+       operationexpr ;
