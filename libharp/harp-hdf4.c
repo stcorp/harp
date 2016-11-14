@@ -710,6 +710,7 @@ int harp_import_hdf4(const char *filename, harp_product **product)
     if (sd_id == -1)
     {
         harp_set_error(HARP_ERROR_HDF4, NULL);
+        harp_add_error_message(" (%s)", filename);
         return -1;
     }
 
@@ -727,6 +728,7 @@ int harp_import_hdf4(const char *filename, harp_product **product)
 
     if (read_product(new_product, sd_id) != 0)
     {
+        harp_add_error_message(" (%s)", filename);
         harp_product_delete(new_product);
         SDend(sd_id);
         return -1;
@@ -1029,11 +1031,13 @@ int harp_export_hdf4(const char *filename, const harp_product *product)
     if (sd_id == -1)
     {
         harp_set_error(HARP_ERROR_HDF4, NULL);
+        harp_add_error_message(" (%s)", filename);
         return -1;
     }
 
     if (write_product(product, sd_id) != 0)
     {
+        harp_add_error_message(" (%s)", filename);
         SDend(sd_id);
         return -1;
     }
@@ -1041,6 +1045,7 @@ int harp_export_hdf4(const char *filename, const harp_product *product)
     if (SDend(sd_id) != 0)
     {
         harp_set_error(HARP_ERROR_HDF4, NULL);
+        harp_add_error_message(" (%s)", filename);
         return -1;
     }
 

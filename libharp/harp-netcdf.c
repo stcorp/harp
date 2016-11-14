@@ -1354,6 +1354,7 @@ int harp_export_netcdf(const char *filename, const harp_product *product)
     if (result != NC_NOERR)
     {
         harp_set_error(HARP_ERROR_NETCDF, "%s", nc_strerror(result));
+        harp_add_error_message(" (%s)", filename);
         return -1;
     }
 
@@ -1361,6 +1362,7 @@ int harp_export_netcdf(const char *filename, const harp_product *product)
 
     if (write_product(ncid, product, &dimensions) != 0)
     {
+        harp_add_error_message(" (%s)", filename);
         nc_close(ncid);
         dimensions_done(&dimensions);
         return -1;
@@ -1372,6 +1374,7 @@ int harp_export_netcdf(const char *filename, const harp_product *product)
     if (result != NC_NOERR)
     {
         harp_set_error(HARP_ERROR_NETCDF, "%s", nc_strerror(result));
+        harp_add_error_message(" (%s)", filename);
         return -1;
     }
 

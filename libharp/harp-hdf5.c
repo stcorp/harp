@@ -1143,6 +1143,7 @@ int harp_import_hdf5(const char *filename, harp_product **product)
     file_id = H5Fopen(filename, H5F_ACC_RDONLY, H5P_DEFAULT);
     if (file_id < 0)
     {
+        harp_add_error_message(" (%s)", filename);
         harp_set_error(HARP_ERROR_HDF5, NULL);
         return -1;
     }
@@ -1161,6 +1162,7 @@ int harp_import_hdf5(const char *filename, harp_product **product)
 
     if (read_product(file_id, new_product) != 0)
     {
+        harp_add_error_message(" (%s)", filename);
         harp_product_delete(new_product);
         H5Fclose(file_id);
         return -1;
@@ -1940,6 +1942,7 @@ int harp_export_hdf5(const char *filename, const harp_product *product)
     if (file_id < 0)
     {
         harp_set_error(HARP_ERROR_HDF5, NULL);
+        harp_add_error_message(" (%s)", filename);
         H5Pclose(fcpl_id);
         return -1;
     }
@@ -1948,6 +1951,7 @@ int harp_export_hdf5(const char *filename, const harp_product *product)
 
     if (write_product(file_id, product) != 0)
     {
+        harp_add_error_message(" (%s)", filename);
         H5Fclose(file_id);
         return -1;
     }
@@ -1955,6 +1959,7 @@ int harp_export_hdf5(const char *filename, const harp_product *product)
     if (H5Fclose(file_id) < 0)
     {
         harp_set_error(HARP_ERROR_HDF5, NULL);
+        harp_add_error_message(" (%s)", filename);
         return -1;
     }
 
