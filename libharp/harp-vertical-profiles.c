@@ -375,7 +375,7 @@ static int get_maximum_vertical_dimension(harp_collocation_result *collocation_r
 
         if (!match_metadata)
         {
-            harp_set_error(HARP_ERROR_INVALID_ARGUMENT, "Metadata unavailable for match pair product %s.",
+            harp_set_error(HARP_ERROR_INVALID_ARGUMENT, "metadata unavailable for match pair product %s",
                            collocation_result->dataset_b->source_product[matching_product_index]);
             return -1;
         }
@@ -465,8 +465,8 @@ static int get_time_index_by_collocation_index(harp_product *product, long collo
         }
     }
 
-    harp_set_error(HARP_ERROR_INVALID_ARGUMENT,
-                   "Couldn't locate collocation_index %li in product %s", collocation_index, product->source_product);
+    harp_set_error(HARP_ERROR_INVALID_ARGUMENT, "couldn't locate collocation_index %li in product %s",
+                   collocation_index, product->source_product);
     return -1;
 }
 
@@ -619,7 +619,7 @@ static int get_vertical_unit(const char *name, char **new_unit)
     }
     else
     {
-        harp_set_error(HARP_ERROR_INVALID_ARGUMENT, "Not a vertical axis variable: '%s'", name);
+        harp_set_error(HARP_ERROR_INVALID_ARGUMENT, "not a vertical axis variable (%s)", name);
         return -1;
     }
 
@@ -636,7 +636,7 @@ static int read_vertical_grid_line(FILE *file, const char *filename, double *new
 
     if (fgets(line, HARP_CSV_LINE_LENGTH, file) == NULL)
     {
-        harp_set_error(HARP_ERROR_INVALID_ARGUMENT, "error reading line of '%s'", filename);
+        harp_set_error(HARP_ERROR_INVALID_ARGUMENT, "error reading line of csv file '%s'", filename);
         return -1;
     }
 
@@ -659,7 +659,7 @@ static int read_vertical_grid_header(FILE *file, const char *filename, char **ne
 
     if (fgets(line, HARP_CSV_LINE_LENGTH, file) == NULL)
     {
-        harp_set_error(HARP_ERROR_INVALID_ARGUMENT, "error reading line of file '%s'", filename);
+        harp_set_error(HARP_ERROR_INVALID_ARGUMENT, "error reading line of csv file '%s'", filename);
         return -1;
     }
 
@@ -694,7 +694,7 @@ static int read_vertical_grid_header(FILE *file, const char *filename, char **ne
     if (*cursor != '[')
     {
         /* No unit is found */
-        harp_set_error(HARP_ERROR_INVALID_ARGUMENT, "No unit in header of '%s'", filename);
+        harp_set_error(HARP_ERROR_INVALID_ARGUMENT, "no unit in header of '%s'", filename);
         free(name);
         return -1;
     }
@@ -755,7 +755,7 @@ int harp_profile_import_grid(const char *filename, harp_variable **new_vertical_
     file = fopen(filename, "r+");
     if (file == NULL)
     {
-        harp_set_error(HARP_ERROR_FILE_OPEN, "Error opening vertical grid file '%s'", filename);
+        harp_set_error(HARP_ERROR_FILE_OPEN, "error opening vertical grid file '%s'", filename);
         return -1;
     }
 
@@ -772,7 +772,7 @@ int harp_profile_import_grid(const char *filename, harp_variable **new_vertical_
     if (num_vertical < 1)
     {
         /* No lines to read */
-        harp_set_error(HARP_ERROR_FILE_READ, "Vertical grid file '%s' has no values", filename);
+        harp_set_error(HARP_ERROR_FILE_READ, "vertical grid file '%s' has no values", filename);
         fclose(file);
         return -1;
     }
@@ -809,7 +809,7 @@ int harp_profile_import_grid(const char *filename, harp_variable **new_vertical_
     /* io cleanup */
     if (fclose(file) != 0)
     {
-        harp_set_error(HARP_ERROR_FILE_READ, "Error closing vertical grid definition file '%s'", filename);
+        harp_set_error(HARP_ERROR_FILE_READ, "error closing vertical grid definition file '%s'", filename);
         free(values);
         free(name);
         free(unit);
@@ -820,7 +820,7 @@ int harp_profile_import_grid(const char *filename, harp_variable **new_vertical_
     if ((strcmp(name, "altitude") == 0 || strcmp(name, "pressure") == 0) != 1)
     {
         harp_set_error(HARP_ERROR_INVALID_NAME,
-                       "Invalid vertical axis name '%s' in header of csv file '%s'", name, filename);
+                       "invalid vertical axis name '%s' in header of csv file '%s'", name, filename);
         free(values);
         free(name);
         free(unit);
@@ -1363,7 +1363,7 @@ LIBHARP_API int harp_product_smooth_vertical(harp_product *product, int num_smoo
         /* Error if no collocation pair exists for this index */
         if (!pair)
         {
-            harp_set_error(HARP_ERROR_INVALID_ARGUMENT, "No collocation pair for collocation index %li.", coll_index);
+            harp_set_error(HARP_ERROR_INVALID_ARGUMENT, "no collocation pair for collocation index %li.", coll_index);
             goto error;
         }
 
@@ -1371,7 +1371,7 @@ LIBHARP_API int harp_product_smooth_vertical(harp_product *product, int num_smoo
         match_metadata = collocation_result->dataset_b->metadata[pair->product_index_b];
         if (match_metadata == NULL)
         {
-            harp_set_error(HARP_ERROR_INVALID_ARGUMENT, "Missing product metadata for product %s.",
+            harp_set_error(HARP_ERROR_INVALID_ARGUMENT, "missing product metadata for product %s",
                            collocation_result->dataset_b->source_product[pair->product_index_b]);
             goto error;
         }
@@ -1390,7 +1390,7 @@ LIBHARP_API int harp_product_smooth_vertical(harp_product *product, int num_smoo
             harp_import(match_metadata->filename, &match);
             if (!match)
             {
-                harp_set_error(HARP_ERROR_IMPORT, "Could not import file %s.", match_metadata->filename);
+                harp_set_error(HARP_ERROR_IMPORT, "could not import file %s", match_metadata->filename);
                 goto error;
             }
 

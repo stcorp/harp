@@ -79,7 +79,7 @@ static int harp_spherical_line_segment_from_polygon(harp_spherical_line *line, c
     }
     else
     {
-        harp_set_error(HARP_ERROR_INVALID_ARGUMENT, "Index out (%d) of range [%d,%d)", i, 0, polygon->numberofpoints);
+        harp_set_error(HARP_ERROR_INVALID_ARGUMENT, "index (%d) out of range [%d,%d)", i, 0, polygon->numberofpoints);
 
         return -1;
     }
@@ -656,14 +656,14 @@ int harp_spherical_polygon_overlapping(const harp_spherical_polygon *polygon_a, 
 
     {
         harp_set_error(HARP_ERROR_INVALID_ARGUMENT,
-                       "harp_spherical_polygon_overlapping_percentage: a line segment overlaps or polygon too large");
+                       "a line segment overlaps or polygon too large for polygon overlap percentage");
         return -1;
     }
 
     if (harp_spherical_polygon_check(polygon_b) != 1)
     {
         harp_set_error(HARP_ERROR_INVALID_ARGUMENT,
-                       "harp_spherical_polygon_overlapping_percentage: a line segment overlaps or polygon too large");
+                       "a line segment overlaps or polygon too large for polygon overlap percentage");
         return -1;
     }
 
@@ -694,14 +694,14 @@ int harp_spherical_polygon_overlapping_percentage(const harp_spherical_polygon *
 
     {
         harp_set_error(HARP_ERROR_INVALID_ARGUMENT,
-                       "harp_spherical_polygon_overlapping_percentage: a line segment overlaps or polygon too large");
+                       "a line segment overlaps or polygon too large for polygon overlap percentage");
         return -1;
     }
 
     if (harp_spherical_polygon_check(polygon_b) != 1)
     {
         harp_set_error(HARP_ERROR_INVALID_ARGUMENT,
-                       "harp_spherical_polygon_overlapping_percentage: a line segment overlaps or polygon too large");
+                       "a line segment overlaps or polygon too large for polygon overlap percentage");
         return -1;
     }
 
@@ -1083,7 +1083,7 @@ int harp_spherical_polygon_from_longitude_latitude_bounds(long measurement_id, l
     point = malloc(sizeof(harp_spherical_point));
     if (point == NULL)
     {
-        harp_set_error(HARP_ERROR_OUT_OF_MEMORY, "Out of memory (could not allocate %lu bytes) (%s:%u)",
+        harp_set_error(HARP_ERROR_OUT_OF_MEMORY, "out of memory (could not allocate %lu bytes) (%s:%u)",
                        sizeof(harp_spherical_point), __FILE__, __LINE__);
         harp_spherical_point_array_delete(point_array);
         return -1;
@@ -1120,7 +1120,7 @@ int harp_spherical_polygon_from_longitude_latitude_bounds(long measurement_id, l
     /* Check the polygon */
     if (harp_spherical_polygon_check(polygon) != 1)
     {
-        harp_set_error(HARP_ERROR_INVALID_ARGUMENT, "Invalid polygon from input longitude bounds and latitude bounds");
+        harp_set_error(HARP_ERROR_INVALID_ARGUMENT, "invalid polygon from input longitude bounds and latitude bounds");
         harp_spherical_point_array_delete(point_array);
         harp_spherical_polygon_delete(polygon);
         free(point);

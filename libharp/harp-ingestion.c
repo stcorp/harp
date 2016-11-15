@@ -2306,7 +2306,7 @@ static int get_operation_dimensionality(ingest_info *info, harp_operation *opera
     }
     else
     {
-        harp_set_error(HARP_ERROR_OPERATION, "Encountered unsupported filter during ingestion.");
+        harp_set_error(HARP_ERROR_OPERATION, "encountered unsupported filter during ingestion");
         return -1;
     }
 
@@ -2438,7 +2438,7 @@ static int execute_masking_phase(ingest_info *info, harp_program *phase_operatio
     /* Verify that all dimension filters have been executed */
     if (phase_operations->num_operations != 0)
     {
-        harp_set_error(HARP_ERROR_OPERATION, "Could not execute all filter operations.");
+        harp_set_error(HARP_ERROR_OPERATION, "could not execute all filter operations");
         goto cleanup;
     }
 

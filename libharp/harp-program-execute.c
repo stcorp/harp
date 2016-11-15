@@ -1104,7 +1104,7 @@ static int get_operation_dimensionality(harp_product *product, harp_operation *o
     }
     else
     {
-        harp_set_error(HARP_ERROR_OPERATION, "Encountered unsupported filter during ingestion.");
+        harp_set_error(HARP_ERROR_OPERATION, "encountered unsupported filter during ingestion");
         return -1;
     }
 

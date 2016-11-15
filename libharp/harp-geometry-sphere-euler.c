@@ -268,7 +268,7 @@ int harp_vector3d_apply_euler_transformation(harp_vector3d *vectorout, const har
                 break;
 
             default:
-                harp_set_error(HARP_ERROR_INVALID_ARGUMENT, "Invalid Euler axis");
+                harp_set_error(HARP_ERROR_INVALID_ARGUMENT, "invalid Euler axis");
                 return -1;
         }
 
