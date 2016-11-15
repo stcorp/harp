@@ -273,7 +273,11 @@ static int resample(int argc, char *argv[])
     if (source_dataset_b)
     {
         /* Import the column b metadata */
-        harp_dataset_import(collocation_result->dataset_b, source_dataset_b);
+        if (harp_dataset_import(collocation_result->dataset_b, source_dataset_b) != 0)
+        {
+            harp_collocation_result_delete(collocation_result);
+            return -1;
+        }
 
         if (harp_product_regrid_vertical_with_collocated_dataset(product, vertical_axis_name, collocation_result) != 0)
         {
@@ -285,7 +289,11 @@ static int resample(int argc, char *argv[])
     if (source_dataset_a)
     {
         /* Import the column a metadata */
-        harp_dataset_import(collocation_result->dataset_a, source_dataset_a);
+        if (harp_dataset_import(collocation_result->dataset_a, source_dataset_a) != 0)
+        {
+            harp_collocation_result_delete(collocation_result);
+            return -1;
+        }
 
         harp_collocation_result_swap_datasets(collocation_result);
         if (harp_product_regrid_vertical_with_collocated_dataset(product, vertical_axis_name, collocation_result) != 0)
@@ -425,7 +433,11 @@ static int smooth(int argc, char *argv[])
     if (source_dataset_b)
     {
         /* Import the column b metadata */
-        harp_dataset_import(collocation_result->dataset_b, source_dataset_b);
+        if (harp_dataset_import(collocation_result->dataset_b, source_dataset_b) != 0)
+        {
+            harp_collocation_result_delete(collocation_result);
+            return -1;
+        }
 
         /* smooth the source product (from dataset a) against the avks in dataset b */
         if (harp_product_smooth_vertical(product, 1, smooth_vars, vertical_axis_name, collocation_result) != 0)
@@ -437,7 +449,11 @@ static int smooth(int argc, char *argv[])
     if (source_dataset_a)
     {
         /* Import the column a metadata */
-        harp_dataset_import(collocation_result->dataset_a, source_dataset_a);
+        if (harp_dataset_import(collocation_result->dataset_a, source_dataset_a) != 0)
+        {
+            harp_collocation_result_delete(collocation_result);
+            return -1;
+        }
 
         /* smooth the source product (from dataset b) against the avks in dataset a */
         harp_collocation_result_swap_datasets(collocation_result);

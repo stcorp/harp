@@ -57,11 +57,11 @@ static int is_directory(const char *directoryname)
     {
         if (errno == ENOENT)
         {
-            harp_set_error(HARP_ERROR_FILE_NOT_FOUND, "could not find %s", directoryname);
+            harp_set_error(HARP_ERROR_FILE_NOT_FOUND, "could not find '%s'", directoryname);
         }
         else
         {
-            harp_set_error(HARP_ERROR_FILE_OPEN, "could not open %s (%s)", directoryname, strerror(errno));
+            harp_set_error(HARP_ERROR_FILE_OPEN, "could not open '%s' (%s)", directoryname, strerror(errno));
         }
         return -1;
     }
@@ -210,6 +210,7 @@ static int add_directory(harp_dataset *dataset, const char *pathname)
     while ((dp = readdir(dirp)) != NULL)
     {
         char *filepath = NULL;
+        int result;
 
         /* Skip '.' and '..' */
         if (strcmp(dp->d_name, ".") == 0 || strcmp(dp->d_name, "..") == 0)
@@ -228,7 +229,14 @@ static int add_directory(harp_dataset *dataset, const char *pathname)
         }
         sprintf(filepath, "%s/%s", pathname, dp->d_name);
 
-        if (is_directory(filepath))
+        result = is_directory(filepath);
+        if (result == -1)
+        {
+            free(filepath);
+            closedir(dirp);
+            return -1;
+        }
+        if (result)
         {
             /* Skip subdirectories */
             free(filepath);
@@ -352,7 +360,14 @@ LIBHARP_API void harp_dataset_print(harp_dataset *dataset, int (*print) (const c
  */
 LIBHARP_API int harp_dataset_import(harp_dataset *dataset, const char *path)
 {
-    if (is_directory(path))
+    int result;
+
+    result = is_directory(path);
+    if (result == -1)
+    {
+        return -1;
+    }
+    if (result)
     {
         return add_directory(dataset, path);
     }
