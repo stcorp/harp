@@ -314,6 +314,7 @@ ESACCI_OZONE_DEFINITION_FILE = ESACCI_OZONE-@CODADEF_VERSION_ESACCI_OZONE@.codad
 GEOMS_DEFINITION_FILE = GEOMS-@CODADEF_VERSION_GEOMS@.codadef
 GOSAT_DEFINITION_FILE = GOSAT-@CODADEF_VERSION_GOSAT@.codadef
 O3MSAF_DEFINITION_FILE = O3MSAF-@CODADEF_VERSION_O3MSAF@.codadef
+QA4ECV_DEFINITION_FILE = QA4ECV-@CODADEF_VERSION_QA4ECV@.codadef
 SENTINEL5P_DEFINITION_FILE = Sentinel5P-@CODADEF_VERSION_Sentinel5P@.codadef
 TEMIS_DEFINITION_FILE = TEMIS-@CODADEF_VERSION_TEMIS@.codadef
 
@@ -332,6 +333,7 @@ DEFINITION_FILES = \
 	definitions/$(GEOMS_DEFINITION_FILE) \
 	definitions/$(GOSAT_DEFINITION_FILE) \
 	definitions/$(O3MSAF_DEFINITION_FILE) \
+	definitions/$(QA4ECV_DEFINITION_FILE) \
 	definitions/$(SENTINEL5P_DEFINITION_FILE) \
 	definitions/$(TEMIS_DEFINITION_FILE)
 
@@ -462,6 +464,15 @@ definitions/$(O3MSAF_DEFINITION_FILE):
 	@$(srcdir)/codadef.sh $(srcdir)/definitions/O3MSAF definitions
 	@if test ! -f definitions/$(O3MSAF_DEFINITION_FILE) ; then \
 	  echo definitions/$(O3MSAF_DEFINITION_FILE) not created. ; \
+	  echo run './config.status --recheck' to update the .codadef version reference. ; \
+	  exit 1 ; \
+	 fi
+
+definitions/$(QA4ECV_DEFINITION_FILE):
+	test -d definitions || $(mkinstalldirs) definitions
+	@$(srcdir)/codadef.sh $(srcdir)/definitions/QA4ECV definitions
+	@if test ! -f definitions/$(QA4ECV_DEFINITION_FILE) ; then \
+	  echo definitions/$(QA4ECV_DEFINITION_FILE) not created. ; \
 	  echo run './config.status --recheck' to update the .codadef version reference. ; \
 	  exit 1 ; \
 	 fi

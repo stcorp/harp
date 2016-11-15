@@ -1,0 +1,28 @@
+<?xml version="1.0"?>
+<cd:ProductClass name="QA4ECV" last-modified="2016-11-15" xmlns:cd="http://www.stcorp.nl/coda/definition/2008/07">
+  <cd:Description>QA4ECV products</cd:Description>
+  <cd:ProductType name="L2_NO2">
+    <cd:Description>QA4ECV Level-2 tropospheric NO2 product</cd:Description>
+    <cd:ProductDefinition id="L2_NO2" format="hdf5" version="0">
+      <cd:Description>The format definition for this product is taken from the HDF5 file itself.</cd:Description>
+      <cd:DetectionRule>
+        <cd:MatchExpression>str(/@project) == "QA4ECV"</cd:MatchExpression>
+        <cd:MatchExpression>str(/@id, 13) == "QA4ECV_L2_NO2"</cd:MatchExpression>
+      </cd:DetectionRule>
+    </cd:ProductDefinition>
+  </cd:ProductType>
+  <cd:ProductType name="L2_HCHO">
+    <cd:Description>QA4ECV Level-2 HCHO product</cd:Description>
+    <cd:ProductDefinition id="L2_HCHO" format="hdf5" version="0">
+      <cd:Description>The format definition for this product is taken from the HDF5 file itself.</cd:Description>
+      <cd:DetectionRule>
+        <cd:MatchExpression>str(/@project) == "QA4ECV"</cd:MatchExpression>
+        <cd:MatchExpression>str(/@id, 14) == "QA4ECV_L2_HCHO"</cd:MatchExpression>
+      </cd:DetectionRule>
+      <cd:DetectionRule>
+        <cd:MatchExpression>str(/@project[0]) == "QA4ECV"</cd:MatchExpression>
+        <cd:MatchExpression>str(/@id[0], 14) == "QA4ECV_L2_HCHO"</cd:MatchExpression>
+      </cd:DetectionRule>
+    </cd:ProductDefinition>
+  </cd:ProductType>
+</cd:ProductClass>
