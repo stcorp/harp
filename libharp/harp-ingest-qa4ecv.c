@@ -726,7 +726,7 @@ static void register_hcho_product(void)
     description = "tropospheric vertical column of HCHO";
     variable_definition =
         harp_ingestion_register_variable_full_read(product_definition, "tropospheric_HCHO_column_number_density",
-                                                   harp_type_float, 1, dimension_type, NULL, description, "mol/cm^2",
+                                                   harp_type_float, 1, dimension_type, NULL, description, "molec/cm^2",
                                                    NULL, read_hcho_column_tropospheric);
     path = "/PRODUCT/tropospheric_hcho_vertical_column[]";
     harp_variable_definition_add_mapping(variable_definition, NULL, NULL, path, NULL);
@@ -735,7 +735,7 @@ static void register_hcho_product(void)
     variable_definition =
         harp_ingestion_register_variable_full_read(product_definition,
                                                    "tropospheric_HCHO_column_number_density_uncertainty_random",
-                                                   harp_type_float, 1, dimension_type, NULL, description, "mol/cm^2",
+                                                   harp_type_float, 1, dimension_type, NULL, description, "molec/cm^2",
                                                    NULL, read_hcho_column_tropospheric_uncertainty_random);
     path = "/PRODUCT/tropospheric_hcho_vertical_column_uncertainty_random[]";
     harp_variable_definition_add_mapping(variable_definition, NULL, NULL, path, NULL);
@@ -744,7 +744,7 @@ static void register_hcho_product(void)
     variable_definition =
     harp_ingestion_register_variable_full_read(product_definition,
                                                "tropospheric_HCHO_column_number_density_uncertainty_systematic",
-                                               harp_type_float, 1, dimension_type, NULL, description, "mol/cm^2",
+                                               harp_type_float, 1, dimension_type, NULL, description, "molec/cm^2",
                                                NULL, read_hcho_column_tropospheric_uncertainty_systematic);
     path = "/PRODUCT/tropospheric_hcho_vertical_column_uncertainty_systematic[]";
     harp_variable_definition_add_mapping(variable_definition, NULL, NULL, path, NULL);
@@ -800,7 +800,7 @@ static void register_no2_product(void)
     description = "tropospheric vertical column of NO2";
     variable_definition =
         harp_ingestion_register_variable_full_read(product_definition, "tropospheric_NO2_column_number_density",
-                                                   harp_type_float, 1, dimension_type, NULL, description, "mol/m^2",
+                                                   harp_type_float, 1, dimension_type, NULL, description, "molec/cm^2",
                                                    NULL, read_no2_column_tropospheric);
     path = "/PRODUCT/tropospheric_no2_vertical_column[]";
     harp_variable_definition_add_mapping(variable_definition, NULL, NULL, path, NULL);
@@ -809,7 +809,7 @@ static void register_no2_product(void)
     variable_definition =
         harp_ingestion_register_variable_full_read(product_definition,
                                                    "tropospheric_NO2_column_number_density_uncertainty",
-                                                   harp_type_float, 1, dimension_type, NULL, description, "mol/m^2",
+                                                   harp_type_float, 1, dimension_type, NULL, description, "molec/cm^2",
                                                    NULL, read_no2_column_tropospheric_precision);
     path = "/PRODUCT/tropospheric_no2_vertical_column_precision[]";
     harp_variable_definition_add_mapping(variable_definition, NULL, NULL, path, NULL);
@@ -827,14 +827,15 @@ static void register_no2_product(void)
         "factor)";
     variable_definition =
         harp_ingestion_register_variable_full_read(product_definition, "NO2_column_number_density", harp_type_float, 1,
-                                                   dimension_type, NULL, description, "mol/m^2", NULL, read_no2_column);
+                                                   dimension_type, NULL, description, "molec/cm^2", NULL,
+                                                   read_no2_column);
     path = "/PRODUCT/SUPPORT_DATA/DETAILED_RESULTS/total_no2_vertical_column[]";
     harp_variable_definition_add_mapping(variable_definition, NULL, NULL, path, NULL);
 
     description = "uncertainty of the total vertical column of NO2 (standard error)";
     variable_definition =
         harp_ingestion_register_variable_full_read(product_definition, "NO2_column_number_density_uncertainty",
-                                                   harp_type_float, 1, dimension_type, NULL, description, "mol/m^2",
+                                                   harp_type_float, 1, dimension_type, NULL, description, "molec/cm^2",
                                                    NULL, read_no2_column_precision);
     path = "/PRODUCT/SUPPORT_DATA/DETAILED_RESULTS/total_no2_vertical_column_precision[]";
     harp_variable_definition_add_mapping(variable_definition, NULL, NULL, path, NULL);
