@@ -108,6 +108,7 @@ libharp_la_SOURCES = \
 	libharp/harp-ingest-mls_l2.c \
 	libharp/harp-ingest-omi_l2.c \
 	libharp/harp-ingest-omi_l3.c \
+	libharp/harp-ingest-qa4ecv.c \
 	libharp/harp-ingest-sciamachy_l2.c \
 	libharp/harp-ingest-s5p_l1b.c \
 	libharp/harp-ingest-s5p_l2.c \

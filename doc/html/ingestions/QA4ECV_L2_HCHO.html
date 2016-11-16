@@ -1,0 +1,394 @@
+
+
+<!DOCTYPE html>
+<!--[if IE 8]><html class="no-js lt-ie9" lang="en" > <![endif]-->
+<!--[if gt IE 8]><!--> <html class="no-js" lang="en" > <!--<![endif]-->
+<head>
+  <meta charset="utf-8">
+  
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  
+  <title>QA4ECV_L2_HCHO &mdash; HARP 0.4b documentation</title>
+  
+
+  
+  
+
+  
+
+  
+  
+    
+
+  
+
+  
+  
+    <link rel="stylesheet" href="../_static/css/theme.css" type="text/css" />
+  
+
+  
+    <link rel="stylesheet" href="../_static/custom.css" type="text/css" />
+  
+
+  
+    <link rel="top" title="HARP 0.4b documentation" href="../index.html"/> 
+
+  
+  <script src="../_static/js/modernizr.min.js"></script>
+
+</head>
+
+<body class="wy-body-for-nav" role="document">
+
+  <div class="wy-grid-for-nav">
+
+    
+    <nav data-toggle="wy-nav-shift" class="wy-nav-side">
+      <div class="wy-side-scroll">
+        <div class="wy-side-nav-search">
+          
+
+          
+            <a href="../index.html" class="icon icon-home"> HARP
+          
+
+          
+          </a>
+
+          
+            
+            
+              <div class="version">
+                0.4
+              </div>
+            
+          
+
+          
+
+          
+        </div>
+
+        <div class="wy-menu wy-menu-vertical" data-spy="affix" role="navigation" aria-label="main navigation">
+          
+            
+            
+                <ul>
+<li class="toctree-l1"><a class="reference internal" href="../install.html">Installation</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../dataformats.html">Data formats</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../algorithms.html">Algorithms</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../operations.html">Operations</a></li>
+<li class="toctree-l1"><a class="reference internal" href="index.html">Ingestion definitions</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../libharp.html">C library</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../python.html">Python interface</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../tools.html">Command line tools</a></li>
+</ul>
+
+            
+          
+        </div>
+      </div>
+    </nav>
+
+    <section data-toggle="wy-nav-shift" class="wy-nav-content-wrap">
+
+      
+      <nav class="wy-nav-top" role="navigation" aria-label="top navigation">
+        <i data-toggle="wy-nav-top" class="fa fa-bars"></i>
+        <a href="../index.html">HARP</a>
+      </nav>
+
+
+      
+      <div class="wy-nav-content">
+        <div class="rst-content">
+          
+
+ 
+
+
+
+<div role="navigation" aria-label="breadcrumbs navigation">
+  <ul class="wy-breadcrumbs">
+    <li><a href="../index.html">Docs</a> &raquo;</li>
+      
+    <li>QA4ECV_L2_HCHO</li>
+      <li class="wy-breadcrumbs-aside">
+        
+          
+        
+      </li>
+  </ul>
+  <hr/>
+</div>
+          <div role="main" class="document" itemscope="itemscope" itemtype="http://schema.org/Article">
+           <div itemprop="articleBody">
+            
+  <div class="section" id="qa4ecv-l2-hcho">
+<h1>QA4ECV_L2_HCHO</h1>
+<div class="section" id="variables">
+<h2>Variables</h2>
+<p>The table below lists the variables that are present in the HARP product that results from an ingestion of <code class="docutils literal"><span class="pre">QA4ECV_L2_HCHO</span></code> data.</p>
+<table border="1" class="docutils">
+<colgroup>
+<col width="25%" />
+<col width="5%" />
+<col width="15%" />
+<col width="15%" />
+<col width="40%" />
+</colgroup>
+<thead valign="bottom">
+<tr class="row-odd"><th class="head">field name</th>
+<th class="head">type</th>
+<th class="head">dimensions</th>
+<th class="head">unit</th>
+<th class="head">description</th>
+</tr>
+</thead>
+<tbody valign="top">
+<tr class="row-even"><td><strong>scanline_pixel_index</strong></td>
+<td>int16</td>
+<td>{<em>time</em>}</td>
+<td>&nbsp;</td>
+<td>pixel index (0-based) within the scanline</td>
+</tr>
+<tr class="row-odd"><td><strong>datetime</strong></td>
+<td>double</td>
+<td>{<em>time</em>}</td>
+<td>seconds since 2010-01-01</td>
+<td>start time of the measurement</td>
+</tr>
+<tr class="row-even"><td><strong>longitude</strong></td>
+<td>float</td>
+<td>{<em>time</em>}</td>
+<td>degree_east</td>
+<td>longitude of the ground pixel center (WGS84)</td>
+</tr>
+<tr class="row-odd"><td><strong>latitude</strong></td>
+<td>float</td>
+<td>{<em>time</em>}</td>
+<td>degree_north</td>
+<td>latitude of the ground pixel center (WGS84)</td>
+</tr>
+<tr class="row-even"><td><strong>longitude_bounds</strong></td>
+<td>float</td>
+<td>{<em>time</em>, 4}</td>
+<td>degree_east</td>
+<td>longitudes of the ground pixel corners (WGS84)</td>
+</tr>
+<tr class="row-odd"><td><strong>latitude_bounds</strong></td>
+<td>float</td>
+<td>{<em>time</em>, 4}</td>
+<td>degree_north</td>
+<td>latitudes of the ground pixel corners (WGS84)</td>
+</tr>
+<tr class="row-even"><td><strong>solar_zenith_angle</strong></td>
+<td>float</td>
+<td>{<em>time</em>}</td>
+<td>degree</td>
+<td>zenith angle of the Sun at the ground pixel location (WGS84); angle measured away from the vertical</td>
+</tr>
+<tr class="row-odd"><td><strong>relative_azimuth_angle</strong></td>
+<td>float</td>
+<td>{<em>time</em>}</td>
+<td>degree</td>
+<td>relative azimuth angle at the ground pixel location (WGS84); angle measured East-of-North</td>
+</tr>
+<tr class="row-even"><td><strong>sensor_zenith_angle</strong></td>
+<td>float</td>
+<td>{<em>time</em>}</td>
+<td>degree</td>
+<td>zenith angle of the satellite at the ground pixel location (WGS84); angle measured away from the vertical</td>
+</tr>
+<tr class="row-odd"><td><strong>pressure_bounds</strong></td>
+<td>double</td>
+<td>{<em>time</em>, <em>vertical</em>, 2}</td>
+<td>Pa</td>
+<td>pressure boundaries</td>
+</tr>
+<tr class="row-even"><td><strong>tropospheric_HCHO_column_number_density</strong></td>
+<td>float</td>
+<td>{<em>time</em>}</td>
+<td>mol/cm^2</td>
+<td>tropospheric vertical column of HCHO</td>
+</tr>
+<tr class="row-odd"><td><strong>tropospheric_HCHO_column_number_density_uncertainty_random</strong></td>
+<td>float</td>
+<td>{<em>time</em>}</td>
+<td>mol/cm^2</td>
+<td>uncertainty of the tropospheric vertical column of HCHO due to random effects</td>
+</tr>
+<tr class="row-even"><td><strong>tropospheric_HCHO_column_number_density_uncertainty_systematic</strong></td>
+<td>float</td>
+<td>{<em>time</em>}</td>
+<td>mol/cm^2</td>
+<td>uncertainty of the tropospheric vertical column of HCHO due to systematic effects</td>
+</tr>
+<tr class="row-odd"><td><strong>HCHO_column_number_density_avk</strong></td>
+<td>float</td>
+<td>{<em>time</em>, <em>vertical</em>}</td>
+<td>&nbsp;</td>
+<td>averaging kernel for the total column number density of tropospheric HCHO</td>
+</tr>
+<tr class="row-even"><td><strong>HCHO_column_number_density_apriori</strong></td>
+<td>float</td>
+<td>{<em>time</em>, <em>vertical</em>}</td>
+<td>&nbsp;</td>
+<td>apriori profile for the total column number density of tropospheric HCHO</td>
+</tr>
+<tr class="row-odd"><td><strong>index</strong></td>
+<td>int32</td>
+<td>{<em>time</em>}</td>
+<td>&nbsp;</td>
+<td>zero-based index of the sample within the source product</td>
+</tr>
+</tbody>
+</table>
+</div>
+<div class="section" id="mapping-description">
+<h2>Mapping description</h2>
+<p>The table below details where and how each variable was retrieved from the input product.</p>
+<table border="1" class="docutils">
+<colgroup>
+<col width="22%" />
+<col width="5%" />
+<col width="74%" />
+</colgroup>
+<thead valign="bottom">
+<tr class="row-odd"><th class="head">field name</th>
+<th class="head" colspan="2">mapping description</th>
+</tr>
+</thead>
+<tbody valign="top">
+<tr class="row-even"><td><strong>scanline_pixel_index</strong></td>
+<td><em>description</em></td>
+<td>the scanline and pixel dimensions are collapsed into a temporal dimension; the index of the pixel within the scanline is computed as the index on the temporal dimension modulo the number of scanlines</td>
+</tr>
+<tr class="row-odd"><td rowspan="2"><strong>datetime</strong></td>
+<td><em>path</em></td>
+<td><strong>/PRODUCT/time, /PRODUCT/delta_time[]</strong></td>
+</tr>
+<tr class="row-even"><td><em>description</em></td>
+<td>time converted from milliseconds since a reference time (given as seconds since 2010-01-01) to seconds since 2010-01-01 (using 86400 seconds per day); the time associated with a scanline is repeated for each pixel in the scanline</td>
+</tr>
+<tr class="row-odd"><td><strong>longitude</strong></td>
+<td><em>path</em></td>
+<td><strong>/PRODUCT/longitude[]</strong></td>
+</tr>
+<tr class="row-even"><td><strong>latitude</strong></td>
+<td><em>path</em></td>
+<td><strong>/PRODUCT/latitude[]</strong></td>
+</tr>
+<tr class="row-odd"><td><strong>longitude_bounds</strong></td>
+<td><em>path</em></td>
+<td><strong>/PRODUCT/SUPPORT_DATA/GEOLOCATIONS/longitude_bounds[]</strong></td>
+</tr>
+<tr class="row-even"><td><strong>latitude_bounds</strong></td>
+<td><em>path</em></td>
+<td><strong>/PRODUCT/SUPPORT_DATA/GEOLOCATIONS/latitude_bounds[]</strong></td>
+</tr>
+<tr class="row-odd"><td><strong>solar_zenith_angle</strong></td>
+<td><em>path</em></td>
+<td><strong>/PRODUCT/SUPPORT_DATA/GEOLOCATIONS/solar_zenith_angle[]</strong></td>
+</tr>
+<tr class="row-even"><td><strong>relative_azimuth_angle</strong></td>
+<td><em>path</em></td>
+<td><strong>/PRODUCT/SUPPORT_DATA/GEOLOCATIONS/relative_azimuth_angle[]</strong></td>
+</tr>
+<tr class="row-odd"><td><strong>sensor_zenith_angle</strong></td>
+<td><em>path</em></td>
+<td><strong>/PRODUCT/SUPPORT_DATA/GEOLOCATIONS/viewing_zenith_angle[]</strong></td>
+</tr>
+<tr class="row-even"><td rowspan="2"><strong>pressure_bounds</strong></td>
+<td><em>path</em></td>
+<td><strong>/PRODUCT/tm5_pressure_level_a[],/PRODUCT/tm5_pressure_level_b[],/PRODUCT/SUPPORT_DATA/INPUT_DATA/surface_pressure[]</strong></td>
+</tr>
+<tr class="row-odd"><td><em>description</em></td>
+<td>pressure in Pa at level k is derived from surface pressure in hPa as: tm5_pressure_level_a[k] + tm5_pressure_level_b[k] * surface_pressure[] * 100.0</td>
+</tr>
+<tr class="row-even"><td><strong>tropospheric_HCHO_column_number_density</strong></td>
+<td><em>path</em></td>
+<td><strong>/PRODUCT/tropospheric_hcho_vertical_column[]</strong></td>
+</tr>
+<tr class="row-odd"><td><strong>tropospheric_HCHO_column_number_density_uncertainty_random</strong></td>
+<td><em>path</em></td>
+<td><strong>/PRODUCT/tropospheric_hcho_vertical_column_uncertainty_random[]</strong></td>
+</tr>
+<tr class="row-even"><td><strong>tropospheric_HCHO_column_number_density_uncertainty_systematic</strong></td>
+<td><em>path</em></td>
+<td><strong>/PRODUCT/tropospheric_hcho_vertical_column_uncertainty_systematic[]</strong></td>
+</tr>
+<tr class="row-odd"><td><strong>HCHO_column_number_density_avk</strong></td>
+<td><em>path</em></td>
+<td><strong>/PRODUCT/SUPPORT_DATA/DETAILED_RESULTS/averaging_kernels[]</strong></td>
+</tr>
+<tr class="row-even"><td><strong>HCHO_column_number_density_apriori</strong></td>
+<td><em>path</em></td>
+<td><strong>/PRODUCT/SUPPORT_DATA/INPUT_DATA/hcho_profile_apriori[]</strong></td>
+</tr>
+</tbody>
+</table>
+</div>
+</div>
+
+
+           </div>
+          </div>
+          <footer>
+  
+
+  <hr/>
+
+  <div role="contentinfo">
+    <p>
+        &copy; Copyright 2015-2016 S&amp;T, The Netherlands.
+
+    </p>
+  </div> 
+
+</footer>
+
+        </div>
+      </div>
+
+    </section>
+
+  </div>
+  
+
+
+  
+
+    <script type="text/javascript">
+        var DOCUMENTATION_OPTIONS = {
+            URL_ROOT:'../',
+            VERSION:'0.4b',
+            COLLAPSE_INDEX:false,
+            FILE_SUFFIX:'.html',
+            HAS_SOURCE:  false
+        };
+    </script>
+      <script type="text/javascript" src="../_static/jquery.js"></script>
+      <script type="text/javascript" src="../_static/underscore.js"></script>
+      <script type="text/javascript" src="../_static/doctools.js"></script>
+      <script type="text/javascript" src="https://cdn.mathjax.org/mathjax/latest/MathJax.js?config=TeX-AMS-MML_HTMLorMML"></script>
+
+  
+
+  
+  
+    <script type="text/javascript" src="../_static/js/theme.js"></script>
+  
+
+  
+  
+  <script type="text/javascript">
+      jQuery(function () {
+          SphinxRtdTheme.StickyNav.enable();
+      });
+  </script>
+   
+
+</body>
+</html>

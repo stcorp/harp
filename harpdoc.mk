@@ -280,6 +280,8 @@ HARP_DOCFILES = \
 	doc/html/ingestions/OMI_L3_OMDOAO3e.html \
 	doc/html/ingestions/OMI_L3_OMTO3d.html \
 	doc/html/ingestions/OMI_L3_OMTO3e.html \
+	doc/html/ingestions/QA4ECV_L2_HCHO.html \
+	doc/html/ingestions/QA4ECV_L2_NO2.html \
 	doc/html/ingestions/S5P_L1B_IR_SIR_BD7.html \
 	doc/html/ingestions/S5P_L1B_IR_SIR_BD8.html \
 	doc/html/ingestions/S5P_L1B_IR_UVN_BD1.html \
@@ -907,6 +909,10 @@ doc/html/ingestions/OMI_L3_OMDOAO3e.html:
 doc/html/ingestions/OMI_L3_OMTO3d.html:
 	$(MAKE) harp_doc
 doc/html/ingestions/OMI_L3_OMTO3e.html:
+	$(MAKE) harp_doc
+doc/html/ingestions/QA4ECV_L2_HCHO.html:
+	$(MAKE) harp_doc
+doc/html/ingestions/QA4ECV_L2_NO2.html:
 	$(MAKE) harp_doc
 doc/html/ingestions/S5P_L1B_IR_SIR_BD7.html:
 	$(MAKE) harp_doc
