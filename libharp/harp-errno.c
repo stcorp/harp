@@ -213,7 +213,7 @@ static void set_error_message_vargs(const char *message, va_list ap)
 
 void harp_add_coda_cursor_path_to_error_message(const coda_cursor *cursor)
 {
-    harp_add_error_message(" at '/");
+    harp_add_error_message(" at '");
     coda_cursor_print_path(cursor, add_error_message);
     harp_add_error_message("'");
 }
