@@ -273,6 +273,17 @@ double_value:
             if (harp_parse_double($1, length, &$$, 0) != length) YYERROR;
             free($1);
         }
+    | '+' DOUBLE_VALUE {
+            long length = strlen($2);
+            if (harp_parse_double($2, length, &$$, 0) != length) YYERROR;
+            free($2);
+        }
+    | '-' DOUBLE_VALUE {
+            long length = strlen($2);
+            if (harp_parse_double($2, length, &$$, 0) != length) YYERROR;
+            free($2);
+            $$ = -$$;
+        }
     | int32_value { $$ = (double)$1; }
     | NAN { $$ = harp_nan(); }
     | '+' NAN { $$ = harp_nan(); }
@@ -282,7 +293,9 @@ double_value:
     ;
 
 int32_value:
-    INTEGER_VALUE { $$ = (int32_t)atol($1); free($1); }
+      INTEGER_VALUE { $$ = (int32_t)atol($1); free($1); }
+    | '+' INTEGER_VALUE { $$ = (int32_t)atol($2); free($2); }
+    | '-' INTEGER_VALUE { $$ = -(int32_t)atol($2); free($2); }
     ;
 
 double_array:
