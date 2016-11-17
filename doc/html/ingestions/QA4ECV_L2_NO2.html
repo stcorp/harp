@@ -219,37 +219,43 @@
 <td>molec/cm^2</td>
 <td>uncertainty of the tropospheric vertical column of NO2 (standard error)</td>
 </tr>
-<tr class="row-even"><td><strong>tropospheric_NO2_column_number_density_amf</strong></td>
+<tr class="row-even"><td><strong>tropospheric_NO2_column_number_density_validity</strong></td>
+<td>int32</td>
+<td>{<em>time</em>}</td>
+<td>&nbsp;</td>
+<td>processing quality flag of the tropospheric vertical column of NO2</td>
+</tr>
+<tr class="row-odd"><td><strong>tropospheric_NO2_column_number_density_amf</strong></td>
 <td>float</td>
 <td>{<em>time</em>}</td>
 <td>&nbsp;</td>
 <td>tropospheric air mass factor, computed by integrating the altitude dependent air mass factor over the atmospheric layers from the surface up to and including the layer with the tropopause</td>
 </tr>
-<tr class="row-odd"><td><strong>NO2_column_number_density</strong></td>
+<tr class="row-even"><td><strong>NO2_column_number_density</strong></td>
 <td>float</td>
 <td>{<em>time</em>}</td>
 <td>molec/cm^2</td>
 <td>total vertical column of NO2 (ratio of the slant column density of NO2 and the total air mass factor)</td>
 </tr>
-<tr class="row-even"><td><strong>NO2_column_number_density_uncertainty</strong></td>
+<tr class="row-odd"><td><strong>NO2_column_number_density_uncertainty</strong></td>
 <td>float</td>
 <td>{<em>time</em>}</td>
 <td>molec/cm^2</td>
 <td>uncertainty of the total vertical column of NO2 (standard error)</td>
 </tr>
-<tr class="row-odd"><td><strong>NO2_column_number_density_amf</strong></td>
+<tr class="row-even"><td><strong>NO2_column_number_density_amf</strong></td>
 <td>float</td>
 <td>{<em>time</em>}</td>
 <td>&nbsp;</td>
 <td>total air mass factor, computed by integrating the altitude dependent air mass factor over the atmospheric layers from the surface to top-of-atmosphere</td>
 </tr>
-<tr class="row-even"><td><strong>NO2_column_number_density_avk</strong></td>
+<tr class="row-odd"><td><strong>NO2_column_number_density_avk</strong></td>
 <td>float</td>
 <td>{<em>time</em>, <em>vertical</em>}</td>
 <td>&nbsp;</td>
 <td>averaging kernel for the air mass factor correction, describing the NO2 profile sensitivity of the vertical column density</td>
 </tr>
-<tr class="row-odd"><td><strong>index</strong></td>
+<tr class="row-even"><td><strong>index</strong></td>
 <td>int32</td>
 <td>{<em>time</em>}</td>
 <td>&nbsp;</td>
@@ -327,23 +333,27 @@
 <td><em>path</em></td>
 <td><strong>/PRODUCT/tropospheric_no2_vertical_column_precision[]</strong></td>
 </tr>
-<tr class="row-even"><td><strong>tropospheric_NO2_column_number_density_amf</strong></td>
+<tr class="row-even"><td><strong>tropospheric_NO2_column_number_density_validity</strong></td>
+<td><em>path</em></td>
+<td><strong>/PRODUCT/SUPPORT_DATA/DETAILED_RESULTS/processing_validity_flags[]</strong></td>
+</tr>
+<tr class="row-odd"><td><strong>tropospheric_NO2_column_number_density_amf</strong></td>
 <td><em>path</em></td>
 <td><strong>/PRODUCT/amf_trop[]</strong></td>
 </tr>
-<tr class="row-odd"><td><strong>NO2_column_number_density</strong></td>
+<tr class="row-even"><td><strong>NO2_column_number_density</strong></td>
 <td><em>path</em></td>
 <td><strong>/PRODUCT/SUPPORT_DATA/DETAILED_RESULTS/total_no2_vertical_column[]</strong></td>
 </tr>
-<tr class="row-even"><td><strong>NO2_column_number_density_uncertainty</strong></td>
+<tr class="row-odd"><td><strong>NO2_column_number_density_uncertainty</strong></td>
 <td><em>path</em></td>
 <td><strong>/PRODUCT/SUPPORT_DATA/DETAILED_RESULTS/total_no2_vertical_column_precision[]</strong></td>
 </tr>
-<tr class="row-odd"><td><strong>NO2_column_number_density_amf</strong></td>
+<tr class="row-even"><td><strong>NO2_column_number_density_amf</strong></td>
 <td><em>path</em></td>
 <td><strong>/PRODUCT/amf_total[]</strong></td>
 </tr>
-<tr class="row-even"><td><strong>NO2_column_number_density_avk</strong></td>
+<tr class="row-odd"><td><strong>NO2_column_number_density_avk</strong></td>
 <td><em>path</em></td>
 <td><strong>/PRODUCT/averaging_kernel[]</strong></td>
 </tr>

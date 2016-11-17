@@ -251,6 +251,13 @@ static int read_dataset(coda_cursor cursor, const char *dataset_name, harp_data_
 
     switch (data_type)
     {
+        case harp_type_int32:
+            if (coda_cursor_read_uint32_array(&cursor, (uint32_t *)data.int32_data, coda_array_ordering_c) != 0)
+            {
+                harp_set_error(HARP_ERROR_CODA, NULL);
+                return -1;
+            }
+            break;
         case harp_type_float:
             if (coda_cursor_read_float_array(&cursor, data.float_data, coda_array_ordering_c) != 0)
             {
@@ -267,6 +274,8 @@ static int read_dataset(coda_cursor cursor, const char *dataset_name, harp_data_
                 harp_set_error(HARP_ERROR_CODA, NULL);
                 return -1;
             }
+            /* Replace values equal to the _FillValue variable attribute by NaN. */
+            harp_array_replace_fill_value(data_type, num_elements, data, fill_value);
             break;
         case harp_type_double:
             if (coda_cursor_read_double_array(&cursor, data.double_data, coda_array_ordering_c) != 0)
@@ -284,14 +293,13 @@ static int read_dataset(coda_cursor cursor, const char *dataset_name, harp_data_
                 harp_set_error(HARP_ERROR_CODA, NULL);
                 return -1;
             }
+            /* Replace values equal to the _FillValue variable attribute by NaN. */
+            harp_array_replace_fill_value(data_type, num_elements, data, fill_value);
             break;
         default:
             assert(0);
             exit(1);
     }
-
-    /* Replace values equal to the _FillValue variable attribute by NaN. */
-    harp_array_replace_fill_value(data_type, num_elements, data, fill_value);
 
     return 0;
 }
@@ -510,6 +518,14 @@ static int read_no2_column_tropospheric_amf(void *user_data, harp_array data)
                         data);
 }
 
+static int read_no2_column_tropospheric_validity(void *user_data, harp_array data)
+{
+    ingest_info *info = (ingest_info *)user_data;
+
+    return read_dataset(info->detailed_results_cursor, "processing_quality_flags", harp_type_int32,
+                        info->num_scanlines * info->num_pixels, data);
+}
+
 static int read_no2_column(void *user_data, harp_array data)
 {
     ingest_info *info = (ingest_info *)user_data;
@@ -564,6 +580,14 @@ static int read_hcho_column_tropospheric_uncertainty_systematic(void *user_data,
 
     return read_dataset(info->product_cursor, "tropospheric_hcho_vertical_column_uncertainty_systematic",
                         harp_type_float, info->num_scanlines * info->num_pixels, data);
+}
+
+static int read_hcho_column_tropospheric_validity(void *user_data, harp_array data)
+{
+    ingest_info *info = (ingest_info *)user_data;
+
+    return read_dataset(info->detailed_results_cursor, "processing_quality_flags", harp_type_int32,
+                        info->num_scanlines * info->num_pixels, data);
 }
 
 static int read_hcho_column_avk(void *user_data, harp_array data)
@@ -749,6 +773,15 @@ static void register_hcho_product(void)
     path = "/PRODUCT/tropospheric_hcho_vertical_column_uncertainty_systematic[]";
     harp_variable_definition_add_mapping(variable_definition, NULL, NULL, path, NULL);
 
+    description = "processing quality flag of the tropospheric vertical column of HCHO";
+    variable_definition =
+    harp_ingestion_register_variable_full_read(product_definition,
+                                               "tropospheric_HCHO_column_number_density_validity",
+                                               harp_type_int32, 1, dimension_type, NULL, description, NULL,
+                                               NULL, read_hcho_column_tropospheric_validity);
+    path = "/PRODUCT/SUPPORT_DATA/DETAILED_RESULTS/processing_validity_flags[]";
+    harp_variable_definition_add_mapping(variable_definition, NULL, NULL, path, NULL);
+
     description = "averaging kernel for the total column number density of tropospheric HCHO";
     variable_definition =
         harp_ingestion_register_variable_full_read(product_definition, "HCHO_column_number_density_avk",
@@ -812,6 +845,15 @@ static void register_no2_product(void)
                                                    harp_type_float, 1, dimension_type, NULL, description, "molec/cm^2",
                                                    NULL, read_no2_column_tropospheric_precision);
     path = "/PRODUCT/tropospheric_no2_vertical_column_precision[]";
+    harp_variable_definition_add_mapping(variable_definition, NULL, NULL, path, NULL);
+
+    description = "processing quality flag of the tropospheric vertical column of NO2";
+    variable_definition =
+    harp_ingestion_register_variable_full_read(product_definition,
+                                               "tropospheric_NO2_column_number_density_validity",
+                                               harp_type_int32, 1, dimension_type, NULL, description, NULL,
+                                               NULL, read_no2_column_tropospheric_validity);
+    path = "/PRODUCT/SUPPORT_DATA/DETAILED_RESULTS/processing_validity_flags[]";
     harp_variable_definition_add_mapping(variable_definition, NULL, NULL, path, NULL);
 
     description = "tropospheric air mass factor, computed by integrating the altitude dependent air mass factor over "

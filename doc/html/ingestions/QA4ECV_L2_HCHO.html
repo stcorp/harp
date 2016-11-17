@@ -225,19 +225,25 @@
 <td>molec/cm^2</td>
 <td>uncertainty of the tropospheric vertical column of HCHO due to systematic effects</td>
 </tr>
-<tr class="row-odd"><td><strong>HCHO_column_number_density_avk</strong></td>
+<tr class="row-odd"><td><strong>tropospheric_HCHO_column_number_density_validity</strong></td>
+<td>int32</td>
+<td>{<em>time</em>}</td>
+<td>&nbsp;</td>
+<td>processing quality flag of the tropospheric vertical column of HCHO</td>
+</tr>
+<tr class="row-even"><td><strong>HCHO_column_number_density_avk</strong></td>
 <td>float</td>
 <td>{<em>time</em>, <em>vertical</em>}</td>
 <td>&nbsp;</td>
 <td>averaging kernel for the total column number density of tropospheric HCHO</td>
 </tr>
-<tr class="row-even"><td><strong>HCHO_column_number_density_apriori</strong></td>
+<tr class="row-odd"><td><strong>HCHO_column_number_density_apriori</strong></td>
 <td>float</td>
 <td>{<em>time</em>, <em>vertical</em>}</td>
 <td>&nbsp;</td>
 <td>apriori profile for the total column number density of tropospheric HCHO</td>
 </tr>
-<tr class="row-odd"><td><strong>index</strong></td>
+<tr class="row-even"><td><strong>index</strong></td>
 <td>int32</td>
 <td>{<em>time</em>}</td>
 <td>&nbsp;</td>
@@ -319,11 +325,15 @@
 <td><em>path</em></td>
 <td><strong>/PRODUCT/tropospheric_hcho_vertical_column_uncertainty_systematic[]</strong></td>
 </tr>
-<tr class="row-odd"><td><strong>HCHO_column_number_density_avk</strong></td>
+<tr class="row-odd"><td><strong>tropospheric_HCHO_column_number_density_validity</strong></td>
+<td><em>path</em></td>
+<td><strong>/PRODUCT/SUPPORT_DATA/DETAILED_RESULTS/processing_validity_flags[]</strong></td>
+</tr>
+<tr class="row-even"><td><strong>HCHO_column_number_density_avk</strong></td>
 <td><em>path</em></td>
 <td><strong>/PRODUCT/SUPPORT_DATA/DETAILED_RESULTS/averaging_kernels[]</strong></td>
 </tr>
-<tr class="row-even"><td><strong>HCHO_column_number_density_apriori</strong></td>
+<tr class="row-odd"><td><strong>HCHO_column_number_density_apriori</strong></td>
 <td><em>path</em></td>
 <td><strong>/PRODUCT/SUPPORT_DATA/INPUT_DATA/hcho_profile_apriori[]</strong></td>
 </tr>
