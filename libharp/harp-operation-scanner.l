@@ -49,13 +49,13 @@ WHITESPACE   [[:space:]]+
 
 %%
 
-"\""([^\"\\]|\\.)*"\"" {
+"\""([^\"\\]|\\.)*"\""  {
                             yylval.string_val = (char *)malloc(yyleng - 1);
                             memcpy(yylval.string_val, yytext + 1, yyleng - 2);
                             yylval.string_val[yyleng - 2] = '\0';
                             return STRING_VALUE;
                         }
-"["([^\[])*"]"        {
+"["([^\[])*"]"          {
                             yylval.string_val = (char *)malloc(yyleng - 1);
                             memcpy(yylval.string_val, yytext + 1, yyleng - 2);
                             yylval.string_val[yyleng - 2] = '\0';
