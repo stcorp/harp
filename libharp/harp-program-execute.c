@@ -730,10 +730,7 @@ static int execute_variable_exclude_filter_operation(harp_product *product, harp
 
     assert(program->num_operations != 0);
     operation = program->operation[0];
-    if (operation->type != harp_operation_exclude_variable)
-    {
-        return 0;
-    }
+    assert(operation->type == harp_operation_exclude_variable);
 
     /* unmark the variables to exclude */
     ex_args = (const harp_variable_exclusion_args *)operation->args;
@@ -774,10 +771,7 @@ static int execute_variable_keep_filter_operation(harp_product *product, harp_pr
 
     assert(program->num_operations != 0);
     operation = program->operation[0];
-    if (operation->type != harp_operation_keep_variable)
-    {
-        return 0;
-    }
+    assert(operation->type == harp_operation_keep_variable);
 
     include_variable_mask = (uint8_t *)calloc(product->num_variables, sizeof(uint8_t));
     if (include_variable_mask == NULL)
@@ -841,11 +835,7 @@ static int execute_collocation_filter(harp_product *product, harp_program *progr
 
     assert(program->num_operations != 0);
     operation = program->operation[0];
-    if (operation->type != harp_operation_filter_collocation)
-    {
-        /* Operation is not a collocation filter operation, skip it. */
-        return 0;
-    }
+    assert(operation->type == harp_operation_filter_collocation);
 
     if (product->source_product == NULL)
     {
@@ -901,11 +891,7 @@ static int execute_regrid(harp_product *product, harp_program *program)
 
     assert(program->num_operations != 0);
     operation = program->operation[0];
-    if (operation->type != harp_operation_regrid)
-    {
-        /* Operation is not a regrid operation, skip it. */
-        return 0;
-    }
+    assert(operation->type == harp_operation_regrid);
 
     args = (const harp_regrid_args *)operation->args;
 
@@ -939,11 +925,7 @@ static int execute_regrid_collocated(harp_product *product, harp_program *progra
 
     assert(program->num_operations != 0);
     operation = program->operation[0];
-    if (operation->type != harp_operation_regrid_collocated)
-    {
-        /* Operation is not a regrid operation, skip it. */
-        return 0;
-    }
+    assert(operation->type == harp_operation_regrid_collocated);
 
     args = (const harp_regrid_collocated_args *)operation->args;
 
@@ -992,11 +974,7 @@ static int execute_flatten(harp_product *product, harp_program *program)
 
     assert(program->num_operations != 0);
     operation = program->operation[0];
-    if (operation->type != harp_operation_flatten)
-    {
-        /* Operation is not a regrid operation, skip it. */
-        return 0;
-    }
+    assert(operation->type == harp_operation_flatten);
 
     args = (const harp_flatten_args *)operation->args;
 
@@ -1295,12 +1273,11 @@ static int execute_filter_operations(harp_product *product, harp_program *progra
 static int execute_derivation(harp_product *product, harp_program *program)
 {
     harp_variable_derivation_args *args = NULL;
-    harp_operation *operation = program->operation[0];
+    harp_operation *operation;
 
-    if (operation->type != harp_operation_derive_variable)
-    {
-        return 0;
-    }
+    assert(program->num_operations != 0);
+    operation = program->operation[0];
+    assert(operation->type == harp_operation_derive_variable);
 
     /* get operation arguments */
     args = (harp_variable_derivation_args *)operation->args;
