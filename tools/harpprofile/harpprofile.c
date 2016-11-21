@@ -306,6 +306,11 @@ static int resample(int argc, char *argv[])
 
     if (export)
     {
+        if (harp_product_update_history(product, "harpprofile", argc, argv) != 0)
+        {
+            harp_product_delete(product);
+            return -1;
+        }
         if (harp_export(output_filename, output_format, product) != 0)
         {
             return -1;
@@ -467,6 +472,11 @@ static int smooth(int argc, char *argv[])
 
     if (export)
     {
+        if (harp_product_update_history(product, "harpprofile", argc, argv) != 0)
+        {
+            harp_product_delete(product);
+            return -1;
+        }
         if (harp_export(output_filename, output_format, product) != 0)
         {
             return -1;
