@@ -738,9 +738,9 @@ static void register_hcho_product(void)
 
     description = "pressure boundaries";
     variable_definition =
-    harp_ingestion_register_variable_full_read(product_definition, "pressure_bounds", harp_type_double, 3,
-                                               pressure_bounds_dimension_type, pressure_bounds_dimension,
-                                               description, "Pa", NULL, read_pressure_bounds);
+        harp_ingestion_register_variable_full_read(product_definition, "pressure_bounds", harp_type_double, 3,
+                                                   pressure_bounds_dimension_type, pressure_bounds_dimension,
+                                                   description, "Pa", NULL, read_pressure_bounds);
     path = "/PRODUCT/tm5_pressure_level_a[],/PRODUCT/tm5_pressure_level_b[],"
         "/PRODUCT/SUPPORT_DATA/INPUT_DATA/surface_pressure[]";
     description = "pressure in Pa at level k is derived from surface pressure in hPa as: tm5_pressure_level_a[k] + "
@@ -766,19 +766,19 @@ static void register_hcho_product(void)
 
     description = "uncertainty of the tropospheric vertical column of HCHO due to systematic effects";
     variable_definition =
-    harp_ingestion_register_variable_full_read(product_definition,
-                                               "tropospheric_HCHO_column_number_density_uncertainty_systematic",
-                                               harp_type_float, 1, dimension_type, NULL, description, "molec/cm^2",
-                                               NULL, read_hcho_column_tropospheric_uncertainty_systematic);
+        harp_ingestion_register_variable_full_read(product_definition,
+                                                   "tropospheric_HCHO_column_number_density_uncertainty_systematic",
+                                                   harp_type_float, 1, dimension_type, NULL, description, "molec/cm^2",
+                                                   NULL, read_hcho_column_tropospheric_uncertainty_systematic);
     path = "/PRODUCT/tropospheric_hcho_vertical_column_uncertainty_systematic[]";
     harp_variable_definition_add_mapping(variable_definition, NULL, NULL, path, NULL);
 
     description = "processing quality flag of the tropospheric vertical column of HCHO";
     variable_definition =
-    harp_ingestion_register_variable_full_read(product_definition,
-                                               "tropospheric_HCHO_column_number_density_validity",
-                                               harp_type_int32, 1, dimension_type, NULL, description, NULL,
-                                               NULL, read_hcho_column_tropospheric_validity);
+        harp_ingestion_register_variable_full_read(product_definition,
+                                                   "tropospheric_HCHO_column_number_density_validity",
+                                                   harp_type_int32, 1, dimension_type, NULL, description, NULL,
+                                                   NULL, read_hcho_column_tropospheric_validity);
     path = "/PRODUCT/SUPPORT_DATA/DETAILED_RESULTS/processing_validity_flags[]";
     harp_variable_definition_add_mapping(variable_definition, NULL, NULL, path, NULL);
 
@@ -849,10 +849,10 @@ static void register_no2_product(void)
 
     description = "processing quality flag of the tropospheric vertical column of NO2";
     variable_definition =
-    harp_ingestion_register_variable_full_read(product_definition,
-                                               "tropospheric_NO2_column_number_density_validity",
-                                               harp_type_int32, 1, dimension_type, NULL, description, NULL,
-                                               NULL, read_no2_column_tropospheric_validity);
+        harp_ingestion_register_variable_full_read(product_definition,
+                                                   "tropospheric_NO2_column_number_density_validity",
+                                                   harp_type_int32, 1, dimension_type, NULL, description, NULL,
+                                                   NULL, read_no2_column_tropospheric_validity);
     path = "/PRODUCT/SUPPORT_DATA/DETAILED_RESULTS/processing_validity_flags[]";
     harp_variable_definition_add_mapping(variable_definition, NULL, NULL, path, NULL);
 
