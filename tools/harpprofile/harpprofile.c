@@ -31,6 +31,17 @@
 
 #define LINE_LENGTH 1024
 
+static int print_warning(const char *message, va_list ap)
+{
+    int result;
+
+    fprintf(stderr, "WARNING: ");
+    result = vfprintf(stderr, message, ap);
+    fprintf(stderr, "\n");
+
+    return result;
+}
+
 static void print_version()
 {
     printf("harpprofile version %s\n", libharp_version);
@@ -514,6 +525,8 @@ int main(int argc, char *argv[])
         print_help();
         return 1;
     }
+
+    harp_set_warning_handler(print_warning);
 
     if (harp_init() != 0)
     {
