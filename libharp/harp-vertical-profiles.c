@@ -1065,83 +1065,179 @@ static int product_filter_resamplable_variables(harp_product *product)
  *   \arg \c 0, Success.
  *   \arg \c -1, Error occurred (check #harp_errno).
  */
-LIBHARP_API int harp_product_regrid_vertical_with_axis_variable(harp_product *product, harp_variable *target_grid)
+LIBHARP_API int harp_product_regrid_vertical_with_axis_variable(harp_product *product, harp_variable *axis_variable)
 {
-    harp_variable *source_grid = NULL;
-    harp_variable *vertical_axis = NULL;
-    long target_vertical_elements = target_grid->dimension[target_grid->num_dimensions - 1];
+    harp_dimension_type grid_dim_type[2] = { harp_dimension_time, harp_dimension_vertical };
+    harp_dimension_type bounds_dim_type[3] = { harp_dimension_time, harp_dimension_vertical,
+        harp_dimension_independent
+    };
+    long num_source_max_vertical_elements;      /* actual elems + NaN padding */
+    long num_target_vertical_elements = axis_variable->dimension[axis_variable->num_dimensions - 1];
     long source_time_dim_length = 0;    /* 0 indicates that we do time-independent regridding */
-    long source_vertical_elements;
+    int source_grid_num_dims = 1;
     int i;
 
-    harp_dimension_type vertical_1d_dim_type[1] = { harp_dimension_vertical };
-    harp_dimension_type vertical_2d_dim_type[2] = { harp_dimension_time, harp_dimension_vertical };
+    /* owned memory */
+    harp_variable *vertical_axis = NULL;
+    harp_variable *source_grid = NULL;
+    harp_variable *source_bounds = NULL;
+    harp_product *target_grid_product = NULL;
+    harp_variable *target_grid = NULL;
+    harp_variable *target_bounds = NULL;
+    char *bounds_name = NULL;
+    double *interpolation_buffer = NULL;
+
+    if (harp_variable_copy(axis_variable, &target_grid) != 0)
+    {
+        goto error;
+    }
 
     /* Derive the source grid (will give doubles because unit is passed) */
-    if (harp_product_add_derived_variable(product, target_grid->name, target_grid->unit, 1, vertical_1d_dim_type) != 0)
+    if (harp_product_get_derived_variable(product, target_grid->name, target_grid->unit, 1, &grid_dim_type[1],
+                                          &source_grid) != 0)
     {
         /* Failed to derive 1D source grid. Try 2D */
-        if (harp_product_add_derived_variable(product,
-                                              target_grid->name, target_grid->unit, 2, vertical_2d_dim_type) != 0)
+        if (harp_product_get_derived_variable(product, target_grid->name, target_grid->unit, 2, grid_dim_type,
+                                              &source_grid) != 0)
         {
-            return -1;
+            goto error;
+        }
+        source_grid_num_dims = 2;
+        source_time_dim_length = source_grid->dimension[0];
+    }
+    num_source_max_vertical_elements = source_grid->dimension[source_grid->num_dimensions - 1];
+
+    if (harp_product_has_variable(product, target_grid->name))
+    {
+        if (harp_product_get_variable_by_name(product, target_grid->name, &vertical_axis) != 0)
+        {
+            goto error;
+        }
+        if (harp_product_remove_variable(product, vertical_axis) != 0)
+        {
+            goto error;
+        }
+        vertical_axis = NULL;
+    }
+
+    /* derive the name of the bounds variable for the vertical axis */
+    bounds_name = malloc(strlen(target_grid->name) + 7 + 1);
+    if (!bounds_name)
+    {
+        harp_set_error(HARP_ERROR_OUT_OF_MEMORY, "out of memory (could not duplicate string)"
+                       " (%s:%u)", __FILE__, __LINE__);
+        goto error;
+    }
+    strcpy(bounds_name, target_grid->name);
+    strcat(bounds_name, "_bounds");
+
+    /* Remove variables that can't be resampled */
+    if (product_filter_resamplable_variables(product) != 0)
+    {
+        goto error;
+    }
+
+    if (source_grid_num_dims > 1)
+    {
+        /* Expand time independent vertical profiles */
+        if (expand_time_independent_vertical_variables(product) != 0)
+        {
+            goto error;
         }
     }
 
-    /* Retrieve basic info about the source grid */
-    harp_product_get_variable_by_name(product, target_grid->name, &source_grid);
-    if (source_grid->num_dimensions > 1)
+    /* Use loglin interpolation if pressure grid */
+    if (strcmp(target_grid->name, "pressure") == 0)
     {
-        source_time_dim_length = source_grid->dimension[0];
+        for (i = 0; i < source_grid->num_elements; i++)
+        {
+            source_grid->data.double_data[i] = log(source_grid->data.double_data[i]);
+        }
+        for (i = 0; i < target_grid->num_elements; i++)
+        {
+            target_grid->data.double_data[i] = log(target_grid->data.double_data[i]);
+        }
     }
-    source_vertical_elements = source_grid->dimension[source_grid->num_dimensions - 1];
+
+    /* Resize the vertical dimension in the target product to make room for the resampled data */
+    if (num_target_vertical_elements > num_source_max_vertical_elements)
+    {
+        if (resize_vertical_dimension(product, num_target_vertical_elements) != 0)
+        {
+            goto error;
+        }
+    }
+
+    /* allocate the buffer for the interpolation */
+    interpolation_buffer = (double *)malloc(num_target_vertical_elements * (size_t)sizeof(double));
+    if (interpolation_buffer == NULL)
+    {
+        harp_set_error(HARP_ERROR_OUT_OF_MEMORY,
+                       "out of memory (could not allocate %lu bytes) (%s:%u)",
+                       num_target_vertical_elements * (size_t)sizeof(double), __FILE__, __LINE__);
+        goto error;
+    }
 
     /* Resample all variables if we know how */
     for (i = product->num_variables - 1; i >= 0; i--)
     {
         harp_variable *variable = product->variable[i];
-        harp_array old_data;
-
-        long new_data_num_elements = variable->num_elements / source_vertical_elements * target_vertical_elements;
-        double *new_data = NULL;
-        long num_blocks = variable->num_elements / source_vertical_elements;
-        long time_blocks = num_blocks;
         profile_resample_type variable_type;
-
-        long time;
-        long block_id;
-
-        /* Calculate the number of num_blocks for which time is constant for time-dependent resampling */
-        if (source_time_dim_length != 0)
-        {
-            time_blocks = num_blocks / source_time_dim_length;
-        }
+        long num_profiles = variable->num_elements / num_target_vertical_elements;
+        long num_profiles_per_time = num_profiles;
+        long num_source_vertical_elements = 0;
+        long time_index;
+        long j;
 
         /* Check if we can resample this kind of variable */
         variable_type = get_profile_resample_type(variable);
-
-        /* skip the source grid variable, we'll set that afterwards */
-        if (variable == source_grid)
-        {
-            variable_type = profile_resample_skip;
-        }
-
         if (variable_type == profile_resample_skip)
         {
             continue;
         }
-        else if (variable_type == profile_resample_remove)
+
+        /* derive bounds variables if necessary for resampling */
+        if (variable_type == profile_resample_interval)
         {
-            harp_report_warning("Removing variable %s; unresamplable dimensions\n", variable->name);
-            harp_product_remove_variable(product, variable);
-            continue;
+            if (target_bounds == NULL)
+            {
+                if (harp_product_get_derived_variable(target_grid_product, bounds_name, target_grid->unit, 2,
+                                                      &bounds_dim_type[1], &target_bounds) != 0)
+                {
+                    goto error;
+                }
+            }
+            if (source_bounds == NULL)
+            {
+                if (source_grid_num_dims == 1)
+                {
+                    if (harp_product_get_derived_variable(product, bounds_name, target_grid->unit, 2,
+                                                          &bounds_dim_type[1], &source_bounds) != 0)
+                    {
+                        goto error;
+                    }
+                }
+                else
+                {
+                    if (harp_product_get_derived_variable(product, bounds_name, target_grid->unit, 3, bounds_dim_type,
+                                                          &source_bounds) != 0)
+                    {
+                        goto error;
+                    }
+                }
+            }
+        }
+
+        /* if variable is time dependent keep track of number of profiles per time */
+        if (variable->dimension_type[0] == harp_dimension_time)
+        {
+            num_profiles_per_time /= variable->dimension_type[0];
         }
 
         /* Ensure that the variable data consists of doubles */
         if (variable->data_type != harp_type_double && harp_variable_convert_data_type(variable, harp_type_double) != 0)
         {
-            harp_variable_delete(target_grid);
-            return -1;
+            goto error;
         }
 
         /* time independent variables with a time-dependent source grid are time-extended */
@@ -1150,55 +1246,95 @@ LIBHARP_API int harp_product_regrid_vertical_with_axis_variable(harp_product *pr
             harp_variable_add_dimension(variable, 0, harp_dimension_time, source_time_dim_length);
         }
 
-        /* Setup target array */
-        new_data = (double *)malloc((size_t)new_data_num_elements * sizeof(double));
-        if (new_data == NULL)
-        {
-            harp_variable_delete(target_grid);
-            harp_set_error(HARP_ERROR_OUT_OF_MEMORY, "out of memory (could not duplicate string) (%s:%u)",
-                           __FILE__, __LINE__);
-            return -1;
-        }
-
         /* Interpolate the data of the variable over the vertical axis */
-        time = -1;
-        for (block_id = 0; block_id < num_blocks; block_id++)
+        time_index = -1;
+        for (j = 0; j < num_profiles; j++)
         {
+            int l;
+
             /* keep track of time for time-dependent vertical grids */
-            if (block_id % time_blocks == 0)
+            if (j % num_profiles_per_time == 0)
             {
-                time++;
+                time_index++;
+                /* find the source grid lengths */
+                num_source_vertical_elements =
+                    get_unpadded_vector_length
+                    (&source_grid->data.double_data[time_index * num_target_vertical_elements],
+                     num_target_vertical_elements);
             }
 
-            harp_interpolate_array_linear(source_vertical_elements,
-                                          source_grid->data.double_data + time * source_vertical_elements,
-                                          variable->data.double_data + block_id * source_vertical_elements,
-                                          target_vertical_elements, target_grid->data.double_data, 0,
-                                          new_data + block_id * target_vertical_elements);
+            if (variable_type == profile_resample_linear)
+            {
+                harp_interpolate_array_linear
+                    (num_source_vertical_elements,
+                     &source_grid->data.double_data[time_index * num_source_max_vertical_elements],
+                     &variable->data.double_data[j * num_target_vertical_elements], num_target_vertical_elements,
+                     target_grid->data.double_data, 0, interpolation_buffer);
+            }
+            else if (variable_type == profile_resample_interval)
+            {
+                harp_interval_interpolate_array_linear
+                    (num_source_vertical_elements,
+                     &source_bounds->data.double_data[time_index * num_source_max_vertical_elements * 2],
+                     &variable->data.double_data[j * num_target_vertical_elements], num_target_vertical_elements,
+                     &target_bounds->data.double_data[time_index * num_target_vertical_elements * 2],
+                     interpolation_buffer);
+            }
+            else
+            {
+                /* other resampling methods are not supported, but should also never be set */
+                assert(0);
+                exit(1);
+            }
+
+            /* copy the buffer to the target var */
+            for (l = 0; l < num_target_vertical_elements; l++)
+            {
+                variable->data.double_data[j * num_target_vertical_elements + l] = interpolation_buffer[l];
+            }
         }
+    }
 
-        /* Update the vertical dimension length */
-        variable->dimension[variable->num_dimensions - 1] = target_vertical_elements;
-
-        /* Set the new variable data */
-        old_data = variable->data;
-
-        variable->data.double_data = new_data;
-        variable->num_elements = new_data_num_elements;
-
-        /* Clean up the old data */
-        free(old_data.double_data);
+    /* Resize the vertical dimension in the target product to minimal size */
+    if (num_target_vertical_elements < num_source_max_vertical_elements)
+    {
+        if (resize_vertical_dimension(product, num_target_vertical_elements) != 0)
+        {
+            goto error;
+        }
     }
 
     /* ensure consistent axis variable in product */
-    product->dimension[harp_dimension_vertical] = target_vertical_elements;
-    harp_variable_copy(target_grid, &vertical_axis);
-    if (harp_product_replace_variable(product, vertical_axis) != 0)
+    if (harp_variable_copy(axis_variable, &vertical_axis) != 0)
     {
-        return -1;
+        goto error;
+    }
+    if (harp_product_add_variable(product, vertical_axis) != 0)
+    {
+        goto error;
     }
 
+    /* cleanup */
+    harp_variable_delete(source_grid);
+    harp_variable_delete(source_bounds);
+    harp_variable_delete(target_grid);
+    harp_variable_delete(target_bounds);
+    harp_product_delete(target_grid_product);
+    free(bounds_name);
+    free(interpolation_buffer);
+
     return 0;
+
+  error:
+    harp_variable_delete(source_grid);
+    harp_variable_delete(source_bounds);
+    harp_variable_delete(target_grid);
+    harp_variable_delete(target_bounds);
+    harp_product_delete(target_grid_product);
+    free(bounds_name);
+    free(interpolation_buffer);
+
+    return -1;
 }
 
 /** Smooth the product's variables (from dataset a in the collocation result) using the vertical grids,
@@ -1534,9 +1670,8 @@ LIBHARP_API int harp_product_smooth_vertical(harp_product *product, int num_smoo
                         harp_interval_interpolate_array_linear
                             (num_source_vertical_elements,
                              &source_bounds->data.double_data[time_index_a * num_source_max_vertical_elements * 2],
-                             &var->data.double_data[(time_index_a * blocks + block) * num_source_max_vertical_elements],
-                             num_target_vertical_elements,
-                             &target_bounds->data.double_data[(time_index_b * num_target_max_vertical_elements) * 2],
+                             &var->data.double_data[source_block_index], num_target_vertical_elements,
+                             &target_bounds->data.double_data[time_index_b * num_target_max_vertical_elements * 2],
                              interpolation_buffer);
                     }
                     else
