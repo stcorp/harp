@@ -1087,8 +1087,17 @@ LIBHARP_API int harp_product_regrid_vertical_with_axis_variable(harp_product *pr
     char *bounds_name = NULL;
     double *interpolation_buffer = NULL;
 
+    if (harp_product_new(&target_grid_product) != 0)
+    {
+        goto error;
+    }
     if (harp_variable_copy(axis_variable, &target_grid) != 0)
     {
+        goto error;
+    }
+    if (harp_product_add_variable(target_grid_product, target_grid) != 0)
+    {
+        harp_variable_delete(target_grid);
         goto error;
     }
 
@@ -1317,7 +1326,6 @@ LIBHARP_API int harp_product_regrid_vertical_with_axis_variable(harp_product *pr
     /* cleanup */
     harp_variable_delete(source_grid);
     harp_variable_delete(source_bounds);
-    harp_variable_delete(target_grid);
     harp_variable_delete(target_bounds);
     harp_product_delete(target_grid_product);
     free(bounds_name);
@@ -1328,7 +1336,6 @@ LIBHARP_API int harp_product_regrid_vertical_with_axis_variable(harp_product *pr
   error:
     harp_variable_delete(source_grid);
     harp_variable_delete(source_bounds);
-    harp_variable_delete(target_grid);
     harp_variable_delete(target_bounds);
     harp_product_delete(target_grid_product);
     free(bounds_name);
