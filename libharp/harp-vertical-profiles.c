@@ -1315,8 +1315,7 @@ LIBHARP_API int harp_product_regrid_vertical_with_axis_variable(harp_product *pr
                     (num_source_vertical_elements,
                      &source_bounds->data.double_data[time_index * num_source_max_vertical_elements * 2],
                      &variable->data.double_data[j * num_target_vertical_elements], num_target_vertical_elements,
-                     &target_bounds->data.double_data[time_index * num_target_vertical_elements * 2],
-                     interpolation_buffer);
+                     target_bounds->data.double_data, interpolation_buffer);
             }
             else
             {
