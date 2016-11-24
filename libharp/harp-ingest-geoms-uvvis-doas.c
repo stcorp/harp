@@ -1841,7 +1841,7 @@ static int init_product_definition(harp_ingestion_module *module, uvvis_doas_gas
     }
 
     /* altitude */
-    description = "effictive retrieval altitude";
+    description = "effective retrieval altitude";
     variable_definition = harp_ingestion_register_variable_full_read(product_definition, "altitude", harp_type_double,
                                                                      2, dimension_type, NULL, description, "km",
                                                                      NULL, read_altitude);
