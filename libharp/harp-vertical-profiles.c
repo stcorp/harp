@@ -804,6 +804,7 @@ int harp_profile_import_grid(const char *filename, harp_variable **new_vertical_
     if (values == NULL)
     {
         harp_set_error(HARP_ERROR_OUT_OF_MEMORY, "out of memory (%s:%u)", __FILE__, __LINE__);
+        fclose(file);
         return -1;
     }
 
