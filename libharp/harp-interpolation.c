@@ -757,7 +757,7 @@ int harp_interval_interpolate_array_linear(long source_length, const double *sou
 
         if (count_valid_contributions != 0)
         {
-            target_array[j] = sum;
+            target_array[i] = sum;
         }
     }
 
