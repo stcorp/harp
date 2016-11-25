@@ -1387,14 +1387,15 @@ LIBHARP_API int harp_product_smooth_vertical(harp_product *product, int num_smoo
                                              const char **smooth_variables, const char *vertical_axis,
                                              const harp_collocation_result *original_collocation_result)
 {
-    int time_index_a, pair_id;
-    long num_source_max_vertical_elements;      /* actual elems + NaN padding */
+    long time_index_a, pair_id;
+    long source_vertical_dim;      /* actual elems + NaN padding */
+    long source_grid_vertical_dim;
+    long max_target_vertical_dim;
     harp_variable *source_collocation_index = NULL;
     harp_dimension_type grid_dim_type[2] = { harp_dimension_time, harp_dimension_vertical };
     harp_dimension_type bounds_dim_type[3] = { harp_dimension_time, harp_dimension_vertical,
         harp_dimension_independent
     };
-    long max_vertical_dim;
 
     /* owned memory */
     harp_variable *source_grid = NULL;
@@ -1446,8 +1447,8 @@ LIBHARP_API int harp_product_smooth_vertical(harp_product *product, int num_smoo
         goto error;
     }
 
-    /* Determine the maximum vertical dimensions size */
-    if (get_maximum_vertical_dimension(collocation_result, &max_vertical_dim) != 0)
+    /* Determine the maximum vertical dimensions size of database b */
+    if (get_maximum_vertical_dimension(collocation_result, &max_target_vertical_dim) != 0)
     {
         goto error;
     }
@@ -1492,24 +1493,24 @@ LIBHARP_API int harp_product_smooth_vertical(harp_product *product, int num_smoo
     }
 
     /* Save the length of the original vertical dimension */
-    num_source_max_vertical_elements = product->dimension[harp_dimension_vertical];
+    source_grid_vertical_dim = product->dimension[harp_dimension_vertical];
 
     /* Resize the vertical dimension in the target product to make room for the resampled data */
-    if (max_vertical_dim > product->dimension[harp_dimension_vertical])
+    if (max_target_vertical_dim > product->dimension[harp_dimension_vertical])
     {
-        if (resize_vertical_dimension(product, max_vertical_dim) != 0)
+        if (resize_vertical_dimension(product, max_target_vertical_dim) != 0)
         {
             goto error;
         }
     }
+    source_vertical_dim = product->dimension[harp_dimension_vertical];
 
     /* allocate the buffer for the interpolation */
-    interpolation_buffer = (double *)malloc(max_vertical_dim * (size_t)sizeof(double));
+    interpolation_buffer = (double *)malloc(max_target_vertical_dim * (size_t)sizeof(double));
     if (interpolation_buffer == NULL)
     {
-        harp_set_error(HARP_ERROR_OUT_OF_MEMORY,
-                       "out of memory (could not allocate %lu bytes) (%s:%u)",
-                       max_vertical_dim * (size_t)sizeof(double), __FILE__, __LINE__);
+        harp_set_error(HARP_ERROR_OUT_OF_MEMORY, "out of memory (could not allocate %lu bytes) (%s:%u)",
+                       max_target_vertical_dim * (size_t)sizeof(double), __FILE__, __LINE__);
         goto error;
     }
 
@@ -1517,12 +1518,12 @@ LIBHARP_API int harp_product_smooth_vertical(harp_product *product, int num_smoo
     {
         harp_collocation_pair *pair = NULL;
         harp_product_metadata *product_metadata;
+        long num_target_vertical_elements;
+        long num_source_vertical_elements;
+        long target_vertical_dim;
+        long coll_index;
         long time_index_b = -1;
         int j;
-        long coll_index;
-        long num_target_vertical_elements;
-        long num_target_max_vertical_elements;
-        long num_source_vertical_elements;
 
         /* Get the collocation index */
         coll_index = source_collocation_index->data.int32_data[time_index_a];
@@ -1602,19 +1603,19 @@ LIBHARP_API int harp_product_smooth_vertical(harp_product *product, int num_smoo
 
         /* find the source grid lengths */
         num_source_vertical_elements =
-            get_unpadded_vector_length(&source_grid->data.double_data[time_index_a * num_source_max_vertical_elements],
-                                       num_source_max_vertical_elements);
+            get_unpadded_vector_length(&source_grid->data.double_data[time_index_a * source_grid_vertical_dim],
+                                       source_grid_vertical_dim);
 
 
         /* figure out the target offset to use: i.e. the number of vertical profile elements that fall
          * below the first source profile elements
          */
-        num_target_max_vertical_elements = target_grid->dimension[1];
+        target_vertical_dim = target_grid->dimension[1];
 
         /* find the target grid length */
         num_target_vertical_elements =
-            get_unpadded_vector_length(&target_grid->data.double_data[time_index_b * num_target_max_vertical_elements],
-                                       num_target_max_vertical_elements);
+            get_unpadded_vector_length(&target_grid->data.double_data[time_index_b * target_vertical_dim],
+                                       target_vertical_dim);
 
         /* Resample & smooth variables */
         for (j = product->num_variables - 1; j >= 0; j--)
@@ -1634,8 +1635,6 @@ LIBHARP_API int harp_product_smooth_vertical(harp_product *product, int num_smoo
             /* do not interpolate the grid variable; this might produce nans at the bottom */
             if (strcmp(var->name, vertical_axis) == 0)
             {
-                int fid;
-
                 /* Ensure that the variable data to resample consists of doubles */
                 if (var->data_type != harp_type_double && harp_variable_convert_data_type(var, harp_type_double) != 0)
                 {
@@ -1643,21 +1642,21 @@ LIBHARP_API int harp_product_smooth_vertical(harp_product *product, int num_smoo
                 }
 
                 /* copy the time slice to the target variable */
-                memcpy(&var->data.double_data[time_index_a * max_vertical_dim],
-                       &target_grid->data.double_data[time_index_b * num_target_max_vertical_elements],
-                       num_target_max_vertical_elements * sizeof(double));
+                memcpy(&var->data.double_data[time_index_a * source_vertical_dim],
+                       &target_grid->data.double_data[time_index_b * target_vertical_dim],
+                       target_vertical_dim * sizeof(double));
 
                 /* make sure the data is using the unit associated with the variable */
-                if (harp_convert_unit(vertical_unit, var->unit, num_target_max_vertical_elements,
-                                      &var->data.double_data[time_index_a * max_vertical_dim]) != 0)
+                if (harp_convert_unit(vertical_unit, var->unit, target_vertical_dim,
+                                      &var->data.double_data[time_index_a * source_vertical_dim]) != 0)
                 {
                     goto error;
                 }
 
                 /* nan fill */
-                for (fid = num_target_max_vertical_elements; fid < max_vertical_dim; fid++)
+                for (k = target_vertical_dim; k < source_vertical_dim; k++)
                 {
-                    var->data.double_data[fid] = harp_nan();
+                    var->data.double_data[time_index_a * source_vertical_dim + k] = harp_nan();
                 }
             }
             else
@@ -1682,28 +1681,28 @@ LIBHARP_API int harp_product_smooth_vertical(harp_product *product, int num_smoo
                 }
 
                 /* Interpolate variable data */
-                num_blocks = var->num_elements / var->dimension[0] / max_vertical_dim;
+                num_blocks = var->num_elements / var->dimension[0] / source_vertical_dim;
                 for (k = 0; k < num_blocks; k++)
                 {
-                    long blockoffset = (time_index_a * num_blocks + k) * max_vertical_dim;
+                    long blockoffset = (time_index_a * num_blocks + k) * source_vertical_dim;
                     int l;
 
                     if (var_type == profile_resample_linear)
                     {
                         harp_interpolate_array_linear
                             (num_source_vertical_elements,
-                             &source_grid->data.double_data[time_index_a * num_source_max_vertical_elements],
+                             &source_grid->data.double_data[time_index_a * source_grid_vertical_dim],
                              &var->data.double_data[blockoffset], num_target_vertical_elements,
-                             &target_grid->data.double_data[time_index_b * num_target_max_vertical_elements], 0,
+                             &target_grid->data.double_data[time_index_b * target_vertical_dim], 0,
                              interpolation_buffer);
                     }
                     else if (var_type == profile_resample_interval)
                     {
                         harp_interval_interpolate_array_linear
                             (num_source_vertical_elements,
-                             &source_bounds->data.double_data[time_index_a * num_source_max_vertical_elements * 2],
+                             &source_bounds->data.double_data[time_index_a * source_grid_vertical_dim * 2],
                              &var->data.double_data[blockoffset], num_target_vertical_elements,
-                             &target_bounds->data.double_data[time_index_b * num_target_max_vertical_elements * 2],
+                             &target_bounds->data.double_data[time_index_b * target_vertical_dim * 2],
                              interpolation_buffer);
                     }
                     else
@@ -1714,7 +1713,7 @@ LIBHARP_API int harp_product_smooth_vertical(harp_product *product, int num_smoo
                     }
 
                     /* copy the buffer to the target var */
-                    for (l = 0; l < max_vertical_dim; l++)
+                    for (l = 0; l < target_vertical_dim; l++)
                     {
                         var->data.double_data[blockoffset + l] = interpolation_buffer[l];
                     }
@@ -1736,9 +1735,9 @@ LIBHARP_API int harp_product_smooth_vertical(harp_product *product, int num_smoo
     }
 
     /* Resize the vertical dimension in the target product to minimal size */
-    if (max_vertical_dim < product->dimension[harp_dimension_vertical])
+    if (max_target_vertical_dim < product->dimension[harp_dimension_vertical])
     {
-        if (resize_vertical_dimension(product, max_vertical_dim) != 0)
+        if (resize_vertical_dimension(product, max_target_vertical_dim) != 0)
         {
             goto error;
         }
