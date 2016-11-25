@@ -1388,7 +1388,7 @@ LIBHARP_API int harp_product_smooth_vertical(harp_product *product, int num_smoo
                                              const harp_collocation_result *original_collocation_result)
 {
     long time_index_a, pair_id;
-    long source_vertical_dim;      /* actual elems + NaN padding */
+    long source_vertical_dim;   /* actual elems + NaN padding */
     long source_grid_vertical_dim;
     long max_target_vertical_dim;
     harp_variable *source_collocation_index = NULL;
