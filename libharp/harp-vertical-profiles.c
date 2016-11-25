@@ -895,18 +895,17 @@ static long get_unpadded_vector_length(double *vector, long vector_length)
 static int vertical_profile_smooth(harp_variable *var, harp_product *collocated_product, long time_index_a,
                                    long time_index_b)
 {
+    harp_variable *apriori, *avk = NULL;
+    char *apriori_name, *avk_name;
     double *vector_in = NULL;
     double *vector_a_priori = NULL;
     double *vector_out = NULL;
     double **matrix = NULL;
-
-    char *apriori_name, *avk_name;
-    harp_variable *apriori, *avk = NULL;
-
-    int has_apriori = 0;
-    int i;
-    long block, blocks;
     long max_vertical_elements = collocated_product->dimension[harp_dimension_vertical];
+    long num_blocks;
+    long k;
+    long i;
+    int has_apriori = 0;
 
     /* get the avk and a priori variables */
     avk_name = malloc(strlen(var->name) + 4 + 1);
@@ -979,11 +978,11 @@ static int vertical_profile_smooth(harp_variable *var, harp_product *collocated_
     }
 
     /* calculate the number of blocks in this datetime slice of the variable */
-    blocks = var->num_elements / var->dimension[0] / max_vertical_elements;
+    num_blocks = var->num_elements / var->dimension[0] / max_vertical_elements;
 
-    for (block = 0; block < blocks; block++)
+    for (k = 0; k < num_blocks; k++)
     {
-        long blockoffset = (time_index_a * blocks + block) * max_vertical_elements;
+        long blockoffset = (time_index_a * num_blocks + k) * max_vertical_elements;
 
         /* figure out the actual unpadded length of the input vector. */
         long vertical_elements = get_unpadded_vector_length(&var->data.double_data[blockoffset], max_vertical_elements);
@@ -1539,9 +1538,9 @@ LIBHARP_API int harp_product_smooth_vertical(harp_product *product, int num_smoo
         }
 
         /* Error if no collocation pair exists for this index */
-        if (!pair)
+        if (pair == NULL)
         {
-            harp_set_error(HARP_ERROR_INVALID_ARGUMENT, "no collocation pair for collocation index %li.", coll_index);
+            harp_set_error(HARP_ERROR_INVALID_ARGUMENT, "no collocation pair for collocation index %li", coll_index);
             goto error;
         }
 
@@ -1621,8 +1620,7 @@ LIBHARP_API int harp_product_smooth_vertical(harp_product *product, int num_smoo
         for (j = product->num_variables - 1; j >= 0; j--)
         {
             harp_variable *var = product->variable[j];
-
-            long block, blocks;
+            long num_blocks;
             int k;
 
             /* Skip variables that don't need resampling */
@@ -1645,13 +1643,13 @@ LIBHARP_API int harp_product_smooth_vertical(harp_product *product, int num_smoo
                 }
 
                 /* copy the time slice to the target variable */
-                memcpy(&var->data.double_data[time_index_a * num_target_max_vertical_elements],
+                memcpy(&var->data.double_data[time_index_a * max_vertical_dim],
                        &target_grid->data.double_data[time_index_b * num_target_max_vertical_elements],
                        num_target_max_vertical_elements * sizeof(double));
 
                 /* make sure the data is using the unit associated with the variable */
                 if (harp_convert_unit(vertical_unit, var->unit, num_target_max_vertical_elements,
-                                      &var->data.double_data[time_index_a * num_target_max_vertical_elements]) != 0)
+                                      &var->data.double_data[time_index_a * max_vertical_dim]) != 0)
                 {
                     goto error;
                 }
@@ -1684,19 +1682,18 @@ LIBHARP_API int harp_product_smooth_vertical(harp_product *product, int num_smoo
                 }
 
                 /* Interpolate variable data */
-                blocks = var->num_elements / var->dimension[0] / num_source_max_vertical_elements;
-                for (block = 0; block < blocks; block++)
+                num_blocks = var->num_elements / var->dimension[0] / max_vertical_dim;
+                for (k = 0; k < num_blocks; k++)
                 {
+                    long blockoffset = (time_index_a * num_blocks + k) * max_vertical_dim;
                     int l;
-                    long target_block_index = (time_index_b * blocks + block) * num_target_max_vertical_elements;
-                    long source_block_index = (time_index_a * blocks + block) * num_source_max_vertical_elements;
 
                     if (var_type == profile_resample_linear)
                     {
                         harp_interpolate_array_linear
                             (num_source_vertical_elements,
                              &source_grid->data.double_data[time_index_a * num_source_max_vertical_elements],
-                             &var->data.double_data[source_block_index], num_target_vertical_elements,
+                             &var->data.double_data[blockoffset], num_target_vertical_elements,
                              &target_grid->data.double_data[time_index_b * num_target_max_vertical_elements], 0,
                              interpolation_buffer);
                     }
@@ -1705,7 +1702,7 @@ LIBHARP_API int harp_product_smooth_vertical(harp_product *product, int num_smoo
                         harp_interval_interpolate_array_linear
                             (num_source_vertical_elements,
                              &source_bounds->data.double_data[time_index_a * num_source_max_vertical_elements * 2],
-                             &var->data.double_data[source_block_index], num_target_vertical_elements,
+                             &var->data.double_data[blockoffset], num_target_vertical_elements,
                              &target_bounds->data.double_data[time_index_b * num_target_max_vertical_elements * 2],
                              interpolation_buffer);
                     }
@@ -1717,9 +1714,9 @@ LIBHARP_API int harp_product_smooth_vertical(harp_product *product, int num_smoo
                     }
 
                     /* copy the buffer to the target var */
-                    for (l = 0; l < num_target_vertical_elements; l++)
+                    for (l = 0; l < max_vertical_dim; l++)
                     {
-                        var->data.double_data[target_block_index + l] = interpolation_buffer[l];
+                        var->data.double_data[blockoffset + l] = interpolation_buffer[l];
                     }
                 }
             }
