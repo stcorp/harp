@@ -1270,7 +1270,7 @@ LIBHARP_API int harp_product_regrid_vertical_with_axis_variable(harp_product *pr
         /* if variable is time dependent keep track of number of profiles per time */
         if (variable->dimension_type[0] == harp_dimension_time)
         {
-            num_profiles_per_time /= variable->dimension_type[0];
+            num_profiles_per_time /= variable->dimension[0];
         }
 
         /* Ensure that the variable data consists of doubles */
