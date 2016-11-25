@@ -1615,7 +1615,7 @@ LIBHARP_API int harp_product_smooth_vertical(harp_product *product, int num_smoo
 
         /* find the target grid length */
         num_target_vertical_elements =
-            get_unpadded_vector_length(&target_grid->data.double_data[time_index_a * num_target_max_vertical_elements],
+            get_unpadded_vector_length(&target_grid->data.double_data[time_index_b * num_target_max_vertical_elements],
                                        num_target_max_vertical_elements);
 
         /* Resample & smooth variables */
@@ -1689,7 +1689,7 @@ LIBHARP_API int harp_product_smooth_vertical(harp_product *product, int num_smoo
                 for (block = 0; block < blocks; block++)
                 {
                     int l;
-                    long target_block_index = (time_index_a * blocks + block) * num_target_max_vertical_elements;
+                    long target_block_index = (time_index_b * blocks + block) * num_target_max_vertical_elements;
                     long source_block_index = (time_index_a * blocks + block) * num_source_max_vertical_elements;
 
                     if (var_type == profile_resample_linear)
