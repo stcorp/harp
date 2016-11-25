@@ -384,22 +384,19 @@ static int get_maximum_vertical_dimension(harp_collocation_result *collocation_r
     for (i = 0; i < collocation_result->num_pairs; i++)
     {
         harp_collocation_pair *pair = collocation_result->pair[i];
-        long matching_product_index = pair->product_index_b;
-        long match_vertical_dim_size;
-        harp_product_metadata *match_metadata = collocation_result->dataset_b->metadata[matching_product_index];
+        long collocated_product_index = pair->product_index_b;
+        harp_product_metadata *product_metadata = collocation_result->dataset_b->metadata[collocated_product_index];
 
-        if (!match_metadata)
+        if (!product_metadata)
         {
-            harp_set_error(HARP_ERROR_INVALID_ARGUMENT, "metadata unavailable for match pair product %s",
-                           collocation_result->dataset_b->source_product[matching_product_index]);
+            harp_set_error(HARP_ERROR_INVALID_ARGUMENT, "metadata unavailable for collocated product %s",
+                           collocation_result->dataset_b->source_product[collocated_product_index]);
             return -1;
         }
 
-        match_vertical_dim_size = match_metadata->dimension[harp_dimension_vertical];
-
-        if (match_vertical_dim_size > max)
+        if (product_metadata->dimension[harp_dimension_vertical] > max)
         {
-            max = match_vertical_dim_size;
+            max = product_metadata->dimension[harp_dimension_vertical];
         }
     }
 
@@ -895,7 +892,8 @@ static long get_unpadded_vector_length(double *vector, long vector_length)
     return vector_length;
 }
 
-static int vertical_profile_smooth(harp_variable *var, harp_product *match, long time_index_a, long time_index_b)
+static int vertical_profile_smooth(harp_variable *var, harp_product *collocated_product, long time_index_a,
+                                   long time_index_b)
 {
     double *vector_in = NULL;
     double *vector_a_priori = NULL;
@@ -908,7 +906,7 @@ static int vertical_profile_smooth(harp_variable *var, harp_product *match, long
     int has_apriori = 0;
     int i;
     long block, blocks;
-    long max_vertical_elements = match->dimension[harp_dimension_vertical];
+    long max_vertical_elements = collocated_product->dimension[harp_dimension_vertical];
 
     /* get the avk and a priori variables */
     avk_name = malloc(strlen(var->name) + 4 + 1);
@@ -925,17 +923,17 @@ static int vertical_profile_smooth(harp_variable *var, harp_product *match, long
     strcpy(avk_name, var->name);
     strcat(avk_name, "_avk");
 
-    if (harp_product_has_variable(match, apriori_name))
+    if (harp_product_has_variable(collocated_product, apriori_name))
     {
         has_apriori = 1;
 
-        if (harp_product_get_variable_by_name(match, apriori_name, &apriori) != 0)
+        if (harp_product_get_variable_by_name(collocated_product, apriori_name, &apriori) != 0)
         {
             return -1;
         }
     }
 
-    if (harp_product_get_variable_by_name(match, avk_name, &avk))
+    if (harp_product_get_variable_by_name(collocated_product, avk_name, &avk))
     {
         return -1;
     }
@@ -1372,7 +1370,7 @@ LIBHARP_API int harp_product_regrid_vertical_with_axis_variable(harp_product *pr
 }
 
 /** Smooth the product's variables (from dataset a in the collocation result) using the vertical grids,
- * avks and a apriori of matching products in dataset b and smooth the variables specified.
+ * avks and a apriori of collocated products in dataset b and smooth the variables specified.
  *
  * \param product Product to smooth.
  * \param num_smooth_variables length of smooth_variables.
@@ -1402,7 +1400,7 @@ LIBHARP_API int harp_product_smooth_vertical(harp_product *product, int num_smoo
     /* owned memory */
     harp_variable *source_grid = NULL;
     harp_variable *source_bounds = NULL;
-    harp_product *match = NULL;
+    harp_product *collocated_product = NULL;
     harp_variable *target_grid = NULL;
     harp_variable *target_bounds = NULL;
     harp_collocation_result *collocation_result = NULL;
@@ -1519,7 +1517,7 @@ LIBHARP_API int harp_product_smooth_vertical(harp_product *product, int num_smoo
     for (pair_id = 0, time_index_a = 0; time_index_a < product->dimension[harp_dimension_time]; time_index_a++)
     {
         harp_collocation_pair *pair = NULL;
-        harp_product_metadata *match_metadata;
+        harp_product_metadata *product_metadata;
         long time_index_b = -1;
         int j;
         long coll_index;
@@ -1530,7 +1528,7 @@ LIBHARP_API int harp_product_smooth_vertical(harp_product *product, int num_smoo
         /* Get the collocation index */
         coll_index = source_collocation_index->data.int32_data[time_index_a];
 
-        /* Get the match-pair for said collocation index */
+        /* Get the collocation-pair for said collocation index */
         for (pair_id = 0; pair_id < collocation_result->num_pairs; pair_id++)
         {
             if (collocation_result->pair[pair_id]->collocation_index == coll_index)
@@ -1547,37 +1545,38 @@ LIBHARP_API int harp_product_smooth_vertical(harp_product *product, int num_smoo
             goto error;
         }
 
-        /* Get metadata of the matching product */
-        match_metadata = collocation_result->dataset_b->metadata[pair->product_index_b];
-        if (match_metadata == NULL)
+        /* Get metadata of the collocated product */
+        product_metadata = collocation_result->dataset_b->metadata[pair->product_index_b];
+        if (product_metadata == NULL)
         {
             harp_set_error(HARP_ERROR_INVALID_ARGUMENT, "missing product metadata for product %s",
                            collocation_result->dataset_b->source_product[pair->product_index_b]);
             goto error;
         }
 
-        /* load the matching product if necessary */
-        if (match == NULL || strcmp(match->source_product, match_metadata->source_product) != 0)
+        /* load the collocated product if necessary */
+        if (collocated_product == NULL || strcmp(collocated_product->source_product, product_metadata->source_product)
+            != 0)
         {
-            /* cleanup previous match product */
-            if (match != NULL)
+            /* cleanup previous collocated product */
+            if (collocated_product != NULL)
             {
-                harp_product_delete(match);
-                match = NULL;
+                harp_product_delete(collocated_product);
+                collocated_product = NULL;
             }
 
             /* import new product */
-            harp_import(match_metadata->filename, &match);
-            if (!match)
+            harp_import(product_metadata->filename, &collocated_product);
+            if (!collocated_product)
             {
-                harp_set_error(HARP_ERROR_IMPORT, "could not import file %s", match_metadata->filename);
+                harp_set_error(HARP_ERROR_IMPORT, "could not import file %s", product_metadata->filename);
                 goto error;
             }
 
             /* Derive the target grid */
             harp_variable_delete(target_grid);
-            if (harp_product_get_derived_variable(match, vertical_axis, vertical_unit, 2, grid_dim_type, &target_grid)
-                != 0)
+            if (harp_product_get_derived_variable(collocated_product, vertical_axis, vertical_unit, 2, grid_dim_type,
+                                                  &target_grid) != 0)
             {
                 goto error;
             }
@@ -1597,7 +1596,7 @@ LIBHARP_API int harp_product_smooth_vertical(harp_product *product, int num_smoo
             target_bounds = NULL;
         }
 
-        if (get_time_index_by_collocation_index(match, pair->collocation_index, &time_index_b) != 0)
+        if (get_time_index_by_collocation_index(collocated_product, pair->collocation_index, &time_index_b) != 0)
         {
             goto error;
         }
@@ -1670,8 +1669,8 @@ LIBHARP_API int harp_product_smooth_vertical(harp_product *product, int num_smoo
                 {
                     if (target_bounds == NULL)
                     {
-                        if (harp_product_get_derived_variable(match, bounds_name, vertical_unit, 3, bounds_dim_type,
-                                                              &target_bounds) != 0)
+                        if (harp_product_get_derived_variable(collocated_product, bounds_name, vertical_unit, 3,
+                                                              bounds_dim_type, &target_bounds) != 0)
                         {
                             goto error;
                         }
@@ -1730,7 +1729,7 @@ LIBHARP_API int harp_product_smooth_vertical(harp_product *product, int num_smoo
             {
                 if (strcmp(smooth_variables[k], var->name) == 0)
                 {
-                    if (vertical_profile_smooth(var, match, time_index_a, time_index_b) != 0)
+                    if (vertical_profile_smooth(var, collocated_product, time_index_a, time_index_b) != 0)
                     {
                         goto error;
                     }
@@ -1753,7 +1752,7 @@ LIBHARP_API int harp_product_smooth_vertical(harp_product *product, int num_smoo
     harp_variable_delete(source_bounds);
     harp_variable_delete(target_grid);
     harp_variable_delete(target_bounds);
-    harp_product_delete(match);
+    harp_product_delete(collocated_product);
     harp_collocation_result_shallow_delete(collocation_result);
     free(vertical_unit);
     free(bounds_name);
@@ -1766,7 +1765,7 @@ LIBHARP_API int harp_product_smooth_vertical(harp_product *product, int num_smoo
     harp_variable_delete(source_bounds);
     harp_variable_delete(target_grid);
     harp_variable_delete(target_bounds);
-    harp_product_delete(match);
+    harp_product_delete(collocated_product);
     harp_collocation_result_shallow_delete(collocation_result);
     free(vertical_unit);
     free(bounds_name);
@@ -1776,7 +1775,7 @@ LIBHARP_API int harp_product_smooth_vertical(harp_product *product, int num_smoo
 }
 
 /** Regrid the product's variables (from dataset a in the collocation result) to the vertical grids,
- * of matching products in dataset b and smooth the variables specified.
+ * of collocated products in dataset b and smooth the variables specified.
  *
  * \param product Product to regrid.
  * \param vertical_axis The name of the variable to use as a vertical axis (pressure/altitude/etc).
