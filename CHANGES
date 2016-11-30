@@ -3,11 +3,22 @@
   a list of filenames or a globbing pattern as parameter (which will return
   the result of harp.concatenate() on the imported/ingested products).
 
+* The parsing of the operations string has been rewritten using flex/yacc.
+  This has fixed several issues related to the parsing and execution of
+  operations.
+
 * Fixed issue with flatten() operation providing wrong results.
+
+* Fixed issue with vertical regridding to a common grid providing wrong
+  results.
+
+* Added variable conversions for apriori profiles.
 
 * Added support for GEOMS FTIR C2H2 ingestion.
 
 * Added support for OMI OMCHOCHO ingestion.
+
+* Added support for QA4ECV NO2 and HCHO products.
 
 0.4 2016-10-16
 ~~~~~~~~~~~~~~
