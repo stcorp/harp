@@ -73,20 +73,21 @@ WHITESPACE   [[:space:]]+
 "inf"                   return INF;
 "not"                   return NOT;
 "in"                    return IN;
+
+"area-mask-covers-area" return FUNC_AREA_MASK_COVERS_AREA;
+"area-mask-covers-point"    return FUNC_AREA_MASK_COVERS_POINT;
+"area-mask-intersects-area" return FUNC_AREA_MASK_INTERSECTS_AREA;
 "collocate-left"        return FUNC_COLLOCATE_LEFT;
 "collocate-right"       return FUNC_COLLOCATE_RIGHT;
-"valid"                 return FUNC_VALID;
-"longitude-range"       return FUNC_LONGITUDE_RANGE;
-"point-distance"        return FUNC_POINT_DISTANCE;
-"area-mask-covers-point"    return FUNC_AREA_MASK_COVERS_POINT;
-"area-mask-covers-area" return FUNC_AREA_MASK_COVERS_AREA;
-"area-mask-intersects-area" return FUNC_AREA_MASK_INTERSECTS_AREA;
 "derive"                return FUNC_DERIVE;
-"keep"                  return FUNC_KEEP;
 "exclude"               return FUNC_EXCLUDE;
 "flatten"               return FUNC_FLATTEN;
+"keep"                  return FUNC_KEEP;
+"longitude-range"       return FUNC_LONGITUDE_RANGE;
+"point-distance"        return FUNC_POINT_DISTANCE;
 "regrid"                return FUNC_REGRID;
 "regrid-collocated"     return FUNC_REGRID_COLLOCATED;
+"valid"                 return FUNC_VALID;
 
 "time"                  {
                             yylval.int32_val = harp_dimension_time;
