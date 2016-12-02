@@ -4,6 +4,9 @@
 * Removed the harpprofile command line tool. Its functionality is replaced by
   the regrid() and smooth() operations.
 
+* Added vertical_unit parameter to harp_product_smooth_vertical() and
+  harp_product_regrid_vertical_with_collocated_dataset() functions.
+
 * Python harp.import_product() and harp.ingest_product() functions now accept
   a list of filenames or a globbing pattern as parameter (which will return
   the result of harp.concatenate() on the imported/ingested products).
