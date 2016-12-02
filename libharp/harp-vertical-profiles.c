@@ -1072,7 +1072,7 @@ static int product_filter_resamplable_variables(harp_product *product)
  * The source grid is determined by derivation of a matching vertical quantity on the specified product.
  *
  * \param product Product to resample.
- * \param target_grid Vertical grid to target.
+ * \param axis_variable Vertical grid to target.
  *
  * \return
  *   \arg \c 0, Success.
