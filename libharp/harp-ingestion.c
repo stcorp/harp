@@ -1485,7 +1485,7 @@ static int evaluate_collocation_filter(ingest_info *info, harp_program *operatio
 
     for (op_id = 0; op_id < operations->num_operations; op_id++)
     {
-        if (operations->operation[op_id]->type == harp_operation_filter_collocation)
+        if (operations->operation[op_id]->type == harp_operation_collocation_filter)
         {
             break;
         }
@@ -1600,24 +1600,24 @@ static int evaluate_point_filters_0d(ingest_info *info, harp_program *ops_0d)
         operation = ops_0d->operation[i];
         switch (operation->type)
         {
-            case harp_operation_filter_point_distance:
+            case harp_operation_area_mask_covers_point_filter:
                 {
-                    const harp_point_distance_filter_args *args;
+                    const harp_area_mask_covers_point_filter_args *args;
 
-                    args = (const harp_point_distance_filter_args *)operation->args;
-                    if (harp_point_distance_filter_predicate_new(args, &predicate) != 0)
+                    args = (const harp_area_mask_covers_point_filter_args *)operation->args;
+                    if (harp_area_mask_covers_point_filter_predicate_new(args, &predicate) != 0)
                     {
                         harp_predicate_set_delete(predicate_set);
                         return -1;
                     }
                 }
                 break;
-            case harp_operation_filter_area_mask_covers_point:
+            case harp_operation_point_distance_filter:
                 {
-                    const harp_area_mask_covers_point_filter_args *args;
+                    const harp_point_distance_filter_args *args;
 
-                    args = (const harp_area_mask_covers_point_filter_args *)operation->args;
-                    if (harp_area_mask_covers_point_filter_predicate_new(args, &predicate) != 0)
+                    args = (const harp_point_distance_filter_args *)operation->args;
+                    if (harp_point_distance_filter_predicate_new(args, &predicate) != 0)
                     {
                         harp_predicate_set_delete(predicate_set);
                         return -1;
@@ -1727,24 +1727,24 @@ static int evaluate_point_filters_1d(ingest_info *info, harp_program *ops_1d)
         operation = ops_1d->operation[i];
         switch (operation->type)
         {
-            case harp_operation_filter_point_distance:
+            case harp_operation_area_mask_covers_point_filter:
                 {
-                    const harp_point_distance_filter_args *args;
+                    const harp_area_mask_covers_point_filter_args *args;
 
-                    args = (const harp_point_distance_filter_args *)operation->args;
-                    if (harp_point_distance_filter_predicate_new(args, &predicate) != 0)
+                    args = (const harp_area_mask_covers_point_filter_args *)operation->args;
+                    if (harp_area_mask_covers_point_filter_predicate_new(args, &predicate) != 0)
                     {
                         harp_predicate_set_delete(predicate_set);
                         return -1;
                     }
                 }
                 break;
-            case harp_operation_filter_area_mask_covers_point:
+            case harp_operation_point_distance_filter:
                 {
-                    const harp_area_mask_covers_point_filter_args *args;
+                    const harp_point_distance_filter_args *args;
 
-                    args = (const harp_area_mask_covers_point_filter_args *)operation->args;
-                    if (harp_area_mask_covers_point_filter_predicate_new(args, &predicate) != 0)
+                    args = (const harp_point_distance_filter_args *)operation->args;
+                    if (harp_point_distance_filter_predicate_new(args, &predicate) != 0)
                     {
                         harp_predicate_set_delete(predicate_set);
                         return -1;
@@ -1871,7 +1871,7 @@ static int evaluate_area_filters_0d(ingest_info *info, harp_program *operations)
         operation = operations->operation[i];
         switch (operation->type)
         {
-            case harp_operation_filter_area_mask_covers_area:
+            case harp_operation_area_mask_covers_area_filter:
                 {
                     const harp_area_mask_covers_area_filter_args *args;
 
@@ -1883,7 +1883,7 @@ static int evaluate_area_filters_0d(ingest_info *info, harp_program *operations)
                     }
                 }
                 break;
-            case harp_operation_filter_area_mask_intersects_area:
+            case harp_operation_area_mask_intersects_area_filter:
                 {
                     const harp_area_mask_intersects_area_filter_args *args;
 
@@ -2005,7 +2005,7 @@ static int evaluate_area_filters_1d(ingest_info *info, harp_program *ops_1d)
         operation = ops_1d->operation[i];
         switch (operation->type)
         {
-            case harp_operation_filter_area_mask_covers_area:
+            case harp_operation_area_mask_covers_area_filter:
                 {
                     const harp_area_mask_covers_area_filter_args *args;
 
@@ -2017,7 +2017,7 @@ static int evaluate_area_filters_1d(ingest_info *info, harp_program *ops_1d)
                     }
                 }
                 break;
-            case harp_operation_filter_area_mask_intersects_area:
+            case harp_operation_area_mask_intersects_area_filter:
                 {
                     const harp_area_mask_intersects_area_filter_args *args;
 
@@ -2221,7 +2221,7 @@ static int get_operation_dimensionality(ingest_info *info, harp_operation *opera
     harp_variable_definition *variable_def = NULL;
 
     /* collocation filters */
-    if (operation->type == harp_operation_filter_collocation)
+    if (operation->type == harp_operation_collocation_filter)
     {
         *num_dimensions = 1L;
     }
@@ -2244,8 +2244,8 @@ static int get_operation_dimensionality(ingest_info *info, harp_operation *opera
         *num_dimensions = variable_def->num_dimensions;
     }
     /* point filters */
-    else if (operation->type == harp_operation_filter_point_distance ||
-             operation->type == harp_operation_filter_area_mask_covers_point)
+    else if (operation->type == harp_operation_area_mask_covers_point_filter ||
+             operation->type == harp_operation_point_distance_filter)
     {
         harp_variable_definition *longitude_def, *latitude_def = NULL;
 
@@ -2271,8 +2271,8 @@ static int get_operation_dimensionality(ingest_info *info, harp_operation *opera
             longitude_def->num_dimensions >
             latitude_def->num_dimensions ? longitude_def->num_dimensions : latitude_def->num_dimensions;
     }
-    else if (operation->type == harp_operation_filter_area_mask_covers_area ||
-             operation->type == harp_operation_filter_area_mask_intersects_area)
+    else if (operation->type == harp_operation_area_mask_covers_area_filter ||
+             operation->type == harp_operation_area_mask_intersects_area_filter)
     {
 
         harp_variable_definition *longitude_bounds_def;
@@ -2300,7 +2300,7 @@ static int get_operation_dimensionality(ingest_info *info, harp_operation *opera
             longitude_bounds_def->num_dimensions : latitude_bounds_def->num_dimensions;
     }
     /* collocation filters */
-    else if (operation->type == harp_operation_filter_collocation)
+    else if (operation->type == harp_operation_collocation_filter)
     {
         *num_dimensions = 1;
     }
@@ -2459,9 +2459,9 @@ static int execute_masking_phase(ingest_info *info, harp_program *phase_operatio
 }
 
 /* execute the variable exclude filter from the head of program */
-static int execute_variable_exclude_filter_operation(ingest_info *info, harp_program *program)
+static int execute_exclude_variable(ingest_info *info, harp_program *program)
 {
-    const harp_variable_exclusion_args *ex_args;
+    const harp_exclude_variable_args *ex_args;
     int variable_id;
     int j;
     harp_operation *operation;
@@ -2474,7 +2474,7 @@ static int execute_variable_exclude_filter_operation(ingest_info *info, harp_pro
     }
 
     /* unmark the variables to exclude */
-    ex_args = (const harp_variable_exclusion_args *)operation->args;
+    ex_args = (const harp_exclude_variable_args *)operation->args;
     for (j = 0; j < ex_args->num_variables; j++)
     {
 
@@ -2497,11 +2497,11 @@ static int execute_variable_exclude_filter_operation(ingest_info *info, harp_pro
     return 0;
 }
 
-static int execute_variable_keep_filter_operation(ingest_info *info, harp_program *program)
+static int execute_keep_variable(ingest_info *info, harp_program *program)
 {
     uint8_t *include_variable_mask;
     harp_operation *operation;
-    const harp_variable_inclusion_args *in_args;
+    const harp_keep_variable_args *in_args;
     int variable_id;
     int j;
 
@@ -2527,7 +2527,7 @@ static int execute_variable_keep_filter_operation(ingest_info *info, harp_progra
     }
 
     /* set the 'keep' flags in the mask */
-    in_args = (const harp_variable_inclusion_args *)operation->args;
+    in_args = (const harp_keep_variable_args *)operation->args;
     for (j = 0; j < in_args->num_variables; j++)
     {
 
@@ -2592,12 +2592,12 @@ static int evaluate_ingestion_mask(ingest_info *info, harp_program *program)
             harp_operation *operation = program->operation[0];
             harp_operation *operation_copy = NULL;
 
-            if (operation->type == harp_operation_keep_variable || operation->type == harp_operation_exclude_variable)
+            if (operation->type == harp_operation_exclude_variable || operation->type == harp_operation_keep_variable)
             {
                 /* includes/excludes mark the next phase */
                 break;
             }
-            else if (operation->type == harp_operation_filter_collocation)
+            else if (operation->type == harp_operation_collocation_filter)
             {
                 /* collocation filters are tricky;
                  * the 'collocation filter' is included during ingestion,
@@ -2678,16 +2678,16 @@ static int evaluate_ingestion_mask(ingest_info *info, harp_program *program)
         {
             harp_operation *operation = program->operation[0];
 
-            if (operation->type == harp_operation_keep_variable)
+            if (operation->type == harp_operation_exclude_variable)
             {
-                if (execute_variable_keep_filter_operation(info, program) != 0)
+                if (execute_exclude_variable(info, program) != 0)
                 {
                     return -1;
                 }
             }
-            else if (operation->type == harp_operation_exclude_variable)
+            else if (operation->type == harp_operation_keep_variable)
             {
-                if (execute_variable_exclude_filter_operation(info, program) != 0)
+                if (execute_keep_variable(info, program) != 0)
                 {
                     return -1;
                 }
