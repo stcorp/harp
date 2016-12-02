@@ -555,7 +555,7 @@ nobase_pkgdata_DATA += $(DOCFILES)
 
 doc: harp_doc
 
-harp_doc: harpconvert libharp/harp.h
+harp_doc: harpconvert libharp/harp.h doc/Doxyfile
 	@if test "x$(SPHINXBUILD)" = x ; then \
 	  echo "Sphinx not available. HARP documentation was not (re)created." ; \
 	elif test "x$(DOXYGEN)" = x ; then \
