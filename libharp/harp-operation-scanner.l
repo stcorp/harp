@@ -86,7 +86,7 @@ WHITESPACE   [[:space:]]+
 "longitude-range"       return FUNC_LONGITUDE_RANGE;
 "point-distance"        return FUNC_POINT_DISTANCE;
 "regrid"                return FUNC_REGRID;
-"regrid-collocated"     return FUNC_REGRID_COLLOCATED;
+"smooth"                return FUNC_SMOOTH;
 "valid"                 return FUNC_VALID;
 
 "time"                  {

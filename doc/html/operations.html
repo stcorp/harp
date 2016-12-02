@@ -245,25 +245,44 @@ Example:</p>
 <blockquote class="last">
 <div><code class="docutils literal"><span class="pre">point-distance(4.357,</span> <span class="pre">52.012,</span> <span class="pre">3</span> <span class="pre">[km])</span></code></div></blockquote>
 </dd>
-<dt><code class="docutils literal"><span class="pre">regrid(dimension,</span> <span class="pre">axisvariable</span> <span class="pre">unit,</span> <span class="pre">(value,</span> <span class="pre">...))</span></code></dt>
+<dt><code class="docutils literal"><span class="pre">regrid(dimension,</span> <span class="pre">axis-variable</span> <span class="pre">unit,</span> <span class="pre">(value,</span> <span class="pre">...))</span></code></dt>
 <dd><p class="first">Regrid all variables in the product for the given dimension using
 the given axis variable as target grid. The operation will use a
-<code class="docutils literal"><span class="pre">derive(axisvariable</span> <span class="pre">{[time,]dimension}</span> <span class="pre">unit)</span></code> to determine
+<code class="docutils literal"><span class="pre">derive(axis-variable</span> <span class="pre">{[time,]dimension}</span> <span class="pre">unit)</span></code> to determine
 the current grid. The target grid is specified as a list of values.
 Example:</p>
 <blockquote class="last">
 <div><code class="docutils literal"><span class="pre">regrid(vertical,</span> <span class="pre">altitude</span> <span class="pre">[km],</span> <span class="pre">(1.0,</span> <span class="pre">2.0,</span> <span class="pre">5.0,</span> <span class="pre">10.0,</span> <span class="pre">15.0,</span> <span class="pre">20.0,</span> <span class="pre">30.0))</span></code></div></blockquote>
 </dd>
-<dt><code class="docutils literal"><span class="pre">regrid(dimension,</span> <span class="pre">axisvariable</span> <span class="pre">unit,</span> <span class="pre">length,</span> <span class="pre">offset,</span> <span class="pre">step)</span></code></dt>
+<dt><code class="docutils literal"><span class="pre">regrid(dimension,</span> <span class="pre">axis-variable</span> <span class="pre">unit,</span> <span class="pre">length,</span> <span class="pre">offset,</span> <span class="pre">step)</span></code></dt>
 <dd><p class="first">Regrid all variables in the product for the given dimension using
 the given axis variable as target grid. The operation will use a
-<code class="docutils literal"><span class="pre">derive(axisvariable</span> <span class="pre">{[time,]dimension}</span> <span class="pre">unit)</span></code> to determine
+<code class="docutils literal"><span class="pre">derive(axis-variable</span> <span class="pre">{[time,]dimension}</span> <span class="pre">unit)</span></code> to determine
 the current grid. The target grid is specified as using a length,
 offset, and step parameters.
 Example:</p>
 <blockquote class="last">
 <div><code class="docutils literal"><span class="pre">regrid(vertical,</span> <span class="pre">altitude</span> <span class="pre">[km],</span> <span class="pre">10,</span> <span class="pre">0.5,</span> <span class="pre">1.0)</span></code>
 (indicating a grid of altitudes 0.5, 1.5, ..., 9.5)</div></blockquote>
+</dd>
+<dt><code class="docutils literal"><span class="pre">regrid(dimension,</span> <span class="pre">axis-variable</span> <span class="pre">unit,</span> <span class="pre">collocation-result-file,</span> <span class="pre">a|b,</span> <span class="pre">dataset-dir)</span></code></dt>
+<dd><p class="first">Regrid all variables in the product for the given dimension using
+the a target grid taken from a collocated dataset. The fourth
+parameter indicates which dataset contains the target grid.
+Example:</p>
+<blockquote class="last">
+<div><code class="docutils literal"><span class="pre">regrid(vertical,</span> <span class="pre">altitude</span> <span class="pre">[km],</span> <span class="pre">&quot;collocation-result.csv&quot;,</span> <span class="pre">b,</span> <span class="pre">&quot;./correlative_data/&quot;)</span></code></div></blockquote>
+</dd>
+<dt><code class="docutils literal"><span class="pre">smooth(variable,</span> <span class="pre">dimension,</span> <span class="pre">axis-variable</span> <span class="pre">unit,</span> <span class="pre">collocation-result-file,</span> <span class="pre">a|b,</span> <span class="pre">dataset-dir)</span></code></dt>
+<dd><p class="first">Smooth the given variable in the product for the given dimension
+using the avaraging kernal (and a-priori profile, if available)
+from a collocated dataset. The fifth parameter indicates which
+dataset contains the avaraging kernel. Before smoothing the
+product is regridded to the grid of the averaging kernel using
+the given axis-variable (see also <code class="docutils literal"><span class="pre">regrid()</span></code>).
+Example:</p>
+<blockquote class="last">
+<div><code class="docutils literal"><span class="pre">smooth(O3_number_density,</span> <span class="pre">vertical,</span> <span class="pre">altitude</span> <span class="pre">[km],</span> <span class="pre">&quot;collocation-result.csv&quot;,</span> <span class="pre">b,</span> <span class="pre">&quot;./correlative_data/&quot;)</span></code></div></blockquote>
 </dd>
 <dt><code class="docutils literal"><span class="pre">valid(variable)</span></code></dt>
 <dd>Exclude invalid values of the specified variable (values
@@ -370,6 +389,7 @@ Then, each further line defines a polygon. Each polygon consists of the vertices
    <span class="s1">&#39;point-distance&#39;</span><span class="p">,</span> <span class="s1">&#39;(&#39;</span><span class="p">,</span> <span class="n">floatvalue</span><span class="p">,</span> <span class="p">[</span><span class="n">unit</span><span class="p">],</span> <span class="s1">&#39;,&#39;</span><span class="p">,</span> <span class="n">floatvalue</span><span class="p">,</span> <span class="p">[</span><span class="n">unit</span><span class="p">],</span> <span class="s1">&#39;,&#39;</span><span class="p">,</span> <span class="n">floatvalue</span><span class="p">,</span> <span class="p">[</span><span class="n">unit</span><span class="p">],</span> <span class="s1">&#39;)&#39;</span> <span class="o">|</span>
    <span class="s1">&#39;regrid&#39;</span><span class="p">,</span> <span class="s1">&#39;(&#39;</span><span class="p">,</span> <span class="n">dimension</span><span class="p">,</span> <span class="s1">&#39;,&#39;</span><span class="p">,</span> <span class="n">variable</span><span class="p">,</span> <span class="p">[</span><span class="n">unit</span><span class="p">],</span> <span class="s1">&#39;,&#39;</span><span class="p">,</span> <span class="s1">&#39;(&#39;</span><span class="p">,</span> <span class="n">floatvaluelist</span><span class="p">,</span> <span class="s1">&#39;)&#39;</span><span class="p">,</span> <span class="s1">&#39;)&#39;</span> <span class="o">|</span>
    <span class="s1">&#39;regrid&#39;</span><span class="p">,</span> <span class="s1">&#39;(&#39;</span><span class="p">,</span> <span class="n">dimension</span><span class="p">,</span> <span class="s1">&#39;,&#39;</span><span class="p">,</span> <span class="n">variable</span><span class="p">,</span> <span class="p">[</span><span class="n">unit</span><span class="p">],</span> <span class="s1">&#39;,&#39;</span><span class="p">,</span> <span class="n">intvalue</span><span class="p">,</span> <span class="s1">&#39;,&#39;</span><span class="p">,</span> <span class="n">floatvalue</span><span class="p">,</span> <span class="s1">&#39;,&#39;</span><span class="p">,</span> <span class="n">floatvalue</span><span class="p">,</span> <span class="s1">&#39;)&#39;</span> <span class="o">|</span>
+   <span class="s1">&#39;smooth&#39;</span><span class="p">,</span> <span class="s1">&#39;(&#39;</span><span class="p">,</span> <span class="n">variable</span><span class="p">,</span> <span class="s1">&#39;,&#39;</span> <span class="n">dimension</span><span class="p">,</span> <span class="s1">&#39;,&#39;</span><span class="p">,</span> <span class="n">variable</span><span class="p">,</span> <span class="p">[</span><span class="n">unit</span><span class="p">],</span> <span class="s1">&#39;,&#39;</span><span class="p">,</span> <span class="n">intvalue</span><span class="p">,</span> <span class="s1">&#39;,&#39;</span><span class="p">,</span> <span class="n">floatvalue</span><span class="p">,</span> <span class="s1">&#39;,&#39;</span><span class="p">,</span> <span class="n">floatvalue</span><span class="p">,</span> <span class="s1">&#39;)&#39;</span> <span class="o">|</span>
    <span class="s1">&#39;valid&#39;</span><span class="p">,</span> <span class="s1">&#39;(&#39;</span><span class="p">,</span> <span class="n">variable</span><span class="p">,</span> <span class="s1">&#39;)&#39;</span> <span class="o">|</span>
 
 <span class="n">operationexpr</span> <span class="o">=</span>

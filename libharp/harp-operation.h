@@ -39,8 +39,8 @@ typedef enum harp_operation_type_enum
     harp_operation_membership_filter,
     harp_operation_point_distance_filter,
     harp_operation_regrid,
-    harp_operation_regrid_file,
     harp_operation_regrid_collocated,
+    harp_operation_smooth_collocated,
     harp_operation_string_comparison_filter,
     harp_operation_string_membership_filter,
     harp_operation_valid_range_filter,
@@ -174,18 +174,26 @@ typedef struct harp_regrid_args_struct
     harp_variable *axis_variable;
 } harp_regrid_args;
 
-typedef struct harp_regrid_file_args_struct
-{
-    char *grid_filename;
-} harp_regrid_file_args;
-
 typedef struct harp_regrid_collocated_args_struct
 {
-    char *dataset_dir;
+    harp_dimension_type dimension_type;
+    char *axis_variable_name;
+    char *axis_unit;
     char *collocation_result;
     char target_dataset;
-    char *vertical_axis;
+    char *dataset_dir;
 } harp_regrid_collocated_args;
+
+typedef struct harp_smooth_collocated_args_struct
+{
+    char *variable_name;
+    harp_dimension_type dimension_type;
+    char *axis_variable_name;
+    char *axis_unit;
+    char *collocation_result;
+    char target_dataset;
+    char *dataset_dir;
+} harp_smooth_collocated_args;
 
 typedef struct harp_string_comparison_filter_args_struct
 {
@@ -239,9 +247,12 @@ int harp_point_distance_filter_new(double longitude, const char *longitude_unit,
                                    harp_operation **operation);
 int harp_regrid_new(harp_dimension_type dimension_type, const char *axis_variable_name, const char *axis_unit,
                     long num_values, double *values, harp_operation **new_operation);
-int harp_regrid_file_new(const char *grid_filename, harp_operation **new_operation);
-int harp_regrid_collocated_new(const char *collocation_result, const char *dataset_dir, const char target_dataset,
-                               const char *vertical_axis, harp_operation **new_operation);
+int harp_regrid_collocated_new(harp_dimension_type dimension_type, const char *axis_variable_name,
+                               const char *axis_unit, const char *collocation_result, const char target_dataset,
+                               const char *dataset_dir, harp_operation **new_operation);
+int harp_smooth_collocated_new(const char *variable_name, harp_dimension_type dimension_type,
+                               const char *axis_variable_name, const char *axis_unit, const char *collocation_result,
+                               const char target_dataset, const char *dataset_dir, harp_operation **new_operation);
 int harp_string_comparison_filter_new(const char *variable_name, harp_comparison_operator_type operator_type,
                                       const char *value, harp_operation **new_operation);
 int harp_string_membership_filter_new(const char *variable_name, harp_membership_operator_type operator_type,

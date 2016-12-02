@@ -119,25 +119,44 @@ Supported functions:
 
             ``point-distance(4.357, 52.012, 3 [km])`` 
 
-    ``regrid(dimension, axisvariable unit, (value, ...))``
+    ``regrid(dimension, axis-variable unit, (value, ...))``
         Regrid all variables in the product for the given dimension using
         the given axis variable as target grid. The operation will use a
-        ``derive(axisvariable {[time,]dimension} unit)`` to determine
+        ``derive(axis-variable {[time,]dimension} unit)`` to determine
         the current grid. The target grid is specified as a list of values.
         Example:
 
             ``regrid(vertical, altitude [km], (1.0, 2.0, 5.0, 10.0, 15.0, 20.0, 30.0))``
 
-    ``regrid(dimension, axisvariable unit, length, offset, step)``
+    ``regrid(dimension, axis-variable unit, length, offset, step)``
         Regrid all variables in the product for the given dimension using
         the given axis variable as target grid. The operation will use a
-        ``derive(axisvariable {[time,]dimension} unit)`` to determine
+        ``derive(axis-variable {[time,]dimension} unit)`` to determine
         the current grid. The target grid is specified as using a length,
         offset, and step parameters.
         Example:
 
             ``regrid(vertical, altitude [km], 10, 0.5, 1.0)``
             (indicating a grid of altitudes 0.5, 1.5, ..., 9.5)
+
+    ``regrid(dimension, axis-variable unit, collocation-result-file, a|b, dataset-dir)``
+        Regrid all variables in the product for the given dimension using
+        the a target grid taken from a collocated dataset. The fourth
+        parameter indicates which dataset contains the target grid. 
+        Example:
+
+            ``regrid(vertical, altitude [km], "collocation-result.csv", b, "./correlative_data/")``
+
+    ``smooth(variable, dimension, axis-variable unit, collocation-result-file, a|b, dataset-dir)``
+        Smooth the given variable in the product for the given dimension
+        using the avaraging kernal (and a-priori profile, if available)
+        from a collocated dataset. The fifth parameter indicates which
+        dataset contains the avaraging kernel. Before smoothing the
+        product is regridded to the grid of the averaging kernel using
+        the given axis-variable (see also ``regrid()``).
+        Example:
+
+            ``smooth(O3_number_density, vertical, altitude [km], "collocation-result.csv", b, "./correlative_data/")``
 
     ``valid(variable)``
         Exclude invalid values of the specified variable (values
@@ -249,6 +268,7 @@ Formal definition
        'point-distance', '(', floatvalue, [unit], ',', floatvalue, [unit], ',', floatvalue, [unit], ')' |
        'regrid', '(', dimension, ',', variable, [unit], ',', '(', floatvaluelist, ')', ')' |
        'regrid', '(', dimension, ',', variable, [unit], ',', intvalue, ',', floatvalue, ',', floatvalue, ')' |
+       'smooth', '(', variable, ',' dimension, ',', variable, [unit], ',', intvalue, ',', floatvalue, ',', floatvalue, ')' |
        'valid', '(', variable, ')' |
 
     operationexpr = 

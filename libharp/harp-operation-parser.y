@@ -214,7 +214,7 @@ int harp_sized_array_add_int32(harp_sized_array *sized_array, int32_t value)
 %token                  FUNC_LONGITUDE_RANGE
 %token                  FUNC_POINT_DISTANCE
 %token                  FUNC_REGRID
-%token                  FUNC_REGRID_COLLOCATED
+%token                  FUNC_SMOOTH
 %token                  FUNC_VALID
 %token                  NAN
 %token                  INF
@@ -496,14 +496,17 @@ operation:
             }
             harp_sized_array_delete(array);
         }
-    | FUNC_REGRID '(' STRING_VALUE ')' {
-            if (harp_regrid_file_new($3, &$$) != 0) YYERROR;
+    | FUNC_REGRID '(' DIMENSION ',' identifier UNIT ',' STRING_VALUE ',' 'a' ',' STRING_VALUE ')' {
+            if (harp_regrid_collocated_new($3, $5, $6, $8, 'a', $12, &$$) != 0) YYERROR;
         }
-    | FUNC_REGRID_COLLOCATED '(' STRING_VALUE ',' STRING_VALUE ',' 'a' ',' identifier ')' {
-            if (harp_regrid_collocated_new($3, $5, 'a', $9, &$$) != 0) YYERROR;
+    | FUNC_REGRID '(' DIMENSION ',' identifier UNIT ',' STRING_VALUE ',' 'b' ',' STRING_VALUE ')' {
+            if (harp_regrid_collocated_new($3, $5, $6, $8, 'b', $12, &$$) != 0) YYERROR;
         }
-    | FUNC_REGRID_COLLOCATED '(' STRING_VALUE ',' STRING_VALUE ',' 'b' ',' identifier ')' {
-            if (harp_regrid_collocated_new($3, $5, 'b', $9, &$$) != 0) YYERROR;
+    | FUNC_SMOOTH '(' identifier ',' DIMENSION ',' identifier UNIT ',' STRING_VALUE ',' 'a' ',' STRING_VALUE ')' {
+            if (harp_smooth_collocated_new($3, $5, $7, $8, $10, 'a', $14, &$$) != 0) YYERROR;
+        }
+    | FUNC_SMOOTH '(' identifier ',' DIMENSION ',' identifier UNIT ',' STRING_VALUE ',' 'b' ',' STRING_VALUE ')' {
+            if (harp_smooth_collocated_new($3, $5, $7, $8, $10, 'b', $14, &$$) != 0) YYERROR;
         }
     | FUNC_VALID '(' identifier ')' {
             if (harp_valid_range_filter_new($3, &$$) != 0) YYERROR;

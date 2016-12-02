@@ -607,276 +607,6 @@ static int get_matrix_from_avk_variable(const harp_variable *avk, long time_inde
     return 0;
 }
 
-static int get_vertical_unit(const char *name, char **new_unit)
-{
-    char *unit = NULL;
-
-    if (strcmp(name, "altitude") == 0)
-    {
-        unit = strdup(HARP_UNIT_LENGTH);
-        if (!unit)
-        {
-            harp_set_error(HARP_ERROR_OUT_OF_MEMORY, "out of memory (could not duplicate string)"
-                           " (%s:%u)", __FILE__, __LINE__);
-        }
-    }
-    else if (strcmp(name, "pressure") == 0)
-    {
-        unit = strdup(HARP_UNIT_PRESSURE);
-        if (!unit)
-        {
-            harp_set_error(HARP_ERROR_OUT_OF_MEMORY, "out of memory (could not duplicate string)"
-                           " (%s:%u)", __FILE__, __LINE__);
-        }
-    }
-    else
-    {
-        harp_set_error(HARP_ERROR_INVALID_ARGUMENT, "not a vertical axis variable (%s)", name);
-        return -1;
-    }
-
-    *new_unit = unit;
-
-    return 0;
-}
-
-static int read_vertical_grid_line(FILE *file, const char *filename, double *new_value)
-{
-    char line[HARP_CSV_LINE_LENGTH];
-    char *cursor = line;
-    double value;
-
-    if (fgets(line, HARP_CSV_LINE_LENGTH, file) == NULL)
-    {
-        harp_set_error(HARP_ERROR_INVALID_ARGUMENT, "error reading line of csv file '%s'", filename);
-        return -1;
-    }
-
-    harp_csv_parse_double(&cursor, &value);
-
-    *new_value = value;
-
-    return 0;
-}
-
-static int read_vertical_grid_header(FILE *file, const char *filename, char **new_name, char **new_unit)
-{
-    char line[HARP_CSV_LINE_LENGTH];
-    char *original_cursor, *cursor;
-    int length;
-    char *name = NULL;
-    char *unit = NULL;
-
-    rewind(file);
-
-    if (fgets(line, HARP_CSV_LINE_LENGTH, file) == NULL)
-    {
-        harp_set_error(HARP_ERROR_INVALID_ARGUMENT, "error reading line of csv file '%s'", filename);
-        return -1;
-    }
-
-    /* remove trailing whitespace */
-    harp_csv_rtrim(line);
-
-    /* skip leading whitespace */
-    original_cursor = cursor = harp_csv_ltrim(line);
-
-    /* Grab name */
-    length = 0;
-    while (*cursor != '[' && *cursor != ',' && *cursor != '\0' && !isspace(*cursor))
-    {
-        cursor++;
-        length++;
-    }
-
-    name = malloc((length + 1) * sizeof(char));
-    if (name == NULL)
-    {
-        harp_set_error(HARP_ERROR_OUT_OF_MEMORY, "out of memory (could not allocate %lu bytes) (%s:%u)",
-                       (length + 1) * sizeof(char), __FILE__, __LINE__);
-
-        return -1;
-    }
-    strncpy(name, original_cursor, length);
-    name[length] = '\0';
-
-    /* Skip white space between name and unit */
-    cursor = harp_csv_ltrim(cursor);
-
-    if (*cursor != '[')
-    {
-        /* No unit is found */
-        harp_set_error(HARP_ERROR_INVALID_ARGUMENT, "no unit in header of '%s'", filename);
-        free(name);
-        return -1;
-    }
-    else
-    {
-        cursor++;
-    }
-
-    /* find unit length */
-    length = 0;
-    original_cursor = cursor;
-    while (*cursor != ']' && *cursor != '\0')
-    {
-        cursor++;
-        length++;
-    }
-
-    /* copy unit */
-    unit = malloc((length + 1) * sizeof(char));
-    if (unit == NULL)
-    {
-        harp_set_error(HARP_ERROR_OUT_OF_MEMORY, "out of memory (could not allocate %lu bytes) (%s:%u)",
-                       (length + 1) * sizeof(char), __FILE__, __LINE__);
-        free(name);
-        free(unit);
-        return -1;
-    }
-    strncpy(unit, original_cursor, length);
-    unit[length] = '\0';
-
-    /* done, return result */
-    *new_name = name;
-    *new_unit = unit;
-
-    return 0;
-}
-
-/**
- * Import vertical grid (altitude/pressure) from specified CSV file into target harp_variable.
- * \return
- *   \arg \c 0, Success.
- *   \arg \c -1, Error occurred (check #harp_errno).
- */
-int harp_profile_import_grid(const char *filename, harp_variable **new_vertical_axis)
-{
-    FILE *file = NULL;
-    long num_vertical;
-    char *name = NULL;
-    char *unit = NULL;
-    double *values = NULL;
-    double value;
-    harp_variable *vertical_axis = NULL;
-    harp_dimension_type vertical_1d_dim_type[1] = { harp_dimension_vertical };
-    long vertical_1d_dim[1];
-    int i;
-
-    /* open the grid file */
-    file = fopen(filename, "r+");
-    if (file == NULL)
-    {
-        harp_set_error(HARP_ERROR_FILE_OPEN, "error opening vertical grid file '%s'", filename);
-        return -1;
-    }
-
-    /* Determine number of values */
-    if (harp_csv_get_num_lines(file, filename, &num_vertical) != 0)
-    {
-        fclose(file);
-        return -1;
-    }
-
-    /* Exclude the header line */
-    num_vertical--;
-
-    if (num_vertical < 1)
-    {
-        /* No lines to read */
-        harp_set_error(HARP_ERROR_FILE_READ, "vertical grid file '%s' has no values", filename);
-        fclose(file);
-        return -1;
-    }
-
-    /* Obtain the name and unit of the quantity */
-    if (read_vertical_grid_header(file, filename, &name, &unit) != 0)
-    {
-        fclose(file);
-        return -1;
-    }
-
-    /* Obtain the values */
-    values = malloc((size_t)num_vertical * sizeof(double));
-    if (values == NULL)
-    {
-        harp_set_error(HARP_ERROR_OUT_OF_MEMORY, "out of memory (%s:%u)", __FILE__, __LINE__);
-        fclose(file);
-        return -1;
-    }
-
-    for (i = 0; i < num_vertical; i++)
-    {
-        if (read_vertical_grid_line(file, filename, &value) != 0)
-        {
-            fclose(file);
-            free(values);
-            free(name);
-            free(unit);
-            return -1;
-        }
-
-        values[i] = value;
-    }
-
-    /* io cleanup */
-    if (fclose(file) != 0)
-    {
-        harp_set_error(HARP_ERROR_FILE_READ, "error closing vertical grid definition file '%s'", filename);
-        free(values);
-        free(name);
-        free(unit);
-        return -1;
-    }
-
-    /* validate the axis variable name */
-    if ((strcmp(name, "altitude") == 0 || strcmp(name, "pressure") == 0) != 1)
-    {
-        harp_set_error(HARP_ERROR_INVALID_NAME,
-                       "invalid vertical axis name '%s' in header of csv file '%s'", name, filename);
-        free(values);
-        free(name);
-        free(unit);
-        return -1;
-    }
-
-    /* create the axis variable */
-    vertical_1d_dim[0] = num_vertical;
-    if (harp_variable_new(name, harp_type_double, 1, vertical_1d_dim_type, vertical_1d_dim, &vertical_axis) != 0)
-    {
-        free(values);
-        free(name);
-        free(unit);
-        return -1;
-    }
-
-    /* Set the axis unit */
-    vertical_axis->unit = strdup(unit);
-    if (vertical_axis->unit == NULL)
-    {
-        harp_variable_delete(vertical_axis);
-        free(values);
-        free(name);
-        free(unit);
-        return -1;
-    }
-
-    /* Copy the axis data */
-    for (i = 0; i < num_vertical; i++)
-    {
-        vertical_axis->data.double_data[i] = values[i];
-    }
-
-    *new_vertical_axis = vertical_axis;
-
-    /* cleanup */
-    free(values);
-    free(name);
-    free(unit);
-
-    return 0;
-}
-
 static long get_unpadded_vector_length(double *vector, long vector_length)
 {
     long i;
@@ -1375,6 +1105,7 @@ LIBHARP_API int harp_product_regrid_vertical_with_axis_variable(harp_product *pr
  * \param num_smooth_variables length of smooth_variables.
  * \param smooth_variables The names of the variables to smooth.
  * \param vertical_axis The name of the variable to use as a vertical axis (pressure/altitude/etc).
+ * \param vertical_unit The unit in which the vertical_axis will be brought for the regridding.
  * \param original_collocation_result The collocation result used to locate the matching vertical
  *   grids/avks/apriori.
  *   The collocation result is assumed to have the appropriate metadata available for all matches (dataset b).
@@ -1385,6 +1116,7 @@ LIBHARP_API int harp_product_regrid_vertical_with_axis_variable(harp_product *pr
  */
 LIBHARP_API int harp_product_smooth_vertical(harp_product *product, int num_smooth_variables,
                                              const char **smooth_variables, const char *vertical_axis,
+                                             const char *vertical_unit,
                                              const harp_collocation_result *original_collocation_result)
 {
     long time_index_a, pair_id;
@@ -1404,7 +1136,6 @@ LIBHARP_API int harp_product_smooth_vertical(harp_product *product, int num_smoo
     harp_variable *target_grid = NULL;
     harp_variable *target_bounds = NULL;
     harp_collocation_result *collocation_result = NULL;
-    char *vertical_unit = NULL;
     char *bounds_name = NULL;
     double *interpolation_buffer = NULL;
 
@@ -1421,12 +1152,6 @@ LIBHARP_API int harp_product_smooth_vertical(harp_product *product, int num_smoo
 
     /* copy the collocation result for filtering */
     if (harp_collocation_result_shallow_copy(original_collocation_result, &collocation_result) != 0)
-    {
-        goto error;
-    }
-
-    /* get the default unit for the chosen vertical axis type */
-    if (get_vertical_unit(vertical_axis, &vertical_unit) != 0)
     {
         goto error;
     }
@@ -1750,7 +1475,6 @@ LIBHARP_API int harp_product_smooth_vertical(harp_product *product, int num_smoo
     harp_variable_delete(target_bounds);
     harp_product_delete(collocated_product);
     harp_collocation_result_shallow_delete(collocation_result);
-    free(vertical_unit);
     free(bounds_name);
     free(interpolation_buffer);
 
@@ -1763,7 +1487,6 @@ LIBHARP_API int harp_product_smooth_vertical(harp_product *product, int num_smoo
     harp_variable_delete(target_bounds);
     harp_product_delete(collocated_product);
     harp_collocation_result_shallow_delete(collocation_result);
-    free(vertical_unit);
     free(bounds_name);
     free(interpolation_buffer);
 
@@ -1783,9 +1506,10 @@ LIBHARP_API int harp_product_smooth_vertical(harp_product *product, int num_smoo
  *   \arg \c -1, Error occurred (check #harp_errno).
  */
 LIBHARP_API int harp_product_regrid_vertical_with_collocated_dataset(harp_product *product, const char *vertical_axis,
+                                                                     const char *vertical_unit,
                                                                      harp_collocation_result *collocation_result)
 {
-    return harp_product_smooth_vertical(product, 0, NULL, vertical_axis, collocation_result);
+    return harp_product_smooth_vertical(product, 0, NULL, vertical_axis, vertical_unit, collocation_result);
 }
 
 /**

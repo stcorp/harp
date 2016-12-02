@@ -1,4 +1,9 @@
 
+* Added regrid() and smooth() operations.
+
+* Removed the harpprofile command line tool. Its functionality is replaced by
+  the regrid() and smooth() operations.
+
 * Python harp.import_product() and harp.ingest_product() functions now accept
   a list of filenames or a globbing pattern as parameter (which will return
   the result of harp.concatenate() on the imported/ingested products).
@@ -9,7 +14,7 @@
 
 * Fixed issue with flatten() operation providing wrong results.
 
-* Fixed issue with vertical regridding to a common grid providing wrong
+* Fixed issue where vertical regridding to a common grid provided wrong
   results.
 
 * Added variable conversions for apriori profiles.

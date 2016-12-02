@@ -1250,40 +1250,6 @@ static int execute_regrid(harp_product *product, harp_program *program)
 }
 
 /* run a regridding operation at the head of program */
-static int execute_regrid_file(harp_product *product, harp_program *program)
-{
-    harp_operation *operation;
-    const harp_regrid_file_args *args;
-    harp_variable *target_grid = NULL;
-
-    assert(program->num_operations != 0);
-    operation = program->operation[0];
-    assert(operation->type == harp_operation_regrid_file);
-
-    args = (const harp_regrid_file_args *)operation->args;
-
-    if (harp_profile_import_grid(args->grid_filename, &target_grid) != 0)
-    {
-        return -1;
-    }
-
-    if (harp_product_regrid_vertical_with_axis_variable(product, target_grid) != 0)
-    {
-        harp_variable_delete(target_grid);
-        return -1;
-    }
-
-    harp_variable_delete(target_grid);
-
-    if (harp_program_remove_operation_at_index(program, 0) != 0)
-    {
-        return -1;
-    }
-
-    return 0;
-}
-
-/* run a regridding operation at the head of program */
 static int execute_regrid_collocated(harp_product *product, harp_program *program)
 {
     harp_operation *operation;
@@ -1295,6 +1261,13 @@ static int execute_regrid_collocated(harp_product *product, harp_program *progra
     assert(operation->type == harp_operation_regrid_collocated);
 
     args = (const harp_regrid_collocated_args *)operation->args;
+
+    if (args->dimension_type != harp_dimension_vertical)
+    {
+        harp_set_error(HARP_ERROR_OPERATION, "regridding of '%s' dimension not supported",
+                       harp_get_dimension_type_name(args->dimension_type));
+        return -1;
+    }
 
     if (harp_collocation_result_read(args->collocation_result, &collocation_result) != 0)
     {
@@ -1318,7 +1291,8 @@ static int execute_regrid_collocated(harp_product *product, harp_program *progra
         }
     }
 
-    if (harp_product_regrid_vertical_with_collocated_dataset(product, args->vertical_axis, collocation_result) != 0)
+    if (harp_product_regrid_vertical_with_collocated_dataset(product, args->axis_variable_name, args->axis_unit,
+                                                             collocation_result) != 0)
     {
         harp_collocation_result_delete(collocation_result);
         return -1;
@@ -1330,6 +1304,64 @@ static int execute_regrid_collocated(harp_product *product, harp_program *progra
         return -1;
     }
 
+    return 0;
+}
+
+/* run a smoothing operation at the head of program */
+static int execute_smooth_collocated(harp_product *product, harp_program *program)
+{
+    harp_operation *operation;
+    const harp_smooth_collocated_args *args;
+    harp_collocation_result *collocation_result = NULL;
+
+    assert(program->num_operations != 0);
+    operation = program->operation[0];
+    assert(operation->type == harp_operation_smooth_collocated);
+
+    args = (const harp_smooth_collocated_args *)operation->args;
+
+    if (args->dimension_type != harp_dimension_vertical)
+    {
+        harp_set_error(HARP_ERROR_OPERATION, "regridding of '%s' dimension not supported",
+                       harp_get_dimension_type_name(args->dimension_type));
+        return -1;
+    }
+
+    if (harp_collocation_result_read(args->collocation_result, &collocation_result) != 0)
+    {
+        return -1;
+    }
+
+    if (args->target_dataset == 'a')
+    {
+        if (harp_dataset_import(collocation_result->dataset_a, args->dataset_dir) != 0)
+        {
+            harp_collocation_result_delete(collocation_result);
+            return -1;
+        }
+    }
+    else
+    {
+        if (harp_dataset_import(collocation_result->dataset_b, args->dataset_dir) != 0)
+        {
+            harp_collocation_result_delete(collocation_result);
+            return -1;
+        }
+    }
+
+    if (harp_product_smooth_vertical(product, 1, (const char **)&args->variable_name, args->axis_variable_name,
+                                     args->axis_unit, collocation_result) != 0)
+    {
+        harp_collocation_result_delete(collocation_result);
+        return -1;
+    }
+
+    if (harp_program_remove_operation_at_index(program, 0) != 0)
+    {
+        harp_collocation_result_delete(collocation_result);
+        return -1;
+    }
+    
     return 0;
 }
 
@@ -1398,14 +1430,14 @@ static int execute_next_operation(harp_product *product, harp_program *program)
                 return -1;
             }
             break;
-        case harp_operation_regrid_file:
-            if (execute_regrid_file(product, program) != 0)
+        case harp_operation_regrid_collocated:
+            if (execute_regrid_collocated(product, program) != 0)
             {
                 return -1;
             }
             break;
-        case harp_operation_regrid_collocated:
-            if (execute_regrid_collocated(product, program) != 0)
+        case harp_operation_smooth_collocated:
+            if (execute_smooth_collocated(product, program) != 0)
             {
                 return -1;
             }
