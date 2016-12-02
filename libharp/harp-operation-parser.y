@@ -58,7 +58,7 @@ static void harp_operation_parser_error(const char *error)
     harp_set_error(HARP_ERROR_OPERATION_SYNTAX, "%s", error);
 }
 
-int harp_sized_array_new(harp_sized_array **new_array, harp_data_type data_type)
+int harp_sized_array_new(harp_data_type data_type, harp_sized_array **new_array)
 {
     harp_sized_array *sized_array;
 
@@ -305,7 +305,7 @@ double_array:
             $$ = $1;
         }
     | double_value {
-            if (harp_sized_array_new(&$$, harp_type_double) != 0) YYERROR;
+            if (harp_sized_array_new(harp_type_double, &$$) != 0) YYERROR;
             if (harp_sized_array_add_double($$, $1) != 0) YYERROR;
         }
     ;
@@ -317,7 +317,7 @@ string_array:
             free($3);
         }
     | STRING_VALUE {
-            if (harp_sized_array_new(&$$, harp_type_string) != 0) YYERROR;
+            if (harp_sized_array_new(harp_type_string, &$$) != 0) YYERROR;
             if (harp_sized_array_add_string($$, $1) != 0) YYERROR;
             free($1);
         }
@@ -330,7 +330,7 @@ identifier_array:
             free($3);
         }
     | identifier {
-            if (harp_sized_array_new(&$$, harp_type_string) != 0) YYERROR;
+            if (harp_sized_array_new(harp_type_string, &$$) != 0) YYERROR;
             if (harp_sized_array_add_string($$, $1) != 0) YYERROR;
             free($1);
         }
@@ -342,14 +342,14 @@ dimension_array:
             $$ = $1;
         }
     | DIMENSION {
-            if (harp_sized_array_new(&$$, harp_type_int32) != 0) YYERROR;
+            if (harp_sized_array_new(harp_type_int32, &$$) != 0) YYERROR;
             if (harp_sized_array_add_int32($$, $1) != 0) YYERROR;
         }
     ;
 
 dimensionspec:
       '{' dimension_array '}' { $$ = $2; }
-    | '{' '}' { if (harp_sized_array_new(&$$, harp_type_int32) != 0) YYERROR; }
+    | '{' '}' { if (harp_sized_array_new(harp_type_int32, &$$) != 0) YYERROR; }
     ;
 
 comparison_operator:
@@ -475,6 +475,26 @@ operation:
         }
     | FUNC_REGRID '(' DIMENSION ',' identifier UNIT ',' '(' double_array ')' ')' {
             if (harp_regrid_new($3, $5, $6, $9->num_elements, $9->array.double_data, &$$) != 0) YYERROR;
+        }
+    | FUNC_REGRID '(' DIMENSION ',' identifier UNIT ',' int32_value ',' double_value ',' double_value ')' {
+            harp_sized_array *array;
+            long i;
+
+            if (harp_sized_array_new(harp_type_double, &array) != 0) YYERROR;
+            for (i = 0; i < $8; i++)
+            {
+                if (harp_sized_array_add_double(array, $10 + i * $12) != 0)
+                {
+                    harp_sized_array_delete(array);
+                    YYERROR;
+                }
+            }
+            if (harp_regrid_new($3, $5, $6, array->num_elements, array->array.double_data, &$$) != 0)
+            {
+                harp_sized_array_delete(array);
+                YYERROR;
+            }
+            harp_sized_array_delete(array);
         }
     | FUNC_REGRID '(' STRING_VALUE ')' {
             if (harp_regrid_file_new($3, &$$) != 0) YYERROR;
