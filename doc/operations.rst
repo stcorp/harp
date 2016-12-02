@@ -10,14 +10,14 @@ Comparison filter
 -----------------
 
     ``variable operator value [unit]``
-    
+
 Exclude measurements for which the comparison evaluates to false.
 
 Supported operators are:
 
-	| ``==`` ``!=``
-	| ``<`` ``<=`` ``>=`` ``>`` (for numerical values only)
-	| ``=&`` ``!&`` (bitfield operators, for integer values only)
+    | ``==`` ``!=``
+    | ``<`` ``<=`` ``>=`` ``>`` (for numerical values only)
+    | ``=&`` ``!&`` (bitfield operators, for integer values only)
 
 
 Bitfield operators work such that ``a =& 5`` returns true if both bits 1 and 3 in ``a`` are set
@@ -47,6 +47,19 @@ Function call
 
 Supported functions:
 
+    ``area-mask-covers-area(area-mask-file)``
+       Exclude measurements for which no area from the area
+       mask file covers the measurement area completely.
+
+    ``area-mask-covers-point(area-mask-file)``
+        Exclude measurements for which no area from the area
+        mask file contains the measurement location.
+
+    ``area-mask-intersects-area(area-mask-file, minimum-overlap-percentage)``
+       Exclude measurements for which no area from the area
+       mask file overlaps at least the specified percentage of
+       the measurement area.
+
     ``collocate-left(collocation-result-file)``
         Apply the specified collocation result file as an index
         filter assuming the product is part of dataset A.
@@ -55,45 +68,15 @@ Supported functions:
         Apply the specified collocation result file as an index
         filter assuming the product is part of dataset B.
 
-    ``valid(variable)``
-        Exclude invalid values of the specified variable (values
-        outside the valid range of the variable, or NaN).
-
-    ``longitude-range(minimum [unit], maximum [unit])``
-        Exclude measurements of which the longitude of the
-        measurement location falls outside the specified range.
-        This function correctly handles longitude ranges that
-        cross the international date line.
-        
-    ``point-distance(longitude [unit], latitude [unit], distance [unit])``
-        Exclude measurements situated further than the specified
-        distance from the specified location.
-        
-    ``area-mask-covers-point(area-mask-file)``
-        Exclude measurements for which no area from the area
-        mask file contains the measurement location.
-        
-    ``area-mask-covers-area(area-mask-file)``
-       Exclude measurements for which no area from the area
-       mask file covers the measurement area completely.
-        
-    ``area-mask-intersects-area(area-mask-file, minimum-overlap-percentage)``
-       Exclude measurements for which no area from the area
-       mask file overlaps at least the specified percentage of
-       the measurement area.
-        
     ``derive(variable {dimension-type, ...} [unit])``
        Derive the specified variable from other variables found
        in the product. The ``--list-conversions`` option of
        harpconvert and harpfilter can be used to list available
        variable conversions.
-        
-    ``keep(variable, ...)``
-       Mark the specified variable(s) for inclusion in the
-       ingested product. All variables marked for inclusion
-       will be kept in the ingested product, all other
-       variables will be excluded.
-        
+       The algorithms behind all the conversions are described
+       in the :doc:`Algorithms <algorithms>` section of the
+       documentation.
+
     ``exclude(variable, ...)``
        Mark the specified variable(s) for exclusion from the
        ingested product. All variables marked for exclusion
@@ -109,6 +92,56 @@ Supported functions:
        more than once on the given dimension will be removed. The
        index and collocation_index variables will also be removed.
        Independent dimensions cannot be flattened.
+       Example:
+
+           ``flatten(longitude);flatten(latitude)``
+           (turn a 2D lat/lon grid into a a series of individual points)
+
+    ``keep(variable, ...)``
+       Mark the specified variable(s) for inclusion in the
+       ingested product. All variables marked for inclusion
+       will be kept in the ingested product, all other
+       variables will be excluded.
+
+    ``longitude-range(minimum [unit], maximum [unit])``
+        Exclude measurements of which the longitude of the
+        measurement location falls outside the specified range.
+        This function correctly handles longitude ranges that
+        cross the international date line.
+
+            ``longitude-range(179.0, -179.0)``
+            (select a 2 degree range around the international dateline)
+
+    ``point-distance(longitude [unit], latitude [unit], distance [unit])``
+        Exclude measurements situated further than the specified
+        distance from the specified location.
+        Example:
+
+            ``point-distance(4.357, 52.012, 3 [km])`` 
+
+    ``regrid(dimension, axisvariable unit, (value, ...))``
+        Regrid all variables in the product for the given dimension using
+        the given axis variable as target grid. The operation will use a
+        ``derive(axisvariable {[time,]dimension} unit)`` to determine
+        the current grid. The target grid is specified as a list of values.
+        Example:
+
+            ``regrid(vertical, altitude [km], (1.0, 2.0, 5.0, 10.0, 15.0, 20.0, 30.0))``
+
+    ``regrid(dimension, axisvariable unit, length, offset, step)``
+        Regrid all variables in the product for the given dimension using
+        the given axis variable as target grid. The operation will use a
+        ``derive(axisvariable {[time,]dimension} unit)`` to determine
+        the current grid. The target grid is specified as using a length,
+        offset, and step parameters.
+        Example:
+
+            ``regrid(vertical, altitude [km], 10, 0.5, 1.0)``
+            (indicating a grid of altitudes 0.5, 1.5, ..., 9.5)
+
+    ``valid(variable)``
+        Exclude invalid values of the specified variable (values
+        outside the valid range of the variable, or NaN).
 
 
 Collocation result file
@@ -116,7 +149,6 @@ Collocation result file
 
 The format of the collocation result file is described in the :ref:`data formats
 <collocation\-result\-file\-format>` documentation.
-
 
 Area mask file
 --------------
@@ -161,9 +193,9 @@ Formal definition
        '^'|'_'|'`'|'{'|'|'|'}'|'~' ;
 
     identifier = alpha, [{alpha | digit | '_'}] ;
-    
+
     variable = identifier ;
-    
+
     variablelist =
        variable |
        variablelist, ',', variable ;
@@ -192,7 +224,7 @@ Formal definition
        stringvaluelist, ',', stringvalue;
 
     valuelist = intvaluelist | floatvaluelist | stringvaluelist ;
-    
+
     unit = '[', [{character-(']')}], ']' ;
 
     dimension = 'time' | 'latitude' | 'longitude' | 'vertical' | 'spectral' | 'independent' ;
@@ -204,18 +236,20 @@ Formal definition
     dimensionspec = '{' dimensionlist '}' ;
 
     functioncall = 
+       'area-mask-covers-area', '(', stringvalue, ')' |
+       'area-mask-covers-point', '(', stringvalue, ')' |
+       'area-mask-intersects-area', '(', stringvalue, ',', floatvalue, ')' |
        'collocate-left', '(', stringvalue, ')' |
        'collocate-right', '(', stringvalue, ')' |
-       'valid', '(', variable, ')' |
-       'longitude-range', '(', floatvalue, [unit], ',', floatvalue, [unit], ')' |
-       'point-distance', '(', floatvalue, [unit], ',', floatvalue, [unit], ',', floatvalue, [unit], ')' |
-       'area-mask-covers-point', '(', stringvalue, ')' |
-       'area-mask-covers-area', '(', stringvalue, ')' |
-       'area-mask-intersects-area', '(', stringvalue, ',', floatvalue, ')' |
        'derive', '(', variable, dimensionspec, [unit], ')' |
-       'keep', '(', variablelist, ')' |
        'exclude', '(', variablelist, ')' |
        'flatten', '(', dimension, ')' ;
+       'keep', '(', variablelist, ')' |
+       'longitude-range', '(', floatvalue, [unit], ',', floatvalue, [unit], ')' |
+       'point-distance', '(', floatvalue, [unit], ',', floatvalue, [unit], ',', floatvalue, [unit], ')' |
+       'regrid', '(', dimension, ',', variable, [unit], ',', '(', floatvaluelist, ')', ')' |
+       'regrid', '(', dimension, ',', variable, [unit], ',', intvalue, ',', floatvalue, ',', floatvalue, ')' |
+       'valid', '(', variable, ')' |
 
     operationexpr = 
        variable, operator, value, [unit] |

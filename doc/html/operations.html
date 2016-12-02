@@ -181,57 +181,93 @@ Units can only be specified for numerical variables.</p>
 <p>Supported functions:</p>
 <blockquote>
 <div><dl class="docutils">
+<dt><code class="docutils literal"><span class="pre">area-mask-covers-area(area-mask-file)</span></code></dt>
+<dd>Exclude measurements for which no area from the area
+mask file covers the measurement area completely.</dd>
+<dt><code class="docutils literal"><span class="pre">area-mask-covers-point(area-mask-file)</span></code></dt>
+<dd>Exclude measurements for which no area from the area
+mask file contains the measurement location.</dd>
+<dt><code class="docutils literal"><span class="pre">area-mask-intersects-area(area-mask-file,</span> <span class="pre">minimum-overlap-percentage)</span></code></dt>
+<dd>Exclude measurements for which no area from the area
+mask file overlaps at least the specified percentage of
+the measurement area.</dd>
 <dt><code class="docutils literal"><span class="pre">collocate-left(collocation-result-file)</span></code></dt>
 <dd>Apply the specified collocation result file as an index
 filter assuming the product is part of dataset A.</dd>
 <dt><code class="docutils literal"><span class="pre">collocate-right(collocation-result-file)</span></code></dt>
 <dd>Apply the specified collocation result file as an index
 filter assuming the product is part of dataset B.</dd>
-<dt><code class="docutils literal"><span class="pre">valid(variable)</span></code></dt>
-<dd>Exclude invalid values of the specified variable (values
-outside the valid range of the variable, or NaN).</dd>
-<dt><code class="docutils literal"><span class="pre">longitude-range(minimum</span> <span class="pre">[unit],</span> <span class="pre">maximum</span> <span class="pre">[unit])</span></code></dt>
-<dd>Exclude measurements of which the longitude of the
-measurement location falls outside the specified range.
-This function correctly handles longitude ranges that
-cross the international date line.</dd>
-<dt><code class="docutils literal"><span class="pre">point-distance(longitude</span> <span class="pre">[unit],</span> <span class="pre">latitude</span> <span class="pre">[unit],</span> <span class="pre">distance</span> <span class="pre">[unit])</span></code></dt>
-<dd>Exclude measurements situated further than the specified
-distance from the specified location.</dd>
-<dt><code class="docutils literal"><span class="pre">area-mask-covers-point(area-mask-file)</span></code></dt>
-<dd>Exclude measurements for which no area from the area
-mask file contains the measurement location.</dd>
-<dt><code class="docutils literal"><span class="pre">area-mask-covers-area(area-mask-file)</span></code></dt>
-<dd>Exclude measurements for which no area from the area
-mask file covers the measurement area completely.</dd>
-<dt><code class="docutils literal"><span class="pre">area-mask-intersects-area(area-mask-file,</span> <span class="pre">minimum-overlap-percentage)</span></code></dt>
-<dd>Exclude measurements for which no area from the area
-mask file overlaps at least the specified percentage of
-the measurement area.</dd>
 <dt><code class="docutils literal"><span class="pre">derive(variable</span> <span class="pre">{dimension-type,</span> <span class="pre">...}</span> <span class="pre">[unit])</span></code></dt>
 <dd>Derive the specified variable from other variables found
 in the product. The <code class="docutils literal"><span class="pre">--list-conversions</span></code> option of
 harpconvert and harpfilter can be used to list available
-variable conversions.</dd>
-<dt><code class="docutils literal"><span class="pre">keep(variable,</span> <span class="pre">...)</span></code></dt>
-<dd>Mark the specified variable(s) for inclusion in the
-ingested product. All variables marked for inclusion
-will be kept in the ingested product, all other
-variables will be excluded.</dd>
+variable conversions.
+The algorithms behind all the conversions are described
+in the <a class="reference internal" href="algorithms.html"><span class="doc">Algorithms</span></a> section of the
+documentation.</dd>
 <dt><code class="docutils literal"><span class="pre">exclude(variable,</span> <span class="pre">...)</span></code></dt>
 <dd>Mark the specified variable(s) for exclusion from the
 ingested product. All variables marked for exclusion
 will be excluded from the ingested product, all other
 variables will be kept.</dd>
 <dt><code class="docutils literal"><span class="pre">flatten(dimension)</span></code></dt>
-<dd>Flatten a product for a certain dimension by collapsing the
+<dd><p class="first">Flatten a product for a certain dimension by collapsing the
 given dimension into the time dimension. The time dimension
 will thus grow by a factor equal to the length of the given
 dimension and none of the variables in the product will
 depend on the given dimension anymore. Variables that depend
 more than once on the given dimension will be removed. The
 index and collocation_index variables will also be removed.
-Independent dimensions cannot be flattened.</dd>
+Independent dimensions cannot be flattened.
+Example:</p>
+<blockquote class="last">
+<div><code class="docutils literal"><span class="pre">flatten(longitude);flatten(latitude)</span></code>
+(turn a 2D lat/lon grid into a a series of individual points)</div></blockquote>
+</dd>
+<dt><code class="docutils literal"><span class="pre">keep(variable,</span> <span class="pre">...)</span></code></dt>
+<dd>Mark the specified variable(s) for inclusion in the
+ingested product. All variables marked for inclusion
+will be kept in the ingested product, all other
+variables will be excluded.</dd>
+<dt><code class="docutils literal"><span class="pre">longitude-range(minimum</span> <span class="pre">[unit],</span> <span class="pre">maximum</span> <span class="pre">[unit])</span></code></dt>
+<dd><p class="first">Exclude measurements of which the longitude of the
+measurement location falls outside the specified range.
+This function correctly handles longitude ranges that
+cross the international date line.</p>
+<blockquote class="last">
+<div><code class="docutils literal"><span class="pre">longitude-range(179.0,</span> <span class="pre">-179.0)</span></code>
+(select a 2 degree range around the international dateline)</div></blockquote>
+</dd>
+<dt><code class="docutils literal"><span class="pre">point-distance(longitude</span> <span class="pre">[unit],</span> <span class="pre">latitude</span> <span class="pre">[unit],</span> <span class="pre">distance</span> <span class="pre">[unit])</span></code></dt>
+<dd><p class="first">Exclude measurements situated further than the specified
+distance from the specified location.
+Example:</p>
+<blockquote class="last">
+<div><code class="docutils literal"><span class="pre">point-distance(4.357,</span> <span class="pre">52.012,</span> <span class="pre">3</span> <span class="pre">[km])</span></code></div></blockquote>
+</dd>
+<dt><code class="docutils literal"><span class="pre">regrid(dimension,</span> <span class="pre">axisvariable</span> <span class="pre">unit,</span> <span class="pre">(value,</span> <span class="pre">...))</span></code></dt>
+<dd><p class="first">Regrid all variables in the product for the given dimension using
+the given axis variable as target grid. The operation will use a
+<code class="docutils literal"><span class="pre">derive(axisvariable</span> <span class="pre">{[time,]dimension}</span> <span class="pre">unit)</span></code> to determine
+the current grid. The target grid is specified as a list of values.
+Example:</p>
+<blockquote class="last">
+<div><code class="docutils literal"><span class="pre">regrid(vertical,</span> <span class="pre">altitude</span> <span class="pre">[km],</span> <span class="pre">(1.0,</span> <span class="pre">2.0,</span> <span class="pre">5.0,</span> <span class="pre">10.0,</span> <span class="pre">15.0,</span> <span class="pre">20.0,</span> <span class="pre">30.0))</span></code></div></blockquote>
+</dd>
+<dt><code class="docutils literal"><span class="pre">regrid(dimension,</span> <span class="pre">axisvariable</span> <span class="pre">unit,</span> <span class="pre">length,</span> <span class="pre">offset,</span> <span class="pre">step)</span></code></dt>
+<dd><p class="first">Regrid all variables in the product for the given dimension using
+the given axis variable as target grid. The operation will use a
+<code class="docutils literal"><span class="pre">derive(axisvariable</span> <span class="pre">{[time,]dimension}</span> <span class="pre">unit)</span></code> to determine
+the current grid. The target grid is specified as using a length,
+offset, and step parameters.
+Example:</p>
+<blockquote class="last">
+<div><code class="docutils literal"><span class="pre">regrid(vertical,</span> <span class="pre">altitude</span> <span class="pre">[km],</span> <span class="pre">10,</span> <span class="pre">0.5,</span> <span class="pre">1.0)</span></code>
+(indicating a grid of altitudes 0.5, 1.5, ..., 9.5)</div></blockquote>
+</dd>
+<dt><code class="docutils literal"><span class="pre">valid(variable)</span></code></dt>
+<dd>Exclude invalid values of the specified variable (values
+outside the valid range of the variable, or NaN).</dd>
 </dl>
 </div></blockquote>
 </div>
@@ -321,18 +357,20 @@ Then, each further line defines a polygon. Each polygon consists of the vertices
 <span class="n">dimensionspec</span> <span class="o">=</span> <span class="s1">&#39;{&#39;</span> <span class="n">dimensionlist</span> <span class="s1">&#39;}&#39;</span> <span class="p">;</span>
 
 <span class="n">functioncall</span> <span class="o">=</span>
+   <span class="s1">&#39;area-mask-covers-area&#39;</span><span class="p">,</span> <span class="s1">&#39;(&#39;</span><span class="p">,</span> <span class="n">stringvalue</span><span class="p">,</span> <span class="s1">&#39;)&#39;</span> <span class="o">|</span>
+   <span class="s1">&#39;area-mask-covers-point&#39;</span><span class="p">,</span> <span class="s1">&#39;(&#39;</span><span class="p">,</span> <span class="n">stringvalue</span><span class="p">,</span> <span class="s1">&#39;)&#39;</span> <span class="o">|</span>
+   <span class="s1">&#39;area-mask-intersects-area&#39;</span><span class="p">,</span> <span class="s1">&#39;(&#39;</span><span class="p">,</span> <span class="n">stringvalue</span><span class="p">,</span> <span class="s1">&#39;,&#39;</span><span class="p">,</span> <span class="n">floatvalue</span><span class="p">,</span> <span class="s1">&#39;)&#39;</span> <span class="o">|</span>
    <span class="s1">&#39;collocate-left&#39;</span><span class="p">,</span> <span class="s1">&#39;(&#39;</span><span class="p">,</span> <span class="n">stringvalue</span><span class="p">,</span> <span class="s1">&#39;)&#39;</span> <span class="o">|</span>
    <span class="s1">&#39;collocate-right&#39;</span><span class="p">,</span> <span class="s1">&#39;(&#39;</span><span class="p">,</span> <span class="n">stringvalue</span><span class="p">,</span> <span class="s1">&#39;)&#39;</span> <span class="o">|</span>
-   <span class="s1">&#39;valid&#39;</span><span class="p">,</span> <span class="s1">&#39;(&#39;</span><span class="p">,</span> <span class="n">variable</span><span class="p">,</span> <span class="s1">&#39;)&#39;</span> <span class="o">|</span>
-   <span class="s1">&#39;longitude-range&#39;</span><span class="p">,</span> <span class="s1">&#39;(&#39;</span><span class="p">,</span> <span class="n">floatvalue</span><span class="p">,</span> <span class="p">[</span><span class="n">unit</span><span class="p">],</span> <span class="s1">&#39;,&#39;</span><span class="p">,</span> <span class="n">floatvalue</span><span class="p">,</span> <span class="p">[</span><span class="n">unit</span><span class="p">],</span> <span class="s1">&#39;)&#39;</span> <span class="o">|</span>
-   <span class="s1">&#39;point-distance&#39;</span><span class="p">,</span> <span class="s1">&#39;(&#39;</span><span class="p">,</span> <span class="n">floatvalue</span><span class="p">,</span> <span class="p">[</span><span class="n">unit</span><span class="p">],</span> <span class="s1">&#39;,&#39;</span><span class="p">,</span> <span class="n">floatvalue</span><span class="p">,</span> <span class="p">[</span><span class="n">unit</span><span class="p">],</span> <span class="s1">&#39;,&#39;</span><span class="p">,</span> <span class="n">floatvalue</span><span class="p">,</span> <span class="p">[</span><span class="n">unit</span><span class="p">],</span> <span class="s1">&#39;)&#39;</span> <span class="o">|</span>
-   <span class="s1">&#39;area-mask-covers-point&#39;</span><span class="p">,</span> <span class="s1">&#39;(&#39;</span><span class="p">,</span> <span class="n">stringvalue</span><span class="p">,</span> <span class="s1">&#39;)&#39;</span> <span class="o">|</span>
-   <span class="s1">&#39;area-mask-covers-area&#39;</span><span class="p">,</span> <span class="s1">&#39;(&#39;</span><span class="p">,</span> <span class="n">stringvalue</span><span class="p">,</span> <span class="s1">&#39;)&#39;</span> <span class="o">|</span>
-   <span class="s1">&#39;area-mask-intersects-area&#39;</span><span class="p">,</span> <span class="s1">&#39;(&#39;</span><span class="p">,</span> <span class="n">stringvalue</span><span class="p">,</span> <span class="s1">&#39;,&#39;</span><span class="p">,</span> <span class="n">floatvalue</span><span class="p">,</span> <span class="s1">&#39;)&#39;</span> <span class="o">|</span>
    <span class="s1">&#39;derive&#39;</span><span class="p">,</span> <span class="s1">&#39;(&#39;</span><span class="p">,</span> <span class="n">variable</span><span class="p">,</span> <span class="n">dimensionspec</span><span class="p">,</span> <span class="p">[</span><span class="n">unit</span><span class="p">],</span> <span class="s1">&#39;)&#39;</span> <span class="o">|</span>
-   <span class="s1">&#39;keep&#39;</span><span class="p">,</span> <span class="s1">&#39;(&#39;</span><span class="p">,</span> <span class="n">variablelist</span><span class="p">,</span> <span class="s1">&#39;)&#39;</span> <span class="o">|</span>
    <span class="s1">&#39;exclude&#39;</span><span class="p">,</span> <span class="s1">&#39;(&#39;</span><span class="p">,</span> <span class="n">variablelist</span><span class="p">,</span> <span class="s1">&#39;)&#39;</span> <span class="o">|</span>
    <span class="s1">&#39;flatten&#39;</span><span class="p">,</span> <span class="s1">&#39;(&#39;</span><span class="p">,</span> <span class="n">dimension</span><span class="p">,</span> <span class="s1">&#39;)&#39;</span> <span class="p">;</span>
+   <span class="s1">&#39;keep&#39;</span><span class="p">,</span> <span class="s1">&#39;(&#39;</span><span class="p">,</span> <span class="n">variablelist</span><span class="p">,</span> <span class="s1">&#39;)&#39;</span> <span class="o">|</span>
+   <span class="s1">&#39;longitude-range&#39;</span><span class="p">,</span> <span class="s1">&#39;(&#39;</span><span class="p">,</span> <span class="n">floatvalue</span><span class="p">,</span> <span class="p">[</span><span class="n">unit</span><span class="p">],</span> <span class="s1">&#39;,&#39;</span><span class="p">,</span> <span class="n">floatvalue</span><span class="p">,</span> <span class="p">[</span><span class="n">unit</span><span class="p">],</span> <span class="s1">&#39;)&#39;</span> <span class="o">|</span>
+   <span class="s1">&#39;point-distance&#39;</span><span class="p">,</span> <span class="s1">&#39;(&#39;</span><span class="p">,</span> <span class="n">floatvalue</span><span class="p">,</span> <span class="p">[</span><span class="n">unit</span><span class="p">],</span> <span class="s1">&#39;,&#39;</span><span class="p">,</span> <span class="n">floatvalue</span><span class="p">,</span> <span class="p">[</span><span class="n">unit</span><span class="p">],</span> <span class="s1">&#39;,&#39;</span><span class="p">,</span> <span class="n">floatvalue</span><span class="p">,</span> <span class="p">[</span><span class="n">unit</span><span class="p">],</span> <span class="s1">&#39;)&#39;</span> <span class="o">|</span>
+   <span class="s1">&#39;regrid&#39;</span><span class="p">,</span> <span class="s1">&#39;(&#39;</span><span class="p">,</span> <span class="n">dimension</span><span class="p">,</span> <span class="s1">&#39;,&#39;</span><span class="p">,</span> <span class="n">variable</span><span class="p">,</span> <span class="p">[</span><span class="n">unit</span><span class="p">],</span> <span class="s1">&#39;,&#39;</span><span class="p">,</span> <span class="s1">&#39;(&#39;</span><span class="p">,</span> <span class="n">floatvaluelist</span><span class="p">,</span> <span class="s1">&#39;)&#39;</span><span class="p">,</span> <span class="s1">&#39;)&#39;</span> <span class="o">|</span>
+   <span class="s1">&#39;regrid&#39;</span><span class="p">,</span> <span class="s1">&#39;(&#39;</span><span class="p">,</span> <span class="n">dimension</span><span class="p">,</span> <span class="s1">&#39;,&#39;</span><span class="p">,</span> <span class="n">variable</span><span class="p">,</span> <span class="p">[</span><span class="n">unit</span><span class="p">],</span> <span class="s1">&#39;,&#39;</span><span class="p">,</span> <span class="n">intvalue</span><span class="p">,</span> <span class="s1">&#39;,&#39;</span><span class="p">,</span> <span class="n">floatvalue</span><span class="p">,</span> <span class="s1">&#39;,&#39;</span><span class="p">,</span> <span class="n">floatvalue</span><span class="p">,</span> <span class="s1">&#39;)&#39;</span> <span class="o">|</span>
+   <span class="s1">&#39;valid&#39;</span><span class="p">,</span> <span class="s1">&#39;(&#39;</span><span class="p">,</span> <span class="n">variable</span><span class="p">,</span> <span class="s1">&#39;)&#39;</span> <span class="o">|</span>
 
 <span class="n">operationexpr</span> <span class="o">=</span>
    <span class="n">variable</span><span class="p">,</span> <span class="n">operator</span><span class="p">,</span> <span class="n">value</span><span class="p">,</span> <span class="p">[</span><span class="n">unit</span><span class="p">]</span> <span class="o">|</span>
