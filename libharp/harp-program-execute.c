@@ -1361,7 +1361,7 @@ static int execute_smooth_collocated(harp_product *product, harp_program *progra
         harp_collocation_result_delete(collocation_result);
         return -1;
     }
-    
+
     return 0;
 }
 
