@@ -1276,19 +1276,12 @@ static int execute_regrid_collocated(harp_product *product, harp_program *progra
 
     if (args->target_dataset == 'a')
     {
-        if (harp_dataset_import(collocation_result->dataset_a, args->dataset_dir) != 0)
-        {
-            harp_collocation_result_delete(collocation_result);
-            return -1;
-        }
+        harp_collocation_result_swap_datasets(collocation_result);
     }
-    else
+    if (harp_dataset_import(collocation_result->dataset_b, args->dataset_dir) != 0)
     {
-        if (harp_dataset_import(collocation_result->dataset_b, args->dataset_dir) != 0)
-        {
-            harp_collocation_result_delete(collocation_result);
-            return -1;
-        }
+        harp_collocation_result_delete(collocation_result);
+        return -1;
     }
 
     if (harp_product_regrid_vertical_with_collocated_dataset(product, args->axis_variable_name, args->axis_unit,
@@ -1334,19 +1327,12 @@ static int execute_smooth_collocated(harp_product *product, harp_program *progra
 
     if (args->target_dataset == 'a')
     {
-        if (harp_dataset_import(collocation_result->dataset_a, args->dataset_dir) != 0)
-        {
-            harp_collocation_result_delete(collocation_result);
-            return -1;
-        }
+        harp_collocation_result_swap_datasets(collocation_result);
     }
-    else
+    if (harp_dataset_import(collocation_result->dataset_b, args->dataset_dir) != 0)
     {
-        if (harp_dataset_import(collocation_result->dataset_b, args->dataset_dir) != 0)
-        {
-            harp_collocation_result_delete(collocation_result);
-            return -1;
-        }
+        harp_collocation_result_delete(collocation_result);
+        return -1;
     }
 
     if (harp_product_smooth_vertical(product, 1, (const char **)&args->variable_name, args->axis_variable_name,

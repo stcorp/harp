@@ -74,6 +74,9 @@ WHITESPACE   [[:space:]]+
 "not"                   return NOT;
 "in"                    return IN;
 
+"a"                     return ID_A;
+"b"                     return ID_B;
+
 "area-mask-covers-area" return FUNC_AREA_MASK_COVERS_AREA;
 "area-mask-covers-point"    return FUNC_AREA_MASK_COVERS_POINT;
 "area-mask-intersects-area" return FUNC_AREA_MASK_INTERSECTS_AREA;

@@ -202,6 +202,8 @@ int harp_sized_array_add_int32(harp_sized_array *sized_array, int32_t value)
 %token  <string_val>    DOUBLE_VALUE
 %token  <int32_val>     DIMENSION
 %token  <string_val>    UNIT
+%token                  ID_A
+%token                  ID_B
 %token                  FUNC_AREA_MASK_COVERS_AREA
 %token                  FUNC_AREA_MASK_COVERS_POINT
 %token                  FUNC_AREA_MASK_INTERSECTS_AREA
@@ -255,6 +257,8 @@ reserved_identifier:
     | NOT { $$ = "not"; }
     | IN { $$ = "in"; }
     | DIMENSION { $$ = harp_get_dimension_type_name($1); }
+    | ID_A { $$ = "a"; }
+    | ID_B { $$ = "b"; }
     | FUNC_DERIVE { $$ = "derive"; }
     | FUNC_EXCLUDE { $$ = "exclude"; }
     | FUNC_FLATTEN { $$ = "flatten"; }
@@ -496,16 +500,16 @@ operation:
             }
             harp_sized_array_delete(array);
         }
-    | FUNC_REGRID '(' DIMENSION ',' identifier UNIT ',' STRING_VALUE ',' 'a' ',' STRING_VALUE ')' {
+    | FUNC_REGRID '(' DIMENSION ',' identifier UNIT ',' STRING_VALUE ',' ID_A ',' STRING_VALUE ')' {
             if (harp_regrid_collocated_new($3, $5, $6, $8, 'a', $12, &$$) != 0) YYERROR;
         }
-    | FUNC_REGRID '(' DIMENSION ',' identifier UNIT ',' STRING_VALUE ',' 'b' ',' STRING_VALUE ')' {
+    | FUNC_REGRID '(' DIMENSION ',' identifier UNIT ',' STRING_VALUE ',' ID_B ',' STRING_VALUE ')' {
             if (harp_regrid_collocated_new($3, $5, $6, $8, 'b', $12, &$$) != 0) YYERROR;
         }
-    | FUNC_SMOOTH '(' identifier ',' DIMENSION ',' identifier UNIT ',' STRING_VALUE ',' 'a' ',' STRING_VALUE ')' {
+    | FUNC_SMOOTH '(' identifier ',' DIMENSION ',' identifier UNIT ',' STRING_VALUE ',' ID_A ',' STRING_VALUE ')' {
             if (harp_smooth_collocated_new($3, $5, $7, $8, $10, 'a', $14, &$$) != 0) YYERROR;
         }
-    | FUNC_SMOOTH '(' identifier ',' DIMENSION ',' identifier UNIT ',' STRING_VALUE ',' 'b' ',' STRING_VALUE ')' {
+    | FUNC_SMOOTH '(' identifier ',' DIMENSION ',' identifier UNIT ',' STRING_VALUE ',' ID_B ',' STRING_VALUE ')' {
             if (harp_smooth_collocated_new($3, $5, $7, $8, $10, 'b', $14, &$$) != 0) YYERROR;
         }
     | FUNC_VALID '(' identifier ')' {
