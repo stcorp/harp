@@ -1498,6 +1498,7 @@ LIBHARP_API int harp_product_smooth_vertical(harp_product *product, int num_smoo
  *
  * \param product Product to regrid.
  * \param vertical_axis The name of the variable to use as a vertical axis (pressure/altitude/etc).
+ * \param vertical_unit The unit in which the vertical_axis will be brought for the regridding.
  * \param collocation_result The collocation result used to find matching variables.
  *   The collocation result is assumed to have the appropriate metadata available for all matches (dataset b).
  *
