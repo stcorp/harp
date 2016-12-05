@@ -1034,16 +1034,22 @@ int harp_collocation_result_shallow_copy(const harp_collocation_result *collocat
 
 void harp_collocation_result_shallow_delete(harp_collocation_result *collocation_result)
 {
-    int i;
-
-    for (i = 0; i < collocation_result->num_pairs; i++)
+    if (collocation_result != NULL)
     {
-        collocation_pair_delete(collocation_result->pair[i]);
-        collocation_result->pair[i] = NULL;
-    }
+        if (collocation_result->pair != NULL)
+        {
+            int i;
 
-    free(collocation_result->pair);
-    free(collocation_result);
+            for (i = 0; i < collocation_result->num_pairs; i++)
+            {
+                collocation_pair_delete(collocation_result->pair[i]);
+                collocation_result->pair[i] = NULL;
+            }
+        }
+
+        free(collocation_result->pair);
+        free(collocation_result);
+    }
 }
 
 /**
