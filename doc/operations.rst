@@ -158,6 +158,10 @@ Supported functions:
 
             ``smooth(O3_number_density, vertical, altitude [km], "collocation-result.csv", b, "./correlative_data/")``
 
+    ``smooth((variable, variable, ...), dimension, axis-variable unit, collocation-result-file, a|b, dataset-dir)``
+        Same as above, but then providing a list of variables that need to be smoothed.
+        For each variable an associated averaging kernel needs to be present in the collocated dataset.
+
     ``valid(variable)``
         Exclude invalid values of the specified variable (values
         outside the valid range of the variable, or NaN).
@@ -269,6 +273,7 @@ Formal definition
        'regrid', '(', dimension, ',', variable, [unit], ',', '(', floatvaluelist, ')', ')' |
        'regrid', '(', dimension, ',', variable, [unit], ',', intvalue, ',', floatvalue, ',', floatvalue, ')' |
        'smooth', '(', variable, ',' dimension, ',', variable, [unit], ',', intvalue, ',', floatvalue, ',', floatvalue, ')' |
+       'smooth', '(', '(', variablelist, ')', ',' dimension, ',', variable, [unit], ',', intvalue, ',', floatvalue, ',', floatvalue, ')' |
        'valid', '(', variable, ')' |
 
     operationexpr = 

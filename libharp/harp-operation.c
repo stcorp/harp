@@ -287,6 +287,15 @@ static void smooth_collocated_args_delete(harp_smooth_collocated_args *args)
     {
         if (args->variable_name != NULL)
         {
+            int i;
+
+            for (i = 0; i < args->num_variables; i++)
+            {
+                if (args->variable_name[i] != NULL)
+                {
+                    free(args->variable_name[i]);
+                }
+            }
             free(args->variable_name);
         }
         if (args->axis_variable_name != NULL)
@@ -952,7 +961,7 @@ static int regrid_collocated_args_new(harp_dimension_type dimension_type, const 
     return 0;
 }
 
-static int smooth_collocated_args_new(const char *variable_name, harp_dimension_type dimension_type,
+static int smooth_collocated_args_new(int num_variables, const char **variable_name, harp_dimension_type dimension_type,
                                       const char *axis_variable_name, const char *axis_unit,
                                       const char *collocation_result, const char target_dataset,
                                       const char *dataset_dir, harp_smooth_collocated_args **new_args)
@@ -973,13 +982,44 @@ static int smooth_collocated_args_new(const char *variable_name, harp_dimension_
         return -1;
     }
 
-    args->variable_name = strdup(variable_name);
+    args->num_variables = 0;
+    args->variable_name = NULL;
     args->dimension_type = dimension_type;
     args->axis_variable_name = strdup(axis_variable_name);
     args->axis_unit = strdup(axis_unit);
     args->collocation_result = strdup(collocation_result);
     args->dataset_dir = strdup(dataset_dir);
     args->target_dataset = target_dataset;
+
+    if (num_variables > 0)
+    {
+        int i;
+
+        args->variable_name = (char **)malloc(num_variables * sizeof(char *));
+        if (args->variable_name == NULL)
+        {
+            smooth_collocated_args_delete(args);
+            harp_set_error(HARP_ERROR_OUT_OF_MEMORY, "out of memory (could not allocate %lu bytes) (%s:%u)",
+                           num_variables * sizeof(char *), __FILE__, __LINE__);
+            return -1;
+        }
+        for (i = 0; i < num_variables; i++)
+        {
+            args->variable_name[i] = NULL;
+        }
+        for (i = 0; i < num_variables; i++)
+        {
+            args->variable_name[i] = strdup(variable_name[i]);
+            if (args->variable_name[i] == NULL)
+            {
+                smooth_collocated_args_delete(args);
+                harp_set_error(HARP_ERROR_OUT_OF_MEMORY, "out of memory (could not duplicate string) (%s:%u)", __FILE__,
+                               __LINE__);
+                return -1;
+            }
+            args->num_variables++;
+        }
+    }
 
     *new_args = args;
     return 0;
@@ -1224,9 +1264,9 @@ static int regrid_collocated_args_copy(const harp_regrid_collocated_args *args, 
 static int smooth_collocated_args_copy(const harp_smooth_collocated_args *args, harp_smooth_collocated_args **new_args)
 {
     assert(args != NULL);
-    return smooth_collocated_args_new(args->variable_name, args->dimension_type, args->axis_variable_name,
-                                      args->axis_unit, args->collocation_result, args->target_dataset,
-                                      args->dataset_dir, new_args);
+    return smooth_collocated_args_new(args->num_variables, (const char **)args->variable_name, args->dimension_type,
+                                      args->axis_variable_name, args->axis_unit, args->collocation_result,
+                                      args->target_dataset, args->dataset_dir, new_args);
 }
 
 static int string_comparison_filter_args_copy(const harp_string_comparison_filter_args *args,
@@ -1756,15 +1796,15 @@ int harp_regrid_collocated_new(harp_dimension_type dimension_type, const char *a
     return 0;
 }
 
-int harp_smooth_collocated_new(const char *variable_name, harp_dimension_type dimension_type,
+int harp_smooth_collocated_new(int num_variables, const char **variable_name, harp_dimension_type dimension_type,
                                const char *axis_variable_name, const char *axis_unit, const char *collocation_result,
                                const char target_dataset, const char *dataset_dir, harp_operation **new_operation)
 {
     harp_smooth_collocated_args *args;
     harp_operation *operation;
 
-    if (smooth_collocated_args_new(variable_name, dimension_type, axis_variable_name, axis_unit, collocation_result,
-                                   target_dataset, dataset_dir, &args) != 0)
+    if (smooth_collocated_args_new(num_variables, variable_name, dimension_type, axis_variable_name, axis_unit,
+                                   collocation_result, target_dataset, dataset_dir, &args) != 0)
     {
         return -1;
     }

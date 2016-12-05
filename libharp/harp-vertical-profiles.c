@@ -1128,6 +1128,7 @@ LIBHARP_API int harp_product_smooth_vertical(harp_product *product, int num_smoo
     harp_dimension_type bounds_dim_type[3] = { harp_dimension_time, harp_dimension_vertical,
         harp_dimension_independent
     };
+    int i;
 
     /* owned memory */
     harp_variable *source_grid = NULL;
@@ -1149,6 +1150,16 @@ LIBHARP_API int harp_product_smooth_vertical(harp_product *product, int num_smoo
     }
     strcpy(bounds_name, vertical_axis);
     strcat(bounds_name, "_bounds");
+
+    /* raise warnings for any variables that were not present */
+    for (i = 0; i < num_smooth_variables; i++)
+    {
+        if (!harp_product_has_variable(product, smooth_variables[i]))
+        {
+            harp_set_error(HARP_ERROR_INVALID_ARGUMENT, "product has no variable named '%s'", smooth_variables[i]);
+            goto error;
+        }
+    }
 
     /* copy the collocation result for filtering */
     if (harp_collocation_result_shallow_copy(original_collocation_result, &collocation_result) != 0)
@@ -1209,8 +1220,6 @@ LIBHARP_API int harp_product_smooth_vertical(harp_product *product, int num_smoo
     /* Use loglin interpolation if pressure grid */
     if (strcmp(source_grid->name, "pressure") == 0)
     {
-        int i;
-
         for (i = 0; i < source_grid->num_elements; i++)
         {
             source_grid->data.double_data[i] = log(source_grid->data.double_data[i]);

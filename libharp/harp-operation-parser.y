@@ -507,10 +507,20 @@ operation:
             if (harp_regrid_collocated_new($3, $5, $6, $8, 'b', $12, &$$) != 0) YYERROR;
         }
     | FUNC_SMOOTH '(' identifier ',' DIMENSION ',' identifier UNIT ',' STRING_VALUE ',' ID_A ',' STRING_VALUE ')' {
-            if (harp_smooth_collocated_new($3, $5, $7, $8, $10, 'a', $14, &$$) != 0) YYERROR;
+            if (harp_smooth_collocated_new(1, (const char **)&$3, $5, $7, $8, $10, 'a', $14, &$$) != 0) YYERROR;
         }
     | FUNC_SMOOTH '(' identifier ',' DIMENSION ',' identifier UNIT ',' STRING_VALUE ',' ID_B ',' STRING_VALUE ')' {
-            if (harp_smooth_collocated_new($3, $5, $7, $8, $10, 'b', $14, &$$) != 0) YYERROR;
+            if (harp_smooth_collocated_new(1, (const char **)&$3, $5, $7, $8, $10, 'b', $14, &$$) != 0) YYERROR;
+        }
+    | FUNC_SMOOTH '(' '(' identifier_array ')' ',' DIMENSION ',' identifier UNIT ',' STRING_VALUE ',' ID_A ','
+      STRING_VALUE ')' {
+            if (harp_smooth_collocated_new($4->num_elements, (const char **)$4->array.string_data,
+                                           $7, $9, $10, $12, 'a', $16, &$$) != 0) YYERROR;
+        }
+    | FUNC_SMOOTH '(' '(' identifier_array ')' ',' DIMENSION ',' identifier UNIT ',' STRING_VALUE ',' ID_B ','
+      STRING_VALUE ')' {
+            if (harp_smooth_collocated_new($4->num_elements, (const char **)$4->array.string_data,
+                                           $7, $9, $10, $12, 'b', $16, &$$) != 0) YYERROR;
         }
     | FUNC_VALID '(' identifier ')' {
             if (harp_valid_range_filter_new($3, &$$) != 0) YYERROR;

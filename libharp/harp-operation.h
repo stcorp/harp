@@ -186,7 +186,8 @@ typedef struct harp_regrid_collocated_args_struct
 
 typedef struct harp_smooth_collocated_args_struct
 {
-    char *variable_name;
+    int num_variables;
+    char **variable_name;
     harp_dimension_type dimension_type;
     char *axis_variable_name;
     char *axis_unit;
@@ -250,7 +251,7 @@ int harp_regrid_new(harp_dimension_type dimension_type, const char *axis_variabl
 int harp_regrid_collocated_new(harp_dimension_type dimension_type, const char *axis_variable_name,
                                const char *axis_unit, const char *collocation_result, const char target_dataset,
                                const char *dataset_dir, harp_operation **new_operation);
-int harp_smooth_collocated_new(const char *variable_name, harp_dimension_type dimension_type,
+int harp_smooth_collocated_new(int num_variables, const char **variable_name, harp_dimension_type dimension_type,
                                const char *axis_variable_name, const char *axis_unit, const char *collocation_result,
                                const char target_dataset, const char *dataset_dir, harp_operation **new_operation);
 int harp_string_comparison_filter_new(const char *variable_name, harp_comparison_operator_type operator_type,
