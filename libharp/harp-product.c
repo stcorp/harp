@@ -1160,7 +1160,6 @@ int harp_product_get_datetime_range(const harp_product *product, double *datetim
             return -1;
         }
 
-        start = harp_plusinf();
         for (i = 0; i < datetime->num_elements; i++)
         {
             const double value = datetime->data.double_data[i];
@@ -1214,7 +1213,6 @@ int harp_product_get_datetime_range(const harp_product *product, double *datetim
             return -1;
         }
 
-        stop = harp_mininf();
         for (i = 0; i < datetime->num_elements; i++)
         {
             const double value = datetime->data.double_data[i];
