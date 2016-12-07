@@ -331,13 +331,7 @@ static int read_datetime(void *user_data, harp_array data)
     double time_reference;
     long i;
 
-    /* Even though the product specification may not accurately describe this, S5P treats all days as having 86400
-     * seconds (as does HARP). The time value is thus the sum of:
-     * - the S5P time reference as seconds since 2010 (using 86400 seconds per day)
-     * - the number of seconds since the S5P time reference
-     */
-
-    /* Read reference time in seconds since 2010-01-01 */
+    /* Read reference time in seconds since 1995-01-01 */
     time_reference_array.ptr = &time_reference;
     if (read_dataset(info->product_cursor, "time", harp_type_double, 1, time_reference_array) != 0)
     {
@@ -350,7 +344,7 @@ static int read_datetime(void *user_data, harp_array data)
         return -1;
     }
 
-    /* Convert observation start time to seconds since 2010-01-01 */
+    /* Convert observation start time to seconds since 1995-01-01 */
     for (i = 0; i < info->num_scanlines; i++)
     {
         data.double_data[i] = time_reference + data.double_data[i] / 1e3;
@@ -626,12 +620,11 @@ static void register_core_variables(harp_product_definition *product_definition)
     description = "start time of the measurement";
     variable_definition =
         harp_ingestion_register_variable_full_read(product_definition, "datetime", harp_type_double, 1, dimension_type,
-                                                   NULL, description, "seconds since 2010-01-01", NULL, read_datetime);
+                                                   NULL, description, "seconds since 1995-01-01", NULL, read_datetime);
     path = "/PRODUCT/time, /PRODUCT/delta_time[]";
     description =
-        "time converted from milliseconds since a reference time (given as seconds since 2010-01-01) to seconds since "
-        "2010-01-01 (using 86400 seconds per day); the time associated with a scanline is repeated for each pixel in "
-        "the scanline";
+        "time converted from milliseconds since a reference time (with the reference time being 1995-01-01) to seconds "
+        "since 1995-01-01; the time associated with a scanline is repeated for each pixel in the scanline";
     harp_variable_definition_add_mapping(variable_definition, NULL, NULL, path, description);
 }
 
