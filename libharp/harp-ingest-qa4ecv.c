@@ -502,11 +502,11 @@ static int read_no2_column_tropospheric(void *user_data, harp_array data)
                         info->num_scanlines * info->num_pixels, data);
 }
 
-static int read_no2_column_tropospheric_precision(void *user_data, harp_array data)
+static int read_no2_column_tropospheric_uncertainty(void *user_data, harp_array data)
 {
     ingest_info *info = (ingest_info *)user_data;
 
-    return read_dataset(info->product_cursor, "tropospheric_no2_vertical_column_precision", harp_type_float,
+    return read_dataset(info->product_cursor, "tropospheric_no2_vertical_column_uncertainty", harp_type_float,
                         info->num_scanlines * info->num_pixels, data);
 }
 
@@ -534,11 +534,11 @@ static int read_no2_column(void *user_data, harp_array data)
                         info->num_scanlines * info->num_pixels, data);
 }
 
-static int read_no2_column_precision(void *user_data, harp_array data)
+static int read_no2_column_uncertainty(void *user_data, harp_array data)
 {
     ingest_info *info = (ingest_info *)user_data;
 
-    return read_dataset(info->detailed_results_cursor, "total_no2_vertical_column_precision", harp_type_float,
+    return read_dataset(info->detailed_results_cursor, "total_no2_vertical_column_uncertainty", harp_type_float,
                         info->num_scanlines * info->num_pixels, data);
 }
 
@@ -843,8 +843,8 @@ static void register_no2_product(void)
         harp_ingestion_register_variable_full_read(product_definition,
                                                    "tropospheric_NO2_column_number_density_uncertainty",
                                                    harp_type_float, 1, dimension_type, NULL, description, "molec/cm^2",
-                                                   NULL, read_no2_column_tropospheric_precision);
-    path = "/PRODUCT/tropospheric_no2_vertical_column_precision[]";
+                                                   NULL, read_no2_column_tropospheric_uncertainty);
+    path = "/PRODUCT/tropospheric_no2_vertical_column_uncertainty[]";
     harp_variable_definition_add_mapping(variable_definition, NULL, NULL, path, NULL);
 
     description = "processing quality flag of the tropospheric vertical column of NO2";
@@ -878,8 +878,8 @@ static void register_no2_product(void)
     variable_definition =
         harp_ingestion_register_variable_full_read(product_definition, "NO2_column_number_density_uncertainty",
                                                    harp_type_float, 1, dimension_type, NULL, description, "molec/cm^2",
-                                                   NULL, read_no2_column_precision);
-    path = "/PRODUCT/SUPPORT_DATA/DETAILED_RESULTS/total_no2_vertical_column_precision[]";
+                                                   NULL, read_no2_column_uncertainty);
+    path = "/PRODUCT/SUPPORT_DATA/DETAILED_RESULTS/total_no2_vertical_column_uncertainty[]";
     harp_variable_definition_add_mapping(variable_definition, NULL, NULL, path, NULL);
 
     description = "total air mass factor, computed by integrating the altitude dependent air mass factor over the "
