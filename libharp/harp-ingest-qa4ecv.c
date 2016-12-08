@@ -30,6 +30,7 @@
 typedef struct ingest_info_struct
 {
     coda_product *product;
+    int use_summed_total_column;
 
     long num_times;
     long num_scanlines;
@@ -189,6 +190,7 @@ static void ingestion_done(void *user_data)
 static int ingestion_init(const harp_ingestion_module *module, coda_product *product,
                           const harp_ingestion_options *options, harp_product_definition **definition, void **user_data)
 {
+    const char *option_value;
     ingest_info *info;
 
     (void)options;
@@ -202,11 +204,25 @@ static int ingestion_init(const harp_ingestion_module *module, coda_product *pro
     }
 
     info->product = product;
+    info->use_summed_total_column = 1;
     info->num_times = 0;
     info->num_scanlines = 0;
     info->num_pixels = 0;
     info->num_corners = 0;
     info->num_layers = 0;
+
+    if (harp_ingestion_options_has_option(options, "total_column"))
+    {
+        if (harp_ingestion_options_get_option(options, "total_column", &option_value) != 0)
+        {
+            ingestion_done(info);
+            return -1;
+        }
+        if (strcmp(option_value, "total") == 0)
+        {
+            info->use_summed_total_column = 0;
+        }
+    }
 
     if (init_cursors(info) != 0)
     {
@@ -523,16 +539,22 @@ static int read_no2_column_tropospheric_validity(void *user_data, harp_array dat
 static int read_no2_column(void *user_data, harp_array data)
 {
     ingest_info *info = (ingest_info *)user_data;
+    char *variable_name;
 
-    return read_dataset(info->detailed_results_cursor, "total_no2_vertical_column", harp_type_float,
+    variable_name = info->use_summed_total_column ? "summed_no2_total_vertical_column" : "total_no2_vertical_column";
+    return read_dataset(info->detailed_results_cursor, variable_name, harp_type_float,
                         info->num_scanlines * info->num_pixels, data);
 }
 
 static int read_no2_column_uncertainty(void *user_data, harp_array data)
 {
     ingest_info *info = (ingest_info *)user_data;
+    char *variable_name;
 
-    return read_dataset(info->detailed_results_cursor, "total_no2_vertical_column_uncertainty", harp_type_float,
+    variable_name = info->use_summed_total_column ? "summed_no2_total_vertical_column_uncertainty" :
+        "total_no2_vertical_column_uncertainty";
+
+    return read_dataset(info->detailed_results_cursor, variable_name, harp_type_float,
                         info->num_scanlines * info->num_pixels, data);
 }
 
@@ -794,6 +816,7 @@ static void register_hcho_product(void)
 
 static void register_no2_product(void)
 {
+    const char *total_column_options[] = {"summed", "total" };
     const char *path;
     const char *description;
     harp_ingestion_module *module;
@@ -806,6 +829,12 @@ static void register_no2_product(void)
 
     module = harp_ingestion_register_module_coda("QA4ECV_L2_NO2", "QA4ECV", "QA4ECV", "L2_NO2",
                                                  "QA4ECV NO2 tropospheric column", ingestion_init, ingestion_done);
+
+    harp_ingestion_register_option(module, "total_column", "whether to use total_no2_vertical_column (which is "
+                                   "derived from the total slant column diveded by the total amf) or "
+                                   "summed_no2_total_vertical_column (which is the sum of the retrieved tropospheric "
+                                   "and statospheric columns); option values are 'summed' (default) and 'total'", 2,
+                                   total_column_options);
 
     product_definition = harp_ingestion_register_product(module, "QA4ECV_L2_NO2", NULL, read_dimensions);
     register_core_variables(product_definition);
@@ -864,16 +893,20 @@ static void register_no2_product(void)
         harp_ingestion_register_variable_full_read(product_definition, "NO2_column_number_density", harp_type_float, 1,
                                                    dimension_type, NULL, description, "molec/cm^2", NULL,
                                                    read_no2_column);
+    path = "/PRODUCT/SUPPORT_DATA/DETAILED_RESULTS/summed_no2_total_vertical_column[]";
+    harp_variable_definition_add_mapping(variable_definition, "total_column=summed", NULL, path, NULL);
     path = "/PRODUCT/SUPPORT_DATA/DETAILED_RESULTS/total_no2_vertical_column[]";
-    harp_variable_definition_add_mapping(variable_definition, NULL, NULL, path, NULL);
+    harp_variable_definition_add_mapping(variable_definition, "total_column=total", NULL, path, NULL);
 
     description = "uncertainty of the total vertical column of NO2 (standard error)";
     variable_definition =
         harp_ingestion_register_variable_full_read(product_definition, "NO2_column_number_density_uncertainty",
                                                    harp_type_float, 1, dimension_type, NULL, description, "molec/cm^2",
                                                    NULL, read_no2_column_uncertainty);
+    path = "/PRODUCT/SUPPORT_DATA/DETAILED_RESULTS/summed_no2_total_vertical_column_uncertainty[]";
+    harp_variable_definition_add_mapping(variable_definition, "total_column=summed", NULL, path, NULL);
     path = "/PRODUCT/SUPPORT_DATA/DETAILED_RESULTS/total_no2_vertical_column_uncertainty[]";
-    harp_variable_definition_add_mapping(variable_definition, NULL, NULL, path, NULL);
+    harp_variable_definition_add_mapping(variable_definition, "total_column=total", NULL, path, NULL);
 
     description = "total air mass factor, computed by integrating the altitude dependent air mass factor over the "
         "atmospheric layers from the surface to top-of-atmosphere";
