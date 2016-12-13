@@ -1658,7 +1658,7 @@ static void register_aer_ai_product(void)
         harp_ingestion_register_variable_full_read(product_definition, "aerosol_index", harp_type_float, 1,
                                                    dimension_type, NULL, description, HARP_UNIT_DIMENSIONLESS, NULL,
                                                    read_aerosol_index);
-    harp_variable_definition_add_mapping(variable_definition, "wavelength_ratio=354_388nm", NULL,
+    harp_variable_definition_add_mapping(variable_definition, "wavelength_ratio=354_388nm (default)", NULL,
                                          "/PRODUCT/aerosol_index_354_388", NULL);
     harp_variable_definition_add_mapping(variable_definition, "wavelength_ratio=340_380nm", NULL,
                                          "/PRODUCT/aerosol_index_340_380", NULL);
@@ -1668,7 +1668,7 @@ static void register_aer_ai_product(void)
         harp_ingestion_register_variable_full_read(product_definition, "aerosol_index_uncertainty", harp_type_float, 1,
                                                    dimension_type, NULL, description, HARP_UNIT_DIMENSIONLESS, NULL,
                                                    read_aerosol_index_uncertainty);
-    harp_variable_definition_add_mapping(variable_definition, "wavelength_ratio=354_388nm", NULL,
+    harp_variable_definition_add_mapping(variable_definition, "wavelength_ratio=354_388nm (default)", NULL,
                                          "/PRODUCT/aerosol_index_354_388_precision", NULL);
     harp_variable_definition_add_mapping(variable_definition, "wavelength_ratio=340_380nm", NULL,
                                          "/PRODUCT/aerosol_index_340_380_precision", NULL);

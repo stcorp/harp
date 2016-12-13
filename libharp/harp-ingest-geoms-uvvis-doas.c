@@ -1957,7 +1957,7 @@ static int init_product_definition(harp_ingestion_module *module, uvvis_doas_gas
         variable_definition = harp_ingestion_register_variable_full_read
             (product_definition, "stratospheric_aerosol_optical_depth", harp_type_double, 1, dimension_type, NULL,
              description, HARP_UNIT_DIMENSIONLESS, exclude_stratospheric_aod, read_stratospheric_aod);
-        harp_variable_definition_add_mapping(variable_definition, "AOD=modeled", NULL,
+        harp_variable_definition_add_mapping(variable_definition, "AOD=modeled (default)", NULL,
                                              "/AEROSOL.OPTICAL.DEPTH.STRATOSPHERIC_INDEPENDENT", NULL);
         harp_variable_definition_add_mapping(variable_definition, "AOD=measured", NULL,
                                              "/AEROSOL.OPTICAL.DEPTH.STRATOSPHERIC_SCATTER.SOLAR.ZENITH", NULL);

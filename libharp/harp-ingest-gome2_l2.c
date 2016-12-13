@@ -1707,7 +1707,7 @@ static void register_common_variables(harp_product_definition *product_definitio
     path = "/TOTAL_COLUMNS/NO2_Corr[]";
     harp_variable_definition_add_mapping(variable_definition, "corrected_no2_column=true", NULL, path, NULL);
     path = "/TOTAL_COLUMNS/NO2[]";
-    harp_variable_definition_add_mapping(variable_definition, "corrected_no2_column=false", NULL, path, NULL);
+    harp_variable_definition_add_mapping(variable_definition, "corrected_no2_column=false (default)", NULL, path, NULL);
 
     /* NO2_column_number_density_uncertainty */
     description = "uncertainty of the NO2 column number density";
@@ -1719,7 +1719,7 @@ static void register_common_variables(harp_product_definition *product_definitio
     harp_variable_definition_add_mapping(variable_definition, "corrected_no2_column=true", NULL, NULL, description);
     path = "/TOTAL_COLUMNS/NO2_Error[], /TOTAL_COLUMNS/NO2[]";
     description = "derived from the relative error in percent as: NO2_Error[] * 0.01 * NO2[]";
-    harp_variable_definition_add_mapping(variable_definition, "corrected_no2_column=false", NULL, path, description);
+    harp_variable_definition_add_mapping(variable_definition, "corrected_no2_column=false (default)", NULL, path, description);
 
     /* tropospheric_NO2_column_number_density */
     description = "tropospheric NO2 column number density";

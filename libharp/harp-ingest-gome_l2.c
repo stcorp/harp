@@ -576,7 +576,8 @@ int harp_ingestion_module_gome_l2_init(void)
     variable_definition = harp_ingestion_register_variable_sample_read(product_definition, "O3_column_number_density",
                                                                        harp_type_double, 1, dimension_type, NULL,
                                                                        description, "molec/cm^2", NULL, read_o3);
-    harp_variable_definition_add_mapping(variable_definition, "ozone=vcd0", NULL, "/ddr[]/irr/vcd[0]/total", NULL);
+    harp_variable_definition_add_mapping(variable_definition, "ozone=vcd0 (default)", NULL, "/ddr[]/irr/vcd[0]/total",
+                                         NULL);
     harp_variable_definition_add_mapping(variable_definition, "ozone=vcd1", NULL, "/ddr[]/irr/vcd[1]/total", NULL);
 
     /* O3_column_number_density_uncertainty */
@@ -585,7 +586,7 @@ int harp_ingestion_module_gome_l2_init(void)
                                                                        "O3_column_number_density_uncertainty",
                                                                        harp_type_double, 1, dimension_type, NULL,
                                                                        description, "molec/cm^2", NULL, read_o3_error);
-    harp_variable_definition_add_mapping(variable_definition, "ozone=vcd0", NULL,
+    harp_variable_definition_add_mapping(variable_definition, "ozone=vcd0 (default)", NULL,
                                          "/ddr[]/irr/vcd[0]/total, /ddr[]/irr/vcd[0]/error", error_mapping);
     harp_variable_definition_add_mapping(variable_definition, "ozone=vcd1", NULL,
                                          "/ddr[]/irr/vcd[1]/total, /ddr[]/irr/vcd[1]/error", error_mapping);

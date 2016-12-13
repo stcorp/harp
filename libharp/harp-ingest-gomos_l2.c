@@ -945,7 +945,7 @@ int harp_ingestion_module_gomos_l2_init(void)
                                                                      harp_type_double, 2, dimension_type, NULL,
                                                                      description, "K", NULL, read_temperature);
     path = "/nl_geolocation[]/local_temp";
-    harp_variable_definition_add_mapping(variable_definition, "temperature=local", NULL, path, NULL);
+    harp_variable_definition_add_mapping(variable_definition, "temperature=local (default)", NULL, path, NULL);
     path = "/nl_geolocation[]/tangent_temp";
     harp_variable_definition_add_mapping(variable_definition, "temperature=model", NULL, path, NULL);
 
@@ -956,7 +956,7 @@ int harp_ingestion_module_gomos_l2_init(void)
                                                                      description, "K", exclude_temperature_std,
                                                                      read_temperature_std);
     path = "/nl_geolocation[]/local_temp_std";
-    harp_variable_definition_add_mapping(variable_definition, "temperature=local", NULL, path, NULL);
+    harp_variable_definition_add_mapping(variable_definition, "temperature=local (default)", NULL, path, NULL);
 
     /* number_density */
     description = "air density";
@@ -964,7 +964,7 @@ int harp_ingestion_module_gomos_l2_init(void)
                                                                      harp_type_double, 2, dimension_type, NULL,
                                                                      description, "molec/cm3", exclude_air, read_air);
     path = "/nl_local_species_density[]/air";
-    harp_variable_definition_add_mapping(variable_definition, "air=local", NULL, path, NULL);
+    harp_variable_definition_add_mapping(variable_definition, "air=local (default)", NULL, path, NULL);
     path = "/nl_geolocation[]/tangent_density";
     harp_variable_definition_add_mapping(variable_definition, "air=model", "CODA product version > 0", path, NULL);
 
@@ -975,9 +975,9 @@ int harp_ingestion_module_gomos_l2_init(void)
                                                                      2, dimension_type, NULL, description, "molec/cm3",
                                                                      exclude_air_std, read_air_std);
     path = "/nl_local_species_density[]/air_std";
-    harp_variable_definition_add_mapping(variable_definition, "air=local", "CODA product version < 2", path,
+    harp_variable_definition_add_mapping(variable_definition, "air=local (default)", "CODA product version < 2", path,
                                          description_std_rel);
-    harp_variable_definition_add_mapping(variable_definition, "air=local", "CODA product version >= 2", path,
+    harp_variable_definition_add_mapping(variable_definition, "air=local (default)", "CODA product version >= 2", path,
                                          description_std_abs);
 
     /* number_density_validity */
@@ -987,7 +987,7 @@ int harp_ingestion_module_gomos_l2_init(void)
                                                                      2, dimension_type, NULL, description, NULL,
                                                                      exclude_air_std, read_air_validity);
     path = "/nl_local_species_density[]/pcd[3]";
-    harp_variable_definition_add_mapping(variable_definition, "air=local", NULL, path, NULL);
+    harp_variable_definition_add_mapping(variable_definition, "air=local (default)", NULL, path, NULL);
 
     /* sensor_altitude */
     description = "altitude of the satellite";
