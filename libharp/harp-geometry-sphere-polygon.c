@@ -395,8 +395,8 @@ int harp_spherical_polygon_contains_point(const harp_spherical_polygon *polygon,
 
         harp_spherical_polygon_apply_euler_transformation(tmp, polygon, &se);
 
-        p.lon = 0.0;
         p.lat = 0.0;
+        p.lon = 0.0;
 
         harp_spherical_point_check(&p);
 
@@ -1028,7 +1028,7 @@ void spherical_polygon_rad_from_deg(harp_spherical_polygon *polygon)
 }
 
 static int harp_spherical_polygon_begin_end_point_equal(long measurement_id, long num_vertices,
-                                                        const double *longitude_bounds, const double *latitude_bounds)
+                                                        const double *latitude_bounds, const double *longitude_bounds)
 {
     long ii_begin, ii_end;
     double deg2rad = (double)(CONST_DEG2RAD);
@@ -1039,20 +1039,20 @@ static int harp_spherical_polygon_begin_end_point_equal(long measurement_id, lon
     ii_end = measurement_id * num_vertices + num_vertices - 1;
 
     /* Get begin and end point */
-    p_begin.lon = longitude_bounds[ii_begin] * deg2rad;
     p_begin.lat = latitude_bounds[ii_begin] * deg2rad;
-    p_end.lon = longitude_bounds[ii_end] * deg2rad;
+    p_begin.lon = longitude_bounds[ii_begin] * deg2rad;
     p_end.lat = latitude_bounds[ii_end] * deg2rad;
+    p_end.lon = longitude_bounds[ii_end] * deg2rad;
     return harp_spherical_point_equal(&p_begin, &p_end);
 }
 
-/* Obtain spherical polygon from two double arrays with longitude_bounds [degree_east] and latitude_bounds [degree_north]
+/* Obtain spherical polygon from two double arrays with latitude_bounds [degree_north] and longitude_bounds [degree_east]
  * Make sure that the points are organized as follows:
  * - counter-clockwise (right-hand rule)
  * - no duplicate points (i.e. begin and end point must not be the same) */
-int harp_spherical_polygon_from_longitude_latitude_bounds(long measurement_id, long num_vertices,
-                                                          const double *longitude_bounds,
+int harp_spherical_polygon_from_latitude_longitude_bounds(long measurement_id, long num_vertices,
                                                           const double *latitude_bounds,
+                                                          const double *longitude_bounds,
                                                           harp_spherical_polygon **new_polygon)
 {
     harp_spherical_polygon *polygon = NULL;
@@ -1064,7 +1064,7 @@ int harp_spherical_polygon_from_longitude_latitude_bounds(long measurement_id, l
     int32_t i;
 
     /* Check if the first and last spherical point of the polygon are equal */
-    if (harp_spherical_polygon_begin_end_point_equal(measurement_id, num_vertices, longitude_bounds, latitude_bounds))
+    if (harp_spherical_polygon_begin_end_point_equal(measurement_id, num_vertices, latitude_bounds, longitude_bounds))
     {
         /* If this is the case, do not include the last point */
         numberofpoints--;
@@ -1096,8 +1096,8 @@ int harp_spherical_polygon_from_longitude_latitude_bounds(long measurement_id, l
         ii = measurement_id * num_vertices + i;
 
         /* Make sure we have the coordinates in the correct units */
-        point->lon = longitude_bounds[ii] * deg2rad;
         point->lat = latitude_bounds[ii] * deg2rad;
+        point->lon = longitude_bounds[ii] * deg2rad;
         harp_spherical_point_check(point);
 
         /* Add the point to the point array */
@@ -1120,7 +1120,7 @@ int harp_spherical_polygon_from_longitude_latitude_bounds(long measurement_id, l
     /* Check the polygon */
     if (harp_spherical_polygon_check(polygon) != 1)
     {
-        harp_set_error(HARP_ERROR_INVALID_ARGUMENT, "invalid polygon from input longitude bounds and latitude bounds");
+        harp_set_error(HARP_ERROR_INVALID_ARGUMENT, "invalid polygon from input latitude bounds and longitude bounds");
         harp_spherical_point_array_delete(point_array);
         harp_spherical_polygon_delete(polygon);
         free(point);
@@ -1198,18 +1198,18 @@ double harp_spherical_polygon_spherical_point_distance_in_meters(const harp_sphe
 /** Determine whether a point is in an area on the surface of the Earth
  * \ingroup harp_geometry
  * This function assumes a spherical earth
- * \param longitude_point Longitude of the point
  * \param latitude_point Latitude of the point
+ * \param longitude_point Longitude of the point
  * \param num_vertices The number of vertices of the bounding polygon of the area
- * \param longitude_bounds Longitude values of the bounds of the area polygon
  * \param latitude_bounds Latitude values of the bounds of the area polygon
+ * \param longitude_bounds Longitude values of the bounds of the area polygon
  * \param in_area Pointer to the C variable where the result will be stored (1 if point is in the area, 0 otherwise).
  * \return
  *   \arg \c 0, Success.
  *   \arg \c -1, Error occurred (check #harp_errno).
  */
-LIBHARP_API int harp_geometry_has_point_in_area(double longitude_point, double latitude_point, int num_vertices,
-                                                double *longitude_bounds, double *latitude_bounds, int *in_area)
+LIBHARP_API int harp_geometry_has_point_in_area(double latitude_point, double longitude_point, int num_vertices,
+                                                double *latitude_bounds, double *longitude_bounds, int *in_area)
 {
     harp_spherical_point point;
     harp_spherical_polygon *polygon = NULL;
@@ -1219,7 +1219,7 @@ LIBHARP_API int harp_geometry_has_point_in_area(double longitude_point, double l
     harp_spherical_point_rad_from_deg(&point);
     harp_spherical_point_check(&point);
 
-    if (harp_spherical_polygon_from_longitude_latitude_bounds(0, num_vertices, longitude_bounds, latitude_bounds,
+    if (harp_spherical_polygon_from_latitude_longitude_bounds(0, num_vertices, latitude_bounds, longitude_bounds,
                                                               &polygon) != 0)
     {
         return -1;
@@ -1236,31 +1236,31 @@ LIBHARP_API int harp_geometry_has_point_in_area(double longitude_point, double l
  * \ingroup harp_geometry
  * This function assumes a spherical earth
  * \param num_vertices_a The number of vertices of the bounding polygon of the first area
- * \param longitude_bounds_a Longitude values of the bounds of the area of the first polygon
  * \param latitude_bounds_a Latitude values of the bounds of the area of the first polygon
+ * \param longitude_bounds_a Longitude values of the bounds of the area of the first polygon
  * \param num_vertices_b The number of vertices of the bounding polygon of the second area
- * \param longitude_bounds_b Longitude values of the bounds of the area of the second polygon
  * \param latitude_bounds_b Latitude values of the bounds of the area of the second polygon
+ * \param longitude_bounds_b Longitude values of the bounds of the area of the second polygon
  * \param has_overlap Pointer to the C variable where the result will be stored (1 if there is overlap, 0 otherwise).
  * \param percentage Pointer to the C variable where the overlap percentage will be stored (use NULL if not needed).
  * \return
  *   \arg \c 0, Success.
  *   \arg \c -1, Error occurred (check #harp_errno).
  */
-LIBHARP_API int harp_geometry_has_area_overlap(int num_vertices_a, double *longitude_bounds_a,
-                                               double *latitude_bounds_a, int num_vertices_b,
-                                               double *longitude_bounds_b, double *latitude_bounds_b, int *has_overlap,
+LIBHARP_API int harp_geometry_has_area_overlap(int num_vertices_a, double *latitude_bounds_a,
+                                               double *longitude_bounds_a, int num_vertices_b,
+                                               double *latitude_bounds_b, double *longitude_bounds_b, int *has_overlap,
                                                double *percentage)
 {
     harp_spherical_polygon *polygon_a = NULL;
     harp_spherical_polygon *polygon_b = NULL;
 
-    if (harp_spherical_polygon_from_longitude_latitude_bounds(0, num_vertices_a, longitude_bounds_a, latitude_bounds_a,
+    if (harp_spherical_polygon_from_latitude_longitude_bounds(0, num_vertices_a, latitude_bounds_a, longitude_bounds_a,
                                                               &polygon_a) != 0)
     {
         return -1;
     }
-    if (harp_spherical_polygon_from_longitude_latitude_bounds(0, num_vertices_b, longitude_bounds_b, latitude_bounds_b,
+    if (harp_spherical_polygon_from_latitude_longitude_bounds(0, num_vertices_b, latitude_bounds_b, longitude_bounds_b,
                                                               &polygon_b) != 0)
     {
         return -1;

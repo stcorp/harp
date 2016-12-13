@@ -267,21 +267,21 @@ static int get_corner_coordinates(ingest_info *info, long scan_id)
      */
 
     /* calculate the center point of the scan */
-    harp_geographic_intersection(latlong[7], latlong[6], latlong[3], latlong[2], latlong[1], latlong[0], latlong[5],
-                                 latlong[4], &center_longitude, &center_latitude);
+    harp_geographic_intersection(latlong[6], latlong[7], latlong[2], latlong[3], latlong[0], latlong[1], latlong[4],
+                                 latlong[5], &center_latitude, &center_longitude);
 
     /* extrapolate the center point outwards to each of the four corners
      * i.e. the outer latitude/longitude points are twice as far from the center point as the mid points of the four
      * elements.
      */
-    harp_geographic_extrapolation(latlong[1], latlong[0], center_longitude, center_latitude,
-                                  &(outer_longitude[0]), &(outer_latitude[0]));
-    harp_geographic_extrapolation(latlong[3], latlong[2], center_longitude, center_latitude,
-                                  &(outer_longitude[1]), &(outer_latitude[1]));
-    harp_geographic_extrapolation(latlong[5], latlong[4], center_longitude, center_latitude,
-                                  &(outer_longitude[2]), &(outer_latitude[2]));
-    harp_geographic_extrapolation(latlong[7], latlong[6], center_longitude, center_latitude,
-                                  &(outer_longitude[3]), &(outer_latitude[3]));
+    harp_geographic_extrapolation(latlong[0], latlong[1], center_latitude, center_longitude,
+                                  &(outer_latitude[0]), &(outer_longitude[0]));
+    harp_geographic_extrapolation(latlong[2], latlong[3], center_latitude, center_longitude,
+                                  &(outer_latitude[1]), &(outer_longitude[1]));
+    harp_geographic_extrapolation(latlong[4], latlong[5], center_latitude, center_longitude,
+                                  &(outer_latitude[2]), &(outer_longitude[2]));
+    harp_geographic_extrapolation(latlong[6], latlong[7], center_latitude, center_longitude,
+                                  &(outer_latitude[3]), &(outer_longitude[3]));
 
     /* the inner corner coordinate (i.e. the one nearest to the center point of the scan) for each of the elements
      * is chosen as the interpolation between the center point of the opposite element and the outer point of the
@@ -310,26 +310,26 @@ static int get_corner_coordinates(ingest_info *info, long scan_id)
      * The distance (center_scan, inner_corner_element) will then be half the distance (center_scan, center_element)
      * and the distance (center_scan, outer_corner_element) will be 1.5 the distance (center_scan, center_element)
      */
-    harp_geographic_average(outer_longitude[0], outer_latitude[0], latlong[5], latlong[4],
-                            &info->corner_longitude[0 + 3], &info->corner_latitude[0 + 3]);
-    harp_geographic_average(outer_longitude[1], outer_latitude[1], latlong[7], latlong[6],
-                            &info->corner_longitude[4 + 0], &info->corner_latitude[4 + 0]);
-    harp_geographic_average(outer_longitude[2], outer_latitude[2], latlong[1], latlong[0],
-                            &info->corner_longitude[8 + 1], &info->corner_latitude[8 + 1]);
-    harp_geographic_average(outer_longitude[3], outer_latitude[3], latlong[3], latlong[2],
-                            &info->corner_longitude[12 + 2], &info->corner_latitude[12 + 2]);
+    harp_geographic_average(outer_latitude[0], outer_longitude[0], latlong[4], latlong[5],
+                            &info->corner_latitude[0 + 3], &info->corner_longitude[0 + 3]);
+    harp_geographic_average(outer_latitude[1], outer_longitude[1], latlong[6], latlong[7],
+                            &info->corner_latitude[4 + 0], &info->corner_longitude[4 + 0]);
+    harp_geographic_average(outer_latitude[2], outer_longitude[2], latlong[0], latlong[1],
+                            &info->corner_latitude[8 + 1], &info->corner_longitude[8 + 1]);
+    harp_geographic_average(outer_latitude[3], outer_longitude[3], latlong[2], latlong[3],
+                            &info->corner_latitude[12 + 2], &info->corner_longitude[12 + 2]);
 
     /* The outer corner coordinate is the interpolation of the outer coordinate of an element with its center
      * coordinate.
      */
-    harp_geographic_average(outer_longitude[0], outer_latitude[0], latlong[1], latlong[0],
-                            &info->corner_longitude[0 + 1], &info->corner_latitude[0 + 1]);
-    harp_geographic_average(outer_longitude[1], outer_latitude[1], latlong[3], latlong[2],
-                            &info->corner_longitude[4 + 2], &info->corner_latitude[4 + 2]);
-    harp_geographic_average(outer_longitude[2], outer_latitude[2], latlong[5], latlong[4],
-                            &info->corner_longitude[8 + 3], &info->corner_latitude[8 + 3]);
-    harp_geographic_average(outer_longitude[3], outer_latitude[3], latlong[7], latlong[6],
-                            &info->corner_longitude[12 + 0], &info->corner_latitude[12 + 0]);
+    harp_geographic_average(outer_latitude[0], outer_longitude[0], latlong[0], latlong[1],
+                            &info->corner_latitude[0 + 1], &info->corner_longitude[0 + 1]);
+    harp_geographic_average(outer_latitude[1], outer_longitude[1], latlong[2], latlong[3],
+                            &info->corner_latitude[4 + 2], &info->corner_longitude[4 + 2]);
+    harp_geographic_average(outer_latitude[2], outer_longitude[2], latlong[4], latlong[5],
+                            &info->corner_latitude[8 + 3], &info->corner_longitude[8 + 3]);
+    harp_geographic_average(outer_latitude[3], outer_longitude[3], latlong[6], latlong[7],
+                            &info->corner_latitude[12 + 0], &info->corner_longitude[12 + 0]);
 
     /* the other corner coordinates are calculated by finding the intersection of the greatcircle through two
      * innner corner coordinates and the greatcircle through two outer corner coordinates.
@@ -347,46 +347,46 @@ static int get_corner_coordinates(ingest_info *info, long scan_id)
      *   0 - 1
      *
      */
-    harp_geographic_intersection(info->corner_longitude[12 + 2], info->corner_latitude[12 + 2],
-                                 info->corner_longitude[0 + 3], info->corner_latitude[0 + 3],
-                                 info->corner_longitude[0 + 1], info->corner_latitude[0 + 1],
-                                 info->corner_longitude[4 + 2], info->corner_latitude[4 + 2],
-                                 &info->corner_longitude[0 + 2], &info->corner_latitude[0 + 2]);
-    harp_geographic_intersection(info->corner_longitude[12 + 0], info->corner_latitude[12 + 0],
-                                 info->corner_longitude[0 + 1], info->corner_latitude[0 + 1],
-                                 info->corner_longitude[0 + 3], info->corner_latitude[0 + 3],
-                                 info->corner_longitude[4 + 0], info->corner_latitude[4 + 0],
-                                 &info->corner_longitude[0 + 0], &info->corner_latitude[0 + 0]);
-    harp_geographic_intersection(info->corner_longitude[0 + 3], info->corner_latitude[0 + 3],
-                                 info->corner_longitude[4 + 0], info->corner_latitude[4 + 0],
-                                 info->corner_longitude[4 + 2], info->corner_latitude[4 + 2],
-                                 info->corner_longitude[8 + 3], info->corner_latitude[8 + 3],
-                                 &info->corner_longitude[4 + 3], &info->corner_latitude[4 + 3]);
-    harp_geographic_intersection(info->corner_longitude[0 + 1], info->corner_latitude[0 + 1],
-                                 info->corner_longitude[4 + 2], info->corner_latitude[4 + 2],
-                                 info->corner_longitude[4 + 0], info->corner_latitude[4 + 0],
-                                 info->corner_longitude[8 + 1], info->corner_latitude[8 + 1],
-                                 &info->corner_longitude[4 + 1], &info->corner_latitude[4 + 1]);
-    harp_geographic_intersection(info->corner_longitude[4 + 0], info->corner_latitude[4 + 0],
-                                 info->corner_longitude[8 + 1], info->corner_latitude[8 + 1],
-                                 info->corner_longitude[8 + 3], info->corner_latitude[8 + 3],
-                                 info->corner_longitude[12 + 0], info->corner_latitude[12 + 0],
-                                 &info->corner_longitude[8 + 0], &info->corner_latitude[8 + 0]);
-    harp_geographic_intersection(info->corner_longitude[4 + 2], info->corner_latitude[4 + 2],
-                                 info->corner_longitude[8 + 3], info->corner_latitude[8 + 3],
-                                 info->corner_longitude[8 + 1], info->corner_latitude[8 + 1],
-                                 info->corner_longitude[12 + 2], info->corner_latitude[12 + 2],
-                                 &info->corner_longitude[8 + 2], &info->corner_latitude[8 + 2]);
-    harp_geographic_intersection(info->corner_longitude[8 + 1], info->corner_latitude[8 + 1],
-                                 info->corner_longitude[12 + 2], info->corner_latitude[12 + 2],
-                                 info->corner_longitude[12 + 0], info->corner_latitude[12 + 0],
-                                 info->corner_longitude[0 + 1], info->corner_latitude[0 + 1],
-                                 &info->corner_longitude[12 + 1], &info->corner_latitude[12 + 1]);
-    harp_geographic_intersection(info->corner_longitude[8 + 3], info->corner_latitude[8 + 3],
-                                 info->corner_longitude[12 + 0], info->corner_latitude[12 + 0],
-                                 info->corner_longitude[12 + 2], info->corner_latitude[12 + 2],
-                                 info->corner_longitude[0 + 3], info->corner_latitude[0 + 3],
-                                 &info->corner_longitude[12 + 3], &info->corner_latitude[12 + 3]);
+    harp_geographic_intersection(info->corner_latitude[12 + 2], info->corner_longitude[12 + 2],
+                                 info->corner_latitude[0 + 3], info->corner_longitude[0 + 3],
+                                 info->corner_latitude[0 + 1], info->corner_longitude[0 + 1],
+                                 info->corner_latitude[4 + 2], info->corner_longitude[4 + 2],
+                                 &info->corner_latitude[0 + 2], &info->corner_longitude[0 + 2]);
+    harp_geographic_intersection(info->corner_latitude[12 + 0], info->corner_longitude[12 + 0],
+                                 info->corner_latitude[0 + 1], info->corner_longitude[0 + 1],
+                                 info->corner_latitude[0 + 3], info->corner_longitude[0 + 3],
+                                 info->corner_latitude[4 + 0], info->corner_longitude[4 + 0],
+                                 &info->corner_latitude[0 + 0], &info->corner_longitude[0 + 0]);
+    harp_geographic_intersection(info->corner_latitude[0 + 3], info->corner_longitude[0 + 3],
+                                 info->corner_latitude[4 + 0], info->corner_longitude[4 + 0],
+                                 info->corner_latitude[4 + 2], info->corner_longitude[4 + 2],
+                                 info->corner_latitude[8 + 3], info->corner_longitude[8 + 3],
+                                 &info->corner_latitude[4 + 3], &info->corner_longitude[4 + 3]);
+    harp_geographic_intersection(info->corner_latitude[0 + 1], info->corner_longitude[0 + 1],
+                                 info->corner_latitude[4 + 2], info->corner_longitude[4 + 2],
+                                 info->corner_latitude[4 + 0], info->corner_longitude[4 + 0],
+                                 info->corner_latitude[8 + 1], info->corner_longitude[8 + 1],
+                                 &info->corner_latitude[4 + 1], &info->corner_longitude[4 + 1]);
+    harp_geographic_intersection(info->corner_latitude[4 + 0], info->corner_longitude[4 + 0],
+                                 info->corner_latitude[8 + 1], info->corner_longitude[8 + 1],
+                                 info->corner_latitude[8 + 3], info->corner_longitude[8 + 3],
+                                 info->corner_latitude[12 + 0], info->corner_longitude[12 + 0],
+                                 &info->corner_latitude[8 + 0], &info->corner_longitude[8 + 0]);
+    harp_geographic_intersection(info->corner_latitude[4 + 2], info->corner_longitude[4 + 2],
+                                 info->corner_latitude[8 + 3], info->corner_longitude[8 + 3],
+                                 info->corner_latitude[8 + 1], info->corner_longitude[8 + 1],
+                                 info->corner_latitude[12 + 2], info->corner_longitude[12 + 2],
+                                 &info->corner_latitude[8 + 2], &info->corner_longitude[8 + 2]);
+    harp_geographic_intersection(info->corner_latitude[8 + 1], info->corner_longitude[8 + 1],
+                                 info->corner_latitude[12 + 2], info->corner_longitude[12 + 2],
+                                 info->corner_latitude[12 + 0], info->corner_longitude[12 + 0],
+                                 info->corner_latitude[0 + 1], info->corner_longitude[0 + 1],
+                                 &info->corner_latitude[12 + 1], &info->corner_longitude[12 + 1]);
+    harp_geographic_intersection(info->corner_latitude[8 + 3], info->corner_longitude[8 + 3],
+                                 info->corner_latitude[12 + 0], info->corner_longitude[12 + 0],
+                                 info->corner_latitude[12 + 2], info->corner_longitude[12 + 2],
+                                 info->corner_latitude[0 + 3], info->corner_longitude[0 + 3],
+                                 &info->corner_latitude[12 + 3], &info->corner_longitude[12 + 3]);
 
     return 0;
 }

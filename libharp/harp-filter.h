@@ -32,10 +32,10 @@ int harp_predicate_update_mask_1d(const harp_predicate *predicate, const harp_va
 int harp_predicate_update_mask_2d(const harp_predicate *predicate, const harp_variable *variable,
                                   harp_dimension_mask *primary_dimension_mask,
                                   harp_dimension_mask *secondary_dimension_mask);
-int harp_point_predicate_update_mask_0d(int num_predicates, harp_predicate **predicate, const harp_variable *longitude,
-                                        const harp_variable *latitude, uint8_t *product_mask);
-int harp_point_predicate_update_mask_1d(int num_predicates, harp_predicate **predicate, const harp_variable *longitude,
-                                        const harp_variable *latitude, harp_dimension_mask *dimension_mask);
+int harp_point_predicate_update_mask_0d(int num_predicates, harp_predicate **predicate, const harp_variable *latitude,
+                                        const harp_variable *longitude, uint8_t *product_mask);
+int harp_point_predicate_update_mask_1d(int num_predicates, harp_predicate **predicate, const harp_variable *latitude,
+                                        const harp_variable *longitude, harp_dimension_mask *dimension_mask);
 int harp_area_predicate_update_mask_0d(int num_predicates, harp_predicate **predicate,
                                        const harp_variable *latitude_bounds, const harp_variable *longitude_bounds,
                                        uint8_t *product_mask);

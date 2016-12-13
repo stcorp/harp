@@ -224,14 +224,14 @@ static void point_distance_filter_args_delete(harp_point_distance_filter_args *a
 {
     if (args != NULL)
     {
-        if (args->longitude_unit != NULL)
-        {
-            free(args->longitude_unit);
-        }
-
         if (args->latitude_unit != NULL)
         {
             free(args->latitude_unit);
+        }
+
+        if (args->longitude_unit != NULL)
+        {
+            free(args->longitude_unit);
         }
 
         if (args->distance_unit != NULL)
@@ -833,8 +833,8 @@ static int membership_filter_args_new(const char *variable_name, harp_membership
     return 0;
 }
 
-static int point_distance_filter_args_new(double longitude, const char *longitude_unit, double latitude,
-                                          const char *latitude_unit, double distance, const char *distance_unit,
+static int point_distance_filter_args_new(double latitude, const char *latitude_unit, double longitude,
+                                          const char *longitude_unit, double distance, const char *distance_unit,
                                           harp_point_distance_filter_args **new_args)
 {
     harp_point_distance_filter_args *args;
@@ -846,17 +846,17 @@ static int point_distance_filter_args_new(double longitude, const char *longitud
                        sizeof(harp_point_distance_filter_args), __FILE__, __LINE__);
         return -1;
     }
-    args->longitude = longitude;
-    args->longitude_unit = NULL;
     args->latitude = latitude;
     args->latitude_unit = NULL;
+    args->longitude = longitude;
+    args->longitude_unit = NULL;
     args->distance = distance;
     args->distance_unit = NULL;
 
-    if (longitude_unit != NULL)
+    if (latitude_unit != NULL)
     {
-        args->longitude_unit = strdup(longitude_unit);
-        if (args->longitude_unit == NULL)
+        args->latitude_unit = strdup(latitude_unit);
+        if (args->latitude_unit == NULL)
         {
             harp_set_error(HARP_ERROR_OUT_OF_MEMORY, "out of memory (could not duplicate string) (%s:%u)", __FILE__,
                            __LINE__);
@@ -865,10 +865,10 @@ static int point_distance_filter_args_new(double longitude, const char *longitud
         }
     }
 
-    if (latitude_unit != NULL)
+    if (longitude_unit != NULL)
     {
-        args->latitude_unit = strdup(latitude_unit);
-        if (args->latitude_unit == NULL)
+        args->longitude_unit = strdup(longitude_unit);
+        if (args->longitude_unit == NULL)
         {
             harp_set_error(HARP_ERROR_OUT_OF_MEMORY, "out of memory (could not duplicate string) (%s:%u)", __FILE__,
                            __LINE__);
@@ -1243,7 +1243,7 @@ static int point_distance_filter_args_copy(const harp_point_distance_filter_args
                                            harp_point_distance_filter_args **new_args)
 {
     assert(args != NULL);
-    return point_distance_filter_args_new(args->longitude, args->longitude_unit, args->latitude, args->latitude_unit,
+    return point_distance_filter_args_new(args->latitude, args->latitude_unit, args->longitude, args->longitude_unit,
                                           args->distance, args->distance_unit, new_args);
 }
 
@@ -1729,14 +1729,14 @@ int harp_membership_filter_new(const char *variable_name, harp_membership_operat
     return 0;
 }
 
-int harp_point_distance_filter_new(double longitude, const char *longitude_unit, double latitude,
-                                   const char *latitude_unit, double distance, const char *distance_unit,
+int harp_point_distance_filter_new(double latitude, const char *latitude_unit, double longitude,
+                                   const char *longitude_unit, double distance, const char *distance_unit,
                                    harp_operation **new_operation)
 {
     harp_point_distance_filter_args *args;
     harp_operation *operation;
 
-    if (point_distance_filter_args_new(longitude, longitude_unit, latitude, latitude_unit, distance, distance_unit,
+    if (point_distance_filter_args_new(latitude, latitude_unit, longitude, longitude_unit, distance, distance_unit,
                                        &args) != 0)
     {
         return -1;

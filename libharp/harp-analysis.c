@@ -440,12 +440,12 @@ double harp_scattering_angle_from_sensor_and_solar_angles(double sensor_zenith_a
 
 /** Calculate the solar azimuth angle for the given time and location
  * \param datetime Datetime [s since 2000-01-01]
- * \param longitude Longitude [degree_east]
  * \param latitude Latitude [degree_north]
+ * \param longitude Longitude [degree_east]
  * \param solar_elevation_angle Pointer to the variable where the solar elevation angle [degree] will be stored
  * \param solar_azimuth_angle Pointer to the variable where the solar elevation angle [degree] will be stored
  */
-void harp_solar_angles_from_datetime_longitude_and_latitude(double datetime, double longitude, double latitude,
+void harp_solar_angles_from_datetime_latitude_and_longitude(double datetime, double latitude, double longitude,
                                                             double *solar_elevation_angle, double *solar_azimuth_angle)
 {
     double pi = (double)M_PI;

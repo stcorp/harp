@@ -913,7 +913,7 @@ static int matchup_two_measurements_in_point_distance(const Reduced_product *red
     longitude_b = reduced_product_b->longitude->data.double_data[index_b];
 
     /* Calculate the distance between two points on the surface of the Earth sphere in [m] */
-    if (harp_geometry_get_point_distance(longitude_a, latitude_a, longitude_b, latitude_b, &point_distance) != 0)
+    if (harp_geometry_get_point_distance(latitude_a, longitude_a, latitude_b, longitude_b, &point_distance) != 0)
     {
         return -1;
     }
@@ -954,11 +954,11 @@ static int matchup_two_measurements_point_in_area(const Reduced_product *reduced
     }
 
     num_vertices = reduced_product_polygons->latitude_bounds->dimension[1];
-    longitude_bounds = &reduced_product_polygons->longitude_bounds->data.double_data[index_polygon * num_vertices];
     latitude_bounds = &reduced_product_polygons->latitude_bounds->data.double_data[index_polygon * num_vertices];
-    return harp_geometry_has_point_in_area(reduced_product_points->longitude->data.double_data[index_point],
-                                           reduced_product_points->latitude->data.double_data[index_point],
-                                           num_vertices, longitude_bounds, latitude_bounds, match);
+    longitude_bounds = &reduced_product_polygons->longitude_bounds->data.double_data[index_polygon * num_vertices];
+    return harp_geometry_has_point_in_area(reduced_product_points->latitude->data.double_data[index_point],
+                                           reduced_product_points->longitude->data.double_data[index_point],
+                                           num_vertices, latitude_bounds, longitude_bounds, match);
 }
 
 /* Matchup: do areas overlap? */
@@ -1002,14 +1002,14 @@ static int matchup_two_measurements_areas_in_areas(const Reduced_product *reduce
     }
 
     num_vertices_a = reduced_product_a->latitude_bounds->dimension[1];
-    longitude_bounds_a = &reduced_product_a->longitude_bounds->data.double_data[index_a * num_vertices_a];
     latitude_bounds_a = &reduced_product_a->latitude_bounds->data.double_data[index_a * num_vertices_a];
+    longitude_bounds_a = &reduced_product_a->longitude_bounds->data.double_data[index_a * num_vertices_a];
     num_vertices_b = reduced_product_b->latitude_bounds->dimension[1];
-    longitude_bounds_b = &reduced_product_b->longitude_bounds->data.double_data[index_b * num_vertices_a];
     latitude_bounds_b = &reduced_product_b->latitude_bounds->data.double_data[index_b * num_vertices_a];
+    longitude_bounds_b = &reduced_product_b->longitude_bounds->data.double_data[index_b * num_vertices_a];
 
-    return harp_geometry_has_area_overlap(num_vertices_a, longitude_bounds_a, latitude_bounds_a, num_vertices_b,
-                                          longitude_bounds_b, latitude_bounds_b, match, NULL);
+    return harp_geometry_has_area_overlap(num_vertices_a, latitude_bounds_a, longitude_bounds_a, num_vertices_b,
+                                          latitude_bounds_b, longitude_bounds_b, match, NULL);
 }
 
 /* Matchup: do areas overlap with an overlapping percentage larger than the criterion? */
@@ -1020,10 +1020,10 @@ static int matchup_two_measurements_in_overlapping_percentage(const Reduced_prod
                                                               const Collocation_criterion_type criterion_type,
                                                               double *overlapping_percentage, int *match)
 {
-    double *longitude_bounds_a;
     double *latitude_bounds_a;
-    double *longitude_bounds_b;
+    double *longitude_bounds_a;
     double *latitude_bounds_b;
+    double *longitude_bounds_b;
     int num_vertices_a;
     int num_vertices_b;
     double da;
@@ -1073,14 +1073,14 @@ static int matchup_two_measurements_in_overlapping_percentage(const Reduced_prod
     }
 
     num_vertices_a = reduced_product_a->latitude_bounds->dimension[1];
-    longitude_bounds_a = &reduced_product_a->longitude_bounds->data.double_data[index_a * num_vertices_a];
     latitude_bounds_a = &reduced_product_a->latitude_bounds->data.double_data[index_a * num_vertices_a];
+    longitude_bounds_a = &reduced_product_a->longitude_bounds->data.double_data[index_a * num_vertices_a];
     num_vertices_b = reduced_product_b->latitude_bounds->dimension[1];
-    longitude_bounds_b = &reduced_product_b->longitude_bounds->data.double_data[index_b * num_vertices_a];
     latitude_bounds_b = &reduced_product_b->latitude_bounds->data.double_data[index_b * num_vertices_a];
+    longitude_bounds_b = &reduced_product_b->longitude_bounds->data.double_data[index_b * num_vertices_a];
 
-    if (harp_geometry_has_area_overlap(num_vertices_a, longitude_bounds_a, latitude_bounds_a, num_vertices_b,
-                                       longitude_bounds_b, latitude_bounds_b, match, overlapping_percentage) != 0)
+    if (harp_geometry_has_area_overlap(num_vertices_a, latitude_bounds_a, longitude_bounds_a, num_vertices_b,
+                                       latitude_bounds_b, longitude_bounds_b, match, overlapping_percentage) != 0)
     {
         return -1;
     }

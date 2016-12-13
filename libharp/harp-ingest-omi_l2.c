@@ -106,13 +106,13 @@ static void calculate_corner_coordinates(long num_time, long num_xtrack, const d
                 /* extrapolate */
                 id1 = i * num_xtrack + j - 1 + (j == 0);
                 id2 = id1 + num_xtrack + (j == 0);
-                harp_geographic_extrapolation(longitude[id1], latitude[id1], longitude[id2], latitude[id2],
-                                              &center_longitude[0], &center_latitude[0]);
+                harp_geographic_extrapolation(latitude[id1], longitude[id1], latitude[id2], longitude[id2],
+                                              &center_latitude[0], &center_longitude[0]);
 
                 id1 = i * num_xtrack + j - (j == num_xtrack);
                 id2 = id1 + num_xtrack - (j == num_xtrack);
-                harp_geographic_extrapolation(longitude[id1], latitude[id1], longitude[id2], latitude[id2],
-                                              &center_longitude[1], &center_latitude[1]);
+                harp_geographic_extrapolation(latitude[id1], longitude[id1], latitude[id2], longitude[id2],
+                                              &center_latitude[1], &center_longitude[1]);
             }
             else
             {
@@ -121,8 +121,8 @@ static void calculate_corner_coordinates(long num_time, long num_xtrack, const d
                     /* extrapolate */
                     id1 = (i - 1) * num_xtrack + j;
                     id2 = id1 + 1;
-                    harp_geographic_extrapolation(longitude[id1], latitude[id1], longitude[id2], latitude[id2],
-                                                  &center_longitude[0], &center_latitude[0]);
+                    harp_geographic_extrapolation(latitude[id1], longitude[id1], latitude[id2], longitude[id2],
+                                                  &center_latitude[0], &center_longitude[0]);
                 }
                 else
                 {
@@ -135,8 +135,8 @@ static void calculate_corner_coordinates(long num_time, long num_xtrack, const d
                     /* extrapolate */
                     id1 = (i - 1) * num_xtrack + j - 1;
                     id2 = id1 - 1;
-                    harp_geographic_extrapolation(longitude[id1], latitude[id1], longitude[id2], latitude[id2],
-                                                  &center_longitude[1], &center_latitude[1]);
+                    harp_geographic_extrapolation(latitude[id1], longitude[id1], latitude[id2], longitude[id2],
+                                                  &center_latitude[1], &center_longitude[1]);
                 }
                 else
                 {
@@ -150,13 +150,13 @@ static void calculate_corner_coordinates(long num_time, long num_xtrack, const d
                 /* extrapolate */
                 id1 = (i - 1) * num_xtrack + j - (j == num_xtrack);
                 id2 = id1 - num_xtrack - (j == num_xtrack);
-                harp_geographic_extrapolation(longitude[id1], latitude[id1], longitude[id2], latitude[id2],
-                                              &center_longitude[2], &center_latitude[2]);
+                harp_geographic_extrapolation(latitude[id1], longitude[id1], latitude[id2], longitude[id2],
+                                              &center_latitude[2], &center_longitude[2]);
 
                 id1 = (i - 1) * num_xtrack + j - 1 + (j == 0);
                 id2 = id1 - num_xtrack + (j == 0);
-                harp_geographic_extrapolation(longitude[id1], latitude[id1], longitude[id2], latitude[id2],
-                                              &center_longitude[3], &center_latitude[3]);
+                harp_geographic_extrapolation(latitude[id1], longitude[id1], latitude[id2], longitude[id2],
+                                              &center_latitude[3], &center_longitude[3]);
             }
             else
             {
@@ -165,8 +165,8 @@ static void calculate_corner_coordinates(long num_time, long num_xtrack, const d
                     /* extrapolate */
                     id1 = i * num_xtrack + j - 1;
                     id2 = id1 - 1;
-                    harp_geographic_extrapolation(longitude[id1], latitude[id1], longitude[id2], latitude[id2],
-                                                  &center_longitude[2], &center_latitude[2]);
+                    harp_geographic_extrapolation(latitude[id1], longitude[id1], latitude[id2], longitude[id2],
+                                                  &center_latitude[2], &center_longitude[2]);
                 }
                 else
                 {
@@ -179,8 +179,8 @@ static void calculate_corner_coordinates(long num_time, long num_xtrack, const d
                     /* extrapolate */
                     id1 = i * num_xtrack + j;
                     id2 = id1 + 1;
-                    harp_geographic_extrapolation(longitude[id1], latitude[id1], longitude[id2], latitude[id2],
-                                                  &center_longitude[3], &center_latitude[3]);
+                    harp_geographic_extrapolation(latitude[id1], longitude[id1], latitude[id2], longitude[id2],
+                                                  &center_latitude[3], &center_longitude[3]);
                 }
                 else
                 {
@@ -189,12 +189,12 @@ static void calculate_corner_coordinates(long num_time, long num_xtrack, const d
                 }
             }
 
-            harp_geographic_intersection(center_longitude[0], center_latitude[0],
-                                         center_longitude[2], center_latitude[2],
-                                         center_longitude[1], center_latitude[1],
-                                         center_longitude[3], center_latitude[3],
-                                         &longitude_grid[i * (num_xtrack + 1) + j],
-                                         &latitude_grid[i * (num_xtrack + 1) + j]);
+            harp_geographic_intersection(center_latitude[0], center_longitude[0],
+                                         center_latitude[2], center_longitude[2],
+                                         center_latitude[1], center_longitude[1],
+                                         center_latitude[3], center_longitude[3],
+                                         &latitude_grid[i * (num_xtrack + 1) + j],
+                                         &longitude_grid[i * (num_xtrack + 1) + j]);
         }
     }
 }

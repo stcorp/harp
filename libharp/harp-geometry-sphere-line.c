@@ -347,8 +347,8 @@ int8_t harp_spherical_line_spherical_line_relationship(const harp_spherical_line
 
                 harp_inverse_euler_transformation_from_spherical_line(&se, &sl2);
 
-                sp.lon = ((a1) ? (M_PI) : (0.0)) - se.phi;      /* node */
                 sp.lat = 0;
+                sp.lon = ((a1) ? (M_PI) : (0.0)) - se.phi;      /* node */
 
                 harp_spherical_point_check(&sp);
 
@@ -482,7 +482,7 @@ int harp_spherical_point_is_at_spherical_line(const harp_spherical_point *point,
 }
 
 /* Calculates the intersection point u of the greatcircles through p1/p2 and q1/q2
- * (given in longitude(phi)/latitude(tau) coordinates) where p1/p2/q1/q2 form a rectangular region
+ * (given in latitude(tau)/longitude(phi) coordinates) where p1/p2/q1/q2 form a rectangular region
  *
  *    \        /
  *     q2    p2
@@ -516,10 +516,10 @@ void harp_spherical_line_spherical_line_intersection_point(const harp_spherical_
     harp_spherical_line_begin(&point_q1, line_q);
     harp_spherical_line_end(&point_q2, line_q);
 
-    p1 = point_p1.lon;  /* in rad */
-    t1 = point_p1.lat;
-    p2 = point_p2.lon;
+    t1 = point_p1.lat;  /* in rad */
+    p1 = point_p1.lon;
     t2 = point_p2.lat;
+    p2 = point_p2.lon;
 
     cp1 = cos(p1);
     sp1 = sin(p1);
@@ -545,10 +545,10 @@ void harp_spherical_line_spherical_line_intersection_point(const harp_spherical_
 
     /* calculate nq */
 
-    p1 = point_q1.lon;
     t1 = point_q1.lat;
-    p2 = point_q2.lon;
+    p1 = point_q1.lon;
     t2 = point_q2.lat;
+    p2 = point_q2.lon;
 
     cp1 = cos(p1);
     sp1 = sin(p1);
@@ -587,8 +587,8 @@ void harp_spherical_line_spherical_line_intersection_point(const harp_spherical_
      */
     if (norm_u == 0)
     {
-        point_u->lon = harp_nan();
         point_u->lat = harp_nan();
+        point_u->lon = harp_nan();
         return;
     }
 
@@ -603,8 +603,8 @@ void harp_spherical_line_spherical_line_intersection_point(const harp_spherical_
     /* atan2 automatically 'does the right thing' ((ux,uy)=(0,0) -> pu=0) */
     pu = atan2(uy, ux);
 
-    point_u->lon = pu;  /* in rad */
     point_u->lat = tu;
+    point_u->lon = pu;  /* in rad */
 
     harp_spherical_point_check(point_u);
 }

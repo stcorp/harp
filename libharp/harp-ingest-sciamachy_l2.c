@@ -1039,7 +1039,7 @@ static int read_latitude(void *user_data, long index, harp_array data)
         {
             return -1;
         }
-        harp_geographic_average(longitude[0], latitude[0], longitude[1], latitude[1], longitude, latitude);
+        harp_geographic_average(latitude[0], longitude[0], latitude[1], longitude[1], latitude, longitude);
     }
     else
     {
@@ -1060,7 +1060,7 @@ static int read_latitude(void *user_data, long index, harp_array data)
         {
             return -1;
         }
-        harp_geographic_average(longitude[0], latitude[0], longitude[1], latitude[1], longitude, latitude);
+        harp_geographic_average(latitude[0], longitude[0], latitude[1], longitude[1], latitude, longitude);
 
         /* read second coordinate from last pixel */
         cursor = info->geo_cursor[info->geo_dsr_id[index] + coadding_factor - 1];
@@ -1073,7 +1073,7 @@ static int read_latitude(void *user_data, long index, harp_array data)
         {
             return -1;
         }
-        harp_geographic_average(longitude[0], latitude[0], longitude[1], latitude[1], longitude, latitude);
+        harp_geographic_average(latitude[0], longitude[0], latitude[1], longitude[1], latitude, longitude);
     }
 
     *data.double_data = latitude[0];
@@ -1121,7 +1121,7 @@ static int read_longitude(void *user_data, long index, harp_array data)
         {
             return -1;
         }
-        harp_geographic_average(longitude[0], latitude[0], longitude[1], latitude[1], longitude, latitude);
+        harp_geographic_average(latitude[0], longitude[0], latitude[1], longitude[1], latitude, longitude);
     }
     else
     {
@@ -1142,7 +1142,7 @@ static int read_longitude(void *user_data, long index, harp_array data)
         {
             return -1;
         }
-        harp_geographic_average(longitude[0], latitude[0], longitude[1], latitude[1], longitude, latitude);
+        harp_geographic_average(latitude[0], longitude[0], latitude[1], longitude[1], latitude, longitude);
 
         /* read second coordinate from last pixel */
         cursor = info->geo_cursor[info->geo_dsr_id[index] + coadding_factor - 1];
@@ -1155,7 +1155,7 @@ static int read_longitude(void *user_data, long index, harp_array data)
         {
             return -1;
         }
-        harp_geographic_average(longitude[0], latitude[0], longitude[1], latitude[1], longitude, latitude);
+        harp_geographic_average(latitude[0], longitude[0], latitude[1], longitude[1], latitude, longitude);
     }
 
     *data.double_data = longitude[0];

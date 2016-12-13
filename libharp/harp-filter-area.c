@@ -145,7 +145,7 @@ int harp_area_mask_intersects_area_filter_predicate_new(const harp_area_mask_int
 }
 
 static long update_mask(int num_predicates, harp_predicate **predicate, long num_areas, long num_points,
-                        const double *longitude_bounds, const double *latitude_bounds, uint8_t *mask)
+                        const double *latitude_bounds, const double *longitude_bounds, uint8_t *mask)
 {
     uint8_t *mask_end;
     long num_masked = 0;
@@ -157,7 +157,7 @@ static long update_mask(int num_predicates, harp_predicate **predicate, long num
             harp_spherical_polygon *area;
             int i;
 
-            if (harp_spherical_polygon_from_longitude_latitude_bounds(0, num_points, longitude_bounds, latitude_bounds,
+            if (harp_spherical_polygon_from_latitude_longitude_bounds(0, num_points, latitude_bounds, longitude_bounds,
                                                                       &area) != 0)
             {
                 *mask = 0;
@@ -182,19 +182,19 @@ static long update_mask(int num_predicates, harp_predicate **predicate, long num
             }
         }
 
-        longitude_bounds += num_points;
         latitude_bounds += num_points;
+        longitude_bounds += num_points;
     }
 
     return num_masked;
 }
 
 int harp_area_predicate_update_mask_0d(int num_predicates, harp_predicate **predicate,
-                                       const harp_variable *longitude_bounds, const harp_variable *latitude_bounds,
+                                       const harp_variable *latitude_bounds, const harp_variable *longitude_bounds,
                                        uint8_t *product_mask)
 {
-    harp_variable *longitude_bounds_copy = NULL;
     harp_variable *latitude_bounds_copy = NULL;
+    harp_variable *longitude_bounds_copy = NULL;
     long num_points;
 
     if (num_predicates == 0)
@@ -207,15 +207,15 @@ int harp_area_predicate_update_mask_0d(int num_predicates, harp_predicate **pred
         return -1;
 
     }
-    if (longitude_bounds == NULL)
-    {
-        harp_set_error(HARP_ERROR_INVALID_ARGUMENT, "longitude_bounds is NULL (%s:%lu)", __FILE__, __LINE__);
-        return -1;
-
-    }
     if (latitude_bounds == NULL)
     {
         harp_set_error(HARP_ERROR_INVALID_ARGUMENT, "latitude_bounds is NULL (%s:%lu)", __FILE__, __LINE__);
+        return -1;
+
+    }
+    if (longitude_bounds == NULL)
+    {
+        harp_set_error(HARP_ERROR_INVALID_ARGUMENT, "longitude_bounds is NULL (%s:%lu)", __FILE__, __LINE__);
         return -1;
 
     }
@@ -231,19 +231,6 @@ int harp_area_predicate_update_mask_0d(int num_predicates, harp_predicate **pred
         return 0;
     }
 
-    if (longitude_bounds->num_dimensions != 1)
-    {
-        harp_set_error(HARP_ERROR_INVALID_ARGUMENT, "variable '%s' has %d dimensions; expected 1",
-                       longitude_bounds->name, longitude_bounds->num_dimensions);
-        return -1;
-    }
-    if (longitude_bounds->dimension_type[0] != harp_dimension_independent)
-    {
-        harp_set_error(HARP_ERROR_INVALID_ARGUMENT, "variable '%s' has dimensions {%s}; expected {%s}",
-                       longitude_bounds->name, harp_get_dimension_type_name(longitude_bounds->dimension_type[0]),
-                       harp_get_dimension_type_name(harp_dimension_independent));
-        return -1;
-    }
     if (latitude_bounds->num_dimensions != 1)
     {
         harp_set_error(HARP_ERROR_INVALID_ARGUMENT, "variable '%s' has %d dimensions; expected 1",
@@ -257,12 +244,25 @@ int harp_area_predicate_update_mask_0d(int num_predicates, harp_predicate **pred
                        harp_get_dimension_type_name(harp_dimension_independent));
         return -1;
     }
-    if (longitude_bounds->dimension[0] != latitude_bounds->dimension[0])
+    if (longitude_bounds->num_dimensions != 1)
+    {
+        harp_set_error(HARP_ERROR_INVALID_ARGUMENT, "variable '%s' has %d dimensions; expected 1",
+                       longitude_bounds->name, longitude_bounds->num_dimensions);
+        return -1;
+    }
+    if (longitude_bounds->dimension_type[0] != harp_dimension_independent)
+    {
+        harp_set_error(HARP_ERROR_INVALID_ARGUMENT, "variable '%s' has dimensions {%s}; expected {%s}",
+                       longitude_bounds->name, harp_get_dimension_type_name(longitude_bounds->dimension_type[0]),
+                       harp_get_dimension_type_name(harp_dimension_independent));
+        return -1;
+    }
+    if (latitude_bounds->dimension[0] != longitude_bounds->dimension[0])
     {
         harp_set_error(HARP_ERROR_INVALID_ARGUMENT, "the length of the independent dimension of variable '%s' (%ld) "
                        "does not match the length of the independent dimension of variable '%s' (%ld)",
-                       longitude_bounds->name, longitude_bounds->dimension[0], latitude_bounds->name,
-                       latitude_bounds->dimension[0]);
+                       latitude_bounds->name, latitude_bounds->dimension[0], longitude_bounds->name,
+                       longitude_bounds->dimension[0]);
         return -1;
     }
 
@@ -270,27 +270,27 @@ int harp_area_predicate_update_mask_0d(int num_predicates, harp_predicate **pred
     if (num_points < 3)
     {
         harp_set_error(HARP_ERROR_INVALID_ARGUMENT, "the length of the independent dimension of variables '%s' and "
-                       "'%s' should be 3 or more", longitude_bounds->name, latitude_bounds->name);
+                       "'%s' should be 3 or more", latitude_bounds->name, longitude_bounds->name);
         return -1;
     }
 
     /* Update product mask. */
-    update_mask(num_predicates, predicate, 1, num_points, longitude_bounds->data.double_data,
-                latitude_bounds->data.double_data, product_mask);
+    update_mask(num_predicates, predicate, 1, num_points, latitude_bounds->data.double_data,
+                longitude_bounds->data.double_data, product_mask);
 
     /* Clean-up. */
-    harp_variable_delete(longitude_bounds_copy);
     harp_variable_delete(latitude_bounds_copy);
+    harp_variable_delete(longitude_bounds_copy);
 
     return 0;
 }
 
 int harp_area_predicate_update_mask_1d(int num_predicates, harp_predicate **predicate,
-                                       const harp_variable *longitude_bounds, const harp_variable *latitude_bounds,
+                                       const harp_variable *latitude_bounds, const harp_variable *longitude_bounds,
                                        harp_dimension_mask *dimension_mask)
 {
-    harp_variable *longitude_bounds_copy = NULL;
     harp_variable *latitude_bounds_copy = NULL;
+    harp_variable *longitude_bounds_copy = NULL;
     harp_dimension_type dimension_type[2] = { harp_dimension_time, harp_dimension_independent };
     long num_areas;
     long num_points;
@@ -305,15 +305,15 @@ int harp_area_predicate_update_mask_1d(int num_predicates, harp_predicate **pred
         return -1;
 
     }
-    if (longitude_bounds == NULL)
-    {
-        harp_set_error(HARP_ERROR_INVALID_ARGUMENT, "longitude_bounds is NULL (%s:%lu)", __FILE__, __LINE__);
-        return -1;
-
-    }
     if (latitude_bounds == NULL)
     {
         harp_set_error(HARP_ERROR_INVALID_ARGUMENT, "latitude_bounds is NULL (%s:%lu)", __FILE__, __LINE__);
+        return -1;
+
+    }
+    if (longitude_bounds == NULL)
+    {
+        harp_set_error(HARP_ERROR_INVALID_ARGUMENT, "longitude_bounds is NULL (%s:%lu)", __FILE__, __LINE__);
         return -1;
 
     }
@@ -322,28 +322,6 @@ int harp_area_predicate_update_mask_1d(int num_predicates, harp_predicate **pred
         harp_set_error(HARP_ERROR_INVALID_ARGUMENT, "dimension_mask is NULL (%s:%lu)", __FILE__, __LINE__);
         return -1;
 
-    }
-    if (longitude_bounds->num_dimensions != 2)
-    {
-        harp_set_error(HARP_ERROR_INVALID_ARGUMENT, "variable '%s' has %d dimensions; expected 2",
-                       longitude_bounds->name, longitude_bounds->num_dimensions);
-        return -1;
-    }
-    if (longitude_bounds->num_dimensions == 1 && longitude_bounds->dimension_type[0] != harp_dimension_independent)
-    {
-        harp_set_error(HARP_ERROR_INVALID_ARGUMENT, "variable '%s' has dimensions {%s}; expected {%s}",
-                       longitude_bounds->name, harp_get_dimension_type_name(longitude_bounds->dimension_type[0]),
-                       harp_get_dimension_type_name(harp_dimension_independent));
-        return -1;
-    }
-    if (!harp_variable_has_dimension_types(longitude_bounds, 2, dimension_type))
-    {
-        harp_set_error(HARP_ERROR_INVALID_ARGUMENT, "variable '%s' has dimensions {%s, %s}; expected {%s, %s}",
-                       longitude_bounds->name, harp_get_dimension_type_name(longitude_bounds->dimension_type[0]),
-                       harp_get_dimension_type_name(longitude_bounds->dimension_type[1]),
-                       harp_get_dimension_type_name(dimension_type[0]),
-                       harp_get_dimension_type_name(dimension_type[1]));
-        return -1;
     }
     if (latitude_bounds->num_dimensions != 2)
     {
@@ -360,16 +338,31 @@ int harp_area_predicate_update_mask_1d(int num_predicates, harp_predicate **pred
                        harp_get_dimension_type_name(dimension_type[1]));
         return -1;
     }
+    if (longitude_bounds->num_dimensions != 2)
+    {
+        harp_set_error(HARP_ERROR_INVALID_ARGUMENT, "variable '%s' has %d dimensions; expected 2",
+                       longitude_bounds->name, longitude_bounds->num_dimensions);
+        return -1;
+    }
+    if (!harp_variable_has_dimension_types(longitude_bounds, 2, dimension_type))
+    {
+        harp_set_error(HARP_ERROR_INVALID_ARGUMENT, "variable '%s' has dimensions {%s, %s}; expected {%s, %s}",
+                       longitude_bounds->name, harp_get_dimension_type_name(longitude_bounds->dimension_type[0]),
+                       harp_get_dimension_type_name(longitude_bounds->dimension_type[1]),
+                       harp_get_dimension_type_name(dimension_type[0]),
+                       harp_get_dimension_type_name(dimension_type[1]));
+        return -1;
+    }
 
     /* Both variables should have the same number of elements, since they depend on the same dimension (time). */
-    assert(longitude_bounds->dimension[0] == latitude_bounds->dimension[0]);
+    assert(latitude_bounds->dimension[0] == longitude_bounds->dimension[0]);
     num_areas = longitude_bounds->dimension[0];
-    if (longitude_bounds->dimension[1] != latitude_bounds->dimension[1])
+    if (latitude_bounds->dimension[1] != longitude_bounds->dimension[1])
     {
         harp_set_error(HARP_ERROR_INVALID_ARGUMENT, "the length of the independent dimension of variable '%s' (%ld) "
                        "does not match the length of the independent dimension of variable '%s' (%ld)",
-                       longitude_bounds->name, longitude_bounds->dimension[1], latitude_bounds->name,
-                       latitude_bounds->dimension[1]);
+                       latitude_bounds->name, latitude_bounds->dimension[1], longitude_bounds->name,
+                       longitude_bounds->dimension[1]);
         return -1;
     }
 
@@ -377,7 +370,7 @@ int harp_area_predicate_update_mask_1d(int num_predicates, harp_predicate **pred
     if (num_points < 3)
     {
         harp_set_error(HARP_ERROR_INVALID_ARGUMENT, "the length of the independent dimension of variables '%s' and "
-                       "'%s' should be 3 or more", longitude_bounds->name, latitude_bounds->name);
+                       "'%s' should be 3 or more", latitude_bounds->name, longitude_bounds->name);
         return -1;
     }
 
@@ -401,33 +394,6 @@ int harp_area_predicate_update_mask_1d(int num_predicates, harp_predicate **pred
     assert(dimension_mask->mask != NULL);
 
     /* Harmonize unit and data type. */
-    if (!harp_variable_has_unit(longitude_bounds, "degree_east"))
-    {
-        if (harp_variable_copy(longitude_bounds, &longitude_bounds_copy) != 0)
-        {
-            return -1;
-        }
-        if (harp_variable_convert_unit(longitude_bounds_copy, "degree_east") != 0)
-        {
-            harp_variable_delete(longitude_bounds_copy);
-            return -1;
-        }
-        longitude_bounds = longitude_bounds_copy;
-    }
-    else if (longitude_bounds->data_type != harp_type_double)
-    {
-        if (harp_variable_copy(longitude_bounds, &longitude_bounds_copy) != 0)
-        {
-            return -1;
-        }
-        if (harp_variable_convert_data_type(longitude_bounds_copy, harp_type_double) != 0)
-        {
-            harp_variable_delete(longitude_bounds_copy);
-            return -1;
-        }
-        longitude_bounds = longitude_bounds_copy;
-    }
-
     if (!harp_variable_has_unit(latitude_bounds, "degree_north"))
     {
         if (harp_variable_copy(latitude_bounds, &latitude_bounds_copy) != 0)
@@ -459,14 +425,41 @@ int harp_area_predicate_update_mask_1d(int num_predicates, harp_predicate **pred
         latitude_bounds = latitude_bounds_copy;
     }
 
+    if (!harp_variable_has_unit(longitude_bounds, "degree_east"))
+    {
+        if (harp_variable_copy(longitude_bounds, &longitude_bounds_copy) != 0)
+        {
+            return -1;
+        }
+        if (harp_variable_convert_unit(longitude_bounds_copy, "degree_east") != 0)
+        {
+            harp_variable_delete(longitude_bounds_copy);
+            return -1;
+        }
+        longitude_bounds = longitude_bounds_copy;
+    }
+    else if (longitude_bounds->data_type != harp_type_double)
+    {
+        if (harp_variable_copy(longitude_bounds, &longitude_bounds_copy) != 0)
+        {
+            return -1;
+        }
+        if (harp_variable_convert_data_type(longitude_bounds_copy, harp_type_double) != 0)
+        {
+            harp_variable_delete(longitude_bounds_copy);
+            return -1;
+        }
+        longitude_bounds = longitude_bounds_copy;
+    }
+
     /* Update dimension mask. */
     dimension_mask->masked_dimension_length = update_mask(num_predicates, predicate, num_areas, num_points,
-                                                          longitude_bounds->data.double_data,
-                                                          latitude_bounds->data.double_data, dimension_mask->mask);
+                                                          latitude_bounds->data.double_data,
+                                                          longitude_bounds->data.double_data, dimension_mask->mask);
 
     /* Clean-up. */
-    harp_variable_delete(longitude_bounds_copy);
     harp_variable_delete(latitude_bounds_copy);
+    harp_variable_delete(longitude_bounds_copy);
 
     return 0;
 }

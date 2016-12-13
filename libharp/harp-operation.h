@@ -161,10 +161,10 @@ typedef struct harp_membership_filter_args_struct
 
 typedef struct harp_point_distance_filter_args_struct
 {
-    double longitude;
-    char *longitude_unit;
     double latitude;
     char *latitude_unit;
+    double longitude;
+    char *longitude_unit;
     double distance;
     char *distance_unit;
 } harp_point_distance_filter_args;
@@ -243,8 +243,8 @@ int harp_longitude_range_filter_new(double min, const char *min_unit, double max
                                     harp_operation **new_operation);
 int harp_membership_filter_new(const char *variable_name, harp_membership_operator_type operator_type, int num_values,
                                const double *value, const char *unit, harp_operation **new_operation);
-int harp_point_distance_filter_new(double longitude, const char *longitude_unit, double latitude,
-                                   const char *latitude_unit, double distance, const char *distance_unit,
+int harp_point_distance_filter_new(double latitude, const char *latitude_unit, double longitude,
+                                   const char *longitude_unit, double distance, const char *distance_unit,
                                    harp_operation **operation);
 int harp_regrid_new(harp_dimension_type dimension_type, const char *axis_variable_name, const char *axis_unit,
                     long num_values, double *values, harp_operation **new_operation);

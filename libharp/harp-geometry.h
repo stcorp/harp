@@ -257,8 +257,8 @@ int harp_spherical_polygon_check(const harp_spherical_polygon *polygon);
 int harp_spherical_polygon_equal(const harp_spherical_polygon *polygon_a, const harp_spherical_polygon *polygon_b,
                                  int direction);
 void harp_spherical_polygon_delete(harp_spherical_polygon *polygon);
-int harp_spherical_polygon_from_longitude_latitude_bounds(long measurement_id, long num_vertices,
-                                                          const double *longitude_bounds, const double *latitude_bounds,
+int harp_spherical_polygon_from_latitude_longitude_bounds(long measurement_id, long num_vertices,
+                                                          const double *latitude_bounds, const double *longitude_bounds,
                                                           harp_spherical_polygon **new_polygon);
 int harp_spherical_polygon_from_point_array(const harp_spherical_point_array *point_array,
                                             harp_spherical_polygon **new_polygon);
@@ -281,8 +281,8 @@ double harp_spherical_polygon_spherical_point_distance_in_meters(const harp_sphe
 /* Additional functions. */
 
 /* Calculate the point distance [m] between two points on a sphere */
-int harp_spherical_point_distance_from_longitude_latitude(double longitude_a, double latitude_a,
-                                                          double longitude_b, double latitude_b,
+int harp_spherical_point_distance_from_latitude_longitude(double latitude_a, double longitude_a,
+                                                          double latitude_b, double longitude_b,
                                                           double *point_distance);
 
 /* Determine if two areas are overlapping */
@@ -296,28 +296,28 @@ int harp_spherical_polygon_overlapping_percentage(const harp_spherical_polygon *
 
 
 /* Convert latitude, longitude [deg] to Cartesian coordinates [m] */
-void harp_wgs84_ellipsoid_cartesian_coordinates_from_longitude_latitude(double longitude, double latitude,
+void harp_wgs84_ellipsoid_cartesian_coordinates_from_latitude_longitude(double latitude, double longitude,
                                                                         double *new_x, double *new_y, double *new_z);
 
 /* Convert Cartesian coordinates [m] to latitude, longitude [deg] */
-void harp_wgs84_ellipsoid_longitude_latitude_from_cartesian_coordinates(double x, double y, double z,
-                                                                        double *new_longitude, double *new_latitude);
+void harp_wgs84_ellipsoid_latitude_longitude_from_cartesian_coordinates(double x, double y, double z,
+                                                                        double *new_latitude, double *new_longitude);
 
 /* Calculate the point distance [m] between two points [deg] on the WGS84 ellipsoid */
-int harp_wgs84_ellipsoid_point_distance_from_longitude_and_latitude(double longitude_a, double latitude_a,
-                                                                    double longitude_b, double latitude_b,
+int harp_wgs84_ellipsoid_point_distance_from_latitude_and_longitude(double latitude_a, double longitude_a,
+                                                                    double latitude_b, double longitude_b,
                                                                     double *point_distance);
 
-void harp_geographic_average(double longitude_p, double latitude_p, double longitude_q, double latitude_q,
-                             double *average_longitude, double *average_latitude);
-void harp_geographic_intersection(double longitude_p1, double latitude_p1, double longitude_p2, double latitude_p2,
-                                  double longitude_q1, double latitude_q1, double longitude_q2, double latitude_q2,
-                                  double *longitude_u, double *latitude_u);
-void harp_geographic_extrapolation(double longitude_p, double latitude_p, double longitude_q, double latitude_q,
-                                   double *longitude_u, double *latitude_u);
+void harp_geographic_average(double latitude_p, double longitude_p, double latitude_q, double longitude_q,
+                             double *average_latitude, double *average_longitude);
+void harp_geographic_intersection(double latitude_p1, double longitude_p1, double latitude_p2, double longitude_p2,
+                                  double latitude_q1, double longitude_q1, double latitude_q2, double longitude_q2,
+                                  double *latitude_u, double *longitude_u);
+void harp_geographic_extrapolation(double latitude_p, double longitude_p, double latitude_q, double longitude_q,
+                                   double *latitude_u, double *longitude_u);
 
-int harp_geographic_center_from_bounds(long num_vertices, const double *longitude_bounds,
-                                       const double *latitude_bounds, double *center_longitude,
-                                       double *center_latitude);
+int harp_geographic_center_from_bounds(long num_vertices, const double *latitude_bounds,
+                                       const double *longitude_bounds, double *center_latitude,
+                                       double *center_longitude);
 
 #endif

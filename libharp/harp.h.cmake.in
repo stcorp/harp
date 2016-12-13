@@ -430,13 +430,13 @@ LIBHARP_API int harp_doc_list_conversions(const harp_product *product, int (*pri
 LIBHARP_API int harp_doc_export_ingestion_definitions(const char *path);
 
 /* Geometry */
-LIBHARP_API int harp_geometry_get_point_distance(double longitude_a, double latitude_a, double longitude_b,
-                                                 double latitude_b, double *distance);
-LIBHARP_API int harp_geometry_has_point_in_area(double longitude_point, double latitude_point, int num_vertices,
-                                                double *longitude_bounds, double *latitude_bounds, int *in_area);
-LIBHARP_API int harp_geometry_has_area_overlap(int num_vertices_a, double *longitude_bounds_a,
-                                               double *latitude_bounds_a, int num_vertices_b,
-                                               double *longitude_bounds_b, double *latitude_bounds_b, int *has_overlap,
+LIBHARP_API int harp_geometry_get_point_distance(double latitude_a, double longitude_a, double latitude_b,
+                                                 double longitude_b, double *distance);
+LIBHARP_API int harp_geometry_has_point_in_area(double latitude_point, double longitude_point, int num_vertices,
+                                                double *latitude_bounds, double *longitude_bounds, int *in_area);
+LIBHARP_API int harp_geometry_has_area_overlap(int num_vertices_a, double *latitude_bounds_a,
+                                               double *longitude_bounds_a, int num_vertices_b,
+                                               double *latitude_bounds_b, double *longitude_bounds_b, int *has_overlap,
                                                double *percentage);
 
 /* Error */

@@ -21,7 +21,7 @@
 #include "harp-geometry.h"
 
 /* Convert latitude, longitude [deg] to Cartesian coordinates [m] */
-void harp_wgs84_ellipsoid_cartesian_coordinates_from_longitude_and_latitude(double longitude, double latitude,
+void harp_wgs84_ellipsoid_cartesian_coordinates_from_latitude_and_longitude(double latitude, double longitude,
                                                                             double *new_x, double *new_y, double *new_z)
 {
     double deg2rad = (double)(CONST_DEG2RAD);
@@ -37,8 +37,8 @@ void harp_wgs84_ellipsoid_cartesian_coordinates_from_longitude_and_latitude(doub
 }
 
 /* Convert latitude, longitude [deg] to Cartesian coordinates [m] */
-void harp_wgs84_ellipsoid_longitude_and_latitude_from_cartesian_coordinates(double x, double y, double z,
-                                                                            double *new_longitude, double *new_latitude)
+void harp_wgs84_ellipsoid_latitude_and_longitude_from_cartesian_coordinates(double x, double y, double z,
+                                                                            double *new_latitude, double *new_longitude)
 {
     double rad2deg = (double)(CONST_RAD2DEG);
     double a = (double)(CONST_SEMI_MAJOR_AXIS_WGS84_ELLIPSOID);
@@ -92,13 +92,13 @@ void harp_wgs84_ellipsoid_longitude_and_latitude_from_cartesian_coordinates(doub
     v = a / sqrt(1.0 - e * e * sin(phi) * sin(phi));
     hg = rho / cos(phi) - v;
 
-    *new_longitude = lambda * rad2deg;
     *new_latitude = phi * rad2deg;
+    *new_longitude = lambda * rad2deg;
 }
 
 /* Return the point distance [m] from the input latitudes and longitudes [deg] */
-int harp_wgs84_ellipsoid_point_distance_from_longitude_and_latitude(double longitude_a, double latitude_a,
-                                                                    double longitude_b, double latitude_b,
+int harp_wgs84_ellipsoid_point_distance_from_latitude_and_longitude(double latitude_a, double longitude_a,
+                                                                    double latitude_b, double longitude_b,
                                                                     double *new_point_distance)
 {
     double point_distance;      /* Surface distance [m] */

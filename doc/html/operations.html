@@ -221,7 +221,7 @@ index and collocation_index variables will also be removed.
 Independent dimensions cannot be flattened.
 Example:</p>
 <blockquote class="last">
-<div><code class="docutils literal"><span class="pre">flatten(longitude);flatten(latitude)</span></code>
+<div><code class="docutils literal"><span class="pre">flatten(latitude);flatten(longitude)</span></code>
 (turn a 2D lat/lon grid into a a series of individual points)</div></blockquote>
 </dd>
 <dt><code class="docutils literal"><span class="pre">keep(variable,</span> <span class="pre">...)</span></code></dt>
@@ -238,12 +238,12 @@ cross the international date line.</p>
 <div><code class="docutils literal"><span class="pre">longitude-range(179.0,</span> <span class="pre">-179.0)</span></code>
 (select a 2 degree range around the international dateline)</div></blockquote>
 </dd>
-<dt><code class="docutils literal"><span class="pre">point-distance(longitude</span> <span class="pre">[unit],</span> <span class="pre">latitude</span> <span class="pre">[unit],</span> <span class="pre">distance</span> <span class="pre">[unit])</span></code></dt>
+<dt><code class="docutils literal"><span class="pre">point-distance(latitude</span> <span class="pre">[unit],</span> <span class="pre">longitude</span> <span class="pre">[unit],</span> <span class="pre">distance</span> <span class="pre">[unit])</span></code></dt>
 <dd><p class="first">Exclude measurements situated further than the specified
 distance from the specified location.
 Example:</p>
 <blockquote class="last">
-<div><code class="docutils literal"><span class="pre">point-distance(4.357,</span> <span class="pre">52.012,</span> <span class="pre">3</span> <span class="pre">[km])</span></code></div></blockquote>
+<div><code class="docutils literal"><span class="pre">point-distance(52.012,</span> <span class="pre">4.357,</span> <span class="pre">3</span> <span class="pre">[km])</span></code></div></blockquote>
 </dd>
 <dt><code class="docutils literal"><span class="pre">regrid(dimension,</span> <span class="pre">axis-variable</span> <span class="pre">unit,</span> <span class="pre">(value,</span> <span class="pre">...))</span></code></dt>
 <dd><p class="first">Regrid all variables in the product for the given dimension using
@@ -301,12 +301,12 @@ outside the valid range of the variable, or NaN).</dd>
 <h2>Area mask file</h2>
 <p>A comma separated (csv) file is used as input for area filters.</p>
 <p>It has the following format:</p>
-<div class="highlight-default"><div class="highlight"><pre><span></span><span class="n">lon0</span><span class="p">,</span><span class="n">lat0</span><span class="p">,</span><span class="n">lon1</span><span class="p">,</span><span class="n">lat1</span><span class="p">,</span><span class="n">lon2</span><span class="p">,</span><span class="n">lat2</span><span class="p">,</span><span class="n">lon3</span><span class="p">,</span><span class="n">lat3</span>
-<span class="mf">60.0</span><span class="p">,</span><span class="mf">0.0</span><span class="p">,</span><span class="mf">60.0</span><span class="p">,</span><span class="mf">40.0</span><span class="p">,</span><span class="o">-</span><span class="mf">60.0</span><span class="p">,</span><span class="mf">40.0</span><span class="p">,</span><span class="o">-</span><span class="mf">60.0</span><span class="p">,</span><span class="mf">0.0</span>
+<div class="highlight-default"><div class="highlight"><pre><span></span><span class="n">lat0</span><span class="p">,</span><span class="n">lon0</span><span class="p">,</span><span class="n">lat1</span><span class="p">,</span><span class="n">lon1</span><span class="p">,</span><span class="n">lat2</span><span class="p">,</span><span class="n">lon2</span><span class="p">,</span><span class="n">lat3</span><span class="p">,</span><span class="n">lon3</span>
+<span class="mf">0.0</span><span class="p">,</span><span class="mf">60.0</span><span class="p">,</span><span class="mf">40.0</span><span class="p">,</span><span class="mf">60.0</span><span class="p">,</span><span class="mf">40.0</span><span class="p">,</span><span class="o">-</span><span class="mf">60.0</span><span class="p">,</span><span class="mf">0.0</span><span class="p">,</span><span class="o">-</span><span class="mf">60.0</span>
 <span class="o">...</span>
 </pre></div>
 </div>
-<p>It starts with a header with longitude, latitude column headers (this header will be skipped by HARP).
+<p>It starts with a header with latitude, longitude column headers (this header will be skipped by HARP).
 Then, each further line defines a polygon. Each polygon consists of the vertices as defined on that line.</p>
 </div>
 <div class="section" id="examples">

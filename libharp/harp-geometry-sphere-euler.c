@@ -25,11 +25,11 @@ int harp_euler_transformation_equal(const harp_euler_transformation *euler1, con
 {
     static harp_spherical_point pointin[2], point[4];
 
-    pointin[0].lon = 0.0;
     pointin[0].lat = 0.0;
+    pointin[0].lon = 0.0;
 
-    pointin[1].lon = M_PI_2;
     pointin[1].lat = 0.0;
+    pointin[1].lon = M_PI_2;
 
     harp_spherical_point_apply_euler_transformation(&point[0], &pointin[0], euler1);
     harp_spherical_point_apply_euler_transformation(&point[1], &pointin[1], euler1);
@@ -47,11 +47,11 @@ void harp_euler_transformation_transform_to_zxz_euler_transformation(harp_euler_
 {
     static harp_spherical_point point[4];
 
-    point[0].lon = 0.0;
     point[0].lat = 0.0;
+    point[0].lon = 0.0;
 
-    point[1].lon = M_PI_2;
     point[1].lat = 0.0;
+    point[1].lon = M_PI_2;
 
     harp_spherical_point_apply_euler_transformation(&point[2], &point[0], transformationin);
     harp_spherical_point_apply_euler_transformation(&point[3], &point[1], transformationin);
@@ -75,13 +75,13 @@ void harp_euler_transformation_invert(harp_euler_transformation *transformation)
 
     const unsigned char c = transformation->phi_axis;
 
-    point[2].lon = -transformation->phi;
-    point[1].lon = -transformation->theta;
-    point[0].lon = -transformation->psi;
-
     point[2].lat = 0.0;
     point[1].lat = 0.0;
     point[0].lat = 0.0;
+
+    point[2].lon = -transformation->phi;
+    point[1].lon = -transformation->theta;
+    point[0].lon = -transformation->psi;
 
     /* Check spherical points */
     harp_spherical_point_check(&point[0]);

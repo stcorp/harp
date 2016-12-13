@@ -188,9 +188,8 @@ void harp_spherical_point_deg_from_rad(harp_spherical_point *point)
  * on the surface of a sphere */
 double harp_spherical_point_distance(const harp_spherical_point *pointp, const harp_spherical_point *pointq)
 {
-    double distance =
-        (acos
-         (sin(pointp->lat) * sin(pointq->lat) + cos(pointp->lat) * cos(pointq->lat) * cos(pointp->lon - pointq->lon)));
+    double distance = acos(sin(pointp->lat) * sin(pointq->lat) + cos(pointp->lat) * cos(pointq->lat) *
+                           cos(pointp->lon - pointq->lon));
 
     if (HARP_GEOMETRY_FPzero(distance))
     {
@@ -221,8 +220,8 @@ int harp_spherical_point_at_distance_and_angle(const harp_spherical_point *point
     azimuth_angle *= CONST_DEG2RAD;
 
     /* Derive the point which lies a distance 'radius' (normalized to [rad]) north of this point */
-    point_b->lon = 0.0;
     point_b->lat = radius / (2.0 * M_PI * earth_radius);
+    point_b->lon = 0.0;
     harp_spherical_point_check(point_b);
 
     /* Perform translation of (0,0) to point a to get point b relative to point a */
@@ -271,8 +270,8 @@ int harp_spherical_point_array_add_point(harp_spherical_point_array *point_array
                        (point_array->numberofpoints + 1) * sizeof(harp_spherical_point), __FILE__, __LINE__);
         return -1;
     }
-    point_array->point[point_array->numberofpoints].lon = point_in->lon;
     point_array->point[point_array->numberofpoints].lat = point_in->lat;
+    point_array->point[point_array->numberofpoints].lon = point_in->lon;
     point_array->numberofpoints++;
     return 0;
 }
@@ -310,24 +309,24 @@ void harp_spherical_point_array_delete(harp_spherical_point_array *point_array)
 /** Calculate the distance between two points on the surface of the Earth meters
  * \ingroup harp_geometry
  * This function assumes a spherical earth
- * \param longitude_a Longitude of first point
  * \param latitude_a Latitude of first point
- * \param longitude_b Longitude of second point
+ * \param longitude_a Longitude of first point
  * \param latitude_b Latitude of second point
+ * \param longitude_b Longitude of second point
  * \param distance Pointer to the C variable where the surface distance in [m] between the two points will be stored.
  * \return
  *   \arg \c 0, Success.
  *   \arg \c -1, Error occurred (check #harp_errno).
  */
-LIBHARP_API int harp_geometry_get_point_distance(double longitude_a, double latitude_a, double longitude_b,
-                                                 double latitude_b, double *distance)
+LIBHARP_API int harp_geometry_get_point_distance(double latitude_a, double longitude_a, double latitude_b,
+                                                 double longitude_b, double *distance)
 {
     harp_spherical_point point_a, point_b;
 
-    point_a.lat = longitude_a * (double)(CONST_DEG2RAD);
-    point_a.lon = latitude_a * (double)(CONST_DEG2RAD);
-    point_b.lat = longitude_b * (double)(CONST_DEG2RAD);
-    point_b.lon = latitude_b * (double)(CONST_DEG2RAD);
+    point_a.lat = latitude_a * (double)(CONST_DEG2RAD);
+    point_a.lon = longitude_a * (double)(CONST_DEG2RAD);
+    point_b.lat = latitude_b * (double)(CONST_DEG2RAD);
+    point_b.lon = longitude_b * (double)(CONST_DEG2RAD);
 
     harp_spherical_point_check(&point_a);
     harp_spherical_point_check(&point_b);

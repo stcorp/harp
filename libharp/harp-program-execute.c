@@ -330,15 +330,8 @@ static int evaluate_point_filters_0d(const harp_product *product, harp_program *
     /* Update product mask. */
     if (predicate_set->num_predicates > 0)
     {
-        harp_variable *longitude;
         harp_variable *latitude;
-
-        if (harp_product_get_variable_by_name(product, "longitude", &longitude) != 0)
-        {
-            harp_predicate_set_delete(predicate_set);
-            harp_set_error(HARP_ERROR_OPERATION, OPERATION_FILTER_POINT_MISSING_LON);
-            return -1;
-        }
+        harp_variable *longitude;
 
         if (harp_product_get_variable_by_name(product, "latitude", &latitude) != 0)
         {
@@ -347,11 +340,18 @@ static int evaluate_point_filters_0d(const harp_product *product, harp_program *
             return -1;
         }
 
-        /* we were promised 0D filters */
-        assert(longitude->num_dimensions == 0 && latitude->num_dimensions == 0);
+        if (harp_product_get_variable_by_name(product, "longitude", &longitude) != 0)
+        {
+            harp_predicate_set_delete(predicate_set);
+            harp_set_error(HARP_ERROR_OPERATION, OPERATION_FILTER_POINT_MISSING_LON);
+            return -1;
+        }
 
-        if (harp_point_predicate_update_mask_0d(predicate_set->num_predicates, predicate_set->predicate, longitude,
-                                                latitude, product_mask) != 0)
+        /* we were promised 0D filters */
+        assert(latitude->num_dimensions == 0 && longitude->num_dimensions == 0);
+
+        if (harp_point_predicate_update_mask_0d(predicate_set->num_predicates, predicate_set->predicate, latitude,
+                                                longitude, product_mask) != 0)
         {
             harp_predicate_set_delete(predicate_set);
             return -1;
@@ -437,15 +437,8 @@ static int evaluate_point_filters_1d(const harp_product *product, harp_program *
     /* Update dimension mask. */
     if (predicate_set->num_predicates > 0)
     {
-        harp_variable *longitude;
         harp_variable *latitude;
-
-        if (harp_product_get_variable_by_name(product, "longitude", &longitude) != 0)
-        {
-            harp_predicate_set_delete(predicate_set);
-            harp_set_error(HARP_ERROR_OPERATION, OPERATION_FILTER_POINT_MISSING_LON);
-            return -1;
-        }
+        harp_variable *longitude;
 
         if (harp_product_get_variable_by_name(product, "latitude", &latitude) != 0)
         {
@@ -454,8 +447,15 @@ static int evaluate_point_filters_1d(const harp_product *product, harp_program *
             return -1;
         }
 
+        if (harp_product_get_variable_by_name(product, "longitude", &longitude) != 0)
+        {
+            harp_predicate_set_delete(predicate_set);
+            harp_set_error(HARP_ERROR_OPERATION, OPERATION_FILTER_POINT_MISSING_LON);
+            return -1;
+        }
+
         /* We were promised 1D filters */
-        assert(longitude->num_dimensions == 1 && latitude->num_dimensions == 1);
+        assert(latitude->num_dimensions == 1 && longitude->num_dimensions == 1);
 
         if (dimension_mask_set[harp_dimension_time] == NULL)
         {
@@ -468,8 +468,8 @@ static int evaluate_point_filters_1d(const harp_product *product, harp_program *
             }
         }
 
-        if (harp_point_predicate_update_mask_1d(predicate_set->num_predicates, predicate_set->predicate, longitude,
-                                                latitude, dimension_mask_set[harp_dimension_time]) != 0)
+        if (harp_point_predicate_update_mask_1d(predicate_set->num_predicates, predicate_set->predicate, latitude,
+                                                longitude, dimension_mask_set[harp_dimension_time]) != 0)
         {
             harp_predicate_set_delete(predicate_set);
             return -1;
@@ -554,15 +554,8 @@ static int evaluate_area_filters_0d(const harp_product *product, harp_program *p
 
     if (predicate_set->num_predicates > 0)
     {
-        harp_variable *longitude_bounds;
         harp_variable *latitude_bounds;
-
-        if (harp_product_get_variable_by_name(product, "longitude_bounds", &longitude_bounds) != 0)
-        {
-            harp_predicate_set_delete(predicate_set);
-            harp_set_error(HARP_ERROR_OPERATION, OPERATION_FILTER_AREA_MISSING_LON_BOUNDS);
-            return -1;
-        }
+        harp_variable *longitude_bounds;
 
         if (harp_product_get_variable_by_name(product, "latitude_bounds", &latitude_bounds) != 0)
         {
@@ -571,7 +564,14 @@ static int evaluate_area_filters_0d(const harp_product *product, harp_program *p
             return -1;
         }
 
-        assert(longitude_bounds->num_dimensions == 1 && latitude_bounds->num_dimensions == 1);
+        if (harp_product_get_variable_by_name(product, "longitude_bounds", &longitude_bounds) != 0)
+        {
+            harp_predicate_set_delete(predicate_set);
+            harp_set_error(HARP_ERROR_OPERATION, OPERATION_FILTER_AREA_MISSING_LON_BOUNDS);
+            return -1;
+        }
+
+        assert(latitude_bounds->num_dimensions == 1 && longitude_bounds->num_dimensions == 1);
         if (!harp_variable_has_dimension_types(longitude_bounds, 1, dimension_type)
             || !harp_variable_has_dimension_types(longitude_bounds, 1, dimension_type))
         {
@@ -581,7 +581,7 @@ static int evaluate_area_filters_0d(const harp_product *product, harp_program *p
         }
 
         if (harp_area_predicate_update_mask_0d(predicate_set->num_predicates, predicate_set->predicate,
-                                               longitude_bounds, latitude_bounds, product_mask) != 0)
+                                               latitude_bounds, longitude_bounds, product_mask) != 0)
         {
             harp_predicate_set_delete(predicate_set);
             return -1;
@@ -667,15 +667,8 @@ static int evaluate_area_filters_1d(const harp_product *product, harp_program *o
 
     if (predicate_set->num_predicates > 0)
     {
-        harp_variable *longitude_bounds;
         harp_variable *latitude_bounds;
-
-        if (harp_product_get_variable_by_name(product, "longitude_bounds", &longitude_bounds) != 0)
-        {
-            harp_predicate_set_delete(predicate_set);
-            harp_set_error(HARP_ERROR_OPERATION, OPERATION_FILTER_AREA_MISSING_LON_BOUNDS);
-            return -1;
-        }
+        harp_variable *longitude_bounds;
 
         if (harp_product_get_variable_by_name(product, "latitude_bounds", &latitude_bounds) != 0)
         {
@@ -684,11 +677,18 @@ static int evaluate_area_filters_1d(const harp_product *product, harp_program *o
             return -1;
         }
 
+        if (harp_product_get_variable_by_name(product, "longitude_bounds", &longitude_bounds) != 0)
+        {
+            harp_predicate_set_delete(predicate_set);
+            harp_set_error(HARP_ERROR_OPERATION, OPERATION_FILTER_AREA_MISSING_LON_BOUNDS);
+            return -1;
+        }
+
         /* We were promised 1D area filters, meaning lat/lon bounds are 2D */
-        assert(longitude_bounds->num_dimensions == 2);
         assert(latitude_bounds->num_dimensions == 2);
-        if (!harp_variable_has_dimension_types(longitude_bounds, 2, dimension_type) ||
-            !harp_variable_has_dimension_types(latitude_bounds, 2, dimension_type))
+        assert(longitude_bounds->num_dimensions == 2);
+        if (!harp_variable_has_dimension_types(latitude_bounds, 2, dimension_type) ||
+            !harp_variable_has_dimension_types(longitude_bounds, 2, dimension_type))
         {
             harp_set_error(HARP_ERROR_OPERATION, OPERATION_FILTER_AREA_WRONG_DIMENSION_FORMAT, "{time, independent}");
             harp_predicate_set_delete(predicate_set);
@@ -707,7 +707,7 @@ static int evaluate_area_filters_1d(const harp_product *product, harp_program *o
         }
 
         if (harp_area_predicate_update_mask_1d(predicate_set->num_predicates, predicate_set->predicate,
-                                               longitude_bounds, latitude_bounds,
+                                               latitude_bounds, longitude_bounds,
                                                dimension_mask_set[harp_dimension_time]) != 0)
         {
             harp_predicate_set_delete(predicate_set);
@@ -755,20 +755,21 @@ static int get_operation_dimensionality(harp_product *product, harp_operation *o
     else if (operation->type == harp_operation_area_mask_covers_point_filter ||
              operation->type == harp_operation_point_distance_filter)
     {
-        harp_variable *longitude_def, *latitude_def = NULL;
+        harp_variable *latitude_def = NULL;
+        harp_variable *longitude_def = NULL;
 
-        if (harp_product_get_variable_by_name(product, "longitude", &longitude_def) != 0)
-        {
-            harp_set_error(HARP_ERROR_OPERATION, OPERATION_FILTER_POINT_MISSING_LON);
-            return -1;
-        }
         if (harp_product_get_variable_by_name(product, "latitude", &latitude_def) != 0)
         {
             harp_set_error(HARP_ERROR_OPERATION, OPERATION_FILTER_POINT_MISSING_LAT);
             return -1;
         }
+        if (harp_product_get_variable_by_name(product, "longitude", &longitude_def) != 0)
+        {
+            harp_set_error(HARP_ERROR_OPERATION, OPERATION_FILTER_POINT_MISSING_LON);
+            return -1;
+        }
         /* point filters must be 0D or 1D */
-        if (longitude_def->num_dimensions > 1 || latitude_def->num_dimensions > 1)
+        if (latitude_def->num_dimensions > 1 || longitude_def->num_dimensions > 1)
         {
             harp_set_error(HARP_ERROR_OPERATION, OPERATION_FILTER_POINT_WRONG_DIMENSION_FORMAT, "{time}");
             return -1;
@@ -782,22 +783,22 @@ static int get_operation_dimensionality(harp_product *product, harp_operation *o
     else if (operation->type == harp_operation_area_mask_covers_area_filter ||
              operation->type == harp_operation_area_mask_intersects_area_filter)
     {
-        harp_variable *longitude_bounds;
         harp_variable *latitude_bounds;
+        harp_variable *longitude_bounds;
 
-        if (harp_product_get_variable_by_name(product, "longitude_bounds", &longitude_bounds) != 0)
-        {
-            harp_set_error(HARP_ERROR_OPERATION, OPERATION_FILTER_AREA_MISSING_LON_BOUNDS);
-            return -1;
-        }
         if (harp_product_get_variable_by_name(product, "latitude_bounds", &latitude_bounds) != 0)
         {
             harp_set_error(HARP_ERROR_OPERATION, OPERATION_FILTER_AREA_MISSING_LAT_BOUNDS);
             return -1;
         }
+        if (harp_product_get_variable_by_name(product, "longitude_bounds", &longitude_bounds) != 0)
+        {
+            harp_set_error(HARP_ERROR_OPERATION, OPERATION_FILTER_AREA_MISSING_LON_BOUNDS);
+            return -1;
+        }
         /* area filters must be 0D or 1D, which means that the bounds are 1D or 2D resp. */
-        if (longitude_bounds->num_dimensions > 2 || latitude_bounds->num_dimensions > 2
-            || longitude_bounds->num_dimensions < 1 || latitude_bounds->num_dimensions < 1)
+        if (latitude_bounds->num_dimensions > 2 || longitude_bounds->num_dimensions > 2 ||
+            latitude_bounds->num_dimensions < 1 || longitude_bounds->num_dimensions < 1)
         {
             harp_set_error(HARP_ERROR_OPERATION, OPERATION_FILTER_POINT_WRONG_DIMENSION_FORMAT, "{time}");
             return -1;

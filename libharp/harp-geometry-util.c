@@ -31,15 +31,15 @@
  * u = (p + q) / 2
  * if p and q are on opposite sides of the sphere an average of the latitudes and longitudes is taken.
  */
-void harp_geographic_average(double longitude_p, double latitude_p, double longitude_q, double latitude_q,
-                             double *longitude_u, double *latitude_u)
+void harp_geographic_average(double latitude_p, double longitude_p, double latitude_q, double longitude_q,
+                             double *latitude_u, double *longitude_u)
 {
-    double phi_p = longitude_p * CONST_DEG2RAD;
     double theta_p = latitude_p * CONST_DEG2RAD;
-    double phi_q = longitude_q * CONST_DEG2RAD;
+    double phi_p = longitude_p * CONST_DEG2RAD;
     double theta_q = latitude_q * CONST_DEG2RAD;
-    double phi_u;
+    double phi_q = longitude_q * CONST_DEG2RAD;
     double theta_u;
+    double phi_u;
 
     double px = cos(phi_p) * cos(theta_p);
     double py = sin(phi_p) * cos(theta_p);
@@ -86,12 +86,12 @@ void harp_geographic_average(double longitude_p, double latitude_p, double longi
     /* atan2 automatically 'does the right thing' ((ux,uy)=(0,0) -> pu=0) */
     phi_u = atan2(uy, ux);
 
-    *longitude_u = phi_u * CONST_RAD2DEG;
     *latitude_u = theta_u * CONST_RAD2DEG;
+    *longitude_u = phi_u * CONST_RAD2DEG;
 }
 
 /** Calculates the intersection point u of the greatcircles through p1/p2 and q1/q2
- * (given in longitude(phi)/latitude(tau) coordinates) where p1/p2/q1/q2 form a rectangular region
+ * (given in latitude(tau)/longitude(phi) coordinates) where p1/p2/q1/q2 form a rectangular region
  *
  *    \        /
  *     q2    p2
@@ -103,9 +103,9 @@ void harp_geographic_average(double longitude_p, double latitude_p, double longi
  *
  * The intersection point 'u' is calculated via: u = (p1 x p2) x (q1 x q2) (a cross product of cross products)
  */
-void harp_geographic_intersection(double longitude_p1, double latitude_p1, double longitude_p2, double latitude_p2,
-                                  double longitude_q1, double latitude_q1, double longitude_q2, double latitude_q2,
-                                  double *longitude_u, double *latitude_u)
+void harp_geographic_intersection(double latitude_p1, double longitude_p1, double latitude_p2, double longitude_p2,
+                                  double latitude_q1, double longitude_q1, double latitude_q2, double longitude_q2,
+                                  double *latitude_u, double *longitude_u)
 {
     double p1, t1, p2, t2;
     double cp1, sp1, ct1, st1;
@@ -119,10 +119,10 @@ void harp_geographic_intersection(double longitude_p1, double latitude_p1, doubl
 
     /* calculate np */
 
-    p1 = longitude_p1 * CONST_DEG2RAD;
     t1 = latitude_p1 * CONST_DEG2RAD;
-    p2 = longitude_p2 * CONST_DEG2RAD;
+    p1 = longitude_p1 * CONST_DEG2RAD;
     t2 = latitude_p2 * CONST_DEG2RAD;
+    p2 = longitude_p2 * CONST_DEG2RAD;
 
     cp1 = cos(p1);
     sp1 = sin(p1);
@@ -149,10 +149,10 @@ void harp_geographic_intersection(double longitude_p1, double latitude_p1, doubl
 
     /* calculate nq */
 
-    p1 = longitude_q1 * CONST_DEG2RAD;
     t1 = latitude_q1 * CONST_DEG2RAD;
-    p2 = longitude_q2 * CONST_DEG2RAD;
+    p1 = longitude_q1 * CONST_DEG2RAD;
     t2 = latitude_q2 * CONST_DEG2RAD;
+    p2 = longitude_q2 * CONST_DEG2RAD;
 
     cp1 = cos(p1);
     sp1 = sin(p1);
@@ -191,8 +191,8 @@ void harp_geographic_intersection(double longitude_p1, double latitude_p1, doubl
      */
     if (norm_u == 0)
     {
-        *longitude_u = harp_nan();
         *latitude_u = harp_nan();
+        *longitude_u = harp_nan();
         return;
     }
 
@@ -207,8 +207,8 @@ void harp_geographic_intersection(double longitude_p1, double latitude_p1, doubl
     /* atan2 automatically 'does the right thing' ((ux,uy)=(0,0) -> pu=0) */
     pu = atan2(uy, ux);
 
-    *longitude_u = pu * CONST_RAD2DEG;
     *latitude_u = tu * CONST_RAD2DEG;
+    *longitude_u = pu * CONST_RAD2DEG;
 }
 
 /** Calculate the point u on the greatcircle through p and q such that u is as far from p as p is from q.
@@ -223,13 +223,13 @@ void harp_geographic_intersection(double longitude_p1, double latitude_p1, doubl
  * or in words: u is -q plus 2 times the projection of q on the vector p
  * the projection of q on p is the inproduct of p and q in the direction of the unit vector p.
  */
-void harp_geographic_extrapolation(double longitude_p, double latitude_p, double longitude_q, double latitude_q,
-                                   double *longitude_u, double *latitude_u)
+void harp_geographic_extrapolation(double latitude_p, double longitude_p, double latitude_q, double longitude_q,
+                                   double *latitude_u, double *longitude_u)
 {
-    double pp = longitude_p * CONST_DEG2RAD;
     double tp = latitude_p * CONST_DEG2RAD;
-    double pq = longitude_q * CONST_DEG2RAD;
+    double pp = longitude_p * CONST_DEG2RAD;
     double tq = latitude_q * CONST_DEG2RAD;
+    double pq = longitude_q * CONST_DEG2RAD;
 
     double cpp = cos(pp);
     double spp = sin(pp);
@@ -260,19 +260,19 @@ void harp_geographic_extrapolation(double longitude_p, double latitude_p, double
     /* atan2 automatically 'does the right thing' ((ux,uy)=(0,0) -> pu=0) */
     double pu = atan2(uy, ux);
 
-    *longitude_u = pu * CONST_RAD2DEG;
     *latitude_u = tu * CONST_RAD2DEG;
+    *longitude_u = pu * CONST_RAD2DEG;
 }
 
-int harp_geographic_center_from_bounds(long num_vertices, const double *longitude_bounds,
-                                       const double *latitude_bounds, double *center_longitude, double *center_latitude)
+int harp_geographic_center_from_bounds(long num_vertices, const double *latitude_bounds, const double *longitude_bounds,
+                                       double *center_latitude, double *center_longitude)
 {
     harp_spherical_polygon *polygon = NULL;
     harp_vector3d vector_center;
     harp_spherical_point point;
 
     /* Convert to a spherical polygon */
-    if (harp_spherical_polygon_from_longitude_latitude_bounds(0, num_vertices, longitude_bounds, latitude_bounds,
+    if (harp_spherical_polygon_from_latitude_longitude_bounds(0, num_vertices, latitude_bounds, longitude_bounds,
                                                               &polygon) != 0)
     {
         return -1;
@@ -288,8 +288,8 @@ int harp_geographic_center_from_bounds(long num_vertices, const double *longitud
     harp_spherical_point_from_vector3d(&point, &vector_center);
     harp_spherical_point_check(&point);
     harp_spherical_point_deg_from_rad(&point);
-    *center_longitude = point.lon;
     *center_latitude = point.lat;
+    *center_longitude = point.lon;
     free(polygon);
 
     return 0;

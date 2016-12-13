@@ -184,9 +184,9 @@ static int parse_polygon(const char *str, harp_spherical_polygon **new_polygon)
         }
 
         length = str - mark;
-        if (harp_parse_double(mark, length, &point.lon, 0) != length || !harp_isfinite(point.lon))
+        if (harp_parse_double(mark, length, &point.lat, 0) != length || !harp_isfinite(point.lat))
         {
-            harp_set_error(HARP_ERROR_INVALID_FORMAT, "invalid longitude '%.*s' (%s:%u)", length, mark, __FILE__,
+            harp_set_error(HARP_ERROR_INVALID_FORMAT, "invalid latitude '%.*s' (%s:%u)", length, mark, __FILE__,
                            __LINE__);
             harp_spherical_point_array_delete(point_array);
             return -1;
@@ -218,9 +218,9 @@ static int parse_polygon(const char *str, harp_spherical_polygon **new_polygon)
         }
 
         length = str - mark;
-        if (harp_parse_double(mark, length, &point.lat, 0) != length || !harp_isfinite(point.lat))
+        if (harp_parse_double(mark, length, &point.lon, 0) != length || !harp_isfinite(point.lon))
         {
-            harp_set_error(HARP_ERROR_INVALID_FORMAT, "invalid latitude '%.*s' (%s:%u)", length, mark, __FILE__,
+            harp_set_error(HARP_ERROR_INVALID_FORMAT, "invalid longitude '%.*s' (%s:%u)", length, mark, __FILE__,
                            __LINE__);
             harp_spherical_point_array_delete(point_array);
             return -1;

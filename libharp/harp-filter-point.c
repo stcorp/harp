@@ -68,20 +68,20 @@ int harp_point_distance_filter_predicate_new(const harp_point_distance_filter_ar
     harp_spherical_point origin;
 
     /* Convert location information to harp_spherical_point. */
-    origin.lon = args->longitude;
     origin.lat = args->latitude;
+    origin.lon = args->longitude;
 
-    if (args->longitude_unit != NULL && harp_unit_compare(args->longitude_unit, "degree_east") != 0)
+    if (args->latitude_unit != NULL && harp_unit_compare(args->latitude_unit, "degree_north") != 0)
     {
-        if (harp_convert_unit(args->longitude_unit, "degree_east", 1, &origin.lon) != 0)
+        if (harp_convert_unit(args->latitude_unit, "degree_north", 1, &origin.lat) != 0)
         {
             return -1;
         }
     }
 
-    if (args->latitude_unit != NULL && harp_unit_compare(args->latitude_unit, "degree_north") != 0)
+    if (args->longitude_unit != NULL && harp_unit_compare(args->longitude_unit, "degree_east") != 0)
     {
-        if (harp_convert_unit(args->latitude_unit, "degree_north", 1, &origin.lat) != 0)
+        if (harp_convert_unit(args->longitude_unit, "degree_east", 1, &origin.lon) != 0)
         {
             return -1;
         }
@@ -121,8 +121,8 @@ int harp_point_distance_filter_predicate_new(const harp_point_distance_filter_ar
     return 0;
 }
 
-static long update_mask(int num_predicates, harp_predicate **predicate, long num_points, const double *longitude,
-                        const double *latitude, uint8_t *mask)
+static long update_mask(int num_predicates, harp_predicate **predicate, long num_points, const double *latitude,
+                        const double *longitude, uint8_t *mask)
 {
     uint8_t *mask_end;
     long num_masked = 0;
@@ -134,8 +134,8 @@ static long update_mask(int num_predicates, harp_predicate **predicate, long num
             harp_spherical_point point;
             int i;
 
-            point.lon = *longitude;
             point.lat = *latitude;
+            point.lon = *longitude;
             harp_spherical_point_rad_from_deg(&point);
             harp_spherical_point_check(&point);
 
@@ -154,18 +154,18 @@ static long update_mask(int num_predicates, harp_predicate **predicate, long num
             }
         }
 
-        longitude++;
         latitude++;
+        longitude++;
     }
 
     return num_masked;
 }
 
-int harp_point_predicate_update_mask_0d(int num_predicates, harp_predicate **predicate, const harp_variable *longitude,
-                                        const harp_variable *latitude, uint8_t *product_mask)
+int harp_point_predicate_update_mask_0d(int num_predicates, harp_predicate **predicate, const harp_variable *latitude,
+                                        const harp_variable *longitude, uint8_t *product_mask)
 {
-    harp_variable *longitude_copy = NULL;
     harp_variable *latitude_copy = NULL;
+    harp_variable *longitude_copy = NULL;
 
     if (num_predicates == 0)
     {
@@ -177,15 +177,15 @@ int harp_point_predicate_update_mask_0d(int num_predicates, harp_predicate **pre
         return -1;
 
     }
-    if (longitude == NULL)
-    {
-        harp_set_error(HARP_ERROR_INVALID_ARGUMENT, "longitude is NULL (%s:%lu)", __FILE__, __LINE__);
-        return -1;
-
-    }
     if (latitude == NULL)
     {
         harp_set_error(HARP_ERROR_INVALID_ARGUMENT, "latitude is NULL (%s:%lu)", __FILE__, __LINE__);
+        return -1;
+
+    }
+    if (longitude == NULL)
+    {
+        harp_set_error(HARP_ERROR_INVALID_ARGUMENT, "longitude is NULL (%s:%lu)", __FILE__, __LINE__);
         return -1;
 
     }
@@ -195,16 +195,16 @@ int harp_point_predicate_update_mask_0d(int num_predicates, harp_predicate **pre
         return -1;
 
     }
-    if (longitude->num_dimensions != 0)
-    {
-        harp_set_error(HARP_ERROR_INVALID_ARGUMENT, "variable '%s' has %d dimensions; expected 0", longitude->name,
-                       longitude->num_dimensions);
-        return -1;
-    }
     if (latitude->num_dimensions != 0)
     {
         harp_set_error(HARP_ERROR_INVALID_ARGUMENT, "variable '%s' has %d dimensions; expected 0", latitude->name,
                        latitude->num_dimensions);
+        return -1;
+    }
+    if (longitude->num_dimensions != 0)
+    {
+        harp_set_error(HARP_ERROR_INVALID_ARGUMENT, "variable '%s' has %d dimensions; expected 0", longitude->name,
+                       longitude->num_dimensions);
         return -1;
     }
     if (!*product_mask)
@@ -214,6 +214,36 @@ int harp_point_predicate_update_mask_0d(int num_predicates, harp_predicate **pre
     }
 
     /* Harmonize unit and data type. */
+    if (!harp_variable_has_unit(latitude, "degree_north"))
+    {
+        if (harp_variable_copy(latitude, &latitude_copy) != 0)
+        {
+            harp_variable_delete(longitude_copy);
+            return -1;
+        }
+        if (harp_variable_convert_unit(latitude_copy, "degree_north") != 0)
+        {
+            harp_variable_delete(latitude_copy);
+            harp_variable_delete(longitude_copy);
+            return -1;
+        }
+        latitude = latitude_copy;
+    }
+    else if (latitude->data_type != harp_type_double)
+    {
+        if (harp_variable_copy(latitude, &latitude_copy) != 0)
+        {
+            harp_variable_delete(longitude_copy);
+            return -1;
+        }
+        if (harp_variable_convert_data_type(latitude_copy, harp_type_double) != 0)
+        {
+            harp_variable_delete(latitude_copy);
+            harp_variable_delete(longitude_copy);
+            return -1;
+        }
+        latitude = latitude_copy;
+    }
     if (!harp_variable_has_unit(longitude, "degree_east"))
     {
         if (harp_variable_copy(longitude, &longitude_copy) != 0)
@@ -241,52 +271,22 @@ int harp_point_predicate_update_mask_0d(int num_predicates, harp_predicate **pre
         longitude = longitude_copy;
     }
 
-    if (!harp_variable_has_unit(latitude, "degree_north"))
-    {
-        if (harp_variable_copy(latitude, &latitude_copy) != 0)
-        {
-            harp_variable_delete(longitude_copy);
-            return -1;
-        }
-        if (harp_variable_convert_unit(latitude_copy, "degree_north") != 0)
-        {
-            harp_variable_delete(longitude_copy);
-            harp_variable_delete(latitude_copy);
-            return -1;
-        }
-        latitude = latitude_copy;
-    }
-    else if (latitude->data_type != harp_type_double)
-    {
-        if (harp_variable_copy(latitude, &latitude_copy) != 0)
-        {
-            harp_variable_delete(longitude_copy);
-            return -1;
-        }
-        if (harp_variable_convert_data_type(latitude_copy, harp_type_double) != 0)
-        {
-            harp_variable_delete(longitude_copy);
-            harp_variable_delete(latitude_copy);
-            return -1;
-        }
-        latitude = latitude_copy;
-    }
 
     /* Update product mask. */
-    update_mask(num_predicates, predicate, 1, longitude->data.double_data, latitude->data.double_data, product_mask);
+    update_mask(num_predicates, predicate, 1, latitude->data.double_data, longitude->data.double_data, product_mask);
 
     /* Clean-up. */
-    harp_variable_delete(longitude_copy);
     harp_variable_delete(latitude_copy);
+    harp_variable_delete(longitude_copy);
 
     return 0;
 }
 
-int harp_point_predicate_update_mask_1d(int num_predicates, harp_predicate **predicate, const harp_variable *longitude,
-                                        const harp_variable *latitude, harp_dimension_mask *dimension_mask)
+int harp_point_predicate_update_mask_1d(int num_predicates, harp_predicate **predicate, const harp_variable *latitude,
+                                        const harp_variable *longitude, harp_dimension_mask *dimension_mask)
 {
-    harp_variable *longitude_copy = NULL;
     harp_variable *latitude_copy = NULL;
+    harp_variable *longitude_copy = NULL;
     long num_points;
 
     if (num_predicates == 0)
@@ -299,15 +299,15 @@ int harp_point_predicate_update_mask_1d(int num_predicates, harp_predicate **pre
         return -1;
 
     }
-    if (longitude == NULL)
-    {
-        harp_set_error(HARP_ERROR_INVALID_ARGUMENT, "longitude is NULL (%s:%lu)", __FILE__, __LINE__);
-        return -1;
-
-    }
     if (latitude == NULL)
     {
         harp_set_error(HARP_ERROR_INVALID_ARGUMENT, "latitude is NULL (%s:%lu)", __FILE__, __LINE__);
+        return -1;
+
+    }
+    if (longitude == NULL)
+    {
+        harp_set_error(HARP_ERROR_INVALID_ARGUMENT, "longitude is NULL (%s:%lu)", __FILE__, __LINE__);
         return -1;
 
     }
@@ -316,19 +316,6 @@ int harp_point_predicate_update_mask_1d(int num_predicates, harp_predicate **pre
         harp_set_error(HARP_ERROR_INVALID_ARGUMENT, "dimension_mask is NULL (%s:%lu)", __FILE__, __LINE__);
         return -1;
 
-    }
-    if (longitude->num_dimensions != 1)
-    {
-        harp_set_error(HARP_ERROR_INVALID_ARGUMENT, "variable '%s' has %d dimensions; expected 1", longitude->name,
-                       longitude->num_dimensions);
-        return -1;
-    }
-    if (longitude->dimension_type[0] != harp_dimension_time)
-    {
-        harp_set_error(HARP_ERROR_INVALID_ARGUMENT, "variable '%s' has dimensions {%s}; expected {%s}", longitude->name,
-                       harp_get_dimension_type_name(longitude->dimension_type[0]),
-                       harp_get_dimension_type_name(harp_dimension_time));
-        return -1;
     }
     if (latitude->num_dimensions != 1)
     {
@@ -340,6 +327,19 @@ int harp_point_predicate_update_mask_1d(int num_predicates, harp_predicate **pre
     {
         harp_set_error(HARP_ERROR_INVALID_ARGUMENT, "variable '%s' has dimensions {%s}; expected {%s}", latitude->name,
                        harp_get_dimension_type_name(latitude->dimension_type[0]),
+                       harp_get_dimension_type_name(harp_dimension_time));
+        return -1;
+    }
+    if (longitude->num_dimensions != 1)
+    {
+        harp_set_error(HARP_ERROR_INVALID_ARGUMENT, "variable '%s' has %d dimensions; expected 1", longitude->name,
+                       longitude->num_dimensions);
+        return -1;
+    }
+    if (longitude->dimension_type[0] != harp_dimension_time)
+    {
+        harp_set_error(HARP_ERROR_INVALID_ARGUMENT, "variable '%s' has dimensions {%s}; expected {%s}", longitude->name,
+                       harp_get_dimension_type_name(longitude->dimension_type[0]),
                        harp_get_dimension_type_name(harp_dimension_time));
         return -1;
     }
@@ -368,6 +368,36 @@ int harp_point_predicate_update_mask_1d(int num_predicates, harp_predicate **pre
     assert(dimension_mask->mask != NULL);
 
     /* Harmonize unit and data type. */
+    if (!harp_variable_has_unit(latitude, "degree_north"))
+    {
+        if (harp_variable_copy(latitude, &latitude_copy) != 0)
+        {
+            harp_variable_delete(longitude_copy);
+            return -1;
+        }
+        if (harp_variable_convert_unit(latitude_copy, "degree_north") != 0)
+        {
+            harp_variable_delete(latitude_copy);
+            harp_variable_delete(longitude_copy);
+            return -1;
+        }
+        latitude = latitude_copy;
+    }
+    else if (latitude->data_type != harp_type_double)
+    {
+        if (harp_variable_copy(latitude, &latitude_copy) != 0)
+        {
+            harp_variable_delete(longitude_copy);
+            return -1;
+        }
+        if (harp_variable_convert_data_type(latitude_copy, harp_type_double) != 0)
+        {
+            harp_variable_delete(latitude_copy);
+            harp_variable_delete(longitude_copy);
+            return -1;
+        }
+        latitude = latitude_copy;
+    }
     if (!harp_variable_has_unit(longitude, "degree_east"))
     {
         if (harp_variable_copy(longitude, &longitude_copy) != 0)
@@ -395,45 +425,14 @@ int harp_point_predicate_update_mask_1d(int num_predicates, harp_predicate **pre
         longitude = longitude_copy;
     }
 
-    if (!harp_variable_has_unit(latitude, "degree_north"))
-    {
-        if (harp_variable_copy(latitude, &latitude_copy) != 0)
-        {
-            harp_variable_delete(longitude_copy);
-            return -1;
-        }
-        if (harp_variable_convert_unit(latitude_copy, "degree_north") != 0)
-        {
-            harp_variable_delete(longitude_copy);
-            harp_variable_delete(latitude_copy);
-            return -1;
-        }
-        latitude = latitude_copy;
-    }
-    else if (latitude->data_type != harp_type_double)
-    {
-        if (harp_variable_copy(latitude, &latitude_copy) != 0)
-        {
-            harp_variable_delete(longitude_copy);
-            return -1;
-        }
-        if (harp_variable_convert_data_type(latitude_copy, harp_type_double) != 0)
-        {
-            harp_variable_delete(longitude_copy);
-            harp_variable_delete(latitude_copy);
-            return -1;
-        }
-        latitude = latitude_copy;
-    }
-
     /* Update dimension mask. */
     dimension_mask->masked_dimension_length = update_mask(num_predicates, predicate, num_points,
-                                                          longitude->data.double_data, latitude->data.double_data,
+                                                          latitude->data.double_data, longitude->data.double_data,
                                                           dimension_mask->mask);
 
     /* Clean-up. */
-    harp_variable_delete(longitude_copy);
     harp_variable_delete(latitude_copy);
+    harp_variable_delete(longitude_copy);
 
     return 0;
 }

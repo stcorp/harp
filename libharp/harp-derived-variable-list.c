@@ -457,9 +457,9 @@ static int get_latitude_from_latlon_bounds(harp_variable *variable, const harp_v
     {
         double latitude, longitude;
 
-        if (harp_geographic_center_from_bounds(num_vertices, &source_variable[1]->data.double_data[i * num_vertices],
-                                               &source_variable[0]->data.double_data[i * num_vertices], &longitude,
-                                               &latitude) != 0)
+        if (harp_geographic_center_from_bounds(num_vertices, &source_variable[0]->data.double_data[i * num_vertices],
+                                               &source_variable[1]->data.double_data[i * num_vertices], &latitude,
+                                               &longitude) != 0)
         {
             return -1;
         }
@@ -519,9 +519,9 @@ static int get_longitude_from_latlon_bounds(harp_variable *variable, const harp_
     {
         double latitude, longitude;
 
-        if (harp_geographic_center_from_bounds(num_vertices, &source_variable[1]->data.double_data[i * num_vertices],
-                                               &source_variable[0]->data.double_data[i * num_vertices], &longitude,
-                                               &latitude) != 0)
+        if (harp_geographic_center_from_bounds(num_vertices, &source_variable[0]->data.double_data[i * num_vertices],
+                                               &source_variable[1]->data.double_data[i * num_vertices], &latitude,
+                                               &longitude) != 0)
         {
             return -1;
         }
@@ -841,9 +841,9 @@ static int get_solar_azimuth_angle_from_datetime_and_latlon(harp_variable *varia
     {
         double solar_elevation_angle;
 
-        harp_solar_angles_from_datetime_longitude_and_latitude(source_variable[0]->data.double_data[i],
-                                                               source_variable[2]->data.double_data[i],
+        harp_solar_angles_from_datetime_latitude_and_longitude(source_variable[0]->data.double_data[i],
                                                                source_variable[1]->data.double_data[i],
+                                                               source_variable[2]->data.double_data[i],
                                                                &solar_elevation_angle, &variable->data.double_data[i]);
     }
 
@@ -859,9 +859,9 @@ static int get_solar_elevation_angle_from_datetime_and_latlon(harp_variable *var
     {
         double solar_azimuth_angle;
 
-        harp_solar_angles_from_datetime_longitude_and_latitude(source_variable[0]->data.double_data[i],
-                                                               source_variable[2]->data.double_data[i],
+        harp_solar_angles_from_datetime_latitude_and_longitude(source_variable[0]->data.double_data[i],
                                                                source_variable[1]->data.double_data[i],
+                                                               source_variable[2]->data.double_data[i],
                                                                &variable->data.double_data[i], &solar_azimuth_angle);
     }
 

@@ -94,7 +94,7 @@ Supported functions:
        Independent dimensions cannot be flattened.
        Example:
 
-           ``flatten(longitude);flatten(latitude)``
+           ``flatten(latitude);flatten(longitude)``
            (turn a 2D lat/lon grid into a a series of individual points)
 
     ``keep(variable, ...)``
@@ -112,12 +112,12 @@ Supported functions:
             ``longitude-range(179.0, -179.0)``
             (select a 2 degree range around the international dateline)
 
-    ``point-distance(longitude [unit], latitude [unit], distance [unit])``
+    ``point-distance(latitude [unit], longitude [unit], distance [unit])``
         Exclude measurements situated further than the specified
         distance from the specified location.
         Example:
 
-            ``point-distance(4.357, 52.012, 3 [km])`` 
+            ``point-distance(52.012, 4.357, 3 [km])`` 
 
     ``regrid(dimension, axis-variable unit, (value, ...))``
         Regrid all variables in the product for the given dimension using
@@ -182,11 +182,11 @@ It has the following format:
 
 ::
 
-    lon0,lat0,lon1,lat1,lon2,lat2,lon3,lat3
-    60.0,0.0,60.0,40.0,-60.0,40.0,-60.0,0.0
+    lat0,lon0,lat1,lon1,lat2,lon2,lat3,lon3
+    0.0,60.0,40.0,60.0,40.0,-60.0,0.0,-60.0
     ...
 
-It starts with a header with longitude, latitude column headers (this header will be skipped by HARP).
+It starts with a header with latitude, longitude column headers (this header will be skipped by HARP).
 Then, each further line defines a polygon. Each polygon consists of the vertices as defined on that line.
 
 Examples
