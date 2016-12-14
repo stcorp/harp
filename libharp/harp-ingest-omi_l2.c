@@ -3077,7 +3077,7 @@ static void register_omso2_product(void)
     /* so2_column_variant ingestion option */
     description = "for V2 products: 'pbl' (anthropogenic SO2 pollution at the planet boundary layer), '5km' (showing"
         " passive degassing at 5km altitude), or '15km' (showing explosive eruptions at 15km); for V3"
-        " products: 'pbl' (planet boundary layer - 0.9km), 'trl' (lower troposhere - 2.5km), 'trm' (middle"
+        " products: 'pbl' (planet boundary layer - 0.9km), 'trl' (lower troposphere - 2.5km), 'trm' (middle"
         " troposphere - 7.5km), 'stl' (upper tropospheric and stratospheric - 17km)";
     harp_ingestion_register_option(module, "so2_column_variant", description, 6, so2_column_variant_option_values);
 
