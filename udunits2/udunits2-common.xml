@@ -130,6 +130,14 @@ elements appear only within <aliases>.
         </unit>
         <unit>
             <comment>Constant</comment>
+            <def>1</def>
+            <aliases>
+                <symbol>ppv</symbol>
+            </aliases>
+            <definition>parts per volume</definition>
+        </unit>
+        <unit>
+            <comment>Constant</comment>
             <def>1e-6</def>
             <aliases>
                 <symbol>ppm</symbol>

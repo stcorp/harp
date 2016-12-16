@@ -23,6 +23,8 @@
 * Aligned order of latitude/longitude arguments in all functions to have
   latitude first and longitude second.
 
+* Added unit 'ppv' to the included udunits2-common.xml file.
+
 * Added variable conversions for apriori profiles.
 
 * Added support for GEOMS FTIR C2H2 ingestion.

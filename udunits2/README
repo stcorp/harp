@@ -42,3 +42,5 @@ build system. The changes that were made are:
 
  - use '_XOPEN_SOURCE 600' instead of '_XOPEN_SOURCE 500' to prevent
    warnings on Mac OS X.
+
+ - Added unit 'ppv' to udunits2-common.xml.
