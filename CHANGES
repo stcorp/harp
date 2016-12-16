@@ -25,6 +25,9 @@
 
 * Added unit 'ppv' to the included udunits2-common.xml file.
 
+* The default internal units have been changes to SI (except for molar mass).
+  All algorithms have been adapted accordingly.
+
 * Added variable conversions for apriori profiles.
 
 * Added support for GEOMS FTIR C2H2 ingestion.
