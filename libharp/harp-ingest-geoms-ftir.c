@@ -391,7 +391,7 @@ static int read_column(void *user_data, harp_array data)
         return -1;
     }
 
-    if (harp_convert_unit(info->column_unit, HARP_UNIT_COLUMN_NUMBER_DENSITY, info->num_time, data.double_data) != 0)
+    if (harp_convert_unit(info->column_unit, "molec/m2", info->num_time, data.double_data) != 0)
     {
         return -1;
     }
@@ -410,7 +410,7 @@ static int read_h2o_column(void *user_data, harp_array data)
         return -1;
     }
 
-    if (harp_convert_unit(info->column_unit, HARP_UNIT_COLUMN_NUMBER_DENSITY, info->num_time, data.double_data) != 0)
+    if (harp_convert_unit(info->column_unit, "molec/m2", info->num_time, data.double_data) != 0)
     {
         return -1;
     }
@@ -430,7 +430,7 @@ static int read_column_apriori(void *user_data, harp_array data)
         return -1;
     }
 
-    if (harp_convert_unit(info->column_unit, HARP_UNIT_COLUMN_NUMBER_DENSITY, info->num_time, data.double_data) != 0)
+    if (harp_convert_unit(info->column_unit, "molec/m2", info->num_time, data.double_data) != 0)
     {
         return -1;
     }
@@ -460,7 +460,7 @@ static int read_column_uncertainty_random(void *user_data, harp_array data)
         return -1;
     }
 
-    if (harp_convert_unit(info->column_unit, HARP_UNIT_COLUMN_NUMBER_DENSITY, info->num_time, data.double_data) != 0)
+    if (harp_convert_unit(info->column_unit, "molec/m2", info->num_time, data.double_data) != 0)
     {
         return -1;
     }
@@ -480,7 +480,7 @@ static int read_column_uncertainty_systematic(void *user_data, harp_array data)
         return -1;
     }
 
-    if (harp_convert_unit(info->column_unit, HARP_UNIT_COLUMN_NUMBER_DENSITY, info->num_time, data.double_data) != 0)
+    if (harp_convert_unit(info->column_unit, "molec/m2", info->num_time, data.double_data) != 0)
     {
         return -1;
     }
@@ -500,7 +500,7 @@ static int read_vmr(void *user_data, harp_array data)
         return -1;
     }
 
-    if (harp_convert_unit(info->vmr_unit, HARP_UNIT_VOLUME_MIXING_RATIO, info->num_time * info->num_vertical,
+    if (harp_convert_unit(info->vmr_unit, "ppmv", info->num_time * info->num_vertical,
                           data.double_data) != 0)
     {
         return -1;
@@ -521,7 +521,7 @@ static int read_h2o_vmr(void *user_data, harp_array data)
         return -1;
     }
 
-    if (harp_convert_unit(info->h2o_vmr_unit, HARP_UNIT_VOLUME_MIXING_RATIO, info->num_time * info->num_vertical,
+    if (harp_convert_unit(info->h2o_vmr_unit, "ppmv", info->num_time * info->num_vertical,
                           data.double_data) != 0)
     {
         return -1;
@@ -542,7 +542,7 @@ static int read_vmr_apriori(void *user_data, harp_array data)
         return -1;
     }
 
-    if (harp_convert_unit(info->vmr_unit, HARP_UNIT_VOLUME_MIXING_RATIO, info->num_time * info->num_vertical,
+    if (harp_convert_unit(info->vmr_unit, "ppmv", info->num_time * info->num_vertical,
                           data.double_data) != 0)
     {
         return -1;
@@ -576,8 +576,8 @@ static int read_vmr_covariance(void *user_data, harp_array data)
         return -1;
     }
 
-    if (harp_convert_unit(info->vmr_covariance_unit, HARP_UNIT_VOLUME_MIXING_RATIO_SQUARED,
-                          info->num_time * info->num_vertical * info->num_vertical, data.double_data) != 0)
+    if (harp_convert_unit(info->vmr_covariance_unit, "(ppmv)2",info->num_time * info->num_vertical * info->num_vertical,
+                          data.double_data) != 0)
     {
         return -1;
     }
@@ -598,7 +598,7 @@ static int read_vmr_uncertainty_random(void *user_data, harp_array data)
         return -1;
     }
 
-    if (harp_convert_unit(info->vmr_unit, HARP_UNIT_VOLUME_MIXING_RATIO, info->num_time * info->num_vertical,
+    if (harp_convert_unit(info->vmr_unit, "ppmv", info->num_time * info->num_vertical,
                           data.double_data) != 0)
     {
         return -1;
@@ -620,7 +620,7 @@ static int read_vmr_uncertainty_systematic(void *user_data, harp_array data)
         return -1;
     }
 
-    if (harp_convert_unit(info->vmr_unit, HARP_UNIT_VOLUME_MIXING_RATIO, info->num_time * info->num_vertical,
+    if (harp_convert_unit(info->vmr_unit, "ppmv", info->num_time * info->num_vertical,
                           data.double_data) != 0)
     {
         return -1;
@@ -1266,7 +1266,7 @@ static int init_product_definition(harp_ingestion_module *module, ftir_gas gas, 
     snprintf(gas_description, MAX_DESCRIPTION_LENGTH, "total %s vertical column", harp_gas_name[gas]);
     variable_definition = harp_ingestion_register_variable_full_read
         (product_definition, gas_var_name, harp_type_double, 1, dimension_type, NULL, gas_description,
-         HARP_UNIT_COLUMN_NUMBER_DENSITY, NULL, read_column);
+         "molec/m2", NULL, read_column);
     snprintf(gas_mapping_path, MAX_PATH_LENGTH, "/%s.COLUMN_ABSORPTION.SOLAR", geoms_gas_name[gas]);
     harp_variable_definition_add_mapping(variable_definition, NULL, "solar measurement", gas_mapping_path, NULL);
     snprintf(gas_mapping_path, MAX_PATH_LENGTH, "/%s.COLUMN_ABSORPTION.LUNAR", geoms_gas_name[gas]);
@@ -1277,7 +1277,7 @@ static int init_product_definition(harp_ingestion_module *module, ftir_gas gas, 
     snprintf(gas_description, MAX_DESCRIPTION_LENGTH, "a priori total %s vertical column", harp_gas_name[gas]);
     variable_definition = harp_ingestion_register_variable_full_read
         (product_definition, gas_var_name, harp_type_double, 1, dimension_type, NULL, gas_description,
-         HARP_UNIT_COLUMN_NUMBER_DENSITY, NULL, read_column_apriori);
+         "molec/m2", NULL, read_column_apriori);
     snprintf(gas_mapping_path, MAX_PATH_LENGTH, "/%s.COLUMN_ABSORPTION.SOLAR_APRIORI", geoms_gas_name[gas]);
     harp_variable_definition_add_mapping(variable_definition, NULL, "solar measurement", gas_mapping_path, NULL);
     snprintf(gas_mapping_path, MAX_PATH_LENGTH, "/%s.COLUMN_ABSORPTION.LUNAR_APRIORI", geoms_gas_name[gas]);
@@ -1301,7 +1301,7 @@ static int init_product_definition(harp_ingestion_module *module, ftir_gas gas, 
              harp_gas_name[gas]);
     variable_definition = harp_ingestion_register_variable_full_read
         (product_definition, gas_var_name, harp_type_double, 1, dimension_type, NULL, gas_description,
-         HARP_UNIT_COLUMN_NUMBER_DENSITY, NULL, read_column_uncertainty_random);
+         "molec/m2", NULL, read_column_uncertainty_random);
     if (version == 1)
     {
         snprintf(gas_mapping_path, MAX_PATH_LENGTH, "/%s.COLUMN_ABSORPTION.SOLAR_UNCERTAINTY.RANDOM",
@@ -1327,7 +1327,7 @@ static int init_product_definition(harp_ingestion_module *module, ftir_gas gas, 
              harp_gas_name[gas]);
     variable_definition = harp_ingestion_register_variable_full_read
         (product_definition, gas_var_name, harp_type_double, 1, dimension_type, NULL, gas_description,
-         HARP_UNIT_COLUMN_NUMBER_DENSITY, NULL, read_column_uncertainty_systematic);
+         "molec/m2", NULL, read_column_uncertainty_systematic);
     if (version == 1)
     {
         snprintf(gas_mapping_path, MAX_PATH_LENGTH, "/%s.COLUMN_ABSORPTION.SOLAR_UNCERTAINTY.SYSTEMATIC",
@@ -1352,7 +1352,7 @@ static int init_product_definition(harp_ingestion_module *module, ftir_gas gas, 
         /* H2O_column_number_density */
         variable_definition = harp_ingestion_register_variable_full_read
             (product_definition, "H2O_column_number_density", harp_type_double, 1, dimension_type, NULL,
-             "total H2O vertical column", HARP_UNIT_COLUMN_NUMBER_DENSITY, NULL, read_h2o_column);
+             "total H2O vertical column", "molec/m2", NULL, read_h2o_column);
         harp_variable_definition_add_mapping(variable_definition, NULL, "solar measurement",
                                              "/H2O.COLUMN_ABSORPTION.SOLAR", NULL);
         harp_variable_definition_add_mapping(variable_definition, NULL, "lunar measurement",
@@ -1363,8 +1363,8 @@ static int init_product_definition(harp_ingestion_module *module, ftir_gas gas, 
     snprintf(gas_var_name, MAX_NAME_LENGTH, "%s_volume_mixing_ratio", harp_gas_name[gas]);
     snprintf(gas_description, MAX_DESCRIPTION_LENGTH, "%s volume mixing ratio", harp_gas_name[gas]);
     variable_definition = harp_ingestion_register_variable_full_read
-        (product_definition, gas_var_name, harp_type_double, 2, dimension_type, NULL, gas_description,
-         HARP_UNIT_VOLUME_MIXING_RATIO, exclude_vmr_absorption, read_vmr);
+        (product_definition, gas_var_name, harp_type_double, 2, dimension_type, NULL, gas_description, "ppmv",
+         exclude_vmr_absorption, read_vmr);
     if (version == 1)
     {
         snprintf(gas_mapping_path, MAX_PATH_LENGTH, "/%s.MIXING.RATIO_ABSORPTION.SOLAR", geoms_gas_name[gas]);
@@ -1384,8 +1384,8 @@ static int init_product_definition(harp_ingestion_module *module, ftir_gas gas, 
     snprintf(gas_var_name, MAX_NAME_LENGTH, "%s_volume_mixing_ratio_apriori", harp_gas_name[gas]);
     snprintf(gas_description, MAX_DESCRIPTION_LENGTH, "a priori %s volume mixing ratio", harp_gas_name[gas]);
     variable_definition = harp_ingestion_register_variable_full_read
-        (product_definition, gas_var_name, harp_type_double, 2, dimension_type, NULL, gas_description,
-         HARP_UNIT_VOLUME_MIXING_RATIO, exclude_vmr_absorption, read_vmr_apriori);
+        (product_definition, gas_var_name, harp_type_double, 2, dimension_type, NULL, gas_description, "ppmv",
+         exclude_vmr_absorption, read_vmr_apriori);
     if (version == 1)
     {
         snprintf(gas_mapping_path, MAX_PATH_LENGTH, "/%s.MIXING.RATIO_ABSORPTION.SOLAR_APRIORI", geoms_gas_name[gas]);
@@ -1431,8 +1431,8 @@ static int init_product_definition(harp_ingestion_module *module, ftir_gas gas, 
     snprintf(gas_var_name, MAX_NAME_LENGTH, "%s_volume_mixing_ratio_covariance", harp_gas_name[gas]);
     snprintf(gas_description, MAX_DESCRIPTION_LENGTH, "covariance of the %s volume mixing ratio", harp_gas_name[gas]);
     variable_definition = harp_ingestion_register_variable_full_read
-        (product_definition, gas_var_name, harp_type_double, 3, dimension_type, NULL, gas_description,
-         HARP_UNIT_VOLUME_MIXING_RATIO_SQUARED, exclude_vmr_absorption, read_vmr_covariance);
+        (product_definition, gas_var_name, harp_type_double, 3, dimension_type, NULL, gas_description, "(ppmv)2",
+         exclude_vmr_absorption, read_vmr_covariance);
     if (version == 1)
     {
         snprintf(gas_mapping_path, MAX_PATH_LENGTH, "/%s.MIXING.RATIO_ABSORPTION.SOLAR_UNCERTAINTY.RANDOM",
@@ -1457,8 +1457,8 @@ static int init_product_definition(harp_ingestion_module *module, ftir_gas gas, 
     snprintf(gas_description, MAX_DESCRIPTION_LENGTH, "random uncertainty of the %s volume mixing ratio",
              harp_gas_name[gas]);
     variable_definition = harp_ingestion_register_variable_full_read
-        (product_definition, gas_var_name, harp_type_double, 2, dimension_type, NULL, gas_description,
-         HARP_UNIT_VOLUME_MIXING_RATIO, exclude_vmr_absorption, read_vmr_uncertainty_random);
+        (product_definition, gas_var_name, harp_type_double, 2, dimension_type, NULL, gas_description, "ppmv",
+         exclude_vmr_absorption, read_vmr_uncertainty_random);
     description = "the uncertainty is the square root of the trace of the covariance";
     if (version == 1)
     {
@@ -1488,8 +1488,8 @@ static int init_product_definition(harp_ingestion_module *module, ftir_gas gas, 
     snprintf(gas_description, MAX_DESCRIPTION_LENGTH, "systematic uncertainty of the %s volume mixing ratio",
              harp_gas_name[gas]);
     variable_definition = harp_ingestion_register_variable_full_read
-        (product_definition, gas_var_name, harp_type_double, 2, dimension_type, NULL, gas_description,
-         HARP_UNIT_VOLUME_MIXING_RATIO, exclude_vmr_absorption, read_vmr_uncertainty_systematic);
+        (product_definition, gas_var_name, harp_type_double, 2, dimension_type, NULL, gas_description, "ppmv",
+         exclude_vmr_absorption, read_vmr_uncertainty_systematic);
     if (version == 1)
     {
         snprintf(gas_mapping_path, MAX_PATH_LENGTH, "/%s.MIXING.RATIO_ABSORPTION.SOLAR_UNCERTAINTY.SYSTEMATIC",
@@ -1519,7 +1519,7 @@ static int init_product_definition(harp_ingestion_module *module, ftir_gas gas, 
         /* H2O_volume_mixing_ratio */
         variable_definition = harp_ingestion_register_variable_full_read
             (product_definition, "H2O_volume_mixing_ratio", harp_type_double, 2, dimension_type, NULL,
-             "H2O volume mixing ratio", HARP_UNIT_VOLUME_MIXING_RATIO, NULL, read_h2o_vmr);
+             "H2O volume mixing ratio", "ppmv", NULL, read_h2o_vmr);
         if (version == 1)
         {
             harp_variable_definition_add_mapping(variable_definition, NULL, "solar measurement",

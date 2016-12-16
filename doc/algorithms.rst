@@ -200,25 +200,25 @@ geopotential height
    :math:`g`        gravity                      :math:`\frac{m}{s^2}`
    :math:`g_{0}`    mean earth gravity           :math:`\frac{m}{s^2}`
    :math:`g_{surf}` gravity at earth surface     :math:`\frac{m}{s^2}`
-   :math:`p`        pressure                     :math:`hPa`
+   :math:`p`        pressure                     :math:`Pa`
    :math:`R_{surf}` earth radius at surface      :math:`m`
    :math:`h`        height above surface         :math:`m`
    :math:`h_{g}`    geopotential height          :math:`m`
    :math:`\phi`     latitude                     :math:`degN`
-   :math:`\rho`     mass density                 :math:`\frac{ug}{m^3}`
+   :math:`\rho`     mass density                 :math:`\frac{kg}{m^3}`
    ================ ============================ ======================
 
    The geopotential height allows the gravity in the hydrostatic equation
 
    .. math::
 
-      dp = - 10^{-11}\rho g dh
+      dp = - \rho g dh
 
    to be replaced by a constant gravity
 
    .. math::
 
-      dp = - 10^{-11}\rho g_{0} dh_{g}
+      dp = - \rho g_{0} dh_{g}
 
    providing
 
@@ -269,7 +269,7 @@ ideal gas law
    ========= ====================== ================================
    :math:`k` Boltzmann constant     :math:`\frac{kg m^2}{K s^2}`
    :math:`N` amount of substance    :math:`molec`
-   :math:`p` pressure               :math:`hPa`
+   :math:`p` pressure               :math:`Pa`
    :math:`R` universal gas constant :math:`\frac{kg m^2}{K mol s^2}`
    :math:`T` temperature            :math:`K`
    :math:`V` volume                 :math:`m^3`
@@ -277,7 +277,7 @@ ideal gas law
 
    .. math::
 
-       pV = 10^{-2}\frac{NRT}{N_{A}} = 10^{-2}NkT
+       pV = \frac{NRT}{N_{A}} = NkT
 
 
 barometric formula
@@ -292,39 +292,39 @@ barometric formula
    :math:`M_{air}` molar mass of total air :math:`\frac{g}{mol}`
    :math:`N`       amount of substance     :math:`molec`
    :math:`N_A`     Avogadro constant       :math:`\frac{1}{mol}`
-   :math:`p`       pressure                :math:`hPa`
+   :math:`p`       pressure                :math:`Pa`
    :math:`R`       universal gas constant  :math:`\frac{kg m^2}{K mol s^2}`
    :math:`T`       temperature             :math:`K`
    :math:`V`       volume                  :math:`m^3`
    :math:`z`       altitude                :math:`m`
    :math:`z_{g}`   geopotential height     :math:`m`
    :math:`\phi`    latitude                :math:`degN`
-   :math:`\rho`    mass density            :math:`\frac{ug}{m^3}`
+   :math:`\rho`    mass density            :math:`\frac{kg}{m^3}`
    =============== ======================= ================================
 
    From the ideal gas law we have:
 
    .. math::
 
-      p = \frac{10^{-2}NkT}{V} = \frac{10^6NM_{air}}{VN_{a}}\frac{10^{-8}kTN_{a}}{M_{air}} = \rho \frac{10^{-8}RT}{M_{air}}
+      p = \frac{NkT}{V} = \frac{10^{-3}NM_{air}}{VN_{a}}\frac{kTN_{a}}{10^{-3}M_{air}} = \rho\frac{RT}{10^{-3}M_{air}}
 
    And from the hydrostatic assumption we get:
 
    .. math::
 
-      10^{2}dp = - 10^{-9}\rho g dz
+      dp = - \rho g dz
 
    Dividing :math:`dp` by `p` we get:
 
    .. math::
 
-      \frac{dp}{p} = -\frac{M_{air}10^{-11}\rho g dz}{\rho10^{-8}RT} = -\frac{M_{air}gdz}{RT}
+      \frac{dp}{p} = -\frac{10^{-3}M_{air}\rho g dz}{\rho RT} = -\frac{10^{-3}M_{air}gdz}{RT}
 
    Integrating this expression from one pressure level to the next we get:
 
    .. math::
 
-      p(i+1) = p(i)e^{-\int^{z(i+1)}_{z(i)}\frac{10^{-2}M_{air}g}{RT}dz}
+      p(i+1) = p(i)e^{-\int^{z(i+1)}_{z(i)}\frac{10^{-3}M_{air}g}{RT}dz}
 
    We can approximate this further by using an average value of the height dependent quantities
    :math:`M_{air}`, :math:`g` and :math:`T` for the integration over the range :math:`[z(i),z(i+1)]`.
@@ -356,12 +356,12 @@ mass density
    :math:`N_A`     Avogadro constant       :math:`\frac{1}{mol}`
    :math:`M_{air}` molar mass of total air :math:`\frac{g}{mol}`
    :math:`V`       volume                  :math:`m^3`
-   :math:`\rho`    mass density            :math:`\frac{ug}{m^3}`
+   :math:`\rho`    mass density            :math:`\frac{kg}{m^3}`
    =============== ======================= ======================
 
    .. math::
 
-      \rho = 10^6\frac{NM_{air}}{VN_{a}}
+      \rho = \frac{10^{-3}NM_{air}}{VN_{a}}
 
 
 number density
@@ -415,9 +415,9 @@ virtual temperature
    :math:`M_{H_{2}O}`   molar mass of H2O        :math:`\frac{g}{mol}`
    :math:`N`            amount of substance      :math:`molec`
    :math:`N_A`          Avogadro constant        :math:`\frac{1}{mol}`
-   :math:`p`            pressure                 :math:`hPa`
-   :math:`p_{dry\_air}` dry air partial pressure :math:`hPa`
-   :math:`p_{H_{2}O}`   H2O partial pressure     :math:`hPa`
+   :math:`p`            pressure                 :math:`Pa`
+   :math:`p_{dry\_air}` dry air partial pressure :math:`Pa`
+   :math:`p_{H_{2}O}`   H2O partial pressure     :math:`Pa`
    :math:`R`            universal gas constant   :math:`\frac{kg m^2}{K mol s^2}`
    :math:`T`            temperature              :math:`K`
    :math:`T_{v}`        virtual temperature      :math:`K`
@@ -428,13 +428,13 @@ virtual temperature
 
    .. math::
 
-      p = \frac{10^{-2}NkT}{V} = \frac{10^6NM_{air}}{VN_{a}}\frac{10^{-8}kTN_{a}}{M_{air}} = \rho \frac{10^{-8}RT}{M_{air}}
+      p = \frac{NkT}{V} = \frac{10^{-3}NM_{air}}{VN_{a}}\frac{kTN_{a}}{10^{-3}M_{air}} = \rho \frac{RT}{10^{-3}M_{air}}
 
    The virtual temperature allows us to use the dry air molar mass in this equation:
 
    .. math::
 
-      p = \rho\frac{10^{-8}RT_{v}}{M_{dry\_air}}
+      p = \rho\frac{RT_{v}}{10^{-3}M_{dry\_air}}
 
    This gives:
 
@@ -453,9 +453,9 @@ volume mixing ratio
    :math:`n_{dry\_air}`   number density of dry air       :math:`\frac{molec}{m^3}`
    :math:`n_{H_{2}O}`     number density of H2O           :math:`\frac{molec}{m^3}`
    :math:`n_{x}`          number density of quantity x    :math:`\frac{molec}{m^3}`
-   :math:`\nu_{x}`        volume mixing ratio of quantity :math:`ppmv`
+   :math:`\nu_{x}`        volume mixing ratio of quantity :math:`ppv`
                           x with regard to total air
-   :math:`\bar{\nu}_{x}`  volume mixing ratio of quantity :math:`ppmv`
+   :math:`\bar{\nu}_{x}`  volume mixing ratio of quantity :math:`ppv`
                           x with regard to dry air
    ====================== =============================== =========================
 
@@ -463,15 +463,15 @@ volume mixing ratio
       :nowrap:
 
       \begin{eqnarray}
-         \nu_{x} & = & 10^{6}\frac{n_{x}}{n_{air}} \\
-         \bar{\nu}_{x} & = & 10^{6}\frac{n_{x}}{n_{dry\_air}} \\
-         \nu_{dry\_air} & = & 10^{6}\frac{n_{dry\_air}}{n_{air}} =
-            10^{6}\frac{n_{air} - n_{H_{2}O}}{n_{air}} = 10^{6} - \nu_{H_{2}O} \\
-         \nu_{air} & = & 10^{6}\frac{n_{air}}{n_{air}} = 10^{6} \\
-         \bar{\nu}_{dry\_air} & = & 10^{6}\frac{n_{dry\_air}}{n_{dry\_air}} = 10^{6} \\
-         \bar{\nu}_{H_{2}O} & = & 10^{6}\frac{n_{H_{2}O}}{n_{dry\_air}} =
-            10^{6}\frac{\nu_{H_{2}O}}{\nu_{dry\_air}} = \frac{\nu_{H_{2}O}}{1 - 10^{-6}\nu_{H_{2}O}} \\
-         \nu_{H_{2}O} & = & \frac{\bar{\nu}_{H_{2}O}}{1 + 10^{-6}\bar{\nu}_{H_{2}O}}
+         \nu_{x} & = & \frac{n_{x}}{n_{air}} \\
+         \bar{\nu}_{x} & = & \frac{n_{x}}{n_{dry\_air}} \\
+         \nu_{dry\_air} & = & \frac{n_{dry\_air}}{n_{air}} =
+            \frac{n_{air} - n_{H_{2}O}}{n_{air}} = 1 - \nu_{H_{2}O} \\
+         \nu_{air} & = & \frac{n_{air}}{n_{air}} = 1 \\
+         \bar{\nu}_{dry\_air} & = & \frac{n_{dry\_air}}{n_{dry\_air}} = 1 \\
+         \bar{\nu}_{H_{2}O} & = & \frac{n_{H_{2}O}}{n_{dry\_air}} =
+            \frac{\nu_{H_{2}O}}{\nu_{dry\_air}} = \frac{\nu_{H_{2}O}}{1 - \nu_{H_{2}O}} \\
+         \nu_{H_{2}O} & = & \frac{\bar{\nu}_{H_{2}O}}{1 + \bar{\nu}_{H_{2}O}}
       \end{eqnarray}
 
 
@@ -488,13 +488,13 @@ mass mixing ratio
    :math:`n_{dry\_air}`  number density of dry air       :math:`\frac{molec}{m^3}`
    :math:`n_{H_{2}O}`    number density of H2O           :math:`\frac{molec}{m^3}`
    :math:`n_{x}`         number density of quantity x    :math:`\frac{molec}{m^3}`
-   :math:`q_{x}`         mass mixing ratio of quantity x :math:`\frac{{\mu}g}{g}`
+   :math:`q_{x}`         mass mixing ratio of quantity x :math:`\frac{kg}{kg}`
                          with regard to total air
-   :math:`\bar{q}_{x}`   mass mixing ratio of quantity x :math:`\frac{{\mu}g}{g}`
+   :math:`\bar{q}_{x}`   mass mixing ratio of quantity x :math:`\frac{kg}{kg}`
                          with regard to dry air
-   :math:`\nu_{x}`       volume mixing ratio of quantity :math:`ppmv`
+   :math:`\nu_{x}`       volume mixing ratio of quantity :math:`ppv`
                          x with regard to total air
-   :math:`\bar{\nu}_{x}` volume mixing ratio of quantity :math:`ppmv`
+   :math:`\bar{\nu}_{x}` volume mixing ratio of quantity :math:`ppv`
                          x with regard to dry air
    ===================== =============================== =========================
 
@@ -502,15 +502,15 @@ mass mixing ratio
       :nowrap:
 
       \begin{eqnarray}
-         q_{x} & = & 10^{6}\frac{n_{x}M_{x}}{n_{air}M_{air}} = \nu_{x}\frac{M_{x}}{M_{air}} \\
-         \bar{q}_{x} & = & 10^{6}\frac{n_{x}M_{x}}{n_{dry\_air}M_{dry\_air}} = \bar{\nu}_{x}\frac{M_{x}}{M_{dry\_air}} \\
-         q_{dry\_air} & = & 10^{6}\frac{n_{dry\_air}M_{dry\_air}}{n_{air}M_{air}} =
-            10^{6}\frac{n_{air}M_{air} - n_{H_{2}O}M_{H_{2}O}}{n_{air}M_{air}} = 10^{6} - q_{H_{2}O} \\
-         q_{air} & = & 10^{6}\frac{n_{air}M_{air}}{n_{air}M_{air}} = 10^{6} \\
-         \bar{q}_{dry\_air} & = & 10^{6}\frac{n_{dry\_air}M_{dry\_air}}{n_{dry\_air}M_{dry\_air}} = 10^{6} \\
-         \bar{q}_{H_{2}O} & = & 10^{6}\frac{n_{H_{2}O}M_{H_{2}O}}{n_{dry\_air}M_{dry\_air}} =
-            10^{6}\frac{q_{H_{2}O}}{q_{dry\_air}} = \frac{q_{H_{2}O}}{1 - 10^{-6}q_{H_{2}O}} \\
-         q_{H_{2}O} & = & \frac{\bar{q}_{H_{2}O}}{1 + 10^{-6}\bar{q}_{H_{2}O}}
+         q_{x} & = & \frac{n_{x}M_{x}}{n_{air}M_{air}} = \nu_{x}\frac{M_{x}}{M_{air}} \\
+         \bar{q}_{x} & = & \frac{n_{x}M_{x}}{n_{dry\_air}M_{dry\_air}} = \bar{\nu}_{x}\frac{M_{x}}{M_{dry\_air}} \\
+         q_{dry\_air} & = & \frac{n_{dry\_air}M_{dry\_air}}{n_{air}M_{air}} =
+            \frac{n_{air}M_{air} - n_{H_{2}O}M_{H_{2}O}}{n_{air}M_{air}} = 1 - q_{H_{2}O} \\
+         q_{air} & = & \frac{n_{air}M_{air}}{n_{air}M_{air}} = 1 \\
+         \bar{q}_{dry\_air} & = & \frac{n_{dry\_air}M_{dry\_air}}{n_{dry\_air}M_{dry\_air}} = 1 \\
+         \bar{q}_{H_{2}O} & = & \frac{n_{H_{2}O}M_{H_{2}O}}{n_{dry\_air}M_{dry\_air}} =
+            \frac{q_{H_{2}O}}{q_{dry\_air}} = \frac{q_{H_{2}O}}{1 - q_{H_{2}O}} \\
+         q_{H_{2}O} & = & \frac{\bar{q}_{H_{2}O}}{1 + \bar{q}_{H_{2}O}}
       \end{eqnarray}
 
 
@@ -528,7 +528,7 @@ molar mass of total air
    :math:`n_{air}`      number density of total air :math:`\frac{molec}{m^3}`
    :math:`n_{dry\_air}` number density of dry air   :math:`\frac{molec}{m^3}`
    :math:`n_{H_{2}O}`   number density of H2O       :math:`\frac{molec}{m^3}`
-   :math:`\nu_{H_{2}O}` volume mixing ratio of H2O  :math:`ppmv`
+   :math:`\nu_{H_{2}O}` volume mixing ratio of H2O  :math:`ppv`
    ==================== =========================== =========================
 
    .. math::
@@ -536,7 +536,7 @@ molar mass of total air
 
       \begin{eqnarray}
          M_{air} & = & \frac{M_{dry\_air}n_{dry\_air} + M_{H_{2}O}n_{H_{2}O}}{n_{air}} \\
-                 & = & M_{dry\_air}\left(1 - 10^{-6}\nu_{H_{2}O}\right) + 10^{-6}M_{H_{2}O}\nu_{H_{2}O}
+                 & = & M_{dry\_air}\left(1 - \nu_{H_{2}O}\right) + M_{H_{2}O}\nu_{H_{2}O}
       \end{eqnarray}
 
 
@@ -551,35 +551,35 @@ molar mass of total air
    :math:`n_{air}`      number density of total air :math:`\frac{molec}{m^3}`
    :math:`n_{dry\_air}` number density of dry air   :math:`\frac{molec}{m^3}`
    :math:`n_{H_{2}O}`   number density of H2O       :math:`\frac{molec}{m^3}`
-   :math:`q_{H_{2}O}`   mass mixing ratio of H2O    :math:`\frac{ug}{g}`
-   :math:`\nu_{H_{2}O}` volume mixing ratio of H2O  :math:`\frac{ug}{g}`
+   :math:`q_{H_{2}O}`   mass mixing ratio of H2O    :math:`\frac{kg}{kg}`
+   :math:`\nu_{H_{2}O}` volume mixing ratio of H2O  :math:`\frac{kg}{kg}`
    ==================== =========================== =========================
 
    .. math::
       :nowrap:
 
       \begin{eqnarray}
-         M_{air} & = & M_{dry\_air}\left(1 - 10^{-6}\nu_{H_{2}O}\right) + 10^{-6}M_{H_{2}O}\nu_{H_{2}O} \\
-                 & = & M_{dry\_air}\left(1 - 10^{-6}\frac{M_{air}}{M_{H_{2}O}}q_{H_{2}O}\right) + 10^{-6}M_{air}q_{H_{2}O} \\
-                 & = & \frac{M_{dry\_air}}{1 + 10^{-6}\frac{M_{dry\_air}}{M_{H_{2}O}}q_{H_{2}O} - 10^{-6}q_{H_{2}O}} \\
-                 & = & \frac{M_{H_{2}O}M_{dry\_air}}{M_{H_{2}O} + 10^{-6}M_{dry\_air}q_{H_{2}O} - 10^{-6}M_{H_{2}O}q_{H_{2}O}} \\
-                 & = & \frac{M_{H_{2}O}M_{dry\_air}}{\left(1-10^{-6}q_{H_{2}O}\right)M_{H_{2}O} + 10^{-6}q_{H_{2}O}M_{dry\_air}} \\
+         M_{air} & = & M_{dry\_air}\left(1 - \nu_{H_{2}O}\right) + M_{H_{2}O}\nu_{H_{2}O} \\
+                 & = & M_{dry\_air}\left(1 - \frac{M_{air}}{M_{H_{2}O}}q_{H_{2}O}\right) + M_{air}q_{H_{2}O} \\
+                 & = & \frac{M_{dry\_air}}{1 + \frac{M_{dry\_air}}{M_{H_{2}O}}q_{H_{2}O} - q_{H_{2}O}} \\
+                 & = & \frac{M_{H_{2}O}M_{dry\_air}}{M_{H_{2}O} + M_{dry\_air}q_{H_{2}O} - M_{H_{2}O}q_{H_{2}O}} \\
+                 & = & \frac{M_{H_{2}O}M_{dry\_air}}{\left(1-q_{H_{2}O}\right)M_{H_{2}O} + q_{H_{2}O}M_{dry\_air}} \\
       \end{eqnarray}
 
 
 partial pressure
 ~~~~~~~~~~~~~~~~
 
-   ===================== =============================== ============
+   ===================== =============================== ===========
    symbol                name                            unit
-   ===================== =============================== ============
-   :math:`p`             total pressure                  :math:`hPa`
-   :math:`p_{x}`         partial pressure of quantity    :math:`hPa`
-   :math:`\nu_{x}`       volume mixing ratio of quantity :math:`ppmv`
+   ===================== =============================== ===========
+   :math:`p`             total pressure                  :math:`Pa`
+   :math:`p_{x}`         partial pressure of quantity    :math:`Pa`
+   :math:`\nu_{x}`       volume mixing ratio of quantity :math:`ppv`
                          x with regard to total air
-   :math:`\bar{\nu}_{x}` volume mixing ratio of quantity :math:`ppmv`
+   :math:`\bar{\nu}_{x}` volume mixing ratio of quantity :math:`ppv`
                          x with regard to dry air
-   ===================== =============================== ============
+   ===================== =============================== ===========
 
    .. math::
       :nowrap:
@@ -587,7 +587,7 @@ partial pressure
       \begin{eqnarray}
          p_{x} & = & \nu_{x}p \\
          p_{x} & = & \bar{\nu}_{x}p_{dry\_air} \\
-         p_{x} & = & 10^{-2}N_{x}kT
+         p_{x} & = & N_{x}kT
       \end{eqnarray}
 
 
@@ -597,7 +597,7 @@ saturated water vapor pressure
    ============= =============================== ===========
    symbol        name                            unit
    ============= =============================== ===========
-   :math:`e_{w}` saturated water vapor pressure  :math:`hPa`
+   :math:`e_{w}` saturated water vapor pressure  :math:`Pa`
    :math:`T`     temperature                     :math:`K`
    ============= =============================== ===========
 
@@ -605,7 +605,7 @@ saturated water vapor pressure
 
    .. math::
 
-      e_{w} = 6.1094e^{\frac{17.625(T-273.15)}{(T-273.15)+243.04}}
+      e_{w} = 610.94e^{\frac{17.625(T-273.15)}{(T-273.15)+243.04}}
 
 
 Common variable conversions
@@ -1313,8 +1313,8 @@ altitude
    :math:`GM`         WGS84 earth's gravitational  :math:`\frac{m^3}{s^2}`
                       constant
    :math:`M_{air}(i)` molar mass of total air      :math:`\frac{g}{mol}`            `molar_mass {:,vertical}`
-   :math:`p(i)`       pressure                     :math:`hPa`                      `pressure {:,vertical}`
-   :math:`p_{surf}`   surface pressure             :math:`hPa`                      `surface_pressure {:}`
+   :math:`p(i)`       pressure                     :math:`Pa`                       `pressure {:,vertical}`
+   :math:`p_{surf}`   surface pressure             :math:`Pa`                       `surface_pressure {:}`
    :math:`R`          universal gas constant       :math:`\frac{kg m^2}{K mol s^2}`
    :math:`T(i)`       temperature                  :math:`K`                        `temperature {:,vertical}`
    :math:`z(i)`       altitude                     :math:`m`                        `altitude {:,vertical}`
@@ -1413,9 +1413,9 @@ column mass density
    symbol             description                                 unit                   variable name
    ================== =========================================== ====================== ==============================
    :math:`z^{B}(l)`   altitude boundaries (:math:`l \in \{1,2\}`) :math:`m`              `altitude_bounds {:,2}`
-   :math:`\rho_{x}`   mass density for air component x            :math:`\frac{ug}{m^3}` `<species>_density {:}`
+   :math:`\rho_{x}`   mass density for air component x            :math:`\frac{kg}{m^3}` `<species>_density {:}`
                       (e.g. :math:`\rho_{O_{3}}`)
-   :math:`\sigma_{x}` column mass density for air component x     :math:`\frac{ug}{m^2}` `<species>_column_density {:}`
+   :math:`\sigma_{x}` column mass density for air component x     :math:`\frac{kg}{m^2}` `<species>_column_density {:}`
                       (e.g. :math:`c_{O_{3}}`)
    ================== =========================================== ====================== ==============================
 
@@ -1433,8 +1433,8 @@ column mass density
    symbol           description                                 unit                   variable name
    ================ =========================================== ====================== =======================
    :math:`z^{B}(l)` altitude boundaries (:math:`l \in \{1,2\}`) :math:`m`              `altitude_bounds {:,2}`
-   :math:`\rho`     mass density for total air                  :math:`\frac{ug}{m^3}` `density {:}`
-   :math:`\sigma`   column mass density for total air           :math:`\frac{ug}{m^2}` `column_density {:}`
+   :math:`\rho`     mass density for total air                  :math:`\frac{kg}{m^3}` `density {:}`
+   :math:`\sigma`   column mass density for total air           :math:`\frac{kg}{m^2}` `column_density {:}`
    ================ =========================================== ====================== =======================
 
    The pattern `:` for the dimensions can represent `{vertical}`, `{latitude,longitude}`, `{latitude,longitude,vertical}`,
@@ -1456,7 +1456,7 @@ column mass density
                       (e.g. :math:`c_{O_{3}}`)
    :math:`M_{x}`      molar mass for air component x            :math:`\frac{g}{mol}`
    :math:`N_A`        Avogadro constant                         :math:`\frac{1}{mol}`
-   :math:`\sigma_{x}` column mass density for air component x   :math:`\frac{ug}{m^2}`    `<species>_column_density {:}`
+   :math:`\sigma_{x}` column mass density for air component x   :math:`\frac{kg}{m^2}`    `<species>_column_density {:}`
                       (e.g. :math:`\sigma_{O_{3}}`)
    ================== ========================================= ========================= =====================================
 
@@ -1465,7 +1465,7 @@ column mass density
 
    .. math::
 
-      \sigma_{x} = \frac{10^{6}c_{x}M_{x}}{N_{A}}
+      \sigma_{x} = \frac{10^{-3}c_{x}M_{x}}{N_{A}}
 
 
 #. column mass density for total air from column number density:
@@ -1478,7 +1478,7 @@ column mass density
    :math:`c`       column number density for total air :math:`\frac{molec}{m^2}` `column_number_density {:}`
    :math:`M_{air}` molar mass for total air            :math:`\frac{g}{mol}`     `molar_mass {:}`
    :math:`N_A`     Avogadro constant                   :math:`\frac{1}{mol}`
-   :math:`\sigma`  column mass density for total air   :math:`\frac{ug}{m^2}`    `column_density {:}`
+   :math:`\sigma`  column mass density for total air   :math:`\frac{kg}{m^2}`    `column_density {:}`
    =============== =================================== ========================= ===========================
 
    The pattern `:` for the dimensions can represent `{vertical}`, `{latitude,longitude}`, `{latitude,longitude,vertical}`,
@@ -1486,7 +1486,7 @@ column mass density
 
    .. math::
 
-      \sigma = \frac{10^{6}c M_{air}}{N_{A}}
+      \sigma = \frac{10^{-3}c M_{air}}{N_{A}}
 
 
 column mass mixing ratio
@@ -1494,16 +1494,16 @@ column mass mixing ratio
 
 #. column mass mixing ratio from column volume mixing ratio
 
-   =============== ======================================== ======================== ==========================================
-   symbol          description                              unit                     variable name
-   =============== ======================================== ======================== ==========================================
-   :math:`M_{air}` molar mass for total air                 :math:`\frac{g}{mol}`    `molar_mass {:}`
+   =============== ======================================== ===================== ==========================================
+   symbol          description                              unit                  variable name
+   =============== ======================================== ===================== ==========================================
+   :math:`M_{air}` molar mass for total air                 :math:`\frac{g}{mol}` `molar_mass {:}`
    :math:`M_{x}`   molar mass for air component x           :math:`\frac{g}{mol}`
-   :math:`q_{x}`   column mass mixing ratio of quantity x   :math:`\frac{{\mu}g}{g}` `<species>_column_mass_mixing_ratio {:}`
+   :math:`q_{x}`   column mass mixing ratio of quantity x   :math:`\frac{kg}{kg}` `<species>_column_mass_mixing_ratio {:}`
                    with regard to total air
-   :math:`\nu_{x}` column volume mixing ratio of quantity x :math:`ppmv`             `<species>_column_volume_mixing_ratio {:}`
+   :math:`\nu_{x}` column volume mixing ratio of quantity x :math:`ppv`           `<species>_column_volume_mixing_ratio {:}`
                    with regard to total air
-   =============== ======================================== ======================== ==========================================
+   =============== ======================================== ===================== ==========================================
 
    The pattern `:` for the dimensions can represent `{latitude,longitude}`, `{time}`, `{time,latitude,longitude}`,
    or no dimensions at all.
@@ -1515,16 +1515,16 @@ column mass mixing ratio
 
 #. column mass mixing ratio dry air from column volume mixing ratio dry air
 
-   ===================== ======================================== ======================== ==================================================
-   symbol                description                              unit                     variable name
-   ===================== ======================================== ======================== ==================================================
+   ===================== ======================================== ===================== ==================================================
+   symbol                description                              unit                  variable name
+   ===================== ======================================== ===================== ==================================================
    :math:`M_{dry\_air}`  molar mass for dry air                   :math:`\frac{g}{mol}`
    :math:`M_{x}`         molar mass for air component x           :math:`\frac{g}{mol}`
-   :math:`\bar{q}_{x}`   column mass mixing ratio of quantity x   :math:`\frac{{\mu}g}{g}` `<species>_column_mass_mixing_ratio_dry_air {:}`
+   :math:`\bar{q}_{x}`   column mass mixing ratio of quantity x   :math:`\frac{kg}{kg}` `<species>_column_mass_mixing_ratio_dry_air {:}`
                          with regard to dry air
-   :math:`\bar{\nu}_{x}` column volume mixing ratio of quantity x :math:`ppmv`             `<species>_column_volume_mixing_ratio_dry_air {:}`
+   :math:`\bar{\nu}_{x}` column volume mixing ratio of quantity x :math:`ppv`           `<species>_column_volume_mixing_ratio_dry_air {:}`
                          with regard to dry air
-   ===================== ======================================== ======================== ==================================================
+   ===================== ======================================== ===================== ==================================================
 
    The pattern `:` for the dimensions can represent `{latitude,longitude}`, `{time}`, `{time,latitude,longitude}`,
    or no dimensions at all.
@@ -1536,16 +1536,16 @@ column mass mixing ratio
 
 #. stratospheric column mass mixing ratio dry air from stratospheric column volume mixing ratio dry air
 
-   ===================== ======================================== ======================== ================================================================
-   symbol                description                              unit                     variable name
-   ===================== ======================================== ======================== ================================================================
+   ===================== ======================================== ===================== ================================================================
+   symbol                description                              unit                  variable name
+   ===================== ======================================== ===================== ================================================================
    :math:`M_{dry\_air}`  molar mass for dry air                   :math:`\frac{g}{mol}`
    :math:`M_{x}`         molar mass for air component x           :math:`\frac{g}{mol}`
-   :math:`\bar{q}_{x}`   stratospheric column mass mixing ratio   :math:`\frac{{\mu}g}{g}` `stratospheric_<species>_column_mass_mixing_ratio_dry_air {:}`
+   :math:`\bar{q}_{x}`   stratospheric column mass mixing ratio   :math:`\frac{kg}{kg}` `stratospheric_<species>_column_mass_mixing_ratio_dry_air {:}`
                          of quantity x with regard to dry air
-   :math:`\bar{\nu}_{x}` stratospheric column volume mixing ratio :math:`ppmv`             `stratospheric_<species>_column_volume_mixing_ratio_dry_air {:}`
+   :math:`\bar{\nu}_{x}` stratospheric column volume mixing ratio :math:`ppv`           `stratospheric_<species>_column_volume_mixing_ratio_dry_air {:}`
                          of quantity x with regard to dry air
-   ===================== ======================================== ======================== ================================================================
+   ===================== ======================================== ===================== ================================================================
 
    The pattern `:` for the dimensions can represent `{latitude,longitude}`, `{time}`, `{time,latitude,longitude}`,
    or no dimensions at all.
@@ -1557,16 +1557,16 @@ column mass mixing ratio
 
 #. tropospheric column mass mixing ratio dry air from tropospheric column volume mixing ratio dry air
 
-   ===================== ======================================= ======================== ===============================================================
-   symbol                description                             unit                     variable name
-   ===================== ======================================= ======================== ===============================================================
+   ===================== ======================================= ===================== ===============================================================
+   symbol                description                             unit                  variable name
+   ===================== ======================================= ===================== ===============================================================
    :math:`M_{dry\_air}`  molar mass for dry air                  :math:`\frac{g}{mol}`
    :math:`M_{x}`         molar mass for air component x          :math:`\frac{g}{mol}`
-   :math:`\bar{q}_{x}`   tropospheric column mass mixing ratio   :math:`\frac{{\mu}g}{g}` `tropospheric_<species>_column_mass_mixing_ratio_dry_air {:}`
+   :math:`\bar{q}_{x}`   tropospheric column mass mixing ratio   :math:`\frac{kg}{kg}` `tropospheric_<species>_column_mass_mixing_ratio_dry_air {:}`
                          of quantity x with regard to dry air
-   :math:`\bar{\nu}_{x}` tropospheric column volume mixing ratio :math:`ppmv`             `tropospheric_<species>_column_volume_mixing_ratio_dry_air {:}`
+   :math:`\bar{\nu}_{x}` tropospheric column volume mixing ratio :math:`ppv`           `tropospheric_<species>_column_volume_mixing_ratio_dry_air {:}`
                          of quantity x with regard to dry air
-   ===================== ======================================= ======================== ===============================================================
+   ===================== ======================================= ===================== ===============================================================
 
    The pattern `:` for the dimensions can represent `{latitude,longitude}`, `{time}`, `{time,latitude,longitude}`,
    or no dimensions at all.
@@ -1664,7 +1664,7 @@ column number density
                       (e.g. :math:`n_{O_{3}}`)
    :math:`M_{x}`      molar mass for air component x            :math:`\frac{g}{mol}`
    :math:`N_A`        Avogadro constant                         :math:`\frac{1}{mol}`
-   :math:`\sigma_{x}` column mass density for air component x   :math:`\frac{ug}{m^2}`    `<species>_column_density {:}`
+   :math:`\sigma_{x}` column mass density for air component x   :math:`\frac{kg}{m^2}`    `<species>_column_density {:}`
                       (e.g. :math:`\sigma_{O_{3}}`)
    ================== ========================================= ========================= =====================================
 
@@ -1673,7 +1673,7 @@ column number density
 
    .. math::
 
-      c_{x} = \frac{\sigma_{x}N_{A}}{10^{6}M_{x}}
+      c_{x} = \frac{\sigma_{x}N_{A}}{10^{-3}M_{x}}
 
 
 #. column number density for total air from column mass density:
@@ -1686,7 +1686,7 @@ column number density
    :math:`c`       column number density for total air :math:`\frac{molec}{m^2}` `column_number_density {:}`
    :math:`M_{air}` molar mass for total air            :math:`\frac{g}{mol}`     `molar_mass {:}`
    :math:`N_A`     Avogadro constant                   :math:`\frac{1}{mol}`
-   :math:`\sigma`  column mass density for total air   :math:`\frac{ug}{m^2}`    `column_density {:}`
+   :math:`\sigma`  column mass density for total air   :math:`\frac{kg}{m^2}`    `column_density {:}`
    =============== =================================== ========================= ===========================
 
    The pattern `:` for the dimensions can represent `{vertical}`, `{latitude,longitude}`, `{latitude,longitude,vertical}`,
@@ -1694,7 +1694,7 @@ column number density
 
    .. math::
 
-      c = \frac{\sigma N_{A}}{10^{6}M_{air}}
+      c = \frac{\sigma N_{A}}{10^{-3}M_{air}}
 
 
 column volume mixing ratio
@@ -1702,16 +1702,16 @@ column volume mixing ratio
 
 #. column volume mixing ratio from column mass mixing ratio
 
-   =============== ======================================== ======================== ==========================================
-   symbol          description                              unit                     variable name
-   =============== ======================================== ======================== ==========================================
-   :math:`M_{air}` molar mass for total air                 :math:`\frac{g}{mol}`    `molar_mass {:}`
+   =============== ======================================== ====================== ==========================================
+   symbol          description                              unit                   variable name
+   =============== ======================================== ====================== ==========================================
+   :math:`M_{air}` molar mass for total air                 :math:`\frac{g}{mol}`  `molar_mass {:}`
    :math:`M_{x}`   molar mass for air component x           :math:`\frac{g}{mol}`
-   :math:`q_{x}`   column mass mixing ratio of quantity x   :math:`\frac{{\mu}g}{g}` `<species>_column_mass_mixing_ratio {:}`
+   :math:`q_{x}`   column mass mixing ratio of quantity x   :math:`\frac{kg}{kg}`  `<species>_column_mass_mixing_ratio {:}`
                    with regard to total air
-   :math:`\nu_{x}` column volume mixing ratio of quantity x :math:`ppmv`             `<species>_column_volume_mixing_ratio {:}`
+   :math:`\nu_{x}` column volume mixing ratio of quantity x :math:`ppv`            `<species>_column_volume_mixing_ratio {:}`
                    with regard to total air
-   =============== ======================================== ======================== ==========================================
+   =============== ======================================== ====================== ==========================================
 
    The pattern `:` for the dimensions can represent `{latitude,longitude}`, `{time}`, `{time,latitude,longitude}`,
    or no dimensions at all.
@@ -1723,16 +1723,16 @@ column volume mixing ratio
 
 #. column volume mixing ratio dry air from column mass mixing ratio dry air
 
-   ===================== ======================================== ======================== ==================================================
-   symbol                description                              unit                     variable name
-   ===================== ======================================== ======================== ==================================================
+   ===================== ======================================== ===================== ==================================================
+   symbol                description                              unit                  variable name
+   ===================== ======================================== ===================== ==================================================
    :math:`M_{dry\_air}`  molar mass for dry air                   :math:`\frac{g}{mol}`
    :math:`M_{x}`         molar mass for air component x           :math:`\frac{g}{mol}`
-   :math:`\bar{q}_{x}`   column mass mixing ratio of quantity x   :math:`\frac{{\mu}g}{g}` `<species>_column_mass_mixing_ratio_dry_air {:}`
+   :math:`\bar{q}_{x}`   column mass mixing ratio of quantity x   :math:`\frac{kg}{kg}` `<species>_column_mass_mixing_ratio_dry_air {:}`
                          with regard to dry air
-   :math:`\bar{\nu}_{x}` column volume mixing ratio of quantity x :math:`ppmv`             `<species>_column_volume_mixing_ratio_dry_air {:}`
+   :math:`\bar{\nu}_{x}` column volume mixing ratio of quantity x :math:`ppv`           `<species>_column_volume_mixing_ratio_dry_air {:}`
                          with regard to dry air
-   ===================== ======================================== ======================== ==================================================
+   ===================== ======================================== ===================== ==================================================
 
    The pattern `:` for the dimensions can represent `{latitude,longitude}`, `{time}`, `{time,latitude,longitude}`,
    or no dimensions at all.
@@ -1744,16 +1744,16 @@ column volume mixing ratio
 
 #. stratospheric column volume mixing ratio dry air from stratospheric column mass mixing ratio dry air
 
-   ===================== ======================================== ======================== ================================================================
-   symbol                description                              unit                     variable name
-   ===================== ======================================== ======================== ================================================================
+   ===================== ======================================== ===================== ================================================================
+   symbol                description                              unit                  variable name
+   ===================== ======================================== ===================== ================================================================
    :math:`M_{dry\_air}`  molar mass for dry air                   :math:`\frac{g}{mol}`
    :math:`M_{x}`         molar mass for air component x           :math:`\frac{g}{mol}`
-   :math:`\bar{q}_{x}`   stratospheric column mass mixing ratio   :math:`\frac{{\mu}g}{g}` `stratospheric_<species>_column_mass_mixing_ratio_dry_air {:}`
+   :math:`\bar{q}_{x}`   stratospheric column mass mixing ratio   :math:`\frac{kg}{kg}` `stratospheric_<species>_column_mass_mixing_ratio_dry_air {:}`
                          of quantity x with regard to dry air
-   :math:`\bar{\nu}_{x}` stratospheric column volume mixing ratio :math:`ppmv`             `stratospheric_<species>_column_volume_mixing_ratio_dry_air {:}`
+   :math:`\bar{\nu}_{x}` stratospheric column volume mixing ratio :math:`ppv`           `stratospheric_<species>_column_volume_mixing_ratio_dry_air {:}`
                          of quantity x with regard to dry air
-   ===================== ======================================== ======================== ================================================================
+   ===================== ======================================== ===================== ================================================================
 
    The pattern `:` for the dimensions can represent `{latitude,longitude}`, `{time}`, `{time,latitude,longitude}`,
    or no dimensions at all.
@@ -1765,16 +1765,16 @@ column volume mixing ratio
 
 #. tropospheric column volume mixing ratio dry air from tropospheric column mass mixing ratio dry air
 
-   ===================== ======================================= ======================== ===============================================================
-   symbol                description                             unit                     variable name
-   ===================== ======================================= ======================== ===============================================================
+   ===================== ======================================= ===================== ===============================================================
+   symbol                description                             unit                  variable name
+   ===================== ======================================= ===================== ===============================================================
    :math:`M_{dry\_air}`  molar mass for dry air                  :math:`\frac{g}{mol}`
    :math:`M_{x}`         molar mass for air component x          :math:`\frac{g}{mol}`
-   :math:`\bar{q}_{x}`   tropospheric column mass mixing ratio   :math:`\frac{{\mu}g}{g}` `tropospheric_<species>_column_mass_mixing_ratio_dry_air {:}`
+   :math:`\bar{q}_{x}`   tropospheric column mass mixing ratio   :math:`\frac{kg}{kg}` `tropospheric_<species>_column_mass_mixing_ratio_dry_air {:}`
                          of quantity x with regard to dry air
-   :math:`\bar{\nu}_{x}` tropospheric column volume mixing ratio :math:`ppmv`             `tropospheric_<species>_column_volume_mixing_ratio_dry_air {:}`
+   :math:`\bar{\nu}_{x}` tropospheric column volume mixing ratio :math:`ppv`           `tropospheric_<species>_column_volume_mixing_ratio_dry_air {:}`
                          of quantity x with regard to dry air
-   ===================== ======================================= ======================== ===============================================================
+   ===================== ======================================= ===================== ===============================================================
 
    The pattern `:` for the dimensions can represent `{latitude,longitude}`, `{time}`, `{time,latitude,longitude}`,
    or no dimensions at all.
@@ -1880,8 +1880,8 @@ geopotential height
    ================== ============================ ================================ ==================================
    :math:`g_{0}`      mean earth gravity           :math:`\frac{m}{s^2}`
    :math:`M_{air}(i)` molar mass of total air      :math:`\frac{g}{mol}`            `molar_mass {:,vertical}`
-   :math:`p(i)`       pressure                     :math:`hPa`                      `pressure {:,vertical}`
-   :math:`p_{surf}`   surface pressure             :math:`hPa`                      `surface_pressure {:}`
+   :math:`p(i)`       pressure                     :math:`Pa`                       `pressure {:,vertical}`
+   :math:`p_{surf}`   surface pressure             :math:`Pa`                       `surface_pressure {:}`
    :math:`R`          universal gas constant       :math:`\frac{kg m^2}{K mol s^2}`
    :math:`T(i)`       temperature                  :math:`K`                        `temperature {:,vertical}`
    :math:`z_{g}(i)`   geopotential height          :math:`m`                        `geopotential_height {:,vertical}`
@@ -1968,7 +1968,7 @@ mass density
    :math:`n_{x}`    number density for air component x :math:`\frac{molec}{m^3}` `<species>_number_density {:}`
                     (e.g. :math:`n_{O_{3}}`)
    :math:`N_A`      Avogadro constant                  :math:`\frac{1}{mol}`
-   :math:`\rho_{x}` mass density for air component x   :math:`\frac{ug}{m^3}`    `<species>_density {:}`
+   :math:`\rho_{x}` mass density for air component x   :math:`\frac{kg}{m^3}`    `<species>_density {:}`
                     (e.g. :math:`\rho_{O_{3}}`)
    ================ ================================== ========================= ==============================
 
@@ -1977,7 +1977,7 @@ mass density
 
    .. math::
 
-      \rho_{x} = \frac{10^{6}n_{x}M_{x}}{N_{A}}
+      \rho_{x} = \frac{10^{-3}n_{x}M_{x}}{N_{A}}
 
 
 #. mass density for total air from number density:
@@ -1988,7 +1988,7 @@ mass density
    :math:`M_{air}`  molar mass for total air     :math:`\frac{g}{mol}`     `molar_mass {:}`
    :math:`n`        number density for total air :math:`\frac{molec}{m^3}` `number_density {:}`
    :math:`N_A`      Avogadro constant            :math:`\frac{1}{mol}`
-   :math:`\rho`     mass density for total air   :math:`\frac{ug}{m^3}`    `density {:}`
+   :math:`\rho`     mass density for total air   :math:`\frac{kg}{m^3}`    `density {:}`
    ================ ============================ ========================= ====================
 
    The pattern `:` for the dimensions can represent `{vertical}`, `{latitude,longitude}`, `{latitude,longitude,vertical}`,
@@ -1996,7 +1996,7 @@ mass density
 
    .. math::
 
-      \rho = \frac{10^{6}n M_{air}}{N_{A}}
+      \rho = \frac{10^{-3}n M_{air}}{N_{A}}
 
 
 #. mass density for air component from column mass density:
@@ -2005,9 +2005,9 @@ mass density
    symbol             description                                 unit                   variable name
    ================== =========================================== ====================== =====================================
    :math:`z^{B}(l)`   altitude boundaries (:math:`l \in \{1,2\}`) :math:`m`              `altitude_bounds {:,2}`
-   :math:`\rho_{x}`   mass density for air component x            :math:`\frac{ug}{m^3}` `<species>_density {:}`
+   :math:`\rho_{x}`   mass density for air component x            :math:`\frac{kg}{m^3}` `<species>_density {:}`
                       (e.g. :math:`\rho_{O_{3}}`)
-   :math:`\sigma_{x}` column mass density for air component x     :math:`\frac{ug}{m^2}` `<species>_column_density {:}`
+   :math:`\sigma_{x}` column mass density for air component x     :math:`\frac{kg}{m^2}` `<species>_column_density {:}`
                       (e.g. :math:`c_{O_{3}}`)
    ================== =========================================== ====================== =====================================
 
@@ -2025,8 +2025,8 @@ mass density
    symbol           description                                 unit                   variable name
    ================ =========================================== ====================== =======================
    :math:`z^{B}(l)` altitude boundaries (:math:`l \in \{1,2\}`) :math:`m`              `altitude_bounds {:,2}`
-   :math:`\rho`     mass density for total air                  :math:`\frac{ug}{m^3}` `density {:}`
-   :math:`\sigma`   column mass density for total air           :math:`\frac{ug}{m^2}` `column_density {:}`
+   :math:`\rho`     mass density for total air                  :math:`\frac{kg}{m^3}` `density {:}`
+   :math:`\sigma`   column mass density for total air           :math:`\frac{kg}{m^2}` `column_density {:}`
    ================ =========================================== ====================== =======================
 
    The pattern `:` for the dimensions can represent `{vertical}`, `{latitude,longitude}`, `{latitude,longitude,vertical}`,
@@ -2042,16 +2042,16 @@ mass mixing ratio
 
 #. mass mixing ratio from volume mixing ratio
 
-   =============== ================================= ======================== ===================================
-   symbol          description                       unit                     variable name
-   =============== ================================= ======================== ===================================
+   =============== ================================= ===================== ===================================
+   symbol          description                       unit                  variable name
+   =============== ================================= ===================== ===================================
    :math:`M_{air}` molar mass for total air          :math:`\frac{g}{mol}`    `molar_mass {:}`
    :math:`M_{x}`   molar mass for air component x    :math:`\frac{g}{mol}`
-   :math:`q_{x}`   mass mixing ratio of quantity x   :math:`\frac{{\mu}g}{g}` `<species>_mass_mixing_ratio {:}`
+   :math:`q_{x}`   mass mixing ratio of quantity x   :math:`\frac{kg}{kg}` `<species>_mass_mixing_ratio {:}`
                    with regard to total air
-   :math:`\nu_{x}` volume mixing ratio of quantity x :math:`ppmv`             `<species>_volume_mixing_ratio {:}`
+   :math:`\nu_{x}` volume mixing ratio of quantity x :math:`ppv`           `<species>_volume_mixing_ratio {:}`
                    with regard to total air
-   =============== ================================= ======================== ===================================
+   =============== ================================= ===================== ===================================
 
    The pattern `:` for the dimensions can represent `{vertical}`, `{latitude,longitude}`, `{latitude,longitude,vertical}`,
    `{time}`, `{time,vertical}`, `{time,latitude,longitude}`, `{time,latitude,longitude,vertical}`, or no dimensions at all.
@@ -2063,16 +2063,16 @@ mass mixing ratio
 
 #. mass mixing ratio dry air from volume mixing ratio dry air
 
-   ===================== ================================= ======================== ===========================================
-   symbol                description                       unit                     variable name
-   ===================== ================================= ======================== ===========================================
+   ===================== ================================= ===================== ===========================================
+   symbol                description                       unit                  variable name
+   ===================== ================================= ===================== ===========================================
    :math:`M_{dry\_air}`  molar mass for dry air            :math:`\frac{g}{mol}`
    :math:`M_{x}`         molar mass for air component x    :math:`\frac{g}{mol}`
-   :math:`\bar{q}_{x}`   mass mixing ratio of quantity x   :math:`\frac{{\mu}g}{g}` `<species>_mass_mixing_ratio_dry_air {:}`
+   :math:`\bar{q}_{x}`   mass mixing ratio of quantity x   :math:`\frac{kg}{kg}` `<species>_mass_mixing_ratio_dry_air {:}`
                          with regard to dry air
-   :math:`\bar{\nu}_{x}` volume mixing ratio of quantity x :math:`ppmv`             `<species>_volume_mixing_ratio_dry_air {:}`
+   :math:`\bar{\nu}_{x}` volume mixing ratio of quantity x :math:`ppv`           `<species>_volume_mixing_ratio_dry_air {:}`
                          with regard to dry air
-   ===================== ================================= ======================== ===========================================
+   ===================== ================================= ===================== ===========================================
 
    The pattern `:` for the dimensions can represent `{vertical}`, `{latitude,longitude}`, `{latitude,longitude,vertical}`,
    `{time}`, `{time,vertical}`, `{time,latitude,longitude}`, `{time,latitude,longitude,vertical}`, or no dimensions at all.
@@ -2093,7 +2093,7 @@ molar mass
    :math:`M_{air}` molar mass of total air :math:`\frac{g}{mol}`     `molar_mass {:}`
    :math:`n`       number density          :math:`\frac{molec}{m^3}` `number_density {:}`
    :math:`N_A`     Avogadro constant       :math:`\frac{1}{mol}`
-   :math:`\rho`    mass density            :math:`\frac{ug}{m^3}`    `density {:}`
+   :math:`\rho`    mass density            :math:`\frac{kg}{m^3}`    `density {:}`
    =============== ======================= ========================= ====================
 
    The pattern `:` for the dimensions can represent `{vertical}`, `{latitude,longitude}`, `{latitude,longitude,vertical}`,
@@ -2101,7 +2101,7 @@ molar mass
 
    .. math::
 
-      M = \frac{\rho N_{A}}{10^{6}n}
+      M = 10^{3}\frac{\rho N_{A}}{n}
 
 
 #. molar mass of total air from H2O mass mixing ratio
@@ -2112,7 +2112,7 @@ molar mass
    :math:`M_{air}`      molar mass of total air  :math:`\frac{g}{mol}` `molar_mass {:}`
    :math:`M_{dry\_air}` molar mass of dry air    :math:`\frac{g}{mol}`
    :math:`M_{H_{2}O}`   molar mass of H2O        :math:`\frac{g}{mol}`
-   :math:`q_{H_{2}O}`   mass mixing ratio of H2O :math:`\frac{ug}{g}`  `H2O_mass_mixing_ratio {:}`
+   :math:`q_{H_{2}O}`   mass mixing ratio of H2O :math:`\frac{kg}{kg}` `H2O_mass_mixing_ratio {:}`
    ==================== ======================== ===================== ===========================
 
    The pattern `:` for the dimensions can represent `{vertical}`, `{latitude,longitude}`, `{latitude,longitude,vertical}`,
@@ -2120,7 +2120,7 @@ molar mass
 
    .. math::
 
-      M_{air} = \frac{M_{H_{2}O}M_{dry\_air}}{\left(1-10^{-6}q_{H_{2}O}\right)M_{H_{2}O} + 10^{-6}q_{H_{2}O}M_{dry\_air}}
+      M_{air} = \frac{M_{H_{2}O}M_{dry\_air}}{\left(1-q_{H_{2}O}\right)M_{H_{2}O} + q_{H_{2}O}M_{dry\_air}}
 
 
 #. molar mass of total air from H2O volume mixing ratio
@@ -2131,7 +2131,7 @@ molar mass
    :math:`M_{air}`      molar mass of total air  :math:`\frac{g}{mol}` `molar_mass {:}`
    :math:`M_{dry\_air}` molar mass of dry air    :math:`\frac{g}{mol}`
    :math:`M_{H_{2}O}`   molar mass of H2O        :math:`\frac{g}{mol}`
-   :math:`\nu_{H_{2}O}` mass mixing ratio of H2O :math:`ppmv`          `H2O_volume_mixing_ratio {:}`
+   :math:`\nu_{H_{2}O}` mass mixing ratio of H2O :math:`ppv`           `H2O_volume_mixing_ratio {:}`
    ==================== ======================== ===================== =============================
 
    The pattern `:` for the dimensions can represent `{vertical}`, `{latitude,longitude}`, `{latitude,longitude,vertical}`,
@@ -2139,7 +2139,7 @@ molar mass
 
    .. math::
 
-      M_{air} = M_{dry\_air}\left(1 - 10^{-6}\nu_{H_{2}O}\right) + 10^{-6}M_{H_{2}O}\nu_{H_{2}O}
+      M_{air} = M_{dry\_air}\left(1 - \nu_{H_{2}O}\right) + M_{H_{2}O}\nu_{H_{2}O}
 
 
 number density
@@ -2154,7 +2154,7 @@ number density
    :math:`n_{x}`    number density for air component x :math:`\frac{molec}{m^3}` `<species>_number_density {:}`
                     (e.g. :math:`n_{O_{3}}`)
    :math:`N_A`      Avogadro constant                  :math:`\frac{1}{mol}`
-   :math:`\rho_{x}` mass density for air component x   :math:`\frac{ug}{m^3}`    `<species>_density {:}`
+   :math:`\rho_{x}` mass density for air component x   :math:`\frac{kg}{m^3}`    `<species>_density {:}`
                     (e.g. :math:`\rho_{O_{3}}`)
    ================ ================================== ========================= ==============================
 
@@ -2163,7 +2163,7 @@ number density
 
    .. math::
 
-      n_{x} = \frac{\rho_{x}N_{A}}{10^{6}M_{x}}
+      n_{x} = \frac{\rho_{x}N_{A}}{10^{-3}M_{x}}
 
 
 #. number density for total air from mass density:
@@ -2174,7 +2174,7 @@ number density
    :math:`M_{air}` molar mass for total air     :math:`\frac{g}{mol}`     `molar_mass {:}`
    :math:`n`       number density for total air :math:`\frac{molec}{m^3}` `number_density {:}`
    :math:`N_A`     Avogadro constant            :math:`\frac{1}{mol}`
-   :math:`\rho`    mass density for total air   :math:`\frac{ug}{m^3}`    `density {:}`
+   :math:`\rho`    mass density for total air   :math:`\frac{kg}{m^3}`    `density {:}`
    =============== ============================ ========================= ====================
 
    The pattern `:` for the dimensions can represent `{vertical}`, `{latitude,longitude}`, `{latitude,longitude,vertical}`,
@@ -2182,7 +2182,7 @@ number density
 
    .. math::
 
-      n = \frac{\rho N_{A}}{10^{6}M_{air}}
+      n = \frac{\rho N_{A}}{10^{-3}M_{air}}
 
 
 #. number density for total air from pressure and temperature
@@ -2192,7 +2192,7 @@ number density
    ========= ================== ============================ ====================
    :math:`k` Boltzmann constant :math:`\frac{kg m^2}{K s^2}`
    :math:`n` number density     :math:`\frac{molec}{m^3}`    `number_density {:}`
-   :math:`p` pressure           :math:`hPa`                  `pressure {:}`
+   :math:`p` pressure           :math:`Pa`                   `pressure {:}`
    :math:`T` temperature        :math:`K`                    `temperature {:}`
    ========= ================== ============================ ====================
 
@@ -2201,7 +2201,7 @@ number density
 
    .. math::
 
-      n = 10^{2}\frac{p}{kT}
+      n = \frac{p}{kT}
 
 
 #. number density from volume mixing ratio
@@ -2212,7 +2212,7 @@ number density
    :math:`n_{air}` number density of total air             :math:`\frac{molec}{m^3}` `number_density {:}`
    :math:`n_{x}`   number density for air component x      :math:`\frac{molec}{m^3}` `<species>_number_density {:}`
                    (e.g. :math:`n_{O_{3}}`)
-   :math:`\nu_{x}` volume mixing ratio for air component x :math:`ppmv`              `<species>_volum_mixing_ratio {:}`
+   :math:`\nu_{x}` volume mixing ratio for air component x :math:`ppv`               `<species>_volum_mixing_ratio {:}`
                    (e.g. :math:`n_{O_{3}}`)
    =============== ======================================= ========================= ==================================
 
@@ -2221,7 +2221,7 @@ number density
 
    .. math::
 
-      n_{x} = 10^{-6}\nu_{x}n_{air}
+      n_{x} = \nu_{x}n_{air}
 
 
 #. number density from volume mixing ratio dry air
@@ -2232,7 +2232,7 @@ number density
    :math:`n_{dry\_air}`  number density of total air             :math:`\frac{molec}{m^3}` `<species>_number_density_dry_air {:}`
    :math:`n_{x}`         number density for air component x      :math:`\frac{molec}{m^3}` `<species>_number_density {:}`
                          (e.g. :math:`n_{O_{3}}`)
-   :math:`\bar{\nu}_{x}` volume mixing ratio for air component x :math:`ppmv`              `<species>_volum_mixing_ratio_dry_air {:}`
+   :math:`\bar{\nu}_{x}` volume mixing ratio for air component x :math:`ppv`               `<species>_volum_mixing_ratio_dry_air {:}`
                          (e.g. :math:`n_{O_{3}}`)
    ===================== ======================================= ========================= ==========================================
 
@@ -2241,7 +2241,7 @@ number density
 
    .. math::
 
-      n_{x} = 10^{-6}\bar{\nu}_{x}n_{dry\_air}
+      n_{x} = \bar{\nu}_{x}n_{dry\_air}
 
 
 #. number density for air component from column number density
@@ -2290,7 +2290,7 @@ number density
    :math:`k`     Boltzmann constant                   :math:`\frac{kg m^2}{K s^2}`
    :math:`n_{x}` number density for air component x   :math:`\frac{molec}{m^3}`    `<species>_number_density {:}`
                  (e.g. :math:`n_{O_{3}}`)
-   :math:`p_{x}` partial pressure for air component x :math:`hPa`                  `<species>_partial_pressure {:}`
+   :math:`p_{x}` partial pressure for air component x :math:`Pa`                   `<species>_partial_pressure {:}`
                  (e.g. :math:`p_{O_{3}}`)
    :math:`T`     temperature                          :math:`K`                    `temperature {:}`
    ============= ==================================== ============================ ================================
@@ -2300,7 +2300,7 @@ number density
 
    .. math::
 
-      n_{x} = 10^{2}\frac{p_{x}}{kT}
+      n_{x} = \frac{p_{x}}{kT}
 
 
 #. surface number density for total air from surface pressure and surface temperature
@@ -2310,7 +2310,7 @@ number density
    ================ ====================== ============================ ============================
    :math:`k`        Boltzmann constant     :math:`\frac{kg m^2}{K s^2}`
    :math:`n_{surf}` surface number density :math:`\frac{molec}{m^3}`    `surface_number_density {:}`
-   :math:`p_{surf}` surface pressure       :math:`hPa`                  `surface_pressure {:}`
+   :math:`p_{surf}` surface pressure       :math:`Pa`                   `surface_pressure {:}`
    :math:`T_{surf}` surface temperature    :math:`K`                    `surface_temperature {:}`
    ================ ====================== ============================ ============================
 
@@ -2319,7 +2319,7 @@ number density
 
    .. math::
 
-      n_{surf}= 10^{2}\frac{p_{surf}}{kT_{surf}}
+      n_{surf} = \frac{p_{surf}}{kT_{surf}}
 
 
 partial pressure
@@ -2333,7 +2333,7 @@ partial pressure
    :math:`k`     Boltzmann constant                   :math:`\frac{kg m^2}{K s^2}`
    :math:`n_{x}` number density for air component x   :math:`\frac{molec}{m^3}`    `<species>_number_density {:}`
                  (e.g. :math:`n_{O_{3}}`)
-   :math:`p_{x}` partial pressure for air component x :math:`hPa`                  `<species>_partial_pressure {:}`
+   :math:`p_{x}` partial pressure for air component x :math:`Pa`                   `<species>_partial_pressure {:}`
                  (e.g. :math:`p_{O_{3}}`)
    :math:`T`     temperature                          :math:`K`                    `temperature {:}`
    ============= ==================================== ============================ ================================
@@ -2343,46 +2343,46 @@ partial pressure
 
    .. math::
 
-      p_{x} = 10^{-2}n_{x}kT
+      p_{x} = n_{x}kT
 
 
 #. partial pressure from volume mixing ratio
 
-   =============== ======================================= ============ ===================================
-   symbol          description                             unit         variable name
-   =============== ======================================= ============ ===================================
-   :math:`p`       pressure                                :math:`hPa`  `pressure {:}`
-   :math:`p_{x}`   partial pressure for air component x    :math:`hPa`  `<species>_partial_pressure {:}`
+   =============== ======================================= =========== ===================================
+   symbol          description                             unit        variable name
+   =============== ======================================= =========== ===================================
+   :math:`p`       pressure                                :math:`Pa`  `pressure {:}`
+   :math:`p_{x}`   partial pressure for air component x    :math:`Pa`  `<species>_partial_pressure {:}`
                    (e.g. :math:`p_{O_{3}}`)
-   :math:`\nu_{x}` volume mixing ratio for air component x :math:`ppmv` `<species>_volume_mixing_ratio {:}`
+   :math:`\nu_{x}` volume mixing ratio for air component x :math:`ppv` `<species>_volume_mixing_ratio {:}`
                    (e.g. :math:`\nu_{O_{3}}`)
-   =============== ======================================= ============ ===================================
+   =============== ======================================= =========== ===================================
 
    The pattern `:` for the dimensions can represent `{vertical}`, `{latitude,longitude}`, `{latitude,longitude,vertical}`,
    `{time}`, `{time,vertical}`, `{time,latitude,longitude}`, `{time,latitude,longitude,vertical}`, or no dimensions at all.
 
    .. math::
 
-      p_{x} = 10^{-6}\nu_{x}p
+      p_{x} = \nu_{x}p
 
 
 #. partial pressure from volume mixing ratio dry air
 
-   ===================== ======================================= ============ ===========================================
-   symbol                description                             unit         variable name
-   ===================== ======================================= ============ ===========================================
-   :math:`p_{x}`         partial pressure for air component x    :math:`hPa`  `<species>_partial_pressure {:}`
+   ===================== ======================================= =========== ===========================================
+   symbol                description                             unit        variable name
+   ===================== ======================================= =========== ===========================================
+   :math:`p_{x}`         partial pressure for air component x    :math:`Pa`  `<species>_partial_pressure {:}`
                          (e.g. :math:`p_{O_{3}}`)
-   :math:`\bar{\nu}_{x}` volume mixing ratio for air component x :math:`ppmv` `<species>_volume_mixing_ratio_dry_air {:}`
+   :math:`\bar{\nu}_{x}` volume mixing ratio for air component x :math:`ppv` `<species>_volume_mixing_ratio_dry_air {:}`
                          (e.g. :math:`\nu_{O_{3}}`)
-   ===================== ======================================= ============ ===========================================
+   ===================== ======================================= =========== ===========================================
 
    The pattern `:` for the dimensions can represent `{vertical}`, `{latitude,longitude}`, `{latitude,longitude,vertical}`,
    `{time}`, `{time,vertical}`, `{time,latitude,longitude}`, `{time,latitude,longitude,vertical}`, or no dimensions at all.
 
    .. math::
 
-      p_{x} = 10^{-6}\bar{\nu}_{x}p_{dry\_air}
+      p_{x} = \bar{\nu}_{x}p_{dry\_air}
 
 
 pressure
@@ -2390,12 +2390,12 @@ pressure
 
 #. pressure from bounds
 
-   ================ =========================================== =========== =======================
-   symbol           description                                 unit        variable name
-   ================ =========================================== =========== =======================
-   :math:`p`        pressure                                    :math:`hPa` `pressure {:}`
-   :math:`p^{B}(l)` pressure boundaries (:math:`l \in \{1,2\}`) :math:`hPa` `pressure_bounds {:,2}`
-   ================ =========================================== =========== =======================
+   ================ =========================================== ========== =======================
+   symbol           description                                 unit       variable name
+   ================ =========================================== ========== =======================
+   :math:`p`        pressure                                    :math:`Pa` `pressure {:}`
+   :math:`p^{B}(l)` pressure boundaries (:math:`l \in \{1,2\}`) :math:`Pa` `pressure_bounds {:,2}`
+   ================ =========================================== ========== =======================
 
    The pattern `:` for the dimensions can represent `{vertical}`, or `{time,vertical}`.
 
@@ -2418,8 +2418,8 @@ pressure
    :math:`GM`         WGS84 earth's gravitational  :math:`\frac{m^3}{s^2}`
                       constant
    :math:`M_{air}(i)` molar mass of total air      :math:`\frac{g}{mol}`            `molar_mass {:,vertical}`
-   :math:`p(i)`       pressure                     :math:`hPa`                      `pressure {:,vertical}`
-   :math:`p_{surf}`   surface pressure             :math:`hPa`                      `surface_pressure {:}`
+   :math:`p(i)`       pressure                     :math:`Pa`                       `pressure {:,vertical}`
+   :math:`p_{surf}`   surface pressure             :math:`Pa`                       `surface_pressure {:}`
    :math:`R`          universal gas constant       :math:`\frac{kg m^2}{K mol s^2}`
    :math:`T(i)`       temperature                  :math:`K`                        `temperature {:,vertical}`
    :math:`z(i)`       altitude                     :math:`m`                        `altitude {:,vertical}`
@@ -2459,8 +2459,8 @@ pressure
    ================== ============================ ================================ ==================================
    :math:`g_{0}`      mean earth gravity           :math:`\frac{m}{s^2}`
    :math:`M_{air}(i)` molar mass of total air      :math:`\frac{g}{mol}`            `molar_mass {:,vertical}`
-   :math:`p(i)`       pressure                     :math:`hPa`                      `pressure {:,vertical}`
-   :math:`p_{surf}`   surface pressure             :math:`hPa`                      `surface_pressure {:}`
+   :math:`p(i)`       pressure                     :math:`Pa`                       `pressure {:,vertical}`
+   :math:`p_{surf}`   surface pressure             :math:`Pa`                       `surface_pressure {:}`
    :math:`R`          universal gas constant       :math:`\frac{kg m^2}{K mol s^2}`
    :math:`T(i)`       temperature                  :math:`K`                        `temperature {:,vertical}`
    :math:`z_{g}(i)`   geopotential height          :math:`m`                        `geopotential_height {:,vertical}`
@@ -2493,7 +2493,7 @@ pressure
    ========= ================== ============================ ====================
    :math:`k` Boltzmann constant :math:`\frac{kg m^2}{K s^2}`
    :math:`n` number density     :math:`\frac{molec}{m^3}`    `number_density {:}`
-   :math:`p` pressure           :math:`hPa`                  `pressure {:}`
+   :math:`p` pressure           :math:`Pa`                   `pressure {:}`
    :math:`T` temperature        :math:`K`                    `temperature {:}`
    ========= ================== ============================ ====================
 
@@ -2502,7 +2502,7 @@ pressure
 
    .. math::
 
-      p = 10^{-2}nkT
+      p = nkT
 
 
 #. surface pressure from surface number density and surface temperature
@@ -2512,7 +2512,7 @@ pressure
    ================ ====================== ============================ ============================
    :math:`k`        Boltzmann constant     :math:`\frac{kg m^2}{K s^2}`
    :math:`n_{surf}` surface number density :math:`\frac{molec}{m^3}`    `surface_number_density {:}`
-   :math:`p_{surf}` surface pressure       :math:`hPa`                  `surface_pressure {:}`
+   :math:`p_{surf}` surface pressure       :math:`Pa`                   `surface_pressure {:}`
    :math:`T_{surf}` surface temperature    :math:`K`                    `surface_temperature {:}`
    ================ ====================== ============================ ============================
 
@@ -2521,7 +2521,7 @@ pressure
 
    .. math::
 
-      p_{surf} = 10^{-2}n_{surf}kT_{surf}
+      p_{surf} = n_{surf}kT_{surf}
 
 
 pressure bounds
@@ -2529,12 +2529,12 @@ pressure bounds
 
 #. pressure ranges from midpoints
 
-   ================== =========================================== =========== ================================
-   symbol             description                                 unit         variable name
-   ================== =========================================== =========== ================================
-   :math:`p(i)`       pressure                                    :math:`hPa` `pressure {:,vertical}`
-   :math:`p^{B}(i,l)` pressure boundaries (:math:`l \in \{1,2\}`) :math:`hPa` `pressure_bounds {:,vertical,2}`
-   ================== =========================================== =========== ================================
+   ================== =========================================== ========== ================================
+   symbol             description                                 unit        variable name
+   ================== =========================================== ========== ================================
+   :math:`p(i)`       pressure                                    :math:`Pa` `pressure {:,vertical}`
+   :math:`p^{B}(i,l)` pressure boundaries (:math:`l \in \{1,2\}`) :math:`Pa` `pressure_bounds {:,vertical,2}`
+   ================== =========================================== ========== ================================
 
    The pattern `:` for the dimensions can represent `{time}`, or no dimension at all.
 
@@ -2554,14 +2554,14 @@ relative humidity
 
 #. relative humidity from H2O partial pressure
 
-   ================== ============================== ======================= ==========================
-   symbol             description                    unit                    variable name
-   ================== ============================== ======================= ==========================
-   :math:`e_{w}`      saturated water vapor pressure :math:`hPa`
-   :math:`p_{H_{2}O}` partial pressure of H2O        :math:`hPa`             `H2O_partial_pressure {:}`
-   :math:`T`          temperature                    :math:`K`               `temperature {:}`
-   :math:`\phi`       relative humidity              :math:`\frac{hPa}{hPa}` `relative_humidity {:}`
-   ================== ============================== ======================= ==========================
+   ================== ============================== ===================== ==========================
+   symbol             description                    unit                  variable name
+   ================== ============================== ===================== ==========================
+   :math:`e_{w}`      saturated water vapor pressure :math:`Pa`
+   :math:`p_{H_{2}O}` partial pressure of H2O        :math:`Pa`            `H2O_partial_pressure {:}`
+   :math:`T`          temperature                    :math:`K`             `temperature {:}`
+   :math:`\phi`       relative humidity              :math:`\frac{Pa}{Pa}` `relative_humidity {:}`
+   ================== ============================== ===================== ==========================
 
    The pattern `:` for the dimensions can represent `{vertical}`, `{latitude,longitude}`, `{latitude,longitude,vertical}`,
    `{time}`, `{time,vertical}`, `{time,latitude,longitude}`, `{time,latitude,longitude,vertical}`, or no dimensions at all.
@@ -2570,7 +2570,7 @@ relative humidity
       :nowrap:
 
       \begin{eqnarray}
-         e_{w} & = & 6.1094e^{\frac{17.625(T-273.15)}{(T-273.15)+243.04}} \\
+         e_{w} & = & 610.94e^{\frac{17.625(T-273.15)}{(T-273.15)+243.04}} \\
          \phi & = & \frac{p_{H_{2}O}}{e_{w}}
       \end{eqnarray}
 
@@ -2585,7 +2585,7 @@ temperature
    ========= ================== ============================ ====================
    :math:`k` Boltzmann constant :math:`\frac{kg m^2}{K s^2}`
    :math:`n` number density     :math:`\frac{molec}{m^3}`    `number_density {:}`
-   :math:`p` pressure           :math:`hPa`                  `pressure {:}`
+   :math:`p` pressure           :math:`Pa`                   `pressure {:}`
    :math:`T` temperature        :math:`K`                    `temperature {:}`
    ========= ================== ============================ ====================
 
@@ -2594,7 +2594,7 @@ temperature
 
    .. math::
 
-      T = 10^{2}\frac{p}{kn}
+      T = \frac{p}{kn}
 
 
 #. temperature from virtual temperature
@@ -2623,7 +2623,7 @@ temperature
    ================ ====================== ============================ ============================
    :math:`k`        Boltzmann constant     :math:`\frac{kg m^2}{K s^2}`
    :math:`n_{surf}` surface number density :math:`\frac{molec}{m^3}`    `surface_number_density {:}`
-   :math:`p_{surf}` surface pressure       :math:`hPa`                  `surface_pressure {:}`
+   :math:`p_{surf}` surface pressure       :math:`Pa`                   `surface_pressure {:}`
    :math:`T_{surf}` surface temperature    :math:`K`                    `surface_temperature {:}`
    ================ ====================== ============================ ============================
 
@@ -2632,7 +2632,7 @@ temperature
 
    .. math::
 
-      T_{surf} = 10^{2}\frac{p_{surf}}{kn_{surf}}
+      T_{surf} = \frac{p_{surf}}{kn_{surf}}
 
 
 virtual temperature
@@ -2668,7 +2668,7 @@ volume mixing ratio
    :math:`n_{air}` number density of total air             :math:`\frac{molec}{m^3}` `number_density {:}`
    :math:`n_{x}`   number density for air component x      :math:`\frac{molec}{m^3}` `<species>_number_density {:}`
                    (e.g. :math:`n_{O_{3}}`)
-   :math:`\nu_{x}` volume mixing ratio for air component x :math:`ppmv`              `<species>_volum_mixing_ratio {:}`
+   :math:`\nu_{x}` volume mixing ratio for air component x :math:`ppv`               `<species>_volum_mixing_ratio {:}`
                    (e.g. :math:`n_{O_{3}}`)
    =============== ======================================= ========================= ==================================
 
@@ -2677,21 +2677,21 @@ volume mixing ratio
 
    .. math::
 
-      \nu_{x} = 10^{6}\frac{n_{x}}{n_{air}}
+      \nu_{x} = \frac{n_{x}}{n_{air}}
 
 
 #. volume mixing ratio from mass mixing ratio
 
-   =============== ================================= ======================== ===================================
-   symbol          description                       unit                     variable name
-   =============== ================================= ======================== ===================================
-   :math:`M_{air}` molar mass for total air          :math:`\frac{g}{mol}`    `molar_mass {:}`
+   =============== ================================= ===================== ===================================
+   symbol          description                       unit                  variable name
+   =============== ================================= ===================== ===================================
+   :math:`M_{air}` molar mass for total air          :math:`\frac{g}{mol}` `molar_mass {:}`
    :math:`M_{x}`   molar mass for air component x    :math:`\frac{g}{mol}`
-   :math:`q_{x}`   mass mixing ratio of quantity x   :math:`\frac{{\mu}g}{g}` `<species>_mass_mixing_ratio {:}`
+   :math:`q_{x}`   mass mixing ratio of quantity x   :math:`\frac{kg}{kg}` `<species>_mass_mixing_ratio {:}`
                    with regard to total air
-   :math:`\nu_{x}` volume mixing ratio of quantity x :math:`ppmv`             `<species>_volume_mixing_ratio {:}`
+   :math:`\nu_{x}` volume mixing ratio of quantity x :math:`ppv`           `<species>_volume_mixing_ratio {:}`
                    with regard to total air
-   =============== ================================= ======================== ===================================
+   =============== ================================= ===================== ===================================
 
    The pattern `:` for the dimensions can represent `{vertical}`, `{latitude,longitude}`, `{latitude,longitude,vertical}`,
    `{time}`, `{time,vertical}`, `{time,latitude,longitude}`, `{time,latitude,longitude,vertical}`, or no dimensions at all.
@@ -2703,22 +2703,22 @@ volume mixing ratio
 
 #. volume mixing ratio from partial pressure
 
-   =============== ======================================= ============ ===================================
-   symbol          description                             unit         variable name
-   =============== ======================================= ============ ===================================
-   :math:`p`       pressure                                :math:`hPa`  `pressure {:}`
-   :math:`p_{x}`   partial pressure for air component x    :math:`hPa`  `<species>_partial_pressure {:}`
+   =============== ======================================= =========== ===================================
+   symbol          description                             unit        variable name
+   =============== ======================================= =========== ===================================
+   :math:`p`       pressure                                :math:`Pa`  `pressure {:}`
+   :math:`p_{x}`   partial pressure for air component x    :math:`Pa`  `<species>_partial_pressure {:}`
                    (e.g. :math:`p_{O_{3}}`)
-   :math:`\nu_{x}` volume mixing ratio for air component x :math:`ppmv` `<species>_volume_mixing_ratio {:}`
+   :math:`\nu_{x}` volume mixing ratio for air component x :math:`ppv` `<species>_volume_mixing_ratio {:}`
                    (e.g. :math:`\nu_{O_{3}}`)
-   =============== ======================================= ============ ===================================
+   =============== ======================================= =========== ===================================
 
    The pattern `:` for the dimensions can represent `{vertical}`, `{latitude,longitude}`, `{latitude,longitude,vertical}`,
    `{time}`, `{time,vertical}`, `{time,latitude,longitude}`, `{time,latitude,longitude,vertical}`, or no dimensions at all.
 
    .. math::
 
-      \nu_{x} = 10^{6}\frac{p_{x}}{p}
+      \nu_{x} = \frac{p_{x}}{p}
 
 
 #. volume mixing ratio dry air from number density
@@ -2729,7 +2729,7 @@ volume mixing ratio
    :math:`n_{dry\_air}`  number density of total air             :math:`\frac{molec}{m^3}` `<species>_number_density_dry_air {:}`
    :math:`n_{x}`         number density for air component x      :math:`\frac{molec}{m^3}` `<species>_number_density {:}`
                          (e.g. :math:`n_{O_{3}}`)
-   :math:`\bar{\nu}_{x}` volume mixing ratio for air component x :math:`ppmv`              `<species>_volum_mixing_ratio_dry_air {:}`
+   :math:`\bar{\nu}_{x}` volume mixing ratio for air component x :math:`ppv`               `<species>_volum_mixing_ratio_dry_air {:}`
                          (e.g. :math:`n_{O_{3}}`)
    ===================== ======================================= ========================= ==========================================
 
@@ -2738,21 +2738,21 @@ volume mixing ratio
 
    .. math::
 
-      \bar{\nu}_{x} = 10^{6}\frac{n_{x}}{n_{dry\_air}}
+      \bar{\nu}_{x} = \frac{n_{x}}{n_{dry\_air}}
 
 
 #. volume mixing ratio dry air from mass mixing ratio dry air
 
-   ===================== ================================= ======================== ===========================================
-   symbol                description                       unit                     variable name
-   ===================== ================================= ======================== ===========================================
+   ===================== ================================= ===================== ===========================================
+   symbol                description                       unit                  variable name
+   ===================== ================================= ===================== ===========================================
    :math:`M_{dry\_air}`  molar mass for dry air            :math:`\frac{g}{mol}`
    :math:`M_{x}`         molar mass for air component x    :math:`\frac{g}{mol}`
-   :math:`\bar{q}_{x}`   mass mixing ratio of quantity x   :math:`\frac{{\mu}g}{g}` `<species>_mass_mixing_ratio_dry_air {:}`
+   :math:`\bar{q}_{x}`   mass mixing ratio of quantity x   :math:`\frac{kg}{kg}` `<species>_mass_mixing_ratio_dry_air {:}`
                          with regard to dry air
-   :math:`\bar{\nu}_{x}` volume mixing ratio of quantity x :math:`ppmv`             `<species>_volume_mixing_ratio_dry_air {:}`
+   :math:`\bar{\nu}_{x}` volume mixing ratio of quantity x :math:`ppv`           `<species>_volume_mixing_ratio_dry_air {:}`
                          with regard to dry air
-   ===================== ================================= ======================== ===========================================
+   ===================== ================================= ===================== ===========================================
 
    The pattern `:` for the dimensions can represent `{vertical}`, `{latitude,longitude}`, `{latitude,longitude,vertical}`,
    `{time}`, `{time,vertical}`, `{time,latitude,longitude}`, `{time,latitude,longitude,vertical}`, or no dimensions at all.
@@ -2764,21 +2764,21 @@ volume mixing ratio
 
 #. volume mixing ratio dry air from partial pressure
 
-   ===================== ======================================= ============ ===========================================
-   symbol                description                             unit         variable name
-   ===================== ======================================= ============ ===========================================
-   :math:`p_{x}`         partial pressure for air component x    :math:`hPa`  `<species>_partial_pressure {:}`
+   ===================== ======================================= =========== ===========================================
+   symbol                description                             unit        variable name
+   ===================== ======================================= =========== ===========================================
+   :math:`p_{x}`         partial pressure for air component x    :math:`Pa`  `<species>_partial_pressure {:}`
                          (e.g. :math:`p_{O_{3}}`)
-   :math:`\bar{\nu}_{x}` volume mixing ratio for air component x :math:`ppmv` `<species>_volume_mixing_ratio_dry_air {:}`
+   :math:`\bar{\nu}_{x}` volume mixing ratio for air component x :math:`ppv` `<species>_volume_mixing_ratio_dry_air {:}`
                          (e.g. :math:`\nu_{O_{3}}`)
-   ===================== ======================================= ============ ===========================================
+   ===================== ======================================= =========== ===========================================
 
    The pattern `:` for the dimensions can represent `{vertical}`, `{latitude,longitude}`, `{latitude,longitude,vertical}`,
    `{time}`, `{time,vertical}`, `{time,latitude,longitude}`, `{time,latitude,longitude,vertical}`, or no dimensions at all.
 
    .. math::
 
-      \bar{\nu}_{x} = 10^{6}\frac{p_{x}}{p_{dry\_air}}
+      \bar{\nu}_{x} = \frac{p_{x}}{p_{dry\_air}}
 
 
 Optical variable conversions
@@ -2793,7 +2793,7 @@ frequency
    symbol          description    unit                variable name
    =============== ============== =================== ================
    :math:`c`       speed of light :math:`\frac{m}{s}`
-   :math:`\lambda` wavelength     :math:`nm`          `wavelength {:}`
+   :math:`\lambda` wavelength     :math:`m`           `wavelength {:}`
    :math:`\nu`     frequency      :math:`Hz`          `frequency {:}`
    =============== ============== =================== ================
 
@@ -2801,24 +2801,24 @@ frequency
 
    .. math::
 
-      \nu = 10^{9}\frac{c}{\lambda}
+      \nu = \frac{c}{\lambda}
 
 
 #. frequency from wavenumber
 
-   =================== ============== ==================== ================
-   symbol              description    unit                 variable name
-   =================== ============== ==================== ================
+   =================== ============== =================== ================
+   symbol              description    unit                variable name
+   =================== ============== =================== ================
    :math:`c`           speed of light :math:`\frac{m}{s}`
-   :math:`\nu`         frequency      :math:`Hz`           `frequency {:}`
-   :math:`\tilde{\nu}` wavenumber     :math:`\frac{1}{cm}` `wavenumber {:}`
-   =================== ============== ==================== ================
+   :math:`\nu`         frequency      :math:`Hz`          `frequency {:}`
+   :math:`\tilde{\nu}` wavenumber     :math:`\frac{1}{m}` `wavenumber {:}`
+   =================== ============== =================== ================
 
    The pattern `:` for the first dimensions can represent `{spectral}`, `{time}`, `{time,spectral}`, or no dimensions at all.
 
    .. math::
 
-      \nu = 10^{2}c\tilde{\nu}
+      \nu = c\tilde{\nu}
 
 
 wavelength
@@ -2830,31 +2830,31 @@ wavelength
    symbol          description    unit                variable name
    =============== ============== =================== ================
    :math:`c`       speed of light :math:`\frac{m}{s}`
-   :math:`\nu`     frequency      :math:`Hz`           `frequency {:}`
-   :math:`\lambda` wavelength     :math:`nm`          `wavelength {:}`
+   :math:`\nu`     frequency      :math:`Hz`          `frequency {:}`
+   :math:`\lambda` wavelength     :math:`m`           `wavelength {:}`
    =============== ============== =================== ================
 
    The pattern `:` for the first dimensions can represent `{spectral}`, `{time}`, `{time,spectral}`, or no dimensions at all.
 
    .. math::
 
-      \lambda = 10^{9}\frac{c}{\nu}
+      \lambda = \frac{c}{\nu}
 
 
 #. wavelength from wavenumber
 
-   =================== ============== ==================== ================
-   symbol              description    unit                 variable name
-   =================== ============== ==================== ================
-   :math:`\lambda`     wavelength     :math:`nm`           `wavelength {:}`
-   :math:`\tilde{\nu}` wavenumber     :math:`\frac{1}{cm}` `wavenumber {:}`
-   =================== ============== ==================== ================
+   =================== ============== =================== ================
+   symbol              description    unit                variable name
+   =================== ============== =================== ================
+   :math:`\lambda`     wavelength     :math:`m`           `wavelength {:}`
+   :math:`\tilde{\nu}` wavenumber     :math:`\frac{1}{m}` `wavenumber {:}`
+   =================== ============== =================== ================
 
    The pattern `:` for the first dimensions can represent `{spectral}`, `{time}`, `{time,spectral}`, or no dimensions at all.
 
    .. math::
 
-      \lambda = \frac{10^{-7}}{\tilde{\nu}}
+      \lambda = \frac{1}{\tilde{\nu}}
 
 
 wavenumber
@@ -2862,33 +2862,33 @@ wavenumber
 
 #. wavenumber from frequency
 
-   =================== ============== ==================== ================
-   symbol              description    unit                 variable name
-   =================== ============== ==================== ================
+   =================== ============== =================== ================
+   symbol              description    unit                variable name
+   =================== ============== =================== ================
    :math:`c`           speed of light :math:`\frac{m}{s}`
-   :math:`\nu`         frequency      :math:`Hz`           `frequency {:}`
-   :math:`\tilde{\nu}` wavenumber     :math:`\frac{1}{cm}` `wavenumber {:}`
-   =================== ============== ==================== ================
+   :math:`\nu`         frequency      :math:`Hz`          `frequency {:}`
+   :math:`\tilde{\nu}` wavenumber     :math:`\frac{1}{m}` `wavenumber {:}`
+   =================== ============== =================== ================
 
    The pattern `:` for the first dimensions can represent `{spectral}`, `{time}`, `{time,spectral}`, or no dimensions at all.
 
    .. math::
 
-      \tilde{\nu} = 10^{-2}\frac{\nu}{c}
+      \tilde{\nu} = \frac{\nu}{c}
 
 
 #. wavenumber from wavelength
 
-   =================== ============== ==================== ================
-   symbol              description    unit                 variable name
-   =================== ============== ==================== ================
-   :math:`\lambda`     wavelength     :math:`nm`           `wavelength {:}`
-   :math:`\tilde{\nu}` wavenumber     :math:`\frac{1}{cm}` `wavenumber {:}`
-   =================== ============== ==================== ================
+   =================== ============== =================== ================
+   symbol              description    unit                variable name
+   =================== ============== =================== ================
+   :math:`\lambda`     wavelength     :math:`m`           `wavelength {:}`
+   :math:`\tilde{\nu}` wavenumber     :math:`\frac{1}{m}` `wavenumber {:}`
+   =================== ============== =================== ================
 
    The pattern `:` for the first dimensions can represent `{spectral}`, `{time}`, `{time,spectral}`, or no dimensions at all.
 
    .. math::
 
-      \tilde{\nu} = \frac{10^{-7}}{\lambda}
+      \tilde{\nu} = \frac{1}{\lambda}
 

@@ -1210,11 +1210,11 @@ static int add_model_conversions()
     };
     int i;
 
-    if (add_aux_afgl86_conversion("pressure", HARP_UNIT_PRESSURE) != 0)
+    if (add_aux_afgl86_conversion("pressure", "hPa") != 0)
     {
         return -1;
     }
-    if (add_aux_usstd76_conversion("pressure", HARP_UNIT_PRESSURE) != 0)
+    if (add_aux_usstd76_conversion("pressure", "hPa") != 0)
     {
         return -1;
     }

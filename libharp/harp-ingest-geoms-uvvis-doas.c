@@ -713,8 +713,7 @@ static int read_vmr_offaxis(void *user_data, harp_array data)
         return -1;
     }
 
-    if (harp_convert_unit(info->vmr_unit, HARP_UNIT_VOLUME_MIXING_RATIO, info->num_time * info->num_vertical,
-                          data.double_data) != 0)
+    if (harp_convert_unit(info->vmr_unit, "ppmv", info->num_time * info->num_vertical, data.double_data) != 0)
     {
         return -1;
     }
@@ -735,7 +734,7 @@ static int read_vmr_offaxis_covariance(void *user_data, harp_array data)
         return -1;
     }
 
-    if (harp_convert_unit(info->vmr_covariance_unit, HARP_UNIT_VOLUME_MIXING_RATIO_SQUARED,
+    if (harp_convert_unit(info->vmr_covariance_unit, "(ppmv)2",
                           info->num_time * info->num_vertical * info->num_vertical, data.double_data) != 0)
     {
         return -1;
@@ -756,8 +755,7 @@ static int read_vmr_offaxis_uncertainty_random(void *user_data, harp_array data)
         return -1;
     }
 
-    if (harp_convert_unit(info->vmr_unit, HARP_UNIT_VOLUME_MIXING_RATIO, info->num_time * info->num_vertical,
-                          data.double_data) != 0)
+    if (harp_convert_unit(info->vmr_unit, "ppmv", info->num_time * info->num_vertical, data.double_data) != 0)
     {
         return -1;
     }
@@ -777,8 +775,7 @@ static int read_vmr_offaxis_uncertainty_systematic(void *user_data, harp_array d
         return -1;
     }
 
-    if (harp_convert_unit(info->vmr_unit, HARP_UNIT_VOLUME_MIXING_RATIO, info->num_time * info->num_vertical,
-                          data.double_data) != 0)
+    if (harp_convert_unit(info->vmr_unit, "ppmv", info->num_time * info->num_vertical, data.double_data) != 0)
     {
         return -1;
     }
@@ -797,8 +794,7 @@ static int read_vmr_offaxis_apriori(void *user_data, harp_array data)
         return -1;
     }
 
-    if (harp_convert_unit(info->vmr_unit, HARP_UNIT_VOLUME_MIXING_RATIO, info->num_time * info->num_vertical,
-                          data.double_data) != 0)
+    if (harp_convert_unit(info->vmr_unit, "ppmv", info->num_time * info->num_vertical, data.double_data) != 0)
     {
         return -1;
     }
@@ -892,8 +888,7 @@ static int read_vmr_zenith(void *user_data, harp_array data)
         return -1;
     }
 
-    if (harp_convert_unit(info->vmr_unit, HARP_UNIT_VOLUME_MIXING_RATIO, info->num_time * info->num_vertical,
-                          data.double_data) != 0)
+    if (harp_convert_unit(info->vmr_unit, "ppmv", info->num_time * info->num_vertical, data.double_data) != 0)
     {
         return -1;
     }
@@ -914,7 +909,7 @@ static int read_vmr_zenith_covariance(void *user_data, harp_array data)
         return -1;
     }
 
-    if (harp_convert_unit(info->vmr_covariance_unit, HARP_UNIT_VOLUME_MIXING_RATIO_SQUARED,
+    if (harp_convert_unit(info->vmr_covariance_unit, "(ppmv)2",
                           info->num_time * info->num_vertical * info->num_vertical, data.double_data) != 0)
     {
         return -1;
@@ -935,8 +930,7 @@ static int read_vmr_zenith_uncertainty_random(void *user_data, harp_array data)
         return -1;
     }
 
-    if (harp_convert_unit(info->vmr_unit, HARP_UNIT_VOLUME_MIXING_RATIO, info->num_time * info->num_vertical,
-                          data.double_data) != 0)
+    if (harp_convert_unit(info->vmr_unit, "ppmv", info->num_time * info->num_vertical, data.double_data) != 0)
     {
         return -1;
     }
@@ -956,8 +950,7 @@ static int read_vmr_zenith_uncertainty_systematic(void *user_data, harp_array da
         return -1;
     }
 
-    if (harp_convert_unit(info->vmr_unit, HARP_UNIT_VOLUME_MIXING_RATIO, info->num_time * info->num_vertical,
-                          data.double_data) != 0)
+    if (harp_convert_unit(info->vmr_unit, "ppmv", info->num_time * info->num_vertical, data.double_data) != 0)
     {
         return -1;
     }
@@ -976,8 +969,7 @@ static int read_vmr_zenith_apriori(void *user_data, harp_array data)
         return -1;
     }
 
-    if (harp_convert_unit(info->vmr_unit, HARP_UNIT_VOLUME_MIXING_RATIO, info->num_time * info->num_vertical,
-                          data.double_data) != 0)
+    if (harp_convert_unit(info->vmr_unit, "ppmv", info->num_time * info->num_vertical, data.double_data) != 0)
     {
         return -1;
     }
@@ -2038,8 +2030,8 @@ static int init_product_definition(harp_ingestion_module *module, uvvis_doas_gas
         snprintf(gas_mapping_path, MAX_PATH_LENGTH, "/%s.MIXING.RATIO.VOLUME_SCATTER.SOLAR.OFFAXIS",
                  geoms_gas_name[gas]);
         variable_definition = harp_ingestion_register_variable_full_read
-            (product_definition, gas_var_name, harp_type_double, 2, dimension_type, NULL, gas_description,
-             HARP_UNIT_VOLUME_MIXING_RATIO, NULL, read_vmr_offaxis);
+            (product_definition, gas_var_name, harp_type_double, 2, dimension_type, NULL, gas_description, "ppmv", NULL,
+             read_vmr_offaxis);
         harp_variable_definition_add_mapping(variable_definition, NULL, NULL, gas_mapping_path, NULL);
 
         /* <gas>_volume_mixing_ratio_covariance */
@@ -2049,8 +2041,8 @@ static int init_product_definition(harp_ingestion_module *module, uvvis_doas_gas
         snprintf(gas_mapping_path, MAX_PATH_LENGTH,
                  "/%s.MIXING.RATIO.VOLUME_SCATTER.SOLAR.OFFAXIS_UNCERTAINTY.RANDOM.COVARIANCE", geoms_gas_name[gas]);
         variable_definition = harp_ingestion_register_variable_full_read
-            (product_definition, gas_var_name, harp_type_double, 3, dimension_type, NULL, gas_description,
-             HARP_UNIT_VOLUME_MIXING_RATIO_SQUARED, NULL, read_vmr_offaxis_covariance);
+            (product_definition, gas_var_name, harp_type_double, 3, dimension_type, NULL, gas_description, "(ppmv)2",
+             NULL, read_vmr_offaxis_covariance);
         harp_variable_definition_add_mapping(variable_definition, NULL, NULL, gas_mapping_path, NULL);
 
         /* <gas>_volume_mixing_ratio_uncertainty_random */
@@ -2060,8 +2052,8 @@ static int init_product_definition(harp_ingestion_module *module, uvvis_doas_gas
         snprintf(gas_mapping_path, MAX_PATH_LENGTH,
                  "/%s.MIXING.RATIO.VOLUME_SCATTER.SOLAR.OFFAXIS_UNCERTAINTY.RANDOM.COVARIANCE", geoms_gas_name[gas]);
         variable_definition = harp_ingestion_register_variable_full_read
-            (product_definition, gas_var_name, harp_type_double, 2, dimension_type, NULL, gas_description,
-             HARP_UNIT_VOLUME_MIXING_RATIO, NULL, read_vmr_offaxis_uncertainty_random);
+            (product_definition, gas_var_name, harp_type_double, 2, dimension_type, NULL, gas_description, "ppmv", NULL,
+             read_vmr_offaxis_uncertainty_random);
         harp_variable_definition_add_mapping(variable_definition, NULL, NULL, gas_mapping_path,
                                              "the uncertainty is the square root of the trace of the covariance");
 
@@ -2073,8 +2065,8 @@ static int init_product_definition(harp_ingestion_module *module, uvvis_doas_gas
                  "/%s.MIXING.RATIO.VOLUME_SCATTER.SOLAR.OFFAXIS_UNCERTAINTY.SYSTEMATIC.COVARIANCE",
                  geoms_gas_name[gas]);
         variable_definition = harp_ingestion_register_variable_full_read
-            (product_definition, gas_var_name, harp_type_double, 2, dimension_type, NULL, gas_description,
-             HARP_UNIT_VOLUME_MIXING_RATIO, NULL, read_vmr_offaxis_uncertainty_systematic);
+            (product_definition, gas_var_name, harp_type_double, 2, dimension_type, NULL, gas_description, "ppmv", NULL,
+             read_vmr_offaxis_uncertainty_systematic);
         harp_variable_definition_add_mapping(variable_definition, NULL, NULL, gas_mapping_path,
                                              "the uncertainty is the square root of the trace of the covariance");
 
@@ -2084,8 +2076,8 @@ static int init_product_definition(harp_ingestion_module *module, uvvis_doas_gas
         snprintf(gas_mapping_path, MAX_PATH_LENGTH, "/%s.MIXING.RATIO.VOLUME_SCATTER.SOLAR.OFFAXIS_APRIORI",
                  geoms_gas_name[gas]);
         variable_definition = harp_ingestion_register_variable_full_read
-            (product_definition, gas_var_name, harp_type_double, 2, dimension_type, NULL, gas_description,
-             HARP_UNIT_VOLUME_MIXING_RATIO, NULL, read_vmr_offaxis_apriori);
+            (product_definition, gas_var_name, harp_type_double, 2, dimension_type, NULL, gas_description, "ppmv", NULL,
+             read_vmr_offaxis_apriori);
         harp_variable_definition_add_mapping(variable_definition, NULL, NULL, gas_mapping_path, NULL);
 
         /* <gas>_volume_mixing_ratio_avk */
@@ -2185,8 +2177,8 @@ static int init_product_definition(harp_ingestion_module *module, uvvis_doas_gas
         snprintf(gas_mapping_path, MAX_PATH_LENGTH, "/%s.MIXING.RATIO.VOLUME_SCATTER.SOLAR.ZENITH",
                  geoms_gas_name[gas]);
         variable_definition = harp_ingestion_register_variable_full_read
-            (product_definition, gas_var_name, harp_type_double, 2, dimension_type, NULL, gas_description,
-             HARP_UNIT_VOLUME_MIXING_RATIO, exclude_vmr_zenith, read_vmr_zenith);
+            (product_definition, gas_var_name, harp_type_double, 2, dimension_type, NULL, gas_description, "ppmv",
+             exclude_vmr_zenith, read_vmr_zenith);
         harp_variable_definition_add_mapping(variable_definition, NULL, NULL, gas_mapping_path, NULL);
 
         /* <gas>_volume_mixing_ratio_covariance */
@@ -2196,8 +2188,8 @@ static int init_product_definition(harp_ingestion_module *module, uvvis_doas_gas
         snprintf(gas_mapping_path, MAX_PATH_LENGTH,
                  "/%s.MIXING.RATIO.VOLUME_SCATTER.SOLAR.ZENITH_UNCERTAINTY.RANDOM.COVARIANCE", geoms_gas_name[gas]);
         variable_definition = harp_ingestion_register_variable_full_read
-            (product_definition, gas_var_name, harp_type_double, 3, dimension_type, NULL, gas_description,
-             HARP_UNIT_VOLUME_MIXING_RATIO_SQUARED, exclude_vmr_zenith, read_vmr_zenith_covariance);
+            (product_definition, gas_var_name, harp_type_double, 3, dimension_type, NULL, gas_description, "(ppmv)2",
+             exclude_vmr_zenith, read_vmr_zenith_covariance);
         harp_variable_definition_add_mapping(variable_definition, NULL, NULL, gas_mapping_path, NULL);
 
         /* <gas>_volume_mixing_ratio_uncertainty_random */
@@ -2207,8 +2199,8 @@ static int init_product_definition(harp_ingestion_module *module, uvvis_doas_gas
         snprintf(gas_mapping_path, MAX_PATH_LENGTH,
                  "/%s.MIXING.RATIO.VOLUME_SCATTER.SOLAR.ZENITH_UNCERTAINTY.RANDOM.COVARIANCE", geoms_gas_name[gas]);
         variable_definition = harp_ingestion_register_variable_full_read
-            (product_definition, gas_var_name, harp_type_double, 2, dimension_type, NULL, gas_description,
-             HARP_UNIT_VOLUME_MIXING_RATIO, exclude_vmr_zenith, read_vmr_zenith_uncertainty_random);
+            (product_definition, gas_var_name, harp_type_double, 2, dimension_type, NULL, gas_description, "ppmv",
+             exclude_vmr_zenith, read_vmr_zenith_uncertainty_random);
         harp_variable_definition_add_mapping(variable_definition, NULL, NULL, gas_mapping_path,
                                              "the uncertainty is the square root of the trace of the covariance");
 
@@ -2219,8 +2211,8 @@ static int init_product_definition(harp_ingestion_module *module, uvvis_doas_gas
         snprintf(gas_mapping_path, MAX_PATH_LENGTH,
                  "/%s.MIXING.RATIO.VOLUME_SCATTER.SOLAR.ZENITH_UNCERTAINTY.SYSTEMATIC.COVARIANCE", geoms_gas_name[gas]);
         variable_definition = harp_ingestion_register_variable_full_read
-            (product_definition, gas_var_name, harp_type_double, 2, dimension_type, NULL, gas_description,
-             HARP_UNIT_VOLUME_MIXING_RATIO, exclude_vmr_zenith, read_vmr_zenith_uncertainty_systematic);
+            (product_definition, gas_var_name, harp_type_double, 2, dimension_type, NULL, gas_description, "ppmv",
+             exclude_vmr_zenith, read_vmr_zenith_uncertainty_systematic);
         harp_variable_definition_add_mapping(variable_definition, NULL, NULL, gas_mapping_path,
                                              "the uncertainty is the square root of the trace of the covariance");
 
@@ -2230,8 +2222,8 @@ static int init_product_definition(harp_ingestion_module *module, uvvis_doas_gas
         snprintf(gas_mapping_path, MAX_PATH_LENGTH, "/%s.MIXING.RATIO.VOLUME_SCATTER.SOLAR.ZENITH_APRIORI",
                  geoms_gas_name[gas]);
         variable_definition = harp_ingestion_register_variable_full_read
-            (product_definition, gas_var_name, harp_type_double, 2, dimension_type, NULL, gas_description,
-             HARP_UNIT_VOLUME_MIXING_RATIO, version >= 7 ? NULL : exclude_vmr_zenith, read_vmr_zenith_apriori);
+            (product_definition, gas_var_name, harp_type_double, 2, dimension_type, NULL, gas_description, "ppmv",
+             version >= 7 ? NULL : exclude_vmr_zenith, read_vmr_zenith_apriori);
         harp_variable_definition_add_mapping(variable_definition, NULL, NULL, gas_mapping_path, NULL);
 
         /* <gas>_volume_mixing_ratio_avk */

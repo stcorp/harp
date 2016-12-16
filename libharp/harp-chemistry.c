@@ -152,13 +152,13 @@ double chemical_species_molar_mass[] = {
 /** Calculate water vapour saturation pressure.
  * Use August-Roche-Magnus formula.
  * \param temperature  Temperature [K]
- * \return the water vapour saturation pressure [hPa]
+ * \return the water vapour saturation pressure [Pa]
  */
 static double get_water_vapour_saturation_pressure_from_temperature(double temperature)
 {
     double temperature_C = temperature - 273.15;        /* Temperature [degreeC] */
 
-    return 6.1094 * exp(17.625 * temperature_C / (temperature_C + 243.04));
+    return 610.94 * exp(17.625 * temperature_C / (temperature_C + 243.04));
 }
 
 /** Return species name
@@ -211,17 +211,17 @@ double harp_density_from_partial_column_and_altitude_bounds(double partial_colum
 /* Convert number density to mass density
  * \param number_density Number density [molec/m3]
  * \param molar_mass Molar mass [g/mol]
- * \return the mass density [ug/m3] */
+ * \return the mass density [kg/m3] */
 double harp_mass_density_from_number_density(double number_density, double molar_mass)
 {
-    return 1e6 * number_density * molar_mass / CONST_NUM_AVOGADRO;
+    return 1e-3 * number_density * molar_mass / CONST_NUM_AVOGADRO;
 }
 
 /* Convert volume mixing ratio to mass mixing ratio
- * \param volume_mixing_ratio Volume mixing ratio of the air component [ppmv]
+ * \param volume_mixing_ratio Volume mixing ratio of the air component [ppv]
  * \param molar_mass_species Molar mass of the air component [g/mol]
  * \param molar_mass_air Molar mass of air [g/mol]
- * \return the mass mixing ratio [ug/g] */
+ * \return the mass mixing ratio [kg/kg] */
 double harp_mass_mixing_ratio_from_volume_mixing_ratio(double volume_mixing_ratio, double molar_mass_species,
                                                        double molar_mass_air)
 {
@@ -229,33 +229,31 @@ double harp_mass_mixing_ratio_from_volume_mixing_ratio(double volume_mixing_rati
 }
 
 /** Get molar mass of total (wet) air from density and number density
- * \param density mass density of total air [ug/g]
+ * \param density mass density of total air [kg/kg]
  * \param number_density number density of total air [molec/m3]
  * \return the molar mass of total air [g/mol]
  */
 double harp_molar_mass_air_from_density_and_number_density(double density, double number_density)
 {
-    return 1e-6 * density * CONST_NUM_AVOGADRO / number_density;
+    return 1e3 * density * CONST_NUM_AVOGADRO / number_density;
 }
 
 /** Get molar mass of total (wet) air from H2O mass mixing ratio
- * \param h2o_mass_mixing_ratio H2O mass mixing ratio [ug/g]
+ * \param h2o_mass_mixing_ratio H2O mass mixing ratio [kg/kg]
  * \return the molar mass of total air [g/mol]
  */
 double harp_molar_mass_air_from_h2o_mass_mixing_ratio(double h2o_mass_mixing_ratio)
 {
-    h2o_mass_mixing_ratio *= 1e-6;      /* convert from [ug/g] to [g/g] */
     return (CONST_MOLAR_MASS_DRY_AIR * CONST_MOLAR_MASS_H2O) /
         ((1 - h2o_mass_mixing_ratio) * CONST_MOLAR_MASS_H2O + h2o_mass_mixing_ratio * CONST_MOLAR_MASS_DRY_AIR);
 }
 
 /** Get molar mass of total (wet) air from H2O volume mixing ratio
- * \param h2o_volume_mixing_ratio H2O volume mixing ratio [ppmv]
+ * \param h2o_volume_mixing_ratio H2O volume mixing ratio [ppv]
  * \return the molar mass of total air [g/mol]
  */
 double harp_molar_mass_air_from_h2o_volume_mixing_ratio(double h2o_volume_mixing_ratio)
 {
-    h2o_volume_mixing_ratio *= 1e-6;    /* convert from [ppmv] to [ppv] */
     return CONST_MOLAR_MASS_DRY_AIR * (1 - h2o_volume_mixing_ratio) + CONST_MOLAR_MASS_H2O * h2o_volume_mixing_ratio;
 }
 
@@ -271,33 +269,33 @@ double harp_molar_mass_for_species(harp_chemical_species species)
 }
 
 /** Convert mass density to number_density
- * \param mass_density Mass density [ug/m3]
+ * \param mass_density Mass density [kg/m3]
  * \param molar_mass Molar mass [g/mol]
  * \return the number density [molec/m3]
  */
 double harp_number_density_from_mass_density(double mass_density, double molar_mass)
 {
-    return 1e-6 * mass_density * CONST_NUM_AVOGADRO / molar_mass;
+    return 1e3 * mass_density * CONST_NUM_AVOGADRO / molar_mass;
 }
 
 /** Convert (partial) pressure and temperature to number_density
- * \param pressure (Partial) pressure [hPa]
+ * \param pressure (Partial) pressure [Pa]
  * \param temperature Temperature [K]
  * \return the number density [molec/m3]
  */
 double harp_number_density_from_pressure_and_temperature(double pressure, double temperature)
 {
-    return 1e2 * pressure / (CONST_BOLTZMANN * temperature);
+    return pressure / (CONST_BOLTZMANN * temperature);
 }
 
 /** Convert volume mixing ratio to number_density
- * \param volume_mixing_ratio volume mixing ratio [ppmv]
+ * \param volume_mixing_ratio volume mixing ratio [ppv]
  * \param number_density_air Number density of air [molec/cm3]
  * \return the number density [molec/m3]
  */
 double harp_number_density_from_volume_mixing_ratio(double volume_mixing_ratio, double number_density_air)
 {
-    return 1e-6 * volume_mixing_ratio * number_density_air;
+    return volume_mixing_ratio * number_density_air;
 }
 
 /** Convert a density to a partial column using the altitude boundaries
@@ -313,29 +311,29 @@ double harp_partial_column_from_density_and_altitude_bounds(double density, cons
 }
 
 /** Convert volume mixing ratio to partial pressure
- * \param volume_mixing_ratio volume mixing ratio [ppmv]
- * \param pressure Pressure [hPa]
- * \return the partial pressure [hPa]
+ * \param volume_mixing_ratio volume mixing ratio [ppv]
+ * \param pressure Pressure [Pa]
+ * \return the partial pressure [Pa]
  */
 double harp_partial_pressure_from_volume_mixing_ratio_and_pressure(double volume_mixing_ratio, double pressure)
 {
-    return 1e-6 * volume_mixing_ratio * pressure;
+    return volume_mixing_ratio * pressure;
 }
 
 /** Convert number density to (partial) pressure
  * \param number_density Number density [molec/m3]
  * \param temperature Temperature [K]
- * \return the (partial) pressure [hPa]
+ * \return the (partial) pressure [Pa]
  */
 double harp_pressure_from_number_density_and_temperature(double number_density, double temperature)
 {
-    return 1e-2 * number_density * CONST_BOLTZMANN * temperature;
+    return number_density * CONST_BOLTZMANN * temperature;
 }
 
 /** Calculate the relative humidity from the given temperature and water vapour partial pressure.
  * The relative humidity is the ratio of the partial pressure of water vapour in a
  * gaseous mixture of air and water vapour to the saturated vapour pressure of water at a given temperature.
- * \param partial_pressure_h2o  Water vapour partial pressure [hPa]
+ * \param partial_pressure_h2o  Water vapour partial pressure [Pa]
  * \param temperature  Temperature [K]
  * \return the relative humidity [%]
  */
@@ -346,12 +344,12 @@ double harp_relative_humidity_from_h2o_partial_pressure_and_temperature(double p
 
 /** Convert number density to temperature
  * \param number_density Number density [molec/m3]
- * \param pressure (partial) Pressure [hPa]
+ * \param pressure (partial) Pressure [Pa]
  * \return the temperature [K]
  */
 double harp_temperature_from_number_density_and_pressure(double number_density, double pressure)
 {
-    return 1e2 * pressure / (number_density * CONST_BOLTZMANN);
+    return pressure / (number_density * CONST_BOLTZMANN);
 }
 
 /** Calculate temperature from virtual temperature
@@ -389,22 +387,21 @@ double harp_volume_mixing_ratio_from_mass_mixing_ratio(double mass_mixing_ratio,
 /** Convert number density to volume mixing ratio
  * \param number_density Number density of air component [molec/m3]
  * \param number_density_air Number density of air [molec/cm3]
- * \return the volume mixing ratio [ppmv]
+ * \return the volume mixing ratio [ppv]
  */
 double harp_volume_mixing_ratio_from_number_density(double number_density, double number_density_air)
 {
-    return 1e6 * number_density / number_density_air;
+    return number_density / number_density_air;
 }
 
 /** Convert partial pressure to volume mixing ratio
- * \param partial_pressure  Partial pressure of constituent [hPa]
- * \param pressure   Pressure of air [hPa]
- * \return the volume mixing ratio [ppmv]
+ * \param partial_pressure  Partial pressure of constituent [Pa]
+ * \param pressure   Pressure of air [Pa]
+ * \return the volume mixing ratio [ppv]
  */
 double harp_volume_mixing_ratio_from_partial_pressure_and_pressure(double partial_pressure, double pressure)
 {
-    /* Convert [1] to [ppmv] */
-    return 1e6 * partial_pressure / pressure;
+    return partial_pressure / pressure;
 }
 
 /**

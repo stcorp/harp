@@ -270,25 +270,23 @@ static double get_solar_declination_angle_from_datetime(double datetime)
 }
 
 /** Convert (electromagnetic wave) wavelength to (electromagnetic wave) frequency
- * \param wavelength      Wavelength [nm]
+ * \param wavelength      Wavelength [m]
  * \return the frequency [Hz]
  */
 double harp_frequency_from_wavelength(double wavelength)
 {
-    /* Convert wavelength [nm] to [m] */
     /* frequency = c / wavelength */
-    return 1.0e9 * (double)CONST_SPEED_OF_LIGHT / wavelength;
+    return (double)CONST_SPEED_OF_LIGHT / wavelength;
 }
 
 /** Convert (electromagnetic wave) wavenumber to (electromagnetic wave) frequency
- * \param wavenumber      Wavenumber [1/cm]
+ * \param wavenumber      Wavenumber [1/m]
  * \return the frequency [Hz]
  */
 double harp_frequency_from_wavenumber(double wavenumber)
 {
-    /* Convert wavenumber [1/cm] to [1/m] */
     /* frequency = c * wavenumber */
-    return 1.0e2 * (double)CONST_SPEED_OF_LIGHT *wavenumber;
+    return (double)CONST_SPEED_OF_LIGHT *wavenumber;
 }
 
 /* Calculate the gravitational acceleration gsurf at the Earth's surface for a given latitude
@@ -727,40 +725,36 @@ int harp_sensor_geometry_angle_profiles_from_sensor_geometry_angles(double altit
 
 /** Convert (electromagnetic wave) frequency to (electromagnetic wave) wavelength
  * \param frequency Frequency [Hz]
- * \return Wavelength [nm]
+ * \return Wavelength [m]
  */
 double harp_wavelength_from_frequency(double frequency)
 {
-    /* Convert [m] to [nm] */
-    return 1.0e9 * (double)CONST_SPEED_OF_LIGHT / frequency;
+    return (double)CONST_SPEED_OF_LIGHT / frequency;
 }
 
 /** Convert (electromagnetic wave) wavenumber to (electromagnetic wave) wavelength
- * \param wavenumber Wavenumber [1/cm]
- * \return Wavelength [nm]
+ * \param wavenumber Wavenumber [1/m]
+ * \return Wavelength [m]
  */
 double harp_wavelength_from_wavenumber(double wavenumber)
 {
-    /* Convert wavenumber [1/cm] to [1/nm] */
-    return 1.0e-7 / wavenumber;
+    return 1.0 / wavenumber;
 }
 
 /** Convert (electromagnetic wave) frequency to (electromagnetic wave) wavenumber
  * \param frequency Frequency [Hz]
- * \return Wavenumber [1/cm]
+ * \return Wavenumber [1/m]
  */
 double harp_wavenumber_from_frequency(double frequency)
 {
-    /* Convert wavenumber [m] to [cm] */
-    return 1.0e-2 * frequency / (double)CONST_SPEED_OF_LIGHT;
+    return frequency / (double)CONST_SPEED_OF_LIGHT;
 }
 
 /** Convert (electromagnetic wave) wavelength to (electromagnetic wave) wavenumber
- * \param wavelength Wavelength [nm]
- * \return Wavenumber [1/cm]
+ * \param wavelength Wavelength [m]
+ * \return Wavenumber [1/m]
  */
 double harp_wavenumber_from_wavelength(double wavelength)
 {
-    /* Convert wavelength [1/nm] to [1/cm] */
-    return 1.0e7 / wavelength;
+    return 1.0 / wavelength;
 }

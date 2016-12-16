@@ -785,7 +785,7 @@ static int init_product_definition(harp_ingestion_module *module, mwr_gas gas, i
     snprintf(gas_description, MAX_DESCRIPTION_LENGTH, "%s volume mixing ratio", gas_name[gas]);
     variable_definition = harp_ingestion_register_variable_full_read
         (product_definition, gas_var_name, harp_type_double, 2, dimension_type, NULL, gas_description,
-         version == 1 ? "1e6 ppmv" : "ppmv", NULL, read_vmr);
+         version == 1 ? "ppv" : "ppmv", NULL, read_vmr);
     snprintf(gas_mapping_path, MAX_PATH_LENGTH, "/%s.MIXING.RATIO%s_EMISSION", gas_name[gas],
              version == 1 ? "" : ".VOLUME");
     harp_variable_definition_add_mapping(variable_definition, NULL, NULL, gas_mapping_path, NULL);
@@ -796,7 +796,7 @@ static int init_product_definition(harp_ingestion_module *module, mwr_gas gas, i
              gas_name[gas]);
     variable_definition = harp_ingestion_register_variable_full_read
         (product_definition, gas_var_name, harp_type_double, 2, dimension_type, NULL, gas_description,
-         version == 1 ? "1e6 ppmv" : "ppmv", NULL, version == 1 ? read_vmr_relerr_random : read_vmr_uncertainty_random);
+         version == 1 ? "ppv" : "ppmv", NULL, version == 1 ? read_vmr_relerr_random : read_vmr_uncertainty_random);
     snprintf(gas_mapping_path, MAX_PATH_LENGTH, "/%s.MIXING.RATIO%s_EMISSION_UNCERTAINTY.RANDOM%s", gas_name[gas],
              version == 1 ? "" : ".VOLUME", version == 1 ? "" : ".STANDARD");
     harp_variable_definition_add_mapping(variable_definition, NULL, NULL, gas_mapping_path, NULL);
@@ -807,7 +807,7 @@ static int init_product_definition(harp_ingestion_module *module, mwr_gas gas, i
              gas_name[gas]);
     variable_definition = harp_ingestion_register_variable_full_read
         (product_definition, gas_var_name, harp_type_double, 3, dimension_type, NULL, gas_description,
-         version == 1 ? "1e6 ppmv" : "ppmv", NULL,
+         version == 1 ? "ppv" : "ppmv", NULL,
          version == 1 ? read_vmr_relerr_systematic : read_vmr_uncertainty_systematic);
     snprintf(gas_mapping_path, MAX_PATH_LENGTH, "/%s.MIXING.RATIO%s_EMISSION_UNCERTAINTY.SYSTEMATIC%s", gas_name[gas],
              version == 1 ? "" : ".VOLUME", version == 1 ? "" : ".STANDARD");
@@ -818,7 +818,7 @@ static int init_product_definition(harp_ingestion_module *module, mwr_gas gas, i
     snprintf(gas_description, MAX_DESCRIPTION_LENGTH, "a priori %s volume mixing ratio", gas_name[gas]);
     variable_definition = harp_ingestion_register_variable_full_read
         (product_definition, gas_var_name, harp_type_double, 2, dimension_type, NULL, gas_description,
-         version == 1 ? "1e6 ppmv" : "ppmv", NULL, read_vmr_apriori);
+         version == 1 ? "ppv" : "ppmv", NULL, read_vmr_apriori);
     snprintf(gas_mapping_path, MAX_PATH_LENGTH, "/%s.MIXING.RATIO%s_EMISSION_APRIORI", gas_name[gas],
              version == 1 ? "" : ".VOLUME");
     harp_variable_definition_add_mapping(variable_definition, NULL, NULL, gas_mapping_path, NULL);

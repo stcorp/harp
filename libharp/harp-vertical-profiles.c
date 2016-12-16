@@ -48,10 +48,10 @@ double harp_altitude_from_gph_and_latitude(double gph, double latitude)
 
 /** Convert a pressure profile to an altitude profile
  * \param num_levels Length of vertical axis
- * \param pressure_profile Pressure vertical profile [hPa]
+ * \param pressure_profile Pressure vertical profile [Pa]
  * \param temperature_profile Temperature vertical profile [K]
  * \param molar_mass_air Molar mass of total air [g/mol]
- * \param surface_pressure Surface pressure [hPa]
+ * \param surface_pressure Surface pressure [Pa]
  * \param surface_height Surface height [m]
  * \param latitude Latitude [degree_north]
  * \param altitude_profile variable in which the vertical profile will be stored [m]
@@ -137,10 +137,10 @@ double harp_gph_from_altitude_and_latitude(double altitude, double latitude)
 
 /** Convert a pressure profile to a geopotential height profile
  * \param num_levels Length of vertical axis
- * \param pressure_profile Pressure vertical profile [hPa]
+ * \param pressure_profile Pressure vertical profile [Pa]
  * \param temperature_profile Temperature vertical profile [K]
  * \param molar_mass_air Molar mass of total air [g/mol]
- * \param surface_pressure Surface pressure [hPa]
+ * \param surface_pressure Surface pressure [Pa]
  * \param surface_height Surface height [m]
  * \param gph_profile Variable in which the vertical profile will be stored [m]
  */
@@ -220,10 +220,10 @@ double harp_profile_column_from_partial_column(long num_levels, const double *pa
  * \param altitude_profile Altitude profile [m]
  * \param temperature_profile Temperature vertical profile [K]
  * \param molar_mass_air Molar mass of total air [g/mol]
- * \param surface_pressure Surface pressure [hPa]
+ * \param surface_pressure Surface pressure [Pa]
  * \param surface_height Surface height [m]
  * \param latitude Latitude [degree_north]
- * \param pressure_profile variable in which the vertical profile will be stored [hPa]
+ * \param pressure_profile variable in which the vertical profile will be stored [Pa]
  */
 void harp_profile_pressure_from_altitude(long num_levels, const double *altitude_profile,
                                          const double *temperature_profile, const double *molar_mass_air,
@@ -272,9 +272,9 @@ void harp_profile_pressure_from_altitude(long num_levels, const double *altitude
  * \param gph_profile Geopotential height profile [m]
  * \param temperature_profile Temperature vertical profile [K]
  * \param molar_mass_air Molar mass of total air [g/mol]
- * \param surface_pressure Surface pressure [hPa]
+ * \param surface_pressure Surface pressure [Pa]
  * \param surface_height Surface height [m]
- * \param pressure_profile Variable in which the vertical profile will be stored [hPa]
+ * \param pressure_profile Variable in which the vertical profile will be stored [Pa]
  */
 void harp_profile_pressure_from_gph(long num_levels, const double *gph_profile, const double *temperature_profile,
                                     const double *molar_mass_air, double surface_pressure, double surface_height,
