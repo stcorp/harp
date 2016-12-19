@@ -1,0 +1,13 @@
+<?xml version="1.0"?>
+<cd:ProductClass name="ODIN_SMR" last-modified="2016-12-19" xmlns:cd="http://www.stcorp.nl/coda/definition/2008/07">
+  <cd:Description>Odin SMR products</cd:Description>
+  <cd:ProductType name="L2">
+    <cd:Description>Odin SMR Level-2</cd:Description>
+    <cd:ProductDefinition id="L2" format="hdf4" version="0">
+      <cd:Description>The format definition for this product is taken from the HDF4-EOS file itself.</cd:Description>
+      <cd:DetectionRule>
+        <cd:MatchExpression path="/GHz/Data_Vgroup/Geolocation/Version2">true</cd:MatchExpression>
+      </cd:DetectionRule>
+    </cd:ProductDefinition>
+  </cd:ProductType>
+</cd:ProductClass>

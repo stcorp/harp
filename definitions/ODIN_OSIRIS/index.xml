@@ -1,0 +1,69 @@
+<?xml version="1.0"?>
+<cd:ProductClass name="ODIN_OSIRIS" last-modified="2016-12-19" xmlns:cd="http://www.stcorp.nl/coda/definition/2008/07">
+  <cd:Description>Odin OSIRIS products</cd:Description>
+  <cd:ProductType name="L2_Aerosol_MART">
+    <cd:Description>OSIRIS Odin L2 Aerosol Limb Saskatoon MART</cd:Description>
+    <cd:ProductDefinition id="L2_Aerosol_MART" format="hdf5" version="0">
+      <cd:Description>The format definition for this product is taken from the HDF5 file itself.</cd:Description>
+      <cd:DetectionRule>
+        <cd:MatchExpression path="/HDFEOS/ADDITIONAL/FILE_ATTRIBUTES">str(.@InstrumentName) == "OSIRIS"</cd:MatchExpression>
+        <cd:MatchExpression>str(.@ProcessLevel) == "L2"</cd:MatchExpression>
+        <!-- we only support products that have just 1 type of swath data -->
+        <cd:MatchExpression path="/HDFEOS/SWATHS">numelements(.) == 1</cd:MatchExpression>
+        <cd:MatchExpression>exists(./OSIRIS_Odin_Aerosol_MART)</cd:MatchExpression>
+      </cd:DetectionRule>
+    </cd:ProductDefinition>
+  </cd:ProductType>
+  <cd:ProductType name="L2_NO2_OE">
+    <cd:Description>OSIRIS Odin L2 NO2 Limb Chalmers DOAS OE</cd:Description>
+    <cd:ProductDefinition id="L2_NO2_OE" format="hdf5" version="0">
+      <cd:Description>The format definition for this product is taken from the HDF5 file itself.</cd:Description>
+      <cd:DetectionRule>
+        <cd:MatchExpression path="/HDFEOS/ADDITIONAL/FILE_ATTRIBUTES">str(.@InstrumentName) == "OSIRIS"</cd:MatchExpression>
+        <cd:MatchExpression>str(.@ProcessLevel) == "L2"</cd:MatchExpression>
+        <!-- we only support products that have just 1 type of swath data -->
+        <cd:MatchExpression path="/HDFEOS/SWATHS">numelements(.) == 1</cd:MatchExpression>
+        <cd:MatchExpression>exists(./OSIRIS_Odin_NO2_DOAS_OE)</cd:MatchExpression>
+      </cd:DetectionRule>
+    </cd:ProductDefinition>
+  </cd:ProductType>
+  <cd:ProductType name="L2_NO2_MART">
+    <cd:Description>OSIRIS Odin L2 NO2 Limb Saskatoon MART</cd:Description>
+    <cd:ProductDefinition id="L2_NO2_MART" format="hdf5" version="0">
+      <cd:Description>The format definition for this product is taken from the HDF5 file itself.</cd:Description>
+      <cd:DetectionRule>
+        <cd:MatchExpression path="/HDFEOS/ADDITIONAL/FILE_ATTRIBUTES">str(.@InstrumentName) == "OSIRIS"</cd:MatchExpression>
+        <cd:MatchExpression>str(.@ProcessLevel) == "L2"</cd:MatchExpression>
+        <!-- we only support products that have just 1 type of swath data -->
+        <cd:MatchExpression path="/HDFEOS/SWATHS">numelements(.) == 1</cd:MatchExpression>
+        <cd:MatchExpression>exists(./OSIRIS_Odin_NO2MART)</cd:MatchExpression>
+      </cd:DetectionRule>
+    </cd:ProductDefinition>
+  </cd:ProductType>
+  <cd:ProductType name="L2_O3_OE">
+    <cd:Description>OSIRIS Odin L2 O3 Limb York Triplet OE</cd:Description>
+    <cd:ProductDefinition id="L2_O3_OE" format="hdf5" version="0">
+      <cd:Description>The format definition for this product is taken from the HDF5 file itself.</cd:Description>
+      <cd:DetectionRule>
+        <cd:MatchExpression path="/HDFEOS/ADDITIONAL/FILE_ATTRIBUTES">str(.@InstrumentName) == "OSIRIS"</cd:MatchExpression>
+        <cd:MatchExpression>str(.@ProcessLevel) == "L2"</cd:MatchExpression>
+        <!-- we only support products that have just 1 type of swath data -->
+        <cd:MatchExpression path="/HDFEOS/SWATHS">numelements(.) == 1</cd:MatchExpression>
+        <cd:MatchExpression>exists(./OSIRIS_Odin_O3_Chappuis_triplet_OE)</cd:MatchExpression>
+      </cd:DetectionRule>
+    </cd:ProductDefinition>
+  </cd:ProductType>
+  <cd:ProductType name="L2_O3_MART">
+    <cd:Description>OSIRIS Odin L2 O3 Limb Saskatoon MART</cd:Description>
+    <cd:ProductDefinition id="L2_O3_MART" format="hdf5" version="0">
+      <cd:Description>The format definition for this product is taken from the HDF5 file itself.</cd:Description>
+      <cd:DetectionRule>
+        <cd:MatchExpression path="/HDFEOS/ADDITIONAL/FILE_ATTRIBUTES">str(.@InstrumentName) == "OSIRIS"</cd:MatchExpression>
+        <cd:MatchExpression>str(.@ProcessLevel) == "L2"</cd:MatchExpression>
+        <!-- we only support products that have just 1 type of swath data -->
+        <cd:MatchExpression path="/HDFEOS/SWATHS">numelements(.) == 1</cd:MatchExpression>
+        <cd:MatchExpression>exists(./OSIRIS_Odin_O3MART)</cd:MatchExpression>
+      </cd:DetectionRule>
+    </cd:ProductDefinition>
+  </cd:ProductType>
+</cd:ProductClass>
