@@ -1,21 +1,14 @@
 <?xml version="1.0"?>
-<cd:ProductClass name="ECMWF" last-modified="2016-09-22" xmlns:cd="http://www.stcorp.nl/coda/definition/2008/07">
+<cd:ProductClass name="ECMWF" last-modified="2016-12-20" xmlns:cd="http://www.stcorp.nl/coda/definition/2008/07">
   <cd:Description>ECMWF GRIB product</cd:Description>
   <cd:ProductType name="GRIB">
     <cd:Description>ECMWF GRIB model outputs</cd:Description>
-    <cd:ProductDefinition id="GRIB1" format="grib1" version="1">
+    <cd:ProductDefinition id="GRIB" format="grib" version="0">
       <cd:Description>The format definition for this product is taken from the GRIB file itself.</cd:Description>
       <cd:DetectionRule>
-      	<!-- centre 98 -> ECMWF -->
-        <cd:MatchExpression><![CDATA[all(/, int(./centre) == 98)]]></cd:MatchExpression>
-      </cd:DetectionRule>
-    </cd:ProductDefinition>
-    <cd:ProductDefinition id="GRIB2" format="grib2" version="2">
-      <cd:Description>The format definition for this product is taken from the GRIB file itself.</cd:Description>
-      <cd:DetectionRule>
-      	<!-- centre 98 -> ECMWF -->
-      	<!-- curret master tables version is 5 -->
-        <cd:MatchExpression><![CDATA[all(/, int(./centre) == 98 && int(./masterTablesVersion) == 5)]]></cd:MatchExpression>
+      	<!-- GRIB1/GRIB2: centre 98 -> ECMWF -->
+      	<!-- GRIB2: curret master tables version is 5 -->
+        <cd:MatchExpression><![CDATA[all(/, (exists(./grib1) && int(./grib1/centre) == 98) || (exists(./grib2) && int(./grib2/centre) == 98 && int(./grib2/masterTablesVersion) == 5))]]></cd:MatchExpression>
       </cd:DetectionRule>
     </cd:ProductDefinition>
   </cd:ProductType>
