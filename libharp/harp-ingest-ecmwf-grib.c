@@ -181,12 +181,11 @@ int param_is_profile[NUM_GRIB_PARAMETERS] = {
 typedef struct ingest_info_struct
 {
     coda_product *product;
-    int grib_version;   /* 1: GRIB1 or 2: GRIB2 */
     long num_messages;
     long num_grid_data;
-    /* GRIB1 grid_data_parameter_ref = table2Version * 256 + indicatorOfParameter
-     * GRIB2 grid_data_parameter_ref = (discipline * 256 + parameterCategory) * 256 + parameterNumber */
-    int *grid_data_parameter_ref;       /* [num_grid_data] */
+    /* GRIB1 grid_data_parameter_ref = (1 * 256 * 256 + table2Version) * 256 + indicatorOfParameter
+     * GRIB2 grid_data_parameter_ref = ((2 * 256 + discipline) * 256 + parameterCategory) * 256 + parameterNumber */
+    long *grid_data_parameter_ref;       /* [num_grid_data] */
     int ignore_duplicates;
     coda_cursor *parameter_cursor;      /* [num_grid_data], array of cursors to /[]/data([])/values for each param */
     double *level;      /* [num_grid_data] */
@@ -654,6 +653,15 @@ static grib_parameter get_grib2_parameter(int parameter_ref)
     return grib_param_unknown;
 }
 
+static grib_parameter get_grib_parameter(int parameter_ref)
+{
+    if (parameter_ref >> 24 == 1)
+    {
+        return get_grib1_parameter(parameter_ref & 0xffffff);
+    }
+    return get_grib2_parameter(parameter_ref & 0xffffff);
+}
+
 static int read_grid_data(ingest_info *info, long grid_data_index, harp_array data)
 {
     long dimensions[2];
@@ -1053,12 +1061,7 @@ static int get_datetime(coda_cursor *cursor, ingest_info *info, double *datetime
     uint32_t forecast_time;
     double scalefactor;
 
-    if (info->grib_version == 1 || !info->is_forecast_datetime)
-    {
-        *datetime = info->reference_datetime;
-        return 0;
-    }
-
+    /* this function is only used for GRIB2 messages */
     if (coda_cursor_goto_record_field_by_name(cursor, "indicatorOfUnitOfTimeRange") != 0)
     {
         harp_set_error(HARP_ERROR_CODA, NULL);
@@ -1112,7 +1115,7 @@ static int get_datetime(coda_cursor *cursor, ingest_info *info, double *datetime
     return 0;
 }
 
-static int get_reference_datetime(coda_cursor *cursor, ingest_info *info)
+static int get_reference_datetime(coda_cursor *cursor, int grib_version, ingest_info *info)
 {
     uint8_t significanceOfReferenceTime;
     uint16_t year;
@@ -1122,7 +1125,7 @@ static int get_reference_datetime(coda_cursor *cursor, ingest_info *info)
     uint8_t minute;
     uint8_t second = 0;
 
-    if (info->grib_version == 1)
+    if (grib_version == 1)
     {
         uint8_t centuryOfReferenceTimeOfData;
         uint8_t yearOfCentury;
@@ -1230,7 +1233,7 @@ static int get_reference_datetime(coda_cursor *cursor, ingest_info *info)
         harp_set_error(HARP_ERROR_CODA, NULL);
         return -1;
     }
-    if (info->grib_version == 2)
+    if (grib_version == 2)
     {
         if (coda_cursor_goto_next_record_field(cursor) != 0)
         {
@@ -1251,7 +1254,7 @@ static int get_reference_datetime(coda_cursor *cursor, ingest_info *info)
         return -1;
     }
 
-    if (info->grib_version == 1)
+    if (grib_version == 1)
     {
         uint8_t unitOfTimeRange;
         uint8_t P1;
@@ -1319,31 +1322,43 @@ static int get_reference_datetime(coda_cursor *cursor, ingest_info *info)
 
 static int get_num_grid_data(coda_cursor *cursor, ingest_info *info)
 {
+    long field_index;
+    long i;
+
     if (coda_cursor_get_num_elements(cursor, &info->num_messages) != 0)
     {
         harp_set_error(HARP_ERROR_CODA, NULL);
         return -1;
     }
 
-    if (info->grib_version == 1)
+    info->num_grid_data = 0;
+    if (coda_cursor_goto_first_array_element(cursor) != 0)
     {
-        info->num_grid_data = info->num_messages;
+        harp_set_error(HARP_ERROR_CODA, NULL);
+        return -1;
     }
-    else
+    for (i = 0; i < info->num_messages; i++)
     {
-        long i;
-
-        info->num_grid_data = 0;
-
-        if (coda_cursor_goto_first_array_element(cursor) != 0)
+        if (coda_cursor_get_available_union_field_index(cursor, &field_index) != 0)
         {
             harp_set_error(HARP_ERROR_CODA, NULL);
             return -1;
         }
-        for (i = 0; i < info->num_messages; i++)
+        if (field_index == 0)
+        {
+            /* GRIB1 */
+            info->num_grid_data++;
+        }
+        else
         {
             long num_data;
 
+            /* GRIB2 */
+            if (coda_cursor_goto_record_field_by_index(cursor, field_index) != 0)
+            {
+                harp_set_error(HARP_ERROR_CODA, NULL);
+                return -1;
+            }
             if (coda_cursor_goto_record_field_by_name(cursor, "data") != 0)
             {
                 harp_set_error(HARP_ERROR_CODA, NULL);
@@ -1357,27 +1372,28 @@ static int get_num_grid_data(coda_cursor *cursor, ingest_info *info)
             coda_cursor_goto_parent(cursor);
             if (num_data == 0)
             {
-                harp_set_error(HARP_ERROR_INGESTION, "missing data section for GRIB message %ld", i);
+                harp_set_error(HARP_ERROR_INGESTION, "missing data section for GRIB2 message %ld", i);
                 return -1;
             }
             info->num_grid_data += num_data;
+            coda_cursor_goto_parent(cursor);
+        }
 
-            if (i < info->num_messages - 1)
+        if (i < info->num_messages - 1)
+        {
+            if (coda_cursor_goto_next_array_element(cursor) != 0)
             {
-                if (coda_cursor_goto_next_array_element(cursor) != 0)
-                {
-                    harp_set_error(HARP_ERROR_CODA, NULL);
-                    return -1;
-                }
+                harp_set_error(HARP_ERROR_CODA, NULL);
+                return -1;
             }
         }
-        coda_cursor_goto_parent(cursor);
     }
+    coda_cursor_goto_parent(cursor);
 
     return 0;
 }
 
-static int get_lat_lon_grid(coda_cursor *cursor, ingest_info *info, int first)
+static int get_lat_lon_grid(coda_cursor *cursor, int grib_version, ingest_info *info, int first)
 {
     uint32_t Ni = 0;
     uint32_t Nj = 0;
@@ -1390,7 +1406,7 @@ static int get_lat_lon_grid(coda_cursor *cursor, ingest_info *info, int first)
     uint32_t N = 0;
     int is_gaussian = 0;
 
-    if (info->grib_version == 1)
+    if (grib_version == 1)
     {
         uint8_t dataRepresentationType;
 
@@ -1548,7 +1564,7 @@ static int get_lat_lon_grid(coda_cursor *cursor, ingest_info *info, int first)
 
     if (first)
     {
-        double scalefactor = info->grib_version == 1 ? 1e-3 : 1e-6;
+        double scalefactor = grib_version == 1 ? 1e-3 : 1e-6;
         int k;
 
         info->Ni = Ni;
@@ -1665,11 +1681,11 @@ static int init_cursors_and_grid(ingest_info *info)
         return -1;
     }
 
-    info->grid_data_parameter_ref = malloc(info->num_grid_data * sizeof(int));
+    info->grid_data_parameter_ref = malloc(info->num_grid_data * sizeof(long));
     if (info->grid_data_parameter_ref == NULL)
     {
         harp_set_error(HARP_ERROR_OUT_OF_MEMORY, "out of memory (could not allocate %lu bytes) (%s:%u)",
-                       info->num_grid_data * sizeof(int), __FILE__, __LINE__);
+                       info->num_grid_data * sizeof(long), __FILE__, __LINE__);
         return -1;
     }
     info->parameter_cursor = malloc(info->num_grid_data * sizeof(coda_cursor));
@@ -1694,10 +1710,35 @@ static int init_cursors_and_grid(ingest_info *info)
     }
     for (i = 0; i < info->num_messages; i++)
     {
-        int parameter_ref = 0;
+        long parameter_ref;
+        int grib_version;
+        long field_index;
         long num_data = 1;
 
-        if (info->grib_version == 2)
+        if (coda_cursor_get_available_union_field_index(&cursor, &field_index) != 0)
+        {
+            harp_set_error(HARP_ERROR_CODA, NULL);
+            return -1;
+        }
+        switch(field_index)
+        {
+            case 0:
+                grib_version = 1;
+                break;
+            case 1:
+                grib_version = 2;
+                break;
+            default:
+                assert(0);
+                exit(1);
+        }
+        parameter_ref = grib_version << 24;
+        if (coda_cursor_goto_record_field_by_index(&cursor, field_index) != 0)
+        {
+            harp_set_error(HARP_ERROR_CODA, NULL);
+            return -1;
+        }
+        if (grib_version == 2)
         {
             if (coda_cursor_goto_record_field_by_name(&cursor, "data") != 0)
             {
@@ -1712,12 +1753,12 @@ static int init_cursors_and_grid(ingest_info *info)
             coda_cursor_goto_parent(&cursor);
         }
 
-        if (get_reference_datetime(&cursor, info) != 0)
+        if (get_reference_datetime(&cursor, grib_version, info) != 0)
         {
             return -1;
         }
 
-        if (info->grib_version == 2)
+        if (grib_version == 2)
         {
             uint8_t discipline = 0;
 
@@ -1740,7 +1781,7 @@ static int init_cursors_and_grid(ingest_info *info)
             harp_set_error(HARP_ERROR_CODA, NULL);
             return -1;
         }
-        if (info->grib_version == 2)
+        if (grib_version == 2)
         {
             long num_grids;
             long j;
@@ -1762,7 +1803,7 @@ static int init_cursors_and_grid(ingest_info *info)
             }
             for (j = 0; j < num_grids; j++)
             {
-                if (get_lat_lon_grid(&cursor, info, i == 0 && j == 0) != 0)
+                if (get_lat_lon_grid(&cursor, grib_version, info, i == 0 && j == 0) != 0)
                 {
                     return -1;
                 }
@@ -1779,14 +1820,14 @@ static int init_cursors_and_grid(ingest_info *info)
         }
         else
         {
-            if (get_lat_lon_grid(&cursor, info, i == 0) != 0)
+            if (get_lat_lon_grid(&cursor, grib_version, info, i == 0) != 0)
             {
                 return -1;
             }
         }
         coda_cursor_goto_parent(&cursor);
 
-        if (info->grib_version == 2)
+        if (grib_version == 2)
         {
             long j;
 
@@ -1834,7 +1875,7 @@ static int init_cursors_and_grid(ingest_info *info)
                 coda_cursor_goto_parent(&cursor);
                 parameter_ref += parameterNumber;
                 info->grid_data_parameter_ref[parameter_index] = parameter_ref;
-                parameter = get_grib2_parameter(parameter_ref);
+                parameter = get_grib_parameter(parameter_ref);
 
                 if (get_datetime(&cursor, info, &datetime) != 0)
                 {
@@ -1969,7 +2010,7 @@ static int init_cursors_and_grid(ingest_info *info)
                 return -1;
             }
             coda_cursor_goto_parent(&cursor);
-            parameter_ref = table2Version * 256;
+            parameter_ref += table2Version * 256;
             if (coda_cursor_goto(&cursor, "indicatorOfParameter") != 0)
             {
                 harp_set_error(HARP_ERROR_CODA, NULL);
@@ -1983,7 +2024,7 @@ static int init_cursors_and_grid(ingest_info *info)
             coda_cursor_goto_parent(&cursor);
             parameter_ref += indicatorOfParameter;
             info->grid_data_parameter_ref[parameter_index] = parameter_ref;
-            parameter = get_grib1_parameter(parameter_ref);
+            parameter = get_grib_parameter(parameter_ref);
 
             if (!datetime_initialised)
             {
@@ -2083,6 +2124,7 @@ static int init_cursors_and_grid(ingest_info *info)
         }
         parameter_index++;
 
+        coda_cursor_goto_parent(&cursor);
         if (i < info->num_messages - 1)
         {
             if (coda_cursor_goto_next_array_element(&cursor) != 0)
@@ -2111,14 +2153,7 @@ static int init_cursors_and_grid(ingest_info *info)
     {
         grib_parameter param;
 
-        if (info->grib_version == 1)
-        {
-            param = get_grib1_parameter(info->grid_data_parameter_ref[i]);
-        }
-        else
-        {
-            param = get_grib2_parameter(info->grid_data_parameter_ref[i]);
-        }
+        param = get_grib_parameter(info->grid_data_parameter_ref[i]);
         if (param == grib_param_unknown)
         {
             for (j = 0; j < i; j++)
@@ -2131,7 +2166,7 @@ static int init_cursors_and_grid(ingest_info *info)
             /* only report the warning for the first occurence */
             if (i == j)
             {
-                if (info->grib_version == 1)
+                if (info->grid_data_parameter_ref[i] >> 24 == 1)
                 {
                     harp_report_warning("unsupported GRIB1 parameter (table2Version %d, indicatorOfParameter %d)",
                                         (info->grid_data_parameter_ref[i] >> 8) & 0xff,
@@ -2239,7 +2274,6 @@ static int ingest_info_new(coda_product *product, ingest_info **new_info)
     }
 
     info->product = product;
-    info->grib_version = 2;
     info->num_messages = 0;
     info->num_grid_data = 0;
     info->grid_data_parameter_ref = NULL;
@@ -2311,8 +2345,7 @@ static int ingestion_init(const harp_ingestion_module *module, coda_product *pro
     {
         return -1;
     }
-    assert(format == coda_format_grib1 || format == coda_format_grib2);
-    info->grib_version = (format == coda_format_grib1 ? 1 : 2);
+    assert(format == coda_format_grib);
 
     if (init_cursors_and_grid(info) != 0)
     {
@@ -2607,9 +2640,10 @@ int harp_ingestion_module_ecmwf_grib_init(void)
                                                                      "seconds since 2000-01-01", NULL, read_datetime);
 
     description = "the time of the measurement converted from TAI93 to seconds since 2000-01-01T00:00:00";
-    path = "/[]/yearOfCentury, /[]/month, /[]/day, /[]/hour, /[]/minute, /[]/centuryOfReferenceTimeOfData";
+    path = "/[]/grib1/yearOfCentury, /[]/grib1/month, /[]/grib1/day, /[]/grib1/hour, /[]/grib1/minute, "
+        "/[]/grib1/centuryOfReferenceTimeOfData";
     harp_variable_definition_add_mapping(variable_definition, NULL, "GRIB1", path, description);
-    path = "/[]/year, /[]/month, /[]/day, /[]/hour, /[]/minute, /[]/second";
+    path = "/[]/grib2/year, /[]/grib2/month, /[]/grib2/day, /[]/grib2/hour, /[]/grib2/minute, /[]/grib2/second";
     harp_variable_definition_add_mapping(variable_definition, NULL, "GRIB2", path, description);
 
     /* longitude */
@@ -2619,9 +2653,9 @@ int harp_ingestion_module_ecmwf_grib_init(void)
                                                                      "degree_east", NULL, read_longitude);
     harp_variable_definition_set_valid_range_double(variable_definition, -180.0, 180.0);
     description = "based on linear interpolation using Ni points from first to last grid point";
-    path = "/[]/grid/Ni, /[]/grid/longitudeOfFirstGridPoint, /[]/grid/longitudeOfLastGridPoint";
+    path = "/[]/grib1/grid/Ni, /[]/grib1/grid/longitudeOfFirstGridPoint, /[]/grib1/grid/longitudeOfLastGridPoint";
     harp_variable_definition_add_mapping(variable_definition, NULL, "GRIB1", path, description);
-    path = "/[]/grid[]/Ni, /[]/grid[]/longitudeOfFirstGridPoint, /[]/grid[]/longitudeOfLastGridPoint";
+    path = "/[]/grib2/grid[]/Ni, /[]/grib2/grid[]/longitudeOfFirstGridPoint, /[]/grib2/grid[]/longitudeOfLastGridPoint";
     harp_variable_definition_add_mapping(variable_definition, NULL, "GRIB2", path, description);
 
     /* latitude */
@@ -2631,9 +2665,9 @@ int harp_ingestion_module_ecmwf_grib_init(void)
                                                                      "degree_north", NULL, read_latitude);
     harp_variable_definition_set_valid_range_double(variable_definition, -90.0, 90.0);
     description = "based on linear interpolation using Nj points from first to last grid point";
-    path = "/[]/grid/Nj, /[]/grid/latitudeOfFirstGridPoint, /[]/grid/latitudeOfLastGridPoint";
+    path = "/[]/grib1/grid/Nj, /[]/grib1/grid/latitudeOfFirstGridPoint, /[]/grib1/grid/latitudeOfLastGridPoint";
     harp_variable_definition_add_mapping(variable_definition, NULL, "GRIB1", path, description);
-    path = "/[]/grid[]/Nj, /[]/grid[]/latitudeOfFirstGridPoint, /[]/grid[]/latitudeOfLastGridPoint";
+    path = "/[]/grib2/grid[]/Nj, /[]/grib2/grid[]/latitudeOfFirstGridPoint, /[]/grib2/grid[]/latitudeOfLastGridPoint";
     harp_variable_definition_add_mapping(variable_definition, NULL, "GRIB2", path, description);
 
     /* wavelength */
