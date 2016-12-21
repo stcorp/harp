@@ -500,8 +500,7 @@ static int read_vmr(void *user_data, harp_array data)
         return -1;
     }
 
-    if (harp_convert_unit(info->vmr_unit, "ppmv", info->num_time * info->num_vertical,
-                          data.double_data) != 0)
+    if (harp_convert_unit(info->vmr_unit, "ppmv", info->num_time * info->num_vertical, data.double_data) != 0)
     {
         return -1;
     }
@@ -521,8 +520,7 @@ static int read_h2o_vmr(void *user_data, harp_array data)
         return -1;
     }
 
-    if (harp_convert_unit(info->h2o_vmr_unit, "ppmv", info->num_time * info->num_vertical,
-                          data.double_data) != 0)
+    if (harp_convert_unit(info->h2o_vmr_unit, "ppmv", info->num_time * info->num_vertical, data.double_data) != 0)
     {
         return -1;
     }
@@ -542,8 +540,7 @@ static int read_vmr_apriori(void *user_data, harp_array data)
         return -1;
     }
 
-    if (harp_convert_unit(info->vmr_unit, "ppmv", info->num_time * info->num_vertical,
-                          data.double_data) != 0)
+    if (harp_convert_unit(info->vmr_unit, "ppmv", info->num_time * info->num_vertical, data.double_data) != 0)
     {
         return -1;
     }
@@ -576,8 +573,9 @@ static int read_vmr_covariance(void *user_data, harp_array data)
         return -1;
     }
 
-    if (harp_convert_unit(info->vmr_covariance_unit, "(ppmv)2",info->num_time * info->num_vertical * info->num_vertical,
-                          data.double_data) != 0)
+    if (harp_convert_unit
+        (info->vmr_covariance_unit, "(ppmv)2", info->num_time * info->num_vertical * info->num_vertical,
+         data.double_data) != 0)
     {
         return -1;
     }
@@ -598,8 +596,7 @@ static int read_vmr_uncertainty_random(void *user_data, harp_array data)
         return -1;
     }
 
-    if (harp_convert_unit(info->vmr_unit, "ppmv", info->num_time * info->num_vertical,
-                          data.double_data) != 0)
+    if (harp_convert_unit(info->vmr_unit, "ppmv", info->num_time * info->num_vertical, data.double_data) != 0)
     {
         return -1;
     }
@@ -620,8 +617,7 @@ static int read_vmr_uncertainty_systematic(void *user_data, harp_array data)
         return -1;
     }
 
-    if (harp_convert_unit(info->vmr_unit, "ppmv", info->num_time * info->num_vertical,
-                          data.double_data) != 0)
+    if (harp_convert_unit(info->vmr_unit, "ppmv", info->num_time * info->num_vertical, data.double_data) != 0)
     {
         return -1;
     }

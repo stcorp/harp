@@ -185,7 +185,7 @@ typedef struct ingest_info_struct
     long num_grid_data;
     /* GRIB1 grid_data_parameter_ref = (1 * 256 * 256 + table2Version) * 256 + indicatorOfParameter
      * GRIB2 grid_data_parameter_ref = ((2 * 256 + discipline) * 256 + parameterCategory) * 256 + parameterNumber */
-    long *grid_data_parameter_ref;       /* [num_grid_data] */
+    long *grid_data_parameter_ref;      /* [num_grid_data] */
     int ignore_duplicates;
     coda_cursor *parameter_cursor;      /* [num_grid_data], array of cursors to /[]/data([])/values for each param */
     double *level;      /* [num_grid_data] */
@@ -1730,7 +1730,7 @@ static int init_cursors_and_grid(ingest_info *info)
             harp_set_error(HARP_ERROR_CODA, NULL);
             return -1;
         }
-        switch(field_index)
+        switch (field_index)
         {
             case 0:
                 grib_version = 1;

@@ -879,16 +879,16 @@ static void register_hcho_product(void)
 
     description = "surface albedo in the HCHO fitting window";
     variable_definition =
-    harp_ingestion_register_variable_full_read(product_definition, "surface_albedo",
-                                               harp_type_float, 1, dimension_type, NULL, description, NULL, NULL,
-                                               read_surface_albedo_hcho);
+        harp_ingestion_register_variable_full_read(product_definition, "surface_albedo",
+                                                   harp_type_float, 1, dimension_type, NULL, description, NULL, NULL,
+                                                   read_surface_albedo_hcho);
     path = "/PRODUCT/SUPPORT_DATA/INPUT_DATA/surface_albedo_hcho[]";
     harp_variable_definition_add_mapping(variable_definition, NULL, NULL, path, NULL);
 }
 
 static void register_no2_product(void)
 {
-    const char *total_column_options[] = {"summed", "total" };
+    const char *total_column_options[] = { "summed", "total" };
     const char *path;
     const char *description;
     harp_ingestion_module *module;
@@ -991,9 +991,9 @@ static void register_no2_product(void)
 
     description = "surface albedo in the NO2 fitting window";
     variable_definition =
-    harp_ingestion_register_variable_full_read(product_definition, "surface_albedo",
-                                               harp_type_float, 1, dimension_type, NULL, description, NULL, NULL,
-                                               read_surface_albedo_no2);
+        harp_ingestion_register_variable_full_read(product_definition, "surface_albedo",
+                                                   harp_type_float, 1, dimension_type, NULL, description, NULL, NULL,
+                                                   read_surface_albedo_no2);
     path = "/PRODUCT/SUPPORT_DATA/INPUT_DATA/surface_albedo_no2[]";
     harp_variable_definition_add_mapping(variable_definition, NULL, NULL, path, NULL);
 }
