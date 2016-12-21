@@ -1562,9 +1562,19 @@ static int get_lat_lon_grid(coda_cursor *cursor, int grib_version, ingest_info *
     }
     coda_cursor_goto_parent(cursor);
 
+    if (grib_version == 1)
+    {
+        /* multiply values by 1e3 to align them with GRIB2 values */
+        latitudeOfFirstGridPoint *= 1000;
+        longitudeOfFirstGridPoint *= 1000;
+        latitudeOfLastGridPoint *= 1000;
+        longitudeOfLastGridPoint *= 1000;
+        iDirectionIncrement *= 1000;
+        jDirectionIncrement *= 1000;
+    }
+
     if (first)
     {
-        double scalefactor = grib_version == 1 ? 1e-3 : 1e-6;
         int k;
 
         info->Ni = Ni;
@@ -1604,11 +1614,11 @@ static int get_lat_lon_grid(coda_cursor *cursor, int grib_version, ingest_info *
             harp_set_error(HARP_ERROR_INGESTION, "latitude grid is not in descending order");
             return -1;
         }
-        info->longitude[0] = longitudeOfFirstGridPoint * scalefactor;
-        info->longitude[info->num_longitudes - 1] = longitudeOfLastGridPoint * scalefactor;
+        info->longitude[0] = longitudeOfFirstGridPoint * 1e-6;
+        info->longitude[info->num_longitudes - 1] = longitudeOfLastGridPoint * 1e-6;
         for (k = 1; k < info->num_longitudes - 1; k++)
         {
-            info->longitude[k] = info->longitude[k - 1] + iDirectionIncrement * scalefactor;
+            info->longitude[k] = info->longitude[k - 1] + iDirectionIncrement * 1e-6;
         }
         if (is_gaussian)
         {
@@ -1624,11 +1634,11 @@ static int get_lat_lon_grid(coda_cursor *cursor, int grib_version, ingest_info *
         }
         else
         {
-            info->latitude[0] = latitudeOfLastGridPoint * scalefactor;
-            info->latitude[info->num_latitudes - 1] = latitudeOfFirstGridPoint * scalefactor;
+            info->latitude[0] = latitudeOfLastGridPoint * 1e-6;
+            info->latitude[info->num_latitudes - 1] = latitudeOfFirstGridPoint * 1e-6;
             for (k = info->num_latitudes - 2; k > 0; k--)
             {
-                info->latitude[k] = info->latitude[k + 1] - iDirectionIncrement * scalefactor;
+                info->latitude[k] = info->latitude[k + 1] - iDirectionIncrement * 1e-6;
             }
         }
     }
