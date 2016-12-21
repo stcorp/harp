@@ -537,6 +537,9 @@ program:
             if (harp_program_new(&$$) != 0) YYERROR;
             if (harp_program_add_operation($$, $1) != 0) YYERROR;
         }
+    | /* empty */ {
+            if (harp_program_new(&$$) != 0) YYERROR;
+        }
     ;
 
 %%
