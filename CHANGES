@@ -25,6 +25,9 @@
 
 * Added unit 'ppv' to the included udunits2-common.xml file.
 
+* Added variables for surface temperature, total water vapour content, and
+  total cloud cover to ECMWF GRIB ingestion.
+
 * The default internal units have been changes to SI (except for molar mass).
   All algorithms have been adapted accordingly.
 
