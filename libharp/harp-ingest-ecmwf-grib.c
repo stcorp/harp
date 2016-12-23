@@ -1345,9 +1345,6 @@ static int get_reference_datetime(coda_cursor *cursor, int grib_version, ingest_
             info->is_forecast_datetime = 1;
             switch (unitOfTimeRange)
             {
-                case 0:        /* minute */
-                    scalefactor = 60;
-                    break;
                 case 1:        /* hour */
                     scalefactor = 60 * 60;
                     break;
