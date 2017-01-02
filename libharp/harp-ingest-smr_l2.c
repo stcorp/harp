@@ -78,7 +78,7 @@ static int read_dimensions(void *user_data, long dimension[HARP_NUM_DIM_TYPES])
 static int get_main_data(ingest_info *info, const char *datasetname, const char *fieldname, harp_array data)
 {
     coda_cursor cursor;
-    int altitude_index;
+    int altitude_index, profile_nr, i;
     double *current_double_data;
 
     if (coda_cursor_set_product(&cursor, info->product) != 0)
@@ -97,7 +97,7 @@ static int get_main_data(ingest_info *info, const char *datasetname, const char 
         return -1;
     }
     current_double_data = data.double_data;
-    for (int profile_nr = 0; profile_nr < info->num_profiles; profile_nr++)
+    for (profile_nr = 0; profile_nr < info->num_profiles; profile_nr++)
     {
         altitude_index = profile_nr * info->num_species;
         if ((info->current_species_nr > 0) &&
@@ -113,7 +113,7 @@ static int get_main_data(ingest_info *info, const char *datasetname, const char 
         /* Read all doubles for one profile and the current species. We   */
         /* can not use read_double_partial_array because that function is */
         /* not supported in CODA for the format of the SMR data (HDF4).   */
-        for (int i = 0; i < info->num_altitudes[altitude_index]; i++)
+        for (i = 0; i < info->num_altitudes[altitude_index]; i++)
         {
             if (coda_cursor_read_double(&cursor, current_double_data) != 0)
             {
@@ -217,12 +217,12 @@ static int disable_exclude_for_species_in_file(ingest_info *info)
 {
     coda_cursor cursor;
     int num_dims;
-    long dims[2];
+    long dims[2], species_nr, i;
     char speciesname[MAX_PATH_LENGTH];
 
     /* Read the species names and include only the registered variables */
     /* that match those species.                                        */
-    for (short i = 0; i < NR_POSSIBLE_SPECIES; i++)
+    for (i = 0; i < NR_POSSIBLE_SPECIES; i++)
     {
         info->species_nr_in_file[i] = 0L;  /* By default all species are not used */
     }
@@ -251,9 +251,9 @@ static int disable_exclude_for_species_in_file(ingest_info *info)
         harp_set_error(HARP_ERROR_CODA, NULL);
         return -1;
     }
-    for (long species_nr = 1; species_nr <= info->num_species; species_nr++)
+    for (species_nr = 1; species_nr <= info->num_species; species_nr++)
     {
-        for (long i = 0; (i < dims[1]) && (i < MAX_PATH_LENGTH); i++)
+        for (i = 0; (i < dims[1]) && (i < MAX_PATH_LENGTH); i++)
         {
             if (coda_cursor_read_char(&cursor, &speciesname[i]) != 0)
             {
@@ -348,7 +348,7 @@ static int disable_exclude_for_species_in_file(ingest_info *info)
 static int init_dimensions(ingest_info *info)
 {
     coda_cursor cursor;
-    long num_retrieval_records;
+    long num_retrieval_records, l;
     short sum;
 
     if (coda_cursor_set_product(&cursor, info->product) != 0)
@@ -401,7 +401,7 @@ static int init_dimensions(ingest_info *info)
         return -1;
     }
     sum = 0;
-    for (long l = 0; l < num_retrieval_records; l++)
+    for (l = 0; l < num_retrieval_records; l++)
     {
         if (coda_cursor_read_int16(&cursor, &info->num_altitudes[l]) != 0)
         {
