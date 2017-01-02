@@ -2339,7 +2339,20 @@ static void register_common_limb_variables(harp_product_definition *product_defi
     harp_dimension_type dimension_type[3];
     long bounds_dimension[3] = { -1, -1, 2 };
     const char *description;
+    const char *limb_mapping;
     char path[MAX_PATH_LENGTH];
+
+    limb_mapping = "The records in the geolocation_limb data set do not have a one-to-one mapping with the records in "
+        "the limb/occultation measurement datasets. Each record in the measurement dataset contains one profile "
+        "retrieval (for one or more species) which was calculated using several measurement points. For the SCIAMACHY "
+        "offline product this amount of limb/occultation measurements (n_meas) is unfortunately almost never equal to "
+        "the amount of height levels that was used for the retrieval (n_main). For this reason it is not possible to "
+        "assign a direct measurement time or tangent location to a profile point. The workaround chosen for HARP is "
+        "to use a single measurement time and tangent location per profile. The chosen time and geolocation "
+        "information is taken from the middlemost measurement that was used for the retrieval (i.e. index = "
+        "(n_meas - 1) / 2). The geolocation record belonging to this measurement is retrieved by comparing the "
+        "measurement time measurement_grid[(n_meas - 1) / 2].dsr_time with the time of the geolocation record "
+        "geolocation_limb[]/dsr_time";
 
     dimension_type[0] = harp_dimension_time;
     dimension_type[1] = harp_dimension_vertical;
@@ -2352,7 +2365,7 @@ static void register_common_limb_variables(harp_product_definition *product_defi
                                                                        description, "seconds since 2000-01-01", NULL,
                                                                        read_datetime_profile);
     snprintf(path, MAX_PATH_LENGTH, "/geolocation_limb[]/dsr_time");
-    harp_variable_definition_add_mapping(variable_definition, NULL, NULL, path, NULL);
+    harp_variable_definition_add_mapping(variable_definition, NULL, NULL, path, limb_mapping);
 
     /* datetime_length */
     description = "measurement integration time";
@@ -2390,7 +2403,7 @@ static void register_common_limb_variables(harp_product_definition *product_defi
                                                                        1, dimension_type, NULL, description,
                                                                        "degree_north", NULL, read_latitude_profile);
     snprintf(path, MAX_PATH_LENGTH, "/geolocation_limb[]/tangent_coord[1]/latitude");
-    harp_variable_definition_add_mapping(variable_definition, NULL, NULL, path, NULL);
+    harp_variable_definition_add_mapping(variable_definition, NULL, NULL, path, limb_mapping);
 
     /* longitude */
     description = "tangent longitude of the vertically mid profile point";
@@ -2399,7 +2412,7 @@ static void register_common_limb_variables(harp_product_definition *product_defi
                                                                        description, "degree_east", NULL,
                                                                        read_longitude_profile);
     snprintf(path, MAX_PATH_LENGTH, "/geolocation_limb[]/tangent_coord[1]/longitude");
-    harp_variable_definition_add_mapping(variable_definition, NULL, NULL, path, NULL);
+    harp_variable_definition_add_mapping(variable_definition, NULL, NULL, path, limb_mapping);
 
     /* solar_zenith_angle */
     description = "solar zenith angle at top of atmosphere for the middle most profile point";
@@ -2408,7 +2421,7 @@ static void register_common_limb_variables(harp_product_definition *product_defi
                                                                        description, "degree", NULL,
                                                                        read_solar_zenith_angle_profile);
     snprintf(path, MAX_PATH_LENGTH, "/geolocation_limb[]/sol_zen_angle_toa[1]");
-    harp_variable_definition_add_mapping(variable_definition, NULL, NULL, path, NULL);
+    harp_variable_definition_add_mapping(variable_definition, NULL, NULL, path, limb_mapping);
 
     /* viewing_zenith_angle */
     description = "line of sight zenith angle at top of atmosphere for the middle most profile point";
@@ -2417,7 +2430,7 @@ static void register_common_limb_variables(harp_product_definition *product_defi
                                                                        description, "degree", NULL,
                                                                        read_los_zenith_angle_profile);
     snprintf(path, MAX_PATH_LENGTH, "/geolocation_limb[]/los_zen_angle_toa[1]");
-    harp_variable_definition_add_mapping(variable_definition, NULL, NULL, path, NULL);
+    harp_variable_definition_add_mapping(variable_definition, NULL, NULL, path, limb_mapping);
 
     /* relative_azimuth_angle */
     description = "relative azimuth angle at top of atmosphere for the middle most profile point";
@@ -2426,7 +2439,7 @@ static void register_common_limb_variables(harp_product_definition *product_defi
                                                                        description, "degree", NULL,
                                                                        read_rel_azimuth_angle_profile);
     snprintf(path, MAX_PATH_LENGTH, "/geolocation_limb[]/rel_azi_angle_toa[1]");
-    harp_variable_definition_add_mapping(variable_definition, NULL, NULL, path, NULL);
+    harp_variable_definition_add_mapping(variable_definition, NULL, NULL, path, limb_mapping);
 
     /* temperature */
     description = "temperature for each profile point";
@@ -2456,7 +2469,6 @@ int harp_ingestion_module_sciamachy_l2_init(void)
     const char *error_mapping;
     const char *vmr_avk_mapping;
     const char *nd_avk_mapping;
-    const char *limb_mapping;
     const char *description;
     const char *path;
 
@@ -2473,17 +2485,6 @@ int harp_ingestion_module_sciamachy_l2_init(void)
         "2+stvec+2*n1*num_altitudes+2*num_altitudes is converted to number density units by multiplying each element "
         "with conv_nd_i/conv_nd_j, where conv_nd is found in add_diag at position "
         "2+stvec+2*n1*num_altitudes+num_altitudes; the vertical axis of the AVK are reversed";
-    limb_mapping = "The records in the geolocation_limb data set do not have a one-to-one mapping with the records in "
-        "the limb/occultation measurement datasets. Each record in the measurement dataset contains one profile "
-        "retrieval (for one or more species) which was calculated using several measurement points. For the SCIAMACHY "
-        "offline product this amount of limb/occultation measurements (n_meas) is unfortunately almost never equal to "
-        "the amount of height levels that was used for the retrieval (n_main). For this reason it is not possible to "
-        "assign a direct measurement time or tangent location to a profile point. The workaround chosen for BEAT is "
-        "to use a single measurement time and tangent location per profile. The chosen time and geolocation "
-        "information is taken from the middlemost measurement that was used for the retrieval (i.e. index = "
-        "(n_meas - 1) / 2). The geolocation record belonging to this measurement is retrieved by comparing the "
-        "measurement time measurement_grid[(n_meas - 1) / 2].dsr_time with the time of the geolocation record "
-        "geolocation_limb[]/dsr_time";
 
     description = "SCIAMACHY Off-Line Level-2";
     module = harp_ingestion_register_module_coda("SCIAMACHY_L2", "SCIAMACHY", "ENVISAT_SCIAMACHY", "SCI_OL__2P",
