@@ -57,6 +57,7 @@ int harp_ingestion_module_qa4ecv_init(void);
 int harp_ingestion_module_sciamachy_l2_init(void);
 int harp_ingestion_module_s5p_l1b_init(void);
 int harp_ingestion_module_s5p_l2_init(void);
+int harp_ingestion_module_smr_l2_init(void);
 int harp_ingestion_module_temis_init(void);
 int harp_ingestion_module_tes_l2_init(void);
 
@@ -91,6 +92,7 @@ static module_init_func_t *module_init_func[] = {
     harp_ingestion_module_sciamachy_l2_init,
     harp_ingestion_module_s5p_l1b_init,
     harp_ingestion_module_s5p_l2_init,
+    harp_ingestion_module_smr_l2_init,
     harp_ingestion_module_temis_init,
     harp_ingestion_module_tes_l2_init
 };
