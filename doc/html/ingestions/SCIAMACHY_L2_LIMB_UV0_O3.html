@@ -263,9 +263,9 @@
 <p>The table below details where and how each variable was retrieved from the input product.</p>
 <table border="1" class="docutils">
 <colgroup>
-<col width="10%" />
 <col width="4%" />
-<col width="86%" />
+<col width="1%" />
+<col width="95%" />
 </colgroup>
 <thead valign="bottom">
 <tr class="row-odd"><th class="head">field name</th>
@@ -273,47 +273,65 @@
 </tr>
 </thead>
 <tbody valign="top">
-<tr class="row-even"><td><strong>datetime_start</strong></td>
+<tr class="row-even"><td rowspan="2"><strong>datetime_start</strong></td>
 <td><em>path</em></td>
 <td><strong>/geolocation_limb[]/dsr_time</strong></td>
 </tr>
-<tr class="row-odd"><td><strong>datetime_length</strong></td>
+<tr class="row-odd"><td><em>description</em></td>
+<td>The records in the geolocation_limb data set do not have a one-to-one mapping with the records in the limb/occultation measurement datasets. Each record in the measurement dataset contains one profile retrieval (for one or more species) which was calculated using several measurement points. For the SCIAMACHY offline product this amount of limb/occultation measurements (n_meas) is unfortunately almost never equal to the amount of height levels that was used for the retrieval (n_main). For this reason it is not possible to assign a direct measurement time or tangent location to a profile point. The workaround chosen for HARP is to use a single measurement time and tangent location per profile. The chosen time and geolocation information is taken from the middlemost measurement that was used for the retrieval (i.e. index = (n_meas - 1) / 2). The geolocation record belonging to this measurement is retrieved by comparing the measurement time measurement_grid[(n_meas - 1) / 2].dsr_time with the time of the geolocation record geolocation_limb[]/dsr_time</td>
+</tr>
+<tr class="row-even"><td><strong>datetime_length</strong></td>
 <td><em>path</em></td>
 <td><strong>/lim_uv0_o3[]/integr_time</strong></td>
 </tr>
-<tr class="row-even"><td rowspan="2"><strong>altitude_bounds</strong></td>
+<tr class="row-odd"><td rowspan="2"><strong>altitude_bounds</strong></td>
 <td><em>path</em></td>
 <td><strong>/lim_uv0_o3[]/tangent_height[]</strong></td>
 </tr>
-<tr class="row-odd"><td><em>description</em></td>
+<tr class="row-even"><td><em>description</em></td>
 <td>the tangent heights are the lower bound altitudes; for the top of the heighest layer a TOA value of 100km is used</td>
 </tr>
-<tr class="row-even"><td rowspan="2"><strong>pressure_bounds</strong></td>
+<tr class="row-odd"><td rowspan="2"><strong>pressure_bounds</strong></td>
 <td><em>path</em></td>
 <td><strong>/lim_uv0_o3[]/tangent_pressure[]</strong></td>
 </tr>
-<tr class="row-odd"><td><em>description</em></td>
+<tr class="row-even"><td><em>description</em></td>
 <td>the tangent pressures are the lower bound pressures; for the top of the heighest layer a pressure value of 3.2e-4 hPa is used</td>
 </tr>
-<tr class="row-even"><td><strong>latitude</strong></td>
+<tr class="row-odd"><td rowspan="2"><strong>latitude</strong></td>
 <td><em>path</em></td>
 <td><strong>/geolocation_limb[]/tangent_coord[1]/latitude</strong></td>
 </tr>
-<tr class="row-odd"><td><strong>longitude</strong></td>
+<tr class="row-even"><td><em>description</em></td>
+<td>The records in the geolocation_limb data set do not have a one-to-one mapping with the records in the limb/occultation measurement datasets. Each record in the measurement dataset contains one profile retrieval (for one or more species) which was calculated using several measurement points. For the SCIAMACHY offline product this amount of limb/occultation measurements (n_meas) is unfortunately almost never equal to the amount of height levels that was used for the retrieval (n_main). For this reason it is not possible to assign a direct measurement time or tangent location to a profile point. The workaround chosen for HARP is to use a single measurement time and tangent location per profile. The chosen time and geolocation information is taken from the middlemost measurement that was used for the retrieval (i.e. index = (n_meas - 1) / 2). The geolocation record belonging to this measurement is retrieved by comparing the measurement time measurement_grid[(n_meas - 1) / 2].dsr_time with the time of the geolocation record geolocation_limb[]/dsr_time</td>
+</tr>
+<tr class="row-odd"><td rowspan="2"><strong>longitude</strong></td>
 <td><em>path</em></td>
 <td><strong>/geolocation_limb[]/tangent_coord[1]/longitude</strong></td>
 </tr>
-<tr class="row-even"><td><strong>solar_zenith_angle</strong></td>
+<tr class="row-even"><td><em>description</em></td>
+<td>The records in the geolocation_limb data set do not have a one-to-one mapping with the records in the limb/occultation measurement datasets. Each record in the measurement dataset contains one profile retrieval (for one or more species) which was calculated using several measurement points. For the SCIAMACHY offline product this amount of limb/occultation measurements (n_meas) is unfortunately almost never equal to the amount of height levels that was used for the retrieval (n_main). For this reason it is not possible to assign a direct measurement time or tangent location to a profile point. The workaround chosen for HARP is to use a single measurement time and tangent location per profile. The chosen time and geolocation information is taken from the middlemost measurement that was used for the retrieval (i.e. index = (n_meas - 1) / 2). The geolocation record belonging to this measurement is retrieved by comparing the measurement time measurement_grid[(n_meas - 1) / 2].dsr_time with the time of the geolocation record geolocation_limb[]/dsr_time</td>
+</tr>
+<tr class="row-odd"><td rowspan="2"><strong>solar_zenith_angle</strong></td>
 <td><em>path</em></td>
 <td><strong>/geolocation_limb[]/sol_zen_angle_toa[1]</strong></td>
 </tr>
-<tr class="row-odd"><td><strong>viewing_zenith_angle</strong></td>
+<tr class="row-even"><td><em>description</em></td>
+<td>The records in the geolocation_limb data set do not have a one-to-one mapping with the records in the limb/occultation measurement datasets. Each record in the measurement dataset contains one profile retrieval (for one or more species) which was calculated using several measurement points. For the SCIAMACHY offline product this amount of limb/occultation measurements (n_meas) is unfortunately almost never equal to the amount of height levels that was used for the retrieval (n_main). For this reason it is not possible to assign a direct measurement time or tangent location to a profile point. The workaround chosen for HARP is to use a single measurement time and tangent location per profile. The chosen time and geolocation information is taken from the middlemost measurement that was used for the retrieval (i.e. index = (n_meas - 1) / 2). The geolocation record belonging to this measurement is retrieved by comparing the measurement time measurement_grid[(n_meas - 1) / 2].dsr_time with the time of the geolocation record geolocation_limb[]/dsr_time</td>
+</tr>
+<tr class="row-odd"><td rowspan="2"><strong>viewing_zenith_angle</strong></td>
 <td><em>path</em></td>
 <td><strong>/geolocation_limb[]/los_zen_angle_toa[1]</strong></td>
 </tr>
-<tr class="row-even"><td><strong>relative_azimuth_angle</strong></td>
+<tr class="row-even"><td><em>description</em></td>
+<td>The records in the geolocation_limb data set do not have a one-to-one mapping with the records in the limb/occultation measurement datasets. Each record in the measurement dataset contains one profile retrieval (for one or more species) which was calculated using several measurement points. For the SCIAMACHY offline product this amount of limb/occultation measurements (n_meas) is unfortunately almost never equal to the amount of height levels that was used for the retrieval (n_main). For this reason it is not possible to assign a direct measurement time or tangent location to a profile point. The workaround chosen for HARP is to use a single measurement time and tangent location per profile. The chosen time and geolocation information is taken from the middlemost measurement that was used for the retrieval (i.e. index = (n_meas - 1) / 2). The geolocation record belonging to this measurement is retrieved by comparing the measurement time measurement_grid[(n_meas - 1) / 2].dsr_time with the time of the geolocation record geolocation_limb[]/dsr_time</td>
+</tr>
+<tr class="row-odd"><td rowspan="2"><strong>relative_azimuth_angle</strong></td>
 <td><em>path</em></td>
 <td><strong>/geolocation_limb[]/rel_azi_angle_toa[1]</strong></td>
+</tr>
+<tr class="row-even"><td><em>description</em></td>
+<td>The records in the geolocation_limb data set do not have a one-to-one mapping with the records in the limb/occultation measurement datasets. Each record in the measurement dataset contains one profile retrieval (for one or more species) which was calculated using several measurement points. For the SCIAMACHY offline product this amount of limb/occultation measurements (n_meas) is unfortunately almost never equal to the amount of height levels that was used for the retrieval (n_main). For this reason it is not possible to assign a direct measurement time or tangent location to a profile point. The workaround chosen for HARP is to use a single measurement time and tangent location per profile. The chosen time and geolocation information is taken from the middlemost measurement that was used for the retrieval (i.e. index = (n_meas - 1) / 2). The geolocation record belonging to this measurement is retrieved by comparing the measurement time measurement_grid[(n_meas - 1) / 2].dsr_time with the time of the geolocation record geolocation_limb[]/dsr_time</td>
 </tr>
 <tr class="row-odd"><td><strong>temperature</strong></td>
 <td><em>path</em></td>

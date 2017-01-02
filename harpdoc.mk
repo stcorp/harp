@@ -325,6 +325,7 @@ HARP_DOCFILES = \
 	doc/html/ingestions/SCIAMACHY_L2_NADIR_UV7_SO2.html \
 	doc/html/ingestions/SCIAMACHY_L2_NADIR_UV8_H2O.html \
 	doc/html/ingestions/SCIAMACHY_L2_NADIR_UV9_CHOCHO.html \
+	doc/html/ingestions/SMR_L2.html \
 	doc/html/ingestions/TEMIS_o3field.html \
 	doc/html/ingestions/TEMIS_o3mean.html \
 	doc/html/ingestions/TES_L2_CH4_Nadir.html \
@@ -998,6 +999,8 @@ doc/html/ingestions/SCIAMACHY_L2_NADIR_UV7_SO2.html:
 doc/html/ingestions/SCIAMACHY_L2_NADIR_UV8_H2O.html:
 	$(MAKE) harp_doc
 doc/html/ingestions/SCIAMACHY_L2_NADIR_UV9_CHOCHO.html:
+	$(MAKE) harp_doc
+doc/html/ingestions/SMR_L2.html:
 	$(MAKE) harp_doc
 doc/html/ingestions/TEMIS_o3field.html:
 	$(MAKE) harp_doc
