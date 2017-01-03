@@ -199,7 +199,7 @@ static int read_solar_zenith_angle(void *user_data, harp_array data)
 
 static int read_altitude(void *user_data, harp_array data)
 {
-   ((ingest_info *)user_data)->current_species_nr = -1;
+    ((ingest_info *)user_data)->current_species_nr = -1;
     return get_main_data((ingest_info *)user_data, "GHz/Data_Vgroup/Data", "Altitudes", data);
 }
 
@@ -360,6 +360,7 @@ static int init_dimensions(ingest_info *info)
     /* Count the number of profiles */
     if (coda_cursor_goto(&cursor, "GHz/Data_Vgroup/Geolocation/Latitude") != 0)
     {
+        harp_set_error(HARP_ERROR_CODA, NULL);
         return -1;
     }
     if (coda_cursor_get_num_elements(&cursor, &info->num_profiles) != 0)
@@ -372,6 +373,7 @@ static int init_dimensions(ingest_info *info)
     /* Count the maximum number of altitudes per profile */
     if (coda_cursor_goto(&cursor, "GHz/Data_Vgroup/Retrieval/Naltitudes") != 0)
     {
+        harp_set_error(HARP_ERROR_CODA, NULL);
         return -1;
     }
     if (coda_cursor_get_num_elements(&cursor, &num_retrieval_records) != 0)
