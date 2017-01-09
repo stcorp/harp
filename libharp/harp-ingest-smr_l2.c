@@ -51,11 +51,6 @@ enum
     NR_POSSIBLE_SPECIES
 };
 
-#ifndef FALSE
-#define FALSE    0
-#define TRUE     1
-#endif
-
 typedef struct ingest_info_struct
 {
     coda_product *product;
