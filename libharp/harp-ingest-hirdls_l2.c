@@ -510,7 +510,7 @@ int harp_ingestion_module_hirdls_l2_init(void)
         harp_ingestion_register_variable_full_read(product_definition, "CCl3F_volume_mixing_ratio_uncertainty",
                                                    harp_type_double, 2, dimension_type, NULL, description, "ppv", NULL,
                                                    read_cfc11_vmr_error);
-    path = "/HDFEOS/SWATHS/HIRDLS/Data_Fields/CFC12Precision[]";
+    path = "/HDFEOS/SWATHS/HIRDLS/Data_Fields/CFC11Precision[]";
     harp_variable_definition_add_mapping(variable_definition, NULL, NULL, path, NULL);
 
     /* CCl2F2_volume_mixing_ratio */
