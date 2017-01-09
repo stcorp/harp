@@ -28,6 +28,8 @@
 
 #define MAX_PATH_LENGTH  256
 
+#define SECONDS_FROM_1993_TO_2000 (220838400 + 5)
+
 enum
 {
     ClO_SPECIES,
@@ -179,7 +181,14 @@ static int get_profile_data(ingest_info *info, const char *datasetname, const ch
 
 static int read_datetime(void *user_data, harp_array data)
 {
-    return get_profile_data((ingest_info *)user_data, "GHz/Data_Vgroup/Geolocation", "Time", data);
+    int retval, i;
+
+    retval = get_profile_data((ingest_info *)user_data, "GHz/Data_Vgroup/Geolocation", "Time", data);
+    for (i = 0; i < ((ingest_info *)user_data)->num_profiles; i++)
+    {
+        data.double_data[i] = data.double_data[i] - SECONDS_FROM_1993_TO_2000;
+    }
+    return retval;
 }
 
 static int read_latitude(void *user_data, harp_array data)
