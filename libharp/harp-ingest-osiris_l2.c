@@ -302,7 +302,7 @@ static void register_aerosol_product(void)
     const char *path;
 
     description = "OSIRIS Level 2";
-    module = harp_ingestion_register_module_coda("OSIRIS_L2", "OSIRIS", "ODIN_OSIRIS", "L2_Aerosol_MART", description, ingestion_init_aerosol, ingestion_done);
+    module = harp_ingestion_register_module_coda("OSIRIS_L2_Aerosol_MART", "OSIRIS", "ODIN_OSIRIS", "L2_Aerosol_MART", description, ingestion_init_aerosol, ingestion_done);
 
     description = "profile data";
     product_definition = harp_ingestion_register_product(module, "OSIRIS_L2", description, read_dimensions);
@@ -374,7 +374,7 @@ static void register_no2_oe_product(void)
     const char *path;
 
     description = "OSIRIS Level 2";
-    module = harp_ingestion_register_module_coda("OSIRIS_L2", "OSIRIS", "ODIN_OSIRIS", "L2_NO2_OE", description, ingestion_init_no2_oe, ingestion_done);
+    module = harp_ingestion_register_module_coda("OSIRIS_L2_NO2_OE", "OSIRIS", "ODIN_OSIRIS", "L2_NO2_OE", description, ingestion_init_no2_oe, ingestion_done);
 
     description = "profile data";
     product_definition = harp_ingestion_register_product(module, "OSIRIS_L2", description, read_dimensions);
@@ -452,7 +452,7 @@ static void register_no2_mart_product(void)
     const char *path;
 
     description = "OSIRIS Level 2";
-    module = harp_ingestion_register_module_coda("OSIRIS_L2", "OSIRIS", "ODIN_OSIRIS", "L2_NO2_MART", description, ingestion_init_no2_mart, ingestion_done);
+    module = harp_ingestion_register_module_coda("OSIRIS_L2_NO2_MART", "OSIRIS", "ODIN_OSIRIS", "L2_NO2_MART", description, ingestion_init_no2_mart, ingestion_done);
 
     description = "profile data";
     product_definition = harp_ingestion_register_product(module, "OSIRIS_L2", description, read_dimensions);
@@ -530,7 +530,7 @@ static void register_o3_oe_product(void)
     const char *path;
 
     description = "OSIRIS Level 2";
-    module = harp_ingestion_register_module_coda("OSIRIS_L2", "OSIRIS", "ODIN_OSIRIS", "L2_O3_OE", description, ingestion_init_o3_oe, ingestion_done);
+    module = harp_ingestion_register_module_coda("OSIRIS_L2_O3_OE", "OSIRIS", "ODIN_OSIRIS", "L2_O3_OE", description, ingestion_init_o3_oe, ingestion_done);
 
     description = "profile data";
     product_definition = harp_ingestion_register_product(module, "OSIRIS_L2", description, read_dimensions);
@@ -608,7 +608,7 @@ static void register_o3_mart_product(void)
     const char *path;
 
     description = "OSIRIS Level 2";
-    module = harp_ingestion_register_module_coda("OSIRIS_L2", "OSIRIS", "ODIN_OSIRIS", "L2_O3_MART", description, ingestion_init_o3_mart, ingestion_done);
+    module = harp_ingestion_register_module_coda("OSIRIS_L2_O3_MART", "OSIRIS", "ODIN_OSIRIS", "L2_O3_MART", description, ingestion_init_o3_mart, ingestion_done);
 
     description = "profile data";
     product_definition = harp_ingestion_register_product(module, "OSIRIS_L2", description, read_dimensions);
