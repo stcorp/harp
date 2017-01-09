@@ -670,7 +670,7 @@ static int read_hcho_column_avk(void *user_data, harp_array data)
                         info->num_scanlines * info->num_pixels * info->num_layers, data);
 }
 
-static int read_hcho_column_apriori(void *user_data, harp_array data)
+static int read_hcho_vmr_apriori(void *user_data, harp_array data)
 {
     ingest_info *info = (ingest_info *)user_data;
 
@@ -862,11 +862,11 @@ static void register_hcho_product(void)
     path = "/PRODUCT/SUPPORT_DATA/DETAILED_RESULTS/averaging_kernels[]";
     harp_variable_definition_add_mapping(variable_definition, NULL, NULL, path, NULL);
 
-    description = "apriori profile for the total column number density of tropospheric HCHO";
+    description = "apriori profile for the volume mixing ratio of tropospheric HCHO";
     variable_definition =
-        harp_ingestion_register_variable_full_read(product_definition, "HCHO_column_number_density_apriori",
+        harp_ingestion_register_variable_full_read(product_definition, "HCHO_volume_mixing_ratio_apriori",
                                                    harp_type_float, 2, dimension_type, NULL, description, NULL, NULL,
-                                                   read_hcho_column_apriori);
+                                                   read_hcho_vmr_apriori);
     path = "/PRODUCT/SUPPORT_DATA/INPUT_DATA/hcho_profile_apriori[]";
     harp_variable_definition_add_mapping(variable_definition, NULL, NULL, path, NULL);
 
