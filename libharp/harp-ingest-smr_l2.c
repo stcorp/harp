@@ -28,26 +28,27 @@
 
 #define MAX_PATH_LENGTH  256
 
-enum {
-   ClO_SPECIES,
-   CO_SPECIES,
-   H2O_SPECIES,
-   H2O_161_SPECIES,
-   H2O_162_SPECIES,
-   H2O_181_SPECIES,
-   HNO3_SPECIES,
-   HO2_SPECIES,
-   N2O_SPECIES,
-   NO_SPECIES,
-   O3_SPECIES,
-   O3_666_SPECIES,
-   O3_667_SPECIES,
-   O3_668_SPECIES,
-   O3_686_SPECIES,
-   BrO2_SPECIES,
-   TEMP_SPECIES,
-   PRES_SPECIES,
-   NR_POSSIBLE_SPECIES
+enum
+{
+    ClO_SPECIES,
+    CO_SPECIES,
+    H2O_SPECIES,
+    H2O_161_SPECIES,
+    H2O_162_SPECIES,
+    H2O_181_SPECIES,
+    HNO3_SPECIES,
+    HO2_SPECIES,
+    N2O_SPECIES,
+    NO_SPECIES,
+    O3_SPECIES,
+    O3_666_SPECIES,
+    O3_667_SPECIES,
+    O3_668_SPECIES,
+    O3_686_SPECIES,
+    BrO2_SPECIES,
+    TEMP_SPECIES,
+    PRES_SPECIES,
+    NR_POSSIBLE_SPECIES
 };
 
 #ifndef FALSE
@@ -59,8 +60,8 @@ typedef struct ingest_info_struct
 {
     coda_product *product;
     int format_version;
-    long num_profiles;         // The number of profiles (each profile is a series of measurements at a certain latitude, longitude and time)
-    long max_num_altitudes;    // The maximum number of altitudes in a profile
+    long num_profiles;  // The number of profiles (each profile is a series of measurements at a certain latitude, longitude and time)
+    long max_num_altitudes;     // The maximum number of altitudes in a profile
     long num_species;
     long species_nr_in_file[NR_POSSIBLE_SPECIES];
     long current_species_nr;
@@ -100,8 +101,7 @@ static int get_main_data(ingest_info *info, const char *datasetname, const char 
     for (profile_nr = 0; profile_nr < info->num_profiles; profile_nr++)
     {
         altitude_index = profile_nr * info->num_species;
-        if ((info->current_species_nr > 0) &&
-            (info->species_nr_in_file[info->current_species_nr] > 0))
+        if ((info->current_species_nr > 0) && (info->species_nr_in_file[info->current_species_nr] > 0))
         {
             altitude_index += info->species_nr_in_file[info->current_species_nr] - 1;
         }
@@ -179,7 +179,7 @@ static int get_profile_data(ingest_info *info, const char *datasetname, const ch
 
 static int read_datetime(void *user_data, harp_array data)
 {
-    return get_profile_data((ingest_info *)user_data, "GHz/Data_Vgroup/Geolocation",  "Time", data);
+    return get_profile_data((ingest_info *)user_data, "GHz/Data_Vgroup/Geolocation", "Time", data);
 }
 
 static int read_latitude(void *user_data, harp_array data)
@@ -224,7 +224,7 @@ static int disable_exclude_for_species_in_file(ingest_info *info)
     /* that match those species.                                        */
     for (i = 0; i < NR_POSSIBLE_SPECIES; i++)
     {
-        info->species_nr_in_file[i] = 0L;  /* By default all species are not used */
+        info->species_nr_in_file[i] = 0L;       /* By default all species are not used */
     }
     if (coda_cursor_set_product(&cursor, info->product) != 0)
     {
@@ -436,7 +436,8 @@ static void ingestion_done(void *user_data)
     free(info);
 }
 
-static int ingestion_init(const harp_ingestion_module *module, coda_product *product, const harp_ingestion_options *options, harp_product_definition **definition, void **user_data)
+static int ingestion_init(const harp_ingestion_module *module, coda_product *product,
+                          const harp_ingestion_options *options, harp_product_definition **definition, void **user_data)
 {
     int format_version;
     ingest_info *info;
@@ -479,113 +480,114 @@ static int ingestion_init(const harp_ingestion_module *module, coda_product *pro
 
 static int exclude_ClO(void *user_data)
 {
-   ((ingest_info *)user_data)->current_species_nr = ClO_SPECIES;
-   return ((ingest_info *)user_data)->species_nr_in_file[ClO_SPECIES] == 0L;
+    ((ingest_info *)user_data)->current_species_nr = ClO_SPECIES;
+    return ((ingest_info *)user_data)->species_nr_in_file[ClO_SPECIES] == 0L;
 }
 
 static int exclude_CO(void *user_data)
 {
-   ((ingest_info *)user_data)->current_species_nr = CO_SPECIES;
-   return ((ingest_info *)user_data)->species_nr_in_file[CO_SPECIES] == 0L;
+    ((ingest_info *)user_data)->current_species_nr = CO_SPECIES;
+    return ((ingest_info *)user_data)->species_nr_in_file[CO_SPECIES] == 0L;
 }
 
 static int exclude_H2O(void *user_data)
 {
-   ((ingest_info *)user_data)->current_species_nr = H2O_SPECIES;
-   return ((ingest_info *)user_data)->species_nr_in_file[H2O_SPECIES] == 0L;
+    ((ingest_info *)user_data)->current_species_nr = H2O_SPECIES;
+    return ((ingest_info *)user_data)->species_nr_in_file[H2O_SPECIES] == 0L;
 }
 
 static int exclude_H2O_161(void *user_data)
 {
-   ((ingest_info *)user_data)->current_species_nr = H2O_161_SPECIES;
-   return ((ingest_info *)user_data)->species_nr_in_file[H2O_161_SPECIES] == 0L;
+    ((ingest_info *)user_data)->current_species_nr = H2O_161_SPECIES;
+    return ((ingest_info *)user_data)->species_nr_in_file[H2O_161_SPECIES] == 0L;
 }
 
 static int exclude_H2O_162(void *user_data)
 {
-   ((ingest_info *)user_data)->current_species_nr = H2O_162_SPECIES;
-   return ((ingest_info *)user_data)->species_nr_in_file[H2O_162_SPECIES] == 0L;
+    ((ingest_info *)user_data)->current_species_nr = H2O_162_SPECIES;
+    return ((ingest_info *)user_data)->species_nr_in_file[H2O_162_SPECIES] == 0L;
 }
 
 static int exclude_H2O_181(void *user_data)
 {
-   ((ingest_info *)user_data)->current_species_nr = H2O_181_SPECIES;
-   return ((ingest_info *)user_data)->species_nr_in_file[H2O_181_SPECIES] == 0L;
+    ((ingest_info *)user_data)->current_species_nr = H2O_181_SPECIES;
+    return ((ingest_info *)user_data)->species_nr_in_file[H2O_181_SPECIES] == 0L;
 }
 
 static int exclude_HNO3(void *user_data)
 {
-   ((ingest_info *)user_data)->current_species_nr = HNO3_SPECIES;
-   return ((ingest_info *)user_data)->species_nr_in_file[HNO3_SPECIES] == 0L;
+    ((ingest_info *)user_data)->current_species_nr = HNO3_SPECIES;
+    return ((ingest_info *)user_data)->species_nr_in_file[HNO3_SPECIES] == 0L;
 }
 
 static int exclude_HO2(void *user_data)
 {
-   ((ingest_info *)user_data)->current_species_nr = HO2_SPECIES;
-   return ((ingest_info *)user_data)->species_nr_in_file[HO2_SPECIES] == 0L;
+    ((ingest_info *)user_data)->current_species_nr = HO2_SPECIES;
+    return ((ingest_info *)user_data)->species_nr_in_file[HO2_SPECIES] == 0L;
 }
 
 static int exclude_N2O(void *user_data)
 {
-   ((ingest_info *)user_data)->current_species_nr = N2O_SPECIES;
-   return ((ingest_info *)user_data)->species_nr_in_file[N2O_SPECIES] == 0L;
+    ((ingest_info *)user_data)->current_species_nr = N2O_SPECIES;
+    return ((ingest_info *)user_data)->species_nr_in_file[N2O_SPECIES] == 0L;
 }
 
 static int exclude_NO(void *user_data)
 {
-   ((ingest_info *)user_data)->current_species_nr = NO_SPECIES;
-   return ((ingest_info *)user_data)->species_nr_in_file[NO_SPECIES] == 0L;
+    ((ingest_info *)user_data)->current_species_nr = NO_SPECIES;
+    return ((ingest_info *)user_data)->species_nr_in_file[NO_SPECIES] == 0L;
 }
 
 static int exclude_O3(void *user_data)
 {
-   ((ingest_info *)user_data)->current_species_nr = O3_SPECIES;
-   return ((ingest_info *)user_data)->species_nr_in_file[O3_SPECIES] == 0L;
+    ((ingest_info *)user_data)->current_species_nr = O3_SPECIES;
+    return ((ingest_info *)user_data)->species_nr_in_file[O3_SPECIES] == 0L;
 }
 
 static int exclude_O3_666(void *user_data)
 {
-   ((ingest_info *)user_data)->current_species_nr = O3_666_SPECIES;
-   return ((ingest_info *)user_data)->species_nr_in_file[O3_666_SPECIES] == 0L;
+    ((ingest_info *)user_data)->current_species_nr = O3_666_SPECIES;
+    return ((ingest_info *)user_data)->species_nr_in_file[O3_666_SPECIES] == 0L;
 }
 
 static int exclude_O3_667(void *user_data)
 {
-   ((ingest_info *)user_data)->current_species_nr = O3_667_SPECIES;
-   return ((ingest_info *)user_data)->species_nr_in_file[O3_667_SPECIES] == 0L;
+    ((ingest_info *)user_data)->current_species_nr = O3_667_SPECIES;
+    return ((ingest_info *)user_data)->species_nr_in_file[O3_667_SPECIES] == 0L;
 }
 
 static int exclude_O3_668(void *user_data)
 {
-   ((ingest_info *)user_data)->current_species_nr = O3_668_SPECIES;
-   return ((ingest_info *)user_data)->species_nr_in_file[O3_668_SPECIES] == 0L;
+    ((ingest_info *)user_data)->current_species_nr = O3_668_SPECIES;
+    return ((ingest_info *)user_data)->species_nr_in_file[O3_668_SPECIES] == 0L;
 }
 
 static int exclude_O3_686(void *user_data)
 {
-   ((ingest_info *)user_data)->current_species_nr = O3_686_SPECIES;
-   return ((ingest_info *)user_data)->species_nr_in_file[O3_686_SPECIES] == 0L;
+    ((ingest_info *)user_data)->current_species_nr = O3_686_SPECIES;
+    return ((ingest_info *)user_data)->species_nr_in_file[O3_686_SPECIES] == 0L;
 }
 
 static int exclude_BrO2(void *user_data)
 {
-   ((ingest_info *)user_data)->current_species_nr = BrO2_SPECIES;
-   return ((ingest_info *)user_data)->species_nr_in_file[BrO2_SPECIES] == 0L;
+    ((ingest_info *)user_data)->current_species_nr = BrO2_SPECIES;
+    return ((ingest_info *)user_data)->species_nr_in_file[BrO2_SPECIES] == 0L;
 }
 
 static int exclude_temperature(void *user_data)
 {
-   ((ingest_info *)user_data)->current_species_nr = TEMP_SPECIES;
-   return ((ingest_info *)user_data)->species_nr_in_file[TEMP_SPECIES] == 0L;
+    ((ingest_info *)user_data)->current_species_nr = TEMP_SPECIES;
+    return ((ingest_info *)user_data)->species_nr_in_file[TEMP_SPECIES] == 0L;
 }
 
 static int exclude_pressure(void *user_data)
 {
-   ((ingest_info *)user_data)->current_species_nr = PRES_SPECIES;
-   return ((ingest_info *)user_data)->species_nr_in_file[PRES_SPECIES] == 0L;
+    ((ingest_info *)user_data)->current_species_nr = PRES_SPECIES;
+    return ((ingest_info *)user_data)->species_nr_in_file[PRES_SPECIES] == 0L;
 }
 
-static void add_ingestion_VMR_variables(harp_product_definition *product_definition, harp_dimension_type *dimension_type, char *species, int exclude_function())
+static void add_ingestion_VMR_variables(harp_product_definition *product_definition,
+                                        harp_dimension_type *dimension_type, char *species, int exclude_function())
 {
     harp_variable_definition *variable_definition;
     const char *path;
@@ -595,16 +597,23 @@ static void add_ingestion_VMR_variables(harp_product_definition *product_definit
     /* volume_mixing_ratio variable */
     snprintf(vmr_description, MAX_PATH_LENGTH, "%s volume mixing ratio", species);
     snprintf(vmr_name, MAX_PATH_LENGTH, "%s_volume_mixing_ratio", species);
-    variable_definition = harp_ingestion_register_variable_full_read(product_definition, vmr_name, harp_type_double, 2, dimension_type, NULL, vmr_description, NULL, exclude_function, read_profile_value);
+    variable_definition =
+        harp_ingestion_register_variable_full_read(product_definition, vmr_name, harp_type_double, 2, dimension_type,
+                                                   NULL, vmr_description, NULL, exclude_function, read_profile_value);
     path = "/GHz/Data_Vgroup/Data/Profiles[]";
-    harp_variable_definition_add_mapping(variable_definition, NULL, NULL, path, "The VMR is converted from ppv to ppmv");
+    harp_variable_definition_add_mapping(variable_definition, NULL, NULL, path,
+                                         "The VMR is converted from ppv to ppmv");
 
     /* volume_mixing_ratio_uncertainty variable */
     snprintf(precision_description, MAX_PATH_LENGTH, "Precision of the %s volume mixing ratio", species);
     snprintf(precision_name, MAX_PATH_LENGTH, "%s_volume_mixing_ratio_uncertainty", species);
-    variable_definition = harp_ingestion_register_variable_full_read(product_definition, precision_name, harp_type_double, 2, dimension_type, NULL, precision_description, NULL, exclude_function, read_totalerror_value);
+    variable_definition =
+        harp_ingestion_register_variable_full_read(product_definition, precision_name, harp_type_double, 2,
+                                                   dimension_type, NULL, precision_description, NULL, exclude_function,
+                                                   read_totalerror_value);
     path = "/GHz/Data_Vgroup/Data/TotalError[]";
-    harp_variable_definition_add_mapping(variable_definition, NULL, NULL, path, "The VMR error is converted from ppv to ppmv");
+    harp_variable_definition_add_mapping(variable_definition, NULL, NULL, path,
+                                         "The VMR error is converted from ppv to ppmv");
 }
 
 int harp_ingestion_module_smr_l2_init(void)
@@ -617,7 +626,9 @@ int harp_ingestion_module_smr_l2_init(void)
     const char *path;
 
     description = "SMR Level 2";
-    module = harp_ingestion_register_module_coda("SMR_L2", "SMR", "ODIN_SMR", "L2", description, ingestion_init, ingestion_done);
+    module =
+        harp_ingestion_register_module_coda("SMR_L2", "SMR", "ODIN_SMR", "L2", description, ingestion_init,
+                                            ingestion_done);
 
     description = "profile data";
     product_definition = harp_ingestion_register_product(module, "SMR_L2", description, read_dimensions);
@@ -630,33 +641,47 @@ int harp_ingestion_module_smr_l2_init(void)
 
     /* time_per_profile */
     description = "The time of the measurement";
-    variable_definition = harp_ingestion_register_variable_full_read(product_definition, "datetime", harp_type_double, 1, dimension_type, NULL, description, "seconds since 2000-01-01", NULL, read_datetime);
+    variable_definition =
+        harp_ingestion_register_variable_full_read(product_definition, "datetime", harp_type_double, 1, dimension_type,
+                                                   NULL, description, "seconds since 2000-01-01", NULL, read_datetime);
     path = "/GHz/Data_Vgroup/Geolocation/Time[]";
-    harp_variable_definition_add_mapping(variable_definition, NULL, NULL, path, "The time converted from TAI93 to seconds since 2000-01-01");
+    harp_variable_definition_add_mapping(variable_definition, NULL, NULL, path,
+                                         "The time converted from TAI93 to seconds since 2000-01-01");
 
     /* latitude_per_profile */
     description = "The center latitude for a profile";
-    variable_definition = harp_ingestion_register_variable_full_read(product_definition, "latitude_per_profile", harp_type_double, 1, dimension_type, NULL, description, "degree_north", NULL, read_latitude);
+    variable_definition =
+        harp_ingestion_register_variable_full_read(product_definition, "latitude_per_profile", harp_type_double, 1,
+                                                   dimension_type, NULL, description, "degree_north", NULL,
+                                                   read_latitude);
     harp_variable_definition_set_valid_range_double(variable_definition, -90.0, 90.0);
     path = "/GHz/Data_Vgroup/Geolocation/Latitude[]";
     harp_variable_definition_add_mapping(variable_definition, NULL, NULL, path, NULL);
 
     /* longitude_per_profile */
     description = "The center longitude for a profile";
-    variable_definition = harp_ingestion_register_variable_full_read(product_definition, "longitude_per_profile", harp_type_double, 1, dimension_type, NULL, description, "degree_east", NULL, read_longitude);
+    variable_definition =
+        harp_ingestion_register_variable_full_read(product_definition, "longitude_per_profile", harp_type_double, 1,
+                                                   dimension_type, NULL, description, "degree_east", NULL,
+                                                   read_longitude);
     harp_variable_definition_set_valid_range_double(variable_definition, -180.0, 180.0);
     path = "/GHz/Data_Vgroup/Geolocation/Longitude[]";
     harp_variable_definition_add_mapping(variable_definition, NULL, NULL, path, NULL);
 
     /* solar_zenith_angle_per_profile */
     description = "Average solar zenith angle for the scan";
-    variable_definition = harp_ingestion_register_variable_full_read(product_definition, "solar_zenith_angle_per_profile", harp_type_double, 1, dimension_type, NULL, description, NULL, NULL, read_solar_zenith_angle);
+    variable_definition =
+        harp_ingestion_register_variable_full_read(product_definition, "solar_zenith_angle_per_profile",
+                                                   harp_type_double, 1, dimension_type, NULL, description, NULL, NULL,
+                                                   read_solar_zenith_angle);
     path = "/GHz/Data_Vgroup/Geolocation/SunZD[]";
     harp_variable_definition_add_mapping(variable_definition, NULL, NULL, path, NULL);
 
     /* altitude */
     description = "The altitude in km for each profile element";
-    variable_definition = harp_ingestion_register_variable_full_read(product_definition, "altitude", harp_type_double, 2, dimension_type, NULL, description, "km", NULL, read_altitude);
+    variable_definition =
+        harp_ingestion_register_variable_full_read(product_definition, "altitude", harp_type_double, 2, dimension_type,
+                                                   NULL, description, "km", NULL, read_altitude);
     path = "/GHz/Data_Vgroup/Data/Altitudes[]";
     harp_variable_definition_add_mapping(variable_definition, NULL, NULL, path, NULL);
 
@@ -679,25 +704,36 @@ int harp_ingestion_module_smr_l2_init(void)
 
     /* temperature */
     description = "Temperature";
-    variable_definition = harp_ingestion_register_variable_full_read(product_definition, "temperature", harp_type_double, 2, dimension_type, NULL, description, "K", exclude_temperature, read_profile_value);
+    variable_definition =
+        harp_ingestion_register_variable_full_read(product_definition, "temperature", harp_type_double, 2,
+                                                   dimension_type, NULL, description, "K", exclude_temperature,
+                                                   read_profile_value);
     path = "/GHz/Data_Vgroup/Data/Profiles[]";
     harp_variable_definition_add_mapping(variable_definition, NULL, NULL, path, NULL);
 
     /* temperature_uncertainty */
     description = "Precision of the temperature";
-    variable_definition = harp_ingestion_register_variable_full_read(product_definition, "temperature_uncertainty", harp_type_double, 2, dimension_type, NULL, description, NULL, exclude_temperature, read_totalerror_value);
+    variable_definition =
+        harp_ingestion_register_variable_full_read(product_definition, "temperature_uncertainty", harp_type_double, 2,
+                                                   dimension_type, NULL, description, NULL, exclude_temperature,
+                                                   read_totalerror_value);
     path = "/GHz/Data_Vgroup/Data/TotalError[]";
     harp_variable_definition_add_mapping(variable_definition, NULL, NULL, path, NULL);
 
     /* pressure */
     description = "Pressure";
-    variable_definition = harp_ingestion_register_variable_full_read(product_definition, "pressure", harp_type_double, 2, dimension_type, NULL, description, "K", exclude_pressure, read_profile_value);
+    variable_definition =
+        harp_ingestion_register_variable_full_read(product_definition, "pressure", harp_type_double, 2, dimension_type,
+                                                   NULL, description, "K", exclude_pressure, read_profile_value);
     path = "/GHz/Data_Vgroup/Data/Profiles[]";
     harp_variable_definition_add_mapping(variable_definition, NULL, NULL, path, NULL);
 
     /* pressure_uncertainty */
     description = "Precision of the pressure";
-    variable_definition = harp_ingestion_register_variable_full_read(product_definition, "pressure_uncertainty", harp_type_double, 2, dimension_type, NULL, description, NULL, exclude_pressure, read_totalerror_value);
+    variable_definition =
+        harp_ingestion_register_variable_full_read(product_definition, "pressure_uncertainty", harp_type_double, 2,
+                                                   dimension_type, NULL, description, NULL, exclude_pressure,
+                                                   read_totalerror_value);
     path = "/GHz/Data_Vgroup/Data/TotalError[]";
     harp_variable_definition_add_mapping(variable_definition, NULL, NULL, path, NULL);
 
