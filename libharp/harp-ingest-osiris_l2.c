@@ -31,6 +31,8 @@
 #define TRUE     1
 #endif
 
+#define SECONDS_FROM_1993_TO_2000 (220838400 + 5)
+
 typedef struct ingest_info_struct
 {
     coda_product *product;
@@ -91,7 +93,14 @@ static int get_data(ingest_info *info, const char *datasetname, const char *fiel
 
 static int read_datetime(void *user_data, harp_array data)
 {
-    return get_data((ingest_info *)user_data, "Geolocation_Fields", "Time", data);
+    int retval, i;
+
+    retval = get_data((ingest_info *)user_data, "Geolocation_Fields", "Time", data);
+    for (i = 0; i < ((ingest_info *)user_data)->num_profiles; i++)
+    {
+        data.double_data[i] = data.double_data[i] - SECONDS_FROM_1993_TO_2000;
+    }
+    return retval;
 }
 
 static int read_latitude(void *user_data, harp_array data)
