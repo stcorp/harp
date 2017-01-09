@@ -1018,8 +1018,8 @@ int harp_ingestion_module_gomos_l2_init(void)
     harp_variable_definition_add_mapping(variable_definition, NULL, NULL, path, NULL);
 
     /* flag_illumination_condition */
-    description = "illumination condition for the profile: 'dark', 'bright', 'twilight', 'strailight', or "
-        "'twilight/strailight'";
+    description = "illumination condition for the profile: 'dark', 'bright', 'twilight', 'straylight', or "
+        "'twilight/straylight'";
     variable_definition = harp_ingestion_register_variable_sample_read(product_definition,
                                                                        "flag_illumination_condition", harp_type_string,
                                                                        1, dimension_type, NULL, description, NULL, NULL,
