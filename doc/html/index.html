@@ -216,9 +216,8 @@
 </div>
 <div class="section" id="what-is-harp">
 <h2>What is HARP?</h2>
-<p>HARP is a toolkit for ingesting, processing and inter-comparing satellite remote
-sensing data against correlative data. Correlative data can be either in-situ
-data, ground based remote sensing data or other satellite remote sensing data.
+<p>HARP is a toolkit for reading, processing and inter-comparing satellite remote
+sensing data, model data, in-situ data, and ground based remote sensing data.
 The toolkit is composed of:</p>
 <ul class="simple">
 <li>A set of <a class="reference internal" href="#command-line-tools"><span class="std std-ref">command line tools</span></a></li>
@@ -226,16 +225,15 @@ The toolkit is composed of:</p>
 </ul>
 <p>The main goal of HARP is to assist in the inter-comparison of data sets. By
 appropriately chaining calls to HARP command line tools one can pre-process
-satellite and correlative data such that the two datasets that need to be
-compared end up having the same temporal/spatial grid, same data
-format/structure, and same physical unit. At the end of the toolchain you will
-have a set of data files that can be directly compared in e.g. Python, IDL or
-MATLAB.</p>
+data sets such that two datasets that need to be compared end up having the
+same temporal/spatial grid, same data format/structure, and same physical unit.
+At the end of the toolchain you will have a set of data files that can be
+directly compared in e.g. Python, IDL or MATLAB.</p>
 <p>In order for the HARP command line tools to handle each others output the
-toolkit uses a its own <a class="reference internal" href="#data-formats"><span class="std std-ref">data format conventions</span></a> for
+toolkit uses its own <a class="reference internal" href="#data-formats"><span class="std std-ref">data format conventions</span></a> for
 intermediate files. The use of this harmonized formatting means that satellite
 products need to be converted first to HARP compliant files. Once in this
-format, further processing can take place.</p>
+format, further processing can be performed.</p>
 </div>
 <div class="section" id="data-formats">
 <span id="id1"></span><h2>Data formats</h2>

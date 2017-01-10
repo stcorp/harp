@@ -24,9 +24,8 @@ Contents
 What is HARP?
 -------------
 
-HARP is a toolkit for ingesting, processing and inter-comparing satellite remote
-sensing data against correlative data. Correlative data can be either in-situ
-data, ground based remote sensing data or other satellite remote sensing data.
+HARP is a toolkit for reading, processing and inter-comparing satellite remote
+sensing data, model data, in-situ data, and ground based remote sensing data.
 The toolkit is composed of:
 
 - A set of :ref:`command line tools <command-line-tools>`
@@ -34,17 +33,16 @@ The toolkit is composed of:
 
 The main goal of HARP is to assist in the inter-comparison of data sets. By
 appropriately chaining calls to HARP command line tools one can pre-process
-satellite and correlative data such that the two datasets that need to be
-compared end up having the same temporal/spatial grid, same data
-format/structure, and same physical unit. At the end of the toolchain you will
-have a set of data files that can be directly compared in e.g. Python, IDL or
-MATLAB.
+data sets such that two datasets that need to be compared end up having the
+same temporal/spatial grid, same data format/structure, and same physical unit.
+At the end of the toolchain you will have a set of data files that can be
+directly compared in e.g. Python, IDL or MATLAB.
 
 In order for the HARP command line tools to handle each others output the
-toolkit uses a its own :ref:`data format conventions <data-formats>` for
+toolkit uses its own :ref:`data format conventions <data-formats>` for
 intermediate files. The use of this harmonized formatting means that satellite
 products need to be converted first to HARP compliant files. Once in this
-format, further processing can take place.
+format, further processing can be performed.
 
 .. _data-formats:
 
