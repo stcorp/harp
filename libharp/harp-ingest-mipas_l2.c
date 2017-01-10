@@ -1708,7 +1708,7 @@ int harp_ingestion_module_mipas_l2_init(void)
     variable_definition = harp_ingestion_register_variable_sample_read(product_definition, "pressure", harp_type_double,
                                                                        2, dimension_type, NULL, description, "hPa",
                                                                        NULL, read_pressure);
-    path = "/pt_retrieval_mds[]/pressure[]";
+    path = "/pt_retrieval_mds[]/tan_press[]";
     harp_variable_definition_add_mapping(variable_definition, NULL, NULL, path, NULL);
 
     description = "pressure standard deviation";
