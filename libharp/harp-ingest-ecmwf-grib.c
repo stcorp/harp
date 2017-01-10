@@ -217,6 +217,7 @@ typedef struct ingest_info_struct
     uint32_t iDirectionIncrement;
     uint32_t jDirectionIncrement;
     uint32_t N;
+    int grid_grib_version;  /* GRIB version of message from which grid was taken */
     int is_gaussian;
 
     /* actual latitude/longitude axis values */
@@ -1641,6 +1642,7 @@ static int get_lat_lon_grid(coda_cursor *cursor, int grib_version, ingest_info *
         info->jDirectionIncrement = jDirectionIncrement;
         info->N = N;
         info->is_gaussian = is_gaussian;
+        info->grid_grib_version = grib_version;
         info->num_longitudes = Ni;
         info->num_latitudes = Nj;
 
@@ -1708,19 +1710,51 @@ static int get_lat_lon_grid(coda_cursor *cursor, int grib_version, ingest_info *
             harp_set_error(HARP_ERROR_INGESTION, "not all lat/lon grids in the GRIB file use the same grid type");
             return -1;
         }
-        if (longitudeOfFirstGridPoint != info->longitudeOfFirstGridPoint ||
-            longitudeOfLastGridPoint != info->longitudeOfLastGridPoint ||
-            iDirectionIncrement != info->iDirectionIncrement)
+        if (info->grid_grib_version != grib_version)
         {
-            harp_set_error(HARP_ERROR_INGESTION, "not all longitude grids in the GRIB file are the same");
-            return -1;
+            /* since GRIB1 and GRIB2 use different resolutions we need to compare with a tollerance of 1000 */
+            if (fabs((double)(longitudeOfFirstGridPoint - info->longitudeOfFirstGridPoint)) > 1e3 ||
+                fabs((double)(longitudeOfLastGridPoint - info->longitudeOfLastGridPoint)) > 1e3 ||
+                fabs((double)(iDirectionIncrement - info->iDirectionIncrement)) > 1e3)
+            {
+                harp_set_error(HARP_ERROR_INGESTION, "not all longitude grids in the GRIB file are the same");
+                return -1;
+            }
+            if (fabs((double)(latitudeOfFirstGridPoint - info->latitudeOfFirstGridPoint)) > 1e3 ||
+                fabs((double)(latitudeOfLastGridPoint - info->latitudeOfLastGridPoint)) > 1e3 ||
+                fabs((double)(jDirectionIncrement - info->jDirectionIncrement)) > 1e3 || N != info->N)
+            {
+                harp_set_error(HARP_ERROR_INGESTION, "not all latitude grids in the GRIB file are the same");
+                return -1;
+            }
+            if (grib_version == 2)
+            {
+                /* prefer more accurate GRIB2 grid over that of less accurate GRIB1 grid */
+                info->latitudeOfFirstGridPoint = latitudeOfFirstGridPoint;
+                info->longitudeOfFirstGridPoint = longitudeOfFirstGridPoint;
+                info->latitudeOfLastGridPoint = latitudeOfLastGridPoint;
+                info->longitudeOfLastGridPoint = longitudeOfLastGridPoint;
+                info->iDirectionIncrement = iDirectionIncrement;
+                info->jDirectionIncrement = jDirectionIncrement;
+                info->grid_grib_version = grib_version;
+            }
         }
-        if (latitudeOfFirstGridPoint != info->latitudeOfFirstGridPoint ||
-            latitudeOfLastGridPoint != info->latitudeOfLastGridPoint ||
-            jDirectionIncrement != info->jDirectionIncrement || N != info->N)
+        else
         {
-            harp_set_error(HARP_ERROR_INGESTION, "not all latitude grids in the GRIB file are the same");
-            return -1;
+            if (longitudeOfFirstGridPoint != info->longitudeOfFirstGridPoint ||
+                longitudeOfLastGridPoint != info->longitudeOfLastGridPoint ||
+                iDirectionIncrement != info->iDirectionIncrement)
+            {
+                harp_set_error(HARP_ERROR_INGESTION, "not all longitude grids in the GRIB file are the same");
+                return -1;
+            }
+            if (latitudeOfFirstGridPoint != info->latitudeOfFirstGridPoint ||
+                latitudeOfLastGridPoint != info->latitudeOfLastGridPoint ||
+                jDirectionIncrement != info->jDirectionIncrement || N != info->N)
+            {
+                harp_set_error(HARP_ERROR_INGESTION, "not all latitude grids in the GRIB file are the same");
+                return -1;
+            }
         }
     }
 
@@ -2359,6 +2393,7 @@ static int ingest_info_new(coda_product *product, ingest_info **new_info)
     info->jDirectionIncrement = 0;
     info->N = 0;
     info->is_gaussian = 0;
+    info->grid_grib_version = 0;
     info->num_longitudes = 0;
     info->longitude = NULL;
     info->num_latitudes = 0;
