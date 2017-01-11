@@ -70,7 +70,7 @@ typedef struct harp_variable_definition_struct
     int (*exclude) (void *user_data);
     int (*read_all) (void *user_data, harp_array data);
     int (*read_range) (void *user_data, long index_offset, long index_length, harp_array data);
-    int (*get_max_range) (void *user_data);
+    long (*get_max_range) (void *user_data);
     int (*read_sample) (void *user_data, long index, harp_array data);
 
     int num_mappings;
@@ -212,7 +212,7 @@ harp_variable_definition *harp_ingestion_register_variable_range_read(harp_produ
                                                                       const long *dimension, const char *description,
                                                                       const char *unit,
                                                                       int (*exclude) (void *user_data),
-                                                                      int (*get_max_range) (void *user_data),
+                                                                      long (*get_max_range) (void *user_data),
                                                                       int (*read_range) (void *user_data,
                                                                                          long index_offset,
                                                                                          long index_length,
