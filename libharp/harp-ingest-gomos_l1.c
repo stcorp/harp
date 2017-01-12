@@ -723,7 +723,7 @@ static int lim_ingestion_init(const harp_ingestion_module *module, coda_product 
         {
             if (strcmp(cp, "false") == 0)
             {
-                info->upper = FALSE;
+                info->corrected = FALSE;
             }
         }
     }
