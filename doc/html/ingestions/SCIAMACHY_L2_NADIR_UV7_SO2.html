@@ -240,6 +240,30 @@
 </tbody>
 </table>
 </div>
+<div class="section" id="ingestion-options">
+<h2>Ingestion options</h2>
+<p>The table below lists the available ingestion options for <code class="docutils literal"><span class="pre">SCIAMACHY_L2</span></code> products.</p>
+<table border="1" class="docutils">
+<colgroup>
+<col width="15%" />
+<col width="25%" />
+<col width="60%" />
+</colgroup>
+<thead valign="bottom">
+<tr class="row-odd"><th class="head">option name</th>
+<th class="head">legal values</th>
+<th class="head">description</th>
+</tr>
+</thead>
+<tbody valign="top">
+<tr class="row-even"><td>dataset</td>
+<td><strong>nad_uv0_o3</strong>, nad_uv1_no2, nad_uv3_bro, nad_uv4_h2co, nad_uv5_so2, nad_uv6_oclo, nad_uv7_so2, nad_uv8_h2o, nad_uv9_chocho, nad_ir0_h2o, nad_ir1_ch4, nad_ir2_n2o, nad_ir3_co, nad_ir4_co2, lim_uv0_o3, lim_uv1_no2, lim_uv3_bro, clouds_aerosol</td>
+<td>the dataset of the L2 product to ingest; each dataset is a combination of nadir/limb choice, retrieval window, and main quantity; option values are &#8216;nad_uv0_o3&#8217;, &#8216;nad_uv1_no2&#8217;, &#8216;nad_uv3_bro&#8217;,  &#8216;nad_uv4_h2co&#8217;, &#8216;nad_uv5_so2&#8217;, &#8216;nad_uv6_oclo&#8217;, &#8216;nad_uv7_so2&#8217;, &#8216;nad_uv8_h2o&#8217;, &#8216;nad_uv9_chocho&#8217;, &#8216;nad_ir0_h2o&#8217;, &#8216;nad_ir1_ch4&#8217;, &#8216;nad_ir2_n2o&#8217;, &#8216;nad_ir3_co&#8217;, &#8216;nad_ir4_co2&#8217;, &#8216;lim_uv0_o3&#8217;, &#8216;lim_uv1_no2&#8217;, &#8216;lim_uv3_bro&#8217;, &#8216;clouds_aerosol&#8217;</td>
+</tr>
+</tbody>
+</table>
+<p>This definition is only applicable when: dataset=nad_uv7_so2</p>
+</div>
 <div class="section" id="mapping-description">
 <h2>Mapping description</h2>
 <p>The table below details where and how each variable was retrieved from the input product.</p>

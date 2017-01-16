@@ -105,7 +105,8 @@ static int product_definition_has_mapping_description(const harp_product_definit
     return 0;
 }
 
-static int generate_product_definition(const char *filename, const harp_product_definition *product_definition)
+static int generate_product_definition(const char *filename, const harp_ingestion_module *module,
+                                       const harp_product_definition *product_definition)
 {
     FILE *fout;
     int i;
@@ -187,6 +188,69 @@ static int generate_product_definition(const char *filename, const harp_product_
         }
         fputc('"', fout);
         fputc('\n', fout);
+    }
+
+    if (module->num_option_definitions > 0)
+    {
+        fputc('\n', fout);
+        fputs("Ingestion options\n", fout);
+        fputs("-----------------\n", fout);
+        fprintf(fout, "The table below lists the available ingestion options for ``%s`` products.\n\n",
+                module->name);
+        fputs(".. csv-table::\n", fout);
+        fputs("   :widths: 15 25 60\n", fout);
+        fputs("   :header-rows: 1\n\n", fout);
+        fputs("   \"option name\", \"legal values\", \"description\"\n", fout);
+
+        for (j = 0; j < module->num_option_definitions; j++)
+        {
+            harp_ingestion_option_definition *option_definition = module->option_definition[j];
+
+            fnputc(3, ' ', fout);
+            fputc('"', fout);
+            fputs(option_definition->name, fout);
+            fputc('"', fout);
+            fputs(", ", fout);
+
+            fputc('"', fout);
+            if (option_definition->num_allowed_values > 0)
+            {
+                int k;
+
+                for (k = 0; k < option_definition->num_allowed_values; k++)
+                {
+                    if (k == 0)
+                    {
+                        fprintf(fout, "**%s**", option_definition->allowed_value[k]);
+                    }
+                    else
+                    {
+                        fputs(option_definition->allowed_value[k], fout);
+                    }
+
+                    if (k + 1 < option_definition->num_allowed_values)
+                    {
+                        fputs(", ", fout);
+                    }
+                }
+            }
+            fputc('"', fout);
+            fputs(", ", fout);
+
+            fputc('"', fout);
+            if (option_definition->description != NULL)
+            {
+                fputs(option_definition->description, fout);
+            }
+            fputc('"', fout);
+            fputc('\n', fout);
+        }
+        fputc('\n', fout);
+
+        if (product_definition->ingestion_option != NULL)
+        {
+            fprintf(fout, "This definition is only applicable when: %s\n", product_definition->ingestion_option);
+        }
     }
 
     if (product_definition_has_mapping_description(product_definition))
@@ -446,11 +510,9 @@ static int generate_product_group(FILE *fout, const char *product_group, int num
         const harp_ingestion_module *module = ingestion_module[i];
 
         fnputc(3, ' ', fout);
-        if (module->num_product_definitions == 1 && strcmp(module->product_definition[0]->name, module->name) == 0 &&
-            module->num_option_definitions == 0)
+        if (module->num_product_definitions == 1 && strcmp(module->product_definition[0]->name, module->name) == 0)
         {
-            /* don't print details when we only have one conversion (whose name equals that of the module)
-             * and if there are no options */
+            /* don't print details when we only have one conversion (whose name equals that of the module) */
             fprintf(fout, "\":doc:`%s`\", ", module->product_definition[0]->name);
         }
         else
@@ -489,8 +551,7 @@ static int generate_product_group(FILE *fout, const char *product_group, int num
         const harp_ingestion_module *module = ingestion_module[i];
         int j;
 
-        if (module->num_product_definitions == 1 && strcmp(module->product_definition[0]->name, module->name) == 0 &&
-            module->num_option_definitions == 0)
+        if (module->num_product_definitions == 1 && strcmp(module->product_definition[0]->name, module->name) == 0)
         {
             /* skip printing details if we already have a direct link to the conversion (see above) */
             continue;
@@ -759,7 +820,7 @@ LIBHARP_API int harp_doc_export_ingestion_definitions(const char *path)
             }
 
             sprintf(filename, "%s/%s.rst", path, product_definition->name);
-            if (generate_product_definition(filename, product_definition) != 0)
+            if (generate_product_definition(filename, ingestion_module, product_definition) != 0)
             {
                 free(filename);
                 return -1;

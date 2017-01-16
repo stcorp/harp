@@ -444,6 +444,33 @@
 </tbody>
 </table>
 </div>
+<div class="section" id="ingestion-options">
+<h2>Ingestion options</h2>
+<p>The table below lists the available ingestion options for <code class="docutils literal"><span class="pre">ECMWF_GRIB</span></code> products.</p>
+<table border="1" class="docutils">
+<colgroup>
+<col width="15%" />
+<col width="25%" />
+<col width="60%" />
+</colgroup>
+<thead valign="bottom">
+<tr class="row-odd"><th class="head">option name</th>
+<th class="head">legal values</th>
+<th class="head">description</th>
+</tr>
+</thead>
+<tbody valign="top">
+<tr class="row-even"><td>ignore_time_for_z</td>
+<td><strong>false</strong>, true</td>
+<td>ignore time for the geopotential parameter</td>
+</tr>
+<tr class="row-odd"><td>ignore_duplicates</td>
+<td><strong>false</strong>, true</td>
+<td>ignore duplicate GRIB messages (only first message occurence will be used)</td>
+</tr>
+</tbody>
+</table>
+</div>
 <div class="section" id="mapping-description">
 <h2>Mapping description</h2>
 <p>The table below details where and how each variable was retrieved from the input product.</p>
