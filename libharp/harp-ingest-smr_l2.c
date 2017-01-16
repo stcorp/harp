@@ -656,7 +656,7 @@ int harp_ingestion_module_smr_l2_init(void)
     description = "center latitude for a profile";
     variable_definition =
         harp_ingestion_register_variable_full_read(product_definition, "latitude", harp_type_double, 1, dimension_type,
-                                                   NULL, description, "degree_north", NULL,read_latitude);
+                                                   NULL, description, "degree_north", NULL, read_latitude);
     harp_variable_definition_set_valid_range_double(variable_definition, -90.0, 90.0);
     path = "/GHz/Data_Vgroup/Geolocation/Latitude[]";
     harp_variable_definition_add_mapping(variable_definition, NULL, NULL, path, NULL);
@@ -665,7 +665,7 @@ int harp_ingestion_module_smr_l2_init(void)
     description = "center longitude for a profile";
     variable_definition =
         harp_ingestion_register_variable_full_read(product_definition, "longitude", harp_type_double, 1, dimension_type,
-                                                   NULL, description, "degree_east", NULL,read_longitude);
+                                                   NULL, description, "degree_east", NULL, read_longitude);
     harp_variable_definition_set_valid_range_double(variable_definition, -180.0, 180.0);
     path = "/GHz/Data_Vgroup/Geolocation/Longitude[]";
     harp_variable_definition_add_mapping(variable_definition, NULL, NULL, path, NULL);
