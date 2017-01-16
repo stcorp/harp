@@ -643,8 +643,8 @@ int harp_ingestion_module_smr_l2_init(void)
     dimension_type[0] = harp_dimension_time;
     dimension_type[1] = harp_dimension_vertical;
 
-    /* time_per_profile */
-    description = "The time of the measurement";
+    /* datetime */
+    description = "time of the measurement";
     variable_definition =
         harp_ingestion_register_variable_full_read(product_definition, "datetime", harp_type_double, 1, dimension_type,
                                                    NULL, description, "seconds since 2000-01-01", NULL, read_datetime);
@@ -652,37 +652,35 @@ int harp_ingestion_module_smr_l2_init(void)
     harp_variable_definition_add_mapping(variable_definition, NULL, NULL, path,
                                          "The time converted from TAI93 to seconds since 2000-01-01");
 
-    /* latitude_per_profile */
-    description = "The center latitude for a profile";
+    /* latitude */
+    description = "center latitude for a profile";
     variable_definition =
-        harp_ingestion_register_variable_full_read(product_definition, "latitude_per_profile", harp_type_double, 1,
-                                                   dimension_type, NULL, description, "degree_north", NULL,
-                                                   read_latitude);
+        harp_ingestion_register_variable_full_read(product_definition, "latitude", harp_type_double, 1, dimension_type,
+                                                   NULL, description, "degree_north", NULL,read_latitude);
     harp_variable_definition_set_valid_range_double(variable_definition, -90.0, 90.0);
     path = "/GHz/Data_Vgroup/Geolocation/Latitude[]";
     harp_variable_definition_add_mapping(variable_definition, NULL, NULL, path, NULL);
 
-    /* longitude_per_profile */
-    description = "The center longitude for a profile";
+    /* longitude */
+    description = "center longitude for a profile";
     variable_definition =
-        harp_ingestion_register_variable_full_read(product_definition, "longitude_per_profile", harp_type_double, 1,
-                                                   dimension_type, NULL, description, "degree_east", NULL,
-                                                   read_longitude);
+        harp_ingestion_register_variable_full_read(product_definition, "longitude", harp_type_double, 1, dimension_type,
+                                                   NULL, description, "degree_east", NULL,read_longitude);
     harp_variable_definition_set_valid_range_double(variable_definition, -180.0, 180.0);
     path = "/GHz/Data_Vgroup/Geolocation/Longitude[]";
     harp_variable_definition_add_mapping(variable_definition, NULL, NULL, path, NULL);
 
-    /* solar_zenith_angle_per_profile */
-    description = "Average solar zenith angle for the scan";
+    /* solar_zenith_angle */
+    description = "average solar zenith angle for the scan";
     variable_definition =
-        harp_ingestion_register_variable_full_read(product_definition, "solar_zenith_angle_per_profile",
-                                                   harp_type_double, 1, dimension_type, NULL, description, NULL, NULL,
+        harp_ingestion_register_variable_full_read(product_definition, "solar_zenith_angle", harp_type_double, 1,
+                                                   dimension_type, NULL, description, NULL, NULL,
                                                    read_solar_zenith_angle);
     path = "/GHz/Data_Vgroup/Geolocation/SunZD[]";
     harp_variable_definition_add_mapping(variable_definition, NULL, NULL, path, NULL);
 
     /* altitude */
-    description = "The altitude in km for each profile element";
+    description = "altitude in km for each profile element";
     variable_definition =
         harp_ingestion_register_variable_full_read(product_definition, "altitude", harp_type_double, 2, dimension_type,
                                                    NULL, description, "km", NULL, read_altitude);
@@ -707,7 +705,7 @@ int harp_ingestion_module_smr_l2_init(void)
     add_ingestion_VMR_variables(product_definition, dimension_type, "BrO2", exclude_BrO2);
 
     /* temperature */
-    description = "Temperature";
+    description = "temperature";
     variable_definition =
         harp_ingestion_register_variable_full_read(product_definition, "temperature", harp_type_double, 2,
                                                    dimension_type, NULL, description, "K", exclude_temperature,
@@ -716,7 +714,7 @@ int harp_ingestion_module_smr_l2_init(void)
     harp_variable_definition_add_mapping(variable_definition, NULL, NULL, path, NULL);
 
     /* temperature_uncertainty */
-    description = "Precision of the temperature";
+    description = "precision of the temperature";
     variable_definition =
         harp_ingestion_register_variable_full_read(product_definition, "temperature_uncertainty", harp_type_double, 2,
                                                    dimension_type, NULL, description, NULL, exclude_temperature,
@@ -725,7 +723,7 @@ int harp_ingestion_module_smr_l2_init(void)
     harp_variable_definition_add_mapping(variable_definition, NULL, NULL, path, NULL);
 
     /* pressure */
-    description = "Pressure";
+    description = "pressure";
     variable_definition =
         harp_ingestion_register_variable_full_read(product_definition, "pressure", harp_type_double, 2, dimension_type,
                                                    NULL, description, "K", exclude_pressure, read_profile_value);
@@ -733,7 +731,7 @@ int harp_ingestion_module_smr_l2_init(void)
     harp_variable_definition_add_mapping(variable_definition, NULL, NULL, path, NULL);
 
     /* pressure_uncertainty */
-    description = "Precision of the pressure";
+    description = "precision of the pressure";
     variable_definition =
         harp_ingestion_register_variable_full_read(product_definition, "pressure_uncertainty", harp_type_double, 2,
                                                    dimension_type, NULL, description, NULL, exclude_pressure,
