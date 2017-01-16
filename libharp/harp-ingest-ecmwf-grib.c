@@ -2748,7 +2748,7 @@ int harp_ingestion_module_ecmwf_grib_init(void)
                                                                      1, dimension_type, NULL, description,
                                                                      "seconds since 2000-01-01", NULL, read_datetime);
 
-    description = "the time of the measurement converted from TAI93 to seconds since 2000-01-01T00:00:00";
+    description = "time of the measurement converted from TAI93 to seconds since 2000-01-01T00:00:00";
     path = "/[]/grib1/yearOfCentury, /[]/grib1/month, /[]/grib1/day, /[]/grib1/hour, /[]/grib1/minute, "
         "/[]/grib1/centuryOfReferenceTimeOfData";
     harp_variable_definition_add_mapping(variable_definition, NULL, "GRIB1", path, description);

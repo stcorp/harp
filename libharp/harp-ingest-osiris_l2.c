@@ -338,7 +338,7 @@ static void register_aerosol_product(void)
     dimension_type[1] = harp_dimension_vertical;
 
     /* time_per_profile */
-    description = "The time of the measurement";
+    description = "time of the measurement";
     variable_definition =
         harp_ingestion_register_variable_full_read(product_definition, "datetime", harp_type_double, 1, dimension_type,
                                                    NULL, description, "seconds since 2000-01-01", NULL, read_datetime);
@@ -347,7 +347,7 @@ static void register_aerosol_product(void)
                                          "The time converted from TAI93 to seconds since 2000-01-01");
 
     /* latitude_per_profile */
-    description = "The center latitude for a profile";
+    description = "center latitude for a profile";
     variable_definition =
         harp_ingestion_register_variable_full_read(product_definition, "latitude_per_profile", harp_type_double, 1,
                                                    dimension_type, NULL, description, "degree_north", NULL,
@@ -357,7 +357,7 @@ static void register_aerosol_product(void)
     harp_variable_definition_add_mapping(variable_definition, NULL, NULL, path, NULL);
 
     /* longitude_per_profile */
-    description = "The center longitude for a profile";
+    description = "center longitude for a profile";
     variable_definition =
         harp_ingestion_register_variable_full_read(product_definition, "longitude_per_profile", harp_type_double, 1,
                                                    dimension_type, NULL, description, "degree_east", NULL,
@@ -367,7 +367,7 @@ static void register_aerosol_product(void)
     harp_variable_definition_add_mapping(variable_definition, NULL, NULL, path, NULL);
 
     /* altitude */
-    description = "The altitude in km for each profile element";
+    description = "altitude in km for each profile element";
     variable_definition =
         harp_ingestion_register_variable_full_read(product_definition, "altitude", harp_type_double, 2, dimension_type,
                                                    NULL, description, "km", NULL, read_altitude);
@@ -376,7 +376,7 @@ static void register_aerosol_product(void)
                                          "The altitude information will be duplicated for each profile");
 
     /* aerosol_number_density */
-    description = "Aerosol number density (in cm^-3)";
+    description = "aerosol number density (in cm^-3)";
     variable_definition =
         harp_ingestion_register_variable_full_read(product_definition, "aerosol_number_density", harp_type_double, 2,
                                                    dimension_type, NULL, description, "cm^-3", NULL,
@@ -385,7 +385,7 @@ static void register_aerosol_product(void)
     harp_variable_definition_add_mapping(variable_definition, NULL, NULL, path, NULL);
 
     /* aerosol_number_density_uncertainty */
-    description = "Precision of the aerosol number density (in cm^-3)";
+    description = "precision of the aerosol number density (in cm^-3)";
     variable_definition =
         harp_ingestion_register_variable_full_read(product_definition, "aerosol_number_density_uncertainty",
                                                    harp_type_double, 2, dimension_type, NULL, description, "cm^-3",
@@ -438,7 +438,7 @@ static void register_no2_oe_product(void)
     dimension_type[1] = harp_dimension_vertical;
 
     /* time_per_profile */
-    description = "The time of the measurement";
+    description = "time of the measurement";
     variable_definition =
         harp_ingestion_register_variable_full_read(product_definition, "datetime", harp_type_double, 1, dimension_type,
                                                    NULL, description, "seconds since 2000-01-01", NULL, read_datetime);
@@ -447,7 +447,7 @@ static void register_no2_oe_product(void)
                                          "The time converted from TAI93 to seconds since 2000-01-01");
 
     /* latitude_per_profile */
-    description = "The center latitude for a profile";
+    description = "center latitude for a profile";
     variable_definition =
         harp_ingestion_register_variable_full_read(product_definition, "latitude_per_profile", harp_type_double, 1,
                                                    dimension_type, NULL, description, "degree_north", NULL,
@@ -457,7 +457,7 @@ static void register_no2_oe_product(void)
     harp_variable_definition_add_mapping(variable_definition, NULL, NULL, path, NULL);
 
     /* longitude_per_profile */
-    description = "The center longitude for a profile";
+    description = "center longitude for a profile";
     variable_definition =
         harp_ingestion_register_variable_full_read(product_definition, "longitude_per_profile", harp_type_double, 1,
                                                    dimension_type, NULL, description, "degree_east", NULL,
@@ -467,7 +467,7 @@ static void register_no2_oe_product(void)
     harp_variable_definition_add_mapping(variable_definition, NULL, NULL, path, NULL);
 
     /* altitude */
-    description = "The altitude in km for each profile element";
+    description = "altitude in km for each profile element";
     variable_definition =
         harp_ingestion_register_variable_full_read(product_definition, "altitude", harp_type_double, 2, dimension_type,
                                                    NULL, description, "km", NULL, read_altitude);
@@ -476,7 +476,7 @@ static void register_no2_oe_product(void)
                                          "The altitude information will be duplicated for each profile");
 
     /* no2_vmr */
-    description = "Volume mixing ratio of NO2";
+    description = "volume mixing ratio of NO2";
     variable_definition =
         harp_ingestion_register_variable_full_read(product_definition, "no2_vmr", harp_type_double, 2, dimension_type,
                                                    NULL, description, NULL, NULL, read_no2_vmr);
@@ -484,7 +484,7 @@ static void register_no2_oe_product(void)
     harp_variable_definition_add_mapping(variable_definition, NULL, NULL, path, "ppmv");
 
     /* no2_vmr_error */
-    description = "Precision of the volume mixing ratio of NO2";
+    description = "precision of the volume mixing ratio of NO2";
     variable_definition =
         harp_ingestion_register_variable_full_read(product_definition, "no2_vmr_error", harp_type_double, 2,
                                                    dimension_type, NULL, description, NULL, NULL, read_no2_vmr_error);
@@ -544,7 +544,7 @@ static void register_no2_mart_product(void)
     dimension_type[1] = harp_dimension_vertical;
 
     /* time_per_profile */
-    description = "The time of the measurement";
+    description = "time of the measurement";
     variable_definition =
         harp_ingestion_register_variable_full_read(product_definition, "datetime", harp_type_double, 1, dimension_type,
                                                    NULL, description, "seconds since 2000-01-01", NULL, read_datetime);
@@ -553,7 +553,7 @@ static void register_no2_mart_product(void)
                                          "The time converted from TAI93 to seconds since 2000-01-01");
 
     /* latitude_per_profile */
-    description = "The center latitude for a profile";
+    description = "center latitude for a profile";
     variable_definition =
         harp_ingestion_register_variable_full_read(product_definition, "latitude_per_profile", harp_type_double, 1,
                                                    dimension_type, NULL, description, "degree_north", NULL,
@@ -563,7 +563,7 @@ static void register_no2_mart_product(void)
     harp_variable_definition_add_mapping(variable_definition, NULL, NULL, path, NULL);
 
     /* longitude_per_profile */
-    description = "The center longitude for a profile";
+    description = "center longitude for a profile";
     variable_definition =
         harp_ingestion_register_variable_full_read(product_definition, "longitude_per_profile", harp_type_double, 1,
                                                    dimension_type, NULL, description, "degree_east", NULL,
@@ -573,7 +573,7 @@ static void register_no2_mart_product(void)
     harp_variable_definition_add_mapping(variable_definition, NULL, NULL, path, NULL);
 
     /* altitude */
-    description = "The altitude in km for each profile element";
+    description = "altitude in km for each profile element";
     variable_definition =
         harp_ingestion_register_variable_full_read(product_definition, "altitude", harp_type_double, 2, dimension_type,
                                                    NULL, description, "km", NULL, read_altitude);
@@ -582,7 +582,7 @@ static void register_no2_mart_product(void)
                                          "The altitude information will be duplicated for each profile");
 
     /* no2_vmr */
-    description = "Volume mixing ratio of NO2";
+    description = "volume mixing ratio of NO2";
     variable_definition =
         harp_ingestion_register_variable_full_read(product_definition, "no2_vmr", harp_type_double, 2, dimension_type,
                                                    NULL, description, NULL, NULL, read_no2_vmr);
@@ -590,7 +590,7 @@ static void register_no2_mart_product(void)
     harp_variable_definition_add_mapping(variable_definition, NULL, NULL, path, "ppmv");
 
     /* no2_vmr_error */
-    description = "Precision of the volume mixing ratio of NO2";
+    description = "precision of the volume mixing ratio of NO2";
     variable_definition =
         harp_ingestion_register_variable_full_read(product_definition, "no2_vmr_error", harp_type_double, 2,
                                                    dimension_type, NULL, description, NULL, NULL, read_no2_vmr_error);
@@ -650,7 +650,7 @@ static void register_o3_oe_product(void)
     dimension_type[1] = harp_dimension_vertical;
 
     /* time_per_profile */
-    description = "The time of the measurement";
+    description = "time of the measurement";
     variable_definition =
         harp_ingestion_register_variable_full_read(product_definition, "datetime", harp_type_double, 1, dimension_type,
                                                    NULL, description, "seconds since 2000-01-01", NULL, read_datetime);
@@ -659,7 +659,7 @@ static void register_o3_oe_product(void)
                                          "The time converted from TAI93 to seconds since 2000-01-01");
 
     /* latitude_per_profile */
-    description = "The center latitude for a profile";
+    description = "center latitude for a profile";
     variable_definition =
         harp_ingestion_register_variable_full_read(product_definition, "latitude_per_profile", harp_type_double, 1,
                                                    dimension_type, NULL, description, "degree_north", NULL,
@@ -669,7 +669,7 @@ static void register_o3_oe_product(void)
     harp_variable_definition_add_mapping(variable_definition, NULL, NULL, path, NULL);
 
     /* longitude_per_profile */
-    description = "The center longitude for a profile";
+    description = "center longitude for a profile";
     variable_definition =
         harp_ingestion_register_variable_full_read(product_definition, "longitude_per_profile", harp_type_double, 1,
                                                    dimension_type, NULL, description, "degree_east", NULL,
@@ -679,7 +679,7 @@ static void register_o3_oe_product(void)
     harp_variable_definition_add_mapping(variable_definition, NULL, NULL, path, NULL);
 
     /* altitude */
-    description = "The altitude in km for each profile element";
+    description = "altitude in km for each profile element";
     variable_definition =
         harp_ingestion_register_variable_full_read(product_definition, "altitude", harp_type_double, 2, dimension_type,
                                                    NULL, description, "km", NULL, read_altitude);
@@ -688,7 +688,7 @@ static void register_o3_oe_product(void)
                                          "The altitude information will be duplicated for each profile");
 
     /* o3_vmr */
-    description = "Volume mixing ratio of O3";
+    description = "volume mixing ratio of O3";
     variable_definition =
         harp_ingestion_register_variable_full_read(product_definition, "o3_vmr", harp_type_double, 2, dimension_type,
                                                    NULL, description, NULL, NULL, read_o3_vmr);
@@ -696,7 +696,7 @@ static void register_o3_oe_product(void)
     harp_variable_definition_add_mapping(variable_definition, NULL, NULL, path, "ppmv");
 
     /* o3_vmr_error */
-    description = "Precision of the volume mixing ratio of O3";
+    description = "precision of the volume mixing ratio of O3";
     variable_definition =
         harp_ingestion_register_variable_full_read(product_definition, "o3_vmr_error", harp_type_double, 2,
                                                    dimension_type, NULL, description, NULL, NULL, read_o3_vmr_error);
@@ -756,7 +756,7 @@ static void register_o3_mart_product(void)
     dimension_type[1] = harp_dimension_vertical;
 
     /* time_per_profile */
-    description = "The time of the measurement";
+    description = "time of the measurement";
     variable_definition =
         harp_ingestion_register_variable_full_read(product_definition, "datetime", harp_type_double, 1, dimension_type,
                                                    NULL, description, "seconds since 2000-01-01", NULL, read_datetime);
@@ -765,7 +765,7 @@ static void register_o3_mart_product(void)
                                          "The time converted from TAI93 to seconds since 2000-01-01");
 
     /* latitude_per_profile */
-    description = "The center latitude for a profile";
+    description = "center latitude for a profile";
     variable_definition =
         harp_ingestion_register_variable_full_read(product_definition, "latitude_per_profile", harp_type_double, 1,
                                                    dimension_type, NULL, description, "degree_north", NULL,
@@ -775,7 +775,7 @@ static void register_o3_mart_product(void)
     harp_variable_definition_add_mapping(variable_definition, NULL, NULL, path, NULL);
 
     /* longitude_per_profile */
-    description = "The center longitude for a profile";
+    description = "center longitude for a profile";
     variable_definition =
         harp_ingestion_register_variable_full_read(product_definition, "longitude_per_profile", harp_type_double, 1,
                                                    dimension_type, NULL, description, "degree_east", NULL,
@@ -785,7 +785,7 @@ static void register_o3_mart_product(void)
     harp_variable_definition_add_mapping(variable_definition, NULL, NULL, path, NULL);
 
     /* altitude */
-    description = "The altitude in km for each profile element";
+    description = "altitude in km for each profile element";
     variable_definition =
         harp_ingestion_register_variable_full_read(product_definition, "altitude", harp_type_double, 2, dimension_type,
                                                    NULL, description, "km", NULL, read_altitude);
@@ -794,7 +794,7 @@ static void register_o3_mart_product(void)
                                          "The altitude information will be duplicated for each profile");
 
     /* o3_vmr */
-    description = "Volume mixing ratio of O3";
+    description = "volume mixing ratio of O3";
     variable_definition =
         harp_ingestion_register_variable_full_read(product_definition, "o3_vmr", harp_type_double, 2, dimension_type,
                                                    NULL, description, NULL, NULL, read_o3_vmr);
@@ -802,7 +802,7 @@ static void register_o3_mart_product(void)
     harp_variable_definition_add_mapping(variable_definition, NULL, NULL, path, "ppmv");
 
     /* o3_vmr_error */
-    description = "Precision of the volume mixing ratio of O3";
+    description = "precision of the volume mixing ratio of O3";
     variable_definition =
         harp_ingestion_register_variable_full_read(product_definition, "o3_vmr_error", harp_type_double, 2,
                                                    dimension_type, NULL, description, NULL, NULL, read_o3_vmr_error);

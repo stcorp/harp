@@ -2641,7 +2641,7 @@ static void register_omdomino_product(void)
                                                                      NULL, read_longitude_bounds_domino);
     harp_variable_definition_set_valid_range_double(variable_definition, -180.0, 180.0);
     path = "/HDFEOS/SWATHS/DominoNO2/Geolocation_Fields/LongitudeCornerpoints[]";
-    description = "coorners are reordered from {a,b,c,d} to {d,b,a,c}";
+    description = "corners are reordered from {a,b,c,d} to {d,b,a,c}";
     harp_variable_definition_add_mapping(variable_definition, NULL, NULL, path, description);
 
     /* latitude_bounds */
@@ -2652,7 +2652,7 @@ static void register_omdomino_product(void)
                                                                      NULL, read_latitude_bounds_domino);
     harp_variable_definition_set_valid_range_double(variable_definition, -90.0, 90.0);
     path = "/HDFEOS/SWATHS/DominoNO2/Geolocation_Fields/LatitudeCornerpoints[]";
-    description = "coorners are reordered from {a,b,c,d} to {d,b,a,c}";
+    description = "corners are reordered from {a,b,c,d} to {d,b,a,c}";
     harp_variable_definition_add_mapping(variable_definition, NULL, NULL, path, description);
 
     /* solar_zenith_angle */
@@ -2973,7 +2973,7 @@ static void register_omo3pr_product(void)
     register_viewing_azimuth_angle_variable(product_definition, path);
 
     /* pressure */
-    description = "the pressure level for each profile element";
+    description = "pressure level for each profile element";
     variable_definition = harp_ingestion_register_variable_sample_read(product_definition, "pressure", harp_type_double,
                                                                        2, dimension_type, NULL, description, "hPa",
                                                                        NULL, read_pressure);

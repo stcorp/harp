@@ -549,7 +549,7 @@ int harp_ingestion_module_gome_l2_init(void)
                                                                        harp_type_double, 1, dimension_type, NULL,
                                                                        description, "degree_east", NULL,
                                                                        read_longitude);
-    description = "Each longitude will be transformed from a value in the range 0 - 360 to a value in the range -180 "
+    description = "each longitude will be transformed from a value in the range 0 - 360 to a value in the range -180 "
         "- 180";
     harp_variable_definition_add_mapping(variable_definition, NULL, NULL, "/ddr[]/glr/corners[4]/lon", description);
 
