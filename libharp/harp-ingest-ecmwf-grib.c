@@ -217,7 +217,7 @@ typedef struct ingest_info_struct
     uint32_t iDirectionIncrement;
     uint32_t jDirectionIncrement;
     uint32_t N;
-    int grid_grib_version;  /* GRIB version of message from which grid was taken */
+    int grid_grib_version;      /* GRIB version of message from which grid was taken */
     int is_gaussian;
 
     /* actual latitude/longitude axis values */
