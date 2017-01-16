@@ -231,7 +231,7 @@ HARP_DOCFILES = \
 	doc/html/ingestions/GOME_L2_ERSOTO.html \
 	doc/html/ingestions/GOMOS_L1_LIMB.html \
 	doc/html/ingestions/GOMOS_L1_TRANSMISSION.html \
-	doc/html/ingestions/GOMOS_NL_L2.html \
+	doc/html/ingestions/GOMOS_L2.html \
 	doc/html/ingestions/GOSAT_FTS_L1b_band1p.html \
 	doc/html/ingestions/GOSAT_FTS_L1b_band1s.html \
 	doc/html/ingestions/GOSAT_FTS_L1b_band2p.html \
@@ -281,7 +281,11 @@ HARP_DOCFILES = \
 	doc/html/ingestions/OMI_L3_OMDOAO3e.html \
 	doc/html/ingestions/OMI_L3_OMTO3d.html \
 	doc/html/ingestions/OMI_L3_OMTO3e.html \
-	doc/html/ingestions/OSIRIS_L2.html \
+	doc/html/ingestions/OSIRIS_L2_Aerosol_MART.html \
+	doc/html/ingestions/OSIRIS_L2_NO2_MART.html \
+	doc/html/ingestions/OSIRIS_L2_NO2_OE.html \
+	doc/html/ingestions/OSIRIS_L2_O3_MART.html \
+	doc/html/ingestions/OSIRIS_L2_O3_OE.html \
 	doc/html/ingestions/QA4ECV_L2_HCHO.html \
 	doc/html/ingestions/QA4ECV_L2_NO2.html \
 	doc/html/ingestions/S5P_L1B_IR_SIR_BD7.html \
@@ -815,7 +819,7 @@ doc/html/ingestions/GOMOS_L1_LIMB.html:
 	$(MAKE) harp_doc
 doc/html/ingestions/GOMOS_L1_TRANSMISSION.html:
 	$(MAKE) harp_doc
-doc/html/ingestions/GOMOS_NL_L2.html:
+doc/html/ingestions/GOMOS_L2.html:
 	$(MAKE) harp_doc
 doc/html/ingestions/GOSAT_FTS_L1b_band1p.html:
 	$(MAKE) harp_doc
@@ -915,7 +919,15 @@ doc/html/ingestions/OMI_L3_OMTO3d.html:
 	$(MAKE) harp_doc
 doc/html/ingestions/OMI_L3_OMTO3e.html:
 	$(MAKE) harp_doc
-doc/html/ingestions/OSIRIS_L2.html:
+doc/html/ingestions/OSIRIS_L2_Aerosol_MART.html:
+	$(MAKE) harp_doc
+doc/html/ingestions/OSIRIS_L2_NO2_MART.html:
+	$(MAKE) harp_doc
+doc/html/ingestions/OSIRIS_L2_NO2_OE.html:
+	$(MAKE) harp_doc
+doc/html/ingestions/OSIRIS_L2_O3_MART.html:
+	$(MAKE) harp_doc
+doc/html/ingestions/OSIRIS_L2_O3_OE.html:
 	$(MAKE) harp_doc
 doc/html/ingestions/QA4ECV_L2_HCHO.html:
 	$(MAKE) harp_doc

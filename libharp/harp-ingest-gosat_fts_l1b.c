@@ -476,6 +476,7 @@ static harp_product_definition *register_radiance_product(harp_ingestion_module 
     const char *product_name;
     const char *product_description;
     const char *description;
+    const char *mapping_description;
     const char *path;
     const char *unit;
 
@@ -485,36 +486,44 @@ static harp_product_definition *register_radiance_product(harp_ingestion_module 
         case 0:
             product_name = "GOSAT_FTS_L1b_band1p";
             product_description = "band1-p spectra";
+            mapping_description = "band=1p";
             break;
         case 1:
             product_name = "GOSAT_FTS_L1b_band1s";
             product_description = "band1-s spectra";
+            mapping_description = "band=1s";
             break;
         case 2:
             product_name = "GOSAT_FTS_L1b_band2p";
             product_description = "band2-p spectra";
+            mapping_description = "band=2p";
             break;
         case 3:
             product_name = "GOSAT_FTS_L1b_band2s";
             product_description = "band2-s spectra";
+            mapping_description = "band=2s";
             break;
         case 4:
             product_name = "GOSAT_FTS_L1b_band3p";
             product_description = "band3-p spectra";
+            mapping_description = "band=3p";
             break;
         case 5:
             product_name = "GOSAT_FTS_L1b_band3s";
             product_description = "band3-s spectra";
+            mapping_description = "band=3s";
             break;
         case 6:
             product_name = "GOSAT_FTS_L1b_band4";
             product_description = "band4 spectra";
+            mapping_description = "band=4";
             break;
         default:
             assert(0);
             exit(1);
     }
     product_definition = harp_ingestion_register_product(module, product_name, product_description, read_dimensions);
+    harp_product_definition_add_mapping(product_definition, NULL, mapping_description);
 
     /* datetime */
     description = "start time of the measurement";

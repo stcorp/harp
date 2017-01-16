@@ -1,0 +1,341 @@
+
+
+<!DOCTYPE html>
+<!--[if IE 8]><html class="no-js lt-ie9" lang="en" > <![endif]-->
+<!--[if gt IE 8]><!--> <html class="no-js" lang="en" > <!--<![endif]-->
+<head>
+  <meta charset="utf-8">
+  
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  
+  <title>OSIRIS_L2_NO2_MART &mdash; HARP 0.4b documentation</title>
+  
+
+  
+  
+
+  
+
+  
+  
+    
+
+  
+
+  
+  
+    <link rel="stylesheet" href="../_static/css/theme.css" type="text/css" />
+  
+
+  
+    <link rel="stylesheet" href="../_static/custom.css" type="text/css" />
+  
+
+  
+    <link rel="top" title="HARP 0.4b documentation" href="../index.html"/> 
+
+  
+  <script src="../_static/js/modernizr.min.js"></script>
+
+</head>
+
+<body class="wy-body-for-nav" role="document">
+
+  <div class="wy-grid-for-nav">
+
+    
+    <nav data-toggle="wy-nav-shift" class="wy-nav-side">
+      <div class="wy-side-scroll">
+        <div class="wy-side-nav-search">
+          
+
+          
+            <a href="../index.html" class="icon icon-home"> HARP
+          
+
+          
+          </a>
+
+          
+            
+            
+              <div class="version">
+                0.4
+              </div>
+            
+          
+
+          
+
+          
+        </div>
+
+        <div class="wy-menu wy-menu-vertical" data-spy="affix" role="navigation" aria-label="main navigation">
+          
+            
+            
+                <ul>
+<li class="toctree-l1"><a class="reference internal" href="../install.html">Installation</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../dataformats.html">Data formats</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../algorithms.html">Algorithms</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../operations.html">Operations</a></li>
+<li class="toctree-l1"><a class="reference internal" href="index.html">Ingestion definitions</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../libharp.html">C library</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../python.html">Python interface</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../tools.html">Command line tools</a></li>
+</ul>
+
+            
+          
+        </div>
+      </div>
+    </nav>
+
+    <section data-toggle="wy-nav-shift" class="wy-nav-content-wrap">
+
+      
+      <nav class="wy-nav-top" role="navigation" aria-label="top navigation">
+        <i data-toggle="wy-nav-top" class="fa fa-bars"></i>
+        <a href="../index.html">HARP</a>
+      </nav>
+
+
+      
+      <div class="wy-nav-content">
+        <div class="rst-content">
+          
+
+ 
+
+
+
+<div role="navigation" aria-label="breadcrumbs navigation">
+  <ul class="wy-breadcrumbs">
+    <li><a href="../index.html">Docs</a> &raquo;</li>
+      
+    <li>OSIRIS_L2_NO2_MART</li>
+      <li class="wy-breadcrumbs-aside">
+        
+          
+        
+      </li>
+  </ul>
+  <hr/>
+</div>
+          <div role="main" class="document" itemscope="itemscope" itemtype="http://schema.org/Article">
+           <div itemprop="articleBody">
+            
+  <div class="section" id="osiris-l2-no2-mart">
+<h1>OSIRIS_L2_NO2_MART</h1>
+<div class="section" id="variables">
+<h2>Variables</h2>
+<p>The table below lists the variables that are present in the HARP product that results from an ingestion of <code class="docutils literal"><span class="pre">OSIRIS_L2_NO2_MART</span></code> data.</p>
+<table border="1" class="docutils">
+<colgroup>
+<col width="25%" />
+<col width="5%" />
+<col width="15%" />
+<col width="15%" />
+<col width="40%" />
+</colgroup>
+<thead valign="bottom">
+<tr class="row-odd"><th class="head">field name</th>
+<th class="head">type</th>
+<th class="head">dimensions</th>
+<th class="head">unit</th>
+<th class="head">description</th>
+</tr>
+</thead>
+<tbody valign="top">
+<tr class="row-even"><td><strong>datetime</strong></td>
+<td>double</td>
+<td>{<em>time</em>}</td>
+<td>seconds since 2000-01-01</td>
+<td>time of the measurement</td>
+</tr>
+<tr class="row-odd"><td><strong>latitude_per_profile</strong></td>
+<td>double</td>
+<td>{<em>time</em>}</td>
+<td>degree_north</td>
+<td>center latitude for a profile</td>
+</tr>
+<tr class="row-even"><td><strong>longitude_per_profile</strong></td>
+<td>double</td>
+<td>{<em>time</em>}</td>
+<td>degree_east</td>
+<td>center longitude for a profile</td>
+</tr>
+<tr class="row-odd"><td><strong>altitude</strong></td>
+<td>double</td>
+<td>{<em>time</em>, <em>vertical</em>}</td>
+<td>km</td>
+<td>altitude in km for each profile element</td>
+</tr>
+<tr class="row-even"><td><strong>no2_vmr</strong></td>
+<td>double</td>
+<td>{<em>time</em>, <em>vertical</em>}</td>
+<td>&nbsp;</td>
+<td>volume mixing ratio of NO2</td>
+</tr>
+<tr class="row-odd"><td><strong>no2_vmr_error</strong></td>
+<td>double</td>
+<td>{<em>time</em>, <em>vertical</em>}</td>
+<td>&nbsp;</td>
+<td>precision of the volume mixing ratio of NO2</td>
+</tr>
+<tr class="row-even"><td><strong>no2</strong></td>
+<td>double</td>
+<td>{<em>time</em>, <em>vertical</em>}</td>
+<td>cm^-3</td>
+<td>NO2 number density</td>
+</tr>
+<tr class="row-odd"><td><strong>solar_zenith_angle</strong></td>
+<td>double</td>
+<td>{<em>time</em>}</td>
+<td>&nbsp;</td>
+<td>Solar zenith angle at the tangent point of the measurement. 0 is sun overhead, 90 is sun on the horizon</td>
+</tr>
+<tr class="row-even"><td><strong>solar_azimuth_angle</strong></td>
+<td>double</td>
+<td>{<em>time</em>}</td>
+<td>&nbsp;</td>
+<td>Solar azimuth angle at the tangent point of the measurement. 0 is due North, 90 is due East, 180 is South and 270 is West</td>
+</tr>
+<tr class="row-odd"><td><strong>index</strong></td>
+<td>int32</td>
+<td>{<em>time</em>}</td>
+<td>&nbsp;</td>
+<td>zero-based index of the sample within the source product</td>
+</tr>
+</tbody>
+</table>
+</div>
+<div class="section" id="mapping-description">
+<h2>Mapping description</h2>
+<p>The table below details where and how each variable was retrieved from the input product.</p>
+<p>OSIRIS Level 2 products only contain a single profile; all measured profile points will be provided in reverse order (from low altitude to high altitude) in the profile</p>
+<table border="1" class="docutils">
+<colgroup>
+<col width="22%" />
+<col width="12%" />
+<col width="65%" />
+</colgroup>
+<thead valign="bottom">
+<tr class="row-odd"><th class="head">field name</th>
+<th class="head" colspan="2">mapping description</th>
+</tr>
+</thead>
+<tbody valign="top">
+<tr class="row-even"><td rowspan="2"><strong>datetime</strong></td>
+<td><em>path</em></td>
+<td><strong>/HDFEOS/SWATHS/OSIRIS_Odin_NO2MART/Geolocation_Fields/Time[]</strong></td>
+</tr>
+<tr class="row-odd"><td><em>description</em></td>
+<td>The time converted from TAI93 to seconds since 2000-01-01</td>
+</tr>
+<tr class="row-even"><td><strong>latitude_per_profile</strong></td>
+<td><em>path</em></td>
+<td><strong>/HDFEOS/SWATHS/OSIRIS_Odin_NO2MART/Geolocation_Fields/Latitude[]</strong></td>
+</tr>
+<tr class="row-odd"><td><strong>longitude_per_profile</strong></td>
+<td><em>path</em></td>
+<td><strong>/HDFEOS/SWATHS/OSIRIS_Odin_NO2MART/Geolocation_Fields/Longitude[]</strong></td>
+</tr>
+<tr class="row-even"><td rowspan="2"><strong>altitude</strong></td>
+<td><em>path</em></td>
+<td><strong>/HDFEOS/SWATHS/OSIRIS_Odin_NO2MART/Geolocation_Fields/Altitude[]</strong></td>
+</tr>
+<tr class="row-odd"><td><em>description</em></td>
+<td>The altitude information will be duplicated for each profile</td>
+</tr>
+<tr class="row-even"><td rowspan="2"><strong>no2_vmr</strong></td>
+<td><em>path</em></td>
+<td><strong>/HDFEOS/SWATHS/OSIRIS_Odin_NO2MART/Data_Fields/NO2[]</strong></td>
+</tr>
+<tr class="row-odd"><td><em>description</em></td>
+<td>ppmv</td>
+</tr>
+<tr class="row-even"><td rowspan="2"><strong>no2_vmr_error</strong></td>
+<td><em>path</em></td>
+<td><strong>/HDFEOS/SWATHS/OSIRIS_Odin_NO2MART/Data_Fields/NO2Precision[]</strong></td>
+</tr>
+<tr class="row-odd"><td><em>description</em></td>
+<td>ppmv</td>
+</tr>
+<tr class="row-even"><td><strong>no2</strong></td>
+<td><em>path</em></td>
+<td><strong>/HDFEOS/SWATHS/OSIRIS_Odin_NO2MART/Data_Fields/NO2NumberDensity[]</strong></td>
+</tr>
+<tr class="row-odd"><td><strong>solar_zenith_angle</strong></td>
+<td><em>path</em></td>
+<td><strong>/HDFEOS/SWATHS/OSIRIS_Odin_NO2MART/Geolocation_Fields/SolarZenithAngle[]</strong></td>
+</tr>
+<tr class="row-even"><td><strong>solar_azimuth_angle</strong></td>
+<td><em>path</em></td>
+<td><strong>/HDFEOS/SWATHS/OSIRIS_Odin_NO2MART/Geolocation_Fields/SolarAzimuthAngle[]</strong></td>
+</tr>
+</tbody>
+</table>
+</div>
+</div>
+
+
+           </div>
+          </div>
+          <footer>
+  
+
+  <hr/>
+
+  <div role="contentinfo">
+    <p>
+        &copy; Copyright 2015-2016 S&amp;T, The Netherlands.
+
+    </p>
+  </div> 
+
+</footer>
+
+        </div>
+      </div>
+
+    </section>
+
+  </div>
+  
+
+
+  
+
+    <script type="text/javascript">
+        var DOCUMENTATION_OPTIONS = {
+            URL_ROOT:'../',
+            VERSION:'0.4b',
+            COLLAPSE_INDEX:false,
+            FILE_SUFFIX:'.html',
+            HAS_SOURCE:  false
+        };
+    </script>
+      <script type="text/javascript" src="../_static/jquery.js"></script>
+      <script type="text/javascript" src="../_static/underscore.js"></script>
+      <script type="text/javascript" src="../_static/doctools.js"></script>
+      <script type="text/javascript" src="https://cdn.mathjax.org/mathjax/latest/MathJax.js?config=TeX-AMS-MML_HTMLorMML"></script>
+
+  
+
+  
+  
+    <script type="text/javascript" src="../_static/js/theme.js"></script>
+  
+
+  
+  
+  <script type="text/javascript">
+      jQuery(function () {
+          SphinxRtdTheme.StickyNav.enable();
+      });
+  </script>
+   
+
+</body>
+</html>

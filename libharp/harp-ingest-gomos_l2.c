@@ -673,7 +673,7 @@ int harp_ingestion_module_gomos_l2_init(void)
                                    "from the external model", 2, model_options);
 
     description = "profile data";
-    product_definition = harp_ingestion_register_product(module, "GOMOS_NL_L2", description, read_dimensions);
+    product_definition = harp_ingestion_register_product(module, "GOMOS_L2", description, read_dimensions);
     description = "GOMOS Level 2 products only contain a single profile; all measured profile points will be provided "
         "in reverse order (from low altitude to high altitude) in the profile";
     harp_product_definition_add_mapping(product_definition, description, NULL);
