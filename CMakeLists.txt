@@ -270,6 +270,7 @@ set(LIBHARP_SOURCES
   libharp/harp-ingest-geoms-uvvis-doas.c
   libharp/harp-ingest-gome_l2.c
   libharp/harp-ingest-gome2_l2.c
+  libharp/harp-ingest-gomos_l1.c
   libharp/harp-ingest-gomos_l2.c
   libharp/harp-ingest-gosat_fts_l1b.c
   libharp/harp-ingest-gosat_fts_l2.c

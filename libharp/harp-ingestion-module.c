@@ -44,6 +44,7 @@ int harp_ingestion_module_geoms_ftir_init(void);
 int harp_ingestion_module_geoms_uvvis_doas_init(void);
 int harp_ingestion_module_gome_l2_init(void);
 int harp_ingestion_module_gome2_l2_init(void);
+int harp_ingestion_module_gomos_l1_init(void);
 int harp_ingestion_module_gomos_l2_init(void);
 int harp_ingestion_module_gosat_fts_l1b_init(void);
 int harp_ingestion_module_gosat_fts_l2_init(void);
@@ -80,6 +81,7 @@ static module_init_func_t *module_init_func[] = {
     harp_ingestion_module_geoms_uvvis_doas_init,
     harp_ingestion_module_gome_l2_init,
     harp_ingestion_module_gome2_l2_init,
+    harp_ingestion_module_gomos_l1_init,
     harp_ingestion_module_gomos_l2_init,
     harp_ingestion_module_gosat_fts_l1b_init,
     harp_ingestion_module_gosat_fts_l2_init,
