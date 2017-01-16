@@ -108,9 +108,9 @@
 </ul>
 </li>
 <li class="toctree-l2"><a class="reference internal" href="#gomos-products">GOMOS products</a><ul>
+<li class="toctree-l3"><a class="reference internal" href="#gomos-l1-limb">GOMOS_L1_LIMB</a></li>
+<li class="toctree-l3"><a class="reference internal" href="#gomos-l1-transmission">GOMOS_L1_TRANSMISSION</a></li>
 <li class="toctree-l3"><a class="reference internal" href="#gomos-l2">GOMOS_L2</a></li>
-<li class="toctree-l3"><a class="reference internal" href="#gomos-lim-l1">GOMOS_LIM_L1</a></li>
-<li class="toctree-l3"><a class="reference internal" href="#gomos-tra-l1">GOMOS_TRA_L1</a></li>
 </ul>
 </li>
 <li class="toctree-l2"><a class="reference internal" href="#gosat-fts-products">GOSAT FTS products</a><ul>
@@ -1586,22 +1586,94 @@
 </tr>
 </thead>
 <tbody valign="top">
+<tr class="row-even"><td><a class="reference internal" href="#gomos-l1-limb"><span class="std std-ref">GOMOS_L1_LIMB</span></a></td>
+<td>ENVISAT_GOMOS/GOM_LIM_1P</td>
+<td>GOMOS Level 1 Geolocated Calibrated Background Spectra (Limb)</td>
+</tr>
+<tr class="row-odd"><td><a class="reference internal" href="#gomos-l1-transmission"><span class="std std-ref">GOMOS_L1_TRANSMISSION</span></a></td>
+<td>ENVISAT_GOMOS/GOM_TRA_1P</td>
+<td>GOMOS Level 1 Geolocated Calibrated Transmission Spectra</td>
+</tr>
 <tr class="row-even"><td><a class="reference internal" href="#gomos-l2"><span class="std std-ref">GOMOS_L2</span></a></td>
 <td>ENVISAT_GOMOS/GOM_NL__2P</td>
 <td>GOMOS Temperature and Atmospheric Constituents Profiles</td>
 </tr>
-<tr class="row-odd"><td><a class="reference internal" href="#gomos-lim-l1"><span class="std std-ref">GOMOS_LIM_L1</span></a></td>
-<td>ENVISAT_GOMOS/GOM_LIM_1P</td>
-<td>GOMOS Level 1</td>
+</tbody>
+</table>
+<div class="section" id="gomos-l1-limb">
+<span id="id15"></span><h3>GOMOS_L1_LIMB</h3>
+<p>GOMOS Level 1 Geolocated Calibrated Background Spectra (Limb)</p>
+<p>The table below lists the available product conversions for <code class="docutils literal"><span class="pre">GOMOS_L1_LIMB</span></code> products.</p>
+<table border="1" class="docutils">
+<colgroup>
+<col width="33%" />
+<col width="33%" />
+<col width="33%" />
+</colgroup>
+<thead valign="bottom">
+<tr class="row-odd"><th class="head">name</th>
+<th class="head">ingestion option</th>
+<th class="head">description</th>
 </tr>
-<tr class="row-even"><td><a class="reference internal" href="#gomos-tra-l1"><span class="std std-ref">GOMOS_TRA_L1</span></a></td>
-<td>ENVISAT_GOMOS/GOM_TRA_1P</td>
-<td>GOMOS Level 1</td>
+</thead>
+<tbody valign="top">
+<tr class="row-even"><td><a class="reference internal" href="GOMOS_L1_LIMB.html"><span class="doc">GOMOS_L1_LIMB</span></a></td>
+<td>&nbsp;</td>
+<td>limb data</td>
 </tr>
 </tbody>
 </table>
+<p>The table below lists the available ingestion options for <code class="docutils literal"><span class="pre">GOMOS_L1_LIMB</span></code> products.</p>
+<table border="1" class="docutils">
+<colgroup>
+<col width="15%" />
+<col width="25%" />
+<col width="60%" />
+</colgroup>
+<thead valign="bottom">
+<tr class="row-odd"><th class="head">option name</th>
+<th class="head">legal values</th>
+<th class="head">description</th>
+</tr>
+</thead>
+<tbody valign="top">
+<tr class="row-even"><td>spectra</td>
+<td><strong>upper</strong>, lower</td>
+<td>retrieve the upper or lower background spectra; by default the upper spectra are retrieved; option values are &#8216;upper&#8217; and &#8216;lower&#8217;</td>
+</tr>
+<tr class="row-odd"><td>corrected</td>
+<td><strong>true</strong>, false</td>
+<td>retrieve the corrected or uncorrected background spectra; by default the corrected spectra are retrieved; option values are &#8216;true&#8217; and &#8216;false&#8217;</td>
+</tr>
+</tbody>
+</table>
+</div>
+<div class="section" id="gomos-l1-transmission">
+<span id="id16"></span><h3>GOMOS_L1_TRANSMISSION</h3>
+<p>GOMOS Level 1 Geolocated Calibrated Transmission Spectra</p>
+<p>The table below lists the available product conversions for <code class="docutils literal"><span class="pre">GOMOS_L1_TRANSMISSION</span></code> products.</p>
+<table border="1" class="docutils">
+<colgroup>
+<col width="33%" />
+<col width="33%" />
+<col width="33%" />
+</colgroup>
+<thead valign="bottom">
+<tr class="row-odd"><th class="head">name</th>
+<th class="head">ingestion option</th>
+<th class="head">description</th>
+</tr>
+</thead>
+<tbody valign="top">
+<tr class="row-even"><td><a class="reference internal" href="GOMOS_L1_TRANSMISSION.html"><span class="doc">GOMOS_L1_TRANSMISSION</span></a></td>
+<td>&nbsp;</td>
+<td>transmission data</td>
+</tr>
+</tbody>
+</table>
+</div>
 <div class="section" id="gomos-l2">
-<span id="id15"></span><h3>GOMOS_L2</h3>
+<span id="id17"></span><h3>GOMOS_L2</h3>
 <p>GOMOS Temperature and Atmospheric Constituents Profiles</p>
 <p>The table below lists the available product conversions for <code class="docutils literal"><span class="pre">GOMOS_L2</span></code> products.</p>
 <table border="1" class="docutils">
@@ -1644,78 +1716,6 @@
 <tr class="row-odd"><td>air</td>
 <td><strong>local</strong>, model</td>
 <td>can be either &#8216;local&#8217; or &#8216;model&#8217;; &#8216;local&#8217; (the default) will retrieve the locally measured air density and &#8216;model&#8217; will return the air density from the external model</td>
-</tr>
-</tbody>
-</table>
-</div>
-<div class="section" id="gomos-lim-l1">
-<span id="id16"></span><h3>GOMOS_LIM_L1</h3>
-<p>GOMOS Level 1</p>
-<p>The table below lists the available product conversions for <code class="docutils literal"><span class="pre">GOMOS_LIM_L1</span></code> products.</p>
-<table border="1" class="docutils">
-<colgroup>
-<col width="33%" />
-<col width="33%" />
-<col width="33%" />
-</colgroup>
-<thead valign="bottom">
-<tr class="row-odd"><th class="head">name</th>
-<th class="head">ingestion option</th>
-<th class="head">description</th>
-</tr>
-</thead>
-<tbody valign="top">
-<tr class="row-even"><td><a class="reference internal" href="GOMOS_L1.html"><span class="doc">GOMOS_L1</span></a></td>
-<td>&nbsp;</td>
-<td>limb data</td>
-</tr>
-</tbody>
-</table>
-<p>The table below lists the available ingestion options for <code class="docutils literal"><span class="pre">GOMOS_LIM_L1</span></code> products.</p>
-<table border="1" class="docutils">
-<colgroup>
-<col width="15%" />
-<col width="25%" />
-<col width="60%" />
-</colgroup>
-<thead valign="bottom">
-<tr class="row-odd"><th class="head">option name</th>
-<th class="head">legal values</th>
-<th class="head">description</th>
-</tr>
-</thead>
-<tbody valign="top">
-<tr class="row-even"><td>spectra</td>
-<td><strong>upper</strong>, lower</td>
-<td>retrieve the upper or lower background spectra; by default the upper spectra are retrieved; option values are &#8216;upper&#8217; and &#8216;lower&#8217;</td>
-</tr>
-<tr class="row-odd"><td>corrected</td>
-<td><strong>true</strong>, false</td>
-<td>retrieve the corrected or uncorrected background spectra; by default the corrected spectra are retrieved; option values are &#8216;true&#8217; and &#8216;false&#8217;</td>
-</tr>
-</tbody>
-</table>
-</div>
-<div class="section" id="gomos-tra-l1">
-<span id="id17"></span><h3>GOMOS_TRA_L1</h3>
-<p>GOMOS Level 1</p>
-<p>The table below lists the available product conversions for <code class="docutils literal"><span class="pre">GOMOS_TRA_L1</span></code> products.</p>
-<table border="1" class="docutils">
-<colgroup>
-<col width="33%" />
-<col width="33%" />
-<col width="33%" />
-</colgroup>
-<thead valign="bottom">
-<tr class="row-odd"><th class="head">name</th>
-<th class="head">ingestion option</th>
-<th class="head">description</th>
-</tr>
-</thead>
-<tbody valign="top">
-<tr class="row-even"><td><a class="reference internal" href="GOMOS_L1.html"><span class="doc">GOMOS_L1</span></a></td>
-<td>&nbsp;</td>
-<td>transmission data</td>
 </tr>
 </tbody>
 </table>

@@ -772,10 +772,9 @@ static void register_limb_product(void)
     const char *upper_lower_options[] = { "upper", "lower" };
     const char *true_false_options[] = { "true", "false" };
 
-    description = "GOMOS Level 1";
-    module =
-        harp_ingestion_register_module_coda("GOMOS_LIM_L1", "GOMOS", "ENVISAT_GOMOS", "GOM_LIM_1P", description,
-                                            lim_ingestion_init, ingestion_done);
+    description = "GOMOS Level 1 Geolocated Calibrated Background Spectra (Limb)";
+    module = harp_ingestion_register_module_coda("GOMOS_L1_LIMB", "GOMOS", "ENVISAT_GOMOS", "GOM_LIM_1P", description,
+                                                 lim_ingestion_init, ingestion_done);
 
     harp_ingestion_register_option(module, "spectra", "retrieve the upper or lower background spectra; by default the "
                                    "upper spectra are retrieved; option values are 'upper' and 'lower'", 2,
@@ -785,7 +784,7 @@ static void register_limb_product(void)
                                    2, true_false_options);
 
     description = "limb data";
-    product_definition = harp_ingestion_register_product(module, "GOMOS_L1", description, read_lim_dimensions);
+    product_definition = harp_ingestion_register_product(module, "GOMOS_L1_LIMB", description, read_lim_dimensions);
     description = "GOMOS Level 1 products only contain a single profile; all measured profile points will be provided "
         "in order from high altitude to low altitude in the profile";
     harp_product_definition_add_mapping(product_definition, description, NULL);
@@ -1175,12 +1174,13 @@ static void register_tra_product(void)
     const char *description;
     const char *path;
 
-    description = "GOMOS Level 1";
-    module = harp_ingestion_register_module_coda("GOMOS_TRA_L1", "GOMOS", "ENVISAT_GOMOS", "GOM_TRA_1P", description,
-                                                 tra_ingestion_init, ingestion_done);
+    description = "GOMOS Level 1 Geolocated Calibrated Transmission Spectra";
+    module = harp_ingestion_register_module_coda("GOMOS_L1_TRANSMISSION", "GOMOS", "ENVISAT_GOMOS", "GOM_TRA_1P",
+                                                 description, tra_ingestion_init, ingestion_done);
 
     description = "transmission data";
-    product_definition = harp_ingestion_register_product(module, "GOMOS_L1", description, read_tra_dimensions);
+    product_definition = harp_ingestion_register_product(module, "GOMOS_L1_TRANSMISSION", description,
+                                                         read_tra_dimensions);
     description = "GOMOS Level 1 products only contain a single profile; all measured transmission data will be "
         "provided in order from high altitude to low altitude in the profile";
     harp_product_definition_add_mapping(product_definition, description, NULL);
