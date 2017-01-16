@@ -446,7 +446,17 @@ static int generate_product_group(FILE *fout, const char *product_group, int num
         const harp_ingestion_module *module = ingestion_module[i];
 
         fnputc(3, ' ', fout);
-        fprintf(fout, "\":ref:`%s`\", ", module->name);
+        if (module->num_product_definitions == 1 && strcmp(module->product_definition[0]->name, module->name) == 0 &&
+            module->num_option_definitions == 0)
+        {
+            /* don't print details when we only have one conversion (whose name equals that of the module)
+             * and if there are no options */
+            fprintf(fout, "\":doc:`%s`\", ", module->product_definition[0]->name);
+        }
+        else
+        {
+            fprintf(fout, "\":ref:`%s`\", ", module->name);
+        }
 
         fputc('"', fout);
         if (module->product_class != NULL && module->product_type != NULL)
@@ -478,6 +488,13 @@ static int generate_product_group(FILE *fout, const char *product_group, int num
     {
         const harp_ingestion_module *module = ingestion_module[i];
         int j;
+
+        if (module->num_product_definitions == 1 && strcmp(module->product_definition[0]->name, module->name) == 0 &&
+            module->num_option_definitions == 0)
+        {
+            /* skip printing details if we already have a direct link to the conversion (see above) */
+            continue;
+        }
 
         fprintf(fout, ".. _%s:\n\n", module->name);
         fprintf(fout, "%s\n", module->name);
