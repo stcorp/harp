@@ -603,21 +603,19 @@ static void add_ingestion_VMR_variables(harp_product_definition *product_definit
     snprintf(vmr_name, MAX_PATH_LENGTH, "%s_volume_mixing_ratio", species);
     variable_definition =
         harp_ingestion_register_variable_full_read(product_definition, vmr_name, harp_type_double, 2, dimension_type,
-                                                   NULL, vmr_description, NULL, exclude_function, read_profile_value);
+                                                   NULL, vmr_description, "ppv", exclude_function, read_profile_value);
     path = "/GHz/Data_Vgroup/Data/Profiles[]";
-    harp_variable_definition_add_mapping(variable_definition, NULL, NULL, path,
-                                         "The VMR is converted from ppv to ppmv");
+    harp_variable_definition_add_mapping(variable_definition, NULL, NULL, path, NULL);
 
     /* volume_mixing_ratio_uncertainty variable */
     snprintf(precision_description, MAX_PATH_LENGTH, "Precision of the %s volume mixing ratio", species);
     snprintf(precision_name, MAX_PATH_LENGTH, "%s_volume_mixing_ratio_uncertainty", species);
     variable_definition =
         harp_ingestion_register_variable_full_read(product_definition, precision_name, harp_type_double, 2,
-                                                   dimension_type, NULL, precision_description, NULL, exclude_function,
+                                                   dimension_type, NULL, precision_description, "ppv", exclude_function,
                                                    read_totalerror_value);
     path = "/GHz/Data_Vgroup/Data/TotalError[]";
-    harp_variable_definition_add_mapping(variable_definition, NULL, NULL, path,
-                                         "The VMR error is converted from ppv to ppmv");
+    harp_variable_definition_add_mapping(variable_definition, NULL, NULL, path, NULL);
 }
 
 int harp_ingestion_module_smr_l2_init(void)
@@ -674,7 +672,7 @@ int harp_ingestion_module_smr_l2_init(void)
     description = "average solar zenith angle for the scan";
     variable_definition =
         harp_ingestion_register_variable_full_read(product_definition, "solar_zenith_angle", harp_type_double, 1,
-                                                   dimension_type, NULL, description, NULL, NULL,
+                                                   dimension_type, NULL, description, "degree", NULL,
                                                    read_solar_zenith_angle);
     path = "/GHz/Data_Vgroup/Geolocation/SunZD[]";
     harp_variable_definition_add_mapping(variable_definition, NULL, NULL, path, NULL);
@@ -717,7 +715,7 @@ int harp_ingestion_module_smr_l2_init(void)
     description = "precision of the temperature";
     variable_definition =
         harp_ingestion_register_variable_full_read(product_definition, "temperature_uncertainty", harp_type_double, 2,
-                                                   dimension_type, NULL, description, NULL, exclude_temperature,
+                                                   dimension_type, NULL, description, "K", exclude_temperature,
                                                    read_totalerror_value);
     path = "/GHz/Data_Vgroup/Data/TotalError[]";
     harp_variable_definition_add_mapping(variable_definition, NULL, NULL, path, NULL);
@@ -726,7 +724,7 @@ int harp_ingestion_module_smr_l2_init(void)
     description = "pressure";
     variable_definition =
         harp_ingestion_register_variable_full_read(product_definition, "pressure", harp_type_double, 2, dimension_type,
-                                                   NULL, description, "K", exclude_pressure, read_profile_value);
+                                                   NULL, description, "hPa", exclude_pressure, read_profile_value);
     path = "/GHz/Data_Vgroup/Data/Profiles[]";
     harp_variable_definition_add_mapping(variable_definition, NULL, NULL, path, NULL);
 
@@ -734,7 +732,7 @@ int harp_ingestion_module_smr_l2_init(void)
     description = "precision of the pressure";
     variable_definition =
         harp_ingestion_register_variable_full_read(product_definition, "pressure_uncertainty", harp_type_double, 2,
-                                                   dimension_type, NULL, description, NULL, exclude_pressure,
+                                                   dimension_type, NULL, description, "hPa", exclude_pressure,
                                                    read_totalerror_value);
     path = "/GHz/Data_Vgroup/Data/TotalError[]";
     harp_variable_definition_add_mapping(variable_definition, NULL, NULL, path, NULL);

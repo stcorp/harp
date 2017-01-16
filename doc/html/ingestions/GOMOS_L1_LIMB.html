@@ -151,67 +151,67 @@
 <td>double</td>
 <td>{<em>time</em>}</td>
 <td>seconds since 2000-01-01</td>
-<td>The time of the measurement</td>
+<td>time of the measurement</td>
 </tr>
 <tr class="row-odd"><td><strong>latitude</strong></td>
 <td>double</td>
 <td>{<em>time</em>}</td>
 <td>degree_north</td>
-<td>The latitude of the apparent tangent point</td>
+<td>latitude of the apparent tangent point</td>
 </tr>
 <tr class="row-even"><td><strong>longitude</strong></td>
 <td>double</td>
 <td>{<em>time</em>}</td>
 <td>degree_east</td>
-<td>The longitude of the apparent tangent point</td>
+<td>longitude of the apparent tangent point</td>
 </tr>
 <tr class="row-odd"><td><strong>altitude</strong></td>
 <td>double</td>
 <td>{<em>time</em>}</td>
-<td>km</td>
-<td>The altitude of the apparent tangent point in km</td>
+<td>m</td>
+<td>altitude of the apparent tangent point</td>
 </tr>
-<tr class="row-even"><td><strong>spectral_photon_radiance</strong></td>
+<tr class="row-even"><td><strong>wavelength_photon_radiance</strong></td>
 <td>double</td>
 <td>{<em>time</em>, <em>spectral</em>}</td>
-<td>ph/s/cm^-2/nm/sr</td>
+<td>count/s/cm2/nm/sr</td>
 <td>The background spectral photon radiance of each spectrum measurement</td>
 </tr>
-<tr class="row-odd"><td><strong>spectral_photon_radiance_error</strong></td>
+<tr class="row-odd"><td><strong>wavelength_photon_radiance_uncertainty</strong></td>
 <td>double</td>
 <td>{<em>time</em>, <em>spectral</em>}</td>
 <td>%</td>
-<td>The error in the background spectral photon radiance of each spectrum measurement</td>
+<td>error in the background spectral photon radiance of each spectrum measurement</td>
 </tr>
 <tr class="row-even"><td><strong>wavelength</strong></td>
 <td>double</td>
 <td>{<em>spectral</em>}</td>
 <td>nm</td>
-<td>The nominal wavelength assignment for each of the detector pixels</td>
+<td>nominal wavelength assignment for each of the detector pixels</td>
 </tr>
 <tr class="row-odd"><td><strong>datetime_length</strong></td>
 <td>double</td>
 <td>&nbsp;</td>
 <td>s</td>
-<td>The integration time for a readout (in seconds)</td>
+<td>integration time for a readout (in seconds)</td>
 </tr>
 <tr class="row-even"><td><strong>sensor_latitude</strong></td>
 <td>double</td>
 <td>{<em>time</em>}</td>
 <td>degree_north</td>
-<td>The latitude of the satellite</td>
+<td>latitude of the satellite</td>
 </tr>
 <tr class="row-odd"><td><strong>sensor_longitude</strong></td>
 <td>double</td>
 <td>{<em>time</em>}</td>
 <td>degree_east</td>
-<td>The longitude of the satellite</td>
+<td>longitude of the satellite</td>
 </tr>
 <tr class="row-even"><td><strong>sensor_altitude</strong></td>
 <td>double</td>
 <td>{<em>time</em>}</td>
-<td>km</td>
-<td>The altitude of satellite in km</td>
+<td>m</td>
+<td>altitude of satellite</td>
 </tr>
 <tr class="row-odd"><td><strong>flag_illumination_condition</strong></td>
 <td>string</td>
@@ -246,11 +246,11 @@
 <tbody valign="top">
 <tr class="row-even"><td>spectra</td>
 <td><strong>upper</strong>, lower</td>
-<td>retrieve the upper or lower background spectra; by default the upper spectra are retrieved; option values are &#8216;upper&#8217; and &#8216;lower&#8217;</td>
+<td>retrieve the upper or lower background spectra; by default the upper spectra are retrieved</td>
 </tr>
 <tr class="row-odd"><td>corrected</td>
 <td><strong>true</strong>, false</td>
-<td>retrieve the corrected or uncorrected background spectra; by default the corrected spectra are retrieved; option values are &#8216;true&#8217; and &#8216;false&#8217;</td>
+<td>retrieve the corrected or uncorrected background spectra; by default the corrected spectra are retrieved</td>
 </tr>
 </tbody>
 </table>
@@ -261,9 +261,9 @@
 <p>GOMOS Level 1 products only contain a single profile; all measured profile points will be provided in order from high altitude to low altitude in the profile</p>
 <table border="1" class="docutils">
 <colgroup>
-<col width="36%" />
+<col width="43%" />
 <col width="15%" />
-<col width="50%" />
+<col width="43%" />
 </colgroup>
 <thead valign="bottom">
 <tr class="row-odd"><th class="head">field name</th>
@@ -283,76 +283,70 @@
 <td><em>path</em></td>
 <td><strong>/lim_ads/tangent_long[]</strong></td>
 </tr>
-<tr class="row-odd"><td rowspan="2"><strong>altitude</strong></td>
+<tr class="row-odd"><td><strong>altitude</strong></td>
 <td><em>path</em></td>
 <td><strong>/lim_ads/tangent_alt[]</strong></td>
 </tr>
-<tr class="row-even"><td><em>description</em></td>
-<td>The value is divided by 1000 to convert it to km</td>
-</tr>
-<tr class="row-odd"><td rowspan="8"><strong>spectral_photon_radiance</strong></td>
+<tr class="row-even"><td rowspan="8"><strong>wavelength_photon_radiance</strong></td>
 <td><em>condition</em></td>
 <td>spectra=upper;corrected=false</td>
 </tr>
-<tr class="row-even"><td><em>path</em></td>
+<tr class="row-odd"><td><em>path</em></td>
 <td><strong>/lim_mds[]/up_low_back_no_corr[0,]</strong></td>
 </tr>
-<tr class="row-odd"><td><em>condition</em></td>
+<tr class="row-even"><td><em>condition</em></td>
 <td>spectra=lower;corrected=false</td>
 </tr>
-<tr class="row-even"><td><em>path</em></td>
+<tr class="row-odd"><td><em>path</em></td>
 <td><strong>/lim_mds[]/up_low_back_no_corr[1,]</strong></td>
 </tr>
-<tr class="row-odd"><td><em>condition</em></td>
+<tr class="row-even"><td><em>condition</em></td>
 <td>spectra=upper;corrected=true</td>
 </tr>
-<tr class="row-even"><td><em>path</em></td>
+<tr class="row-odd"><td><em>path</em></td>
 <td><strong>/lim_mds[]/up_low_back_corr[0,]</strong></td>
 </tr>
-<tr class="row-odd"><td><em>condition</em></td>
+<tr class="row-even"><td><em>condition</em></td>
 <td>spectra=lower;corrected=true</td>
 </tr>
-<tr class="row-even"><td><em>path</em></td>
+<tr class="row-odd"><td><em>path</em></td>
 <td><strong>/lim_mds[]/up_low_back_corr[1,]</strong></td>
 </tr>
-<tr class="row-odd"><td rowspan="4"><strong>spectral_photon_radiance_error</strong></td>
+<tr class="row-even"><td rowspan="4"><strong>wavelength_photon_radiance_uncertainty</strong></td>
 <td><em>condition</em></td>
 <td>spectra=upper</td>
 </tr>
-<tr class="row-even"><td><em>path</em></td>
+<tr class="row-odd"><td><em>path</em></td>
 <td><strong>/lim_mds[]/err_up_low_back_corr[0,]</strong></td>
 </tr>
-<tr class="row-odd"><td><em>condition</em></td>
+<tr class="row-even"><td><em>condition</em></td>
 <td>spectra=lower</td>
 </tr>
-<tr class="row-even"><td><em>path</em></td>
+<tr class="row-odd"><td><em>path</em></td>
 <td><strong>/lim_mds[]/err_up_low_back_corr[1,]</strong></td>
 </tr>
-<tr class="row-odd"><td rowspan="2"><strong>wavelength</strong></td>
+<tr class="row-even"><td rowspan="2"><strong>wavelength</strong></td>
 <td><em>path</em></td>
 <td><strong>/lim_nom_wav_assignment[]/nom_wl[]</strong></td>
 </tr>
-<tr class="row-even"><td><em>description</em></td>
+<tr class="row-odd"><td><em>description</em></td>
 <td>Will be set to nm</td>
 </tr>
-<tr class="row-odd"><td><strong>datetime_length</strong></td>
+<tr class="row-even"><td><strong>datetime_length</strong></td>
 <td><em>path</em></td>
 <td><strong>/sph/samp_duration</strong></td>
 </tr>
-<tr class="row-even"><td><strong>sensor_latitude</strong></td>
+<tr class="row-odd"><td><strong>sensor_latitude</strong></td>
 <td><em>path</em></td>
 <td><strong>/lim_ads/lat[]</strong></td>
 </tr>
-<tr class="row-odd"><td><strong>sensor_longitude</strong></td>
+<tr class="row-even"><td><strong>sensor_longitude</strong></td>
 <td><em>path</em></td>
 <td><strong>/lim_ads/longit[]</strong></td>
 </tr>
-<tr class="row-even"><td rowspan="2"><strong>sensor_altitude</strong></td>
+<tr class="row-odd"><td><strong>sensor_altitude</strong></td>
 <td><em>path</em></td>
 <td><strong>/lim_ads/alt[]</strong></td>
-</tr>
-<tr class="row-odd"><td><em>description</em></td>
-<td>The value is divided by 1000 to convert it to km</td>
 </tr>
 <tr class="row-even"><td rowspan="4"><strong>flag_illumination_condition</strong></td>
 <td><em>condition</em></td>

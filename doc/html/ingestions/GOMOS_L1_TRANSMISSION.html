@@ -151,67 +151,67 @@
 <td>double</td>
 <td>{<em>time</em>}</td>
 <td>seconds since 2000-01-01</td>
-<td>The time of the measurement</td>
+<td>time of the measurement</td>
 </tr>
 <tr class="row-odd"><td><strong>latitude</strong></td>
 <td>double</td>
 <td>{<em>time</em>}</td>
 <td>degree_north</td>
-<td>The latitude of the apparent tangent point</td>
+<td>latitude of the apparent tangent point</td>
 </tr>
 <tr class="row-even"><td><strong>longitude</strong></td>
 <td>double</td>
 <td>{<em>time</em>}</td>
 <td>degree_east</td>
-<td>The longitude of the apparent tangent point</td>
+<td>longitude of the apparent tangent point</td>
 </tr>
 <tr class="row-odd"><td><strong>altitude</strong></td>
 <td>double</td>
 <td>{<em>time</em>}</td>
-<td>km</td>
-<td>The altitude of the apparent tangent point in km</td>
+<td>m</td>
+<td>altitude of the apparent tangent point</td>
 </tr>
-<tr class="row-even"><td><strong>spectral_photon_irradiance</strong></td>
+<tr class="row-even"><td><strong>wavelength_photon_irradiance</strong></td>
 <td>double</td>
 <td>{<em>time</em>, <em>spectral</em>}</td>
-<td>ph/s/cm^-2/nm</td>
-<td>The spectral photon irradiance of each spectrum measurement</td>
+<td>count/s/cm2/nm</td>
+<td>spectral photon irradiance of each spectrum measurement</td>
 </tr>
-<tr class="row-odd"><td><strong>spectral_photon_irradiance_error</strong></td>
+<tr class="row-odd"><td><strong>wavelength_photon_irradiance_uncertainty</strong></td>
 <td>double</td>
 <td>{<em>time</em>, <em>spectral</em>}</td>
-<td>ph/s/cm^-2/nm</td>
-<td>The error in the spectral photon irradiance of each spectrum measurement</td>
+<td>count/s/cm2/nm</td>
+<td>error in the spectral photon irradiance of each spectrum measurement</td>
 </tr>
 <tr class="row-even"><td><strong>wavelength</strong></td>
 <td>double</td>
 <td>{<em>spectral</em>}</td>
 <td>nm</td>
-<td>The nominal wavelength assignment for each of the detector pixels</td>
+<td>nominal wavelength assignment for each of the detector pixels</td>
 </tr>
 <tr class="row-odd"><td><strong>datetime_length</strong></td>
 <td>double</td>
 <td>&nbsp;</td>
 <td>s</td>
-<td>The integration time for a readout (in seconds)</td>
+<td>integration time for a readout (in seconds)</td>
 </tr>
 <tr class="row-even"><td><strong>sensor_latitude</strong></td>
 <td>double</td>
 <td>{<em>time</em>}</td>
 <td>degree_north</td>
-<td>The latitude of the satellite position at half-measurement</td>
+<td>latitude of the satellite position at half-measurement</td>
 </tr>
 <tr class="row-odd"><td><strong>sensor_longitude</strong></td>
 <td>double</td>
 <td>{<em>time</em>}</td>
 <td>degree_east</td>
-<td>The longitude of the satellite position at half-measurement</td>
+<td>longitude of the satellite position at half-measurement</td>
 </tr>
 <tr class="row-even"><td><strong>sensor_altitude</strong></td>
 <td>double</td>
 <td>{<em>time</em>}</td>
-<td>km</td>
-<td>The altitude of the satellite at half-measurement</td>
+<td>m</td>
+<td>altitude of the satellite at half-measurement</td>
 </tr>
 <tr class="row-odd"><td><strong>flag_illumination_condition</strong></td>
 <td>string</td>
@@ -234,9 +234,9 @@
 <p>GOMOS Level 1 products only contain a single profile; all measured transmission data will be provided in order from high altitude to low altitude in the profile</p>
 <table border="1" class="docutils">
 <colgroup>
-<col width="37%" />
-<col width="15%" />
-<col width="49%" />
+<col width="45%" />
+<col width="13%" />
+<col width="43%" />
 </colgroup>
 <thead valign="bottom">
 <tr class="row-odd"><th class="head">field name</th>
@@ -256,27 +256,21 @@
 <td><em>path</em></td>
 <td><strong>/tra_geolocation/tangent_long[1]</strong></td>
 </tr>
-<tr class="row-odd"><td rowspan="2"><strong>altitude</strong></td>
+<tr class="row-odd"><td><strong>altitude</strong></td>
 <td><em>path</em></td>
 <td><strong>/tra_geolocation/tangent_alt[1]</strong></td>
 </tr>
-<tr class="row-even"><td><em>description</em></td>
-<td>The value is divided by 1000 to convert it to km</td>
-</tr>
-<tr class="row-odd"><td><strong>spectral_photon_irradiance</strong></td>
+<tr class="row-even"><td><strong>wavelength_photon_irradiance</strong></td>
 <td><em>path</em></td>
 <td><strong>/tra_transmission[]/trans_spectra[]</strong></td>
 </tr>
-<tr class="row-even"><td><strong>spectral_photon_irradiance_error</strong></td>
+<tr class="row-odd"><td><strong>wavelength_photon_irradiance_uncertainty</strong></td>
 <td><em>path</em></td>
 <td><strong>/tra_transmission[]/cov[]</strong></td>
 </tr>
-<tr class="row-odd"><td rowspan="2"><strong>wavelength</strong></td>
+<tr class="row-even"><td><strong>wavelength</strong></td>
 <td><em>path</em></td>
 <td><strong>/tra_nom_wav_assignment[]/nom_wl[]</strong></td>
-</tr>
-<tr class="row-even"><td><em>description</em></td>
-<td>Will be set to nm</td>
 </tr>
 <tr class="row-odd"><td><strong>datetime_length</strong></td>
 <td><em>path</em></td>
@@ -290,24 +284,21 @@
 <td><em>path</em></td>
 <td><strong>/tra_geolocation/longit[1]</strong></td>
 </tr>
-<tr class="row-even"><td rowspan="2"><strong>sensor_altitude</strong></td>
+<tr class="row-even"><td><strong>sensor_altitude</strong></td>
 <td><em>path</em></td>
 <td><strong>/tra_geolocation/alt[1]</strong></td>
 </tr>
-<tr class="row-odd"><td><em>description</em></td>
-<td>The value is divided by 1000 to convert it to km</td>
-</tr>
-<tr class="row-even"><td rowspan="4"><strong>flag_illumination_condition</strong></td>
+<tr class="row-odd"><td rowspan="4"><strong>flag_illumination_condition</strong></td>
 <td><em>condition</em></td>
 <td>CODA product version 0</td>
 </tr>
-<tr class="row-odd"><td><em>path</em></td>
+<tr class="row-even"><td><em>path</em></td>
 <td><strong>/tra_summary_quality[0]/limb_flag</strong></td>
 </tr>
-<tr class="row-even"><td><em>condition</em></td>
+<tr class="row-odd"><td><em>condition</em></td>
 <td>CODA product version 1 and higher</td>
 </tr>
-<tr class="row-odd"><td><em>path</em></td>
+<tr class="row-even"><td><em>path</em></td>
 <td><strong>/tra_summary_quality[0]/obs_illum_cond</strong></td>
 </tr>
 </tbody>

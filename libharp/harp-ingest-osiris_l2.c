@@ -375,19 +375,19 @@ static void register_aerosol_product(void)
                                          "The altitude information will be duplicated for each profile");
 
     /* aerosol_number_density */
-    description = "aerosol number density (in cm^-3)";
+    description = "aerosol number density";
     variable_definition =
         harp_ingestion_register_variable_full_read(product_definition, "aerosol_number_density", harp_type_double, 2,
-                                                   dimension_type, NULL, description, "cm^-3", NULL,
+                                                   dimension_type, NULL, description, "molec/cm3", NULL,
                                                    read_aerosol_number_density);
     path = "/HDFEOS/SWATHS/OSIRIS_Odin_Aerosol_MART/Data_Fields/Aerosol[]";
     harp_variable_definition_add_mapping(variable_definition, NULL, NULL, path, NULL);
 
     /* aerosol_number_density_uncertainty */
-    description = "precision of the aerosol number density (in cm^-3)";
+    description = "precision of the aerosol number density";
     variable_definition =
         harp_ingestion_register_variable_full_read(product_definition, "aerosol_number_density_uncertainty",
-                                                   harp_type_double, 2, dimension_type, NULL, description, "cm^-3",
+                                                   harp_type_double, 2, dimension_type, NULL, description, "molec/cm3",
                                                    NULL, read_aerosol_number_density_uncertainty);
     path = "/HDFEOS/SWATHS/OSIRIS_Odin_Aerosol_MART/Data_Fields/AerosolPrecision[]";
     harp_variable_definition_add_mapping(variable_definition, NULL, NULL, path, NULL);
@@ -397,7 +397,7 @@ static void register_aerosol_product(void)
         "horizon";
     variable_definition =
         harp_ingestion_register_variable_full_read(product_definition, "solar_zenith_angle", harp_type_double, 1,
-                                                   dimension_type, NULL, description, NULL, NULL,
+                                                   dimension_type, NULL, description, "degree", NULL,
                                                    read_solar_zenith_angle);
     path = "/HDFEOS/SWATHS/OSIRIS_Odin_Aerosol_MART/Geolocation_Fields/SolarZenithAngle[]";
     harp_variable_definition_add_mapping(variable_definition, NULL, NULL, path, NULL);
@@ -407,7 +407,7 @@ static void register_aerosol_product(void)
         "is South and 270 is West";
     variable_definition =
         harp_ingestion_register_variable_full_read(product_definition, "solar_azimuth_angle", harp_type_double, 1,
-                                                   dimension_type, NULL, description, NULL, NULL,
+                                                   dimension_type, NULL, description, "degree", NULL,
                                                    read_solar_azimuth_angle);
     path = "/HDFEOS/SWATHS/OSIRIS_Odin_Aerosol_MART/Geolocation_Fields/SolarAzimuthAngle[]";
     harp_variable_definition_add_mapping(variable_definition, NULL, NULL, path, NULL);
@@ -491,7 +491,7 @@ static void register_no2_oe_product(void)
     description = "NO2 number density";
     variable_definition =
         harp_ingestion_register_variable_full_read(product_definition, "no2", harp_type_double, 2, dimension_type, NULL,
-                                                   description, "cm^-3", NULL, read_no2);
+                                                   description, "molec/cm3", NULL, read_no2);
     path = "/HDFEOS/SWATHS/OSIRIS_Odin_NO2_DOAS_OE/Data_Fields/NO2NumberDensity[]";
     harp_variable_definition_add_mapping(variable_definition, NULL, NULL, path, NULL);
 
@@ -500,7 +500,7 @@ static void register_no2_oe_product(void)
         "horizon";
     variable_definition =
         harp_ingestion_register_variable_full_read(product_definition, "solar_zenith_angle", harp_type_double, 1,
-                                                   dimension_type, NULL, description, NULL, NULL,
+                                                   dimension_type, NULL, description, "degree", NULL,
                                                    read_solar_zenith_angle);
     path = "/HDFEOS/SWATHS/OSIRIS_Odin_NO2_DOAS_OE/Geolocation_Fields/SolarZenithAngle[]";
     harp_variable_definition_add_mapping(variable_definition, NULL, NULL, path, NULL);
@@ -510,7 +510,7 @@ static void register_no2_oe_product(void)
         "is South and 270 is West";
     variable_definition =
         harp_ingestion_register_variable_full_read(product_definition, "solar_azimuth_angle", harp_type_double, 1,
-                                                   dimension_type, NULL, description, NULL, NULL,
+                                                   dimension_type, NULL, description, "degree", NULL,
                                                    read_solar_azimuth_angle);
     path = "/HDFEOS/SWATHS/OSIRIS_Odin_NO2_DOAS_OE/Geolocation_Fields/SolarAzimuthAngle[]";
     harp_variable_definition_add_mapping(variable_definition, NULL, NULL, path, NULL);
@@ -594,7 +594,7 @@ static void register_no2_mart_product(void)
     description = "NO2 number density";
     variable_definition =
         harp_ingestion_register_variable_full_read(product_definition, "no2", harp_type_double, 2, dimension_type, NULL,
-                                                   description, "cm^-3", NULL, read_no2);
+                                                   description, "molec/cm3", NULL, read_no2);
     path = "/HDFEOS/SWATHS/OSIRIS_Odin_NO2MART/Data_Fields/NO2NumberDensity[]";
     harp_variable_definition_add_mapping(variable_definition, NULL, NULL, path, NULL);
 
@@ -603,7 +603,7 @@ static void register_no2_mart_product(void)
         "horizon";
     variable_definition =
         harp_ingestion_register_variable_full_read(product_definition, "solar_zenith_angle", harp_type_double, 1,
-                                                   dimension_type, NULL, description, NULL, NULL,
+                                                   dimension_type, NULL, description, "degree", NULL,
                                                    read_solar_zenith_angle);
     path = "/HDFEOS/SWATHS/OSIRIS_Odin_NO2MART/Geolocation_Fields/SolarZenithAngle[]";
     harp_variable_definition_add_mapping(variable_definition, NULL, NULL, path, NULL);
@@ -613,7 +613,7 @@ static void register_no2_mart_product(void)
         "is South and 270 is West";
     variable_definition =
         harp_ingestion_register_variable_full_read(product_definition, "solar_azimuth_angle", harp_type_double, 1,
-                                                   dimension_type, NULL, description, NULL, NULL,
+                                                   dimension_type, NULL, description, "degree", NULL,
                                                    read_solar_azimuth_angle);
     path = "/HDFEOS/SWATHS/OSIRIS_Odin_NO2MART/Geolocation_Fields/SolarAzimuthAngle[]";
     harp_variable_definition_add_mapping(variable_definition, NULL, NULL, path, NULL);
@@ -697,7 +697,7 @@ static void register_o3_oe_product(void)
     description = "O3 number density";
     variable_definition =
         harp_ingestion_register_variable_full_read(product_definition, "o3", harp_type_double, 2, dimension_type, NULL,
-                                                   description, "cm^-3", NULL, read_o3);
+                                                   description, "molec/cm3", NULL, read_o3);
     path = "/HDFEOS/SWATHS/OSIRIS_Odin_O3_Chappuis_triplet_OE/Data_Fields/O3NumberDensity[]";
     harp_variable_definition_add_mapping(variable_definition, NULL, NULL, path, NULL);
 
@@ -706,7 +706,7 @@ static void register_o3_oe_product(void)
         "horizon";
     variable_definition =
         harp_ingestion_register_variable_full_read(product_definition, "solar_zenith_angle", harp_type_double, 1,
-                                                   dimension_type, NULL, description, NULL, NULL,
+                                                   dimension_type, NULL, description, "degree", NULL,
                                                    read_solar_zenith_angle);
     path = "/HDFEOS/SWATHS/OSIRIS_Odin_O3_Chappuis_triplet_OE/Geolocation_Fields/SolarZenithAngle[]";
     harp_variable_definition_add_mapping(variable_definition, NULL, NULL, path, NULL);
@@ -716,7 +716,7 @@ static void register_o3_oe_product(void)
         "is South and 270 is West";
     variable_definition =
         harp_ingestion_register_variable_full_read(product_definition, "solar_azimuth_angle", harp_type_double, 1,
-                                                   dimension_type, NULL, description, NULL, NULL,
+                                                   dimension_type, NULL, description, "degree", NULL,
                                                    read_solar_azimuth_angle);
     path = "/HDFEOS/SWATHS/OSIRIS_Odin_O3_Chappuis_triplet_OE/Geolocation_Fields/SolarAzimuthAngle[]";
     harp_variable_definition_add_mapping(variable_definition, NULL, NULL, path, NULL);
@@ -801,7 +801,7 @@ static void register_o3_mart_product(void)
     description = "O3 number density";
     variable_definition =
         harp_ingestion_register_variable_full_read(product_definition, "o3", harp_type_double, 2, dimension_type, NULL,
-                                                   description, "cm^-3", NULL, read_o3);
+                                                   description, "molec/cm3", NULL, read_o3);
     path = "/HDFEOS/SWATHS/OSIRIS_Odin_O3MART/Data_Fields/O3NumberDensity[]";
     harp_variable_definition_add_mapping(variable_definition, NULL, NULL, path, NULL);
 
@@ -810,7 +810,7 @@ static void register_o3_mart_product(void)
         "horizon";
     variable_definition =
         harp_ingestion_register_variable_full_read(product_definition, "solar_zenith_angle", harp_type_double, 1,
-                                                   dimension_type, NULL, description, NULL, NULL,
+                                                   dimension_type, NULL, description, "degree", NULL,
                                                    read_solar_zenith_angle);
     path = "/HDFEOS/SWATHS/OSIRIS_Odin_O3MART/Geolocation_Fields/SolarZenithAngle[]";
     harp_variable_definition_add_mapping(variable_definition, NULL, NULL, path, NULL);
@@ -820,7 +820,7 @@ static void register_o3_mart_product(void)
         "is South and 270 is West";
     variable_definition =
         harp_ingestion_register_variable_full_read(product_definition, "solar_azimuth_angle", harp_type_double, 1,
-                                                   dimension_type, NULL, description, NULL, NULL,
+                                                   dimension_type, NULL, description, "degree", NULL,
                                                    read_solar_azimuth_angle);
     path = "/HDFEOS/SWATHS/OSIRIS_Odin_O3MART/Geolocation_Fields/SolarAzimuthAngle[]";
     harp_variable_definition_add_mapping(variable_definition, NULL, NULL, path, NULL);

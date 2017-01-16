@@ -510,17 +510,8 @@ static int read_lim_longitude(void *user_data, harp_array data)
 
 static int read_lim_altitude(void *user_data, harp_array data)
 {
-    long l;
-    int retval;
-
-    retval = get_main_data((ingest_info *)user_data, "lim_ads", "tangent_alt", USE_UPPER_FLAG_AS_INDEX,
+    return get_main_data((ingest_info *)user_data, "lim_ads", "tangent_alt", USE_UPPER_FLAG_AS_INDEX,
                            data.double_data);
-    /* Convert read altitude from meters to kilometers */
-    for (l = 0; l < ((ingest_info *)user_data)->elements_per_profile; l++)
-    {
-        data.double_data[l] = data.double_data[l] / 1000.0;
-    }
-    return retval;
 }
 
 static int read_lim_spectral_photon_radiance(void *user_data, harp_array data)
@@ -638,16 +629,7 @@ static int read_lim_sensor_longitude(void *user_data, harp_array data)
 
 static int read_lim_sensor_altitude(void *user_data, harp_array data)
 {
-    long l;
-    int retval;
-
-    retval = get_main_data((ingest_info *)user_data, "lim_ads", "alt", IS_NO_ARRAY, data.double_data);
-    /* Convert read altitude from meters to kilometers */
-    for (l = 0; l < ((ingest_info *)user_data)->elements_per_profile; l++)
-    {
-        data.double_data[l] = data.double_data[l] / 1000.0;
-    }
-    return retval;
+    return get_main_data((ingest_info *)user_data, "lim_ads", "alt", IS_NO_ARRAY, data.double_data);
 }
 
 static int read_lim_illumination_condition(void *user_data, long index, harp_array data)
@@ -777,11 +759,9 @@ static void register_limb_product(void)
                                                  lim_ingestion_init, ingestion_done);
 
     harp_ingestion_register_option(module, "spectra", "retrieve the upper or lower background spectra; by default the "
-                                   "upper spectra are retrieved; option values are 'upper' and 'lower'", 2,
-                                   upper_lower_options);
+                                   "upper spectra are retrieved", 2, upper_lower_options);
     harp_ingestion_register_option(module, "corrected", "retrieve the corrected or uncorrected background spectra; by "
-                                   "default the corrected spectra are retrieved; option values are 'true' and 'false'",
-                                   2, true_false_options);
+                                   "default the corrected spectra are retrieved", 2, true_false_options);
 
     description = "limb data";
     product_definition = harp_ingestion_register_product(module, "GOMOS_L1_LIMB", description, read_lim_dimensions);
@@ -792,8 +772,8 @@ static void register_limb_product(void)
     dimension_type[0] = harp_dimension_time;
     dimension_type[1] = harp_dimension_spectral;
 
-    /* time_of_the_measurement */
-    description = "The time of the measurement";
+    /* datetime */
+    description = "time of the measurement";
     variable_definition =
         harp_ingestion_register_variable_full_read(product_definition, "datetime", harp_type_double, 1, dimension_type,
                                                    NULL, description, "seconds since 2000-01-01", NULL,
@@ -801,8 +781,8 @@ static void register_limb_product(void)
     path = "/lim_mds/dsr_time";
     harp_variable_definition_add_mapping(variable_definition, NULL, NULL, path, NULL);
 
-    /* latitude_of_the_measurement */
-    description = "The latitude of the apparent tangent point";
+    /* latitude */
+    description = "latitude of the apparent tangent point";
     variable_definition =
         harp_ingestion_register_variable_full_read(product_definition, "latitude", harp_type_double, 1, dimension_type,
                                                    NULL, description, "degree_north", NULL, read_lim_latitude);
@@ -810,8 +790,8 @@ static void register_limb_product(void)
     path = "/lim_ads/tangent_lat[]";
     harp_variable_definition_add_mapping(variable_definition, NULL, NULL, path, NULL);
 
-    /* longitude_of_the_measurement */
-    description = "The longitude of the apparent tangent point";
+    /* longitude */
+    description = "longitude of the apparent tangent point";
     variable_definition =
         harp_ingestion_register_variable_full_read(product_definition, "longitude", harp_type_double, 1, dimension_type,
                                                    NULL, description, "degree_east", NULL, read_lim_longitude);
@@ -819,20 +799,19 @@ static void register_limb_product(void)
     path = "/lim_ads/tangent_long[]";
     harp_variable_definition_add_mapping(variable_definition, NULL, NULL, path, NULL);
 
-    /* altitude_of_the_measurement */
-    description = "The altitude of the apparent tangent point in km";
+    /* altitude */
+    description = "altitude of the apparent tangent point";
     variable_definition =
         harp_ingestion_register_variable_full_read(product_definition, "altitude", harp_type_double, 1, dimension_type,
-                                                   NULL, description, "km", NULL, read_lim_altitude);
+                                                   NULL, description, "m", NULL, read_lim_altitude);
     path = "/lim_ads/tangent_alt[]";
-    harp_variable_definition_add_mapping(variable_definition, NULL, NULL, path,
-                                         "The value is divided by 1000 to convert it to km");
+    harp_variable_definition_add_mapping(variable_definition, NULL, NULL, path, NULL);
 
-    /* background_spectral_photon_radiance_of_each_spectrum_measurement */
+    /* wavelength_photon_radiance */
     description = "The background spectral photon radiance of each spectrum measurement";
     variable_definition =
-        harp_ingestion_register_variable_full_read(product_definition, "spectral_photon_radiance", harp_type_double, 2,
-                                                   dimension_type, NULL, description, "ph/s/cm^-2/nm/sr", NULL,
+        harp_ingestion_register_variable_full_read(product_definition, "wavelength_photon_radiance", harp_type_double, 2,
+                                                   dimension_type, NULL, description, "count/s/cm2/nm/sr", NULL,
                                                    read_lim_spectral_photon_radiance);
     path = "/lim_mds[]/up_low_back_no_corr[0,]";
     harp_variable_definition_add_mapping(variable_definition, NULL, "spectra=upper;corrected=false", path, NULL);
@@ -843,10 +822,10 @@ static void register_limb_product(void)
     path = "/lim_mds[]/up_low_back_corr[1,]";
     harp_variable_definition_add_mapping(variable_definition, NULL, "spectra=lower;corrected=true", path, NULL);
 
-    /* error percentage in background_spectral_photon_radiance_of_each_spectrum_measurement */
-    description = "The error in the background spectral photon radiance of each spectrum measurement";
+    /* wavelength_photon_radiance_uncertainty */
+    description = "error in the background spectral photon radiance of each spectrum measurement";
     variable_definition =
-        harp_ingestion_register_variable_full_read(product_definition, "spectral_photon_radiance_error",
+        harp_ingestion_register_variable_full_read(product_definition, "wavelength_photon_radiance_uncertainty",
                                                    harp_type_double, 2, dimension_type, NULL, description, "%", NULL,
                                                    read_lim_spectral_photon_radiance_error);
     path = "/lim_mds[]/err_up_low_back_corr[0,]";
@@ -854,8 +833,8 @@ static void register_limb_product(void)
     path = "/lim_mds[]/err_up_low_back_corr[1,]";
     harp_variable_definition_add_mapping(variable_definition, NULL, "spectra=lower", path, NULL);
 
-    /* wavelength_of_each_spectrum_measurement */
-    description = "The nominal wavelength assignment for each of the detector pixels";
+    /* wavelength */
+    description = "nominal wavelength assignment for each of the detector pixels";
     variable_definition =
         harp_ingestion_register_variable_full_read(product_definition, "wavelength", harp_type_double, 1,
                                                    &(dimension_type[1]), NULL, description, "nm", NULL,
@@ -863,8 +842,8 @@ static void register_limb_product(void)
     path = "/lim_nom_wav_assignment[]/nom_wl[]";
     harp_variable_definition_add_mapping(variable_definition, NULL, NULL, path, "Will be set to nm");
 
-    /* integration time */
-    description = "The integration time for a readout (in seconds)";
+    /* datetime_length time */
+    description = "integration time for a readout (in seconds)";
     variable_definition =
         harp_ingestion_register_variable_full_read(product_definition, "datetime_length", harp_type_double, 0,
                                                    dimension_type, NULL, description, "s", NULL,
@@ -873,7 +852,7 @@ static void register_limb_product(void)
     harp_variable_definition_add_mapping(variable_definition, NULL, NULL, path, NULL);
 
     /* sensor_latitude */
-    description = "The latitude of the satellite";
+    description = "latitude of the satellite";
     variable_definition =
         harp_ingestion_register_variable_full_read(product_definition, "sensor_latitude", harp_type_double, 1,
                                                    dimension_type, NULL, description, "degree_north", NULL,
@@ -883,7 +862,7 @@ static void register_limb_product(void)
     harp_variable_definition_add_mapping(variable_definition, NULL, NULL, path, NULL);
 
     /* sensor_longitude */
-    description = "The longitude of the satellite";
+    description = "longitude of the satellite";
     variable_definition =
         harp_ingestion_register_variable_full_read(product_definition, "sensor_longitude", harp_type_double, 1,
                                                    dimension_type, NULL, description, "degree_east", NULL,
@@ -893,14 +872,13 @@ static void register_limb_product(void)
     harp_variable_definition_add_mapping(variable_definition, NULL, NULL, path, NULL);
 
     /* sensor_altitude */
-    description = "The altitude of satellite in km";
+    description = "altitude of satellite";
     variable_definition =
         harp_ingestion_register_variable_full_read(product_definition, "sensor_altitude", harp_type_double, 1,
-                                                   dimension_type, NULL, description, "km", NULL,
+                                                   dimension_type, NULL, description, "m", NULL,
                                                    read_lim_sensor_altitude);
     path = "/lim_ads/alt[]";
-    harp_variable_definition_add_mapping(variable_definition, NULL, NULL, path,
-                                         "The value is divided by 1000 to convert it to km");
+    harp_variable_definition_add_mapping(variable_definition, NULL, NULL, path, NULL);
 
     /* illumination_condition */
     description = "The illumination condition for each profile: 'dark', 'bright', 'twilight', 'straylight' or "
@@ -943,17 +921,8 @@ static int read_tra_longitude(void *user_data, harp_array data)
 
 static int read_tra_altitude(void *user_data, harp_array data)
 {
-    long l;
-    int retval;
-
-    retval = get_main_data((ingest_info *)user_data, "tra_geolocation", "tangent_alt", USE_ARRAY_INDEX_1,
-                           data.double_data);
-    /* Convert read altitude from meters to kilometers */
-    for (l = 0; l < ((ingest_info *)user_data)->elements_per_profile; l++)
-    {
-        data.double_data[l] = data.double_data[l] / 1000.0;
-    }
-    return retval;
+    return get_main_data((ingest_info *)user_data, "tra_geolocation", "tangent_alt", USE_ARRAY_INDEX_1,
+                         data.double_data);
 }
 
 static int read_tra_spectral_photon_irradiance(void *user_data, harp_array data)
@@ -1063,16 +1032,7 @@ static int read_tra_sensor_longitude(void *user_data, harp_array data)
 
 static int read_tra_sensor_altitude(void *user_data, harp_array data)
 {
-    long l;
-    int retval;
-
-    retval = get_main_data((ingest_info *)user_data, "tra_geolocation", "alt", USE_ARRAY_INDEX_1, data.double_data);
-    /* Convert read altitude from meters to kilometers */
-    for (l = 0; l < ((ingest_info *)user_data)->elements_per_profile; l++)
-    {
-        data.double_data[l] = data.double_data[l] / 1000.0;
-    }
-    return retval;
+    return get_main_data((ingest_info *)user_data, "tra_geolocation", "alt", USE_ARRAY_INDEX_1, data.double_data);
 }
 
 static int read_tra_illumination_condition(void *user_data, long index, harp_array data)
@@ -1188,8 +1148,8 @@ static void register_tra_product(void)
     dimension_type[0] = harp_dimension_time;
     dimension_type[1] = harp_dimension_spectral;
 
-    /* time_of_the_measurement */
-    description = "The time of the measurement";
+    /* datetime */
+    description = "time of the measurement";
     variable_definition =
         harp_ingestion_register_variable_full_read(product_definition, "datetime", harp_type_double, 1, dimension_type,
                                                    NULL, description, "seconds since 2000-01-01", NULL,
@@ -1197,8 +1157,8 @@ static void register_tra_product(void)
     path = "/tra_transmission/dsr_time";
     harp_variable_definition_add_mapping(variable_definition, NULL, NULL, path, NULL);
 
-    /* latitude_of_the_measurement */
-    description = "The latitude of the apparent tangent point";
+    /* latitude */
+    description = "latitude of the apparent tangent point";
     variable_definition =
         harp_ingestion_register_variable_full_read(product_definition, "latitude", harp_type_double, 1, dimension_type,
                                                    NULL, description, "degree_north", NULL, read_tra_latitude);
@@ -1206,8 +1166,8 @@ static void register_tra_product(void)
     path = "/tra_geolocation/tangent_lat[1]";
     harp_variable_definition_add_mapping(variable_definition, NULL, NULL, path, NULL);
 
-    /* longitude_of_the_measurement */
-    description = "The longitude of the apparent tangent point";
+    /* longitude */
+    description = "longitude of the apparent tangent point";
     variable_definition =
         harp_ingestion_register_variable_full_read(product_definition, "longitude", harp_type_double, 1, dimension_type,
                                                    NULL, description, "degree_east", NULL, read_tra_longitude);
@@ -1215,20 +1175,19 @@ static void register_tra_product(void)
     path = "/tra_geolocation/tangent_long[1]";
     harp_variable_definition_add_mapping(variable_definition, NULL, NULL, path, NULL);
 
-    /* altitude_of_the_measurement */
-    description = "The altitude of the apparent tangent point in km";
+    /* altitude */
+    description = "altitude of the apparent tangent point";
     variable_definition =
         harp_ingestion_register_variable_full_read(product_definition, "altitude", harp_type_double, 1, dimension_type,
-                                                   NULL, description, "km", NULL, read_tra_altitude);
+                                                   NULL, description, "m", NULL, read_tra_altitude);
     path = "/tra_geolocation/tangent_alt[1]";
-    harp_variable_definition_add_mapping(variable_definition, NULL, NULL, path,
-                                         "The value is divided by 1000 to convert it to km");
+    harp_variable_definition_add_mapping(variable_definition, NULL, NULL, path, NULL);
 
-    /* spectral_photon_irradiance_of_each_spectrum_measurement */
-    description = "The spectral photon irradiance of each spectrum measurement";
+    /* wavelength_photon_irradiance */
+    description = "spectral photon irradiance of each spectrum measurement";
     variable_definition =
-        harp_ingestion_register_variable_full_read(product_definition, "spectral_photon_irradiance", harp_type_double,
-                                                   2, dimension_type, NULL, description, "ph/s/cm^-2/nm", NULL,
+        harp_ingestion_register_variable_full_read(product_definition, "wavelength_photon_irradiance", harp_type_double,
+                                                   2, dimension_type, NULL, description, "count/s/cm2/nm", NULL,
                                                    read_tra_spectral_photon_irradiance);
     path = "/tra_transmission[]/trans_spectra[]";
     harp_variable_definition_add_mapping(variable_definition, NULL, NULL, path, NULL);
@@ -1236,27 +1195,26 @@ static void register_tra_product(void)
     /* According to section 10.4.1.7.6 in the ENVISAT-GOMOS product      */
     /* specifications (PO-RS-MDA-GS-2009) the cov[] field contains the   */
     /* covariance function of the full transmission. For now, this is    */
-    /* interpreted as an error margin of the transmission (which matches */
-    /* the functionality in BEAT-II).                                    */
-    description = "The error in the spectral photon irradiance of each spectrum measurement";
+    /* interpreted as a standard deviation of the transmission.          */
+    description = "error in the spectral photon irradiance of each spectrum measurement";
     variable_definition =
-        harp_ingestion_register_variable_full_read(product_definition, "spectral_photon_irradiance_error",
+        harp_ingestion_register_variable_full_read(product_definition, "wavelength_photon_irradiance_uncertainty",
                                                    harp_type_double, 2, dimension_type, NULL, description,
-                                                   "ph/s/cm^-2/nm", NULL, read_tra_spectral_photon_irradiance_error);
+                                                   "count/s/cm2/nm", NULL, read_tra_spectral_photon_irradiance_error);
     path = "/tra_transmission[]/cov[]";
     harp_variable_definition_add_mapping(variable_definition, NULL, NULL, path, NULL);
 
     /* wavelength_of_each_spectrum_measurement */
-    description = "The nominal wavelength assignment for each of the detector pixels";
+    description = "nominal wavelength assignment for each of the detector pixels";
     variable_definition =
         harp_ingestion_register_variable_full_read(product_definition, "wavelength", harp_type_double, 1,
                                                    &(dimension_type[1]), NULL, description, "nm", NULL,
                                                    read_tra_wavelength);
     path = "/tra_nom_wav_assignment[]/nom_wl[]";
-    harp_variable_definition_add_mapping(variable_definition, NULL, NULL, path, "Will be set to nm");
+    harp_variable_definition_add_mapping(variable_definition, NULL, NULL, path, NULL);
 
     /* integration time */
-    description = "The integration time for a readout (in seconds)";
+    description = "integration time for a readout (in seconds)";
     variable_definition =
         harp_ingestion_register_variable_full_read(product_definition, "datetime_length", harp_type_double, 0,
                                                    dimension_type, NULL, description, "s", NULL,
@@ -1265,7 +1223,7 @@ static void register_tra_product(void)
     harp_variable_definition_add_mapping(variable_definition, NULL, NULL, path, NULL);
 
     /* sensor_latitude */
-    description = "The latitude of the satellite position at half-measurement";
+    description = "latitude of the satellite position at half-measurement";
     variable_definition =
         harp_ingestion_register_variable_full_read(product_definition, "sensor_latitude", harp_type_double, 1,
                                                    dimension_type, NULL, description, "degree_north", NULL,
@@ -1275,7 +1233,7 @@ static void register_tra_product(void)
     harp_variable_definition_add_mapping(variable_definition, NULL, NULL, path, NULL);
 
     /* sensor_longitude */
-    description = "The longitude of the satellite position at half-measurement";
+    description = "longitude of the satellite position at half-measurement";
     variable_definition =
         harp_ingestion_register_variable_full_read(product_definition, "sensor_longitude", harp_type_double, 1,
                                                    dimension_type, NULL, description, "degree_east", NULL,
@@ -1285,14 +1243,13 @@ static void register_tra_product(void)
     harp_variable_definition_add_mapping(variable_definition, NULL, NULL, path, NULL);
 
     /* sensor_altitude */
-    description = "The altitude of the satellite at half-measurement";
+    description = "altitude of the satellite at half-measurement";
     variable_definition =
         harp_ingestion_register_variable_full_read(product_definition, "sensor_altitude", harp_type_double, 1,
-                                                   dimension_type, NULL, description, "km", NULL,
+                                                   dimension_type, NULL, description, "m", NULL,
                                                    read_tra_sensor_altitude);
     path = "/tra_geolocation/alt[1]";
-    harp_variable_definition_add_mapping(variable_definition, NULL, NULL, path,
-                                         "The value is divided by 1000 to convert it to km");
+    harp_variable_definition_add_mapping(variable_definition, NULL, NULL, path, NULL);
 
     /* illumination_condition */
     description = "The illumination condition for each profile: 'dark', 'bright', 'twilight', 'straylight' or "
