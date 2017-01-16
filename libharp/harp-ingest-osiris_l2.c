@@ -338,7 +338,7 @@ static void register_aerosol_product(void)
     dimension_type[0] = harp_dimension_time;
     dimension_type[1] = harp_dimension_vertical;
 
-    /* time_per_profile */
+    /* datetime */
     description = "time of the measurement";
     variable_definition =
         harp_ingestion_register_variable_full_read(product_definition, "datetime", harp_type_double, 1, dimension_type,
@@ -347,22 +347,20 @@ static void register_aerosol_product(void)
     harp_variable_definition_add_mapping(variable_definition, NULL, NULL, path,
                                          "The time converted from TAI93 to seconds since 2000-01-01");
 
-    /* latitude_per_profile */
+    /* latitude */
     description = "center latitude for a profile";
     variable_definition =
-        harp_ingestion_register_variable_full_read(product_definition, "latitude_per_profile", harp_type_double, 1,
-                                                   dimension_type, NULL, description, "degree_north", NULL,
-                                                   read_latitude);
+        harp_ingestion_register_variable_full_read(product_definition, "latitude", harp_type_double, 1, dimension_type,
+                                                   NULL, description, "degree_north", NULL, read_latitude);
     harp_variable_definition_set_valid_range_double(variable_definition, -90.0, 90.0);
     path = "/HDFEOS/SWATHS/OSIRIS_Odin_Aerosol_MART/Geolocation_Fields/Latitude[]";
     harp_variable_definition_add_mapping(variable_definition, NULL, NULL, path, NULL);
 
-    /* longitude_per_profile */
+    /* longitude */
     description = "center longitude for a profile";
     variable_definition =
-        harp_ingestion_register_variable_full_read(product_definition, "longitude_per_profile", harp_type_double, 1,
-                                                   dimension_type, NULL, description, "degree_east", NULL,
-                                                   read_longitude);
+        harp_ingestion_register_variable_full_read(product_definition, "longitude", harp_type_double, 1, dimension_type,
+                                                   NULL, description, "degree_east", NULL, read_longitude);
     harp_variable_definition_set_valid_range_double(variable_definition, -180.0, 180.0);
     path = "/HDFEOS/SWATHS/OSIRIS_Odin_Aerosol_MART/Geolocation_Fields/Longitude[]";
     harp_variable_definition_add_mapping(variable_definition, NULL, NULL, path, NULL);
@@ -395,8 +393,8 @@ static void register_aerosol_product(void)
     harp_variable_definition_add_mapping(variable_definition, NULL, NULL, path, NULL);
 
     /* solar_zenith_angle */
-    description =
-        "Solar zenith angle at the tangent point of the measurement. 0 is sun overhead, 90 is sun on the horizon";
+    description = "solar zenith angle at the tangent point of the measurement; 0 is sun overhead, 90 is sun on the "
+        "horizon";
     variable_definition =
         harp_ingestion_register_variable_full_read(product_definition, "solar_zenith_angle", harp_type_double, 1,
                                                    dimension_type, NULL, description, NULL, NULL,
@@ -405,8 +403,8 @@ static void register_aerosol_product(void)
     harp_variable_definition_add_mapping(variable_definition, NULL, NULL, path, NULL);
 
     /* solar_azimuth_angle */
-    description =
-        "Solar azimuth angle at the tangent point of the measurement. 0 is due North, 90 is due East, 180 is South and 270 is West";
+    description = "solar azimuth angle at the tangent point of the measurement; 0 is due North, 90 is due East, 180 "
+        "is South and 270 is West";
     variable_definition =
         harp_ingestion_register_variable_full_read(product_definition, "solar_azimuth_angle", harp_type_double, 1,
                                                    dimension_type, NULL, description, NULL, NULL,
@@ -425,9 +423,8 @@ static void register_no2_oe_product(void)
     const char *path;
 
     description = "OSIRIS Level 2";
-    module =
-        harp_ingestion_register_module_coda("OSIRIS_L2_NO2_OE", "OSIRIS", "ODIN_OSIRIS", "L2_NO2_OE", description,
-                                            ingestion_init_no2_oe, ingestion_done);
+    module = harp_ingestion_register_module_coda("OSIRIS_L2_NO2_OE", "OSIRIS", "ODIN_OSIRIS", "L2_NO2_OE", description,
+                                                 ingestion_init_no2_oe, ingestion_done);
 
     description = "profile data";
     product_definition = harp_ingestion_register_product(module, "OSIRIS_L2_NO2_OE", description, read_dimensions);
@@ -438,7 +435,7 @@ static void register_no2_oe_product(void)
     dimension_type[0] = harp_dimension_time;
     dimension_type[1] = harp_dimension_vertical;
 
-    /* time_per_profile */
+    /* datetime */
     description = "time of the measurement";
     variable_definition =
         harp_ingestion_register_variable_full_read(product_definition, "datetime", harp_type_double, 1, dimension_type,
@@ -447,22 +444,20 @@ static void register_no2_oe_product(void)
     harp_variable_definition_add_mapping(variable_definition, NULL, NULL, path,
                                          "The time converted from TAI93 to seconds since 2000-01-01");
 
-    /* latitude_per_profile */
+    /* latitude */
     description = "center latitude for a profile";
     variable_definition =
-        harp_ingestion_register_variable_full_read(product_definition, "latitude_per_profile", harp_type_double, 1,
-                                                   dimension_type, NULL, description, "degree_north", NULL,
-                                                   read_latitude);
+        harp_ingestion_register_variable_full_read(product_definition, "latitude", harp_type_double, 1, dimension_type,
+                                                   NULL, description, "degree_north", NULL, read_latitude);
     harp_variable_definition_set_valid_range_double(variable_definition, -90.0, 90.0);
     path = "/HDFEOS/SWATHS/OSIRIS_Odin_NO2_DOAS_OE/Geolocation_Fields/Latitude[]";
     harp_variable_definition_add_mapping(variable_definition, NULL, NULL, path, NULL);
 
-    /* longitude_per_profile */
+    /* longitude */
     description = "center longitude for a profile";
     variable_definition =
-        harp_ingestion_register_variable_full_read(product_definition, "longitude_per_profile", harp_type_double, 1,
-                                                   dimension_type, NULL, description, "degree_east", NULL,
-                                                   read_longitude);
+        harp_ingestion_register_variable_full_read(product_definition, "longitude", harp_type_double, 1, dimension_type,
+                                                   NULL, description, "degree_east", NULL, read_longitude);
     harp_variable_definition_set_valid_range_double(variable_definition, -180.0, 180.0);
     path = "/HDFEOS/SWATHS/OSIRIS_Odin_NO2_DOAS_OE/Geolocation_Fields/Longitude[]";
     harp_variable_definition_add_mapping(variable_definition, NULL, NULL, path, NULL);
@@ -501,8 +496,8 @@ static void register_no2_oe_product(void)
     harp_variable_definition_add_mapping(variable_definition, NULL, NULL, path, NULL);
 
     /* solar_zenith_angle */
-    description =
-        "Solar zenith angle at the tangent point of the measurement. 0 is sun overhead, 90 is sun on the horizon";
+    description = "solar zenith angle at the tangent point of the measurement; 0 is sun overhead, 90 is sun on the "
+        "horizon";
     variable_definition =
         harp_ingestion_register_variable_full_read(product_definition, "solar_zenith_angle", harp_type_double, 1,
                                                    dimension_type, NULL, description, NULL, NULL,
@@ -511,8 +506,8 @@ static void register_no2_oe_product(void)
     harp_variable_definition_add_mapping(variable_definition, NULL, NULL, path, NULL);
 
     /* solar_azimuth_angle */
-    description =
-        "Solar azimuth angle at the tangent point of the measurement. 0 is due North, 90 is due East, 180 is South and 270 is West";
+    description = "solar azimuth angle at the tangent point of the measurement; 0 is due North, 90 is due East, 180 "
+        "is South and 270 is West";
     variable_definition =
         harp_ingestion_register_variable_full_read(product_definition, "solar_azimuth_angle", harp_type_double, 1,
                                                    dimension_type, NULL, description, NULL, NULL,
@@ -531,9 +526,8 @@ static void register_no2_mart_product(void)
     const char *path;
 
     description = "OSIRIS Level 2";
-    module =
-        harp_ingestion_register_module_coda("OSIRIS_L2_NO2_MART", "OSIRIS", "ODIN_OSIRIS", "L2_NO2_MART", description,
-                                            ingestion_init_no2_mart, ingestion_done);
+    module = harp_ingestion_register_module_coda("OSIRIS_L2_NO2_MART", "OSIRIS", "ODIN_OSIRIS", "L2_NO2_MART",
+                                                 description, ingestion_init_no2_mart, ingestion_done);
 
     description = "profile data";
     product_definition = harp_ingestion_register_product(module, "OSIRIS_L2_NO2_MART", description, read_dimensions);
@@ -544,7 +538,7 @@ static void register_no2_mart_product(void)
     dimension_type[0] = harp_dimension_time;
     dimension_type[1] = harp_dimension_vertical;
 
-    /* time_per_profile */
+    /* datetime */
     description = "time of the measurement";
     variable_definition =
         harp_ingestion_register_variable_full_read(product_definition, "datetime", harp_type_double, 1, dimension_type,
@@ -553,22 +547,20 @@ static void register_no2_mart_product(void)
     harp_variable_definition_add_mapping(variable_definition, NULL, NULL, path,
                                          "The time converted from TAI93 to seconds since 2000-01-01");
 
-    /* latitude_per_profile */
+    /* latitude */
     description = "center latitude for a profile";
     variable_definition =
-        harp_ingestion_register_variable_full_read(product_definition, "latitude_per_profile", harp_type_double, 1,
-                                                   dimension_type, NULL, description, "degree_north", NULL,
-                                                   read_latitude);
+        harp_ingestion_register_variable_full_read(product_definition, "latitude", harp_type_double, 1, dimension_type,
+                                                   NULL, description, "degree_north", NULL, read_latitude);
     harp_variable_definition_set_valid_range_double(variable_definition, -90.0, 90.0);
     path = "/HDFEOS/SWATHS/OSIRIS_Odin_NO2MART/Geolocation_Fields/Latitude[]";
     harp_variable_definition_add_mapping(variable_definition, NULL, NULL, path, NULL);
 
-    /* longitude_per_profile */
+    /* longitude */
     description = "center longitude for a profile";
     variable_definition =
-        harp_ingestion_register_variable_full_read(product_definition, "longitude_per_profile", harp_type_double, 1,
-                                                   dimension_type, NULL, description, "degree_east", NULL,
-                                                   read_longitude);
+        harp_ingestion_register_variable_full_read(product_definition, "longitude", harp_type_double, 1, dimension_type,
+                                                   NULL, description, "degree_east", NULL, read_longitude);
     harp_variable_definition_set_valid_range_double(variable_definition, -180.0, 180.0);
     path = "/HDFEOS/SWATHS/OSIRIS_Odin_NO2MART/Geolocation_Fields/Longitude[]";
     harp_variable_definition_add_mapping(variable_definition, NULL, NULL, path, NULL);
@@ -607,8 +599,8 @@ static void register_no2_mart_product(void)
     harp_variable_definition_add_mapping(variable_definition, NULL, NULL, path, NULL);
 
     /* solar_zenith_angle */
-    description =
-        "Solar zenith angle at the tangent point of the measurement. 0 is sun overhead, 90 is sun on the horizon";
+    description = "solar zenith angle at the tangent point of the measurement; 0 is sun overhead, 90 is sun on the "
+        "horizon";
     variable_definition =
         harp_ingestion_register_variable_full_read(product_definition, "solar_zenith_angle", harp_type_double, 1,
                                                    dimension_type, NULL, description, NULL, NULL,
@@ -617,8 +609,8 @@ static void register_no2_mart_product(void)
     harp_variable_definition_add_mapping(variable_definition, NULL, NULL, path, NULL);
 
     /* solar_azimuth_angle */
-    description =
-        "Solar azimuth angle at the tangent point of the measurement. 0 is due North, 90 is due East, 180 is South and 270 is West";
+    description = "solar azimuth angle at the tangent point of the measurement; 0 is due North, 90 is due East, 180 "
+        "is South and 270 is West";
     variable_definition =
         harp_ingestion_register_variable_full_read(product_definition, "solar_azimuth_angle", harp_type_double, 1,
                                                    dimension_type, NULL, description, NULL, NULL,
@@ -637,9 +629,8 @@ static void register_o3_oe_product(void)
     const char *path;
 
     description = "OSIRIS Level 2";
-    module =
-        harp_ingestion_register_module_coda("OSIRIS_L2_O3_OE", "OSIRIS", "ODIN_OSIRIS", "L2_O3_OE", description,
-                                            ingestion_init_o3_oe, ingestion_done);
+    module = harp_ingestion_register_module_coda("OSIRIS_L2_O3_OE", "OSIRIS", "ODIN_OSIRIS", "L2_O3_OE", description,
+                                                 ingestion_init_o3_oe, ingestion_done);
 
     description = "profile data";
     product_definition = harp_ingestion_register_product(module, "OSIRIS_L2_O3_OE", description, read_dimensions);
@@ -650,7 +641,7 @@ static void register_o3_oe_product(void)
     dimension_type[0] = harp_dimension_time;
     dimension_type[1] = harp_dimension_vertical;
 
-    /* time_per_profile */
+    /* datetime */
     description = "time of the measurement";
     variable_definition =
         harp_ingestion_register_variable_full_read(product_definition, "datetime", harp_type_double, 1, dimension_type,
@@ -659,22 +650,20 @@ static void register_o3_oe_product(void)
     harp_variable_definition_add_mapping(variable_definition, NULL, NULL, path,
                                          "The time converted from TAI93 to seconds since 2000-01-01");
 
-    /* latitude_per_profile */
+    /* latitude */
     description = "center latitude for a profile";
     variable_definition =
-        harp_ingestion_register_variable_full_read(product_definition, "latitude_per_profile", harp_type_double, 1,
-                                                   dimension_type, NULL, description, "degree_north", NULL,
-                                                   read_latitude);
+        harp_ingestion_register_variable_full_read(product_definition, "latitude", harp_type_double, 1, dimension_type,
+                                                   NULL, description, "degree_north", NULL, read_latitude);
     harp_variable_definition_set_valid_range_double(variable_definition, -90.0, 90.0);
     path = "/HDFEOS/SWATHS/OSIRIS_Odin_O3_Chappuis_triplet_OE/Geolocation_Fields/Latitude[]";
     harp_variable_definition_add_mapping(variable_definition, NULL, NULL, path, NULL);
 
-    /* longitude_per_profile */
+    /* longitude */
     description = "center longitude for a profile";
     variable_definition =
-        harp_ingestion_register_variable_full_read(product_definition, "longitude_per_profile", harp_type_double, 1,
-                                                   dimension_type, NULL, description, "degree_east", NULL,
-                                                   read_longitude);
+        harp_ingestion_register_variable_full_read(product_definition, "longitude", harp_type_double, 1, dimension_type,
+                                                   NULL, description, "degree_east", NULL, read_longitude);
     harp_variable_definition_set_valid_range_double(variable_definition, -180.0, 180.0);
     path = "/HDFEOS/SWATHS/OSIRIS_Odin_O3_Chappuis_triplet_OE/Geolocation_Fields/Longitude[]";
     harp_variable_definition_add_mapping(variable_definition, NULL, NULL, path, NULL);
@@ -713,8 +702,8 @@ static void register_o3_oe_product(void)
     harp_variable_definition_add_mapping(variable_definition, NULL, NULL, path, NULL);
 
     /* solar_zenith_angle */
-    description =
-        "Solar zenith angle at the tangent point of the measurement. 0 is sun overhead, 90 is sun on the horizon";
+    description = "solar zenith angle at the tangent point of the measurement; 0 is sun overhead, 90 is sun on the "
+        "horizon";
     variable_definition =
         harp_ingestion_register_variable_full_read(product_definition, "solar_zenith_angle", harp_type_double, 1,
                                                    dimension_type, NULL, description, NULL, NULL,
@@ -723,8 +712,8 @@ static void register_o3_oe_product(void)
     harp_variable_definition_add_mapping(variable_definition, NULL, NULL, path, NULL);
 
     /* solar_azimuth_angle */
-    description =
-        "Solar azimuth angle at the tangent point of the measurement. 0 is due North, 90 is due East, 180 is South and 270 is West";
+    description = "solar azimuth angle at the tangent point of the measurement; 0 is due North, 90 is due East, 180 "
+        "is South and 270 is West";
     variable_definition =
         harp_ingestion_register_variable_full_read(product_definition, "solar_azimuth_angle", harp_type_double, 1,
                                                    dimension_type, NULL, description, NULL, NULL,
@@ -756,7 +745,7 @@ static void register_o3_mart_product(void)
     dimension_type[0] = harp_dimension_time;
     dimension_type[1] = harp_dimension_vertical;
 
-    /* time_per_profile */
+    /* datetime */
     description = "time of the measurement";
     variable_definition =
         harp_ingestion_register_variable_full_read(product_definition, "datetime", harp_type_double, 1, dimension_type,
@@ -765,22 +754,20 @@ static void register_o3_mart_product(void)
     harp_variable_definition_add_mapping(variable_definition, NULL, NULL, path,
                                          "The time converted from TAI93 to seconds since 2000-01-01");
 
-    /* latitude_per_profile */
+    /* latitude */
     description = "center latitude for a profile";
     variable_definition =
-        harp_ingestion_register_variable_full_read(product_definition, "latitude_per_profile", harp_type_double, 1,
-                                                   dimension_type, NULL, description, "degree_north", NULL,
-                                                   read_latitude);
+        harp_ingestion_register_variable_full_read(product_definition, "latitude", harp_type_double, 1, dimension_type,
+                                                   NULL, description, "degree_north", NULL, read_latitude);
     harp_variable_definition_set_valid_range_double(variable_definition, -90.0, 90.0);
     path = "/HDFEOS/SWATHS/OSIRIS_Odin_O3MART/Geolocation_Fields/Latitude[]";
     harp_variable_definition_add_mapping(variable_definition, NULL, NULL, path, NULL);
 
-    /* longitude_per_profile */
+    /* longitude */
     description = "center longitude for a profile";
     variable_definition =
-        harp_ingestion_register_variable_full_read(product_definition, "longitude_per_profile", harp_type_double, 1,
-                                                   dimension_type, NULL, description, "degree_east", NULL,
-                                                   read_longitude);
+        harp_ingestion_register_variable_full_read(product_definition, "longitude", harp_type_double, 1, dimension_type,
+                                                   NULL, description, "degree_east", NULL, read_longitude);
     harp_variable_definition_set_valid_range_double(variable_definition, -180.0, 180.0);
     path = "/HDFEOS/SWATHS/OSIRIS_Odin_O3MART/Geolocation_Fields/Longitude[]";
     harp_variable_definition_add_mapping(variable_definition, NULL, NULL, path, NULL);
@@ -819,8 +806,8 @@ static void register_o3_mart_product(void)
     harp_variable_definition_add_mapping(variable_definition, NULL, NULL, path, NULL);
 
     /* solar_zenith_angle */
-    description =
-        "Solar zenith angle at the tangent point of the measurement. 0 is sun overhead, 90 is sun on the horizon";
+    description = "solar zenith angle at the tangent point of the measurement; 0 is sun overhead, 90 is sun on the "
+        "horizon";
     variable_definition =
         harp_ingestion_register_variable_full_read(product_definition, "solar_zenith_angle", harp_type_double, 1,
                                                    dimension_type, NULL, description, NULL, NULL,
@@ -829,8 +816,8 @@ static void register_o3_mart_product(void)
     harp_variable_definition_add_mapping(variable_definition, NULL, NULL, path, NULL);
 
     /* solar_azimuth_angle */
-    description =
-        "Solar azimuth angle at the tangent point of the measurement. 0 is due North, 90 is due East, 180 is South and 270 is West";
+    description = "solar azimuth angle at the tangent point of the measurement; 0 is due North, 90 is due East, 180 "
+        "is South and 270 is West";
     variable_definition =
         harp_ingestion_register_variable_full_read(product_definition, "solar_azimuth_angle", harp_type_double, 1,
                                                    dimension_type, NULL, description, NULL, NULL,

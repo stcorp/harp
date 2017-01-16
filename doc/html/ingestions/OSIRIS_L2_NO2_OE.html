@@ -153,13 +153,13 @@
 <td>seconds since 2000-01-01</td>
 <td>time of the measurement</td>
 </tr>
-<tr class="row-odd"><td><strong>latitude_per_profile</strong></td>
+<tr class="row-odd"><td><strong>latitude</strong></td>
 <td>double</td>
 <td>{<em>time</em>}</td>
 <td>degree_north</td>
 <td>center latitude for a profile</td>
 </tr>
-<tr class="row-even"><td><strong>longitude_per_profile</strong></td>
+<tr class="row-even"><td><strong>longitude</strong></td>
 <td>double</td>
 <td>{<em>time</em>}</td>
 <td>degree_east</td>
@@ -193,13 +193,13 @@
 <td>double</td>
 <td>{<em>time</em>}</td>
 <td>&nbsp;</td>
-<td>Solar zenith angle at the tangent point of the measurement. 0 is sun overhead, 90 is sun on the horizon</td>
+<td>solar zenith angle at the tangent point of the measurement; 0 is sun overhead, 90 is sun on the horizon</td>
 </tr>
 <tr class="row-even"><td><strong>solar_azimuth_angle</strong></td>
 <td>double</td>
 <td>{<em>time</em>}</td>
 <td>&nbsp;</td>
-<td>Solar azimuth angle at the tangent point of the measurement. 0 is due North, 90 is due East, 180 is South and 270 is West</td>
+<td>solar azimuth angle at the tangent point of the measurement; 0 is due North, 90 is due East, 180 is South and 270 is West</td>
 </tr>
 <tr class="row-odd"><td><strong>index</strong></td>
 <td>int32</td>
@@ -216,9 +216,9 @@
 <p>OSIRIS Level 2 products only contain a single profile; all measured profile points will be provided in reverse order (from low altitude to high altitude) in the profile</p>
 <table border="1" class="docutils">
 <colgroup>
-<col width="22%" />
+<col width="20%" />
 <col width="12%" />
-<col width="66%" />
+<col width="67%" />
 </colgroup>
 <thead valign="bottom">
 <tr class="row-odd"><th class="head">field name</th>
@@ -233,11 +233,11 @@
 <tr class="row-odd"><td><em>description</em></td>
 <td>The time converted from TAI93 to seconds since 2000-01-01</td>
 </tr>
-<tr class="row-even"><td><strong>latitude_per_profile</strong></td>
+<tr class="row-even"><td><strong>latitude</strong></td>
 <td><em>path</em></td>
 <td><strong>/HDFEOS/SWATHS/OSIRIS_Odin_NO2_DOAS_OE/Geolocation_Fields/Latitude[]</strong></td>
 </tr>
-<tr class="row-odd"><td><strong>longitude_per_profile</strong></td>
+<tr class="row-odd"><td><strong>longitude</strong></td>
 <td><em>path</em></td>
 <td><strong>/HDFEOS/SWATHS/OSIRIS_Odin_NO2_DOAS_OE/Geolocation_Fields/Longitude[]</strong></td>
 </tr>
