@@ -21,6 +21,7 @@ from __future__ import print_function
 from collections import OrderedDict
 import glob
 import numpy
+import os
 
 try:
     from cStringIO import StringIO
@@ -346,7 +347,18 @@ def _init():
     global _lib, _encoding, _py_dimension_type, _c_dimension_type, _py_data_type, _c_data_type_name
 
     # Initialize the HARP C library
-    _lib = _ffi.dlopen(_get_c_library_filename())
+    clib = _get_c_library_filename()
+    _lib = _ffi.dlopen(clib)
+
+    if os.getenv('CODA_DEFINITION') is None:
+        # Set coda definition path relative to C library
+        if _system() == "Windows":
+            relpath = "../definitions"
+        else:
+            relpath = "../share/harp/definitions"
+        _lib.harp_set_coda_definition_path_conditional(_encode_path(os.path.dirname(clib)),
+                                                       _encode_string(os.path.basename(clib)),
+                                                       _encode_path(relpath))
 
     if _lib.harp_init() != 0:
         raise CLibraryError()

@@ -11,6 +11,9 @@
   a list of filenames or a globbing pattern as parameter (which will return
   the result of harp.concatenate() on the imported/ingested products).
 
+* Automatically set CODA definition path for HARP Python interface
+  (path can be overruled with CODA_DEFINITION environment variable).
+
 * The parsing of the operations string has been rewritten using flex/yacc.
   This has fixed several issues related to the parsing and execution of
   operations.
