@@ -226,8 +226,6 @@ static int get_wavenumber_sample_data(ingest_info *info, long row, float *float_
             harp_set_error(HARP_SUCCESS, "product error detected (IDefNslast1b - IDefNsfirst1b + 1 > 8700)");
             return -1;
         }
-        /* convert from m^(-1) to cm^(-1) by scaling sample_width */
-        sample_width *= 1E-2;
     }
     for (sample = first_sample, i = 0; sample <= last_sample; sample++, i++)
     {
@@ -571,7 +569,7 @@ int harp_ingestion_module_iasi_l1_init(void)
 
     /* spectral_radiance_of_each_spectrum_measurement */
     description = "measured radiances";
-    variable_definition = harp_ingestion_register_variable_sample_read(product_definition, "spectral_radiance", harp_type_float, 2, dimension_type, NULL, description, "W/cm^2.sr.cm^-1", NULL, read_spectral_radiance_sample);
+    variable_definition = harp_ingestion_register_variable_sample_read(product_definition, "spectral_radiance", harp_type_float, 2, dimension_type, NULL, description, "W/m^2.sr.m^-1", NULL, read_spectral_radiance_sample);
     path = "/MDR[]/MDR/GS1cSpect[], /MDR[]/MDR/IDefNsfirst1b, /GIADR_ScaleFactors/IDefScaleSondNbScale, /GIADR_ScaleFactors/IDefScaleSondScaleFactor[], /GIADR_ScaleFactors/IdefScaleSondNsfirst[], /GIADR_ScaleFactors/IDefScaleSondNslast[]";
 
 /* PROBLEM: The description below becomes text in a table cell with no  */
@@ -584,16 +582,14 @@ int harp_ingestion_module_iasi_l1_init(void)
                   "      w = chanNb - IDefNsfirst1b + 1;"
                   "      pixel_readout[w] = GS1cSpect[..,..,w] * 10^(-SF)"
                   "   }"
-                  "}"
-                  "Finally, the spectral readout value is converted from W/m^2.sr.m^-1 to W/cm^2.sr.cm^-1 by dividing by 100.";
+                  "}";
     harp_variable_definition_add_mapping(variable_definition, NULL, NULL, path, description);
 
     /* wavenumber_of_each_spectrum_measurement */
     description = "nominal wavelength assignment for each of the detector pixels";
-    variable_definition = harp_ingestion_register_variable_sample_read(product_definition, "wavenumber", harp_type_float, 2, dimension_type, NULL, description, "cm^-1", NULL, read_wavenumber_sample);
-    path = "/MDR[]/MDR/IDefSpectDWn1b, /MDR[]/MDR/IDefNsfirst1b, /MDR[]/MDR/IDefSpectDWn1b";
-    description = "wavenumber[i] = IDefSpectDWn1b * (i + IDefNsfirst1b - 1). "
-                  "The wavenumbers are converted from m^-1 to cm^-1 by dividing by 100.";
+    variable_definition = harp_ingestion_register_variable_sample_read(product_definition, "wavenumber", harp_type_float, 2, dimension_type, NULL, description, "m^-1", NULL, read_wavenumber_sample);
+    path = "/MDR[]/MDR/IDefSpectDWn1b, /MDR[]/MDR/IDefNsfirst1b, /MDR[]/MDR/IDefNslast1b";
+    description = "wavenumber[i] = IDefSpectDWn1b * (i + IDefNsfirst1b - 1). ";
     harp_variable_definition_add_mapping(variable_definition, NULL, NULL, path, description);
 
     /* scan_subset_counter */
