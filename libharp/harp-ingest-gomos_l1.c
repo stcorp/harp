@@ -946,78 +946,12 @@ static int read_tra_altitude(void *user_data, harp_array data)
                          data.double_data);
 }
 
-static int read_tra_spectral_photon_irradiance(void *user_data, harp_array data)
+static int read_wavelength_photon_transmittance(void *user_data, harp_array data)
 {
-    int retval;
-    double transmission_in_electrons, wavelength, conversion_factor;
-    double *transmission_code_values, *transmission_offsets, *transmission_gains;
-    double *double_data;
     ingest_info *info;
-    long profile_nr, wavelength_nr;
 
     info = (ingest_info *)user_data;
-
-    CHECKED_MALLOC(transmission_code_values, sizeof(double) * info->elements_per_profile * info->num_wavelengths);
-    retval = get_spectral_data(info, "tra_transmission", "trans_spectra", 0, transmission_code_values);
-    if (retval != 0)
-    {
-        free(transmission_code_values);
-        return retval;
-    }
-
-    CHECKED_MALLOC(transmission_offsets, sizeof(double) * info->elements_per_profile);
-    retval = get_main_data((ingest_info *)user_data, "tra_auxiliary_data", "off_back", IS_NO_ARRAY,
-                           transmission_offsets);
-    if (retval != 0)
-    {
-        free(transmission_offsets);
-        free(transmission_code_values);
-        return retval;
-    }
-    CHECKED_MALLOC(transmission_gains, sizeof(double) * info->elements_per_profile);
-    retval = get_main_data((ingest_info *)user_data, "tra_auxiliary_data", "gain_back", IS_NO_ARRAY,
-                           transmission_gains);
-    if (retval != 0)
-    {
-        free(transmission_gains);
-        free(transmission_offsets);
-        free(transmission_code_values);
-        return retval;
-    }
-    double_data = data.double_data;
-    for (profile_nr = 0; profile_nr < info->elements_per_profile; profile_nr++)
-    {
-        for (wavelength_nr = 0; wavelength_nr < info->num_wavelengths; wavelength_nr++)
-        {
-            /* Convert the value to electrons by using the offsets and gains */
-            /* from the auxiliary data according to section 10.4.1.7.6 in    */
-            /* the ENVISAT-GOMOS product specifications (PO-RS-MDA-GS-2009). */
-            transmission_in_electrons = transmission_offsets[profile_nr] +
-                transmission_code_values[profile_nr * info->num_wavelengths + wavelength_nr] /
-                transmission_gains[profile_nr];
-            wavelength = info->wavelengths[wavelength_nr];
-            /* Convert the value in electrons to a physical unit according */
-            /* to section 10.4.1.7.2 in the ENVISAT-GOMOS product          */
-            /* specifications (ESA Doc Ref: PO-RS-MDA-GS-2009).            */
-            if (spectral_conversion_factor(info, "tra_occultation_data", "size_rad_sens_curve_star",
-                                           "abs_rad_sens_curve_star", "rad_sens_curve_star", wavelength,
-                                           &conversion_factor) == 0)
-            {
-                *double_data = transmission_in_electrons * conversion_factor;
-            }
-            else
-            {
-                *double_data = 0.0;
-            }
-            double_data++;
-        }
-    }
-
-    spectral_conversion_factor(NULL, NULL, NULL, NULL, NULL, 0.0, NULL);
-    free(transmission_gains);
-    free(transmission_offsets);
-    free(transmission_code_values);
-    return 0;
+    return get_spectral_data(info, "tra_transmission", "trans_spectra", 0, data.double_data);
 }
 
 static int read_tra_spectral_photon_irradiance_error(void *user_data, harp_array data)
@@ -1204,12 +1138,12 @@ static void register_tra_product(void)
     path = "/tra_geolocation/tangent_alt[1]";
     harp_variable_definition_add_mapping(variable_definition, NULL, NULL, path, NULL);
 
-    /* wavelength_photon_irradiance */
-    description = "spectral photon irradiance of each spectrum measurement";
+    /* wavelength_photon_transmittance */
+    description = "wavelength photon transmittance of each spectrum measurement, this value is calculated as the wavelength_photon_radiance divided by the wavelength_photon_radiance of an unobstructed view.";
     variable_definition =
-        harp_ingestion_register_variable_full_read(product_definition, "wavelength_photon_irradiance", harp_type_double,
-                                                   2, dimension_type, NULL, description, "count/s/cm2/nm", NULL,
-                                                   read_tra_spectral_photon_irradiance);
+        harp_ingestion_register_variable_full_read(product_definition, "wavelength_photon_transmittance", harp_type_double,
+                                                   2, dimension_type, NULL, description, NULL, NULL,
+                                                   read_wavelength_photon_transmittance);
     path = "/tra_transmission[]/trans_spectra[]";
     harp_variable_definition_add_mapping(variable_definition, NULL, NULL, path, NULL);
 
