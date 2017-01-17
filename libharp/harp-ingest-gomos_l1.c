@@ -48,6 +48,7 @@ typedef struct ingest_info_struct
     long elements_per_profile;  /* Each profile is a series of elements, each element is a series of measurements for different wavelengths */
     long num_wavelengths;       /* The number of different spectra in 1 element */
     double *wavelengths;
+    double *limb_radiance_data_values;
     int upper;
     int corrected;
 } ingest_info;
@@ -559,6 +560,7 @@ static int read_lim_spectral_photon_radiance(void *user_data, harp_array data)
         free(background_code_values);
         return retval;
     }
+
     double_data = data.double_data;
     for (profile_nr = 0; profile_nr < info->elements_per_profile; profile_nr++)
     {
@@ -592,16 +594,35 @@ static int read_lim_spectral_photon_radiance(void *user_data, harp_array data)
     free(background_gains);
     free(background_offsets);
     free(background_code_values);
+
+    CHECKED_MALLOC(info->limb_radiance_data_values, sizeof(double) * info->elements_per_profile * info->num_wavelengths);
+    memcpy(info->limb_radiance_data_values, data.double_data, sizeof(double) * info->elements_per_profile * info->num_wavelengths);
+
     return 0;
 }
 
 static int read_lim_spectral_photon_radiance_error(void *user_data, harp_array data)
 {
     ingest_info *info;
+    double *measured_data, *percentage;
+    long i;
+    int retval;
 
     info = (ingest_info *)user_data;
-    return get_spectral_data(info, "lim_mds", "err_up_low_back_corr", info->upper ? 0 : info->num_wavelengths,
+    retval = get_spectral_data(info, "lim_mds", "err_up_low_back_corr", info->upper ? 0 : info->num_wavelengths,
                              data.double_data);
+    measured_data = info->limb_radiance_data_values;
+    percentage = data.double_data;
+    for (i = 0; i < info->elements_per_profile * info->num_wavelengths; i++)
+    {
+        /* From percentage and measured datavalue, calculate uncertainty */
+        *percentage *= 0.01;
+        *percentage *= *measured_data;
+        measured_data++;
+        percentage++;
+    }
+    free(info->limb_radiance_data_values);
+    return retval;
 }
 
 static int read_lim_wavelength(void *user_data, harp_array data)
@@ -808,7 +829,7 @@ static void register_limb_product(void)
     harp_variable_definition_add_mapping(variable_definition, NULL, NULL, path, NULL);
 
     /* wavelength_photon_radiance */
-    description = "The background spectral photon radiance of each spectrum measurement";
+    description = "background spectral photon radiance of each spectrum measurement";
     variable_definition =
         harp_ingestion_register_variable_full_read(product_definition, "wavelength_photon_radiance", harp_type_double, 2,
                                                    dimension_type, NULL, description, "count/s/cm2/nm/sr", NULL,
@@ -826,7 +847,7 @@ static void register_limb_product(void)
     description = "error in the background spectral photon radiance of each spectrum measurement";
     variable_definition =
         harp_ingestion_register_variable_full_read(product_definition, "wavelength_photon_radiance_uncertainty",
-                                                   harp_type_double, 2, dimension_type, NULL, description, "%", NULL,
+                                                   harp_type_double, 2, dimension_type, NULL, description, "count/s/cm2/nm/sr", NULL,
                                                    read_lim_spectral_photon_radiance_error);
     path = "/lim_mds[]/err_up_low_back_corr[0,]";
     harp_variable_definition_add_mapping(variable_definition, NULL, "spectra=upper", path, NULL);
