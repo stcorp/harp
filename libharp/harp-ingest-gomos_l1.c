@@ -267,6 +267,11 @@ static int get_spectral_data(ingest_info *info, const char *datasetname, const c
                 return -1;
             }
             double_data++;
+            if (coda_cursor_goto_next_array_element(&cursor) != 0)
+            {
+                harp_set_error(HARP_ERROR_CODA, NULL);
+                return -1;
+            }
         }
         if (coda_cursor_goto_parent(&cursor) != 0)
         {
