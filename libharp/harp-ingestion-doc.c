@@ -195,8 +195,7 @@ static int generate_product_definition(const char *filename, const harp_ingestio
         fputc('\n', fout);
         fputs("Ingestion options\n", fout);
         fputs("-----------------\n", fout);
-        fprintf(fout, "The table below lists the available ingestion options for ``%s`` products.\n\n",
-                module->name);
+        fprintf(fout, "The table below lists the available ingestion options for ``%s`` products.\n\n", module->name);
         fputs(".. csv-table::\n", fout);
         fputs("   :widths: 15 25 60\n", fout);
         fputs("   :header-rows: 1\n\n", fout);
