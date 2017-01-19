@@ -547,29 +547,29 @@ int harp_ingestion_module_iasi_l1_init(void)
     dimension_type[0] = harp_dimension_time;
     dimension_type[1] = harp_dimension_spectral;
 
-    /* time_of_the_measurement */
+    /* datetime */
     description = "time of the measurement";
     variable_definition = harp_ingestion_register_variable_full_read(product_definition, "datetime", harp_type_double, 1, dimension_type, NULL, description, "seconds since 2000-01-01", NULL, read_datetime);
     path = "/MDR[]/MDR/RECORD_HEADER/RECORD_START_TIME";
     harp_variable_definition_add_mapping(variable_definition, NULL, NULL, path, "");
 
-    /* latitude_of_the_measurement */
+    /* latitude */
     description = "center latitude of the measurement";
     variable_definition = harp_ingestion_register_variable_full_read(product_definition, "latitude", harp_type_double, 1, dimension_type, NULL, description, "degree_north", NULL, read_latitude);
     harp_variable_definition_set_valid_range_double(variable_definition, -90.0, 90.0);
     path = "/MDR[]/MDR/GGeoSondLoc[,,1]";
     harp_variable_definition_add_mapping(variable_definition, NULL, NULL, path, NULL);
 
-    /* longitude_of_the_measurement */
+    /* longitude */
     description = "center longitude of the measurement";
     variable_definition = harp_ingestion_register_variable_full_read(product_definition, "longitude", harp_type_double, 1, dimension_type, NULL, description, "degree_east", NULL, read_longitude);
     harp_variable_definition_set_valid_range_double(variable_definition, -180.0, 180.0);
     path = "/MDR[]/MDR/GGeoSondLoc[,,0]";
     harp_variable_definition_add_mapping(variable_definition, NULL, NULL, path, NULL);
 
-    /* spectral_radiance_of_each_spectrum_measurement */
+    /* wavenumber_radiance */
     description = "measured radiances";
-    variable_definition = harp_ingestion_register_variable_sample_read(product_definition, "spectral_radiance", harp_type_float, 2, dimension_type, NULL, description, "W/m^2.sr.m^-1", NULL, read_spectral_radiance_sample);
+    variable_definition = harp_ingestion_register_variable_sample_read(product_definition, "wavenumber_radiance", harp_type_float, 2, dimension_type, NULL, description, "W/m^2.sr.m^-1", NULL, read_spectral_radiance_sample);
     path = "/MDR[]/MDR/GS1cSpect[], /MDR[]/MDR/IDefNsfirst1b, /GIADR_ScaleFactors/IDefScaleSondNbScale, /GIADR_ScaleFactors/IDefScaleSondScaleFactor[], /GIADR_ScaleFactors/IdefScaleSondNsfirst[], /GIADR_ScaleFactors/IDefScaleSondNslast[]";
 
 /* PROBLEM: The description below becomes text in a table cell with no  */
@@ -585,7 +585,7 @@ int harp_ingestion_module_iasi_l1_init(void)
                   "}";
     harp_variable_definition_add_mapping(variable_definition, NULL, NULL, path, description);
 
-    /* wavenumber_of_each_spectrum_measurement */
+    /* wavenumber */
     description = "nominal wavelength assignment for each of the detector pixels";
     variable_definition = harp_ingestion_register_variable_sample_read(product_definition, "wavenumber", harp_type_float, 2, dimension_type, NULL, description, "m^-1", NULL, read_wavenumber_sample);
     path = "/MDR[]/MDR/IDefSpectDWn1b, /MDR[]/MDR/IDefNsfirst1b, /MDR[]/MDR/IDefNslast1b";
