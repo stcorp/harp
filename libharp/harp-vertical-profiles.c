@@ -989,6 +989,7 @@ LIBHARP_API int harp_product_regrid_vertical_with_axis_variable(harp_product *pr
 
         /* Check if we can resample this kind of variable */
         variable_type = get_profile_resample_type(variable);
+
         if (variable_type == profile_resample_skip)
         {
             continue;
