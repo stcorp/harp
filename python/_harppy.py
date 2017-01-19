@@ -352,6 +352,7 @@ def _init():
 
     if os.getenv('CODA_DEFINITION') is None:
         # Set coda definition path relative to C library
+        from platform import system as _system
         if _system() == "Windows":
             relpath = "../definitions"
         else:
