@@ -26,7 +26,8 @@
 #include <stdio.h>
 #include <string.h>
 
-typedef enum main_data_variable_enum {
+typedef enum main_data_variable_enum
+{
     DATETIME,
     LONGITUDE,
     LATITUDE
@@ -42,18 +43,19 @@ typedef struct ingest_info_struct
 {
     coda_product *product;
     int format_version;
-    long mdr_records;      // Total number of MDR records (valid scanlines and dummy records)
-    long valid_scanlines;  // Each file is a series of scanlines, each scanline is a series of scans, each scan is a 2x2 matrix of spectral measurements.
+    long mdr_records;   // Total number of MDR records (valid scanlines and dummy records)
+    long valid_scanlines;       // Each file is a series of scanlines, each scanline is a series of scans, each scan is a 2x2 matrix of spectral measurements.
     coda_cursor *mdr_cursors;
-    long num_main;         // Number spectral measurements in the file (number scanlines * 30 * 4)
-    long num_pixels;       // Number of pixels in 1 scan (will usually be 8700)
+    long num_main;      // Number spectral measurements in the file (number scanlines * 30 * 4)
+    long num_pixels;    // Number of pixels in 1 scan (will usually be 8700)
     int16_t nr_scale_factors;
     int16_t *scale_factors;
     int16_t *channel_first;
     int16_t *channel_last;
 } ingest_info;
 
-static int get_main_data(ingest_info *info, const char *fieldname, main_data_variable var_type, double *double_data_array)
+static int get_main_data(ingest_info *info, const char *fieldname, main_data_variable var_type,
+                         double *double_data_array)
 {
     coda_cursor cursor;
     double *double_data;
@@ -69,7 +71,8 @@ static int get_main_data(ingest_info *info, const char *fieldname, main_data_var
             harp_set_error(HARP_ERROR_CODA, NULL);
             return -1;
         }
-        switch (var_type) {
+        switch (var_type)
+        {
             case DATETIME:
                 if (coda_cursor_read_double(&cursor, double_data) != 0)
                 {
@@ -191,8 +194,8 @@ static int get_wavenumber_sample_data(ingest_info *info, long row, float *float_
         }
         if (coda_cursor_read_double(&cursor, &sample_width) != 0)
         {
-             harp_set_error(HARP_ERROR_CODA, NULL);
-             return -1;
+            harp_set_error(HARP_ERROR_CODA, NULL);
+            return -1;
         }
         coda_cursor_goto_parent(&cursor);
         if (coda_cursor_goto_record_field_by_name(&cursor, "IDefNsfirst1b") != 0)
@@ -283,7 +286,7 @@ static int read_datetime(void *user_data, harp_array data)
         {
             /* A full scanline takes 8 seconds and consist of 37 scans */
             /* (30 scans with data and 7 for calibration etc.          */
-            scantime = mdr_times[i] + (j * 8.0/37);
+            scantime = mdr_times[i] + (j * 8.0 / 37);
             for (k = 0; k < SPECTRA_PER_SCAN; k++)
             {
                 *double_data = scantime;
@@ -491,7 +494,8 @@ static int read_GIADR_scalefactors(ingest_info *info)
     return 0;
 }
 
-static int ingestion_init(const harp_ingestion_module *module, coda_product *product, const harp_ingestion_options *options, harp_product_definition **definition, void **user_data)
+static int ingestion_init(const harp_ingestion_module *module, coda_product *product,
+                          const harp_ingestion_options *options, harp_product_definition **definition, void **user_data)
 {
     int format_version;
     ingest_info *info;
@@ -537,11 +541,14 @@ int harp_ingestion_module_iasi_l1_init(void)
     const char *path;
 
     description = "IASI Level 1";
-    module = harp_ingestion_register_module_coda("IASI_L1", "IASI", "EPS", "IASI_xxx_1C", description, ingestion_init, ingestion_done);
+    module =
+        harp_ingestion_register_module_coda("IASI_L1", "IASI", "EPS", "IASI_xxx_1C", description, ingestion_init,
+                                            ingestion_done);
 
     description = "IASI Level 1 product";
     product_definition = harp_ingestion_register_product(module, "IASI_L1", description, read_dimensions);
-    description = "GOMOS Level 1 products contain a number of scanlines, each scanline contains 30 scans, each scan contains 4 spectra and each spectrum contains 8700 measurements";
+    description =
+        "GOMOS Level 1 products contain a number of scanlines, each scanline contains 30 scans, each scan contains 4 spectra and each spectrum contains 8700 measurements";
     harp_product_definition_add_mapping(product_definition, description, NULL);
 
     dimension_type[0] = harp_dimension_time;
@@ -549,52 +556,65 @@ int harp_ingestion_module_iasi_l1_init(void)
 
     /* datetime */
     description = "time of the measurement";
-    variable_definition = harp_ingestion_register_variable_full_read(product_definition, "datetime", harp_type_double, 1, dimension_type, NULL, description, "seconds since 2000-01-01", NULL, read_datetime);
+    variable_definition =
+        harp_ingestion_register_variable_full_read(product_definition, "datetime", harp_type_double, 1, dimension_type,
+                                                   NULL, description, "seconds since 2000-01-01", NULL, read_datetime);
     path = "/MDR[]/MDR/RECORD_HEADER/RECORD_START_TIME";
     harp_variable_definition_add_mapping(variable_definition, NULL, NULL, path, "");
 
     /* latitude */
     description = "center latitude of the measurement";
-    variable_definition = harp_ingestion_register_variable_full_read(product_definition, "latitude", harp_type_double, 1, dimension_type, NULL, description, "degree_north", NULL, read_latitude);
+    variable_definition =
+        harp_ingestion_register_variable_full_read(product_definition, "latitude", harp_type_double, 1, dimension_type,
+                                                   NULL, description, "degree_north", NULL, read_latitude);
     harp_variable_definition_set_valid_range_double(variable_definition, -90.0, 90.0);
     path = "/MDR[]/MDR/GGeoSondLoc[,,1]";
     harp_variable_definition_add_mapping(variable_definition, NULL, NULL, path, NULL);
 
     /* longitude */
     description = "center longitude of the measurement";
-    variable_definition = harp_ingestion_register_variable_full_read(product_definition, "longitude", harp_type_double, 1, dimension_type, NULL, description, "degree_east", NULL, read_longitude);
+    variable_definition =
+        harp_ingestion_register_variable_full_read(product_definition, "longitude", harp_type_double, 1, dimension_type,
+                                                   NULL, description, "degree_east", NULL, read_longitude);
     harp_variable_definition_set_valid_range_double(variable_definition, -180.0, 180.0);
     path = "/MDR[]/MDR/GGeoSondLoc[,,0]";
     harp_variable_definition_add_mapping(variable_definition, NULL, NULL, path, NULL);
 
     /* wavenumber_radiance */
     description = "measured radiances";
-    variable_definition = harp_ingestion_register_variable_sample_read(product_definition, "wavenumber_radiance", harp_type_float, 2, dimension_type, NULL, description, "W/m^2.sr.m^-1", NULL, read_spectral_radiance_sample);
-    path = "/MDR[]/MDR/GS1cSpect[], /MDR[]/MDR/IDefNsfirst1b, /GIADR_ScaleFactors/IDefScaleSondNbScale, /GIADR_ScaleFactors/IDefScaleSondScaleFactor[], /GIADR_ScaleFactors/IdefScaleSondNsfirst[], /GIADR_ScaleFactors/IDefScaleSondNslast[]";
+    variable_definition =
+        harp_ingestion_register_variable_sample_read(product_definition, "wavenumber_radiance", harp_type_float, 2,
+                                                     dimension_type, NULL, description, "W/m^2.sr.m^-1", NULL,
+                                                     read_spectral_radiance_sample);
+    path =
+        "/MDR[]/MDR/GS1cSpect[], /MDR[]/MDR/IDefNsfirst1b, /GIADR_ScaleFactors/IDefScaleSondNbScale, /GIADR_ScaleFactors/IDefScaleSondScaleFactor[], /GIADR_ScaleFactors/IdefScaleSondNsfirst[], /GIADR_ScaleFactors/IDefScaleSondNslast[]";
 
 /* PROBLEM: The description below becomes text in a table cell with no  */
 /* line breaks. Adding \n or <br> does not help. Sander wil investigate */
 /* how to add line breaks in this situation.                            */
     description = "spectral data is scaled using the information in GIADR_ScaleFactors:"
-                  "for numScale = 0 to (IDefScaleSondNbScale - 1) do {"
-                  "   SF = IDefScaleSondScaleFactor[numScale];"
-                  "   for chanNb = IdefScaleSondNsfirst[numScale] to IDefScaleSondNslast[numScale] do {"
-                  "      w = chanNb - IDefNsfirst1b + 1;"
-                  "      pixel_readout[w] = GS1cSpect[..,..,w] * 10^(-SF)"
-                  "   }"
-                  "}";
+        "for numScale = 0 to (IDefScaleSondNbScale - 1) do {"
+        "   SF = IDefScaleSondScaleFactor[numScale];"
+        "   for chanNb = IdefScaleSondNsfirst[numScale] to IDefScaleSondNslast[numScale] do {"
+        "      w = chanNb - IDefNsfirst1b + 1;" "      pixel_readout[w] = GS1cSpect[..,..,w] * 10^(-SF)" "   }" "}";
     harp_variable_definition_add_mapping(variable_definition, NULL, NULL, path, description);
 
     /* wavenumber */
     description = "nominal wavelength assignment for each of the detector pixels";
-    variable_definition = harp_ingestion_register_variable_sample_read(product_definition, "wavenumber", harp_type_float, 2, dimension_type, NULL, description, "m^-1", NULL, read_wavenumber_sample);
+    variable_definition =
+        harp_ingestion_register_variable_sample_read(product_definition, "wavenumber", harp_type_float, 2,
+                                                     dimension_type, NULL, description, "m^-1", NULL,
+                                                     read_wavenumber_sample);
     path = "/MDR[]/MDR/IDefSpectDWn1b, /MDR[]/MDR/IDefNsfirst1b, /MDR[]/MDR/IDefNslast1b";
     description = "wavenumber[i] = IDefSpectDWn1b * (i + IDefNsfirst1b - 1). ";
     harp_variable_definition_add_mapping(variable_definition, NULL, NULL, path, description);
 
     /* scan_subset_counter */
     description = "relative index (0-119) of this measurement within an MDR";
-    variable_definition = harp_ingestion_register_variable_full_read(product_definition, "scan_subset_counter", harp_type_int8, 1, dimension_type, NULL, description, NULL, NULL, read_scan_subset_counter);
+    variable_definition =
+        harp_ingestion_register_variable_full_read(product_definition, "scan_subset_counter", harp_type_int8, 1,
+                                                   dimension_type, NULL, description, NULL, NULL,
+                                                   read_scan_subset_counter);
 
     return 0;
 }
