@@ -963,16 +963,16 @@ static int read_tra_wavelength_photon_transmittance(void *user_data, harp_array 
 static int read_tra_wavelength_photon_transmittance_error(void *user_data, harp_array data)
 {
     ingest_info *info;
-    long wavelength_nr;
+    long i;
 
     info = (ingest_info *)user_data;
     if (get_spectral_data(info, "tra_transmission", "cov", 0, data.double_data) != 0)
     {
         return -1;
     }
-    for (wavelength_nr = 0; wavelength_nr < info->num_wavelengths; wavelength_nr++)
+    for (i = 0; i < info->elements_per_profile * info->num_wavelengths; i++)
     {
-        data.double_data[wavelength_nr] = sqrt(data.double_data[wavelength_nr]);
+        data.double_data[i] = sqrt(data.double_data[i]);
     }
     return 0;
 }
