@@ -1459,6 +1459,7 @@ static int get_lat_lon_grid(coda_cursor *cursor, int grib_version, ingest_info *
     uint32_t iDirectionIncrement = 0;
     uint32_t jDirectionIncrement = 0;
     uint32_t N = 0;
+    uint8_t scanningMode = 0;
     int is_gaussian = 0;
 
     if (grib_version == 1)
@@ -1616,6 +1617,22 @@ static int get_lat_lon_grid(coda_cursor *cursor, int grib_version, ingest_info *
         }
     }
     coda_cursor_goto_parent(cursor);
+    if (coda_cursor_goto_record_field_by_name(cursor, "scanningMode") != 0)
+    {
+        harp_set_error(HARP_ERROR_CODA, NULL);
+        return -1;
+    }
+    if (coda_cursor_read_uint32(cursor, &scanningMode) != 0)
+    {
+        harp_set_error(HARP_ERROR_CODA, NULL);
+        return -1;
+    }
+    coda_cursor_goto_parent(cursor);
+    if (scanningMode != 0)
+    {
+        harp_set_error(HARP_ERROR_INGESTION, "unsupported scanningMode (%d) for grid", scanningMode);
+        return -1;
+    }
 
     if (grib_version == 1)
     {
