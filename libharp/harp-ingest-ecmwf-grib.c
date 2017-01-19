@@ -1622,7 +1622,7 @@ static int get_lat_lon_grid(coda_cursor *cursor, int grib_version, ingest_info *
         harp_set_error(HARP_ERROR_CODA, NULL);
         return -1;
     }
-    if (coda_cursor_read_uint32(cursor, &scanningMode) != 0)
+    if (coda_cursor_read_uint8(cursor, &scanningMode) != 0)
     {
         harp_set_error(HARP_ERROR_CODA, NULL);
         return -1;
