@@ -622,8 +622,7 @@ static int read_lim_spectral_photon_radiance_error(void *user_data, harp_array d
     for (i = 0; i < info->elements_per_profile * info->num_wavelengths; i++)
     {
         /* From percentage and measured datavalue, calculate uncertainty */
-        *percentage *= 0.01;
-        *percentage *= *measured_data;
+        *percentage = fabs(0.01 * (*percentage) * (*measured_data));
         measured_data++;
         percentage++;
     }
