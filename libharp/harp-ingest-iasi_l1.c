@@ -115,12 +115,12 @@ static int get_main_data(ingest_info *info, const char *fieldname, main_data_var
 static int get_spectra_sample_data(ingest_info *info, long row, float *float_data_array)
 {
     static int32_t first_channel;
-    static uint8_t measured_spectrum_data[SPECTRA_PER_SCANLINE * 8700];
-    static uint8_t *spectrum_data;
+    static int16_t measured_spectrum_data[SPECTRA_PER_SCANLINE * 8700];
+    static int16_t *spectrum_data;
     coda_cursor cursor;
     float *float_data, *start_of_float_data_this_spectrum;
     int16_t scale_nr, channel_nr;
-    uint8_t *start_of_this_spectrum;
+    int16_t *start_of_this_spectrum;
 
     float_data = float_data_array;
     cursor = info->mdr_cursors[row / SPECTRA_PER_SCANLINE];
@@ -138,7 +138,7 @@ static int get_spectra_sample_data(ingest_info *info, long row, float *float_dat
         }
         coda_cursor_goto_parent(&cursor);
 
-        /* GS1cSpect contains bytes and has the following dimensions: */
+        /* GS1cSpect contains int16 and has the following dimensions: */
         /* dim[0] = SCANS_PER_SCANLINE (fixed at 30)                  */
         /* dim[1] = SPECTRA_PER_SCAN (fixed at 4)                     */
         /* dim[2] = pixels in one spectrum (fixed at 8700)            */
@@ -147,8 +147,7 @@ static int get_spectra_sample_data(ingest_info *info, long row, float *float_dat
             harp_set_error(HARP_ERROR_CODA, NULL);
             return -1;
         }
-
-        if (coda_cursor_read_bytes(&cursor, measured_spectrum_data, 0, SPECTRA_PER_SCANLINE * info->num_pixels) != 0)
+        if (coda_cursor_read_int16_array(&cursor, measured_spectrum_data, coda_array_ordering_c) != 0)
         {
             harp_set_error(HARP_ERROR_CODA, NULL);
             return -1;
@@ -157,13 +156,14 @@ static int get_spectra_sample_data(ingest_info *info, long row, float *float_dat
     }
 
     start_of_this_spectrum = spectrum_data;
-    start_of_float_data_this_spectrum = float_data;;
+    start_of_float_data_this_spectrum = float_data;
     for (scale_nr = 0; scale_nr < info->nr_scale_factors; scale_nr++)
     {
+        spectrum_data = start_of_this_spectrum + info->channel_first[scale_nr] - first_channel;
         for (channel_nr = info->channel_first[scale_nr]; channel_nr <= info->channel_last[scale_nr]; channel_nr++)
         {
             /* Because this data has limited precision (it was stored in */
-            /* a byte), we store the radiance in a float.                */
+            /* an int16), we store the radiance in a float.              */
             *float_data = (float)(*spectrum_data) * pow(10.0, -(info->scale_factors[scale_nr]));
             float_data++;
             spectrum_data++;
