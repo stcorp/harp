@@ -511,8 +511,7 @@ static int read_lim_longitude(void *user_data, harp_array data)
 
 static int read_lim_altitude(void *user_data, harp_array data)
 {
-    return get_main_data((ingest_info *)user_data, "lim_ads", "tangent_alt", USE_UPPER_FLAG_AS_INDEX,
-                           data.double_data);
+    return get_main_data((ingest_info *)user_data, "lim_ads", "tangent_alt", USE_UPPER_FLAG_AS_INDEX, data.double_data);
 }
 
 static int read_lim_spectral_photon_radiance(void *user_data, harp_array data)
@@ -612,7 +611,7 @@ static int read_lim_spectral_photon_radiance_error(void *user_data, harp_array d
 
     info = (ingest_info *)user_data;
     retval = get_spectral_data(info, "lim_mds", "err_up_low_back_corr", info->upper ? 0 : info->num_wavelengths,
-                             data.double_data);
+                               data.double_data);
     measured_data = info->limb_radiance_data_values;
     percentage = data.double_data;
     for (i = 0; i < info->elements_per_profile * info->num_wavelengths; i++)
