@@ -595,8 +595,10 @@ static int read_lim_spectral_photon_radiance(void *user_data, harp_array data)
     free(background_offsets);
     free(background_code_values);
 
-    CHECKED_MALLOC(info->limb_radiance_data_values, sizeof(double) * info->elements_per_profile * info->num_wavelengths);
-    memcpy(info->limb_radiance_data_values, data.double_data, sizeof(double) * info->elements_per_profile * info->num_wavelengths);
+    CHECKED_MALLOC(info->limb_radiance_data_values,
+                   sizeof(double) * info->elements_per_profile * info->num_wavelengths);
+    memcpy(info->limb_radiance_data_values, data.double_data,
+           sizeof(double) * info->elements_per_profile * info->num_wavelengths);
 
     return 0;
 }
@@ -831,8 +833,8 @@ static void register_limb_product(void)
     /* wavelength_photon_radiance */
     description = "background spectral photon radiance of each spectrum measurement";
     variable_definition =
-        harp_ingestion_register_variable_full_read(product_definition, "wavelength_photon_radiance", harp_type_double, 2,
-                                                   dimension_type, NULL, description, "count/s/cm2/nm/sr", NULL,
+        harp_ingestion_register_variable_full_read(product_definition, "wavelength_photon_radiance", harp_type_double,
+                                                   2, dimension_type, NULL, description, "count/s/cm2/nm/sr", NULL,
                                                    read_lim_spectral_photon_radiance);
     path = "/lim_mds[]/up_low_back_no_corr[0,]";
     harp_variable_definition_add_mapping(variable_definition, NULL, "spectra=upper;corrected=false", path, NULL);
@@ -847,8 +849,8 @@ static void register_limb_product(void)
     description = "error in the background spectral photon radiance of each spectrum measurement";
     variable_definition =
         harp_ingestion_register_variable_full_read(product_definition, "wavelength_photon_radiance_uncertainty",
-                                                   harp_type_double, 2, dimension_type, NULL, description, "count/s/cm2/nm/sr", NULL,
-                                                   read_lim_spectral_photon_radiance_error);
+                                                   harp_type_double, 2, dimension_type, NULL, description,
+                                                   "count/s/cm2/nm/sr", NULL, read_lim_spectral_photon_radiance_error);
     path = "/lim_mds[]/err_up_low_back_corr[0,]";
     harp_variable_definition_add_mapping(variable_definition, NULL, "spectra=upper", path, NULL);
     path = "/lim_mds[]/err_up_low_back_corr[1,]";
@@ -957,9 +959,18 @@ static int read_tra_wavelength_photon_transmittance(void *user_data, harp_array 
 static int read_tra_wavelength_photon_transmittance_error(void *user_data, harp_array data)
 {
     ingest_info *info;
+    long wavelength_nr;
 
     info = (ingest_info *)user_data;
-    return get_spectral_data(info, "tra_transmission", "cov", 0, data.double_data);
+    if (get_spectral_data(info, "tra_transmission", "cov", 0, data.double_data) != 0)
+    {
+        return -1;
+    }
+    for (wavelength_nr = 0; wavelength_nr < info->num_wavelengths; wavelength_nr++)
+    {
+        data.double_data[wavelength_nr] = sqrt(data.double_data[wavelength_nr]);
+    }
+    return 0;
 }
 
 static int read_tra_wavelength(void *user_data, harp_array data)
@@ -1139,10 +1150,11 @@ static void register_tra_product(void)
     harp_variable_definition_add_mapping(variable_definition, NULL, NULL, path, NULL);
 
     /* wavelength_photon_transmittance */
-    description = "wavelength photon transmittance of each spectrum measurement, this value is calculated as the wavelength_photon_radiance divided by the wavelength_photon_radiance of an unobstructed view.";
+    description = "wavelength photon transmittance of each spectrum measurement";
     variable_definition =
-        harp_ingestion_register_variable_full_read(product_definition, "wavelength_photon_transmittance", harp_type_double,
-                                                   2, dimension_type, NULL, description, NULL, NULL,
+        harp_ingestion_register_variable_full_read(product_definition, "wavelength_photon_transmittance",
+                                                   harp_type_double, 2, dimension_type, NULL, description,
+                                                   "(count/s/cm2/nm)/(count/s/cm2/nm)", NULL,
                                                    read_tra_wavelength_photon_transmittance);
     path = "/tra_transmission[]/trans_spectra[]";
     harp_variable_definition_add_mapping(variable_definition, NULL, NULL, path, NULL);
@@ -1155,9 +1167,11 @@ static void register_tra_product(void)
     variable_definition =
         harp_ingestion_register_variable_full_read(product_definition, "wavelength_photon_transmittance_uncertainty",
                                                    harp_type_double, 2, dimension_type, NULL, description,
-                                                   "count/s/cm2/nm", NULL, read_tra_wavelength_photon_transmittance_error);
+                                                   "(count/s/cm2/nm)/(count/s/cm2/nm)", NULL,
+                                                   read_tra_wavelength_photon_transmittance_error);
     path = "/tra_transmission[]/cov[]";
-    harp_variable_definition_add_mapping(variable_definition, NULL, NULL, path, NULL);
+    description = "the square root of the variance values are taken to provide the standard uncertainty";
+    harp_variable_definition_add_mapping(variable_definition, NULL, NULL, path, description);
 
     /* wavelength_of_each_spectrum_measurement */
     description = "nominal wavelength assignment for each of the detector pixels";
