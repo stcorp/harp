@@ -946,7 +946,7 @@ static int read_tra_altitude(void *user_data, harp_array data)
                          data.double_data);
 }
 
-static int read_wavelength_photon_transmittance(void *user_data, harp_array data)
+static int read_tra_wavelength_photon_transmittance(void *user_data, harp_array data)
 {
     ingest_info *info;
 
@@ -954,7 +954,7 @@ static int read_wavelength_photon_transmittance(void *user_data, harp_array data
     return get_spectral_data(info, "tra_transmission", "trans_spectra", 0, data.double_data);
 }
 
-static int read_tra_spectral_photon_irradiance_error(void *user_data, harp_array data)
+static int read_tra_wavelength_photon_transmittance_error(void *user_data, harp_array data)
 {
     ingest_info *info;
 
@@ -1143,7 +1143,7 @@ static void register_tra_product(void)
     variable_definition =
         harp_ingestion_register_variable_full_read(product_definition, "wavelength_photon_transmittance", harp_type_double,
                                                    2, dimension_type, NULL, description, NULL, NULL,
-                                                   read_wavelength_photon_transmittance);
+                                                   read_tra_wavelength_photon_transmittance);
     path = "/tra_transmission[]/trans_spectra[]";
     harp_variable_definition_add_mapping(variable_definition, NULL, NULL, path, NULL);
 
@@ -1151,11 +1151,11 @@ static void register_tra_product(void)
     /* specifications (PO-RS-MDA-GS-2009) the cov[] field contains the   */
     /* covariance function of the full transmission. For now, this is    */
     /* interpreted as a standard deviation of the transmission.          */
-    description = "error in the spectral photon irradiance of each spectrum measurement";
+    description = "error in the wavelength photon transmittance of each spectrum measurement";
     variable_definition =
-        harp_ingestion_register_variable_full_read(product_definition, "wavelength_photon_irradiance_uncertainty",
+        harp_ingestion_register_variable_full_read(product_definition, "wavelength_photon_transmittance_uncertainty",
                                                    harp_type_double, 2, dimension_type, NULL, description,
-                                                   "count/s/cm2/nm", NULL, read_tra_spectral_photon_irradiance_error);
+                                                   "count/s/cm2/nm", NULL, read_tra_wavelength_photon_transmittance_error);
     path = "/tra_transmission[]/cov[]";
     harp_variable_definition_add_mapping(variable_definition, NULL, NULL, path, NULL);
 
