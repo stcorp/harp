@@ -8,7 +8,7 @@
   
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
   
-  <title>GOMOS_L1_TRANSMISSION &mdash; HARP 0.4b documentation</title>
+  <title>IASI_L1 &mdash; HARP 0.4b documentation</title>
   
 
   
@@ -113,7 +113,7 @@
   <ul class="wy-breadcrumbs">
     <li><a href="../index.html">Docs</a> &raquo;</li>
       
-    <li>GOMOS_L1_TRANSMISSION</li>
+    <li>IASI_L1</li>
       <li class="wy-breadcrumbs-aside">
         
           
@@ -125,11 +125,11 @@
           <div role="main" class="document" itemscope="itemscope" itemtype="http://schema.org/Article">
            <div itemprop="articleBody">
             
-  <div class="section" id="gomos-l1-transmission">
-<h1>GOMOS_L1_TRANSMISSION</h1>
+  <div class="section" id="iasi-l1">
+<h1>IASI_L1</h1>
 <div class="section" id="variables">
 <h2>Variables</h2>
-<p>The table below lists the variables that are present in the HARP product that results from an ingestion of <code class="docutils literal"><span class="pre">GOMOS_L1_TRANSMISSION</span></code> data.</p>
+<p>The table below lists the variables that are present in the HARP product that results from an ingestion of <code class="docutils literal"><span class="pre">IASI_L1</span></code> data.</p>
 <table border="1" class="docutils">
 <colgroup>
 <col width="25%" />
@@ -157,67 +157,31 @@
 <td>double</td>
 <td>{<em>time</em>}</td>
 <td>degree_north</td>
-<td>latitude of the apparent tangent point</td>
+<td>center latitude of the measurement</td>
 </tr>
 <tr class="row-even"><td><strong>longitude</strong></td>
 <td>double</td>
 <td>{<em>time</em>}</td>
 <td>degree_east</td>
-<td>longitude of the apparent tangent point</td>
+<td>center longitude of the measurement</td>
 </tr>
-<tr class="row-odd"><td><strong>altitude</strong></td>
-<td>double</td>
-<td>{<em>time</em>}</td>
-<td>m</td>
-<td>altitude of the apparent tangent point</td>
-</tr>
-<tr class="row-even"><td><strong>wavelength_photon_transmittance</strong></td>
-<td>double</td>
+<tr class="row-odd"><td><strong>wavenumber_radiance</strong></td>
+<td>float</td>
 <td>{<em>time</em>, <em>spectral</em>}</td>
-<td>(count/s/cm2/nm)/(count/s/cm2/nm)</td>
-<td>wavelength photon transmittance of each spectrum measurement</td>
+<td>W/m^2.sr.m^-1</td>
+<td>measured radiances</td>
 </tr>
-<tr class="row-odd"><td><strong>wavelength_photon_transmittance_uncertainty</strong></td>
-<td>double</td>
+<tr class="row-even"><td><strong>wavenumber</strong></td>
+<td>float</td>
 <td>{<em>time</em>, <em>spectral</em>}</td>
-<td>(count/s/cm2/nm)/(count/s/cm2/nm)</td>
-<td>error in the wavelength photon transmittance of each spectrum measurement</td>
-</tr>
-<tr class="row-even"><td><strong>wavelength</strong></td>
-<td>double</td>
-<td>{<em>spectral</em>}</td>
-<td>nm</td>
+<td>m^-1</td>
 <td>nominal wavelength assignment for each of the detector pixels</td>
 </tr>
-<tr class="row-odd"><td><strong>datetime_length</strong></td>
-<td>double</td>
-<td>&nbsp;</td>
-<td>s</td>
-<td>integration time for a readout (in seconds)</td>
-</tr>
-<tr class="row-even"><td><strong>sensor_latitude</strong></td>
-<td>double</td>
+<tr class="row-odd"><td><strong>scan_subset_counter</strong></td>
+<td>int8</td>
 <td>{<em>time</em>}</td>
-<td>degree_north</td>
-<td>latitude of the satellite position at half-measurement</td>
-</tr>
-<tr class="row-odd"><td><strong>sensor_longitude</strong></td>
-<td>double</td>
-<td>{<em>time</em>}</td>
-<td>degree_east</td>
-<td>longitude of the satellite position at half-measurement</td>
-</tr>
-<tr class="row-even"><td><strong>sensor_altitude</strong></td>
-<td>double</td>
-<td>{<em>time</em>}</td>
-<td>m</td>
-<td>altitude of the satellite at half-measurement</td>
-</tr>
-<tr class="row-odd"><td><strong>flag_illumination_condition</strong></td>
-<td>string</td>
 <td>&nbsp;</td>
-<td>&nbsp;</td>
-<td>The illumination condition for each profile: &#8216;dark&#8217;, &#8216;bright&#8217;, &#8216;twilight&#8217;, &#8216;straylight&#8217; or &#8216;twilight/straylight&#8217;</td>
+<td>relative index (0-119) of this measurement within an MDR</td>
 </tr>
 <tr class="row-even"><td><strong>index</strong></td>
 <td>int32</td>
@@ -231,12 +195,12 @@
 <div class="section" id="mapping-description">
 <h2>Mapping description</h2>
 <p>The table below details where and how each variable was retrieved from the input product.</p>
-<p>GOMOS Level 1 products only contain a single profile; all measured transmission data will be provided in order from high altitude to low altitude in the profile</p>
+<p>GOMOS Level 1 products contain a number of scanlines, each scanline contains 30 scans, each scan contains 4 spectra and each spectrum contains 8700 measurements</p>
 <table border="1" class="docutils">
 <colgroup>
-<col width="33%" />
-<col width="10%" />
-<col width="57%" />
+<col width="7%" />
+<col width="4%" />
+<col width="90%" />
 </colgroup>
 <thead valign="bottom">
 <tr class="row-odd"><th class="head">field name</th>
@@ -244,65 +208,34 @@
 </tr>
 </thead>
 <tbody valign="top">
-<tr class="row-even"><td><strong>datetime</strong></td>
+<tr class="row-even"><td rowspan="2"><strong>datetime</strong></td>
 <td><em>path</em></td>
-<td><strong>/tra_transmission/dsr_time</strong></td>
+<td><strong>/MDR[]/MDR/RECORD_HEADER/RECORD_START_TIME</strong></td>
 </tr>
-<tr class="row-odd"><td><strong>latitude</strong></td>
+<tr class="row-odd"><td><em>description</em></td>
+<td>&nbsp;</td>
+</tr>
+<tr class="row-even"><td><strong>latitude</strong></td>
 <td><em>path</em></td>
-<td><strong>/tra_geolocation/tangent_lat[1]</strong></td>
+<td><strong>/MDR[]/MDR/GGeoSondLoc[,,1]</strong></td>
 </tr>
-<tr class="row-even"><td><strong>longitude</strong></td>
+<tr class="row-odd"><td><strong>longitude</strong></td>
 <td><em>path</em></td>
-<td><strong>/tra_geolocation/tangent_long[1]</strong></td>
+<td><strong>/MDR[]/MDR/GGeoSondLoc[,,0]</strong></td>
 </tr>
-<tr class="row-odd"><td><strong>altitude</strong></td>
+<tr class="row-even"><td rowspan="2"><strong>wavenumber_radiance</strong></td>
 <td><em>path</em></td>
-<td><strong>/tra_geolocation/tangent_alt[1]</strong></td>
+<td><strong>/MDR[]/MDR/GS1cSpect[], /MDR[]/MDR/IDefNsfirst1b, /GIADR_ScaleFactors/IDefScaleSondNbScale, /GIADR_ScaleFactors/IDefScaleSondScaleFactor[], /GIADR_ScaleFactors/IdefScaleSondNsfirst[], /GIADR_ScaleFactors/IDefScaleSondNslast[]</strong></td>
 </tr>
-<tr class="row-even"><td><strong>wavelength_photon_transmittance</strong></td>
+<tr class="row-odd"><td><em>description</em></td>
+<td>spectral data is scaled using the information in GIADR_ScaleFactors:for numScale = 0 to (IDefScaleSondNbScale - 1) do {   SF = IDefScaleSondScaleFactor[numScale];   for chanNb = IdefScaleSondNsfirst[numScale] to IDefScaleSondNslast[numScale] do {      w = chanNb - IDefNsfirst1b + 1;      pixel_readout[w] = GS1cSpect[..,..,w] * 10^(-SF)   }}</td>
+</tr>
+<tr class="row-even"><td rowspan="2"><strong>wavenumber</strong></td>
 <td><em>path</em></td>
-<td><strong>/tra_transmission[]/trans_spectra[]</strong></td>
+<td><strong>/MDR[]/MDR/IDefSpectDWn1b, /MDR[]/MDR/IDefNsfirst1b, /MDR[]/MDR/IDefNslast1b</strong></td>
 </tr>
-<tr class="row-odd"><td rowspan="2"><strong>wavelength_photon_transmittance_uncertainty</strong></td>
-<td><em>path</em></td>
-<td><strong>/tra_transmission[]/cov[]</strong></td>
-</tr>
-<tr class="row-even"><td><em>description</em></td>
-<td>the square root of the variance values are taken to provide the standard uncertainty</td>
-</tr>
-<tr class="row-odd"><td><strong>wavelength</strong></td>
-<td><em>path</em></td>
-<td><strong>/tra_nom_wav_assignment[]/nom_wl[]</strong></td>
-</tr>
-<tr class="row-even"><td><strong>datetime_length</strong></td>
-<td><em>path</em></td>
-<td><strong>/sph/samp_duration</strong></td>
-</tr>
-<tr class="row-odd"><td><strong>sensor_latitude</strong></td>
-<td><em>path</em></td>
-<td><strong>/tra_geolocation/lat[1]</strong></td>
-</tr>
-<tr class="row-even"><td><strong>sensor_longitude</strong></td>
-<td><em>path</em></td>
-<td><strong>/tra_geolocation/longit[1]</strong></td>
-</tr>
-<tr class="row-odd"><td><strong>sensor_altitude</strong></td>
-<td><em>path</em></td>
-<td><strong>/tra_geolocation/alt[1]</strong></td>
-</tr>
-<tr class="row-even"><td rowspan="4"><strong>flag_illumination_condition</strong></td>
-<td><em>condition</em></td>
-<td>CODA product version 0</td>
-</tr>
-<tr class="row-odd"><td><em>path</em></td>
-<td><strong>/tra_summary_quality[0]/limb_flag</strong></td>
-</tr>
-<tr class="row-even"><td><em>condition</em></td>
-<td>CODA product version 1 and higher</td>
-</tr>
-<tr class="row-odd"><td><em>path</em></td>
-<td><strong>/tra_summary_quality[0]/obs_illum_cond</strong></td>
+<tr class="row-odd"><td><em>description</em></td>
+<td>wavenumber[i] = IDefSpectDWn1b * (i + IDefNsfirst1b - 1).</td>
 </tr>
 </tbody>
 </table>

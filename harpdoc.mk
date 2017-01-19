@@ -242,6 +242,7 @@ HARP_DOCFILES = \
 	doc/html/ingestions/GOSAT_FTS_L2_CH4_TC.html \
 	doc/html/ingestions/GOSAT_FTS_L2_CO2_TC.html \
 	doc/html/ingestions/HIRDLS_L2.html \
+	doc/html/ingestions/IASI_L1.html \
 	doc/html/ingestions/IASI_L2.html \
 	doc/html/ingestions/MIPAS_NL_L2.html \
 	doc/html/ingestions/MLS_L2_BRO.html \
@@ -840,6 +841,8 @@ doc/html/ingestions/GOSAT_FTS_L2_CH4_TC.html:
 doc/html/ingestions/GOSAT_FTS_L2_CO2_TC.html:
 	$(MAKE) harp_doc
 doc/html/ingestions/HIRDLS_L2.html:
+	$(MAKE) harp_doc
+doc/html/ingestions/IASI_L1.html:
 	$(MAKE) harp_doc
 doc/html/ingestions/IASI_L2.html:
 	$(MAKE) harp_doc
