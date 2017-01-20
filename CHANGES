@@ -1,4 +1,6 @@
 
+* Changed Open Source licence of HARP from GPLv2 to BSD (3-Clause).
+
 * Added regrid() and smooth() operations.
 
 * Removed the harpprofile command line tool. Its functionality is replaced by
