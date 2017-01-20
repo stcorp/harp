@@ -1,4 +1,4 @@
-Copyright (C) 2015-2016 S[&]T, The Netherlands
+Copyright (C) 2015-2017 S[&]T, The Netherlands
 
                 HARP 0.4 Release Notes
 
@@ -14,7 +14,7 @@ physical unit.
 
 This version of HARP is a beta release to allow the community to get familiar
 with the software and provide feedback. HARP still lacks various components
-(see below), but these are planned to be added during the first half of 2016.
+(see below), but these are planned to be added in the near future.
 The current version of HARP contains:
  - ingestion of product data for:
    - Sentinel 5P L1/L2
@@ -22,13 +22,17 @@ The current version of HARP contains:
    - NDACC FTIR/Lidar/MWR/UVVIS-DOAS data (GEOMS format)
    - GOME L2
    - GOME-2 L2
+   - IASI L1
    - IASI L2
    - OMI L2/L3
    - TES/MLS/HIRDLS L2
    - GOSAT FTS L1/L2
+   - GOMOS L1
    - GOMOS L2
    - MIPAS L2
    - SCIAMACHY L2
+   - OSIRIS L2
+   - SMR L2
    - ECMF GRIB (includes Copernicus Atmospheric Monitoring Service (CAMS))
    - TEMIS ozone fields
  - import/export of data from/into HARP-specific data format
@@ -50,6 +54,8 @@ The current version of HARP contains:
  - harpprofile command line tool to modify atmospheric profile data:
    - vertical regridding
    - vertical smoothing using averaging kernels (and a-priori profiles)
+ - direct ingestion/import/export interfaces for:
+   - MATLAB (Linux + Mac OS X)
 
 Note that HARP is meant as a successor to the BEAT-II interface of the ESA
 Atmospheric Toolbox, which means that BEAT-II will at some point become
@@ -66,18 +72,14 @@ The following items are planned to be added in upcoming releases:
    - Cloud CCI
    - GHG CCI
    - Aerosol CCI
-   - GOMOS L1
    - MIPAS L1
    - SCIAMACHY L1
    - GOME L1
    - GOME-2 L1
-   - IASI L1
-   - OSIRIS L2
-   - SMR L2
    - ACE-FTS
    - ADM/Aeolus
  - direct ingestion/import/export interfaces for:
-   - MATLAB
+   - MATLAB (Windows)
    - IDL
 
 
