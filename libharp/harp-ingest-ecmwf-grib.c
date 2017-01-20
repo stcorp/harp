@@ -1536,6 +1536,12 @@ static int get_lat_lon_grid(coda_cursor *cursor, int grib_version, ingest_info *
         return -1;
     }
     coda_cursor_goto_parent(cursor);
+    if ((grib_version == 1 && (Ni == 65535 || Nj == 65535)) ||
+        (grib_version == 2 && (Ni == 4294967295 || Nj == 4294967295)))
+    {
+        harp_set_error(HARP_ERROR_INGESTION, "reduced Gaussian grids are not supported");
+        return -1;
+    }
 
     if (coda_cursor_goto_record_field_by_name(cursor, "latitudeOfFirstGridPoint") != 0)
     {
