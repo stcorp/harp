@@ -818,6 +818,8 @@ static int get_operation_dimensionality(harp_product *product, harp_operation *o
         *num_dimensions =
             longitude_bounds->num_dimensions >
             latitude_bounds->num_dimensions ? longitude_bounds->num_dimensions : latitude_bounds->num_dimensions;
+        /* don't count the independent dimension */
+        *num_dimensions -= 1;
     }
     else
     {
