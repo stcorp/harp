@@ -99,6 +99,7 @@ WHITESPACE   [[:space:]]+
 "keep"                  return FUNC_KEEP;
 "longitude-range"       return FUNC_LONGITUDE_RANGE;
 "point-distance"        return FUNC_POINT_DISTANCE;
+"point-in-area"         return FUNC_POINT_IN_AREA;
 "regrid"                return FUNC_REGRID;
 "smooth"                return FUNC_SMOOTH;
 "valid"                 return FUNC_VALID;

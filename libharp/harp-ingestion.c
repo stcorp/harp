@@ -1906,6 +1906,18 @@ static int evaluate_area_filters_0d(ingest_info *info, harp_program *operations)
                     }
                 }
                 break;
+            case harp_operation_point_in_area_filter:
+                {
+                    const harp_point_in_area_filter_args *args;
+
+                    args = (const harp_point_in_area_filter_args *)operation->args;
+                    if (harp_point_in_area_filter_predicate_new(args, &predicate) != 0)
+                    {
+                        harp_predicate_set_delete(predicate_set);
+                        return -1;
+                    }
+                }
+                break;
             default:
                 /* Not an area filter, skip. */
                 i++;
@@ -2034,6 +2046,18 @@ static int evaluate_area_filters_1d(ingest_info *info, harp_program *ops_1d)
 
                     args = (const harp_area_mask_intersects_area_filter_args *)operation->args;
                     if (harp_area_mask_intersects_area_filter_predicate_new(args, &predicate) != 0)
+                    {
+                        harp_predicate_set_delete(predicate_set);
+                        return -1;
+                    }
+                }
+                break;
+            case harp_operation_point_in_area_filter:
+                {
+                    const harp_point_in_area_filter_args *args;
+
+                    args = (const harp_point_in_area_filter_args *)operation->args;
+                    if (harp_point_in_area_filter_predicate_new(args, &predicate) != 0)
                     {
                         harp_predicate_set_delete(predicate_set);
                         return -1;
@@ -2284,7 +2308,8 @@ static int get_operation_dimensionality(ingest_info *info, harp_operation *opera
             latitude_def->num_dimensions ? longitude_def->num_dimensions : latitude_def->num_dimensions;
     }
     else if (operation->type == harp_operation_area_mask_covers_area_filter ||
-             operation->type == harp_operation_area_mask_intersects_area_filter)
+             operation->type == harp_operation_area_mask_intersects_area_filter ||
+             operation->type == harp_operation_point_in_area_filter)
     {
 
         harp_variable_definition *latitude_bounds_def;
@@ -2310,6 +2335,8 @@ static int get_operation_dimensionality(ingest_info *info, harp_operation *opera
 
         *num_dimensions = (longitude_bounds_def->num_dimensions > latitude_bounds_def->num_dimensions) ?
             longitude_bounds_def->num_dimensions : latitude_bounds_def->num_dimensions;
+        /* don't count the independent dimension */
+        *num_dimensions -= 1;
     }
     /* collocation filters */
     else if (operation->type == harp_operation_collocation_filter)

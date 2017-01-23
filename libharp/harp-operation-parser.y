@@ -226,6 +226,7 @@ int harp_sized_array_add_int32(harp_sized_array *sized_array, int32_t value)
 %token                  FUNC_KEEP
 %token                  FUNC_LONGITUDE_RANGE
 %token                  FUNC_POINT_DISTANCE
+%token                  FUNC_POINT_IN_AREA
 %token                  FUNC_REGRID
 %token                  FUNC_SMOOTH
 %token                  FUNC_VALID
@@ -487,6 +488,18 @@ operation:
         }
     | FUNC_POINT_DISTANCE '(' double_value UNIT ',' double_value UNIT ',' double_value UNIT ')' {
             if (harp_point_distance_filter_new($3, $4, $6, $7, $9, $10, &$$) != 0) YYERROR;
+        }
+    | FUNC_POINT_IN_AREA '(' double_value ',' double_value ')' {
+            if (harp_point_in_area_filter_new($3, NULL, $5, NULL, &$$) != 0) YYERROR;
+        }
+    | FUNC_POINT_IN_AREA '(' double_value ',' double_value UNIT ')' {
+            if (harp_point_in_area_filter_new($3, NULL, $5, $6, &$$) != 0) YYERROR;
+        }
+    | FUNC_POINT_IN_AREA '(' double_value UNIT ',' double_value ')' {
+            if (harp_point_in_area_filter_new($3, $4, $6, NULL, &$$) != 0) YYERROR;
+        }
+    | FUNC_POINT_IN_AREA '(' double_value UNIT ',' double_value UNIT ')' {
+            if (harp_point_in_area_filter_new($3, $4, $6, $7, &$$) != 0) YYERROR;
         }
     | FUNC_REGRID '(' DIMENSION ',' identifier UNIT ',' '(' double_array ')' ')' {
             if (harp_regrid_new($3, $5, $6, $9->num_elements, $9->array.double_data, &$$) != 0) YYERROR;

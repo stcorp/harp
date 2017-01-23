@@ -117,7 +117,14 @@ Supported functions:
         distance from the specified location.
         Example:
 
-            ``point-distance(52.012, 4.357, 3 [km])`` 
+            ``point-distance(52.012, 4.357, 3 [km])``
+
+    ``point-in-area(latitude [unit], longitude [unit])``
+        Exclude measurements for which the given location does not
+        fall inside the measurement area.
+        Example:
+
+            ``point-in-area(52.012, 4.357)``
 
     ``regrid(dimension, axis-variable unit, (value, ...))``
         Regrid all variables in the product for the given dimension using

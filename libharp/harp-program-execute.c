@@ -543,6 +543,18 @@ static int evaluate_area_filters_0d(const harp_product *product, harp_program *p
                     }
                 }
                 break;
+            case harp_operation_point_in_area_filter:
+                {
+                    const harp_point_in_area_filter_args *args;
+
+                    args = (const harp_point_in_area_filter_args *)operation->args;
+                    if (harp_point_in_area_filter_predicate_new(args, &predicate) != 0)
+                    {
+                        harp_predicate_set_delete(predicate_set);
+                        return -1;
+                    }
+                }
+                break;
             default:
                 /* Not an area filter, skip. */
                 i++;
@@ -650,6 +662,18 @@ static int evaluate_area_filters_1d(const harp_product *product, harp_program *o
 
                     args = (const harp_area_mask_intersects_area_filter_args *)operation->args;
                     if (harp_area_mask_intersects_area_filter_predicate_new(args, &predicate) != 0)
+                    {
+                        harp_predicate_set_delete(predicate_set);
+                        return -1;
+                    }
+                }
+                break;
+            case harp_operation_point_in_area_filter:
+                {
+                    const harp_point_in_area_filter_args *args;
+
+                    args = (const harp_point_in_area_filter_args *)operation->args;
+                    if (harp_point_in_area_filter_predicate_new(args, &predicate) != 0)
                     {
                         harp_predicate_set_delete(predicate_set);
                         return -1;
@@ -792,7 +816,8 @@ static int get_operation_dimensionality(harp_product *product, harp_operation *o
             latitude_def->num_dimensions ? longitude_def->num_dimensions : latitude_def->num_dimensions;
     }
     else if (operation->type == harp_operation_area_mask_covers_area_filter ||
-             operation->type == harp_operation_area_mask_intersects_area_filter)
+             operation->type == harp_operation_area_mask_intersects_area_filter ||
+             operation->type == harp_operation_point_in_area_filter)
     {
         harp_variable *latitude_bounds;
         harp_variable *longitude_bounds;
@@ -1386,6 +1411,7 @@ static int execute_next_operation(harp_product *product, harp_program *program)
         case harp_operation_longitude_range_filter:
         case harp_operation_membership_filter:
         case harp_operation_point_distance_filter:
+        case harp_operation_point_in_area_filter:
         case harp_operation_string_comparison_filter:
         case harp_operation_string_membership_filter:
         case harp_operation_valid_range_filter:

@@ -76,6 +76,7 @@ int harp_get_filter_predicate_for_operation(const harp_operation *operation, har
                                             harp_predicate **new_predicate);
 int harp_point_distance_filter_predicate_new(const harp_point_distance_filter_args *args,
                                              harp_predicate **new_predicate);
+int harp_point_in_area_filter_predicate_new(const harp_point_in_area_filter_args *args, harp_predicate **new_predicate);
 int harp_area_mask_covers_point_filter_predicate_new(const harp_area_mask_covers_point_filter_args *args,
                                                      harp_predicate **new_predicate);
 int harp_area_mask_covers_area_filter_predicate_new(const harp_area_mask_covers_area_filter_args *args,

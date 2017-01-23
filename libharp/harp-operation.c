@@ -254,6 +254,24 @@ static void point_distance_filter_args_delete(harp_point_distance_filter_args *a
     }
 }
 
+static void point_in_area_filter_args_delete(harp_point_in_area_filter_args *args)
+{
+    if (args != NULL)
+    {
+        if (args->latitude_unit != NULL)
+        {
+            free(args->latitude_unit);
+        }
+
+        if (args->longitude_unit != NULL)
+        {
+            free(args->longitude_unit);
+        }
+
+        free(args);
+    }
+}
+
 static void regrid_args_delete(harp_regrid_args *args)
 {
     if (args != NULL)
@@ -904,6 +922,51 @@ static int point_distance_filter_args_new(double latitude, const char *latitude_
     return 0;
 }
 
+static int point_in_area_filter_args_new(double latitude, const char *latitude_unit, double longitude,
+                                         const char *longitude_unit, harp_point_in_area_filter_args **new_args)
+{
+    harp_point_in_area_filter_args *args;
+
+    args = (harp_point_in_area_filter_args *)malloc(sizeof(harp_point_in_area_filter_args));
+    if (args == NULL)
+    {
+        harp_set_error(HARP_ERROR_OUT_OF_MEMORY, "out of memory (could not allocate %lu bytes) (%s:%u)",
+                       sizeof(harp_point_distance_filter_args), __FILE__, __LINE__);
+        return -1;
+    }
+    args->latitude = latitude;
+    args->latitude_unit = NULL;
+    args->longitude = longitude;
+    args->longitude_unit = NULL;
+
+    if (latitude_unit != NULL)
+    {
+        args->latitude_unit = strdup(latitude_unit);
+        if (args->latitude_unit == NULL)
+        {
+            harp_set_error(HARP_ERROR_OUT_OF_MEMORY, "out of memory (could not duplicate string) (%s:%u)", __FILE__,
+                           __LINE__);
+            point_in_area_filter_args_delete(args);
+            return -1;
+        }
+    }
+
+    if (longitude_unit != NULL)
+    {
+        args->longitude_unit = strdup(longitude_unit);
+        if (args->longitude_unit == NULL)
+        {
+            harp_set_error(HARP_ERROR_OUT_OF_MEMORY, "out of memory (could not duplicate string) (%s:%u)", __FILE__,
+                           __LINE__);
+            point_in_area_filter_args_delete(args);
+            return -1;
+        }
+    }
+
+    *new_args = args;
+    return 0;
+}
+
 static int regrid_args_new(harp_dimension_type dimension_type, const char *axis_variable_name, const char *axis_unit,
                            long num_values, double *values, harp_regrid_args **new_args)
 {
@@ -1258,6 +1321,14 @@ static int point_distance_filter_args_copy(const harp_point_distance_filter_args
                                           args->distance, args->distance_unit, new_args);
 }
 
+static int point_in_area_filter_args_copy(const harp_point_in_area_filter_args *args,
+                                          harp_point_in_area_filter_args **new_args)
+{
+    assert(args != NULL);
+    return point_in_area_filter_args_new(args->latitude, args->latitude_unit, args->longitude, args->longitude_unit,
+                                         new_args);
+}
+
 static int regrid_args_copy(const harp_regrid_args *args, harp_regrid_args **new_args)
 {
     assert(args != NULL);
@@ -1364,6 +1435,9 @@ static void args_delete(harp_operation_type operation_type, void *args)
         case harp_operation_point_distance_filter:
             point_distance_filter_args_delete((harp_point_distance_filter_args *)args);
             break;
+        case harp_operation_point_in_area_filter:
+            point_in_area_filter_args_delete((harp_point_in_area_filter_args *)args);
+            break;
         case harp_operation_regrid:
             regrid_args_delete((harp_regrid_args *)args);
             break;
@@ -1442,6 +1516,9 @@ static int args_copy(harp_operation_type operation_type, const void *args, void 
         case harp_operation_point_distance_filter:
             return point_distance_filter_args_copy((const harp_point_distance_filter_args *)args,
                                                    (harp_point_distance_filter_args **)new_args);
+        case harp_operation_point_in_area_filter:
+            return point_in_area_filter_args_copy((const harp_point_in_area_filter_args *)args,
+                                                  (harp_point_in_area_filter_args **)new_args);
         case harp_operation_regrid:
             return regrid_args_copy((harp_regrid_args *)args, (harp_regrid_args **)new_args);
         case harp_operation_regrid_collocated:
@@ -1763,6 +1840,27 @@ int harp_point_distance_filter_new(double latitude, const char *latitude_unit, d
     return 0;
 }
 
+int harp_point_in_area_filter_new(double latitude, const char *latitude_unit, double longitude,
+                                  const char *longitude_unit, harp_operation **new_operation)
+{
+    harp_point_in_area_filter_args *args;
+    harp_operation *operation;
+
+    if (point_in_area_filter_args_new(latitude, latitude_unit, longitude, longitude_unit, &args) != 0)
+    {
+        return -1;
+    }
+
+    if (harp_operation_new(harp_operation_point_in_area_filter, args, &operation) != 0)
+    {
+        point_in_area_filter_args_delete(args);
+        return -1;
+    }
+
+    *new_operation = operation;
+    return 0;
+}
+
 int harp_regrid_new(harp_dimension_type dimension_type, const char *axis_variable_name, const char *axis_unit,
                     long num_values, double *values, harp_operation **new_operation)
 {
@@ -1937,6 +2035,7 @@ int harp_operation_is_dimension_filter(const harp_operation *operation)
         case harp_operation_longitude_range_filter:
         case harp_operation_membership_filter:
         case harp_operation_point_distance_filter:
+        case harp_operation_point_in_area_filter:
         case harp_operation_string_comparison_filter:
         case harp_operation_string_membership_filter:
         case harp_operation_valid_range_filter:

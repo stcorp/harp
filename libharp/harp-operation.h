@@ -49,6 +49,7 @@ typedef enum harp_operation_type_enum
     harp_operation_longitude_range_filter,
     harp_operation_membership_filter,
     harp_operation_point_distance_filter,
+    harp_operation_point_in_area_filter,
     harp_operation_regrid,
     harp_operation_regrid_collocated,
     harp_operation_smooth_collocated,
@@ -180,6 +181,14 @@ typedef struct harp_point_distance_filter_args_struct
     char *distance_unit;
 } harp_point_distance_filter_args;
 
+typedef struct harp_point_in_area_filter_args_struct
+{
+    double latitude;
+    char *latitude_unit;
+    double longitude;
+    char *longitude_unit;
+} harp_point_in_area_filter_args;
+
 typedef struct harp_regrid_args_struct
 {
     harp_variable *axis_variable;
@@ -257,6 +266,8 @@ int harp_membership_filter_new(const char *variable_name, harp_membership_operat
 int harp_point_distance_filter_new(double latitude, const char *latitude_unit, double longitude,
                                    const char *longitude_unit, double distance, const char *distance_unit,
                                    harp_operation **operation);
+int harp_point_in_area_filter_new(double latitude, const char *latitude_unit, double longitude,
+                                  const char *longitude_unit, harp_operation **operation);
 int harp_regrid_new(harp_dimension_type dimension_type, const char *axis_variable_name, const char *axis_unit,
                     long num_values, double *values, harp_operation **new_operation);
 int harp_regrid_collocated_new(harp_dimension_type dimension_type, const char *axis_variable_name,

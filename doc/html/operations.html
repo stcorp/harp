@@ -245,6 +245,13 @@ Example:</p>
 <blockquote class="last">
 <div><code class="docutils literal"><span class="pre">point-distance(52.012,</span> <span class="pre">4.357,</span> <span class="pre">3</span> <span class="pre">[km])</span></code></div></blockquote>
 </dd>
+<dt><code class="docutils literal"><span class="pre">point-in-area(latitude</span> <span class="pre">[unit],</span> <span class="pre">longitude</span> <span class="pre">[unit])</span></code></dt>
+<dd><p class="first">Exclude measurements for which the given location does not
+fall inside the measurement area.
+Example:</p>
+<blockquote class="last">
+<div><code class="docutils literal"><span class="pre">point-in-area(52.012,</span> <span class="pre">4.357)</span></code></div></blockquote>
+</dd>
 <dt><code class="docutils literal"><span class="pre">regrid(dimension,</span> <span class="pre">axis-variable</span> <span class="pre">unit,</span> <span class="pre">(value,</span> <span class="pre">...))</span></code></dt>
 <dd><p class="first">Regrid all variables in the product for the given dimension using
 the given axis variable as target grid. The operation will use a

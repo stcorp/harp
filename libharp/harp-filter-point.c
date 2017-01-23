@@ -39,6 +39,11 @@ typedef struct point_distance_test_args_struct
     double distance;
 } point_distance_test_args;
 
+typedef struct point_in_area_test_args_struct
+{
+    harp_spherical_point origin;
+} point_in_area_test_args;
+
 static void point_distance_test_args_delete(point_distance_test_args *args)
 {
     if (args != NULL)
@@ -125,6 +130,75 @@ int harp_point_distance_filter_predicate_new(const harp_point_distance_filter_ar
     if (harp_predicate_new(test_point_distance, predicate_args, point_distance_test_args_delete_func, &predicate) != 0)
     {
         point_distance_test_args_delete(predicate_args);
+        return -1;
+    }
+
+    *new_predicate = predicate;
+    return 0;
+}
+
+static void point_in_area_test_args_delete(point_in_area_test_args *args)
+{
+    if (args != NULL)
+    {
+        free(args);
+    }
+}
+
+static void point_in_area_test_args_delete_func(void *untyped_args)
+{
+    point_in_area_test_args_delete((point_in_area_test_args *)untyped_args);
+}
+
+static uint8_t test_point_in_area(void *untyped_args, const void *untyped_value)
+{
+    point_in_area_test_args *args = (point_in_area_test_args *)untyped_args;
+
+    return harp_spherical_polygon_contains_point((const harp_spherical_polygon *)untyped_value, &args->origin);
+}
+
+int harp_point_in_area_filter_predicate_new(const harp_point_in_area_filter_args *args, harp_predicate **new_predicate)
+{
+    harp_predicate *predicate;
+    point_in_area_test_args *predicate_args;
+    harp_spherical_point origin;
+
+    /* Convert location information to harp_spherical_point. */
+    origin.lat = args->latitude;
+    origin.lon = args->longitude;
+
+    if (args->latitude_unit != NULL && harp_unit_compare(args->latitude_unit, "degree_north") != 0)
+    {
+        if (harp_convert_unit(args->latitude_unit, "degree_north", 1, &origin.lat) != 0)
+        {
+            return -1;
+        }
+    }
+
+    if (args->longitude_unit != NULL && harp_unit_compare(args->longitude_unit, "degree_east") != 0)
+    {
+        if (harp_convert_unit(args->longitude_unit, "degree_east", 1, &origin.lon) != 0)
+        {
+            return -1;
+        }
+    }
+
+    harp_spherical_point_rad_from_deg(&origin);
+    harp_spherical_point_check(&origin);
+
+    predicate_args = (point_in_area_test_args *)malloc(sizeof(point_distance_test_args));
+    if (predicate_args == NULL)
+    {
+        harp_set_error(HARP_ERROR_OUT_OF_MEMORY, "out of memory (could not allocate %lu bytes) (%s:%u)",
+                       sizeof(point_in_area_test_args), __FILE__, __LINE__);
+        return -1;
+    }
+
+    predicate_args->origin = origin;
+
+    if (harp_predicate_new(test_point_in_area, predicate_args, point_in_area_test_args_delete_func, &predicate) != 0)
+    {
+        point_in_area_test_args_delete(predicate_args);
         return -1;
     }
 
