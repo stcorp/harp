@@ -1,0 +1,517 @@
+
+
+<!DOCTYPE html>
+<!--[if IE 8]><html class="no-js lt-ie9" lang="en" > <![endif]-->
+<!--[if gt IE 8]><!--> <html class="no-js" lang="en" > <!--<![endif]-->
+<head>
+  <meta charset="utf-8">
+  
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  
+  <title>GOME_L1_EXTRACTED &mdash; HARP 0.4b documentation</title>
+  
+
+  
+  
+
+  
+
+  
+  
+    
+
+  
+
+  
+  
+    <link rel="stylesheet" href="../_static/css/theme.css" type="text/css" />
+  
+
+  
+    <link rel="stylesheet" href="../_static/custom.css" type="text/css" />
+  
+
+  
+    <link rel="top" title="HARP 0.4b documentation" href="../index.html"/> 
+
+  
+  <script src="../_static/js/modernizr.min.js"></script>
+
+</head>
+
+<body class="wy-body-for-nav" role="document">
+
+  <div class="wy-grid-for-nav">
+
+    
+    <nav data-toggle="wy-nav-shift" class="wy-nav-side">
+      <div class="wy-side-scroll">
+        <div class="wy-side-nav-search">
+          
+
+          
+            <a href="../index.html" class="icon icon-home"> HARP
+          
+
+          
+          </a>
+
+          
+            
+            
+              <div class="version">
+                0.4
+              </div>
+            
+          
+
+          
+
+          
+        </div>
+
+        <div class="wy-menu wy-menu-vertical" data-spy="affix" role="navigation" aria-label="main navigation">
+          
+            
+            
+                <ul>
+<li class="toctree-l1"><a class="reference internal" href="../install.html">Installation</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../dataformats.html">Data formats</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../algorithms.html">Algorithms</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../operations.html">Operations</a></li>
+<li class="toctree-l1"><a class="reference internal" href="index.html">Ingestion definitions</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../libharp.html">C library</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../python.html">Python interface</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../tools.html">Command line tools</a></li>
+</ul>
+
+            
+          
+        </div>
+      </div>
+    </nav>
+
+    <section data-toggle="wy-nav-shift" class="wy-nav-content-wrap">
+
+      
+      <nav class="wy-nav-top" role="navigation" aria-label="top navigation">
+        <i data-toggle="wy-nav-top" class="fa fa-bars"></i>
+        <a href="../index.html">HARP</a>
+      </nav>
+
+
+      
+      <div class="wy-nav-content">
+        <div class="rst-content">
+          
+
+ 
+
+
+
+<div role="navigation" aria-label="breadcrumbs navigation">
+  <ul class="wy-breadcrumbs">
+    <li><a href="../index.html">Docs</a> &raquo;</li>
+      
+    <li>GOME_L1_EXTRACTED</li>
+      <li class="wy-breadcrumbs-aside">
+        
+          
+        
+      </li>
+  </ul>
+  <hr/>
+</div>
+          <div role="main" class="document" itemscope="itemscope" itemtype="http://schema.org/Article">
+           <div itemprop="articleBody">
+            
+  <div class="section" id="gome-l1-extracted">
+<h1>GOME_L1_EXTRACTED</h1>
+<div class="section" id="variables">
+<h2>Variables</h2>
+<p>The table below lists the variables that are present in the HARP product that results from an ingestion of <code class="docutils literal"><span class="pre">GOME_L1_EXTRACTED</span></code> data.</p>
+<table border="1" class="docutils">
+<colgroup>
+<col width="25%" />
+<col width="5%" />
+<col width="15%" />
+<col width="15%" />
+<col width="40%" />
+</colgroup>
+<thead valign="bottom">
+<tr class="row-odd"><th class="head">field name</th>
+<th class="head">type</th>
+<th class="head">dimensions</th>
+<th class="head">unit</th>
+<th class="head">description</th>
+</tr>
+</thead>
+<tbody valign="top">
+<tr class="row-even"><td><strong>datetime</strong></td>
+<td>double</td>
+<td>{<em>time</em>}</td>
+<td>seconds since 2000-01-01</td>
+<td>time of the measurement at the end of the integration time</td>
+</tr>
+<tr class="row-odd"><td><strong>latitude</strong></td>
+<td>double</td>
+<td>{<em>time</em>}</td>
+<td>degree_north</td>
+<td>tangent latitude of the measurement</td>
+</tr>
+<tr class="row-even"><td><strong>longitude</strong></td>
+<td>double</td>
+<td>{<em>time</em>}</td>
+<td>degree_east</td>
+<td>tangent longitude of the measurement</td>
+</tr>
+<tr class="row-odd"><td><strong>latitude_bounds</strong></td>
+<td>double</td>
+<td>{<em>time</em>, 4}</td>
+<td>degree_north</td>
+<td>corner latitudes for the ground pixel of the measurement</td>
+</tr>
+<tr class="row-even"><td><strong>longitude_bounds</strong></td>
+<td>double</td>
+<td>{<em>time</em>, 4}</td>
+<td>degree_north</td>
+<td>corner longitudes for the ground pixel of the measurement</td>
+</tr>
+<tr class="row-odd"><td><strong>wavelength_photon_radiance</strong></td>
+<td>double</td>
+<td>{<em>time</em>, <em>spectral</em>}</td>
+<td>count/s/cm2/sr/nm</td>
+<td>measured radiances</td>
+</tr>
+<tr class="row-even"><td><strong>wavelength_photon_radiance_uncertainty</strong></td>
+<td>double</td>
+<td>{<em>time</em>, <em>spectral</em>}</td>
+<td>count/s/cm2/sr/nm</td>
+<td>absolute radiance measurement error</td>
+</tr>
+<tr class="row-odd"><td><strong>wavelength_photon_irradiance</strong></td>
+<td>double</td>
+<td>{<em>time</em>, <em>spectral</em>}</td>
+<td>count/s/cm2/nm</td>
+<td>sun spectrum spectral irradiance</td>
+</tr>
+<tr class="row-even"><td><strong>wavelength_photon_irradiance_uncertainty</strong></td>
+<td>double</td>
+<td>{<em>time</em>, <em>spectral</em>}</td>
+<td>count/s/cm2/nm</td>
+<td>relative radiometric precision of the sun reference spectrum</td>
+</tr>
+<tr class="row-odd"><td><strong>wavelength</strong></td>
+<td>double</td>
+<td>{<em>time</em>, <em>spectral</em>}</td>
+<td>nm</td>
+<td>nominal wavelength assignment for each of the detector pixels</td>
+</tr>
+<tr class="row-even"><td><strong>datetime_length</strong></td>
+<td>double</td>
+<td>{<em>time</em>, <em>spectral</em>}</td>
+<td>s</td>
+<td>integration time for each pixel</td>
+</tr>
+<tr class="row-odd"><td><strong>scan_subset_counter</strong></td>
+<td>int8</td>
+<td>{<em>time</em>}</td>
+<td>&nbsp;</td>
+<td>relative index (0-3) of this measurement within a scan (forward+backward)</td>
+</tr>
+<tr class="row-even"><td><strong>scan_direction</strong></td>
+<td>string</td>
+<td>{<em>time</em>}</td>
+<td>&nbsp;</td>
+<td>scan direction for each measurement: &#8216;forward&#8217;, &#8216;backward&#8217; or &#8216;mixed&#8217; (for a measurement that consisted of both a forward and backward scan)</td>
+</tr>
+<tr class="row-odd"><td><strong>solar_zenith_angle</strong></td>
+<td>double</td>
+<td>{<em>time</em>}</td>
+<td>&nbsp;</td>
+<td>solar zenith angle at instrument</td>
+</tr>
+<tr class="row-even"><td><strong>solar_azimuth_angle</strong></td>
+<td>double</td>
+<td>{<em>time</em>}</td>
+<td>&nbsp;</td>
+<td>solar azimuth angle at instrument</td>
+</tr>
+<tr class="row-odd"><td><strong>viewing_zenith_angle</strong></td>
+<td>double</td>
+<td>{<em>time</em>}</td>
+<td>&nbsp;</td>
+<td>line of sight zenith angle at instrument</td>
+</tr>
+<tr class="row-even"><td><strong>viewing_azimuth_angle</strong></td>
+<td>double</td>
+<td>{<em>time</em>}</td>
+<td>&nbsp;</td>
+<td>line of sight azimuth angle at instrument</td>
+</tr>
+<tr class="row-odd"><td><strong>index</strong></td>
+<td>int32</td>
+<td>{<em>time</em>}</td>
+<td>&nbsp;</td>
+<td>zero-based index of the sample within the source product</td>
+</tr>
+</tbody>
+</table>
+</div>
+<div class="section" id="ingestion-options">
+<h2>Ingestion options</h2>
+<p>The table below lists the available ingestion options for <code class="docutils literal"><span class="pre">GOME_L1_EXTRACTED</span></code> products.</p>
+<table border="1" class="docutils">
+<colgroup>
+<col width="15%" />
+<col width="25%" />
+<col width="60%" />
+</colgroup>
+<thead valign="bottom">
+<tr class="row-odd"><th class="head">option name</th>
+<th class="head">legal values</th>
+<th class="head">description</th>
+</tr>
+</thead>
+<tbody valign="top">
+<tr class="row-even"><td>band</td>
+<td><strong>band-1a</strong>, band-1b, band-2a, band-2b, band-3, band-4, blind-1a, straylight-1a, straylight-1b, straylight-2a</td>
+<td>only include data from the specified band (&#8216;band-1a&#8217;, &#8216;band-1b&#8217;, &#8216;band-2a&#8217;, &#8216;band-2b&#8217;, &#8216;band-3&#8217;, &#8216;band-4&#8217;, &#8216;blind-1a&#8217;, &#8216;straylight-1a&#8217;, &#8216;straylight-1b&#8217;, &#8216;straylight-2a&#8217;); by default data from all bands is retrieved</td>
+</tr>
+<tr class="row-odd"><td>data</td>
+<td><strong>sun_reference</strong></td>
+<td>retrieve the measured radiances or the sun spectra; by default the measured radiances are retrieved</td>
+</tr>
+</tbody>
+</table>
+</div>
+<div class="section" id="mapping-description">
+<h2>Mapping description</h2>
+<p>The table below details where and how each variable was retrieved from the input product.</p>
+<p>GOME Level 1 Extracted Spectra</p>
+<table border="1" class="docutils">
+<colgroup>
+<col width="18%" />
+<col width="6%" />
+<col width="76%" />
+</colgroup>
+<thead valign="bottom">
+<tr class="row-odd"><th class="head">field name</th>
+<th class="head" colspan="2">mapping description</th>
+</tr>
+</thead>
+<tbody valign="top">
+<tr class="row-even"><td rowspan="3"><strong>datetime</strong></td>
+<td><em>path</em></td>
+<td><strong>/egp[]/agi/groundpixel_end</strong></td>
+</tr>
+<tr class="row-odd"><td><em>condition</em></td>
+<td>data=sun_reference</td>
+</tr>
+<tr class="row-even"><td><em>path</em></td>
+<td><strong>/sfs/utc_solar_spectrum</strong></td>
+</tr>
+<tr class="row-odd"><td rowspan="3"><strong>latitude</strong></td>
+<td><em>available</em></td>
+<td>optional</td>
+</tr>
+<tr class="row-even"><td><em>path</em></td>
+<td><strong>/egp[]/agi/coords[4]/latitude</strong></td>
+</tr>
+<tr class="row-odd"><td><em>description</em></td>
+<td>tangent latitude of the measurement</td>
+</tr>
+<tr class="row-even"><td rowspan="3"><strong>longitude</strong></td>
+<td><em>available</em></td>
+<td>optional</td>
+</tr>
+<tr class="row-odd"><td><em>path</em></td>
+<td><strong>/egp[]/agi/coords[4]/longitude</strong></td>
+</tr>
+<tr class="row-even"><td><em>description</em></td>
+<td>tangent longitude of the measurement</td>
+</tr>
+<tr class="row-odd"><td rowspan="3"><strong>latitude_bounds</strong></td>
+<td><em>available</em></td>
+<td>optional</td>
+</tr>
+<tr class="row-even"><td><em>path</em></td>
+<td><strong>/egp[]/agi/coords[0:3]/latitude</strong></td>
+</tr>
+<tr class="row-odd"><td><em>description</em></td>
+<td>The corners are rearranged in the following way: 1,3,2,0</td>
+</tr>
+<tr class="row-even"><td rowspan="3"><strong>longitude_bounds</strong></td>
+<td><em>available</em></td>
+<td>optional</td>
+</tr>
+<tr class="row-odd"><td><em>path</em></td>
+<td><strong>/egp[]/agi/coords[0:3]/longitude</strong></td>
+</tr>
+<tr class="row-even"><td><em>description</em></td>
+<td>The corners are rearranged in the following way: 1,3,2,0</td>
+</tr>
+<tr class="row-odd"><td rowspan="3"><strong>wavelength_photon_radiance</strong></td>
+<td><em>available</em></td>
+<td>optional</td>
+</tr>
+<tr class="row-even"><td><em>path</em></td>
+<td><strong>/egp[]/brda[]/edr[]/abs_radiance</strong></td>
+</tr>
+<tr class="row-odd"><td><em>description</em></td>
+<td>will be set to NaN is brda record is not available or if egp[]/brda[]/edr[]/flag != 0</td>
+</tr>
+<tr class="row-even"><td rowspan="3"><strong>wavelength_photon_radiance_uncertainty</strong></td>
+<td><em>available</em></td>
+<td>optional</td>
+</tr>
+<tr class="row-odd"><td><em>path</em></td>
+<td><strong>/egp[]/brda[]/edr[]/abs_rad_err</strong></td>
+</tr>
+<tr class="row-even"><td><em>description</em></td>
+<td>will be set to NaN is brda record is not available or if egp[]/brda[]/edr[]/flag != 0</td>
+</tr>
+<tr class="row-odd"><td rowspan="2"><strong>wavelength_photon_irradiance</strong></td>
+<td><em>available</em></td>
+<td>optional</td>
+</tr>
+<tr class="row-even"><td><em>path</em></td>
+<td><strong>/cdr[]/sdr[]/abs_irr</strong></td>
+</tr>
+<tr class="row-odd"><td rowspan="2"><strong>wavelength_photon_irradiance_uncertainty</strong></td>
+<td><em>available</em></td>
+<td>optional</td>
+</tr>
+<tr class="row-even"><td><em>path</em></td>
+<td><strong>/cdr[]/sdr[]/abs_irr_err</strong></td>
+</tr>
+<tr class="row-odd"><td rowspan="3"><strong>wavelength</strong></td>
+<td><em>path</em></td>
+<td><strong>/egp[]/brda[]/edr[]/wavelength</strong></td>
+</tr>
+<tr class="row-even"><td><em>condition</em></td>
+<td>data=sun_reference</td>
+</tr>
+<tr class="row-odd"><td><em>path</em></td>
+<td><strong>/cdr[]/sdr[]/wavelength</strong></td>
+</tr>
+<tr class="row-even"><td rowspan="2"><strong>datetime_length</strong></td>
+<td><em>available</em></td>
+<td>optional</td>
+</tr>
+<tr class="row-odd"><td><em>path</em></td>
+<td><strong>/egp[]/brda[]/integration_time</strong></td>
+</tr>
+<tr class="row-even"><td rowspan="3"><strong>scan_subset_counter</strong></td>
+<td><em>available</em></td>
+<td>optional</td>
+</tr>
+<tr class="row-odd"><td><em>path</em></td>
+<td><strong>/egp[]/sub_counter</strong></td>
+</tr>
+<tr class="row-even"><td><em>description</em></td>
+<td>if a measurement consisted of multiple ground pixels, the subset counter of the last pixel is taken</td>
+</tr>
+<tr class="row-odd"><td rowspan="3"><strong>scan_direction</strong></td>
+<td><em>available</em></td>
+<td>optional</td>
+</tr>
+<tr class="row-even"><td><em>path</em></td>
+<td><strong>/egp[]/sub_counter</strong></td>
+</tr>
+<tr class="row-odd"><td><em>description</em></td>
+<td>when the integration time is higher than 1.5 s we are dealing with a mixed pixel, otherwise the scan direction is based on the subset counter of the measurement (0-2 forward, 3 = backward)</td>
+</tr>
+<tr class="row-even"><td rowspan="2"><strong>solar_zenith_angle</strong></td>
+<td><em>available</em></td>
+<td>optional</td>
+</tr>
+<tr class="row-odd"><td><em>path</em></td>
+<td><strong>/egp[]/agi/solar_angles_spacecraft/zenith_b</strong></td>
+</tr>
+<tr class="row-even"><td rowspan="2"><strong>solar_azimuth_angle</strong></td>
+<td><em>available</em></td>
+<td>optional</td>
+</tr>
+<tr class="row-odd"><td><em>path</em></td>
+<td><strong>/egp[]/agi/solar_angles_spacecraft/azimuth_b</strong></td>
+</tr>
+<tr class="row-even"><td rowspan="2"><strong>viewing_zenith_angle</strong></td>
+<td><em>available</em></td>
+<td>optional</td>
+</tr>
+<tr class="row-odd"><td><em>path</em></td>
+<td><strong>/egp[]/agi/los_spacecraft/zenith_b</strong></td>
+</tr>
+<tr class="row-even"><td rowspan="2"><strong>viewing_azimuth_angle</strong></td>
+<td><em>available</em></td>
+<td>optional</td>
+</tr>
+<tr class="row-odd"><td><em>path</em></td>
+<td><strong>/egp[]/agi/los_spacecraft/azimuth_b</strong></td>
+</tr>
+</tbody>
+</table>
+</div>
+</div>
+
+
+           </div>
+          </div>
+          <footer>
+  
+
+  <hr/>
+
+  <div role="contentinfo">
+    <p>
+        &copy; Copyright 2015-2017 S&amp;T, The Netherlands.
+
+    </p>
+  </div> 
+
+</footer>
+
+        </div>
+      </div>
+
+    </section>
+
+  </div>
+  
+
+
+  
+
+    <script type="text/javascript">
+        var DOCUMENTATION_OPTIONS = {
+            URL_ROOT:'../',
+            VERSION:'0.4b',
+            COLLAPSE_INDEX:false,
+            FILE_SUFFIX:'.html',
+            HAS_SOURCE:  false
+        };
+    </script>
+      <script type="text/javascript" src="../_static/jquery.js"></script>
+      <script type="text/javascript" src="../_static/underscore.js"></script>
+      <script type="text/javascript" src="../_static/doctools.js"></script>
+      <script type="text/javascript" src="https://cdn.mathjax.org/mathjax/latest/MathJax.js?config=TeX-AMS-MML_HTMLorMML"></script>
+
+  
+
+  
+  
+    <script type="text/javascript" src="../_static/js/theme.js"></script>
+  
+
+  
+  
+  <script type="text/javascript">
+      jQuery(function () {
+          SphinxRtdTheme.StickyNav.enable();
+      });
+  </script>
+   
+
+</body>
+</html>
