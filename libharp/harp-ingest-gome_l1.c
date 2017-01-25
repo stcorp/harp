@@ -304,7 +304,7 @@ static int get_spectral_data_per_band(coda_cursor cursor_start_of_band, ingest_i
                 }
                 if (copy_previous_values > 0)
                 {
-                    for (l = 1; l <= copy_previous_values; l++)
+                    for (l = 1; (l <= copy_previous_values) && (l <= egp_record_nr); l++)
                     {
                         *(double_data - (l * info->max_measurements_one_egp)) = *double_data;
                         info->mixed_pixel_in_this_egp_record[egp_record_nr - l] = TRUE;
@@ -313,7 +313,7 @@ static int get_spectral_data_per_band(coda_cursor cursor_start_of_band, ingest_i
                 break;
 
             case INTEGRATION_TIME:
-                for (l = 0; l <= copy_previous_values; l++)
+                for (l = 0; (l <= copy_previous_values) && (l <= egp_record_nr); l++)
                 {
                     *(double_data - (l * info->max_measurements_one_egp)) = integration_time;
                     info->mixed_pixel_in_this_egp_record[egp_record_nr - l] = TRUE;
@@ -1015,7 +1015,6 @@ int harp_ingestion_module_gome_l1_init(void)
     long bounds_dimension[2] = { -1, 4 };
     const char *description;
     const char *path;
-
     const char *band_options[] =
         { "band-1a", "band-1b", "band-2a", "band-2b", "band-3", "band-4", "blind-1a", "straylight-1a", "straylight-1b",
         "straylight-2a"
