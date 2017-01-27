@@ -47,24 +47,24 @@ Function call
 
 Supported functions:
 
-    ``area-mask-covers-area(area-mask-file)``
+    ``area_mask_covers_area(area-mask-file)``
        Exclude measurements for which no area from the area
        mask file covers the measurement area completely.
 
-    ``area-mask-covers-point(area-mask-file)``
+    ``area_mask_covers_point(area-mask-file)``
         Exclude measurements for which no area from the area
         mask file contains the measurement location.
 
-    ``area-mask-intersects-area(area-mask-file, minimum-overlap-percentage)``
+    ``area_mask_intersects_area(area-mask-file, minimum-overlap-percentage)``
        Exclude measurements for which no area from the area
        mask file overlaps at least the specified percentage of
        the measurement area.
 
-    ``collocate-left(collocation-result-file)``
+    ``collocate_left(collocation-result-file)``
         Apply the specified collocation result file as an index
         filter assuming the product is part of dataset A.
 
-    ``collocate-right(collocation-result-file)``
+    ``collocate_right(collocation-result-file)``
         Apply the specified collocation result file as an index
         filter assuming the product is part of dataset B.
 
@@ -103,28 +103,28 @@ Supported functions:
        will be kept in the ingested product, all other
        variables will be excluded.
 
-    ``longitude-range(minimum [unit], maximum [unit])``
+    ``longitude_range(minimum [unit], maximum [unit])``
         Exclude measurements of which the longitude of the
         measurement location falls outside the specified range.
         This function correctly handles longitude ranges that
         cross the international date line.
 
-            ``longitude-range(179.0, -179.0)``
+            ``longitude_range(179.0, -179.0)``
             (select a 2 degree range around the international dateline)
 
-    ``point-distance(latitude [unit], longitude [unit], distance [unit])``
+    ``point_distance(latitude [unit], longitude [unit], distance [unit])``
         Exclude measurements situated further than the specified
         distance from the specified location.
         Example:
 
-            ``point-distance(52.012, 4.357, 3 [km])``
+            ``point_distance(52.012, 4.357, 3 [km])``
 
-    ``point-in-area(latitude [unit], longitude [unit])``
+    ``point_in_area(latitude [unit], longitude [unit])``
         Exclude measurements for which the given location does not
         fall inside the measurement area.
         Example:
 
-            ``point-in-area(52.012, 4.357)``
+            ``point_in_area(52.012, 4.357)``
 
     ``regrid(dimension, axis-variable unit, (value, ...))``
         Regrid all variables in the product for the given dimension using
@@ -200,7 +200,7 @@ Examples
 --------
 
     | ``derive(altitude {time} [km]); pressure > 3.0 [bar]``
-    | ``point-distance(-52.5 [degree], 1.0 [rad], 1e3 [km])``
+    | ``point_distance(-52.5 [degree], 1.0 [rad], 1e3 [km])``
     | ``index in (0, 10, 20, 30, 40); valid(pressure)``
 
 Formal definition
@@ -266,17 +266,18 @@ Formal definition
     dimensionspec = '{' dimensionlist '}' ;
 
     functioncall = 
-       'area-mask-covers-area', '(', stringvalue, ')' |
-       'area-mask-covers-point', '(', stringvalue, ')' |
-       'area-mask-intersects-area', '(', stringvalue, ',', floatvalue, ')' |
-       'collocate-left', '(', stringvalue, ')' |
-       'collocate-right', '(', stringvalue, ')' |
+       'area_mask_covers_area', '(', stringvalue, ')' |
+       'area_mask_covers_point', '(', stringvalue, ')' |
+       'area_mask_intersects_area', '(', stringvalue, ',', floatvalue, ')' |
+       'collocate_left', '(', stringvalue, ')' |
+       'collocate_right', '(', stringvalue, ')' |
        'derive', '(', variable, dimensionspec, [unit], ')' |
        'exclude', '(', variablelist, ')' |
        'flatten', '(', dimension, ')' ;
        'keep', '(', variablelist, ')' |
-       'longitude-range', '(', floatvalue, [unit], ',', floatvalue, [unit], ')' |
-       'point-distance', '(', floatvalue, [unit], ',', floatvalue, [unit], ',', floatvalue, [unit], ')' |
+       'longitude_range', '(', floatvalue, [unit], ',', floatvalue, [unit], ')' |
+       'point_distance', '(', floatvalue, [unit], ',', floatvalue, [unit], ',', floatvalue, [unit], ')' |
+       'point_in_area', '(', floatvalue, [unit], ',', floatvalue, [unit], ')' |
        'regrid', '(', dimension, ',', variable, [unit], ',', '(', floatvaluelist, ')', ')' |
        'regrid', '(', dimension, ',', variable, [unit], ',', intvalue, ',', floatvalue, ',', floatvalue, ')' |
        'smooth', '(', variable, ',' dimension, ',', variable, [unit], ',', intvalue, ',', floatvalue, ',', floatvalue, ')' |

@@ -88,18 +88,18 @@ WHITESPACE   [[:space:]]+
 "a"                     return ID_A;
 "b"                     return ID_B;
 
-"area-mask-covers-area" return FUNC_AREA_MASK_COVERS_AREA;
-"area-mask-covers-point"    return FUNC_AREA_MASK_COVERS_POINT;
-"area-mask-intersects-area" return FUNC_AREA_MASK_INTERSECTS_AREA;
-"collocate-left"        return FUNC_COLLOCATE_LEFT;
-"collocate-right"       return FUNC_COLLOCATE_RIGHT;
+"area_mask_covers_area" return FUNC_AREA_MASK_COVERS_AREA;
+"area_mask_covers_point"    return FUNC_AREA_MASK_COVERS_POINT;
+"area_mask_intersects_area" return FUNC_AREA_MASK_INTERSECTS_AREA;
+"collocate_left"        return FUNC_COLLOCATE_LEFT;
+"collocate_right"       return FUNC_COLLOCATE_RIGHT;
 "derive"                return FUNC_DERIVE;
 "exclude"               return FUNC_EXCLUDE;
 "flatten"               return FUNC_FLATTEN;
 "keep"                  return FUNC_KEEP;
-"longitude-range"       return FUNC_LONGITUDE_RANGE;
-"point-distance"        return FUNC_POINT_DISTANCE;
-"point-in-area"         return FUNC_POINT_IN_AREA;
+"longitude_range"       return FUNC_LONGITUDE_RANGE;
+"point_distance"        return FUNC_POINT_DISTANCE;
+"point_in_area"         return FUNC_POINT_IN_AREA;
 "regrid"                return FUNC_REGRID;
 "smooth"                return FUNC_SMOOTH;
 "valid"                 return FUNC_VALID;

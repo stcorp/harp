@@ -1,7 +1,9 @@
 
 * Changed Open Source licence of HARP from GPLv2 to BSD (3-Clause).
 
-* Added regrid(), smooth(), and point-in-area() operations.
+* Changed all '-' to '_' in operation function names to make them identifiers.
+
+* Added regrid(), smooth(), and point_in_area() operations.
 
 * Removed the harpprofile command line tool. Its functionality is replaced by
   the regrid() and smooth() operations.
