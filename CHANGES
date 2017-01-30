@@ -27,6 +27,9 @@
 * Fixed issue where vertical regridding to a common grid provided wrong
   results.
 
+* Fixed issue where interval interpolation for a pressure grid was not
+  using a log-linear interpolation.
+
 * Aligned order of latitude/longitude arguments in all functions to have
   latitude first and longitude second.
 

@@ -966,6 +966,20 @@ LIBHARP_API int harp_product_regrid_vertical_with_axis_variable(harp_product *pr
         {
             target_grid->data.double_data[i] = log(target_grid->data.double_data[i]);
         }
+        if (source_bounds != NULL)
+        {
+            for (i = 0; i < source_bounds->num_elements; i++)
+            {
+                source_bounds->data.double_data[i] = log(source_bounds->data.double_data[i]);
+            }
+        }
+        if (target_bounds != NULL)
+        {
+            for (i = 0; i < target_bounds->num_elements; i++)
+            {
+                target_bounds->data.double_data[i] = log(target_bounds->data.double_data[i]);
+            }
+        }
     }
 
     /* Resize the vertical dimension in the target product to make room for the resampled data */
@@ -1236,6 +1250,13 @@ LIBHARP_API int harp_product_smooth_vertical(harp_product *product, int num_smoo
         {
             source_grid->data.double_data[i] = log(source_grid->data.double_data[i]);
         }
+        if (needs_interval_resample(product))
+        {
+            for (i = 0; i < source_bounds->num_elements; i++)
+            {
+                source_bounds->data.double_data[i] = log(source_bounds->data.double_data[i]);
+            }
+        }
     }
 
     /* Save the length of the original vertical dimension */
@@ -1269,7 +1290,7 @@ LIBHARP_API int harp_product_smooth_vertical(harp_product *product, int num_smoo
         long target_vertical_dim;
         long coll_index;
         long time_index_b = -1;
-        int j;
+        int i, j;
 
         /* Get the collocation index */
         coll_index = source_collocation_index->data.int32_data[time_index_a];
@@ -1329,8 +1350,6 @@ LIBHARP_API int harp_product_smooth_vertical(harp_product *product, int num_smoo
             /* Use loglin interpolation if pressure grid */
             if (strcmp(target_grid->name, "pressure") == 0)
             {
-                int i;
-
                 for (i = 0; i < target_grid->num_elements; i++)
                 {
                     target_grid->data.double_data[i] = log(target_grid->data.double_data[i]);
@@ -1416,6 +1435,13 @@ LIBHARP_API int harp_product_smooth_vertical(harp_product *product, int num_smoo
                                                               bounds_dim_type, &target_bounds) != 0)
                         {
                             goto error;
+                        }
+                        if (strcmp(target_grid->name, "pressure") == 0)
+                        {
+                            for (i = 0; i < target_bounds->num_elements; i++)
+                            {
+                                target_bounds->data.double_data[i] = log(target_bounds->data.double_data[i]);
+                            }
                         }
                     }
                 }
