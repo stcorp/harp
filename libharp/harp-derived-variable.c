@@ -52,6 +52,22 @@ typedef struct conversion_info_struct
 
 static int find_and_execute_conversion(conversion_info *info);
 
+static void set_variable_not_found_error(conversion_info *info)
+{
+    int i;
+
+    harp_set_error(HARP_ERROR_VARIABLE_NOT_FOUND, "could not derive variable '%s {", info->variable_name);
+    for (i = 0; i < info->num_dimensions; i++)
+    {
+        if (i > 0)
+        {
+            harp_add_error_message(",");
+        }
+        harp_add_error_message(harp_get_dimension_type_name(info->dimension_type[i]));
+    }
+    harp_add_error_message("}'");
+}
+
 static int has_dimension_types(const harp_variable *variable, int num_dimensions,
                                const harp_dimension_type *dimension_type, long independent_dimension_length)
 {
@@ -503,7 +519,7 @@ static int find_and_execute_conversion(conversion_info *info)
         }
     }
 
-    harp_set_error(HARP_ERROR_VARIABLE_NOT_FOUND, "could not derive variable '%s'", info->variable_name);
+    set_variable_not_found_error(info);
     return -1;
 }
 
@@ -566,7 +582,7 @@ static int find_and_print_conversion(conversion_info *info, int (*print) (const 
         }
     }
 
-    harp_set_error(HARP_ERROR_VARIABLE_NOT_FOUND, "could not derive variable '%s'", info->variable_name);
+    set_variable_not_found_error(info);
     return -1;
 }
 
