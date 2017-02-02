@@ -169,15 +169,9 @@ void harp_dimension_mask_set_delete(harp_dimension_mask_set *dimension_mask_set)
 
 int harp_dimension_mask_fill_true(harp_dimension_mask *dimension_mask)
 {
-    long i;
-
     assert(dimension_mask != NULL && dimension_mask->num_elements > 0 && dimension_mask->mask != NULL);
 
-    /* TODO: If it can be assumed that sizeof(uint8_t) == 1, then we can use memset() here. */
-    for (i = 0; i < dimension_mask->num_elements; i++)
-    {
-        dimension_mask->mask[i] = 1;
-    }
+    memset(dimension_mask->mask, 1, dimension_mask->num_elements);
 
     dimension_mask->masked_dimension_length = 1;
     if (dimension_mask->num_elements > 0)
