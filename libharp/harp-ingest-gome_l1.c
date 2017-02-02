@@ -1015,6 +1015,7 @@ int harp_ingestion_module_gome_l1_init(void)
     long bounds_dimension[2] = { -1, 4 };
     const char *description;
     const char *path;
+
     const char *band_options[] =
         { "band-1a", "band-1b", "band-2a", "band-2b", "band-3", "band-4", "blind-1a", "straylight-1a", "straylight-1b",
         "straylight-2a"
