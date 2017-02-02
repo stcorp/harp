@@ -394,6 +394,35 @@
 </dd></dl>
 
 <dl class="function">
+<dt id="_CPPv243find_collocation_pair_for_collocation_indexP23harp_collocation_resultiPi">
+<span id="find_collocation_pair_for_collocation_index__harp_collocation_resultP.i.iP"></span><span class="target" id="libharpgroup__harp__collocation_1ga80ffc7e84b8e192e703b734b7eb0ccb6"></span><em class="property">static</em> int <code class="descname">find_collocation_pair_for_collocation_index</code><span class="sig-paren">(</span><a class="reference internal" href="#_CPPv223harp_collocation_result" title="harp_collocation_result">harp_collocation_result</a> *<em>collocation_result</em>, int <em>collocation_index</em>, int *<em>index</em><span class="sig-paren">)</span></dt>
+<dd></dd></dl>
+
+<dl class="function">
+<dt id="_CPPv254harp_collocation_result_filter_for_collocation_indicesP23harp_collocation_resultiP7int32_t">
+<span id="harp_collocation_result_filter_for_collocation_indices__harp_collocation_resultP.i.int32_tP"></span><span class="target" id="libharpgroup__harp__collocation_1gaa6c5b8ce281adbbd56359df455380a1f"></span>int <code class="descname">harp_collocation_result_filter_for_collocation_indices</code><span class="sig-paren">(</span><a class="reference internal" href="#_CPPv223harp_collocation_result" title="harp_collocation_result">harp_collocation_result</a> *<em>collocation_result</em>, int <em>num_indices</em>, int32_t *<em>collocation_index</em><span class="sig-paren">)</span></dt>
+<dd><p>Filter collocation result set for the specified list of collocation indices. The collocation result pairs will be sorted according to the order in the provided <em>collocation_index</em> parameter. If a collocation index cannot be found in the collocation_result set then an error will be thrown. <dl class="docutils">
+<dt><strong>Return</strong></dt>
+<dd><ul class="simple">
+<li><code class="docutils literal"><span class="pre">0</span></code>, Success. </li>
+<li><code class="docutils literal"><span class="pre">-1</span></code>, Error occurred (check <a class="reference internal" href="libharp_error.html#libharpgroup__harp__error_1gab2eeb46528306c6799632d1e800c4c36"><span class="std std-ref">harp_errno</span></a>). </li>
+</ul>
+</dd>
+<dt><strong>Parameters</strong></dt>
+<dd><ul class="breatheparameterlist first last">
+<li><code class="first docutils literal"><span class="pre">collocation_result</span></code> - <p>Result set that will be filtered in place. </p>
+</li>
+<li><code class="first docutils literal"><span class="pre">num_indices</span></code> - <p>Number of items in the collocation_index parameter. </p>
+</li>
+<li><code class="first docutils literal"><span class="pre">collocation_index</span></code> - <p>Array of collocation index values to match against the collocation_result set. </p>
+</li>
+</ul>
+</dd>
+</dl>
+</p>
+</dd></dl>
+
+<dl class="function">
 <dt id="_CPPv232harp_collocation_result_add_pairP23harp_collocation_resultlPKclPKclPKd">
 <span id="harp_collocation_result_add_pair__harp_collocation_resultP.l.cCP.l.cCP.l.doubleCP"></span><span class="target" id="libharpgroup__harp__collocation_1gaa9cd0fe4f098808ed86eb3f9eb24ed19"></span>int <code class="descname">harp_collocation_result_add_pair</code><span class="sig-paren">(</span><a class="reference internal" href="#_CPPv223harp_collocation_result" title="harp_collocation_result">harp_collocation_result</a> *<em>collocation_result</em>, long <em>collocation_index</em>, <em class="property">const</em> char *<em>source_product_a</em>, long <em>index_a</em>, <em class="property">const</em> char *<em>source_product_b</em>, long <em>index_b</em>, <em class="property">const</em> double *<em>difference</em><span class="sig-paren">)</span></dt>
 <dd><p>Add collocation result entry to a result set <dl class="docutils">

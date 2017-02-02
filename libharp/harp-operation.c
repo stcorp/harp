@@ -136,6 +136,39 @@ static void derive_variable_args_delete(harp_derive_variable_args *args)
     }
 }
 
+static void derive_smoothed_column_collocated_args_delete(harp_derive_smoothed_column_collocated_args *args)
+{
+    if (args != NULL)
+    {
+        if (args->variable_name != NULL)
+        {
+            free(args->variable_name);
+        }
+        if (args->unit != NULL)
+        {
+            free(args->unit);
+        }
+        if (args->axis_variable_name != NULL)
+        {
+            free(args->axis_variable_name);
+        }
+        if (args->axis_unit != NULL)
+        {
+            free(args->axis_unit);
+        }
+        if (args->collocation_result != NULL)
+        {
+            free(args->collocation_result);
+        }
+        if (args->dataset_dir != NULL)
+        {
+            free(args->dataset_dir);
+        }
+
+        free(args);
+    }
+}
+
 static void exclude_variable_args_delete(harp_exclude_variable_args *args)
 {
     if (args != NULL)
@@ -636,6 +669,68 @@ static int derive_variable_args_new(const char *variable_name, int num_dimension
             harp_set_error(HARP_ERROR_OUT_OF_MEMORY, "out of memory (could not duplicate string) (%s:%u)", __FILE__,
                            __LINE__);
             derive_variable_args_delete(args);
+            return -1;
+        }
+    }
+
+    *new_args = args;
+    return 0;
+}
+
+static int derive_smoothed_column_collocated_args_new(const char *variable_name, int num_dimensions,
+                                                      const harp_dimension_type *dimension_type, const char *unit,
+                                                      const char *axis_variable_name, const char *axis_unit,
+                                                      const char *collocation_result, const char target_dataset,
+                                                      const char *dataset_dir,
+                                                      harp_derive_smoothed_column_collocated_args **new_args)
+{
+    harp_derive_smoothed_column_collocated_args *args;
+    int i;
+
+    assert(variable_name != NULL);
+    assert(axis_variable_name != NULL);
+    assert(axis_unit != NULL);
+    assert(collocation_result != NULL);
+    assert(dataset_dir != NULL);
+
+    args = (harp_derive_smoothed_column_collocated_args *)malloc(sizeof(harp_derive_smoothed_column_collocated_args));
+    if (args == NULL)
+    {
+        harp_set_error(HARP_ERROR_OUT_OF_MEMORY, "out of memory (could not allocate %lu bytes) (%s:%u)",
+                       sizeof(harp_derive_smoothed_column_collocated_args), __FILE__, __LINE__);
+        return -1;
+    }
+    args->variable_name = NULL;
+    args->num_dimensions = num_dimensions;
+    args->unit = NULL;
+    args->axis_variable_name = strdup(axis_variable_name);
+    args->axis_unit = strdup(axis_unit);
+    args->collocation_result = strdup(collocation_result);
+    args->dataset_dir = strdup(dataset_dir);
+    args->target_dataset = target_dataset;
+
+    args->variable_name = strdup(variable_name);
+    if (args->variable_name == NULL)
+    {
+        harp_set_error(HARP_ERROR_OUT_OF_MEMORY, "out of memory (could not duplicate string) (%s:%u)", __FILE__,
+                       __LINE__);
+        derive_smoothed_column_collocated_args_delete(args);
+        return -1;
+    }
+
+    for (i = 0; i < num_dimensions; i++)
+    {
+        args->dimension_type[i] = dimension_type[i];
+    }
+
+    if (unit != NULL)
+    {
+        args->unit = strdup(unit);
+        if (args->unit == NULL)
+        {
+            harp_set_error(HARP_ERROR_OUT_OF_MEMORY, "out of memory (could not duplicate string) (%s:%u)", __FILE__,
+                           __LINE__);
+            derive_smoothed_column_collocated_args_delete(args);
             return -1;
         }
     }
@@ -1281,6 +1376,16 @@ static int derive_variable_args_copy(const harp_derive_variable_args *args, harp
                                     new_args);
 }
 
+static int derive_smoothed_column_collocated_args_copy(const harp_derive_smoothed_column_collocated_args *args,
+                                                       harp_derive_smoothed_column_collocated_args **new_args)
+{
+    assert(args != NULL);
+    return derive_smoothed_column_collocated_args_new(args->variable_name, args->num_dimensions, args->dimension_type,
+                                                      args->unit, args->axis_variable_name, args->axis_unit,
+                                                      args->collocation_result, args->target_dataset, args->dataset_dir,
+                                                      new_args);
+}
+
 static int exclude_variable_args_copy(const harp_exclude_variable_args *args, harp_exclude_variable_args **new_args)
 {
     assert(args != NULL);
@@ -1417,6 +1522,9 @@ static void args_delete(harp_operation_type operation_type, void *args)
         case harp_operation_derive_variable:
             derive_variable_args_delete((harp_derive_variable_args *)args);
             break;
+        case harp_operation_derive_smoothed_column_collocated:
+            derive_smoothed_column_collocated_args_delete((harp_derive_smoothed_column_collocated_args *)args);
+            break;
         case harp_operation_exclude_variable:
             exclude_variable_args_delete((harp_exclude_variable_args *)args);
             break;
@@ -1456,9 +1564,6 @@ static void args_delete(harp_operation_type operation_type, void *args)
         case harp_operation_valid_range_filter:
             valid_range_filter_args_delete((harp_valid_range_filter_args *)args);
             break;
-        default:
-            assert(0);
-            exit(1);
     }
 }
 
@@ -1500,6 +1605,10 @@ static int args_copy(harp_operation_type operation_type, const void *args, void 
         case harp_operation_derive_variable:
             return derive_variable_args_copy((const harp_derive_variable_args *)args,
                                              (harp_derive_variable_args **)new_args);
+        case harp_operation_derive_smoothed_column_collocated:
+            return derive_smoothed_column_collocated_args_copy
+                ((const harp_derive_smoothed_column_collocated_args *)args,
+                 (harp_derive_smoothed_column_collocated_args **)new_args);
         case harp_operation_exclude_variable:
             return exclude_variable_args_copy((harp_exclude_variable_args *)args,
                                               (harp_exclude_variable_args **)new_args);
@@ -1708,6 +1817,32 @@ int harp_derive_variable_new(const char *variable_name, int num_dimensions, cons
     if (harp_operation_new(harp_operation_derive_variable, args, &operation) != 0)
     {
         derive_variable_args_delete(args);
+        return -1;
+    }
+
+    *new_operation = operation;
+    return 0;
+}
+
+int harp_derive_smoothed_column_collocated_new(const char *variable_name, int num_dimensions,
+                                               const harp_dimension_type *dimension_type, const char *unit,
+                                               const char *axis_variable_name, const char *axis_unit,
+                                               const char *collocation_result, const char target_dataset,
+                                               const char *dataset_dir, harp_operation **new_operation)
+{
+    harp_derive_smoothed_column_collocated_args *args;
+    harp_operation *operation;
+
+    if (derive_smoothed_column_collocated_args_new(variable_name, num_dimensions, dimension_type, unit,
+                                                   axis_variable_name, axis_unit, collocation_result, target_dataset,
+                                                   dataset_dir, &args) != 0)
+    {
+        return -1;
+    }
+
+    if (harp_operation_new(harp_operation_derive_smoothed_column_collocated, args, &operation) != 0)
+    {
+        derive_smoothed_column_collocated_args_delete(args);
         return -1;
     }
 

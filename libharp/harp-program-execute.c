@@ -1121,6 +1121,73 @@ static int execute_derive_variable(harp_product *product, harp_program *program)
     return 0;
 }
 
+/* execute the calculation of a total column using a column averaging kernel and a-priori */
+static int execute_derive_smoothed_column_collocated(harp_product *product, harp_program *program)
+{
+    harp_derive_smoothed_column_collocated_args *args = NULL;
+    harp_operation *operation;
+    harp_collocation_result *collocation_result = NULL;
+    harp_variable *variable;
+
+    assert(program->num_operations != 0);
+    operation = program->operation[0];
+    assert(operation->type == harp_operation_derive_smoothed_column_collocated);
+
+    /* get operation arguments */
+    args = (harp_derive_smoothed_column_collocated_args *)operation->args;
+
+    if (harp_collocation_result_read(args->collocation_result, &collocation_result) != 0)
+    {
+        return -1;
+    }
+
+    if (args->target_dataset == 'a')
+    {
+        harp_collocation_result_swap_datasets(collocation_result);
+    }
+    if (harp_dataset_import(collocation_result->dataset_b, args->dataset_dir) != 0)
+    {
+        harp_collocation_result_delete(collocation_result);
+        return -1;
+    }
+
+    /* execute the operation */
+    if (harp_product_get_smoothed_column_using_collocated_dataset(product, args->variable_name, args->unit,
+                                                                  args->num_dimensions, args->dimension_type,
+                                                                  args->axis_variable_name, args->axis_unit,
+                                                                  collocation_result, &variable) != 0)
+    {
+        harp_collocation_result_delete(collocation_result);
+        return -1;
+    }
+    harp_collocation_result_delete(collocation_result);
+
+    if (harp_product_has_variable(product, variable->name))
+    {
+        if (harp_product_replace_variable(product, variable) != 0)
+        {
+            harp_variable_delete(variable);
+            return -1;
+        }
+    }
+    else
+    {
+        if (harp_product_add_variable(product, variable) != 0)
+        {
+            harp_variable_delete(variable);
+            return -1;
+        }
+    }
+
+    /* remove the operation from the queue */
+    if (harp_program_remove_operation_at_index(program, 0) != 0)
+    {
+        return -1;
+    }
+
+    return 0;
+}
+
 /* execute the variable exclude filter from the head of program */
 static int execute_exclude_variable(harp_product *product, harp_program *program)
 {
@@ -1428,6 +1495,12 @@ static int execute_next_operation(harp_product *product, harp_program *program)
             break;
         case harp_operation_derive_variable:
             if (execute_derive_variable(product, program) != 0)
+            {
+                return -1;
+            }
+            break;
+        case harp_operation_derive_smoothed_column_collocated:
+            if (execute_derive_smoothed_column_collocated(product, program) != 0)
             {
                 return -1;
             }

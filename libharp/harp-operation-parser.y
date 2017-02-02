@@ -221,6 +221,7 @@ int harp_sized_array_add_int32(harp_sized_array *sized_array, int32_t value)
 %token                  FUNC_COLLOCATE_LEFT
 %token                  FUNC_COLLOCATE_RIGHT
 %token                  FUNC_DERIVE
+%token                  FUNC_DERIVE_SMOOTHED_COLUMN
 %token                  FUNC_EXCLUDE
 %token                  FUNC_FLATTEN
 %token                  FUNC_KEEP
@@ -443,6 +444,14 @@ operation:
         }
     | FUNC_DERIVE '(' identifier dimensionspec UNIT ')' {
             if (harp_derive_variable_new($3, $4->num_elements, $4->array.int32_data, $5, &$$) != 0) YYERROR;
+        }
+    | FUNC_DERIVE_SMOOTHED_COLUMN '(' identifier dimensionspec UNIT ',' identifier UNIT ',' STRING_VALUE ',' ID_A ',' STRING_VALUE ')' {
+            if (harp_derive_smoothed_column_collocated_new($3, $4->num_elements, $4->array.int32_data, $5, $7, $8, $10,
+                                                           'a', $14, &$$) != 0) YYERROR;
+        }
+    | FUNC_DERIVE_SMOOTHED_COLUMN '(' identifier dimensionspec UNIT ',' identifier UNIT ',' STRING_VALUE ',' ID_B ',' STRING_VALUE ')' {
+            if (harp_derive_smoothed_column_collocated_new($3, $4->num_elements, $4->array.int32_data, $5, $7, $8, $10,
+                                                           'b', $14, &$$) != 0) YYERROR;
         }
     | FUNC_EXCLUDE '(' identifier_array ')' {
             if (harp_exclude_variable_new($3->num_elements, (const char **)$3->array.string_data, &$$) != 0) YYERROR;

@@ -77,6 +77,28 @@ Supported functions:
        in the :doc:`Algorithms <algorithms>` section of the
        documentation.
 
+    ``derive_smoothed_column(variable {dimension-type, ...} [unit], axis-variable unit, collocation-result-file, a|b, dataset-dir)``
+       Derive the specified variable from other variables found
+       in the product. The ``--list-conversions`` option of
+       harpconvert and harpfilter can be used to list available
+       variable conversions.
+       The algorithms behind all the conversions are described
+       in the :doc:`Algorithms <algorithms>` section of the
+       documentation.
+       Derive the given intergrated column value by first deriving
+       a partial column profile variant of the variable and then
+       smoothing/integrating this partial column profile using the
+       column avaraging kernal (and a-priori, if available) from a
+       collocated dataset. The third parameter indicates which dataset
+       contains the avaraging kernel.
+       Before smoothing the partial column profile is regridded to
+       the grid of the column averaging kernel using the given
+       axis-variable (see also ``regrid()``).
+
+       Example:
+
+           ``derive_smoothed_column(O3_column_number_density {time} [molec/cm2], altitude [km], "collocation-result.csv", b, "./correlative_data/")``
+
     ``exclude(variable, ...)``
        Mark the specified variable(s) for exclusion from the
        ingested product. All variables marked for exclusion
@@ -272,6 +294,7 @@ Formal definition
        'collocate_left', '(', stringvalue, ')' |
        'collocate_right', '(', stringvalue, ')' |
        'derive', '(', variable, dimensionspec, [unit], ')' |
+       'derive_smoothed_column', '(', variable, dimensionspec, [unit], ',' variable, [unit], ',', stringvalue, ',', ( 'a' | 'b' ), ',', stringvalue, ')' |
        'exclude', '(', variablelist, ')' |
        'flatten', '(', dimension, ')' ;
        'keep', '(', variablelist, ')' |
@@ -280,8 +303,8 @@ Formal definition
        'point_in_area', '(', floatvalue, [unit], ',', floatvalue, [unit], ')' |
        'regrid', '(', dimension, ',', variable, [unit], ',', '(', floatvaluelist, ')', ')' |
        'regrid', '(', dimension, ',', variable, [unit], ',', intvalue, ',', floatvalue, ',', floatvalue, ')' |
-       'smooth', '(', variable, ',' dimension, ',', variable, [unit], ',', intvalue, ',', floatvalue, ',', floatvalue, ')' |
-       'smooth', '(', '(', variablelist, ')', ',' dimension, ',', variable, [unit], ',', intvalue, ',', floatvalue, ',', floatvalue, ')' |
+       'smooth', '(', variable, ',' dimension, ',', variable, [unit], ',', stringvalue, ',', ( 'a' | 'b' ), ',', stringvalue, ')' |
+       'smooth', '(', '(', variablelist, ')', ',' dimension, ',', variable, [unit], ',', stringvalue, ',', ( 'a' | 'b' ), ',', stringvalue, ')' |
        'valid', '(', variable, ')' |
 
     operationexpr = 

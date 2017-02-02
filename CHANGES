@@ -3,13 +3,17 @@
 
 * Changed all '-' to '_' in operation function names to make them identifiers.
 
-* Added regrid(), smooth(), and point_in_area() operations.
+* Added regrid(), smooth(), derive_smoothed_column(), and point_in_area()
+  operations.
 
 * Removed the harpprofile command line tool. Its functionality is replaced by
   the regrid() and smooth() operations.
 
 * Added vertical_unit parameter to harp_product_smooth_vertical() and
   harp_product_regrid_vertical_with_collocated_dataset() functions.
+
+* Added harp_collocation_result_filter_for_collocation_indices() and
+  harp_product_get_smoothed_column_using_collocated_dataset() functions.
 
 * Python harp.import_product() and harp.ingest_product() functions now accept
   a list of filenames or a globbing pattern as parameter (which will return

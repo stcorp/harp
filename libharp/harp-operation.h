@@ -43,6 +43,7 @@ typedef enum harp_operation_type_enum
     harp_operation_collocation_filter,
     harp_operation_comparison_filter,
     harp_operation_derive_variable,
+    harp_operation_derive_smoothed_column_collocated,
     harp_operation_exclude_variable,
     harp_operation_flatten,
     harp_operation_keep_variable,
@@ -136,6 +137,19 @@ typedef struct harp_derive_variable_args_struct
     harp_dimension_type dimension_type[HARP_MAX_NUM_DIMS];
     char *unit;
 } harp_derive_variable_args;
+
+typedef struct harp_derive_smoothed_column_collocated_args_struct
+{
+    char *variable_name;
+    int num_dimensions;
+    harp_dimension_type dimension_type[HARP_MAX_NUM_DIMS];
+    char *unit;
+    char *axis_variable_name;
+    char *axis_unit;
+    char *collocation_result;
+    char target_dataset;
+    char *dataset_dir;
+} harp_derive_smoothed_column_collocated_args;
 
 typedef struct harp_exclude_variable_args_struct
 {
@@ -256,6 +270,11 @@ int harp_comparison_filter_new(const char *variable_name, harp_comparison_operat
                                const char *unit, harp_operation **new_operation);
 int harp_derive_variable_new(const char *variable_name, int num_dimensions, const harp_dimension_type *dimension_type,
                              const char *unit, harp_operation **new_operation);
+int harp_derive_smoothed_column_collocated_new(const char *variable_name, int num_dimensions,
+                                               const harp_dimension_type *dimension_type, const char *unit,
+                                               const char *axis_variable_name, const char *axis_unit,
+                                               const char *collocation_result, const char target_dataset,
+                                               const char *dataset_dir, harp_operation **new_operation);
 int harp_exclude_variable_new(int num_variables, const char **variable_name, harp_operation **new_operation);
 int harp_flatten_new(const harp_dimension_type dimension_type, harp_operation **new_operation);
 int harp_keep_variable_new(int num_variables, const char **variable_name, harp_operation **new_operation);

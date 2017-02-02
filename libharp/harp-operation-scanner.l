@@ -94,6 +94,7 @@ WHITESPACE   [[:space:]]+
 "collocate_left"        return FUNC_COLLOCATE_LEFT;
 "collocate_right"       return FUNC_COLLOCATE_RIGHT;
 "derive"                return FUNC_DERIVE;
+"derive_smoothed_column"	return FUNC_DERIVE_SMOOTHED_COLUMN;
 "exclude"               return FUNC_EXCLUDE;
 "flatten"               return FUNC_FLATTEN;
 "keep"                  return FUNC_KEEP;

@@ -519,6 +519,13 @@ LIBHARP_API int harp_product_smooth_vertical(harp_product *product, int num_smoo
                                              const char *vertical_unit,
                                              const harp_collocation_result *collocation_result);
 LIBHARP_API int harp_product_flatten_dimension(harp_product *product, harp_dimension_type dimension_name);
+LIBHARP_API int harp_product_get_smoothed_column_using_collocated_dataset(harp_product *product, const char *name,
+                                                                          const char *unit, int num_dimensions,
+                                                                          const harp_dimension_type *dimension_type,
+                                                                          const char *vertical_axis,
+                                                                          const char *vertical_unit,
+                                                                          harp_collocation_result *collocation_result,
+                                                                          harp_variable **variable);
 
 /* Product Metadata */
 LIBHARP_API int harp_import_product_metadata(const char *filename, harp_product_metadata **metadata);
@@ -557,6 +564,8 @@ LIBHARP_API int harp_collocation_result_filter_for_source_product_a(harp_colloca
                                                                     const char *source_product);
 LIBHARP_API int harp_collocation_result_filter_for_source_product_b(harp_collocation_result *collocation_result,
                                                                     const char *source_product);
+LIBHARP_API int harp_collocation_result_filter_for_collocation_indices(harp_collocation_result *collocation_result,
+                                                                       int num_indices, int32_t *collocation_index);
 LIBHARP_API int harp_collocation_result_add_pair(harp_collocation_result *collocation_result, long collocation_index,
                                                  const char *source_product_a, long index_a,
                                                  const char *source_product_b, long index_b, const double *difference);
