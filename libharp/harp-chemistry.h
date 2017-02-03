@@ -119,6 +119,9 @@ double harp_number_density_from_mass_density(double mass_density, double molar_m
 double harp_number_density_from_pressure_and_temperature(double pressure, double temperature);
 double harp_number_density_from_volume_mixing_ratio(double volume_mixing_ratio, double number_density_air);
 double harp_partial_column_from_density_and_altitude_bounds(double density, const double *altitude_bounds);
+double harp_partial_column_number_density_from_volume_mixing_ratio(double volume_mixing_ratio, double latitude,
+                                                                   double molar_mass_air,
+                                                                   const double *pressure_bounds);
 double harp_partial_pressure_from_volume_mixing_ratio_and_pressure(double volume_mixing_ratio, double pressure);
 double harp_pressure_from_number_density_and_temperature(double number_density, double temperature);
 double harp_relative_humidity_from_h2o_partial_pressure_and_temperature(double partial_pressure_h2o,

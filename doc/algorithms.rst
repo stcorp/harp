@@ -38,7 +38,9 @@ symbol              name                         unit                           
                     constant
 :math:`k`           Boltzmann constant           :math:`\frac{kg m^2}{K s^2}`     :math:`1.38064852\cdot10^{-23}`
 :math:`N_A`         Avogadro constant            :math:`\frac{1}{mol}`            :math:`6.022140857\cdot10^{23}`
+:math:`p_{0}`       standard pressure            :math:`Pa`                       :math:`101325`
 :math:`R`           universal gas constant       :math:`\frac{kg m^2}{K mol s^2}` :math:`8.3144598`
+:math:`T_{0}`       standard temperature         :math:`K`                        :math:`273.15`
 :math:`\omega`      WGS84 earth angular velocity :math:`rad/s`                    :math:`7292115.0\cdot10^{-11}`
 =================== ============================ ================================ ===============================
 
@@ -1697,6 +1699,96 @@ column number density
       c = \frac{\sigma N_{A}}{10^{-3}M_{air}}
 
 
+#. column number density for air component from volume mixing ratio:
+
+   ================== =========================================== ================================ =====================================
+   symbol             description                                 unit                             variable name
+   ================== =========================================== ================================ =====================================
+   :math:`a`          WGS84 semi-major axis                       :math:`m`
+   :math:`b`          WGS84 semi-minor axis                       :math:`m`
+   :math:`c_{x}`      column number density for air component x   :math:`\frac{molec}{m^2}`        `<species>_column_number_density {:}`
+                      (e.g. :math:`c_{O_{3}}`)
+   :math:`f`          WGS84 flattening                            :math:`m`
+   :math:`g`          gravity                                     :math:`\frac{m}{s^2}`
+   :math:`g_{0}`      mean earth gravity                          :math:`\frac{m}{s^2}`
+   :math:`g_{surf}`   gravity at surface                          :math:`\frac{m}{s^2}`
+   :math:`GM`         WGS84 earth's gravitational constant        :math:`\frac{m^3}{s^2}`
+   :math:`M_{air}`    molar mass of total air                     :math:`\frac{g}{mol}`            `molar_mass {:}`
+   :math:`N_A`        Avogadro constant                           :math:`\frac{1}{mol}`
+   :math:`p`          pressure                                    :math:`Pa`
+   :math:`p_{0}`      standard pressure                           :math:`Pa`
+   :math:`p^{B}(l)`   pressure boundaries (:math:`l \in \{1,2\}`) :math:`Pa`                       `pressure_bounds {:,2}`
+   :math:`R`          universal gas constant                      :math:`\frac{kg m^2}{K mol s^2}`
+   :math:`T_{0}`      standard temperature                        :math:`K`
+   :math:`z`          altitude                                    :math:`m`
+   :math:`\nu_{x}`    volume mixing ratio of quantity x           :math:`ppv`                      `<species>_volume_mixing_ratio {:}`
+                      with regard to total air
+   :math:`\phi`       latitude                                    :math:`degN`                     `latitude {:}`
+   :math:`\omega`     WGS84 earth angular velocity                :math:`rad/s`
+   ================== =========================================== ================================ =====================================
+
+   The pattern `:` for the dimensions can represent `{vertical}`, `{latitude,longitude}`, `{latitude,longitude,vertical}`,
+   `{time}`, `{time,vertical}`, `{time,latitude,longitude}`, `{time,latitude,longitude,vertical}`, or no dimensions at all.
+
+   .. math::
+      :nowrap:
+
+      \begin{eqnarray}
+         g_{surf} & = & 9.7803253359 \frac{1 + 0.00193185265241{\sin}^2(\frac{\pi}{180}\phi)}
+            {\sqrt{1 - 0.00669437999013 {\sin}^2(\frac{\pi}{180}\phi)}} \\
+         m & = & \frac{\omega^2a^2b}{GM} \\
+         p & = & e^{\frac{\ln(p^{B}(2)) + \ln(p^{B}(1))}{2}} \\
+         z & = & -\frac{RT_{0}}{10^{-3}M_{air}g_{0}}\ln(\frac{p}{p_{0}}) \\
+         g & = & g_{surf} \left(1 - \frac{2}{a}\left(1+f+m-2f{\sin}^2(\frac{\pi}{180}\phi)\right)z + \frac{3}{a^2}z^2\right) \\
+         c_{x} & = & -\nu_{x}\frac{N_A}{10^{-3}M_{air}g}(p^{B}(2)-p^{B}(1))
+      \end{eqnarray}
+
+
+#. column number density for air component from volume mixing ratio dry air:
+
+   ===================== =========================================== ================================ ===========================================
+   symbol                description                                 unit                             variable name
+   ===================== =========================================== ================================ ===========================================
+   :math:`a`             WGS84 semi-major axis                       :math:`m`
+   :math:`b`             WGS84 semi-minor axis                       :math:`m`
+   :math:`c_{x}`         column number density for air component x   :math:`\frac{molec}{m^2}`        `<species>_column_number_density {:}`
+                         (e.g. :math:`c_{O_{3}}`)
+   :math:`f`             WGS84 flattening                            :math:`m`
+   :math:`g`             gravity                                     :math:`\frac{m}{s^2}`
+   :math:`g_{0}`         mean earth gravity                          :math:`\frac{m}{s^2}`
+   :math:`g_{surf}`      gravity at surface                          :math:`\frac{m}{s^2}`
+   :math:`GM`            WGS84 earth's gravitational constant        :math:`\frac{m^3}{s^2}`
+   :math:`M_{dry\_air}`  molar mass for dry air                      :math:`\frac{g}{mol}`
+   :math:`N_A`           Avogadro constant                           :math:`\frac{1}{mol}`
+   :math:`p`             pressure                                    :math:`Pa`
+   :math:`p_{0}`         standard pressure                           :math:`Pa`
+   :math:`p^{B}(l)`      pressure boundaries (:math:`l \in \{1,2\}`) :math:`Pa`                       `pressure_bounds {:,2}`
+   :math:`R`             universal gas constant                      :math:`\frac{kg m^2}{K mol s^2}`
+   :math:`T_{0}`         standard temperature                        :math:`K`
+   :math:`z`             altitude                                    :math:`m`
+   :math:`\bar{\nu}_{x}` volume mixing ratio of quantity x           :math:`ppv`                      `<species>_volume_mixing_ratio_dry_air {:}`
+                         with regard to dry air
+   :math:`\phi`          latitude                                    :math:`degN`                     `latitude {:}`
+   :math:`\omega`        WGS84 earth angular velocity                :math:`rad/s`
+   ===================== =========================================== ================================ ===========================================
+
+   The pattern `:` for the dimensions can represent `{vertical}`, `{latitude,longitude}`, `{latitude,longitude,vertical}`,
+   `{time}`, `{time,vertical}`, `{time,latitude,longitude}`, `{time,latitude,longitude,vertical}`, or no dimensions at all.
+
+   .. math::
+      :nowrap:
+
+      \begin{eqnarray}
+         g_{surf} & = & 9.7803253359 \frac{1 + 0.00193185265241{\sin}^2(\frac{\pi}{180}\phi)}
+            {\sqrt{1 - 0.00669437999013 {\sin}^2(\frac{\pi}{180}\phi)}} \\
+         m & = & \frac{\omega^2a^2b}{GM} \\
+         p & = & e^{\frac{\ln(p^{B}(2)) + \ln(p^{B}(1))}{2}} \\
+         z & = & -\frac{RT_{0}}{10^{-3}M_{dry\_air}g_{0}}\ln(\frac{p}{p_{0}}) \\
+         g & = & g_{surf} \left(1 - \frac{2}{a}\left(1+f+m-2f{\sin}^2(\frac{\pi}{180}\phi)\right)z + \frac{3}{a^2}z^2\right) \\
+         c_{x} & = & -\bar{\nu}_{x}\frac{N_A}{10^{-3}M_{dry\_air}g}(p^{B}(2)-p^{B}(1))
+      \end{eqnarray}
+
+
 column volume mixing ratio
 ~~~~~~~~~~~~~~~~~~~~~~~~~~
 
@@ -2542,10 +2634,10 @@ pressure bounds
       :nowrap:
 
       \begin{eqnarray}
-         p^{B}(1,1) & = & e^{2ln(p(1)) - ln(p(2))} \\
-         p^{B}(i,1) & = & e^{\frac{ln(p(i-1)) + ln(p(i))}{2}}, 1 < i \leq N \\
-         p^{B}(i,2) & = & e^{ln(p^{B}(i+1,1))}, 1 \leq i < N \\
-         p^{B}(N,2) & = & e^{2ln(p(N)) - ln(p(N-1))}
+         p^{B}(1,1) & = & e^{2\ln(p(1)) - \ln(p(2))} \\
+         p^{B}(i,1) & = & e^{\frac{\ln(p(i-1)) + \ln(p(i))}{2}}, 1 < i \leq N \\
+         p^{B}(i,2) & = & e^{\ln(p^{B}(i+1,1))}, 1 \leq i < N \\
+         p^{B}(N,2) & = & e^{2\ln(p(N)) - \ln(p(N-1))}
       \end{eqnarray}
 
 
