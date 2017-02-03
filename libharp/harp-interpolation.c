@@ -713,62 +713,59 @@ int harp_interval_interpolate_array_linear(long source_length, const double *sou
 
     for (i = 0; i < target_length; i++)
     {
-        target_array[i] = harp_nan();
-    }
-
-    for (i = 0; i < target_length; i++)
-    {
+        long num_valid_contributions = 0;
         double sum = 0.0;
-        long count_valid_contributions = 0;
+        double xminb, xmaxb;
+
+        if (target_grid_boundaries[2 * i] < target_grid_boundaries[2 * i + 1])
+        {
+            xminb = target_grid_boundaries[2 * i];
+            xmaxb = target_grid_boundaries[2 * i + 1];
+        }
+        else
+        {
+            xminb = target_grid_boundaries[2 * i + 1];
+            xmaxb = target_grid_boundaries[2 * i];
+        }
 
         for (j = 0; j < source_length; j++)
         {
-            double xmina = source_grid_boundaries[2 * j];
-            double xmaxa = source_grid_boundaries[2 * j + 1];
-            double xminb = target_grid_boundaries[2 * i];
-            double xmaxb = target_grid_boundaries[2 * i + 1];
+            double xmina, xmaxa;
 
-            if (!harp_isnan(source_array[i]))
+            if (source_grid_boundaries[2 * j] < source_grid_boundaries[2 * j + 1])
             {
-                harp_overlapping_scenario overlapping_scenario;
-                double weight = 0.0;
+                xmina = source_grid_boundaries[2 * j];
+                xmaxa = source_grid_boundaries[2 * j + 1];
+            }
+            else
+            {
+                xmina = source_grid_boundaries[2 * j + 1];
+                xmaxa = source_grid_boundaries[2 * j];
+            }
 
-                if (harp_determine_overlapping_scenario(xmina, xmaxa, xminb, xmaxb, &overlapping_scenario) != 0)
-                {
-                    return -1;
-                }
+            if (xmina < xmaxb && xminb < xmaxa && xmaxa > xmina && !harp_isnan(source_array[i]))
+            {
+                double xminc, xmaxc, weight;
 
-                switch (overlapping_scenario)
-                {
-                    case harp_overlapping_scenario_no_overlap_b_a:
-                    case harp_overlapping_scenario_no_overlap_a_b:
-                        weight = 0.0;
-                        break;
-                    case harp_overlapping_scenario_overlap_a_equals_b:
-                        weight = 1.0;
-                        break;
-                    case harp_overlapping_scenario_partial_overlap_a_b:
-                        weight = (xmaxa - xminb) / (xmaxa - xmina);
-                        break;
-                    case harp_overlapping_scenario_partial_overlap_b_a:
-                        weight = (xmaxb - xmina) / (xmaxa - xmina);
-                        break;
-                    case harp_overlapping_scenario_overlap_a_contains_b:
-                        weight = (xmaxb - xminb) / (xmaxa - xmina);
-                        break;
-                    case harp_overlapping_scenario_overlap_b_contains_a:
-                        weight = 1.0;
-                        break;
-                }
+                /* there is overlap, interval A is not empty, and interval A has a valid value */
 
+                /* calculate intersection interval C of intervals A and B */
+                xminc = xmina < xminb ? xminb : xmina;
+                xmaxc = xmaxa > xmaxb ? xmaxb : xmaxa;
+
+                weight = (xmaxc - xminc) / (xmaxa - xmina);
                 sum += weight * source_array[i];
-                count_valid_contributions++;
+                num_valid_contributions++;
             }
         }
 
-        if (count_valid_contributions != 0)
+        if (num_valid_contributions != 0)
         {
             target_array[i] = sum;
+        }
+        else
+        {
+            target_array[i] = harp_nan();
         }
     }
 

@@ -113,17 +113,6 @@ typedef struct harp_derived_variable_list_struct
 
 extern harp_derived_variable_list *harp_derived_variable_conversions;
 
-typedef enum harp_overlapping_scenario_enum
-{
-    harp_overlapping_scenario_no_overlap_b_a = 0,
-    harp_overlapping_scenario_no_overlap_a_b = 1,
-    harp_overlapping_scenario_overlap_a_equals_b = 2,
-    harp_overlapping_scenario_partial_overlap_a_b = 3,
-    harp_overlapping_scenario_partial_overlap_b_a = 4,
-    harp_overlapping_scenario_overlap_a_contains_b = 5,
-    harp_overlapping_scenario_overlap_b_contains_a = 6
-} harp_overlapping_scenario;
-
 /* Utility functions */
 long harp_parse_double(const char *buffer, long buffer_length, double *dst, int ignore_trailing_bytes);
 long harp_get_max_string_length(long num_strings, char **string_data);
@@ -216,9 +205,6 @@ int harp_derived_variable_list_add_conversion(harp_variable_conversion *conversi
 void harp_derived_variable_list_done(void);
 
 /* Analysis functions */
-int harp_determine_overlapping_scenario(double xmin_a, double xmax_a,
-                                        double xmin_b, double xmax_b,
-                                        harp_overlapping_scenario *new_overlapping_scenario);
 double harp_fraction_of_day_from_datetime(double datetime);
 double harp_fraction_of_year_from_datetime(double datetime);
 
