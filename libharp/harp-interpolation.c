@@ -705,9 +705,9 @@ void harp_interpolate_array_loglinear(long source_length, const double *source_g
 /* Interpolate array from source grid to target grid using linear interpolation
  * Both source_grid_boundaries and target_grid_boundaries need to be strict monotonic.
  */
-int harp_interval_interpolate_array_linear(long source_length, const double *source_grid_boundaries,
-                                           const double *source_array, long target_length,
-                                           const double *target_grid_boundaries, double *target_array)
+void harp_interval_interpolate_array_linear(long source_length, const double *source_grid_boundaries,
+                                            const double *source_array, long target_length,
+                                            const double *target_grid_boundaries, double *target_array)
 {
     long i, j;
 
@@ -768,8 +768,6 @@ int harp_interval_interpolate_array_linear(long source_length, const double *sou
             target_array[i] = harp_nan();
         }
     }
-
-    return 0;
 }
 
 /* Determine boundary intervals based on linear inter-/extrapolation of mid points.

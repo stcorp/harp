@@ -292,9 +292,9 @@ void harp_interpolate_value_loglinear(long source_length, const double *source_g
 void harp_interpolate_array_loglinear(long source_length, const double *source_grid, const double *source_array,
                                       long target_length, const double *target_grid, int out_of_bound_flag,
                                       double *target_array);
-int harp_interval_interpolate_array_linear(long source_length, const double *source_grid_boundaries,
-                                           const double *source_array, long target_length,
-                                           const double *target_grid_boundaries, double *target_array);
+void harp_interval_interpolate_array_linear(long source_length, const double *source_grid_boundaries,
+                                            const double *source_array, long target_length,
+                                            const double *target_grid_boundaries, double *target_array);
 void harp_bounds_from_midpoints_linear(long num_midpoints, const double *midpoints, double *intervals);
 void harp_bounds_from_midpoints_loglinear(long num_midpoints, const double *midpoints, double *intervals);
 

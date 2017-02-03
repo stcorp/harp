@@ -639,10 +639,9 @@ static int get_smoothed_total_column(harp_variable *column_variable, harp_variab
                                      long num_vertical_elements)
 {
     harp_dimension_type dim_type[2] = { harp_dimension_time, harp_dimension_vertical };
-    long max_vertical_elements = collocated_product->dimension[harp_dimension_vertical];
+    long max_vertical_elements;
     long num_blocks;
-    long k;
-    long i;
+    long i, k;
     int has_apriori = 0;
 
     /* owned memory */
@@ -650,6 +649,8 @@ static int get_smoothed_total_column(harp_variable *column_variable, harp_variab
     harp_variable *avk = NULL;
     char *apriori_name = NULL;
     char *avk_name = NULL;
+
+    max_vertical_elements = partcol_variable->dimension[partcol_variable->num_dimensions - 1];
 
     /* get the avk and a priori variables */
     avk_name = malloc(strlen(column_variable->name) + 4 + 1);
@@ -684,7 +685,7 @@ static int get_smoothed_total_column(harp_variable *column_variable, harp_variab
     {
         long blockoffset_col = time_index_a * num_blocks + k;
         long blockoffset_prof = blockoffset_col * max_vertical_elements;
-        long num_valid = 0;
+        long is_valid = 0;
 
         /* multiply partial column profile with column averaging kernel */
         column_variable->data.double_data[blockoffset_col] = 0;
@@ -695,7 +696,7 @@ static int get_smoothed_total_column(harp_variable *column_variable, harp_variab
                 column_variable->data.double_data[blockoffset_col] +=
                     partcol_variable->data.double_data[blockoffset_prof + i] *
                     avk->data.double_data[time_index_b * max_vertical_elements + i];
-                num_valid++;
+                is_valid = 1;
             }
 
             /* add the apriori */
@@ -704,13 +705,13 @@ static int get_smoothed_total_column(harp_variable *column_variable, harp_variab
                 column_variable->data.double_data[blockoffset_col] +=
                     (1 - avk->data.double_data[time_index_b * max_vertical_elements + i]) *
                     apriori->data.double_data[time_index_b * max_vertical_elements + i];
-            }
-            else if (num_valid == 0)
-            {
-                column_variable->data.double_data[blockoffset_col] = harp_nan();
+                is_valid = 1;
             }
         }
-
+        if (!is_valid)
+        {
+            column_variable->data.double_data[blockoffset_col] = harp_nan();
+        }
     }
 
     /* cleanup */
@@ -1538,8 +1539,9 @@ LIBHARP_API int harp_product_get_smoothed_column_using_collocated_dataset
      harp_collocation_result *collocation_result, harp_variable **variable)
 {
     harp_dimension_type partcol_dimension_type[HARP_NUM_DIM_TYPES];
-    long max_target_vertical_dim;
     long source_vertical_dim;
+    long source_grid_vertical_dim;
+    long max_target_vertical_dim;
     harp_variable *source_collocation_index = NULL;
 
     harp_dimension_type bounds_dim_type[3] = { harp_dimension_time, harp_dimension_vertical,
@@ -1575,7 +1577,8 @@ LIBHARP_API int harp_product_get_smoothed_column_using_collocated_dataset
         harp_set_error(HARP_ERROR_INVALID_ARGUMENT, "product has no vertical dimension");
         return -1;
     }
-    source_vertical_dim = product->dimension[harp_dimension_vertical];
+    source_grid_vertical_dim = product->dimension[harp_dimension_vertical];
+    source_vertical_dim = source_grid_vertical_dim;
 
     /* derive the name of the bounds variable for the vertical axis */
     bounds_name = malloc(strlen(vertical_axis) + 7 + 1);
@@ -1657,12 +1660,13 @@ LIBHARP_API int harp_product_get_smoothed_column_using_collocated_dataset
     }
 
     /* Resize the partial column profile to make room for the resampled data */
-    if (max_target_vertical_dim > product->dimension[harp_dimension_vertical])
+    if (max_target_vertical_dim > source_vertical_dim)
     {
         if (harp_variable_resize_dimension(partcol_variable, num_dimensions - 1, max_target_vertical_dim) != 0)
         {
             goto error;
         }
+        source_vertical_dim = max_target_vertical_dim;
     }
 
     /* allocate the buffer for the interpolation */
@@ -1752,29 +1756,25 @@ LIBHARP_API int harp_product_get_smoothed_column_using_collocated_dataset
 
         /* find the source grid lengths */
         num_source_vertical_elements =
-            get_unpadded_vector_length(&source_bounds->data.double_data[time_index_a * source_vertical_dim * 2],
-                                       source_vertical_dim * 2) / 2;
+            get_unpadded_vector_length(&source_bounds->data.double_data[time_index_a * source_grid_vertical_dim * 2],
+                                       source_grid_vertical_dim * 2) / 2;
 
-
-        /* figure out the target offset to use: i.e. the number of vertical profile elements that fall
-         * below the first source profile elements
-         */
-        target_vertical_dim = target_bounds->dimension[1];
 
         /* find the target grid length */
+        target_vertical_dim = target_bounds->dimension[1];
         num_target_vertical_elements =
             get_unpadded_vector_length(&target_bounds->data.double_data[time_index_b * target_vertical_dim * 2],
                                        target_vertical_dim * 2) / 2;
 
         /* Resample partial column */
-        num_blocks = partcol_variable->num_elements / partcol_variable->dimension[0] / max_target_vertical_dim;
+        num_blocks = partcol_variable->num_elements / partcol_variable->dimension[0] / source_vertical_dim;
         for (i = 0; i < num_blocks; i++)
         {
-            long blockoffset = (time_index_a * num_blocks + i) * max_target_vertical_dim;
+            long blockoffset = (time_index_a * num_blocks + i) * source_vertical_dim;
 
             harp_interval_interpolate_array_linear
                 (num_source_vertical_elements,
-                 &source_bounds->data.double_data[time_index_a * source_vertical_dim * 2],
+                 &source_bounds->data.double_data[time_index_a * source_grid_vertical_dim * 2],
                  &partcol_variable->data.double_data[blockoffset], num_target_vertical_elements,
                  &target_bounds->data.double_data[time_index_b * target_vertical_dim * 2], interpolation_buffer);
 
@@ -1783,7 +1783,7 @@ LIBHARP_API int harp_product_get_smoothed_column_using_collocated_dataset
             {
                 partcol_variable->data.double_data[blockoffset + j] = interpolation_buffer[j];
             }
-            for (j = num_target_vertical_elements; j < num_source_vertical_elements; j++)
+            for (j = num_target_vertical_elements; j < source_vertical_dim; j++)
             {
                 partcol_variable->data.double_data[blockoffset + j] = harp_nan();
             }
