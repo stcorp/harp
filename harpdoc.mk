@@ -102,6 +102,8 @@ HARP_DOCFILES = \
 	doc/html/ingestions/GEOMS-TE-FTIR-002-SF6.html \
 	doc/html/ingestions/GEOMS-TE-LIDAR-O3-003.html \
 	doc/html/ingestions/GEOMS-TE-LIDAR-O3-004.html \
+	doc/html/ingestions/GEOMS-TE-LIDAR-TEMPERATURE-003.html \
+	doc/html/ingestions/GEOMS-TE-LIDAR-TEMPERATURE-004.html \
 	doc/html/ingestions/GEOMS-TE-MWR-001-CO.html \
 	doc/html/ingestions/GEOMS-TE-MWR-001-ClO.html \
 	doc/html/ingestions/GEOMS-TE-MWR-001-H2O.html \
@@ -564,6 +566,10 @@ doc/html/ingestions/GEOMS-TE-FTIR-002-SF6.html:
 doc/html/ingestions/GEOMS-TE-LIDAR-O3-003.html:
 	$(MAKE) harp_doc
 doc/html/ingestions/GEOMS-TE-LIDAR-O3-004.html:
+	$(MAKE) harp_doc
+doc/html/ingestions/GEOMS-TE-LIDAR-TEMPERATURE-003.html:
+	$(MAKE) harp_doc
+doc/html/ingestions/GEOMS-TE-LIDAR-TEMPERATURE-004.html:
 	$(MAKE) harp_doc
 doc/html/ingestions/GEOMS-TE-MWR-001-CO.html:
 	$(MAKE) harp_doc

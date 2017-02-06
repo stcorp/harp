@@ -195,18 +195,6 @@
 <td>days since 2000-01-01</td>
 <td>stop time of the measurement</td>
 </tr>
-<tr class="row-even"><td><strong>O3_number_density</strong></td>
-<td>double</td>
-<td>{<em>time</em>, <em>vertical</em>}</td>
-<td>molec/m3</td>
-<td>absorption differential O3 number density</td>
-</tr>
-<tr class="row-odd"><td><strong>O3_number_density_uncertainty</strong></td>
-<td>double</td>
-<td>{<em>time</em>, <em>vertical</em>}</td>
-<td>molec/m3</td>
-<td>standard deviation of the absorption differential O3 number density</td>
-</tr>
 <tr class="row-even"><td><strong>altitude</strong></td>
 <td>double</td>
 <td>{<em>vertical</em>}</td>
@@ -217,13 +205,25 @@
 <td>double</td>
 <td>{<em>vertical</em>}</td>
 <td>hPa</td>
-<td>pressure profile to derive volume mixing ratio</td>
+<td>pressure profile from independent source</td>
 </tr>
 <tr class="row-even"><td><strong>temperature</strong></td>
 <td>double</td>
 <td>{<em>vertical</em>}</td>
 <td>K</td>
-<td>temperature profile to derive volume mixing ratio</td>
+<td>temperature profile from independent source</td>
+</tr>
+<tr class="row-odd"><td><strong>O3_number_density</strong></td>
+<td>double</td>
+<td>{<em>time</em>, <em>vertical</em>}</td>
+<td>molec/m3</td>
+<td>absorption differential O3 number density</td>
+</tr>
+<tr class="row-even"><td><strong>O3_number_density_uncertainty</strong></td>
+<td>double</td>
+<td>{<em>time</em>, <em>vertical</em>}</td>
+<td>molec/m3</td>
+<td>standard deviation of the absorption differential O3 number density</td>
 </tr>
 <tr class="row-odd"><td><strong>index</strong></td>
 <td>int32</td>
@@ -281,14 +281,6 @@
 <td><em>path</em></td>
 <td><strong>/DATETIME.STOP</strong></td>
 </tr>
-<tr class="row-even"><td><strong>O3_number_density</strong></td>
-<td><em>path</em></td>
-<td><strong>/O3.NUMBER.DENSITY_ABSORPTION.DIFFERENTIAL</strong></td>
-</tr>
-<tr class="row-odd"><td><strong>O3_number_density_uncertainty</strong></td>
-<td><em>path</em></td>
-<td><strong>/O3.NUMBER.DENSITY_ABSORPTION.DIFFERENTIAL_UNCERTAINTY.COMBINED.STANDARD</strong></td>
-</tr>
 <tr class="row-even"><td><strong>altitude</strong></td>
 <td><em>path</em></td>
 <td><strong>/ALTITUDE</strong></td>
@@ -300,6 +292,14 @@
 <tr class="row-even"><td><strong>temperature</strong></td>
 <td><em>path</em></td>
 <td><strong>/TEMPERATURE_INDEPENDENT</strong></td>
+</tr>
+<tr class="row-odd"><td><strong>O3_number_density</strong></td>
+<td><em>path</em></td>
+<td><strong>/O3.NUMBER.DENSITY_ABSORPTION.DIFFERENTIAL</strong></td>
+</tr>
+<tr class="row-even"><td><strong>O3_number_density_uncertainty</strong></td>
+<td><em>path</em></td>
+<td><strong>/O3.NUMBER.DENSITY_ABSORPTION.DIFFERENTIAL_UNCERTAINTY.COMBINED.STANDARD</strong></td>
 </tr>
 </tbody>
 </table>

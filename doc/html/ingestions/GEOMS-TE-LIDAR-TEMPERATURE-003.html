@@ -8,7 +8,7 @@
   
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
   
-  <title>GEOMS-TE-LIDAR-O3-004 &mdash; HARP 0.4b documentation</title>
+  <title>GEOMS-TE-LIDAR-TEMPERATURE-003 &mdash; HARP 0.4b documentation</title>
   
 
   
@@ -113,7 +113,7 @@
   <ul class="wy-breadcrumbs">
     <li><a href="../index.html">Docs</a> &raquo;</li>
       
-    <li>GEOMS-TE-LIDAR-O3-004</li>
+    <li>GEOMS-TE-LIDAR-TEMPERATURE-003</li>
       <li class="wy-breadcrumbs-aside">
         
           
@@ -125,11 +125,11 @@
           <div role="main" class="document" itemscope="itemscope" itemtype="http://schema.org/Article">
            <div itemprop="articleBody">
             
-  <div class="section" id="geoms-te-lidar-o3-004">
-<h1>GEOMS-TE-LIDAR-O3-004</h1>
+  <div class="section" id="geoms-te-lidar-temperature-003">
+<h1>GEOMS-TE-LIDAR-TEMPERATURE-003</h1>
 <div class="section" id="variables">
 <h2>Variables</h2>
-<p>The table below lists the variables that are present in the HARP product that results from an ingestion of <code class="docutils literal"><span class="pre">GEOMS-TE-LIDAR-O3-004</span></code> data.</p>
+<p>The table below lists the variables that are present in the HARP product that results from an ingestion of <code class="docutils literal"><span class="pre">GEOMS-TE-LIDAR-TEMPERATURE-003</span></code> data.</p>
 <table border="1" class="docutils">
 <colgroup>
 <col width="25%" />
@@ -209,23 +209,29 @@
 </tr>
 <tr class="row-even"><td><strong>temperature</strong></td>
 <td>double</td>
-<td>{<em>vertical</em>}</td>
+<td>{<em>time</em>, <em>vertical</em>}</td>
 <td>K</td>
-<td>temperature profile from independent source</td>
+<td>backscatter temperature</td>
 </tr>
-<tr class="row-odd"><td><strong>O3_number_density</strong></td>
+<tr class="row-odd"><td><strong>temperature_uncertainty</strong></td>
+<td>double</td>
+<td>{<em>time</em>, <em>vertical</em>}</td>
+<td>K</td>
+<td>standard deviation of the backscatter temperature</td>
+</tr>
+<tr class="row-even"><td><strong>number_density</strong></td>
 <td>double</td>
 <td>{<em>time</em>, <em>vertical</em>}</td>
 <td>molec/m3</td>
-<td>absorption differential O3 number density</td>
+<td>backscatter number density</td>
 </tr>
-<tr class="row-even"><td><strong>O3_number_density_uncertainty</strong></td>
+<tr class="row-odd"><td><strong>number_density_uncertainty</strong></td>
 <td>double</td>
 <td>{<em>time</em>, <em>vertical</em>}</td>
 <td>molec/m3</td>
-<td>standard deviation of the absorption differential O3 number density</td>
+<td>standard deviation of the backscatter number density</td>
 </tr>
-<tr class="row-odd"><td><strong>index</strong></td>
+<tr class="row-even"><td><strong>index</strong></td>
 <td>int32</td>
 <td>{<em>time</em>}</td>
 <td>&nbsp;</td>
@@ -239,9 +245,9 @@
 <p>The table below details where and how each variable was retrieved from the input product.</p>
 <table border="1" class="docutils">
 <colgroup>
-<col width="29%" />
-<col width="7%" />
-<col width="64%" />
+<col width="31%" />
+<col width="8%" />
+<col width="61%" />
 </colgroup>
 <thead valign="bottom">
 <tr class="row-odd"><th class="head">field name</th>
@@ -291,15 +297,19 @@
 </tr>
 <tr class="row-even"><td><strong>temperature</strong></td>
 <td><em>path</em></td>
-<td><strong>/TEMPERATURE_INDEPENDENT</strong></td>
+<td><strong>/TEMPERATURE_BACKSCATTER</strong></td>
 </tr>
-<tr class="row-odd"><td><strong>O3_number_density</strong></td>
+<tr class="row-odd"><td><strong>temperature_uncertainty</strong></td>
 <td><em>path</em></td>
-<td><strong>/O3.NUMBER.DENSITY_ABSORPTION.DIFFERENTIAL</strong></td>
+<td><strong>/TEMPERATURE_BACKSCATTER_UNCERTAINTY.COMBINED.STANDARD</strong></td>
 </tr>
-<tr class="row-even"><td><strong>O3_number_density_uncertainty</strong></td>
+<tr class="row-even"><td><strong>number_density</strong></td>
 <td><em>path</em></td>
-<td><strong>/O3.NUMBER.DENSITY_ABSORPTION.DIFFERENTIAL_UNCERTAINTY.COMBINED.STANDARD</strong></td>
+<td><strong>/NUMBER.DENSITY_BACKSCATTER</strong></td>
+</tr>
+<tr class="row-odd"><td><strong>number_density_uncertainty</strong></td>
+<td><em>path</em></td>
+<td><strong>/NUMBER.DENSITY_BACKSCATTER_UNCERTAINTY.COMBINED.STANDARD</strong></td>
 </tr>
 </tbody>
 </table>
