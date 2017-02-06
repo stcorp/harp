@@ -798,6 +798,7 @@ static void register_common_variables(harp_product_definition *product_definitio
     path = "/PRODUCT/tm5_surface_pressure[]";
     harp_variable_definition_add_mapping(variable_definition, NULL, NULL, path, NULL);
 
+    description = "pressure boundaries for each layer";
     variable_definition =
         harp_ingestion_register_variable_full_read(product_definition, "pressure_bounds", harp_type_double, 3,
                                                    pressure_bounds_dimension_type, pressure_bounds_dimension,
@@ -870,7 +871,7 @@ static void register_hcho_product(void)
         harp_ingestion_register_variable_full_read(product_definition, "HCHO_column_number_density_avk",
                                                    harp_type_float, 2, dimension_type, NULL, description, NULL, NULL,
                                                    read_hcho_column_avk);
-    path = "/PRODUCT/SUPPORT_DATA/DETAILED_RESULTS/averaging_kernels[]";
+    path = "/PRODUCT/averaging_kernel[]";
     harp_variable_definition_add_mapping(variable_definition, NULL, NULL, path, NULL);
 
     description = "apriori profile for the volume mixing ratio of tropospheric HCHO";
@@ -984,8 +985,7 @@ static void register_no2_product(void)
     path = "/PRODUCT/amf_total[]";
     harp_variable_definition_add_mapping(variable_definition, NULL, NULL, path, NULL);
 
-    description = "averaging kernel for the air mass factor correction, describing the NO2 profile sensitivity of the "
-        "vertical column density";
+    description = "averaging kernel for the total column number density of NO2";
     variable_definition =
         harp_ingestion_register_variable_full_read(product_definition, "NO2_column_number_density_avk", harp_type_float,
                                                    2, dimension_type, NULL, description, HARP_UNIT_DIMENSIONLESS, NULL,
