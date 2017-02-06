@@ -230,6 +230,7 @@ density                                                                       X 
 frequency                                                                     X
 geopotential                                  surface                         X       X    X
 geopotential_height                           surface                         X       X    X
+hlos_wind_velocity                            surface                         X       X    X             hlos means 'horizontal line of sight'
 index                                                                                                    zero-based index of the sample within the source product
 sensor_name                                                                                              used mainly for ground based networks to provide a unique sensor id
 latitude                                      sensor                          X            (lat)
@@ -271,6 +272,8 @@ viewing_zenith_angle                                                          X
 virtual_temperature                                                           X       X    X
 wavelength                                                                    X                    X
 wavenumber                                                                    X                    X
+wind_speed                                    surface                         X       X    X
+wind_direction                                surface                         X       X    X
 <species>_column_density                      stratospheric,  amf, apriori,   X       X    X             this is the mass density
                                               tropospheric    avk
 <species>_column_number_density               stratospheric,  amf, apriori,   X       X    X
@@ -394,7 +397,10 @@ The 'surface' prefix should only be used when quantities are combined together w
 If a product just contains surface quantities then don't use a 'surface' prefix but just omit the vertical dimension and
 indicate the vertical level (i.e. location of the surface) using a 'pressure', 'altitude', and/or 'geopotential_height' variable.
 
-All (horizontal) azimuth angles in HARP should follow the convention that 0 is North facing and the angle is increasing when moving Eastwards (i.e. clockwise).
+All (horizontal) azimuth angles in HARP should follow the convention that 0 is North facing
+and the angle is increasing when moving Eastwards (i.e. clockwise).
+Wind direction follows the same rules as for azimuth angles (North = 0, East = 90 degrees),
+but the direction indicates where the wind is coming *from*.
 
 Be aware that there are still several topics under discussion that may change the above naming convention.
 See the HARP issues list on the GitHub website for more details.
