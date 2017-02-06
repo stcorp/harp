@@ -34,8 +34,12 @@
 
 #include <assert.h>
 #include <math.h>
+#include <stdio.h>
 #include <stdlib.h>
 #include <string.h>
+
+#define MAX_NAME_LENGTH 80
+#define MAX_DESCRIPTION_LENGTH 100
 
 typedef struct ingest_info_struct
 {
@@ -345,20 +349,18 @@ static int ingestion_init(const harp_ingestion_module *module, coda_product *pro
     return 0;
 }
 
-int harp_ingestion_module_geoms_lidar_init(void)
+static int init_product_definition(harp_ingestion_module *module, int version)
 {
-    harp_ingestion_module *module;
     harp_product_definition *product_definition;
     harp_variable_definition *variable_definition;
     harp_dimension_type dimension_type[2];
+    char product_name[MAX_NAME_LENGTH];
+    char product_description[MAX_DESCRIPTION_LENGTH];
     const char *description;
 
-    description = "GEOMS template for LIDAR ozone";
-    module = harp_ingestion_register_module_coda("GEOMS-TE-LIDAR-O3", "GEOMS", "GEOMS", "LIDAR_O3", description,
-                                                 ingestion_init, ingestion_done);
-
-    description = "GEOMS template for LIDAR ozone v003";
-    product_definition = harp_ingestion_register_product(module, "GEOMS-TE-LIDAR-O3-003", description, read_dimensions);
+    snprintf(product_name, MAX_NAME_LENGTH, "GEOMS-TE-LIDAR-O3-%03d", version);
+    snprintf(product_description, MAX_DESCRIPTION_LENGTH, "GEOMS template for LIDAR ozone v%03d", version);
+    product_definition = harp_ingestion_register_product(module, product_name, product_description, read_dimensions);
 
     dimension_type[0] = harp_dimension_time;
     dimension_type[1] = harp_dimension_vertical;
@@ -463,6 +465,19 @@ int harp_ingestion_module_geoms_lidar_init(void)
                                                                      harp_type_double, 1, dimension_type, NULL,
                                                                      description, "K", NULL, read_temperature_ind);
     harp_variable_definition_add_mapping(variable_definition, NULL, NULL, "/TEMPERATURE_INDEPENDENT", NULL);
+
+    return 0;
+}
+
+int harp_ingestion_module_geoms_lidar_init(void)
+{
+    harp_ingestion_module *module;
+
+    module = harp_ingestion_register_module_coda("GEOMS-TE-LIDAR-O3", "GEOMS", "GEOMS", "LIDAR_O3",
+                                                 "GEOMS template for LIDAR ozone", ingestion_init, ingestion_done);
+
+    init_product_definition(module, 3);
+    init_product_definition(module, 4);
 
     return 0;
 }
