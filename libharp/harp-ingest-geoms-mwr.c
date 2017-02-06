@@ -474,45 +474,45 @@ static int get_product_definition(const harp_ingestion_module *module, coda_prod
 
     if (coda_cursor_set_product(&cursor, product) != 0)
     {
-        harp_set_error(HARP_ERROR_UNSUPPORTED_PRODUCT, NULL);
+        harp_set_error(HARP_ERROR_CODA, NULL);
         return -1;
     }
     if (coda_cursor_goto(&cursor, "@DATA_TEMPLATE") != 0)
     {
-        harp_set_error(HARP_ERROR_UNSUPPORTED_PRODUCT, NULL);
+        harp_set_error(HARP_ERROR_UNSUPPORTED_PRODUCT, "could not find DATA_TEMPLATE global attribute");
         return -1;
     }
     if (coda_cursor_get_string_length(&cursor, &length) != 0)
     {
-        harp_set_error(HARP_ERROR_UNSUPPORTED_PRODUCT, NULL);
+        harp_set_error(HARP_ERROR_CODA, NULL);
         return -1;
     }
     /* template should match the pattern "GEOMS-TE-MWR-xxx" */
     if (length != 16)
     {
-        harp_set_error(HARP_ERROR_UNSUPPORTED_PRODUCT, NULL);
+        harp_set_error(HARP_ERROR_UNSUPPORTED_PRODUCT, "invalid string length for DATA_TEMPLATE global attribute");
         return -1;
     }
     if (coda_cursor_read_string(&cursor, template_name, 17) != 0)
     {
-        harp_set_error(HARP_ERROR_UNSUPPORTED_PRODUCT, NULL);
+        harp_set_error(HARP_ERROR_CODA, NULL);
         return -1;
     }
 
     if (coda_cursor_goto(&cursor, "/@DATA_SOURCE") != 0)
     {
-        harp_set_error(HARP_ERROR_UNSUPPORTED_PRODUCT, NULL);
+        harp_set_error(HARP_ERROR_UNSUPPORTED_PRODUCT, "could not find DATA_SOURCE global attribute");
         return -1;
     }
     if (coda_cursor_read_string(&cursor, data_source, 20) != 0)
     {
-        harp_set_error(HARP_ERROR_UNSUPPORTED_PRODUCT, NULL);
+        harp_set_error(HARP_ERROR_CODA, NULL);
         return -1;
     }
     /* data source should match the pattern "MWR.<SPECIES>_xxxx" */
     if (strncmp(data_source, "MWR.", 4) != 0)
     {
-        harp_set_error(HARP_ERROR_UNSUPPORTED_PRODUCT, NULL);
+        harp_set_error(HARP_ERROR_UNSUPPORTED_PRODUCT, "DATA_SOURCE global attribute has an invalid value");
         return -1;
     }
     /* truncate data_source at first '_' occurence */
@@ -534,14 +534,15 @@ static int get_product_definition(const harp_ingestion_module *module, coda_prod
     {
         /* match against product definition name: '<template_name>-<gas>' */
         if (strncmp(template_name, module->product_definition[i]->name, 16) == 0 &&
-            strcmp(&module->product_definition[i]->name[17], gas) == 0)
+            strcmp(gas, &module->product_definition[i]->name[17]) == 0)
         {
             *definition = module->product_definition[i];
             return 0;
         }
     }
 
-    harp_set_error(HARP_ERROR_UNSUPPORTED_PRODUCT, NULL);
+    harp_set_error(HARP_ERROR_UNSUPPORTED_PRODUCT, "GEOMS template '%s' for gas '%s' not supported", template_name,
+                   gas);
     return -1;
 }
 

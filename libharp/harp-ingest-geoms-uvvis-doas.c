@@ -1306,17 +1306,17 @@ static int get_product_definition(const harp_ingestion_module *module, coda_prod
 
     if (coda_cursor_set_product(&cursor, product) != 0)
     {
-        harp_set_error(HARP_ERROR_UNSUPPORTED_PRODUCT, NULL);
+        harp_set_error(HARP_ERROR_CODA, NULL);
         return -1;
     }
     if (coda_cursor_goto(&cursor, "@DATA_TEMPLATE") != 0)
     {
-        harp_set_error(HARP_ERROR_UNSUPPORTED_PRODUCT, NULL);
+        harp_set_error(HARP_ERROR_UNSUPPORTED_PRODUCT, "could not find DATA_TEMPLATE global attribute");
         return -1;
     }
     if (coda_cursor_get_string_length(&cursor, &length) != 0)
     {
-        harp_set_error(HARP_ERROR_UNSUPPORTED_PRODUCT, NULL);
+        harp_set_error(HARP_ERROR_CODA, NULL);
         return -1;
     }
     /* template should match the pattern "GEOMS-TE-UVVIS-DOAS-[DIRECTSUN-GAS|OFFAXIS-GAS|OFFAXIS-AEROSOL|ZENITH-GAS]-xxx" */
@@ -1338,17 +1338,17 @@ static int get_product_definition(const harp_ingestion_module *module, coda_prod
     }
     else
     {
-        harp_set_error(HARP_ERROR_UNSUPPORTED_PRODUCT, NULL);
+        harp_set_error(HARP_ERROR_UNSUPPORTED_PRODUCT, "invalid string length for DATA_TEMPLATE global attribute");
         return -1;
     }
     if (coda_cursor_read_string(&cursor, template_name, 40) != 0)
     {
-        harp_set_error(HARP_ERROR_UNSUPPORTED_PRODUCT, NULL);
+        harp_set_error(HARP_ERROR_CODA, NULL);
         return -1;
     }
     if (strncmp(template_name, "GEOMS-TE-UVVIS-DOAS-", 20) != 0)
     {
-        harp_set_error(HARP_ERROR_UNSUPPORTED_PRODUCT, NULL);
+        harp_set_error(HARP_ERROR_UNSUPPORTED_PRODUCT, "invalid GEOMS template name '%s", template_name);
         return -1;
     }
 
@@ -1363,23 +1363,24 @@ static int get_product_definition(const harp_ingestion_module *module, coda_prod
                 return 0;
             }
         }
+        harp_set_error(HARP_ERROR_UNSUPPORTED_PRODUCT, "GEOMS template '%s' not supported", template_name);
     }
     else
     {
         if (coda_cursor_goto(&cursor, "/@DATA_SOURCE") != 0)
         {
-            harp_set_error(HARP_ERROR_UNSUPPORTED_PRODUCT, NULL);
+            harp_set_error(HARP_ERROR_UNSUPPORTED_PRODUCT, "could not find DATA_SOURCE global attribute");
             return -1;
         }
         if (coda_cursor_read_string(&cursor, data_source, 30) != 0)
         {
-            harp_set_error(HARP_ERROR_UNSUPPORTED_PRODUCT, NULL);
+            harp_set_error(HARP_ERROR_CODA, NULL);
             return -1;
         }
         /* data source should match the pattern "UVVIS_DOAS.[DIRECTSUN|OFFAXIS|ZENITH].<SPECIES>_xxxx" */
         if (strncmp(data_source, "UVVIS.DOAS.", 11) != 0)
         {
-            harp_set_error(HARP_ERROR_UNSUPPORTED_PRODUCT, NULL);
+            harp_set_error(HARP_ERROR_UNSUPPORTED_PRODUCT, "DATA_SOURCE global attribute has an invalid value");
             return -1;
         }
         switch (expected_type)
@@ -1402,7 +1403,7 @@ static int get_product_definition(const harp_ingestion_module *module, coda_prod
         }
         if (result != 0)
         {
-            harp_set_error(HARP_ERROR_UNSUPPORTED_PRODUCT, NULL);
+            harp_set_error(HARP_ERROR_UNSUPPORTED_PRODUCT, "DATA_SOURCE global attribute has an invalid value");
             return -1;
         }
         /* truncate data_source at first '_' occurence */
@@ -1423,15 +1424,16 @@ static int get_product_definition(const harp_ingestion_module *module, coda_prod
         {
             /* match against product definition name: '<template_name>-<gas>' */
             if (strncmp(template_name, module->product_definition[i]->name, length) == 0 &&
-                strcmp(&module->product_definition[i]->name[length + 1], gas) == 0)
+                strcmp(gas, &module->product_definition[i]->name[length + 1]) == 0)
             {
                 *definition = module->product_definition[i];
                 return 0;
             }
         }
+        harp_set_error(HARP_ERROR_UNSUPPORTED_PRODUCT, "GEOMS template '%s' for gas '%s' not supported", template_name,
+                       gas);
     }
 
-    harp_set_error(HARP_ERROR_UNSUPPORTED_PRODUCT, NULL);
     return -1;
 }
 

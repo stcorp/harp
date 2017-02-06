@@ -227,17 +227,17 @@ static int get_product_definition(const harp_ingestion_module *module, coda_prod
 
     if (coda_cursor_set_product(&cursor, product) != 0)
     {
-        harp_set_error(HARP_ERROR_UNSUPPORTED_PRODUCT, NULL);
+        harp_set_error(HARP_ERROR_CODA, NULL);
         return -1;
     }
     if (coda_cursor_goto(&cursor, "@DATA_TEMPLATE") != 0)
     {
-        harp_set_error(HARP_ERROR_UNSUPPORTED_PRODUCT, NULL);
+        harp_set_error(HARP_ERROR_UNSUPPORTED_PRODUCT, "could not find DATA_TEMPLATE global attribute");
         return -1;
     }
     if (coda_cursor_read_string(&cursor, template_name, 100) != 0)
     {
-        harp_set_error(HARP_ERROR_UNSUPPORTED_PRODUCT, NULL);
+        harp_set_error(HARP_ERROR_CODA, NULL);
         return -1;
     }
 
@@ -250,7 +250,7 @@ static int get_product_definition(const harp_ingestion_module *module, coda_prod
         }
     }
 
-    harp_set_error(HARP_ERROR_UNSUPPORTED_PRODUCT, NULL);
+    harp_set_error(HARP_ERROR_UNSUPPORTED_PRODUCT, "GEOMS template '%s' not supported", template_name);
     return -1;
 }
 
