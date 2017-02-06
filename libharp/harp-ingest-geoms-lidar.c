@@ -219,8 +219,7 @@ static int read_nd_bs_uncertainty(void *user_data, harp_array data)
 
 static int read_temp_bs(void *user_data, harp_array data)
 {
-    return read_variable_double(user_data, "TEMPERATURE_BACKSCATTER",
-                                ((ingest_info *)user_data)->num_vertical, data);
+    return read_variable_double(user_data, "TEMPERATURE_BACKSCATTER", ((ingest_info *)user_data)->num_vertical, data);
 }
 
 static int read_temp_bs_uncertainty(void *user_data, harp_array data)
@@ -440,7 +439,7 @@ static void register_common_variables(harp_product_definition *product_definitio
                                                                      description, "days since 2000-01-01", NULL,
                                                                      read_datetime_stop);
     harp_variable_definition_add_mapping(variable_definition, NULL, NULL, "/DATETIME.STOP", NULL);
-    
+
     dimension_type[0] = harp_dimension_vertical;
 
     /* altitude */
@@ -530,8 +529,7 @@ static int init_temperature_product_definition(harp_ingestion_module *module, in
     variable_definition = harp_ingestion_register_variable_full_read(product_definition, "temperature",
                                                                      harp_type_double, 2, dimension_type, NULL,
                                                                      description, "K", NULL, read_temp_bs);
-    harp_variable_definition_add_mapping(variable_definition, NULL, NULL, "/TEMPERATURE_BACKSCATTER",
-                                         NULL);
+    harp_variable_definition_add_mapping(variable_definition, NULL, NULL, "/TEMPERATURE_BACKSCATTER", NULL);
 
     /* temperature_uncertainty */
     description = "standard deviation of the backscatter temperature";
@@ -547,8 +545,7 @@ static int init_temperature_product_definition(harp_ingestion_module *module, in
     variable_definition = harp_ingestion_register_variable_full_read(product_definition, "number_density",
                                                                      harp_type_double, 2, dimension_type, NULL,
                                                                      description, "molec/m3", NULL, read_nd_bs);
-    harp_variable_definition_add_mapping(variable_definition, NULL, NULL, "/NUMBER.DENSITY_BACKSCATTER",
-                                         NULL);
+    harp_variable_definition_add_mapping(variable_definition, NULL, NULL, "/NUMBER.DENSITY_BACKSCATTER", NULL);
 
     /* number_density_uncertainty */
     description = "standard deviation of the backscatter number density";
