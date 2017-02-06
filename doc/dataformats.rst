@@ -210,6 +210,9 @@ aerosol_optical_depth                                                         X 
 altitude                                      sensor,                         X       X    X             altitude in HARP is with respect to the WGS84 reference ellipsoid
                                               surface
 altitude_bounds                                                                       X    X
+cloud_base_albedo                                                             X            X
+cloud_base_height                                                             X            X
+cloud_base_pressure                                                           X            X
 cloud_fraction                                                                X            X
 cloud_optical_depth                                                           X            X             this is equal to 'cloud optical thickness'
 cloud_pressure                                                                X            X
