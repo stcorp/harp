@@ -394,6 +394,7 @@ The 'surface' prefix should only be used when quantities are combined together w
 If a product just contains surface quantities then don't use a 'surface' prefix but just omit the vertical dimension and
 indicate the vertical level (i.e. location of the surface) using a 'pressure', 'altitude', and/or 'geopotential_height' variable.
 
+All (horizontal) azimuth angles in HARP should follow the convention that 0 is North facing and the angle is increasing when moving Eastwards (i.e. clockwise).
 
 Be aware that there are still several topics under discussion that may change the above naming convention.
 See the HARP issues list on the GitHub website for more details.
