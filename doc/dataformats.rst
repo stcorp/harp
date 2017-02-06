@@ -231,6 +231,12 @@ datetime_start
 datetime_stop
 density                                                                       X       X    X             this is the mass density
 frequency                                                                     X
+frequency_irradiance                                                          X                    X
+frequency_photon_irradiance                                                   X                    X
+frequency_photon_radiance                                                     X                    X
+frequency_photon_transmittance                                                X                    X
+frequency_radiance                                                            X                    X
+frequency_transmittance                                                       X                    X
 geopotential                                  surface                         X       X    X
 geopotential_height                           surface                         X       X    X
 hlos_wind_velocity                            surface                         X       X    X             hlos means 'horizontal line of sight'
@@ -274,7 +280,19 @@ viewing_elevation_angle                                                       X
 viewing_zenith_angle                                                          X
 virtual_temperature                                                           X       X    X
 wavelength                                                                    X                    X
+wavelength_irradiance                                                         X                    X
+wavelength_photon_irradiance                                                  X                    X
+wavelength_photon_radiance                                                    X                    X
+wavelength_photon_transmittance                                               X                    X
+wavelength_radiance                                                           X                    X
+wavelength_transmittance                                                      X                    X
 wavenumber                                                                    X                    X
+wavenumber_irradiance                                                         X                    X
+wavenumber_photon_irradiance                                                  X                    X
+wavenumber_photon_radiance                                                    X                    X
+wavenumber_photon_transmittance                                               X                    X
+wavenumber_radiance                                                           X                    X
+wavenumber_transmittance                                                      X                    X
 wind_speed                                    surface                         X       X    X
 wind_direction                                surface                         X       X    X
 <species>_column_density                      stratospheric,  amf, apriori,   X       X    X             this is the mass density
