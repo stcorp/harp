@@ -320,7 +320,6 @@ static int get_spectral_data_per_band(coda_cursor cursor_start_of_band, ingest_i
                 for (l = 0; (l <= copy_previous_values) && (l <= egp_record_nr); l++)
                 {
                     *(double_data - (l * info->max_measurements_one_egp)) = integration_time;
-                    info->mixed_pixel_in_this_egp_record[egp_record_nr - l] = TRUE;
                 }
                 break;
         }
