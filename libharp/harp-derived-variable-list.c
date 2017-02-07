@@ -321,6 +321,7 @@ static int get_expanded_dimension(harp_variable *variable, const harp_variable *
         variable->dimension_type[i] = source_variable[0]->dimension_type[i];
         variable->dimension[i] = source_variable[0]->dimension[i];
     }
+    /* this assumes that this function is not used to expand string data! */
     memcpy(variable->data.ptr, source_variable[0]->data.ptr,
            (size_t)variable->num_elements * harp_get_size_for_type(variable->data_type));
 
@@ -4769,10 +4770,10 @@ static int add_axis_conversions(void)
         }
     }
 
-    /* {[time]} from {[time],vertical} */
     dimension_type[1] = harp_dimension_vertical;
     for (i = 0; i < 2; i++)
     {
+        /* {[time]} from {[time],vertical} */
         if (harp_variable_conversion_new("latitude", harp_type_double, HARP_UNIT_LATITUDE, i, dimension_type, 0,
                                          get_vertical_mid_point, &conversion) != 0)
         {
@@ -4780,6 +4781,18 @@ static int add_axis_conversions(void)
         }
         if (harp_variable_conversion_add_source(conversion, "latitude", harp_type_double, HARP_UNIT_LATITUDE, i + 1,
                                                 &dimension_type[1 - i], 0) != 0)
+        {
+            return -1;
+        }
+
+        /* {[time],vertical} from {[time]} */
+        if (harp_variable_conversion_new("latitude", harp_type_double, HARP_UNIT_LATITUDE, i + 1,
+                                         &dimension_type[1 - i], 0, get_expanded_dimension, &conversion) != 0)
+        {
+            return -1;
+        }
+        if (harp_variable_conversion_add_source(conversion, "latitude", harp_type_double, HARP_UNIT_LATITUDE, i,
+                                                dimension_type, 0) != 0)
         {
             return -1;
         }
@@ -4888,10 +4901,10 @@ static int add_axis_conversions(void)
         }
     }
 
-    /* {[time]} from {[time],vertical} */
     dimension_type[1] = harp_dimension_vertical;
     for (i = 0; i < 2; i++)
     {
+        /* {[time]} from {[time],vertical} */
         if (harp_variable_conversion_new("longitude", harp_type_double, HARP_UNIT_LONGITUDE, i, dimension_type, 0,
                                          get_vertical_mid_point, &conversion) != 0)
         {
@@ -4899,6 +4912,18 @@ static int add_axis_conversions(void)
         }
         if (harp_variable_conversion_add_source(conversion, "longitude", harp_type_double, HARP_UNIT_LONGITUDE, i + 1,
                                                 &dimension_type[1 - i], 0) != 0)
+        {
+            return -1;
+        }
+
+        /* {[time],vertical} from {[time]} */
+        if (harp_variable_conversion_new("longitude", harp_type_double, HARP_UNIT_LONGITUDE, i + 1,
+                                         &dimension_type[1 - i], 0, get_expanded_dimension, &conversion) != 0)
+        {
+            return -1;
+        }
+        if (harp_variable_conversion_add_source(conversion, "longitude", harp_type_double, HARP_UNIT_LONGITUDE, i,
+                                                dimension_type, 0) != 0)
         {
             return -1;
         }
