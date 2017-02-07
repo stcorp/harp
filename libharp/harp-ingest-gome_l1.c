@@ -142,7 +142,7 @@ static int get_main_data(ingest_info *info, const char *datasetname, const char 
                          double *double_data_array)
 {
     coda_cursor cursor;
-    double *double_data;
+    double *double_data, corners[4];
     long i, j;
 
     double_data = double_data_array;
@@ -205,15 +205,19 @@ static int get_main_data(ingest_info *info, const char *datasetname, const char 
                         harp_set_error(HARP_ERROR_CODA, NULL);
                         return -1;
                     }
-                    if (coda_cursor_read_double(&cursor, double_data) != 0)
+                    if (coda_cursor_read_double(&cursor, &corners[j]) != 0)
                     {
                         harp_set_error(HARP_ERROR_CODA, NULL);
                         return -1;
                     }
                     coda_cursor_goto_parent(&cursor);
                     coda_cursor_goto_parent(&cursor);
-                    double_data++;
                 }
+                double_data[0] = corners[1];
+                double_data[1] = corners[3];
+                double_data[2] = corners[2];
+                double_data[3] = corners[0];
+                double_data += 4;
                 break;
         }
     }
