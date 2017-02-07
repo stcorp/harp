@@ -5091,6 +5091,7 @@ static int add_axis_conversions(void)
 
     /*** frequency ***/
 
+    dimension_type[1] = harp_dimension_spectral;
     for (i = 0; i < 3; i++)
     {
         if (i > 0)
@@ -5129,7 +5130,6 @@ static int add_axis_conversions(void)
 
     /*** wavelength ***/
 
-    dimension_type[1] = harp_dimension_spectral;
     for (i = 0; i < 3; i++)
     {
         if (i > 0)
