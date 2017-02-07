@@ -1,11 +1,8 @@
 
-These files are taken from udunits, version 2.2.20.
+These files are taken from udunits, version 2.2.24.
 
 The source files have been slightly modified in order to fit them into this
 build system. The changes that were made are:
-
- - tsearch.h and tsearch.c were taken from github, since they were missing
-   from the official 2.2.20 source package.
 
  - scanner.l and parser.y have been renamed to utscanner.l and utparser.y
 
@@ -42,5 +39,3 @@ build system. The changes that were made are:
 
  - use '_XOPEN_SOURCE 600' instead of '_XOPEN_SOURCE 500' to prevent
    warnings on Mac OS X.
-
- - Added unit 'ppv' to udunits2-common.xml.

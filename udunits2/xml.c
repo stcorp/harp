@@ -1810,7 +1810,13 @@ endImport(
         path = text;
     }
     else {
-        (void)snprintf(buf, sizeof(buf), "%s/%s",
+        (void)snprintf(buf, sizeof(buf),
+#ifdef _MSC_VER
+            // The directory pathname has a trailing backslash on Windows
+            "%s%s",
+#else
+            "%s/%s",
+#endif
             XML_GetBase(currFile->parser), text);
 
         buf[sizeof(buf)-1] = 0;
@@ -2083,21 +2089,24 @@ readXml(
         ut_handle_error_message("Couldn't create XML parser");
     }
     else {
-        char        base[_XOPEN_PATH_MAX];
-
-        (void)strncpy(base, path, sizeof(base));
-        base[sizeof(base)-1] = 0;
-#ifndef _MSC_VER
-        (void)memmove(base, dirname(base), sizeof(base));
+        char base[_XOPEN_PATH_MAX];
+#ifdef _MSC_VER
+        {
+            char drive[_MAX_DRIVE+1]; // Will have trailing colon
+            char directory[_MAX_DIR+1]; // Will have trailing backslash
+            _splitpath(path, drive, directory, NULL, NULL);
+            (void)snprintf(base, sizeof(base), "%s%s", drive, directory);
+            base[sizeof(base)-1] = 0;
+        }
 #else
-		{
-			char *m_dir = (char*)malloc(sizeof(char)*1024);
-			_splitpath(base,NULL,m_dir,NULL,NULL);
-			(void)memmove(base,m_dir,sizeof(base));
-			free(m_dir);
-		}
+        {
+            // str*cpy() must not copy overlapping strings
+            char tmp[_XOPEN_PATH_MAX];
+            (void)strncpy(tmp, path, sizeof(tmp));
+            tmp[sizeof(tmp)-1] = 0;
+            (void)strcpy(base, dirname(tmp));
+        }
 #endif
-		base[sizeof(base)-1] = 0;
 
         if (XML_SetBase(parser, base) != XML_STATUS_OK) {
             status = UT_OS;
