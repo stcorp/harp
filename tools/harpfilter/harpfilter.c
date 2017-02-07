@@ -79,7 +79,7 @@ static void print_help()
     printf("        If the filtered product is empty, a warning will be printed and the\n");
     printf("        tool will return with exit code 2 (without writing a file).\n");
     printf("\n");
-    printf("    harpfilter --list-conversions [input product file]\n");
+    printf("    harpfilter --list-derivations [input product file]\n");
     printf("        List all available variable conversions. If an input product file is\n");
     printf("        specified, limit the list to variable conversions that are possible\n");
     printf("        given the specified product.\n");
@@ -92,7 +92,7 @@ static void print_help()
     printf("\n");
 }
 
-static int list_conversions(int argc, char *argv[])
+static int list_derivations(int argc, char *argv[])
 {
     harp_product *product = NULL;
     const char *input_filename = NULL;
@@ -251,9 +251,9 @@ int main(int argc, char *argv[])
         exit(1);
     }
 
-    if (strcmp(argv[1], "--list-conversions") == 0)
+    if (strcmp(argv[1], "--list-derivations") == 0)
     {
-        if (list_conversions(argc, argv) != 0)
+        if (list_derivations(argc, argv) != 0)
         {
             fprintf(stderr, "ERROR: %s\n", harp_errno_to_string(harp_errno));
             harp_done();

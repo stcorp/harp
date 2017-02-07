@@ -26,7 +26,7 @@ netCDF/HDF4/HDF5 file.
           If the filtered product is empty, a warning will be printed and the
           tool will return with exit code 2 (without writing a file).
 
-      harpfilter --list-conversions [input product file]
+      harpfilter --list-derivations [input product file]
           List all available variable conversions. If an input product file is
           specified, limit the list to variable conversions that are possible
           given the specified product.

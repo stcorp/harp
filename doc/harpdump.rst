@@ -20,6 +20,11 @@ Inspect the contents of a HARP compliant netCDF/HDF4/HDF5 file.
               -d, --data:
                   Show data values for each variable.
 
+      harpdump --list-derivations [input product file]
+          List all available variable conversions. If an input product file is
+          specified, limit the list to variable conversions that are possible
+          given the specified product.
+                                  
       harpdump -h, --help
           Show help (this text).
 

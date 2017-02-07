@@ -53,6 +53,9 @@
 
 * Added support for QA4ECV NO2 and HCHO products.
 
+* Changed --list-conversions command line option to --list-derivations.
+  And added --list-derivations option to harpdump.
+
 0.4 2016-10-16
 ~~~~~~~~~~~~~~
 

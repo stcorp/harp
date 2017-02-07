@@ -74,6 +74,11 @@ static void print_help()
     printf("            -d, --data:\n");
     printf("                Show data values for each variable.\n");
     printf("\n");
+    printf("    harpdump --list-derivations [input product file]\n");
+    printf("        List all available variable conversions. If an input product file is\n");
+    printf("        specified, limit the list to variable conversions that are possible\n");
+    printf("        given the specified product.\n");
+    printf("\n");
     printf("    harpdump -h, --help\n");
     printf("        Show help (this text).\n");
     printf("\n");
@@ -82,32 +87,49 @@ static void print_help()
     printf("\n");
 }
 
-int main(int argc, char *argv[])
+static int list_derivations(int argc, char *argv[])
+{
+    harp_product *product = NULL;
+    const char *input_filename = NULL;
+
+    if (argc == 2)
+    {
+        return harp_doc_list_conversions(NULL, printf);
+    }
+
+    if (argc != 3)
+    {
+        fprintf(stderr, "ERROR: invalid arguments\n");
+        print_help();
+        exit(1);
+    }
+
+    input_filename = argv[argc - 1];
+
+    /* Import the product */
+    if (harp_import(input_filename, &product) != 0)
+    {
+        return -1;
+    }
+
+    /* List possible conversions */
+    if (harp_doc_list_conversions(product, printf) != 0)
+    {
+        harp_product_delete(product);
+        return -1;
+    }
+
+    harp_product_delete(product);
+    return 0;
+}
+
+static int dump(int argc, char *argv[])
 {
     harp_product *product;
     const char *operations = NULL;
     int data = 0;
     int list = 0;
     int i;
-
-    if (argc == 1 || strcmp(argv[1], "-h") == 0 || strcmp(argv[1], "--help") == 0)
-    {
-        print_help();
-        exit(0);
-    }
-
-    if (strcmp(argv[1], "-v") == 0 || strcmp(argv[1], "--version") == 0)
-    {
-        print_version();
-        exit(0);
-    }
-
-    if (argc < 2)
-    {
-        fprintf(stderr, "ERROR: invalid arguments\n");
-        print_help();
-        exit(1);
-    }
 
     /* parse argumenst */
     for (i = 1; i < argc; i++)
@@ -135,11 +157,53 @@ int main(int argc, char *argv[])
         {
             fprintf(stderr, "ERROR: invalid arguments\n");
             print_help();
-            exit(1);
+            return -1;
         }
     }
 
     if (i != argc - 1)
+    {
+        fprintf(stderr, "ERROR: invalid arguments\n");
+        print_help();
+        return -1;
+    }
+
+    if (harp_import(argv[argc - 1], &product) != 0)
+    {
+        return -1;
+    }
+
+    if (operations != NULL)
+    {
+        if (harp_product_execute_operations(product, operations) != 0)
+        {
+            harp_product_delete(product);
+            return -1;
+        }
+    }
+
+    harp_product_print(product, !list, data && !list, printf);
+
+    harp_product_delete(product);
+
+    return 0;
+}
+
+int main(int argc, char *argv[])
+{
+    if (argc == 1 || strcmp(argv[1], "-h") == 0 || strcmp(argv[1], "--help") == 0)
+    {
+        print_help();
+        exit(0);
+    }
+
+    if (strcmp(argv[1], "-v") == 0 || strcmp(argv[1], "--version") == 0)
+    {
+        print_version();
+        exit(0);
+    }
+
+    if (argc < 2)
     {
         fprintf(stderr, "ERROR: invalid arguments\n");
         print_help();
@@ -153,28 +217,28 @@ int main(int argc, char *argv[])
         fprintf(stderr, "ERROR: %s\n", harp_errno_to_string(harp_errno));
         exit(1);
     }
-
-    if (harp_import(argv[argc - 1], &product) != 0)
+    
+    if (strcmp(argv[1], "--list-derivations") == 0)
     {
-        fprintf(stderr, "ERROR: %s\n", harp_errno_to_string(harp_errno));
-        harp_done();
-        exit(1);
-    }
-
-    if (operations != NULL)
-    {
-        if (harp_product_execute_operations(product, operations) != 0)
+        if (list_derivations(argc, argv) != 0)
         {
             fprintf(stderr, "ERROR: %s\n", harp_errno_to_string(harp_errno));
-            harp_product_delete(product);
             harp_done();
             exit(1);
         }
     }
-
-    harp_product_print(product, !list, data && !list, printf);
-
-    harp_product_delete(product);
+    else
+    {
+        if (dump(argc, argv) != 0)
+        {
+            if (harp_errno != HARP_SUCCESS)
+            {
+                fprintf(stderr, "ERROR: %s\n", harp_errno_to_string(harp_errno));
+            }
+            harp_done();
+            exit(1);
+        }
+    }
 
     harp_done();
 

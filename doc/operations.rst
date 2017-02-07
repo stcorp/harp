@@ -70,18 +70,18 @@ Supported functions:
 
     ``derive(variable {dimension-type, ...} [unit])``
        Derive the specified variable from other variables found
-       in the product. The ``--list-conversions`` option of
-       harpconvert and harpfilter can be used to list available
-       variable conversions.
+       in the product. The ``--list-derivations`` option of
+       harpconvert, harpdump, and harpfilter can be used to list
+       available variable conversions.
        The algorithms behind all the conversions are described
        in the :doc:`Algorithms <algorithms>` section of the
        documentation.
 
     ``derive_smoothed_column(variable {dimension-type, ...} [unit], axis-variable unit, collocation-result-file, a|b, dataset-dir)``
        Derive the specified variable from other variables found
-       in the product. The ``--list-conversions`` option of
-       harpconvert and harpfilter can be used to list available
-       variable conversions.
+       in the product. The ``--list-derivations`` option of
+       harpconvert, harpdump, and harpfilter can be used to list
+       available variable conversions.
        The algorithms behind all the conversions are described
        in the :doc:`Algorithms <algorithms>` section of the
        documentation.

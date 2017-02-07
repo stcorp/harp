@@ -38,7 +38,7 @@ product types supported by HARP.
           Perform an internal test for each product by ingesting the product
           using all possible combinations of ingestion options.
 
-      harpconvert --list-conversions [options] [input product file]
+      harpconvert --list-derivations [options] [input product file]
           List all available variable conversions. If an input product file is
           specified, limit the list to variable conversions that are possible
           given the specified product.

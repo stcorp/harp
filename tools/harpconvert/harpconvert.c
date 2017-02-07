@@ -89,7 +89,7 @@ static void print_help()
     printf("        Perform an internal test for each product by ingesting the product\n");
     printf("        using all possible combinations of ingestion options.\n");
     printf("\n");
-    printf("    harpconvert --list-conversions [options] [input product file]\n");
+    printf("    harpconvert --list-derivations [options] [input product file]\n");
     printf("        List all available variable conversions. If an input product file is\n");
     printf("        specified, limit the list to variable conversions that are possible\n");
     printf("        given the specified product.\n");
@@ -115,7 +115,7 @@ static void print_help()
     printf("\n");
 }
 
-static int list_conversions(int argc, char *argv[])
+static int list_derivations(int argc, char *argv[])
 {
     const char *options = NULL;
     harp_product *product = NULL;
@@ -352,9 +352,9 @@ int main(int argc, char *argv[])
         exit(1);
     }
 
-    if (strcmp(argv[1], "--list-conversions") == 0)
+    if (strcmp(argv[1], "--list-derivations") == 0)
     {
-        result = list_conversions(argc, argv);
+        result = list_derivations(argc, argv);
     }
     else if (strcmp(argv[1], "--generate-documentation") == 0)
     {
