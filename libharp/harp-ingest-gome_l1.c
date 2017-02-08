@@ -252,7 +252,6 @@ static int get_spectral_data_per_band(coda_cursor cursor_start_of_band, ingest_i
     if (integration_time > 1.51)
     {
         copy_previous_values = (long)((integration_time - 1.49) / 1.5);
-        info->mixed_pixel_in_this_egp_record[egp_record_nr] = TRUE;
     }
 
     cursor = cursor_start_of_band;
@@ -311,7 +310,6 @@ static int get_spectral_data_per_band(coda_cursor cursor_start_of_band, ingest_i
                     for (l = 1; (l <= copy_previous_values) && (l <= egp_record_nr); l++)
                     {
                         *(double_data - (l * info->max_measurements_one_egp)) = *double_data;
-                        info->mixed_pixel_in_this_egp_record[egp_record_nr - l] = TRUE;
                     }
                 }
                 break;
@@ -732,6 +730,7 @@ static int read_dimensions(void *user_data, long dimension[HARP_NUM_DIM_TYPES])
 static int init_dimensions(ingest_info *info)
 {
     coda_cursor cursor, save_cursor_egp, save_cursor_brda;
+    double integration_time;
     long num_brda_elements, num_edr_records, i, j, offset;
     int band_nr;
     char band_name[MAX_SIZE_BANDNAME];
@@ -786,6 +785,25 @@ static int init_dimensions(ingest_info *info)
         for (j = 0; j < num_brda_elements; j++)
         {
             save_cursor_brda = cursor;
+
+            if (coda_cursor_goto_record_field_by_name(&cursor, "integration_time") != 0)
+            {
+                harp_set_error(HARP_ERROR_CODA, NULL);
+                return -1;
+            }
+            if (coda_cursor_read_double(&cursor, &integration_time) != 0)
+            {
+                harp_set_error(HARP_ERROR_CODA, NULL);
+                return -1;
+            }
+            coda_cursor_goto_parent(&cursor);
+            /* Check for mixed pixels (i.e. integration_time > 1.5). */
+            /* We use a margin of 0.01 to prevent rounding problems. */
+            if (integration_time > 1.51)
+            {
+                info->mixed_pixel_in_this_egp_record[i] = TRUE;
+            }
+
             if (coda_cursor_goto_record_field_by_name(&cursor, "band_id") != 0)
             {
                 harp_set_error(HARP_ERROR_CODA, NULL);
@@ -811,6 +829,7 @@ static int init_dimensions(ingest_info *info)
                 }
                 continue;
             }
+
             if (coda_cursor_goto_record_field_by_name(&cursor, "edr") != 0)
             {
                 harp_set_error(HARP_ERROR_CODA, NULL);
