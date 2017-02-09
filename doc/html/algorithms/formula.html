@@ -1,0 +1,1156 @@
+
+
+<!DOCTYPE html>
+<!--[if IE 8]><html class="no-js lt-ie9" lang="en" > <![endif]-->
+<!--[if gt IE 8]><!--> <html class="no-js" lang="en" > <!--<![endif]-->
+<head>
+  <meta charset="utf-8">
+  
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  
+  <title>Common formula &mdash; HARP 0.4b documentation</title>
+  
+
+  
+  
+
+  
+
+  
+  
+    
+
+  
+
+  
+  
+    <link rel="stylesheet" href="../_static/css/theme.css" type="text/css" />
+  
+
+  
+    <link rel="stylesheet" href="../_static/custom.css" type="text/css" />
+  
+
+  
+    <link rel="top" title="HARP 0.4b documentation" href="../index.html"/>
+        <link rel="up" title="Algorithms" href="index.html"/>
+        <link rel="next" title="common derivations" href="common.html"/>
+        <link rel="prev" title="Definitions" href="definitions.html"/> 
+
+  
+  <script src="../_static/js/modernizr.min.js"></script>
+
+</head>
+
+<body class="wy-body-for-nav" role="document">
+
+  <div class="wy-grid-for-nav">
+
+    
+    <nav data-toggle="wy-nav-shift" class="wy-nav-side">
+      <div class="wy-side-scroll">
+        <div class="wy-side-nav-search">
+          
+
+          
+            <a href="../index.html" class="icon icon-home"> HARP
+          
+
+          
+          </a>
+
+          
+            
+            
+              <div class="version">
+                0.4
+              </div>
+            
+          
+
+          
+
+          
+        </div>
+
+        <div class="wy-menu wy-menu-vertical" data-spy="affix" role="navigation" aria-label="main navigation">
+          
+            
+            
+                <ul class="current">
+<li class="toctree-l1"><a class="reference internal" href="../install.html">Installation</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../dataformats.html">Data formats</a></li>
+<li class="toctree-l1 current"><a class="reference internal" href="index.html">Algorithms</a><ul class="current">
+<li class="toctree-l2"><a class="reference internal" href="definitions.html">Definitions</a></li>
+<li class="toctree-l2 current"><a class="current reference internal" href="#">Common formula</a><ul>
+<li class="toctree-l3"><a class="reference internal" href="#gravity">gravity</a></li>
+<li class="toctree-l3"><a class="reference internal" href="#geopotential-height">geopotential height</a></li>
+<li class="toctree-l3"><a class="reference internal" href="#gas-constant">gas constant</a></li>
+<li class="toctree-l3"><a class="reference internal" href="#ideal-gas-law">ideal gas law</a></li>
+<li class="toctree-l3"><a class="reference internal" href="#barometric-formula">barometric formula</a></li>
+<li class="toctree-l3"><a class="reference internal" href="#mass-density">mass density</a></li>
+<li class="toctree-l3"><a class="reference internal" href="#number-density">number density</a></li>
+<li class="toctree-l3"><a class="reference internal" href="#dry-air-vs-total-air">dry air vs. total air</a></li>
+<li class="toctree-l3"><a class="reference internal" href="#virtual-temperature">virtual temperature</a></li>
+<li class="toctree-l3"><a class="reference internal" href="#volume-mixing-ratio">volume mixing ratio</a></li>
+<li class="toctree-l3"><a class="reference internal" href="#mass-mixing-ratio">mass mixing ratio</a></li>
+<li class="toctree-l3"><a class="reference internal" href="#molar-mass-of-total-air">molar mass of total air</a></li>
+<li class="toctree-l3"><a class="reference internal" href="#partial-pressure">partial pressure</a></li>
+<li class="toctree-l3"><a class="reference internal" href="#saturated-water-vapor-pressure">saturated water vapor pressure</a></li>
+</ul>
+</li>
+<li class="toctree-l2"><a class="reference internal" href="index.html#variable-conversions">Variable Conversions</a></li>
+</ul>
+</li>
+<li class="toctree-l1"><a class="reference internal" href="../operations.html">Operations</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../ingestions/index.html">Ingestion definitions</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../libharp.html">C library</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../python.html">Python interface</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../tools.html">Command line tools</a></li>
+</ul>
+
+            
+          
+        </div>
+      </div>
+    </nav>
+
+    <section data-toggle="wy-nav-shift" class="wy-nav-content-wrap">
+
+      
+      <nav class="wy-nav-top" role="navigation" aria-label="top navigation">
+        <i data-toggle="wy-nav-top" class="fa fa-bars"></i>
+        <a href="../index.html">HARP</a>
+      </nav>
+
+
+      
+      <div class="wy-nav-content">
+        <div class="rst-content">
+          
+
+ 
+
+
+
+<div role="navigation" aria-label="breadcrumbs navigation">
+  <ul class="wy-breadcrumbs">
+    <li><a href="../index.html">Docs</a> &raquo;</li>
+      
+          <li><a href="index.html">Algorithms</a> &raquo;</li>
+      
+    <li>Common formula</li>
+      <li class="wy-breadcrumbs-aside">
+        
+          
+        
+      </li>
+  </ul>
+  <hr/>
+</div>
+          <div role="main" class="document" itemscope="itemscope" itemtype="http://schema.org/Article">
+           <div itemprop="articleBody">
+            
+  <div class="section" id="common-formula">
+<h1>Common formula</h1>
+<div class="section" id="gravity">
+<h2>gravity</h2>
+<ol class="arabic">
+<li><p class="first">Newton&#8217;s gravitational law</p>
+<table border="1" class="docutils">
+<colgroup>
+<col width="24%" />
+<col width="42%" />
+<col width="33%" />
+</colgroup>
+<thead valign="bottom">
+<tr class="row-odd"><th class="head">symbol</th>
+<th class="head">description</th>
+<th class="head">unit</th>
+</tr>
+</thead>
+<tbody valign="top">
+<tr class="row-even"><td><span class="math">\(g\)</span></td>
+<td>gravity</td>
+<td><span class="math">\(\frac{m}{s^2}\)</span></td>
+</tr>
+<tr class="row-odd"><td><span class="math">\(g_{surf}\)</span></td>
+<td>gravity at earth surface</td>
+<td><span class="math">\(\frac{m}{s^2}\)</span></td>
+</tr>
+<tr class="row-even"><td><span class="math">\(h\)</span></td>
+<td>height above surface</td>
+<td><span class="math">\(m\)</span></td>
+</tr>
+<tr class="row-odd"><td><span class="math">\(R_{surf}\)</span></td>
+<td>earth radius at surface</td>
+<td><span class="math">\(m\)</span></td>
+</tr>
+</tbody>
+</table>
+<div class="math">
+\[g = g_{surf}\left(\frac{R_{surf}}{R_{surf} + h}\right)^2\]</div>
+</li>
+<li><p class="first">normal gravity at ellipsoid surface</p>
+<p>This is the WGS84 ellipsoidal gravity formula as taken from NIMA TR8350.2</p>
+<table border="1" class="docutils">
+<colgroup>
+<col width="28%" />
+<col width="36%" />
+<col width="36%" />
+</colgroup>
+<thead valign="bottom">
+<tr class="row-odd"><th class="head">symbol</th>
+<th class="head">name</th>
+<th class="head">unit</th>
+</tr>
+</thead>
+<tbody valign="top">
+<tr class="row-even"><td><span class="math">\(a\)</span></td>
+<td>WGS84 semi-major axis</td>
+<td><span class="math">\(m\)</span></td>
+</tr>
+<tr class="row-odd"><td><span class="math">\(b\)</span></td>
+<td>WGS84 semi-minor axis</td>
+<td><span class="math">\(m\)</span></td>
+</tr>
+<tr class="row-even"><td><span class="math">\(e\)</span></td>
+<td>eccentricity</td>
+<td><span class="math">\(m\)</span></td>
+</tr>
+<tr class="row-odd"><td><span class="math">\(g_{e}\)</span></td>
+<td>gravity at equator</td>
+<td><span class="math">\(\frac{m}{s^2}\)</span></td>
+</tr>
+<tr class="row-even"><td><span class="math">\(g_{p}\)</span></td>
+<td>gravity at poles</td>
+<td><span class="math">\(\frac{m}{s^2}\)</span></td>
+</tr>
+<tr class="row-odd"><td><span class="math">\(g_{surf}\)</span></td>
+<td>gravity at surface</td>
+<td><span class="math">\(\frac{m}{s^2}\)</span></td>
+</tr>
+<tr class="row-even"><td><span class="math">\(\phi\)</span></td>
+<td>latitude</td>
+<td><span class="math">\(degN\)</span></td>
+</tr>
+</tbody>
+</table>
+<div class="math">
+\begin{eqnarray}
+   e^2 &amp; = &amp; \frac{a^2-b^2}{a^2} \\
+   k &amp; = &amp; \frac{bg_{p} - ag_{e}}{ag_{e}} \\
+   g_{surf} &amp; = &amp; g_{e}\frac{1 + k {\sin}^2(\frac{\pi}{180}\phi)}{\sqrt{1 - e^2{\sin}^2(\frac{\pi}{180}\phi)}} \\
+   g_{surf} &amp; = &amp; 9.7803253359 \frac{1 + 0.00193185265241{\sin}^2(\frac{\pi}{180}\phi)}
+      {\sqrt{1 - 0.00669437999013{\sin}^2(\frac{\pi}{180}\phi)}}
+\end{eqnarray}</div></li>
+<li><p class="first">normal gravity above ellipsoid surface</p>
+<p>This is the WGS84 ellipsoidal gravity formula as taken from NIMA TR8350.2</p>
+<table border="1" class="docutils">
+<colgroup>
+<col width="21%" />
+<col width="48%" />
+<col width="31%" />
+</colgroup>
+<thead valign="bottom">
+<tr class="row-odd"><th class="head">symbol</th>
+<th class="head">name</th>
+<th class="head">unit</th>
+</tr>
+</thead>
+<tbody valign="top">
+<tr class="row-even"><td><span class="math">\(a\)</span></td>
+<td>WGS84 semi-major axis</td>
+<td><span class="math">\(m\)</span></td>
+</tr>
+<tr class="row-odd"><td><span class="math">\(b\)</span></td>
+<td>WGS84 semi-minor axis</td>
+<td><span class="math">\(m\)</span></td>
+</tr>
+<tr class="row-even"><td><span class="math">\(f\)</span></td>
+<td>WGS84 flattening</td>
+<td><span class="math">\(m\)</span></td>
+</tr>
+<tr class="row-odd"><td><span class="math">\(g\)</span></td>
+<td>gravity</td>
+<td><span class="math">\(\frac{m}{s^2}\)</span></td>
+</tr>
+<tr class="row-even"><td><span class="math">\(g_{surf}\)</span></td>
+<td>gravity at the ellipsoid surface</td>
+<td><span class="math">\(\frac{m}{s^2}\)</span></td>
+</tr>
+<tr class="row-odd"><td><span class="math">\(GM\)</span></td>
+<td>WGS84 earth&#8217;s gravitational constant</td>
+<td><span class="math">\(\frac{m^3}{s^2}\)</span></td>
+</tr>
+<tr class="row-even"><td><span class="math">\(z\)</span></td>
+<td>altitude</td>
+<td><span class="math">\(m\)</span></td>
+</tr>
+<tr class="row-odd"><td><span class="math">\(\phi\)</span></td>
+<td>latitude</td>
+<td><span class="math">\(degN\)</span></td>
+</tr>
+<tr class="row-even"><td><span class="math">\(\omega\)</span></td>
+<td>WGS84 earth angular velocity</td>
+<td><span class="math">\(rad/s\)</span></td>
+</tr>
+</tbody>
+</table>
+<p>The formula used is the one based on the truncated Taylor series expansion:</p>
+<div class="math">
+\begin{eqnarray}
+   m &amp; = &amp; \frac{\omega^2a^2b}{GM} \\
+   g &amp; = &amp; g_{surf} \left[ 1 - \frac{2}{a}\left(1+f+m-2f{\sin}^2(\frac{\pi}{180}\phi)\right)z + \frac{3}{a^2}z^2 \right] \\
+\end{eqnarray}</div></li>
+</ol>
+</div>
+<div class="section" id="geopotential-height">
+<h2>geopotential height</h2>
+<blockquote>
+<div><table border="1" class="docutils">
+<colgroup>
+<col width="24%" />
+<col width="42%" />
+<col width="33%" />
+</colgroup>
+<thead valign="bottom">
+<tr class="row-odd"><th class="head">symbol</th>
+<th class="head">description</th>
+<th class="head">unit</th>
+</tr>
+</thead>
+<tbody valign="top">
+<tr class="row-even"><td><span class="math">\(g\)</span></td>
+<td>gravity</td>
+<td><span class="math">\(\frac{m}{s^2}\)</span></td>
+</tr>
+<tr class="row-odd"><td><span class="math">\(g_{0}\)</span></td>
+<td>mean earth gravity</td>
+<td><span class="math">\(\frac{m}{s^2}\)</span></td>
+</tr>
+<tr class="row-even"><td><span class="math">\(g_{surf}\)</span></td>
+<td>gravity at earth surface</td>
+<td><span class="math">\(\frac{m}{s^2}\)</span></td>
+</tr>
+<tr class="row-odd"><td><span class="math">\(p\)</span></td>
+<td>pressure</td>
+<td><span class="math">\(Pa\)</span></td>
+</tr>
+<tr class="row-even"><td><span class="math">\(R_{surf}\)</span></td>
+<td>earth radius at surface</td>
+<td><span class="math">\(m\)</span></td>
+</tr>
+<tr class="row-odd"><td><span class="math">\(h\)</span></td>
+<td>height above surface</td>
+<td><span class="math">\(m\)</span></td>
+</tr>
+<tr class="row-even"><td><span class="math">\(h_{g}\)</span></td>
+<td>geopotential height</td>
+<td><span class="math">\(m\)</span></td>
+</tr>
+<tr class="row-odd"><td><span class="math">\(\phi\)</span></td>
+<td>latitude</td>
+<td><span class="math">\(degN\)</span></td>
+</tr>
+<tr class="row-even"><td><span class="math">\(\rho\)</span></td>
+<td>mass density</td>
+<td><span class="math">\(\frac{kg}{m^3}\)</span></td>
+</tr>
+</tbody>
+</table>
+<p>The geopotential height allows the gravity in the hydrostatic equation</p>
+<div class="math">
+\[dp = - \rho g dh\]</div>
+<p>to be replaced by a constant gravity</p>
+<div class="math">
+\[dp = - \rho g_{0} dh_{g}\]</div>
+<p>providing</p>
+<div class="math">
+\[dh_{g} = \frac{g}{g_{0}}dh\]</div>
+<p>With Newton&#8217;s gravitational law this becomes</p>
+<div class="math">
+\[dh_{g} = \frac{g_{surf}}{g_{0}}\left(\frac{R_{surf}}{R_{surf} + h}\right)^2dh\]</div>
+<p>And integrating this, considering that <span class="math">\(h=0\)</span> and <span class="math">\(h_{g}=0\)</span> at the surface, results in</p>
+<div class="math">
+\[h_{g} = \frac{g_{surf}}{g_{0}}\frac{R_{surf}h}{R_{surf} + h}\]</div>
+<div class="math">
+\[h = \frac{g_{0}R_{surf}h_{g}}{g_{surf}R_{surf}-g_{0}h_{g}}\]</div>
+</div></blockquote>
+</div>
+<div class="section" id="gas-constant">
+<h2>gas constant</h2>
+<blockquote>
+<div><table border="1" class="docutils">
+<colgroup>
+<col width="17%" />
+<col width="34%" />
+<col width="49%" />
+</colgroup>
+<thead valign="bottom">
+<tr class="row-odd"><th class="head">symbol</th>
+<th class="head">name</th>
+<th class="head">unit</th>
+</tr>
+</thead>
+<tbody valign="top">
+<tr class="row-even"><td><span class="math">\(k\)</span></td>
+<td>Boltzmann constant</td>
+<td><span class="math">\(\frac{kg m^2}{K s^2}\)</span></td>
+</tr>
+<tr class="row-odd"><td><span class="math">\(N_A\)</span></td>
+<td>Avogadro constant</td>
+<td><span class="math">\(\frac{1}{mol}\)</span></td>
+</tr>
+<tr class="row-even"><td><span class="math">\(R\)</span></td>
+<td>universal gas constant</td>
+<td><span class="math">\(\frac{kg m^2}{K mol s^2}\)</span></td>
+</tr>
+</tbody>
+</table>
+<p>Relation between Boltzmann constant, universal gas constant, and Avogadro constant:</p>
+<div class="math">
+\[k = \frac{R}{N_A}\]</div>
+</div></blockquote>
+</div>
+<div class="section" id="ideal-gas-law">
+<h2>ideal gas law</h2>
+<blockquote>
+<div><table border="1" class="docutils">
+<colgroup>
+<col width="14%" />
+<col width="35%" />
+<col width="51%" />
+</colgroup>
+<thead valign="bottom">
+<tr class="row-odd"><th class="head">symbol</th>
+<th class="head">name</th>
+<th class="head">unit</th>
+</tr>
+</thead>
+<tbody valign="top">
+<tr class="row-even"><td><span class="math">\(k\)</span></td>
+<td>Boltzmann constant</td>
+<td><span class="math">\(\frac{kg m^2}{K s^2}\)</span></td>
+</tr>
+<tr class="row-odd"><td><span class="math">\(N\)</span></td>
+<td>amount of substance</td>
+<td><span class="math">\(molec\)</span></td>
+</tr>
+<tr class="row-even"><td><span class="math">\(p\)</span></td>
+<td>pressure</td>
+<td><span class="math">\(Pa\)</span></td>
+</tr>
+<tr class="row-odd"><td><span class="math">\(R\)</span></td>
+<td>universal gas constant</td>
+<td><span class="math">\(\frac{kg m^2}{K mol s^2}\)</span></td>
+</tr>
+<tr class="row-even"><td><span class="math">\(T\)</span></td>
+<td>temperature</td>
+<td><span class="math">\(K\)</span></td>
+</tr>
+<tr class="row-odd"><td><span class="math">\(V\)</span></td>
+<td>volume</td>
+<td><span class="math">\(m^3\)</span></td>
+</tr>
+</tbody>
+</table>
+<div class="math">
+\[pV = \frac{NRT}{N_{A}} = NkT\]</div>
+</div></blockquote>
+</div>
+<div class="section" id="barometric-formula">
+<h2>barometric formula</h2>
+<blockquote>
+<div><table border="1" class="docutils">
+<colgroup>
+<col width="21%" />
+<col width="33%" />
+<col width="46%" />
+</colgroup>
+<thead valign="bottom">
+<tr class="row-odd"><th class="head">symbol</th>
+<th class="head">name</th>
+<th class="head">unit</th>
+</tr>
+</thead>
+<tbody valign="top">
+<tr class="row-even"><td><span class="math">\(g\)</span></td>
+<td>gravity</td>
+<td><span class="math">\(\frac{m}{s^2}\)</span></td>
+</tr>
+<tr class="row-odd"><td><span class="math">\(g_{0}\)</span></td>
+<td>mean earth gravity</td>
+<td><span class="math">\(\frac{m}{s^2}\)</span></td>
+</tr>
+<tr class="row-even"><td><span class="math">\(k\)</span></td>
+<td>Boltzmann constant</td>
+<td><span class="math">\(\frac{kg m^2}{K s^2}\)</span></td>
+</tr>
+<tr class="row-odd"><td><span class="math">\(M_{air}\)</span></td>
+<td>molar mass of total air</td>
+<td><span class="math">\(\frac{g}{mol}\)</span></td>
+</tr>
+<tr class="row-even"><td><span class="math">\(N\)</span></td>
+<td>amount of substance</td>
+<td><span class="math">\(molec\)</span></td>
+</tr>
+<tr class="row-odd"><td><span class="math">\(N_A\)</span></td>
+<td>Avogadro constant</td>
+<td><span class="math">\(\frac{1}{mol}\)</span></td>
+</tr>
+<tr class="row-even"><td><span class="math">\(p\)</span></td>
+<td>pressure</td>
+<td><span class="math">\(Pa\)</span></td>
+</tr>
+<tr class="row-odd"><td><span class="math">\(R\)</span></td>
+<td>universal gas constant</td>
+<td><span class="math">\(\frac{kg m^2}{K mol s^2}\)</span></td>
+</tr>
+<tr class="row-even"><td><span class="math">\(T\)</span></td>
+<td>temperature</td>
+<td><span class="math">\(K\)</span></td>
+</tr>
+<tr class="row-odd"><td><span class="math">\(V\)</span></td>
+<td>volume</td>
+<td><span class="math">\(m^3\)</span></td>
+</tr>
+<tr class="row-even"><td><span class="math">\(z\)</span></td>
+<td>altitude</td>
+<td><span class="math">\(m\)</span></td>
+</tr>
+<tr class="row-odd"><td><span class="math">\(z_{g}\)</span></td>
+<td>geopotential height</td>
+<td><span class="math">\(m\)</span></td>
+</tr>
+<tr class="row-even"><td><span class="math">\(\phi\)</span></td>
+<td>latitude</td>
+<td><span class="math">\(degN\)</span></td>
+</tr>
+<tr class="row-odd"><td><span class="math">\(\rho\)</span></td>
+<td>mass density</td>
+<td><span class="math">\(\frac{kg}{m^3}\)</span></td>
+</tr>
+</tbody>
+</table>
+<p>From the ideal gas law we have:</p>
+<div class="math">
+\[p = \frac{NkT}{V} = \frac{10^{-3}NM_{air}}{VN_{a}}\frac{kTN_{a}}{10^{-3}M_{air}} = \rho\frac{RT}{10^{-3}M_{air}}\]</div>
+<p>And from the hydrostatic assumption we get:</p>
+<div class="math">
+\[dp = - \rho g dz\]</div>
+<p>Dividing <span class="math">\(dp\)</span> by <cite>p</cite> we get:</p>
+<div class="math">
+\[\frac{dp}{p} = -\frac{10^{-3}M_{air}\rho g dz}{\rho RT} = -\frac{10^{-3}M_{air}gdz}{RT}\]</div>
+<p>Integrating this expression from one pressure level to the next we get:</p>
+<div class="math">
+\[p(i+1) = p(i)e^{-\int^{z(i+1)}_{z(i)}\frac{10^{-3}M_{air}g}{RT}dz}\]</div>
+<p>We can approximate this further by using an average value of the height dependent quantities
+<span class="math">\(M_{air}\)</span>, <span class="math">\(g\)</span> and <span class="math">\(T\)</span> for the integration over the range <span class="math">\([z(i),z(i+1)]\)</span>.
+This gives:</p>
+<div class="math">
+\begin{eqnarray}
+   g &amp; = &amp; g(\phi,\frac{z(i)+z(i+1)}{2}) \\
+   p(i+1) &amp; = &amp; p(i)e^{-10^{-3}\frac{M_{air}(i)+M_{air}(i+1)}{2}\frac{2}{T(i)+T(i+1)}\frac{g}{R}\left(z(i+1)-z(i)\right)} \\
+          &amp; = &amp; p(i)e^{-10^{-3}\frac{M_{air}(i)+M_{air}(i+1)}{T(i)+T(i+1)}\frac{g}{R}\left(z(i+1)-z(i)\right)}
+\end{eqnarray}</div><p>When using geopotential height the formula is the same except that <span class="math">\(g=g_{0}\)</span> at all levels:</p>
+<div class="math">
+\[p(i+1) = p(i)e^{-10^{-3}\frac{M_{air}(i)+M_{air}(i+1)}{T(i)+T(i+1)}\frac{g_{0}}{R}\left(z_{g}(i+1)-z_{g}(i)\right)}\]</div>
+</div></blockquote>
+</div>
+<div class="section" id="mass-density">
+<h2>mass density</h2>
+<blockquote>
+<div><table border="1" class="docutils">
+<colgroup>
+<col width="25%" />
+<col width="38%" />
+<col width="37%" />
+</colgroup>
+<thead valign="bottom">
+<tr class="row-odd"><th class="head">symbol</th>
+<th class="head">name</th>
+<th class="head">unit</th>
+</tr>
+</thead>
+<tbody valign="top">
+<tr class="row-even"><td><span class="math">\(N\)</span></td>
+<td>amount of substance</td>
+<td><span class="math">\(molec\)</span></td>
+</tr>
+<tr class="row-odd"><td><span class="math">\(N_A\)</span></td>
+<td>Avogadro constant</td>
+<td><span class="math">\(\frac{1}{mol}\)</span></td>
+</tr>
+<tr class="row-even"><td><span class="math">\(M_{air}\)</span></td>
+<td>molar mass of total air</td>
+<td><span class="math">\(\frac{g}{mol}\)</span></td>
+</tr>
+<tr class="row-odd"><td><span class="math">\(V\)</span></td>
+<td>volume</td>
+<td><span class="math">\(m^3\)</span></td>
+</tr>
+<tr class="row-even"><td><span class="math">\(\rho\)</span></td>
+<td>mass density</td>
+<td><span class="math">\(\frac{kg}{m^3}\)</span></td>
+</tr>
+</tbody>
+</table>
+<div class="math">
+\[\rho = \frac{10^{-3}NM_{air}}{VN_{a}}\]</div>
+</div></blockquote>
+</div>
+<div class="section" id="number-density">
+<h2>number density</h2>
+<blockquote>
+<div><table border="1" class="docutils">
+<colgroup>
+<col width="17%" />
+<col width="36%" />
+<col width="47%" />
+</colgroup>
+<thead valign="bottom">
+<tr class="row-odd"><th class="head">symbol</th>
+<th class="head">name</th>
+<th class="head">unit</th>
+</tr>
+</thead>
+<tbody valign="top">
+<tr class="row-even"><td><span class="math">\(n\)</span></td>
+<td>number density</td>
+<td><span class="math">\(\frac{molec}{m^3}\)</span></td>
+</tr>
+<tr class="row-odd"><td><span class="math">\(N\)</span></td>
+<td>amount of substance</td>
+<td><span class="math">\(molec\)</span></td>
+</tr>
+<tr class="row-even"><td><span class="math">\(V\)</span></td>
+<td>volume</td>
+<td><span class="math">\(m^3\)</span></td>
+</tr>
+</tbody>
+</table>
+<div class="math">
+\[n = \frac{N}{V}\]</div>
+</div></blockquote>
+</div>
+<div class="section" id="dry-air-vs-total-air">
+<h2>dry air vs. total air</h2>
+<blockquote>
+<div><table border="1" class="docutils">
+<colgroup>
+<col width="28%" />
+<col width="38%" />
+<col width="35%" />
+</colgroup>
+<thead valign="bottom">
+<tr class="row-odd"><th class="head">symbol</th>
+<th class="head">name</th>
+<th class="head">unit</th>
+</tr>
+</thead>
+<tbody valign="top">
+<tr class="row-even"><td><span class="math">\(n_{air}\)</span></td>
+<td>number density of total air</td>
+<td><span class="math">\(\frac{molec}{m^3}\)</span></td>
+</tr>
+<tr class="row-odd"><td><span class="math">\(n_{dry\_air}\)</span></td>
+<td>number density of dry air</td>
+<td><span class="math">\(\frac{molec}{m^3}\)</span></td>
+</tr>
+<tr class="row-even"><td><span class="math">\(n_{H_{2}O}\)</span></td>
+<td>number density of H2O</td>
+<td><span class="math">\(\frac{molec}{m^3}\)</span></td>
+</tr>
+<tr class="row-odd"><td><span class="math">\(M_{air}\)</span></td>
+<td>molar mass of total air</td>
+<td><span class="math">\(\frac{g}{mol}\)</span></td>
+</tr>
+<tr class="row-even"><td><span class="math">\(M_{dry\_air}\)</span></td>
+<td>molar mass of dry air</td>
+<td><span class="math">\(\frac{g}{mol}\)</span></td>
+</tr>
+<tr class="row-odd"><td><span class="math">\(M_{H_{2}O}\)</span></td>
+<td>molar mass of H2O</td>
+<td><span class="math">\(\frac{g}{mol}\)</span></td>
+</tr>
+</tbody>
+</table>
+<div class="math">
+\begin{eqnarray}
+   n_{air} &amp; = &amp; n_{dry\_air} + n_{H_{2}O} \\
+   M_{air}n_{air} &amp; = &amp; M_{dry\_air}n_{dry\_air} + M_{H_{2}O}n_{H_{2}O}
+\end{eqnarray}</div></div></blockquote>
+</div>
+<div class="section" id="virtual-temperature">
+<h2>virtual temperature</h2>
+<blockquote>
+<div><table border="1" class="docutils">
+<colgroup>
+<col width="26%" />
+<col width="32%" />
+<col width="42%" />
+</colgroup>
+<thead valign="bottom">
+<tr class="row-odd"><th class="head">symbol</th>
+<th class="head">name</th>
+<th class="head">unit</th>
+</tr>
+</thead>
+<tbody valign="top">
+<tr class="row-even"><td><span class="math">\(k\)</span></td>
+<td>Boltzmann constant</td>
+<td><span class="math">\(\frac{kg m^2}{K s^2}\)</span></td>
+</tr>
+<tr class="row-odd"><td><span class="math">\(M_{air}\)</span></td>
+<td>molar mass of total air</td>
+<td><span class="math">\(\frac{g}{mol}\)</span></td>
+</tr>
+<tr class="row-even"><td><span class="math">\(M_{dry\_air}\)</span></td>
+<td>molar mass of dry air</td>
+<td><span class="math">\(\frac{g}{mol}\)</span></td>
+</tr>
+<tr class="row-odd"><td><span class="math">\(M_{H_{2}O}\)</span></td>
+<td>molar mass of H2O</td>
+<td><span class="math">\(\frac{g}{mol}\)</span></td>
+</tr>
+<tr class="row-even"><td><span class="math">\(N\)</span></td>
+<td>amount of substance</td>
+<td><span class="math">\(molec\)</span></td>
+</tr>
+<tr class="row-odd"><td><span class="math">\(N_A\)</span></td>
+<td>Avogadro constant</td>
+<td><span class="math">\(\frac{1}{mol}\)</span></td>
+</tr>
+<tr class="row-even"><td><span class="math">\(p\)</span></td>
+<td>pressure</td>
+<td><span class="math">\(Pa\)</span></td>
+</tr>
+<tr class="row-odd"><td><span class="math">\(p_{dry\_air}\)</span></td>
+<td>dry air partial pressure</td>
+<td><span class="math">\(Pa\)</span></td>
+</tr>
+<tr class="row-even"><td><span class="math">\(p_{H_{2}O}\)</span></td>
+<td>H2O partial pressure</td>
+<td><span class="math">\(Pa\)</span></td>
+</tr>
+<tr class="row-odd"><td><span class="math">\(R\)</span></td>
+<td>universal gas constant</td>
+<td><span class="math">\(\frac{kg m^2}{K mol s^2}\)</span></td>
+</tr>
+<tr class="row-even"><td><span class="math">\(T\)</span></td>
+<td>temperature</td>
+<td><span class="math">\(K\)</span></td>
+</tr>
+<tr class="row-odd"><td><span class="math">\(T_{v}\)</span></td>
+<td>virtual temperature</td>
+<td><span class="math">\(K\)</span></td>
+</tr>
+<tr class="row-even"><td><span class="math">\(V\)</span></td>
+<td>volume</td>
+<td><span class="math">\(m^3\)</span></td>
+</tr>
+</tbody>
+</table>
+<p>From the ideal gas law we have:</p>
+<div class="math">
+\[p = \frac{NkT}{V} = \frac{10^{-3}NM_{air}}{VN_{a}}\frac{kTN_{a}}{10^{-3}M_{air}} = \rho \frac{RT}{10^{-3}M_{air}}\]</div>
+<p>The virtual temperature allows us to use the dry air molar mass in this equation:</p>
+<div class="math">
+\[p = \rho\frac{RT_{v}}{10^{-3}M_{dry\_air}}\]</div>
+<p>This gives:</p>
+<div class="math">
+\[T_{v} = \frac{M_{dry\_air}}{M_{air}}T\]</div>
+</div></blockquote>
+</div>
+<div class="section" id="volume-mixing-ratio">
+<h2>volume mixing ratio</h2>
+<blockquote>
+<div><table border="1" class="docutils">
+<colgroup>
+<col width="28%" />
+<col width="40%" />
+<col width="32%" />
+</colgroup>
+<thead valign="bottom">
+<tr class="row-odd"><th class="head">symbol</th>
+<th class="head">name</th>
+<th class="head">unit</th>
+</tr>
+</thead>
+<tbody valign="top">
+<tr class="row-even"><td><span class="math">\(n_{air}\)</span></td>
+<td>number density of total air</td>
+<td><span class="math">\(\frac{molec}{m^3}\)</span></td>
+</tr>
+<tr class="row-odd"><td><span class="math">\(n_{dry\_air}\)</span></td>
+<td>number density of dry air</td>
+<td><span class="math">\(\frac{molec}{m^3}\)</span></td>
+</tr>
+<tr class="row-even"><td><span class="math">\(n_{H_{2}O}\)</span></td>
+<td>number density of H2O</td>
+<td><span class="math">\(\frac{molec}{m^3}\)</span></td>
+</tr>
+<tr class="row-odd"><td><span class="math">\(n_{x}\)</span></td>
+<td>number density of quantity x</td>
+<td><span class="math">\(\frac{molec}{m^3}\)</span></td>
+</tr>
+<tr class="row-even"><td><span class="math">\(\nu_{x}\)</span></td>
+<td>volume mixing ratio of quantity
+x with regard to total air</td>
+<td><span class="math">\(ppv\)</span></td>
+</tr>
+<tr class="row-odd"><td><span class="math">\(\bar{\nu}_{x}\)</span></td>
+<td>volume mixing ratio of quantity
+x with regard to dry air</td>
+<td><span class="math">\(ppv\)</span></td>
+</tr>
+</tbody>
+</table>
+<div class="math">
+\begin{eqnarray}
+   \nu_{x} &amp; = &amp; \frac{n_{x}}{n_{air}} \\
+   \bar{\nu}_{x} &amp; = &amp; \frac{n_{x}}{n_{dry\_air}} \\
+   \nu_{dry\_air} &amp; = &amp; \frac{n_{dry\_air}}{n_{air}} =
+      \frac{n_{air} - n_{H_{2}O}}{n_{air}} = 1 - \nu_{H_{2}O} \\
+   \nu_{air} &amp; = &amp; \frac{n_{air}}{n_{air}} = 1 \\
+   \bar{\nu}_{dry\_air} &amp; = &amp; \frac{n_{dry\_air}}{n_{dry\_air}} = 1 \\
+   \bar{\nu}_{H_{2}O} &amp; = &amp; \frac{n_{H_{2}O}}{n_{dry\_air}} =
+      \frac{\nu_{H_{2}O}}{\nu_{dry\_air}} = \frac{\nu_{H_{2}O}}{1 - \nu_{H_{2}O}} \\
+   \nu_{H_{2}O} &amp; = &amp; \frac{\bar{\nu}_{H_{2}O}}{1 + \bar{\nu}_{H_{2}O}}
+\end{eqnarray}</div></div></blockquote>
+</div>
+<div class="section" id="mass-mixing-ratio">
+<h2>mass mixing ratio</h2>
+<blockquote>
+<div><table border="1" class="docutils">
+<colgroup>
+<col width="27%" />
+<col width="40%" />
+<col width="32%" />
+</colgroup>
+<thead valign="bottom">
+<tr class="row-odd"><th class="head">symbol</th>
+<th class="head">name</th>
+<th class="head">unit</th>
+</tr>
+</thead>
+<tbody valign="top">
+<tr class="row-even"><td><span class="math">\(M_{air}\)</span></td>
+<td>molar mass of total air</td>
+<td><span class="math">\(\frac{g}{mol}\)</span></td>
+</tr>
+<tr class="row-odd"><td><span class="math">\(M_{dry\_air}\)</span></td>
+<td>molar mass of dry air</td>
+<td><span class="math">\(\frac{g}{mol}\)</span></td>
+</tr>
+<tr class="row-even"><td><span class="math">\(M_{x}\)</span></td>
+<td>molar mass of quantity x</td>
+<td><span class="math">\(\frac{g}{mol}\)</span></td>
+</tr>
+<tr class="row-odd"><td><span class="math">\(n_{air}\)</span></td>
+<td>number density of total air</td>
+<td><span class="math">\(\frac{molec}{m^3}\)</span></td>
+</tr>
+<tr class="row-even"><td><span class="math">\(n_{dry\_air}\)</span></td>
+<td>number density of dry air</td>
+<td><span class="math">\(\frac{molec}{m^3}\)</span></td>
+</tr>
+<tr class="row-odd"><td><span class="math">\(n_{H_{2}O}\)</span></td>
+<td>number density of H2O</td>
+<td><span class="math">\(\frac{molec}{m^3}\)</span></td>
+</tr>
+<tr class="row-even"><td><span class="math">\(n_{x}\)</span></td>
+<td>number density of quantity x</td>
+<td><span class="math">\(\frac{molec}{m^3}\)</span></td>
+</tr>
+<tr class="row-odd"><td><span class="math">\(q_{x}\)</span></td>
+<td>mass mixing ratio of quantity x
+with regard to total air</td>
+<td><span class="math">\(\frac{kg}{kg}\)</span></td>
+</tr>
+<tr class="row-even"><td><span class="math">\(\bar{q}_{x}\)</span></td>
+<td>mass mixing ratio of quantity x
+with regard to dry air</td>
+<td><span class="math">\(\frac{kg}{kg}\)</span></td>
+</tr>
+<tr class="row-odd"><td><span class="math">\(\nu_{x}\)</span></td>
+<td>volume mixing ratio of quantity
+x with regard to total air</td>
+<td><span class="math">\(ppv\)</span></td>
+</tr>
+<tr class="row-even"><td><span class="math">\(\bar{\nu}_{x}\)</span></td>
+<td>volume mixing ratio of quantity
+x with regard to dry air</td>
+<td><span class="math">\(ppv\)</span></td>
+</tr>
+</tbody>
+</table>
+<div class="math">
+\begin{eqnarray}
+   q_{x} &amp; = &amp; \frac{n_{x}M_{x}}{n_{air}M_{air}} = \nu_{x}\frac{M_{x}}{M_{air}} \\
+   \bar{q}_{x} &amp; = &amp; \frac{n_{x}M_{x}}{n_{dry\_air}M_{dry\_air}} = \bar{\nu}_{x}\frac{M_{x}}{M_{dry\_air}} \\
+   q_{dry\_air} &amp; = &amp; \frac{n_{dry\_air}M_{dry\_air}}{n_{air}M_{air}} =
+      \frac{n_{air}M_{air} - n_{H_{2}O}M_{H_{2}O}}{n_{air}M_{air}} = 1 - q_{H_{2}O} \\
+   q_{air} &amp; = &amp; \frac{n_{air}M_{air}}{n_{air}M_{air}} = 1 \\
+   \bar{q}_{dry\_air} &amp; = &amp; \frac{n_{dry\_air}M_{dry\_air}}{n_{dry\_air}M_{dry\_air}} = 1 \\
+   \bar{q}_{H_{2}O} &amp; = &amp; \frac{n_{H_{2}O}M_{H_{2}O}}{n_{dry\_air}M_{dry\_air}} =
+      \frac{q_{H_{2}O}}{q_{dry\_air}} = \frac{q_{H_{2}O}}{1 - q_{H_{2}O}} \\
+   q_{H_{2}O} &amp; = &amp; \frac{\bar{q}_{H_{2}O}}{1 + \bar{q}_{H_{2}O}}
+\end{eqnarray}</div></div></blockquote>
+</div>
+<div class="section" id="molar-mass-of-total-air">
+<h2>molar mass of total air</h2>
+<ol class="arabic">
+<li><p class="first">molar mass of total air from H2O volume mixing ratio</p>
+<table border="1" class="docutils">
+<colgroup>
+<col width="28%" />
+<col width="38%" />
+<col width="35%" />
+</colgroup>
+<thead valign="bottom">
+<tr class="row-odd"><th class="head">symbol</th>
+<th class="head">name</th>
+<th class="head">unit</th>
+</tr>
+</thead>
+<tbody valign="top">
+<tr class="row-even"><td><span class="math">\(M_{air}\)</span></td>
+<td>molar mass of total air</td>
+<td><span class="math">\(\frac{g}{mol}\)</span></td>
+</tr>
+<tr class="row-odd"><td><span class="math">\(M_{dry\_air}\)</span></td>
+<td>molar mass of dry air</td>
+<td><span class="math">\(\frac{g}{mol}\)</span></td>
+</tr>
+<tr class="row-even"><td><span class="math">\(M_{H_{2}O}\)</span></td>
+<td>molar mass of H2O</td>
+<td><span class="math">\(\frac{g}{mol}\)</span></td>
+</tr>
+<tr class="row-odd"><td><span class="math">\(n_{air}\)</span></td>
+<td>number density of total air</td>
+<td><span class="math">\(\frac{molec}{m^3}\)</span></td>
+</tr>
+<tr class="row-even"><td><span class="math">\(n_{dry\_air}\)</span></td>
+<td>number density of dry air</td>
+<td><span class="math">\(\frac{molec}{m^3}\)</span></td>
+</tr>
+<tr class="row-odd"><td><span class="math">\(n_{H_{2}O}\)</span></td>
+<td>number density of H2O</td>
+<td><span class="math">\(\frac{molec}{m^3}\)</span></td>
+</tr>
+<tr class="row-even"><td><span class="math">\(\nu_{H_{2}O}\)</span></td>
+<td>volume mixing ratio of H2O</td>
+<td><span class="math">\(ppv\)</span></td>
+</tr>
+</tbody>
+</table>
+<div class="math">
+\begin{eqnarray}
+   M_{air} &amp; = &amp; \frac{M_{dry\_air}n_{dry\_air} + M_{H_{2}O}n_{H_{2}O}}{n_{air}} \\
+           &amp; = &amp; M_{dry\_air}\left(1 - \nu_{H_{2}O}\right) + M_{H_{2}O}\nu_{H_{2}O}
+\end{eqnarray}</div></li>
+<li><p class="first">molar mass of total air from H2O mass mixing ratio</p>
+<table border="1" class="docutils">
+<colgroup>
+<col width="28%" />
+<col width="38%" />
+<col width="35%" />
+</colgroup>
+<thead valign="bottom">
+<tr class="row-odd"><th class="head">symbol</th>
+<th class="head">name</th>
+<th class="head">unit</th>
+</tr>
+</thead>
+<tbody valign="top">
+<tr class="row-even"><td><span class="math">\(M_{air}\)</span></td>
+<td>molar mass of total air</td>
+<td><span class="math">\(\frac{g}{mol}\)</span></td>
+</tr>
+<tr class="row-odd"><td><span class="math">\(M_{dry\_air}\)</span></td>
+<td>molar mass of dry air</td>
+<td><span class="math">\(\frac{g}{mol}\)</span></td>
+</tr>
+<tr class="row-even"><td><span class="math">\(M_{H_{2}O}\)</span></td>
+<td>molar mass of H2O</td>
+<td><span class="math">\(\frac{g}{mol}\)</span></td>
+</tr>
+<tr class="row-odd"><td><span class="math">\(n_{air}\)</span></td>
+<td>number density of total air</td>
+<td><span class="math">\(\frac{molec}{m^3}\)</span></td>
+</tr>
+<tr class="row-even"><td><span class="math">\(n_{dry\_air}\)</span></td>
+<td>number density of dry air</td>
+<td><span class="math">\(\frac{molec}{m^3}\)</span></td>
+</tr>
+<tr class="row-odd"><td><span class="math">\(n_{H_{2}O}\)</span></td>
+<td>number density of H2O</td>
+<td><span class="math">\(\frac{molec}{m^3}\)</span></td>
+</tr>
+<tr class="row-even"><td><span class="math">\(q_{H_{2}O}\)</span></td>
+<td>mass mixing ratio of H2O</td>
+<td><span class="math">\(\frac{kg}{kg}\)</span></td>
+</tr>
+<tr class="row-odd"><td><span class="math">\(\nu_{H_{2}O}\)</span></td>
+<td>volume mixing ratio of H2O</td>
+<td><span class="math">\(\frac{kg}{kg}\)</span></td>
+</tr>
+</tbody>
+</table>
+<div class="math">
+\begin{eqnarray}
+   M_{air} &amp; = &amp; M_{dry\_air}\left(1 - \nu_{H_{2}O}\right) + M_{H_{2}O}\nu_{H_{2}O} \\
+           &amp; = &amp; M_{dry\_air}\left(1 - \frac{M_{air}}{M_{H_{2}O}}q_{H_{2}O}\right) + M_{air}q_{H_{2}O} \\
+           &amp; = &amp; \frac{M_{dry\_air}}{1 + \frac{M_{dry\_air}}{M_{H_{2}O}}q_{H_{2}O} - q_{H_{2}O}} \\
+           &amp; = &amp; \frac{M_{H_{2}O}M_{dry\_air}}{M_{H_{2}O} + M_{dry\_air}q_{H_{2}O} - M_{H_{2}O}q_{H_{2}O}} \\
+           &amp; = &amp; \frac{M_{H_{2}O}M_{dry\_air}}{\left(1-q_{H_{2}O}\right)M_{H_{2}O} + q_{H_{2}O}M_{dry\_air}} \\
+\end{eqnarray}</div></li>
+</ol>
+</div>
+<div class="section" id="partial-pressure">
+<h2>partial pressure</h2>
+<blockquote>
+<div><table border="1" class="docutils">
+<colgroup>
+<col width="33%" />
+<col width="49%" />
+<col width="17%" />
+</colgroup>
+<thead valign="bottom">
+<tr class="row-odd"><th class="head">symbol</th>
+<th class="head">name</th>
+<th class="head">unit</th>
+</tr>
+</thead>
+<tbody valign="top">
+<tr class="row-even"><td><span class="math">\(p\)</span></td>
+<td>total pressure</td>
+<td><span class="math">\(Pa\)</span></td>
+</tr>
+<tr class="row-odd"><td><span class="math">\(p_{x}\)</span></td>
+<td>partial pressure of quantity</td>
+<td><span class="math">\(Pa\)</span></td>
+</tr>
+<tr class="row-even"><td><span class="math">\(\nu_{x}\)</span></td>
+<td>volume mixing ratio of quantity
+x with regard to total air</td>
+<td><span class="math">\(ppv\)</span></td>
+</tr>
+<tr class="row-odd"><td><span class="math">\(\bar{\nu}_{x}\)</span></td>
+<td>volume mixing ratio of quantity
+x with regard to dry air</td>
+<td><span class="math">\(ppv\)</span></td>
+</tr>
+</tbody>
+</table>
+<div class="math">
+\begin{eqnarray}
+   p_{x} &amp; = &amp; \nu_{x}p \\
+   p_{x} &amp; = &amp; \bar{\nu}_{x}p_{dry\_air} \\
+   p_{x} &amp; = &amp; N_{x}kT
+\end{eqnarray}</div></div></blockquote>
+</div>
+<div class="section" id="saturated-water-vapor-pressure">
+<h2>saturated water vapor pressure</h2>
+<blockquote>
+<div><table border="1" class="docutils">
+<colgroup>
+<col width="24%" />
+<col width="56%" />
+<col width="20%" />
+</colgroup>
+<thead valign="bottom">
+<tr class="row-odd"><th class="head">symbol</th>
+<th class="head">name</th>
+<th class="head">unit</th>
+</tr>
+</thead>
+<tbody valign="top">
+<tr class="row-even"><td><span class="math">\(e_{w}\)</span></td>
+<td>saturated water vapor pressure</td>
+<td><span class="math">\(Pa\)</span></td>
+</tr>
+<tr class="row-odd"><td><span class="math">\(T\)</span></td>
+<td>temperature</td>
+<td><span class="math">\(K\)</span></td>
+</tr>
+</tbody>
+</table>
+<p>This is the August-Roche-Magnus formula for the saturated water vapour pressure</p>
+<div class="math">
+\[e_{w} = 610.94e^{\frac{17.625(T-273.15)}{(T-273.15)+243.04}}\]</div>
+</div></blockquote>
+</div>
+</div>
+
+
+           </div>
+          </div>
+          <footer>
+  
+    <div class="rst-footer-buttons" role="navigation" aria-label="footer navigation">
+      
+        <a href="common.html" class="btn btn-neutral float-right" title="common derivations" accesskey="n">Next <span class="fa fa-arrow-circle-right"></span></a>
+      
+      
+        <a href="definitions.html" class="btn btn-neutral" title="Definitions" accesskey="p"><span class="fa fa-arrow-circle-left"></span> Previous</a>
+      
+    </div>
+  
+
+  <hr/>
+
+  <div role="contentinfo">
+    <p>
+        &copy; Copyright 2015-2017 S&amp;T, The Netherlands.
+
+    </p>
+  </div> 
+
+</footer>
+
+        </div>
+      </div>
+
+    </section>
+
+  </div>
+  
+
+
+  
+
+    <script type="text/javascript">
+        var DOCUMENTATION_OPTIONS = {
+            URL_ROOT:'../',
+            VERSION:'0.4b',
+            COLLAPSE_INDEX:false,
+            FILE_SUFFIX:'.html',
+            HAS_SOURCE:  false
+        };
+    </script>
+      <script type="text/javascript" src="../_static/jquery.js"></script>
+      <script type="text/javascript" src="../_static/underscore.js"></script>
+      <script type="text/javascript" src="../_static/doctools.js"></script>
+      <script type="text/javascript" src="https://cdn.mathjax.org/mathjax/latest/MathJax.js?config=TeX-AMS-MML_HTMLorMML"></script>
+
+  
+
+  
+  
+    <script type="text/javascript" src="../_static/js/theme.js"></script>
+  
+
+  
+  
+  <script type="text/javascript">
+      jQuery(function () {
+          SphinxRtdTheme.StickyNav.enable();
+      });
+  </script>
+   
+
+</body>
+</html>

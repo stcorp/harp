@@ -35,7 +35,53 @@ HARP_DOCFILES = \
 	doc/html/_static/up-pressed.png \
 	doc/html/_static/up.png \
 	doc/html/_static/websupport.js \
-	doc/html/algorithms.html \
+	doc/html/algorithms/common.html \
+	doc/html/algorithms/definitions.html \
+	doc/html/algorithms/derivations/aerosol_extinction_coefficient.html \
+	doc/html/algorithms/derivations/aerosol_optical_depth.html \
+	doc/html/algorithms/derivations/altitude.html \
+	doc/html/algorithms/derivations/altitude_bounds.html \
+	doc/html/algorithms/derivations/column_mass_density.html \
+	doc/html/algorithms/derivations/column_mass_mixing_ratio.html \
+	doc/html/algorithms/derivations/column_number_density.html \
+	doc/html/algorithms/derivations/column_volume_mixing_ratio.html \
+	doc/html/algorithms/derivations/datetime.html \
+	doc/html/algorithms/derivations/datetime_length.html \
+	doc/html/algorithms/derivations/datetime_start.html \
+	doc/html/algorithms/derivations/datetime_stop.html \
+	doc/html/algorithms/derivations/frequency.html \
+	doc/html/algorithms/derivations/geopotential.html \
+	doc/html/algorithms/derivations/geopotential_height.html \
+	doc/html/algorithms/derivations/latitude.html \
+	doc/html/algorithms/derivations/latitude_bounds.html \
+	doc/html/algorithms/derivations/longitude.html \
+	doc/html/algorithms/derivations/longitude_bounds.html \
+	doc/html/algorithms/derivations/mass_density.html \
+	doc/html/algorithms/derivations/mass_mixing_ratio.html \
+	doc/html/algorithms/derivations/molar_mass.html \
+	doc/html/algorithms/derivations/number_density.html \
+	doc/html/algorithms/derivations/partial_pressure.html \
+	doc/html/algorithms/derivations/pressure.html \
+	doc/html/algorithms/derivations/pressure_bounds.html \
+	doc/html/algorithms/derivations/relative_azimuth_angle.html \
+	doc/html/algorithms/derivations/relative_humidity.html \
+	doc/html/algorithms/derivations/scattering_angle.html \
+	doc/html/algorithms/derivations/sensor_azimuth_angle.html \
+	doc/html/algorithms/derivations/sensor_elevation_angle.html \
+	doc/html/algorithms/derivations/sensor_zenith_angle.html \
+	doc/html/algorithms/derivations/solar_azimuth_angle.html \
+	doc/html/algorithms/derivations/solar_elevation_angle.html \
+	doc/html/algorithms/derivations/solar_zenith_angle.html \
+	doc/html/algorithms/derivations/temperature.html \
+	doc/html/algorithms/derivations/viewing_azimuth_angle.html \
+	doc/html/algorithms/derivations/viewing_elevation_angle.html \
+	doc/html/algorithms/derivations/viewing_zenith_angle.html \
+	doc/html/algorithms/derivations/virtual_temperature.html \
+	doc/html/algorithms/derivations/volume_mixing_ratio.html \
+	doc/html/algorithms/derivations/wavelength.html \
+	doc/html/algorithms/derivations/wavenumber.html \
+	doc/html/algorithms/formula.html \
+	doc/html/algorithms/index.html \
 	doc/html/dataformats.html \
 	doc/html/genindex.html \
 	doc/html/harpcheck.html \
@@ -435,7 +481,99 @@ doc/html/_static/up.png:
 	$(MAKE) harp_doc
 doc/html/_static/websupport.js:
 	$(MAKE) harp_doc
-doc/html/algorithms.html:
+doc/html/algorithms/common.html:
+	$(MAKE) harp_doc
+doc/html/algorithms/definitions.html:
+	$(MAKE) harp_doc
+doc/html/algorithms/derivations/aerosol_extinction_coefficient.html:
+	$(MAKE) harp_doc
+doc/html/algorithms/derivations/aerosol_optical_depth.html:
+	$(MAKE) harp_doc
+doc/html/algorithms/derivations/altitude.html:
+	$(MAKE) harp_doc
+doc/html/algorithms/derivations/altitude_bounds.html:
+	$(MAKE) harp_doc
+doc/html/algorithms/derivations/column_mass_density.html:
+	$(MAKE) harp_doc
+doc/html/algorithms/derivations/column_mass_mixing_ratio.html:
+	$(MAKE) harp_doc
+doc/html/algorithms/derivations/column_number_density.html:
+	$(MAKE) harp_doc
+doc/html/algorithms/derivations/column_volume_mixing_ratio.html:
+	$(MAKE) harp_doc
+doc/html/algorithms/derivations/datetime.html:
+	$(MAKE) harp_doc
+doc/html/algorithms/derivations/datetime_length.html:
+	$(MAKE) harp_doc
+doc/html/algorithms/derivations/datetime_start.html:
+	$(MAKE) harp_doc
+doc/html/algorithms/derivations/datetime_stop.html:
+	$(MAKE) harp_doc
+doc/html/algorithms/derivations/frequency.html:
+	$(MAKE) harp_doc
+doc/html/algorithms/derivations/geopotential.html:
+	$(MAKE) harp_doc
+doc/html/algorithms/derivations/geopotential_height.html:
+	$(MAKE) harp_doc
+doc/html/algorithms/derivations/latitude.html:
+	$(MAKE) harp_doc
+doc/html/algorithms/derivations/latitude_bounds.html:
+	$(MAKE) harp_doc
+doc/html/algorithms/derivations/longitude.html:
+	$(MAKE) harp_doc
+doc/html/algorithms/derivations/longitude_bounds.html:
+	$(MAKE) harp_doc
+doc/html/algorithms/derivations/mass_density.html:
+	$(MAKE) harp_doc
+doc/html/algorithms/derivations/mass_mixing_ratio.html:
+	$(MAKE) harp_doc
+doc/html/algorithms/derivations/molar_mass.html:
+	$(MAKE) harp_doc
+doc/html/algorithms/derivations/number_density.html:
+	$(MAKE) harp_doc
+doc/html/algorithms/derivations/partial_pressure.html:
+	$(MAKE) harp_doc
+doc/html/algorithms/derivations/pressure.html:
+	$(MAKE) harp_doc
+doc/html/algorithms/derivations/pressure_bounds.html:
+	$(MAKE) harp_doc
+doc/html/algorithms/derivations/relative_azimuth_angle.html:
+	$(MAKE) harp_doc
+doc/html/algorithms/derivations/relative_humidity.html:
+	$(MAKE) harp_doc
+doc/html/algorithms/derivations/scattering_angle.html:
+	$(MAKE) harp_doc
+doc/html/algorithms/derivations/sensor_azimuth_angle.html:
+	$(MAKE) harp_doc
+doc/html/algorithms/derivations/sensor_elevation_angle.html:
+	$(MAKE) harp_doc
+doc/html/algorithms/derivations/sensor_zenith_angle.html:
+	$(MAKE) harp_doc
+doc/html/algorithms/derivations/solar_azimuth_angle.html:
+	$(MAKE) harp_doc
+doc/html/algorithms/derivations/solar_elevation_angle.html:
+	$(MAKE) harp_doc
+doc/html/algorithms/derivations/solar_zenith_angle.html:
+	$(MAKE) harp_doc
+doc/html/algorithms/derivations/temperature.html:
+	$(MAKE) harp_doc
+doc/html/algorithms/derivations/viewing_azimuth_angle.html:
+	$(MAKE) harp_doc
+doc/html/algorithms/derivations/viewing_elevation_angle.html:
+	$(MAKE) harp_doc
+doc/html/algorithms/derivations/viewing_zenith_angle.html:
+	$(MAKE) harp_doc
+doc/html/algorithms/derivations/virtual_temperature.html:
+	$(MAKE) harp_doc
+doc/html/algorithms/derivations/volume_mixing_ratio.html:
+	$(MAKE) harp_doc
+doc/html/algorithms/derivations/wavelength.html:
+	$(MAKE) harp_doc
+doc/html/algorithms/derivations/wavenumber.html:
+	$(MAKE) harp_doc
+doc/html/algorithms/formula.html:
+	$(MAKE) harp_doc
+doc/html/algorithms/index.html:
 	$(MAKE) harp_doc
 doc/html/dataformats.html:
 	$(MAKE) harp_doc

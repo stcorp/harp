@@ -1,0 +1,505 @@
+
+
+<!DOCTYPE html>
+<!--[if IE 8]><html class="no-js lt-ie9" lang="en" > <![endif]-->
+<!--[if gt IE 8]><!--> <html class="no-js" lang="en" > <!--<![endif]-->
+<head>
+  <meta charset="utf-8">
+  
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  
+  <title>Definitions &mdash; HARP 0.4b documentation</title>
+  
+
+  
+  
+
+  
+
+  
+  
+    
+
+  
+
+  
+  
+    <link rel="stylesheet" href="../_static/css/theme.css" type="text/css" />
+  
+
+  
+    <link rel="stylesheet" href="../_static/custom.css" type="text/css" />
+  
+
+  
+    <link rel="top" title="HARP 0.4b documentation" href="../index.html"/>
+        <link rel="up" title="Algorithms" href="index.html"/>
+        <link rel="next" title="Common formula" href="formula.html"/>
+        <link rel="prev" title="Algorithms" href="index.html"/> 
+
+  
+  <script src="../_static/js/modernizr.min.js"></script>
+
+</head>
+
+<body class="wy-body-for-nav" role="document">
+
+  <div class="wy-grid-for-nav">
+
+    
+    <nav data-toggle="wy-nav-shift" class="wy-nav-side">
+      <div class="wy-side-scroll">
+        <div class="wy-side-nav-search">
+          
+
+          
+            <a href="../index.html" class="icon icon-home"> HARP
+          
+
+          
+          </a>
+
+          
+            
+            
+              <div class="version">
+                0.4
+              </div>
+            
+          
+
+          
+
+          
+        </div>
+
+        <div class="wy-menu wy-menu-vertical" data-spy="affix" role="navigation" aria-label="main navigation">
+          
+            
+            
+                <ul class="current">
+<li class="toctree-l1"><a class="reference internal" href="../install.html">Installation</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../dataformats.html">Data formats</a></li>
+<li class="toctree-l1 current"><a class="reference internal" href="index.html">Algorithms</a><ul class="current">
+<li class="toctree-l2 current"><a class="current reference internal" href="#">Definitions</a><ul>
+<li class="toctree-l3"><a class="reference internal" href="#leading-dimensions">Leading dimensions</a></li>
+<li class="toctree-l3"><a class="reference internal" href="#constants">Constants</a></li>
+<li class="toctree-l3"><a class="reference internal" href="#molar-mass">Molar mass</a></li>
+</ul>
+</li>
+<li class="toctree-l2"><a class="reference internal" href="formula.html">Common formula</a></li>
+<li class="toctree-l2"><a class="reference internal" href="index.html#variable-conversions">Variable Conversions</a></li>
+</ul>
+</li>
+<li class="toctree-l1"><a class="reference internal" href="../operations.html">Operations</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../ingestions/index.html">Ingestion definitions</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../libharp.html">C library</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../python.html">Python interface</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../tools.html">Command line tools</a></li>
+</ul>
+
+            
+          
+        </div>
+      </div>
+    </nav>
+
+    <section data-toggle="wy-nav-shift" class="wy-nav-content-wrap">
+
+      
+      <nav class="wy-nav-top" role="navigation" aria-label="top navigation">
+        <i data-toggle="wy-nav-top" class="fa fa-bars"></i>
+        <a href="../index.html">HARP</a>
+      </nav>
+
+
+      
+      <div class="wy-nav-content">
+        <div class="rst-content">
+          
+
+ 
+
+
+
+<div role="navigation" aria-label="breadcrumbs navigation">
+  <ul class="wy-breadcrumbs">
+    <li><a href="../index.html">Docs</a> &raquo;</li>
+      
+          <li><a href="index.html">Algorithms</a> &raquo;</li>
+      
+    <li>Definitions</li>
+      <li class="wy-breadcrumbs-aside">
+        
+          
+        
+      </li>
+  </ul>
+  <hr/>
+</div>
+          <div role="main" class="document" itemscope="itemscope" itemtype="http://schema.org/Article">
+           <div itemprop="articleBody">
+            
+  <div class="section" id="definitions">
+<h1>Definitions</h1>
+<div class="section" id="leading-dimensions">
+<h2>Leading dimensions</h2>
+<p>Many algorithms can be applied exactly the same to a variable even though it may have different dimension dependencies.
+For instance, a density conversion can be the same algorithm for either <cite>density {}</cite>, <cite>density {time}</cite>,
+<cite>density {latitude,longitude}</cite>, <cite>density {time,vertical}</cite>, etc.
+The algorithm is just applied element-wise for each element in the dimensions that <cite>density</cite> depends on.
+Such leading dimensions that can be handled element-wise are captured by a &#8216;:&#8217; in the variable reference in the
+definitions below.
+Any dimensions that are significant for the conversion (for instance, the <cite>vertical</cite> dimension when integrating a
+vertical profile to a total column) will still be mentioned explicitly and will map to an index in the symbol used for
+the quantity (e.g. <span class="math">\(\nu(:,i)\)</span>). If an algorithm has variables with a &#8216;:&#8217; in the dimension specification then the
+algorithm will contain a description of which combination of dimensions are supported for &#8216;:&#8217;.</p>
+</div>
+<div class="section" id="constants">
+<h2>Constants</h2>
+<table border="1" class="docutils">
+<colgroup>
+<col width="17%" />
+<col width="25%" />
+<col width="29%" />
+<col width="28%" />
+</colgroup>
+<thead valign="bottom">
+<tr class="row-odd"><th class="head">symbol</th>
+<th class="head">name</th>
+<th class="head">unit</th>
+<th class="head">value</th>
+</tr>
+</thead>
+<tbody valign="top">
+<tr class="row-even"><td><span class="math">\(a\)</span></td>
+<td>WGS84 semi-major axis</td>
+<td><span class="math">\(m\)</span></td>
+<td><span class="math">\(6378137.0\)</span></td>
+</tr>
+<tr class="row-odd"><td><span class="math">\(b\)</span></td>
+<td>WGS84 semi-minor axis</td>
+<td><span class="math">\(m\)</span></td>
+<td><span class="math">\(6356752.314245\)</span></td>
+</tr>
+<tr class="row-even"><td><span class="math">\(c\)</span></td>
+<td>speed of light</td>
+<td><span class="math">\(\frac{m}{s}\)</span></td>
+<td><span class="math">\(2.99792458\cdot10^{8}\)</span></td>
+</tr>
+<tr class="row-odd"><td><span class="math">\(\frac{1}{f}\)</span></td>
+<td>WGS84 inverse flatting</td>
+<td>&nbsp;</td>
+<td><span class="math">\(298.257223563\)</span></td>
+</tr>
+<tr class="row-even"><td><span class="math">\(g_{0}\)</span></td>
+<td>mean earth gravity</td>
+<td><span class="math">\(\frac{m}{s^2}\)</span></td>
+<td><span class="math">\(9.80665\)</span></td>
+</tr>
+<tr class="row-odd"><td><span class="math">\(g_{e}\)</span></td>
+<td>earth gravity at equator</td>
+<td><span class="math">\(\frac{m}{s^2}\)</span></td>
+<td><span class="math">\(9.7803253359\)</span></td>
+</tr>
+<tr class="row-even"><td><span class="math">\(g_{p}\)</span></td>
+<td>earth gravity at poles</td>
+<td><span class="math">\(\frac{m}{s^2}\)</span></td>
+<td><span class="math">\(9.8321849378\)</span></td>
+</tr>
+<tr class="row-odd"><td><span class="math">\(GM\)</span></td>
+<td>WGS84 earth&#8217;s gravitational
+constant</td>
+<td><span class="math">\(\frac{m^3}{s^2}\)</span></td>
+<td><span class="math">\(3986004.418\cdot10^{8}\)</span></td>
+</tr>
+<tr class="row-even"><td><span class="math">\(k\)</span></td>
+<td>Boltzmann constant</td>
+<td><span class="math">\(\frac{kg m^2}{K s^2}\)</span></td>
+<td><span class="math">\(1.38064852\cdot10^{-23}\)</span></td>
+</tr>
+<tr class="row-odd"><td><span class="math">\(N_A\)</span></td>
+<td>Avogadro constant</td>
+<td><span class="math">\(\frac{1}{mol}\)</span></td>
+<td><span class="math">\(6.022140857\cdot10^{23}\)</span></td>
+</tr>
+<tr class="row-even"><td><span class="math">\(p_{0}\)</span></td>
+<td>standard pressure</td>
+<td><span class="math">\(Pa\)</span></td>
+<td><span class="math">\(101325\)</span></td>
+</tr>
+<tr class="row-odd"><td><span class="math">\(R\)</span></td>
+<td>universal gas constant</td>
+<td><span class="math">\(\frac{kg m^2}{K mol s^2}\)</span></td>
+<td><span class="math">\(8.3144598\)</span></td>
+</tr>
+<tr class="row-even"><td><span class="math">\(T_{0}\)</span></td>
+<td>standard temperature</td>
+<td><span class="math">\(K\)</span></td>
+<td><span class="math">\(273.15\)</span></td>
+</tr>
+<tr class="row-odd"><td><span class="math">\(\omega\)</span></td>
+<td>WGS84 earth angular velocity</td>
+<td><span class="math">\(rad/s\)</span></td>
+<td><span class="math">\(7292115.0\cdot10^{-11}\)</span></td>
+</tr>
+</tbody>
+</table>
+</div>
+<div class="section" id="molar-mass">
+<h2>Molar mass</h2>
+<p>The following table provides for each species the molar mass <span class="math">\(M_{x}\)</span> in <span class="math">\(\frac{g}{mol}\)</span>.</p>
+<p>See the documentation on the HARP data format for a description of all species.</p>
+<table border="1" class="docutils">
+<colgroup>
+<col width="13%" />
+<col width="88%" />
+</colgroup>
+<thead valign="bottom">
+<tr class="row-odd"><th class="head">name</th>
+<th class="head">molar mass</th>
+</tr>
+</thead>
+<tbody valign="top">
+<tr class="row-even"><td>dry air</td>
+<td>28.9644</td>
+</tr>
+<tr class="row-odd"><td>BrO</td>
+<td>95.9034</td>
+</tr>
+<tr class="row-even"><td>BrO2</td>
+<td>111.9028</td>
+</tr>
+<tr class="row-odd"><td>CCl2F2</td>
+<td>120.9135</td>
+</tr>
+<tr class="row-even"><td>CCl3F</td>
+<td>137.3681</td>
+</tr>
+<tr class="row-odd"><td>CF4</td>
+<td>88.00431</td>
+</tr>
+<tr class="row-even"><td>CHClF2</td>
+<td>86.4684</td>
+</tr>
+<tr class="row-odd"><td>CH3Cl</td>
+<td>50.4875</td>
+</tr>
+<tr class="row-even"><td>CH4</td>
+<td>16.0425</td>
+</tr>
+<tr class="row-odd"><td>CO</td>
+<td>28.0101</td>
+</tr>
+<tr class="row-even"><td>COF2</td>
+<td>66.0069</td>
+</tr>
+<tr class="row-odd"><td>COS</td>
+<td>60.0751</td>
+</tr>
+<tr class="row-even"><td>CO2</td>
+<td>44.0095</td>
+</tr>
+<tr class="row-odd"><td>C2H2</td>
+<td>26.0373</td>
+</tr>
+<tr class="row-even"><td>C2H2O2</td>
+<td>58.036163</td>
+</tr>
+<tr class="row-odd"><td>C2H6</td>
+<td>30.0690</td>
+</tr>
+<tr class="row-even"><td>C2H3NO5</td>
+<td>121.04892</td>
+</tr>
+<tr class="row-odd"><td>C3H8</td>
+<td>44.09562</td>
+</tr>
+<tr class="row-even"><td>C5H8</td>
+<td>68.11702</td>
+</tr>
+<tr class="row-odd"><td>ClNO3</td>
+<td>97.4579</td>
+</tr>
+<tr class="row-even"><td>ClO</td>
+<td>51.4524</td>
+</tr>
+<tr class="row-odd"><td>HCHO</td>
+<td>30.026</td>
+</tr>
+<tr class="row-even"><td>HCOOH</td>
+<td>46.0254</td>
+</tr>
+<tr class="row-odd"><td>HCN</td>
+<td>27.0253</td>
+</tr>
+<tr class="row-even"><td>HCl</td>
+<td>36.4609</td>
+</tr>
+<tr class="row-odd"><td>HF</td>
+<td>20.006343</td>
+</tr>
+<tr class="row-even"><td>HNO2</td>
+<td>47.013494</td>
+</tr>
+<tr class="row-odd"><td>HNO3</td>
+<td>63.0129</td>
+</tr>
+<tr class="row-even"><td>HNO4</td>
+<td>79.0122</td>
+</tr>
+<tr class="row-odd"><td>HOCl</td>
+<td>52.4603</td>
+</tr>
+<tr class="row-even"><td>HO2</td>
+<td>33.00674</td>
+</tr>
+<tr class="row-odd"><td>H2O</td>
+<td>18.0153</td>
+</tr>
+<tr class="row-even"><td>H2O_161</td>
+<td>1.00782503207 + 15.99491461956 + 1.00782503207</td>
+</tr>
+<tr class="row-odd"><td>H2O_162</td>
+<td>1.00782503207 + 15.99491461956 + 2.0141017778</td>
+</tr>
+<tr class="row-even"><td>H2O_171</td>
+<td>1.00782503207 + 16.99913170 + 1.00782503207</td>
+</tr>
+<tr class="row-odd"><td>H2O_181</td>
+<td>1.00782503207 + 17.9991610 + 1.00782503207</td>
+</tr>
+<tr class="row-even"><td>H2O2</td>
+<td>34.01468</td>
+</tr>
+<tr class="row-odd"><td>IO</td>
+<td>142.903873</td>
+</tr>
+<tr class="row-even"><td>NO</td>
+<td>30.00610</td>
+</tr>
+<tr class="row-odd"><td>NOCl</td>
+<td>65.4591</td>
+</tr>
+<tr class="row-even"><td>NO2</td>
+<td>46.00550</td>
+</tr>
+<tr class="row-odd"><td>NO3</td>
+<td>62.0049</td>
+</tr>
+<tr class="row-even"><td>N2</td>
+<td>28.01340</td>
+</tr>
+<tr class="row-odd"><td>N2O</td>
+<td>44.0129</td>
+</tr>
+<tr class="row-even"><td>N2O5</td>
+<td>108.0104</td>
+</tr>
+<tr class="row-odd"><td>OClO</td>
+<td>67.4518</td>
+</tr>
+<tr class="row-even"><td>OH</td>
+<td>17.00734</td>
+</tr>
+<tr class="row-odd"><td>O2</td>
+<td>32.000</td>
+</tr>
+<tr class="row-even"><td>O3</td>
+<td>47.99820</td>
+</tr>
+<tr class="row-odd"><td>O3_666</td>
+<td>15.99491461956 + 15.99491461956 + 15.99491461956</td>
+</tr>
+<tr class="row-even"><td>O3_667</td>
+<td>15.99491461956 + 15.99491461956 + 16.99913170</td>
+</tr>
+<tr class="row-odd"><td>O3_668</td>
+<td>15.99491461956 + 15.99491461956 + 17.9991610</td>
+</tr>
+<tr class="row-even"><td>O3_686</td>
+<td>15.99491461956 + 17.9991610 + 15.99491461956</td>
+</tr>
+<tr class="row-odd"><td>O4</td>
+<td>63.9976</td>
+</tr>
+<tr class="row-even"><td>SF6</td>
+<td>146.0554</td>
+</tr>
+<tr class="row-odd"><td>SO2</td>
+<td>64.0638</td>
+</tr>
+</tbody>
+</table>
+</div>
+</div>
+
+
+           </div>
+          </div>
+          <footer>
+  
+    <div class="rst-footer-buttons" role="navigation" aria-label="footer navigation">
+      
+        <a href="formula.html" class="btn btn-neutral float-right" title="Common formula" accesskey="n">Next <span class="fa fa-arrow-circle-right"></span></a>
+      
+      
+        <a href="index.html" class="btn btn-neutral" title="Algorithms" accesskey="p"><span class="fa fa-arrow-circle-left"></span> Previous</a>
+      
+    </div>
+  
+
+  <hr/>
+
+  <div role="contentinfo">
+    <p>
+        &copy; Copyright 2015-2017 S&amp;T, The Netherlands.
+
+    </p>
+  </div> 
+
+</footer>
+
+        </div>
+      </div>
+
+    </section>
+
+  </div>
+  
+
+
+  
+
+    <script type="text/javascript">
+        var DOCUMENTATION_OPTIONS = {
+            URL_ROOT:'../',
+            VERSION:'0.4b',
+            COLLAPSE_INDEX:false,
+            FILE_SUFFIX:'.html',
+            HAS_SOURCE:  false
+        };
+    </script>
+      <script type="text/javascript" src="../_static/jquery.js"></script>
+      <script type="text/javascript" src="../_static/underscore.js"></script>
+      <script type="text/javascript" src="../_static/doctools.js"></script>
+      <script type="text/javascript" src="https://cdn.mathjax.org/mathjax/latest/MathJax.js?config=TeX-AMS-MML_HTMLorMML"></script>
+
+  
+
+  
+  
+    <script type="text/javascript" src="../_static/js/theme.js"></script>
+  
+
+  
+  
+  <script type="text/javascript">
+      jQuery(function () {
+          SphinxRtdTheme.StickyNav.enable();
+      });
+  </script>
+   
+
+</body>
+</html>

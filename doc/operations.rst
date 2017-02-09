@@ -74,7 +74,7 @@ Supported functions:
        harpconvert, harpdump, and harpfilter can be used to list
        available variable conversions.
        The algorithms behind all the conversions are described
-       in the :doc:`Algorithms <algorithms>` section of the
+       in the :doc:`Algorithms <algorithms/index>` section of the
        documentation.
 
     ``derive_smoothed_column(variable {dimension-type, ...} [unit], axis-variable unit, collocation-result-file, a|b, dataset-dir)``
@@ -83,7 +83,7 @@ Supported functions:
        harpconvert, harpdump, and harpfilter can be used to list
        available variable conversions.
        The algorithms behind all the conversions are described
-       in the :doc:`Algorithms <algorithms>` section of the
+       in the :doc:`Algorithms <algorithms/index>` section of the
        documentation.
        Derive the given intergrated column value by first deriving
        a partial column profile variant of the variable and then

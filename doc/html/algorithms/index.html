@@ -1,0 +1,333 @@
+
+
+<!DOCTYPE html>
+<!--[if IE 8]><html class="no-js lt-ie9" lang="en" > <![endif]-->
+<!--[if gt IE 8]><!--> <html class="no-js" lang="en" > <!--<![endif]-->
+<head>
+  <meta charset="utf-8">
+  
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  
+  <title>Algorithms &mdash; HARP 0.4b documentation</title>
+  
+
+  
+  
+
+  
+
+  
+  
+    
+
+  
+
+  
+  
+    <link rel="stylesheet" href="../_static/css/theme.css" type="text/css" />
+  
+
+  
+    <link rel="stylesheet" href="../_static/custom.css" type="text/css" />
+  
+
+  
+    <link rel="top" title="HARP 0.4b documentation" href="../index.html"/>
+        <link rel="next" title="Definitions" href="definitions.html"/>
+        <link rel="prev" title="Data formats" href="../dataformats.html"/> 
+
+  
+  <script src="../_static/js/modernizr.min.js"></script>
+
+</head>
+
+<body class="wy-body-for-nav" role="document">
+
+  <div class="wy-grid-for-nav">
+
+    
+    <nav data-toggle="wy-nav-shift" class="wy-nav-side">
+      <div class="wy-side-scroll">
+        <div class="wy-side-nav-search">
+          
+
+          
+            <a href="../index.html" class="icon icon-home"> HARP
+          
+
+          
+          </a>
+
+          
+            
+            
+              <div class="version">
+                0.4
+              </div>
+            
+          
+
+          
+
+          
+        </div>
+
+        <div class="wy-menu wy-menu-vertical" data-spy="affix" role="navigation" aria-label="main navigation">
+          
+            
+            
+                <ul class="current">
+<li class="toctree-l1"><a class="reference internal" href="../install.html">Installation</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../dataformats.html">Data formats</a></li>
+<li class="toctree-l1 current"><a class="current reference internal" href="#">Algorithms</a><ul>
+<li class="toctree-l2"><a class="reference internal" href="definitions.html">Definitions</a></li>
+<li class="toctree-l2"><a class="reference internal" href="formula.html">Common formula</a></li>
+<li class="toctree-l2"><a class="reference internal" href="#variable-conversions">Variable Conversions</a><ul>
+<li class="toctree-l3"><a class="reference internal" href="common.html">common derivations</a></li>
+<li class="toctree-l3"><a class="reference internal" href="derivations/aerosol_extinction_coefficient.html">aerosol extinction coefficient derivations</a></li>
+<li class="toctree-l3"><a class="reference internal" href="derivations/aerosol_optical_depth.html">aerosol optical depth derivations</a></li>
+<li class="toctree-l3"><a class="reference internal" href="derivations/altitude.html">altitude derivations</a></li>
+<li class="toctree-l3"><a class="reference internal" href="derivations/altitude_bounds.html">altitude bounds derivations</a></li>
+<li class="toctree-l3"><a class="reference internal" href="derivations/column_mass_density.html">column mass density derivations</a></li>
+<li class="toctree-l3"><a class="reference internal" href="derivations/column_mass_mixing_ratio.html">column mass mixing ratio derivations</a></li>
+<li class="toctree-l3"><a class="reference internal" href="derivations/column_number_density.html">column number density derivations</a></li>
+<li class="toctree-l3"><a class="reference internal" href="derivations/column_volume_mixing_ratio.html">column volume mixing ratio derivations</a></li>
+<li class="toctree-l3"><a class="reference internal" href="derivations/datetime.html">datetime derivations</a></li>
+<li class="toctree-l3"><a class="reference internal" href="derivations/datetime_length.html">datetime length derivations</a></li>
+<li class="toctree-l3"><a class="reference internal" href="derivations/datetime_start.html">datetime start derivations</a></li>
+<li class="toctree-l3"><a class="reference internal" href="derivations/datetime_stop.html">datetime stop derivations</a></li>
+<li class="toctree-l3"><a class="reference internal" href="derivations/frequency.html">frequency derivations</a></li>
+<li class="toctree-l3"><a class="reference internal" href="derivations/geopotential.html">geopotential derivations</a></li>
+<li class="toctree-l3"><a class="reference internal" href="derivations/geopotential_height.html">geopotential height derivations</a></li>
+<li class="toctree-l3"><a class="reference internal" href="derivations/latitude.html">latitude derivations</a></li>
+<li class="toctree-l3"><a class="reference internal" href="derivations/latitude_bounds.html">latitude bounds derivations</a></li>
+<li class="toctree-l3"><a class="reference internal" href="derivations/longitude.html">longitude derivations</a></li>
+<li class="toctree-l3"><a class="reference internal" href="derivations/longitude_bounds.html">longitude bounds derivations</a></li>
+<li class="toctree-l3"><a class="reference internal" href="derivations/mass_density.html">mass density derivations</a></li>
+<li class="toctree-l3"><a class="reference internal" href="derivations/mass_mixing_ratio.html">mass mixing ratio derivations</a></li>
+<li class="toctree-l3"><a class="reference internal" href="derivations/molar_mass.html">molar mass derivations</a></li>
+<li class="toctree-l3"><a class="reference internal" href="derivations/number_density.html">number density derivations</a></li>
+<li class="toctree-l3"><a class="reference internal" href="derivations/partial_pressure.html">partial pressure derivations</a></li>
+<li class="toctree-l3"><a class="reference internal" href="derivations/pressure.html">pressure derivations</a></li>
+<li class="toctree-l3"><a class="reference internal" href="derivations/pressure_bounds.html">pressure bounds derivations</a></li>
+<li class="toctree-l3"><a class="reference internal" href="derivations/relative_azimuth_angle.html">relative azimuth angle derivations</a></li>
+<li class="toctree-l3"><a class="reference internal" href="derivations/relative_humidity.html">relative humidity derivations</a></li>
+<li class="toctree-l3"><a class="reference internal" href="derivations/scattering_angle.html">scattering angle derivations</a></li>
+<li class="toctree-l3"><a class="reference internal" href="derivations/sensor_azimuth_angle.html">sensor azimuth angle derivations</a></li>
+<li class="toctree-l3"><a class="reference internal" href="derivations/sensor_elevation_angle.html">sensor elevation angle derivations</a></li>
+<li class="toctree-l3"><a class="reference internal" href="derivations/sensor_zenith_angle.html">sensor zenith angle derivations</a></li>
+<li class="toctree-l3"><a class="reference internal" href="derivations/solar_azimuth_angle.html">solar azimuth angle derivations</a></li>
+<li class="toctree-l3"><a class="reference internal" href="derivations/solar_elevation_angle.html">solar elevation angle derivations</a></li>
+<li class="toctree-l3"><a class="reference internal" href="derivations/solar_zenith_angle.html">solar zenith angle derivations</a></li>
+<li class="toctree-l3"><a class="reference internal" href="derivations/temperature.html">temperature derivations</a></li>
+<li class="toctree-l3"><a class="reference internal" href="derivations/viewing_azimuth_angle.html">viewing azimuth angle derivations</a></li>
+<li class="toctree-l3"><a class="reference internal" href="derivations/viewing_elevation_angle.html">viewing elevation angle derivations</a></li>
+<li class="toctree-l3"><a class="reference internal" href="derivations/viewing_zenith_angle.html">viewing zenith angle derivations</a></li>
+<li class="toctree-l3"><a class="reference internal" href="derivations/virtual_temperature.html">virtual temperature derivations</a></li>
+<li class="toctree-l3"><a class="reference internal" href="derivations/volume_mixing_ratio.html">volume mixing ratio derivations</a></li>
+<li class="toctree-l3"><a class="reference internal" href="derivations/wavelength.html">wavelength derivations</a></li>
+<li class="toctree-l3"><a class="reference internal" href="derivations/wavenumber.html">wavenumber derivations</a></li>
+</ul>
+</li>
+</ul>
+</li>
+<li class="toctree-l1"><a class="reference internal" href="../operations.html">Operations</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../ingestions/index.html">Ingestion definitions</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../libharp.html">C library</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../python.html">Python interface</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../tools.html">Command line tools</a></li>
+</ul>
+
+            
+          
+        </div>
+      </div>
+    </nav>
+
+    <section data-toggle="wy-nav-shift" class="wy-nav-content-wrap">
+
+      
+      <nav class="wy-nav-top" role="navigation" aria-label="top navigation">
+        <i data-toggle="wy-nav-top" class="fa fa-bars"></i>
+        <a href="../index.html">HARP</a>
+      </nav>
+
+
+      
+      <div class="wy-nav-content">
+        <div class="rst-content">
+          
+
+ 
+
+
+
+<div role="navigation" aria-label="breadcrumbs navigation">
+  <ul class="wy-breadcrumbs">
+    <li><a href="../index.html">Docs</a> &raquo;</li>
+      
+    <li>Algorithms</li>
+      <li class="wy-breadcrumbs-aside">
+        
+          
+        
+      </li>
+  </ul>
+  <hr/>
+</div>
+          <div role="main" class="document" itemscope="itemscope" itemtype="http://schema.org/Article">
+           <div itemprop="articleBody">
+            
+  <div class="section" id="algorithms">
+<h1>Algorithms</h1>
+<p>This section describes the algorithms behind the operations that can be performed by HARP.</p>
+<p>Note that all algorithms here are defined in their discretized form (to reflect the implementation in source code).</p>
+<div class="toctree-wrapper compound">
+<ul>
+<li class="toctree-l1"><a class="reference internal" href="definitions.html">Definitions</a><ul>
+<li class="toctree-l2"><a class="reference internal" href="definitions.html#leading-dimensions">Leading dimensions</a></li>
+<li class="toctree-l2"><a class="reference internal" href="definitions.html#constants">Constants</a></li>
+<li class="toctree-l2"><a class="reference internal" href="definitions.html#molar-mass">Molar mass</a></li>
+</ul>
+</li>
+<li class="toctree-l1"><a class="reference internal" href="formula.html">Common formula</a><ul>
+<li class="toctree-l2"><a class="reference internal" href="formula.html#gravity">gravity</a></li>
+<li class="toctree-l2"><a class="reference internal" href="formula.html#geopotential-height">geopotential height</a></li>
+<li class="toctree-l2"><a class="reference internal" href="formula.html#gas-constant">gas constant</a></li>
+<li class="toctree-l2"><a class="reference internal" href="formula.html#ideal-gas-law">ideal gas law</a></li>
+<li class="toctree-l2"><a class="reference internal" href="formula.html#barometric-formula">barometric formula</a></li>
+<li class="toctree-l2"><a class="reference internal" href="formula.html#mass-density">mass density</a></li>
+<li class="toctree-l2"><a class="reference internal" href="formula.html#number-density">number density</a></li>
+<li class="toctree-l2"><a class="reference internal" href="formula.html#dry-air-vs-total-air">dry air vs. total air</a></li>
+<li class="toctree-l2"><a class="reference internal" href="formula.html#virtual-temperature">virtual temperature</a></li>
+<li class="toctree-l2"><a class="reference internal" href="formula.html#volume-mixing-ratio">volume mixing ratio</a></li>
+<li class="toctree-l2"><a class="reference internal" href="formula.html#mass-mixing-ratio">mass mixing ratio</a></li>
+<li class="toctree-l2"><a class="reference internal" href="formula.html#molar-mass-of-total-air">molar mass of total air</a></li>
+<li class="toctree-l2"><a class="reference internal" href="formula.html#partial-pressure">partial pressure</a></li>
+<li class="toctree-l2"><a class="reference internal" href="formula.html#saturated-water-vapor-pressure">saturated water vapor pressure</a></li>
+</ul>
+</li>
+</ul>
+</div>
+<div class="section" id="variable-conversions">
+<h2>Variable Conversions</h2>
+<div class="toctree-wrapper compound">
+<ul>
+<li class="toctree-l1"><a class="reference internal" href="common.html">common derivations</a></li>
+<li class="toctree-l1"><a class="reference internal" href="derivations/aerosol_extinction_coefficient.html">aerosol extinction coefficient derivations</a></li>
+<li class="toctree-l1"><a class="reference internal" href="derivations/aerosol_optical_depth.html">aerosol optical depth derivations</a></li>
+<li class="toctree-l1"><a class="reference internal" href="derivations/altitude.html">altitude derivations</a></li>
+<li class="toctree-l1"><a class="reference internal" href="derivations/altitude_bounds.html">altitude bounds derivations</a></li>
+<li class="toctree-l1"><a class="reference internal" href="derivations/column_mass_density.html">column mass density derivations</a></li>
+<li class="toctree-l1"><a class="reference internal" href="derivations/column_mass_mixing_ratio.html">column mass mixing ratio derivations</a></li>
+<li class="toctree-l1"><a class="reference internal" href="derivations/column_number_density.html">column number density derivations</a></li>
+<li class="toctree-l1"><a class="reference internal" href="derivations/column_volume_mixing_ratio.html">column volume mixing ratio derivations</a></li>
+<li class="toctree-l1"><a class="reference internal" href="derivations/datetime.html">datetime derivations</a></li>
+<li class="toctree-l1"><a class="reference internal" href="derivations/datetime_length.html">datetime length derivations</a></li>
+<li class="toctree-l1"><a class="reference internal" href="derivations/datetime_start.html">datetime start derivations</a></li>
+<li class="toctree-l1"><a class="reference internal" href="derivations/datetime_stop.html">datetime stop derivations</a></li>
+<li class="toctree-l1"><a class="reference internal" href="derivations/frequency.html">frequency derivations</a></li>
+<li class="toctree-l1"><a class="reference internal" href="derivations/geopotential.html">geopotential derivations</a></li>
+<li class="toctree-l1"><a class="reference internal" href="derivations/geopotential_height.html">geopotential height derivations</a></li>
+<li class="toctree-l1"><a class="reference internal" href="derivations/latitude.html">latitude derivations</a></li>
+<li class="toctree-l1"><a class="reference internal" href="derivations/latitude_bounds.html">latitude bounds derivations</a></li>
+<li class="toctree-l1"><a class="reference internal" href="derivations/longitude.html">longitude derivations</a></li>
+<li class="toctree-l1"><a class="reference internal" href="derivations/longitude_bounds.html">longitude bounds derivations</a></li>
+<li class="toctree-l1"><a class="reference internal" href="derivations/mass_density.html">mass density derivations</a></li>
+<li class="toctree-l1"><a class="reference internal" href="derivations/mass_mixing_ratio.html">mass mixing ratio derivations</a></li>
+<li class="toctree-l1"><a class="reference internal" href="derivations/molar_mass.html">molar mass derivations</a></li>
+<li class="toctree-l1"><a class="reference internal" href="derivations/number_density.html">number density derivations</a></li>
+<li class="toctree-l1"><a class="reference internal" href="derivations/partial_pressure.html">partial pressure derivations</a></li>
+<li class="toctree-l1"><a class="reference internal" href="derivations/pressure.html">pressure derivations</a></li>
+<li class="toctree-l1"><a class="reference internal" href="derivations/pressure_bounds.html">pressure bounds derivations</a></li>
+<li class="toctree-l1"><a class="reference internal" href="derivations/relative_azimuth_angle.html">relative azimuth angle derivations</a></li>
+<li class="toctree-l1"><a class="reference internal" href="derivations/relative_humidity.html">relative humidity derivations</a></li>
+<li class="toctree-l1"><a class="reference internal" href="derivations/scattering_angle.html">scattering angle derivations</a></li>
+<li class="toctree-l1"><a class="reference internal" href="derivations/sensor_azimuth_angle.html">sensor azimuth angle derivations</a></li>
+<li class="toctree-l1"><a class="reference internal" href="derivations/sensor_elevation_angle.html">sensor elevation angle derivations</a></li>
+<li class="toctree-l1"><a class="reference internal" href="derivations/sensor_zenith_angle.html">sensor zenith angle derivations</a></li>
+<li class="toctree-l1"><a class="reference internal" href="derivations/solar_azimuth_angle.html">solar azimuth angle derivations</a></li>
+<li class="toctree-l1"><a class="reference internal" href="derivations/solar_elevation_angle.html">solar elevation angle derivations</a></li>
+<li class="toctree-l1"><a class="reference internal" href="derivations/solar_zenith_angle.html">solar zenith angle derivations</a></li>
+<li class="toctree-l1"><a class="reference internal" href="derivations/temperature.html">temperature derivations</a></li>
+<li class="toctree-l1"><a class="reference internal" href="derivations/viewing_azimuth_angle.html">viewing azimuth angle derivations</a></li>
+<li class="toctree-l1"><a class="reference internal" href="derivations/viewing_elevation_angle.html">viewing elevation angle derivations</a></li>
+<li class="toctree-l1"><a class="reference internal" href="derivations/viewing_zenith_angle.html">viewing zenith angle derivations</a></li>
+<li class="toctree-l1"><a class="reference internal" href="derivations/virtual_temperature.html">virtual temperature derivations</a></li>
+<li class="toctree-l1"><a class="reference internal" href="derivations/volume_mixing_ratio.html">volume mixing ratio derivations</a></li>
+<li class="toctree-l1"><a class="reference internal" href="derivations/wavelength.html">wavelength derivations</a></li>
+<li class="toctree-l1"><a class="reference internal" href="derivations/wavenumber.html">wavenumber derivations</a></li>
+</ul>
+</div>
+</div>
+</div>
+
+
+           </div>
+          </div>
+          <footer>
+  
+    <div class="rst-footer-buttons" role="navigation" aria-label="footer navigation">
+      
+        <a href="definitions.html" class="btn btn-neutral float-right" title="Definitions" accesskey="n">Next <span class="fa fa-arrow-circle-right"></span></a>
+      
+      
+        <a href="../dataformats.html" class="btn btn-neutral" title="Data formats" accesskey="p"><span class="fa fa-arrow-circle-left"></span> Previous</a>
+      
+    </div>
+  
+
+  <hr/>
+
+  <div role="contentinfo">
+    <p>
+        &copy; Copyright 2015-2017 S&amp;T, The Netherlands.
+
+    </p>
+  </div> 
+
+</footer>
+
+        </div>
+      </div>
+
+    </section>
+
+  </div>
+  
+
+
+  
+
+    <script type="text/javascript">
+        var DOCUMENTATION_OPTIONS = {
+            URL_ROOT:'../',
+            VERSION:'0.4b',
+            COLLAPSE_INDEX:false,
+            FILE_SUFFIX:'.html',
+            HAS_SOURCE:  false
+        };
+    </script>
+      <script type="text/javascript" src="../_static/jquery.js"></script>
+      <script type="text/javascript" src="../_static/underscore.js"></script>
+      <script type="text/javascript" src="../_static/doctools.js"></script>
+      <script type="text/javascript" src="https://cdn.mathjax.org/mathjax/latest/MathJax.js?config=TeX-AMS-MML_HTMLorMML"></script>
+
+  
+
+  
+  
+    <script type="text/javascript" src="../_static/js/theme.js"></script>
+  
+
+  
+  
+  <script type="text/javascript">
+      jQuery(function () {
+          SphinxRtdTheme.StickyNav.enable();
+      });
+  </script>
+   
+
+</body>
+</html>

@@ -14,7 +14,7 @@ Contents
 
    install
    dataformats
-   algorithms
+   algorithms/index
    operations
    ingestions/index
    libharp
@@ -69,7 +69,7 @@ Algorithms
 
 HARP can perform a wide variety of operations on the data. A description of
 the algorithms as used in HARP can be found in the :doc:`Algorithms
-<algorithms>` section of the documentation.
+<algorithms/index>` section of the documentation.
 
 Operations
 ----------
