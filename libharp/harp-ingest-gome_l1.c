@@ -540,32 +540,7 @@ static int get_sun_reference_spectral_data(ingest_info *info, const char *fieldn
 
 static int read_datetime(void *user_data, harp_array data)
 {
-    coda_cursor cursor;
-    ingest_info *info = (ingest_info *)user_data;
-
-    if (info->sun_reference)
-    {
-        if (coda_cursor_set_product(&cursor, info->product) != 0)
-        {
-            harp_set_error(HARP_ERROR_CODA, NULL);
-            return -1;
-        }
-        if (coda_cursor_goto(&cursor, "sfs/utc_solar_spectrum") != 0)
-        {
-            harp_set_error(HARP_ERROR_CODA, NULL);
-            return -1;
-        }
-        if (coda_cursor_read_double(&cursor, data.double_data) != 0)
-        {
-            harp_set_error(HARP_ERROR_CODA, NULL);
-            return -1;
-        }
-        return 0;
-    }
-    else
-    {
-        return get_main_data((ingest_info *)user_data, "agi", "groundpixel_end", IS_NO_ARRAY, data.double_data);
-    }
+    return get_main_data((ingest_info *)user_data, "agi", "groundpixel_end", IS_NO_ARRAY, data.double_data);
 }
 
 static int read_latitude(void *user_data, harp_array data)
@@ -598,27 +573,9 @@ static int read_wavelength_photon_radiance_uncertainty(void *user_data, harp_arr
     return get_spectral_data((ingest_info *)user_data, "abs_rad_err", RADIANCE, data.double_data);
 }
 
-static int read_sun_reference_wavelength_photon_irradiance(void *user_data, harp_array data)
-{
-    return get_sun_reference_spectral_data((ingest_info *)user_data, "abs_irr", data.double_data);
-}
-
-static int read_sun_reference_wavelength_photon_irradiance_uncertainty(void *user_data, harp_array data)
-{
-    return get_sun_reference_spectral_data((ingest_info *)user_data, "abs_irr_err", data.double_data);
-}
-
 static int read_wavelength(void *user_data, harp_array data)
 {
-    if (((ingest_info *)user_data)->sun_reference)
-    {
-        return get_sun_reference_spectral_data((ingest_info *)user_data, "wavelength", data.double_data);
-    }
-    else
-    {
-        return get_spectral_data((ingest_info *)user_data, "wavelength", WAVELENGTH, data.double_data);
-    }
-    return 0;
+    return get_spectral_data((ingest_info *)user_data, "wavelength", WAVELENGTH, data.double_data);
 }
 
 static int read_datetime_length(void *user_data, harp_array data)
@@ -710,20 +667,59 @@ static int read_viewing_azimuth_angle(void *user_data, harp_array data)
     return get_main_data((ingest_info *)user_data, "agi/los_spacecraft", "azimuth_b", IS_NO_ARRAY, data.double_data);
 }
 
+static int read_sun_reference_datetime(void *user_data, harp_array data)
+{
+    coda_cursor cursor;
+    ingest_info *info = (ingest_info *)user_data;
+
+    if (coda_cursor_set_product(&cursor, info->product) != 0)
+    {
+        harp_set_error(HARP_ERROR_CODA, NULL);
+        return -1;
+    }
+    if (coda_cursor_goto(&cursor, "sfs/utc_solar_spectrum") != 0)
+    {
+        harp_set_error(HARP_ERROR_CODA, NULL);
+        return -1;
+    }
+    if (coda_cursor_read_double(&cursor, data.double_data) != 0)
+    {
+        harp_set_error(HARP_ERROR_CODA, NULL);
+        return -1;
+    }
+    return 0;
+}
+
+static int read_sun_reference_wavelength_photon_irradiance(void *user_data, harp_array data)
+{
+    return get_sun_reference_spectral_data((ingest_info *)user_data, "abs_irr", data.double_data);
+}
+
+static int read_sun_reference_wavelength_photon_irradiance_uncertainty(void *user_data, harp_array data)
+{
+    return get_sun_reference_spectral_data((ingest_info *)user_data, "abs_irr_err", data.double_data);
+}
+
+static int read_sun_reference_wavelength(void *user_data, harp_array data)
+{
+    return get_sun_reference_spectral_data((ingest_info *)user_data, "wavelength", data.double_data);
+}
+
 static int read_dimensions(void *user_data, long dimension[HARP_NUM_DIM_TYPES])
 {
     ingest_info *info = (ingest_info *)user_data;
 
-    if (info->sun_reference)
-    {
-        dimension[harp_dimension_time] = 1;
-        dimension[harp_dimension_spectral] = info->total_spectra_pixels;
-    }
-    else
-    {
-        dimension[harp_dimension_time] = info->num_egp_records;
-        dimension[harp_dimension_spectral] = info->max_measurements_one_egp;
-    }
+    dimension[harp_dimension_time] = info->num_egp_records;
+    dimension[harp_dimension_spectral] = info->max_measurements_one_egp;
+    return 0;
+}
+
+static int read_sun_reference_dimensions(void *user_data, long dimension[HARP_NUM_DIM_TYPES])
+{
+    ingest_info *info = (ingest_info *)user_data;
+
+    dimension[harp_dimension_time] = 1;
+    dimension[harp_dimension_spectral] = info->total_spectra_pixels;
     return 0;
 }
 
@@ -959,16 +955,6 @@ static int init_sun_reference_dimensions(ingest_info *info)
     return 0;
 }
 
-static int exclude_when_sun_reference(void *user_data)
-{
-    return ((ingest_info *)user_data)->sun_reference;
-}
-
-static int exclude_when_not_sun_reference(void *user_data)
-{
-    return !(((ingest_info *)user_data)->sun_reference);
-}
-
 static int ingestion_init(const harp_ingestion_module *module, coda_product *product,
                           const harp_ingestion_options *options, harp_product_definition **definition, void **user_data)
 {
@@ -1011,6 +997,7 @@ static int ingestion_init(const harp_ingestion_module *module, coda_product *pro
             ingestion_done(info);
             return -1;
         }
+        *definition = module->product_definition[1];
     }
     else
     {
@@ -1019,17 +1006,16 @@ static int ingestion_init(const harp_ingestion_module *module, coda_product *pro
             ingestion_done(info);
             return -1;
         }
+        *definition = module->product_definition[0];
     }
 
-    *definition = *module->product_definition;
     *user_data = info;
 
     return 0;
 }
 
-int harp_ingestion_module_gome_l1_init(void)
+static int register_nominal_product(harp_ingestion_module *module)
 {
-    harp_ingestion_module *module;
     harp_product_definition *product_definition;
     harp_variable_definition *variable_definition;
     harp_dimension_type dimension_type[2];
@@ -1037,23 +1023,6 @@ int harp_ingestion_module_gome_l1_init(void)
     long bounds_dimension[2] = { -1, 4 };
     const char *description;
     const char *path;
-
-    const char *band_options[] =
-        { "band-1a", "band-1b", "band-2a", "band-2b", "band-3", "band-4", "blind-1a", "straylight-1a", "straylight-1b",
-        "straylight-2a"
-    };
-    const char *sun_reference_options[] = { "sun_reference" };
-
-    description = "GOME Level 1 Extracted data";
-    module =
-        harp_ingestion_register_module_coda("GOME_L1_EXTRACTED", "GOME", "ERS_GOME", "GOM.LVL13_EXTRACTED", description,
-                                            ingestion_init, ingestion_done);
-    harp_ingestion_register_option(module, "band",
-                                   "only include data from the specified band ('band-1a', 'band-1b', 'band-2a', 'band-2b', 'band-3', 'band-4', 'blind-1a', 'straylight-1a', 'straylight-1b', 'straylight-2a'); by default data from all bands is retrieved",
-                                   10, band_options);
-    harp_ingestion_register_option(module, "data",
-                                   "retrieve the measured radiances or the sun spectra; by default the measured radiances are retrieved",
-                                   1, sun_reference_options);
 
     description = "GOME Level 1 Extracted Spectra product";
     product_definition = harp_ingestion_register_product(module, "GOME_L1_EXTRACTED", description, read_dimensions);
@@ -1073,15 +1042,12 @@ int harp_ingestion_module_gome_l1_init(void)
                                                    NULL, description, "seconds since 2000-01-01", NULL, read_datetime);
     path = "/egp[]/agi/groundpixel_end";
     harp_variable_definition_add_mapping(variable_definition, NULL, NULL, path, NULL);
-    path = "/sfs/utc_solar_spectrum";
-    harp_variable_definition_add_mapping(variable_definition, "data=sun_reference", NULL, path, NULL);
 
     /* latitude_of_the_measurement */
     description = "tangent latitude of the measurement";
     variable_definition =
         harp_ingestion_register_variable_full_read(product_definition, "latitude", harp_type_double, 1, dimension_type,
-                                                   NULL, description, "degree_north", exclude_when_sun_reference,
-                                                   read_latitude);
+                                                   NULL, description, "degree_north", NULL, read_latitude);
     harp_variable_definition_set_valid_range_double(variable_definition, -90.0, 90.0);
     path = "/egp[]/agi/coords[4]/latitude";
     harp_variable_definition_add_mapping(variable_definition, NULL, NULL, path, description);
@@ -1090,8 +1056,7 @@ int harp_ingestion_module_gome_l1_init(void)
     description = "tangent longitude of the measurement";
     variable_definition =
         harp_ingestion_register_variable_full_read(product_definition, "longitude", harp_type_double, 1, dimension_type,
-                                                   NULL, description, "degree_east", exclude_when_sun_reference,
-                                                   read_longitude);
+                                                   NULL, description, "degree_east", NULL, read_longitude);
     harp_variable_definition_set_valid_range_double(variable_definition, -180.0, 180.0);
     path = "/egp[]/agi/coords[4]/longitude";
     harp_variable_definition_add_mapping(variable_definition, NULL, NULL, path, description);
@@ -1101,7 +1066,7 @@ int harp_ingestion_module_gome_l1_init(void)
     variable_definition =
         harp_ingestion_register_variable_full_read(product_definition, "latitude_bounds", harp_type_double, 2,
                                                    bounds_dimension_type, bounds_dimension, description, "degree_north",
-                                                   exclude_when_sun_reference, read_latitude_bounds);
+                                                   NULL, read_latitude_bounds);
     harp_variable_definition_set_valid_range_double(variable_definition, -90.0, 90.0);
     path = "/egp[]/agi/coords[0:3]/latitude";
     description = "The corners are rearranged in the following way: 1,3,2,0";
@@ -1112,7 +1077,7 @@ int harp_ingestion_module_gome_l1_init(void)
     variable_definition =
         harp_ingestion_register_variable_full_read(product_definition, "longitude_bounds", harp_type_double, 2,
                                                    bounds_dimension_type, bounds_dimension, description, "degree_north",
-                                                   exclude_when_sun_reference, read_longitude_bounds);
+                                                   NULL, read_longitude_bounds);
     harp_variable_definition_set_valid_range_double(variable_definition, -90.0, 90.0);
     path = "/egp[]/agi/coords[0:3]/longitude";
     description = "The corners are rearranged in the following way: 1,3,2,0";
@@ -1123,7 +1088,7 @@ int harp_ingestion_module_gome_l1_init(void)
     variable_definition =
         harp_ingestion_register_variable_full_read(product_definition, "wavelength_photon_radiance", harp_type_double,
                                                    2, dimension_type, NULL, description, "count/s/cm2/sr/nm",
-                                                   exclude_when_sun_reference, read_wavelength_photon_radiance);
+                                                   NULL, read_wavelength_photon_radiance);
     path = "/egp[]/brda[]/edr[]/abs_radiance";
     description = "will be set to NaN is brda record is not available or if egp[]/brda[]/edr[]/flag != 0";
     harp_variable_definition_add_mapping(variable_definition, NULL, NULL, path, description);
@@ -1133,31 +1098,11 @@ int harp_ingestion_module_gome_l1_init(void)
     variable_definition =
         harp_ingestion_register_variable_full_read(product_definition, "wavelength_photon_radiance_uncertainty",
                                                    harp_type_double, 2, dimension_type, NULL, description,
-                                                   "count/s/cm2/sr/nm", exclude_when_sun_reference,
+                                                   "count/s/cm2/sr/nm", NULL,
                                                    read_wavelength_photon_radiance_uncertainty);
     path = "/egp[]/brda[]/edr[]/abs_rad_err";
     description = "will be set to NaN is brda record is not available or if egp[]/brda[]/edr[]/flag != 0";
     harp_variable_definition_add_mapping(variable_definition, NULL, NULL, path, description);
-
-    /* wavelength_photon_irradiance */
-    description = "sun spectrum spectral irradiance";
-    variable_definition =
-        harp_ingestion_register_variable_full_read(product_definition, "wavelength_photon_irradiance", harp_type_double,
-                                                   2, dimension_type, NULL, description, "count/s/cm2/nm",
-                                                   exclude_when_not_sun_reference,
-                                                   read_sun_reference_wavelength_photon_irradiance);
-    path = "/cdr[]/sdr[]/abs_irr";
-    harp_variable_definition_add_mapping(variable_definition, NULL, NULL, path, NULL);
-
-    /* wavelength_photon_irradiance_uncertainty */
-    description = "relative radiometric precision of the sun reference spectrum";
-    variable_definition =
-        harp_ingestion_register_variable_full_read(product_definition, "wavelength_photon_irradiance_uncertainty",
-                                                   harp_type_double, 2, dimension_type, NULL, description,
-                                                   "count/s/cm2/nm", exclude_when_not_sun_reference,
-                                                   read_sun_reference_wavelength_photon_irradiance_uncertainty);
-    path = "/cdr[]/sdr[]/abs_irr_err";
-    harp_variable_definition_add_mapping(variable_definition, NULL, NULL, path, NULL);
 
     /* wavelength */
     description = "nominal wavelength assignment for each of the detector pixels";
@@ -1166,15 +1111,12 @@ int harp_ingestion_module_gome_l1_init(void)
                                                    dimension_type, NULL, description, "nm", NULL, read_wavelength);
     path = "/egp[]/brda[]/edr[]/wavelength";
     harp_variable_definition_add_mapping(variable_definition, NULL, NULL, path, NULL);
-    path = "/cdr[]/sdr[]/wavelength";
-    harp_variable_definition_add_mapping(variable_definition, "data=sun_reference", NULL, path, NULL);
 
     /* datetime_length */
     description = "integration time for each pixel";
     variable_definition =
         harp_ingestion_register_variable_full_read(product_definition, "datetime_length", harp_type_double, 2,
-                                                   dimension_type, NULL, description, "s", exclude_when_sun_reference,
-                                                   read_datetime_length);
+                                                   dimension_type, NULL, description, "s", NULL, read_datetime_length);
     path = "/egp[]/brda[]/integration_time";
     harp_variable_definition_add_mapping(variable_definition, NULL, NULL, path, NULL);
 
@@ -1182,7 +1124,7 @@ int harp_ingestion_module_gome_l1_init(void)
     description = "relative index (0-3) of this measurement within a scan (forward+backward)";
     variable_definition =
         harp_ingestion_register_variable_full_read(product_definition, "scan_subset_counter", harp_type_int8, 1,
-                                                   dimension_type, NULL, description, NULL, exclude_when_sun_reference,
+                                                   dimension_type, NULL, description, NULL, NULL,
                                                    read_scan_subset_counter);
     harp_variable_definition_set_valid_range_int8(variable_definition, 0, 3);
     path = "/egp[]/sub_counter";
@@ -1194,8 +1136,8 @@ int harp_ingestion_module_gome_l1_init(void)
         "scan direction for each measurement: 'forward', 'backward' or 'mixed' (for a measurement that consisted of both a forward and backward scan)";
     variable_definition =
         harp_ingestion_register_variable_sample_read(product_definition, "scan_direction", harp_type_string, 1,
-                                                     dimension_type, NULL, description, NULL,
-                                                     exclude_when_sun_reference, read_scan_direction);
+                                                     dimension_type, NULL, description, NULL, NULL,
+                                                     read_scan_direction);
     path = "/egp[]/sub_counter";
     description =
         "when the integration time is higher than 1.5 s we are dealing with a mixed pixel, otherwise the scan direction is based on the subset counter of the measurement (0-2 forward, 3 = backward)";
@@ -1205,7 +1147,7 @@ int harp_ingestion_module_gome_l1_init(void)
     description = "solar zenith angle at instrument";
     variable_definition =
         harp_ingestion_register_variable_full_read(product_definition, "solar_zenith_angle", harp_type_double, 1,
-                                                   dimension_type, NULL, description, NULL, exclude_when_sun_reference,
+                                                   dimension_type, NULL, description, NULL, NULL,
                                                    read_solar_zenith_angle);
     path = "/egp[]/agi/solar_angles_spacecraft/zenith_b";
     harp_variable_definition_add_mapping(variable_definition, NULL, NULL, path, NULL);
@@ -1214,7 +1156,7 @@ int harp_ingestion_module_gome_l1_init(void)
     description = "solar azimuth angle at instrument";
     variable_definition =
         harp_ingestion_register_variable_full_read(product_definition, "solar_azimuth_angle", harp_type_double, 1,
-                                                   dimension_type, NULL, description, NULL, exclude_when_sun_reference,
+                                                   dimension_type, NULL, description, NULL, NULL,
                                                    read_solar_azimuth_angle);
     path = "/egp[]/agi/solar_angles_spacecraft/azimuth_b";
     harp_variable_definition_add_mapping(variable_definition, NULL, NULL, path, NULL);
@@ -1223,7 +1165,7 @@ int harp_ingestion_module_gome_l1_init(void)
     description = "line of sight zenith angle at instrument";
     variable_definition =
         harp_ingestion_register_variable_full_read(product_definition, "viewing_zenith_angle", harp_type_double, 1,
-                                                   dimension_type, NULL, description, NULL, exclude_when_sun_reference,
+                                                   dimension_type, NULL, description, NULL, NULL,
                                                    read_viewing_zenith_angle);
     path = "/egp[]/agi/los_spacecraft/zenith_b";
     harp_variable_definition_add_mapping(variable_definition, NULL, NULL, path, NULL);
@@ -1232,10 +1174,96 @@ int harp_ingestion_module_gome_l1_init(void)
     description = "line of sight azimuth angle at instrument";
     variable_definition =
         harp_ingestion_register_variable_full_read(product_definition, "viewing_azimuth_angle", harp_type_double, 1,
-                                                   dimension_type, NULL, description, NULL, exclude_when_sun_reference,
+                                                   dimension_type, NULL, description, NULL, NULL,
                                                    read_viewing_azimuth_angle);
     path = "/egp[]/agi/los_spacecraft/azimuth_b";
     harp_variable_definition_add_mapping(variable_definition, NULL, NULL, path, NULL);
 
+    return 0;
+}
+
+static int register_sun_reference_product(harp_ingestion_module *module)
+{
+    harp_product_definition *product_definition_sun_reference;
+    harp_variable_definition *variable_definition;
+    harp_dimension_type dimension_type[2];
+    const char *description;
+    const char *path;
+
+    description = "GOME Level 1 Extracted Spectra Sun Reference product";
+    product_definition_sun_reference =
+        harp_ingestion_register_product(module, "GOME_L1_EXTRACTED_sun_reference", description,
+                                        read_sun_reference_dimensions);
+    description = "GOME Level 1 Extracted Spectra Sun Reference";
+    harp_product_definition_add_mapping(product_definition_sun_reference, description, NULL);
+
+    dimension_type[0] = harp_dimension_time;
+    dimension_type[1] = harp_dimension_spectral;
+
+    /* time_of_the_measurement */
+    description = "time of the sun reference measurement at the end of the integration time";
+    variable_definition =
+        harp_ingestion_register_variable_full_read(product_definition_sun_reference, "datetime", harp_type_double, 1,
+                                                   dimension_type, NULL, description, "seconds since 2000-01-01", NULL,
+                                                   read_sun_reference_datetime);
+    path = "/sfs/utc_solar_spectrum";
+    harp_variable_definition_add_mapping(variable_definition, NULL, NULL, path, NULL);
+
+    /* wavelength_photon_irradiance */
+    description = "sun spectrum spectral irradiance";
+    variable_definition =
+        harp_ingestion_register_variable_full_read(product_definition_sun_reference, "wavelength_photon_irradiance",
+                                                   harp_type_double, 2, dimension_type, NULL, description,
+                                                   "count/s/cm2/nm", NULL,
+                                                   read_sun_reference_wavelength_photon_irradiance);
+    path = "/cdr[]/sdr[]/abs_irr";
+    harp_variable_definition_add_mapping(variable_definition, NULL, NULL, path, NULL);
+
+    /* wavelength_photon_irradiance_uncertainty */
+    description = "relative radiometric precision of the sun reference spectrum";
+    variable_definition =
+        harp_ingestion_register_variable_full_read(product_definition_sun_reference,
+                                                   "wavelength_photon_irradiance_uncertainty", harp_type_double, 2,
+                                                   dimension_type, NULL, description, "count/s/cm2/nm", NULL,
+                                                   read_sun_reference_wavelength_photon_irradiance_uncertainty);
+    path = "/cdr[]/sdr[]/abs_irr_err";
+    harp_variable_definition_add_mapping(variable_definition, NULL, NULL, path, NULL);
+
+    /* wavelength */
+    description = "nominal wavelength assignment for each of the detector pixels";
+    variable_definition =
+        harp_ingestion_register_variable_full_read(product_definition_sun_reference, "wavelength", harp_type_double, 2,
+                                                   dimension_type, NULL, description, "nm", NULL,
+                                                   read_sun_reference_wavelength);
+    path = "/cdr[]/sdr[]/wavelength";
+    harp_variable_definition_add_mapping(variable_definition, NULL, NULL, path, NULL);
+
+    return 0;
+}
+
+int harp_ingestion_module_gome_l1_init(void)
+{
+    harp_ingestion_module *module;
+    const char *description;
+
+    const char *band_options[] =
+        { "band-1a", "band-1b", "band-2a", "band-2b", "band-3", "band-4", "blind-1a", "straylight-1a", "straylight-1b",
+        "straylight-2a"
+    };
+    const char *sun_reference_options[] = { "sun_reference" };
+
+    description = "GOME Level 1 Extracted data";
+    module =
+        harp_ingestion_register_module_coda("GOME_L1_EXTRACTED", "GOME", "ERS_GOME", "GOM.LVL13_EXTRACTED", description,
+                                            ingestion_init, ingestion_done);
+    harp_ingestion_register_option(module, "band",
+                                   "only include data from the specified band ('band-1a', 'band-1b', 'band-2a', 'band-2b', 'band-3', 'band-4', 'blind-1a', 'straylight-1a', 'straylight-1b', 'straylight-2a'); by default data from all bands is retrieved",
+                                   10, band_options);
+    harp_ingestion_register_option(module, "data",
+                                   "retrieve the measured radiances or the sun spectra; by default the measured radiances are retrieved",
+                                   1, sun_reference_options);
+
+    register_nominal_product(module);
+    register_sun_reference_product(module);
     return 0;
 }
