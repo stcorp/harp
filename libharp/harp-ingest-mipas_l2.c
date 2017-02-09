@@ -1631,7 +1631,7 @@ static int read_f12_akm_vmr(void *user_data, long index, harp_array data)
 
 int harp_ingestion_module_mipas_l2_init(void)
 {
-    const char *species_options[] = { "all", "H2O", "O3", "HNO3", "CH4", "N2O", "NO2", "F11", "ClNO", "N2O5", "F12" };
+    const char *species_options[] = { "H2O", "O3", "HNO3", "CH4", "N2O", "NO2", "F11", "ClNO", "N2O5", "F12" };
     harp_ingestion_module *module;
     harp_product_definition *product_definition;
     harp_variable_definition *variable_definition;
@@ -1643,10 +1643,10 @@ int harp_ingestion_module_mipas_l2_init(void)
     module = harp_ingestion_register_module_coda("MIPAS_L2", "MIPAS", "ENVISAT_MIPAS", "MIP_NL__2P", description,
                                                  ingestion_init, ingestion_done);
 
-    harp_ingestion_register_option(module, "species", "if not set to 'all' then ingest only the specified species "
-                                   "(together with p and T) and remove all vertical levels for which the logical "
-                                   "retrieval vector (lrv) for the specified species is false", NUM_SPECIES_TYPES + 1,
-                                   species_options);
+    harp_ingestion_register_option(module, "species", "if the option is provided then ingest only the specified "
+                                   "species (together with p and T) and remove all vertical levels for which the "
+                                   "logical retrieval vector (lrv) for the specified species is false",
+                                   NUM_SPECIES_TYPES, species_options);
 
     description = "profile data";
     product_definition = harp_ingestion_register_product(module, "MIPAS_NL_L2", description, read_dimensions);

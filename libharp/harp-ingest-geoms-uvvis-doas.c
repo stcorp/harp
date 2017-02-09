@@ -2505,8 +2505,8 @@ int harp_ingestion_module_geoms_uvvis_doas_init()
                                                  "GEOMS template for UVVIS-DOAS direct sun measurements",
                                                  ingestion_init, ingestion_done);
 
-    harp_ingestion_register_option(module, "AOD", "ingest the modeled or measured aerosol optical depth properties", 2,
-                                   aod_option_values);
+    harp_ingestion_register_option(module, "AOD", "ingest the modeled (default) or measured aerosol optical depth "
+                                   "properties", 2, aod_option_values);
 
     for (i = 0; i < num_uvvis_doas_gas; i++)
     {
@@ -2533,8 +2533,8 @@ int harp_ingestion_module_geoms_uvvis_doas_init()
                                                  "GEOMS template for UVVIS-DOAS off-axis aerosol measurements",
                                                  ingestion_init, ingestion_done);
 
-    harp_ingestion_register_option(module, "AOD", "ingest the modeled or measured aerosol optical depth properties", 2,
-                                   aod_option_values);
+    harp_ingestion_register_option(module, "AOD", "ingest the modeled (default) or measured aerosol optical depth "
+                                   "properties", 2, aod_option_values);
 
     init_product_definition(module, -1, uvvis_doas_offaxis_aerosol, 4);
     init_product_definition(module, -1, uvvis_doas_offaxis_aerosol, 6);
@@ -2544,8 +2544,8 @@ int harp_ingestion_module_geoms_uvvis_doas_init()
                                                  "GEOMS template for UVVIS-DOAS zenith measurements", ingestion_init,
                                                  ingestion_done);
 
-    harp_ingestion_register_option(module, "AOD", "ingest the modeled or measured aerosol optical depth properties", 2,
-                                   aod_option_values);
+    harp_ingestion_register_option(module, "AOD", "ingest the modeled (default) or measured aerosol optical depth "
+                                   "properties", 2, aod_option_values);
 
     for (i = 0; i < num_uvvis_doas_gas; i++)
     {

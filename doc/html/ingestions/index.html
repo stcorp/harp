@@ -816,8 +816,8 @@
 </thead>
 <tbody valign="top">
 <tr class="row-even"><td>AOD</td>
-<td><strong>modeled</strong>, measured</td>
-<td>ingest the modeled or measured aerosol optical depth properties</td>
+<td>modeled, measured</td>
+<td>ingest the modeled (default) or measured aerosol optical depth properties</td>
 </tr>
 </tbody>
 </table>
@@ -1004,8 +1004,8 @@
 </thead>
 <tbody valign="top">
 <tr class="row-even"><td>AOD</td>
-<td><strong>modeled</strong>, measured</td>
-<td>ingest the modeled or measured aerosol optical depth properties</td>
+<td>modeled, measured</td>
+<td>ingest the modeled (default) or measured aerosol optical depth properties</td>
 </tr>
 </tbody>
 </table>
@@ -1164,8 +1164,8 @@
 </thead>
 <tbody valign="top">
 <tr class="row-even"><td>AOD</td>
-<td><strong>modeled</strong>, measured</td>
-<td>ingest the modeled or measured aerosol optical depth properties</td>
+<td>modeled, measured</td>
+<td>ingest the modeled (default) or measured aerosol optical depth properties</td>
 </tr>
 </tbody>
 </table>
@@ -1246,11 +1246,11 @@
 </thead>
 <tbody valign="top">
 <tr class="row-even"><td>band</td>
-<td><strong>band-1a</strong>, band-1b, band-2a, band-2b, band-3, band-4, blind-1a, straylight-1a, straylight-1b, straylight-2a</td>
+<td>band-1a, band-1b, band-2a, band-2b, band-3, band-4, blind-1a, straylight-1a, straylight-1b, straylight-2a</td>
 <td>only include data from the specified band (&#8216;band-1a&#8217;, &#8216;band-1b&#8217;, &#8216;band-2a&#8217;, &#8216;band-2b&#8217;, &#8216;band-3&#8217;, &#8216;band-4&#8217;, &#8216;blind-1a&#8217;, &#8216;straylight-1a&#8217;, &#8216;straylight-1b&#8217;, &#8216;straylight-2a&#8217;); by default data from all bands is retrieved</td>
 </tr>
 <tr class="row-odd"><td>data</td>
-<td><strong>sun_reference</strong></td>
+<td>sun_reference</td>
 <td>retrieve the measured radiances or the sun spectra; by default the measured radiances are retrieved</td>
 </tr>
 </tbody>
@@ -1346,11 +1346,11 @@
 </thead>
 <tbody valign="top">
 <tr class="row-even"><td>band</td>
-<td><strong>band-1a</strong>, band-1b, band-2a, band-2b, band-3, band-4</td>
+<td>band-1a, band-1b, band-2a, band-2b, band-3, band-4</td>
 <td>only include data from the specified band (&#8216;band-1a&#8217;, &#8216;band-1b&#8217;, &#8216;band-2a&#8217;, &#8216;band-2b&#8217;, &#8216;band-3&#8217;, &#8216;band-4&#8217;); by default data from all bands is retrieved</td>
 </tr>
 <tr class="row-odd"><td>data</td>
-<td><strong>radiance</strong>, transmission, sun, moon, sun_reference</td>
+<td>radiance, transmission, sun, moon, sun_reference</td>
 <td>retrieve the measured radiances, the transmission spectra, the sun measurement spectra, the moon measurement spectra or the sun reference spectrum; by default the measured radiances are retrieved</td>
 </tr>
 </tbody>
@@ -1478,8 +1478,8 @@
 </thead>
 <tbody valign="top">
 <tr class="row-even"><td>band</td>
-<td><strong>1p</strong>, 1s, 2p, 2s, 3p, 3s, 4</td>
-<td>spectral band to ingest</td>
+<td>1p, 1s, 2p, 2s, 3p, 3s, 4</td>
+<td>spectral band to ingest (default is 1p)</td>
 </tr>
 </tbody>
 </table>
@@ -1592,8 +1592,8 @@
 </thead>
 <tbody valign="top">
 <tr class="row-even"><td>species</td>
-<td><strong>all</strong>, H2O, O3, HNO3, CH4, N2O, NO2, F11, ClNO, N2O5, F12</td>
-<td>if not set to &#8216;all&#8217; then ingest only the specified species (together with p and T) and remove all vertical levels for which the logical retrieval vector (lrv) for the specified species is false</td>
+<td>H2O, O3, HNO3, CH4, N2O, NO2, F11, ClNO, N2O5, F12</td>
+<td>if the option is provided then ingest only the specified species (together with p and T) and remove all vertical levels for which the logical retrieval vector (lrv) for the specified species is false</td>
 </tr>
 </tbody>
 </table>
@@ -2028,8 +2028,8 @@
 </thead>
 <tbody valign="top">
 <tr class="row-even"><td>dataset</td>
-<td><strong>nad_uv0_o3</strong>, nad_uv1_no2, nad_uv3_bro, nad_uv4_h2co, nad_uv5_so2, nad_uv6_oclo, nad_uv7_so2, nad_uv8_h2o, nad_uv9_chocho, nad_ir0_h2o, nad_ir1_ch4, nad_ir2_n2o, nad_ir3_co, nad_ir4_co2, lim_uv0_o3, lim_uv1_no2, lim_uv3_bro, clouds_aerosol</td>
-<td>the dataset of the L2 product to ingest; each dataset is a combination of nadir/limb choice, retrieval window, and main quantity; option values are &#8216;nad_uv0_o3&#8217;, &#8216;nad_uv1_no2&#8217;, &#8216;nad_uv3_bro&#8217;,  &#8216;nad_uv4_h2co&#8217;, &#8216;nad_uv5_so2&#8217;, &#8216;nad_uv6_oclo&#8217;, &#8216;nad_uv7_so2&#8217;, &#8216;nad_uv8_h2o&#8217;, &#8216;nad_uv9_chocho&#8217;, &#8216;nad_ir0_h2o&#8217;, &#8216;nad_ir1_ch4&#8217;, &#8216;nad_ir2_n2o&#8217;, &#8216;nad_ir3_co&#8217;, &#8216;nad_ir4_co2&#8217;, &#8216;lim_uv0_o3&#8217;, &#8216;lim_uv1_no2&#8217;, &#8216;lim_uv3_bro&#8217;, &#8216;clouds_aerosol&#8217;</td>
+<td>nad_uv0_o3, nad_uv1_no2, nad_uv3_bro, nad_uv4_h2co, nad_uv5_so2, nad_uv6_oclo, nad_uv7_so2, nad_uv8_h2o, nad_uv9_chocho, nad_ir0_h2o, nad_ir1_ch4, nad_ir2_n2o, nad_ir3_co, nad_ir4_co2, lim_uv0_o3, lim_uv1_no2, lim_uv3_bro, clouds_aerosol</td>
+<td>the dataset of the L2 product to ingest; each dataset is a combination of nadir/limb choice, retrieval window, and main quantity; option values are &#8216;nad_uv0_o3&#8217; (default), &#8216;nad_uv1_no2&#8217;, &#8216;nad_uv3_bro&#8217;,  &#8216;nad_uv4_h2co&#8217;, &#8216;nad_uv5_so2&#8217;, &#8216;nad_uv6_oclo&#8217;, &#8216;nad_uv7_so2&#8217;, &#8216;nad_uv8_h2o&#8217;, &#8216;nad_uv9_chocho&#8217;, &#8216;nad_ir0_h2o&#8217;, &#8216;nad_ir1_ch4&#8217;, &#8216;nad_ir2_n2o&#8217;, &#8216;nad_ir3_co&#8217;, &#8216;nad_ir4_co2&#8217;, &#8216;lim_uv0_o3&#8217;, &#8216;lim_uv1_no2&#8217;, &#8216;lim_uv3_bro&#8217;, &#8216;clouds_aerosol&#8217;</td>
 </tr>
 </tbody>
 </table>
@@ -2196,8 +2196,8 @@
 </thead>
 <tbody valign="top">
 <tr class="row-even"><td>band</td>
-<td><strong>7</strong>, 8</td>
-<td>spectral band to ingest</td>
+<td>7, 8</td>
+<td>spectral band to ingest (default=7)</td>
 </tr>
 </tbody>
 </table>
@@ -2260,8 +2260,8 @@
 </thead>
 <tbody valign="top">
 <tr class="row-even"><td>band</td>
-<td><strong>1</strong>, 2, 3, 4, 5, 6</td>
-<td>spectral band to ingest</td>
+<td>1, 2, 3, 4, 5, 6</td>
+<td>spectral band to ingest (default=1)</td>
 </tr>
 </tbody>
 </table>

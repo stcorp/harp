@@ -1256,12 +1256,12 @@ int harp_ingestion_module_gome_l1_init(void)
     module =
         harp_ingestion_register_module_coda("GOME_L1_EXTRACTED", "GOME", "ERS_GOME", "GOM.LVL13_EXTRACTED", description,
                                             ingestion_init, ingestion_done);
-    harp_ingestion_register_option(module, "band",
-                                   "only include data from the specified band ('band-1a', 'band-1b', 'band-2a', 'band-2b', 'band-3', 'band-4', 'blind-1a', 'straylight-1a', 'straylight-1b', 'straylight-2a'); by default data from all bands is retrieved",
-                                   10, band_options);
-    harp_ingestion_register_option(module, "data",
-                                   "retrieve the measured radiances or the sun spectra; by default the measured radiances are retrieved",
-                                   1, sun_reference_options);
+    harp_ingestion_register_option(module, "band", "only include data from the specified band ('band-1a', 'band-1b', "
+                                   "'band-2a', 'band-2b', 'band-3', 'band-4', 'blind-1a', 'straylight-1a', "
+                                   "'straylight-1b', 'straylight-2a'); by default data from all bands is retrieved", 10,
+                                   band_options);
+    harp_ingestion_register_option(module, "data", "retrieve the measured radiances or the sun spectra; by default "
+                                   "the measured radiances are retrieved", 1, sun_reference_options);
 
     register_nominal_product(module);
     register_sun_reference_product(module);

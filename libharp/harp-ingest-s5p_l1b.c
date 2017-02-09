@@ -936,7 +936,7 @@ int harp_ingestion_module_s5p_l1b_init(void)
     description = "Sentinel-5P L1b UVN irradiance spectra";
     module = harp_ingestion_register_module_coda("S5P_L1B_IR_UVN", "Sentinel-5P", "Sentinel5P", "L1B_IR_UVN",
                                                  description, ingestion_init_s5p_l1b_ir, ingestion_done);
-    harp_ingestion_register_option(module, "band", "spectral band to ingest", 6, band_option_values);
+    harp_ingestion_register_option(module, "band", "spectral band to ingest (default=1)", 6, band_option_values);
 
     product_definition =
         harp_ingestion_register_product(module, "S5P_L1B_IR_UVN_BD1", "irradiance spectra (band 1, UVN module)",
@@ -978,7 +978,7 @@ int harp_ingestion_module_s5p_l1b_init(void)
     description = "Sentinel-5P L1b SWIR irradiance spectra";
     module = harp_ingestion_register_module_coda("S5P_L1B_IR_SIR", "Sentinel-5P", "Sentinel5P", "L1B_IR_SIR",
                                                  description, ingestion_init_s5p_l1b_ir, ingestion_done);
-    harp_ingestion_register_option(module, "band", "spectral band to ingest", 2, &band_option_values[6]);
+    harp_ingestion_register_option(module, "band", "spectral band to ingest (default=7)", 2, &band_option_values[6]);
 
     product_definition =
         harp_ingestion_register_product(module, "S5P_L1B_IR_SIR_BD7", "irradiance spectra (band 7, SWIR module)",

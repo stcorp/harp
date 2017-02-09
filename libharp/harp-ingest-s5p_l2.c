@@ -1656,7 +1656,7 @@ static void register_aer_ai_product(void)
     module = harp_ingestion_register_module_coda("S5P_L2_AER_AI", "Sentinel-5P", "Sentinel5P", "L2__AER_AI",
                                                  "Sentinel-5P L2 aerosol index", ingestion_init_aer_ai, ingestion_done);
 
-    description = "ingest aerosol index retrieved at wavelengths 354/388 nm, or 340/388 nm";
+    description = "ingest aerosol index retrieved at wavelengths 354/388 nm (default), or 340/388 nm";
     harp_ingestion_register_option(module, "wavelength_ratio", description, 2, wavelength_ratio_option_values);
 
     product_definition = harp_ingestion_register_product(module, "S5P_L2_AER_AI", NULL, read_dimensions);

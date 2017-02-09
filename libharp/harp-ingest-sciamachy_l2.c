@@ -2503,7 +2503,7 @@ int harp_ingestion_module_sciamachy_l2_init(void)
 
     harp_ingestion_register_option(module, "dataset", "the dataset of the L2 product to ingest; each dataset is a "
                                    "combination of nadir/limb choice, retrieval window, and main quantity; option "
-                                   "values are 'nad_uv0_o3', 'nad_uv1_no2', 'nad_uv3_bro',  'nad_uv4_h2co', "
+                                   "values are 'nad_uv0_o3' (default), 'nad_uv1_no2', 'nad_uv3_bro',  'nad_uv4_h2co', "
                                    "'nad_uv5_so2', 'nad_uv6_oclo', 'nad_uv7_so2', 'nad_uv8_h2o', 'nad_uv9_chocho', "
                                    "'nad_ir0_h2o', 'nad_ir1_ch4', 'nad_ir2_n2o', 'nad_ir3_co', 'nad_ir4_co2', "
                                    "'lim_uv0_o3', 'lim_uv1_no2', 'lim_uv3_bro', 'clouds_aerosol'", 18, dataset_options);

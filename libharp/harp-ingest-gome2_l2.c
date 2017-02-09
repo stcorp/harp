@@ -1154,7 +1154,7 @@ static int parse_option_corrected_no2_columnn(ingest_info *info, const harp_inge
 
     if (harp_ingestion_options_get_option(options, "corrected_no2_column", &value) == 0)
     {
-        info->corrected_no2 = (strcmp(value, "true") == 0);
+        info->corrected_no2 = 1;
     }
 
     return 0;
@@ -1718,7 +1718,7 @@ static void register_common_variables(harp_product_definition *product_definitio
     path = "/TOTAL_COLUMNS/NO2_Corr[]";
     harp_variable_definition_add_mapping(variable_definition, "corrected_no2_column=true", NULL, path, NULL);
     path = "/TOTAL_COLUMNS/NO2[]";
-    harp_variable_definition_add_mapping(variable_definition, "corrected_no2_column=false (default)", NULL, path, NULL);
+    harp_variable_definition_add_mapping(variable_definition, "corrected_no2_column unset (default)", NULL, path, NULL);
 
     /* NO2_column_number_density_uncertainty */
     description = "uncertainty of the NO2 column number density";
@@ -1730,7 +1730,7 @@ static void register_common_variables(harp_product_definition *product_definitio
     harp_variable_definition_add_mapping(variable_definition, "corrected_no2_column=true", NULL, NULL, description);
     path = "/TOTAL_COLUMNS/NO2_Error[], /TOTAL_COLUMNS/NO2[]";
     description = "derived from the relative error in percent as: NO2_Error[] * 0.01 * NO2[]";
-    harp_variable_definition_add_mapping(variable_definition, "corrected_no2_column=false (default)", NULL, path,
+    harp_variable_definition_add_mapping(variable_definition, "corrected_no2_column unset (default)", NULL, path,
                                          description);
 
     /* tropospheric_NO2_column_number_density */
@@ -2144,13 +2144,13 @@ static void register_scan_variables(harp_product_definition *product_definition,
 
 static void register_common_options(harp_ingestion_module *module)
 {
-    const char *corrected_no2_column_option_values[2] = { "false", "true" };
+    const char *corrected_no2_column_option_values[2] = { "true" };
     const char *description;
 
     /* clipped_cloud_fraction ingestion option */
     description = "ingest the NO2 total vertical column density corrected for tropospheric contribution (instead of "
         "the uncorrected NO2 total vertical column density)";
-    harp_ingestion_register_option(module, "corrected_no2_column", description, 2, corrected_no2_column_option_values);
+    harp_ingestion_register_option(module, "corrected_no2_column", description, 1, corrected_no2_column_option_values);
 }
 
 static void register_o3mnto_product(void)

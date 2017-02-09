@@ -229,15 +229,7 @@ static int generate_product_definition(const char *filename, const harp_ingestio
 
                 for (k = 0; k < option_definition->num_allowed_values; k++)
                 {
-                    if (k == 0)
-                    {
-                        fprintf(fout, "**%s**", option_definition->allowed_value[k]);
-                    }
-                    else
-                    {
-                        fputs(option_definition->allowed_value[k], fout);
-                    }
-
+                    fputs(option_definition->allowed_value[k], fout);
                     if (k + 1 < option_definition->num_allowed_values)
                     {
                         fputs(", ", fout);
@@ -633,15 +625,7 @@ static int generate_product_group(FILE *fout, const char *product_group, int num
 
                     for (k = 0; k < option_definition->num_allowed_values; k++)
                     {
-                        if (k == 0)
-                        {
-                            fprintf(fout, "**%s**", option_definition->allowed_value[k]);
-                        }
-                        else
-                        {
-                            fputs(option_definition->allowed_value[k], fout);
-                        }
-
+                        fputs(option_definition->allowed_value[k], fout);
                         if (k + 1 < option_definition->num_allowed_values)
                         {
                             fputs(", ", fout);

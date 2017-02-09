@@ -2467,11 +2467,11 @@ static int ingestion_init(const harp_ingestion_module *module, coda_product *pro
 
     if (harp_ingestion_options_get_option(options, "ignore_time_for_z", &value) == 0)
     {
-        info->ignore_time_for_z = (strcmp(value, "true") == 0);
+        info->ignore_time_for_z = 1;
     }
     if (harp_ingestion_options_get_option(options, "ignore_duplicates", &value) == 0)
     {
-        info->ignore_duplicates = (strcmp(value, "true") == 0);
+        info->ignore_duplicates = 1;
     }
 
     if (coda_get_product_format(product, &format) != 0)
@@ -2754,7 +2754,7 @@ int harp_ingestion_module_ecmwf_grib_init(void)
     harp_ingestion_module *module;
     harp_product_definition *product_definition;
     harp_variable_definition *variable_definition;
-    const char *ignore_option_values[] = { "false", "true" };
+    const char *ignore_option_values[] = { "true" };
     const char *description;
     const char *path;
 
@@ -2763,11 +2763,11 @@ int harp_ingestion_module_ecmwf_grib_init(void)
 
     /* option to ignore the time value of the geopotential parameter */
     description = "ignore time for the geopotential parameter";
-    harp_ingestion_register_option(module, "ignore_time_for_z", description, 2, ignore_option_values);
+    harp_ingestion_register_option(module, "ignore_time_for_z", description, 1, ignore_option_values);
 
     /* option to ignore any duplicates  time check of geopotential parameter */
     description = "ignore duplicate GRIB messages (only first message occurence will be used)";
-    harp_ingestion_register_option(module, "ignore_duplicates", description, 2, ignore_option_values);
+    harp_ingestion_register_option(module, "ignore_duplicates", description, 1, ignore_option_values);
 
 
     /* ECMWF GRIB product */
