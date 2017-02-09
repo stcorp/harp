@@ -147,139 +147,121 @@
 </tr>
 </thead>
 <tbody valign="top">
-<tr class="row-even"><td><strong>datetime_start</strong></td>
-<td>double</td>
-<td>{<em>time</em>}</td>
-<td>seconds since 2000-01-01</td>
-<td>start UTC date/time of Sun calibration mode measurement</td>
-</tr>
-<tr class="row-odd"><td><strong>datetime_end</strong></td>
-<td>double</td>
-<td>{<em>time</em>}</td>
-<td>seconds since 2000-01-01</td>
-<td>end UTC date/time of Sun calibration mode measurement</td>
-</tr>
-<tr class="row-even"><td><strong>sun_reference_wavelength_photon_irradiance</strong></td>
-<td>double</td>
-<td>{<em>time</em>, <em>spectral</em>}</td>
-<td>count/s/cm2/nm</td>
-<td>solar mean reference spectrum</td>
-</tr>
-<tr class="row-odd"><td><strong>datetime</strong></td>
+<tr class="row-even"><td><strong>datetime</strong></td>
 <td>double</td>
 <td>{<em>time</em>}</td>
 <td>seconds since 2000-01-01</td>
 <td>time of the measurement at the end of the integration time</td>
 </tr>
-<tr class="row-even"><td><strong>latitude</strong></td>
+<tr class="row-odd"><td><strong>latitude</strong></td>
 <td>double</td>
 <td>{<em>time</em>}</td>
 <td>degree_north</td>
 <td>center latitude of the measurement</td>
 </tr>
-<tr class="row-odd"><td><strong>longitude</strong></td>
+<tr class="row-even"><td><strong>longitude</strong></td>
 <td>double</td>
 <td>{<em>time</em>}</td>
 <td>degree_east</td>
 <td>center longitude of the measurement</td>
 </tr>
-<tr class="row-even"><td><strong>latitude_bounds</strong></td>
+<tr class="row-odd"><td><strong>latitude_bounds</strong></td>
 <td>double</td>
 <td>{<em>time</em>, 4}</td>
 <td>degree_north</td>
 <td>corner latitudes for the ground pixel of the measurement</td>
 </tr>
-<tr class="row-odd"><td><strong>longitude_bounds</strong></td>
+<tr class="row-even"><td><strong>longitude_bounds</strong></td>
 <td>double</td>
 <td>{<em>time</em>, 4}</td>
 <td>degree_north</td>
 <td>corner longitudes for the ground pixel of the measurement</td>
 </tr>
-<tr class="row-even"><td><strong>wavelength_photon_radiance</strong></td>
+<tr class="row-odd"><td><strong>wavelength_photon_radiance</strong></td>
 <td>double</td>
 <td>{<em>time</em>, <em>spectral</em>}</td>
 <td>count/s/cm2/sr/nm</td>
 <td>measured radiances</td>
 </tr>
-<tr class="row-odd"><td><strong>transmittance</strong></td>
+<tr class="row-even"><td><strong>transmittance</strong></td>
 <td>double</td>
 <td>{<em>time</em>, <em>spectral</em>}</td>
 <td>&nbsp;</td>
 <td>transmittance</td>
 </tr>
-<tr class="row-even"><td><strong>wavelength_photon_irradiance_sun</strong></td>
+<tr class="row-odd"><td><strong>wavelength_photon_irradiance_sun</strong></td>
 <td>double</td>
 <td>{<em>time</em>, <em>spectral</em>}</td>
 <td>count/s/cm2/nm</td>
 <td>measured sun irradiances</td>
 </tr>
-<tr class="row-odd"><td><strong>wavelength_photon_irradiance_moon</strong></td>
+<tr class="row-even"><td><strong>wavelength_photon_irradiance_moon</strong></td>
 <td>double</td>
 <td>{<em>time</em>, <em>spectral</em>}</td>
 <td>count/s/cm2/nm</td>
 <td>measured moon irradiances</td>
 </tr>
-<tr class="row-even"><td><strong>wavelength</strong></td>
+<tr class="row-odd"><td><strong>wavelength</strong></td>
 <td>double</td>
 <td>{<em>time</em>, <em>spectral</em>}</td>
 <td>nm</td>
 <td>nominal wavelength assignment for each of the detector pixels</td>
 </tr>
-<tr class="row-odd"><td><strong>datetime_length</strong></td>
+<tr class="row-even"><td><strong>datetime_length</strong></td>
 <td>double</td>
 <td>{<em>time</em>, <em>spectral</em>}</td>
 <td>s</td>
 <td>integration time for each pixel</td>
 </tr>
-<tr class="row-even"><td><strong>scan_subset_counter</strong></td>
+<tr class="row-odd"><td><strong>scan_subset_counter</strong></td>
 <td>int8</td>
 <td>{<em>time</em>}</td>
 <td>&nbsp;</td>
 <td>relative index (0-3) of this measurement within a scan (forward+backward)</td>
 </tr>
-<tr class="row-odd"><td><strong>scan_direction</strong></td>
+<tr class="row-even"><td><strong>scan_direction</strong></td>
 <td>string</td>
 <td>{<em>time</em>}</td>
 <td>&nbsp;</td>
 <td>scan direction for each measurement: &#8216;forward&#8217;, &#8216;backward&#8217; or &#8216;mixed&#8217; (for a measurement that consisted of both a forward and backward scan)</td>
 </tr>
-<tr class="row-even"><td><strong>cloud_top_pressure</strong></td>
+<tr class="row-odd"><td><strong>cloud_top_pressure</strong></td>
 <td>double</td>
 <td>{<em>time</em>}</td>
 <td>&nbsp;</td>
 <td>cloud top pressure</td>
 </tr>
-<tr class="row-odd"><td><strong>cloud_fraction</strong></td>
+<tr class="row-even"><td><strong>cloud_fraction</strong></td>
 <td>double</td>
 <td>{<em>time</em>}</td>
 <td>&nbsp;</td>
 <td>cloud fraction</td>
 </tr>
-<tr class="row-even"><td><strong>solar_zenith_angle_toa</strong></td>
+<tr class="row-odd"><td><strong>solar_zenith_angle_toa</strong></td>
 <td>double</td>
 <td>{<em>time</em>}</td>
 <td>&nbsp;</td>
 <td>solar zenith angle at top of atmosphere</td>
 </tr>
-<tr class="row-odd"><td><strong>solar_azimuth_angle_toa</strong></td>
+<tr class="row-even"><td><strong>solar_azimuth_angle_toa</strong></td>
 <td>double</td>
 <td>{<em>time</em>}</td>
 <td>&nbsp;</td>
 <td>solar azimuth angle at top of atmosphere</td>
 </tr>
-<tr class="row-even"><td><strong>viewing_zenith_angle_toa</strong></td>
+<tr class="row-odd"><td><strong>viewing_zenith_angle_toa</strong></td>
 <td>double</td>
 <td>{<em>time</em>}</td>
 <td>&nbsp;</td>
 <td>viewing zenith angle at top of atmosphere</td>
 </tr>
-<tr class="row-odd"><td><strong>viewing_azimuth_angle_toa</strong></td>
+<tr class="row-even"><td><strong>viewing_azimuth_angle_toa</strong></td>
 <td>double</td>
 <td>{<em>time</em>}</td>
 <td>&nbsp;</td>
 <td>viewing azimuth angle at top of atmosphere</td>
 </tr>
-<tr class="row-even"><td><strong>index</strong></td>
+<tr class="row-odd"><td><strong>index</strong></td>
 <td>int32</td>
 <td>{<em>time</em>}</td>
 <td>&nbsp;</td>
@@ -321,9 +303,9 @@
 <p>GOME2 Level 1b data</p>
 <table border="1" class="docutils">
 <colgroup>
-<col width="12%" />
+<col width="10%" />
 <col width="4%" />
-<col width="84%" />
+<col width="86%" />
 </colgroup>
 <thead valign="bottom">
 <tr class="row-odd"><th class="head">field name</th>
@@ -331,149 +313,97 @@
 </tr>
 </thead>
 <tbody valign="top">
-<tr class="row-even"><td rowspan="3"><strong>datetime_start</strong></td>
-<td><em>available</em></td>
-<td>optional</td>
-</tr>
-<tr class="row-odd"><td><em>condition</em></td>
-<td>data=sun_reference</td>
-</tr>
-<tr class="row-even"><td><em>path</em></td>
-<td><strong>/VIADR_SMR[]/START_UTC_SUN</strong></td>
-</tr>
-<tr class="row-odd"><td rowspan="3"><strong>datetime_end</strong></td>
-<td><em>available</em></td>
-<td>optional</td>
-</tr>
-<tr class="row-even"><td><em>condition</em></td>
-<td>data=sun_reference</td>
-</tr>
-<tr class="row-odd"><td><em>path</em></td>
-<td><strong>/VIADR_SMR[]/START_UTC_SUN</strong></td>
-</tr>
-<tr class="row-even"><td rowspan="2"><strong>sun_reference_wavelength_photon_irradiance</strong></td>
-<td><em>available</em></td>
-<td>optional</td>
-</tr>
-<tr class="row-odd"><td><em>path</em></td>
-<td><strong>/VIADR_SMR[]/SMR[]</strong></td>
-</tr>
-<tr class="row-even"><td rowspan="13"><strong>datetime</strong></td>
-<td><em>available</em></td>
-<td>optional</td>
-</tr>
-<tr class="row-odd"><td><em>condition</em></td>
+<tr class="row-even"><td rowspan="12"><strong>datetime</strong></td>
+<td><em>condition</em></td>
 <td>data=radiance</td>
 </tr>
-<tr class="row-even"><td><em>path</em></td>
+<tr class="row-odd"><td><em>path</em></td>
 <td><strong>/MDR[]/Earthshine/RECORD_HEADER/RECORD_START_TIME</strong></td>
 </tr>
-<tr class="row-odd"><td><em>description</em></td>
+<tr class="row-even"><td><em>description</em></td>
 <td>The record start time is the start time of the scan and thus the start time of the second readout in the MDR. The start time for readout i (0..31) is thus RECORD_START_TIME + (i - 1) * 0.1875 and the time at end of integration time (which is the time that is returned) is RECORD_START_TIME + i * 0.1875</td>
 </tr>
-<tr class="row-even"><td><em>condition</em></td>
+<tr class="row-odd"><td><em>condition</em></td>
 <td>data=transmission</td>
 </tr>
-<tr class="row-odd"><td><em>path</em></td>
+<tr class="row-even"><td><em>path</em></td>
 <td><strong>/MDR[]/Earthshine/RECORD_HEADER/RECORD_START_TIME</strong></td>
 </tr>
-<tr class="row-even"><td><em>description</em></td>
+<tr class="row-odd"><td><em>description</em></td>
 <td>The record start time is the start time of the scan and thus the start time of the second readout in the MDR. The start time for readout i (0..31) is thus RECORD_START_TIME + (i - 1) * 0.1875 and the time at end of integration time (which is the time that is returned) is RECORD_START_TIME + i * 0.1875</td>
 </tr>
-<tr class="row-odd"><td><em>condition</em></td>
+<tr class="row-even"><td><em>condition</em></td>
 <td>data=sun</td>
 </tr>
-<tr class="row-even"><td><em>path</em></td>
+<tr class="row-odd"><td><em>path</em></td>
 <td><strong>/MDR[]/Sun/RECORD_HEADER/RECORD_START_TIME</strong></td>
 </tr>
-<tr class="row-odd"><td><em>description</em></td>
+<tr class="row-even"><td><em>description</em></td>
 <td>The record start time is the start time of the scan and thus the start time of the second readout in the MDR. The start time for readout i (0..31) is thus RECORD_START_TIME + (i - 1) * 0.1875 and the time at end of integration time (which is the time that is returned) is RECORD_START_TIME + i * 0.1875</td>
 </tr>
-<tr class="row-even"><td><em>condition</em></td>
+<tr class="row-odd"><td><em>condition</em></td>
 <td>data=moon</td>
 </tr>
-<tr class="row-odd"><td><em>path</em></td>
+<tr class="row-even"><td><em>path</em></td>
 <td><strong>/MDR[]/Moon/RECORD_HEADER/RECORD_START_TIME</strong></td>
 </tr>
-<tr class="row-even"><td><em>description</em></td>
+<tr class="row-odd"><td><em>description</em></td>
 <td>The record start time is the start time of the scan and thus the start time of the second readout in the MDR. The start time for readout i (0..31) is thus RECORD_START_TIME + (i - 1) * 0.1875 and the time at end of integration time (which is the time that is returned) is RECORD_START_TIME + i * 0.1875</td>
 </tr>
-<tr class="row-odd"><td rowspan="7"><strong>latitude</strong></td>
+<tr class="row-even"><td rowspan="7"><strong>latitude</strong></td>
 <td><em>available</em></td>
 <td>optional</td>
 </tr>
-<tr class="row-even"><td><em>condition</em></td>
+<tr class="row-odd"><td><em>condition</em></td>
 <td>CODA version &lt; 12</td>
 </tr>
-<tr class="row-odd"><td><em>path</em></td>
+<tr class="row-even"><td><em>path</em></td>
 <td><strong>/MDR[]/Earthshine/GEO_EARTH_ACTUAL/CENTRE_ACTUAL[INT_INDEX[band_id],]/latitude</strong></td>
 </tr>
-<tr class="row-even"><td><em>description</em></td>
+<tr class="row-odd"><td><em>description</em></td>
 <td>The integration time index INT_INDEX[band_id] is the index of the band with the minimum integration time (limited to those bands that are ingested).</td>
 </tr>
-<tr class="row-odd"><td><em>condition</em></td>
+<tr class="row-even"><td><em>condition</em></td>
 <td>CODA version &gt;= 12</td>
 </tr>
-<tr class="row-even"><td><em>path</em></td>
+<tr class="row-odd"><td><em>path</em></td>
 <td><strong>/MDR[]/Earthshine/GEO_EARTH_ACTUAL_INT_INDEX[timer_id][]/CENTRE_ACTUAL/latitude</strong></td>
 </tr>
-<tr class="row-odd"><td><em>description</em></td>
+<tr class="row-even"><td><em>description</em></td>
 <td>The integration time index INT_INDEX[timer_id] is the index (starting with 1) of the timer with the minimum integration time (limited to the timers of those bands that are ingested).</td>
 </tr>
-<tr class="row-even"><td rowspan="7"><strong>longitude</strong></td>
+<tr class="row-odd"><td rowspan="7"><strong>longitude</strong></td>
 <td><em>available</em></td>
 <td>optional</td>
 </tr>
-<tr class="row-odd"><td><em>condition</em></td>
+<tr class="row-even"><td><em>condition</em></td>
 <td>CODA version &lt; 12</td>
 </tr>
-<tr class="row-even"><td><em>path</em></td>
+<tr class="row-odd"><td><em>path</em></td>
 <td><strong>/MDR[]/Earthshine/GEO_EARTH_ACTUAL/CENTRE_ACTUAL[INT_INDEX[band_id],]/longitude</strong></td>
 </tr>
-<tr class="row-odd"><td><em>description</em></td>
+<tr class="row-even"><td><em>description</em></td>
 <td>The integration time index INT_INDEX[band_id] is the index of the band with the minimum integration time (limited to those bands that are ingested).</td>
 </tr>
-<tr class="row-even"><td><em>condition</em></td>
+<tr class="row-odd"><td><em>condition</em></td>
 <td>CODA version &gt;= 12</td>
 </tr>
-<tr class="row-odd"><td><em>path</em></td>
+<tr class="row-even"><td><em>path</em></td>
 <td><strong>/MDR[]/Earthshine/GEO_EARTH_ACTUAL_INT_INDEX[timer_id][]/CENTRE_ACTUAL/longitude</strong></td>
 </tr>
-<tr class="row-even"><td><em>description</em></td>
+<tr class="row-odd"><td><em>description</em></td>
 <td>The integration time index INT_INDEX[timer_id] is the index (starting with 1) of the timer with the minimum integration time (limited to the timers of those bands that are ingested).</td>
 </tr>
-<tr class="row-odd"><td rowspan="7"><strong>latitude_bounds</strong></td>
+<tr class="row-even"><td rowspan="7"><strong>latitude_bounds</strong></td>
 <td><em>available</em></td>
 <td>optional</td>
 </tr>
-<tr class="row-even"><td><em>condition</em></td>
+<tr class="row-odd"><td><em>condition</em></td>
 <td>CODA version &lt; 12</td>
 </tr>
-<tr class="row-odd"><td><em>path</em></td>
+<tr class="row-even"><td><em>path</em></td>
 <td><strong>/MDR[]/Earthshine/GEO_EARTH_ACTUAL/CORNER_ACTUAL[INT_INDEX[band_id],,]/latitude</strong></td>
 </tr>
-<tr class="row-even"><td><em>description</em></td>
-<td>The integration time index INT_INDEX[band_id] is the index of the band with the minimum integration time (limited to those bands that are ingested). The corners ABCD are reordered as BDCA.</td>
-</tr>
-<tr class="row-odd"><td><em>condition</em></td>
-<td>CODA version &gt;= 12</td>
-</tr>
-<tr class="row-even"><td><em>path</em></td>
-<td><strong>/MDR[]/Earthshine/GEO_EARTH_ACTUAL_INT_INDEX[timer_id][]/CORNER_ACTUAL[]/latitude</strong></td>
-</tr>
-<tr class="row-odd"><td><em>description</em></td>
-<td>The integration time index INT_INDEX[timer_id] is the index (starting with 1) of the timer with the minimum integration time (limited to the timers of those bands that are ingested). The corners ABCD are reordered as BDCA.</td>
-</tr>
-<tr class="row-even"><td rowspan="7"><strong>longitude_bounds</strong></td>
-<td><em>available</em></td>
-<td>optional</td>
-</tr>
-<tr class="row-odd"><td><em>condition</em></td>
-<td>CODA version &lt; 12</td>
-</tr>
-<tr class="row-even"><td><em>path</em></td>
-<td><strong>/MDR[]/Earthshine/GEO_EARTH_ACTUAL/CORNER_ACTUAL[INT_INDEX[band_id],,]/longitude</strong></td>
-</tr>
 <tr class="row-odd"><td><em>description</em></td>
 <td>The integration time index INT_INDEX[band_id] is the index of the band with the minimum integration time (limited to those bands that are ingested). The corners ABCD are reordered as BDCA.</td>
 </tr>
@@ -481,69 +411,82 @@
 <td>CODA version &gt;= 12</td>
 </tr>
 <tr class="row-odd"><td><em>path</em></td>
-<td><strong>/MDR[]/Earthshine/GEO_EARTH_ACTUAL_INT_INDEX[timer_id][]/CORNER_ACTUAL[]/longitude</strong></td>
+<td><strong>/MDR[]/Earthshine/GEO_EARTH_ACTUAL_INT_INDEX[timer_id][]/CORNER_ACTUAL[]/latitude</strong></td>
 </tr>
 <tr class="row-even"><td><em>description</em></td>
 <td>The integration time index INT_INDEX[timer_id] is the index (starting with 1) of the timer with the minimum integration time (limited to the timers of those bands that are ingested). The corners ABCD are reordered as BDCA.</td>
 </tr>
-<tr class="row-odd"><td rowspan="2"><strong>wavelength_photon_radiance</strong></td>
+<tr class="row-odd"><td rowspan="7"><strong>longitude_bounds</strong></td>
 <td><em>available</em></td>
 <td>optional</td>
 </tr>
+<tr class="row-even"><td><em>condition</em></td>
+<td>CODA version &lt; 12</td>
+</tr>
+<tr class="row-odd"><td><em>path</em></td>
+<td><strong>/MDR[]/Earthshine/GEO_EARTH_ACTUAL/CORNER_ACTUAL[INT_INDEX[band_id],,]/longitude</strong></td>
+</tr>
+<tr class="row-even"><td><em>description</em></td>
+<td>The integration time index INT_INDEX[band_id] is the index of the band with the minimum integration time (limited to those bands that are ingested). The corners ABCD are reordered as BDCA.</td>
+</tr>
+<tr class="row-odd"><td><em>condition</em></td>
+<td>CODA version &gt;= 12</td>
+</tr>
 <tr class="row-even"><td><em>path</em></td>
+<td><strong>/MDR[]/Earthshine/GEO_EARTH_ACTUAL_INT_INDEX[timer_id][]/CORNER_ACTUAL[]/longitude</strong></td>
+</tr>
+<tr class="row-odd"><td><em>description</em></td>
+<td>The integration time index INT_INDEX[timer_id] is the index (starting with 1) of the timer with the minimum integration time (limited to the timers of those bands that are ingested). The corners ABCD are reordered as BDCA.</td>
+</tr>
+<tr class="row-even"><td rowspan="2"><strong>wavelength_photon_radiance</strong></td>
+<td><em>available</em></td>
+<td>optional</td>
+</tr>
+<tr class="row-odd"><td><em>path</em></td>
 <td><strong>/MDR[]/Earthshine/BAND_1A[,]/RAD, /MDR[]/Earthshine/BAND_1B[,]/RAD, /MDR[]/Earthshine/BAND_2A[,]/RAD, /MDR[]/Earthshine/BAND_2B[,]/RAD, /MDR[]/Earthshine/BAND_3[,]/RAD, /MDR[]/Earthshine/BAND_4[,]/RAD</strong></td>
 </tr>
-<tr class="row-odd"><td rowspan="2"><strong>transmittance</strong></td>
+<tr class="row-even"><td rowspan="2"><strong>transmittance</strong></td>
 <td><em>available</em></td>
 <td>optional</td>
 </tr>
-<tr class="row-even"><td><em>path</em></td>
+<tr class="row-odd"><td><em>path</em></td>
 <td><strong>/MDR[]/Earthshine/BAND_1A[,]/RAD, /MDR[]/Earthshine/BAND_1B[,]/RAD, /MDR[]/Earthshine/BAND_2A[,]/RAD, /MDR[]/Earthshine/BAND_2B[,]/RAD, /MDR[]/Earthshine/BAND_3[,]/RAD, /MDR[]/Earthshine/BAND_4[,]/RAD</strong></td>
 </tr>
-<tr class="row-odd"><td rowspan="2"><strong>wavelength_photon_irradiance_sun</strong></td>
+<tr class="row-even"><td rowspan="2"><strong>wavelength_photon_irradiance_sun</strong></td>
 <td><em>available</em></td>
 <td>optional</td>
 </tr>
-<tr class="row-even"><td><em>path</em></td>
+<tr class="row-odd"><td><em>path</em></td>
 <td><strong>/MDR[]/Sun/BAND_1A[,]/RAD, /MDR[]/Sun/BAND_1B[,]/RAD, /MDR[]/Sun/BAND_2A[,]/RAD, /MDR[]/Sun/BAND_2B[,]/RAD, /MDR[]/Sun/BAND_3[,]/RAD, /MDR[]/Sun/BAND_4[,]/RAD</strong></td>
 </tr>
-<tr class="row-odd"><td rowspan="2"><strong>wavelength_photon_irradiance_moon</strong></td>
+<tr class="row-even"><td rowspan="2"><strong>wavelength_photon_irradiance_moon</strong></td>
 <td><em>available</em></td>
 <td>optional</td>
 </tr>
-<tr class="row-even"><td><em>path</em></td>
+<tr class="row-odd"><td><em>path</em></td>
 <td><strong>/MDR[]/Moon/BAND_1A[,]/RAD, /MDR[]/Moon/BAND_1B[,]/RAD, /MDR[]/Moon/BAND_2A[,]/RAD, /MDR[]/Moon/BAND_2B[,]/RAD, /MDR[]/Moon/BAND_3[,]/RAD, /MDR[]/Moon/BAND_4[,]/RAD</strong></td>
 </tr>
-<tr class="row-odd"><td rowspan="8"><strong>wavelength</strong></td>
+<tr class="row-even"><td rowspan="6"><strong>wavelength</strong></td>
 <td><em>condition</em></td>
 <td>data=radiance or data=transmission</td>
 </tr>
-<tr class="row-even"><td><em>path</em></td>
+<tr class="row-odd"><td><em>path</em></td>
 <td><strong>/MDR[]/Earthshine/WAVELENGTH_1A[], /MDR[]/Earthshine/WAVELENGTH_1B[], /MDR[]/Earthshine/WAVELENGTH_2A[], /MDR/Earthshine[]/WAVELENGTH_2B[], /MDR[]/Earthshine/WAVELENGTH_3[], /MDR[]/Earthshine/WAVELENGTH_4[]</strong></td>
 </tr>
-<tr class="row-odd"><td><em>condition</em></td>
+<tr class="row-even"><td><em>condition</em></td>
 <td>data=sun</td>
 </tr>
-<tr class="row-even"><td><em>path</em></td>
+<tr class="row-odd"><td><em>path</em></td>
 <td><strong>/MDR[]/Sun/WAVELENGTH_1A[], /MDR[]/Sun/WAVELENGTH_1B[], /MDR[]/Sun/WAVELENGTH_2A[], /MDR[]/Sun/WAVELENGTH_2B[], /MDR[]/Sun/WAVELENGTH_3[], /MDR[]/Sun/WAVELENGTH_4[]</strong></td>
 </tr>
-<tr class="row-odd"><td><em>condition</em></td>
+<tr class="row-even"><td><em>condition</em></td>
 <td>data=moon</td>
 </tr>
-<tr class="row-even"><td><em>path</em></td>
+<tr class="row-odd"><td><em>path</em></td>
 <td><strong>/MDR[]/Moon/WAVELENGTH_1A[], /MDR[]/Moon/WAVELENGTH_1B[], /MDR[]/Moon/WAVELENGTH_2A[], /MDR[]/Moon/WAVELENGTH_2B[], /MDR[]/Moon/WAVELENGTH_3[], /MDR[]/Moon/WAVELENGTH_4[]</strong></td>
 </tr>
-<tr class="row-odd"><td><em>condition</em></td>
-<td>data=sun_reference</td>
-</tr>
-<tr class="row-even"><td><em>path</em></td>
-<td><strong>/VIADR_SDR[]/LAMBDA_SMR[,]</strong></td>
-</tr>
-<tr class="row-odd"><td rowspan="7"><strong>datetime_length</strong></td>
-<td><em>available</em></td>
-<td>optional</td>
-</tr>
-<tr class="row-even"><td><em>condition</em></td>
+<tr class="row-even"><td rowspan="6"><strong>datetime_length</strong></td>
+<td><em>condition</em></td>
 <td>data=radiance or data=transmission</td>
 </tr>
 <tr class="row-odd"><td><em>path</em></td>
