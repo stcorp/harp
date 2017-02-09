@@ -74,11 +74,11 @@ static int get_altitude_from_pressure(harp_variable *variable, const harp_variab
 
 static int get_aux_variable_afgl86(harp_variable *variable, const harp_variable **source_variable)
 {
-    int i;
+    long i;
 
     for (i = 0; i < variable->dimension[0]; i++)
     {
-        int num_levels = variable->dimension[1];
+        long num_levels = variable->dimension[1];
         int num_levels_afgl86;
         const double *altitude;
         const double *values;
@@ -106,7 +106,7 @@ static int get_aux_variable_usstd76(harp_variable *variable, const harp_variable
     int num_levels_usstd76;
     const double *altitude;
     const double *values;
-    int i;
+    long i;
 
     if (harp_aux_usstd76_get_profile("altitude", &num_levels_usstd76, &altitude) != 0)
     {
@@ -119,7 +119,7 @@ static int get_aux_variable_usstd76(harp_variable *variable, const harp_variable
 
     for (i = 0; i < variable->dimension[0]; i++)
     {
-        int num_levels = variable->dimension[1];
+        long num_levels = variable->dimension[1];
 
         harp_interpolate_array_linear(num_levels_usstd76, altitude, values, num_levels,
                                       &source_variable[0]->data.double_data[i * num_levels], 0,
@@ -559,7 +559,7 @@ static int get_midpoint_from_begin_and_end(harp_variable *variable, const harp_v
 
 static int get_midpoint_from_bounds(harp_variable *variable, const harp_variable **source_variable)
 {
-    int i;
+    long i;
 
     for (i = 0; i < variable->num_elements; i++)
     {
@@ -572,12 +572,44 @@ static int get_midpoint_from_bounds(harp_variable *variable, const harp_variable
 
 static int get_midpoint_from_bounds_log(harp_variable *variable, const harp_variable **source_variable)
 {
-    int i;
+    long i;
 
     for (i = 0; i < variable->num_elements; i++)
     {
         variable->data.double_data[i] = exp((log(source_variable[0]->data.double_data[2 * i]) +
                                              log(source_variable[0]->data.double_data[2 * i + 1])) / 2.0);
+    }
+
+    return 0;
+}
+
+static int get_minimum_from_array(harp_variable *variable, const harp_variable **source_variable)
+{
+    long dim_length;
+    long i;
+
+    assert(source_variable[0]->num_dimensions == variable->num_dimensions + 1);
+
+    dim_length = source_variable[0]->dimension[source_variable[0]->num_dimensions - 1];
+    for (i = 0; i < variable->num_elements; i++)
+    {
+        if (dim_length > 0)
+        {
+            long j;
+
+            variable->data.double_data[i] = source_variable[0]->data.double_data[i * dim_length];
+            for (j = 1; j < dim_length; j++)
+            {
+                if (source_variable[0]->data.double_data[i * dim_length + j] < variable->data.double_data[i])
+                {
+                    variable->data.double_data[i] = source_variable[0]->data.double_data[i * dim_length + j];
+                }
+            }
+        }
+        else
+        {
+            variable->data.double_data[i] = harp_nan();
+        }
     }
 
     return 0;
@@ -923,7 +955,7 @@ static int get_sqrt_trace_from_matrix(harp_variable *variable, const harp_variab
 {
     long num_elements;
     long length;
-    int i, j;
+    long i, j;
 
     length = variable->dimension[variable->num_dimensions - 1];
     num_elements = variable->num_elements / length;
@@ -4600,6 +4632,38 @@ static int add_axis_conversions(void)
                                             dimension_type, 0) != 0)
     {
         return -1;
+    }
+
+    /* {[time]} from {[time,]spectral} */
+    dimension_type[1] = harp_dimension_spectral;
+    for (i = 0; i < 2; i++)
+    {
+        if (harp_variable_conversion_new("datetime_length", harp_type_double, HARP_UNIT_TIME, i, &dimension_type[1 - i],
+                                         0, get_minimum_from_array, &conversion) != 0)
+        {
+            return -1;
+        }
+        if (harp_variable_conversion_add_source(conversion, "datetime_length", harp_type_double, HARP_UNIT_TIME, i + 1,
+                                                &dimension_type[1 - i], 0) != 0)
+        {
+            return -1;
+        }
+    }
+
+    /* {[time]} from {[time,]vertical} */
+    dimension_type[1] = harp_dimension_vertical;
+    for (i = 0; i < 2; i++)
+    {
+        if (harp_variable_conversion_new("datetime_length", harp_type_double, HARP_UNIT_TIME, i, &dimension_type[1 - i],
+                                         0, get_minimum_from_array, &conversion) != 0)
+        {
+            return -1;
+        }
+        if (harp_variable_conversion_add_source(conversion, "datetime_length", harp_type_double, HARP_UNIT_TIME, i + 1,
+                                                &dimension_type[1 - i], 0) != 0)
+        {
+            return -1;
+        }
     }
 
     /*** datetime_start ***/
