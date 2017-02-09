@@ -863,7 +863,7 @@ static void register_hcho_product(void)
                                                    "tropospheric_HCHO_column_number_density_validity",
                                                    harp_type_int32, 1, dimension_type, NULL, description, NULL,
                                                    NULL, read_hcho_column_tropospheric_validity);
-    path = "/PRODUCT/SUPPORT_DATA/DETAILED_RESULTS/processing_validity_flags[]";
+    path = "/PRODUCT/SUPPORT_DATA/DETAILED_RESULTS/processing_quality_flags[]";
     harp_variable_definition_add_mapping(variable_definition, NULL, NULL, path, NULL);
 
     description = "averaging kernel for the total column number density of tropospheric HCHO";
@@ -943,7 +943,7 @@ static void register_no2_product(void)
                                                    "tropospheric_NO2_column_number_density_validity",
                                                    harp_type_int32, 1, dimension_type, NULL, description, NULL,
                                                    NULL, read_no2_column_tropospheric_validity);
-    path = "/PRODUCT/SUPPORT_DATA/DETAILED_RESULTS/processing_validity_flags[]";
+    path = "/PRODUCT/SUPPORT_DATA/DETAILED_RESULTS/processing_quality_flags[]";
     harp_variable_definition_add_mapping(variable_definition, NULL, NULL, path, NULL);
 
     description = "tropospheric air mass factor, computed by integrating the altitude dependent air mass factor over "
