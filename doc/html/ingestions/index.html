@@ -94,7 +94,10 @@
 <li class="toctree-l3"><a class="reference internal" href="#geoms-te-uvvis-doas-zenith">GEOMS-TE-UVVIS-DOAS-ZENITH</a></li>
 </ul>
 </li>
-<li class="toctree-l2"><a class="reference internal" href="#gome-products">GOME products</a></li>
+<li class="toctree-l2"><a class="reference internal" href="#gome-products">GOME products</a><ul>
+<li class="toctree-l3"><a class="reference internal" href="#gome-l1-extracted">GOME_L1_EXTRACTED</a></li>
+</ul>
+</li>
 <li class="toctree-l2"><a class="reference internal" href="#gome-2-products">GOME-2 products</a></li>
 <li class="toctree-l2"><a class="reference internal" href="#gome2-products">GOME2 products</a></li>
 <li class="toctree-l2"><a class="reference internal" href="#gomos-products">GOMOS products</a></li>
@@ -1180,7 +1183,7 @@
 </tr>
 </thead>
 <tbody valign="top">
-<tr class="row-even"><td><a class="reference internal" href="GOME_L1_EXTRACTED.html"><span class="doc">GOME_L1_EXTRACTED</span></a></td>
+<tr class="row-even"><td><a class="reference internal" href="#gome-l1-extracted"><span class="std std-ref">GOME_L1_EXTRACTED</span></a></td>
 <td>ERS_GOME/GOM.LVL13_EXTRACTED</td>
 <td>GOME Level 1 Extracted data</td>
 </tr>
@@ -1198,6 +1201,58 @@
 </tr>
 </tbody>
 </table>
+<div class="section" id="gome-l1-extracted">
+<span id="id9"></span><h3>GOME_L1_EXTRACTED</h3>
+<p>GOME Level 1 Extracted data</p>
+<p>The table below lists the available product conversions for <code class="docutils literal"><span class="pre">GOME_L1_EXTRACTED</span></code> products.</p>
+<table border="1" class="docutils">
+<colgroup>
+<col width="33%" />
+<col width="33%" />
+<col width="33%" />
+</colgroup>
+<thead valign="bottom">
+<tr class="row-odd"><th class="head">name</th>
+<th class="head">ingestion option</th>
+<th class="head">description</th>
+</tr>
+</thead>
+<tbody valign="top">
+<tr class="row-even"><td><a class="reference internal" href="GOME_L1_EXTRACTED.html"><span class="doc">GOME_L1_EXTRACTED</span></a></td>
+<td>&nbsp;</td>
+<td>GOME Level 1 Extracted Spectra product</td>
+</tr>
+<tr class="row-odd"><td><a class="reference internal" href="GOME_L1_EXTRACTED_sun_reference.html"><span class="doc">GOME_L1_EXTRACTED_sun_reference</span></a></td>
+<td>&nbsp;</td>
+<td>GOME Level 1 Extracted Spectra Sun Reference product</td>
+</tr>
+</tbody>
+</table>
+<p>The table below lists the available ingestion options for <code class="docutils literal"><span class="pre">GOME_L1_EXTRACTED</span></code> products.</p>
+<table border="1" class="docutils">
+<colgroup>
+<col width="15%" />
+<col width="25%" />
+<col width="60%" />
+</colgroup>
+<thead valign="bottom">
+<tr class="row-odd"><th class="head">option name</th>
+<th class="head">legal values</th>
+<th class="head">description</th>
+</tr>
+</thead>
+<tbody valign="top">
+<tr class="row-even"><td>band</td>
+<td><strong>band-1a</strong>, band-1b, band-2a, band-2b, band-3, band-4, blind-1a, straylight-1a, straylight-1b, straylight-2a</td>
+<td>only include data from the specified band (&#8216;band-1a&#8217;, &#8216;band-1b&#8217;, &#8216;band-2a&#8217;, &#8216;band-2b&#8217;, &#8216;band-3&#8217;, &#8216;band-4&#8217;, &#8216;blind-1a&#8217;, &#8216;straylight-1a&#8217;, &#8216;straylight-1b&#8217;, &#8216;straylight-2a&#8217;); by default data from all bands is retrieved</td>
+</tr>
+<tr class="row-odd"><td>data</td>
+<td><strong>sun_reference</strong></td>
+<td>retrieve the measured radiances or the sun spectra; by default the measured radiances are retrieved</td>
+</tr>
+</tbody>
+</table>
+</div>
 </div>
 <div class="section" id="gome-2-products">
 <span id="gome-2"></span><h2>GOME-2 products</h2>
@@ -1307,7 +1362,7 @@
 </tbody>
 </table>
 <div class="section" id="gosat-fts-l1b">
-<span id="id9"></span><h3>GOSAT_FTS_L1b</h3>
+<span id="id10"></span><h3>GOSAT_FTS_L1b</h3>
 <p>GOSAT FTS Level 1b radiance spectra</p>
 <p>The table below lists the available product conversions for <code class="docutils literal"><span class="pre">GOSAT_FTS_L1b</span></code> products.</p>
 <table border="1" class="docutils">
@@ -1445,7 +1500,7 @@
 </tbody>
 </table>
 <div class="section" id="mipas-l2">
-<span id="id10"></span><h3>MIPAS_L2</h3>
+<span id="id11"></span><h3>MIPAS_L2</h3>
 <p>MIPAS Temperature, Pressure, and Atmospheric Constituents Profiles</p>
 <p>The table below lists the available product conversions for <code class="docutils literal"><span class="pre">MIPAS_L2</span></code> products.</p>
 <table border="1" class="docutils">
@@ -1813,7 +1868,7 @@
 </tbody>
 </table>
 <div class="section" id="sciamachy-l2">
-<span id="id11"></span><h3>SCIAMACHY_L2</h3>
+<span id="id12"></span><h3>SCIAMACHY_L2</h3>
 <p>SCIAMACHY Off-Line Level-2</p>
 <p>The table below lists the available product conversions for <code class="docutils literal"><span class="pre">SCIAMACHY_L2</span></code> products.</p>
 <table border="1" class="docutils">
@@ -2045,7 +2100,7 @@
 </tbody>
 </table>
 <div class="section" id="s5p-l1b-ir-sir">
-<span id="id12"></span><h3>S5P_L1B_IR_SIR</h3>
+<span id="id13"></span><h3>S5P_L1B_IR_SIR</h3>
 <p>Sentinel-5P L1b SWIR irradiance spectra</p>
 <p>The table below lists the available product conversions for <code class="docutils literal"><span class="pre">S5P_L1B_IR_SIR</span></code> products.</p>
 <table border="1" class="docutils">
@@ -2093,7 +2148,7 @@
 </table>
 </div>
 <div class="section" id="s5p-l1b-ir-uvn">
-<span id="id13"></span><h3>S5P_L1B_IR_UVN</h3>
+<span id="id14"></span><h3>S5P_L1B_IR_UVN</h3>
 <p>Sentinel-5P L1b UVN irradiance spectra</p>
 <p>The table below lists the available product conversions for <code class="docutils literal"><span class="pre">S5P_L1B_IR_UVN</span></code> products.</p>
 <table border="1" class="docutils">

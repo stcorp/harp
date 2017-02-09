@@ -8,7 +8,7 @@
   
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
   
-  <title>GOME_L1_EXTRACTED &mdash; HARP 0.4b documentation</title>
+  <title>GOME_L1_EXTRACTED_sun_reference &mdash; HARP 0.4b documentation</title>
   
 
   
@@ -113,7 +113,7 @@
   <ul class="wy-breadcrumbs">
     <li><a href="../index.html">Docs</a> &raquo;</li>
       
-    <li>GOME_L1_EXTRACTED</li>
+    <li>GOME_L1_EXTRACTED_sun_reference</li>
       <li class="wy-breadcrumbs-aside">
         
           
@@ -125,11 +125,11 @@
           <div role="main" class="document" itemscope="itemscope" itemtype="http://schema.org/Article">
            <div itemprop="articleBody">
             
-  <div class="section" id="gome-l1-extracted">
-<h1>GOME_L1_EXTRACTED</h1>
+  <div class="section" id="gome-l1-extracted-sun-reference">
+<h1>GOME_L1_EXTRACTED_sun_reference</h1>
 <div class="section" id="variables">
 <h2>Variables</h2>
-<p>The table below lists the variables that are present in the HARP product that results from an ingestion of <code class="docutils literal"><span class="pre">GOME_L1_EXTRACTED</span></code> data.</p>
+<p>The table below lists the variables that are present in the HARP product that results from an ingestion of <code class="docutils literal"><span class="pre">GOME_L1_EXTRACTED_sun_reference</span></code> data.</p>
 <table border="1" class="docutils">
 <colgroup>
 <col width="25%" />
@@ -151,43 +151,19 @@
 <td>double</td>
 <td>{<em>time</em>}</td>
 <td>seconds since 2000-01-01</td>
-<td>time of the measurement at the end of the integration time</td>
+<td>time of the sun reference measurement at the end of the integration time</td>
 </tr>
-<tr class="row-odd"><td><strong>latitude</strong></td>
-<td>double</td>
-<td>{<em>time</em>}</td>
-<td>degree_north</td>
-<td>tangent latitude of the measurement</td>
-</tr>
-<tr class="row-even"><td><strong>longitude</strong></td>
-<td>double</td>
-<td>{<em>time</em>}</td>
-<td>degree_east</td>
-<td>tangent longitude of the measurement</td>
-</tr>
-<tr class="row-odd"><td><strong>latitude_bounds</strong></td>
-<td>double</td>
-<td>{<em>time</em>, 4}</td>
-<td>degree_north</td>
-<td>corner latitudes for the ground pixel of the measurement</td>
-</tr>
-<tr class="row-even"><td><strong>longitude_bounds</strong></td>
-<td>double</td>
-<td>{<em>time</em>, 4}</td>
-<td>degree_north</td>
-<td>corner longitudes for the ground pixel of the measurement</td>
-</tr>
-<tr class="row-odd"><td><strong>wavelength_photon_radiance</strong></td>
+<tr class="row-odd"><td><strong>wavelength_photon_irradiance</strong></td>
 <td>double</td>
 <td>{<em>time</em>, <em>spectral</em>}</td>
-<td>count/s/cm2/sr/nm</td>
-<td>measured radiances</td>
+<td>count/s/cm2/nm</td>
+<td>sun spectrum spectral irradiance</td>
 </tr>
-<tr class="row-even"><td><strong>wavelength_photon_radiance_uncertainty</strong></td>
+<tr class="row-even"><td><strong>wavelength_photon_irradiance_uncertainty</strong></td>
 <td>double</td>
 <td>{<em>time</em>, <em>spectral</em>}</td>
-<td>count/s/cm2/sr/nm</td>
-<td>absolute radiance measurement error</td>
+<td>count/s/cm2/nm</td>
+<td>relative radiometric precision of the sun reference spectrum</td>
 </tr>
 <tr class="row-odd"><td><strong>wavelength</strong></td>
 <td>double</td>
@@ -195,49 +171,7 @@
 <td>nm</td>
 <td>nominal wavelength assignment for each of the detector pixels</td>
 </tr>
-<tr class="row-even"><td><strong>datetime_length</strong></td>
-<td>double</td>
-<td>{<em>time</em>, <em>spectral</em>}</td>
-<td>s</td>
-<td>integration time for each pixel</td>
-</tr>
-<tr class="row-odd"><td><strong>scan_subset_counter</strong></td>
-<td>int8</td>
-<td>{<em>time</em>}</td>
-<td>&nbsp;</td>
-<td>relative index (0-3) of this measurement within a scan (forward+backward)</td>
-</tr>
-<tr class="row-even"><td><strong>scan_direction</strong></td>
-<td>string</td>
-<td>{<em>time</em>}</td>
-<td>&nbsp;</td>
-<td>scan direction for each measurement: &#8216;forward&#8217;, &#8216;backward&#8217; or &#8216;mixed&#8217; (for a measurement that consisted of both a forward and backward scan)</td>
-</tr>
-<tr class="row-odd"><td><strong>solar_zenith_angle</strong></td>
-<td>double</td>
-<td>{<em>time</em>}</td>
-<td>&nbsp;</td>
-<td>solar zenith angle at instrument</td>
-</tr>
-<tr class="row-even"><td><strong>solar_azimuth_angle</strong></td>
-<td>double</td>
-<td>{<em>time</em>}</td>
-<td>&nbsp;</td>
-<td>solar azimuth angle at instrument</td>
-</tr>
-<tr class="row-odd"><td><strong>viewing_zenith_angle</strong></td>
-<td>double</td>
-<td>{<em>time</em>}</td>
-<td>&nbsp;</td>
-<td>line of sight zenith angle at instrument</td>
-</tr>
-<tr class="row-even"><td><strong>viewing_azimuth_angle</strong></td>
-<td>double</td>
-<td>{<em>time</em>}</td>
-<td>&nbsp;</td>
-<td>line of sight azimuth angle at instrument</td>
-</tr>
-<tr class="row-odd"><td><strong>index</strong></td>
+<tr class="row-even"><td><strong>index</strong></td>
 <td>int32</td>
 <td>{<em>time</em>}</td>
 <td>&nbsp;</td>
@@ -276,12 +210,12 @@
 <div class="section" id="mapping-description">
 <h2>Mapping description</h2>
 <p>The table below details where and how each variable was retrieved from the input product.</p>
-<p>GOME Level 1 Extracted Spectra</p>
+<p>GOME Level 1 Extracted Spectra Sun Reference</p>
 <table border="1" class="docutils">
 <colgroup>
-<col width="18%" />
-<col width="6%" />
-<col width="76%" />
+<col width="55%" />
+<col width="10%" />
+<col width="36%" />
 </colgroup>
 <thead valign="bottom">
 <tr class="row-odd"><th class="head">field name</th>
@@ -291,87 +225,19 @@
 <tbody valign="top">
 <tr class="row-even"><td><strong>datetime</strong></td>
 <td><em>path</em></td>
-<td><strong>/egp[]/agi/groundpixel_end</strong></td>
+<td><strong>/sfs/utc_solar_spectrum</strong></td>
 </tr>
-<tr class="row-odd"><td rowspan="2"><strong>latitude</strong></td>
+<tr class="row-odd"><td><strong>wavelength_photon_irradiance</strong></td>
 <td><em>path</em></td>
-<td><strong>/egp[]/agi/coords[4]/latitude</strong></td>
+<td><strong>/cdr[]/sdr[]/abs_irr</strong></td>
 </tr>
-<tr class="row-even"><td><em>description</em></td>
-<td>tangent latitude of the measurement</td>
-</tr>
-<tr class="row-odd"><td rowspan="2"><strong>longitude</strong></td>
+<tr class="row-even"><td><strong>wavelength_photon_irradiance_uncertainty</strong></td>
 <td><em>path</em></td>
-<td><strong>/egp[]/agi/coords[4]/longitude</strong></td>
-</tr>
-<tr class="row-even"><td><em>description</em></td>
-<td>tangent longitude of the measurement</td>
-</tr>
-<tr class="row-odd"><td rowspan="2"><strong>latitude_bounds</strong></td>
-<td><em>path</em></td>
-<td><strong>/egp[]/agi/coords[0:3]/latitude</strong></td>
-</tr>
-<tr class="row-even"><td><em>description</em></td>
-<td>The corners are rearranged in the following way: 1,3,2,0</td>
-</tr>
-<tr class="row-odd"><td rowspan="2"><strong>longitude_bounds</strong></td>
-<td><em>path</em></td>
-<td><strong>/egp[]/agi/coords[0:3]/longitude</strong></td>
-</tr>
-<tr class="row-even"><td><em>description</em></td>
-<td>The corners are rearranged in the following way: 1,3,2,0</td>
-</tr>
-<tr class="row-odd"><td rowspan="2"><strong>wavelength_photon_radiance</strong></td>
-<td><em>path</em></td>
-<td><strong>/egp[]/brda[]/edr[]/abs_radiance</strong></td>
-</tr>
-<tr class="row-even"><td><em>description</em></td>
-<td>will be set to NaN is brda record is not available or if egp[]/brda[]/edr[]/flag != 0</td>
-</tr>
-<tr class="row-odd"><td rowspan="2"><strong>wavelength_photon_radiance_uncertainty</strong></td>
-<td><em>path</em></td>
-<td><strong>/egp[]/brda[]/edr[]/abs_rad_err</strong></td>
-</tr>
-<tr class="row-even"><td><em>description</em></td>
-<td>will be set to NaN is brda record is not available or if egp[]/brda[]/edr[]/flag != 0</td>
+<td><strong>/cdr[]/sdr[]/abs_irr_err</strong></td>
 </tr>
 <tr class="row-odd"><td><strong>wavelength</strong></td>
 <td><em>path</em></td>
-<td><strong>/egp[]/brda[]/edr[]/wavelength</strong></td>
-</tr>
-<tr class="row-even"><td><strong>datetime_length</strong></td>
-<td><em>path</em></td>
-<td><strong>/egp[]/brda[]/integration_time</strong></td>
-</tr>
-<tr class="row-odd"><td rowspan="2"><strong>scan_subset_counter</strong></td>
-<td><em>path</em></td>
-<td><strong>/egp[]/sub_counter</strong></td>
-</tr>
-<tr class="row-even"><td><em>description</em></td>
-<td>if a measurement consisted of multiple ground pixels, the subset counter of the last pixel is taken</td>
-</tr>
-<tr class="row-odd"><td rowspan="2"><strong>scan_direction</strong></td>
-<td><em>path</em></td>
-<td><strong>/egp[]/sub_counter</strong></td>
-</tr>
-<tr class="row-even"><td><em>description</em></td>
-<td>when the integration time is higher than 1.5 s we are dealing with a mixed pixel, otherwise the scan direction is based on the subset counter of the measurement (0-2 forward, 3 = backward)</td>
-</tr>
-<tr class="row-odd"><td><strong>solar_zenith_angle</strong></td>
-<td><em>path</em></td>
-<td><strong>/egp[]/agi/solar_angles_spacecraft/zenith_b</strong></td>
-</tr>
-<tr class="row-even"><td><strong>solar_azimuth_angle</strong></td>
-<td><em>path</em></td>
-<td><strong>/egp[]/agi/solar_angles_spacecraft/azimuth_b</strong></td>
-</tr>
-<tr class="row-odd"><td><strong>viewing_zenith_angle</strong></td>
-<td><em>path</em></td>
-<td><strong>/egp[]/agi/los_spacecraft/zenith_b</strong></td>
-</tr>
-<tr class="row-even"><td><strong>viewing_azimuth_angle</strong></td>
-<td><em>path</em></td>
-<td><strong>/egp[]/agi/los_spacecraft/azimuth_b</strong></td>
+<td><strong>/cdr[]/sdr[]/wavelength</strong></td>
 </tr>
 </tbody>
 </table>

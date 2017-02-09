@@ -231,6 +231,7 @@ HARP_DOCFILES = \
 	doc/html/ingestions/GOME2_L2_O3MNTO.html \
 	doc/html/ingestions/GOME2_L2_O3MOTO.html \
 	doc/html/ingestions/GOME_L1_EXTRACTED.html \
+	doc/html/ingestions/GOME_L1_EXTRACTED_sun_reference.html \
 	doc/html/ingestions/GOME_L2.html \
 	doc/html/ingestions/GOME_L2_ERSNTO.html \
 	doc/html/ingestions/GOME_L2_ERSOTO.html \
@@ -824,6 +825,8 @@ doc/html/ingestions/GOME2_L2_O3MNTO.html:
 doc/html/ingestions/GOME2_L2_O3MOTO.html:
 	$(MAKE) harp_doc
 doc/html/ingestions/GOME_L1_EXTRACTED.html:
+	$(MAKE) harp_doc
+doc/html/ingestions/GOME_L1_EXTRACTED_sun_reference.html:
 	$(MAKE) harp_doc
 doc/html/ingestions/GOME_L2.html:
 	$(MAKE) harp_doc
