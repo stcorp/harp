@@ -217,7 +217,7 @@ int main(int argc, char *argv[])
         fprintf(stderr, "ERROR: %s\n", harp_errno_to_string(harp_errno));
         exit(1);
     }
-    
+
     if (strcmp(argv[1], "--list-derivations") == 0)
     {
         if (list_derivations(argc, argv) != 0)
