@@ -44,7 +44,7 @@ endif
 
 # headers
 
-include_HEADERS = libharp/harp.h
+nodist_include_HEADERS = libharp/harp.h
 
 # *** build rules ***
 
