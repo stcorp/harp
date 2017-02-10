@@ -2017,27 +2017,25 @@ int harp_ingestion_module_gome2_l1_init(void)
     const char *description;
 
     description = "GOME2 Level 1 data";
-    module =
-        harp_ingestion_register_module_coda("GOME2_L1", "GOME2", "EPS", "GOME_xxx_1B", description,
-                                            ingestion_init, ingestion_done);
-    harp_ingestion_register_option(module, "band",
-                                   "only include data from the specified band ('band-1a', 'band-1b', 'band-2a', 'band-2b', 'band-3', 'band-4'); by default data from all bands is retrieved",
-                                   6, band_name_as_option);
-    harp_ingestion_register_option(module, "data",
-                                   "retrieve the measured radiances, the transmission spectra, the sun measurement spectra, the moon measurement spectra or the sun reference spectrum; by default the measured radiances are retrieved",
-                                   5, data_options);
+    module = harp_ingestion_register_module_coda("GOME2_L1", "GOME-2", "EPS", "GOME_xxx_1B", description,
+                                                 ingestion_init, ingestion_done);
+    harp_ingestion_register_option(module, "band", "only include data from the specified band ('band-1a', 'band-1b', "
+                                   "'band-2a', 'band-2b', 'band-3', 'band-4'); by default data from all bands is "
+                                   "retrieved", 6, band_name_as_option);
+    harp_ingestion_register_option(module, "data", "retrieve the measured radiances, the transmission spectra, the sun "
+                                   "measurement spectra, the moon measurement spectra or the sun reference spectrum; "
+                                   "by default the measured radiances are retrieved", 5, data_options);
 
     description = "GOME2 Level 1b product";
-    product_definition =
-        harp_ingestion_register_product(module, "GOME2_L1", description, read_dimensions_measurements_fields);
+    product_definition = harp_ingestion_register_product(module, "GOME2_L1", description,
+                                                         read_dimensions_measurements_fields);
     description = "GOME2 Level 1b data";
     harp_product_definition_add_mapping(product_definition, description, NULL);
     register_variables_measurement_fields(product_definition);
 
     description = "GOME2 Level 1b sun reference product";
-    product_definition_sun_reference =
-        harp_ingestion_register_product(module, "GOME2_L1_sun_reference", description,
-                                        read_dimensions_reference_spectrum_fields);
+    product_definition_sun_reference = harp_ingestion_register_product(module, "GOME2_L1_sun_reference", description,
+                                                                       read_dimensions_reference_spectrum_fields);
     description = "GOME2 Level 1b sun reference data";
     harp_product_definition_add_mapping(product_definition_sun_reference, description, NULL);
     register_variables_reference_spectrum_fields(product_definition_sun_reference);
