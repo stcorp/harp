@@ -1449,9 +1449,9 @@ static void register_variables_measurement_fields(harp_product_definition *produ
     description = "corner longitudes for the ground pixel of the measurement";
     variable_definition =
         harp_ingestion_register_variable_full_read(product_definition, "longitude_bounds", harp_type_double, 2,
-                                                   bounds_dimension_type, bounds_dimension, description, "degree_north",
+                                                   bounds_dimension_type, bounds_dimension, description, "degree_east",
                                                    exclude_when_not_radiance_or_transmission, read_longitude_bounds);
-    harp_variable_definition_set_valid_range_double(variable_definition, -90.0, 90.0);
+    harp_variable_definition_set_valid_range_double(variable_definition, -180.0, 180.0);
     path = "/MDR[]/Earthshine/GEO_EARTH_ACTUAL/CORNER_ACTUAL[INT_INDEX[band_id],,]/longitude";
     description =
         "The integration time index INT_INDEX[band_id] is the index of the band with the minimum integration time (limited to those bands that are ingested). The corners ABCD are reordered as BDCA.";
@@ -1576,7 +1576,7 @@ static void register_variables_measurement_fields(harp_product_definition *produ
     description = "solar zenith angle at top of atmosphere";
     variable_definition =
         harp_ingestion_register_variable_full_read(product_definition, "solar_zenith_angle_toa", harp_type_double, 1,
-                                                   dimension_type, NULL, description, NULL,
+                                                   dimension_type, NULL, description, "degree",
                                                    exclude_when_not_radiance_or_transmission, read_solar_zenith_angle);
     path = "/MDR[]/Earthshine/GEO_EARTH_ACTUAL/SOLAR_ZENITH_ACTUAL[INT_INDEX[band_id],1,]";
     description =
@@ -1591,7 +1591,7 @@ static void register_variables_measurement_fields(harp_product_definition *produ
     description = "solar azimuth angle at top of atmosphere";
     variable_definition =
         harp_ingestion_register_variable_full_read(product_definition, "solar_azimuth_angle_toa", harp_type_double, 1,
-                                                   dimension_type, NULL, description, NULL,
+                                                   dimension_type, NULL, description, "degree",
                                                    exclude_when_not_radiance_or_transmission, read_solar_azimuth_angle);
     path = "/MDR[]/Earthshine/GEO_EARTH_ACTUAL/SOLAR_AZIMUTH_ACTUAL[INT_INDEX[band_id],1,]";
     description =
@@ -1606,7 +1606,7 @@ static void register_variables_measurement_fields(harp_product_definition *produ
     description = "viewing zenith angle at top of atmosphere";
     variable_definition =
         harp_ingestion_register_variable_full_read(product_definition, "viewing_zenith_angle_toa", harp_type_double, 1,
-                                                   dimension_type, NULL, description, NULL,
+                                                   dimension_type, NULL, description, "degree",
                                                    exclude_when_not_radiance_or_transmission,
                                                    read_viewing_zenith_angle);
     path = "/MDR[]/Earthshine/GEO_EARTH_ACTUAL/SAT_ZENITH_ACTUAL[INT_INDEX[band_id],1,]";
@@ -1622,7 +1622,7 @@ static void register_variables_measurement_fields(harp_product_definition *produ
     description = "viewing azimuth angle at top of atmosphere";
     variable_definition =
         harp_ingestion_register_variable_full_read(product_definition, "viewing_azimuth_angle_toa", harp_type_double, 1,
-                                                   dimension_type, NULL, description, NULL,
+                                                   dimension_type, NULL, description, "degree",
                                                    exclude_when_not_radiance_or_transmission,
                                                    read_viewing_azimuth_angle);
     path = "/MDR[]/Earthshine/GEO_EARTH_ACTUAL/SAT_AZIMUTH_ACTUAL[INT_INDEX[band_id],1,]";
@@ -2093,14 +2093,14 @@ int harp_ingestion_module_gome2_l1_init(void)
         "A measurement with a higher integration time will only be included if each of its 187.5ms sub-parts have not "
         "been filtered out (this also holds for measurements with an integration time > 6s). If spectra from multiple "
         "bands with different integration times are ingested then the measurements with a high integration time will "
-        "only be ingested of all subpixels of the measurements with the minimum integration time are also ingested. "
+        "only be ingested if all subpixels of the measurements with the minimum integration time are also ingested. "
         "The measurement with a high integration time will be put in the same 'row' as the first corresponding minimum "
         "integration time measurement (i.e. measurements of different bands are aligned according to start time of the "
         "measurement).\n\n";
     harp_product_definition_add_mapping(product_definition, description, NULL);
     description = "If the band configuration changes somewhere during the orbit and a band filter is given, then "
         "we only include detector pixels that are inside the requested band for the duration of the whole orbit. i.e. "
-        "detector pixels that change band during the orbit will allways be excluded when a band filter is given.";
+        "detector pixels that change band during the orbit will always be excluded when a band filter is given.";
     harp_product_definition_add_mapping(product_definition, description, NULL);
     register_variables_measurement_fields(product_definition);
 
