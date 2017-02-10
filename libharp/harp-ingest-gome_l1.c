@@ -1053,7 +1053,7 @@ static int register_nominal_product(harp_ingestion_module *module)
     description = "corner longitudes for the ground pixel of the measurement";
     variable_definition =
         harp_ingestion_register_variable_full_read(product_definition, "longitude_bounds", harp_type_double, 2,
-                                                   bounds_dimension_type, bounds_dimension, description, "degree_north",
+                                                   bounds_dimension_type, bounds_dimension, description, "degree_east",
                                                    NULL, read_longitude_bounds);
     harp_variable_definition_set_valid_range_double(variable_definition, -90.0, 90.0);
     path = "/egp[]/agi/coords[0:3]/longitude";
@@ -1109,22 +1109,20 @@ static int register_nominal_product(harp_ingestion_module *module)
     harp_variable_definition_add_mapping(variable_definition, NULL, NULL, path, description);
 
     /* scan_direction */
-    description =
-        "scan direction for each measurement: 'forward' or 'backward'";
+    description = "scan direction for each measurement: 'forward' or 'backward'";
     variable_definition =
         harp_ingestion_register_variable_sample_read(product_definition, "scan_direction", harp_type_string, 1,
                                                      dimension_type, NULL, description, NULL, NULL,
                                                      read_scan_direction);
     path = "/egp[]/sub_counter";
-    description =
-        "the scan direction is based on the subset counter of the measurement (0-2 forward, 3 = backward)";
+    description = "the scan direction is based on the subset counter of the measurement (0-2 forward, 3 = backward)";
     harp_variable_definition_add_mapping(variable_definition, NULL, NULL, path, description);
 
     /* solar_zenith_angle */
     description = "solar zenith angle at instrument";
     variable_definition =
         harp_ingestion_register_variable_full_read(product_definition, "solar_zenith_angle", harp_type_double, 1,
-                                                   dimension_type, NULL, description, NULL, NULL,
+                                                   dimension_type, NULL, description, "degree", NULL,
                                                    read_solar_zenith_angle);
     path = "/egp[]/agi/solar_angles_spacecraft/zenith_b";
     harp_variable_definition_add_mapping(variable_definition, NULL, NULL, path, NULL);
@@ -1133,7 +1131,7 @@ static int register_nominal_product(harp_ingestion_module *module)
     description = "solar azimuth angle at instrument";
     variable_definition =
         harp_ingestion_register_variable_full_read(product_definition, "solar_azimuth_angle", harp_type_double, 1,
-                                                   dimension_type, NULL, description, NULL, NULL,
+                                                   dimension_type, NULL, description, "degree", NULL,
                                                    read_solar_azimuth_angle);
     path = "/egp[]/agi/solar_angles_spacecraft/azimuth_b";
     harp_variable_definition_add_mapping(variable_definition, NULL, NULL, path, NULL);
@@ -1142,7 +1140,7 @@ static int register_nominal_product(harp_ingestion_module *module)
     description = "line of sight zenith angle at instrument";
     variable_definition =
         harp_ingestion_register_variable_full_read(product_definition, "viewing_zenith_angle", harp_type_double, 1,
-                                                   dimension_type, NULL, description, NULL, NULL,
+                                                   dimension_type, NULL, description, "degree", NULL,
                                                    read_viewing_zenith_angle);
     path = "/egp[]/agi/los_spacecraft/zenith_b";
     harp_variable_definition_add_mapping(variable_definition, NULL, NULL, path, NULL);
@@ -1151,7 +1149,7 @@ static int register_nominal_product(harp_ingestion_module *module)
     description = "line of sight azimuth angle at instrument";
     variable_definition =
         harp_ingestion_register_variable_full_read(product_definition, "viewing_azimuth_angle", harp_type_double, 1,
-                                                   dimension_type, NULL, description, NULL, NULL,
+                                                   dimension_type, NULL, description, "degree", NULL,
                                                    read_viewing_azimuth_angle);
     path = "/egp[]/agi/los_spacecraft/azimuth_b";
     harp_variable_definition_add_mapping(variable_definition, NULL, NULL, path, NULL);
