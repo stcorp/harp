@@ -70,7 +70,6 @@ typedef struct ingest_info_struct
 
     /* Measured radiance fields */
     coda_cursor *egp_cursors;
-    short *mixed_pixel_in_this_egp_record;
     long num_egp_records;
     long num_edr_records[MAX_NR_BANDS];
     long offset_of_band[MAX_NR_BANDS];
@@ -104,10 +103,6 @@ static void ingestion_done(void *user_data)
     if (info->egp_cursors != NULL)
     {
         free(info->egp_cursors);
-    }
-    if (info->mixed_pixel_in_this_egp_record != NULL)
-    {
-        free(info->mixed_pixel_in_this_egp_record);
     }
     free(info);
 }
@@ -630,11 +625,12 @@ static int read_scan_direction(void *user_data, long index, harp_array data)
         harp_set_error(HARP_ERROR_CODA, NULL);
         return -1;
     }
-    if (info->mixed_pixel_in_this_egp_record[index])
-    {
-        *data.string_data = strdup("mixed");
-    }
-    else if (sub_counter < 3)
+    /* Note: In previous versions of this source, we had a value 'mixed' */
+    /* that was meant for a measurement that consisted of both a forward */
+    /* and a backward scan. Since in HARP we always store GOME_L1 data   */
+    /* with the maximum resolution (one main-record every 1.5 seconds),  */
+    /* this 'mixed' value is no longer used.                             */
+    if (sub_counter < 3)
     {
         *data.string_data = strdup("forward");
     }
@@ -749,7 +745,6 @@ static int init_dimensions(ingest_info *info)
         return -1;
     }
     CHECKED_MALLOC(info->egp_cursors, info->num_egp_records * sizeof(coda_cursor));
-    CHECKED_MALLOC(info->mixed_pixel_in_this_egp_record, info->num_egp_records * sizeof(short));
 
     /* Count the number of spectra per band */
     if (coda_cursor_goto_first_array_element(&cursor) != 0)
@@ -761,7 +756,6 @@ static int init_dimensions(ingest_info *info)
     {
         save_cursor_egp = cursor;
         info->egp_cursors[i] = cursor;
-        info->mixed_pixel_in_this_egp_record[i] = FALSE;
         if (coda_cursor_goto_record_field_by_name(&cursor, "brda") != 0)
         {
             harp_set_error(HARP_ERROR_CODA, NULL);
@@ -781,24 +775,6 @@ static int init_dimensions(ingest_info *info)
         for (j = 0; j < num_brda_elements; j++)
         {
             save_cursor_brda = cursor;
-
-            if (coda_cursor_goto_record_field_by_name(&cursor, "integration_time") != 0)
-            {
-                harp_set_error(HARP_ERROR_CODA, NULL);
-                return -1;
-            }
-            if (coda_cursor_read_double(&cursor, &integration_time) != 0)
-            {
-                harp_set_error(HARP_ERROR_CODA, NULL);
-                return -1;
-            }
-            coda_cursor_goto_parent(&cursor);
-            /* Check for mixed pixels (i.e. integration_time > 1.5). */
-            /* We use a margin of 0.01 to prevent rounding problems. */
-            if (integration_time > 1.51)
-            {
-                info->mixed_pixel_in_this_egp_record[i] = TRUE;
-            }
 
             if (coda_cursor_goto_record_field_by_name(&cursor, "band_id") != 0)
             {
@@ -846,6 +822,7 @@ static int init_dimensions(ingest_info *info)
                                band_name, info->num_edr_records[band_nr], num_edr_records);
                 info->num_edr_records[band_nr] = num_edr_records;
             }
+
             cursor = save_cursor_brda;
             if (j < (num_brda_elements - 1))
             {
@@ -1133,14 +1110,14 @@ static int register_nominal_product(harp_ingestion_module *module)
 
     /* scan_direction */
     description =
-        "scan direction for each measurement: 'forward', 'backward' or 'mixed' (for a measurement that consisted of both a forward and backward scan)";
+        "scan direction for each measurement: 'forward' or 'backward'";
     variable_definition =
         harp_ingestion_register_variable_sample_read(product_definition, "scan_direction", harp_type_string, 1,
                                                      dimension_type, NULL, description, NULL, NULL,
                                                      read_scan_direction);
     path = "/egp[]/sub_counter";
     description =
-        "when the integration time is higher than 1.5 s we are dealing with a mixed pixel, otherwise the scan direction is based on the subset counter of the measurement (0-2 forward, 3 = backward)";
+        "the scan direction is based on the subset counter of the measurement (0-2 forward, 3 = backward)";
     harp_variable_definition_add_mapping(variable_definition, NULL, NULL, path, description);
 
     /* solar_zenith_angle */
@@ -1253,9 +1230,8 @@ int harp_ingestion_module_gome_l1_init(void)
     const char *sun_reference_options[] = { "sun_reference" };
 
     description = "GOME Level 1 Extracted data";
-    module =
-        harp_ingestion_register_module_coda("GOME_L1_EXTRACTED", "GOME", "ERS_GOME", "GOM.LVL13_EXTRACTED", description,
-                                            ingestion_init, ingestion_done);
+    module = harp_ingestion_register_module_coda("GOME_L1_EXTRACTED", "GOME", "ERS_GOME", "GOM.LVL13_EXTRACTED",
+                                                 description, ingestion_init, ingestion_done);
     harp_ingestion_register_option(module, "band", "only include data from the specified band ('band-1a', 'band-1b', "
                                    "'band-2a', 'band-2b', 'band-3', 'band-4', 'blind-1a', 'straylight-1a', "
                                    "'straylight-1b', 'straylight-2a'); by default data from all bands is retrieved", 10,
