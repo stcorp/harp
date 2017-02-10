@@ -2064,7 +2064,7 @@ int harp_ingestion_module_gome2_l1_init(void)
         "change occurs). This means that the readout that has the 'invalid' meta-data will never be a valid "
         "measurement anyway.\n\n";
     harp_product_definition_add_mapping(product_definition, description, NULL);
-        description = "Because of all this, HARP will exercise the following rules during ingestion:\n"
+    description = "Because of all this, HARP will exercise the following rules during ingestion:\n"
         "1) the first readout of the first MDR will always be ignored (and you will never see the last readout of the "
         "last scan, because it won't be in the product)\n"
         "2) the first readout after a change in measurement mode (i.e. earthshine vs. calibration vs. sun vs. moon) "
@@ -2074,7 +2074,7 @@ int harp_ingestion_module_gome2_l1_init(void)
         "4) if two MDRs are not continuous (i.e. there is a time gap) then the first readout of the second MDR will "
         "be ignored\n\n";
     harp_product_definition_add_mapping(product_definition, description, NULL);
-        description = "GOME-2 uses 6 bands for the main spectra (1A, 1B, 2A, 2B, 3, and 4). Within a scan each band "
+    description = "GOME-2 uses 6 bands for the main spectra (1A, 1B, 2A, 2B, 3, and 4). Within a scan each band "
         "can have its own integration time. There will be at most 32 readouts per scan (corresponding with an "
         "integration time of 187.5ms). If the integration time is 375ms, 750ms, 1.5s, 3s or 6s there will be 16, 8, "
         "4, 2, or 1 measurement(s) respectively for this band in a scan. Some readouts may even cover multiple scans "
@@ -2089,7 +2089,7 @@ int harp_ingestion_module_gome2_l1_init(void)
         "This means that the minimum integration time can change depending on the wavelength filter that was applied"
         "\n\n";
     harp_product_definition_add_mapping(product_definition, description, NULL);
-        description = "The filtering on time and geolocation will always be performed using the 187.5ms resolution. "
+    description = "The filtering on time and geolocation will always be performed using the 187.5ms resolution. "
         "A measurement with a higher integration time will only be included if each of its 187.5ms sub-parts have not "
         "been filtered out (this also holds for measurements with an integration time > 6s). If spectra from multiple "
         "bands with different integration times are ingested then the measurements with a high integration time will "
@@ -2098,7 +2098,7 @@ int harp_ingestion_module_gome2_l1_init(void)
         "integration time measurement (i.e. measurements of different bands are aligned according to start time of the "
         "measurement).\n\n";
     harp_product_definition_add_mapping(product_definition, description, NULL);
-        description = "If the band configuration changes somewhere during the orbit and a band filter is given, then "
+    description = "If the band configuration changes somewhere during the orbit and a band filter is given, then "
         "we only include detector pixels that are inside the requested band for the duration of the whole orbit. i.e. "
         "detector pixels that change band during the orbit will allways be excluded when a band filter is given.";
     harp_product_definition_add_mapping(product_definition, description, NULL);
