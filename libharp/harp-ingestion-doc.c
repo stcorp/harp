@@ -263,11 +263,11 @@ static int generate_product_definition(const char *filename, const harp_ingestio
         fputc('\n', fout);
         fputs("Mapping description\n", fout);
         fputs("-------------------\n", fout);
-        fputs("The table below details where and how each variable was retrieved from the input product.\n\n", fout);
         if (product_definition->mapping_description != NULL)
         {
             fprintf(fout, "%s\n\n", product_definition->mapping_description);
         }
+        fputs("The table below details where and how each variable was retrieved from the input product.\n\n", fout);
 
         for (i = 0; i < product_definition->num_variable_definitions; i++)
         {

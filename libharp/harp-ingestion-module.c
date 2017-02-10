@@ -991,11 +991,27 @@ void harp_product_definition_add_mapping(harp_product_definition *product_defini
 {
     if (mapping_description != NULL)
     {
-        product_definition->mapping_description = strdup(mapping_description);
+        if (product_definition->mapping_description != NULL)
+        {
+            char *new_description;
+            long length;
+
+            /* append description */
+            length = strlen(product_definition->mapping_description) + strlen(mapping_description) + 1;
+            new_description = realloc(product_definition->mapping_description, length);
+            assert(new_description != NULL);
+            strcat(new_description, mapping_description);
+            product_definition->mapping_description = new_description;
+        }
+        else
+        {
+            product_definition->mapping_description = strdup(mapping_description);
+        }
         assert(product_definition->mapping_description != NULL);
     }
     if (ingestion_option != NULL)
     {
+        assert(product_definition->ingestion_option == NULL);
         product_definition->ingestion_option = strdup(ingestion_option);
         assert(product_definition->ingestion_option != NULL);
     }
