@@ -593,20 +593,27 @@ static int get_minimum_from_array(harp_variable *variable, const harp_variable *
     dim_length = source_variable[0]->dimension[source_variable[0]->num_dimensions - 1];
     for (i = 0; i < variable->num_elements; i++)
     {
-        if (dim_length > 0)
-        {
-            long j;
+        int is_set = 0;
+        long j;
 
-            variable->data.double_data[i] = source_variable[0]->data.double_data[i * dim_length];
-            for (j = 1; j < dim_length; j++)
+        for (j = 0; j < dim_length; j++)
+        {
+            double value = source_variable[0]->data.double_data[i * dim_length + j];
+
+            if (!harp_isnan(value))
             {
-                if (source_variable[0]->data.double_data[i * dim_length + j] < variable->data.double_data[i])
+                if (!is_set)
                 {
-                    variable->data.double_data[i] = source_variable[0]->data.double_data[i * dim_length + j];
+                    variable->data.double_data[i] = value;
+                    is_set = 1;
+                }
+                else if (value < variable->data.double_data[i])
+                {
+                    variable->data.double_data[i] = value;
                 }
             }
         }
-        else
+        if (!is_set)
         {
             variable->data.double_data[i] = harp_nan();
         }
