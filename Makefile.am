@@ -639,8 +639,10 @@ harp_doc: harpconvert libharp/harp.h doc/Doxyfile
 	  if test "x$(srcdir)" != "x$(builddir)" ; then \
 	    cp $(srcdir)/doc/conf.py doc ; \
 	    cp -r $(srcdir)/doc/static doc ; \
+	    $(mkinstalldirs) doc/algorithms ; \
+	    $(mkinstalldirs) doc/algorithms/derivations ; \
 	    for file in $(RSTFILES) ; do \
-	      cp $(srcdir)/$$file doc ; \
+	      cp $(srcdir)/$$file $$file ; \
 	    done ; \
 	  fi ; \
 	  $(SPHINXBUILD) -a -b html -d doctrees doc $(srcdir)/doc/html ; \
