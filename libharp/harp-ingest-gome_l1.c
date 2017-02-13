@@ -722,7 +722,6 @@ static int read_sun_reference_dimensions(void *user_data, long dimension[HARP_NU
 static int init_dimensions(ingest_info *info)
 {
     coda_cursor cursor, save_cursor_egp, save_cursor_brda;
-    double integration_time;
     long num_brda_elements, num_edr_records, i, j, offset;
     int band_nr;
     char band_name[MAX_SIZE_BANDNAME];
