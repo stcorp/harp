@@ -78,15 +78,26 @@ static int init_cursors(ingest_info *info)
     if (info->band_id < 6)
     {
         wavenumber_path = "exposureAttribute/pointAttribute/RadiometricCorrectionInfo/spectrumObsWavelengthRange_SWIR";
+        if (coda_cursor_goto(&info->wavenumber_cursor, wavenumber_path) != 0)
+        {
+            if (coda_errno == CODA_ERROR_INVALID_NAME)
+            {
+                /* This is a night-time product (that only has a TIR */
+                /* band) so return an empty product (see issue 79).  */
+                return 1;
+            }
+            harp_set_error(HARP_ERROR_CODA, NULL);
+            return -1;
+        }
     }
     else
     {
         wavenumber_path = "exposureAttribute/pointAttribute/RadiometricCorrectionInfo/spectrumObsWavelengthRange_TIR";
-    }
-    if (coda_cursor_goto(&info->wavenumber_cursor, wavenumber_path) != 0)
-    {
-        harp_set_error(HARP_ERROR_CODA, NULL);
-        return -1;
+        if (coda_cursor_goto(&info->wavenumber_cursor, wavenumber_path) != 0)
+        {
+            harp_set_error(HARP_ERROR_CODA, NULL);
+            return -1;
+        }
     }
 
     switch (info->band_id)
@@ -105,6 +116,7 @@ static int init_cursors(ingest_info *info)
             break;
         default:
             radiance_path = "Spectrum/TIR/band4/obsWavelength";
+            break;
     }
     if (coda_cursor_goto(&info->radiance_cursor, radiance_path) != 0)
     {
@@ -444,6 +456,7 @@ static int ingestion_init(const harp_ingestion_module *module, coda_product *pro
                           const harp_ingestion_options *options, harp_product_definition **definition, void **user_data)
 {
     ingest_info *info;
+    int retval;
 
     info = malloc(sizeof(ingest_info));
     if (info == NULL)
@@ -461,15 +474,25 @@ static int ingestion_init(const harp_ingestion_module *module, coda_product *pro
         ingestion_done(info);
         return -1;
     }
-    if (init_cursors(info) != 0)
+    retval = init_cursors(info);
+    if (retval < 0)
     {
         ingestion_done(info);
         return -1;
     }
-    if (init_num_main(info) != 0)
+    else if (retval == 0)
     {
-        ingestion_done(info);
-        return -1;
+        if (init_num_main(info) != 0)
+        {
+            ingestion_done(info);
+            return -1;
+        }
+    }
+    else
+    {
+        /* This is a night-time product and we have selected a band     */
+        /* that does not exist, return an empty product (see issue 79). */
+        info->num_main = 0;
     }
 
     *definition = module->product_definition[info->band_id];
