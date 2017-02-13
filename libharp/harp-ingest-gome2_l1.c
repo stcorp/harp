@@ -86,7 +86,6 @@ typedef struct ingest_info_struct
     uint16_t *max_num_recs;
     int *band_nr_fastest_band;
     int *index_of_fastest_timer_in_list_of_timers;
-    short *no_mixed_pixel;
     short *readout_offset;      /* First valid readout in MDR record, will always be 1 (in case the first readout is skipped) or 0 (default) */
 
     /* Data about the VIADR_SMR-records */
@@ -135,10 +134,6 @@ static void ingestion_done(void *user_data)
     if (info->index_of_fastest_timer_in_list_of_timers != NULL)
     {
         free(info->index_of_fastest_timer_in_list_of_timers);
-    }
-    if (info->no_mixed_pixel != NULL)
-    {
-        free(info->no_mixed_pixel);
     }
     if (info->readout_offset != NULL)
     {
@@ -843,20 +838,18 @@ static int read_scan_direction(void *user_data, long index, harp_array data)
     {
         subset_counter = (((index_plus_readout_offset - 1) % 32) / 2);
     }
-    if (info->no_mixed_pixel[index_plus_readout_offset / 32])
+    /* Note: In previous versions of this source, we had a value 'mixed'    */
+    /* that was meant for a measurement that consisted of both a forward    */
+    /* and a backward scan. Since in HARP we always store GOME2_L1 data     */
+    /* with the maximum resolution (one main-record every 375 milliseconds) */
+    /* this 'mixed' value is no longer used.                                */
+    if (subset_counter < 12)
     {
-        if (subset_counter < 12)
-        {
-            *(data.string_data) = strdup("forward");
-        }
-        else
-        {
-            *(data.string_data) = strdup("backward");
-        }
+        *(data.string_data) = strdup("forward");
     }
     else
     {
-        *(data.string_data) = strdup("mixed");
+        *(data.string_data) = strdup("backward");
     }
     index_plus_readout_offset++;
 
@@ -1112,13 +1105,6 @@ static int determine_fastest_band(ingest_info *info, coda_cursor start_cursor, l
             }
         }
     }
-    if (min_integration_time <= 1.5)
-    {
-        /* There is at least one band with an integration time */
-        /* equal or smaller than 1.5 seconds so there are no   */
-        /* mixed pixels.                                       */
-        info->no_mixed_pixel[valid_mdr_record] = TRUE;
-    }
 
     if (info->format_version >= 12)
     {
@@ -1209,7 +1195,6 @@ static int init_measurements_dimensions(ingest_info *info)
     CHECKED_MALLOC(info->max_num_recs, valid_mdr_record * sizeof(uint16_t));
     CHECKED_MALLOC(info->band_nr_fastest_band, valid_mdr_record * sizeof(int));
     CHECKED_MALLOC(info->index_of_fastest_timer_in_list_of_timers, valid_mdr_record * sizeof(int));
-    CHECKED_MALLOC(info->no_mixed_pixel, valid_mdr_record * sizeof(short));
     CHECKED_MALLOC(info->readout_offset, valid_mdr_record * sizeof(short));
 
     if (coda_cursor_goto_first_array_element(&cursor) != 0)
@@ -1229,7 +1214,6 @@ static int init_measurements_dimensions(ingest_info *info)
             info->max_num_recs[valid_mdr_record] = 0;
             info->band_nr_fastest_band[valid_mdr_record] = 0;
             info->index_of_fastest_timer_in_list_of_timers[valid_mdr_record] = 1;
-            info->no_mixed_pixel[valid_mdr_record] = FALSE;
             info->readout_offset[valid_mdr_record] = 0;
             if (!prev_mdr_record_was_valid)
             {
@@ -1540,14 +1524,14 @@ static void register_variables_measurement_fields(harp_product_definition *produ
 
     /* scan_direction */
     description =
-        "scan direction for each measurement: 'forward', 'backward' or 'mixed' (for a measurement that consisted of both a forward and backward scan)";
+        "scan direction for each measurement: 'forward' or 'backward'";
     variable_definition =
         harp_ingestion_register_variable_sample_read(product_definition, "scan_direction", harp_type_string, 1,
                                                      dimension_type, NULL, description, NULL,
                                                      exclude_when_not_radiance_or_transmission, read_scan_direction);
     path = "/MDR[]/Earthshine/INTEGRATION_TIMES[]";
     description =
-        "when the integration time is higher than 1.5 s we are dealing with a mixed pixel, otherwise the scan direction is based on the subset counter of the measurement (0-11 forward, 12-15 = backward)";
+        "the scan direction is based on the subset counter of the measurement (0-11 forward, 12-15 = backward)";
     harp_variable_definition_add_mapping(variable_definition, NULL, NULL, path, description);
 
     /* cloud_top_pressure */
