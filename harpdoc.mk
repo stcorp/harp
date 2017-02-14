@@ -368,6 +368,8 @@ HARP_DOCFILES = \
 	doc/html/ingestions/S5P_L2_O3.html \
 	doc/html/ingestions/S5P_L2_O3_PR.html \
 	doc/html/ingestions/S5P_L2_SO2.html \
+	doc/html/ingestions/SCIAMACHY_L1c.html \
+	doc/html/ingestions/SCIAMACHY_L1c_sun_reference.html \
 	doc/html/ingestions/SCIAMACHY_L2_CLOUDS_AEROSOL.html \
 	doc/html/ingestions/SCIAMACHY_L2_LIMB_UV0_O3.html \
 	doc/html/ingestions/SCIAMACHY_L2_LIMB_UV1_NO2.html \
@@ -1146,6 +1148,10 @@ doc/html/ingestions/S5P_L2_O3.html:
 doc/html/ingestions/S5P_L2_O3_PR.html:
 	$(MAKE) harp_doc
 doc/html/ingestions/S5P_L2_SO2.html:
+	$(MAKE) harp_doc
+doc/html/ingestions/SCIAMACHY_L1c.html:
+	$(MAKE) harp_doc
+doc/html/ingestions/SCIAMACHY_L1c_sun_reference.html:
 	$(MAKE) harp_doc
 doc/html/ingestions/SCIAMACHY_L2_CLOUDS_AEROSOL.html:
 	$(MAKE) harp_doc

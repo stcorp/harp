@@ -174,7 +174,7 @@
 <tr class="row-even"><td><strong>longitude_bounds</strong></td>
 <td>double</td>
 <td>{<em>time</em>, 4}</td>
-<td>degree_north</td>
+<td>degree_east</td>
 <td>corner longitudes for the ground pixel of the measurement</td>
 </tr>
 <tr class="row-odd"><td><strong>wavelength_photon_radiance</strong></td>
@@ -211,30 +211,30 @@
 <td>string</td>
 <td>{<em>time</em>}</td>
 <td>&nbsp;</td>
-<td>scan direction for each measurement: &#8216;forward&#8217;, &#8216;backward&#8217; or &#8216;mixed&#8217; (for a measurement that consisted of both a forward and backward scan)</td>
+<td>scan direction for each measurement: &#8216;forward&#8217; or &#8216;backward&#8217;</td>
 </tr>
 <tr class="row-odd"><td><strong>solar_zenith_angle</strong></td>
 <td>double</td>
 <td>{<em>time</em>}</td>
-<td>&nbsp;</td>
+<td>degree</td>
 <td>solar zenith angle at instrument</td>
 </tr>
 <tr class="row-even"><td><strong>solar_azimuth_angle</strong></td>
 <td>double</td>
 <td>{<em>time</em>}</td>
-<td>&nbsp;</td>
+<td>degree</td>
 <td>solar azimuth angle at instrument</td>
 </tr>
 <tr class="row-odd"><td><strong>viewing_zenith_angle</strong></td>
 <td>double</td>
 <td>{<em>time</em>}</td>
-<td>&nbsp;</td>
+<td>degree</td>
 <td>line of sight zenith angle at instrument</td>
 </tr>
 <tr class="row-even"><td><strong>viewing_azimuth_angle</strong></td>
 <td>double</td>
 <td>{<em>time</em>}</td>
-<td>&nbsp;</td>
+<td>degree</td>
 <td>line of sight azimuth angle at instrument</td>
 </tr>
 <tr class="row-odd"><td><strong>index</strong></td>
@@ -279,9 +279,9 @@
 <p>The table below details where and how each variable was retrieved from the input product.</p>
 <table border="1" class="docutils">
 <colgroup>
-<col width="18%" />
-<col width="6%" />
-<col width="76%" />
+<col width="28%" />
+<col width="9%" />
+<col width="63%" />
 </colgroup>
 <thead valign="bottom">
 <tr class="row-odd"><th class="head">field name</th>
@@ -355,7 +355,7 @@
 <td><strong>/egp[]/sub_counter</strong></td>
 </tr>
 <tr class="row-even"><td><em>description</em></td>
-<td>when the integration time is higher than 1.5 s we are dealing with a mixed pixel, otherwise the scan direction is based on the subset counter of the measurement (0-2 forward, 3 = backward)</td>
+<td>the scan direction is based on the subset counter of the measurement (0-2 forward, 3 = backward)</td>
 </tr>
 <tr class="row-odd"><td><strong>solar_zenith_angle</strong></td>
 <td><em>path</em></td>

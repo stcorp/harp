@@ -174,7 +174,7 @@
 <tr class="row-even"><td><strong>longitude_bounds</strong></td>
 <td>double</td>
 <td>{<em>time</em>, 4}</td>
-<td>degree_north</td>
+<td>degree_east</td>
 <td>corner longitudes for the ground pixel of the measurement</td>
 </tr>
 <tr class="row-odd"><td><strong>wavelength_photon_radiance</strong></td>
@@ -223,7 +223,7 @@
 <td>string</td>
 <td>{<em>time</em>}</td>
 <td>&nbsp;</td>
-<td>scan direction for each measurement: &#8216;forward&#8217;, &#8216;backward&#8217; or &#8216;mixed&#8217; (for a measurement that consisted of both a forward and backward scan)</td>
+<td>scan direction for each measurement: &#8216;forward&#8217; or &#8216;backward&#8217;</td>
 </tr>
 <tr class="row-odd"><td><strong>cloud_top_pressure</strong></td>
 <td>double</td>
@@ -240,25 +240,25 @@
 <tr class="row-odd"><td><strong>solar_zenith_angle_toa</strong></td>
 <td>double</td>
 <td>{<em>time</em>}</td>
-<td>&nbsp;</td>
+<td>degree</td>
 <td>solar zenith angle at top of atmosphere</td>
 </tr>
 <tr class="row-even"><td><strong>solar_azimuth_angle_toa</strong></td>
 <td>double</td>
 <td>{<em>time</em>}</td>
-<td>&nbsp;</td>
+<td>degree</td>
 <td>solar azimuth angle at top of atmosphere</td>
 </tr>
 <tr class="row-odd"><td><strong>viewing_zenith_angle_toa</strong></td>
 <td>double</td>
 <td>{<em>time</em>}</td>
-<td>&nbsp;</td>
+<td>degree</td>
 <td>viewing zenith angle at top of atmosphere</td>
 </tr>
 <tr class="row-even"><td><strong>viewing_azimuth_angle_toa</strong></td>
 <td>double</td>
 <td>{<em>time</em>}</td>
-<td>&nbsp;</td>
+<td>degree</td>
 <td>viewing azimuth angle at top of atmosphere</td>
 </tr>
 <tr class="row-odd"><td><strong>index</strong></td>
@@ -309,8 +309,8 @@
 3) if a change in integration time occurs (for any of the bands) then the first readout (for all bands) of the next MDR will be ignored
 4) if two MDRs are not continuous (i.e. there is a time gap) then the first readout of the second MDR will be ignored</p>
 <p>GOME-2 uses 6 bands for the main spectra (1A, 1B, 2A, 2B, 3, and 4). Within a scan each band can have its own integration time. There will be at most 32 readouts per scan (corresponding with an integration time of 187.5ms). If the integration time is 375ms, 750ms, 1.5s, 3s or 6s there will be 16, 8, 4, 2, or 1 measurement(s) respectively for this band in a scan. Some readouts may even cover multiple scans if the integration time is larger than 6s. HARP will combine the data for all bands into a single two-dimensional pixel_readout array. Because of the differences in integration time this means that for some bands there will be gaps in the pixel_readout array. These gaps will be filled with NaN values. HARP will always use the minimum integration time of all ingested bands to determine the time resolution for the HARP variables. For instance, if the minimum integration time for a scan is 1.5s you will find 4 entries in the HARP variables for this scan. All meta-data, such as geolocation, angles, etc. will also be ingested for this minimum integration time (i.e. you will see co-added meta-data if the integration time is &gt; 187.5ms). The minimum integration time is calculated based on those bands from which actual data is ingested. This means that the minimum integration time can change depending on the wavelength filter that was applied</p>
-<p>The filtering on time and geolocation will always be performed using the 187.5ms resolution. A measurement with a higher integration time will only be included if each of its 187.5ms sub-parts have not been filtered out (this also holds for measurements with an integration time &gt; 6s). If spectra from multiple bands with different integration times are ingested then the measurements with a high integration time will only be ingested of all subpixels of the measurements with the minimum integration time are also ingested. The measurement with a high integration time will be put in the same &#8216;row&#8217; as the first corresponding minimum integration time measurement (i.e. measurements of different bands are aligned according to start time of the measurement).</p>
-<p>If the band configuration changes somewhere during the orbit and a band filter is given, then we only include detector pixels that are inside the requested band for the duration of the whole orbit. i.e. detector pixels that change band during the orbit will allways be excluded when a band filter is given.</p>
+<p>The filtering on time and geolocation will always be performed using the 187.5ms resolution. A measurement with a higher integration time will only be included if each of its 187.5ms sub-parts have not been filtered out (this also holds for measurements with an integration time &gt; 6s). If spectra from multiple bands with different integration times are ingested then the measurements with a high integration time will only be ingested if all subpixels of the measurements with the minimum integration time are also ingested. The measurement with a high integration time will be put in the same &#8216;row&#8217; as the first corresponding minimum integration time measurement (i.e. measurements of different bands are aligned according to start time of the measurement).</p>
+<p>If the band configuration changes somewhere during the orbit and a band filter is given, then we only include detector pixels that are inside the requested band for the duration of the whole orbit. i.e. detector pixels that change band during the orbit will always be excluded when a band filter is given.</p>
 <p>The table below details where and how each variable was retrieved from the input product.</p>
 <table border="1" class="docutils">
 <colgroup>
@@ -527,7 +527,7 @@
 <td><strong>/MDR[]/Earthshine/INTEGRATION_TIMES[]</strong></td>
 </tr>
 <tr class="row-odd"><td><em>description</em></td>
-<td>when the integration time is higher than 1.5 s we are dealing with a mixed pixel, otherwise the scan direction is based on the subset counter of the measurement (0-11 forward, 12-15 = backward)</td>
+<td>the scan direction is based on the subset counter of the measurement (0-11 forward, 12-15 = backward)</td>
 </tr>
 <tr class="row-even"><td rowspan="3"><strong>cloud_top_pressure</strong></td>
 <td><em>available</em></td>
