@@ -2740,8 +2740,16 @@ static int exclude_tc_c3h8(void *user_data)
 static void add_value_variable_mapping(harp_variable_definition *variable_definition, const char *grib1_description,
                                        const char *grib2_description)
 {
-    harp_variable_definition_add_mapping(variable_definition, NULL, "GRIB1", "/[]/data/values[]", grib1_description);
-    harp_variable_definition_add_mapping(variable_definition, NULL, "GRIB2", "/[]/data[]/values[]", grib2_description);
+    if (grib1_description != NULL)
+    {
+        harp_variable_definition_add_mapping(variable_definition, NULL, "GRIB1", "/[]/data/values[]",
+                                             grib1_description);
+    }
+    if (grib2_description != NULL)
+    {
+        harp_variable_definition_add_mapping(variable_definition, NULL, "GRIB2", "/[]/data[]/values[]",
+                                             grib2_description);
+    }
 }
 
 int harp_ingestion_module_ecmwf_grib_init(void)
@@ -2872,7 +2880,9 @@ int harp_ingestion_module_ecmwf_grib_init(void)
                                                                      read_pressure);
     description = "the coordinateValues contain [a(1), ..., a(N+1), b(1), ..., b(N+1)] coefficients for the N+1 "
         "vertical layer boundaries; p(N-i) = (a(i) + a(i+1) + (b(i) + b(i+1))lnsp)/2";
-    harp_variable_definition_add_mapping(variable_definition, NULL, NULL, "..../coordinateValues[]", description);
+    harp_variable_definition_add_mapping(variable_definition, NULL, "surface_pressure is available and at least one "
+                                         "parameter has vertical coordinate values", "..../coordinateValues[]",
+                                         description);
 
     /* pressure_bounds */
     description = "pressure_bounds";
@@ -2882,10 +2892,12 @@ int harp_ingestion_module_ecmwf_grib_init(void)
                                                                      exclude_pressure, read_pressure_bounds);
     description = "the coordinateValues contain [a(1), ..., a(N+1), b(1), ..., b(N+1)] coefficients for the N+1 "
         "vertical layer boundaries; p(N-i,1) = a(i) + b(i)lnsp; p(N-i,2) = a(i+1) + b(i+1)lnsp";
-    harp_variable_definition_add_mapping(variable_definition, NULL, NULL, "..../coordinateValues[]", description);
+    harp_variable_definition_add_mapping(variable_definition, NULL, "surface_pressure is available and at least one "
+                                         "parameter has vertical coordinate values", "..../coordinateValues[]",
+                                         description);
 
     /* tcc: cloud_fraction */
-    description = "pressure at the surface";
+    description = "cloud fraction";
     variable_definition = harp_ingestion_register_variable_full_read(product_definition, "cloud_fraction",
                                                                      harp_type_float, 2, &dimension_type[1], NULL,
                                                                      description, HARP_UNIT_DIMENSIONLESS, exclude_tcc,
@@ -2899,7 +2911,7 @@ int harp_ingestion_module_ecmwf_grib_init(void)
                                                                      harp_type_float, 2, &dimension_type[1], NULL,
                                                                      description, "K", exclude_2t, read_2t);
     add_value_variable_mapping(variable_definition, "(table,indicator) = (128,167), (160,167), (180,167), or (190,167)",
-                               "");
+                               NULL);
 
     /* ch4: CH4_mass_mixing_ratio */
     description = "methane mass mixing ratio";
