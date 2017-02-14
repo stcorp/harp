@@ -110,7 +110,7 @@ typedef struct ingest_info_struct
     int aod_variant;    /* 0:modeled, 1:measured */
     int has_latitude;
     int has_longitude;
-    int has_stratospheric_aod;
+    int has_aod;
     int has_vmr_zenith;
     int has_tropo_column_zenith;
     int has_wind_direction;
@@ -632,16 +632,6 @@ static int read_cloud_conditions(void *user_data, long index, harp_array data)
     return read_variable_string(user_data, "CLOUD_CONDITIONS", index, ((ingest_info *)user_data)->num_time, data);
 }
 
-static int read_stratospheric_aod(void *user_data, harp_array data)
-{
-    ingest_info *info = (ingest_info *)user_data;
-    const char *path;
-
-    path = info->aod_variant == 0 ? "/AEROSOL_OPTICAL_DEPTH_STRATOSPHERIC_INDEPENDENT" :
-        "/AEROSOL_OPTICAL_DEPTH_STRATOSPHERIC_SCATTER_SOLAR_ZENITH";
-    return read_variable_double(user_data, path, info->num_time, data);
-}
-
 static int read_pressure_ind(void *user_data, harp_array data)
 {
     ingest_info *info = (ingest_info *)user_data;
@@ -1045,6 +1035,16 @@ static int read_tropo_column_zenith_avk(void *user_data, harp_array data)
     return read_vertical_variable_double(user_data, path, info->num_time * info->num_vertical, data);
 }
 
+static int read_strat_aerosol_optical_depth(void *user_data, harp_array data)
+{
+    ingest_info *info = (ingest_info *)user_data;
+    const char *path;
+
+    path = info->aod_variant == 0 ? "/AEROSOL_OPTICAL_DEPTH_STRATOSPHERIC_INDEPENDENT" :
+        "/AEROSOL_OPTICAL_DEPTH_STRATOSPHERIC_SCATTER_SOLAR_ZENITH";
+    return read_variable_double(user_data, path, info->num_time, data);
+}
+
 static int read_strat_column_zenith(void *user_data, harp_array data)
 {
     ingest_info *info = (ingest_info *)user_data;
@@ -1119,6 +1119,15 @@ static int read_partial_column_zenith_apriori(void *user_data, harp_array data)
     return read_vertical_variable_double(user_data, path, info->num_time * info->num_vertical, data);
 }
 
+static int read_aerosol_optical_depth(void *user_data, harp_array data)
+{
+    ingest_info *info = (ingest_info *)user_data;
+    const char *path;
+
+    path = info->aod_variant == 0 ? "/AEROSOL_OPTICAL_DEPTH_INDEPENDENT" : "/AEROSOL_OPTICAL_DEPTH_ABSORPTION_SOLAR";
+    return read_variable_double(user_data, path, info->num_time, data);
+}
+
 static int read_aerosol_extinction_coefficient(void *user_data, harp_array data)
 {
     ingest_info *info = (ingest_info *)user_data;
@@ -1173,10 +1182,21 @@ static int read_aerosol_extinction_coefficient_avk(void *user_data, harp_array d
 
 static int read_tropo_aerosol_optical_depth(void *user_data, harp_array data)
 {
-    const char *path = "/AEROSOL_OPTICAL_DEPTH_TROPOSPHERIC_SCATTER_SOLAR_OFFAXIS";
+    const char *path;
     ingest_info *info = (ingest_info *)user_data;
 
-    return read_variable_double(user_data, path, info->num_time * info->num_spectral, data);
+    if (info->template_type == uvvis_doas_offaxis_aerosol)
+    {
+        path = "/AEROSOL_OPTICAL_DEPTH_TROPOSPHERIC_SCATTER_SOLAR_OFFAXIS";
+        return read_variable_double(user_data, path, info->num_time * info->num_spectral, data);
+    }
+    else
+    {
+        /* uvvis_doas_offaxis */
+        path = info->aod_variant == 0 ? "/AEROSOL_OPTICAL_DEPTH_TROPOSPHERIC_INDEPENDENT" :
+            "/AEROSOL_OPTICAL_DEPTH_TROPOSPHERIC_SCATTER_SOLAR_OFFAXIS";
+        return read_variable_double(user_data, path, info->num_time, data);
+    }
 }
 
 static int read_tropo_aerosol_optical_depth_uncertainty_random(void *user_data, harp_array data)
@@ -1223,9 +1243,9 @@ static int exclude_longitude(void *user_data)
     return !((ingest_info *)user_data)->has_longitude;
 }
 
-static int exclude_stratospheric_aod(void *user_data)
+static int exclude_aod(void *user_data)
 {
-    return !((ingest_info *)user_data)->has_stratospheric_aod;
+    return !((ingest_info *)user_data)->has_aod;
 }
 
 static int exclude_vmr_zenith(void *user_data)
@@ -1557,9 +1577,24 @@ static int get_optional_variable_availability(ingest_info *info)
 
     info->has_longitude = (coda_cursor_goto(&cursor, "/LONGITUDE") == 0);
 
-    snprintf(path, MAX_PATH_LENGTH, "%s", info->aod_variant == 0 ? "/AEROSOL_OPTICAL_DEPTH_STRATOSPHERIC_INDEPENDENT" :
-             "/AEROSOL_OPTICAL_DEPTH_STRATOSPHERIC_SCATTER_SOLAR_ZENITH");
-    info->has_stratospheric_aod = (coda_cursor_goto(&cursor, path) == 0);
+    if (info->template_type == uvvis_doas_zenith)
+    {
+        snprintf(path, MAX_PATH_LENGTH, "%s",
+                 info->aod_variant == 0 ? "/AEROSOL_OPTICAL_DEPTH_STRATOSPHERIC_INDEPENDENT" :
+                 "/AEROSOL_OPTICAL_DEPTH_STRATOSPHERIC_SCATTER_SOLAR_ZENITH");
+        info->has_aod = (coda_cursor_goto(&cursor, path) == 0);
+    }
+    else if (info->template_type == uvvis_doas_directsun)
+    {
+        snprintf(path, MAX_PATH_LENGTH, "%s", info->aod_variant == 0 ? "/AEROSOL_OPTICAL_DEPTH_INDEPENDENT" :
+                 "/AEROSOL_OPTICAL_DEPTH_ABSORPTION.SOLAR");
+        info->has_aod = (coda_cursor_goto(&cursor, path) == 0);
+    }
+    else
+    {
+        /* offaxis (gas+aerosol) should always have AOD */
+        info->has_aod = 1;
+    }
 
     if (info->template_type != uvvis_doas_offaxis_aerosol)
     {
@@ -1955,21 +1990,18 @@ static int init_product_definition(harp_ingestion_module *module, uvvis_doas_gas
         harp_variable_definition_add_mapping(variable_definition, NULL, NULL, "/CLOUD.CONDITIONS", NULL);
     }
 
-    if (template_type != uvvis_doas_offaxis_aerosol)
-    {
-        /* stratospheric_aerosol_optical_depth */
-        description = "total stratospheric aerosol optical depth user for the retrieval ";
-        variable_definition = harp_ingestion_register_variable_full_read
-            (product_definition, "stratospheric_aerosol_optical_depth", harp_type_double, 1, dimension_type, NULL,
-             description, HARP_UNIT_DIMENSIONLESS, exclude_stratospheric_aod, read_stratospheric_aod);
-        harp_variable_definition_add_mapping(variable_definition, "AOD=modeled (default)", NULL,
-                                             "/AEROSOL.OPTICAL.DEPTH.STRATOSPHERIC_INDEPENDENT", NULL);
-        harp_variable_definition_add_mapping(variable_definition, "AOD=measured", NULL,
-                                             "/AEROSOL.OPTICAL.DEPTH.STRATOSPHERIC_SCATTER.SOLAR.ZENITH", NULL);
-    }
-
     if (template_type == uvvis_doas_directsun)
     {
+        /* aerosol_optical_depth */
+        description = "aerosol optical depth used for the retrieval ";
+        variable_definition = harp_ingestion_register_variable_full_read
+            (product_definition, "aerosol_optical_depth", harp_type_double, 1, dimension_type, NULL,
+             description, HARP_UNIT_DIMENSIONLESS, exclude_aod, read_aerosol_optical_depth);
+        harp_variable_definition_add_mapping(variable_definition, "AOD=modeled (default)", NULL,
+                                             "/AEROSOL.OPTICAL.DEPTH_INDEPENDENT", NULL);
+        harp_variable_definition_add_mapping(variable_definition, "AOD=measured", NULL,
+                                             "/AEROSOL.OPTICAL.DEPTH_ABSORPTION.SOLAR", NULL);
+
         /* <gas>_column_number_density */
         snprintf(gas_var_name, MAX_NAME_LENGTH, "%s_column_number_density", harp_gas_name[gas]);
         snprintf(gas_description, MAX_DESCRIPTION_LENGTH, "%s column number density", harp_gas_name[gas]);
@@ -2037,6 +2069,16 @@ static int init_product_definition(harp_ingestion_module *module, uvvis_doas_gas
     }
     else if (template_type == uvvis_doas_offaxis)
     {
+        /* tropospheric_aerosol_optical_depth */
+        description = "tropospheric aerosol optical depth used for the retrieval ";
+        variable_definition = harp_ingestion_register_variable_full_read
+            (product_definition, "tropospheric_aerosol_optical_depth", harp_type_double, 1, dimension_type, NULL,
+             description, HARP_UNIT_DIMENSIONLESS, NULL, read_tropo_aerosol_optical_depth);
+        harp_variable_definition_add_mapping(variable_definition, "AOD=modeled (default)", NULL,
+                                             "/AEROSOL.OPTICAL.DEPTH.TROPOSPHERIC_INDEPENDENT", NULL);
+        harp_variable_definition_add_mapping(variable_definition, "AOD=measured", NULL,
+                                             "/AEROSOL.OPTICAL.DEPTH.TROPOSPHERIC_SCATTER.SOLAR.OFFAXIS", NULL);
+
         /* <gas>_volume_mixing_ratio */
         snprintf(gas_var_name, MAX_NAME_LENGTH, "%s_volume_mixing_ratio", harp_gas_name[gas]);
         snprintf(gas_description, MAX_DESCRIPTION_LENGTH, "%s volume mixing ratio", harp_gas_name[gas]);
@@ -2184,6 +2226,16 @@ static int init_product_definition(harp_ingestion_module *module, uvvis_doas_gas
     }
     else if (template_type == uvvis_doas_zenith)
     {
+        /* stratospheric_aerosol_optical_depth */
+        description = "stratospheric aerosol optical depth used for the retrieval ";
+        variable_definition = harp_ingestion_register_variable_full_read
+            (product_definition, "stratospheric_aerosol_optical_depth", harp_type_double, 1, dimension_type, NULL,
+             description, HARP_UNIT_DIMENSIONLESS, exclude_aod, read_strat_aerosol_optical_depth);
+        harp_variable_definition_add_mapping(variable_definition, "AOD=modeled (default)", NULL,
+                                             "/AEROSOL.OPTICAL.DEPTH.STRATOSPHERIC_INDEPENDENT", NULL);
+        harp_variable_definition_add_mapping(variable_definition, "AOD=measured", NULL,
+                                             "/AEROSOL.OPTICAL.DEPTH.STRATOSPHERIC_SCATTER.SOLAR.ZENITH", NULL);
+
         /* <gas>_volume_mixing_ratio */
         snprintf(gas_var_name, MAX_NAME_LENGTH, "%s_volume_mixing_ratio", harp_gas_name[gas]);
         snprintf(gas_description, MAX_DESCRIPTION_LENGTH, "%s volume mixing ratio", harp_gas_name[gas]);
