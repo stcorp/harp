@@ -194,11 +194,11 @@
 </div>
 <div class="section" id="mapping-description">
 <h2>Mapping description</h2>
-<p>GOMOS Level 1 products contain a number of scanlines, each scanline contains 30 scans, each scan contains 4 spectra and each spectrum contains 8700 measurements</p>
+<p>IASI Level 1 products contain a number of scanlines, each scanline contains 30 scans, each scan contains 4 spectra and each spectrum contains 8700 measurements</p>
 <p>The table below details where and how each variable was retrieved from the input product.</p>
 <table border="1" class="docutils">
 <colgroup>
-<col width="7%" />
+<col width="6%" />
 <col width="4%" />
 <col width="90%" />
 </colgroup>
@@ -228,7 +228,7 @@
 <td><strong>/MDR[]/MDR/GS1cSpect[], /MDR[]/MDR/IDefNsfirst1b, /GIADR_ScaleFactors/IDefScaleSondNbScale, /GIADR_ScaleFactors/IDefScaleSondScaleFactor[], /GIADR_ScaleFactors/IdefScaleSondNsfirst[], /GIADR_ScaleFactors/IDefScaleSondNslast[]</strong></td>
 </tr>
 <tr class="row-odd"><td><em>description</em></td>
-<td>spectral data is scaled using the information in GIADR_ScaleFactors:for numScale = 0 to (IDefScaleSondNbScale - 1) do {   SF = IDefScaleSondScaleFactor[numScale];   for chanNb = IdefScaleSondNsfirst[numScale] to IDefScaleSondNslast[numScale] do {      w = chanNb - IDefNsfirst1b + 1;      pixel_readout[w] = GS1cSpect[..,..,w] * 10^(-SF)   }}</td>
+<td>spectral data is scaled using the information in GIADR_ScaleFactors:<code class="docutils literal"><span class="pre">for</span> <span class="pre">numScale</span> <span class="pre">=</span> <span class="pre">0</span> <span class="pre">to</span> <span class="pre">(IDefScaleSondNbScale</span> <span class="pre">-</span> <span class="pre">1)</span> <span class="pre">do</span></code> <code class="docutils literal"><span class="pre">{</span></code> <code class="docutils literal"><span class="pre">SF</span> <span class="pre">=</span> <span class="pre">IDefScaleSondScaleFactor[numScale];</span></code> <code class="docutils literal"><span class="pre">for</span> <span class="pre">chanNb</span> <span class="pre">=</span> <span class="pre">IdefScaleSondNsfirst[numScale]</span> <span class="pre">to</span> <span class="pre">IDefScaleSondNslast[numScale]</span> <span class="pre">do</span></code> <code class="docutils literal"><span class="pre">{</span></code> <code class="docutils literal"><span class="pre">w</span> <span class="pre">=</span> <span class="pre">chanNb</span> <span class="pre">-</span> <span class="pre">IDefNsfirst1b</span> <span class="pre">+</span> <span class="pre">1;</span></code> <code class="docutils literal"><span class="pre">pixel_readout[w]</span> <span class="pre">=</span> <span class="pre">GS1cSpect[..,..,w]</span> <span class="pre">*</span> <span class="pre">10^(-SF)</span></code> <code class="docutils literal"><span class="pre">}</span></code> <code class="docutils literal"><span class="pre">}</span></code></td>
 </tr>
 <tr class="row-even"><td rowspan="2"><strong>wavenumber</strong></td>
 <td><em>path</em></td>

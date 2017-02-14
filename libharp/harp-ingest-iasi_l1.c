@@ -558,8 +558,8 @@ int harp_ingestion_module_iasi_l1_init(void)
 
     description = "IASI Level 1 product";
     product_definition = harp_ingestion_register_product(module, "IASI_L1", description, read_dimensions);
-    description =
-        "GOMOS Level 1 products contain a number of scanlines, each scanline contains 30 scans, each scan contains 4 spectra and each spectrum contains 8700 measurements";
+    description = "IASI Level 1 products contain a number of scanlines, each scanline contains 30 scans, each scan "
+        "contains 4 spectra and each spectrum contains 8700 measurements";
     harp_product_definition_add_mapping(product_definition, description, NULL);
 
     dimension_type[0] = harp_dimension_time;
@@ -597,17 +597,13 @@ int harp_ingestion_module_iasi_l1_init(void)
         harp_ingestion_register_variable_sample_read(product_definition, "wavenumber_radiance", harp_type_float, 2,
                                                      dimension_type, NULL, description, "W/m^2.sr.m^-1", NULL,
                                                      read_spectral_radiance_sample);
-    path =
-        "/MDR[]/MDR/GS1cSpect[], /MDR[]/MDR/IDefNsfirst1b, /GIADR_ScaleFactors/IDefScaleSondNbScale, /GIADR_ScaleFactors/IDefScaleSondScaleFactor[], /GIADR_ScaleFactors/IdefScaleSondNsfirst[], /GIADR_ScaleFactors/IDefScaleSondNslast[]";
-
-/* PROBLEM: The description below becomes text in a table cell with no  */
-/* line breaks. Adding \n or <br> does not help. Sander wil investigate */
-/* how to add line breaks in this situation.                            */
+    path = "/MDR[]/MDR/GS1cSpect[], /MDR[]/MDR/IDefNsfirst1b, /GIADR_ScaleFactors/IDefScaleSondNbScale, "
+        "/GIADR_ScaleFactors/IDefScaleSondScaleFactor[], /GIADR_ScaleFactors/IdefScaleSondNsfirst[], "
+        "/GIADR_ScaleFactors/IDefScaleSondNslast[]";
     description = "spectral data is scaled using the information in GIADR_ScaleFactors:"
-        "for numScale = 0 to (IDefScaleSondNbScale - 1) do {"
-        "   SF = IDefScaleSondScaleFactor[numScale];"
-        "   for chanNb = IdefScaleSondNsfirst[numScale] to IDefScaleSondNslast[numScale] do {"
-        "      w = chanNb - IDefNsfirst1b + 1;" "      pixel_readout[w] = GS1cSpect[..,..,w] * 10^(-SF)" "   }" "}";
+        "``for numScale = 0 to (IDefScaleSondNbScale - 1) do`` ``{`` ``SF = IDefScaleSondScaleFactor[numScale];``"
+        " ``for chanNb = IdefScaleSondNsfirst[numScale] to IDefScaleSondNslast[numScale] do`` ``{``"
+        " ``w = chanNb - IDefNsfirst1b + 1;`` ``pixel_readout[w] = GS1cSpect[..,..,w] * 10^(-SF)`` ``}`` ``}``";
     harp_variable_definition_add_mapping(variable_definition, NULL, NULL, path, description);
 
     /* wavenumber */
