@@ -209,7 +209,7 @@ aerosol_optical_depth                         stratospheric,                  X 
 <aerosol_type>_aerosol_extinction_coefficient surface                         X       X    X       X
 <aerosol_type>_aerosol_optical_depth          stratospheric,                  X       X    X       X     this is equal to 'aerosol optical thickness'
                                               tropospheric
-altitude                                      sensor,                         X       X    X             altitude in HARP is with respect to the WGS84 reference ellipsoid
+altitude                                      sensor,                         X       X    X
                                               surface
 altitude_bounds                                                                       X    X
 cloud_base_albedo                                                             X            X
