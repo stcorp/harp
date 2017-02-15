@@ -1,0 +1,584 @@
+<?xml version="1.0"?>
+<cd:ProductClass name="ESACCI_AEROSOL" last-modified="2017-02-15" xmlns:cd="http://www.stcorp.nl/coda/definition/2008/07">
+  <cd:Description>ESA Aerosol CCI products</cd:Description>
+
+  <!-- AATSR ADV products -->
+
+  <cd:ProductType name="AATSR_ADV_L2">
+    <cd:Description>CCI Aerosol AATSR Dual View (ADV) L2 profile</cd:Description>
+    <cd:ProductDefinition id="AATSR_ADV_L2_nc3" format="netcdf" version="3">
+      <cd:Description>The format definition for this product is taken from the netcdf file itself.</cd:Description>
+      <cd:DetectionRule>
+        <cd:MatchExpression>substr(15, 18, filename()) == "ESACCI-L2P_AEROSOL"</cd:MatchExpression>
+        <cd:MatchExpression>substr(47, 17, filename()) == "AATSR-ENVISAT-ADV"</cd:MatchExpression>
+      </cd:DetectionRule>
+    </cd:ProductDefinition>
+    <cd:ProductDefinition id="AATSR_ADV_L2_nc4" format="hdf5" version="4">
+      <cd:Description>The format definition for this product is taken from the netcdf file itself.</cd:Description>
+      <cd:DetectionRule>
+        <cd:MatchExpression>substr(15, 18, filename()) == "ESACCI-L2P_AEROSOL"</cd:MatchExpression>
+        <cd:MatchExpression>substr(47, 17, filename()) == "AATSR-ENVISAT-ADV"</cd:MatchExpression>
+      </cd:DetectionRule>
+    </cd:ProductDefinition>
+  </cd:ProductType>
+
+  <cd:ProductType name="AATSR_ADV_L3_Daily">
+    <cd:Description>CCI Aerosol AATSR Dual View (ADV) L3 daily profile</cd:Description>
+    <cd:ProductDefinition id="AATSR_ADV_L3_Daily_nc3" format="netcdf" version="3">
+      <cd:Description>The format definition for this product is taken from the netcdf file itself.</cd:Description>
+      <cd:DetectionRule>
+        <cd:MatchExpression>substr(9, 18, filename()) == "ESACCI-L3C_AEROSOL"</cd:MatchExpression>
+        <cd:MatchExpression>substr(41, 23, filename()) == "AATSR-ENVISAT-ADV_DAILY"</cd:MatchExpression>
+      </cd:DetectionRule>
+    </cd:ProductDefinition>
+    <cd:ProductDefinition id="AATSR_ADV_L3_Daily_nc4" format="hdf5" version="4">
+      <cd:Description>The format definition for this product is taken from the netcdf file itself.</cd:Description>
+      <cd:DetectionRule>
+        <cd:MatchExpression>substr(9, 18, filename()) == "ESACCI-L3C_AEROSOL"</cd:MatchExpression>
+        <cd:MatchExpression>substr(41, 23, filename()) == "AATSR-ENVISAT-ADV_DAILY"</cd:MatchExpression>
+      </cd:DetectionRule>
+    </cd:ProductDefinition>
+  </cd:ProductType>
+
+  <cd:ProductType name="AATSR_ADV_L3_Monthly">
+    <cd:Description>CCI Aerosol AATSR Dual View (ADV) L3 monthly profile</cd:Description>
+    <cd:ProductDefinition id="AATSR_ADV_L3_Monthly_nc3" format="netcdf" version="3">
+      <cd:Description>The format definition for this product is taken from the netcdf file itself.</cd:Description>
+      <cd:DetectionRule>
+        <cd:MatchExpression>substr(7, 18, filename()) == "ESACCI-L3C_AEROSOL"</cd:MatchExpression>
+        <!-- The word MOTNHLY is not a mistake, the files really have that word in their name -->
+        <cd:MatchExpression>substr(39, 25, filename()) == "AATSR-ENVISAT-ADV_MOTNHLY"</cd:MatchExpression>
+      </cd:DetectionRule>
+    </cd:ProductDefinition>
+    <cd:ProductDefinition id="AATSR_ADV_L3_Monthly_nc4" format="hdf5" version="4">
+      <cd:Description>The format definition for this product is taken from the netcdf file itself.</cd:Description>
+      <cd:DetectionRule>
+        <cd:MatchExpression>substr(7, 18, filename()) == "ESACCI-L3C_AEROSOL"</cd:MatchExpression>
+        <!-- The word MOTNHLY is not a mistake, the files really have that word in their name -->
+        <cd:MatchExpression>substr(39, 25, filename()) == "AATSR-ENVISAT-ADV_MOTNHLY"</cd:MatchExpression>
+      </cd:DetectionRule>
+    </cd:ProductDefinition>
+  </cd:ProductType>
+
+  <!-- AATSR ORAC products -->
+
+  <cd:ProductType name="AATSR_ORAC_L2">
+    <cd:Description>CCI Aerosol AATSR Oxford-Rutherford appleton laboratory Aerosol and Clouds (ORAC) L2 profile</cd:Description>
+    <cd:ProductDefinition id="AATSR_ORAC_L2_nc3" format="netcdf" version="3">
+      <cd:Description>The format definition for this product is taken from the netcdf file itself.</cd:Description>
+      <cd:DetectionRule>
+        <cd:MatchExpression>substr(15, 18, filename()) == "ESACCI-L2P_AEROSOL"</cd:MatchExpression>
+        <cd:MatchExpression>substr(47, 18, filename()) == "AATSR-ENVISAT-ORAC"</cd:MatchExpression>
+      </cd:DetectionRule>
+    </cd:ProductDefinition>
+    <cd:ProductDefinition id="AATSR_ORAC_L2_nc4" format="hdf5" version="4">
+      <cd:Description>The format definition for this product is taken from the netcdf file itself.</cd:Description>
+      <cd:DetectionRule>
+        <cd:MatchExpression>substr(15, 18, filename()) == "ESACCI-L2P_AEROSOL"</cd:MatchExpression>
+        <cd:MatchExpression>substr(47, 18, filename()) == "AATSR-ENVISAT-ORAC"</cd:MatchExpression>
+      </cd:DetectionRule>
+    </cd:ProductDefinition>
+  </cd:ProductType>
+
+  <cd:ProductType name="AATSR_ORAC_L3_Daily">
+    <cd:Description>CCI Aerosol AATSR Oxford-Rutherford appleton laboratory Aerosol and Clouds (ORAC) L3 daily profile</cd:Description>
+    <cd:ProductDefinition id="AATSR_ORAC_L3_Daily_nc3" format="netcdf" version="3">
+      <cd:Description>The format definition for this product is taken from the netcdf file itself.</cd:Description>
+      <cd:DetectionRule>
+        <cd:MatchExpression>substr(9, 18, filename()) == "ESACCI-L3C_AEROSOL"</cd:MatchExpression>
+        <cd:MatchExpression>substr(41, 24, filename()) == "AATSR-ENVISAT-ORAC-DAILY"</cd:MatchExpression>
+      </cd:DetectionRule>
+    </cd:ProductDefinition>
+    <cd:ProductDefinition id="AATSR_ORAC_L3_Daily_nc4" format="hdf5" version="4">
+      <cd:Description>The format definition for this product is taken from the netcdf file itself.</cd:Description>
+      <cd:DetectionRule>
+        <cd:MatchExpression>substr(9, 18, filename()) == "ESACCI-L3C_AEROSOL"</cd:MatchExpression>
+        <cd:MatchExpression>substr(41, 24, filename()) == "AATSR-ENVISAT-ORAC-DAILY"</cd:MatchExpression>
+      </cd:DetectionRule>
+    </cd:ProductDefinition>
+  </cd:ProductType>
+
+  <cd:ProductType name="AATSR_ORAC_L3_Monthly">
+    <cd:Description>CCI Aerosol AATSR Oxford-Rutherford appleton laboratory Aerosol and Clouds (ORAC) L3 monthly profile</cd:Description>
+    <cd:ProductDefinition id="AATSR_ORAC_L3_Monthly_nc3" format="netcdf" version="3">
+      <cd:Description>The format definition for this product is taken from the netcdf file itself.</cd:Description>
+      <cd:DetectionRule>
+        <cd:MatchExpression>substr(7, 18, filename()) == "ESACCI-L3C_AEROSOL"</cd:MatchExpression>
+        <cd:MatchExpression>substr(39, 26, filename()) == "AATSR-ENVISAT-ORAC-MONTHLY"</cd:MatchExpression>
+      </cd:DetectionRule>
+    </cd:ProductDefinition>
+    <cd:ProductDefinition id="AATSR_ORAC_L3_Monthly_nc4" format="hdf5" version="4">
+      <cd:Description>The format definition for this product is taken from the netcdf file itself.</cd:Description>
+      <cd:DetectionRule>
+        <cd:MatchExpression>substr(7, 18, filename()) == "ESACCI-L3C_AEROSOL"</cd:MatchExpression>
+        <cd:MatchExpression>substr(39, 26, filename()) == "AATSR-ENVISAT-ORAC-MONTHLY"</cd:MatchExpression>
+      </cd:DetectionRule>
+    </cd:ProductDefinition>
+  </cd:ProductType>
+
+  <!-- AATSR SU products -->
+
+  <cd:ProductType name="AATSR_SU_L2">
+    <cd:Description>CCI Aerosol AATSR Swansea University (SU) L2 profile</cd:Description>
+    <cd:ProductDefinition id="AATSR_SU_L2_nc3" format="netcdf" version="3">
+      <cd:Description>The format definition for this product is taken from the netcdf file itself.</cd:Description>
+      <cd:DetectionRule>
+        <cd:MatchExpression>substr(15, 18, filename()) == "ESACCI-L2P_AEROSOL"</cd:MatchExpression>
+        <cd:MatchExpression>substr(47, 16, filename()) == "AATSR_ENVISAT-SU"</cd:MatchExpression>
+      </cd:DetectionRule>
+    </cd:ProductDefinition>
+    <cd:ProductDefinition id="AATSR_SU_L2_nc4" format="hdf5" version="4">
+      <cd:Description>The format definition for this product is taken from the netcdf file itself.</cd:Description>
+      <cd:DetectionRule>
+        <cd:MatchExpression>substr(15, 18, filename()) == "ESACCI-L2P_AEROSOL"</cd:MatchExpression>
+        <cd:MatchExpression>substr(47, 16, filename()) == "AATSR_ENVISAT-SU"</cd:MatchExpression>
+      </cd:DetectionRule>
+    </cd:ProductDefinition>
+  </cd:ProductType>
+
+  <cd:ProductType name="AATSR_SU_L3_Daily">
+    <cd:Description>CCI Aerosol AATSR Swansea University (SU) L3 daily profile</cd:Description>
+    <cd:ProductDefinition id="AATSR_SU_L3_Daily_nc3" format="netcdf" version="3">
+      <cd:Description>The format definition for this product is taken from the netcdf file itself.</cd:Description>
+      <cd:DetectionRule>
+        <cd:MatchExpression>substr(9, 18, filename()) == "ESACCI-L3C_AEROSOL"</cd:MatchExpression>
+        <cd:MatchExpression>substr(41, 22, filename()) == "AATSR_ENVISAT-SU_DAILY"</cd:MatchExpression>
+      </cd:DetectionRule>
+    </cd:ProductDefinition>
+    <cd:ProductDefinition id="AATSR_SU_L3_Daily_nc4" format="hdf5" version="4">
+      <cd:Description>The format definition for this product is taken from the netcdf file itself.</cd:Description>
+      <cd:DetectionRule>
+        <cd:MatchExpression>substr(9, 18, filename()) == "ESACCI-L3C_AEROSOL"</cd:MatchExpression>
+        <cd:MatchExpression>substr(41, 22, filename()) == "AATSR_ENVISAT-SU_DAILY"</cd:MatchExpression>
+      </cd:DetectionRule>
+    </cd:ProductDefinition>
+  </cd:ProductType>
+
+  <cd:ProductType name="AATSR_SU_L3_Monthly">
+    <cd:Description>CCI Aerosol AATSR Swansea University (SU) L3 monthly profile</cd:Description>
+    <cd:ProductDefinition id="AATSR_SU_L3_Monthly_nc3" format="netcdf" version="3">
+      <cd:Description>The format definition for this product is taken from the netcdf file itself.</cd:Description>
+      <cd:DetectionRule>
+        <cd:MatchExpression>substr(7, 18, filename()) == "ESACCI-L3C_AEROSOL"</cd:MatchExpression>
+        <cd:MatchExpression>substr(39, 24, filename()) == "AATSR_ENVISAT-SU_MONTHLY"</cd:MatchExpression>
+      </cd:DetectionRule>
+    </cd:ProductDefinition>
+    <cd:ProductDefinition id="AATSR_SU_L3_Monthly_nc4" format="hdf5" version="4">
+      <cd:Description>The format definition for this product is taken from the netcdf file itself.</cd:Description>
+      <cd:DetectionRule>
+        <cd:MatchExpression>substr(7, 18, filename()) == "ESACCI-L3C_AEROSOL"</cd:MatchExpression>
+        <cd:MatchExpression>substr(39, 24, filename()) == "AATSR_ENVISAT-SU_MONTHLY"</cd:MatchExpression>
+      </cd:DetectionRule>
+    </cd:ProductDefinition>
+  </cd:ProductType>
+
+  <!-- ATSR2 ADV products -->
+
+  <cd:ProductType name="ATSR2_ADV_L2">
+    <cd:Description>CCI Aerosol AATSR Dual View (ADV) L2 profile</cd:Description>
+    <cd:ProductDefinition id="ATSR2_ADV_L2_nc3" format="netcdf" version="3">
+      <cd:Description>The format definition for this product is taken from the netcdf file itself.</cd:Description>
+      <cd:DetectionRule>
+        <cd:MatchExpression>substr(15, 18, filename()) == "ESACCI-L2P_AEROSOL"</cd:MatchExpression>
+        <cd:MatchExpression>substr(47, 14, filename()) == "ATSR2-ERS2-ADV"</cd:MatchExpression>
+      </cd:DetectionRule>
+    </cd:ProductDefinition>
+    <cd:ProductDefinition id="ATSR2_ADV_L2_nc4" format="hdf5" version="4">
+      <cd:Description>The format definition for this product is taken from the netcdf file itself.</cd:Description>
+      <cd:DetectionRule>
+        <cd:MatchExpression>substr(15, 18, filename()) == "ESACCI-L2P_AEROSOL"</cd:MatchExpression>
+        <cd:MatchExpression>substr(47, 14, filename()) == "ATSR2-ERS2-ADV"</cd:MatchExpression>
+      </cd:DetectionRule>
+    </cd:ProductDefinition>
+  </cd:ProductType>
+
+  <cd:ProductType name="ATSR2_ADV_L3_Daily">
+    <cd:Description>CCI Aerosol AATSR Dual View (ADV) L3 daily profile</cd:Description>
+    <cd:ProductDefinition id="ATSR2_ADV_L3_Daily_nc3" format="netcdf" version="3">
+      <cd:Description>The format definition for this product is taken from the netcdf file itself.</cd:Description>
+      <cd:DetectionRule>
+        <cd:MatchExpression>substr(9, 18, filename()) == "ESACCI-L3C_AEROSOL"</cd:MatchExpression>
+        <cd:MatchExpression>substr(41, 20, filename()) == "ATSR2-ERS2-ADV_DAILY"</cd:MatchExpression>
+      </cd:DetectionRule>
+    </cd:ProductDefinition>
+    <cd:ProductDefinition id="ATSR2_ADV_L3_Daily_nc4" format="hdf5" version="4">
+      <cd:Description>The format definition for this product is taken from the netcdf file itself.</cd:Description>
+      <cd:DetectionRule>
+        <cd:MatchExpression>substr(9, 18, filename()) == "ESACCI-L3C_AEROSOL"</cd:MatchExpression>
+        <cd:MatchExpression>substr(41, 20, filename()) == "ATSR2-ERS2-ADV_DAILY"</cd:MatchExpression>
+      </cd:DetectionRule>
+    </cd:ProductDefinition>
+  </cd:ProductType>
+
+  <cd:ProductType name="ATSR2_ADV_L3_Monthly">
+    <cd:Description>CCI Aerosol AATSR Dual View (ADV) L3 monthly profile</cd:Description>
+    <cd:ProductDefinition id="ATSR2_ADV_L3_Monthly_nc3" format="netcdf" version="3">
+      <cd:Description>The format definition for this product is taken from the netcdf file itself.</cd:Description>
+      <cd:DetectionRule>
+        <cd:MatchExpression>substr(7, 18, filename()) == "ESACCI-L3C_AEROSOL"</cd:MatchExpression>
+        <cd:MatchExpression>substr(39, 22, filename()) == "ATSR2-ERS2-ADV_MONTHLY"</cd:MatchExpression>
+      </cd:DetectionRule>
+    </cd:ProductDefinition>
+    <cd:ProductDefinition id="ATSR2_ADV_L3_Monthly_nc4" format="hdf5" version="4">
+      <cd:Description>The format definition for this product is taken from the netcdf file itself.</cd:Description>
+      <cd:DetectionRule>
+        <cd:MatchExpression>substr(7, 18, filename()) == "ESACCI-L3C_AEROSOL"</cd:MatchExpression>
+        <cd:MatchExpression>substr(39, 22, filename()) == "ATSR2-ERS2-ADV_MONTHLY"</cd:MatchExpression>
+      </cd:DetectionRule>
+    </cd:ProductDefinition>
+  </cd:ProductType>
+
+  <!-- ATSR2 ORAC products -->
+
+  <cd:ProductType name="ATSR2_ORAC_L2">
+    <cd:Description>CCI Aerosol ATSR-2 Oxford-Rutherford appleton laboratory Aerosol and Clouds (ORAC) L2 profile</cd:Description>
+    <cd:ProductDefinition id="ATSR2_ORAC_L2_nc3" format="netcdf" version="3">
+      <cd:Description>The format definition for this product is taken from the netcdf file itself.</cd:Description>
+      <cd:DetectionRule>
+        <cd:MatchExpression>substr(15, 18, filename()) == "ESACCI-L2P_AEROSOL"</cd:MatchExpression>
+        <cd:MatchExpression>substr(47, 15, filename()) == "ATSR2-ERS2-ORAC"</cd:MatchExpression>
+      </cd:DetectionRule>
+    </cd:ProductDefinition>
+    <cd:ProductDefinition id="ATSR2_ORAC_L2_nc4" format="hdf5" version="4">
+      <cd:Description>The format definition for this product is taken from the netcdf file itself.</cd:Description>
+      <cd:DetectionRule>
+        <cd:MatchExpression>substr(15, 18, filename()) == "ESACCI-L2P_AEROSOL"</cd:MatchExpression>
+        <cd:MatchExpression>substr(47, 15, filename()) == "ATSR2-ERS2-ORAC"</cd:MatchExpression>
+      </cd:DetectionRule>
+    </cd:ProductDefinition>
+  </cd:ProductType>
+
+  <cd:ProductType name="ATSR2_ORAC_L3_Daily">
+    <cd:Description>CCI Aerosol ATSR-2 Oxford-Rutherford appleton laboratory Aerosol and Clouds (ORAC) L3 daily profile</cd:Description>
+    <cd:ProductDefinition id="ATSR2_ORAC_L3_Daily_nc3" format="netcdf" version="3">
+      <cd:Description>The format definition for this product is taken from the netcdf file itself.</cd:Description>
+      <cd:DetectionRule>
+        <cd:MatchExpression>substr(9, 18, filename()) == "ESACCI-L3C_AEROSOL"</cd:MatchExpression>
+        <cd:MatchExpression>substr(41, 21, filename()) == "ATSR2-ERS2-ORAC-DAILY"</cd:MatchExpression>
+      </cd:DetectionRule>
+    </cd:ProductDefinition>
+    <cd:ProductDefinition id="ATSR2_ORAC_L3_Daily_nc4" format="hdf5" version="4">
+      <cd:Description>The format definition for this product is taken from the netcdf file itself.</cd:Description>
+      <cd:DetectionRule>
+        <cd:MatchExpression>substr(9, 18, filename()) == "ESACCI-L3C_AEROSOL"</cd:MatchExpression>
+        <cd:MatchExpression>substr(41, 21, filename()) == "ATSR2-ERS2-ORAC-DAILY"</cd:MatchExpression>
+      </cd:DetectionRule>
+    </cd:ProductDefinition>
+  </cd:ProductType>
+
+  <cd:ProductType name="ATSR2_ORAC_L3_Monthly">
+    <cd:Description>CCI Aerosol ATSR-2 Oxford-Rutherford appleton laboratory Aerosol and Clouds (ORAC) L3 monthly profile</cd:Description>
+    <cd:ProductDefinition id="ATSR2_ORAC_L3_Monthly_nc3" format="netcdf" version="3">
+      <cd:Description>The format definition for this product is taken from the netcdf file itself.</cd:Description>
+      <cd:DetectionRule>
+        <cd:MatchExpression>substr(7, 18, filename()) == "ESACCI-L3C_AEROSOL"</cd:MatchExpression>
+        <cd:MatchExpression>substr(39, 23, filename()) == "ATSR2-ERS2-ORAC-MONTHLY"</cd:MatchExpression>
+      </cd:DetectionRule>
+    </cd:ProductDefinition>
+    <cd:ProductDefinition id="ATSR2_ORAC_L3_Monthly_nc4" format="hdf5" version="4">
+      <cd:Description>The format definition for this product is taken from the netcdf file itself.</cd:Description>
+      <cd:DetectionRule>
+        <cd:MatchExpression>substr(7, 18, filename()) == "ESACCI-L3C_AEROSOL"</cd:MatchExpression>
+        <cd:MatchExpression>substr(39, 23, filename()) == "ATSR2-ERS2-ORAC-MONTHLY"</cd:MatchExpression>
+      </cd:DetectionRule>
+    </cd:ProductDefinition>
+  </cd:ProductType>
+
+  <!-- ATSR2 SU products -->
+
+  <cd:ProductType name="ATSR2_SU_L2">
+    <cd:Description>CCI Aerosol ATSR2 Swansea University (SU) L2 profile</cd:Description>
+    <cd:ProductDefinition id="ATSR2_SU_L2_nc3" format="netcdf" version="3">
+      <cd:Description>The format definition for this product is taken from the netcdf file itself.</cd:Description>
+      <cd:DetectionRule>
+        <cd:MatchExpression>substr(15, 18, filename()) == "ESACCI-L2P_AEROSOL"</cd:MatchExpression>
+        <cd:MatchExpression>substr(47, 13, filename()) == "ATSR2_ERS2-SU"</cd:MatchExpression>
+      </cd:DetectionRule>
+    </cd:ProductDefinition>
+    <cd:ProductDefinition id="ATSR2_SU_L2_nc4" format="hdf5" version="4">
+      <cd:Description>The format definition for this product is taken from the netcdf file itself.</cd:Description>
+      <cd:DetectionRule>
+        <cd:MatchExpression>substr(15, 18, filename()) == "ESACCI-L2P_AEROSOL"</cd:MatchExpression>
+        <cd:MatchExpression>substr(47, 13, filename()) == "ATSR2_ERS2-SU"</cd:MatchExpression>
+      </cd:DetectionRule>
+    </cd:ProductDefinition>
+  </cd:ProductType>
+
+  <cd:ProductType name="ATSR2_SU_L3_Daily">
+    <cd:Description>CCI Aerosol ATSR2 Swansea University (SU) L3 daily profile</cd:Description>
+    <cd:ProductDefinition id="ATSR2_SU_L3_Daily_nc3" format="netcdf" version="3">
+      <cd:Description>The format definition for this product is taken from the netcdf file itself.</cd:Description>
+      <cd:DetectionRule>
+        <cd:MatchExpression>substr(9, 18, filename()) == "ESACCI-L3C_AEROSOL"</cd:MatchExpression>
+        <cd:MatchExpression>substr(41, 19, filename()) == "ATSR2_ERS2-SU_DAILY"</cd:MatchExpression>
+      </cd:DetectionRule>
+    </cd:ProductDefinition>
+    <cd:ProductDefinition id="ATSR2_SU_L3_Daily_nc4" format="hdf5" version="4">
+      <cd:Description>The format definition for this product is taken from the netcdf file itself.</cd:Description>
+      <cd:DetectionRule>
+        <cd:MatchExpression>substr(9, 18, filename()) == "ESACCI-L3C_AEROSOL"</cd:MatchExpression>
+        <cd:MatchExpression>substr(41, 19, filename()) == "ATSR2_ERS2-SU_DAILY"</cd:MatchExpression>
+      </cd:DetectionRule>
+    </cd:ProductDefinition>
+  </cd:ProductType>
+
+  <cd:ProductType name="ATSR2_SU_L3_Monthly">
+    <cd:Description>CCI Aerosol ATSR2 Swansea University (SU) L3 monthly profile</cd:Description>
+    <cd:ProductDefinition id="ATSR2_SU_L3_Monthly_nc3" format="netcdf" version="3">
+      <cd:Description>The format definition for this product is taken from the netcdf file itself.</cd:Description>
+      <cd:DetectionRule>
+        <cd:MatchExpression>substr(7, 18, filename()) == "ESACCI-L3C_AEROSOL"</cd:MatchExpression>
+        <cd:MatchExpression>substr(39, 21, filename()) == "ATSR2_ERS2-SU_MONTHLY"</cd:MatchExpression>
+      </cd:DetectionRule>
+    </cd:ProductDefinition>
+    <cd:ProductDefinition id="ATSR2_SU_L3_Monthly_nc4" format="hdf5" version="4">
+      <cd:Description>The format definition for this product is taken from the netcdf file itself.</cd:Description>
+      <cd:DetectionRule>
+        <cd:MatchExpression>substr(7, 18, filename()) == "ESACCI-L3C_AEROSOL"</cd:MatchExpression>
+        <cd:MatchExpression>substr(39, 21, filename()) == "ATSR2_ERS2-SU_MONTHLY"</cd:MatchExpression>
+      </cd:DetectionRule>
+    </cd:ProductDefinition>
+  </cd:ProductType>
+
+  <cd:ProductType name="GOMOS_AERGOM_L3">
+    <cd:Description>CCI GOMOS AERGOM L3 profile</cd:Description>
+    <cd:ProductDefinition id="GOMOS_AERGOM_L3_nc3" format="netcdf" version="3">
+      <cd:Description>The format definition for this product is taken from the netcdf file itself.</cd:Description>
+      <cd:DetectionRule>
+        <cd:MatchExpression>substr(18, 18, filename()) == "ESACCI-L3C_AEROSOL"</cd:MatchExpression>
+        <cd:MatchExpression>substr(41, 20, filename()) == "GOMOS_ENVISAT-AERGOM"</cd:MatchExpression>
+      </cd:DetectionRule>
+    </cd:ProductDefinition>
+    <cd:ProductDefinition id="GOMOS_AERGOM_L3_nc4" format="hdf5" version="4">
+      <cd:Description>The format definition for this product is taken from the netcdf file itself.</cd:Description>
+      <cd:DetectionRule>
+        <cd:MatchExpression>substr(18, 18, filename()) == "ESACCI-L3C_AEROSOL"</cd:MatchExpression>
+        <cd:MatchExpression>substr(41, 20, filename()) == "GOMOS_ENVISAT-AERGOM"</cd:MatchExpression>
+      </cd:DetectionRule>
+    </cd:ProductDefinition>
+  </cd:ProductType>
+
+  <!-- IASI DLR products -->
+  <cd:ProductType name="IASI_DLR_L2">
+    <cd:Description>CCI Aerosol IASI Deutsches zentrum fur Luft- und Raumfarht (DLR) L2 profile</cd:Description>
+    <cd:ProductDefinition id="IASI_DLR_L2_nc3" format="netcdf" version="3">
+      <cd:Description>The format definition for this product is taken from the netcdf file itself.</cd:Description>
+      <cd:DetectionRule>
+        <cd:MatchExpression>substr(9, 18, filename()) == "ESACCI-L2P_AEROSOL"</cd:MatchExpression>
+        <cd:MatchExpression>substr(41, 15, filename()) == "IASI_METOPA-DLR"</cd:MatchExpression>
+      </cd:DetectionRule>
+    </cd:ProductDefinition>
+    <cd:ProductDefinition id="IASI_DLR_L2_nc4" format="hdf5" version="4">
+      <cd:Description>The format definition for this product is taken from the netcdf file itself.</cd:Description>
+      <cd:DetectionRule>
+        <cd:MatchExpression>substr(9, 18, filename()) == "ESACCI-L2P_AEROSOL"</cd:MatchExpression>
+        <cd:MatchExpression>substr(41, 15, filename()) == "IASI_METOPA-DLR"</cd:MatchExpression>
+      </cd:DetectionRule>
+    </cd:ProductDefinition>
+  </cd:ProductType>
+
+  <cd:ProductType name="IASI_DLR_L3_Daily">
+    <cd:Description>CCI Aerosol IASI Deutsches zentrum fur Luft- und Raumfarht (DLR) L3 daily profile</cd:Description>
+    <cd:ProductDefinition id="IASI_DLR_L3_Daily_nc3" format="netcdf" version="3">
+      <cd:Description>The format definition for this product is taken from the netcdf file itself.</cd:Description>
+      <cd:DetectionRule>
+        <cd:MatchExpression>substr(9, 18, filename()) == "ESACCI-L3P_AEROSOL"</cd:MatchExpression>
+        <cd:MatchExpression>substr(41, 15, filename()) == "IASI_METOPA-DLR"</cd:MatchExpression>
+      </cd:DetectionRule>
+    </cd:ProductDefinition>
+    <cd:ProductDefinition id="IASI_DLR_L3_Daily_nc4" format="hdf5" version="4">
+      <cd:Description>The format definition for this product is taken from the netcdf file itself.</cd:Description>
+      <cd:DetectionRule>
+        <cd:MatchExpression>substr(9, 18, filename()) == "ESACCI-L3P_AEROSOL"</cd:MatchExpression>
+        <cd:MatchExpression>substr(41, 15, filename()) == "IASI_METOPA-DLR"</cd:MatchExpression>
+      </cd:DetectionRule>
+    </cd:ProductDefinition>
+  </cd:ProductType>
+
+  <cd:ProductType name="IASI_DLR_L3_Monthly">
+    <cd:Description>CCI Aerosol IASI Deutsches zentrum fur Luft- und Raumfarht (DLR) L3 monthly profile</cd:Description>
+    <cd:ProductDefinition id="IASI_DLR_L3_Monthly_nc3" format="netcdf" version="3">
+      <cd:Description>The format definition for this product is taken from the netcdf file itself.</cd:Description>
+      <cd:DetectionRule>
+        <cd:MatchExpression>substr(7, 18, filename()) == "ESACCI-L3P_AEROSOL"</cd:MatchExpression>
+        <cd:MatchExpression>substr(39, 15, filename()) == "IASI_METOPA-DLR"</cd:MatchExpression>
+      </cd:DetectionRule>
+    </cd:ProductDefinition>
+    <cd:ProductDefinition id="IASI_DLR_L3_Monthly_nc4" format="hdf5" version="4">
+      <cd:Description>The format definition for this product is taken from the netcdf file itself.</cd:Description>
+      <cd:DetectionRule>
+        <cd:MatchExpression>substr(7, 18, filename()) == "ESACCI-L3P_AEROSOL"</cd:MatchExpression>
+        <cd:MatchExpression>substr(39, 15, filename()) == "IASI_METOPA-DLR"</cd:MatchExpression>
+      </cd:DetectionRule>
+    </cd:ProductDefinition>
+  </cd:ProductType>
+
+  <!-- IASI LMD products -->
+
+  <cd:ProductType name="IASI_LMD_L2">
+    <cd:Description>CCI Aerosol IASI Laboratoire de Météorologie Dynamique (LMD) L2 profile</cd:Description>
+    <cd:ProductDefinition id="IASI_LMD_L2_nc3" format="netcdf" version="3">
+      <cd:Description>The format definition for this product is taken from the netcdf file itself.</cd:Description>
+      <cd:DetectionRule>
+        <cd:MatchExpression>substr(9, 18, filename()) == "ESACCI-L2P_AEROSOL"</cd:MatchExpression>
+        <cd:MatchExpression>substr(34, 19, filename()) == "IASI-METOPA-LMDAERO"</cd:MatchExpression>
+      </cd:DetectionRule>
+    </cd:ProductDefinition>
+    <cd:ProductDefinition id="IASI_LMD_L2_nc4" format="hdf5" version="4">
+      <cd:Description>The format definition for this product is taken from the netcdf file itself.</cd:Description>
+      <cd:DetectionRule>
+        <cd:MatchExpression>substr(9, 18, filename()) == "ESACCI-L2P_AEROSOL"</cd:MatchExpression>
+        <cd:MatchExpression>substr(34, 19, filename()) == "IASI-METOPA-LMDAERO"</cd:MatchExpression>
+      </cd:DetectionRule>
+    </cd:ProductDefinition>
+  </cd:ProductType>
+
+  <cd:ProductType name="IASI_LMD_L3_Daily">
+    <cd:Description>CCI Aerosol IASI Laboratoire de Météorologie Dynamique (LMD) L3 daily profile</cd:Description>
+    <cd:ProductDefinition id="IASI_LMD_L3_Daily_nc3" format="netcdf" version="3">
+      <cd:Description>The format definition for this product is taken from the netcdf file itself.</cd:Description>
+      <cd:DetectionRule>
+        <cd:MatchExpression>substr(9, 17, filename()) == "ESACCI-L3_AEROSOL"</cd:MatchExpression>
+        <cd:MatchExpression>substr(33, 19, filename()) == "IASI-METOPA-LMDAERO"</cd:MatchExpression>
+      </cd:DetectionRule>
+    </cd:ProductDefinition>
+    <cd:ProductDefinition id="IASI_LMD_L3_Daily_nc4" format="hdf5" version="4">
+      <cd:Description>The format definition for this product is taken from the netcdf file itself.</cd:Description>
+      <cd:DetectionRule>
+        <cd:MatchExpression>substr(9, 17, filename()) == "ESACCI-L3_AEROSOL"</cd:MatchExpression>
+        <cd:MatchExpression>substr(33, 19, filename()) == "IASI-METOPA-LMDAERO"</cd:MatchExpression>
+      </cd:DetectionRule>
+    </cd:ProductDefinition>
+  </cd:ProductType>
+
+  <cd:ProductType name="IASI_LMD_L3_Monthly">
+    <cd:Description>CCI Aerosol IASI Laboratoire de Météorologie Dynamique (LMD) L3 monthly profile</cd:Description>
+    <cd:ProductDefinition id="IASI_LMD_L3_Monthly_nc3" format="netcdf" version="3">
+      <cd:Description>The format definition for this product is taken from the netcdf file itself.</cd:Description>
+      <cd:DetectionRule>
+        <cd:MatchExpression>substr(7, 17, filename()) == "ESACCI-L3_AEROSOL"</cd:MatchExpression>
+        <cd:MatchExpression>substr(31, 19, filename()) == "IASI-METOPA-LMDAERO"</cd:MatchExpression>
+      </cd:DetectionRule>
+    </cd:ProductDefinition>
+    <cd:ProductDefinition id="IASI_LMD_L3_Monthly_nc4" format="hdf5" version="4">
+      <cd:Description>The format definition for this product is taken from the netcdf file itself.</cd:Description>
+      <cd:DetectionRule>
+        <cd:MatchExpression>substr(7, 17, filename()) == "ESACCI-L3_AEROSOL"</cd:MatchExpression>
+        <cd:MatchExpression>substr(31, 19, filename()) == "IASI-METOPA-LMDAERO"</cd:MatchExpression>
+      </cd:DetectionRule>
+    </cd:ProductDefinition>
+  </cd:ProductType>
+
+  <!-- IASI University of Brussels (ULB) products -->
+
+  <cd:ProductType name="IASI_ULB_L2">
+    <cd:Description>CCI Aerosol IASI University of Brussels (ULB) L2 profile</cd:Description>
+    <cd:ProductDefinition id="IASI_ULB_L2_nc3" format="netcdf" version="3">
+      <cd:Description>The format definition for this product is taken from the netcdf file itself.</cd:Description>
+      <cd:DetectionRule>
+        <cd:MatchExpression>substr(9, 18, filename()) == "ESACCI-L2P_AEROSOL"</cd:MatchExpression>
+        <cd:MatchExpression>substr(34, 15, filename()) == "IASI-METOPA-ULB"</cd:MatchExpression>
+      </cd:DetectionRule>
+    </cd:ProductDefinition>
+    <cd:ProductDefinition id="IASI_ULB_L2_nc4" format="hdf5" version="4">
+      <cd:Description>The format definition for this product is taken from the netcdf file itself.</cd:Description>
+      <cd:DetectionRule>
+        <cd:MatchExpression>substr(9, 18, filename()) == "ESACCI-L2P_AEROSOL"</cd:MatchExpression>
+        <cd:MatchExpression>substr(34, 15, filename()) == "IASI-METOPA-ULB"</cd:MatchExpression>
+      </cd:DetectionRule>
+    </cd:ProductDefinition>
+  </cd:ProductType>
+
+  <cd:ProductType name="IASI_ULB_L3_Daily">
+    <cd:Description>CCI Aerosol IASI University of Brussels (ULB) L3 daily profile</cd:Description>
+    <cd:ProductDefinition id="IASI_ULB_L3_Daily_nc3" format="netcdf" version="3">
+      <cd:Description>The format definition for this product is taken from the netcdf file itself.</cd:Description>
+      <cd:DetectionRule>
+        <cd:MatchExpression>substr(9, 17, filename()) == "ESACCI-L3_AEROSOL"</cd:MatchExpression>
+        <cd:MatchExpression>substr(33, 15, filename()) == "IASI-METOPA-ULB"</cd:MatchExpression>
+      </cd:DetectionRule>
+    </cd:ProductDefinition>
+    <cd:ProductDefinition id="IASI_ULB_L3_Daily_nc4" format="hdf5" version="4">
+      <cd:Description>The format definition for this product is taken from the netcdf file itself.</cd:Description>
+      <cd:DetectionRule>
+        <cd:MatchExpression>substr(9, 17, filename()) == "ESACCI-L3_AEROSOL"</cd:MatchExpression>
+        <cd:MatchExpression>substr(33, 15, filename()) == "IASI-METOPA-ULB"</cd:MatchExpression>
+      </cd:DetectionRule>
+    </cd:ProductDefinition>
+  </cd:ProductType>
+
+  <cd:ProductType name="IASI_ULB_L3_Monthly">
+    <cd:Description>CCI Aerosol IASI University of Brussels (ULB) L3 monthly profile</cd:Description>
+    <cd:ProductDefinition id="IASI_ULB_L3_Monthly_nc3" format="netcdf" version="3">
+      <cd:Description>The format definition for this product is taken from the netcdf file itself.</cd:Description>
+      <cd:DetectionRule>
+        <cd:MatchExpression>substr(7, 17, filename()) == "ESACCI-L3_AEROSOL"</cd:MatchExpression>
+        <cd:MatchExpression>substr(31, 15, filename()) == "IASI-METOPA-ULB"</cd:MatchExpression>
+      </cd:DetectionRule>
+    </cd:ProductDefinition>
+    <cd:ProductDefinition id="IASI_ULB_L3_Monthly_nc4" format="hdf5" version="4">
+      <cd:Description>The format definition for this product is taken from the netcdf file itself.</cd:Description>
+      <cd:DetectionRule>
+        <cd:MatchExpression>substr(7, 17, filename()) == "ESACCI-L3_AEROSOL"</cd:MatchExpression>
+        <cd:MatchExpression>substr(31, 15, filename()) == "IASI-METOPA-ULB"</cd:MatchExpression>
+      </cd:DetectionRule>
+    </cd:ProductDefinition>
+  </cd:ProductType>
+
+  <!-- MERIS ALAMO products -->
+
+  <cd:ProductType name="MERIS_ALAMO_L2">
+    <cd:Description>CCI Aerosol Load and Altitude from MERIS over Ocean (ALAMO) L2 profile</cd:Description>
+    <cd:ProductDefinition id="MERIS_ALAMO_L2_nc3" format="netcdf" version="3">
+      <cd:Description>The format definition for this product is taken from the netcdf file itself.</cd:Description>
+      <cd:DetectionRule>
+        <cd:MatchExpression>substr(15, 18, filename()) == "ESACCI-L2P_AEROSOL"</cd:MatchExpression>
+        <cd:MatchExpression>substr(38, 19, filename()) == "MERIS_ENVISAT-ALAMO"</cd:MatchExpression>
+      </cd:DetectionRule>
+    </cd:ProductDefinition>
+    <cd:ProductDefinition id="MERIS_ALAMO_L2_nc4" format="hdf5" version="4">
+      <cd:Description>The format definition for this product is taken from the netcdf file itself.</cd:Description>
+      <cd:DetectionRule>
+        <cd:MatchExpression>substr(15, 18, filename()) == "ESACCI-L2P_AEROSOL"</cd:MatchExpression>
+        <cd:MatchExpression>substr(38, 19, filename()) == "MERIS_ENVISAT-ALAMO"</cd:MatchExpression>
+      </cd:DetectionRule>
+    </cd:ProductDefinition>
+  </cd:ProductType>
+
+  <cd:ProductType name="MERIS_ALAMO_L3_Daily">
+    <cd:Description>CCI Aerosol Load and Altitude from MERIS over Ocean (ALAMO) L3 daily profile</cd:Description>
+    <cd:ProductDefinition id="MERIS_ALAMO_L3_Daily_nc3" format="netcdf" version="3">
+      <cd:Description>The format definition for this product is taken from the netcdf file itself.</cd:Description>
+      <cd:DetectionRule>
+        <cd:MatchExpression>substr(9, 18, filename()) == "ESACCI-L3C_AEROSOL"</cd:MatchExpression>
+        <cd:MatchExpression>substr(32, 19, filename()) == "MERIS_ENVISAT-ALAMO"</cd:MatchExpression>
+      </cd:DetectionRule>
+    </cd:ProductDefinition>
+    <cd:ProductDefinition id="MERIS_ALAMO_L3_Daily_nc4" format="hdf5" version="4">
+      <cd:Description>The format definition for this product is taken from the netcdf file itself.</cd:Description>
+      <cd:DetectionRule>
+        <cd:MatchExpression>substr(9, 18, filename()) == "ESACCI-L3C_AEROSOL"</cd:MatchExpression>
+        <cd:MatchExpression>substr(32, 19, filename()) == "MERIS_ENVISAT-ALAMO"</cd:MatchExpression>
+      </cd:DetectionRule>
+    </cd:ProductDefinition>
+  </cd:ProductType>
+
+  <cd:ProductType name="MERIS_ALAMO_L3_Monthly">
+    <cd:Description>CCI Aerosol Load and Altitude from MERIS over Ocean (ALAMO) L3 monthly profile</cd:Description>
+    <cd:ProductDefinition id="MERIS_ALAMO_L3_Monthly_nc3" format="netcdf" version="3">
+      <cd:Description>The format definition for this product is taken from the netcdf file itself.</cd:Description>
+      <cd:DetectionRule>
+        <cd:MatchExpression>substr(7, 18, filename()) == "ESACCI-L3C_AEROSOL"</cd:MatchExpression>
+        <cd:MatchExpression>substr(30, 19, filename()) == "MERIS_ENVISAT-ALAMO"</cd:MatchExpression>
+      </cd:DetectionRule>
+    </cd:ProductDefinition>
+    <cd:ProductDefinition id="MERIS_ALAMO_L3_Monthly_nc4" format="hdf5" version="4">
+      <cd:Description>The format definition for this product is taken from the netcdf file itself.</cd:Description>
+      <cd:DetectionRule>
+        <cd:MatchExpression>substr(7, 18, filename()) == "ESACCI-L3C_AEROSOL"</cd:MatchExpression>
+        <cd:MatchExpression>substr(30, 19, filename()) == "MERIS_ENVISAT-ALAMO"</cd:MatchExpression>
+      </cd:DetectionRule>
+    </cd:ProductDefinition>
+  </cd:ProductType>
+
+</cd:ProductClass>
