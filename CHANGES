@@ -45,7 +45,8 @@
 * The default internal units have been changes to SI (except for molar mass).
   All algorithms have been adapted accordingly.
 
-* Added variable conversions for apriori profiles.
+* Added variable conversions for: apriori profiles, column density from
+  mass density (including pm1/pm2.5/pm10).
 
 * Added support for GEOMS FTIR C2H2 ingestion.
 
