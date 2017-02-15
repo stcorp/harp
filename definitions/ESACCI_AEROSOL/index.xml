@@ -175,7 +175,7 @@
   <!-- ATSR2 ADV products -->
 
   <cd:ProductType name="ATSR2_ADV_L2">
-    <cd:Description>CCI Aerosol AATSR Dual View (ADV) L2 profile</cd:Description>
+    <cd:Description>CCI Aerosol ATSR-2 Dual View (ADV) L2 profile</cd:Description>
     <cd:ProductDefinition id="ATSR2_ADV_L2_nc3" format="netcdf" version="3">
       <cd:Description>The format definition for this product is taken from the netcdf file itself.</cd:Description>
       <cd:DetectionRule>
@@ -193,7 +193,7 @@
   </cd:ProductType>
 
   <cd:ProductType name="ATSR2_ADV_L3_Daily">
-    <cd:Description>CCI Aerosol AATSR Dual View (ADV) L3 daily profile</cd:Description>
+    <cd:Description>CCI Aerosol ATSR-2 Dual View (ADV) L3 daily profile</cd:Description>
     <cd:ProductDefinition id="ATSR2_ADV_L3_Daily_nc3" format="netcdf" version="3">
       <cd:Description>The format definition for this product is taken from the netcdf file itself.</cd:Description>
       <cd:DetectionRule>
@@ -211,7 +211,7 @@
   </cd:ProductType>
 
   <cd:ProductType name="ATSR2_ADV_L3_Monthly">
-    <cd:Description>CCI Aerosol AATSR Dual View (ADV) L3 monthly profile</cd:Description>
+    <cd:Description>CCI Aerosol ATSR-2 Dual View (ADV) L3 monthly profile</cd:Description>
     <cd:ProductDefinition id="ATSR2_ADV_L3_Monthly_nc3" format="netcdf" version="3">
       <cd:Description>The format definition for this product is taken from the netcdf file itself.</cd:Description>
       <cd:DetectionRule>
