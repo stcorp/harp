@@ -299,6 +299,8 @@ wind_speed                                    surface                         X 
 wind_direction                                surface                         X       X    X
 <species>_column_density                      stratospheric,  amf, apriori,   X       X    X             this is the mass density
                                               tropospheric    avk
+<pm>_column_density                           stratospheric,                  X       X    X             this is the mass density
+                                              tropospheric
 <species>_column_number_density               stratospheric,  amf, apriori,   X       X    X
                                               tropospheric    avk
 <species>_column_mass_mixing_ratio            stratospheric,                  X            X
@@ -309,14 +311,15 @@ wind_direction                                surface                         X 
                                               tropospheric
 <species>_column_volume_mixing_ratio_dry_air  stratospheric,                  X            X
                                               tropospheric
-<species>_density                                                             X       X    X             this is the mass density
-<species>_mass_mixing_ratio                                   apriori, avk    X       X    X
-<species>_mass_mixing_ratio_dry_air                           apriori, avk    X       X    X
-<species>_number_density                                      apriori, avk    X       X    X
-<species>_partial_pressure                                                    X       X    X
-<species>_partial_pressure_dry_air                                            X       X    X
-<species>_volume_mixing_ratio                                 apriori, avk    X       X    X             this is equal to 'number mixing ratio'
-<species>_volume_mixing_ratio_dry_air                         apriori, avk    X       X    X
+<species>_density                             surface                         X       X    X             this is the mass density
+<pm>_density                                  surface                         X       X    X             this is the mass density
+<species>_mass_mixing_ratio                   surface         apriori, avk    X       X    X
+<species>_mass_mixing_ratio_dry_air           surface         apriori, avk    X       X    X
+<species>_number_density                      surface         apriori, avk    X       X    X
+<species>_partial_pressure                    surface                         X       X    X
+<species>_partial_pressure_dry_air            surface                         X       X    X
+<species>_volume_mixing_ratio                 surface         apriori, avk    X       X    X             this is equal to 'number mixing ratio'
+<species>_volume_mixing_ratio_dry_air         surface         apriori, avk    X       X    X
 ============================================= =============== =============== ======= ==== ======= ===== =======================================================================
 
 The supported aersol types are:
@@ -330,6 +333,16 @@ organic_matter organic matter
 black_carbon   black carbon
 sulphate       sulphate
 ============== =================
+
+The supported PM (particulate matter) types are:
+
+===== ==================================
+Name  Description
+===== ==================================
+PM1   particulate matter with d < 1 um
+PM2p5 particulate matter with d < 2.5 um
+PM10  particulate matter with d < 10 um
+===== ==================================
 
 The supported species are:
 

@@ -1687,6 +1687,43 @@ static int add_species_conversions_for_grid(const char *species, int num_dimensi
         return -1;
     }
 
+    /* column from partial column profile */
+    if (!has_vertical)
+    {
+        if (harp_variable_conversion_new(name_column_density, harp_type_double, HARP_UNIT_COLUMN_MASS_DENSITY,
+                                         num_dimensions, dimension_type, 0, get_column_from_partial_column,
+                                         &conversion) != 0)
+        {
+            return -1;
+        }
+        dimension_type[num_dimensions] = harp_dimension_vertical;
+        if (harp_variable_conversion_add_source(conversion, name_column_density, harp_type_double,
+                                                HARP_UNIT_COLUMN_MASS_DENSITY, num_dimensions + 1, dimension_type, 0)
+            != 0)
+        {
+            return -1;
+        }
+    }
+
+    /* create column from density */
+    dimension_type[num_dimensions] = harp_dimension_independent;
+    if (harp_variable_conversion_new(name_column_density, harp_type_double, HARP_UNIT_COLUMN_MASS_DENSITY,
+                                     num_dimensions, dimension_type, 0, get_partial_column_from_density_and_alt_bounds,
+                                     &conversion) != 0)
+    {
+        return -1;
+    }
+    if (harp_variable_conversion_add_source(conversion, name_density, harp_type_double, HARP_UNIT_MASS_DENSITY,
+                                            num_dimensions, dimension_type, 0) != 0)
+    {
+        return -1;
+    }
+    if (harp_variable_conversion_add_source(conversion, "altitude_bounds", harp_type_double, HARP_UNIT_LENGTH,
+                                            num_dimensions + 1, dimension_type, 2) != 0)
+    {
+        return -1;
+    }
+    
     /* column mass density from column number density */
     if (harp_variable_conversion_new(name_column_density, harp_type_double, HARP_UNIT_COLUMN_MASS_DENSITY,
                                      num_dimensions, dimension_type, 0, get_density_from_nd_for_species, &conversion) !=
@@ -3019,6 +3056,162 @@ static int add_species_conversions_for_grid(const char *species, int num_dimensi
     return 0;
 }
 
+static int add_particulate_matter_conversions_for_grid(const char *pm, int num_dimensions,
+                                                       harp_dimension_type target_dimension_type[HARP_MAX_NUM_DIMS],
+                                                       int has_vertical)
+{
+    harp_variable_conversion *conversion;
+    harp_dimension_type dimension_type[HARP_MAX_NUM_DIMS];
+    char name_column_density[MAX_NAME_LENGTH];
+    char name_strato_column_density[MAX_NAME_LENGTH];
+    char name_tropo_column_density[MAX_NAME_LENGTH];
+    char name_density[MAX_NAME_LENGTH];
+    int i;
+
+    /* we need to be able to add at least one dimension of our own */
+    assert(num_dimensions < HARP_MAX_NUM_DIMS);
+
+    for (i = 0; i < num_dimensions; i++)
+    {
+        dimension_type[i] = target_dimension_type[i];
+    }
+
+    snprintf(name_column_density, MAX_NAME_LENGTH, "%s_column_density", pm);
+    snprintf(name_strato_column_density, MAX_NAME_LENGTH, "stratospheric_%s_column_density", pm);
+    snprintf(name_tropo_column_density, MAX_NAME_LENGTH, "tropospheric_%s_column_density", pm);
+    snprintf(name_density, MAX_NAME_LENGTH, "%s_density", pm);
+
+    /*** column (mass) density ***/
+
+    /* time dependent from independent */
+    if (add_time_indepedent_to_dependent_conversion(name_column_density, harp_type_double,
+                                                    HARP_UNIT_COLUMN_MASS_DENSITY, num_dimensions, dimension_type, 0) !=
+        0)
+    {
+        return -1;
+    }
+
+    /* uncertainties */
+    if (add_uncertainty_conversions(name_column_density, HARP_UNIT_COLUMN_MASS_DENSITY, num_dimensions, dimension_type)
+        != 0)
+    {
+        return -1;
+    }
+
+    /* column from partial column profile */
+    if (!has_vertical)
+    {
+        if (harp_variable_conversion_new(name_column_density, harp_type_double, HARP_UNIT_COLUMN_MASS_DENSITY,
+                                         num_dimensions, dimension_type, 0, get_column_from_partial_column,
+                                         &conversion) != 0)
+        {
+            return -1;
+        }
+        dimension_type[num_dimensions] = harp_dimension_vertical;
+        if (harp_variable_conversion_add_source(conversion, name_column_density, harp_type_double,
+                                                HARP_UNIT_COLUMN_MASS_DENSITY, num_dimensions + 1, dimension_type, 0)
+            != 0)
+        {
+            return -1;
+        }
+    }
+
+    /* create column from density */
+    dimension_type[num_dimensions] = harp_dimension_independent;
+    if (harp_variable_conversion_new(name_column_density, harp_type_double, HARP_UNIT_COLUMN_MASS_DENSITY,
+                                     num_dimensions, dimension_type, 0, get_partial_column_from_density_and_alt_bounds,
+                                     &conversion) != 0)
+    {
+        return -1;
+    }
+    if (harp_variable_conversion_add_source(conversion, name_density, harp_type_double, HARP_UNIT_MASS_DENSITY,
+                                            num_dimensions, dimension_type, 0) != 0)
+    {
+        return -1;
+    }
+    if (harp_variable_conversion_add_source(conversion, "altitude_bounds", harp_type_double, HARP_UNIT_LENGTH,
+                                            num_dimensions + 1, dimension_type, 2) != 0)
+    {
+        return -1;
+    }
+
+    /*** stratospheric column (mass) density ***/
+
+    if (!has_vertical)
+    {
+        /* time dependent from independent */
+        if (add_time_indepedent_to_dependent_conversion(name_strato_column_density, harp_type_double,
+                                                        HARP_UNIT_COLUMN_MASS_DENSITY, num_dimensions, dimension_type,
+                                                        0) != 0)
+        {
+            return -1;
+        }
+
+        /* uncertainties */
+        if (add_uncertainty_conversions(name_strato_column_density, HARP_UNIT_COLUMN_MASS_DENSITY, num_dimensions,
+                                        dimension_type) != 0)
+        {
+            return -1;
+        }
+    }
+
+    /*** tropospheric column (mass) density ***/
+
+    if (!has_vertical)
+    {
+        /* time dependent from independent */
+        if (add_time_indepedent_to_dependent_conversion(name_tropo_column_density, harp_type_double,
+                                                        HARP_UNIT_COLUMN_MASS_DENSITY, num_dimensions, dimension_type,
+                                                        0) != 0)
+        {
+            return -1;
+        }
+
+        /* uncertainties */
+        if (add_uncertainty_conversions(name_tropo_column_density, HARP_UNIT_COLUMN_MASS_DENSITY, num_dimensions,
+                                        dimension_type) != 0)
+        {
+            return -1;
+        }
+    }
+
+    /*** (mass) density ***/
+
+    /* time dependent from independent */
+    if (add_time_indepedent_to_dependent_conversion(name_density, harp_type_double, HARP_UNIT_MASS_DENSITY,
+                                                    num_dimensions, dimension_type, 0) != 0)
+    {
+        return -1;
+    }
+
+    /* uncertainties */
+    if (add_uncertainty_conversions(name_density, HARP_UNIT_NUMBER_DENSITY, num_dimensions, dimension_type) != 0)
+    {
+        return -1;
+    }
+
+    /* mass density from partial column profile */
+    if (harp_variable_conversion_new(name_density, harp_type_double, HARP_UNIT_NUMBER_DENSITY, num_dimensions,
+                                     dimension_type, 0, get_density_from_partial_column_and_alt_bounds, &conversion) !=
+        0)
+    {
+        return -1;
+    }
+    if (harp_variable_conversion_add_source(conversion, name_column_density, harp_type_double,
+                                            HARP_UNIT_COLUMN_NUMBER_DENSITY, num_dimensions, dimension_type, 0) != 0)
+    {
+        return -1;
+    }
+    dimension_type[num_dimensions] = harp_dimension_independent;
+    if (harp_variable_conversion_add_source(conversion, "altitude_bounds", harp_type_double, HARP_UNIT_LENGTH,
+                                            num_dimensions + 1, dimension_type, 2) != 0)
+    {
+        return -1;
+    }
+
+    return 0;
+}
+
 static int add_aerosol_conversions_for_grid(int num_dimensions, harp_dimension_type dimension_type[HARP_MAX_NUM_DIMS])
 {
     const char *prefix[] = { "", "sea_salt_", "dust_", "organic_matter_", "black_carbon_", "sulphate_" };
@@ -3176,6 +3369,19 @@ static int add_conversions_for_grid(int num_dimensions, harp_dimension_type dime
         {
             return -1;
         }
+    }
+    /* Add conversions for particulate matter variables */
+    if (add_particulate_matter_conversions_for_grid("PM1", num_dimensions, dimension_type, has_vertical) != 0)
+    {
+        return -1;
+    }
+    if (add_particulate_matter_conversions_for_grid("PM2p5", num_dimensions, dimension_type, has_vertical) != 0)
+    {
+        return -1;
+    }
+    if (add_particulate_matter_conversions_for_grid("PM10", num_dimensions, dimension_type, has_vertical) != 0)
+    {
+        return -1;
     }
 
     /* Add conversions for variables that can be spectral dependent (with spectral dimension used for grouping) */
