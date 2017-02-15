@@ -2573,6 +2573,9 @@ int harp_ingestion_module_geoms_uvvis_doas_init()
                                                  "GEOMS template for UVVIS-DOAS off-axis gas measurements",
                                                  ingestion_init, ingestion_done);
 
+    harp_ingestion_register_option(module, "AOD", "ingest the modeled (default) or measured aerosol optical depth "
+                                   "properties", 2, aod_option_values);
+
     for (i = 0; i < num_uvvis_doas_gas; i++)
     {
         init_product_definition(module, i, uvvis_doas_offaxis, 4);
@@ -2584,9 +2587,6 @@ int harp_ingestion_module_geoms_uvvis_doas_init()
                                                  "UVVIS_DOAS_OFFAXIS_AEROSOL",
                                                  "GEOMS template for UVVIS-DOAS off-axis aerosol measurements",
                                                  ingestion_init, ingestion_done);
-
-    harp_ingestion_register_option(module, "AOD", "ingest the modeled (default) or measured aerosol optical depth "
-                                   "properties", 2, aod_option_values);
 
     init_product_definition(module, -1, uvvis_doas_offaxis_aerosol, 4);
     init_product_definition(module, -1, uvvis_doas_offaxis_aerosol, 6);
