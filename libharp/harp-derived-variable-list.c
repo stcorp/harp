@@ -1723,7 +1723,7 @@ static int add_species_conversions_for_grid(const char *species, int num_dimensi
     {
         return -1;
     }
-    
+
     /* column mass density from column number density */
     if (harp_variable_conversion_new(name_column_density, harp_type_double, HARP_UNIT_COLUMN_MASS_DENSITY,
                                      num_dimensions, dimension_type, 0, get_density_from_nd_for_species, &conversion) !=
