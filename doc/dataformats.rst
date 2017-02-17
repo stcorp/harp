@@ -275,8 +275,8 @@ solar_zenith_angle                            sensor,                         X
 sun_normalized_radiance                                                       X                    X
 surface_albedo                                                                X            X       X
 temperature                                   surface                         X       X    X
+tropopause_altitude                                                           X            X             altitude of the troposphere/stratosphere boundary location
 tropopause_pressure                                                           X            X             pressure level of the troposphere/stratosphere boundary location
-tropopause_height                                                             X            X             altitude of the troposphere/stratosphere boundary location
 viewing_azimuth_angle                                                         X
 viewing_elevation_angle                                                       X
 viewing_zenith_angle                                                          X
