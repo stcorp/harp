@@ -231,49 +231,55 @@
 <td>Pa</td>
 <td>pressure boundaries</td>
 </tr>
-<tr class="row-even"><td><strong>tropospheric_NO2_column_number_density</strong></td>
+<tr class="row-even"><td><strong>tropopause_pressure</strong></td>
+<td>double</td>
+<td>{<em>time</em>}</td>
+<td>Pa</td>
+<td>tropopause pressure</td>
+</tr>
+<tr class="row-odd"><td><strong>tropospheric_NO2_column_number_density</strong></td>
 <td>float</td>
 <td>{<em>time</em>}</td>
 <td>mol/m^2</td>
 <td>tropospheric vertical column of NO2</td>
 </tr>
-<tr class="row-odd"><td><strong>tropospheric_NO2_column_number_density_uncertainty</strong></td>
+<tr class="row-even"><td><strong>tropospheric_NO2_column_number_density_uncertainty</strong></td>
 <td>float</td>
 <td>{<em>time</em>}</td>
 <td>mol/m^2</td>
 <td>uncertainty of the tropospheric vertical column of NO2 (standard error)</td>
 </tr>
-<tr class="row-even"><td><strong>tropospheric_NO2_column_number_density_amf</strong></td>
+<tr class="row-odd"><td><strong>tropospheric_NO2_column_number_density_amf</strong></td>
 <td>float</td>
 <td>{<em>time</em>}</td>
 <td>&nbsp;</td>
 <td>tropospheric air mass factor, computed by integrating the altitude dependent air mass factor over the atmospheric layers from the surface up to and including the layer with the tropopause</td>
 </tr>
-<tr class="row-odd"><td><strong>NO2_column_number_density</strong></td>
+<tr class="row-even"><td><strong>NO2_column_number_density</strong></td>
 <td>float</td>
 <td>{<em>time</em>}</td>
 <td>mol/m^2</td>
 <td>total vertical column of NO2 (ratio of the slant column density of NO2 and the total air mass factor)</td>
 </tr>
-<tr class="row-even"><td><strong>NO2_column_number_density_uncertainty</strong></td>
+<tr class="row-odd"><td><strong>NO2_column_number_density_uncertainty</strong></td>
 <td>float</td>
 <td>{<em>time</em>}</td>
 <td>mol/m^2</td>
 <td>uncertainty of the total vertical column of NO2 (standard error)</td>
 </tr>
-<tr class="row-odd"><td><strong>NO2_column_number_density_amf</strong></td>
+<tr class="row-even"><td><strong>NO2_column_number_density_amf</strong></td>
 <td>float</td>
 <td>{<em>time</em>}</td>
 <td>&nbsp;</td>
 <td>total air mass factor, computed by integrating the altitude dependent air mass factor over the atmospheric layers from the surface to top-of-atmosphere</td>
 </tr>
-<tr class="row-even"><td><strong>NO2_column_number_density_avk</strong></td>
+<tr class="row-odd"><td><strong>NO2_column_number_density_avk</strong></td>
 <td>float</td>
 <td>{<em>time</em>, <em>vertical</em>}</td>
 <td>&nbsp;</td>
 <td>averaging kernel for the air mass factor correction, describing the NO2 profile sensitivity of the vertical column density</td>
 </tr>
-<tr class="row-odd"><td><strong>index</strong></td>
+<tr class="row-even"><td><strong>index</strong></td>
 <td>int32</td>
 <td>{<em>time</em>}</td>
 <td>&nbsp;</td>
@@ -363,10 +369,17 @@
 </tr>
 <tr class="row-odd"><td rowspan="2"><strong>pressure_bounds</strong></td>
 <td><em>path</em></td>
-<td><strong>/PRODUCT/tm5_pressure_level_a[],/PRODUCT/tm5_pressure_level_b[],/PRODUCT/SUPPORT_DATA/INPUT_DATA/surface_pressure[]</strong></td>
+<td><strong>/PRODUCT/tm5_pressure_level_a[], /PRODUCT/tm5_pressure_level_b[],/PRODUCT/SUPPORT_DATA/INPUT_DATA/surface_pressure[]</strong></td>
 </tr>
 <tr class="row-even"><td><em>description</em></td>
 <td>pressure in Pa at level k is derived from surface pressure in hPa as: tm5_pressure_level_a[k] + tm5_pressure_level_b[k] * surface_pressure[] * 100.0</td>
+</tr>
+<tr class="row-odd"><td rowspan="2"><strong>tropopause_pressure</strong></td>
+<td><em>path</em></td>
+<td><strong>/PRODUCT/tm5_pressure_level_a[], /PRODUCT/tm5_pressure_level_b[], /PRODUCT/tm5_tropopause_layer_index[], /PRODUCT/SUPPORT_DATA/INPUT_DATA/surface_pressure[]</strong></td>
+</tr>
+<tr class="row-even"><td><em>description</em></td>
+<td>pressure in Pa at tropause is derived from the upper bound of the layer with tropopause layer index k: tm5_pressure_level_a[k + 1] + tm5_pressure_level_b[k + 1] * surface_pressure[] * 100.0</td>
 </tr>
 <tr class="row-odd"><td><strong>tropospheric_NO2_column_number_density</strong></td>
 <td><em>path</em></td>

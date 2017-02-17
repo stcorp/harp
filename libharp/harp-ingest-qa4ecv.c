@@ -279,10 +279,36 @@ static int read_dataset(coda_cursor cursor, const char *dataset_name, harp_data_
     switch (data_type)
     {
         case harp_type_int32:
-            if (coda_cursor_read_uint32_array(&cursor, (uint32_t *)data.int32_data, coda_array_ordering_c) != 0)
             {
-                harp_set_error(HARP_ERROR_CODA, NULL);
-                return -1;
+                coda_native_type read_type;
+
+                if (coda_cursor_goto_first_array_element(&cursor) != 0)
+                {
+                    harp_set_error(HARP_ERROR_CODA, NULL);
+                    return -1;
+                }
+                if (coda_cursor_get_read_type(&cursor, &read_type) != 0)
+                {
+                    harp_set_error(HARP_ERROR_CODA, NULL);
+                    return -1;
+                }
+                coda_cursor_goto_parent(&cursor);
+                if (read_type == coda_native_type_uint32)
+                {
+                    if (coda_cursor_read_uint32_array(&cursor, (uint32_t *)data.int32_data, coda_array_ordering_c) != 0)
+                    {
+                        harp_set_error(HARP_ERROR_CODA, NULL);
+                        return -1;
+                    }
+                }
+                else
+                {
+                    if (coda_cursor_read_int32_array(&cursor, data.int32_data, coda_array_ordering_c) != 0)
+                    {
+                        harp_set_error(HARP_ERROR_CODA, NULL);
+                        return -1;
+                    }
+                }
             }
             break;
         case harp_type_float:
@@ -454,6 +480,106 @@ static int read_surface_pressure(void *user_data, harp_array data)
 
     return read_dataset(info->product_cursor, "tm5_surface_pressure", harp_type_float,
                         info->num_scanlines * info->num_pixels, data);
+}
+
+static int read_tropopause_pressure(void *user_data, harp_array data)
+{
+    ingest_info *info = (ingest_info *)user_data;
+    harp_array hybride_coef_a;
+    harp_array hybride_coef_b;
+    harp_array layer_index;
+    long num_profiles;
+    long num_layers;
+    long i;
+
+    num_profiles = info->num_scanlines * info->num_pixels;
+    num_layers = info->num_layers;
+
+    layer_index.ptr = malloc(num_profiles * sizeof(int32_t));
+    if (layer_index.ptr == NULL)
+    {
+        harp_set_error(HARP_ERROR_OUT_OF_MEMORY, "out of memory (could not allocate %lu bytes) (%s:%u)",
+                       num_profiles * sizeof(int32_t), __FILE__, __LINE__);
+        return -1;
+    }
+
+    hybride_coef_a.ptr = malloc(num_layers * 2 * sizeof(double));
+    if (hybride_coef_a.ptr == NULL)
+    {
+        harp_set_error(HARP_ERROR_OUT_OF_MEMORY, "out of memory (could not allocate %lu bytes) (%s:%u)",
+                       num_layers * 2 * sizeof(double), __FILE__, __LINE__);
+        free(layer_index.ptr);
+        return -1;
+    }
+
+    hybride_coef_b.ptr = malloc(num_layers * 2 * sizeof(double));
+    if (hybride_coef_b.ptr == NULL)
+    {
+        harp_set_error(HARP_ERROR_OUT_OF_MEMORY, "out of memory (could not allocate %lu bytes) (%s:%u)",
+                       num_layers * 2 * sizeof(double), __FILE__, __LINE__);
+        free(hybride_coef_a.ptr);
+        free(layer_index.ptr);
+        return -1;
+    }
+
+    if (read_dataset(info->product_cursor, "tm5_tropopause_layer_index", harp_type_int32, num_profiles, layer_index) !=
+        0)
+    {
+        free(hybride_coef_b.ptr);
+        free(hybride_coef_a.ptr);
+        free(layer_index.ptr);
+        return -1;
+    }
+
+    if (read_dataset(info->product_cursor, "tm5_pressure_level_a", harp_type_double, num_layers * 2, hybride_coef_a) !=
+        0)
+    {
+        free(hybride_coef_b.ptr);
+        free(hybride_coef_a.ptr);
+        free(layer_index.ptr);
+        return -1;
+    }
+
+    if (read_dataset(info->product_cursor, "tm5_pressure_level_b", harp_type_double, num_layers * 2, hybride_coef_b) !=
+        0)
+    {
+        free(hybride_coef_b.ptr);
+        free(hybride_coef_a.ptr);
+        free(layer_index.ptr);
+        return -1;
+    }
+
+    if (read_dataset(info->product_cursor, "tm5_surface_pressure", harp_type_double, num_profiles, data) != 0)
+    {
+        free(hybride_coef_b.ptr);
+        free(hybride_coef_a.ptr);
+        free(layer_index.ptr);
+        return -1;
+    }
+
+    for (i = 0; i < num_profiles; i++)
+    {
+        long index = layer_index.int32_data[i];
+
+        if (index >= 0 && index < num_layers)
+        {
+            double surface_pressure = data.double_data[i] * 100.0;      /* surface pressure at specific (time, lat, lon) */
+
+            /* the tropause level is the upper boundary of the layer defined by layer_index */
+            data.double_data[i] = hybride_coef_a.double_data[index * 2 + 1] +
+                hybride_coef_b.double_data[index * 2 + 1] * surface_pressure;
+        }
+        else
+        {
+            data.double_data[i] = harp_nan();
+        }
+    }
+
+    free(hybride_coef_b.ptr);
+    free(hybride_coef_a.ptr);
+    free(layer_index.ptr);
+
+    return 0;
 }
 
 static int read_pressure_bounds(void *user_data, harp_array data)
@@ -919,6 +1045,16 @@ static void register_no2_product(void)
 
     product_definition = harp_ingestion_register_product(module, "QA4ECV_L2_NO2", NULL, read_dimensions);
     register_common_variables(product_definition);
+
+    description = "tropopause pressure";
+    variable_definition = harp_ingestion_register_variable_full_read(product_definition, "tropopause_pressure",
+                                                                     harp_type_double, 1, dimension_type, NULL,
+                                                                     description, "Pa", NULL, read_tropopause_pressure);
+    path = "/PRODUCT/tm5_pressure_level_a[], /PRODUCT/tm5_pressure_level_b[], /PRODUCT/tm5_surface_pressure[], "
+        "/PRODUCT/tm5_tropopause_layer_index[]";
+    description = "pressure in Pa at tropause is derived from the upper bound of the layer with tropopause layer index "
+        "k: tm5_pressure_level_a[k + 1] + tm5_pressure_level_b[k + 1] * tm5_surface_pressure[] * 100.0";
+    harp_variable_definition_add_mapping(variable_definition, NULL, NULL, path, description);
 
     description = "tropospheric vertical column of NO2";
     variable_definition =
