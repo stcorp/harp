@@ -256,6 +256,7 @@ set(LIBHARP_SOURCES
   libharp/harp-geometry-util.c
   libharp/harp-geometry-wgs84.c
   libharp/harp-geometry.h
+  libharp/harp-ingest-cci_l2_aerosol.c
   libharp/harp-ingest-cci_l2_o3_lp.c
   libharp/harp-ingest-cci_l2_o3_np.c
   libharp/harp-ingest-cci_l2_o3_tc.c
