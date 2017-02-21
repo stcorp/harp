@@ -754,14 +754,64 @@ static int read_longitude(void *user_data, harp_array data)
 
 static int read_latitude_bounds(void *user_data, harp_array data)
 {
-    return get_main_geo_earth_actual_data((ingest_info *)user_data, "CORNER_ACTUAL", "latitude", 0, 3, 4,
-                                          data.double_data);
+    ingest_info *info = (ingest_info *)user_data;
+    long i, j;
+    double *double_data, a, b, c, d;
+
+    if (get_main_geo_earth_actual_data(info, "CORNER_ACTUAL", "latitude", 0, 3, 4, data.double_data) != 0)
+    {
+        return -1;
+    }
+
+    /* Rearrange the corners ABCD as BDCA */
+    double_data = data.double_data;
+    for (i = 0; i < info->num_mdr_records; i++)
+    {
+        for (j = 0; j < (MAX_READOUTS_PER_MDR_RECORD - info->readout_offset[i]); j++)
+        {
+            a = *double_data;
+            b = *(double_data + 1);
+            c = *(double_data + 2);
+            d = *(double_data + 3);
+            *double_data = b;
+            *(double_data + 1) = d;
+            *(double_data + 2) = c;
+            *(double_data + 3) = a;
+            double_data += 4;
+        }
+    }
+    return 0;
 }
 
 static int read_longitude_bounds(void *user_data, harp_array data)
 {
-    return get_main_geo_earth_actual_data((ingest_info *)user_data, "CORNER_ACTUAL", "longitude", 0, 3, 4,
-                                          data.double_data);
+    ingest_info *info = (ingest_info *)user_data;
+    long i, j;
+    double *double_data, a, b, c, d;
+
+    if (get_main_geo_earth_actual_data(info, "CORNER_ACTUAL", "longitude", 0, 3, 4, data.double_data) != 0)
+    {
+        return -1;
+    }
+
+    /* Rearrange the corners ABCD as BDCA */
+    double_data = data.double_data;
+    for (i = 0; i < info->num_mdr_records; i++)
+    {
+        for (j = 0; j < (MAX_READOUTS_PER_MDR_RECORD - info->readout_offset[i]); j++)
+        {
+            a = *double_data;
+            b = *(double_data + 1);
+            c = *(double_data + 2);
+            d = *(double_data + 3);
+            *double_data = b;
+            *(double_data + 1) = d;
+            *(double_data + 2) = c;
+            *(double_data + 3) = a;
+            double_data += 4;
+        }
+    }
+    return 0;
 }
 
 static int read_wavelength_photon_radiance(void *user_data, harp_array data)
