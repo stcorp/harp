@@ -82,46 +82,7 @@
 <li class="toctree-l1"><a class="reference internal" href="../algorithms/index.html">Algorithms</a></li>
 <li class="toctree-l1"><a class="reference internal" href="../operations.html">Operations</a></li>
 <li class="toctree-l1 current"><a class="current reference internal" href="#">Ingestion definitions</a><ul>
-<li class="toctree-l2"><a class="reference internal" href="#aerosol-cci-aatsr-adv-l2-products">Aerosol CCI AATSR ADV L2 products</a><ul>
-<li class="toctree-l3"><a class="reference internal" href="#esacci-aerosol-aatsr-adv-l2">ESACCI_AEROSOL_AATSR_ADV_L2</a></li>
-</ul>
-</li>
-<li class="toctree-l2"><a class="reference internal" href="#aerosol-cci-aatsr-orac-l2-products">Aerosol CCI AATSR ORAC L2 products</a><ul>
-<li class="toctree-l3"><a class="reference internal" href="#esacci-aerosol-aatsr-orac-l2">ESACCI_AEROSOL_AATSR_ORAC_L2</a></li>
-</ul>
-</li>
-<li class="toctree-l2"><a class="reference internal" href="#aerosol-cci-aatsr-su-l2-products">Aerosol CCI AATSR SU L2 products</a><ul>
-<li class="toctree-l3"><a class="reference internal" href="#esacci-aerosol-aatsr-su-l2">ESACCI_AEROSOL_AATSR_SU_L2</a></li>
-</ul>
-</li>
-<li class="toctree-l2"><a class="reference internal" href="#aerosol-cci-atsr2-adv-l2-products">Aerosol CCI ATSR2 ADV L2 products</a><ul>
-<li class="toctree-l3"><a class="reference internal" href="#esacci-aerosol-atsr2-adv-l2">ESACCI_AEROSOL_ATSR2_ADV_L2</a></li>
-</ul>
-</li>
-<li class="toctree-l2"><a class="reference internal" href="#aerosol-cci-atsr2-orac-l2-products">Aerosol CCI ATSR2 ORAC L2 products</a><ul>
-<li class="toctree-l3"><a class="reference internal" href="#esacci-aerosol-atsr2-orac-l2">ESACCI_AEROSOL_ATSR2_ORAC_L2</a></li>
-</ul>
-</li>
-<li class="toctree-l2"><a class="reference internal" href="#aerosol-cci-atsr2-su-l2-products">Aerosol CCI ATSR2 SU L2 products</a><ul>
-<li class="toctree-l3"><a class="reference internal" href="#esacci-aerosol-atsr2-su-l2">ESACCI_AEROSOL_ATSR2_SU_L2</a></li>
-</ul>
-</li>
-<li class="toctree-l2"><a class="reference internal" href="#aerosol-cci-iasi-dlr-l2-products">Aerosol CCI IASI DLR L2 products</a><ul>
-<li class="toctree-l3"><a class="reference internal" href="#esacci-aerosol-iasi-dlr-l2">ESACCI_AEROSOL_IASI_DLR_L2</a></li>
-</ul>
-</li>
-<li class="toctree-l2"><a class="reference internal" href="#aerosol-cci-iasi-lmd-l2-products">Aerosol CCI IASI LMD L2 products</a><ul>
-<li class="toctree-l3"><a class="reference internal" href="#esacci-aerosol-iasi-lmd-l2">ESACCI_AEROSOL_IASI_LMD_L2</a></li>
-</ul>
-</li>
-<li class="toctree-l2"><a class="reference internal" href="#aerosol-cci-iasi-ulb-l2-products">Aerosol CCI IASI ULB L2 products</a><ul>
-<li class="toctree-l3"><a class="reference internal" href="#esacci-aerosol-iasi-ulb-l2">ESACCI_AEROSOL_IASI_ULB_L2</a></li>
-</ul>
-</li>
-<li class="toctree-l2"><a class="reference internal" href="#aerosol-cci-meris-alamo-l2-products">Aerosol CCI MERIS ALAMO L2 products</a><ul>
-<li class="toctree-l3"><a class="reference internal" href="#esacci-aerosol-meris-alamo-l2">ESACCI_AEROSOL_MERIS_ALAMO_L2</a></li>
-</ul>
-</li>
+<li class="toctree-l2"><a class="reference internal" href="#aerosol-cci-products">Aerosol CCI products</a></li>
 <li class="toctree-l2"><a class="reference internal" href="#ecmwf-grib-products">ECMWF GRIB products</a></li>
 <li class="toctree-l2"><a class="reference internal" href="#geoms-products">GEOMS products</a><ul>
 <li class="toctree-l3"><a class="reference internal" href="#geoms-te-ftir">GEOMS-TE-FTIR</a></li>
@@ -227,8 +188,8 @@
 <p>For example, suppose a certain type of product contains both O<sub>3</sub> and NO<sub>2</sub> volume mixing ratios retrieved on different spatial grids. In this case, it is not possible to have a single pair of <em>longitude</em> and <em>latitude</em> variables that describes the geolocation information for both retrievals. Therefore, two different conversions will be made available for this product type, one for the O<sub>3</sub> volume mixing ratio, and another for the NO<sub>2</sub> volume mixing ratio.</p>
 <p>For each product type, <em>ingestion options</em> may be available. These options can be used, for example, to switch between different product conversions (usually when quantities defined on different grids are present within a single product), or to switch between different variants of a quantity. Ingestion options should be passed to the ingest function as a semi-colon separated string of <code class="docutils literal"><span class="pre">option_name=value</span></code> pairs. These options are unrelated to <em>operations</em> (filtering, inclusion and exclusion of variables, and adding derived variables). Ingestion options are only meaningful in the context of an ingestion, while operations can be applied both on-the-fly during ingestion, as well as to existing HARP products.</p>
 <p>The list below gives an overview of the conversions and ingestion options available for each product type. For each conversion, there is a separate page that describes the resulting HARP product. This includes a list of all the variables, the value type, the dimensions, and the unit of each variable, as well as a full <em>mapping description</em> that details where and how HARP retrieved the data from the input product.</p>
-<div class="section" id="aerosol-cci-aatsr-adv-l2-products">
-<span id="aerosol-cci-aatsr-adv-l2"></span><h2>Aerosol CCI AATSR ADV L2 products</h2>
+<div class="section" id="aerosol-cci-products">
+<span id="aerosol-cci"></span><h2>Aerosol CCI products</h2>
 <table border="1" class="docutils">
 <colgroup>
 <col width="33%" />
@@ -238,454 +199,52 @@
 <thead valign="bottom">
 <tr class="row-odd"><th class="head">HARP product name</th>
 <th class="head">CODA product type</th>
-<th class="head">description</th>
-</tr>
-</thead>
-<tbody valign="top">
-<tr class="row-even"><td><a class="reference internal" href="#esacci-aerosol-aatsr-adv-l2"><span class="std std-ref">ESACCI_AEROSOL_AATSR_ADV_L2</span></a></td>
-<td>ESACCI_AEROSOL/AATSR_ADV_L2</td>
-<td>CCI L2 Aerosol profile from AATSR processed by ADV</td>
-</tr>
-</tbody>
-</table>
-<div class="section" id="esacci-aerosol-aatsr-adv-l2">
-<span id="id1"></span><h3>ESACCI_AEROSOL_AATSR_ADV_L2</h3>
-<p>CCI L2 Aerosol profile from AATSR processed by ADV</p>
-<p>The table below lists the available product conversions for <code class="docutils literal"><span class="pre">ESACCI_AEROSOL_AATSR_ADV_L2</span></code> products.</p>
-<table border="1" class="docutils">
-<colgroup>
-<col width="33%" />
-<col width="33%" />
-<col width="33%" />
-</colgroup>
-<thead valign="bottom">
-<tr class="row-odd"><th class="head">name</th>
-<th class="head">ingestion option</th>
 <th class="head">description</th>
 </tr>
 </thead>
 <tbody valign="top">
 <tr class="row-even"><td><a class="reference internal" href="ESACCI_AEROSOL_L2_AATSR_ADV.html"><span class="doc">ESACCI_AEROSOL_L2_AATSR_ADV</span></a></td>
-<td>&nbsp;</td>
-<td>&nbsp;</td>
+<td>ESACCI_AEROSOL/AATSR_ADV_L2</td>
+<td>CCI L2 Aerosol profile from AATSR processed by ADV</td>
 </tr>
-</tbody>
-</table>
-</div>
-</div>
-<div class="section" id="aerosol-cci-aatsr-orac-l2-products">
-<span id="aerosol-cci-aatsr-orac-l2"></span><h2>Aerosol CCI AATSR ORAC L2 products</h2>
-<table border="1" class="docutils">
-<colgroup>
-<col width="33%" />
-<col width="33%" />
-<col width="33%" />
-</colgroup>
-<thead valign="bottom">
-<tr class="row-odd"><th class="head">HARP product name</th>
-<th class="head">CODA product type</th>
-<th class="head">description</th>
-</tr>
-</thead>
-<tbody valign="top">
-<tr class="row-even"><td><a class="reference internal" href="#esacci-aerosol-aatsr-orac-l2"><span class="std std-ref">ESACCI_AEROSOL_AATSR_ORAC_L2</span></a></td>
+<tr class="row-odd"><td><a class="reference internal" href="ESACCI_AEROSOL_L2_AATSR_ORAC.html"><span class="doc">ESACCI_AEROSOL_L2_AATSR_ORAC</span></a></td>
 <td>ESACCI_AEROSOL/AATSR_ORAC_L2</td>
 <td>CCI L2 Aerosol profile from AATSR processed by ORAC</td>
 </tr>
-</tbody>
-</table>
-<div class="section" id="esacci-aerosol-aatsr-orac-l2">
-<span id="id2"></span><h3>ESACCI_AEROSOL_AATSR_ORAC_L2</h3>
-<p>CCI L2 Aerosol profile from AATSR processed by ORAC</p>
-<p>The table below lists the available product conversions for <code class="docutils literal"><span class="pre">ESACCI_AEROSOL_AATSR_ORAC_L2</span></code> products.</p>
-<table border="1" class="docutils">
-<colgroup>
-<col width="33%" />
-<col width="33%" />
-<col width="33%" />
-</colgroup>
-<thead valign="bottom">
-<tr class="row-odd"><th class="head">name</th>
-<th class="head">ingestion option</th>
-<th class="head">description</th>
-</tr>
-</thead>
-<tbody valign="top">
-<tr class="row-even"><td><a class="reference internal" href="ESACCI_AEROSOL_L2_AATSR_ORAC.html"><span class="doc">ESACCI_AEROSOL_L2_AATSR_ORAC</span></a></td>
-<td>&nbsp;</td>
-<td>&nbsp;</td>
-</tr>
-</tbody>
-</table>
-</div>
-</div>
-<div class="section" id="aerosol-cci-aatsr-su-l2-products">
-<span id="aerosol-cci-aatsr-su-l2"></span><h2>Aerosol CCI AATSR SU L2 products</h2>
-<table border="1" class="docutils">
-<colgroup>
-<col width="33%" />
-<col width="33%" />
-<col width="33%" />
-</colgroup>
-<thead valign="bottom">
-<tr class="row-odd"><th class="head">HARP product name</th>
-<th class="head">CODA product type</th>
-<th class="head">description</th>
-</tr>
-</thead>
-<tbody valign="top">
-<tr class="row-even"><td><a class="reference internal" href="#esacci-aerosol-aatsr-su-l2"><span class="std std-ref">ESACCI_AEROSOL_AATSR_SU_L2</span></a></td>
+<tr class="row-even"><td><a class="reference internal" href="ESACCI_AEROSOL_L2_AATSR_SU.html"><span class="doc">ESACCI_AEROSOL_L2_AATSR_SU</span></a></td>
 <td>ESACCI_AEROSOL/AATSR_SU_L2</td>
 <td>CCI L2 Aerosol profile from AATSR processed by SU</td>
 </tr>
-</tbody>
-</table>
-<div class="section" id="esacci-aerosol-aatsr-su-l2">
-<span id="id3"></span><h3>ESACCI_AEROSOL_AATSR_SU_L2</h3>
-<p>CCI L2 Aerosol profile from AATSR processed by SU</p>
-<p>The table below lists the available product conversions for <code class="docutils literal"><span class="pre">ESACCI_AEROSOL_AATSR_SU_L2</span></code> products.</p>
-<table border="1" class="docutils">
-<colgroup>
-<col width="33%" />
-<col width="33%" />
-<col width="33%" />
-</colgroup>
-<thead valign="bottom">
-<tr class="row-odd"><th class="head">name</th>
-<th class="head">ingestion option</th>
-<th class="head">description</th>
-</tr>
-</thead>
-<tbody valign="top">
-<tr class="row-even"><td><a class="reference internal" href="ESACCI_AEROSOL_L2_AATSR_SU.html"><span class="doc">ESACCI_AEROSOL_L2_AATSR_SU</span></a></td>
-<td>&nbsp;</td>
-<td>&nbsp;</td>
-</tr>
-</tbody>
-</table>
-</div>
-</div>
-<div class="section" id="aerosol-cci-atsr2-adv-l2-products">
-<span id="aerosol-cci-atsr2-adv-l2"></span><h2>Aerosol CCI ATSR2 ADV L2 products</h2>
-<table border="1" class="docutils">
-<colgroup>
-<col width="33%" />
-<col width="33%" />
-<col width="33%" />
-</colgroup>
-<thead valign="bottom">
-<tr class="row-odd"><th class="head">HARP product name</th>
-<th class="head">CODA product type</th>
-<th class="head">description</th>
-</tr>
-</thead>
-<tbody valign="top">
-<tr class="row-even"><td><a class="reference internal" href="#esacci-aerosol-atsr2-adv-l2"><span class="std std-ref">ESACCI_AEROSOL_ATSR2_ADV_L2</span></a></td>
+<tr class="row-odd"><td><a class="reference internal" href="ESACCI_AEROSOL_L2_ATSR2_ADV.html"><span class="doc">ESACCI_AEROSOL_L2_ATSR2_ADV</span></a></td>
 <td>ESACCI_AEROSOL/ATSR2_ADV_L2</td>
 <td>CCI L2 Aerosol profile from ATSR-2 processed by ADV</td>
 </tr>
-</tbody>
-</table>
-<div class="section" id="esacci-aerosol-atsr2-adv-l2">
-<span id="id4"></span><h3>ESACCI_AEROSOL_ATSR2_ADV_L2</h3>
-<p>CCI L2 Aerosol profile from ATSR-2 processed by ADV</p>
-<p>The table below lists the available product conversions for <code class="docutils literal"><span class="pre">ESACCI_AEROSOL_ATSR2_ADV_L2</span></code> products.</p>
-<table border="1" class="docutils">
-<colgroup>
-<col width="33%" />
-<col width="33%" />
-<col width="33%" />
-</colgroup>
-<thead valign="bottom">
-<tr class="row-odd"><th class="head">name</th>
-<th class="head">ingestion option</th>
-<th class="head">description</th>
-</tr>
-</thead>
-<tbody valign="top">
-<tr class="row-even"><td><a class="reference internal" href="ESACCI_AEROSOL_L2_ATSR2_ADV.html"><span class="doc">ESACCI_AEROSOL_L2_ATSR2_ADV</span></a></td>
-<td>&nbsp;</td>
-<td>&nbsp;</td>
-</tr>
-</tbody>
-</table>
-</div>
-</div>
-<div class="section" id="aerosol-cci-atsr2-orac-l2-products">
-<span id="aerosol-cci-atsr2-orac-l2"></span><h2>Aerosol CCI ATSR2 ORAC L2 products</h2>
-<table border="1" class="docutils">
-<colgroup>
-<col width="33%" />
-<col width="33%" />
-<col width="33%" />
-</colgroup>
-<thead valign="bottom">
-<tr class="row-odd"><th class="head">HARP product name</th>
-<th class="head">CODA product type</th>
-<th class="head">description</th>
-</tr>
-</thead>
-<tbody valign="top">
-<tr class="row-even"><td><a class="reference internal" href="#esacci-aerosol-atsr2-orac-l2"><span class="std std-ref">ESACCI_AEROSOL_ATSR2_ORAC_L2</span></a></td>
+<tr class="row-even"><td><a class="reference internal" href="ESACCI_AEROSOL_L2_ATSR2_ORAC.html"><span class="doc">ESACCI_AEROSOL_L2_ATSR2_ORAC</span></a></td>
 <td>ESACCI_AEROSOL/ATSR2_ORAC_L2</td>
 <td>CCI L2 Aerosol profile from ATSR-2 processed by ORAC</td>
 </tr>
-</tbody>
-</table>
-<div class="section" id="esacci-aerosol-atsr2-orac-l2">
-<span id="id5"></span><h3>ESACCI_AEROSOL_ATSR2_ORAC_L2</h3>
-<p>CCI L2 Aerosol profile from ATSR-2 processed by ORAC</p>
-<p>The table below lists the available product conversions for <code class="docutils literal"><span class="pre">ESACCI_AEROSOL_ATSR2_ORAC_L2</span></code> products.</p>
-<table border="1" class="docutils">
-<colgroup>
-<col width="33%" />
-<col width="33%" />
-<col width="33%" />
-</colgroup>
-<thead valign="bottom">
-<tr class="row-odd"><th class="head">name</th>
-<th class="head">ingestion option</th>
-<th class="head">description</th>
-</tr>
-</thead>
-<tbody valign="top">
-<tr class="row-even"><td><a class="reference internal" href="ESACCI_AEROSOL_L2_ATSR2_ORAC.html"><span class="doc">ESACCI_AEROSOL_L2_ATSR2_ORAC</span></a></td>
-<td>&nbsp;</td>
-<td>&nbsp;</td>
-</tr>
-</tbody>
-</table>
-</div>
-</div>
-<div class="section" id="aerosol-cci-atsr2-su-l2-products">
-<span id="aerosol-cci-atsr2-su-l2"></span><h2>Aerosol CCI ATSR2 SU L2 products</h2>
-<table border="1" class="docutils">
-<colgroup>
-<col width="33%" />
-<col width="33%" />
-<col width="33%" />
-</colgroup>
-<thead valign="bottom">
-<tr class="row-odd"><th class="head">HARP product name</th>
-<th class="head">CODA product type</th>
-<th class="head">description</th>
-</tr>
-</thead>
-<tbody valign="top">
-<tr class="row-even"><td><a class="reference internal" href="#esacci-aerosol-atsr2-su-l2"><span class="std std-ref">ESACCI_AEROSOL_ATSR2_SU_L2</span></a></td>
+<tr class="row-odd"><td><a class="reference internal" href="ESACCI_AEROSOL_L2_ATSR2_SU.html"><span class="doc">ESACCI_AEROSOL_L2_ATSR2_SU</span></a></td>
 <td>ESACCI_AEROSOL/ATSR2_SU_L2</td>
 <td>CCI L2 Aerosol profile from ATSR-2 processed by SU</td>
 </tr>
-</tbody>
-</table>
-<div class="section" id="esacci-aerosol-atsr2-su-l2">
-<span id="id6"></span><h3>ESACCI_AEROSOL_ATSR2_SU_L2</h3>
-<p>CCI L2 Aerosol profile from ATSR-2 processed by SU</p>
-<p>The table below lists the available product conversions for <code class="docutils literal"><span class="pre">ESACCI_AEROSOL_ATSR2_SU_L2</span></code> products.</p>
-<table border="1" class="docutils">
-<colgroup>
-<col width="33%" />
-<col width="33%" />
-<col width="33%" />
-</colgroup>
-<thead valign="bottom">
-<tr class="row-odd"><th class="head">name</th>
-<th class="head">ingestion option</th>
-<th class="head">description</th>
-</tr>
-</thead>
-<tbody valign="top">
-<tr class="row-even"><td><a class="reference internal" href="ESACCI_AEROSOL_L2_ATSR2_SU.html"><span class="doc">ESACCI_AEROSOL_L2_ATSR2_SU</span></a></td>
-<td>&nbsp;</td>
-<td>&nbsp;</td>
-</tr>
-</tbody>
-</table>
-</div>
-</div>
-<div class="section" id="aerosol-cci-iasi-dlr-l2-products">
-<span id="aerosol-cci-iasi-dlr-l2"></span><h2>Aerosol CCI IASI DLR L2 products</h2>
-<table border="1" class="docutils">
-<colgroup>
-<col width="33%" />
-<col width="33%" />
-<col width="33%" />
-</colgroup>
-<thead valign="bottom">
-<tr class="row-odd"><th class="head">HARP product name</th>
-<th class="head">CODA product type</th>
-<th class="head">description</th>
-</tr>
-</thead>
-<tbody valign="top">
-<tr class="row-even"><td><a class="reference internal" href="#esacci-aerosol-iasi-dlr-l2"><span class="std std-ref">ESACCI_AEROSOL_IASI_DLR_L2</span></a></td>
+<tr class="row-even"><td><a class="reference internal" href="ESACCI_AEROSOL_L2_IASI_DLR.html"><span class="doc">ESACCI_AEROSOL_L2_IASI_DLR</span></a></td>
 <td>ESACCI_AEROSOL/IASI_DLR_L2</td>
 <td>CCI L2 Aerosol profile from IASI processed by DLR</td>
 </tr>
-</tbody>
-</table>
-<div class="section" id="esacci-aerosol-iasi-dlr-l2">
-<span id="id7"></span><h3>ESACCI_AEROSOL_IASI_DLR_L2</h3>
-<p>CCI L2 Aerosol profile from IASI processed by DLR</p>
-<p>The table below lists the available product conversions for <code class="docutils literal"><span class="pre">ESACCI_AEROSOL_IASI_DLR_L2</span></code> products.</p>
-<table border="1" class="docutils">
-<colgroup>
-<col width="33%" />
-<col width="33%" />
-<col width="33%" />
-</colgroup>
-<thead valign="bottom">
-<tr class="row-odd"><th class="head">name</th>
-<th class="head">ingestion option</th>
-<th class="head">description</th>
-</tr>
-</thead>
-<tbody valign="top">
-<tr class="row-even"><td><a class="reference internal" href="ESACCI_AEROSOL_L2_IASI_DLR.html"><span class="doc">ESACCI_AEROSOL_L2_IASI_DLR</span></a></td>
-<td>&nbsp;</td>
-<td>&nbsp;</td>
-</tr>
-</tbody>
-</table>
-</div>
-</div>
-<div class="section" id="aerosol-cci-iasi-lmd-l2-products">
-<span id="aerosol-cci-iasi-lmd-l2"></span><h2>Aerosol CCI IASI LMD L2 products</h2>
-<table border="1" class="docutils">
-<colgroup>
-<col width="33%" />
-<col width="33%" />
-<col width="33%" />
-</colgroup>
-<thead valign="bottom">
-<tr class="row-odd"><th class="head">HARP product name</th>
-<th class="head">CODA product type</th>
-<th class="head">description</th>
-</tr>
-</thead>
-<tbody valign="top">
-<tr class="row-even"><td><a class="reference internal" href="#esacci-aerosol-iasi-lmd-l2"><span class="std std-ref">ESACCI_AEROSOL_IASI_LMD_L2</span></a></td>
+<tr class="row-odd"><td><a class="reference internal" href="ESACCI_AEROSOL_L2_IASI_LMD.html"><span class="doc">ESACCI_AEROSOL_L2_IASI_LMD</span></a></td>
 <td>ESACCI_AEROSOL/IASI_LMD_L2</td>
 <td>CCI L2 Aerosol profile from IASI processed by LMD</td>
 </tr>
-</tbody>
-</table>
-<div class="section" id="esacci-aerosol-iasi-lmd-l2">
-<span id="id8"></span><h3>ESACCI_AEROSOL_IASI_LMD_L2</h3>
-<p>CCI L2 Aerosol profile from IASI processed by LMD</p>
-<p>The table below lists the available product conversions for <code class="docutils literal"><span class="pre">ESACCI_AEROSOL_IASI_LMD_L2</span></code> products.</p>
-<table border="1" class="docutils">
-<colgroup>
-<col width="33%" />
-<col width="33%" />
-<col width="33%" />
-</colgroup>
-<thead valign="bottom">
-<tr class="row-odd"><th class="head">name</th>
-<th class="head">ingestion option</th>
-<th class="head">description</th>
-</tr>
-</thead>
-<tbody valign="top">
-<tr class="row-even"><td><a class="reference internal" href="ESACCI_AEROSOL_L2_IASI_LMD.html"><span class="doc">ESACCI_AEROSOL_L2_IASI_LMD</span></a></td>
-<td>&nbsp;</td>
-<td>&nbsp;</td>
-</tr>
-</tbody>
-</table>
-</div>
-</div>
-<div class="section" id="aerosol-cci-iasi-ulb-l2-products">
-<span id="aerosol-cci-iasi-ulb-l2"></span><h2>Aerosol CCI IASI ULB L2 products</h2>
-<table border="1" class="docutils">
-<colgroup>
-<col width="33%" />
-<col width="33%" />
-<col width="33%" />
-</colgroup>
-<thead valign="bottom">
-<tr class="row-odd"><th class="head">HARP product name</th>
-<th class="head">CODA product type</th>
-<th class="head">description</th>
-</tr>
-</thead>
-<tbody valign="top">
-<tr class="row-even"><td><a class="reference internal" href="#esacci-aerosol-iasi-ulb-l2"><span class="std std-ref">ESACCI_AEROSOL_IASI_ULB_L2</span></a></td>
+<tr class="row-even"><td><a class="reference internal" href="ESACCI_AEROSOL_L2_IASI_ULB.html"><span class="doc">ESACCI_AEROSOL_L2_IASI_ULB</span></a></td>
 <td>ESACCI_AEROSOL/IASI_ULB_L2</td>
 <td>CCI L2 Aerosol profile from IASI processed by ULB</td>
 </tr>
-</tbody>
-</table>
-<div class="section" id="esacci-aerosol-iasi-ulb-l2">
-<span id="id9"></span><h3>ESACCI_AEROSOL_IASI_ULB_L2</h3>
-<p>CCI L2 Aerosol profile from IASI processed by ULB</p>
-<p>The table below lists the available product conversions for <code class="docutils literal"><span class="pre">ESACCI_AEROSOL_IASI_ULB_L2</span></code> products.</p>
-<table border="1" class="docutils">
-<colgroup>
-<col width="33%" />
-<col width="33%" />
-<col width="33%" />
-</colgroup>
-<thead valign="bottom">
-<tr class="row-odd"><th class="head">name</th>
-<th class="head">ingestion option</th>
-<th class="head">description</th>
-</tr>
-</thead>
-<tbody valign="top">
-<tr class="row-even"><td><a class="reference internal" href="ESACCI_AEROSOL_L2_IASI_ULB.html"><span class="doc">ESACCI_AEROSOL_L2_IASI_ULB</span></a></td>
-<td>&nbsp;</td>
-<td>&nbsp;</td>
-</tr>
-</tbody>
-</table>
-</div>
-</div>
-<div class="section" id="aerosol-cci-meris-alamo-l2-products">
-<span id="aerosol-cci-meris-alamo-l2"></span><h2>Aerosol CCI MERIS ALAMO L2 products</h2>
-<table border="1" class="docutils">
-<colgroup>
-<col width="33%" />
-<col width="33%" />
-<col width="33%" />
-</colgroup>
-<thead valign="bottom">
-<tr class="row-odd"><th class="head">HARP product name</th>
-<th class="head">CODA product type</th>
-<th class="head">description</th>
-</tr>
-</thead>
-<tbody valign="top">
-<tr class="row-even"><td><a class="reference internal" href="#esacci-aerosol-meris-alamo-l2"><span class="std std-ref">ESACCI_AEROSOL_MERIS_ALAMO_L2</span></a></td>
+<tr class="row-odd"><td><a class="reference internal" href="ESACCI_AEROSOL_L2_MERIS_ALAMO.html"><span class="doc">ESACCI_AEROSOL_L2_MERIS_ALAMO</span></a></td>
 <td>ESACCI_AEROSOL/MERIS_ALAMO_L2</td>
 <td>CCI L2 Aerosol profile from MERIS processed by ALAMO</td>
 </tr>
 </tbody>
 </table>
-<div class="section" id="esacci-aerosol-meris-alamo-l2">
-<span id="id10"></span><h3>ESACCI_AEROSOL_MERIS_ALAMO_L2</h3>
-<p>CCI L2 Aerosol profile from MERIS processed by ALAMO</p>
-<p>The table below lists the available product conversions for <code class="docutils literal"><span class="pre">ESACCI_AEROSOL_MERIS_ALAMO_L2</span></code> products.</p>
-<table border="1" class="docutils">
-<colgroup>
-<col width="33%" />
-<col width="33%" />
-<col width="33%" />
-</colgroup>
-<thead valign="bottom">
-<tr class="row-odd"><th class="head">name</th>
-<th class="head">ingestion option</th>
-<th class="head">description</th>
-</tr>
-</thead>
-<tbody valign="top">
-<tr class="row-even"><td><a class="reference internal" href="ESACCI_AEROSOL_L2_MERIS_ALAMO.html"><span class="doc">ESACCI_AEROSOL_L2_MERIS_ALAMO</span></a></td>
-<td>&nbsp;</td>
-<td>&nbsp;</td>
-</tr>
-</tbody>
-</table>
-</div>
 </div>
 <div class="section" id="ecmwf-grib-products">
 <span id="ecmwf-grib"></span><h2>ECMWF GRIB products</h2>
@@ -759,7 +318,7 @@
 </tbody>
 </table>
 <div class="section" id="geoms-te-ftir">
-<span id="id11"></span><h3>GEOMS-TE-FTIR</h3>
+<span id="id1"></span><h3>GEOMS-TE-FTIR</h3>
 <p>GEOMS template for FTIR</p>
 <p>The table below lists the available product conversions for <code class="docutils literal"><span class="pre">GEOMS-TE-FTIR</span></code> products.</p>
 <table border="1" class="docutils">
@@ -963,7 +522,7 @@
 </table>
 </div>
 <div class="section" id="geoms-te-lidar-o3">
-<span id="id12"></span><h3>GEOMS-TE-LIDAR-O3</h3>
+<span id="id2"></span><h3>GEOMS-TE-LIDAR-O3</h3>
 <p>GEOMS template for LIDAR ozone</p>
 <p>The table below lists the available product conversions for <code class="docutils literal"><span class="pre">GEOMS-TE-LIDAR-O3</span></code> products.</p>
 <table border="1" class="docutils">
@@ -991,7 +550,7 @@
 </table>
 </div>
 <div class="section" id="geoms-te-lidar-temperature">
-<span id="id13"></span><h3>GEOMS-TE-LIDAR-TEMPERATURE</h3>
+<span id="id3"></span><h3>GEOMS-TE-LIDAR-TEMPERATURE</h3>
 <p>GEOMS template for LIDAR temperature</p>
 <p>The table below lists the available product conversions for <code class="docutils literal"><span class="pre">GEOMS-TE-LIDAR-TEMPERATURE</span></code> products.</p>
 <table border="1" class="docutils">
@@ -1019,7 +578,7 @@
 </table>
 </div>
 <div class="section" id="geoms-te-mwr">
-<span id="id14"></span><h3>GEOMS-TE-MWR</h3>
+<span id="id4"></span><h3>GEOMS-TE-MWR</h3>
 <p>GEOMS template for MWR</p>
 <p>The table below lists the available product conversions for <code class="docutils literal"><span class="pre">GEOMS-TE-MWR</span></code> products.</p>
 <table border="1" class="docutils">
@@ -1123,7 +682,7 @@
 </table>
 </div>
 <div class="section" id="geoms-te-uvvis-doas-directsun">
-<span id="id15"></span><h3>GEOMS-TE-UVVIS-DOAS-DIRECTSUN</h3>
+<span id="id5"></span><h3>GEOMS-TE-UVVIS-DOAS-DIRECTSUN</h3>
 <p>GEOMS template for UVVIS-DOAS direct sun measurements</p>
 <p>The table below lists the available product conversions for <code class="docutils literal"><span class="pre">GEOMS-TE-UVVIS-DOAS-DIRECTSUN</span></code> products.</p>
 <table border="1" class="docutils">
@@ -1323,7 +882,7 @@
 </table>
 </div>
 <div class="section" id="geoms-te-uvvis-doas-offaxis">
-<span id="id16"></span><h3>GEOMS-TE-UVVIS-DOAS-OFFAXIS</h3>
+<span id="id6"></span><h3>GEOMS-TE-UVVIS-DOAS-OFFAXIS</h3>
 <p>GEOMS template for UVVIS-DOAS off-axis gas measurements</p>
 <p>The table below lists the available product conversions for <code class="docutils literal"><span class="pre">GEOMS-TE-UVVIS-DOAS-OFFAXIS</span></code> products.</p>
 <table border="1" class="docutils">
@@ -1483,7 +1042,7 @@
 </table>
 </div>
 <div class="section" id="geoms-te-uvvis-doas-offaxis-aerosol">
-<span id="id17"></span><h3>GEOMS-TE-UVVIS-DOAS-OFFAXIS-AEROSOL</h3>
+<span id="id7"></span><h3>GEOMS-TE-UVVIS-DOAS-OFFAXIS-AEROSOL</h3>
 <p>GEOMS template for UVVIS-DOAS off-axis aerosol measurements</p>
 <p>The table below lists the available product conversions for <code class="docutils literal"><span class="pre">GEOMS-TE-UVVIS-DOAS-OFFAXIS-AEROSOL</span></code> products.</p>
 <table border="1" class="docutils">
@@ -1511,7 +1070,7 @@
 </table>
 </div>
 <div class="section" id="geoms-te-uvvis-doas-zenith">
-<span id="id18"></span><h3>GEOMS-TE-UVVIS-DOAS-ZENITH</h3>
+<span id="id8"></span><h3>GEOMS-TE-UVVIS-DOAS-ZENITH</h3>
 <p>GEOMS template for UVVIS-DOAS zenith measurements</p>
 <p>The table below lists the available product conversions for <code class="docutils literal"><span class="pre">GEOMS-TE-UVVIS-DOAS-ZENITH</span></code> products.</p>
 <table border="1" class="docutils">
@@ -1705,7 +1264,7 @@
 </tbody>
 </table>
 <div class="section" id="gome-l1-extracted">
-<span id="id19"></span><h3>GOME_L1_EXTRACTED</h3>
+<span id="id9"></span><h3>GOME_L1_EXTRACTED</h3>
 <p>GOME Level 1 Extracted data</p>
 <p>The table below lists the available product conversions for <code class="docutils literal"><span class="pre">GOME_L1_EXTRACTED</span></code> products.</p>
 <table border="1" class="docutils">
@@ -1787,7 +1346,7 @@
 </tbody>
 </table>
 <div class="section" id="gome2-l1">
-<span id="id20"></span><h3>GOME2_L1</h3>
+<span id="id10"></span><h3>GOME2_L1</h3>
 <p>GOME2 Level 1 data</p>
 <p>The table below lists the available product conversions for <code class="docutils literal"><span class="pre">GOME2_L1</span></code> products.</p>
 <table border="1" class="docutils">
@@ -1907,7 +1466,7 @@
 </tbody>
 </table>
 <div class="section" id="gosat-fts-l1b">
-<span id="id21"></span><h3>GOSAT_FTS_L1b</h3>
+<span id="id11"></span><h3>GOSAT_FTS_L1b</h3>
 <p>GOSAT FTS Level 1b radiance spectra</p>
 <p>The table below lists the available product conversions for <code class="docutils literal"><span class="pre">GOSAT_FTS_L1b</span></code> products.</p>
 <table border="1" class="docutils">
@@ -2045,7 +1604,7 @@
 </tbody>
 </table>
 <div class="section" id="mipas-l2">
-<span id="id22"></span><h3>MIPAS_L2</h3>
+<span id="id12"></span><h3>MIPAS_L2</h3>
 <p>MIPAS Temperature, Pressure, and Atmospheric Constituents Profiles</p>
 <p>The table below lists the available product conversions for <code class="docutils literal"><span class="pre">MIPAS_L2</span></code> products.</p>
 <table border="1" class="docutils">
@@ -2417,7 +1976,7 @@
 </tbody>
 </table>
 <div class="section" id="sciamachy-l1c">
-<span id="id23"></span><h3>SCIAMACHY_L1c</h3>
+<span id="id13"></span><h3>SCIAMACHY_L1c</h3>
 <p>SCIAMACHY Level 1c</p>
 <p>The table below lists the available product conversions for <code class="docutils literal"><span class="pre">SCIAMACHY_L1c</span></code> products.</p>
 <table border="1" class="docutils">
@@ -2465,7 +2024,7 @@
 </table>
 </div>
 <div class="section" id="sciamachy-l2">
-<span id="id24"></span><h3>SCIAMACHY_L2</h3>
+<span id="id14"></span><h3>SCIAMACHY_L2</h3>
 <p>SCIAMACHY Off-Line Level-2</p>
 <p>The table below lists the available product conversions for <code class="docutils literal"><span class="pre">SCIAMACHY_L2</span></code> products.</p>
 <table border="1" class="docutils">
@@ -2697,7 +2256,7 @@
 </tbody>
 </table>
 <div class="section" id="s5p-l1b-ir-sir">
-<span id="id25"></span><h3>S5P_L1B_IR_SIR</h3>
+<span id="id15"></span><h3>S5P_L1B_IR_SIR</h3>
 <p>Sentinel-5P L1b SWIR irradiance spectra</p>
 <p>The table below lists the available product conversions for <code class="docutils literal"><span class="pre">S5P_L1B_IR_SIR</span></code> products.</p>
 <table border="1" class="docutils">
@@ -2745,7 +2304,7 @@
 </table>
 </div>
 <div class="section" id="s5p-l1b-ir-uvn">
-<span id="id26"></span><h3>S5P_L1B_IR_UVN</h3>
+<span id="id16"></span><h3>S5P_L1B_IR_UVN</h3>
 <p>Sentinel-5P L1b UVN irradiance spectra</p>
 <p>The table below lists the available product conversions for <code class="docutils literal"><span class="pre">S5P_L1B_IR_UVN</span></code> products.</p>
 <table border="1" class="docutils">

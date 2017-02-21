@@ -562,48 +562,46 @@ static int register_module_l2_aatsr_atsr2(void)
     harp_ingestion_module *adv_module, *orac_module, *su_module;
 
     adv_module =
-        harp_ingestion_register_module_coda("ESACCI_AEROSOL_AATSR_ADV_L2", "Aerosol CCI AATSR ADV L2", "ESACCI_AEROSOL",
+        harp_ingestion_register_module_coda("ESACCI_AEROSOL_L2_AATSR_ADV", "Aerosol CCI", "ESACCI_AEROSOL",
                                             "AATSR_ADV_L2", "CCI L2 Aerosol profile from AATSR processed by ADV",
                                             ingestion_init_aatsr_atsr2_adv, ingestion_done);
     register_aatsr_atsr2_product(adv_module, "ESACCI_AEROSOL_L2_AATSR_ADV",
                                  "/AOD550_uncertainty[], AOD670_uncertainty[], AOD1600_uncertainty[]");
 
     orac_module =
-        harp_ingestion_register_module_coda("ESACCI_AEROSOL_AATSR_ORAC_L2", "Aerosol CCI AATSR ORAC L2",
-                                            "ESACCI_AEROSOL", "AATSR_ORAC_L2",
-                                            "CCI L2 Aerosol profile from AATSR processed by ORAC",
+        harp_ingestion_register_module_coda("ESACCI_AEROSOL_L2_AATSR_ORAC", "Aerosol CCI", "ESACCI_AEROSOL",
+                                            "AATSR_ORAC_L2", "CCI L2 Aerosol profile from AATSR processed by ORAC",
                                             ingestion_init_aatsr_atsr2_orac, ingestion_done);
     register_aatsr_atsr2_product(orac_module, "ESACCI_AEROSOL_L2_AATSR_ORAC",
                                  "/AOD550_uncertainty[], AOD870_uncertainty[]");
 
     su_module =
-        harp_ingestion_register_module_coda("ESACCI_AEROSOL_AATSR_SU_L2", "Aerosol CCI AATSR SU L2", "ESACCI_AEROSOL",
+        harp_ingestion_register_module_coda("ESACCI_AEROSOL_L2_AATSR_SU", "Aerosol CCI", "ESACCI_AEROSOL",
                                             "AATSR_SU_L2", "CCI L2 Aerosol profile from AATSR processed by SU",
                                             ingestion_init_aatsr_atsr2_su, ingestion_done);
-    register_aatsr_atsr2_product(su_module, "ESACCI_AEROSOL_L2_AATSR_SU",
-                                 "/AOD550_uncertainty[], AOD670_uncertainty[], AOD870_uncertainty[], AOD1600_uncertainty[]");
+    register_aatsr_atsr2_product(su_module, "ESACCI_AEROSOL_L2_AATSR_SU", "/AOD550_uncertainty[], "
+                                 "AOD670_uncertainty[], AOD870_uncertainty[], AOD1600_uncertainty[]");
 
     adv_module =
-        harp_ingestion_register_module_coda("ESACCI_AEROSOL_ATSR2_ADV_L2", "Aerosol CCI ATSR2 ADV L2", "ESACCI_AEROSOL",
+        harp_ingestion_register_module_coda("ESACCI_AEROSOL_L2_ATSR2_ADV", "Aerosol CCI", "ESACCI_AEROSOL",
                                             "ATSR2_ADV_L2", "CCI L2 Aerosol profile from ATSR-2 processed by ADV",
                                             ingestion_init_aatsr_atsr2_adv, ingestion_done);
     register_aatsr_atsr2_product(adv_module, "ESACCI_AEROSOL_L2_ATSR2_ADV",
                                  "/AOD550_uncertainty[], AOD670_uncertainty[], AOD1600_uncertainty[]");
 
     orac_module =
-        harp_ingestion_register_module_coda("ESACCI_AEROSOL_ATSR2_ORAC_L2", "Aerosol CCI ATSR2 ORAC L2",
-                                            "ESACCI_AEROSOL", "ATSR2_ORAC_L2",
-                                            "CCI L2 Aerosol profile from ATSR-2 processed by ORAC",
+        harp_ingestion_register_module_coda("ESACCI_AEROSOL_L2_ATSR2_ORAC", "Aerosol CCI", "ESACCI_AEROSOL",
+                                            "ATSR2_ORAC_L2", "CCI L2 Aerosol profile from ATSR-2 processed by ORAC",
                                             ingestion_init_aatsr_atsr2_orac, ingestion_done);
     register_aatsr_atsr2_product(orac_module, "ESACCI_AEROSOL_L2_ATSR2_ORAC",
                                  "/AOD550_uncertainty[], AOD870_uncertainty[]");
 
     su_module =
-        harp_ingestion_register_module_coda("ESACCI_AEROSOL_ATSR2_SU_L2", "Aerosol CCI ATSR2 SU L2", "ESACCI_AEROSOL",
+        harp_ingestion_register_module_coda("ESACCI_AEROSOL_L2_ATSR2_SU", "Aerosol CCI", "ESACCI_AEROSOL",
                                             "ATSR2_SU_L2", "CCI L2 Aerosol profile from ATSR-2 processed by SU",
                                             ingestion_init_aatsr_atsr2_su, ingestion_done);
-    register_aatsr_atsr2_product(su_module, "ESACCI_AEROSOL_L2_ATSR2_SU",
-                                 "/AOD550_uncertainty[], AOD670_uncertainty[], AOD870_uncertainty[], AOD1600_uncertainty[]");
+    register_aatsr_atsr2_product(su_module, "ESACCI_AEROSOL_L2_ATSR2_SU", "/AOD550_uncertainty[], "
+                                 "AOD670_uncertainty[], AOD870_uncertainty[], AOD1600_uncertainty[]");
 
     return 0;
 }
@@ -651,9 +649,8 @@ static int register_module_l2_meris(void)
     const char *path;
 
     module =
-        harp_ingestion_register_module_coda("ESACCI_AEROSOL_MERIS_ALAMO_L2", "Aerosol CCI MERIS ALAMO L2",
-                                            "ESACCI_AEROSOL", "MERIS_ALAMO_L2",
-                                            "CCI L2 Aerosol profile from MERIS processed by ALAMO",
+        harp_ingestion_register_module_coda("ESACCI_AEROSOL_L2_MERIS_ALAMO", "Aerosol CCI", "ESACCI_AEROSOL",
+                                            "MERIS_ALAMO_L2", "CCI L2 Aerosol profile from MERIS processed by ALAMO",
                                             ingestion_init_meris, ingestion_done);
 
     product_definition =
@@ -881,21 +878,21 @@ static int register_module_l2_iasi(void)
     harp_ingestion_module *dlr_module, *lmd_module, *ulb_module;
 
     dlr_module =
-        harp_ingestion_register_module_coda("ESACCI_AEROSOL_IASI_DLR_L2", "Aerosol CCI IASI DLR L2", "ESACCI_AEROSOL",
+        harp_ingestion_register_module_coda("ESACCI_AEROSOL_L2_IASI_DLR", "Aerosol CCI", "ESACCI_AEROSOL",
                                             "IASI_DLR_L2", "CCI L2 Aerosol profile from IASI processed by DLR",
                                             ingestion_init_iasi_dlr, ingestion_done);
     register_iasi_product(dlr_module, "ESACCI_AEROSOL_L2_IASI_DLR", "/D_AOD550, /D_AOD10000, /D_AOD11000",
                           "/D_AOD11000_uncertainty");
 
     lmd_module =
-        harp_ingestion_register_module_coda("ESACCI_AEROSOL_IASI_LMD_L2", "Aerosol CCI IASI LMD L2", "ESACCI_AEROSOL",
+        harp_ingestion_register_module_coda("ESACCI_AEROSOL_L2_IASI_LMD", "Aerosol CCI", "ESACCI_AEROSOL",
                                             "IASI_LMD_L2", "CCI L2 Aerosol profile from IASI processed by LMD",
                                             ingestion_init_iasi_lmd, ingestion_done);
     register_iasi_product(lmd_module, "ESACCI_AEROSOL_L2_IASI_LMD", "/Daod550, /Daod10000, /Daod11000",
                           "/Daod10000_uncertainty");
 
     ulb_module =
-        harp_ingestion_register_module_coda("ESACCI_AEROSOL_IASI_ULB_L2", "Aerosol CCI IASI ULB L2", "ESACCI_AEROSOL",
+        harp_ingestion_register_module_coda("ESACCI_AEROSOL_L2_IASI_ULB", "Aerosol CCI", "ESACCI_AEROSOL",
                                             "IASI_ULB_L2", "CCI L2 Aerosol profile from IASI processed by ULB",
                                             ingestion_init_iasi_ulb, ingestion_done);
     register_iasi_product(ulb_module, "ESACCI_AEROSOL_L2_IASI_ULB", "/D_AOD550, /D_AOD10000, /D_AOD11000",
