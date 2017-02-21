@@ -673,14 +673,50 @@ static int read_longitude(void *user_data, harp_array data)
 
 static int read_latitude_bounds(void *user_data, harp_array data)
 {
-    return get_main_data((ingest_info *)user_data, "corner_coord", USE_ARRAY_INDEX_0_3, "latitude", IS_NO_ARRAY,
-                         data.double_data);
+    ingest_info *info = (ingest_info *)user_data;
+    long i;
+    double *double_data, save_one;
+
+    if (get_main_data(info, "corner_coord", USE_ARRAY_INDEX_0_3, "latitude", IS_NO_ARRAY, data.double_data) != 0)
+    {
+        return -1;
+    }
+
+    /* Rearrange the corners 0, 1, 2, 3 as 0, 2, 3, 1 */
+    double_data = data.double_data;
+    for (i = 0; i < info->total_num_observations; i++)
+    {
+        save_one = *(double_data + 1);
+        *(double_data + 1) = *(double_data + 2);
+        *(double_data + 2) = *(double_data + 3);
+        *(double_data + 3) = save_one;
+        double_data += 4;
+    }
+    return 0;
 }
 
 static int read_longitude_bounds(void *user_data, harp_array data)
 {
-    return get_main_data((ingest_info *)user_data, "corner_coord", USE_ARRAY_INDEX_0_3, "longitude", IS_NO_ARRAY,
-                         data.double_data);
+    ingest_info *info = (ingest_info *)user_data;
+    long i;
+    double *double_data, save_one;
+
+    if (get_main_data(info, "corner_coord", USE_ARRAY_INDEX_0_3, "longitude", IS_NO_ARRAY, data.double_data) != 0)
+    {
+        return -1;
+    }
+
+    /* Rearrange the corners 0, 1, 2, 3 as 0, 2, 3, 1 */
+    double_data = data.double_data;
+    for (i = 0; i < info->total_num_observations; i++)
+    {
+        save_one = *(double_data + 1);
+        *(double_data + 1) = *(double_data + 2);
+        *(double_data + 2) = *(double_data + 3);
+        *(double_data + 3) = save_one;
+        double_data += 4;
+    }
+    return 0;
 }
 
 static int read_sensor_altitude(void *user_data, harp_array data)
