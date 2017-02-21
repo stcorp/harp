@@ -91,6 +91,16 @@ HARP_DOCFILES = \
 	doc/html/harpfilter.html \
 	doc/html/index.html \
 	doc/html/ingestions/ECMWF_GRIB.html \
+	doc/html/ingestions/ESACCI_AEROSOL_L2_AATSR_ADV.html \
+	doc/html/ingestions/ESACCI_AEROSOL_L2_AATSR_ORAC.html \
+	doc/html/ingestions/ESACCI_AEROSOL_L2_AATSR_SU.html \
+	doc/html/ingestions/ESACCI_AEROSOL_L2_ATSR2_ADV.html \
+	doc/html/ingestions/ESACCI_AEROSOL_L2_ATSR2_ORAC.html \
+	doc/html/ingestions/ESACCI_AEROSOL_L2_ATSR2_SU.html \
+	doc/html/ingestions/ESACCI_AEROSOL_L2_IASI_DLR.html \
+	doc/html/ingestions/ESACCI_AEROSOL_L2_IASI_LMD.html \
+	doc/html/ingestions/ESACCI_AEROSOL_L2_IASI_ULB.html \
+	doc/html/ingestions/ESACCI_AEROSOL_L2_MERIS_ALAMO.html \
 	doc/html/ingestions/ESACCI_OZONE_L2_LP.html \
 	doc/html/ingestions/ESACCI_OZONE_L2_NP.html \
 	doc/html/ingestions/ESACCI_OZONE_L2_TC.html \
@@ -273,8 +283,10 @@ HARP_DOCFILES = \
 	doc/html/ingestions/GEOMS-TE-UVVIS-DOAS-ZENITH-GAS-007-O3.html \
 	doc/html/ingestions/GEOMS-TE-UVVIS-DOAS-ZENITH-GAS-007-OClO.html \
 	doc/html/ingestions/GEOMS-TE-UVVIS-DOAS-ZENITH-GAS-007-SO2.html \
-	doc/html/ingestions/GOME2_L1.html \
+	doc/html/ingestions/GOME2_L1_irradiance.html \
+	doc/html/ingestions/GOME2_L1_radiance.html \
 	doc/html/ingestions/GOME2_L1_sun_reference.html \
+	doc/html/ingestions/GOME2_L1_transmission.html \
 	doc/html/ingestions/GOME2_L2_O3MNTO.html \
 	doc/html/ingestions/GOME2_L2_O3MOTO.html \
 	doc/html/ingestions/GOME_L1_EXTRACTED.html \
@@ -594,6 +606,26 @@ doc/html/harpfilter.html:
 doc/html/index.html:
 	$(MAKE) harp_doc
 doc/html/ingestions/ECMWF_GRIB.html:
+	$(MAKE) harp_doc
+doc/html/ingestions/ESACCI_AEROSOL_L2_AATSR_ADV.html:
+	$(MAKE) harp_doc
+doc/html/ingestions/ESACCI_AEROSOL_L2_AATSR_ORAC.html:
+	$(MAKE) harp_doc
+doc/html/ingestions/ESACCI_AEROSOL_L2_AATSR_SU.html:
+	$(MAKE) harp_doc
+doc/html/ingestions/ESACCI_AEROSOL_L2_ATSR2_ADV.html:
+	$(MAKE) harp_doc
+doc/html/ingestions/ESACCI_AEROSOL_L2_ATSR2_ORAC.html:
+	$(MAKE) harp_doc
+doc/html/ingestions/ESACCI_AEROSOL_L2_ATSR2_SU.html:
+	$(MAKE) harp_doc
+doc/html/ingestions/ESACCI_AEROSOL_L2_IASI_DLR.html:
+	$(MAKE) harp_doc
+doc/html/ingestions/ESACCI_AEROSOL_L2_IASI_LMD.html:
+	$(MAKE) harp_doc
+doc/html/ingestions/ESACCI_AEROSOL_L2_IASI_ULB.html:
+	$(MAKE) harp_doc
+doc/html/ingestions/ESACCI_AEROSOL_L2_MERIS_ALAMO.html:
 	$(MAKE) harp_doc
 doc/html/ingestions/ESACCI_OZONE_L2_LP.html:
 	$(MAKE) harp_doc
@@ -959,9 +991,13 @@ doc/html/ingestions/GEOMS-TE-UVVIS-DOAS-ZENITH-GAS-007-OClO.html:
 	$(MAKE) harp_doc
 doc/html/ingestions/GEOMS-TE-UVVIS-DOAS-ZENITH-GAS-007-SO2.html:
 	$(MAKE) harp_doc
-doc/html/ingestions/GOME2_L1.html:
+doc/html/ingestions/GOME2_L1_irradiance.html:
+	$(MAKE) harp_doc
+doc/html/ingestions/GOME2_L1_radiance.html:
 	$(MAKE) harp_doc
 doc/html/ingestions/GOME2_L1_sun_reference.html:
+	$(MAKE) harp_doc
+doc/html/ingestions/GOME2_L1_transmission.html:
 	$(MAKE) harp_doc
 doc/html/ingestions/GOME2_L2_O3MNTO.html:
 	$(MAKE) harp_doc

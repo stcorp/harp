@@ -1,0 +1,565 @@
+
+
+<!DOCTYPE html>
+<!--[if IE 8]><html class="no-js lt-ie9" lang="en" > <![endif]-->
+<!--[if gt IE 8]><!--> <html class="no-js" lang="en" > <!--<![endif]-->
+<head>
+  <meta charset="utf-8">
+  
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  
+  <title>GOME2_L1_transmission &mdash; HARP 0.4b documentation</title>
+  
+
+  
+  
+
+  
+
+  
+  
+    
+
+  
+
+  
+  
+    <link rel="stylesheet" href="../_static/css/theme.css" type="text/css" />
+  
+
+  
+    <link rel="stylesheet" href="../_static/custom.css" type="text/css" />
+  
+
+  
+    <link rel="top" title="HARP 0.4b documentation" href="../index.html"/> 
+
+  
+  <script src="../_static/js/modernizr.min.js"></script>
+
+</head>
+
+<body class="wy-body-for-nav" role="document">
+
+  <div class="wy-grid-for-nav">
+
+    
+    <nav data-toggle="wy-nav-shift" class="wy-nav-side">
+      <div class="wy-side-scroll">
+        <div class="wy-side-nav-search">
+          
+
+          
+            <a href="../index.html" class="icon icon-home"> HARP
+          
+
+          
+          </a>
+
+          
+            
+            
+              <div class="version">
+                0.4
+              </div>
+            
+          
+
+          
+
+          
+        </div>
+
+        <div class="wy-menu wy-menu-vertical" data-spy="affix" role="navigation" aria-label="main navigation">
+          
+            
+            
+                <ul>
+<li class="toctree-l1"><a class="reference internal" href="../install.html">Installation</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../dataformats.html">Data formats</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../algorithms/index.html">Algorithms</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../operations.html">Operations</a></li>
+<li class="toctree-l1"><a class="reference internal" href="index.html">Ingestion definitions</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../libharp.html">C library</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../python.html">Python interface</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../tools.html">Command line tools</a></li>
+</ul>
+
+            
+          
+        </div>
+      </div>
+    </nav>
+
+    <section data-toggle="wy-nav-shift" class="wy-nav-content-wrap">
+
+      
+      <nav class="wy-nav-top" role="navigation" aria-label="top navigation">
+        <i data-toggle="wy-nav-top" class="fa fa-bars"></i>
+        <a href="../index.html">HARP</a>
+      </nav>
+
+
+      
+      <div class="wy-nav-content">
+        <div class="rst-content">
+          
+
+ 
+
+
+
+<div role="navigation" aria-label="breadcrumbs navigation">
+  <ul class="wy-breadcrumbs">
+    <li><a href="../index.html">Docs</a> &raquo;</li>
+      
+    <li>GOME2_L1_transmission</li>
+      <li class="wy-breadcrumbs-aside">
+        
+          
+        
+      </li>
+  </ul>
+  <hr/>
+</div>
+          <div role="main" class="document" itemscope="itemscope" itemtype="http://schema.org/Article">
+           <div itemprop="articleBody">
+            
+  <div class="section" id="gome2-l1-transmission">
+<h1>GOME2_L1_transmission</h1>
+<div class="section" id="variables">
+<h2>Variables</h2>
+<p>The table below lists the variables that are present in the HARP product that results from an ingestion of <code class="docutils literal"><span class="pre">GOME2_L1_transmission</span></code> data.</p>
+<table border="1" class="docutils">
+<colgroup>
+<col width="25%" />
+<col width="5%" />
+<col width="15%" />
+<col width="15%" />
+<col width="40%" />
+</colgroup>
+<thead valign="bottom">
+<tr class="row-odd"><th class="head">field name</th>
+<th class="head">type</th>
+<th class="head">dimensions</th>
+<th class="head">unit</th>
+<th class="head">description</th>
+</tr>
+</thead>
+<tbody valign="top">
+<tr class="row-even"><td><strong>datetime</strong></td>
+<td>double</td>
+<td>{<em>time</em>}</td>
+<td>seconds since 2000-01-01</td>
+<td>time of the measurement at the end of the integration time</td>
+</tr>
+<tr class="row-odd"><td><strong>latitude</strong></td>
+<td>double</td>
+<td>{<em>time</em>}</td>
+<td>degree_north</td>
+<td>center latitude of the measurement</td>
+</tr>
+<tr class="row-even"><td><strong>longitude</strong></td>
+<td>double</td>
+<td>{<em>time</em>}</td>
+<td>degree_east</td>
+<td>center longitude of the measurement</td>
+</tr>
+<tr class="row-odd"><td><strong>latitude_bounds</strong></td>
+<td>double</td>
+<td>{<em>time</em>, 4}</td>
+<td>degree_north</td>
+<td>corner latitudes for the ground pixel of the measurement</td>
+</tr>
+<tr class="row-even"><td><strong>longitude_bounds</strong></td>
+<td>double</td>
+<td>{<em>time</em>, 4}</td>
+<td>degree_east</td>
+<td>corner longitudes for the ground pixel of the measurement</td>
+</tr>
+<tr class="row-odd"><td><strong>transmittance</strong></td>
+<td>double</td>
+<td>{<em>time</em>, <em>spectral</em>}</td>
+<td>&nbsp;</td>
+<td>transmittance</td>
+</tr>
+<tr class="row-even"><td><strong>wavelength</strong></td>
+<td>double</td>
+<td>{<em>time</em>, <em>spectral</em>}</td>
+<td>nm</td>
+<td>nominal wavelength assignment for each of the detector pixels</td>
+</tr>
+<tr class="row-odd"><td><strong>datetime_length</strong></td>
+<td>double</td>
+<td>{<em>time</em>, <em>spectral</em>}</td>
+<td>s</td>
+<td>integration time for each pixel</td>
+</tr>
+<tr class="row-even"><td><strong>scan_subset_counter</strong></td>
+<td>int8</td>
+<td>{<em>time</em>}</td>
+<td>&nbsp;</td>
+<td>relative index (0-3) of this measurement within a scan (forward+backward)</td>
+</tr>
+<tr class="row-odd"><td><strong>scan_direction</strong></td>
+<td>string</td>
+<td>{<em>time</em>}</td>
+<td>&nbsp;</td>
+<td>scan direction for each measurement: &#8216;forward&#8217; or &#8216;backward&#8217;</td>
+</tr>
+<tr class="row-even"><td><strong>cloud_top_pressure</strong></td>
+<td>double</td>
+<td>{<em>time</em>}</td>
+<td>&nbsp;</td>
+<td>cloud top pressure</td>
+</tr>
+<tr class="row-odd"><td><strong>cloud_fraction</strong></td>
+<td>double</td>
+<td>{<em>time</em>}</td>
+<td>&nbsp;</td>
+<td>cloud fraction</td>
+</tr>
+<tr class="row-even"><td><strong>solar_zenith_angle_toa</strong></td>
+<td>double</td>
+<td>{<em>time</em>}</td>
+<td>degree</td>
+<td>solar zenith angle at top of atmosphere</td>
+</tr>
+<tr class="row-odd"><td><strong>solar_azimuth_angle_toa</strong></td>
+<td>double</td>
+<td>{<em>time</em>}</td>
+<td>degree</td>
+<td>solar azimuth angle at top of atmosphere</td>
+</tr>
+<tr class="row-even"><td><strong>viewing_zenith_angle_toa</strong></td>
+<td>double</td>
+<td>{<em>time</em>}</td>
+<td>degree</td>
+<td>viewing zenith angle at top of atmosphere</td>
+</tr>
+<tr class="row-odd"><td><strong>viewing_azimuth_angle_toa</strong></td>
+<td>double</td>
+<td>{<em>time</em>}</td>
+<td>degree</td>
+<td>viewing azimuth angle at top of atmosphere</td>
+</tr>
+<tr class="row-even"><td><strong>index</strong></td>
+<td>int32</td>
+<td>{<em>time</em>}</td>
+<td>&nbsp;</td>
+<td>zero-based index of the sample within the source product</td>
+</tr>
+</tbody>
+</table>
+</div>
+<div class="section" id="ingestion-options">
+<h2>Ingestion options</h2>
+<p>The table below lists the available ingestion options for <code class="docutils literal"><span class="pre">GOME2_L1</span></code> products.</p>
+<table border="1" class="docutils">
+<colgroup>
+<col width="15%" />
+<col width="25%" />
+<col width="60%" />
+</colgroup>
+<thead valign="bottom">
+<tr class="row-odd"><th class="head">option name</th>
+<th class="head">legal values</th>
+<th class="head">description</th>
+</tr>
+</thead>
+<tbody valign="top">
+<tr class="row-even"><td>band</td>
+<td>band-1a, band-1b, band-2a, band-2b, band-3, band-4</td>
+<td>only include data from the specified band (&#8216;band-1a&#8217;, &#8216;band-1b&#8217;, &#8216;band-2a&#8217;, &#8216;band-2b&#8217;, &#8216;band-3&#8217;, &#8216;band-4&#8217;); by default data from all bands is retrieved</td>
+</tr>
+<tr class="row-odd"><td>data</td>
+<td>radiance, transmission, sun, moon, sun_reference</td>
+<td>retrieve the measured radiances, the transmission spectra, the sun measurement spectra, the moon measurement spectra or the sun reference spectrum; by default the measured radiances are retrieved</td>
+</tr>
+</tbody>
+</table>
+</div>
+<div class="section" id="mapping-description">
+<h2>Mapping description</h2>
+<p>The GOME2 spectral data in the GOME2 L1b product is stored inside MDRs. There are separate MDRs for Earthshine, Calibration, Sun, and Moon measurements. In addition there are also &#8216;Dummy Records&#8217; (DMDR) that can be present when there is lost data in the product. With HARP only Earthshine, Sun, and Moon measurements can be ingested.</p>
+<p>Each MDR roughly contains a single scan. However, an MDR does not exactly correspond 1-to-1 with a GOME-2 scan. This is an important fact to be aware of. The real situation is as follows:</p>
+<p>Within a single scan (a scan takes 6 seconds) there are 16 Instrument Source Packets (covering 375ms each) coming from the satellite. Each ISP contains at most two readouts (there are two if the integration time for a band is 187.5ms (or 93.75ms)). The problem is that the two readouts of the first ISP of a scan contain the last measurement of the previous scan and the first measurement of the new scan. The second ISP contains data for measurements #2 and #3, the third for #4 and #5, etc. The last measurement of a scan will again be found in the first ISP of the next scan. Instead of shifting the data and grouping all data of a single scan together in a single MDR the Level 1a and Level 1b processors just place the MDR boundary at the start of the first ISP of a scan and terminate the MDR at the end of ISP 16. This means that in Level 1b (but also 1a) products the first measurement in an MDR will always be the last measurement of the previous scan.</p>
+<p>Nearly all meta-data for a readout (time, geolocation, viewing/solar angles, etc.) in an MDR are filled taking into account this same shift. This means that for retrieving the geolocation of the first readout of an MDR from the GEO_EARTH_ACTUAL record, one will in fact get the geolocation information of the last backscan pixel of the previous scan. However, the integration time meta-data for the first readout in an MDR is not shifted this way (the GEO_EARTH information is also not shifted, by the way, and just contains the 32 geolocation pixels for the scan). As long as the integration time does not change from one scan to another this won&#8217;t impact anything, but the L1 products will contain invalid metadata for the first MDR readout if there is a change of integration time between two consecutive scans. In that case the calculated geolocation, angles, etc. of the first readout are values based on the integration time of the _new_ scan instead of the _old_ scan (e.g. the ground pixel will thus either be too large or too small). The (relative) good news to this is that, if a change in integration time occurs, the last pixel readout of the final scan with the &#8216;old&#8217; integration time will never be valid and will have undefined values in the product (this is because the instrument prematurely terminates the final readout if a scan configuration change occurs). This means that the readout that has the &#8216;invalid&#8217; meta-data will never be a valid measurement anyway.</p>
+<p>Because of all this, HARP will exercise the following rules during ingestion:
+1) the first readout of the first MDR will always be ignored (and you will never see the last readout of the last scan, because it won&#8217;t be in the product)
+2) the first readout after a change in measurement mode (i.e. earthshine vs. calibration vs. sun vs. moon) will be ignored
+3) if a change in integration time occurs (for any of the bands) then the first readout (for all bands) of the next MDR will be ignored
+4) if two MDRs are not continuous (i.e. there is a time gap) then the first readout of the second MDR will be ignored</p>
+<p>GOME-2 uses 6 bands for the main spectra (1A, 1B, 2A, 2B, 3, and 4). Within a scan each band can have its own integration time. There will be at most 32 readouts per scan (corresponding with an integration time of 187.5ms). If the integration time is 375ms, 750ms, 1.5s, 3s or 6s there will be 16, 8, 4, 2, or 1 measurement(s) respectively for this band in a scan. Some readouts may even cover multiple scans if the integration time is larger than 6s. HARP will combine the data for all bands into a single two-dimensional pixel_readout array. Because of the differences in integration time this means that for some bands there will be gaps in the pixel_readout array. These gaps will be filled with NaN values. HARP will always use the minimum integration time of all ingested bands to determine the time resolution for the HARP variables. For instance, if the minimum integration time for a scan is 1.5s you will find 4 entries in the HARP variables for this scan. All meta-data, such as geolocation, angles, etc. will also be ingested for this minimum integration time (i.e. you will see co-added meta-data if the integration time is &gt; 187.5ms). The minimum integration time is calculated based on those bands from which actual data is ingested. This means that the minimum integration time can change depending on the wavelength filter that was applied</p>
+<p>The filtering on time and geolocation will always be performed using the 187.5ms resolution. A measurement with a higher integration time will only be included if each of its 187.5ms sub-parts have not been filtered out (this also holds for measurements with an integration time &gt; 6s). If spectra from multiple bands with different integration times are ingested then the measurements with a high integration time will only be ingested if all subpixels of the measurements with the minimum integration time are also ingested. The measurement with a high integration time will be put in the same &#8216;row&#8217; as the first corresponding minimum integration time measurement (i.e. measurements of different bands are aligned according to start time of the measurement).</p>
+<p>If the band configuration changes somewhere during the orbit and a band filter is given, then we only include detector pixels that are inside the requested band for the duration of the whole orbit. i.e. detector pixels that change band during the orbit will always be excluded when a band filter is given.</p>
+<p>The table below details where and how each variable was retrieved from the input product.</p>
+<table border="1" class="docutils">
+<colgroup>
+<col width="8%" />
+<col width="4%" />
+<col width="88%" />
+</colgroup>
+<thead valign="bottom">
+<tr class="row-odd"><th class="head">field name</th>
+<th class="head" colspan="2">mapping description</th>
+</tr>
+</thead>
+<tbody valign="top">
+<tr class="row-even"><td rowspan="2"><strong>datetime</strong></td>
+<td><em>path</em></td>
+<td><strong>/MDR[]/Earthshine/RECORD_HEADER/RECORD_START_TIME</strong></td>
+</tr>
+<tr class="row-odd"><td><em>description</em></td>
+<td>The record start time is the start time of the scan and thus the start time of the second readout in the MDR. The start time for readout i (0..31) is thus RECORD_START_TIME + (i - 1) * 0.1875 and the time at end of integration time (which is the time that is returned) is RECORD_START_TIME + i * 0.1875</td>
+</tr>
+<tr class="row-even"><td rowspan="6"><strong>latitude</strong></td>
+<td><em>condition</em></td>
+<td>CODA version &lt; 12</td>
+</tr>
+<tr class="row-odd"><td><em>path</em></td>
+<td><strong>/MDR[]/Earthshine/GEO_EARTH_ACTUAL/CENTRE_ACTUAL[INT_INDEX[band_id],]/latitude</strong></td>
+</tr>
+<tr class="row-even"><td><em>description</em></td>
+<td>The integration time index INT_INDEX[band_id] is the index of the band with the minimum integration time (limited to those bands that are ingested).</td>
+</tr>
+<tr class="row-odd"><td><em>condition</em></td>
+<td>CODA version &gt;= 12</td>
+</tr>
+<tr class="row-even"><td><em>path</em></td>
+<td><strong>/MDR[]/Earthshine/GEO_EARTH_ACTUAL_INT_INDEX[timer_id][]/CENTRE_ACTUAL/latitude</strong></td>
+</tr>
+<tr class="row-odd"><td><em>description</em></td>
+<td>The integration time index INT_INDEX[timer_id] is the index (starting with 1) of the timer with the minimum integration time (limited to the timers of those bands that are ingested).</td>
+</tr>
+<tr class="row-even"><td rowspan="6"><strong>longitude</strong></td>
+<td><em>condition</em></td>
+<td>CODA version &lt; 12</td>
+</tr>
+<tr class="row-odd"><td><em>path</em></td>
+<td><strong>/MDR[]/Earthshine/GEO_EARTH_ACTUAL/CENTRE_ACTUAL[INT_INDEX[band_id],]/longitude</strong></td>
+</tr>
+<tr class="row-even"><td><em>description</em></td>
+<td>The integration time index INT_INDEX[band_id] is the index of the band with the minimum integration time (limited to those bands that are ingested).</td>
+</tr>
+<tr class="row-odd"><td><em>condition</em></td>
+<td>CODA version &gt;= 12</td>
+</tr>
+<tr class="row-even"><td><em>path</em></td>
+<td><strong>/MDR[]/Earthshine/GEO_EARTH_ACTUAL_INT_INDEX[timer_id][]/CENTRE_ACTUAL/longitude</strong></td>
+</tr>
+<tr class="row-odd"><td><em>description</em></td>
+<td>The integration time index INT_INDEX[timer_id] is the index (starting with 1) of the timer with the minimum integration time (limited to the timers of those bands that are ingested).</td>
+</tr>
+<tr class="row-even"><td rowspan="6"><strong>latitude_bounds</strong></td>
+<td><em>condition</em></td>
+<td>CODA version &lt; 12</td>
+</tr>
+<tr class="row-odd"><td><em>path</em></td>
+<td><strong>/MDR[]/Earthshine/GEO_EARTH_ACTUAL/CORNER_ACTUAL[INT_INDEX[band_id],,]/latitude</strong></td>
+</tr>
+<tr class="row-even"><td><em>description</em></td>
+<td>The integration time index INT_INDEX[band_id] is the index of the band with the minimum integration time (limited to those bands that are ingested). The corners ABCD are reordered as BDCA.</td>
+</tr>
+<tr class="row-odd"><td><em>condition</em></td>
+<td>CODA version &gt;= 12</td>
+</tr>
+<tr class="row-even"><td><em>path</em></td>
+<td><strong>/MDR[]/Earthshine/GEO_EARTH_ACTUAL_INT_INDEX[timer_id][]/CORNER_ACTUAL[]/latitude</strong></td>
+</tr>
+<tr class="row-odd"><td><em>description</em></td>
+<td>The integration time index INT_INDEX[timer_id] is the index (starting with 1) of the timer with the minimum integration time (limited to the timers of those bands that are ingested). The corners ABCD are reordered as BDCA.</td>
+</tr>
+<tr class="row-even"><td rowspan="6"><strong>longitude_bounds</strong></td>
+<td><em>condition</em></td>
+<td>CODA version &lt; 12</td>
+</tr>
+<tr class="row-odd"><td><em>path</em></td>
+<td><strong>/MDR[]/Earthshine/GEO_EARTH_ACTUAL/CORNER_ACTUAL[INT_INDEX[band_id],,]/longitude</strong></td>
+</tr>
+<tr class="row-even"><td><em>description</em></td>
+<td>The integration time index INT_INDEX[band_id] is the index of the band with the minimum integration time (limited to those bands that are ingested). The corners ABCD are reordered as BDCA.</td>
+</tr>
+<tr class="row-odd"><td><em>condition</em></td>
+<td>CODA version &gt;= 12</td>
+</tr>
+<tr class="row-even"><td><em>path</em></td>
+<td><strong>/MDR[]/Earthshine/GEO_EARTH_ACTUAL_INT_INDEX[timer_id][]/CORNER_ACTUAL[]/longitude</strong></td>
+</tr>
+<tr class="row-odd"><td><em>description</em></td>
+<td>The integration time index INT_INDEX[timer_id] is the index (starting with 1) of the timer with the minimum integration time (limited to the timers of those bands that are ingested). The corners ABCD are reordered as BDCA.</td>
+</tr>
+<tr class="row-even"><td><strong>transmittance</strong></td>
+<td><em>path</em></td>
+<td><strong>/MDR[]/Earthshine/BAND_1A[,]/RAD, /MDR[]/Earthshine/BAND_1B[,]/RAD, /MDR[]/Earthshine/BAND_2A[,]/RAD, /MDR[]/Earthshine/BAND_2B[,]/RAD, /MDR[]/Earthshine/BAND_3[,]/RAD, /MDR[]/Earthshine/BAND_4[,]/RAD</strong></td>
+</tr>
+<tr class="row-odd"><td><strong>wavelength</strong></td>
+<td><em>path</em></td>
+<td><strong>/MDR[]/Earthshine/WAVELENGTH_1A[], /MDR[]/Earthshine/WAVELENGTH_1B[], /MDR[]/Earthshine/WAVELENGTH_2A[], /MDR/Earthshine[]/WAVELENGTH_2B[], /MDR[]/Earthshine/WAVELENGTH_3[], /MDR[]/Earthshine/WAVELENGTH_4[]</strong></td>
+</tr>
+<tr class="row-even"><td><strong>datetime_length</strong></td>
+<td><em>path</em></td>
+<td><strong>/MDR[]/Earthshine/INTEGRATION_TIMES[]</strong></td>
+</tr>
+<tr class="row-odd"><td rowspan="2"><strong>scan_direction</strong></td>
+<td><em>path</em></td>
+<td><strong>/MDR[]/Earthshine/INTEGRATION_TIMES[]</strong></td>
+</tr>
+<tr class="row-even"><td><em>description</em></td>
+<td>the scan direction is based on the subset counter of the measurement (0-11 forward, 12-15 = backward)</td>
+</tr>
+<tr class="row-odd"><td rowspan="2"><strong>cloud_top_pressure</strong></td>
+<td><em>path</em></td>
+<td><strong>/MDR[]/Earthshine/CLOUD/FIT_1[]</strong></td>
+</tr>
+<tr class="row-even"><td><em>description</em></td>
+<td>If the minimum ingested integration time &gt; 187.5ms then the corresponding cloud top pressures will be combined using logarithmic averaging. The cloud top pressure will be set to NaN if FIT_MODE in the CLOUD structure is not equal to 0 or if FIT_1 is set to a fill value (even when this holds for only one of the averaged items)</td>
+</tr>
+<tr class="row-odd"><td rowspan="2"><strong>cloud_fraction</strong></td>
+<td><em>path</em></td>
+<td><strong>/MDR[]/Earthshine/CLOUD/FIT_2[]</strong></td>
+</tr>
+<tr class="row-even"><td><em>description</em></td>
+<td>If the minimum ingested integration time &gt; 187.5ms then the corresponding cloud fractions will be combined using averaging. The cloud fraction will be set to NaN if FIT_MODE in the CLOUD structure is not equal to 0 or if FIT_2 is set to a fill value (even when this holds for only one of the averaged items)</td>
+</tr>
+<tr class="row-odd"><td rowspan="6"><strong>solar_zenith_angle_toa</strong></td>
+<td><em>condition</em></td>
+<td>CODA version &lt; 12</td>
+</tr>
+<tr class="row-even"><td><em>path</em></td>
+<td><strong>/MDR[]/Earthshine/GEO_EARTH_ACTUAL/SOLAR_ZENITH_ACTUAL[INT_INDEX[band_id],1,]</strong></td>
+</tr>
+<tr class="row-odd"><td><em>description</em></td>
+<td>The integration time index INT_INDEX[band_id] is the index of the band with the minimum integration time (limited to those bands that are ingested).</td>
+</tr>
+<tr class="row-even"><td><em>condition</em></td>
+<td>CODA version &gt;= 12</td>
+</tr>
+<tr class="row-odd"><td><em>path</em></td>
+<td><strong>/MDR[]/Earthshine/GEO_EARTH_ACTUAL_INT_INDEX[timer_id][]/SOLAR_ZENITH_ACTUAL[1]</strong></td>
+</tr>
+<tr class="row-even"><td><em>description</em></td>
+<td>The integration time index INT_INDEX[timer_id] is the index (starting with 1) of the timer with the minimum integration time (limited to the timers of those bands that are ingested).</td>
+</tr>
+<tr class="row-odd"><td rowspan="6"><strong>solar_azimuth_angle_toa</strong></td>
+<td><em>condition</em></td>
+<td>CODA version &lt; 12</td>
+</tr>
+<tr class="row-even"><td><em>path</em></td>
+<td><strong>/MDR[]/Earthshine/GEO_EARTH_ACTUAL/SOLAR_AZIMUTH_ACTUAL[INT_INDEX[band_id],1,]</strong></td>
+</tr>
+<tr class="row-odd"><td><em>description</em></td>
+<td>The integration time index INT_INDEX[band_id] is the index of the band with the minimum integration time (limited to those bands that are ingested).</td>
+</tr>
+<tr class="row-even"><td><em>condition</em></td>
+<td>CODA version &gt;= 12</td>
+</tr>
+<tr class="row-odd"><td><em>path</em></td>
+<td><strong>/MDR[]/Earthshine/GEO_EARTH_ACTUAL_INT_INDEX[timer_id][]/SOLAR_AZIMUTH_ACTUAL[1]</strong></td>
+</tr>
+<tr class="row-even"><td><em>description</em></td>
+<td>The integration time index INT_INDEX[timer_id] is the index (starting with 1) of the timer with the minimum integration time (limited to the timers of those bands that are ingested).</td>
+</tr>
+<tr class="row-odd"><td rowspan="6"><strong>viewing_zenith_angle_toa</strong></td>
+<td><em>condition</em></td>
+<td>CODA version &lt; 12</td>
+</tr>
+<tr class="row-even"><td><em>path</em></td>
+<td><strong>/MDR[]/Earthshine/GEO_EARTH_ACTUAL/SAT_ZENITH_ACTUAL[INT_INDEX[band_id],1,]</strong></td>
+</tr>
+<tr class="row-odd"><td><em>description</em></td>
+<td>The integration time index INT_INDEX[band_id] is the index of the band with the minimum integration time (limited to those bands that are ingested).</td>
+</tr>
+<tr class="row-even"><td><em>condition</em></td>
+<td>CODA version &gt;= 12</td>
+</tr>
+<tr class="row-odd"><td><em>path</em></td>
+<td><strong>/MDR[]/Earthshine/GEO_EARTH_ACTUAL_INT_INDEX[timer_id][]/SAT_ZENITH_ACTUAL[1]</strong></td>
+</tr>
+<tr class="row-even"><td><em>description</em></td>
+<td>The integration time index INT_INDEX[timer_id] is the index (starting with 1) of the timer with the minimum integration time (limited to the timers of those bands that are ingested).</td>
+</tr>
+<tr class="row-odd"><td rowspan="6"><strong>viewing_azimuth_angle_toa</strong></td>
+<td><em>condition</em></td>
+<td>CODA version &lt; 12</td>
+</tr>
+<tr class="row-even"><td><em>path</em></td>
+<td><strong>/MDR[]/Earthshine/GEO_EARTH_ACTUAL/SAT_AZIMUTH_ACTUAL[INT_INDEX[band_id],1,]</strong></td>
+</tr>
+<tr class="row-odd"><td><em>description</em></td>
+<td>The integration time index INT_INDEX[band_id] is the index of the band with the minimum integration time (limited to those bands that are ingested).</td>
+</tr>
+<tr class="row-even"><td><em>condition</em></td>
+<td>CODA version &gt;= 12</td>
+</tr>
+<tr class="row-odd"><td><em>path</em></td>
+<td><strong>/MDR[]/Earthshine/GEO_EARTH_ACTUAL_INT_INDEX[timer_id][]/SAT_AZIMUTH_ACTUAL[1]</strong></td>
+</tr>
+<tr class="row-even"><td><em>description</em></td>
+<td>The integration time index INT_INDEX[timer_id] is the index (starting with 1) of the timer with the minimum integration time (limited to the timers of those bands that are ingested).</td>
+</tr>
+</tbody>
+</table>
+</div>
+</div>
+
+
+           </div>
+          </div>
+          <footer>
+  
+
+  <hr/>
+
+  <div role="contentinfo">
+    <p>
+        &copy; Copyright 2015-2017 S&amp;T, The Netherlands.
+
+    </p>
+  </div> 
+
+</footer>
+
+        </div>
+      </div>
+
+    </section>
+
+  </div>
+  
+
+
+  
+
+    <script type="text/javascript">
+        var DOCUMENTATION_OPTIONS = {
+            URL_ROOT:'../',
+            VERSION:'0.4b',
+            COLLAPSE_INDEX:false,
+            FILE_SUFFIX:'.html',
+            HAS_SOURCE:  false
+        };
+    </script>
+      <script type="text/javascript" src="../_static/jquery.js"></script>
+      <script type="text/javascript" src="../_static/underscore.js"></script>
+      <script type="text/javascript" src="../_static/doctools.js"></script>
+      <script type="text/javascript" src="https://cdn.mathjax.org/mathjax/latest/MathJax.js?config=TeX-AMS-MML_HTMLorMML"></script>
+
+  
+
+  
+  
+    <script type="text/javascript" src="../_static/js/theme.js"></script>
+  
+
+  
+  
+  <script type="text/javascript">
+      jQuery(function () {
+          SphinxRtdTheme.StickyNav.enable();
+      });
+  </script>
+   
+
+</body>
+</html>
