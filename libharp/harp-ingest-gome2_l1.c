@@ -1330,28 +1330,7 @@ static int exclude_when_not_sun(void *user_data)
     return (info->ingestion_data != DATA_SUN);
 }
 
-static int exclude_when_not_radiance_or_transmission(void *user_data)
-{
-    ingest_info *info = (ingest_info *)user_data;
-
-    return ((info->ingestion_data != DATA_RADIANCE) && (info->ingestion_data != DATA_TRANSMISSION));
-}
-
-static int exclude_when_not_transmission(void *user_data)
-{
-    ingest_info *info = (ingest_info *)user_data;
-
-    return (info->ingestion_data != DATA_TRANSMISSION);
-}
-
-static int exclude_when_not_radiance(void *user_data)
-{
-    ingest_info *info = (ingest_info *)user_data;
-
-    return (info->ingestion_data != DATA_RADIANCE);
-}
-
-static void register_variables_measurement_fields(harp_product_definition *product_definition)
+static void register_variables_radiance_transmittance_fields(harp_product_definition *product_definition, int radiance)
 {
     harp_variable_definition *variable_definition;
     harp_dimension_type dimension_type[2];
@@ -1371,22 +1350,16 @@ static void register_variables_measurement_fields(harp_product_definition *produ
     variable_definition =
         harp_ingestion_register_variable_full_read(product_definition, "datetime", harp_type_double, 1, dimension_type,
                                                    NULL, description, "seconds since 2000-01-01", NULL, read_datetime);
-    path = "/MDR[]/Earthshine/RECORD_HEADER/RECORD_START_TIME";
     description =
         "The record start time is the start time of the scan and thus the start time of the second readout in the MDR. The start time for readout i (0..31) is thus RECORD_START_TIME + (i - 1) * 0.1875 and the time at end of integration time (which is the time that is returned) is RECORD_START_TIME + i * 0.1875";
-    harp_variable_definition_add_mapping(variable_definition, "data=radiance", NULL, path, description);
-    harp_variable_definition_add_mapping(variable_definition, "data=transmission", NULL, path, description);
-    path = "/MDR[]/Sun/RECORD_HEADER/RECORD_START_TIME";
-    harp_variable_definition_add_mapping(variable_definition, "data=sun", NULL, path, description);
-    path = "/MDR[]/Moon/RECORD_HEADER/RECORD_START_TIME";
-    harp_variable_definition_add_mapping(variable_definition, "data=moon", NULL, path, description);
+    path = "/MDR[]/Earthshine/RECORD_HEADER/RECORD_START_TIME";
+    harp_variable_definition_add_mapping(variable_definition, NULL, NULL, path, description);
 
     /* latitude_of_the_measurement */
     description = "center latitude of the measurement";
     variable_definition =
         harp_ingestion_register_variable_full_read(product_definition, "latitude", harp_type_double, 1, dimension_type,
-                                                   NULL, description, "degree_north",
-                                                   exclude_when_not_radiance_or_transmission, read_latitude);
+                                                   NULL, description, "degree_north", NULL, read_latitude);
     harp_variable_definition_set_valid_range_double(variable_definition, -90.0, 90.0);
     path = "/MDR[]/Earthshine/GEO_EARTH_ACTUAL/CENTRE_ACTUAL[INT_INDEX[band_id],]/latitude";
     description =
@@ -1401,8 +1374,7 @@ static void register_variables_measurement_fields(harp_product_definition *produ
     description = "center longitude of the measurement";
     variable_definition =
         harp_ingestion_register_variable_full_read(product_definition, "longitude", harp_type_double, 1, dimension_type,
-                                                   NULL, description, "degree_east",
-                                                   exclude_when_not_radiance_or_transmission, read_longitude);
+                                                   NULL, description, "degree_east", NULL, read_longitude);
     harp_variable_definition_set_valid_range_double(variable_definition, -180.0, 180.0);
     path = "/MDR[]/Earthshine/GEO_EARTH_ACTUAL/CENTRE_ACTUAL[INT_INDEX[band_id],]/longitude";
     description =
@@ -1418,7 +1390,7 @@ static void register_variables_measurement_fields(harp_product_definition *produ
     variable_definition =
         harp_ingestion_register_variable_full_read(product_definition, "latitude_bounds", harp_type_double, 2,
                                                    bounds_dimension_type, bounds_dimension, description, "degree_north",
-                                                   exclude_when_not_radiance_or_transmission, read_latitude_bounds);
+                                                   NULL, read_latitude_bounds);
     harp_variable_definition_set_valid_range_double(variable_definition, -90.0, 90.0);
     path = "/MDR[]/Earthshine/GEO_EARTH_ACTUAL/CORNER_ACTUAL[INT_INDEX[band_id],,]/latitude";
     description =
@@ -1434,7 +1406,7 @@ static void register_variables_measurement_fields(harp_product_definition *produ
     variable_definition =
         harp_ingestion_register_variable_full_read(product_definition, "longitude_bounds", harp_type_double, 2,
                                                    bounds_dimension_type, bounds_dimension, description, "degree_east",
-                                                   exclude_when_not_radiance_or_transmission, read_longitude_bounds);
+                                                   NULL, read_longitude_bounds);
     harp_variable_definition_set_valid_range_double(variable_definition, -180.0, 180.0);
     path = "/MDR[]/Earthshine/GEO_EARTH_ACTUAL/CORNER_ACTUAL[INT_INDEX[band_id],,]/longitude";
     description =
@@ -1445,46 +1417,26 @@ static void register_variables_measurement_fields(harp_product_definition *produ
         "The integration time index INT_INDEX[timer_id] is the index (starting with 1) of the timer with the minimum integration time (limited to the timers of those bands that are ingested). The corners ABCD are reordered as BDCA.";
     harp_variable_definition_add_mapping(variable_definition, NULL, "CODA version >= 12", path, description);
 
-    /* wavelength_photon_radiance */
-    description = "measured radiances";
-    variable_definition =
-        harp_ingestion_register_variable_full_read(product_definition, "wavelength_photon_radiance", harp_type_double,
-                                                   2, dimension_type, NULL, description, "count/s/cm2/sr/nm",
-                                                   exclude_when_not_radiance, read_wavelength_photon_radiance);
+    if (radiance)
+    {
+        /* wavelength_photon_radiance */
+        description = "measured radiances";
+        variable_definition =
+            harp_ingestion_register_variable_full_read(product_definition, "wavelength_photon_radiance",
+                                                       harp_type_double, 2, dimension_type, NULL, description,
+                                                       "count/s/cm2/sr/nm", NULL, read_wavelength_photon_radiance);
+    }
+    else
+    {
+        /* transmittance */
+        description = "transmittance";
+        variable_definition =
+            harp_ingestion_register_variable_full_read(product_definition, "transmittance", harp_type_double, 2,
+                                                       dimension_type, NULL, description, NULL, NULL,
+                                                       read_transmittance);
+    }
     path =
         "/MDR[]/Earthshine/BAND_1A[,]/RAD, /MDR[]/Earthshine/BAND_1B[,]/RAD, /MDR[]/Earthshine/BAND_2A[,]/RAD, /MDR[]/Earthshine/BAND_2B[,]/RAD, /MDR[]/Earthshine/BAND_3[,]/RAD, /MDR[]/Earthshine/BAND_4[,]/RAD";
-    harp_variable_definition_add_mapping(variable_definition, NULL, NULL, path, NULL);
-
-    /* transmittance */
-    description = "transmittance";
-    variable_definition =
-        harp_ingestion_register_variable_full_read(product_definition, "transmittance", harp_type_double,
-                                                   2, dimension_type, NULL, description, NULL,
-                                                   exclude_when_not_transmission, read_transmittance);
-    path =
-        "/MDR[]/Earthshine/BAND_1A[,]/RAD, /MDR[]/Earthshine/BAND_1B[,]/RAD, /MDR[]/Earthshine/BAND_2A[,]/RAD, /MDR[]/Earthshine/BAND_2B[,]/RAD, /MDR[]/Earthshine/BAND_3[,]/RAD, /MDR[]/Earthshine/BAND_4[,]/RAD";
-    harp_variable_definition_add_mapping(variable_definition, NULL, NULL, path, NULL);
-
-    /* wavelength_photon_irradiance of the sun */
-    description = "measured sun irradiances";
-    variable_definition =
-        harp_ingestion_register_variable_full_read(product_definition, "wavelength_photon_irradiance_sun",
-                                                   harp_type_double, 2, dimension_type, NULL, description,
-                                                   "count/s/cm2/nm", exclude_when_not_sun,
-                                                   read_sun_wavelength_photon_irradiance);
-    path =
-        "/MDR[]/Sun/BAND_1A[,]/RAD, /MDR[]/Sun/BAND_1B[,]/RAD, /MDR[]/Sun/BAND_2A[,]/RAD, /MDR[]/Sun/BAND_2B[,]/RAD, /MDR[]/Sun/BAND_3[,]/RAD, /MDR[]/Sun/BAND_4[,]/RAD";
-    harp_variable_definition_add_mapping(variable_definition, NULL, NULL, path, NULL);
-
-    /* wavelength_photon_irradiance of the moon */
-    description = "measured moon irradiances";
-    variable_definition =
-        harp_ingestion_register_variable_full_read(product_definition, "wavelength_photon_irradiance_moon",
-                                                   harp_type_double, 2, dimension_type, NULL, description,
-                                                   "count/s/cm2/nm", exclude_when_not_moon,
-                                                   read_moon_wavelength_photon_irradiance);
-    path =
-        "/MDR[]/Moon/BAND_1A[,]/RAD, /MDR[]/Moon/BAND_1B[,]/RAD, /MDR[]/Moon/BAND_2A[,]/RAD, /MDR[]/Moon/BAND_2B[,]/RAD, /MDR[]/Moon/BAND_3[,]/RAD, /MDR[]/Moon/BAND_4[,]/RAD";
     harp_variable_definition_add_mapping(variable_definition, NULL, NULL, path, NULL);
 
     /* wavelength */
@@ -1494,13 +1446,7 @@ static void register_variables_measurement_fields(harp_product_definition *produ
                                                    dimension_type, NULL, description, "nm", NULL, read_wavelength);
     path =
         "/MDR[]/Earthshine/WAVELENGTH_1A[], /MDR[]/Earthshine/WAVELENGTH_1B[], /MDR[]/Earthshine/WAVELENGTH_2A[], /MDR/Earthshine[]/WAVELENGTH_2B[], /MDR[]/Earthshine/WAVELENGTH_3[], /MDR[]/Earthshine/WAVELENGTH_4[]";
-    harp_variable_definition_add_mapping(variable_definition, NULL, "data=radiance or data=transmission", path, NULL);
-    path =
-        "/MDR[]/Sun/WAVELENGTH_1A[], /MDR[]/Sun/WAVELENGTH_1B[], /MDR[]/Sun/WAVELENGTH_2A[], /MDR[]/Sun/WAVELENGTH_2B[], /MDR[]/Sun/WAVELENGTH_3[], /MDR[]/Sun/WAVELENGTH_4[]";
-    harp_variable_definition_add_mapping(variable_definition, "data=sun", NULL, path, NULL);
-    path =
-        "/MDR[]/Moon/WAVELENGTH_1A[], /MDR[]/Moon/WAVELENGTH_1B[], /MDR[]/Moon/WAVELENGTH_2A[], /MDR[]/Moon/WAVELENGTH_2B[], /MDR[]/Moon/WAVELENGTH_3[], /MDR[]/Moon/WAVELENGTH_4[]";
-    harp_variable_definition_add_mapping(variable_definition, "data=moon", NULL, path, NULL);
+    harp_variable_definition_add_mapping(variable_definition, NULL, NULL, path, NULL);
 
     /* datetime_length */
     description = "integration time for each pixel";
@@ -1508,26 +1454,22 @@ static void register_variables_measurement_fields(harp_product_definition *produ
         harp_ingestion_register_variable_full_read(product_definition, "datetime_length", harp_type_double, 2,
                                                    dimension_type, NULL, description, "s", NULL, read_datetime_length);
     path = "/MDR[]/Earthshine/INTEGRATION_TIMES[]";
-    harp_variable_definition_add_mapping(variable_definition, NULL, "data=radiance or data=transmission", path, NULL);
-    path = "/MDR[]/Sun/INTEGRATION_TIMES[]";
-    harp_variable_definition_add_mapping(variable_definition, "data=sun", NULL, path, NULL);
-    path = "/MDR[]/Moon/INTEGRATION_TIMES[]";
-    harp_variable_definition_add_mapping(variable_definition, "data=moon", NULL, path, NULL);
+    harp_variable_definition_add_mapping(variable_definition, NULL, NULL, path, NULL);
 
     /* scan_subset_counter */
     description = "relative index (0-3) of this measurement within a scan (forward+backward)";
     variable_definition =
         harp_ingestion_register_variable_full_read(product_definition, "scan_subset_counter", harp_type_int8, 1,
-                                                   dimension_type, NULL, description, NULL,
-                                                   exclude_when_not_radiance_or_transmission, read_scan_subset_counter);
+                                                   dimension_type, NULL, description, NULL, NULL,
+                                                   read_scan_subset_counter);
     harp_variable_definition_set_valid_range_int8(variable_definition, 0, 3);
 
     /* scan_direction */
     description = "scan direction for each measurement: 'forward' or 'backward'";
     variable_definition =
         harp_ingestion_register_variable_sample_read(product_definition, "scan_direction", harp_type_string, 1,
-                                                     dimension_type, NULL, description, NULL,
-                                                     exclude_when_not_radiance_or_transmission, read_scan_direction);
+                                                     dimension_type, NULL, description, NULL, NULL,
+                                                     read_scan_direction);
     path = "/MDR[]/Earthshine/INTEGRATION_TIMES[]";
     description =
         "the scan direction is based on the subset counter of the measurement (0-11 forward, 12-15 = backward)";
@@ -1537,8 +1479,8 @@ static void register_variables_measurement_fields(harp_product_definition *produ
     description = "cloud top pressure";
     variable_definition =
         harp_ingestion_register_variable_full_read(product_definition, "cloud_top_pressure", harp_type_double, 1,
-                                                   dimension_type, NULL, description, NULL,
-                                                   exclude_when_not_radiance_or_transmission, read_cloud_top_pressure);
+                                                   dimension_type, NULL, description, NULL, NULL,
+                                                   read_cloud_top_pressure);
     path = "/MDR[]/Earthshine/CLOUD/FIT_1[]";
     description =
         "If the minimum ingested integration time > 187.5ms then the corresponding cloud top pressures will be combined using logarithmic averaging. The cloud top pressure will be set to NaN if FIT_MODE in the CLOUD structure is not equal to 0 or if FIT_1 is set to a fill value (even when this holds for only one of the averaged items)";
@@ -1548,8 +1490,8 @@ static void register_variables_measurement_fields(harp_product_definition *produ
     description = "cloud fraction";
     variable_definition =
         harp_ingestion_register_variable_full_read(product_definition, "cloud_fraction", harp_type_double, 1,
-                                                   dimension_type, NULL, description, NULL,
-                                                   exclude_when_not_radiance_or_transmission, read_cloud_fraction);
+                                                   dimension_type, NULL, description, NULL, NULL,
+                                                   read_cloud_fraction);
     path = "/MDR[]/Earthshine/CLOUD/FIT_2[]";
     description =
         "If the minimum ingested integration time > 187.5ms then the corresponding cloud fractions will be combined using averaging. The cloud fraction will be set to NaN if FIT_MODE in the CLOUD structure is not equal to 0 or if FIT_2 is set to a fill value (even when this holds for only one of the averaged items)";
@@ -1559,8 +1501,8 @@ static void register_variables_measurement_fields(harp_product_definition *produ
     description = "solar zenith angle at top of atmosphere";
     variable_definition =
         harp_ingestion_register_variable_full_read(product_definition, "solar_zenith_angle_toa", harp_type_double, 1,
-                                                   dimension_type, NULL, description, "degree",
-                                                   exclude_when_not_radiance_or_transmission, read_solar_zenith_angle);
+                                                   dimension_type, NULL, description, "degree", NULL,
+                                                   read_solar_zenith_angle);
     path = "/MDR[]/Earthshine/GEO_EARTH_ACTUAL/SOLAR_ZENITH_ACTUAL[INT_INDEX[band_id],1,]";
     description =
         "The integration time index INT_INDEX[band_id] is the index of the band with the minimum integration time (limited to those bands that are ingested).";
@@ -1574,8 +1516,8 @@ static void register_variables_measurement_fields(harp_product_definition *produ
     description = "solar azimuth angle at top of atmosphere";
     variable_definition =
         harp_ingestion_register_variable_full_read(product_definition, "solar_azimuth_angle_toa", harp_type_double, 1,
-                                                   dimension_type, NULL, description, "degree",
-                                                   exclude_when_not_radiance_or_transmission, read_solar_azimuth_angle);
+                                                   dimension_type, NULL, description, "degree", NULL,
+                                                   read_solar_azimuth_angle);
     path = "/MDR[]/Earthshine/GEO_EARTH_ACTUAL/SOLAR_AZIMUTH_ACTUAL[INT_INDEX[band_id],1,]";
     description =
         "The integration time index INT_INDEX[band_id] is the index of the band with the minimum integration time (limited to those bands that are ingested).";
@@ -1589,8 +1531,7 @@ static void register_variables_measurement_fields(harp_product_definition *produ
     description = "viewing zenith angle at top of atmosphere";
     variable_definition =
         harp_ingestion_register_variable_full_read(product_definition, "viewing_zenith_angle_toa", harp_type_double, 1,
-                                                   dimension_type, NULL, description, "degree",
-                                                   exclude_when_not_radiance_or_transmission,
+                                                   dimension_type, NULL, description, "degree", NULL,
                                                    read_viewing_zenith_angle);
     path = "/MDR[]/Earthshine/GEO_EARTH_ACTUAL/SAT_ZENITH_ACTUAL[INT_INDEX[band_id],1,]";
     description =
@@ -1605,8 +1546,7 @@ static void register_variables_measurement_fields(harp_product_definition *produ
     description = "viewing azimuth angle at top of atmosphere";
     variable_definition =
         harp_ingestion_register_variable_full_read(product_definition, "viewing_azimuth_angle_toa", harp_type_double, 1,
-                                                   dimension_type, NULL, description, "degree",
-                                                   exclude_when_not_radiance_or_transmission,
+                                                   dimension_type, NULL, description, "degree", NULL,
                                                    read_viewing_azimuth_angle);
     path = "/MDR[]/Earthshine/GEO_EARTH_ACTUAL/SAT_AZIMUTH_ACTUAL[INT_INDEX[band_id],1,]";
     description =
@@ -1616,6 +1556,73 @@ static void register_variables_measurement_fields(harp_product_definition *produ
     description =
         "The integration time index INT_INDEX[timer_id] is the index (starting with 1) of the timer with the minimum integration time (limited to the timers of those bands that are ingested).";
     harp_variable_definition_add_mapping(variable_definition, NULL, "CODA version >= 12", path, description);
+}
+
+static void register_variables_irradiance_fields(harp_product_definition *product_definition)
+{
+    harp_variable_definition *variable_definition;
+    harp_dimension_type dimension_type[2];
+    const char *description;
+    const char *path;
+
+    dimension_type[0] = harp_dimension_time;
+    dimension_type[1] = harp_dimension_spectral;
+
+    /* time_of_the_measurement */
+    description = "time of the measurement at the end of the integration time";
+    variable_definition =
+        harp_ingestion_register_variable_full_read(product_definition, "datetime", harp_type_double, 1, dimension_type,
+                                                   NULL, description, "seconds since 2000-01-01", NULL, read_datetime);
+    description =
+        "The record start time is the start time of the scan and thus the start time of the second readout in the MDR. The start time for readout i (0..31) is thus RECORD_START_TIME + (i - 1) * 0.1875 and the time at end of integration time (which is the time that is returned) is RECORD_START_TIME + i * 0.1875";
+    path = "/MDR[]/Sun/RECORD_HEADER/RECORD_START_TIME";
+    harp_variable_definition_add_mapping(variable_definition, "data=sun", NULL, path, description);
+    path = "/MDR[]/Moon/RECORD_HEADER/RECORD_START_TIME";
+    harp_variable_definition_add_mapping(variable_definition, "data=moon", NULL, path, description);
+
+    /* wavelength_photon_irradiance of the sun */
+    description = "measured sun irradiances";
+    variable_definition =
+        harp_ingestion_register_variable_full_read(product_definition, "wavelength_photon_irradiance_sun",
+                                                   harp_type_double, 2, dimension_type, NULL, description,
+                                                   "count/s/cm2/nm", exclude_when_not_sun,
+                                                   read_sun_wavelength_photon_irradiance);
+    path =
+        "/MDR[]/Sun/BAND_1A[,]/RAD, /MDR[]/Sun/BAND_1B[,]/RAD, /MDR[]/Sun/BAND_2A[,]/RAD, /MDR[]/Sun/BAND_2B[,]/RAD, /MDR[]/Sun/BAND_3[,]/RAD, /MDR[]/Sun/BAND_4[,]/RAD";
+    harp_variable_definition_add_mapping(variable_definition, "data=sun", NULL, path, NULL);
+
+    /* wavelength_photon_irradiance of the moon */
+    description = "measured moon irradiances";
+    variable_definition =
+        harp_ingestion_register_variable_full_read(product_definition, "wavelength_photon_irradiance_moon",
+                                                   harp_type_double, 2, dimension_type, NULL, description,
+                                                   "count/s/cm2/nm", exclude_when_not_moon,
+                                                   read_moon_wavelength_photon_irradiance);
+    path =
+        "/MDR[]/Moon/BAND_1A[,]/RAD, /MDR[]/Moon/BAND_1B[,]/RAD, /MDR[]/Moon/BAND_2A[,]/RAD, /MDR[]/Moon/BAND_2B[,]/RAD, /MDR[]/Moon/BAND_3[,]/RAD, /MDR[]/Moon/BAND_4[,]/RAD";
+    harp_variable_definition_add_mapping(variable_definition, "data=moon", NULL, path, NULL);
+
+    /* wavelength */
+    description = "nominal wavelength assignment for each of the detector pixels";
+    variable_definition =
+        harp_ingestion_register_variable_full_read(product_definition, "wavelength", harp_type_double, 2,
+                                                   dimension_type, NULL, description, "nm", NULL, read_wavelength);
+    path =
+        "/MDR[]/Sun/WAVELENGTH_1A[], /MDR[]/Sun/WAVELENGTH_1B[], /MDR[]/Sun/WAVELENGTH_2A[], /MDR[]/Sun/WAVELENGTH_2B[], /MDR[]/Sun/WAVELENGTH_3[], /MDR[]/Sun/WAVELENGTH_4[]";
+    harp_variable_definition_add_mapping(variable_definition, "data=sun", NULL, path, NULL);
+    path =
+        "/MDR[]/Moon/WAVELENGTH_1A[], /MDR[]/Moon/WAVELENGTH_1B[], /MDR[]/Moon/WAVELENGTH_2A[], /MDR[]/Moon/WAVELENGTH_2B[], /MDR[]/Moon/WAVELENGTH_3[], /MDR[]/Moon/WAVELENGTH_4[]";
+    harp_variable_definition_add_mapping(variable_definition, "data=moon", NULL, path, NULL);
+
+    /* datetime_length */
+    description = "integration time for each pixel";
+    variable_definition =
+        harp_ingestion_register_variable_full_read(product_definition, "datetime_length", harp_type_double, 2,
+                                                   dimension_type, NULL, description, "s", NULL, read_datetime_length);
+    path = "/MDR[]/Sun/INTEGRATION_TIMES[]";
+    harp_variable_definition_add_mapping(variable_definition, "data=sun", NULL, path, NULL);
+    path = "/MDR[]/Moon/INTEGRATION_TIMES[]";
+    harp_variable_definition_add_mapping(variable_definition, "data=moon", NULL, path, NULL);
 }
 
 static int read_dimensions_measurements_fields(void *user_data, long dimension[HARP_NUM_DIM_TYPES])
@@ -1968,23 +1975,41 @@ static int ingestion_init(const harp_ingestion_module *module, coda_product *pro
         }
     }
 
-    if (info->ingestion_data == DATA_SUN_REFERENCE)
-    {
-        if (init_sun_reference_dimensions(info) != 0)
-        {
-            ingestion_done(info);
-            return -1;
-        }
-        *definition = module->product_definition[1];
-    }
-    else
+    if (info->ingestion_data == DATA_RADIANCE)
     {
         if (init_measurements_dimensions(info) != 0)
         {
             ingestion_done(info);
             return -1;
         }
-        *definition = module->product_definition[0];
+        *definition = module->product_definition[0];  /* Product 0 = radiance */
+    }
+    else if (info->ingestion_data == DATA_TRANSMISSION)
+    {
+        if (init_measurements_dimensions(info) != 0)
+        {
+            ingestion_done(info);
+            return -1;
+        }
+        *definition = module->product_definition[1];  /* Product 1 = transmission */
+    }
+    else if ((info->ingestion_data == DATA_SUN) || (info->ingestion_data == DATA_MOON))
+    {
+        if (init_measurements_dimensions(info) != 0)
+        {
+            ingestion_done(info);
+            return -1;
+        }
+        *definition = module->product_definition[2];  /* Product 2 = irradiance */
+    }
+    else if (info->ingestion_data == DATA_SUN_REFERENCE)
+    {
+        if (init_sun_reference_dimensions(info) != 0)
+        {
+            ingestion_done(info);
+            return -1;
+        }
+        *definition = module->product_definition[3];  /* Product 3 = sun_reference */
     }
 
     *user_data = info;
@@ -1992,25 +2017,13 @@ static int ingestion_init(const harp_ingestion_module *module, coda_product *pro
     return 0;
 }
 
-int harp_ingestion_module_gome2_l1_init(void)
+static harp_product_definition *register_measurement_product(harp_ingestion_module *module, const char *product_name,
+                                                             const char *product_description)
 {
-    harp_ingestion_module *module;
-    harp_product_definition *product_definition, *product_definition_sun_reference;
-    const char *data_options[] = { "radiance", "transmission", "sun", "moon", "sun_reference" };
+    harp_product_definition *product_definition;
     const char *description;
 
-    description = "GOME2 Level 1 data";
-    module = harp_ingestion_register_module_coda("GOME2_L1", "GOME-2", "EPS", "GOME_xxx_1B", description,
-                                                 ingestion_init, ingestion_done);
-    harp_ingestion_register_option(module, "band", "only include data from the specified band ('band-1a', 'band-1b', "
-                                   "'band-2a', 'band-2b', 'band-3', 'band-4'); by default data from all bands is "
-                                   "retrieved", 6, band_name_as_option);
-    harp_ingestion_register_option(module, "data", "retrieve the measured radiances, the transmission spectra, the sun "
-                                   "measurement spectra, the moon measurement spectra or the sun reference spectrum; "
-                                   "by default the measured radiances are retrieved", 5, data_options);
-
-    description = "GOME2 Level 1b product";
-    product_definition = harp_ingestion_register_product(module, "GOME2_L1", description,
+    product_definition = harp_ingestion_register_product(module, product_name, product_description,
                                                          read_dimensions_measurements_fields);
     description = "The GOME2 spectral data in the GOME2 L1b product is stored inside MDRs. There are separate MDRs for "
         "Earthshine, Calibration, Sun, and Moon measurements. In addition there are also 'Dummy Records' (DMDR) that "
@@ -2085,14 +2098,45 @@ int harp_ingestion_module_gome2_l1_init(void)
         "we only include detector pixels that are inside the requested band for the duration of the whole orbit. i.e. "
         "detector pixels that change band during the orbit will always be excluded when a band filter is given.";
     harp_product_definition_add_mapping(product_definition, description, NULL);
-    register_variables_measurement_fields(product_definition);
 
-    description = "GOME2 Level 1b sun reference product";
-    product_definition_sun_reference = harp_ingestion_register_product(module, "GOME2_L1_sun_reference", description,
-                                                                       read_dimensions_reference_spectrum_fields);
+    return product_definition;
+}
+
+int harp_ingestion_module_gome2_l1_init(void)
+{
+    harp_ingestion_module *module;
+    harp_product_definition *product_definition;
+    const char *data_options[] = { "radiance", "transmission", "sun", "moon", "sun_reference" };
+    const char *description;
+
+    description = "GOME2 Level 1 data";
+    module = harp_ingestion_register_module_coda("GOME2_L1", "GOME-2", "EPS", "GOME_xxx_1B", description,
+                                                 ingestion_init, ingestion_done);
+    harp_ingestion_register_option(module, "band", "only include data from the specified band ('band-1a', 'band-1b', "
+                                   "'band-2a', 'band-2b', 'band-3', 'band-4'); by default data from all bands is "
+                                   "retrieved", 6, band_name_as_option);
+    harp_ingestion_register_option(module, "data", "retrieve the measured radiances, the transmission spectra, the sun "
+                                   "measurement spectra, the moon measurement spectra or the sun reference spectrum; "
+                                   "by default the measured radiances are retrieved", 5, data_options);
+
+    product_definition = register_measurement_product(module, "GOME2_L1_radiance",
+                                                      "GOME2 Level 1b radiance product");
+    register_variables_radiance_transmittance_fields(product_definition, TRUE);
+
+    product_definition = register_measurement_product(module, "GOME2_L1_transmission",
+                                                      "GOME2 Level 1b transmission product");
+    register_variables_radiance_transmittance_fields(product_definition, FALSE);
+
+    product_definition = register_measurement_product(module, "GOME2_L1_irradiance",
+                                                      "GOME2 Level 1b irradiance product");
+    register_variables_irradiance_fields(product_definition);
+
+    product_definition = harp_ingestion_register_product(module, "GOME2_L1_sun_reference",
+                                                         "GOME2 Level 1b sun reference product",
+                                                         read_dimensions_reference_spectrum_fields);
     description = "GOME2 Level 1b sun reference data";
-    harp_product_definition_add_mapping(product_definition_sun_reference, description, NULL);
-    register_variables_reference_spectrum_fields(product_definition_sun_reference);
+    harp_product_definition_add_mapping(product_definition, description, NULL);
+    register_variables_reference_spectrum_fields(product_definition);
 
     return 0;
 }
