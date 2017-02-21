@@ -40,7 +40,7 @@ string         char*                                             null-terminated
 Dimensions
 ~~~~~~~~~~
 HARP has strict rules regarding the dimensions of variables. Each dimension of a variable may be used to represent a
-physical dimension (such as time, latitude, longitude, height, et cetera), or it may be used as an indepedent dimension.
+physical dimension (such as time, latitude, longitude, height, etcetera), or it may be used as an independent dimension.
 
 Only dimension types supported by HARP can be used. These types are:
 
@@ -75,7 +75,7 @@ libraries may have different conventions with regard to how they deal with array
 The order in which dimensions need to be provided for a variable is defined by the following rules:
 
  - If present, the ``time`` dimension is always the first (i.e. slowest running) dimension.
- - Next are categorial dimensions used for grouping. For instance, this can be the ``spectral`` dimension when it is
+ - Next are categorical dimensions used for grouping. For instance, this can be the ``spectral`` dimension when it is
    used to distinguish between retrievals performed using different choices of wavelength, or to distinguish data from
    different spectral bands.
  - Next are the spatial dimensions, ordered as ``latitude``, ``longitude``, ``vertical``.
@@ -157,7 +157,7 @@ Variable attributes
 ~~~~~~~~~~~~~~~~~~~
 ``description`` string (optional)
   This attribute provides a human readable description of the content of the variable. It should make clear what the
-  source of the data was (e.g. measured, climatology, derived, et cetera).
+  source of the data was (e.g. measured, climatology, derived, etcetera).
 
 ``dims`` string (optional)
   This attribute is only applicable for `HDF4`_ files (`netCDF-3`_ uses named dimensions and `HDF5`_ uses dimension
@@ -322,7 +322,7 @@ wind_direction                                surface                         X 
 <species>_volume_mixing_ratio_dry_air         surface         apriori, avk    X       X    X
 ============================================= =============== =============== ======= ==== ======= ===== =======================================================================
 
-The supported aersol types are:
+The supported aerosol types are:
 
 ============== =================
 Aerosol type   Description                 
@@ -429,7 +429,7 @@ Some examples of valid variable names are: ``tropospheric_O3_column_number_densi
 The `Vert`, `Lat/Lon`, and `Spec` columns indicate whether a variable can be dependent on the ``vertical``,
 ``latitude`` & ``longitude``, and/or ``spectral`` dimensions (any variable can be dependent on the ``time`` dimension).
 
-The 'surface' prefix should only be used when quantities are combined together with quantites that have a vertical dimension.
+The 'surface' prefix should only be used when quantities are combined together with quantities that have a vertical dimension.
 If a product just contains surface quantities then don't use a 'surface' prefix but just omit the vertical dimension and
 indicate the vertical level (i.e. location of the surface) using a 'pressure', 'altitude', and/or 'geopotential_height' variable.
 

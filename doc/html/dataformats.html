@@ -235,7 +235,7 @@ these data types are mapped to and from the data types supported by each file fo
 <div class="section" id="dimensions">
 <h3>Dimensions</h3>
 <p>HARP has strict rules regarding the dimensions of variables. Each dimension of a variable may be used to represent a
-physical dimension (such as time, latitude, longitude, height, et cetera), or it may be used as an indepedent dimension.</p>
+physical dimension (such as time, latitude, longitude, height, etcetera), or it may be used as an independent dimension.</p>
 <p>Only dimension types supported by HARP can be used. These types are:</p>
 <dl class="docutils">
 <dt><code class="docutils literal"><span class="pre">time</span></code></dt>
@@ -263,7 +263,7 @@ libraries may have different conventions with regard to how they deal with array
 <blockquote>
 <div><ul class="simple">
 <li>If present, the <code class="docutils literal"><span class="pre">time</span></code> dimension is always the first (i.e. slowest running) dimension.</li>
-<li>Next are categorial dimensions used for grouping. For instance, this can be the <code class="docutils literal"><span class="pre">spectral</span></code> dimension when it is
+<li>Next are categorical dimensions used for grouping. For instance, this can be the <code class="docutils literal"><span class="pre">spectral</span></code> dimension when it is
 used to distinguish between retrievals performed using different choices of wavelength, or to distinguish data from
 different spectral bands.</li>
 <li>Next are the spatial dimensions, ordered as <code class="docutils literal"><span class="pre">latitude</span></code>, <code class="docutils literal"><span class="pre">longitude</span></code>, <code class="docutils literal"><span class="pre">vertical</span></code>.</li>
@@ -337,7 +337,7 @@ day).</dd>
 <dl class="docutils">
 <dt><code class="docutils literal"><span class="pre">description</span></code> string (optional)</dt>
 <dd>This attribute provides a human readable description of the content of the variable. It should make clear what the
-source of the data was (e.g. measured, climatology, derived, et cetera).</dd>
+source of the data was (e.g. measured, climatology, derived, etcetera).</dd>
 <dt><code class="docutils literal"><span class="pre">dims</span></code> string (optional)</dt>
 <dd>This attribute is only applicable for <a class="reference internal" href="#hdf4">HDF4</a> files (<a class="reference internal" href="#netcdf-3">netCDF-3</a> uses named dimensions and <a class="reference internal" href="#hdf5">HDF5</a> uses dimension
 scales). This attribute stores the type of each dimension of the associated variable as a comma-separated list of
@@ -1335,7 +1335,7 @@ tropospheric</td>
 </tr>
 </tbody>
 </table>
-<p>The supported aersol types are:</p>
+<p>The supported aerosol types are:</p>
 <table border="1" class="docutils">
 <colgroup>
 <col width="45%" />
@@ -1653,7 +1653,7 @@ Variables having an &#8216;X&#8217; in the Quality column can have any of the fo
 <code class="docutils literal"><span class="pre">tropospheric_O3_column_number_density_uncertainty</span></code>, <code class="docutils literal"><span class="pre">O3_column_number_density_apriori_uncertainty</span></code>.</p>
 <p>The <cite>Vert</cite>, <cite>Lat/Lon</cite>, and <cite>Spec</cite> columns indicate whether a variable can be dependent on the <code class="docutils literal"><span class="pre">vertical</span></code>,
 <code class="docutils literal"><span class="pre">latitude</span></code> &amp; <code class="docutils literal"><span class="pre">longitude</span></code>, and/or <code class="docutils literal"><span class="pre">spectral</span></code> dimensions (any variable can be dependent on the <code class="docutils literal"><span class="pre">time</span></code> dimension).</p>
-<p>The &#8216;surface&#8217; prefix should only be used when quantities are combined together with quantites that have a vertical dimension.
+<p>The &#8216;surface&#8217; prefix should only be used when quantities are combined together with quantities that have a vertical dimension.
 If a product just contains surface quantities then don&#8217;t use a &#8216;surface&#8217; prefix but just omit the vertical dimension and
 indicate the vertical level (i.e. location of the surface) using a &#8216;pressure&#8217;, &#8216;altitude&#8217;, and/or &#8216;geopotential_height&#8217; variable.</p>
 <p>All (horizontal) azimuth angles in HARP should follow the convention that 0 is North facing
