@@ -1507,12 +1507,12 @@ static void register_variables_radiance_transmittance_fields(harp_product_defini
     harp_variable_definition_add_mapping(variable_definition, NULL, NULL, path, NULL);
 
     /* scan_subset_counter */
-    description = "relative index (0-3) of this measurement within a scan (forward+backward)";
+    description = "relative index (0-15) of this measurement within a scan (forward+backward)";
     variable_definition =
         harp_ingestion_register_variable_full_read(product_definition, "scan_subset_counter", harp_type_int8, 1,
                                                    dimension_type, NULL, description, NULL, NULL,
                                                    read_scan_subset_counter);
-    harp_variable_definition_set_valid_range_int8(variable_definition, 0, 3);
+    harp_variable_definition_set_valid_range_int8(variable_definition, 0, 15);
 
     /* scan_direction */
     description = "scan direction for each measurement: 'forward' or 'backward'";
