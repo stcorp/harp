@@ -779,6 +779,7 @@ LIBHARP_API int harp_product_regrid_vertical_with_axis_variable(harp_product *pr
         harp_dimension_independent
     };
     long num_source_max_vertical_elements;      /* actual elems + NaN padding */
+    long num_source_grid_max_vertical_elements;
     long num_target_vertical_elements = axis_variable->dimension[axis_variable->num_dimensions - 1];
     long source_time_dim_length = 0;    /* 0 indicates that we do time-independent regridding */
     int source_grid_num_dims = 1;
@@ -810,7 +811,8 @@ LIBHARP_API int harp_product_regrid_vertical_with_axis_variable(harp_product *pr
         source_grid_num_dims = 2;
         source_time_dim_length = source_grid->dimension[0];
     }
-    num_source_max_vertical_elements = source_grid->dimension[source_grid->num_dimensions - 1];
+    num_source_grid_max_vertical_elements = source_grid->dimension[source_grid->num_dimensions - 1];
+    num_source_max_vertical_elements = num_source_grid_max_vertical_elements;
 
     /* derive bounds variables if necessary for resampling */
     if (needs_interval_resample(product))
@@ -942,6 +944,7 @@ LIBHARP_API int harp_product_regrid_vertical_with_axis_variable(harp_product *pr
         {
             goto error;
         }
+        num_source_max_vertical_elements = num_target_vertical_elements;
     }
 
     /* allocate the buffer for the interpolation */
@@ -959,7 +962,7 @@ LIBHARP_API int harp_product_regrid_vertical_with_axis_variable(harp_product *pr
     {
         harp_variable *variable = product->variable[i];
         profile_resample_type variable_type;
-        long num_profiles = variable->num_elements / num_target_vertical_elements;
+        long num_profiles = variable->num_elements / num_source_max_vertical_elements;
         long num_profiles_per_time = num_profiles;
         long num_source_vertical_elements = 0;
         long time_index;
@@ -1000,28 +1003,31 @@ LIBHARP_API int harp_product_regrid_vertical_with_axis_variable(harp_product *pr
             /* keep track of time for time-dependent vertical grids */
             if (j % num_profiles_per_time == 0)
             {
-                time_index++;
+                if (j == 0 || source_grid_num_dims == 2)
+                {
+                    time_index++;
+                }
                 /* find the source grid lengths */
                 num_source_vertical_elements =
                     get_unpadded_vector_length
-                    (&source_grid->data.double_data[time_index * num_source_max_vertical_elements],
-                     num_source_max_vertical_elements);
+                    (&source_grid->data.double_data[time_index * num_source_grid_max_vertical_elements],
+                     num_source_grid_max_vertical_elements);
             }
 
             if (variable_type == profile_resample_linear)
             {
                 harp_interpolate_array_linear
                     (num_source_vertical_elements,
-                     &source_grid->data.double_data[time_index * num_source_max_vertical_elements],
-                     &variable->data.double_data[j * num_target_vertical_elements], num_target_vertical_elements,
+                     &source_grid->data.double_data[time_index * num_source_grid_max_vertical_elements],
+                     &variable->data.double_data[j * num_source_max_vertical_elements], num_target_vertical_elements,
                      target_grid->data.double_data, 0, interpolation_buffer);
             }
             else if (variable_type == profile_resample_interval)
             {
                 harp_interval_interpolate_array_linear
                     (num_source_vertical_elements,
-                     &source_bounds->data.double_data[time_index * num_source_max_vertical_elements * 2],
-                     &variable->data.double_data[j * num_target_vertical_elements], num_target_vertical_elements,
+                     &source_bounds->data.double_data[time_index * num_source_grid_max_vertical_elements * 2],
+                     &variable->data.double_data[j * num_source_max_vertical_elements], num_target_vertical_elements,
                      target_bounds->data.double_data, interpolation_buffer);
             }
             else
@@ -1034,7 +1040,7 @@ LIBHARP_API int harp_product_regrid_vertical_with_axis_variable(harp_product *pr
             /* copy the buffer to the target var */
             for (l = 0; l < num_target_vertical_elements; l++)
             {
-                variable->data.double_data[j * num_target_vertical_elements + l] = interpolation_buffer[l];
+                variable->data.double_data[j * num_source_max_vertical_elements + l] = interpolation_buffer[l];
             }
         }
     }
