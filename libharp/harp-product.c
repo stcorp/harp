@@ -571,7 +571,7 @@ LIBHARP_API int harp_product_remove_variable(harp_product *product, harp_variabl
  */
 LIBHARP_API int harp_product_replace_variable(harp_product *product, harp_variable *variable)
 {
-    int variable_id;
+    int index;
     int i;
 
     if (variable == NULL)
@@ -580,14 +580,14 @@ LIBHARP_API int harp_product_replace_variable(harp_product *product, harp_variab
         return -1;
     }
 
-    if (harp_product_get_variable_id_by_name(product, variable->name, &variable_id) != 0)
+    if (harp_product_get_variable_index_by_name(product, variable->name, &index) != 0)
     {
         harp_set_error(HARP_ERROR_VARIABLE_NOT_FOUND, "variable '%s' does not exist (%s:%u)", variable->name, __FILE__,
                        __LINE__);
         return -1;
     }
 
-    if (product->variable[variable_id] == variable)
+    if (product->variable[index] == variable)
     {
         /* Attempt to replace variable by itself. */
         return 0;
@@ -614,11 +614,11 @@ LIBHARP_API int harp_product_replace_variable(harp_product *product, harp_variab
     }
 
     /* Replace variable. */
-    sync_product_dimensions_on_variable_remove(product, product->variable[variable_id]);
-    harp_variable_delete(product->variable[variable_id]);
+    sync_product_dimensions_on_variable_remove(product, product->variable[index]);
+    harp_variable_delete(product->variable[index]);
 
-    product->variable[variable_id] = variable;
-    sync_product_dimensions_on_variable_add(product, product->variable[variable_id]);
+    product->variable[index] = variable;
+    sync_product_dimensions_on_variable_add(product, product->variable[index]);
 
     return 0;
 }
@@ -693,12 +693,12 @@ LIBHARP_API int harp_product_get_variable_by_name(const harp_product *product, c
  * If no variable with the given name can be found an error is returned.
  * \param product Product in which the find the variable.
  * \param name Name of the variable.
- * \param variable_id Pointer to the C variable where the index in the HARP variables list for the product is returned.
+ * \param index Pointer to the C variable where the index in the HARP variables list for the product is returned.
  * \return
  *   \arg \c 0, Success.
  *   \arg \c -1, Error occurred (check #harp_errno).
  */
-LIBHARP_API int harp_product_get_variable_id_by_name(const harp_product *product, const char *name, int *variable_id)
+LIBHARP_API int harp_product_get_variable_index_by_name(const harp_product *product, const char *name, int *index)
 {
     int i;
 
@@ -708,9 +708,9 @@ LIBHARP_API int harp_product_get_variable_id_by_name(const harp_product *product
         return -1;
     }
 
-    if (variable_id == NULL)
+    if (index == NULL)
     {
-        harp_set_error(HARP_ERROR_INVALID_ARGUMENT, "variable_id is NULL (%s:%u)", __FILE__, __LINE__);
+        harp_set_error(HARP_ERROR_INVALID_ARGUMENT, "index is NULL (%s:%u)", __FILE__, __LINE__);
         return -1;
     }
 
@@ -718,7 +718,7 @@ LIBHARP_API int harp_product_get_variable_id_by_name(const harp_product *product
     {
         if (strcmp(product->variable[i]->name, name) == 0)
         {
-            *variable_id = i;
+            *index = i;
             return 0;
         }
     }

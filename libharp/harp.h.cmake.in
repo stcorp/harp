@@ -496,7 +496,7 @@ LIBHARP_API int harp_product_is_empty(const harp_product *product);
 LIBHARP_API int harp_product_has_variable(const harp_product *product, const char *name);
 LIBHARP_API int harp_product_get_variable_by_name(const harp_product *product, const char *name,
                                                   harp_variable **variable);
-LIBHARP_API int harp_product_get_variable_id_by_name(const harp_product *product, const char *name, int *variable_id);
+LIBHARP_API int harp_product_get_variable_index_by_name(const harp_product *product, const char *name, int *index);
 LIBHARP_API int harp_product_get_derived_variable(const harp_product *product, const char *name, const char *unit,
                                                   int num_dimensions, const harp_dimension_type *dimension_type,
                                                   harp_variable **variable);

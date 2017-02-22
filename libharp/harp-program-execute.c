@@ -1192,7 +1192,7 @@ static int execute_derive_smoothed_column_collocated(harp_product *product, harp
 static int execute_exclude_variable(harp_product *product, harp_program *program)
 {
     const harp_exclude_variable_args *ex_args;
-    int variable_id;
+    int index;
     int j;
     harp_operation *operation;
 
@@ -1204,14 +1204,14 @@ static int execute_exclude_variable(harp_product *product, harp_program *program
     ex_args = (const harp_exclude_variable_args *)operation->args;
     for (j = 0; j < ex_args->num_variables; j++)
     {
-        if (harp_product_get_variable_id_by_name(product, ex_args->variable_name[j], &variable_id) != 0)
+        if (harp_product_get_variable_index_by_name(product, ex_args->variable_name[j], &index) != 0)
         {
             /* already removed, not an error */
             continue;
         }
 
         /* execute the operation: remove the variable */
-        if (harp_product_remove_variable(product, product->variable[variable_id]) != 0)
+        if (harp_product_remove_variable(product, product->variable[index]) != 0)
         {
             return -1;
         }
@@ -1258,7 +1258,7 @@ static int execute_keep_variable(harp_product *product, harp_program *program)
 {
     harp_operation *operation;
     const harp_keep_variable_args *in_args;
-    int variable_id;
+    int index;
     int j;
 
     /* owned mem */
@@ -1286,7 +1286,7 @@ static int execute_keep_variable(harp_product *product, harp_program *program)
     in_args = (const harp_keep_variable_args *)operation->args;
     for (j = 0; j < in_args->num_variables; j++)
     {
-        if (harp_product_get_variable_id_by_name(product, in_args->variable_name[j], &variable_id) != 0)
+        if (harp_product_get_variable_index_by_name(product, in_args->variable_name[j], &index) != 0)
         {
             harp_set_error(HARP_ERROR_OPERATION, OPERATION_KEEP_NON_EXISTANT_VARIABLE_FORMAT,
                            in_args->variable_name[j]);
@@ -1294,7 +1294,7 @@ static int execute_keep_variable(harp_product *product, harp_program *program)
             return -1;
         }
 
-        include_variable_mask[variable_id] = 1;
+        include_variable_mask[index] = 1;
     }
 
     /* filter the variables using the mask */

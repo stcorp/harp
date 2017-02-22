@@ -15,6 +15,9 @@
 * Added harp_collocation_result_filter_for_collocation_indices() and
   harp_product_get_smoothed_column_using_collocated_dataset() functions.
 
+* Renamed harp_product_get_variable_id_by_name() to
+  harp_product_get_variable_index_by_name().
+
 * Python harp.import_product() and harp.ingest_product() functions now accept
   a list of filenames or a globbing pattern as parameter (which will return
   the result of harp.concatenate() on the imported/ingested products).

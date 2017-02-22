@@ -521,8 +521,8 @@
 </dd></dl>
 
 <dl class="function">
-<dt id="_CPPv236harp_product_get_variable_id_by_namePK12harp_productPKcPi">
-<span id="harp_product_get_variable_id_by_name__harp_productCP.cCP.iP"></span><span class="target" id="libharpgroup__harp__product_1ga83ca20653fb5d17f8fbe52b68dc45926"></span>int <code class="descname">harp_product_get_variable_id_by_name</code><span class="sig-paren">(</span><em class="property">const</em> <a class="reference internal" href="#_CPPv212harp_product" title="harp_product">harp_product</a> *<em>product</em>, <em class="property">const</em> char *<em>name</em>, int *<em>variable_id</em><span class="sig-paren">)</span></dt>
+<dt id="_CPPv239harp_product_get_variable_index_by_namePK12harp_productPKcPi">
+<span id="harp_product_get_variable_index_by_name__harp_productCP.cCP.iP"></span><span class="target" id="libharpgroup__harp__product_1ga954f21b21958d1f316b83d60a8816d4e"></span>int <code class="descname">harp_product_get_variable_index_by_name</code><span class="sig-paren">(</span><em class="property">const</em> <a class="reference internal" href="#_CPPv212harp_product" title="harp_product">harp_product</a> *<em>product</em>, <em class="property">const</em> char *<em>name</em>, int *<em>index</em><span class="sig-paren">)</span></dt>
 <dd><p>Find index of variable with a given name for a product. If no variable with the given name can be found an error is returned. <dl class="docutils">
 <dt><strong>Return</strong></dt>
 <dd><ul class="simple">
@@ -536,7 +536,7 @@
 </li>
 <li><code class="first docutils literal"><span class="pre">name</span></code> - <p>Name of the variable. </p>
 </li>
-<li><code class="first docutils literal"><span class="pre">variable_id</span></code> - <p>Pointer to the C variable where the index in the HARP variables list for the product is returned. </p>
+<li><code class="first docutils literal"><span class="pre">index</span></code> - <p>Pointer to the C variable where the index in the HARP variables list for the product is returned. </p>
 </li>
 </ul>
 </dd>
@@ -649,6 +649,34 @@
 <li><code class="first docutils literal"><span class="pre">product</span></code> - <p>Product that the operations should be executed on. </p>
 </li>
 <li><code class="first docutils literal"><span class="pre">operations</span></code> - <p>Operations to execute; should be specified as a semi-colon separated string of operations. </p>
+</li>
+</ul>
+</dd>
+</dl>
+</p>
+</dd></dl>
+
+<dl class="function">
+<dt id="_CPPv238harp_product_regrid_with_axis_variableP12harp_productP13harp_variableP13harp_variable">
+<span id="harp_product_regrid_with_axis_variable__harp_productP.harp_variableP.harp_variableP"></span><span class="target" id="libharpgroup__harp__product_1ga07a808c69fa7972af739aad407860ee1"></span>int <code class="descname">harp_product_regrid_with_axis_variable</code><span class="sig-paren">(</span><a class="reference internal" href="#_CPPv212harp_product" title="harp_product">harp_product</a> *<em>product</em>, <a class="reference internal" href="libharp_variable.html#_CPPv213harp_variable" title="harp_variable">harp_variable</a> *<em>target_grid</em>, <a class="reference internal" href="libharp_variable.html#_CPPv213harp_variable" title="harp_variable">harp_variable</a> *<em>target_bounds</em><span class="sig-paren">)</span></dt>
+<dd><p>Resample all variables in product against a specified grid. The target grid variable should be an axis variable containing the target grid (as &#8216;double&#8217; values). It should be a one-dimensional variable (for a time independent grid) or a two-dimensional variable (for a time dependent grid). The dimension to use for regridding is based on the last dimenion of the target grid variable. This function cannot be used to regrid the time dimension (or an independent dimension).</p>
+<p>If the target grid variable is two dimensional (i.e. time dependent) then its time dimension should match that of the product.</p>
+<p>For each variable in the product a dimension-specific rule based on the variable name will determine how to regrid the variable (point/interval interpolation). If interval interpolation is needed for one of the variables then target boundaries are needed. These can be provided using the optional target_bounds parameter. If this parameter is not provided, the boundaries will be calculated automatically from the target grid (by inter/extrapolating intervals from mid-points).</p>
+<p>The source grid and bounds are determined by derivation of the variable on the specified product (using the variable name of the target_grid variable).</p>
+<p><dl class="docutils">
+<dt><strong>Return</strong></dt>
+<dd><ul class="simple">
+<li><code class="docutils literal"><span class="pre">0</span></code>, Success. </li>
+<li><code class="docutils literal"><span class="pre">-1</span></code>, Error occurred (check <a class="reference internal" href="libharp_error.html#libharpgroup__harp__error_1gab2eeb46528306c6799632d1e800c4c36"><span class="std std-ref">harp_errno</span></a>). </li>
+</ul>
+</dd>
+<dt><strong>Parameters</strong></dt>
+<dd><ul class="breatheparameterlist first last">
+<li><code class="first docutils literal"><span class="pre">product</span></code> - <p>Product to resample. </p>
+</li>
+<li><code class="first docutils literal"><span class="pre">target_grid</span></code> - <p>Target grid variable. </p>
+</li>
+<li><code class="first docutils literal"><span class="pre">target_bounds</span></code> - <p>Target grid boundaries variable (optional).</p>
 </li>
 </ul>
 </dd>
