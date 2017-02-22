@@ -88,7 +88,7 @@ Supported functions:
        Derive the given intergrated column value by first deriving
        a partial column profile variant of the variable and then
        smoothing/integrating this partial column profile using the
-       column avaraging kernal (and a-priori, if available) from a
+       column avaraging kernel (and a-priori, if available) from a
        collocated dataset. The third parameter indicates which dataset
        contains the avaraging kernel.
        Before smoothing the partial column profile is regridded to
@@ -178,7 +178,7 @@ Supported functions:
 
     ``smooth(variable, dimension, axis-variable unit, collocation-result-file, a|b, dataset-dir)``
         Smooth the given variable in the product for the given dimension
-        using the avaraging kernal (and a-priori profile, if available)
+        using the avaraging kernel (and a-priori profile, if available)
         from a collocated dataset. The fifth parameter indicates which
         dataset contains the avaraging kernel. Before smoothing the
         product is regridded to the grid of the averaging kernel using
@@ -189,7 +189,8 @@ Supported functions:
 
     ``smooth((variable, variable, ...), dimension, axis-variable unit, collocation-result-file, a|b, dataset-dir)``
         Same as above, but then providing a list of variables that need to be smoothed.
-        For each variable an associated averaging kernel needs to be present in the collocated dataset.
+        For each variable an associated averaging kernel (and associated a-priori,
+        if applicable) needs to be present in the collocated dataset.
 
     ``valid(variable)``
         Exclude invalid values of the specified variable (values
