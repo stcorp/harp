@@ -12,8 +12,9 @@
 * Added vertical_unit parameter to harp_product_smooth_vertical() and
   harp_product_regrid_vertical_with_collocated_dataset() functions.
 
-* Added harp_collocation_result_filter_for_collocation_indices() and
-  harp_product_get_smoothed_column_using_collocated_dataset() functions.
+* Added harp_collocation_result_filter_for_collocation_indices(),
+  harp_product_get_smoothed_column_using_collocated_dataset(), and
+  harp_product_remove_variable_by_name() functions.
 
 * Renamed harp_product_get_variable_id_by_name() to
   harp_product_get_variable_index_by_name().

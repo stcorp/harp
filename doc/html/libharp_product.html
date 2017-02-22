@@ -453,6 +453,28 @@
 </dd></dl>
 
 <dl class="function">
+<dt id="_CPPv236harp_product_remove_variable_by_nameP12harp_productPKc">
+<span id="harp_product_remove_variable_by_name__harp_productP.cCP"></span><span class="target" id="libharpgroup__harp__product_1ga592399cec1ab4a611a620fc788a9c84d"></span>int <code class="descname">harp_product_remove_variable_by_name</code><span class="sig-paren">(</span><a class="reference internal" href="#_CPPv212harp_product" title="harp_product">harp_product</a> *<em>product</em>, <em class="property">const</em> char *<em>name</em><span class="sig-paren">)</span></dt>
+<dd><p>Remove a variable from a product using the name of the variable. This function removes the variable with the specified name from the product and then deletes the variable itself. <dl class="docutils">
+<dt><strong>Return</strong></dt>
+<dd><ul class="simple">
+<li><code class="docutils literal"><span class="pre">0</span></code>, Success. </li>
+<li><code class="docutils literal"><span class="pre">-1</span></code>, Error occurred (check <a class="reference internal" href="libharp_error.html#libharpgroup__harp__error_1gab2eeb46528306c6799632d1e800c4c36"><span class="std std-ref">harp_errno</span></a>). </li>
+</ul>
+</dd>
+<dt><strong>Parameters</strong></dt>
+<dd><ul class="breatheparameterlist first last">
+<li><code class="first docutils literal"><span class="pre">product</span></code> - <p>Product from which the variable should be removed. </p>
+</li>
+<li><code class="first docutils literal"><span class="pre">name</span></code> - <p>Name of the variable that should be removed. </p>
+</li>
+</ul>
+</dd>
+</dl>
+</p>
+</dd></dl>
+
+<dl class="function">
 <dt id="_CPPv229harp_product_replace_variableP12harp_productP13harp_variable">
 <span id="harp_product_replace_variable__harp_productP.harp_variableP"></span><span class="target" id="libharpgroup__harp__product_1ga29283b1d2a2042fb164ade0b8b5be9e7"></span>int <code class="descname">harp_product_replace_variable</code><span class="sig-paren">(</span><a class="reference internal" href="#_CPPv212harp_product" title="harp_product">harp_product</a> *<em>product</em>, <a class="reference internal" href="libharp_variable.html#_CPPv213harp_variable" title="harp_variable">harp_variable</a> *<em>variable</em><span class="sig-paren">)</span></dt>
 <dd><p>Replaces an existing variable with the one provided. The product should already contain a variable with the same name as <em>variable</em>. This function searches in the list of variables in the product for one with the same name, removes this variable and then adds the given <em>variable</em> in its place. Note that if you try to replace a variable with itself the function does nothing (and returns success). <dl class="docutils">

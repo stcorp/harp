@@ -884,15 +884,10 @@ LIBHARP_API int harp_product_regrid_vertical_with_axis_variable(harp_product *pr
     /* remove axis variable if it exists (since we don't want to interpolate it) */
     if (harp_product_has_variable(product, target_grid->name))
     {
-        if (harp_product_get_variable_by_name(product, target_grid->name, &vertical_axis) != 0)
+        if (harp_product_remove_variable_by_name(product, target_grid->name) != 0)
         {
             goto error;
         }
-        if (harp_product_remove_variable(product, vertical_axis) != 0)
-        {
-            goto error;
-        }
-        vertical_axis = NULL;
     }
 
     /* Remove variables that can't be resampled */

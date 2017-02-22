@@ -1192,7 +1192,6 @@ static int execute_derive_smoothed_column_collocated(harp_product *product, harp
 static int execute_exclude_variable(harp_product *product, harp_program *program)
 {
     const harp_exclude_variable_args *ex_args;
-    int index;
     int j;
     harp_operation *operation;
 
@@ -1204,16 +1203,13 @@ static int execute_exclude_variable(harp_product *product, harp_program *program
     ex_args = (const harp_exclude_variable_args *)operation->args;
     for (j = 0; j < ex_args->num_variables; j++)
     {
-        if (harp_product_get_variable_index_by_name(product, ex_args->variable_name[j], &index) != 0)
+        if (harp_product_has_variable(product, ex_args->variable_name[j]))
         {
-            /* already removed, not an error */
-            continue;
-        }
-
-        /* execute the operation: remove the variable */
-        if (harp_product_remove_variable(product, product->variable[index]) != 0)
-        {
-            return -1;
+            /* execute the operation: remove the variable */
+            if (harp_product_remove_variable_by_name(product, ex_args->variable_name[j]) != 0)
+            {
+                return -1;
+            }
         }
     }
 

@@ -559,6 +559,31 @@ LIBHARP_API int harp_product_remove_variable(harp_product *product, harp_variabl
     return 0;
 }
 
+/** Remove a variable from a product using the name of the variable.
+ * This function removes the variable with the specified name from the product and then deletes the variable itself.
+ * \param product Product from which the variable should be removed.
+ * \param name Name of the variable that should be removed.
+ * \return
+ *   \arg \c 0, Success.
+ *   \arg \c -1, Error occurred (check #harp_errno).
+ */
+LIBHARP_API int harp_product_remove_variable_by_name(harp_product *product, const char *name)
+{
+    harp_variable *variable;
+
+    if (harp_product_get_variable_by_name(product, name, &variable) != 0)
+    {
+        return -1;
+    }
+    if (harp_product_detach_variable(product, variable) != 0)
+    {
+        return -1;
+    }
+    harp_variable_delete(variable);
+
+    return 0;
+}
+
 /** Replaces an existing variable with the one provided.
  * The product should already contain a variable with the same name as \a variable. This function searches in the list
  * of variables in the product for one with the same name, removes this variable and then adds the given \a variable in
@@ -1088,14 +1113,12 @@ int harp_product_remove_dimension(harp_product *product, harp_dimension_type dim
         return 0;
     }
 
-    i = 0;
-    while (i < product->num_variables)
+    for (i = product->num_variables - 1; i >= 0; i--)
     {
         harp_variable *variable = product->variable[i];
 
         if (!harp_variable_has_dimension_type(variable, dimension_type))
         {
-            i++;
             continue;
         }
 
@@ -1351,16 +1374,16 @@ LIBHARP_API int harp_product_flatten_dimension(harp_product *product, harp_dimen
     }
 
     /* remove index and collocation_index variables if they exist */
-    if (harp_product_get_variable_by_name(product, "index", &var) != -1)
+    if (harp_product_has_variable(product, "index"))
     {
-        if (harp_product_remove_variable(product, var) != 0)
+        if (harp_product_remove_variable_by_name(product, "index") != 0)
         {
             return -1;
         }
     }
-    if (harp_product_get_variable_by_name(product, "collocation_index", &var) != -1)
+    if (harp_product_has_variable(product, "collocation_index"))
     {
-        if (harp_product_remove_variable(product, var) != 0)
+        if (harp_product_remove_variable_by_name(product, "collocation_index") != 0)
         {
             return -1;
         }
