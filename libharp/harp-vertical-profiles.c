@@ -369,7 +369,7 @@ static profile_resample_type get_profile_resample_type(harp_variable *variable)
     return profile_resample_remove;
 }
 
-int needs_interval_resample(harp_product *product)
+static int needs_interval_resample(harp_product *product)
 {
     int i;
 
