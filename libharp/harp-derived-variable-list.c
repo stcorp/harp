@@ -583,45 +583,6 @@ static int get_midpoint_from_bounds_log(harp_variable *variable, const harp_vari
     return 0;
 }
 
-static int get_minimum_from_array(harp_variable *variable, const harp_variable **source_variable)
-{
-    long dim_length;
-    long i;
-
-    assert(source_variable[0]->num_dimensions == variable->num_dimensions + 1);
-
-    dim_length = source_variable[0]->dimension[source_variable[0]->num_dimensions - 1];
-    for (i = 0; i < variable->num_elements; i++)
-    {
-        int is_set = 0;
-        long j;
-
-        for (j = 0; j < dim_length; j++)
-        {
-            double value = source_variable[0]->data.double_data[i * dim_length + j];
-
-            if (!harp_isnan(value))
-            {
-                if (!is_set)
-                {
-                    variable->data.double_data[i] = value;
-                    is_set = 1;
-                }
-                else if (value < variable->data.double_data[i])
-                {
-                    variable->data.double_data[i] = value;
-                }
-            }
-        }
-        if (!is_set)
-        {
-            variable->data.double_data[i] = harp_nan();
-        }
-    }
-
-    return 0;
-}
-
 static int get_mmr_from_vmr(harp_variable *variable, const harp_variable **source_variable)
 {
     double molar_mass_species;
@@ -4845,38 +4806,6 @@ static int add_axis_conversions(void)
                                             dimension_type, 0) != 0)
     {
         return -1;
-    }
-
-    /* {[time]} from {[time,]spectral} */
-    dimension_type[1] = harp_dimension_spectral;
-    for (i = 0; i < 2; i++)
-    {
-        if (harp_variable_conversion_new("datetime_length", harp_type_double, HARP_UNIT_TIME, i, &dimension_type[1 - i],
-                                         0, get_minimum_from_array, &conversion) != 0)
-        {
-            return -1;
-        }
-        if (harp_variable_conversion_add_source(conversion, "datetime_length", harp_type_double, HARP_UNIT_TIME, i + 1,
-                                                &dimension_type[1 - i], 0) != 0)
-        {
-            return -1;
-        }
-    }
-
-    /* {[time]} from {[time,]vertical} */
-    dimension_type[1] = harp_dimension_vertical;
-    for (i = 0; i < 2; i++)
-    {
-        if (harp_variable_conversion_new("datetime_length", harp_type_double, HARP_UNIT_TIME, i, &dimension_type[1 - i],
-                                         0, get_minimum_from_array, &conversion) != 0)
-        {
-            return -1;
-        }
-        if (harp_variable_conversion_add_source(conversion, "datetime_length", harp_type_double, HARP_UNIT_TIME, i + 1,
-                                                &dimension_type[1 - i], 0) != 0)
-        {
-            return -1;
-        }
     }
 
     /*** datetime_start ***/

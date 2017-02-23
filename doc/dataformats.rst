@@ -228,7 +228,7 @@ column_density                                stratospheric,  amf, apriori,   X 
 column_number_density                         stratospheric,  amf, apriori,   X       X    X
                                               tropospheric    avk
 datetime
-datetime_length                                                                       X            X
+datetime_length                                                                       X
 datetime_start
 datetime_stop
 density                                                                       X       X    X             this is the mass density
@@ -243,7 +243,11 @@ geopotential                                  surface                         X 
 geopotential_height                           surface                         X       X    X
 hlos_wind_velocity                            surface                         X       X    X             hlos means 'horizontal line of sight'
 index                                                                                                    zero-based index of the sample within the source product
-sensor_name                                                                                              used mainly for ground based networks to provide a unique sensor id
+integration_time                                                                      X    X       X     provides measurement specific integration time
+                                                                                                         (at e.g. altitude or wavelength) compared to overal datetime_length;
+                                                                                                         only use if integration time differs from datetime_length;
+                                                                                                         integration_time longer than datetime_length that covers multiple
+                                                                                                         datetime values means replication of measured value in time dimension.
 latitude                                      sensor                          X            (lat)
 latitude_bounds                                                                            (lat)
 longitude                                     sensor                          X            (lon)
@@ -263,6 +267,7 @@ scanline_pixel_index
 scattering_angle                                                              X
 sensor_azimuth_angle                                                          X
 sensor_elevation_angle                                                        X
+sensor_name                                                                                              used mainly for ground based networks to provide a unique sensor id
 sensor_zenith_angle                                                           X
 site_name                                                                                                used for data of a specific named geographical location
 solar_azimuth_angle                           sensor,                         X

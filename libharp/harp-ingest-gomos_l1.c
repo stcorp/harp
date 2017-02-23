@@ -879,7 +879,7 @@ static void register_limb_product(void)
     path = "/lim_nom_wav_assignment[]/nom_wl[]";
     harp_variable_definition_add_mapping(variable_definition, NULL, NULL, path, "Will be set to nm");
 
-    /* datetime_length time */
+    /* datetime_length */
     description = "integration time for a readout (in seconds)";
     variable_definition =
         harp_ingestion_register_variable_full_read(product_definition, "datetime_length", harp_type_double, 0,
@@ -1196,7 +1196,7 @@ static void register_tra_product(void)
     path = "/tra_nom_wav_assignment[]/nom_wl[]";
     harp_variable_definition_add_mapping(variable_definition, NULL, NULL, path, NULL);
 
-    /* integration time */
+    /* datetime_length */
     description = "integration time for a readout (in seconds)";
     variable_definition =
         harp_ingestion_register_variable_full_read(product_definition, "datetime_length", harp_type_double, 0,

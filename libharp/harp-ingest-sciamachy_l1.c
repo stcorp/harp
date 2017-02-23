@@ -1229,8 +1229,7 @@ void register_nadir_limb_occultation_product(harp_ingestion_module *module)
         harp_ingestion_register_variable_full_read(product_definition, "altitude", harp_type_double, 1, dimension_type,
                                                    NULL, description, "km", exclude_when_not_limb_or_occultation,
                                                    read_altitude);
-    description = "dsr is the dsr for the cluster with an integration time equal to the minimal integration time of all"
-        " ingested clusters for that state";
+    description = "dsr is the dsr for the cluster with an integration time equal to the minimal integration time";
     path = "/limb[]/geo[]/tan_h[1]";
     harp_variable_definition_add_mapping(variable_definition, "data=limb", NULL, path, description);
     path = "/occultation[]/geo[]/tan_h[1]";
@@ -1361,10 +1360,10 @@ void register_nadir_limb_occultation_product(harp_ingestion_module *module)
     path = "occultation[]/pixel_wavelength[]";
     harp_variable_definition_add_mapping(variable_definition, "data=occultation", NULL, path, NULL);
 
-    /* integration time */
+    /* integration_time */
     description = "integration time for a readout (in seconds)";
     variable_definition =
-        harp_ingestion_register_variable_full_read(product_definition, "datetime_length", harp_type_double, 2,
+        harp_ingestion_register_variable_full_read(product_definition, "integration_time", harp_type_double, 2,
                                                    dimension_type, NULL, description, "s", NULL, read_integration_time);
     path = "/states[]/clus_config[]/intgr_time";
     harp_variable_definition_add_mapping(variable_definition, NULL, NULL, path, NULL);

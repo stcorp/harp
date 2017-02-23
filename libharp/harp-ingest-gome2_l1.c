@@ -839,7 +839,7 @@ static int read_wavelength(void *user_data, harp_array data)
     return get_spectral_data((ingest_info *)user_data, NULL, WAVELENGTH, data.double_data);
 }
 
-static int read_datetime_length(void *user_data, harp_array data)
+static int read_integration_time(void *user_data, harp_array data)
 {
     return get_spectral_data((ingest_info *)user_data, NULL, INTEGRATION_TIME, data.double_data);
 }
@@ -1498,11 +1498,11 @@ static void register_variables_radiance_transmittance_fields(harp_product_defini
         "/MDR[]/Earthshine/WAVELENGTH_1A[], /MDR[]/Earthshine/WAVELENGTH_1B[], /MDR[]/Earthshine/WAVELENGTH_2A[], /MDR/Earthshine[]/WAVELENGTH_2B[], /MDR[]/Earthshine/WAVELENGTH_3[], /MDR[]/Earthshine/WAVELENGTH_4[]";
     harp_variable_definition_add_mapping(variable_definition, NULL, NULL, path, NULL);
 
-    /* datetime_length */
+    /* integration_time */
     description = "integration time for each pixel";
     variable_definition =
-        harp_ingestion_register_variable_full_read(product_definition, "datetime_length", harp_type_double, 2,
-                                                   dimension_type, NULL, description, "s", NULL, read_datetime_length);
+        harp_ingestion_register_variable_full_read(product_definition, "integration_time", harp_type_double, 2,
+                                                   dimension_type, NULL, description, "s", NULL, read_integration_time);
     path = "/MDR[]/Earthshine/INTEGRATION_TIMES[]";
     harp_variable_definition_add_mapping(variable_definition, NULL, NULL, path, NULL);
 
@@ -1664,11 +1664,11 @@ static void register_variables_irradiance_fields(harp_product_definition *produc
         "/MDR[]/Moon/WAVELENGTH_1A[], /MDR[]/Moon/WAVELENGTH_1B[], /MDR[]/Moon/WAVELENGTH_2A[], /MDR[]/Moon/WAVELENGTH_2B[], /MDR[]/Moon/WAVELENGTH_3[], /MDR[]/Moon/WAVELENGTH_4[]";
     harp_variable_definition_add_mapping(variable_definition, "data=moon", NULL, path, NULL);
 
-    /* datetime_length */
+    /* integration_time */
     description = "integration time for each pixel";
     variable_definition =
-        harp_ingestion_register_variable_full_read(product_definition, "datetime_length", harp_type_double, 2,
-                                                   dimension_type, NULL, description, "s", NULL, read_datetime_length);
+        harp_ingestion_register_variable_full_read(product_definition, "integration_time", harp_type_double, 2,
+                                                   dimension_type, NULL, description, "s", NULL, read_integration_time);
     path = "/MDR[]/Sun/INTEGRATION_TIMES[]";
     harp_variable_definition_add_mapping(variable_definition, "data=sun", NULL, path, NULL);
     path = "/MDR[]/Moon/INTEGRATION_TIMES[]";

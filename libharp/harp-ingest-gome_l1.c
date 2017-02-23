@@ -573,7 +573,7 @@ static int read_wavelength(void *user_data, harp_array data)
     return get_spectral_data((ingest_info *)user_data, "wavelength", WAVELENGTH, data.double_data);
 }
 
-static int read_datetime_length(void *user_data, harp_array data)
+static int read_integration_time(void *user_data, harp_array data)
 {
     return get_spectral_data((ingest_info *)user_data, NULL, INTEGRATION_TIME, data.double_data);
 }
@@ -1088,11 +1088,11 @@ static int register_nominal_product(harp_ingestion_module *module)
     path = "/egp[]/brda[]/edr[]/wavelength";
     harp_variable_definition_add_mapping(variable_definition, NULL, NULL, path, NULL);
 
-    /* datetime_length */
+    /* integration_time */
     description = "integration time for each pixel";
     variable_definition =
-        harp_ingestion_register_variable_full_read(product_definition, "datetime_length", harp_type_double, 2,
-                                                   dimension_type, NULL, description, "s", NULL, read_datetime_length);
+        harp_ingestion_register_variable_full_read(product_definition, "integration_time", harp_type_double, 2,
+                                                   dimension_type, NULL, description, "s", NULL, read_integration_time);
     path = "/egp[]/brda[]/integration_time";
     harp_variable_definition_add_mapping(variable_definition, NULL, NULL, path, NULL);
 
