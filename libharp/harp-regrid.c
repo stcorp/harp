@@ -63,7 +63,7 @@ static long get_unpadded_length(double *vector, long vector_length)
 
 static resample_type get_resample_type(harp_variable *variable, harp_dimension_type dimension_type)
 {
-    int num_matching_dims ;
+    int num_matching_dims;
     int i;
 
     /* ensure that there is only 1 dimension of the given type */
@@ -180,7 +180,7 @@ static int filter_resamplable_variables(harp_product *product, harp_dimension_ty
             }
         }
     }
-    
+
     return 0;
 }
 
@@ -653,7 +653,7 @@ LIBHARP_API int harp_product_regrid_with_axis_variable(harp_product *product, ha
 
     return 0;
 
-error:
+  error:
     harp_variable_delete(source_grid);
     harp_variable_delete(source_bounds);
     harp_variable_delete(local_target_grid);
