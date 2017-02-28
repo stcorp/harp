@@ -1488,9 +1488,6 @@ LIBHARP_API int harp_product_get_smoothed_column_using_collocated_dataset
         }
     }
 
-    /* regrid partial column profile to target grid */
-    /* apply column averaging kernel + a-priori to regridded partial column profile */
-
     *variable = column_variable;
 
     /* cleanup */
