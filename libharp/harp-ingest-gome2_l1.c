@@ -1540,8 +1540,7 @@ static void register_variables_radiance_transmittance_fields(harp_product_defini
     description = "cloud fraction";
     variable_definition =
         harp_ingestion_register_variable_full_read(product_definition, "cloud_fraction", harp_type_double, 1,
-                                                   dimension_type, NULL, description, NULL, NULL,
-                                                   read_cloud_fraction);
+                                                   dimension_type, NULL, description, NULL, NULL, read_cloud_fraction);
     path = "/MDR[]/Earthshine/CLOUD/FIT_2[]";
     description =
         "If the minimum ingested integration time > 187.5ms then the corresponding cloud fractions will be combined using averaging. The cloud fraction will be set to NaN if FIT_MODE in the CLOUD structure is not equal to 0 or if FIT_2 is set to a fill value (even when this holds for only one of the averaged items)";
@@ -2032,7 +2031,7 @@ static int ingestion_init(const harp_ingestion_module *module, coda_product *pro
             ingestion_done(info);
             return -1;
         }
-        *definition = module->product_definition[0];  /* Product 0 = radiance */
+        *definition = module->product_definition[0];    /* Product 0 = radiance */
     }
     else if (info->ingestion_data == DATA_TRANSMISSION)
     {
@@ -2041,7 +2040,7 @@ static int ingestion_init(const harp_ingestion_module *module, coda_product *pro
             ingestion_done(info);
             return -1;
         }
-        *definition = module->product_definition[1];  /* Product 1 = transmission */
+        *definition = module->product_definition[1];    /* Product 1 = transmission */
     }
     else if ((info->ingestion_data == DATA_SUN) || (info->ingestion_data == DATA_MOON))
     {
@@ -2050,7 +2049,7 @@ static int ingestion_init(const harp_ingestion_module *module, coda_product *pro
             ingestion_done(info);
             return -1;
         }
-        *definition = module->product_definition[2];  /* Product 2 = irradiance */
+        *definition = module->product_definition[2];    /* Product 2 = irradiance */
     }
     else if (info->ingestion_data == DATA_SUN_REFERENCE)
     {
@@ -2059,7 +2058,7 @@ static int ingestion_init(const harp_ingestion_module *module, coda_product *pro
             ingestion_done(info);
             return -1;
         }
-        *definition = module->product_definition[3];  /* Product 3 = sun_reference */
+        *definition = module->product_definition[3];    /* Product 3 = sun_reference */
     }
 
     *user_data = info;
@@ -2169,8 +2168,7 @@ int harp_ingestion_module_gome2_l1_init(void)
                                    "measurement spectra, the moon measurement spectra or the sun reference spectrum; "
                                    "by default the measured radiances are retrieved", 5, data_options);
 
-    product_definition = register_measurement_product(module, "GOME2_L1_radiance",
-                                                      "GOME2 Level 1b radiance product");
+    product_definition = register_measurement_product(module, "GOME2_L1_radiance", "GOME2 Level 1b radiance product");
     register_variables_radiance_transmittance_fields(product_definition, TRUE);
 
     product_definition = register_measurement_product(module, "GOME2_L1_transmission",
