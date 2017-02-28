@@ -681,10 +681,10 @@
 <dl class="function">
 <dt id="_CPPv238harp_product_regrid_with_axis_variableP12harp_productP13harp_variableP13harp_variable">
 <span id="harp_product_regrid_with_axis_variable__harp_productP.harp_variableP.harp_variableP"></span><span class="target" id="libharpgroup__harp__product_1ga07a808c69fa7972af739aad407860ee1"></span>int <code class="descname">harp_product_regrid_with_axis_variable</code><span class="sig-paren">(</span><a class="reference internal" href="#_CPPv212harp_product" title="harp_product">harp_product</a> *<em>product</em>, <a class="reference internal" href="libharp_variable.html#_CPPv213harp_variable" title="harp_variable">harp_variable</a> *<em>target_grid</em>, <a class="reference internal" href="libharp_variable.html#_CPPv213harp_variable" title="harp_variable">harp_variable</a> *<em>target_bounds</em><span class="sig-paren">)</span></dt>
-<dd><p>Resample all variables in product against a specified grid. The target grid variable should be an axis variable containing the target grid (as &#8216;double&#8217; values). It should be a one-dimensional variable (for a time independent grid) or a two-dimensional variable (for a time dependent grid). The dimension to use for regridding is based on the last dimenion of the target grid variable. This function cannot be used to regrid the time dimension (or an independent dimension).</p>
+<dd><p>Resample all variables in product against a specified grid. The target grid variable should be an axis variable containing the target grid (as &#8216;double&#8217; values). It should be a one-dimensional variable (for a time independent grid) or a two-dimensional variable (for a time dependent grid). The dimension to use for regridding is based on the type of the last dimenion of the target grid variable. This function cannot be used to regrid the time dimension (or an independent dimension).</p>
 <p>If the target grid variable is two dimensional (i.e. time dependent) then its time dimension should match that of the product.</p>
 <p>For each variable in the product a dimension-specific rule based on the variable name will determine how to regrid the variable (point/interval interpolation). If interval interpolation is needed for one of the variables then target boundaries are needed. These can be provided using the optional target_bounds parameter. If this parameter is not provided, the boundaries will be calculated automatically from the target grid (by inter/extrapolating intervals from mid-points).</p>
-<p>The source grid and bounds are determined by derivation of the variable on the specified product (using the variable name of the target_grid variable).</p>
+<p>The source grid (and bounds) are determined by performing a variable derivation on the product (using the variable name of the target_grid variable).</p>
 <p><dl class="docutils">
 <dt><strong>Return</strong></dt>
 <dd><ul class="simple">
@@ -699,29 +699,6 @@
 <li><code class="first docutils literal"><span class="pre">target_grid</span></code> - <p>Target grid variable. </p>
 </li>
 <li><code class="first docutils literal"><span class="pre">target_bounds</span></code> - <p>Target grid boundaries variable (optional).</p>
-</li>
-</ul>
-</dd>
-</dl>
-</p>
-</dd></dl>
-
-<dl class="function">
-<dt id="_CPPv247harp_product_regrid_vertical_with_axis_variableP12harp_productP13harp_variable">
-<span id="harp_product_regrid_vertical_with_axis_variable__harp_productP.harp_variableP"></span><span class="target" id="libharpgroup__harp__product_1ga2d92d22a44b7457c358724aee1609b3b"></span>int <code class="descname">harp_product_regrid_vertical_with_axis_variable</code><span class="sig-paren">(</span><a class="reference internal" href="#_CPPv212harp_product" title="harp_product">harp_product</a> *<em>product</em>, <a class="reference internal" href="libharp_variable.html#_CPPv213harp_variable" title="harp_variable">harp_variable</a> *<em>axis_variable</em><span class="sig-paren">)</span></dt>
-<dd><p>Resamples all variables in product against a specified grid. Target_grid is expected to be a variable of dimensions {vertical}. The source grid is determined by derivation of a matching vertical quantity on the specified product.</p>
-<p><dl class="docutils">
-<dt><strong>Return</strong></dt>
-<dd><ul class="simple">
-<li><code class="docutils literal"><span class="pre">0</span></code>, Success. </li>
-<li><code class="docutils literal"><span class="pre">-1</span></code>, Error occurred (check <a class="reference internal" href="libharp_error.html#libharpgroup__harp__error_1gab2eeb46528306c6799632d1e800c4c36"><span class="std std-ref">harp_errno</span></a>). </li>
-</ul>
-</dd>
-<dt><strong>Parameters</strong></dt>
-<dd><ul class="breatheparameterlist first last">
-<li><code class="first docutils literal"><span class="pre">product</span></code> - <p>Product to resample. </p>
-</li>
-<li><code class="first docutils literal"><span class="pre">axis_variable</span></code> - <p>Vertical grid to target.</p>
 </li>
 </ul>
 </dd>

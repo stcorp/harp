@@ -34,15 +34,6 @@
 
 #include "harp-internal.h"
 
-typedef enum profile_resample_type_enum
-{
-    profile_resample_skip,
-    profile_resample_remove,
-    profile_resample_linear,
-    profile_resample_log,
-    profile_resample_interval
-} profile_resample_type;
-
 /* Conversions */
 double harp_geopotential_from_gph(double gph);
 double harp_gph_from_geopotential(double geopotential);

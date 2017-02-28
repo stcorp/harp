@@ -511,7 +511,8 @@ LIBHARP_API void harp_product_print(const harp_product *product, int show_attrib
 LIBHARP_API int harp_product_get_metadata(harp_product *product, harp_product_metadata **new_metadata);
 
 
-LIBHARP_API int harp_product_regrid_vertical_with_axis_variable(harp_product *product, harp_variable *target_grid);
+LIBHARP_API int harp_product_regrid_with_axis_variable(harp_product *product, harp_variable *target_grid,
+                                                       harp_variable *target_bounds);
 LIBHARP_API int harp_product_regrid_vertical_with_collocated_dataset(harp_product *product, const char *vertical_axis,
                                                                      const char *vertical_unit,
                                                                      harp_collocation_result *collocation_result);

@@ -12,6 +12,10 @@
 * Added vertical_unit parameter to harp_product_smooth_vertical() and
   harp_product_regrid_vertical_with_collocated_dataset() functions.
 
+* Replaced harp_product_regrid_vertical_with_axis_variable() with
+  harp_product_regrid_with_axis_variable(). It can now be used for other
+  dimensions too (except the time dimension).
+
 * Added harp_collocation_result_filter_for_collocation_indices(),
   harp_product_get_smoothed_column_using_collocated_dataset(), and
   harp_product_remove_variable_by_name() functions.

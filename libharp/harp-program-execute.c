@@ -1330,14 +1330,15 @@ static int execute_regrid(harp_product *product, harp_program *program)
 
     args = (const harp_regrid_args *)operation->args;
 
-    if (args->axis_variable->dimension_type[0] != harp_dimension_vertical)
+    if (args->axis_variable->dimension_type[0] == harp_dimension_time ||
+        args->axis_variable->dimension_type[0] == harp_dimension_independent)
     {
         harp_set_error(HARP_ERROR_OPERATION, "regridding of '%s' dimension not supported",
                        harp_get_dimension_type_name(args->axis_variable->dimension_type[0]));
         return -1;
     }
 
-    if (harp_product_regrid_vertical_with_axis_variable(product, args->axis_variable) != 0)
+    if (harp_product_regrid_with_axis_variable(product, args->axis_variable, NULL) != 0)
     {
         harp_variable_delete(target_grid);
         return -1;
