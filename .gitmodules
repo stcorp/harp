@@ -13,3 +13,6 @@
 [submodule "definitions/EPS"]
 	path = definitions/EPS
 	url = https://github.com/stcorp/codadef-eps
+[submodule "definitions/AEOLUS"]
+	path = definitions/AEOLUS
+	url = https://github.com/stcorp/codadef-aeolus

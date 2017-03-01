@@ -304,6 +304,7 @@ EXTRA_DIST += \
 
 # *** product definition files ***
 
+AEOLUS_DEFINITION_FILE = AEOLUS-@CODADEF_VERSION_AEOLUS@.codadef
 AURA_HIRDLS_DEFINITION_FILE = AURA_HIRDLS-@CODADEF_VERSION_AURA_HIRDLS@.codadef
 AURA_MLS_DEFINITION_FILE = AURA_MLS-@CODADEF_VERSION_AURA_MLS@.codadef
 AURA_OMI_DEFINITION_FILE = AURA_OMI-@CODADEF_VERSION_AURA_OMI@.codadef
@@ -326,6 +327,7 @@ SENTINEL5P_DEFINITION_FILE = Sentinel5P-@CODADEF_VERSION_Sentinel5P@.codadef
 TEMIS_DEFINITION_FILE = TEMIS-@CODADEF_VERSION_TEMIS@.codadef
 
 DEFINITION_FILES = \
+	definitions/$(AEOLUS_DEFINITION_FILE) \
 	definitions/$(AURA_HIRDLS_DEFINITION_FILE) \
 	definitions/$(AURA_MLS_DEFINITION_FILE) \
 	definitions/$(AURA_OMI_DEFINITION_FILE) \
@@ -351,6 +353,15 @@ EXTRA_DIST += $(DEFINITION_FILES) codadef.sh
 MAINTAINERCLEANFILES += $(DEFINITION_FILES)
 
 nobase_pkgdata_DATA = $(DEFINITION_FILES)
+
+definitions/$(AEOLUS_DEFINITION_FILE):
+	test -d definitions || $(mkinstalldirs) definitions
+	@$(srcdir)/codadef.sh $(srcdir)/definitions/AEOLUS definitions
+	@if test ! -f definitions/$(AEOLUS_DEFINITION_FILE) ; then \
+	  echo definitions/$(AEOLUS_DEFINITION_FILE) not created. ; \
+	  echo run './config.status --recheck' to update the .codadef version reference. ; \
+	  exit 1 ; \
+	 fi
 
 definitions/$(AURA_HIRDLS_DEFINITION_FILE):
 	test -d definitions || $(mkinstalldirs) definitions
