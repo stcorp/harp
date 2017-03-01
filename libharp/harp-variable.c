@@ -133,6 +133,7 @@ int harp_variable_rearrange_dimension(harp_variable *variable, int dim_index, lo
     long filter_block_size;
     long i_increment;
     long i;
+    int needs_shuffle;
 
     /* The multidimensional array is split in three parts:
      *   num_elements = num_groups * dim[dim_index] * num_block_elements
@@ -165,6 +166,7 @@ int harp_variable_rearrange_dimension(harp_variable *variable, int dim_index, lo
         return -1;
     }
 
+    needs_shuffle = 0;
     for (i = 0; i < num_dim_elements; i++)
     {
         if (dim_element_ids[i] < 0 || dim_element_ids[i] >= variable->dimension[dim_index])
@@ -174,6 +176,15 @@ int harp_variable_rearrange_dimension(harp_variable *variable, int dim_index, lo
                            i, dim_element_ids[i], variable->dimension[dim_index], __FILE__, __LINE__);
             return -1;
         }
+        if (dim_element_ids[i] != i)
+        {
+            needs_shuffle = 1;
+        }
+    }
+    if (!needs_shuffle)
+    {
+        /* all ellements are already in the right location, don't do anything */
+        return 0;
     }
 
     /* Calculate the number of times we have to reshuffle the indices (i.e. the product of the higher dimensions). */
