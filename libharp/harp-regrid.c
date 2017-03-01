@@ -184,7 +184,7 @@ static int filter_resamplable_variables(harp_product *product, harp_dimension_ty
     return 0;
 }
 
-static int get_bounds_for_grid_from_product(harp_product *product, harp_variable *grid, harp_variable **bounds)
+int harp_product_get_derived_bounds_for_grid(harp_product *product, harp_variable *grid, harp_variable **bounds)
 {
     harp_dimension_type dim_type[HARP_MAX_NUM_DIMS];
     char *bounds_name = NULL;
@@ -233,7 +233,7 @@ static int get_bounds_for_grid_from_variable(harp_variable *grid, harp_variable 
         harp_product_delete(product);
         return -1;
     }
-    if (get_bounds_for_grid_from_product(product, grid, bounds) != 0)
+    if (harp_product_get_derived_bounds_for_grid(product, grid, bounds) != 0)
     {
         if (harp_product_detach_variable(product, grid) == 0)
         {
@@ -287,7 +287,6 @@ LIBHARP_API int harp_product_regrid_with_axis_variable(harp_product *product, ha
                                                        harp_variable *target_bounds)
 {
     harp_dimension_type grid_dim_type[2];
-    harp_dimension_type bounds_dim_type[3];
     harp_dimension_type dimension_type;
     long source_max_dim_elements;       /* actual elems + NaN padding */
     long source_grid_max_dim_elements;
@@ -376,9 +375,6 @@ LIBHARP_API int harp_product_regrid_with_axis_variable(harp_product *product, ha
 
     grid_dim_type[0] = harp_dimension_time;
     grid_dim_type[1] = dimension_type;
-    bounds_dim_type[0] = harp_dimension_time;
-    bounds_dim_type[1] = dimension_type;
-    bounds_dim_type[2] = harp_dimension_independent;
 
     /* Derive the source grid (will give doubles because unit is passed) */
     /* Try time independent */
@@ -407,7 +403,7 @@ LIBHARP_API int harp_product_regrid_with_axis_variable(harp_product *product, ha
                 goto error;
             }
         }
-        if (get_bounds_for_grid_from_product(product, source_grid, &source_bounds) != 0)
+        if (harp_product_get_derived_bounds_for_grid(product, source_grid, &source_bounds) != 0)
         {
             goto error;
         }
@@ -614,6 +610,10 @@ LIBHARP_API int harp_product_regrid_with_axis_variable(harp_product *product, ha
                 for (k = 0; k < target_grid_num_dim_elements; k++)
                 {
                     variable->data.double_data[(j * source_max_dim_elements + k) * num_elements + l] = target_buffer[k];
+                }
+                for (k = target_grid_num_dim_elements; k < target_grid_max_dim_elements; k++)
+                {
+                    variable->data.double_data[(j * source_max_dim_elements + k) * num_elements + l] = harp_nan();
                 }
             }
         }
