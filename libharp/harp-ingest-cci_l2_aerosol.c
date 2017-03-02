@@ -553,6 +553,8 @@ static int register_aatsr_atsr2_product(harp_ingestion_module *module, char *pro
     variable_definition =
         harp_ingestion_register_variable_full_read(product_definition, "wavelength", harp_type_double, 2,
                                                    dimension_type, NULL, description, "nm", NULL, read_wavelength);
+    description = "fixed values";
+    harp_variable_definition_add_mapping(variable_definition, NULL, NULL, NULL, description);
 
     return 0;
 }
@@ -718,6 +720,8 @@ static int register_module_l2_meris(void)
     variable_definition =
         harp_ingestion_register_variable_full_read(product_definition, "wavelength", harp_type_double, 2,
                                                    dimension_type, NULL, description, "nm", NULL, read_wavelength);
+    description = "fixed values";
+    harp_variable_definition_add_mapping(variable_definition, NULL, NULL, NULL, description);
 
     return 0;
 }
@@ -869,6 +873,8 @@ static int register_iasi_product(harp_ingestion_module *module, char *productnam
     variable_definition =
         harp_ingestion_register_variable_full_read(product_definition, "wavelength", harp_type_double, 2,
                                                    dimension_type, NULL, description, "nm", NULL, read_wavelength);
+    description = "fixed values";
+    harp_variable_definition_add_mapping(variable_definition, NULL, NULL, NULL, description);
 
     return 0;
 }
