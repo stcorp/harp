@@ -468,6 +468,7 @@ LIBHARP_API int harp_variable_new(const char *name, harp_data_type data_type, in
                                   harp_variable **new_variable);
 LIBHARP_API void harp_variable_delete(harp_variable *variable);
 LIBHARP_API int harp_variable_copy(const harp_variable *variable, harp_variable **new_variable);
+LIBHARP_API int harp_variable_append(harp_variable *variable, const harp_variable *other_variable);
 LIBHARP_API int harp_variable_rename(harp_variable *variable, const char *name);
 LIBHARP_API int harp_variable_set_description(harp_variable *variable, const char *description);
 LIBHARP_API int harp_variable_set_unit(harp_variable *variable, const char *unit);
@@ -486,6 +487,7 @@ LIBHARP_API void harp_variable_print_data(harp_variable *variable, int (*print) 
 LIBHARP_API int harp_product_new(harp_product **new_product);
 LIBHARP_API void harp_product_delete(harp_product *product);
 LIBHARP_API int harp_product_copy(const harp_product *product, harp_product **new_product);
+LIBHARP_API int harp_product_append(harp_product *product, harp_product *other_product);
 LIBHARP_API int harp_product_set_source_product(harp_product *product, const char *source_product);
 LIBHARP_API int harp_product_set_history(harp_product *product, const char *history);
 LIBHARP_API int harp_product_add_variable(harp_product *product, harp_variable *variable);

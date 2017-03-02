@@ -507,6 +507,15 @@ if(WIN32)
 endif(WIN32)
 install(TARGETS harpfilter DESTINATION bin)
 
+#  harpmerge
+add_executable(harpmerge tools/harpmerge/harpmerge.c)
+target_link_libraries(harpmerge harp ${CODA_LIBRARIES} ${HDF4_LIBRARIES} ${HDF5_LIBRARIES} ${MATHLIB})
+if(WIN32)
+  # Also set DLL compile flags
+  set_target_properties(harpmerge PROPERTIES COMPILE_FLAGS "-DLIBHARPDLL")
+endif(WIN32)
+install(TARGETS harpmerge DESTINATION bin)
+
 # python
 if(HARP_BUILD_PYTHON)
   find_package(PythonInterp)

@@ -1133,7 +1133,7 @@ LIBHARP_API int harp_variable_copy(const harp_variable *other_variable, harp_var
     }
     if (variable->data_type == harp_type_string)
     {
-        memset(variable->data.ptr, 0, (size_t)variable->num_elements * harp_get_size_for_type(variable->data_type));
+        memset(variable->data.ptr, 0, (size_t)variable->num_elements * harp_get_size_for_type(harp_type_string));
         for (i = 0; i < variable->num_elements; i++)
         {
             variable->data.string_data[i] = strdup(other_variable->data.string_data[i]);
@@ -1153,6 +1153,99 @@ LIBHARP_API int harp_variable_copy(const harp_variable *other_variable, harp_var
     }
 
     *new_variable = variable;
+    return 0;
+}
+
+/** Append one variable to another.
+ * Both variables need to have the 'time' dimension as first dimension.
+ * And all non-time dimensions need to be the same for both variables.
+ * \param variable Variable to which data should be appended.
+ * \param other_variable Variable that should be appended.
+ * \return
+ *   \arg \c 0, Success.
+ *   \arg \c -1, Error occurred (check #harp_errno).
+ */
+LIBHARP_API int harp_variable_append(harp_variable *variable, const harp_variable *other_variable)
+{
+    void *data;
+    long element_size;
+    long new_num_elements;
+    long i;
+
+    if (strcmp(variable->name, other_variable->name) != 0)
+    {
+        harp_set_error(HARP_ERROR_INVALID_ARGUMENT, "variables don't have the same name");
+        return -1;
+    }
+    if (variable->data_type != other_variable->data_type)
+    {
+        harp_set_error(HARP_ERROR_INVALID_ARGUMENT, "variables don't have the same datatype (%s)", variable->name);
+        return -1;
+    }
+    if (variable->num_dimensions != other_variable->num_dimensions)
+    {
+        harp_set_error(HARP_ERROR_INVALID_ARGUMENT, "variables don't have the same number of dimensions (%s)",
+                       variable->name);
+        return -1;
+    }
+    if (variable->num_dimensions == 0 || variable->dimension_type[0] != harp_dimension_time ||
+        other_variable->num_dimensions == 0 || other_variable->dimension_type[0] != harp_dimension_time)
+    {
+        harp_set_error(HARP_ERROR_INVALID_ARGUMENT, "variables need to be time dependent (%s)", variable->name);
+        return -1;
+    }
+
+    for (i = 1; i < variable->num_dimensions; i++)
+    {
+        if (variable->dimension_type[i] != other_variable->dimension_type[i])
+        {
+            harp_set_error(HARP_ERROR_INVALID_ARGUMENT, "variables (%s) don't have the same type of dimensions",
+                           variable->name);
+            return -1;
+        }
+        if (variable->dimension[i] != other_variable->dimension[i])
+        {
+            harp_set_error(HARP_ERROR_INVALID_ARGUMENT, "variables (%s) don't have the same dimension lengths",
+                           variable->name);
+            return -1;
+        }
+    }
+
+    element_size = harp_get_size_for_type(variable->data_type);
+    new_num_elements = variable->num_elements + other_variable->num_elements;
+    data = realloc(variable->data.ptr, (size_t)new_num_elements * element_size);
+    if (data == NULL)
+    {
+        harp_set_error(HARP_ERROR_OUT_OF_MEMORY, "out of memory (could not allocate %lu bytes) (%s:%u)",
+                       (size_t)new_num_elements * element_size, __FILE__, __LINE__);
+        return -1;
+    }
+    variable->data.ptr = data;
+
+    if (variable->data_type == harp_type_string)
+    {
+        memset(&variable->data.string_data[variable->num_elements], 0,
+               (size_t)other_variable->num_elements * element_size);
+        for (i = 0; i < other_variable->num_elements; i++)
+        {
+            variable->data.string_data[variable->num_elements + i] = strdup(other_variable->data.string_data[i]);
+            if (variable->data.string_data[variable->num_elements + i] == NULL)
+            {
+                harp_set_error(HARP_ERROR_OUT_OF_MEMORY, "out of memory (could not duplicate string) (%s:%u)", __FILE__,
+                               __LINE__);
+                return -1;
+            }
+        }
+    }
+    else
+    {
+        char *to_ptr = (char *)variable->data.ptr + variable->num_elements * element_size;
+
+        memcpy(to_ptr, other_variable->data.ptr, (size_t)other_variable->num_elements * element_size);
+    }
+    variable->dimension[0] += other_variable->dimension[0];
+    variable->num_elements += other_variable->num_elements;
+
     return 0;
 }
 

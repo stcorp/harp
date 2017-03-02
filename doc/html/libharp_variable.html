@@ -378,6 +378,28 @@
 </dd></dl>
 
 <dl class="function">
+<dt id="_CPPv220harp_variable_appendP13harp_variablePK13harp_variable">
+<span id="harp_variable_append__harp_variableP.harp_variableCP"></span><span class="target" id="libharpgroup__harp__variable_1gae2f3e63db847f4bcddd25f1a06c2267a"></span>int <code class="descname">harp_variable_append</code><span class="sig-paren">(</span><a class="reference internal" href="#_CPPv213harp_variable" title="harp_variable">harp_variable</a> *<em>variable</em>, <em class="property">const</em> <a class="reference internal" href="#_CPPv213harp_variable" title="harp_variable">harp_variable</a> *<em>other_variable</em><span class="sig-paren">)</span></dt>
+<dd><p>Append one variable to another. Both variables need to have the &#8216;time&#8217; dimension as first dimension. And all non-time dimensions need to be the same for both variables. <dl class="docutils">
+<dt><strong>Return</strong></dt>
+<dd><ul class="simple">
+<li><code class="docutils literal"><span class="pre">0</span></code>, Success. </li>
+<li><code class="docutils literal"><span class="pre">-1</span></code>, Error occurred (check <a class="reference internal" href="libharp_error.html#libharpgroup__harp__error_1gab2eeb46528306c6799632d1e800c4c36"><span class="std std-ref">harp_errno</span></a>). </li>
+</ul>
+</dd>
+<dt><strong>Parameters</strong></dt>
+<dd><ul class="breatheparameterlist first last">
+<li><code class="first docutils literal"><span class="pre">variable</span></code> - <p>Variable to which data should be appended. </p>
+</li>
+<li><code class="first docutils literal"><span class="pre">other_variable</span></code> - <p>Variable that should be appended. </p>
+</li>
+</ul>
+</dd>
+</dl>
+</p>
+</dd></dl>
+
+<dl class="function">
 <dt id="_CPPv220harp_variable_renameP13harp_variablePKc">
 <span id="harp_variable_rename__harp_variableP.cCP"></span><span class="target" id="libharpgroup__harp__variable_1ga392b44a53ce8ec7bee03ba5d826ee77e"></span>int <code class="descname">harp_variable_rename</code><span class="sig-paren">(</span><a class="reference internal" href="#_CPPv213harp_variable" title="harp_variable">harp_variable</a> *<em>variable</em>, <em class="property">const</em> char *<em>name</em><span class="sig-paren">)</span></dt>
 <dd><p>Change the name of a variable. <dl class="docutils">

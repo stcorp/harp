@@ -341,6 +341,28 @@
 </dd></dl>
 
 <dl class="function">
+<dt id="_CPPv219harp_product_appendP12harp_productP12harp_product">
+<span id="harp_product_append__harp_productP.harp_productP"></span><span class="target" id="libharpgroup__harp__product_1gac38975a39f20971cac1cefb8416b2347"></span>int <code class="descname">harp_product_append</code><span class="sig-paren">(</span><a class="reference internal" href="#_CPPv212harp_product" title="harp_product">harp_product</a> *<em>product</em>, <a class="reference internal" href="#_CPPv212harp_product" title="harp_product">harp_product</a> *<em>other_product</em><span class="sig-paren">)</span></dt>
+<dd><p>Append one product to another. The &#8216;index&#8217; variable, if present, will be removed. All variables in both products will have a &#8216;time&#8217; dimension introduced as first dimension. Both products will have all non-time dimensions extended to the maximum of either product. Any &#8216;source_product&#8217; attribute for the first product will be removed. <dl class="docutils">
+<dt><strong>Return</strong></dt>
+<dd><ul class="simple">
+<li><code class="docutils literal"><span class="pre">0</span></code>, Success. </li>
+<li><code class="docutils literal"><span class="pre">-1</span></code>, Error occurred (check <a class="reference internal" href="libharp_error.html#libharpgroup__harp__error_1gab2eeb46528306c6799632d1e800c4c36"><span class="std std-ref">harp_errno</span></a>). </li>
+</ul>
+</dd>
+<dt><strong>Parameters</strong></dt>
+<dd><ul class="breatheparameterlist first last">
+<li><code class="first docutils literal"><span class="pre">product</span></code> - <p>Product to which data should be appended. </p>
+</li>
+<li><code class="first docutils literal"><span class="pre">other_product</span></code> - <p>Product that should be appended. </p>
+</li>
+</ul>
+</dd>
+</dl>
+</p>
+</dd></dl>
+
+<dl class="function">
 <dt id="_CPPv231harp_product_set_source_productP12harp_productPKc">
 <span id="harp_product_set_source_product__harp_productP.cCP"></span><span class="target" id="libharpgroup__harp__product_1gaced1e960e14b51d2979961b3d16394a1"></span>int <code class="descname">harp_product_set_source_product</code><span class="sig-paren">(</span><a class="reference internal" href="#_CPPv212harp_product" title="harp_product">harp_product</a> *<em>product</em>, <em class="property">const</em> char *<em>source_product</em><span class="sig-paren">)</span></dt>
 <dd><p>Set the source product attribute of the specified product. Store a copy of <em>source_product</em> as the value of the source product attribute of the specified product. The previous value (if any) will be freed. <dl class="docutils">
@@ -625,6 +647,52 @@
 <dt><strong>Parameters</strong></dt>
 <dd><ul class="breatheparameterlist first last">
 <li><code class="first docutils literal"><span class="pre">product</span></code> - <p>Product to verify. </p>
+</li>
+</ul>
+</dd>
+</dl>
+</p>
+</dd></dl>
+
+<dl class="function">
+<dt id="_CPPv218harp_product_printPK12harp_productiiPFiPKczE">
+<span class="target" id="libharpgroup__harp__product_1gaa19c7763369e3ab99129c7beb6bbedad"></span>void <code class="descname">harp_product_print</code><span class="sig-paren">(</span><em class="property">const</em> <a class="reference internal" href="#_CPPv212harp_product" title="harp_product">harp_product</a> *<em>product</em>, int <em>show_attributes</em>, int <em>show_data</em>, int (*<em>print</em>)<span class="sig-paren">(</span><em class="property">const</em> char *, ...<span class="sig-paren">)</span><span class="sig-paren">)</span></dt>
+<dd><p>Print a harp_product struct using the specified print function. <dl class="docutils">
+<dt><strong>Parameters</strong></dt>
+<dd><ul class="breatheparameterlist first last">
+<li><code class="first docutils literal"><span class="pre">product</span></code> - <p>Product to print. </p>
+</li>
+<li><code class="first docutils literal"><span class="pre">show_attributes</span></code> - <p>Whether or not to print the attributes of variables. </p>
+</li>
+<li><code class="first docutils literal"><span class="pre">show_data</span></code> - <p>Whether or not to print the data arrays of the variables </p>
+</li>
+<li><code class="first docutils literal"><span class="pre">print</span></code> - <p>Print function to use </p>
+</li>
+</ul>
+</dd>
+</dl>
+</p>
+</dd></dl>
+
+<dl class="function">
+<dt id="_CPPv230harp_product_flatten_dimensionP12harp_product19harp_dimension_type">
+<span id="harp_product_flatten_dimension__harp_productP.harp_dimension_type"></span><span class="target" id="libharpgroup__harp__product_1gaf70331b5522250534866484c23b78500"></span>int <code class="descname">harp_product_flatten_dimension</code><span class="sig-paren">(</span><a class="reference internal" href="#_CPPv212harp_product" title="harp_product">harp_product</a> *<em>product</em>, <a class="reference internal" href="libharp_general.html#_CPPv219harp_dimension_type" title="harp_dimension_type">harp_dimension_type</a> <em>dimension_type</em><span class="sig-paren">)</span></dt>
+<dd><p>Collapse a given dimension into the time dimension</p>
+<p>Flattening a product for a certain dimension collapses the dimension into the time dimension (i.e. the time dimension and the provided dimension are flattened together). For instance, if a product contains a variable with [num_time,num_longitude,num_latitudes,num_vertical] as dimensions, then flattening for the vertical dimension will result in a variable with [num_time*num_vertical,num_longitudes,num_latitudes] as dimensions.</p>
+<p>The end result of this function is the time dimension will have grown by a factor equal to the length of the given dimension type and that none of the variables in the product will depend on the given dimension type anymore.</p>
+<p>Any variables that depend more than once on the given dimension type will be removed from the product. The index and collocation_index variables will be removed if present. Variables that had the given dimension type but were time independent are first made time dependent before flattening the dimension.</p>
+<p>Independent dimensions cannot be flattened. <dl class="docutils">
+<dt><strong>Return</strong></dt>
+<dd><ul class="simple">
+<li><code class="docutils literal"><span class="pre">0</span></code>, Success. </li>
+<li><code class="docutils literal"><span class="pre">-1</span></code>, Error occurred (check <a class="reference internal" href="libharp_error.html#libharpgroup__harp__error_1gab2eeb46528306c6799632d1e800c4c36"><span class="std std-ref">harp_errno</span></a>). </li>
+</ul>
+</dd>
+<dt><strong>Parameters</strong></dt>
+<dd><ul class="breatheparameterlist first last">
+<li><code class="first docutils literal"><span class="pre">product</span></code> - <p>HARP product. </p>
+</li>
+<li><code class="first docutils literal"><span class="pre">dimension_type</span></code> - <p>Dimension to use for the flattening. </p>
 </li>
 </ul>
 </dd>

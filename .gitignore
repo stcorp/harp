@@ -34,7 +34,7 @@ stamp-*
 /harpconvert
 /harpdump
 /harpfilter
-/harpprofile
+/harpmerge
 /libharp/harp-operation-parser.c
 /libharp/harp-operation-parser.h
 /libharp/harp-operation-scanner.c
