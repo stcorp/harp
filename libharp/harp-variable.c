@@ -166,7 +166,7 @@ int harp_variable_rearrange_dimension(harp_variable *variable, int dim_index, lo
         return -1;
     }
 
-    needs_shuffle = 0;
+    needs_shuffle = num_dim_elements != variable->dimension[dim_index];
     for (i = 0; i < num_dim_elements; i++)
     {
         if (dim_element_ids[i] < 0 || dim_element_ids[i] >= variable->dimension[dim_index])
