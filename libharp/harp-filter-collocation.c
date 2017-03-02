@@ -421,7 +421,26 @@ int harp_product_apply_collocation_mask(harp_collocation_mask *collocation_mask,
         harp_dimension_mask *dimension_mask;
         long dimension;
 
-        /* TODO: Check number of dimensions, dimension type, and data type. */
+        if (collocation_index->data_type != harp_type_int32)
+        {
+            harp_set_error(HARP_ERROR_OPERATION, "variable '%s' has wrong data type", collocation_index->name);
+            return -1;
+        }
+        if (collocation_index->num_dimensions != 1)
+        {
+            harp_set_error(HARP_ERROR_OPERATION, "variable '%s' has %d dimensions (expected 1)",
+                           collocation_index->name, collocation_index->num_dimensions);
+            return -1;
+        }
+
+        if (collocation_index->dimension_type[0] != harp_dimension_time)
+        {
+            harp_set_error(HARP_ERROR_OPERATION, "dimension 0 of variable '%s' is of type '%s' (expected '%s')",
+                           collocation_index->name, harp_get_dimension_type_name(collocation_index->dimension_type[0]),
+                           harp_get_dimension_type_name(harp_dimension_time));
+            return -1;
+        }
+
         dimension = product->dimension[harp_dimension_time];
         if (harp_dimension_mask_new(1, &dimension, &dimension_mask) != 0)
         {
@@ -454,8 +473,11 @@ int harp_product_apply_collocation_mask(harp_collocation_mask *collocation_mask,
         {
             return -1;
         }
-        assert(index->data_type == harp_type_int32);
-
+        if (index->data_type != harp_type_int32)
+        {
+            harp_set_error(HARP_ERROR_OPERATION, "variable '%s' has wrong data type", index->name);
+            return -1;
+        }
         if (index->num_dimensions != 1)
         {
             harp_set_error(HARP_ERROR_OPERATION, "variable '%s' has %d dimensions (expected 1)", index->name,
