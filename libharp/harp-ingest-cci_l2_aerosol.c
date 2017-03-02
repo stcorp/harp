@@ -59,8 +59,6 @@ typedef struct ingest_info_struct
     long num_time;
     long num_wavelengths;
     long aod_wavelengths[MAX_WAVELENGTHS];
-    long num_uncertainties_wavelengths;
-    long aod_uncertainties_wavelengths[MAX_WAVELENGTHS];
     double *values_buffer;
     char *aod_fieldname;
     char *aod_uncertainty_name;
@@ -271,36 +269,26 @@ static int read_aerosol_optical_depth_uncertainty(void *user_data, harp_array da
     ingest_info *info = (ingest_info *)user_data;
     double nan, *dest;
     long i, j;
-    short wavelength_has_uncertainty_value;
     char fieldname[81];
 
     nan = coda_NaN();
     for (i = 0; i < info->num_wavelengths; i++)
     {
-        wavelength_has_uncertainty_value = FALSE;
-        for (j = 0; j < info->num_uncertainties_wavelengths; j++)
+        sprintf(fieldname, "/%s%ld_%s", info->aod_fieldname, info->aod_wavelengths[i], info->aod_uncertainty_name);
+        if (read_aod_one_wavelength(info, data, fieldname, i) != 0)
         {
-            if (info->aod_wavelengths[i] == info->aod_uncertainties_wavelengths[j])
+            if (coda_errno == CODA_ERROR_INVALID_NAME)
             {
-                wavelength_has_uncertainty_value = TRUE;
-                break;
+                dest = data.double_data + i;
+                for (j = 0; j < info->num_time; j++)
+                {
+                    *dest = nan;
+                    dest += info->num_wavelengths;
+                }
             }
-        }
-        if (wavelength_has_uncertainty_value)
-        {
-            sprintf(fieldname, "/%s%ld_%s", info->aod_fieldname, info->aod_wavelengths[i], info->aod_uncertainty_name);
-            if (read_aod_one_wavelength(info, data, fieldname, i) != 0)
+            else
             {
                 return -1;
-            }
-        }
-        else
-        {
-            dest = data.double_data + i;
-            for (j = 0; j < info->num_time; j++)
-            {
-                *dest = nan;
-                dest += info->num_wavelengths;
             }
         }
     }
@@ -372,9 +360,9 @@ static int init_dimensions(ingest_info *info)
 
 /* Start of code that is specific for the AATSR and ATSR2 instruments */
 
-static int ingestion_init_aatsr_atsr2_adv(const harp_ingestion_module *module, coda_product *product,
-                                          const harp_ingestion_options *options, harp_product_definition **definition,
-                                          void **user_data)
+static int ingestion_init_aatsr_atsr2(const harp_ingestion_module *module, coda_product *product,
+                                      const harp_ingestion_options *options, harp_product_definition **definition,
+                                      void **user_data)
 {
     ingest_info *info;
 
@@ -392,10 +380,6 @@ static int ingestion_init_aatsr_atsr2_adv(const harp_ingestion_module *module, c
     info->aod_wavelengths[1] = 670;
     info->aod_wavelengths[2] = 870;
     info->aod_wavelengths[3] = 1600;
-    info->num_uncertainties_wavelengths = 3;
-    info->aod_uncertainties_wavelengths[0] = 550;
-    info->aod_uncertainties_wavelengths[1] = 670;
-    info->aod_uncertainties_wavelengths[2] = 1600;
     info->aod_fieldname = strdup("AOD");
     info->aod_uncertainty_name = strdup("uncertainty");
     *definition = *module->product_definition;
@@ -404,71 +388,7 @@ static int ingestion_init_aatsr_atsr2_adv(const harp_ingestion_module *module, c
     return 0;
 }
 
-static int ingestion_init_aatsr_atsr2_orac(const harp_ingestion_module *module, coda_product *product,
-                                           const harp_ingestion_options *options, harp_product_definition **definition,
-                                           void **user_data)
-{
-    ingest_info *info;
-
-    (void)options;
-
-    CHECKED_MALLOC(info, sizeof(ingest_info));
-    info->product = product;
-    if (init_dimensions(info) != 0)
-    {
-        ingestion_done(info);
-        return -1;
-    }
-    info->num_wavelengths = 4;
-    info->aod_wavelengths[0] = 550;
-    info->aod_wavelengths[1] = 670;
-    info->aod_wavelengths[2] = 870;
-    info->aod_wavelengths[3] = 1600;
-    info->num_uncertainties_wavelengths = 2;
-    info->aod_uncertainties_wavelengths[0] = 550;
-    info->aod_uncertainties_wavelengths[1] = 870;
-    info->aod_fieldname = strdup("AOD");
-    info->aod_uncertainty_name = strdup("uncertainty");
-    *definition = *module->product_definition;
-    *user_data = info;
-
-    return 0;
-}
-
-static int ingestion_init_aatsr_atsr2_su(const harp_ingestion_module *module, coda_product *product,
-                                         const harp_ingestion_options *options, harp_product_definition **definition,
-                                         void **user_data)
-{
-    ingest_info *info;
-
-    (void)options;
-
-    CHECKED_MALLOC(info, sizeof(ingest_info));
-    info->product = product;
-    if (init_dimensions(info) != 0)
-    {
-        ingestion_done(info);
-        return -1;
-    }
-    info->num_wavelengths = 4;
-    info->aod_wavelengths[0] = 550;
-    info->aod_wavelengths[1] = 670;
-    info->aod_wavelengths[2] = 870;
-    info->aod_wavelengths[3] = 1600;
-    info->num_uncertainties_wavelengths = 4;
-    info->aod_uncertainties_wavelengths[0] = 550;
-    info->aod_uncertainties_wavelengths[1] = 670;
-    info->aod_uncertainties_wavelengths[2] = 870;
-    info->aod_uncertainties_wavelengths[3] = 1600;
-    info->aod_fieldname = strdup("AOD");
-    info->aod_uncertainty_name = strdup("uncertainty");
-    *definition = *module->product_definition;
-    *user_data = info;
-
-    return 0;
-}
-
-static int register_aatsr_atsr2_product(harp_ingestion_module *module, char *productname, char *uncertainties_mapping)
+static int register_aatsr_atsr2_product(harp_ingestion_module *module, char *productname)
 {
     harp_product_definition *product_definition;
     harp_variable_definition *variable_definition;
@@ -542,7 +462,10 @@ static int register_aatsr_atsr2_product(harp_ingestion_module *module, char *pro
         harp_ingestion_register_variable_full_read(product_definition, "aerosol_optical_depth_uncertainty",
                                                    harp_type_double, 2, dimension_type, NULL, description, NULL, NULL,
                                                    read_aerosol_optical_depth_uncertainty);
-    harp_variable_definition_add_mapping(variable_definition, NULL, NULL, uncertainties_mapping, NULL);
+    path = "/AOD550_uncertainty[], /AOD670_uncertainty[], /AOD870_uncertainty[], /AOD1600_uncertainty[]";
+    description =
+        "depending on how the data is processed, uncertainty data is not always available for all wavelengths. If the data is not available, NaN values are used.";
+    harp_variable_definition_add_mapping(variable_definition, NULL, NULL, path, description);
 
     // Note: After a discussion with Sander Niemeijer it has been decided not to ingest the aerosol_type information.
     // In case we need that aerosol_type information later, look at page 23 of
@@ -561,49 +484,19 @@ static int register_aatsr_atsr2_product(harp_ingestion_module *module, char *pro
 
 static int register_module_l2_aatsr_atsr2(void)
 {
-    harp_ingestion_module *adv_module, *orac_module, *su_module;
+    harp_ingestion_module *module;
 
-    adv_module =
-        harp_ingestion_register_module_coda("ESACCI_AEROSOL_L2_AATSR_ADV", "Aerosol CCI", "ESACCI_AEROSOL",
-                                            "AATSR_ADV_L2", "CCI L2 Aerosol profile from AATSR processed by ADV",
-                                            ingestion_init_aatsr_atsr2_adv, ingestion_done);
-    register_aatsr_atsr2_product(adv_module, "ESACCI_AEROSOL_L2_AATSR_ADV",
-                                 "/AOD550_uncertainty[], AOD670_uncertainty[], AOD1600_uncertainty[]");
+    module =
+        harp_ingestion_register_module_coda("ESACCI_AEROSOL_L2_AATSR", "Aerosol CCI", "ESACCI_AEROSOL",
+                                            "AATSR_L2", "CCI L2 Aerosol profile from AATSR",
+                                            ingestion_init_aatsr_atsr2, ingestion_done);
+    register_aatsr_atsr2_product(module, "ESACCI_AEROSOL_L2_AATSR");
 
-    orac_module =
-        harp_ingestion_register_module_coda("ESACCI_AEROSOL_L2_AATSR_ORAC", "Aerosol CCI", "ESACCI_AEROSOL",
-                                            "AATSR_ORAC_L2", "CCI L2 Aerosol profile from AATSR processed by ORAC",
-                                            ingestion_init_aatsr_atsr2_orac, ingestion_done);
-    register_aatsr_atsr2_product(orac_module, "ESACCI_AEROSOL_L2_AATSR_ORAC",
-                                 "/AOD550_uncertainty[], AOD870_uncertainty[]");
-
-    su_module =
-        harp_ingestion_register_module_coda("ESACCI_AEROSOL_L2_AATSR_SU", "Aerosol CCI", "ESACCI_AEROSOL",
-                                            "AATSR_SU_L2", "CCI L2 Aerosol profile from AATSR processed by SU",
-                                            ingestion_init_aatsr_atsr2_su, ingestion_done);
-    register_aatsr_atsr2_product(su_module, "ESACCI_AEROSOL_L2_AATSR_SU", "/AOD550_uncertainty[], "
-                                 "AOD670_uncertainty[], AOD870_uncertainty[], AOD1600_uncertainty[]");
-
-    adv_module =
-        harp_ingestion_register_module_coda("ESACCI_AEROSOL_L2_ATSR2_ADV", "Aerosol CCI", "ESACCI_AEROSOL",
-                                            "ATSR2_ADV_L2", "CCI L2 Aerosol profile from ATSR-2 processed by ADV",
-                                            ingestion_init_aatsr_atsr2_adv, ingestion_done);
-    register_aatsr_atsr2_product(adv_module, "ESACCI_AEROSOL_L2_ATSR2_ADV",
-                                 "/AOD550_uncertainty[], AOD670_uncertainty[], AOD1600_uncertainty[]");
-
-    orac_module =
-        harp_ingestion_register_module_coda("ESACCI_AEROSOL_L2_ATSR2_ORAC", "Aerosol CCI", "ESACCI_AEROSOL",
-                                            "ATSR2_ORAC_L2", "CCI L2 Aerosol profile from ATSR-2 processed by ORAC",
-                                            ingestion_init_aatsr_atsr2_orac, ingestion_done);
-    register_aatsr_atsr2_product(orac_module, "ESACCI_AEROSOL_L2_ATSR2_ORAC",
-                                 "/AOD550_uncertainty[], AOD870_uncertainty[]");
-
-    su_module =
-        harp_ingestion_register_module_coda("ESACCI_AEROSOL_L2_ATSR2_SU", "Aerosol CCI", "ESACCI_AEROSOL",
-                                            "ATSR2_SU_L2", "CCI L2 Aerosol profile from ATSR-2 processed by SU",
-                                            ingestion_init_aatsr_atsr2_su, ingestion_done);
-    register_aatsr_atsr2_product(su_module, "ESACCI_AEROSOL_L2_ATSR2_SU", "/AOD550_uncertainty[], "
-                                 "AOD670_uncertainty[], AOD870_uncertainty[], AOD1600_uncertainty[]");
+    module =
+        harp_ingestion_register_module_coda("ESACCI_AEROSOL_L2_ATSR2", "Aerosol CCI", "ESACCI_AEROSOL",
+                                            "ATSR2_L2", "CCI L2 Aerosol profile from ATSR-2",
+                                            ingestion_init_aatsr_atsr2, ingestion_done);
+    register_aatsr_atsr2_product(module, "ESACCI_AEROSOL_L2_ATSR2");
 
     return 0;
 }
@@ -628,9 +521,6 @@ static int ingestion_init_meris(const harp_ingestion_module *module, coda_produc
     info->num_wavelengths = 2;
     info->aod_wavelengths[0] = 550;
     info->aod_wavelengths[1] = 865;
-    info->num_uncertainties_wavelengths = 2;
-    info->aod_uncertainties_wavelengths[0] = 550;
-    info->aod_uncertainties_wavelengths[1] = 865;
     info->aod_fieldname = strdup("AOD");
     info->aod_uncertainty_name = strdup("std");
     *definition = *module->product_definition;
@@ -728,11 +618,12 @@ static int register_module_l2_meris(void)
 
 /* Start of code that is specific for the IASI instrument */
 
-static int ingestion_init_iasi_dlr(const harp_ingestion_module *module, coda_product *product,
-                                   const harp_ingestion_options *options, harp_product_definition **definition,
-                                   void **user_data)
+static int ingestion_init_iasi(const harp_ingestion_module *module, coda_product *product,
+                               const harp_ingestion_options *options, harp_product_definition **definition,
+                               void **user_data)
 {
     ingest_info *info;
+    coda_cursor cursor;
 
     (void)options;
 
@@ -747,67 +638,19 @@ static int ingestion_init_iasi_dlr(const harp_ingestion_module *module, coda_pro
     info->aod_wavelengths[0] = 550;
     info->aod_wavelengths[1] = 10000;
     info->aod_wavelengths[2] = 11000;
-    info->num_uncertainties_wavelengths = 1;
-    info->aod_uncertainties_wavelengths[0] = 11000;
-    info->aod_fieldname = strdup("D_AOD");
-    info->aod_uncertainty_name = strdup("uncertainty");
-    *definition = *module->product_definition;
-    *user_data = info;
-
-    return 0;
-}
-
-static int ingestion_init_iasi_lmd(const harp_ingestion_module *module, coda_product *product,
-                                   const harp_ingestion_options *options, harp_product_definition **definition,
-                                   void **user_data)
-{
-    ingest_info *info;
-
-    (void)options;
-
-    CHECKED_MALLOC(info, sizeof(ingest_info));
-    info->product = product;
-    if (init_dimensions(info) != 0)
+    if (coda_cursor_set_product(&cursor, info->product) != 0)
     {
-        ingestion_done(info);
+        harp_set_error(HARP_ERROR_CODA, NULL);
         return -1;
     }
-    info->num_wavelengths = 3;
-    info->aod_wavelengths[0] = 550;
-    info->aod_wavelengths[1] = 10000;
-    info->aod_wavelengths[2] = 11000;
-    info->num_uncertainties_wavelengths = 1;
-    info->aod_uncertainties_wavelengths[0] = 10000;
-    info->aod_fieldname = strdup("Daod");
-    info->aod_uncertainty_name = strdup("uncertainty");
-    *definition = *module->product_definition;
-    *user_data = info;
-
-    return 0;
-}
-
-static int ingestion_init_iasi_ulb(const harp_ingestion_module *module, coda_product *product,
-                                   const harp_ingestion_options *options, harp_product_definition **definition,
-                                   void **user_data)
-{
-    ingest_info *info;
-
-    (void)options;
-
-    CHECKED_MALLOC(info, sizeof(ingest_info));
-    info->product = product;
-    if (init_dimensions(info) != 0)
+    if (coda_cursor_goto(&cursor, "/D_AOD550") == 0)
     {
-        ingestion_done(info);
-        return -1;
+        info->aod_fieldname = strdup("D_AOD");
     }
-    info->num_wavelengths = 3;
-    info->aod_wavelengths[0] = 550;
-    info->aod_wavelengths[1] = 10000;
-    info->aod_wavelengths[2] = 11000;
-    info->num_uncertainties_wavelengths = 1;
-    info->aod_uncertainties_wavelengths[0] = 10000;
-    info->aod_fieldname = strdup("D_AOD");
+    else
+    {
+        info->aod_fieldname = strdup("Daod");
+    }
     info->aod_uncertainty_name = strdup("uncertainty");
     *definition = *module->product_definition;
     *user_data = info;
@@ -815,8 +658,7 @@ static int ingestion_init_iasi_ulb(const harp_ingestion_module *module, coda_pro
     return 0;
 }
 
-static int register_iasi_product(harp_ingestion_module *module, char *productname, char *aod_mapping,
-                                 char *uncertainties_mapping)
+static int register_iasi_product(harp_ingestion_module *module, char *productname)
 {
     harp_product_definition *product_definition;
     harp_variable_definition *variable_definition;
@@ -858,7 +700,10 @@ static int register_iasi_product(harp_ingestion_module *module, char *productnam
         harp_ingestion_register_variable_full_read(product_definition, "dust_aerosol_optical_depth", harp_type_double,
                                                    2, dimension_type, NULL, description, NULL, NULL,
                                                    read_aerosol_optical_depth);
-    harp_variable_definition_add_mapping(variable_definition, NULL, NULL, aod_mapping, NULL);
+    path = "/D_AOD550[], /D_AOD10000[], /D_AOD11000[]";
+    harp_variable_definition_add_mapping(variable_definition, "data processed by DLR or ULB", NULL, path, NULL);
+    path = "/Daod550[], /Daod10000[], /Daod11000[]";
+    harp_variable_definition_add_mapping(variable_definition, "data processed by LMD", NULL, path, NULL);
 
     /* dust_aerosol_optical_depth_uncertainty */
     description = "uncertainty of the dust aerosol optical depth";
@@ -866,7 +711,14 @@ static int register_iasi_product(harp_ingestion_module *module, char *productnam
         harp_ingestion_register_variable_full_read(product_definition, "dust_aerosol_optical_depth_uncertainty",
                                                    harp_type_double, 2, dimension_type, NULL, description, NULL, NULL,
                                                    read_aerosol_optical_depth_uncertainty);
-    harp_variable_definition_add_mapping(variable_definition, NULL, NULL, uncertainties_mapping, NULL);
+    description =
+        "depending on how the data is processed, uncertainty data is not always available for all wavelengths. If the data is not available, NaN values are used.";
+    path = "/D_AOD11000_uncertainty[]";
+    harp_variable_definition_add_mapping(variable_definition, "data processed by DLR", NULL, path, description);
+    path = "/Daod10000_uncertainty[]";
+    harp_variable_definition_add_mapping(variable_definition, "data processed by LMD", NULL, path, description);
+    path = "/D_AOD10000_uncertainty[]";
+    harp_variable_definition_add_mapping(variable_definition, "data processed by DLR", NULL, path, description);
 
     /* wavelength */
     description = "wavelengths of the measurements";
@@ -881,28 +733,13 @@ static int register_iasi_product(harp_ingestion_module *module, char *productnam
 
 static int register_module_l2_iasi(void)
 {
-    harp_ingestion_module *dlr_module, *lmd_module, *ulb_module;
+    harp_ingestion_module *module;
 
-    dlr_module =
-        harp_ingestion_register_module_coda("ESACCI_AEROSOL_L2_IASI_DLR", "Aerosol CCI", "ESACCI_AEROSOL",
-                                            "IASI_DLR_L2", "CCI L2 Aerosol profile from IASI processed by DLR",
-                                            ingestion_init_iasi_dlr, ingestion_done);
-    register_iasi_product(dlr_module, "ESACCI_AEROSOL_L2_IASI_DLR", "/D_AOD550, /D_AOD10000, /D_AOD11000",
-                          "/D_AOD11000_uncertainty");
-
-    lmd_module =
-        harp_ingestion_register_module_coda("ESACCI_AEROSOL_L2_IASI_LMD", "Aerosol CCI", "ESACCI_AEROSOL",
-                                            "IASI_LMD_L2", "CCI L2 Aerosol profile from IASI processed by LMD",
-                                            ingestion_init_iasi_lmd, ingestion_done);
-    register_iasi_product(lmd_module, "ESACCI_AEROSOL_L2_IASI_LMD", "/Daod550, /Daod10000, /Daod11000",
-                          "/Daod10000_uncertainty");
-
-    ulb_module =
-        harp_ingestion_register_module_coda("ESACCI_AEROSOL_L2_IASI_ULB", "Aerosol CCI", "ESACCI_AEROSOL",
-                                            "IASI_ULB_L2", "CCI L2 Aerosol profile from IASI processed by ULB",
-                                            ingestion_init_iasi_ulb, ingestion_done);
-    register_iasi_product(ulb_module, "ESACCI_AEROSOL_L2_IASI_ULB", "/D_AOD550, /D_AOD10000, /D_AOD11000",
-                          "/D_AOD10000_uncertainty");
+    module =
+        harp_ingestion_register_module_coda("ESACCI_AEROSOL_L2_IASI", "Aerosol CCI", "ESACCI_AEROSOL",
+                                            "IASI_L2", "CCI L2 Aerosol profile from IASI",
+                                            ingestion_init_iasi, ingestion_done);
+    register_iasi_product(module, "ESACCI_AEROSOL_L2_IASI");
 
     return 0;
 }
