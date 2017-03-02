@@ -78,13 +78,6 @@ Supported functions:
        documentation.
 
     ``derive_smoothed_column(variable {dimension-type, ...} [unit], axis-variable unit, collocation-result-file, a|b, dataset-dir)``
-       Derive the specified variable from other variables found
-       in the product. The ``--list-derivations`` option of
-       harpconvert, harpdump, and harpfilter can be used to list
-       available variable conversions.
-       The algorithms behind all the conversions are described
-       in the :doc:`Algorithms <algorithms/index>` section of the
-       documentation.
        Derive the given intergrated column value by first deriving
        a partial column profile variant of the variable and then
        smoothing/integrating this partial column profile using the
