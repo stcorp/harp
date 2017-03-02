@@ -55,6 +55,9 @@ void harp_collocation_mask_delete(harp_collocation_mask *mask);
 int harp_collocation_mask_add_index_pair(harp_collocation_mask *mask, harp_collocation_index_pair *index_pair);
 void harp_collocation_mask_sort_by_index(harp_collocation_mask *mask);
 void harp_collocation_mask_sort_by_collocation_index(harp_collocation_mask *mask);
+int harp_collocation_mask_from_result(const harp_collocation_result *collocation_result,
+                                      harp_collocation_filter_type filter_type, const char *source_product,
+                                      harp_collocation_mask **new_mask);
 int harp_collocation_mask_import(const char *filename, harp_collocation_filter_type filter_type,
                                  const char *original_filename, harp_collocation_mask **new_mask);
 
