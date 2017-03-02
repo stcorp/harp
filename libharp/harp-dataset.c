@@ -363,7 +363,15 @@ LIBHARP_API void harp_dataset_print(harp_dataset *dataset, int (*print) (const c
 
     for (i = 0; i < dataset->num_products; i++)
     {
-        harp_product_metadata_print(dataset->metadata[i], print);
+        if (dataset->metadata[i] != NULL)
+        {
+            harp_product_metadata_print(dataset->metadata[i], print);
+        }
+        else
+        {
+            print("source_product: %s", dataset->source_product[i]);
+        }
+        print("\n");
     }
 }
 
