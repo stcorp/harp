@@ -911,15 +911,6 @@ int harp_import_global_attributes_netcdf(const char *filename, double *datetime_
         }
     }
 
-    if (source_product != NULL)
-    {
-        if (read_string_attribute(ncid, NC_GLOBAL, "source_product", &attr_source_product) != 0)
-        {
-            nc_close(ncid);
-            return -1;
-        }
-    }
-
     if (dimension != NULL)
     {
         int num_dimensions;
@@ -965,6 +956,29 @@ int harp_import_global_attributes_netcdf(const char *filename, double *datetime_
                     return -1;
                 }
                 attr_dimension[harp_dim_type] = length;
+            }
+        }
+    }
+
+    if (source_product != NULL)
+    {
+        if (nc_inq_att(ncid, NC_GLOBAL, "source_product", NULL, NULL) == NC_NOERR)
+        {
+            if (read_string_attribute(ncid, NC_GLOBAL, "source_product", &attr_source_product) != 0)
+            {
+                nc_close(ncid);
+                return -1;
+            }
+        }
+        else
+        {
+            /* use filename if there is no source_product attribute */
+            attr_source_product = strdup(harp_basename(filename));
+            if (attr_source_product == NULL)
+            {
+                harp_set_error(HARP_ERROR_OUT_OF_MEMORY, "out of memory (could not duplicate string) (%s:%u)", __FILE__,
+                               __LINE__);
+                return -1;
             }
         }
     }
