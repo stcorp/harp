@@ -8,7 +8,7 @@
   
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
   
-  <title>ESACCI_AEROSOL_L2_ATSR2_SU &mdash; HARP 0.4b documentation</title>
+  <title>ESACCI_AEROSOL_L2_AATSR &mdash; HARP 0.4b documentation</title>
   
 
   
@@ -113,7 +113,7 @@
   <ul class="wy-breadcrumbs">
     <li><a href="../index.html">Docs</a> &raquo;</li>
       
-    <li>ESACCI_AEROSOL_L2_ATSR2_SU</li>
+    <li>ESACCI_AEROSOL_L2_AATSR</li>
       <li class="wy-breadcrumbs-aside">
         
           
@@ -125,11 +125,11 @@
           <div role="main" class="document" itemscope="itemscope" itemtype="http://schema.org/Article">
            <div itemprop="articleBody">
             
-  <div class="section" id="esacci-aerosol-l2-atsr2-su">
-<h1>ESACCI_AEROSOL_L2_ATSR2_SU</h1>
+  <div class="section" id="esacci-aerosol-l2-aatsr">
+<h1>ESACCI_AEROSOL_L2_AATSR</h1>
 <div class="section" id="variables">
 <h2>Variables</h2>
-<p>The table below lists the variables that are present in the HARP product that results from an ingestion of <code class="docutils literal"><span class="pre">ESACCI_AEROSOL_L2_ATSR2_SU</span></code> data.</p>
+<p>The table below lists the variables that are present in the HARP product that results from an ingestion of <code class="docutils literal"><span class="pre">ESACCI_AEROSOL_L2_AATSR</span></code> data.</p>
 <table border="1" class="docutils">
 <colgroup>
 <col width="25%" />
@@ -209,9 +209,9 @@
 <p>The table below details where and how each variable was retrieved from the input product.</p>
 <table border="1" class="docutils">
 <colgroup>
-<col width="23%" />
-<col width="9%" />
-<col width="68%" />
+<col width="19%" />
+<col width="7%" />
+<col width="74%" />
 </colgroup>
 <thead valign="bottom">
 <tr class="row-odd"><th class="head">field name</th>
@@ -249,11 +249,14 @@
 <td><em>path</em></td>
 <td><strong>/AOD550[], /AOD670[], /AOD870[], /AOD1600[]</strong></td>
 </tr>
-<tr class="row-even"><td><strong>aerosol_optical_depth_uncertainty</strong></td>
+<tr class="row-even"><td rowspan="2"><strong>aerosol_optical_depth_uncertainty</strong></td>
 <td><em>path</em></td>
-<td><strong>/AOD550_uncertainty[], AOD670_uncertainty[], AOD870_uncertainty[], AOD1600_uncertainty[]</strong></td>
+<td><strong>/AOD550_uncertainty[], /AOD670_uncertainty[], /AOD870_uncertainty[], /AOD1600_uncertainty[]</strong></td>
 </tr>
-<tr class="row-odd"><td><strong>wavelength</strong></td>
+<tr class="row-odd"><td><em>description</em></td>
+<td>depending on how the data is processed, uncertainty data is not always available for all wavelengths. If the data is not available, NaN values are used.</td>
+</tr>
+<tr class="row-even"><td><strong>wavelength</strong></td>
 <td><em>description</em></td>
 <td>fixed values</td>
 </tr>

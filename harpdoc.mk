@@ -92,15 +92,9 @@ HARP_DOCFILES = \
 	doc/html/harpmerge.html \
 	doc/html/index.html \
 	doc/html/ingestions/ECMWF_GRIB.html \
-	doc/html/ingestions/ESACCI_AEROSOL_L2_AATSR_ADV.html \
-	doc/html/ingestions/ESACCI_AEROSOL_L2_AATSR_ORAC.html \
-	doc/html/ingestions/ESACCI_AEROSOL_L2_AATSR_SU.html \
-	doc/html/ingestions/ESACCI_AEROSOL_L2_ATSR2_ADV.html \
-	doc/html/ingestions/ESACCI_AEROSOL_L2_ATSR2_ORAC.html \
-	doc/html/ingestions/ESACCI_AEROSOL_L2_ATSR2_SU.html \
-	doc/html/ingestions/ESACCI_AEROSOL_L2_IASI_DLR.html \
-	doc/html/ingestions/ESACCI_AEROSOL_L2_IASI_LMD.html \
-	doc/html/ingestions/ESACCI_AEROSOL_L2_IASI_ULB.html \
+	doc/html/ingestions/ESACCI_AEROSOL_L2_AATSR.html \
+	doc/html/ingestions/ESACCI_AEROSOL_L2_ATSR2.html \
+	doc/html/ingestions/ESACCI_AEROSOL_L2_IASI.html \
 	doc/html/ingestions/ESACCI_AEROSOL_L2_MERIS_ALAMO.html \
 	doc/html/ingestions/ESACCI_OZONE_L2_LP.html \
 	doc/html/ingestions/ESACCI_OZONE_L2_NP.html \
@@ -610,23 +604,11 @@ doc/html/index.html:
 	$(MAKE) harp_doc
 doc/html/ingestions/ECMWF_GRIB.html:
 	$(MAKE) harp_doc
-doc/html/ingestions/ESACCI_AEROSOL_L2_AATSR_ADV.html:
+doc/html/ingestions/ESACCI_AEROSOL_L2_AATSR.html:
 	$(MAKE) harp_doc
-doc/html/ingestions/ESACCI_AEROSOL_L2_AATSR_ORAC.html:
+doc/html/ingestions/ESACCI_AEROSOL_L2_ATSR2.html:
 	$(MAKE) harp_doc
-doc/html/ingestions/ESACCI_AEROSOL_L2_AATSR_SU.html:
-	$(MAKE) harp_doc
-doc/html/ingestions/ESACCI_AEROSOL_L2_ATSR2_ADV.html:
-	$(MAKE) harp_doc
-doc/html/ingestions/ESACCI_AEROSOL_L2_ATSR2_ORAC.html:
-	$(MAKE) harp_doc
-doc/html/ingestions/ESACCI_AEROSOL_L2_ATSR2_SU.html:
-	$(MAKE) harp_doc
-doc/html/ingestions/ESACCI_AEROSOL_L2_IASI_DLR.html:
-	$(MAKE) harp_doc
-doc/html/ingestions/ESACCI_AEROSOL_L2_IASI_LMD.html:
-	$(MAKE) harp_doc
-doc/html/ingestions/ESACCI_AEROSOL_L2_IASI_ULB.html:
+doc/html/ingestions/ESACCI_AEROSOL_L2_IASI.html:
 	$(MAKE) harp_doc
 doc/html/ingestions/ESACCI_AEROSOL_L2_MERIS_ALAMO.html:
 	$(MAKE) harp_doc
