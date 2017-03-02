@@ -95,8 +95,12 @@ int merge_dataset(harp_product **merged_product, harp_dataset *dataset, const ch
     for (i = 0; i < dataset->num_products; i++)
     {
         harp_product *product;
+        int index;
 
-        if (harp_import(dataset->metadata[i]->filename, &product) != 0)
+        /* add products in sorted order (sorted by source_product value) */
+        index = dataset->sorted_index[i];
+
+        if (harp_import(dataset->metadata[index]->filename, &product) != 0)
         {
             return -1;
         }

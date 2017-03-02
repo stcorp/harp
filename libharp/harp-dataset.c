@@ -296,6 +296,7 @@ LIBHARP_API int harp_dataset_new(harp_dataset **new_dataset)
     }
 
     dataset->product_to_index = hashtable_new(0);
+    dataset->sorted_index = NULL;
     dataset->num_products = 0;
     dataset->metadata = NULL;
     dataset->source_product = NULL;
@@ -318,6 +319,11 @@ LIBHARP_API void harp_dataset_delete(harp_dataset *dataset)
     if (dataset->product_to_index != NULL)
     {
         hashtable_delete(dataset->product_to_index);
+    }
+
+    if (dataset->sorted_index != NULL)
+    {
+        free(dataset->sorted_index);
     }
 
     if (dataset->source_product != NULL)
@@ -439,29 +445,46 @@ LIBHARP_API int harp_dataset_add_product(harp_dataset *dataset, const char *sour
     /* if source product does not already appear, add it */
     if (!harp_dataset_has_product(dataset, source_product))
     {
+        int index;
+        int i;
+
         /* Make space for new entry */
         if (dataset->num_products % BLOCK_SIZE == 0)
         {
-            int i;
+            char **new_source_product;
+            int *new_sorted_index;
+            harp_product_metadata **new_metadata;
 
             /* grow the source_product array by one block */
-            dataset->source_product = realloc(dataset->source_product,
-                                              (dataset->num_products + BLOCK_SIZE) * sizeof(char **));
-            if (dataset->source_product == NULL)
+            new_source_product = realloc(dataset->source_product,
+                                         (dataset->num_products + BLOCK_SIZE) * sizeof(char **));
+            if (new_source_product == NULL)
             {
                 harp_set_error(HARP_ERROR_OUT_OF_MEMORY, "out of memory (could not allocate %lu bytes) (%s:%u)",
-                               (long)(dataset->num_products + BLOCK_SIZE) * sizeof(char **), __FILE__, __LINE__);
+                               (dataset->num_products + BLOCK_SIZE) * sizeof(char **), __FILE__, __LINE__);
                 return -1;
             }
+            dataset->source_product = new_source_product;
 
-            dataset->metadata = realloc(dataset->metadata,
-                                        (dataset->num_products + BLOCK_SIZE) * sizeof(harp_product_metadata *));
-            if (!dataset->metadata)
+            new_sorted_index = realloc(dataset->sorted_index, (dataset->num_products + BLOCK_SIZE) * sizeof(int));
+            if (new_sorted_index == NULL)
             {
                 harp_set_error(HARP_ERROR_OUT_OF_MEMORY, "out of memory (could not allocate %lu bytes) (%s:%u)",
-                               (long)(dataset->num_products + BLOCK_SIZE) * sizeof(char *), __FILE__, __LINE__);
+                               (dataset->num_products + BLOCK_SIZE) * sizeof(int), __FILE__, __LINE__);
                 return -1;
             }
+            dataset->sorted_index = new_sorted_index;
+
+            new_metadata = realloc(dataset->metadata,
+                                   (dataset->num_products + BLOCK_SIZE) * sizeof(harp_product_metadata *));
+            if (new_metadata == NULL)
+            {
+                harp_set_error(HARP_ERROR_OUT_OF_MEMORY, "out of memory (could not allocate %lu bytes) (%s:%u)",
+                               (dataset->num_products + BLOCK_SIZE) * sizeof(harp_product_metadata *), __FILE__,
+                               __LINE__);
+                return -1;
+            }
+            dataset->metadata = new_metadata;
 
             /* zero-out metadata entries; as these are only optionally set in the future */
             for (i = dataset->num_products; i < (dataset->num_products + BLOCK_SIZE); i++)
@@ -469,6 +492,18 @@ LIBHARP_API int harp_dataset_add_product(harp_dataset *dataset, const char *sour
                 dataset->metadata[i] = NULL;
             }
         }
+
+        /* add newly appended item into the list of sorted indices */
+        index = 0;
+        while (index < dataset->num_products && strcmp(source_product, dataset->source_product[index]) > 0)
+        {
+            index++;
+        }
+        for (i = dataset->num_products; i > index; i--)
+        {
+            dataset->sorted_index[i] = dataset->sorted_index[i - 1];
+        }
+        dataset->sorted_index[index] = dataset->num_products;
 
         dataset->num_products++;
 
@@ -480,7 +515,6 @@ LIBHARP_API int harp_dataset_add_product(harp_dataset *dataset, const char *sour
             return -1;
         }
 
-        /* add it to the index */
         if (hashtable_add_name(dataset->product_to_index, dataset->source_product[dataset->num_products - 1]) != 0)
         {
             assert(0);

@@ -330,6 +330,7 @@ struct harp_dataset_struct
 {
     struct hashtable_struct *product_to_index;  /* maps source_product names to indices */
     char **source_product;      /* set of source products - every source appears only once */
+    int *sorted_index;  /* indices of products sorted by source_product name */
     int num_products;
     harp_product_metadata **metadata;   /* stores metadata for source in source_product */
 };
