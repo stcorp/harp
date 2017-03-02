@@ -383,7 +383,7 @@ LIBHARP_API int harp_collocation_result_filter_for_source_product_b(harp_colloca
     long product_index;
     long i, j;
 
-    if (harp_dataset_get_index_from_source_product(collocation_result->dataset_a, source_product, &product_index) != 0)
+    if (harp_dataset_get_index_from_source_product(collocation_result->dataset_b, source_product, &product_index) != 0)
     {
         return -1;
     }
