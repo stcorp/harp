@@ -65,19 +65,19 @@ static void write_scalar(harp_scalar data, harp_data_type data_type, int (*print
     }
 }
 
-static void write_array(harp_array data, harp_data_type data_type, long num_elements, long num_blocks,
+static void write_array(harp_array data, harp_data_type data_type, long num_elements, long block_size,
                         int (*print) (const char *, ...))
 {
     long i, j, index;
 
     index = 0;
-    for (i = 0; i == 0 || i < num_blocks; i++)
+    for (i = 0; i < num_elements / block_size; i++)
     {
-        if (num_blocks != 0)
+        if (block_size > 1)
         {
             print("\n  ");
         }
-        for (j = 0; j < num_elements / num_blocks; j++)
+        for (j = 0; j < block_size; j++)
         {
             switch (data_type)
             {
@@ -2023,12 +2023,12 @@ LIBHARP_API void harp_variable_print_data(harp_variable *variable, int (*print) 
     print(" = ");
     if (variable->num_dimensions <= 1)
     {
-        write_array(variable->data, variable->data_type, variable->num_elements, 0, print);
+        write_array(variable->data, variable->data_type, variable->num_elements, 1, print);
     }
     else
     {
         write_array(variable->data, variable->data_type, variable->num_elements,
-                    variable->num_elements / variable->dimension[variable->num_dimensions - 1], print);
+                    variable->dimension[variable->num_dimensions - 1], print);
     }
     print("\n\n");
 }
