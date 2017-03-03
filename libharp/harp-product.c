@@ -308,6 +308,60 @@ int harp_product_rearrange_dimension(harp_product *product, harp_dimension_type 
     return 0;
 }
 
+int harp_product_sort_by_index(harp_product *product, const char *index_variable, long num_elements, int32_t *index)
+{
+    harp_variable *variable;
+    long *dim_element_ids;
+    long i, j;
+
+    if (harp_product_get_variable_by_name(product, index_variable, &variable) != 0)
+    {
+        return -1;
+    }
+
+    if (num_elements != variable->num_elements)
+    {
+        harp_set_error(HARP_ERROR_INVALID_ARGUMENT, "length of index variable (%ld) and index array (%ld) don't match",
+                       variable->num_elements, num_elements);
+        return -1;
+    }
+
+    dim_element_ids = malloc(num_elements * sizeof(long));
+    if (dim_element_ids == NULL)
+    {
+        harp_set_error(HARP_ERROR_OUT_OF_MEMORY, "out of memory (could not allocate %lu bytes) (%s:%u)",
+                       num_elements * sizeof(long), __FILE__, __LINE__);
+        return -1;
+    }
+
+    for (i = 0; i < num_elements; i++)
+    {
+        for (j = 0; j < num_elements; j++)
+        {
+            if (index[i] == variable->data.int32_data[j])
+            {
+                break;
+            }
+        }
+        if (j == num_elements)
+        {
+            harp_set_error(HARP_ERROR_INVALID_ARGUMENT, "index %ld not found in index variable", (long)index[i]);
+            return -1;
+        }
+        dim_element_ids[i] = j;
+    }
+
+    if (harp_product_rearrange_dimension(product, harp_dimension_time, num_elements, dim_element_ids) != 0)
+    {
+        free(dim_element_ids);
+        return -1;
+    }
+
+    free(dim_element_ids);
+
+    return 0;
+}
+
 int harp_product_resize_dimension(harp_product *product, harp_dimension_type dimension_type, long length)
 {
     int i;
