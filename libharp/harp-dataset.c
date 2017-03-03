@@ -328,7 +328,7 @@ LIBHARP_API void harp_dataset_delete(harp_dataset *dataset)
 
     if (dataset->source_product != NULL)
     {
-        int i;
+        long i;
 
         for (i = 0; i < dataset->num_products; i++)
         {
@@ -340,7 +340,7 @@ LIBHARP_API void harp_dataset_delete(harp_dataset *dataset)
 
     if (dataset->metadata != NULL)
     {
-        int i;
+        long i;
 
         for (i = 0; i < dataset->num_products; i++)
         {
@@ -359,7 +359,7 @@ LIBHARP_API void harp_dataset_delete(harp_dataset *dataset)
  */
 LIBHARP_API void harp_dataset_print(harp_dataset *dataset, int (*print) (const char *, ...))
 {
-    int i;
+    long i;
 
     for (i = 0; i < dataset->num_products; i++)
     {
@@ -453,14 +453,14 @@ LIBHARP_API int harp_dataset_add_product(harp_dataset *dataset, const char *sour
     /* if source product does not already appear, add it */
     if (!harp_dataset_has_product(dataset, source_product))
     {
-        int index;
-        int i;
+        long index;
+        long i;
 
         /* Make space for new entry */
         if (dataset->num_products % BLOCK_SIZE == 0)
         {
             char **new_source_product;
-            int *new_sorted_index;
+            long *new_sorted_index;
             harp_product_metadata **new_metadata;
 
             /* grow the source_product array by one block */
@@ -474,11 +474,11 @@ LIBHARP_API int harp_dataset_add_product(harp_dataset *dataset, const char *sour
             }
             dataset->source_product = new_source_product;
 
-            new_sorted_index = realloc(dataset->sorted_index, (dataset->num_products + BLOCK_SIZE) * sizeof(int));
+            new_sorted_index = realloc(dataset->sorted_index, (dataset->num_products + BLOCK_SIZE) * sizeof(long));
             if (new_sorted_index == NULL)
             {
                 harp_set_error(HARP_ERROR_OUT_OF_MEMORY, "out of memory (could not allocate %lu bytes) (%s:%u)",
-                               (dataset->num_products + BLOCK_SIZE) * sizeof(int), __FILE__, __LINE__);
+                               (dataset->num_products + BLOCK_SIZE) * sizeof(long), __FILE__, __LINE__);
                 return -1;
             }
             dataset->sorted_index = new_sorted_index;

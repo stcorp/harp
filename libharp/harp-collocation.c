@@ -404,10 +404,10 @@ LIBHARP_API int harp_collocation_result_filter_for_source_product_b(harp_colloca
 
 /* This function uses a binary search and assumes the collocation result to be sorted by collocation index */
 static int find_collocation_pair_for_collocation_index(harp_collocation_result *collocation_result,
-                                                       int collocation_index, int *index)
+                                                       long collocation_index, long *index)
 {
-    int lower_index;
-    int upper_index;
+    long lower_index;
+    long upper_index;
 
     lower_index = 0;
     upper_index = collocation_result->num_pairs - 1;
@@ -415,7 +415,7 @@ static int find_collocation_pair_for_collocation_index(harp_collocation_result *
     while (upper_index >= lower_index)
     {
         /* Determine the index that splits the search space into two (approximately) equal halves. */
-        int pivot_index = lower_index + ((upper_index - lower_index) / 2);
+        long pivot_index = lower_index + ((upper_index - lower_index) / 2);
 
         /* If the pivot equals the key, terminate early. */
         if (collocation_result->pair[pivot_index]->collocation_index == collocation_index)
@@ -451,11 +451,11 @@ static int find_collocation_pair_for_collocation_index(harp_collocation_result *
  *   \arg \c -1, Error occurred (check #harp_errno).
  */
 LIBHARP_API int harp_collocation_result_filter_for_collocation_indices(harp_collocation_result *collocation_result,
-                                                                       int num_indices, int32_t *collocation_index)
+                                                                       long num_indices, int32_t *collocation_index)
 {
     harp_collocation_pair **pair = NULL;
-    int num_pairs = 0;
-    int i;
+    long num_pairs = 0;
+    long i;
 
     if (harp_collocation_result_sort_by_collocation_index(collocation_result) != 0)
     {
@@ -473,8 +473,8 @@ LIBHARP_API int harp_collocation_result_filter_for_collocation_indices(harp_coll
 
     for (i = 0; i < num_indices; i++)
     {
-        int index;
-        int j;
+        long index;
+        long j;
 
         if (find_collocation_pair_for_collocation_index(collocation_result, collocation_index[i], &index) != 0)
         {
@@ -1084,7 +1084,7 @@ LIBHARP_API int harp_collocation_result_write(const char *collocation_result_fil
  */
 LIBHARP_API void harp_collocation_result_swap_datasets(harp_collocation_result *collocation_result)
 {
-    int i;
+    long i;
     harp_dataset *data_a;
 
     for (i = 0; i < collocation_result->num_pairs; i++)
@@ -1104,7 +1104,7 @@ int harp_collocation_result_shallow_copy(const harp_collocation_result *collocat
 {
     harp_collocation_result *result = NULL;
     harp_collocation_pair **pairs = NULL;
-    int i;
+    long i;
 
     /* allocate memory for the result struct */
     result = (harp_collocation_result *)malloc(sizeof(harp_collocation_result));
@@ -1156,7 +1156,7 @@ void harp_collocation_result_shallow_delete(harp_collocation_result *collocation
     {
         if (collocation_result->pair != NULL)
         {
-            int i;
+            long i;
 
             for (i = 0; i < collocation_result->num_pairs; i++)
             {

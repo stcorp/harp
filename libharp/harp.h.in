@@ -330,8 +330,8 @@ struct harp_dataset_struct
 {
     struct hashtable_struct *product_to_index;  /* maps source_product names to indices */
     char **source_product;      /* set of source products - every source appears only once */
-    int *sorted_index;  /* indices of products sorted by source_product name */
-    int num_products;
+    long *sorted_index;  /* indices of products sorted by source_product name */
+    long num_products;
     harp_product_metadata **metadata;   /* stores metadata for source in source_product */
 };
 
@@ -384,7 +384,7 @@ struct harp_collocation_result_struct
     harp_dataset *dataset_b;
     int difference_available[HARP_COLLOCATION_RESULT_MAX_NUM_DIFFERENCES];
     char *difference_unit[HARP_COLLOCATION_RESULT_MAX_NUM_DIFFERENCES];
-    int num_pairs;
+    long num_pairs;
     harp_collocation_pair **pair;
 };
 
@@ -570,7 +570,7 @@ LIBHARP_API int harp_collocation_result_filter_for_source_product_a(harp_colloca
 LIBHARP_API int harp_collocation_result_filter_for_source_product_b(harp_collocation_result *collocation_result,
                                                                     const char *source_product);
 LIBHARP_API int harp_collocation_result_filter_for_collocation_indices(harp_collocation_result *collocation_result,
-                                                                       int num_indices, int32_t *collocation_index);
+                                                                       long num_indices, int32_t *collocation_index);
 LIBHARP_API int harp_collocation_result_add_pair(harp_collocation_result *collocation_result, long collocation_index,
                                                  const char *source_product_a, long index_a,
                                                  const char *source_product_b, long index_b, const double *difference);
