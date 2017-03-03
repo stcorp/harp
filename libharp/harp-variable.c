@@ -326,17 +326,19 @@ int harp_variable_rearrange_dimension(harp_variable *variable, int dim_index, lo
             int is_cycle = 0;
             long k;
 
-            /* Don't do anything if the item is already in the right spot */
-            if (to_id == from_id)
+            if (move_to_id[from_id] == to_id)
             {
-                moved[from_id] = 1;
-                continue;
-            }
-
-            /* Skip this element if we already filled this block because of an earlier shuffle */
-            if (move_to_id[from_id] == to_id && moved[from_id])
-            {
-                continue;
+                /* We already filled this block because of an earlier shuffle */
+                if (moved[from_id])
+                {
+                    continue;
+                }
+                /* The item is already in the right spot (and we don't have to duplicate strings) */
+                if (to_id == from_id)
+                {
+                    moved[from_id] = 1;
+                    continue;
+                }
             }
 
             /* Check if the data at the current position needs to be moved away first */
