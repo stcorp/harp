@@ -1934,13 +1934,13 @@ LIBHARP_API void harp_variable_print(harp_variable *variable, int show_attribute
     switch (variable->data_type)
     {
         case harp_type_int8:
-            print("byte");
+            print("int8");
             break;
         case harp_type_int16:
-            print("int");
+            print("int16");
             break;
         case harp_type_int32:
-            print("long");
+            print("int32");
             break;
         case harp_type_float:
             print("float");
