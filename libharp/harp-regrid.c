@@ -296,6 +296,7 @@ LIBHARP_API int harp_product_regrid_with_axis_variable(harp_product *product, ha
     long source_num_time_elements = 1;
     int source_grid_num_dims = 1;
     int target_grid_num_dims;
+    harp_variable *variable;
     long i;
 
     /* owned memory */
@@ -491,13 +492,14 @@ LIBHARP_API int harp_product_regrid_with_axis_variable(harp_product *product, ha
     /* regrid each variable */
     for (i = product->num_variables - 1; i >= 0; i--)
     {
-        harp_variable *variable = product->variable[i];
         resample_type type;
         long source_time_index;
         long target_time_index;
         long num_blocks;
         long num_elements;
         long j;
+
+        variable = product->variable[i];
 
         /* Check if we can resample this kind of variable */
         type = get_resample_type(variable, dimension_type);
@@ -629,18 +631,26 @@ LIBHARP_API int harp_product_regrid_with_axis_variable(harp_product *product, ha
     }
 
     /* ensure consistent axis variables in product */
-    if (harp_product_add_variable(product, local_target_grid) != 0)
+    if (harp_variable_copy(target_grid, &variable) != 0)
     {
         goto error;
     }
-    local_target_grid = NULL;
-    if (local_target_bounds != NULL)
+    if (harp_product_add_variable(product, variable) != 0)
     {
-        if (harp_product_add_variable(product, local_target_bounds) != 0)
+        harp_variable_delete(variable);
+        goto error;
+    }
+    if (target_bounds != NULL)
+    {
+        if (harp_variable_copy(target_bounds, &variable) != 0)
         {
             goto error;
         }
-        local_target_bounds = NULL;
+        if (harp_product_add_variable(product, variable) != 0)
+        {
+            harp_variable_delete(variable);
+            goto error;
+        }
     }
 
     /* cleanup */
