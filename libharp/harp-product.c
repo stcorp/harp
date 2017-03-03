@@ -1464,6 +1464,11 @@ LIBHARP_API void harp_product_print(const harp_product *product, int show_attrib
 {
     int i;
 
+    if (product == NULL)
+    {
+        print("NULL\n");
+        return;
+    }
     print("dimensions:\n");
     for (i = 0; i < HARP_NUM_DIM_TYPES; i++)
     {

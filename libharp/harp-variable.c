@@ -1926,6 +1926,11 @@ LIBHARP_API void harp_variable_print(harp_variable *variable, int show_attribute
     int i;
 
     print("    ");
+    if (variable == NULL)
+    {
+        print("NULL\n");
+        return;
+    }
     switch (variable->data_type)
     {
         case harp_type_int8:
