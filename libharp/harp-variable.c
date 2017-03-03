@@ -896,7 +896,6 @@ int harp_variable_remove_dimension(harp_variable *variable, int dim_index, long 
         return -1;
     }
 
-    variable->num_elements /= variable->dimension[dim_index];
     for (i = dim_index; i < variable->num_dimensions - 1; i++)
     {
         variable->dimension[i] = variable->dimension[i + 1];
