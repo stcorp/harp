@@ -287,58 +287,39 @@ int harp_collocation_mask_import(const char *filename, harp_collocation_filter_t
     return 0;
 }
 
-int harp_filter_index(const harp_variable *index, harp_collocation_mask *collocation_mask,
-                      harp_dimension_mask *dimension_mask)
+/* find value in sorted array of values (returns 1 if found, 0 if not found) */
+static int find_collocation_pair_for_collocation_index(harp_collocation_mask *collocation_mask,
+                                                       long collocation_index, long *index)
 {
-    long i;
-    long j;
-    long count;
+    long lower_index;
+    long upper_index;
 
-    assert(index->num_dimensions == 1);
-    assert(dimension_mask->num_dimensions == 1 && dimension_mask->num_elements == index->num_elements);
+    lower_index = 0;
+    upper_index = collocation_mask->num_index_pairs - 1;
 
-    harp_collocation_mask_sort_by_index(collocation_mask);
-
-    i = 0;
-    j = 0;
-    count = 0;
-    while (i < collocation_mask->num_index_pairs && j < index->num_elements)
+    while (upper_index >= lower_index)
     {
-        if (collocation_mask->index_pair[i]->index < index->data.int32_data[j])
+        /* Determine the index that splits the search space into two (approximately) equal halves. */
+        long pivot_index = lower_index + ((upper_index - lower_index) / 2);
+
+        /* If the pivot equals the key, terminate early. */
+        if (collocation_mask->index_pair[pivot_index]->collocation_index == collocation_index)
         {
-            /* Measurement not present in product, ignore. */
-            i++;
+            *index = pivot_index;
+            return 1;
         }
-        else if (collocation_mask->index_pair[i]->index > index->data.int32_data[j])
+
+        /* If the pivot is smaller than the key, search the upper sub array, otherwise search the lower sub array. */
+        if (collocation_mask->index_pair[pivot_index]->collocation_index < collocation_index)
         {
-            /* Measurement not selected, or duplicate index in product. */
-            dimension_mask->mask[j] = 0;
-            j++;
+            lower_index = pivot_index + 1;
         }
         else
         {
-            if (dimension_mask->mask[j])
-            {
-                count++;
-            }
-
-            while (i < collocation_mask->num_index_pairs
-                   && collocation_mask->index_pair[i]->index == index->data.int32_data[j])
-            {
-                i++;
-            }
-
-            j++;
+            upper_index = pivot_index - 1;
         }
     }
 
-    while (j < index->num_elements)
-    {
-        dimension_mask->mask[j] = 0;
-        j++;
-    }
-
-    dimension_mask->masked_dimension_length = count;
     return 0;
 }
 
@@ -346,52 +327,27 @@ int harp_filter_collocation_index(const harp_variable *collocation_index, harp_c
                                   harp_dimension_mask *dimension_mask)
 {
     long i;
-    long j;
-    long count;
 
     assert(collocation_index->num_dimensions == 1);
     assert(dimension_mask->num_dimensions == 1 && dimension_mask->num_elements == collocation_index->num_elements);
 
     harp_collocation_mask_sort_by_collocation_index(collocation_mask);
 
-    i = 0;
-    j = 0;
-    count = 0;
-    while (i < collocation_mask->num_index_pairs && j < collocation_index->num_elements)
+    for (i = 0; i < collocation_index->num_elements; i++)
     {
-        if (collocation_mask->index_pair[i]->collocation_index < collocation_index->data.int32_data[j])
+        if (dimension_mask->mask[i])
         {
-            /* Measurement not present in product, ignore. */
-            i++;
-        }
-        else if (collocation_mask->index_pair[i]->collocation_index > collocation_index->data.int32_data[j])
-        {
-            /* Measurement not selected, or duplicate index in product. */
-            dimension_mask->mask[j] = 0;
-            j++;
-        }
-        else
-        {
-            if (dimension_mask->mask[j])
+            long index;
+
+            if (!find_collocation_pair_for_collocation_index(collocation_mask, collocation_index->data.int32_data[i],
+                                                             &index))
             {
-                count++;
+                dimension_mask->mask[i] = 0;
+                dimension_mask->masked_dimension_length--;
             }
-
-            j++;
         }
     }
 
-    while (j < collocation_index->num_elements)
-    {
-        if (dimension_mask->mask[j])
-        {
-            count++;
-        }
-
-        j++;
-    }
-
-    dimension_mask->masked_dimension_length = count;
     return 0;
 }
 
