@@ -65,36 +65,46 @@ static void write_scalar(harp_scalar data, harp_data_type data_type, int (*print
     }
 }
 
-static void write_array(harp_array data, harp_data_type data_type, long num_elements, int (*print) (const char *, ...))
+static void write_array(harp_array data, harp_data_type data_type, long num_elements, long num_blocks,
+                        int (*print) (const char *, ...))
 {
-    long i;
+    long i, j, index;
 
-    for (i = 0; i < num_elements; i++)
+    index = 0;
+    for (i = 0; i == 0 || i < num_blocks; i++)
     {
-        switch (data_type)
+        if (num_blocks != 0)
         {
-            case harp_type_int8:
-                print("%d", (int)data.int8_data[i]);
-                break;
-            case harp_type_int16:
-                print("%d", (int)data.int16_data[i]);
-                break;
-            case harp_type_int32:
-                print("%ld", (long)data.int32_data[i]);
-                break;
-            case harp_type_float:
-                print("%.16g", (double)data.float_data[i]);
-                break;
-            case harp_type_double:
-                print("%.16g", (double)data.double_data[i]);
-                break;
-            case harp_type_string:
-                print("\"%s\"", data.string_data[i]);
-                break;
+            print("\n  ");
         }
-        if (i < num_elements - 1)
+        for (j = 0; j < num_elements / num_blocks; j++)
         {
-            print(", ");
+            switch (data_type)
+            {
+                case harp_type_int8:
+                    print("%d", (int)data.int8_data[index]);
+                    break;
+                case harp_type_int16:
+                    print("%d", (int)data.int16_data[index]);
+                    break;
+                case harp_type_int32:
+                    print("%ld", (long)data.int32_data[index]);
+                    break;
+                case harp_type_float:
+                    print("%.16g", (double)data.float_data[index]);
+                    break;
+                case harp_type_double:
+                    print("%.16g", (double)data.double_data[index]);
+                    break;
+                case harp_type_string:
+                    print("\"%s\"", data.string_data[index]);
+                    break;
+            }
+            if (index < num_elements - 1)
+            {
+                print(", ");
+            }
+            index++;
         }
     }
 }
@@ -2011,7 +2021,15 @@ LIBHARP_API void harp_variable_print_data(harp_variable *variable, int (*print) 
 {
     print("%s", variable->name);
     print(" = ");
-    write_array(variable->data, variable->data_type, variable->num_elements, print);
+    if (variable->num_dimensions <= 1)
+    {
+        write_array(variable->data, variable->data_type, variable->num_elements, 0, print);
+    }
+    else
+    {
+        write_array(variable->data, variable->data_type, variable->num_elements,
+                    variable->num_elements / variable->dimension[variable->num_dimensions - 1], print);
+    }
     print("\n\n");
 }
 
