@@ -32,11 +32,14 @@
 #include "harp-internal.h"
 #include "harp-constants.h"
 #include "harp-csv.h"
+#include "harp-filter-collocation.h"
 
 #include <assert.h>
 #include <math.h>
 #include <stdlib.h>
 #include <string.h>
+
+#define MAX_NAME_LENGTH 128
 
 typedef enum profile_resample_type_enum
 {
@@ -643,104 +646,6 @@ static int vertical_profile_smooth(harp_variable *var, harp_product *collocated_
     return -1;
 }
 
-static int get_smoothed_total_column(harp_variable *column_variable, harp_variable *partcol_variable,
-                                     harp_product *collocated_product, long time_index_a, long time_index_b,
-                                     long num_vertical_elements)
-{
-    harp_dimension_type dim_type[2] = { harp_dimension_time, harp_dimension_vertical };
-    long max_vertical_elements;
-    long num_blocks;
-    long i, k;
-    int has_apriori = 0;
-
-    /* owned memory */
-    harp_variable *apriori = NULL;
-    harp_variable *avk = NULL;
-    char *apriori_name = NULL;
-    char *avk_name = NULL;
-
-    max_vertical_elements = partcol_variable->dimension[partcol_variable->num_dimensions - 1];
-
-    /* get the avk and a priori variables */
-    avk_name = malloc(strlen(column_variable->name) + 4 + 1);
-    apriori_name = malloc(strlen(column_variable->name) + 8 + 1);
-    if (!avk_name || !apriori_name)
-    {
-        harp_set_error(HARP_ERROR_OUT_OF_MEMORY, "out of memory (could not duplicate string) (%s:%u)",
-                       __FILE__, __LINE__);
-        goto error;
-    }
-
-    strcpy(apriori_name, column_variable->name);
-    strcat(apriori_name, "_apriori");
-    strcpy(avk_name, column_variable->name);
-    strcat(avk_name, "_avk");
-
-    if (harp_product_get_derived_variable(collocated_product, apriori_name, column_variable->unit, 2, dim_type,
-                                          &apriori) == 0)
-    {
-        has_apriori = 1;
-    }
-
-    if (harp_product_get_derived_variable(collocated_product, avk_name, "", 2, dim_type, &avk))
-    {
-        goto error;
-    }
-
-    /* calculate the number of blocks in this datetime slice of the variable */
-    num_blocks = column_variable->num_elements / column_variable->dimension[0];
-
-    for (k = 0; k < num_blocks; k++)
-    {
-        long blockoffset_col = time_index_a * num_blocks + k;
-        long blockoffset_prof = blockoffset_col * max_vertical_elements;
-        long is_valid = 0;
-
-        /* multiply partial column profile with column averaging kernel */
-        column_variable->data.double_data[blockoffset_col] = 0;
-        for (i = 0; i < num_vertical_elements; i++)
-        {
-            if (!harp_isnan(partcol_variable->data.double_data[blockoffset_prof + i]))
-            {
-                column_variable->data.double_data[blockoffset_col] +=
-                    partcol_variable->data.double_data[blockoffset_prof + i] *
-                    avk->data.double_data[time_index_b * max_vertical_elements + i];
-                is_valid = 1;
-            }
-
-            /* add the apriori */
-            if (has_apriori)
-            {
-                column_variable->data.double_data[blockoffset_col] +=
-                    (1 - avk->data.double_data[time_index_b * max_vertical_elements + i]) *
-                    apriori->data.double_data[time_index_b * max_vertical_elements + i];
-                is_valid = 1;
-            }
-        }
-        if (!is_valid)
-        {
-            column_variable->data.double_data[blockoffset_col] = harp_nan();
-        }
-    }
-
-    /* cleanup */
-    harp_variable_delete(apriori);
-    harp_variable_delete(avk);
-    free(apriori_name);
-    free(avk_name);
-
-    return 0;
-
-  error:
-
-    harp_variable_delete(apriori);
-    harp_variable_delete(avk);
-    free(apriori_name);
-    free(avk_name);
-
-    return -1;
-}
-
 static int product_filter_resamplable_variables(harp_product *product)
 {
     int i;
@@ -976,8 +881,7 @@ LIBHARP_API int harp_product_smooth_vertical(harp_product *product, int num_smoo
             }
 
             /* import new product */
-            harp_import(product_metadata->filename, &collocated_product);
-            if (!collocated_product)
+            if (harp_import(product_metadata->filename, &collocated_product) != 0)
             {
                 harp_set_error(HARP_ERROR_IMPORT, "could not import file %s", product_metadata->filename);
                 goto error;
@@ -1208,6 +1112,252 @@ LIBHARP_API int harp_product_regrid_vertical_with_collocated_dataset(harp_produc
     return harp_product_smooth_vertical(product, 0, NULL, vertical_axis, vertical_unit, collocation_result);
 }
 
+/** Derive vertical column smoothed with column averaging kernel and optional a-priori
+ * First a partial column profile will be derived from the product.
+ * This partial column profile will be regridded to the column averaging kernel grid.
+ * The regridded column profile will then be combined with the column averaging kernel and optional apriori profile
+ * to create an integrated smoothed vertical column.
+ * \param product Product from which to derive a smoothed integrated vertical column.
+ * \param name Name of the variable that should be created.
+ * \param unit Unit (optional) of the variable that should be created.
+ * \param num_dimensions Number of dimensions of the variable that should be created.
+ * \param dimension_type Type of dimension for each of the dimensions of the variable that should be created.
+ * \param column_avk_grid Vertical grid of the column avk.
+ * \param column_avk_bounds Vertical grid boundaries variable of the column avk (optional).
+ * \param column_avk Column averaging kernel variable.
+ * \param apriori Apriori profile (optional).
+ * \param variable Pointer to the C variable where the derived HARP variable will be stored.
+ *
+ * \return
+ *   \arg \c 0, Success.
+ *   \arg \c -1, Error occurred (check #harp_errno).
+ */
+LIBHARP_API int harp_product_get_smoothed_column
+    (harp_product *product, const char *name, const char *unit, harp_variable *vertical_grid,
+     harp_variable *vertical_bounds, harp_variable *column_avk, harp_variable *apriori, harp_variable **variable)
+{
+    harp_dimension_type grid_dim_type[2];
+    harp_product *regrid_product;
+    harp_variable *column_variable;
+    harp_variable *partcol_variable;
+    harp_variable *source_grid;
+    harp_variable *source_bounds;
+    long num_vertical_elements;
+    long i, j;
+
+    if (product->dimension[harp_dimension_vertical] == 0)
+    {
+        harp_set_error(HARP_ERROR_INVALID_ARGUMENT, "product has no vertical dimension");
+        return -1;
+    }
+    if (vertical_grid->num_dimensions < 1 ||
+        vertical_grid->dimension_type[vertical_grid->num_dimensions - 1] != harp_dimension_vertical)
+    {
+        harp_set_error(HARP_ERROR_INVALID_ARGUMENT, "vertical grid has invalid dimensions");
+        return -1;
+    }
+    /* vertical_bounds are checked by harp_product_regrid_with_axis_variable() */
+    if (column_avk->num_dimensions < 1 ||
+        column_avk->dimension_type[column_avk->num_dimensions - 1] != harp_dimension_vertical)
+    {
+        harp_set_error(HARP_ERROR_INVALID_ARGUMENT, "column avk has invalid dimensions");
+        return -1;
+    }
+    num_vertical_elements = vertical_grid->dimension[vertical_grid->num_dimensions - 1];
+    if (column_avk->dimension[column_avk->num_dimensions - 1] != num_vertical_elements)
+    {
+        harp_set_error(HARP_ERROR_INVALID_ARGUMENT, "column avk and vertical grid have inconsistent dimensions");
+        return -1;
+    }
+    if (apriori != NULL)
+    {
+        if (apriori->num_dimensions != column_avk->num_dimensions)
+        {
+            harp_set_error(HARP_ERROR_INVALID_ARGUMENT, "apriori profile and column avk have inconsistent dimensions");
+            return -1;
+        }
+        for (i = 0; i < apriori->num_dimensions; i++)
+        {
+            if (apriori->dimension_type[i] != column_avk->dimension_type[i] ||
+                apriori->dimension[i] != column_avk->dimension[i])
+            {
+                harp_set_error(HARP_ERROR_INVALID_ARGUMENT,
+                               "apriori profile and column avk have inconsistent dimensions");
+                return -1;
+            }
+        }
+    }
+
+    if (harp_product_new(&regrid_product) != 0)
+    {
+        return -1;
+    }
+
+    /* retrieve partial column profile from source product */
+    if (harp_product_get_derived_variable(product, name, unit, column_avk->num_dimensions, column_avk->dimension_type,
+                                          &partcol_variable) != 0)
+    {
+        harp_product_delete(regrid_product);
+        return -1;
+    }
+    if (harp_product_add_variable(regrid_product, partcol_variable) != 0)
+    {
+        harp_variable_delete(partcol_variable);
+        harp_product_delete(regrid_product);
+        return -1;
+    }
+
+    grid_dim_type[0] = harp_dimension_time;
+    grid_dim_type[1] = harp_dimension_vertical;
+
+    /* Add axis variables for the source grid to the temporary product */
+    if (harp_product_get_derived_variable(product, vertical_grid->name, vertical_grid->unit, 1, &grid_dim_type[1],
+                                          &source_grid) != 0)
+    {
+        /* Failed to derive time independent. Try time dependent. */
+        if (harp_product_get_derived_variable(product, vertical_grid->name, vertical_grid->unit, 2, grid_dim_type,
+                                              &source_grid) != 0)
+        {
+            harp_product_delete(regrid_product);
+            return -1;
+        }
+    }
+    if (harp_product_add_variable(regrid_product, source_grid) != 0)
+    {
+        harp_variable_delete(source_grid);
+        harp_product_delete(regrid_product);
+        return -1;
+    }
+    if (harp_product_get_derived_bounds_for_grid(product, source_grid, &source_bounds) != 0)
+    {
+        harp_product_delete(regrid_product);
+        return -1;
+    }
+    if (harp_product_add_variable(regrid_product, source_bounds) != 0)
+    {
+        harp_variable_delete(source_bounds);
+        harp_product_delete(regrid_product);
+        return -1;
+    }
+
+    if (harp_product_regrid_with_axis_variable(regrid_product, vertical_grid, vertical_bounds) != 0)
+    {
+        harp_product_delete(regrid_product);
+        return -1;
+    }
+
+    if (harp_variable_new(name, harp_type_double, column_avk->num_dimensions - 1, column_avk->dimension_type,
+                          column_avk->dimension, &column_variable) != 0)
+    {
+        harp_product_delete(regrid_product);
+        return -1;
+    }
+    if( harp_variable_set_unit(column_variable, unit) != 0)
+    {
+        harp_variable_delete(column_variable);
+        harp_product_delete(regrid_product);
+        return -1;
+    }
+
+    for (i = 0; i < column_variable->num_elements; i++)
+    {
+        int is_valid = 0;
+
+        /* multiply partial column profile with column averaging kernel */
+        column_variable->data.double_data[i] = 0;
+        for (j = 0; j < num_vertical_elements; j++)
+        {
+            if (!harp_isnan(partcol_variable->data.double_data[i * num_vertical_elements + j]))
+            {
+                column_variable->data.double_data[i] +=
+                    partcol_variable->data.double_data[i * num_vertical_elements + j] *
+                    column_avk->data.double_data[i * num_vertical_elements + j];
+                is_valid = 1;
+            }
+
+            /* add the apriori */
+            if (apriori != NULL && !harp_isnan(apriori->data.double_data[i * num_vertical_elements + j]))
+            {
+                column_variable->data.double_data[i] +=
+                    (1 - column_avk->data.double_data[i * num_vertical_elements + j]) *
+                    apriori->data.double_data[i * num_vertical_elements + j];
+                is_valid = 1;
+            }
+        }
+        if (!is_valid)
+        {
+            column_variable->data.double_data[i] = harp_nan();
+        }
+    }
+
+    harp_product_delete(regrid_product);
+
+    *variable = column_variable;
+
+    return 0;
+}
+
+static int get_collocated_product(harp_collocation_result *collocation_result, const char *source_product_b,
+                                  harp_product **product)
+{
+    harp_collocation_result *filtered_result;
+    harp_collocation_mask *mask;
+    harp_product_metadata *product_metadata;
+    harp_product *collocated_product;
+    harp_collocation_pair *pair;
+
+    if (harp_collocation_result_shallow_copy(collocation_result, &filtered_result) != 0)
+    {
+        return -1;
+    }
+    if (harp_collocation_result_filter_for_source_product_b(filtered_result, source_product_b) != 0)
+    {
+        harp_collocation_result_shallow_delete(filtered_result);
+        return -1;
+    }
+    if (filtered_result->num_pairs == 0)
+    {
+        *product = NULL;
+        return 0;
+    }
+    /* use product b reference from first pair to find and import product */
+    pair = filtered_result->pair[0];
+    product_metadata = filtered_result->dataset_b->metadata[pair->product_index_b];
+    if (product_metadata == NULL)
+    {
+        harp_set_error(HARP_ERROR_INVALID_ARGUMENT, "missing product metadata for product %s",
+                       filtered_result->dataset_b->source_product[pair->product_index_b]);
+        harp_collocation_result_shallow_delete(filtered_result);
+        return -1;
+    }
+
+    if (harp_collocation_mask_from_result(filtered_result, harp_collocation_right, source_product_b, &mask) != 0)
+    {
+        harp_collocation_result_shallow_delete(filtered_result);
+        return -1;
+    }
+
+    harp_collocation_result_shallow_delete(filtered_result);
+
+    if (harp_import(product_metadata->filename, &collocated_product) != 0)
+    {
+        harp_set_error(HARP_ERROR_IMPORT, "could not import file %s", product_metadata->filename);
+        harp_collocation_mask_delete(mask);
+        return -1;
+    }
+
+    if (harp_product_apply_collocation_mask(mask, collocated_product) != 0)
+    {
+        harp_collocation_mask_delete(mask);
+        return -1;
+    }
+
+    harp_collocation_mask_delete(mask);
+    *product = collocated_product;
+
+    return 0;
+}
+
 /** Derive a vertical column smoothed with column averaging kernel and a-priori from collocated products in dataset b
  *
  * \param product Product to regrid.
@@ -1230,27 +1380,17 @@ LIBHARP_API int harp_product_get_smoothed_column_using_collocated_dataset
      const harp_dimension_type *dimension_type, const char *vertical_axis, const char *vertical_unit,
      harp_collocation_result *collocation_result, harp_variable **variable)
 {
-    harp_dimension_type partcol_dimension_type[HARP_NUM_DIM_TYPES];
-    long source_vertical_dim;
-    long source_grid_vertical_dim;
-    long max_target_vertical_dim;
-    harp_variable *source_collocation_index = NULL;
-
-    harp_dimension_type bounds_dim_type[3] = { harp_dimension_time, harp_dimension_vertical,
-        harp_dimension_independent
-    };
-    long i;
-    int pair_id;
-
-    /* owned memory */
-    harp_variable *column_variable = NULL;
-    harp_variable *partcol_variable = NULL;
-    harp_variable *source_bounds = NULL;
-    harp_product *collocated_product = NULL;
-    harp_variable *target_bounds = NULL;
     harp_collocation_result *filtered_collocation_result = NULL;
-    char *bounds_name = NULL;
-    double *interpolation_buffer = NULL;
+    harp_product *merged_product = NULL;
+    char vertical_bounds_name[MAX_NAME_LENGTH];
+    char column_avk_name[MAX_NAME_LENGTH];
+    char apriori_name[MAX_NAME_LENGTH];
+    harp_variable *collocation_index = NULL;
+    harp_variable *vertical_grid = NULL;
+    harp_variable *vertical_bounds = NULL;
+    harp_variable *column_avk = NULL;
+    harp_variable *apriori = NULL;
+    long i;
 
     if (num_dimensions == 0 || dimension_type[0] != harp_dimension_time)
     {
@@ -1269,249 +1409,166 @@ LIBHARP_API int harp_product_get_smoothed_column_using_collocated_dataset
         harp_set_error(HARP_ERROR_INVALID_ARGUMENT, "product has no vertical dimension");
         return -1;
     }
-    source_grid_vertical_dim = product->dimension[harp_dimension_vertical];
-    source_vertical_dim = source_grid_vertical_dim;
 
-    /* derive the name of the bounds variable for the vertical axis */
-    bounds_name = malloc(strlen(vertical_axis) + 7 + 1);
-    if (bounds_name == NULL)
+    /* Get the source product's collocation index variable */
+    if (harp_product_get_variable_by_name(product, "collocation_index", &collocation_index) != 0)
     {
-        harp_set_error(HARP_ERROR_OUT_OF_MEMORY, "out of memory (could not duplicate string)"
-                       " (%s:%u)", __FILE__, __LINE__);
-        goto error;
-    }
-    strcpy(bounds_name, vertical_axis);
-    strcat(bounds_name, "_bounds");
-
-    /* determine partial column profile dimensions */
-    for (i = 0; i < num_dimensions; i++)
-    {
-        partcol_dimension_type[i] = dimension_type[i];
-    }
-    partcol_dimension_type[num_dimensions] = harp_dimension_vertical;
-    num_dimensions++;
-
-    /* retrieve partial column profile from source product */
-    if (harp_product_get_derived_variable(product, name, unit, num_dimensions, partcol_dimension_type,
-                                          &partcol_variable) != 0)
-    {
-        goto error;
-    }
-
-    if (harp_variable_new(name, harp_type_double, num_dimensions - 1, dimension_type, partcol_variable->dimension,
-                          &column_variable) != 0)
-    {
-        goto error;
+        return -1;
     }
 
     /* copy the collocation result for filtering */
     if (harp_collocation_result_shallow_copy(collocation_result, &filtered_collocation_result) != 0)
     {
-        goto error;
-    }
-
-    /* Get the source product's collocation index variable */
-    if (harp_product_get_variable_by_name(product, "collocation_index", &source_collocation_index) != 0)
-    {
-        goto error;
+        return -1;
     }
 
     /* Reduce the collocation result to only pairs that include the source product */
     if (harp_collocation_result_filter_for_collocation_indices(filtered_collocation_result,
-                                                               source_collocation_index->num_elements,
-                                                               source_collocation_index->data.int32_data) != 0)
+                                                               collocation_index->num_elements,
+                                                               collocation_index->data.int32_data) != 0)
     {
-        goto error;
+        harp_product_delete(merged_product);
+        harp_collocation_result_shallow_delete(filtered_collocation_result);
+        return -1;
+    }
+    if (filtered_collocation_result->num_pairs != collocation_index->num_elements)
+    {
+        harp_set_error(HARP_ERROR_INVALID_ARGUMENT, "product and collocation result are inconsistent");
+        harp_product_delete(merged_product);
+        harp_collocation_result_shallow_delete(filtered_collocation_result);
+        return -1;
     }
 
-    /* We sort by dataset b so we only have to read each file from dataset b once */
-    if (harp_collocation_result_sort_by_b(filtered_collocation_result) != 0)
-    {
-        goto error;
-    }
+    snprintf(vertical_bounds_name, MAX_NAME_LENGTH, "%s_bounds", vertical_axis);
+    snprintf(column_avk_name, MAX_NAME_LENGTH, "%s_avk", name);
+    snprintf(apriori_name, MAX_NAME_LENGTH, "%s_apriori", name);
 
-    /* Determine the maximum vertical dimensions size of database b */
-    if (get_maximum_vertical_dimension(filtered_collocation_result, &max_target_vertical_dim) != 0)
+    for (i = 0; i < filtered_collocation_result->dataset_b->num_products; i++)
     {
-        goto error;
-    }
+        harp_dimension_type local_dimension_type[HARP_NUM_DIM_TYPES];
+        harp_product *collocated_product;
+        long j;
 
-    /* Derive the source grid */
-    if (harp_product_get_derived_variable(product, bounds_name, vertical_unit, 3, bounds_dim_type, &source_bounds) != 0)
-    {
-        goto error;
-    }
-
-    /* Use loglin interpolation if pressure grid */
-    if (strcmp(vertical_axis, "pressure") == 0)
-    {
-        for (i = 0; i < source_bounds->num_elements; i++)
+        if (get_collocated_product(filtered_collocation_result,
+                                   filtered_collocation_result->dataset_b->source_product[i], &collocated_product) != 0)
         {
-            source_bounds->data.double_data[i] = log(source_bounds->data.double_data[i]);
-        }
-    }
-
-    /* Resize the partial column profile to make room for the resampled data */
-    if (max_target_vertical_dim > source_vertical_dim)
-    {
-        if (harp_variable_resize_dimension(partcol_variable, num_dimensions - 1, max_target_vertical_dim) != 0)
-        {
-            goto error;
-        }
-        source_vertical_dim = max_target_vertical_dim;
-    }
-
-    /* allocate the buffer for the interpolation */
-    interpolation_buffer = (double *)malloc(max_target_vertical_dim * (size_t)sizeof(double));
-    if (interpolation_buffer == NULL)
-    {
-        harp_set_error(HARP_ERROR_OUT_OF_MEMORY, "out of memory (could not allocate %lu bytes) (%s:%u)",
-                       max_target_vertical_dim * (size_t)sizeof(double), __FILE__, __LINE__);
-        goto error;
-    }
-
-    for (pair_id = 0; pair_id < filtered_collocation_result->num_pairs; pair_id++)
-    {
-        harp_collocation_pair *pair = NULL;
-        harp_product_metadata *product_metadata;
-        long num_target_vertical_elements;
-        long num_source_vertical_elements;
-        long target_vertical_dim;
-        long time_index_a;
-        long time_index_b;
-        long num_blocks;
-        int i, j;
-
-        pair = filtered_collocation_result->pair[pair_id];
-        if (get_time_index_by_collocation_index(product, pair->collocation_index, &time_index_a) != 0)
-        {
-            goto error;
+            harp_product_delete(merged_product);
+            harp_collocation_result_shallow_delete(filtered_collocation_result);
+            return -1;
         }
 
-        if (strcmp(filtered_collocation_result->dataset_a->source_product[pair->product_index_a],
-                   product->source_product) != 0)
+        if (collocated_product == NULL || harp_product_is_empty(collocated_product))
         {
-            harp_set_error(HARP_ERROR_INVALID_ARGUMENT, "product reference mismatch for collocation index %d in "
-                           "collocation result file", pair->collocation_index);
-            goto error;
+            continue;
         }
 
-        /* Get metadata of the collocated product */
-        product_metadata = filtered_collocation_result->dataset_b->metadata[pair->product_index_b];
-        if (product_metadata == NULL)
-        {
-            harp_set_error(HARP_ERROR_INVALID_ARGUMENT, "missing product metadata for product %s",
-                           filtered_collocation_result->dataset_b->source_product[pair->product_index_b]);
-            goto error;
-        }
+        local_dimension_type[0] = harp_dimension_time;
+        local_dimension_type[1] = harp_dimension_vertical;
+        local_dimension_type[2] = harp_dimension_independent;
 
-        /* load the collocated product if necessary */
-        if (collocated_product == NULL || strcmp(collocated_product->source_product, product_metadata->source_product)
+        /* vertical grid */
+        if (harp_product_add_derived_variable(collocated_product, vertical_axis, vertical_unit, 2, local_dimension_type)
             != 0)
         {
-            /* cleanup previous collocated product */
-            if (collocated_product != NULL)
-            {
-                harp_product_delete(collocated_product);
-                collocated_product = NULL;
-            }
+            harp_product_delete(collocated_product);
+            harp_product_delete(merged_product);
+            harp_collocation_result_shallow_delete(filtered_collocation_result);
+            return -1;
+        }
 
-            /* import new product */
-            harp_import(product_metadata->filename, &collocated_product);
-            if (!collocated_product)
-            {
-                harp_set_error(HARP_ERROR_IMPORT, "could not import file %s", product_metadata->filename);
-                goto error;
-            }
+        /* vertical grid bounds */
+        if (harp_product_add_derived_variable(collocated_product, vertical_bounds_name, vertical_unit, 3,
+                                              local_dimension_type) != 0)
+        {
+            harp_product_delete(collocated_product);
+            harp_product_delete(merged_product);
+            harp_collocation_result_shallow_delete(filtered_collocation_result);
+            return -1;
+        }
 
-            /* Derive the target grid */
-            harp_variable_delete(target_bounds);
-            if (harp_product_get_derived_variable(collocated_product, bounds_name, vertical_unit, 3, bounds_dim_type,
-                                                  &target_bounds) != 0)
+        for (j = 0; j < num_dimensions; j++)
+        {
+            local_dimension_type[j] = dimension_type[j];
+        }
+        local_dimension_type[num_dimensions] = harp_dimension_vertical;
+
+        /* column avk */
+        if (harp_product_add_derived_variable(collocated_product, column_avk_name, "", num_dimensions + 1,
+                                              local_dimension_type) != 0)
+        {
+            harp_product_delete(collocated_product);
+            harp_product_delete(merged_product);
+            harp_collocation_result_shallow_delete(filtered_collocation_result);
+            return -1;
+        }
+
+        /* apriori profile */
+        harp_product_add_derived_variable(collocated_product, apriori_name, unit, num_dimensions + 1,
+                                          local_dimension_type);
+        /* it is Ok if the apriori cannot be derived (we ignore the return value of the function) */
+
+        /* strip collocated product to just the variables that we need */
+        for (j = collocated_product->num_variables - 1; j >= 0; j--)
+        {
+            const char *name = collocated_product->variable[j]->name;
+
+            if (strcmp(name, "collocation_index") != 0 && strcmp(name, vertical_axis) != 0 &&
+                strcmp(name, vertical_bounds_name) != 0 && strcmp(name, column_avk_name) != 0 &&
+                strcmp(name, apriori_name) != 0)
             {
-                goto error;
-            }
-            /* Use loglin interpolation if pressure grid */
-            if (strcmp(vertical_axis, "pressure") == 0)
-            {
-                for (i = 0; i < target_bounds->num_elements; i++)
+                if (harp_product_remove_variable(collocated_product, collocated_product->variable[j]) != 0)
                 {
-                    target_bounds->data.double_data[i] = log(target_bounds->data.double_data[i]);
+                    harp_product_delete(collocated_product);
+                    harp_product_delete(merged_product);
+                    harp_collocation_result_shallow_delete(filtered_collocation_result);
+                    return -1;
                 }
             }
         }
 
-        if (get_time_index_by_collocation_index(collocated_product, pair->collocation_index, &time_index_b) != 0)
+        if (merged_product == NULL)
         {
-            goto error;
+            merged_product = collocated_product;
         }
-
-        /* find the source grid lengths */
-        num_source_vertical_elements =
-            get_unpadded_vector_length(&source_bounds->data.double_data[time_index_a * source_grid_vertical_dim * 2],
-                                       source_grid_vertical_dim * 2) / 2;
-
-
-        /* find the target grid length */
-        target_vertical_dim = target_bounds->dimension[1];
-        num_target_vertical_elements =
-            get_unpadded_vector_length(&target_bounds->data.double_data[time_index_b * target_vertical_dim * 2],
-                                       target_vertical_dim * 2) / 2;
-
-        /* Resample partial column */
-        num_blocks = partcol_variable->num_elements / partcol_variable->dimension[0] / source_vertical_dim;
-        for (i = 0; i < num_blocks; i++)
+        else
         {
-            long blockoffset = (time_index_a * num_blocks + i) * source_vertical_dim;
-
-            harp_interval_interpolate_array_linear
-                (num_source_vertical_elements,
-                 &source_bounds->data.double_data[time_index_a * source_grid_vertical_dim * 2],
-                 &partcol_variable->data.double_data[blockoffset], num_target_vertical_elements,
-                 &target_bounds->data.double_data[time_index_b * target_vertical_dim * 2], interpolation_buffer);
-
-            /* copy the buffer to the target var */
-            for (j = 0; j < num_target_vertical_elements; j++)
+            if (harp_product_append(merged_product, collocated_product) != 0)
             {
-                partcol_variable->data.double_data[blockoffset + j] = interpolation_buffer[j];
+                harp_product_delete(collocated_product);
+                harp_product_delete(merged_product);
+                harp_collocation_result_shallow_delete(filtered_collocation_result);
+                return -1;
             }
-            for (j = num_target_vertical_elements; j < source_vertical_dim; j++)
-            {
-                partcol_variable->data.double_data[blockoffset + j] = harp_nan();
-            }
-        }
-
-        if (get_smoothed_total_column(column_variable, partcol_variable, collocated_product, time_index_a,
-                                      time_index_b, num_target_vertical_elements) != 0)
-        {
-            goto error;
+            harp_product_delete(collocated_product);
         }
     }
 
-    *variable = column_variable;
+    /* sort the merged product so the samples are in the same order as in 'product' */
+    if (harp_product_sort_by_index(merged_product, "collocation_index", collocation_index->num_elements,
+                                   collocation_index->data.int32_data) != 0)
+    {
+        harp_product_delete(merged_product);
+        harp_collocation_result_shallow_delete(filtered_collocation_result);
+        return -1;
+    }
+
+    harp_product_get_variable_by_name(merged_product, vertical_axis, &vertical_grid);
+    harp_product_get_variable_by_name(merged_product, vertical_bounds_name, &vertical_bounds);
+    harp_product_get_variable_by_name(merged_product, column_avk_name, &column_avk);
+    harp_product_get_variable_by_name(merged_product, apriori_name, &apriori);
+    if (harp_product_get_smoothed_column(product, name, unit, vertical_grid, vertical_bounds, column_avk, apriori,
+                                         variable) != 0)
+    {
+        harp_product_delete(merged_product);
+        harp_collocation_result_shallow_delete(filtered_collocation_result);
+        return -1;
+    }
 
     /* cleanup */
-    harp_variable_delete(partcol_variable);
-    harp_variable_delete(source_bounds);
-    harp_variable_delete(target_bounds);
-    harp_product_delete(collocated_product);
+    harp_product_delete(merged_product);
     harp_collocation_result_shallow_delete(filtered_collocation_result);
-    free(bounds_name);
-    free(interpolation_buffer);
 
     return 0;
-
-  error:
-    harp_variable_delete(column_variable);
-    harp_variable_delete(partcol_variable);
-    harp_variable_delete(source_bounds);
-    harp_variable_delete(target_bounds);
-    harp_product_delete(collocated_product);
-    harp_collocation_result_shallow_delete(filtered_collocation_result);
-    free(bounds_name);
-    free(interpolation_buffer);
-
-    return -1;
 }
 
 /**

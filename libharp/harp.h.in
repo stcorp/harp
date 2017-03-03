@@ -524,6 +524,10 @@ LIBHARP_API int harp_product_smooth_vertical(harp_product *product, int num_smoo
                                              const char *vertical_unit,
                                              const harp_collocation_result *collocation_result);
 LIBHARP_API int harp_product_flatten_dimension(harp_product *product, harp_dimension_type dimension_name);
+LIBHARP_API int harp_product_get_smoothed_column(harp_product *product, const char *name, const char *unit,
+                                                 harp_variable *vertical_grid, harp_variable *vertical_bounds,
+                                                 harp_variable *column_avk, harp_variable *apriori,
+                                                 harp_variable **variable);
 LIBHARP_API int harp_product_get_smoothed_column_using_collocated_dataset(harp_product *product, const char *name,
                                                                           const char *unit, int num_dimensions,
                                                                           const harp_dimension_type *dimension_type,

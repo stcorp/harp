@@ -19,6 +19,7 @@
   dimensions too (except the time dimension).
 
 * Added harp_collocation_result_filter_for_collocation_indices(),
+  harp_product_get_smoothed_column(),
   harp_product_get_smoothed_column_using_collocated_dataset(),
   harp_product_remove_variable_by_name(), harp_variable_append(), and
   harp_product_append() functions.
