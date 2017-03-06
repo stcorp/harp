@@ -871,14 +871,16 @@ static int read_scan_subset_counter(void *user_data, harp_array data)
 static int read_scan_direction(void *user_data, long index, harp_array data)
 {
     ingest_info *info;
-    long subset_counter;
-    static long index_plus_readout_offset;
+    long i, subset_counter, index_plus_readout_offset;
 
     info = (ingest_info *)user_data;
-    if ((index % 32 == 0) && (info->readout_offset[index / 32] != 0))
+
+    index_plus_readout_offset = index;
+    for (i = 0; i < index; i += 32)
     {
-        index_plus_readout_offset += info->readout_offset[index / 32];
+        index_plus_readout_offset += info->readout_offset[i / 32];
     }
+
     if (index_plus_readout_offset == 0L)
     {
         /* First readout is from previous scan so subset counter = 15 */
@@ -901,7 +903,6 @@ static int read_scan_direction(void *user_data, long index, harp_array data)
     {
         *(data.string_data) = strdup("backward");
     }
-    index_plus_readout_offset++;
 
     return 0;
 }
@@ -1106,9 +1107,9 @@ static int mdr_record_is_valid(ingest_info *info, coda_cursor *cursor)
     return TRUE;
 }
 
-static int determine_fastest_band(ingest_info *info, coda_cursor start_cursor, long valid_mdr_record)
+static int determine_fastest_band(ingest_info *info, coda_cursor start_cursor, long valid_mdr_record,
+                                  uint16_t *previous_num_recs_of_band)
 {
-    static uint16_t previous_num_recs_of_band[MAX_NR_BANDS] = { 0 };
     coda_cursor cursor;
     double min_integration_time;
     uint16_t num_recs_of_band;
@@ -1137,6 +1138,8 @@ static int determine_fastest_band(ingest_info *info, coda_cursor start_cursor, l
         }
         if (num_recs_of_band != previous_num_recs_of_band[i])
         {
+            /* This is the either the first valid MDR record or the integration time of this band has just changed. */
+            /* In both cases we need to skip the first measurement by setting the readout_offset.                   */
             previous_num_recs_of_band[i] = num_recs_of_band;
             info->readout_offset[valid_mdr_record] = 1;
         }
@@ -1199,6 +1202,7 @@ static int init_measurements_dimensions(ingest_info *info)
     long num_all_mdr_records, mdr_record, valid_mdr_record;
     long band_nr, offset, dim[CODA_MAX_NUM_DIMS];
     int num_dims, prev_mdr_record_was_valid;
+    uint16_t previous_num_recs_of_band[MAX_NR_BANDS];
 
     if (coda_cursor_set_product(&cursor, info->product) != 0)
     {
@@ -1254,6 +1258,7 @@ static int init_measurements_dimensions(ingest_info *info)
     }
     prev_mdr_record_was_valid = FALSE;
     time_of_prev_mdr_record = 0.0;
+    memset(previous_num_recs_of_band, '\0', sizeof(previous_num_recs_of_band));
     for (mdr_record = 0, valid_mdr_record = 0; mdr_record < num_all_mdr_records; mdr_record++)
     {
         save_cursor_mdr = cursor;
@@ -1292,7 +1297,7 @@ static int init_measurements_dimensions(ingest_info *info)
                 info->readout_offset[valid_mdr_record] = 1;
             }
 
-            if (determine_fastest_band(info, cursor, valid_mdr_record) != 0)
+            if (determine_fastest_band(info, cursor, valid_mdr_record, previous_num_recs_of_band) != 0)
             {
                 return -1;
             }

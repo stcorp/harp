@@ -1,4 +1,4 @@
-/*
+ /*
  * Copyright (C) 2015-2017 S[&]T, The Netherlands.
  * All rights reserved.
  *
@@ -60,6 +60,9 @@ typedef struct ingest_info_struct
     long num_wavelengths;       /* The number of different spectra in 1 element */
     double *wavelengths;
     double *limb_radiance_data_values;
+    double *wavelengths_in_conversion_factor_table;
+    double *conversion_factors_in_table;
+    uint8_t nr_wavelengths_in_conversion_factor_table;
     int upper;
     int corrected;
 } ingest_info;
@@ -381,111 +384,109 @@ static int get_illumination_condition(ingest_info *info, const char *datasetname
     return 0;
 }
 
-static int spectral_conversion_factor(ingest_info *info, char *datasetname, char *num_fieldname,
-                                      char *wavelength_fieldname, char *factor_fieldname, double wavelength,
-                                      double *conversion_factor)
+
+static int read_spectral_conversion_factors(ingest_info *info, char *datasetname, char *num_fieldname,
+                                            char *wavelength_fieldname, char *factor_fieldname)
 {
-    static double *wavelengths_in_table = NULL, *conversion_factors_in_table = NULL;
-    static uint8_t nr_wavelengths_in_table;
     coda_cursor cursor;
+
+    if (coda_cursor_set_product(&cursor, info->product) != 0)
+    {
+        harp_set_error(HARP_ERROR_CODA, NULL);
+        return -1;
+    }
+    if (coda_cursor_goto_record_field_by_name(&cursor, datasetname) != 0)
+    {
+        harp_set_error(HARP_ERROR_CODA, NULL);
+        return -1;
+    }
+    if (coda_cursor_goto_first_array_element(&cursor) != 0)
+    {
+        harp_set_error(HARP_ERROR_CODA, NULL);
+        return -1;
+    }
+
+    /* Read number of wavelengths in the lookup table */
+    if (coda_cursor_goto_record_field_by_name(&cursor, num_fieldname) != 0)
+    {
+        harp_set_error(HARP_ERROR_CODA, NULL);
+        return -1;
+    }
+    if (coda_cursor_read_uint8(&cursor, &info->nr_wavelengths_in_conversion_factor_table) != 0)
+    {
+        harp_set_error(HARP_ERROR_CODA, NULL);
+        return -1;
+    }
+    coda_cursor_goto_parent(&cursor);
+
+    /* Read wavelengths in the lookup table */
+    CHECKED_MALLOC(info->wavelengths_in_conversion_factor_table, sizeof(double) * info->nr_wavelengths_in_conversion_factor_table);
+    if (coda_cursor_goto_record_field_by_name(&cursor, wavelength_fieldname) != 0)
+    {
+        harp_set_error(HARP_ERROR_CODA, NULL);
+        return -1;
+    }
+    if (coda_cursor_read_double_partial_array(&cursor, 0L, (long)(info->nr_wavelengths_in_conversion_factor_table), info->wavelengths_in_conversion_factor_table) !=
+        0)
+    {
+        harp_set_error(HARP_ERROR_CODA, NULL);
+        return -1;
+    }
+    coda_cursor_goto_parent(&cursor);
+
+    /* Read conversion factors in the lookup table */
+    CHECKED_MALLOC(info->conversion_factors_in_table, sizeof(double) * info->nr_wavelengths_in_conversion_factor_table);
+    if (coda_cursor_goto_record_field_by_name(&cursor, factor_fieldname) != 0)
+    {
+        harp_set_error(HARP_ERROR_CODA, NULL);
+        return -1;
+    }
+    if (coda_cursor_read_double_partial_array
+        (&cursor, 0L, (long)(info->nr_wavelengths_in_conversion_factor_table), info->conversion_factors_in_table) != 0)
+    {
+        harp_set_error(HARP_ERROR_CODA, NULL);
+        return -1;
+    }
+    coda_cursor_goto_root(&cursor);
+    return 0;
+}
+
+static void free_spectral_conversion_factors(ingest_info *info)
+{
+    if (info->wavelengths_in_conversion_factor_table != NULL)
+    {
+        free(info->wavelengths_in_conversion_factor_table);
+        info->wavelengths_in_conversion_factor_table = NULL;
+    }
+    if (info->conversion_factors_in_table != NULL)
+    {
+        free(info->conversion_factors_in_table);
+        info->conversion_factors_in_table = NULL;
+    }
+}
+
+static int spectral_conversion_factor(ingest_info *info, double wavelength, double *conversion_factor)
+{
     uint8_t i;
 
-    if (info == NULL)
+    if (wavelength < info->wavelengths_in_conversion_factor_table[0])
     {
-        /* Free the allocated memory */
-        if (wavelengths_in_table != NULL)
-        {
-            free(wavelengths_in_table);
-            wavelengths_in_table = NULL;
-        }
-        if (conversion_factors_in_table != NULL)
-        {
-            free(conversion_factors_in_table);
-            conversion_factors_in_table = NULL;
-        }
-        return 0;
+        *conversion_factor = info->conversion_factors_in_table[0];
     }
-
-    if (wavelengths_in_table == NULL)
+    else if (wavelength > info->wavelengths_in_conversion_factor_table[info->nr_wavelengths_in_conversion_factor_table - 1])
     {
-        if (coda_cursor_set_product(&cursor, info->product) != 0)
-        {
-            harp_set_error(HARP_ERROR_CODA, NULL);
-            return -1;
-        }
-        if (coda_cursor_goto_record_field_by_name(&cursor, datasetname) != 0)
-        {
-            harp_set_error(HARP_ERROR_CODA, NULL);
-            return -1;
-        }
-        if (coda_cursor_goto_first_array_element(&cursor) != 0)
-        {
-            harp_set_error(HARP_ERROR_CODA, NULL);
-            return -1;
-        }
-
-        /* Read number of wavelengths in the lookup table */
-        if (coda_cursor_goto_record_field_by_name(&cursor, num_fieldname) != 0)
-        {
-            harp_set_error(HARP_ERROR_CODA, NULL);
-            return -1;
-        }
-        if (coda_cursor_read_uint8(&cursor, &nr_wavelengths_in_table) != 0)
-        {
-            harp_set_error(HARP_ERROR_CODA, NULL);
-            return -1;
-        }
-        coda_cursor_goto_parent(&cursor);
-
-        /* Read wavelengths in the lookup table */
-        CHECKED_MALLOC(wavelengths_in_table, sizeof(double) * nr_wavelengths_in_table);
-        if (coda_cursor_goto_record_field_by_name(&cursor, wavelength_fieldname) != 0)
-        {
-            harp_set_error(HARP_ERROR_CODA, NULL);
-            return -1;
-        }
-        if (coda_cursor_read_double_partial_array(&cursor, 0L, (long)nr_wavelengths_in_table, wavelengths_in_table) !=
-            0)
-        {
-            harp_set_error(HARP_ERROR_CODA, NULL);
-            return -1;
-        }
-        coda_cursor_goto_parent(&cursor);
-
-        /* Read conversion factors in the lookup table */
-        CHECKED_MALLOC(conversion_factors_in_table, sizeof(double) * nr_wavelengths_in_table);
-        if (coda_cursor_goto_record_field_by_name(&cursor, factor_fieldname) != 0)
-        {
-            harp_set_error(HARP_ERROR_CODA, NULL);
-            return -1;
-        }
-        if (coda_cursor_read_double_partial_array
-            (&cursor, 0L, (long)nr_wavelengths_in_table, conversion_factors_in_table) != 0)
-        {
-            harp_set_error(HARP_ERROR_CODA, NULL);
-            return -1;
-        }
-        coda_cursor_goto_root(&cursor);
-    }
-
-    if (wavelength < wavelengths_in_table[0])
-    {
-        *conversion_factor = conversion_factors_in_table[0];
-    }
-    else if (wavelength > wavelengths_in_table[nr_wavelengths_in_table - 1])
-    {
-        *conversion_factor = conversion_factors_in_table[nr_wavelengths_in_table - 1];
+        *conversion_factor = info->conversion_factors_in_table[info->nr_wavelengths_in_conversion_factor_table - 1];
     }
     else
     {
-        for (i = 1; i < nr_wavelengths_in_table; i++)
+        for (i = 1; i < info->nr_wavelengths_in_conversion_factor_table; i++)
         {
-            if ((wavelength > wavelengths_in_table[i - 1]) && (wavelength < wavelengths_in_table[i]))
+            if ((wavelength > info->wavelengths_in_conversion_factor_table[i - 1]) && (wavelength < info->wavelengths_in_conversion_factor_table[i]))
             {
-                *conversion_factor = conversion_factors_in_table[i - 1] +
-                    ((conversion_factors_in_table[i] - conversion_factors_in_table[i - 1]) *
-                     ((wavelength - wavelengths_in_table[i - 1]) /
-                      (wavelengths_in_table[i] - wavelengths_in_table[i - 1])));
+                *conversion_factor = info->conversion_factors_in_table[i - 1] +
+                    ((info->conversion_factors_in_table[i] - info->conversion_factors_in_table[i - 1]) *
+                     ((wavelength - info->wavelengths_in_conversion_factor_table[i - 1]) /
+                      (info->wavelengths_in_conversion_factor_table[i] - info->wavelengths_in_conversion_factor_table[i - 1])));
             }
         }
     }
@@ -497,6 +498,10 @@ static void ingestion_done(void *user_data)
 {
     ingest_info *info = (ingest_info *)user_data;
 
+    if (info->wavelengths != NULL)
+    {
+        free(info->wavelengths);
+    }
     free(info);
 }
 
@@ -575,6 +580,12 @@ static int read_lim_spectral_photon_radiance(void *user_data, harp_array data)
         free(background_code_values);
         return retval;
     }
+    if (read_spectral_conversion_factors(info, "lim_occultation_data", "size_rad_sens_curve_limb",
+                                         "abs_rad_sens_curve_limb", "rad_sens_curve_limb") != 0)
+    {
+        free_spectral_conversion_factors(info);
+        return -1;
+    }
 
     double_data = data.double_data;
     for (profile_nr = 0; profile_nr < info->elements_per_profile; profile_nr++)
@@ -591,9 +602,8 @@ static int read_lim_spectral_photon_radiance(void *user_data, harp_array data)
             /* Convert the value in electrons to a physical unit according */
             /* to section 10.4.2.7.2 in the ENVISAT-GOMOS product          */
             /* specifications (ESA Doc Ref: PO-RS-MDA-GS-2009).            */
-            if (spectral_conversion_factor(info, "lim_occultation_data", "size_rad_sens_curve_limb",
-                                           "abs_rad_sens_curve_limb", "rad_sens_curve_limb", wavelength,
-                                           &conversion_factor) == 0)
+            conversion_factor = 1.0;
+            if (spectral_conversion_factor(info, wavelength, &conversion_factor) == 0)
             {
                 *double_data = background_in_electrons * conversion_factor;
             }
@@ -605,7 +615,7 @@ static int read_lim_spectral_photon_radiance(void *user_data, harp_array data)
         }
     }
 
-    spectral_conversion_factor(NULL, NULL, NULL, NULL, NULL, 0.0, NULL);
+    free_spectral_conversion_factors(info);
     free(background_gains);
     free(background_offsets);
     free(background_code_values);
