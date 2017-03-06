@@ -1176,4 +1176,3 @@ void harp_collocation_result_shallow_delete(harp_collocation_result *collocation
         free(collocation_result);
     }
 }
-

@@ -1,4 +1,4 @@
- /*
+/*
  * Copyright (C) 2015-2017 S[&]T, The Netherlands.
  * All rights reserved.
  *
@@ -420,14 +420,16 @@ static int read_spectral_conversion_factors(ingest_info *info, char *datasetname
     coda_cursor_goto_parent(&cursor);
 
     /* Read wavelengths in the lookup table */
-    CHECKED_MALLOC(info->wavelengths_in_conversion_factor_table, sizeof(double) * info->nr_wavelengths_in_conversion_factor_table);
+    CHECKED_MALLOC(info->wavelengths_in_conversion_factor_table,
+                   sizeof(double) * info->nr_wavelengths_in_conversion_factor_table);
     if (coda_cursor_goto_record_field_by_name(&cursor, wavelength_fieldname) != 0)
     {
         harp_set_error(HARP_ERROR_CODA, NULL);
         return -1;
     }
-    if (coda_cursor_read_double_partial_array(&cursor, 0L, (long)(info->nr_wavelengths_in_conversion_factor_table), info->wavelengths_in_conversion_factor_table) !=
-        0)
+    if (coda_cursor_read_double_partial_array
+        (&cursor, 0L, (long)(info->nr_wavelengths_in_conversion_factor_table),
+         info->wavelengths_in_conversion_factor_table) != 0)
     {
         harp_set_error(HARP_ERROR_CODA, NULL);
         return -1;
@@ -473,7 +475,8 @@ static int spectral_conversion_factor(ingest_info *info, double wavelength, doub
     {
         *conversion_factor = info->conversion_factors_in_table[0];
     }
-    else if (wavelength > info->wavelengths_in_conversion_factor_table[info->nr_wavelengths_in_conversion_factor_table - 1])
+    else if (wavelength >
+             info->wavelengths_in_conversion_factor_table[info->nr_wavelengths_in_conversion_factor_table - 1])
     {
         *conversion_factor = info->conversion_factors_in_table[info->nr_wavelengths_in_conversion_factor_table - 1];
     }
@@ -481,12 +484,14 @@ static int spectral_conversion_factor(ingest_info *info, double wavelength, doub
     {
         for (i = 1; i < info->nr_wavelengths_in_conversion_factor_table; i++)
         {
-            if ((wavelength > info->wavelengths_in_conversion_factor_table[i - 1]) && (wavelength < info->wavelengths_in_conversion_factor_table[i]))
+            if ((wavelength > info->wavelengths_in_conversion_factor_table[i - 1]) &&
+                (wavelength < info->wavelengths_in_conversion_factor_table[i]))
             {
                 *conversion_factor = info->conversion_factors_in_table[i - 1] +
                     ((info->conversion_factors_in_table[i] - info->conversion_factors_in_table[i - 1]) *
                      ((wavelength - info->wavelengths_in_conversion_factor_table[i - 1]) /
-                      (info->wavelengths_in_conversion_factor_table[i] - info->wavelengths_in_conversion_factor_table[i - 1])));
+                      (info->wavelengths_in_conversion_factor_table[i] -
+                       info->wavelengths_in_conversion_factor_table[i - 1])));
             }
         }
     }
