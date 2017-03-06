@@ -670,67 +670,6 @@ static int product_filter_resamplable_variables(harp_product *product)
     return 0;
 }
 
-static int get_collocated_product(harp_collocation_result *collocation_result, const char *source_product_b,
-                                  harp_product **product)
-{
-    harp_collocation_result *filtered_result;
-    harp_collocation_mask *mask;
-    harp_product_metadata *product_metadata;
-    harp_product *collocated_product;
-    harp_collocation_pair *pair;
-
-    if (harp_collocation_result_shallow_copy(collocation_result, &filtered_result) != 0)
-    {
-        return -1;
-    }
-    if (harp_collocation_result_filter_for_source_product_b(filtered_result, source_product_b) != 0)
-    {
-        harp_collocation_result_shallow_delete(filtered_result);
-        return -1;
-    }
-    if (filtered_result->num_pairs == 0)
-    {
-        *product = NULL;
-        return 0;
-    }
-    /* use product b reference from first pair to find and import product */
-    pair = filtered_result->pair[0];
-    product_metadata = filtered_result->dataset_b->metadata[pair->product_index_b];
-    if (product_metadata == NULL)
-    {
-        harp_set_error(HARP_ERROR_INVALID_ARGUMENT, "missing product metadata for product %s",
-                       filtered_result->dataset_b->source_product[pair->product_index_b]);
-        harp_collocation_result_shallow_delete(filtered_result);
-        return -1;
-    }
-
-    if (harp_collocation_mask_from_result(filtered_result, harp_collocation_right, source_product_b, &mask) != 0)
-    {
-        harp_collocation_result_shallow_delete(filtered_result);
-        return -1;
-    }
-
-    harp_collocation_result_shallow_delete(filtered_result);
-
-    if (harp_import(product_metadata->filename, &collocated_product) != 0)
-    {
-        harp_set_error(HARP_ERROR_IMPORT, "could not import file %s", product_metadata->filename);
-        harp_collocation_mask_delete(mask);
-        return -1;
-    }
-
-    if (harp_product_apply_collocation_mask(mask, collocated_product) != 0)
-    {
-        harp_collocation_mask_delete(mask);
-        return -1;
-    }
-
-    harp_collocation_mask_delete(mask);
-    *product = collocated_product;
-
-    return 0;
-}
-
 /** \addtogroup harp_product
  * @{
  */
@@ -1153,26 +1092,6 @@ LIBHARP_API int harp_product_smooth_vertical(harp_product *product, int num_smoo
     return -1;
 }
 
-/** Regrid the product's variables (from dataset a in the collocation result) to the vertical grids,
- * of collocated products in dataset b and smooth the variables specified.
- *
- * \param product Product to regrid.
- * \param vertical_axis The name of the variable to use as a vertical axis (pressure/altitude/etc).
- * \param vertical_unit The unit in which the vertical_axis will be brought for the regridding.
- * \param collocation_result The collocation result used to find matching variables.
- *   The collocation result is assumed to have the appropriate metadata available for all matches (dataset b).
- *
- * \return
- *   \arg \c 0, Success.
- *   \arg \c -1, Error occurred (check #harp_errno).
- */
-LIBHARP_API int harp_product_regrid_vertical_with_collocated_dataset(harp_product *product, const char *vertical_axis,
-                                                                     const char *vertical_unit,
-                                                                     harp_collocation_result *collocation_result)
-{
-    return harp_product_smooth_vertical(product, 0, NULL, vertical_axis, vertical_unit, collocation_result);
-}
-
 /** Derive vertical column smoothed with column averaging kernel and optional a-priori
  * First a partial column profile will be derived from the product.
  * This partial column profile will be regridded to the column averaging kernel grid.
@@ -1447,8 +1366,9 @@ LIBHARP_API int harp_product_get_smoothed_column_using_collocated_dataset
         harp_product *collocated_product;
         long j;
 
-        if (get_collocated_product(filtered_collocation_result,
-                                   filtered_collocation_result->dataset_b->source_product[i], &collocated_product) != 0)
+        if (harp_collocation_result_get_filtered_product_b(filtered_collocation_result,
+                                                           filtered_collocation_result->dataset_b->source_product[i],
+                                                           &collocated_product) != 0)
         {
             harp_product_delete(merged_product);
             harp_collocation_result_shallow_delete(filtered_collocation_result);
@@ -1553,7 +1473,10 @@ LIBHARP_API int harp_product_get_smoothed_column_using_collocated_dataset
     harp_product_get_variable_by_name(merged_product, vertical_axis, &vertical_grid);
     harp_product_get_variable_by_name(merged_product, vertical_bounds_name, &vertical_bounds);
     harp_product_get_variable_by_name(merged_product, column_avk_name, &column_avk);
-    harp_product_get_variable_by_name(merged_product, apriori_name, &apriori);
+    if (harp_product_has_variable(merged_product, apriori_name))
+    {
+        harp_product_get_variable_by_name(merged_product, apriori_name, &apriori);
+    }
     if (harp_product_get_smoothed_column(product, name, unit, vertical_grid, vertical_bounds, column_avk, apriori,
                                          variable) != 0)
     {

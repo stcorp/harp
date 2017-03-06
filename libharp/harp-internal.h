@@ -300,8 +300,14 @@ void harp_interval_interpolate_array_linear(long source_length, const double *so
 void harp_bounds_from_midpoints_linear(long num_midpoints, const double *midpoints, double *intervals);
 void harp_bounds_from_midpoints_loglinear(long num_midpoints, const double *midpoints, double *intervals);
 
+/* Collocation */
 int harp_collocation_result_shallow_copy(const harp_collocation_result *collocation_result,
                                          harp_collocation_result **new_result);
 void harp_collocation_result_shallow_delete(harp_collocation_result *collocation_result);
+
+int harp_collocation_result_get_filtered_product_a(harp_collocation_result *collocation_result,
+                                                   const char *source_product, harp_product **product);
+int harp_collocation_result_get_filtered_product_b(harp_collocation_result *collocation_result,
+                                                   const char *source_product, harp_product **product);
 
 #endif

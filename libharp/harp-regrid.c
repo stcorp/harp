@@ -34,7 +34,10 @@
 #include <assert.h>
 #include <math.h>
 #include <stdlib.h>
+#include <stdio.h>
 #include <string.h>
+
+#define MAX_NAME_LENGTH 128
 
 typedef enum resample_type_enum
 {
@@ -672,6 +675,178 @@ LIBHARP_API int harp_product_regrid_with_axis_variable(harp_product *product, ha
     free(target_buffer);
 
     return -1;
+}
+
+/** Regrid the product's variables (from dataset a in the collocation result) to the target grid of collocated products
+ * in dataset b.
+ *
+ * This function cannot be used to regrid the time dimension (or an independent dimension).
+ *
+ * \param product Product to regrid.
+ * \param dimension_type Type of dimension that should be regridded.
+ * \param axis_name The name of the variable to use as target grid.
+ * \param axis_unit The unit in which the vertical_axis will be brought for the regridding.
+ * \param collocation_result The collocation result used to find matching variables.
+ *   The collocation result is assumed to have the appropriate metadata available for all matches (dataset b).
+ *
+ * \return
+ *   \arg \c 0, Success.
+ *   \arg \c -1, Error occurred (check #harp_errno).
+ */
+LIBHARP_API int harp_product_regrid_with_collocated_dataset(harp_product *product, harp_dimension_type dimension_type,
+                                                            const char *axis_name, const char *axis_unit,
+                                                            harp_collocation_result *collocation_result)
+{
+    harp_collocation_result *filtered_collocation_result = NULL;
+    harp_product *merged_product = NULL;
+    char bounds_name[MAX_NAME_LENGTH];
+    harp_variable *collocation_index = NULL;
+    harp_variable *target_grid = NULL;
+    harp_variable *target_bounds = NULL;
+    long i;
+
+    if (dimension_type == harp_dimension_independent || dimension_type == harp_dimension_time)
+    {
+        harp_set_error(HARP_ERROR_INVALID_ARGUMENT, "can not regrid %s dimension",
+                       harp_get_dimension_type_name(dimension_type));
+
+    }
+    if (product->dimension[dimension_type] == 0)
+    {
+        harp_set_error(HARP_ERROR_INVALID_ARGUMENT, "product has no %s dimension",
+                       harp_get_dimension_type_name(dimension_type));
+        return -1;
+    }
+
+    /* Get the source product's collocation index variable */
+    if (harp_product_get_variable_by_name(product, "collocation_index", &collocation_index) != 0)
+    {
+        return -1;
+    }
+
+    /* copy the collocation result for filtering */
+    if (harp_collocation_result_shallow_copy(collocation_result, &filtered_collocation_result) != 0)
+    {
+        return -1;
+    }
+
+    /* Reduce the collocation result to only pairs that include the source product */
+    if (harp_collocation_result_filter_for_collocation_indices(filtered_collocation_result,
+                                                               collocation_index->num_elements,
+                                                               collocation_index->data.int32_data) != 0)
+    {
+        harp_product_delete(merged_product);
+        harp_collocation_result_shallow_delete(filtered_collocation_result);
+        return -1;
+    }
+    if (filtered_collocation_result->num_pairs != collocation_index->num_elements)
+    {
+        harp_set_error(HARP_ERROR_INVALID_ARGUMENT, "product and collocation result are inconsistent");
+        harp_product_delete(merged_product);
+        harp_collocation_result_shallow_delete(filtered_collocation_result);
+        return -1;
+    }
+
+    snprintf(bounds_name, MAX_NAME_LENGTH, "%s_bounds", axis_name);
+
+    for (i = 0; i < filtered_collocation_result->dataset_b->num_products; i++)
+    {
+        harp_dimension_type local_dimension_type[HARP_NUM_DIM_TYPES];
+        harp_product *collocated_product;
+        long j;
+
+        if (harp_collocation_result_get_filtered_product_b(filtered_collocation_result,
+                                                           filtered_collocation_result->dataset_b->source_product[i],
+                                                           &collocated_product) != 0)
+        {
+            harp_product_delete(merged_product);
+            harp_collocation_result_shallow_delete(filtered_collocation_result);
+            return -1;
+        }
+
+        if (collocated_product == NULL || harp_product_is_empty(collocated_product))
+        {
+            continue;
+        }
+
+        local_dimension_type[0] = harp_dimension_time;
+        local_dimension_type[1] = dimension_type;
+        local_dimension_type[2] = harp_dimension_independent;
+
+        /* target grid */
+        if (harp_product_add_derived_variable(collocated_product, axis_name, axis_unit, 2, local_dimension_type) != 0)
+        {
+            harp_product_delete(collocated_product);
+            harp_product_delete(merged_product);
+            harp_collocation_result_shallow_delete(filtered_collocation_result);
+            return -1;
+        }
+
+        /* target grid bounds */
+        harp_product_add_derived_variable(collocated_product, bounds_name, axis_unit, 3, local_dimension_type);
+        /* it is Ok if the target boundaries cannot be derived (we ignore the return value of the function) */
+
+        /* strip collocated product to just the variables that we need */
+        for (j = collocated_product->num_variables - 1; j >= 0; j--)
+        {
+            const char *name = collocated_product->variable[j]->name;
+
+            if (strcmp(name, "collocation_index") != 0 && strcmp(name, axis_name) != 0 &&
+                strcmp(name, bounds_name) != 0)
+            {
+                if (harp_product_remove_variable(collocated_product, collocated_product->variable[j]) != 0)
+                {
+                    harp_product_delete(collocated_product);
+                    harp_product_delete(merged_product);
+                    harp_collocation_result_shallow_delete(filtered_collocation_result);
+                    return -1;
+                }
+            }
+        }
+
+        if (merged_product == NULL)
+        {
+            merged_product = collocated_product;
+        }
+        else
+        {
+            if (harp_product_append(merged_product, collocated_product) != 0)
+            {
+                harp_product_delete(collocated_product);
+                harp_product_delete(merged_product);
+                harp_collocation_result_shallow_delete(filtered_collocation_result);
+                return -1;
+            }
+            harp_product_delete(collocated_product);
+        }
+    }
+
+    /* sort the merged product so the samples are in the same order as in 'product' */
+    if (harp_product_sort_by_index(merged_product, "collocation_index", collocation_index->num_elements,
+                                   collocation_index->data.int32_data) != 0)
+    {
+        harp_product_delete(merged_product);
+        harp_collocation_result_shallow_delete(filtered_collocation_result);
+        return -1;
+    }
+
+    harp_product_get_variable_by_name(merged_product, axis_name, &target_grid);
+    if (harp_product_has_variable(merged_product, bounds_name))
+    {
+        harp_product_get_variable_by_name(merged_product, bounds_name, &target_bounds);
+    }
+    if (harp_product_regrid_with_axis_variable(product, target_grid, target_bounds) != 0)
+    {
+        harp_product_delete(merged_product);
+        harp_collocation_result_shallow_delete(filtered_collocation_result);
+        return -1;
+    }
+
+    /* cleanup */
+    harp_product_delete(merged_product);
+    harp_collocation_result_shallow_delete(filtered_collocation_result);
+
+    return 0;
 }
 
 /**

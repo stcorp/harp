@@ -1081,6 +1081,9 @@ LIBHARP_API int harp_collocation_result_write(const char *collocation_result_fil
 }
 
 /** Swap the columns of this collocation result inplace.
+ *
+ * This swaps datasets A and B (such that A becomes B and B becomes A).
+ * \param collocation_result Collocation result whose datasets should be swapped.
  */
 LIBHARP_API void harp_collocation_result_swap_datasets(harp_collocation_result *collocation_result)
 {
@@ -1098,7 +1101,11 @@ LIBHARP_API void harp_collocation_result_swap_datasets(harp_collocation_result *
     collocation_result->dataset_b = data_a;
 }
 
-/** Creates a shallow copy of a collocation result for filtering purposes */
+/**
+ * @}
+ */
+
+/* Creates a shallow copy of a collocation result for filtering purposes */
 int harp_collocation_result_shallow_copy(const harp_collocation_result *collocation_result,
                                          harp_collocation_result **new_result)
 {
@@ -1170,6 +1177,3 @@ void harp_collocation_result_shallow_delete(harp_collocation_result *collocation
     }
 }
 
-/**
- * @}
- */

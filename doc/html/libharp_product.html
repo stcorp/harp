@@ -775,6 +775,36 @@
 </dd></dl>
 
 <dl class="function">
+<dt id="_CPPv243harp_product_regrid_with_collocated_datasetP12harp_product19harp_dimension_typePKcPKcP23harp_collocation_result">
+<span id="harp_product_regrid_with_collocated_dataset__harp_productP.harp_dimension_type.cCP.cCP.harp_collocation_resultP"></span><span class="target" id="libharpgroup__harp__product_1ga47c35b04d92f993a62d9911619fe0ea9"></span>int <code class="descname">harp_product_regrid_with_collocated_dataset</code><span class="sig-paren">(</span><a class="reference internal" href="#_CPPv212harp_product" title="harp_product">harp_product</a> *<em>product</em>, <a class="reference internal" href="libharp_general.html#_CPPv219harp_dimension_type" title="harp_dimension_type">harp_dimension_type</a> <em>dimension_type</em>, <em class="property">const</em> char *<em>axis_name</em>, <em class="property">const</em> char *<em>axis_unit</em>, <a class="reference internal" href="libharp_collocation.html#_CPPv223harp_collocation_result" title="harp_collocation_result">harp_collocation_result</a> *<em>collocation_result</em><span class="sig-paren">)</span></dt>
+<dd><p>Regrid the product&#8217;s variables (from dataset a in the collocation result) to the target grid of collocated products in dataset b.</p>
+<p>This function cannot be used to regrid the time dimension (or an independent dimension).</p>
+<p><dl class="docutils">
+<dt><strong>Return</strong></dt>
+<dd><ul class="simple">
+<li><code class="docutils literal"><span class="pre">0</span></code>, Success. </li>
+<li><code class="docutils literal"><span class="pre">-1</span></code>, Error occurred (check <a class="reference internal" href="libharp_error.html#libharpgroup__harp__error_1gab2eeb46528306c6799632d1e800c4c36"><span class="std std-ref">harp_errno</span></a>). </li>
+</ul>
+</dd>
+<dt><strong>Parameters</strong></dt>
+<dd><ul class="breatheparameterlist first last">
+<li><code class="first docutils literal"><span class="pre">product</span></code> - <p>Product to regrid. </p>
+</li>
+<li><code class="first docutils literal"><span class="pre">dimension_type</span></code> - <p>Type of dimension that should be regridded. </p>
+</li>
+<li><code class="first docutils literal"><span class="pre">axis_name</span></code> - <p>The name of the variable to use as target grid. </p>
+</li>
+<li><code class="first docutils literal"><span class="pre">axis_unit</span></code> - <p>The unit in which the vertical_axis will be brought for the regridding. </p>
+</li>
+<li><code class="first docutils literal"><span class="pre">collocation_result</span></code> - <p>The collocation result used to find matching variables. The collocation result is assumed to have the appropriate metadata available for all matches (dataset b).</p>
+</li>
+</ul>
+</dd>
+</dl>
+</p>
+</dd></dl>
+
+<dl class="function">
 <dt id="_CPPv228harp_product_smooth_verticalP12harp_productiPPKcPKcPKcPK23harp_collocation_result">
 <span id="harp_product_smooth_vertical__harp_productP.i.cCPP.cCP.cCP.harp_collocation_resultCP"></span><span class="target" id="libharpgroup__harp__product_1ga57f00b115d7bddf0fe8a32790f618031"></span>int <code class="descname">harp_product_smooth_vertical</code><span class="sig-paren">(</span><a class="reference internal" href="#_CPPv212harp_product" title="harp_product">harp_product</a> *<em>product</em>, int <em>num_smooth_variables</em>, <em class="property">const</em> char **<em>smooth_variables</em>, <em class="property">const</em> char *<em>vertical_axis</em>, <em class="property">const</em> char *<em>vertical_unit</em>, <em class="property">const</em> <a class="reference internal" href="libharp_collocation.html#_CPPv223harp_collocation_result" title="harp_collocation_result">harp_collocation_result</a> *<em>collocation_result</em><span class="sig-paren">)</span></dt>
 <dd><p>Smooth the product&#8217;s variables (from dataset a in the collocation result) using the vertical grids, avks and a apriori of collocated products in dataset b and smooth the variables specified.</p>
@@ -798,33 +828,6 @@
 <li><code class="first docutils literal"><span class="pre">vertical_unit</span></code> - <p>The unit in which the vertical_axis will be brought for the regridding. </p>
 </li>
 <li><code class="first docutils literal"><span class="pre">collocation_result</span></code> - <p>The collocation result used to locate the matching vertical grids/avks/apriori. The collocation result is assumed to have the appropriate metadata available for all matches (dataset b).</p>
-</li>
-</ul>
-</dd>
-</dl>
-</p>
-</dd></dl>
-
-<dl class="function">
-<dt id="_CPPv252harp_product_regrid_vertical_with_collocated_datasetP12harp_productPKcPKcP23harp_collocation_result">
-<span id="harp_product_regrid_vertical_with_collocated_dataset__harp_productP.cCP.cCP.harp_collocation_resultP"></span><span class="target" id="libharpgroup__harp__product_1gaf48587ee92aa738ef9a41fcee947f32e"></span>int <code class="descname">harp_product_regrid_vertical_with_collocated_dataset</code><span class="sig-paren">(</span><a class="reference internal" href="#_CPPv212harp_product" title="harp_product">harp_product</a> *<em>product</em>, <em class="property">const</em> char *<em>vertical_axis</em>, <em class="property">const</em> char *<em>vertical_unit</em>, <a class="reference internal" href="libharp_collocation.html#_CPPv223harp_collocation_result" title="harp_collocation_result">harp_collocation_result</a> *<em>collocation_result</em><span class="sig-paren">)</span></dt>
-<dd><p>Regrid the product&#8217;s variables (from dataset a in the collocation result) to the vertical grids, of collocated products in dataset b and smooth the variables specified.</p>
-<p><dl class="docutils">
-<dt><strong>Return</strong></dt>
-<dd><ul class="simple">
-<li><code class="docutils literal"><span class="pre">0</span></code>, Success. </li>
-<li><code class="docutils literal"><span class="pre">-1</span></code>, Error occurred (check <a class="reference internal" href="libharp_error.html#libharpgroup__harp__error_1gab2eeb46528306c6799632d1e800c4c36"><span class="std std-ref">harp_errno</span></a>). </li>
-</ul>
-</dd>
-<dt><strong>Parameters</strong></dt>
-<dd><ul class="breatheparameterlist first last">
-<li><code class="first docutils literal"><span class="pre">product</span></code> - <p>Product to regrid. </p>
-</li>
-<li><code class="first docutils literal"><span class="pre">vertical_axis</span></code> - <p>The name of the variable to use as a vertical axis (pressure/altitude/etc). </p>
-</li>
-<li><code class="first docutils literal"><span class="pre">vertical_unit</span></code> - <p>The unit in which the vertical_axis will be brought for the regridding. </p>
-</li>
-<li><code class="first docutils literal"><span class="pre">collocation_result</span></code> - <p>The collocation result used to find matching variables. The collocation result is assumed to have the appropriate metadata available for all matches (dataset b).</p>
 </li>
 </ul>
 </dd>

@@ -12,7 +12,7 @@
   the regrid() and smooth() operations.
 
 * Added vertical_unit parameter to harp_product_smooth_vertical() and
-  harp_product_regrid_vertical_with_collocated_dataset() functions.
+  harp_product_regrid_with_collocated_dataset() functions.
 
 * Replaced harp_product_regrid_vertical_with_axis_variable() with
   harp_product_regrid_with_axis_variable(). It can now be used for other

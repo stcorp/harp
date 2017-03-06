@@ -545,3 +545,98 @@ int harp_product_apply_collocation_mask(harp_collocation_mask *collocation_mask,
 
     return 0;
 }
+
+static int get_collocated_product(harp_collocation_result *collocation_result, const char *source_product_b,
+                                  harp_product **product)
+{
+    harp_collocation_mask *mask;
+    harp_product_metadata *product_metadata;
+    harp_product *collocated_product;
+    harp_collocation_pair *pair;
+
+    if (harp_collocation_result_filter_for_source_product_b(collocation_result, source_product_b) != 0)
+    {
+        return -1;
+    }
+    if (collocation_result->num_pairs == 0)
+    {
+        *product = NULL;
+        return 0;
+    }
+    /* use product b reference from first pair to find and import product */
+    pair = collocation_result->pair[0];
+    product_metadata = collocation_result->dataset_b->metadata[pair->product_index_b];
+    if (product_metadata == NULL)
+    {
+        harp_set_error(HARP_ERROR_INVALID_ARGUMENT, "missing product metadata for product %s",
+                       collocation_result->dataset_b->source_product[pair->product_index_b]);
+        return -1;
+    }
+
+    if (harp_collocation_mask_from_result(collocation_result, harp_collocation_right, source_product_b, &mask) != 0)
+    {
+        return -1;
+    }
+
+    if (harp_import(product_metadata->filename, &collocated_product) != 0)
+    {
+        harp_set_error(HARP_ERROR_IMPORT, "could not import file %s", product_metadata->filename);
+        harp_collocation_mask_delete(mask);
+        return -1;
+    }
+
+    if (harp_product_apply_collocation_mask(mask, collocated_product) != 0)
+    {
+        harp_collocation_mask_delete(mask);
+        return -1;
+    }
+
+    harp_collocation_mask_delete(mask);
+    *product = collocated_product;
+
+    return 0;
+}
+
+int harp_collocation_result_get_filtered_product_a(harp_collocation_result *collocation_result,
+                                                   const char *source_product, harp_product **product)
+{
+    harp_collocation_result *result_copy;
+
+    if (harp_collocation_result_shallow_copy(collocation_result, &result_copy) != 0)
+    {
+        return -1;
+    }
+    /* swap datasets, so we can filter for product b */
+    harp_collocation_result_swap_datasets(result_copy);
+
+    if (get_collocated_product(result_copy, source_product, product) != 0)
+    {
+        harp_collocation_result_shallow_delete(result_copy);
+        return -1;
+    }
+
+    harp_collocation_result_shallow_delete(result_copy);
+
+    return 0;
+}
+
+int harp_collocation_result_get_filtered_product_b(harp_collocation_result *collocation_result,
+                                                   const char *source_product, harp_product **product)
+{
+    harp_collocation_result *result_copy;
+
+    if (harp_collocation_result_shallow_copy(collocation_result, &result_copy) != 0)
+    {
+        return -1;
+    }
+
+    if (get_collocated_product(result_copy, source_product, product) != 0)
+    {
+        harp_collocation_result_shallow_delete(result_copy);
+        return -1;
+    }
+
+    harp_collocation_result_shallow_delete(result_copy);
+
+    return 0;
+}

@@ -1365,13 +1365,6 @@ static int execute_regrid_collocated(harp_product *product, harp_program *progra
 
     args = (const harp_regrid_collocated_args *)operation->args;
 
-    if (args->dimension_type != harp_dimension_vertical)
-    {
-        harp_set_error(HARP_ERROR_OPERATION, "regridding of '%s' dimension not supported",
-                       harp_get_dimension_type_name(args->dimension_type));
-        return -1;
-    }
-
     if (harp_collocation_result_read(args->collocation_result, &collocation_result) != 0)
     {
         return -1;
@@ -1387,8 +1380,8 @@ static int execute_regrid_collocated(harp_product *product, harp_program *progra
         return -1;
     }
 
-    if (harp_product_regrid_vertical_with_collocated_dataset(product, args->axis_variable_name, args->axis_unit,
-                                                             collocation_result) != 0)
+    if (harp_product_regrid_with_collocated_dataset(product, args->dimension_type, args->axis_variable_name,
+                                                    args->axis_unit, collocation_result) != 0)
     {
         harp_collocation_result_delete(collocation_result);
         return -1;
