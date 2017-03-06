@@ -11,6 +11,11 @@
 * Removed the harpprofile command line tool. Its functionality is replaced by
   the regrid() and smooth() operations.
 
+* Renamed harp_product_regrid_vertical_with_collocated_dataset() to
+  harp_product_regrid_with_collocated_dataset() and
+  harp_product_smooth_vertical() to
+  harp_product_smooth_vertical_with_collocated_dataset()
+
 * Added vertical_unit parameter to harp_product_smooth_vertical() and
   harp_product_regrid_with_collocated_dataset() functions.
 
@@ -21,8 +26,8 @@
 * Added harp_collocation_result_filter_for_collocation_indices(),
   harp_product_get_smoothed_column(),
   harp_product_get_smoothed_column_using_collocated_dataset(),
-  harp_product_remove_variable_by_name(), harp_variable_append(), and
-  harp_product_append() functions.
+  harp_product_remove_variable_by_name(), harp_variable_append(),
+  harp_product_append(), and harp_variable_smooth_vertical() functions.
 
 * Renamed harp_product_get_variable_id_by_name() to
   harp_product_get_variable_index_by_name().

@@ -1431,8 +1431,10 @@ static int execute_smooth_collocated(harp_product *product, harp_program *progra
         return -1;
     }
 
-    if (harp_product_smooth_vertical(product, args->num_variables, (const char **)args->variable_name,
-                                     args->axis_variable_name, args->axis_unit, collocation_result) != 0)
+    if (harp_product_smooth_vertical_with_collocated_dataset(product, args->num_variables,
+                                                             (const char **)args->variable_name,
+                                                             args->axis_variable_name, args->axis_unit,
+                                                             collocation_result) != 0)
     {
         harp_collocation_result_delete(collocation_result);
         return -1;

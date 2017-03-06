@@ -330,7 +330,7 @@ struct harp_dataset_struct
 {
     struct hashtable_struct *product_to_index;  /* maps source_product names to indices */
     char **source_product;      /* set of source products - every source appears only once */
-    long *sorted_index;  /* indices of products sorted by source_product name */
+    long *sorted_index; /* indices of products sorted by source_product name */
     long num_products;
     harp_product_metadata **metadata;   /* stores metadata for source in source_product */
 };
@@ -484,6 +484,9 @@ LIBHARP_API int harp_variable_verify(const harp_variable *variable);
 LIBHARP_API void harp_variable_print(harp_variable *variable, int show_attributes, int (*print) (const char *, ...));
 LIBHARP_API void harp_variable_print_data(harp_variable *variable, int (*print) (const char *, ...));
 
+LIBHARP_API int harp_variable_smooth_vertical(harp_variable *variable, harp_variable *vertical_axis,
+                                              harp_variable *averaging_kernel, harp_variable *apriori);
+
 /* Product */
 LIBHARP_API int harp_product_new(harp_product **new_product);
 LIBHARP_API void harp_product_delete(harp_product *product);
@@ -513,17 +516,17 @@ LIBHARP_API void harp_product_print(const harp_product *product, int show_attrib
                                     int (*print) (const char *, ...));
 LIBHARP_API int harp_product_get_metadata(harp_product *product, harp_product_metadata **new_metadata);
 
-
+LIBHARP_API int harp_product_flatten_dimension(harp_product *product, harp_dimension_type dimension_name);
 LIBHARP_API int harp_product_regrid_with_axis_variable(harp_product *product, harp_variable *target_grid,
                                                        harp_variable *target_bounds);
 LIBHARP_API int harp_product_regrid_with_collocated_dataset(harp_product *product, harp_dimension_type dimension_type,
                                                             const char *axis_name, const char *axis_unit,
                                                             harp_collocation_result *collocation_result);
-LIBHARP_API int harp_product_smooth_vertical(harp_product *product, int num_smooth_variables,
-                                             const char **smooth_variables, const char *vertical_axis,
-                                             const char *vertical_unit,
-                                             const harp_collocation_result *collocation_result);
-LIBHARP_API int harp_product_flatten_dimension(harp_product *product, harp_dimension_type dimension_name);
+LIBHARP_API int harp_product_smooth_vertical_with_collocated_dataset(harp_product *product, int num_smooth_variables,
+                                                                     const char **smooth_variables,
+                                                                     const char *vertical_axis,
+                                                                     const char *vertical_unit,
+                                                                     const harp_collocation_result *collocation_result);
 LIBHARP_API int harp_product_get_smoothed_column(harp_product *product, const char *name, const char *unit,
                                                  harp_variable *vertical_grid, harp_variable *vertical_bounds,
                                                  harp_variable *column_avk, harp_variable *apriori,

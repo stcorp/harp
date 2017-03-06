@@ -635,6 +635,32 @@
 </p>
 </dd></dl>
 
+<dl class="function">
+<dt id="_CPPv229harp_variable_smooth_verticalP13harp_variableP13harp_variableP13harp_variableP13harp_variable">
+<span id="harp_variable_smooth_vertical__harp_variableP.harp_variableP.harp_variableP.harp_variableP"></span><span class="target" id="libharpgroup__harp__variable_1ga2a8bc0e62c08f776dca1b4b74cdec637"></span>int <code class="descname">harp_variable_smooth_vertical</code><span class="sig-paren">(</span><a class="reference internal" href="#_CPPv213harp_variable" title="harp_variable">harp_variable</a> *<em>variable</em>, <a class="reference internal" href="#_CPPv213harp_variable" title="harp_variable">harp_variable</a> *<em>vertical_axis</em>, <a class="reference internal" href="#_CPPv213harp_variable" title="harp_variable">harp_variable</a> *<em>averaging_kernel</em>, <a class="reference internal" href="#_CPPv213harp_variable" title="harp_variable">harp_variable</a> *<em>apriori</em><span class="sig-paren">)</span></dt>
+<dd><p>Vertically smooth the variable using the given averaging kernel and a apriori. The variable already needs to be on the same vertical grid as that of the averaging kernel (and a priori). The apriori is optional. If provided, the apriori is first subtracted from the variable, then the smoothing is performed, and finally the apriori is added again. The averaging kernel needs to have dimensions {time,vertical,vertical} and the apriori {time,vertical}. The variable to be smoothed needs to have dimensions {time, ..., vertical} (i.e. first dimension must be time and the last the vertical dimension; number of dimensions needs to be 2 or higher). The vertical axis variable is optional and, if provided, needs to have dimensions {time,vertical}. The vertical axis variable will be used to determine the valid number of vertical elements per profile. <dl class="docutils">
+<dt><strong>Return</strong></dt>
+<dd><ul class="simple">
+<li><code class="docutils literal"><span class="pre">0</span></code>, Success. </li>
+<li><code class="docutils literal"><span class="pre">-1</span></code>, Error occurred (check <a class="reference internal" href="libharp_error.html#libharpgroup__harp__error_1gab2eeb46528306c6799632d1e800c4c36"><span class="std std-ref">harp_errno</span></a>). </li>
+</ul>
+</dd>
+<dt><strong>Parameters</strong></dt>
+<dd><ul class="breatheparameterlist first last">
+<li><code class="first docutils literal"><span class="pre">variable</span></code> - <p>Variable to which the averaging kernel (and apriori) should be applied. </p>
+</li>
+<li><code class="first docutils literal"><span class="pre">vertical_axis</span></code> - <p>The variable containing the time dependent vertical grid (optional). </p>
+</li>
+<li><code class="first docutils literal"><span class="pre">averaging_kernel</span></code> - <p>The variable containing the averaging kernel. </p>
+</li>
+<li><code class="first docutils literal"><span class="pre">apriori</span></code> - <p>The variable containing the apriori (optional). </p>
+</li>
+</ul>
+</dd>
+</dl>
+</p>
+</dd></dl>
+
 </div>
 <dl class="class">
 <dt id="_CPPv220harp_variable_struct">
