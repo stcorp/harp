@@ -670,6 +670,67 @@ static int product_filter_resamplable_variables(harp_product *product)
     return 0;
 }
 
+static int get_collocated_product(harp_collocation_result *collocation_result, const char *source_product_b,
+                                  harp_product **product)
+{
+    harp_collocation_result *filtered_result;
+    harp_collocation_mask *mask;
+    harp_product_metadata *product_metadata;
+    harp_product *collocated_product;
+    harp_collocation_pair *pair;
+
+    if (harp_collocation_result_shallow_copy(collocation_result, &filtered_result) != 0)
+    {
+        return -1;
+    }
+    if (harp_collocation_result_filter_for_source_product_b(filtered_result, source_product_b) != 0)
+    {
+        harp_collocation_result_shallow_delete(filtered_result);
+        return -1;
+    }
+    if (filtered_result->num_pairs == 0)
+    {
+        *product = NULL;
+        return 0;
+    }
+    /* use product b reference from first pair to find and import product */
+    pair = filtered_result->pair[0];
+    product_metadata = filtered_result->dataset_b->metadata[pair->product_index_b];
+    if (product_metadata == NULL)
+    {
+        harp_set_error(HARP_ERROR_INVALID_ARGUMENT, "missing product metadata for product %s",
+                       filtered_result->dataset_b->source_product[pair->product_index_b]);
+        harp_collocation_result_shallow_delete(filtered_result);
+        return -1;
+    }
+
+    if (harp_collocation_mask_from_result(filtered_result, harp_collocation_right, source_product_b, &mask) != 0)
+    {
+        harp_collocation_result_shallow_delete(filtered_result);
+        return -1;
+    }
+
+    harp_collocation_result_shallow_delete(filtered_result);
+
+    if (harp_import(product_metadata->filename, &collocated_product) != 0)
+    {
+        harp_set_error(HARP_ERROR_IMPORT, "could not import file %s", product_metadata->filename);
+        harp_collocation_mask_delete(mask);
+        return -1;
+    }
+
+    if (harp_product_apply_collocation_mask(mask, collocated_product) != 0)
+    {
+        harp_collocation_mask_delete(mask);
+        return -1;
+    }
+
+    harp_collocation_mask_delete(mask);
+    *product = collocated_product;
+
+    return 0;
+}
+
 /** \addtogroup harp_product
  * @{
  */
@@ -1120,10 +1181,8 @@ LIBHARP_API int harp_product_regrid_vertical_with_collocated_dataset(harp_produc
  * \param product Product from which to derive a smoothed integrated vertical column.
  * \param name Name of the variable that should be created.
  * \param unit Unit (optional) of the variable that should be created.
- * \param num_dimensions Number of dimensions of the variable that should be created.
- * \param dimension_type Type of dimension for each of the dimensions of the variable that should be created.
- * \param column_avk_grid Vertical grid of the column avk.
- * \param column_avk_bounds Vertical grid boundaries variable of the column avk (optional).
+ * \param vertical_grid Variable containing the vertical grid of the column avk.
+ * \param vertical_bounds Variable containig the grid boundaries of the column avk (optional).
  * \param column_avk Column averaging kernel variable.
  * \param apriori Apriori profile (optional).
  * \param variable Pointer to the C variable where the derived HARP variable will be stored.
@@ -1293,67 +1352,6 @@ LIBHARP_API int harp_product_get_smoothed_column
     harp_product_delete(regrid_product);
 
     *variable = column_variable;
-
-    return 0;
-}
-
-static int get_collocated_product(harp_collocation_result *collocation_result, const char *source_product_b,
-                                  harp_product **product)
-{
-    harp_collocation_result *filtered_result;
-    harp_collocation_mask *mask;
-    harp_product_metadata *product_metadata;
-    harp_product *collocated_product;
-    harp_collocation_pair *pair;
-
-    if (harp_collocation_result_shallow_copy(collocation_result, &filtered_result) != 0)
-    {
-        return -1;
-    }
-    if (harp_collocation_result_filter_for_source_product_b(filtered_result, source_product_b) != 0)
-    {
-        harp_collocation_result_shallow_delete(filtered_result);
-        return -1;
-    }
-    if (filtered_result->num_pairs == 0)
-    {
-        *product = NULL;
-        return 0;
-    }
-    /* use product b reference from first pair to find and import product */
-    pair = filtered_result->pair[0];
-    product_metadata = filtered_result->dataset_b->metadata[pair->product_index_b];
-    if (product_metadata == NULL)
-    {
-        harp_set_error(HARP_ERROR_INVALID_ARGUMENT, "missing product metadata for product %s",
-                       filtered_result->dataset_b->source_product[pair->product_index_b]);
-        harp_collocation_result_shallow_delete(filtered_result);
-        return -1;
-    }
-
-    if (harp_collocation_mask_from_result(filtered_result, harp_collocation_right, source_product_b, &mask) != 0)
-    {
-        harp_collocation_result_shallow_delete(filtered_result);
-        return -1;
-    }
-
-    harp_collocation_result_shallow_delete(filtered_result);
-
-    if (harp_import(product_metadata->filename, &collocated_product) != 0)
-    {
-        harp_set_error(HARP_ERROR_IMPORT, "could not import file %s", product_metadata->filename);
-        harp_collocation_mask_delete(mask);
-        return -1;
-    }
-
-    if (harp_product_apply_collocation_mask(mask, collocated_product) != 0)
-    {
-        harp_collocation_mask_delete(mask);
-        return -1;
-    }
-
-    harp_collocation_mask_delete(mask);
-    *product = collocated_product;
 
     return 0;
 }
