@@ -426,4 +426,20 @@
     </cd:ProductDefinition>
   </cd:ProductType>
 
+  <cd:ProductType name="Multi_Sensor_AAI_L3">
+    <cd:Description>CCI Absorbing Aerosol Index from Multi Sensor L3 profile</cd:Description>
+    <cd:ProductDefinition id="Multi_Sensor_AAI_L3_nc3" format="netcdf" version="3">
+      <cd:Description>The format definition for this product is taken from the netcdf file itself.</cd:Description>
+      <cd:DetectionRule>
+        <cd:MatchExpression>substr(0, 16, filename()) == "Multi-Sensor_AAI"</cd:MatchExpression>
+      </cd:DetectionRule>
+    </cd:ProductDefinition>
+    <cd:ProductDefinition id="MERIS_ALAMO_L3_nc4" format="hdf5" version="4">
+      <cd:Description>The format definition for this product is taken from the netcdf file itself.</cd:Description>
+      <cd:DetectionRule>
+        <cd:MatchExpression>substr(0, 16, filename()) == "Multi-Sensor_AAI"</cd:MatchExpression>
+      </cd:DetectionRule>
+    </cd:ProductDefinition>
+  </cd:ProductType>
+
 </cd:ProductClass>
