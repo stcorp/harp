@@ -96,6 +96,12 @@ HARP_DOCFILES = \
 	doc/html/ingestions/ESACCI_AEROSOL_L2_ATSR2.html \
 	doc/html/ingestions/ESACCI_AEROSOL_L2_IASI.html \
 	doc/html/ingestions/ESACCI_AEROSOL_L2_MERIS_ALAMO.html \
+	doc/html/ingestions/ESACCI_AEROSOL_L3_AATSR.html \
+	doc/html/ingestions/ESACCI_AEROSOL_L3_ATSR2.html \
+	doc/html/ingestions/ESACCI_AEROSOL_L3_GOMOS_AERGOM.html \
+	doc/html/ingestions/ESACCI_AEROSOL_L3_IASI.html \
+	doc/html/ingestions/ESACCI_AEROSOL_L3_MERIS_ALAMO.html \
+	doc/html/ingestions/ESACCI_AEROSOL_L3_Multi_Sensor_AAI.html \
 	doc/html/ingestions/ESACCI_OZONE_L2_LP.html \
 	doc/html/ingestions/ESACCI_OZONE_L2_NP.html \
 	doc/html/ingestions/ESACCI_OZONE_L2_TC.html \
@@ -611,6 +617,18 @@ doc/html/ingestions/ESACCI_AEROSOL_L2_ATSR2.html:
 doc/html/ingestions/ESACCI_AEROSOL_L2_IASI.html:
 	$(MAKE) harp_doc
 doc/html/ingestions/ESACCI_AEROSOL_L2_MERIS_ALAMO.html:
+	$(MAKE) harp_doc
+doc/html/ingestions/ESACCI_AEROSOL_L3_AATSR.html:
+	$(MAKE) harp_doc
+doc/html/ingestions/ESACCI_AEROSOL_L3_ATSR2.html:
+	$(MAKE) harp_doc
+doc/html/ingestions/ESACCI_AEROSOL_L3_GOMOS_AERGOM.html:
+	$(MAKE) harp_doc
+doc/html/ingestions/ESACCI_AEROSOL_L3_IASI.html:
+	$(MAKE) harp_doc
+doc/html/ingestions/ESACCI_AEROSOL_L3_MERIS_ALAMO.html:
+	$(MAKE) harp_doc
+doc/html/ingestions/ESACCI_AEROSOL_L3_Multi_Sensor_AAI.html:
 	$(MAKE) harp_doc
 doc/html/ingestions/ESACCI_OZONE_L2_LP.html:
 	$(MAKE) harp_doc
