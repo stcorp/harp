@@ -658,6 +658,45 @@ int harp_product_get_datetime_range(const harp_product *product, double *datetim
     return 0;
 }
 
+int harp_product_get_storage_size(const harp_product *product, int with_attributes, int64_t *size)
+{
+    int64_t total_size = 0;
+    int i;
+
+    if (with_attributes)
+    {
+        if (product->source_product != NULL)
+        {
+            total_size += strlen(product->source_product);
+        }
+        if (product->history != NULL)
+        {
+            total_size += strlen(product->history);
+        }
+    }
+
+    for (i = 0; i < product->num_variables; i++)
+    {
+        harp_variable *variable = product->variable[i];
+
+        total_size += variable->num_elements * harp_get_size_for_type(variable->data_type);
+        if (with_attributes)
+        {
+            if (variable->description != 0)
+            {
+                total_size += strlen(variable->description);
+            }
+            if (variable->unit != 0)
+            {
+                total_size += strlen(variable->unit);
+            }
+        }
+    }
+
+    *size = total_size;
+    return 0;
+}
+
 /** \addtogroup harp_product
  * @{
  */

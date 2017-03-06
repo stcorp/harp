@@ -1360,6 +1360,8 @@ static int write_product(int ncid, const harp_product *product, netcdf_dimension
 int harp_export_netcdf(const char *filename, const harp_product *product)
 {
     netcdf_dimensions dimensions;
+    int64_t size;
+    int flags = 0;
     int result;
     int ncid;
 
@@ -1375,7 +1377,16 @@ int harp_export_netcdf(const char *filename, const harp_product *product)
         return -1;
     }
 
-    result = nc_create(filename, 0, &ncid);
+    if (harp_product_get_storage_size(product, 1, &size) != 0)
+    {
+        return -1;
+    }
+    if (size > 1073741824)
+    {
+        /* files larger than 1GB will be stored using 64-bit offsets */
+        flags |= NC_64BIT_OFFSET;
+    }
+    result = nc_create(filename, flags, &ncid);
     if (result != NC_NOERR)
     {
         harp_set_error(HARP_ERROR_NETCDF, "%s", nc_strerror(result));

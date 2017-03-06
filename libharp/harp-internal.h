@@ -158,6 +158,7 @@ int harp_product_remove_dimension(harp_product *product, harp_dimension_type dim
 void harp_product_remove_all_variables(harp_product *product);
 int harp_product_get_datetime_range(const harp_product *product, double *datetime_start, double *datetime_stop);
 int harp_product_get_derived_bounds_for_grid(harp_product *product, harp_variable *grid, harp_variable **bounds);
+int harp_product_get_storage_size(const harp_product *product, int with_attributes, int64_t *size);
 
 /* Import */
 #ifdef HAVE_HDF4
