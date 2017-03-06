@@ -830,7 +830,7 @@ static int read_scan_direction(void *user_data, long index, harp_array data)
         harp_set_error(HARP_ERROR_CODA, NULL);
         return -1;
     }
-    for (i = 0; i < 2; i++)
+    for (i = 0; i <= 2; i++)
     {
         if (coda_cursor_goto_record_field_by_name(&cursor, "latitude") != 0)
         {
