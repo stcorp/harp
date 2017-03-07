@@ -127,7 +127,8 @@ altitude derivations
    :math:`\phi`       latitude                     :math:`degN`          `latitude {:}`
    ================== ============================ ===================== =================================
 
-   The pattern `:` for the dimensions can represent `{vertical}`, `{time}`, `{time,vertical}`, or no dimensions at all.
+   The pattern `:` for the dimensions can represent `{latitude,longitude}`, `{time}`, `{time,latitude,longitude}`,
+   or no dimensions at all.
 
    This equation approximates the mean sea level gravity and radius by that of the reference ellipsoid.
 
