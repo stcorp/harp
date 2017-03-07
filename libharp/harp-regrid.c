@@ -768,7 +768,38 @@ LIBHARP_API int harp_product_regrid_with_collocated_dataset(harp_product *produc
         {
             continue;
         }
-
+        if (collocated_product->dimension[dimension_type] == 0)
+        {
+            /* product does not depend on the regridding dimension
+             * if the axis variable is still there (as 'axis_name {time}') then extend it
+             * with the given dimension type and treat the length of the dimension as 1
+             */
+            local_dimension_type[0] = harp_dimension_time;
+            if (harp_product_add_derived_variable(collocated_product, axis_name, axis_unit, 1, local_dimension_type)
+                != 0)
+            {
+                harp_product_delete(collocated_product);
+                harp_product_delete(merged_product);
+                harp_collocation_result_shallow_delete(filtered_collocation_result);
+                return -1;
+            }
+            if (harp_product_get_variable_by_name(collocated_product, axis_name, &target_grid) != 0)
+            {
+                harp_product_delete(collocated_product);
+                harp_product_delete(merged_product);
+                harp_collocation_result_shallow_delete(filtered_collocation_result);
+                return -1;
+            }
+            if (harp_variable_add_dimension(target_grid, 1, dimension_type, 1) != 0)
+            {
+                harp_product_delete(collocated_product);
+                harp_product_delete(merged_product);
+                harp_collocation_result_shallow_delete(filtered_collocation_result);
+                return -1;
+            }
+            harp_variable_print(target_grid, 0, printf);
+            collocated_product->dimension[dimension_type] = 1;
+        }
         local_dimension_type[0] = harp_dimension_time;
         local_dimension_type[1] = dimension_type;
         local_dimension_type[2] = harp_dimension_independent;
