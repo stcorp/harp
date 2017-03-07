@@ -797,7 +797,6 @@ LIBHARP_API int harp_product_regrid_with_collocated_dataset(harp_product *produc
                 harp_collocation_result_shallow_delete(filtered_collocation_result);
                 return -1;
             }
-            harp_variable_print(target_grid, 0, printf);
             collocated_product->dimension[dimension_type] = 1;
         }
         local_dimension_type[0] = harp_dimension_time;
