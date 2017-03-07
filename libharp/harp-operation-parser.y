@@ -231,6 +231,7 @@ int harp_sized_array_add_int32(harp_sized_array *sized_array, int32_t value)
 %token                  FUNC_REGRID
 %token                  FUNC_SMOOTH
 %token                  FUNC_VALID
+%token                  FUNC_WRAP
 %token                  NAN
 %token                  INF
 %token                  IN
@@ -287,6 +288,7 @@ reserved_identifier:
     | FUNC_REGRID { $$ = "regrid"; }
     | FUNC_SMOOTH { $$ = "smooth"; }
     | FUNC_VALID { $$ = "valid"; }
+    | FUNC_WRAP { $$ = "wrap"; }
     ;
 
 identifier:
@@ -566,6 +568,14 @@ operation:
         }
     | FUNC_VALID '(' identifier ')' {
             if (harp_valid_range_filter_new($3, &$$) != 0) YYERROR;
+            free($3);
+        }
+    | FUNC_WRAP '(' identifier ',' double_value ',' double_value ')' {
+            if (harp_wrap_new($3, NULL, $5, $7, &$$) != 0) YYERROR;
+            free($3);
+        }
+    | FUNC_WRAP '(' identifier UNIT ',' double_value ',' double_value ')' {
+            if (harp_wrap_new($3, $4, $6, $8, &$$) != 0) YYERROR;
             free($3);
         }
     ;

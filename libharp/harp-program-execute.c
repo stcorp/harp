@@ -1449,6 +1449,51 @@ static int execute_smooth_collocated(harp_product *product, harp_program *progra
     return 0;
 }
 
+static int execute_wrap(harp_product *product, harp_program *program)
+{
+    harp_operation *operation;
+    const harp_wrap_args *args;
+    harp_variable *variable;
+    long i;
+
+    assert(program->num_operations != 0);
+    operation = program->operation[0];
+    assert(operation->type == harp_operation_wrap);
+
+    args = (const harp_wrap_args *)operation->args;
+
+    if (harp_product_get_variable_by_name(product, args->variable_name, &variable) != 0)
+    {
+        return -1;
+    }
+    if (args->unit != NULL)
+    {
+        if (harp_variable_convert_unit(variable, args->unit) != 0)
+        {
+            return -1;
+        }
+    }
+    else
+    {
+        if (harp_variable_convert_data_type(variable, harp_type_double) != 0)
+        {
+            return -1;
+        }
+    }
+
+    for (i = 0; i < variable->num_elements; i++)
+    {
+        variable->data.double_data[i] = harp_wrap(variable->data.double_data[i], args->min, args->max);
+    }
+
+    if (harp_program_remove_operation_at_index(program, 0) != 0)
+    {
+        return -1;
+    }
+
+    return 0;
+}
+
 /* Execute the next operation in the specified program.
  * Consecutive dimension-filters are treated as a single 'operation' for optimization purposes.
  */
@@ -1529,6 +1574,12 @@ static int execute_next_operation(harp_product *product, harp_program *program)
             break;
         case harp_operation_smooth_collocated:
             if (execute_smooth_collocated(product, program) != 0)
+            {
+                return -1;
+            }
+            break;
+        case harp_operation_wrap:
+            if (execute_wrap(product, program) != 0)
             {
                 return -1;
             }

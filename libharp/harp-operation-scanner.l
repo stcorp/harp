@@ -104,6 +104,7 @@ WHITESPACE   [[:space:]]+
 "regrid"                return FUNC_REGRID;
 "smooth"                return FUNC_SMOOTH;
 "valid"                 return FUNC_VALID;
+"wrap"                  return FUNC_WRAP;
 
 "time"                  {
                             yylval.int32_val = harp_dimension_time;

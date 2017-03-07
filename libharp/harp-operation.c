@@ -440,6 +440,23 @@ static void valid_range_filter_args_delete(harp_valid_range_filter_args *args)
     }
 }
 
+static void wrap_args_delete(harp_wrap_args *args)
+{
+    if (args != NULL)
+    {
+        if (args->variable_name != NULL)
+        {
+            free(args->variable_name);
+        }
+        if (args->unit != NULL)
+        {
+            free(args->unit);
+        }
+
+        free(args);
+    }
+}
+
 static int area_mask_covers_area_filter_args_new(const char *filename,
                                                  harp_area_mask_covers_area_filter_args **new_args)
 {
@@ -1329,6 +1346,46 @@ static int valid_range_filter_args_new(const char *variable_name, harp_valid_ran
     return 0;
 }
 
+static int wrap_args_new(const char *variable_name, const char *unit, double min, double max, harp_wrap_args **new_args)
+{
+    harp_wrap_args *args;
+
+    args = (harp_wrap_args *)malloc(sizeof(harp_wrap_args));
+    if (args == NULL)
+    {
+        harp_set_error(HARP_ERROR_OUT_OF_MEMORY, "out of memory (could not allocate %lu bytes) (%s:%u)",
+                       sizeof(harp_wrap_args), __FILE__, __LINE__);
+        return -1;
+    }
+    args->variable_name = NULL;
+    args->unit = NULL;
+    args->min = min;
+    args->max = max;
+
+    args->variable_name = strdup(variable_name);
+    if (args->variable_name == NULL)
+    {
+        harp_set_error(HARP_ERROR_OUT_OF_MEMORY, "out of memory (could not duplicate string) (%s:%u)", __FILE__,
+                       __LINE__);
+        wrap_args_delete(args);
+        return -1;
+    }
+    if (unit != NULL)
+    {
+        args->unit = strdup(unit);
+        if (args->unit == NULL)
+        {
+            harp_set_error(HARP_ERROR_OUT_OF_MEMORY, "out of memory (could not duplicate string) (%s:%u)", __FILE__,
+                           __LINE__);
+            wrap_args_delete(args);
+            return -1;
+        }
+    }
+
+    *new_args = args;
+    return 0;
+}
+
 static int area_mask_covers_area_filter_args_copy(const harp_area_mask_covers_area_filter_args *args,
                                                   harp_area_mask_covers_area_filter_args **new_args)
 {
@@ -1478,6 +1535,12 @@ static int valid_range_filter_args_copy(const harp_valid_range_filter_args *args
     return valid_range_filter_args_new(args->variable_name, new_args);
 }
 
+static int wrap_args_copy(const harp_wrap_args *args, harp_wrap_args **new_args)
+{
+    assert(args != NULL);
+    return wrap_args_new(args->variable_name, args->unit, args->min, args->max, new_args);
+}
+
 int harp_operation_new(harp_operation_type type, void *args, harp_operation **new_operation)
 {
     harp_operation *operation;
@@ -1564,6 +1627,9 @@ static void args_delete(harp_operation_type operation_type, void *args)
         case harp_operation_valid_range_filter:
             valid_range_filter_args_delete((harp_valid_range_filter_args *)args);
             break;
+        case harp_operation_wrap:
+            wrap_args_delete((harp_wrap_args *)args);
+            break;
     }
 }
 
@@ -1645,6 +1711,8 @@ static int args_copy(harp_operation_type operation_type, const void *args, void 
         case harp_operation_valid_range_filter:
             return valid_range_filter_args_copy((const harp_valid_range_filter_args *)args,
                                                 (harp_valid_range_filter_args **)new_args);
+        case harp_operation_wrap:
+            return wrap_args_copy((const harp_wrap_args *)args, (harp_wrap_args **)new_args);
     }
 
     return -1;
@@ -2118,6 +2186,26 @@ int harp_valid_range_filter_new(const char *variable_name, harp_operation **new_
     if (harp_operation_new(harp_operation_valid_range_filter, args, &operation) != 0)
     {
         valid_range_filter_args_delete(args);
+        return -1;
+    }
+
+    *new_operation = operation;
+    return 0;
+}
+
+int harp_wrap_new(const char *variable_name, const char *unit, double min, double max, harp_operation **new_operation)
+{
+    harp_wrap_args *args;
+    harp_operation *operation;
+
+    if (wrap_args_new(variable_name, unit, min, max, &args) != 0)
+    {
+        return -1;
+    }
+
+    if (harp_operation_new(harp_operation_wrap, args, &operation) != 0)
+    {
+        wrap_args_delete(args);
         return -1;
     }
 

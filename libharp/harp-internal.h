@@ -277,6 +277,7 @@ double harp_wavelength_from_frequency(double frequency);
 double harp_wavelength_from_wavenumber(double wavenumber);
 double harp_wavenumber_from_frequency(double frequency);
 double harp_wavenumber_from_wavelength(double wavelength);
+double harp_wrap(double value, double min, double max);
 
 /* Interpolation */
 void harp_interpolate_find_index(long source_length, const double *source_grid, double target_grid_point, long *index);

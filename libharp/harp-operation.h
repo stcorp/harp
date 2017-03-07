@@ -57,6 +57,7 @@ typedef enum harp_operation_type_enum
     harp_operation_string_comparison_filter,
     harp_operation_string_membership_filter,
     harp_operation_valid_range_filter,
+    harp_operation_wrap,
 } harp_operation_type;
 
 typedef struct harp_operation_struct
@@ -250,6 +251,14 @@ typedef struct harp_valid_range_filter_args_struct
     char *variable_name;
 } harp_valid_range_filter_args;
 
+typedef struct harp_wrap_args_struct
+{
+    char *variable_name;
+    char *unit;
+    double min;
+    double max;
+} harp_wrap_args;
+
 /* Generic operation */
 int harp_operation_new(harp_operation_type type, void *args, harp_operation **new_operation);
 void harp_operation_delete(harp_operation *operation);
@@ -300,5 +309,6 @@ int harp_string_comparison_filter_new(const char *variable_name, harp_comparison
 int harp_string_membership_filter_new(const char *variable_name, harp_membership_operator_type operator_type,
                                       int num_values, const char **value, harp_operation **new_operation);
 int harp_valid_range_filter_new(const char *variable_name, harp_operation **new_operation);
+int harp_wrap_new(const char *variable_name, const char *unit, double min, double max, harp_operation **new_operation);
 
 #endif

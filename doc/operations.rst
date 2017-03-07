@@ -190,6 +190,13 @@ Supported functions:
         Exclude invalid values of the specified variable (values
         outside the valid range of the variable, or NaN).
 
+    ``wrap(variable [unit], minimum, maximum)``
+        Wrap the values of the variable to the range given by minimum and maximum.
+        The result is: min + (value - min) % (max - min)
+        Example:
+
+            ``wrap(longitude [degree_east], -180, 180)``
+
 
 Collocation result file
 -----------------------
@@ -301,7 +308,8 @@ Formal definition
        'regrid', '(', dimension, ',', variable, unit, ',', stringvalue, ',', ( 'a' | 'b' ), ',', stringvalue, ')' |
        'smooth', '(', variable, ',' dimension, ',', variable, unit, ',', stringvalue, ',', ( 'a' | 'b' ), ',', stringvalue, ')' |
        'smooth', '(', '(', variablelist, ')', ',' dimension, ',', variable, unit, ',', stringvalue, ',', ( 'a' | 'b' ), ',', stringvalue, ')' |
-       'valid', '(', variable, ')' ;
+       'valid', '(', variable, ')' |
+       'wrap', '(', variable, [unit], ',', floatvalue, ',', floatvalue, ')' ;
 
     operationexpr = 
        variable, operator, value, [unit] |

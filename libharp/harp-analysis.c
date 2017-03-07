@@ -601,3 +601,15 @@ double harp_wavenumber_from_wavelength(double wavelength)
 {
     return 1.0 / wavelength;
 }
+
+/** Wrap a value to the given min/max range
+ * The result is: min + (value - min) % (max - min)
+ * \param value Value to wrap to the given range
+ * \param min Minimum value of the range
+ * \param max Maximum value of the range
+ * \return Wrapped value
+ */
+double harp_wrap(double value, double min, double max)
+{
+    return min + fmod(value - min, max - min);
+}
