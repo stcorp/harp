@@ -263,7 +263,6 @@ input:
     | program     { parsed_program = $1; }
     ;
 
-/* note that we only have to include function names here that don't contain a '-' */
 reserved_identifier:
       NAN { $$ = "nan"; }
     | INF { $$ = "inf"; }
@@ -272,11 +271,21 @@ reserved_identifier:
     | DIMENSION { $$ = harp_get_dimension_type_name($1); }
     | ID_A { $$ = "a"; }
     | ID_B { $$ = "b"; }
+    | FUNC_AREA_MASK_COVERS_AREA { $$ = "area_mask_covers_area"; }
+    | FUNC_AREA_MASK_COVERS_POINT { $$ = "area_mask_covers_point"; }
+    | FUNC_AREA_MASK_INTERSECTS_AREA { $$ = "area_mask_intersects_area"; }
+    | FUNC_COLLOCATE_LEFT { $$ = "collocate_left"; }
+    | FUNC_COLLOCATE_RIGHT { $$ = "collocate_right"; }
     | FUNC_DERIVE { $$ = "derive"; }
+    | FUNC_DERIVE_SMOOTHED_COLUMN { $$ = "derive_smoothed_column"; }
     | FUNC_EXCLUDE { $$ = "exclude"; }
     | FUNC_FLATTEN { $$ = "flatten"; }
     | FUNC_KEEP { $$ = "keep"; }
+    | FUNC_LONGITUDE_RANGE { $$ = "longitude_range"; }
+    | FUNC_POINT_DISTANCE { $$ = "point_distance"; }
+    | FUNC_POINT_IN_AREA { $$ = "point_in_area"; }
     | FUNC_REGRID { $$ = "regrid"; }
+    | FUNC_SMOOTH { $$ = "smooth"; }
     | FUNC_VALID { $$ = "valid"; }
     ;
 
