@@ -567,7 +567,7 @@ LIBHARP_API int harp_product_regrid_with_axis_variable(harp_product *product, ha
             long k, l;
 
             /* keep track of time index for time dependent grids */
-            if (j % (num_blocks/source_num_time_elements) == 0)
+            if (j % (num_blocks / source_num_time_elements) == 0)
             {
                 if (source_grid_num_dims == 2 && j > 0)
                 {
