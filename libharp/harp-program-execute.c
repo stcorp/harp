@@ -79,10 +79,7 @@ static int evaluate_value_filters_0d(const harp_product *product, harp_program *
             harp_predicate_delete(predicate);
             return -1;
         }
-        else
-        {
-            harp_predicate_delete(predicate);
-        }
+        harp_predicate_delete(predicate);
 
         if (harp_program_remove_operation_at_index(ops_0d, i) != 0)
         {
@@ -958,6 +955,8 @@ static int execute_filter_operations(harp_product *product, harp_program *progra
 
     if (product_mask == 0)
     {
+        /* the full product is masked out so remove all variables to make it empty */
+        harp_product_remove_all_variables(product);
         status = 0;
         goto cleanup;
     }
