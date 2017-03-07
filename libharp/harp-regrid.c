@@ -296,7 +296,7 @@ LIBHARP_API int harp_product_regrid_with_axis_variable(harp_product *product, ha
     long source_grid_num_dim_elements;
     long target_grid_max_dim_elements;
     long target_grid_num_dim_elements;
-    long source_num_time_elements = 1;
+    long source_num_time_elements;
     int source_grid_num_dims = 1;
     int target_grid_num_dims;
     harp_variable *variable;
@@ -377,6 +377,14 @@ LIBHARP_API int harp_product_regrid_with_axis_variable(harp_product *product, ha
         }
     }
 
+    if (product->dimension[harp_dimension_time] == 0)
+    {
+        /* if the product did not have a time dimension then introduce one with length 1
+         * all variables that will be regridded will have this dimension added as first dimension */
+        product->dimension[harp_dimension_time] = 1;
+    }
+    source_num_time_elements = product->dimension[harp_dimension_time];
+
     grid_dim_type[0] = harp_dimension_time;
     grid_dim_type[1] = dimension_type;
 
@@ -392,7 +400,6 @@ LIBHARP_API int harp_product_regrid_with_axis_variable(harp_product *product, ha
             goto error;
         }
         source_grid_num_dims = 2;
-        source_num_time_elements = source_grid->dimension[0];
     }
     source_grid_max_dim_elements = source_grid->dimension[source_grid->num_dimensions - 1];
     source_max_dim_elements = source_grid_max_dim_elements;
@@ -519,8 +526,8 @@ LIBHARP_API int harp_product_regrid_with_axis_variable(harp_product *product, ha
             goto error;
         }
 
-        /* Make time independent variables time dependent if source grid is time dependent */
-        if (source_grid_num_dims > 1)
+        /* Make time independent variables time dependent if source grid or target grid is time dependent */
+        if (source_grid_num_dims > 1 || target_grid_num_dims > 1)
         {
             if (variable->dimension_type[0] != harp_dimension_time)
             {
@@ -553,26 +560,26 @@ LIBHARP_API int harp_product_regrid_with_axis_variable(harp_product *product, ha
         /* keep track of time index separately since num_blocks can capture more than just the time dimension */
         source_time_index = 0;
         target_time_index = 0;
+        source_grid_num_dim_elements = get_unpadded_length(source_grid->data.double_data, source_grid_max_dim_elements);
+        target_grid_num_dim_elements = get_unpadded_length(target_grid->data.double_data, target_grid_max_dim_elements);
         for (j = 0; j < num_blocks; j++)
         {
             long k, l;
 
             /* keep track of time index for time dependent grids */
-            if (j % source_num_time_elements == 0)
+            if (j % (num_blocks/source_num_time_elements) == 0)
             {
                 if (source_grid_num_dims == 2 && j > 0)
                 {
                     source_time_index++;
+                    source_grid_num_dim_elements =
+                        get_unpadded_length(&source_grid->data.double_data[source_time_index *
+                                                                           source_grid_max_dim_elements],
+                                            source_grid_max_dim_elements);
                 }
-                /* find the actual grid lengths */
-                source_grid_num_dim_elements =
-                    get_unpadded_length(&source_grid->data.double_data[source_time_index *
-                                                                       source_grid_max_dim_elements],
-                                        source_grid_max_dim_elements);
-                if (target_grid_num_dims == 2 || j == 0)
+                if (target_grid_num_dims == 2 && j > 0)
                 {
-                    /* if target grid is time dependent, then source grid will also be time dependent */
-                    target_time_index = source_time_index;
+                    target_time_index++;
                     target_grid_num_dim_elements =
                         get_unpadded_length(&target_grid->data.double_data[target_time_index *
                                                                            target_grid_max_dim_elements],
@@ -582,7 +589,7 @@ LIBHARP_API int harp_product_regrid_with_axis_variable(harp_product *product, ha
 
             for (l = 0; l < num_elements; l++)
             {
-                /* we need to regrid by tacking a slice for each sub element 'l' */
+                /* we need to regrid by taking a slice for each sub element 'l' */
                 for (k = 0; k < source_grid_num_dim_elements; k++)
                 {
                     source_buffer[k] = variable->data.double_data[(j * source_max_dim_elements + k) * num_elements + l];
