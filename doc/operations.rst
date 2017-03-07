@@ -105,7 +105,8 @@ Supported functions:
        dimension and none of the variables in the product will
        depend on the given dimension anymore. Variables that depend
        more than once on the given dimension will be removed. The
-       index and collocation_index variables will also be removed.
+       index and collocation_index variables will be removed if the
+       length of the flattened dimension did not equal 1.
        Independent dimensions cannot be flattened.
        Example:
 

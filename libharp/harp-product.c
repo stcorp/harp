@@ -1612,7 +1612,8 @@ LIBHARP_API void harp_product_print(const harp_product *product, int show_attrib
  * dimension type and that none of the variables in the product will depend on the given dimension type anymore.
  *
  * Any variables that depend more than once on the given dimension type will be removed from the product.
- * The index and collocation_index variables will be removed if present.
+ * If the length of the flattend dimensions does not equal 1 then the index and collocation_index variables will be
+ * removed if present.
  * Variables that had the given dimension type but were time independent are first made time dependent before
  * flattening the dimension.
  *
@@ -1639,19 +1640,22 @@ LIBHARP_API int harp_product_flatten_dimension(harp_product *product, harp_dimen
         return 0;
     }
 
-    /* remove index and collocation_index variables if they exist */
-    if (harp_product_has_variable(product, "index"))
+    if (dim_length != 1)
     {
-        if (harp_product_remove_variable_by_name(product, "index") != 0)
+        /* remove index and collocation_index variables if they exist */
+        if (harp_product_has_variable(product, "index"))
         {
-            return -1;
+            if (harp_product_remove_variable_by_name(product, "index") != 0)
+            {
+                return -1;
+            }
         }
-    }
-    if (harp_product_has_variable(product, "collocation_index"))
-    {
-        if (harp_product_remove_variable_by_name(product, "collocation_index") != 0)
+        if (harp_product_has_variable(product, "collocation_index"))
         {
-            return -1;
+            if (harp_product_remove_variable_by_name(product, "collocation_index") != 0)
+            {
+                return -1;
+            }
         }
     }
 
