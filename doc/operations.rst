@@ -289,18 +289,19 @@ Formal definition
        'collocate_left', '(', stringvalue, ')' |
        'collocate_right', '(', stringvalue, ')' |
        'derive', '(', variable, dimensionspec, [unit], ')' |
-       'derive_smoothed_column', '(', variable, dimensionspec, [unit], ',' variable, [unit], ',', stringvalue, ',', ( 'a' | 'b' ), ',', stringvalue, ')' |
+       'derive_smoothed_column', '(', variable, dimensionspec, [unit], ',', variable, unit, ',', stringvalue, ',', ( 'a' | 'b' ), ',', stringvalue, ')' |
        'exclude', '(', variablelist, ')' |
-       'flatten', '(', dimension, ')' ;
+       'flatten', '(', dimension, ')' |
        'keep', '(', variablelist, ')' |
        'longitude_range', '(', floatvalue, [unit], ',', floatvalue, [unit], ')' |
        'point_distance', '(', floatvalue, [unit], ',', floatvalue, [unit], ',', floatvalue, [unit], ')' |
        'point_in_area', '(', floatvalue, [unit], ',', floatvalue, [unit], ')' |
-       'regrid', '(', dimension, ',', variable, [unit], ',', '(', floatvaluelist, ')', ')' |
-       'regrid', '(', dimension, ',', variable, [unit], ',', intvalue, ',', floatvalue, ',', floatvalue, ')' |
-       'smooth', '(', variable, ',' dimension, ',', variable, [unit], ',', stringvalue, ',', ( 'a' | 'b' ), ',', stringvalue, ')' |
-       'smooth', '(', '(', variablelist, ')', ',' dimension, ',', variable, [unit], ',', stringvalue, ',', ( 'a' | 'b' ), ',', stringvalue, ')' |
-       'valid', '(', variable, ')' |
+       'regrid', '(', dimension, ',', variable, unit, ',', '(', floatvaluelist, ')', ')' |
+       'regrid', '(', dimension, ',', variable, unit, ',', intvalue, ',', floatvalue, ',', floatvalue, ')' |
+       'regrid', '(', dimension, ',', variable, unit, ',', stringvalue, ',', ( 'a' | 'b' ), ',', stringvalue, ')' |
+       'smooth', '(', variable, ',' dimension, ',', variable, unit, ',', stringvalue, ',', ( 'a' | 'b' ), ',', stringvalue, ')' |
+       'smooth', '(', '(', variablelist, ')', ',' dimension, ',', variable, unit, ',', stringvalue, ',', ( 'a' | 'b' ), ',', stringvalue, ')' |
+       'valid', '(', variable, ')' ;
 
     operationexpr = 
        variable, operator, value, [unit] |
