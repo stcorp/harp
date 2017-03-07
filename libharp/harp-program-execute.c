@@ -1060,11 +1060,12 @@ static int execute_collocation_filter(harp_product *product, harp_program *progr
      */
     if (!harp_product_has_variable(product, "collocation_index") && !harp_product_has_variable(product, "index"))
     {
-        /* Neither the "collocation_index" nor the "index" variable exists in the product,
-         * which means collocation
-         * filters cannot be applied. */
-        harp_set_error(HARP_ERROR_OPERATION, OPERATION_FILTER_COLLOCATION_MISSING_INDEX);
-        return -1;
+        int dimension_type = harp_dimension_time;
+
+        if (harp_product_add_derived_variable(product, "index", NULL, 1, &dimension_type) != 0)
+        {
+            return -1;
+        }
     }
 
     args = (const harp_collocation_filter_args *)operation->args;
