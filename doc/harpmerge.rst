@@ -7,7 +7,7 @@ the time dimension and storing the result into a single output file.
 ::
 
   Usage:
-      harpmerge [options] <file/dir> [<file/dir> ...] <output product file>
+      harpmerge [options] <file|dir> [<file|dir> ...] <output product file>
           Concatenate all products as specified by the file and directory paths
           into a single product.
   

@@ -59,7 +59,7 @@ static void print_version()
 static void print_help()
 {
     printf("Usage:\n");
-    printf("    harpmerge [options] <file/dir> [<file/dir> ...] <output product file>\n");
+    printf("    harpmerge [options] <file|dir> [<file|dir> ...] <output product file>\n");
     printf("        Concatenate all products as specified by the file and directory paths\n");
     printf("        into a single product.\n");
     printf("\n");
