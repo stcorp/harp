@@ -125,49 +125,46 @@ static int get_main_data(ingest_info *info, const char *fieldname, main_data_var
 
 static int get_spectra_sample_data(ingest_info *info, long row, float *float_data_array)
 {
-    static int32_t first_channel;
-    static int16_t measured_spectrum_data[SPECTRA_PER_SCANLINE * 8700];
-    static int16_t *spectrum_data;
+    int32_t first_channel;
+    int16_t measured_spectrum_data[8700];
+    int16_t *spectrum_data;
     coda_cursor cursor;
-    float *float_data, *start_of_float_data_this_spectrum;
+    float *float_data;
     int16_t scale_nr, channel_nr;
     int16_t *start_of_this_spectrum;
 
     float_data = float_data_array;
     cursor = info->mdr_cursors[row / SPECTRA_PER_SCANLINE];
-    if (row % SPECTRA_PER_SCANLINE == 0L)
+    if (coda_cursor_goto_record_field_by_name(&cursor, "IDefNsfirst1b") != 0)
     {
-        if (coda_cursor_goto_record_field_by_name(&cursor, "IDefNsfirst1b") != 0)
-        {
-            harp_set_error(HARP_ERROR_CODA, NULL);
-            return -1;
-        }
-        if (coda_cursor_read_int32(&cursor, &first_channel) != 0)
-        {
-            harp_set_error(HARP_ERROR_CODA, NULL);
-            return -1;
-        }
-        coda_cursor_goto_parent(&cursor);
+        harp_set_error(HARP_ERROR_CODA, NULL);
+        return -1;
+    }
+    if (coda_cursor_read_int32(&cursor, &first_channel) != 0)
+    {
+        harp_set_error(HARP_ERROR_CODA, NULL);
+        return -1;
+    }
+    coda_cursor_goto_parent(&cursor);
 
-        /* GS1cSpect contains int16 and has the following dimensions: */
-        /* dim[0] = SCANS_PER_SCANLINE (fixed at 30)                  */
-        /* dim[1] = SPECTRA_PER_SCAN (fixed at 4)                     */
-        /* dim[2] = pixels in one spectrum (fixed at 8700)            */
-        if (coda_cursor_goto_record_field_by_name(&cursor, "GS1cSpect") != 0)
-        {
-            harp_set_error(HARP_ERROR_CODA, NULL);
-            return -1;
-        }
-        if (coda_cursor_read_int16_array(&cursor, measured_spectrum_data, coda_array_ordering_c) != 0)
-        {
-            harp_set_error(HARP_ERROR_CODA, NULL);
-            return -1;
-        }
-        spectrum_data = measured_spectrum_data;
+    /* GS1cSpect contains int16 and has the following dimensions: */
+    /* dim[0] = SCANS_PER_SCANLINE (fixed at 30)                  */
+    /* dim[1] = SPECTRA_PER_SCAN (fixed at 4)                     */
+    /* dim[2] = pixels in one spectrum (fixed at 8700)            */
+    if (coda_cursor_goto_record_field_by_name(&cursor, "GS1cSpect") != 0)
+    {
+        harp_set_error(HARP_ERROR_CODA, NULL);
+        return -1;
     }
 
+    if (coda_cursor_read_int16_partial_array(&cursor, (row % SPECTRA_PER_SCANLINE) * info->num_pixels, info->num_pixels, measured_spectrum_data) != 0)
+    {
+        harp_set_error(HARP_ERROR_CODA, NULL);
+        return -1;
+    }
+    spectrum_data = measured_spectrum_data;
+
     start_of_this_spectrum = spectrum_data;
-    start_of_float_data_this_spectrum = float_data;
     for (scale_nr = 0; scale_nr < info->nr_scale_factors; scale_nr++)
     {
         spectrum_data = start_of_this_spectrum + info->channel_first[scale_nr] - first_channel;
@@ -181,65 +178,61 @@ static int get_spectra_sample_data(ingest_info *info, long row, float *float_dat
         }
     }
     spectrum_data = start_of_this_spectrum + info->num_pixels;
-    float_data = start_of_float_data_this_spectrum + info->num_pixels;
 
     return 0;
 }
 
 static int get_wavenumber_sample_data(ingest_info *info, long row, float *float_data_array)
 {
-    static double sample_width;
-    static int32_t first_sample, last_sample, sample;
+    double sample_width;
+    int32_t first_sample, last_sample, sample;
     coda_cursor cursor;
     float *float_data;
     long i;
 
     float_data = float_data_array;
     cursor = info->mdr_cursors[row / SPECTRA_PER_SCANLINE];
-    if (row % SPECTRA_PER_SCANLINE == 0L)
+    if (coda_cursor_goto_record_field_by_name(&cursor, "IDefSpectDWn1b") != 0)
     {
-        if (coda_cursor_goto_record_field_by_name(&cursor, "IDefSpectDWn1b") != 0)
-        {
-            harp_set_error(HARP_ERROR_CODA, NULL);
-            return -1;
-        }
-        if (coda_cursor_read_double(&cursor, &sample_width) != 0)
-        {
-            harp_set_error(HARP_ERROR_CODA, NULL);
-            return -1;
-        }
-        coda_cursor_goto_parent(&cursor);
-        if (coda_cursor_goto_record_field_by_name(&cursor, "IDefNsfirst1b") != 0)
-        {
-            harp_set_error(HARP_ERROR_CODA, NULL);
-            return -1;
-        }
-        if (coda_cursor_read_int32(&cursor, &first_sample) != 0)
-        {
-            harp_set_error(HARP_ERROR_CODA, NULL);
-            return -1;
-        }
-        coda_cursor_goto_parent(&cursor);
-        if (coda_cursor_goto_record_field_by_name(&cursor, "IDefNslast1b") != 0)
-        {
-            harp_set_error(HARP_ERROR_CODA, NULL);
-            return -1;
-        }
-        if (coda_cursor_read_int32(&cursor, &last_sample) != 0)
-        {
-            harp_set_error(HARP_ERROR_CODA, NULL);
-            return -1;
-        }
-        if (last_sample < first_sample)
-        {
-            harp_set_error(HARP_SUCCESS, "product error detected (IDefNslast1b < IDefNsfirst1b)");
-            return -1;
-        }
-        if ((last_sample - first_sample + 1) > info->num_pixels)
-        {
-            harp_set_error(HARP_SUCCESS, "product error detected (IDefNslast1b - IDefNsfirst1b + 1 > 8700)");
-            return -1;
-        }
+        harp_set_error(HARP_ERROR_CODA, NULL);
+        return -1;
+    }
+    if (coda_cursor_read_double(&cursor, &sample_width) != 0)
+    {
+        harp_set_error(HARP_ERROR_CODA, NULL);
+        return -1;
+    }
+    coda_cursor_goto_parent(&cursor);
+    if (coda_cursor_goto_record_field_by_name(&cursor, "IDefNsfirst1b") != 0)
+    {
+        harp_set_error(HARP_ERROR_CODA, NULL);
+        return -1;
+    }
+    if (coda_cursor_read_int32(&cursor, &first_sample) != 0)
+    {
+        harp_set_error(HARP_ERROR_CODA, NULL);
+        return -1;
+    }
+    coda_cursor_goto_parent(&cursor);
+    if (coda_cursor_goto_record_field_by_name(&cursor, "IDefNslast1b") != 0)
+    {
+        harp_set_error(HARP_ERROR_CODA, NULL);
+        return -1;
+    }
+    if (coda_cursor_read_int32(&cursor, &last_sample) != 0)
+    {
+        harp_set_error(HARP_ERROR_CODA, NULL);
+        return -1;
+    }
+    if (last_sample < first_sample)
+    {
+        harp_set_error(HARP_SUCCESS, "product error detected (IDefNslast1b < IDefNsfirst1b)");
+        return -1;
+    }
+    if ((last_sample - first_sample + 1) > info->num_pixels)
+    {
+        harp_set_error(HARP_SUCCESS, "product error detected (IDefNslast1b - IDefNsfirst1b + 1 > 8700)");
+        return -1;
     }
     for (sample = first_sample, i = 0; sample <= last_sample; sample++, i++)
     {
