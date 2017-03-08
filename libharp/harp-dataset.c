@@ -503,7 +503,8 @@ LIBHARP_API int harp_dataset_add_product(harp_dataset *dataset, const char *sour
 
         /* add newly appended item into the list of sorted indices */
         index = 0;
-        while (index < dataset->num_products && strcmp(source_product, dataset->source_product[index]) > 0)
+        while (index < dataset->num_products &&
+               strcmp(source_product, dataset->source_product[dataset->sorted_index[index]]) > 0)
         {
             index++;
         }
