@@ -157,7 +157,8 @@ static int get_spectra_sample_data(ingest_info *info, long row, float *float_dat
         return -1;
     }
 
-    if (coda_cursor_read_int16_partial_array(&cursor, (row % SPECTRA_PER_SCANLINE) * info->num_pixels, info->num_pixels, measured_spectrum_data) != 0)
+    if (coda_cursor_read_int16_partial_array(&cursor, (row % SPECTRA_PER_SCANLINE) * info->num_pixels,
+                                             info->num_pixels, measured_spectrum_data) != 0)
     {
         harp_set_error(HARP_ERROR_CODA, NULL);
         return -1;
