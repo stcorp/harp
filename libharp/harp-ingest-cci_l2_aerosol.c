@@ -315,6 +315,28 @@ static int read_wavelength(void *user_data, harp_array data)
     return 0;
 }
 
+static int read_sensor_zenith_angle(void *user_data, harp_array data)
+{
+    ingest_info *info = (ingest_info *)user_data;
+    int retval;
+
+    retval = read_dataset(info, "/satellite_zenith_at_center", info->num_time, data);
+    if (retval != 0)
+    {
+        retval = read_dataset(info, "/satellite_zenith", info->num_time, data);
+    }
+    return 0;
+}
+
+static int read_solar_zenith_angle(void *user_data, harp_array data)
+{
+    ingest_info *info = (ingest_info *)user_data;
+    int retval;
+
+    retval = read_dataset(info, "/sun_zenith_at_center", info->num_time, data);
+    return retval;
+}
+
 static int read_dimensions(void *user_data, long dimension[HARP_NUM_DIM_TYPES])
 {
     ingest_info *info = (ingest_info *)user_data;
@@ -359,6 +381,31 @@ static int init_dimensions(ingest_info *info)
 }
 
 /* Start of code that is specific for the AATSR and ATSR2 instruments */
+
+static int exclude_when_multiple_zenith_angles(void *user_data)
+{
+    ingest_info *info = (ingest_info *)user_data;
+    coda_cursor cursor;
+    long coda_num_elements;
+
+    if (coda_cursor_set_product(&cursor, info->product) != 0)
+    {
+        return TRUE;
+    }
+    if (coda_cursor_goto(&cursor, "/satellite_zenith_at_center") != 0)
+    {
+        return TRUE;
+    }
+    if (coda_cursor_get_num_elements(&cursor, &coda_num_elements) != 0)
+    {
+        return TRUE;
+    }
+    if (coda_num_elements != info->num_time)
+    {
+        return TRUE;
+    }
+    return FALSE;
+}
 
 static int ingestion_init_aatsr_atsr2(const harp_ingestion_module *module, coda_product *product,
                                       const harp_ingestion_options *options, harp_product_definition **definition,
@@ -478,6 +525,24 @@ static int register_aatsr_atsr2_product(harp_ingestion_module *module, char *pro
                                                    dimension_type, NULL, description, "nm", NULL, read_wavelength);
     description = "fixed values";
     harp_variable_definition_add_mapping(variable_definition, NULL, NULL, NULL, description);
+
+    /* sensor_zenith_angle */
+    description = "sensor zenith angle for nadir view";
+    variable_definition =
+        harp_ingestion_register_variable_full_read(product_definition, "sensor_zenith_angle", harp_type_double, 1,
+                                                   dimension_type, NULL, description, NULL,
+                                                   exclude_when_multiple_zenith_angles, read_sensor_zenith_angle);
+    path = "/satellite_zenith_at_center[]";
+    harp_variable_definition_add_mapping(variable_definition, NULL, NULL, path, NULL);
+
+    /* solar_zenith_angle */
+    description = "solar zenith angle for nadir view";
+    variable_definition =
+        harp_ingestion_register_variable_full_read(product_definition, "solar_zenith_angle", harp_type_double, 1,
+                                                   dimension_type, NULL, description, NULL,
+                                                   exclude_when_multiple_zenith_angles, read_solar_zenith_angle);
+    path = "/sun_zenith_at_center[]";
+    harp_variable_definition_add_mapping(variable_definition, NULL, NULL, path, NULL);
 
     return 0;
 }
@@ -727,6 +792,17 @@ static int register_iasi_product(harp_ingestion_module *module, char *productnam
                                                    dimension_type, NULL, description, "nm", NULL, read_wavelength);
     description = "fixed values";
     harp_variable_definition_add_mapping(variable_definition, NULL, NULL, NULL, description);
+
+    /* sensor_zenith_angle */
+    description = "sensor zenith angle";
+    variable_definition =
+        harp_ingestion_register_variable_full_read(product_definition, "sensor_zenith_angle", harp_type_double, 1,
+                                                   dimension_type, NULL, description, NULL, NULL,
+                                                   read_sensor_zenith_angle);
+    path = "/satellite_zenith_at_center[]";
+    harp_variable_definition_add_mapping(variable_definition, "data processed by DLR or ULB", NULL, path, NULL);
+    path = "/satellite_zenith[]";
+    harp_variable_definition_add_mapping(variable_definition, "data processed by LMD", NULL, path, NULL);
 
     return 0;
 }
