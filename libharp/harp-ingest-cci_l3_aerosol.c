@@ -64,6 +64,7 @@ typedef struct ingest_info_struct
     double *values_buffer;
     char *aod_fieldname;
     char *aod_uncertainty_name;
+    int zenith_fields_present;
 } ingest_info;
 
 /* -------------------- Code -------------------- */
@@ -85,6 +86,46 @@ static void ingestion_done(void *user_data)
         free(info->aod_uncertainty_name);
     }
     free(info);
+}
+
+static int read_partial_dataset(ingest_info *info, const char *path, long offset, long num_elements, harp_array data)
+{
+    coda_cursor cursor;
+    long coda_num_elements;
+    harp_scalar fill_value;
+
+    if (coda_cursor_set_product(&cursor, info->product) != 0)
+    {
+        harp_set_error(HARP_ERROR_CODA, NULL);
+        return -1;
+    }
+    if (coda_cursor_goto(&cursor, path) != 0)
+    {
+        harp_set_error(HARP_ERROR_CODA, NULL);
+        return -1;
+    }
+    if (coda_cursor_get_num_elements(&cursor, &coda_num_elements) != 0)
+    {
+        harp_set_error(HARP_ERROR_CODA, NULL);
+        return -1;
+    }
+    if (coda_num_elements < num_elements)
+    {
+        harp_set_error(HARP_ERROR_INGESTION, "dataset has %ld elements (expected %ld)", coda_num_elements,
+                       num_elements);
+        harp_add_coda_cursor_path_to_error_message(&cursor);
+        harp_add_error_message(" (%s:%lu)", __FILE__, __LINE__);
+        return -1;
+    }
+    if (coda_cursor_read_double_partial_array(&cursor, offset, num_elements, data.double_data) != 0)
+    {
+        harp_set_error(HARP_ERROR_CODA, NULL);
+        return -1;
+    }
+    fill_value.double_data = -999.0;
+    harp_array_replace_fill_value(harp_type_double, num_elements, data, fill_value);
+
+    return 0;
 }
 
 static int read_dataset(ingest_info *info, const char *path, long num_elements, harp_array data)
@@ -459,13 +500,71 @@ static int init_dimensions(ingest_info *info)
         info->num_altitudes = coda_dim[0];
     }
 
-    CHECKED_MALLOC(info->values_buffer,
-                   info->num_latitudes * info->num_longitudes * info->num_altitudes * sizeof(double));
+    if (coda_cursor_goto(&cursor, "/sun_zenith_mean") != 0)
+    {
+        info->zenith_fields_present = FALSE;
+    }
+    else
+    {
+        info->zenith_fields_present = TRUE;
+    }
 
     return 0;
 }
 
 /* Start of code that is specific for the AATSR and ATSR2 instruments */
+
+static int read_aatsr_atsr2_sensor_zenith_angle(void *user_data, harp_array data)
+{
+    harp_array zenith_angles;
+    ingest_info *info = (ingest_info *)user_data;
+    double *src, *dest;
+    long i;
+
+    zenith_angles.double_data = info->values_buffer;
+    /* The field is [2][latitude][longitude] but we only read the first [latitude][longitude] values */
+    if (read_partial_dataset(info, "/satellite_zenith_mean", 0, info->num_latitudes * info->num_longitudes,
+                             zenith_angles) != 0)
+    {
+        return -1;
+    }
+    /* Copy zenith_angles to the 3-dimensional array[wavelengths][latitudes][longitudes] with data */
+    dest = data.double_data;
+    for (i = 0; i < info->num_wavelengths; i++)
+    {
+        src = info->values_buffer;
+        memcpy(dest, src, info->num_latitudes * info->num_longitudes * sizeof(double));
+        dest += info->num_latitudes * info->num_longitudes;
+    }
+
+    return 0;
+}
+
+static int read_aatsr_atsr2_solar_zenith_angle(void *user_data, harp_array data)
+{
+    harp_array zenith_angles;
+    ingest_info *info = (ingest_info *)user_data;
+    double *src, *dest;
+    long i;
+
+    zenith_angles.double_data = info->values_buffer;
+    /* The field is [2][latitude][longitude] but we only read the first [latitude][longitude] values */
+    if (read_partial_dataset(info, "/sun_zenith_mean", 0, info->num_latitudes * info->num_longitudes,
+                             zenith_angles) != 0)
+    {
+        return -1;
+    }
+    /* Copy zenith_angles to the 3-dimensional array[wavelengths][latitudes][longitudes] with data */
+    dest = data.double_data;
+    for (i = 0; i < info->num_wavelengths; i++)
+    {
+        src = info->values_buffer;
+        memcpy(dest, src, info->num_latitudes * info->num_longitudes * sizeof(double));
+        dest += info->num_latitudes * info->num_longitudes;
+    }
+
+    return 0;
+}
 
 static int ingestion_init_aatsr_atsr2(const harp_ingestion_module *module, coda_product *product,
                                       const harp_ingestion_options *options, harp_product_definition **definition,
@@ -483,6 +582,9 @@ static int ingestion_init_aatsr_atsr2(const harp_ingestion_module *module, coda_
         ingestion_done(info);
         return -1;
     }
+    CHECKED_MALLOC(info->values_buffer,
+                   info->num_latitudes * info->num_longitudes * info->num_altitudes * sizeof(double));
+
     info->num_wavelengths = 4;
     info->aod_wavelengths[0] = 550;
     info->aod_wavelengths[1] = 670;
@@ -499,6 +601,11 @@ static int ingestion_init_aatsr_atsr2(const harp_ingestion_module *module, coda_
     *user_data = info;
 
     return 0;
+}
+
+static int exclude_when_no_zenith(void *user_data)
+{
+    return !(((ingest_info *)user_data)->zenith_fields_present);
 }
 
 static int register_aatsr_atsr2_product(harp_ingestion_module *module, char *productname)
@@ -564,6 +671,24 @@ static int register_aatsr_atsr2_product(harp_ingestion_module *module, char *pro
     description = "fixed values";
     harp_variable_definition_add_mapping(variable_definition, NULL, NULL, NULL, description);
 
+    /* sensor_zenith_angle */
+    description = "sensor zenith angle";
+    variable_definition =
+        harp_ingestion_register_variable_full_read(product_definition, "sensor_zenith_angle", harp_type_double, 3,
+                                                   dimension_type, NULL, description, NULL, exclude_when_no_zenith,
+                                                   read_aatsr_atsr2_sensor_zenith_angle);
+    path = "/satellite_zenith_mean[]";
+    harp_variable_definition_add_mapping(variable_definition, NULL, NULL, path, NULL);
+
+    /* solar_zenith_angle */
+    description = "solar zenith angle";
+    variable_definition =
+        harp_ingestion_register_variable_full_read(product_definition, "solar_zenith_angle", harp_type_double, 3,
+                                                   dimension_type, NULL, description, NULL, exclude_when_no_zenith,
+                                                   read_aatsr_atsr2_solar_zenith_angle);
+    path = "/sun_zenith_mean[]";
+    harp_variable_definition_add_mapping(variable_definition, NULL, NULL, path, NULL);
+
     return 0;
 }
 
@@ -603,6 +728,9 @@ static int ingestion_init_gomos(const harp_ingestion_module *module, coda_produc
         ingestion_done(info);
         return -1;
     }
+    CHECKED_MALLOC(info->values_buffer,
+                   info->num_latitudes * info->num_longitudes * info->num_altitudes * sizeof(double));
+
     info->num_wavelengths = 1;
     info->aod_wavelengths[0] = 550;
     info->aod_fieldname = strdup("//S_AOD%ld");
@@ -727,6 +855,9 @@ static int ingestion_init_meris(const harp_ingestion_module *module, coda_produc
         ingestion_done(info);
         return -1;
     }
+    CHECKED_MALLOC(info->values_buffer,
+                   info->num_latitudes * info->num_longitudes * info->num_altitudes * sizeof(double));
+
     info->num_wavelengths = 2;
     info->aod_wavelengths[0] = 550;
     info->aod_wavelengths[1] = 865;
@@ -822,6 +953,9 @@ static int ingestion_init_iasi(const harp_ingestion_module *module, coda_product
         ingestion_done(info);
         return -1;
     }
+    CHECKED_MALLOC(info->values_buffer,
+                   info->num_latitudes * info->num_longitudes * info->num_altitudes * sizeof(double));
+
     info->num_wavelengths = 3;
     info->aod_wavelengths[0] = 550;
     info->aod_wavelengths[1] = 10000;
@@ -926,6 +1060,13 @@ static int register_module_l3_iasi(void)
 
 /* Start of code that is specific for the Multi Sensor instrument */
 
+static int read_multi_sensor_solar_zenith_angle(void *user_data, harp_array data)
+{
+    ingest_info *info = (ingest_info *)user_data;
+
+    return read_dataset(info, "/solar_zenith_angle", info->num_latitudes * info->num_longitudes, data);
+}
+
 static int ingestion_init_multi_sensor(const harp_ingestion_module *module, coda_product *product,
                                        const harp_ingestion_options *options, harp_product_definition **definition,
                                        void **user_data)
@@ -941,8 +1082,10 @@ static int ingestion_init_multi_sensor(const harp_ingestion_module *module, coda
         ingestion_done(info);
         return -1;
     }
+    CHECKED_MALLOC(info->values_buffer,
+                   info->num_latitudes * info->num_longitudes * info->num_altitudes * sizeof(double));
+
     info->num_wavelengths = 1;
-    CHECKED_MALLOC(info->values_buffer, info->num_latitudes * info->num_longitudes * sizeof(double));
     info->aod_fieldname = NULL;
     info->aod_uncertainty_name = NULL;
     *definition = *module->product_definition;
@@ -987,12 +1130,21 @@ static int register_module_l3_multi_sensor(void)
     harp_variable_definition_add_mapping(variable_definition, NULL, NULL, path, NULL);
 
     /* absorbing_aerosol_index */
-    description = "absorbing_aerosol_index";
+    description = "absorbing aerosol index";
     variable_definition =
         harp_ingestion_register_variable_full_read(product_definition, "absorbing_aerosol_index", harp_type_double, 2,
                                                    dimension_type, NULL, description, NULL, NULL,
                                                    read_absorbing_aerosol_index);
     path = "/absorbing_aerosol_index[]";
+    harp_variable_definition_add_mapping(variable_definition, NULL, NULL, path, NULL);
+
+    /* solar_zenith_angle */
+    description = "solar zenith angle";
+    variable_definition =
+        harp_ingestion_register_variable_full_read(product_definition, "solar_zenith_angle", harp_type_double, 2,
+                                                   dimension_type, NULL, description, NULL, NULL,
+                                                   read_multi_sensor_solar_zenith_angle);
+    path = "/solar_zenith_angle[]";
     harp_variable_definition_add_mapping(variable_definition, NULL, NULL, path, NULL);
 
     return 0;
