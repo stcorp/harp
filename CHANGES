@@ -5,8 +5,8 @@
 
 * Added harpmerge command line tool.
 
-* Added regrid(), smooth(), derive_smoothed_column(), point_in_area(), and
-  wrap() operations.
+* Added regrid(), rename(), smooth(), derive_smoothed_column(),
+  point_in_area(), and wrap() operations.
 
 * Removed the harpprofile command line tool. Its functionality is replaced by
   the regrid() and smooth() operations.

@@ -343,6 +343,24 @@ static void regrid_collocated_args_delete(harp_regrid_collocated_args *args)
     }
 }
 
+static void rename_args_delete(harp_rename_args *args)
+{
+    if (args != NULL)
+    {
+        if (args->variable_name != NULL)
+        {
+            free(args->variable_name);
+        }
+        if (args->new_variable_name != NULL)
+        {
+            free(args->new_variable_name);
+        }
+
+        free(args);
+    }
+}
+
+
 static void smooth_collocated_args_delete(harp_smooth_collocated_args *args)
 {
     if (args != NULL)
@@ -1147,6 +1165,29 @@ static int regrid_collocated_args_new(harp_dimension_type dimension_type, const 
     return 0;
 }
 
+static int rename_args_new(const char *variable_name, const char *new_variable_name, harp_rename_args **new_args)
+{
+    harp_rename_args *args;
+
+    assert(variable_name != NULL);
+    assert(new_variable_name != NULL);
+
+    args = (harp_rename_args *)malloc(sizeof(harp_rename_args));
+    if (args == NULL)
+    {
+        harp_set_error(HARP_ERROR_OUT_OF_MEMORY, "out of memory (could not allocate %lu bytes) (%s:%u)",
+                       sizeof(harp_rename_args), __FILE__, __LINE__);
+        return -1;
+    }
+    args->variable_name = strdup(variable_name);
+    assert(args->variable_name != NULL);
+    args->new_variable_name = strdup(new_variable_name);
+    assert(args->new_variable_name != NULL);
+
+    *new_args = args;
+    return 0;
+}
+
 static int smooth_collocated_args_new(int num_variables, const char **variable_name, harp_dimension_type dimension_type,
                                       const char *axis_variable_name, const char *axis_unit,
                                       const char *collocation_result, const char target_dataset,
@@ -1505,6 +1546,12 @@ static int regrid_collocated_args_copy(const harp_regrid_collocated_args *args, 
                                       args->collocation_result, args->target_dataset, args->dataset_dir, new_args);
 }
 
+static int rename_args_copy(const harp_rename_args *args, harp_rename_args **new_args)
+{
+    assert(args != NULL);
+    return rename_args_new(args->variable_name, args->new_variable_name, new_args);
+}
+
 static int smooth_collocated_args_copy(const harp_smooth_collocated_args *args, harp_smooth_collocated_args **new_args)
 {
     assert(args != NULL);
@@ -1615,6 +1662,9 @@ static void args_delete(harp_operation_type operation_type, void *args)
         case harp_operation_regrid_collocated:
             regrid_collocated_args_delete((harp_regrid_collocated_args *)args);
             break;
+        case harp_operation_rename:
+            rename_args_delete((harp_rename_args *)args);
+            break;
         case harp_operation_smooth_collocated:
             smooth_collocated_args_delete((harp_smooth_collocated_args *)args);
             break;
@@ -1699,6 +1749,8 @@ static int args_copy(harp_operation_type operation_type, const void *args, void 
         case harp_operation_regrid_collocated:
             return regrid_collocated_args_copy((harp_regrid_collocated_args *)args,
                                                (harp_regrid_collocated_args **)new_args);
+        case harp_operation_rename:
+            return rename_args_copy((harp_rename_args *)args, (harp_rename_args **)new_args);
         case harp_operation_smooth_collocated:
             return smooth_collocated_args_copy((harp_smooth_collocated_args *)args,
                                                (harp_smooth_collocated_args **)new_args);
@@ -2101,6 +2153,26 @@ int harp_regrid_collocated_new(harp_dimension_type dimension_type, const char *a
     if (harp_operation_new(harp_operation_regrid_collocated, args, &operation) != 0)
     {
         regrid_collocated_args_delete(args);
+        return -1;
+    }
+
+    *new_operation = operation;
+    return 0;
+}
+
+int harp_rename_new(const char *variable_name, const char *new_variable_name, harp_operation **new_operation)
+{
+    harp_rename_args *args;
+    harp_operation *operation;
+
+    if (rename_args_new(variable_name, new_variable_name, &args) != 0)
+    {
+        return -1;
+    }
+
+    if (harp_operation_new(harp_operation_rename, args, &operation) != 0)
+    {
+        rename_args_delete(args);
         return -1;
     }
 

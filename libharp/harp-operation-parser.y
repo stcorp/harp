@@ -229,6 +229,7 @@ int harp_sized_array_add_int32(harp_sized_array *sized_array, int32_t value)
 %token                  FUNC_POINT_DISTANCE
 %token                  FUNC_POINT_IN_AREA
 %token                  FUNC_REGRID
+%token                  FUNC_RENAME
 %token                  FUNC_SMOOTH
 %token                  FUNC_VALID
 %token                  FUNC_WRAP
@@ -286,6 +287,7 @@ reserved_identifier:
     | FUNC_POINT_DISTANCE { $$ = "point_distance"; }
     | FUNC_POINT_IN_AREA { $$ = "point_in_area"; }
     | FUNC_REGRID { $$ = "regrid"; }
+    | FUNC_RENAME { $$ = "rename"; }
     | FUNC_SMOOTH { $$ = "smooth"; }
     | FUNC_VALID { $$ = "valid"; }
     | FUNC_WRAP { $$ = "wrap"; }
@@ -549,6 +551,9 @@ operation:
         }
     | FUNC_REGRID '(' DIMENSION ',' identifier UNIT ',' STRING_VALUE ',' ID_B ',' STRING_VALUE ')' {
             if (harp_regrid_collocated_new($3, $5, $6, $8, 'b', $12, &$$) != 0) YYERROR;
+        }
+    | FUNC_RENAME '(' identifier ',' identifier ')' {
+            if (harp_rename_new($3, $5, &$$) != 0) YYERROR;
         }
     | FUNC_SMOOTH '(' identifier ',' DIMENSION ',' identifier UNIT ',' STRING_VALUE ',' ID_A ',' STRING_VALUE ')' {
             if (harp_smooth_collocated_new(1, (const char **)&$3, $5, $7, $8, $10, 'a', $14, &$$) != 0) YYERROR;

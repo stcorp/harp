@@ -1396,6 +1396,55 @@ static int execute_regrid_collocated(harp_product *product, harp_program *progra
     return 0;
 }
 
+/* run a rename operation at the head of program */
+static int execute_rename(harp_product *product, harp_program *program)
+{
+    harp_operation *operation;
+    const harp_rename_args *args;
+    harp_variable *variable = NULL;
+    char *new_name;
+
+    assert(program->num_operations != 0);
+    operation = program->operation[0];
+    assert(operation->type == harp_operation_rename);
+
+    args = (const harp_rename_args *)operation->args;
+
+    if (harp_product_get_variable_by_name(product, args->variable_name, &variable) != 0)
+    {
+        return -1;
+    }
+
+    new_name = strdup(args->new_variable_name);
+    if (new_name == NULL)
+    {
+        harp_set_error(HARP_ERROR_OUT_OF_MEMORY, "out of memory (could not duplicate string) (%s:%u)", __FILE__,
+                       __LINE__);
+        return -1;
+    }
+
+    if (harp_product_detach_variable(product, variable) != 0)
+    {
+        free(new_name);
+        return -1;
+    }
+    free(variable->name);
+    variable->name = new_name;
+
+    if (harp_product_add_variable(product, variable) != 0)
+    {
+        harp_variable_delete(variable);
+        return -1;
+    }
+
+    if (harp_program_remove_operation_at_index(program, 0) != 0)
+    {
+        return -1;
+    }
+
+    return 0;
+}
+
 /* run a smoothing operation at the head of program */
 static int execute_smooth_collocated(harp_product *product, harp_program *program)
 {
@@ -1568,6 +1617,12 @@ static int execute_next_operation(harp_product *product, harp_program *program)
             break;
         case harp_operation_regrid_collocated:
             if (execute_regrid_collocated(product, program) != 0)
+            {
+                return -1;
+            }
+            break;
+        case harp_operation_rename:
+            if (execute_rename(product, program) != 0)
             {
                 return -1;
             }

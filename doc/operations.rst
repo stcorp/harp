@@ -170,6 +170,16 @@ Supported functions:
 
             ``regrid(vertical, altitude [km], "collocation-result.csv", b, "./correlative_data/")``
 
+    ``rename(variable, new_name)``
+        Rename the variable to the new name.
+        Note that this operation should be used with care since it will change the meaning of the
+        data (potentially interpreting it incorrectly in further operations).
+        It is primarilly meant to add/remove prefixes (such as surface/tropospheric/etc.) to allow
+        the variable to be used in a more specific (with prefix) or generic (without prefix) way.
+        Example:
+
+            ``rename("surface_temperature", "temperature")``
+
     ``smooth(variable, dimension, axis-variable unit, collocation-result-file, a|b, dataset-dir)``
         Smooth the given variable in the product for the given dimension
         using the avaraging kernel (and a-priori profile, if available)

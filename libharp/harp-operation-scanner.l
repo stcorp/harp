@@ -102,6 +102,7 @@ WHITESPACE   [[:space:]]+
 "point_distance"        return FUNC_POINT_DISTANCE;
 "point_in_area"         return FUNC_POINT_IN_AREA;
 "regrid"                return FUNC_REGRID;
+"rename"                return FUNC_RENAME;
 "smooth"                return FUNC_SMOOTH;
 "valid"                 return FUNC_VALID;
 "wrap"                  return FUNC_WRAP;
