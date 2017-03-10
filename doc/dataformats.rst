@@ -379,7 +379,7 @@ C3H8     propane
 C5H8     isoprene
 ClNO3    chlorine nitrate
 ClO      chlorine monoxide
-HCHO     formaldehyde                 CH2O
+HCHO     formaldehyde                 CH2O, H2CO
 HCOOH    formic acid                  HCO2H
 HCN      hydrogen cyanide
 HCl      hydrogen chloride
