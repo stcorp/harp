@@ -84,7 +84,7 @@ static const char *geoms_gas_name[num_uvvis_doas_gas] = {
 static const char *harp_gas_name[num_uvvis_doas_gas] = {
     "BrO",
     "C2H2O2",
-    "HCOH",
+    "HCHO",
     "H2O",
     "HNO2",
     "IO",
