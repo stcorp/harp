@@ -489,7 +489,7 @@ static int register_aatsr_atsr2_product(harp_ingestion_module *module, char *pro
         harp_ingestion_register_variable_full_read(product_definition, "longitude_bounds", harp_type_double, 2,
                                                    bounds_dimension_type, bounds_dimension, description, "degree_east",
                                                    NULL, read_longitude_bounds);
-    harp_variable_definition_set_valid_range_double(variable_definition, -90.0, 90.0);
+    harp_variable_definition_set_valid_range_double(variable_definition, -180.0f, 180.0f);
     path =
         "/pixel_corner_longitude1[], /pixel_corner_longitude2[], /pixel_corner_longitude3[], /pixel_corner_longitude4[]";
     harp_variable_definition_add_mapping(variable_definition, NULL, NULL, path, description);
