@@ -2,7 +2,7 @@
 <cd:ProductClass name="ESACCI_GHG" last-modified="2017-03-13" xmlns:cd="http://www.stcorp.nl/coda/definition/2008/07">
   <cd:Description>ESA Green House Gases CCI products</cd:Description>
 
-  <!-- EMMA products -->
+  <!-- EMMA L2 products -->
 
   <cd:ProductType name="EMMA_L2">
     <cd:Description>CCI Green House Gases EMMA L2 profile</cd:Description>
@@ -34,7 +34,7 @@
 
   </cd:ProductType>
 
-  <!-- GOSAT products -->
+  <!-- GOSAT L2 products -->
 
   <cd:ProductType name="GOSAT_L2">
     <cd:Description>CCI Green House Gases GOSAT L2 profile</cd:Description>
@@ -58,7 +58,7 @@
 
   </cd:ProductType>
 
-  <!-- SCIAMACHY products -->
+  <!-- SCIAMACHY L2 products -->
 
   <cd:ProductType name="SCIAMACHY_L2">
     <cd:Description>CCI Green House Gases SCIAMACHY L2 profile</cd:Description>
@@ -129,6 +129,28 @@
       <cd:DetectionRule>
         <!-- old version of CCI Green House Gases SCIAMACHY WFMD profile of CO2 -->
         <cd:MatchExpression>substr(0, 12, filename()) == "CO2_SCI_WFMD"</cd:MatchExpression>
+      </cd:DetectionRule>
+    </cd:ProductDefinition>
+
+  </cd:ProductType>
+
+  <!-- L3 products -->
+
+  <cd:ProductType name="Obs4MIPs_L3">
+    <cd:Description>CCI Green House Gases EMMA L2 profile</cd:Description>
+
+    <cd:ProductDefinition id="Obs4MIPs_L3_nc3" format="netcdf" version="3">
+      <cd:Description>The format definition for this product is taken from the netcdf file itself.</cd:Description>
+      <cd:DetectionRule>
+        <!-- CCI Green House Gases Obs4MIPs L3 profile -->
+        <cd:MatchExpression>substr(5, 9, filename()) == "ghgcci_l3"</cd:MatchExpression>
+      </cd:DetectionRule>
+    </cd:ProductDefinition>
+    <cd:ProductDefinition id="Obs4MIPs_L3_nc4" format="hdf5" version="4">
+      <cd:Description>The format definition for this product is taken from the netcdf file itself.</cd:Description>
+      <cd:DetectionRule>
+        <!-- CCI Green House Gases Obs4MIPs L3 profile -->
+        <cd:MatchExpression>substr(5, 9, filename()) == "ghgcci_l3"</cd:MatchExpression>
       </cd:DetectionRule>
     </cd:ProductDefinition>
 
