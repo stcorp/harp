@@ -42,10 +42,11 @@ static harp_ingestion_module_register *module_register = NULL;
 
 /* Module initialization functions (forward declarations). */
 int harp_ingestion_module_cci_l2_aerosol_init(void);
-int harp_ingestion_module_cci_l3_aerosol_init(void);
+int harp_ingestion_module_cci_l2_ghg_init(void);
 int harp_ingestion_module_cci_l2_o3_lp_init(void);
 int harp_ingestion_module_cci_l2_o3_np_init(void);
 int harp_ingestion_module_cci_l2_o3_tc_init(void);
+int harp_ingestion_module_cci_l3_aerosol_init(void);
 int harp_ingestion_module_cci_l3_o3_lp_init(void);
 int harp_ingestion_module_cci_l3_o3_np_init(void);
 int harp_ingestion_module_cci_l3_o3_tc_init(void);
@@ -85,10 +86,11 @@ typedef int (module_init_func_t) (void);
 
 static module_init_func_t *module_init_func[] = {
     harp_ingestion_module_cci_l2_aerosol_init,
-    harp_ingestion_module_cci_l3_aerosol_init,
+    harp_ingestion_module_cci_l2_ghg_init,
     harp_ingestion_module_cci_l2_o3_lp_init,
     harp_ingestion_module_cci_l2_o3_np_init,
     harp_ingestion_module_cci_l2_o3_tc_init,
+    harp_ingestion_module_cci_l3_aerosol_init,
     harp_ingestion_module_cci_l3_o3_lp_init,
     harp_ingestion_module_cci_l3_o3_np_init,
     harp_ingestion_module_cci_l3_o3_tc_init,

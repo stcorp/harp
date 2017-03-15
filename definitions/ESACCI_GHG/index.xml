@@ -1,0 +1,137 @@
+<?xml version="1.0"?>
+<cd:ProductClass name="ESACCI_GHG" last-modified="2017-03-13" xmlns:cd="http://www.stcorp.nl/coda/definition/2008/07">
+  <cd:Description>ESA Green House Gases CCI products</cd:Description>
+
+  <!-- EMMA products -->
+
+  <cd:ProductType name="EMMA_L2">
+    <cd:Description>CCI Green House Gases EMMA L2 profile</cd:Description>
+
+    <cd:ProductDefinition id="EMMA_L2_nc3" format="netcdf" version="3">
+      <cd:Description>The format definition for this product is taken from the netcdf file itself.</cd:Description>
+      <cd:DetectionRule>
+        <!-- CCI Green House Gases EMMA L2 profile -->
+        <cd:MatchExpression>substr(0, 13, filename()) == "ESACCI-GHG-L2"</cd:MatchExpression>
+        <cd:MatchExpression>substr(26, 4, filename()) == "EMMA"</cd:MatchExpression>
+      </cd:DetectionRule>
+      <cd:DetectionRule>
+        <!-- old version of CCI Green House Gases EMMA file -->
+        <cd:MatchExpression>substr(0, 9, filename()) == "l2db_emma"</cd:MatchExpression>
+      </cd:DetectionRule>
+    </cd:ProductDefinition>
+    <cd:ProductDefinition id="EMMA_L2_nc4" format="hdf5" version="4">
+      <cd:Description>The format definition for this product is taken from the netcdf file itself.</cd:Description>
+      <cd:DetectionRule>
+        <!-- CCI Green House Gases EMMA L2 profile -->
+        <cd:MatchExpression>substr(0, 13, filename()) == "ESACCI-GHG-L2"</cd:MatchExpression>
+        <cd:MatchExpression>substr(26, 4, filename()) == "EMMA"</cd:MatchExpression>
+      </cd:DetectionRule>
+      <cd:DetectionRule>
+        <!-- old version of CCI Green House Gases EMMA file -->
+        <cd:MatchExpression>substr(0, 9, filename()) == "l2db_emma"</cd:MatchExpression>
+      </cd:DetectionRule>
+    </cd:ProductDefinition>
+
+  </cd:ProductType>
+
+  <!-- GOSAT products -->
+
+  <cd:ProductType name="GOSAT_L2">
+    <cd:Description>CCI Green House Gases GOSAT L2 profile</cd:Description>
+
+    <cd:ProductDefinition id="GOSAT_L2_nc3" format="netcdf" version="3">
+      <cd:Description>The format definition for this product is taken from the netcdf file itself.</cd:Description>
+      <cd:DetectionRule>
+        <!-- CCI Green House Gases GOSAT L2 profile -->
+        <cd:MatchExpression>substr(0, 13, filename()) == "ESACCI-GHG-L2"</cd:MatchExpression>
+        <cd:MatchExpression>substr(18, 5, filename()) == "GOSAT"</cd:MatchExpression>
+      </cd:DetectionRule>
+    </cd:ProductDefinition>
+    <cd:ProductDefinition id="GOSAT_L2_nc4" format="hdf5" version="4">
+      <cd:Description>The format definition for this product is taken from the netcdf file itself.</cd:Description>
+      <cd:DetectionRule>
+        <!-- CCI Green House Gases GOSAT L2 profile -->
+        <cd:MatchExpression>substr(0, 13, filename()) == "ESACCI-GHG-L2"</cd:MatchExpression>
+        <cd:MatchExpression>substr(18, 5, filename()) == "GOSAT"</cd:MatchExpression>
+      </cd:DetectionRule>
+    </cd:ProductDefinition>
+
+  </cd:ProductType>
+
+  <!-- SCIAMACHY products -->
+
+  <cd:ProductType name="SCIAMACHY_L2">
+    <cd:Description>CCI Green House Gases SCIAMACHY L2 profile</cd:Description>
+
+    <cd:ProductDefinition id="SCIAMACHY_L2_nc3" format="netcdf" version="3">
+      <cd:Description>The format definition for this product is taken from the netcdf file itself.</cd:Description>
+      <cd:DetectionRule>
+        <!-- CCI Green House Gases SCIAMACHY Bremen optimal EStimation Differential optical absorption spectroscopy (BESD) L2 profile -->
+        <cd:MatchExpression>substr(0, 13, filename()) == "ESACCI-GHG-L2"</cd:MatchExpression>
+        <cd:MatchExpression>substr(18, 14, filename()) == "SCIAMACHY-BESD"</cd:MatchExpression>
+      </cd:DetectionRule>
+      <cd:DetectionRule>
+        <!-- old version of CCI Green House Gases SCIAMACHY BESD profile of CH4 -->
+        <cd:MatchExpression>substr(0, 12, filename()) == "CH4_SCI_BESD"</cd:MatchExpression>
+      </cd:DetectionRule>
+      <cd:DetectionRule>
+        <!-- old version of CCI Green House Gases SCIAMACHY BESD profile of CO2 -->
+        <cd:MatchExpression>substr(0, 12, filename()) == "CO2_SCI_BESD"</cd:MatchExpression>
+      </cd:DetectionRule>
+      <cd:DetectionRule>
+        <!-- CCI Green House Gases SCIAMACHY Interative Maximum A Posteriori (IMAP) L2 profile -->
+        <cd:MatchExpression>substr(0, 13, filename()) == "ESACCI-GHG-L2"</cd:MatchExpression>
+        <cd:MatchExpression>substr(18, 14, filename()) == "SCIAMACHY-IMAP"</cd:MatchExpression>
+      </cd:DetectionRule>
+      <cd:DetectionRule>
+        <!-- CCI Green House Gases SCIAMACHY Weighting Function Modified Differential optical absorption spectroscopy (WFMD) L2 profile -->
+        <cd:MatchExpression>substr(0, 13, filename()) == "ESACCI-GHG-L2"</cd:MatchExpression>
+        <cd:MatchExpression>substr(18, 14, filename()) == "SCIAMACHY-WFMD"</cd:MatchExpression>
+      </cd:DetectionRule>
+      <cd:DetectionRule>
+        <!-- old version of CCI Green House Gases SCIAMACHY WFMD profile of CH4 -->
+        <cd:MatchExpression>substr(0, 12, filename()) == "CH4_SCI_WFMD"</cd:MatchExpression>
+      </cd:DetectionRule>
+      <cd:DetectionRule>
+        <!-- old version of CCI Green House Gases SCIAMACHY WFMD profile of CO2 -->
+        <cd:MatchExpression>substr(0, 12, filename()) == "CO2_SCI_WFMD"</cd:MatchExpression>
+      </cd:DetectionRule>
+    </cd:ProductDefinition>
+    <cd:ProductDefinition id="SCIAMACHY_L2_nc4" format="hdf5" version="4">
+      <cd:Description>The format definition for this product is taken from the netcdf file itself.</cd:Description>
+      <cd:DetectionRule>
+        <!-- CCI Green House Gases SCIAMACHY Bremen optimal EStimation Differential optical absorption spectroscopy (BESD) L2 profile -->
+        <cd:MatchExpression>substr(0, 13, filename()) == "ESACCI-GHG-L2"</cd:MatchExpression>
+        <cd:MatchExpression>substr(18, 14, filename()) == "SCIAMACHY-BESD"</cd:MatchExpression>
+      </cd:DetectionRule>
+      <cd:DetectionRule>
+        <!-- old version of CCI Green House Gases SCIAMACHY BESD profile of CH4 -->
+        <cd:MatchExpression>substr(0, 12, filename()) == "CH4_SCI_BESD"</cd:MatchExpression>
+      </cd:DetectionRule>
+      <cd:DetectionRule>
+        <!-- old version of CCI Green House Gases SCIAMACHY BESD profile of CO2 -->
+        <cd:MatchExpression>substr(0, 12, filename()) == "CO2_SCI_BESD"</cd:MatchExpression>
+      </cd:DetectionRule>
+      <cd:DetectionRule>
+        <!-- CCI Green House Gases SCIAMACHY Interative Maximum A Posteriori (IMAP) L2 profile -->
+        <cd:MatchExpression>substr(0, 13, filename()) == "ESACCI-GHG-L2"</cd:MatchExpression>
+        <cd:MatchExpression>substr(18, 14, filename()) == "SCIAMACHY-IMAP"</cd:MatchExpression>
+      </cd:DetectionRule>
+      <cd:DetectionRule>
+        <!-- CCI Green House Gases SCIAMACHY Weighting Function Modified Differential optical absorption spectroscopy (WFMD) L2 profile -->
+        <cd:MatchExpression>substr(0, 13, filename()) == "ESACCI-GHG-L2"</cd:MatchExpression>
+        <cd:MatchExpression>substr(18, 14, filename()) == "SCIAMACHY-WFMD"</cd:MatchExpression>
+      </cd:DetectionRule>
+      <cd:DetectionRule>
+        <!-- old version of CCI Green House Gases SCIAMACHY WFMD profile of CH4 -->
+        <cd:MatchExpression>substr(0, 12, filename()) == "CH4_SCI_WFMD"</cd:MatchExpression>
+      </cd:DetectionRule>
+      <cd:DetectionRule>
+        <!-- old version of CCI Green House Gases SCIAMACHY WFMD profile of CO2 -->
+        <cd:MatchExpression>substr(0, 12, filename()) == "CO2_SCI_WFMD"</cd:MatchExpression>
+      </cd:DetectionRule>
+    </cd:ProductDefinition>
+
+  </cd:ProductType>
+
+</cd:ProductClass>
