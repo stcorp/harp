@@ -1,6 +1,9 @@
 <?xml version="1.0"?>
 <cd:ProductClass name="AURA_TES" last-modified="2016-09-19" xmlns:cd="http://www.stcorp.nl/coda/definition/2008/07">
   <cd:Description>Aura TES products</cd:Description>
+
+  <!-- Nadir product types -->
+
   <cd:ProductType name="TL2CH4N">
     <cd:Description>L2 Methane (CH4) Nadir</cd:Description>
     <cd:ProductDefinition id="TL2CH4N" format="hdf5" version="0">
@@ -17,6 +20,24 @@
       </cd:DetectionRule>
     </cd:ProductDefinition>
   </cd:ProductType>
+
+  <cd:ProductType name="TL2CO2N">
+    <cd:Description>L2 Carbon Dioxide (CO2) Nadir</cd:Description>
+    <cd:ProductDefinition id="TL2CO2N" format="hdf5" version="0">
+      <cd:Description>The format definition for this product is taken from the HDF5 file itself.</cd:Description>
+      <cd:DetectionRule>
+        <cd:MatchExpression path="/HDFEOS/ADDITIONAL/FILE_ATTRIBUTES">str(.@InstrumentName) == "TES"</cd:MatchExpression>
+        <cd:MatchExpression>str(.@ProcessLevel,1) == "2"</cd:MatchExpression>
+        <cd:MatchExpression path="/HDFEOS/SWATHS">exists(./CO2NadirSwath)</cd:MatchExpression>
+      </cd:DetectionRule>
+      <cd:DetectionRule>
+        <cd:MatchExpression path="/HDFEOS/ADDITIONAL/FILE_ATTRIBUTES">str(.@InstrumentName) == "TES"</cd:MatchExpression>
+        <cd:MatchExpression>str(.@ProcessLevel,2) == "L2"</cd:MatchExpression>
+        <cd:MatchExpression path="/HDFEOS/SWATHS">exists(./CO2NadirSwath)</cd:MatchExpression>
+      </cd:DetectionRule>
+    </cd:ProductDefinition>
+  </cd:ProductType>
+
   <cd:ProductType name="TL2CON">
     <cd:Description>L2 Carbon Monoxide (CO) Nadir</cd:Description>
     <cd:ProductDefinition id="TL2CON" format="hdf5" version="0">
@@ -33,6 +54,24 @@
       </cd:DetectionRule>
     </cd:ProductDefinition>
   </cd:ProductType>
+
+  <cd:ProductType name="TL2FORN">
+    <cd:Description>L2 Formic Acid (HCOOH) Nadir</cd:Description>
+    <cd:ProductDefinition id="TL2FORN" format="hdf5" version="0">
+      <cd:Description>The format definition for this product is taken from the HDF5 file itself.</cd:Description>
+      <cd:DetectionRule>
+        <cd:MatchExpression path="/HDFEOS/ADDITIONAL/FILE_ATTRIBUTES">str(.@InstrumentName) == "TES"</cd:MatchExpression>
+        <cd:MatchExpression>str(.@ProcessLevel,1) == "2"</cd:MatchExpression>
+        <cd:MatchExpression path="/HDFEOS/SWATHS">exists(./HCOOHNadirSwath)</cd:MatchExpression>
+      </cd:DetectionRule>
+      <cd:DetectionRule>
+        <cd:MatchExpression path="/HDFEOS/ADDITIONAL/FILE_ATTRIBUTES">str(.@InstrumentName) == "TES"</cd:MatchExpression>
+        <cd:MatchExpression>str(.@ProcessLevel,2) == "L2"</cd:MatchExpression>
+        <cd:MatchExpression path="/HDFEOS/SWATHS">exists(./HCOOHNadirSwath)</cd:MatchExpression>
+      </cd:DetectionRule>
+    </cd:ProductDefinition>
+  </cd:ProductType>
+
   <cd:ProductType name="TL2H2ON">
     <cd:Description>L2 Water Vapor (H2O) Nadir</cd:Description>
     <cd:ProductDefinition id="TL2H2ON" format="hdf5" version="0">
@@ -49,6 +88,75 @@
       </cd:DetectionRule>
     </cd:ProductDefinition>
   </cd:ProductType>
+
+  <cd:ProductType name="TL2HDON">
+    <cd:Description>L2 Deuterium Oxide (HDO) Nadir</cd:Description>
+    <cd:ProductDefinition id="TL2HDON" format="hdf5" version="0">
+      <cd:Description>The format definition for this product is taken from the HDF5 file itself.</cd:Description>
+      <cd:DetectionRule>
+        <cd:MatchExpression path="/HDFEOS/ADDITIONAL/FILE_ATTRIBUTES">str(.@InstrumentName) == "TES"</cd:MatchExpression>
+        <cd:MatchExpression>str(.@ProcessLevel,1) == "2"</cd:MatchExpression>
+        <cd:MatchExpression path="/HDFEOS/SWATHS">exists(./HDONadirSwath)</cd:MatchExpression>
+      </cd:DetectionRule>
+      <cd:DetectionRule>
+        <cd:MatchExpression path="/HDFEOS/ADDITIONAL/FILE_ATTRIBUTES">str(.@InstrumentName) == "TES"</cd:MatchExpression>
+        <cd:MatchExpression>str(.@ProcessLevel,2) == "L2"</cd:MatchExpression>
+        <cd:MatchExpression path="/HDFEOS/SWATHS">exists(./HDONadirSwath)</cd:MatchExpression>
+      </cd:DetectionRule>
+    </cd:ProductDefinition>
+  </cd:ProductType>
+
+  <cd:ProductType name="TL2MTLN">
+    <cd:Description>L2 Methanol (CH3OH) Nadir</cd:Description>
+    <cd:ProductDefinition id="TL2MTLN" format="hdf5" version="0">
+      <cd:Description>The format definition for this product is taken from the HDF5 file itself.</cd:Description>
+      <cd:DetectionRule>
+        <cd:MatchExpression path="/HDFEOS/ADDITIONAL/FILE_ATTRIBUTES">str(.@InstrumentName) == "TES"</cd:MatchExpression>
+        <cd:MatchExpression>str(.@ProcessLevel,1) == "2"</cd:MatchExpression>
+        <cd:MatchExpression path="/HDFEOS/SWATHS">exists(./CH3OHNadirSwath)</cd:MatchExpression>
+      </cd:DetectionRule>
+      <cd:DetectionRule>
+        <cd:MatchExpression path="/HDFEOS/ADDITIONAL/FILE_ATTRIBUTES">str(.@InstrumentName) == "TES"</cd:MatchExpression>
+        <cd:MatchExpression>str(.@ProcessLevel,2) == "L2"</cd:MatchExpression>
+        <cd:MatchExpression path="/HDFEOS/SWATHS">exists(./CH3OHNadirSwath)</cd:MatchExpression>
+      </cd:DetectionRule>
+    </cd:ProductDefinition>
+  </cd:ProductType>
+
+  <cd:ProductType name="TL2N2ON">
+    <cd:Description>L2 Nitrous Oxide (N2O) Nadir</cd:Description>
+    <cd:ProductDefinition id="TL2N2ON" format="hdf5" version="0">
+      <cd:Description>The format definition for this product is taken from the HDF5 file itself.</cd:Description>
+      <cd:DetectionRule>
+        <cd:MatchExpression path="/HDFEOS/ADDITIONAL/FILE_ATTRIBUTES">str(.@InstrumentName) == "TES"</cd:MatchExpression>
+        <cd:MatchExpression>str(.@ProcessLevel,1) == "2"</cd:MatchExpression>
+        <cd:MatchExpression path="/HDFEOS/SWATHS">exists(./N2ONadirSwath)</cd:MatchExpression>
+      </cd:DetectionRule>
+      <cd:DetectionRule>
+        <cd:MatchExpression path="/HDFEOS/ADDITIONAL/FILE_ATTRIBUTES">str(.@InstrumentName) == "TES"</cd:MatchExpression>
+        <cd:MatchExpression>str(.@ProcessLevel,2) == "L2"</cd:MatchExpression>
+        <cd:MatchExpression path="/HDFEOS/SWATHS">exists(./N2ONadirSwath)</cd:MatchExpression>
+      </cd:DetectionRule>
+    </cd:ProductDefinition>
+  </cd:ProductType>
+
+  <cd:ProductType name="TL2NH3N">
+    <cd:Description>L2 Ammonia (NH3) Nadir</cd:Description>
+    <cd:ProductDefinition id="TL2NH3N" format="hdf5" version="0">
+      <cd:Description>The format definition for this product is taken from the HDF5 file itself.</cd:Description>
+      <cd:DetectionRule>
+        <cd:MatchExpression path="/HDFEOS/ADDITIONAL/FILE_ATTRIBUTES">str(.@InstrumentName) == "TES"</cd:MatchExpression>
+        <cd:MatchExpression>str(.@ProcessLevel,1) == "2"</cd:MatchExpression>
+        <cd:MatchExpression path="/HDFEOS/SWATHS">exists(./NH3NadirSwath)</cd:MatchExpression>
+      </cd:DetectionRule>
+      <cd:DetectionRule>
+        <cd:MatchExpression path="/HDFEOS/ADDITIONAL/FILE_ATTRIBUTES">str(.@InstrumentName) == "TES"</cd:MatchExpression>
+        <cd:MatchExpression>str(.@ProcessLevel,2) == "L2"</cd:MatchExpression>
+        <cd:MatchExpression path="/HDFEOS/SWATHS">exists(./NH3NadirSwath)</cd:MatchExpression>
+      </cd:DetectionRule>
+    </cd:ProductDefinition>
+  </cd:ProductType>
+
   <cd:ProductType name="TL2O3N">
     <cd:Description>L2 Ozone (O3) Nadir</cd:Description>
     <cd:ProductDefinition id="TL2O3N" format="hdf5" version="0">
@@ -65,6 +173,7 @@
       </cd:DetectionRule>
     </cd:ProductDefinition>
   </cd:ProductType>
+
   <cd:ProductType name="TL2ATMTN">
     <cd:Description>L2 Atmospheric Temperatures Nadir</cd:Description>
     <cd:ProductDefinition id="TL2ATMTN" format="hdf5" version="0">
@@ -81,4 +190,126 @@
       </cd:DetectionRule>
     </cd:ProductDefinition>
   </cd:ProductType>
+
+  <!-- Limb product types -->
+
+  <cd:ProductType name="TL2CH4L">
+    <cd:Description>L2 Methane (CH4) Limb</cd:Description>
+    <cd:ProductDefinition id="TL2CH4L" format="hdf5" version="0">
+      <cd:Description>The format definition for this product is taken from the HDF5 file itself.</cd:Description>
+      <cd:DetectionRule>
+        <cd:MatchExpression path="/HDFEOS/ADDITIONAL/FILE_ATTRIBUTES">str(.@InstrumentName) == "TES"</cd:MatchExpression>
+        <cd:MatchExpression>str(.@ProcessLevel,1) == "2"</cd:MatchExpression>
+        <cd:MatchExpression path="/HDFEOS/SWATHS">exists(./CH4LimbSwath)</cd:MatchExpression>
+      </cd:DetectionRule>
+      <cd:DetectionRule>
+        <cd:MatchExpression path="/HDFEOS/ADDITIONAL/FILE_ATTRIBUTES">str(.@InstrumentName) == "TES"</cd:MatchExpression>
+        <cd:MatchExpression>str(.@ProcessLevel,2) == "L2"</cd:MatchExpression>
+        <cd:MatchExpression path="/HDFEOS/SWATHS">exists(./CH4LimbSwath)</cd:MatchExpression>
+      </cd:DetectionRule>
+    </cd:ProductDefinition>
+  </cd:ProductType>
+
+  <cd:ProductType name="TL2H2OL">
+    <cd:Description>L2 Water Vapor (H2O) Limb</cd:Description>
+    <cd:ProductDefinition id="TL2H2OL" format="hdf5" version="0">
+      <cd:Description>The format definition for this product is taken from the HDF5 file itself.</cd:Description>
+      <cd:DetectionRule>
+        <cd:MatchExpression path="/HDFEOS/ADDITIONAL/FILE_ATTRIBUTES">str(.@InstrumentName) == "TES"</cd:MatchExpression>
+        <cd:MatchExpression>str(.@ProcessLevel,1) == "2"</cd:MatchExpression>
+        <cd:MatchExpression path="/HDFEOS/SWATHS">exists(./H2OLimbSwath)</cd:MatchExpression>
+      </cd:DetectionRule>
+      <cd:DetectionRule>
+        <cd:MatchExpression path="/HDFEOS/ADDITIONAL/FILE_ATTRIBUTES">str(.@InstrumentName) == "TES"</cd:MatchExpression>
+        <cd:MatchExpression>str(.@ProcessLevel,2) == "L2"</cd:MatchExpression>
+        <cd:MatchExpression path="/HDFEOS/SWATHS">exists(./H2OLimbSwath)</cd:MatchExpression>
+      </cd:DetectionRule>
+    </cd:ProductDefinition>
+  </cd:ProductType>
+
+  <cd:ProductType name="TL2HDOL">
+    <cd:Description>L2 Deuterium Oxide (HDO) Limb</cd:Description>
+    <cd:ProductDefinition id="TL2HDOL" format="hdf5" version="0">
+      <cd:Description>The format definition for this product is taken from the HDF5 file itself.</cd:Description>
+      <cd:DetectionRule>
+        <cd:MatchExpression path="/HDFEOS/ADDITIONAL/FILE_ATTRIBUTES">str(.@InstrumentName) == "TES"</cd:MatchExpression>
+        <cd:MatchExpression>str(.@ProcessLevel,1) == "2"</cd:MatchExpression>
+        <cd:MatchExpression path="/HDFEOS/SWATHS">exists(./HDOLimbSwath)</cd:MatchExpression>
+      </cd:DetectionRule>
+      <cd:DetectionRule>
+        <cd:MatchExpression path="/HDFEOS/ADDITIONAL/FILE_ATTRIBUTES">str(.@InstrumentName) == "TES"</cd:MatchExpression>
+        <cd:MatchExpression>str(.@ProcessLevel,2) == "L2"</cd:MatchExpression>
+        <cd:MatchExpression path="/HDFEOS/SWATHS">exists(./HDOLimbSwath)</cd:MatchExpression>
+      </cd:DetectionRule>
+    </cd:ProductDefinition>
+  </cd:ProductType>
+
+  <cd:ProductType name="TL2HNO3L">
+    <cd:Description>L2 Nitric Acid (HNO3) Limb</cd:Description>
+    <cd:ProductDefinition id="TL2HNO3L" format="hdf5" version="0">
+      <cd:Description>The format definition for this product is taken from the HDF5 file itself.</cd:Description>
+      <cd:DetectionRule>
+        <cd:MatchExpression path="/HDFEOS/ADDITIONAL/FILE_ATTRIBUTES">str(.@InstrumentName) == "TES"</cd:MatchExpression>
+        <cd:MatchExpression>str(.@ProcessLevel,1) == "2"</cd:MatchExpression>
+        <cd:MatchExpression path="/HDFEOS/SWATHS">exists(./HNO3LimbSwath)</cd:MatchExpression>
+      </cd:DetectionRule>
+      <cd:DetectionRule>
+        <cd:MatchExpression path="/HDFEOS/ADDITIONAL/FILE_ATTRIBUTES">str(.@InstrumentName) == "TES"</cd:MatchExpression>
+        <cd:MatchExpression>str(.@ProcessLevel,2) == "L2"</cd:MatchExpression>
+        <cd:MatchExpression path="/HDFEOS/SWATHS">exists(./HNO3LimbSwath)</cd:MatchExpression>
+      </cd:DetectionRule>
+    </cd:ProductDefinition>
+  </cd:ProductType>
+
+  <cd:ProductType name="TL2NO2L">
+    <cd:Description>L2 Nitrogen Dioxide (NO2) Limb</cd:Description>
+    <cd:ProductDefinition id="TL2NO2L" format="hdf5" version="0">
+      <cd:Description>The format definition for this product is taken from the HDF5 file itself.</cd:Description>
+      <cd:DetectionRule>
+        <cd:MatchExpression path="/HDFEOS/ADDITIONAL/FILE_ATTRIBUTES">str(.@InstrumentName) == "TES"</cd:MatchExpression>
+        <cd:MatchExpression>str(.@ProcessLevel,1) == "2"</cd:MatchExpression>
+        <cd:MatchExpression path="/HDFEOS/SWATHS">exists(./NLO2LimbSwath)</cd:MatchExpression>
+      </cd:DetectionRule>
+      <cd:DetectionRule>
+        <cd:MatchExpression path="/HDFEOS/ADDITIONAL/FILE_ATTRIBUTES">str(.@InstrumentName) == "TES"</cd:MatchExpression>
+        <cd:MatchExpression>str(.@ProcessLevel,2) == "L2"</cd:MatchExpression>
+        <cd:MatchExpression path="/HDFEOS/SWATHS">exists(./NO2LimbSwath)</cd:MatchExpression>
+      </cd:DetectionRule>
+    </cd:ProductDefinition>
+  </cd:ProductType>
+
+  <cd:ProductType name="TL2O3L">
+    <cd:Description>L2 Ozone (O3) Limb</cd:Description>
+    <cd:ProductDefinition id="TL2O3L" format="hdf5" version="0">
+      <cd:Description>The format definition for this product is taken from the HDF5 file itself.</cd:Description>
+      <cd:DetectionRule>
+        <cd:MatchExpression path="/HDFEOS/ADDITIONAL/FILE_ATTRIBUTES">str(.@InstrumentName) == "TES"</cd:MatchExpression>
+        <cd:MatchExpression>str(.@ProcessLevel,1) == "2"</cd:MatchExpression>
+        <cd:MatchExpression path="/HDFEOS/SWATHS">exists(./O3LimbSwath)</cd:MatchExpression>
+      </cd:DetectionRule>
+      <cd:DetectionRule>
+        <cd:MatchExpression path="/HDFEOS/ADDITIONAL/FILE_ATTRIBUTES">str(.@InstrumentName) == "TES"</cd:MatchExpression>
+        <cd:MatchExpression>str(.@ProcessLevel,2) == "L2"</cd:MatchExpression>
+        <cd:MatchExpression path="/HDFEOS/SWATHS">exists(./O3LimbSwath)</cd:MatchExpression>
+      </cd:DetectionRule>
+    </cd:ProductDefinition>
+  </cd:ProductType>
+
+  <cd:ProductType name="TL2ATMTL">
+    <cd:Description>L2 Atmospheric Temperatures Limb</cd:Description>
+    <cd:ProductDefinition id="TL2ATMTL" format="hdf5" version="0">
+      <cd:Description>The format definition for this product is taken from the HDF5 file itself.</cd:Description>
+      <cd:DetectionRule>
+        <cd:MatchExpression path="/HDFEOS/ADDITIONAL/FILE_ATTRIBUTES">str(.@InstrumentName) == "TES"</cd:MatchExpression>
+        <cd:MatchExpression>str(.@ProcessLevel,1) == "2"</cd:MatchExpression>
+        <cd:MatchExpression path="/HDFEOS/SWATHS">exists(./TATMLimbSwath)</cd:MatchExpression>
+      </cd:DetectionRule>
+      <cd:DetectionRule>
+        <cd:MatchExpression path="/HDFEOS/ADDITIONAL/FILE_ATTRIBUTES">str(.@InstrumentName) == "TES"</cd:MatchExpression>
+        <cd:MatchExpression>str(.@ProcessLevel,2) == "L2"</cd:MatchExpression>
+        <cd:MatchExpression path="/HDFEOS/SWATHS">exists(./TATMLimbSwath)</cd:MatchExpression>
+      </cd:DetectionRule>
+    </cd:ProductDefinition>
+  </cd:ProductType>
+
 </cd:ProductClass>

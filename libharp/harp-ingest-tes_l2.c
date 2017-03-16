@@ -34,6 +34,7 @@
 
 #include <stdlib.h>
 #include <string.h>
+#include <stdio.h>
 
 #define SECONDS_FROM_1993_TO_2000 (220838400 + 5)
 
@@ -374,6 +375,14 @@ static int ingestion_init(const harp_ingestion_module *module, coda_product *pro
     return 0;
 }
 
+static int ingestion_init_ch3oh_nadir(const harp_ingestion_module *module, coda_product *product,
+                                      const harp_ingestion_options *options, harp_product_definition **definition,
+                                      void **user_data)
+{
+    return ingestion_init(module, product, options, definition, user_data, "CH3OHNadirSwath", "CH3OH",
+                          "CH3OHPrecision");
+}
+
 static int ingestion_init_ch4_nadir(const harp_ingestion_module *module, coda_product *product,
                                     const harp_ingestion_options *options, harp_product_definition **definition,
                                     void **user_data)
@@ -388,11 +397,47 @@ static int ingestion_init_co_nadir(const harp_ingestion_module *module, coda_pro
     return ingestion_init(module, product, options, definition, user_data, "CONadirSwath", "CO", "COPrecision");
 }
 
+static int ingestion_init_co2_nadir(const harp_ingestion_module *module, coda_product *product,
+                                    const harp_ingestion_options *options, harp_product_definition **definition,
+                                    void **user_data)
+{
+    return ingestion_init(module, product, options, definition, user_data, "CO2NadirSwath", "CO2", "CO2Precision");
+}
+
 static int ingestion_init_h2o_nadir(const harp_ingestion_module *module, coda_product *product,
                                     const harp_ingestion_options *options, harp_product_definition **definition,
                                     void **user_data)
 {
     return ingestion_init(module, product, options, definition, user_data, "H2ONadirSwath", "H2O", "H2OPrecision");
+}
+
+static int ingestion_init_hcooh_nadir(const harp_ingestion_module *module, coda_product *product,
+                                      const harp_ingestion_options *options, harp_product_definition **definition,
+                                      void **user_data)
+{
+    return ingestion_init(module, product, options, definition, user_data, "HCOOHNadirSwath", "HCOOH",
+                          "HCOOHPrecision");
+}
+
+static int ingestion_init_hdo_nadir(const harp_ingestion_module *module, coda_product *product,
+                                    const harp_ingestion_options *options, harp_product_definition **definition,
+                                    void **user_data)
+{
+    return ingestion_init(module, product, options, definition, user_data, "HDONadirSwath", "HDO", "HDOPrecision");
+}
+
+static int ingestion_init_n2o_nadir(const harp_ingestion_module *module, coda_product *product,
+                                    const harp_ingestion_options *options, harp_product_definition **definition,
+                                    void **user_data)
+{
+    return ingestion_init(module, product, options, definition, user_data, "N2ONadirSwath", "N2O", "N2OPrecision");
+}
+
+static int ingestion_init_nh3_nadir(const harp_ingestion_module *module, coda_product *product,
+                                    const harp_ingestion_options *options, harp_product_definition **definition,
+                                    void **user_data)
+{
+    return ingestion_init(module, product, options, definition, user_data, "NH3NadirSwath", "NH3", "NH3Precision");
 }
 
 static int ingestion_init_o3_nadir(const harp_ingestion_module *module, coda_product *product,
@@ -407,6 +452,55 @@ static int ingestion_init_tatm_nadir(const harp_ingestion_module *module, coda_p
                                      void **user_data)
 {
     return ingestion_init(module, product, options, definition, user_data, "TATMNadirSwath", "TATM", "TATMPrecision");
+}
+
+static int ingestion_init_ch4_limb(const harp_ingestion_module *module, coda_product *product,
+                                   const harp_ingestion_options *options, harp_product_definition **definition,
+                                   void **user_data)
+{
+    return ingestion_init(module, product, options, definition, user_data, "CH4LimbSwath", "CH4", "CH4Precision");
+}
+
+static int ingestion_init_h2o_limb(const harp_ingestion_module *module, coda_product *product,
+                                   const harp_ingestion_options *options, harp_product_definition **definition,
+                                   void **user_data)
+{
+    return ingestion_init(module, product, options, definition, user_data, "H2OLimbSwath", "H2O", "H2OPrecision");
+}
+
+static int ingestion_init_hdo_limb(const harp_ingestion_module *module, coda_product *product,
+                                   const harp_ingestion_options *options, harp_product_definition **definition,
+                                   void **user_data)
+{
+    return ingestion_init(module, product, options, definition, user_data, "HDOLimbSwath", "HDO", "HDOPrecision");
+}
+
+static int ingestion_init_hno3_limb(const harp_ingestion_module *module, coda_product *product,
+                                    const harp_ingestion_options *options, harp_product_definition **definition,
+                                    void **user_data)
+{
+    return ingestion_init(module, product, options, definition, user_data, "HNO3LimbSwath", "HNO3", "HNO3Precision");
+}
+
+static int ingestion_init_no2_limb(const harp_ingestion_module *module, coda_product *product,
+                                   const harp_ingestion_options *options, harp_product_definition **definition,
+                                   void **user_data)
+{
+    return ingestion_init(module, product, options, definition, user_data, "O3LimbSwath", "O3", "O3Precision");
+}
+
+static int ingestion_init_o3_limb(const harp_ingestion_module *module, coda_product *product,
+                                  const harp_ingestion_options *options, harp_product_definition **definition,
+                                  void **user_data)
+{
+    return ingestion_init(module, product, options, definition, user_data, "O3LimbSwath", "O3", "O3Precision");
+}
+
+static int ingestion_init_tatm_limb(const harp_ingestion_module *module, coda_product *product,
+                                    const harp_ingestion_options *options, harp_product_definition **definition,
+                                    void **user_data)
+{
+    return ingestion_init(module, product, options, definition, user_data, "TATMLimbSwath", "TATM", "TATMPrecision");
 }
 
 static void register_datetime_variable(harp_product_definition *product_definition, const char *path)
@@ -478,268 +572,141 @@ static void register_pressure_variable(harp_product_definition *product_definiti
     harp_variable_definition_add_mapping(variable_definition, NULL, NULL, path, NULL);
 }
 
-static void register_ch4_nadir_product(void)
+static void register_nadir_product(const char *gas_code, const char *gas_name, const char *product_type,
+                                   int (*ingestion_init) (const harp_ingestion_module *module,
+                                                          coda_product *product,
+                                                          const harp_ingestion_options *options,
+                                                          harp_product_definition **definition, void **user_data))
 {
     harp_ingestion_module *module;
     harp_product_definition *product_definition;
     harp_variable_definition *variable_definition;
     harp_dimension_type dimension_type[2] = { harp_dimension_time, harp_dimension_vertical };
-    const char *description;
-    const char *path;
+    char name[81], description[81], path[255];
 
-    module = harp_ingestion_register_module_coda("TES_L2_CH4_Nadir", "TES", "AURA_TES", "TL2CH4N",
-                                                 "TES CH4 nadir profile", ingestion_init_ch4_nadir, ingestion_done);
+    sprintf(name, "TES_L2_%s_Nadir", gas_code);
+    sprintf(description, "TES %s nadir profile", gas_name);
+    module = harp_ingestion_register_module_coda(name, "TES", "AURA_TES", product_type, description,
+                                                 ingestion_init, ingestion_done);
 
-    /* CH4_Nadir product */
-    product_definition = harp_ingestion_register_product(module, "TES_L2_CH4_Nadir", NULL, read_dimensions);
+    /* Nadir product */
+    product_definition = harp_ingestion_register_product(module, name, NULL, read_dimensions);
 
     /* datetime */
-    path = "/HDFEOS/SWATHS/CH4NadirSwath/Geolocation_Fields/Time[]";
+    sprintf(path, "/HDFEOS/SWATHS/%sNadirSwath/Geolocation_Fields/Time[]", gas_code);
     register_datetime_variable(product_definition, path);
 
     /* longitude and latitude */
-    path = "/HDFEOS/SWATHS/CH4NadirSwath/Geolocation_Fields/Longitude[]";
+    sprintf(path, "/HDFEOS/SWATHS/%sNadirSwath/Geolocation_Fields/Longitude[]", gas_code);
     register_longitude_variable(product_definition, path);
-    path = "/HDFEOS/SWATHS/CH4NadirSwath/Geolocation_Fields/Latitude[]";
+    sprintf(path, "/HDFEOS/SWATHS/%sNadirSwath/Geolocation_Fields/Latitude[]", gas_code);
     register_latitude_variable(product_definition, path);
 
     /* altitude */
-    path = "/HDFEOS/SWATHS/CH4NadirSwath/Data_Fields/Altitude[]";
+    sprintf(path, "/HDFEOS/SWATHS/%sNadirSwath/Data_Fields/Altitude[]", gas_code);
     register_altitude_variable(product_definition, path);
 
     /* pressure */
-    path = "/HDFEOS/SWATHS/CH4NadirSwath/Data_Fields/Pressure[]";
+    sprintf(path, "/HDFEOS/SWATHS/%sNadirSwath/Data_Fields/Pressure[]", gas_code);
     register_pressure_variable(product_definition, path);
 
-    /* CH4_volume_mixing_ratio */
-    description = "CH4 volume mixing ratio";
-    variable_definition = harp_ingestion_register_variable_full_read(product_definition, "CH4_volume_mixing_ratio",
-                                                                     harp_type_double, 2, dimension_type, NULL,
-                                                                     description, "ppv", NULL, read_value);
-    path = "/HDFEOS/SWATHS/CH4NadirSwath/Data_Fields/CH4[]";
+    /* volume_mixing_ratio */
+    sprintf(name, "%s_volume_mixing_ratio", gas_code);
+    sprintf(description, "%s volume mixing ratio", gas_name);
+    sprintf(path, "/HDFEOS/SWATHS/%sNadirSwath/Data_Fields/%s[]", gas_code, gas_code);
+    variable_definition = harp_ingestion_register_variable_full_read(product_definition, name, harp_type_double, 2,
+                                                                     dimension_type, NULL, description, "ppv", NULL,
+                                                                     read_value);
     harp_variable_definition_add_mapping(variable_definition, NULL, NULL, path, NULL);
 
-    /* CH4_volume_mixing_ratio_uncertainty */
-    description = "CH4 volume mixing ratio precision";
-    variable_definition = harp_ingestion_register_variable_full_read(product_definition,
-                                                                     "CH4_volume_mixing_ratio_uncertainty",
-                                                                     harp_type_double, 2, dimension_type, NULL,
-                                                                     description, "ppv", NULL, read_error);
-    path = "/HDFEOS/SWATHS/CH4NadirSwath/Data_Fields/CH4Precision[]";
+    /* volume_mixing_ratio_uncertainty */
+    sprintf(name, "%s_volume_mixing_ratio_uncertainty", gas_code);
+    sprintf(description, "%s volume mixing ratio precision", gas_name);
+    sprintf(path, "/HDFEOS/SWATHS/%sNadirSwath/Data_Fields/%sPrecision[]", gas_code, gas_code);
+    variable_definition = harp_ingestion_register_variable_full_read(product_definition, name, harp_type_double, 2,
+                                                                     dimension_type, NULL, description, "ppv", NULL,
+                                                                     read_error);
     harp_variable_definition_add_mapping(variable_definition, NULL, NULL, path, NULL);
 }
 
-static void register_co_nadir_product(void)
+static void register_limb_product(const char *gas_code, const char *gas_name, const char *product_type,
+                                  int (*ingestion_init) (const harp_ingestion_module *module,
+                                                         coda_product *product,
+                                                         const harp_ingestion_options *options,
+                                                         harp_product_definition **definition, void **user_data))
 {
     harp_ingestion_module *module;
     harp_product_definition *product_definition;
     harp_variable_definition *variable_definition;
     harp_dimension_type dimension_type[2] = { harp_dimension_time, harp_dimension_vertical };
-    const char *description;
-    const char *path;
+    char name[81], description[81], path[255];
 
-    module = harp_ingestion_register_module_coda("TES_L2_CO_Nadir", "TES", "AURA_TES", "TL2CON", "TES CO nadir profile",
-                                                 ingestion_init_co_nadir, ingestion_done);
+    sprintf(name, "TES_L2_%s_Limb", gas_code);
+    sprintf(description, "TES %s limb profile", gas_name);
+    module = harp_ingestion_register_module_coda(name, "TES", "AURA_TES", product_type, description,
+                                                 ingestion_init, ingestion_done);
 
-    /* CO_Nadir product */
-    product_definition = harp_ingestion_register_product(module, "TES_L2_CO_Nadir", NULL, read_dimensions);
+    /* Limb product */
+    product_definition = harp_ingestion_register_product(module, name, NULL, read_dimensions);
 
     /* datetime */
-    path = "/HDFEOS/SWATHS/CONadirSwath/Geolocation_Fields/Time[]";
+    sprintf(path, "/HDFEOS/SWATHS/%sLimbSwath/Geolocation_Fields/Time[]", gas_code);
     register_datetime_variable(product_definition, path);
 
     /* longitude and latitude */
-    path = "/HDFEOS/SWATHS/CONadirSwath/Geolocation_Fields/Longitude[]";
+    sprintf(path, "/HDFEOS/SWATHS/%sLimbSwath/Geolocation_Fields/Longitude[]", gas_code);
     register_longitude_variable(product_definition, path);
-    path = "/HDFEOS/SWATHS/CONadirSwath/Geolocation_Fields/Latitude[]";
+    sprintf(path, "/HDFEOS/SWATHS/%sLimbSwath/Geolocation_Fields/Latitude[]", gas_code);
     register_latitude_variable(product_definition, path);
 
     /* altitude */
-    path = "/HDFEOS/SWATHS/CONadirSwath/Data_Fields/Altitude[]";
+    sprintf(path, "/HDFEOS/SWATHS/%sLimbSwath/Data_Fields/Altitude[]", gas_code);
     register_altitude_variable(product_definition, path);
 
     /* pressure */
-    path = "/HDFEOS/SWATHS/CONadirSwath/Data_Fields/Pressure[]";
+    sprintf(path, "/HDFEOS/SWATHS/%sLimbSwath/Data_Fields/Pressure[]", gas_code);
     register_pressure_variable(product_definition, path);
 
-    /* CO_volume_mixing_ratio */
-    description = "CO volume mixing ratio";
-    variable_definition = harp_ingestion_register_variable_full_read(product_definition, "CO_volume_mixing_ratio",
-                                                                     harp_type_double, 2, dimension_type, NULL,
-                                                                     description, "ppv", NULL, read_value);
-    path = "/HDFEOS/SWATHS/CONadirSwath/Data_Fields/CO[]";
+    /* volume_mixing_ratio */
+    sprintf(name, "%s_volume_mixing_ratio", gas_code);
+    sprintf(description, "%s volume mixing ratio", gas_name);
+    sprintf(path, "/HDFEOS/SWATHS/%sLimbSwath/Data_Fields/%s[]", gas_code, gas_code);
+    variable_definition = harp_ingestion_register_variable_full_read(product_definition, name, harp_type_double, 2,
+                                                                     dimension_type, NULL, description, "ppv", NULL,
+                                                                     read_value);
     harp_variable_definition_add_mapping(variable_definition, NULL, NULL, path, NULL);
 
-    /* CO_volume_mixing_ratio_uncertainty */
-    description = "CO volume mixing ratio precision";
-    variable_definition = harp_ingestion_register_variable_full_read(product_definition,
-                                                                     "CO_volume_mixing_ratio_uncertainty",
-                                                                     harp_type_double, 2, dimension_type, NULL,
-                                                                     description, "ppv", NULL, read_error);
-    path = "/HDFEOS/SWATHS/CONadirSwath/Data_Fields/COPrecision[]";
-    harp_variable_definition_add_mapping(variable_definition, NULL, NULL, path, NULL);
-}
-
-static void register_h2o_nadir_product(void)
-{
-    harp_ingestion_module *module;
-    harp_product_definition *product_definition;
-    harp_variable_definition *variable_definition;
-    harp_dimension_type dimension_type[2] = { harp_dimension_time, harp_dimension_vertical };
-    const char *description;
-    const char *path;
-
-    module = harp_ingestion_register_module_coda("TES_L2_H2O_Nadir", "TES", "AURA_TES", "TL2H2ON",
-                                                 "TES H2O nadir profile", ingestion_init_h2o_nadir, ingestion_done);
-
-    /* H2O_Nadir product */
-    product_definition = harp_ingestion_register_product(module, "TES_L2_H2O_Nadir", NULL, read_dimensions);
-
-    /* datetime */
-    path = "/HDFEOS/SWATHS/H2ONadirSwath/Geolocation_Fields/Time[]";
-    register_datetime_variable(product_definition, path);
-
-    /* longitude and latitude */
-    path = "/HDFEOS/SWATHS/H2ONadirSwath/Geolocation_Fields/Longitude[]";
-    register_longitude_variable(product_definition, path);
-    path = "/HDFEOS/SWATHS/H2ONadirSwath/Geolocation_Fields/Latitude[]";
-    register_latitude_variable(product_definition, path);
-
-    /* altitude */
-    path = "/HDFEOS/SWATHS/H2ONadirSwath/Data_Fields/Altitude[]";
-    register_altitude_variable(product_definition, path);
-
-    /* pressure */
-    path = "/HDFEOS/SWATHS/H2ONadirSwath/Data_Fields/Pressure[]";
-    register_pressure_variable(product_definition, path);
-
-    /* H2O_volume_mixing_ratio */
-    description = "H2O volume mixing ratio";
-    variable_definition = harp_ingestion_register_variable_full_read(product_definition, "H2O_volume_mixing_ratio",
-                                                                     harp_type_double, 2, dimension_type, NULL,
-                                                                     description, "ppv", NULL, read_value);
-    path = "/HDFEOS/SWATHS/H2ONadirSwath/Data_Fields/H2O[]";
-    harp_variable_definition_add_mapping(variable_definition, NULL, NULL, path, NULL);
-
-    /* H2O_volume_mixing_ratio_uncertainty */
-    description = "H2O volume mixing ratio precision";
-    variable_definition = harp_ingestion_register_variable_full_read(product_definition,
-                                                                     "H2O_volume_mixing_ratio_uncertainty",
-                                                                     harp_type_double, 2, dimension_type, NULL,
-                                                                     description, "ppv", NULL, read_error);
-    path = "/HDFEOS/SWATHS/H2ONadirSwath/Data_Fields/H2OPrecision[]";
-    harp_variable_definition_add_mapping(variable_definition, NULL, NULL, path, NULL);
-}
-
-static void register_o3_nadir_product(void)
-{
-    harp_ingestion_module *module;
-    harp_product_definition *product_definition;
-    harp_variable_definition *variable_definition;
-    harp_dimension_type dimension_type[2] = { harp_dimension_time, harp_dimension_vertical };
-    const char *description;
-    const char *path;
-
-    module = harp_ingestion_register_module_coda("TES_L2_O3_Nadir", "TES", "AURA_TES", "TL2O3N", "TES O3 nadir profile",
-                                                 ingestion_init_o3_nadir, ingestion_done);
-
-    /* O3_Nadir product */
-    product_definition = harp_ingestion_register_product(module, "TES_L2_O3_Nadir", NULL, read_dimensions);
-
-    /* datetime */
-    path = "/HDFEOS/SWATHS/O3NadirSwath/Geolocation_Fields/Time[]";
-    register_datetime_variable(product_definition, path);
-
-    /* longitude and latitude */
-    path = "/HDFEOS/SWATHS/O3NadirSwath/Geolocation_Fields/Longitude[]";
-    register_longitude_variable(product_definition, path);
-    path = "/HDFEOS/SWATHS/O3NadirSwath/Geolocation_Fields/Latitude[]";
-    register_latitude_variable(product_definition, path);
-
-    /* altitude */
-    path = "/HDFEOS/SWATHS/O3NadirSwath/Data_Fields/Altitude[]";
-    register_altitude_variable(product_definition, path);
-
-    /* pressure */
-    path = "/HDFEOS/SWATHS/O3NadirSwath/Data_Fields/Pressure[]";
-    register_pressure_variable(product_definition, path);
-
-    /* O3_volume_mixing_ratio */
-    description = "O3 volume mixing ratio";
-    variable_definition = harp_ingestion_register_variable_full_read(product_definition, "O3_volume_mixing_ratio",
-                                                                     harp_type_double, 2, dimension_type, NULL,
-                                                                     description, "ppv", NULL, read_value);
-    path = "/HDFEOS/SWATHS/O3NadirSwath/Data_Fields/O3[]";
-    harp_variable_definition_add_mapping(variable_definition, NULL, NULL, path, NULL);
-
-    /* O3_volume_mixing_ratio_uncertainty */
-    description = "O3 volume mixing ratio precision";
-    variable_definition = harp_ingestion_register_variable_full_read(product_definition,
-                                                                     "O3_volume_mixing_ratio_uncertainty",
-                                                                     harp_type_double, 2, dimension_type, NULL,
-                                                                     description, "ppv", NULL, read_error);
-    path = "/HDFEOS/SWATHS/O3NadirSwath/Data_Fields/O3Precision[]";
-    harp_variable_definition_add_mapping(variable_definition, NULL, NULL, path, NULL);
-}
-
-static void register_tatm_nadir_product(void)
-{
-    harp_ingestion_module *module;
-    harp_product_definition *product_definition;
-    harp_variable_definition *variable_definition;
-    harp_dimension_type dimension_type[2] = { harp_dimension_time, harp_dimension_vertical };
-    const char *description;
-    const char *path;
-
-    module = harp_ingestion_register_module_coda("TES_L2_Temperature_Nadir", "TES", "AURA_TES", "TL2ATMTN",
-                                                 "TES atmospheric temperature nadir profile",
-                                                 ingestion_init_tatm_nadir, ingestion_done);
-
-    /* Temperature_Nadir product */
-    product_definition = harp_ingestion_register_product(module, "TES_L2_Temperature_Nadir", NULL, read_dimensions);
-
-    /* datetime */
-    path = "/HDFEOS/SWATHS/TATMNadirSwath/Geolocation_Fields/Time[]";
-    register_datetime_variable(product_definition, path);
-
-    /* longitude and latitude */
-    path = "/HDFEOS/SWATHS/TATMNadirSwath/Geolocation_Fields/Longitude[]";
-    register_longitude_variable(product_definition, path);
-    path = "/HDFEOS/SWATHS/TATMNadirSwath/Geolocation_Fields/Latitude[]";
-    register_latitude_variable(product_definition, path);
-
-    /* altitude */
-    path = "/HDFEOS/SWATHS/TATMNadirSwath/Data_Fields/Altitude[]";
-    register_altitude_variable(product_definition, path);
-
-    /* pressure */
-    path = "/HDFEOS/SWATHS/TATMNadirSwath/Data_Fields/Pressure[]";
-    register_pressure_variable(product_definition, path);
-
-    /* temperature */
-    description = "temperature";
-    variable_definition = harp_ingestion_register_variable_full_read(product_definition, "temperature",
-                                                                     harp_type_double, 2, dimension_type, NULL,
-                                                                     description, "K", NULL, read_value);
-    path = "/HDFEOS/SWATHS/TATMNadirSwath/Data_Fields/TATM[]";
-    harp_variable_definition_add_mapping(variable_definition, NULL, NULL, path, NULL);
-
-    /* temperature_uncertainty */
-    description = "temperature precision";
-    variable_definition = harp_ingestion_register_variable_full_read(product_definition, "temperature_uncertainty",
-                                                                     harp_type_double, 2, dimension_type, NULL,
-                                                                     description, "K", NULL, read_error);
-    path = "/HDFEOS/SWATHS/TATMNadirSwath/Data_Fields/TATMPrecision[]";
+    /* volume_mixing_ratio_uncertainty */
+    sprintf(name, "%s_volume_mixing_ratio_uncertainty", gas_code);
+    sprintf(description, "%s volume mixing ratio precision", gas_name);
+    sprintf(path, "/HDFEOS/SWATHS/%sLimbSwath/Data_Fields/%sPrecision[]", gas_code, gas_code);
+    variable_definition = harp_ingestion_register_variable_full_read(product_definition, name, harp_type_double, 2,
+                                                                     dimension_type, NULL, description, "ppv", NULL,
+                                                                     read_error);
     harp_variable_definition_add_mapping(variable_definition, NULL, NULL, path, NULL);
 }
 
 int harp_ingestion_module_tes_l2_init(void)
 {
-    register_ch4_nadir_product();
-    register_co_nadir_product();
-    register_h2o_nadir_product();
-    register_o3_nadir_product();
-    register_tatm_nadir_product();
+    register_nadir_product("CH3OH", "methanol", "TL2MTLN", ingestion_init_ch3oh_nadir);
+    register_nadir_product("CH4", "methane", "TL2CH4N", ingestion_init_ch4_nadir);
+    register_nadir_product("CO", "carbon monoxide", "TL2CON", ingestion_init_co_nadir);
+    register_nadir_product("CO2", "carbon dioxide", "TL2CO2N", ingestion_init_co2_nadir);
+    register_nadir_product("H2O", "water vapour", "TL2H2ON", ingestion_init_h2o_nadir);
+    register_nadir_product("HCOOH", "formic acid", "TL2FORN", ingestion_init_hcooh_nadir);
+    register_nadir_product("HDO", "deuterium oxide", "TL2HDON", ingestion_init_hdo_nadir);
+    register_nadir_product("N2O", "nitrous oxide", "TL2N2ON", ingestion_init_n2o_nadir);
+    register_nadir_product("NH3", "ammonia", "TL2NH3N", ingestion_init_nh3_nadir);
+    register_nadir_product("O3", "ozone", "TL2O3N", ingestion_init_o3_nadir);
+    register_nadir_product("Temperature", "atmospheric temperature", "TL2ATMTN", ingestion_init_tatm_nadir);
+
+    register_limb_product("CH4", "methane", "TL2CH4N", ingestion_init_ch4_limb);
+    register_limb_product("H2O", "water vapour", "TL2H2OL", ingestion_init_h2o_limb);
+    register_limb_product("HDO", "deuterium oxide", "TL2HDOL", ingestion_init_hdo_limb);
+    register_limb_product("HNO3", "water vapour", "TL2HNO3L", ingestion_init_hno3_limb);
+    register_limb_product("NO2", "nitrogen dioxide", "TL2NO2L", ingestion_init_no2_limb);
+    register_limb_product("O3", "ozone", "TL2O3L", ingestion_init_o3_limb);
+    register_limb_product("Temperature", "atmospheric temperature", "TL2ATMTL", ingestion_init_tatm_limb);
 
     return 0;
 }
