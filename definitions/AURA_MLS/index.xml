@@ -107,7 +107,7 @@
       <cd:DetectionRule>
         <cd:MatchExpression path="/HDFEOS/ADDITIONAL/FILE_ATTRIBUTES">str(.@InstrumentName,3) == "MLS"</cd:MatchExpression>
         <cd:MatchExpression>str(.@ProcessLevel,1) == "2" || str(.@ProcessLevel,2) == "L2"</cd:MatchExpression>
-        <cd:MatchExpression path="/HDFEOS/SWATHS">exists(/HCN)</cd:MatchExpression>
+        <cd:MatchExpression path="/HDFEOS/SWATHS">exists(./HCN)</cd:MatchExpression>
       </cd:DetectionRule>
     </cd:ProductDefinition>
   </cd:ProductType>
@@ -151,7 +151,7 @@
       <cd:DetectionRule>
         <cd:MatchExpression path="/HDFEOS/ADDITIONAL/FILE_ATTRIBUTES">str(.@InstrumentName,3) == "MLS"</cd:MatchExpression>
         <cd:MatchExpression>str(.@ProcessLevel,1) == "2" || str(.@ProcessLevel,2) == "L2"</cd:MatchExpression>
-        <cd:MatchExpression path="/HDFEOS/SWATHS">exists(/IWC)</cd:MatchExpression>
+        <cd:MatchExpression path="/HDFEOS/SWATHS">exists(./IWC)</cd:MatchExpression>
       </cd:DetectionRule>
     </cd:ProductDefinition>
   </cd:ProductType>
@@ -162,7 +162,7 @@
       <cd:DetectionRule>
         <cd:MatchExpression path="/HDFEOS/ADDITIONAL/FILE_ATTRIBUTES">str(.@InstrumentName,3) == "MLS"</cd:MatchExpression>
         <cd:MatchExpression>str(.@ProcessLevel,1) == "2" || str(.@ProcessLevel,2) == "L2"</cd:MatchExpression>
-        <cd:MatchExpression path="/HDFEOS/SWATHS">exists(/N2O)</cd:MatchExpression>
+        <cd:MatchExpression path="/HDFEOS/SWATHS">exists(./N2O)</cd:MatchExpression>
       </cd:DetectionRule>
     </cd:ProductDefinition>
   </cd:ProductType>
