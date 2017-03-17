@@ -417,10 +417,9 @@ static int register_module_l3_Obs4MIPs(void)
     const char *description;
     const char *path;
 
-    module =
-        harp_ingestion_register_module_coda("ESACCI_GHG_Obs4MIPs_L3", "Green House Gases CCI", "ESACCI_GHG",
-                                            "Obs4MIPs_L3", "CCI L3 Obs4MIPs Green House Gases profile",
-                                            ingestion_init, ingestion_done);
+    module = harp_ingestion_register_module_coda("ESACCI_GHG_L3_Obs4MIPs", "Green House Gases CCI", "ESACCI_GHG",
+                                                 "Obs4MIPs_L3", "CCI L3 Obs4MIPs Green House Gases profile",
+                                                 ingestion_init, ingestion_done);
     product_definition = harp_ingestion_register_product(module, "ESACCI_GHG_L3_Obs4MIPs", NULL, read_dimensions);
 
     /* datetime */
