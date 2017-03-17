@@ -8,7 +8,7 @@
   
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
   
-  <title>TES_L2_CO_Nadir &mdash; HARP 0.4b documentation</title>
+  <title>ESACCI_GHG_L2_SCIAMACHY &mdash; HARP 0.4b documentation</title>
   
 
   
@@ -113,7 +113,7 @@
   <ul class="wy-breadcrumbs">
     <li><a href="../index.html">Docs</a> &raquo;</li>
       
-    <li>TES_L2_CO_Nadir</li>
+    <li>ESACCI_GHG_L2_SCIAMACHY</li>
       <li class="wy-breadcrumbs-aside">
         
           
@@ -125,11 +125,11 @@
           <div role="main" class="document" itemscope="itemscope" itemtype="http://schema.org/Article">
            <div itemprop="articleBody">
             
-  <div class="section" id="tes-l2-co-nadir">
-<h1>TES_L2_CO_Nadir</h1>
+  <div class="section" id="esacci-ghg-l2-sciamachy">
+<h1>ESACCI_GHG_L2_SCIAMACHY</h1>
 <div class="section" id="variables">
 <h2>Variables</h2>
-<p>The table below lists the variables that are present in the HARP product that results from an ingestion of <code class="docutils literal"><span class="pre">TES_L2_CO_Nadir</span></code> data.</p>
+<p>The table below lists the variables that are present in the HARP product that results from an ingestion of <code class="docutils literal"><span class="pre">ESACCI_GHG_L2_SCIAMACHY</span></code> data.</p>
 <table border="1" class="docutils">
 <colgroup>
 <col width="25%" />
@@ -151,45 +151,75 @@
 <td>double</td>
 <td>{<em>time</em>}</td>
 <td>seconds since 2000-01-01</td>
-<td>time of the measurement (in seconds since 2000-01-01 00:00:00)</td>
+<td>time of the measurement</td>
 </tr>
-<tr class="row-odd"><td><strong>longitude</strong></td>
+<tr class="row-odd"><td><strong>surface_altitude</strong></td>
 <td>double</td>
 <td>{<em>time</em>}</td>
-<td>degree_east</td>
-<td>tangent longitude</td>
+<td>m</td>
+<td>average surface altitude w.r.t. geoid</td>
 </tr>
 <tr class="row-even"><td><strong>latitude</strong></td>
 <td>double</td>
 <td>{<em>time</em>}</td>
 <td>degree_north</td>
-<td>tangent latitude</td>
+<td>latitude of the ground pixel center</td>
 </tr>
-<tr class="row-odd"><td><strong>altitude</strong></td>
+<tr class="row-odd"><td><strong>longitude</strong></td>
 <td>double</td>
-<td>{<em>time</em>, <em>vertical</em>}</td>
-<td>m</td>
-<td>altitude per profile level</td>
+<td>{<em>time</em>}</td>
+<td>degree_east</td>
+<td>longitude of the ground pixel center</td>
 </tr>
-<tr class="row-even"><td><strong>pressure</strong></td>
+<tr class="row-even"><td><strong>latitude_bounds</strong></td>
 <td>double</td>
-<td>{<em>time</em>, <em>vertical</em>}</td>
-<td>hPa</td>
-<td>pressure per profile level</td>
+<td>{<em>time</em>, 4}</td>
+<td>degree_north</td>
+<td>corner latitudes for the ground pixel of the measurement</td>
 </tr>
-<tr class="row-odd"><td><strong>CO_volume_mixing_ratio</strong></td>
+<tr class="row-odd"><td><strong>longitude_bounds</strong></td>
 <td>double</td>
-<td>{<em>time</em>, <em>vertical</em>}</td>
-<td>ppv</td>
-<td>carbon monoxide volume mixing ratio</td>
+<td>{<em>time</em>, 4}</td>
+<td>degree_east</td>
+<td>corner longitudes for the ground pixel of the measurement</td>
 </tr>
-<tr class="row-even"><td><strong>CO_volume_mixing_ratio_uncertainty</strong></td>
+<tr class="row-even"><td><strong>sensor_zenith_angle</strong></td>
 <td>double</td>
-<td>{<em>time</em>, <em>vertical</em>}</td>
-<td>ppv</td>
-<td>carbon monoxide volume mixing ratio precision</td>
+<td>{<em>time</em>}</td>
+<td>&nbsp;</td>
+<td>sensor zenith angle</td>
 </tr>
-<tr class="row-odd"><td><strong>index</strong></td>
+<tr class="row-odd"><td><strong>solar_zenith_angle</strong></td>
+<td>double</td>
+<td>{<em>time</em>}</td>
+<td>&nbsp;</td>
+<td>solar zenith angle</td>
+</tr>
+<tr class="row-even"><td><strong>CH4_column_volume_mixing_ratio</strong></td>
+<td>double</td>
+<td>{<em>time</em>}</td>
+<td>ppmv</td>
+<td>CH4 column volume mixing ratio</td>
+</tr>
+<tr class="row-odd"><td><strong>CH4_column_volume_mixing_ratio_uncertainty</strong></td>
+<td>double</td>
+<td>{<em>time</em>}</td>
+<td>ppmv</td>
+<td>CH4 column volume mixing ratio uncertainty</td>
+</tr>
+<tr class="row-even"><td><strong>CO2_column_volume_mixing_ratio</strong></td>
+<td>double</td>
+<td>{<em>time</em>}</td>
+<td>ppmv</td>
+<td>CO2 column volume mixing ratio</td>
+</tr>
+<tr class="row-odd"><td><strong>CO2_column_volume_mixing_ratio_uncertainty</strong></td>
+<td>double</td>
+<td>{<em>time</em>}</td>
+<td>ppmv</td>
+<td>CO2 column volume mixing ratio uncertainty</td>
+</tr>
+<tr class="row-even"><td><strong>index</strong></td>
 <td>int32</td>
 <td>{<em>time</em>}</td>
 <td>&nbsp;</td>
@@ -203,9 +233,9 @@
 <p>The table below details where and how each variable was retrieved from the input product.</p>
 <table border="1" class="docutils">
 <colgroup>
-<col width="33%" />
-<col width="12%" />
-<col width="55%" />
+<col width="46%" />
+<col width="14%" />
+<col width="39%" />
 </colgroup>
 <thead valign="bottom">
 <tr class="row-odd"><th class="head">field name</th>
@@ -213,36 +243,80 @@
 </tr>
 </thead>
 <tbody valign="top">
-<tr class="row-even"><td rowspan="2"><strong>datetime</strong></td>
+<tr class="row-even"><td><strong>datetime</strong></td>
 <td><em>path</em></td>
-<td><strong>/HDFEOS/SWATHS/CONadirSwath/Geolocation_Fields/Time[]</strong></td>
+<td><strong>time[]</strong></td>
 </tr>
-<tr class="row-odd"><td><em>description</em></td>
-<td>the time converted from TAI93 to seconds since 2000-01-01T00:00:00</td>
+<tr class="row-odd"><td rowspan="2"><strong>surface_altitude</strong></td>
+<td><em>available</em></td>
+<td>optional</td>
 </tr>
-<tr class="row-even"><td><strong>longitude</strong></td>
-<td><em>path</em></td>
-<td><strong>/HDFEOS/SWATHS/CONadirSwath/Geolocation_Fields/Longitude[]</strong></td>
+<tr class="row-even"><td><em>path</em></td>
+<td><strong>altitude[]</strong></td>
 </tr>
 <tr class="row-odd"><td><strong>latitude</strong></td>
 <td><em>path</em></td>
-<td><strong>/HDFEOS/SWATHS/CONadirSwath/Geolocation_Fields/Latitude[]</strong></td>
+<td><strong>latitude[]</strong></td>
 </tr>
-<tr class="row-even"><td><strong>altitude</strong></td>
+<tr class="row-even"><td><strong>longitude</strong></td>
 <td><em>path</em></td>
-<td><strong>/HDFEOS/SWATHS/CONadirSwath/Data_Fields/Altitude[]</strong></td>
+<td><strong>longitude[]</strong></td>
 </tr>
-<tr class="row-odd"><td><strong>pressure</strong></td>
-<td><em>path</em></td>
-<td><strong>/HDFEOS/SWATHS/CONadirSwath/Data_Fields/Pressure[]</strong></td>
+<tr class="row-odd"><td rowspan="3"><strong>latitude_bounds</strong></td>
+<td><em>available</em></td>
+<td>optional</td>
 </tr>
-<tr class="row-even"><td><strong>CO_volume_mixing_ratio</strong></td>
-<td><em>path</em></td>
-<td><strong>/HDFEOS/SWATHS/CONadirSwath/Data_Fields/CO[]</strong></td>
+<tr class="row-even"><td><em>path</em></td>
+<td><strong>latitude_corners[]</strong></td>
 </tr>
-<tr class="row-odd"><td><strong>CO_volume_mixing_ratio_uncertainty</strong></td>
+<tr class="row-odd"><td><em>description</em></td>
+<td>The corners ABCD are reordered as BDCA.</td>
+</tr>
+<tr class="row-even"><td rowspan="3"><strong>longitude_bounds</strong></td>
+<td><em>available</em></td>
+<td>optional</td>
+</tr>
+<tr class="row-odd"><td><em>path</em></td>
+<td><strong>longitude_corners[]</strong></td>
+</tr>
+<tr class="row-even"><td><em>description</em></td>
+<td>The corners ABCD are reordered as BDCA.</td>
+</tr>
+<tr class="row-odd"><td><strong>sensor_zenith_angle</strong></td>
 <td><em>path</em></td>
-<td><strong>/HDFEOS/SWATHS/CONadirSwath/Data_Fields/COPrecision[]</strong></td>
+<td><strong>sensor_zenith_angle[]</strong></td>
+</tr>
+<tr class="row-even"><td><strong>solar_zenith_angle</strong></td>
+<td><em>path</em></td>
+<td><strong>solar_zenith_angle[]</strong></td>
+</tr>
+<tr class="row-odd"><td rowspan="2"><strong>CH4_column_volume_mixing_ratio</strong></td>
+<td><em>available</em></td>
+<td>optional</td>
+</tr>
+<tr class="row-even"><td><em>path</em></td>
+<td><strong>xch4[]</strong></td>
+</tr>
+<tr class="row-odd"><td rowspan="2"><strong>CH4_column_volume_mixing_ratio_uncertainty</strong></td>
+<td><em>available</em></td>
+<td>optional</td>
+</tr>
+<tr class="row-even"><td><em>path</em></td>
+<td><strong>xch4_uncertainty[]</strong></td>
+</tr>
+<tr class="row-odd"><td rowspan="2"><strong>CO2_column_volume_mixing_ratio</strong></td>
+<td><em>available</em></td>
+<td>optional</td>
+</tr>
+<tr class="row-even"><td><em>path</em></td>
+<td><strong>xco2[]</strong></td>
+</tr>
+<tr class="row-odd"><td rowspan="2"><strong>CO2_column_volume_mixing_ratio_uncertainty</strong></td>
+<td><em>available</em></td>
+<td>optional</td>
+</tr>
+<tr class="row-even"><td><em>path</em></td>
+<td><strong>xco2_uncertainty[]</strong></td>
 </tr>
 </tbody>
 </table>

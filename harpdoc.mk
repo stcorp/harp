@@ -102,6 +102,10 @@ HARP_DOCFILES = \
 	doc/html/ingestions/ESACCI_AEROSOL_L3_IASI.html \
 	doc/html/ingestions/ESACCI_AEROSOL_L3_MERIS_ALAMO.html \
 	doc/html/ingestions/ESACCI_AEROSOL_L3_Multi_Sensor_AAI.html \
+	doc/html/ingestions/ESACCI_GHG_L2_EMMA.html \
+	doc/html/ingestions/ESACCI_GHG_L2_GOSAT.html \
+	doc/html/ingestions/ESACCI_GHG_L2_SCIAMACHY.html \
+	doc/html/ingestions/ESACCI_GHG_L3_Obs4MIPs.html \
 	doc/html/ingestions/ESACCI_OZONE_L2_LP.html \
 	doc/html/ingestions/ESACCI_OZONE_L2_NP.html \
 	doc/html/ingestions/ESACCI_OZONE_L2_TC.html \
@@ -404,10 +408,23 @@ HARP_DOCFILES = \
 	doc/html/ingestions/SMR_L2.html \
 	doc/html/ingestions/TEMIS_o3field.html \
 	doc/html/ingestions/TEMIS_o3mean.html \
+	doc/html/ingestions/TES_L2_CH3OH_Nadir.html \
+	doc/html/ingestions/TES_L2_CH4_Limb.html \
 	doc/html/ingestions/TES_L2_CH4_Nadir.html \
+	doc/html/ingestions/TES_L2_CO2_Nadir.html \
 	doc/html/ingestions/TES_L2_CO_Nadir.html \
+	doc/html/ingestions/TES_L2_H2O_Limb.html \
 	doc/html/ingestions/TES_L2_H2O_Nadir.html \
+	doc/html/ingestions/TES_L2_HCOOH_Nadir.html \
+	doc/html/ingestions/TES_L2_HDO_Limb.html \
+	doc/html/ingestions/TES_L2_HDO_Nadir.html \
+	doc/html/ingestions/TES_L2_HNO3_Limb.html \
+	doc/html/ingestions/TES_L2_N2O_Nadir.html \
+	doc/html/ingestions/TES_L2_NH3_Nadir.html \
+	doc/html/ingestions/TES_L2_NO2_Limb.html \
+	doc/html/ingestions/TES_L2_O3_Limb.html \
 	doc/html/ingestions/TES_L2_O3_Nadir.html \
+	doc/html/ingestions/TES_L2_Temperature_Limb.html \
 	doc/html/ingestions/TES_L2_Temperature_Nadir.html \
 	doc/html/ingestions/index.html \
 	doc/html/install.html \
@@ -629,6 +646,14 @@ doc/html/ingestions/ESACCI_AEROSOL_L3_IASI.html:
 doc/html/ingestions/ESACCI_AEROSOL_L3_MERIS_ALAMO.html:
 	$(MAKE) harp_doc
 doc/html/ingestions/ESACCI_AEROSOL_L3_Multi_Sensor_AAI.html:
+	$(MAKE) harp_doc
+doc/html/ingestions/ESACCI_GHG_L2_EMMA.html:
+	$(MAKE) harp_doc
+doc/html/ingestions/ESACCI_GHG_L2_GOSAT.html:
+	$(MAKE) harp_doc
+doc/html/ingestions/ESACCI_GHG_L2_SCIAMACHY.html:
+	$(MAKE) harp_doc
+doc/html/ingestions/ESACCI_GHG_L3_Obs4MIPs.html:
 	$(MAKE) harp_doc
 doc/html/ingestions/ESACCI_OZONE_L2_LP.html:
 	$(MAKE) harp_doc
@@ -1234,13 +1259,39 @@ doc/html/ingestions/TEMIS_o3field.html:
 	$(MAKE) harp_doc
 doc/html/ingestions/TEMIS_o3mean.html:
 	$(MAKE) harp_doc
+doc/html/ingestions/TES_L2_CH3OH_Nadir.html:
+	$(MAKE) harp_doc
+doc/html/ingestions/TES_L2_CH4_Limb.html:
+	$(MAKE) harp_doc
 doc/html/ingestions/TES_L2_CH4_Nadir.html:
+	$(MAKE) harp_doc
+doc/html/ingestions/TES_L2_CO2_Nadir.html:
 	$(MAKE) harp_doc
 doc/html/ingestions/TES_L2_CO_Nadir.html:
 	$(MAKE) harp_doc
+doc/html/ingestions/TES_L2_H2O_Limb.html:
+	$(MAKE) harp_doc
 doc/html/ingestions/TES_L2_H2O_Nadir.html:
 	$(MAKE) harp_doc
+doc/html/ingestions/TES_L2_HCOOH_Nadir.html:
+	$(MAKE) harp_doc
+doc/html/ingestions/TES_L2_HDO_Limb.html:
+	$(MAKE) harp_doc
+doc/html/ingestions/TES_L2_HDO_Nadir.html:
+	$(MAKE) harp_doc
+doc/html/ingestions/TES_L2_HNO3_Limb.html:
+	$(MAKE) harp_doc
+doc/html/ingestions/TES_L2_N2O_Nadir.html:
+	$(MAKE) harp_doc
+doc/html/ingestions/TES_L2_NH3_Nadir.html:
+	$(MAKE) harp_doc
+doc/html/ingestions/TES_L2_NO2_Limb.html:
+	$(MAKE) harp_doc
+doc/html/ingestions/TES_L2_O3_Limb.html:
+	$(MAKE) harp_doc
 doc/html/ingestions/TES_L2_O3_Nadir.html:
+	$(MAKE) harp_doc
+doc/html/ingestions/TES_L2_Temperature_Limb.html:
 	$(MAKE) harp_doc
 doc/html/ingestions/TES_L2_Temperature_Nadir.html:
 	$(MAKE) harp_doc
