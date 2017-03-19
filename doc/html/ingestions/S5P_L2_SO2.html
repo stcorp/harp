@@ -257,9 +257,9 @@
 <p>The table below details where and how each variable was retrieved from the input product.</p>
 <table border="1" class="docutils">
 <colgroup>
-<col width="15%" />
-<col width="5%" />
-<col width="80%" />
+<col width="17%" />
+<col width="6%" />
+<col width="78%" />
 </colgroup>
 <thead valign="bottom">
 <tr class="row-odd"><th class="head">field name</th>
@@ -276,7 +276,7 @@
 <td><strong>/PRODUCT/time, /PRODUCT/delta_time[]</strong></td>
 </tr>
 <tr class="row-even"><td><em>description</em></td>
-<td>time converted from milliseconds since a reference time (given as seconds since 2010-01-01) to seconds since 2010-01-01 (using 86400 seconds per day); the time associated with a scanline is repeated for each pixel in the scanline</td>
+<td>time converted from milliseconds since a reference time (given as seconds since 2010-01-01) to seconds since 2010-01-01 (using 86400 seconds per day)</td>
 </tr>
 <tr class="row-odd"><td><strong>longitude</strong></td>
 <td><em>path</em></td>
@@ -333,15 +333,18 @@
 </tr>
 <tr class="row-odd"><td><strong>SO2_column_number_density</strong></td>
 <td><em>path</em></td>
-<td><strong>/PRODUCT/so2_vertical_column[]</strong></td>
+<td><strong>/PRODUCT/sulfurdioxide_total_vertical_column[]</strong></td>
 </tr>
-<tr class="row-even"><td><strong>SO2_column_number_density_uncertainty</strong></td>
-<td><em>path</em></td>
-<td><strong>/PRODUCT/so2_vertical_column_precision[]</strong></td>
+<tr class="row-even"><td rowspan="2"><strong>SO2_column_number_density_uncertainty</strong></td>
+<td><em>available</em></td>
+<td>optional</td>
 </tr>
-<tr class="row-odd"><td><strong>SO2_column_number_density_avk</strong></td>
+<tr class="row-odd"><td><em>path</em></td>
+<td><strong>/PRODUCT/sulfurdioxide_total_vertical_column_precision[]</strong></td>
+</tr>
+<tr class="row-even"><td><strong>SO2_column_number_density_avk</strong></td>
 <td><em>path</em></td>
-<td><strong>/PRODUCT/SUPPORT_DATA/DETAILED_RESULTS/averaging_kernels[]</strong></td>
+<td><strong>/PRODUCT/SUPPORT_DATA/DETAILED_RESULTS/averaging_kernel[]</strong></td>
 </tr>
 </tbody>
 </table>

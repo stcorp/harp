@@ -269,9 +269,9 @@
 <p>The table below details where and how each variable was retrieved from the input product.</p>
 <table border="1" class="docutils">
 <colgroup>
-<col width="15%" />
+<col width="14%" />
 <col width="4%" />
-<col width="82%" />
+<col width="83%" />
 </colgroup>
 <thead valign="bottom">
 <tr class="row-odd"><th class="head">field name</th>
@@ -352,18 +352,18 @@
 </tr>
 <tr class="row-odd"><td rowspan="2"><strong>pressure_bounds</strong></td>
 <td><em>path</em></td>
-<td><strong>/PRODUCT/SUPPORT_DATA/INPUT_DATA/surface_pressure[],/PRODUCT/SUPPORT_DATA/INPUT_DATA/dp[]</strong></td>
+<td><strong>/PRODUCT/SUPPORT_DATA/INPUT_DATA/surface_pressure[],/PRODUCT/SUPPORT_DATA/INPUT_DATA/pressure_interval[]</strong></td>
 </tr>
 <tr class="row-even"><td><em>description</em></td>
-<td>derived from surface pressure and pressure difference between retrieval levels (the pressure grid is equidistant between the surface pressure and a fixed top pressure); given a zero-based layer index k, the pressure bounds for layer k are derived as: (surface_pressure - k * dp, surface_pressure - (k + 1) * dp)</td>
+<td>derived from surface pressure and pressure difference between retrieval levels (the pressure grid is equidistant between the surface pressure and a fixed top pressure); given a zero-based layer index k, the pressure bounds for layer k are derived as: (surface_pressure - k * pressure_interval, surface_pressure - (k + 1) * pressure_interval)</td>
 </tr>
 <tr class="row-odd"><td><strong>CH4_column_volume_mixing_ratio_dry_air</strong></td>
 <td><em>path</em></td>
-<td><strong>/PRODUCT/XCH4[]</strong></td>
+<td><strong>/PRODUCT/methane_mixing_ratio[]</strong></td>
 </tr>
 <tr class="row-even"><td><strong>CH4_column_volume_mixing_ratio_dry_air_uncertainty</strong></td>
 <td><em>path</em></td>
-<td><strong>/PRODUCT/XCH4_precision[]</strong></td>
+<td><strong>/PRODUCT/methane_mixing_ratio_precision[]</strong></td>
 </tr>
 <tr class="row-odd"><td><strong>CH4_column_volume_mixing_ratio_dry_air_avk</strong></td>
 <td><em>path</em></td>

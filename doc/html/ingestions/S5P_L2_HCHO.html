@@ -243,11 +243,11 @@
 <td>&nbsp;</td>
 <td>averaging kernel for the total column number density of tropospheric HCHO</td>
 </tr>
-<tr class="row-even"><td><strong>HCHO_column_number_density_apriori</strong></td>
+<tr class="row-even"><td><strong>HCHO_volume_mixing_ratio_apriori</strong></td>
 <td>float</td>
 <td>{<em>time</em>, <em>vertical</em>}</td>
-<td>&nbsp;</td>
-<td>apriori profile for the total column number density of tropospheric HCHO</td>
+<td>ppv</td>
+<td>HCHO apriori profile in volume mixing ratios</td>
 </tr>
 <tr class="row-odd"><td><strong>index</strong></td>
 <td>int32</td>
@@ -263,9 +263,9 @@
 <p>The table below details where and how each variable was retrieved from the input product.</p>
 <table border="1" class="docutils">
 <colgroup>
-<col width="15%" />
-<col width="5%" />
-<col width="80%" />
+<col width="17%" />
+<col width="6%" />
+<col width="77%" />
 </colgroup>
 <thead valign="bottom">
 <tr class="row-odd"><th class="head">field name</th>
@@ -282,7 +282,7 @@
 <td><strong>/PRODUCT/time, /PRODUCT/delta_time[]</strong></td>
 </tr>
 <tr class="row-even"><td><em>description</em></td>
-<td>time converted from milliseconds since a reference time (given as seconds since 2010-01-01) to seconds since 2010-01-01 (using 86400 seconds per day); the time associated with a scanline is repeated for each pixel in the scanline</td>
+<td>time converted from milliseconds since a reference time (given as seconds since 2010-01-01) to seconds since 2010-01-01 (using 86400 seconds per day)</td>
 </tr>
 <tr class="row-odd"><td><strong>longitude</strong></td>
 <td><em>path</em></td>
@@ -339,19 +339,22 @@
 </tr>
 <tr class="row-odd"><td><strong>HCHO_column_number_density</strong></td>
 <td><em>path</em></td>
-<td><strong>/PRODUCT/hcho_vertical_column[]</strong></td>
+<td><strong>/PRODUCT/formaldehyde_tropospheric_vertical_column[]</strong></td>
 </tr>
 <tr class="row-even"><td><strong>HCHO_column_number_density_uncertainty</strong></td>
 <td><em>path</em></td>
-<td><strong>/PRODUCT/hcho_vertical_column_precision[]</strong></td>
+<td><strong>/PRODUCT/formaldehyde_tropospheric_vertical_column_precision[]</strong></td>
 </tr>
 <tr class="row-odd"><td><strong>HCHO_column_number_density_avk</strong></td>
 <td><em>path</em></td>
-<td><strong>/PRODUCT/SUPPORT_DATA/DETAILED_RESULTS/averaging_kernels[]</strong></td>
+<td><strong>/PRODUCT/SUPPORT_DATA/DETAILED_RESULTS/averaging_kernel[]</strong></td>
 </tr>
-<tr class="row-even"><td><strong>HCHO_column_number_density_apriori</strong></td>
-<td><em>path</em></td>
-<td><strong>/PRODUCT/SUPPORT_DATA/DETAILED_RESULTS/hcho_profile_apriori[]</strong></td>
+<tr class="row-even"><td rowspan="2"><strong>HCHO_volume_mixing_ratio_apriori</strong></td>
+<td><em>available</em></td>
+<td>optional</td>
+</tr>
+<tr class="row-odd"><td><em>path</em></td>
+<td><strong>/PRODUCT/SUPPORT_DATA/DETAILED_RESULTS/formaldehyde_profile_apriori[]</strong></td>
 </tr>
 </tbody>
 </table>

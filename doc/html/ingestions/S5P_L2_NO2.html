@@ -288,6 +288,29 @@
 </tbody>
 </table>
 </div>
+<div class="section" id="ingestion-options">
+<h2>Ingestion options</h2>
+<p>The table below lists the available ingestion options for <code class="docutils literal"><span class="pre">S5P_L2_NO2</span></code> products.</p>
+<table border="1" class="docutils">
+<colgroup>
+<col width="15%" />
+<col width="25%" />
+<col width="60%" />
+</colgroup>
+<thead valign="bottom">
+<tr class="row-odd"><th class="head">option name</th>
+<th class="head">legal values</th>
+<th class="head">description</th>
+</tr>
+</thead>
+<tbody valign="top">
+<tr class="row-even"><td>total_column</td>
+<td>summed, total</td>
+<td>whether to use nitrogendioxide_total_column (which is derived from the total slant column diveded by the total amf) or nitrogendioxide_summed_total_column (which is the sum of the retrieved tropospheric and statospheric columns); option values are &#8216;summed&#8217; (default) and &#8216;total&#8217;</td>
+</tr>
+</tbody>
+</table>
+</div>
 <div class="section" id="mapping-description">
 <h2>Mapping description</h2>
 <p>The table below details where and how each variable was retrieved from the input product.</p>
@@ -369,41 +392,59 @@
 </tr>
 <tr class="row-odd"><td rowspan="2"><strong>pressure_bounds</strong></td>
 <td><em>path</em></td>
-<td><strong>/PRODUCT/tm5_pressure_level_a[], /PRODUCT/tm5_pressure_level_b[],/PRODUCT/SUPPORT_DATA/INPUT_DATA/surface_pressure[]</strong></td>
+<td><strong>/PRODUCT/tm5_constant_a[], /PRODUCT/tm5_constant_b[], /PRODUCT/SUPPORT_DATA/INPUT_DATA/surface_pressure[]</strong></td>
 </tr>
 <tr class="row-even"><td><em>description</em></td>
-<td>pressure in Pa at level k is derived from surface pressure in hPa as: tm5_pressure_level_a[k] + tm5_pressure_level_b[k] * surface_pressure[] * 100.0</td>
+<td>pressure in Pa at level k is derived from surface pressure in hPa as: tm5_constant_a[k] + tm5_constant_b[k] * surface_pressure[]</td>
 </tr>
 <tr class="row-odd"><td rowspan="2"><strong>tropopause_pressure</strong></td>
 <td><em>path</em></td>
-<td><strong>/PRODUCT/tm5_pressure_level_a[], /PRODUCT/tm5_pressure_level_b[], /PRODUCT/tm5_tropopause_layer_index[], /PRODUCT/SUPPORT_DATA/INPUT_DATA/surface_pressure[]</strong></td>
+<td><strong>/PRODUCT/tm5_constant_a[], /PRODUCT/tm5_constant_b[], /PRODUCT/tm5_tropopause_layer_index[], /PRODUCT/SUPPORT_DATA/INPUT_DATA/surface_pressure[]</strong></td>
 </tr>
 <tr class="row-even"><td><em>description</em></td>
-<td>pressure in Pa at tropause is derived from the upper bound of the layer with tropopause layer index k: tm5_pressure_level_a[k + 1] + tm5_pressure_level_b[k + 1] * surface_pressure[] * 100.0</td>
+<td>pressure in Pa at tropause is derived from the upper bound of the layer with tropopause layer index k: tm5_constant_a[k + 1] + tm5_constant_b[k + 1] * surface_pressure[]</td>
 </tr>
 <tr class="row-odd"><td><strong>tropospheric_NO2_column_number_density</strong></td>
 <td><em>path</em></td>
-<td><strong>/PRODUCT/tropospheric_no2_vertical_column[]</strong></td>
+<td><strong>/PRODUCT/nitrogendioxide_tropospheric_column[]</strong></td>
 </tr>
 <tr class="row-even"><td><strong>tropospheric_NO2_column_number_density_uncertainty</strong></td>
 <td><em>path</em></td>
-<td><strong>/PRODUCT/tropospheric_no2_vertical_column_precision[]</strong></td>
+<td><strong>/PRODUCT/nitrogendioxide_tropospheric_column_precision[]</strong></td>
 </tr>
 <tr class="row-odd"><td><strong>tropospheric_NO2_column_number_density_amf</strong></td>
 <td><em>path</em></td>
-<td><strong>/PRODUCT/amf_trop[]</strong></td>
+<td><strong>/PRODUCT/air_mass_factor_troposphere[]</strong></td>
 </tr>
-<tr class="row-even"><td><strong>NO2_column_number_density</strong></td>
-<td><em>path</em></td>
-<td><strong>/PRODUCT/SUPPORT_DATA/DETAILED_RESULTS/total_no2_vertical_column[]</strong></td>
+<tr class="row-even"><td rowspan="4"><strong>NO2_column_number_density</strong></td>
+<td><em>condition</em></td>
+<td>total_column=summed (default)</td>
 </tr>
-<tr class="row-odd"><td><strong>NO2_column_number_density_uncertainty</strong></td>
-<td><em>path</em></td>
-<td><strong>/PRODUCT/SUPPORT_DATA/DETAILED_RESULTS/total_no2_vertical_column_precision[]</strong></td>
+<tr class="row-odd"><td><em>path</em></td>
+<td><strong>/PRODUCT/SUPPORT_DATA/DETAILED_RESULTS/nitrogendioxide_summed_total_column[]</strong></td>
+</tr>
+<tr class="row-even"><td><em>condition</em></td>
+<td>total_column=total</td>
+</tr>
+<tr class="row-odd"><td><em>path</em></td>
+<td><strong>/PRODUCT/SUPPORT_DATA/DETAILED_RESULTS/nitrogendioxide_total_column[]</strong></td>
+</tr>
+<tr class="row-even"><td rowspan="4"><strong>NO2_column_number_density_uncertainty</strong></td>
+<td><em>condition</em></td>
+<td>total_column=summed (default)</td>
+</tr>
+<tr class="row-odd"><td><em>path</em></td>
+<td><strong>/PRODUCT/SUPPORT_DATA/DETAILED_RESULTS/nitrogendioxide_summed_total_column_precision[]</strong></td>
+</tr>
+<tr class="row-even"><td><em>condition</em></td>
+<td>total_column=total</td>
+</tr>
+<tr class="row-odd"><td><em>path</em></td>
+<td><strong>/PRODUCT/SUPPORT_DATA/DETAILED_RESULTS/nitrogendioxide_total_column_precision[]</strong></td>
 </tr>
 <tr class="row-even"><td><strong>NO2_column_number_density_amf</strong></td>
 <td><em>path</em></td>
-<td><strong>/PRODUCT/amf_total[]</strong></td>
+<td><strong>/PRODUCT/air_mass_factor_total[]</strong></td>
 </tr>
 <tr class="row-odd"><td><strong>NO2_column_number_density_avk</strong></td>
 <td><em>path</em></td>
