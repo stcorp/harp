@@ -212,6 +212,7 @@ aerosol_optical_depth                         stratospheric,                  X 
 altitude                                      sensor,                         X       X    X
                                               surface
 altitude_bounds                                                                       X    X
+cloud_albedo                                                                  X            X
 cloud_base_albedo                                                             X            X
 cloud_base_height                                                             X            X
 cloud_base_pressure                                                           X            X
