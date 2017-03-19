@@ -83,7 +83,7 @@ static const char *s5p_dimension_name[S5P_NUM_PRODUCT_TYPES][S5P_NUM_DIM_TYPES] 
     {"time", "scanline", "ground_pixel", "corner", "layer", NULL}
 };
 
-static const int s5p_delta_time_num_dims[S5P_NUM_PRODUCT_TYPES] = {2, 2, 2, 2, 2, 2, 2, 3, 2, 3, 3, 3};
+static const int s5p_delta_time_num_dims[S5P_NUM_PRODUCT_TYPES] = { 2, 2, 2, 2, 2, 2, 2, 3, 2, 3, 3, 3 };
 
 typedef struct ingest_info_struct
 {
@@ -421,6 +421,7 @@ static int init_optional_variables(ingest_info *info)
     if (info->product_type == s5p_type_hcho)
     {
         coda_cursor cursor = info->detailed_results_cursor;
+
         if (coda_cursor_goto(&cursor, "formaldehyde_profile_apriori") == 0)
         {
             info->has_hcho_apriori = 1;
@@ -429,6 +430,7 @@ static int init_optional_variables(ingest_info *info)
     else if (info->product_type == s5p_type_so2)
     {
         coda_cursor cursor = info->detailed_results_cursor;
+
         if (coda_cursor_goto(&cursor, "sulfurdioxide_total_vertical_column_precision") == 0)
         {
             info->has_so2_precision = 1;
@@ -871,8 +873,8 @@ static int read_fresco_cloud_pressure(void *user_data, harp_array data)
 {
     ingest_info *info = (ingest_info *)user_data;
 
-    return read_dataset(info->product_cursor, "cloud_pressure_crb", harp_type_float, info->num_scanlines * info->num_pixels,
-                        data);
+    return read_dataset(info->product_cursor, "cloud_pressure_crb", harp_type_float,
+                        info->num_scanlines * info->num_pixels, data);
 }
 
 static int read_fresco_cloud_pressure_precision(void *user_data, harp_array data)
@@ -887,8 +889,8 @@ static int read_fresco_cloud_height(void *user_data, harp_array data)
 {
     ingest_info *info = (ingest_info *)user_data;
 
-    return read_dataset(info->product_cursor, "cloud_height_crb", harp_type_float, info->num_scanlines * info->num_pixels,
-                        data);
+    return read_dataset(info->product_cursor, "cloud_height_crb", harp_type_float,
+                        info->num_scanlines * info->num_pixels, data);
 }
 
 static int read_fresco_cloud_height_precision(void *user_data, harp_array data)
@@ -1183,11 +1185,11 @@ static int read_no2_tropopause_pressure(void *user_data, harp_array data)
 
         if (index >= 0 && index < num_layers)
         {
-            double surface_pressure = data.double_data[i];  /* surface pressure at specific (time, lat, lon) */
+            double surface_pressure = data.double_data[i];      /* surface pressure at specific (time, lat, lon) */
 
             /* the tropause level is the upper boundary of the layer defined by layer_index */
             data.double_data[i] = hybride_coef_a.double_data[index * 2 + 1] +
-            hybride_coef_b.double_data[index * 2 + 1] * surface_pressure;
+                hybride_coef_b.double_data[index * 2 + 1] * surface_pressure;
         }
         else
         {
@@ -1222,8 +1224,8 @@ static int read_no2_column_tropospheric_amf(void *user_data, harp_array data)
 {
     ingest_info *info = (ingest_info *)user_data;
 
-    return read_dataset(info->product_cursor, "air_mass_factor_troposphere", harp_type_float, info->num_scanlines * info->num_pixels,
-                        data);
+    return read_dataset(info->product_cursor, "air_mass_factor_troposphere", harp_type_float,
+                        info->num_scanlines * info->num_pixels, data);
 }
 
 static int read_no2_column(void *user_data, harp_array data)
@@ -1243,7 +1245,7 @@ static int read_no2_column_precision(void *user_data, harp_array data)
     char *variable_name;
 
     variable_name = info->use_summed_total_column ? "nitrogendioxide_summed_total_column_precision" :
-    "nitrogendioxide_total_column_precision";
+        "nitrogendioxide_total_column_precision";
     return read_dataset(info->detailed_results_cursor, variable_name, harp_type_float,
                         info->num_scanlines * info->num_pixels, data);
 }
@@ -1252,8 +1254,8 @@ static int read_no2_column_amf(void *user_data, harp_array data)
 {
     ingest_info *info = (ingest_info *)user_data;
 
-    return read_dataset(info->product_cursor, "air_mass_factor_total", harp_type_float, info->num_scanlines * info->num_pixels,
-                        data);
+    return read_dataset(info->product_cursor, "air_mass_factor_total", harp_type_float,
+                        info->num_scanlines * info->num_pixels, data);
 }
 
 static int read_no2_column_avk(void *user_data, harp_array data)
@@ -1367,15 +1369,16 @@ static int read_o3_column(void *user_data, harp_array data)
 {
     ingest_info *info = (ingest_info *)user_data;
 
-    return read_dataset(info->product_cursor, "ozone_total_vertical_column", harp_type_float, info->num_scanlines * info->num_pixels, data);
+    return read_dataset(info->product_cursor, "ozone_total_vertical_column", harp_type_float,
+                        info->num_scanlines * info->num_pixels, data);
 }
 
 static int read_o3_column_precision(void *user_data, harp_array data)
 {
     ingest_info *info = (ingest_info *)user_data;
 
-    return read_dataset(info->product_cursor, "ozone_total_vertical_column_precision", harp_type_float, info->num_scanlines * info->num_pixels,
-                        data);
+    return read_dataset(info->product_cursor, "ozone_total_vertical_column_precision", harp_type_float,
+                        info->num_scanlines * info->num_pixels, data);
 }
 
 static int read_o3_column_apriori(void *user_data, harp_array data)
