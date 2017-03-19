@@ -1180,7 +1180,7 @@ static void register_hno3_product(void)
     const char *description;
     const char *path;
 
-    module = harp_ingestion_register_module_coda("MLS_L2_HNO3", "MLS", "AURA_MLS", "HNO3", "MLS HNO3 profile",
+    module = harp_ingestion_register_module_coda("MLS_L2_HNO3", "MLS", "AURA_MLS", "ML2HNO3", "MLS HNO3 profile",
                                                  ingestion_init_hno3, ingestion_done);
 
     /* HNO3 product */
