@@ -204,8 +204,6 @@ static int ingestion_init(const harp_ingestion_module *module, coda_product *pro
     const char *option_value;
     ingest_info *info;
 
-    (void)options;
-
     info = (ingest_info *)malloc(sizeof(ingest_info));
     if (info == NULL)
     {
