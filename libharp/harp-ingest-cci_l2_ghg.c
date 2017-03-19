@@ -59,12 +59,12 @@ typedef struct ingest_info_struct
     long num_time;
 } ingest_info;
 
-typedef enum data_source
+typedef enum ghg_data_source
 {
     SCIAMACHY,
     GOSAT,
     EMMA
-} data_source;
+} ghg_data_source;
 
 /* -------------------- Code -------------------- */
 
@@ -418,7 +418,7 @@ static int exclude_co2(void *user_data)
     return FALSE;
 }
 
-static int register_fields(harp_product_definition *product_definition, data_source source)
+static int register_fields(harp_product_definition *product_definition, ghg_data_source source)
 {
     harp_variable_definition *variable_definition;
     harp_dimension_type dimension_type[1] = { harp_dimension_time };
