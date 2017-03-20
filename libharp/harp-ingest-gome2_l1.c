@@ -104,9 +104,9 @@ static int get_smr_spectral_data(ingest_info *info, const char *fieldname, doubl
 
 /* ---------------------- global variables -------------------------------- */
 
-const char *band_name_in_file[] = { "BAND_1A", "BAND_1B", "BAND_2A", "BAND_2B", "BAND_3", "BAND_4" };
-const char *band_name_as_option[] = { "band-1a", "band-1b", "band-2a", "band-2b", "band-3", "band-4" };
-const char *wavelength_name_in_file[] =
+static const char *band_name_in_file[] = { "BAND_1A", "BAND_1B", "BAND_2A", "BAND_2B", "BAND_3", "BAND_4" };
+static const char *band_name_as_option[] = { "band-1a", "band-1b", "band-2a", "band-2b", "band-3", "band-4" };
+static const char *wavelength_name_in_file[] =
     { "WAVELENGTH_1A", "WAVELENGTH_1B", "WAVELENGTH_2A", "WAVELENGTH_2B", "WAVELENGTH_3", "WAVELENGTH_4" };
 
 /* --------------------------- code --------------------------------------- */
