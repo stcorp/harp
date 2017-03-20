@@ -56,7 +56,7 @@ typedef struct ingest_info_struct
     long num_mds_records;
     double first_wavenum[NR_BANDS];
     double last_wavenum[NR_BANDS];
-    long measurements_in_band[NR_BANDS];
+    int measurements_in_band[NR_BANDS];
     long offset_in_band[NR_BANDS];
     long total_measurements_all_bands;
 
@@ -280,7 +280,7 @@ static int init_dimensions(ingest_info *info)
         harp_set_error(HARP_ERROR_CODA, NULL);
         return -1;
     }
-    if (coda_cursor_read_int64_array(&cursor, info->measurements_in_band, coda_array_ordering_c) != 0)
+    if (coda_cursor_read_int32_array(&cursor, info->measurements_in_band, coda_array_ordering_c) != 0)
     {
         harp_set_error(HARP_ERROR_CODA, NULL);
         return -1;
