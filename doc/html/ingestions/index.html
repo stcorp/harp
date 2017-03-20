@@ -130,6 +130,7 @@
 <li class="toctree-l2"><a class="reference internal" href="#sentinel-5p-products">Sentinel-5P products</a><ul>
 <li class="toctree-l3"><a class="reference internal" href="#s5p-l1b-ir-sir">S5P_L1B_IR_SIR</a></li>
 <li class="toctree-l3"><a class="reference internal" href="#s5p-l1b-ir-uvn">S5P_L1B_IR_UVN</a></li>
+<li class="toctree-l3"><a class="reference internal" href="#s5p-l2-cloud">S5P_L2_CLOUD</a></li>
 </ul>
 </li>
 <li class="toctree-l2"><a class="reference internal" href="#temis-products">TEMIS products</a></li>
@@ -2305,7 +2306,7 @@
 <td>Sentinel5P/L2__CH4___</td>
 <td>Sentinel-5P L2 CH4 total column</td>
 </tr>
-<tr class="row-even"><td><a class="reference internal" href="S5P_L2_CLOUD.html"><span class="doc">S5P_L2_CLOUD</span></a></td>
+<tr class="row-even"><td><a class="reference internal" href="#s5p-l2-cloud"><span class="std std-ref">S5P_L2_CLOUD</span></a></td>
 <td>Sentinel5P/L2__CLOUD_</td>
 <td>Sentinel-5P L2 cloud properties</td>
 </tr>
@@ -2447,6 +2448,54 @@
 <tr class="row-even"><td>band</td>
 <td>1, 2, 3, 4, 5, 6</td>
 <td>spectral band to ingest (default=1)</td>
+</tr>
+</tbody>
+</table>
+</div>
+<div class="section" id="s5p-l2-cloud">
+<span id="id18"></span><h3>S5P_L2_CLOUD</h3>
+<p>Sentinel-5P L2 cloud properties</p>
+<p>The table below lists the available product conversions for <code class="docutils literal"><span class="pre">S5P_L2_CLOUD</span></code> products.</p>
+<table border="1" class="docutils">
+<colgroup>
+<col width="33%" />
+<col width="33%" />
+<col width="33%" />
+</colgroup>
+<thead valign="bottom">
+<tr class="row-odd"><th class="head">name</th>
+<th class="head">ingestion option</th>
+<th class="head">description</th>
+</tr>
+</thead>
+<tbody valign="top">
+<tr class="row-even"><td><a class="reference internal" href="S5P_L2_CLOUD_CAL.html"><span class="doc">S5P_L2_CLOUD_CAL</span></a></td>
+<td>model=CAL</td>
+<td>&nbsp;</td>
+</tr>
+<tr class="row-odd"><td><a class="reference internal" href="S5P_L2_CLOUD_CRB.html"><span class="doc">S5P_L2_CLOUD_CRB</span></a></td>
+<td>model=CRB</td>
+<td>&nbsp;</td>
+</tr>
+</tbody>
+</table>
+<p>The table below lists the available ingestion options for <code class="docutils literal"><span class="pre">S5P_L2_CLOUD</span></code> products.</p>
+<table border="1" class="docutils">
+<colgroup>
+<col width="15%" />
+<col width="25%" />
+<col width="60%" />
+</colgroup>
+<thead valign="bottom">
+<tr class="row-odd"><th class="head">option name</th>
+<th class="head">legal values</th>
+<th class="head">description</th>
+</tr>
+</thead>
+<tbody valign="top">
+<tr class="row-even"><td>model</td>
+<td>CAL, CRB</td>
+<td>whether to retrieve the cloud properties from the CAL model or the CRB model; option values are &#8216;CAL&#8217; (default) and &#8216;CRB&#8217;</td>
 </tr>
 </tbody>
 </table>

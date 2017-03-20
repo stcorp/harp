@@ -378,7 +378,8 @@ HARP_DOCFILES = \
 	doc/html/ingestions/S5P_L1B_RA_BD8.html \
 	doc/html/ingestions/S5P_L2_AER_AI.html \
 	doc/html/ingestions/S5P_L2_CH4.html \
-	doc/html/ingestions/S5P_L2_CLOUD.html \
+	doc/html/ingestions/S5P_L2_CLOUD_CAL.html \
+	doc/html/ingestions/S5P_L2_CLOUD_CRB.html \
 	doc/html/ingestions/S5P_L2_CO.html \
 	doc/html/ingestions/S5P_L2_FRESCO.html \
 	doc/html/ingestions/S5P_L2_HCHO.html \
@@ -1200,7 +1201,9 @@ doc/html/ingestions/S5P_L2_AER_AI.html:
 	$(MAKE) harp_doc
 doc/html/ingestions/S5P_L2_CH4.html:
 	$(MAKE) harp_doc
-doc/html/ingestions/S5P_L2_CLOUD.html:
+doc/html/ingestions/S5P_L2_CLOUD_CAL.html:
+	$(MAKE) harp_doc
+doc/html/ingestions/S5P_L2_CLOUD_CRB.html:
 	$(MAKE) harp_doc
 doc/html/ingestions/S5P_L2_CO.html:
 	$(MAKE) harp_doc

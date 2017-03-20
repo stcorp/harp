@@ -8,7 +8,7 @@
   
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
   
-  <title>S5P_L2_CO &mdash; HARP 0.4b documentation</title>
+  <title>S5P_L2_CLOUD_CRB &mdash; HARP 0.4b documentation</title>
   
 
   
@@ -113,7 +113,7 @@
   <ul class="wy-breadcrumbs">
     <li><a href="../index.html">Docs</a> &raquo;</li>
       
-    <li>S5P_L2_CO</li>
+    <li>S5P_L2_CLOUD_CRB</li>
       <li class="wy-breadcrumbs-aside">
         
           
@@ -125,11 +125,11 @@
           <div role="main" class="document" itemscope="itemscope" itemtype="http://schema.org/Article">
            <div itemprop="articleBody">
             
-  <div class="section" id="s5p-l2-co">
-<h1>S5P_L2_CO</h1>
+  <div class="section" id="s5p-l2-cloud-crb">
+<h1>S5P_L2_CLOUD_CRB</h1>
 <div class="section" id="variables">
 <h2>Variables</h2>
-<p>The table below lists the variables that are present in the HARP product that results from an ingestion of <code class="docutils literal"><span class="pre">S5P_L2_CO</span></code> data.</p>
+<p>The table below lists the variables that are present in the HARP product that results from an ingestion of <code class="docutils literal"><span class="pre">S5P_L2_CLOUD_CRB</span></code> data.</p>
 <table border="1" class="docutils">
 <colgroup>
 <col width="25%" />
@@ -225,37 +225,67 @@
 <td>degree</td>
 <td>azimuth angle of the satellite at the ground pixel location (WGS84); angle measured East-of-North</td>
 </tr>
-<tr class="row-odd"><td><strong>altitude</strong></td>
+<tr class="row-odd"><td><strong>cloud_fraction</strong></td>
 <td>float</td>
-<td>{<em>vertical</em>}</td>
-<td>m</td>
-<td>fixed altitude grid on which the radiative transfer calculations are done; altitude is measured relative to the surface</td>
+<td>{<em>time</em>}</td>
+<td>&nbsp;</td>
+<td>retrieved effective radiometric cloud fraction using the OCRA/ROCINN CRB model</td>
 </tr>
-<tr class="row-even"><td><strong>pressure</strong></td>
+<tr class="row-even"><td><strong>cloud_fraction_uncertainty</strong></td>
 <td>float</td>
-<td>{<em>time</em>, <em>vertical</em>}</td>
+<td>{<em>time</em>}</td>
+<td>&nbsp;</td>
+<td>uncertainty of the retrieved effective radiometric cloud fraction using the OCRA/ROCINN CRB model</td>
+</tr>
+<tr class="row-odd"><td><strong>cloud_pressure</strong></td>
+<td>float</td>
+<td>{<em>time</em>}</td>
 <td>Pa</td>
-<td>pressure of the layer interfaces of the vertical grid</td>
+<td>retrieved atmospheric pressure at the level of cloud using the OCRA/ROCINN CRB model</td>
 </tr>
-<tr class="row-odd"><td><strong>CO_column_number_density</strong></td>
+<tr class="row-even"><td><strong>cloud_pressure_uncertainty</strong></td>
 <td>float</td>
 <td>{<em>time</em>}</td>
-<td>mol/m^2</td>
-<td>vertically integrated CO column density</td>
+<td>Pa</td>
+<td>error of the retrieved atmospheric pressure at the level of cloud using the OCRA/ROCINN CRB model</td>
 </tr>
-<tr class="row-even"><td><strong>CO_column_number_density_uncertainty</strong></td>
+<tr class="row-odd"><td><strong>cloud_height</strong></td>
 <td>float</td>
 <td>{<em>time</em>}</td>
-<td>mol/m^2</td>
-<td>uncertainty of the vertically integrated CO column density (standard error)</td>
-</tr>
-<tr class="row-odd"><td><strong>CO_column_number_density_avk</strong></td>
-<td>float</td>
-<td>{<em>time</em>, <em>vertical</em>}</td>
 <td>m</td>
-<td>averaging kernel for the vertically integrated CO column density</td>
+<td>retrieved atmospheric height at the level of cloud using the OCRA/ROCINN CRB model</td>
 </tr>
-<tr class="row-even"><td><strong>index</strong></td>
+<tr class="row-even"><td><strong>cloud_height_uncertainty</strong></td>
+<td>float</td>
+<td>{<em>time</em>}</td>
+<td>m</td>
+<td>error of the retrieved atmospheric height at the level of cloud using the OCRA/ROCINN CRB model</td>
+</tr>
+<tr class="row-odd"><td><strong>cloud_albedo</strong></td>
+<td>float</td>
+<td>{<em>time</em>}</td>
+<td>&nbsp;</td>
+<td>albedo of cloud using the OCRA/ROCINN CRB model</td>
+</tr>
+<tr class="row-even"><td><strong>cloud_albedo_uncertainty</strong></td>
+<td>float</td>
+<td>{<em>time</em>}</td>
+<td>&nbsp;</td>
+<td>uncertainty of the albedo of cloud using the OCRA/ROCINN CRB model</td>
+</tr>
+<tr class="row-odd"><td><strong>surface_albedo</strong></td>
+<td>float</td>
+<td>{<em>time</em>}</td>
+<td>&nbsp;</td>
+<td>surface albedo fitted using the OCRA/ROCINN CRB model</td>
+</tr>
+<tr class="row-even"><td><strong>surface_albedo_uncertainty</strong></td>
+<td>float</td>
+<td>{<em>time</em>}</td>
+<td>&nbsp;</td>
+<td>uncertainty of the surface albedo fitted using the OCRA/ROCINN CRB model</td>
+</tr>
+<tr class="row-odd"><td><strong>index</strong></td>
 <td>int32</td>
 <td>{<em>time</em>}</td>
 <td>&nbsp;</td>
@@ -264,14 +294,38 @@
 </tbody>
 </table>
 </div>
+<div class="section" id="ingestion-options">
+<h2>Ingestion options</h2>
+<p>The table below lists the available ingestion options for <code class="docutils literal"><span class="pre">S5P_L2_CLOUD</span></code> products.</p>
+<table border="1" class="docutils">
+<colgroup>
+<col width="15%" />
+<col width="25%" />
+<col width="60%" />
+</colgroup>
+<thead valign="bottom">
+<tr class="row-odd"><th class="head">option name</th>
+<th class="head">legal values</th>
+<th class="head">description</th>
+</tr>
+</thead>
+<tbody valign="top">
+<tr class="row-even"><td>model</td>
+<td>CAL, CRB</td>
+<td>whether to retrieve the cloud properties from the CAL model or the CRB model; option values are &#8216;CAL&#8217; (default) and &#8216;CRB&#8217;</td>
+</tr>
+</tbody>
+</table>
+<p>This definition is only applicable when: model=CRB</p>
+</div>
 <div class="section" id="mapping-description">
 <h2>Mapping description</h2>
 <p>The table below details where and how each variable was retrieved from the input product.</p>
 <table border="1" class="docutils">
 <colgroup>
-<col width="15%" />
-<col width="5%" />
-<col width="80%" />
+<col width="13%" />
+<col width="6%" />
+<col width="81%" />
 </colgroup>
 <thead valign="bottom">
 <tr class="row-odd"><th class="head">field name</th>
@@ -288,7 +342,7 @@
 <td><strong>/PRODUCT/time, /PRODUCT/delta_time[]</strong></td>
 </tr>
 <tr class="row-even"><td><em>description</em></td>
-<td>time converted from milliseconds since a reference time (given as seconds since 2010-01-01) to seconds since 2010-01-01 (using 86400 seconds per day); the time associated with a scanline is repeated for each pixel in the scanline</td>
+<td>time converted from milliseconds since a reference time (given as seconds since 2010-01-01) to seconds since 2010-01-01 (using 86400 seconds per day)</td>
 </tr>
 <tr class="row-odd"><td><strong>longitude</strong></td>
 <td><em>path</em></td>
@@ -343,25 +397,45 @@
 <td><em>path</em></td>
 <td><strong>/PRODUCT/SUPPORT_DATA/GEOLOCATIONS/viewing_azimuth_angle[]</strong></td>
 </tr>
-<tr class="row-odd"><td><strong>altitude</strong></td>
+<tr class="row-odd"><td><strong>cloud_fraction</strong></td>
 <td><em>path</em></td>
-<td><strong>/PRODUCT/layer[]</strong></td>
+<td><strong>/PRODUCT/SUPPORT_DATA/DETAILED_RESULTS/cloud_fraction_crb[]</strong></td>
 </tr>
-<tr class="row-even"><td><strong>pressure</strong></td>
+<tr class="row-even"><td><strong>cloud_fraction_uncertainty</strong></td>
 <td><em>path</em></td>
-<td><strong>/PRODUCT/SUPPORT_DATA/DETAILED_RESULTS/pressure_levels[]</strong></td>
+<td><strong>/PRODUCT/SUPPORT_DATA/DETAILED_RESULTS/cloud_fraction_crb_precision[]</strong></td>
 </tr>
-<tr class="row-odd"><td><strong>CO_column_number_density</strong></td>
+<tr class="row-odd"><td><strong>cloud_pressure</strong></td>
 <td><em>path</em></td>
-<td><strong>/PRODUCT/carbonmonoxide_total_column[]</strong></td>
+<td><strong>/PRODUCT/SUPPORT_DATA/DETAILED_RESULTS/cloud_pressure_crb[]</strong></td>
 </tr>
-<tr class="row-even"><td><strong>CO_column_number_density_uncertainty</strong></td>
+<tr class="row-even"><td><strong>cloud_pressure_uncertainty</strong></td>
 <td><em>path</em></td>
-<td><strong>/PRODUCT/carbonmonoxide_total_column_precision[]</strong></td>
+<td><strong>/PRODUCT/SUPPORT_DATA/DETAILED_RESULTS/cloud_pressure_crb_precision[]</strong></td>
 </tr>
-<tr class="row-odd"><td><strong>CO_column_number_density_avk</strong></td>
+<tr class="row-odd"><td><strong>cloud_height</strong></td>
 <td><em>path</em></td>
-<td><strong>/PRODUCT/SUPPORT_DATA/DETAILED_RESULTS/column_averaging_kernel[]</strong></td>
+<td><strong>/PRODUCT/SUPPORT_DATA/DETAILED_RESULTS/cloud_height_crb[]</strong></td>
+</tr>
+<tr class="row-even"><td><strong>cloud_height_uncertainty</strong></td>
+<td><em>path</em></td>
+<td><strong>/PRODUCT/SUPPORT_DATA/DETAILED_RESULTS/cloud_height_crb_precision[]</strong></td>
+</tr>
+<tr class="row-odd"><td><strong>cloud_albedo</strong></td>
+<td><em>path</em></td>
+<td><strong>/PRODUCT/SUPPORT_DATA/DETAILED_RESULTS/cloud_albedo_crb[]</strong></td>
+</tr>
+<tr class="row-even"><td><strong>cloud_albedo_uncertainty</strong></td>
+<td><em>path</em></td>
+<td><strong>/PRODUCT/SUPPORT_DATA/DETAILED_RESULTS/cloud_albedo_crb_precision[]</strong></td>
+</tr>
+<tr class="row-odd"><td><strong>surface_albedo</strong></td>
+<td><em>path</em></td>
+<td><strong>/PRODUCT/SUPPORT_DATA/DETAILED_RESULTS/surface_albedo_fitted_crb[]</strong></td>
+</tr>
+<tr class="row-even"><td><strong>surface_albedo_uncertainty</strong></td>
+<td><em>path</em></td>
+<td><strong>/PRODUCT/SUPPORT_DATA/DETAILED_RESULTS/surface_albedo_fitted_crb_precision[]</strong></td>
 </tr>
 </tbody>
 </table>
