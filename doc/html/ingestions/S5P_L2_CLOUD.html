@@ -237,17 +237,41 @@
 <td>&nbsp;</td>
 <td>uncertainty of the retrieved fraction of horizontal area occupied by clouds using the OCRA/ROCINN CAL model</td>
 </tr>
+<tr class="row-odd"><td><strong>cloud_base_pressure</strong></td>
+<td>float</td>
+<td>{<em>time</em>}</td>
+<td>hPa</td>
+<td>cloud base pressure calculated using the OCRA/ROCINN CAL model</td>
+</tr>
+<tr class="row-even"><td><strong>cloud_base_pressure_uncertainty</strong></td>
+<td>float</td>
+<td>{<em>time</em>}</td>
+<td>hPa</td>
+<td>error of the cloud base pressure calculated using the OCRA/ROCINN CAL model</td>
+</tr>
+<tr class="row-odd"><td><strong>cloud_base_height</strong></td>
+<td>float</td>
+<td>{<em>time</em>}</td>
+<td>m</td>
+<td>cloud base height calculated using the OCRA/ROCINN CAL model</td>
+</tr>
+<tr class="row-even"><td><strong>cloud_base_height_uncertainty</strong></td>
+<td>float</td>
+<td>{<em>time</em>}</td>
+<td>m</td>
+<td>error of the cloud base height calculated using the OCRA/ROCINN CAL model</td>
+</tr>
 <tr class="row-odd"><td><strong>cloud_top_pressure</strong></td>
 <td>float</td>
 <td>{<em>time</em>}</td>
 <td>hPa</td>
-<td>retrieved atmospheric pressure at the level of cloud using the OCRA/ROCINN CAL model</td>
+<td>retrieved atmospheric pressure at the level of cloud top using the OCRA/ROCINN CAL model</td>
 </tr>
 <tr class="row-even"><td><strong>cloud_top_pressure_uncertainty</strong></td>
 <td>float</td>
 <td>{<em>time</em>}</td>
 <td>hPa</td>
-<td>uncertainty of the retrieved atmospheric pressure at the level of cloud using the OCRA/ROCINN CAL model</td>
+<td>uncertainty of the retrieved atmospheric pressure at the level of cloud top using the OCRA/ROCINN CAL model</td>
 </tr>
 <tr class="row-odd"><td><strong>cloud_top_height</strong></td>
 <td>float</td>
@@ -272,6 +296,18 @@
 <td>{<em>time</em>}</td>
 <td>m</td>
 <td>uncertainty of the retrieved cloud optical depth using the OCRA/ROCINN CAL model</td>
+</tr>
+<tr class="row-odd"><td><strong>surface_albedo</strong></td>
+<td>float</td>
+<td>{<em>time</em>}</td>
+<td>&nbsp;</td>
+<td>surface albedo fitted using the OCRA/ROCINN CAL model</td>
+</tr>
+<tr class="row-even"><td><strong>surface_albedo_uncertainty</strong></td>
+<td>float</td>
+<td>{<em>time</em>}</td>
+<td>&nbsp;</td>
+<td>uncertainty of the surface albedo fitted using the OCRA/ROCINN CAL model</td>
 </tr>
 <tr class="row-odd"><td><strong>index</strong></td>
 <td>int32</td>
@@ -369,6 +405,22 @@
 <td><em>path</em></td>
 <td><strong>/PRODUCT/cloud_fraction_precision[]</strong></td>
 </tr>
+<tr class="row-odd"><td><strong>cloud_base_pressure</strong></td>
+<td><em>path</em></td>
+<td><strong>/PRODUCT/cloud_base_pressure[]</strong></td>
+</tr>
+<tr class="row-even"><td><strong>cloud_base_pressure_uncertainty</strong></td>
+<td><em>path</em></td>
+<td><strong>/PRODUCT/cloud_base_pressure_precision[]</strong></td>
+</tr>
+<tr class="row-odd"><td><strong>cloud_base_height</strong></td>
+<td><em>path</em></td>
+<td><strong>/PRODUCT/cloud_base_height[]</strong></td>
+</tr>
+<tr class="row-even"><td><strong>cloud_base_height_uncertainty</strong></td>
+<td><em>path</em></td>
+<td><strong>/PRODUCT/cloud_base_height_precision[]</strong></td>
+</tr>
 <tr class="row-odd"><td><strong>cloud_top_pressure</strong></td>
 <td><em>path</em></td>
 <td><strong>/PRODUCT/cloud_top_pressure[]</strong></td>
@@ -392,6 +444,14 @@
 <tr class="row-even"><td><strong>cloud_optical_depth_uncertainty</strong></td>
 <td><em>path</em></td>
 <td><strong>/PRODUCT/cloud_optical_thickness_precision[]</strong></td>
+</tr>
+<tr class="row-odd"><td><strong>surface_albedo</strong></td>
+<td><em>path</em></td>
+<td><strong>/PRODUCT/SUPPORT_DATA/DETAILED_RESULTS/surface_albedo_fitted[]</strong></td>
+</tr>
+<tr class="row-even"><td><strong>surface_albedo_uncertainty</strong></td>
+<td><em>path</em></td>
+<td><strong>/PRODUCT/SUPPORT_DATA/DETAILED_RESULTS/surface_albedo_fitted_precision[]</strong></td>
 </tr>
 </tbody>
 </table>
