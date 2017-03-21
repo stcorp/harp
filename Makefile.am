@@ -85,13 +85,14 @@ libharp_la_SOURCES = \
 	libharp/harp-geometry-util.c \
 	libharp/harp-geometry-wgs84.c \
 	libharp/harp-geometry.h \
-        libharp/harp-ingest-cci_l2_aerosol.c \
-        libharp/harp-ingest-cci_l2_ghg.c \
+	libharp/harp-ingest-aeolus_l1b.c \
+	libharp/harp-ingest-cci_l2_aerosol.c \
+	libharp/harp-ingest-cci_l2_ghg.c \
 	libharp/harp-ingest-cci_l2_o3_lp.c \
 	libharp/harp-ingest-cci_l2_o3_np.c \
 	libharp/harp-ingest-cci_l2_o3_tc.c \
-        libharp/harp-ingest-cci_l3_aerosol.c \
-        libharp/harp-ingest-cci_l3_ghg.c \
+	libharp/harp-ingest-cci_l3_aerosol.c \
+	libharp/harp-ingest-cci_l3_ghg.c \
 	libharp/harp-ingest-cci_l3_o3_lp.c \
 	libharp/harp-ingest-cci_l3_o3_np.c \
 	libharp/harp-ingest-cci_l3_o3_tc.c \
