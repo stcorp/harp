@@ -1,0 +1,109 @@
+<?xml version="1.0"?>
+<cd:ProductClass name="NPP_SUOMI" last-modified="2017-03-22" xmlns:cd="http://www.stcorp.nl/coda/definition/2008/07">
+  <cd:Description>NPP Suomi products</cd:Description>
+
+  <!-- VIIRS EDR products -->
+
+  <cd:ProductType name="VIIRS_EDR_L2">
+    <cd:Description>VIIRS EDR L2 profile</cd:Description>
+
+    <cd:ProductDefinition id="VIIRS_EDR_L2_nc4" format="hdf5" version="4">
+      <cd:Description>The format definition for this product is taken from the hdf5 file itself.</cd:Description>
+      <cd:DetectionRule>
+        <!-- VIIRS Aerosol Optical Thickness -->
+        <cd:MatchExpression>regex("VAOO.*_npp", filename())</cd:MatchExpression>
+      </cd:DetectionRule>
+      <cd:DetectionRule>
+        <!-- VIIRS Cloud Base Height -->
+        <cd:MatchExpression>regex("VCBH.*_npp", filename())</cd:MatchExpression>
+      </cd:DetectionRule>
+      <cd:DetectionRule>
+        <!-- VIIRS Cloud Cover Layers -->
+        <cd:MatchExpression>regex("VCCL.*_npp", filename())</cd:MatchExpression>
+      </cd:DetectionRule>
+      <cd:DetectionRule>
+        <!-- VIIRS Cloud Effective Particle Size -->
+        <cd:MatchExpression>regex("VCEP.*_npp", filename())</cd:MatchExpression>
+      </cd:DetectionRule>
+      <cd:DetectionRule>
+        <!-- VIIRS Cloud Mask -->
+        <cd:MatchExpression>regex("VICM.*_npp", filename())</cd:MatchExpression>
+      </cd:DetectionRule>
+      <cd:DetectionRule>
+        <!-- VIIRS Cloud Optical Thickness -->
+        <cd:MatchExpression>regex("VCOT.*_npp", filename())</cd:MatchExpression>
+      </cd:DetectionRule>
+      <cd:DetectionRule>
+        <!-- VIIRS Cloud Top Height -->
+        <cd:MatchExpression>regex("VCTH.*_npp", filename())</cd:MatchExpression>
+      </cd:DetectionRule>
+      <cd:DetectionRule>
+        <!-- VIIRS Cloud Top Pressure -->
+        <cd:MatchExpression>regex("VCTP.*_npp", filename())</cd:MatchExpression>
+      </cd:DetectionRule>
+      <cd:DetectionRule>
+        <!-- VIIRS Cloud Top Temperature -->
+        <cd:MatchExpression>regex("VCTT.*_npp", filename())</cd:MatchExpression>
+      </cd:DetectionRule>
+      <cd:DetectionRule>
+        <!-- VIIRS Suspended Matter -->
+        <cd:MatchExpression>regex("VSUM.*_npp", filename())</cd:MatchExpression>
+      </cd:DetectionRule>
+    </cd:ProductDefinition>
+
+  </cd:ProductType>
+
+  <!-- OMPS IP products -->
+
+  <cd:ProductType name="OMPS_IP_L2">
+    <cd:Description>OMPS IP L2 profile</cd:Description>
+
+    <cd:ProductDefinition id="OMPS_IP_L2_nc4" format="hdf5" version="4">
+      <cd:Description>The format definition for this product is taken from the hdf5 file itself.</cd:Description>
+      <cd:DetectionRule>
+        <!-- OMPS Nadir Profile Averaging Kernels IP -->
+        <cd:MatchExpression>regex("INPAK.*_npp", filename())</cd:MatchExpression>
+      </cd:DetectionRule>
+      <cd:DetectionRule>
+        <!-- OMPS Nadir Profile Ozone IP -->
+        <cd:MatchExpression>regex("IMOP.*_npp", filename())</cd:MatchExpression>
+      </cd:DetectionRule>
+    </cd:ProductDefinition>
+
+  </cd:ProductType>
+
+  <!-- OMPS EDR products -->
+
+  <cd:ProductType name="OMPS_EDR_L2">
+    <cd:Description>OMPS EDR L2 profile</cd:Description>
+
+    <cd:ProductDefinition id="OMPS_EDR_L2_nc4" format="hdf5" version="4">
+      <cd:Description>The format definition for this product is taken from the hdf5 file itself.</cd:Description>
+      <cd:DetectionRule>
+        <!-- OMPS Nadir Profile Ozone -->
+        <cd:MatchExpression>regex("OONP.*_npp", filename())</cd:MatchExpression>
+      </cd:DetectionRule>
+      <cd:DetectionRule>
+        <!-- OMPS Ozone Total Column -->
+        <cd:MatchExpression>regex("OOTC.*_npp", filename())</cd:MatchExpression>
+      </cd:DetectionRule>
+    </cd:ProductDefinition>
+
+  </cd:ProductType>
+
+  <!-- CRIMSS EDR products -->
+
+  <cd:ProductType name="CRIMSS_EDR_L2">
+    <cd:Description>CrIMSS EDR L2 profile</cd:Description>
+
+    <cd:ProductDefinition id="CRIMSS_EDR_L2_nc4" format="hdf5" version="4">
+      <cd:Description>The format definition for this product is taken from the hdf5 file itself.</cd:Description>
+      <cd:DetectionRule>
+        <!-- CrIMSS Atmospheric Vertical Profile -->
+        <cd:MatchExpression>regex("REDR.*_npp", filename())</cd:MatchExpression>
+      </cd:DetectionRule>
+    </cd:ProductDefinition>
+
+  </cd:ProductType>
+
+</cd:ProductClass>

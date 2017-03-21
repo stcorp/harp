@@ -330,6 +330,7 @@ ESACCI_GHG_DEFINITION_FILE = ESACCI_GHG-@CODADEF_VERSION_ESACCI_GHG@.codadef
 ESACCI_OZONE_DEFINITION_FILE = ESACCI_OZONE-@CODADEF_VERSION_ESACCI_OZONE@.codadef
 GEOMS_DEFINITION_FILE = GEOMS-@CODADEF_VERSION_GEOMS@.codadef
 GOSAT_DEFINITION_FILE = GOSAT-@CODADEF_VERSION_GOSAT@.codadef
+NPP_SUOMI_DEFINITION_FILE = NPP_SUOMI-@CODADEF_VERSION_NPP_SUOMI@.codadef
 O3MSAF_DEFINITION_FILE = O3MSAF-@CODADEF_VERSION_O3MSAF@.codadef
 ODIN_OSIRIS_DEFINITION_FILE = ODIN_OSIRIS-@CODADEF_VERSION_ODIN_OSIRIS@.codadef
 ODIN_SMR_DEFINITION_FILE = ODIN_SMR-@CODADEF_VERSION_ODIN_SMR@.codadef
@@ -354,6 +355,7 @@ DEFINITION_FILES = \
 	definitions/$(ESACCI_OZONE_DEFINITION_FILE) \
 	definitions/$(GEOMS_DEFINITION_FILE) \
 	definitions/$(GOSAT_DEFINITION_FILE) \
+	definitions/$(NPP_SUOMI_DEFINITION_FILE) \
 	definitions/$(O3MSAF_DEFINITION_FILE) \
 	definitions/$(ODIN_OSIRIS_DEFINITION_FILE) \
 	definitions/$(ODIN_SMR_DEFINITION_FILE) \
@@ -506,6 +508,15 @@ definitions/$(GOSAT_DEFINITION_FILE):
 	@$(srcdir)/codadef.sh $(srcdir)/definitions/GOSAT definitions
 	@if test ! -f definitions/$(GOSAT_DEFINITION_FILE) ; then \
 	  echo definitions/$(GOSAT_DEFINITION_FILE) not created. ; \
+	  echo run './config.status --recheck' to update the .codadef version reference. ; \
+	  exit 1 ; \
+	 fi
+
+definitions/$(NPP_SUOMI_DEFINITION_FILE):
+	test -d definitions || $(mkinstalldirs) definitions
+	@$(srcdir)/codadef.sh $(srcdir)/definitions/NPP_SUOMI definitions
+	@if test ! -f definitions/$(NPP_SUOMI_DEFINITION_FILE) ; then \
+	  echo definitions/$(NPP_SUOMI_DEFINITION_FILE) not created. ; \
 	  echo run './config.status --recheck' to update the .codadef version reference. ; \
 	  exit 1 ; \
 	 fi
