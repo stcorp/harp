@@ -866,13 +866,13 @@ static void register_limb_product(void)
                                                    2, dimension_type, NULL, description, "count/s/cm2/nm/sr", NULL,
                                                    read_lim_spectral_photon_radiance);
     path = "/lim_mds[]/up_low_back_no_corr[0,]";
-    harp_variable_definition_add_mapping(variable_definition, NULL, "spectra=upper;corrected=false", path, NULL);
+    harp_variable_definition_add_mapping(variable_definition, NULL, "spectra=upper and corrected=false", path, NULL);
     path = "/lim_mds[]/up_low_back_no_corr[1,]";
-    harp_variable_definition_add_mapping(variable_definition, NULL, "spectra=lower;corrected=false", path, NULL);
+    harp_variable_definition_add_mapping(variable_definition, NULL, "spectra=lower and corrected=false", path, NULL);
     path = "/lim_mds[]/up_low_back_corr[0,]";
-    harp_variable_definition_add_mapping(variable_definition, NULL, "spectra=upper;corrected=true", path, NULL);
+    harp_variable_definition_add_mapping(variable_definition, NULL, "spectra=upper and corrected=true", path, NULL);
     path = "/lim_mds[]/up_low_back_corr[1,]";
-    harp_variable_definition_add_mapping(variable_definition, NULL, "spectra=lower;corrected=true", path, NULL);
+    harp_variable_definition_add_mapping(variable_definition, NULL, "spectra=lower and corrected=true", path, NULL);
 
     /* wavelength_photon_radiance_uncertainty */
     description = "error in the background spectral photon radiance of each spectrum measurement";

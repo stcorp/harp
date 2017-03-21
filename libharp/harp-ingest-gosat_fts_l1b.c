@@ -520,7 +520,7 @@ static harp_product_definition *register_radiance_product(harp_ingestion_module 
         case 0:
             product_name = "GOSAT_FTS_L1b_band1p";
             product_description = "band1-p spectra";
-            mapping_description = "band=1p";
+            mapping_description = "band=1p or band unset";
             break;
         case 1:
             product_name = "GOSAT_FTS_L1b_band1s";

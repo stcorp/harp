@@ -1096,7 +1096,8 @@ static void register_no2_product(void)
                                                    dimension_type, NULL, description, "molec/cm^2", NULL,
                                                    read_no2_column);
     path = "/PRODUCT/SUPPORT_DATA/DETAILED_RESULTS/summed_no2_total_vertical_column[]";
-    harp_variable_definition_add_mapping(variable_definition, "total_column=summed (default)", NULL, path, NULL);
+    harp_variable_definition_add_mapping(variable_definition, "total_column=summed or total_column unset", NULL, path,
+                                         NULL);
     path = "/PRODUCT/SUPPORT_DATA/DETAILED_RESULTS/total_no2_vertical_column[]";
     harp_variable_definition_add_mapping(variable_definition, "total_column=total", NULL, path, NULL);
 
@@ -1106,7 +1107,8 @@ static void register_no2_product(void)
                                                    harp_type_float, 1, dimension_type, NULL, description, "molec/cm^2",
                                                    NULL, read_no2_column_uncertainty);
     path = "/PRODUCT/SUPPORT_DATA/DETAILED_RESULTS/summed_no2_total_vertical_column_uncertainty[]";
-    harp_variable_definition_add_mapping(variable_definition, "total_column=summed (default)", NULL, path, NULL);
+    harp_variable_definition_add_mapping(variable_definition, "total_column=summed  or total_column unset", NULL, path,
+                                         NULL);
     path = "/PRODUCT/SUPPORT_DATA/DETAILED_RESULTS/total_no2_vertical_column_uncertainty[]";
     harp_variable_definition_add_mapping(variable_definition, "total_column=total", NULL, path, NULL);
 

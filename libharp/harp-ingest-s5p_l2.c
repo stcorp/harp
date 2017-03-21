@@ -2020,8 +2020,8 @@ static void register_aer_ai_product(void)
         harp_ingestion_register_variable_full_read(product_definition, "aerosol_index", harp_type_float, 1,
                                                    dimension_type, NULL, description, HARP_UNIT_DIMENSIONLESS, NULL,
                                                    read_aerosol_index);
-    harp_variable_definition_add_mapping(variable_definition, "wavelength_ratio=354_388nm (default)", NULL,
-                                         "/PRODUCT/aerosol_index_354_388", NULL);
+    harp_variable_definition_add_mapping(variable_definition, "wavelength_ratio=354_388nm or wavelength_ratio unset",
+                                         NULL, "/PRODUCT/aerosol_index_354_388", NULL);
     harp_variable_definition_add_mapping(variable_definition, "wavelength_ratio=340_380nm", NULL,
                                          "/PRODUCT/aerosol_index_340_380", NULL);
 
@@ -2511,7 +2511,8 @@ static void register_no2_product(void)
         harp_ingestion_register_variable_full_read(product_definition, "NO2_column_number_density", harp_type_float, 1,
                                                    dimension_type, NULL, description, "mol/m^2", NULL, read_no2_column);
     path = "/PRODUCT/SUPPORT_DATA/DETAILED_RESULTS/nitrogendioxide_summed_total_column[]";
-    harp_variable_definition_add_mapping(variable_definition, "total_column=summed (default)", NULL, path, NULL);
+    harp_variable_definition_add_mapping(variable_definition, "total_column=summed or total_column unset", NULL, path,
+                                         NULL);
     path = "/PRODUCT/SUPPORT_DATA/DETAILED_RESULTS/nitrogendioxide_total_column[]";
     harp_variable_definition_add_mapping(variable_definition, "total_column=total", NULL, path, NULL);
 
@@ -2521,7 +2522,8 @@ static void register_no2_product(void)
                                                    harp_type_float, 1, dimension_type, NULL, description, "mol/m^2",
                                                    NULL, read_no2_column_precision);
     path = "/PRODUCT/SUPPORT_DATA/DETAILED_RESULTS/nitrogendioxide_summed_total_column_precision[]";
-    harp_variable_definition_add_mapping(variable_definition, "total_column=summed (default)", NULL, path, NULL);
+    harp_variable_definition_add_mapping(variable_definition, "total_column=summed or total_column unset", NULL, path,
+                                         NULL);
     path = "/PRODUCT/SUPPORT_DATA/DETAILED_RESULTS/nitrogendioxide_total_column_precision[]";
     harp_variable_definition_add_mapping(variable_definition, "total_column=total", NULL, path, NULL);
 
@@ -2910,7 +2912,7 @@ static void register_cloud_product(void)
                                    "the CRB model; option values are 'CAL' (default) and 'CRB'", 2, model_options);
 
     product_definition = harp_ingestion_register_product(module, "S5P_L2_CLOUD_CAL", NULL, read_dimensions);
-    harp_product_definition_add_mapping(product_definition, NULL, "model=CAL or module unset");
+    harp_product_definition_add_mapping(product_definition, NULL, "model=CAL or model unset");
     register_cloud_cal_variables(product_definition);
 
     product_definition = harp_ingestion_register_product(module, "S5P_L2_CLOUD_CRB", NULL, read_dimensions);

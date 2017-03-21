@@ -941,7 +941,7 @@ int harp_ingestion_module_s5p_l1b_init(void)
     product_definition =
         harp_ingestion_register_product(module, "S5P_L1B_IR_UVN_BD1", "irradiance spectra (band 1, UVN module)",
                                         read_dimensions);
-    harp_product_definition_add_mapping(product_definition, NULL, "band=1");
+    harp_product_definition_add_mapping(product_definition, NULL, "band=1 or band unset");
     register_irradiance_product_variables(product_definition, "BAND1_IRRADIANCE");
 
     product_definition =
@@ -983,7 +983,7 @@ int harp_ingestion_module_s5p_l1b_init(void)
     product_definition =
         harp_ingestion_register_product(module, "S5P_L1B_IR_SIR_BD7", "irradiance spectra (band 7, SWIR module)",
                                         read_dimensions);
-    harp_product_definition_add_mapping(product_definition, NULL, "band=7");
+    harp_product_definition_add_mapping(product_definition, NULL, "band=7 or band unset");
     register_irradiance_product_variables(product_definition, "BAND7_IRRADIANCE");
 
     product_definition =

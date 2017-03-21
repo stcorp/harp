@@ -1003,7 +1003,7 @@ static int register_nominal_product(harp_ingestion_module *module)
     description = "GOME Level 1 Extracted Spectra product";
     product_definition = harp_ingestion_register_product(module, "GOME_L1_EXTRACTED", description, read_dimensions);
     description = "GOME Level 1 Extracted Spectra";
-    harp_product_definition_add_mapping(product_definition, description, NULL);
+    harp_product_definition_add_mapping(product_definition, description, "data unset");
 
     dimension_type[0] = harp_dimension_time;
     dimension_type[1] = harp_dimension_spectral;
@@ -1169,7 +1169,7 @@ static int register_sun_reference_product(harp_ingestion_module *module)
         harp_ingestion_register_product(module, "GOME_L1_EXTRACTED_sun_reference", description,
                                         read_sun_reference_dimensions);
     description = "GOME Level 1 Extracted Spectra Sun Reference";
-    harp_product_definition_add_mapping(product_definition_sun_reference, description, NULL);
+    harp_product_definition_add_mapping(product_definition_sun_reference, description, "data=sun_reference");
 
     dimension_type[0] = harp_dimension_time;
     dimension_type[1] = harp_dimension_spectral;

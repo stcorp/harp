@@ -2512,7 +2512,7 @@ int harp_ingestion_module_sciamachy_l2_init(void)
     description = "total column data retrieved from UV window 0 (O3)";
     product_definition = harp_ingestion_register_product(module, "SCIAMACHY_L2_NADIR_UV0_O3", description,
                                                          read_dimensions);
-    harp_product_definition_add_mapping(product_definition, NULL, "dataset=nad_uv0_o3");
+    harp_product_definition_add_mapping(product_definition, NULL, "dataset=nad_uv0_o3 or dataset unset");
 
     register_common_nadir_cloud_variables(product_definition, "nad_uv0_o3");
 

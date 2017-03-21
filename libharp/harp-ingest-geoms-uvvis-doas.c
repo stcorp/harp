@@ -1997,7 +1997,7 @@ static int init_product_definition(harp_ingestion_module *module, uvvis_doas_gas
         variable_definition = harp_ingestion_register_variable_full_read
             (product_definition, "aerosol_optical_depth", harp_type_double, 1, dimension_type, NULL,
              description, HARP_UNIT_DIMENSIONLESS, exclude_aod, read_aerosol_optical_depth);
-        harp_variable_definition_add_mapping(variable_definition, "AOD=modeled (default)", NULL,
+        harp_variable_definition_add_mapping(variable_definition, "AOD=modeled or AOD unset", NULL,
                                              "/AEROSOL.OPTICAL.DEPTH_INDEPENDENT", NULL);
         harp_variable_definition_add_mapping(variable_definition, "AOD=measured", NULL,
                                              "/AEROSOL.OPTICAL.DEPTH_ABSORPTION.SOLAR", NULL);
@@ -2074,7 +2074,7 @@ static int init_product_definition(harp_ingestion_module *module, uvvis_doas_gas
         variable_definition = harp_ingestion_register_variable_full_read
             (product_definition, "tropospheric_aerosol_optical_depth", harp_type_double, 1, dimension_type, NULL,
              description, HARP_UNIT_DIMENSIONLESS, NULL, read_tropo_aerosol_optical_depth);
-        harp_variable_definition_add_mapping(variable_definition, "AOD=modeled (default)", NULL,
+        harp_variable_definition_add_mapping(variable_definition, "AOD=modeled or AOD unset", NULL,
                                              "/AEROSOL.OPTICAL.DEPTH.TROPOSPHERIC_INDEPENDENT", NULL);
         harp_variable_definition_add_mapping(variable_definition, "AOD=measured", NULL,
                                              "/AEROSOL.OPTICAL.DEPTH.TROPOSPHERIC_SCATTER.SOLAR.OFFAXIS", NULL);
@@ -2231,7 +2231,7 @@ static int init_product_definition(harp_ingestion_module *module, uvvis_doas_gas
         variable_definition = harp_ingestion_register_variable_full_read
             (product_definition, "stratospheric_aerosol_optical_depth", harp_type_double, 1, dimension_type, NULL,
              description, HARP_UNIT_DIMENSIONLESS, exclude_aod, read_strat_aerosol_optical_depth);
-        harp_variable_definition_add_mapping(variable_definition, "AOD=modeled (default)", NULL,
+        harp_variable_definition_add_mapping(variable_definition, "AOD=modeled or AOD unset", NULL,
                                              "/AEROSOL.OPTICAL.DEPTH.STRATOSPHERIC_INDEPENDENT", NULL);
         harp_variable_definition_add_mapping(variable_definition, "AOD=measured", NULL,
                                              "/AEROSOL.OPTICAL.DEPTH.STRATOSPHERIC_SCATTER.SOLAR.ZENITH", NULL);

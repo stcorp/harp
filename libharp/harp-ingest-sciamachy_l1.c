@@ -1205,7 +1205,7 @@ void register_nadir_limb_occultation_product(harp_ingestion_module *module)
     description = "SCIAMACHY Level 1c";
     product_definition = harp_ingestion_register_product(module, "SCIAMACHY_L1c", description, read_dimensions);
     description = "SCIAMACHY Level 1c";
-    harp_product_definition_add_mapping(product_definition, description, NULL);
+    harp_product_definition_add_mapping(product_definition, description, "data=nadir or data=limb or data=occultation");
 
     dimension_type[0] = harp_dimension_time;
     dimension_type[1] = harp_dimension_spectral;
@@ -1244,7 +1244,7 @@ void register_nadir_limb_occultation_product(harp_ingestion_module *module)
     description = "dsr is the dsr for the cluster with an integration time equal to the minimal integration time of all"
         " ingested clusters for that state";
     path = "/nadir[]/geo[]/center_coord/latitude";
-    harp_variable_definition_add_mapping(variable_definition, "data=nadir", NULL, path, description);
+    harp_variable_definition_add_mapping(variable_definition, "data=nadir or data unset", NULL, path, description);
     path = "/limb[]/geo[]/tang_ground_point[1]/latitude";
     harp_variable_definition_add_mapping(variable_definition, "data=limb", NULL, path, description);
     path = "/occultation[]/geo[]/tang_ground_point[1]/latitude";
@@ -1259,7 +1259,7 @@ void register_nadir_limb_occultation_product(harp_ingestion_module *module)
     description = "dsr is the dsr for the cluster with an integration time equal to the minimal integration time of all"
         " ingested clusters for that state";
     path = "/nadir[]/geo[]/center_coord/longitude";
-    harp_variable_definition_add_mapping(variable_definition, "data=nadir", NULL, path, description);
+    harp_variable_definition_add_mapping(variable_definition, "data=nadir or data unset", NULL, path, description);
     path = "/limb[]/geo[]/tang_ground_point[1]/longitude";
     harp_variable_definition_add_mapping(variable_definition, "data=limb", NULL, path, description);
     path = "/occultation[]/geo[]/tang_ground_point[1]/longitude";
@@ -1297,7 +1297,7 @@ void register_nadir_limb_occultation_product(harp_ingestion_module *module)
     description = "dsr is the dsr for the cluster with an integration time equal to the minimal integration time of all"
         " ingested clusters for that state";
     path = "/nadir[]/geo[]/sat_h";
-    harp_variable_definition_add_mapping(variable_definition, "data=nadir", NULL, path, description);
+    harp_variable_definition_add_mapping(variable_definition, "data=nadir or data unset", NULL, path, description);
     path = "/limb[]/geo[]/sat_h";
     harp_variable_definition_add_mapping(variable_definition, "data=limb", NULL, path, description);
     path = "/occultation[]/geo[]/sat_h";
@@ -1313,7 +1313,7 @@ void register_nadir_limb_occultation_product(harp_ingestion_module *module)
     description = "dsr is the dsr for the cluster with an integration time equal to the minimal integration time of all"
         " ingested clusters for that state";
     path = "/nadir[]/geo[]/sub_sat_point/latitude";
-    harp_variable_definition_add_mapping(variable_definition, "data=nadir", NULL, path, description);
+    harp_variable_definition_add_mapping(variable_definition, "data=nadir or data unset", NULL, path, description);
     path = "/limb[]/geo[]/sub_sat_point/latitude";
     harp_variable_definition_add_mapping(variable_definition, "data=limb", NULL, path, description);
     path = "/occultation[]/geo[]/sub_sat_point/latitude";
@@ -1329,7 +1329,7 @@ void register_nadir_limb_occultation_product(harp_ingestion_module *module)
     description = "dsr is the dsr for the cluster with an integration time equal to the minimal integration time of all"
         " ingested clusters for that state";
     path = "/nadir[]/geo[]/sub_sat_point/longitude";
-    harp_variable_definition_add_mapping(variable_definition, "data=nadir", NULL, path, description);
+    harp_variable_definition_add_mapping(variable_definition, "data=nadir or data unset", NULL, path, description);
     path = "/limb[]/geo[]/sub_sat_point/longitude";
     harp_variable_definition_add_mapping(variable_definition, "data=limb", NULL, path, description);
     path = "/occultation[]/geo[]/sub_sat_point/longitude";
@@ -1342,7 +1342,7 @@ void register_nadir_limb_occultation_product(harp_ingestion_module *module)
                                                    harp_type_double, 2, dimension_type, NULL, description,
                                                    "(count/s/cm2/sr/nm)", NULL, read_wavelength_photon_radiance);
     path = "/nadir[]/observations[]";
-    harp_variable_definition_add_mapping(variable_definition, "data=nadir", NULL, path, NULL);
+    harp_variable_definition_add_mapping(variable_definition, "data=nadir or data unset", NULL, path, NULL);
     path = "/limb[]/observations[]";
     harp_variable_definition_add_mapping(variable_definition, "data=limb", NULL, path, NULL);
     path = "/occultation[]/observations[]";
@@ -1354,7 +1354,7 @@ void register_nadir_limb_occultation_product(harp_ingestion_module *module)
         harp_ingestion_register_variable_full_read(product_definition, "wavelength", harp_type_double, 2,
                                                    dimension_type, NULL, description, "nm", NULL, read_wavelength);
     path = "nadir[]/pixel_wavelength[]";
-    harp_variable_definition_add_mapping(variable_definition, "data=nadir", NULL, path, NULL);
+    harp_variable_definition_add_mapping(variable_definition, "data=nadir or data unset", NULL, path, NULL);
     path = "limb[]/pixel_wavelength[]";
     harp_variable_definition_add_mapping(variable_definition, "data=limb", NULL, path, NULL);
     path = "occultation[]/pixel_wavelength[]";
@@ -1375,7 +1375,7 @@ void register_nadir_limb_occultation_product(harp_ingestion_module *module)
                                                    dimension_type, NULL, description, "degree",
                                                    NULL, read_solar_zenith_angle);
     path = "/nadir[]/geo[]/sol_zen_ang[1]";
-    harp_variable_definition_add_mapping(variable_definition, "data=nadir", NULL, path, NULL);
+    harp_variable_definition_add_mapping(variable_definition, "data=nadir or data unset", NULL, path, NULL);
     path = "/limb[]/geo[]/sol_zen_ang[1]";
     harp_variable_definition_add_mapping(variable_definition, "data=limb", NULL, path, NULL);
     path = "/occultation[]/geo[]/sol_zen_ang[1]";
@@ -1388,7 +1388,7 @@ void register_nadir_limb_occultation_product(harp_ingestion_module *module)
                                                    dimension_type, NULL, description, "degree",
                                                    NULL, read_solar_azimuth_angle);
     path = "/nadir[]/geo[]/sol_azi_ang[1]";
-    harp_variable_definition_add_mapping(variable_definition, "data=nadir", NULL, path, NULL);
+    harp_variable_definition_add_mapping(variable_definition, "data=nadir or data unset", NULL, path, NULL);
     path = "/limb[]/geo[]/sol_azi_ang[1]";
     harp_variable_definition_add_mapping(variable_definition, "data=limb", NULL, path, NULL);
     path = "/occultation[]/geo[]/sol_azi_ang[1]";
@@ -1401,7 +1401,7 @@ void register_nadir_limb_occultation_product(harp_ingestion_module *module)
                                                    dimension_type, NULL, description, "degree",
                                                    NULL, read_viewing_zenith_angle);
     path = "/nadir[]/geo[]/los_zen_ang[1]";
-    harp_variable_definition_add_mapping(variable_definition, "data=nadir", NULL, path, NULL);
+    harp_variable_definition_add_mapping(variable_definition, "data=nadir or data unset", NULL, path, NULL);
     path = "/limb[]/geo[]/los_zen_ang[1]";
     harp_variable_definition_add_mapping(variable_definition, "data=limb", NULL, path, NULL);
     path = "/occultation[]/geo[]/los_zen_ang[1]";
@@ -1414,7 +1414,7 @@ void register_nadir_limb_occultation_product(harp_ingestion_module *module)
                                                    dimension_type, NULL, description, "degree",
                                                    NULL, read_viewing_azimuth_angle);
     path = "/nadir[]/geo[]/los_azi_ang[1]";
-    harp_variable_definition_add_mapping(variable_definition, "data=nadir", NULL, path, NULL);
+    harp_variable_definition_add_mapping(variable_definition, "data=nadir or data unset", NULL, path, NULL);
     path = "/limb[]/geo[]/los_azi_ang[1]";
     harp_variable_definition_add_mapping(variable_definition, "data=limb", NULL, path, NULL);
     path = "/occultation[]/geo[]/los_azi_ang[1]";
@@ -1594,7 +1594,7 @@ void register_sun_reference_product(harp_ingestion_module *module)
     product_definition =
         harp_ingestion_register_product(module, "SCIAMACHY_L1c_sun_reference", description, read_dimensions);
     description = "SCIAMACHY Level 1c sun reference";
-    harp_product_definition_add_mapping(product_definition, description, NULL);
+    harp_product_definition_add_mapping(product_definition, description, "data=sun_reference");
 
     dimension_type[0] = harp_dimension_time;
     dimension_type[1] = harp_dimension_spectral;

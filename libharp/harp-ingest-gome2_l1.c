@@ -2072,7 +2072,8 @@ static int ingestion_init(const harp_ingestion_module *module, coda_product *pro
 }
 
 static harp_product_definition *register_measurement_product(harp_ingestion_module *module, const char *product_name,
-                                                             const char *product_description)
+                                                             const char *product_description,
+                                                             const char *ingestion_option)
 {
     harp_product_definition *product_definition;
     const char *description;
@@ -2083,7 +2084,7 @@ static harp_product_definition *register_measurement_product(harp_ingestion_modu
         "Earthshine, Calibration, Sun, and Moon measurements. In addition there are also 'Dummy Records' (DMDR) that "
         "can be present when there is lost data in the product. With HARP only Earthshine, Sun, and Moon "
         "measurements can be ingested.\n\n";
-    harp_product_definition_add_mapping(product_definition, description, NULL);
+    harp_product_definition_add_mapping(product_definition, description, ingestion_option);
     description = "Each MDR roughly contains a single scan. However, an MDR does not exactly correspond 1-to-1 with a "
         "GOME-2 scan. This is an important fact to be aware of. The real situation is as follows:\n\n";
     harp_product_definition_add_mapping(product_definition, description, NULL);
@@ -2173,22 +2174,23 @@ int harp_ingestion_module_gome2_l1_init(void)
                                    "measurement spectra, the moon measurement spectra or the sun reference spectrum; "
                                    "by default the measured radiances are retrieved", 5, data_options);
 
-    product_definition = register_measurement_product(module, "GOME2_L1_radiance", "GOME2 Level 1b radiance product");
+    product_definition = register_measurement_product(module, "GOME2_L1_radiance", "GOME2 Level 1b radiance product",
+                                                      "data=radiance or data unset");
     register_variables_radiance_transmittance_fields(product_definition, TRUE);
 
     product_definition = register_measurement_product(module, "GOME2_L1_transmission",
-                                                      "GOME2 Level 1b transmission product");
+                                                      "GOME2 Level 1b transmission product", "data=transmission");
     register_variables_radiance_transmittance_fields(product_definition, FALSE);
 
     product_definition = register_measurement_product(module, "GOME2_L1_irradiance",
-                                                      "GOME2 Level 1b irradiance product");
+                                                      "GOME2 Level 1b irradiance product", "data=sun or data=moon");
     register_variables_irradiance_fields(product_definition);
 
     product_definition = harp_ingestion_register_product(module, "GOME2_L1_sun_reference",
                                                          "GOME2 Level 1b sun reference product",
                                                          read_dimensions_reference_spectrum_fields);
     description = "GOME2 Level 1b sun reference data";
-    harp_product_definition_add_mapping(product_definition, description, NULL);
+    harp_product_definition_add_mapping(product_definition, description, "data=sun_reference");
     register_variables_reference_spectrum_fields(product_definition);
 
     return 0;

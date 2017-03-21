@@ -280,6 +280,7 @@
 </tr>
 </tbody>
 </table>
+<p>This definition is only applicable when: data=nadir or data=limb or data=occultation</p>
 </div>
 <div class="section" id="mapping-description">
 <h2>Mapping description</h2>
@@ -328,7 +329,7 @@
 </tr>
 <tr class="row-odd"><td rowspan="9"><strong>latitude</strong></td>
 <td><em>condition</em></td>
-<td>data=nadir</td>
+<td>data=nadir or data unset</td>
 </tr>
 <tr class="row-even"><td><em>path</em></td>
 <td><strong>/nadir[]/geo[]/center_coord/latitude</strong></td>
@@ -356,7 +357,7 @@
 </tr>
 <tr class="row-even"><td rowspan="9"><strong>longitude</strong></td>
 <td><em>condition</em></td>
-<td>data=nadir</td>
+<td>data=nadir or data unset</td>
 </tr>
 <tr class="row-odd"><td><em>path</em></td>
 <td><strong>/nadir[]/geo[]/center_coord/longitude</strong></td>
@@ -404,7 +405,7 @@
 </tr>
 <tr class="row-odd"><td rowspan="9"><strong>sensor_altitude</strong></td>
 <td><em>condition</em></td>
-<td>data=nadir</td>
+<td>data=nadir or data unset</td>
 </tr>
 <tr class="row-even"><td><em>path</em></td>
 <td><strong>/nadir[]/geo[]/sat_h</strong></td>
@@ -432,7 +433,7 @@
 </tr>
 <tr class="row-even"><td rowspan="9"><strong>sensor_latitude</strong></td>
 <td><em>condition</em></td>
-<td>data=nadir</td>
+<td>data=nadir or data unset</td>
 </tr>
 <tr class="row-odd"><td><em>path</em></td>
 <td><strong>/nadir[]/geo[]/sub_sat_point/latitude</strong></td>
@@ -460,7 +461,7 @@
 </tr>
 <tr class="row-odd"><td rowspan="9"><strong>sensor_longitude</strong></td>
 <td><em>condition</em></td>
-<td>data=nadir</td>
+<td>data=nadir or data unset</td>
 </tr>
 <tr class="row-even"><td><em>path</em></td>
 <td><strong>/nadir[]/geo[]/sub_sat_point/longitude</strong></td>
@@ -488,7 +489,7 @@
 </tr>
 <tr class="row-even"><td rowspan="6"><strong>wavelength_photon_radiance</strong></td>
 <td><em>condition</em></td>
-<td>data=nadir</td>
+<td>data=nadir or data unset</td>
 </tr>
 <tr class="row-odd"><td><em>path</em></td>
 <td><strong>/nadir[]/observations[]</strong></td>
@@ -507,7 +508,7 @@
 </tr>
 <tr class="row-even"><td rowspan="6"><strong>wavelength</strong></td>
 <td><em>condition</em></td>
-<td>data=nadir</td>
+<td>data=nadir or data unset</td>
 </tr>
 <tr class="row-odd"><td><em>path</em></td>
 <td><strong>nadir[]/pixel_wavelength[]</strong></td>
@@ -530,7 +531,7 @@
 </tr>
 <tr class="row-odd"><td rowspan="6"><strong>solar_zenith_angle</strong></td>
 <td><em>condition</em></td>
-<td>data=nadir</td>
+<td>data=nadir or data unset</td>
 </tr>
 <tr class="row-even"><td><em>path</em></td>
 <td><strong>/nadir[]/geo[]/sol_zen_ang[1]</strong></td>
@@ -549,7 +550,7 @@
 </tr>
 <tr class="row-odd"><td rowspan="6"><strong>solar_azimuth_angle</strong></td>
 <td><em>condition</em></td>
-<td>data=nadir</td>
+<td>data=nadir or data unset</td>
 </tr>
 <tr class="row-even"><td><em>path</em></td>
 <td><strong>/nadir[]/geo[]/sol_azi_ang[1]</strong></td>
@@ -568,7 +569,7 @@
 </tr>
 <tr class="row-odd"><td rowspan="6"><strong>viewing_zenith_angle</strong></td>
 <td><em>condition</em></td>
-<td>data=nadir</td>
+<td>data=nadir or data unset</td>
 </tr>
 <tr class="row-even"><td><em>path</em></td>
 <td><strong>/nadir[]/geo[]/los_zen_ang[1]</strong></td>
@@ -587,7 +588,7 @@
 </tr>
 <tr class="row-odd"><td rowspan="6"><strong>viewing_azimuth_angle</strong></td>
 <td><em>condition</em></td>
-<td>data=nadir</td>
+<td>data=nadir or data unset</td>
 </tr>
 <tr class="row-even"><td><em>path</em></td>
 <td><strong>/nadir[]/geo[]/los_azi_ang[1]</strong></td>

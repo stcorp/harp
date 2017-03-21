@@ -1481,7 +1481,7 @@ static int parse_option_clipped_cloud_fraction(ingest_info *info, const harp_ing
 
     if (harp_ingestion_options_get_option(options, "clipped_cloud_fraction", &value) == 0)
     {
-        info->clipped_cloud_fraction = (strcmp(value, "true") == 0);
+        info->clipped_cloud_fraction = 0;
     }
 
     return 0;
@@ -1564,7 +1564,7 @@ static int parse_option_destriped(ingest_info *info, const harp_ingestion_option
 
     if (harp_ingestion_options_get_option(options, "destriped", &value) == 0)
     {
-        info->destriped = (strcmp(value, "true") == 0);
+        info->destriped = 1;
     }
 
     return 0;
@@ -1576,7 +1576,7 @@ static int parse_option_clear_sky(ingest_info *info, const harp_ingestion_option
 
     if (harp_ingestion_options_get_option(options, "clear_sky", &value) == 0)
     {
-        info->clear_sky = (strcmp(value, "true") == 0);
+        info->clear_sky = 1;
     }
 
     return 0;
@@ -2246,7 +2246,7 @@ static void register_ombro_product(void)
     harp_product_definition *product_definition;
     harp_variable_definition *variable_definition;
     harp_dimension_type dimension_type[1] = { harp_dimension_time };
-    const char *destriped_option_values[] = { "false", "true" };
+    const char *destriped_option_values[] = { "true" };
     const char *description;
     const char *path;
 
@@ -2255,7 +2255,7 @@ static void register_ombro_product(void)
 
     /* destriped ingestion option */
     description = "ingest column densities with destriping correction";
-    harp_ingestion_register_option(module, "destriped", description, 2, destriped_option_values);
+    harp_ingestion_register_option(module, "destriped", description, 1, destriped_option_values);
 
     /* OMBRO product */
     product_definition = harp_ingestion_register_product(module, "OMI_L2_OMBRO", NULL, read_dimensions);
@@ -2279,7 +2279,7 @@ static void register_ombro_product(void)
                                                                      harp_type_double, 1, dimension_type, NULL,
                                                                      description, "molec/cm^2", NULL, read_bro_column);
     path = "/HDFEOS/SWATHS/OMI_Total_Column_Amount_BRO/Data_Fields/ColumnAmount[]";
-    harp_variable_definition_add_mapping(variable_definition, "destriped=false (default)", NULL, path, NULL);
+    harp_variable_definition_add_mapping(variable_definition, "destriped unset", NULL, path, NULL);
     path = "/HDFEOS/SWATHS/OMI_Total_Column_Amount_BRO/Data_Fields/ColumnAmountDestriped[]";
     harp_variable_definition_add_mapping(variable_definition, "destriped=true", NULL, path, NULL);
 
@@ -2291,7 +2291,7 @@ static void register_ombro_product(void)
                                                                      description, "molec/cm^2", exclude_destriped,
                                                                      read_bro_column_error);
     path = "/HDFEOS/SWATHS/OMI_Total_Column_Amount_BRO/Data_Fields/ColumnUncertainty[]";
-    harp_variable_definition_add_mapping(variable_definition, "destriped=false (default)", NULL, path, NULL);
+    harp_variable_definition_add_mapping(variable_definition, "destriped unset", NULL, path, NULL);
 }
 
 static void register_omchocho_product(void)
@@ -2300,7 +2300,7 @@ static void register_omchocho_product(void)
     harp_product_definition *product_definition;
     harp_variable_definition *variable_definition;
     harp_dimension_type dimension_type[1] = { harp_dimension_time };
-    const char *destriped_option_values[] = { "false", "true" };
+    const char *destriped_option_values[] = { "true" };
     const char *description;
     const char *path;
 
@@ -2310,7 +2310,7 @@ static void register_omchocho_product(void)
 
     /* destriped ingestion option */
     description = "ingest column densities with destriping correction";
-    harp_ingestion_register_option(module, "destriped", description, 2, destriped_option_values);
+    harp_ingestion_register_option(module, "destriped", description, 1, destriped_option_values);
 
     /* OMCHOCHO product */
     product_definition = harp_ingestion_register_product(module, "OMI_L2_OMCHOCHO", NULL, read_dimensions);
@@ -2335,7 +2335,7 @@ static void register_omchocho_product(void)
                                                                      description, "molec/cm^2", NULL,
                                                                      read_chocho_column);
     path = "/HDFEOS/SWATHS/OMI_Total_Column_Amount_CHOCHO/Data_Fields/ColumnAmount[]";
-    harp_variable_definition_add_mapping(variable_definition, "destriped=false (default)", NULL, path, NULL);
+    harp_variable_definition_add_mapping(variable_definition, "destriped unset", NULL, path, NULL);
     path = "/HDFEOS/SWATHS/OMI_Total_Column_Amount_CHOCHO/Data_Fields/ColumnAmountDestriped[]";
     harp_variable_definition_add_mapping(variable_definition, "destriped=true", NULL, path, NULL);
 
@@ -2347,7 +2347,7 @@ static void register_omchocho_product(void)
                                                                      description, "molec/cm^2", exclude_destriped,
                                                                      read_chocho_column_error);
     path = "/HDFEOS/SWATHS/OMI_Total_Column_Amount_CHOCHO/Data_Fields/ColumnUncertainty[]";
-    harp_variable_definition_add_mapping(variable_definition, "destriped=false (default)", NULL, path, NULL);
+    harp_variable_definition_add_mapping(variable_definition, "destriped unset", NULL, path, NULL);
 }
 
 static void register_omcldo2_product(void)
@@ -2356,7 +2356,7 @@ static void register_omcldo2_product(void)
     harp_product_definition *product_definition;
     harp_variable_definition *variable_definition;
     harp_dimension_type dimension_type[1] = { harp_dimension_time };
-    const char *clipped_cloud_fraction_option_values[] = { "true", "false" };
+    const char *clipped_cloud_fraction_option_values[] = { "false" };
     const char *description;
     const char *path;
 
@@ -2366,7 +2366,7 @@ static void register_omcldo2_product(void)
 
     /* clipped_cloud_fraction ingestion option */
     description = "ingest clipped (to the range [0.0, 1.0]) cloud fractions";
-    harp_ingestion_register_option(module, "clipped_cloud_fraction", description, 2,
+    harp_ingestion_register_option(module, "clipped_cloud_fraction", description, 1,
                                    clipped_cloud_fraction_option_values);
 
     /* OMCLDO2 product */
@@ -2408,7 +2408,7 @@ static void register_omcldo2_product(void)
                                                                      description, HARP_UNIT_DIMENSIONLESS, NULL,
                                                                      read_cloud_fraction);
     path = "/HDFEOS/SWATHS/CloudFractionAndPressure/Data_Fields/CloudFraction[]";
-    harp_variable_definition_add_mapping(variable_definition, "clipped_cloud_fraction=true", NULL, path, NULL);
+    harp_variable_definition_add_mapping(variable_definition, "clipped_cloud_fraction unset", NULL, path, NULL);
     path = "/HDFEOS/SWATHS/CloudFractionAndPressure/Data_Fields/CloudFractionNotClipped[]";
     harp_variable_definition_add_mapping(variable_definition, "clipped_cloud_fraction=false", NULL, path, NULL);
 
@@ -2773,7 +2773,7 @@ static void register_omhcho_product(void)
     harp_product_definition *product_definition;
     harp_variable_definition *variable_definition;
     harp_dimension_type dimension_type[1] = { harp_dimension_time };
-    const char *destriped_option_values[] = { "false", "true" };
+    const char *destriped_option_values[] = { "true" };
     const char *description;
     const char *path;
 
@@ -2782,7 +2782,7 @@ static void register_omhcho_product(void)
 
     /* destriped ingestion option */
     description = "ingest column densities with destriping correction";
-    harp_ingestion_register_option(module, "destriped", description, 2, destriped_option_values);
+    harp_ingestion_register_option(module, "destriped", description, 1, destriped_option_values);
 
     /* OMHCHO product */
     product_definition = harp_ingestion_register_product(module, "OMI_L2_OMHCHO", NULL, read_dimensions);
@@ -2806,7 +2806,7 @@ static void register_omhcho_product(void)
                                                                      harp_type_double, 1, dimension_type, NULL,
                                                                      description, "molec/cm^2", NULL, read_hcho_column);
     path = "/HDFEOS/SWATHS/OMI_Total_Column_Amount_HCHO/Data_Fields/ColumnAmount[]";
-    harp_variable_definition_add_mapping(variable_definition, "destriped=false (default)", NULL, path, NULL);
+    harp_variable_definition_add_mapping(variable_definition, "destriped unset", NULL, path, NULL);
     path = "/HDFEOS/SWATHS/OMI_Total_Column_Amount_HCHO/Data_Fields/ColumnAmountDestriped[]";
     harp_variable_definition_add_mapping(variable_definition, "destriped=true", NULL, path, NULL);
 
@@ -2818,7 +2818,7 @@ static void register_omhcho_product(void)
                                                                      description, "molec/cm^2", exclude_destriped,
                                                                      read_hcho_column_error);
     path = "/HDFEOS/SWATHS/OMI_Total_Column_Amount_HCHO/Data_Fields/ColumnUncertainty[]";
-    harp_variable_definition_add_mapping(variable_definition, "destriped=false (default)", NULL, path, NULL);
+    harp_variable_definition_add_mapping(variable_definition, "destriped unset", NULL, path, NULL);
 }
 
 static void register_omno2_product(void)
@@ -3024,7 +3024,7 @@ static void register_omoclo_product(void)
     harp_product_definition *product_definition;
     harp_variable_definition *variable_definition;
     harp_dimension_type dimension_type[1] = { harp_dimension_time };
-    const char *destriped_option_values[] = { "false", "true" };
+    const char *destriped_option_values[] = { "true" };
     const char *description;
     const char *path;
 
@@ -3033,7 +3033,7 @@ static void register_omoclo_product(void)
 
     /* destriped ingestion option */
     description = "ingest column densities with destriping correction";
-    harp_ingestion_register_option(module, "destriped", description, 2, destriped_option_values);
+    harp_ingestion_register_option(module, "destriped", description, 1, destriped_option_values);
 
     /* OMOCLO product */
     product_definition = harp_ingestion_register_product(module, "OMI_L2_OMOCLO", NULL, read_dimensions);
@@ -3057,7 +3057,7 @@ static void register_omoclo_product(void)
                                                                      harp_type_double, 1, dimension_type, NULL,
                                                                      description, "molec/cm^2", NULL, read_oclo_column);
     path = "/HDFEOS/SWATHS/OMI_Total_Column_Amount_OClO/Data_Fields/ColumnAmount[]";
-    harp_variable_definition_add_mapping(variable_definition, "destriped=false (default)", NULL, path, NULL);
+    harp_variable_definition_add_mapping(variable_definition, "destriped unset", NULL, path, NULL);
     path = "/HDFEOS/SWATHS/OMI_Total_Column_Amount_OClO/Data_Fields/ColumnAmountDestriped[]";
     harp_variable_definition_add_mapping(variable_definition, "destriped=true", NULL, path, NULL);
 
@@ -3069,7 +3069,7 @@ static void register_omoclo_product(void)
                                                                      description, "molec/cm^2", exclude_destriped,
                                                                      read_oclo_column_error);
     path = "/HDFEOS/SWATHS/OMI_Total_Column_Amount_OClO/Data_Fields/ColumnUncertainty[]";
-    harp_variable_definition_add_mapping(variable_definition, "destriped=false (default)", NULL, path, description);
+    harp_variable_definition_add_mapping(variable_definition, "destriped unset", NULL, path, description);
 }
 
 static void register_omso2_product(void)
@@ -3130,15 +3130,15 @@ static void register_omso2_product(void)
                                                                      harp_type_double, 1, dimension_type, NULL,
                                                                      description, "DU", NULL, read_so2_column);
     path = "/HDFEOS/SWATHS/OMI_Total_Column_Amount_SO2/Data_Fields/SO2ColumnAmountPBL[]";
-    harp_variable_definition_add_mapping(variable_definition, "so2_column_variant=pbl (default)", "V2 product", path,
-                                         NULL);
+    harp_variable_definition_add_mapping(variable_definition, "so2_column_variant=pbl or so2_column_variant unset",
+                                         "V2 product", path, NULL);
     path = "/HDFEOS/SWATHS/OMI_Total_Column_Amount_SO2/Data_Fields/SO2ColumnAmount05KM[]";
     harp_variable_definition_add_mapping(variable_definition, "so2_column_variant=5km", "V2 product", path, NULL);
     path = "/HDFEOS/SWATHS/OMI_Total_Column_Amount_SO2/Data_Fields/SO2ColumnAmount15KM[]";
     harp_variable_definition_add_mapping(variable_definition, "so2_column_variant=15km", "V2 product", path, NULL);
     path = "/HDFEOS/SWATHS/OMI_Total_Column_Amount_SO2/Data_Fields/ColumnAmountSO2_PBL[]";
-    harp_variable_definition_add_mapping(variable_definition, "so2_column_variant=pbl (default)", "V3 product", path,
-                                         NULL);
+    harp_variable_definition_add_mapping(variable_definition, "so2_column_variant=pbl or so2_column_variant unset",
+                                         "V3 product", path, NULL);
     path = "/HDFEOS/SWATHS/OMI_Total_Column_Amount_SO2/Data_Fields/ColumnAmountSO2_TRL[]";
     harp_variable_definition_add_mapping(variable_definition, "so2_column_variant=trl", "V3 product", path, NULL);
     path = "/HDFEOS/SWATHS/OMI_Total_Column_Amount_SO2/Data_Fields/ColumnAmountSO2_TRM[]";
@@ -3251,7 +3251,8 @@ static void register_omto3_product(void)
     path = "/HDFEOS/SWATHS/OMI_Column_Amount_O3/Data_Fields/CloudFraction[]";
     harp_variable_definition_add_mapping(variable_definition, NULL, "V2 product", path, NULL);
     path = "/HDFEOS/SWATHS/OMI_Column_Amount_O3/Data_Fields/fc[]";
-    harp_variable_definition_add_mapping(variable_definition, "cloud_fraction_variant=effective (default)",
+    harp_variable_definition_add_mapping(variable_definition,
+                                         "cloud_fraction_variant=effective or cloud_fraction_variant unset",
                                          "V3 product", path, NULL);
     path = "/HDFEOS/SWATHS/OMI_Column_Amount_O3/Data_Fields/RadiativeCloudFraction[]";
     harp_variable_definition_add_mapping(variable_definition, "cloud_fraction_variant=radiative", "V3 product", path,
@@ -3282,7 +3283,7 @@ static void register_omuvb_product(void)
     harp_product_definition *product_definition;
     harp_variable_definition *variable_definition;
     harp_dimension_type dimension_type[1] = { harp_dimension_time };
-    const char *clear_sky_option_values[] = { "false", "true" };
+    const char *clear_sky_option_values[] = { "true" };
     const char *wavelength_option_values[] = { "305nm", "310nm", "324nm", "380nm" };
     const char *description;
     const char *path;
@@ -3293,7 +3294,7 @@ static void register_omuvb_product(void)
 
     /* clear_sky ingestion option */
     description = "ingest clear sky surface UV irradiance";
-    harp_ingestion_register_option(module, "clear_sky", description, 2, clear_sky_option_values);
+    harp_ingestion_register_option(module, "clear_sky", description, 1, clear_sky_option_values);
 
     /* wavelength ingestion option */
     description = "wavelength for which to ingest the surface UV irradiance";
@@ -3326,17 +3327,13 @@ static void register_omuvb_product(void)
                                                                      description, "W/(m^2.nm)", NULL,
                                                                      read_uv_irradiance_surface);
     path = "/HDFEOS/SWATHS/UVB/Data_Fields/Irradiance305[]";
-    harp_variable_definition_add_mapping(variable_definition, "clear_sky=false (default) and wavelength=305nm", NULL,
-                                         path, NULL);
+    harp_variable_definition_add_mapping(variable_definition, "clear_sky unset and wavelength=305nm", NULL, path, NULL);
     path = "/HDFEOS/SWATHS/UVB/Data_Fields/Irradiance310[]";
-    harp_variable_definition_add_mapping(variable_definition, "clear_sky=false (default) and wavelength=310nm", NULL,
-                                         path, NULL);
+    harp_variable_definition_add_mapping(variable_definition, "clear_sky unset and wavelength=310nm", NULL, path, NULL);
     path = "/HDFEOS/SWATHS/UVB/Data_Fields/Irradiance324[]";
-    harp_variable_definition_add_mapping(variable_definition, "clear_sky=false (default) and wavelength=324nm", NULL,
-                                         path, NULL);
+    harp_variable_definition_add_mapping(variable_definition, "clear_sky unset and wavelength=324nm", NULL, path, NULL);
     path = "/HDFEOS/SWATHS/UVB/Data_Fields/Irradiance380[]";
-    harp_variable_definition_add_mapping(variable_definition, "clear_sky=false (default) and wavelength=380nm", NULL,
-                                         path, NULL);
+    harp_variable_definition_add_mapping(variable_definition, "clear_sky unset and wavelength=380nm", NULL, path, NULL);
     path = "/HDFEOS/SWATHS/UVB/Data_Fields/CSIrradiance305[]";
     harp_variable_definition_add_mapping(variable_definition, "clear_sky=true and wavelength=305nm", NULL, path, NULL);
     path = "/HDFEOS/SWATHS/UVB/Data_Fields/CSIrradiance310[]";
