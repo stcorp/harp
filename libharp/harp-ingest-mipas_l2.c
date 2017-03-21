@@ -1649,7 +1649,7 @@ int harp_ingestion_module_mipas_l2_init(void)
                                    NUM_SPECIES_TYPES, species_options);
 
     description = "profile data";
-    product_definition = harp_ingestion_register_product(module, "MIPAS_NL_L2", description, read_dimensions);
+    product_definition = harp_ingestion_register_product(module, "MIPAS_L2", description, read_dimensions);
 
     dimension_type[0] = harp_dimension_time;
     dimension_type[1] = harp_dimension_vertical;

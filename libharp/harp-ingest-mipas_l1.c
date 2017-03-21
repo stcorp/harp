@@ -370,7 +370,7 @@ int harp_ingestion_module_mipas_l1_init(void)
                                    " 'D'); by default data from all bands is retrieved", 5, band_name_as_option);
 
     description = "MIPAS Level 1 Spectra product";
-    product_definition = harp_ingestion_register_product(module, "MIPAS_NL_L1", description, read_dimensions);
+    product_definition = harp_ingestion_register_product(module, "MIPAS_L1", description, read_dimensions);
     description = "MIPAS Level 1 Spectra";
     harp_product_definition_add_mapping(product_definition, description, NULL);
 
