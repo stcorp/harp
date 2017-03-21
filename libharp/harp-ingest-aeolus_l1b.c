@@ -399,7 +399,26 @@ static int read_datetime(void *user_data, long index, harp_array data)
 {
     ingest_info *info = (ingest_info *)user_data;
 
-    *data.double_data = info->time[info->observation ? index : (index / info->n_max_actual)];
+    if (info->observation)
+    {
+        *data.double_data = info->time[index];
+    }
+    else
+    {
+        *data.double_data = info->time[index / info->n_max_actual] +
+            (index % info->n_max_actual) * (12.0 / info->n_max_actual);
+    }
+
+    return 0;
+}
+
+static int read_datetime_length(void *user_data, long index, harp_array data)
+{
+    ingest_info *info = (ingest_info *)user_data;
+
+    (void)index;
+
+    *data.double_data = info->observation ? 12.0 : (12.0 / info->n_max_actual);
 
     return 0;
 }
@@ -524,16 +543,48 @@ static void register_common_variables(harp_product_definition *product_definitio
     dimension_type[1] = harp_dimension_vertical;
 
     /* datetime_start */
-    description = "start time of the measurement";
-    variable_definition = harp_ingestion_register_variable_sample_read(product_definition, "datetime_start",
-                                                                       harp_type_double, 1, dimension_type, NULL,
-                                                                       description, "seconds since 2000-01-01", NULL,
-                                                                       read_datetime);
-    snprintf(path, MAX_PATH_LENGTH, "/geolocation[]/start_of_observation_time");
-    description = "All profiles within the same BRC will have the same time value associated to them";
-    harp_variable_definition_add_mapping(variable_definition, NULL, NULL, path, description);
+    if (obs)
+    {
+        description = "start time of the observation";
+        variable_definition = harp_ingestion_register_variable_sample_read(product_definition, "datetime_start",
+                                                                           harp_type_double, 1, dimension_type, NULL,
+                                                                           description, "seconds since 2000-01-01",
+                                                                           NULL, read_datetime);
+        harp_variable_definition_add_mapping(variable_definition, NULL, NULL,
+                                             "/geolocation[]/start_of_observation_time", NULL);
+    }
+    else
+    {
+        description = "start time of the measurement";
+        variable_definition = harp_ingestion_register_variable_sample_read(product_definition, "datetime_start",
+                                                                           harp_type_double, 1, dimension_type, NULL,
+                                                                           description, "seconds since 2000-01-01",
+                                                                           NULL, read_datetime);
+        harp_variable_definition_add_mapping(variable_definition, NULL, NULL,
+                                             "/geolocation[]/start_of_observation_time, /sph/n_max_actual",
+                                             "start_of_observation_time + 12.0/n_max_actual * index within BRC");
+    }
 
-    /* TODO: add datetime_length */
+    /* datetime_length */
+    if (obs)
+    {
+        description = "duration of the observation";
+        variable_definition = harp_ingestion_register_variable_sample_read(product_definition, "datetime_length",
+                                                                           harp_type_double, 1, dimension_type, NULL,
+                                                                           description, "s", NULL,
+                                                                           read_datetime_length);
+        harp_variable_definition_add_mapping(variable_definition, NULL, NULL, NULL, "set to fixed value of 12 seconds");
+    }
+    else
+    {
+        description = "duration of the measurement";
+        variable_definition = harp_ingestion_register_variable_sample_read(product_definition, "datetime_length",
+                                                                           harp_type_double, 1, dimension_type, NULL,
+                                                                           description, "s", NULL,
+                                                                           read_datetime_length);
+        harp_variable_definition_add_mapping(variable_definition, NULL, NULL, "/sph/n_max_actual",
+                                             "set to 12.0/n_max_actual seconds");
+    }
 
     /* latitude */
     description = "latitude of the lower edge of the height bin along the line-of-sight";

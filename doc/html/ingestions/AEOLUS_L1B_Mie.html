@@ -153,37 +153,43 @@
 <td>seconds since 2000-01-01</td>
 <td>start time of the measurement</td>
 </tr>
-<tr class="row-odd"><td><strong>latitude</strong></td>
+<tr class="row-odd"><td><strong>datetime_length</strong></td>
+<td>double</td>
+<td>{<em>time</em>}</td>
+<td>s</td>
+<td>duration of the measurement</td>
+</tr>
+<tr class="row-even"><td><strong>latitude</strong></td>
 <td>double</td>
 <td>{<em>time</em>, <em>vertical</em>}</td>
 <td>degree_north</td>
 <td>latitude of the lower edge of the height bin along the line-of-sight</td>
 </tr>
-<tr class="row-even"><td><strong>longitude</strong></td>
+<tr class="row-odd"><td><strong>longitude</strong></td>
 <td>double</td>
 <td>{<em>time</em>, <em>vertical</em>}</td>
 <td>degree_east</td>
 <td>longitude of the lower edge of the height bin along the line-of-sight</td>
 </tr>
-<tr class="row-odd"><td><strong>altitude</strong></td>
+<tr class="row-even"><td><strong>altitude</strong></td>
 <td>double</td>
 <td>{<em>time</em>, <em>vertical</em>}</td>
 <td>m</td>
 <td>altitude of the lower edge of the height bin along the line-of-sight; value is negative if below DEM surface</td>
 </tr>
-<tr class="row-even"><td><strong>hlos_wind_velocity</strong></td>
+<tr class="row-odd"><td><strong>hlos_wind_velocity</strong></td>
 <td>double</td>
 <td>{<em>time</em>, <em>vertical</em>}</td>
 <td>m/s</td>
 <td>HLOS wind velocity at the altitude bin</td>
 </tr>
-<tr class="row-odd"><td><strong>hlos_wind_velocity_validity</strong></td>
+<tr class="row-even"><td><strong>hlos_wind_velocity_validity</strong></td>
 <td>double</td>
 <td>{<em>time</em>, <em>vertical</em>}</td>
 <td>&nbsp;</td>
 <td>quality flag of the HLOS wind velocity at the altitude bin</td>
 </tr>
-<tr class="row-even"><td><strong>index</strong></td>
+<tr class="row-odd"><td><strong>index</strong></td>
 <td>int32</td>
 <td>{<em>time</em>}</td>
 <td>&nbsp;</td>
@@ -233,10 +239,17 @@
 <tbody valign="top">
 <tr class="row-even"><td rowspan="2"><strong>datetime_start</strong></td>
 <td><em>path</em></td>
-<td><strong>/geolocation[]/start_of_observation_time</strong></td>
+<td><strong>/geolocation[]/start_of_observation_time, /sph/n_max_actual</strong></td>
 </tr>
 <tr class="row-odd"><td><em>description</em></td>
-<td>All profiles within the same BRC will have the same time value associated to them</td>
+<td>start_of_observation_time + 12.0/n_max_actual * index within BRC</td>
+</tr>
+<tr class="row-even"><td rowspan="2"><strong>datetime_length</strong></td>
+<td><em>path</em></td>
+<td><strong>/sph/n_max_actual</strong></td>
+</tr>
+<tr class="row-odd"><td><em>description</em></td>
+<td>set to 12.0/n_max_actual seconds</td>
 </tr>
 <tr class="row-even"><td><strong>latitude</strong></td>
 <td><em>path</em></td>
