@@ -129,11 +129,11 @@ static int read_wavenumber_radiance(void *user_data, harp_array data)
 {
     coda_cursor cursor;
     ingest_info *info = (ingest_info *)user_data;
-    double *double_data;
-    long i, j;
+    float *float_data;
+    long i;
     short start_band, end_band, band_nr;
 
-    double_data = data.double_data;
+    float_data = data.float_data;
     if (info->selected_band >= 0)
     {
         start_band = end_band = info->selected_band;
@@ -153,17 +153,12 @@ static int read_wavenumber_radiance(void *user_data, harp_array data)
                 harp_set_error(HARP_ERROR_CODA, NULL);
                 return -1;
             }
-            if (coda_cursor_read_double_array(&cursor, double_data, coda_array_ordering_c) != 0)
+            if (coda_cursor_read_float_array(&cursor, float_data, coda_array_ordering_c) != 0)
             {
                 harp_set_error(HARP_ERROR_CODA, NULL);
                 return -1;
             }
-            /* Convert from W/cm^2/sr/cm to W/m^2/sr/cm */
-            for (j = 0; j < info->measurements_in_band[band_nr]; j++)
-            {
-                *double_data *= 10000.0;
-                double_data++;
-            }
+            float_data += info->measurements_in_band[band_nr];
             coda_cursor_goto_parent(&cursor);
         }
     }
@@ -415,7 +410,7 @@ int harp_ingestion_module_mipas_l1_init(void)
     description = "measured radiances";
     variable_definition =
         harp_ingestion_register_variable_full_read(product_definition, "wavenumber_radiance", harp_type_double,
-                                                   2, dimension_type, NULL, description, "W/m^2/sr/cm",
+                                                   2, dimension_type, NULL, description, "W/cm^2/sr/cm",
                                                    NULL, read_wavenumber_radiance);
     path =
         "/mipas_level_1b_mds[]/band_a[], /mipas_level_1b_mds[]/band_ab[], /mipas_level_1b_mds[]/band_b[], /mipas_level_1b_mds[]/band_c[], /mipas_level_1b_mds[]/band_d[]";
