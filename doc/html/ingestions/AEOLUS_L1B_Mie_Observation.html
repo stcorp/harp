@@ -1,0 +1,325 @@
+
+
+<!DOCTYPE html>
+<!--[if IE 8]><html class="no-js lt-ie9" lang="en" > <![endif]-->
+<!--[if gt IE 8]><!--> <html class="no-js" lang="en" > <!--<![endif]-->
+<head>
+  <meta charset="utf-8">
+  
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  
+  <title>AEOLUS_L1B_Mie_Observation &mdash; HARP 0.4b documentation</title>
+  
+
+  
+  
+
+  
+
+  
+  
+    
+
+  
+
+  
+  
+    <link rel="stylesheet" href="../_static/css/theme.css" type="text/css" />
+  
+
+  
+    <link rel="stylesheet" href="../_static/custom.css" type="text/css" />
+  
+
+  
+    <link rel="top" title="HARP 0.4b documentation" href="../index.html"/> 
+
+  
+  <script src="../_static/js/modernizr.min.js"></script>
+
+</head>
+
+<body class="wy-body-for-nav" role="document">
+
+  <div class="wy-grid-for-nav">
+
+    
+    <nav data-toggle="wy-nav-shift" class="wy-nav-side">
+      <div class="wy-side-scroll">
+        <div class="wy-side-nav-search">
+          
+
+          
+            <a href="../index.html" class="icon icon-home"> HARP
+          
+
+          
+          </a>
+
+          
+            
+            
+              <div class="version">
+                0.4
+              </div>
+            
+          
+
+          
+
+          
+        </div>
+
+        <div class="wy-menu wy-menu-vertical" data-spy="affix" role="navigation" aria-label="main navigation">
+          
+            
+            
+                <ul>
+<li class="toctree-l1"><a class="reference internal" href="../install.html">Installation</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../dataformats.html">Data formats</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../algorithms/index.html">Algorithms</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../operations.html">Operations</a></li>
+<li class="toctree-l1"><a class="reference internal" href="index.html">Ingestion definitions</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../libharp.html">C library</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../python.html">Python interface</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../tools.html">Command line tools</a></li>
+</ul>
+
+            
+          
+        </div>
+      </div>
+    </nav>
+
+    <section data-toggle="wy-nav-shift" class="wy-nav-content-wrap">
+
+      
+      <nav class="wy-nav-top" role="navigation" aria-label="top navigation">
+        <i data-toggle="wy-nav-top" class="fa fa-bars"></i>
+        <a href="../index.html">HARP</a>
+      </nav>
+
+
+      
+      <div class="wy-nav-content">
+        <div class="rst-content">
+          
+
+ 
+
+
+
+<div role="navigation" aria-label="breadcrumbs navigation">
+  <ul class="wy-breadcrumbs">
+    <li><a href="../index.html">Docs</a> &raquo;</li>
+      
+    <li>AEOLUS_L1B_Mie_Observation</li>
+      <li class="wy-breadcrumbs-aside">
+        
+          
+        
+      </li>
+  </ul>
+  <hr/>
+</div>
+          <div role="main" class="document" itemscope="itemscope" itemtype="http://schema.org/Article">
+           <div itemprop="articleBody">
+            
+  <div class="section" id="aeolus-l1b-mie-observation">
+<h1>AEOLUS_L1B_Mie_Observation</h1>
+<div class="section" id="variables">
+<h2>Variables</h2>
+<p>The table below lists the variables that are present in the HARP product that results from an ingestion of <code class="docutils literal"><span class="pre">AEOLUS_L1B_Mie_Observation</span></code> data.</p>
+<table border="1" class="docutils">
+<colgroup>
+<col width="25%" />
+<col width="5%" />
+<col width="15%" />
+<col width="15%" />
+<col width="40%" />
+</colgroup>
+<thead valign="bottom">
+<tr class="row-odd"><th class="head">field name</th>
+<th class="head">type</th>
+<th class="head">dimensions</th>
+<th class="head">unit</th>
+<th class="head">description</th>
+</tr>
+</thead>
+<tbody valign="top">
+<tr class="row-even"><td><strong>datetime_start</strong></td>
+<td>double</td>
+<td>{<em>time</em>}</td>
+<td>seconds since 2000-01-01</td>
+<td>start time of the measurement</td>
+</tr>
+<tr class="row-odd"><td><strong>latitude</strong></td>
+<td>double</td>
+<td>{<em>time</em>, <em>vertical</em>}</td>
+<td>degree_north</td>
+<td>latitude of the lower edge of the height bin along the line-of-sight</td>
+</tr>
+<tr class="row-even"><td><strong>longitude</strong></td>
+<td>double</td>
+<td>{<em>time</em>, <em>vertical</em>}</td>
+<td>degree_east</td>
+<td>longitude of the lower edge of the height bin along the line-of-sight</td>
+</tr>
+<tr class="row-odd"><td><strong>altitude</strong></td>
+<td>double</td>
+<td>{<em>time</em>, <em>vertical</em>}</td>
+<td>m</td>
+<td>altitude of the lower edge of the height bin along the line-of-sight; value is negative if below DEM surface</td>
+</tr>
+<tr class="row-even"><td><strong>hlos_wind_velocity</strong></td>
+<td>double</td>
+<td>{<em>time</em>, <em>vertical</em>}</td>
+<td>m/s</td>
+<td>HLOS wind velocity at the altitude bin</td>
+</tr>
+<tr class="row-odd"><td><strong>hlos_wind_velocity_validity</strong></td>
+<td>double</td>
+<td>{<em>time</em>, <em>vertical</em>}</td>
+<td>&nbsp;</td>
+<td>quality flag of the HLOS wind velocity at the altitude bin</td>
+</tr>
+<tr class="row-even"><td><strong>index</strong></td>
+<td>int32</td>
+<td>{<em>time</em>}</td>
+<td>&nbsp;</td>
+<td>zero-based index of the sample within the source product</td>
+</tr>
+</tbody>
+</table>
+</div>
+<div class="section" id="ingestion-options">
+<h2>Ingestion options</h2>
+<p>The table below lists the available ingestion options for <code class="docutils literal"><span class="pre">AEOLUS_L1B</span></code> products.</p>
+<table border="1" class="docutils">
+<colgroup>
+<col width="15%" />
+<col width="25%" />
+<col width="60%" />
+</colgroup>
+<thead valign="bottom">
+<tr class="row-odd"><th class="head">option name</th>
+<th class="head">legal values</th>
+<th class="head">description</th>
+</tr>
+</thead>
+<tbody valign="top">
+<tr class="row-even"><td>data</td>
+<td>rayleigh_measurement, mie_measurement, rayleigh_observation, mie_observation</td>
+<td>the type of wind profile to ingest (rayleigh/mie, observation/measurement)</td>
+</tr>
+</tbody>
+</table>
+<p>This definition is only applicable when: data=mie_observation</p>
+</div>
+<div class="section" id="mapping-description">
+<h2>Mapping description</h2>
+<p>The table below details where and how each variable was retrieved from the input product.</p>
+<table border="1" class="docutils">
+<colgroup>
+<col width="22%" />
+<col width="10%" />
+<col width="68%" />
+</colgroup>
+<thead valign="bottom">
+<tr class="row-odd"><th class="head">field name</th>
+<th class="head" colspan="2">mapping description</th>
+</tr>
+</thead>
+<tbody valign="top">
+<tr class="row-even"><td rowspan="2"><strong>datetime_start</strong></td>
+<td><em>path</em></td>
+<td><strong>/geolocation[]/start_of_observation_time</strong></td>
+</tr>
+<tr class="row-odd"><td><em>description</em></td>
+<td>All profiles within the same BRC will have the same time value associated to them</td>
+</tr>
+<tr class="row-even"><td><strong>latitude</strong></td>
+<td><em>path</em></td>
+<td><strong>/geolocation[]/observation_geolocation[]/observation_rayleigh_geolocation[]/latitude_of_height_bin</strong></td>
+</tr>
+<tr class="row-odd"><td><strong>longitude</strong></td>
+<td><em>path</em></td>
+<td><strong>/geolocation[]/observation_geolocation[]/observation_rayleigh_geolocation[]/latitude_of_height_bin</strong></td>
+</tr>
+<tr class="row-even"><td><strong>altitude</strong></td>
+<td><em>path</em></td>
+<td><strong>/geolocation[]/observation_geolocation[]/observation_rayleigh_geolocation[]/altitude_of_height_bin</strong></td>
+</tr>
+<tr class="row-odd"><td><strong>hlos_wind_velocity</strong></td>
+<td><em>path</em></td>
+<td><strong>/wind_velocity[]/observation_wind_profile[]/rayleigh_altitude_bin_wind_info[]/wind_velocity</strong></td>
+</tr>
+<tr class="row-even"><td><strong>hlos_wind_velocity_validity</strong></td>
+<td><em>path</em></td>
+<td><strong>/wind_velocity[]/observation_wind_profile[]/rayleigh_altitude_bin_wind_info[]/bin_quality_flag</strong></td>
+</tr>
+</tbody>
+</table>
+</div>
+</div>
+
+
+           </div>
+          </div>
+          <footer>
+  
+
+  <hr/>
+
+  <div role="contentinfo">
+    <p>
+        &copy; Copyright 2015-2017 S&amp;T, The Netherlands.
+
+    </p>
+  </div> 
+
+</footer>
+
+        </div>
+      </div>
+
+    </section>
+
+  </div>
+  
+
+
+  
+
+    <script type="text/javascript">
+        var DOCUMENTATION_OPTIONS = {
+            URL_ROOT:'../',
+            VERSION:'0.4b',
+            COLLAPSE_INDEX:false,
+            FILE_SUFFIX:'.html',
+            HAS_SOURCE:  false
+        };
+    </script>
+      <script type="text/javascript" src="../_static/jquery.js"></script>
+      <script type="text/javascript" src="../_static/underscore.js"></script>
+      <script type="text/javascript" src="../_static/doctools.js"></script>
+      <script type="text/javascript" src="https://cdn.mathjax.org/mathjax/latest/MathJax.js?config=TeX-AMS-MML_HTMLorMML"></script>
+
+  
+
+  
+  
+    <script type="text/javascript" src="../_static/js/theme.js"></script>
+  
+
+  
+  
+  <script type="text/javascript">
+      jQuery(function () {
+          SphinxRtdTheme.StickyNav.enable();
+      });
+  </script>
+   
+
+</body>
+</html>

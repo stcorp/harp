@@ -91,6 +91,10 @@ HARP_DOCFILES = \
 	doc/html/harpfilter.html \
 	doc/html/harpmerge.html \
 	doc/html/index.html \
+	doc/html/ingestions/AEOLUS_L1B_Mie.html \
+	doc/html/ingestions/AEOLUS_L1B_Mie_Observation.html \
+	doc/html/ingestions/AEOLUS_L1B_Rayleigh.html \
+	doc/html/ingestions/AEOLUS_L1B_Rayleigh_Observation.html \
 	doc/html/ingestions/ECMWF_GRIB.html \
 	doc/html/ingestions/ESACCI_AEROSOL_L2_AATSR.html \
 	doc/html/ingestions/ESACCI_AEROSOL_L2_ATSR2.html \
@@ -626,6 +630,14 @@ doc/html/harpfilter.html:
 doc/html/harpmerge.html:
 	$(MAKE) harp_doc
 doc/html/index.html:
+	$(MAKE) harp_doc
+doc/html/ingestions/AEOLUS_L1B_Mie.html:
+	$(MAKE) harp_doc
+doc/html/ingestions/AEOLUS_L1B_Mie_Observation.html:
+	$(MAKE) harp_doc
+doc/html/ingestions/AEOLUS_L1B_Rayleigh.html:
+	$(MAKE) harp_doc
+doc/html/ingestions/AEOLUS_L1B_Rayleigh_Observation.html:
 	$(MAKE) harp_doc
 doc/html/ingestions/ECMWF_GRIB.html:
 	$(MAKE) harp_doc
