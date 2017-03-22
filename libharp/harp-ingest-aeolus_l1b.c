@@ -62,6 +62,98 @@ static int read_dimensions(void *user_data, long dimension[HARP_NUM_DIM_TYPES])
     return 0;
 }
 
+static int get_double_average_array(coda_cursor cursor, const char *field_name, harp_array data)
+{
+    int i;
+
+    if (coda_cursor_goto_first_array_element(&cursor) != 0)
+    {
+        harp_set_error(HARP_ERROR_CODA, NULL);
+        return -1;
+    }
+    for (i = 0; i < 25; i++)
+    {
+        double value;
+
+        if (coda_cursor_goto_record_field_by_name(&cursor, field_name) != 0)
+        {
+            harp_set_error(HARP_ERROR_CODA, NULL);
+            return -1;
+        }
+        if (coda_cursor_read_double(&cursor, &value) != 0)
+        {
+            harp_set_error(HARP_ERROR_CODA, NULL);
+            return -1;
+        }
+        if (i < 24)
+        {
+            data.double_data[i] = value;
+        }
+        if (i > 0)
+        {
+            data.double_data[i - 1] = (data.double_data[i - 1] + value) / 2;
+        }
+        coda_cursor_goto_parent(&cursor);
+        if (i < 24)
+        {
+            if (coda_cursor_goto_next_array_element(&cursor) != 0)
+            {
+                harp_set_error(HARP_ERROR_CODA, NULL);
+                return -1;
+            }
+
+        }
+    }
+
+    return 0;
+}
+
+static int get_double_bounds_array(coda_cursor cursor, const char *field_name, harp_array data)
+{
+    int i;
+
+    if (coda_cursor_goto_first_array_element(&cursor) != 0)
+    {
+        harp_set_error(HARP_ERROR_CODA, NULL);
+        return -1;
+    }
+    for (i = 0; i < 25; i++)
+    {
+        double value;
+
+        if (coda_cursor_goto_record_field_by_name(&cursor, field_name) != 0)
+        {
+            harp_set_error(HARP_ERROR_CODA, NULL);
+            return -1;
+        }
+        if (coda_cursor_read_double(&cursor, &value) != 0)
+        {
+            harp_set_error(HARP_ERROR_CODA, NULL);
+            return -1;
+        }
+        if (i < 24)
+        {
+            data.double_data[i * 2] = value;
+        }
+        if (i > 0)
+        {
+            data.double_data[i * 2 - 1] = value;
+        }
+        coda_cursor_goto_parent(&cursor);
+        if (i < 24)
+        {
+            if (coda_cursor_goto_next_array_element(&cursor) != 0)
+            {
+                harp_set_error(HARP_ERROR_CODA, NULL);
+                return -1;
+            }
+
+        }
+    }
+
+    return 0;
+}
+
 static int get_double_array_data(coda_cursor cursor, const char *field_name, harp_array data)
 {
     int i;
@@ -201,18 +293,18 @@ static int init_cursors(ingest_info *info)
                        info->num_obs * sizeof(double), __FILE__, __LINE__);
         return -1;
     }
-    info->geo_bin_cursor = malloc(info->num_profiles * sizeof(coda_Cursor));
+    info->geo_bin_cursor = malloc(info->num_profiles * sizeof(coda_cursor));
     if (info->geo_bin_cursor == NULL)
     {
         harp_set_error(HARP_ERROR_OUT_OF_MEMORY, "out of memory (could not allocate %lu bytes) (%s:%u)",
-                       info->num_profiles * sizeof(coda_Cursor), __FILE__, __LINE__);
+                       info->num_profiles * sizeof(coda_cursor), __FILE__, __LINE__);
         return -1;
     }
-    info->wv_bin_cursor = malloc(info->num_profiles * sizeof(coda_Cursor));
+    info->wv_bin_cursor = malloc(info->num_profiles * sizeof(coda_cursor));
     if (info->wv_bin_cursor == NULL)
     {
         harp_set_error(HARP_ERROR_OUT_OF_MEMORY, "out of memory (could not allocate %lu bytes) (%s:%u)",
-                       info->num_profiles * sizeof(coda_Cursor), __FILE__, __LINE__);
+                       info->num_profiles * sizeof(coda_cursor), __FILE__, __LINE__);
         return -1;
     }
 
@@ -425,17 +517,17 @@ static int read_datetime_length(void *user_data, long index, harp_array data)
 
 static int read_latitude(void *user_data, long index, harp_array data)
 {
-    return get_double_array_data(((ingest_info *)user_data)->geo_bin_cursor[index], "latitude_of_height_bin", data);
+    return get_double_average_array(((ingest_info *)user_data)->geo_bin_cursor[index], "latitude_of_height_bin", data);
 }
 
 static int read_longitude(void *user_data, long index, harp_array data)
 {
-    return get_double_array_data(((ingest_info *)user_data)->geo_bin_cursor[index], "longitude_of_height_bin", data);
+    return get_double_average_array(((ingest_info *)user_data)->geo_bin_cursor[index], "longitude_of_height_bin", data);
 }
 
-static int read_altitude(void *user_data, long index, harp_array data)
+static int read_altitude_bounds(void *user_data, long index, harp_array data)
 {
-    return get_double_array_data(((ingest_info *)user_data)->geo_bin_cursor[index], "altitude_of_height_bin", data);
+    return get_double_bounds_array(((ingest_info *)user_data)->geo_bin_cursor[index], "altitude_of_height_bin", data);
 }
 
 static int read_wind_velocity(void *user_data, long index, harp_array data)
@@ -535,12 +627,20 @@ static int ingestion_init(const harp_ingestion_module *module, coda_product *pro
 static void register_common_variables(harp_product_definition *product_definition, int rayleigh, int obs)
 {
     harp_variable_definition *variable_definition;
-    harp_dimension_type dimension_type[2];
+    harp_dimension_type dimension_type[3];
     const char *description;
     char path[MAX_PATH_LENGTH];
+    long dimension[3];
 
     dimension_type[0] = harp_dimension_time;
     dimension_type[1] = harp_dimension_vertical;
+    dimension_type[2] = harp_dimension_independent;
+
+    /* for altitude bounds */
+    dimension[0] = -1;
+    dimension[1] = -1;
+    dimension[2] = 2;
+
 
     /* datetime_start */
     if (obs)
@@ -587,31 +687,33 @@ static void register_common_variables(harp_product_definition *product_definitio
     }
 
     /* latitude */
-    description = "latitude of the lower edge of the height bin along the line-of-sight";
+    description = "average of the latitudes of the edges of the height bin along the line-of-sight";
     variable_definition = harp_ingestion_register_variable_sample_read(product_definition, "latitude",
                                                                        harp_type_double, 2, dimension_type, NULL,
                                                                        description, "degree_north", NULL,
                                                                        read_latitude);
     snprintf(path, MAX_PATH_LENGTH, "/geolocation[]/%s_geolocation[]/%s%s_geolocation[]/latitude_of_height_bin",
              obs ? "observation" : "measurement", obs ? "observation_" : "", rayleigh ? "rayleigh" : "mie");
-    harp_variable_definition_add_mapping(variable_definition, NULL, NULL, path, NULL);
+    description = "average of the value at the upper and lower edge of the height bin";
+    harp_variable_definition_add_mapping(variable_definition, NULL, NULL, path, description);
 
     /* longitude */
-    description = "longitude of the lower edge of the height bin along the line-of-sight";
+    description = "average of the longitude of the edges of the height bin along the line-of-sight";
     variable_definition = harp_ingestion_register_variable_sample_read(product_definition, "longitude",
                                                                        harp_type_double, 2, dimension_type, NULL,
                                                                        description, "degree_east", NULL,
                                                                        read_longitude);
     snprintf(path, MAX_PATH_LENGTH, "/geolocation[]/%s_geolocation[]/%s%s_geolocation[]/latitude_of_height_bin",
              obs ? "observation" : "measurement", obs ? "observation_" : "", rayleigh ? "rayleigh" : "mie");
-    harp_variable_definition_add_mapping(variable_definition, NULL, NULL, path, NULL);
+    description = "average of the value at the upper and lower edge of the height bin";
+    harp_variable_definition_add_mapping(variable_definition, NULL, NULL, path, description);
 
-    /* altitude */
-    description = "altitude of the lower edge of the height bin along the line-of-sight; "
+    /* altitude_bounds */
+    description = "altitude boundaries of the height bin along the line-of-sight; "
         "value is negative if below DEM surface";
-    variable_definition = harp_ingestion_register_variable_sample_read(product_definition, "altitude",
-                                                                       harp_type_double, 2, dimension_type, NULL,
-                                                                       description, "m", NULL, read_altitude);
+    variable_definition = harp_ingestion_register_variable_sample_read(product_definition, "altitude_bounds",
+                                                                       harp_type_double, 3, dimension_type, dimension,
+                                                                       description, "m", NULL, read_altitude_bounds);
     snprintf(path, MAX_PATH_LENGTH, "/geolocation[]/%s_geolocation[]/%s%s_geolocation[]/altitude_of_height_bin",
              obs ? "observation" : "measurement", obs ? "observation_" : "", rayleigh ? "rayleigh" : "mie");
     harp_variable_definition_add_mapping(variable_definition, NULL, NULL, path, NULL);
@@ -628,7 +730,7 @@ static void register_common_variables(harp_product_definition *product_definitio
     /* hlos_wind_velocity_validity */
     description = "quality flag of the HLOS wind velocity at the altitude bin";
     variable_definition = harp_ingestion_register_variable_sample_read(product_definition,
-                                                                       "hlos_wind_velocity_validity", harp_type_double,
+                                                                       "hlos_wind_velocity_validity", harp_type_int32,
                                                                        2, dimension_type, NULL, description, NULL,
                                                                        NULL, read_wind_velocity_validity);
     snprintf(path, MAX_PATH_LENGTH, "/wind_velocity[]/%s_wind_profile[]/%s_altitude_bin_wind_info[]/bin_quality_flag",
