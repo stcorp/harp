@@ -756,23 +756,23 @@ int harp_ingestion_module_aeolus_l1b_init(void)
     description = "Measurement Rayleigh HLOS wind profile";
     product_definition = harp_ingestion_register_product(module, "AEOLUS_L1B_Rayleigh", description, read_dimensions);
     harp_product_definition_add_mapping(product_definition, NULL, "data=rayleigh_measurement");
-    register_common_variables(product_definition, 0, 0);
+    register_common_variables(product_definition, 1, 0);
 
     description = "Measurement Mie HLOS wind profile";
     product_definition = harp_ingestion_register_product(module, "AEOLUS_L1B_Mie", description, read_dimensions);
     harp_product_definition_add_mapping(product_definition, NULL, "data=mie_measurement");
-    register_common_variables(product_definition, 1, 0);
+    register_common_variables(product_definition, 0, 0);
     
     description = "Observation Rayleigh HLOS wind profile";
     product_definition = harp_ingestion_register_product(module, "AEOLUS_L1B_Rayleigh_Observation", description,
                                                          read_dimensions);
     harp_product_definition_add_mapping(product_definition, NULL, "data=rayleigh_observation or data unset");
-    register_common_variables(product_definition, 0, 1);
+    register_common_variables(product_definition, 1, 1);
 
     description = "Observation Mie HLOS wind profile";
     product_definition = harp_ingestion_register_product(module, "AEOLUS_L1B_Mie_Observation", description, read_dimensions);
     harp_product_definition_add_mapping(product_definition, NULL, "data=mie_observation");
-    register_common_variables(product_definition, 1, 1);
+    register_common_variables(product_definition, 0, 1);
 
     return 0;
 }
