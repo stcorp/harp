@@ -660,6 +660,32 @@ static int get_molar_mass_from_h2o_vmr(harp_variable *variable, const harp_varia
     return 0;
 }
 
+static int get_nd_dry_air_from_nd_total(harp_variable *variable, const harp_variable **source_variable)
+{
+    long i;
+
+    for (i = 0; i < variable->num_elements; i++)
+    {
+        variable->data.double_data[i] = source_variable[0]->data.double_data[i] -
+            source_variable[1]->data.double_data[i];
+    }
+
+    return 0;
+}
+
+static int get_nd_total_from_nd_dry_air(harp_variable *variable, const harp_variable **source_variable)
+{
+    long i;
+
+    for (i = 0; i < variable->num_elements; i++)
+    {
+        variable->data.double_data[i] = source_variable[0]->data.double_data[i] +
+            source_variable[1]->data.double_data[i];
+    }
+
+    return 0;
+}
+
 static int get_nd_from_density_for_air(harp_variable *variable, const harp_variable **source_variable)
 {
     long i;
@@ -2930,7 +2956,7 @@ static int add_species_conversions_for_grid(const char *species, int num_dimensi
     }
 
     /* volume mixing ratio dry air from number density */
-    if (harp_variable_conversion_new(name_vmr, harp_type_double, HARP_UNIT_VOLUME_MIXING_RATIO, num_dimensions,
+    if (harp_variable_conversion_new(name_vmr_dry, harp_type_double, HARP_UNIT_VOLUME_MIXING_RATIO, num_dimensions,
                                      dimension_type, 0, get_vmr_from_nd, &conversion) != 0)
     {
         return -1;
@@ -2986,8 +3012,8 @@ static int add_species_conversions_for_grid(const char *species, int num_dimensi
     }
 
     /* volume mixing ratio dry air from number density */
-    if (harp_variable_conversion_new(name_vmr_apriori, harp_type_double, HARP_UNIT_VOLUME_MIXING_RATIO, num_dimensions,
-                                     dimension_type, 0, get_vmr_from_nd, &conversion) != 0)
+    if (harp_variable_conversion_new(name_vmr_dry_apriori, harp_type_double, HARP_UNIT_VOLUME_MIXING_RATIO,
+                                     num_dimensions, dimension_type, 0, get_vmr_from_nd, &conversion) != 0)
     {
         return -1;
     }
@@ -3810,6 +3836,40 @@ static int add_conversions_for_grid(int num_dimensions, harp_dimension_type dime
     dimension_type[num_dimensions] = harp_dimension_independent;
     if (harp_variable_conversion_add_source(conversion, "altitude_bounds", harp_type_double, HARP_UNIT_LENGTH,
                                             num_dimensions + 1, dimension_type, 2) != 0)
+    {
+        return -1;
+    }
+
+    /* total air number density from dry air number density */
+    if (harp_variable_conversion_new("number_density", harp_type_double, HARP_UNIT_NUMBER_DENSITY, num_dimensions,
+                                     dimension_type, 0, get_nd_total_from_nd_dry_air, &conversion) != 0)
+    {
+        return -1;
+    }
+    if (harp_variable_conversion_add_source(conversion, "dry_air_number_density", harp_type_double,
+                                            HARP_UNIT_NUMBER_DENSITY, num_dimensions, dimension_type, 0) != 0)
+    {
+        return -1;
+    }
+    if (harp_variable_conversion_add_source(conversion, "H2O_number_density", harp_type_double,
+                                            HARP_UNIT_NUMBER_DENSITY, num_dimensions, dimension_type, 0) != 0)
+    {
+        return -1;
+    }
+
+    /* dry air number density from total air number density */
+    if (harp_variable_conversion_new("dry_air_number_density", harp_type_double, HARP_UNIT_NUMBER_DENSITY, num_dimensions,
+                                     dimension_type, 0, get_nd_dry_air_from_nd_total, &conversion) != 0)
+    {
+        return -1;
+    }
+    if (harp_variable_conversion_add_source(conversion, "number_density", harp_type_double,
+                                            HARP_UNIT_NUMBER_DENSITY, num_dimensions, dimension_type, 0) != 0)
+    {
+        return -1;
+    }
+    if (harp_variable_conversion_add_source(conversion, "H2O_number_density", harp_type_double,
+                                            HARP_UNIT_NUMBER_DENSITY, num_dimensions, dimension_type, 0) != 0)
     {
         return -1;
     }
