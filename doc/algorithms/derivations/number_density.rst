@@ -85,7 +85,7 @@ number density derivations
    ===================== ======================================= ========================= ==========================================
    symbol                description                             unit                      variable name
    ===================== ======================================= ========================= ==========================================
-   :math:`n_{dry\_air}`  number density of total air             :math:`\frac{molec}{m^3}` `<species>_number_density_dry_air {:}`
+   :math:`n_{dry\_air}`  number density of dry air               :math:`\frac{molec}{m^3}` `dry_air_number_density {:}`
    :math:`n_{x}`         number density for air component x      :math:`\frac{molec}{m^3}` `<species>_number_density {:}`
                          (e.g. :math:`n_{O_{3}}`)
    :math:`\bar{\nu}_{x}` volume mixing ratio for air component x :math:`ppv`               `<species>_volum_mixing_ratio_dry_air {:}`
