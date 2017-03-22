@@ -19,6 +19,7 @@ The current version of HARP contains:
  - ingestion of product data for:
    - Sentinel 5P L1/L2
    - Aerosol CCI
+   - GHG CCI
    - Ozone CCI L2/L3/L4
    - NDACC FTIR/Lidar/MWR/UVVIS-DOAS data (GEOMS format)
    - GOME L1
@@ -27,6 +28,7 @@ The current version of HARP contains:
    - GOME-2 L2
    - IASI L1
    - IASI L2
+   - MIPAS L1
    - OMI L2/L3
    - TES/MLS/HIRDLS L2
    - GOSAT FTS L1/L2
@@ -74,8 +76,6 @@ The following items are planned to be added in upcoming releases:
  - ingestion of product data for:
    - NPP Suomi (CrIS/ATMS/OMPS/VIIRS) L2
    - Cloud CCI
-   - GHG CCI
-   - MIPAS L1
    - ACE-FTS
    - ADM/Aeolus
  - direct ingestion/import/export interfaces for:
