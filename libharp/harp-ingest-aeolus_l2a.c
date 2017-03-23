@@ -244,7 +244,7 @@ static int init_cursors(ingest_info *info)
             }
         }
     }
-    
+
     return 0;
 }
 
@@ -388,8 +388,7 @@ int harp_ingestion_module_aeolus_l2a_init(void)
     description = "duration of the observation";
     variable_definition = harp_ingestion_register_variable_sample_read(product_definition, "datetime_length",
                                                                        harp_type_double, 1, dimension_type, NULL,
-                                                                       description, "s", NULL,
-                                                                       read_datetime_length);
+                                                                       description, "s", NULL, read_datetime_length);
     harp_variable_definition_add_mapping(variable_definition, NULL, NULL, NULL, "set to fixed value of 12 seconds");
 
     /* latitude */
@@ -469,8 +468,7 @@ int harp_ingestion_module_aeolus_l2a_init(void)
     description = "processing qc flag for the particle local optical depth";
     variable_definition = harp_ingestion_register_variable_sample_read(product_definition, "optical_depth_validity",
                                                                        harp_type_int8, 2, dimension_type, NULL,
-                                                                       description, NULL, NULL,
-                                                                       read_lod_validity);
+                                                                       description, NULL, NULL, read_lod_validity);
     harp_variable_definition_add_mapping(variable_definition, NULL, NULL,
                                          "/sca_pcd[]/profile_pcd_bins[]/processing_qc_flag", NULL);
 
