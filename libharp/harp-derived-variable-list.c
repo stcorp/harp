@@ -2484,14 +2484,14 @@ static int add_species_conversions_for_grid(const char *species, int num_dimensi
     }
 
     /* mass density from partial column profile */
-    if (harp_variable_conversion_new(name_density, harp_type_double, HARP_UNIT_NUMBER_DENSITY, num_dimensions,
+    if (harp_variable_conversion_new(name_density, harp_type_double, HARP_UNIT_MASS_DENSITY, num_dimensions,
                                      dimension_type, 0, get_density_from_partial_column_and_alt_bounds, &conversion) !=
         0)
     {
         return -1;
     }
     if (harp_variable_conversion_add_source(conversion, name_column_density, harp_type_double,
-                                            HARP_UNIT_COLUMN_NUMBER_DENSITY, num_dimensions, dimension_type, 0) != 0)
+                                            HARP_UNIT_COLUMN_MASS_DENSITY, num_dimensions, dimension_type, 0) != 0)
     {
         return -1;
     }
