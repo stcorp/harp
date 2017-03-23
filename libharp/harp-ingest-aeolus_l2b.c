@@ -77,9 +77,10 @@ static int get_int8_profile(coda_cursor profile_cursor, coda_cursor *result_curs
     }
     for (i = 0; i < 24; i++)
     {
-        if (result_id[i] != 0)
+        /* invert the result index since data is stored from top to bottom */
+        if (result_id[23 - i] != 0)
         {
-            coda_cursor cursor = result_cursor[result_id[i] - 1];
+            coda_cursor cursor = result_cursor[result_id[23 - i] - 1];
 
             if (coda_cursor_goto(&cursor, path) != 0)
             {
@@ -136,9 +137,10 @@ static int get_double_profile(coda_cursor profile_cursor, coda_cursor *result_cu
     }
     for (i = 0; i < 24; i++)
     {
-        if (result_id[i] != 0)
+        /* invert the result index since data is stored from top to bottom */
+        if (result_id[23 - i] != 0)
         {
-            coda_cursor cursor = result_cursor[result_id[i] - 1];
+            coda_cursor cursor = result_cursor[result_id[23 - i] - 1];
 
             if (coda_cursor_goto(&cursor, path) != 0)
             {

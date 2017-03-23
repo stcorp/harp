@@ -85,13 +85,15 @@ static int get_double_average_array(coda_cursor cursor, const char *field_name, 
             harp_set_error(HARP_ERROR_CODA, NULL);
             return -1;
         }
+        /* invert the index since data is stored from top to bottom */
         if (i < 24)
         {
-            data.double_data[i] = value;
+            data.double_data[23 - i] = value;
         }
         if (i > 0)
         {
-            data.double_data[i - 1] = (data.double_data[i - 1] + value) / 2;
+            data.double_data[24 - i] += value;
+            data.double_data[24 - i] /= 2.0;
         }
         coda_cursor_goto_parent(&cursor);
         if (i < 24)
@@ -131,13 +133,14 @@ static int get_double_bounds_array(coda_cursor cursor, const char *field_name, h
             harp_set_error(HARP_ERROR_CODA, NULL);
             return -1;
         }
+        /* invert the index since data is stored from top to bottom */
         if (i < 24)
         {
-            data.double_data[i * 2] = value;
+            data.double_data[47 - i * 2] = value;
         }
         if (i > 0)
         {
-            data.double_data[i * 2 - 1] = value;
+            data.double_data[48 - i * 2] = value;
         }
         coda_cursor_goto_parent(&cursor);
         if (i < 24)
@@ -170,7 +173,8 @@ static int get_double_array_data(coda_cursor cursor, const char *field_name, har
             harp_set_error(HARP_ERROR_CODA, NULL);
             return -1;
         }
-        if (coda_cursor_read_double(&cursor, &data.double_data[i]) != 0)
+        /* invert the index since data is stored from top to bottom */
+        if (coda_cursor_read_double(&cursor, &data.double_data[23 - i]) != 0)
         {
             harp_set_error(HARP_ERROR_CODA, NULL);
             return -1;
@@ -206,7 +210,8 @@ static int get_int32_array_data(coda_cursor cursor, const char *field_name, harp
             harp_set_error(HARP_ERROR_CODA, NULL);
             return -1;
         }
-        if (coda_cursor_read_int32(&cursor, &data.int32_data[i]) != 0)
+        /* invert the index since data is stored from top to bottom */
+        if (coda_cursor_read_int32(&cursor, &data.int32_data[23 - i]) != 0)
         {
             harp_set_error(HARP_ERROR_CODA, NULL);
             return -1;
