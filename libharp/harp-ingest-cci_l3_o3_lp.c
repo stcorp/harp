@@ -662,6 +662,15 @@ static void register_mmzm_product(void)
         "is used as the time of the measurement";
     harp_variable_definition_add_mapping(variable_definition, NULL, NULL, path, description);
 
+    /* longitude */
+    description = "longitude of the bin center";
+    variable_definition =
+    harp_ingestion_register_variable_full_read(product_definition, "longitude", harp_type_double, 1,
+                                               latitude_dimension_type, NULL, description, "degree_east", NULL,
+                                               read_latitude);
+    path = "/longitude_centers[]";
+    harp_variable_definition_add_mapping(variable_definition, NULL, NULL, path, NULL);
+
     /* latitude */
     description = "latitude of the bin center";
     variable_definition =
@@ -676,7 +685,7 @@ static void register_mmzm_product(void)
     description =
         "approximate altitude at pressure levels computed as 16 * log10(1013 / pressure), with pressure in hPa";
     variable_definition =
-        harp_ingestion_register_variable_full_read(product_definition, "approximate_altitude", harp_type_double, 1,
+        harp_ingestion_register_variable_full_read(product_definition, "altitude", harp_type_double, 1,
                                                    vertical_dimension_type, NULL, description, "km", NULL,
                                                    read_altitude);
     path = "/approximate_altitude[]";
