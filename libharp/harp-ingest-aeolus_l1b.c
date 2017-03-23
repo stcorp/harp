@@ -43,12 +43,12 @@
 typedef struct ingest_info_struct
 {
     coda_product *product;
-    int rayleigh; /* 1 for rayleigh data, 0 for mie data */
-    int observation; /* 1 for observation, 0 for measurement */
+    int rayleigh;       /* 1 for rayleigh data, 0 for mie data */
+    int observation;    /* 1 for observation, 0 for measurement */
     int32_t num_obs;
     int32_t n_max;
     int32_t n_max_actual;
-    int num_profiles; /* either 'num_obs' or 'num_obs * n_max_actual' */
+    int num_profiles;   /* either 'num_obs' or 'num_obs * n_max_actual' */
     double *time;
     coda_cursor *geo_bin_cursor;
     coda_cursor *wv_bin_cursor;
@@ -767,7 +767,7 @@ int harp_ingestion_module_aeolus_l1b_init(void)
     product_definition = harp_ingestion_register_product(module, "AEOLUS_L1B_Mie", description, read_dimensions);
     harp_product_definition_add_mapping(product_definition, NULL, "data=mie_measurement");
     register_common_variables(product_definition, 0, 0);
-    
+
     description = "Observation Rayleigh HLOS wind profile";
     product_definition = harp_ingestion_register_product(module, "AEOLUS_L1B_Rayleigh_Observation", description,
                                                          read_dimensions);
@@ -775,7 +775,8 @@ int harp_ingestion_module_aeolus_l1b_init(void)
     register_common_variables(product_definition, 1, 1);
 
     description = "Observation Mie HLOS wind profile";
-    product_definition = harp_ingestion_register_product(module, "AEOLUS_L1B_Mie_Observation", description, read_dimensions);
+    product_definition =
+        harp_ingestion_register_product(module, "AEOLUS_L1B_Mie_Observation", description, read_dimensions);
     harp_product_definition_add_mapping(product_definition, NULL, "data=mie_observation");
     register_common_variables(product_definition, 0, 1);
 

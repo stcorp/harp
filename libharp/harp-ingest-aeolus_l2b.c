@@ -43,7 +43,7 @@
 typedef struct ingest_info_struct
 {
     coda_product *product;
-    int rayleigh; /* 1 for rayleigh data, 0 for mie data */
+    int rayleigh;       /* 1 for rayleigh data, 0 for mie data */
     int num_hloswind;
     int num_profiles;
     coda_cursor *geolocation_cursor;
@@ -159,7 +159,7 @@ static int get_double_profile(coda_cursor profile_cursor, coda_cursor *result_cu
     {
         data.double_data[i] = harp_nan();
     }
-    
+
     return 0;
 }
 
@@ -532,6 +532,6 @@ int harp_ingestion_module_aeolus_l2b_init(void)
     product_definition = harp_ingestion_register_product(module, "AEOLUS_L2B_Mie", description, read_dimensions);
     harp_product_definition_add_mapping(product_definition, NULL, "data=mie");
     register_common_variables(product_definition, 0);
-    
+
     return 0;
 }

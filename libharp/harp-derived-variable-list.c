@@ -3858,8 +3858,8 @@ static int add_conversions_for_grid(int num_dimensions, harp_dimension_type dime
     }
 
     /* dry air number density from total air number density */
-    if (harp_variable_conversion_new("dry_air_number_density", harp_type_double, HARP_UNIT_NUMBER_DENSITY, num_dimensions,
-                                     dimension_type, 0, get_nd_dry_air_from_nd_total, &conversion) != 0)
+    if (harp_variable_conversion_new("dry_air_number_density", harp_type_double, HARP_UNIT_NUMBER_DENSITY,
+                                     num_dimensions, dimension_type, 0, get_nd_dry_air_from_nd_total, &conversion) != 0)
     {
         return -1;
     }

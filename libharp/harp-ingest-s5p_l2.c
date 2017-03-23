@@ -2638,126 +2638,127 @@ static void register_cloud_cal_variables(harp_product_definition *product_defini
     /* cloud_base_pressure_uncertainty */
     description = "error of the cloud base pressure calculated using the OCRA/ROCINN CAL model";
     variable_definition =
-    harp_ingestion_register_variable_full_read(product_definition, "cloud_base_pressure_uncertainty",
-                                               harp_type_float, 1, dimension_type, NULL, description, "Pa", NULL,
-                                               read_cloud_base_pressure_precision);
+        harp_ingestion_register_variable_full_read(product_definition, "cloud_base_pressure_uncertainty",
+                                                   harp_type_float, 1, dimension_type, NULL, description, "Pa", NULL,
+                                                   read_cloud_base_pressure_precision);
     path = "/PRODUCT/cloud_base_pressure_precision[]";
     harp_variable_definition_add_mapping(variable_definition, NULL, NULL, path, NULL);
 
     /* cloud_base_height */
     description = "cloud base height calculated using the OCRA/ROCINN CAL model";
     variable_definition =
-    harp_ingestion_register_variable_full_read(product_definition, "cloud_base_height", harp_type_float, 1,
-                                               dimension_type, NULL, description, "m", NULL, read_cloud_base_height);
+        harp_ingestion_register_variable_full_read(product_definition, "cloud_base_height", harp_type_float, 1,
+                                                   dimension_type, NULL, description, "m", NULL,
+                                                   read_cloud_base_height);
     path = "/PRODUCT/cloud_base_height[]";
     harp_variable_definition_add_mapping(variable_definition, NULL, NULL, path, NULL);
 
     /* cloud_base_height_uncertainty */
     description = "error of the cloud base height calculated using the OCRA/ROCINN CAL model";
     variable_definition =
-    harp_ingestion_register_variable_full_read(product_definition, "cloud_base_height_uncertainty", harp_type_float,
-                                               1, dimension_type, NULL, description, "m", NULL,
-                                               read_cloud_base_height_precision);
+        harp_ingestion_register_variable_full_read(product_definition, "cloud_base_height_uncertainty", harp_type_float,
+                                                   1, dimension_type, NULL, description, "m", NULL,
+                                                   read_cloud_base_height_precision);
     path = "/PRODUCT/cloud_base_height_precision[]";
     harp_variable_definition_add_mapping(variable_definition, NULL, NULL, path, NULL);
 
     /* cloud_top_pressure */
     description = "retrieved atmospheric pressure at the level of cloud top using the OCRA/ROCINN CAL model";
     variable_definition =
-    harp_ingestion_register_variable_full_read(product_definition, "cloud_top_pressure", harp_type_float, 1,
-                                               dimension_type, NULL, description, "Pa", NULL,
-                                               read_cloud_top_pressure);
+        harp_ingestion_register_variable_full_read(product_definition, "cloud_top_pressure", harp_type_float, 1,
+                                                   dimension_type, NULL, description, "Pa", NULL,
+                                                   read_cloud_top_pressure);
     path = "/PRODUCT/cloud_top_pressure[]";
     harp_variable_definition_add_mapping(variable_definition, NULL, NULL, path, NULL);
 
     /* cloud_top_pressure_uncertainty */
     description = "uncertainty of the retrieved atmospheric pressure at the level of cloud top using the OCRA/ROCINN "
-    "CAL model";
+        "CAL model";
     variable_definition =
-    harp_ingestion_register_variable_full_read(product_definition, "cloud_top_pressure_uncertainty",
-                                               harp_type_float, 1, dimension_type, NULL, description, "Pa", NULL,
-                                               read_cloud_top_pressure_precision);
+        harp_ingestion_register_variable_full_read(product_definition, "cloud_top_pressure_uncertainty",
+                                                   harp_type_float, 1, dimension_type, NULL, description, "Pa", NULL,
+                                                   read_cloud_top_pressure_precision);
     path = "/PRODUCT/cloud_top_pressure_precision[]";
     harp_variable_definition_add_mapping(variable_definition, NULL, NULL, path, NULL);
 
     /* cloud_top_height */
     description = "retrieved vertical distance above the surface of the cloud top using the OCRA/ROCINN CAL model";
     variable_definition =
-    harp_ingestion_register_variable_full_read(product_definition, "cloud_top_height", harp_type_float, 1,
-                                               dimension_type, NULL, description, "m", NULL, read_cloud_top_height);
+        harp_ingestion_register_variable_full_read(product_definition, "cloud_top_height", harp_type_float, 1,
+                                                   dimension_type, NULL, description, "m", NULL, read_cloud_top_height);
     path = "/PRODUCT/cloud_top_height[]";
     harp_variable_definition_add_mapping(variable_definition, NULL, NULL, path, NULL);
 
     /* cloud_top_height_uncertainty */
     description = "uncertainty of the retrieved vertical distance above the surface of the cloud top using the "
-    "OCRA/ROCINN CAL model";
+        "OCRA/ROCINN CAL model";
     variable_definition =
-    harp_ingestion_register_variable_full_read(product_definition, "cloud_top_height_uncertainty", harp_type_float,
-                                               1, dimension_type, NULL, description, "m", NULL,
-                                               read_cloud_top_height_precision);
+        harp_ingestion_register_variable_full_read(product_definition, "cloud_top_height_uncertainty", harp_type_float,
+                                                   1, dimension_type, NULL, description, "m", NULL,
+                                                   read_cloud_top_height_precision);
     path = "/PRODUCT/cloud_top_height_precision[]";
     harp_variable_definition_add_mapping(variable_definition, NULL, NULL, path, NULL);
 
     /* cloud_optical_depth */
     description = "retrieved cloud optical depth using the OCRA/ROCINN CAL model";
     variable_definition =
-    harp_ingestion_register_variable_full_read(product_definition, "cloud_optical_depth", harp_type_float, 1,
-                                               dimension_type, NULL, description, "m", NULL,
-                                               read_cloud_optical_thickness);
+        harp_ingestion_register_variable_full_read(product_definition, "cloud_optical_depth", harp_type_float, 1,
+                                                   dimension_type, NULL, description, "m", NULL,
+                                                   read_cloud_optical_thickness);
     path = "/PRODUCT/cloud_optical_thickness[]";
     harp_variable_definition_add_mapping(variable_definition, NULL, NULL, path, NULL);
 
     /* cloud_optical_depth_uncertainty */
     description = "uncertainty of the retrieved cloud optical depth using the OCRA/ROCINN CAL model";
     variable_definition =
-    harp_ingestion_register_variable_full_read(product_definition, "cloud_optical_depth_uncertainty",
-                                               harp_type_float, 1, dimension_type, NULL, description, "m", NULL,
-                                               read_cloud_optical_thickness_precision);
+        harp_ingestion_register_variable_full_read(product_definition, "cloud_optical_depth_uncertainty",
+                                                   harp_type_float, 1, dimension_type, NULL, description, "m", NULL,
+                                                   read_cloud_optical_thickness_precision);
     path = "/PRODUCT/cloud_optical_thickness_precision[]";
     harp_variable_definition_add_mapping(variable_definition, NULL, NULL, path, NULL);
 
     /* surface_albedo */
     description = "surface albedo fitted using the OCRA/ROCINN CAL model";
     variable_definition =
-    harp_ingestion_register_variable_full_read(product_definition, "surface_albedo", harp_type_float, 1,
-                                               dimension_type, NULL, description, HARP_UNIT_DIMENSIONLESS, NULL,
-                                               read_cloud_surface_albedo);
+        harp_ingestion_register_variable_full_read(product_definition, "surface_albedo", harp_type_float, 1,
+                                                   dimension_type, NULL, description, HARP_UNIT_DIMENSIONLESS, NULL,
+                                                   read_cloud_surface_albedo);
     path = "/PRODUCT/SUPPORT_DATA/DETAILED_RESULTS/surface_albedo_fitted[]";
     harp_variable_definition_add_mapping(variable_definition, NULL, NULL, path, NULL);
 
     /* surface_albedo_uncertainty */
     description = "uncertainty of the surface albedo fitted using the OCRA/ROCINN CAL model";
     variable_definition =
-    harp_ingestion_register_variable_full_read(product_definition, "surface_albedo_uncertainty",
-                                               harp_type_float, 1, dimension_type, NULL, description,
-                                               HARP_UNIT_DIMENSIONLESS, NULL, read_cloud_surface_albedo_precision);
+        harp_ingestion_register_variable_full_read(product_definition, "surface_albedo_uncertainty",
+                                                   harp_type_float, 1, dimension_type, NULL, description,
+                                                   HARP_UNIT_DIMENSIONLESS, NULL, read_cloud_surface_albedo_precision);
     path = "/PRODUCT/SUPPORT_DATA/DETAILED_RESULTS/surface_albedo_fitted_precision[]";
     harp_variable_definition_add_mapping(variable_definition, NULL, NULL, path, NULL);
 
     /* surface_altitude */
     description = "surface altitude";
     variable_definition =
-    harp_ingestion_register_variable_full_read(product_definition, "surface_altitude", harp_type_float, 1,
-                                               dimension_type, NULL, description, "m", NULL,
-                                               read_cloud_surface_altitude);
+        harp_ingestion_register_variable_full_read(product_definition, "surface_altitude", harp_type_float, 1,
+                                                   dimension_type, NULL, description, "m", NULL,
+                                                   read_cloud_surface_altitude);
     path = "/PRODUCT/SUPPORT_DATA/INPUT_DATA/surface_altitude[]";
     harp_variable_definition_add_mapping(variable_definition, NULL, NULL, path, NULL);
 
     /* surface_altitude_uncertainty */
     description = "surface altitude precision";
     variable_definition =
-    harp_ingestion_register_variable_full_read(product_definition, "surface_altitude_precision", harp_type_float, 1,
-                                               dimension_type, NULL, description, "m", NULL,
-                                               read_cloud_surface_altitude_precision);
+        harp_ingestion_register_variable_full_read(product_definition, "surface_altitude_precision", harp_type_float, 1,
+                                                   dimension_type, NULL, description, "m", NULL,
+                                                   read_cloud_surface_altitude_precision);
     path = "/PRODUCT/SUPPORT_DATA/INPUT_DATA/surface_altitude_precision[]";
     harp_variable_definition_add_mapping(variable_definition, NULL, NULL, path, NULL);
 
     /* surface_pressure */
     description = "surface pressure";
     variable_definition =
-    harp_ingestion_register_variable_full_read(product_definition, "surface_pressure", harp_type_float, 1,
-                                               dimension_type, NULL, description, "Pa", NULL,
-                                               read_cloud_surface_pressure);
+        harp_ingestion_register_variable_full_read(product_definition, "surface_pressure", harp_type_float, 1,
+                                                   dimension_type, NULL, description, "Pa", NULL,
+                                                   read_cloud_surface_pressure);
     path = "/PRODUCT/SUPPORT_DATA/INPUT_DATA/surface_pressure[]";
     harp_variable_definition_add_mapping(variable_definition, NULL, NULL, path, NULL);
 }
@@ -2794,80 +2795,81 @@ static void register_cloud_crb_variables(harp_product_definition *product_defini
     /* cloud_fraction_apriori */
     description = "effective radiometric cloud fraction a priori";
     variable_definition =
-    harp_ingestion_register_variable_full_read(product_definition, "cloud_fraction_apriori", harp_type_float, 1,
-                                               dimension_type, NULL, description, HARP_UNIT_DIMENSIONLESS, NULL,
-                                               read_cloud_fraction_apriori);
+        harp_ingestion_register_variable_full_read(product_definition, "cloud_fraction_apriori", harp_type_float, 1,
+                                                   dimension_type, NULL, description, HARP_UNIT_DIMENSIONLESS, NULL,
+                                                   read_cloud_fraction_apriori);
     path = "/PRODUCT/SUPPORT_DATA/DETAILED_RESULTS/cloud_fraction_apriori[]";
     harp_variable_definition_add_mapping(variable_definition, NULL, NULL, path, NULL);
 
     /* cloud_pressure */
     description = "retrieved atmospheric pressure at the level of cloud using the OCRA/ROCINN CRB model";
     variable_definition =
-    harp_ingestion_register_variable_full_read(product_definition, "cloud_pressure", harp_type_float, 1,
-                                               dimension_type, NULL, description, "Pa", NULL,
-                                               read_cloud_pressure_crb);
+        harp_ingestion_register_variable_full_read(product_definition, "cloud_pressure", harp_type_float, 1,
+                                                   dimension_type, NULL, description, "Pa", NULL,
+                                                   read_cloud_pressure_crb);
     path = "/PRODUCT/SUPPORT_DATA/DETAILED_RESULTS/cloud_pressure_crb[]";
     harp_variable_definition_add_mapping(variable_definition, NULL, NULL, path, NULL);
 
     /* cloud_pressure_uncertainty */
     description = "error of the retrieved atmospheric pressure at the level of cloud using the OCRA/ROCINN CRB model";
     variable_definition =
-    harp_ingestion_register_variable_full_read(product_definition, "cloud_pressure_uncertainty",
-                                               harp_type_float, 1, dimension_type, NULL, description, "Pa", NULL,
-                                               read_cloud_pressure_crb_precision);
+        harp_ingestion_register_variable_full_read(product_definition, "cloud_pressure_uncertainty",
+                                                   harp_type_float, 1, dimension_type, NULL, description, "Pa", NULL,
+                                                   read_cloud_pressure_crb_precision);
     path = "/PRODUCT/SUPPORT_DATA/DETAILED_RESULTS/cloud_pressure_crb_precision[]";
     harp_variable_definition_add_mapping(variable_definition, NULL, NULL, path, NULL);
 
     /* cloud_height */
     description = "retrieved atmospheric height at the level of cloud using the OCRA/ROCINN CRB model";
     variable_definition =
-    harp_ingestion_register_variable_full_read(product_definition, "cloud_height", harp_type_float, 1,
-                                               dimension_type, NULL, description, "m", NULL, read_cloud_height_crb);
+        harp_ingestion_register_variable_full_read(product_definition, "cloud_height", harp_type_float, 1,
+                                                   dimension_type, NULL, description, "m", NULL, read_cloud_height_crb);
     path = "/PRODUCT/SUPPORT_DATA/DETAILED_RESULTS/cloud_height_crb[]";
     harp_variable_definition_add_mapping(variable_definition, NULL, NULL, path, NULL);
 
     /* cloud_height_uncertainty */
     description = "error of the retrieved atmospheric height at the level of cloud using the OCRA/ROCINN CRB model";
     variable_definition =
-    harp_ingestion_register_variable_full_read(product_definition, "cloud_height_uncertainty", harp_type_float,
-                                               1, dimension_type, NULL, description, "m", NULL,
-                                               read_cloud_height_crb_precision);
+        harp_ingestion_register_variable_full_read(product_definition, "cloud_height_uncertainty", harp_type_float,
+                                                   1, dimension_type, NULL, description, "m", NULL,
+                                                   read_cloud_height_crb_precision);
     path = "/PRODUCT/SUPPORT_DATA/DETAILED_RESULTS/cloud_height_crb_precision[]";
     harp_variable_definition_add_mapping(variable_definition, NULL, NULL, path, NULL);
 
     /* cloud_albedo */
     description = "albedo of cloud using the OCRA/ROCINN CRB model";
     variable_definition =
-    harp_ingestion_register_variable_full_read(product_definition, "cloud_albedo", harp_type_float, 1,
-                                               dimension_type, NULL, description, HARP_UNIT_DIMENSIONLESS, NULL,
-                                               read_cloud_albedo_crb);
+        harp_ingestion_register_variable_full_read(product_definition, "cloud_albedo", harp_type_float, 1,
+                                                   dimension_type, NULL, description, HARP_UNIT_DIMENSIONLESS, NULL,
+                                                   read_cloud_albedo_crb);
     path = "/PRODUCT/SUPPORT_DATA/DETAILED_RESULTS/cloud_albedo_crb[]";
     harp_variable_definition_add_mapping(variable_definition, NULL, NULL, path, NULL);
 
     /* cloud_albedo_uncertainty */
     description = "uncertainty of the albedo of cloud using the OCRA/ROCINN CRB model";
     variable_definition =
-    harp_ingestion_register_variable_full_read(product_definition, "cloud_albedo_uncertainty",
-                                               harp_type_float, 1, dimension_type, NULL, description,
-                                               HARP_UNIT_DIMENSIONLESS, NULL, read_cloud_albedo_crb_precision);
+        harp_ingestion_register_variable_full_read(product_definition, "cloud_albedo_uncertainty",
+                                                   harp_type_float, 1, dimension_type, NULL, description,
+                                                   HARP_UNIT_DIMENSIONLESS, NULL, read_cloud_albedo_crb_precision);
     path = "/PRODUCT/SUPPORT_DATA/DETAILED_RESULTS/cloud_albedo_crb_precision[]";
     harp_variable_definition_add_mapping(variable_definition, NULL, NULL, path, NULL);
 
     /* surface_albedo */
     description = "surface albedo fitted using the OCRA/ROCINN CRB model";
     variable_definition =
-    harp_ingestion_register_variable_full_read(product_definition, "surface_albedo", harp_type_float, 1,
-                                               dimension_type, NULL, description, HARP_UNIT_DIMENSIONLESS, NULL,
-                                               read_cloud_surface_albedo_crb);
+        harp_ingestion_register_variable_full_read(product_definition, "surface_albedo", harp_type_float, 1,
+                                                   dimension_type, NULL, description, HARP_UNIT_DIMENSIONLESS, NULL,
+                                                   read_cloud_surface_albedo_crb);
     path = "/PRODUCT/SUPPORT_DATA/DETAILED_RESULTS/surface_albedo_fitted_crb[]";
     harp_variable_definition_add_mapping(variable_definition, NULL, NULL, path, NULL);
 
     /* surface_albedo_uncertainty */
     description = "uncertainty of the surface albedo fitted using the OCRA/ROCINN CRB model";
     variable_definition =
-    harp_ingestion_register_variable_full_read(product_definition, "surface_albedo_uncertainty",
-                                               harp_type_float, 1, dimension_type, NULL, description,
-                                               HARP_UNIT_DIMENSIONLESS, NULL, read_cloud_surface_albedo_crb_precision);
+        harp_ingestion_register_variable_full_read(product_definition, "surface_albedo_uncertainty",
+                                                   harp_type_float, 1, dimension_type, NULL, description,
+                                                   HARP_UNIT_DIMENSIONLESS, NULL,
+                                                   read_cloud_surface_albedo_crb_precision);
     path = "/PRODUCT/SUPPORT_DATA/DETAILED_RESULTS/surface_albedo_fitted_crb_precision[]";
     harp_variable_definition_add_mapping(variable_definition, NULL, NULL, path, NULL);
 
