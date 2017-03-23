@@ -212,6 +212,7 @@ aerosol_optical_depth                         stratospheric,                  X 
 altitude                                      sensor,                         X       X    X
                                               surface
 altitude_bounds                                                                       X    X
+backscatter_coefficient                       surface                         X       X    X       X
 cloud_albedo                                                                  X            X
 cloud_base_albedo                                                             X            X
 cloud_base_height                                                             X            X
@@ -233,6 +234,7 @@ datetime_length                                                                 
 datetime_start
 datetime_stop
 density                                                                       X       X    X             this is the mass density
+extinction_coefficient                        surface                         X       X    X       X
 frequency                                                                     X
 frequency_irradiance                                                          X                    X
 frequency_photon_irradiance                                                   X                    X
