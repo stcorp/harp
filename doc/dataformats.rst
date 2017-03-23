@@ -258,6 +258,7 @@ longitude_bounds                                                                
 molar_mass                                                                    X       X    X             this is the molar mass of the total substance (it is defined by the
                                                                                                          relation between the variables 'density' and 'number_density')
 number_density                                surface                         X       X    X
+optical_depth                                                                 X       X    X       X     this is equal to 'optical thickness'
 pressure                                      surface                         X       X    X
 pressure_bounds                                                               X       X    X
 radiance                                                                      X                    X
