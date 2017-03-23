@@ -1,5 +1,5 @@
 # autoconf file for HARP
-AC_INIT([harp],[0.4])
+AC_INIT([harp],[0.5])
 AC_CONFIG_AUX_DIR([.])
 AM_INIT_AUTOMAKE(foreign subdir-objects 1.10 -Wall)
 

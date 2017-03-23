@@ -6,9 +6,9 @@ The section describes the command line tools provided by the HARP toolkit.
 .. toctree::
    :maxdepth: 2
 
-   harpconvert
    harpcheck
+   harpcollocate
+   harpconvert
    harpdump
    harpfilter
    harpmerge
-   harpcollocate

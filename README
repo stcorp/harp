@@ -1,45 +1,34 @@
 Copyright (C) 2015-2017 S[&]T, The Netherlands
 
-                HARP 0.4 Release Notes
+                HARP 0.5 Release Notes
 
 
 HARP is a toolset for ingesting, processing and inter-comparing satellite or
 model data against correlative data. The toolset is composed of a set of
 command line tools and a library of analysis functions. The main goal of HARP
 is to assist in the inter-comparison of data sets. By appropriatelty chaining
-calls to the HARP command line tools one can preprocess satellite and
-correlative data such that the two datasets that need to be compared end up
-having the same temporal/spatial grid, same data format/structure, and same
-physical unit.
+calls to the HARP command line tools one can preprocess satellite, model,
+and/or correlative data such that two datasets that need to be compared end
+up having the same temporal/spatial grid, same data format/structure, and
+same physical unit.
 
-This version of HARP is a beta release to allow the community to get familiar
-with the software and provide feedback. HARP still lacks various components
-(see below), but these are planned to be added in the near future.
-The current version of HARP contains:
+This version of HARP is still a beta release. HARP still lacks a few
+components (see below), but these are planned to be added in the near future.
+
+The main functionalities of HARP are:
  - ingestion of product data for:
-   - Sentinel 5P L1/L2
-   - Aerosol CCI
-   - GHG CCI
-   - Ozone CCI L2/L3/L4
-   - NDACC FTIR/Lidar/MWR/UVVIS-DOAS data (GEOMS format)
-   - GOME L1
-   - GOME L2
-   - GOME-2 L1
-   - GOME-2 L2
-   - IASI L1
-   - IASI L2
-   - MIPAS L1
-   - OMI L2/L3
-   - TES/MLS/HIRDLS L2
+   - ADM-Aeolus L1b/L2a/L2b
+   - Aura OMI/TES/MLS/HIRDLS L2 + OMI L3
+   - ECMF GRIB (includes CAMS global model data)
+   - ENVISAT GOMOS/MIPAS/SCIAMACHY L1/L2
+   - ERS GOME/GOME-2 L1/L2
+   - ESA CCI: Aerosol, GHG, Ozone
+   - EUMETSAT GOME-2/IASI L1/L2
    - GOSAT FTS L1/L2
-   - GOMOS L1
-   - GOMOS L2
-   - MIPAS L2
-   - SCIAMACHY L1
-   - SCIAMACHY L2
-   - OSIRIS L2
-   - SMR L2
-   - ECMF GRIB (includes Copernicus Atmospheric Monitoring Service (CAMS))
+   - IASI L1/L2
+   - NDACC FTIR/Lidar/MWR/UVVIS-DOAS data (GEOMS format)
+   - ODIN OSIRIS/SMR L2
+   - Sentinel 5P L1/L2
    - TEMIS ozone fields
  - import/export of data from/into HARP-specific data format
    The HARP data format standard is a convention on top of netCDF3/HDF4/HDF5
@@ -50,18 +39,17 @@ The current version of HARP contains:
    available product data: you just say which quantity you want, and if HARP
    has an algorithm for it and the necessary inputs quantities are in the
    product, HARP will automatically do all calculations for you
+ - performing regridding operations
+ - vertical smoothing of atmospheric profiles
  - built-in AFGL86 and USSTD76 climatology data
  - C Library interface to all core functionality
  - direct ingestion/import/export interfaces for:
    - Python
- - command line tools harpconvert, harpfilter, harpdump, harpcheck
- - harpcollocate command line tool providing collocation of two datasets at
-   individual measurement level
- - harpprofile command line tool to modify atmospheric profile data:
-   - vertical regridding
-   - vertical smoothing using averaging kernels (and a-priori profiles)
- - direct ingestion/import/export interfaces for:
    - MATLAB (Linux + Mac OS X)
+ - command line tools harpcheck, harpcollocate, harpconvert, harpdump,
+   harpfilter, and harpmerge
+ - extensive documentation, including specification of algorithms used for
+   the variable derivations.
 
 Note that HARP is meant as a successor to the BEAT-II interface of the ESA
 Atmospheric Toolbox, which means that BEAT-II will at some point become
@@ -74,10 +62,9 @@ Restrictions
 Note that this version of HARP is not yet feature complete.
 The following items are planned to be added in upcoming releases:
  - ingestion of product data for:
-   - NPP Suomi (CrIS/ATMS/OMPS/VIIRS) L2
-   - Cloud CCI
    - ACE-FTS
-   - ADM/Aeolus
+   - Cloud CCI
+   - NPP Suomi (CrIS/ATMS/OMPS/VIIRS) L2
  - direct ingestion/import/export interfaces for:
    - MATLAB (Windows)
    - IDL

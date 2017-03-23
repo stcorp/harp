@@ -2,7 +2,7 @@ cmake_minimum_required(VERSION 2.8)
 
 project(HARP)
 
-set(VERSION 0.4)
+set(VERSION 0.5)
 set(HARP_VERSION \"${VERSION}\")
 set(CPACK_PACKAGE_VERSION_MAJOR 0)
 set(CPACK_PACKAGE_VERSION_MINOR 2)
