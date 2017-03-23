@@ -38,7 +38,7 @@
 #include <stdlib.h>
 #include <string.h>
 
-#define MAX_PATH_LENGTH 100
+#define MAX_PATH_LENGTH 256
 
 typedef struct ingest_info_struct
 {
@@ -492,7 +492,7 @@ static void register_common_variables(harp_product_definition *product_definitio
     description = "HLOS wind velocity";
     variable_definition = harp_ingestion_register_variable_sample_read(product_definition, "hlos_wind_velocity",
                                                                        harp_type_double, 2, dimension_type, NULL,
-                                                                       description, "m/s", NULL, read_wind_velocity);
+                                                                       description, "cm/s", NULL, read_wind_velocity);
     snprintf(path, MAX_PATH_LENGTH, "/%s_hloswind[/%s_profile/l2b_wind_profies/wind_result_id_number - 1]"
              "/windresult/%s_wind_velocity", rayleigh ? "rayleigh" : "mie", rayleigh ? "rayleigh" : "mie",
              rayleigh ? "rayleigh" : "mie");

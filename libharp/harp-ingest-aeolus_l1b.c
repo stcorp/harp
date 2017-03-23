@@ -38,7 +38,7 @@
 #include <stdlib.h>
 #include <string.h>
 
-#define MAX_PATH_LENGTH 100
+#define MAX_PATH_LENGTH 256
 
 typedef struct ingest_info_struct
 {
