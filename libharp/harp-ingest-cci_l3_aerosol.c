@@ -357,16 +357,13 @@ static int read_wavelength(void *user_data, harp_array data)
 {
     ingest_info *info = (ingest_info *)user_data;
     double *dest;
-    long i, j;
+    long i;
 
     dest = data.double_data;
     for (i = 0; i < info->num_wavelengths; i++)
     {
-        for (j = 0; j < (info->num_latitudes * info->num_longitudes); j++)
-        {
-            *dest = info->aod_wavelengths[i];
-            dest++;
-        }
+        *dest = info->aod_wavelengths[i];
+        dest++;
     }
 
     return 0;
@@ -476,54 +473,19 @@ static int init_dimensions(ingest_info *info)
 
 static int read_aatsr_atsr2_sensor_zenith_angle(void *user_data, harp_array data)
 {
-    harp_array zenith_angles;
     ingest_info *info = (ingest_info *)user_data;
-    double *src, *dest;
-    long i;
 
-    zenith_angles.double_data = info->values_buffer;
     /* The field is [2][latitude][longitude] but we only read the first [latitude][longitude] values */
-    if (read_partial_dataset(info, "/satellite_zenith_mean", 0, info->num_latitudes * info->num_longitudes,
-                             zenith_angles) != 0)
-    {
-        return -1;
-    }
-    /* Copy zenith_angles to the 3-dimensional array[wavelengths][latitudes][longitudes] with data */
-    dest = data.double_data;
-    for (i = 0; i < info->num_wavelengths; i++)
-    {
-        src = info->values_buffer;
-        memcpy(dest, src, info->num_latitudes * info->num_longitudes * sizeof(double));
-        dest += info->num_latitudes * info->num_longitudes;
-    }
-
-    return 0;
+    return read_partial_dataset(info, "/satellite_zenith_mean", 0, info->num_latitudes * info->num_longitudes,
+                                data);
 }
 
 static int read_aatsr_atsr2_solar_zenith_angle(void *user_data, harp_array data)
 {
-    harp_array zenith_angles;
     ingest_info *info = (ingest_info *)user_data;
-    double *src, *dest;
-    long i;
 
-    zenith_angles.double_data = info->values_buffer;
     /* The field is [2][latitude][longitude] but we only read the first [latitude][longitude] values */
-    if (read_partial_dataset(info, "/sun_zenith_mean", 0, info->num_latitudes * info->num_longitudes,
-                             zenith_angles) != 0)
-    {
-        return -1;
-    }
-    /* Copy zenith_angles to the 3-dimensional array[wavelengths][latitudes][longitudes] with data */
-    dest = data.double_data;
-    for (i = 0; i < info->num_wavelengths; i++)
-    {
-        src = info->values_buffer;
-        memcpy(dest, src, info->num_latitudes * info->num_longitudes * sizeof(double));
-        dest += info->num_latitudes * info->num_longitudes;
-    }
-
-    return 0;
+    return read_partial_dataset(info, "/sun_zenith_mean", 0, info->num_latitudes * info->num_longitudes, data);
 }
 
 static int ingestion_init_aatsr_atsr2(const harp_ingestion_module *module, coda_product *product,
@@ -628,7 +590,7 @@ static int register_aatsr_atsr2_product(harp_ingestion_module *module, char *pro
     /* wavelength */
     description = "wavelengths of the measurements";
     variable_definition =
-        harp_ingestion_register_variable_full_read(product_definition, "wavelength", harp_type_double, 3,
+        harp_ingestion_register_variable_full_read(product_definition, "wavelength", harp_type_double, 1,
                                                    dimension_type, NULL, description, "nm", NULL, read_wavelength);
     description = "fixed values";
     harp_variable_definition_add_mapping(variable_definition, NULL, NULL, NULL, description);
@@ -636,18 +598,18 @@ static int register_aatsr_atsr2_product(harp_ingestion_module *module, char *pro
     /* sensor_zenith_angle */
     description = "sensor zenith angle";
     variable_definition =
-        harp_ingestion_register_variable_full_read(product_definition, "sensor_zenith_angle", harp_type_double, 3,
-                                                   dimension_type, NULL, description, NULL, exclude_when_no_zenith,
-                                                   read_aatsr_atsr2_sensor_zenith_angle);
+        harp_ingestion_register_variable_full_read(product_definition, "sensor_zenith_angle", harp_type_double, 2,
+                                                   &(dimension_type[1]), NULL, description, NULL,
+                                                   exclude_when_no_zenith, read_aatsr_atsr2_sensor_zenith_angle);
     path = "/satellite_zenith_mean[]";
     harp_variable_definition_add_mapping(variable_definition, NULL, NULL, path, NULL);
 
     /* solar_zenith_angle */
     description = "solar zenith angle";
     variable_definition =
-        harp_ingestion_register_variable_full_read(product_definition, "solar_zenith_angle", harp_type_double, 3,
-                                                   dimension_type, NULL, description, NULL, exclude_when_no_zenith,
-                                                   read_aatsr_atsr2_solar_zenith_angle);
+        harp_ingestion_register_variable_full_read(product_definition, "solar_zenith_angle", harp_type_double, 2,
+                                                   &(dimension_type[1]), NULL, description, NULL,
+                                                   exclude_when_no_zenith, read_aatsr_atsr2_solar_zenith_angle);
     path = "/sun_zenith_mean[]";
     harp_variable_definition_add_mapping(variable_definition, NULL, NULL, path, NULL);
 
@@ -794,7 +756,7 @@ static int register_module_l3_gomos(void)
     /* wavelength */
     description = "wavelengths of the measurements";
     variable_definition =
-        harp_ingestion_register_variable_full_read(product_definition, "wavelength", harp_type_double, 3,
+        harp_ingestion_register_variable_full_read(product_definition, "wavelength", harp_type_double, 1,
                                                    dimension_type, NULL, description, "nm", NULL, read_wavelength);
     description = "fixed values";
     harp_variable_definition_add_mapping(variable_definition, NULL, NULL, NULL, description);
@@ -893,7 +855,7 @@ static int register_module_l3_meris(void)
     /* wavelength */
     description = "wavelengths of the measurements";
     variable_definition =
-        harp_ingestion_register_variable_full_read(product_definition, "wavelength", harp_type_double, 3,
+        harp_ingestion_register_variable_full_read(product_definition, "wavelength", harp_type_double, 1,
                                                    dimension_type, NULL, description, "nm", NULL, read_wavelength);
     description = "fixed values";
     harp_variable_definition_add_mapping(variable_definition, NULL, NULL, NULL, description);
@@ -1006,7 +968,7 @@ static int register_iasi_product(harp_ingestion_module *module, char *productnam
     /* wavelength */
     description = "wavelengths of the measurements";
     variable_definition =
-        harp_ingestion_register_variable_full_read(product_definition, "wavelength", harp_type_double, 3,
+        harp_ingestion_register_variable_full_read(product_definition, "wavelength", harp_type_double, 1,
                                                    dimension_type, NULL, description, "nm", NULL, read_wavelength);
     description = "fixed values";
     harp_variable_definition_add_mapping(variable_definition, NULL, NULL, NULL, description);
