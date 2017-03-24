@@ -170,56 +170,16 @@ static int read_dataset(ingest_info *info, const char *path, long num_elements, 
 
 static int read_latitude(void *user_data, harp_array data)
 {
-    harp_array latitudes;
     ingest_info *info = (ingest_info *)user_data;
-    double *src, *dest;
-    long i, j, k;
 
-    latitudes.double_data = info->values_buffer;
-    if (read_dataset(info, "/latitude", info->num_latitudes, latitudes) != 0)
-    {
-        return -1;
-    }
-    /* Copy latitudes to the 3-dimensional array[wavelengths][latitudes][longitudes] with data */
-    dest = data.double_data;
-    for (i = 0; i < info->num_wavelengths; i++)
-    {
-        src = info->values_buffer;
-        for (j = 0; j < info->num_latitudes; j++)
-        {
-            for (k = 0; k < info->num_longitudes; k++)
-            {
-                *dest = *src;
-                dest++;
-            }
-            src++;
-        }
-    }
-
-    return 0;
+    return read_dataset(info, "/latitude", info->num_latitudes, data);
 }
 
 static int read_longitude(void *user_data, harp_array data)
 {
-    harp_array longitudes;
     ingest_info *info = (ingest_info *)user_data;
-    double *dest;
-    long i;
 
-    longitudes.double_data = info->values_buffer;
-    if (read_dataset(info, "/longitude", info->num_longitudes, longitudes) != 0)
-    {
-        return -1;
-    }
-    /* Copy longitudes to the 3-dimensional array[wavelengths][latitudes][longitudes] with data */
-    dest = data.double_data;
-    for (i = 0; i < (info->num_wavelengths * info->num_latitudes); i++)
-    {
-        memcpy(dest, info->values_buffer, info->num_longitudes * sizeof(double));
-        dest += info->num_longitudes;
-    }
-
-    return 0;
+    return read_dataset(info, "/longitude", info->num_longitudes, data);
 }
 
 static int read_aod_one_wavelength(ingest_info *info, harp_array data, const char *fieldname, long offset_of_wavelength)
@@ -622,8 +582,9 @@ static int register_aatsr_atsr2_product(harp_ingestion_module *module, char *pro
     /* latitude */
     description = "latitude of the ground pixel center";
     variable_definition =
-        harp_ingestion_register_variable_full_read(product_definition, "latitude", harp_type_double, 3, dimension_type,
-                                                   NULL, description, "degree_north", NULL, read_latitude);
+        harp_ingestion_register_variable_full_read(product_definition, "latitude", harp_type_double, 1,
+                                                   &(dimension_type[1]), NULL, description, "degree_north", NULL,
+                                                   read_latitude);
     harp_variable_definition_set_valid_range_double(variable_definition, -90.0f, 90.0f);
     path = "/latitude[]";
     harp_variable_definition_add_mapping(variable_definition, NULL, NULL, path, NULL);
@@ -631,8 +592,9 @@ static int register_aatsr_atsr2_product(harp_ingestion_module *module, char *pro
     /* longitude */
     description = "longitude of the ground pixel center";
     variable_definition =
-        harp_ingestion_register_variable_full_read(product_definition, "longitude", harp_type_double, 3, dimension_type,
-                                                   NULL, description, "degree_east", NULL, read_longitude);
+        harp_ingestion_register_variable_full_read(product_definition, "longitude", harp_type_double, 1,
+                                                   &(dimension_type[2]), NULL, description, "degree_east", NULL,
+                                                   read_longitude);
     harp_variable_definition_set_valid_range_double(variable_definition, -180.0f, 180.0f);
     path = "/longitude[]";
     harp_variable_definition_add_mapping(variable_definition, NULL, NULL, path, NULL);
@@ -765,8 +727,9 @@ static int register_module_l3_gomos(void)
     /* latitude */
     description = "latitude of the ground pixel center";
     variable_definition =
-        harp_ingestion_register_variable_full_read(product_definition, "latitude", harp_type_double, 3, dimension_type,
-                                                   NULL, description, "degree_north", NULL, read_latitude);
+        harp_ingestion_register_variable_full_read(product_definition, "latitude", harp_type_double, 1,
+                                                   &(dimension_type[1]), NULL, description, "degree_north", NULL,
+                                                   read_latitude);
     harp_variable_definition_set_valid_range_double(variable_definition, -90.0f, 90.0f);
     path = "/latitude[]";
     harp_variable_definition_add_mapping(variable_definition, NULL, NULL, path, NULL);
@@ -774,8 +737,9 @@ static int register_module_l3_gomos(void)
     /* longitude */
     description = "longitude of the ground pixel center";
     variable_definition =
-        harp_ingestion_register_variable_full_read(product_definition, "longitude", harp_type_double, 3, dimension_type,
-                                                   NULL, description, "degree_east", NULL, read_longitude);
+        harp_ingestion_register_variable_full_read(product_definition, "longitude", harp_type_double, 1,
+                                                   &(dimension_type[2]), NULL, description, "degree_east", NULL,
+                                                   read_longitude);
     harp_variable_definition_set_valid_range_double(variable_definition, -180.0f, 180.0f);
     path = "/longitude[]";
     harp_variable_definition_add_mapping(variable_definition, NULL, NULL, path, NULL);
@@ -891,8 +855,9 @@ static int register_module_l3_meris(void)
     /* latitude */
     description = "latitude of the ground pixel center";
     variable_definition =
-        harp_ingestion_register_variable_full_read(product_definition, "latitude", harp_type_double, 3, dimension_type,
-                                                   NULL, description, "degree_north", NULL, read_latitude);
+        harp_ingestion_register_variable_full_read(product_definition, "latitude", harp_type_double, 1,
+                                                   &(dimension_type[1]), NULL, description, "degree_north", NULL,
+                                                   read_latitude);
     harp_variable_definition_set_valid_range_double(variable_definition, -90.0f, 90.0f);
     path = "/latitude[]";
     harp_variable_definition_add_mapping(variable_definition, NULL, NULL, path, NULL);
@@ -900,8 +865,9 @@ static int register_module_l3_meris(void)
     /* longitude */
     description = "longitude of the ground pixel center";
     variable_definition =
-        harp_ingestion_register_variable_full_read(product_definition, "longitude", harp_type_double, 3, dimension_type,
-                                                   NULL, description, "degree_east", NULL, read_longitude);
+        harp_ingestion_register_variable_full_read(product_definition, "longitude", harp_type_double, 1,
+                                                   &(dimension_type[2]), NULL, description, "degree_east", NULL,
+                                                   read_longitude);
     harp_variable_definition_set_valid_range_double(variable_definition, -180.0f, 180.0f);
     path = "/longitude[]";
     harp_variable_definition_add_mapping(variable_definition, NULL, NULL, path, NULL);
@@ -994,8 +960,9 @@ static int register_iasi_product(harp_ingestion_module *module, char *productnam
     /* latitude */
     description = "latitude of the ground pixel center";
     variable_definition =
-        harp_ingestion_register_variable_full_read(product_definition, "latitude", harp_type_double, 3, dimension_type,
-                                                   NULL, description, "degree_north", NULL, read_latitude);
+        harp_ingestion_register_variable_full_read(product_definition, "latitude", harp_type_double, 1,
+                                                   &(dimension_type[1]), NULL, description, "degree_north", NULL,
+                                                   read_latitude);
     harp_variable_definition_set_valid_range_double(variable_definition, -90.0f, 90.0f);
     path = "/latitude[]";
     harp_variable_definition_add_mapping(variable_definition, NULL, NULL, path, NULL);
@@ -1003,8 +970,9 @@ static int register_iasi_product(harp_ingestion_module *module, char *productnam
     /* longitude */
     description = "longitude of the ground pixel center";
     variable_definition =
-        harp_ingestion_register_variable_full_read(product_definition, "longitude", harp_type_double, 3, dimension_type,
-                                                   NULL, description, "degree_east", NULL, read_longitude);
+        harp_ingestion_register_variable_full_read(product_definition, "longitude", harp_type_double, 1,
+                                                   &(dimension_type[2]), NULL, description, "degree_east", NULL,
+                                                   read_longitude);
     harp_variable_definition_set_valid_range_double(variable_definition, -180.0f, 180.0f);
     path = "/longitude[]";
     harp_variable_definition_add_mapping(variable_definition, NULL, NULL, path, NULL);
@@ -1114,8 +1082,9 @@ static int register_module_l3_multi_sensor(void)
     /* latitude */
     description = "latitude of the ground pixel center";
     variable_definition =
-        harp_ingestion_register_variable_full_read(product_definition, "latitude", harp_type_double, 2, dimension_type,
-                                                   NULL, description, "degree_north", NULL, read_latitude);
+        harp_ingestion_register_variable_full_read(product_definition, "latitude", harp_type_double, 1,
+                                                   &(dimension_type[0]), NULL, description, "degree_north", NULL,
+                                                   read_latitude);
     harp_variable_definition_set_valid_range_double(variable_definition, -90.0f, 90.0f);
     path = "/latitude[]";
     harp_variable_definition_add_mapping(variable_definition, NULL, NULL, path, NULL);
@@ -1123,8 +1092,9 @@ static int register_module_l3_multi_sensor(void)
     /* longitude */
     description = "longitude of the ground pixel center";
     variable_definition =
-        harp_ingestion_register_variable_full_read(product_definition, "longitude", harp_type_double, 2, dimension_type,
-                                                   NULL, description, "degree_east", NULL, read_longitude);
+        harp_ingestion_register_variable_full_read(product_definition, "longitude", harp_type_double, 2,
+                                                   &(dimension_type[1]), NULL, description, "degree_east", NULL,
+                                                   read_longitude);
     harp_variable_definition_set_valid_range_double(variable_definition, -180.0f, 180.0f);
     path = "/longitude[]";
     harp_variable_definition_add_mapping(variable_definition, NULL, NULL, path, NULL);
