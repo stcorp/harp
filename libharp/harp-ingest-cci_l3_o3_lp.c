@@ -598,7 +598,7 @@ static void register_mzm_product(void)
     description =
         "approximate altitude at pressure levels computed as 16 * log10(1013 / pressure), with pressure in hPa";
     variable_definition =
-        harp_ingestion_register_variable_full_read(product_definition, "approximate_altitude", harp_type_double, 1,
+        harp_ingestion_register_variable_full_read(product_definition, "altitude", harp_type_double, 1,
                                                    vertical_dimension_type, NULL, description, "km", NULL,
                                                    read_altitude);
     path = "/approximate_altitude[]";
