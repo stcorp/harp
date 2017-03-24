@@ -1054,7 +1054,7 @@ static int register_module_l3_multi_sensor(void)
     /* longitude */
     description = "longitude of the ground pixel center";
     variable_definition =
-        harp_ingestion_register_variable_full_read(product_definition, "longitude", harp_type_double, 2,
+        harp_ingestion_register_variable_full_read(product_definition, "longitude", harp_type_double, 1,
                                                    &(dimension_type[1]), NULL, description, "degree_east", NULL,
                                                    read_longitude);
     harp_variable_definition_set_valid_range_double(variable_definition, -180.0f, 180.0f);
