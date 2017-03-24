@@ -797,6 +797,14 @@ static int read_hcho_column_tropospheric_validity(void *user_data, harp_array da
                         info->num_scanlines * info->num_pixels, data);
 }
 
+static int read_hcho_column_tropospheric_amf(void *user_data, harp_array data)
+{
+    ingest_info *info = (ingest_info *)user_data;
+
+    return read_dataset(info->product_cursor, "amf_trop", harp_type_float, info->num_scanlines * info->num_pixels,
+                        data);
+}
+
 static int read_hcho_column_avk(void *user_data, harp_array data)
 {
     ingest_info *info = (ingest_info *)user_data;
@@ -1004,6 +1012,14 @@ static void register_hcho_product(void)
                                                    harp_type_float, 2, dimension_type, NULL, description, NULL, NULL,
                                                    read_hcho_vmr_apriori);
     path = "/PRODUCT/SUPPORT_DATA/INPUT_DATA/hcho_profile_apriori[]";
+    harp_variable_definition_add_mapping(variable_definition, NULL, NULL, path, NULL);
+
+    description = "tropospheric air mass factor";
+    variable_definition =
+        harp_ingestion_register_variable_full_read(product_definition, "tropospheric_HCHO_column_number_density_amf",
+                                               harp_type_float, 1, dimension_type, NULL, description,
+                                               HARP_UNIT_DIMENSIONLESS, NULL, read_hcho_column_tropospheric_amf);
+    path = "/PRODUCT/amf_trop[]";
     harp_variable_definition_add_mapping(variable_definition, NULL, NULL, path, NULL);
 
     description = "cloud radiance fraction at 341nm for HCHO retrieval";
