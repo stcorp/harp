@@ -128,64 +128,16 @@ static int read_datetime(void *user_data, harp_array data)
 
 static int read_latitude(void *user_data, harp_array data)
 {
-    harp_array latitudes;
     ingest_info *info = (ingest_info *)user_data;
-    double *src, *dest;
-    long i, j;
 
-    CHECKED_MALLOC(latitudes.double_data, info->num_latitude * sizeof(double));
-    if (read_dataset(info, "lat", info->num_latitude, latitudes) != 0)
-    {
-        free(latitudes.double_data);
-        return -1;
-    }
-
-    /* Copy from latitudes to latitudes x longitudes array */
-    src = latitudes.double_data;
-    dest = data.double_data;
-    for (i = 0; i < info->num_latitude; i++)
-    {
-        for (j = 0; j < info->num_longitude; j++)
-        {
-            *dest = *src;
-            dest++;
-        }
-        src++;
-    }
-    free(latitudes.double_data);
-
-    /* Copy the latitudes x longitudes array for every time */
-    src = data.double_data;
-    dest = data.double_data + (info->num_latitude * info->num_longitude);
-    for (i = 1; i < info->num_time; i++)
-    {
-        memcpy(dest, src, info->num_latitude * info->num_longitude * sizeof(double));
-        dest += (info->num_latitude * info->num_longitude);
-    }
-
-    return 0;
+    return read_dataset(info, "lat", info->num_latitude, data);
 }
 
 static int read_longitude(void *user_data, harp_array data)
 {
     ingest_info *info = (ingest_info *)user_data;
-    double *src, *dest;
-    long i;
 
-    if (read_dataset(info, "lon", info->num_longitude, data) != 0)
-    {
-        return -1;
-    }
-
-    /* Copy the longitudes array for every time-latitude combination */
-    src = data.double_data;
-    dest = data.double_data + info->num_longitude;
-    for (i = 1; i < (info->num_time * info->num_latitude); i++)
-    {
-        memcpy(dest, src, info->num_longitude * sizeof(double));
-        dest += info->num_longitude;
-    }
-    return 0;
+    return read_dataset(info, "lon", info->num_longitude, data);
 }
 
 static int read_CH4_column_volume_mixing_ratio(void *user_data, harp_array data)
@@ -433,8 +385,9 @@ static int register_module_l3_Obs4MIPs(void)
     /* latitude */
     description = "latitude of the ground pixel center";
     variable_definition =
-        harp_ingestion_register_variable_full_read(product_definition, "latitude", harp_type_double, 3, dimension_type,
-                                                   NULL, description, "degree_north", NULL, read_latitude);
+        harp_ingestion_register_variable_full_read(product_definition, "latitude", harp_type_double, 1,
+                                                   &(dimension_type[1]), NULL, description, "degree_north", NULL,
+                                                   read_latitude);
     harp_variable_definition_set_valid_range_double(variable_definition, -90.0, 90.0);
     path = "lat[]";
     harp_variable_definition_add_mapping(variable_definition, NULL, NULL, path, NULL);
@@ -442,8 +395,9 @@ static int register_module_l3_Obs4MIPs(void)
     /* longitude */
     description = "longitude of the ground pixel center";
     variable_definition =
-        harp_ingestion_register_variable_full_read(product_definition, "longitude", harp_type_double, 3, dimension_type,
-                                                   NULL, description, "degree_east", NULL, read_longitude);
+        harp_ingestion_register_variable_full_read(product_definition, "longitude", harp_type_double, 1,
+                                                   &(dimension_type[2]), NULL, description, "degree_east", NULL,
+                                                   read_longitude);
     harp_variable_definition_set_valid_range_double(variable_definition, -180.0, 180.0);
     path = "long[]";
     harp_variable_definition_add_mapping(variable_definition, NULL, NULL, path, NULL);
@@ -492,5 +446,3 @@ int harp_ingestion_module_cci_l3_ghg_init(void)
     register_module_l3_Obs4MIPs();
     return 0;
 }
-
-//debugmsg("make indent (2 keer) + make doc");
