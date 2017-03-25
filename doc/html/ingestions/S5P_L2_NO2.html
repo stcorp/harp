@@ -255,31 +255,37 @@
 <td>&nbsp;</td>
 <td>tropospheric air mass factor, computed by integrating the altitude dependent air mass factor over the atmospheric layers from the surface up to and including the layer with the tropopause</td>
 </tr>
-<tr class="row-even"><td><strong>NO2_column_number_density</strong></td>
+<tr class="row-even"><td><strong>tropospheric_NO2_column_number_density_avk</strong></td>
+<td>float</td>
+<td>{<em>time</em>, <em>vertical</em>}</td>
+<td>&nbsp;</td>
+<td>averaging kernel for the tropospheric vertical column number density of NO2</td>
+</tr>
+<tr class="row-odd"><td><strong>NO2_column_number_density</strong></td>
 <td>float</td>
 <td>{<em>time</em>}</td>
 <td>mol/m^2</td>
 <td>total vertical column of NO2 (ratio of the slant column density of NO2 and the total air mass factor)</td>
 </tr>
-<tr class="row-odd"><td><strong>NO2_column_number_density_uncertainty</strong></td>
+<tr class="row-even"><td><strong>NO2_column_number_density_uncertainty</strong></td>
 <td>float</td>
 <td>{<em>time</em>}</td>
 <td>mol/m^2</td>
 <td>uncertainty of the total vertical column of NO2 (standard error)</td>
 </tr>
-<tr class="row-even"><td><strong>NO2_column_number_density_amf</strong></td>
+<tr class="row-odd"><td><strong>NO2_column_number_density_amf</strong></td>
 <td>float</td>
 <td>{<em>time</em>}</td>
 <td>&nbsp;</td>
 <td>total air mass factor, computed by integrating the altitude dependent air mass factor over the atmospheric layers from the surface to top-of-atmosphere</td>
 </tr>
-<tr class="row-odd"><td><strong>NO2_column_number_density_avk</strong></td>
+<tr class="row-even"><td><strong>NO2_column_number_density_avk</strong></td>
 <td>float</td>
 <td>{<em>time</em>, <em>vertical</em>}</td>
 <td>&nbsp;</td>
 <td>averaging kernel for the air mass factor correction, describing the NO2 profile sensitivity of the vertical column density</td>
 </tr>
-<tr class="row-even"><td><strong>index</strong></td>
+<tr class="row-odd"><td><strong>index</strong></td>
 <td>int32</td>
 <td>{<em>time</em>}</td>
 <td>&nbsp;</td>
@@ -415,6 +421,13 @@
 <tr class="row-odd"><td><strong>tropospheric_NO2_column_number_density_amf</strong></td>
 <td><em>path</em></td>
 <td><strong>/PRODUCT/air_mass_factor_troposphere[]</strong></td>
+</tr>
+<tr class="row-even"><td rowspan="2"><strong>tropospheric_NO2_column_number_density_avk</strong></td>
+<td><em>path</em></td>
+<td><strong>/PRODUCT/averaging_kernel[], /PRODUCT/air_mass_factor_total[], /PRODUCT/air_mass_factor_troposphere[], /PRODUCT/tm5_tropopause_layer_index[]</strong></td>
+</tr>
+<tr class="row-odd"><td><em>description</em></td>
+<td>averaging_kernel[layer] = if layer &lt;= tm5_tropopause_layer_index then averaging_kernel[layer] * tm5_tropopause_layer_index / air_mass_factor_troposphere else 0</td>
 </tr>
 <tr class="row-even"><td rowspan="4"><strong>NO2_column_number_density</strong></td>
 <td><em>condition</em></td>
