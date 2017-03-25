@@ -1380,6 +1380,44 @@ static int read_no2_tropopause_pressure(void *user_data, harp_array data)
     return 0;
 }
 
+static int read_no2_column(void *user_data, harp_array data)
+{
+    ingest_info *info = (ingest_info *)user_data;
+    char *variable_name;
+
+    variable_name = info->use_summed_total_column ? "nitrogendioxide_summed_total_column" :
+    "nitrogendioxide_total_column";
+    return read_dataset(info->detailed_results_cursor, variable_name, harp_type_float,
+                        info->num_scanlines * info->num_pixels, data);
+}
+
+static int read_no2_column_precision(void *user_data, harp_array data)
+{
+    ingest_info *info = (ingest_info *)user_data;
+    char *variable_name;
+
+    variable_name = info->use_summed_total_column ? "nitrogendioxide_summed_total_column_precision" :
+    "nitrogendioxide_total_column_precision";
+    return read_dataset(info->detailed_results_cursor, variable_name, harp_type_float,
+                        info->num_scanlines * info->num_pixels, data);
+}
+
+static int read_no2_column_amf(void *user_data, harp_array data)
+{
+    ingest_info *info = (ingest_info *)user_data;
+
+    return read_dataset(info->product_cursor, "air_mass_factor_total", harp_type_float,
+                        info->num_scanlines * info->num_pixels, data);
+}
+
+static int read_no2_column_avk(void *user_data, harp_array data)
+{
+    ingest_info *info = (ingest_info *)user_data;
+
+    return read_dataset(info->product_cursor, "averaging_kernel", harp_type_float,
+                        info->num_scanlines * info->num_pixels * info->num_layers, data);
+}
+
 static int read_no2_column_tropospheric(void *user_data, harp_array data)
 {
     ingest_info *info = (ingest_info *)user_data;
@@ -1404,42 +1442,85 @@ static int read_no2_column_tropospheric_amf(void *user_data, harp_array data)
                         info->num_scanlines * info->num_pixels, data);
 }
 
-static int read_no2_column(void *user_data, harp_array data)
+static int read_no2_column_tropospheric_avk(void *user_data, harp_array data)
 {
     ingest_info *info = (ingest_info *)user_data;
-    char *variable_name;
+    harp_array layer_data;
+    harp_array amf_data;
+    long i, j;
 
-    variable_name = info->use_summed_total_column ? "nitrogendioxide_summed_total_column" :
-        "nitrogendioxide_total_column";
-    return read_dataset(info->detailed_results_cursor, variable_name, harp_type_float,
-                        info->num_scanlines * info->num_pixels, data);
-}
+    if (read_dataset(info->product_cursor, "averaging_kernel", harp_type_float,
+                     info->num_scanlines * info->num_pixels * info->num_layers, data) != 0)
+    {
+        return -1;
+    }
 
-static int read_no2_column_precision(void *user_data, harp_array data)
-{
-    ingest_info *info = (ingest_info *)user_data;
-    char *variable_name;
+    layer_data.int32_data = malloc(info->num_scanlines * info->num_pixels * sizeof(int32_t));
+    if (layer_data.int32_data == NULL)
+    {
+        harp_set_error(HARP_ERROR_OUT_OF_MEMORY, "out of memory (could not allocate %lu bytes) (%s:%u)",
+                       info->num_scanlines * info->num_pixels * sizeof(int32_t), __FILE__, __LINE__);
+        return -1;
+    }
+    if (read_dataset(info->product_cursor, "tm5_tropopause_layer_index", harp_type_int32,
+                     info->num_scanlines * info->num_pixels, layer_data) != 0)
+    {
+        free(layer_data.int32_data);
+        return -1;
+    }
 
-    variable_name = info->use_summed_total_column ? "nitrogendioxide_summed_total_column_precision" :
-        "nitrogendioxide_total_column_precision";
-    return read_dataset(info->detailed_results_cursor, variable_name, harp_type_float,
-                        info->num_scanlines * info->num_pixels, data);
-}
+    amf_data.float_data = malloc(info->num_scanlines * info->num_pixels * sizeof(float));
+    if (amf_data.float_data == NULL)
+    {
+        harp_set_error(HARP_ERROR_OUT_OF_MEMORY, "out of memory (could not allocate %lu bytes) (%s:%u)",
+                       info->num_scanlines * info->num_pixels * sizeof(float), __FILE__, __LINE__);
+        free(layer_data.int32_data);
+        return -1;
+    }
+    if (read_no2_column_amf(user_data, amf_data) != 0)
+    {
+        free(amf_data.float_data);
+        free(layer_data.int32_data);
+        return -1;
+    }
+    for (i = 0; i < info->num_scanlines * info->num_pixels; i++)
+    {
+        if (layer_data.int32_data[i] < 0 || layer_data.int32_data[i] >= info->num_layers)
+        {
+            for (j = 0; j < info->num_layers; j++)
+            {
+                data.float_data[i * info->num_layers + j] = harp_nan();
+            }
+        }
+        else
+        {
+            for (j = 0; j < layer_data.int32_data[i]; j++)
+            {
+                data.float_data[i * info->num_layers + j] *= amf_data.float_data[i];
+            }
+            for (j = layer_data.int32_data[i]; j < info->num_layers; j++)
+            {
+                data.float_data[i * info->num_layers + j] = 0;
+            }
+        }
+    }
+    free(layer_data.int32_data);
 
-static int read_no2_column_amf(void *user_data, harp_array data)
-{
-    ingest_info *info = (ingest_info *)user_data;
+    if (read_no2_column_tropospheric_amf(user_data, amf_data) != 0)
+    {
+        free(amf_data.float_data);
+        return -1;
+    }
+    for (i = 0; i < info->num_scanlines * info->num_pixels; i++)
+    {
+        for (j = 0; j < info->num_layers; j++)
+        {
+            data.float_data[i * info->num_layers + j] /= amf_data.float_data[i];
+        }
+    }
+    free(amf_data.float_data);
 
-    return read_dataset(info->product_cursor, "air_mass_factor_total", harp_type_float,
-                        info->num_scanlines * info->num_pixels, data);
-}
-
-static int read_no2_column_avk(void *user_data, harp_array data)
-{
-    ingest_info *info = (ingest_info *)user_data;
-
-    return read_dataset(info->product_cursor, "averaging_kernel", harp_type_float,
-                        info->num_scanlines * info->num_pixels * info->num_layers, data);
+    return 0;
 }
 
 static int read_co_altitude(void *user_data, harp_array data)
@@ -1587,6 +1668,14 @@ static int read_hcho_column_precision(void *user_data, harp_array data)
 
     return read_dataset(info->product_cursor, "formaldehyde_tropospheric_vertical_column_precision", harp_type_float,
                         info->num_scanlines * info->num_pixels, data);
+}
+
+static int read_hcho_column_trueness(void *user_data, harp_array data)
+{
+    ingest_info *info = (ingest_info *)user_data;
+
+    return read_dataset(info->detailed_results_cursor, "formaldehyde_tropospheric_vertical_column_trueness",
+                        harp_type_float, info->num_scanlines * info->num_pixels, data);
 }
 
 static int read_hcho_column_avk(void *user_data, harp_array data)
@@ -2196,23 +2285,33 @@ static void register_hcho_product(void)
     register_geolocation_variables(product_definition);
     register_additional_geolocation_variables(product_definition);
 
-    description = "total column number density of tropospheric HCHO";
+    description = "tropospheric HCHO column number density";
     variable_definition =
-        harp_ingestion_register_variable_full_read(product_definition, "HCHO_column_number_density", harp_type_float, 1,
-                                                   dimension_type, NULL, description, "mol/cm^2", NULL,
-                                                   read_hcho_column);
+        harp_ingestion_register_variable_full_read(product_definition, "tropospheric_HCHO_column_number_density",
+                                                   harp_type_float, 1, dimension_type, NULL, description, "mol/cm^2",
+                                                   NULL, read_hcho_column);
     path = "/PRODUCT/formaldehyde_tropospheric_vertical_column[]";
     harp_variable_definition_add_mapping(variable_definition, NULL, NULL, path, NULL);
 
-    description = "uncertainty of the total column number density of tropospheric HCHO";
+    description = "uncertainty of the tropospheric HCHO column number density due to random effects";
     variable_definition =
-        harp_ingestion_register_variable_full_read(product_definition, "HCHO_column_number_density_uncertainty",
+        harp_ingestion_register_variable_full_read(product_definition,
+                                                   "tropospheric_HCHO_column_number_density_uncertainty_random",
                                                    harp_type_float, 1, dimension_type, NULL, description, "mol/cm^2",
                                                    NULL, read_hcho_column_precision);
     path = "/PRODUCT/formaldehyde_tropospheric_vertical_column_precision[]";
     harp_variable_definition_add_mapping(variable_definition, NULL, NULL, path, NULL);
 
-    description = "averaging kernel for the total column number density of tropospheric HCHO";
+    description = "uncertainty of the tropospheric HCHO column number density due to systematic effects";
+    variable_definition =
+        harp_ingestion_register_variable_full_read(product_definition,
+                                                   "tropospheric_HCHO_column_number_density_uncertainty_systematic",
+                                                   harp_type_float, 1, dimension_type, NULL, description, "mol/cm^2",
+                                                   NULL, read_hcho_column_trueness);
+    path = "/PRODUCT/SUPPORT_DATA/DETAILED_RESULTS/formaldehyde_tropospheric_vertical_column_trueness[]";
+    harp_variable_definition_add_mapping(variable_definition, NULL, NULL, path, NULL);
+
+    description = "averaging kernel for the total HCHO column number density";
     variable_definition =
         harp_ingestion_register_variable_full_read(product_definition, "HCHO_column_number_density_avk",
                                                    harp_type_float, 2, dimension_type, NULL, description, NULL, NULL,
@@ -2509,6 +2608,17 @@ static void register_no2_product(void)
                                                    HARP_UNIT_DIMENSIONLESS, NULL, read_no2_column_tropospheric_amf);
     path = "/PRODUCT/air_mass_factor_troposphere[]";
     harp_variable_definition_add_mapping(variable_definition, NULL, NULL, path, NULL);
+
+    description = "averaging kernel for the tropospheric vertical column number density of NO2";
+    variable_definition =
+    harp_ingestion_register_variable_full_read(product_definition, "tropospheric_NO2_column_number_density_avk",
+                                               harp_type_float, 2, dimension_type, NULL, description,
+                                               HARP_UNIT_DIMENSIONLESS, NULL, read_no2_column_tropospheric_avk);
+    path = "/PRODUCT/averaging_kernel[], /PRODUCT/air_mass_factor_total[], /PRODUCT/air_mass_factor_troposphere[], "
+        "/PRODUCT/tm5_tropopause_layer_index[]";
+    description = "averaging_kernel[layer] = if layer <= tm5_tropopause_layer_index then "
+        "averaging_kernel[layer] * tm5_tropopause_layer_index / air_mass_factor_troposphere else 0";
+    harp_variable_definition_add_mapping(variable_definition, NULL, NULL, path, description);
 
     description = "total vertical column of NO2 (ratio of the slant column density of NO2 and the total air mass "
         "factor)";
