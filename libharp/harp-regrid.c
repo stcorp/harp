@@ -266,7 +266,7 @@ static int get_bounds_for_grid_from_variable(harp_variable *grid, harp_variable 
  * The dimension to use for regridding is based on the type of the last dimenion of the target grid variable.
  * This function cannot be used to regrid the time dimension (or an independent dimension).
  *
- * If the target grid variable is two dimensional (i.e. time dependent) then its time dimension should match that of 
+ * If the target grid variable is two dimensional (i.e. time dependent) then its time dimension should match that of
  * the product.
  *
  * For each variable in the product a dimension-specific rule based on the variable name will determine how to regrid

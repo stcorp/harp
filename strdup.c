@@ -24,4 +24,4 @@ char *strdup(const char *str)
     new_str[length] = '\0';
 
     return new_str;
-} 
+}

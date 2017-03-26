@@ -10,7 +10,7 @@ int strcasecmp(const char *s1, const char *s2)
     unsigned char us1;
     unsigned char us2;
     size_t index;
-    
+
     us1 = tolower(*s1);
     us2 = tolower(*s2);
 
@@ -21,6 +21,6 @@ int strcasecmp(const char *s1, const char *s2)
         us1 = tolower(s1[index]);
         us2 = tolower(s2[index]);
     }
-    
+
     return us1 - us2;
 }
