@@ -167,8 +167,8 @@ AC_CONFIG_FILES([doc/Doxyfile])
 #    increment age.
 # 6. If any interfaces have been removed or changed since the last public
 #    release, then set age to 0.
-LIBHARP_CURRENT=3
-LIBHARP_REVISION=1
+LIBHARP_CURRENT=4
+LIBHARP_REVISION=0
 LIBHARP_AGE=0
 AC_SUBST(LIBHARP_CURRENT)
 AC_SUBST(LIBHARP_REVISION)
