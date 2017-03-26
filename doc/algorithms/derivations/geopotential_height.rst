@@ -73,7 +73,7 @@ geopotential height derivations
    This should normally be the case since even for pressure grids that start at the surface, :math:`p_{surf}` should
    equal the lower pressure boundary :math:`p^{B}(1,1)`, whereas :math:`p(1)` should then be between :math:`p^{B}(1,1)`
    and :math:`p^{B}(1,2)` (which is generally not equal to :math:`p^{B}(1,1)`).
-   
+
    .. math::
       :nowrap:
 

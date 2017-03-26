@@ -38,6 +38,6 @@ solar azimuth angle derivations
             \alpha_{0} = 0, & 0 \\
             \alpha_{0} \neq 0, & \frac{180}{\pi}\arctan(\frac{\cos(\delta)\sin(\Omega)}{\cos(\frac{\pi}{180}\alpha_{0})},
                \frac{-\sin(\delta)\cos(\frac{\pi}{180}\phi) +
-               \cos(\delta)\sin(\frac{\pi}{180}\phi)\cos(\Omega)}{\cos(\frac{\pi}{180}\alpha_{0})}) 
+               \cos(\delta)\sin(\frac{\pi}{180}\phi)\cos(\Omega)}{\cos(\frac{\pi}{180}\alpha_{0})})
          \end{cases}
       \end{eqnarray}

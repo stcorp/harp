@@ -24,7 +24,7 @@ Inspect the contents of a HARP compliant netCDF/HDF4/HDF5 file.
           List all available variable conversions. If an input product file is
           specified, limit the list to variable conversions that are possible
           given the specified product.
-                                  
+
       harpdump -h, --help
           Show help (this text).
 

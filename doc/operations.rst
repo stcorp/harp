@@ -165,7 +165,7 @@ Supported functions:
     ``regrid(dimension, axis-variable unit, collocation-result-file, a|b, dataset-dir)``
         Regrid all variables in the product for the given dimension using
         the a target grid taken from a collocated dataset. The fourth
-        parameter indicates which dataset contains the target grid. 
+        parameter indicates which dataset contains the target grid.
         Example:
 
             ``regrid(vertical, altitude [km], "collocation-result.csv", b, "./correlative_data/")``
@@ -299,7 +299,7 @@ Formal definition
 
     dimensionspec = '{' dimensionlist '}' ;
 
-    functioncall = 
+    functioncall =
        'area_mask_covers_area', '(', stringvalue, ')' |
        'area_mask_covers_point', '(', stringvalue, ')' |
        'area_mask_intersects_area', '(', stringvalue, ',', floatvalue, ')' |
@@ -321,7 +321,7 @@ Formal definition
        'valid', '(', variable, ')' |
        'wrap', '(', variable, [unit], ',', floatvalue, ',', floatvalue, ')' ;
 
-    operationexpr = 
+    operationexpr =
        variable, operator, value, [unit] |
        variable, ['not'], 'in', '(', valuelist, ')', [unit] |
        functioncall |

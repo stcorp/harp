@@ -10,7 +10,7 @@ Modules
 -------
 Each module has a separate section that contains its general description together with descriptions for all types, variables, functions, etc. that are part of this module.
 
-The main modules are those for HARP Products and Variables, as these cover the main datastructures for the content of products. 
+The main modules are those for HARP Products and Variables, as these cover the main datastructures for the content of products.
 Most operations in HARP work in these Products and Variables.
 
 .. toctree::

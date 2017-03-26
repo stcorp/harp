@@ -50,7 +50,7 @@ pressure derivations
    since even for altitude grids that start at the surface, :math:`z_{surf}` should equal the lower altitude boundary
    :math:`z^{B}(1,1)`, whereas :math:`z(1)` should then be between :math:`z^{B}(1,1)` and :math:`z^{B}(1,2)`
    (which is generally not equal to :math:`z^{B}(1,1)`).
-   
+
    .. math::
       :nowrap:
 
@@ -89,7 +89,7 @@ pressure derivations
    normally be the case since even for geopotential height grids that start at the surface, :math:`z_{g,surf}` should
    equal the lower altitude boundary :math:`z^{B}_{g}(1,1)`, whereas :math:`z_{g}(1)` should then be between
    :math:`z^{B}_{g}(1,1)` and :math:`z^{B}_{g}(1,2)` (which is generally not equal to :math:`z^{B}_{g}(1,1)`).
-   
+
    .. math::
       :nowrap:
 

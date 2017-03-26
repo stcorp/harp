@@ -15,5 +15,5 @@ scattering angle derivations
    The pattern `:` for the dimensions can represent `{time}`, or no dimensions at all.
 
    .. math::
-      \Theta_{s} = \frac{180}{\pi}\arccos\left(-\cos\left(\frac{\pi}{180}\theta_{0}\right)\cos\left(\frac{\pi}{180}\theta_{S}\right) - 
+      \Theta_{s} = \frac{180}{\pi}\arccos\left(-\cos\left(\frac{\pi}{180}\theta_{0}\right)\cos\left(\frac{\pi}{180}\theta_{S}\right) -
             \sin\left(\frac{\pi}{180}\theta_{0}\right)\sin\left(\frac{\pi}{180}\theta_{S}\right)\cos\left(\frac{\pi}{180}\varphi_{r}\right)\right)

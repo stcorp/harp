@@ -231,7 +231,7 @@ barometric formula
 
        p(i+1) = p(i)e^{-10^{-3}\frac{M_{air}(i)+M_{air}(i+1)}{T(i)+T(i+1)}\frac{g_{0}}{R}\left(z_{g}(i+1)-z_{g}(i)\right)}
 
-   
+
 mass density
 ------------
 
@@ -487,7 +487,7 @@ saturated water vapor pressure
    :math:`T`     temperature                     :math:`K`
    ============= =============================== ===========
 
-   This is the August-Roche-Magnus formula for the saturated water vapour pressure 
+   This is the August-Roche-Magnus formula for the saturated water vapour pressure
 
    .. math::
 

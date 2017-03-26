@@ -334,7 +334,7 @@ wind_direction                                surface                         X 
 The supported aerosol types are:
 
 ============== =================
-Aerosol type   Description                 
+Aerosol type   Description
 ============== =================
 sea_salt       sea salt
 dust           dust
