@@ -65,11 +65,21 @@
 * Added variable conversions for: apriori profiles, column density from
   mass density (including pm1/pm2.5/pm10).
 
+* Added support for AEOLUS L1b/L2a/L2b products.
+
+* Added support for Aerosol and GHG CCI L2/L3 products.
+
 * Added support for GEOMS FTIR C2H2 ingestion.
 
 * Added support for OMI OMCHOCHO ingestion.
 
+* Added support for additional TES L2 products.
+
 * Added support for QA4ECV NO2 and HCHO products.
+
+* Added support for GOME, GOME-2, GOMOS, MIPAS, IASI, SCIAMACHY L1 products.
+
+* Added support for ODIN OSIRIS and SMR L2 products.
 
 * Changed --list-conversions command line option to --list-derivations.
   And added --list-derivations option to harpdump.
