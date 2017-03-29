@@ -711,7 +711,7 @@ static int read_no2_column_uncertainty(void *user_data, harp_array data)
     char *variable_name;
 
     variable_name = info->use_summed_total_column ? "summed_no2_total_vertical_column_uncertainty" :
-    "total_no2_vertical_column_uncertainty";
+        "total_no2_vertical_column_uncertainty";
 
     return read_dataset(info->detailed_results_cursor, variable_name, harp_type_float,
                         info->num_scanlines * info->num_pixels, data);

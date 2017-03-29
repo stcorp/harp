@@ -665,9 +665,9 @@ static void register_mmzm_product(void)
     /* longitude */
     description = "longitude of the bin center";
     variable_definition =
-    harp_ingestion_register_variable_full_read(product_definition, "longitude", harp_type_double, 1,
-                                               latitude_dimension_type, NULL, description, "degree_east", NULL,
-                                               read_latitude);
+        harp_ingestion_register_variable_full_read(product_definition, "longitude", harp_type_double, 1,
+                                                   latitude_dimension_type, NULL, description, "degree_east", NULL,
+                                                   read_latitude);
     path = "/longitude_centers[]";
     harp_variable_definition_add_mapping(variable_definition, NULL, NULL, path, NULL);
 

@@ -476,8 +476,7 @@ static int read_aatsr_atsr2_sensor_zenith_angle(void *user_data, harp_array data
     ingest_info *info = (ingest_info *)user_data;
 
     /* The field is [2][latitude][longitude] but we only read the first [latitude][longitude] values */
-    return read_partial_dataset(info, "/satellite_zenith_mean", 0, info->num_latitudes * info->num_longitudes,
-                                data);
+    return read_partial_dataset(info, "/satellite_zenith_mean", 0, info->num_latitudes * info->num_longitudes, data);
 }
 
 static int read_aatsr_atsr2_solar_zenith_angle(void *user_data, harp_array data)

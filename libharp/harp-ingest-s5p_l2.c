@@ -1386,7 +1386,7 @@ static int read_no2_column(void *user_data, harp_array data)
     char *variable_name;
 
     variable_name = info->use_summed_total_column ? "nitrogendioxide_summed_total_column" :
-    "nitrogendioxide_total_column";
+        "nitrogendioxide_total_column";
     return read_dataset(info->detailed_results_cursor, variable_name, harp_type_float,
                         info->num_scanlines * info->num_pixels, data);
 }
@@ -1397,7 +1397,7 @@ static int read_no2_column_precision(void *user_data, harp_array data)
     char *variable_name;
 
     variable_name = info->use_summed_total_column ? "nitrogendioxide_summed_total_column_precision" :
-    "nitrogendioxide_total_column_precision";
+        "nitrogendioxide_total_column_precision";
     return read_dataset(info->detailed_results_cursor, variable_name, harp_type_float,
                         info->num_scanlines * info->num_pixels, data);
 }
@@ -2416,105 +2416,105 @@ static void register_or_profile_variables(harp_product_definition *product_defin
 
     description = "pressure";
     variable_definition =
-    harp_ingestion_register_variable_full_read(product_definition, "pressure", harp_type_float, 2, dimension_type,
-                                               NULL, description, "Pa", NULL, read_o3_pr_pressure);
+        harp_ingestion_register_variable_full_read(product_definition, "pressure", harp_type_float, 2, dimension_type,
+                                                   NULL, description, "Pa", NULL, read_o3_pr_pressure);
     path = "/PRODUCT/SUPPORT_DATA/INPUT_DATA/pressure[]";
     harp_variable_definition_add_mapping(variable_definition, NULL, NULL, path, NULL);
 
     description = "altitude";
     variable_definition =
-    harp_ingestion_register_variable_full_read(product_definition, "altitude", harp_type_float, 2, dimension_type,
-                                               NULL, description, "m", NULL, read_o3_pr_altitude);
+        harp_ingestion_register_variable_full_read(product_definition, "altitude", harp_type_float, 2, dimension_type,
+                                                   NULL, description, "m", NULL, read_o3_pr_altitude);
     path = "/PRODUCT/SUPPORT_DATA/INPUT_DATA/altitude[]";
     harp_variable_definition_add_mapping(variable_definition, NULL, NULL, path, NULL);
 
     description = "temperature";
     variable_definition =
-    harp_ingestion_register_variable_full_read(product_definition, "temperature", harp_type_float, 2,
-                                               dimension_type, NULL, description, "K", NULL,
-                                               read_o3_pr_temperature);
+        harp_ingestion_register_variable_full_read(product_definition, "temperature", harp_type_float, 2,
+                                                   dimension_type, NULL, description, "K", NULL,
+                                                   read_o3_pr_temperature);
     path = "/PRODUCT/SUPPORT_DATA/INPUT_DATA/temperature[]";
     harp_variable_definition_add_mapping(variable_definition, NULL, NULL, path, NULL);
 
     description = "O3 volume mixing ratio";
     variable_definition =
-    harp_ingestion_register_variable_full_read(product_definition, "O3_volume_mixing_ratio", harp_type_float, 2,
-                                               dimension_type, NULL, description, "ppmv", NULL,
-                                               read_o3_pr_volume_mixing_ratio);
+        harp_ingestion_register_variable_full_read(product_definition, "O3_volume_mixing_ratio", harp_type_float, 2,
+                                                   dimension_type, NULL, description, "ppmv", NULL,
+                                                   read_o3_pr_volume_mixing_ratio);
     path = "/PRODUCT/ozone_profile[]";
     harp_variable_definition_add_mapping(variable_definition, NULL, NULL, path, NULL);
 
     description = "uncertainty of the O3 volume mixing ratio";
     variable_definition =
-    harp_ingestion_register_variable_full_read(product_definition, "O3_volume_mixing_ratio_uncertainty",
-                                               harp_type_float, 2, dimension_type, NULL, description, "ppmv", NULL,
-                                               read_o3_pr_volume_mixing_ratio_uncertainty);
+        harp_ingestion_register_variable_full_read(product_definition, "O3_volume_mixing_ratio_uncertainty",
+                                                   harp_type_float, 2, dimension_type, NULL, description, "ppmv", NULL,
+                                                   read_o3_pr_volume_mixing_ratio_uncertainty);
     path = "/PRODUCT/ozone_profile_precision[]";
     harp_variable_definition_add_mapping(variable_definition, NULL, NULL, path, NULL);
 
     description = "O3 volume mixing ratio averaging kernel";
     variable_definition =
-    harp_ingestion_register_variable_full_read(product_definition, "O3_volume_mixing_ratio_avk", harp_type_float, 3,
-                                               dimension_type, NULL, description, HARP_UNIT_DIMENSIONLESS, NULL,
-                                               read_o3_pr_volume_mixing_ratio_avk);
+        harp_ingestion_register_variable_full_read(product_definition, "O3_volume_mixing_ratio_avk", harp_type_float, 3,
+                                                   dimension_type, NULL, description, HARP_UNIT_DIMENSIONLESS, NULL,
+                                                   read_o3_pr_volume_mixing_ratio_avk);
     path = "/PRODUCT/SUPPORT_DATA/DETAILED_RESULTS/averaging_kernel[]";
     harp_variable_definition_add_mapping(variable_definition, NULL, NULL, path, NULL);
 
     description = "O3 volume mixing ratio apriori";
     variable_definition =
-    harp_ingestion_register_variable_full_read(product_definition, "O3_volume_mixing_ratio_apriori",
-                                               harp_type_float, 2, dimension_type, NULL, description, "ppmv", NULL,
-                                               read_o3_pr_volume_mixing_ratio_apriori);
+        harp_ingestion_register_variable_full_read(product_definition, "O3_volume_mixing_ratio_apriori",
+                                                   harp_type_float, 2, dimension_type, NULL, description, "ppmv", NULL,
+                                                   read_o3_pr_volume_mixing_ratio_apriori);
     path = "/PRODUCT/SUPPORT_DATA/INPUT_DATA/ozone_profile_apriori[]";
     harp_variable_definition_add_mapping(variable_definition, NULL, NULL, path, NULL);
 
     description = "uncertainty of the O3 volume mixing ratio apriori";
     variable_definition =
-    harp_ingestion_register_variable_full_read(product_definition, "O3_volume_mixing_ratio_apriori_uncertainty",
-                                               harp_type_float, 2, dimension_type, NULL, description, "ppmv", NULL,
-                                               read_o3_pr_volume_mixing_ratio_apriori_uncertainty);
+        harp_ingestion_register_variable_full_read(product_definition, "O3_volume_mixing_ratio_apriori_uncertainty",
+                                                   harp_type_float, 2, dimension_type, NULL, description, "ppmv", NULL,
+                                                   read_o3_pr_volume_mixing_ratio_apriori_uncertainty);
     path = "/PRODUCT/SUPPORT_DATA/INPUT_DATA/ozone_profile_apriori_error_covariance_matrix[]";
     description = "uncertainty derived from variance as: sqrt(ozone_profile_apriori_error_covariance_matrix[])";
     harp_variable_definition_add_mapping(variable_definition, NULL, NULL, path, description);
 
     description = "O3 volume mixing ratio covariance";
     variable_definition =
-    harp_ingestion_register_variable_full_read(product_definition, "O3_volume_mixing_ratio_covariance",
-                                               harp_type_float, 3, dimension_type, NULL, description, "pptv", NULL,
-                                               read_o3_pr_volume_mixing_ratio_covariance);
+        harp_ingestion_register_variable_full_read(product_definition, "O3_volume_mixing_ratio_covariance",
+                                                   harp_type_float, 3, dimension_type, NULL, description, "pptv", NULL,
+                                                   read_o3_pr_volume_mixing_ratio_covariance);
     path = "/PRODUCT/SUPPORT_DATA/DETAILED_RESULTS/ozone_profile_error_covariance_matrix[]";
     harp_variable_definition_add_mapping(variable_definition, NULL, NULL, path, NULL);
 
     description = "O3 total column";
     variable_definition =
-    harp_ingestion_register_variable_full_read(product_definition, "O3_column_number_density", harp_type_float, 1,
-                                               dimension_type, NULL, description, "mol/m^2", NULL,
-                                               read_o3_pr_column_number_density);
+        harp_ingestion_register_variable_full_read(product_definition, "O3_column_number_density", harp_type_float, 1,
+                                                   dimension_type, NULL, description, "mol/m^2", NULL,
+                                                   read_o3_pr_column_number_density);
     path = "/PRODUCT/ozone_total_column[]";
     harp_variable_definition_add_mapping(variable_definition, NULL, NULL, path, NULL);
 
     description = "uncertainty of the O3 total column";
     variable_definition =
-    harp_ingestion_register_variable_full_read(product_definition, "O3_column_number_density_uncertainty",
-                                               harp_type_float, 1, dimension_type, NULL, description, "mol/m^2",
-                                               NULL, read_o3_pr_column_number_density_uncertainty);
+        harp_ingestion_register_variable_full_read(product_definition, "O3_column_number_density_uncertainty",
+                                                   harp_type_float, 1, dimension_type, NULL, description, "mol/m^2",
+                                                   NULL, read_o3_pr_column_number_density_uncertainty);
     path = "/PRODUCT/ozone_total_column_precision[]";
     harp_variable_definition_add_mapping(variable_definition, NULL, NULL, path, NULL);
 
     description = "O3 tropospheric column";
     variable_definition =
-    harp_ingestion_register_variable_full_read(product_definition, "tropospheric_O3_column_number_density",
-                                               harp_type_float, 1, dimension_type, NULL, description, "mol/m^2",
-                                               NULL, read_o3_pr_tropospheric_column_number_density);
+        harp_ingestion_register_variable_full_read(product_definition, "tropospheric_O3_column_number_density",
+                                                   harp_type_float, 1, dimension_type, NULL, description, "mol/m^2",
+                                                   NULL, read_o3_pr_tropospheric_column_number_density);
     path = "/PRODUCT/ozone_tropospheric_column[]";
     harp_variable_definition_add_mapping(variable_definition, NULL, NULL, path, NULL);
 
     description = "uncertainty of the O3 tropospheric column";
     variable_definition =
-    harp_ingestion_register_variable_full_read(product_definition,
-                                               "tropospheric_O3_column_number_density_uncertainty", harp_type_float,
-                                               1, dimension_type, NULL, description, "mol/m^2", NULL,
-                                               read_o3_pr_tropospheric_column_number_density_uncertainty);
+        harp_ingestion_register_variable_full_read(product_definition,
+                                                   "tropospheric_O3_column_number_density_uncertainty", harp_type_float,
+                                                   1, dimension_type, NULL, description, "mol/m^2", NULL,
+                                                   read_o3_pr_tropospheric_column_number_density_uncertainty);
     path = "/PRODUCT/ozone_tropospheric_column_precision[]";
     harp_variable_definition_add_mapping(variable_definition, NULL, NULL, path, NULL);
 }
@@ -2627,9 +2627,9 @@ static void register_no2_product(void)
 
     description = "averaging kernel for the tropospheric vertical column number density of NO2";
     variable_definition =
-    harp_ingestion_register_variable_full_read(product_definition, "tropospheric_NO2_column_number_density_avk",
-                                               harp_type_float, 2, dimension_type, NULL, description,
-                                               HARP_UNIT_DIMENSIONLESS, NULL, read_no2_column_tropospheric_avk);
+        harp_ingestion_register_variable_full_read(product_definition, "tropospheric_NO2_column_number_density_avk",
+                                                   harp_type_float, 2, dimension_type, NULL, description,
+                                                   HARP_UNIT_DIMENSIONLESS, NULL, read_no2_column_tropospheric_avk);
     path = "/PRODUCT/averaging_kernel[], /PRODUCT/air_mass_factor_total[], /PRODUCT/air_mass_factor_troposphere[], "
         "/PRODUCT/tm5_tropopause_layer_index[]";
     description = "averaging_kernel[layer] = if layer <= tm5_tropopause_layer_index then "
