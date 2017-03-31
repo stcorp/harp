@@ -74,6 +74,10 @@ int harp_ingestion_module_iasi_l2_init(void);
 int harp_ingestion_module_mipas_l1_init(void);
 int harp_ingestion_module_mipas_l2_init(void);
 int harp_ingestion_module_mls_l2_init(void);
+int harp_ingestion_module_npp_suomi_crimss_l2_init(void);
+int harp_ingestion_module_npp_suomi_omps_profiles_l2_init(void);
+int harp_ingestion_module_npp_suomi_omps_totals_l2_init(void);
+int harp_ingestion_module_npp_suomi_viirs_l2_init(void);
 int harp_ingestion_module_omi_l2_init(void);
 int harp_ingestion_module_omi_l3_init(void);
 int harp_ingestion_module_osiris_l2_init(void);
@@ -123,6 +127,10 @@ static module_init_func_t *module_init_func[] = {
     harp_ingestion_module_mipas_l1_init,
     harp_ingestion_module_mipas_l2_init,
     harp_ingestion_module_mls_l2_init,
+    harp_ingestion_module_npp_suomi_crimss_l2_init,
+    harp_ingestion_module_npp_suomi_omps_profiles_l2_init,
+    harp_ingestion_module_npp_suomi_omps_totals_l2_init,
+    harp_ingestion_module_npp_suomi_viirs_l2_init,
     harp_ingestion_module_omi_l2_init,
     harp_ingestion_module_omi_l3_init,
     harp_ingestion_module_osiris_l2_init,

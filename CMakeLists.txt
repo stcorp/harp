@@ -289,6 +289,10 @@ set(LIBHARP_SOURCES
   libharp/harp-ingest-mipas_l1.c
   libharp/harp-ingest-mipas_l2.c
   libharp/harp-ingest-mls_l2.c
+  libharp/harp-ingest-npp-suomi-crimss_l2.c
+  libharp/harp-ingest-npp-suomi-omps_profiles_l2.c
+  libharp/harp-ingest-npp-suomi-omps_totals_l2.c
+  libharp/harp-ingest-npp-suomi-viirs_l2.c
   libharp/harp-ingest-omi_l2.c
   libharp/harp-ingest-omi_l3.c
   libharp/harp-ingest-osiris_l2.c
