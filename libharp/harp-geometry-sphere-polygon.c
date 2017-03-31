@@ -258,7 +258,6 @@ harp_spherical_polygon *harp_spherical_polygon_duplicate(const harp_spherical_po
 }
 
 /* Derive the centre coordinates of a polygon */
-/* TODO: Replace this 'PgSphere' algorithm with the one in the DPM */
 int harp_spherical_polygon_centre(harp_vector3d *vector_centre, const harp_spherical_polygon *polygon)
 {
     harp_vector3d vector_polygon_point;
