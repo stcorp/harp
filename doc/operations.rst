@@ -163,9 +163,9 @@ Supported functions:
             (indicating a grid of altitudes 0.5, 1.5, ..., 9.5)
 
     ``regrid(dimension, axis-variable unit, collocation-result-file, a|b, dataset-dir)``
-        Regrid all variables in the product for the given dimension using
-        the a target grid taken from a collocated dataset. The fourth
-        parameter indicates which dataset contains the target grid.
+        Regrid all variables in the product for the given dimension using the
+        target grid taken from a collocated dataset. The fourth parameter
+        indicates which dataset contains the target grid.
         Example:
 
             ``regrid(vertical, altitude [km], "collocation-result.csv", b, "./correlative_data/")``
