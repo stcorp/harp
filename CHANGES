@@ -1,3 +1,8 @@
+* Added ingestion support for NPP-Suomi.
+
+* Renamed O3MSAF codadef to ACSAF. When updating HARP, you should remove
+  any existing O3SMAF-*.codadef files from your installation directory.
+
 0.5 2017-03-26
 ~~~~~~~~~~~~~~
 
