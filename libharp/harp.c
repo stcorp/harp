@@ -716,12 +716,20 @@ LIBHARP_API int harp_parse_dimension_type(const char *str, harp_dimension_type *
  */
 int harp_parse_file_convention(const char *str, int *major, int *minor)
 {
+    char *harpconv;
     int result;
 
-    result = sscanf(str, "HARP-%d.%d", major, minor);
+    harpconv = strstr(str, "HARP");
+    if (harpconv == NULL)
+    {
+        harp_set_error(HARP_ERROR_INVALID_ARGUMENT, "HARP is not included in file convention string '%s'", str);
+        return -1;
+    }
+    result = sscanf(harpconv, "HARP-%d.%d", major, minor);
     if (result != 2)
     {
-        harp_set_error(HARP_ERROR_INVALID_ARGUMENT, "unknown file convention '%s' (%s:%d)", str, __FILE__, __LINE__);
+        harp_set_error(HARP_ERROR_INVALID_ARGUMENT,
+                       "invalid HARP convention reference in file convention '%s' (expected 'HARP-x.y')", str);
         return -1;
     }
 
