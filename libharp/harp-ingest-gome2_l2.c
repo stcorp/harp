@@ -2158,7 +2158,7 @@ static void register_o3mnto_product(void)
     harp_ingestion_module *module;
     harp_product_definition *product_definition;
 
-    module = harp_ingestion_register_module_coda("GOME2_L2_O3MNTO", "GOME-2", "O3MSAF", "O3MNTO",
+    module = harp_ingestion_register_module_coda("GOME2_L2_O3MNTO", "GOME-2", "ACSAF", "O3MNTO",
                                                  "GOME2 near-real-time total column trace gas product", ingestion_init,
                                                  ingestion_done);
     register_common_options(module);
@@ -2174,7 +2174,7 @@ static void register_o3moto_product(void)
     harp_ingestion_module *module;
     harp_product_definition *product_definition;
 
-    module = harp_ingestion_register_module_coda("GOME2_L2_O3MOTO", "GOME-2", "O3MSAF", "O3MOTO",
+    module = harp_ingestion_register_module_coda("GOME2_L2_O3MOTO", "GOME-2", "ACSAF", "O3MOTO",
                                                  "GOME2 offline total column trace gas product", ingestion_init,
                                                  ingestion_done);
     register_common_options(module);

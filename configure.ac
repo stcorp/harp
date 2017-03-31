@@ -184,6 +184,7 @@ AC_DEFINE_UNQUOTED(HARP_FORMAT_VERSION_MINOR, [$HARP_FORMAT_VERSION_MINOR], [Cur
 AC_DEFINE_UNQUOTED(HARP_CONVENTION, ["HARP-$HARP_FORMAT_VERSION_MAJOR.$HARP_FORMAT_VERSION_MINOR"], [String to use in netCDF Conventions attribute])
 
 # codadef versions
+ST_CODADEF_VERSION([$srcdir/definitions],[ACSAF])
 ST_CODADEF_VERSION([$srcdir/definitions],[AEOLUS])
 ST_CODADEF_VERSION([$srcdir/definitions],[AURA_HIRDLS])
 ST_CODADEF_VERSION([$srcdir/definitions],[AURA_MLS])
@@ -201,7 +202,6 @@ ST_CODADEF_VERSION([$srcdir/definitions],[ESACCI_OZONE])
 ST_CODADEF_VERSION([$srcdir/definitions],[GEOMS])
 ST_CODADEF_VERSION([$srcdir/definitions],[GOSAT])
 ST_CODADEF_VERSION([$srcdir/definitions],[NPP_SUOMI])
-ST_CODADEF_VERSION([$srcdir/definitions],[O3MSAF])
 ST_CODADEF_VERSION([$srcdir/definitions],[ODIN_OSIRIS])
 ST_CODADEF_VERSION([$srcdir/definitions],[ODIN_SMR])
 ST_CODADEF_VERSION([$srcdir/definitions],[QA4ECV])

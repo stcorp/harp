@@ -317,6 +317,7 @@ EXTRA_DIST += \
 
 # *** product definition files ***
 
+ACSAF_DEFINITION_FILE = ACSAF-@CODADEF_VERSION_ACSAF@.codadef
 AEOLUS_DEFINITION_FILE = AEOLUS-@CODADEF_VERSION_AEOLUS@.codadef
 AURA_HIRDLS_DEFINITION_FILE = AURA_HIRDLS-@CODADEF_VERSION_AURA_HIRDLS@.codadef
 AURA_MLS_DEFINITION_FILE = AURA_MLS-@CODADEF_VERSION_AURA_MLS@.codadef
@@ -334,7 +335,6 @@ ESACCI_OZONE_DEFINITION_FILE = ESACCI_OZONE-@CODADEF_VERSION_ESACCI_OZONE@.codad
 GEOMS_DEFINITION_FILE = GEOMS-@CODADEF_VERSION_GEOMS@.codadef
 GOSAT_DEFINITION_FILE = GOSAT-@CODADEF_VERSION_GOSAT@.codadef
 NPP_SUOMI_DEFINITION_FILE = NPP_SUOMI-@CODADEF_VERSION_NPP_SUOMI@.codadef
-O3MSAF_DEFINITION_FILE = O3MSAF-@CODADEF_VERSION_O3MSAF@.codadef
 ODIN_OSIRIS_DEFINITION_FILE = ODIN_OSIRIS-@CODADEF_VERSION_ODIN_OSIRIS@.codadef
 ODIN_SMR_DEFINITION_FILE = ODIN_SMR-@CODADEF_VERSION_ODIN_SMR@.codadef
 QA4ECV_DEFINITION_FILE = QA4ECV-@CODADEF_VERSION_QA4ECV@.codadef
@@ -342,6 +342,7 @@ SENTINEL5P_DEFINITION_FILE = Sentinel5P-@CODADEF_VERSION_Sentinel5P@.codadef
 TEMIS_DEFINITION_FILE = TEMIS-@CODADEF_VERSION_TEMIS@.codadef
 
 DEFINITION_FILES = \
+	definitions/$(ACSAF_DEFINITION_FILE) \
 	definitions/$(AEOLUS_DEFINITION_FILE) \
 	definitions/$(AURA_HIRDLS_DEFINITION_FILE) \
 	definitions/$(AURA_MLS_DEFINITION_FILE) \
@@ -359,7 +360,6 @@ DEFINITION_FILES = \
 	definitions/$(GEOMS_DEFINITION_FILE) \
 	definitions/$(GOSAT_DEFINITION_FILE) \
 	definitions/$(NPP_SUOMI_DEFINITION_FILE) \
-	definitions/$(O3MSAF_DEFINITION_FILE) \
 	definitions/$(ODIN_OSIRIS_DEFINITION_FILE) \
 	definitions/$(ODIN_SMR_DEFINITION_FILE) \
 	definitions/$(QA4ECV_DEFINITION_FILE) \
@@ -370,6 +370,15 @@ EXTRA_DIST += $(DEFINITION_FILES) codadef.sh
 MAINTAINERCLEANFILES += $(DEFINITION_FILES)
 
 nobase_pkgdata_DATA = $(DEFINITION_FILES)
+
+definitions/$(ACSAF_DEFINITION_FILE):
+	test -d definitions || $(mkinstalldirs) definitions
+	@$(srcdir)/codadef.sh $(srcdir)/definitions/ACSAF definitions
+	@if test ! -f definitions/$(ACSAF_DEFINITION_FILE) ; then \
+	  echo definitions/$(ACSAF_DEFINITION_FILE) not created. ; \
+	  echo run './config.status --recheck' to update the .codadef version reference. ; \
+	  exit 1 ; \
+	 fi
 
 definitions/$(AEOLUS_DEFINITION_FILE):
 	test -d definitions || $(mkinstalldirs) definitions
@@ -520,15 +529,6 @@ definitions/$(NPP_SUOMI_DEFINITION_FILE):
 	@$(srcdir)/codadef.sh $(srcdir)/definitions/NPP_SUOMI definitions
 	@if test ! -f definitions/$(NPP_SUOMI_DEFINITION_FILE) ; then \
 	  echo definitions/$(NPP_SUOMI_DEFINITION_FILE) not created. ; \
-	  echo run './config.status --recheck' to update the .codadef version reference. ; \
-	  exit 1 ; \
-	 fi
-
-definitions/$(O3MSAF_DEFINITION_FILE):
-	test -d definitions || $(mkinstalldirs) definitions
-	@$(srcdir)/codadef.sh $(srcdir)/definitions/O3MSAF definitions
-	@if test ! -f definitions/$(O3MSAF_DEFINITION_FILE) ; then \
-	  echo definitions/$(O3MSAF_DEFINITION_FILE) not created. ; \
 	  echo run './config.status --recheck' to update the .codadef version reference. ; \
 	  exit 1 ; \
 	 fi
