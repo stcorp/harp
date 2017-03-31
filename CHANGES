@@ -3,6 +3,8 @@
 * Renamed O3MSAF codadef to ACSAF. When updating HARP, you should remove
   any existing O3SMAF-*.codadef files from your installation directory.
 
+* Fixed issue with TES TL2CH4L ingestion.
+
 0.5 2017-03-26
 ~~~~~~~~~~~~~~
 
