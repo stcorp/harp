@@ -1246,6 +1246,12 @@ int harp_ingestion_init(void)
         return 0;
     }
 
+    if (coda_init() != 0)
+    {
+        harp_set_error(HARP_ERROR_CODA, NULL);
+        return -1;
+    }
+
     module_register = (harp_ingestion_module_register *)malloc(sizeof(harp_ingestion_module_register));
     if (module_register == NULL)
     {
@@ -1255,12 +1261,6 @@ int harp_ingestion_init(void)
     }
     module_register->num_ingestion_modules = 0;
     module_register->ingestion_module = NULL;
-
-    if (coda_init() != 0)
-    {
-        harp_set_error(HARP_ERROR_CODA, NULL);
-        return -1;
-    }
 
     /* Make sure that udunits gets initialized as well */
     if (!harp_unit_is_valid(""))
