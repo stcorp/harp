@@ -287,22 +287,10 @@ static int read_extinction(void *user_data, long index, harp_array data)
                             "extinction", data);
 }
 
-static int read_extinction_validity(void *user_data, long index, harp_array data)
-{
-    return get_int8_array(((ingest_info *)user_data)->pcd_cursor[index], "profile_pcd_bins", "processing_qc_flag",
-                          data);
-}
-
 static int read_backscatter(void *user_data, long index, harp_array data)
 {
     return get_double_array(((ingest_info *)user_data)->properties_cursor[index], "sca_optical_properties",
                             "backscatter", data);
-}
-
-static int read_backscatter_validity(void *user_data, long index, harp_array data)
-{
-    return get_int8_array(((ingest_info *)user_data)->pcd_cursor[index], "profile_pcd_bins", "processing_qc_flag",
-                          data);
 }
 
 static int read_lod(void *user_data, long index, harp_array data)
@@ -311,7 +299,7 @@ static int read_lod(void *user_data, long index, harp_array data)
                             "lod", data);
 }
 
-static int read_lod_validity(void *user_data, long index, harp_array data)
+static int read_validity(void *user_data, long index, harp_array data)
 {
     return get_int8_array(((ingest_info *)user_data)->pcd_cursor[index], "profile_pcd_bins", "processing_qc_flag",
                           data);
@@ -426,16 +414,6 @@ int harp_ingestion_module_aeolus_l2a_init(void)
     harp_variable_definition_add_mapping(variable_definition, NULL, NULL,
                                          "/sca_optical_properties[]/sca_optical_properties[]/extinction", NULL);
 
-    /* extinction_coefficient_validity */
-    description = "processing qc flag for the particle extinction";
-    variable_definition = harp_ingestion_register_variable_sample_read(product_definition,
-                                                                       "extinction_coefficient_validity",
-                                                                       harp_type_int8, 2, dimension_type, NULL,
-                                                                       description, NULL, NULL,
-                                                                       read_extinction_validity);
-    harp_variable_definition_add_mapping(variable_definition, NULL, NULL,
-                                         "/sca_pcd[]/profile_pcd_bins[]/processing_qc_flag", NULL);
-
     /* backscatter_coefficient */
     description = "particle backscatter";
     variable_definition = harp_ingestion_register_variable_sample_read(product_definition, "backscatter_coefficient",
@@ -444,16 +422,6 @@ int harp_ingestion_module_aeolus_l2a_init(void)
                                                                        read_backscatter);
     harp_variable_definition_add_mapping(variable_definition, NULL, NULL,
                                          "/sca_optical_properties[]/sca_optical_properties[]/backscatter", NULL);
-
-    /* backscatter_coefficient_validity */
-    description = "processing qc flag for the particle backscatter";
-    variable_definition = harp_ingestion_register_variable_sample_read(product_definition,
-                                                                       "backscatter_coefficient_validity",
-                                                                       harp_type_int8, 2, dimension_type, NULL,
-                                                                       description, NULL, NULL,
-                                                                       read_backscatter_validity);
-    harp_variable_definition_add_mapping(variable_definition, NULL, NULL,
-                                         "/sca_pcd[]/profile_pcd_bins[]/processing_qc_flag", NULL);
 
     /* optical_depth */
     description = "particle local optical depth";
@@ -464,11 +432,11 @@ int harp_ingestion_module_aeolus_l2a_init(void)
     harp_variable_definition_add_mapping(variable_definition, NULL, NULL,
                                          "/sca_optical_properties[]/sca_optical_properties[]/lod", NULL);
 
-    /* optical_depth_validity */
-    description = "processing qc flag for the particle local optical depth";
-    variable_definition = harp_ingestion_register_variable_sample_read(product_definition, "optical_depth_validity",
-                                                                       harp_type_int8, 2, dimension_type, NULL,
-                                                                       description, NULL, NULL, read_lod_validity);
+    /* validity */
+    description = "processing qc flag";
+    variable_definition = harp_ingestion_register_variable_sample_read(product_definition, "validity", harp_type_int8,
+                                                                       2, dimension_type, NULL,description, NULL, NULL,
+                                                                       read_validity);
     harp_variable_definition_add_mapping(variable_definition, NULL, NULL,
                                          "/sca_pcd[]/profile_pcd_bins[]/processing_qc_flag", NULL);
 

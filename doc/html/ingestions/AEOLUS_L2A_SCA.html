@@ -183,23 +183,11 @@
 <td>10^-6 m^-1</td>
 <td>particle extinction</td>
 </tr>
-<tr class="row-even"><td><strong>extinction_coefficient_validity</strong></td>
-<td>int8</td>
-<td>{<em>time</em>, <em>vertical</em>}</td>
-<td>&nbsp;</td>
-<td>processing qc flag for the particle extinction</td>
-</tr>
-<tr class="row-odd"><td><strong>backscatter_coefficient</strong></td>
+<tr class="row-even"><td><strong>backscatter_coefficient</strong></td>
 <td>double</td>
 <td>{<em>time</em>, <em>vertical</em>}</td>
 <td>10^-6 m^-1 sr^-1</td>
 <td>particle backscatter</td>
-</tr>
-<tr class="row-even"><td><strong>backscatter_coefficient_validity</strong></td>
-<td>int8</td>
-<td>{<em>time</em>, <em>vertical</em>}</td>
-<td>&nbsp;</td>
-<td>processing qc flag for the particle backscatter</td>
 </tr>
 <tr class="row-odd"><td><strong>optical_depth</strong></td>
 <td>double</td>
@@ -207,11 +195,11 @@
 <td>&nbsp;</td>
 <td>particle local optical depth</td>
 </tr>
-<tr class="row-even"><td><strong>optical_depth_validity</strong></td>
+<tr class="row-even"><td><strong>validity</strong></td>
 <td>int8</td>
 <td>{<em>time</em>, <em>vertical</em>}</td>
 <td>&nbsp;</td>
-<td>processing qc flag for the particle local optical depth</td>
+<td>processing qc flag</td>
 </tr>
 <tr class="row-odd"><td><strong>index</strong></td>
 <td>int32</td>
@@ -227,9 +215,9 @@
 <p>The table below details where and how each variable was retrieved from the input product.</p>
 <table border="1" class="docutils">
 <colgroup>
-<col width="31%" />
-<col width="12%" />
-<col width="56%" />
+<col width="26%" />
+<col width="13%" />
+<col width="61%" />
 </colgroup>
 <thead valign="bottom">
 <tr class="row-odd"><th class="head">field name</th>
@@ -261,23 +249,15 @@
 <td><em>path</em></td>
 <td><strong>/sca_optical_properties[]/sca_optical_properties[]/extinction</strong></td>
 </tr>
-<tr class="row-even"><td><strong>extinction_coefficient_validity</strong></td>
-<td><em>path</em></td>
-<td><strong>/sca_pcd[]/profile_pcd_bins[]/processing_qc_flag</strong></td>
-</tr>
-<tr class="row-odd"><td><strong>backscatter_coefficient</strong></td>
+<tr class="row-even"><td><strong>backscatter_coefficient</strong></td>
 <td><em>path</em></td>
 <td><strong>/sca_optical_properties[]/sca_optical_properties[]/backscatter</strong></td>
-</tr>
-<tr class="row-even"><td><strong>backscatter_coefficient_validity</strong></td>
-<td><em>path</em></td>
-<td><strong>/sca_pcd[]/profile_pcd_bins[]/processing_qc_flag</strong></td>
 </tr>
 <tr class="row-odd"><td><strong>optical_depth</strong></td>
 <td><em>path</em></td>
 <td><strong>/sca_optical_properties[]/sca_optical_properties[]/lod</strong></td>
 </tr>
-<tr class="row-even"><td><strong>optical_depth_validity</strong></td>
+<tr class="row-even"><td><strong>validity</strong></td>
 <td><em>path</em></td>
 <td><strong>/sca_pcd[]/profile_pcd_bins[]/processing_qc_flag</strong></td>
 </tr>
