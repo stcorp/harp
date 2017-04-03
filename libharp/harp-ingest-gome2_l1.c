@@ -86,7 +86,7 @@ typedef struct ingest_info_struct
     uint16_t *max_num_recs;
     int *band_nr_fastest_band;
     int *index_of_fastest_timer_in_list_of_timers;
-    short *readout_offset;      /* First valid readout in MDR record, will always be 1 (in case the first readout is skipped) or 0 (default) */
+    short *readout_offset;      /* First valid readout in MDR record: 1 (if first readout is skipped) or 0 (default) */
 
     /* Data about the VIADR_SMR-records */
     long num_viadr_smr_records;
@@ -212,8 +212,7 @@ static int get_main_datetime_data(ingest_info *info, double *double_data_array)
 }
 
 /*
- * Read GEO_EARTH_ACTUAL data from a datafile with product version 12 or
- * higher. The data is retrieved from the path:
+ * Read GEO_EARTH_ACTUAL data from a datafile with product version 12 or higher. The data is retrieved from the path:
  * GEO_EARTH_ACTUAL_<index fastest timer>[readout_nr]/dataset_name[start_data_index..end_data_index]/fieldname
  */
 static int get_main_geo_earth_actual_data_new_version(ingest_info *info, long mdr_record, const char *dataset_name,
@@ -291,9 +290,8 @@ static int get_main_geo_earth_actual_data_new_version(ingest_info *info, long md
                     }
                 }
             }
-            double_data +=
-                ((MAX_READOUTS_PER_MDR_RECORD / info->max_num_recs[mdr_record]) - 1) * (end_data_index -
-                                                                                        start_data_index + 1);
+            double_data += ((MAX_READOUTS_PER_MDR_RECORD / info->max_num_recs[mdr_record]) - 1) *
+                (end_data_index - start_data_index + 1);
             coda_cursor_goto_parent(&cursor);
             coda_cursor_goto_parent(&cursor);
         }
@@ -335,8 +333,7 @@ static int get_main_geo_earth_actual_data_new_version(ingest_info *info, long md
 }
 
 /*
- * Read GEO_EARTH_ACTUAL data from a datafile with product version 11 or
- * lower. The data is retrieved from the path:
+ * Read GEO_EARTH_ACTUAL data from a datafile with product version 11 or lower. The data is retrieved from the path:
  * GEO_EARTH_ACTUAL/datasetname[band_nr][start_data_index..end_data_index][readout_nr]/fieldname
  */
 static int get_main_geo_earth_actual_data_old_version(ingest_info *info, long mdr_record, const char *dataset_name,
@@ -360,10 +357,10 @@ static int get_main_geo_earth_actual_data_old_version(ingest_info *info, long md
     }
     for (i = start_data_index; i <= end_data_index; i++)
     {
-        if (coda_cursor_goto_array_element_by_index
-            (&cursor,
-             (info->band_nr_fastest_band[mdr_record] * data_dim_size * MAX_READOUTS_PER_MDR_RECORD) +
-             (i * MAX_READOUTS_PER_MDR_RECORD)) != 0)
+        if (coda_cursor_goto_array_element_by_index(&cursor,
+                                                    (info->band_nr_fastest_band[mdr_record] * data_dim_size *
+                                                     MAX_READOUTS_PER_MDR_RECORD) + (i * MAX_READOUTS_PER_MDR_RECORD))
+            != 0)
         {
             harp_set_error(HARP_ERROR_CODA, NULL);
             return -1;
@@ -392,16 +389,14 @@ static int get_main_geo_earth_actual_data_old_version(ingest_info *info, long md
             {
                 copy_double_data_to_following_rows(info->max_num_recs[mdr_record],
                                                    end_data_index - start_data_index + 1, double_data);
-                double_data +=
-                    ((MAX_READOUTS_PER_MDR_RECORD / info->max_num_recs[mdr_record]) *
-                     (end_data_index - start_data_index + 1));
+                double_data += ((MAX_READOUTS_PER_MDR_RECORD / info->max_num_recs[mdr_record]) *
+                                (end_data_index - start_data_index + 1));
             }
             else
             {
                 /* Skip rows, these rows remain filled with NaN */
-                double_data +=
-                    (((MAX_READOUTS_PER_MDR_RECORD / info->max_num_recs[mdr_record]) - 1) * (end_data_index -
-                                                                                             start_data_index + 1));
+                double_data += (((MAX_READOUTS_PER_MDR_RECORD / info->max_num_recs[mdr_record]) - 1) *
+                                (end_data_index - start_data_index + 1));
             }
 
             if (j < (info->max_num_recs[mdr_record] - 1))
@@ -457,8 +452,8 @@ static int get_main_geo_earth_actual_data(ingest_info *info, const char *dataset
                 return -1;
             }
         }
-        double_data +=
-            ((end_data_index - start_data_index + 1L) * (MAX_READOUTS_PER_MDR_RECORD - info->readout_offset[i]));
+        double_data += ((end_data_index - start_data_index + 1L) *
+                        (MAX_READOUTS_PER_MDR_RECORD - info->readout_offset[i]));
     }
     return 0;
 }
@@ -468,8 +463,8 @@ static int get_main_cloud_data(ingest_info *info, long mdr_record, int fit_numbe
     coda_cursor cursor;
     double invalid_value_boundary = (fit_number == 1 ? -2147483 : -2147);
     const char *fieldname = (fit_number == 1 ? "FIT_1" : "FIT_2");
-    long i;
     uint8_t fit_mode[MAX_READOUTS_PER_MDR_RECORD];
+    long i;
 
     cursor = info->mdr_lightsource_cursors[mdr_record];
     if (coda_cursor_goto_record_field_by_name(&cursor, "CLOUD") != 0)
@@ -755,8 +750,8 @@ static int read_longitude(void *user_data, harp_array data)
 static int read_latitude_bounds(void *user_data, harp_array data)
 {
     ingest_info *info = (ingest_info *)user_data;
-    long i, j;
     double *double_data, a, b, c, d;
+    long i, j;
 
     if (get_main_geo_earth_actual_data(info, "CORNER_ACTUAL", "latitude", 0, 3, 4, data.double_data) != 0)
     {
@@ -786,8 +781,8 @@ static int read_latitude_bounds(void *user_data, harp_array data)
 static int read_longitude_bounds(void *user_data, harp_array data)
 {
     ingest_info *info = (ingest_info *)user_data;
-    long i, j;
     double *double_data, a, b, c, d;
+    long i, j;
 
     if (get_main_geo_earth_actual_data(info, "CORNER_ACTUAL", "longitude", 0, 3, 4, data.double_data) != 0)
     {
@@ -1186,9 +1181,8 @@ static int determine_fastest_band(ingest_info *info, coda_cursor start_cursor, l
         }
         if (i > 10)
         {
-            harp_set_error(HARP_ERROR_INGESTION,
-                           "Can't find minimum integration time %lf in array of integration times",
-                           min_integration_time);
+            harp_set_error(HARP_ERROR_INGESTION, "cannot find minimum integration time %lf in array of integration "
+                           "times", min_integration_time);
             return -1;
         }
     }
@@ -1326,7 +1320,7 @@ static int init_measurements_dimensions(ingest_info *info)
                 }
                 else if (info->num_pixels[band_nr] != dim[1])
                 {
-                    harp_set_error(HARP_ERROR_INGESTION, "Number of pixels for band %s is changed from %ld to %ld",
+                    harp_set_error(HARP_ERROR_INGESTION, "number of pixels for band %s is changed from %ld to %ld",
                                    band_name_in_file[band_nr], info->num_pixels[band_nr], dim[1]);
                     info->num_pixels[band_nr] = dim[1];
                 }
@@ -1405,8 +1399,9 @@ static void register_variables_radiance_transmittance_fields(harp_product_defini
     variable_definition =
         harp_ingestion_register_variable_full_read(product_definition, "datetime", harp_type_double, 1, dimension_type,
                                                    NULL, description, "seconds since 2000-01-01", NULL, read_datetime);
-    description =
-        "The record start time is the start time of the scan and thus the start time of the second readout in the MDR. The start time for readout i (0..31) is thus RECORD_START_TIME + (i - 1) * 0.1875 and the time at end of integration time (which is the time that is returned) is RECORD_START_TIME + i * 0.1875";
+    description = "The record start time is the start time of the scan and thus the start time of the second readout "
+        "in the MDR. The start time for readout i (0..31) is thus RECORD_START_TIME + (i - 1) * 0.1875 and the time "
+        "at end of integration time (which is the time that is returned) is RECORD_START_TIME + i * 0.1875";
     path = "/MDR[]/Earthshine/RECORD_HEADER/RECORD_START_TIME";
     harp_variable_definition_add_mapping(variable_definition, NULL, NULL, path, description);
 
@@ -1417,12 +1412,12 @@ static void register_variables_radiance_transmittance_fields(harp_product_defini
                                                    NULL, description, "degree_north", NULL, read_latitude);
     harp_variable_definition_set_valid_range_double(variable_definition, -90.0, 90.0);
     path = "/MDR[]/Earthshine/GEO_EARTH_ACTUAL/CENTRE_ACTUAL[INT_INDEX[band_id],]/latitude";
-    description =
-        "The integration time index INT_INDEX[band_id] is the index of the band with the minimum integration time (limited to those bands that are ingested).";
+    description = "The integration time index INT_INDEX[band_id] is the index of the band with the minimum integration "
+        "time (limited to those bands that are ingested)";
     harp_variable_definition_add_mapping(variable_definition, NULL, "CODA version < 12", path, description);
-    path = "/MDR[]/Earthshine/GEO_EARTH_ACTUAL_INT_INDEX[timer_id][]/CENTRE_ACTUAL/latitude";
-    description =
-        "The integration time index INT_INDEX[timer_id] is the index (starting with 1) of the timer with the minimum integration time (limited to the timers of those bands that are ingested).";
+    path = "/MDR[]/Earthshine/GEO_EARTH_ACTUAL_k[]/CENTRE_ACTUAL/latitude";
+    description = "The integration time index k is the index (starting with 1) of the minimum integration time such "
+        "that UNIQUE_INT[k-1] == min(INTEGRATION_TIMES[j]) for all bands j (0..9) that are ingeste.";
     harp_variable_definition_add_mapping(variable_definition, NULL, "CODA version >= 12", path, description);
 
     /* longitude_of_the_measurement */
@@ -1435,9 +1430,9 @@ static void register_variables_radiance_transmittance_fields(harp_product_defini
     description =
         "The integration time index INT_INDEX[band_id] is the index of the band with the minimum integration time (limited to those bands that are ingested).";
     harp_variable_definition_add_mapping(variable_definition, NULL, "CODA version < 12", path, description);
-    path = "/MDR[]/Earthshine/GEO_EARTH_ACTUAL_INT_INDEX[timer_id][]/CENTRE_ACTUAL/longitude";
-    description =
-        "The integration time index INT_INDEX[timer_id] is the index (starting with 1) of the timer with the minimum integration time (limited to the timers of those bands that are ingested).";
+    path = "/MDR[]/Earthshine/GEO_EARTH_ACTUAL_k[]/CENTRE_ACTUAL/longitude";
+    description = "The integration time index k is the index (starting with 1) of the minimum integration time such "
+        "that UNIQUE_INT[k-1] == min(INTEGRATION_TIMES[j]) for all bands j (0..9) that are ingeste.";
     harp_variable_definition_add_mapping(variable_definition, NULL, "CODA version >= 12", path, description);
 
     /* latitude_bounds */
@@ -1451,9 +1446,9 @@ static void register_variables_radiance_transmittance_fields(harp_product_defini
     description =
         "The integration time index INT_INDEX[band_id] is the index of the band with the minimum integration time (limited to those bands that are ingested). The corners ABCD are reordered as BDCA.";
     harp_variable_definition_add_mapping(variable_definition, NULL, "CODA version < 12", path, description);
-    path = "/MDR[]/Earthshine/GEO_EARTH_ACTUAL_INT_INDEX[timer_id][]/CORNER_ACTUAL[]/latitude";
-    description =
-        "The integration time index INT_INDEX[timer_id] is the index (starting with 1) of the timer with the minimum integration time (limited to the timers of those bands that are ingested). The corners ABCD are reordered as BDCA.";
+    path = "/MDR[]/Earthshine/GEO_EARTH_ACTUAL_k[]/CORNER_ACTUAL[]/latitude";
+    description = "The integration time index k is the index (starting with 1) of the minimum integration time such "
+        "that UNIQUE_INT[k-1] == min(INTEGRATION_TIMES[j]) for all bands j (0..9) that are ingeste.";
     harp_variable_definition_add_mapping(variable_definition, NULL, "CODA version >= 12", path, description);
 
     /* longitude_bounds */
@@ -1467,9 +1462,9 @@ static void register_variables_radiance_transmittance_fields(harp_product_defini
     description =
         "The integration time index INT_INDEX[band_id] is the index of the band with the minimum integration time (limited to those bands that are ingested). The corners ABCD are reordered as BDCA.";
     harp_variable_definition_add_mapping(variable_definition, NULL, "CODA version < 12", path, description);
-    path = "/MDR[]/Earthshine/GEO_EARTH_ACTUAL_INT_INDEX[timer_id][]/CORNER_ACTUAL[]/longitude";
-    description =
-        "The integration time index INT_INDEX[timer_id] is the index (starting with 1) of the timer with the minimum integration time (limited to the timers of those bands that are ingested). The corners ABCD are reordered as BDCA.";
+    path = "/MDR[]/Earthshine/GEO_EARTH_ACTUAL_k[]/CORNER_ACTUAL[]/longitude";
+    description = "The integration time index k is the index (starting with 1) of the minimum integration time such "
+        "that UNIQUE_INT[k-1] == min(INTEGRATION_TIMES[j]) for all bands j (0..9) that are ingeste.";
     harp_variable_definition_add_mapping(variable_definition, NULL, "CODA version >= 12", path, description);
 
     if (radiance)
@@ -1490,8 +1485,8 @@ static void register_variables_radiance_transmittance_fields(harp_product_defini
                                                        dimension_type, NULL, description, NULL, NULL,
                                                        read_transmittance);
     }
-    path =
-        "/MDR[]/Earthshine/BAND_1A[,]/RAD, /MDR[]/Earthshine/BAND_1B[,]/RAD, /MDR[]/Earthshine/BAND_2A[,]/RAD, /MDR[]/Earthshine/BAND_2B[,]/RAD, /MDR[]/Earthshine/BAND_3[,]/RAD, /MDR[]/Earthshine/BAND_4[,]/RAD";
+    path = "/MDR[]/Earthshine/BAND_1A[,]/RAD, /MDR[]/Earthshine/BAND_1B[,]/RAD, /MDR[]/Earthshine/BAND_2A[,]/RAD, "
+        "/MDR[]/Earthshine/BAND_2B[,]/RAD, /MDR[]/Earthshine/BAND_3[,]/RAD, /MDR[]/Earthshine/BAND_4[,]/RAD";
     harp_variable_definition_add_mapping(variable_definition, NULL, NULL, path, NULL);
 
     /* wavelength */
@@ -1499,8 +1494,8 @@ static void register_variables_radiance_transmittance_fields(harp_product_defini
     variable_definition =
         harp_ingestion_register_variable_full_read(product_definition, "wavelength", harp_type_double, 2,
                                                    dimension_type, NULL, description, "nm", NULL, read_wavelength);
-    path =
-        "/MDR[]/Earthshine/WAVELENGTH_1A[], /MDR[]/Earthshine/WAVELENGTH_1B[], /MDR[]/Earthshine/WAVELENGTH_2A[], /MDR/Earthshine[]/WAVELENGTH_2B[], /MDR[]/Earthshine/WAVELENGTH_3[], /MDR[]/Earthshine/WAVELENGTH_4[]";
+    path = "/MDR[]/Earthshine/WAVELENGTH_1A[], /MDR[]/Earthshine/WAVELENGTH_1B[], /MDR[]/Earthshine/WAVELENGTH_2A[], "
+        "/MDR/Earthshine[]/WAVELENGTH_2B[], /MDR[]/Earthshine/WAVELENGTH_3[], /MDR[]/Earthshine/WAVELENGTH_4[]";
     harp_variable_definition_add_mapping(variable_definition, NULL, NULL, path, NULL);
 
     /* integration_time */
@@ -1537,8 +1532,10 @@ static void register_variables_radiance_transmittance_fields(harp_product_defini
                                                    dimension_type, NULL, description, NULL, NULL,
                                                    read_cloud_top_pressure);
     path = "/MDR[]/Earthshine/CLOUD/FIT_1[]";
-    description =
-        "If the minimum ingested integration time > 187.5ms then the corresponding cloud top pressures will be combined using logarithmic averaging. The cloud top pressure will be set to NaN if FIT_MODE in the CLOUD structure is not equal to 0 or if FIT_1 is set to a fill value (even when this holds for only one of the averaged items)";
+    description = "If the minimum ingested integration time > 187.5ms then the corresponding cloud top pressures will "
+        "be combined using logarithmic averaging. The cloud top pressure will be set to NaN if FIT_MODE in the CLOUD "
+        "structure is not equal to 0 or if FIT_1 is set to a fill value (even when this holds for only one of the "
+        "averaged items)";
     harp_variable_definition_add_mapping(variable_definition, NULL, NULL, path, description);
 
     /* cloud_fraction */
@@ -1547,8 +1544,9 @@ static void register_variables_radiance_transmittance_fields(harp_product_defini
         harp_ingestion_register_variable_full_read(product_definition, "cloud_fraction", harp_type_double, 1,
                                                    dimension_type, NULL, description, NULL, NULL, read_cloud_fraction);
     path = "/MDR[]/Earthshine/CLOUD/FIT_2[]";
-    description =
-        "If the minimum ingested integration time > 187.5ms then the corresponding cloud fractions will be combined using averaging. The cloud fraction will be set to NaN if FIT_MODE in the CLOUD structure is not equal to 0 or if FIT_2 is set to a fill value (even when this holds for only one of the averaged items)";
+    description = "If the minimum ingested integration time > 187.5ms then the corresponding cloud fractions will be "
+        "combined using averaging. The cloud fraction will be set to NaN if FIT_MODE in the CLOUD structure is not "
+        "equal to 0 or if FIT_2 is set to a fill value (even when this holds for only one of the averaged items)";
     harp_variable_definition_add_mapping(variable_definition, NULL, NULL, path, description);
 
     /* solar_zenith_angle */
@@ -1558,12 +1556,12 @@ static void register_variables_radiance_transmittance_fields(harp_product_defini
                                                    dimension_type, NULL, description, "degree", NULL,
                                                    read_solar_zenith_angle);
     path = "/MDR[]/Earthshine/GEO_EARTH_ACTUAL/SOLAR_ZENITH_ACTUAL[INT_INDEX[band_id],1,]";
-    description =
-        "The integration time index INT_INDEX[band_id] is the index of the band with the minimum integration time (limited to those bands that are ingested).";
+    description = "The integration time index INT_INDEX[band_id] is the index of the band with the minimum "
+        "integration time (limited to those bands that are ingested).";
     harp_variable_definition_add_mapping(variable_definition, NULL, "CODA version < 12", path, description);
-    path = "/MDR[]/Earthshine/GEO_EARTH_ACTUAL_INT_INDEX[timer_id][]/SOLAR_ZENITH_ACTUAL[1]";
-    description =
-        "The integration time index INT_INDEX[timer_id] is the index (starting with 1) of the timer with the minimum integration time (limited to the timers of those bands that are ingested).";
+    path = "/MDR[]/Earthshine/GEO_EARTH_ACTUAL_k[]/SOLAR_ZENITH_ACTUAL[1]";
+    description = "The integration time index k is the index (starting with 1) of the minimum integration time such "
+        "that UNIQUE_INT[k-1] == min(INTEGRATION_TIMES[j]) for all bands j (0..9) that are ingeste.";
     harp_variable_definition_add_mapping(variable_definition, NULL, "CODA version >= 12", path, description);
 
     /* solar_azimuth_angle */
@@ -1573,12 +1571,12 @@ static void register_variables_radiance_transmittance_fields(harp_product_defini
                                                    dimension_type, NULL, description, "degree", NULL,
                                                    read_solar_azimuth_angle);
     path = "/MDR[]/Earthshine/GEO_EARTH_ACTUAL/SOLAR_AZIMUTH_ACTUAL[INT_INDEX[band_id],1,]";
-    description =
-        "The integration time index INT_INDEX[band_id] is the index of the band with the minimum integration time (limited to those bands that are ingested).";
+    description = "The integration time index INT_INDEX[band_id] is the index of the band with the minimum "
+        "integration time (limited to those bands that are ingested).";
     harp_variable_definition_add_mapping(variable_definition, NULL, "CODA version < 12", path, description);
-    path = "/MDR[]/Earthshine/GEO_EARTH_ACTUAL_INT_INDEX[timer_id][]/SOLAR_AZIMUTH_ACTUAL[1]";
-    description =
-        "The integration time index INT_INDEX[timer_id] is the index (starting with 1) of the timer with the minimum integration time (limited to the timers of those bands that are ingested).";
+    path = "/MDR[]/Earthshine/GEO_EARTH_ACTUAL_k[]/SOLAR_AZIMUTH_ACTUAL[1]";
+    description = "The integration time index k is the index (starting with 1) of the minimum integration time such "
+        "that UNIQUE_INT[k-1] == min(INTEGRATION_TIMES[j]) for all bands j (0..9) that are ingeste.";
     harp_variable_definition_add_mapping(variable_definition, NULL, "CODA version >= 12", path, description);
 
     /* viewing_zenith_angle */
@@ -1588,12 +1586,12 @@ static void register_variables_radiance_transmittance_fields(harp_product_defini
                                                    dimension_type, NULL, description, "degree", NULL,
                                                    read_viewing_zenith_angle);
     path = "/MDR[]/Earthshine/GEO_EARTH_ACTUAL/SAT_ZENITH_ACTUAL[INT_INDEX[band_id],1,]";
-    description =
-        "The integration time index INT_INDEX[band_id] is the index of the band with the minimum integration time (limited to those bands that are ingested).";
+    description = "The integration time index INT_INDEX[band_id] is the index of the band with the minimum "
+        "integration time (limited to those bands that are ingested).";
     harp_variable_definition_add_mapping(variable_definition, NULL, "CODA version < 12", path, description);
-    path = "/MDR[]/Earthshine/GEO_EARTH_ACTUAL_INT_INDEX[timer_id][]/SAT_ZENITH_ACTUAL[1]";
-    description =
-        "The integration time index INT_INDEX[timer_id] is the index (starting with 1) of the timer with the minimum integration time (limited to the timers of those bands that are ingested).";
+    path = "/MDR[]/Earthshine/GEO_EARTH_ACTUAL_k[]/SAT_ZENITH_ACTUAL[1]";
+    description = "The integration time index k is the index (starting with 1) of the minimum integration time such "
+        "that UNIQUE_INT[k-1] == min(INTEGRATION_TIMES[j]) for all bands j (0..9) that are ingeste.";
     harp_variable_definition_add_mapping(variable_definition, NULL, "CODA version >= 12", path, description);
 
     /* viewing_azimuth_angle */
@@ -1603,12 +1601,12 @@ static void register_variables_radiance_transmittance_fields(harp_product_defini
                                                    dimension_type, NULL, description, "degree", NULL,
                                                    read_viewing_azimuth_angle);
     path = "/MDR[]/Earthshine/GEO_EARTH_ACTUAL/SAT_AZIMUTH_ACTUAL[INT_INDEX[band_id],1,]";
-    description =
-        "The integration time index INT_INDEX[band_id] is the index of the band with the minimum integration time (limited to those bands that are ingested).";
+    description = "The integration time index INT_INDEX[band_id] is the index of the band with the minimum "
+        "integration time (limited to those bands that are ingested).";
     harp_variable_definition_add_mapping(variable_definition, NULL, "CODA version < 12", path, description);
-    path = "/MDR[]/Earthshine/GEO_EARTH_ACTUAL_INT_INDEX[timer_id][]/SAT_AZIMUTH_ACTUAL[1]";
-    description =
-        "The integration time index INT_INDEX[timer_id] is the index (starting with 1) of the timer with the minimum integration time (limited to the timers of those bands that are ingested).";
+    path = "/MDR[]/Earthshine/GEO_EARTH_ACTUAL_k[]/SAT_AZIMUTH_ACTUAL[1]";
+    description = "The integration time index k is the index (starting with 1) of the minimum integration time such "
+        "that UNIQUE_INT[k-1] == min(INTEGRATION_TIMES[j]) for all bands j (0..9) that are ingeste.";
     harp_variable_definition_add_mapping(variable_definition, NULL, "CODA version >= 12", path, description);
 }
 
@@ -1627,8 +1625,9 @@ static void register_variables_irradiance_fields(harp_product_definition *produc
     variable_definition =
         harp_ingestion_register_variable_full_read(product_definition, "datetime", harp_type_double, 1, dimension_type,
                                                    NULL, description, "seconds since 2000-01-01", NULL, read_datetime);
-    description =
-        "The record start time is the start time of the scan and thus the start time of the second readout in the MDR. The start time for readout i (0..31) is thus RECORD_START_TIME + (i - 1) * 0.1875 and the time at end of integration time (which is the time that is returned) is RECORD_START_TIME + i * 0.1875";
+    description = "The record start time is the start time of the scan and thus the start time of the second readout "
+        "in the MDR. The start time for readout i (0..31) is thus RECORD_START_TIME + (i - 1) * 0.1875 and the time "
+        "at end of integration time (which is the time that is returned) is RECORD_START_TIME + i * 0.1875";
     path = "/MDR[]/Sun/RECORD_HEADER/RECORD_START_TIME";
     harp_variable_definition_add_mapping(variable_definition, "data=sun", NULL, path, description);
     path = "/MDR[]/Moon/RECORD_HEADER/RECORD_START_TIME";
@@ -1641,8 +1640,8 @@ static void register_variables_irradiance_fields(harp_product_definition *produc
                                                    harp_type_double, 2, dimension_type, NULL, description,
                                                    "count/s/cm2/nm", exclude_when_not_sun,
                                                    read_sun_wavelength_photon_irradiance);
-    path =
-        "/MDR[]/Sun/BAND_1A[,]/RAD, /MDR[]/Sun/BAND_1B[,]/RAD, /MDR[]/Sun/BAND_2A[,]/RAD, /MDR[]/Sun/BAND_2B[,]/RAD, /MDR[]/Sun/BAND_3[,]/RAD, /MDR[]/Sun/BAND_4[,]/RAD";
+    path = "/MDR[]/Sun/BAND_1A[,]/RAD, /MDR[]/Sun/BAND_1B[,]/RAD, /MDR[]/Sun/BAND_2A[,]/RAD, "
+        "/MDR[]/Sun/BAND_2B[,]/RAD, /MDR[]/Sun/BAND_3[,]/RAD, /MDR[]/Sun/BAND_4[,]/RAD";
     harp_variable_definition_add_mapping(variable_definition, "data=sun", NULL, path, NULL);
 
     /* wavelength_photon_irradiance of the moon */
@@ -1652,8 +1651,8 @@ static void register_variables_irradiance_fields(harp_product_definition *produc
                                                    harp_type_double, 2, dimension_type, NULL, description,
                                                    "count/s/cm2/nm", exclude_when_not_moon,
                                                    read_moon_wavelength_photon_irradiance);
-    path =
-        "/MDR[]/Moon/BAND_1A[,]/RAD, /MDR[]/Moon/BAND_1B[,]/RAD, /MDR[]/Moon/BAND_2A[,]/RAD, /MDR[]/Moon/BAND_2B[,]/RAD, /MDR[]/Moon/BAND_3[,]/RAD, /MDR[]/Moon/BAND_4[,]/RAD";
+    path = "/MDR[]/Moon/BAND_1A[,]/RAD, /MDR[]/Moon/BAND_1B[,]/RAD, /MDR[]/Moon/BAND_2A[,]/RAD, "
+        "/MDR[]/Moon/BAND_2B[,]/RAD, /MDR[]/Moon/BAND_3[,]/RAD, /MDR[]/Moon/BAND_4[,]/RAD";
     harp_variable_definition_add_mapping(variable_definition, "data=moon", NULL, path, NULL);
 
     /* wavelength */
@@ -1661,11 +1660,11 @@ static void register_variables_irradiance_fields(harp_product_definition *produc
     variable_definition =
         harp_ingestion_register_variable_full_read(product_definition, "wavelength", harp_type_double, 2,
                                                    dimension_type, NULL, description, "nm", NULL, read_wavelength);
-    path =
-        "/MDR[]/Sun/WAVELENGTH_1A[], /MDR[]/Sun/WAVELENGTH_1B[], /MDR[]/Sun/WAVELENGTH_2A[], /MDR[]/Sun/WAVELENGTH_2B[], /MDR[]/Sun/WAVELENGTH_3[], /MDR[]/Sun/WAVELENGTH_4[]";
+    path = "/MDR[]/Sun/WAVELENGTH_1A[], /MDR[]/Sun/WAVELENGTH_1B[], /MDR[]/Sun/WAVELENGTH_2A[], "
+        "/MDR[]/Sun/WAVELENGTH_2B[], /MDR[]/Sun/WAVELENGTH_3[], /MDR[]/Sun/WAVELENGTH_4[]";
     harp_variable_definition_add_mapping(variable_definition, "data=sun", NULL, path, NULL);
-    path =
-        "/MDR[]/Moon/WAVELENGTH_1A[], /MDR[]/Moon/WAVELENGTH_1B[], /MDR[]/Moon/WAVELENGTH_2A[], /MDR[]/Moon/WAVELENGTH_2B[], /MDR[]/Moon/WAVELENGTH_3[], /MDR[]/Moon/WAVELENGTH_4[]";
+    path = "/MDR[]/Moon/WAVELENGTH_1A[], /MDR[]/Moon/WAVELENGTH_1B[], /MDR[]/Moon/WAVELENGTH_2A[], "
+        "/MDR[]/Moon/WAVELENGTH_2B[], /MDR[]/Moon/WAVELENGTH_3[], /MDR[]/Moon/WAVELENGTH_4[]";
     harp_variable_definition_add_mapping(variable_definition, "data=moon", NULL, path, NULL);
 
     /* integration_time */
@@ -1973,7 +1972,7 @@ static int ingestion_init(const harp_ingestion_module *module, coda_product *pro
     if (format_version < 5)
     {
         harp_set_error(HARP_ERROR_INGESTION,
-                       "This GOM_xxx_1B file is stored using a too old format and is not supported by HARP.");
+                       "this GOM_xxx_1B file is stored using a too old format and is not supported by HARP");
         return -1;
     }
 

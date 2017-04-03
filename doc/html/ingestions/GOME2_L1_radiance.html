@@ -322,16 +322,16 @@
 <td><strong>/MDR[]/Earthshine/GEO_EARTH_ACTUAL/CENTRE_ACTUAL[INT_INDEX[band_id],]/latitude</strong></td>
 </tr>
 <tr class="row-even"><td><em>description</em></td>
-<td>The integration time index INT_INDEX[band_id] is the index of the band with the minimum integration time (limited to those bands that are ingested).</td>
+<td>The integration time index INT_INDEX[band_id] is the index of the band with the minimum integration time (limited to those bands that are ingested)</td>
 </tr>
 <tr class="row-odd"><td><em>condition</em></td>
 <td>CODA version &gt;= 12</td>
 </tr>
 <tr class="row-even"><td><em>path</em></td>
-<td><strong>/MDR[]/Earthshine/GEO_EARTH_ACTUAL_INT_INDEX[timer_id][]/CENTRE_ACTUAL/latitude</strong></td>
+<td><strong>/MDR[]/Earthshine/GEO_EARTH_ACTUAL_k[]/CENTRE_ACTUAL/latitude</strong></td>
 </tr>
 <tr class="row-odd"><td><em>description</em></td>
-<td>The integration time index INT_INDEX[timer_id] is the index (starting with 1) of the timer with the minimum integration time (limited to the timers of those bands that are ingested).</td>
+<td>The integration time index k is the index (starting with 1) of the minimum integration time such that UNIQUE_INT[k-1] == min(INTEGRATION_TIMES[j]) for all bands j (0..9) that are ingeste.</td>
 </tr>
 <tr class="row-even"><td rowspan="6"><strong>longitude</strong></td>
 <td><em>condition</em></td>
@@ -347,10 +347,10 @@
 <td>CODA version &gt;= 12</td>
 </tr>
 <tr class="row-even"><td><em>path</em></td>
-<td><strong>/MDR[]/Earthshine/GEO_EARTH_ACTUAL_INT_INDEX[timer_id][]/CENTRE_ACTUAL/longitude</strong></td>
+<td><strong>/MDR[]/Earthshine/GEO_EARTH_ACTUAL_k[]/CENTRE_ACTUAL/longitude</strong></td>
 </tr>
 <tr class="row-odd"><td><em>description</em></td>
-<td>The integration time index INT_INDEX[timer_id] is the index (starting with 1) of the timer with the minimum integration time (limited to the timers of those bands that are ingested).</td>
+<td>The integration time index k is the index (starting with 1) of the minimum integration time such that UNIQUE_INT[k-1] == min(INTEGRATION_TIMES[j]) for all bands j (0..9) that are ingeste.</td>
 </tr>
 <tr class="row-even"><td rowspan="6"><strong>latitude_bounds</strong></td>
 <td><em>condition</em></td>
@@ -366,10 +366,10 @@
 <td>CODA version &gt;= 12</td>
 </tr>
 <tr class="row-even"><td><em>path</em></td>
-<td><strong>/MDR[]/Earthshine/GEO_EARTH_ACTUAL_INT_INDEX[timer_id][]/CORNER_ACTUAL[]/latitude</strong></td>
+<td><strong>/MDR[]/Earthshine/GEO_EARTH_ACTUAL_k[]/CORNER_ACTUAL[]/latitude</strong></td>
 </tr>
 <tr class="row-odd"><td><em>description</em></td>
-<td>The integration time index INT_INDEX[timer_id] is the index (starting with 1) of the timer with the minimum integration time (limited to the timers of those bands that are ingested). The corners ABCD are reordered as BDCA.</td>
+<td>The integration time index k is the index (starting with 1) of the minimum integration time such that UNIQUE_INT[k-1] == min(INTEGRATION_TIMES[j]) for all bands j (0..9) that are ingeste.</td>
 </tr>
 <tr class="row-even"><td rowspan="6"><strong>longitude_bounds</strong></td>
 <td><em>condition</em></td>
@@ -385,10 +385,10 @@
 <td>CODA version &gt;= 12</td>
 </tr>
 <tr class="row-even"><td><em>path</em></td>
-<td><strong>/MDR[]/Earthshine/GEO_EARTH_ACTUAL_INT_INDEX[timer_id][]/CORNER_ACTUAL[]/longitude</strong></td>
+<td><strong>/MDR[]/Earthshine/GEO_EARTH_ACTUAL_k[]/CORNER_ACTUAL[]/longitude</strong></td>
 </tr>
 <tr class="row-odd"><td><em>description</em></td>
-<td>The integration time index INT_INDEX[timer_id] is the index (starting with 1) of the timer with the minimum integration time (limited to the timers of those bands that are ingested). The corners ABCD are reordered as BDCA.</td>
+<td>The integration time index k is the index (starting with 1) of the minimum integration time such that UNIQUE_INT[k-1] == min(INTEGRATION_TIMES[j]) for all bands j (0..9) that are ingeste.</td>
 </tr>
 <tr class="row-even"><td><strong>wavelength_photon_radiance</strong></td>
 <td><em>path</em></td>
@@ -437,10 +437,10 @@
 <td>CODA version &gt;= 12</td>
 </tr>
 <tr class="row-odd"><td><em>path</em></td>
-<td><strong>/MDR[]/Earthshine/GEO_EARTH_ACTUAL_INT_INDEX[timer_id][]/SOLAR_ZENITH_ACTUAL[1]</strong></td>
+<td><strong>/MDR[]/Earthshine/GEO_EARTH_ACTUAL_k[]/SOLAR_ZENITH_ACTUAL[1]</strong></td>
 </tr>
 <tr class="row-even"><td><em>description</em></td>
-<td>The integration time index INT_INDEX[timer_id] is the index (starting with 1) of the timer with the minimum integration time (limited to the timers of those bands that are ingested).</td>
+<td>The integration time index k is the index (starting with 1) of the minimum integration time such that UNIQUE_INT[k-1] == min(INTEGRATION_TIMES[j]) for all bands j (0..9) that are ingeste.</td>
 </tr>
 <tr class="row-odd"><td rowspan="6"><strong>solar_azimuth_angle_toa</strong></td>
 <td><em>condition</em></td>
@@ -456,10 +456,10 @@
 <td>CODA version &gt;= 12</td>
 </tr>
 <tr class="row-odd"><td><em>path</em></td>
-<td><strong>/MDR[]/Earthshine/GEO_EARTH_ACTUAL_INT_INDEX[timer_id][]/SOLAR_AZIMUTH_ACTUAL[1]</strong></td>
+<td><strong>/MDR[]/Earthshine/GEO_EARTH_ACTUAL_k[]/SOLAR_AZIMUTH_ACTUAL[1]</strong></td>
 </tr>
 <tr class="row-even"><td><em>description</em></td>
-<td>The integration time index INT_INDEX[timer_id] is the index (starting with 1) of the timer with the minimum integration time (limited to the timers of those bands that are ingested).</td>
+<td>The integration time index k is the index (starting with 1) of the minimum integration time such that UNIQUE_INT[k-1] == min(INTEGRATION_TIMES[j]) for all bands j (0..9) that are ingeste.</td>
 </tr>
 <tr class="row-odd"><td rowspan="6"><strong>viewing_zenith_angle_toa</strong></td>
 <td><em>condition</em></td>
@@ -475,10 +475,10 @@
 <td>CODA version &gt;= 12</td>
 </tr>
 <tr class="row-odd"><td><em>path</em></td>
-<td><strong>/MDR[]/Earthshine/GEO_EARTH_ACTUAL_INT_INDEX[timer_id][]/SAT_ZENITH_ACTUAL[1]</strong></td>
+<td><strong>/MDR[]/Earthshine/GEO_EARTH_ACTUAL_k[]/SAT_ZENITH_ACTUAL[1]</strong></td>
 </tr>
 <tr class="row-even"><td><em>description</em></td>
-<td>The integration time index INT_INDEX[timer_id] is the index (starting with 1) of the timer with the minimum integration time (limited to the timers of those bands that are ingested).</td>
+<td>The integration time index k is the index (starting with 1) of the minimum integration time such that UNIQUE_INT[k-1] == min(INTEGRATION_TIMES[j]) for all bands j (0..9) that are ingeste.</td>
 </tr>
 <tr class="row-odd"><td rowspan="6"><strong>viewing_azimuth_angle_toa</strong></td>
 <td><em>condition</em></td>
@@ -494,10 +494,10 @@
 <td>CODA version &gt;= 12</td>
 </tr>
 <tr class="row-odd"><td><em>path</em></td>
-<td><strong>/MDR[]/Earthshine/GEO_EARTH_ACTUAL_INT_INDEX[timer_id][]/SAT_AZIMUTH_ACTUAL[1]</strong></td>
+<td><strong>/MDR[]/Earthshine/GEO_EARTH_ACTUAL_k[]/SAT_AZIMUTH_ACTUAL[1]</strong></td>
 </tr>
 <tr class="row-even"><td><em>description</em></td>
-<td>The integration time index INT_INDEX[timer_id] is the index (starting with 1) of the timer with the minimum integration time (limited to the timers of those bands that are ingested).</td>
+<td>The integration time index k is the index (starting with 1) of the minimum integration time such that UNIQUE_INT[k-1] == min(INTEGRATION_TIMES[j]) for all bands j (0..9) that are ingeste.</td>
 </tr>
 </tbody>
 </table>
