@@ -343,6 +343,20 @@ HARP_DOCFILES = \
 	doc/html/ingestions/MLS_L2_RHI.html \
 	doc/html/ingestions/MLS_L2_SO2.html \
 	doc/html/ingestions/MLS_L2_T.html \
+	doc/html/ingestions/NPP_SUOMI_L2_CRIMSS_EDR_MOISTURE.html \
+	doc/html/ingestions/NPP_SUOMI_L2_CRIMSS_EDR_PRESSURE.html \
+	doc/html/ingestions/NPP_SUOMI_L2_CRIMSS_EDR_TEMPERATURE.html \
+	doc/html/ingestions/NPP_SUOMI_L2_OMPS_EDR_OONP.html \
+	doc/html/ingestions/NPP_SUOMI_L2_OMPS_EDR_OOTC.html \
+	doc/html/ingestions/NPP_SUOMI_L2_OMPS_IP_IMOP.html \
+	doc/html/ingestions/NPP_SUOMI_L2_VIIRS_EDR_VAOO.html \
+	doc/html/ingestions/NPP_SUOMI_L2_VIIRS_EDR_VCBH.html \
+	doc/html/ingestions/NPP_SUOMI_L2_VIIRS_EDR_VCCL.html \
+	doc/html/ingestions/NPP_SUOMI_L2_VIIRS_EDR_VCDT.html \
+	doc/html/ingestions/NPP_SUOMI_L2_VIIRS_EDR_VCEP.html \
+	doc/html/ingestions/NPP_SUOMI_L2_VIIRS_EDR_VCTH.html \
+	doc/html/ingestions/NPP_SUOMI_L2_VIIRS_EDR_VCTP.html \
+	doc/html/ingestions/NPP_SUOMI_L2_VIIRS_EDR_VCTT.html \
 	doc/html/ingestions/OMI_L2_OMAERUV.html \
 	doc/html/ingestions/OMI_L2_OMBRO.html \
 	doc/html/ingestions/OMI_L2_OMCHOCHO.html \
@@ -1138,6 +1152,34 @@ doc/html/ingestions/MLS_L2_RHI.html:
 doc/html/ingestions/MLS_L2_SO2.html:
 	$(MAKE) harp_doc
 doc/html/ingestions/MLS_L2_T.html:
+	$(MAKE) harp_doc
+doc/html/ingestions/NPP_SUOMI_L2_CRIMSS_EDR_MOISTURE.html:
+	$(MAKE) harp_doc
+doc/html/ingestions/NPP_SUOMI_L2_CRIMSS_EDR_PRESSURE.html:
+	$(MAKE) harp_doc
+doc/html/ingestions/NPP_SUOMI_L2_CRIMSS_EDR_TEMPERATURE.html:
+	$(MAKE) harp_doc
+doc/html/ingestions/NPP_SUOMI_L2_OMPS_EDR_OONP.html:
+	$(MAKE) harp_doc
+doc/html/ingestions/NPP_SUOMI_L2_OMPS_EDR_OOTC.html:
+	$(MAKE) harp_doc
+doc/html/ingestions/NPP_SUOMI_L2_OMPS_IP_IMOP.html:
+	$(MAKE) harp_doc
+doc/html/ingestions/NPP_SUOMI_L2_VIIRS_EDR_VAOO.html:
+	$(MAKE) harp_doc
+doc/html/ingestions/NPP_SUOMI_L2_VIIRS_EDR_VCBH.html:
+	$(MAKE) harp_doc
+doc/html/ingestions/NPP_SUOMI_L2_VIIRS_EDR_VCCL.html:
+	$(MAKE) harp_doc
+doc/html/ingestions/NPP_SUOMI_L2_VIIRS_EDR_VCDT.html:
+	$(MAKE) harp_doc
+doc/html/ingestions/NPP_SUOMI_L2_VIIRS_EDR_VCEP.html:
+	$(MAKE) harp_doc
+doc/html/ingestions/NPP_SUOMI_L2_VIIRS_EDR_VCTH.html:
+	$(MAKE) harp_doc
+doc/html/ingestions/NPP_SUOMI_L2_VIIRS_EDR_VCTP.html:
+	$(MAKE) harp_doc
+doc/html/ingestions/NPP_SUOMI_L2_VIIRS_EDR_VCTT.html:
 	$(MAKE) harp_doc
 doc/html/ingestions/OMI_L2_OMAERUV.html:
 	$(MAKE) harp_doc
