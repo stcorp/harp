@@ -217,13 +217,16 @@ cloud_albedo                                                                  X 
 cloud_base_albedo                                                             X            X
 cloud_base_height                                                             X            X
 cloud_base_pressure                                                           X            X
+cloud_base_temperature                                                        X            X
 cloud_fraction                                                                X            X
+cloud_height                                                                  X            X
 cloud_optical_depth                                                           X            X             this is equal to 'cloud optical thickness'
 cloud_pressure                                                                X            X
-cloud_height                                                                  X            X
+cloud_temperature                                                             X            X
 cloud_top_albedo                                                              X            X
 cloud_top_height                                                              X            X
 cloud_top_pressure                                                            X            X
+cloud_top_temperature                                                         X            X
 collocation_index                                                                                        zero-based index as provided in the collocation result file
 column_density                                stratospheric,  amf, apriori,   X       X    X             this is the mass density
                                               tropospheric    avk
@@ -250,7 +253,7 @@ integration_time                                                                
                                                                                                          (at e.g. altitude or wavelength) compared to overal datetime_length;
                                                                                                          only use if integration time differs from datetime_length;
                                                                                                          integration_time longer than datetime_length that covers multiple
-                                                                                                         datetime values means replication of measured value in time dimension.
+                                                                                                         datetime values means replication of measured value in time dimension
 latitude                                      sensor                          X            (lat)
 latitude_bounds                                                                            (lat)
 longitude                                     sensor                          X            (lon)
@@ -286,6 +289,8 @@ surface_albedo                                                                X 
 temperature                                   surface                         X       X    X
 tropopause_altitude                                                           X            X             altitude of the troposphere/stratosphere boundary location
 tropopause_pressure                                                           X            X             pressure level of the troposphere/stratosphere boundary location
+validity                                                                                                 validity flag for each time sample or whole product;
+                                                                                                         only to be used if validity flag is for multiple variables combined
 viewing_azimuth_angle                                                         X
 viewing_elevation_angle                                                       X
 viewing_zenith_angle                                                          X
