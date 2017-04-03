@@ -159,29 +159,29 @@
 <td>seconds since 1995-01-01</td>
 <td>start time of the measurement</td>
 </tr>
-<tr class="row-even"><td><strong>longitude</strong></td>
-<td>float</td>
-<td>{<em>time</em>}</td>
-<td>degree_east</td>
-<td>longitude of the ground pixel center (WGS84)</td>
-</tr>
-<tr class="row-odd"><td><strong>latitude</strong></td>
+<tr class="row-even"><td><strong>latitude</strong></td>
 <td>float</td>
 <td>{<em>time</em>}</td>
 <td>degree_north</td>
 <td>latitude of the ground pixel center (WGS84)</td>
 </tr>
-<tr class="row-even"><td><strong>longitude_bounds</strong></td>
+<tr class="row-odd"><td><strong>longitude</strong></td>
 <td>float</td>
-<td>{<em>time</em>, 4}</td>
+<td>{<em>time</em>}</td>
 <td>degree_east</td>
-<td>longitudes of the ground pixel corners (WGS84)</td>
+<td>longitude of the ground pixel center (WGS84)</td>
 </tr>
-<tr class="row-odd"><td><strong>latitude_bounds</strong></td>
+<tr class="row-even"><td><strong>latitude_bounds</strong></td>
 <td>float</td>
 <td>{<em>time</em>, 4}</td>
 <td>degree_north</td>
 <td>latitudes of the ground pixel corners (WGS84)</td>
+</tr>
+<tr class="row-odd"><td><strong>longitude_bounds</strong></td>
+<td>float</td>
+<td>{<em>time</em>, 4}</td>
+<td>degree_east</td>
+<td>longitudes of the ground pixel corners (WGS84)</td>
 </tr>
 <tr class="row-even"><td><strong>solar_zenith_angle</strong></td>
 <td>float</td>
@@ -219,71 +219,83 @@
 <td>Pa</td>
 <td>pressure boundaries for each layer</td>
 </tr>
+<tr class="row-even"><td><strong>cloud_fraction</strong></td>
+<td>float</td>
+<td>{<em>time</em>}</td>
+<td>&nbsp;</td>
+<td>cloud fraction</td>
+</tr>
+<tr class="row-odd"><td><strong>cloud_fraction_uncertainty</strong></td>
+<td>float</td>
+<td>{<em>time</em>}</td>
+<td>&nbsp;</td>
+<td>effective cloud fraction uncertainty</td>
+</tr>
 <tr class="row-even"><td><strong>cloud_pressure</strong></td>
 <td>float</td>
 <td>{<em>time</em>}</td>
 <td>hPa</td>
 <td>cloud optical centroid pressure from the cloud product</td>
 </tr>
-<tr class="row-odd"><td><strong>tropopause_pressure</strong></td>
+<tr class="row-odd"><td><strong>cloud_pressure_uncertainty</strong></td>
+<td>float</td>
+<td>{<em>time</em>}</td>
+<td>hPa</td>
+<td>cloud optical centroid pressure from the cloud product</td>
+</tr>
+<tr class="row-even"><td><strong>tropopause_pressure</strong></td>
 <td>double</td>
 <td>{<em>time</em>}</td>
 <td>Pa</td>
 <td>tropopause pressure</td>
 </tr>
-<tr class="row-even"><td><strong>tropospheric_NO2_column_number_density</strong></td>
+<tr class="row-odd"><td><strong>tropospheric_NO2_column_number_density</strong></td>
 <td>float</td>
 <td>{<em>time</em>}</td>
 <td>molec/cm^2</td>
 <td>tropospheric vertical column of NO2</td>
 </tr>
-<tr class="row-odd"><td><strong>tropospheric_NO2_column_number_density_uncertainty</strong></td>
+<tr class="row-even"><td><strong>tropospheric_NO2_column_number_density_uncertainty</strong></td>
 <td>float</td>
 <td>{<em>time</em>}</td>
 <td>molec/cm^2</td>
 <td>uncertainty of the tropospheric vertical column of NO2 (standard error)</td>
 </tr>
-<tr class="row-even"><td><strong>tropospheric_NO2_column_number_density_avk</strong></td>
+<tr class="row-odd"><td><strong>tropospheric_NO2_column_number_density_avk</strong></td>
 <td>float</td>
 <td>{<em>time</em>, <em>vertical</em>}</td>
 <td>&nbsp;</td>
 <td>averaging kernel for the tropospheric vertical column number density of NO2</td>
 </tr>
-<tr class="row-odd"><td><strong>tropospheric_NO2_column_number_density_amf</strong></td>
+<tr class="row-even"><td><strong>tropospheric_NO2_column_number_density_amf</strong></td>
 <td>float</td>
 <td>{<em>time</em>}</td>
 <td>&nbsp;</td>
 <td>tropospheric air mass factor, computed by integrating the altitude dependent air mass factor over the atmospheric layers from the surface up to and including the layer with the tropopause</td>
 </tr>
-<tr class="row-even"><td><strong>NO2_column_number_density</strong></td>
+<tr class="row-odd"><td><strong>NO2_column_number_density</strong></td>
 <td>float</td>
 <td>{<em>time</em>}</td>
 <td>molec/cm^2</td>
 <td>total vertical column of NO2 (ratio of the slant column density of NO2 and the total air mass factor)</td>
 </tr>
-<tr class="row-odd"><td><strong>NO2_column_number_density_uncertainty</strong></td>
+<tr class="row-even"><td><strong>NO2_column_number_density_uncertainty</strong></td>
 <td>float</td>
 <td>{<em>time</em>}</td>
 <td>molec/cm^2</td>
 <td>uncertainty of the total vertical column of NO2 (standard error)</td>
 </tr>
-<tr class="row-even"><td><strong>NO2_column_number_density_amf</strong></td>
+<tr class="row-odd"><td><strong>NO2_column_number_density_amf</strong></td>
 <td>float</td>
 <td>{<em>time</em>}</td>
 <td>&nbsp;</td>
 <td>total air mass factor, computed by integrating the altitude dependent air mass factor over the atmospheric layers from the surface to top-of-atmosphere</td>
 </tr>
-<tr class="row-odd"><td><strong>NO2_column_number_density_avk</strong></td>
+<tr class="row-even"><td><strong>NO2_column_number_density_avk</strong></td>
 <td>float</td>
 <td>{<em>time</em>, <em>vertical</em>}</td>
 <td>&nbsp;</td>
 <td>averaging kernel for the total column number density of NO2</td>
-</tr>
-<tr class="row-even"><td><strong>cloud_fraction</strong></td>
-<td>float</td>
-<td>{<em>time</em>}</td>
-<td>&nbsp;</td>
-<td>cloud radiance fraction at 439nm for NO2 retrieval</td>
 </tr>
 <tr class="row-odd"><td><strong>surface_albedo</strong></td>
 <td>float</td>
@@ -326,6 +338,10 @@
 <td>summed, total</td>
 <td>whether to use total_no2_vertical_column (which is derived from the total slant column diveded by the total amf) or summed_no2_total_vertical_column (which is the sum of the retrieved tropospheric and statospheric columns); option values are &#8216;summed&#8217; (default) and &#8216;total&#8217;</td>
 </tr>
+<tr class="row-odd"><td>cloud_fraction</td>
+<td>radiance</td>
+<td>whether to ingest the cloud fraction (default) or the radiance cloud fraction (cloud_fraction=radiance)</td>
+</tr>
 </tbody>
 </table>
 </div>
@@ -355,21 +371,21 @@
 <tr class="row-even"><td><em>description</em></td>
 <td>time converted from milliseconds since a reference time (with the reference time being 1995-01-01) to seconds since 1995-01-01; the time associated with a scanline is repeated for each pixel in the scanline</td>
 </tr>
-<tr class="row-odd"><td><strong>longitude</strong></td>
-<td><em>path</em></td>
-<td><strong>/PRODUCT/longitude[]</strong></td>
-</tr>
-<tr class="row-even"><td><strong>latitude</strong></td>
+<tr class="row-odd"><td><strong>latitude</strong></td>
 <td><em>path</em></td>
 <td><strong>/PRODUCT/latitude[]</strong></td>
 </tr>
-<tr class="row-odd"><td><strong>longitude_bounds</strong></td>
+<tr class="row-even"><td><strong>longitude</strong></td>
 <td><em>path</em></td>
-<td><strong>/PRODUCT/SUPPORT_DATA/GEOLOCATIONS/longitude_bounds[]</strong></td>
+<td><strong>/PRODUCT/longitude[]</strong></td>
 </tr>
-<tr class="row-even"><td><strong>latitude_bounds</strong></td>
+<tr class="row-odd"><td><strong>latitude_bounds</strong></td>
 <td><em>path</em></td>
 <td><strong>/PRODUCT/SUPPORT_DATA/GEOLOCATIONS/latitude_bounds[]</strong></td>
+</tr>
+<tr class="row-even"><td><strong>longitude_bounds</strong></td>
+<td><em>path</em></td>
+<td><strong>/PRODUCT/SUPPORT_DATA/GEOLOCATIONS/longitude_bounds[]</strong></td>
 </tr>
 <tr class="row-odd"><td><strong>solar_zenith_angle</strong></td>
 <td><em>path</em></td>
@@ -398,9 +414,36 @@
 <tr class="row-odd"><td><em>description</em></td>
 <td>pressure in Pa at level k is derived from surface pressure in hPa as: tm5_pressure_level_a[k] + tm5_pressure_level_b[k] * tm5_surface_pressure[] * 100.0</td>
 </tr>
-<tr class="row-even"><td><strong>cloud_pressure</strong></td>
+<tr class="row-even"><td rowspan="4"><strong>cloud_fraction</strong></td>
+<td><em>condition</em></td>
+<td>cloud_fraction unset</td>
+</tr>
+<tr class="row-odd"><td><em>path</em></td>
+<td><strong>/PRODUCT/SUPPORT_DATA/INPUT_DATA/cloud_fraction[]</strong></td>
+</tr>
+<tr class="row-even"><td><em>condition</em></td>
+<td>cloud_fraction=radiance</td>
+</tr>
+<tr class="row-odd"><td><em>path</em></td>
+<td><strong>/PRODUCT/SUPPORT_DATA/DETAILED_RESULTS/cloud_radiance_fraction_no2[]</strong></td>
+</tr>
+<tr class="row-even"><td rowspan="3"><strong>cloud_fraction_uncertainty</strong></td>
+<td><em>available</em></td>
+<td>optional</td>
+</tr>
+<tr class="row-odd"><td><em>condition</em></td>
+<td>cloud_fraction unset</td>
+</tr>
+<tr class="row-even"><td><em>path</em></td>
+<td><strong>/PRODUCT/SUPPORT_DATA/INPUT_DATA/cloud_fraction_uncertainty[]</strong></td>
+</tr>
+<tr class="row-odd"><td><strong>cloud_pressure</strong></td>
 <td><em>path</em></td>
 <td><strong>/PRODUCT/SUPPORT_DATA/INPUT_DATA/cloud_pressure[]</strong></td>
+</tr>
+<tr class="row-even"><td><strong>cloud_pressure_uncertainty</strong></td>
+<td><em>path</em></td>
+<td><strong>/PRODUCT/SUPPORT_DATA/INPUT_DATA/cloud_pressure_uncertainty[]</strong></td>
 </tr>
 <tr class="row-odd"><td rowspan="2"><strong>tropopause_pressure</strong></td>
 <td><em>path</em></td>
@@ -462,15 +505,11 @@
 <td><em>path</em></td>
 <td><strong>/PRODUCT/averaging_kernel[]</strong></td>
 </tr>
-<tr class="row-even"><td><strong>cloud_fraction</strong></td>
-<td><em>path</em></td>
-<td><strong>/PRODUCT/SUPPORT_DATA/DETAILED_RESULTS/cloud_radiance_fraction_no2[]</strong></td>
-</tr>
-<tr class="row-odd"><td><strong>surface_albedo</strong></td>
+<tr class="row-even"><td><strong>surface_albedo</strong></td>
 <td><em>path</em></td>
 <td><strong>/PRODUCT/SUPPORT_DATA/INPUT_DATA/surface_albedo_no2[]</strong></td>
 </tr>
-<tr class="row-even"><td><strong>validity</strong></td>
+<tr class="row-odd"><td><strong>validity</strong></td>
 <td><em>path</em></td>
 <td><strong>/PRODUCT/SUPPORT_DATA/DETAILED_RESULTS/processing_quality_flags[]</strong></td>
 </tr>
