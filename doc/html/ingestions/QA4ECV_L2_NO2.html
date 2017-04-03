@@ -243,59 +243,59 @@
 <td>molec/cm^2</td>
 <td>uncertainty of the tropospheric vertical column of NO2 (standard error)</td>
 </tr>
-<tr class="row-even"><td><strong>tropospheric_NO2_column_number_density_validity</strong></td>
-<td>int32</td>
-<td>{<em>time</em>}</td>
-<td>&nbsp;</td>
-<td>processing quality flag of the tropospheric vertical column of NO2</td>
-</tr>
-<tr class="row-odd"><td><strong>tropospheric_NO2_column_number_density_avk</strong></td>
+<tr class="row-even"><td><strong>tropospheric_NO2_column_number_density_avk</strong></td>
 <td>float</td>
 <td>{<em>time</em>, <em>vertical</em>}</td>
 <td>&nbsp;</td>
 <td>averaging kernel for the tropospheric vertical column number density of NO2</td>
 </tr>
-<tr class="row-even"><td><strong>tropospheric_NO2_column_number_density_amf</strong></td>
+<tr class="row-odd"><td><strong>tropospheric_NO2_column_number_density_amf</strong></td>
 <td>float</td>
 <td>{<em>time</em>}</td>
 <td>&nbsp;</td>
 <td>tropospheric air mass factor, computed by integrating the altitude dependent air mass factor over the atmospheric layers from the surface up to and including the layer with the tropopause</td>
 </tr>
-<tr class="row-odd"><td><strong>NO2_column_number_density</strong></td>
+<tr class="row-even"><td><strong>NO2_column_number_density</strong></td>
 <td>float</td>
 <td>{<em>time</em>}</td>
 <td>molec/cm^2</td>
 <td>total vertical column of NO2 (ratio of the slant column density of NO2 and the total air mass factor)</td>
 </tr>
-<tr class="row-even"><td><strong>NO2_column_number_density_uncertainty</strong></td>
+<tr class="row-odd"><td><strong>NO2_column_number_density_uncertainty</strong></td>
 <td>float</td>
 <td>{<em>time</em>}</td>
 <td>molec/cm^2</td>
 <td>uncertainty of the total vertical column of NO2 (standard error)</td>
 </tr>
-<tr class="row-odd"><td><strong>NO2_column_number_density_amf</strong></td>
+<tr class="row-even"><td><strong>NO2_column_number_density_amf</strong></td>
 <td>float</td>
 <td>{<em>time</em>}</td>
 <td>&nbsp;</td>
 <td>total air mass factor, computed by integrating the altitude dependent air mass factor over the atmospheric layers from the surface to top-of-atmosphere</td>
 </tr>
-<tr class="row-even"><td><strong>NO2_column_number_density_avk</strong></td>
+<tr class="row-odd"><td><strong>NO2_column_number_density_avk</strong></td>
 <td>float</td>
 <td>{<em>time</em>, <em>vertical</em>}</td>
 <td>&nbsp;</td>
 <td>averaging kernel for the total column number density of NO2</td>
 </tr>
-<tr class="row-odd"><td><strong>cloud_fraction</strong></td>
+<tr class="row-even"><td><strong>cloud_fraction</strong></td>
 <td>float</td>
 <td>{<em>time</em>}</td>
 <td>&nbsp;</td>
 <td>cloud radiance fraction at 439nm for NO2 retrieval</td>
 </tr>
-<tr class="row-even"><td><strong>surface_albedo</strong></td>
+<tr class="row-odd"><td><strong>surface_albedo</strong></td>
 <td>float</td>
 <td>{<em>time</em>}</td>
 <td>&nbsp;</td>
 <td>surface albedo in the NO2 fitting window</td>
+</tr>
+<tr class="row-even"><td><strong>validity</strong></td>
+<td>int32</td>
+<td>{<em>time</em>}</td>
+<td>&nbsp;</td>
+<td>processing quality flag</td>
 </tr>
 <tr class="row-odd"><td><strong>index</strong></td>
 <td>int32</td>
@@ -417,62 +417,62 @@
 <td><em>path</em></td>
 <td><strong>/PRODUCT/tropospheric_no2_vertical_column_uncertainty[]</strong></td>
 </tr>
-<tr class="row-odd"><td><strong>tropospheric_NO2_column_number_density_validity</strong></td>
-<td><em>path</em></td>
-<td><strong>/PRODUCT/SUPPORT_DATA/DETAILED_RESULTS/processing_quality_flags[]</strong></td>
-</tr>
-<tr class="row-even"><td rowspan="2"><strong>tropospheric_NO2_column_number_density_avk</strong></td>
+<tr class="row-odd"><td rowspan="2"><strong>tropospheric_NO2_column_number_density_avk</strong></td>
 <td><em>path</em></td>
 <td><strong>/PRODUCT/averaging_kernel[], /PRODUCT/amf_total[], /PRODUCT/amf_trop[], /PRODUCT/tm5_tropopause_layer_index[]</strong></td>
 </tr>
-<tr class="row-odd"><td><em>description</em></td>
+<tr class="row-even"><td><em>description</em></td>
 <td>averaging_kernel[layer] = if layer &lt;= tm5_tropopause_layer_index then averaging_kernel[layer] * amf_total / amf_trop else 0</td>
 </tr>
-<tr class="row-even"><td><strong>tropospheric_NO2_column_number_density_amf</strong></td>
+<tr class="row-odd"><td><strong>tropospheric_NO2_column_number_density_amf</strong></td>
 <td><em>path</em></td>
 <td><strong>/PRODUCT/amf_trop[]</strong></td>
 </tr>
-<tr class="row-odd"><td rowspan="4"><strong>NO2_column_number_density</strong></td>
+<tr class="row-even"><td rowspan="4"><strong>NO2_column_number_density</strong></td>
 <td><em>condition</em></td>
 <td>total_column=summed or total_column unset</td>
 </tr>
-<tr class="row-even"><td><em>path</em></td>
+<tr class="row-odd"><td><em>path</em></td>
 <td><strong>/PRODUCT/SUPPORT_DATA/DETAILED_RESULTS/summed_no2_total_vertical_column[]</strong></td>
 </tr>
-<tr class="row-odd"><td><em>condition</em></td>
+<tr class="row-even"><td><em>condition</em></td>
 <td>total_column=total</td>
 </tr>
-<tr class="row-even"><td><em>path</em></td>
+<tr class="row-odd"><td><em>path</em></td>
 <td><strong>/PRODUCT/SUPPORT_DATA/DETAILED_RESULTS/total_no2_vertical_column[]</strong></td>
 </tr>
-<tr class="row-odd"><td rowspan="4"><strong>NO2_column_number_density_uncertainty</strong></td>
+<tr class="row-even"><td rowspan="4"><strong>NO2_column_number_density_uncertainty</strong></td>
 <td><em>condition</em></td>
 <td>total_column=summed  or total_column unset</td>
 </tr>
-<tr class="row-even"><td><em>path</em></td>
+<tr class="row-odd"><td><em>path</em></td>
 <td><strong>/PRODUCT/SUPPORT_DATA/DETAILED_RESULTS/summed_no2_total_vertical_column_uncertainty[]</strong></td>
 </tr>
-<tr class="row-odd"><td><em>condition</em></td>
+<tr class="row-even"><td><em>condition</em></td>
 <td>total_column=total</td>
 </tr>
-<tr class="row-even"><td><em>path</em></td>
+<tr class="row-odd"><td><em>path</em></td>
 <td><strong>/PRODUCT/SUPPORT_DATA/DETAILED_RESULTS/total_no2_vertical_column_uncertainty[]</strong></td>
 </tr>
-<tr class="row-odd"><td><strong>NO2_column_number_density_amf</strong></td>
+<tr class="row-even"><td><strong>NO2_column_number_density_amf</strong></td>
 <td><em>path</em></td>
 <td><strong>/PRODUCT/amf_total[]</strong></td>
 </tr>
-<tr class="row-even"><td><strong>NO2_column_number_density_avk</strong></td>
+<tr class="row-odd"><td><strong>NO2_column_number_density_avk</strong></td>
 <td><em>path</em></td>
 <td><strong>/PRODUCT/averaging_kernel[]</strong></td>
 </tr>
-<tr class="row-odd"><td><strong>cloud_fraction</strong></td>
+<tr class="row-even"><td><strong>cloud_fraction</strong></td>
 <td><em>path</em></td>
 <td><strong>/PRODUCT/SUPPORT_DATA/DETAILED_RESULTS/cloud_radiance_fraction_no2[]</strong></td>
 </tr>
-<tr class="row-even"><td><strong>surface_albedo</strong></td>
+<tr class="row-odd"><td><strong>surface_albedo</strong></td>
 <td><em>path</em></td>
 <td><strong>/PRODUCT/SUPPORT_DATA/INPUT_DATA/surface_albedo_no2[]</strong></td>
+</tr>
+<tr class="row-even"><td><strong>validity</strong></td>
+<td><em>path</em></td>
+<td><strong>/PRODUCT/SUPPORT_DATA/DETAILED_RESULTS/processing_quality_flags[]</strong></td>
 </tr>
 </tbody>
 </table>

@@ -695,6 +695,14 @@ static int read_surface_albedo_hcho(void *user_data, harp_array data)
                         info->num_scanlines * info->num_pixels, data);
 }
 
+static int read_validity(void *user_data, harp_array data)
+{
+    ingest_info *info = (ingest_info *)user_data;
+
+    return read_dataset(info->detailed_results_cursor, "processing_quality_flags", harp_type_int32,
+                        info->num_scanlines * info->num_pixels, data);
+}
+
 static int read_no2_column(void *user_data, harp_array data)
 {
     ingest_info *info = (ingest_info *)user_data;
@@ -755,14 +763,6 @@ static int read_no2_column_tropospheric_amf(void *user_data, harp_array data)
 
     return read_dataset(info->product_cursor, "amf_trop", harp_type_float, info->num_scanlines * info->num_pixels,
                         data);
-}
-
-static int read_no2_column_tropospheric_validity(void *user_data, harp_array data)
-{
-    ingest_info *info = (ingest_info *)user_data;
-
-    return read_dataset(info->detailed_results_cursor, "processing_quality_flags", harp_type_int32,
-                        info->num_scanlines * info->num_pixels, data);
 }
 
 static int read_no2_column_tropospheric_avk(void *user_data, harp_array data)
@@ -868,14 +868,6 @@ static int read_hcho_column_tropospheric_uncertainty_systematic(void *user_data,
 
     return read_dataset(info->product_cursor, "tropospheric_hcho_vertical_column_uncertainty_systematic",
                         harp_type_float, info->num_scanlines * info->num_pixels, data);
-}
-
-static int read_hcho_column_tropospheric_validity(void *user_data, harp_array data)
-{
-    ingest_info *info = (ingest_info *)user_data;
-
-    return read_dataset(info->detailed_results_cursor, "processing_quality_flags", harp_type_int32,
-                        info->num_scanlines * info->num_pixels, data);
 }
 
 static int read_hcho_column_tropospheric_amf(void *user_data, harp_array data)
@@ -1070,15 +1062,6 @@ static void register_hcho_product(void)
     path = "/PRODUCT/tropospheric_hcho_vertical_column_uncertainty_systematic[]";
     harp_variable_definition_add_mapping(variable_definition, NULL, NULL, path, NULL);
 
-    description = "processing quality flag of the tropospheric vertical column of HCHO";
-    variable_definition =
-        harp_ingestion_register_variable_full_read(product_definition,
-                                                   "tropospheric_HCHO_column_number_density_validity",
-                                                   harp_type_int32, 1, dimension_type, NULL, description, NULL,
-                                                   NULL, read_hcho_column_tropospheric_validity);
-    path = "/PRODUCT/SUPPORT_DATA/DETAILED_RESULTS/processing_quality_flags[]";
-    harp_variable_definition_add_mapping(variable_definition, NULL, NULL, path, NULL);
-
     description = "tropospheric air mass factor";
     variable_definition =
         harp_ingestion_register_variable_full_read(product_definition, "tropospheric_HCHO_column_number_density_amf",
@@ -1116,6 +1099,13 @@ static void register_hcho_product(void)
                                                    harp_type_float, 1, dimension_type, NULL, description, NULL, NULL,
                                                    read_surface_albedo_hcho);
     path = "/PRODUCT/SUPPORT_DATA/INPUT_DATA/surface_albedo_hcho[]";
+    harp_variable_definition_add_mapping(variable_definition, NULL, NULL, path, NULL);
+
+    description = "processing quality flag";
+    variable_definition =
+        harp_ingestion_register_variable_full_read(product_definition, "validity", harp_type_int32, 1, dimension_type,
+                                                   NULL, description, NULL, NULL, read_validity);
+    path = "/PRODUCT/SUPPORT_DATA/DETAILED_RESULTS/processing_quality_flags[]";
     harp_variable_definition_add_mapping(variable_definition, NULL, NULL, path, NULL);
 }
 
@@ -1166,15 +1156,6 @@ static void register_no2_product(void)
                                                    harp_type_float, 1, dimension_type, NULL, description, "molec/cm^2",
                                                    NULL, read_no2_column_tropospheric_uncertainty);
     path = "/PRODUCT/tropospheric_no2_vertical_column_uncertainty[]";
-    harp_variable_definition_add_mapping(variable_definition, NULL, NULL, path, NULL);
-
-    description = "processing quality flag of the tropospheric vertical column of NO2";
-    variable_definition =
-        harp_ingestion_register_variable_full_read(product_definition,
-                                                   "tropospheric_NO2_column_number_density_validity",
-                                                   harp_type_int32, 1, dimension_type, NULL, description, NULL,
-                                                   NULL, read_no2_column_tropospheric_validity);
-    path = "/PRODUCT/SUPPORT_DATA/DETAILED_RESULTS/processing_quality_flags[]";
     harp_variable_definition_add_mapping(variable_definition, NULL, NULL, path, NULL);
 
     description = "averaging kernel for the tropospheric vertical column number density of NO2";
@@ -1250,6 +1231,13 @@ static void register_no2_product(void)
                                                    harp_type_float, 1, dimension_type, NULL, description, NULL, NULL,
                                                    read_surface_albedo_no2);
     path = "/PRODUCT/SUPPORT_DATA/INPUT_DATA/surface_albedo_no2[]";
+    harp_variable_definition_add_mapping(variable_definition, NULL, NULL, path, NULL);
+
+    description = "processing quality flag";
+    variable_definition =
+        harp_ingestion_register_variable_full_read(product_definition, "validity", harp_type_int32, 1, dimension_type,
+                                                   NULL, description, NULL, NULL, read_validity);
+    path = "/PRODUCT/SUPPORT_DATA/DETAILED_RESULTS/processing_quality_flags[]";
     harp_variable_definition_add_mapping(variable_definition, NULL, NULL, path, NULL);
 }
 
