@@ -1,10 +1,15 @@
 * Added ingestion support for NPP-Suomi.
 
+* Allow 'Conventions' global attribute to contain more than just a reference
+  to HARP.
+
 * Renamed O3MSAF codadef to ACSAF. When updating HARP, you should remove
   any existing O3SMAF-*.codadef files from your installation directory.
   Otherwise you will get 'detection rule for ... is shadowed by ... ' errors.
 
 * Fixed issue with TES TL2CH4L ingestion.
+
+* Updates to Aeolus, S5P, and QA4ECV product ingestions.
 
 0.5 2017-03-26
 ~~~~~~~~~~~~~~
