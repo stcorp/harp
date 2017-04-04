@@ -50,6 +50,7 @@ int harp_ingestion_module_cci_l2_o3_lp_init(void);
 int harp_ingestion_module_cci_l2_o3_np_init(void);
 int harp_ingestion_module_cci_l2_o3_tc_init(void);
 int harp_ingestion_module_cci_l3_aerosol_init(void);
+int harp_ingestion_module_cci_l3_cloud_init(void);
 int harp_ingestion_module_cci_l3_ghg_init(void);
 int harp_ingestion_module_cci_l3_o3_lp_init(void);
 int harp_ingestion_module_cci_l3_o3_np_init(void);
@@ -103,6 +104,7 @@ static module_init_func_t *module_init_func[] = {
     harp_ingestion_module_cci_l2_o3_np_init,
     harp_ingestion_module_cci_l2_o3_tc_init,
     harp_ingestion_module_cci_l3_aerosol_init,
+    harp_ingestion_module_cci_l3_cloud_init,
     harp_ingestion_module_cci_l3_ghg_init,
     harp_ingestion_module_cci_l3_o3_lp_init,
     harp_ingestion_module_cci_l3_o3_np_init,

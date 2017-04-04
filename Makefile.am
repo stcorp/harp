@@ -94,6 +94,7 @@ libharp_la_SOURCES = \
 	libharp/harp-ingest-cci_l2_o3_np.c \
 	libharp/harp-ingest-cci_l2_o3_tc.c \
 	libharp/harp-ingest-cci_l3_aerosol.c \
+	libharp/harp-ingest-cci_l3_cloud.c \
 	libharp/harp-ingest-cci_l3_ghg.c \
 	libharp/harp-ingest-cci_l3_o3_lp.c \
 	libharp/harp-ingest-cci_l3_o3_np.c \
@@ -334,6 +335,7 @@ ENVISAT_SCIAMACHY_DEFINITION_FILE = ENVISAT_SCIAMACHY-@CODADEF_VERSION_ENVISAT_S
 EPS_DEFINITION_FILE = EPS-@CODADEF_VERSION_EPS@.codadef
 ERS_GOME_DEFINITION_FILE = ERS_GOME-@CODADEF_VERSION_ERS_GOME@.codadef
 ESACCI_AEROSOL_DEFINITION_FILE = ESACCI_AEROSOL-@CODADEF_VERSION_ESACCI_AEROSOL@.codadef
+ESACCI_CLOUD_DEFINITION_FILE = ESACCI_CLOUD-@CODADEF_VERSION_ESACCI_CLOUD@.codadef
 ESACCI_GHG_DEFINITION_FILE = ESACCI_GHG-@CODADEF_VERSION_ESACCI_GHG@.codadef
 ESACCI_OZONE_DEFINITION_FILE = ESACCI_OZONE-@CODADEF_VERSION_ESACCI_OZONE@.codadef
 GEOMS_DEFINITION_FILE = GEOMS-@CODADEF_VERSION_GEOMS@.codadef
@@ -359,6 +361,7 @@ DEFINITION_FILES = \
 	definitions/$(EPS_DEFINITION_FILE) \
 	definitions/$(ERS_GOME_DEFINITION_FILE) \
 	definitions/$(ESACCI_AEROSOL_DEFINITION_FILE) \
+	definitions/$(ESACCI_CLOUD_DEFINITION_FILE) \
 	definitions/$(ESACCI_GHG_DEFINITION_FILE) \
 	definitions/$(ESACCI_OZONE_DEFINITION_FILE) \
 	definitions/$(GEOMS_DEFINITION_FILE) \
@@ -488,6 +491,15 @@ definitions/$(ESACCI_AEROSOL_DEFINITION_FILE):
 	@$(srcdir)/codadef.sh $(srcdir)/definitions/ESACCI_AEROSOL definitions
 	@if test ! -f definitions/$(ESACCI_AEROSOL_DEFINITION_FILE) ; then \
 	  echo definitions/$(ESACCI_AEROSOL_DEFINITION_FILE) not created. ; \
+	  echo run './config.status --recheck' to update the .codadef version reference. ; \
+	  exit 1 ; \
+	 fi
+
+definitions/$(ESACCI_CLOUD_DEFINITION_FILE):
+	test -d definitions || $(mkinstalldirs) definitions
+	@$(srcdir)/codadef.sh $(srcdir)/definitions/ESACCI_CLOUD definitions
+	@if test ! -f definitions/$(ESACCI_CLOUD_DEFINITION_FILE) ; then \
+	  echo definitions/$(ESACCI_CLOUD_DEFINITION_FILE) not created. ; \
 	  echo run './config.status --recheck' to update the .codadef version reference. ; \
 	  exit 1 ; \
 	 fi

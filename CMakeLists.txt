@@ -265,6 +265,7 @@ set(LIBHARP_SOURCES
   libharp/harp-ingest-cci_l2_o3_np.c
   libharp/harp-ingest-cci_l2_o3_tc.c
   libharp/harp-ingest-cci_l3_aerosol.c
+  libharp/harp-ingest-cci_l3_cloud.c
   libharp/harp-ingest-cci_l3_ghg.c
   libharp/harp-ingest-cci_l3_o3_lp.c
   libharp/harp-ingest-cci_l3_o3_np.c
@@ -585,6 +586,7 @@ add_codadef(ENVISAT_SCIAMACHY)
 add_codadef(EPS)
 add_codadef(ERS_GOME)
 add_codadef(ESACCI_AEROSOL)
+add_codadef(ESACCI_CLOUD)
 add_codadef(ESACCI_GHG)
 add_codadef(ESACCI_OZONE)
 add_codadef(GEOMS)
