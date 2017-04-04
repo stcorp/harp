@@ -159,11 +159,11 @@
 <td>seconds since 2010-01-01</td>
 <td>start time of the measurement</td>
 </tr>
-<tr class="row-even"><td><strong>longitude</strong></td>
-<td>float</td>
+<tr class="row-even"><td><strong>validity</strong></td>
+<td>int32</td>
 <td>{<em>time</em>}</td>
-<td>degree_east</td>
-<td>longitude of the ground pixel center (WGS84)</td>
+<td>&nbsp;</td>
+<td>processing quality flag</td>
 </tr>
 <tr class="row-odd"><td><strong>latitude</strong></td>
 <td>float</td>
@@ -171,11 +171,11 @@
 <td>degree_north</td>
 <td>latitude of the ground pixel center (WGS84)</td>
 </tr>
-<tr class="row-even"><td><strong>longitude_bounds</strong></td>
+<tr class="row-even"><td><strong>longitude</strong></td>
 <td>float</td>
-<td>{<em>time</em>, 4}</td>
+<td>{<em>time</em>}</td>
 <td>degree_east</td>
-<td>longitudes of the ground pixel corners (WGS84)</td>
+<td>longitude of the ground pixel center (WGS84)</td>
 </tr>
 <tr class="row-odd"><td><strong>latitude_bounds</strong></td>
 <td>float</td>
@@ -183,11 +183,11 @@
 <td>degree_north</td>
 <td>latitudes of the ground pixel corners (WGS84)</td>
 </tr>
-<tr class="row-even"><td><strong>sensor_longitude</strong></td>
+<tr class="row-even"><td><strong>longitude_bounds</strong></td>
 <td>float</td>
-<td>{<em>time</em>}</td>
+<td>{<em>time</em>, 4}</td>
 <td>degree_east</td>
-<td>longitude of the goedetic sub-satellite point (WGS84)</td>
+<td>longitudes of the ground pixel corners (WGS84)</td>
 </tr>
 <tr class="row-odd"><td><strong>sensor_latitude</strong></td>
 <td>float</td>
@@ -195,67 +195,73 @@
 <td>degree_north</td>
 <td>latitude of the geodetic sub-satellite point (WGS84)</td>
 </tr>
-<tr class="row-even"><td><strong>sensor_altitude</strong></td>
+<tr class="row-even"><td><strong>sensor_longitude</strong></td>
+<td>float</td>
+<td>{<em>time</em>}</td>
+<td>degree_east</td>
+<td>longitude of the goedetic sub-satellite point (WGS84)</td>
+</tr>
+<tr class="row-odd"><td><strong>sensor_altitude</strong></td>
 <td>float</td>
 <td>{<em>time</em>}</td>
 <td>m</td>
 <td>altitude of the satellite with respect to the geodetic sub-satellite point (WGS84)</td>
 </tr>
-<tr class="row-odd"><td><strong>solar_zenith_angle</strong></td>
+<tr class="row-even"><td><strong>solar_zenith_angle</strong></td>
 <td>float</td>
 <td>{<em>time</em>}</td>
 <td>degree</td>
 <td>zenith angle of the Sun at the ground pixel location (WGS84); angle measured away from the vertical</td>
 </tr>
-<tr class="row-even"><td><strong>solar_azimuth_angle</strong></td>
+<tr class="row-odd"><td><strong>solar_azimuth_angle</strong></td>
 <td>float</td>
 <td>{<em>time</em>}</td>
 <td>degree</td>
 <td>azimuth angle of the Sun at the ground pixel location (WGS84); angle measured East-of-North</td>
 </tr>
-<tr class="row-odd"><td><strong>sensor_zenith_angle</strong></td>
+<tr class="row-even"><td><strong>sensor_zenith_angle</strong></td>
 <td>float</td>
 <td>{<em>time</em>}</td>
 <td>degree</td>
 <td>zenith angle of the satellite at the ground pixel location (WGS84); angle measured away from the vertical</td>
 </tr>
-<tr class="row-even"><td><strong>sensor_azimuth_angle</strong></td>
+<tr class="row-odd"><td><strong>sensor_azimuth_angle</strong></td>
 <td>float</td>
 <td>{<em>time</em>}</td>
 <td>degree</td>
 <td>azimuth angle of the satellite at the ground pixel location (WGS84); angle measured East-of-North</td>
 </tr>
-<tr class="row-odd"><td><strong>altitude</strong></td>
+<tr class="row-even"><td><strong>altitude</strong></td>
 <td>float</td>
 <td>{<em>vertical</em>}</td>
 <td>m</td>
 <td>fixed altitude grid on which the radiative transfer calculations are done; altitude is measured relative to the surface</td>
 </tr>
-<tr class="row-even"><td><strong>pressure</strong></td>
+<tr class="row-odd"><td><strong>pressure</strong></td>
 <td>float</td>
 <td>{<em>time</em>, <em>vertical</em>}</td>
 <td>Pa</td>
 <td>pressure of the layer interfaces of the vertical grid</td>
 </tr>
-<tr class="row-odd"><td><strong>CO_column_number_density</strong></td>
+<tr class="row-even"><td><strong>CO_column_number_density</strong></td>
 <td>float</td>
 <td>{<em>time</em>}</td>
 <td>mol/m^2</td>
 <td>vertically integrated CO column density</td>
 </tr>
-<tr class="row-even"><td><strong>CO_column_number_density_uncertainty</strong></td>
+<tr class="row-odd"><td><strong>CO_column_number_density_uncertainty</strong></td>
 <td>float</td>
 <td>{<em>time</em>}</td>
 <td>mol/m^2</td>
 <td>uncertainty of the vertically integrated CO column density (standard error)</td>
 </tr>
-<tr class="row-odd"><td><strong>CO_column_number_density_avk</strong></td>
+<tr class="row-even"><td><strong>CO_column_number_density_avk</strong></td>
 <td>float</td>
 <td>{<em>time</em>, <em>vertical</em>}</td>
 <td>m</td>
 <td>averaging kernel for the vertically integrated CO column density</td>
 </tr>
-<tr class="row-even"><td><strong>index</strong></td>
+<tr class="row-odd"><td><strong>index</strong></td>
 <td>int32</td>
 <td>{<em>time</em>}</td>
 <td>&nbsp;</td>
@@ -290,28 +296,28 @@
 <tr class="row-even"><td><em>description</em></td>
 <td>time converted from milliseconds since a reference time (given as seconds since 2010-01-01) to seconds since 2010-01-01 (using 86400 seconds per day); the time associated with a scanline is repeated for each pixel in the scanline</td>
 </tr>
-<tr class="row-odd"><td><strong>longitude</strong></td>
+<tr class="row-odd"><td rowspan="2"><strong>validity</strong></td>
 <td><em>path</em></td>
-<td><strong>/PRODUCT/longitude[]</strong></td>
+<td><strong>/PRODUCT/SUPPORT_DATA/DETAILED_RESULTS/processing_quality_flags[]</strong></td>
 </tr>
-<tr class="row-even"><td><strong>latitude</strong></td>
+<tr class="row-even"><td><em>description</em></td>
+<td>the uint32 data is cast to int32</td>
+</tr>
+<tr class="row-odd"><td><strong>latitude</strong></td>
 <td><em>path</em></td>
 <td><strong>/PRODUCT/latitude[]</strong></td>
 </tr>
-<tr class="row-odd"><td><strong>longitude_bounds</strong></td>
+<tr class="row-even"><td><strong>longitude</strong></td>
 <td><em>path</em></td>
-<td><strong>/PRODUCT/SUPPORT_DATA/GEOLOCATIONS/longitude_bounds[]</strong></td>
+<td><strong>/PRODUCT/longitude[]</strong></td>
 </tr>
-<tr class="row-even"><td><strong>latitude_bounds</strong></td>
+<tr class="row-odd"><td><strong>latitude_bounds</strong></td>
 <td><em>path</em></td>
 <td><strong>/PRODUCT/SUPPORT_DATA/GEOLOCATIONS/latitude_bounds[]</strong></td>
 </tr>
-<tr class="row-odd"><td rowspan="2"><strong>sensor_longitude</strong></td>
+<tr class="row-even"><td><strong>longitude_bounds</strong></td>
 <td><em>path</em></td>
-<td><strong>/PRODUCT/SUPPORT_DATA/GEOLOCATIONS/satellite_longitude[]</strong></td>
-</tr>
-<tr class="row-even"><td><em>description</em></td>
-<td>the satellite longitude associated with a scanline is repeated for each pixel in the scanline</td>
+<td><strong>/PRODUCT/SUPPORT_DATA/GEOLOCATIONS/longitude_bounds[]</strong></td>
 </tr>
 <tr class="row-odd"><td rowspan="2"><strong>sensor_latitude</strong></td>
 <td><em>path</em></td>
@@ -319,6 +325,13 @@
 </tr>
 <tr class="row-even"><td><em>description</em></td>
 <td>the satellite latitude associated with a scanline is repeated for each pixel in the scanline</td>
+</tr>
+<tr class="row-odd"><td rowspan="2"><strong>sensor_longitude</strong></td>
+<td><em>path</em></td>
+<td><strong>/PRODUCT/SUPPORT_DATA/GEOLOCATIONS/satellite_longitude[]</strong></td>
+</tr>
+<tr class="row-even"><td><em>description</em></td>
+<td>the satellite longitude associated with a scanline is repeated for each pixel in the scanline</td>
 </tr>
 <tr class="row-odd"><td rowspan="2"><strong>sensor_altitude</strong></td>
 <td><em>path</em></td>

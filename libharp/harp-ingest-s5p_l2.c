@@ -801,13 +801,30 @@ static int read_input_altitude(void *user_data, harp_array data)
 static int read_input_altitude_bounds(void *user_data, harp_array data)
 {
     ingest_info *info = (ingest_info *)user_data;
+    harp_array surfalt_data;
     long num_layers;
-    long i;
+    long i, j;
 
     if (read_dataset(info->input_data_cursor, "height_levels", harp_type_float,
                      info->num_scanlines * info->num_pixels * info->num_levels, data) != 0)
     {
         return -1;
+    }
+    /* read surface altitude in buffer after height levels (which will fit if 2*num_layers>num_levels) */
+    assert(info->num_layers * 2 > info->num_levels);
+    surfalt_data.float_data = &data.float_data[info->num_scanlines * info->num_pixels * info->num_levels];
+    if (read_dataset(info->input_data_cursor, "surface_altitude", harp_type_float,
+                     info->num_scanlines * info->num_pixels, surfalt_data) != 0)
+    {
+        return -1;
+    }
+    /* convert level heights to level altitudes using surface altitude */
+    for (i = 0; i < info->num_scanlines * info->num_pixels; i++)
+    {
+        for (j = 0; j < info->num_levels; j++)
+        {
+            data.float_data[i * info->num_levels + j] += surfalt_data.float_data[i];
+        }
     }
 
     /* Convert from #levels (== #layers + 1) consecutive altitudes to #layers x 2 altitude bounds. Iterate in reverse to
@@ -820,7 +837,6 @@ static int read_input_altitude_bounds(void *user_data, harp_array data)
     {
         float *altitude = &data.float_data[i * (num_layers + 1)];
         float *altitude_bounds = &data.float_data[i * num_layers * 2];
-        long j;
 
         for (j = num_layers - 1; j >= 0; --j)
         {
@@ -1567,6 +1583,39 @@ static int read_results_pressure_levels(void *user_data, harp_array data)
                         info->num_scanlines * info->num_pixels * info->num_layers, data);
 }
 
+static int read_results_processing_quality_flags(void *user_data, harp_array data)
+{
+    ingest_info *info = (ingest_info *)user_data;
+    coda_cursor cursor = info->detailed_results_cursor;
+    long coda_num_elements;
+
+    if (coda_cursor_goto_record_field_by_name(&cursor, "processing_quality_flags") != 0)
+    {
+        harp_set_error(HARP_ERROR_CODA, NULL);
+        return -1;
+    }
+    if (coda_cursor_get_num_elements(&cursor, &coda_num_elements) != 0)
+    {
+        harp_set_error(HARP_ERROR_CODA, NULL);
+        return -1;
+    }
+    if (coda_num_elements != info->num_scanlines * info->num_pixels)
+    {
+        harp_set_error(HARP_ERROR_INGESTION, "dataset has %ld elements; expected %ld", coda_num_elements,
+                       info->num_scanlines * info->num_pixels);
+        harp_add_coda_cursor_path_to_error_message(&cursor);
+        return -1;
+    }
+
+    if (coda_cursor_read_uint32_array(&cursor, (uint32_t *)data.int32_data, coda_array_ordering_c) != 0)
+    {
+        harp_set_error(HARP_ERROR_CODA, NULL);
+        return -1;
+    }
+
+    return 0;
+}
+
 static int read_results_surface_albedo_fitted(void *user_data, harp_array data)
 {
     ingest_info *info = (ingest_info *)user_data;
@@ -1935,6 +1984,7 @@ static void register_core_variables(harp_product_definition *product_definition,
     harp_variable_definition *variable_definition;
     harp_dimension_type dimension_type[1] = { harp_dimension_time };
 
+    /* scanline_pixel_index */
     description = "pixel index (0-based) within the scanline";
     variable_definition =
         harp_ingestion_register_variable_sample_read(product_definition, "scanline_pixel_index", harp_type_int16, 1,
@@ -1945,6 +1995,7 @@ static void register_core_variables(harp_product_definition *product_definition,
         "scanline is computed as the index on the temporal dimension modulo the number of scanlines";
     harp_variable_definition_add_mapping(variable_definition, NULL, NULL, NULL, description);
 
+    /* datetime */
     description = "start time of the measurement";
     variable_definition =
         harp_ingestion_register_variable_full_read(product_definition, "datetime", harp_type_double, 1, dimension_type,
@@ -1962,6 +2013,16 @@ static void register_core_variables(harp_product_definition *product_definition,
             "seconds since 2010-01-01 (using 86400 seconds per day)";
     }
     harp_variable_definition_add_mapping(variable_definition, NULL, NULL, path, description);
+
+    /* validity */
+    description = "processing quality flag";
+    variable_definition =
+        harp_ingestion_register_variable_full_read(product_definition, "validity", harp_type_int32, 1, dimension_type,
+                                                   NULL, description, NULL, NULL,
+                                                   read_results_processing_quality_flags);
+    path = "/PRODUCT/SUPPORT_DATA/DETAILED_RESULTS/processing_quality_flags[]";
+    description = "the uint32 data is cast to int32";
+    harp_variable_definition_add_mapping(variable_definition, NULL, NULL, path, description);
 }
 
 static void register_geolocation_variables(harp_product_definition *product_definition)
@@ -1971,20 +2032,22 @@ static void register_geolocation_variables(harp_product_definition *product_defi
     harp_variable_definition *variable_definition;
     harp_dimension_type dimension_type[1] = { harp_dimension_time };
 
-    description = "longitude of the ground pixel center (WGS84)";
-    variable_definition = harp_ingestion_register_variable_full_read(product_definition, "longitude", harp_type_float,
-                                                                     1, dimension_type, NULL, description,
-                                                                     "degree_east", NULL, read_product_longitude);
-    harp_variable_definition_set_valid_range_float(variable_definition, -180.0f, 180.0f);
-    path = "/PRODUCT/longitude[]";
-    harp_variable_definition_add_mapping(variable_definition, NULL, NULL, path, NULL);
-
+    /* latitude */
     description = "latitude of the ground pixel center (WGS84)";
     variable_definition = harp_ingestion_register_variable_full_read(product_definition, "latitude", harp_type_float, 1,
                                                                      dimension_type, NULL, description, "degree_north",
                                                                      NULL, read_product_latitude);
     harp_variable_definition_set_valid_range_float(variable_definition, -90.0f, 90.0f);
     path = "/PRODUCT/latitude[]";
+    harp_variable_definition_add_mapping(variable_definition, NULL, NULL, path, NULL);
+
+    /* longitude */
+    description = "longitude of the ground pixel center (WGS84)";
+    variable_definition = harp_ingestion_register_variable_full_read(product_definition, "longitude", harp_type_float,
+                                                                     1, dimension_type, NULL, description,
+                                                                     "degree_east", NULL, read_product_longitude);
+    harp_variable_definition_set_valid_range_float(variable_definition, -180.0f, 180.0f);
+    path = "/PRODUCT/longitude[]";
     harp_variable_definition_add_mapping(variable_definition, NULL, NULL, path, NULL);
 }
 
@@ -1997,15 +2060,7 @@ static void register_additional_geolocation_variables(harp_product_definition *p
     harp_dimension_type bounds_dimension_type[2] = { harp_dimension_time, harp_dimension_independent };
     long bounds_dimension[2] = { -1, 4 };
 
-    description = "longitudes of the ground pixel corners (WGS84)";
-    variable_definition = harp_ingestion_register_variable_full_read(product_definition, "longitude_bounds",
-                                                                     harp_type_float, 2, bounds_dimension_type,
-                                                                     bounds_dimension, description, "degree_east",
-                                                                     NULL, read_geolocation_longitude_bounds);
-    harp_variable_definition_set_valid_range_float(variable_definition, -180.0f, 180.0f);
-    path = "/PRODUCT/SUPPORT_DATA/GEOLOCATIONS/longitude_bounds[]";
-    harp_variable_definition_add_mapping(variable_definition, NULL, NULL, path, NULL);
-
+    /* latitude_bounds */
     description = "latitudes of the ground pixel corners (WGS84)";
     variable_definition = harp_ingestion_register_variable_full_read(product_definition, "latitude_bounds",
                                                                      harp_type_float, 2, bounds_dimension_type,
@@ -2015,16 +2070,17 @@ static void register_additional_geolocation_variables(harp_product_definition *p
     path = "/PRODUCT/SUPPORT_DATA/GEOLOCATIONS/latitude_bounds[]";
     harp_variable_definition_add_mapping(variable_definition, NULL, NULL, path, NULL);
 
-    description = "longitude of the goedetic sub-satellite point (WGS84)";
-    variable_definition = harp_ingestion_register_variable_full_read(product_definition, "sensor_longitude",
-                                                                     harp_type_float, 1, dimension_type, NULL,
-                                                                     description, "degree_east", NULL,
-                                                                     read_geolocation_satellite_longitude);
+    /* longitude_bounds */
+    description = "longitudes of the ground pixel corners (WGS84)";
+    variable_definition = harp_ingestion_register_variable_full_read(product_definition, "longitude_bounds",
+                                                                     harp_type_float, 2, bounds_dimension_type,
+                                                                     bounds_dimension, description, "degree_east",
+                                                                     NULL, read_geolocation_longitude_bounds);
     harp_variable_definition_set_valid_range_float(variable_definition, -180.0f, 180.0f);
-    path = "/PRODUCT/SUPPORT_DATA/GEOLOCATIONS/satellite_longitude[]";
-    description = "the satellite longitude associated with a scanline is repeated for each pixel in the scanline";
-    harp_variable_definition_add_mapping(variable_definition, NULL, NULL, path, description);
+    path = "/PRODUCT/SUPPORT_DATA/GEOLOCATIONS/longitude_bounds[]";
+    harp_variable_definition_add_mapping(variable_definition, NULL, NULL, path, NULL);
 
+    /* sensor_latitude */
     description = "latitude of the geodetic sub-satellite point (WGS84)";
     variable_definition = harp_ingestion_register_variable_full_read(product_definition, "sensor_latitude",
                                                                      harp_type_float, 1, dimension_type, NULL,
@@ -2035,6 +2091,18 @@ static void register_additional_geolocation_variables(harp_product_definition *p
     description = "the satellite latitude associated with a scanline is repeated for each pixel in the scanline";
     harp_variable_definition_add_mapping(variable_definition, NULL, NULL, path, description);
 
+    /* sensor_longitude */
+    description = "longitude of the goedetic sub-satellite point (WGS84)";
+    variable_definition = harp_ingestion_register_variable_full_read(product_definition, "sensor_longitude",
+                                                                     harp_type_float, 1, dimension_type, NULL,
+                                                                     description, "degree_east", NULL,
+                                                                     read_geolocation_satellite_longitude);
+    harp_variable_definition_set_valid_range_float(variable_definition, -180.0f, 180.0f);
+    path = "/PRODUCT/SUPPORT_DATA/GEOLOCATIONS/satellite_longitude[]";
+    description = "the satellite longitude associated with a scanline is repeated for each pixel in the scanline";
+    harp_variable_definition_add_mapping(variable_definition, NULL, NULL, path, description);
+
+    /* sensor_altitude */
     description = "altitude of the satellite with respect to the geodetic sub-satellite point (WGS84)";
     variable_definition = harp_ingestion_register_variable_full_read(product_definition, "sensor_altitude",
                                                                      harp_type_float, 1, dimension_type, NULL,
@@ -2045,7 +2113,7 @@ static void register_additional_geolocation_variables(harp_product_definition *p
     description = "the satellite altitude associated with a scanline is repeated for each pixel in the scanline";
     harp_variable_definition_add_mapping(variable_definition, NULL, NULL, path, description);
 
-    /* Angles. */
+    /* solar_zenith_angle */
     description = "zenith angle of the Sun at the ground pixel location (WGS84); angle measured away from the vertical";
     variable_definition = harp_ingestion_register_variable_full_read(product_definition, "solar_zenith_angle",
                                                                      harp_type_float, 1, dimension_type, NULL,
@@ -2055,6 +2123,7 @@ static void register_additional_geolocation_variables(harp_product_definition *p
     path = "/PRODUCT/SUPPORT_DATA/GEOLOCATIONS/solar_zenith_angle[]";
     harp_variable_definition_add_mapping(variable_definition, NULL, NULL, path, NULL);
 
+    /* solar_azimuth_angle */
     description = "azimuth angle of the Sun at the ground pixel location (WGS84); angle measured East-of-North";
     variable_definition = harp_ingestion_register_variable_full_read(product_definition, "solar_azimuth_angle",
                                                                      harp_type_float, 1, dimension_type, NULL,
@@ -2064,6 +2133,7 @@ static void register_additional_geolocation_variables(harp_product_definition *p
     path = "/PRODUCT/SUPPORT_DATA/GEOLOCATIONS/solar_azimuth_angle[]";
     harp_variable_definition_add_mapping(variable_definition, NULL, NULL, path, NULL);
 
+    /* sensor_zenith_angle */
     description = "zenith angle of the satellite at the ground pixel location (WGS84); angle measured away from the "
         "vertical";
     variable_definition = harp_ingestion_register_variable_full_read(product_definition, "sensor_zenith_angle",
@@ -2074,6 +2144,7 @@ static void register_additional_geolocation_variables(harp_product_definition *p
     path = "/PRODUCT/SUPPORT_DATA/GEOLOCATIONS/viewing_zenith_angle[]";
     harp_variable_definition_add_mapping(variable_definition, NULL, NULL, path, NULL);
 
+    /* sensor_azimuth_angle */
     description = "azimuth angle of the satellite at the ground pixel location (WGS84); angle measured East-of-North";
     variable_definition = harp_ingestion_register_variable_full_read(product_definition, "sensor_azimuth_angle",
                                                                      harp_type_float, 1, dimension_type, NULL,
@@ -2103,8 +2174,8 @@ static void register_surface_variables(harp_product_definition *product_definiti
     /* surface_altitude_uncertainty */
     description = "surface altitude precision";
     variable_definition =
-        harp_ingestion_register_variable_full_read(product_definition, "surface_altitude_precision", harp_type_float, 1,
-                                                   dimension_type, NULL, description, "m", NULL,
+        harp_ingestion_register_variable_full_read(product_definition, "surface_altitude_uncertainty", harp_type_float,
+                                                   1, dimension_type, NULL, description, "m", NULL,
                                                    read_input_surface_altitude_precision);
     path = "/PRODUCT/SUPPORT_DATA/INPUT_DATA/surface_altitude_precision[]";
     harp_variable_definition_add_mapping(variable_definition, NULL, NULL, path, NULL);
@@ -2139,9 +2210,10 @@ static void register_aer_ai_product(void)
     register_geolocation_variables(product_definition);
     register_additional_geolocation_variables(product_definition);
 
+    /* absorbing_aerosol_index */
     description = "aerosol index";
     variable_definition =
-        harp_ingestion_register_variable_full_read(product_definition, "aerosol_index", harp_type_float, 1,
+        harp_ingestion_register_variable_full_read(product_definition, "absorbing_aerosol_index", harp_type_float, 1,
                                                    dimension_type, NULL, description, HARP_UNIT_DIMENSIONLESS, NULL,
                                                    read_product_aerosol_index);
     harp_variable_definition_add_mapping(variable_definition, "wavelength_ratio=354_388nm or wavelength_ratio unset",
@@ -2149,11 +2221,12 @@ static void register_aer_ai_product(void)
     harp_variable_definition_add_mapping(variable_definition, "wavelength_ratio=340_380nm", NULL,
                                          "/PRODUCT/aerosol_index_340_380", NULL);
 
+    /* absorbing_aerosol_index_uncertainty */
     description = "uncertainty of the aerosol index";
     variable_definition =
-        harp_ingestion_register_variable_full_read(product_definition, "aerosol_index_uncertainty", harp_type_float, 1,
-                                                   dimension_type, NULL, description, HARP_UNIT_DIMENSIONLESS, NULL,
-                                                   read_product_aerosol_index_precision);
+        harp_ingestion_register_variable_full_read(product_definition, "absorbing_aerosol_index_uncertainty",
+                                                   harp_type_float, 1, dimension_type, NULL, description,
+                                                   HARP_UNIT_DIMENSIONLESS, NULL, read_product_aerosol_index_precision);
     harp_variable_definition_add_mapping(variable_definition, "wavelength_ratio=354_388nm (default)", NULL,
                                          "/PRODUCT/aerosol_index_354_388_precision", NULL);
     harp_variable_definition_add_mapping(variable_definition, "wavelength_ratio=340_380nm", NULL,
@@ -2198,16 +2271,18 @@ static void register_ch4_product(void)
     register_geolocation_variables(product_definition);
     register_additional_geolocation_variables(product_definition);
 
+    /* altitude_bounds */
     description = "altitude bounds per profile layer; altitude is measured as the vertical distance to the surface";
     variable_definition =
-        harp_ingestion_register_variable_full_read(product_definition, "altitude_bounds_surface", harp_type_float, 3,
+        harp_ingestion_register_variable_full_read(product_definition, "altitude_bounds", harp_type_float, 3,
                                                    dimension_type, dimension, description, "m", NULL,
                                                    read_input_altitude_bounds);
-    path = "/PRODUCT/SUPPORT_DATA/INPUT_DATA/height_levels[]";
-    description = "derived from altitude per level (layer boundary) by repeating the inner levels; the upper bound of "
-        "layer k is equal to the lower bound of layer k+1";
+    path = "/PRODUCT/SUPPORT_DATA/INPUT_DATA/height_levels[], /PRODUCT/SUPPORT_DATA/INPUT_DATA/surface_altitude[]";
+    description = "derived from height per level (layer boundary) by repeating the inner levels; the upper bound of "
+        "layer k is equal to the lower bound of layer k+1; height is converted to altitude by adding surface_altitude";
     harp_variable_definition_add_mapping(variable_definition, NULL, NULL, path, description);
 
+    /* pressure_bounds */
     description = "pressure bounds per profile layer";
     variable_definition =
         harp_ingestion_register_variable_full_read(product_definition, "pressure_bounds", harp_type_double, 3,
@@ -2220,6 +2295,7 @@ static void register_ch4_product(void)
         "surface_pressure - (k + 1) * pressure_interval)";
     harp_variable_definition_add_mapping(variable_definition, NULL, NULL, path, description);
 
+    /* CH4_column_volume_mixing_ratio_dry_air */
     description = "column averaged dry air mixing ratio of methane";
     variable_definition =
         harp_ingestion_register_variable_full_read(product_definition, "CH4_column_volume_mixing_ratio_dry_air",
@@ -2228,6 +2304,7 @@ static void register_ch4_product(void)
     path = "/PRODUCT/methane_mixing_ratio[]";
     harp_variable_definition_add_mapping(variable_definition, NULL, NULL, path, NULL);
 
+    /* CH4_column_volume_mixing_ratio_dry_air_uncertainty */
     description = "uncertainty of the column averaged dry air mixing ratio of methane (1 sigma error)";
     variable_definition =
         harp_ingestion_register_variable_full_read(product_definition,
@@ -2237,6 +2314,7 @@ static void register_ch4_product(void)
     path = "/PRODUCT/methane_mixing_ratio_precision[]";
     harp_variable_definition_add_mapping(variable_definition, NULL, NULL, path, NULL);
 
+    /* CH4_column_volume_mixing_ratio_dry_air_avk */
     description = "column averaging kernel for methane retrieval";
     variable_definition =
         harp_ingestion_register_variable_full_read(product_definition, "CH4_column_volume_mixing_ratio_dry_air_avk",
@@ -2264,6 +2342,7 @@ static void register_co_product(void)
     register_geolocation_variables(product_definition);
     register_additional_geolocation_variables(product_definition);
 
+    /* altitude */
     description = "fixed altitude grid on which the radiative transfer calculations are done; altitude is measured"
         " relative to the surface";
     variable_definition =
@@ -2273,6 +2352,7 @@ static void register_co_product(void)
     path = "/PRODUCT/layer[]";
     harp_variable_definition_add_mapping(variable_definition, NULL, NULL, path, NULL);
 
+    /* pressure */
     description = "pressure of the layer interfaces of the vertical grid";
     variable_definition =
         harp_ingestion_register_variable_full_read(product_definition, "pressure", harp_type_float, 2, dimension_type,
@@ -2280,6 +2360,7 @@ static void register_co_product(void)
     path = "/PRODUCT/SUPPORT_DATA/DETAILED_RESULTS/pressure_levels[]";
     harp_variable_definition_add_mapping(variable_definition, NULL, NULL, path, NULL);
 
+    /* CO_column_number_density */
     description = "vertically integrated CO column density";
     variable_definition =
         harp_ingestion_register_variable_full_read(product_definition, "CO_column_number_density", harp_type_float, 1,
@@ -2288,6 +2369,7 @@ static void register_co_product(void)
     path = "/PRODUCT/carbonmonoxide_total_column[]";
     harp_variable_definition_add_mapping(variable_definition, NULL, NULL, path, NULL);
 
+    /* CO_column_number_density_uncertainty */
     description = "uncertainty of the vertically integrated CO column density (standard error)";
     variable_definition =
         harp_ingestion_register_variable_full_read(product_definition, "CO_column_number_density_uncertainty",
@@ -2296,6 +2378,7 @@ static void register_co_product(void)
     path = "/PRODUCT/carbonmonoxide_total_column_precision[]";
     harp_variable_definition_add_mapping(variable_definition, NULL, NULL, path, NULL);
 
+    /* CO_column_number_density_avk */
     description = "averaging kernel for the vertically integrated CO column density";
     variable_definition =
         harp_ingestion_register_variable_full_read(product_definition, "CO_column_number_density_avk", harp_type_float,
@@ -2322,6 +2405,7 @@ static void register_hcho_product(void)
     register_geolocation_variables(product_definition);
     register_additional_geolocation_variables(product_definition);
 
+    /* tropospheric_HCHO_column_number_density */
     description = "tropospheric HCHO column number density";
     variable_definition =
         harp_ingestion_register_variable_full_read(product_definition, "tropospheric_HCHO_column_number_density",
@@ -2330,6 +2414,7 @@ static void register_hcho_product(void)
     path = "/PRODUCT/formaldehyde_tropospheric_vertical_column[]";
     harp_variable_definition_add_mapping(variable_definition, NULL, NULL, path, NULL);
 
+    /* tropospheric_HCHO_column_number_density_uncertainty_random */
     description = "uncertainty of the tropospheric HCHO column number density due to random effects";
     variable_definition =
         harp_ingestion_register_variable_full_read(product_definition,
@@ -2340,6 +2425,7 @@ static void register_hcho_product(void)
     path = "/PRODUCT/formaldehyde_tropospheric_vertical_column_precision[]";
     harp_variable_definition_add_mapping(variable_definition, NULL, NULL, path, NULL);
 
+    /* tropospheric_HCHO_column_number_density_uncertainty_systematic */
     description = "uncertainty of the tropospheric HCHO column number density due to systematic effects";
     variable_definition =
         harp_ingestion_register_variable_full_read(product_definition,
@@ -2350,6 +2436,7 @@ static void register_hcho_product(void)
     path = "/PRODUCT/SUPPORT_DATA/DETAILED_RESULTS/formaldehyde_tropospheric_vertical_column_trueness[]";
     harp_variable_definition_add_mapping(variable_definition, NULL, NULL, path, NULL);
 
+    /* HCHO_column_number_density_avk */
     description = "averaging kernel for the total HCHO column number density";
     variable_definition =
         harp_ingestion_register_variable_full_read(product_definition, "HCHO_column_number_density_avk",
@@ -2358,6 +2445,7 @@ static void register_hcho_product(void)
     path = "/PRODUCT/SUPPORT_DATA/DETAILED_RESULTS/averaging_kernel[]";
     harp_variable_definition_add_mapping(variable_definition, NULL, NULL, path, NULL);
 
+    /* HCHO_volume_mixing_ratio_apriori */
     description = "HCHO apriori profile in volume mixing ratios";
     variable_definition =
         harp_ingestion_register_variable_full_read(product_definition, "HCHO_volume_mixing_ratio_apriori",
@@ -2366,6 +2454,7 @@ static void register_hcho_product(void)
     path = "/PRODUCT/SUPPORT_DATA/DETAILED_RESULTS/formaldehyde_profile_apriori[]";
     harp_variable_definition_add_mapping(variable_definition, NULL, NULL, path, NULL);
 
+    /* tropospheric_HCHO_column_number_density_amf */
     description = "tropospheric air mass factor";
     variable_definition =
         harp_ingestion_register_variable_full_read(product_definition, "tropospheric_HCHO_column_number_density_amf",
@@ -2397,6 +2486,7 @@ static void register_o3_product(void)
     register_geolocation_variables(product_definition);
     register_additional_geolocation_variables(product_definition);
 
+    /* pressure_bounds */
     description = "pressure bounds per profile layer";
     variable_definition =
         harp_ingestion_register_variable_full_read(product_definition, "pressure_bounds", harp_type_float, 3,
@@ -2407,6 +2497,7 @@ static void register_o3_product(void)
         "the upper bound of layer k is equal to the lower bound of layer k+1";
     harp_variable_definition_add_mapping(variable_definition, NULL, NULL, path, description);
 
+    /* O3_column_number_density */
     description = "O3 column number density";
     variable_definition =
         harp_ingestion_register_variable_full_read(product_definition, "O3_column_number_density", harp_type_float, 1,
@@ -2415,6 +2506,7 @@ static void register_o3_product(void)
     path = "/PRODUCT/ozone_total_vertical_column[]";
     harp_variable_definition_add_mapping(variable_definition, NULL, NULL, path, NULL);
 
+    /* O3_column_number_density_uncertainty */
     description = "uncertainty of the O3 column number density";
     variable_definition =
         harp_ingestion_register_variable_full_read(product_definition, "O3_column_number_density_uncertainty",
@@ -2423,6 +2515,7 @@ static void register_o3_product(void)
     path = "/PRODUCT/ozone_total_vertical_column_precision[]";
     harp_variable_definition_add_mapping(variable_definition, NULL, NULL, path, NULL);
 
+    /* O3_column_number_density_apriori */
     description = "O3 column number density apriori";
     variable_definition =
         harp_ingestion_register_variable_full_read(product_definition, "O3_column_number_density_apriori",
@@ -2431,6 +2524,7 @@ static void register_o3_product(void)
     path = "/PRODUCT/SUPPORT_DATA/DETAILED_RESULTS/ozone_profile_apriori[]";
     harp_variable_definition_add_mapping(variable_definition, NULL, NULL, path, NULL);
 
+    /* O3_column_number_density_avk */
     description = "averaging kernel for the O3 column number density";
     variable_definition =
         harp_ingestion_register_variable_full_read(product_definition, "O3_column_number_density_avk", harp_type_float,
@@ -2661,6 +2755,7 @@ static void register_no2_product(void)
     register_geolocation_variables(product_definition);
     register_additional_geolocation_variables(product_definition);
 
+    /* pressure_bounds */
     description = "pressure boundaries";
     variable_definition =
         harp_ingestion_register_variable_full_read(product_definition, "pressure_bounds", harp_type_double, 3,
@@ -2671,6 +2766,7 @@ static void register_no2_product(void)
         "tm5_constant_b[k] * surface_pressure[]";
     harp_variable_definition_add_mapping(variable_definition, NULL, NULL, path, description);
 
+    /* tropopause_pressure */
     description = "tropopause pressure";
     variable_definition = harp_ingestion_register_variable_full_read(product_definition, "tropopause_pressure",
                                                                      harp_type_double, 1, dimension_type, NULL,
@@ -2682,6 +2778,7 @@ static void register_no2_product(void)
         "k: tm5_constant_a[k + 1] + tm5_constant_b[k + 1] * surface_pressure[]";
     harp_variable_definition_add_mapping(variable_definition, NULL, NULL, path, description);
 
+    /* tropospheric_NO2_column_number_density */
     description = "tropospheric vertical column of NO2";
     variable_definition =
         harp_ingestion_register_variable_full_read(product_definition, "tropospheric_NO2_column_number_density",
@@ -2690,6 +2787,7 @@ static void register_no2_product(void)
     path = "/PRODUCT/nitrogendioxide_tropospheric_column[]";
     harp_variable_definition_add_mapping(variable_definition, NULL, NULL, path, NULL);
 
+    /* tropospheric_NO2_column_number_density_uncertainty */
     description = "uncertainty of the tropospheric vertical column of NO2 (standard error)";
     variable_definition =
         harp_ingestion_register_variable_full_read(product_definition,
@@ -2699,6 +2797,7 @@ static void register_no2_product(void)
     path = "/PRODUCT/nitrogendioxide_tropospheric_column_precision[]";
     harp_variable_definition_add_mapping(variable_definition, NULL, NULL, path, NULL);
 
+    /* tropospheric_NO2_column_number_density_amf */
     description = "tropospheric air mass factor, computed by integrating the altitude dependent air mass factor over "
         "the atmospheric layers from the surface up to and including the layer with the tropopause";
     variable_definition =
@@ -2709,6 +2808,7 @@ static void register_no2_product(void)
     path = "/PRODUCT/air_mass_factor_troposphere[]";
     harp_variable_definition_add_mapping(variable_definition, NULL, NULL, path, NULL);
 
+    /* tropospheric_NO2_column_number_density_avk */
     description = "averaging kernel for the tropospheric vertical column number density of NO2";
     variable_definition =
         harp_ingestion_register_variable_full_read(product_definition, "tropospheric_NO2_column_number_density_avk",
@@ -2720,6 +2820,7 @@ static void register_no2_product(void)
         "averaging_kernel[layer] * tm5_tropopause_layer_index / air_mass_factor_troposphere else 0";
     harp_variable_definition_add_mapping(variable_definition, NULL, NULL, path, description);
 
+    /* NO2_column_number_density */
     description = "total vertical column of NO2 (ratio of the slant column density of NO2 and the total air mass "
         "factor)";
     variable_definition =
@@ -2731,6 +2832,7 @@ static void register_no2_product(void)
     path = "/PRODUCT/SUPPORT_DATA/DETAILED_RESULTS/nitrogendioxide_total_column[]";
     harp_variable_definition_add_mapping(variable_definition, "total_column=total", NULL, path, NULL);
 
+    /* NO2_column_number_density_uncertainty */
     description = "uncertainty of the total vertical column of NO2 (standard error)";
     variable_definition =
         harp_ingestion_register_variable_full_read(product_definition, "NO2_column_number_density_uncertainty",
@@ -2742,6 +2844,7 @@ static void register_no2_product(void)
     path = "/PRODUCT/SUPPORT_DATA/DETAILED_RESULTS/nitrogendioxide_total_column_precision[]";
     harp_variable_definition_add_mapping(variable_definition, "total_column=total", NULL, path, NULL);
 
+    /* NO2_column_number_density_amf */
     description = "total air mass factor, computed by integrating the altitude dependent air mass factor over the "
         "atmospheric layers from the surface to top-of-atmosphere";
     variable_definition =
@@ -2751,6 +2854,7 @@ static void register_no2_product(void)
     path = "/PRODUCT/air_mass_factor_total[]";
     harp_variable_definition_add_mapping(variable_definition, NULL, NULL, path, NULL);
 
+    /* NO2_column_number_density_avk */
     description = "averaging kernel for the air mass factor correction, describing the NO2 profile sensitivity of the "
         "vertical column density";
     variable_definition =
@@ -2778,6 +2882,7 @@ static void register_so2_product(void)
     register_geolocation_variables(product_definition);
     register_additional_geolocation_variables(product_definition);
 
+    /* SO2_column_number_density */
     description = "SO2 vertical column density";
     variable_definition =
         harp_ingestion_register_variable_full_read(product_definition, "SO2_column_number_density", harp_type_float, 1,
@@ -2786,6 +2891,7 @@ static void register_so2_product(void)
     path = "/PRODUCT/sulfurdioxide_total_vertical_column[]";
     harp_variable_definition_add_mapping(variable_definition, NULL, NULL, path, NULL);
 
+    /* SO2_column_number_density_uncertainty */
     description = "uncertainty of the SO2 vertical column density";
     variable_definition =
         harp_ingestion_register_variable_full_read(product_definition, "SO2_column_number_density_uncertainty",
@@ -2795,6 +2901,7 @@ static void register_so2_product(void)
     path = "/PRODUCT/sulfurdioxide_total_vertical_column_precision[]";
     harp_variable_definition_add_mapping(variable_definition, NULL, NULL, path, NULL);
 
+    /* SO2_column_number_density_avk */
     description = "averaging kernel for the SO2 vertical column density";
     variable_definition =
         harp_ingestion_register_variable_full_read(product_definition, "SO2_column_number_density_avk", harp_type_float,
@@ -3111,6 +3218,7 @@ static void register_fresco_product(void)
     register_geolocation_variables(product_definition);
     register_additional_geolocation_variables(product_definition);
 
+    /* cloud_fraction */
     description = "effective cloud fraction retrieved from the O2 A-band";
     variable_definition =
         harp_ingestion_register_variable_full_read(product_definition, "cloud_fraction", harp_type_float, 1,
@@ -3119,6 +3227,7 @@ static void register_fresco_product(void)
     path = "/PRODUCT/cloud_fraction_crb[]";
     harp_variable_definition_add_mapping(variable_definition, NULL, NULL, path, NULL);
 
+    /* cloud_fraction_uncertainty */
     description = "uncertainty of the effective cloud fraction";
     variable_definition =
         harp_ingestion_register_variable_full_read(product_definition, "cloud_fraction_uncertainty", harp_type_float, 1,
@@ -3127,6 +3236,7 @@ static void register_fresco_product(void)
     path = "/PRODUCT/cloud_fraction_crb_precision[]";
     harp_variable_definition_add_mapping(variable_definition, NULL, NULL, path, NULL);
 
+    /* cloud_pressure */
     description = "cloud optical centroid pressure retrieved from the O2 A-band";
     variable_definition =
         harp_ingestion_register_variable_full_read(product_definition, "cloud_pressure", harp_type_float, 1,
@@ -3135,6 +3245,7 @@ static void register_fresco_product(void)
     path = "/PRODUCT/cloud_pressure_crb[]";
     harp_variable_definition_add_mapping(variable_definition, NULL, NULL, path, NULL);
 
+    /* cloud_pressure_uncertainty */
     description = "uncertainty of the cloud optical centroid pressure";
     variable_definition =
         harp_ingestion_register_variable_full_read(product_definition, "cloud_pressure_uncertainty", harp_type_float, 1,
@@ -3143,6 +3254,7 @@ static void register_fresco_product(void)
     path = "/PRODUCT/cloud_pressure_crb_precision[]";
     harp_variable_definition_add_mapping(variable_definition, NULL, NULL, path, NULL);
 
+    /* cloud_height */
     description = "cloud optical centroid height with respect to the surface";
     variable_definition =
         harp_ingestion_register_variable_full_read(product_definition, "cloud_height", harp_type_float, 1,
@@ -3151,6 +3263,7 @@ static void register_fresco_product(void)
     path = "/PRODUCT/cloud_height_crb[]";
     harp_variable_definition_add_mapping(variable_definition, NULL, NULL, path, NULL);
 
+    /* cloud_height_uncertainty */
     description = "uncertainty of the cloud optical centroid height";
     variable_definition =
         harp_ingestion_register_variable_full_read(product_definition, "cloud_height_uncertainty", harp_type_float, 1,
@@ -3159,6 +3272,7 @@ static void register_fresco_product(void)
     path = "/PRODUCT/cloud_height_crb_precision[]";
     harp_variable_definition_add_mapping(variable_definition, NULL, NULL, path, NULL);
 
+    /* cloud_albedo */
     description = "cloud albedo; this is a fixed value for FRESCO";
     variable_definition =
         harp_ingestion_register_variable_full_read(product_definition, "cloud_albedo", harp_type_float, 1,
@@ -3167,6 +3281,7 @@ static void register_fresco_product(void)
     path = "/PRODUCT/cloud_albedo[]";
     harp_variable_definition_add_mapping(variable_definition, NULL, NULL, path, NULL);
 
+    /* cloud_albedo_uncertainty */
     description = "cloud albedo error; since cloud albedo is fixed for FRESCO, this value is set to NaN";
     variable_definition =
         harp_ingestion_register_variable_full_read(product_definition, "cloud_albedo_uncertainty", harp_type_float, 1,
