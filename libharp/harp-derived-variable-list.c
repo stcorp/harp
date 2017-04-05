@@ -3469,16 +3469,19 @@ static int add_conversions_for_grid(int num_dimensions, harp_dimension_type dime
         return -1;
     }
 
-    /* range from midpoints */
-    if (harp_variable_conversion_new("altitude_bounds", harp_type_double, HARP_UNIT_LENGTH, num_dimensions + 1,
-                                     dimension_type, 2, get_bounds_from_midpoints, &conversion) != 0)
+    if (has_vertical)
     {
-        return -1;
-    }
-    if (harp_variable_conversion_add_source(conversion, "altitude", harp_type_double, HARP_UNIT_LENGTH, num_dimensions,
-                                            dimension_type, 0) != 0)
-    {
-        return -1;
+        /* range from midpoints */
+        if (harp_variable_conversion_new("altitude_bounds", harp_type_double, HARP_UNIT_LENGTH, num_dimensions + 1,
+                                         dimension_type, 2, get_bounds_from_midpoints, &conversion) != 0)
+        {
+            return -1;
+        }
+        if (harp_variable_conversion_add_source(conversion, "altitude", harp_type_double, HARP_UNIT_LENGTH, num_dimensions,
+                                                dimension_type, 0) != 0)
+        {
+            return -1;
+        }
     }
 
     /*** column (mass) density ***/
@@ -3996,15 +3999,18 @@ static int add_conversions_for_grid(int num_dimensions, harp_dimension_type dime
     }
 
     /* range from midpoints */
-    if (harp_variable_conversion_new("pressure_bounds", harp_type_double, HARP_UNIT_PRESSURE, num_dimensions + 1,
-                                     dimension_type, 2, get_bounds_from_midpoints_log, &conversion) != 0)
+    if (has_vertical)
     {
-        return -1;
-    }
-    if (harp_variable_conversion_add_source(conversion, "pressure", harp_type_double, HARP_UNIT_PRESSURE,
-                                            num_dimensions, dimension_type, 0) != 0)
-    {
-        return -1;
+        if (harp_variable_conversion_new("pressure_bounds", harp_type_double, HARP_UNIT_PRESSURE, num_dimensions + 1,
+                                         dimension_type, 2, get_bounds_from_midpoints_log, &conversion) != 0)
+        {
+            return -1;
+        }
+        if (harp_variable_conversion_add_source(conversion, "pressure", harp_type_double, HARP_UNIT_PRESSURE,
+                                                num_dimensions, dimension_type, 0) != 0)
+        {
+            return -1;
+        }
     }
 
     /*** stratospheric column (mass) density ***/
