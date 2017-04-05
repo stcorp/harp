@@ -89,6 +89,11 @@
 </ul>
 </li>
 <li class="toctree-l2"><a class="reference internal" href="#aerosol-cci-products">Aerosol CCI products</a></li>
+<li class="toctree-l2"><a class="reference internal" href="#cloud-cci-products">Cloud CCI products</a><ul>
+<li class="toctree-l3"><a class="reference internal" href="#esacci-cloud-l3c">ESACCI_CLOUD_L3C</a></li>
+<li class="toctree-l3"><a class="reference internal" href="#esacci-cloud-l3u">ESACCI_CLOUD_L3U</a></li>
+</ul>
+</li>
 <li class="toctree-l2"><a class="reference internal" href="#ecmwf-grib-products">ECMWF GRIB products</a></li>
 <li class="toctree-l2"><a class="reference internal" href="#geoms-products">GEOMS products</a><ul>
 <li class="toctree-l3"><a class="reference internal" href="#geoms-te-ftir">GEOMS-TE-FTIR</a></li>
@@ -413,6 +418,124 @@
 </tbody>
 </table>
 </div>
+<div class="section" id="cloud-cci-products">
+<span id="cloud-cci"></span><h2>Cloud CCI products</h2>
+<table border="1" class="docutils">
+<colgroup>
+<col width="33%" />
+<col width="33%" />
+<col width="33%" />
+</colgroup>
+<thead valign="bottom">
+<tr class="row-odd"><th class="head">HARP product name</th>
+<th class="head">CODA product type</th>
+<th class="head">description</th>
+</tr>
+</thead>
+<tbody valign="top">
+<tr class="row-even"><td><a class="reference internal" href="#esacci-cloud-l3c"><span class="std std-ref">ESACCI_CLOUD_L3C</span></a></td>
+<td>ESACCI_CLOUD/L3_MONTHLY</td>
+<td>CCI L3C Cloud profile</td>
+</tr>
+<tr class="row-odd"><td><a class="reference internal" href="#esacci-cloud-l3u"><span class="std std-ref">ESACCI_CLOUD_L3U</span></a></td>
+<td>ESACCI_CLOUD/L3_DAILY</td>
+<td>CCI L3U Cloud profile</td>
+</tr>
+</tbody>
+</table>
+<div class="section" id="esacci-cloud-l3c">
+<span id="id4"></span><h3>ESACCI_CLOUD_L3C</h3>
+<p>CCI L3C Cloud profile</p>
+<p>The table below lists the available product conversions for <code class="docutils literal"><span class="pre">ESACCI_CLOUD_L3C</span></code> products.</p>
+<table border="1" class="docutils">
+<colgroup>
+<col width="33%" />
+<col width="33%" />
+<col width="33%" />
+</colgroup>
+<thead valign="bottom">
+<tr class="row-odd"><th class="head">name</th>
+<th class="head">ingestion option</th>
+<th class="head">description</th>
+</tr>
+</thead>
+<tbody valign="top">
+<tr class="row-even"><td><a class="reference internal" href="ESACCI_CLOUD_L3_Monthly.html"><span class="doc">ESACCI_CLOUD_L3_Monthly</span></a></td>
+<td>&nbsp;</td>
+<td>&nbsp;</td>
+</tr>
+</tbody>
+</table>
+<p>The table below lists the available ingestion options for <code class="docutils literal"><span class="pre">ESACCI_CLOUD_L3C</span></code> products.</p>
+<table border="1" class="docutils">
+<colgroup>
+<col width="15%" />
+<col width="25%" />
+<col width="60%" />
+</colgroup>
+<thead valign="bottom">
+<tr class="row-odd"><th class="head">option name</th>
+<th class="head">legal values</th>
+<th class="head">description</th>
+</tr>
+</thead>
+<tbody valign="top">
+<tr class="row-even"><td>corrected</td>
+<td>false, &#8221; (default)</td>
+<td>ingest the corrected or uncorrected data; option values are &#8216;false&#8217;, &#8216;&#8217; (default, we ingest the corrected data)</td>
+</tr>
+</tbody>
+</table>
+</div>
+<div class="section" id="esacci-cloud-l3u">
+<span id="id5"></span><h3>ESACCI_CLOUD_L3U</h3>
+<p>CCI L3U Cloud profile</p>
+<p>The table below lists the available product conversions for <code class="docutils literal"><span class="pre">ESACCI_CLOUD_L3U</span></code> products.</p>
+<table border="1" class="docutils">
+<colgroup>
+<col width="33%" />
+<col width="33%" />
+<col width="33%" />
+</colgroup>
+<thead valign="bottom">
+<tr class="row-odd"><th class="head">name</th>
+<th class="head">ingestion option</th>
+<th class="head">description</th>
+</tr>
+</thead>
+<tbody valign="top">
+<tr class="row-even"><td><a class="reference internal" href="ESACCI_CLOUD_L3_Daily.html"><span class="doc">ESACCI_CLOUD_L3_Daily</span></a></td>
+<td>&nbsp;</td>
+<td>&nbsp;</td>
+</tr>
+</tbody>
+</table>
+<p>The table below lists the available ingestion options for <code class="docutils literal"><span class="pre">ESACCI_CLOUD_L3U</span></code> products.</p>
+<table border="1" class="docutils">
+<colgroup>
+<col width="15%" />
+<col width="25%" />
+<col width="60%" />
+</colgroup>
+<thead valign="bottom">
+<tr class="row-odd"><th class="head">option name</th>
+<th class="head">legal values</th>
+<th class="head">description</th>
+</tr>
+</thead>
+<tbody valign="top">
+<tr class="row-even"><td>orbit</td>
+<td>ascending, descending</td>
+<td>the orbit of the L3 product to ingest; option values are &#8216;ascending&#8217;, &#8216;descending&#8217;</td>
+</tr>
+<tr class="row-odd"><td>corrected</td>
+<td>false, &#8221; (default)</td>
+<td>ingest the corrected or uncorrected data; option values are &#8216;false&#8217;, &#8216;&#8217; (default, we ingest the corrected data)</td>
+</tr>
+</tbody>
+</table>
+</div>
+</div>
 <div class="section" id="ecmwf-grib-products">
 <span id="ecmwf-grib"></span><h2>ECMWF GRIB products</h2>
 <table border="1" class="docutils">
@@ -485,7 +608,7 @@
 </tbody>
 </table>
 <div class="section" id="geoms-te-ftir">
-<span id="id4"></span><h3>GEOMS-TE-FTIR</h3>
+<span id="id6"></span><h3>GEOMS-TE-FTIR</h3>
 <p>GEOMS template for FTIR</p>
 <p>The table below lists the available product conversions for <code class="docutils literal"><span class="pre">GEOMS-TE-FTIR</span></code> products.</p>
 <table border="1" class="docutils">
@@ -689,7 +812,7 @@
 </table>
 </div>
 <div class="section" id="geoms-te-lidar-o3">
-<span id="id5"></span><h3>GEOMS-TE-LIDAR-O3</h3>
+<span id="id7"></span><h3>GEOMS-TE-LIDAR-O3</h3>
 <p>GEOMS template for LIDAR ozone</p>
 <p>The table below lists the available product conversions for <code class="docutils literal"><span class="pre">GEOMS-TE-LIDAR-O3</span></code> products.</p>
 <table border="1" class="docutils">
@@ -717,7 +840,7 @@
 </table>
 </div>
 <div class="section" id="geoms-te-lidar-temperature">
-<span id="id6"></span><h3>GEOMS-TE-LIDAR-TEMPERATURE</h3>
+<span id="id8"></span><h3>GEOMS-TE-LIDAR-TEMPERATURE</h3>
 <p>GEOMS template for LIDAR temperature</p>
 <p>The table below lists the available product conversions for <code class="docutils literal"><span class="pre">GEOMS-TE-LIDAR-TEMPERATURE</span></code> products.</p>
 <table border="1" class="docutils">
@@ -745,7 +868,7 @@
 </table>
 </div>
 <div class="section" id="geoms-te-mwr">
-<span id="id7"></span><h3>GEOMS-TE-MWR</h3>
+<span id="id9"></span><h3>GEOMS-TE-MWR</h3>
 <p>GEOMS template for MWR</p>
 <p>The table below lists the available product conversions for <code class="docutils literal"><span class="pre">GEOMS-TE-MWR</span></code> products.</p>
 <table border="1" class="docutils">
@@ -849,7 +972,7 @@
 </table>
 </div>
 <div class="section" id="geoms-te-uvvis-doas-directsun">
-<span id="id8"></span><h3>GEOMS-TE-UVVIS-DOAS-DIRECTSUN</h3>
+<span id="id10"></span><h3>GEOMS-TE-UVVIS-DOAS-DIRECTSUN</h3>
 <p>GEOMS template for UVVIS-DOAS direct sun measurements</p>
 <p>The table below lists the available product conversions for <code class="docutils literal"><span class="pre">GEOMS-TE-UVVIS-DOAS-DIRECTSUN</span></code> products.</p>
 <table border="1" class="docutils">
@@ -1049,7 +1172,7 @@
 </table>
 </div>
 <div class="section" id="geoms-te-uvvis-doas-offaxis">
-<span id="id9"></span><h3>GEOMS-TE-UVVIS-DOAS-OFFAXIS</h3>
+<span id="id11"></span><h3>GEOMS-TE-UVVIS-DOAS-OFFAXIS</h3>
 <p>GEOMS template for UVVIS-DOAS off-axis gas measurements</p>
 <p>The table below lists the available product conversions for <code class="docutils literal"><span class="pre">GEOMS-TE-UVVIS-DOAS-OFFAXIS</span></code> products.</p>
 <table border="1" class="docutils">
@@ -1209,7 +1332,7 @@
 </table>
 </div>
 <div class="section" id="geoms-te-uvvis-doas-offaxis-aerosol">
-<span id="id10"></span><h3>GEOMS-TE-UVVIS-DOAS-OFFAXIS-AEROSOL</h3>
+<span id="id12"></span><h3>GEOMS-TE-UVVIS-DOAS-OFFAXIS-AEROSOL</h3>
 <p>GEOMS template for UVVIS-DOAS off-axis aerosol measurements</p>
 <p>The table below lists the available product conversions for <code class="docutils literal"><span class="pre">GEOMS-TE-UVVIS-DOAS-OFFAXIS-AEROSOL</span></code> products.</p>
 <table border="1" class="docutils">
@@ -1237,7 +1360,7 @@
 </table>
 </div>
 <div class="section" id="geoms-te-uvvis-doas-zenith">
-<span id="id11"></span><h3>GEOMS-TE-UVVIS-DOAS-ZENITH</h3>
+<span id="id13"></span><h3>GEOMS-TE-UVVIS-DOAS-ZENITH</h3>
 <p>GEOMS template for UVVIS-DOAS zenith measurements</p>
 <p>The table below lists the available product conversions for <code class="docutils literal"><span class="pre">GEOMS-TE-UVVIS-DOAS-ZENITH</span></code> products.</p>
 <table border="1" class="docutils">
@@ -1431,7 +1554,7 @@
 </tbody>
 </table>
 <div class="section" id="gome-l1-extracted">
-<span id="id12"></span><h3>GOME_L1_EXTRACTED</h3>
+<span id="id14"></span><h3>GOME_L1_EXTRACTED</h3>
 <p>GOME Level 1 Extracted data</p>
 <p>The table below lists the available product conversions for <code class="docutils literal"><span class="pre">GOME_L1_EXTRACTED</span></code> products.</p>
 <table border="1" class="docutils">
@@ -1513,7 +1636,7 @@
 </tbody>
 </table>
 <div class="section" id="gome2-l1">
-<span id="id13"></span><h3>GOME2_L1</h3>
+<span id="id15"></span><h3>GOME2_L1</h3>
 <p>GOME2 Level 1 data</p>
 <p>The table below lists the available product conversions for <code class="docutils literal"><span class="pre">GOME2_L1</span></code> products.</p>
 <table border="1" class="docutils">
@@ -1633,7 +1756,7 @@
 </tbody>
 </table>
 <div class="section" id="gosat-fts-l1b">
-<span id="id14"></span><h3>GOSAT_FTS_L1b</h3>
+<span id="id16"></span><h3>GOSAT_FTS_L1b</h3>
 <p>GOSAT FTS Level 1b radiance spectra</p>
 <p>The table below lists the available product conversions for <code class="docutils literal"><span class="pre">GOSAT_FTS_L1b</span></code> products.</p>
 <table border="1" class="docutils">
@@ -1973,7 +2096,7 @@
 </tbody>
 </table>
 <div class="section" id="npp-suomi-l2-crimss-edr-redr">
-<span id="id15"></span><h3>NPP_SUOMI_L2_CRIMSS_EDR_REDR</h3>
+<span id="id17"></span><h3>NPP_SUOMI_L2_CRIMSS_EDR_REDR</h3>
 <p>NPP Suomi CRIMSS EDR Atmospheric Vertical Profile</p>
 <p>The table below lists the available product conversions for <code class="docutils literal"><span class="pre">NPP_SUOMI_L2_CRIMSS_EDR_REDR</span></code> products.</p>
 <table border="1" class="docutils">
@@ -2255,7 +2378,7 @@
 </tbody>
 </table>
 <div class="section" id="sciamachy-l1c">
-<span id="id16"></span><h3>SCIAMACHY_L1c</h3>
+<span id="id18"></span><h3>SCIAMACHY_L1c</h3>
 <p>SCIAMACHY Level 1c</p>
 <p>The table below lists the available product conversions for <code class="docutils literal"><span class="pre">SCIAMACHY_L1c</span></code> products.</p>
 <table border="1" class="docutils">
@@ -2303,7 +2426,7 @@
 </table>
 </div>
 <div class="section" id="sciamachy-l2">
-<span id="id17"></span><h3>SCIAMACHY_L2</h3>
+<span id="id19"></span><h3>SCIAMACHY_L2</h3>
 <p>SCIAMACHY Off-Line Level-2</p>
 <p>The table below lists the available product conversions for <code class="docutils literal"><span class="pre">SCIAMACHY_L2</span></code> products.</p>
 <table border="1" class="docutils">
@@ -2539,7 +2662,7 @@
 </tbody>
 </table>
 <div class="section" id="s5p-l1b-ir-sir">
-<span id="id18"></span><h3>S5P_L1B_IR_SIR</h3>
+<span id="id20"></span><h3>S5P_L1B_IR_SIR</h3>
 <p>Sentinel-5P L1b SWIR irradiance spectra</p>
 <p>The table below lists the available product conversions for <code class="docutils literal"><span class="pre">S5P_L1B_IR_SIR</span></code> products.</p>
 <table border="1" class="docutils">
@@ -2587,7 +2710,7 @@
 </table>
 </div>
 <div class="section" id="s5p-l1b-ir-uvn">
-<span id="id19"></span><h3>S5P_L1B_IR_UVN</h3>
+<span id="id21"></span><h3>S5P_L1B_IR_UVN</h3>
 <p>Sentinel-5P L1b UVN irradiance spectra</p>
 <p>The table below lists the available product conversions for <code class="docutils literal"><span class="pre">S5P_L1B_IR_UVN</span></code> products.</p>
 <table border="1" class="docutils">
@@ -2651,7 +2774,7 @@
 </table>
 </div>
 <div class="section" id="s5p-l2-cloud">
-<span id="id20"></span><h3>S5P_L2_CLOUD</h3>
+<span id="id22"></span><h3>S5P_L2_CLOUD</h3>
 <p>Sentinel-5P L2 cloud properties</p>
 <p>The table below lists the available product conversions for <code class="docutils literal"><span class="pre">S5P_L2_CLOUD</span></code> products.</p>
 <table border="1" class="docutils">

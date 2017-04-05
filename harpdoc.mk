@@ -109,6 +109,8 @@ HARP_DOCFILES = \
 	doc/html/ingestions/ESACCI_AEROSOL_L3_IASI.html \
 	doc/html/ingestions/ESACCI_AEROSOL_L3_MERIS_ALAMO.html \
 	doc/html/ingestions/ESACCI_AEROSOL_L3_Multi_Sensor_AAI.html \
+	doc/html/ingestions/ESACCI_CLOUD_L3_Daily.html \
+	doc/html/ingestions/ESACCI_CLOUD_L3_Monthly.html \
 	doc/html/ingestions/ESACCI_GHG_L2_EMMA.html \
 	doc/html/ingestions/ESACCI_GHG_L2_GOSAT.html \
 	doc/html/ingestions/ESACCI_GHG_L2_SCIAMACHY.html \
@@ -684,6 +686,10 @@ doc/html/ingestions/ESACCI_AEROSOL_L3_IASI.html:
 doc/html/ingestions/ESACCI_AEROSOL_L3_MERIS_ALAMO.html:
 	$(MAKE) harp_doc
 doc/html/ingestions/ESACCI_AEROSOL_L3_Multi_Sensor_AAI.html:
+	$(MAKE) harp_doc
+doc/html/ingestions/ESACCI_CLOUD_L3_Daily.html:
+	$(MAKE) harp_doc
+doc/html/ingestions/ESACCI_CLOUD_L3_Monthly.html:
 	$(MAKE) harp_doc
 doc/html/ingestions/ESACCI_GHG_L2_EMMA.html:
 	$(MAKE) harp_doc
