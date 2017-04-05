@@ -2440,8 +2440,8 @@ static void register_hcho_product(void)
     description = "averaging kernel for the total HCHO column number density";
     variable_definition =
         harp_ingestion_register_variable_full_read(product_definition, "HCHO_column_number_density_avk",
-                                                   harp_type_float, 2, dimension_type, NULL, description, NULL, NULL,
-                                                   read_results_averaging_kernel_1d);
+                                                   harp_type_float, 2, dimension_type, NULL, description,
+                                                   HARP_UNIT_DIMENSIONLESS, NULL, read_results_averaging_kernel_1d);
     path = "/PRODUCT/SUPPORT_DATA/DETAILED_RESULTS/averaging_kernel[]";
     harp_variable_definition_add_mapping(variable_definition, NULL, NULL, path, NULL);
 
@@ -2490,7 +2490,7 @@ static void register_o3_product(void)
     description = "pressure bounds per profile layer";
     variable_definition =
         harp_ingestion_register_variable_full_read(product_definition, "pressure_bounds", harp_type_float, 3,
-                                                   dimension_type, dimension, description, NULL, NULL,
+                                                   dimension_type, dimension, description, "Pa", NULL,
                                                    read_results_pressure_bounds);
     path = "/PRODUCT/SUPPORT_DATA/DETAILED_RESULTS/pressure_grid[]";
     description = "derived from pressure per level (layer boundary) by repeating the inner levels; "
@@ -2501,7 +2501,7 @@ static void register_o3_product(void)
     description = "O3 column number density";
     variable_definition =
         harp_ingestion_register_variable_full_read(product_definition, "O3_column_number_density", harp_type_float, 1,
-                                                   dimension_type, NULL, description, NULL, NULL,
+                                                   dimension_type, NULL, description, "mol/m^2", NULL,
                                                    read_product_ozone_total_vertical_column);
     path = "/PRODUCT/ozone_total_vertical_column[]";
     harp_variable_definition_add_mapping(variable_definition, NULL, NULL, path, NULL);
@@ -2510,8 +2510,8 @@ static void register_o3_product(void)
     description = "uncertainty of the O3 column number density";
     variable_definition =
         harp_ingestion_register_variable_full_read(product_definition, "O3_column_number_density_uncertainty",
-                                                   harp_type_float, 1, dimension_type, NULL, description, NULL, NULL,
-                                                   read_product_ozone_total_vertical_column_precision);
+                                                   harp_type_float, 1, dimension_type, NULL, description, "mol/m^2",
+                                                   NULL, read_product_ozone_total_vertical_column_precision);
     path = "/PRODUCT/ozone_total_vertical_column_precision[]";
     harp_variable_definition_add_mapping(variable_definition, NULL, NULL, path, NULL);
 
@@ -2519,8 +2519,8 @@ static void register_o3_product(void)
     description = "O3 column number density apriori";
     variable_definition =
         harp_ingestion_register_variable_full_read(product_definition, "O3_column_number_density_apriori",
-                                                   harp_type_float, 2, dimension_type, NULL, description, "DU", NULL,
-                                                   read_results_ozone_profile_apriori);
+                                                   harp_type_float, 2, dimension_type, NULL, description, "mol/m^2",
+                                                   NULL, read_results_ozone_profile_apriori);
     path = "/PRODUCT/SUPPORT_DATA/DETAILED_RESULTS/ozone_profile_apriori[]";
     harp_variable_definition_add_mapping(variable_definition, NULL, NULL, path, NULL);
 
@@ -2886,7 +2886,7 @@ static void register_so2_product(void)
     description = "SO2 vertical column density";
     variable_definition =
         harp_ingestion_register_variable_full_read(product_definition, "SO2_column_number_density", harp_type_float, 1,
-                                                   dimension_type, NULL, description, NULL, NULL,
+                                                   dimension_type, NULL, description, "mol/m^2", NULL,
                                                    read_product_sulfurdioxide_total_vertical_column);
     path = "/PRODUCT/sulfurdioxide_total_vertical_column[]";
     harp_variable_definition_add_mapping(variable_definition, NULL, NULL, path, NULL);
@@ -2895,7 +2895,7 @@ static void register_so2_product(void)
     description = "uncertainty of the SO2 vertical column density";
     variable_definition =
         harp_ingestion_register_variable_full_read(product_definition, "SO2_column_number_density_uncertainty",
-                                                   harp_type_float, 1, dimension_type, NULL, description, NULL,
+                                                   harp_type_float, 1, dimension_type, NULL, description, "mol/m^2",
                                                    exclude_so2_column_uncertainty,
                                                    read_product_sulfurdioxide_total_vertical_column_precision);
     path = "/PRODUCT/sulfurdioxide_total_vertical_column_precision[]";
@@ -2905,7 +2905,7 @@ static void register_so2_product(void)
     description = "averaging kernel for the SO2 vertical column density";
     variable_definition =
         harp_ingestion_register_variable_full_read(product_definition, "SO2_column_number_density_avk", harp_type_float,
-                                                   2, dimension_type, NULL, description, NULL, NULL,
+                                                   2, dimension_type, NULL, description, HARP_UNIT_DIMENSIONLESS, NULL,
                                                    read_results_averaging_kernel_1d);
     path = "/PRODUCT/SUPPORT_DATA/DETAILED_RESULTS/averaging_kernel[]";
     harp_variable_definition_add_mapping(variable_definition, NULL, NULL, path, NULL);
