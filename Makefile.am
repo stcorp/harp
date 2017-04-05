@@ -328,6 +328,7 @@ AURA_HIRDLS_DEFINITION_FILE = AURA_HIRDLS-@CODADEF_VERSION_AURA_HIRDLS@.codadef
 AURA_MLS_DEFINITION_FILE = AURA_MLS-@CODADEF_VERSION_AURA_MLS@.codadef
 AURA_OMI_DEFINITION_FILE = AURA_OMI-@CODADEF_VERSION_AURA_OMI@.codadef
 AURA_TES_DEFINITION_FILE = AURA_TES-@CODADEF_VERSION_AURA_TES@.codadef
+CALIPSO_DEFINITION_FILE = CALIPSO-@CODADEF_VERSION_CALIPSO@.codadef
 ECMWF_DEFINITION_FILE = ECMWF-@CODADEF_VERSION_ECMWF@.codadef
 ENVISAT_GOMOS_DEFINITION_FILE = ENVISAT_GOMOS-@CODADEF_VERSION_ENVISAT_GOMOS@.codadef
 ENVISAT_MIPAS_DEFINITION_FILE = ENVISAT_MIPAS-@CODADEF_VERSION_ENVISAT_MIPAS@.codadef
@@ -354,6 +355,7 @@ DEFINITION_FILES = \
 	definitions/$(AURA_MLS_DEFINITION_FILE) \
 	definitions/$(AURA_OMI_DEFINITION_FILE) \
 	definitions/$(AURA_TES_DEFINITION_FILE) \
+	definitions/$(CALIPSO_DEFINITION_FILE) \
 	definitions/$(ECMWF_DEFINITION_FILE) \
 	definitions/$(ENVISAT_GOMOS_DEFINITION_FILE) \
 	definitions/$(ENVISAT_MIPAS_DEFINITION_FILE) \
@@ -428,6 +430,15 @@ definitions/$(AURA_TES_DEFINITION_FILE):
 	@$(srcdir)/codadef.sh $(srcdir)/definitions/AURA_TES definitions
 	@if test ! -f definitions/$(AURA_TES_DEFINITION_FILE) ; then \
 	  echo definitions/$(AURA_TES_DEFINITION_FILE) not created. ; \
+	  echo run './config.status --recheck' to update the .codadef version reference. ; \
+	  exit 1 ; \
+	 fi
+
+definitions/$(CALIPSO_DEFINITION_FILE):
+	test -d definitions || $(mkinstalldirs) definitions
+	@$(srcdir)/codadef.sh $(srcdir)/definitions/CALIPSO definitions
+	@if test ! -f definitions/$(CALIPSO_DEFINITION_FILE) ; then \
+	  echo definitions/$(CALIPSO_DEFINITION_FILE) not created. ; \
 	  echo run './config.status --recheck' to update the .codadef version reference. ; \
 	  exit 1 ; \
 	 fi
