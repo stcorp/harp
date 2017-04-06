@@ -435,7 +435,7 @@ int harp_ingestion_module_aeolus_l2a_init(void)
     /* validity */
     description = "processing qc flag";
     variable_definition = harp_ingestion_register_variable_sample_read(product_definition, "validity", harp_type_int8,
-                                                                       2, dimension_type, NULL,description, NULL, NULL,
+                                                                       2, dimension_type, NULL, description, NULL, NULL,
                                                                        read_validity);
     harp_variable_definition_add_mapping(variable_definition, NULL, NULL,
                                          "/sca_pcd[]/profile_pcd_bins[]/processing_qc_flag", NULL);
