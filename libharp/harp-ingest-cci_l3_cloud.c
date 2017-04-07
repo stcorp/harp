@@ -915,5 +915,3 @@ int harp_ingestion_module_cci_l3_cloud_init(void)
 
     return 0;
 }
-
-//debugmsg("make indent en make doc");
