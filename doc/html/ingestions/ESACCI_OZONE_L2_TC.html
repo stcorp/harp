@@ -13,6 +13,8 @@
 
   
   
+  
+  
 
   
 
@@ -32,6 +34,8 @@
   
 
   
+        <link rel="index" title="Index"
+              href="../genindex.html"/>
     <link rel="top" title="HARP 0.5b documentation" href="../index.html"/> 
 
   
@@ -41,6 +45,7 @@
 
 <body class="wy-body-for-nav" role="document">
 
+   
   <div class="wy-grid-for-nav">
 
     
@@ -74,7 +79,10 @@
           
             
             
-                <ul>
+              
+            
+            
+              <ul>
 <li class="toctree-l1"><a class="reference internal" href="../install.html">Installation</a></li>
 <li class="toctree-l1"><a class="reference internal" href="../dataformats.html">Data formats</a></li>
 <li class="toctree-l1"><a class="reference internal" href="../algorithms/index.html">Algorithms</a></li>
@@ -95,8 +103,10 @@
 
       
       <nav class="wy-nav-top" role="navigation" aria-label="top navigation">
-        <i data-toggle="wy-nav-top" class="fa fa-bars"></i>
-        <a href="../index.html">HARP</a>
+        
+          <i data-toggle="wy-nav-top" class="fa fa-bars"></i>
+          <a href="../index.html">HARP</a>
+        
       </nav>
 
 
@@ -105,21 +115,38 @@
         <div class="rst-content">
           
 
- 
+
+
+
+
+
+
+
+
+
+
+
 
 
 
 <div role="navigation" aria-label="breadcrumbs navigation">
+
   <ul class="wy-breadcrumbs">
-    <li><a href="../index.html">Docs</a> &raquo;</li>
-      
-    <li>ESACCI_OZONE_L2_TC</li>
+    
+      <li><a href="../index.html">Docs</a> &raquo;</li>
+        
+      <li>ESACCI_OZONE_L2_TC</li>
+    
+    
       <li class="wy-breadcrumbs-aside">
         
-          
+            
         
       </li>
+    
   </ul>
+
+  
   <hr/>
 </div>
           <div role="main" class="document" itemscope="itemscope" itemtype="http://schema.org/Article">
@@ -130,7 +157,7 @@
 <div class="section" id="variables">
 <h2>Variables</h2>
 <p>The table below lists the variables that are present in the HARP product that results from an ingestion of <code class="docutils literal"><span class="pre">ESACCI_OZONE_L2_TC</span></code> data.</p>
-<table border="1" class="docutils">
+<table border="1" class="colwidths-given docutils">
 <colgroup>
 <col width="25%" />
 <col width="5%" />
@@ -150,7 +177,7 @@
 <tr class="row-even"><td><strong>scanline_pixel_index</strong></td>
 <td>int32</td>
 <td>{<em>time</em>}</td>
-<td>&nbsp;</td>
+<td>&#160;</td>
 <td>zero-based index of the instantaneous field of view within the swath</td>
 </tr>
 <tr class="row-odd"><td><strong>datetime</strong></td>
@@ -222,7 +249,7 @@
 <tr class="row-even"><td><strong>cloud_fraction</strong></td>
 <td>double</td>
 <td>{<em>time</em>}</td>
-<td>&nbsp;</td>
+<td>&#160;</td>
 <td>effective cloud fraction</td>
 </tr>
 <tr class="row-odd"><td><strong>cloud_top_pressure</strong></td>
@@ -234,7 +261,7 @@
 <tr class="row-even"><td><strong>cloud_top_albedo</strong></td>
 <td>double</td>
 <td>{<em>time</em>}</td>
-<td>&nbsp;</td>
+<td>&#160;</td>
 <td>effective cloud top albedo</td>
 </tr>
 <tr class="row-odd"><td><strong>pressure</strong></td>
@@ -246,13 +273,13 @@
 <tr class="row-even"><td><strong>albedo</strong></td>
 <td>double</td>
 <td>{<em>time</em>}</td>
-<td>&nbsp;</td>
+<td>&#160;</td>
 <td>retrieved effective albedo of the scene</td>
 </tr>
 <tr class="row-odd"><td><strong>surface_albedo</strong></td>
 <td>double</td>
 <td>{<em>time</em>}</td>
-<td>&nbsp;</td>
+<td>&#160;</td>
 <td>minimum surface albedo at 335nm from OMI LER climatology</td>
 </tr>
 <tr class="row-even"><td><strong>surface_altitude</strong></td>
@@ -270,7 +297,7 @@
 <tr class="row-even"><td><strong>O3_column_number_density_avk</strong></td>
 <td>double</td>
 <td>{<em>time</em>, <em>vertical</em>}</td>
-<td>&nbsp;</td>
+<td>&#160;</td>
 <td>averaging kernels in the layers of the forward model</td>
 </tr>
 <tr class="row-odd"><td><strong>O3_column_number_density_apriori</strong></td>
@@ -282,7 +309,7 @@
 <tr class="row-even"><td><strong>index</strong></td>
 <td>int32</td>
 <td>{<em>time</em>}</td>
-<td>&nbsp;</td>
+<td>&#160;</td>
 <td>zero-based index of the sample within the source product</td>
 </tr>
 </tbody>
@@ -401,6 +428,9 @@
 
 
            </div>
+           <div class="articleComments">
+            
+           </div>
           </div>
           <footer>
   
@@ -433,13 +463,14 @@
             VERSION:'0.5b',
             COLLAPSE_INDEX:false,
             FILE_SUFFIX:'.html',
-            HAS_SOURCE:  false
+            HAS_SOURCE:  false,
+            SOURCELINK_SUFFIX: '.txt'
         };
     </script>
       <script type="text/javascript" src="../_static/jquery.js"></script>
       <script type="text/javascript" src="../_static/underscore.js"></script>
       <script type="text/javascript" src="../_static/doctools.js"></script>
-      <script type="text/javascript" src="https://cdn.mathjax.org/mathjax/latest/MathJax.js?config=TeX-AMS-MML_HTMLorMML"></script>
+      <script type="text/javascript" src="https://cdnjs.cloudflare.com/ajax/libs/mathjax/2.7.0/MathJax.js?config=TeX-AMS-MML_HTMLorMML"></script>
 
   
 

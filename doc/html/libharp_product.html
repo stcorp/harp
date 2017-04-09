@@ -13,6 +13,8 @@
 
   
   
+  
+  
 
   
 
@@ -32,6 +34,8 @@
   
 
   
+        <link rel="index" title="Index"
+              href="genindex.html"/>
     <link rel="top" title="HARP 0.5b documentation" href="index.html"/>
         <link rel="up" title="C library" href="libharp.html"/>
         <link rel="next" title="Product Metadata" href="libharp_product_metadata.html"/>
@@ -44,6 +48,7 @@
 
 <body class="wy-body-for-nav" role="document">
 
+   
   <div class="wy-grid-for-nav">
 
     
@@ -77,7 +82,10 @@
           
             
             
-                <ul class="current">
+              
+            
+            
+              <ul class="current">
 <li class="toctree-l1"><a class="reference internal" href="install.html">Installation</a></li>
 <li class="toctree-l1"><a class="reference internal" href="dataformats.html">Data formats</a></li>
 <li class="toctree-l1"><a class="reference internal" href="algorithms/index.html">Algorithms</a></li>
@@ -112,8 +120,10 @@
 
       
       <nav class="wy-nav-top" role="navigation" aria-label="top navigation">
-        <i data-toggle="wy-nav-top" class="fa fa-bars"></i>
-        <a href="index.html">HARP</a>
+        
+          <i data-toggle="wy-nav-top" class="fa fa-bars"></i>
+          <a href="index.html">HARP</a>
+        
       </nav>
 
 
@@ -122,23 +132,40 @@
         <div class="rst-content">
           
 
- 
+
+
+
+
+
+
+
+
+
+
+
 
 
 
 <div role="navigation" aria-label="breadcrumbs navigation">
+
   <ul class="wy-breadcrumbs">
-    <li><a href="index.html">Docs</a> &raquo;</li>
-      
+    
+      <li><a href="index.html">Docs</a> &raquo;</li>
+        
           <li><a href="libharp.html">C library</a> &raquo;</li>
-      
-    <li>Product</li>
+        
+      <li>Product</li>
+    
+    
       <li class="wy-breadcrumbs-aside">
         
-          
+            
         
       </li>
+    
   </ul>
+
+  
   <hr/>
 </div>
           <div role="main" class="document" itemscope="itemscope" itemtype="http://schema.org/Article">
@@ -159,20 +186,20 @@
 </p>
 <p>Note that the <code class="docutils literal"><span class="pre">Conventions</span></code> global attribute is not included as this is automatically handled by the import/export functions of HARP. Similar, the <code class="docutils literal"><span class="pre">datetime_start</span></code> and <code class="docutils literal"><span class="pre">datetime_stop</span></code> attributes are handled by the export function. They are set to the minimum and maximum values of the variables <code class="docutils literal"><span class="pre">datetime</span></code>, <code class="docutils literal"><span class="pre">datetime_start</span></code> and <code class="docutils literal"><span class="pre">datetime_stop</span></code> (if available).</p>
 <p>For each variable in the HARP product the dimensions need to match the length of their type as defined in the dimension array of the HARP product (for all dimension types except &#8216;independent&#8217;). </p>
-<div class="breathe-sectiondef container">
+<div class="breathe-sectiondef docutils container">
 <p class="breathe-sectiondef-title rubric">Typedefs</p>
 <dl class="type">
 <dt id="_CPPv212harp_product">
-<span id="harp_product"></span><span class="target" id="libharpgroup__harp__product_1gab3fddebd8b746e0d76948d03ca073ddc"></span><em class="property">typedef </em><em class="property">struct</em> <a class="reference internal" href="#_CPPv219harp_product_struct" title="harp_product_struct">harp_product_struct</a> <code class="descname">harp_product</code></dt>
+<span id="harp_product"></span><span class="target" id="libharpgroup__harp__product_1gab3fddebd8b746e0d76948d03ca073ddc"></span><em class="property">typedef </em><em class="property">struct</em> <a class="reference internal" href="#_CPPv219harp_product_struct" title="harp_product_struct">harp_product_struct</a> <code class="descname">harp_product</code><br /></dt>
 <dd><p>HARP Product typedef </p>
 </dd></dl>
 
 </div>
-<div class="breathe-sectiondef container">
+<div class="breathe-sectiondef docutils container">
 <p class="breathe-sectiondef-title rubric">Functions</p>
 <dl class="function">
 <dt id="_CPPv233harp_product_get_derived_variablePK12harp_productPKcPKciPK19harp_dimension_typePP13harp_variable">
-<span id="harp_product_get_derived_variable__harp_productCP.cCP.cCP.i.harp_dimension_typeCP.harp_variablePP"></span><span class="target" id="libharpgroup__harp__product_1ga22e16c228da1e922aac423537a52df71"></span>int <code class="descname">harp_product_get_derived_variable</code><span class="sig-paren">(</span><em class="property">const</em> <a class="reference internal" href="#_CPPv212harp_product" title="harp_product">harp_product</a> *<em>product</em>, <em class="property">const</em> char *<em>name</em>, <em class="property">const</em> char *<em>unit</em>, int <em>num_dimensions</em>, <em class="property">const</em> <a class="reference internal" href="libharp_general.html#_CPPv219harp_dimension_type" title="harp_dimension_type">harp_dimension_type</a> *<em>dimension_type</em>, <a class="reference internal" href="libharp_variable.html#_CPPv213harp_variable" title="harp_variable">harp_variable</a> **<em>variable</em><span class="sig-paren">)</span></dt>
+<span id="harp_product_get_derived_variable__harp_productCP.cCP.cCP.i.harp_dimension_typeCP.harp_variablePP"></span><span class="target" id="libharpgroup__harp__product_1ga22e16c228da1e922aac423537a52df71"></span>int <code class="descname">harp_product_get_derived_variable</code><span class="sig-paren">(</span><em class="property">const</em> <a class="reference internal" href="#_CPPv212harp_product" title="harp_product">harp_product</a> *<em>product</em>, <em class="property">const</em> char *<em>name</em>, <em class="property">const</em> char *<em>unit</em>, int <em>num_dimensions</em>, <em class="property">const</em> <a class="reference internal" href="libharp_general.html#_CPPv219harp_dimension_type" title="harp_dimension_type">harp_dimension_type</a> *<em>dimension_type</em>, <a class="reference internal" href="libharp_variable.html#_CPPv213harp_variable" title="harp_variable">harp_variable</a> **<em>variable</em><span class="sig-paren">)</span><br /></dt>
 <dd><p>Retrieve a new variable based on the set of automatic conversions that are supported by HARP.</p>
 <p>If the product already contained a variable with the given name, you will get a copy of that variable (and converted to the specified data type and unit). Otherwise the function will try to create a new variable based on the data found in the product or on available auxiliary data (e.g. built-in climatology). The caller of this function will be responsible for the memory management of the returned variable. <dl class="docutils">
 <dt><strong>Note</strong></dt>
@@ -186,19 +213,13 @@
 </ul>
 </dd>
 <dt><strong>Parameters</strong></dt>
-<dd><ul class="breatheparameterlist first last">
-<li><code class="first docutils literal"><span class="pre">product</span></code> - <p>Product from which to derive the new variable. </p>
-</li>
-<li><code class="first docutils literal"><span class="pre">name</span></code> - <p>Name of the variable that should be created. </p>
-</li>
-<li><code class="first docutils literal"><span class="pre">unit</span></code> - <p>Unit (optional) of the variable that should be created. </p>
-</li>
-<li><code class="first docutils literal"><span class="pre">num_dimensions</span></code> - <p>Number of dimensions of the variable that should be created. </p>
-</li>
-<li><code class="first docutils literal"><span class="pre">dimension_type</span></code> - <p>Type of dimension for each of the dimensions of the variable that should be created. </p>
-</li>
-<li><code class="first docutils literal"><span class="pre">variable</span></code> - <p>Pointer to the C variable where the derived HARP variable will be stored. </p>
-</li>
+<dd><ul class="breatheparameterlist first last simple">
+<li><code class="docutils literal"><span class="pre">product</span></code>: Product from which to derive the new variable. </li>
+<li><code class="docutils literal"><span class="pre">name</span></code>: Name of the variable that should be created. </li>
+<li><code class="docutils literal"><span class="pre">unit</span></code>: Unit (optional) of the variable that should be created. </li>
+<li><code class="docutils literal"><span class="pre">num_dimensions</span></code>: Number of dimensions of the variable that should be created. </li>
+<li><code class="docutils literal"><span class="pre">dimension_type</span></code>: Type of dimension for each of the dimensions of the variable that should be created. </li>
+<li><code class="docutils literal"><span class="pre">variable</span></code>: Pointer to the C variable where the derived HARP variable will be stored. </li>
 </ul>
 </dd>
 </dl>
@@ -207,7 +228,7 @@
 
 <dl class="function">
 <dt id="_CPPv233harp_product_add_derived_variableP12harp_productPKcPKciPK19harp_dimension_type">
-<span id="harp_product_add_derived_variable__harp_productP.cCP.cCP.i.harp_dimension_typeCP"></span><span class="target" id="libharpgroup__harp__product_1gaa9cafd72562752a99f3cfc0c9e02920e"></span>int <code class="descname">harp_product_add_derived_variable</code><span class="sig-paren">(</span><a class="reference internal" href="#_CPPv212harp_product" title="harp_product">harp_product</a> *<em>product</em>, <em class="property">const</em> char *<em>name</em>, <em class="property">const</em> char *<em>unit</em>, int <em>num_dimensions</em>, <em class="property">const</em> <a class="reference internal" href="libharp_general.html#_CPPv219harp_dimension_type" title="harp_dimension_type">harp_dimension_type</a> *<em>dimension_type</em><span class="sig-paren">)</span></dt>
+<span id="harp_product_add_derived_variable__harp_productP.cCP.cCP.i.harp_dimension_typeCP"></span><span class="target" id="libharpgroup__harp__product_1gaa9cafd72562752a99f3cfc0c9e02920e"></span>int <code class="descname">harp_product_add_derived_variable</code><span class="sig-paren">(</span><a class="reference internal" href="#_CPPv212harp_product" title="harp_product">harp_product</a> *<em>product</em>, <em class="property">const</em> char *<em>name</em>, <em class="property">const</em> char *<em>unit</em>, int <em>num_dimensions</em>, <em class="property">const</em> <a class="reference internal" href="libharp_general.html#_CPPv219harp_dimension_type" title="harp_dimension_type">harp_dimension_type</a> *<em>dimension_type</em><span class="sig-paren">)</span><br /></dt>
 <dd><p>Create a derived variable and add it to the product.</p>
 <p>If a similar named variable with the right dimensions was already in the product then that variable will be modified to match the given unit (and in case <em>unit</em> is NULL, then the function will just leave the product unmodified). Otherwise the function will call <a class="reference internal" href="#libharpgroup__harp__product_1ga22e16c228da1e922aac423537a52df71"><span class="std std-ref">harp_product_get_derived_variable()</span></a> and add the new variable using <a class="reference internal" href="#libharpgroup__harp__product_1ga84a2e8737ef00ab3ec8cecb54bd53d51"><span class="std std-ref">harp_product_add_variable()</span></a> (removing any existing variable with the same name, but different dimensions) <dl class="docutils">
 <dt><strong>Return</strong></dt>
@@ -217,17 +238,12 @@
 </ul>
 </dd>
 <dt><strong>Parameters</strong></dt>
-<dd><ul class="breatheparameterlist first last">
-<li><code class="first docutils literal"><span class="pre">product</span></code> - <p>Product from which to derive the new variable and into which the derived variable should be placed. </p>
-</li>
-<li><code class="first docutils literal"><span class="pre">name</span></code> - <p>Name of the variable that should be added. </p>
-</li>
-<li><code class="first docutils literal"><span class="pre">unit</span></code> - <p>Unit (optional) of the variable that should be added. </p>
-</li>
-<li><code class="first docutils literal"><span class="pre">num_dimensions</span></code> - <p>Number of dimensions of the variable that should be created. </p>
-</li>
-<li><code class="first docutils literal"><span class="pre">dimension_type</span></code> - <p>Type of dimension for each of the dimensions of the variable that should be created. </p>
-</li>
+<dd><ul class="breatheparameterlist first last simple">
+<li><code class="docutils literal"><span class="pre">product</span></code>: Product from which to derive the new variable and into which the derived variable should be placed. </li>
+<li><code class="docutils literal"><span class="pre">name</span></code>: Name of the variable that should be added. </li>
+<li><code class="docutils literal"><span class="pre">unit</span></code>: Unit (optional) of the variable that should be added. </li>
+<li><code class="docutils literal"><span class="pre">num_dimensions</span></code>: Number of dimensions of the variable that should be created. </li>
+<li><code class="docutils literal"><span class="pre">dimension_type</span></code>: Type of dimension for each of the dimensions of the variable that should be created. </li>
 </ul>
 </dd>
 </dl>
@@ -236,7 +252,7 @@
 
 <dl class="function">
 <dt id="_CPPv211harp_ingestPKcPKcPKcPP12harp_product">
-<span id="harp_ingest__cCP.cCP.cCP.harp_productPP"></span><span class="target" id="libharpgroup__harp__product_1ga281e3c9ff77268094289ecdb6e74eac1"></span>int <code class="descname">harp_ingest</code><span class="sig-paren">(</span><em class="property">const</em> char *<em>filename</em>, <em class="property">const</em> char *<em>operations</em>, <em class="property">const</em> char *<em>options</em>, <a class="reference internal" href="#_CPPv212harp_product" title="harp_product">harp_product</a> **<em>product</em><span class="sig-paren">)</span></dt>
+<span id="harp_ingest__cCP.cCP.cCP.harp_productPP"></span><span class="target" id="libharpgroup__harp__product_1ga281e3c9ff77268094289ecdb6e74eac1"></span>int <code class="descname">harp_ingest</code><span class="sig-paren">(</span><em class="property">const</em> char *<em>filename</em>, <em class="property">const</em> char *<em>operations</em>, <em class="property">const</em> char *<em>options</em>, <a class="reference internal" href="#_CPPv212harp_product" title="harp_product">harp_product</a> **<em>product</em><span class="sig-paren">)</span><br /></dt>
 <dd><p>Ingest a product.</p>
 <p><dl class="docutils">
 <dt><strong>Return</strong></dt>
@@ -246,15 +262,11 @@
 </ul>
 </dd>
 <dt><strong>Parameters</strong></dt>
-<dd><ul class="breatheparameterlist first last">
-<li><code class="first docutils literal"><span class="pre">filename</span></code> - <p>Filename of the product to ingest. </p>
-</li>
-<li><code class="first docutils literal"><span class="pre">operations</span></code> - <p>Script defining the operations to be performed as part of ingestion (for example, filtering). </p>
-</li>
-<li><code class="first docutils literal"><span class="pre">options</span></code> - <p>Options to be passed to the ingestion module. </p>
-</li>
-<li><code class="first docutils literal"><span class="pre">product</span></code> - <p>Pointer to a location where a pointer to the ingested product will be stored. </p>
-</li>
+<dd><ul class="breatheparameterlist first last simple">
+<li><code class="docutils literal"><span class="pre">filename</span></code>: Filename of the product to ingest. </li>
+<li><code class="docutils literal"><span class="pre">operations</span></code>: Script defining the operations to be performed as part of ingestion (for example, filtering). </li>
+<li><code class="docutils literal"><span class="pre">options</span></code>: Options to be passed to the ingestion module. </li>
+<li><code class="docutils literal"><span class="pre">product</span></code>: Pointer to a location where a pointer to the ingested product will be stored. </li>
 </ul>
 </dd>
 </dl>
@@ -263,7 +275,7 @@
 
 <dl class="function">
 <dt id="_CPPv216harp_ingest_testPKcPFiPKczE">
-<span class="target" id="libharpgroup__harp__product_1ga1116b160ecb1cf9f4282c78ae720eb51"></span>int <code class="descname">harp_ingest_test</code><span class="sig-paren">(</span><em class="property">const</em> char *<em>filename</em>, int (*<em>print</em>)<span class="sig-paren">(</span><em class="property">const</em> char *, ...<span class="sig-paren">)</span><span class="sig-paren">)</span></dt>
+<span class="target" id="libharpgroup__harp__product_1ga1116b160ecb1cf9f4282c78ae720eb51"></span>int <code class="descname">harp_ingest_test</code><span class="sig-paren">(</span><em class="property">const</em> char *<em>filename</em>, int (*<em>print</em>)<span class="sig-paren">(</span><em class="property">const</em> char *, ...<span class="sig-paren">)</span><span class="sig-paren">)</span><br /></dt>
 <dd><p>Test ingestion of a product using all possible ingestion option values.</p>
 <p>Results are printed using the provided <em>print</em> function. The <em>print</em> function parameter should be a function that resembles printf(). <dl class="docutils">
 <dt><strong>Return</strong></dt>
@@ -273,11 +285,9 @@
 </ul>
 </dd>
 <dt><strong>Parameters</strong></dt>
-<dd><ul class="breatheparameterlist first last">
-<li><code class="first docutils literal"><span class="pre">filename</span></code> - <p>Filename of the product to ingest. </p>
-</li>
-<li><code class="first docutils literal"><span class="pre">print</span></code> - <p>Reference to a printf compatible function. </p>
-</li>
+<dd><ul class="breatheparameterlist first last simple">
+<li><code class="docutils literal"><span class="pre">filename</span></code>: Filename of the product to ingest. </li>
+<li><code class="docutils literal"><span class="pre">print</span></code>: Reference to a printf compatible function. </li>
 </ul>
 </dd>
 </dl>
@@ -286,7 +296,7 @@
 
 <dl class="function">
 <dt id="_CPPv216harp_product_newPP12harp_product">
-<span id="harp_product_new__harp_productPP"></span><span class="target" id="libharpgroup__harp__product_1ga0d4b0729140d78db3441be1b66451e91"></span>int <code class="descname">harp_product_new</code><span class="sig-paren">(</span><a class="reference internal" href="#_CPPv212harp_product" title="harp_product">harp_product</a> **<em>new_product</em><span class="sig-paren">)</span></dt>
+<span id="harp_product_new__harp_productPP"></span><span class="target" id="libharpgroup__harp__product_1ga0d4b0729140d78db3441be1b66451e91"></span>int <code class="descname">harp_product_new</code><span class="sig-paren">(</span><a class="reference internal" href="#_CPPv212harp_product" title="harp_product">harp_product</a> **<em>new_product</em><span class="sig-paren">)</span><br /></dt>
 <dd><p>Create new product. The product will be intialized with 0 variables and 0 attributes. <dl class="docutils">
 <dt><strong>Return</strong></dt>
 <dd><ul class="simple">
@@ -295,9 +305,8 @@
 </ul>
 </dd>
 <dt><strong>Parameters</strong></dt>
-<dd><ul class="breatheparameterlist first last">
-<li><code class="first docutils literal"><span class="pre">new_product</span></code> - <p>Pointer to the C variable where the new HARP product will be stored. </p>
-</li>
+<dd><ul class="breatheparameterlist first last simple">
+<li><code class="docutils literal"><span class="pre">new_product</span></code>: Pointer to the C variable where the new HARP product will be stored. </li>
 </ul>
 </dd>
 </dl>
@@ -306,12 +315,11 @@
 
 <dl class="function">
 <dt id="_CPPv219harp_product_deleteP12harp_product">
-<span id="harp_product_delete__harp_productP"></span><span class="target" id="libharpgroup__harp__product_1ga733c9e35d18dd76b7f9d7bf36c1c53a8"></span>void <code class="descname">harp_product_delete</code><span class="sig-paren">(</span><a class="reference internal" href="#_CPPv212harp_product" title="harp_product">harp_product</a> *<em>product</em><span class="sig-paren">)</span></dt>
+<span id="harp_product_delete__harp_productP"></span><span class="target" id="libharpgroup__harp__product_1ga733c9e35d18dd76b7f9d7bf36c1c53a8"></span>void <code class="descname">harp_product_delete</code><span class="sig-paren">(</span><a class="reference internal" href="#_CPPv212harp_product" title="harp_product">harp_product</a> *<em>product</em><span class="sig-paren">)</span><br /></dt>
 <dd><p>Delete product. Remove product and all attached variables and attributes. <dl class="docutils">
 <dt><strong>Parameters</strong></dt>
-<dd><ul class="breatheparameterlist first last">
-<li><code class="first docutils literal"><span class="pre">product</span></code> - <p>HARP product. </p>
-</li>
+<dd><ul class="breatheparameterlist first last simple">
+<li><code class="docutils literal"><span class="pre">product</span></code>: HARP product. </li>
 </ul>
 </dd>
 </dl>
@@ -320,7 +328,7 @@
 
 <dl class="function">
 <dt id="_CPPv217harp_product_copyPK12harp_productPP12harp_product">
-<span id="harp_product_copy__harp_productCP.harp_productPP"></span><span class="target" id="libharpgroup__harp__product_1gaeb2e6f3916f21319e8c8576efaa1e351"></span>int <code class="descname">harp_product_copy</code><span class="sig-paren">(</span><em class="property">const</em> <a class="reference internal" href="#_CPPv212harp_product" title="harp_product">harp_product</a> *<em>other_product</em>, <a class="reference internal" href="#_CPPv212harp_product" title="harp_product">harp_product</a> **<em>new_product</em><span class="sig-paren">)</span></dt>
+<span id="harp_product_copy__harp_productCP.harp_productPP"></span><span class="target" id="libharpgroup__harp__product_1gaeb2e6f3916f21319e8c8576efaa1e351"></span>int <code class="descname">harp_product_copy</code><span class="sig-paren">(</span><em class="property">const</em> <a class="reference internal" href="#_CPPv212harp_product" title="harp_product">harp_product</a> *<em>other_product</em>, <a class="reference internal" href="#_CPPv212harp_product" title="harp_product">harp_product</a> **<em>new_product</em><span class="sig-paren">)</span><br /></dt>
 <dd><p>Create a copy of a product. The function will create a deep-copy of the given product, also creating copyies of all attributes and variables. <dl class="docutils">
 <dt><strong>Return</strong></dt>
 <dd><ul class="simple">
@@ -329,11 +337,9 @@
 </ul>
 </dd>
 <dt><strong>Parameters</strong></dt>
-<dd><ul class="breatheparameterlist first last">
-<li><code class="first docutils literal"><span class="pre">other_product</span></code> - <p>Product that should be copied. </p>
-</li>
-<li><code class="first docutils literal"><span class="pre">new_product</span></code> - <p>Pointer to the variable where the new HARP product will be stored. </p>
-</li>
+<dd><ul class="breatheparameterlist first last simple">
+<li><code class="docutils literal"><span class="pre">other_product</span></code>: Product that should be copied. </li>
+<li><code class="docutils literal"><span class="pre">new_product</span></code>: Pointer to the variable where the new HARP product will be stored. </li>
 </ul>
 </dd>
 </dl>
@@ -342,7 +348,7 @@
 
 <dl class="function">
 <dt id="_CPPv219harp_product_appendP12harp_productP12harp_product">
-<span id="harp_product_append__harp_productP.harp_productP"></span><span class="target" id="libharpgroup__harp__product_1gac38975a39f20971cac1cefb8416b2347"></span>int <code class="descname">harp_product_append</code><span class="sig-paren">(</span><a class="reference internal" href="#_CPPv212harp_product" title="harp_product">harp_product</a> *<em>product</em>, <a class="reference internal" href="#_CPPv212harp_product" title="harp_product">harp_product</a> *<em>other_product</em><span class="sig-paren">)</span></dt>
+<span id="harp_product_append__harp_productP.harp_productP"></span><span class="target" id="libharpgroup__harp__product_1gac38975a39f20971cac1cefb8416b2347"></span>int <code class="descname">harp_product_append</code><span class="sig-paren">(</span><a class="reference internal" href="#_CPPv212harp_product" title="harp_product">harp_product</a> *<em>product</em>, <a class="reference internal" href="#_CPPv212harp_product" title="harp_product">harp_product</a> *<em>other_product</em><span class="sig-paren">)</span><br /></dt>
 <dd><p>Append one product to another. The &#8216;index&#8217; variable, if present, will be removed. All variables in both products will have a &#8216;time&#8217; dimension introduced as first dimension. Both products will have all non-time dimensions extended to the maximum of either product. Any &#8216;source_product&#8217; attribute for the first product will be removed. <dl class="docutils">
 <dt><strong>Return</strong></dt>
 <dd><ul class="simple">
@@ -351,11 +357,9 @@
 </ul>
 </dd>
 <dt><strong>Parameters</strong></dt>
-<dd><ul class="breatheparameterlist first last">
-<li><code class="first docutils literal"><span class="pre">product</span></code> - <p>Product to which data should be appended. </p>
-</li>
-<li><code class="first docutils literal"><span class="pre">other_product</span></code> - <p>Product that should be appended. </p>
-</li>
+<dd><ul class="breatheparameterlist first last simple">
+<li><code class="docutils literal"><span class="pre">product</span></code>: Product to which data should be appended. </li>
+<li><code class="docutils literal"><span class="pre">other_product</span></code>: Product that should be appended. </li>
 </ul>
 </dd>
 </dl>
@@ -364,7 +368,7 @@
 
 <dl class="function">
 <dt id="_CPPv231harp_product_set_source_productP12harp_productPKc">
-<span id="harp_product_set_source_product__harp_productP.cCP"></span><span class="target" id="libharpgroup__harp__product_1gaced1e960e14b51d2979961b3d16394a1"></span>int <code class="descname">harp_product_set_source_product</code><span class="sig-paren">(</span><a class="reference internal" href="#_CPPv212harp_product" title="harp_product">harp_product</a> *<em>product</em>, <em class="property">const</em> char *<em>source_product</em><span class="sig-paren">)</span></dt>
+<span id="harp_product_set_source_product__harp_productP.cCP"></span><span class="target" id="libharpgroup__harp__product_1gaced1e960e14b51d2979961b3d16394a1"></span>int <code class="descname">harp_product_set_source_product</code><span class="sig-paren">(</span><a class="reference internal" href="#_CPPv212harp_product" title="harp_product">harp_product</a> *<em>product</em>, <em class="property">const</em> char *<em>source_product</em><span class="sig-paren">)</span><br /></dt>
 <dd><p>Set the source product attribute of the specified product. Store a copy of <em>source_product</em> as the value of the source product attribute of the specified product. The previous value (if any) will be freed. <dl class="docutils">
 <dt><strong>Return</strong></dt>
 <dd><ul class="simple">
@@ -373,11 +377,9 @@
 </ul>
 </dd>
 <dt><strong>Parameters</strong></dt>
-<dd><ul class="breatheparameterlist first last">
-<li><code class="first docutils literal"><span class="pre">product</span></code> - <p>Product for which to set the source product attribute. </p>
-</li>
-<li><code class="first docutils literal"><span class="pre">source_product</span></code> - <p>New value for the source product attribute. </p>
-</li>
+<dd><ul class="breatheparameterlist first last simple">
+<li><code class="docutils literal"><span class="pre">product</span></code>: Product for which to set the source product attribute. </li>
+<li><code class="docutils literal"><span class="pre">source_product</span></code>: New value for the source product attribute. </li>
 </ul>
 </dd>
 </dl>
@@ -386,7 +388,7 @@
 
 <dl class="function">
 <dt id="_CPPv224harp_product_set_historyP12harp_productPKc">
-<span id="harp_product_set_history__harp_productP.cCP"></span><span class="target" id="libharpgroup__harp__product_1ga7693ca9ca73d407973f93f4a3d27d3bf"></span>int <code class="descname">harp_product_set_history</code><span class="sig-paren">(</span><a class="reference internal" href="#_CPPv212harp_product" title="harp_product">harp_product</a> *<em>product</em>, <em class="property">const</em> char *<em>history</em><span class="sig-paren">)</span></dt>
+<span id="harp_product_set_history__harp_productP.cCP"></span><span class="target" id="libharpgroup__harp__product_1ga7693ca9ca73d407973f93f4a3d27d3bf"></span>int <code class="descname">harp_product_set_history</code><span class="sig-paren">(</span><a class="reference internal" href="#_CPPv212harp_product" title="harp_product">harp_product</a> *<em>product</em>, <em class="property">const</em> char *<em>history</em><span class="sig-paren">)</span><br /></dt>
 <dd><p>Set the history attribute of the specified product. Store a copy of <em>history</em> as the value of the history attribute of the specified product. The previous value (if any) will be freed. <dl class="docutils">
 <dt><strong>Return</strong></dt>
 <dd><ul class="simple">
@@ -395,11 +397,9 @@
 </ul>
 </dd>
 <dt><strong>Parameters</strong></dt>
-<dd><ul class="breatheparameterlist first last">
-<li><code class="first docutils literal"><span class="pre">product</span></code> - <p>Product for which to set the history attribute. </p>
-</li>
-<li><code class="first docutils literal"><span class="pre">history</span></code> - <p>New value for the history attribute. </p>
-</li>
+<dd><ul class="breatheparameterlist first last simple">
+<li><code class="docutils literal"><span class="pre">product</span></code>: Product for which to set the history attribute. </li>
+<li><code class="docutils literal"><span class="pre">history</span></code>: New value for the history attribute. </li>
 </ul>
 </dd>
 </dl>
@@ -408,7 +408,7 @@
 
 <dl class="function">
 <dt id="_CPPv225harp_product_add_variableP12harp_productP13harp_variable">
-<span id="harp_product_add_variable__harp_productP.harp_variableP"></span><span class="target" id="libharpgroup__harp__product_1ga84a2e8737ef00ab3ec8cecb54bd53d51"></span>int <code class="descname">harp_product_add_variable</code><span class="sig-paren">(</span><a class="reference internal" href="#_CPPv212harp_product" title="harp_product">harp_product</a> *<em>product</em>, <a class="reference internal" href="libharp_variable.html#_CPPv213harp_variable" title="harp_variable">harp_variable</a> *<em>variable</em><span class="sig-paren">)</span></dt>
+<span id="harp_product_add_variable__harp_productP.harp_variableP"></span><span class="target" id="libharpgroup__harp__product_1ga84a2e8737ef00ab3ec8cecb54bd53d51"></span>int <code class="descname">harp_product_add_variable</code><span class="sig-paren">(</span><a class="reference internal" href="#_CPPv212harp_product" title="harp_product">harp_product</a> *<em>product</em>, <a class="reference internal" href="libharp_variable.html#_CPPv213harp_variable" title="harp_variable">harp_variable</a> *<em>variable</em><span class="sig-paren">)</span><br /></dt>
 <dd><p>Add a variable to a product. <dl class="docutils">
 <dt><strong>Note</strong></dt>
 <dd>The memory management of the variable will be handled via the product after you have added the variable. </dd>
@@ -419,11 +419,9 @@
 </ul>
 </dd>
 <dt><strong>Parameters</strong></dt>
-<dd><ul class="breatheparameterlist first last">
-<li><code class="first docutils literal"><span class="pre">product</span></code> - <p>Product to which the variable should be added. </p>
-</li>
-<li><code class="first docutils literal"><span class="pre">variable</span></code> - <p>Variable that should be added to the product. </p>
-</li>
+<dd><ul class="breatheparameterlist first last simple">
+<li><code class="docutils literal"><span class="pre">product</span></code>: Product to which the variable should be added. </li>
+<li><code class="docutils literal"><span class="pre">variable</span></code>: Variable that should be added to the product. </li>
 </ul>
 </dd>
 </dl>
@@ -432,7 +430,7 @@
 
 <dl class="function">
 <dt id="_CPPv228harp_product_detach_variableP12harp_productPK13harp_variable">
-<span id="harp_product_detach_variable__harp_productP.harp_variableCP"></span><span class="target" id="libharpgroup__harp__product_1ga99d5d7f3a1e70ee69ee7519aaf9e3be4"></span>int <code class="descname">harp_product_detach_variable</code><span class="sig-paren">(</span><a class="reference internal" href="#_CPPv212harp_product" title="harp_product">harp_product</a> *<em>product</em>, <em class="property">const</em> <a class="reference internal" href="libharp_variable.html#_CPPv213harp_variable" title="harp_variable">harp_variable</a> *<em>variable</em><span class="sig-paren">)</span></dt>
+<span id="harp_product_detach_variable__harp_productP.harp_variableCP"></span><span class="target" id="libharpgroup__harp__product_1ga99d5d7f3a1e70ee69ee7519aaf9e3be4"></span>int <code class="descname">harp_product_detach_variable</code><span class="sig-paren">(</span><a class="reference internal" href="#_CPPv212harp_product" title="harp_product">harp_product</a> *<em>product</em>, <em class="property">const</em> <a class="reference internal" href="libharp_variable.html#_CPPv213harp_variable" title="harp_variable">harp_variable</a> *<em>variable</em><span class="sig-paren">)</span><br /></dt>
 <dd><p>Detach a variable from a product. Removes a variable from a product without deleting the variable itself. After detaching, the caller of the function will be responsible for the further memory management of the variable. <dl class="docutils">
 <dt><strong>Return</strong></dt>
 <dd><ul class="simple">
@@ -441,11 +439,9 @@
 </ul>
 </dd>
 <dt><strong>Parameters</strong></dt>
-<dd><ul class="breatheparameterlist first last">
-<li><code class="first docutils literal"><span class="pre">product</span></code> - <p>Product from which the variable should be detached. </p>
-</li>
-<li><code class="first docutils literal"><span class="pre">variable</span></code> - <p>Variable that should be detached. </p>
-</li>
+<dd><ul class="breatheparameterlist first last simple">
+<li><code class="docutils literal"><span class="pre">product</span></code>: Product from which the variable should be detached. </li>
+<li><code class="docutils literal"><span class="pre">variable</span></code>: Variable that should be detached. </li>
 </ul>
 </dd>
 </dl>
@@ -454,7 +450,7 @@
 
 <dl class="function">
 <dt id="_CPPv228harp_product_remove_variableP12harp_productP13harp_variable">
-<span id="harp_product_remove_variable__harp_productP.harp_variableP"></span><span class="target" id="libharpgroup__harp__product_1ga88c38cc628718f06065e9160bf735057"></span>int <code class="descname">harp_product_remove_variable</code><span class="sig-paren">(</span><a class="reference internal" href="#_CPPv212harp_product" title="harp_product">harp_product</a> *<em>product</em>, <a class="reference internal" href="libharp_variable.html#_CPPv213harp_variable" title="harp_variable">harp_variable</a> *<em>variable</em><span class="sig-paren">)</span></dt>
+<span id="harp_product_remove_variable__harp_productP.harp_variableP"></span><span class="target" id="libharpgroup__harp__product_1ga88c38cc628718f06065e9160bf735057"></span>int <code class="descname">harp_product_remove_variable</code><span class="sig-paren">(</span><a class="reference internal" href="#_CPPv212harp_product" title="harp_product">harp_product</a> *<em>product</em>, <a class="reference internal" href="libharp_variable.html#_CPPv213harp_variable" title="harp_variable">harp_variable</a> *<em>variable</em><span class="sig-paren">)</span><br /></dt>
 <dd><p>Remove a variable from a product. This function removes the specified variable from the product and then deletes the variable itself. <dl class="docutils">
 <dt><strong>Return</strong></dt>
 <dd><ul class="simple">
@@ -463,11 +459,9 @@
 </ul>
 </dd>
 <dt><strong>Parameters</strong></dt>
-<dd><ul class="breatheparameterlist first last">
-<li><code class="first docutils literal"><span class="pre">product</span></code> - <p>Product from which the variable should be removed. </p>
-</li>
-<li><code class="first docutils literal"><span class="pre">variable</span></code> - <p>Variable that should be removed. </p>
-</li>
+<dd><ul class="breatheparameterlist first last simple">
+<li><code class="docutils literal"><span class="pre">product</span></code>: Product from which the variable should be removed. </li>
+<li><code class="docutils literal"><span class="pre">variable</span></code>: Variable that should be removed. </li>
 </ul>
 </dd>
 </dl>
@@ -476,7 +470,7 @@
 
 <dl class="function">
 <dt id="_CPPv236harp_product_remove_variable_by_nameP12harp_productPKc">
-<span id="harp_product_remove_variable_by_name__harp_productP.cCP"></span><span class="target" id="libharpgroup__harp__product_1ga592399cec1ab4a611a620fc788a9c84d"></span>int <code class="descname">harp_product_remove_variable_by_name</code><span class="sig-paren">(</span><a class="reference internal" href="#_CPPv212harp_product" title="harp_product">harp_product</a> *<em>product</em>, <em class="property">const</em> char *<em>name</em><span class="sig-paren">)</span></dt>
+<span id="harp_product_remove_variable_by_name__harp_productP.cCP"></span><span class="target" id="libharpgroup__harp__product_1ga592399cec1ab4a611a620fc788a9c84d"></span>int <code class="descname">harp_product_remove_variable_by_name</code><span class="sig-paren">(</span><a class="reference internal" href="#_CPPv212harp_product" title="harp_product">harp_product</a> *<em>product</em>, <em class="property">const</em> char *<em>name</em><span class="sig-paren">)</span><br /></dt>
 <dd><p>Remove a variable from a product using the name of the variable. This function removes the variable with the specified name from the product and then deletes the variable itself. <dl class="docutils">
 <dt><strong>Return</strong></dt>
 <dd><ul class="simple">
@@ -485,11 +479,9 @@
 </ul>
 </dd>
 <dt><strong>Parameters</strong></dt>
-<dd><ul class="breatheparameterlist first last">
-<li><code class="first docutils literal"><span class="pre">product</span></code> - <p>Product from which the variable should be removed. </p>
-</li>
-<li><code class="first docutils literal"><span class="pre">name</span></code> - <p>Name of the variable that should be removed. </p>
-</li>
+<dd><ul class="breatheparameterlist first last simple">
+<li><code class="docutils literal"><span class="pre">product</span></code>: Product from which the variable should be removed. </li>
+<li><code class="docutils literal"><span class="pre">name</span></code>: Name of the variable that should be removed. </li>
 </ul>
 </dd>
 </dl>
@@ -498,7 +490,7 @@
 
 <dl class="function">
 <dt id="_CPPv229harp_product_replace_variableP12harp_productP13harp_variable">
-<span id="harp_product_replace_variable__harp_productP.harp_variableP"></span><span class="target" id="libharpgroup__harp__product_1ga29283b1d2a2042fb164ade0b8b5be9e7"></span>int <code class="descname">harp_product_replace_variable</code><span class="sig-paren">(</span><a class="reference internal" href="#_CPPv212harp_product" title="harp_product">harp_product</a> *<em>product</em>, <a class="reference internal" href="libharp_variable.html#_CPPv213harp_variable" title="harp_variable">harp_variable</a> *<em>variable</em><span class="sig-paren">)</span></dt>
+<span id="harp_product_replace_variable__harp_productP.harp_variableP"></span><span class="target" id="libharpgroup__harp__product_1ga29283b1d2a2042fb164ade0b8b5be9e7"></span>int <code class="descname">harp_product_replace_variable</code><span class="sig-paren">(</span><a class="reference internal" href="#_CPPv212harp_product" title="harp_product">harp_product</a> *<em>product</em>, <a class="reference internal" href="libharp_variable.html#_CPPv213harp_variable" title="harp_variable">harp_variable</a> *<em>variable</em><span class="sig-paren">)</span><br /></dt>
 <dd><p>Replaces an existing variable with the one provided. The product should already contain a variable with the same name as <em>variable</em>. This function searches in the list of variables in the product for one with the same name, removes this variable and then adds the given <em>variable</em> in its place. Note that if you try to replace a variable with itself the function does nothing (and returns success). <dl class="docutils">
 <dt><strong>Return</strong></dt>
 <dd><ul class="simple">
@@ -507,11 +499,9 @@
 </ul>
 </dd>
 <dt><strong>Parameters</strong></dt>
-<dd><ul class="breatheparameterlist first last">
-<li><code class="first docutils literal"><span class="pre">product</span></code> - <p>Product in which the variable should be replaced. </p>
-</li>
-<li><code class="first docutils literal"><span class="pre">variable</span></code> - <p>Variable that should be used to replace an existing variable. </p>
-</li>
+<dd><ul class="breatheparameterlist first last simple">
+<li><code class="docutils literal"><span class="pre">product</span></code>: Product in which the variable should be replaced. </li>
+<li><code class="docutils literal"><span class="pre">variable</span></code>: Variable that should be used to replace an existing variable. </li>
 </ul>
 </dd>
 </dl>
@@ -520,7 +510,7 @@
 
 <dl class="function">
 <dt id="_CPPv225harp_product_has_variablePK12harp_productPKc">
-<span id="harp_product_has_variable__harp_productCP.cCP"></span><span class="target" id="libharpgroup__harp__product_1ga38ab016c406bcb69f3286b1285bf9f82"></span>int <code class="descname">harp_product_has_variable</code><span class="sig-paren">(</span><em class="property">const</em> <a class="reference internal" href="#_CPPv212harp_product" title="harp_product">harp_product</a> *<em>product</em>, <em class="property">const</em> char *<em>name</em><span class="sig-paren">)</span></dt>
+<span id="harp_product_has_variable__harp_productCP.cCP"></span><span class="target" id="libharpgroup__harp__product_1ga38ab016c406bcb69f3286b1285bf9f82"></span>int <code class="descname">harp_product_has_variable</code><span class="sig-paren">(</span><em class="property">const</em> <a class="reference internal" href="#_CPPv212harp_product" title="harp_product">harp_product</a> *<em>product</em>, <em class="property">const</em> char *<em>name</em><span class="sig-paren">)</span><br /></dt>
 <dd><p>Test if product contains a variable with the specified name. <dl class="docutils">
 <dt><strong>Return</strong></dt>
 <dd><ul class="simple">
@@ -529,11 +519,9 @@
 </ul>
 </dd>
 <dt><strong>Parameters</strong></dt>
-<dd><ul class="breatheparameterlist first last">
-<li><code class="first docutils literal"><span class="pre">product</span></code> - <p>Product to search. </p>
-</li>
-<li><code class="first docutils literal"><span class="pre">name</span></code> - <p>Name of the variable to search for. </p>
-</li>
+<dd><ul class="breatheparameterlist first last simple">
+<li><code class="docutils literal"><span class="pre">product</span></code>: Product to search. </li>
+<li><code class="docutils literal"><span class="pre">name</span></code>: Name of the variable to search for. </li>
 </ul>
 </dd>
 </dl>
@@ -542,7 +530,7 @@
 
 <dl class="function">
 <dt id="_CPPv233harp_product_get_variable_by_namePK12harp_productPKcPP13harp_variable">
-<span id="harp_product_get_variable_by_name__harp_productCP.cCP.harp_variablePP"></span><span class="target" id="libharpgroup__harp__product_1gab79f5cc57e53ecc01e2b83debd423446"></span>int <code class="descname">harp_product_get_variable_by_name</code><span class="sig-paren">(</span><em class="property">const</em> <a class="reference internal" href="#_CPPv212harp_product" title="harp_product">harp_product</a> *<em>product</em>, <em class="property">const</em> char *<em>name</em>, <a class="reference internal" href="libharp_variable.html#_CPPv213harp_variable" title="harp_variable">harp_variable</a> **<em>variable</em><span class="sig-paren">)</span></dt>
+<span id="harp_product_get_variable_by_name__harp_productCP.cCP.harp_variablePP"></span><span class="target" id="libharpgroup__harp__product_1gab79f5cc57e53ecc01e2b83debd423446"></span>int <code class="descname">harp_product_get_variable_by_name</code><span class="sig-paren">(</span><em class="property">const</em> <a class="reference internal" href="#_CPPv212harp_product" title="harp_product">harp_product</a> *<em>product</em>, <em class="property">const</em> char *<em>name</em>, <a class="reference internal" href="libharp_variable.html#_CPPv213harp_variable" title="harp_variable">harp_variable</a> **<em>variable</em><span class="sig-paren">)</span><br /></dt>
 <dd><p>Find variable with a given name for a product. If no variable with the given name can be found an error is returned. <dl class="docutils">
 <dt><strong>Return</strong></dt>
 <dd><ul class="simple">
@@ -551,13 +539,10 @@
 </ul>
 </dd>
 <dt><strong>Parameters</strong></dt>
-<dd><ul class="breatheparameterlist first last">
-<li><code class="first docutils literal"><span class="pre">product</span></code> - <p>Product in which to find the variable. </p>
-</li>
-<li><code class="first docutils literal"><span class="pre">name</span></code> - <p>Name of the variable. </p>
-</li>
-<li><code class="first docutils literal"><span class="pre">variable</span></code> - <p>Pointer to the C variable where the found HARP variable will be stored. </p>
-</li>
+<dd><ul class="breatheparameterlist first last simple">
+<li><code class="docutils literal"><span class="pre">product</span></code>: Product in which to find the variable. </li>
+<li><code class="docutils literal"><span class="pre">name</span></code>: Name of the variable. </li>
+<li><code class="docutils literal"><span class="pre">variable</span></code>: Pointer to the C variable where the found HARP variable will be stored. </li>
 </ul>
 </dd>
 </dl>
@@ -566,7 +551,7 @@
 
 <dl class="function">
 <dt id="_CPPv239harp_product_get_variable_index_by_namePK12harp_productPKcPi">
-<span id="harp_product_get_variable_index_by_name__harp_productCP.cCP.iP"></span><span class="target" id="libharpgroup__harp__product_1ga954f21b21958d1f316b83d60a8816d4e"></span>int <code class="descname">harp_product_get_variable_index_by_name</code><span class="sig-paren">(</span><em class="property">const</em> <a class="reference internal" href="#_CPPv212harp_product" title="harp_product">harp_product</a> *<em>product</em>, <em class="property">const</em> char *<em>name</em>, int *<em>index</em><span class="sig-paren">)</span></dt>
+<span id="harp_product_get_variable_index_by_name__harp_productCP.cCP.iP"></span><span class="target" id="libharpgroup__harp__product_1ga954f21b21958d1f316b83d60a8816d4e"></span>int <code class="descname">harp_product_get_variable_index_by_name</code><span class="sig-paren">(</span><em class="property">const</em> <a class="reference internal" href="#_CPPv212harp_product" title="harp_product">harp_product</a> *<em>product</em>, <em class="property">const</em> char *<em>name</em>, int *<em>index</em><span class="sig-paren">)</span><br /></dt>
 <dd><p>Find index of variable with a given name for a product. If no variable with the given name can be found an error is returned. <dl class="docutils">
 <dt><strong>Return</strong></dt>
 <dd><ul class="simple">
@@ -575,13 +560,10 @@
 </ul>
 </dd>
 <dt><strong>Parameters</strong></dt>
-<dd><ul class="breatheparameterlist first last">
-<li><code class="first docutils literal"><span class="pre">product</span></code> - <p>Product in which the find the variable. </p>
-</li>
-<li><code class="first docutils literal"><span class="pre">name</span></code> - <p>Name of the variable. </p>
-</li>
-<li><code class="first docutils literal"><span class="pre">index</span></code> - <p>Pointer to the C variable where the index in the HARP variables list for the product is returned. </p>
-</li>
+<dd><ul class="breatheparameterlist first last simple">
+<li><code class="docutils literal"><span class="pre">product</span></code>: Product in which the find the variable. </li>
+<li><code class="docutils literal"><span class="pre">name</span></code>: Name of the variable. </li>
+<li><code class="docutils literal"><span class="pre">index</span></code>: Pointer to the C variable where the index in the HARP variables list for the product is returned. </li>
 </ul>
 </dd>
 </dl>
@@ -590,7 +572,7 @@
 
 <dl class="function">
 <dt id="_CPPv221harp_product_is_emptyPK12harp_product">
-<span id="harp_product_is_empty__harp_productCP"></span><span class="target" id="libharpgroup__harp__product_1ga49f593a4807148aebdea48acc9b8e6af"></span>int <code class="descname">harp_product_is_empty</code><span class="sig-paren">(</span><em class="property">const</em> <a class="reference internal" href="#_CPPv212harp_product" title="harp_product">harp_product</a> *<em>product</em><span class="sig-paren">)</span></dt>
+<span id="harp_product_is_empty__harp_productCP"></span><span class="target" id="libharpgroup__harp__product_1ga49f593a4807148aebdea48acc9b8e6af"></span>int <code class="descname">harp_product_is_empty</code><span class="sig-paren">(</span><em class="property">const</em> <a class="reference internal" href="#_CPPv212harp_product" title="harp_product">harp_product</a> *<em>product</em><span class="sig-paren">)</span><br /></dt>
 <dd><p>Determine whether all variables in a product have at least one element. If at least one variable has 0 elements or if the product has 0 variables the function returns 1, and 0 otherwise. <dl class="docutils">
 <dt><strong>Return</strong></dt>
 <dd><ul class="simple">
@@ -599,9 +581,8 @@
 </ul>
 </dd>
 <dt><strong>Parameters</strong></dt>
-<dd><ul class="breatheparameterlist first last">
-<li><code class="first docutils literal"><span class="pre">product</span></code> - <p>Product to check for empty data. </p>
-</li>
+<dd><ul class="breatheparameterlist first last simple">
+<li><code class="docutils literal"><span class="pre">product</span></code>: Product to check for empty data. </li>
 </ul>
 </dd>
 </dl>
@@ -610,7 +591,7 @@
 
 <dl class="function">
 <dt id="_CPPv227harp_product_update_historyP12harp_productPKciA_Pc">
-<span id="harp_product_update_history__harp_productP.cCP.i.cPA"></span><span class="target" id="libharpgroup__harp__product_1ga6e574e19c463cf244b60cc4d25710195"></span>int <code class="descname">harp_product_update_history</code><span class="sig-paren">(</span><a class="reference internal" href="#_CPPv212harp_product" title="harp_product">harp_product</a> *<em>product</em>, <em class="property">const</em> char *<em>executable</em>, int <em>argc</em>, char *<em>argv</em>[]<span class="sig-paren">)</span></dt>
+<span id="harp_product_update_history__harp_productP.cCP.i.cPA"></span><span class="target" id="libharpgroup__harp__product_1ga6e574e19c463cf244b60cc4d25710195"></span>int <code class="descname">harp_product_update_history</code><span class="sig-paren">(</span><a class="reference internal" href="#_CPPv212harp_product" title="harp_product">harp_product</a> *<em>product</em>, <em class="property">const</em> char *<em>executable</em>, int <em>argc</em>, char *<em>argv</em>[]<span class="sig-paren">)</span><br /></dt>
 <dd><p>Update the history attribute in the product based on the command line parameters. This function will extend the existing product history metadata element with a line containing the call that was used to run this program. This command line execution call is constructed based on the <em>argc</em> and <em>argv</em> arguments. <dl class="docutils">
 <dt><strong>Return</strong></dt>
 <dd><ul class="simple">
@@ -619,15 +600,11 @@
 </ul>
 </dd>
 <dt><strong>Parameters</strong></dt>
-<dd><ul class="breatheparameterlist first last">
-<li><code class="first docutils literal"><span class="pre">product</span></code> - <p>Product for which the history metada should be extended. </p>
-</li>
-<li><code class="first docutils literal"><span class="pre">executable</span></code> - <p>Name of the command line executable (this value is used instead of argv[0]). </p>
-</li>
-<li><code class="first docutils literal"><span class="pre">argc</span></code> - <p>Variable as passed by main(). </p>
-</li>
-<li><code class="first docutils literal"><span class="pre">argv</span></code> - <p>Variable as passed by main(). </p>
-</li>
+<dd><ul class="breatheparameterlist first last simple">
+<li><code class="docutils literal"><span class="pre">product</span></code>: Product for which the history metada should be extended. </li>
+<li><code class="docutils literal"><span class="pre">executable</span></code>: Name of the command line executable (this value is used instead of argv[0]). </li>
+<li><code class="docutils literal"><span class="pre">argc</span></code>: Variable as passed by main(). </li>
+<li><code class="docutils literal"><span class="pre">argv</span></code>: Variable as passed by main(). </li>
 </ul>
 </dd>
 </dl>
@@ -636,7 +613,7 @@
 
 <dl class="function">
 <dt id="_CPPv219harp_product_verifyPK12harp_product">
-<span id="harp_product_verify__harp_productCP"></span><span class="target" id="libharpgroup__harp__product_1ga84b6effef3e96d88fa623d14015112df"></span>int <code class="descname">harp_product_verify</code><span class="sig-paren">(</span><em class="property">const</em> <a class="reference internal" href="#_CPPv212harp_product" title="harp_product">harp_product</a> *<em>product</em><span class="sig-paren">)</span></dt>
+<span id="harp_product_verify__harp_productCP"></span><span class="target" id="libharpgroup__harp__product_1ga84b6effef3e96d88fa623d14015112df"></span>int <code class="descname">harp_product_verify</code><span class="sig-paren">(</span><em class="property">const</em> <a class="reference internal" href="#_CPPv212harp_product" title="harp_product">harp_product</a> *<em>product</em><span class="sig-paren">)</span><br /></dt>
 <dd><p>Verify that a product is internally consistent and complies with conventions. <dl class="docutils">
 <dt><strong>Return</strong></dt>
 <dd><ul class="simple">
@@ -645,9 +622,8 @@
 </ul>
 </dd>
 <dt><strong>Parameters</strong></dt>
-<dd><ul class="breatheparameterlist first last">
-<li><code class="first docutils literal"><span class="pre">product</span></code> - <p>Product to verify. </p>
-</li>
+<dd><ul class="breatheparameterlist first last simple">
+<li><code class="docutils literal"><span class="pre">product</span></code>: Product to verify. </li>
 </ul>
 </dd>
 </dl>
@@ -656,18 +632,14 @@
 
 <dl class="function">
 <dt id="_CPPv218harp_product_printPK12harp_productiiPFiPKczE">
-<span class="target" id="libharpgroup__harp__product_1gaa19c7763369e3ab99129c7beb6bbedad"></span>void <code class="descname">harp_product_print</code><span class="sig-paren">(</span><em class="property">const</em> <a class="reference internal" href="#_CPPv212harp_product" title="harp_product">harp_product</a> *<em>product</em>, int <em>show_attributes</em>, int <em>show_data</em>, int (*<em>print</em>)<span class="sig-paren">(</span><em class="property">const</em> char *, ...<span class="sig-paren">)</span><span class="sig-paren">)</span></dt>
+<span class="target" id="libharpgroup__harp__product_1gaa19c7763369e3ab99129c7beb6bbedad"></span>void <code class="descname">harp_product_print</code><span class="sig-paren">(</span><em class="property">const</em> <a class="reference internal" href="#_CPPv212harp_product" title="harp_product">harp_product</a> *<em>product</em>, int <em>show_attributes</em>, int <em>show_data</em>, int (*<em>print</em>)<span class="sig-paren">(</span><em class="property">const</em> char *, ...<span class="sig-paren">)</span><span class="sig-paren">)</span><br /></dt>
 <dd><p>Print a harp_product struct using the specified print function. <dl class="docutils">
 <dt><strong>Parameters</strong></dt>
-<dd><ul class="breatheparameterlist first last">
-<li><code class="first docutils literal"><span class="pre">product</span></code> - <p>Product to print. </p>
-</li>
-<li><code class="first docutils literal"><span class="pre">show_attributes</span></code> - <p>Whether or not to print the attributes of variables. </p>
-</li>
-<li><code class="first docutils literal"><span class="pre">show_data</span></code> - <p>Whether or not to print the data arrays of the variables </p>
-</li>
-<li><code class="first docutils literal"><span class="pre">print</span></code> - <p>Print function to use </p>
-</li>
+<dd><ul class="breatheparameterlist first last simple">
+<li><code class="docutils literal"><span class="pre">product</span></code>: Product to print. </li>
+<li><code class="docutils literal"><span class="pre">show_attributes</span></code>: Whether or not to print the attributes of variables. </li>
+<li><code class="docutils literal"><span class="pre">show_data</span></code>: Whether or not to print the data arrays of the variables </li>
+<li><code class="docutils literal"><span class="pre">print</span></code>: Print function to use </li>
 </ul>
 </dd>
 </dl>
@@ -676,7 +648,7 @@
 
 <dl class="function">
 <dt id="_CPPv230harp_product_flatten_dimensionP12harp_product19harp_dimension_type">
-<span id="harp_product_flatten_dimension__harp_productP.harp_dimension_type"></span><span class="target" id="libharpgroup__harp__product_1gaf70331b5522250534866484c23b78500"></span>int <code class="descname">harp_product_flatten_dimension</code><span class="sig-paren">(</span><a class="reference internal" href="#_CPPv212harp_product" title="harp_product">harp_product</a> *<em>product</em>, <a class="reference internal" href="libharp_general.html#_CPPv219harp_dimension_type" title="harp_dimension_type">harp_dimension_type</a> <em>dimension_type</em><span class="sig-paren">)</span></dt>
+<span id="harp_product_flatten_dimension__harp_productP.harp_dimension_type"></span><span class="target" id="libharpgroup__harp__product_1gaf70331b5522250534866484c23b78500"></span>int <code class="descname">harp_product_flatten_dimension</code><span class="sig-paren">(</span><a class="reference internal" href="#_CPPv212harp_product" title="harp_product">harp_product</a> *<em>product</em>, <a class="reference internal" href="libharp_general.html#_CPPv219harp_dimension_type" title="harp_dimension_type">harp_dimension_type</a> <em>dimension_type</em><span class="sig-paren">)</span><br /></dt>
 <dd><p>Collapse a given dimension into the time dimension</p>
 <p>Flattening a product for a certain dimension collapses the dimension into the time dimension (i.e. the time dimension and the provided dimension are flattened together). For instance, if a product contains a variable with [num_time,num_longitude,num_latitudes,num_vertical] as dimensions, then flattening for the vertical dimension will result in a variable with [num_time*num_vertical,num_longitudes,num_latitudes] as dimensions.</p>
 <p>The end result of this function is the time dimension will have grown by a factor equal to the length of the given dimension type and that none of the variables in the product will depend on the given dimension type anymore.</p>
@@ -689,11 +661,9 @@
 </ul>
 </dd>
 <dt><strong>Parameters</strong></dt>
-<dd><ul class="breatheparameterlist first last">
-<li><code class="first docutils literal"><span class="pre">product</span></code> - <p>HARP product. </p>
-</li>
-<li><code class="first docutils literal"><span class="pre">dimension_type</span></code> - <p>Dimension to use for the flattening. </p>
-</li>
+<dd><ul class="breatheparameterlist first last simple">
+<li><code class="docutils literal"><span class="pre">product</span></code>: HARP product. </li>
+<li><code class="docutils literal"><span class="pre">dimension_type</span></code>: Dimension to use for the flattening. </li>
 </ul>
 </dd>
 </dl>
@@ -702,7 +672,7 @@
 
 <dl class="function">
 <dt id="_CPPv228harp_product_execute_programP12harp_productP12harp_program">
-<span id="harp_product_execute_program__harp_productP.harp_programP"></span><span class="target" id="libharpgroup__harp__product_1ga77d14b2422bcbc891af8d5b0c18f9d38"></span>int <code class="descname">harp_product_execute_program</code><span class="sig-paren">(</span><a class="reference internal" href="#_CPPv212harp_product" title="harp_product">harp_product</a> *<em>product</em>, harp_program *<em>program</em><span class="sig-paren">)</span></dt>
+<span id="harp_product_execute_program__harp_productP.harp_programP"></span><span class="target" id="libharpgroup__harp__product_1ga77d14b2422bcbc891af8d5b0c18f9d38"></span>int <code class="descname">harp_product_execute_program</code><span class="sig-paren">(</span><a class="reference internal" href="#_CPPv212harp_product" title="harp_product">harp_product</a> *<em>product</em>, harp_program *<em>program</em><span class="sig-paren">)</span><br /></dt>
 <dd><p>Execute a set of operations (the program) on a HARP product.</p>
 <p><dl class="docutils">
 <dt><strong>Return</strong></dt>
@@ -712,11 +682,9 @@
 </ul>
 </dd>
 <dt><strong>Parameters</strong></dt>
-<dd><ul class="breatheparameterlist first last">
-<li><code class="first docutils literal"><span class="pre">product</span></code> - <p>Product that the operations should be executed on. </p>
-</li>
-<li><code class="first docutils literal"><span class="pre">program</span></code> - <p>Program to execute </p>
-</li>
+<dd><ul class="breatheparameterlist first last simple">
+<li><code class="docutils literal"><span class="pre">product</span></code>: Product that the operations should be executed on. </li>
+<li><code class="docutils literal"><span class="pre">program</span></code>: Program to execute </li>
 </ul>
 </dd>
 </dl>
@@ -725,7 +693,7 @@
 
 <dl class="function">
 <dt id="_CPPv231harp_product_execute_operationsP12harp_productPKc">
-<span id="harp_product_execute_operations__harp_productP.cCP"></span><span class="target" id="libharpgroup__harp__product_1gaac9e4b48ca9a060f53c1e2bb4f44d840"></span>int <code class="descname">harp_product_execute_operations</code><span class="sig-paren">(</span><a class="reference internal" href="#_CPPv212harp_product" title="harp_product">harp_product</a> *<em>product</em>, <em class="property">const</em> char *<em>operations</em><span class="sig-paren">)</span></dt>
+<span id="harp_product_execute_operations__harp_productP.cCP"></span><span class="target" id="libharpgroup__harp__product_1gaac9e4b48ca9a060f53c1e2bb4f44d840"></span>int <code class="descname">harp_product_execute_operations</code><span class="sig-paren">(</span><a class="reference internal" href="#_CPPv212harp_product" title="harp_product">harp_product</a> *<em>product</em>, <em class="property">const</em> char *<em>operations</em><span class="sig-paren">)</span><br /></dt>
 <dd><p>Execute one or more operations on a product.</p>
 <p>if one of the operations results in an empty product then the function will immediately return with the empty product (and return code 0) and will not execute any of the remaining actions anymore. <dl class="docutils">
 <dt><strong>Return</strong></dt>
@@ -735,11 +703,9 @@
 </ul>
 </dd>
 <dt><strong>Parameters</strong></dt>
-<dd><ul class="breatheparameterlist first last">
-<li><code class="first docutils literal"><span class="pre">product</span></code> - <p>Product that the operations should be executed on. </p>
-</li>
-<li><code class="first docutils literal"><span class="pre">operations</span></code> - <p>Operations to execute; should be specified as a semi-colon separated string of operations. </p>
-</li>
+<dd><ul class="breatheparameterlist first last simple">
+<li><code class="docutils literal"><span class="pre">product</span></code>: Product that the operations should be executed on. </li>
+<li><code class="docutils literal"><span class="pre">operations</span></code>: Operations to execute; should be specified as a semi-colon separated string of operations. </li>
 </ul>
 </dd>
 </dl>
@@ -748,7 +714,7 @@
 
 <dl class="function">
 <dt id="_CPPv238harp_product_regrid_with_axis_variableP12harp_productP13harp_variableP13harp_variable">
-<span id="harp_product_regrid_with_axis_variable__harp_productP.harp_variableP.harp_variableP"></span><span class="target" id="libharpgroup__harp__product_1ga07a808c69fa7972af739aad407860ee1"></span>int <code class="descname">harp_product_regrid_with_axis_variable</code><span class="sig-paren">(</span><a class="reference internal" href="#_CPPv212harp_product" title="harp_product">harp_product</a> *<em>product</em>, <a class="reference internal" href="libharp_variable.html#_CPPv213harp_variable" title="harp_variable">harp_variable</a> *<em>target_grid</em>, <a class="reference internal" href="libharp_variable.html#_CPPv213harp_variable" title="harp_variable">harp_variable</a> *<em>target_bounds</em><span class="sig-paren">)</span></dt>
+<span id="harp_product_regrid_with_axis_variable__harp_productP.harp_variableP.harp_variableP"></span><span class="target" id="libharpgroup__harp__product_1ga07a808c69fa7972af739aad407860ee1"></span>int <code class="descname">harp_product_regrid_with_axis_variable</code><span class="sig-paren">(</span><a class="reference internal" href="#_CPPv212harp_product" title="harp_product">harp_product</a> *<em>product</em>, <a class="reference internal" href="libharp_variable.html#_CPPv213harp_variable" title="harp_variable">harp_variable</a> *<em>target_grid</em>, <a class="reference internal" href="libharp_variable.html#_CPPv213harp_variable" title="harp_variable">harp_variable</a> *<em>target_bounds</em><span class="sig-paren">)</span><br /></dt>
 <dd><p>Resample all variables in product against a specified grid. The target grid variable should be an axis variable containing the target grid (as &#8216;double&#8217; values). It should be a one-dimensional variable (for a time independent grid) or a two-dimensional variable (for a time dependent grid). The dimension to use for regridding is based on the type of the last dimenion of the target grid variable. This function cannot be used to regrid the time dimension (or an independent dimension).</p>
 <p>If the target grid variable is two dimensional (i.e. time dependent) then its time dimension should match that of the product.</p>
 <p>For each variable in the product a dimension-specific rule based on the variable name will determine how to regrid the variable (point/interval interpolation). If interval interpolation is needed for one of the variables then target boundaries are needed. These can be provided using the optional target_bounds parameter. If this parameter is not provided, the boundaries will be calculated automatically from the target grid (by inter/extrapolating intervals from mid-points).</p>
@@ -761,13 +727,10 @@
 </ul>
 </dd>
 <dt><strong>Parameters</strong></dt>
-<dd><ul class="breatheparameterlist first last">
-<li><code class="first docutils literal"><span class="pre">product</span></code> - <p>Product to resample. </p>
-</li>
-<li><code class="first docutils literal"><span class="pre">target_grid</span></code> - <p>Target grid variable. </p>
-</li>
-<li><code class="first docutils literal"><span class="pre">target_bounds</span></code> - <p>Target grid boundaries variable (optional).</p>
-</li>
+<dd><ul class="breatheparameterlist first last simple">
+<li><code class="docutils literal"><span class="pre">product</span></code>: Product to resample. </li>
+<li><code class="docutils literal"><span class="pre">target_grid</span></code>: Target grid variable. </li>
+<li><code class="docutils literal"><span class="pre">target_bounds</span></code>: Target grid boundaries variable (optional).</li>
 </ul>
 </dd>
 </dl>
@@ -776,7 +739,7 @@
 
 <dl class="function">
 <dt id="_CPPv243harp_product_regrid_with_collocated_datasetP12harp_product19harp_dimension_typePKcPKcP23harp_collocation_result">
-<span id="harp_product_regrid_with_collocated_dataset__harp_productP.harp_dimension_type.cCP.cCP.harp_collocation_resultP"></span><span class="target" id="libharpgroup__harp__product_1ga47c35b04d92f993a62d9911619fe0ea9"></span>int <code class="descname">harp_product_regrid_with_collocated_dataset</code><span class="sig-paren">(</span><a class="reference internal" href="#_CPPv212harp_product" title="harp_product">harp_product</a> *<em>product</em>, <a class="reference internal" href="libharp_general.html#_CPPv219harp_dimension_type" title="harp_dimension_type">harp_dimension_type</a> <em>dimension_type</em>, <em class="property">const</em> char *<em>axis_name</em>, <em class="property">const</em> char *<em>axis_unit</em>, <a class="reference internal" href="libharp_collocation.html#_CPPv223harp_collocation_result" title="harp_collocation_result">harp_collocation_result</a> *<em>collocation_result</em><span class="sig-paren">)</span></dt>
+<span id="harp_product_regrid_with_collocated_dataset__harp_productP.harp_dimension_type.cCP.cCP.harp_collocation_resultP"></span><span class="target" id="libharpgroup__harp__product_1ga47c35b04d92f993a62d9911619fe0ea9"></span>int <code class="descname">harp_product_regrid_with_collocated_dataset</code><span class="sig-paren">(</span><a class="reference internal" href="#_CPPv212harp_product" title="harp_product">harp_product</a> *<em>product</em>, <a class="reference internal" href="libharp_general.html#_CPPv219harp_dimension_type" title="harp_dimension_type">harp_dimension_type</a> <em>dimension_type</em>, <em class="property">const</em> char *<em>axis_name</em>, <em class="property">const</em> char *<em>axis_unit</em>, <a class="reference internal" href="libharp_collocation.html#_CPPv223harp_collocation_result" title="harp_collocation_result">harp_collocation_result</a> *<em>collocation_result</em><span class="sig-paren">)</span><br /></dt>
 <dd><p>Regrid the product&#8217;s variables (from dataset a in the collocation result) to the target grid of collocated products in dataset b.</p>
 <p>This function cannot be used to regrid the time dimension (or an independent dimension).</p>
 <p><dl class="docutils">
@@ -787,17 +750,12 @@
 </ul>
 </dd>
 <dt><strong>Parameters</strong></dt>
-<dd><ul class="breatheparameterlist first last">
-<li><code class="first docutils literal"><span class="pre">product</span></code> - <p>Product to regrid. </p>
-</li>
-<li><code class="first docutils literal"><span class="pre">dimension_type</span></code> - <p>Type of dimension that should be regridded. </p>
-</li>
-<li><code class="first docutils literal"><span class="pre">axis_name</span></code> - <p>The name of the variable to use as target grid. </p>
-</li>
-<li><code class="first docutils literal"><span class="pre">axis_unit</span></code> - <p>The unit in which the vertical_axis will be brought for the regridding. </p>
-</li>
-<li><code class="first docutils literal"><span class="pre">collocation_result</span></code> - <p>The collocation result used to find matching variables. The collocation result is assumed to have the appropriate metadata available for all matches (dataset b).</p>
-</li>
+<dd><ul class="breatheparameterlist first last simple">
+<li><code class="docutils literal"><span class="pre">product</span></code>: Product to regrid. </li>
+<li><code class="docutils literal"><span class="pre">dimension_type</span></code>: Type of dimension that should be regridded. </li>
+<li><code class="docutils literal"><span class="pre">axis_name</span></code>: The name of the variable to use as target grid. </li>
+<li><code class="docutils literal"><span class="pre">axis_unit</span></code>: The unit in which the vertical_axis will be brought for the regridding. </li>
+<li><code class="docutils literal"><span class="pre">collocation_result</span></code>: The collocation result used to find matching variables. The collocation result is assumed to have the appropriate metadata available for all matches (dataset b).</li>
 </ul>
 </dd>
 </dl>
@@ -806,7 +764,7 @@
 
 <dl class="function">
 <dt id="_CPPv252harp_product_smooth_vertical_with_collocated_datasetP12harp_productiPPKcPKcPKcPK23harp_collocation_result">
-<span id="harp_product_smooth_vertical_with_collocated_dataset__harp_productP.i.cCPP.cCP.cCP.harp_collocation_resultCP"></span><span class="target" id="libharpgroup__harp__product_1ga615f50993415eea52aea0ef0f1743374"></span>int <code class="descname">harp_product_smooth_vertical_with_collocated_dataset</code><span class="sig-paren">(</span><a class="reference internal" href="#_CPPv212harp_product" title="harp_product">harp_product</a> *<em>product</em>, int <em>num_smooth_variables</em>, <em class="property">const</em> char **<em>smooth_variables</em>, <em class="property">const</em> char *<em>vertical_axis</em>, <em class="property">const</em> char *<em>vertical_unit</em>, <em class="property">const</em> <a class="reference internal" href="libharp_collocation.html#_CPPv223harp_collocation_result" title="harp_collocation_result">harp_collocation_result</a> *<em>collocation_result</em><span class="sig-paren">)</span></dt>
+<span id="harp_product_smooth_vertical_with_collocated_dataset__harp_productP.i.cCPP.cCP.cCP.harp_collocation_resultCP"></span><span class="target" id="libharpgroup__harp__product_1ga615f50993415eea52aea0ef0f1743374"></span>int <code class="descname">harp_product_smooth_vertical_with_collocated_dataset</code><span class="sig-paren">(</span><a class="reference internal" href="#_CPPv212harp_product" title="harp_product">harp_product</a> *<em>product</em>, int <em>num_smooth_variables</em>, <em class="property">const</em> char **<em>smooth_variables</em>, <em class="property">const</em> char *<em>vertical_axis</em>, <em class="property">const</em> char *<em>vertical_unit</em>, <em class="property">const</em> <a class="reference internal" href="libharp_collocation.html#_CPPv223harp_collocation_result" title="harp_collocation_result">harp_collocation_result</a> *<em>collocation_result</em><span class="sig-paren">)</span><br /></dt>
 <dd><p>Smooth the product&#8217;s variables (from dataset a in the collocation result) using the vertical grids, avks and a apriori of collocated products in dataset b.</p>
 <p>The product is first fully regridded (using the vertical dimension) to the vertical grid of the averaging kernel (and apriori). Then, the given list of variables is smoothed using the list of AVKs and apriori variables.</p>
 <p><dl class="docutils">
@@ -817,19 +775,13 @@
 </ul>
 </dd>
 <dt><strong>Parameters</strong></dt>
-<dd><ul class="breatheparameterlist first last">
-<li><code class="first docutils literal"><span class="pre">product</span></code> - <p>Product to smooth. </p>
-</li>
-<li><code class="first docutils literal"><span class="pre">num_smooth_variables</span></code> - <p>length of smooth_variables. </p>
-</li>
-<li><code class="first docutils literal"><span class="pre">smooth_variables</span></code> - <p>The names of the variables to smooth. </p>
-</li>
-<li><code class="first docutils literal"><span class="pre">vertical_axis</span></code> - <p>The name of the variable to use as a vertical axis (pressure/altitude/etc). </p>
-</li>
-<li><code class="first docutils literal"><span class="pre">vertical_unit</span></code> - <p>The unit in which the vertical_axis will be brought for the regridding. </p>
-</li>
-<li><code class="first docutils literal"><span class="pre">collocation_result</span></code> - <p>The collocation result used to locate the matching vertical grids/avks/apriori. The collocation result is assumed to have the appropriate metadata available for all matches (dataset b).</p>
-</li>
+<dd><ul class="breatheparameterlist first last simple">
+<li><code class="docutils literal"><span class="pre">product</span></code>: Product to smooth. </li>
+<li><code class="docutils literal"><span class="pre">num_smooth_variables</span></code>: length of smooth_variables. </li>
+<li><code class="docutils literal"><span class="pre">smooth_variables</span></code>: The names of the variables to smooth. </li>
+<li><code class="docutils literal"><span class="pre">vertical_axis</span></code>: The name of the variable to use as a vertical axis (pressure/altitude/etc). </li>
+<li><code class="docutils literal"><span class="pre">vertical_unit</span></code>: The unit in which the vertical_axis will be brought for the regridding. </li>
+<li><code class="docutils literal"><span class="pre">collocation_result</span></code>: The collocation result used to locate the matching vertical grids/avks/apriori. The collocation result is assumed to have the appropriate metadata available for all matches (dataset b).</li>
 </ul>
 </dd>
 </dl>
@@ -838,7 +790,7 @@
 
 <dl class="function">
 <dt id="_CPPv232harp_product_get_smoothed_columnP12harp_productPKcPKcP13harp_variableP13harp_variableP13harp_variableP13harp_variablePP13harp_variable">
-<span id="harp_product_get_smoothed_column__harp_productP.cCP.cCP.harp_variableP.harp_variableP.harp_variableP.harp_variableP.harp_variablePP"></span><span class="target" id="libharpgroup__harp__product_1ga63186eb4d5508d85d8f2d332245871f1"></span>int <code class="descname">harp_product_get_smoothed_column</code><span class="sig-paren">(</span><a class="reference internal" href="#_CPPv212harp_product" title="harp_product">harp_product</a> *<em>product</em>, <em class="property">const</em> char *<em>name</em>, <em class="property">const</em> char *<em>unit</em>, <a class="reference internal" href="libharp_variable.html#_CPPv213harp_variable" title="harp_variable">harp_variable</a> *<em>vertical_grid</em>, <a class="reference internal" href="libharp_variable.html#_CPPv213harp_variable" title="harp_variable">harp_variable</a> *<em>vertical_bounds</em>, <a class="reference internal" href="libharp_variable.html#_CPPv213harp_variable" title="harp_variable">harp_variable</a> *<em>column_avk</em>, <a class="reference internal" href="libharp_variable.html#_CPPv213harp_variable" title="harp_variable">harp_variable</a> *<em>apriori</em>, <a class="reference internal" href="libharp_variable.html#_CPPv213harp_variable" title="harp_variable">harp_variable</a> **<em>variable</em><span class="sig-paren">)</span></dt>
+<span id="harp_product_get_smoothed_column__harp_productP.cCP.cCP.harp_variableP.harp_variableP.harp_variableP.harp_variableP.harp_variablePP"></span><span class="target" id="libharpgroup__harp__product_1ga63186eb4d5508d85d8f2d332245871f1"></span>int <code class="descname">harp_product_get_smoothed_column</code><span class="sig-paren">(</span><a class="reference internal" href="#_CPPv212harp_product" title="harp_product">harp_product</a> *<em>product</em>, <em class="property">const</em> char *<em>name</em>, <em class="property">const</em> char *<em>unit</em>, <a class="reference internal" href="libharp_variable.html#_CPPv213harp_variable" title="harp_variable">harp_variable</a> *<em>vertical_grid</em>, <a class="reference internal" href="libharp_variable.html#_CPPv213harp_variable" title="harp_variable">harp_variable</a> *<em>vertical_bounds</em>, <a class="reference internal" href="libharp_variable.html#_CPPv213harp_variable" title="harp_variable">harp_variable</a> *<em>column_avk</em>, <a class="reference internal" href="libharp_variable.html#_CPPv213harp_variable" title="harp_variable">harp_variable</a> *<em>apriori</em>, <a class="reference internal" href="libharp_variable.html#_CPPv213harp_variable" title="harp_variable">harp_variable</a> **<em>variable</em><span class="sig-paren">)</span><br /></dt>
 <dd><p>Derive vertical column smoothed with column averaging kernel and optional a-priori First a partial column profile will be derived from the product. This partial column profile will be regridded to the column averaging kernel grid. The regridded column profile will then be combined with the column averaging kernel and optional apriori profile to create an integrated smoothed vertical column. <dl class="docutils">
 <dt><strong>Return</strong></dt>
 <dd><ul class="simple">
@@ -847,23 +799,15 @@
 </ul>
 </dd>
 <dt><strong>Parameters</strong></dt>
-<dd><ul class="breatheparameterlist first last">
-<li><code class="first docutils literal"><span class="pre">product</span></code> - <p>Product from which to derive a smoothed integrated vertical column. </p>
-</li>
-<li><code class="first docutils literal"><span class="pre">name</span></code> - <p>Name of the variable that should be created. </p>
-</li>
-<li><code class="first docutils literal"><span class="pre">unit</span></code> - <p>Unit (optional) of the variable that should be created. </p>
-</li>
-<li><code class="first docutils literal"><span class="pre">vertical_grid</span></code> - <p>Variable containing the vertical grid of the column avk. </p>
-</li>
-<li><code class="first docutils literal"><span class="pre">vertical_bounds</span></code> - <p>Variable containig the grid boundaries of the column avk (optional). </p>
-</li>
-<li><code class="first docutils literal"><span class="pre">column_avk</span></code> - <p>Column averaging kernel variable. </p>
-</li>
-<li><code class="first docutils literal"><span class="pre">apriori</span></code> - <p>Apriori profile (optional). </p>
-</li>
-<li><code class="first docutils literal"><span class="pre">variable</span></code> - <p>Pointer to the C variable where the derived HARP variable will be stored.</p>
-</li>
+<dd><ul class="breatheparameterlist first last simple">
+<li><code class="docutils literal"><span class="pre">product</span></code>: Product from which to derive a smoothed integrated vertical column. </li>
+<li><code class="docutils literal"><span class="pre">name</span></code>: Name of the variable that should be created. </li>
+<li><code class="docutils literal"><span class="pre">unit</span></code>: Unit (optional) of the variable that should be created. </li>
+<li><code class="docutils literal"><span class="pre">vertical_grid</span></code>: Variable containing the vertical grid of the column avk. </li>
+<li><code class="docutils literal"><span class="pre">vertical_bounds</span></code>: Variable containig the grid boundaries of the column avk (optional). </li>
+<li><code class="docutils literal"><span class="pre">column_avk</span></code>: Column averaging kernel variable. </li>
+<li><code class="docutils literal"><span class="pre">apriori</span></code>: Apriori profile (optional). </li>
+<li><code class="docutils literal"><span class="pre">variable</span></code>: Pointer to the C variable where the derived HARP variable will be stored.</li>
 </ul>
 </dd>
 </dl>
@@ -872,7 +816,7 @@
 
 <dl class="function">
 <dt id="_CPPv257harp_product_get_smoothed_column_using_collocated_datasetP12harp_productPKcPKciPK19harp_dimension_typePKcPKcP23harp_collocation_resultPP13harp_variable">
-<span id="harp_product_get_smoothed_column_using_collocated_dataset__harp_productP.cCP.cCP.i.harp_dimension_typeCP.cCP.cCP.harp_collocation_resultP.harp_variablePP"></span><span class="target" id="libharpgroup__harp__product_1gae8dbb309df51f78ab40414b95f97cbc4"></span>int <code class="descname">harp_product_get_smoothed_column_using_collocated_dataset</code><span class="sig-paren">(</span><a class="reference internal" href="#_CPPv212harp_product" title="harp_product">harp_product</a> *<em>product</em>, <em class="property">const</em> char *<em>name</em>, <em class="property">const</em> char *<em>unit</em>, int <em>num_dimensions</em>, <em class="property">const</em> <a class="reference internal" href="libharp_general.html#_CPPv219harp_dimension_type" title="harp_dimension_type">harp_dimension_type</a> *<em>dimension_type</em>, <em class="property">const</em> char *<em>vertical_axis</em>, <em class="property">const</em> char *<em>vertical_unit</em>, <a class="reference internal" href="libharp_collocation.html#_CPPv223harp_collocation_result" title="harp_collocation_result">harp_collocation_result</a> *<em>collocation_result</em>, <a class="reference internal" href="libharp_variable.html#_CPPv213harp_variable" title="harp_variable">harp_variable</a> **<em>variable</em><span class="sig-paren">)</span></dt>
+<span id="harp_product_get_smoothed_column_using_collocated_dataset__harp_productP.cCP.cCP.i.harp_dimension_typeCP.cCP.cCP.harp_collocation_resultP.harp_variablePP"></span><span class="target" id="libharpgroup__harp__product_1gae8dbb309df51f78ab40414b95f97cbc4"></span>int <code class="descname">harp_product_get_smoothed_column_using_collocated_dataset</code><span class="sig-paren">(</span><a class="reference internal" href="#_CPPv212harp_product" title="harp_product">harp_product</a> *<em>product</em>, <em class="property">const</em> char *<em>name</em>, <em class="property">const</em> char *<em>unit</em>, int <em>num_dimensions</em>, <em class="property">const</em> <a class="reference internal" href="libharp_general.html#_CPPv219harp_dimension_type" title="harp_dimension_type">harp_dimension_type</a> *<em>dimension_type</em>, <em class="property">const</em> char *<em>vertical_axis</em>, <em class="property">const</em> char *<em>vertical_unit</em>, <a class="reference internal" href="libharp_collocation.html#_CPPv223harp_collocation_result" title="harp_collocation_result">harp_collocation_result</a> *<em>collocation_result</em>, <a class="reference internal" href="libharp_variable.html#_CPPv213harp_variable" title="harp_variable">harp_variable</a> **<em>variable</em><span class="sig-paren">)</span><br /></dt>
 <dd><p>Derive a vertical column smoothed with column averaging kernel and a-priori from collocated products in dataset b</p>
 <p><dl class="docutils">
 <dt><strong>Return</strong></dt>
@@ -882,25 +826,16 @@
 </ul>
 </dd>
 <dt><strong>Parameters</strong></dt>
-<dd><ul class="breatheparameterlist first last">
-<li><code class="first docutils literal"><span class="pre">product</span></code> - <p>Product to regrid. </p>
-</li>
-<li><code class="first docutils literal"><span class="pre">name</span></code> - <p>Name of the variable that should be created. </p>
-</li>
-<li><code class="first docutils literal"><span class="pre">unit</span></code> - <p>Unit (optional) of the variable that should be created. </p>
-</li>
-<li><code class="first docutils literal"><span class="pre">num_dimensions</span></code> - <p>Number of dimensions of the variable that should be created. </p>
-</li>
-<li><code class="first docutils literal"><span class="pre">dimension_type</span></code> - <p>Type of dimension for each of the dimensions of the variable that should be created. </p>
-</li>
-<li><code class="first docutils literal"><span class="pre">vertical_axis</span></code> - <p>The name of the variable to use as a vertical axis (pressure/altitude/etc). </p>
-</li>
-<li><code class="first docutils literal"><span class="pre">vertical_unit</span></code> - <p>The unit in which the vertical_axis will be brought for the regridding. </p>
-</li>
-<li><code class="first docutils literal"><span class="pre">collocation_result</span></code> - <p>The collocation result used to find matching variables. The collocation result is assumed to have the appropriate metadata available for all matches (dataset b). </p>
-</li>
-<li><code class="first docutils literal"><span class="pre">variable</span></code> - <p>Pointer to the C variable where the derived HARP variable will be stored.</p>
-</li>
+<dd><ul class="breatheparameterlist first last simple">
+<li><code class="docutils literal"><span class="pre">product</span></code>: Product to regrid. </li>
+<li><code class="docutils literal"><span class="pre">name</span></code>: Name of the variable that should be created. </li>
+<li><code class="docutils literal"><span class="pre">unit</span></code>: Unit (optional) of the variable that should be created. </li>
+<li><code class="docutils literal"><span class="pre">num_dimensions</span></code>: Number of dimensions of the variable that should be created. </li>
+<li><code class="docutils literal"><span class="pre">dimension_type</span></code>: Type of dimension for each of the dimensions of the variable that should be created. </li>
+<li><code class="docutils literal"><span class="pre">vertical_axis</span></code>: The name of the variable to use as a vertical axis (pressure/altitude/etc). </li>
+<li><code class="docutils literal"><span class="pre">vertical_unit</span></code>: The unit in which the vertical_axis will be brought for the regridding. </li>
+<li><code class="docutils literal"><span class="pre">collocation_result</span></code>: The collocation result used to find matching variables. The collocation result is assumed to have the appropriate metadata available for all matches (dataset b). </li>
+<li><code class="docutils literal"><span class="pre">variable</span></code>: Pointer to the C variable where the derived HARP variable will be stored.</li>
 </ul>
 </dd>
 </dl>
@@ -909,7 +844,7 @@
 
 <dl class="function">
 <dt id="_CPPv211harp_importPKcPP12harp_product">
-<span id="harp_import__cCP.harp_productPP"></span><span class="target" id="libharpgroup__harp__product_1ga5e316f710ae07a76c30447070f3cff6f"></span>int <code class="descname">harp_import</code><span class="sig-paren">(</span><em class="property">const</em> char *<em>filename</em>, <a class="reference internal" href="#_CPPv212harp_product" title="harp_product">harp_product</a> **<em>product</em><span class="sig-paren">)</span></dt>
+<span id="harp_import__cCP.harp_productPP"></span><span class="target" id="libharpgroup__harp__product_1ga5e316f710ae07a76c30447070f3cff6f"></span>int <code class="descname">harp_import</code><span class="sig-paren">(</span><em class="property">const</em> char *<em>filename</em>, <a class="reference internal" href="#_CPPv212harp_product" title="harp_product">harp_product</a> **<em>product</em><span class="sig-paren">)</span><br /></dt>
 <dd><p>Import HARP product from file.</p>
 <p>Try to import an HDF4, HDF5, or netCDF file that complies to the HARP Data Format. You should pass a variable to <em>product</em> that was initialized with <a class="reference internal" href="#libharpgroup__harp__product_1ga0d4b0729140d78db3441be1b66451e91"><span class="std std-ref">harp_product_new()</span></a>. <dl class="docutils">
 <dt><strong>Return</strong></dt>
@@ -919,11 +854,9 @@
 </ul>
 </dd>
 <dt><strong>Parameters</strong></dt>
-<dd><ul class="breatheparameterlist first last">
-<li><code class="first docutils literal"><span class="pre">filename</span></code> - <p>Path to the file that is to be imported. </p>
-</li>
-<li><code class="first docutils literal"><span class="pre">product</span></code> - <p>Empty product that is to be filled with information from the imported file. </p>
-</li>
+<dd><ul class="breatheparameterlist first last simple">
+<li><code class="docutils literal"><span class="pre">filename</span></code>: Path to the file that is to be imported. </li>
+<li><code class="docutils literal"><span class="pre">product</span></code>: Empty product that is to be filled with information from the imported file. </li>
 </ul>
 </dd>
 </dl>
@@ -932,7 +865,7 @@
 
 <dl class="function">
 <dt id="_CPPv228harp_import_product_metadataPKcPP21harp_product_metadata">
-<span id="harp_import_product_metadata__cCP.harp_product_metadataPP"></span><span class="target" id="libharpgroup__harp__product_1ga5c633cf8880cd007c37ca385679a97d2"></span>int <code class="descname">harp_import_product_metadata</code><span class="sig-paren">(</span><em class="property">const</em> char *<em>filename</em>, <a class="reference internal" href="libharp_product_metadata.html#_CPPv221harp_product_metadata" title="harp_product_metadata">harp_product_metadata</a> **<em>new_metadata</em><span class="sig-paren">)</span></dt>
+<span id="harp_import_product_metadata__cCP.harp_product_metadataPP"></span><span class="target" id="libharpgroup__harp__product_1ga5c633cf8880cd007c37ca385679a97d2"></span>int <code class="descname">harp_import_product_metadata</code><span class="sig-paren">(</span><em class="property">const</em> char *<em>filename</em>, <a class="reference internal" href="libharp_product_metadata.html#_CPPv221harp_product_metadata" title="harp_product_metadata">harp_product_metadata</a> **<em>new_metadata</em><span class="sig-paren">)</span><br /></dt>
 <dd><p>Retrieve global attributes from a HARP product file.</p>
 <p>This function retrieves the product metadata * without performing a full import. This function is only supported for netCDF files. <dl class="docutils">
 <dt><strong>Return</strong></dt>
@@ -942,11 +875,9 @@
 </ul>
 </dd>
 <dt><strong>Parameters</strong></dt>
-<dd><ul class="breatheparameterlist first last">
-<li><code class="first docutils literal"><span class="pre">filename</span></code> - <p>Path to the file for which to retrieve global attributes. </p>
-</li>
-<li><code class="first docutils literal"><span class="pre">new_metadata</span></code> - <p>Pointer to the variable where the metadata should be stored. </p>
-</li>
+<dd><ul class="breatheparameterlist first last simple">
+<li><code class="docutils literal"><span class="pre">filename</span></code>: Path to the file for which to retrieve global attributes. </li>
+<li><code class="docutils literal"><span class="pre">new_metadata</span></code>: Pointer to the variable where the metadata should be stored. </li>
 </ul>
 </dd>
 </dl>
@@ -955,7 +886,7 @@
 
 <dl class="function">
 <dt id="_CPPv211harp_exportPKcPKcPK12harp_product">
-<span id="harp_export__cCP.cCP.harp_productCP"></span><span class="target" id="libharpgroup__harp__product_1ga4baa27278b9ed26482b7dde2d0b390b4"></span>int <code class="descname">harp_export</code><span class="sig-paren">(</span><em class="property">const</em> char *<em>filename</em>, <em class="property">const</em> char *<em>export_format</em>, <em class="property">const</em> <a class="reference internal" href="#_CPPv212harp_product" title="harp_product">harp_product</a> *<em>product</em><span class="sig-paren">)</span></dt>
+<span id="harp_export__cCP.cCP.harp_productCP"></span><span class="target" id="libharpgroup__harp__product_1ga4baa27278b9ed26482b7dde2d0b390b4"></span>int <code class="descname">harp_export</code><span class="sig-paren">(</span><em class="property">const</em> char *<em>filename</em>, <em class="property">const</em> char *<em>export_format</em>, <em class="property">const</em> <a class="reference internal" href="#_CPPv212harp_product" title="harp_product">harp_product</a> *<em>product</em><span class="sig-paren">)</span><br /></dt>
 <dd><p>Export HARP product to a file.</p>
 <p>Export product to an HDF4, HDF5, or netCDF file that complies to the HARP Data Format. <dl class="docutils">
 <dt><strong>Return</strong></dt>
@@ -965,13 +896,10 @@
 </ul>
 </dd>
 <dt><strong>Parameters</strong></dt>
-<dd><ul class="breatheparameterlist first last">
-<li><code class="first docutils literal"><span class="pre">filename</span></code> - <p>Path to the file to which the product is to be exported. </p>
-</li>
-<li><code class="first docutils literal"><span class="pre">export_format</span></code> - <p>Either &#8220;HDF4&#8221;, &#8220;HDF5&#8221;, or &#8220;netCDF&#8221;. </p>
-</li>
-<li><code class="first docutils literal"><span class="pre">product</span></code> - <p>Product that should be exported to file. </p>
-</li>
+<dd><ul class="breatheparameterlist first last simple">
+<li><code class="docutils literal"><span class="pre">filename</span></code>: Path to the file to which the product is to be exported. </li>
+<li><code class="docutils literal"><span class="pre">export_format</span></code>: Either &#8220;HDF4&#8221;, &#8220;HDF5&#8221;, or &#8220;netCDF&#8221;. </li>
+<li><code class="docutils literal"><span class="pre">product</span></code>: Product that should be exported to file. </li>
 </ul>
 </dd>
 </dl>
@@ -981,37 +909,37 @@
 </div>
 <dl class="class">
 <dt id="_CPPv219harp_product_struct">
-<span id="harp_product_struct"></span><span class="target" id="libharpstructharp__product__struct"></span><em class="property">struct </em><code class="descname">harp_product_struct</code></dt>
+<span id="harp_product_struct"></span><span class="target" id="libharpstructharp__product__struct"></span><em class="property">struct </em><code class="descname">harp_product_struct</code><br /></dt>
 <dd><em>#include &lt;harp.h&gt;</em><p>HARP Product struct </p>
-<div class="breathe-sectiondef container">
+<div class="breathe-sectiondef docutils container">
 <p class="breathe-sectiondef-title rubric">Public Members</p>
 <dl class="member">
 <dt id="_CPPv29dimension">
-<span id="dimension__lA"></span><span class="target" id="libharpstructharp__product__struct_1a2b479dd242dcc077c95ebb3736cf594a"></span>long <code class="descname">dimension</code>[HARP_NUM_DIM_TYPES]</dt>
+<span id="dimension__lA"></span><span class="target" id="libharpstructharp__product__struct_1a2b479dd242dcc077c95ebb3736cf594a"></span>long <code class="descname">dimension</code>[HARP_NUM_DIM_TYPES]<br /></dt>
 <dd><p>length of each dimension (0 for unused dimensions) </p>
 </dd></dl>
 
 <dl class="member">
 <dt id="_CPPv213num_variables">
-<span id="num_variables__i"></span><span class="target" id="libharpstructharp__product__struct_1a2ba7d62da65ff95eae9aa4c64e05fe5d"></span>int <code class="descname">num_variables</code></dt>
+<span id="num_variables__i"></span><span class="target" id="libharpstructharp__product__struct_1a2ba7d62da65ff95eae9aa4c64e05fe5d"></span>int <code class="descname">num_variables</code><br /></dt>
 <dd><p>number of variables in this product </p>
 </dd></dl>
 
 <dl class="member">
 <dt id="_CPPv28variable">
-<span id="variable__harp_variablePP"></span><span class="target" id="libharpstructharp__product__struct_1a1f5ae397c76bc98f5b3d0a8f83df2bef"></span><a class="reference internal" href="libharp_variable.html#_CPPv213harp_variable" title="harp_variable">harp_variable</a> **<code class="descname">variable</code></dt>
+<span id="variable__harp_variablePP"></span><span class="target" id="libharpstructharp__product__struct_1a1f5ae397c76bc98f5b3d0a8f83df2bef"></span><a class="reference internal" href="libharp_variable.html#_CPPv213harp_variable" title="harp_variable">harp_variable</a> **<code class="descname">variable</code><br /></dt>
 <dd><p>pointers to the variables </p>
 </dd></dl>
 
 <dl class="member">
 <dt id="_CPPv214source_product">
-<span id="source_product__cP"></span><span class="target" id="libharpstructharp__product__struct_1ac4188bb9f4fc3b0a70418ba4f67ff8dd"></span>char *<code class="descname">source_product</code></dt>
+<span id="source_product__cP"></span><span class="target" id="libharpstructharp__product__struct_1ac4188bb9f4fc3b0a70418ba4f67ff8dd"></span>char *<code class="descname">source_product</code><br /></dt>
 <dd><p>identifier of the product the HARP product originates from </p>
 </dd></dl>
 
 <dl class="member">
 <dt id="_CPPv27history">
-<span id="history__cP"></span><span class="target" id="libharpstructharp__product__struct_1a20a905e5529c6aa145a1eadfb556903b"></span>char *<code class="descname">history</code></dt>
+<span id="history__cP"></span><span class="target" id="libharpstructharp__product__struct_1a20a905e5529c6aa145a1eadfb556903b"></span>char *<code class="descname">history</code><br /></dt>
 <dd><p>value for the &#8216;history&#8217; global attribute </p>
 </dd></dl>
 
@@ -1024,15 +952,18 @@
 
 
            </div>
+           <div class="articleComments">
+            
+           </div>
           </div>
           <footer>
   
     <div class="rst-footer-buttons" role="navigation" aria-label="footer navigation">
       
-        <a href="libharp_product_metadata.html" class="btn btn-neutral float-right" title="Product Metadata" accesskey="n">Next <span class="fa fa-arrow-circle-right"></span></a>
+        <a href="libharp_product_metadata.html" class="btn btn-neutral float-right" title="Product Metadata" accesskey="n" rel="next">Next <span class="fa fa-arrow-circle-right"></span></a>
       
       
-        <a href="libharp_general.html" class="btn btn-neutral" title="General" accesskey="p"><span class="fa fa-arrow-circle-left"></span> Previous</a>
+        <a href="libharp_general.html" class="btn btn-neutral" title="General" accesskey="p" rel="prev"><span class="fa fa-arrow-circle-left"></span> Previous</a>
       
     </div>
   
@@ -1065,13 +996,14 @@
             VERSION:'0.5b',
             COLLAPSE_INDEX:false,
             FILE_SUFFIX:'.html',
-            HAS_SOURCE:  false
+            HAS_SOURCE:  false,
+            SOURCELINK_SUFFIX: '.txt'
         };
     </script>
       <script type="text/javascript" src="_static/jquery.js"></script>
       <script type="text/javascript" src="_static/underscore.js"></script>
       <script type="text/javascript" src="_static/doctools.js"></script>
-      <script type="text/javascript" src="https://cdn.mathjax.org/mathjax/latest/MathJax.js?config=TeX-AMS-MML_HTMLorMML"></script>
+      <script type="text/javascript" src="https://cdnjs.cloudflare.com/ajax/libs/mathjax/2.7.0/MathJax.js?config=TeX-AMS-MML_HTMLorMML"></script>
 
   
 

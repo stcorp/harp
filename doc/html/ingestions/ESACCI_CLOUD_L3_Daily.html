@@ -13,6 +13,8 @@
 
   
   
+  
+  
 
   
 
@@ -32,6 +34,8 @@
   
 
   
+        <link rel="index" title="Index"
+              href="../genindex.html"/>
     <link rel="top" title="HARP 0.5b documentation" href="../index.html"/> 
 
   
@@ -41,6 +45,7 @@
 
 <body class="wy-body-for-nav" role="document">
 
+   
   <div class="wy-grid-for-nav">
 
     
@@ -74,7 +79,10 @@
           
             
             
-                <ul>
+              
+            
+            
+              <ul>
 <li class="toctree-l1"><a class="reference internal" href="../install.html">Installation</a></li>
 <li class="toctree-l1"><a class="reference internal" href="../dataformats.html">Data formats</a></li>
 <li class="toctree-l1"><a class="reference internal" href="../algorithms/index.html">Algorithms</a></li>
@@ -95,8 +103,10 @@
 
       
       <nav class="wy-nav-top" role="navigation" aria-label="top navigation">
-        <i data-toggle="wy-nav-top" class="fa fa-bars"></i>
-        <a href="../index.html">HARP</a>
+        
+          <i data-toggle="wy-nav-top" class="fa fa-bars"></i>
+          <a href="../index.html">HARP</a>
+        
       </nav>
 
 
@@ -105,21 +115,38 @@
         <div class="rst-content">
           
 
- 
+
+
+
+
+
+
+
+
+
+
+
 
 
 
 <div role="navigation" aria-label="breadcrumbs navigation">
+
   <ul class="wy-breadcrumbs">
-    <li><a href="../index.html">Docs</a> &raquo;</li>
-      
-    <li>ESACCI_CLOUD_L3_Daily</li>
+    
+      <li><a href="../index.html">Docs</a> &raquo;</li>
+        
+      <li>ESACCI_CLOUD_L3_Daily</li>
+    
+    
       <li class="wy-breadcrumbs-aside">
         
-          
+            
         
       </li>
+    
   </ul>
+
+  
   <hr/>
 </div>
           <div role="main" class="document" itemscope="itemscope" itemtype="http://schema.org/Article">
@@ -130,7 +157,7 @@
 <div class="section" id="variables">
 <h2>Variables</h2>
 <p>The table below lists the variables that are present in the HARP product that results from an ingestion of <code class="docutils literal"><span class="pre">ESACCI_CLOUD_L3_Daily</span></code> data.</p>
-<table border="1" class="docutils">
+<table border="1" class="colwidths-given docutils">
 <colgroup>
 <col width="25%" />
 <col width="5%" />
@@ -162,91 +189,91 @@
 <tr class="row-even"><td><strong>cloud_optical_depth</strong></td>
 <td>double</td>
 <td>{<em>latitude</em>, <em>longitude</em>}</td>
-<td>&nbsp;</td>
+<td>&#160;</td>
 <td>cloud optical depth</td>
 </tr>
 <tr class="row-odd"><td><strong>cloud_optical_depth_uncertainty</strong></td>
 <td>double</td>
 <td>{<em>latitude</em>, <em>longitude</em>}</td>
-<td>&nbsp;</td>
+<td>&#160;</td>
 <td>uncertainty of the cloud optical depth</td>
 </tr>
 <tr class="row-even"><td><strong>cloud_top_height</strong></td>
 <td>double</td>
 <td>{<em>latitude</em>, <em>longitude</em>}</td>
-<td>&nbsp;</td>
+<td>&#160;</td>
 <td>cloud top eight</td>
 </tr>
 <tr class="row-odd"><td><strong>cloud_top_height_uncertainty</strong></td>
 <td>double</td>
 <td>{<em>latitude</em>, <em>longitude</em>}</td>
-<td>&nbsp;</td>
+<td>&#160;</td>
 <td>uncertainty of the cloud top height</td>
 </tr>
 <tr class="row-even"><td><strong>cloud_top_pressure</strong></td>
 <td>double</td>
 <td>{<em>latitude</em>, <em>longitude</em>}</td>
-<td>&nbsp;</td>
+<td>&#160;</td>
 <td>cloud top pressure</td>
 </tr>
 <tr class="row-odd"><td><strong>cloud_top_pressure_uncertainty</strong></td>
 <td>double</td>
 <td>{<em>latitude</em>, <em>longitude</em>}</td>
-<td>&nbsp;</td>
+<td>&#160;</td>
 <td>uncertainty of the cloud top pressure</td>
 </tr>
 <tr class="row-even"><td><strong>cloud_top_temperature</strong></td>
 <td>double</td>
 <td>{<em>latitude</em>, <em>longitude</em>}</td>
-<td>&nbsp;</td>
+<td>&#160;</td>
 <td>cloud top temperature</td>
 </tr>
 <tr class="row-odd"><td><strong>cloud_top_temperature_uncertainty</strong></td>
 <td>double</td>
 <td>{<em>latitude</em>, <em>longitude</em>}</td>
-<td>&nbsp;</td>
+<td>&#160;</td>
 <td>uncertainty of the cloud top temperature</td>
 </tr>
 <tr class="row-even"><td><strong>validity</strong></td>
 <td>double</td>
 <td>{<em>latitude</em>, <em>longitude</em>}</td>
-<td>&nbsp;</td>
+<td>&#160;</td>
 <td>validity of the measurement</td>
 </tr>
 <tr class="row-odd"><td><strong>relative_azimuth_angle</strong></td>
 <td>double</td>
 <td>{<em>latitude</em>, <em>longitude</em>}</td>
-<td>&nbsp;</td>
+<td>&#160;</td>
 <td>relative azimuth angle</td>
 </tr>
 <tr class="row-even"><td><strong>sensor_zenith_angle</strong></td>
 <td>double</td>
 <td>{<em>latitude</em>, <em>longitude</em>}</td>
-<td>&nbsp;</td>
+<td>&#160;</td>
 <td>viewing zenith angle</td>
 </tr>
 <tr class="row-odd"><td><strong>solar_zenith_angle</strong></td>
 <td>double</td>
 <td>{<em>latitude</em>, <em>longitude</em>}</td>
-<td>&nbsp;</td>
+<td>&#160;</td>
 <td>solar zenith angle</td>
 </tr>
 <tr class="row-even"><td><strong>surface_temperature</strong></td>
 <td>double</td>
 <td>{<em>latitude</em>, <em>longitude</em>}</td>
-<td>&nbsp;</td>
+<td>&#160;</td>
 <td>surface_temperature</td>
 </tr>
 <tr class="row-odd"><td><strong>surface_temperature_uncertainty</strong></td>
 <td>double</td>
 <td>{<em>latitude</em>, <em>longitude</em>}</td>
-<td>&nbsp;</td>
+<td>&#160;</td>
 <td>surface_temperature_uncertainty</td>
 </tr>
 <tr class="row-even"><td><strong>datetime</strong></td>
 <td>double</td>
-<td>&nbsp;</td>
-<td>&nbsp;</td>
+<td>&#160;</td>
+<td>&#160;</td>
 <td>datetime</td>
 </tr>
 </tbody>
@@ -255,7 +282,7 @@
 <div class="section" id="ingestion-options">
 <h2>Ingestion options</h2>
 <p>The table below lists the available ingestion options for <code class="docutils literal"><span class="pre">ESACCI_CLOUD_L3U</span></code> products.</p>
-<table border="1" class="docutils">
+<table border="1" class="colwidths-given docutils">
 <colgroup>
 <col width="15%" />
 <col width="25%" />
@@ -504,6 +531,9 @@
 
 
            </div>
+           <div class="articleComments">
+            
+           </div>
           </div>
           <footer>
   
@@ -536,13 +566,14 @@
             VERSION:'0.5b',
             COLLAPSE_INDEX:false,
             FILE_SUFFIX:'.html',
-            HAS_SOURCE:  false
+            HAS_SOURCE:  false,
+            SOURCELINK_SUFFIX: '.txt'
         };
     </script>
       <script type="text/javascript" src="../_static/jquery.js"></script>
       <script type="text/javascript" src="../_static/underscore.js"></script>
       <script type="text/javascript" src="../_static/doctools.js"></script>
-      <script type="text/javascript" src="https://cdn.mathjax.org/mathjax/latest/MathJax.js?config=TeX-AMS-MML_HTMLorMML"></script>
+      <script type="text/javascript" src="https://cdnjs.cloudflare.com/ajax/libs/mathjax/2.7.0/MathJax.js?config=TeX-AMS-MML_HTMLorMML"></script>
 
   
 

@@ -22,7 +22,7 @@ HARP_DOCFILES = \
 	doc/html/_static/fonts/fontawesome-webfont.svg \
 	doc/html/_static/fonts/fontawesome-webfont.ttf \
 	doc/html/_static/fonts/fontawesome-webfont.woff \
-	doc/html/_static/jquery-1.11.1.js \
+	doc/html/_static/jquery-3.1.0.js \
 	doc/html/_static/jquery.js \
 	doc/html/_static/js/modernizr.min.js \
 	doc/html/_static/js/theme.js \
@@ -513,7 +513,7 @@ doc/html/_static/fonts/fontawesome-webfont.ttf:
 	$(MAKE) harp_doc
 doc/html/_static/fonts/fontawesome-webfont.woff:
 	$(MAKE) harp_doc
-doc/html/_static/jquery-1.11.1.js:
+doc/html/_static/jquery-3.1.0.js:
 	$(MAKE) harp_doc
 doc/html/_static/jquery.js:
 	$(MAKE) harp_doc

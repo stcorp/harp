@@ -13,6 +13,8 @@
 
   
   
+  
+  
 
   
 
@@ -32,6 +34,8 @@
   
 
   
+        <link rel="index" title="Index"
+              href="genindex.html"/>
     <link rel="top" title="HARP 0.5b documentation" href="index.html"/>
         <link rel="up" title="C library" href="libharp.html"/>
         <link rel="next" title="Product" href="libharp_product.html"/>
@@ -44,6 +48,7 @@
 
 <body class="wy-body-for-nav" role="document">
 
+   
   <div class="wy-grid-for-nav">
 
     
@@ -77,7 +82,10 @@
           
             
             
-                <ul class="current">
+              
+            
+            
+              <ul class="current">
 <li class="toctree-l1"><a class="reference internal" href="install.html">Installation</a></li>
 <li class="toctree-l1"><a class="reference internal" href="dataformats.html">Data formats</a></li>
 <li class="toctree-l1"><a class="reference internal" href="algorithms/index.html">Algorithms</a></li>
@@ -112,8 +120,10 @@
 
       
       <nav class="wy-nav-top" role="navigation" aria-label="top navigation">
-        <i data-toggle="wy-nav-top" class="fa fa-bars"></i>
-        <a href="index.html">HARP</a>
+        
+          <i data-toggle="wy-nav-top" class="fa fa-bars"></i>
+          <a href="index.html">HARP</a>
+        
       </nav>
 
 
@@ -122,23 +132,40 @@
         <div class="rst-content">
           
 
- 
+
+
+
+
+
+
+
+
+
+
+
 
 
 
 <div role="navigation" aria-label="breadcrumbs navigation">
+
   <ul class="wy-breadcrumbs">
-    <li><a href="index.html">Docs</a> &raquo;</li>
-      
+    
+      <li><a href="index.html">Docs</a> &raquo;</li>
+        
           <li><a href="libharp.html">C library</a> &raquo;</li>
-      
-    <li>General</li>
+        
+      <li>General</li>
+    
+    
       <li class="wy-breadcrumbs-aside">
         
-          
+            
         
       </li>
+    
   </ul>
+
+  
   <hr/>
 </div>
           <div role="main" class="document" itemscope="itemscope" itemtype="http://schema.org/Article">
@@ -150,81 +177,81 @@
 <dt>
 <span class="target" id="libharpgroup__harp__general"></span><em>group</em> <code class="descname">harp_general</code></dt>
 <dd><p>The HARP General module contains all general and miscellaneous functions and procedures of HARP. </p>
-<div class="breathe-sectiondef container">
+<div class="breathe-sectiondef docutils container">
 <p class="breathe-sectiondef-title rubric">Defines</p>
 <dl class="macro">
 <dt id="c.HARP_NUM_DATA_TYPES">
-<span class="target" id="libharpgroup__harp__general_1ga9d447bb4e021c2cc273ade8d9c7a9086"></span><code class="descname">HARP_NUM_DATA_TYPES</code></dt>
+<span class="target" id="libharpgroup__harp__general_1ga9d447bb4e021c2cc273ade8d9c7a9086"></span><code class="descname">HARP_NUM_DATA_TYPES</code> (6)</dt>
 <dd></dd></dl>
 
 <dl class="macro">
 <dt id="c.HARP_NUM_DIM_TYPES">
-<span class="target" id="libharpgroup__harp__general_1ga745afa2b5da35e983684ec9d5c6b8641"></span><code class="descname">HARP_NUM_DIM_TYPES</code></dt>
+<span class="target" id="libharpgroup__harp__general_1ga745afa2b5da35e983684ec9d5c6b8641"></span><code class="descname">HARP_NUM_DIM_TYPES</code> (5)</dt>
 <dd></dd></dl>
 
 </div>
-<div class="breathe-sectiondef container">
+<div class="breathe-sectiondef docutils container">
 <p class="breathe-sectiondef-title rubric">Typedefs</p>
 <dl class="type">
 <dt id="_CPPv214harp_data_type">
-<span id="harp_data_type"></span><span class="target" id="libharpgroup__harp__general_1ga3e6679493bcea7a86f5db857b724d626"></span><em class="property">typedef </em><em class="property">enum</em> harp_data_type_enum <code class="descname">harp_data_type</code></dt>
+<span id="harp_data_type"></span><span class="target" id="libharpgroup__harp__general_1ga3e6679493bcea7a86f5db857b724d626"></span><em class="property">typedef </em><em class="property">enum</em> harp_data_type_enum <code class="descname">harp_data_type</code><br /></dt>
 <dd></dd></dl>
 
 <dl class="type">
 <dt id="_CPPv211harp_scalar">
-<span id="harp_scalar"></span><span class="target" id="libharpgroup__harp__general_1ga614d2a182d07f61a78f6c07f206be65b"></span><em class="property">typedef </em><em class="property">union</em> <a class="reference internal" href="#_CPPv217harp_scalar_union" title="harp_scalar_union">harp_scalar_union</a> <code class="descname">harp_scalar</code></dt>
+<span id="harp_scalar"></span><span class="target" id="libharpgroup__harp__general_1ga614d2a182d07f61a78f6c07f206be65b"></span><em class="property">typedef </em><em class="property">union</em> <a class="reference internal" href="#_CPPv217harp_scalar_union" title="harp_scalar_union">harp_scalar_union</a> <code class="descname">harp_scalar</code><br /></dt>
 <dd></dd></dl>
 
 <dl class="type">
 <dt id="_CPPv210harp_array">
-<span id="harp_array"></span><span class="target" id="libharpgroup__harp__general_1gab28d0895c88c16552c09a614a3af128d"></span><em class="property">typedef </em><em class="property">union</em> <a class="reference internal" href="#_CPPv216harp_array_union" title="harp_array_union">harp_array_union</a> <code class="descname">harp_array</code></dt>
+<span id="harp_array"></span><span class="target" id="libharpgroup__harp__general_1gab28d0895c88c16552c09a614a3af128d"></span><em class="property">typedef </em><em class="property">union</em> <a class="reference internal" href="#_CPPv216harp_array_union" title="harp_array_union">harp_array_union</a> <code class="descname">harp_array</code><br /></dt>
 <dd></dd></dl>
 
 <dl class="type">
 <dt id="_CPPv219harp_dimension_type">
-<span id="harp_dimension_type"></span><span class="target" id="libharpgroup__harp__general_1ga09aa1869c3441f715812f30cd30bc4e0"></span><em class="property">typedef </em><em class="property">enum</em> harp_dimension_type_enum <code class="descname">harp_dimension_type</code></dt>
+<span id="harp_dimension_type"></span><span class="target" id="libharpgroup__harp__general_1ga09aa1869c3441f715812f30cd30bc4e0"></span><em class="property">typedef </em><em class="property">enum</em> harp_dimension_type_enum <code class="descname">harp_dimension_type</code><br /></dt>
 <dd></dd></dl>
 
 </div>
-<div class="breathe-sectiondef container">
+<div class="breathe-sectiondef docutils container">
 <p class="breathe-sectiondef-title rubric">Enums</p>
 <dl class="type">
 <dt id="_CPPv2N12harp_general19harp_data_type_enumE">
-<span id="harp_general::harp_data_type_enum"></span><span class="target" id="libharpgroup__harp__general_1ga580990f8c0e1539578c35c71394c13b8"></span><em class="property">enum </em><code class="descname">harp_data_type_enum</code></dt>
+<span id="harp_general::harp_data_type_enum"></span><span class="target" id="libharpgroup__harp__general_1ga580990f8c0e1539578c35c71394c13b8"></span><em class="property">enum </em><code class="descname">harp_data_type_enum</code><br /></dt>
 <dd><p><em>Values:</em></p>
 <dl class="member">
 <dt id="_CPPv2N12harp_general14harp_type_int8E">
-<span id="harp_general::harp_type_int8"></span><span class="target" id="libharpgroup__harp__general_1gga580990f8c0e1539578c35c71394c13b8a6ea1a29087267f166b4051a18c462567"></span><code class="descname">harp_type_int8</code></dt>
+<span id="harp_general::harp_type_int8"></span><span class="target" id="libharpgroup__harp__general_1gga580990f8c0e1539578c35c71394c13b8a6ea1a29087267f166b4051a18c462567"></span><code class="descname">harp_type_int8</code><br /></dt>
 <dd><p>BYTE </p>
 </dd></dl>
 
 <dl class="member">
 <dt id="_CPPv2N12harp_general15harp_type_int16E">
-<span id="harp_general::harp_type_int16"></span><span class="target" id="libharpgroup__harp__general_1gga580990f8c0e1539578c35c71394c13b8a356bfcd65137fcd06a83b8738bf8565a"></span><code class="descname">harp_type_int16</code></dt>
+<span id="harp_general::harp_type_int16"></span><span class="target" id="libharpgroup__harp__general_1gga580990f8c0e1539578c35c71394c13b8a356bfcd65137fcd06a83b8738bf8565a"></span><code class="descname">harp_type_int16</code><br /></dt>
 <dd><p>INTEGER </p>
 </dd></dl>
 
 <dl class="member">
 <dt id="_CPPv2N12harp_general15harp_type_int32E">
-<span id="harp_general::harp_type_int32"></span><span class="target" id="libharpgroup__harp__general_1gga580990f8c0e1539578c35c71394c13b8ac67b47d1c1d3f3b3d567d0e593c625ca"></span><code class="descname">harp_type_int32</code></dt>
+<span id="harp_general::harp_type_int32"></span><span class="target" id="libharpgroup__harp__general_1gga580990f8c0e1539578c35c71394c13b8ac67b47d1c1d3f3b3d567d0e593c625ca"></span><code class="descname">harp_type_int32</code><br /></dt>
 <dd><p>LONG </p>
 </dd></dl>
 
 <dl class="member">
 <dt id="_CPPv2N12harp_general15harp_type_floatE">
-<span id="harp_general::harp_type_float"></span><span class="target" id="libharpgroup__harp__general_1gga580990f8c0e1539578c35c71394c13b8a16defd7698fa568a45f3924889f1df4d"></span><code class="descname">harp_type_float</code></dt>
+<span id="harp_general::harp_type_float"></span><span class="target" id="libharpgroup__harp__general_1gga580990f8c0e1539578c35c71394c13b8a16defd7698fa568a45f3924889f1df4d"></span><code class="descname">harp_type_float</code><br /></dt>
 <dd><p>FLOAT </p>
 </dd></dl>
 
 <dl class="member">
 <dt id="_CPPv2N12harp_general16harp_type_doubleE">
-<span id="harp_general::harp_type_double"></span><span class="target" id="libharpgroup__harp__general_1gga580990f8c0e1539578c35c71394c13b8a9bf51666946a319e65285fba8c9f841c"></span><code class="descname">harp_type_double</code></dt>
+<span id="harp_general::harp_type_double"></span><span class="target" id="libharpgroup__harp__general_1gga580990f8c0e1539578c35c71394c13b8a9bf51666946a319e65285fba8c9f841c"></span><code class="descname">harp_type_double</code><br /></dt>
 <dd><p>DOUBLE </p>
 </dd></dl>
 
 <dl class="member">
 <dt id="_CPPv2N12harp_general16harp_type_stringE">
-<span id="harp_general::harp_type_string"></span><span class="target" id="libharpgroup__harp__general_1gga580990f8c0e1539578c35c71394c13b8a4905027039bfc016c4747810c8041f00"></span><code class="descname">harp_type_string</code></dt>
+<span id="harp_general::harp_type_string"></span><span class="target" id="libharpgroup__harp__general_1gga580990f8c0e1539578c35c71394c13b8a4905027039bfc016c4747810c8041f00"></span><code class="descname">harp_type_string</code><br /></dt>
 <dd><p>STRING </p>
 </dd></dl>
 
@@ -232,46 +259,46 @@
 
 <dl class="type">
 <dt id="_CPPv2N12harp_general24harp_dimension_type_enumE">
-<span id="harp_general::harp_dimension_type_enum"></span><span class="target" id="libharpgroup__harp__general_1ga8ba37626d488a9335d5f0a6f233bf744"></span><em class="property">enum </em><code class="descname">harp_dimension_type_enum</code></dt>
+<span id="harp_general::harp_dimension_type_enum"></span><span class="target" id="libharpgroup__harp__general_1ga8ba37626d488a9335d5f0a6f233bf744"></span><em class="property">enum </em><code class="descname">harp_dimension_type_enum</code><br /></dt>
 <dd><p><em>Values:</em></p>
 <dl class="member">
 <dt id="_CPPv2N12harp_general26harp_dimension_independentE">
-<span id="harp_general::harp_dimension_independent"></span><span class="target" id="libharpgroup__harp__general_1gga8ba37626d488a9335d5f0a6f233bf744a212acf3790da31ff1d3e4ec6d351fb54"></span><code class="descname">harp_dimension_independent</code> = -1</dt>
+<span id="harp_general::harp_dimension_independent"></span><span class="target" id="libharpgroup__harp__general_1gga8ba37626d488a9335d5f0a6f233bf744a212acf3790da31ff1d3e4ec6d351fb54"></span><code class="descname">harp_dimension_independent</code> = -1<br /></dt>
 <dd></dd></dl>
 
 <dl class="member">
 <dt id="_CPPv2N12harp_general19harp_dimension_timeE">
-<span id="harp_general::harp_dimension_time"></span><span class="target" id="libharpgroup__harp__general_1gga8ba37626d488a9335d5f0a6f233bf744ad3689d56a28fcb601b2e5e87c1344ce8"></span><code class="descname">harp_dimension_time</code></dt>
+<span id="harp_general::harp_dimension_time"></span><span class="target" id="libharpgroup__harp__general_1gga8ba37626d488a9335d5f0a6f233bf744ad3689d56a28fcb601b2e5e87c1344ce8"></span><code class="descname">harp_dimension_time</code><br /></dt>
 <dd></dd></dl>
 
 <dl class="member">
 <dt id="_CPPv2N12harp_general23harp_dimension_latitudeE">
-<span id="harp_general::harp_dimension_latitude"></span><span class="target" id="libharpgroup__harp__general_1gga8ba37626d488a9335d5f0a6f233bf744a5d9ca65f783666a65ef1b4db004157ce"></span><code class="descname">harp_dimension_latitude</code></dt>
+<span id="harp_general::harp_dimension_latitude"></span><span class="target" id="libharpgroup__harp__general_1gga8ba37626d488a9335d5f0a6f233bf744a5d9ca65f783666a65ef1b4db004157ce"></span><code class="descname">harp_dimension_latitude</code><br /></dt>
 <dd></dd></dl>
 
 <dl class="member">
 <dt id="_CPPv2N12harp_general24harp_dimension_longitudeE">
-<span id="harp_general::harp_dimension_longitude"></span><span class="target" id="libharpgroup__harp__general_1gga8ba37626d488a9335d5f0a6f233bf744a78850d1e9182848e7a244440c60f1336"></span><code class="descname">harp_dimension_longitude</code></dt>
+<span id="harp_general::harp_dimension_longitude"></span><span class="target" id="libharpgroup__harp__general_1gga8ba37626d488a9335d5f0a6f233bf744a78850d1e9182848e7a244440c60f1336"></span><code class="descname">harp_dimension_longitude</code><br /></dt>
 <dd></dd></dl>
 
 <dl class="member">
 <dt id="_CPPv2N12harp_general23harp_dimension_verticalE">
-<span id="harp_general::harp_dimension_vertical"></span><span class="target" id="libharpgroup__harp__general_1gga8ba37626d488a9335d5f0a6f233bf744a5ac5074d38b2138eb18fd0cb0f4a58bd"></span><code class="descname">harp_dimension_vertical</code></dt>
+<span id="harp_general::harp_dimension_vertical"></span><span class="target" id="libharpgroup__harp__general_1gga8ba37626d488a9335d5f0a6f233bf744a5ac5074d38b2138eb18fd0cb0f4a58bd"></span><code class="descname">harp_dimension_vertical</code><br /></dt>
 <dd></dd></dl>
 
 <dl class="member">
 <dt id="_CPPv2N12harp_general23harp_dimension_spectralE">
-<span id="harp_general::harp_dimension_spectral"></span><span class="target" id="libharpgroup__harp__general_1gga8ba37626d488a9335d5f0a6f233bf744a48489fcca5d4dca5f70ffb9975d9ebe6"></span><code class="descname">harp_dimension_spectral</code></dt>
+<span id="harp_general::harp_dimension_spectral"></span><span class="target" id="libharpgroup__harp__general_1gga8ba37626d488a9335d5f0a6f233bf744a48489fcca5d4dca5f70ffb9975d9ebe6"></span><code class="descname">harp_dimension_spectral</code><br /></dt>
 <dd></dd></dl>
 
 </dd></dl>
 
 </div>
-<div class="breathe-sectiondef container">
+<div class="breathe-sectiondef docutils container">
 <p class="breathe-sectiondef-title rubric">Functions</p>
 <dl class="function">
 <dt id="_CPPv217harp_convert_unitPKcPKclPd">
-<span id="harp_convert_unit__cCP.cCP.l.doubleP"></span><span class="target" id="libharpgroup__harp__general_1gaf2f2e7ffc3090f796385669ed69f92e9"></span>int <code class="descname">harp_convert_unit</code><span class="sig-paren">(</span><em class="property">const</em> char *<em>from_unit</em>, <em class="property">const</em> char *<em>to_unit</em>, long <em>num_values</em>, double *<em>value</em><span class="sig-paren">)</span></dt>
+<span id="harp_convert_unit__cCP.cCP.l.doubleP"></span><span class="target" id="libharpgroup__harp__general_1gaf2f2e7ffc3090f796385669ed69f92e9"></span>int <code class="descname">harp_convert_unit</code><span class="sig-paren">(</span><em class="property">const</em> char *<em>from_unit</em>, <em class="property">const</em> char *<em>to_unit</em>, long <em>num_values</em>, double *<em>value</em><span class="sig-paren">)</span><br /></dt>
 <dd><p>Perform unit conversion on data</p>
 <p>Apply unit conversion on a range of floating point values. Conversion will be performed in-place. If there is no conversion available from the current unit to the new unit then an error will be raised. <dl class="docutils">
 <dt><strong>Return</strong></dt>
@@ -281,15 +308,11 @@
 </ul>
 </dd>
 <dt><strong>Parameters</strong></dt>
-<dd><ul class="breatheparameterlist first last">
-<li><code class="first docutils literal"><span class="pre">from_unit</span></code> - <p>Existing unit of the data that should be converted (use udunits2 compliant units). </p>
-</li>
-<li><code class="first docutils literal"><span class="pre">to_unit</span></code> - <p>Unit to which the data should be converted (use udunits2 compliant units). </p>
-</li>
-<li><code class="first docutils literal"><span class="pre">num_values</span></code> - <p>Number of floating point values in <em>value</em>. </p>
-</li>
-<li><code class="first docutils literal"><span class="pre">value</span></code> - <p>Array of floating point values that should be converted. </p>
-</li>
+<dd><ul class="breatheparameterlist first last simple">
+<li><code class="docutils literal"><span class="pre">from_unit</span></code>: Existing unit of the data that should be converted (use udunits2 compliant units). </li>
+<li><code class="docutils literal"><span class="pre">to_unit</span></code>: Unit to which the data should be converted (use udunits2 compliant units). </li>
+<li><code class="docutils literal"><span class="pre">num_values</span></code>: Number of floating point values in <em>value</em>. </li>
+<li><code class="docutils literal"><span class="pre">value</span></code>: Array of floating point values that should be converted. </li>
 </ul>
 </dd>
 </dl>
@@ -298,14 +321,13 @@
 
 <dl class="function">
 <dt id="_CPPv213harp_basenamePKc">
-<span id="harp_basename__cCP"></span><span class="target" id="libharpgroup__harp__general_1ga96d2dcbea0ae2ee275bdb7113980ae92"></span><em class="property">const</em> char *<code class="descname">harp_basename</code><span class="sig-paren">(</span><em class="property">const</em> char *<em>path</em><span class="sig-paren">)</span></dt>
+<span id="harp_basename__cCP"></span><span class="target" id="libharpgroup__harp__general_1ga96d2dcbea0ae2ee275bdb7113980ae92"></span><em class="property">const</em> char *<code class="descname">harp_basename</code><span class="sig-paren">(</span><em class="property">const</em> char *<em>path</em><span class="sig-paren">)</span><br /></dt>
 <dd><p>Remove everything but the last pathname component from <em>path</em>. <dl class="docutils">
 <dt><strong>Return</strong></dt>
 <dd>Pointer to the last pathname component of <em>path</em>, i.e. everything from the end of <em>path</em> up to the first pathname component separation character (&#8216;\&#8217; or &#8216;/&#8217; on Windows, &#8216;/&#8217; otherwise). </dd>
 <dt><strong>Parameters</strong></dt>
-<dd><ul class="breatheparameterlist first last">
-<li><code class="first docutils literal"><span class="pre">path</span></code> - <p>Path to compute the basename of. </p>
-</li>
+<dd><ul class="breatheparameterlist first last simple">
+<li><code class="docutils literal"><span class="pre">path</span></code>: Path to compute the basename of. </li>
 </ul>
 </dd>
 </dl>
@@ -314,14 +336,13 @@
 
 <dl class="function">
 <dt id="_CPPv223harp_get_data_type_name14harp_data_type">
-<span id="harp_get_data_type_name__harp_data_type"></span><span class="target" id="libharpgroup__harp__general_1gaffceeeef4a5b49917a355539ffb18980"></span><em class="property">const</em> char *<code class="descname">harp_get_data_type_name</code><span class="sig-paren">(</span><a class="reference internal" href="#_CPPv214harp_data_type" title="harp_data_type">harp_data_type</a> <em>data_type</em><span class="sig-paren">)</span></dt>
+<span id="harp_get_data_type_name__harp_data_type"></span><span class="target" id="libharpgroup__harp__general_1gaffceeeef4a5b49917a355539ffb18980"></span><em class="property">const</em> char *<code class="descname">harp_get_data_type_name</code><span class="sig-paren">(</span><a class="reference internal" href="#_CPPv214harp_data_type" title="harp_data_type">harp_data_type</a> <em>data_type</em><span class="sig-paren">)</span><br /></dt>
 <dd><p>Returns the name of a data type. <dl class="docutils">
 <dt><strong>Return</strong></dt>
 <dd>if the data type is known a string containing the name of the type, otherwise the string &#8220;unknown&#8221;. </dd>
 <dt><strong>Parameters</strong></dt>
-<dd><ul class="breatheparameterlist first last">
-<li><code class="first docutils literal"><span class="pre">data_type</span></code> - <p>HARP basic data type </p>
-</li>
+<dd><ul class="breatheparameterlist first last simple">
+<li><code class="docutils literal"><span class="pre">data_type</span></code>: HARP basic data type </li>
 </ul>
 </dd>
 </dl>
@@ -330,14 +351,13 @@
 
 <dl class="function">
 <dt id="_CPPv222harp_get_size_for_type14harp_data_type">
-<span id="harp_get_size_for_type__harp_data_type"></span><span class="target" id="libharpgroup__harp__general_1ga04e7afdfba69e2ee2596bfed9dc87355"></span>long <code class="descname">harp_get_size_for_type</code><span class="sig-paren">(</span><a class="reference internal" href="#_CPPv214harp_data_type" title="harp_data_type">harp_data_type</a> <em>data_type</em><span class="sig-paren">)</span></dt>
+<span id="harp_get_size_for_type__harp_data_type"></span><span class="target" id="libharpgroup__harp__general_1ga04e7afdfba69e2ee2596bfed9dc87355"></span>long <code class="descname">harp_get_size_for_type</code><span class="sig-paren">(</span><a class="reference internal" href="#_CPPv214harp_data_type" title="harp_data_type">harp_data_type</a> <em>data_type</em><span class="sig-paren">)</span><br /></dt>
 <dd><p>Retrieve the byte size for a HARP data type. <dl class="docutils">
 <dt><strong>Return</strong></dt>
 <dd>The size of the data type in bytes. </dd>
 <dt><strong>Parameters</strong></dt>
-<dd><ul class="breatheparameterlist first last">
-<li><code class="first docutils literal"><span class="pre">data_type</span></code> - <p>Data type for which to retrieve the size. </p>
-</li>
+<dd><ul class="breatheparameterlist first last simple">
+<li><code class="docutils literal"><span class="pre">data_type</span></code>: Data type for which to retrieve the size. </li>
 </ul>
 </dd>
 </dl>
@@ -346,14 +366,13 @@
 
 <dl class="function">
 <dt id="_CPPv228harp_get_fill_value_for_type14harp_data_type">
-<span id="harp_get_fill_value_for_type__harp_data_type"></span><span class="target" id="libharpgroup__harp__general_1ga00efcbd66b05ad34562435771e600341"></span><a class="reference internal" href="#_CPPv211harp_scalar" title="harp_scalar">harp_scalar</a> <code class="descname">harp_get_fill_value_for_type</code><span class="sig-paren">(</span><a class="reference internal" href="#_CPPv214harp_data_type" title="harp_data_type">harp_data_type</a> <em>data_type</em><span class="sig-paren">)</span></dt>
+<span id="harp_get_fill_value_for_type__harp_data_type"></span><span class="target" id="libharpgroup__harp__general_1ga00efcbd66b05ad34562435771e600341"></span><a class="reference internal" href="#_CPPv211harp_scalar" title="harp_scalar">harp_scalar</a> <code class="descname">harp_get_fill_value_for_type</code><span class="sig-paren">(</span><a class="reference internal" href="#_CPPv214harp_data_type" title="harp_data_type">harp_data_type</a> <em>data_type</em><span class="sig-paren">)</span><br /></dt>
 <dd><p>Retrieve the fill value for a HARP data type. <dl class="docutils">
 <dt><strong>Return</strong></dt>
 <dd>The fill value for the data type. </dd>
 <dt><strong>Parameters</strong></dt>
-<dd><ul class="breatheparameterlist first last">
-<li><code class="first docutils literal"><span class="pre">data_type</span></code> - <p>Data type for which to retrieve the fill value. </p>
-</li>
+<dd><ul class="breatheparameterlist first last simple">
+<li><code class="docutils literal"><span class="pre">data_type</span></code>: Data type for which to retrieve the fill value. </li>
 </ul>
 </dd>
 </dl>
@@ -362,14 +381,13 @@
 
 <dl class="function">
 <dt id="_CPPv227harp_get_valid_min_for_type14harp_data_type">
-<span id="harp_get_valid_min_for_type__harp_data_type"></span><span class="target" id="libharpgroup__harp__general_1ga854ceb4ea5b4953cfa94a0b738bdbee5"></span><a class="reference internal" href="#_CPPv211harp_scalar" title="harp_scalar">harp_scalar</a> <code class="descname">harp_get_valid_min_for_type</code><span class="sig-paren">(</span><a class="reference internal" href="#_CPPv214harp_data_type" title="harp_data_type">harp_data_type</a> <em>data_type</em><span class="sig-paren">)</span></dt>
+<span id="harp_get_valid_min_for_type__harp_data_type"></span><span class="target" id="libharpgroup__harp__general_1ga854ceb4ea5b4953cfa94a0b738bdbee5"></span><a class="reference internal" href="#_CPPv211harp_scalar" title="harp_scalar">harp_scalar</a> <code class="descname">harp_get_valid_min_for_type</code><span class="sig-paren">(</span><a class="reference internal" href="#_CPPv214harp_data_type" title="harp_data_type">harp_data_type</a> <em>data_type</em><span class="sig-paren">)</span><br /></dt>
 <dd><p>Retrieve the minimum valid value for a HARP data type. <dl class="docutils">
 <dt><strong>Return</strong></dt>
 <dd>The minimum valid value of the data type. </dd>
 <dt><strong>Parameters</strong></dt>
-<dd><ul class="breatheparameterlist first last">
-<li><code class="first docutils literal"><span class="pre">data_type</span></code> - <p>Data type for which to retrieve the minimum valid value. </p>
-</li>
+<dd><ul class="breatheparameterlist first last simple">
+<li><code class="docutils literal"><span class="pre">data_type</span></code>: Data type for which to retrieve the minimum valid value. </li>
 </ul>
 </dd>
 </dl>
@@ -378,14 +396,13 @@
 
 <dl class="function">
 <dt id="_CPPv227harp_get_valid_max_for_type14harp_data_type">
-<span id="harp_get_valid_max_for_type__harp_data_type"></span><span class="target" id="libharpgroup__harp__general_1ga0161b0bb8622db439ce702d125855de9"></span><a class="reference internal" href="#_CPPv211harp_scalar" title="harp_scalar">harp_scalar</a> <code class="descname">harp_get_valid_max_for_type</code><span class="sig-paren">(</span><a class="reference internal" href="#_CPPv214harp_data_type" title="harp_data_type">harp_data_type</a> <em>data_type</em><span class="sig-paren">)</span></dt>
+<span id="harp_get_valid_max_for_type__harp_data_type"></span><span class="target" id="libharpgroup__harp__general_1ga0161b0bb8622db439ce702d125855de9"></span><a class="reference internal" href="#_CPPv211harp_scalar" title="harp_scalar">harp_scalar</a> <code class="descname">harp_get_valid_max_for_type</code><span class="sig-paren">(</span><a class="reference internal" href="#_CPPv214harp_data_type" title="harp_data_type">harp_data_type</a> <em>data_type</em><span class="sig-paren">)</span><br /></dt>
 <dd><p>Retrieve the maximum valid value for a HARP data type. <dl class="docutils">
 <dt><strong>Return</strong></dt>
 <dd>The maximum valid value of the data type. </dd>
 <dt><strong>Parameters</strong></dt>
-<dd><ul class="breatheparameterlist first last">
-<li><code class="first docutils literal"><span class="pre">data_type</span></code> - <p>Data type for which to retrieve the maximum valid value. </p>
-</li>
+<dd><ul class="breatheparameterlist first last simple">
+<li><code class="docutils literal"><span class="pre">data_type</span></code>: Data type for which to retrieve the maximum valid value. </li>
 </ul>
 </dd>
 </dl>
@@ -394,7 +411,7 @@
 
 <dl class="function">
 <dt id="_CPPv227harp_is_fill_value_for_type14harp_data_type11harp_scalar">
-<span id="harp_is_fill_value_for_type__harp_data_type.harp_scalar"></span><span class="target" id="libharpgroup__harp__general_1gaffeedbea853fee203d4555664225e261"></span>int <code class="descname">harp_is_fill_value_for_type</code><span class="sig-paren">(</span><a class="reference internal" href="#_CPPv214harp_data_type" title="harp_data_type">harp_data_type</a> <em>data_type</em>, <a class="reference internal" href="#_CPPv211harp_scalar" title="harp_scalar">harp_scalar</a> <em>value</em><span class="sig-paren">)</span></dt>
+<span id="harp_is_fill_value_for_type__harp_data_type.harp_scalar"></span><span class="target" id="libharpgroup__harp__general_1gaffeedbea853fee203d4555664225e261"></span>int <code class="descname">harp_is_fill_value_for_type</code><span class="sig-paren">(</span><a class="reference internal" href="#_CPPv214harp_data_type" title="harp_data_type">harp_data_type</a> <em>data_type</em>, <a class="reference internal" href="#_CPPv211harp_scalar" title="harp_scalar">harp_scalar</a> <em>value</em><span class="sig-paren">)</span><br /></dt>
 <dd><p>Test if <em>value</em> equals the fill value for the specified data type. <dl class="docutils">
 <dt><strong>Return</strong></dt>
 <dd><ul class="simple">
@@ -403,11 +420,9 @@
 </ul>
 </dd>
 <dt><strong>Parameters</strong></dt>
-<dd><ul class="breatheparameterlist first last">
-<li><code class="first docutils literal"><span class="pre">data_type</span></code> - <p>Data type corresponding to the value of <em>value</em>. </p>
-</li>
-<li><code class="first docutils literal"><span class="pre">value</span></code> - <p>Value to test. </p>
-</li>
+<dd><ul class="breatheparameterlist first last simple">
+<li><code class="docutils literal"><span class="pre">data_type</span></code>: Data type corresponding to the value of <em>value</em>. </li>
+<li><code class="docutils literal"><span class="pre">value</span></code>: Value to test. </li>
 </ul>
 </dd>
 </dl>
@@ -416,7 +431,7 @@
 
 <dl class="function">
 <dt id="_CPPv226harp_is_valid_min_for_type14harp_data_type11harp_scalar">
-<span id="harp_is_valid_min_for_type__harp_data_type.harp_scalar"></span><span class="target" id="libharpgroup__harp__general_1ga43fde638ad814bb4a88c2e63ab06deca"></span>int <code class="descname">harp_is_valid_min_for_type</code><span class="sig-paren">(</span><a class="reference internal" href="#_CPPv214harp_data_type" title="harp_data_type">harp_data_type</a> <em>data_type</em>, <a class="reference internal" href="#_CPPv211harp_scalar" title="harp_scalar">harp_scalar</a> <em>value</em><span class="sig-paren">)</span></dt>
+<span id="harp_is_valid_min_for_type__harp_data_type.harp_scalar"></span><span class="target" id="libharpgroup__harp__general_1ga43fde638ad814bb4a88c2e63ab06deca"></span>int <code class="descname">harp_is_valid_min_for_type</code><span class="sig-paren">(</span><a class="reference internal" href="#_CPPv214harp_data_type" title="harp_data_type">harp_data_type</a> <em>data_type</em>, <a class="reference internal" href="#_CPPv211harp_scalar" title="harp_scalar">harp_scalar</a> <em>value</em><span class="sig-paren">)</span><br /></dt>
 <dd><p>Test if <em>value</em> equals the minimum valid value for the specified data type. <dl class="docutils">
 <dt><strong>Return</strong></dt>
 <dd><ul class="simple">
@@ -425,11 +440,9 @@
 </ul>
 </dd>
 <dt><strong>Parameters</strong></dt>
-<dd><ul class="breatheparameterlist first last">
-<li><code class="first docutils literal"><span class="pre">data_type</span></code> - <p>Data type corresponding to the value of <em>value</em>. </p>
-</li>
-<li><code class="first docutils literal"><span class="pre">value</span></code> - <p>Value to test. </p>
-</li>
+<dd><ul class="breatheparameterlist first last simple">
+<li><code class="docutils literal"><span class="pre">data_type</span></code>: Data type corresponding to the value of <em>value</em>. </li>
+<li><code class="docutils literal"><span class="pre">value</span></code>: Value to test. </li>
 </ul>
 </dd>
 </dl>
@@ -438,7 +451,7 @@
 
 <dl class="function">
 <dt id="_CPPv226harp_is_valid_max_for_type14harp_data_type11harp_scalar">
-<span id="harp_is_valid_max_for_type__harp_data_type.harp_scalar"></span><span class="target" id="libharpgroup__harp__general_1gace82158c05757551242151c4cb8709f6"></span>int <code class="descname">harp_is_valid_max_for_type</code><span class="sig-paren">(</span><a class="reference internal" href="#_CPPv214harp_data_type" title="harp_data_type">harp_data_type</a> <em>data_type</em>, <a class="reference internal" href="#_CPPv211harp_scalar" title="harp_scalar">harp_scalar</a> <em>value</em><span class="sig-paren">)</span></dt>
+<span id="harp_is_valid_max_for_type__harp_data_type.harp_scalar"></span><span class="target" id="libharpgroup__harp__general_1gace82158c05757551242151c4cb8709f6"></span>int <code class="descname">harp_is_valid_max_for_type</code><span class="sig-paren">(</span><a class="reference internal" href="#_CPPv214harp_data_type" title="harp_data_type">harp_data_type</a> <em>data_type</em>, <a class="reference internal" href="#_CPPv211harp_scalar" title="harp_scalar">harp_scalar</a> <em>value</em><span class="sig-paren">)</span><br /></dt>
 <dd><p>Test if <em>value</em> equals the maximum valid value for the specified data type. <dl class="docutils">
 <dt><strong>Return</strong></dt>
 <dd><ul class="simple">
@@ -447,11 +460,9 @@
 </ul>
 </dd>
 <dt><strong>Parameters</strong></dt>
-<dd><ul class="breatheparameterlist first last">
-<li><code class="first docutils literal"><span class="pre">data_type</span></code> - <p>Data type corresponding to the value of <em>value</em>. </p>
-</li>
-<li><code class="first docutils literal"><span class="pre">value</span></code> - <p>Value to test. </p>
-</li>
+<dd><ul class="breatheparameterlist first last simple">
+<li><code class="docutils literal"><span class="pre">data_type</span></code>: Data type corresponding to the value of <em>value</em>. </li>
+<li><code class="docutils literal"><span class="pre">value</span></code>: Value to test. </li>
 </ul>
 </dd>
 </dl>
@@ -460,7 +471,7 @@
 
 <dl class="function">
 <dt id="_CPPv213harp_isfinited">
-<span id="harp_isfinite__double"></span><span class="target" id="libharpgroup__harp__general_1gab2573bc2856e63bf0f13c342c97fcc74"></span>int <code class="descname">harp_isfinite</code><span class="sig-paren">(</span>double <em>x</em><span class="sig-paren">)</span></dt>
+<span id="harp_isfinite__double"></span><span class="target" id="libharpgroup__harp__general_1gab2573bc2856e63bf0f13c342c97fcc74"></span>int <code class="descname">harp_isfinite</code><span class="sig-paren">(</span>double <em>x</em><span class="sig-paren">)</span><br /></dt>
 <dd><p>Find out whether a double value is a finite number (i.e. not NaN and not infinite). <dl class="docutils">
 <dt><strong>Return</strong></dt>
 <dd><ul class="simple">
@@ -469,9 +480,8 @@
 </ul>
 </dd>
 <dt><strong>Parameters</strong></dt>
-<dd><ul class="breatheparameterlist first last">
-<li><code class="first docutils literal"><span class="pre">x</span></code> - <p>A double value. </p>
-</li>
+<dd><ul class="breatheparameterlist first last simple">
+<li><code class="docutils literal"><span class="pre">x</span></code>: A double value. </li>
 </ul>
 </dd>
 </dl>
@@ -480,7 +490,7 @@
 
 <dl class="function">
 <dt id="_CPPv210harp_isnand">
-<span id="harp_isnan__double"></span><span class="target" id="libharpgroup__harp__general_1gabc115e3ba02afd21054b75ccb025a8a3"></span>int <code class="descname">harp_isnan</code><span class="sig-paren">(</span>double <em>x</em><span class="sig-paren">)</span></dt>
+<span id="harp_isnan__double"></span><span class="target" id="libharpgroup__harp__general_1gabc115e3ba02afd21054b75ccb025a8a3"></span>int <code class="descname">harp_isnan</code><span class="sig-paren">(</span>double <em>x</em><span class="sig-paren">)</span><br /></dt>
 <dd><p>Find out whether a double value equals NaN (Not a Number). <dl class="docutils">
 <dt><strong>Return</strong></dt>
 <dd><ul class="simple">
@@ -489,9 +499,8 @@
 </ul>
 </dd>
 <dt><strong>Parameters</strong></dt>
-<dd><ul class="breatheparameterlist first last">
-<li><code class="first docutils literal"><span class="pre">x</span></code> - <p>A double value. </p>
-</li>
+<dd><ul class="breatheparameterlist first last simple">
+<li><code class="docutils literal"><span class="pre">x</span></code>: A double value. </li>
 </ul>
 </dd>
 </dl>
@@ -500,7 +509,7 @@
 
 <dl class="function">
 <dt id="_CPPv28harp_nanv">
-<span id="harp_nan__void"></span><span class="target" id="libharpgroup__harp__general_1ga10caef8ce343d5b5bec3b8240441ef86"></span>double <code class="descname">harp_nan</code><span class="sig-paren">(</span>void<span class="sig-paren">)</span></dt>
+<span id="harp_nan__void"></span><span class="target" id="libharpgroup__harp__general_1ga10caef8ce343d5b5bec3b8240441ef86"></span>double <code class="descname">harp_nan</code><span class="sig-paren">(</span>void<span class="sig-paren">)</span><br /></dt>
 <dd><p>Retrieve a double value that respresents NaN (Not a Number). <dl class="docutils">
 <dt><strong>Return</strong></dt>
 <dd>The double value &#8216;NaN&#8217;. </dd>
@@ -510,7 +519,7 @@
 
 <dl class="function">
 <dt id="_CPPv210harp_isinfd">
-<span id="harp_isinf__double"></span><span class="target" id="libharpgroup__harp__general_1ga29b220390a28440d8f4f8e50afcdbd0a"></span>int <code class="descname">harp_isinf</code><span class="sig-paren">(</span>double <em>x</em><span class="sig-paren">)</span></dt>
+<span id="harp_isinf__double"></span><span class="target" id="libharpgroup__harp__general_1ga29b220390a28440d8f4f8e50afcdbd0a"></span>int <code class="descname">harp_isinf</code><span class="sig-paren">(</span>double <em>x</em><span class="sig-paren">)</span><br /></dt>
 <dd><p>Find out whether a double value equals inf (either positive or negative infinity). <dl class="docutils">
 <dt><strong>Return</strong></dt>
 <dd><ul class="simple">
@@ -519,9 +528,8 @@
 </ul>
 </dd>
 <dt><strong>Parameters</strong></dt>
-<dd><ul class="breatheparameterlist first last">
-<li><code class="first docutils literal"><span class="pre">x</span></code> - <p>A double value. </p>
-</li>
+<dd><ul class="breatheparameterlist first last simple">
+<li><code class="docutils literal"><span class="pre">x</span></code>: A double value. </li>
 </ul>
 </dd>
 </dl>
@@ -530,7 +538,7 @@
 
 <dl class="function">
 <dt id="_CPPv214harp_isplusinfd">
-<span id="harp_isplusinf__double"></span><span class="target" id="libharpgroup__harp__general_1gae3a1e45bedf7743577d367ba7edb9f27"></span>int <code class="descname">harp_isplusinf</code><span class="sig-paren">(</span>double <em>x</em><span class="sig-paren">)</span></dt>
+<span id="harp_isplusinf__double"></span><span class="target" id="libharpgroup__harp__general_1gae3a1e45bedf7743577d367ba7edb9f27"></span>int <code class="descname">harp_isplusinf</code><span class="sig-paren">(</span>double <em>x</em><span class="sig-paren">)</span><br /></dt>
 <dd><p>Find out whether a double value equals +inf (positive infinity). <dl class="docutils">
 <dt><strong>Return</strong></dt>
 <dd><ul class="simple">
@@ -539,9 +547,8 @@
 </ul>
 </dd>
 <dt><strong>Parameters</strong></dt>
-<dd><ul class="breatheparameterlist first last">
-<li><code class="first docutils literal"><span class="pre">x</span></code> - <p>A double value. </p>
-</li>
+<dd><ul class="breatheparameterlist first last simple">
+<li><code class="docutils literal"><span class="pre">x</span></code>: A double value. </li>
 </ul>
 </dd>
 </dl>
@@ -550,7 +557,7 @@
 
 <dl class="function">
 <dt id="_CPPv213harp_ismininfd">
-<span id="harp_ismininf__double"></span><span class="target" id="libharpgroup__harp__general_1gad3a45b9aefba353096685388531e7012"></span>int <code class="descname">harp_ismininf</code><span class="sig-paren">(</span>double <em>x</em><span class="sig-paren">)</span></dt>
+<span id="harp_ismininf__double"></span><span class="target" id="libharpgroup__harp__general_1gad3a45b9aefba353096685388531e7012"></span>int <code class="descname">harp_ismininf</code><span class="sig-paren">(</span>double <em>x</em><span class="sig-paren">)</span><br /></dt>
 <dd><p>Find out whether a double value equals -inf (negative infinity). <dl class="docutils">
 <dt><strong>Return</strong></dt>
 <dd><ul class="simple">
@@ -559,9 +566,8 @@
 </ul>
 </dd>
 <dt><strong>Parameters</strong></dt>
-<dd><ul class="breatheparameterlist first last">
-<li><code class="first docutils literal"><span class="pre">x</span></code> - <p>A double value. </p>
-</li>
+<dd><ul class="breatheparameterlist first last simple">
+<li><code class="docutils literal"><span class="pre">x</span></code>: A double value. </li>
 </ul>
 </dd>
 </dl>
@@ -570,7 +576,7 @@
 
 <dl class="function">
 <dt id="_CPPv212harp_plusinfv">
-<span id="harp_plusinf__void"></span><span class="target" id="libharpgroup__harp__general_1gadbfd3aa6ed1b7743899a67399971620f"></span>double <code class="descname">harp_plusinf</code><span class="sig-paren">(</span>void<span class="sig-paren">)</span></dt>
+<span id="harp_plusinf__void"></span><span class="target" id="libharpgroup__harp__general_1gadbfd3aa6ed1b7743899a67399971620f"></span>double <code class="descname">harp_plusinf</code><span class="sig-paren">(</span>void<span class="sig-paren">)</span><br /></dt>
 <dd><p>Retrieve a double value that respresents +inf (positive infinity). <dl class="docutils">
 <dt><strong>Return</strong></dt>
 <dd>The double value &#8216;+inf&#8217;. </dd>
@@ -580,7 +586,7 @@
 
 <dl class="function">
 <dt id="_CPPv211harp_mininfv">
-<span id="harp_mininf__void"></span><span class="target" id="libharpgroup__harp__general_1ga0d6fdf4326a386b00e7f68851b450581"></span>double <code class="descname">harp_mininf</code><span class="sig-paren">(</span>void<span class="sig-paren">)</span></dt>
+<span id="harp_mininf__void"></span><span class="target" id="libharpgroup__harp__general_1ga0d6fdf4326a386b00e7f68851b450581"></span>double <code class="descname">harp_mininf</code><span class="sig-paren">(</span>void<span class="sig-paren">)</span><br /></dt>
 <dd><p>Retrieve a double value that respresents -inf (negative infinity). <dl class="docutils">
 <dt><strong>Return</strong></dt>
 <dd>The double value &#8216;-inf&#8217;. </dd>
@@ -590,14 +596,12 @@
 
 <dl class="function">
 <dt id="_CPPv210harp_str647int64_tPc">
-<span id="harp_str64__int64_t.cP"></span><span class="target" id="libharpgroup__harp__general_1ga98bdd4f3fd3e7c913342fb4e781a375b"></span>void <code class="descname">harp_str64</code><span class="sig-paren">(</span>int64_t <em>a</em>, char *<em>s</em><span class="sig-paren">)</span></dt>
+<span id="harp_str64__int64_t.cP"></span><span class="target" id="libharpgroup__harp__general_1ga98bdd4f3fd3e7c913342fb4e781a375b"></span>void <code class="descname">harp_str64</code><span class="sig-paren">(</span>int64_t <em>a</em>, char *<em>s</em><span class="sig-paren">)</span><br /></dt>
 <dd><p>Write 64 bit signed integer to a string. The string <em>s</em> will be 0 terminated. <dl class="docutils">
 <dt><strong>Parameters</strong></dt>
-<dd><ul class="breatheparameterlist first last">
-<li><code class="first docutils literal"><span class="pre">a</span></code> - <p>A signed 64 bit integer value. </p>
-</li>
-<li><code class="first docutils literal"><span class="pre">s</span></code> - <p>A character buffer that is at least 21 bytes long. </p>
-</li>
+<dd><ul class="breatheparameterlist first last simple">
+<li><code class="docutils literal"><span class="pre">a</span></code>: A signed 64 bit integer value. </li>
+<li><code class="docutils literal"><span class="pre">s</span></code>: A character buffer that is at least 21 bytes long. </li>
 </ul>
 </dd>
 </dl>
@@ -606,14 +610,12 @@
 
 <dl class="function">
 <dt id="_CPPv211harp_str64u8uint64_tPc">
-<span id="harp_str64u__uint64_t.cP"></span><span class="target" id="libharpgroup__harp__general_1gac156193e67edb52e1f940780c351f47c"></span>void <code class="descname">harp_str64u</code><span class="sig-paren">(</span>uint64_t <em>a</em>, char *<em>s</em><span class="sig-paren">)</span></dt>
+<span id="harp_str64u__uint64_t.cP"></span><span class="target" id="libharpgroup__harp__general_1gac156193e67edb52e1f940780c351f47c"></span>void <code class="descname">harp_str64u</code><span class="sig-paren">(</span>uint64_t <em>a</em>, char *<em>s</em><span class="sig-paren">)</span><br /></dt>
 <dd><p>Write 64 bit unsigned integer to a string. The string <em>s</em> will be 0 terminated. <dl class="docutils">
 <dt><strong>Parameters</strong></dt>
-<dd><ul class="breatheparameterlist first last">
-<li><code class="first docutils literal"><span class="pre">a</span></code> - <p>An unsigned 64 bit integer value. </p>
-</li>
-<li><code class="first docutils literal"><span class="pre">s</span></code> - <p>A character buffer that is at least 21 bytes long. </p>
-</li>
+<dd><ul class="breatheparameterlist first last simple">
+<li><code class="docutils literal"><span class="pre">a</span></code>: An unsigned 64 bit integer value. </li>
+<li><code class="docutils literal"><span class="pre">s</span></code>: A character buffer that is at least 21 bytes long. </li>
 </ul>
 </dd>
 </dl>
@@ -622,7 +624,7 @@
 
 <dl class="function">
 <dt id="_CPPv229harp_set_coda_definition_pathPKc">
-<span id="harp_set_coda_definition_path__cCP"></span><span class="target" id="libharpgroup__harp__general_1gab1b7664358a26d101ff84cafbfe486db"></span>int <code class="descname">harp_set_coda_definition_path</code><span class="sig-paren">(</span><em class="property">const</em> char *<em>path</em><span class="sig-paren">)</span></dt>
+<span id="harp_set_coda_definition_path__cCP"></span><span class="target" id="libharpgroup__harp__general_1gab1b7664358a26d101ff84cafbfe486db"></span>int <code class="descname">harp_set_coda_definition_path</code><span class="sig-paren">(</span><em class="property">const</em> char *<em>path</em><span class="sig-paren">)</span><br /></dt>
 <dd><p>Set the search path for CODA product definition files. This function should be called before <a class="reference internal" href="#libharpgroup__harp__general_1gad1f344feb3bea74322283efca649a045"><span class="std std-ref">harp_init()</span></a> is called.</p>
 <p>The CODA C library is used by the HARP C library for import of products that do not use the HARP format. To access data in a product, the CODA C library requires a definition of the internal structure of the product file (unless the product is stored in a self-describing file format). This information is stored in CODA product definition (.codadef) files.</p>
 <p>The path should be a searchpath for CODA .codadef files similar like the PATH environment variable of your system. Path components should be separated by &#8216;;&#8217; on Windows and by &#8216;:&#8217; on other systems.</p>
@@ -643,9 +645,8 @@
 </ul>
 </dd>
 <dt><strong>Parameters</strong></dt>
-<dd><ul class="breatheparameterlist first last">
-<li><code class="first docutils literal"><span class="pre">path</span></code> - <p>Search path for .codadef files </p>
-</li>
+<dd><ul class="breatheparameterlist first last simple">
+<li><code class="docutils literal"><span class="pre">path</span></code>: Search path for .codadef files </li>
 </ul>
 </dd>
 </dl>
@@ -654,7 +655,7 @@
 
 <dl class="function">
 <dt id="_CPPv241harp_set_coda_definition_path_conditionalPKcPKcPKc">
-<span id="harp_set_coda_definition_path_conditional__cCP.cCP.cCP"></span><span class="target" id="libharpgroup__harp__general_1ga679243ffdd37971e1d8ff63d498df560"></span>int <code class="descname">harp_set_coda_definition_path_conditional</code><span class="sig-paren">(</span><em class="property">const</em> char *<em>file</em>, <em class="property">const</em> char *<em>searchpath</em>, <em class="property">const</em> char *<em>relative_location</em><span class="sig-paren">)</span></dt>
+<span id="harp_set_coda_definition_path_conditional__cCP.cCP.cCP"></span><span class="target" id="libharpgroup__harp__general_1ga679243ffdd37971e1d8ff63d498df560"></span>int <code class="descname">harp_set_coda_definition_path_conditional</code><span class="sig-paren">(</span><em class="property">const</em> char *<em>file</em>, <em class="property">const</em> char *<em>searchpath</em>, <em class="property">const</em> char *<em>relative_location</em><span class="sig-paren">)</span><br /></dt>
 <dd><p>Set the directory for CODA product definition files based on the location of another file. This function should be called before <a class="reference internal" href="#libharpgroup__harp__general_1gad1f344feb3bea74322283efca649a045"><span class="std std-ref">harp_init()</span></a> is called.</p>
 <p>The CODA C library is used by the HARP C library for import of products that do not use the HARP format. To access data in a product, the CODA C library requires a definition of the internal structure of the product file (unless the product is stored in a self-describing file format). This information is stored in CODA product definition (.codadef) files.</p>
 <p>This function will try to find the file with filename <em>file</em> in the provided searchpath <em>searchpath</em>. The first directory in the searchpath where the file <em>file</em> exists will be appended with the relative directory <em>relative_location</em> to determine the CODA product definition path. This path will be used as CODA definition path. If the file could not be found in the searchpath then the CODA definition path will not be set.</p>
@@ -675,13 +676,10 @@
 </ul>
 </dd>
 <dt><strong>Parameters</strong></dt>
-<dd><ul class="breatheparameterlist first last">
-<li><code class="first docutils literal"><span class="pre">file</span></code> - <p>Filename of the file to search for </p>
-</li>
-<li><code class="first docutils literal"><span class="pre">searchpath</span></code> - <p>Search path where to look for the file <em>file</em> (can be NULL) </p>
-</li>
-<li><code class="first docutils literal"><span class="pre">relative_location</span></code> - <p>Filepath relative to the directory from <em>searchpath</em> where <em>file</em> was found that should be used to determine the CODA definition path. </p>
-</li>
+<dd><ul class="breatheparameterlist first last simple">
+<li><code class="docutils literal"><span class="pre">file</span></code>: Filename of the file to search for </li>
+<li><code class="docutils literal"><span class="pre">searchpath</span></code>: Search path where to look for the file <em>file</em> (can be NULL) </li>
+<li><code class="docutils literal"><span class="pre">relative_location</span></code>: Filepath relative to the directory from <em>searchpath</em> where <em>file</em> was found that should be used to determine the CODA definition path. </li>
 </ul>
 </dd>
 </dl>
@@ -690,7 +688,7 @@
 
 <dl class="function">
 <dt id="_CPPv233harp_set_option_enable_aux_afgl86i">
-<span id="harp_set_option_enable_aux_afgl86__i"></span><span class="target" id="libharpgroup__harp__general_1ga38646e2cec16b6d94f143af90de664af"></span>int <code class="descname">harp_set_option_enable_aux_afgl86</code><span class="sig-paren">(</span>int <em>enable</em><span class="sig-paren">)</span></dt>
+<span id="harp_set_option_enable_aux_afgl86__i"></span><span class="target" id="libharpgroup__harp__general_1ga38646e2cec16b6d94f143af90de664af"></span>int <code class="descname">harp_set_option_enable_aux_afgl86</code><span class="sig-paren">(</span>int <em>enable</em><span class="sig-paren">)</span><br /></dt>
 <dd><p>Enable/Disable the use of AFGL86 climatology in variable conversions Enabling this option will allow the derived variable functions to create variables using the built-in AFGL86 profiles. If datetime, latitude, and altitude variables are available then altitude regridded versions of the following climatological quantities can be created:<ul class="simple">
 <li>pressure</li>
 <li>temperature</li>
@@ -711,11 +709,10 @@
 </dd>
 <dt><strong>Parameters</strong></dt>
 <dd><ul class="breatheparameterlist first last">
-<li><code class="first docutils literal"><span class="pre">enable</span></code> - <p><ul>
+<li><code class="docutils literal"><span class="pre">enable</span></code>: <ul>
 <li>0: Disable use of AFGL86. </li>
 <li>1: Enable use of AFGL86. </li>
 </ul>
-</p>
 </li>
 </ul>
 </dd>
@@ -727,7 +724,7 @@
 
 <dl class="function">
 <dt id="_CPPv233harp_get_option_enable_aux_afgl86v">
-<span id="harp_get_option_enable_aux_afgl86__void"></span><span class="target" id="libharpgroup__harp__general_1gadef7f0b01e01812bc2707d5ce186cb7f"></span>int <code class="descname">harp_get_option_enable_aux_afgl86</code><span class="sig-paren">(</span>void<span class="sig-paren">)</span></dt>
+<span id="harp_get_option_enable_aux_afgl86__void"></span><span class="target" id="libharpgroup__harp__general_1gadef7f0b01e01812bc2707d5ce186cb7f"></span>int <code class="descname">harp_get_option_enable_aux_afgl86</code><span class="sig-paren">(</span>void<span class="sig-paren">)</span><br /></dt>
 <dd><p>Retrieve the current setting for the usage of AFGL86 option. <dl class="docutils">
 <dt><strong>See</strong></dt>
 <dd><a class="reference internal" href="#libharpgroup__harp__general_1ga38646e2cec16b6d94f143af90de664af"><span class="std std-ref">harp_set_option_enable_aux_afgl86()</span></a> </dd>
@@ -743,7 +740,7 @@
 
 <dl class="function">
 <dt id="_CPPv234harp_set_option_enable_aux_usstd76i">
-<span id="harp_set_option_enable_aux_usstd76__i"></span><span class="target" id="libharpgroup__harp__general_1ga70782e2ade60c7f06549d379b523e203"></span>int <code class="descname">harp_set_option_enable_aux_usstd76</code><span class="sig-paren">(</span>int <em>enable</em><span class="sig-paren">)</span></dt>
+<span id="harp_set_option_enable_aux_usstd76__i"></span><span class="target" id="libharpgroup__harp__general_1ga70782e2ade60c7f06549d379b523e203"></span>int <code class="descname">harp_set_option_enable_aux_usstd76</code><span class="sig-paren">(</span>int <em>enable</em><span class="sig-paren">)</span><br /></dt>
 <dd><p>Enable/Disable the use of US Standard 76 climatology in variable conversions Enabling this option will allow the derived variable functions to create variables using the built-in US Standard 76 profiles. If an altitude variable is available then altitude regridded versions of the following climatological quantities can be created:<ul class="simple">
 <li>pressure</li>
 <li>temperature</li>
@@ -764,11 +761,10 @@
 </dd>
 <dt><strong>Parameters</strong></dt>
 <dd><ul class="breatheparameterlist first last">
-<li><code class="first docutils literal"><span class="pre">enable</span></code> - <p><ul>
+<li><code class="docutils literal"><span class="pre">enable</span></code>: <ul>
 <li>0: Disable use of US Standard 76. </li>
 <li>1: Enable use of US Standard 76. </li>
 </ul>
-</p>
 </li>
 </ul>
 </dd>
@@ -780,7 +776,7 @@
 
 <dl class="function">
 <dt id="_CPPv234harp_get_option_enable_aux_usstd76v">
-<span id="harp_get_option_enable_aux_usstd76__void"></span><span class="target" id="libharpgroup__harp__general_1ga7327c3e52a6e791c454966519f74ea10"></span>int <code class="descname">harp_get_option_enable_aux_usstd76</code><span class="sig-paren">(</span>void<span class="sig-paren">)</span></dt>
+<span id="harp_get_option_enable_aux_usstd76__void"></span><span class="target" id="libharpgroup__harp__general_1ga7327c3e52a6e791c454966519f74ea10"></span>int <code class="descname">harp_get_option_enable_aux_usstd76</code><span class="sig-paren">(</span>void<span class="sig-paren">)</span><br /></dt>
 <dd><p>Retrieve the current setting for the usage of US Standard 76 option. <dl class="docutils">
 <dt><strong>See</strong></dt>
 <dd><a class="reference internal" href="#libharpgroup__harp__general_1ga70782e2ade60c7f06549d379b523e203"><span class="std std-ref">harp_set_option_enable_aux_usstd76()</span></a> </dd>
@@ -796,7 +792,7 @@
 
 <dl class="function">
 <dt id="_CPPv29harp_initv">
-<span id="harp_init__void"></span><span class="target" id="libharpgroup__harp__general_1gad1f344feb3bea74322283efca649a045"></span>int <code class="descname">harp_init</code><span class="sig-paren">(</span>void<span class="sig-paren">)</span></dt>
+<span id="harp_init__void"></span><span class="target" id="libharpgroup__harp__general_1gad1f344feb3bea74322283efca649a045"></span>int <code class="descname">harp_init</code><span class="sig-paren">(</span>void<span class="sig-paren">)</span><br /></dt>
 <dd><p>Initializes the HARP C library. This function should be called before any other HARP C library function is called (except for <a class="reference internal" href="#libharpgroup__harp__general_1gab1b7664358a26d101ff84cafbfe486db"><span class="std std-ref">harp_set_coda_definition_path()</span></a>, <a class="reference internal" href="#libharpgroup__harp__general_1ga679243ffdd37971e1d8ff63d498df560"><span class="std std-ref">harp_set_coda_definition_path_conditional()</span></a>, and <a class="reference internal" href="libharp_error.html#libharpgroup__harp__error_1ga88c982481989852993829a34cd310b7d"><span class="std std-ref">harp_set_warning_handler()</span></a>).</p>
 <p>HARP may at some point after calling <a class="reference internal" href="#libharpgroup__harp__general_1gad1f344feb3bea74322283efca649a045"><span class="std std-ref">harp_init()</span></a> also initialize the underlying CODA C library that is used for ingestion of products that are not using the HARP format. The CODA C library may require access to .codadef files that describe the formats of certain product files. In order to tell CODA where these .codadef files are located you will have to either set the CODA_DEFINITION environment variable to the proper path, or set the path programmatically using the <a class="reference internal" href="#libharpgroup__harp__general_1gab1b7664358a26d101ff84cafbfe486db"><span class="std std-ref">harp_set_coda_definition_path()</span></a> or <a class="reference internal" href="#libharpgroup__harp__general_1ga679243ffdd37971e1d8ff63d498df560"><span class="std std-ref">harp_set_coda_definition_path_conditional()</span></a> function, before calling <a class="reference internal" href="#libharpgroup__harp__general_1gad1f344feb3bea74322283efca649a045"><span class="std std-ref">harp_init()</span></a> for the first time.</p>
 <p>If you use CODA functions directly in combination with HARP functions you should call coda_init() and coda_done() explictly yourself and not rely on HARP having performed the coda_init() for you.</p>
@@ -814,7 +810,7 @@
 
 <dl class="function">
 <dt id="_CPPv29harp_donev">
-<span id="harp_done__void"></span><span class="target" id="libharpgroup__harp__general_1ga450874cf522aa206ac0101a013b372c0"></span>void <code class="descname">harp_done</code><span class="sig-paren">(</span>void<span class="sig-paren">)</span></dt>
+<span id="harp_done__void"></span><span class="target" id="libharpgroup__harp__general_1ga450874cf522aa206ac0101a013b372c0"></span>void <code class="descname">harp_done</code><span class="sig-paren">(</span>void<span class="sig-paren">)</span><br /></dt>
 <dd><p>Finalizes the HARP C library. This function should be called to let the HARP C library free up any resources it has claimed since initialization.</p>
 <p>It is valid to perform multiple calls to <a class="reference internal" href="#libharpgroup__harp__general_1gad1f344feb3bea74322283efca649a045"><span class="std std-ref">harp_init()</span></a> after each other. Only the first call to <a class="reference internal" href="#libharpgroup__harp__general_1gad1f344feb3bea74322283efca649a045"><span class="std std-ref">harp_init()</span></a> will do the actual initialization and all following calls to <a class="reference internal" href="#libharpgroup__harp__general_1gad1f344feb3bea74322283efca649a045"><span class="std std-ref">harp_init()</span></a> will only increase an initialization counter. Each call to <a class="reference internal" href="#libharpgroup__harp__general_1gad1f344feb3bea74322283efca649a045"><span class="std std-ref">harp_init()</span></a> needs to be matched by a call to <a class="reference internal" href="#libharpgroup__harp__general_1ga450874cf522aa206ac0101a013b372c0"><span class="std std-ref">harp_done()</span></a> at clean-up time (i.e. the number of calls to <a class="reference internal" href="#libharpgroup__harp__general_1ga450874cf522aa206ac0101a013b372c0"><span class="std std-ref">harp_done()</span></a> needs to be equal to the number of calls to <a class="reference internal" href="#libharpgroup__harp__general_1gad1f344feb3bea74322283efca649a045"><span class="std std-ref">harp_init()</span></a>). Only the final <a class="reference internal" href="#libharpgroup__harp__general_1ga450874cf522aa206ac0101a013b372c0"><span class="std std-ref">harp_done()</span></a> call (when the initialization counter has reached 0) will perform the actual clean-up of the HARP C library.</p>
 <p>Calling a HARP function other than <a class="reference internal" href="#libharpgroup__harp__general_1gad1f344feb3bea74322283efca649a045"><span class="std std-ref">harp_init()</span></a> after the final <a class="reference internal" href="#libharpgroup__harp__general_1ga450874cf522aa206ac0101a013b372c0"><span class="std std-ref">harp_done()</span></a> call will result in undefined behavior. </p>
@@ -823,32 +819,32 @@
 </div>
 <dl class="type">
 <dt id="_CPPv217harp_scalar_union">
-<span id="harp_scalar_union"></span><span class="target" id="libharpunionharp__scalar__union"></span><em class="property">union </em><code class="descname">harp_scalar_union</code></dt>
-<dd><div class="breathe-sectiondef container">
+<span id="harp_scalar_union"></span><span class="target" id="libharpunionharp__scalar__union"></span><em class="property">union </em><code class="descname">harp_scalar_union</code><br /></dt>
+<dd><div class="breathe-sectiondef docutils container">
 <p class="breathe-sectiondef-title rubric">Public Members</p>
 <dl class="member">
 <dt id="_CPPv29int8_data">
-<span id="int8_data__int8_t"></span><span class="target" id="libharpunionharp__scalar__union_1a4a9d2eff66135fc91fe8ed0c9f3bba3f"></span>int8_t <code class="descname">int8_data</code></dt>
+<span id="int8_data__int8_t"></span><span class="target" id="libharpunionharp__scalar__union_1a4a9d2eff66135fc91fe8ed0c9f3bba3f"></span>int8_t <code class="descname">int8_data</code><br /></dt>
 <dd></dd></dl>
 
 <dl class="member">
 <dt id="_CPPv210int16_data">
-<span id="int16_data__int16_t"></span><span class="target" id="libharpunionharp__scalar__union_1a1590290ec326241b74bbb86c676645a7"></span>int16_t <code class="descname">int16_data</code></dt>
+<span id="int16_data__int16_t"></span><span class="target" id="libharpunionharp__scalar__union_1a1590290ec326241b74bbb86c676645a7"></span>int16_t <code class="descname">int16_data</code><br /></dt>
 <dd></dd></dl>
 
 <dl class="member">
 <dt id="_CPPv210int32_data">
-<span id="int32_data__int32_t"></span><span class="target" id="libharpunionharp__scalar__union_1ae5e457267f7135c20fae36ab117fcad9"></span>int32_t <code class="descname">int32_data</code></dt>
+<span id="int32_data__int32_t"></span><span class="target" id="libharpunionharp__scalar__union_1ae5e457267f7135c20fae36ab117fcad9"></span>int32_t <code class="descname">int32_data</code><br /></dt>
 <dd></dd></dl>
 
 <dl class="member">
 <dt id="_CPPv210float_data">
-<span id="float_data__float"></span><span class="target" id="libharpunionharp__scalar__union_1ac7ebd021cb43cb1a0fcd0efaeaac1ac6"></span>float <code class="descname">float_data</code></dt>
+<span id="float_data__float"></span><span class="target" id="libharpunionharp__scalar__union_1ac7ebd021cb43cb1a0fcd0efaeaac1ac6"></span>float <code class="descname">float_data</code><br /></dt>
 <dd></dd></dl>
 
 <dl class="member">
 <dt id="_CPPv211double_data">
-<span id="double_data__double"></span><span class="target" id="libharpunionharp__scalar__union_1a84caf21d09365fd3888e0b65027fafc5"></span>double <code class="descname">double_data</code></dt>
+<span id="double_data__double"></span><span class="target" id="libharpunionharp__scalar__union_1a84caf21d09365fd3888e0b65027fafc5"></span>double <code class="descname">double_data</code><br /></dt>
 <dd></dd></dl>
 
 </div>
@@ -856,42 +852,42 @@
 
 <dl class="type">
 <dt id="_CPPv216harp_array_union">
-<span id="harp_array_union"></span><span class="target" id="libharpunionharp__array__union"></span><em class="property">union </em><code class="descname">harp_array_union</code></dt>
-<dd><div class="breathe-sectiondef container">
+<span id="harp_array_union"></span><span class="target" id="libharpunionharp__array__union"></span><em class="property">union </em><code class="descname">harp_array_union</code><br /></dt>
+<dd><div class="breathe-sectiondef docutils container">
 <p class="breathe-sectiondef-title rubric">Public Members</p>
 <dl class="member">
 <dt id="_CPPv29int8_data">
-<span id="int8_data__int8_tP"></span><span class="target" id="libharpunionharp__array__union_1a1dbbdb8f868b8f374d30f1df311d1952"></span>int8_t *<code class="descname">int8_data</code></dt>
+<span id="int8_data__int8_tP"></span><span class="target" id="libharpunionharp__array__union_1a1dbbdb8f868b8f374d30f1df311d1952"></span>int8_t *<code class="descname">int8_data</code><br /></dt>
 <dd></dd></dl>
 
 <dl class="member">
 <dt id="_CPPv210int16_data">
-<span id="int16_data__int16_tP"></span><span class="target" id="libharpunionharp__array__union_1a5e881b66f87b9f481a1d1cf0140f933a"></span>int16_t *<code class="descname">int16_data</code></dt>
+<span id="int16_data__int16_tP"></span><span class="target" id="libharpunionharp__array__union_1a5e881b66f87b9f481a1d1cf0140f933a"></span>int16_t *<code class="descname">int16_data</code><br /></dt>
 <dd></dd></dl>
 
 <dl class="member">
 <dt id="_CPPv210int32_data">
-<span id="int32_data__int32_tP"></span><span class="target" id="libharpunionharp__array__union_1a104a9d196af01f0286935be7e4dcfc0c"></span>int32_t *<code class="descname">int32_data</code></dt>
+<span id="int32_data__int32_tP"></span><span class="target" id="libharpunionharp__array__union_1a104a9d196af01f0286935be7e4dcfc0c"></span>int32_t *<code class="descname">int32_data</code><br /></dt>
 <dd></dd></dl>
 
 <dl class="member">
 <dt id="_CPPv210float_data">
-<span id="float_data__floatP"></span><span class="target" id="libharpunionharp__array__union_1a4927bb7a0ea0f2dc44ab0fbe6caa54f1"></span>float *<code class="descname">float_data</code></dt>
+<span id="float_data__floatP"></span><span class="target" id="libharpunionharp__array__union_1a4927bb7a0ea0f2dc44ab0fbe6caa54f1"></span>float *<code class="descname">float_data</code><br /></dt>
 <dd></dd></dl>
 
 <dl class="member">
 <dt id="_CPPv211double_data">
-<span id="double_data__doubleP"></span><span class="target" id="libharpunionharp__array__union_1acb6b371c87f9636e98cdf390d6620fde"></span>double *<code class="descname">double_data</code></dt>
+<span id="double_data__doubleP"></span><span class="target" id="libharpunionharp__array__union_1acb6b371c87f9636e98cdf390d6620fde"></span>double *<code class="descname">double_data</code><br /></dt>
 <dd></dd></dl>
 
 <dl class="member">
 <dt id="_CPPv211string_data">
-<span id="string_data__cPP"></span><span class="target" id="libharpunionharp__array__union_1a50127147d54ae038835226b75231d187"></span>char **<code class="descname">string_data</code></dt>
+<span id="string_data__cPP"></span><span class="target" id="libharpunionharp__array__union_1a50127147d54ae038835226b75231d187"></span>char **<code class="descname">string_data</code><br /></dt>
 <dd></dd></dl>
 
 <dl class="member">
 <dt id="_CPPv23ptr">
-<span id="ptr__voidP"></span><span class="target" id="libharpunionharp__array__union_1add9af9569af79ec26dd741fb226b38ba"></span>void *<code class="descname">ptr</code></dt>
+<span id="ptr__voidP"></span><span class="target" id="libharpunionharp__array__union_1add9af9569af79ec26dd741fb226b38ba"></span>void *<code class="descname">ptr</code><br /></dt>
 <dd></dd></dl>
 
 </div>
@@ -903,15 +899,18 @@
 
 
            </div>
+           <div class="articleComments">
+            
+           </div>
           </div>
           <footer>
   
     <div class="rst-footer-buttons" role="navigation" aria-label="footer navigation">
       
-        <a href="libharp_product.html" class="btn btn-neutral float-right" title="Product" accesskey="n">Next <span class="fa fa-arrow-circle-right"></span></a>
+        <a href="libharp_product.html" class="btn btn-neutral float-right" title="Product" accesskey="n" rel="next">Next <span class="fa fa-arrow-circle-right"></span></a>
       
       
-        <a href="libharp_error.html" class="btn btn-neutral" title="Error" accesskey="p"><span class="fa fa-arrow-circle-left"></span> Previous</a>
+        <a href="libharp_error.html" class="btn btn-neutral" title="Error" accesskey="p" rel="prev"><span class="fa fa-arrow-circle-left"></span> Previous</a>
       
     </div>
   
@@ -944,13 +943,14 @@
             VERSION:'0.5b',
             COLLAPSE_INDEX:false,
             FILE_SUFFIX:'.html',
-            HAS_SOURCE:  false
+            HAS_SOURCE:  false,
+            SOURCELINK_SUFFIX: '.txt'
         };
     </script>
       <script type="text/javascript" src="_static/jquery.js"></script>
       <script type="text/javascript" src="_static/underscore.js"></script>
       <script type="text/javascript" src="_static/doctools.js"></script>
-      <script type="text/javascript" src="https://cdn.mathjax.org/mathjax/latest/MathJax.js?config=TeX-AMS-MML_HTMLorMML"></script>
+      <script type="text/javascript" src="https://cdnjs.cloudflare.com/ajax/libs/mathjax/2.7.0/MathJax.js?config=TeX-AMS-MML_HTMLorMML"></script>
 
   
 

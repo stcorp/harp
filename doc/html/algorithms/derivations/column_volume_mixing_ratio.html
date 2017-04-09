@@ -13,6 +13,8 @@
 
   
   
+  
+  
 
   
 
@@ -32,6 +34,8 @@
   
 
   
+        <link rel="index" title="Index"
+              href="../../genindex.html"/>
     <link rel="top" title="HARP 0.5b documentation" href="../../index.html"/>
         <link rel="up" title="Algorithms" href="../index.html"/>
         <link rel="next" title="datetime derivations" href="datetime.html"/>
@@ -44,6 +48,7 @@
 
 <body class="wy-body-for-nav" role="document">
 
+   
   <div class="wy-grid-for-nav">
 
     
@@ -77,7 +82,10 @@
           
             
             
-                <ul class="current">
+              
+            
+            
+              <ul class="current">
 <li class="toctree-l1"><a class="reference internal" href="../../install.html">Installation</a></li>
 <li class="toctree-l1"><a class="reference internal" href="../../dataformats.html">Data formats</a></li>
 <li class="toctree-l1 current"><a class="reference internal" href="../index.html">Algorithms</a><ul class="current">
@@ -149,8 +157,10 @@
 
       
       <nav class="wy-nav-top" role="navigation" aria-label="top navigation">
-        <i data-toggle="wy-nav-top" class="fa fa-bars"></i>
-        <a href="../../index.html">HARP</a>
+        
+          <i data-toggle="wy-nav-top" class="fa fa-bars"></i>
+          <a href="../../index.html">HARP</a>
+        
       </nav>
 
 
@@ -159,23 +169,40 @@
         <div class="rst-content">
           
 
- 
+
+
+
+
+
+
+
+
+
+
+
 
 
 
 <div role="navigation" aria-label="breadcrumbs navigation">
+
   <ul class="wy-breadcrumbs">
-    <li><a href="../../index.html">Docs</a> &raquo;</li>
-      
+    
+      <li><a href="../../index.html">Docs</a> &raquo;</li>
+        
           <li><a href="../index.html">Algorithms</a> &raquo;</li>
-      
-    <li>column volume mixing ratio derivations</li>
+        
+      <li>column volume mixing ratio derivations</li>
+    
+    
       <li class="wy-breadcrumbs-aside">
         
-          
+            
         
       </li>
+    
   </ul>
+
+  
   <hr/>
 </div>
           <div role="main" class="document" itemscope="itemscope" itemtype="http://schema.org/Article">
@@ -208,7 +235,7 @@
 <tr class="row-odd"><td><span class="math">\(M_{x}\)</span></td>
 <td>molar mass for air component x</td>
 <td><span class="math">\(\frac{g}{mol}\)</span></td>
-<td>&nbsp;</td>
+<td>&#160;</td>
 </tr>
 <tr class="row-even"><td><span class="math">\(q_{x}\)</span></td>
 <td>column mass mixing ratio of quantity x
@@ -248,12 +275,12 @@ or no dimensions at all.</p>
 <tr class="row-even"><td><span class="math">\(M_{dry\_air}\)</span></td>
 <td>molar mass for dry air</td>
 <td><span class="math">\(\frac{g}{mol}\)</span></td>
-<td>&nbsp;</td>
+<td>&#160;</td>
 </tr>
 <tr class="row-odd"><td><span class="math">\(M_{x}\)</span></td>
 <td>molar mass for air component x</td>
 <td><span class="math">\(\frac{g}{mol}\)</span></td>
-<td>&nbsp;</td>
+<td>&#160;</td>
 </tr>
 <tr class="row-even"><td><span class="math">\(\bar{q}_{x}\)</span></td>
 <td>column mass mixing ratio of quantity x
@@ -293,12 +320,12 @@ or no dimensions at all.</p>
 <tr class="row-even"><td><span class="math">\(M_{dry\_air}\)</span></td>
 <td>molar mass for dry air</td>
 <td><span class="math">\(\frac{g}{mol}\)</span></td>
-<td>&nbsp;</td>
+<td>&#160;</td>
 </tr>
 <tr class="row-odd"><td><span class="math">\(M_{x}\)</span></td>
 <td>molar mass for air component x</td>
 <td><span class="math">\(\frac{g}{mol}\)</span></td>
-<td>&nbsp;</td>
+<td>&#160;</td>
 </tr>
 <tr class="row-even"><td><span class="math">\(\bar{q}_{x}\)</span></td>
 <td>stratospheric column mass mixing ratio
@@ -338,12 +365,12 @@ or no dimensions at all.</p>
 <tr class="row-even"><td><span class="math">\(M_{dry\_air}\)</span></td>
 <td>molar mass for dry air</td>
 <td><span class="math">\(\frac{g}{mol}\)</span></td>
-<td>&nbsp;</td>
+<td>&#160;</td>
 </tr>
 <tr class="row-odd"><td><span class="math">\(M_{x}\)</span></td>
 <td>molar mass for air component x</td>
 <td><span class="math">\(\frac{g}{mol}\)</span></td>
-<td>&nbsp;</td>
+<td>&#160;</td>
 </tr>
 <tr class="row-even"><td><span class="math">\(\bar{q}_{x}\)</span></td>
 <td>tropospheric column mass mixing ratio
@@ -369,15 +396,18 @@ or no dimensions at all.</p>
 
 
            </div>
+           <div class="articleComments">
+            
+           </div>
           </div>
           <footer>
   
     <div class="rst-footer-buttons" role="navigation" aria-label="footer navigation">
       
-        <a href="datetime.html" class="btn btn-neutral float-right" title="datetime derivations" accesskey="n">Next <span class="fa fa-arrow-circle-right"></span></a>
+        <a href="datetime.html" class="btn btn-neutral float-right" title="datetime derivations" accesskey="n" rel="next">Next <span class="fa fa-arrow-circle-right"></span></a>
       
       
-        <a href="column_number_density.html" class="btn btn-neutral" title="column number density derivations" accesskey="p"><span class="fa fa-arrow-circle-left"></span> Previous</a>
+        <a href="column_number_density.html" class="btn btn-neutral" title="column number density derivations" accesskey="p" rel="prev"><span class="fa fa-arrow-circle-left"></span> Previous</a>
       
     </div>
   
@@ -410,13 +440,14 @@ or no dimensions at all.</p>
             VERSION:'0.5b',
             COLLAPSE_INDEX:false,
             FILE_SUFFIX:'.html',
-            HAS_SOURCE:  false
+            HAS_SOURCE:  false,
+            SOURCELINK_SUFFIX: '.txt'
         };
     </script>
       <script type="text/javascript" src="../../_static/jquery.js"></script>
       <script type="text/javascript" src="../../_static/underscore.js"></script>
       <script type="text/javascript" src="../../_static/doctools.js"></script>
-      <script type="text/javascript" src="https://cdn.mathjax.org/mathjax/latest/MathJax.js?config=TeX-AMS-MML_HTMLorMML"></script>
+      <script type="text/javascript" src="https://cdnjs.cloudflare.com/ajax/libs/mathjax/2.7.0/MathJax.js?config=TeX-AMS-MML_HTMLorMML"></script>
 
   
 

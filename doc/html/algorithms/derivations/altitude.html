@@ -13,6 +13,8 @@
 
   
   
+  
+  
 
   
 
@@ -32,6 +34,8 @@
   
 
   
+        <link rel="index" title="Index"
+              href="../../genindex.html"/>
     <link rel="top" title="HARP 0.5b documentation" href="../../index.html"/>
         <link rel="up" title="Algorithms" href="../index.html"/>
         <link rel="next" title="altitude bounds derivations" href="altitude_bounds.html"/>
@@ -44,6 +48,7 @@
 
 <body class="wy-body-for-nav" role="document">
 
+   
   <div class="wy-grid-for-nav">
 
     
@@ -77,7 +82,10 @@
           
             
             
-                <ul class="current">
+              
+            
+            
+              <ul class="current">
 <li class="toctree-l1"><a class="reference internal" href="../../install.html">Installation</a></li>
 <li class="toctree-l1"><a class="reference internal" href="../../dataformats.html">Data formats</a></li>
 <li class="toctree-l1 current"><a class="reference internal" href="../index.html">Algorithms</a><ul class="current">
@@ -149,8 +157,10 @@
 
       
       <nav class="wy-nav-top" role="navigation" aria-label="top navigation">
-        <i data-toggle="wy-nav-top" class="fa fa-bars"></i>
-        <a href="../../index.html">HARP</a>
+        
+          <i data-toggle="wy-nav-top" class="fa fa-bars"></i>
+          <a href="../../index.html">HARP</a>
+        
       </nav>
 
 
@@ -159,23 +169,40 @@
         <div class="rst-content">
           
 
- 
+
+
+
+
+
+
+
+
+
+
+
 
 
 
 <div role="navigation" aria-label="breadcrumbs navigation">
+
   <ul class="wy-breadcrumbs">
-    <li><a href="../../index.html">Docs</a> &raquo;</li>
-      
+    
+      <li><a href="../../index.html">Docs</a> &raquo;</li>
+        
           <li><a href="../index.html">Algorithms</a> &raquo;</li>
-      
-    <li>altitude derivations</li>
+        
+      <li>altitude derivations</li>
+    
+    
       <li class="wy-breadcrumbs-aside">
         
-          
+            
         
       </li>
+    
   </ul>
+
+  
   <hr/>
 </div>
           <div role="main" class="document" itemscope="itemscope" itemtype="http://schema.org/Article">
@@ -203,18 +230,18 @@
 <tr class="row-even"><td><span class="math">\(g_{0}\)</span></td>
 <td>mean earth gravity</td>
 <td><span class="math">\(\frac{m}{s^2}\)</span></td>
-<td>&nbsp;</td>
+<td>&#160;</td>
 </tr>
 <tr class="row-odd"><td><span class="math">\(g_{wgs84}\)</span></td>
 <td>gravity at WGS84 ellipsoid</td>
 <td><span class="math">\(\frac{m}{s^2}\)</span></td>
-<td>&nbsp;</td>
+<td>&#160;</td>
 </tr>
 <tr class="row-even"><td><span class="math">\(R_{wgs84}\)</span></td>
 <td>local earth curvature radius
 at WGS84 ellipsoid</td>
 <td><span class="math">\(m\)</span></td>
-<td>&nbsp;</td>
+<td>&#160;</td>
 </tr>
 <tr class="row-odd"><td><span class="math">\(z\)</span></td>
 <td>altitude</td>
@@ -326,38 +353,38 @@ at WGS84 ellipsoid</td>
 <tr class="row-even"><td><span class="math">\(a\)</span></td>
 <td>WGS84 semi-major axis</td>
 <td><span class="math">\(m\)</span></td>
-<td>&nbsp;</td>
+<td>&#160;</td>
 </tr>
 <tr class="row-odd"><td><span class="math">\(b\)</span></td>
 <td>WGS84 semi-minor axis</td>
 <td><span class="math">\(m\)</span></td>
-<td>&nbsp;</td>
+<td>&#160;</td>
 </tr>
 <tr class="row-even"><td><span class="math">\(f\)</span></td>
 <td>WGS84 flattening</td>
 <td><span class="math">\(m\)</span></td>
-<td>&nbsp;</td>
+<td>&#160;</td>
 </tr>
 <tr class="row-odd"><td><span class="math">\(g\)</span></td>
 <td>gravity</td>
 <td><span class="math">\(\frac{m}{s^2}\)</span></td>
-<td>&nbsp;</td>
+<td>&#160;</td>
 </tr>
 <tr class="row-even"><td><span class="math">\(g_{0}\)</span></td>
 <td>mean earth gravity</td>
 <td><span class="math">\(\frac{m}{s^2}\)</span></td>
-<td>&nbsp;</td>
+<td>&#160;</td>
 </tr>
 <tr class="row-odd"><td><span class="math">\(g_{surf}\)</span></td>
 <td>gravity at surface</td>
 <td><span class="math">\(\frac{m}{s^2}\)</span></td>
-<td>&nbsp;</td>
+<td>&#160;</td>
 </tr>
 <tr class="row-even"><td><span class="math">\(GM\)</span></td>
 <td>WGS84 earth&#8217;s gravitational
 constant</td>
 <td><span class="math">\(\frac{m^3}{s^2}\)</span></td>
-<td>&nbsp;</td>
+<td>&#160;</td>
 </tr>
 <tr class="row-odd"><td><span class="math">\(M_{air}(i)\)</span></td>
 <td>molar mass of total air</td>
@@ -377,7 +404,7 @@ constant</td>
 <tr class="row-even"><td><span class="math">\(R\)</span></td>
 <td>universal gas constant</td>
 <td><span class="math">\(\frac{kg m^2}{K mol s^2}\)</span></td>
-<td>&nbsp;</td>
+<td>&#160;</td>
 </tr>
 <tr class="row-odd"><td><span class="math">\(T(i)\)</span></td>
 <td>temperature</td>
@@ -402,7 +429,7 @@ constant</td>
 <tr class="row-odd"><td><span class="math">\(\omega\)</span></td>
 <td>WGS84 earth angular velocity</td>
 <td><span class="math">\(rad/s\)</span></td>
-<td>&nbsp;</td>
+<td>&#160;</td>
 </tr>
 </tbody>
 </table>
@@ -442,18 +469,18 @@ and <span class="math">\(p^{B}(1,2)\)</span> (which is generally not equal to <s
 <tr class="row-even"><td><span class="math">\(g_{0}\)</span></td>
 <td>mean earth gravity</td>
 <td><span class="math">\(\frac{m}{s^2}\)</span></td>
-<td>&nbsp;</td>
+<td>&#160;</td>
 </tr>
 <tr class="row-odd"><td><span class="math">\(g_{wgs84}\)</span></td>
 <td>gravity at WGS84 ellipsoid</td>
 <td><span class="math">\(\frac{m}{s^2}\)</span></td>
-<td>&nbsp;</td>
+<td>&#160;</td>
 </tr>
 <tr class="row-even"><td><span class="math">\(R_{wgs84}\)</span></td>
 <td>local earth curvature radius
 at WGS84 ellipsoid</td>
 <td><span class="math">\(m\)</span></td>
-<td>&nbsp;</td>
+<td>&#160;</td>
 </tr>
 <tr class="row-odd"><td><span class="math">\(z_{surf}\)</span></td>
 <td>surface altitude
@@ -490,15 +517,18 @@ or no dimensions at all.</p>
 
 
            </div>
+           <div class="articleComments">
+            
+           </div>
           </div>
           <footer>
   
     <div class="rst-footer-buttons" role="navigation" aria-label="footer navigation">
       
-        <a href="altitude_bounds.html" class="btn btn-neutral float-right" title="altitude bounds derivations" accesskey="n">Next <span class="fa fa-arrow-circle-right"></span></a>
+        <a href="altitude_bounds.html" class="btn btn-neutral float-right" title="altitude bounds derivations" accesskey="n" rel="next">Next <span class="fa fa-arrow-circle-right"></span></a>
       
       
-        <a href="aerosol_optical_depth.html" class="btn btn-neutral" title="aerosol optical depth derivations" accesskey="p"><span class="fa fa-arrow-circle-left"></span> Previous</a>
+        <a href="aerosol_optical_depth.html" class="btn btn-neutral" title="aerosol optical depth derivations" accesskey="p" rel="prev"><span class="fa fa-arrow-circle-left"></span> Previous</a>
       
     </div>
   
@@ -531,13 +561,14 @@ or no dimensions at all.</p>
             VERSION:'0.5b',
             COLLAPSE_INDEX:false,
             FILE_SUFFIX:'.html',
-            HAS_SOURCE:  false
+            HAS_SOURCE:  false,
+            SOURCELINK_SUFFIX: '.txt'
         };
     </script>
       <script type="text/javascript" src="../../_static/jquery.js"></script>
       <script type="text/javascript" src="../../_static/underscore.js"></script>
       <script type="text/javascript" src="../../_static/doctools.js"></script>
-      <script type="text/javascript" src="https://cdn.mathjax.org/mathjax/latest/MathJax.js?config=TeX-AMS-MML_HTMLorMML"></script>
+      <script type="text/javascript" src="https://cdnjs.cloudflare.com/ajax/libs/mathjax/2.7.0/MathJax.js?config=TeX-AMS-MML_HTMLorMML"></script>
 
   
 
