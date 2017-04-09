@@ -4451,8 +4451,6 @@ static int add_radiance_conversions(void)
     dimension_type[1] = harp_dimension_spectral;
 
     /*** radiance ***/
-
-    dimension_type[1] = harp_dimension_spectral;
     for (i = 1; i < 3; i++)
     {
         if (add_uncertainty_conversions("radiance", HARP_UNIT_RADIANCE, i, dimension_type) != 0)
@@ -4462,8 +4460,6 @@ static int add_radiance_conversions(void)
     }
 
     /*** reflectance ***/
-
-    dimension_type[1] = harp_dimension_spectral;
     for (i = 1; i < 3; i++)
     {
         if (add_uncertainty_conversions("reflectance", HARP_UNIT_DIMENSIONLESS, i, dimension_type) != 0)
@@ -4473,8 +4469,6 @@ static int add_radiance_conversions(void)
     }
 
     /*** solar irradiance ***/
-
-    dimension_type[1] = harp_dimension_spectral;
     for (i = 1; i < 3; i++)
     {
         if (add_uncertainty_conversions("solar_irradiance", HARP_UNIT_IRRADIANCE, i, dimension_type) != 0)
@@ -4484,8 +4478,6 @@ static int add_radiance_conversions(void)
     }
 
     /*** sun normalized radiance ***/
-
-    dimension_type[1] = harp_dimension_spectral;
     for (i = 1; i < 3; i++)
     {
         if (add_uncertainty_conversions("sun_normalized_radiance", HARP_UNIT_DIMENSIONLESS, i, dimension_type) != 0)
@@ -5528,11 +5520,6 @@ static int init_conversions(void)
     }
 
     if (add_angle_conversions() != 0)
-    {
-        return -1;
-    }
-
-    if (add_radiance_conversions() != 0)
     {
         return -1;
     }
