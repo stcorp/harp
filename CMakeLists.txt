@@ -259,6 +259,7 @@ set(LIBHARP_SOURCES
   libharp/harp-ingest-aeolus_l1b.c
   libharp/harp-ingest-aeolus_l2a.c
   libharp/harp-ingest-aeolus_l2b.c
+  libharp/harp-ingest-calipso_l2.c
   libharp/harp-ingest-cci_l2_aerosol.c
   libharp/harp-ingest-cci_l2_ghg.c
   libharp/harp-ingest-cci_l2_o3_lp.c

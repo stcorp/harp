@@ -44,6 +44,7 @@ static harp_ingestion_module_register *module_register = NULL;
 int harp_ingestion_module_aeolus_l1b_init(void);
 int harp_ingestion_module_aeolus_l2a_init(void);
 int harp_ingestion_module_aeolus_l2b_init(void);
+int harp_ingestion_module_calipso_l2_init(void);
 int harp_ingestion_module_cci_l2_aerosol_init(void);
 int harp_ingestion_module_cci_l2_ghg_init(void);
 int harp_ingestion_module_cci_l2_o3_lp_init(void);
@@ -98,6 +99,7 @@ static module_init_func_t *module_init_func[] = {
     harp_ingestion_module_aeolus_l1b_init,
     harp_ingestion_module_aeolus_l2a_init,
     harp_ingestion_module_aeolus_l2b_init,
+    harp_ingestion_module_calipso_l2_init,
     harp_ingestion_module_cci_l2_aerosol_init,
     harp_ingestion_module_cci_l2_ghg_init,
     harp_ingestion_module_cci_l2_o3_lp_init,

@@ -1,0 +1,534 @@
+
+
+<!DOCTYPE html>
+<!--[if IE 8]><html class="no-js lt-ie9" lang="en" > <![endif]-->
+<!--[if gt IE 8]><!--> <html class="no-js" lang="en" > <!--<![endif]-->
+<head>
+  <meta charset="utf-8">
+  
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  
+  <title>CALIPSO_L2_CAL_LID_CPro &mdash; HARP 0.5b documentation</title>
+  
+
+  
+  
+  
+  
+
+  
+
+  
+  
+    
+
+  
+
+  
+  
+    <link rel="stylesheet" href="../_static/css/theme.css" type="text/css" />
+  
+
+  
+    <link rel="stylesheet" href="../_static/custom.css" type="text/css" />
+  
+
+  
+        <link rel="index" title="Index"
+              href="../genindex.html"/>
+    <link rel="top" title="HARP 0.5b documentation" href="../index.html"/> 
+
+  
+  <script src="../_static/js/modernizr.min.js"></script>
+
+</head>
+
+<body class="wy-body-for-nav" role="document">
+
+   
+  <div class="wy-grid-for-nav">
+
+    
+    <nav data-toggle="wy-nav-shift" class="wy-nav-side">
+      <div class="wy-side-scroll">
+        <div class="wy-side-nav-search">
+          
+
+          
+            <a href="../index.html" class="icon icon-home"> HARP
+          
+
+          
+          </a>
+
+          
+            
+            
+              <div class="version">
+                0.5
+              </div>
+            
+          
+
+          
+
+          
+        </div>
+
+        <div class="wy-menu wy-menu-vertical" data-spy="affix" role="navigation" aria-label="main navigation">
+          
+            
+            
+              
+            
+            
+              <ul>
+<li class="toctree-l1"><a class="reference internal" href="../install.html">Installation</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../dataformats.html">Data formats</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../algorithms/index.html">Algorithms</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../operations.html">Operations</a></li>
+<li class="toctree-l1"><a class="reference internal" href="index.html">Ingestion definitions</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../libharp.html">C library</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../python.html">Python interface</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../tools.html">Command line tools</a></li>
+</ul>
+
+            
+          
+        </div>
+      </div>
+    </nav>
+
+    <section data-toggle="wy-nav-shift" class="wy-nav-content-wrap">
+
+      
+      <nav class="wy-nav-top" role="navigation" aria-label="top navigation">
+        
+          <i data-toggle="wy-nav-top" class="fa fa-bars"></i>
+          <a href="../index.html">HARP</a>
+        
+      </nav>
+
+
+      
+      <div class="wy-nav-content">
+        <div class="rst-content">
+          
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+<div role="navigation" aria-label="breadcrumbs navigation">
+
+  <ul class="wy-breadcrumbs">
+    
+      <li><a href="../index.html">Docs</a> &raquo;</li>
+        
+      <li>CALIPSO_L2_CAL_LID_CPro</li>
+    
+    
+      <li class="wy-breadcrumbs-aside">
+        
+            
+        
+      </li>
+    
+  </ul>
+
+  
+  <hr/>
+</div>
+          <div role="main" class="document" itemscope="itemscope" itemtype="http://schema.org/Article">
+           <div itemprop="articleBody">
+            
+  <div class="section" id="calipso-l2-cal-lid-cpro">
+<h1>CALIPSO_L2_CAL_LID_CPro</h1>
+<div class="section" id="variables">
+<h2>Variables</h2>
+<p>The table below lists the variables that are present in the HARP product that results from an ingestion of <code class="docutils literal"><span class="pre">CALIPSO_L2_CAL_LID_CPro</span></code> data.</p>
+<table border="1" class="colwidths-given docutils">
+<colgroup>
+<col width="25%" />
+<col width="5%" />
+<col width="15%" />
+<col width="15%" />
+<col width="40%" />
+</colgroup>
+<thead valign="bottom">
+<tr class="row-odd"><th class="head">field name</th>
+<th class="head">type</th>
+<th class="head">dimensions</th>
+<th class="head">unit</th>
+<th class="head">description</th>
+</tr>
+</thead>
+<tbody valign="top">
+<tr class="row-even"><td><strong>datetime</strong></td>
+<td>double</td>
+<td>{<em>time</em>}</td>
+<td>seconds since 2000-01-01</td>
+<td>time during midpoint of the measurement</td>
+</tr>
+<tr class="row-odd"><td><strong>latitude</strong></td>
+<td>double</td>
+<td>{<em>time</em>}</td>
+<td>degree_north</td>
+<td>latitude of the ground pixel center</td>
+</tr>
+<tr class="row-even"><td><strong>longitude</strong></td>
+<td>double</td>
+<td>{<em>time</em>}</td>
+<td>degree_east</td>
+<td>longitude of the ground pixel center</td>
+</tr>
+<tr class="row-odd"><td><strong>tropopause_altitude</strong></td>
+<td>double</td>
+<td>{<em>time</em>}</td>
+<td>km</td>
+<td>tropopause altitude</td>
+</tr>
+<tr class="row-even"><td><strong>tropospheric_aerosol_optical_depth</strong></td>
+<td>double</td>
+<td>{<em>time</em>}</td>
+<td>&#160;</td>
+<td>tropospheric aerosol optical depth</td>
+</tr>
+<tr class="row-odd"><td><strong>tropospheric_aerosol_optical_depth_uncertainty</strong></td>
+<td>double</td>
+<td>{<em>time</em>}</td>
+<td>&#160;</td>
+<td>tropospheric aerosol optical depth uncertainty</td>
+</tr>
+<tr class="row-even"><td><strong>stratospheric_aerosol_optical_depth</strong></td>
+<td>double</td>
+<td>{<em>time</em>}</td>
+<td>&#160;</td>
+<td>stratospheric aerosol optical depth</td>
+</tr>
+<tr class="row-odd"><td><strong>stratospheric_aerosol_optical_depth_uncertainty</strong></td>
+<td>double</td>
+<td>{<em>time</em>}</td>
+<td>&#160;</td>
+<td>stratospheric aerosol optical depth uncertainty</td>
+</tr>
+<tr class="row-even"><td><strong>cloud_optical_depth</strong></td>
+<td>double</td>
+<td>{<em>time</em>}</td>
+<td>&#160;</td>
+<td>cloud optical depth</td>
+</tr>
+<tr class="row-odd"><td><strong>cloud_optical_depth_uncertainty</strong></td>
+<td>double</td>
+<td>{<em>time</em>}</td>
+<td>&#160;</td>
+<td>cloud optical depth uncertainty</td>
+</tr>
+<tr class="row-even"><td><strong>altitude</strong></td>
+<td>double</td>
+<td>{<em>vertical</em>}</td>
+<td>km</td>
+<td>altitude</td>
+</tr>
+<tr class="row-odd"><td><strong>pressure</strong></td>
+<td>double</td>
+<td>{<em>time</em>, <em>vertical</em>}</td>
+<td>hPa</td>
+<td>pressure</td>
+</tr>
+<tr class="row-even"><td><strong>temperature</strong></td>
+<td>double</td>
+<td>{<em>time</em>, <em>vertical</em>}</td>
+<td>K</td>
+<td>temperature</td>
+</tr>
+<tr class="row-odd"><td><strong>aerosol_extinction_coefficient</strong></td>
+<td>double</td>
+<td>{<em>time</em>, <em>vertical</em>}</td>
+<td>km^-1</td>
+<td>aerosol_extinction_coefficient</td>
+</tr>
+<tr class="row-even"><td><strong>aerosol_extinction_coefficient_uncertainty</strong></td>
+<td>double</td>
+<td>{<em>time</em>, <em>vertical</em>}</td>
+<td>km^-1</td>
+<td>aerosol_extinction_coefficient_uncertainty</td>
+</tr>
+<tr class="row-odd"><td><strong>backscatter_coefficient</strong></td>
+<td>double</td>
+<td>{<em>time</em>, <em>vertical</em>}</td>
+<td>km^-1</td>
+<td>backscatter_coefficient</td>
+</tr>
+<tr class="row-even"><td><strong>backscatter_coefficient_uncertainty</strong></td>
+<td>double</td>
+<td>{<em>time</em>, <em>vertical</em>}</td>
+<td>km^-1</td>
+<td>backscatter_coefficient_uncertainty</td>
+</tr>
+<tr class="row-odd"><td><strong>index</strong></td>
+<td>int32</td>
+<td>{<em>time</em>}</td>
+<td>&#160;</td>
+<td>zero-based index of the sample within the source product</td>
+</tr>
+</tbody>
+</table>
+</div>
+<div class="section" id="ingestion-options">
+<h2>Ingestion options</h2>
+<p>The table below lists the available ingestion options for <code class="docutils literal"><span class="pre">CALIPSO_L2_CAL_LID_CPro</span></code> products.</p>
+<table border="1" class="colwidths-given docutils">
+<colgroup>
+<col width="15%" />
+<col width="25%" />
+<col width="60%" />
+</colgroup>
+<thead valign="bottom">
+<tr class="row-odd"><th class="head">option name</th>
+<th class="head">legal values</th>
+<th class="head">description</th>
+</tr>
+</thead>
+<tbody valign="top">
+<tr class="row-even"><td>wavelength</td>
+<td>532, 1064</td>
+<td>the wavelength whose measurements are ingested; option values are &#8216;532&#8217; and &#8216;1064&#8217;</td>
+</tr>
+</tbody>
+</table>
+</div>
+<div class="section" id="mapping-description">
+<h2>Mapping description</h2>
+<p>The table below details where and how each variable was retrieved from the input product.</p>
+<table border="1" class="docutils">
+<colgroup>
+<col width="39%" />
+<col width="10%" />
+<col width="51%" />
+</colgroup>
+<thead valign="bottom">
+<tr class="row-odd"><th class="head">field name</th>
+<th class="head" colspan="2">mapping description</th>
+</tr>
+</thead>
+<tbody valign="top">
+<tr class="row-even"><td><strong>datetime</strong></td>
+<td><em>path</em></td>
+<td><strong>/Profile_Time[]</strong></td>
+</tr>
+<tr class="row-odd"><td><strong>latitude</strong></td>
+<td><em>path</em></td>
+<td><strong>/Latitude[]</strong></td>
+</tr>
+<tr class="row-even"><td><strong>longitude</strong></td>
+<td><em>path</em></td>
+<td><strong>/Longitude[]</strong></td>
+</tr>
+<tr class="row-odd"><td><strong>tropopause_altitude</strong></td>
+<td><em>path</em></td>
+<td><strong>/Tropopause_Height[]</strong></td>
+</tr>
+<tr class="row-even"><td rowspan="4"><strong>tropospheric_aerosol_optical_depth</strong></td>
+<td><em>condition</em></td>
+<td>wavelength=532</td>
+</tr>
+<tr class="row-odd"><td><em>path</em></td>
+<td><strong>/Column_Optical_Depth_Tropospheric_Aerosols_532[]</strong></td>
+</tr>
+<tr class="row-even"><td><em>condition</em></td>
+<td>wavelength=1064</td>
+</tr>
+<tr class="row-odd"><td><em>path</em></td>
+<td><strong>/Column_Optical_Depth_Tropospheric_Aerosols_1064[]</strong></td>
+</tr>
+<tr class="row-even"><td rowspan="4"><strong>tropospheric_aerosol_optical_depth_uncertainty</strong></td>
+<td><em>condition</em></td>
+<td>wavelength=532</td>
+</tr>
+<tr class="row-odd"><td><em>path</em></td>
+<td><strong>/Column_Optical_Depth_Tropospheric_Aerosols_Uncertainty_532[]</strong></td>
+</tr>
+<tr class="row-even"><td><em>condition</em></td>
+<td>wavelength=1064</td>
+</tr>
+<tr class="row-odd"><td><em>path</em></td>
+<td><strong>/Column_Optical_Depth_Tropospheric_Aerosols_Uncertainty_1064[]</strong></td>
+</tr>
+<tr class="row-even"><td rowspan="4"><strong>stratospheric_aerosol_optical_depth</strong></td>
+<td><em>condition</em></td>
+<td>wavelength=532</td>
+</tr>
+<tr class="row-odd"><td><em>path</em></td>
+<td><strong>/Column_Optical_Depth_Stratospheric_Aerosols_532[]</strong></td>
+</tr>
+<tr class="row-even"><td><em>condition</em></td>
+<td>wavelength=1064</td>
+</tr>
+<tr class="row-odd"><td><em>path</em></td>
+<td><strong>/Column_Optical_Depth_Stratospheric_Aerosols_1064[]</strong></td>
+</tr>
+<tr class="row-even"><td rowspan="4"><strong>stratospheric_aerosol_optical_depth_uncertainty</strong></td>
+<td><em>condition</em></td>
+<td>wavelength=532</td>
+</tr>
+<tr class="row-odd"><td><em>path</em></td>
+<td><strong>/Column_Optical_Depth_Stratospheric_Aerosols_Uncertainty_532[]</strong></td>
+</tr>
+<tr class="row-even"><td><em>condition</em></td>
+<td>wavelength=1064</td>
+</tr>
+<tr class="row-odd"><td><em>path</em></td>
+<td><strong>/Column_Optical_Depth_Stratospheric_Aerosols_Uncertainty_1064[]</strong></td>
+</tr>
+<tr class="row-even"><td><strong>cloud_optical_depth</strong></td>
+<td><em>path</em></td>
+<td><strong>/Column_Optical_Depth_Cloud_532[]</strong></td>
+</tr>
+<tr class="row-odd"><td><strong>cloud_optical_depth_uncertainty</strong></td>
+<td><em>path</em></td>
+<td><strong>/Column_Optical_Depth_Cloud_Uncertainty_532[]</strong></td>
+</tr>
+<tr class="row-even"><td><strong>altitude</strong></td>
+<td><em>path</em></td>
+<td><strong>/metadata/Lidar_Data_Altitudes[]</strong></td>
+</tr>
+<tr class="row-odd"><td><strong>pressure</strong></td>
+<td><em>path</em></td>
+<td><strong>/Pressure[,]</strong></td>
+</tr>
+<tr class="row-even"><td><strong>temperature</strong></td>
+<td><em>path</em></td>
+<td><strong>/Temperature[,]</strong></td>
+</tr>
+<tr class="row-odd"><td rowspan="4"><strong>aerosol_extinction_coefficient</strong></td>
+<td><em>condition</em></td>
+<td>wavelength=532</td>
+</tr>
+<tr class="row-even"><td><em>path</em></td>
+<td><strong>/Extinction_Coefficient_532[,]</strong></td>
+</tr>
+<tr class="row-odd"><td><em>condition</em></td>
+<td>wavelength=1064</td>
+</tr>
+<tr class="row-even"><td><em>path</em></td>
+<td><strong>/Extinction_Coefficient_1064[,]</strong></td>
+</tr>
+<tr class="row-odd"><td rowspan="4"><strong>aerosol_extinction_coefficient_uncertainty</strong></td>
+<td><em>condition</em></td>
+<td>wavelength=532</td>
+</tr>
+<tr class="row-even"><td><em>path</em></td>
+<td><strong>/Extinction_Coefficient_Uncertainty_532[,]</strong></td>
+</tr>
+<tr class="row-odd"><td><em>condition</em></td>
+<td>wavelength=1064</td>
+</tr>
+<tr class="row-even"><td><em>path</em></td>
+<td><strong>/Extinction_Coefficient_Uncertainty_1064[,]</strong></td>
+</tr>
+<tr class="row-odd"><td rowspan="4"><strong>backscatter_coefficient</strong></td>
+<td><em>condition</em></td>
+<td>wavelength=532</td>
+</tr>
+<tr class="row-even"><td><em>path</em></td>
+<td><strong>/Total_Backscatter_Coefficient_532[,]</strong></td>
+</tr>
+<tr class="row-odd"><td><em>condition</em></td>
+<td>wavelength=1064</td>
+</tr>
+<tr class="row-even"><td><em>path</em></td>
+<td><strong>/Backscatter_Coefficient_1064[,]</strong></td>
+</tr>
+<tr class="row-odd"><td rowspan="4"><strong>backscatter_coefficient_uncertainty</strong></td>
+<td><em>condition</em></td>
+<td>wavelength=532</td>
+</tr>
+<tr class="row-even"><td><em>path</em></td>
+<td><strong>/Total_Backscatter_Coefficient_Uncertainty_532[,]</strong></td>
+</tr>
+<tr class="row-odd"><td><em>condition</em></td>
+<td>wavelength=1064</td>
+</tr>
+<tr class="row-even"><td><em>path</em></td>
+<td><strong>/Backscatter_Coefficient_Uncertainty_1064[,]</strong></td>
+</tr>
+</tbody>
+</table>
+</div>
+</div>
+
+
+           </div>
+           <div class="articleComments">
+            
+           </div>
+          </div>
+          <footer>
+  
+
+  <hr/>
+
+  <div role="contentinfo">
+    <p>
+        &copy; Copyright 2015-2017 S&amp;T, The Netherlands.
+
+    </p>
+  </div> 
+
+</footer>
+
+        </div>
+      </div>
+
+    </section>
+
+  </div>
+  
+
+
+  
+
+    <script type="text/javascript">
+        var DOCUMENTATION_OPTIONS = {
+            URL_ROOT:'../',
+            VERSION:'0.5b',
+            COLLAPSE_INDEX:false,
+            FILE_SUFFIX:'.html',
+            HAS_SOURCE:  false,
+            SOURCELINK_SUFFIX: '.txt'
+        };
+    </script>
+      <script type="text/javascript" src="../_static/jquery.js"></script>
+      <script type="text/javascript" src="../_static/underscore.js"></script>
+      <script type="text/javascript" src="../_static/doctools.js"></script>
+      <script type="text/javascript" src="https://cdnjs.cloudflare.com/ajax/libs/mathjax/2.7.0/MathJax.js?config=TeX-AMS-MML_HTMLorMML"></script>
+
+  
+
+  
+  
+    <script type="text/javascript" src="../_static/js/theme.js"></script>
+  
+
+  
+  
+  <script type="text/javascript">
+      jQuery(function () {
+          SphinxRtdTheme.StickyNav.enable();
+      });
+  </script>
+   
+
+</body>
+</html>
