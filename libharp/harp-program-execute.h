@@ -39,7 +39,7 @@
 #define OPERATION_FILTER_POINT_MISSING_LON "point filter expected variable longitude"
 #define OPERATION_FILTER_POINT_MISSING_LAT "point filter expected variable latitude"
 #define OPERATION_FILTER_POINT_WRONG_DIMENSION_FORMAT "point filter expected lat/long of dimension %s"
-#define OPERATION_FILTER_AREA_MISSING_LON_BOUNDS "area filter expectded variable longitude_bounds"
+#define OPERATION_FILTER_AREA_MISSING_LON_BOUNDS "area filter expected variable longitude_bounds"
 #define OPERATION_FILTER_AREA_MISSING_LAT_BOUNDS "area filter expected variable latitude_bounds"
 #define OPERATION_FILTER_AREA_WRONG_DIMENSION_FORMAT "area filter expected lat/lon-bounds of dimensions %s"
 #define OPERATION_FILTER_COLLOCATION_MISSING_INDEX "collocation filter expected either collocation index or index variable of dimension {time}"
