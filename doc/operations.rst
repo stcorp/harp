@@ -48,17 +48,17 @@ Function call
 Supported functions:
 
     ``area_mask_covers_area(area-mask-file)``
-       Exclude measurements for which no area from the area
-       mask file covers the measurement area completely.
+        Exclude measurements for which no area from the area
+        mask file covers the measurement area completely.
 
     ``area_mask_covers_point(area-mask-file)``
         Exclude measurements for which no area from the area
         mask file contains the measurement location.
 
     ``area_mask_intersects_area(area-mask-file, minimum-overlap-percentage)``
-       Exclude measurements for which no area from the area
-       mask file overlaps at least the specified percentage of
-       the measurement area.
+        Exclude measurements for which no area from the area
+        mask file overlaps at least the specified percentage of
+        the measurement area.
 
     ``collocate_left(collocation-result-file)``
         Apply the specified collocation result file as an index
@@ -69,55 +69,55 @@ Supported functions:
         filter assuming the product is part of dataset B.
 
     ``derive(variable {dimension-type, ...} [unit])``
-       Derive the specified variable from other variables found
-       in the product. The ``--list-derivations`` option of
-       harpconvert, harpdump, and harpfilter can be used to list
-       available variable conversions.
-       The algorithms behind all the conversions are described
-       in the :doc:`Algorithms <algorithms/index>` section of the
-       documentation.
+        Derive the specified variable from other variables found
+        in the product. The ``--list-derivations`` option of
+        harpconvert, harpdump, and harpfilter can be used to list
+        available variable conversions.
+        The algorithms behind all the conversions are described
+        in the :doc:`Algorithms <algorithms/index>` section of the
+        documentation.
 
     ``derive_smoothed_column(variable {dimension-type, ...} [unit], axis-variable unit, collocation-result-file, a|b, dataset-dir)``
-       Derive the given intergrated column value by first deriving
-       a partial column profile variant of the variable and then
-       smoothing/integrating this partial column profile using the
-       column avaraging kernel (and a-priori, if available) from a
-       collocated dataset. The third parameter indicates which dataset
-       contains the avaraging kernel.
-       Before smoothing the partial column profile is regridded to
-       the grid of the column averaging kernel using the given
-       axis-variable (see also ``regrid()``).
+        Derive the given intergrated column value by first deriving
+        a partial column profile variant of the variable and then
+        smoothing/integrating this partial column profile using the
+        column avaraging kernel (and a-priori, if available) from a
+        collocated dataset. The third parameter indicates which dataset
+        contains the avaraging kernel.
+        Before smoothing the partial column profile is regridded to
+        the grid of the column averaging kernel using the given
+        axis-variable (see also ``regrid()``).
 
-       Example:
+        Example:
 
-           ``derive_smoothed_column(O3_column_number_density {time} [molec/cm2], altitude [km], "collocation-result.csv", b, "./correlative_data/")``
+            ``derive_smoothed_column(O3_column_number_density {time} [molec/cm2], altitude [km], "collocation-result.csv", b, "./correlative_data/")``
 
     ``exclude(variable, ...)``
-       Mark the specified variable(s) for exclusion from the
-       ingested product. All variables marked for exclusion
-       will be excluded from the ingested product, all other
-       variables will be kept.
+        Mark the specified variable(s) for exclusion from the
+        ingested product. All variables marked for exclusion
+        will be excluded from the ingested product, all other
+        variables will be kept.
 
     ``flatten(dimension)``
-       Flatten a product for a certain dimension by collapsing the
-       given dimension into the time dimension. The time dimension
-       will thus grow by a factor equal to the length of the given
-       dimension and none of the variables in the product will
-       depend on the given dimension anymore. Variables that depend
-       more than once on the given dimension will be removed. The
-       index and collocation_index variables will be removed if the
-       length of the flattened dimension did not equal 1.
-       Independent dimensions cannot be flattened.
-       Example:
+        Flatten a product for a certain dimension by collapsing the
+        given dimension into the time dimension. The time dimension
+        will thus grow by a factor equal to the length of the given
+        dimension and none of the variables in the product will
+        depend on the given dimension anymore. Variables that depend
+        more than once on the given dimension will be removed. The
+        index and collocation_index variables will be removed if the
+        length of the flattened dimension did not equal 1.
+        Independent dimensions cannot be flattened.
+        Example:
 
-           ``flatten(latitude);flatten(longitude)``
-           (turn a 2D lat/lon grid into a a series of individual points)
+            ``flatten(latitude);flatten(longitude)``
+            (turn a 2D lat/lon grid into a a series of individual points)
 
     ``keep(variable, ...)``
-       Mark the specified variable(s) for inclusion in the
-       ingested product. All variables marked for inclusion
-       will be kept in the ingested product, all other
-       variables will be excluded.
+        Mark the specified variable(s) for inclusion in the
+        ingested product. All variables marked for inclusion
+        will be kept in the ingested product, all other
+        variables will be excluded.
 
     ``longitude_range(minimum [unit], maximum [unit])``
         Exclude measurements of which the longitude of the
