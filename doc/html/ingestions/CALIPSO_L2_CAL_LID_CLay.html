@@ -174,11 +174,23 @@
 </tr>
 </thead>
 <tbody valign="top">
-<tr class="row-even"><td><strong>datetime</strong></td>
+<tr class="row-even"><td><strong>datetime_start</strong></td>
+<td>double</td>
+<td>{<em>time</em>}</td>
+<td>seconds since 2000-01-01</td>
+<td>time at the start of the measurement</td>
+</tr>
+<tr class="row-odd"><td><strong>datetime</strong></td>
 <td>double</td>
 <td>{<em>time</em>}</td>
 <td>seconds since 2000-01-01</td>
 <td>time during midpoint of the measurement</td>
+</tr>
+<tr class="row-even"><td><strong>datetime_stop</strong></td>
+<td>double</td>
+<td>{<em>time</em>}</td>
+<td>seconds since 2000-01-01</td>
+<td>time at the end of the measurement</td>
 </tr>
 <tr class="row-odd"><td><strong>latitude</strong></td>
 <td>double</td>
@@ -192,61 +204,103 @@
 <td>degree_east</td>
 <td>longitude of the ground pixel center</td>
 </tr>
-<tr class="row-odd"><td><strong>solar_zenith_angle</strong></td>
-<td>double</td>
-<td>{<em>time</em>}</td>
-<td>degree</td>
-<td>solar zenith angle</td>
-</tr>
-<tr class="row-even"><td><strong>solar_azimuth_angle</strong></td>
-<td>double</td>
-<td>{<em>time</em>}</td>
-<td>degree</td>
-<td>solar azimuth angle</td>
-</tr>
 <tr class="row-odd"><td><strong>tropopause_altitude</strong></td>
 <td>double</td>
 <td>{<em>time</em>}</td>
 <td>km</td>
 <td>tropopause altitude</td>
 </tr>
-<tr class="row-even"><td><strong>tropospheric_aerosol_optical_depth</strong></td>
+<tr class="row-even"><td><strong>solar_zenith_angle</strong></td>
+<td>double</td>
+<td>{<em>time</em>}</td>
+<td>degree</td>
+<td>solar zenith angle</td>
+</tr>
+<tr class="row-odd"><td><strong>solar_azimuth_angle</strong></td>
+<td>double</td>
+<td>{<em>time</em>}</td>
+<td>degree</td>
+<td>solar azimuth angle</td>
+</tr>
+<tr class="row-even"><td><strong>viewing_elevation_angle</strong></td>
+<td>double</td>
+<td>{<em>time</em>}</td>
+<td>degree</td>
+<td>viewing elevation angle</td>
+</tr>
+<tr class="row-odd"><td><strong>scattering_angle</strong></td>
+<td>double</td>
+<td>{<em>time</em>}</td>
+<td>degree</td>
+<td>scattering angle</td>
+</tr>
+<tr class="row-even"><td><strong>altitude</strong></td>
+<td>double</td>
+<td>{<em>time</em>, <em>vertical</em>}</td>
+<td>km</td>
+<td>altitude of the middle of the layer</td>
+</tr>
+<tr class="row-odd"><td><strong>altitude_bounds</strong></td>
+<td>double</td>
+<td>{<em>time</em>, <em>vertical</em>, 2}</td>
+<td>km</td>
+<td>altitudes at the base and the top of the layer</td>
+</tr>
+<tr class="row-even"><td><strong>pressure</strong></td>
+<td>double</td>
+<td>{<em>time</em>, <em>vertical</em>}</td>
+<td>hPa</td>
+<td>pressure at the middle of the layer</td>
+</tr>
+<tr class="row-odd"><td><strong>pressure_bounds</strong></td>
+<td>double</td>
+<td>{<em>time</em>, <em>vertical</em>, 2}</td>
+<td>hPa</td>
+<td>pressures at the base and the top of the layer</td>
+</tr>
+<tr class="row-even"><td><strong>temperature</strong></td>
+<td>double</td>
+<td>{<em>time</em>, <em>vertical</em>}</td>
+<td>K</td>
+<td>temperature at the middle of the layer</td>
+</tr>
+<tr class="row-odd"><td><strong>tropospheric_aerosol_optical_depth</strong></td>
 <td>double</td>
 <td>{<em>time</em>}</td>
 <td>&#160;</td>
 <td>tropospheric aerosol optical depth</td>
 </tr>
-<tr class="row-odd"><td><strong>tropospheric_aerosol_optical_depth_uncertainty</strong></td>
+<tr class="row-even"><td><strong>tropospheric_aerosol_optical_depth_uncertainty</strong></td>
 <td>double</td>
 <td>{<em>time</em>}</td>
 <td>&#160;</td>
 <td>tropospheric aerosol optical depth uncertainty</td>
 </tr>
-<tr class="row-even"><td><strong>stratospheric_aerosol_optical_depth</strong></td>
+<tr class="row-odd"><td><strong>stratospheric_aerosol_optical_depth</strong></td>
 <td>double</td>
 <td>{<em>time</em>}</td>
 <td>&#160;</td>
 <td>stratospheric aerosol optical depth</td>
 </tr>
-<tr class="row-odd"><td><strong>stratospheric_aerosol_optical_depth_uncertainty</strong></td>
+<tr class="row-even"><td><strong>stratospheric_aerosol_optical_depth_uncertainty</strong></td>
 <td>double</td>
 <td>{<em>time</em>}</td>
 <td>&#160;</td>
 <td>stratospheric aerosol optical depth uncertainty</td>
 </tr>
-<tr class="row-even"><td><strong>cloud_optical_depth</strong></td>
+<tr class="row-odd"><td><strong>cloud_optical_depth</strong></td>
 <td>double</td>
 <td>{<em>time</em>}</td>
 <td>&#160;</td>
 <td>cloud optical depth</td>
 </tr>
-<tr class="row-odd"><td><strong>cloud_optical_depth_uncertainty</strong></td>
+<tr class="row-even"><td><strong>cloud_optical_depth_uncertainty</strong></td>
 <td>double</td>
 <td>{<em>time</em>}</td>
 <td>&#160;</td>
 <td>cloud optical depth uncertainty</td>
 </tr>
-<tr class="row-even"><td><strong>index</strong></td>
+<tr class="row-odd"><td><strong>index</strong></td>
 <td>int32</td>
 <td>{<em>time</em>}</td>
 <td>&#160;</td>
@@ -283,9 +337,9 @@
 <p>The table below details where and how each variable was retrieved from the input product.</p>
 <table border="1" class="docutils">
 <colgroup>
-<col width="39%" />
-<col width="10%" />
-<col width="51%" />
+<col width="33%" />
+<col width="9%" />
+<col width="58%" />
 </colgroup>
 <thead valign="bottom">
 <tr class="row-odd"><th class="head">field name</th>
@@ -293,29 +347,80 @@
 </tr>
 </thead>
 <tbody valign="top">
+<tr class="row-even"><td rowspan="2"><strong>datetime_start</strong></td>
+<td><em>path</em></td>
+<td><strong>/Profile_Time[,0]</strong></td>
+</tr>
+<tr class="row-odd"><td><em>description</em></td>
+<td>time at the start of the measurement</td>
+</tr>
 <tr class="row-even"><td><strong>datetime</strong></td>
 <td><em>path</em></td>
-<td><strong>/Profile_Time[]</strong></td>
+<td><strong>/Profile_Time[,N/2]</strong></td>
+</tr>
+<tr class="row-odd"><td rowspan="2"><strong>datetime_stop</strong></td>
+<td><em>path</em></td>
+<td><strong>/Profile_Time[,N-1]</strong></td>
+</tr>
+<tr class="row-even"><td><em>description</em></td>
+<td>time at the end of the measurement</td>
 </tr>
 <tr class="row-odd"><td><strong>latitude</strong></td>
 <td><em>path</em></td>
-<td><strong>/Latitude[]</strong></td>
+<td><strong>/Latitude[,N/2]</strong></td>
 </tr>
 <tr class="row-even"><td><strong>longitude</strong></td>
 <td><em>path</em></td>
-<td><strong>/Longitude[]</strong></td>
-</tr>
-<tr class="row-odd"><td><strong>solar_zenith_angle</strong></td>
-<td><em>path</em></td>
-<td><strong>/Solar_Zenith_Angle[]</strong></td>
-</tr>
-<tr class="row-even"><td><strong>solar_azimuth_angle</strong></td>
-<td><em>path</em></td>
-<td><strong>/Solar_Azimuth_Angle[]</strong></td>
+<td><strong>/Longitude[,N/2]</strong></td>
 </tr>
 <tr class="row-odd"><td><strong>tropopause_altitude</strong></td>
 <td><em>path</em></td>
 <td><strong>/Tropopause_Height[]</strong></td>
+</tr>
+<tr class="row-even"><td><strong>solar_zenith_angle</strong></td>
+<td><em>path</em></td>
+<td><strong>/Solar_Zenith_Angle[]</strong></td>
+</tr>
+<tr class="row-odd"><td><strong>solar_azimuth_angle</strong></td>
+<td><em>path</em></td>
+<td><strong>/Solar_Azimuth_Angle[]</strong></td>
+</tr>
+<tr class="row-even"><td><strong>viewing_elevation_angle</strong></td>
+<td><em>path</em></td>
+<td><strong>/Off_Nadir_Angle[]</strong></td>
+</tr>
+<tr class="row-odd"><td><strong>scattering_angle</strong></td>
+<td><em>path</em></td>
+<td><strong>/Scattering_Angle[]</strong></td>
+</tr>
+<tr class="row-even"><td rowspan="2"><strong>altitude</strong></td>
+<td><em>path</em></td>
+<td><strong>/Layer_Base_Altitude[,], /Layer_Top_Altitude[,]</strong></td>
+</tr>
+<tr class="row-odd"><td><em>description</em></td>
+<td>The altitude is calculated as the mid-point between the base and top altitudes of the layer</td>
+</tr>
+<tr class="row-even"><td><strong>altitude_bounds</strong></td>
+<td><em>path</em></td>
+<td><strong>/Layer_Base_Altitude[,], /Layer_Top_Altitude[,]</strong></td>
+</tr>
+<tr class="row-odd"><td rowspan="2"><strong>pressure</strong></td>
+<td><em>path</em></td>
+<td><strong>/Midlayer_Pressure[,]</strong></td>
+</tr>
+<tr class="row-even"><td><em>description</em></td>
+<td>pressure at the middle of the layer</td>
+</tr>
+<tr class="row-odd"><td><strong>pressure_bounds</strong></td>
+<td><em>path</em></td>
+<td><strong>/Layer_Base_Pressure[,], /Layer_Top_Pressure[,]</strong></td>
+</tr>
+<tr class="row-even"><td rowspan="2"><strong>temperature</strong></td>
+<td><em>path</em></td>
+<td><strong>/Midlayer_Temperature[,]</strong></td>
+</tr>
+<tr class="row-odd"><td><em>description</em></td>
+<td>temperature at the middle of the layer</td>
 </tr>
 <tr class="row-even"><td rowspan="4"><strong>tropospheric_aerosol_optical_depth</strong></td>
 <td><em>condition</em></td>

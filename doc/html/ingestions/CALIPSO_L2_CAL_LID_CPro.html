@@ -174,11 +174,23 @@
 </tr>
 </thead>
 <tbody valign="top">
-<tr class="row-even"><td><strong>datetime</strong></td>
+<tr class="row-even"><td><strong>datetime_start</strong></td>
+<td>double</td>
+<td>{<em>time</em>}</td>
+<td>seconds since 2000-01-01</td>
+<td>time at the start of the measurement</td>
+</tr>
+<tr class="row-odd"><td><strong>datetime</strong></td>
 <td>double</td>
 <td>{<em>time</em>}</td>
 <td>seconds since 2000-01-01</td>
 <td>time during midpoint of the measurement</td>
+</tr>
+<tr class="row-even"><td><strong>datetime_stop</strong></td>
+<td>double</td>
+<td>{<em>time</em>}</td>
+<td>seconds since 2000-01-01</td>
+<td>time at the end of the measurement</td>
 </tr>
 <tr class="row-odd"><td><strong>latitude</strong></td>
 <td>double</td>
@@ -198,42 +210,6 @@
 <td>km</td>
 <td>tropopause altitude</td>
 </tr>
-<tr class="row-even"><td><strong>tropospheric_aerosol_optical_depth</strong></td>
-<td>double</td>
-<td>{<em>time</em>}</td>
-<td>&#160;</td>
-<td>tropospheric aerosol optical depth</td>
-</tr>
-<tr class="row-odd"><td><strong>tropospheric_aerosol_optical_depth_uncertainty</strong></td>
-<td>double</td>
-<td>{<em>time</em>}</td>
-<td>&#160;</td>
-<td>tropospheric aerosol optical depth uncertainty</td>
-</tr>
-<tr class="row-even"><td><strong>stratospheric_aerosol_optical_depth</strong></td>
-<td>double</td>
-<td>{<em>time</em>}</td>
-<td>&#160;</td>
-<td>stratospheric aerosol optical depth</td>
-</tr>
-<tr class="row-odd"><td><strong>stratospheric_aerosol_optical_depth_uncertainty</strong></td>
-<td>double</td>
-<td>{<em>time</em>}</td>
-<td>&#160;</td>
-<td>stratospheric aerosol optical depth uncertainty</td>
-</tr>
-<tr class="row-even"><td><strong>cloud_optical_depth</strong></td>
-<td>double</td>
-<td>{<em>time</em>}</td>
-<td>&#160;</td>
-<td>cloud optical depth</td>
-</tr>
-<tr class="row-odd"><td><strong>cloud_optical_depth_uncertainty</strong></td>
-<td>double</td>
-<td>{<em>time</em>}</td>
-<td>&#160;</td>
-<td>cloud optical depth uncertainty</td>
-</tr>
 <tr class="row-even"><td><strong>altitude</strong></td>
 <td>double</td>
 <td>{<em>vertical</em>}</td>
@@ -252,29 +228,65 @@
 <td>K</td>
 <td>temperature</td>
 </tr>
-<tr class="row-odd"><td><strong>aerosol_extinction_coefficient</strong></td>
+<tr class="row-odd"><td><strong>extinction_coefficient</strong></td>
 <td>double</td>
 <td>{<em>time</em>, <em>vertical</em>}</td>
 <td>km^-1</td>
-<td>aerosol_extinction_coefficient</td>
+<td>extinction coefficient</td>
 </tr>
-<tr class="row-even"><td><strong>aerosol_extinction_coefficient_uncertainty</strong></td>
+<tr class="row-even"><td><strong>extinction_coefficient_uncertainty</strong></td>
 <td>double</td>
 <td>{<em>time</em>, <em>vertical</em>}</td>
 <td>km^-1</td>
-<td>aerosol_extinction_coefficient_uncertainty</td>
+<td>extinction coefficient uncertainty</td>
 </tr>
 <tr class="row-odd"><td><strong>backscatter_coefficient</strong></td>
 <td>double</td>
 <td>{<em>time</em>, <em>vertical</em>}</td>
 <td>km^-1</td>
-<td>backscatter_coefficient</td>
+<td>backscatter coefficient</td>
 </tr>
 <tr class="row-even"><td><strong>backscatter_coefficient_uncertainty</strong></td>
 <td>double</td>
 <td>{<em>time</em>, <em>vertical</em>}</td>
 <td>km^-1</td>
-<td>backscatter_coefficient_uncertainty</td>
+<td>backscatter coefficient uncertainty</td>
+</tr>
+<tr class="row-odd"><td><strong>tropospheric_aerosol_optical_depth</strong></td>
+<td>double</td>
+<td>{<em>time</em>}</td>
+<td>&#160;</td>
+<td>tropospheric aerosol optical depth</td>
+</tr>
+<tr class="row-even"><td><strong>tropospheric_aerosol_optical_depth_uncertainty</strong></td>
+<td>double</td>
+<td>{<em>time</em>}</td>
+<td>&#160;</td>
+<td>tropospheric aerosol optical depth uncertainty</td>
+</tr>
+<tr class="row-odd"><td><strong>stratospheric_aerosol_optical_depth</strong></td>
+<td>double</td>
+<td>{<em>time</em>}</td>
+<td>&#160;</td>
+<td>stratospheric aerosol optical depth</td>
+</tr>
+<tr class="row-even"><td><strong>stratospheric_aerosol_optical_depth_uncertainty</strong></td>
+<td>double</td>
+<td>{<em>time</em>}</td>
+<td>&#160;</td>
+<td>stratospheric aerosol optical depth uncertainty</td>
+</tr>
+<tr class="row-odd"><td><strong>cloud_optical_depth</strong></td>
+<td>double</td>
+<td>{<em>time</em>}</td>
+<td>&#160;</td>
+<td>cloud optical depth</td>
+</tr>
+<tr class="row-even"><td><strong>cloud_optical_depth_uncertainty</strong></td>
+<td>double</td>
+<td>{<em>time</em>}</td>
+<td>&#160;</td>
+<td>cloud optical depth uncertainty</td>
 </tr>
 <tr class="row-odd"><td><strong>index</strong></td>
 <td>int32</td>
@@ -314,8 +326,8 @@
 <table border="1" class="docutils">
 <colgroup>
 <col width="39%" />
-<col width="10%" />
-<col width="51%" />
+<col width="11%" />
+<col width="50%" />
 </colgroup>
 <thead valign="bottom">
 <tr class="row-odd"><th class="head">field name</th>
@@ -323,81 +335,35 @@
 </tr>
 </thead>
 <tbody valign="top">
+<tr class="row-even"><td rowspan="2"><strong>datetime_start</strong></td>
+<td><em>path</em></td>
+<td><strong>/Profile_Time[,0]</strong></td>
+</tr>
+<tr class="row-odd"><td><em>description</em></td>
+<td>time at the start of the measurement</td>
+</tr>
 <tr class="row-even"><td><strong>datetime</strong></td>
 <td><em>path</em></td>
-<td><strong>/Profile_Time[]</strong></td>
+<td><strong>/Profile_Time[,N/2]</strong></td>
+</tr>
+<tr class="row-odd"><td rowspan="2"><strong>datetime_stop</strong></td>
+<td><em>path</em></td>
+<td><strong>/Profile_Time[,N-1]</strong></td>
+</tr>
+<tr class="row-even"><td><em>description</em></td>
+<td>time at the end of the measurement</td>
 </tr>
 <tr class="row-odd"><td><strong>latitude</strong></td>
 <td><em>path</em></td>
-<td><strong>/Latitude[]</strong></td>
+<td><strong>/Latitude[,N/2]</strong></td>
 </tr>
 <tr class="row-even"><td><strong>longitude</strong></td>
 <td><em>path</em></td>
-<td><strong>/Longitude[]</strong></td>
+<td><strong>/Longitude[,N/2]</strong></td>
 </tr>
 <tr class="row-odd"><td><strong>tropopause_altitude</strong></td>
 <td><em>path</em></td>
 <td><strong>/Tropopause_Height[]</strong></td>
-</tr>
-<tr class="row-even"><td rowspan="4"><strong>tropospheric_aerosol_optical_depth</strong></td>
-<td><em>condition</em></td>
-<td>wavelength=532</td>
-</tr>
-<tr class="row-odd"><td><em>path</em></td>
-<td><strong>/Column_Optical_Depth_Tropospheric_Aerosols_532[]</strong></td>
-</tr>
-<tr class="row-even"><td><em>condition</em></td>
-<td>wavelength=1064</td>
-</tr>
-<tr class="row-odd"><td><em>path</em></td>
-<td><strong>/Column_Optical_Depth_Tropospheric_Aerosols_1064[]</strong></td>
-</tr>
-<tr class="row-even"><td rowspan="4"><strong>tropospheric_aerosol_optical_depth_uncertainty</strong></td>
-<td><em>condition</em></td>
-<td>wavelength=532</td>
-</tr>
-<tr class="row-odd"><td><em>path</em></td>
-<td><strong>/Column_Optical_Depth_Tropospheric_Aerosols_Uncertainty_532[]</strong></td>
-</tr>
-<tr class="row-even"><td><em>condition</em></td>
-<td>wavelength=1064</td>
-</tr>
-<tr class="row-odd"><td><em>path</em></td>
-<td><strong>/Column_Optical_Depth_Tropospheric_Aerosols_Uncertainty_1064[]</strong></td>
-</tr>
-<tr class="row-even"><td rowspan="4"><strong>stratospheric_aerosol_optical_depth</strong></td>
-<td><em>condition</em></td>
-<td>wavelength=532</td>
-</tr>
-<tr class="row-odd"><td><em>path</em></td>
-<td><strong>/Column_Optical_Depth_Stratospheric_Aerosols_532[]</strong></td>
-</tr>
-<tr class="row-even"><td><em>condition</em></td>
-<td>wavelength=1064</td>
-</tr>
-<tr class="row-odd"><td><em>path</em></td>
-<td><strong>/Column_Optical_Depth_Stratospheric_Aerosols_1064[]</strong></td>
-</tr>
-<tr class="row-even"><td rowspan="4"><strong>stratospheric_aerosol_optical_depth_uncertainty</strong></td>
-<td><em>condition</em></td>
-<td>wavelength=532</td>
-</tr>
-<tr class="row-odd"><td><em>path</em></td>
-<td><strong>/Column_Optical_Depth_Stratospheric_Aerosols_Uncertainty_532[]</strong></td>
-</tr>
-<tr class="row-even"><td><em>condition</em></td>
-<td>wavelength=1064</td>
-</tr>
-<tr class="row-odd"><td><em>path</em></td>
-<td><strong>/Column_Optical_Depth_Stratospheric_Aerosols_Uncertainty_1064[]</strong></td>
-</tr>
-<tr class="row-even"><td><strong>cloud_optical_depth</strong></td>
-<td><em>path</em></td>
-<td><strong>/Column_Optical_Depth_Cloud_532[]</strong></td>
-</tr>
-<tr class="row-odd"><td><strong>cloud_optical_depth_uncertainty</strong></td>
-<td><em>path</em></td>
-<td><strong>/Column_Optical_Depth_Cloud_Uncertainty_532[]</strong></td>
 </tr>
 <tr class="row-even"><td><strong>altitude</strong></td>
 <td><em>path</em></td>
@@ -411,7 +377,7 @@
 <td><em>path</em></td>
 <td><strong>/Temperature[,]</strong></td>
 </tr>
-<tr class="row-odd"><td rowspan="4"><strong>aerosol_extinction_coefficient</strong></td>
+<tr class="row-odd"><td rowspan="4"><strong>extinction_coefficient</strong></td>
 <td><em>condition</em></td>
 <td>wavelength=532</td>
 </tr>
@@ -424,7 +390,7 @@
 <tr class="row-even"><td><em>path</em></td>
 <td><strong>/Extinction_Coefficient_1064[,]</strong></td>
 </tr>
-<tr class="row-odd"><td rowspan="4"><strong>aerosol_extinction_coefficient_uncertainty</strong></td>
+<tr class="row-odd"><td rowspan="4"><strong>extinction_coefficient_uncertainty</strong></td>
 <td><em>condition</em></td>
 <td>wavelength=532</td>
 </tr>
@@ -462,6 +428,66 @@
 </tr>
 <tr class="row-even"><td><em>path</em></td>
 <td><strong>/Backscatter_Coefficient_Uncertainty_1064[,]</strong></td>
+</tr>
+<tr class="row-odd"><td rowspan="4"><strong>tropospheric_aerosol_optical_depth</strong></td>
+<td><em>condition</em></td>
+<td>wavelength=532</td>
+</tr>
+<tr class="row-even"><td><em>path</em></td>
+<td><strong>/Column_Optical_Depth_Tropospheric_Aerosols_532[]</strong></td>
+</tr>
+<tr class="row-odd"><td><em>condition</em></td>
+<td>wavelength=1064</td>
+</tr>
+<tr class="row-even"><td><em>path</em></td>
+<td><strong>/Column_Optical_Depth_Tropospheric_Aerosols_1064[]</strong></td>
+</tr>
+<tr class="row-odd"><td rowspan="4"><strong>tropospheric_aerosol_optical_depth_uncertainty</strong></td>
+<td><em>condition</em></td>
+<td>wavelength=532</td>
+</tr>
+<tr class="row-even"><td><em>path</em></td>
+<td><strong>/Column_Optical_Depth_Tropospheric_Aerosols_Uncertainty_532[]</strong></td>
+</tr>
+<tr class="row-odd"><td><em>condition</em></td>
+<td>wavelength=1064</td>
+</tr>
+<tr class="row-even"><td><em>path</em></td>
+<td><strong>/Column_Optical_Depth_Tropospheric_Aerosols_Uncertainty_1064[]</strong></td>
+</tr>
+<tr class="row-odd"><td rowspan="4"><strong>stratospheric_aerosol_optical_depth</strong></td>
+<td><em>condition</em></td>
+<td>wavelength=532</td>
+</tr>
+<tr class="row-even"><td><em>path</em></td>
+<td><strong>/Column_Optical_Depth_Stratospheric_Aerosols_532[]</strong></td>
+</tr>
+<tr class="row-odd"><td><em>condition</em></td>
+<td>wavelength=1064</td>
+</tr>
+<tr class="row-even"><td><em>path</em></td>
+<td><strong>/Column_Optical_Depth_Stratospheric_Aerosols_1064[]</strong></td>
+</tr>
+<tr class="row-odd"><td rowspan="4"><strong>stratospheric_aerosol_optical_depth_uncertainty</strong></td>
+<td><em>condition</em></td>
+<td>wavelength=532</td>
+</tr>
+<tr class="row-even"><td><em>path</em></td>
+<td><strong>/Column_Optical_Depth_Stratospheric_Aerosols_Uncertainty_532[]</strong></td>
+</tr>
+<tr class="row-odd"><td><em>condition</em></td>
+<td>wavelength=1064</td>
+</tr>
+<tr class="row-even"><td><em>path</em></td>
+<td><strong>/Column_Optical_Depth_Stratospheric_Aerosols_Uncertainty_1064[]</strong></td>
+</tr>
+<tr class="row-odd"><td><strong>cloud_optical_depth</strong></td>
+<td><em>path</em></td>
+<td><strong>/Column_Optical_Depth_Cloud_532[]</strong></td>
+</tr>
+<tr class="row-even"><td><strong>cloud_optical_depth_uncertainty</strong></td>
+<td><em>path</em></td>
+<td><strong>/Column_Optical_Depth_Cloud_Uncertainty_532[]</strong></td>
 </tr>
 </tbody>
 </table>
