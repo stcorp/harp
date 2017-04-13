@@ -33,7 +33,6 @@
 #define HARP_FILTER_COLLOCATION_H
 
 #include "harp-internal.h"
-#include "harp-operation.h"
 
 typedef struct harp_collocation_index_pair_struct
 {
@@ -44,27 +43,13 @@ typedef struct harp_collocation_index_pair_struct
 typedef struct harp_collocation_mask_struct
 {
     long num_index_pairs;
-    harp_collocation_index_pair **index_pair;
+    harp_collocation_index_pair *index_pair;
 } harp_collocation_mask;
 
-int harp_collocation_index_pair_new(long collocation_index, long index, harp_collocation_index_pair **new_index_pair);
-void harp_collocation_index_pair_delete(harp_collocation_index_pair *index_pair);
-
-int harp_collocation_mask_new(harp_collocation_mask **new_mask);
 void harp_collocation_mask_delete(harp_collocation_mask *mask);
-int harp_collocation_mask_add_index_pair(harp_collocation_mask *mask, harp_collocation_index_pair *index_pair);
-void harp_collocation_mask_sort_by_index(harp_collocation_mask *mask);
-void harp_collocation_mask_sort_by_collocation_index(harp_collocation_mask *mask);
-int harp_collocation_mask_from_result(const harp_collocation_result *collocation_result,
-                                      harp_collocation_filter_type filter_type, const char *source_product,
-                                      harp_collocation_mask **new_mask);
 int harp_collocation_mask_import(const char *filename, harp_collocation_filter_type filter_type,
                                  const char *original_filename, harp_collocation_mask **new_mask);
 
-int harp_filter_index(const harp_variable *index, harp_collocation_mask *collocation_mask,
-                      harp_dimension_mask *dimension_mask);
-int harp_filter_collocation_index(const harp_variable *collocation_index, harp_collocation_mask *collocation_mask,
-                                  harp_dimension_mask *dimension_mask);
-int harp_product_apply_collocation_mask(harp_collocation_mask *collocation_mask, harp_product *product);
+int harp_product_apply_collocation_mask(harp_product *product, harp_collocation_mask *collocation_mask);
 
 #endif

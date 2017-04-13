@@ -43,5 +43,3 @@
 #define OPERATION_FILTER_AREA_MISSING_LAT_BOUNDS "area filter expected variable latitude_bounds"
 #define OPERATION_FILTER_AREA_WRONG_DIMENSION_FORMAT "area filter expected lat/lon-bounds of dimensions %s"
 #define OPERATION_FILTER_COLLOCATION_MISSING_INDEX "collocation filter expected either collocation index or index variable of dimension {time}"
-
-int harp_product_execute_program(harp_product *product, harp_program *program);

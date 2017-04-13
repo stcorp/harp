@@ -31,6 +31,11 @@
 
 #include "harp-geometry.h"
 
+#include <assert.h>
+#include <math.h>
+#include <stddef.h>
+#include <stdlib.h>
+
 int harp_spherical_polygon_equal(const harp_spherical_polygon *polygon_a, const harp_spherical_polygon *polygon_b,
                                  int direction)
 {

@@ -33,6 +33,8 @@
 #include "harp-constants.h"
 #include "harp-geometry.h"
 
+#include <math.h>
+
 /** Calculate the fraction of the day
  * \param datetime   Datetime [s since 2000-01-01]
  * \return the fraction of the day [1]

@@ -31,6 +31,10 @@
 
 #include "harp-geometry.h"
 
+#include <assert.h>
+#include <math.h>
+#include <stdlib.h>
+
 /* Check if two spherical points are equal */
 int harp_spherical_point_equal(const harp_spherical_point *pointa, const harp_spherical_point *pointb)
 {

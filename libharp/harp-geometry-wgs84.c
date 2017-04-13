@@ -31,6 +31,8 @@
 
 #include "harp-geometry.h"
 
+#include <math.h>
+
 /* Convert latitude, longitude [deg] to Cartesian coordinates [m] */
 void harp_wgs84_ellipsoid_cartesian_coordinates_from_latitude_and_longitude(double latitude, double longitude,
                                                                             double *new_x, double *new_y, double *new_z)

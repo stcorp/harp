@@ -69,7 +69,7 @@ int harp_dimension_mask_new(int num_dimensions, const long *dimension, harp_dime
     }
 
     /* Initialize the mask to all 1's. */
-    for (i = 0; i < dimension_mask->num_elements; ++i)
+    for (i = 0; i < dimension_mask->num_elements; i++)
     {
         dimension_mask->mask[i] = 1;
     }

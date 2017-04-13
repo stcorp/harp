@@ -33,7 +33,6 @@
 #define HARP_INGESTION_H
 
 #include "harp-internal.h"
-#include "harp-operation.h"
 #include "coda.h"
 
 typedef struct harp_ingestion_option_struct

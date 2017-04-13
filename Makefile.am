@@ -71,11 +71,8 @@ libharp_la_SOURCES = \
 	libharp/harp-errno.c \
 	libharp/harp-filter.h \
 	libharp/harp-filter.c \
-	libharp/harp-filter-area.c \
 	libharp/harp-filter-collocation.h \
 	libharp/harp-filter-collocation.c \
-	libharp/harp-filter-point.c \
-	libharp/harp-filter-predicate.c \
 	libharp/harp-geometry-sphere-circle.c \
 	libharp/harp-geometry-sphere-euler.c \
 	libharp/harp-geometry-sphere-line.c \
@@ -148,14 +145,11 @@ libharp_la_SOURCES = \
 	libharp/harp-operation-scanner.l \
 	libharp/harp-operation.h \
 	libharp/harp-operation.c \
-	libharp/harp-predicate.h \
-	libharp/harp-predicate.c \
 	libharp/harp-product.c \
 	libharp/harp-product-metadata.c \
 	libharp/harp-program.h \
 	libharp/harp-program.c \
 	libharp/harp-program-execute.h \
-	libharp/harp-program-execute.c \
 	libharp/harp-regrid.c \
 	libharp/harp-sea-surface.c \
 	libharp/harp-units.c \
