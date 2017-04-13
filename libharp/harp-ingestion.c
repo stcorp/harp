@@ -39,7 +39,6 @@
 #include "harp-geometry.h"
 #include "harp-operation.h"
 #include "harp-program.h"
-#include "harp-program-execute.h"
 
 #include <assert.h>
 #include <stdio.h>
@@ -893,7 +892,7 @@ static int execute_value_filter(ingest_info *info, harp_program *program)
     if (find_variable_definition(info, variable_name, &variable_def) != 0)
     {
         /* non existant variable is an error */
-        harp_set_error(HARP_ERROR_OPERATION, OPERATION_FILTER_NON_EXISTANT_VARIABLE_FORMAT, variable_name);
+        harp_set_error(HARP_ERROR_OPERATION, "cannot filter on non-existant variable %s", variable_name);
         return -1;
     }
     data_type_size = harp_get_size_for_type(variable_def->data_type);
@@ -1175,12 +1174,12 @@ static int execute_point_filter(ingest_info *info, harp_program *program)
 
     if (find_variable_definition(info, "latitude", &latitude_def) != 0)
     {
-        harp_set_error(HARP_ERROR_OPERATION, OPERATION_FILTER_POINT_MISSING_LAT);
+        harp_set_error(HARP_ERROR_OPERATION, "point filter expected variable latitude");
         return -1;
     }
     if (find_variable_definition(info, "longitude", &longitude_def) != 0)
     {
-        harp_set_error(HARP_ERROR_OPERATION, OPERATION_FILTER_POINT_MISSING_LON);
+        harp_set_error(HARP_ERROR_OPERATION, "point filter expected variable longitude");
         return -1;
     }
 
@@ -1332,12 +1331,12 @@ static int execute_polygon_filter(ingest_info *info, harp_program *program)
 
     if (find_variable_definition(info, "latitude_bounds", &latitude_bounds_def) != 0)
     {
-        harp_set_error(HARP_ERROR_OPERATION, OPERATION_FILTER_AREA_MISSING_LAT_BOUNDS);
+        harp_set_error(HARP_ERROR_OPERATION, "area filter expected variable latitude_bounds");
         return -1;
     }
     if (find_variable_definition(info, "longitude_bounds", &longitude_bounds_def) != 0)
     {
-        harp_set_error(HARP_ERROR_OPERATION, OPERATION_FILTER_AREA_MISSING_LON_BOUNDS);
+        harp_set_error(HARP_ERROR_OPERATION, "area filter expected variable longitude_bounds");
         return -1;
     }
 
@@ -1541,8 +1540,7 @@ static int execute_keep_variable(ingest_info *info, harp_operation_keep_variable
         index = harp_product_definition_get_variable_index(info->product_definition, operation->variable_name[j]);
         if (index < 0 || info->variable_mask[index] == 0)
         {
-            harp_set_error(HARP_ERROR_OPERATION, OPERATION_KEEP_NON_EXISTANT_VARIABLE_FORMAT,
-                           operation->variable_name[j]);
+            harp_set_error(HARP_ERROR_OPERATION, "cannot keep non-existant variable %s", operation->variable_name[j]);
             free(included);
             return -1;
         }

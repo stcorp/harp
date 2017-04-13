@@ -318,7 +318,6 @@ set(LIBHARP_SOURCES
   libharp/harp-product-metadata.c
   libharp/harp-program.h
   libharp/harp-program.c
-  libharp/harp-program-execute.h
   libharp/harp-sea-surface.c
   libharp/harp-regrid.c
   libharp/harp-units.c

@@ -30,7 +30,6 @@
  */
 
 #include "harp-program.h"
-#include "harp-program-execute.h"
 #include "harp-filter-collocation.h"
 #include "harp-filter.h"
 #include "harp-filter.h"
@@ -652,8 +651,7 @@ static int execute_keep_variable(harp_product *product, harp_operation_keep_vari
     {
         if (harp_product_get_variable_index_by_name(product, operation->variable_name[j], &index) != 0)
         {
-            harp_set_error(HARP_ERROR_OPERATION, OPERATION_KEEP_NON_EXISTANT_VARIABLE_FORMAT,
-                           operation->variable_name[j]);
+            harp_set_error(HARP_ERROR_OPERATION, "cannot keep non-existant variable %s", operation->variable_name[j]);
             free(included);
             return -1;
         }
