@@ -256,6 +256,7 @@ set(LIBHARP_SOURCES
   libharp/harp-geometry-util.c
   libharp/harp-geometry-wgs84.c
   libharp/harp-geometry.h
+  libharp/harp-ingest-ace_fts_l2.c
   libharp/harp-ingest-aeolus_l1b.c
   libharp/harp-ingest-aeolus_l2a.c
   libharp/harp-ingest-aeolus_l2b.c
@@ -574,6 +575,7 @@ function(add_codadef name)
   endif(CODADEF_DIR)
 endfunction(add_codadef)
 
+add_codadef(ACE_FTS)
 add_codadef(ACSAF)
 add_codadef(AEOLUS)
 add_codadef(AURA_HIRDLS)
