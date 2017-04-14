@@ -933,14 +933,19 @@ LIBHARP_API int harp_product_get_smoothed_column(harp_product *product, const ch
                     partcol_variable->data.double_data[i * num_vertical_elements + j] *
                     column_avk->data.double_data[i * num_vertical_elements + j];
                 is_valid = 1;
+                /* subtract the apriori */
+                if (apriori != NULL && !harp_isnan(apriori->data.double_data[i * num_vertical_elements + j]))
+                {
+                    column_variable->data.double_data[i] -=
+                        column_avk->data.double_data[i * num_vertical_elements + j] *
+                        apriori->data.double_data[i * num_vertical_elements + j];
+                }
             }
 
             /* add the apriori */
             if (apriori != NULL && !harp_isnan(apriori->data.double_data[i * num_vertical_elements + j]))
             {
-                column_variable->data.double_data[i] +=
-                    (1 - column_avk->data.double_data[i * num_vertical_elements + j]) *
-                    apriori->data.double_data[i * num_vertical_elements + j];
+                column_variable->data.double_data[i] += apriori->data.double_data[i * num_vertical_elements + j];
                 is_valid = 1;
             }
         }
