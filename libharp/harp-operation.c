@@ -1750,7 +1750,7 @@ int harp_operation_set_new(const char *option, const char *value, harp_operation
                        sizeof(harp_operation_set), __FILE__, __LINE__);
         return -1;
     }
-    operation->type = operation_rename;
+    operation->type = operation_set;
     operation->option = NULL;
     operation->value = NULL;
 
