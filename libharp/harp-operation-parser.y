@@ -456,10 +456,12 @@ operation:
             free($3);
         }
     | FUNC_DERIVE '(' identifier dimensionspec ')' {
-            if (harp_operation_derive_variable_new($3, $4->num_elements, $4->array.int32_data, NULL, &$$) != 0) YYERROR;
+            if (harp_operation_derive_variable_new($3, harp_type_double, $4->num_elements, $4->array.int32_data, NULL,
+                                                   &$$) != 0) YYERROR;
         }
     | FUNC_DERIVE '(' identifier dimensionspec UNIT ')' {
-            if (harp_operation_derive_variable_new($3, $4->num_elements, $4->array.int32_data, $5, &$$) != 0) YYERROR;
+            if (harp_operation_derive_variable_new($3, harp_type_double, $4->num_elements, $4->array.int32_data, $5,
+                                                   &$$) != 0) YYERROR;
         }
     | FUNC_DERIVE_SMOOTHED_COLUMN '(' identifier dimensionspec UNIT ',' identifier UNIT ',' STRING_VALUE ',' ID_A ',' STRING_VALUE ')' {
             if (harp_operation_derive_smoothed_column_collocated_new($3, $4->num_elements, $4->array.int32_data, $5, $7,

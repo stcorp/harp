@@ -1,5 +1,8 @@
 * Added ingestion support for NPP-Suomi.
 
+* Added data_type parameter to harp_product_get_derived_variable() and
+  harp_product_add_derived_variable() functions.
+
 * Allow 'Conventions' global attribute to contain more than just a reference
   to HARP.
 

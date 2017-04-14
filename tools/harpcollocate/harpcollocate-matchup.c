@@ -453,12 +453,13 @@ static int get_derived_variable(harp_product *product, Reduced_product_variable_
         harp_dimension_type dims[] = { harp_dimension_time, harp_dimension_independent };
 
         /* Get the derived parameter from the product. */
-        return harp_product_get_derived_variable(product, variable_name, unit, 2, dims, new_variable);
+        return harp_product_get_derived_variable(product, variable_name, harp_type_double, unit, 2, dims, new_variable);
     }
     else
     {
         /* Get the derived parameter from the product. */
-        return harp_product_get_derived_variable(product, variable_name, unit, 1, &dimension_type, new_variable);
+        return harp_product_get_derived_variable(product, variable_name, harp_type_double, unit, 1, &dimension_type,
+                                                 new_variable);
     }
 }
 

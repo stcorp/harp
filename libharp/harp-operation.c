@@ -1104,7 +1104,7 @@ int harp_operation_comparison_filter_new(const char *variable_name, harp_compari
     return 0;
 }
 
-int harp_operation_derive_variable_new(const char *variable_name, int num_dimensions,
+int harp_operation_derive_variable_new(const char *variable_name, harp_data_type data_type, int num_dimensions,
                                        const harp_dimension_type *dimension_type, const char *unit,
                                        harp_operation **new_operation)
 {
@@ -1122,6 +1122,7 @@ int harp_operation_derive_variable_new(const char *variable_name, int num_dimens
     }
     operation->type = operation_derive_variable;
     operation->variable_name = NULL;
+    operation->data_type = data_type;
     operation->num_dimensions = num_dimensions;
     operation->unit = NULL;
 

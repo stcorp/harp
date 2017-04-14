@@ -504,11 +504,12 @@ LIBHARP_API int harp_product_has_variable(const harp_product *product, const cha
 LIBHARP_API int harp_product_get_variable_by_name(const harp_product *product, const char *name,
                                                   harp_variable **variable);
 LIBHARP_API int harp_product_get_variable_index_by_name(const harp_product *product, const char *name, int *index);
-LIBHARP_API int harp_product_get_derived_variable(const harp_product *product, const char *name, const char *unit,
-                                                  int num_dimensions, const harp_dimension_type *dimension_type,
-                                                  harp_variable **variable);
-LIBHARP_API int harp_product_add_derived_variable(harp_product *product, const char *name, const char *unit,
-                                                  int num_dimensions, const harp_dimension_type *dimension_type);
+LIBHARP_API int harp_product_get_derived_variable(const harp_product *product, const char *name,
+                                                  harp_data_type data_type,const char *unit, int num_dimensions,
+                                                  const harp_dimension_type *dimension_type, harp_variable **variable);
+LIBHARP_API int harp_product_add_derived_variable(harp_product *product, const char *name, harp_data_type data_type,
+                                                  const char *unit, int num_dimensions,
+                                                  const harp_dimension_type *dimension_type);
 LIBHARP_API int harp_product_update_history(harp_product *product, const char *executable, int argc, char *argv[]);
 LIBHARP_API int harp_product_verify(const harp_product *product);
 LIBHARP_API int harp_product_execute_operations(harp_product *product, const char *operations);

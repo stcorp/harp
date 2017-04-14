@@ -214,6 +214,7 @@ typedef struct harp_operation_derive_variable_struct
     harp_operation_type type;
     /* parameters */
     char *variable_name;
+    harp_data_type data_type;
     int num_dimensions;
     harp_dimension_type dimension_type[HARP_MAX_NUM_DIMS];
     char *unit;
@@ -402,7 +403,7 @@ int harp_operation_collocation_filter_new(const char *filename, harp_collocation
                                           harp_operation **new_operation);
 int harp_operation_comparison_filter_new(const char *variable_name, harp_comparison_operator_type operator_type,
                                          double value, const char *unit, harp_operation **new_operation);
-int harp_operation_derive_variable_new(const char *variable_name, int num_dimensions,
+int harp_operation_derive_variable_new(const char *variable_name, harp_data_type data_type, int num_dimensions,
                                        const harp_dimension_type *dimension_type, const char *unit,
                                        harp_operation **new_operation);
 int harp_operation_derive_smoothed_column_collocated_new(const char *variable_name, int num_dimensions,

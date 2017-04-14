@@ -211,8 +211,8 @@ int harp_product_get_derived_bounds_for_grid(harp_product *product, harp_variabl
     strcpy(bounds_name, grid->name);
     strcat(bounds_name, "_bounds");
 
-    if (harp_product_get_derived_variable(product, bounds_name, grid->unit, grid->num_dimensions + 1, dim_type, bounds)
-        != 0)
+    if (harp_product_get_derived_variable(product, bounds_name, harp_type_double, grid->unit, grid->num_dimensions + 1,
+                                          dim_type, bounds) != 0)
     {
         free(bounds_name);
         return -1;
@@ -390,12 +390,12 @@ LIBHARP_API int harp_product_regrid_with_axis_variable(harp_product *product, ha
 
     /* Derive the source grid (will give doubles because unit is passed) */
     /* Try time independent */
-    if (harp_product_get_derived_variable(product, target_grid->name, target_grid->unit, 1, &grid_dim_type[1],
-                                          &source_grid) != 0)
+    if (harp_product_get_derived_variable(product, target_grid->name, harp_type_double, target_grid->unit, 1,
+                                          &grid_dim_type[1], &source_grid) != 0)
     {
         /* Failed to derive time independent. Try time dependent. */
-        if (harp_product_get_derived_variable(product, target_grid->name, target_grid->unit, 2, grid_dim_type,
-                                              &source_grid) != 0)
+        if (harp_product_get_derived_variable(product, target_grid->name, harp_type_double, target_grid->unit, 2,
+                                              grid_dim_type, &source_grid) != 0)
         {
             goto error;
         }
@@ -782,8 +782,8 @@ LIBHARP_API int harp_product_regrid_with_collocated_dataset(harp_product *produc
              * with the given dimension type and treat the length of the dimension as 1
              */
             local_dimension_type[0] = harp_dimension_time;
-            if (harp_product_add_derived_variable(collocated_product, axis_name, axis_unit, 1, local_dimension_type)
-                != 0)
+            if (harp_product_add_derived_variable(collocated_product, axis_name, harp_type_double, axis_unit, 1,
+                                                  local_dimension_type) != 0)
             {
                 harp_product_delete(collocated_product);
                 harp_product_delete(merged_product);
@@ -811,7 +811,8 @@ LIBHARP_API int harp_product_regrid_with_collocated_dataset(harp_product *produc
         local_dimension_type[2] = harp_dimension_independent;
 
         /* target grid */
-        if (harp_product_add_derived_variable(collocated_product, axis_name, axis_unit, 2, local_dimension_type) != 0)
+        if (harp_product_add_derived_variable(collocated_product, axis_name, harp_type_double, axis_unit, 2,
+                                              local_dimension_type) != 0)
         {
             harp_product_delete(collocated_product);
             harp_product_delete(merged_product);
@@ -820,7 +821,8 @@ LIBHARP_API int harp_product_regrid_with_collocated_dataset(harp_product *produc
         }
 
         /* target grid bounds */
-        harp_product_add_derived_variable(collocated_product, bounds_name, axis_unit, 3, local_dimension_type);
+        harp_product_add_derived_variable(collocated_product, bounds_name, harp_type_double, axis_unit, 3,
+                                          local_dimension_type);
         /* it is Ok if the target boundaries cannot be derived (we ignore the return value of the function) */
 
         /* strip collocated product to just the variables that we need */
