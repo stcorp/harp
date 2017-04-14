@@ -299,8 +299,11 @@ LIBHARP_API int harp_product_regrid_with_axis_variable(harp_product *product, ha
     long source_num_time_elements;
     int source_grid_num_dims = 1;
     int target_grid_num_dims;
+    int out_of_bound_flag;
     harp_variable *variable;
     long i;
+
+    out_of_bound_flag = harp_get_option_regrid_out_of_bounds();
 
     /* owned memory */
     harp_variable *source_grid = NULL;
@@ -600,8 +603,8 @@ LIBHARP_API int harp_product_regrid_with_axis_variable(harp_product *product, ha
                         (source_grid_num_dim_elements,
                          &source_grid->data.double_data[source_time_index * source_grid_max_dim_elements],
                          source_buffer, target_grid_num_dim_elements,
-                         &local_target_grid->data.double_data[target_time_index * target_grid_max_dim_elements], 0,
-                         target_buffer);
+                         &local_target_grid->data.double_data[target_time_index * target_grid_max_dim_elements],
+                         out_of_bound_flag, target_buffer);
                 }
                 else if (type == resample_interval)
                 {
