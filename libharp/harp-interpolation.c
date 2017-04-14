@@ -513,7 +513,7 @@ static void interpolate_linear(long source_length, const double *source_grid, co
         /* grid point is before source_grid[0] */
         if (out_of_bound_flag == 1)
         {
-            *target_value = source_grid[0];
+            *target_value = source_array[0];
         }
         else if (out_of_bound_flag == 2)
         {
@@ -530,7 +530,7 @@ static void interpolate_linear(long source_length, const double *source_grid, co
         /* grid point is after source_grid[source_length - 1] */
         if (out_of_bound_flag == 1)
         {
-            *target_value = source_grid[source_length - 1];
+            *target_value = source_array[source_length - 1];
         }
         else if (out_of_bound_flag == 2)
         {
@@ -615,7 +615,7 @@ static void interpolate_loglinear(long source_length, const double *source_grid,
         /* grid point is before source_grid[0] */
         if (out_of_bound_flag == 1)
         {
-            *target_value = source_grid[0];
+            *target_value = source_array[0];
         }
         else if (out_of_bound_flag == 2)
         {
@@ -632,7 +632,7 @@ static void interpolate_loglinear(long source_length, const double *source_grid,
         /* grid point is after source_grid[source_length - 1] */
         if (out_of_bound_flag == 1)
         {
-            *target_value = source_grid[source_length - 1];
+            *target_value = source_array[source_length - 1];
         }
         else if (out_of_bound_flag == 2)
         {
