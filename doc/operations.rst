@@ -68,7 +68,7 @@ Supported functions:
         Apply the specified collocation result file as an index
         filter assuming the product is part of dataset B.
 
-    ``derive(variable {dimension-type, ...} [unit])``
+    ``derive(variable [datatype] {dimension-type, ...} [unit])``
         Derive the specified variable from other variables found
         in the product. The ``--list-derivations`` option of
         harpconvert, harpdump, and harpfilter can be used to list
@@ -76,6 +76,15 @@ Supported functions:
         The algorithms behind all the conversions are described
         in the :doc:`Algorithms <algorithms/index>` section of the
         documentation.
+        If the datatype is not provided then ``double`` values will
+        be retrieved.
+        The derive operation can also be used to perform data type
+        or unit conversions on existing variables in a product.
+
+        Example:
+
+            ``derive(altitude {time,vertical} [km])``
+            ``derive(latitude float {time})``
 
     ``derive_smoothed_column(variable {dimension-type, ...} [unit], axis-variable unit, collocation-result-file, a|b, dataset-dir)``
         Derive the given intergrated column value by first deriving
@@ -291,6 +300,8 @@ Formal definition
 
     unit = '[', [{character-(']')}], ']' ;
 
+    datatype = 'int8' | 'int16' | 'int32' | 'float' | 'double' | 'string' ;
+
     dimension = 'time' | 'latitude' | 'longitude' | 'vertical' | 'spectral' | 'independent' ;
 
     dimensionlist =
@@ -305,7 +316,7 @@ Formal definition
        'area_mask_intersects_area', '(', stringvalue, ',', floatvalue, ')' |
        'collocate_left', '(', stringvalue, ')' |
        'collocate_right', '(', stringvalue, ')' |
-       'derive', '(', variable, dimensionspec, [unit], ')' |
+       'derive', '(', variable, [datatype], dimensionspec, [unit], ')' |
        'derive_smoothed_column', '(', variable, dimensionspec, [unit], ',', variable, unit, ',', stringvalue, ',', ( 'a' | 'b' ), ',', stringvalue, ')' |
        'exclude', '(', variablelist, ')' |
        'flatten', '(', dimension, ')' |

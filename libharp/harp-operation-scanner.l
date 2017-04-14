@@ -107,6 +107,31 @@ WHITESPACE   [[:space:]]+
 "valid"                 return FUNC_VALID;
 "wrap"                  return FUNC_WRAP;
 
+"int8"                  {
+                            yylval.int32_val = harp_type_int8;
+                            return DATATYPE;
+                        }
+"int16"                 {
+                            yylval.int32_val = harp_type_int16;
+                            return DATATYPE;
+                        }
+"int32"                 {
+                            yylval.int32_val = harp_type_int32;
+                            return DATATYPE;
+                        }
+"float"                 {
+                            yylval.int32_val = harp_type_float;
+                            return DATATYPE;
+                        }
+"double"                {
+                            yylval.int32_val = harp_type_double;
+                            return DATATYPE;
+                        }
+"string"                {
+                            yylval.int32_val = harp_type_string;
+                            return DATATYPE;
+                        }
+
 "time"                  {
                             yylval.int32_val = harp_dimension_time;
                             return DIMENSION;
@@ -131,6 +156,7 @@ WHITESPACE   [[:space:]]+
                             yylval.int32_val = harp_dimension_independent;
                             return DIMENSION;
                         }
+
 {IDENTIFIER}            {
                             yylval.string_val = strdup(yytext);
                             return NAME;

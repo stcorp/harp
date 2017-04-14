@@ -212,6 +212,7 @@ int harp_sized_array_add_int32(harp_sized_array *sized_array, int32_t value)
 %token  <string_val>    STRING_VALUE
 %token  <string_val>    INTEGER_VALUE
 %token  <string_val>    DOUBLE_VALUE
+%token  <int32_val>     DATATYPE
 %token  <int32_val>     DIMENSION
 %token  <string_val>    UNIT
 %token                  ID_A
@@ -272,6 +273,7 @@ reserved_identifier:
     | NOT { $$ = "not"; }
     | IN { $$ = "in"; }
     | DIMENSION { $$ = harp_get_dimension_type_name($1); }
+    | DATATYPE { $$ = harp_get_data_type_name($1); }
     | ID_A { $$ = "a"; }
     | ID_B { $$ = "b"; }
     | FUNC_AREA_MASK_COVERS_AREA { $$ = "area_mask_covers_area"; }
@@ -463,11 +465,21 @@ operation:
             if (harp_operation_derive_variable_new($3, harp_type_double, $4->num_elements, $4->array.int32_data, $5,
                                                    &$$) != 0) YYERROR;
         }
-    | FUNC_DERIVE_SMOOTHED_COLUMN '(' identifier dimensionspec UNIT ',' identifier UNIT ',' STRING_VALUE ',' ID_A ',' STRING_VALUE ')' {
+    | FUNC_DERIVE '(' identifier DATATYPE dimensionspec ')' {
+            if (harp_operation_derive_variable_new($3, $4, $5->num_elements, $5->array.int32_data, NULL, &$$) != 0)
+                YYERROR;
+        }
+    | FUNC_DERIVE '(' identifier DATATYPE dimensionspec UNIT ')' {
+            if (harp_operation_derive_variable_new($3, $4, $5->num_elements, $5->array.int32_data, $6, &$$) != 0)
+                YYERROR;
+        }
+    | FUNC_DERIVE_SMOOTHED_COLUMN '(' identifier dimensionspec UNIT ',' identifier UNIT ',' STRING_VALUE ',' ID_A ','
+      STRING_VALUE ')' {
             if (harp_operation_derive_smoothed_column_collocated_new($3, $4->num_elements, $4->array.int32_data, $5, $7,
                                                                      $8, $10, 'a', $14, &$$) != 0) YYERROR;
         }
-    | FUNC_DERIVE_SMOOTHED_COLUMN '(' identifier dimensionspec UNIT ',' identifier UNIT ',' STRING_VALUE ',' ID_B ',' STRING_VALUE ')' {
+    | FUNC_DERIVE_SMOOTHED_COLUMN '(' identifier dimensionspec UNIT ',' identifier UNIT ',' STRING_VALUE ',' ID_B ','
+      STRING_VALUE ')' {
             if (harp_operation_derive_smoothed_column_collocated_new($3, $4->num_elements, $4->array.int32_data, $5, $7,
                                                                      $8, $10, 'b', $14, &$$) != 0) YYERROR;
         }

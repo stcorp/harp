@@ -224,14 +224,23 @@ filter assuming the product is part of dataset A.</dd>
 <dt><code class="docutils literal"><span class="pre">collocate_right(collocation-result-file)</span></code></dt>
 <dd>Apply the specified collocation result file as an index
 filter assuming the product is part of dataset B.</dd>
-<dt><code class="docutils literal"><span class="pre">derive(variable</span> <span class="pre">{dimension-type,</span> <span class="pre">...}</span> <span class="pre">[unit])</span></code></dt>
-<dd>Derive the specified variable from other variables found
+<dt><code class="docutils literal"><span class="pre">derive(variable</span> <span class="pre">[datatype]</span> <span class="pre">{dimension-type,</span> <span class="pre">...}</span> <span class="pre">[unit])</span></code></dt>
+<dd><p class="first">Derive the specified variable from other variables found
 in the product. The <code class="docutils literal"><span class="pre">--list-derivations</span></code> option of
 harpconvert, harpdump, and harpfilter can be used to list
 available variable conversions.
 The algorithms behind all the conversions are described
 in the <a class="reference internal" href="algorithms/index.html"><span class="doc">Algorithms</span></a> section of the
-documentation.</dd>
+documentation.
+If the datatype is not provided then <code class="docutils literal"><span class="pre">double</span></code> values will
+be retrieved.
+The derive operation can also be used to perform data type
+or unit conversions on existing variables in a product.</p>
+<p>Example:</p>
+<blockquote class="last">
+<div><code class="docutils literal"><span class="pre">derive(altitude</span> <span class="pre">{time,vertical}</span> <span class="pre">[km])</span></code>
+<code class="docutils literal"><span class="pre">derive(latitude</span> <span class="pre">float</span> <span class="pre">{time})</span></code></div></blockquote>
+</dd>
 <dt><code class="docutils literal"><span class="pre">derive_smoothed_column(variable</span> <span class="pre">{dimension-type,</span> <span class="pre">...}</span> <span class="pre">[unit],</span> <span class="pre">axis-variable</span> <span class="pre">unit,</span> <span class="pre">collocation-result-file,</span> <span class="pre">a|b,</span> <span class="pre">dataset-dir)</span></code></dt>
 <dd><p class="first">Derive the given intergrated column value by first deriving
 a partial column profile variant of the variable and then
@@ -437,6 +446,8 @@ Then, each further line defines a polygon. Each polygon consists of the vertices
 
 <span class="n">unit</span> <span class="o">=</span> <span class="s1">&#39;[&#39;</span><span class="p">,</span> <span class="p">[{</span><span class="n">character</span><span class="o">-</span><span class="p">(</span><span class="s1">&#39;]&#39;</span><span class="p">)}],</span> <span class="s1">&#39;]&#39;</span> <span class="p">;</span>
 
+<span class="n">datatype</span> <span class="o">=</span> <span class="s1">&#39;int8&#39;</span> <span class="o">|</span> <span class="s1">&#39;int16&#39;</span> <span class="o">|</span> <span class="s1">&#39;int32&#39;</span> <span class="o">|</span> <span class="s1">&#39;float&#39;</span> <span class="o">|</span> <span class="s1">&#39;double&#39;</span> <span class="o">|</span> <span class="s1">&#39;string&#39;</span> <span class="p">;</span>
+
 <span class="n">dimension</span> <span class="o">=</span> <span class="s1">&#39;time&#39;</span> <span class="o">|</span> <span class="s1">&#39;latitude&#39;</span> <span class="o">|</span> <span class="s1">&#39;longitude&#39;</span> <span class="o">|</span> <span class="s1">&#39;vertical&#39;</span> <span class="o">|</span> <span class="s1">&#39;spectral&#39;</span> <span class="o">|</span> <span class="s1">&#39;independent&#39;</span> <span class="p">;</span>
 
 <span class="n">dimensionlist</span> <span class="o">=</span>
@@ -451,7 +462,7 @@ Then, each further line defines a polygon. Each polygon consists of the vertices
    <span class="s1">&#39;area_mask_intersects_area&#39;</span><span class="p">,</span> <span class="s1">&#39;(&#39;</span><span class="p">,</span> <span class="n">stringvalue</span><span class="p">,</span> <span class="s1">&#39;,&#39;</span><span class="p">,</span> <span class="n">floatvalue</span><span class="p">,</span> <span class="s1">&#39;)&#39;</span> <span class="o">|</span>
    <span class="s1">&#39;collocate_left&#39;</span><span class="p">,</span> <span class="s1">&#39;(&#39;</span><span class="p">,</span> <span class="n">stringvalue</span><span class="p">,</span> <span class="s1">&#39;)&#39;</span> <span class="o">|</span>
    <span class="s1">&#39;collocate_right&#39;</span><span class="p">,</span> <span class="s1">&#39;(&#39;</span><span class="p">,</span> <span class="n">stringvalue</span><span class="p">,</span> <span class="s1">&#39;)&#39;</span> <span class="o">|</span>
-   <span class="s1">&#39;derive&#39;</span><span class="p">,</span> <span class="s1">&#39;(&#39;</span><span class="p">,</span> <span class="n">variable</span><span class="p">,</span> <span class="n">dimensionspec</span><span class="p">,</span> <span class="p">[</span><span class="n">unit</span><span class="p">],</span> <span class="s1">&#39;)&#39;</span> <span class="o">|</span>
+   <span class="s1">&#39;derive&#39;</span><span class="p">,</span> <span class="s1">&#39;(&#39;</span><span class="p">,</span> <span class="n">variable</span><span class="p">,</span> <span class="p">[</span><span class="n">datatype</span><span class="p">],</span> <span class="n">dimensionspec</span><span class="p">,</span> <span class="p">[</span><span class="n">unit</span><span class="p">],</span> <span class="s1">&#39;)&#39;</span> <span class="o">|</span>
    <span class="s1">&#39;derive_smoothed_column&#39;</span><span class="p">,</span> <span class="s1">&#39;(&#39;</span><span class="p">,</span> <span class="n">variable</span><span class="p">,</span> <span class="n">dimensionspec</span><span class="p">,</span> <span class="p">[</span><span class="n">unit</span><span class="p">],</span> <span class="s1">&#39;,&#39;</span><span class="p">,</span> <span class="n">variable</span><span class="p">,</span> <span class="n">unit</span><span class="p">,</span> <span class="s1">&#39;,&#39;</span><span class="p">,</span> <span class="n">stringvalue</span><span class="p">,</span> <span class="s1">&#39;,&#39;</span><span class="p">,</span> <span class="p">(</span> <span class="s1">&#39;a&#39;</span> <span class="o">|</span> <span class="s1">&#39;b&#39;</span> <span class="p">),</span> <span class="s1">&#39;,&#39;</span><span class="p">,</span> <span class="n">stringvalue</span><span class="p">,</span> <span class="s1">&#39;)&#39;</span> <span class="o">|</span>
    <span class="s1">&#39;exclude&#39;</span><span class="p">,</span> <span class="s1">&#39;(&#39;</span><span class="p">,</span> <span class="n">variablelist</span><span class="p">,</span> <span class="s1">&#39;)&#39;</span> <span class="o">|</span>
    <span class="s1">&#39;flatten&#39;</span><span class="p">,</span> <span class="s1">&#39;(&#39;</span><span class="p">,</span> <span class="n">dimension</span><span class="p">,</span> <span class="s1">&#39;)&#39;</span> <span class="o">|</span>
