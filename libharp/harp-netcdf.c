@@ -460,6 +460,7 @@ static int read_variable(harp_product *product, int ncid, int varid, netcdf_dime
         {
             harp_set_error(HARP_ERROR_IMPORT, "variable '%s' of type '%s' has 0 dimensions; expected >= 1",
                            netcdf_name, harp_get_data_type_name(harp_type_string));
+            return -1;
         }
 
         if (dimensions->type[netcdf_dim_id[num_dimensions - 1]] != netcdf_dimension_string)
