@@ -65,6 +65,12 @@ extern int harp_option_enable_aux_usstd76;
 typedef int (*harp_conversion_function) (harp_variable *variable, const harp_variable **source_variable);
 typedef int (*harp_conversion_enabled_function) (void);
 
+typedef enum harp_collocation_filter_type_enum
+{
+    harp_collocation_left,
+    harp_collocation_right
+} harp_collocation_filter_type;
+
 /* dimsvar_name is the variable name prefixed with HARP_MAX_NUM_DIMS characters defining the dimension types
  * dimsvar_name is thus the unique name for the combination of variable name + dimension types
  * the character code for a dimension type is: '0' + dimension_type, which gives:
@@ -307,8 +313,6 @@ int harp_collocation_result_shallow_copy(const harp_collocation_result *collocat
                                          harp_collocation_result **new_result);
 void harp_collocation_result_shallow_delete(harp_collocation_result *collocation_result);
 
-int harp_collocation_result_get_filtered_product_a(harp_collocation_result *collocation_result,
-                                                   const char *source_product, harp_product **product);
 int harp_collocation_result_get_filtered_product_b(harp_collocation_result *collocation_result,
                                                    const char *source_product, harp_product **product);
 

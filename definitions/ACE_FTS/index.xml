@@ -1,0 +1,24 @@
+<?xml version="1.0"?>
+<cd:ProductClass name="ACE_FTS" last-modified="2017-04-12" xmlns:cd="http://www.stcorp.nl/coda/definition/2008/07">
+  <cd:Description>ACE-FTS L2 products</cd:Description>
+  <cd:ProductType name="L2_ASCII_main">
+    <cd:Description>ACE-FTS L2 Retrievals for main isotopologues (ASCII)</cd:Description>
+    <cd:ProductDefinition id="ACE_FTS_L2_ASCII_main_v2" format="ascii" version="2">
+      <cd:DetectionRule>
+        <cd:MatchExpression>regex("s[rs][0-9]+(tangrid)?.asc", filename())</cd:MatchExpression>
+        <cd:MatchData offset="0">name</cd:MatchData>
+        <cd:MatchData offset="15"> ace.s</cd:MatchData>
+      </cd:DetectionRule>
+    </cd:ProductDefinition>
+  </cd:ProductType>
+  <cd:ProductType name="L2_ASCII_iso">
+    <cd:Description>ACE-FTS L2 Retrievals for subsidiary isotopologues (ASCII)</cd:Description>
+    <cd:ProductDefinition id="ACE_FTS_L2_ASCII_iso_v2" format="ascii" version="2">
+      <cd:DetectionRule>
+        <cd:MatchExpression>regex("s[rs][0-9]+iso(tangrid)?.asc", filename())</cd:MatchExpression>
+        <cd:MatchData offset="0">name</cd:MatchData>
+        <cd:MatchData offset="15"> ace.s</cd:MatchData>
+      </cd:DetectionRule>
+    </cd:ProductDefinition>
+  </cd:ProductType>
+</cd:ProductClass>

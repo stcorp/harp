@@ -35,6 +35,11 @@
 
 #include "hashtable.h"
 
+#include <assert.h>
+#include <math.h>
+#include <stdio.h>
+#include <stdlib.h>
+
 #define MAX_NAME_LENGTH 128
 
 harp_derived_variable_list *harp_derived_variable_conversions = NULL;

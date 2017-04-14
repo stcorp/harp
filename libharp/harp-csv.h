@@ -29,11 +29,10 @@
  * POSSIBILITY OF SUCH DAMAGE.
  */
 
-#include <stdio.h>
-#include <ctype.h>
-
 #ifndef HARP_CSV_H
 #define HARP_CSV_H
+
+#include <stdio.h>
 
 #define HARP_CSV_LINE_LENGTH 1024
 

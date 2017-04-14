@@ -242,11 +242,8 @@ set(LIBHARP_SOURCES
   libharp/harp-errno.c
   libharp/harp-filter.h
   libharp/harp-filter.c
-  libharp/harp-filter-area.c
   libharp/harp-filter-collocation.h
   libharp/harp-filter-collocation.c
-  libharp/harp-filter-point.c
-  libharp/harp-filter-predicate.c
   libharp/harp-geometry-sphere-circle.c
   libharp/harp-geometry-sphere-euler.c
   libharp/harp-geometry-sphere-line.c
@@ -256,6 +253,7 @@ set(LIBHARP_SOURCES
   libharp/harp-geometry-util.c
   libharp/harp-geometry-wgs84.c
   libharp/harp-geometry.h
+  libharp/harp-ingest-ace_fts_l2.c
   libharp/harp-ingest-aeolus_l1b.c
   libharp/harp-ingest-aeolus_l2a.c
   libharp/harp-ingest-aeolus_l2b.c
@@ -316,14 +314,10 @@ set(LIBHARP_SOURCES
   libharp/harp-netcdf.c
   libharp/harp-operation.h
   libharp/harp-operation.c
-  libharp/harp-predicate.h
-  libharp/harp-predicate.c
   libharp/harp-product.c
   libharp/harp-product-metadata.c
   libharp/harp-program.h
   libharp/harp-program.c
-  libharp/harp-program-execute.h
-  libharp/harp-program-execute.c
   libharp/harp-sea-surface.c
   libharp/harp-regrid.c
   libharp/harp-units.c
@@ -574,6 +568,7 @@ function(add_codadef name)
   endif(CODADEF_DIR)
 endfunction(add_codadef)
 
+add_codadef(ACE_FTS)
 add_codadef(ACSAF)
 add_codadef(AEOLUS)
 add_codadef(AURA_HIRDLS)

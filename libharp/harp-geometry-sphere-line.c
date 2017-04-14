@@ -31,6 +31,8 @@
 
 #include "harp-geometry.h"
 
+#include <math.h>
+
 /* Define all possible relationships between spherical lines */
 const int8_t harp_spherical_line_relationship_avoid = HARP_GEOMETRY_LINE_AVOID; /* line avoids other line */
 const int8_t harp_spherical_line_relationship_equal = HARP_GEOMETRY_LINE_EQUAL; /* lines are equal */

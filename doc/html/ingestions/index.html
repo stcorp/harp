@@ -90,6 +90,7 @@
 <li class="toctree-l1"><a class="reference internal" href="../algorithms/index.html">Algorithms</a></li>
 <li class="toctree-l1"><a class="reference internal" href="../operations.html">Operations</a></li>
 <li class="toctree-l1 current"><a class="current reference internal" href="#">Ingestion definitions</a><ul>
+<li class="toctree-l2"><a class="reference internal" href="#ace-products">ACE products</a></li>
 <li class="toctree-l2"><a class="reference internal" href="#aeolus-products">AEOLUS products</a><ul>
 <li class="toctree-l3"><a class="reference internal" href="#aeolus-l1b">AEOLUS_L1B</a></li>
 <li class="toctree-l3"><a class="reference internal" href="#aeolus-l2a">AEOLUS_L2A</a></li>
@@ -230,6 +231,32 @@
 <p>For example, suppose a certain type of product contains both O<sub>3</sub> and NO<sub>2</sub> volume mixing ratios retrieved on different spatial grids. In this case, it is not possible to have a single pair of <em>longitude</em> and <em>latitude</em> variables that describes the geolocation information for both retrievals. Therefore, two different conversions will be made available for this product type, one for the O<sub>3</sub> volume mixing ratio, and another for the NO<sub>2</sub> volume mixing ratio.</p>
 <p>For each product type, <em>ingestion options</em> may be available. These options can be used, for example, to switch between different product conversions (usually when quantities defined on different grids are present within a single product), or to switch between different variants of a quantity. Ingestion options should be passed to the ingest function as a semi-colon separated string of <code class="docutils literal"><span class="pre">option_name=value</span></code> pairs. These options are unrelated to <em>operations</em> (filtering, inclusion and exclusion of variables, and adding derived variables). Ingestion options are only meaningful in the context of an ingestion, while operations can be applied both on-the-fly during ingestion, as well as to existing HARP products.</p>
 <p>The list below gives an overview of the conversions and ingestion options available for each product type. For each conversion, there is a separate page that describes the resulting HARP product. This includes a list of all the variables, the value type, the dimensions, and the unit of each variable, as well as a full <em>mapping description</em> that details where and how HARP retrieved the data from the input product.</p>
+<div class="section" id="ace-products">
+<span id="ace"></span><h2>ACE products</h2>
+<table border="1" class="docutils">
+<colgroup>
+<col width="33%" />
+<col width="33%" />
+<col width="33%" />
+</colgroup>
+<thead valign="bottom">
+<tr class="row-odd"><th class="head">HARP product name</th>
+<th class="head">CODA product type</th>
+<th class="head">description</th>
+</tr>
+</thead>
+<tbody valign="top">
+<tr class="row-even"><td><a class="reference internal" href="ACE_FTS_L2_iso.html"><span class="doc">ACE_FTS_L2_iso</span></a></td>
+<td>ACE_FTS/L2_ASCII_iso</td>
+<td>ACE_FTS_L2_ASCII_iso_v2</td>
+</tr>
+<tr class="row-odd"><td><a class="reference internal" href="ACE_FTS_L2_main.html"><span class="doc">ACE_FTS_L2_main</span></a></td>
+<td>ACE_FTS/L2_ASCII_main</td>
+<td>ACE_FTS_L2_ASCII_main_v2</td>
+</tr>
+</tbody>
+</table>
+</div>
 <div class="section" id="aeolus-products">
 <span id="aeolus"></span><h2>AEOLUS products</h2>
 <table border="1" class="docutils">

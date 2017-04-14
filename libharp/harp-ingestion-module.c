@@ -41,6 +41,7 @@
 static harp_ingestion_module_register *module_register = NULL;
 
 /* Module initialization functions (forward declarations). */
+int harp_ingestion_module_ace_fts_l2_init(void);
 int harp_ingestion_module_aeolus_l1b_init(void);
 int harp_ingestion_module_aeolus_l2a_init(void);
 int harp_ingestion_module_aeolus_l2b_init(void);
@@ -96,6 +97,7 @@ int harp_ingestion_module_tes_l2_init(void);
 typedef int (module_init_func_t) (void);
 
 static module_init_func_t *module_init_func[] = {
+    harp_ingestion_module_ace_fts_l2_init,
     harp_ingestion_module_aeolus_l1b_init,
     harp_ingestion_module_aeolus_l2a_init,
     harp_ingestion_module_aeolus_l2b_init,

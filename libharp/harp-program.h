@@ -34,24 +34,24 @@
 
 #include "harp-operation.h"
 
-#include <assert.h>
-#include <stdlib.h>
-
-/* HARP programs are list of harp_operations */
+/* HARP programs are lists of harp_operations */
 typedef struct harp_program_struct
 {
     int num_operations;
     harp_operation **operation;
+
+    /* state information used during execution of the program */
+    int current_index;  /* index of operation that is next to be executed */
 } harp_program;
 
 int harp_program_new(harp_program **new_program);
 void harp_program_delete(harp_program *program);
 int harp_program_add_operation(harp_program *program, harp_operation *operation);
-int harp_program_remove_operation_at_index(harp_program *program, int index);
-int harp_program_remove_operation(harp_program *program, harp_operation *operation);
-int harp_program_copy(const harp_program *other_program, harp_program **new_program);
 
 /* Parser */
 int harp_program_from_string(const char *str, harp_program **new_program);
+
+/* Execution */
+int harp_product_execute_program(harp_product *product, harp_program *program);
 
 #endif

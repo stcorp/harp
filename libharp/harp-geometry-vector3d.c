@@ -31,6 +31,9 @@
 
 #include "harp-geometry.h"
 
+#include <math.h>
+#include <stdlib.h>
+
 /* Create new vector */
 harp_vector3d *harp_vector3d_new(double x, double y, double z)
 {

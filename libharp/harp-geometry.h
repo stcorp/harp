@@ -35,15 +35,6 @@
 #include "harp-internal.h"
 #include "harp-constants.h"
 
-#include <assert.h>
-#include <ctype.h>
-#include <stdio.h>
-#include <stdarg.h>
-#include <stdlib.h>
-#include <stddef.h>
-#include <string.h>
-#include <math.h>
-
 #define HARP_GEOMETRY_LINE_AVOID     1  /* line avoids other line */
 #define HARP_GEOMETRY_LINE_EQUAL     2  /* lines are equal */
 #define HARP_GEOMETRY_LINE_CONT_LINE 3  /* line contains line */

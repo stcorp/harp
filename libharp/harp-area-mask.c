@@ -31,6 +31,11 @@
 
 #include "harp-area-mask.h"
 
+#include <ctype.h>
+#include <stdlib.h>
+#include <stdio.h>
+#include <string.h>
+
 #define AREA_MASK_BLOCK_SIZE 1024
 #define AREA_MASK_MAX_LINE_SIZE 1024
 

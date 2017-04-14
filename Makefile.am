@@ -71,11 +71,8 @@ libharp_la_SOURCES = \
 	libharp/harp-errno.c \
 	libharp/harp-filter.h \
 	libharp/harp-filter.c \
-	libharp/harp-filter-area.c \
 	libharp/harp-filter-collocation.h \
 	libharp/harp-filter-collocation.c \
-	libharp/harp-filter-point.c \
-	libharp/harp-filter-predicate.c \
 	libharp/harp-geometry-sphere-circle.c \
 	libharp/harp-geometry-sphere-euler.c \
 	libharp/harp-geometry-sphere-line.c \
@@ -85,6 +82,7 @@ libharp_la_SOURCES = \
 	libharp/harp-geometry-util.c \
 	libharp/harp-geometry-wgs84.c \
 	libharp/harp-geometry.h \
+	libharp/harp-ingest-ace_fts_l2.c \
 	libharp/harp-ingest-aeolus_l1b.c \
 	libharp/harp-ingest-aeolus_l2a.c \
 	libharp/harp-ingest-aeolus_l2b.c \
@@ -147,14 +145,10 @@ libharp_la_SOURCES = \
 	libharp/harp-operation-scanner.l \
 	libharp/harp-operation.h \
 	libharp/harp-operation.c \
-	libharp/harp-predicate.h \
-	libharp/harp-predicate.c \
 	libharp/harp-product.c \
 	libharp/harp-product-metadata.c \
 	libharp/harp-program.h \
 	libharp/harp-program.c \
-	libharp/harp-program-execute.h \
-	libharp/harp-program-execute.c \
 	libharp/harp-regrid.c \
 	libharp/harp-sea-surface.c \
 	libharp/harp-units.c \
@@ -323,6 +317,7 @@ EXTRA_DIST += \
 
 # *** product definition files ***
 
+ACE_FTS_DEFINITION_FILE = ACE_FTS-@CODADEF_VERSION_ACE_FTS@.codadef
 ACSAF_DEFINITION_FILE = ACSAF-@CODADEF_VERSION_ACSAF@.codadef
 AEOLUS_DEFINITION_FILE = AEOLUS-@CODADEF_VERSION_AEOLUS@.codadef
 AURA_HIRDLS_DEFINITION_FILE = AURA_HIRDLS-@CODADEF_VERSION_AURA_HIRDLS@.codadef
@@ -350,6 +345,7 @@ SENTINEL5P_DEFINITION_FILE = Sentinel5P-@CODADEF_VERSION_Sentinel5P@.codadef
 TEMIS_DEFINITION_FILE = TEMIS-@CODADEF_VERSION_TEMIS@.codadef
 
 DEFINITION_FILES = \
+	definitions/$(ACE_FTS_DEFINITION_FILE) \
 	definitions/$(ACSAF_DEFINITION_FILE) \
 	definitions/$(AEOLUS_DEFINITION_FILE) \
 	definitions/$(AURA_HIRDLS_DEFINITION_FILE) \
@@ -380,6 +376,15 @@ EXTRA_DIST += $(DEFINITION_FILES) codadef.sh
 MAINTAINERCLEANFILES += $(DEFINITION_FILES)
 
 nobase_pkgdata_DATA = $(DEFINITION_FILES)
+
+definitions/$(ACE_FTS_DEFINITION_FILE):
+	test -d definitions || $(mkinstalldirs) definitions
+	@$(srcdir)/codadef.sh $(srcdir)/definitions/ACE_FTS definitions
+	@if test ! -f definitions/$(ACE_FTS_DEFINITION_FILE) ; then \
+	  echo definitions/$(ACE_FTS_DEFINITION_FILE) not created. ; \
+	  echo run './config.status --recheck' to update the .codadef version reference. ; \
+	  exit 1 ; \
+	 fi
 
 definitions/$(ACSAF_DEFINITION_FILE):
 	test -d definitions || $(mkinstalldirs) definitions

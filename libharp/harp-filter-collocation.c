@@ -40,8 +40,8 @@
 
 static int compare_by_index(const void *a, const void *b)
 {
-    harp_collocation_index_pair *pair_a = *(harp_collocation_index_pair **)a;
-    harp_collocation_index_pair *pair_b = *(harp_collocation_index_pair **)b;
+    harp_collocation_index_pair *pair_a = (harp_collocation_index_pair *)a;
+    harp_collocation_index_pair *pair_b = (harp_collocation_index_pair *)b;
 
     if (pair_a->index < pair_b->index)
     {
@@ -58,8 +58,8 @@ static int compare_by_index(const void *a, const void *b)
 
 static int compare_by_collocation_index(const void *a, const void *b)
 {
-    harp_collocation_index_pair *pair_a = *(harp_collocation_index_pair **)a;
-    harp_collocation_index_pair *pair_b = *(harp_collocation_index_pair **)b;
+    harp_collocation_index_pair *pair_a = (harp_collocation_index_pair *)a;
+    harp_collocation_index_pair *pair_b = (harp_collocation_index_pair *)b;
 
     if (pair_a->collocation_index < pair_b->collocation_index)
     {
@@ -74,34 +74,7 @@ static int compare_by_collocation_index(const void *a, const void *b)
     return 0;
 }
 
-int harp_collocation_index_pair_new(long collocation_index, long index, harp_collocation_index_pair **new_index_pair)
-{
-    harp_collocation_index_pair *index_pair;
-
-    index_pair = (harp_collocation_index_pair *)malloc(sizeof(harp_collocation_index_pair));
-    if (index_pair == NULL)
-    {
-        harp_set_error(HARP_ERROR_OUT_OF_MEMORY, "out of memory (could not allocate %lu bytes) (%s:%u)",
-                       sizeof(harp_collocation_index_pair), __FILE__, __LINE__);
-        return -1;
-    }
-
-    index_pair->collocation_index = collocation_index;
-    index_pair->index = index;
-
-    *new_index_pair = index_pair;
-    return 0;
-}
-
-void harp_collocation_index_pair_delete(harp_collocation_index_pair *index_pair)
-{
-    if (index_pair != NULL)
-    {
-        free(index_pair);
-    }
-}
-
-int harp_collocation_mask_new(harp_collocation_mask **new_mask)
+static int collocation_mask_new(harp_collocation_mask **new_mask)
 {
     harp_collocation_mask *mask;
 
@@ -126,13 +99,6 @@ void harp_collocation_mask_delete(harp_collocation_mask *mask)
     {
         if (mask->index_pair != NULL)
         {
-            long i;
-
-            for (i = 0; i < mask->num_index_pairs; i++)
-            {
-                harp_collocation_index_pair_delete(mask->index_pair[i]);
-            }
-
             free(mask->index_pair);
         }
 
@@ -140,43 +106,45 @@ void harp_collocation_mask_delete(harp_collocation_mask *mask)
     }
 }
 
-int harp_collocation_mask_add_index_pair(harp_collocation_mask *mask, harp_collocation_index_pair *index_pair)
+static int collocation_mask_add_index_pair(harp_collocation_mask *mask, long collocation_index, long index)
 {
     if (mask->num_index_pairs % COLLOCATION_MASK_BLOCK_SIZE == 0)
     {
-        harp_collocation_index_pair **new_index_pair;
+        harp_collocation_index_pair *new_index_pair;
 
         new_index_pair = realloc(mask->index_pair, (mask->num_index_pairs + COLLOCATION_MASK_BLOCK_SIZE)
-                                 * sizeof(harp_collocation_index_pair *));
+                                 * sizeof(harp_collocation_index_pair));
         if (new_index_pair == NULL)
         {
             harp_set_error(HARP_ERROR_OUT_OF_MEMORY, "out of memory (could not allocate %lu bytes) (%s:%u)",
                            (mask->num_index_pairs + COLLOCATION_MASK_BLOCK_SIZE)
-                           * sizeof(harp_collocation_index_pair *), __FILE__, __LINE__);
+                           * sizeof(harp_collocation_index_pair), __FILE__, __LINE__);
             return -1;
         }
 
         mask->index_pair = new_index_pair;
     }
 
-    mask->index_pair[mask->num_index_pairs] = index_pair;
+    mask->index_pair[mask->num_index_pairs].collocation_index = collocation_index;
+    mask->index_pair[mask->num_index_pairs].index = index;
     mask->num_index_pairs++;
+
     return 0;
 }
 
-void harp_collocation_mask_sort_by_index(harp_collocation_mask *mask)
+static void collocation_mask_sort_by_index(harp_collocation_mask *mask)
 {
-    qsort(mask->index_pair, mask->num_index_pairs, sizeof(harp_collocation_index_pair *), compare_by_index);
+    qsort(mask->index_pair, mask->num_index_pairs, sizeof(harp_collocation_index_pair), compare_by_index);
 }
 
-void harp_collocation_mask_sort_by_collocation_index(harp_collocation_mask *mask)
+static void collocation_mask_sort_by_collocation_index(harp_collocation_mask *mask)
 {
-    qsort(mask->index_pair, mask->num_index_pairs, sizeof(harp_collocation_index_pair *), compare_by_collocation_index);
+    qsort(mask->index_pair, mask->num_index_pairs, sizeof(harp_collocation_index_pair), compare_by_collocation_index);
 }
 
-int harp_collocation_mask_from_result(const harp_collocation_result *collocation_result,
-                                      harp_collocation_filter_type filter_type, const char *source_product,
-                                      harp_collocation_mask **new_mask)
+static int collocation_mask_from_result(const harp_collocation_result *collocation_result,
+                                        harp_collocation_filter_type filter_type, const char *source_product,
+                                        harp_collocation_mask **new_mask)
 {
     long i;
     long product_index = -1;
@@ -188,7 +156,7 @@ int harp_collocation_mask_from_result(const harp_collocation_result *collocation
         return -1;
     }
 
-    if (harp_collocation_mask_new(&mask) != 0)
+    if (collocation_mask_new(&mask) != 0)
     {
         return -1;
     }
@@ -217,7 +185,6 @@ int harp_collocation_mask_from_result(const harp_collocation_result *collocation
     for (i = 0; i < collocation_result->num_pairs && product_index >= 0; i++)
     {
         const harp_collocation_pair *pair;
-        harp_collocation_index_pair *index_pair;
 
         pair = collocation_result->pair[i];
         if (filter_type == harp_collocation_left)
@@ -227,7 +194,7 @@ int harp_collocation_mask_from_result(const harp_collocation_result *collocation
                 continue;
             }
 
-            if (harp_collocation_index_pair_new(pair->collocation_index, pair->sample_index_a, &index_pair) != 0)
+            if (collocation_mask_add_index_pair(mask, pair->collocation_index, pair->sample_index_a) != 0)
             {
                 harp_collocation_mask_delete(mask);
                 return -1;
@@ -240,19 +207,13 @@ int harp_collocation_mask_from_result(const harp_collocation_result *collocation
                 continue;
             }
 
-            if (harp_collocation_index_pair_new(pair->collocation_index, pair->sample_index_b, &index_pair) != 0)
+            if (collocation_mask_add_index_pair(mask, pair->collocation_index, pair->sample_index_b) != 0)
             {
                 harp_collocation_mask_delete(mask);
                 return -1;
             }
         }
 
-        if (harp_collocation_mask_add_index_pair(mask, index_pair) != 0)
-        {
-            harp_collocation_index_pair_delete(index_pair);
-            harp_collocation_mask_delete(mask);
-            return -1;
-        }
     }
 
     *new_mask = mask;
@@ -276,7 +237,7 @@ int harp_collocation_mask_import(const char *filename, harp_collocation_filter_t
         return -1;
     }
 
-    if (harp_collocation_mask_from_result(collocation_result, filter_type, source_product, &mask) != 0)
+    if (collocation_mask_from_result(collocation_result, filter_type, source_product, &mask) != 0)
     {
         harp_collocation_result_delete(collocation_result);
         return -1;
@@ -303,14 +264,14 @@ static int find_collocation_pair_for_collocation_index(harp_collocation_mask *co
         long pivot_index = lower_index + ((upper_index - lower_index) / 2);
 
         /* If the pivot equals the key, terminate early. */
-        if (collocation_mask->index_pair[pivot_index]->collocation_index == collocation_index)
+        if (collocation_mask->index_pair[pivot_index].collocation_index == collocation_index)
         {
             *index = pivot_index;
             return 1;
         }
 
         /* If the pivot is smaller than the key, search the upper sub array, otherwise search the lower sub array. */
-        if (collocation_mask->index_pair[pivot_index]->collocation_index < collocation_index)
+        if (collocation_mask->index_pair[pivot_index].collocation_index < collocation_index)
         {
             lower_index = pivot_index + 1;
         }
@@ -323,15 +284,15 @@ static int find_collocation_pair_for_collocation_index(harp_collocation_mask *co
     return 0;
 }
 
-int harp_filter_collocation_index(const harp_variable *collocation_index, harp_collocation_mask *collocation_mask,
-                                  harp_dimension_mask *dimension_mask)
+static int filter_collocation_index(const harp_variable *collocation_index, harp_collocation_mask *collocation_mask,
+                                    harp_dimension_mask *dimension_mask)
 {
     long i;
 
     assert(collocation_index->num_dimensions == 1);
     assert(dimension_mask->num_dimensions == 1 && dimension_mask->num_elements == collocation_index->num_elements);
 
-    harp_collocation_mask_sort_by_collocation_index(collocation_mask);
+    collocation_mask_sort_by_collocation_index(collocation_mask);
 
     for (i = 0; i < collocation_index->num_elements; i++)
     {
@@ -351,7 +312,7 @@ int harp_filter_collocation_index(const harp_variable *collocation_index, harp_c
     return 0;
 }
 
-int harp_product_apply_collocation_mask(harp_collocation_mask *collocation_mask, harp_product *product)
+int harp_product_apply_collocation_mask(harp_product *product, harp_collocation_mask *collocation_mask)
 {
     harp_variable *collocation_index = NULL;
 
@@ -403,7 +364,7 @@ int harp_product_apply_collocation_mask(harp_collocation_mask *collocation_mask,
             return -1;
         }
 
-        if (harp_filter_collocation_index(collocation_index, collocation_mask, dimension_mask) != 0)
+        if (filter_collocation_index(collocation_index, collocation_mask, dimension_mask) != 0)
         {
             harp_dimension_mask_delete(dimension_mask);
             return -1;
@@ -450,7 +411,7 @@ int harp_product_apply_collocation_mask(harp_collocation_mask *collocation_mask,
         }
 
         /* Sort the collocation mask by index. */
-        harp_collocation_mask_sort_by_index(collocation_mask);
+        collocation_mask_sort_by_index(collocation_mask);
 
         /* Both the collocation mask and the 'index' variable should now be sorted (since the 'index' variable should
          * always be sorted).
@@ -460,19 +421,19 @@ int harp_product_apply_collocation_mask(harp_collocation_mask *collocation_mask,
         num_elements = 0;
         while (i < collocation_mask->num_index_pairs && j < index->num_elements)
         {
-            if (collocation_mask->index_pair[i]->index < index->data.int32_data[j])
+            if (collocation_mask->index_pair[i].index < index->data.int32_data[j])
             {
                 /* Measurement not present in product, ignore. */
                 i++;
             }
-            else if (collocation_mask->index_pair[i]->index > index->data.int32_data[j])
+            else if (collocation_mask->index_pair[i].index > index->data.int32_data[j])
             {
                 /* Measurement not selected, or duplicate index in product, ignore. */
                 j++;
             }
             else
             {
-                assert(collocation_mask->index_pair[i]->index == index->data.int32_data[j]);
+                assert(collocation_mask->index_pair[i].index == index->data.int32_data[j]);
                 i++;
                 num_elements++;
             }
@@ -505,22 +466,22 @@ int harp_product_apply_collocation_mask(harp_collocation_mask *collocation_mask,
         k = 0;
         while (i < collocation_mask->num_index_pairs && j < index->num_elements)
         {
-            if (collocation_mask->index_pair[i]->index < index->data.int32_data[j])
+            if (collocation_mask->index_pair[i].index < index->data.int32_data[j])
             {
                 /* Measurement not present in product, ignore. */
                 i++;
             }
-            else if (collocation_mask->index_pair[i]->index > index->data.int32_data[j])
+            else if (collocation_mask->index_pair[i].index > index->data.int32_data[j])
             {
                 /* Measurement not selected, or duplicate index in product, ignore. */
                 j++;
             }
             else
             {
-                assert(collocation_mask->index_pair[i]->index == index->data.int32_data[j]);
+                assert(collocation_mask->index_pair[i].index == index->data.int32_data[j]);
 
                 dimension_index[k] = j;
-                collocation_index->data.int32_data[k] = collocation_mask->index_pair[i]->collocation_index;
+                collocation_index->data.int32_data[k] = collocation_mask->index_pair[i].collocation_index;
 
                 i++;
                 k++;
@@ -573,7 +534,7 @@ static int get_collocated_product(harp_collocation_result *collocation_result, c
         return -1;
     }
 
-    if (harp_collocation_mask_from_result(collocation_result, harp_collocation_right, source_product_b, &mask) != 0)
+    if (collocation_mask_from_result(collocation_result, harp_collocation_right, source_product_b, &mask) != 0)
     {
         return -1;
     }
@@ -585,7 +546,7 @@ static int get_collocated_product(harp_collocation_result *collocation_result, c
         return -1;
     }
 
-    if (harp_product_apply_collocation_mask(mask, collocated_product) != 0)
+    if (harp_product_apply_collocation_mask(collocated_product, mask) != 0)
     {
         harp_collocation_mask_delete(mask);
         return -1;
@@ -593,29 +554,6 @@ static int get_collocated_product(harp_collocation_result *collocation_result, c
 
     harp_collocation_mask_delete(mask);
     *product = collocated_product;
-
-    return 0;
-}
-
-int harp_collocation_result_get_filtered_product_a(harp_collocation_result *collocation_result,
-                                                   const char *source_product, harp_product **product)
-{
-    harp_collocation_result *result_copy;
-
-    if (harp_collocation_result_shallow_copy(collocation_result, &result_copy) != 0)
-    {
-        return -1;
-    }
-    /* swap datasets, so we can filter for product b */
-    harp_collocation_result_swap_datasets(result_copy);
-
-    if (get_collocated_product(result_copy, source_product, product) != 0)
-    {
-        harp_collocation_result_shallow_delete(result_copy);
-        return -1;
-    }
-
-    harp_collocation_result_shallow_delete(result_copy);
 
     return 0;
 }

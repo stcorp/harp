@@ -569,6 +569,7 @@ int harp_product_filter(harp_product *product, const harp_dimension_mask_set *di
     {
         harp_variable *variable = product->variable[i];
 
+        /* if we have a 2D dim filter then make sure that the variable has a time dimension */
         if (variable->num_dimensions > 0 && variable->dimension_type[0] != harp_dimension_time)
         {
             int j;

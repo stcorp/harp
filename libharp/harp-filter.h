@@ -34,55 +34,6 @@
 
 #include "harp-internal.h"
 #include "harp-operation.h"
-#include "harp-predicate.h"
-
-int harp_predicate_update_mask_0d(const harp_predicate *predicate, const harp_variable *variable,
-                                  uint8_t *product_mask);
-int harp_predicate_update_mask_1d(const harp_predicate *predicate, const harp_variable *variable,
-                                  harp_dimension_mask *dimension_mask);
-int harp_predicate_update_mask_2d(const harp_predicate *predicate, const harp_variable *variable,
-                                  harp_dimension_mask *primary_dimension_mask,
-                                  harp_dimension_mask *secondary_dimension_mask);
-int harp_point_predicate_update_mask_0d(int num_predicates, harp_predicate **predicate, const harp_variable *latitude,
-                                        const harp_variable *longitude, uint8_t *product_mask);
-int harp_point_predicate_update_mask_1d(int num_predicates, harp_predicate **predicate, const harp_variable *latitude,
-                                        const harp_variable *longitude, harp_dimension_mask *dimension_mask);
-int harp_area_predicate_update_mask_0d(int num_predicates, harp_predicate **predicate,
-                                       const harp_variable *latitude_bounds, const harp_variable *longitude_bounds,
-                                       uint8_t *product_mask);
-int harp_area_predicate_update_mask_1d(int num_predicates, harp_predicate **predicate,
-                                       const harp_variable *latitude_bounds, const harp_variable *longitude_bounds,
-                                       harp_dimension_mask *dimension_mask);
-
-int harp_comparison_filter_predicate_new(const harp_comparison_filter_args *args, harp_data_type data_type,
-                                         const char *unit, harp_predicate **new_predicate);
-int harp_string_comparison_filter_predicate_new(const harp_string_comparison_filter_args *args,
-                                                harp_data_type data_type, harp_predicate **new_predicate);
-int harp_bit_mask_filter_predicate_new(const harp_bit_mask_filter_args *args, harp_data_type data_type,
-                                       harp_predicate **new_predicate);
-int harp_membership_filter_predicate_new(const harp_membership_filter_args *args, harp_data_type data_type,
-                                         const char *unit, harp_predicate **new_predicate);
-int harp_string_membership_filter_predicate_new(const harp_string_membership_filter_args *args,
-                                                harp_data_type data_type, harp_predicate **new_predicate);
-int harp_valid_range_filter_predicate_new(harp_data_type data_type, harp_scalar valid_min, harp_scalar valid_max,
-                                          harp_predicate **new_predicate);
-int harp_longitude_range_filter_predicate_new(const harp_longitude_range_filter_args *args, harp_data_type data_type,
-                                              const char *unit, harp_predicate **new_predicate);
-int harp_collocation_filter_predicate_new(const harp_collocation_result *collocation_result, const char *source_product,
-                                          harp_collocation_filter_type filter_type, int use_collocation_index,
-                                          harp_predicate **new_predicate);
-int harp_get_filter_predicate_for_operation(const harp_operation *operation, harp_data_type data_type, const char *unit,
-                                            harp_scalar valid_min, harp_scalar valid_max,
-                                            harp_predicate **new_predicate);
-int harp_point_distance_filter_predicate_new(const harp_point_distance_filter_args *args,
-                                             harp_predicate **new_predicate);
-int harp_point_in_area_filter_predicate_new(const harp_point_in_area_filter_args *args, harp_predicate **new_predicate);
-int harp_area_mask_covers_point_filter_predicate_new(const harp_area_mask_covers_point_filter_args *args,
-                                                     harp_predicate **new_predicate);
-int harp_area_mask_covers_area_filter_predicate_new(const harp_area_mask_covers_area_filter_args *args,
-                                                    harp_predicate **new_predicate);
-int harp_area_mask_intersects_area_filter_predicate_new(const harp_area_mask_intersects_area_filter_args *args,
-                                                        harp_predicate **new_predicate);
 
 void harp_array_filter(harp_data_type data_type, int num_dimensions,
                        const long *source_dimension, const uint8_t **source_mask, harp_array source,

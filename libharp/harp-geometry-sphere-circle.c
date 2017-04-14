@@ -31,6 +31,8 @@
 
 #include "harp-geometry.h"
 
+#include <math.h>
+
 /* Checks whether two circles are equal */
 int harp_spherical_circle_equal(const harp_spherical_circle *circle1, const harp_spherical_circle *circle2)
 {

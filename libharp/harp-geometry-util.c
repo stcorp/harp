@@ -31,6 +31,8 @@
 
 #include "harp-geometry.h"
 
+#include <math.h>
+
 /** Calculate the point u on the greatcircle through p and q such that u is the average of p and q.
  *
  *        q
@@ -292,7 +294,7 @@ int harp_geographic_center_from_bounds(long num_vertices, const double *latitude
     /* Derive the centre point coordinates */
     if (harp_spherical_polygon_centre(&vector_center, polygon) != 0)
     {
-        free(polygon);
+        harp_spherical_polygon_delete(polygon);
         return -1;
     }
 
@@ -301,7 +303,7 @@ int harp_geographic_center_from_bounds(long num_vertices, const double *latitude
     harp_spherical_point_deg_from_rad(&point);
     *center_latitude = point.lat;
     *center_longitude = point.lon;
-    free(polygon);
+    harp_spherical_polygon_delete(polygon);
 
     return 0;
 }

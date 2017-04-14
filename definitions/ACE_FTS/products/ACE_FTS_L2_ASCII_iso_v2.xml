@@ -1,0 +1,226 @@
+<?xml version="1.0"?>
+<cd:ProductDefinition id="ACE_FTS_L2_ASCII_iso_v2" format="ascii" last-modified="2017-04-12" xmlns:cd="http://www.stcorp.nl/coda/definition/2008/07">
+  <cd:Record format="ascii">
+
+  <cd:Field name="name_title">
+    <cd:Text>
+      <cd:FixedValue>name          | </cd:FixedValue>
+      <cd:ByteSize>16</cd:ByteSize>
+      <cd:NativeType>string</cd:NativeType>
+    </cd:Text>
+    <cd:Hidden/>
+  </cd:Field>
+  <cd:Field name="name">
+    <cd:Text>
+      <cd:Description>name of the file</cd:Description>
+      <cd:ByteSize>11</cd:ByteSize>
+      <cd:NativeType>string</cd:NativeType>
+    </cd:Text>
+  </cd:Field>
+  <cd:Field name="ls_1">
+    <cd:AsciiLineSeparator>
+    </cd:AsciiLineSeparator>
+    <cd:Hidden/>
+  </cd:Field>
+  <cd:Field name="start_timetag_title">
+    <cd:Text>
+      <cd:FixedValue>start_timetag | </cd:FixedValue>
+      <cd:ByteSize>16</cd:ByteSize>
+      <cd:NativeType>string</cd:NativeType>
+    </cd:Text>
+    <cd:Hidden/>
+  </cd:Field>
+  <cd:Field name="start_timetag">
+    <cd:Text>
+      <cd:Description>tag of start time of the measurements</cd:Description>
+      <cd:ByteSize>10</cd:ByteSize>
+      <cd:NativeType>string</cd:NativeType>
+    </cd:Text>
+  </cd:Field>
+  <cd:Field name="ls_2">
+    <cd:AsciiLineSeparator>
+    </cd:AsciiLineSeparator>
+    <cd:Hidden/>
+  </cd:Field>
+  <cd:Field name="end_timetag_title">
+    <cd:Text>
+      <cd:FixedValue>end_timetag   | </cd:FixedValue>
+      <cd:ByteSize>16</cd:ByteSize>
+      <cd:NativeType>string</cd:NativeType>
+    </cd:Text>
+    <cd:Hidden/>
+  </cd:Field>
+  <cd:Field name="end_timetag">
+    <cd:Text>
+      <cd:Description>tag of end time of the measurements</cd:Description>
+      <cd:ByteSize>10</cd:ByteSize>
+      <cd:NativeType>string</cd:NativeType>
+    </cd:Text>
+  </cd:Field>
+  <cd:Field name="ls_3">
+    <cd:AsciiLineSeparator>
+    </cd:AsciiLineSeparator>
+    <cd:Hidden/>
+  </cd:Field>
+  <cd:Field name="start_time_title">
+    <cd:Text>
+      <cd:FixedValue>start_time    | </cd:FixedValue>
+      <cd:ByteSize>16</cd:ByteSize>
+      <cd:NativeType>string</cd:NativeType>
+    </cd:Text>
+    <cd:Hidden/>
+  </cd:Field>
+  <cd:Field name="start_time">
+    <cd:Text>
+      <cd:Description>start time of the measurements</cd:Description>
+      <cd:ByteSize>22</cd:ByteSize>
+      <cd:NativeType>string</cd:NativeType>
+    </cd:Text>
+  </cd:Field>
+  <cd:Field name="ls_4">
+    <cd:AsciiLineSeparator>
+    </cd:AsciiLineSeparator>
+    <cd:Hidden/>
+  </cd:Field>
+  <cd:Field name="end_time_title">
+    <cd:Text>
+      <cd:FixedValue>end_time      | </cd:FixedValue>
+      <cd:ByteSize>16</cd:ByteSize>
+      <cd:NativeType>string</cd:NativeType>
+    </cd:Text>
+    <cd:Hidden/>
+  </cd:Field>
+  <cd:Field name="end_time">
+    <cd:Text>
+      <cd:Description>end time of the measurements</cd:Description>
+      <cd:ByteSize>22</cd:ByteSize>
+      <cd:NativeType>string</cd:NativeType>
+    </cd:Text>
+  </cd:Field>
+  <cd:Field name="ls_5">
+    <cd:AsciiLineSeparator>
+    </cd:AsciiLineSeparator>
+    <cd:Hidden/>
+  </cd:Field>
+  <cd:Field name="date_title">
+    <cd:Text>
+      <cd:FixedValue>date          | </cd:FixedValue>
+      <cd:ByteSize>16</cd:ByteSize>
+      <cd:NativeType>string</cd:NativeType>
+    </cd:Text>
+    <cd:Hidden/>
+  </cd:Field>
+  <cd:Field name="date">
+    <cd:Text>
+      <cd:Description>date of the measurements</cd:Description>
+      <cd:ByteSize>25</cd:ByteSize>
+      <cd:NativeType>string</cd:NativeType>
+    </cd:Text>
+  </cd:Field>
+  <cd:Field name="ls_6">
+    <cd:AsciiLineSeparator>
+    </cd:AsciiLineSeparator>
+    <cd:Hidden/>
+  </cd:Field>
+  <cd:Field name="latitude_title">
+    <cd:Text>
+      <cd:FixedValue>latitude      | </cd:FixedValue>
+      <cd:ByteSize>16</cd:ByteSize>
+      <cd:NativeType>string</cd:NativeType>
+    </cd:Text>
+    <cd:Hidden/>
+  </cd:Field>
+  <cd:Field name="latitude">
+    <cd:Float format="ascii">
+      <cd:Description>latitude of 30 km geometric tangent point for occultation</cd:Description>
+      <cd:NativeType>float</cd:NativeType>
+      <cd:Unit>degree</cd:Unit>
+    </cd:Float>
+  </cd:Field>
+  <cd:Field name="ls_7">
+    <cd:AsciiLineSeparator>
+    </cd:AsciiLineSeparator>
+    <cd:Hidden/>
+  </cd:Field>
+  <cd:Field name="longitude_title">
+    <cd:Text>
+      <cd:FixedValue>start_timetag | </cd:FixedValue>
+      <cd:ByteSize>16</cd:ByteSize>
+      <cd:NativeType>string</cd:NativeType>
+    </cd:Text>
+    <cd:Hidden/>
+  </cd:Field>
+  <cd:Field name="longitude">
+    <cd:Float format="ascii">
+      <cd:Description>longitude of 30 km geometric tangent point for occultation</cd:Description>
+      <cd:NativeType>float</cd:NativeType>
+      <cd:Unit>degree</cd:Unit>
+    </cd:Float>
+  </cd:Field>
+  <cd:Field name="ls_8">
+    <cd:AsciiLineSeparator>
+    </cd:AsciiLineSeparator>
+    <cd:Hidden/>
+  </cd:Field>
+  <cd:Field name="beta_angle_title">
+    <cd:Text>
+      <cd:FixedValue>beta_angle    | </cd:FixedValue>
+      <cd:ByteSize>16</cd:ByteSize>
+      <cd:NativeType>string</cd:NativeType>
+    </cd:Text>
+    <cd:Hidden/>
+  </cd:Field>
+  <cd:Field name="beta_angle">
+    <cd:Float format="ascii">
+      <cd:Description>beta angle of occultation (at 30 km geometric tangent point)</cd:Description>
+      <cd:NativeType>float</cd:NativeType>
+      <cd:Unit>degree</cd:Unit>
+    </cd:Float>
+  </cd:Field>
+  <cd:Field name="ls_9">
+    <cd:AsciiLineSeparator>
+    </cd:AsciiLineSeparator>
+    <cd:Hidden/>
+  </cd:Field>
+  <cd:Field name="ls_10">
+    <cd:AsciiLineSeparator>
+    </cd:AsciiLineSeparator>
+    <cd:Hidden/>
+  </cd:Field>
+  <cd:Field name="empty_line">
+    <cd:AsciiLine>
+      <cd:Description>line that only contains spaces</cd:Description>
+    </cd:AsciiLine>
+  </cd:Field>
+  <cd:Field name="ls_11">
+    <cd:AsciiLineSeparator>
+    </cd:AsciiLineSeparator>
+    <cd:Hidden/>
+  </cd:Field>
+  <cd:Field name="field_names">
+    <cd:AsciiLine>
+      <cd:Description>line with names of fields</cd:Description>
+    </cd:AsciiLine>
+  </cd:Field>
+  <cd:Field name="ls_12">
+    <cd:AsciiLineSeparator>
+    </cd:AsciiLineSeparator>
+    <cd:Hidden/>
+  </cd:Field>
+  <cd:Field name="field_data">
+    <cd:Array>
+      <cd:Dimension><![CDATA[max(1,$num_datalines)]]></cd:Dimension>
+      <cd:AsciiLine>
+        <cd:Description>line with data of fields</cd:Description>
+      </cd:AsciiLine>
+    </cd:Array>
+  </cd:Field>
+
+  </cd:Record>
+
+  <cd:ProductVariable name="num_datalines">
+    <!-- The array field_data has size (total filesize - start of array field_data) / (length one line in the array + sizeof(linefeed)) -->
+    <cd:Init><![CDATA[$num_datalines = (filesize() - byteoffset(/field_data)) / (length(/field_data[0]) + 1)]]></cd:Init>
+  </cd:ProductVariable>
+
+</cd:ProductDefinition>
