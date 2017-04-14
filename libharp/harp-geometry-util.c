@@ -32,6 +32,7 @@
 #include "harp-geometry.h"
 
 #include <math.h>
+#include <stdlib.h>
 
 /** Calculate the point u on the greatcircle through p and q such that u is the average of p and q.
  *

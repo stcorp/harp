@@ -32,6 +32,8 @@
 #include "harp-geometry.h"
 
 #include <math.h>
+#include <stdlib.h>
+#include <string.h>
 
 /* Check if two Euler transformation are equal */
 int harp_euler_transformation_equal(const harp_euler_transformation *euler1, const harp_euler_transformation *euler2)
