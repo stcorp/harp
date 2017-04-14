@@ -1189,7 +1189,7 @@ static void register_hcho_product(void)
     description = "apriori profile for the volume mixing ratio of tropospheric HCHO";
     variable_definition =
         harp_ingestion_register_variable_full_read(product_definition, "HCHO_volume_mixing_ratio_dry_air_apriori",
-                                                   harp_type_float, 2, dimension_type, NULL, description, NULL, NULL,
+                                                   harp_type_float, 2, dimension_type, NULL, description, "ppv", NULL,
                                                    read_hcho_vmr_apriori);
     path = "/PRODUCT/SUPPORT_DATA/INPUT_DATA/hcho_profile_apriori[]";
     harp_variable_definition_add_mapping(variable_definition, NULL, NULL, path, NULL);
