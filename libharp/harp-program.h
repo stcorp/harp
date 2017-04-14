@@ -42,6 +42,10 @@ typedef struct harp_program_struct
 
     /* state information used during execution of the program */
     int current_index;  /* index of operation that is next to be executed */
+    /* initial global HARP options */
+    int option_enable_aux_afgl86;
+    int option_enable_aux_usstd76;
+    int option_regrid_out_of_bounds;
 } harp_program;
 
 int harp_program_new(harp_program **new_program);

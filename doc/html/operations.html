@@ -341,6 +341,44 @@ Example:</p>
 <blockquote class="last">
 <div><code class="docutils literal"><span class="pre">rename(&quot;surface_temperature&quot;,</span> <span class="pre">&quot;temperature&quot;)</span></code></div></blockquote>
 </dd>
+<dt><code class="docutils literal"><span class="pre">set(option,</span> <span class="pre">value)</span></code></dt>
+<dd><p class="first">Set a specific option in HARP.
+Both the option and value parameters need to be provided as string
+values (using double quotes).
+Options will be set &#8216;globally&#8217; in HARP and will persists for all
+further operations in the list. After termination of the list of
+operations, all HARP options will be reverted back to their initial
+values.
+Available options are:</p>
+<dl class="docutils">
+<dt><code class="docutils literal"><span class="pre">afgl86</span></code></dt>
+<dd><p class="first">Determine how to deal with interpolation of target grid values that
+fall outside the source grid range.
+Possible values are:</p>
+<ul class="last simple">
+<li><code class="docutils literal"><span class="pre">disabled</span></code> (default) disable the use of AFGL86 climatology in
+variable conversions</li>
+<li><code class="docutils literal"><span class="pre">enabled</span></code> enable the use of AFGL86 climatology in variable
+conversions (using seasonal and latitude band dependence)</li>
+<li><code class="docutils literal"><span class="pre">usstd76</span></code> enable AFGL86 using US Standard profiles</li>
+</ul>
+</dd>
+<dt><code class="docutils literal"><span class="pre">regrid_out_of_bounds</span></code></dt>
+<dd><p class="first">Determine how to deal with interpolation of target grid values that
+fall outside the source grid range.
+Possible values are:</p>
+<ul class="last simple">
+<li><code class="docutils literal"><span class="pre">nan</span></code> (default) to set values outside the range to NaN</li>
+<li><code class="docutils literal"><span class="pre">edge</span></code> to use to nearest edge value</li>
+<li><code class="docutils literal"><span class="pre">extrapolate</span></code> to perform extrapolation</li>
+</ul>
+</dd>
+</dl>
+<p>Example:</p>
+<blockquote class="last">
+<div><code class="docutils literal"><span class="pre">set(&quot;afgl86&quot;,</span> <span class="pre">&quot;enabled&quot;)</span></code>
+<code class="docutils literal"><span class="pre">set(&quot;regrid_out_of_bounds&quot;,</span> <span class="pre">&quot;extrapolate&quot;)</span></code></div></blockquote>
+</dd>
 <dt><code class="docutils literal"><span class="pre">smooth(variable,</span> <span class="pre">dimension,</span> <span class="pre">axis-variable</span> <span class="pre">unit,</span> <span class="pre">collocation-result-file,</span> <span class="pre">a|b,</span> <span class="pre">dataset-dir)</span></code></dt>
 <dd><p class="first">Smooth the given variable in the product for the given dimension
 using the avaraging kernel (and a-priori profile, if available)
@@ -473,8 +511,9 @@ Then, each further line defines a polygon. Each polygon consists of the vertices
    <span class="s1">&#39;regrid&#39;</span><span class="p">,</span> <span class="s1">&#39;(&#39;</span><span class="p">,</span> <span class="n">dimension</span><span class="p">,</span> <span class="s1">&#39;,&#39;</span><span class="p">,</span> <span class="n">variable</span><span class="p">,</span> <span class="n">unit</span><span class="p">,</span> <span class="s1">&#39;,&#39;</span><span class="p">,</span> <span class="s1">&#39;(&#39;</span><span class="p">,</span> <span class="n">floatvaluelist</span><span class="p">,</span> <span class="s1">&#39;)&#39;</span><span class="p">,</span> <span class="s1">&#39;)&#39;</span> <span class="o">|</span>
    <span class="s1">&#39;regrid&#39;</span><span class="p">,</span> <span class="s1">&#39;(&#39;</span><span class="p">,</span> <span class="n">dimension</span><span class="p">,</span> <span class="s1">&#39;,&#39;</span><span class="p">,</span> <span class="n">variable</span><span class="p">,</span> <span class="n">unit</span><span class="p">,</span> <span class="s1">&#39;,&#39;</span><span class="p">,</span> <span class="n">intvalue</span><span class="p">,</span> <span class="s1">&#39;,&#39;</span><span class="p">,</span> <span class="n">floatvalue</span><span class="p">,</span> <span class="s1">&#39;,&#39;</span><span class="p">,</span> <span class="n">floatvalue</span><span class="p">,</span> <span class="s1">&#39;)&#39;</span> <span class="o">|</span>
    <span class="s1">&#39;regrid&#39;</span><span class="p">,</span> <span class="s1">&#39;(&#39;</span><span class="p">,</span> <span class="n">dimension</span><span class="p">,</span> <span class="s1">&#39;,&#39;</span><span class="p">,</span> <span class="n">variable</span><span class="p">,</span> <span class="n">unit</span><span class="p">,</span> <span class="s1">&#39;,&#39;</span><span class="p">,</span> <span class="n">stringvalue</span><span class="p">,</span> <span class="s1">&#39;,&#39;</span><span class="p">,</span> <span class="p">(</span> <span class="s1">&#39;a&#39;</span> <span class="o">|</span> <span class="s1">&#39;b&#39;</span> <span class="p">),</span> <span class="s1">&#39;,&#39;</span><span class="p">,</span> <span class="n">stringvalue</span><span class="p">,</span> <span class="s1">&#39;)&#39;</span> <span class="o">|</span>
-   <span class="s1">&#39;smooth&#39;</span><span class="p">,</span> <span class="s1">&#39;(&#39;</span><span class="p">,</span> <span class="n">variable</span><span class="p">,</span> <span class="s1">&#39;,&#39;</span> <span class="n">dimension</span><span class="p">,</span> <span class="s1">&#39;,&#39;</span><span class="p">,</span> <span class="n">variable</span><span class="p">,</span> <span class="n">unit</span><span class="p">,</span> <span class="s1">&#39;,&#39;</span><span class="p">,</span> <span class="n">stringvalue</span><span class="p">,</span> <span class="s1">&#39;,&#39;</span><span class="p">,</span> <span class="p">(</span> <span class="s1">&#39;a&#39;</span> <span class="o">|</span> <span class="s1">&#39;b&#39;</span> <span class="p">),</span> <span class="s1">&#39;,&#39;</span><span class="p">,</span> <span class="n">stringvalue</span><span class="p">,</span> <span class="s1">&#39;)&#39;</span> <span class="o">|</span>
-   <span class="s1">&#39;smooth&#39;</span><span class="p">,</span> <span class="s1">&#39;(&#39;</span><span class="p">,</span> <span class="s1">&#39;(&#39;</span><span class="p">,</span> <span class="n">variablelist</span><span class="p">,</span> <span class="s1">&#39;)&#39;</span><span class="p">,</span> <span class="s1">&#39;,&#39;</span> <span class="n">dimension</span><span class="p">,</span> <span class="s1">&#39;,&#39;</span><span class="p">,</span> <span class="n">variable</span><span class="p">,</span> <span class="n">unit</span><span class="p">,</span> <span class="s1">&#39;,&#39;</span><span class="p">,</span> <span class="n">stringvalue</span><span class="p">,</span> <span class="s1">&#39;,&#39;</span><span class="p">,</span> <span class="p">(</span> <span class="s1">&#39;a&#39;</span> <span class="o">|</span> <span class="s1">&#39;b&#39;</span> <span class="p">),</span> <span class="s1">&#39;,&#39;</span><span class="p">,</span> <span class="n">stringvalue</span><span class="p">,</span> <span class="s1">&#39;)&#39;</span> <span class="o">|</span>
+   <span class="s1">&#39;set&#39;</span><span class="p">,</span> <span class="s1">&#39;(&#39;</span><span class="p">,</span> <span class="n">stringvalue</span><span class="p">,</span> <span class="s1">&#39;,&#39;</span><span class="p">,</span> <span class="n">stringvalue</span><span class="p">,</span> <span class="s1">&#39;)&#39;</span> <span class="o">|</span>
+   <span class="s1">&#39;smooth&#39;</span><span class="p">,</span> <span class="s1">&#39;(&#39;</span><span class="p">,</span> <span class="n">variable</span><span class="p">,</span> <span class="s1">&#39;,&#39;</span><span class="p">,</span> <span class="n">dimension</span><span class="p">,</span> <span class="s1">&#39;,&#39;</span><span class="p">,</span> <span class="n">variable</span><span class="p">,</span> <span class="n">unit</span><span class="p">,</span> <span class="s1">&#39;,&#39;</span><span class="p">,</span> <span class="n">stringvalue</span><span class="p">,</span> <span class="s1">&#39;,&#39;</span><span class="p">,</span> <span class="p">(</span> <span class="s1">&#39;a&#39;</span> <span class="o">|</span> <span class="s1">&#39;b&#39;</span> <span class="p">),</span> <span class="s1">&#39;,&#39;</span><span class="p">,</span> <span class="n">stringvalue</span><span class="p">,</span> <span class="s1">&#39;)&#39;</span> <span class="o">|</span>
+   <span class="s1">&#39;smooth&#39;</span><span class="p">,</span> <span class="s1">&#39;(&#39;</span><span class="p">,</span> <span class="s1">&#39;(&#39;</span><span class="p">,</span> <span class="n">variablelist</span><span class="p">,</span> <span class="s1">&#39;)&#39;</span><span class="p">,</span> <span class="s1">&#39;,&#39;</span><span class="p">,</span> <span class="n">dimension</span><span class="p">,</span> <span class="s1">&#39;,&#39;</span><span class="p">,</span> <span class="n">variable</span><span class="p">,</span> <span class="n">unit</span><span class="p">,</span> <span class="s1">&#39;,&#39;</span><span class="p">,</span> <span class="n">stringvalue</span><span class="p">,</span> <span class="s1">&#39;,&#39;</span><span class="p">,</span> <span class="p">(</span> <span class="s1">&#39;a&#39;</span> <span class="o">|</span> <span class="s1">&#39;b&#39;</span> <span class="p">),</span> <span class="s1">&#39;,&#39;</span><span class="p">,</span> <span class="n">stringvalue</span><span class="p">,</span> <span class="s1">&#39;)&#39;</span> <span class="o">|</span>
    <span class="s1">&#39;valid&#39;</span><span class="p">,</span> <span class="s1">&#39;(&#39;</span><span class="p">,</span> <span class="n">variable</span><span class="p">,</span> <span class="s1">&#39;)&#39;</span> <span class="o">|</span>
    <span class="s1">&#39;wrap&#39;</span><span class="p">,</span> <span class="s1">&#39;(&#39;</span><span class="p">,</span> <span class="n">variable</span><span class="p">,</span> <span class="p">[</span><span class="n">unit</span><span class="p">],</span> <span class="s1">&#39;,&#39;</span><span class="p">,</span> <span class="n">floatvalue</span><span class="p">,</span> <span class="s1">&#39;,&#39;</span><span class="p">,</span> <span class="n">floatvalue</span><span class="p">,</span> <span class="s1">&#39;)&#39;</span> <span class="p">;</span>
 

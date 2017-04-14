@@ -690,6 +690,22 @@ static void rename_delete(harp_operation_rename *operation)
     }
 }
 
+static void set_delete(harp_operation_set *operation)
+{
+    if (operation != NULL)
+    {
+        if (operation->option != NULL)
+        {
+            free(operation->option);
+        }
+        if (operation->value != NULL)
+        {
+            free(operation->value);
+        }
+
+        free(operation);
+    }
+}
 
 static void smooth_collocated_delete(harp_operation_smooth_collocated *operation)
 {
@@ -861,6 +877,9 @@ void harp_operation_delete(harp_operation *operation)
             break;
         case operation_rename:
             rename_delete((harp_operation_rename *)operation);
+            break;
+        case operation_set:
+            set_delete((harp_operation_set *)operation);
             break;
         case operation_smooth_collocated:
             smooth_collocated_delete((harp_operation_smooth_collocated *)operation);
@@ -1710,6 +1729,45 @@ int harp_operation_rename_new(const char *variable_name, const char *new_variabl
         harp_set_error(HARP_ERROR_OUT_OF_MEMORY, "out of memory (could not duplicate string) (%s:%u)", __FILE__,
                        __LINE__);
         rename_delete(operation);
+        return -1;
+    }
+
+    *new_operation = (harp_operation *)operation;
+    return 0;
+}
+
+int harp_operation_set_new(const char *option, const char *value, harp_operation **new_operation)
+{
+    harp_operation_set *operation;
+
+    assert(option != NULL);
+    assert(value != NULL);
+
+    operation = (harp_operation_set *)malloc(sizeof(harp_operation_set));
+    if (operation == NULL)
+    {
+        harp_set_error(HARP_ERROR_OUT_OF_MEMORY, "out of memory (could not allocate %lu bytes) (%s:%u)",
+                       sizeof(harp_operation_set), __FILE__, __LINE__);
+        return -1;
+    }
+    operation->type = operation_rename;
+    operation->option = NULL;
+    operation->value = NULL;
+
+    operation->option = strdup(option);
+    if (operation->option == NULL)
+    {
+        harp_set_error(HARP_ERROR_OUT_OF_MEMORY, "out of memory (could not duplicate string) (%s:%u)", __FILE__,
+                       __LINE__);
+        set_delete(operation);
+        return -1;
+    }
+    operation->value = strdup(value);
+    if (operation->value == NULL)
+    {
+        harp_set_error(HARP_ERROR_OUT_OF_MEMORY, "out of memory (could not duplicate string) (%s:%u)", __FILE__,
+                       __LINE__);
+        set_delete(operation);
         return -1;
     }
 

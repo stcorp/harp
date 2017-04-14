@@ -54,6 +54,7 @@ static int harp_init_counter = 0;
 
 int harp_option_enable_aux_afgl86 = 0;
 int harp_option_enable_aux_usstd76 = 0;
+int harp_option_regrid_out_of_bounds = 0;
 
 typedef enum file_format_enum
 {
@@ -376,6 +377,44 @@ LIBHARP_API int harp_set_option_enable_aux_usstd76(int enable)
 LIBHARP_API int harp_get_option_enable_aux_usstd76(void)
 {
     return harp_option_enable_aux_usstd76;
+}
+
+/** Set how to treat out of bound values during regridding operations.
+ * This is only applicable for point interpolation regridding. Any point that falls outside the target grid
+ * can be either set to NaN (the default), set to the nearest edge value, or set based on extrapolation (of two nearest
+ * points). This global HARP option determines which of the three cases will be used.
+ * \param method
+ *   \arg 0: Set values outside source grid to NaN
+ *   \arg 1: Set value outside source grid to edge value (=min/max of source grid)
+ *   \arg 2: Extrapolate based on nearest two edge values
+ * \return
+ *   \arg \c 0, Success.
+ *   \arg \c -1, Error occurred (check #harp_errno).
+ */
+LIBHARP_API int harp_set_option_regrid_out_of_bounds(int method)
+{
+    if (method < 0 || method > 2)
+    {
+        harp_set_error(HARP_ERROR_INVALID_ARGUMENT, "method argument (%d) is not valid (%s:%u)", method, __FILE__,
+                       __LINE__);
+        return -1;
+    }
+
+    harp_option_regrid_out_of_bounds = method;
+
+    return 0;
+}
+
+/** Retrieve the current setting for treating out of bound values during regridding operations.
+ * \see harp_set_option_regrid_out_of_bounds()
+ * \return
+ *   \arg \c 0 Set values outside source grid to NaN
+ *   \arg \c 1 Set value outside source grid to edge value (=min/max of source grid)
+ *   \arg \c 2 Extrapolate based on nearest two edge values
+ */
+LIBHARP_API int harp_get_option_regrid_out_of_bounds(void)
+{
+    return harp_option_regrid_out_of_bounds;
 }
 
 /** Initializes the HARP C library.

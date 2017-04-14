@@ -189,6 +189,41 @@ Supported functions:
 
             ``rename("surface_temperature", "temperature")``
 
+    ``set(option, value)``
+        Set a specific option in HARP.
+        Both the option and value parameters need to be provided as string
+        values (using double quotes).
+        Options will be set 'globally' in HARP and will persists for all
+        further operations in the list. After termination of the list of
+        operations, all HARP options will be reverted back to their initial
+        values.
+        Available options are:
+
+        ``afgl86``
+            Determine how to deal with interpolation of target grid values that
+            fall outside the source grid range.
+            Possible values are:
+
+            - ``disabled`` (default) disable the use of AFGL86 climatology in
+              variable conversions
+            - ``enabled`` enable the use of AFGL86 climatology in variable
+              conversions (using seasonal and latitude band dependence)
+            - ``usstd76`` enable AFGL86 using US Standard profiles
+
+        ``regrid_out_of_bounds``
+            Determine how to deal with interpolation of target grid values that
+            fall outside the source grid range.
+            Possible values are:
+
+            - ``nan`` (default) to set values outside the range to NaN
+            - ``edge`` to use to nearest edge value
+            - ``extrapolate`` to perform extrapolation
+
+        Example:
+
+            ``set("afgl86", "enabled")``
+            ``set("regrid_out_of_bounds", "extrapolate")``
+
     ``smooth(variable, dimension, axis-variable unit, collocation-result-file, a|b, dataset-dir)``
         Smooth the given variable in the product for the given dimension
         using the avaraging kernel (and a-priori profile, if available)
@@ -327,8 +362,9 @@ Formal definition
        'regrid', '(', dimension, ',', variable, unit, ',', '(', floatvaluelist, ')', ')' |
        'regrid', '(', dimension, ',', variable, unit, ',', intvalue, ',', floatvalue, ',', floatvalue, ')' |
        'regrid', '(', dimension, ',', variable, unit, ',', stringvalue, ',', ( 'a' | 'b' ), ',', stringvalue, ')' |
-       'smooth', '(', variable, ',' dimension, ',', variable, unit, ',', stringvalue, ',', ( 'a' | 'b' ), ',', stringvalue, ')' |
-       'smooth', '(', '(', variablelist, ')', ',' dimension, ',', variable, unit, ',', stringvalue, ',', ( 'a' | 'b' ), ',', stringvalue, ')' |
+       'set', '(', stringvalue, ',', stringvalue, ')' |
+       'smooth', '(', variable, ',', dimension, ',', variable, unit, ',', stringvalue, ',', ( 'a' | 'b' ), ',', stringvalue, ')' |
+       'smooth', '(', '(', variablelist, ')', ',', dimension, ',', variable, unit, ',', stringvalue, ',', ( 'a' | 'b' ), ',', stringvalue, ')' |
        'valid', '(', variable, ')' |
        'wrap', '(', variable, [unit], ',', floatvalue, ',', floatvalue, ')' ;
 

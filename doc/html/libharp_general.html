@@ -791,6 +791,47 @@
 </dd></dl>
 
 <dl class="function">
+<dt id="_CPPv236harp_set_option_regrid_out_of_boundsi">
+<span id="harp_set_option_regrid_out_of_bounds__i"></span><span class="target" id="libharpgroup__harp__general_1ga83bdb60fc511d16c19e7c51d48aae84d"></span>int <code class="descname">harp_set_option_regrid_out_of_bounds</code><span class="sig-paren">(</span>int <em>method</em><span class="sig-paren">)</span><br /></dt>
+<dd><p>Set how to treat out of bound values during regridding operations. This is only applicable for point interpolation regridding. Any point that falls outside the target grid can be either set to NaN (the default), set to the nearest edge value, or set based on extrapolation (of two nearest points). This global HARP option determines which of the three cases will be used. <dl class="docutils">
+<dt><strong>Return</strong></dt>
+<dd><ul class="simple">
+<li><code class="docutils literal"><span class="pre">0</span></code>, Success. </li>
+<li><code class="docutils literal"><span class="pre">-1</span></code>, Error occurred (check <a class="reference internal" href="libharp_error.html#libharpgroup__harp__error_1gab2eeb46528306c6799632d1e800c4c36"><span class="std std-ref">harp_errno</span></a>). </li>
+</ul>
+</dd>
+<dt><strong>Parameters</strong></dt>
+<dd><ul class="breatheparameterlist first last simple">
+<li><code class="docutils literal"><span class="pre">method</span></code>: <ul>
+<li>0: Set values outside source grid to NaN </li>
+<li>1: Set value outside source grid to edge value (=min/max of source grid) </li>
+<li>2: Extrapolate based on nearest two edge values </li>
+</ul>
+</li>
+</ul>
+</dd>
+</dl>
+</p>
+</dd></dl>
+
+<dl class="function">
+<dt id="_CPPv236harp_get_option_regrid_out_of_boundsv">
+<span id="harp_get_option_regrid_out_of_bounds__void"></span><span class="target" id="libharpgroup__harp__general_1ga6119ed7d2ec68bdddb35845cd663fbef"></span>int <code class="descname">harp_get_option_regrid_out_of_bounds</code><span class="sig-paren">(</span>void<span class="sig-paren">)</span><br /></dt>
+<dd><p>Retrieve the current setting for treating out of bound values during regridding operations. <dl class="docutils">
+<dt><strong>See</strong></dt>
+<dd><a class="reference internal" href="#libharpgroup__harp__general_1ga83bdb60fc511d16c19e7c51d48aae84d"><span class="std std-ref">harp_set_option_regrid_out_of_bounds()</span></a> </dd>
+<dt><strong>Return</strong></dt>
+<dd><ul class="simple">
+<li><code class="docutils literal"><span class="pre">0</span></code> Set values outside source grid to NaN </li>
+<li><code class="docutils literal"><span class="pre">1</span></code> Set value outside source grid to edge value (=min/max of source grid) </li>
+<li><code class="docutils literal"><span class="pre">2</span></code> Extrapolate based on nearest two edge values </li>
+</ul>
+</dd>
+</dl>
+</p>
+</dd></dl>
+
+<dl class="function">
 <dt id="_CPPv29harp_initv">
 <span id="harp_init__void"></span><span class="target" id="libharpgroup__harp__general_1gad1f344feb3bea74322283efca649a045"></span>int <code class="descname">harp_init</code><span class="sig-paren">(</span>void<span class="sig-paren">)</span><br /></dt>
 <dd><p>Initializes the HARP C library. This function should be called before any other HARP C library function is called (except for <a class="reference internal" href="#libharpgroup__harp__general_1gab1b7664358a26d101ff84cafbfe486db"><span class="std std-ref">harp_set_coda_definition_path()</span></a>, <a class="reference internal" href="#libharpgroup__harp__general_1ga679243ffdd37971e1d8ff63d498df560"><span class="std std-ref">harp_set_coda_definition_path_conditional()</span></a>, and <a class="reference internal" href="libharp_error.html#libharpgroup__harp__error_1ga88c982481989852993829a34cd310b7d"><span class="std std-ref">harp_set_warning_handler()</span></a>).</p>

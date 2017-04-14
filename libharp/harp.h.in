@@ -434,6 +434,8 @@ LIBHARP_API int harp_set_option_enable_aux_afgl86(int enable);
 LIBHARP_API int harp_get_option_enable_aux_afgl86(void);
 LIBHARP_API int harp_set_option_enable_aux_usstd76(int enable);
 LIBHARP_API int harp_get_option_enable_aux_usstd76(void);
+LIBHARP_API int harp_set_option_regrid_out_of_bounds(int method);
+LIBHARP_API int harp_get_option_regrid_out_of_bounds(void);
 
 LIBHARP_API int harp_convert_unit(const char *from_unit, const char *to_unit, long num_values, double *value);
 

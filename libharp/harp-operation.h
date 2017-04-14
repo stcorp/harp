@@ -57,6 +57,7 @@ typedef enum harp_operation_type_enum
     operation_regrid,
     operation_regrid_collocated,
     operation_rename,
+    operation_set,
     operation_smooth_collocated,
     operation_string_comparison_filter,
     operation_string_membership_filter,
@@ -114,6 +115,7 @@ typedef enum harp_membership_operator_type_enum
  *   |-  harp_operation_regrid
  *   |-  harp_operation_regrid_collocated
  *   |-  harp_operation_rename
+ *   |-  harp_operation_set
  *   |-  harp_operation_smooth_collocated
  *   |-  harp_operation_wrap
  */
@@ -327,6 +329,14 @@ typedef struct harp_operation_rename_struct
     char *new_variable_name;
 } harp_operation_rename;
 
+typedef struct harp_operation_set_struct
+{
+    harp_operation_type type;
+    /* parameters */
+    char *option;
+    char *value;
+} harp_operation_set;
+
 typedef struct harp_operation_smooth_collocated_struct
 {
     harp_operation_type type;
@@ -431,6 +441,7 @@ int harp_operation_regrid_collocated_new(harp_dimension_type dimension_type, con
                                          const char target_dataset, const char *dataset_dir,
                                          harp_operation **new_operation);
 int harp_operation_rename_new(const char *variable_name, const char *new_variable_name, harp_operation **new_operation);
+int harp_operation_set_new(const char *option, const char *value, harp_operation **new_operation);
 int harp_operation_smooth_collocated_new(int num_variables, const char **variable_name,
                                          harp_dimension_type dimension_type, const char *axis_variable_name,
                                          const char *axis_unit, const char *collocation_result,

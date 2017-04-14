@@ -232,6 +232,7 @@ int harp_sized_array_add_int32(harp_sized_array *sized_array, int32_t value)
 %token                  FUNC_POINT_IN_AREA
 %token                  FUNC_REGRID
 %token                  FUNC_RENAME
+%token                  FUNC_SET
 %token                  FUNC_SMOOTH
 %token                  FUNC_VALID
 %token                  FUNC_WRAP
@@ -291,6 +292,7 @@ reserved_identifier:
     | FUNC_POINT_IN_AREA { $$ = "point_in_area"; }
     | FUNC_REGRID { $$ = "regrid"; }
     | FUNC_RENAME { $$ = "rename"; }
+    | FUNC_SET { $$ = "set"; }
     | FUNC_SMOOTH { $$ = "smooth"; }
     | FUNC_VALID { $$ = "valid"; }
     | FUNC_WRAP { $$ = "wrap"; }
@@ -496,7 +498,7 @@ operation:
         }
     | FUNC_LONGITUDE_RANGE '(' double_value ',' double_value ')' {
             if (harp_operation_longitude_range_filter_new($3, NULL, $5, NULL, &$$) != 0) YYERROR;
-    }
+        }
     | FUNC_LONGITUDE_RANGE '(' double_value ',' double_value UNIT ')' {
             if (harp_operation_longitude_range_filter_new($3, NULL, $5, $6, &$$) != 0) YYERROR;
         }
@@ -573,6 +575,9 @@ operation:
         }
     | FUNC_RENAME '(' identifier ',' identifier ')' {
             if (harp_operation_rename_new($3, $5, &$$) != 0) YYERROR;
+        }
+    | FUNC_SET '(' STRING_VALUE ',' STRING_VALUE ')' {
+            if (harp_operation_set_new($3, $5, &$$) != 0) YYERROR;
         }
     | FUNC_SMOOTH '(' identifier ',' DIMENSION ',' identifier UNIT ',' STRING_VALUE ',' ID_A ',' STRING_VALUE ')' {
             if (harp_operation_smooth_collocated_new(1, (const char **)&$3, $5, $7, $8, $10, 'a', $14, &$$) != 0)

@@ -56,6 +56,13 @@ int harp_program_new(harp_program **new_program)
     program->operation = NULL;
     program->current_index = 0;
 
+    program->option_enable_aux_afgl86 = harp_get_option_enable_aux_afgl86();
+    program->option_enable_aux_usstd76 = harp_get_option_enable_aux_usstd76();
+    program->option_regrid_out_of_bounds = harp_get_option_regrid_out_of_bounds();
+
+    /* we only explicitly set the regrid_out_of_bounds option */
+    harp_set_option_regrid_out_of_bounds(0);
+
     *new_program = program;
     return 0;
 }
@@ -64,6 +71,11 @@ void harp_program_delete(harp_program *program)
 {
     if (program != NULL)
     {
+        /* reset global HARP options to initial values */
+        harp_set_option_enable_aux_afgl86(program->option_enable_aux_afgl86);
+        harp_set_option_enable_aux_usstd76(program->option_enable_aux_usstd76);
+        harp_set_option_regrid_out_of_bounds(program->option_regrid_out_of_bounds);
+
         if (program->operation != NULL)
         {
             int i;
@@ -763,6 +775,64 @@ static int execute_rename(harp_product *product, harp_operation_rename *operatio
     return 0;
 }
 
+static int execute_set(harp_product *product, harp_operation_set *operation)
+{
+    (void)product;
+
+    if (strcmp(operation->option, "afgl86") == 0)
+    {
+        if (strcmp(operation->value, "enabled") == 0)
+        {
+            harp_set_option_enable_aux_afgl86(1);
+            harp_set_option_enable_aux_usstd76(0);
+        }
+        else if (strcmp(operation->value, "disabled") == 0)
+        {
+            harp_set_option_enable_aux_afgl86(0);
+            harp_set_option_enable_aux_usstd76(0);
+        }
+        else if (strcmp(operation->value, "usstd76") == 0)
+        {
+            harp_set_option_enable_aux_afgl86(0);
+            harp_set_option_enable_aux_usstd76(1);
+        }
+        else
+        {
+            harp_set_error(HARP_ERROR_OPERATION, "invalid value '%s' for option '%s'", operation->value,
+                           operation->option);
+            return -1;
+        }
+    }
+    else if (strcmp(operation->option, "regrid_out_of_bounds") == 0)
+    {
+        if (strcmp(operation->value, "nan") == 0)
+        {
+            harp_set_option_regrid_out_of_bounds(0);
+        }
+        else if (strcmp(operation->value, "edge") == 0)
+        {
+            harp_set_option_regrid_out_of_bounds(1);
+        }
+        else if (strcmp(operation->value, "extrapolate") == 0)
+        {
+            harp_set_option_regrid_out_of_bounds(2);
+        }
+        else
+        {
+            harp_set_error(HARP_ERROR_OPERATION, "invalid value '%s' for option '%s'", operation->value,
+                           operation->option);
+            return -1;
+        }
+    }
+    else
+    {
+        harp_set_error(HARP_ERROR_OPERATION, "invalid option '%s'", operation->option);
+        return -1;
+    }
+
+    return 0;
+}
+
 static int execute_smooth_collocated(harp_product *product, harp_operation_smooth_collocated *operation)
 {
     harp_collocation_result *collocation_result = NULL;
@@ -922,6 +992,12 @@ int harp_product_execute_program(harp_product *product, harp_program *program)
                 break;
             case operation_rename:
                 if (execute_rename(product, (harp_operation_rename *)operation) != 0)
+                {
+                    return -1;
+                }
+                break;
+            case operation_set:
+                if (execute_set(product, (harp_operation_set *)operation) != 0)
                 {
                     return -1;
                 }
