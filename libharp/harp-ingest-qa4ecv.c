@@ -1180,8 +1180,8 @@ static void register_hcho_product(void)
     description = "averaging kernel for the total column number density of tropospheric HCHO";
     variable_definition =
         harp_ingestion_register_variable_full_read(product_definition, "HCHO_column_number_density_avk",
-                                                   harp_type_float, 2, dimension_type, NULL, description, NULL, NULL,
-                                                   read_hcho_column_avk);
+                                                   harp_type_float, 2, dimension_type, NULL, description,
+                                                   HARP_UNIT_DIMENSIONLESS, NULL, read_hcho_column_avk);
     path = "/PRODUCT/averaging_kernel[]";
     harp_variable_definition_add_mapping(variable_definition, NULL, NULL, path, NULL);
 
