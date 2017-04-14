@@ -799,7 +799,7 @@ static int get_partial_column_nd_from_vmr_dry_and_pressure_bounds(harp_variable 
             harp_partial_column_number_density_from_volume_mixing_ratio(source_variable[0]->data.double_data[i],
                                                                         source_variable[1]->data.double_data[i],
                                                                         molar_mass_dry_air,
-                                                                        &source_variable[3]->data.double_data[2 * i]);
+                                                                        &source_variable[2]->data.double_data[2 * i]);
     }
 
     return 0;
