@@ -371,69 +371,77 @@ static int reduced_product_new(Reduced_product **new_reduced_product)
     return 0;
 }
 
-static void get_variable_name_and_unit_from_variable_type(const Reduced_product_variable_type variable_type,
-                                                          const char **variable_name, const char **unit)
+static void get_variable_name_type_and_unit_from_variable_type(const Reduced_product_variable_type variable_type,
+                                                               const char **variable_name, harp_data_type *data_type,
+                                                               const char **unit)
 {
     switch (variable_type)
     {
         case reduced_product_variable_type_index:
             *variable_name = "index";
+            *data_type = harp_type_int32;
             *unit = NULL;
             break;
 
         case reduced_product_variable_type_datetime:
             *variable_name = "datetime";
+            *data_type = harp_type_double;
             *unit = HARP_UNIT_DATETIME;
             break;
 
         case reduced_product_variable_type_latitude:
             *variable_name = "latitude";
+            *data_type = harp_type_double;
             *unit = HARP_UNIT_LATITUDE;
             break;
 
         case reduced_product_variable_type_longitude:
             *variable_name = "longitude";
+            *data_type = harp_type_double;
             *unit = HARP_UNIT_LONGITUDE;
             break;
 
         case reduced_product_variable_type_latitude_bounds:
             *variable_name = "latitude_bounds";
+            *data_type = harp_type_double;
             *unit = HARP_UNIT_LATITUDE;
             break;
 
         case reduced_product_variable_type_longitude_bounds:
             *variable_name = "longitude_bounds";
+            *data_type = harp_type_double;
             *unit = HARP_UNIT_LONGITUDE;
             break;
 
         case reduced_product_variable_type_sza:
             *variable_name = "solar_zenith_angle";
+            *data_type = harp_type_double;
             *unit = HARP_UNIT_ANGLE;
             break;
 
         case reduced_product_variable_type_saa:
             *variable_name = "solar_azimuth_angle";
+            *data_type = harp_type_double;
             *unit = HARP_UNIT_ANGLE;
             break;
 
         case reduced_product_variable_type_vza:
             *variable_name = "viewing_zenith_angle";
+            *data_type = harp_type_double;
             *unit = HARP_UNIT_ANGLE;
             break;
 
         case reduced_product_variable_type_vaa:
             *variable_name = "viewing_azimuth_angle";
+            *data_type = harp_type_double;
             *unit = HARP_UNIT_ANGLE;
             break;
 
         case reduced_product_variable_type_theta:
             *variable_name = "scattering_angle";
+            *data_type = harp_type_double;
             *unit = HARP_UNIT_ANGLE;
             break;
-
-        default:
-            assert(0);
-            exit(1);
     }
 }
 
@@ -441,11 +449,13 @@ static int get_derived_variable(harp_product *product, Reduced_product_variable_
                                 harp_variable **new_variable)
 {
     harp_dimension_type dimension_type = harp_dimension_time;
+    harp_data_type data_type;
     char *variable_name = NULL;
     char *unit = NULL;
 
     /* Get target variable name and unit. */
-    get_variable_name_and_unit_from_variable_type(variable_type, (const char **)&variable_name, (const char **)&unit);
+    get_variable_name_type_and_unit_from_variable_type(variable_type, (const char **)&variable_name, &data_type,
+                                                       (const char **)&unit);
 
     if (variable_type == reduced_product_variable_type_latitude_bounds ||
         variable_type == reduced_product_variable_type_longitude_bounds)
@@ -453,12 +463,12 @@ static int get_derived_variable(harp_product *product, Reduced_product_variable_
         harp_dimension_type dims[] = { harp_dimension_time, harp_dimension_independent };
 
         /* Get the derived parameter from the product. */
-        return harp_product_get_derived_variable(product, variable_name, harp_type_double, unit, 2, dims, new_variable);
+        return harp_product_get_derived_variable(product, variable_name, data_type, unit, 2, dims, new_variable);
     }
     else
     {
         /* Get the derived parameter from the product. */
-        return harp_product_get_derived_variable(product, variable_name, harp_type_double, unit, 1, &dimension_type,
+        return harp_product_get_derived_variable(product, variable_name, data_type, unit, 1, &dimension_type,
                                                  new_variable);
     }
 }
