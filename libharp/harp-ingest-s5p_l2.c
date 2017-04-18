@@ -2659,9 +2659,9 @@ static void register_hcho_product(void)
     /* cloud_albedo_uncertainty */
     description = "uncertainty of the cloud albedo";
     variable_definition =
-    harp_ingestion_register_variable_full_read(product_definition, "cloud_albedo_uncertainty", harp_type_float, 1,
-                                               dimension_type, NULL, description, HARP_UNIT_DIMENSIONLESS, NULL,
-                                               read_input_cloud_albedo_crb_precision);
+        harp_ingestion_register_variable_full_read(product_definition, "cloud_albedo_uncertainty", harp_type_float, 1,
+                                                   dimension_type, NULL, description, HARP_UNIT_DIMENSIONLESS, NULL,
+                                                   read_input_cloud_albedo_crb_precision);
     path = "/PRODUCT/SUPPORT_DATA/INPUT_DATA/cloud_albedo_precision";
     harp_variable_definition_add_mapping(variable_definition, NULL, NULL, path, description);
 
@@ -2726,9 +2726,9 @@ static void register_hcho_product(void)
     /* surface_albedo */
     description = "surface albedo";
     variable_definition =
-    harp_ingestion_register_variable_full_read(product_definition, "surface_albedo", harp_type_float, 1,
-                                               dimension_type, NULL, description, HARP_UNIT_DIMENSIONLESS, NULL,
-                                               read_input_surface_albedo);
+        harp_ingestion_register_variable_full_read(product_definition, "surface_albedo", harp_type_float, 1,
+                                                   dimension_type, NULL, description, HARP_UNIT_DIMENSIONLESS, NULL,
+                                                   read_input_surface_albedo);
     path = "/PRODUCT/SUPPORT_DATA/INPUT_DATA/surface_albedo";
     harp_variable_definition_add_mapping(variable_definition, NULL, NULL, path, description);
 
@@ -3307,7 +3307,7 @@ static void register_no2_product(void)
     path = "/PRODUCT/averaging_kernel[], /PRODUCT/air_mass_factor_total[], "
         "/PRODUCT/SUPPORT_DATA/DETAILED_RESULTS/air_mass_factor_stratosphere[], /PRODUCT/tm5_tropopause_layer_index[]";
     description = "averaging_kernel[layer] = if layer > tm5_tropopause_layer_index then "
-    "averaging_kernel[layer] * air_mass_factor_total / air_mass_factor_stratosphere else 0";
+        "averaging_kernel[layer] * air_mass_factor_total / air_mass_factor_stratosphere else 0";
     harp_variable_definition_add_mapping(variable_definition, NULL, NULL, path, description);
 }
 
