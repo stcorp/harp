@@ -258,6 +258,54 @@
 <td>degree</td>
 <td>azimuth angle of the satellite at the ground pixel location (WGS84); angle measured East-of-North</td>
 </tr>
+<tr class="row-even"><td><strong>cloud_fraction</strong></td>
+<td>float</td>
+<td>{<em>time</em>}</td>
+<td>&#160;</td>
+<td>cloud fraction for NO2 fitting window</td>
+</tr>
+<tr class="row-odd"><td><strong>absorbing_aerosol_index</strong></td>
+<td>float</td>
+<td>{<em>time</em>}</td>
+<td>&#160;</td>
+<td>aerosol index</td>
+</tr>
+<tr class="row-even"><td><strong>cloud_albedo</strong></td>
+<td>float</td>
+<td>{<em>time</em>}</td>
+<td>&#160;</td>
+<td>cloud albedo</td>
+</tr>
+<tr class="row-odd"><td><strong>cloud_pressure</strong></td>
+<td>float</td>
+<td>{<em>time</em>}</td>
+<td>Pa</td>
+<td>cloud pressure</td>
+</tr>
+<tr class="row-even"><td><strong>surface_albedo</strong></td>
+<td>float</td>
+<td>{<em>time</em>}</td>
+<td>&#160;</td>
+<td>surface albedo</td>
+</tr>
+<tr class="row-odd"><td><strong>surface_altitude</strong></td>
+<td>float</td>
+<td>{<em>time</em>}</td>
+<td>m</td>
+<td>surface altitude</td>
+</tr>
+<tr class="row-even"><td><strong>surface_altitude_uncertainty</strong></td>
+<td>float</td>
+<td>{<em>time</em>}</td>
+<td>m</td>
+<td>surface altitude precision</td>
+</tr>
+<tr class="row-odd"><td><strong>surface_pressure</strong></td>
+<td>float</td>
+<td>{<em>time</em>}</td>
+<td>Pa</td>
+<td>surface pressure</td>
+</tr>
 <tr class="row-even"><td><strong>pressure_bounds</strong></td>
 <td>double</td>
 <td>{<em>time</em>, <em>vertical</em>, 2}</td>
@@ -318,6 +366,30 @@
 <td>&#160;</td>
 <td>averaging kernel for the air mass factor correction, describing the NO2 profile sensitivity of the vertical column density</td>
 </tr>
+<tr class="row-even"><td><strong>stratospheric_NO2_column_number_density</strong></td>
+<td>float</td>
+<td>{<em>time</em>}</td>
+<td>mol/m^2</td>
+<td>stratospheric vertical column of NO2</td>
+</tr>
+<tr class="row-odd"><td><strong>stratospheric_NO2_column_number_density_uncertainty</strong></td>
+<td>float</td>
+<td>{<em>time</em>}</td>
+<td>mol/m^2</td>
+<td>uncertainty of the stratospheric vertical column of NO2 (standard error)</td>
+</tr>
+<tr class="row-even"><td><strong>stratospheric_NO2_column_number_density_amf</strong></td>
+<td>float</td>
+<td>{<em>time</em>}</td>
+<td>&#160;</td>
+<td>stratospheric air mass factor</td>
+</tr>
+<tr class="row-odd"><td><strong>stratospheric_NO2_column_number_density_avk</strong></td>
+<td>float</td>
+<td>{<em>time</em>, <em>vertical</em>}</td>
+<td>&#160;</td>
+<td>averaging kernel for the stratospheric vertical column number density of NO2</td>
+</tr>
 <tr class="row-even"><td><strong>index</strong></td>
 <td>int32</td>
 <td>{<em>time</em>}</td>
@@ -346,6 +418,10 @@
 <tr class="row-even"><td>total_column</td>
 <td>summed, total</td>
 <td>whether to use nitrogendioxide_total_column (which is derived from the total slant column diveded by the total amf) or nitrogendioxide_summed_total_column (which is the sum of the retrieved tropospheric and statospheric columns); option values are &#8216;summed&#8217; (default) and &#8216;total&#8217;</td>
+</tr>
+<tr class="row-odd"><td>cloud_fraction</td>
+<td>radiance</td>
+<td>whether to ingest the cloud fraction (default) or the radiance cloud fraction (cloud_fraction=radiance)</td>
 </tr>
 </tbody>
 </table>
@@ -436,72 +512,144 @@
 <td><em>path</em></td>
 <td><strong>/PRODUCT/SUPPORT_DATA/GEOLOCATIONS/viewing_azimuth_angle[]</strong></td>
 </tr>
-<tr class="row-odd"><td rowspan="2"><strong>pressure_bounds</strong></td>
+<tr class="row-odd"><td rowspan="4"><strong>cloud_fraction</strong></td>
+<td><em>condition</em></td>
+<td>cloud_fraction unset</td>
+</tr>
+<tr class="row-even"><td><em>path</em></td>
+<td><strong>/PRODUCT/SUPPORT_DATA/DETAILED_RESULTS/cloud_fraction_crb_nitrogendioxide_window[]</strong></td>
+</tr>
+<tr class="row-odd"><td><em>condition</em></td>
+<td>cloud_fraction=radiance</td>
+</tr>
+<tr class="row-even"><td><em>path</em></td>
+<td><strong>/PRODUCT/SUPPORT_DATA/DETAILED_RESULTS/cloud_radiance_fraction_nitrogendioxide_window[]</strong></td>
+</tr>
+<tr class="row-odd"><td rowspan="2"><strong>absorbing_aerosol_index</strong></td>
+<td><em>path</em></td>
+<td><strong>/PRODUCT/SUPPORT_DATA/INPUT_DATA/aerosol_index_354_388</strong></td>
+</tr>
+<tr class="row-even"><td><em>description</em></td>
+<td>aerosol index</td>
+</tr>
+<tr class="row-odd"><td rowspan="2"><strong>cloud_albedo</strong></td>
+<td><em>path</em></td>
+<td><strong>/PRODUCT/SUPPORT_DATA/INPUT_DATA/cloud_albedo</strong></td>
+</tr>
+<tr class="row-even"><td><em>description</em></td>
+<td>cloud albedo</td>
+</tr>
+<tr class="row-odd"><td rowspan="2"><strong>cloud_pressure</strong></td>
+<td><em>path</em></td>
+<td><strong>/PRODUCT/SUPPORT_DATA/INPUT_DATA/cloud_pressure_crb</strong></td>
+</tr>
+<tr class="row-even"><td><em>description</em></td>
+<td>cloud pressure</td>
+</tr>
+<tr class="row-odd"><td rowspan="2"><strong>surface_albedo</strong></td>
+<td><em>path</em></td>
+<td><strong>/PRODUCT/SUPPORT_DATA/INPUT_DATA/surface_albedo_nitrogendioxide_window</strong></td>
+</tr>
+<tr class="row-even"><td><em>description</em></td>
+<td>surface albedo</td>
+</tr>
+<tr class="row-odd"><td><strong>surface_altitude</strong></td>
+<td><em>path</em></td>
+<td><strong>/PRODUCT/SUPPORT_DATA/INPUT_DATA/surface_altitude[]</strong></td>
+</tr>
+<tr class="row-even"><td><strong>surface_altitude_uncertainty</strong></td>
+<td><em>path</em></td>
+<td><strong>/PRODUCT/SUPPORT_DATA/INPUT_DATA/surface_altitude_precision[]</strong></td>
+</tr>
+<tr class="row-odd"><td><strong>surface_pressure</strong></td>
+<td><em>path</em></td>
+<td><strong>/PRODUCT/SUPPORT_DATA/INPUT_DATA/surface_pressure[]</strong></td>
+</tr>
+<tr class="row-even"><td rowspan="2"><strong>pressure_bounds</strong></td>
 <td><em>path</em></td>
 <td><strong>/PRODUCT/tm5_constant_a[], /PRODUCT/tm5_constant_b[], /PRODUCT/SUPPORT_DATA/INPUT_DATA/surface_pressure[]</strong></td>
 </tr>
-<tr class="row-even"><td><em>description</em></td>
+<tr class="row-odd"><td><em>description</em></td>
 <td>pressure in Pa at level k is derived from surface pressure in Pa as: tm5_constant_a[k] + tm5_constant_b[k] * surface_pressure[]</td>
 </tr>
-<tr class="row-odd"><td rowspan="2"><strong>tropopause_pressure</strong></td>
+<tr class="row-even"><td rowspan="2"><strong>tropopause_pressure</strong></td>
 <td><em>path</em></td>
 <td><strong>/PRODUCT/tm5_constant_a[], /PRODUCT/tm5_constant_b[], /PRODUCT/tm5_tropopause_layer_index[], /PRODUCT/SUPPORT_DATA/INPUT_DATA/surface_pressure[]</strong></td>
 </tr>
-<tr class="row-even"><td><em>description</em></td>
+<tr class="row-odd"><td><em>description</em></td>
 <td>pressure in Pa at tropause is derived from the upper bound of the layer with tropopause layer index k: tm5_constant_a[k + 1] + tm5_constant_b[k + 1] * surface_pressure[]</td>
 </tr>
-<tr class="row-odd"><td><strong>tropospheric_NO2_column_number_density</strong></td>
+<tr class="row-even"><td><strong>tropospheric_NO2_column_number_density</strong></td>
 <td><em>path</em></td>
 <td><strong>/PRODUCT/nitrogendioxide_tropospheric_column[]</strong></td>
 </tr>
-<tr class="row-even"><td><strong>tropospheric_NO2_column_number_density_uncertainty</strong></td>
+<tr class="row-odd"><td><strong>tropospheric_NO2_column_number_density_uncertainty</strong></td>
 <td><em>path</em></td>
 <td><strong>/PRODUCT/nitrogendioxide_tropospheric_column_precision[]</strong></td>
 </tr>
-<tr class="row-odd"><td><strong>tropospheric_NO2_column_number_density_amf</strong></td>
+<tr class="row-even"><td><strong>tropospheric_NO2_column_number_density_amf</strong></td>
 <td><em>path</em></td>
 <td><strong>/PRODUCT/air_mass_factor_troposphere[]</strong></td>
 </tr>
-<tr class="row-even"><td rowspan="2"><strong>tropospheric_NO2_column_number_density_avk</strong></td>
+<tr class="row-odd"><td rowspan="2"><strong>tropospheric_NO2_column_number_density_avk</strong></td>
 <td><em>path</em></td>
 <td><strong>/PRODUCT/averaging_kernel[], /PRODUCT/air_mass_factor_total[], /PRODUCT/air_mass_factor_troposphere[], /PRODUCT/tm5_tropopause_layer_index[]</strong></td>
 </tr>
-<tr class="row-odd"><td><em>description</em></td>
-<td>averaging_kernel[layer] = if layer &lt;= tm5_tropopause_layer_index then averaging_kernel[layer] * tm5_tropopause_layer_index / air_mass_factor_troposphere else 0</td>
+<tr class="row-even"><td><em>description</em></td>
+<td>averaging_kernel[layer] = if layer &lt;= tm5_tropopause_layer_index then averaging_kernel[layer] * air_mass_factor_total / air_mass_factor_troposphere else 0</td>
 </tr>
-<tr class="row-even"><td rowspan="4"><strong>NO2_column_number_density</strong></td>
+<tr class="row-odd"><td rowspan="4"><strong>NO2_column_number_density</strong></td>
 <td><em>condition</em></td>
 <td>total_column=summed or total_column unset</td>
 </tr>
-<tr class="row-odd"><td><em>path</em></td>
+<tr class="row-even"><td><em>path</em></td>
 <td><strong>/PRODUCT/SUPPORT_DATA/DETAILED_RESULTS/nitrogendioxide_summed_total_column[]</strong></td>
 </tr>
-<tr class="row-even"><td><em>condition</em></td>
+<tr class="row-odd"><td><em>condition</em></td>
 <td>total_column=total</td>
 </tr>
-<tr class="row-odd"><td><em>path</em></td>
+<tr class="row-even"><td><em>path</em></td>
 <td><strong>/PRODUCT/SUPPORT_DATA/DETAILED_RESULTS/nitrogendioxide_total_column[]</strong></td>
 </tr>
-<tr class="row-even"><td rowspan="4"><strong>NO2_column_number_density_uncertainty</strong></td>
+<tr class="row-odd"><td rowspan="4"><strong>NO2_column_number_density_uncertainty</strong></td>
 <td><em>condition</em></td>
 <td>total_column=summed or total_column unset</td>
 </tr>
-<tr class="row-odd"><td><em>path</em></td>
+<tr class="row-even"><td><em>path</em></td>
 <td><strong>/PRODUCT/SUPPORT_DATA/DETAILED_RESULTS/nitrogendioxide_summed_total_column_precision[]</strong></td>
 </tr>
-<tr class="row-even"><td><em>condition</em></td>
+<tr class="row-odd"><td><em>condition</em></td>
 <td>total_column=total</td>
 </tr>
-<tr class="row-odd"><td><em>path</em></td>
+<tr class="row-even"><td><em>path</em></td>
 <td><strong>/PRODUCT/SUPPORT_DATA/DETAILED_RESULTS/nitrogendioxide_total_column_precision[]</strong></td>
 </tr>
-<tr class="row-even"><td><strong>NO2_column_number_density_amf</strong></td>
+<tr class="row-odd"><td><strong>NO2_column_number_density_amf</strong></td>
 <td><em>path</em></td>
 <td><strong>/PRODUCT/air_mass_factor_total[]</strong></td>
 </tr>
-<tr class="row-odd"><td><strong>NO2_column_number_density_avk</strong></td>
+<tr class="row-even"><td><strong>NO2_column_number_density_avk</strong></td>
 <td><em>path</em></td>
 <td><strong>/PRODUCT/averaging_kernel[]</strong></td>
+</tr>
+<tr class="row-odd"><td><strong>stratospheric_NO2_column_number_density</strong></td>
+<td><em>path</em></td>
+<td><strong>/PRODUCT/nitrogendioxide_tropospheric_column[]</strong></td>
+</tr>
+<tr class="row-even"><td><strong>stratospheric_NO2_column_number_density_uncertainty</strong></td>
+<td><em>path</em></td>
+<td><strong>/PRODUCT/nitrogendioxide_tropospheric_column_precision[]</strong></td>
+</tr>
+<tr class="row-odd"><td><strong>stratospheric_NO2_column_number_density_amf</strong></td>
+<td><em>path</em></td>
+<td><strong>/PRODUCT/air_mass_factor_troposphere[]</strong></td>
+</tr>
+<tr class="row-even"><td rowspan="2"><strong>stratospheric_NO2_column_number_density_avk</strong></td>
+<td><em>path</em></td>
+<td><strong>/PRODUCT/averaging_kernel[], /PRODUCT/air_mass_factor_total[], /PRODUCT/SUPPORT_DATA/DETAILED_RESULTS/air_mass_factor_stratosphere[], /PRODUCT/tm5_tropopause_layer_index[]</strong></td>
+</tr>
+<tr class="row-odd"><td><em>description</em></td>
+<td>averaging_kernel[layer] = if layer &gt; tm5_tropopause_layer_index then averaging_kernel[layer] * air_mass_factor_total / air_mass_factor_stratosphere else 0</td>
 </tr>
 </tbody>
 </table>
