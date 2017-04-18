@@ -90,7 +90,7 @@ typedef struct ingest_info_struct
     coda_product *product;
     int use_summed_total_column;
     int use_radiance_cloud_fraction;
-    int so2_column_type; /* 0: total (tm5 profile), 1: 1km box profile, 2: 7km box profile, 3: 15km box profile */
+    int so2_column_type;        /* 0: total (tm5 profile), 1: 1km box profile, 2: 7km box profile, 3: 15km box profile */
 
     s5p_product_type product_type;
     long num_times;
@@ -3624,9 +3624,9 @@ static void register_so2_product(void)
     /* surface_albedo */
     description = "surface albedo";
     variable_definition =
-    harp_ingestion_register_variable_full_read(product_definition, "surface_albedo", harp_type_float, 1,
-                                               dimension_type, NULL, description, HARP_UNIT_DIMENSIONLESS, NULL,
-                                               read_so2_surface_albedo);
+        harp_ingestion_register_variable_full_read(product_definition, "surface_albedo", harp_type_float, 1,
+                                                   dimension_type, NULL, description, HARP_UNIT_DIMENSIONLESS, NULL,
+                                                   read_so2_surface_albedo);
     path = "/PRODUCT/SUPPORT_DATA/INPUT_DATA/surface_albedo_328nm, "
         "/PRODUCT/SUPPORT_DATA/INPUT_DATA/surface_albedo_376nm, "
         "/PRODUCT/SUPPORT_DATA/DETAILED_RESULTS/selected_fitting_window_flag";
