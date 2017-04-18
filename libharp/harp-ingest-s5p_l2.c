@@ -90,6 +90,7 @@ typedef struct ingest_info_struct
     coda_product *product;
     int use_summed_total_column;
     int use_radiance_cloud_fraction;
+    int so2_column_type; /* 0: total (tm5 profile), 1: 1km box profile, 2: 7km box profile, 3: 15km box profile */
 
     s5p_product_type product_type;
     long num_times;
@@ -107,8 +108,7 @@ typedef struct ingest_info_struct
     coda_cursor input_data_cursor;
 
     int wavelength_ratio;
-    int has_hcho_apriori;
-    int has_so2_precision;
+    int is_nrti;
 } ingest_info;
 
 static void broadcast_array_float(long num_scanlines, long num_pixels, float *data)
@@ -417,25 +417,26 @@ static int init_dimensions(ingest_info *info)
     return 0;
 }
 
-static int init_optional_variables(ingest_info *info)
+static int init_processing_mode(ingest_info *info)
 {
-    if (info->product_type == s5p_type_hcho)
-    {
-        coda_cursor cursor = info->detailed_results_cursor;
+    coda_cursor cursor;
+    char mode[5];
 
-        if (coda_cursor_goto(&cursor, "formaldehyde_profile_apriori") == 0)
-        {
-            info->has_hcho_apriori = 1;
-        }
+    if (coda_cursor_set_product(&cursor, info->product) != 0)
+    {
+        return -1;
     }
-    else if (info->product_type == s5p_type_so2)
+    if (coda_cursor_goto(&cursor, "/METADATA/GRANULE_DESCRIPTION@ProcessingMode") != 0)
     {
-        coda_cursor cursor = info->detailed_results_cursor;
-
-        if (coda_cursor_goto(&cursor, "sulfurdioxide_total_vertical_column_precision") == 0)
-        {
-            info->has_so2_precision = 1;
-        }
+        return -1;
+    }
+    if (coda_cursor_read_string(&cursor, mode, 5) != 0)
+    {
+        return -1;
+    }
+    if (strcmp(mode, "NRTI") == 0)
+    {
+        info->is_nrti = 1;
     }
 
     return 0;
@@ -463,6 +464,7 @@ static int ingestion_init(const harp_ingestion_module *module, coda_product *pro
     info->product = product;
     info->use_summed_total_column = 1;
     info->use_radiance_cloud_fraction = 0;
+    info->so2_column_type = 0;
     info->num_times = 0;
     info->num_scanlines = 0;
     info->num_pixels = 0;
@@ -470,8 +472,19 @@ static int ingestion_init(const harp_ingestion_module *module, coda_product *pro
     info->num_layers = 0;
     info->num_levels = 0;
     info->wavelength_ratio = 354;
-    info->has_hcho_apriori = 0;
-    info->has_so2_precision = 0;
+    info->is_nrti = 0;
+
+    if (init_processing_mode(info) != 0)
+    {
+        ingestion_done(info);
+        return -1;
+    }
+
+    if (get_product_type(info->product, &info->product_type) != 0)
+    {
+        ingestion_done(info);
+        return -1;
+    }
 
     if (harp_ingestion_options_has_option(options, "total_column"))
     {
@@ -489,11 +502,33 @@ static int ingestion_init(const harp_ingestion_module *module, coda_product *pro
     {
         info->use_radiance_cloud_fraction = 1;
     }
-
-    if (get_product_type(info->product, &info->product_type) != 0)
+    if (harp_ingestion_options_has_option(options, "so2_column"))
     {
-        ingestion_done(info);
-        return -1;
+        if (!info->is_nrti)
+        {
+            /* alternative SO2 columns are only available for NRTI, so return an empty product if not NRTI */
+            /* (i.e. just pick the first definition and leave num_times set to 0) */
+            *definition = *module->product_definition;
+            *user_data = info;
+            return 0;
+        }
+        if (harp_ingestion_options_get_option(options, "so2_column", &option_value) != 0)
+        {
+            ingestion_done(info);
+            return -1;
+        }
+        if (strcmp(option_value, "1km") == 0)
+        {
+            info->so2_column_type = 1;
+        }
+        else if (strcmp(option_value, "7km") == 0)
+        {
+            info->so2_column_type = 2;
+        }
+        else if (strcmp(option_value, "15km") == 0)
+        {
+            info->so2_column_type = 3;
+        }
     }
 
     if (init_cursors(info) != 0)
@@ -503,12 +538,6 @@ static int ingestion_init(const harp_ingestion_module *module, coda_product *pro
     }
 
     if (init_dimensions(info) != 0)
-    {
-        ingestion_done(info);
-        return -1;
-    }
-
-    if (init_optional_variables(info) != 0)
     {
         ingestion_done(info);
         return -1;
@@ -1482,22 +1511,6 @@ static int read_product_ozone_tropospheric_column_precision(void *user_data, har
                         info->num_scanlines * info->num_pixels, data);
 }
 
-static int read_product_sulfurdioxide_total_vertical_column(void *user_data, harp_array data)
-{
-    ingest_info *info = (ingest_info *)user_data;
-
-    return read_dataset(info->product_cursor, "sulfurdioxide_total_vertical_column", harp_type_float,
-                        info->num_scanlines * info->num_pixels, data);
-}
-
-static int read_product_sulfurdioxide_total_vertical_column_precision(void *user_data, harp_array data)
-{
-    ingest_info *info = (ingest_info *)user_data;
-
-    return read_dataset(info->product_cursor, "sulfurdioxide_total_vertical_column_precision", harp_type_float,
-                        info->num_scanlines * info->num_pixels, data);
-}
-
 static int read_results_air_mass_factor_stratosphere(void *user_data, harp_array data)
 {
     ingest_info *info = (ingest_info *)user_data;
@@ -1763,12 +1776,12 @@ static int read_results_processing_quality_flags(void *user_data, harp_array dat
     return 0;
 }
 
-static int read_results_sulfurdioxide_total_vertical_column_trueness(void *user_data, harp_array data)
+static int read_results_sulfurdioxide_profile_apriori(void *user_data, harp_array data)
 {
     ingest_info *info = (ingest_info *)user_data;
 
-    return read_dataset(info->detailed_results_cursor, "sulfurdioxide_total_vertical_column_trueness", harp_type_float,
-                        info->num_scanlines * info->num_pixels, data);
+    return read_dataset(info->detailed_results_cursor, "sulfurdioxide_profile_apriori", harp_type_float,
+                        info->num_scanlines * info->num_pixels * info->num_layers, data);
 }
 
 static int read_results_surface_albedo_fitted(void *user_data, harp_array data)
@@ -2184,6 +2197,239 @@ static int read_no2_tropopause_pressure(void *user_data, harp_array data)
     return 0;
 }
 
+static int read_so2_total_air_mass_factor(void *user_data, harp_array data)
+{
+    ingest_info *info = (ingest_info *)user_data;
+
+    switch (info->so2_column_type)
+    {
+        case 0:
+            return read_dataset(info->detailed_results_cursor, "sulfurdioxide_total_air_mass_factor_polluted",
+                                harp_type_float, info->num_scanlines * info->num_pixels, data);
+        case 1:
+            return read_dataset(info->detailed_results_cursor, "sulfurdioxide_total_air_mass_factor_1km",
+                                harp_type_float, info->num_scanlines * info->num_pixels, data);
+        case 2:
+            return read_dataset(info->detailed_results_cursor, "sulfurdioxide_total_air_mass_factor_7km",
+                                harp_type_float, info->num_scanlines * info->num_pixels, data);
+        case 3:
+            return read_dataset(info->detailed_results_cursor, "sulfurdioxide_total_air_mass_factor_15km",
+                                harp_type_float, info->num_scanlines * info->num_pixels, data);
+    }
+
+    assert(0);
+    exit(1);
+}
+
+static int read_so2_total_air_mass_factor_precision(void *user_data, harp_array data)
+{
+    ingest_info *info = (ingest_info *)user_data;
+
+    switch (info->so2_column_type)
+    {
+        case 0:
+            return read_dataset(info->detailed_results_cursor, "sulfurdioxide_total_air_mass_factor_polluted_precision",
+                                harp_type_float, info->num_scanlines * info->num_pixels, data);
+        case 1:
+            return read_dataset(info->detailed_results_cursor, "sulfurdioxide_total_air_mass_factor_1km_precision",
+                                harp_type_float, info->num_scanlines * info->num_pixels, data);
+        case 2:
+            return read_dataset(info->detailed_results_cursor, "sulfurdioxide_total_air_mass_factor_7km_precision",
+                                harp_type_float, info->num_scanlines * info->num_pixels, data);
+        case 3:
+            return read_dataset(info->detailed_results_cursor, "sulfurdioxide_total_air_mass_factor_15km_precision",
+                                harp_type_float, info->num_scanlines * info->num_pixels, data);
+    }
+
+    assert(0);
+    exit(1);
+}
+
+static int read_so2_total_air_mass_factor_trueness(void *user_data, harp_array data)
+{
+    ingest_info *info = (ingest_info *)user_data;
+
+    switch (info->so2_column_type)
+    {
+        case 0:
+            return read_dataset(info->detailed_results_cursor, "sulfurdioxide_total_air_mass_factor_polluted_trueness",
+                                harp_type_float, info->num_scanlines * info->num_pixels, data);
+        case 1:
+            return read_dataset(info->detailed_results_cursor, "sulfurdioxide_total_air_mass_factor_1km_trueness",
+                                harp_type_float, info->num_scanlines * info->num_pixels, data);
+        case 2:
+            return read_dataset(info->detailed_results_cursor, "sulfurdioxide_total_air_mass_factor_7km_trueness",
+                                harp_type_float, info->num_scanlines * info->num_pixels, data);
+        case 3:
+            return read_dataset(info->detailed_results_cursor, "sulfurdioxide_total_air_mass_factor_15km_trueness",
+                                harp_type_float, info->num_scanlines * info->num_pixels, data);
+    }
+
+    assert(0);
+    exit(1);
+}
+
+static int read_so2_total_vertical_column(void *user_data, harp_array data)
+{
+    ingest_info *info = (ingest_info *)user_data;
+
+    switch (info->so2_column_type)
+    {
+        case 0:
+            return read_dataset(info->product_cursor, "sulfurdioxide_total_vertical_column", harp_type_float,
+                                info->num_scanlines * info->num_pixels, data);
+        case 1:
+            return read_dataset(info->detailed_results_cursor, "sulfurdioxide_total_vertical_column_1km",
+                                harp_type_float, info->num_scanlines * info->num_pixels, data);
+        case 2:
+            return read_dataset(info->detailed_results_cursor, "sulfurdioxide_total_vertical_column_7km",
+                                harp_type_float, info->num_scanlines * info->num_pixels, data);
+        case 3:
+            return read_dataset(info->detailed_results_cursor, "sulfurdioxide_total_vertical_column_15km",
+                                harp_type_float, info->num_scanlines * info->num_pixels, data);
+    }
+
+    assert(0);
+    exit(1);
+}
+
+static int read_so2_total_vertical_column_precision(void *user_data, harp_array data)
+{
+    ingest_info *info = (ingest_info *)user_data;
+
+    switch (info->so2_column_type)
+    {
+        case 0:
+            return read_dataset(info->product_cursor, "sulfurdioxide_total_vertical_column_precision", harp_type_float,
+                                info->num_scanlines * info->num_pixels, data);
+        case 1:
+            return read_dataset(info->detailed_results_cursor, "sulfurdioxide_total_vertical_column_1km_precision",
+                                harp_type_float, info->num_scanlines * info->num_pixels, data);
+        case 2:
+            return read_dataset(info->detailed_results_cursor, "sulfurdioxide_total_vertical_column_7km_precision",
+                                harp_type_float, info->num_scanlines * info->num_pixels, data);
+        case 3:
+            return read_dataset(info->detailed_results_cursor, "sulfurdioxide_total_vertical_column_15km_precision",
+                                harp_type_float, info->num_scanlines * info->num_pixels, data);
+    }
+
+    assert(0);
+    exit(1);
+}
+
+static int read_so2_total_vertical_column_trueness(void *user_data, harp_array data)
+{
+    ingest_info *info = (ingest_info *)user_data;
+
+    switch (info->so2_column_type)
+    {
+        case 0:
+            return read_dataset(info->detailed_results_cursor, "sulfurdioxide_total_vertical_column_trueness",
+                                harp_type_float, info->num_scanlines * info->num_pixels, data);
+        case 1:
+            return read_dataset(info->detailed_results_cursor, "sulfurdioxide_total_vertical_column_1km_trueness",
+                                harp_type_float, info->num_scanlines * info->num_pixels, data);
+        case 2:
+            return read_dataset(info->detailed_results_cursor, "sulfurdioxide_total_vertical_column_7km_trueness",
+                                harp_type_float, info->num_scanlines * info->num_pixels, data);
+        case 3:
+            return read_dataset(info->detailed_results_cursor, "sulfurdioxide_total_vertical_column_15km_trueness",
+                                harp_type_float, info->num_scanlines * info->num_pixels, data);
+    }
+
+    assert(0);
+    exit(1);
+}
+
+
+static int read_so2_surface_albedo(void *user_data, harp_array data)
+{
+    ingest_info *info = (ingest_info *)user_data;
+    harp_array surface_albedo_328;
+    harp_array surface_albedo_376;
+    harp_array selected_fitting_window_flag;
+    long num_elements = info->num_scanlines * info->num_pixels;
+    long i;
+
+    surface_albedo_328.ptr = malloc(num_elements * sizeof(float));
+    if (surface_albedo_328.ptr == NULL)
+    {
+        harp_set_error(HARP_ERROR_OUT_OF_MEMORY, "out of memory (could not allocate %lu bytes) (%s:%u)",
+                       num_elements * sizeof(float), __FILE__, __LINE__);
+        return -1;
+    }
+
+    surface_albedo_376.ptr = malloc(num_elements * sizeof(float));
+    if (surface_albedo_376.ptr == NULL)
+    {
+        harp_set_error(HARP_ERROR_OUT_OF_MEMORY, "out of memory (could not allocate %lu bytes) (%s:%u)",
+                       num_elements * sizeof(float), __FILE__, __LINE__);
+        free(surface_albedo_328.ptr);
+        return -1;
+    }
+
+    selected_fitting_window_flag.ptr = malloc(num_elements * sizeof(int32_t));
+    if (selected_fitting_window_flag.ptr == NULL)
+    {
+        harp_set_error(HARP_ERROR_OUT_OF_MEMORY, "out of memory (could not allocate %lu bytes) (%s:%u)",
+                       num_elements * sizeof(int32_t), __FILE__, __LINE__);
+        free(surface_albedo_328.ptr);
+        free(surface_albedo_376.ptr);
+        return -1;
+    }
+
+    if (read_dataset(info->input_data_cursor, "surface_albedo_328nm", harp_type_float, num_elements, surface_albedo_328)
+        != 0)
+    {
+        free(surface_albedo_328.ptr);
+        free(surface_albedo_376.ptr);
+        free(selected_fitting_window_flag.ptr);
+        return -1;
+    }
+
+    if (read_dataset(info->input_data_cursor, "surface_albedo_376nm", harp_type_float, num_elements, surface_albedo_376)
+        != 0)
+    {
+        free(surface_albedo_328.ptr);
+        free(surface_albedo_376.ptr);
+        free(selected_fitting_window_flag.ptr);
+        return -1;
+    }
+
+    if (read_dataset(info->detailed_results_cursor, "selected_fitting_window_flag", harp_type_int32, num_elements,
+                     selected_fitting_window_flag) != 0)
+    {
+        free(surface_albedo_328.ptr);
+        free(surface_albedo_376.ptr);
+        free(selected_fitting_window_flag.ptr);
+        return -1;
+    }
+
+    for (i = 0; i < num_elements; i++)
+    {
+        int flag = (int)selected_fitting_window_flag.int32_data[i];
+
+        if (flag == 1 || flag == 2)
+        {
+            data.float_data[i] = surface_albedo_328.float_data[i];
+        }
+        else if (flag == 3)
+        {
+            data.float_data[i] = surface_albedo_376.float_data[i];
+        }
+        else
+        {
+            data.float_data[i] = harp_nan();
+        }
+    }
+
+    free(surface_albedo_328.ptr);
+    free(surface_albedo_376.ptr);
+    free(selected_fitting_window_flag.ptr);
+
+    return 0;
+}
+
 static int parse_option_wavelength_ratio(ingest_info *info, const harp_ingestion_options *options)
 {
     const char *value;
@@ -2229,14 +2475,14 @@ static int ingestion_init_aer_ai(const harp_ingestion_module *module, coda_produ
     return 0;
 }
 
-static int exclude_hcho_apriori(void *user_data)
+static int exclude_nrti(void *user_data)
 {
-    return !((ingest_info *)user_data)->has_hcho_apriori;
+    return !((ingest_info *)user_data)->is_nrti;
 }
 
-static int exclude_so2_column_uncertainty(void *user_data)
+static int exclude_so2_apriori_profile(void *user_data)
 {
-    return !((ingest_info *)user_data)->has_so2_precision;
+    return ((ingest_info *)user_data)->so2_column_type != 0;
 }
 
 static void register_core_variables(harp_product_definition *product_definition, int delta_time_num_dims)
@@ -2431,7 +2677,7 @@ static void register_cloud_variables(harp_product_definition *product_definition
                                                    dimension_type, NULL, description, HARP_UNIT_DIMENSIONLESS, NULL,
                                                    read_input_cloud_albedo_crb);
     path = "/PRODUCT/SUPPORT_DATA/INPUT_DATA/cloud_albedo";
-    harp_variable_definition_add_mapping(variable_definition, NULL, NULL, path, description);
+    harp_variable_definition_add_mapping(variable_definition, NULL, NULL, path, NULL);
 
     /* cloud_albedo_uncertainty */
     description = "uncertainty of the cloud albedo";
@@ -2440,7 +2686,7 @@ static void register_cloud_variables(harp_product_definition *product_definition
                                                    dimension_type, NULL, description, HARP_UNIT_DIMENSIONLESS, NULL,
                                                    read_input_cloud_albedo_crb_precision);
     path = "/PRODUCT/SUPPORT_DATA/INPUT_DATA/cloud_albedo_precision";
-    harp_variable_definition_add_mapping(variable_definition, NULL, NULL, path, description);
+    harp_variable_definition_add_mapping(variable_definition, NULL, NULL, path, NULL);
 
     /* cloud_fraction */
     description = "cloud fraction";
@@ -2471,7 +2717,7 @@ static void register_cloud_variables(harp_product_definition *product_definition
                                                    dimension_type, NULL, description, "km", NULL,
                                                    read_input_cloud_height_crb);
     path = "/PRODUCT/SUPPORT_DATA/INPUT_DATA/cloud_height_crb";
-    harp_variable_definition_add_mapping(variable_definition, NULL, NULL, path, description);
+    harp_variable_definition_add_mapping(variable_definition, NULL, NULL, path, NULL);
 
     /* cloud_altitude_uncertainty */
     description = "uncertainty of the cloud altitude";
@@ -2480,7 +2726,7 @@ static void register_cloud_variables(harp_product_definition *product_definition
                                                    dimension_type, NULL, description, "km", NULL,
                                                    read_input_cloud_height_crb_precision);
     path = "/PRODUCT/SUPPORT_DATA/INPUT_DATA/cloud_height_crb_precision";
-    harp_variable_definition_add_mapping(variable_definition, NULL, NULL, path, description);
+    harp_variable_definition_add_mapping(variable_definition, NULL, NULL, path, NULL);
 
     /* cloud_pressure */
     description = "cloud pressure";
@@ -2489,7 +2735,7 @@ static void register_cloud_variables(harp_product_definition *product_definition
                                                    dimension_type, NULL, description, "Pa", NULL,
                                                    read_input_cloud_pressure_crb);
     path = "/PRODUCT/SUPPORT_DATA/INPUT_DATA/cloud_pressure_crb";
-    harp_variable_definition_add_mapping(variable_definition, NULL, NULL, path, description);
+    harp_variable_definition_add_mapping(variable_definition, NULL, NULL, path, NULL);
 
     /* cloud_pressure_uncertainty */
     description = "uncertainty of the cloud pressure";
@@ -2498,7 +2744,7 @@ static void register_cloud_variables(harp_product_definition *product_definition
                                                    dimension_type, NULL, description, "Pa", NULL,
                                                    read_input_cloud_pressure_crb_precision);
     path = "/PRODUCT/SUPPORT_DATA/INPUT_DATA/cloud_pressure_crb_precision";
-    harp_variable_definition_add_mapping(variable_definition, NULL, NULL, path, description);
+    harp_variable_definition_add_mapping(variable_definition, NULL, NULL, path, NULL);
 }
 
 static void register_surface_variables(harp_product_definition *product_definition)
@@ -2764,7 +3010,7 @@ static void register_hcho_product(void)
                                                    dimension_type, NULL, description, HARP_UNIT_DIMENSIONLESS, NULL,
                                                    read_input_surface_albedo);
     path = "/PRODUCT/SUPPORT_DATA/INPUT_DATA/surface_albedo";
-    harp_variable_definition_add_mapping(variable_definition, NULL, NULL, path, description);
+    harp_variable_definition_add_mapping(variable_definition, NULL, NULL, path, NULL);
 
     register_surface_variables(product_definition);
 
@@ -2813,7 +3059,7 @@ static void register_hcho_product(void)
     variable_definition =
         harp_ingestion_register_variable_full_read(product_definition, "HCHO_volume_mixing_ratio_apriori",
                                                    harp_type_float, 2, dimension_type, NULL, description, "ppv",
-                                                   exclude_hcho_apriori, read_results_formaldehyde_profile_apriori);
+                                                   exclude_nrti, read_results_formaldehyde_profile_apriori);
     path = "/PRODUCT/SUPPORT_DATA/DETAILED_RESULTS/formaldehyde_profile_apriori[]";
     harp_variable_definition_add_mapping(variable_definition, NULL, NULL, path, NULL);
 
@@ -3163,7 +3409,7 @@ static void register_no2_product(void)
                                                    dimension_type, NULL, description, HARP_UNIT_DIMENSIONLESS, NULL,
                                                    read_input_aerosol_index_354_388);
     path = "/PRODUCT/SUPPORT_DATA/INPUT_DATA/aerosol_index_354_388";
-    harp_variable_definition_add_mapping(variable_definition, NULL, NULL, path, description);
+    harp_variable_definition_add_mapping(variable_definition, NULL, NULL, path, NULL);
 
     /* cloud_albedo */
     description = "cloud albedo";
@@ -3172,7 +3418,7 @@ static void register_no2_product(void)
                                                    dimension_type, NULL, description, HARP_UNIT_DIMENSIONLESS, NULL,
                                                    read_input_cloud_albedo);
     path = "/PRODUCT/SUPPORT_DATA/INPUT_DATA/cloud_albedo";
-    harp_variable_definition_add_mapping(variable_definition, NULL, NULL, path, description);
+    harp_variable_definition_add_mapping(variable_definition, NULL, NULL, path, NULL);
 
     /* cloud_pressure */
     description = "cloud pressure";
@@ -3181,7 +3427,7 @@ static void register_no2_product(void)
                                                    dimension_type, NULL, description, "Pa", NULL,
                                                    read_input_cloud_pressure_crb);
     path = "/PRODUCT/SUPPORT_DATA/INPUT_DATA/cloud_pressure_crb";
-    harp_variable_definition_add_mapping(variable_definition, NULL, NULL, path, description);
+    harp_variable_definition_add_mapping(variable_definition, NULL, NULL, path, NULL);
 
     /* surface_albedo */
     description = "surface albedo";
@@ -3190,7 +3436,7 @@ static void register_no2_product(void)
                                                    dimension_type, NULL, description, HARP_UNIT_DIMENSIONLESS, NULL,
                                                    read_input_surface_albedo_nitrogendioxide_window);
     path = "/PRODUCT/SUPPORT_DATA/INPUT_DATA/surface_albedo_nitrogendioxide_window";
-    harp_variable_definition_add_mapping(variable_definition, NULL, NULL, path, description);
+    harp_variable_definition_add_mapping(variable_definition, NULL, NULL, path, NULL);
 
     register_surface_variables(product_definition);
 
@@ -3347,6 +3593,7 @@ static void register_no2_product(void)
 
 static void register_so2_product(void)
 {
+    const char *so2_column_options[] = { "1km", "7km", "15km" };
     const char *cloud_fraction_options[] = { "radiance" };
     const char *path;
     const char *description;
@@ -3358,6 +3605,12 @@ static void register_so2_product(void)
     module = harp_ingestion_register_module_coda("S5P_L2_SO2", "Sentinel-5P", "Sentinel5P", "L2__SO2___",
                                                  "Sentinel-5P L2 SO2 total column", ingestion_init, ingestion_done);
 
+    harp_ingestion_register_option(module, "so2_column", "whether to ingest the SO2 column derived from the TM5 "
+                                   "profile (default), from the 1km box profile (so2_column=1km), from the 7km box "
+                                   "profile (so2_column=7km), or from the 15km box profile (so2_column=15km); "
+                                   "providing this option will only work for NRTI data (otherwise an empty product is "
+                                   "returned)", 3, so2_column_options);
+
     harp_ingestion_register_option(module, "cloud_fraction", "whether to ingest the cloud fraction (default) or the "
                                    "radiance cloud fraction (cloud_fraction=radiance)", 1, cloud_fraction_options);
 
@@ -3368,6 +3621,19 @@ static void register_so2_product(void)
 
     register_cloud_variables(product_definition);
 
+    /* surface_albedo */
+    description = "surface albedo";
+    variable_definition =
+    harp_ingestion_register_variable_full_read(product_definition, "surface_albedo", harp_type_float, 1,
+                                               dimension_type, NULL, description, HARP_UNIT_DIMENSIONLESS, NULL,
+                                               read_so2_surface_albedo);
+    path = "/PRODUCT/SUPPORT_DATA/INPUT_DATA/surface_albedo_328nm, "
+        "/PRODUCT/SUPPORT_DATA/INPUT_DATA/surface_albedo_376nm, "
+        "/PRODUCT/SUPPORT_DATA/DETAILED_RESULTS/selected_fitting_window_flag";
+    description = "if selected_fitting_window_flag is 1 or 2 then use surface_albedo_328, if "
+        "selected_fitting_window_flag is 3 then use surface_albedo_376, else set to NaN";
+    harp_variable_definition_add_mapping(variable_definition, NULL, NULL, path, description);
+
     register_surface_variables(product_definition);
 
     /* SO2_column_number_density */
@@ -3375,19 +3641,30 @@ static void register_so2_product(void)
     variable_definition =
         harp_ingestion_register_variable_full_read(product_definition, "SO2_column_number_density", harp_type_float, 1,
                                                    dimension_type, NULL, description, "mol/m^2", NULL,
-                                                   read_product_sulfurdioxide_total_vertical_column);
+                                                   read_so2_total_vertical_column);
     path = "/PRODUCT/sulfurdioxide_total_vertical_column[]";
-    harp_variable_definition_add_mapping(variable_definition, NULL, NULL, path, NULL);
+    harp_variable_definition_add_mapping(variable_definition, "so2_column unset", NULL, path, NULL);
+    path = "/PRODUCT/SUPPORT_DATA/DETAILED_RESULTS/sulfurdioxide_total_vertical_column_1km[]";
+    harp_variable_definition_add_mapping(variable_definition, "so2_column=1km", NULL, path, NULL);
+    path = "/PRODUCT/SUPPORT_DATA/DETAILED_RESULTS/sulfurdioxide_total_vertical_column_7km[]";
+    harp_variable_definition_add_mapping(variable_definition, "so2_column=7km", NULL, path, NULL);
+    path = "/PRODUCT/SUPPORT_DATA/DETAILED_RESULTS/sulfurdioxide_total_vertical_column_15km[]";
+    harp_variable_definition_add_mapping(variable_definition, "so2_column=15km", NULL, path, NULL);
 
     /* SO2_column_number_density_uncertainty_random */
     description = "random component of the uncertainty of the SO2 vertical column density";
     variable_definition =
         harp_ingestion_register_variable_full_read(product_definition, "SO2_column_number_density_uncertainty_random",
                                                    harp_type_float, 1, dimension_type, NULL, description, "mol/m^2",
-                                                   exclude_so2_column_uncertainty,
-                                                   read_product_sulfurdioxide_total_vertical_column_precision);
+                                                   exclude_nrti, read_so2_total_vertical_column_precision);
     path = "/PRODUCT/sulfurdioxide_total_vertical_column_precision[]";
-    harp_variable_definition_add_mapping(variable_definition, NULL, NULL, path, NULL);
+    harp_variable_definition_add_mapping(variable_definition, "so2_column unset", NULL, path, NULL);
+    path = "/PRODUCT/SUPPORT_DATA/DETAILED_RESULTS/sulfurdioxide_total_vertical_column_1km_precision[]";
+    harp_variable_definition_add_mapping(variable_definition, "so2_column=1km", NULL, path, NULL);
+    path = "/PRODUCT/SUPPORT_DATA/DETAILED_RESULTS/sulfurdioxide_total_vertical_column_7km_precision[]";
+    harp_variable_definition_add_mapping(variable_definition, "so2_column=7km", NULL, path, NULL);
+    path = "/PRODUCT/SUPPORT_DATA/DETAILED_RESULTS/sulfurdioxide_total_vertical_column_15km_precision[]";
+    harp_variable_definition_add_mapping(variable_definition, "so2_column=15km", NULL, path, NULL);
 
     /* SO2_column_number_density_uncertainty_systematic */
     description = "systematic component of the uncertainty of the SO2 vertical column density";
@@ -3395,10 +3672,63 @@ static void register_so2_product(void)
         harp_ingestion_register_variable_full_read(product_definition,
                                                    "SO2_column_number_density_uncertainty_systematic", harp_type_float,
                                                    1, dimension_type, NULL, description, "mol/m^2",
-                                                   exclude_so2_column_uncertainty,
-                                                   read_results_sulfurdioxide_total_vertical_column_trueness);
+                                                   exclude_nrti, read_so2_total_vertical_column_trueness);
     path = "/PRODUCT/SUPPORT_DATA/DETAILED_RESULTS/sulfurdioxide_total_vertical_column_trueness[]";
-    harp_variable_definition_add_mapping(variable_definition, NULL, NULL, path, NULL);
+    harp_variable_definition_add_mapping(variable_definition, "so2_column unset", NULL, path, NULL);
+    path = "/PRODUCT/SUPPORT_DATA/DETAILED_RESULTS/sulfurdioxide_total_vertical_column_1km_trueness[]";
+    harp_variable_definition_add_mapping(variable_definition, "so2_column=1km", NULL, path, NULL);
+    path = "/PRODUCT/SUPPORT_DATA/DETAILED_RESULTS/sulfurdioxide_total_vertical_column_7km_trueness[]";
+    harp_variable_definition_add_mapping(variable_definition, "so2_column=7km", NULL, path, NULL);
+    path = "/PRODUCT/SUPPORT_DATA/DETAILED_RESULTS/sulfurdioxide_total_vertical_column_15km_trueness[]";
+    harp_variable_definition_add_mapping(variable_definition, "so2_column=15km", NULL, path, NULL);
+
+    /* SO2_column_number_density_amf */
+    description = "total air mass factor";
+    variable_definition =
+        harp_ingestion_register_variable_full_read(product_definition, "SO2_column_number_density_amf", harp_type_float,
+                                                   1, dimension_type, NULL, description, HARP_UNIT_DIMENSIONLESS,
+                                                   NULL, read_so2_total_air_mass_factor);
+    path = "/PRODUCT/SUPPORT_DATA/DETAILED_RESULTS/sulfurdioxide_total_air_mass_factor_polluted[]";
+    harp_variable_definition_add_mapping(variable_definition, "so2_column unset", NULL, path, NULL);
+    path = "/PRODUCT/SUPPORT_DATA/DETAILED_RESULTS/sulfurdioxide_total_air_mass_factor_1km[]";
+    harp_variable_definition_add_mapping(variable_definition, "so2_column=1km", NULL, path, NULL);
+    path = "/PRODUCT/SUPPORT_DATA/DETAILED_RESULTS/sulfurdioxide_total_air_mass_factor_7km[]";
+    harp_variable_definition_add_mapping(variable_definition, "so2_column=7km", NULL, path, NULL);
+    path = "/PRODUCT/SUPPORT_DATA/DETAILED_RESULTS/sulfurdioxide_total_air_mass_factor_15km[]";
+    harp_variable_definition_add_mapping(variable_definition, "so2_column=15km", NULL, path, NULL);
+
+    /* SO2_column_number_density_amf_uncertainty_random */
+    description = "random component of the uncertainty of the total air mass factor";
+    variable_definition =
+        harp_ingestion_register_variable_full_read(product_definition,
+                                                   "SO2_column_number_density_amf_uncertainty_random", harp_type_float,
+                                                   1, dimension_type, NULL, description, HARP_UNIT_DIMENSIONLESS,
+                                                   exclude_nrti, read_so2_total_air_mass_factor_precision);
+    path = "/PRODUCT/SUPPORT_DATA/DETAILED_RESULTS/sulfurdioxide_total_air_mass_factor_polluted_precision[]";
+    harp_variable_definition_add_mapping(variable_definition, "so2_column unset", NULL, path, NULL);
+    path = "/PRODUCT/SUPPORT_DATA/DETAILED_RESULTS/sulfurdioxide_total_air_mass_factor_1km_precision[]";
+    harp_variable_definition_add_mapping(variable_definition, "so2_column=1km", NULL, path, NULL);
+    path = "/PRODUCT/SUPPORT_DATA/DETAILED_RESULTS/sulfurdioxide_total_air_mass_factor_7km_precision[]";
+    harp_variable_definition_add_mapping(variable_definition, "so2_column=7km", NULL, path, NULL);
+    path = "/PRODUCT/SUPPORT_DATA/DETAILED_RESULTS/sulfurdioxide_total_air_mass_factor_15km_precision[]";
+    harp_variable_definition_add_mapping(variable_definition, "so2_column=15km", NULL, path, NULL);
+
+    /* SO2_column_number_density_amf_uncertainty_systematic */
+    description = "systematic component of the uncertainty of the total air mass factor";
+    variable_definition =
+        harp_ingestion_register_variable_full_read(product_definition,
+                                                   "SO2_column_number_density_amf_uncertainty_systematic",
+                                                   harp_type_float, 1, dimension_type, NULL, description,
+                                                   HARP_UNIT_DIMENSIONLESS, exclude_nrti,
+                                                   read_so2_total_air_mass_factor_trueness);
+    path = "/PRODUCT/SUPPORT_DATA/DETAILED_RESULTS/sulfurdioxide_total_air_mass_factor_polluted_trueness[]";
+    harp_variable_definition_add_mapping(variable_definition, "so2_column unset", NULL, path, NULL);
+    path = "/PRODUCT/SUPPORT_DATA/DETAILED_RESULTS/sulfurdioxide_total_air_mass_factor_1km_trueness[]";
+    harp_variable_definition_add_mapping(variable_definition, "so2_column=1km", NULL, path, NULL);
+    path = "/PRODUCT/SUPPORT_DATA/DETAILED_RESULTS/sulfurdioxide_total_air_mass_factor_7km_trueness[]";
+    harp_variable_definition_add_mapping(variable_definition, "so2_column=7km", NULL, path, NULL);
+    path = "/PRODUCT/SUPPORT_DATA/DETAILED_RESULTS/sulfurdioxide_total_air_mass_factor_15km_trueness[]";
+    harp_variable_definition_add_mapping(variable_definition, "so2_column=15km", NULL, path, NULL);
 
     /* SO2_column_number_density_avk */
     description = "averaging kernel for the SO2 vertical column density";
@@ -3408,6 +3738,16 @@ static void register_so2_product(void)
                                                    read_results_averaging_kernel_1d);
     path = "/PRODUCT/SUPPORT_DATA/DETAILED_RESULTS/averaging_kernel[]";
     harp_variable_definition_add_mapping(variable_definition, NULL, NULL, path, NULL);
+
+    /* SO2_volume_mixing_ratio_apriori */
+    description = "SO2 apriori profile in volume mixing ratios";
+    variable_definition =
+        harp_ingestion_register_variable_full_read(product_definition, "SO2_volume_mixing_ratio_apriori",
+                                                   harp_type_float, 2, dimension_type, NULL, description, "ppv",
+                                                   exclude_so2_apriori_profile,
+                                                   read_results_sulfurdioxide_profile_apriori);
+    path = "/PRODUCT/SUPPORT_DATA/DETAILED_RESULTS/sulfurdioxide_profile_apriori[]";
+    harp_variable_definition_add_mapping(variable_definition, "so2_column unset", NULL, path, NULL);
 
     /* O3_column_number_density */
     description = "O3 vertical column density";
