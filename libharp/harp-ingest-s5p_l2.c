@@ -89,6 +89,7 @@ typedef struct ingest_info_struct
 {
     coda_product *product;
     int use_summed_total_column;
+    int use_radiance_cloud_fraction;
 
     s5p_product_type product_type;
     long num_times;
@@ -461,6 +462,7 @@ static int ingestion_init(const harp_ingestion_module *module, coda_product *pro
 
     info->product = product;
     info->use_summed_total_column = 1;
+    info->use_radiance_cloud_fraction = 0;
     info->num_times = 0;
     info->num_scanlines = 0;
     info->num_pixels = 0;
@@ -482,6 +484,10 @@ static int ingestion_init(const harp_ingestion_module *module, coda_product *pro
         {
             info->use_summed_total_column = 0;
         }
+    }
+    if (harp_ingestion_options_has_option(options, "cloud_fraction"))
+    {
+        info->use_radiance_cloud_fraction = 1;
     }
 
     if (get_product_type(info->product, &info->product_type) != 0)
@@ -790,6 +796,14 @@ static int read_geolocation_viewing_zenith_angle(void *user_data, harp_array dat
                         info->num_scanlines * info->num_pixels, data);
 }
 
+static int read_input_aerosol_index_354_388(void *user_data, harp_array data)
+{
+    ingest_info *info = (ingest_info *)user_data;
+
+    return read_dataset(info->input_data_cursor, "aerosol_index_354_388", harp_type_float,
+                        info->num_scanlines * info->num_pixels, data);
+}
+
 static int read_input_altitude(void *user_data, harp_array data)
 {
     ingest_info *info = (ingest_info *)user_data;
@@ -847,6 +861,14 @@ static int read_input_altitude_bounds(void *user_data, harp_array data)
     }
 
     return 0;
+}
+
+static int read_input_cloud_albedo(void *user_data, harp_array data)
+{
+    ingest_info *info = (ingest_info *)user_data;
+
+    return read_dataset(info->input_data_cursor, "cloud_albedo", harp_type_float,
+                        info->num_scanlines * info->num_pixels, data);
 }
 
 static int read_input_cloud_pressure_crb(void *user_data, harp_array data)
@@ -975,6 +997,14 @@ static int read_input_pressure_bounds(void *user_data, harp_array data)
     free(delta_pressure.ptr);
 
     return 0;
+}
+
+static int read_input_surface_albedo_nitrogendioxide_window(void *user_data, harp_array data)
+{
+    ingest_info *info = (ingest_info *)user_data;
+
+    return read_dataset(info->input_data_cursor, "surface_albedo_nitrogendioxide_window", harp_type_float,
+                        info->num_scanlines * info->num_pixels, data);
 }
 
 static int read_input_surface_altitude(void *user_data, harp_array data)
@@ -1404,6 +1434,14 @@ static int read_product_sulfurdioxide_total_vertical_column_precision(void *user
                         info->num_scanlines * info->num_pixels, data);
 }
 
+static int read_results_air_mass_factor_stratosphere(void *user_data, harp_array data)
+{
+    ingest_info *info = (ingest_info *)user_data;
+
+    return read_dataset(info->detailed_results_cursor, "air_mass_factor_stratosphere", harp_type_float,
+                        info->num_scanlines * info->num_pixels, data);
+}
+
 static int read_results_averaging_kernel_2d(void *user_data, harp_array data)
 {
     ingest_info *info = (ingest_info *)user_data;
@@ -1457,6 +1495,19 @@ static int read_results_cloud_fraction_crb_precision(void *user_data, harp_array
     ingest_info *info = (ingest_info *)user_data;
 
     return read_dataset(info->detailed_results_cursor, "cloud_fraction_crb_precision", harp_type_float,
+                        info->num_scanlines * info->num_pixels, data);
+}
+
+static int read_results_cloud_fraction_nitrogendioxide_window(void *user_data, harp_array data)
+{
+    ingest_info *info = (ingest_info *)user_data;
+
+    if (info->use_radiance_cloud_fraction)
+    {
+        return read_dataset(info->detailed_results_cursor, "cloud_radiance_fraction_nitrogendioxide_window",
+                            harp_type_float, info->num_scanlines * info->num_pixels, data);
+    }
+    return read_dataset(info->detailed_results_cursor, "cloud_fraction_crb_nitrogen_dioxide_window", harp_type_float,
                         info->num_scanlines * info->num_pixels, data);
 }
 
@@ -1521,6 +1572,22 @@ static int read_results_formaldehyde_tropospheric_vertical_column_trueness(void 
     ingest_info *info = (ingest_info *)user_data;
 
     return read_dataset(info->detailed_results_cursor, "formaldehyde_tropospheric_vertical_column_trueness",
+                        harp_type_float, info->num_scanlines * info->num_pixels, data);
+}
+
+static int read_results_nitrogendioxide_stratospheric_column(void *user_data, harp_array data)
+{
+    ingest_info *info = (ingest_info *)user_data;
+
+    return read_dataset(info->detailed_results_cursor, "nitrogendioxide_stratospheric_column", harp_type_float,
+                        info->num_scanlines * info->num_pixels, data);
+}
+
+static int read_results_nitrogendioxide_stratospheric_column_precision(void *user_data, harp_array data)
+{
+    ingest_info *info = (ingest_info *)user_data;
+
+    return read_dataset(info->detailed_results_cursor, "nitrogendioxide_stratospheric_column_precision",
                         harp_type_float, info->num_scanlines * info->num_pixels, data);
 }
 
@@ -1668,6 +1735,87 @@ static int read_no2_column_precision(void *user_data, harp_array data)
         "nitrogendioxide_total_column_precision";
     return read_dataset(info->detailed_results_cursor, variable_name, harp_type_float,
                         info->num_scanlines * info->num_pixels, data);
+}
+
+static int read_no2_column_stratospheric_avk(void *user_data, harp_array data)
+{
+    ingest_info *info = (ingest_info *)user_data;
+    harp_array layer_data;
+    harp_array amf_data;
+    long i, j;
+
+    if (read_dataset(info->product_cursor, "averaging_kernel", harp_type_float,
+                     info->num_scanlines * info->num_pixels * info->num_layers, data) != 0)
+    {
+        return -1;
+    }
+
+    layer_data.int32_data = malloc(info->num_scanlines * info->num_pixels * sizeof(int32_t));
+    if (layer_data.int32_data == NULL)
+    {
+        harp_set_error(HARP_ERROR_OUT_OF_MEMORY, "out of memory (could not allocate %lu bytes) (%s:%u)",
+                       info->num_scanlines * info->num_pixels * sizeof(int32_t), __FILE__, __LINE__);
+        return -1;
+    }
+    if (read_dataset(info->product_cursor, "tm5_tropopause_layer_index", harp_type_int32,
+                     info->num_scanlines * info->num_pixels, layer_data) != 0)
+    {
+        free(layer_data.int32_data);
+        return -1;
+    }
+
+    amf_data.float_data = malloc(info->num_scanlines * info->num_pixels * sizeof(float));
+    if (amf_data.float_data == NULL)
+    {
+        harp_set_error(HARP_ERROR_OUT_OF_MEMORY, "out of memory (could not allocate %lu bytes) (%s:%u)",
+                       info->num_scanlines * info->num_pixels * sizeof(float), __FILE__, __LINE__);
+        free(layer_data.int32_data);
+        return -1;
+    }
+    if (read_product_air_mass_factor_total(user_data, amf_data) != 0)
+    {
+        free(amf_data.float_data);
+        free(layer_data.int32_data);
+        return -1;
+    }
+    for (i = 0; i < info->num_scanlines * info->num_pixels; i++)
+    {
+        if (layer_data.int32_data[i] < 0 || layer_data.int32_data[i] >= info->num_layers)
+        {
+            for (j = 0; j < info->num_layers; j++)
+            {
+                data.float_data[i * info->num_layers + j] = harp_nan();
+            }
+        }
+        else
+        {
+            for (j = 0; j < layer_data.int32_data[i]; j++)
+            {
+                data.float_data[i * info->num_layers + j] = 0;
+            }
+            for (j = layer_data.int32_data[i]; j < info->num_layers; j++)
+            {
+                data.float_data[i * info->num_layers + j] *= amf_data.float_data[i];
+            }
+        }
+    }
+    free(layer_data.int32_data);
+
+    if (read_results_air_mass_factor_stratosphere(user_data, amf_data) != 0)
+    {
+        free(amf_data.float_data);
+        return -1;
+    }
+    for (i = 0; i < info->num_scanlines * info->num_pixels; i++)
+    {
+        for (j = 0; j < info->num_layers; j++)
+        {
+            data.float_data[i * info->num_layers + j] /= amf_data.float_data[i];
+        }
+    }
+    free(amf_data.float_data);
+
+    return 0;
 }
 
 static int read_no2_column_tropospheric_avk(void *user_data, harp_array data)
@@ -2731,6 +2879,7 @@ static void register_o3_tpr_product(void)
 static void register_no2_product(void)
 {
     const char *total_column_options[] = { "summed", "total" };
+    const char *cloud_fraction_options[] = { "radiance" };
     const char *path;
     const char *description;
     harp_ingestion_module *module;
@@ -2751,10 +2900,63 @@ static void register_no2_product(void)
                                    "tropospheric and statospheric columns); option values are 'summed' (default) and "
                                    "'total'", 2, total_column_options);
 
+    harp_ingestion_register_option(module, "cloud_fraction", "whether to ingest the cloud fraction (default) or the "
+                                   "radiance cloud fraction (cloud_fraction=radiance)", 1, cloud_fraction_options);
+
     product_definition = harp_ingestion_register_product(module, "S5P_L2_NO2", NULL, read_dimensions);
     register_core_variables(product_definition, s5p_delta_time_num_dims[s5p_type_no2]);
     register_geolocation_variables(product_definition);
     register_additional_geolocation_variables(product_definition);
+    register_surface_variables(product_definition);
+
+    /* cloud_fraction */
+    description = "cloud fraction for NO2 fitting window";
+    variable_definition =
+        harp_ingestion_register_variable_full_read(product_definition, "cloud_fraction", harp_type_float, 1,
+                                                   dimension_type, NULL, description, HARP_UNIT_DIMENSIONLESS, NULL,
+                                                   read_results_cloud_fraction_nitrogendioxide_window);
+    path = "/PRODUCT/SUPPORT_DATA/DETAILED_RESULTS/cloud_fraction_crb_nitrogendioxide_window[]";
+    harp_variable_definition_add_mapping(variable_definition, "cloud_fraction unset", NULL, path, NULL);
+    path = "/PRODUCT/SUPPORT_DATA/DETAILED_RESULTS/cloud_radiance_fraction_nitrogendioxide_window[]";
+    harp_variable_definition_add_mapping(variable_definition, "cloud_fraction=radiance", NULL, path, NULL);
+
+    /* absorbing_aerosol_index */
+    description = "aerosol index";
+    variable_definition =
+        harp_ingestion_register_variable_full_read(product_definition, "absorbing_aerosol_index", harp_type_float, 1,
+                                                   dimension_type, NULL, description, HARP_UNIT_DIMENSIONLESS, NULL,
+                                                   read_input_aerosol_index_354_388);
+    path = "/PRODUCT/SUPPORT_DATA/INPUT_DATA/aerosol_index_354_388";
+    harp_variable_definition_add_mapping(variable_definition, NULL, NULL, path, description);
+
+    /* cloud_albedo */
+    description = "cloud albedo";
+    variable_definition =
+        harp_ingestion_register_variable_full_read(product_definition, "cloud_albedo", harp_type_float, 1,
+                                                   dimension_type, NULL, description, HARP_UNIT_DIMENSIONLESS, NULL,
+                                                   read_input_cloud_albedo);
+    path = "/PRODUCT/SUPPORT_DATA/INPUT_DATA/cloud_albedo";
+    harp_variable_definition_add_mapping(variable_definition, NULL, NULL, path, description);
+
+    /* cloud_pressure */
+    description = "cloud pressure";
+    variable_definition =
+        harp_ingestion_register_variable_full_read(product_definition, "cloud_pressure", harp_type_float, 1,
+                                                   dimension_type, NULL, description, "Pa", NULL,
+                                                   read_input_cloud_pressure_crb);
+    path = "/PRODUCT/SUPPORT_DATA/INPUT_DATA/cloud_pressure_crb";
+    harp_variable_definition_add_mapping(variable_definition, NULL, NULL, path, description);
+
+    /* surface_albedo */
+    description = "surface albedo";
+    variable_definition =
+        harp_ingestion_register_variable_full_read(product_definition, "surface_albedo", harp_type_float, 1,
+                                                   dimension_type, NULL, description, HARP_UNIT_DIMENSIONLESS, NULL,
+                                                   read_input_surface_albedo_nitrogendioxide_window);
+    path = "/PRODUCT/SUPPORT_DATA/INPUT_DATA/surface_albedo_nitrogendioxide_window";
+    harp_variable_definition_add_mapping(variable_definition, NULL, NULL, path, description);
+
+
 
     /* pressure_bounds */
     description = "pressure boundaries";
@@ -2818,7 +3020,7 @@ static void register_no2_product(void)
     path = "/PRODUCT/averaging_kernel[], /PRODUCT/air_mass_factor_total[], /PRODUCT/air_mass_factor_troposphere[], "
         "/PRODUCT/tm5_tropopause_layer_index[]";
     description = "averaging_kernel[layer] = if layer <= tm5_tropopause_layer_index then "
-        "averaging_kernel[layer] * tm5_tropopause_layer_index / air_mass_factor_troposphere else 0";
+        "averaging_kernel[layer] * air_mass_factor_total / air_mass_factor_troposphere else 0";
     harp_variable_definition_add_mapping(variable_definition, NULL, NULL, path, description);
 
     /* NO2_column_number_density */
@@ -2864,6 +3066,47 @@ static void register_no2_product(void)
                                                    read_product_averaging_kernel);
     path = "/PRODUCT/averaging_kernel[]";
     harp_variable_definition_add_mapping(variable_definition, NULL, NULL, path, NULL);
+
+    /* stratospheric_NO2_column_number_density */
+    description = "stratospheric vertical column of NO2";
+    variable_definition =
+        harp_ingestion_register_variable_full_read(product_definition, "stratospheric_NO2_column_number_density",
+                                                   harp_type_float, 1, dimension_type, NULL, description, "mol/m^2",
+                                                   NULL, read_results_nitrogendioxide_stratospheric_column);
+    path = "/PRODUCT/nitrogendioxide_tropospheric_column[]";
+    harp_variable_definition_add_mapping(variable_definition, NULL, NULL, path, NULL);
+
+    /* stratospheric_NO2_column_number_density_uncertainty */
+    description = "uncertainty of the stratospheric vertical column of NO2 (standard error)";
+    variable_definition =
+        harp_ingestion_register_variable_full_read(product_definition,
+                                                   "stratospheric_NO2_column_number_density_uncertainty",
+                                                   harp_type_float, 1, dimension_type, NULL, description, "mol/m^2",
+                                                   NULL, read_results_nitrogendioxide_stratospheric_column_precision);
+    path = "/PRODUCT/nitrogendioxide_tropospheric_column_precision[]";
+    harp_variable_definition_add_mapping(variable_definition, NULL, NULL, path, NULL);
+
+    /* stratospheric_NO2_column_number_density_amf */
+    description = "stratospheric air mass factor";
+    variable_definition =
+        harp_ingestion_register_variable_full_read(product_definition, "stratospheric_NO2_column_number_density_amf",
+                                                   harp_type_float, 1, dimension_type, NULL, description,
+                                                   HARP_UNIT_DIMENSIONLESS, NULL,
+                                                   read_results_air_mass_factor_stratosphere);
+    path = "/PRODUCT/air_mass_factor_troposphere[]";
+    harp_variable_definition_add_mapping(variable_definition, NULL, NULL, path, NULL);
+
+    /* stratospheric_NO2_column_number_density_avk */
+    description = "averaging kernel for the stratospheric vertical column number density of NO2";
+    variable_definition =
+        harp_ingestion_register_variable_full_read(product_definition, "stratospheric_NO2_column_number_density_avk",
+                                                   harp_type_float, 2, dimension_type, NULL, description,
+                                                   HARP_UNIT_DIMENSIONLESS, NULL, read_no2_column_stratospheric_avk);
+    path = "/PRODUCT/averaging_kernel[], /PRODUCT/air_mass_factor_total[], "
+        "/PRODUCT/SUPPORT_DATA/DETAILED_RESULTS/air_mass_factor_stratosphere[], /PRODUCT/tm5_tropopause_layer_index[]";
+    description = "averaging_kernel[layer] = if layer > tm5_tropopause_layer_index then "
+    "averaging_kernel[layer] * air_mass_factor_total / air_mass_factor_stratosphere else 0";
+    harp_variable_definition_add_mapping(variable_definition, NULL, NULL, path, description);
 }
 
 static void register_so2_product(void)
