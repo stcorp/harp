@@ -148,8 +148,22 @@ static int read_dataset(ingest_info *info, const char *path, long num_elements, 
     {
         if (coda_cursor_read_double(&cursor, &fill_value.double_data) != 0)
         {
-            harp_set_error(HARP_ERROR_CODA, NULL);
-            return -1;
+            char str[4];
+
+            if (coda_cursor_read_string(&cursor, str, sizeof(str)) != 0)
+            {
+                harp_set_error(HARP_ERROR_CODA, NULL);
+                return -1;
+            }
+            if (strcmp(str, "NaN") == 0)
+            {
+                fill_value.double_data = coda_NaN();
+            }
+            else
+            {
+                harp_set_error(HARP_ERROR_INGESTION, "Invalid FillValue '%s'", str);
+                return -1;
+            }
         }
         harp_array_replace_fill_value(harp_type_double, num_elements, data, fill_value);
     }
