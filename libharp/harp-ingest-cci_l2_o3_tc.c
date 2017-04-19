@@ -297,7 +297,7 @@ static int read_sensor_zenith_angle(void *user_data, harp_array data)
 {
     ingest_info *info = (ingest_info *)user_data;
 
-    return read_dataset(info, "/sensor_zenith_angle", harp_type_double, info->num_time, data);
+    return read_dataset(info, "/viewing_zenith_angle", harp_type_double, info->num_time, data);
 }
 
 static int read_relative_azimuth_angle(void *user_data, harp_array data)
@@ -311,7 +311,7 @@ static int read_pressure(void *user_data, harp_array data)
 {
     ingest_info *info = (ingest_info *)user_data;
 
-    return read_dataset(info, "/effective_scene_air_pressure", harp_type_double, info->num_time, data);
+    return read_dataset(info, "/effective_scene_pressure", harp_type_double, info->num_time, data);
 }
 
 static int read_pressure_bounds(void *user_data, harp_array data)
@@ -367,14 +367,14 @@ static int read_O3_column_number_density(void *user_data, harp_array data)
 {
     ingest_info *info = (ingest_info *)user_data;
 
-    return read_dataset(info, "/atmosphere_mole_content_of_ozone", harp_type_double, info->num_time, data);
+    return read_dataset(info, "/total_ozone_column", harp_type_double, info->num_time, data);
 }
 
 static int read_O3_column_number_density_uncertainty_random(void *user_data, harp_array data)
 {
     ingest_info *info = (ingest_info *)user_data;
 
-    return read_dataset(info, "/atmosphere_mole_content_of_ozone_random_error", harp_type_double, info->num_time, data);
+    return read_dataset(info, "/total_ozone_column_random_error", harp_type_double, info->num_time, data);
 }
 
 static int read_O3_column_number_density_avk(void *user_data, harp_array data)
@@ -427,14 +427,14 @@ static int read_cloud_fraction(void *user_data, harp_array data)
 {
     ingest_info *info = (ingest_info *)user_data;
 
-    return read_dataset(info, "/cloud_area_fraction", harp_type_double, info->num_time, data);
+    return read_dataset(info, "/cloud_fraction", harp_type_double, info->num_time, data);
 }
 
 static int read_cloud_top_pressure(void *user_data, harp_array data)
 {
     ingest_info *info = (ingest_info *)user_data;
 
-    return read_dataset(info, "/air_pressure_at_cloud_top", harp_type_double, info->num_time, data);
+    return read_dataset(info, "/cloud_top_pressure", harp_type_double, info->num_time, data);
 }
 
 static int read_cloud_top_albedo(void *user_data, harp_array data)
@@ -548,7 +548,7 @@ int harp_ingestion_module_cci_l2_o3_tc_init(void)
                                                    dimension_type, NULL, description, "degree", NULL,
                                                    read_sensor_zenith_angle);
     harp_variable_definition_set_valid_range_double(variable_definition, 0.0, 60.0);
-    path = "/sensor_zenith_angle[]";
+    path = "/viewing_zenith_angle[]";
     harp_variable_definition_add_mapping(variable_definition, NULL, NULL, path, NULL);
 
     /* solar_zenith_angle */
@@ -576,7 +576,7 @@ int harp_ingestion_module_cci_l2_o3_tc_init(void)
         harp_ingestion_register_variable_full_read(product_definition, "O3_column_number_density", harp_type_double, 1,
                                                    dimension_type, NULL, description, "DU", NULL,
                                                    read_O3_column_number_density);
-    path = "/atmosphere_mole_content_of_ozone[]";
+    path = "/total_ozone_column[]";
     harp_variable_definition_add_mapping(variable_definition, NULL, NULL, path, NULL);
 
     /* O3_column_number_density_uncertainty_random */
@@ -585,7 +585,7 @@ int harp_ingestion_module_cci_l2_o3_tc_init(void)
         harp_ingestion_register_variable_full_read(product_definition, "O3_column_number_density_uncertainty_random",
                                                    harp_type_double, 1, dimension_type, NULL, description, "DU", NULL,
                                                    read_O3_column_number_density_uncertainty_random);
-    path = "/atmosphere_mole_content_of_ozone_random_error[]";
+    path = "/total_ozone_column_random_error[]";
     harp_variable_definition_add_mapping(variable_definition, NULL, NULL, path, NULL);
 
     /* temperature */
@@ -602,7 +602,7 @@ int harp_ingestion_module_cci_l2_o3_tc_init(void)
                                                                      harp_type_double, 1, dimension_type, NULL,
                                                                      description, HARP_UNIT_DIMENSIONLESS, NULL,
                                                                      read_cloud_fraction);
-    path = "/cloud_area_fraction[]";
+    path = "/cloud_fraction[]";
     harp_variable_definition_add_mapping(variable_definition, NULL, NULL, path, NULL);
 
     /* cloud_top_pressure */
@@ -610,7 +610,7 @@ int harp_ingestion_module_cci_l2_o3_tc_init(void)
     variable_definition = harp_ingestion_register_variable_full_read(product_definition, "cloud_top_pressure",
                                                                      harp_type_double, 1, dimension_type, NULL,
                                                                      description, "Pa", NULL, read_cloud_top_pressure);
-    path = "/air_pressure_at_cloud_top[]";
+    path = "/cloud_top_pressure[]";
     harp_variable_definition_add_mapping(variable_definition, NULL, NULL, path, NULL);
 
     /* cloud_top_albedo */
@@ -627,7 +627,7 @@ int harp_ingestion_module_cci_l2_o3_tc_init(void)
     variable_definition =
         harp_ingestion_register_variable_full_read(product_definition, "pressure", harp_type_double, 1, dimension_type,
                                                    NULL, description, "Pa", NULL, read_pressure);
-    path = "/effective_scene_air_pressure[]";
+    path = "/effective_scene_pressure[]";
     harp_variable_definition_add_mapping(variable_definition, NULL, NULL, path, NULL);
 
     /* albedo */
