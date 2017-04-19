@@ -95,9 +95,11 @@ libharp_la_SOURCES = \
 	libharp/harp-ingest-cci_l3_aerosol.c \
 	libharp/harp-ingest-cci_l3_cloud.c \
 	libharp/harp-ingest-cci_l3_ghg.c \
+	libharp/harp-ingest-cci_l3_o3_lntoc.c \
 	libharp/harp-ingest-cci_l3_o3_lp.c \
 	libharp/harp-ingest-cci_l3_o3_np.c \
 	libharp/harp-ingest-cci_l3_o3_tc.c \
+	libharp/harp-ingest-cci_l3_o3_ttoc.c \
 	libharp/harp-ingest-cci_l4_o3_np.c \
 	libharp/harp-ingest-ecmwf-grib.c \
 	libharp/harp-ingest-geoms-lidar.c \
