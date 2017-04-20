@@ -74,7 +74,7 @@ static const char *s5p_dimension_name[S5P_NUM_PRODUCT_TYPES][S5P_NUM_DIM_TYPES] 
     {"time", "scanline", "ground_pixel", "corner", "layer", NULL},
     {"time", "scanline", "ground_pixel", "corner", "layer", NULL},
     {"time", "scanline", "ground_pixel", "corner", "layer", "level"},
-    {"time", "scanline", "ground_pixel", "corner", "layer", "level"},
+    {"time", "scanline", "ground_pixel", "corner", NULL, NULL},
     {"time", "scanline", "ground_pixel", "corner", NULL, NULL},
     {"time", "scanline", "ground_pixel", "corner", NULL, NULL},
     {"time", "scanline", "ground_pixel", "corner", NULL, NULL},
@@ -1192,6 +1192,38 @@ static int read_product_aerosol_index_precision(void *user_data, harp_array data
                         data);
 }
 
+static int read_product_aerosol_mid_height(void *user_data, harp_array data)
+{
+    ingest_info *info = (ingest_info *)user_data;
+
+    return read_dataset(info->product_cursor, "aerosol_mid_height", harp_type_float,
+                        info->num_scanlines * info->num_pixels, data);
+}
+
+static int read_product_aerosol_mid_height_precision(void *user_data, harp_array data)
+{
+    ingest_info *info = (ingest_info *)user_data;
+
+    return read_dataset(info->product_cursor, "aerosol_mid_height_precision", harp_type_float,
+                        info->num_scanlines * info->num_pixels, data);
+}
+
+static int read_product_aerosol_mid_pressure(void *user_data, harp_array data)
+{
+    ingest_info *info = (ingest_info *)user_data;
+
+    return read_dataset(info->product_cursor, "aerosol_mid_pressure", harp_type_float,
+                        info->num_scanlines * info->num_pixels, data);
+}
+
+static int read_product_aerosol_mid_pressure_precision(void *user_data, harp_array data)
+{
+    ingest_info *info = (ingest_info *)user_data;
+
+    return read_dataset(info->product_cursor, "aerosol_mid_pressure_precision", harp_type_float,
+                        info->num_scanlines * info->num_pixels, data);
+}
+
 static int read_product_averaging_kernel(void *user_data, harp_array data)
 {
     ingest_info *info = (ingest_info *)user_data;
@@ -1508,6 +1540,22 @@ static int read_product_ozone_tropospheric_column_precision(void *user_data, har
     ingest_info *info = (ingest_info *)user_data;
 
     return read_dataset(info->product_cursor, "ozone_tropospheric_column_precision", harp_type_float,
+                        info->num_scanlines * info->num_pixels, data);
+}
+
+static int read_results_aerosol_optical_thickness(void *user_data, harp_array data)
+{
+    ingest_info *info = (ingest_info *)user_data;
+
+    return read_dataset(info->detailed_results_cursor, "aerosol_optical_thickness", harp_type_float,
+                        info->num_scanlines * info->num_pixels, data);
+}
+
+static int read_results_aerosol_optical_thickness_precision(void *user_data, harp_array data)
+{
+    ingest_info *info = (ingest_info *)user_data;
+
+    return read_dataset(info->detailed_results_cursor, "aerosol_optical_thickness_precision", harp_type_float,
                         info->num_scanlines * info->num_pixels, data);
 }
 
@@ -2825,11 +2873,13 @@ static void register_aer_ai_product(void)
                                          "/PRODUCT/aerosol_index_340_380_precision", NULL);
 }
 
-#if 0
 static void register_aer_lh_product(void)
 {
+    const char *path;
+    const char *description;
     harp_ingestion_module *module;
     harp_product_definition *product_definition;
+    harp_variable_definition *variable_definition;
     harp_dimension_type dimension_type[1] = { harp_dimension_time };
 
     module = harp_ingestion_register_module_coda("S5P_L2_AER_LH", "Sentinel-5P", "Sentinel5P", "L2__AER_LH",
@@ -2839,8 +2889,59 @@ static void register_aer_lh_product(void)
     register_core_variables(product_definition, s5p_delta_time_num_dims[s5p_type_aer_lh]);
     register_geolocation_variables(product_definition);
     register_additional_geolocation_variables(product_definition);
+
+    /* altitude */
+    description = "altitude of center of aerosol layer";
+    variable_definition =
+        harp_ingestion_register_variable_full_read(product_definition, "altitude", harp_type_float, 1, dimension_type,
+                                                   NULL, description, "m", NULL, read_product_aerosol_mid_height);
+    path = "/PRODUCT/aerosol_mid_height[]";
+    harp_variable_definition_add_mapping(variable_definition, NULL, NULL, path, NULL);
+
+    /* altitude_uncertainty */
+    description = "uncertainty of altitude of center of aerosol layer";
+    variable_definition =
+        harp_ingestion_register_variable_full_read(product_definition, "altitude_uncertainty", harp_type_float, 1,
+                                                   dimension_type, NULL, description, "m", NULL,
+                                                   read_product_aerosol_mid_height_precision);
+    path = "/PRODUCT/aerosol_mid_height_precision[]";
+    harp_variable_definition_add_mapping(variable_definition, NULL, NULL, path, NULL);
+
+    /* pressure */
+    description = "pressure at center of aerosol layer";
+    variable_definition =
+        harp_ingestion_register_variable_full_read(product_definition, "pressure", harp_type_float, 1, dimension_type,
+                                                   NULL, description, "Pa", NULL, read_product_aerosol_mid_pressure);
+    path = "/PRODUCT/aerosol_mid_pressure[]";
+    harp_variable_definition_add_mapping(variable_definition, NULL, NULL, path, NULL);
+
+    /* pressure_uncertainty */
+    description = "uncertainty of pressure at center of aerosol layer";
+    variable_definition =
+    harp_ingestion_register_variable_full_read(product_definition, "pressure_uncertainty", harp_type_float, 1,
+                                               dimension_type, NULL, description, "Pa", NULL,
+                                               read_product_aerosol_mid_pressure_precision);
+    path = "/PRODUCT/aerosol_mid_pressure_precision[]";
+    harp_variable_definition_add_mapping(variable_definition, NULL, NULL, path, NULL);
+
+    /* aerosol_optical_depth */
+    description = "aerosol optical thickness";
+    variable_definition =
+        harp_ingestion_register_variable_full_read(product_definition, "aerosol_optical_depth", harp_type_float, 1,
+                                                   dimension_type, NULL, description, "m", NULL,
+                                                   read_results_aerosol_optical_thickness);
+    path = "/PRODUCT/SUPPORT_DATA/DETAILED_RESULTS/aerosol_optical_thickness[]";
+    harp_variable_definition_add_mapping(variable_definition, NULL, NULL, path, NULL);
+
+    /* aerosol_optical_depth_uncertainty */
+    description = "uncertainty of the aerosol optical thickness";
+    variable_definition =
+        harp_ingestion_register_variable_full_read(product_definition, "aerosol_optical_depth_uncertainty",
+                                                   harp_type_float, 1, dimension_type, NULL, description, "m", NULL,
+                                                   read_results_aerosol_optical_thickness_precision);
+    path = "/PRODUCT/SUPPORT_DATA/DETAILED_RESULTS/aerosol_optical_thickness_precision[]";
+    harp_variable_definition_add_mapping(variable_definition, NULL, NULL, path, NULL);
 }
-#endif
 
 static void register_ch4_product(void)
 {
@@ -4151,7 +4252,7 @@ static void register_fresco_product(void)
 int harp_ingestion_module_s5p_l2_init(void)
 {
     register_aer_ai_product();
-    // register_aer_lh_product();
+    register_aer_lh_product();
     register_ch4_product();
     register_co_product();
     register_hcho_product();
