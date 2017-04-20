@@ -17,17 +17,20 @@ components (see below), but these are planned to be added in the near future.
 
 The main functionalities of HARP are:
  - ingestion of product data for:
+   - ACE FTS L2
    - ADM-Aeolus L1b/L2a/L2b
    - Aura OMI/TES/MLS/HIRDLS L2 + OMI L3
+   - CALIPSO (Lidar L2)
    - ECMF GRIB (includes CAMS global model data)
    - ENVISAT GOMOS/MIPAS/SCIAMACHY L1/L2
-   - ERS GOME/GOME-2 L1/L2
-   - ESA CCI: Aerosol, GHG, Ozone
-   - EUMETSAT GOME-2/IASI L1/L2
+   - ERS GOME L1/L2
+   - ESA CCI Aerosol/Cloud/GHG/Ozone
    - GOSAT FTS L1/L2
-   - IASI L1/L2
+   - Metop GOME-2/IASI L1/L2
    - NDACC FTIR/Lidar/MWR/UVVIS-DOAS data (GEOMS format)
+   - NPP Suomi (CrIS/OMPS/VIIRS) L2
    - ODIN OSIRIS/SMR L2
+   - QA4ECV NO2/HCHO L2
    - Sentinel 5P L1/L2
    - TEMIS ozone fields
  - import/export of data from/into HARP-specific data format
@@ -45,7 +48,6 @@ The main functionalities of HARP are:
  - C Library interface to all core functionality
  - direct ingestion/import/export interfaces for:
    - Python
-   - MATLAB (Linux + Mac OS X)
  - command line tools harpcheck, harpcollocate, harpconvert, harpdump,
    harpfilter, and harpmerge
  - extensive documentation, including specification of algorithms used for
@@ -60,14 +62,8 @@ Restrictions
 ============
 
 Note that this version of HARP is not yet feature complete.
-The following items are planned to be added in upcoming releases:
- - ingestion of product data for:
-   - ACE-FTS
-   - Cloud CCI
-   - NPP Suomi (CrIS/ATMS/OMPS/VIIRS) L2
- - direct ingestion/import/export interfaces for:
-   - MATLAB (Windows)
-   - IDL
+The direct ingestion/import/export interfaces for MATLAB and IDL are planned
+to be added in an upcoming release.
 
 
 Installation

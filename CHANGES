@@ -1,15 +1,29 @@
-* Added ingestion support for NPP-Suomi.
+* Added ingestion support for ACE-FTS, CALIPSO, Cloud CCI, and NPP-Suomi.
 
-* Added data_type parameter to harp_product_get_derived_variable() and
-  harp_product_add_derived_variable() functions.
-
-* Added harp_product_bin() function.
+* Added bin() and set() operations.
 
 * Added optional data_type parameter to derive() operation.
 
+* Major refactoring of internal implementation of operations (greatly
+  reducing and simplifying the code).
+
+* Fix application of apriori for smoothed column derivation (for vertical
+  range where partial columns are NaN, don't subtract apriori*AVK, but just
+  set to apriori).
+
+* Fix memory issue in partial column from vmr dry air derivation.
+
+* Remove double definition of radiance conversions.
+
 * Added global HARP option `regrid_out_of_bounds`.
 
-* Added bin() and set() operations.
+* Added harp_product_bin() function.
+
+* Add data_type parameter to harp_product_add_derived_variable() and
+  harp_product_get_derived_variable() functions.
+
+* Added data_type parameter to harp_product_get_derived_variable() and
+  harp_product_add_derived_variable() functions.
 
 * Allow 'Conventions' global attribute to contain more than just a reference
   to HARP.
@@ -20,7 +34,7 @@
 
 * Fixed issue with TES TL2CH4L ingestion.
 
-* Updates to Aeolus, S5P, and QA4ECV product ingestions.
+* Updates to Aeolus, S5P, QA4ECV, and Ozone CCI product ingestions.
 
 0.5 2017-03-26
 ~~~~~~~~~~~~~~
