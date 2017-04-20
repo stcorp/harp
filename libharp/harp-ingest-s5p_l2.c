@@ -41,6 +41,7 @@
 typedef enum s5p_product_type_enum
 {
     s5p_type_o3_pr,
+    s5p_type_o3_tcl,
     s5p_type_o3_tpr,
     s5p_type_no2,
     s5p_type_co,
@@ -70,6 +71,7 @@ typedef enum s5p_dimension_type_enum
 
 static const char *s5p_dimension_name[S5P_NUM_PRODUCT_TYPES][S5P_NUM_DIM_TYPES] = {
     {"time", "scanline", "ground_pixel", "corner", NULL, "level"},
+    {"time", NULL, NULL, NULL, NULL, NULL},
     {"time", "scanline", "ground_pixel", "corner", NULL, NULL},
     {"time", "scanline", "ground_pixel", "corner", "layer", NULL},
     {"time", "scanline", "ground_pixel", "corner", "layer", NULL},
@@ -83,13 +85,15 @@ static const char *s5p_dimension_name[S5P_NUM_PRODUCT_TYPES][S5P_NUM_DIM_TYPES] 
     {"time", "scanline", "ground_pixel", "corner", "layer", NULL}
 };
 
-static const int s5p_delta_time_num_dims[S5P_NUM_PRODUCT_TYPES] = { 2, 2, 2, 2, 2, 2, 2, 3, 2, 3, 3, 3 };
+static const int s5p_delta_time_num_dims[S5P_NUM_PRODUCT_TYPES] = { 2, 0, 2, 2, 2, 2, 2, 2, 3, 2, 3, 3, 3 };
 
 typedef struct ingest_info_struct
 {
     coda_product *product;
     int use_summed_total_column;
     int use_radiance_cloud_fraction;
+    int use_ch4_bias_corrected;
+    int use_o3_tcl_upper;
     int so2_column_type;        /* 0: total (tm5 profile), 1: 1km box profile, 2: 7km box profile, 3: 15km box profile */
 
     s5p_product_type product_type;
@@ -99,8 +103,8 @@ typedef struct ingest_info_struct
     long num_corners;
     long num_layers;
     long num_levels;
-    long num_latitude;
-    long num_longitude;
+    long num_latitudes;
+    long num_longitudes;
 
     coda_cursor product_cursor;
     coda_cursor geolocation_cursor;
@@ -157,6 +161,8 @@ static const char *get_product_type_name(s5p_product_type product_type)
     {
         case s5p_type_o3_pr:
             return "L2__O3__PR";
+        case s5p_type_o3_tcl:
+            return "L2__O3_TCL";
         case s5p_type_o3_tpr:
             return "L2__O3_TPR";
         case s5p_type_no2:
@@ -297,28 +303,34 @@ static int init_cursors(ingest_info *info)
         return -1;
     }
 
-    if (coda_cursor_goto_record_field_by_name(&cursor, "GEOLOCATIONS") != 0)
+    if (info->product_type != s5p_type_o3_tcl)
     {
-        harp_set_error(HARP_ERROR_CODA, NULL);
-        return -1;
+        if (coda_cursor_goto_record_field_by_name(&cursor, "GEOLOCATIONS") != 0)
+        {
+            harp_set_error(HARP_ERROR_CODA, NULL);
+            return -1;
+        }
+        info->geolocation_cursor = cursor;
+        coda_cursor_goto_parent(&cursor);
     }
-    info->geolocation_cursor = cursor;
 
-    coda_cursor_goto_parent(&cursor);
     if (coda_cursor_goto_record_field_by_name(&cursor, "DETAILED_RESULTS") != 0)
     {
         harp_set_error(HARP_ERROR_CODA, NULL);
         return -1;
     }
     info->detailed_results_cursor = cursor;
-
     coda_cursor_goto_parent(&cursor);
-    if (coda_cursor_goto_record_field_by_name(&cursor, "INPUT_DATA") != 0)
+
+    if (info->product_type != s5p_type_o3_tcl)
     {
-        harp_set_error(HARP_ERROR_CODA, NULL);
-        return -1;
+        if (coda_cursor_goto_record_field_by_name(&cursor, "INPUT_DATA") != 0)
+        {
+            harp_set_error(HARP_ERROR_CODA, NULL);
+            return -1;
+        }
+        info->input_data_cursor = cursor;
     }
-    info->input_data_cursor = cursor;
 
     return 0;
 }
@@ -329,6 +341,12 @@ static int init_dimensions(ingest_info *info)
     {
         if (get_dimension_length(info, s5p_dimension_name[info->product_type][s5p_dim_time], &info->num_times) != 0)
         {
+            return -1;
+        }
+        if (info->num_times != 1)
+        {
+            harp_set_error(HARP_ERROR_INGESTION, "dimension '%s' has length %ld; expected 1",
+                           s5p_dimension_name[info->product_type][s5p_dim_time], info->num_times);
             return -1;
         }
     }
@@ -356,6 +374,12 @@ static int init_dimensions(ingest_info *info)
         {
             return -1;
         }
+        if (info->num_corners != 4)
+        {
+            harp_set_error(HARP_ERROR_INGESTION, "dimension '%s' has length %ld; expected 4",
+                           s5p_dimension_name[info->product_type][s5p_dim_corner], info->num_corners);
+            return -1;
+        }
     }
 
     if (s5p_dimension_name[info->product_type][s5p_dim_layer] != NULL)
@@ -374,18 +398,30 @@ static int init_dimensions(ingest_info *info)
         }
     }
 
-    if (info->num_times != 1)
+    if (info->product_type == s5p_type_o3_tcl)
     {
-        harp_set_error(HARP_ERROR_INGESTION, "dimension '%s' has length %ld; expected 1",
-                       s5p_dimension_name[info->product_type][s5p_dim_time], info->num_times);
-        return -1;
-    }
-
-    if (info->num_corners != 4)
-    {
-        harp_set_error(HARP_ERROR_INGESTION, "dimension '%s' has length %ld; expected 4",
-                       s5p_dimension_name[info->product_type][s5p_dim_corner], info->num_corners);
-        return -1;
+        if (info->use_o3_tcl_upper)
+        {
+            if (get_dimension_length(info, "lat", &info->num_latitudes) != 0)
+            {
+                return -1;
+            }
+            if (get_dimension_length(info, "lon", &info->num_longitudes) != 0)
+            {
+                return -1;
+            }
+        }
+        else
+        {
+            if (get_dimension_length(info, "latitude", &info->num_latitudes) != 0)
+            {
+                return -1;
+            }
+            if (get_dimension_length(info, "longitude", &info->num_longitudes) != 0)
+            {
+                return -1;
+            }
+        }
     }
 
     if (info->num_layers > 0 && info->num_levels > 0)
@@ -422,16 +458,25 @@ static int init_processing_mode(ingest_info *info)
     coda_cursor cursor;
     char mode[5];
 
+    if (info->product_type == s5p_type_o3_tcl)
+    {
+        /* The O3 TCL product has no ProcessingMode attribute, but we also don't care about it being NRTI or OFFL */
+        return 0;
+    }
+
     if (coda_cursor_set_product(&cursor, info->product) != 0)
     {
+        harp_set_error(HARP_ERROR_CODA, NULL);
         return -1;
     }
     if (coda_cursor_goto(&cursor, "/METADATA/GRANULE_DESCRIPTION@ProcessingMode") != 0)
     {
+        harp_set_error(HARP_ERROR_CODA, NULL);
         return -1;
     }
     if (coda_cursor_read_string(&cursor, mode, 5) != 0)
     {
+        harp_set_error(HARP_ERROR_CODA, NULL);
         return -1;
     }
     if (strcmp(mode, "NRTI") == 0)
@@ -464,6 +509,8 @@ static int ingestion_init(const harp_ingestion_module *module, coda_product *pro
     info->product = product;
     info->use_summed_total_column = 1;
     info->use_radiance_cloud_fraction = 0;
+    info->use_ch4_bias_corrected = 0;
+    info->use_o3_tcl_upper = 0;
     info->so2_column_type = 0;
     info->num_times = 0;
     info->num_scanlines = 0;
@@ -474,13 +521,13 @@ static int ingestion_init(const harp_ingestion_module *module, coda_product *pro
     info->wavelength_ratio = 354;
     info->is_nrti = 0;
 
-    if (init_processing_mode(info) != 0)
+    if (get_product_type(info->product, &info->product_type) != 0)
     {
         ingestion_done(info);
         return -1;
     }
 
-    if (get_product_type(info->product, &info->product_type) != 0)
+    if (init_processing_mode(info) != 0)
     {
         ingestion_done(info);
         return -1;
@@ -501,6 +548,14 @@ static int ingestion_init(const harp_ingestion_module *module, coda_product *pro
     if (harp_ingestion_options_has_option(options, "cloud_fraction"))
     {
         info->use_radiance_cloud_fraction = 1;
+    }
+    if (harp_ingestion_options_has_option(options, "ch4"))
+    {
+        info->use_ch4_bias_corrected = 1;
+    }
+    if (harp_ingestion_options_has_option(options, "o3"))
+    {
+        info->use_o3_tcl_upper = 1;
     }
     if (harp_ingestion_options_has_option(options, "so2_column"))
     {
@@ -647,7 +702,14 @@ static int read_dimensions(void *user_data, long dimension[HARP_NUM_DIM_TYPES])
 {
     ingest_info *info = (ingest_info *)user_data;
 
-    dimension[harp_dimension_time] = info->num_times * info->num_scanlines * info->num_pixels;
+    if (info->product_type == s5p_type_o3_tcl)
+    {
+        dimension[harp_dimension_time] = info->num_times;
+    }
+    else
+    {
+        dimension[harp_dimension_time] = info->num_times * info->num_scanlines * info->num_pixels;
+    }
     switch (info->product_type)
     {
         case s5p_type_no2:
@@ -667,9 +729,10 @@ static int read_dimensions(void *user_data, long dimension[HARP_NUM_DIM_TYPES])
         case s5p_type_cloud:
         case s5p_type_fresco:
             break;
-        default:
-            assert(0);
-            exit(1);
+        case s5p_type_o3_tcl:
+            dimension[harp_dimension_latitude] = info->num_latitudes;
+            dimension[harp_dimension_longitude] = info->num_longitudes;
+           break;
     }
 
     return 0;
@@ -1447,14 +1510,6 @@ static int read_product_longitude(void *user_data, harp_array data)
                         data);
 }
 
-static int read_product_methane_mixing_ratio(void *user_data, harp_array data)
-{
-    ingest_info *info = (ingest_info *)user_data;
-
-    return read_dataset(info->product_cursor, "methane_mixing_ratio", harp_type_float,
-                        info->num_scanlines * info->num_pixels, data);
-}
-
 static int read_product_methane_mixing_ratio_precision(void *user_data, harp_array data)
 {
     ingest_info *info = (ingest_info *)user_data;
@@ -1864,6 +1919,19 @@ static int read_results_surface_albedo_fitted_crb_precision(void *user_data, har
                         info->num_scanlines * info->num_pixels, data);
 }
 
+static int read_ch4_methane_mixing_ratio(void *user_data, harp_array data)
+{
+    ingest_info *info = (ingest_info *)user_data;
+
+    if (info->use_ch4_bias_corrected)
+    {
+        return read_dataset(info->product_cursor, "methane_mixing_ratio_bias_corrected", harp_type_float,
+                            info->num_scanlines * info->num_pixels, data);
+    }
+    return read_dataset(info->product_cursor, "methane_mixing_ratio", harp_type_float,
+                        info->num_scanlines * info->num_pixels, data);
+}
+
 static int read_hcho_cloud_fraction(void *user_data, harp_array data)
 {
     ingest_info *info = (ingest_info *)user_data;
@@ -1888,6 +1956,118 @@ static int read_hcho_cloud_fraction_precision(void *user_data, harp_array data)
     }
     return read_dataset(info->input_data_cursor, "cloud_fraction_crb_precision", harp_type_float,
                         info->num_scanlines * info->num_pixels, data);
+}
+
+static int read_o3_tcl_time_value(void *user_data, const char *path, harp_array data)
+{
+    ingest_info *info = (ingest_info *)user_data;
+    char value[50];
+    coda_cursor cursor;
+
+    if (coda_cursor_set_product(&cursor, info->product) != 0)
+    {
+        harp_set_error(HARP_ERROR_CODA, NULL);
+        return -1;
+    }
+    if (coda_cursor_goto(&cursor, path) != 0)
+    {
+        harp_set_error(HARP_ERROR_CODA, NULL);
+        return -1;
+    }
+    if (coda_cursor_read_string(&cursor, value, 50) != 0)
+    {
+        harp_set_error(HARP_ERROR_CODA, NULL);
+        return -1;
+    }
+    if (coda_time_string_to_double("yyyy-MM-dd'T'HH:mm:ss", value, data.double_data) != 0)
+    {
+        harp_set_error(HARP_ERROR_CODA, NULL);
+        return -1;
+    }
+
+    return 0;
+}
+
+static int read_o3_tcl_datetime_start(void *user_data, harp_array data)
+{
+    return read_o3_tcl_time_value(user_data, "/@time_coverage_start", data);
+}
+
+static int read_o3_tcl_datetime_stop(void *user_data, harp_array data)
+{
+    return read_o3_tcl_time_value(user_data, "/@time_coverage_end", data);
+}
+
+static int read_o3_tcl_latitude(void *user_data, harp_array data)
+{
+    ingest_info *info = (ingest_info *)user_data;
+
+    if (info->use_o3_tcl_upper)
+    {
+        return read_dataset(info->product_cursor, "lat", harp_type_float, info->num_latitudes, data);
+    }
+    return read_dataset(info->product_cursor, "latitude", harp_type_float, info->num_latitudes, data);
+}
+
+static int read_o3_tcl_longitude(void *user_data, harp_array data)
+{
+    ingest_info *info = (ingest_info *)user_data;
+
+    if (info->use_o3_tcl_upper)
+    {
+        return read_dataset(info->product_cursor, "lon", harp_type_float, info->num_longitudes, data);
+    }
+    return read_dataset(info->product_cursor, "longitude", harp_type_float, info->num_longitudes, data);
+}
+
+static int read_o3_tcl_ozone_tropospheric_mixing_ratio(void *user_data, harp_array data)
+{
+    ingest_info *info = (ingest_info *)user_data;
+
+    if (info->use_o3_tcl_upper)
+    {
+        return read_dataset(info->product_cursor, "ozone_upper_tropospheric_mixing_ratio", harp_type_float,
+                            info->num_latitudes * info->num_longitudes, data);
+    }
+    return read_dataset(info->product_cursor, "ozone_tropospheric_mixing_ratio", harp_type_float,
+                        info->num_latitudes * info->num_longitudes, data);
+}
+
+static int read_o3_tcl_ozone_tropospheric_mixing_ratio_precision(void *user_data, harp_array data)
+{
+    ingest_info *info = (ingest_info *)user_data;
+
+    if (info->use_o3_tcl_upper)
+    {
+        return read_dataset(info->product_cursor, "ozone_upper_tropospheric_mixing_ratio_precision", harp_type_float,
+                            info->num_latitudes * info->num_longitudes, data);
+    }
+    return read_dataset(info->product_cursor, "ozone_tropospheric_mixing_ratio_precision", harp_type_float,
+                        info->num_latitudes * info->num_longitudes, data);
+}
+
+static int read_o3_tcl_ozone_tropospheric_mixing_ratio_flag(void *user_data, harp_array data)
+{
+    ingest_info *info = (ingest_info *)user_data;
+
+    return read_dataset(info->product_cursor, "ozone_upper_tropospheric_mixing_ratio_flag", harp_type_int32,
+                        info->num_latitudes * info->num_longitudes, data);
+}
+
+static int read_o3_tcl_ozone_tropospheric_vertical_column(void *user_data, harp_array data)
+{
+    ingest_info *info = (ingest_info *)user_data;
+
+    return read_dataset(info->product_cursor, "ozone_tropospheric_vertical_column", harp_type_float,
+                        info->num_latitudes * info->num_longitudes, data);
+}
+
+static int read_o3_tcl_ozone_tropospheric_vertical_column_precision(void *user_data, harp_array data)
+{
+    ingest_info *info = (ingest_info *)user_data;
+
+    return read_dataset(info->product_cursor, "ozone_tropospheric_vertical_column_precision", harp_type_float,
+                        info->num_latitudes * info->num_longitudes, data);
 }
 
 static int read_no2_column(void *user_data, harp_array data)
@@ -2528,6 +2708,16 @@ static int exclude_nrti(void *user_data)
     return !((ingest_info *)user_data)->is_nrti;
 }
 
+static int exclude_o3_tcl(void *user_data)
+{
+    return !((ingest_info *)user_data)->use_o3_tcl_upper;
+}
+
+static int exclude_o3_tcl_upper(void *user_data)
+{
+    return ((ingest_info *)user_data)->use_o3_tcl_upper;
+}
+
 static int exclude_so2_apriori_profile(void *user_data)
 {
     return ((ingest_info *)user_data)->so2_column_type != 0;
@@ -2945,12 +3135,12 @@ static void register_aer_lh_product(void)
 
 static void register_ch4_product(void)
 {
+    const char *ch4_options[] = { "bias_corrected" };
     const char *path;
     const char *description;
     harp_ingestion_module *module;
     harp_product_definition *product_definition;
     harp_variable_definition *variable_definition;
-
     harp_dimension_type dimension_type[3] = { harp_dimension_time, harp_dimension_vertical,
         harp_dimension_independent
     };
@@ -2958,6 +3148,9 @@ static void register_ch4_product(void)
 
     module = harp_ingestion_register_module_coda("S5P_L2_CH4", "Sentinel-5P", "Sentinel5P", "L2__CH4___",
                                                  "Sentinel-5P L2 CH4 total column", ingestion_init, ingestion_done);
+
+    harp_ingestion_register_option(module, "ch4", "whether to ingest the 'normal' CH4 column vmr (default) or the "
+                                   "bias corrected CH4 column vmr (ch4=bias_corrected)", 1, ch4_options);
 
     product_definition = harp_ingestion_register_product(module, "S5P_L2_CH4", NULL, read_dimensions);
     register_core_variables(product_definition, s5p_delta_time_num_dims[s5p_type_ch4]);
@@ -2993,9 +3186,11 @@ static void register_ch4_product(void)
     variable_definition =
         harp_ingestion_register_variable_full_read(product_definition, "CH4_column_volume_mixing_ratio_dry_air",
                                                    harp_type_float, 1, dimension_type, NULL, description, "ppbv", NULL,
-                                                   read_product_methane_mixing_ratio);
+                                                   read_ch4_methane_mixing_ratio);
     path = "/PRODUCT/methane_mixing_ratio[]";
-    harp_variable_definition_add_mapping(variable_definition, NULL, NULL, path, NULL);
+    harp_variable_definition_add_mapping(variable_definition, "ch4 unset", NULL, path, NULL);
+    path = "/PRODUCT/methane_mixing_ratio_bias_corrected[]";
+    harp_variable_definition_add_mapping(variable_definition, "ch4=bias_corrected", NULL, path, NULL);
 
     /* CH4_column_volume_mixing_ratio_dry_air_uncertainty */
     description = "uncertainty of the column averaged dry air mixing ratio of methane (1 sigma error)";
@@ -3441,6 +3636,122 @@ static void register_o3_pr_product(void)
     register_additional_geolocation_variables(product_definition);
     register_o3_profile_variables(product_definition);
     register_surface_variables(product_definition);
+}
+
+static void register_o3_tcl_product(void)
+{
+    const char *o3_options[] = { "upper" };
+    const char *path;
+    const char *description;
+    harp_ingestion_module *module;
+    harp_product_definition *product_definition;
+    harp_variable_definition *variable_definition;
+    harp_dimension_type dimension_type[3] = { harp_dimension_time, harp_dimension_latitude, harp_dimension_longitude };
+
+    module = harp_ingestion_register_module_coda("S5P_L2_O3_TCL", "Sentinel-5P", "Sentinel5P", "L2__O3_TCL",
+                                                 "Sentinel-5P L2 O3 tropospheric column", ingestion_init,
+                                                 ingestion_done);
+
+    harp_ingestion_register_option(module, "o3", "whether to ingest the 'normal' tropospheric O3 column grid (default) "
+                                   "or the upper tropospheric column grid (o3=upper)", 1, o3_options);
+
+    product_definition = harp_ingestion_register_product(module, "S5P_L2_O3_TCL", NULL, read_dimensions);
+
+    /* datetime_start */
+    description = "coverage start time";
+    variable_definition =
+        harp_ingestion_register_variable_full_read(product_definition, "datetime_start", harp_type_double, 1,
+                                                   dimension_type, NULL, description, "seconds since 2010-01-01", NULL,
+                                                   read_o3_tcl_datetime_start);
+    path = "/@time_coverage_start";
+    harp_variable_definition_add_mapping(variable_definition, NULL, NULL, path, NULL);
+
+    /* datetime_stop */
+    description = "coverage stop time";
+    variable_definition =
+        harp_ingestion_register_variable_full_read(product_definition, "datetime_stop", harp_type_double, 1,
+                                                   dimension_type, NULL, description, "seconds since 2010-01-01", NULL,
+                                                   read_o3_tcl_datetime_stop);
+    path = "/@time_coverage_end";
+    harp_variable_definition_add_mapping(variable_definition, NULL, NULL, path, NULL);
+
+    /* latitude */
+    description = "grid center latitudes";
+    variable_definition = harp_ingestion_register_variable_full_read(product_definition, "latitude", harp_type_float, 1,
+                                                                     &dimension_type[1], NULL, description,
+                                                                     "degree_north", NULL, read_o3_tcl_latitude);
+    harp_variable_definition_set_valid_range_float(variable_definition, -90.0f, 90.0f);
+    path = "/PRODUCT/latitude[]";
+    harp_variable_definition_add_mapping(variable_definition, "o3 unset", NULL, path, NULL);
+    path = "/PRODUCT/lat[]";
+    harp_variable_definition_add_mapping(variable_definition, "o3=upper", NULL, path, NULL);
+
+    /* longitude */
+    description = "grid center longitudes";
+    variable_definition = harp_ingestion_register_variable_full_read(product_definition, "longitude", harp_type_float,
+                                                                     1, &dimension_type[2], NULL, description,
+                                                                     "degree_east", NULL, read_o3_tcl_longitude);
+    harp_variable_definition_set_valid_range_float(variable_definition, -180.0f, 180.0f);
+    path = "/PRODUCT/longitude[]";
+    harp_variable_definition_add_mapping(variable_definition, "o3 unset", NULL, path, NULL);
+    path = "/PRODUCT/lon[]";
+    harp_variable_definition_add_mapping(variable_definition, "o3=upper", NULL, path, NULL);
+
+    /* tropospheric_O3_column_volume_mixing_ratio_dry_air */
+    description = "average tropospheric ozone mixing ratio";
+    variable_definition =
+        harp_ingestion_register_variable_full_read(product_definition,
+                                                   "tropospheric_O3_column_volume_mixing_ratio_dry_air",
+                                                   harp_type_float, 3, dimension_type, NULL, description, "ppbv", NULL,
+                                                   read_o3_tcl_ozone_tropospheric_mixing_ratio);
+    path = "/PRODUCT/ozone_tropospheric_mixing_ratio[]";
+    harp_variable_definition_add_mapping(variable_definition, "o3 unset", NULL, path, NULL);
+    path = "/PRODUCT/ozone_upper_tropospheric_mixing_ratio[]";
+    harp_variable_definition_add_mapping(variable_definition, "o3=upper", NULL, path, NULL);
+
+    /* tropospheric_O3_column_volume_mixing_ratio_dry_air_uncertainty */
+    description = "uncertainty of the average tropospheric ozone mixing ratio";
+    variable_definition =
+        harp_ingestion_register_variable_full_read(product_definition,
+                                                   "tropospheric_O3_column_volume_mixing_ratio_dry_air_uncertainty",
+                                                   harp_type_float, 3, dimension_type, NULL, description, "ppbv", NULL,
+                                                   read_o3_tcl_ozone_tropospheric_mixing_ratio_precision);
+    path = "/PRODUCT/ozone_tropospheric_mixing_ratio_precision[]";
+    harp_variable_definition_add_mapping(variable_definition, "o3 unset", NULL, path, NULL);
+    path = "/PRODUCT/ozone_upper_tropospheric_mixing_ratio_precision[]";
+    harp_variable_definition_add_mapping(variable_definition, "o3=upper", NULL, path, NULL);
+
+    /* tropospheric_O3_column_volume_mixing_ratio_dry_air_validity */
+    description = "validity of the average tropospheric ozone mixing ratio";
+    variable_definition =
+        harp_ingestion_register_variable_full_read(product_definition,
+                                                   "tropospheric_O3_column_volume_mixing_ratio_dry_air_validity",
+                                                   harp_type_int32, 3, dimension_type, NULL, description, NULL,
+                                                   exclude_o3_tcl, read_o3_tcl_ozone_tropospheric_mixing_ratio_flag);
+    path = "/PRODUCT/ozone_upper_tropospheric_mixing_ratio_flag[]";
+    harp_variable_definition_add_mapping(variable_definition, "o3=upper", NULL, path, NULL);
+
+    /* tropospheric_O3_column_number_density */
+    description = "average tropospheric ozone column number density";
+    variable_definition =
+        harp_ingestion_register_variable_full_read(product_definition,
+                                                   "tropospheric_O3_column_number_density",
+                                                   harp_type_float, 3, dimension_type, NULL, description, "mol/m2",
+                                                   exclude_o3_tcl_upper,
+                                                   read_o3_tcl_ozone_tropospheric_vertical_column);
+    path = "/PRODUCT/ozone_tropospheric_vertical_column[]";
+    harp_variable_definition_add_mapping(variable_definition, "o3 unset", NULL, path, NULL);
+
+    /* tropospheric_O3_column_number_density_precision */
+    description = "uncertainty of the average tropospheric ozone column number density";
+    variable_definition =
+        harp_ingestion_register_variable_full_read(product_definition,
+                                                   "tropospheric_O3_column_number_density_uncertainty",
+                                                   harp_type_float, 3, dimension_type, NULL, description, "mol/m2",
+                                                   exclude_o3_tcl_upper,
+                                                   read_o3_tcl_ozone_tropospheric_vertical_column_precision);
+    path = "/PRODUCT/ozone_tropospheric_vertical_column_precision[]";
+    harp_variable_definition_add_mapping(variable_definition, "o3 unset", NULL, path, NULL);
 }
 
 static void register_o3_tpr_product(void)
@@ -4258,6 +4569,7 @@ int harp_ingestion_module_s5p_l2_init(void)
     register_hcho_product();
     register_o3_product();
     register_o3_pr_product();
+    register_o3_tcl_product();
     register_o3_tpr_product();
     register_no2_product();
     register_so2_product();
