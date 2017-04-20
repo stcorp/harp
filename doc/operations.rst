@@ -60,6 +60,26 @@ Supported functions:
         mask file overlaps at least the specified percentage of
         the measurement area.
 
+    ``bin(variable)``
+        For all variables in a product perform an averaging in the time
+        dimension such that all samples in the same bin get averaged.
+        A bin is defined by all samples of the given variable that have the
+        same value.
+        Example:
+
+            | ``bin(index)``
+            | ``bin(validity)``
+
+    ``bin(collocation-result-file, a|b)``
+        For all variables in a product perform an averaging in the time
+        dimension such that all samples in the same bin get averaged.
+        A bin is defined by all samples having the same collocated pair from
+        the dataset that is indicated by the second parameter.
+        Example:
+
+            | ``bin("collocation-result.csv", b)``
+            | (the product is part of dataset A and the collocated pair that defines the bin is part of dataset B)
+
     ``collocate_left(collocation-result-file)``
         Apply the specified collocation result file as an index
         filter assuming the product is part of dataset A.
@@ -83,8 +103,8 @@ Supported functions:
 
         Example:
 
-            ``derive(altitude {time,vertical} [km])``
-            ``derive(latitude float {time})``
+            | ``derive(altitude {time,vertical} [km])``
+            | ``derive(latitude float {time})``
 
     ``derive_smoothed_column(variable {dimension-type, ...} [unit], axis-variable unit, collocation-result-file, a|b, dataset-dir)``
         Derive the given intergrated column value by first deriving
@@ -119,8 +139,8 @@ Supported functions:
         Independent dimensions cannot be flattened.
         Example:
 
-            ``flatten(latitude);flatten(longitude)``
-            (turn a 2D lat/lon grid into a a series of individual points)
+            | ``flatten(latitude);flatten(longitude)``
+            | (turn a 2D lat/lon grid into a a series of individual points)
 
     ``keep(variable, ...)``
         Mark the specified variable(s) for inclusion in the
@@ -134,8 +154,8 @@ Supported functions:
         This function correctly handles longitude ranges that
         cross the international date line.
 
-            ``longitude_range(179.0, -179.0)``
-            (select a 2 degree range around the international dateline)
+            | ``longitude_range(179.0, -179.0)``
+            | (select a 2 degree range around the international dateline)
 
     ``point_distance(latitude [unit], longitude [unit], distance [unit])``
         Exclude measurements situated further than the specified
@@ -168,8 +188,8 @@ Supported functions:
         offset, and step parameters.
         Example:
 
-            ``regrid(vertical, altitude [km], 10, 0.5, 1.0)``
-            (indicating a grid of altitudes 0.5, 1.5, ..., 9.5)
+            | ``regrid(vertical, altitude [km], 10, 0.5, 1.0)``
+            | (indicating a grid of altitudes 0.5, 1.5, ..., 9.5)
 
     ``regrid(dimension, axis-variable unit, collocation-result-file, a|b, dataset-dir)``
         Regrid all variables in the product for the given dimension using the
@@ -221,8 +241,8 @@ Supported functions:
 
         Example:
 
-            ``set("afgl86", "enabled")``
-            ``set("regrid_out_of_bounds", "extrapolate")``
+            | ``set("afgl86", "enabled")``
+            | ``set("regrid_out_of_bounds", "extrapolate")``
 
     ``smooth(variable, dimension, axis-variable unit, collocation-result-file, a|b, dataset-dir)``
         Smooth the given variable in the product for the given dimension
@@ -349,6 +369,8 @@ Formal definition
        'area_mask_covers_area', '(', stringvalue, ')' |
        'area_mask_covers_point', '(', stringvalue, ')' |
        'area_mask_intersects_area', '(', stringvalue, ',', floatvalue, ')' |
+       'bin', '(', variable, ')' |
+       'bin', '(', stringvalue, ',', ( 'a' | 'b' ), ')' |
        'collocate_left', '(', stringvalue, ')' |
        'collocate_right', '(', stringvalue, ')' |
        'derive', '(', variable, [datatype], dimensionspec, [unit], ')' |

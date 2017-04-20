@@ -218,6 +218,32 @@ mask file contains the measurement location.</dd>
 <dd>Exclude measurements for which no area from the area
 mask file overlaps at least the specified percentage of
 the measurement area.</dd>
+<dt><code class="docutils literal"><span class="pre">bin(variable)</span></code></dt>
+<dd><p class="first">For all variables in a product perform an averaging in the time
+dimension such that all samples in the same bin get averaged.
+A bin is defined by all samples of the given variable that have the
+same value.
+Example:</p>
+<blockquote class="last">
+<div><div class="line-block">
+<div class="line"><code class="docutils literal"><span class="pre">bin(index)</span></code></div>
+<div class="line"><code class="docutils literal"><span class="pre">bin(validity)</span></code></div>
+</div>
+</div></blockquote>
+</dd>
+<dt><code class="docutils literal"><span class="pre">bin(collocation-result-file,</span> <span class="pre">a|b)</span></code></dt>
+<dd><p class="first">For all variables in a product perform an averaging in the time
+dimension such that all samples in the same bin get averaged.
+A bin is defined by all samples having the same collocated pair from
+the dataset that is indicated by the second parameter.
+Example:</p>
+<blockquote class="last">
+<div><div class="line-block">
+<div class="line"><code class="docutils literal"><span class="pre">bin(&quot;collocation-result.csv&quot;,</span> <span class="pre">b)</span></code></div>
+<div class="line">(the product is part of dataset A and the collocated pair that defines the bin is part of dataset B)</div>
+</div>
+</div></blockquote>
+</dd>
 <dt><code class="docutils literal"><span class="pre">collocate_left(collocation-result-file)</span></code></dt>
 <dd>Apply the specified collocation result file as an index
 filter assuming the product is part of dataset A.</dd>
@@ -238,8 +264,11 @@ The derive operation can also be used to perform data type
 or unit conversions on existing variables in a product.</p>
 <p>Example:</p>
 <blockquote class="last">
-<div><code class="docutils literal"><span class="pre">derive(altitude</span> <span class="pre">{time,vertical}</span> <span class="pre">[km])</span></code>
-<code class="docutils literal"><span class="pre">derive(latitude</span> <span class="pre">float</span> <span class="pre">{time})</span></code></div></blockquote>
+<div><div class="line-block">
+<div class="line"><code class="docutils literal"><span class="pre">derive(altitude</span> <span class="pre">{time,vertical}</span> <span class="pre">[km])</span></code></div>
+<div class="line"><code class="docutils literal"><span class="pre">derive(latitude</span> <span class="pre">float</span> <span class="pre">{time})</span></code></div>
+</div>
+</div></blockquote>
 </dd>
 <dt><code class="docutils literal"><span class="pre">derive_smoothed_column(variable</span> <span class="pre">{dimension-type,</span> <span class="pre">...}</span> <span class="pre">[unit],</span> <span class="pre">axis-variable</span> <span class="pre">unit,</span> <span class="pre">collocation-result-file,</span> <span class="pre">a|b,</span> <span class="pre">dataset-dir)</span></code></dt>
 <dd><p class="first">Derive the given intergrated column value by first deriving
@@ -272,8 +301,11 @@ length of the flattened dimension did not equal 1.
 Independent dimensions cannot be flattened.
 Example:</p>
 <blockquote class="last">
-<div><code class="docutils literal"><span class="pre">flatten(latitude);flatten(longitude)</span></code>
-(turn a 2D lat/lon grid into a a series of individual points)</div></blockquote>
+<div><div class="line-block">
+<div class="line"><code class="docutils literal"><span class="pre">flatten(latitude);flatten(longitude)</span></code></div>
+<div class="line">(turn a 2D lat/lon grid into a a series of individual points)</div>
+</div>
+</div></blockquote>
 </dd>
 <dt><code class="docutils literal"><span class="pre">keep(variable,</span> <span class="pre">...)</span></code></dt>
 <dd>Mark the specified variable(s) for inclusion in the
@@ -286,8 +318,11 @@ measurement location falls outside the specified range.
 This function correctly handles longitude ranges that
 cross the international date line.</p>
 <blockquote class="last">
-<div><code class="docutils literal"><span class="pre">longitude_range(179.0,</span> <span class="pre">-179.0)</span></code>
-(select a 2 degree range around the international dateline)</div></blockquote>
+<div><div class="line-block">
+<div class="line"><code class="docutils literal"><span class="pre">longitude_range(179.0,</span> <span class="pre">-179.0)</span></code></div>
+<div class="line">(select a 2 degree range around the international dateline)</div>
+</div>
+</div></blockquote>
 </dd>
 <dt><code class="docutils literal"><span class="pre">point_distance(latitude</span> <span class="pre">[unit],</span> <span class="pre">longitude</span> <span class="pre">[unit],</span> <span class="pre">distance</span> <span class="pre">[unit])</span></code></dt>
 <dd><p class="first">Exclude measurements situated further than the specified
@@ -320,8 +355,11 @@ the current grid. The target grid is specified as using a length,
 offset, and step parameters.
 Example:</p>
 <blockquote class="last">
-<div><code class="docutils literal"><span class="pre">regrid(vertical,</span> <span class="pre">altitude</span> <span class="pre">[km],</span> <span class="pre">10,</span> <span class="pre">0.5,</span> <span class="pre">1.0)</span></code>
-(indicating a grid of altitudes 0.5, 1.5, ..., 9.5)</div></blockquote>
+<div><div class="line-block">
+<div class="line"><code class="docutils literal"><span class="pre">regrid(vertical,</span> <span class="pre">altitude</span> <span class="pre">[km],</span> <span class="pre">10,</span> <span class="pre">0.5,</span> <span class="pre">1.0)</span></code></div>
+<div class="line">(indicating a grid of altitudes 0.5, 1.5, ..., 9.5)</div>
+</div>
+</div></blockquote>
 </dd>
 <dt><code class="docutils literal"><span class="pre">regrid(dimension,</span> <span class="pre">axis-variable</span> <span class="pre">unit,</span> <span class="pre">collocation-result-file,</span> <span class="pre">a|b,</span> <span class="pre">dataset-dir)</span></code></dt>
 <dd><p class="first">Regrid all variables in the product for the given dimension using the
@@ -376,8 +414,11 @@ Possible values are:</p>
 </dl>
 <p>Example:</p>
 <blockquote class="last">
-<div><code class="docutils literal"><span class="pre">set(&quot;afgl86&quot;,</span> <span class="pre">&quot;enabled&quot;)</span></code>
-<code class="docutils literal"><span class="pre">set(&quot;regrid_out_of_bounds&quot;,</span> <span class="pre">&quot;extrapolate&quot;)</span></code></div></blockquote>
+<div><div class="line-block">
+<div class="line"><code class="docutils literal"><span class="pre">set(&quot;afgl86&quot;,</span> <span class="pre">&quot;enabled&quot;)</span></code></div>
+<div class="line"><code class="docutils literal"><span class="pre">set(&quot;regrid_out_of_bounds&quot;,</span> <span class="pre">&quot;extrapolate&quot;)</span></code></div>
+</div>
+</div></blockquote>
 </dd>
 <dt><code class="docutils literal"><span class="pre">smooth(variable,</span> <span class="pre">dimension,</span> <span class="pre">axis-variable</span> <span class="pre">unit,</span> <span class="pre">collocation-result-file,</span> <span class="pre">a|b,</span> <span class="pre">dataset-dir)</span></code></dt>
 <dd><p class="first">Smooth the given variable in the product for the given dimension
@@ -498,6 +539,8 @@ Then, each further line defines a polygon. Each polygon consists of the vertices
    <span class="s1">&#39;area_mask_covers_area&#39;</span><span class="p">,</span> <span class="s1">&#39;(&#39;</span><span class="p">,</span> <span class="n">stringvalue</span><span class="p">,</span> <span class="s1">&#39;)&#39;</span> <span class="o">|</span>
    <span class="s1">&#39;area_mask_covers_point&#39;</span><span class="p">,</span> <span class="s1">&#39;(&#39;</span><span class="p">,</span> <span class="n">stringvalue</span><span class="p">,</span> <span class="s1">&#39;)&#39;</span> <span class="o">|</span>
    <span class="s1">&#39;area_mask_intersects_area&#39;</span><span class="p">,</span> <span class="s1">&#39;(&#39;</span><span class="p">,</span> <span class="n">stringvalue</span><span class="p">,</span> <span class="s1">&#39;,&#39;</span><span class="p">,</span> <span class="n">floatvalue</span><span class="p">,</span> <span class="s1">&#39;)&#39;</span> <span class="o">|</span>
+   <span class="s1">&#39;bin&#39;</span><span class="p">,</span> <span class="s1">&#39;(&#39;</span><span class="p">,</span> <span class="n">variable</span><span class="p">,</span> <span class="s1">&#39;)&#39;</span> <span class="o">|</span>
+   <span class="s1">&#39;bin&#39;</span><span class="p">,</span> <span class="s1">&#39;(&#39;</span><span class="p">,</span> <span class="n">stringvalue</span><span class="p">,</span> <span class="s1">&#39;,&#39;</span><span class="p">,</span> <span class="p">(</span> <span class="s1">&#39;a&#39;</span> <span class="o">|</span> <span class="s1">&#39;b&#39;</span> <span class="p">),</span> <span class="s1">&#39;)&#39;</span> <span class="o">|</span>
    <span class="s1">&#39;collocate_left&#39;</span><span class="p">,</span> <span class="s1">&#39;(&#39;</span><span class="p">,</span> <span class="n">stringvalue</span><span class="p">,</span> <span class="s1">&#39;)&#39;</span> <span class="o">|</span>
    <span class="s1">&#39;collocate_right&#39;</span><span class="p">,</span> <span class="s1">&#39;(&#39;</span><span class="p">,</span> <span class="n">stringvalue</span><span class="p">,</span> <span class="s1">&#39;)&#39;</span> <span class="o">|</span>
    <span class="s1">&#39;derive&#39;</span><span class="p">,</span> <span class="s1">&#39;(&#39;</span><span class="p">,</span> <span class="n">variable</span><span class="p">,</span> <span class="p">[</span><span class="n">datatype</span><span class="p">],</span> <span class="n">dimensionspec</span><span class="p">,</span> <span class="p">[</span><span class="n">unit</span><span class="p">],</span> <span class="s1">&#39;)&#39;</span> <span class="o">|</span>

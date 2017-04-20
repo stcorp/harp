@@ -422,6 +422,32 @@ static void area_mask_intersects_area_filter_delete(harp_operation_area_mask_int
     }
 }
 
+static void bin_collocated_delete(harp_operation_bin_collocated *operation)
+{
+    if (operation != NULL)
+    {
+        if (operation->collocation_result != NULL)
+        {
+            free(operation->collocation_result);
+        }
+
+        free(operation);
+    }
+}
+
+static void bin_with_variable_delete(harp_operation_bin_with_variable *operation)
+{
+    if (operation != NULL)
+    {
+        if (operation->variable_name != NULL)
+        {
+            free(operation->variable_name);
+        }
+
+        free(operation);
+    }
+}
+
 static void bit_mask_filter_delete(harp_operation_bit_mask_filter *operation)
 {
     if (operation != NULL)
@@ -833,6 +859,12 @@ void harp_operation_delete(harp_operation *operation)
         case operation_area_mask_intersects_area_filter:
             area_mask_intersects_area_filter_delete((harp_operation_area_mask_intersects_area_filter *)operation);
             break;
+        case operation_bin_collocated:
+            bin_collocated_delete((harp_operation_bin_collocated *)operation);
+            break;
+        case operation_bin_with_variable:
+            bin_with_variable_delete((harp_operation_bin_with_variable *)operation);
+            break;
         case operation_bit_mask_filter:
             bit_mask_filter_delete((harp_operation_bit_mask_filter *)operation);
             break;
@@ -1003,6 +1035,66 @@ int harp_operation_area_mask_intersects_area_filter_new(const char *filename, do
     if (harp_area_mask_read(operation->filename, &operation->area_mask) != 0)
     {
         area_mask_intersects_area_filter_delete(operation);
+        return -1;
+    }
+
+    *new_operation = (harp_operation *)operation;
+    return 0;
+}
+
+int harp_operation_bin_collocated_new(const char *collocation_result, const char target_dataset,
+                                      harp_operation **new_operation)
+{
+    harp_operation_bin_collocated *operation;
+
+    assert(collocation_result != NULL);
+
+    operation = (harp_operation_bin_collocated *)malloc(sizeof(harp_operation_bin_collocated));
+    if (operation == NULL)
+    {
+        harp_set_error(HARP_ERROR_OUT_OF_MEMORY, "out of memory (could not allocate %lu bytes) (%s:%u)",
+                       sizeof(harp_operation_bin_collocated), __FILE__, __LINE__);
+        return -1;
+    }
+    operation->type = operation_bin_collocated;
+    operation->collocation_result = NULL;
+    operation->target_dataset = target_dataset;
+
+    operation->collocation_result = strdup(collocation_result);
+    if (operation->collocation_result == NULL)
+    {
+        harp_set_error(HARP_ERROR_OUT_OF_MEMORY, "out of memory (could not duplicate string) (%s:%u)", __FILE__,
+                       __LINE__);
+        bin_collocated_delete(operation);
+        return -1;
+    }
+
+    *new_operation = (harp_operation *)operation;
+    return 0;
+}
+
+int harp_operation_bin_with_variable_new(const char *variable_name, harp_operation **new_operation)
+{
+    harp_operation_bin_with_variable *operation;
+
+    assert(variable_name != NULL);
+
+    operation = (harp_operation_bin_with_variable *)malloc(sizeof(harp_operation_bin_with_variable));
+    if (operation == NULL)
+    {
+        harp_set_error(HARP_ERROR_OUT_OF_MEMORY, "out of memory (could not allocate %lu bytes) (%s:%u)",
+                       sizeof(harp_operation_bin_with_variable), __FILE__, __LINE__);
+        return -1;
+    }
+    operation->type = operation_bin_with_variable;
+    operation->variable_name = NULL;
+
+    operation->variable_name = strdup(variable_name);
+    if (operation->variable_name == NULL)
+    {
+        harp_set_error(HARP_ERROR_OUT_OF_MEMORY, "out of memory (could not duplicate string) (%s:%u)", __FILE__,
+                       __LINE__);
+        bin_with_variable_delete(operation);
         return -1;
     }
 

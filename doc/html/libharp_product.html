@@ -198,6 +198,31 @@
 <div class="breathe-sectiondef docutils container">
 <p class="breathe-sectiondef-title rubric">Functions</p>
 <dl class="function">
+<dt id="_CPPv216harp_product_binP12harp_productllPl">
+<span id="harp_product_bin__harp_productP.l.l.lP"></span><span class="target" id="libharpgroup__harp__product_1gac1a935b414c03ed0a9a414a53dbc311e"></span>int <code class="descname">harp_product_bin</code><span class="sig-paren">(</span><a class="reference internal" href="#_CPPv212harp_product" title="harp_product">harp_product</a> *<em>product</em>, long <em>num_bins</em>, long <em>num_elements</em>, long *<em>bin_index</em><span class="sig-paren">)</span><br /></dt>
+<dd><p>Bin the product&#8217;s variables. This will bin all variables in the time dimension. Each time sample will be put in the bin defined by bin_index. All variables with a time dimension will then be resampled using these bins. The resulting value for each variable will be the average of all values for the bin. Variables with multiple dimensions will have all elements in the sub dimensions averaged on an element by element basis.</p>
+<p>Variables that have a time dimension but no unit (or using a string data type) will be removed.</p>
+<p>All variables that are binned are converted to a double data type. Bins that have no samples will end up with a NaN value.</p>
+<p><dl class="docutils">
+<dt><strong>Return</strong></dt>
+<dd><ul class="simple">
+<li><code class="docutils literal"><span class="pre">0</span></code>, Success. </li>
+<li><code class="docutils literal"><span class="pre">-1</span></code>, Error occurred (check <a class="reference internal" href="libharp_error.html#libharpgroup__harp__error_1gab2eeb46528306c6799632d1e800c4c36"><span class="std std-ref">harp_errno</span></a>). </li>
+</ul>
+</dd>
+<dt><strong>Parameters</strong></dt>
+<dd><ul class="breatheparameterlist first last simple">
+<li><code class="docutils literal"><span class="pre">product</span></code>: Product to regrid. </li>
+<li><code class="docutils literal"><span class="pre">num_bins</span></code>: Number of target bins. </li>
+<li><code class="docutils literal"><span class="pre">num_elements</span></code>: Length of bin_index array (should equal the length of the time dimension) </li>
+<li><code class="docutils literal"><span class="pre">bin_index</span></code>: Array of target bin index numbers (0 .. num_bins-1) for each sample in the time dimension.</li>
+</ul>
+</dd>
+</dl>
+</p>
+</dd></dl>
+
+<dl class="function">
 <dt id="_CPPv233harp_product_get_derived_variablePK12harp_productPKc14harp_data_typePKciPK19harp_dimension_typePP13harp_variable">
 <span id="harp_product_get_derived_variable__harp_productCP.cCP.harp_data_type.cCP.i.harp_dimension_typeCP.harp_variablePP"></span><span class="target" id="libharpgroup__harp__product_1gae327b2b6c1da75eb61d99e09b974d3d0"></span>int <code class="descname">harp_product_get_derived_variable</code><span class="sig-paren">(</span><em class="property">const</em> <a class="reference internal" href="#_CPPv212harp_product" title="harp_product">harp_product</a> *<em>product</em>, <em class="property">const</em> char *<em>name</em>, <a class="reference internal" href="libharp_general.html#_CPPv214harp_data_type" title="harp_data_type">harp_data_type</a> <em>data_type</em>, <em class="property">const</em> char *<em>unit</em>, int <em>num_dimensions</em>, <em class="property">const</em> <a class="reference internal" href="libharp_general.html#_CPPv219harp_dimension_type" title="harp_dimension_type">harp_dimension_type</a> *<em>dimension_type</em>, <a class="reference internal" href="libharp_variable.html#_CPPv213harp_variable" title="harp_variable">harp_variable</a> **<em>variable</em><span class="sig-paren">)</span><br /></dt>
 <dd><p>Retrieve a new variable based on the set of automatic conversions that are supported by HARP.</p>

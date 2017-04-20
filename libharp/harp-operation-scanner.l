@@ -91,6 +91,7 @@ WHITESPACE   [[:space:]]+
 "area_mask_covers_area" return FUNC_AREA_MASK_COVERS_AREA;
 "area_mask_covers_point"    return FUNC_AREA_MASK_COVERS_POINT;
 "area_mask_intersects_area" return FUNC_AREA_MASK_INTERSECTS_AREA;
+"bin"                   return FUNC_BIN;
 "collocate_left"        return FUNC_COLLOCATE_LEFT;
 "collocate_right"       return FUNC_COLLOCATE_RIGHT;
 "derive"                return FUNC_DERIVE;

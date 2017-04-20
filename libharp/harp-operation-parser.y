@@ -220,6 +220,7 @@ int harp_sized_array_add_int32(harp_sized_array *sized_array, int32_t value)
 %token                  FUNC_AREA_MASK_COVERS_AREA
 %token                  FUNC_AREA_MASK_COVERS_POINT
 %token                  FUNC_AREA_MASK_INTERSECTS_AREA
+%token                  FUNC_BIN
 %token                  FUNC_COLLOCATE_LEFT
 %token                  FUNC_COLLOCATE_RIGHT
 %token                  FUNC_DERIVE
@@ -280,6 +281,7 @@ reserved_identifier:
     | FUNC_AREA_MASK_COVERS_AREA { $$ = "area_mask_covers_area"; }
     | FUNC_AREA_MASK_COVERS_POINT { $$ = "area_mask_covers_point"; }
     | FUNC_AREA_MASK_INTERSECTS_AREA { $$ = "area_mask_intersects_area"; }
+    | FUNC_BIN { $$ = "bin"; }
     | FUNC_COLLOCATE_LEFT { $$ = "collocate_left"; }
     | FUNC_COLLOCATE_RIGHT { $$ = "collocate_right"; }
     | FUNC_DERIVE { $$ = "derive"; }
@@ -412,35 +414,24 @@ operation:
         }
     | identifier comparison_operator double_value {
             if (harp_operation_comparison_filter_new($1, $2, $3, NULL, &$$) != 0) YYERROR;
-            free($1);
         }
     | identifier comparison_operator double_value UNIT {
             if (harp_operation_comparison_filter_new($1, $2, $3, $4, &$$) != 0) YYERROR;
-            free($1);
-            free($4);
         }
     | identifier comparison_operator STRING_VALUE {
             if (harp_operation_string_comparison_filter_new($1, $2, $3, &$$) != 0) YYERROR;
-            free($1);
-            free($3);
         }
     | identifier membership_operator '(' double_array ')' UNIT {
             if (harp_operation_membership_filter_new($1, $2, $4->num_elements, $4->array.double_data, $6, &$$) != 0)
                 YYERROR;
-            free($1);
-            harp_sized_array_delete($4);
         }
     | identifier membership_operator '(' double_array ')' {
             if (harp_operation_membership_filter_new($1, $2, $4->num_elements, $4->array.double_data, NULL, &$$) != 0)
                 YYERROR;
-            free($1);
-            harp_sized_array_delete($4);
         }
     | identifier membership_operator '(' string_array ')' {
             if (harp_operation_string_membership_filter_new($1, $2, $4->num_elements,
                                                             (const char **)$4->array.string_data, &$$) != 0) YYERROR;
-            free($1);
-            harp_sized_array_delete($4);
         }
     | FUNC_AREA_MASK_COVERS_AREA '(' STRING_VALUE ')' {
             if (harp_operation_area_mask_covers_area_filter_new($3, &$$) != 0) YYERROR;
@@ -451,13 +442,20 @@ operation:
     | FUNC_AREA_MASK_INTERSECTS_AREA '(' STRING_VALUE ',' double_value ')' {
             if (harp_operation_area_mask_intersects_area_filter_new($3, $5, &$$) != 0) YYERROR;
         }
+    | FUNC_BIN '(' identifier ')' {
+            if (harp_operation_bin_with_variable_new($3, &$$) != 0) YYERROR;
+        }
+    | FUNC_BIN '(' STRING_VALUE ',' ID_A ')' {
+            if (harp_operation_bin_collocated_new($3, 'a', &$$) != 0) YYERROR;
+        }
+    | FUNC_BIN '(' STRING_VALUE ',' ID_B ')' {
+            if (harp_operation_bin_collocated_new($3, 'b', &$$) != 0) YYERROR;
+        }
     | FUNC_COLLOCATE_LEFT '(' STRING_VALUE ')' {
             if (harp_operation_collocation_filter_new($3, harp_collocation_left, &$$) != 0) YYERROR;
-            free($3);
         }
     | FUNC_COLLOCATE_RIGHT '(' STRING_VALUE ')' {
             if (harp_operation_collocation_filter_new($3, harp_collocation_right, &$$) != 0) YYERROR;
-            free($3);
         }
     | FUNC_DERIVE '(' identifier dimensionspec ')' {
             if (harp_operation_derive_variable_new($3, harp_type_double, $4->num_elements, $4->array.int32_data, NULL,
@@ -554,18 +552,9 @@ operation:
             if (harp_sized_array_new(harp_type_double, &array) != 0) YYERROR;
             for (i = 0; i < $8; i++)
             {
-                if (harp_sized_array_add_double(array, $10 + i * $12) != 0)
-                {
-                    harp_sized_array_delete(array);
-                    YYERROR;
-                }
+                if (harp_sized_array_add_double(array, $10 + i * $12) != 0) YYERROR;
             }
-            if (harp_operation_regrid_new($3, $5, $6, array->num_elements, array->array.double_data, &$$) != 0)
-            {
-                harp_sized_array_delete(array);
-                YYERROR;
-            }
-            harp_sized_array_delete(array);
+            if (harp_operation_regrid_new($3, $5, $6, array->num_elements, array->array.double_data, &$$) != 0) YYERROR;
         }
     | FUNC_REGRID '(' DIMENSION ',' identifier UNIT ',' STRING_VALUE ',' ID_A ',' STRING_VALUE ')' {
             if (harp_operation_regrid_collocated_new($3, $5, $6, $8, 'a', $12, &$$) != 0) YYERROR;
@@ -599,15 +588,12 @@ operation:
         }
     | FUNC_VALID '(' identifier ')' {
             if (harp_operation_valid_range_filter_new($3, &$$) != 0) YYERROR;
-            free($3);
         }
     | FUNC_WRAP '(' identifier ',' double_value ',' double_value ')' {
             if (harp_operation_wrap_new($3, NULL, $5, $7, &$$) != 0) YYERROR;
-            free($3);
         }
     | FUNC_WRAP '(' identifier UNIT ',' double_value ',' double_value ')' {
             if (harp_operation_wrap_new($3, $4, $6, $8, &$$) != 0) YYERROR;
-            free($3);
         }
     ;
 

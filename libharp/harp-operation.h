@@ -42,6 +42,8 @@ typedef enum harp_operation_type_enum
     operation_area_mask_covers_area_filter,
     operation_area_mask_covers_point_filter,
     operation_area_mask_intersects_area_filter,
+    operation_bin_collocated,
+    operation_bin_with_variable,
     operation_bit_mask_filter,
     operation_collocation_filter,
     operation_comparison_filter,
@@ -107,6 +109,8 @@ typedef enum harp_membership_operator_type_enum
  *   |  |-  harp_operation_area_mask_covers_area_filter
  *   |  |-  harp_operation_area_mask_intersects_area_filter
  *   |  |-  harp_operation_point_in_area_filter
+ *   |-  harp_operation_bin_collocated
+ *   |-  harp_operation_bin_with_variable
  *   |-  harp_operation_derive_variable
  *   |-  harp_operation_derive_smoothed_column_collocated
  *   |-  harp_operation_exclude_variable
@@ -173,6 +177,21 @@ typedef struct harp_operation_area_mask_intersects_area_filter_struct
     /* extra */
     harp_area_mask *area_mask;
 } harp_operation_area_mask_intersects_area_filter;
+
+typedef struct harp_operation_bin_collocated_struct
+{
+    harp_operation_type type;
+    /* parameters */
+    char *collocation_result;
+    char target_dataset;
+} harp_operation_bin_collocated;
+
+typedef struct harp_operation_bin_with_variable_struct
+{
+    harp_operation_type type;
+    /* parameters */
+    char *variable_name;
+} harp_operation_bin_with_variable;
 
 typedef struct harp_operation_bit_mask_filter_struct
 {
@@ -407,6 +426,9 @@ int harp_operation_area_mask_covers_area_filter_new(const char *filename, harp_o
 int harp_operation_area_mask_covers_point_filter_new(const char *filename, harp_operation **new_operation);
 int harp_operation_area_mask_intersects_area_filter_new(const char *filename, double min_percentage,
                                                         harp_operation **new_operation);
+int harp_operation_bin_collocated_new(const char *collocation_result, const char target_dataset,
+                                      harp_operation **new_operation);
+int harp_operation_bin_with_variable_new(const char *variable_name, harp_operation **new_operation);
 int harp_operation_bit_mask_filter_new(const char *variable_name, harp_bit_mask_operator_type operator_type,
                                        uint32_t bit_mask, harp_operation **new_operation);
 int harp_operation_collocation_filter_new(const char *filename, harp_collocation_filter_type filter_type,

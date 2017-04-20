@@ -520,6 +520,7 @@ LIBHARP_API void harp_product_print(const harp_product *product, int show_attrib
 LIBHARP_API int harp_product_get_metadata(harp_product *product, harp_product_metadata **new_metadata);
 
 LIBHARP_API int harp_product_flatten_dimension(harp_product *product, harp_dimension_type dimension_name);
+LIBHARP_API int harp_product_bin(harp_product *product, long num_bins, long num_elements, long *bin_index);
 LIBHARP_API int harp_product_regrid_with_axis_variable(harp_product *product, harp_variable *target_grid,
                                                        harp_variable *target_bounds);
 LIBHARP_API int harp_product_regrid_with_collocated_dataset(harp_product *product, harp_dimension_type dimension_type,

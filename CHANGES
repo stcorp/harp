@@ -3,11 +3,13 @@
 * Added data_type parameter to harp_product_get_derived_variable() and
   harp_product_add_derived_variable() functions.
 
+* Added harp_product_bin() function.
+
 * Added optional data_type parameter to derive() operation.
 
 * Added global HARP option `regrid_out_of_bounds`.
 
-* Added set() operation.
+* Added bin() and set() operations.
 
 * Allow 'Conventions' global attribute to contain more than just a reference
   to HARP.

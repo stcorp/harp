@@ -560,6 +560,35 @@ static int execute_collocation_filter(harp_product *product, harp_operation_coll
     return harp_product_apply_collocation_mask(product, operation->collocation_mask);
 }
 
+static int execute_bin_collocated(harp_product *product, harp_operation_bin_collocated *operation)
+{
+    harp_collocation_result *collocation_result = NULL;
+
+    if (harp_collocation_result_read(operation->collocation_result, &collocation_result) != 0)
+    {
+        return -1;
+    }
+
+    if (operation->target_dataset == 'a')
+    {
+        harp_collocation_result_swap_datasets(collocation_result);
+    }
+
+    if (harp_product_bin_with_collocated_dataset(product, collocation_result) != 0)
+    {
+        harp_collocation_result_delete(collocation_result);
+        return -1;
+    }
+
+
+    return 0;
+}
+
+static int execute_bin_with_variable(harp_product *product, harp_operation_bin_with_variable *operation)
+{
+    return harp_product_bin_with_variable(product, operation->variable_name);
+}
+
 static int execute_derive_variable(harp_product *product, harp_operation_derive_variable *operation)
 {
     return harp_product_add_derived_variable(product, operation->variable_name, operation->data_type, operation->unit,
@@ -737,6 +766,8 @@ static int execute_regrid_collocated(harp_product *product, harp_operation_regri
         harp_collocation_result_delete(collocation_result);
         return -1;
     }
+
+    harp_collocation_result_delete(collocation_result);
     return 0;
 }
 
@@ -943,6 +974,18 @@ int harp_product_execute_program(harp_product *product, harp_program *program)
                 break;
             case operation_collocation_filter:
                 if (execute_collocation_filter(product, (harp_operation_collocation_filter *)operation) != 0)
+                {
+                    return -1;
+                }
+                break;
+            case operation_bin_collocated:
+                if (execute_bin_collocated(product, (harp_operation_bin_collocated *)operation) != 0)
+                {
+                    return -1;
+                }
+                break;
+            case operation_bin_with_variable:
+                if (execute_bin_with_variable(product, (harp_operation_bin_with_variable *)operation) != 0)
                 {
                     return -1;
                 }

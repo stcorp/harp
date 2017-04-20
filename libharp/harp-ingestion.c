@@ -1626,6 +1626,8 @@ static int evaluate_ingestion_mask(ingest_info *info, harp_program *program)
                     return -1;
                 }
                 break;
+            case operation_bin_collocated:
+            case operation_bin_with_variable:
             case operation_derive_variable:
             case operation_derive_smoothed_column_collocated:
             case operation_flatten:

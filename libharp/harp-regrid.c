@@ -84,16 +84,22 @@ static resample_type get_resample_type(harp_variable *variable, harp_dimension_t
         return resample_skip;
     }
 
+    /* we can't resample strings */
+    if (variable->data_type == harp_type_string)
+    {
+        return resample_remove;
+    }
+
+    /* we can't resample data without a unit */
+    if (variable->unit == NULL)
+    {
+        return resample_remove;
+    }
+
     if (num_matching_dims != 1)
     {
         /* remove all variables with more than one matching dimension */
         /* TODO: how to resample 2D AVKs */
-        return resample_remove;
-    }
-
-    /* we can't resample strings */
-    if (variable->data_type == harp_type_string)
-    {
         return resample_remove;
     }
 
