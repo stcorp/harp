@@ -342,7 +342,6 @@ void harp_array_filter(harp_data_type data_type, int num_dimensions, const long 
                 }
             }
         }
-        assert(num_dimensions != 0);
 
         if (dimension_index > 0)
         {
