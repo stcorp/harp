@@ -77,7 +77,7 @@ static binning_type get_binning_type(harp_variable *variable)
     {
         return binning_remove;
     }
-    
+
     /* uncertainty propagation needs to be handled differently (remove for now) */
     if (strstr(variable->name, "_uncertainty") != NULL)
     {
@@ -305,7 +305,7 @@ int harp_product_bin_with_collocated_dataset(harp_product *product, harp_colloca
 {
     harp_collocation_result *filtered_collocation_result = NULL;
     harp_variable *collocation_index = NULL;
-    long *index;    /* contains index of first sample for each bin */
+    long *index;        /* contains index of first sample for each bin */
     long *bin_index;
     long num_bins;
     long i, j;
@@ -406,7 +406,7 @@ int harp_product_bin_with_collocated_dataset(harp_product *product, harp_colloca
 int harp_product_bin_with_variable(harp_product *product, const char *variable_name)
 {
     harp_variable *variable;
-    long *index;    /* contains index of first sample for each bin */
+    long *index;        /* contains index of first sample for each bin */
     long *bin_index;
     long num_bins;
     long i, j;
@@ -525,6 +525,6 @@ int harp_product_bin_with_variable(harp_product *product, const char *variable_n
 
     /* cleanup */
     free(bin_index);
-    
+
     return 0;
 }

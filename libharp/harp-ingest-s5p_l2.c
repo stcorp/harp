@@ -732,7 +732,7 @@ static int read_dimensions(void *user_data, long dimension[HARP_NUM_DIM_TYPES])
         case s5p_type_o3_tcl:
             dimension[harp_dimension_latitude] = info->num_latitudes;
             dimension[harp_dimension_longitude] = info->num_longitudes;
-           break;
+            break;
     }
 
     return 0;
@@ -3108,9 +3108,9 @@ static void register_aer_lh_product(void)
     /* pressure_uncertainty */
     description = "uncertainty of pressure at center of aerosol layer";
     variable_definition =
-    harp_ingestion_register_variable_full_read(product_definition, "pressure_uncertainty", harp_type_float, 1,
-                                               dimension_type, NULL, description, "Pa", NULL,
-                                               read_product_aerosol_mid_pressure_precision);
+        harp_ingestion_register_variable_full_read(product_definition, "pressure_uncertainty", harp_type_float, 1,
+                                                   dimension_type, NULL, description, "Pa", NULL,
+                                                   read_product_aerosol_mid_pressure_precision);
     path = "/PRODUCT/aerosol_mid_pressure_precision[]";
     harp_variable_definition_add_mapping(variable_definition, NULL, NULL, path, NULL);
 
@@ -3141,6 +3141,7 @@ static void register_ch4_product(void)
     harp_ingestion_module *module;
     harp_product_definition *product_definition;
     harp_variable_definition *variable_definition;
+
     harp_dimension_type dimension_type[3] = { harp_dimension_time, harp_dimension_vertical,
         harp_dimension_independent
     };
