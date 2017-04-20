@@ -211,7 +211,7 @@ aerosol_optical_depth                         stratospheric,                  X 
                                               tropospheric
 altitude                                      sensor,                         X       X    X
                                               surface
-altitude_bounds                                                                       X    X
+altitude_bounds                                                               X       X    X
 backscatter_coefficient                       surface                         X       X    X       X
 cloud_albedo                                                                  X            X
 cloud_base_albedo                                                             X            X
