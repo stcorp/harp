@@ -892,8 +892,8 @@ static int execute_value_filter(ingest_info *info, harp_program *program)
 
     if (find_variable_definition(info, variable_name, &variable_def) != 0)
     {
-        /* non existant variable is an error */
-        harp_set_error(HARP_ERROR_OPERATION, "cannot filter on non-existant variable %s", variable_name);
+        /* non existent variable is an error */
+        harp_set_error(HARP_ERROR_OPERATION, "cannot filter on non-existent variable %s", variable_name);
         return -1;
     }
     data_type_size = harp_get_size_for_type(variable_def->data_type);
@@ -1505,7 +1505,7 @@ static int execute_exclude_variable(ingest_info *info, harp_operation_exclude_va
         index = harp_product_definition_get_variable_index(info->product_definition, operation->variable_name[j]);
         if (index < 0)
         {
-            /* non-existant variable, not an error */
+            /* non-existent variable, not an error */
             continue;
         }
 
@@ -1541,7 +1541,7 @@ static int execute_keep_variable(ingest_info *info, harp_operation_keep_variable
         index = harp_product_definition_get_variable_index(info->product_definition, operation->variable_name[j]);
         if (index < 0 || info->variable_mask[index] == 0)
         {
-            harp_set_error(HARP_ERROR_OPERATION, "cannot keep non-existant variable %s", operation->variable_name[j]);
+            harp_set_error(HARP_ERROR_OPERATION, "cannot keep non-existent variable %s", operation->variable_name[j]);
             free(included);
             return -1;
         }

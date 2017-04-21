@@ -695,7 +695,7 @@ static int execute_keep_variable(harp_product *product, harp_operation_keep_vari
     {
         if (harp_product_get_variable_index_by_name(product, operation->variable_name[j], &index) != 0)
         {
-            harp_set_error(HARP_ERROR_OPERATION, "cannot keep non-existant variable %s", operation->variable_name[j]);
+            harp_set_error(HARP_ERROR_OPERATION, "cannot keep non-existent variable %s", operation->variable_name[j]);
             free(included);
             return -1;
         }
