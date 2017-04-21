@@ -154,6 +154,22 @@ static int get_double_array(coda_cursor cursor, const char *field1, const char *
     return 0;
 }
 
+static int get_sqrt_double_array(coda_cursor cursor, const char *field1, const char *field2, harp_array data)
+{
+    int i;
+
+    if (get_double_array(cursor, field1, field2, data) != 0)
+    {
+        return -1;
+    }
+    for (i = 0; i < 24; i++)
+    {
+        data.double_data[i] = sqrt(data.double_data[i]);
+    }
+
+    return 0;
+}
+
 static int init_cursors(ingest_info *info)
 {
     coda_cursor cursor;
@@ -287,16 +303,34 @@ static int read_extinction(void *user_data, long index, harp_array data)
                             "extinction", data);
 }
 
+static int read_extinction_uncertainty(void *user_data, long index, harp_array data)
+{
+    return get_sqrt_double_array(((ingest_info *)user_data)->pcd_cursor[index], "profile_pcd_bins",
+                                 "extinction_variance", data);
+}
+
 static int read_backscatter(void *user_data, long index, harp_array data)
 {
     return get_double_array(((ingest_info *)user_data)->properties_cursor[index], "sca_optical_properties",
                             "backscatter", data);
 }
 
+static int read_backscatter_uncertainty(void *user_data, long index, harp_array data)
+{
+    return get_sqrt_double_array(((ingest_info *)user_data)->pcd_cursor[index], "profile_pcd_bins",
+                                 "backscatter_variance", data);
+}
+
 static int read_lod(void *user_data, long index, harp_array data)
 {
-    return get_double_array(((ingest_info *)user_data)->properties_cursor[index], "sca_optical_properties",
-                            "lod", data);
+    return get_double_array(((ingest_info *)user_data)->properties_cursor[index], "sca_optical_properties", "lod",
+                            data);
+}
+
+static int read_lod_uncertainty(void *user_data, long index, harp_array data)
+{
+    return get_sqrt_double_array(((ingest_info *)user_data)->pcd_cursor[index], "profile_pcd_bins", "lod_variance",
+                                 data);
 }
 
 static int read_validity(void *user_data, long index, harp_array data)
@@ -414,6 +448,17 @@ int harp_ingestion_module_aeolus_l2a_init(void)
     harp_variable_definition_add_mapping(variable_definition, NULL, NULL,
                                          "/sca_optical_properties[]/sca_optical_properties[]/extinction", NULL);
 
+    /* extinction_coefficient_uncertainty */
+    description = "uncertainty of the particle extinction";
+    variable_definition = harp_ingestion_register_variable_sample_read(product_definition,
+                                                                       "extinction_coefficient_uncertainty",
+                                                                       harp_type_double, 2, dimension_type, NULL,
+                                                                       description, "m^-1", NULL,
+                                                                       read_extinction_uncertainty);
+    description = "the square root of the variance is taken as uncertainty";
+    harp_variable_definition_add_mapping(variable_definition, NULL, NULL,
+                                         "/sca_pcd[]/profile_pcd_bins[]/extinction_variance", description);
+
     /* backscatter_coefficient */
     description = "particle backscatter";
     variable_definition = harp_ingestion_register_variable_sample_read(product_definition, "backscatter_coefficient",
@@ -423,6 +468,17 @@ int harp_ingestion_module_aeolus_l2a_init(void)
     harp_variable_definition_add_mapping(variable_definition, NULL, NULL,
                                          "/sca_optical_properties[]/sca_optical_properties[]/backscatter", NULL);
 
+    /* backscatter_coefficient_uncertainty */
+    description = "uncertainty of the particle backscatter";
+    variable_definition = harp_ingestion_register_variable_sample_read(product_definition,
+                                                                       "backscatter_coefficient_uncertainty",
+                                                                       harp_type_double, 2, dimension_type, NULL,
+                                                                       description, "m^-1 sr^-1", NULL,
+                                                                       read_backscatter_uncertainty);
+    description = "the square root of the variance is taken as uncertainty";
+    harp_variable_definition_add_mapping(variable_definition, NULL, NULL,
+                                         "/sca_pcd[]/profile_pcd_bins[]/backscatter_variance", description);
+
     /* optical_depth */
     description = "particle local optical depth";
     variable_definition = harp_ingestion_register_variable_sample_read(product_definition, "optical_depth",
@@ -431,6 +487,16 @@ int harp_ingestion_module_aeolus_l2a_init(void)
                                                                        read_lod);
     harp_variable_definition_add_mapping(variable_definition, NULL, NULL,
                                          "/sca_optical_properties[]/sca_optical_properties[]/lod", NULL);
+
+    /* optical_depth_uncertainty */
+    description = "uncertainty of the particle local optical depth";
+    variable_definition = harp_ingestion_register_variable_sample_read(product_definition, "optical_depth_uncertainty",
+                                                                       harp_type_double, 2, dimension_type, NULL,
+                                                                       description, HARP_UNIT_DIMENSIONLESS, NULL,
+                                                                       read_lod_uncertainty);
+    description = "the square root of the variance is taken as uncertainty";
+    harp_variable_definition_add_mapping(variable_definition, NULL, NULL,
+                                         "/sca_pcd[]/profile_pcd_bins[]/lod_variance", description);
 
     /* validity */
     description = "processing qc flag";

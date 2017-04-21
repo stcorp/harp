@@ -210,11 +210,23 @@
 <td>10^-6 m^-1</td>
 <td>particle extinction</td>
 </tr>
-<tr class="row-even"><td><strong>backscatter_coefficient</strong></td>
+<tr class="row-even"><td><strong>extinction_coefficient_uncertainty</strong></td>
+<td>double</td>
+<td>{<em>time</em>, <em>vertical</em>}</td>
+<td>m^-1</td>
+<td>uncertainty of the particle extinction</td>
+</tr>
+<tr class="row-odd"><td><strong>backscatter_coefficient</strong></td>
 <td>double</td>
 <td>{<em>time</em>, <em>vertical</em>}</td>
 <td>10^-6 m^-1 sr^-1</td>
 <td>particle backscatter</td>
+</tr>
+<tr class="row-even"><td><strong>backscatter_coefficient_uncertainty</strong></td>
+<td>double</td>
+<td>{<em>time</em>, <em>vertical</em>}</td>
+<td>m^-1 sr^-1</td>
+<td>uncertainty of the particle backscatter</td>
 </tr>
 <tr class="row-odd"><td><strong>optical_depth</strong></td>
 <td>double</td>
@@ -222,13 +234,19 @@
 <td>&#160;</td>
 <td>particle local optical depth</td>
 </tr>
-<tr class="row-even"><td><strong>validity</strong></td>
+<tr class="row-even"><td><strong>optical_depth_uncertainty</strong></td>
+<td>double</td>
+<td>{<em>time</em>, <em>vertical</em>}</td>
+<td>&#160;</td>
+<td>uncertainty of the particle local optical depth</td>
+</tr>
+<tr class="row-odd"><td><strong>validity</strong></td>
 <td>int8</td>
 <td>{<em>time</em>, <em>vertical</em>}</td>
 <td>&#160;</td>
 <td>processing qc flag</td>
 </tr>
-<tr class="row-odd"><td><strong>index</strong></td>
+<tr class="row-even"><td><strong>index</strong></td>
 <td>int32</td>
 <td>{<em>time</em>}</td>
 <td>&#160;</td>
@@ -242,9 +260,9 @@
 <p>The table below details where and how each variable was retrieved from the input product.</p>
 <table border="1" class="docutils">
 <colgroup>
-<col width="26%" />
-<col width="13%" />
-<col width="61%" />
+<col width="33%" />
+<col width="12%" />
+<col width="55%" />
 </colgroup>
 <thead valign="bottom">
 <tr class="row-odd"><th class="head">field name</th>
@@ -276,13 +294,34 @@
 <td><em>path</em></td>
 <td><strong>/sca_optical_properties[]/sca_optical_properties[]/extinction</strong></td>
 </tr>
+<tr class="row-even"><td rowspan="2"><strong>extinction_coefficient_uncertainty</strong></td>
+<td><em>path</em></td>
+<td><strong>/sca_pcd[]/profile_pcd_bins[]/extinction_variance</strong></td>
+</tr>
+<tr class="row-odd"><td><em>description</em></td>
+<td>the square root of the variance is taken as uncertainty</td>
+</tr>
 <tr class="row-even"><td><strong>backscatter_coefficient</strong></td>
 <td><em>path</em></td>
 <td><strong>/sca_optical_properties[]/sca_optical_properties[]/backscatter</strong></td>
 </tr>
+<tr class="row-odd"><td rowspan="2"><strong>backscatter_coefficient_uncertainty</strong></td>
+<td><em>path</em></td>
+<td><strong>/sca_pcd[]/profile_pcd_bins[]/backscatter_variance</strong></td>
+</tr>
+<tr class="row-even"><td><em>description</em></td>
+<td>the square root of the variance is taken as uncertainty</td>
+</tr>
 <tr class="row-odd"><td><strong>optical_depth</strong></td>
 <td><em>path</em></td>
 <td><strong>/sca_optical_properties[]/sca_optical_properties[]/lod</strong></td>
+</tr>
+<tr class="row-even"><td rowspan="2"><strong>optical_depth_uncertainty</strong></td>
+<td><em>path</em></td>
+<td><strong>/sca_pcd[]/profile_pcd_bins[]/lod_variance</strong></td>
+</tr>
+<tr class="row-odd"><td><em>description</em></td>
+<td>the square root of the variance is taken as uncertainty</td>
 </tr>
 <tr class="row-even"><td><strong>validity</strong></td>
 <td><em>path</em></td>
