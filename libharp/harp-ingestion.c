@@ -981,16 +981,36 @@ static int execute_value_filter(ingest_info *info, harp_program *program)
             return -1;
         }
 
+        if (dimension_type == harp_dimension_time)
+        {
+            for (i = 0; i < info->dimension[dimension_type]; i++)
+            {
+                if (dimension_mask->mask[i])
+                {
+                    harp_array data;
+
+                    data.int8_data = &buffer->data.int8_data[i * data_type_size];
+                    if (read_sample(info, variable_def, i, data) != 0)
+                    {
+                        read_buffer_delete(buffer);
+                        return -1;
+                    }
+                }
+            }
+        }
+        else
+        {
+            if (read_sample(info, variable_def, 0, buffer->data) != 0)
+            {
+                read_buffer_delete(buffer);
+                return -1;
+            }
+        }
+
         for (i = 0; i < info->dimension[dimension_type]; i++)
         {
             if (dimension_mask->mask[i])
             {
-                if (read_sample(info, variable_def, i, buffer->data) != 0)
-                {
-                    read_buffer_delete(buffer);
-                    return -1;
-                }
-
                 for (k = 0; k < num_operations; k++)
                 {
                     if (dimension_mask->mask[i])
@@ -999,7 +1019,8 @@ static int execute_value_filter(ingest_info *info, harp_program *program)
                         int result;
 
                         operation = (harp_operation_value_filter *)program->operation[program->current_index + k];
-                        result = operation->eval(operation, variable_def->data_type, buffer->data.ptr);
+                        result = operation->eval(operation, variable_def->data_type,
+                                                 &buffer->data.int8_data[i * data_type_size]);
                         if (result < 0)
                         {
                             if (info->dimension_mask_set[dimension_type]->num_dimensions == 2)
