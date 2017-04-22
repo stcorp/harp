@@ -620,6 +620,37 @@ static int ingestion_init(const harp_ingestion_module *module, coda_product *pro
     return 0;
 }
 
+static int read_double_attribute(coda_cursor cursor, const char *dataset_name, const char *attribute, double *value)
+{
+    if (coda_cursor_goto_record_field_by_name(&cursor, dataset_name) != 0)
+    {
+        harp_set_error(HARP_ERROR_CODA, NULL);
+        return -1;
+    }
+    if (coda_cursor_goto_attributes(&cursor) != 0)
+    {
+        harp_set_error(HARP_ERROR_CODA, NULL);
+        return -1;
+    }
+    if (coda_cursor_goto_record_field_by_name(&cursor, attribute) != 0)
+    {
+        harp_set_error(HARP_ERROR_CODA, NULL);
+        return -1;
+    }
+    if (coda_cursor_goto_first_array_element(&cursor) != 0)
+    {
+        harp_set_error(HARP_ERROR_CODA, NULL);
+        return -1;
+    }
+    if (coda_cursor_read_double(&cursor, value) != 0)
+    {
+        harp_set_error(HARP_ERROR_CODA, NULL);
+        return -1;
+    }
+
+    return 0;
+}
+
 static int read_dataset(coda_cursor cursor, const char *dataset_name, harp_data_type data_type, long num_elements,
                         harp_array data)
 {
@@ -1038,19 +1069,85 @@ static int read_input_ozone_profile_apriori(void *user_data, harp_array data)
 static int read_input_ozone_profile_apriori_uncertainty(void *user_data, harp_array data)
 {
     ingest_info *info = (ingest_info *)user_data;
-    long num_elements = info->num_scanlines * info->num_pixels * info->num_levels;
-    long i;
 
-    if (read_dataset(info->input_data_cursor, "ozone_profile_apriori_error_covariance_matrix", harp_type_float,
-                     num_elements, data) != 0)
+    return read_dataset(info->input_data_cursor, "ozone_profile_apriori_precision", harp_type_float,
+                        info->num_scanlines * info->num_pixels * info->num_levels, data);
+}
+
+static int read_input_ozone_profile_apriori_covariance(void *user_data, harp_array data)
+{
+    ingest_info *info = (ingest_info *)user_data;
+    long num_elements = info->num_scanlines * info->num_pixels;
+    long num_levels = info->num_levels;
+    harp_array altitude;
+    harp_array stddev;
+    double correlation_length;
+    long i, j, k;
+
+    if (read_double_attribute(info->input_data_cursor, "ozone_profile_apriori_precision", "correlation_length",
+                              &correlation_length) != 0)
     {
+        return -1;
+    }
+
+    altitude.float_data = malloc(num_elements * num_levels * sizeof(float));
+    if (altitude.float_data == NULL)
+    {
+        harp_set_error(HARP_ERROR_OUT_OF_MEMORY, "out of memory (could not allocate %lu bytes) (%s:%u)",
+                       num_elements * num_levels * sizeof(float), __FILE__, __LINE__);
+        return -1;
+    }
+    if (read_input_altitude(user_data, altitude) != 0)
+    {
+        free(altitude.float_data);
+        return -1;
+    }
+
+    stddev.float_data = malloc(num_elements * num_levels * sizeof(float));
+    if (stddev.float_data == NULL)
+    {
+        harp_set_error(HARP_ERROR_OUT_OF_MEMORY, "out of memory (could not allocate %lu bytes) (%s:%u)",
+                       num_elements * num_levels * sizeof(float), __FILE__, __LINE__);
+        free(altitude.float_data);
+        return -1;
+    }
+    if (read_input_ozone_profile_apriori_uncertainty(user_data, stddev) != 0)
+    {
+        free(altitude.float_data);
+        free(stddev.float_data);
         return -1;
     }
 
     for (i = 0; i < num_elements; i++)
     {
-        data.float_data[i] = sqrtf(data.float_data[i]);
+        long offset = i * num_levels * num_levels;
+
+        for (j = 0; j < num_levels; j++)
+        {
+            for (k = 0; k < num_levels; k++)
+            {
+                double value;
+
+                if (k <= j)
+                {
+                    value = data.float_data[offset + j] * data.float_data[offset + k];
+                    if (k < j)
+                    {
+                        value *= exp(-fabs(altitude.float_data[j] - altitude.float_data[k]) / correlation_length);
+                    }
+                }
+                else
+                {
+                    /* since the matrix is symetric, use the value from the lower triangular part of the matrix */
+                    value = data.float_data[offset + k * num_levels + j];
+                }
+                data.float_data[offset + j * num_levels + k] = (float)value;
+            }
+        }
     }
+
+    free(altitude.float_data);
+    free(stddev.float_data);
 
     return 0;
 }
@@ -3566,14 +3663,16 @@ static void register_o3_profile_variables(harp_product_definition *product_defin
     path = "/PRODUCT/SUPPORT_DATA/INPUT_DATA/ozone_profile_apriori[]";
     harp_variable_definition_add_mapping(variable_definition, NULL, NULL, path, NULL);
 
-    /* O3_volume_mixing_ratio_apriori_uncertainty */
-    description = "uncertainty of the O3 volume mixing ratio apriori";
+    /* O3_volume_mixing_ratio_apriori_covariance */
+    description = "covariance of the O3 volume mixing ratio apriori";
     variable_definition =
-        harp_ingestion_register_variable_full_read(product_definition, "O3_volume_mixing_ratio_apriori_uncertainty",
-                                                   harp_type_float, 2, dimension_type, NULL, description, "ppmv",
-                                                   NULL, read_input_ozone_profile_apriori_uncertainty);
-    path = "/PRODUCT/SUPPORT_DATA/INPUT_DATA/ozone_profile_apriori_error_covariance_matrix[]";
-    description = "uncertainty derived from variance as: sqrt(ozone_profile_apriori_error_covariance_matrix[])";
+        harp_ingestion_register_variable_full_read(product_definition, "O3_volume_mixing_ratio_apriori_covariance",
+                                                   harp_type_float, 3, dimension_type, NULL, description, "ppmv^2",
+                                                   NULL, read_input_ozone_profile_apriori_covariance);
+    path = "/PRODUCT/SUPPORT_DATA/INPUT_DATA/ozone_profile_apriori_precision[], "
+        "/PRODUCT/SUPPORT_DATA/INPUT_DATA/ozone_profile_apriori_precision@correlation_length, "
+        "/PRODUCT/SUPPORT_DATA/INPUT_DATA/altitude[]";
+    description = "covariance[i,j] = exp(-(latitude[i]-latitude[j])/correlation_length) * precision[i] * precision[j]";
     harp_variable_definition_add_mapping(variable_definition, NULL, NULL, path, description);
 
     /* O3_volume_mixing_ratio_covariance */

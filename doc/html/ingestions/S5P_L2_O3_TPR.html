@@ -324,11 +324,11 @@
 <td>ppmv</td>
 <td>O3 volume mixing ratio apriori</td>
 </tr>
-<tr class="row-odd"><td><strong>O3_volume_mixing_ratio_apriori_uncertainty</strong></td>
+<tr class="row-odd"><td><strong>O3_volume_mixing_ratio_apriori_covariance</strong></td>
 <td>float</td>
-<td>{<em>time</em>, <em>vertical</em>}</td>
-<td>ppmv</td>
-<td>uncertainty of the O3 volume mixing ratio apriori</td>
+<td>{<em>time</em>, <em>vertical</em>, <em>vertical</em>}</td>
+<td>ppmv^2</td>
+<td>covariance of the O3 volume mixing ratio apriori</td>
 </tr>
 <tr class="row-even"><td><strong>O3_volume_mixing_ratio_covariance</strong></td>
 <td>float</td>
@@ -517,12 +517,12 @@
 <td><em>path</em></td>
 <td><strong>/PRODUCT/SUPPORT_DATA/INPUT_DATA/ozone_profile_apriori[]</strong></td>
 </tr>
-<tr class="row-even"><td rowspan="2"><strong>O3_volume_mixing_ratio_apriori_uncertainty</strong></td>
+<tr class="row-even"><td rowspan="2"><strong>O3_volume_mixing_ratio_apriori_covariance</strong></td>
 <td><em>path</em></td>
-<td><strong>/PRODUCT/SUPPORT_DATA/INPUT_DATA/ozone_profile_apriori_error_covariance_matrix[]</strong></td>
+<td><strong>/PRODUCT/SUPPORT_DATA/INPUT_DATA/ozone_profile_apriori_precision[], /PRODUCT/SUPPORT_DATA/INPUT_DATA/ozone_profile_apriori_precision&#64;correlation_length, /PRODUCT/SUPPORT_DATA/INPUT_DATA/altitude[]</strong></td>
 </tr>
 <tr class="row-odd"><td><em>description</em></td>
-<td>uncertainty derived from variance as: sqrt(ozone_profile_apriori_error_covariance_matrix[])</td>
+<td>covariance[i,j] = exp(-(latitude[i]-latitude[j])/correlation_length) * precision[i] * precision[j]</td>
 </tr>
 <tr class="row-even"><td><strong>O3_volume_mixing_ratio_covariance</strong></td>
 <td><em>path</em></td>
