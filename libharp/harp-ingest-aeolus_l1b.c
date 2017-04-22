@@ -530,9 +530,56 @@ static int read_longitude(void *user_data, long index, harp_array data)
     return get_double_average_array(((ingest_info *)user_data)->geo_bin_cursor[index], "longitude_of_height_bin", data);
 }
 
+static int read_geoid_separation(void *user_data, long index, harp_array data)
+{
+    ingest_info *info = (ingest_info *)user_data;
+    coda_cursor cursor;
+
+    cursor = ((ingest_info *)user_data)->geo_bin_cursor[index];
+    coda_cursor_goto_parent(&cursor);
+    if (!info->observation)
+    {
+        if (coda_cursor_goto(&cursor, "../../observation_geolocation") != 0)
+        {
+            return -1;
+        }
+    }
+    if (coda_cursor_goto_record_field_by_name(&cursor, "geoid_separation") != 0)
+    {
+        harp_set_error(HARP_ERROR_CODA, NULL);
+        return -1;
+    }
+    if (coda_cursor_read_double(&cursor, data.double_data) != 0)
+    {
+        harp_set_error(HARP_ERROR_CODA, NULL);
+        return -1;
+    }
+
+    return 0;
+}
+
 static int read_altitude_bounds(void *user_data, long index, harp_array data)
 {
-    return get_double_bounds_array(((ingest_info *)user_data)->geo_bin_cursor[index], "altitude_of_height_bin", data);
+    double geoid_separation;
+    harp_array geoid_data;
+    int i;
+
+    geoid_data.double_data = &geoid_separation;
+    if (read_geoid_separation(user_data, index, geoid_data) != 0)
+    {
+        return -1;
+    }
+    if (get_double_bounds_array(((ingest_info *)user_data)->geo_bin_cursor[index], "altitude_of_height_bin", data) != 0)
+    {
+        return -1;
+    }
+
+    for (i = 0; i < 2 * 24; i++)
+    {
+        data.double_data[i] -= geoid_separation;
+    }
+
+    return 0;
 }
 
 static int read_wind_velocity(void *user_data, long index, harp_array data)
@@ -719,9 +766,19 @@ static void register_common_variables(harp_product_definition *product_definitio
     variable_definition = harp_ingestion_register_variable_sample_read(product_definition, "altitude_bounds",
                                                                        harp_type_double, 3, dimension_type, dimension,
                                                                        description, "m", NULL, read_altitude_bounds);
-    snprintf(path, MAX_PATH_LENGTH, "/geolocation[]/%s_geolocation[]/%s%s_geolocation[]/altitude_of_height_bin",
+    snprintf(path, MAX_PATH_LENGTH, "/geolocation[]/%s_geolocation[]/%s%s_geolocation[]/altitude_of_height_bin, "
+             "/geolocation[]/observation_geolocation/geoid_separation",
              obs ? "observation" : "measurement", obs ? "observation_" : "", rayleigh ? "rayleigh" : "mie");
-    harp_variable_definition_add_mapping(variable_definition, NULL, NULL, path, NULL);
+    description = "actual altitude is the stored height vs. WGS84 - geoid_separation ";
+    harp_variable_definition_add_mapping(variable_definition, NULL, NULL, path, description);
+
+    /* geoid_height */
+    description = "Geoid separation";
+    variable_definition = harp_ingestion_register_variable_sample_read(product_definition, "geoid_height",
+                                                                       harp_type_double, 1, dimension_type, dimension,
+                                                                       description, "m", NULL, read_geoid_separation);
+    harp_variable_definition_add_mapping(variable_definition, NULL, NULL,
+                                         "/geolocation[]/observation_geolocation/geoid_separation", NULL);
 
     /* hlos_wind_velocity */
     description = "HLOS wind velocity at the altitude bin";

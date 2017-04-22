@@ -204,19 +204,25 @@
 <td>m</td>
 <td>altitude boundaries of the height bin along the line-of-sight; value is negative if below DEM surface</td>
 </tr>
-<tr class="row-odd"><td><strong>hlos_wind_velocity</strong></td>
+<tr class="row-odd"><td><strong>geoid_height</strong></td>
+<td>double</td>
+<td>{<em>time</em>}</td>
+<td>m</td>
+<td>Geoid separation</td>
+</tr>
+<tr class="row-even"><td><strong>hlos_wind_velocity</strong></td>
 <td>double</td>
 <td>{<em>time</em>, <em>vertical</em>}</td>
 <td>m/s</td>
 <td>HLOS wind velocity at the altitude bin</td>
 </tr>
-<tr class="row-even"><td><strong>hlos_wind_velocity_validity</strong></td>
+<tr class="row-odd"><td><strong>hlos_wind_velocity_validity</strong></td>
 <td>int32</td>
 <td>{<em>time</em>, <em>vertical</em>}</td>
 <td>&#160;</td>
 <td>quality flag of the HLOS wind velocity at the altitude bin</td>
 </tr>
-<tr class="row-odd"><td><strong>index</strong></td>
+<tr class="row-even"><td><strong>index</strong></td>
 <td>int32</td>
 <td>{<em>time</em>}</td>
 <td>&#160;</td>
@@ -254,9 +260,9 @@
 <p>The table below details where and how each variable was retrieved from the input product.</p>
 <table border="1" class="docutils">
 <colgroup>
-<col width="22%" />
-<col width="10%" />
-<col width="67%" />
+<col width="16%" />
+<col width="7%" />
+<col width="76%" />
 </colgroup>
 <thead valign="bottom">
 <tr class="row-odd"><th class="head">field name</th>
@@ -286,9 +292,16 @@
 <tr class="row-odd"><td><em>description</em></td>
 <td>average of the value at the upper and lower edge of the height bin</td>
 </tr>
-<tr class="row-even"><td><strong>altitude_bounds</strong></td>
+<tr class="row-even"><td rowspan="2"><strong>altitude_bounds</strong></td>
 <td><em>path</em></td>
-<td><strong>/geolocation[]/observation_geolocation[]/observation_mie_geolocation[]/altitude_of_height_bin</strong></td>
+<td><strong>/geolocation[]/observation_geolocation[]/observation_mie_geolocation[]/altitude_of_height_bin, /geolocation[]/observation_geolocation/geoid_separation</strong></td>
+</tr>
+<tr class="row-odd"><td><em>description</em></td>
+<td>actual altitude is the stored height vs. WGS84 - geoid_separation</td>
+</tr>
+<tr class="row-even"><td><strong>geoid_height</strong></td>
+<td><em>path</em></td>
+<td><strong>/geolocation[]/observation_geolocation/geoid_separation</strong></td>
 </tr>
 <tr class="row-odd"><td><strong>hlos_wind_velocity</strong></td>
 <td><em>path</em></td>
