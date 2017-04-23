@@ -1,3 +1,6 @@
+0.6 2017-04-23
+~~~~~~~~~~~~~~
+
 * Added ingestion support for ACE-FTS, CALIPSO, Cloud CCI, and NPP-Suomi.
 
 * Added bin() and set() operations.
