@@ -196,8 +196,9 @@ static int get_column_from_partial_column(harp_variable *variable, const harp_va
     long num_levels;
     long i;
 
-    num_levels = source_variable[0]->dimension[1];
-    for (i = 0; i < variable->dimension[0]; i++)
+    num_levels = source_variable[0]->dimension[source_variable[0]->num_dimensions - 1];
+    assert(variable->num_elements == source_variable[0]->num_elements / num_levels);
+    for (i = 0; i < variable->num_elements; i++)
     {
         variable->data.double_data[i] =
             harp_profile_column_from_partial_column(num_levels, &source_variable[0]->data.double_data[i * num_levels]);
