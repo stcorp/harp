@@ -482,7 +482,6 @@ static int find_and_execute_conversion(conversion_info *info)
 {
     int index;
 
-    printf("conversion %s\n", info->dimsvar_name);
     index = hashtable_get_index_from_name(harp_derived_variable_conversions->hash_data, info->dimsvar_name);
     if (index >= 0)
     {
