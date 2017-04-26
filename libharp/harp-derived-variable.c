@@ -145,29 +145,15 @@ static char *get_dimsvar_name(const char *variable_name, int num_dimensions, con
     return dimsvar_name;
 }
 
-static int conversion_info_init(conversion_info *info, const harp_product *product, const char *variable_name,
-                                int num_dimensions, const harp_dimension_type *dimension_type)
+static int conversion_info_init(conversion_info *info, const harp_product *product)
 {
-    int i;
-
     info->product = product;
     info->conversion = NULL;
     info->dimsvar_name = NULL;
     info->variable_name = NULL;
-    info->num_dimensions = num_dimensions;
-    for (i = 0; i < num_dimensions; i++)
-    {
-        info->dimension_type[i] = dimension_type[i];
-    }
+    info->num_dimensions = 0;
     info->skip = NULL;
     info->variable = NULL;
-
-    info->dimsvar_name = get_dimsvar_name(variable_name, num_dimensions, info->dimension_type);
-    if (info->dimsvar_name == NULL)
-    {
-        return -1;
-    }
-    info->variable_name = &info->dimsvar_name[HARP_MAX_NUM_DIMS];
 
     info->skip = malloc(harp_derived_variable_conversions->num_variables);
     if (info->skip == NULL)
@@ -179,6 +165,45 @@ static int conversion_info_init(conversion_info *info, const harp_product *produ
     memset(info->skip, 0, harp_derived_variable_conversions->num_variables);
 
     return 0;
+}
+
+static int conversion_info_set_variable(conversion_info *info, const char *variable_name, int num_dimensions,
+                                        const harp_dimension_type *dimension_type)
+{
+    int i;
+
+    if (info->dimsvar_name != NULL)
+    {
+        free(info->dimsvar_name);
+    }
+    info->variable_name = NULL;
+
+    info->num_dimensions = num_dimensions;
+    for (i = 0; i < num_dimensions; i++)
+    {
+        info->dimension_type[i] = dimension_type[i];
+    }
+
+    info->dimsvar_name = get_dimsvar_name(variable_name, num_dimensions, info->dimension_type);
+    if (info->dimsvar_name == NULL)
+    {
+        return -1;
+    }
+    info->variable_name = &info->dimsvar_name[HARP_MAX_NUM_DIMS];
+
+    return 0;
+
+}
+
+static int conversion_info_init_with_variable(conversion_info *info, const harp_product *product,
+                                              const char *variable_name, int num_dimensions,
+                                              const harp_dimension_type *dimension_type)
+{
+    if (conversion_info_init(info, product) != 0)
+    {
+        return -1;
+    }
+    return conversion_info_set_variable(info, variable_name, num_dimensions, dimension_type);
 }
 
 static void conversion_info_done(conversion_info *info)
@@ -315,8 +340,9 @@ static int perform_conversion(conversion_info *info)
         conversion_info source_info;
         harp_source_variable_definition *source_definition = &info->conversion->source_definition[i];
 
-        if (conversion_info_init(&source_info, info->product, source_definition->variable_name,
-                                 source_definition->num_dimensions, source_definition->dimension_type) != 0)
+        if (conversion_info_init_with_variable(&source_info, info->product, source_definition->variable_name,
+                                               source_definition->num_dimensions, source_definition->dimension_type) !=
+            0)
         {
             return -1;
         }
@@ -358,10 +384,14 @@ static int perform_conversion(conversion_info *info)
     return result;
 }
 
-static int find_source_variable(conversion_info *info, harp_source_variable_definition *source_definition)
+/* return: 0: possible, 1: not possible (no cycle), 2: not possible (cycle) */
+static int find_source_variables(conversion_info *info, harp_source_variable_definition *source_definition)
 {
     harp_variable *variable;
+    harp_variable_conversion_list *conversion_list;
+    int has_cycle = 0;
     int index;
+    int i;
 
     if (harp_product_get_variable_by_name(info->product, source_definition->variable_name, &variable) == 0)
     {
@@ -369,84 +399,90 @@ static int find_source_variable(conversion_info *info, harp_source_variable_defi
                                 source_definition->independent_dimension_length))
         {
             /* variable is present in the product */
-            return 1;
+            return 0;
         }
     }
 
     /* try to find a conversion for the variable */
     index = hashtable_get_index_from_name(harp_derived_variable_conversions->hash_data,
                                           source_definition->dimsvar_name);
-    if (index >= 0)
+    if (index < 0)
     {
-        harp_variable_conversion_list *conversion_list;
-        int i;
+        /* no conversion found */
+        return 1;
+    }
+    if (info->skip[index])
+    {
+        has_cycle = info->skip[index] == 1;
+        return 1 + has_cycle;
+    }
 
-        conversion_list = harp_derived_variable_conversions->conversions_for_variable[index];
-        for (i = 0; i < conversion_list->num_conversions; i++)
+    conversion_list = harp_derived_variable_conversions->conversions_for_variable[index];
+    for (i = 0; i < conversion_list->num_conversions; i++)
+    {
+        harp_variable_conversion *conversion = conversion_list->conversion[i];
+        int j;
+
+        if (conversion->enabled != NULL && !conversion->enabled())
         {
-            harp_variable_conversion *conversion = conversion_list->conversion[i];
-            int j;
+            continue;
+        }
+        for (j = 0; j < conversion->num_dimensions; j++)
+        {
+            if (conversion->dimension_type[j] == harp_dimension_independent &&
+                source_definition->independent_dimension_length >= 0 &&
+                conversion->independent_dimension_length != source_definition->independent_dimension_length)
+            {
+                break;
+            }
+        }
+        if (j < conversion->num_dimensions)
+        {
+            continue;
+        }
 
-            if (conversion->enabled != NULL && !conversion->enabled())
+        info->skip[index] = 1;
+
+        for (j = 0; j < conversion->num_source_variables; j++)
+        {
+            int result;
+
+            /* recursively find the source variables for creating this variable */
+            result = find_source_variables(info, &conversion->source_definition[j]);
+            if (result != 0)
             {
-                continue;
-            }
-            if (info->skip[index])
-            {
-                continue;
-            }
-            for (j = 0; j < conversion->num_dimensions; j++)
-            {
-                if (conversion->dimension_type[j] == harp_dimension_independent &&
-                    source_definition->independent_dimension_length >= 0 &&
-                    conversion->independent_dimension_length != source_definition->independent_dimension_length)
+                /* source not found */
+                if (result == 2)
                 {
-                    break;
+                    has_cycle = 1;
                 }
+                break;
             }
-            if (j < conversion->num_dimensions)
-            {
-                continue;
-            }
+        }
 
-            info->skip[index] = 1;
+        info->skip[index] = 0;
 
-            for (j = 0; j < conversion->num_source_variables; j++)
-            {
-                int result;
-
-                /* recursively find the source variables for creating this variable */
-                result = find_source_variable(info, &conversion->source_definition[j]);
-                if (result == -1)
-                {
-                    info->skip[index] = 0;
-                    return -1;
-                }
-                if (result == 0)
-                {
-                    /* source not found */
-                    break;
-                }
-            }
-
-            info->skip[index] = 0;
-
-            if (j == conversion->num_source_variables)
-            {
-                /* the conversion is possible */
-                return 1;
-            }
+        if (j == conversion->num_source_variables)
+        {
+            /* the conversion is possible */
+            return 0;
         }
     }
 
+    if (!has_cycle)
+    {
+        info->skip[index] = 2;
+    }
+
     /* no conversion found */
-    return 0;
+    return 1 + has_cycle;
 }
 
 static int find_and_execute_conversion(conversion_info *info)
 {
     int index;
 
+    printf("conversion %s\n", info->dimsvar_name);
     index = hashtable_get_index_from_name(harp_derived_variable_conversions->hash_data, info->dimsvar_name);
     if (index >= 0)
     {
@@ -491,13 +527,8 @@ static int find_and_execute_conversion(conversion_info *info)
             {
                 int result;
 
-                result = find_source_variable(info, &conversion->source_definition[j]);
-                if (result == -1)
-                {
-                    info->skip[index] = 0;
-                    return -1;
-                }
-                if (result == 0)
+                result = find_source_variables(info, &conversion->source_definition[j]);
+                if (result != 0)
                 {
                     /* source not found */
                     break;
@@ -556,13 +587,8 @@ static int find_and_print_conversion(conversion_info *info, int (*print) (const 
             {
                 int result;
 
-                result = find_source_variable(info, &conversion->source_definition[j]);
-                if (result == -1)
-                {
-                    info->skip[index] = 0;
-                    return -1;
-                }
-                if (result == 0)
+                result = find_source_variables(info, &conversion->source_definition[j]);
+                if (result != 0)
                 {
                     /* source not found */
                     break;
@@ -687,8 +713,9 @@ static void print_conversion(conversion_info *info, int (*print) (const char *, 
             harp_source_variable_definition *source_definition = &info->conversion->source_definition[i];
 
             print_source_variable(source_definition, print, indent);
-            if (conversion_info_init(&source_info, info->product, source_definition->variable_name,
-                                     source_definition->num_dimensions, source_definition->dimension_type) != 0)
+            if (conversion_info_init_with_variable(&source_info, info->product, source_definition->variable_name,
+                                                   source_definition->num_dimensions, source_definition->dimension_type)
+                != 0)
             {
                 print("ERROR: %s\n", harp_errno_to_string(harp_errno));
                 return;
@@ -944,6 +971,7 @@ int harp_variable_conversion_set_source_description(harp_variable_conversion *co
  */
 LIBHARP_API int harp_doc_list_conversions(const harp_product *product, int (*print) (const char *, ...))
 {
+    conversion_info info;
     int i, j;
 
     if (harp_derived_variable_conversions == NULL)
@@ -983,23 +1011,28 @@ LIBHARP_API int harp_doc_list_conversions(const harp_product *product, int (*pri
         return 0;
     }
 
+    if (conversion_info_init(&info, product) != 0)
+    {
+        return -1;
+    }
+
     /* Show possible conversions */
     for (i = 0; i < harp_derived_variable_conversions->num_variables; i++)
     {
         harp_variable_conversion_list *conversion_list = harp_derived_variable_conversions->conversions_for_variable[i];
-        conversion_info info;
+        int is_possible = 0;
 
         assert(conversion_list->num_conversions > 0);
 
         /* initialize based on first conversion in the list */
-        if (conversion_info_init(&info, product, conversion_list->conversion[0]->variable_name,
-                                 conversion_list->conversion[0]->num_dimensions,
-                                 conversion_list->conversion[0]->dimension_type) != 0)
+        if (conversion_info_set_variable(&info, conversion_list->conversion[0]->variable_name,
+                                         conversion_list->conversion[0]->num_dimensions,
+                                         conversion_list->conversion[0]->dimension_type) != 0)
         {
             return -1;
         }
 
-        info.skip[i] = 1;
+        info.skip[i] = 2;
 
         for (j = 0; j < conversion_list->num_conversions; j++)
         {
@@ -1027,13 +1060,8 @@ LIBHARP_API int harp_doc_list_conversions(const harp_product *product, int (*pri
             {
                 int result;
 
-                result = find_source_variable(&info, &conversion->source_definition[k]);
-                if (result == -1)
-                {
-                    conversion_info_done(&info);
-                    return -1;
-                }
-                if (result == 0)
+                result = find_source_variables(&info, &conversion->source_definition[k]);
+                if (result != 0)
                 {
                     /* source not found */
                     break;
@@ -1048,12 +1076,18 @@ LIBHARP_API int harp_doc_list_conversions(const harp_product *product, int (*pri
                 print_conversion(&info, print, 1);
                 print("\n");
                 /* don't show any remaining results */
+                is_possible = 1;
                 break;
             }
         }
 
-        conversion_info_done(&info);
+        if (is_possible)
+        {
+            info.skip[i] = 0;
+        }
     }
+
+    conversion_info_done(&info);
 
     return 0;
 }
@@ -1128,7 +1162,7 @@ LIBHARP_API int harp_product_get_derived_variable(const harp_product *product, c
         }
     }
 
-    if (conversion_info_init(&info, product, name, num_dimensions, dimension_type) != 0)
+    if (conversion_info_init_with_variable(&info, product, name, num_dimensions, dimension_type) != 0)
     {
         return -1;
     }
