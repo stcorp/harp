@@ -106,6 +106,7 @@ WHITESPACE   [[:space:]]+
 "rename"                return FUNC_RENAME;
 "set"                   return FUNC_SET;
 "smooth"                return FUNC_SMOOTH;
+"sort"                  return FUNC_SORT;
 "valid"                 return FUNC_VALID;
 "wrap"                  return FUNC_WRAP;
 

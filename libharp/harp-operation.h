@@ -61,6 +61,7 @@ typedef enum harp_operation_type_enum
     operation_rename,
     operation_set,
     operation_smooth_collocated,
+    operation_sort,
     operation_string_comparison_filter,
     operation_string_membership_filter,
     operation_valid_range_filter,
@@ -121,6 +122,7 @@ typedef enum harp_membership_operator_type_enum
  *   |-  harp_operation_rename
  *   |-  harp_operation_set
  *   |-  harp_operation_smooth_collocated
+ *   |-  harp_operation_sort
  *   |-  harp_operation_wrap
  */
 
@@ -370,6 +372,13 @@ typedef struct harp_operation_smooth_collocated_struct
     char *dataset_dir;
 } harp_operation_smooth_collocated;
 
+typedef struct harp_operation_sort_struct
+{
+    harp_operation_type type;
+    /* parameters */
+    char *variable_name;
+} harp_operation_sort;
+
 typedef struct harp_operation_string_comparison_filter_struct
 {
     harp_operation_type type;
@@ -469,6 +478,7 @@ int harp_operation_smooth_collocated_new(int num_variables, const char **variabl
                                          const char *axis_unit, const char *collocation_result,
                                          const char target_dataset, const char *dataset_dir,
                                          harp_operation **new_operation);
+int harp_operation_sort_new(const char *variable_name, harp_operation **new_operation);
 int harp_operation_string_comparison_filter_new(const char *variable_name, harp_comparison_operator_type operator_type,
                                                 const char *value, harp_operation **new_operation);
 int harp_operation_string_membership_filter_new(const char *variable_name, harp_membership_operator_type operator_type,

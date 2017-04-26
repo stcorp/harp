@@ -235,6 +235,7 @@ int harp_sized_array_add_int32(harp_sized_array *sized_array, int32_t value)
 %token                  FUNC_RENAME
 %token                  FUNC_SET
 %token                  FUNC_SMOOTH
+%token                  FUNC_SORT
 %token                  FUNC_VALID
 %token                  FUNC_WRAP
 %token                  NAN
@@ -296,6 +297,7 @@ reserved_identifier:
     | FUNC_RENAME { $$ = "rename"; }
     | FUNC_SET { $$ = "set"; }
     | FUNC_SMOOTH { $$ = "smooth"; }
+    | FUNC_SORT { $$ = "sort"; }
     | FUNC_VALID { $$ = "valid"; }
     | FUNC_WRAP { $$ = "wrap"; }
     ;
@@ -585,6 +587,9 @@ operation:
       STRING_VALUE ')' {
             if (harp_operation_smooth_collocated_new($4->num_elements, (const char **)$4->array.string_data,
                                                      $7, $9, $10, $12, 'b', $16, &$$) != 0) YYERROR;
+        }
+    | FUNC_SORT '(' identifier ')' {
+            if (harp_operation_sort_new($3, &$$) != 0) YYERROR;
         }
     | FUNC_VALID '(' identifier ')' {
             if (harp_operation_valid_range_filter_new($3, &$$) != 0) YYERROR;

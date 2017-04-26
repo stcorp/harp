@@ -260,6 +260,12 @@ Supported functions:
         For each variable an associated averaging kernel (and associated a-priori,
         if applicable) needs to be present in the collocated dataset.
 
+    ``sort(variable)``
+        Reorder a dimension for all variables in the product such that the
+    	variable provided as parameter ends up being sorted. The variable
+    	should be one dimensional and the dimension that gets reordered is
+    	this dimension of the referenced variable.
+
     ``valid(variable)``
         Exclude invalid values of the specified variable (values
         outside the valid range of the variable, or NaN).
@@ -387,6 +393,7 @@ Formal definition
        'set', '(', stringvalue, ',', stringvalue, ')' |
        'smooth', '(', variable, ',', dimension, ',', variable, unit, ',', stringvalue, ',', ( 'a' | 'b' ), ',', stringvalue, ')' |
        'smooth', '(', '(', variablelist, ')', ',', dimension, ',', variable, unit, ',', stringvalue, ',', ( 'a' | 'b' ), ',', stringvalue, ')' |
+       'sort', '(', variable, ')' |
        'valid', '(', variable, ')' |
        'wrap', '(', variable, [unit], ',', floatvalue, ',', floatvalue, ')' ;
 

@@ -902,6 +902,11 @@ static int execute_smooth_collocated(harp_product *product, harp_operation_smoot
     return 0;
 }
 
+static int execute_sort(harp_product *product, harp_operation_sort *operation)
+{
+    return harp_product_sort(product, operation->variable_name);
+}
+
 static int execute_wrap(harp_product *product, harp_operation_wrap *operation)
 {
     harp_variable *variable;
@@ -1047,6 +1052,12 @@ int harp_product_execute_program(harp_product *product, harp_program *program)
                 break;
             case operation_smooth_collocated:
                 if (execute_smooth_collocated(product, (harp_operation_smooth_collocated *)operation) != 0)
+                {
+                    return -1;
+                }
+                break;
+            case operation_sort:
+                if (execute_sort(product, (harp_operation_sort *)operation) != 0)
                 {
                     return -1;
                 }

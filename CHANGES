@@ -1,3 +1,7 @@
+* Added sort() operation.
+
+* Added harp_product_sort() function.
+
 * Fix issue in deriving total column from partial column profile if partial
   column profile did not have {time,vertical} dimensions.
 

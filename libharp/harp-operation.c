@@ -771,6 +771,19 @@ static void smooth_collocated_delete(harp_operation_smooth_collocated *operation
     }
 }
 
+static void sort_delete(harp_operation_sort *operation)
+{
+    if (operation != NULL)
+    {
+        if (operation->variable_name != NULL)
+        {
+            free(operation->variable_name);
+        }
+
+        free(operation);
+    }
+}
+
 static void string_comparison_filter_delete(harp_operation_string_comparison_filter *operation)
 {
     if (operation != NULL)
@@ -915,6 +928,9 @@ void harp_operation_delete(harp_operation *operation)
             break;
         case operation_smooth_collocated:
             smooth_collocated_delete((harp_operation_smooth_collocated *)operation);
+            break;
+        case operation_sort:
+            sort_delete((harp_operation_sort *)operation);
             break;
         case operation_string_comparison_filter:
             string_comparison_filter_delete((harp_operation_string_comparison_filter *)operation);
@@ -1959,6 +1975,35 @@ int harp_operation_smooth_collocated_new(int num_variables, const char **variabl
             }
             operation->num_variables++;
         }
+    }
+
+    *new_operation = (harp_operation *)operation;
+    return 0;
+}
+
+int harp_operation_sort_new(const char *variable_name, harp_operation **new_operation)
+{
+    harp_operation_sort *operation;
+
+    assert(variable_name != NULL);
+
+    operation = (harp_operation_sort *)malloc(sizeof(harp_operation_sort));
+    if (operation == NULL)
+    {
+        harp_set_error(HARP_ERROR_OUT_OF_MEMORY, "out of memory (could not allocate %lu bytes) (%s:%u)",
+                       sizeof(harp_operation_sort), __FILE__, __LINE__);
+        return -1;
+    }
+    operation->type = operation_sort;
+    operation->variable_name = NULL;
+
+    operation->variable_name = strdup(variable_name);
+    if (operation->variable_name == NULL)
+    {
+        harp_set_error(HARP_ERROR_OUT_OF_MEMORY, "out of memory (could not duplicate string) (%s:%u)", __FILE__,
+                       __LINE__);
+        sort_delete(operation);
+        return -1;
     }
 
     *new_operation = (harp_operation *)operation;

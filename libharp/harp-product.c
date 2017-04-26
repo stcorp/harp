@@ -121,6 +121,73 @@ static int get_arguments(int argc, char *argv[], char **new_arguments)
     return 0;
 }
 
+static harp_variable *comparison_variable;
+
+static int compare_variable_elements(const void *a, const void *b)
+{
+    long index_a = *(long *)a;
+    long index_b = *(long *)b;
+
+    switch (comparison_variable->data_type)
+    {
+        case harp_type_int8:
+            if (comparison_variable->data.int8_data[index_a] < comparison_variable->data.int8_data[index_b])
+            {
+                return -1;
+            }
+            else if (comparison_variable->data.int8_data[index_a] > comparison_variable->data.int8_data[index_b])
+            {
+                return 1;
+            }
+            return 0;
+        case harp_type_int16:
+            if (comparison_variable->data.int16_data[index_a] < comparison_variable->data.int16_data[index_b])
+            {
+                return -1;
+            }
+            else if (comparison_variable->data.int16_data[index_a] > comparison_variable->data.int16_data[index_b])
+            {
+                return 1;
+            }
+            return 0;
+        case harp_type_int32:
+            if (comparison_variable->data.int32_data[index_a] < comparison_variable->data.int32_data[index_b])
+            {
+                return -1;
+            }
+            else if (comparison_variable->data.int32_data[index_a] > comparison_variable->data.int32_data[index_b])
+            {
+                return 1;
+            }
+            return 0;
+        case harp_type_float:
+            if (comparison_variable->data.float_data[index_a] < comparison_variable->data.float_data[index_b])
+            {
+                return -1;
+            }
+            else if (comparison_variable->data.float_data[index_a] > comparison_variable->data.float_data[index_b])
+            {
+                return 1;
+            }
+            return 0;
+        case harp_type_double:
+            if (comparison_variable->data.double_data[index_a] < comparison_variable->data.double_data[index_b])
+            {
+                return -1;
+            }
+            else if (comparison_variable->data.double_data[index_a] > comparison_variable->data.double_data[index_b])
+            {
+                return 1;
+            }
+            return 0;
+        case harp_type_string:
+            return strcmp(comparison_variable->data.string_data[index_a],
+                          comparison_variable->data.string_data[index_b]);
+    }
+    assert(0);
+    exit(1);
+}
+
 static void sync_product_dimensions_on_variable_add(harp_product *product, const harp_variable *variable)
 {
     int i;
@@ -1751,6 +1818,65 @@ LIBHARP_API int harp_product_flatten_dimension(harp_product *product, harp_dimen
     /* update the dimension info of the product */
     product->dimension[harp_dimension_time] *= dim_length;
     product->dimension[dimension_type] = 0;
+
+    return 0;
+}
+
+/** Reorder a dimension for all variables in a product such that the variable with the given name ends up sorted.
+ *
+ * A variable for the provided variable_name should exist in the product and this variable should be a one dimensional
+ * variable. The dimension that will be reordered is this single dimension of the referenced variable.
+ *
+ * \param product HARP product
+ * \param variable_name Name of the variable to should end up sorted
+ * \return
+ *   \arg \c 0, Success.
+ *   \arg \c -1, Error occurred (check #harp_errno).
+ */
+LIBHARP_API int harp_product_sort(harp_product *product, const char *variable_name)
+{
+    long num_elements;
+    long *dim_element_ids;
+    long i;
+
+    if (harp_product_get_variable_by_name(product, variable_name, &comparison_variable) != 0)
+    {
+        return -1;
+    }
+    if (comparison_variable->num_dimensions != 1)
+    {
+        harp_set_error(HARP_ERROR_INVALID_ARGUMENT, "variable for sorting should be a one dimensional array");
+        return -1;
+    }
+    if (comparison_variable->dimension_type[0] == harp_dimension_independent)
+    {
+        harp_set_error(HARP_ERROR_INVALID_ARGUMENT, "cannot sort independent dimension");
+        return -1;
+    }
+    num_elements = comparison_variable->num_elements;
+
+    dim_element_ids = malloc(num_elements * sizeof(long));
+    if (dim_element_ids == NULL)
+    {
+        harp_set_error(HARP_ERROR_OUT_OF_MEMORY, "out of memory (could not allocate %lu bytes) (%s:%u)",
+                       num_elements * sizeof(long), __FILE__, __LINE__);
+        return -1;
+    }
+    for (i = 0; i < num_elements; i++)
+    {
+        dim_element_ids[i] = i;
+    }
+
+    qsort(dim_element_ids, num_elements, sizeof(long), compare_variable_elements);
+
+    if (harp_product_rearrange_dimension(product, comparison_variable->dimension_type[0], num_elements, dim_element_ids)
+        != 0)
+    {
+        free(dim_element_ids);
+        return -1;
+    }
+
+    free(dim_element_ids);
 
     return 0;
 }
