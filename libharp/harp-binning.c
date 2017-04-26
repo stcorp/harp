@@ -90,6 +90,17 @@ static binning_type get_binning_type(harp_variable *variable)
         return binning_remove;
     }
 
+    /* we can't bin latitude/longitude bounds if they define an area */
+    if (strcmp(variable->name, "latitude_bounds") == 0 || strcmp(variable->name, "longitude_bounds") == 0)
+    {
+        if (variable->num_dimensions > 0 &&
+            variable->dimension_type[variable->num_dimensions - 1] == harp_dimension_independent &&
+            variable->dimension[variable->num_dimensions - 1] > 2)
+        {
+            return binning_remove;
+        }
+    }
+
     /* use average by default */
     return binning_average;
 }
