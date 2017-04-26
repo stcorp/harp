@@ -245,7 +245,7 @@ LIBHARP_API int harp_product_bin(harp_product *product, long num_bins, long num_
         /* then divide by the number of elements in the bin */
         for (i = 0; i < num_bins; i++)
         {
-            long target_index = index[bin_index[i]];
+            long target_index = index[i];
 
             if (count[i] > 1)
             {
