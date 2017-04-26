@@ -486,7 +486,7 @@ static void register_no2_oe_product(void)
     description = "volume mixing ratio of NO2";
     variable_definition =
         harp_ingestion_register_variable_full_read(product_definition, "no2_vmr", harp_type_double, 2, dimension_type,
-                                                   NULL, description, NULL, NULL, read_no2_vmr);
+                                                   NULL, description, "ppmv", NULL, read_no2_vmr);
     path = "/HDFEOS/SWATHS/OSIRIS_Odin_NO2_DOAS_OE/Data_Fields/NO2[]";
     harp_variable_definition_add_mapping(variable_definition, NULL, NULL, path, "ppmv");
 
@@ -494,7 +494,7 @@ static void register_no2_oe_product(void)
     description = "precision of the volume mixing ratio of NO2";
     variable_definition =
         harp_ingestion_register_variable_full_read(product_definition, "no2_vmr_error", harp_type_double, 2,
-                                                   dimension_type, NULL, description, NULL, NULL, read_no2_vmr_error);
+                                                   dimension_type, NULL, description, "ppmv", NULL, read_no2_vmr_error);
     path = "/HDFEOS/SWATHS/OSIRIS_Odin_NO2_DOAS_OE/Data_Fields/NO2Precision[]";
     harp_variable_definition_add_mapping(variable_definition, NULL, NULL, path, "ppmv");
 
@@ -589,7 +589,7 @@ static void register_no2_mart_product(void)
     description = "volume mixing ratio of NO2";
     variable_definition =
         harp_ingestion_register_variable_full_read(product_definition, "no2_vmr", harp_type_double, 2, dimension_type,
-                                                   NULL, description, NULL, NULL, read_no2_vmr);
+                                                   NULL, description, "ppmv", NULL, read_no2_vmr);
     path = "/HDFEOS/SWATHS/OSIRIS_Odin_NO2MART/Data_Fields/NO2[]";
     harp_variable_definition_add_mapping(variable_definition, NULL, NULL, path, "ppmv");
 
@@ -597,7 +597,7 @@ static void register_no2_mart_product(void)
     description = "precision of the volume mixing ratio of NO2";
     variable_definition =
         harp_ingestion_register_variable_full_read(product_definition, "no2_vmr_error", harp_type_double, 2,
-                                                   dimension_type, NULL, description, NULL, NULL, read_no2_vmr_error);
+                                                   dimension_type, NULL, description, "ppmv", NULL, read_no2_vmr_error);
     path = "/HDFEOS/SWATHS/OSIRIS_Odin_NO2MART/Data_Fields/NO2Precision[]";
     harp_variable_definition_add_mapping(variable_definition, NULL, NULL, path, "ppmv");
 
@@ -692,7 +692,7 @@ static void register_o3_oe_product(void)
     description = "volume mixing ratio of O3";
     variable_definition =
         harp_ingestion_register_variable_full_read(product_definition, "o3_vmr", harp_type_double, 2, dimension_type,
-                                                   NULL, description, NULL, NULL, read_o3_vmr);
+                                                   NULL, description, "ppmv", NULL, read_o3_vmr);
     path = "/HDFEOS/SWATHS/OSIRIS_Odin_O3_Chappuis_triplet_OE/Data_Fields/O3[]";
     harp_variable_definition_add_mapping(variable_definition, NULL, NULL, path, "ppmv");
 
@@ -700,7 +700,7 @@ static void register_o3_oe_product(void)
     description = "precision of the volume mixing ratio of O3";
     variable_definition =
         harp_ingestion_register_variable_full_read(product_definition, "o3_vmr_error", harp_type_double, 2,
-                                                   dimension_type, NULL, description, NULL, NULL, read_o3_vmr_error);
+                                                   dimension_type, NULL, description, "ppmv", NULL, read_o3_vmr_error);
     path = "/HDFEOS/SWATHS/OSIRIS_Odin_O3_Chappuis_triplet_OE/Data_Fields/O3Precision[]";
     harp_variable_definition_add_mapping(variable_definition, NULL, NULL, path, "ppmv");
 
@@ -796,7 +796,7 @@ static void register_o3_mart_product(void)
     description = "volume mixing ratio of O3";
     variable_definition =
         harp_ingestion_register_variable_full_read(product_definition, "o3_vmr", harp_type_double, 2, dimension_type,
-                                                   NULL, description, NULL, NULL, read_o3_vmr);
+                                                   NULL, description, "ppmv", NULL, read_o3_vmr);
     path = "/HDFEOS/SWATHS/OSIRIS_Odin_O3MART/Data_Fields/O3[]";
     harp_variable_definition_add_mapping(variable_definition, NULL, NULL, path, "ppmv");
 
@@ -804,7 +804,7 @@ static void register_o3_mart_product(void)
     description = "precision of the volume mixing ratio of O3";
     variable_definition =
         harp_ingestion_register_variable_full_read(product_definition, "o3_vmr_error", harp_type_double, 2,
-                                                   dimension_type, NULL, description, NULL, NULL, read_o3_vmr_error);
+                                                   dimension_type, NULL, description, "ppmv", NULL, read_o3_vmr_error);
     path = "/HDFEOS/SWATHS/OSIRIS_Odin_O3MART/Data_Fields/O3Precision[]";
     harp_variable_definition_add_mapping(variable_definition, NULL, NULL, path, "ppmv");
 

@@ -510,7 +510,7 @@ static int register_fields(harp_product_definition *product_definition, ghg_data
     description = "sensor zenith angle";
     variable_definition =
         harp_ingestion_register_variable_full_read(product_definition, "sensor_zenith_angle", harp_type_double, 1,
-                                                   dimension_type, NULL, description, NULL,
+                                                   dimension_type, NULL, description, "degree",
                                                    (source == EMMA) ? exclude_sensor_zenith_angle : NULL,
                                                    read_sensor_zenith_angle);
     path = "sensor_zenith_angle[]";
@@ -520,7 +520,7 @@ static int register_fields(harp_product_definition *product_definition, ghg_data
     description = "solar zenith angle";
     variable_definition =
         harp_ingestion_register_variable_full_read(product_definition, "solar_zenith_angle", harp_type_double, 1,
-                                                   dimension_type, NULL, description, NULL,
+                                                   dimension_type, NULL, description, "degree",
                                                    (source == EMMA) ? exclude_solar_zenith_angle : NULL,
                                                    read_solar_zenith_angle);
     path = "solar_zenith_angle[]";

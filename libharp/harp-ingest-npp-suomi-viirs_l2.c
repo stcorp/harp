@@ -836,8 +836,8 @@ static void register_aeros_product_type(const char *product_type)
     description = "aerosol_optical_depth";
     variable_definition =
         harp_ingestion_register_variable_full_read(product_definition, "aerosol_optical_depth",
-                                                   harp_type_double, 2, dimension_type, NULL, description, NULL,
-                                                   NULL, read_aerosol_optical_depth);
+                                                   harp_type_double, 2, dimension_type, NULL, description,
+                                                   HARP_UNIT_DIMENSIONLESS, NULL, read_aerosol_optical_depth);
     path = "/All_Data/VIIRS-Aeros-EDR_All/AerosolOpticalDepth";
     harp_variable_definition_add_mapping(variable_definition, NULL, NULL, path, NULL);
 
@@ -983,7 +983,8 @@ static void register_cloud_product_type(const char *product_type, const char *pr
     description = "cloud_fraction";
     variable_definition =
         harp_ingestion_register_variable_full_read(product_definition, "cloud_fraction",
-                                                   harp_type_double, 1, dimension_type, NULL, description, NULL,
+                                                   harp_type_double, 1, dimension_type, NULL, description,
+                                                   HARP_UNIT_DIMENSIONLESS,
                                                    (type_nr == CLOUD_FRACTION) ? NULL : exclude_non_cloud_fraction,
                                                    read_cloud_fraction);
     path = "/All_Data/VIIRS-CCL-EDR_All/SummedCloudCover";
@@ -1005,7 +1006,8 @@ static void register_cloud_product_type(const char *product_type, const char *pr
     description = "cloud_optical_depth";
     variable_definition =
         harp_ingestion_register_variable_full_read(product_definition, "cloud_optical_depth",
-                                                   harp_type_double, 1, dimension_type, NULL, description, NULL,
+                                                   harp_type_double, 1, dimension_type, NULL, description,
+                                                   HARP_UNIT_DIMENSIONLESS,
                                                    (type_nr ==
                                                     CLOUD_OPTICAL_DEPTH) ? NULL : exclude_non_cloud_optical_depth,
                                                    read_cloud_optical_depth);

@@ -498,7 +498,7 @@ static int register_aatsr_atsr2_product(harp_ingestion_module *module, char *pro
     description = "aerosol optical depth";
     variable_definition =
         harp_ingestion_register_variable_full_read(product_definition, "aerosol_optical_depth", harp_type_double, 2,
-                                                   dimension_type, NULL, description, NULL, NULL,
+                                                   dimension_type, NULL, description, HARP_UNIT_DIMENSIONLESS, NULL,
                                                    read_aerosol_optical_depth);
     path = "/AOD550[], /AOD670[], /AOD870[], /AOD1600[]";
     harp_variable_definition_add_mapping(variable_definition, NULL, NULL, path, NULL);
@@ -507,7 +507,8 @@ static int register_aatsr_atsr2_product(harp_ingestion_module *module, char *pro
     description = "uncertainty of the aerosol optical depth";
     variable_definition =
         harp_ingestion_register_variable_full_read(product_definition, "aerosol_optical_depth_uncertainty",
-                                                   harp_type_double, 2, dimension_type, NULL, description, NULL, NULL,
+                                                   harp_type_double, 2, dimension_type, NULL, description,
+                                                   HARP_UNIT_DIMENSIONLESS, NULL,
                                                    read_aerosol_optical_depth_uncertainty);
     path = "/AOD550_uncertainty[], /AOD670_uncertainty[], /AOD870_uncertainty[], /AOD1600_uncertainty[]";
     description =
@@ -530,7 +531,7 @@ static int register_aatsr_atsr2_product(harp_ingestion_module *module, char *pro
     description = "sensor zenith angle for nadir view";
     variable_definition =
         harp_ingestion_register_variable_full_read(product_definition, "sensor_zenith_angle", harp_type_double, 1,
-                                                   dimension_type, NULL, description, NULL,
+                                                   dimension_type, NULL, description, "degree",
                                                    exclude_when_multiple_zenith_angles, read_sensor_zenith_angle);
     path = "/satellite_zenith_at_center[]";
     harp_variable_definition_add_mapping(variable_definition, NULL, NULL, path, NULL);
@@ -539,7 +540,7 @@ static int register_aatsr_atsr2_product(harp_ingestion_module *module, char *pro
     description = "solar zenith angle for nadir view";
     variable_definition =
         harp_ingestion_register_variable_full_read(product_definition, "solar_zenith_angle", harp_type_double, 1,
-                                                   dimension_type, NULL, description, NULL,
+                                                   dimension_type, NULL, description, "degree",
                                                    exclude_when_multiple_zenith_angles, read_solar_zenith_angle);
     path = "/sun_zenith_at_center[]";
     harp_variable_definition_add_mapping(variable_definition, NULL, NULL, path, NULL);
@@ -656,7 +657,7 @@ static int register_module_l2_meris(void)
     description = "aerosol optical depth";
     variable_definition =
         harp_ingestion_register_variable_full_read(product_definition, "aerosol_optical_depth", harp_type_double, 2,
-                                                   dimension_type, NULL, description, NULL, NULL,
+                                                   dimension_type, NULL, description, HARP_UNIT_DIMENSIONLESS, NULL,
                                                    read_aerosol_optical_depth);
     path = "/AOD550[], /AOD865[]";
     harp_variable_definition_add_mapping(variable_definition, NULL, NULL, path, NULL);
@@ -665,7 +666,8 @@ static int register_module_l2_meris(void)
     description = "uncertainty of the aerosol optical depth";
     variable_definition =
         harp_ingestion_register_variable_full_read(product_definition, "aerosol_optical_depth_uncertainty",
-                                                   harp_type_double, 2, dimension_type, NULL, description, NULL, NULL,
+                                                   harp_type_double, 2, dimension_type, NULL, description,
+                                                   HARP_UNIT_DIMENSIONLESS, NULL,
                                                    read_aerosol_optical_depth_uncertainty);
     path = "/AOD550_std[], /AOD865_std[]";
     harp_variable_definition_add_mapping(variable_definition, NULL, NULL, path, NULL);
@@ -763,7 +765,7 @@ static int register_iasi_product(harp_ingestion_module *module, char *productnam
     description = "dust aerosol optical depth";
     variable_definition =
         harp_ingestion_register_variable_full_read(product_definition, "dust_aerosol_optical_depth", harp_type_double,
-                                                   2, dimension_type, NULL, description, NULL, NULL,
+                                                   2, dimension_type, NULL, description, HARP_UNIT_DIMENSIONLESS, NULL,
                                                    read_aerosol_optical_depth);
     path = "/D_AOD550[], /D_AOD10000[], /D_AOD11000[]";
     harp_variable_definition_add_mapping(variable_definition, "data processed by DLR or ULB", NULL, path, NULL);
@@ -774,7 +776,8 @@ static int register_iasi_product(harp_ingestion_module *module, char *productnam
     description = "uncertainty of the dust aerosol optical depth";
     variable_definition =
         harp_ingestion_register_variable_full_read(product_definition, "dust_aerosol_optical_depth_uncertainty",
-                                                   harp_type_double, 2, dimension_type, NULL, description, NULL, NULL,
+                                                   harp_type_double, 2, dimension_type, NULL, description,
+                                                   HARP_UNIT_DIMENSIONLESS, NULL,
                                                    read_aerosol_optical_depth_uncertainty);
     description =
         "depending on how the data is processed, uncertainty data is not always available for all wavelengths. If the data is not available, NaN values are used.";
@@ -797,7 +800,7 @@ static int register_iasi_product(harp_ingestion_module *module, char *productnam
     description = "sensor zenith angle";
     variable_definition =
         harp_ingestion_register_variable_full_read(product_definition, "sensor_zenith_angle", harp_type_double, 1,
-                                                   dimension_type, NULL, description, NULL, NULL,
+                                                   dimension_type, NULL, description, "degree", NULL,
                                                    read_sensor_zenith_angle);
     path = "/satellite_zenith_at_center[]";
     harp_variable_definition_add_mapping(variable_definition, "data processed by DLR or ULB", NULL, path, NULL);

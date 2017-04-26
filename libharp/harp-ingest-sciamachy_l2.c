@@ -2340,7 +2340,8 @@ static void register_common_nadir_cloud_variables(harp_product_definition *produ
     description = "average cloud fraction of footprint";
     variable_definition = harp_ingestion_register_variable_sample_read(product_definition, "cloud_fraction",
                                                                        harp_type_double, 1, dimension_type, NULL,
-                                                                       description, NULL, NULL, read_cloud_fraction);
+                                                                       description, HARP_UNIT_DIMENSIONLESS, NULL,
+                                                                       read_cloud_fraction);
     snprintf(path, MAX_PATH_LENGTH, "/clouds_aerosol[]/cl_frac");
     harp_variable_definition_add_mapping(variable_definition, NULL, NULL, path, NULL);
 }

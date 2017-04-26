@@ -1482,7 +1482,7 @@ static void register_variables_radiance_transmittance_fields(harp_product_defini
         description = "transmittance";
         variable_definition =
             harp_ingestion_register_variable_full_read(product_definition, "transmittance", harp_type_double, 2,
-                                                       dimension_type, NULL, description, NULL, NULL,
+                                                       dimension_type, NULL, description, HARP_UNIT_DIMENSIONLESS, NULL,
                                                        read_transmittance);
     }
     path = "/MDR[]/Earthshine/BAND_1A[,]/RAD, /MDR[]/Earthshine/BAND_1B[,]/RAD, /MDR[]/Earthshine/BAND_2A[,]/RAD, "
@@ -1529,7 +1529,7 @@ static void register_variables_radiance_transmittance_fields(harp_product_defini
     description = "cloud top pressure";
     variable_definition =
         harp_ingestion_register_variable_full_read(product_definition, "cloud_top_pressure", harp_type_double, 1,
-                                                   dimension_type, NULL, description, NULL, NULL,
+                                                   dimension_type, NULL, description, "hPa", NULL,
                                                    read_cloud_top_pressure);
     path = "/MDR[]/Earthshine/CLOUD/FIT_1[]";
     description = "If the minimum ingested integration time > 187.5ms then the corresponding cloud top pressures will "
@@ -1542,7 +1542,8 @@ static void register_variables_radiance_transmittance_fields(harp_product_defini
     description = "cloud fraction";
     variable_definition =
         harp_ingestion_register_variable_full_read(product_definition, "cloud_fraction", harp_type_double, 1,
-                                                   dimension_type, NULL, description, NULL, NULL, read_cloud_fraction);
+                                                   dimension_type, NULL, description, HARP_UNIT_DIMENSIONLESS, NULL,
+                                                   read_cloud_fraction);
     path = "/MDR[]/Earthshine/CLOUD/FIT_2[]";
     description = "If the minimum ingested integration time > 187.5ms then the corresponding cloud fractions will be "
         "combined using averaging. The cloud fraction will be set to NaN if FIT_MODE in the CLOUD structure is not "

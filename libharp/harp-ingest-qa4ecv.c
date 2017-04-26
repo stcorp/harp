@@ -1068,14 +1068,14 @@ static void register_common_variables(harp_product_definition *product_definitio
     {
         variable_definition = harp_ingestion_register_variable_full_read(product_definition, "cloud_fraction",
                                                                          harp_type_float, 1, dimension_type, NULL,
-                                                                         description, NULL, NULL,
+                                                                         description, HARP_UNIT_DIMENSIONLESS, NULL,
                                                                          read_cloud_fraction_no2);
     }
     else
     {
         variable_definition = harp_ingestion_register_variable_full_read(product_definition, "cloud_fraction",
                                                                          harp_type_float, 1, dimension_type, NULL,
-                                                                         description, NULL, NULL,
+                                                                         description, HARP_UNIT_DIMENSIONLESS, NULL,
                                                                          read_cloud_fraction_hcho);
 
     }
@@ -1095,7 +1095,7 @@ static void register_common_variables(harp_product_definition *product_definitio
     description = "effective cloud fraction uncertainty";
     variable_definition = harp_ingestion_register_variable_full_read(product_definition, "cloud_fraction_uncertainty",
                                                                      harp_type_float, 1, dimension_type, NULL,
-                                                                     description, NULL,
+                                                                     description, HARP_UNIT_DIMENSIONLESS,
                                                                      exclude_cloud_fraction_uncertainty,
                                                                      read_cloud_fraction_uncertainty);
     path = "/PRODUCT/SUPPORT_DATA/INPUT_DATA/cloud_fraction_uncertainty[]";
@@ -1198,8 +1198,8 @@ static void register_hcho_product(void)
     description = "surface albedo in the HCHO fitting window";
     variable_definition =
         harp_ingestion_register_variable_full_read(product_definition, "surface_albedo",
-                                                   harp_type_float, 1, dimension_type, NULL, description, NULL, NULL,
-                                                   read_surface_albedo_hcho);
+                                                   harp_type_float, 1, dimension_type, NULL, description,
+                                                   HARP_UNIT_DIMENSIONLESS, NULL, read_surface_albedo_hcho);
     path = "/PRODUCT/SUPPORT_DATA/INPUT_DATA/surface_albedo_hcho[]";
     harp_variable_definition_add_mapping(variable_definition, NULL, NULL, path, NULL);
 
@@ -1338,8 +1338,8 @@ static void register_no2_product(void)
     description = "surface albedo in the NO2 fitting window";
     variable_definition =
         harp_ingestion_register_variable_full_read(product_definition, "surface_albedo",
-                                                   harp_type_float, 1, dimension_type, NULL, description, NULL, NULL,
-                                                   read_surface_albedo_no2);
+                                                   harp_type_float, 1, dimension_type, NULL, description,
+                                                   HARP_UNIT_DIMENSIONLESS, NULL, read_surface_albedo_no2);
     path = "/PRODUCT/SUPPORT_DATA/INPUT_DATA/surface_albedo_no2[]";
     harp_variable_definition_add_mapping(variable_definition, NULL, NULL, path, NULL);
 

@@ -564,7 +564,7 @@ static int register_aatsr_atsr2_product(harp_ingestion_module *module, char *pro
     description = "aerosol optical depth";
     variable_definition =
         harp_ingestion_register_variable_full_read(product_definition, "aerosol_optical_depth", harp_type_double, 3,
-                                                   dimension_type, NULL, description, NULL, NULL,
+                                                   dimension_type, NULL, description, HARP_UNIT_DIMENSIONLESS, NULL,
                                                    read_aerosol_optical_depth);
     path = "/AOD550_mean[], /AOD670_mean[], /AOD870_mean[], /AOD1600_mean[]";
     description =
@@ -575,7 +575,8 @@ static int register_aatsr_atsr2_product(harp_ingestion_module *module, char *pro
     description = "uncertainty of the aerosol optical depth";
     variable_definition =
         harp_ingestion_register_variable_full_read(product_definition, "aerosol_optical_depth_uncertainty",
-                                                   harp_type_double, 3, dimension_type, NULL, description, NULL, NULL,
+                                                   harp_type_double, 3, dimension_type, NULL, description,
+                                                   HARP_UNIT_DIMENSIONLESS, NULL,
                                                    read_aerosol_optical_depth_uncertainty);
     path = "/AOD550_sdev[], /AOD670_sdev[], /AOD870_sdev[], /AOD1600_sdev[]";
     description =
@@ -598,7 +599,7 @@ static int register_aatsr_atsr2_product(harp_ingestion_module *module, char *pro
     description = "sensor zenith angle";
     variable_definition =
         harp_ingestion_register_variable_full_read(product_definition, "sensor_zenith_angle", harp_type_double, 2,
-                                                   &(dimension_type[1]), NULL, description, NULL,
+                                                   &(dimension_type[1]), NULL, description, "degree",
                                                    exclude_when_no_zenith, read_aatsr_atsr2_sensor_zenith_angle);
     path = "/satellite_zenith_mean[]";
     harp_variable_definition_add_mapping(variable_definition, NULL, NULL, path, NULL);
@@ -607,7 +608,7 @@ static int register_aatsr_atsr2_product(harp_ingestion_module *module, char *pro
     description = "solar zenith angle";
     variable_definition =
         harp_ingestion_register_variable_full_read(product_definition, "solar_zenith_angle", harp_type_double, 2,
-                                                   &(dimension_type[1]), NULL, description, NULL,
+                                                   &(dimension_type[1]), NULL, description, "degree",
                                                    exclude_when_no_zenith, read_aatsr_atsr2_solar_zenith_angle);
     path = "/sun_zenith_mean[]";
     harp_variable_definition_add_mapping(variable_definition, NULL, NULL, path, NULL);
@@ -709,8 +710,8 @@ static int register_module_l3_gomos(void)
     description = "stratospheric aerosol optical depth";
     variable_definition =
         harp_ingestion_register_variable_full_read(product_definition, "stratospheric_aerosol_optical_depth",
-                                                   harp_type_double, 3, dimension_type, NULL, description, NULL, NULL,
-                                                   read_aerosol_optical_depth);
+                                                   harp_type_double, 3, dimension_type, NULL, description,
+                                                   HARP_UNIT_DIMENSIONLESS, NULL, read_aerosol_optical_depth);
     path = "/S_AOD550[]";
     harp_variable_definition_add_mapping(variable_definition, NULL, NULL, path, NULL);
 
@@ -719,7 +720,7 @@ static int register_module_l3_gomos(void)
     variable_definition =
         harp_ingestion_register_variable_full_read(product_definition,
                                                    "stratospheric_aerosol_optical_depth_uncertainty", harp_type_double,
-                                                   3, dimension_type, NULL, description, NULL, NULL,
+                                                   3, dimension_type, NULL, description, HARP_UNIT_DIMENSIONLESS, NULL,
                                                    read_aerosol_optical_depth_uncertainty);
     path = "/S_AOD550_uncertainty[]";
     harp_variable_definition_add_mapping(variable_definition, NULL, NULL, path, NULL);
@@ -837,7 +838,7 @@ static int register_module_l3_meris(void)
     description = "aerosol optical depth";
     variable_definition =
         harp_ingestion_register_variable_full_read(product_definition, "aerosol_optical_depth", harp_type_double, 3,
-                                                   dimension_type, NULL, description, NULL, NULL,
+                                                   dimension_type, NULL, description, HARP_UNIT_DIMENSIONLESS, NULL,
                                                    read_aerosol_optical_depth);
     path = "/AOD550[], /AOD865[]";
     harp_variable_definition_add_mapping(variable_definition, NULL, NULL, path, NULL);
@@ -846,7 +847,8 @@ static int register_module_l3_meris(void)
     description = "uncertainty of the aerosol optical depth";
     variable_definition =
         harp_ingestion_register_variable_full_read(product_definition, "aerosol_optical_depth_uncertainty",
-                                                   harp_type_double, 3, dimension_type, NULL, description, NULL, NULL,
+                                                   harp_type_double, 3, dimension_type, NULL, description,
+                                                   HARP_UNIT_DIMENSIONLESS, NULL,
                                                    read_aerosol_optical_depth_uncertainty);
     path = "/AOD550_std[], /AOD865_std[]";
     harp_variable_definition_add_mapping(variable_definition, NULL, NULL, path, NULL);
@@ -942,7 +944,7 @@ static int register_iasi_product(harp_ingestion_module *module, char *productnam
     description = "dust aerosol optical depth";
     variable_definition =
         harp_ingestion_register_variable_full_read(product_definition, "dust_aerosol_optical_depth", harp_type_double,
-                                                   3, dimension_type, NULL, description, NULL, NULL,
+                                                   3, dimension_type, NULL, description, HARP_UNIT_DIMENSIONLESS, NULL,
                                                    read_aerosol_optical_depth);
     path = "/D_AOD550[], /D_AOD10000[], /D_AOD11000[]";
     harp_variable_definition_add_mapping(variable_definition, "data processed by DLR", NULL, path, NULL);
@@ -955,7 +957,8 @@ static int register_iasi_product(harp_ingestion_module *module, char *productnam
     description = "uncertainty of the dust aerosol optical depth";
     variable_definition =
         harp_ingestion_register_variable_full_read(product_definition, "dust_aerosol_optical_depth_uncertainty",
-                                                   harp_type_double, 3, dimension_type, NULL, description, NULL, NULL,
+                                                   harp_type_double, 3, dimension_type, NULL, description,
+                                                   HARP_UNIT_DIMENSIONLESS, NULL,
                                                    read_aerosol_optical_depth_uncertainty);
     path = "/D_AOD11000_uncertainty[]";
     harp_variable_definition_add_mapping(variable_definition, "data processed by DLR", NULL, path, NULL);
@@ -1064,7 +1067,7 @@ static int register_module_l3_multi_sensor(void)
     description = "absorbing aerosol index";
     variable_definition =
         harp_ingestion_register_variable_full_read(product_definition, "absorbing_aerosol_index", harp_type_double, 2,
-                                                   dimension_type, NULL, description, NULL, NULL,
+                                                   dimension_type, NULL, description, HARP_UNIT_DIMENSIONLESS, NULL,
                                                    read_absorbing_aerosol_index);
     path = "/absorbing_aerosol_index[]";
     harp_variable_definition_add_mapping(variable_definition, NULL, NULL, path, NULL);
@@ -1073,7 +1076,7 @@ static int register_module_l3_multi_sensor(void)
     description = "solar zenith angle";
     variable_definition =
         harp_ingestion_register_variable_full_read(product_definition, "solar_zenith_angle", harp_type_double, 2,
-                                                   dimension_type, NULL, description, NULL, NULL,
+                                                   dimension_type, NULL, description, "degree", NULL,
                                                    read_multi_sensor_solar_zenith_angle);
     path = "/solar_zenith_angle[]";
     harp_variable_definition_add_mapping(variable_definition, NULL, NULL, path, NULL);

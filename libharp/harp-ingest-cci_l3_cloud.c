@@ -543,7 +543,7 @@ void register_fields_for_daily_l3u_cloud_data(void)
     description = "cloud optical depth";
     variable_definition =
         harp_ingestion_register_variable_full_read(product_definition, "cloud_optical_depth", harp_type_double, 2,
-                                                   dimension_type, NULL, description, NULL, NULL,
+                                                   dimension_type, NULL, description, HARP_UNIT_DIMENSIONLESS, NULL,
                                                    read_cloud_optical_depth);
     path = "/cot_asc[,,]";
     harp_variable_definition_add_mapping(variable_definition, NULL, "orbit=ascending", path, NULL);
@@ -554,18 +554,18 @@ void register_fields_for_daily_l3u_cloud_data(void)
     description = "uncertainty of the cloud optical depth";
     variable_definition =
         harp_ingestion_register_variable_full_read(product_definition, "cloud_optical_depth_uncertainty",
-                                                   harp_type_double, 2, dimension_type, NULL, description, NULL, NULL,
-                                                   read_cloud_optical_depth_uncertainty);
+                                                   harp_type_double, 2, dimension_type, NULL, description,
+                                                   HARP_UNIT_DIMENSIONLESS, NULL, read_cloud_optical_depth_uncertainty);
     path = "/cot_asc_unc[,,]";
     harp_variable_definition_add_mapping(variable_definition, NULL, "orbit=ascending", path, NULL);
     path = "/cot_desc_unc[,,]";
     harp_variable_definition_add_mapping(variable_definition, NULL, "orbit=descending", path, NULL);
 
     /* cloud_top_height */
-    description = "cloud top eight";
+    description = "cloud top height";
     variable_definition =
         harp_ingestion_register_variable_full_read(product_definition, "cloud_top_height", harp_type_double, 2,
-                                                   dimension_type, NULL, description, NULL, NULL,
+                                                   dimension_type, NULL, description, "m", NULL,
                                                    read_cloud_top_height);
     path = "/cth_asc[,,]";
     harp_variable_definition_add_mapping(variable_definition, NULL, "orbit=ascending", path, NULL);
@@ -576,7 +576,7 @@ void register_fields_for_daily_l3u_cloud_data(void)
     description = "uncertainty of the cloud top height";
     variable_definition =
         harp_ingestion_register_variable_full_read(product_definition, "cloud_top_height_uncertainty",
-                                                   harp_type_double, 2, dimension_type, NULL, description, NULL, NULL,
+                                                   harp_type_double, 2, dimension_type, NULL, description, "m", NULL,
                                                    read_cloud_top_height_uncertainty);
     path = "/cth_asc_unc[,,]";
     harp_variable_definition_add_mapping(variable_definition, NULL, "orbit=ascending", path, NULL);
@@ -587,7 +587,7 @@ void register_fields_for_daily_l3u_cloud_data(void)
     description = "cloud top pressure";
     variable_definition =
         harp_ingestion_register_variable_full_read(product_definition, "cloud_top_pressure", harp_type_double, 2,
-                                                   dimension_type, NULL, description, NULL, NULL,
+                                                   dimension_type, NULL, description, "hPa", NULL,
                                                    read_cloud_top_pressure);
     path = "/ctp_asc[,,]";
     harp_variable_definition_add_mapping(variable_definition, NULL, "orbit=ascending", path, NULL);
@@ -598,7 +598,7 @@ void register_fields_for_daily_l3u_cloud_data(void)
     description = "uncertainty of the cloud top pressure";
     variable_definition =
         harp_ingestion_register_variable_full_read(product_definition, "cloud_top_pressure_uncertainty",
-                                                   harp_type_double, 2, dimension_type, NULL, description, NULL, NULL,
+                                                   harp_type_double, 2, dimension_type, NULL, description, "hPa", NULL,
                                                    read_cloud_top_pressure_uncertainty);
     path = "/ctp_asc_unc[,,]";
     harp_variable_definition_add_mapping(variable_definition, NULL, "orbit=ascending", path, NULL);
@@ -609,7 +609,7 @@ void register_fields_for_daily_l3u_cloud_data(void)
     description = "cloud top temperature";
     variable_definition =
         harp_ingestion_register_variable_full_read(product_definition, "cloud_top_temperature", harp_type_double, 2,
-                                                   dimension_type, NULL, description, NULL, NULL,
+                                                   dimension_type, NULL, description, "K", NULL,
                                                    read_cloud_top_temperature);
     path = "/ctt_asc[,,]";
     harp_variable_definition_add_mapping(variable_definition, NULL, "orbit=ascending", path, NULL);
@@ -620,7 +620,7 @@ void register_fields_for_daily_l3u_cloud_data(void)
     description = "uncertainty of the cloud top temperature";
     variable_definition =
         harp_ingestion_register_variable_full_read(product_definition, "cloud_top_temperature_uncertainty",
-                                                   harp_type_double, 2, dimension_type, NULL, description, NULL, NULL,
+                                                   harp_type_double, 2, dimension_type, NULL, description, "K", NULL,
                                                    read_cloud_top_temperature_uncertainty);
     path = "/ctt_asc_unc[,,]";
     harp_variable_definition_add_mapping(variable_definition, NULL, "orbit=ascending", path, NULL);
@@ -631,7 +631,7 @@ void register_fields_for_daily_l3u_cloud_data(void)
     description = "validity of the measurement";
     variable_definition =
         harp_ingestion_register_variable_full_read(product_definition, "validity",
-                                                   harp_type_double, 2, dimension_type, NULL, description, NULL,
+                                                   harp_type_int16, 2, dimension_type, NULL, description, NULL,
                                                    exclude_validity_field, read_validity);
     path = "/qcflag_asc[,,]";
     harp_variable_definition_add_mapping(variable_definition, NULL, "orbit=ascending", path, NULL);
@@ -642,7 +642,7 @@ void register_fields_for_daily_l3u_cloud_data(void)
     description = "relative azimuth angle";
     variable_definition =
         harp_ingestion_register_variable_full_read(product_definition, "relative_azimuth_angle", harp_type_double, 2,
-                                                   dimension_type, NULL, description, NULL,
+                                                   dimension_type, NULL, description, "degree",
                                                    NULL, read_relative_azimuth_angle);
     path = "/relazi_asc[,,]";
     harp_variable_definition_add_mapping(variable_definition, NULL, "orbit=ascending", path, NULL);
@@ -653,7 +653,7 @@ void register_fields_for_daily_l3u_cloud_data(void)
     description = "viewing zenith angle";
     variable_definition =
         harp_ingestion_register_variable_full_read(product_definition, "sensor_zenith_angle", harp_type_double, 2,
-                                                   dimension_type, NULL, description, NULL,
+                                                   dimension_type, NULL, description, "degree",
                                                    NULL, read_viewing_zenith_angle);
     path = "/satzen_asc[,,]";
     harp_variable_definition_add_mapping(variable_definition, NULL, "orbit=ascending", path, NULL);
@@ -664,7 +664,7 @@ void register_fields_for_daily_l3u_cloud_data(void)
     description = "solar zenith angle";
     variable_definition =
         harp_ingestion_register_variable_full_read(product_definition, "solar_zenith_angle", harp_type_double, 2,
-                                                   dimension_type, NULL, description, NULL,
+                                                   dimension_type, NULL, description, "degree",
                                                    NULL, read_solar_zenith_angle);
     path = "/solzen_asc[,,]";
     harp_variable_definition_add_mapping(variable_definition, NULL, "orbit=ascending", path, NULL);
@@ -675,7 +675,7 @@ void register_fields_for_daily_l3u_cloud_data(void)
     description = "surface_temperature";
     variable_definition =
         harp_ingestion_register_variable_full_read(product_definition, "surface_temperature", harp_type_double, 2,
-                                                   dimension_type, NULL, description, NULL,
+                                                   dimension_type, NULL, description, "K",
                                                    exclude_surface_temperature_field, read_surface_temperature);
     path = "/stemp_asc[,,]";
     harp_variable_definition_add_mapping(variable_definition, NULL, "orbit=ascending", path, NULL);
@@ -686,7 +686,7 @@ void register_fields_for_daily_l3u_cloud_data(void)
     description = "surface_temperature_uncertainty";
     variable_definition =
         harp_ingestion_register_variable_full_read(product_definition, "surface_temperature_uncertainty",
-                                                   harp_type_double, 2, dimension_type, NULL, description, NULL,
+                                                   harp_type_double, 2, dimension_type, NULL, description, "K",
                                                    exclude_surface_temperature_field,
                                                    read_surface_temperature_uncertainty);
     path = "/stemp_asc_unc[,,]";
@@ -698,7 +698,8 @@ void register_fields_for_daily_l3u_cloud_data(void)
     description = "datetime";
     variable_definition =
         harp_ingestion_register_variable_full_read(product_definition, "datetime", harp_type_double, 0,
-                                                   dimension_type, NULL, description, NULL, NULL, read_datetime);
+                                                   dimension_type, NULL, description, "s since 2000-01-01", NULL,
+                                                   read_datetime);
     path = "/time";
     harp_variable_definition_add_mapping(variable_definition, NULL, NULL, path, NULL);
 }
@@ -812,7 +813,7 @@ void register_fields_for_monthly_l3c_cloud_data(void)
     description = "cloud optical depth";
     variable_definition =
         harp_ingestion_register_variable_full_read(product_definition, "cloud_optical_depth", harp_type_double, 2,
-                                                   dimension_type, NULL, description, NULL, NULL,
+                                                   dimension_type, NULL, description, HARP_UNIT_DIMENSIONLESS, NULL,
                                                    read_cloud_optical_depth);
     path = "/cot[,,]";
     harp_variable_definition_add_mapping(variable_definition, NULL, NULL, path, NULL);
@@ -821,8 +822,8 @@ void register_fields_for_monthly_l3c_cloud_data(void)
     description = "uncertainty of the cloud optical depth";
     variable_definition =
         harp_ingestion_register_variable_full_read(product_definition, "cloud_optical_depth_uncertainty",
-                                                   harp_type_double, 2, dimension_type, NULL, description, NULL, NULL,
-                                                   read_cloud_optical_depth_uncertainty);
+                                                   harp_type_double, 2, dimension_type, NULL, description,
+                                                   HARP_UNIT_DIMENSIONLESS, NULL, read_cloud_optical_depth_uncertainty);
     path = "/cot_unc[,,]";
     harp_variable_definition_add_mapping(variable_definition, NULL, NULL, path, NULL);
 
@@ -830,7 +831,7 @@ void register_fields_for_monthly_l3c_cloud_data(void)
     description = "cloud top eight";
     variable_definition =
         harp_ingestion_register_variable_full_read(product_definition, "cloud_top_height", harp_type_double, 2,
-                                                   dimension_type, NULL, description, NULL, NULL,
+                                                   dimension_type, NULL, description, "m", NULL,
                                                    read_cloud_top_height);
     path = "/cth[,,]";
     harp_variable_definition_add_mapping(variable_definition, NULL, NULL, path, NULL);
@@ -839,7 +840,7 @@ void register_fields_for_monthly_l3c_cloud_data(void)
     description = "uncertainty of the cloud top height";
     variable_definition =
         harp_ingestion_register_variable_full_read(product_definition, "cloud_top_height_uncertainty",
-                                                   harp_type_double, 2, dimension_type, NULL, description, NULL, NULL,
+                                                   harp_type_double, 2, dimension_type, NULL, description, "m", NULL,
                                                    read_cloud_top_height_uncertainty);
     path = "/cth_unc[,,]";
     harp_variable_definition_add_mapping(variable_definition, NULL, NULL, path, NULL);
@@ -848,7 +849,7 @@ void register_fields_for_monthly_l3c_cloud_data(void)
     description = "cloud top pressure";
     variable_definition =
         harp_ingestion_register_variable_full_read(product_definition, "cloud_top_pressure", harp_type_double, 2,
-                                                   dimension_type, NULL, description, NULL, NULL,
+                                                   dimension_type, NULL, description, "hPa", NULL,
                                                    read_cloud_top_pressure);
     path = "/ctp[,,]";
     harp_variable_definition_add_mapping(variable_definition, NULL, NULL, path, NULL);
@@ -857,7 +858,7 @@ void register_fields_for_monthly_l3c_cloud_data(void)
     description = "uncertainty of the cloud top pressure";
     variable_definition =
         harp_ingestion_register_variable_full_read(product_definition, "cloud_top_pressure_uncertainty",
-                                                   harp_type_double, 2, dimension_type, NULL, description, NULL, NULL,
+                                                   harp_type_double, 2, dimension_type, NULL, description, "hPa", NULL,
                                                    read_cloud_top_pressure_uncertainty);
     path = "/ctp_unc[,,]";
     harp_variable_definition_add_mapping(variable_definition, NULL, NULL, path, NULL);
@@ -866,7 +867,7 @@ void register_fields_for_monthly_l3c_cloud_data(void)
     description = "cloud top temperature";
     variable_definition =
         harp_ingestion_register_variable_full_read(product_definition, "cloud_top_temperature", harp_type_double, 2,
-                                                   dimension_type, NULL, description, NULL, NULL,
+                                                   dimension_type, NULL, description, "K", NULL,
                                                    read_cloud_top_temperature);
     path = "/ctt[,,]";
     harp_variable_definition_add_mapping(variable_definition, NULL, NULL, path, NULL);
@@ -875,7 +876,7 @@ void register_fields_for_monthly_l3c_cloud_data(void)
     description = "uncertainty of the cloud top temperature";
     variable_definition =
         harp_ingestion_register_variable_full_read(product_definition, "cloud_top_temperature_uncertainty",
-                                                   harp_type_double, 2, dimension_type, NULL, description, NULL, NULL,
+                                                   harp_type_double, 2, dimension_type, NULL, description, "K", NULL,
                                                    read_cloud_top_temperature_uncertainty);
     path = "/ctt_unc[,,]";
     harp_variable_definition_add_mapping(variable_definition, NULL, NULL, path, NULL);
@@ -884,7 +885,7 @@ void register_fields_for_monthly_l3c_cloud_data(void)
     description = "surface_temperature";
     variable_definition =
         harp_ingestion_register_variable_full_read(product_definition, "surface_temperature", harp_type_double, 2,
-                                                   dimension_type, NULL, description, NULL,
+                                                   dimension_type, NULL, description, "K",
                                                    exclude_surface_temperature_field, read_surface_temperature);
     path = "/stemp[,,]";
     harp_variable_definition_add_mapping(variable_definition, NULL, NULL, path, NULL);
@@ -893,7 +894,7 @@ void register_fields_for_monthly_l3c_cloud_data(void)
     description = "surface_temperature_uncertainty";
     variable_definition =
         harp_ingestion_register_variable_full_read(product_definition, "surface_temperature_uncertainty",
-                                                   harp_type_double, 2, dimension_type, NULL, description, NULL,
+                                                   harp_type_double, 2, dimension_type, NULL, description, "K",
                                                    exclude_surface_temperature_field,
                                                    read_surface_temperature_uncertainty);
     path = "/stemp_unc[,,]";
@@ -903,7 +904,8 @@ void register_fields_for_monthly_l3c_cloud_data(void)
     description = "datetime";
     variable_definition =
         harp_ingestion_register_variable_full_read(product_definition, "datetime", harp_type_double, 0,
-                                                   dimension_type, NULL, description, NULL, NULL, read_datetime);
+                                                   dimension_type, NULL, description, "s since 2000-01-01", NULL,
+                                                   read_datetime);
     path = "/time";
     harp_variable_definition_add_mapping(variable_definition, NULL, NULL, path, NULL);
 }
