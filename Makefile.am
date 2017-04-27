@@ -378,7 +378,7 @@ DEFINITION_FILES = \
 EXTRA_DIST += $(DEFINITION_FILES) codadef.sh
 MAINTAINERCLEANFILES += $(DEFINITION_FILES)
 
-nobase_pkgdata_DATA = $(DEFINITION_FILES)
+definitions_DATA = $(DEFINITION_FILES)
 
 definitions/$(ACE_FTS_DEFINITION_FILE):
 	test -d definitions || $(mkinstalldirs) definitions
@@ -715,7 +715,7 @@ EXTRA_DIST += \
 	doc/static/custom.css \
 	$(DOCFILES)
 
-nobase_pkgdata_DATA += $(DOCFILES)
+nobase_pkgdata_DATA = $(DOCFILES)
 
 doc: harp_doc
 

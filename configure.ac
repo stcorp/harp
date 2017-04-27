@@ -306,8 +306,10 @@ AC_REPLACE_FUNCS([strdup strcasecmp strncasecmp vsnprintf])
 
 # Directories for optional components start empty and will be set later.
 harppythondir=
+definitionsdir="\${datadir}/coda/definitions"
 
 AC_SUBST(harppythondir)
+AC_SUBST(definitionsdir)
 
 # *** harp-python ***
 

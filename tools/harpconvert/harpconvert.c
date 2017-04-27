@@ -312,11 +312,6 @@ static int convert(int argc, char *argv[])
 
 int main(int argc, char *argv[])
 {
-#ifdef WIN32
-    const char *definition_path = "../definitions";
-#else
-    const char *definition_path = "../share/" PACKAGE "/definitions";
-#endif
     int result;
 
     if (argc == 1 || strcmp(argv[1], "-h") == 0 || strcmp(argv[1], "--help") == 0)
@@ -338,7 +333,7 @@ int main(int argc, char *argv[])
         exit(1);
     }
 
-    if (harp_set_coda_definition_path_conditional(argv[0], NULL, definition_path) != 0)
+    if (harp_set_coda_definition_path_conditional(argv[0], NULL, "../share/coda/definitions") != 0)
     {
         fprintf(stderr, "ERROR: %s\n", harp_errno_to_string(harp_errno));
         exit(1);

@@ -251,6 +251,12 @@ int main(int argc, char *argv[])
         exit(1);
     }
 
+    if (harp_set_coda_definition_path_conditional(argv[0], NULL, "../share/coda/definitions") != 0)
+    {
+        fprintf(stderr, "ERROR: %s\n", harp_errno_to_string(harp_errno));
+        exit(1);
+    }
+
     harp_set_warning_handler(print_warning);
 
     if (harp_init() != 0)

@@ -365,11 +365,7 @@ def _init():
 
     if os.getenv('CODA_DEFINITION') is None:
         # Set coda definition path relative to C library
-        from platform import system as _system
-        if _system() == "Windows":
-            relpath = "../definitions"
-        else:
-            relpath = "../share/harp/definitions"
+        relpath = "../share/coda/definitions"
         _lib.harp_set_coda_definition_path_conditional(_encode_path(os.path.dirname(clib)),
                                                        _encode_string(os.path.basename(clib)),
                                                        _encode_path(relpath))

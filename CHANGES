@@ -2,6 +2,12 @@
 
 * Added harp_product_sort() function.
 
+* codadef files are now installed in <prefix>/share/coda/definitions.
+  This allows a present CODA installation to use the same codadef files.
+
+* Windows installation now installs data and documentation files in the
+  subdirectory <prefix>/share/harp.
+
 * Fix issue in deriving total column from partial column profile if partial
   column profile did not have {time,vertical} dimensions.
 

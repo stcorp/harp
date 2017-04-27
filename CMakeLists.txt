@@ -432,11 +432,7 @@ include_directories(BEFORE ${CMAKE_CURRENT_SOURCE_DIR}/expat ${CMAKE_CURRENT_SOU
 
 install(FILES ${CMAKE_CURRENT_BINARY_DIR}/harp.h DESTINATION include)
 
-if(WIN32)
-set(UDUNITS2_XML_DIR_RELATIVE data)
-else(WIN32)
 set(UDUNITS2_XML_DIR_RELATIVE share/harp)
-endif(WIN32)
 set(UDUNITS2_XML_DIR ${CMAKE_INSTALL_PREFIX}/${UDUNITS2_XML_DIR_RELATIVE})
 add_definitions(-DDEFAULT_UDUNITS2_XML_PATH="${UDUNITS2_XML_DIR}/udunits2.xml")
 add_library(harp SHARED ${LIBHARP_SOURCES} ${LIBUDUNITS2_SOURCES} ${LIBNETCDF_SOURCES})
@@ -543,11 +539,7 @@ endif(HARP_BUILD_PYTHON)
 
 
 # product definition files
-if(WIN32)
-set(CODADEF_INSTALL_DIR definitions)
-else(WIN32)
-set(CODADEF_INSTALL_DIR share/harp/definitions)
-endif(WIN32)
+set(CODADEF_INSTALL_DIR share/coda/definitions)
 
 function(add_codadef name)
   file(GLOB CODADEF_DIR ${CMAKE_CURRENT_SOURCE_DIR}/definitions/${name}/index.xml)
@@ -599,11 +591,7 @@ add_codadef(Sentinel5P)
 add_codadef(TEMIS)
 
 # documentation
-if(WIN32)
-install(DIRECTORY ${CMAKE_CURRENT_SOURCE_DIR}/doc/html DESTINATION doc)
-else(WIN32)
 install(DIRECTORY ${CMAKE_CURRENT_SOURCE_DIR}/doc/html DESTINATION share/harp/doc)
-endif(WIN32)
 
 # udunits xml files
 install(FILES
