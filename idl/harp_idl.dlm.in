@@ -1,0 +1,12 @@
+MODULE		harp_idl
+DESCRIPTION	Earth Observation data harmonization toolset
+VERSION		@VERSION@
+SOURCE		S[&]T
+
+FUNCTION        HARP_EXPORT                   2 3
+FUNCTION        HARP_IMPORT                   1 2
+FUNCTION        HARP_INGEST                   1 3
+
+PROCEDURE       HARP_UNLOAD                   0 0
+
+STRUCTURE       HARP_ERROR

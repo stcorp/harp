@@ -35,6 +35,10 @@ noinst_PROGRAMS = findtypedef
 lib_LTLIBRARIES = libharp.la
 noinst_LTLIBRARIES = libnetcdf.la libudunits2.la
 
+if BUILD_IDL
+idldlmexec_LTLIBRARIES = harp_idl.la
+endif
+
 if BUILD_PYTHON
 harppython_PYTHON = \
 	$(srcdir)/python/__init__.py \
@@ -624,6 +628,16 @@ EXTRA_DIST += \
 	python/_harpc.py \
 	python/build.py
 
+# harp_idl
+
+HARP_IDL_SOURCE_FILES = idl/harp_idl.c
+INDENTFILES += $(HARP_IDL_SOURCE_FILES)
+
+if BUILD_IDL
+harp_idl_la_SOURCES = $(HARP_IDL_SOURCE_FILES)
+harp_idl_la_LDFLAGS = -module -shared -avoid-version -lharp
+endif
+
 # *** misc distribution files ***
 
 EXTRA_DIST += \
@@ -633,6 +647,18 @@ EXTRA_DIST += \
 	README \
 	INSTALL \
 	bootstrap
+
+# *** idl data ***
+
+HARP_IDL_DLMFILES = \
+	idl/harp_idl.dlm
+
+EXTRA_DIST += $(HARP_IDL_DLMFILES) \
+	idl/harp_idl.dlm.in
+ 
+if BUILD_IDL
+idldlmexec_DATA = $(HARP_IDL_DLMFILES)
+endif
 
 # *** documentation ***
 
