@@ -36,6 +36,7 @@ lib_LTLIBRARIES = libharp.la
 noinst_LTLIBRARIES = libnetcdf.la libudunits2.la
 
 if BUILD_IDL
+idldlmexecdir="\${pkglibdir}/idl"
 idldlmexec_LTLIBRARIES = harp_idl.la
 endif
 
