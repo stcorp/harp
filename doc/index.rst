@@ -18,6 +18,7 @@ Contents
    operations
    ingestions/index
    libharp
+   idl
    python
    tools
 
@@ -85,6 +86,13 @@ C library
 Common parts that are used by the various HARP command line tools are gathered
 in a single :doc:`HARP C library <libharp>`. This library can be used to build
 custom applications or libraries that work with HARP compliant data products.
+
+IDL interface
+----------------
+
+The :doc:`HARP IDL interface <idl>` provides a set of functions to import
+and export HARP products, and to ingest non-HARP products of a type supported by
+HARP from IDL.
 
 Python interface
 ----------------

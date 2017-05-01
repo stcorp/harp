@@ -90,6 +90,7 @@ HARP_DOCFILES = \
 	doc/html/harpdump.html \
 	doc/html/harpfilter.html \
 	doc/html/harpmerge.html \
+	doc/html/idl.html \
 	doc/html/index.html \
 	doc/html/ingestions/ACE_FTS_L2_iso.html \
 	doc/html/ingestions/ACE_FTS_L2_main.html \
@@ -658,6 +659,8 @@ doc/html/harpdump.html:
 doc/html/harpfilter.html:
 	$(MAKE) harp_doc
 doc/html/harpmerge.html:
+	$(MAKE) harp_doc
+doc/html/idl.html:
 	$(MAKE) harp_doc
 doc/html/index.html:
 	$(MAKE) harp_doc
