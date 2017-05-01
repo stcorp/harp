@@ -565,8 +565,7 @@ void register_fields_for_daily_l3u_cloud_data(void)
     description = "cloud top height";
     variable_definition =
         harp_ingestion_register_variable_full_read(product_definition, "cloud_top_height", harp_type_double, 2,
-                                                   dimension_type, NULL, description, "m", NULL,
-                                                   read_cloud_top_height);
+                                                   dimension_type, NULL, description, "m", NULL, read_cloud_top_height);
     path = "/cth_asc[,,]";
     harp_variable_definition_add_mapping(variable_definition, NULL, "orbit=ascending", path, NULL);
     path = "/cth_desc[,,]";
@@ -831,8 +830,7 @@ void register_fields_for_monthly_l3c_cloud_data(void)
     description = "cloud top eight";
     variable_definition =
         harp_ingestion_register_variable_full_read(product_definition, "cloud_top_height", harp_type_double, 2,
-                                                   dimension_type, NULL, description, "m", NULL,
-                                                   read_cloud_top_height);
+                                                   dimension_type, NULL, description, "m", NULL, read_cloud_top_height);
     path = "/cth[,,]";
     harp_variable_definition_add_mapping(variable_definition, NULL, NULL, path, NULL);
 

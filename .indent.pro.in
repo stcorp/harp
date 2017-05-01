@@ -52,6 +52,12 @@
 -T H5E_error_t
 -T hsize_t
 -T UCHAR
+-T IDL_MEMINT
+-T IDL_STRING
+-T IDL_STRUCT_TAG_DEF
+-T IDL_StructDefPtr
+-T IDL_SYSRTN_GENERIC
+-T IDL_VPTR
 -T XML_Parser
 -T cv_converter
 -T ut_unit

@@ -333,7 +333,8 @@ static void copy_one_dimension_from_harp_to_idl(harp_variable *variable, int dim
         }
         for (i = 0; i < variable->dimension[dimension_nr]; i++)
         {
-            copy_one_dimension_from_harp_to_idl(variable, dimension_nr - 1, offset + i * size_lower_dimensions, idl_data);
+            copy_one_dimension_from_harp_to_idl(variable, dimension_nr - 1, offset + i * size_lower_dimensions,
+                                                idl_data);
         }
     }
 }
@@ -436,7 +437,8 @@ static void copy_one_dimension_from_idl_to_harp(harp_variable *variable, int dim
         }
         for (i = 0; i < variable->dimension[dimension_nr]; i++)
         {
-            copy_one_dimension_from_idl_to_harp(variable, dimension_nr - 1, offset + i * size_lower_dimensions, idl_data);
+            copy_one_dimension_from_idl_to_harp(variable, dimension_nr - 1, offset + i * size_lower_dimensions,
+                                                idl_data);
         }
     }
 }
@@ -646,11 +648,13 @@ static IDL_VPTR harp_idl_ingest(int argc, IDL_VPTR *argv)
 
     assert(argc == 1 || argc == 2 || argc == 3);
 
-    if ((argv[0]->type != IDL_TYP_STRING) || (argc > 1 && (argv[1]->type != IDL_TYP_STRING)) || (argc > 2 && (argv[2]->type != IDL_TYP_STRING)))
+    if ((argv[0]->type != IDL_TYP_STRING) || (argc > 1 && (argv[1]->type != IDL_TYP_STRING)) ||
+        (argc > 2 && (argv[2]->type != IDL_TYP_STRING)))
     {
         return harp_idl_get_error_struct(HARP_IDL_ERR_EXPECTED_STRING);
     }
-    if (((argv[0]->flags & IDL_V_ARR) != 0) || (argc > 1 && ((argv[1]->flags & IDL_V_ARR) != 0)) || (argc > 2 && ((argv[2]->flags & IDL_V_ARR) != 0)))
+    if (((argv[0]->flags & IDL_V_ARR) != 0) || (argc > 1 && ((argv[1]->flags & IDL_V_ARR) != 0)) ||
+        (argc > 2 && ((argv[2]->flags & IDL_V_ARR) != 0)))
     {
         return harp_idl_get_error_struct(HARP_IDL_ERR_EXPECTED_SINGLE_ELM);
     }
@@ -709,9 +713,9 @@ static int register_idl_functions_and_procedures(void)
     /* function declarations */
 
     static IDL_SYSFUN_DEF2 idl_func_addr[] = {
-        {{harp_idl_export}, "HARP_EXPORT", 2, 3, 0, 0},  /* harp_export(product, filename, <format>) */
-        {{harp_idl_import}, "HARP_IMPORT", 1, 2, 0, 0},  /* product = harp_import(filename, <operations>) */
-        {{harp_idl_ingest}, "HARP_INGEST", 1, 3, 0, 0},  /* product = harp_ingest(filename, <operations>, <options>) */
+        {{harp_idl_export}, "HARP_EXPORT", 2, 3, 0, 0}, /* harp_export(product, filename, <format>) */
+        {{harp_idl_import}, "HARP_IMPORT", 1, 2, 0, 0}, /* product = harp_import(filename, <operations>) */
+        {{harp_idl_ingest}, "HARP_INGEST", 1, 3, 0, 0}, /* product = harp_ingest(filename, <operations>, <options>) */
     };
 
     /* procedure declarations */
