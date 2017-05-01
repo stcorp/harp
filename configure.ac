@@ -29,6 +29,8 @@ AH_BOTTOM([
 #   include <sys/types.h>
 #  endif
 # endif
+
+
 #endif
 
 #ifndef HAVE_STRDUP
@@ -305,11 +307,21 @@ AC_REPLACE_FUNCS([strdup strcasecmp strncasecmp vsnprintf])
 
 # *** directories ***
 
+examplesdir="\${pkgdatadir}/examples"
+
 # Directories for optional components start empty and will be set later.
 harppythondir=
+matlabmexexecdir=
+codamatlabexamplesdir=
+harpmatlabexamplesdir=
 definitionsdir="\${datadir}/coda/definitions"
 
+AC_SUBST(examplesdir)
+
 AC_SUBST(harppythondir)
+AC_SUBST(matlabmexexecdir)
+AC_SUBST(codamatlabexamplesdir)
+AC_SUBST(harpmatlabexamplesdir)
 AC_SUBST(definitionsdir)
 
 # *** harp-python ***
@@ -328,6 +340,27 @@ Try setting the PYTHON environment variable to the location of your Python inter
 fi
 
 AM_CONDITIONAL(BUILD_PYTHON, test $ac_cv_enable_python = yes)
+
+# *** harp-matlab ****
+
+# check whether we should build the MATLAB interface
+AC_ARG_ENABLE([matlab],
+              [AS_HELP_STRING([--enable-matlab],[build the MATLAB interface])],
+              [ac_cv_enable_matlab=$enableval],
+              [AC_CACHE_CHECK([build MATLAB interface], ac_cv_enable_matlab, ac_cv_enable_matlab=no)])
+
+if test $ac_cv_enable_matlab = yes ; then
+  ST_CHECK_MATLAB
+  if test $st_cv_have_matlab = no ; then
+    AC_MSG_ERROR(BOXED_TEXT([ERROR: MATLAB is required to build the MATLAB interface.
+Try setting the MATLAB environment variable to the root of your MATLAB
+installation if you have MATLAB installed.]))
+  fi
+  matlabmexexecdir="\${pkglibdir}/matlab"
+  harpmatlabexamplesdir="\${examplesdir}/harp_matlab"
+fi
+
+AM_CONDITIONAL(BUILD_MATLAB, test $ac_cv_enable_matlab = yes)
 
 # *** harp_idl ***
 
