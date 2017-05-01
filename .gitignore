@@ -35,6 +35,7 @@ stamp-*
 /harpdump
 /harpfilter
 /harpmerge
+/idl/harp_idl.dlm
 /libharp/harp-operation-parser.c
 /libharp/harp-operation-parser.h
 /libharp/harp-operation-scanner.c
