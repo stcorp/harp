@@ -35,13 +35,12 @@ noinst_PROGRAMS = findtypedef
 lib_LTLIBRARIES = libharp.la
 noinst_LTLIBRARIES = libnetcdf.la libudunits2.la
 
-if BUILD_MATLAB
-matlabmexexec_LTLIBRARIES = harp_matlab.la
+if BUILD_IDL
+idldlmexec_LTLIBRARIES = harp_idl.la
 endif
 
-if BUILD_IDL
-idldlmexecdir="\${pkglibdir}/idl"
-idldlmexec_LTLIBRARIES = harp_idl.la
+if BUILD_MATLAB
+matlabmexexec_LTLIBRARIES = harp_matlab.la
 endif
 
 if BUILD_PYTHON
@@ -327,12 +326,42 @@ EXTRA_DIST += \
 	udunits2/LICENSE \
 	udunits2/README
 
+# harp-python
+
+python/_harpc.py: $(srcdir)/libharp/harp.h.in $(srcdir)/python/build.py
+	@$(MKDIR_P) python
+	$(PYTHON) $(srcdir)/python/build.py $(srcdir)/libharp/harp.h.in python/_harpc.py
+
+EXTRA_DIST += \
+	python/_harpc.py \
+	python/build.py
+
+# harp-idl
+
+HARP_IDL_SOURCE_FILES = idl/harp_idl.c
+INDENTFILES += $(HARP_IDL_SOURCE_FILES)
+
+if BUILD_IDL
+harp_idl_la_SOURCES = $(HARP_IDL_SOURCE_FILES)
+harp_idl_la_LDFLAGS = -module -shared -avoid-version -lharp
+endif
+
+HARP_IDL_DLMFILES = \
+	idl/harp_idl.dlm
+
+EXTRA_DIST += $(HARP_IDL_DLMFILES) \
+	idl/harp_idl.dlm.in
+
+if BUILD_IDL
+idldlmexec_DATA = $(HARP_IDL_DLMFILES)
+endif
+
 # harp-matlab
 
 HARP_MATLAB_SOURCE_FILES = \
-	harp_matlab/harp-matlab.h \
-	harp_matlab/harp-matlab-product.c \
-	harp_matlab/harp_matlab.c
+	matlab/harp-matlab.h \
+	matlab/harp-matlab-product.c \
+	matlab/harp_matlab.c
 INDENTFILES += $(HARP_MATLAB_SOURCE_FILES)
 
 if BUILD_MATLAB
@@ -343,13 +372,11 @@ harp_matlab_la_LIBADD = libharp.la
 harp_matlab_la_DEPENDENCIES = libharp.la
 endif
 
-# *** matlab data ***
-
 HARP_MATLAB_MFILES = \
-	harp_matlab/harp_import.m \
-	harp_matlab/harp_export.m \
-	harp_matlab/harp_ingest.m \
-	harp_matlab/harp_version.m
+	matlab/harp_import.m \
+	matlab/harp_export.m \
+	matlab/harp_ingest.m \
+	matlab/harp_version.m
 
 EXTRA_DIST += $(HARP_MATLAB_MFILES)
 
@@ -653,26 +680,6 @@ definitions/$(TEMIS_DEFINITION_FILE):
 	  exit 1 ; \
 	 fi
 
-# harp-python
-
-python/_harpc.py: $(srcdir)/libharp/harp.h.in $(srcdir)/python/build.py
-	@$(MKDIR_P) python
-	$(PYTHON) $(srcdir)/python/build.py $(srcdir)/libharp/harp.h.in python/_harpc.py
-
-EXTRA_DIST += \
-	python/_harpc.py \
-	python/build.py
-
-# harp_idl
-
-HARP_IDL_SOURCE_FILES = idl/harp_idl.c
-INDENTFILES += $(HARP_IDL_SOURCE_FILES)
-
-if BUILD_IDL
-harp_idl_la_SOURCES = $(HARP_IDL_SOURCE_FILES)
-harp_idl_la_LDFLAGS = -module -shared -avoid-version -lharp
-endif
-
 # *** misc distribution files ***
 
 EXTRA_DIST += \
@@ -682,18 +689,6 @@ EXTRA_DIST += \
 	README \
 	INSTALL \
 	bootstrap
-
-# *** idl data ***
-
-HARP_IDL_DLMFILES = \
-	idl/harp_idl.dlm
-
-EXTRA_DIST += $(HARP_IDL_DLMFILES) \
-	idl/harp_idl.dlm.in
- 
-if BUILD_IDL
-idldlmexec_DATA = $(HARP_IDL_DLMFILES)
-endif
 
 # *** documentation ***
 
