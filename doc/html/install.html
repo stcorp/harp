@@ -249,9 +249,10 @@ additional steps if you want to build HARP from the GitHub git respository.</p>
 </dl>
 <p>When you clone and checkout the HARP git repository make sure to also
 initialize the git submodules:</p>
-<blockquote>
-<div>$ git submodule init
-$ git submodule update</div></blockquote>
+<div class="highlight-default"><div class="highlight"><pre><span></span>$ git submodule init
+$ git submodule update
+</pre></div>
+</div>
 <p>This will pull in several entries in the definitions subdirectory.</p>
 <p>Then, run the bootstrap script in the root of the source directory. After
 that you can follow the steps as usual for building the source package.</p>
@@ -355,6 +356,19 @@ If <code class="docutils literal"><span class="pre">./configure</span></code> co
 file, pass this option to <code class="docutils literal"><span class="pre">./configure</span></code> with the location of this
 include file.</p>
 </dd>
+<dt><code class="docutils literal"><span class="pre">--enable-idl</span></code> :</dt>
+<dd><p class="first last">By default HARP is built without the IDL interface.
+Use this option to enable building of the interface to IDL.</p>
+</dd>
+<dt><code class="docutils literal"><span class="pre">IDL=&lt;IDL</span> <span class="pre">root</span> <span class="pre">directory&gt;</span></code> :</dt>
+<dd><p class="first last">If you want to build the IDL interface you should also use this
+option to tell the configuration script where you have installed IDL.
+The &lt;IDL root directory&gt; is the root directory of your IDL
+installation. It should contain for instance the <cite>bin</cite> directory with
+the idl executable and an <cite>external</cite> directory containing the file
+<cite>export.h</cite>. Also make sure that you provide an absolute path for the
+IDL root directory (i.e. starting with a <cite>/</cite>).</p>
+</dd>
 <dt><code class="docutils literal"><span class="pre">--enable-matlab</span></code> :</dt>
 <dd><p class="first last">By default HARP is built without the MATLAB interface.
 Use this option to enable building of the interface to MATLAB.</p>
@@ -363,11 +377,11 @@ Use this option to enable building of the interface to MATLAB.</p>
 <dd><p class="first last">If you want to build the MATLAB interface you should also use this
 option to tell the configuration script where you have installed
 MATLAB. The &lt;MATLAB root directory&gt; is the root directory of your
-MATLAB installation. It should contain for instance the &#8216;bin&#8217;
+MATLAB installation. It should contain for instance the <code class="docutils literal"><span class="pre">bin</span></code>
 directory with the matlab and mex executables (or symbolic links to
-them) and an &#8216;extern/include&#8217; subdirectory containing the file
-&#8216;mex.h&#8217;. Also make sure that you provide an absolute path for the
-MATLAB root directory (i.e. starting with a &#8216;/&#8217;).</p>
+them) and an <code class="docutils literal"><span class="pre">extern/include</span></code> subdirectory containing the file
+<code class="docutils literal"><span class="pre">mex.h</span></code>. Also make sure that you provide an absolute path for the
+MATLAB root directory (i.e. starting with a <code class="docutils literal"><span class="pre">/</span></code>).</p>
 </dd>
 </dl>
 <p>You should now call the configure script with the options that are
@@ -399,6 +413,38 @@ running the configure script, issue the following command:</p>
 </pre></div>
 </div>
 </li>
+<li><p class="first">If you enabled the IDL interface then you will have to add
+&lt;CODA installdir&gt;/lib/coda/idl to your DLM_PATH. You do this by setting an
+IDL_DLM_PATH environment variable and add this setting to your system shell
+startup script (if you don&#8217;t now how to set environment variables or add
+these to your shell startup script, please ask your system administrator).
+The variable should be set to &#8220;&lt;IDL_DEFAULT&gt;&#8221; appended with the HARP DLM
+directory. If, for instance, you have installed HARP un /usr/local then you
+should set the <code class="docutils literal"><span class="pre">IDL_DLM_PATH</span></code> environment variable to
+<code class="docutils literal"><span class="pre">&lt;IDL_DEFAULT&gt;:/usr/local/lib/harp/idl</span></code>.
+Note that you should ideally not use the IDL &#8216;pref_set&#8217; function to set the
+IDL_DLM_PATH. The HARP DLM file will still load, but HARP will not be able
+to find the coda format definition files this way. You can work around this
+by setting an explicit path to your coda definition files directory instead
+of having HARP/CODA automatically determine this location based on the
+IDL_DLM_PATH.
+This is done by setting the CODA_DEFINITION environment variable. This can
+be done outside IDL by setting the environment variable globally, but you
+can also do this inside IDL before you call any HARP or CODA functions
+using:</p>
+<div class="highlight-default"><div class="highlight"><pre><span></span><span class="n">IDL</span><span class="o">&gt;</span> <span class="n">SETENV</span><span class="p">,</span> <span class="s1">&#39;CODA_DEFINITION=/path/to/codadefs/&#39;</span>
+</pre></div>
+</div>
+<p>Information on how to set environment variables on Mac OS X can be found at:
+<a class="reference external" href="http://developer.apple.com/mac/library/documentation/MacOSX/Conceptual/BPRuntimeConfig/Articles/EnvironmentVars.html">http://developer.apple.com/mac/library/documentation/MacOSX/Conceptual/BPRuntimeConfig/Articles/EnvironmentVars.html</a></p>
+</li>
+<li><p class="first">If you enabled the MATLAB interface then you should create a startup.m file
+in a &#8216;matlab&#8217; directory in your home directory (<code class="docutils literal"><span class="pre">~/matlab/startup.m</span></code>)
+that contains the line:</p>
+<div class="highlight-default"><div class="highlight"><pre><span></span><span class="n">addpath</span> <span class="o">&lt;</span><span class="n">HARP</span> <span class="n">installdir</span><span class="o">&gt;/</span><span class="n">lib</span><span class="o">/</span><span class="n">coda</span><span class="o">/</span><span class="n">matlab</span>
+</pre></div>
+</div>
+</li>
 </ol>
 </div></blockquote>
 </div>
@@ -412,6 +458,32 @@ you might encounter problems with e.g. the Python interface.</p>
 your PATH setting. And then make sure to add the Lib/site-packages directory
 to your PYTHONPATH (or copy the harp python package that is inside it to a
 location that is already in your Python module path).</p>
+<p>For IDL you will have to add &lt;HARP installdir&gt;idl to your DLM_PATH.
+You do this by setting an IDL_DLM_PATH environment variable.
+On Windows open the &#8216;System&#8217; control panel of your Windows operating system and
+goto the &#8216;Advanced&#8217; tab. Then click on &#8216;Environment Variables&#8217; and create a new
+system variable with the name <code class="docutils literal"><span class="pre">IDL_DLM_PATH</span></code> and value
+<code class="docutils literal"><span class="pre">&lt;IDL_DEFAULT&gt;;C:\HARP\lib</span></code>.
+If you have installed HARP in a location different from C:HARP then replace
+this part in the value by the installation directory you chose when installing
+HARP.
+Note that you should ideally not use the IDL &#8216;pref_set&#8217; function to set the
+IDL_DLM_PATH. The HARP DLM file will still load, but HARP will not be able to
+find the coda format definition files this way. You can work around this by
+setting an explicit path to your coda definition files directory instead of
+having HARP/CODA automatically determine this location based on the
+IDL_DLM_PATH.
+This is done by setting the CODA_DEFINITION environment variable. This can be
+done outside IDL by setting the environment variable globally, but you can also
+do this inside IDL before you call any HARP or CODA functions using:</p>
+<div class="highlight-default"><div class="highlight"><pre><span></span><span class="n">IDL</span><span class="o">&gt;</span> <span class="n">SETENV</span><span class="p">,</span> <span class="s1">&#39;CODA_DEFINITION=/path/to/codadefs/&#39;</span>
+</pre></div>
+</div>
+<p>For MATLAB you will have to start MATLAB and goto the &#8216;Set Path...&#8217; menu item
+in the &#8216;File&#8217; menu. Here you should add the directory &#8216;C:HARPmatlab&#8217;. If you
+have installed HARP in a location different from C:HARP then replace this part
+of the directory by the installation directory you had chosen when you
+installed HARP.</p>
 <p>Note: The binary installer for Windows comes with DLLs for all dependencies,
 which are CODA, HDF4, HDF5, and their dependencies.</p>
 </div>
