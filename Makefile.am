@@ -369,7 +369,6 @@ endif
 HARP_MATLAB_MFILES = \
 	matlab/harp_import.m \
 	matlab/harp_export.m \
-	matlab/harp_ingest.m \
 	matlab/harp_version.m
 
 EXTRA_DIST += $(HARP_MATLAB_MFILES)
