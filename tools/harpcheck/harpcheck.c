@@ -61,8 +61,11 @@ static void print_help()
 {
     printf("Usage:\n");
     printf("    harpcheck <input product file> [input product file...]\n");
-    printf("        Verify that the input products are HARP compliant netCDF/HDF4/HDF5\n");
-    printf("        products.\n");
+    printf("        If the product is a HARP product then verify that the\n");
+    printf("        product is HARP compliant.\n");
+    printf("        Otherwise, try to import the product using an applicable\n");
+    printf("        ingestion module and test the ingestion for all possible\n");
+    printf("        ingestion options.\n");
     printf("\n");
     printf("    harpcheck -h, --help\n");
     printf("        Show help (this text).\n");
@@ -122,16 +125,10 @@ int main(int argc, char *argv[])
     for (k = i; k < argc; k++)
     {
         const char *filename = argv[k];
-        harp_product *product;
 
-        printf("%s\n", filename);
-        if (harp_import(filename, &product) != 0)
+        if (harp_import_test(filename, printf) != 0)
         {
             fprintf(stderr, "ERROR: %s\n", harp_errno_to_string(harp_errno));
-        }
-        else
-        {
-            harp_product_delete(product);
         }
         printf("\n");
     }

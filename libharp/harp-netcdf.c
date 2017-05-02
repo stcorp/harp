@@ -679,8 +679,7 @@ static int verify_product(int ncid)
                 if (major > HARP_FORMAT_VERSION_MAJOR ||
                     (major == HARP_FORMAT_VERSION_MAJOR && minor > HARP_FORMAT_VERSION_MINOR))
                 {
-                    harp_set_error(HARP_ERROR_UNSUPPORTED_PRODUCT, "unsupported HARP format version %d.%d",
-                                   major, minor);
+                    harp_set_error(HARP_ERROR_FILE_OPEN, "unsupported HARP format version %d.%d", major, minor);
                     return -1;
                 }
                 return 0;

@@ -481,7 +481,7 @@ static int reduced_product_import(const char *path, const Collocation_options *c
     Reduced_product *reduced_product = NULL;
 
     /* Import the product. */
-    if (harp_import(path, &product) != 0)
+    if (harp_import(path, NULL, NULL, &product) != 0)
     {
         return -1;
     }

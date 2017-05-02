@@ -592,56 +592,6 @@ static IDL_VPTR harp_idl_export(int argc, IDL_VPTR *argv)
 static IDL_VPTR harp_idl_import(int argc, IDL_VPTR *argv)
 {
     harp_product *product;
-    harp_program *program;
-    const char *operations;
-    IDL_VPTR retval;
-
-    assert(argc == 1 || argc == 2);
-
-    if ((argv[0]->type != IDL_TYP_STRING) || (argc > 1 && (argv[1]->type != IDL_TYP_STRING)))
-    {
-        return harp_idl_get_error_struct(HARP_IDL_ERR_EXPECTED_STRING);
-    }
-    if (((argv[0]->flags & IDL_V_ARR) != 0) || (argc > 1 && ((argv[1]->flags & IDL_V_ARR) != 0)))
-    {
-        return harp_idl_get_error_struct(HARP_IDL_ERR_EXPECTED_SINGLE_ELM);
-    }
-
-    if (harp_idl_init() != 0)
-    {
-        return harp_idl_get_error_struct(harp_errno);
-    }
-
-    /* First argument = filename, second (optional) argument is operations. */
-    if (harp_import(IDL_STRING_STR(&argv[0]->value.str), &product) != 0)
-    {
-        return harp_idl_get_error_struct(harp_errno);
-    }
-
-    /* Since the operations can not performed during the input, they are performed now. */
-    if (argc > 1)
-    {
-        operations = IDL_STRING_STR(&argv[1]->value.str);
-        if (harp_program_from_string(operations, &program) != 0)
-        {
-            return harp_idl_get_error_struct(harp_errno);
-        }
-        if (harp_product_execute_program(product, program) != 0)
-        {
-            return harp_idl_get_error_struct(harp_errno);
-        }
-        harp_program_delete(program);
-    }
-
-    retval = harp_idl_get_record(product);
-    harp_product_delete(product);
-
-    return retval;
-}
-
-static IDL_VPTR harp_idl_ingest(int argc, IDL_VPTR *argv)
-{
-    harp_product *product;
     const char *operations;
     const char *options;
     IDL_VPTR retval;
@@ -676,7 +626,7 @@ static IDL_VPTR harp_idl_ingest(int argc, IDL_VPTR *argv)
         options = IDL_STRING_STR(&argv[2]->value.str);
     }
 
-    if (harp_ingest(IDL_STRING_STR(&argv[0]->value.str), operations, options, &product) != 0)
+    if (harp_import(IDL_STRING_STR(&argv[0]->value.str), operations, options, &product) != 0)
     {
         return harp_idl_get_error_struct(harp_errno);
     }
@@ -714,8 +664,7 @@ static int register_idl_functions_and_procedures(void)
 
     static IDL_SYSFUN_DEF2 idl_func_addr[] = {
         {{harp_idl_export}, "HARP_EXPORT", 2, 3, 0, 0}, /* harp_export(product, filename, <format>) */
-        {{harp_idl_import}, "HARP_IMPORT", 1, 2, 0, 0}, /* product = harp_import(filename, <operations>) */
-        {{harp_idl_ingest}, "HARP_INGEST", 1, 3, 0, 0}, /* product = harp_ingest(filename, <operations>, <options>) */
+        {{harp_idl_import}, "HARP_IMPORT", 1, 3, 0, 0}, /* product = harp_import(filename, <operations>, <options>) */
     };
 
     /* procedure declarations */

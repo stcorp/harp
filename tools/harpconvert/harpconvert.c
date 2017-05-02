@@ -61,7 +61,9 @@ static void print_help()
 {
     printf("Usage:\n");
     printf("    harpconvert [options] <input product file> <output product file>\n");
-    printf("        Convert the input product to a HARP netCDF/HDF4/HDF5 product.\n");
+    printf("        Import a product that is stored in HARP format or in one of the\n");
+    printf("        supported external formats, perform operations on it (if provided),\n");
+    printf("        and save the results to a HARP netCDF/HDF4/HDF5 product.\n");
     printf("\n");
     printf("        Options:\n");
     printf("            -a, --operations <operation list>\n");
@@ -82,12 +84,8 @@ static void print_help()
     printf("                    hdf4\n");
     printf("                    hdf5\n");
     printf("\n");
-    printf("        If the ingested product is empty, a warning will be printed and the\n");
+    printf("        If the imported product is empty, a warning will be printed and the\n");
     printf("        tool will return with exit code 2 (without writing a file).\n");
-    printf("\n");
-    printf("    harpconvert --test <input product file> [input product file...]\n");
-    printf("        Perform an internal test for each product by ingesting the product\n");
-    printf("        using all possible combinations of ingestion options.\n");
     printf("\n");
     printf("    harpconvert --list-derivations [options] [input product file]\n");
     printf("        List all available variable conversions. If an input product file is\n");
@@ -103,9 +101,9 @@ static void print_help()
     printf("\n");
     printf("    harpconvert --generate-documentation [output directory]\n");
     printf("        Generate a series of documentation files in the specified output\n");
-    printf("        directory. The documentation describes the set of supported product\n");
-    printf("        types and the details of the HARP product(s) that can be produced\n");
-    printf("        from them.\n");
+    printf("        directory. The documentation describes the set of supported foreign\n");
+    printf("        product types and the details of the HARP product(s) that can be\n");
+    printf("        produced from them.\n");
     printf("\n");
     printf("    harpconvert -h, --help\n");
     printf("        Show help (this text).\n");
@@ -153,7 +151,7 @@ static int list_derivations(int argc, char *argv[])
         return -1;
     }
 
-    if (harp_ingest(input_filename, NULL, options, &product) != 0)
+    if (harp_import(input_filename, NULL, options, &product) != 0)
     {
         return -1;
     }
@@ -194,38 +192,6 @@ static int generate_doc(int argc, char *argv[])
     }
 
     return 0;
-}
-
-static int test_conversions(int argc, char *argv[])
-{
-    int result = 0;
-    int i;
-
-    if (argc > 2 && argv[2][0] == '-')
-    {
-        fprintf(stderr, "ERROR: invalid argument: '%s'\n", argv[1]);
-        print_help();
-        return -1;
-    }
-    if (argc < 3)
-    {
-        fprintf(stderr, "ERROR: input product file not specified\n");
-        print_help();
-        return -1;
-    }
-
-    for (i = 2; i < argc; i++)
-    {
-        if (harp_ingest_test(argv[i], printf) != 0)
-        {
-            fprintf(stderr, "ERROR: %s\n", harp_errno_to_string(harp_errno));
-            result = -1;
-        }
-        printf("\n");
-    }
-
-    harp_errno = HARP_SUCCESS;  /* make sure the last error message does not get printed again */
-    return result;
 }
 
 static int convert(int argc, char *argv[])
@@ -281,7 +247,7 @@ static int convert(int argc, char *argv[])
     input_filename = argv[argc - 2];
     output_filename = argv[argc - 1];
 
-    if (harp_ingest(input_filename, operations, options, &product) != 0)
+    if (harp_import(input_filename, operations, options, &product) != 0)
     {
         return -1;
     }
@@ -354,10 +320,6 @@ int main(int argc, char *argv[])
     else if (strcmp(argv[1], "--generate-documentation") == 0)
     {
         result = generate_doc(argc, argv);
-    }
-    else if (strcmp(argv[1], "--test") == 0)
-    {
-        result = test_conversions(argc, argv);
     }
     else
     {

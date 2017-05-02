@@ -3,9 +3,9 @@ Python interface
 
 The Python interface consists of a Python package ``'harp'`` that provides a set
 of functions to :py:func:`import <harp.import_product>` and :py:func:`export
-<harp.export_product>` HARP products, and to :py:func:`ingest
-<harp.ingest_product>` non-HARP products of a type :doc:`supported by HARP
-<ingestions/index>`. The Python interface depends on the ``_cffi_backend``
+<harp.export_product>` HARP products. The import can be used to read products
+using the HARP format or to read non-HARP products of a type :doc:`supported by
+HARP <ingestions/index>`. The Python interface depends on the ``_cffi_backend``
 module, which is part of the C foreign function interface (cffi) package. This
 package must be installed in order to be able to use the Python interface. See
 the `cffi documentation`_ for details on how to install the cffi package.
@@ -90,8 +90,8 @@ concepts product and variable.
 | harp_variable | harp.Variable    |
 +---------------+------------------+
 
-The table below shows the type map that is used when importing or ingesting a
-product, i.e. when translating from the C domain to the Python domain.
+The table below shows the type map that is used when importing a product, i.e.
+when translating from the C domain to the Python domain.
 
 Variable data arrays are converted to NumPy arrays. The NumPy data type used for
 the converted array is determined from the HARP data type of the variable
@@ -243,8 +243,8 @@ Examples
    # Convert the product to an OrderedDict.
    dict_product = harp.to_dict(product)
 
-   # Ingest an S5P L2 HCHO product.
-   hcho_product = harp.ingest_product("S5P_NRTI_L2__HCHO___20080808T224727_20080808T234211_21635_01_021797_00000000T000000.nc",
+   # Import an S5P L2 HCHO product.
+   hcho_product = harp.import_product("S5P_NRTI_L2__HCHO___20080808T224727_20080808T234211_21635_01_021797_00000000T000000.nc",
                                       "solar_zenith_angle < 60 [degree]; latitude > 30 [degree_north]; latitude < 60 [degree_north]")
 
    # Pretty print information about the product.
@@ -292,9 +292,8 @@ This section describes the types defined by the HARP Python interface.
       density = product.HCHO_column_number_density
       density = product["HCHO_column_number_density"]
 
-      # Iterate over all variables in the product. For imported or ingested
-      # products, the order of the variables is the same as the order in the
-      # source product.
+      # Iterate over all variables in the product. For imported  products, the
+      # order of the variables is the same as the order in the source product.
       for name in product:
           print(product[name].unit)
 
@@ -341,29 +340,14 @@ Functions
 
 This section describes the functions defined by the HARP Python library.
 
-.. py:function:: harp.ingest_product(filename, operations="", options="")
+.. py:function:: harp.import_product(filename, operations="", options="")
 
-   Ingest a product of a type supported by HARP.
-
-   If the filename argument is a list of filenames or a globbing (glob.glob())
-   pattern then the harp.ingest_product() function will be called on each
-   individual file and the result of harp.concatenate() on the ingested products
-   will be returned.
-
-   :param str filename: Filename, list of filenames or file pattern of the
-                       product(s) to ingest
-   :param str operations: Actions to apply as part of the ingestion; should be
-                       specified as a semi-colon separated string of operations.
-   :param str options: Ingestion module specific options; should be specified as
-                       a semi-colon separated string of key=value pairs.
-   :returns: Ingested product.
-   :rtype: harp.Product
-
-.. py:function:: harp.import_product(filename, operations="")
-
-   Import a HARP compliant product.
-
-   The file format (NetCDF/HDF4/HDF5) of the product will be auto-detected.
+   Import a product from a file.
+ 
+   This will first try to import the file as an HDF4, HDF5, or netCDF file that
+   complies to the HARP Data Format. If the file is not stored using the HARP
+   format then it will try to import it using one of the available ingestion
+   modules.
 
    If the filename argument is a list of filenames or a globbing (glob.glob())
    pattern then the harp.import_product() function will be called on each
@@ -372,9 +356,11 @@ This section describes the functions defined by the HARP Python library.
 
    :param str filename: Filename, list of filenames or file pattern of the
                        product(s) to import
-   :param str operations: Actions to execute on the product after it has been
-                       imported; should be specified as a semi-colon separated
-                       string of operations.
+   :param str operations: Actions to apply as part of the import; should be
+                       specified as a semi-colon separated string of operations.
+   :param str options: Ingestion module specific options; should be specified as
+                       a semi-colon separated string of key=value pairs; only
+                       used if the file is not in HARP format.
    :returns: Imported product.
    :rtype: harp.Product
 
@@ -442,9 +428,8 @@ This section describes the functions defined by the HARP Python library.
       # 'HCHO_column_number_density'.
       product["HCHO_column_number_density_unit"]
 
-      # Iterate over all variables in the product. For imported or ingested
-      # products, the order of the variables is the same as the order in the
-      # source product.
+      # Iterate over all variables in the product. For imported products, the
+      # order of the variables is the same as the order in the source product.
       for name, value in product.items():
           print name, value
 
@@ -513,5 +498,5 @@ This sections describes the exceptions defined by the HARP Python interface.
 
 .. py:exception:: harp.NoDataError()
 
-   Exception raised when the product returned from an ingestion or import
-   contains no variables, or variables without data.
+   Exception raised when the product returned from an import contains no
+   variables, or variables without data.

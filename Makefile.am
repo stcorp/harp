@@ -27,7 +27,7 @@ uninstall-hook: $(UNINSTALL_HOOK_TARGETS)
 
 # programs
 
-bin_PROGRAMS = harpcheck harpcollocate harpconvert harpdump harpfilter harpmerge
+bin_PROGRAMS = harpcheck harpcollocate harpconvert harpdump harpmerge
 noinst_PROGRAMS = findtypedef
 
 # libraries (+ related files)
@@ -221,12 +221,6 @@ INDENTFILES += $(harpconvert_SOURCES)
 harpdump_SOURCES = tools/harpdump/harpdump.c
 harpdump_LDADD = libharp.la
 INDENTFILES += $(harpdump_SOURCES)
-
-# harpfilter
-
-harpfilter_SOURCES = tools/harpfilter/harpfilter.c
-harpfilter_LDADD = libharp.la
-INDENTFILES += $(harpfilter_SOURCES)
 
 # harpmerge
 
@@ -749,7 +743,6 @@ RSTFILES = \
 	doc/harpcollocate.rst \
 	doc/harpconvert.rst \
 	doc/harpdump.rst \
-	doc/harpfilter.rst \
 	doc/harpmerge.rst \
 	doc/index.rst \
 	doc/libharp.rst \

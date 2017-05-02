@@ -504,15 +504,6 @@ if(WIN32)
 endif(WIN32)
 install(TARGETS harpdump DESTINATION bin)
 
-#  harpfilter
-add_executable(harpfilter tools/harpfilter/harpfilter.c)
-target_link_libraries(harpfilter harp ${CODA_LIBRARIES} ${HDF4_LIBRARIES} ${HDF5_LIBRARIES} ${MATHLIB})
-if(WIN32)
-  # Also set DLL compile flags
-  set_target_properties(harpfilter PROPERTIES COMPILE_FLAGS "-DLIBHARPDLL")
-endif(WIN32)
-install(TARGETS harpfilter DESTINATION bin)
-
 #  harpmerge
 add_executable(harpmerge tools/harpmerge/harpmerge.c)
 target_link_libraries(harpmerge harp ${CODA_LIBRARIES} ${HDF4_LIBRARIES} ${HDF5_LIBRARIES} ${MATHLIB})

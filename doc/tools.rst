@@ -10,5 +10,4 @@ The section describes the command line tools provided by the HARP toolkit.
    harpcollocate
    harpconvert
    harpdump
-   harpfilter
    harpmerge

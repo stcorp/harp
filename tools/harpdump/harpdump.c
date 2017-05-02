@@ -107,7 +107,7 @@ static int list_derivations(int argc, char *argv[])
     input_filename = argv[argc - 1];
 
     /* Import the product */
-    if (harp_import(input_filename, &product) != 0)
+    if (harp_import(input_filename, NULL, NULL, &product) != 0)
     {
         return -1;
     }
@@ -168,18 +168,9 @@ static int dump(int argc, char *argv[])
         return -1;
     }
 
-    if (harp_import(argv[argc - 1], &product) != 0)
+    if (harp_import(argv[argc - 1], operations, NULL, &product) != 0)
     {
         return -1;
-    }
-
-    if (operations != NULL)
-    {
-        if (harp_product_execute_operations(product, operations) != 0)
-        {
-            harp_product_delete(product);
-            return -1;
-        }
     }
 
     harp_product_print(product, !list, data && !list, printf);

@@ -100,7 +100,7 @@ int merge_dataset(harp_product **merged_product, harp_dataset *dataset, const ch
         /* add products in sorted order (sorted by source_product value) */
         index = dataset->sorted_index[i];
 
-        if (harp_import(dataset->metadata[index]->filename, &product) != 0)
+        if (harp_import(dataset->metadata[index]->filename, NULL, NULL, &product) != 0)
         {
             return -1;
         }

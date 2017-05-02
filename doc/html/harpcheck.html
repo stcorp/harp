@@ -99,7 +99,6 @@
 <li class="toctree-l2"><a class="reference internal" href="harpcollocate.html">harpcollocate</a></li>
 <li class="toctree-l2"><a class="reference internal" href="harpconvert.html">harpconvert</a></li>
 <li class="toctree-l2"><a class="reference internal" href="harpdump.html">harpdump</a></li>
-<li class="toctree-l2"><a class="reference internal" href="harpfilter.html">harpfilter</a></li>
 <li class="toctree-l2"><a class="reference internal" href="harpmerge.html">harpmerge</a></li>
 </ul>
 </li>
@@ -172,8 +171,11 @@
 read by other HARP command line tools.</p>
 <div class="highlight-default"><div class="highlight"><pre><span></span><span class="n">Usage</span><span class="p">:</span>
     <span class="n">harpcheck</span> <span class="o">&lt;</span><span class="nb">input</span> <span class="n">product</span> <span class="n">file</span><span class="o">&gt;</span> <span class="p">[</span><span class="nb">input</span> <span class="n">product</span> <span class="n">file</span><span class="o">...</span><span class="p">]</span>
-        <span class="n">Verify</span> <span class="n">that</span> <span class="n">the</span> <span class="nb">input</span> <span class="n">products</span> <span class="n">are</span> <span class="n">HARP</span> <span class="n">compliant</span> <span class="n">netCDF</span><span class="o">/</span><span class="n">HDF4</span><span class="o">/</span><span class="n">HDF5</span>
-        <span class="n">products</span><span class="o">.</span>
+        <span class="n">If</span> <span class="n">the</span> <span class="n">product</span> <span class="ow">is</span> <span class="n">a</span> <span class="n">HARP</span> <span class="n">product</span> <span class="n">then</span> <span class="n">verify</span> <span class="n">that</span> <span class="n">the</span>
+        <span class="n">product</span> <span class="ow">is</span> <span class="n">HARP</span> <span class="n">compliant</span><span class="o">.</span>
+        <span class="n">Otherwise</span><span class="p">,</span> <span class="k">try</span> <span class="n">to</span> <span class="kn">import</span> <span class="nn">the</span> <span class="n">product</span> <span class="n">using</span> <span class="n">an</span> <span class="n">applicable</span>
+        <span class="n">ingestion</span> <span class="n">module</span> <span class="ow">and</span> <span class="n">test</span> <span class="n">the</span> <span class="n">ingestion</span> <span class="k">for</span> <span class="nb">all</span> <span class="n">possible</span>
+        <span class="n">ingestion</span> <span class="n">options</span><span class="o">.</span>
 
     <span class="n">harpcheck</span> <span class="o">-</span><span class="n">h</span><span class="p">,</span> <span class="o">--</span><span class="n">help</span>
         <span class="n">Show</span> <span class="n">help</span> <span class="p">(</span><span class="n">this</span> <span class="n">text</span><span class="p">)</span><span class="o">.</span>

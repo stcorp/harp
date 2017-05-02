@@ -539,7 +539,7 @@ static int get_collocated_product(harp_collocation_result *collocation_result, c
         return -1;
     }
 
-    if (harp_import(product_metadata->filename, &collocated_product) != 0)
+    if (harp_import(product_metadata->filename, NULL, NULL, &collocated_product) != 0)
     {
         harp_set_error(HARP_ERROR_IMPORT, "could not import file %s", product_metadata->filename);
         harp_collocation_mask_delete(mask);

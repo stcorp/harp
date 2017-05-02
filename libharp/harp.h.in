@@ -561,12 +561,9 @@ LIBHARP_API int harp_dataset_has_product(harp_dataset *dataset, const char *sour
 LIBHARP_API int harp_dataset_add_product(harp_dataset *dataset, const char *source_product,
                                          harp_product_metadata *metadata);
 
-/* Ingestion */
-LIBHARP_API int harp_ingest(const char *filename, const char *script, const char *options, harp_product **product);
-LIBHARP_API int harp_ingest_test(const char *filename, int (*print) (const char *, ...));
-
 /* Import */
-LIBHARP_API int harp_import(const char *filename, harp_product **product);
+LIBHARP_API int harp_import(const char *filename, const char *operations, const char *options, harp_product **product);
+LIBHARP_API int harp_import_test(const char *filename, int (*print) (const char *, ...));
 
 /* Export */
 LIBHARP_API int harp_export(const char *filename, const char *format, const harp_product *product);

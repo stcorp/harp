@@ -154,7 +154,7 @@ static int update_mask_for_product(const harp_collocation_result *collocation_re
     collocation_index_slist *index_slist;
     long i;
 
-    if (harp_import(product_path, &product) != 0)
+    if (harp_import(product_path, NULL, NULL, &product) != 0)
     {
         return -1;
     }

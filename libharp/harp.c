@@ -484,20 +484,32 @@ LIBHARP_API void harp_done(void)
 
 /** @} */
 
-/** Import HARP product from file.
+/** Import a product from a file.
  * \ingroup harp_product
- * Try to import an HDF4, HDF5, or netCDF file that complies to the HARP Data Format.
- * You should pass a variable to \a product that was initialized with harp_product_new().
- * \param filename Path to the file that is to be imported.
- * \param product Empty product that is to be filled with information from the imported file.
+ * This will first try to import the file as an HDF4, HDF5, or netCDF file that complies to the HARP Data Format.
+ * If the file is not stored using the HARP format then it will try to import it using one of the available ingestion
+ * modules.
+ * The \a options parameter is optional (can be NULL) and describes the ingestion options. The parameter is only
+ * applicable if the file is not already using the HARP format and needs to be converted using one of the ingestion
+ * modules.
+ * The \a operations parameter is optional (can be NULL) and provides the list of operations that will be performed as
+ * part of the import. Some operations, such as filters, can already be performed as part of an import and this may thus
+ * be faster than using a harp_product_execute_operations() after a full import of the product.
+ * \param[in] filename Path to the file that is to be imported.
+ * \param[in] operations string (optional) containing actions to apply as part of the import; should be specified as a
+ * semi-colon separated string of operations.
+ * \param[in] options Ingestion module specific options (optional); should be specified as a semi-colon separated
+ * string of key=value pair; only used if the file is not in HARP format.
+ * \param[out] product Pointer to a location where a pointer to the ingested product will be stored.
  * \return
  *   \arg \c 0, Success.
  *   \arg \c -1, Error occurred (check #harp_errno).
  */
-LIBHARP_API int harp_import(const char *filename, harp_product **product)
+LIBHARP_API int harp_import(const char *filename, const char *operations, const char *options, harp_product **product)
 {
     harp_product *imported_product;
     file_format format;
+    int result;
 
     if (determine_file_format(filename, &format) != 0)
     {
@@ -508,41 +520,62 @@ LIBHARP_API int harp_import(const char *filename, harp_product **product)
     {
         case format_hdf4:
 #ifdef HAVE_HDF4
-            if (harp_import_hdf4(filename, &imported_product) != 0)
-            {
-                return -1;
-            }
-            break;
+            result = harp_import_hdf4(filename, &imported_product);
 #else
-            coda_set_error(HARP_ERROR_NO_HDF4_SUPPORT, NULL);
-            return -1;
+            harp_set_error(HARP_ERROR_UNSUPPORTED_PRODUCT, NULL);
+            result = -1;
 #endif
+            break;
         case format_hdf5:
 #ifdef HAVE_HDF5
-            if (harp_import_hdf5(filename, &imported_product) != 0)
-            {
-                return -1;
-            }
-            break;
+            result = harp_import_hdf5(filename, &imported_product);
 #else
-            coda_set_error(HARP_ERROR_NO_HDF5_SUPPORT, NULL);
-            return -1;
+            harp_set_error(HARP_ERROR_UNSUPPORTED_PRODUCT, NULL);
+            result = -1;
 #endif
+            break;
         case format_netcdf:
-            if (harp_import_netcdf(filename, &imported_product) != 0)
-            {
-                return -1;
-            }
+            result = harp_import_netcdf(filename, &imported_product);
             break;
         default:
-            harp_set_error(HARP_ERROR_FILE_OPEN, "unsupported file format for %s", filename);
-            return -1;
+            harp_set_error(HARP_ERROR_UNSUPPORTED_PRODUCT, NULL);
+            result = -1;
     }
 
-    if (harp_product_verify(imported_product) != 0)
+    if (result != 0)
     {
-        harp_product_delete(imported_product);
-        return -1;
+        if (harp_errno != HARP_ERROR_UNSUPPORTED_PRODUCT)
+        {
+            return -1;
+        }
+
+        /* try ingest */
+        if (harp_product_new(&imported_product) != 0)
+        {
+            return -1;
+        }
+        if (harp_ingest(filename, operations, options, &imported_product) != 0)
+        {
+            harp_product_delete(imported_product);
+            return -1;
+        }
+    }
+    else
+    {
+        if (harp_product_verify(imported_product) != 0)
+        {
+            harp_product_delete(imported_product);
+            return -1;
+        }
+
+        if (operations != NULL)
+        {
+            if (harp_product_execute_operations(imported_product, operations) != 0)
+            {
+                harp_product_delete(imported_product);
+                return -1;
+            }
+        }
     }
 
     *product = imported_product;
@@ -550,10 +583,87 @@ LIBHARP_API int harp_import(const char *filename, harp_product **product)
     return 0;
 }
 
-/** Retrieve global attributes from a HARP product file.
+/** Test import of a product.
  * \ingroup harp_product
- * This function retrieves the product metadata * without performing a full import.
- * This function is only supported for netCDF files.
+ * If the product is a HARP product then verify that the product is a HARP compliant netCDF/HDF4/HDF5 product.
+ * Otherwise, try to import the product using an applicable ingestion module and test the ingestion for all possible
+ * ingestion options.
+ * Results are printed using the provided \a print function.
+ * The \a print function parameter should be a function that resembles printf().
+ * \param[in] filename Filename of the product to import.
+ * \param[in] print Reference to a printf compatible function.
+ * \return
+ *   \arg \c 0, Success.
+ *   \arg \c -1, Error occurred (check #harp_errno).
+ */
+LIBHARP_API int harp_import_test(const char *filename, int (*print) (const char *, ...))
+{
+    harp_product *product;
+    file_format format;
+    int result;
+
+    print("product: %s\n", filename);
+
+    if (determine_file_format(filename, &format) != 0)
+    {
+        return -1;
+    }
+
+    switch (format)
+    {
+        case format_hdf4:
+#ifdef HAVE_HDF4
+            result = harp_import_hdf4(filename, &product);
+#else
+            harp_set_error(HARP_ERROR_UNSUPPORTED_PRODUCT, NULL);
+            result = -1;
+#endif
+            break;
+        case format_hdf5:
+#ifdef HAVE_HDF5
+            result = harp_import_hdf5(filename, &product);
+#else
+            harp_set_error(HARP_ERROR_UNSUPPORTED_PRODUCT, NULL);
+            result = -1;
+#endif
+            break;
+        case format_netcdf:
+            result = harp_import_netcdf(filename, &product);
+            break;
+        default:
+            harp_set_error(HARP_ERROR_UNSUPPORTED_PRODUCT, NULL);
+            result = -1;
+    }
+
+    if (result != 0)
+    {
+        if (harp_errno != HARP_ERROR_UNSUPPORTED_PRODUCT)
+        {
+            return -1;
+        }
+        /* try ingest */
+        return harp_ingest_test(filename, print);
+    }
+
+    print("import:");
+    if (harp_product_verify(product) != 0)
+    {
+        print(" [FAIL]\n");
+        print("ERROR: %s\n", harp_errno_to_string(harp_errno));
+        harp_product_delete(product);
+        return -1;
+    }
+    print(" [OK]\n");
+
+    harp_product_delete(product);
+
+    return 0;
+}
+
+/** Retrieve global attributes from a product file.
+ * \ingroup harp_product
+ * This function retrieves the product metadata without performing a full import.
+ * This function is only supported for netCDF files using the HARP file format.
  * \param  filename Path to the file for which to retrieve global attributes.
  * \param  new_metadata Pointer to the variable where the metadata should be stored.
  * \return
@@ -616,7 +726,7 @@ LIBHARP_API int harp_import_product_metadata(const char *filename, harp_product_
             break;
         default:
             harp_product_metadata_delete(metadata);
-            harp_set_error(HARP_ERROR_FILE_OPEN, "unsupported file format for %s", filename);
+            harp_set_error(HARP_ERROR_UNSUPPORTED_PRODUCT, "unsupported file format for %s", filename);
             return -1;
     }
 

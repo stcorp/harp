@@ -1820,17 +1820,7 @@ static int ingest(const char *filename, harp_program *program, const harp_ingest
     return 0;
 }
 
-/** Ingest a product.
- * \ingroup harp_product
- * \param[in] filename Filename of the product to ingest.
- * \param[in] operations Script defining the operations to be performed as part of ingestion (for example, filtering).
- * \param[in] options Options to be passed to the ingestion module.
- * \param[out] product Pointer to a location where a pointer to the ingested product will be stored.
- * \return
- *   \arg \c 0, Success.
- *   \arg \c -1, Error occurred (check #harp_errno).
- */
-LIBHARP_API int harp_ingest(const char *filename, const char *operations, const char *options, harp_product **product)
+int harp_ingest(const char *filename, const char *operations, const char *options, harp_product **product)
 {
     harp_program *program;
     harp_ingestion_options *option_list;
@@ -1908,17 +1898,7 @@ LIBHARP_API int harp_ingest(const char *filename, const char *operations, const 
     return status;
 }
 
-/** Test ingestion of a product using all possible ingestion option values.
- * \ingroup harp_product
- * Results are printed using the provided \a print function.
- * The \a print function parameter should be a function that resembles printf().
- * \param[in] filename Filename of the product to ingest.
- * \param[in] print Reference to a printf compatible function.
- * \return
- *   \arg \c 0, Success.
- *   \arg \c -1, Error occurred (check #harp_errno).
- */
-LIBHARP_API int harp_ingest_test(const char *filename, int (*print) (const char *, ...))
+int harp_ingest_test(const char *filename, int (*print) (const char *, ...))
 {
     coda_product *product = NULL;
     ingest_info *info;
@@ -1983,8 +1963,6 @@ LIBHARP_API int harp_ingest_test(const char *filename, int (*print) (const char 
             }
         }
     }
-
-    print("product: %s\n", filename);
 
     depth = num_options;
     while (status == 0 && depth >= 0)

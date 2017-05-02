@@ -47,8 +47,7 @@ except ImportError:
 from harp._harpc import ffi as _ffi
 
 __all__ = ["Error", "CLibraryError", "UnsupportedTypeError", "UnsupportedDimensionError", "Variable", "Product",
-           "get_encoding", "set_encoding", "version", "ingest_product", "import_product", "export_product",
-           "concatenate", "to_dict"]
+           "get_encoding", "set_encoding", "version", "import_product", "export_product", "concatenate", "to_dict"]
 
 class Error(Exception):
     """Exception base class for all HARP Python interface errors."""
@@ -93,8 +92,8 @@ class UnsupportedDimensionError(Error):
     pass
 
 class NoDataError(Error):
-    """Exception raised when the product returned from an ingestion or import
-    contains no variables, or variables without data.
+    """Exception raised when the product returned from an import contains no variables,
+    or variables without data.
 
     """
     def __init__(self):
@@ -971,87 +970,47 @@ def to_dict(product):
 
     return dictionary
 
-def import_product(filename, operations=""):
-    """Import a HARP compliant product.
+def import_product(filename, operations="", options=""):
+    """Import a product from a file.
 
-    The file format (NetCDF/HDF4/HDF5) of the product will be auto-detected.
+    This will first try to import the file as an HDF4, HDF5, or netCDF file that
+    complies to the HARP Data Format. If the file is not stored using the HARP
+    format then it will try to import it using one of the available ingestion
+    modules.
 
-    If the filename argument is a list of filenames or a globbing (glob.glob()) pattern
-    then the harp.import_product() function will be called on each individual file and
-    the result of harp.concatenate() on the imported products will be returned.
+    If the filename argument is a list of filenames or a globbing (glob.glob())
+    pattern then the harp.import_product() function will be called on each
+    individual file and the result of harp.concatenate() on the imported products
+    will be returned.
 
     Arguments:
     filename -- Filename, list of filenames or file pattern of the product(s) to import
-    operations  -- Actions to execute on the product after it has been imported; should
-                be specified as a semi-colon separated string of operations.
+    operations -- Actions to apply as part of the import; should be specified as a
+                  semi-colon separated string of operations.
+    options -- Ingestion module specific options; should be specified as a semi-
+               colon separated string of key=value pairs; only used if the file is not
+               in HARP format.
 
     """
     if not (isinstance(filename, bytes) or isinstance(filename, str)):
         # Assume this is a list of filenames or patterns
-        return concatenate([import_product(file, operations) for file in filename])
+        return concatenate([import_product(file, operations, options) for file in filename])
     filename = _encode_path(filename)
     if '*' in filename or '?' in filename:
         # This is a globbing pattern
         filenames = sorted(glob.glob(filename))
         if len(filenames) == 0:
             raise Error("no files matching '%s'" % (filename))
-        return concatenate([import_product(file, operations) for file in filenames])
+        return concatenate([import_product(file, operations, options) for file in filenames])
 
     c_product_ptr = _ffi.new("harp_product **")
 
     # Import the product as a C product.
-    if _lib.harp_import(_encode_path(filename), c_product_ptr) != 0:
+    if _lib.harp_import(_encode_path(filename), _encode_string(operations), _encode_string(options), c_product_ptr) != 0:
         raise CLibraryError()
 
     try:
-        # Execute operation list expression on the C product.
-        if operations and _lib.harp_product_execute_operations(c_product_ptr[0], _encode_string(operations)) != 0:
-            raise CLibraryError()
-
         # Raise an exception if the imported C product contains no variables, or variables without data.
-        if _lib.harp_product_is_empty(c_product_ptr[0]) == 1:
-            raise NoDataError()
-
-        # Convert the C product into its Python representation.
-        return _import_product(c_product_ptr[0])
-
-    finally:
-        _lib.harp_product_delete(c_product_ptr[0])
-
-def ingest_product(filename, operations="", options=""):
-    """Ingest a product of a type supported by HARP.
-
-    If the filename argument is a list of filenames or a globbing (glob.glob()) pattern
-    then the harp.ingest_product() function will be called on each individual file and
-    the result of harp.concatenate() on the ingested products will be returned.
-
-    Arguments:
-    filename -- Filename, list of filenames or file pattern of the product(s) to ingest
-    operations  -- Actions to execute as part of the ingestion; should be specified as a
-                semi-colon separated string of operations.
-    options  -- Ingestion module specific options; should be specified as a semi-
-                colon separated string of key=value pairs.
-
-    """
-    if not (isinstance(filename, bytes) or isinstance(filename, str)):
-        # Assume this is a list of filenames or patterns
-        return concatenate([ingest_product(file, operations, options) for file in filename])
-    filename = _encode_path(filename)
-    if '*' in filename or '?' in filename:
-        # This is a globbing pattern
-        filenames = sorted(glob.glob(filename))
-        if len(filenames) == 0:
-            raise Error("no files matching '%s'" % (filename))
-        return concatenate([ingest_product(file, operations, options) for file in filenames])
-
-    c_product_ptr = _ffi.new("harp_product **")
-
-    # Ingest the product as a C product.
-    if _lib.harp_ingest(_encode_path(filename), _encode_string(operations), _encode_string(options), c_product_ptr) != 0:
-        raise CLibraryError()
-
-    try:
-        # Raise an exception if the ingested C product contains no variables, or variables without data.
         if _lib.harp_product_is_empty(c_product_ptr[0]) == 1:
             raise NoDataError()
 

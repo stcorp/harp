@@ -279,50 +279,6 @@
 </dd></dl>
 
 <dl class="function">
-<dt id="_CPPv211harp_ingestPKcPKcPKcPP12harp_product">
-<span id="harp_ingest__cCP.cCP.cCP.harp_productPP"></span><span class="target" id="libharpgroup__harp__product_1ga281e3c9ff77268094289ecdb6e74eac1"></span>int <code class="descname">harp_ingest</code><span class="sig-paren">(</span><em class="property">const</em> char *<em>filename</em>, <em class="property">const</em> char *<em>operations</em>, <em class="property">const</em> char *<em>options</em>, <a class="reference internal" href="#_CPPv212harp_product" title="harp_product">harp_product</a> **<em>product</em><span class="sig-paren">)</span><br /></dt>
-<dd><p>Ingest a product.</p>
-<p><dl class="docutils">
-<dt><strong>Return</strong></dt>
-<dd><ul class="simple">
-<li><code class="docutils literal"><span class="pre">0</span></code>, Success. </li>
-<li><code class="docutils literal"><span class="pre">-1</span></code>, Error occurred (check <a class="reference internal" href="libharp_error.html#libharpgroup__harp__error_1gab2eeb46528306c6799632d1e800c4c36"><span class="std std-ref">harp_errno</span></a>). </li>
-</ul>
-</dd>
-<dt><strong>Parameters</strong></dt>
-<dd><ul class="breatheparameterlist first last simple">
-<li><code class="docutils literal"><span class="pre">filename</span></code>: Filename of the product to ingest. </li>
-<li><code class="docutils literal"><span class="pre">operations</span></code>: Script defining the operations to be performed as part of ingestion (for example, filtering). </li>
-<li><code class="docutils literal"><span class="pre">options</span></code>: Options to be passed to the ingestion module. </li>
-<li><code class="docutils literal"><span class="pre">product</span></code>: Pointer to a location where a pointer to the ingested product will be stored. </li>
-</ul>
-</dd>
-</dl>
-</p>
-</dd></dl>
-
-<dl class="function">
-<dt id="_CPPv216harp_ingest_testPKcPFiPKczE">
-<span class="target" id="libharpgroup__harp__product_1ga1116b160ecb1cf9f4282c78ae720eb51"></span>int <code class="descname">harp_ingest_test</code><span class="sig-paren">(</span><em class="property">const</em> char *<em>filename</em>, int (*<em>print</em>)<span class="sig-paren">(</span><em class="property">const</em> char *, ...<span class="sig-paren">)</span><span class="sig-paren">)</span><br /></dt>
-<dd><p>Test ingestion of a product using all possible ingestion option values.</p>
-<p>Results are printed using the provided <em>print</em> function. The <em>print</em> function parameter should be a function that resembles printf(). <dl class="docutils">
-<dt><strong>Return</strong></dt>
-<dd><ul class="simple">
-<li><code class="docutils literal"><span class="pre">0</span></code>, Success. </li>
-<li><code class="docutils literal"><span class="pre">-1</span></code>, Error occurred (check <a class="reference internal" href="libharp_error.html#libharpgroup__harp__error_1gab2eeb46528306c6799632d1e800c4c36"><span class="std std-ref">harp_errno</span></a>). </li>
-</ul>
-</dd>
-<dt><strong>Parameters</strong></dt>
-<dd><ul class="breatheparameterlist first last simple">
-<li><code class="docutils literal"><span class="pre">filename</span></code>: Filename of the product to ingest. </li>
-<li><code class="docutils literal"><span class="pre">print</span></code>: Reference to a printf compatible function. </li>
-</ul>
-</dd>
-</dl>
-</p>
-</dd></dl>
-
-<dl class="function">
 <dt id="_CPPv216harp_product_newPP12harp_product">
 <span id="harp_product_new__harp_productPP"></span><span class="target" id="libharpgroup__harp__product_1ga0d4b0729140d78db3441be1b66451e91"></span>int <code class="descname">harp_product_new</code><span class="sig-paren">(</span><a class="reference internal" href="#_CPPv212harp_product" title="harp_product">harp_product</a> **<em>new_product</em><span class="sig-paren">)</span><br /></dt>
 <dd><p>Create new product. The product will be intialized with 0 variables and 0 attributes. <dl class="docutils">
@@ -872,10 +828,10 @@
 </dd></dl>
 
 <dl class="function">
-<dt id="_CPPv211harp_importPKcPP12harp_product">
-<span id="harp_import__cCP.harp_productPP"></span><span class="target" id="libharpgroup__harp__product_1ga5e316f710ae07a76c30447070f3cff6f"></span>int <code class="descname">harp_import</code><span class="sig-paren">(</span><em class="property">const</em> char *<em>filename</em>, <a class="reference internal" href="#_CPPv212harp_product" title="harp_product">harp_product</a> **<em>product</em><span class="sig-paren">)</span><br /></dt>
-<dd><p>Import HARP product from file.</p>
-<p>Try to import an HDF4, HDF5, or netCDF file that complies to the HARP Data Format. You should pass a variable to <em>product</em> that was initialized with <a class="reference internal" href="#libharpgroup__harp__product_1ga0d4b0729140d78db3441be1b66451e91"><span class="std std-ref">harp_product_new()</span></a>. <dl class="docutils">
+<dt id="_CPPv211harp_importPKcPKcPKcPP12harp_product">
+<span id="harp_import__cCP.cCP.cCP.harp_productPP"></span><span class="target" id="libharpgroup__harp__product_1gad34fd0e7ec4e7f9e7f796aa7344f4b24"></span>int <code class="descname">harp_import</code><span class="sig-paren">(</span><em class="property">const</em> char *<em>filename</em>, <em class="property">const</em> char *<em>operations</em>, <em class="property">const</em> char *<em>options</em>, <a class="reference internal" href="#_CPPv212harp_product" title="harp_product">harp_product</a> **<em>product</em><span class="sig-paren">)</span><br /></dt>
+<dd><p>Import a product from a file.</p>
+<p>This will first try to import the file as an HDF4, HDF5, or netCDF file that complies to the HARP Data Format. If the file is not stored using the HARP format then it will try to import it using one of the available ingestion modules. The <em>options</em> parameter is optional (can be NULL) and describes the ingestion options. The parameter is only applicable if the file is not already using the HARP format and needs to be converted using one of the ingestion modules. The <em>operations</em> parameter is optional (can be NULL) and provides the list of operations that will be performed as part of the import. Some operations, such as filters, can already be performed as part of an import and this may thus be faster than using a <a class="reference internal" href="#libharpgroup__harp__product_1gaac9e4b48ca9a060f53c1e2bb4f44d840"><span class="std std-ref">harp_product_execute_operations()</span></a> after a full import of the product. <dl class="docutils">
 <dt><strong>Return</strong></dt>
 <dd><ul class="simple">
 <li><code class="docutils literal"><span class="pre">0</span></code>, Success. </li>
@@ -885,7 +841,30 @@
 <dt><strong>Parameters</strong></dt>
 <dd><ul class="breatheparameterlist first last simple">
 <li><code class="docutils literal"><span class="pre">filename</span></code>: Path to the file that is to be imported. </li>
-<li><code class="docutils literal"><span class="pre">product</span></code>: Empty product that is to be filled with information from the imported file. </li>
+<li><code class="docutils literal"><span class="pre">operations</span></code>: string (optional) containing actions to apply as part of the import; should be specified as a semi-colon separated string of operations. </li>
+<li><code class="docutils literal"><span class="pre">options</span></code>: Ingestion module specific options (optional); should be specified as a semi-colon separated string of key=value pair; only used if the file is not in HARP format. </li>
+<li><code class="docutils literal"><span class="pre">product</span></code>: Pointer to a location where a pointer to the ingested product will be stored. </li>
+</ul>
+</dd>
+</dl>
+</p>
+</dd></dl>
+
+<dl class="function">
+<dt id="_CPPv216harp_import_testPKcPFiPKczE">
+<span class="target" id="libharpgroup__harp__product_1ga0b4ebfc36043501d174e6c5176698274"></span>int <code class="descname">harp_import_test</code><span class="sig-paren">(</span><em class="property">const</em> char *<em>filename</em>, int (*<em>print</em>)<span class="sig-paren">(</span><em class="property">const</em> char *, ...<span class="sig-paren">)</span><span class="sig-paren">)</span><br /></dt>
+<dd><p>Test import of a product.</p>
+<p>If the product is a HARP product then verify that the product is a HARP compliant netCDF/HDF4/HDF5 product. Otherwise, try to import the product using an applicable ingestion module and test the ingestion for all possible ingestion options. Results are printed using the provided <em>print</em> function. The <em>print</em> function parameter should be a function that resembles printf(). <dl class="docutils">
+<dt><strong>Return</strong></dt>
+<dd><ul class="simple">
+<li><code class="docutils literal"><span class="pre">0</span></code>, Success. </li>
+<li><code class="docutils literal"><span class="pre">-1</span></code>, Error occurred (check <a class="reference internal" href="libharp_error.html#libharpgroup__harp__error_1gab2eeb46528306c6799632d1e800c4c36"><span class="std std-ref">harp_errno</span></a>). </li>
+</ul>
+</dd>
+<dt><strong>Parameters</strong></dt>
+<dd><ul class="breatheparameterlist first last simple">
+<li><code class="docutils literal"><span class="pre">filename</span></code>: Filename of the product to import. </li>
+<li><code class="docutils literal"><span class="pre">print</span></code>: Reference to a printf compatible function. </li>
 </ul>
 </dd>
 </dl>
@@ -895,8 +874,8 @@
 <dl class="function">
 <dt id="_CPPv228harp_import_product_metadataPKcPP21harp_product_metadata">
 <span id="harp_import_product_metadata__cCP.harp_product_metadataPP"></span><span class="target" id="libharpgroup__harp__product_1ga5c633cf8880cd007c37ca385679a97d2"></span>int <code class="descname">harp_import_product_metadata</code><span class="sig-paren">(</span><em class="property">const</em> char *<em>filename</em>, <a class="reference internal" href="libharp_product_metadata.html#_CPPv221harp_product_metadata" title="harp_product_metadata">harp_product_metadata</a> **<em>new_metadata</em><span class="sig-paren">)</span><br /></dt>
-<dd><p>Retrieve global attributes from a HARP product file.</p>
-<p>This function retrieves the product metadata * without performing a full import. This function is only supported for netCDF files. <dl class="docutils">
+<dd><p>Retrieve global attributes from a product file.</p>
+<p>This function retrieves the product metadata without performing a full import. This function is only supported for netCDF files using the HARP file format. <dl class="docutils">
 <dt><strong>Return</strong></dt>
 <dd><ul class="simple">
 <li><code class="docutils literal"><span class="pre">0</span></code>, Succes. </li>

@@ -1,3 +1,10 @@
+* The import and ingest functions have been combined into a single import
+  function that can both read HARP compliant products as well as ingest from
+  the supported external formats. This means:
+  - harp_import() and harp_ingest() are combined into a single harp_import()
+  - harpfilter has been removed (use harpconvert instead)
+  - '--test' option of harpconvert has been removed (use harpcheck instead)
+
 * Added sort() operation.
 
 * Added harp_product_sort() function.

@@ -170,7 +170,9 @@
   <div class="section" id="python-interface">
 <h1>Python interface</h1>
 <p>The Python interface consists of a Python package <code class="docutils literal"><span class="pre">'harp'</span></code> that provides a set
-of functions to <a class="reference internal" href="#harp.import_product" title="harp.import_product"><code class="xref py py-func docutils literal"><span class="pre">import</span></code></a> and <a class="reference internal" href="#harp.export_product" title="harp.export_product"><code class="xref py py-func docutils literal"><span class="pre">export</span></code></a> HARP products, and to <a class="reference internal" href="#harp.ingest_product" title="harp.ingest_product"><code class="xref py py-func docutils literal"><span class="pre">ingest</span></code></a> non-HARP products of a type <a class="reference internal" href="ingestions/index.html"><span class="doc">supported by HARP</span></a>. The Python interface depends on the <code class="docutils literal"><span class="pre">_cffi_backend</span></code>
+of functions to <a class="reference internal" href="#harp.import_product" title="harp.import_product"><code class="xref py py-func docutils literal"><span class="pre">import</span></code></a> and <a class="reference internal" href="#harp.export_product" title="harp.export_product"><code class="xref py py-func docutils literal"><span class="pre">export</span></code></a> HARP products. The import can be used to read products
+using the HARP format or to read non-HARP products of a type <a class="reference internal" href="ingestions/index.html"><span class="doc">supported by
+HARP</span></a>. The Python interface depends on the <code class="docutils literal"><span class="pre">_cffi_backend</span></code>
 module, which is part of the C foreign function interface (cffi) package. This
 package must be installed in order to be able to use the Python interface. See
 the <a class="reference external" href="http://cffi.readthedocs.org/en/latest/installation.html">cffi documentation</a> for details on how to install the cffi package.</p>
@@ -250,8 +252,8 @@ concepts product and variable.</p>
 </tr>
 </tbody>
 </table>
-<p>The table below shows the type map that is used when importing or ingesting a
-product, i.e. when translating from the C domain to the Python domain.</p>
+<p>The table below shows the type map that is used when importing a product, i.e.
+when translating from the C domain to the Python domain.</p>
 <p>Variable data arrays are converted to NumPy arrays. The NumPy data type used for
 the converted array is determined from the HARP data type of the variable
 according to the type map shown below. Zero-dimensional arrays of length 1 are
@@ -518,8 +520,8 @@ default encoding is <code class="docutils literal"><span class="pre">'ascii'</sp
 <span class="c1"># Convert the product to an OrderedDict.</span>
 <span class="n">dict_product</span> <span class="o">=</span> <span class="n">harp</span><span class="o">.</span><span class="n">to_dict</span><span class="p">(</span><span class="n">product</span><span class="p">)</span>
 
-<span class="c1"># Ingest an S5P L2 HCHO product.</span>
-<span class="n">hcho_product</span> <span class="o">=</span> <span class="n">harp</span><span class="o">.</span><span class="n">ingest_product</span><span class="p">(</span><span class="s2">&quot;S5P_NRTI_L2__HCHO___20080808T224727_20080808T234211_21635_01_021797_00000000T000000.nc&quot;</span><span class="p">,</span>
+<span class="c1"># Import an S5P L2 HCHO product.</span>
+<span class="n">hcho_product</span> <span class="o">=</span> <span class="n">harp</span><span class="o">.</span><span class="n">import_product</span><span class="p">(</span><span class="s2">&quot;S5P_NRTI_L2__HCHO___20080808T224727_20080808T234211_21635_01_021797_00000000T000000.nc&quot;</span><span class="p">,</span>
                                    <span class="s2">&quot;solar_zenith_angle &lt; 60 [degree]; latitude &gt; 30 [degree_north]; latitude &lt; 60 [degree_north]&quot;</span><span class="p">)</span>
 
 <span class="c1"># Pretty print information about the product.</span>
@@ -561,9 +563,8 @@ syntax, or the item access <code class="docutils literal"><span class="pre">'[]'
 <span class="n">density</span> <span class="o">=</span> <span class="n">product</span><span class="o">.</span><span class="n">HCHO_column_number_density</span>
 <span class="n">density</span> <span class="o">=</span> <span class="n">product</span><span class="p">[</span><span class="s2">&quot;HCHO_column_number_density&quot;</span><span class="p">]</span>
 
-<span class="c1"># Iterate over all variables in the product. For imported or ingested</span>
-<span class="c1"># products, the order of the variables is the same as the order in the</span>
-<span class="c1"># source product.</span>
+<span class="c1"># Iterate over all variables in the product. For imported  products, the</span>
+<span class="c1"># order of the variables is the same as the order in the source product.</span>
 <span class="k">for</span> <span class="n">name</span> <span class="ow">in</span> <span class="n">product</span><span class="p">:</span>
     <span class="k">print</span><span class="p">(</span><span class="n">product</span><span class="p">[</span><span class="n">name</span><span class="p">]</span><span class="o">.</span><span class="n">unit</span><span class="p">)</span>
 </pre></div>
@@ -629,42 +630,13 @@ considered to be invalid.</li>
 <h3>Functions</h3>
 <p>This section describes the functions defined by the HARP Python library.</p>
 <dl class="function">
-<dt id="harp.ingest_product">
-<code class="descclassname">harp.</code><code class="descname">ingest_product</code><span class="sig-paren">(</span><em>filename</em>, <em>operations=&quot;&quot;</em>, <em>options=&quot;&quot;</em><span class="sig-paren">)</span></dt>
-<dd><p>Ingest a product of a type supported by HARP.</p>
-<p>If the filename argument is a list of filenames or a globbing (glob.glob())
-pattern then the harp.ingest_product() function will be called on each
-individual file and the result of harp.concatenate() on the ingested products
-will be returned.</p>
-<table class="docutils field-list" frame="void" rules="none">
-<col class="field-name" />
-<col class="field-body" />
-<tbody valign="top">
-<tr class="field-odd field"><th class="field-name">Parameters:</th><td class="field-body"><ul class="first simple">
-<li><strong>filename</strong> (<em>str</em>) &#8211; Filename, list of filenames or file pattern of the
-product(s) to ingest</li>
-<li><strong>operations</strong> (<em>str</em>) &#8211; Actions to apply as part of the ingestion; should be
-specified as a semi-colon separated string of operations.</li>
-<li><strong>options</strong> (<em>str</em>) &#8211; Ingestion module specific options; should be specified as
-a semi-colon separated string of key=value pairs.</li>
-</ul>
-</td>
-</tr>
-<tr class="field-even field"><th class="field-name">Returns:</th><td class="field-body"><p class="first">Ingested product.</p>
-</td>
-</tr>
-<tr class="field-odd field"><th class="field-name">Return type:</th><td class="field-body"><p class="first last"><a class="reference internal" href="#harp.Product" title="harp.Product">harp.Product</a></p>
-</td>
-</tr>
-</tbody>
-</table>
-</dd></dl>
-
-<dl class="function">
 <dt id="harp.import_product">
-<code class="descclassname">harp.</code><code class="descname">import_product</code><span class="sig-paren">(</span><em>filename</em>, <em>operations=&quot;&quot;</em><span class="sig-paren">)</span></dt>
-<dd><p>Import a HARP compliant product.</p>
-<p>The file format (NetCDF/HDF4/HDF5) of the product will be auto-detected.</p>
+<code class="descclassname">harp.</code><code class="descname">import_product</code><span class="sig-paren">(</span><em>filename</em>, <em>operations=&quot;&quot;</em>, <em>options=&quot;&quot;</em><span class="sig-paren">)</span></dt>
+<dd><p>Import a product from a file.</p>
+<p>This will first try to import the file as an HDF4, HDF5, or netCDF file that
+complies to the HARP Data Format. If the file is not stored using the HARP
+format then it will try to import it using one of the available ingestion
+modules.</p>
 <p>If the filename argument is a list of filenames or a globbing (glob.glob())
 pattern then the harp.import_product() function will be called on each
 individual file and the result of harp.concatenate() on the imported products
@@ -676,9 +648,11 @@ will be returned.</p>
 <tr class="field-odd field"><th class="field-name">Parameters:</th><td class="field-body"><ul class="first simple">
 <li><strong>filename</strong> (<em>str</em>) &#8211; Filename, list of filenames or file pattern of the
 product(s) to import</li>
-<li><strong>operations</strong> (<em>str</em>) &#8211; Actions to execute on the product after it has been
-imported; should be specified as a semi-colon separated
-string of operations.</li>
+<li><strong>operations</strong> (<em>str</em>) &#8211; Actions to apply as part of the import; should be
+specified as a semi-colon separated string of operations.</li>
+<li><strong>options</strong> (<em>str</em>) &#8211; Ingestion module specific options; should be specified as
+a semi-colon separated string of key=value pairs; only
+used if the file is not in HARP format.</li>
 </ul>
 </td>
 </tr>
@@ -766,9 +740,8 @@ information.</p>
 <span class="c1"># &#39;HCHO_column_number_density&#39;.</span>
 <span class="n">product</span><span class="p">[</span><span class="s2">&quot;HCHO_column_number_density_unit&quot;</span><span class="p">]</span>
 
-<span class="c1"># Iterate over all variables in the product. For imported or ingested</span>
-<span class="c1"># products, the order of the variables is the same as the order in the</span>
-<span class="c1"># source product.</span>
+<span class="c1"># Iterate over all variables in the product. For imported products, the</span>
+<span class="c1"># order of the variables is the same as the order in the source product.</span>
 <span class="k">for</span> <span class="n">name</span><span class="p">,</span> <span class="n">value</span> <span class="ow">in</span> <span class="n">product</span><span class="o">.</span><span class="n">items</span><span class="p">():</span>
     <span class="k">print</span> <span class="n">name</span><span class="p">,</span> <span class="n">value</span>
 </pre></div>
@@ -909,8 +882,8 @@ single string containing an error message.</td>
 <dl class="exception">
 <dt id="harp.NoDataError">
 <em class="property">exception </em><code class="descclassname">harp.</code><code class="descname">NoDataError</code></dt>
-<dd><p>Exception raised when the product returned from an ingestion or import
-contains no variables, or variables without data.</p>
+<dd><p>Exception raised when the product returned from an import contains no
+variables, or variables without data.</p>
 </dd></dl>
 
 </div>

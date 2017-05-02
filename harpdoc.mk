@@ -88,7 +88,6 @@ HARP_DOCFILES = \
 	doc/html/harpcollocate.html \
 	doc/html/harpconvert.html \
 	doc/html/harpdump.html \
-	doc/html/harpfilter.html \
 	doc/html/harpmerge.html \
 	doc/html/idl.html \
 	doc/html/index.html \
@@ -655,8 +654,6 @@ doc/html/harpcollocate.html:
 doc/html/harpconvert.html:
 	$(MAKE) harp_doc
 doc/html/harpdump.html:
-	$(MAKE) harp_doc
-doc/html/harpfilter.html:
 	$(MAKE) harp_doc
 doc/html/harpmerge.html:
 	$(MAKE) harp_doc
