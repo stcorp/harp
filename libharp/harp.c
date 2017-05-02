@@ -66,15 +66,15 @@ typedef enum file_format_enum
 
 static file_format format_from_string(const char *format)
 {
-    if (strcasecmp(format, "HDF4") == 0)
+    if (strcasecmp(format, "hdf4") == 0)
     {
         return format_hdf4;
     }
-    else if (strcasecmp(format, "HDF5") == 0)
+    else if (strcasecmp(format, "hdf5") == 0)
     {
         return format_hdf5;
     }
-    else if (strcasecmp(format, "netCDF") == 0)
+    else if (strcasecmp(format, "netcdf") == 0)
     {
         return format_netcdf;
     }
@@ -739,7 +739,7 @@ LIBHARP_API int harp_import_product_metadata(const char *filename, harp_product_
  * \ingroup harp_product
  * Export product to an HDF4, HDF5, or netCDF file that complies to the HARP Data Format.
  * \param filename Path to the file to which the product is to be exported.
- * \param export_format Either "HDF4", "HDF5", or "netCDF".
+ * \param export_format Either "hdf4", "hdf5", or "netcdf".
  * \param product Product that should be exported to file.
  * \return
  *   \arg \c 0, Success.

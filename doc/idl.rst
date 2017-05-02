@@ -2,10 +2,8 @@ IDL interface
 ================
 
 The Interactive Data Language (IDL) interface consists of a Dynamic Loadable
-Module (DLM) file named ``'harp_idl.dlm'`` that provides the interface of the
-following functions `harp_ingest`, `harp_import`, `harp_export` and
-`harp_unload` and a shared library named ``'harp_idl.so'`` that provides the
-implementation of those functions.
+Module (DLM) that provides the `harp_import`, `harp_export` and `harp_unload`
+functions.
 
 Products are represented in IDL as structures which can be manipulated freely
 from within IDL. A product structure contains a field for each variable
@@ -66,7 +64,7 @@ Examples
 
    ; Ingest a file and convert it to a HARP product (the
    ; file that is used in this example is an ACE-FTS file).
-   product1 = harp_ingest("ss13799.asc")
+   product1 = harp_import("ss13799.asc")
 
    ; Print information about the product.
    help,product1
@@ -99,35 +97,34 @@ This section describes the functions defined by the HARP IDL interface.
 .. Note: The py:function does not mean that these are Python functions, it just
 .. means that we use the python formatting in Sphinx.
 
-.. py:function:: harp_ingest(filename, operations="", options="")
+.. py:function:: harp_import(filename, operations="", options="")
 
-   Ingest a product of a type supported by HARP.
+   Import a product from a file.
+ 
+   This will first try to import the file as an HDF4, HDF5, or netCDF file that
+   complies to the HARP Data Format. If the file is not stored using the HARP
+   format then it will try to import it using one of the available ingestion
+   modules.
+
+   If the filename argument is a list of filenames or a globbing (glob.glob())
+   pattern then the harp.import_product() function will be called on each
+   individual file and the result of harp.concatenate() on the imported products
+   will be returned.
 
    :param str filename: Filename of the product to ingest
-   :param str operations: Actions to apply as part of the ingestion; should be
+   :param str operations: Actions to apply as part of the import; should be
                        specified as a semi-colon separated string of operations.
    :param str options: Ingestion module specific options; should be specified as
-                       a semi-colon separated string of key=value pairs.
+                       a semi-colon separated string of key=value pairs; only
+                       used if the file is not in HARP format.
    :returns: Ingested product.
 
-.. py:function:: harp_import(filename, operations="")
-
-   Import a HARP compliant product.
-
-   The file format (netCDF/HDF4/HDF5) of the product will be auto-detected.
-
-   :param str filename: Filename of the product to import
-   :param str operations: Actions to execute on the product after it has been
-                       imported; should be specified as a semi-colon separated
-                       string of operations.
-   :returns: Imported product.
-
-.. py:function:: harp_export(product, filename, file_format="netCDF")
+.. py:function:: harp_export(product, filename, file_format="netcdf")
 
    Export a HARP compliant product.
 
    :param str product: Product to export.
    :param str filename: Filename of the exported product.
-   :param str file_format: File format to use; one of 'netCDF', 'HDF4', or
-                           'HDF5'. If no format is specified, netCDF is used.
+   :param str file_format: File format to use; one of 'netcdf', 'hdf4', or
+                           'hdf5'. If no format is specified, netcdf is used.
 

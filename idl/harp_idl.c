@@ -573,7 +573,7 @@ static IDL_VPTR harp_idl_export(int argc, IDL_VPTR *argv)
         return harp_idl_get_error_struct(result);
     }
 
-    format = "netCDF";
+    format = "netcdf";
     if (argc > 2)
     {
         format = IDL_STRING_STR(&argv[2]->value.str);
