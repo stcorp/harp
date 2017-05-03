@@ -333,19 +333,18 @@ products into HARP products.</p>
 <dl class="docutils">
 <dt>harpconvert ...</dt>
 <dd>Convert all products that do not already follow the HARP format conventions
-to a common data format.</dd>
-<dt>harpfilter ...</dt>
-<dd>Filter/convert the data in each file: remove unneeded
+to a common data format.
+Filter/convert the data in each file: remove unneeded
 parameters/measurements, add derived physical parameters, perform unit
-conversion, etc.</dd>
+conversion, regrid dimensions, etc.</dd>
 <dt>harpcollocate matchup ...</dt>
 <dd>Find the measurement pairs that match within the specified collocation
 criteria and save the result into a collocation result file.</dd>
 <dt>harpcollocate resample ...</dt>
 <dd>Apply resampling to the collocation result file.</dd>
-<dt>harpfilter -a &#8216;collocate-left(&lt;csvfile&gt;)&#8217; ...</dt>
+<dt>harpconvert -a &#8216;collocate-left(&lt;csvfile&gt;)&#8217; ...</dt>
 <dd>Apply the collocation filter for each file in the primary dataset</dd>
-<dt>harpfilter -a &#8216;collocate-right(&lt;csvfile&gt;)&#8217; ...</dt>
+<dt>harpconvert -a &#8216;collocate-right(&lt;csvfile&gt;)&#8217; ...</dt>
 <dd>Apply the collocation filter for each file in the secondary dataset</dd>
 </dl>
 <p>Input files can be verified with</p>
