@@ -334,7 +334,6 @@ static int read_string_attribute(hid_t obj_id, const char *name, char **data)
     char *str;
     hid_t attr_id;
     hid_t data_type_id;
-    hid_t mem_type_id;
     hid_t space_id;
     hsize_t size;
 
@@ -353,7 +352,7 @@ static int read_string_attribute(hid_t obj_id, const char *name, char **data)
         return -1;
     }
 
-    if (H5Tget_class(data_type_id) != H5T_STRING || H5Tis_variable_str(data_type_id) > 0)
+    if (H5Tget_class(data_type_id) != H5T_STRING || H5Tis_variable_str(data_type_id))
     {
         harp_set_error(HARP_ERROR_IMPORT, "attribute '%s' has invalid type", name);
         H5Tclose(data_type_id);
@@ -369,12 +368,12 @@ static int read_string_attribute(hid_t obj_id, const char *name, char **data)
         H5Aclose(attr_id);
         return -1;
     }
-    H5Tclose(data_type_id);
 
     space_id = H5Aget_space(attr_id);
     if (space_id < 0)
     {
         harp_set_error(HARP_ERROR_HDF5, NULL);
+        H5Tclose(data_type_id);
         H5Aclose(attr_id);
         return -1;
     }
@@ -382,56 +381,33 @@ static int read_string_attribute(hid_t obj_id, const char *name, char **data)
     if (H5Sis_simple(space_id) <= 0 || H5Sget_simple_extent_type(space_id) != H5S_SCALAR)
     {
         harp_set_error(HARP_ERROR_IMPORT, "attribute '%s' has invalid format", name);
+        H5Tclose(data_type_id);
         H5Sclose(space_id);
         H5Aclose(attr_id);
         return -1;
     }
     H5Sclose(space_id);
 
-    mem_type_id = H5Tcopy(H5T_C_S1);
-    if (mem_type_id < 0)
-    {
-        harp_set_error(HARP_ERROR_HDF5, NULL);
-        H5Aclose(attr_id);
-        return -1;
-    }
-
-    if (H5Tset_size(mem_type_id, size) < 0)
-    {
-        harp_set_error(HARP_ERROR_HDF5, NULL);
-        H5Tclose(mem_type_id);
-        H5Aclose(attr_id);
-        return -1;
-    }
-
-    if (H5Tset_strpad(mem_type_id, H5T_STR_NULLPAD) < 0)
-    {
-        harp_set_error(HARP_ERROR_HDF5, NULL);
-        H5Tclose(mem_type_id);
-        H5Aclose(attr_id);
-        return -1;
-    }
-
     str = malloc((size + 1) * sizeof(char));
     if (str == NULL)
     {
         harp_set_error(HARP_ERROR_OUT_OF_MEMORY, "out of memory (could not allocate %lu bytes) (%s:%u)",
                        (size + 1) * sizeof(char), __FILE__, __LINE__);
-        H5Tclose(mem_type_id);
+        H5Tclose(data_type_id);
         H5Aclose(attr_id);
         return -1;
     }
     str[size] = '\0';
 
-    if (H5Aread(attr_id, mem_type_id, str) < 0)
+    if (H5Aread(attr_id, data_type_id, str) < 0)
     {
         harp_set_error(HARP_ERROR_HDF5, NULL);
         free(str);
-        H5Tclose(mem_type_id);
+        H5Tclose(data_type_id);
         H5Aclose(attr_id);
         return -1;
     }
-    H5Tclose(mem_type_id);
+    H5Tclose(data_type_id);
     H5Aclose(attr_id);
 
     *data = str;
