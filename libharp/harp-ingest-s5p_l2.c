@@ -986,14 +986,6 @@ static int read_input_altitude_bounds(void *user_data, harp_array data)
     return 0;
 }
 
-static int read_input_cloud_albedo(void *user_data, harp_array data)
-{
-    ingest_info *info = (ingest_info *)user_data;
-
-    return read_dataset(info->input_data_cursor, "cloud_albedo", harp_type_float,
-                        info->num_scanlines * info->num_pixels, data);
-}
-
 static int read_input_cloud_albedo_crb(void *user_data, harp_array data)
 {
     ingest_info *info = (ingest_info *)user_data;
@@ -1408,19 +1400,19 @@ static int read_product_carbonmonoxide_total_column_precision(void *user_data, h
                         info->num_scanlines * info->num_pixels, data);
 }
 
-static int read_product_cloud_albedo(void *user_data, harp_array data)
+static int read_product_cloud_albedo_crb(void *user_data, harp_array data)
 {
     ingest_info *info = (ingest_info *)user_data;
 
-    return read_dataset(info->product_cursor, "cloud_albedo", harp_type_float, info->num_scanlines * info->num_pixels,
+    return read_dataset(info->product_cursor, "cloud_albedo_crb", harp_type_float, info->num_scanlines * info->num_pixels,
                         data);
 }
 
-static int read_product_cloud_albedo_precision(void *user_data, harp_array data)
+static int read_product_cloud_albedo_crb_precision(void *user_data, harp_array data)
 {
     ingest_info *info = (ingest_info *)user_data;
 
-    return read_dataset(info->product_cursor, "cloud_albedo_precision", harp_type_float,
+    return read_dataset(info->product_cursor, "cloud_albedo_crb_precision", harp_type_float,
                         info->num_scanlines * info->num_pixels, data);
 }
 
@@ -3011,7 +3003,7 @@ static void register_cloud_variables(harp_product_definition *product_definition
         harp_ingestion_register_variable_full_read(product_definition, "cloud_albedo", harp_type_float, 1,
                                                    dimension_type, NULL, description, HARP_UNIT_DIMENSIONLESS, NULL,
                                                    read_input_cloud_albedo_crb);
-    path = "/PRODUCT/SUPPORT_DATA/INPUT_DATA/cloud_albedo";
+    path = "/PRODUCT/SUPPORT_DATA/INPUT_DATA/cloud_albedo_crb";
     harp_variable_definition_add_mapping(variable_definition, NULL, NULL, path, NULL);
 
     /* cloud_albedo_uncertainty */
@@ -3020,7 +3012,7 @@ static void register_cloud_variables(harp_product_definition *product_definition
         harp_ingestion_register_variable_full_read(product_definition, "cloud_albedo_uncertainty", harp_type_float, 1,
                                                    dimension_type, NULL, description, HARP_UNIT_DIMENSIONLESS, NULL,
                                                    read_input_cloud_albedo_crb_precision);
-    path = "/PRODUCT/SUPPORT_DATA/INPUT_DATA/cloud_albedo_precision";
+    path = "/PRODUCT/SUPPORT_DATA/INPUT_DATA/cloud_albedo_crb_precision";
     harp_variable_definition_add_mapping(variable_definition, NULL, NULL, path, NULL);
 
     /* cloud_fraction */
@@ -3928,8 +3920,8 @@ static void register_no2_product(void)
     variable_definition =
         harp_ingestion_register_variable_full_read(product_definition, "cloud_albedo", harp_type_float, 1,
                                                    dimension_type, NULL, description, HARP_UNIT_DIMENSIONLESS, NULL,
-                                                   read_input_cloud_albedo);
-    path = "/PRODUCT/SUPPORT_DATA/INPUT_DATA/cloud_albedo";
+                                                   read_input_cloud_albedo_crb);
+    path = "/PRODUCT/SUPPORT_DATA/INPUT_DATA/cloud_albedo_crb";
     harp_variable_definition_add_mapping(variable_definition, NULL, NULL, path, NULL);
 
     /* cloud_pressure */
@@ -4646,8 +4638,8 @@ static void register_fresco_product(void)
     variable_definition =
         harp_ingestion_register_variable_full_read(product_definition, "cloud_albedo", harp_type_float, 1,
                                                    dimension_type, NULL, description, HARP_UNIT_DIMENSIONLESS, NULL,
-                                                   read_product_cloud_albedo);
-    path = "/PRODUCT/cloud_albedo[]";
+                                                   read_product_cloud_albedo_crb);
+    path = "/PRODUCT/cloud_albedo_crb[]";
     harp_variable_definition_add_mapping(variable_definition, NULL, NULL, path, NULL);
 
     /* cloud_albedo_uncertainty */
@@ -4655,8 +4647,8 @@ static void register_fresco_product(void)
     variable_definition =
         harp_ingestion_register_variable_full_read(product_definition, "cloud_albedo_uncertainty", harp_type_float, 1,
                                                    dimension_type, NULL, description, HARP_UNIT_DIMENSIONLESS, NULL,
-                                                   read_product_cloud_albedo_precision);
-    path = "/PRODUCT/cloud_albedo_precision[]";
+                                                   read_product_cloud_albedo_crb_precision);
+    path = "/PRODUCT/cloud_albedo_crb_precision[]";
     harp_variable_definition_add_mapping(variable_definition, NULL, NULL, path, NULL);
 }
 
