@@ -31,7 +31,7 @@
 
 * Improve speed of --list-derivations on a product.
 
-* Updates to S5P product ingestions.
+* Updates to S5P and GEOMS-TE-UVVIS-DOAS-OFFAXIS product ingestions.
 
 0.6 2017-04-23
 ~~~~~~~~~~~~~~

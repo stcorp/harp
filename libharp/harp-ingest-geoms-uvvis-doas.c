@@ -115,6 +115,7 @@ typedef struct ingest_info_struct
     int has_tropo_column_zenith;
     int has_wind_direction;
     int has_wind_speed;
+    int has_optimal_estimation_variables;   /* used for MAXDOAS */
     char vmr_unit[MAX_UNIT_LENGTH];
     char vmr_covariance_unit[MAX_UNIT_LENGTH];
 } ingest_info;
@@ -1268,6 +1269,11 @@ static int exclude_wind_speed(void *user_data)
     return !((ingest_info *)user_data)->has_wind_speed;
 }
 
+static int exclude_optimal_estimation_variables(void *user_data)
+{
+    return !((ingest_info *)user_data)->has_optimal_estimation_variables;
+}
+
 static void ingestion_done(void *user_data)
 {
     free(user_data);
@@ -1608,6 +1614,12 @@ static int get_optional_variable_availability(ingest_info *info)
     info->has_wind_direction = (coda_cursor_goto(&cursor, "/WIND.DIRECTION.SURFACE_INDEPENDENT") == 0);
     info->has_wind_speed = (coda_cursor_goto(&cursor, "/WIND.SPEED.SURFACE_INDEPENDENT") == 0);
 
+    info->has_optimal_estimation_variables = 0;
+    if (info->template_type == uvvis_doas_offaxis)
+    {
+        snprintf(path, MAX_PATH_LENGTH, "/%s.MIXING.RATIO.VOLUME_SCATTER.SOLAR.OFFAXIS", geoms_gas_name[info->gas]);
+        info->has_optimal_estimation_variables = (coda_cursor_goto(&cursor, path) == 0);
+    }
     return 0;
 }
 
@@ -1644,16 +1656,20 @@ static int get_dynamic_units(ingest_info *info)
     }
     if (info->template_type == uvvis_doas_offaxis)
     {
-        snprintf(path, MAX_PATH_LENGTH, "/%s_MIXING_RATIO_VOLUME_SCATTER_SOLAR_OFFAXIS", geoms_gas_name[info->gas]);
-        if (read_unit(&cursor, path, info->vmr_unit) != 0)
+        if (info->has_optimal_estimation_variables)
         {
-            return -1;
-        }
-        snprintf(path, MAX_PATH_LENGTH, "/%s_MIXING_RATIO_VOLUME_SCATTER_SOLAR_OFFAXIS_UNCERTAINTY_RANDOM_COVARIANCE",
-                 geoms_gas_name[info->gas]);
-        if (read_unit(&cursor, path, info->vmr_covariance_unit) != 0)
-        {
-            return -1;
+            snprintf(path, MAX_PATH_LENGTH, "/%s_MIXING_RATIO_VOLUME_SCATTER_SOLAR_OFFAXIS", geoms_gas_name[info->gas]);
+            if (read_unit(&cursor, path, info->vmr_unit) != 0)
+            {
+                return -1;
+            }
+            snprintf(path, MAX_PATH_LENGTH,
+                     "/%s_MIXING_RATIO_VOLUME_SCATTER_SOLAR_OFFAXIS_UNCERTAINTY_RANDOM_COVARIANCE",
+                     geoms_gas_name[info->gas]);
+            if (read_unit(&cursor, path, info->vmr_covariance_unit) != 0)
+            {
+                return -1;
+            }
         }
     }
     else if (info->template_type == uvvis_doas_zenith)
@@ -2085,8 +2101,8 @@ static int init_product_definition(harp_ingestion_module *module, uvvis_doas_gas
         snprintf(gas_mapping_path, MAX_PATH_LENGTH, "/%s.MIXING.RATIO.VOLUME_SCATTER.SOLAR.OFFAXIS",
                  geoms_gas_name[gas]);
         variable_definition = harp_ingestion_register_variable_full_read
-            (product_definition, gas_var_name, harp_type_double, 2, dimension_type, NULL, gas_description, "ppmv", NULL,
-             read_vmr_offaxis);
+            (product_definition, gas_var_name, harp_type_double, 2, dimension_type, NULL, gas_description, "ppmv",
+             exclude_optimal_estimation_variables, read_vmr_offaxis);
         harp_variable_definition_add_mapping(variable_definition, NULL, NULL, gas_mapping_path, NULL);
 
         /* <gas>_volume_mixing_ratio_covariance */
@@ -2097,7 +2113,7 @@ static int init_product_definition(harp_ingestion_module *module, uvvis_doas_gas
                  "/%s.MIXING.RATIO.VOLUME_SCATTER.SOLAR.OFFAXIS_UNCERTAINTY.RANDOM.COVARIANCE", geoms_gas_name[gas]);
         variable_definition = harp_ingestion_register_variable_full_read
             (product_definition, gas_var_name, harp_type_double, 3, dimension_type, NULL, gas_description, "(ppmv)2",
-             NULL, read_vmr_offaxis_covariance);
+             exclude_optimal_estimation_variables, read_vmr_offaxis_covariance);
         harp_variable_definition_add_mapping(variable_definition, NULL, NULL, gas_mapping_path, NULL);
 
         /* <gas>_volume_mixing_ratio_uncertainty_random */
@@ -2107,8 +2123,8 @@ static int init_product_definition(harp_ingestion_module *module, uvvis_doas_gas
         snprintf(gas_mapping_path, MAX_PATH_LENGTH,
                  "/%s.MIXING.RATIO.VOLUME_SCATTER.SOLAR.OFFAXIS_UNCERTAINTY.RANDOM.COVARIANCE", geoms_gas_name[gas]);
         variable_definition = harp_ingestion_register_variable_full_read
-            (product_definition, gas_var_name, harp_type_double, 2, dimension_type, NULL, gas_description, "ppmv", NULL,
-             read_vmr_offaxis_uncertainty_random);
+            (product_definition, gas_var_name, harp_type_double, 2, dimension_type, NULL, gas_description, "ppmv",
+             exclude_optimal_estimation_variables, read_vmr_offaxis_uncertainty_random);
         harp_variable_definition_add_mapping(variable_definition, NULL, NULL, gas_mapping_path,
                                              "the uncertainty is the square root of the trace of the covariance");
 
@@ -2120,8 +2136,8 @@ static int init_product_definition(harp_ingestion_module *module, uvvis_doas_gas
                  "/%s.MIXING.RATIO.VOLUME_SCATTER.SOLAR.OFFAXIS_UNCERTAINTY.SYSTEMATIC.COVARIANCE",
                  geoms_gas_name[gas]);
         variable_definition = harp_ingestion_register_variable_full_read
-            (product_definition, gas_var_name, harp_type_double, 2, dimension_type, NULL, gas_description, "ppmv", NULL,
-             read_vmr_offaxis_uncertainty_systematic);
+            (product_definition, gas_var_name, harp_type_double, 2, dimension_type, NULL, gas_description, "ppmv",
+             exclude_optimal_estimation_variables, read_vmr_offaxis_uncertainty_systematic);
         harp_variable_definition_add_mapping(variable_definition, NULL, NULL, gas_mapping_path,
                                              "the uncertainty is the square root of the trace of the covariance");
 
@@ -2131,8 +2147,8 @@ static int init_product_definition(harp_ingestion_module *module, uvvis_doas_gas
         snprintf(gas_mapping_path, MAX_PATH_LENGTH, "/%s.MIXING.RATIO.VOLUME_SCATTER.SOLAR.OFFAXIS_APRIORI",
                  geoms_gas_name[gas]);
         variable_definition = harp_ingestion_register_variable_full_read
-            (product_definition, gas_var_name, harp_type_double, 2, dimension_type, NULL, gas_description, "ppmv", NULL,
-             read_vmr_offaxis_apriori);
+            (product_definition, gas_var_name, harp_type_double, 2, dimension_type, NULL, gas_description, "ppmv",
+             exclude_optimal_estimation_variables, read_vmr_offaxis_apriori);
         harp_variable_definition_add_mapping(variable_definition, NULL, NULL, gas_mapping_path, NULL);
 
         /* <gas>_volume_mixing_ratio_avk */
@@ -2143,7 +2159,7 @@ static int init_product_definition(harp_ingestion_module *module, uvvis_doas_gas
                  geoms_gas_name[gas]);
         variable_definition = harp_ingestion_register_variable_full_read
             (product_definition, gas_var_name, harp_type_double, 3, dimension_type, NULL, gas_description,
-             HARP_UNIT_DIMENSIONLESS, NULL, read_vmr_offaxis_avk);
+             HARP_UNIT_DIMENSIONLESS, exclude_optimal_estimation_variables, read_vmr_offaxis_avk);
         harp_variable_definition_add_mapping(variable_definition, NULL, NULL, gas_mapping_path, NULL);
 
         /* tropospheric_<gas>_column_number_density */
@@ -2188,7 +2204,7 @@ static int init_product_definition(harp_ingestion_module *module, uvvis_doas_gas
                  geoms_gas_name[gas]);
         variable_definition = harp_ingestion_register_variable_full_read
             (product_definition, gas_var_name, harp_type_double, 1, dimension_type, NULL, gas_description,
-             "Pmolec cm-2", NULL, read_tropo_column_offaxis_apriori);
+             "Pmolec cm-2", exclude_optimal_estimation_variables, read_tropo_column_offaxis_apriori);
         harp_variable_definition_add_mapping(variable_definition, NULL, NULL, gas_mapping_path, NULL);
 
         /* tropospheric_<gas>_column_number_density_avk */
@@ -2221,7 +2237,7 @@ static int init_product_definition(harp_ingestion_module *module, uvvis_doas_gas
                  geoms_gas_name[gas]);
         variable_definition = harp_ingestion_register_variable_full_read
             (product_definition, gas_var_name, harp_type_double, 2, dimension_type, NULL, gas_description,
-             "Pmolec cm-2", NULL, read_partial_column_offaxis_apriori);
+             "Pmolec cm-2", exclude_optimal_estimation_variables, read_partial_column_offaxis_apriori);
         harp_variable_definition_add_mapping(variable_definition, NULL, NULL, gas_mapping_path, NULL);
     }
     else if (template_type == uvvis_doas_zenith)
