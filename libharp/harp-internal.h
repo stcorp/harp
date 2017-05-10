@@ -191,6 +191,7 @@ int harp_parse_file_convention(const char *str, int *major, int *minor);
 /* Ingest */
 int harp_ingest(const char *filename, const char *operations, const char *options, harp_product **product);
 int harp_ingest_test(const char *filename, int (*print) (const char *, ...));
+void harp_ingestion_done(void);
 
 /* Units */
 typedef struct harp_unit_converter_struct harp_unit_converter;

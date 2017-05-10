@@ -30,7 +30,6 @@
  */
 
 #include "harp-internal.h"
-#include "harp-ingestion.h"
 
 #include <sys/types.h>
 #include <sys/stat.h>

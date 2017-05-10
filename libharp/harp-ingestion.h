@@ -239,6 +239,5 @@ harp_variable_definition *harp_ingestion_register_variable_sample_read(harp_prod
 
 /* Initialization and clean-up. */
 int harp_ingestion_init(void);
-void harp_ingestion_done(void);
 
 #endif
