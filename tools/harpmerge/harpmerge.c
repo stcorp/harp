@@ -71,6 +71,13 @@ static void print_help()
     printf("                more details.\n");
     printf("                Operations will be performed before a product is appended.\n");
     printf("\n");
+    printf("            -o, --options <option list>\n");
+    printf("                List of options to pass to the ingestion module.\n");
+    printf("                Only applicable of an input product is not in HARP format.\n");
+    printf("                Options are separated by semi-colons. Each option consists\n");
+    printf("                of an <option name>=<value> pair. An option list needs to be\n");
+    printf("                provided as a single expression.\n");
+    printf("\n");
     printf("            -f, --format <format>\n");
     printf("                Output format:\n");
     printf("                    netcdf (default)\n");
@@ -88,7 +95,7 @@ static void print_help()
     printf("\n");
 }
 
-int merge_dataset(harp_product **merged_product, harp_dataset *dataset, const char *operations)
+int merge_dataset(harp_product **merged_product, harp_dataset *dataset, const char *operations, const char *options)
 {
     int i;
 
@@ -100,17 +107,9 @@ int merge_dataset(harp_product **merged_product, harp_dataset *dataset, const ch
         /* add products in sorted order (sorted by source_product value) */
         index = dataset->sorted_index[i];
 
-        if (harp_import(dataset->metadata[index]->filename, NULL, NULL, &product) != 0)
+        if (harp_import(dataset->metadata[index]->filename, operations, options, &product) != 0)
         {
             return -1;
-        }
-        if (operations != NULL)
-        {
-            if (harp_product_execute_operations(product, operations) != 0)
-            {
-                harp_product_delete(product);
-                return -1;
-            }
         }
         if (!harp_product_is_empty(product))
         {
@@ -137,6 +136,7 @@ static int merge(int argc, char *argv[])
 {
     harp_product *merged_product = NULL;
     const char *operations = NULL;
+    const char *options = NULL;
     const char *output_filename = NULL;
     const char *output_format = "netcdf";
     int i;
@@ -148,6 +148,12 @@ static int merge(int argc, char *argv[])
             argv[i + 1][0] != '-')
         {
             operations = argv[i + 1];
+            i++;
+        }
+        else if ((strcmp(argv[i], "-o") == 0 || strcmp(argv[i], "--options") == 0) && i + 1 < argc &&
+                 argv[i + 1][0] != '-')
+        {
+            options = argv[i + 1];
             i++;
         }
         else if ((strcmp(argv[i], "-f") == 0 || strcmp(argv[i], "--format") == 0) && i + 1 < argc
@@ -190,7 +196,7 @@ static int merge(int argc, char *argv[])
             harp_dataset_delete(dataset);
             return -1;
         }
-        if (merge_dataset(&merged_product, dataset, operations) != 0)
+        if (merge_dataset(&merged_product, dataset, operations, options) != 0)
         {
             harp_product_delete(merged_product);
             harp_dataset_delete(dataset);

@@ -74,6 +74,7 @@ static void print_help()
     printf("\n");
     printf("            -o, --options <option list>\n");
     printf("                List of options to pass to the ingestion module.\n");
+    printf("                Only applicable of the input product is not in HARP format.\n");
     printf("                Options are separated by semi-colons. Each option consists\n");
     printf("                of an <option name>=<value> pair. An option list needs to be\n");
     printf("                provided as a single expression.\n");
@@ -87,23 +88,11 @@ static void print_help()
     printf("        If the imported product is empty, a warning will be printed and the\n");
     printf("        tool will return with exit code 2 (without writing a file).\n");
     printf("\n");
-    printf("    harpconvert --list-derivations [options] [input product file]\n");
-    printf("        List all available variable conversions. If an input product file is\n");
-    printf("        specified, limit the list to variable conversions that are possible\n");
-    printf("        given the specified product.\n");
-    printf("\n");
-    printf("        Options:\n");
-    printf("            -o, --options <option list>\n");
-    printf("                List of options to pass to the ingestion module.\n");
-    printf("                Options are separated by semi-colons. Each option consists\n");
-    printf("                of an <option name>=<value> pair. An option list needs to be\n");
-    printf("                provided as a single expression.\n");
-    printf("\n");
     printf("    harpconvert --generate-documentation [output directory]\n");
     printf("        Generate a series of documentation files in the specified output\n");
     printf("        directory. The documentation describes the set of supported foreign\n");
-    printf("        product types and the details of the HARP product(s) that can be\n");
-    printf("        produced from them.\n");
+    printf("        product types and the details of the HARP product(s) that are\n");
+    printf("        produced by an ingestion.\n");
     printf("\n");
     printf("    harpconvert -h, --help\n");
     printf("        Show help (this text).\n");
@@ -111,60 +100,6 @@ static void print_help()
     printf("    harpconvert -v, --version\n");
     printf("        Print the version number of HARP and exit.\n");
     printf("\n");
-}
-
-static int list_derivations(int argc, char *argv[])
-{
-    const char *options = NULL;
-    harp_product *product = NULL;
-    const char *input_filename = NULL;
-    int i;
-
-    if (argc == 2)
-    {
-        return harp_doc_list_conversions(NULL, printf);
-    }
-
-    for (i = 2; i < argc; i++)
-    {
-        if ((strcmp(argv[i], "-o") == 0 || strcmp(argv[i], "--options") == 0) && i + 1 < argc && argv[i + 1][0] != '-')
-        {
-            options = argv[i + 1];
-            i++;
-        }
-        else if (argv[i][0] != '-' && i == argc - 1)
-        {
-            input_filename = argv[i];
-        }
-        else
-        {
-            fprintf(stderr, "ERROR: invalid arguments\n");
-            print_help();
-            exit(1);
-        }
-    }
-
-    if (input_filename == NULL)
-    {
-        fprintf(stderr, "ERROR: input product file not specified\n");
-        print_help();
-        return -1;
-    }
-
-    if (harp_import(input_filename, NULL, options, &product) != 0)
-    {
-        return -1;
-    }
-
-    /* List possible conversions. */
-    if (harp_doc_list_conversions(product, printf) != 0)
-    {
-        harp_product_delete(product);
-        return -1;
-    }
-
-    harp_product_delete(product);
-    return 0;
 }
 
 static int generate_doc(int argc, char *argv[])
@@ -313,11 +248,7 @@ int main(int argc, char *argv[])
         exit(1);
     }
 
-    if (strcmp(argv[1], "--list-derivations") == 0)
-    {
-        result = list_derivations(argc, argv);
-    }
-    else if (strcmp(argv[1], "--generate-documentation") == 0)
+    if (strcmp(argv[1], "--generate-documentation") == 0)
     {
         result = generate_doc(argc, argv);
     }

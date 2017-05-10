@@ -23,6 +23,7 @@ product types supported by HARP.
 
               -o, --options <option list>
                   List of options to pass to the ingestion module.
+                  Only applicable of the input product is not in HARP format.
                   Options are separated by semi-colons. Each option consists
                   of an <option name>=<value> pair. An option list needs to be
                   provided as a single expression.
@@ -36,23 +37,11 @@ product types supported by HARP.
           If the ingested product is empty, a warning will be printed and the
           tool will return with exit code 2 (without writing a file).
 
-      harpconvert --list-derivations [options] [input product file]
-          List all available variable conversions. If an input product file is
-          specified, limit the list to variable conversions that are possible
-          given the specified product.
-
-          Options:
-              -o, --options <option list>
-                  List of options to pass to the ingestion module.
-                  Options are separated by semi-colons. Each option consists
-                  of an <option name>=<value> pair. An option list needs to be
-                  provided as a single expression.
-
       harpconvert --generate-documentation [options] [output directory]
           Generate a series of documentation files in the specified output
           directory. The documentation describes the set of supported foreign
-          product types and the details of the HARP product(s) that can be
-          produced from them.
+          product types and the details of the HARP product(s) that are
+          produced by an ingestion.
 
       harpconvert -h, --help
           Show help (this text).

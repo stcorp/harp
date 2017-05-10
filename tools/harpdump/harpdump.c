@@ -61,7 +61,7 @@ static void print_help()
 {
     printf("Usage:\n");
     printf("    harpdump [options] <input product file>\n");
-    printf("        Print the contents of a HARP compliant netCDF/HDF4/HDF5 product.\n");
+    printf("        Print the contents of a HARP imported product.\n");
     printf("\n");
     printf("        Options:\n");
     printf("            -a, --operations <operation list>\n");
@@ -69,15 +69,39 @@ static void print_help()
     printf("                An operation list needs to be provided as a single expression.\n");
     printf("                See the 'operations' section of the HARP documentation for\n");
     printf("                more details.\n");
-    printf("            -l, --list:\n");
+    printf("\n");
+    printf("            -o, --options <option list>\n");
+    printf("                List of options to pass to the ingestion module.\n");
+    printf("                Only applicable of the input product is not in HARP format.\n");
+    printf("                Options are separated by semi-colons. Each option consists\n");
+    printf("                of an <option name>=<value> pair. An option list needs to be\n");
+    printf("                provided as a single expression.\n");
+    printf("\n");
+    printf("            -l, --list\n");
     printf("                Only show list of variables (no attributes).\n");
-    printf("            -d, --data:\n");
+    printf("\n");
+    printf("            -d, --data\n");
     printf("                Show data values for each variable.\n");
     printf("\n");
-    printf("    harpdump --list-derivations [input product file]\n");
+    printf("    harpdump --list-derivations [options] [input product file]\n");
     printf("        List all available variable conversions. If an input product file is\n");
     printf("        specified, limit the list to variable conversions that are possible\n");
     printf("        given the specified product.\n");
+    printf("\n");
+    printf("        Options:\n");
+    printf("            -a, --operations <operation list>\n");
+    printf("                List of operations to apply to the product before determining\n");
+    printf("                the possible derivations.\n");
+    printf("                An operation list needs to be provided as a single expression.\n");
+    printf("                See the 'operations' section of the HARP documentation for\n");
+    printf("                more details.\n");
+    printf("\n");
+    printf("            -o, --options <option list>\n");
+    printf("                List of options to pass to the ingestion module.\n");
+    printf("                Only applicable of the input product is not in HARP format.\n");
+    printf("                Options are separated by semi-colons. Each option consists\n");
+    printf("                of an <option name>=<value> pair. An option list needs to be\n");
+    printf("                provided as a single expression.\n");
     printf("\n");
     printf("    harpdump -h, --help\n");
     printf("        Show help (this text).\n");
@@ -89,25 +113,52 @@ static void print_help()
 
 static int list_derivations(int argc, char *argv[])
 {
+    const char *operations = NULL;
+    const char *options = NULL;
     harp_product *product = NULL;
     const char *input_filename = NULL;
+    int i;
 
     if (argc == 2)
     {
         return harp_doc_list_conversions(NULL, printf);
     }
 
-    if (argc != 3)
+    for (i = 2; i < argc; i++)
     {
-        fprintf(stderr, "ERROR: invalid arguments\n");
-        print_help();
-        exit(1);
+        if ((strcmp(argv[i], "-a") == 0 || strcmp(argv[i], "--operations") == 0) && i + 1 < argc &&
+            argv[i + 1][0] != '-')
+        {
+            operations = argv[i + 1];
+            i++;
+        }
+        else if ((strcmp(argv[i], "-o") == 0 || strcmp(argv[i], "--options") == 0) && i + 1 < argc &&
+                 argv[i + 1][0] != '-')
+        {
+            options = argv[i + 1];
+            i++;
+        }
+        else if (argv[i][0] != '-' && i == argc - 1)
+        {
+            input_filename = argv[i];
+        }
+        else
+        {
+            fprintf(stderr, "ERROR: invalid arguments\n");
+            print_help();
+            exit(1);
+        }
     }
 
-    input_filename = argv[argc - 1];
+    if (input_filename == NULL)
+    {
+        fprintf(stderr, "ERROR: input product file not specified\n");
+        print_help();
+        return -1;
+    }
 
     /* Import the product */
-    if (harp_import(input_filename, NULL, NULL, &product) != 0)
+    if (harp_import(input_filename, operations, options, &product) != 0)
     {
         return -1;
     }
@@ -125,8 +176,9 @@ static int list_derivations(int argc, char *argv[])
 
 static int dump(int argc, char *argv[])
 {
-    harp_product *product;
     const char *operations = NULL;
+    const char *options = NULL;
+    harp_product *product;
     int data = 0;
     int list = 0;
     int i;
@@ -138,6 +190,12 @@ static int dump(int argc, char *argv[])
             argv[i + 1][0] != '-')
         {
             operations = argv[i + 1];
+            i++;
+        }
+        else if ((strcmp(argv[i], "-o") == 0 || strcmp(argv[i], "--options") == 0) && i + 1 < argc &&
+                 argv[i + 1][0] != '-')
+        {
+            options = argv[i + 1];
             i++;
         }
         else if (strcmp(argv[i], "-l") == 0 || strcmp(argv[i], "--list") == 0)
@@ -168,7 +226,7 @@ static int dump(int argc, char *argv[])
         return -1;
     }
 
-    if (harp_import(argv[argc - 1], operations, NULL, &product) != 0)
+    if (harp_import(argv[argc - 1], operations, options, &product) != 0)
     {
         return -1;
     }
