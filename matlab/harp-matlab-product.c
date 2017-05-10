@@ -51,7 +51,7 @@ static void harp_matlab_add_harp_product_variable(mxArray * mx_struct, harp_prod
     {
         harp_matlab_harp_error();
     }
-    if (harp_product_get_variable_id_by_name(*product, variable_name, &index) != 0)
+    if (harp_product_get_variable_index_by_name(*product, variable_name, &index) != 0)
     {
         harp_matlab_harp_error();
     }
