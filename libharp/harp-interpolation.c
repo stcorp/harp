@@ -743,7 +743,7 @@ void harp_interval_interpolate_array_linear(long source_length, const double *so
                 xmaxa = source_grid_boundaries[2 * j];
             }
 
-            if (xmina < xmaxb && xminb < xmaxa && xmaxa > xmina && !harp_isnan(source_array[i]))
+            if (!(xmina >= xmaxb || xminb >= xmaxa || harp_isnan(source_array[i])))
             {
                 double xminc, xmaxc, weight;
 
@@ -754,7 +754,7 @@ void harp_interval_interpolate_array_linear(long source_length, const double *so
                 xmaxc = xmaxa > xmaxb ? xmaxb : xmaxa;
 
                 weight = (xmaxc - xminc) / (xmaxa - xmina);
-                sum += weight * source_array[i];
+                sum += weight * source_array[j];
                 num_valid_contributions++;
             }
         }
