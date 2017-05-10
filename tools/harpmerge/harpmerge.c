@@ -78,6 +78,9 @@ static void print_help()
     printf("                of an <option name>=<value> pair. An option list needs to be\n");
     printf("                provided as a single expression.\n");
     printf("\n");
+    printf("            -l, --list\n");
+    printf("                Print to stdout each filename that is currently being merged.\n");
+    printf("\n");
     printf("            -f, --format <format>\n");
     printf("                Output format:\n");
     printf("                    netcdf (default)\n");
@@ -95,7 +98,8 @@ static void print_help()
     printf("\n");
 }
 
-int merge_dataset(harp_product **merged_product, harp_dataset *dataset, const char *operations, const char *options)
+int merge_dataset(harp_product **merged_product, harp_dataset *dataset, const char *operations, const char *options,
+                  int verbose)
 {
     int i;
 
@@ -107,6 +111,10 @@ int merge_dataset(harp_product **merged_product, harp_dataset *dataset, const ch
         /* add products in sorted order (sorted by source_product value) */
         index = dataset->sorted_index[i];
 
+        if (verbose)
+        {
+            printf("%s\n", dataset->metadata[index]->filename);
+        }
         if (harp_import(dataset->metadata[index]->filename, operations, options, &product) != 0)
         {
             return -1;
@@ -139,6 +147,7 @@ static int merge(int argc, char *argv[])
     const char *options = NULL;
     const char *output_filename = NULL;
     const char *output_format = "netcdf";
+    int verbose = 0;
     int i;
 
     /* Parse arguments after list/'export format' */
@@ -161,6 +170,10 @@ static int merge(int argc, char *argv[])
         {
             output_format = argv[i + 1];
             i++;
+        }
+        else if (strcmp(argv[i], "-l") == 0 || strcmp(argv[i], "--list") == 0)
+        {
+            verbose = 1;
         }
         else if (argv[i][0] != '-')
         {
@@ -196,7 +209,7 @@ static int merge(int argc, char *argv[])
             harp_dataset_delete(dataset);
             return -1;
         }
-        if (merge_dataset(&merged_product, dataset, operations, options) != 0)
+        if (merge_dataset(&merged_product, dataset, operations, options, verbose) != 0)
         {
             harp_product_delete(merged_product);
             harp_dataset_delete(dataset);

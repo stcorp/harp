@@ -26,6 +26,9 @@ the time dimension and storing the result into a single output file.
                   of an <option name>=<value> pair. An option list needs to be
                   provided as a single expression.
 
+              -l, --list
+                  Print to stdout each filename that is currently being merged.
+
               -f, --format <format>
                   Output format:
                       netcdf (default)

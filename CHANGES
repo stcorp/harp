@@ -12,6 +12,8 @@
 * '--list-derivations' option of harpconvert has been removed (use harpdump
   instead).
 
+* Added -l option to harpmerge.
+
 * Added sort() operation.
 
 * Added harp_product_sort() function.
