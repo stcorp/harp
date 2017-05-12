@@ -1002,6 +1002,38 @@ static int read_input_cloud_albedo_crb_precision(void *user_data, harp_array dat
                         info->num_scanlines * info->num_pixels, data);
 }
 
+static int read_input_cloud_base_height(void *user_data, harp_array data)
+{
+    ingest_info *info = (ingest_info *)user_data;
+
+    return read_dataset(info->input_data_cursor, "cloud_base_height", harp_type_float,
+                        info->num_scanlines * info->num_pixels, data);
+}
+
+static int read_input_cloud_base_height_precision(void *user_data, harp_array data)
+{
+    ingest_info *info = (ingest_info *)user_data;
+
+    return read_dataset(info->input_data_cursor, "cloud_base_height_precision", harp_type_float,
+                        info->num_scanlines * info->num_pixels, data);
+}
+
+static int read_input_cloud_base_pressure(void *user_data, harp_array data)
+{
+    ingest_info *info = (ingest_info *)user_data;
+
+    return read_dataset(info->input_data_cursor, "cloud_base_pressure", harp_type_float,
+                        info->num_scanlines * info->num_pixels, data);
+}
+
+static int read_input_cloud_base_pressure_precision(void *user_data, harp_array data)
+{
+    ingest_info *info = (ingest_info *)user_data;
+
+    return read_dataset(info->input_data_cursor, "cloud_base_pressure_precision", harp_type_float,
+                        info->num_scanlines * info->num_pixels, data);
+}
+
 static int read_input_cloud_height_crb(void *user_data, harp_array data)
 {
     ingest_info *info = (ingest_info *)user_data;
@@ -1018,6 +1050,22 @@ static int read_input_cloud_height_crb_precision(void *user_data, harp_array dat
                         info->num_scanlines * info->num_pixels, data);
 }
 
+static int read_input_cloud_optical_thickness(void *user_data, harp_array data)
+{
+    ingest_info *info = (ingest_info *)user_data;
+
+    return read_dataset(info->input_data_cursor, "cloud_optical_thickness", harp_type_float,
+                        info->num_scanlines * info->num_pixels, data);
+}
+
+static int read_input_cloud_optical_thickness_precision(void *user_data, harp_array data)
+{
+    ingest_info *info = (ingest_info *)user_data;
+
+    return read_dataset(info->input_data_cursor, "cloud_optical_thickness_precision", harp_type_float,
+                        info->num_scanlines * info->num_pixels, data);
+}
+
 static int read_input_cloud_pressure_crb(void *user_data, harp_array data)
 {
     ingest_info *info = (ingest_info *)user_data;
@@ -1031,6 +1079,38 @@ static int read_input_cloud_pressure_crb_precision(void *user_data, harp_array d
     ingest_info *info = (ingest_info *)user_data;
 
     return read_dataset(info->input_data_cursor, "cloud_pressure_crb_precision", harp_type_float,
+                        info->num_scanlines * info->num_pixels, data);
+}
+
+static int read_input_cloud_top_height(void *user_data, harp_array data)
+{
+    ingest_info *info = (ingest_info *)user_data;
+
+    return read_dataset(info->input_data_cursor, "cloud_top_height", harp_type_float,
+                        info->num_scanlines * info->num_pixels, data);
+}
+
+static int read_input_cloud_top_height_precision(void *user_data, harp_array data)
+{
+    ingest_info *info = (ingest_info *)user_data;
+
+    return read_dataset(info->input_data_cursor, "cloud_top_height_precision", harp_type_float,
+                        info->num_scanlines * info->num_pixels, data);
+}
+
+static int read_input_cloud_top_pressure(void *user_data, harp_array data)
+{
+    ingest_info *info = (ingest_info *)user_data;
+
+    return read_dataset(info->input_data_cursor, "cloud_top_pressure", harp_type_float,
+                        info->num_scanlines * info->num_pixels, data);
+}
+
+static int read_input_cloud_top_pressure_precision(void *user_data, harp_array data)
+{
+    ingest_info *info = (ingest_info *)user_data;
+
+    return read_dataset(info->input_data_cursor, "cloud_top_pressure_precision", harp_type_float,
                         info->num_scanlines * info->num_pixels, data);
 }
 
@@ -1448,6 +1528,38 @@ static int read_product_cloud_base_pressure_precision(void *user_data, harp_arra
                         info->num_scanlines * info->num_pixels, data);
 }
 
+static int read_product_cloud_fraction(void *user_data, harp_array data)
+{
+    ingest_info *info = (ingest_info *)user_data;
+
+    return read_dataset(info->product_cursor, "cloud_fraction", harp_type_float,
+                        info->num_scanlines * info->num_pixels, data);
+}
+
+static int read_product_cloud_fraction_precision(void *user_data, harp_array data)
+{
+    ingest_info *info = (ingest_info *)user_data;
+
+    return read_dataset(info->product_cursor, "cloud_fraction_precision", harp_type_float,
+                        info->num_scanlines * info->num_pixels, data);
+}
+
+static int read_product_cloud_fraction_crb(void *user_data, harp_array data)
+{
+    ingest_info *info = (ingest_info *)user_data;
+
+    return read_dataset(info->product_cursor, "cloud_fraction_crb", harp_type_float,
+                        info->num_scanlines * info->num_pixels, data);
+}
+
+static int read_product_cloud_fraction_crb_precision(void *user_data, harp_array data)
+{
+    ingest_info *info = (ingest_info *)user_data;
+
+    return read_dataset(info->product_cursor, "cloud_fraction_crb_precision", harp_type_float,
+                        info->num_scanlines * info->num_pixels, data);
+}
+
 static int read_product_cloud_height_crb(void *user_data, harp_array data)
 {
     ingest_info *info = (ingest_info *)user_data;
@@ -1525,38 +1637,6 @@ static int read_product_cloud_top_pressure_precision(void *user_data, harp_array
     ingest_info *info = (ingest_info *)user_data;
 
     return read_dataset(info->product_cursor, "cloud_top_pressure_precision", harp_type_float,
-                        info->num_scanlines * info->num_pixels, data);
-}
-
-static int read_product_cloud_fraction(void *user_data, harp_array data)
-{
-    ingest_info *info = (ingest_info *)user_data;
-
-    return read_dataset(info->product_cursor, "cloud_fraction", harp_type_float,
-                        info->num_scanlines * info->num_pixels, data);
-}
-
-static int read_product_cloud_fraction_precision(void *user_data, harp_array data)
-{
-    ingest_info *info = (ingest_info *)user_data;
-
-    return read_dataset(info->product_cursor, "cloud_fraction_precision", harp_type_float,
-                        info->num_scanlines * info->num_pixels, data);
-}
-
-static int read_product_cloud_fraction_crb(void *user_data, harp_array data)
-{
-    ingest_info *info = (ingest_info *)user_data;
-
-    return read_dataset(info->product_cursor, "cloud_fraction_crb", harp_type_float,
-                        info->num_scanlines * info->num_pixels, data);
-}
-
-static int read_product_cloud_fraction_crb_precision(void *user_data, harp_array data)
-{
-    ingest_info *info = (ingest_info *)user_data;
-
-    return read_dataset(info->product_cursor, "cloud_fraction_crb_precision", harp_type_float,
                         info->num_scanlines * info->num_pixels, data);
 }
 
@@ -1876,6 +1956,22 @@ static int read_results_nitrogendioxide_stratospheric_column_precision(void *use
                         harp_type_float, info->num_scanlines * info->num_pixels, data);
 }
 
+static int read_results_ozone_total_air_mass_factor(void *user_data, harp_array data)
+{
+    ingest_info *info = (ingest_info *)user_data;
+
+    return read_dataset(info->detailed_results_cursor, "ozone_total_air_mass_factor", harp_type_float,
+                        info->num_scanlines * info->num_pixels, data);
+}
+
+static int read_results_ozone_total_air_mass_factor_trueness(void *user_data, harp_array data)
+{
+    ingest_info *info = (ingest_info *)user_data;
+
+    return read_dataset(info->detailed_results_cursor, "ozone_total_air_mass_factor_trueness", harp_type_float,
+                        info->num_scanlines * info->num_pixels, data);
+}
+
 static int read_results_ozone_profile_apriori(void *user_data, harp_array data)
 {
     ingest_info *info = (ingest_info *)user_data;
@@ -2044,6 +2140,23 @@ static int read_hcho_cloud_fraction_precision(void *user_data, harp_array data)
                             harp_type_float, info->num_scanlines * info->num_pixels, data);
     }
     return read_dataset(info->input_data_cursor, "cloud_fraction_crb_precision", harp_type_float,
+                        info->num_scanlines * info->num_pixels, data);
+}
+
+static int read_o3_cloud_fraction(void *user_data, harp_array data)
+{
+    ingest_info *info = (ingest_info *)user_data;
+
+    return read_dataset(info->input_data_cursor, info->is_nrti ? "cloud_fraction" :  "cloud_fraction_crb",
+                        harp_type_float, info->num_scanlines * info->num_pixels, data);
+}
+
+static int read_o3_cloud_fraction_precision(void *user_data, harp_array data)
+{
+    ingest_info *info = (ingest_info *)user_data;
+
+    return read_dataset(info->input_data_cursor,
+                        info->is_nrti ? "cloud_fraction_precision" : "cloud_fraction_crb_precision", harp_type_float,
                         info->num_scanlines * info->num_pixels, data);
 }
 
@@ -2792,9 +2905,14 @@ static int ingestion_init_aer_ai(const harp_ingestion_module *module, coda_produ
     return 0;
 }
 
-static int exclude_nrti(void *user_data)
+static int exclude_non_nrti(void *user_data)
 {
     return !((ingest_info *)user_data)->is_nrti;
+}
+
+static int exclude_nrti(void *user_data)
+{
+    return ((ingest_info *)user_data)->is_nrti;
 }
 
 static int exclude_o3_tcl(void *user_data)
@@ -3445,9 +3563,9 @@ static void register_hcho_product(void)
     variable_definition =
         harp_ingestion_register_variable_full_read(product_definition, "HCHO_volume_mixing_ratio_apriori",
                                                    harp_type_float, 2, dimension_type, NULL, description, "ppv",
-                                                   exclude_nrti, read_results_formaldehyde_profile_apriori);
+                                                   exclude_non_nrti, read_results_formaldehyde_profile_apriori);
     path = "/PRODUCT/SUPPORT_DATA/DETAILED_RESULTS/formaldehyde_profile_apriori[]";
-    harp_variable_definition_add_mapping(variable_definition, NULL, NULL, path, NULL);
+    harp_variable_definition_add_mapping(variable_definition, NULL, "NRTI", path, NULL);
 
     /* tropospheric_HCHO_column_number_density_amf */
     description = "tropospheric air mass factor";
@@ -3471,7 +3589,7 @@ static void register_hcho_product(void)
     harp_variable_definition_add_mapping(variable_definition, NULL, NULL, path, NULL);
 
     /* tropospheric_HCHO_column_number_density_amf_uncertainty_systematic */
-    description = "system part of the tropospheric air mass factor uncertainty";
+    description = "systematic part of the tropospheric air mass factor uncertainty";
     variable_definition =
         harp_ingestion_register_variable_full_read(product_definition,
                                                    "tropospheric_HCHO_column_number_density_amf_uncertainty_systematic",
@@ -3502,6 +3620,186 @@ static void register_o3_product(void)
     register_core_variables(product_definition, s5p_delta_time_num_dims[s5p_type_o3]);
     register_geolocation_variables(product_definition);
     register_additional_geolocation_variables(product_definition);
+
+    /* cloud_base_height */
+    description = "cloud base height calculated using the OCRA/ROCINN CAL model";
+    variable_definition =
+        harp_ingestion_register_variable_full_read(product_definition, "cloud_base_height", harp_type_float, 1,
+                                                   dimension_type, NULL, description, "m", exclude_non_nrti,
+                                                   read_input_cloud_base_height);
+    path = "/PRODUCT/SUPPORT_DATA/INPUT_DATA/cloud_base_height[]";
+    harp_variable_definition_add_mapping(variable_definition, NULL, "NRTI", path, NULL);
+
+    /* cloud_base_height_uncertainty */
+    description = "error of the cloud base height calculated using the OCRA/ROCINN CAL model";
+    variable_definition =
+        harp_ingestion_register_variable_full_read(product_definition, "cloud_base_height_uncertainty", harp_type_float,
+                                                   1, dimension_type, NULL, description, "m", exclude_non_nrti,
+                                                   read_input_cloud_base_height_precision);
+    path = "/PRODUCT/SUPPORT_DATA/INPUT_DATA/cloud_base_height_precision[]";
+    harp_variable_definition_add_mapping(variable_definition, NULL, "NRTI", path, NULL);
+
+    /* cloud_base_pressure */
+    description = "cloud base pressure calculated using the OCRA/ROCINN CAL model";
+    variable_definition =
+        harp_ingestion_register_variable_full_read(product_definition, "cloud_base_pressure", harp_type_float, 1,
+                                                   dimension_type, NULL, description, "Pa", exclude_non_nrti,
+                                                   read_input_cloud_base_pressure);
+    path = "/PRODUCT/SUPPORT_DATA/INPUT_DATA/cloud_base_pressure[]";
+    harp_variable_definition_add_mapping(variable_definition, NULL, "NRTI", path, NULL);
+
+    /* cloud_base_pressure_uncertainty */
+    description = "error of the cloud base pressure calculated using the OCRA/ROCINN CAL model";
+    variable_definition =
+        harp_ingestion_register_variable_full_read(product_definition, "cloud_base_pressure_uncertainty",
+                                                   harp_type_float, 1, dimension_type, NULL, description, "Pa",
+                                                   exclude_non_nrti, read_input_cloud_base_pressure_precision);
+    path = "/PRODUCT/SUPPORT_DATA/INPUT_DATA/cloud_base_pressure_precision[]";
+    harp_variable_definition_add_mapping(variable_definition, NULL, "NRTI", path, NULL);
+
+    /* cloud_fraction */
+    description = "cloud fraction from either the OCRA/ROCINN CAL or CRB model";
+    variable_definition =
+        harp_ingestion_register_variable_full_read(product_definition, "cloud_fraction", harp_type_float, 1,
+                                                   dimension_type, NULL, description, HARP_UNIT_DIMENSIONLESS,
+                                                   NULL, read_o3_cloud_fraction);
+    path = "/PRODUCT/SUPPORT_DATA/INPUT_DATA/cloud_fraction[]";
+    harp_variable_definition_add_mapping(variable_definition, NULL, "NRTI", path, NULL);
+    path = "/PRODUCT/SUPPORT_DATA/INPUT_DATA/cloud_fraction_crb[]";
+    harp_variable_definition_add_mapping(variable_definition, NULL, "OFFL", path, NULL);
+
+    /* cloud_fraction_uncertainty */
+    description = "uncertainty of the cloud fraction";
+    variable_definition =
+        harp_ingestion_register_variable_full_read(product_definition, "cloud_fraction_uncertainty", harp_type_float, 1,
+                                                   dimension_type, NULL, description, HARP_UNIT_DIMENSIONLESS,
+                                                   NULL, read_o3_cloud_fraction_precision);
+    path = "/PRODUCT/SUPPORT_DATA/INPUT_DATA/cloud_fraction_precision[]";
+    harp_variable_definition_add_mapping(variable_definition, NULL, "NRTI", path, NULL);
+    path = "/PRODUCT/SUPPORT_DATA/INPUT_DATA/cloud_fraction_crb_precision[]";
+    harp_variable_definition_add_mapping(variable_definition, NULL, "OFFL", path, NULL);
+
+    /* cloud_optical_depth */
+    description = "retrieved cloud optical depth using the OCRA/ROCINN CAL model";
+    variable_definition =
+        harp_ingestion_register_variable_full_read(product_definition, "cloud_optical_depth", harp_type_float, 1,
+                                                   dimension_type, NULL, description, "m", exclude_non_nrti,
+                                                   read_input_cloud_optical_thickness);
+    path = "/PRODUCT/SUPPORT_DATA/INPUT_DATA/cloud_optical_thickness[]";
+    harp_variable_definition_add_mapping(variable_definition, NULL, "NRTI", path, NULL);
+
+    /* cloud_optical_depth_uncertainty */
+    description = "uncertainty of the retrieved cloud optical depth using the OCRA/ROCINN CAL model";
+    variable_definition =
+        harp_ingestion_register_variable_full_read(product_definition, "cloud_optical_depth_uncertainty",
+                                                   harp_type_float, 1, dimension_type, NULL, description, "m",
+                                                   exclude_non_nrti, read_input_cloud_optical_thickness_precision);
+    path = "/PRODUCT/SUPPORT_DATA/INPUT_DATA/cloud_optical_thickness_precision[]";
+    harp_variable_definition_add_mapping(variable_definition, NULL, "NRTI", path, NULL);
+
+    /* cloud_top_pressure */
+    description = "retrieved atmospheric pressure at the level of cloud top using the OCRA/ROCINN CAL model";
+    variable_definition =
+        harp_ingestion_register_variable_full_read(product_definition, "cloud_top_pressure", harp_type_float, 1,
+                                                   dimension_type, NULL, description, "Pa", exclude_non_nrti,
+                                                   read_input_cloud_top_pressure);
+    path = "/PRODUCT/SUPPORT_DATA/INPUT_DATA/cloud_top_pressure[]";
+    harp_variable_definition_add_mapping(variable_definition, NULL, "NRTI", path, NULL);
+
+    /* cloud_top_pressure_uncertainty */
+    description = "uncertainty of the retrieved atmospheric pressure at the level of cloud top using the OCRA/ROCINN "
+        "CAL model";
+    variable_definition =
+        harp_ingestion_register_variable_full_read(product_definition, "cloud_top_pressure_uncertainty",
+                                                   harp_type_float, 1, dimension_type, NULL, description, "Pa",
+                                                   exclude_non_nrti, read_input_cloud_top_pressure_precision);
+    path = "/PRODUCT/SUPPORT_DATA/INPUT_DATA/cloud_top_pressure_precision[]";
+    harp_variable_definition_add_mapping(variable_definition, NULL, "NRTI", path, NULL);
+
+    /* cloud_top_height */
+    description = "retrieved vertical distance above the surface of the cloud top using the OCRA/ROCINN CAL model";
+    variable_definition =
+        harp_ingestion_register_variable_full_read(product_definition, "cloud_top_height", harp_type_float, 1,
+                                                   dimension_type, NULL, description, "m", exclude_non_nrti,
+                                                   read_input_cloud_top_height);
+    path = "/PRODUCT/SUPPORT_DATA/INPUT_DATA/cloud_top_height[]";
+    harp_variable_definition_add_mapping(variable_definition, NULL, "NRTI", path, NULL);
+
+    /* cloud_top_height_uncertainty */
+    description = "uncertainty of the retrieved vertical distance above the surface of the cloud top using the "
+        "OCRA/ROCINN CAL model";
+    variable_definition =
+        harp_ingestion_register_variable_full_read(product_definition, "cloud_top_height_uncertainty", harp_type_float,
+                                                   1, dimension_type, NULL, description, "m", exclude_non_nrti,
+                                                   read_input_cloud_top_height_precision);
+    path = "/PRODUCT/SUPPORT_DATA/INPUT_DATA/cloud_top_height_precision[]";
+    harp_variable_definition_add_mapping(variable_definition, NULL, "NRTI", path, NULL);
+
+    /* cloud_albedo */
+    description = "albedo of cloud using the OCRA/ROCINN CRB model";
+    variable_definition =
+        harp_ingestion_register_variable_full_read(product_definition, "cloud_albedo", harp_type_float, 1,
+                                                   dimension_type, NULL, description, HARP_UNIT_DIMENSIONLESS,
+                                                   exclude_nrti, read_input_cloud_albedo_crb);
+    path = "/PRODUCT/SUPPORT_DATA/INPUT_DATA/cloud_albedo_crb[]";
+    harp_variable_definition_add_mapping(variable_definition, NULL, "OFFL", path, NULL);
+
+    /* cloud_albedo_uncertainty */
+    description = "uncertainty of the albedo of cloud using the OCRA/ROCINN CRB model";
+    variable_definition =
+        harp_ingestion_register_variable_full_read(product_definition, "cloud_albedo_uncertainty",
+                                                   harp_type_float, 1, dimension_type, NULL, description,
+                                                   HARP_UNIT_DIMENSIONLESS, exclude_nrti,
+                                                   read_input_cloud_albedo_crb_precision);
+    path = "/PRODUCT/SUPPORT_DATA/INPUT_DATA/cloud_albedo_crb_precision[]";
+    harp_variable_definition_add_mapping(variable_definition, NULL, "OFFL", path, NULL);
+
+    /* cloud_height */
+    description = "retrieved atmospheric height at the level of cloud using the OCRA/ROCINN CRB model";
+    variable_definition =
+        harp_ingestion_register_variable_full_read(product_definition, "cloud_height", harp_type_float, 1,
+                                                   dimension_type, NULL, description, "m", exclude_nrti,
+                                                   read_input_cloud_height_crb);
+    path = "/PRODUCT/SUPPORT_DATA/INPUT_DATA/cloud_height_crb[]";
+    harp_variable_definition_add_mapping(variable_definition, NULL, "OFFL", path, NULL);
+
+    /* cloud_height_uncertainty */
+    description = "error of the retrieved atmospheric height at the level of cloud using the OCRA/ROCINN CRB model";
+    variable_definition =
+        harp_ingestion_register_variable_full_read(product_definition, "cloud_height_uncertainty", harp_type_float,
+                                                   1, dimension_type, NULL, description, "m", exclude_nrti,
+                                                   read_input_cloud_height_crb_precision);
+    path = "/PRODUCT/SUPPORT_DATA/INPUT_DATA/cloud_height_crb_precision[]";
+    harp_variable_definition_add_mapping(variable_definition, NULL, "OFFL", path, NULL);
+
+    /* cloud_pressure */
+    description = "retrieved atmospheric pressure at the level of cloud using the OCRA/ROCINN CRB model";
+    variable_definition =
+        harp_ingestion_register_variable_full_read(product_definition, "cloud_pressure", harp_type_float, 1,
+                                                   dimension_type, NULL, description, "Pa", exclude_nrti,
+                                                   read_input_cloud_pressure_crb);
+    path = "/PRODUCT/SUPPORT_DATA/INPUT_DATA/cloud_pressure_crb[]";
+    harp_variable_definition_add_mapping(variable_definition, NULL, "OFFL", path, NULL);
+
+    /* cloud_pressure_uncertainty */
+    description = "error of the retrieved atmospheric pressure at the level of cloud using the OCRA/ROCINN CRB model";
+    variable_definition =
+        harp_ingestion_register_variable_full_read(product_definition, "cloud_pressure_uncertainty",
+                                                   harp_type_float, 1, dimension_type, NULL, description, "Pa",
+                                                   exclude_nrti, read_input_cloud_pressure_crb_precision);
+    path = "/PRODUCT/SUPPORT_DATA/INPUT_DATA/cloud_pressure_crb_precision[]";
+    harp_variable_definition_add_mapping(variable_definition, NULL, "OFFL", path, NULL);
+
+    /* surface_albedo */
+    description = "surface albedo";
+    variable_definition =
+        harp_ingestion_register_variable_full_read(product_definition, "surface_albedo", harp_type_float, 1,
+                                                   dimension_type, NULL, description, HARP_UNIT_DIMENSIONLESS, NULL,
+                                                   read_input_surface_albedo);
+    path = "/PRODUCT/SUPPORT_DATA/INPUT_DATA/surface_albedo[]";
+    harp_variable_definition_add_mapping(variable_definition, NULL, NULL, path, NULL);
+
+    register_surface_variables(product_definition);
 
     /* pressure_bounds */
     description = "pressure bounds per profile layer";
@@ -3549,6 +3847,25 @@ static void register_o3_product(void)
                                                    read_results_averaging_kernel_1d);
     path = "/PRODUCT/SUPPORT_DATA/DETAILED_RESULTS/averaging_kernel[]";
     harp_variable_definition_add_mapping(variable_definition, NULL, NULL, path, NULL);
+
+    /* O3_column_number_density_amf */
+    description = "O3 column number density total air mass factor";
+    variable_definition =
+        harp_ingestion_register_variable_full_read(product_definition, "O3_column_number_density_amf", harp_type_float,
+                                                   1, dimension_type, NULL, description, HARP_UNIT_DIMENSIONLESS,
+                                                   exclude_non_nrti, read_results_ozone_total_air_mass_factor);
+    path = "/PRODUCT/SUPPORT_DATA/DETAILED_RESULTS/ozone_total_air_mass_factor[]";
+    harp_variable_definition_add_mapping(variable_definition, NULL, "NRTI", path, NULL);
+
+    /* O3_column_number_density_amf_uncertainty */
+    description = "uncertainty of the O3 column number density total air mass factor";
+    variable_definition =
+        harp_ingestion_register_variable_full_read(product_definition, "O3_column_number_density_amf_uncertainty",
+                                                   harp_type_float, 1, dimension_type, NULL, description,
+                                                   HARP_UNIT_DIMENSIONLESS, exclude_non_nrti,
+                                                   read_results_ozone_total_air_mass_factor_trueness);
+    path = "/PRODUCT/SUPPORT_DATA/DETAILED_RESULTS/ozone_total_air_mass_factor_trueness[]";
+    harp_variable_definition_add_mapping(variable_definition, NULL, "NRTI", path, NULL);
 }
 
 static void register_o3_profile_variables(harp_product_definition *product_definition)
@@ -4149,26 +4466,26 @@ static void register_so2_product(void)
     path = "/PRODUCT/sulfurdioxide_total_vertical_column[]";
     harp_variable_definition_add_mapping(variable_definition, "so2_column unset", NULL, path, NULL);
     path = "/PRODUCT/SUPPORT_DATA/DETAILED_RESULTS/sulfurdioxide_total_vertical_column_1km[]";
-    harp_variable_definition_add_mapping(variable_definition, "so2_column=1km", NULL, path, NULL);
+    harp_variable_definition_add_mapping(variable_definition, "so2_column=1km", "NRTI", path, NULL);
     path = "/PRODUCT/SUPPORT_DATA/DETAILED_RESULTS/sulfurdioxide_total_vertical_column_7km[]";
-    harp_variable_definition_add_mapping(variable_definition, "so2_column=7km", NULL, path, NULL);
+    harp_variable_definition_add_mapping(variable_definition, "so2_column=7km", "NRTI", path, NULL);
     path = "/PRODUCT/SUPPORT_DATA/DETAILED_RESULTS/sulfurdioxide_total_vertical_column_15km[]";
-    harp_variable_definition_add_mapping(variable_definition, "so2_column=15km", NULL, path, NULL);
+    harp_variable_definition_add_mapping(variable_definition, "so2_column=15km", "NRTI", path, NULL);
 
     /* SO2_column_number_density_uncertainty_random */
     description = "random component of the uncertainty of the SO2 vertical column density";
     variable_definition =
         harp_ingestion_register_variable_full_read(product_definition, "SO2_column_number_density_uncertainty_random",
                                                    harp_type_float, 1, dimension_type, NULL, description, "mol/m^2",
-                                                   exclude_nrti, read_so2_total_vertical_column_precision);
+                                                   exclude_non_nrti, read_so2_total_vertical_column_precision);
     path = "/PRODUCT/sulfurdioxide_total_vertical_column_precision[]";
-    harp_variable_definition_add_mapping(variable_definition, "so2_column unset", NULL, path, NULL);
+    harp_variable_definition_add_mapping(variable_definition, "so2_column unset", "NRTI", path, NULL);
     path = "/PRODUCT/SUPPORT_DATA/DETAILED_RESULTS/sulfurdioxide_total_vertical_column_1km_precision[]";
-    harp_variable_definition_add_mapping(variable_definition, "so2_column=1km", NULL, path, NULL);
+    harp_variable_definition_add_mapping(variable_definition, "so2_column=1km", "NRTI", path, NULL);
     path = "/PRODUCT/SUPPORT_DATA/DETAILED_RESULTS/sulfurdioxide_total_vertical_column_7km_precision[]";
-    harp_variable_definition_add_mapping(variable_definition, "so2_column=7km", NULL, path, NULL);
+    harp_variable_definition_add_mapping(variable_definition, "so2_column=7km", "NRTI", path, NULL);
     path = "/PRODUCT/SUPPORT_DATA/DETAILED_RESULTS/sulfurdioxide_total_vertical_column_15km_precision[]";
-    harp_variable_definition_add_mapping(variable_definition, "so2_column=15km", NULL, path, NULL);
+    harp_variable_definition_add_mapping(variable_definition, "so2_column=15km", "NRTI", path, NULL);
 
     /* SO2_column_number_density_uncertainty_systematic */
     description = "systematic component of the uncertainty of the SO2 vertical column density";
@@ -4176,15 +4493,15 @@ static void register_so2_product(void)
         harp_ingestion_register_variable_full_read(product_definition,
                                                    "SO2_column_number_density_uncertainty_systematic", harp_type_float,
                                                    1, dimension_type, NULL, description, "mol/m^2",
-                                                   exclude_nrti, read_so2_total_vertical_column_trueness);
+                                                   exclude_non_nrti, read_so2_total_vertical_column_trueness);
     path = "/PRODUCT/SUPPORT_DATA/DETAILED_RESULTS/sulfurdioxide_total_vertical_column_trueness[]";
-    harp_variable_definition_add_mapping(variable_definition, "so2_column unset", NULL, path, NULL);
+    harp_variable_definition_add_mapping(variable_definition, "so2_column unset", "NRTI", path, NULL);
     path = "/PRODUCT/SUPPORT_DATA/DETAILED_RESULTS/sulfurdioxide_total_vertical_column_1km_trueness[]";
-    harp_variable_definition_add_mapping(variable_definition, "so2_column=1km", NULL, path, NULL);
+    harp_variable_definition_add_mapping(variable_definition, "so2_column=1km", "NRTI", path, NULL);
     path = "/PRODUCT/SUPPORT_DATA/DETAILED_RESULTS/sulfurdioxide_total_vertical_column_7km_trueness[]";
-    harp_variable_definition_add_mapping(variable_definition, "so2_column=7km", NULL, path, NULL);
+    harp_variable_definition_add_mapping(variable_definition, "so2_column=7km", "NRTI", path, NULL);
     path = "/PRODUCT/SUPPORT_DATA/DETAILED_RESULTS/sulfurdioxide_total_vertical_column_15km_trueness[]";
-    harp_variable_definition_add_mapping(variable_definition, "so2_column=15km", NULL, path, NULL);
+    harp_variable_definition_add_mapping(variable_definition, "so2_column=15km", "NRTI", path, NULL);
 
     /* SO2_column_number_density_amf */
     description = "total air mass factor";
@@ -4195,11 +4512,11 @@ static void register_so2_product(void)
     path = "/PRODUCT/SUPPORT_DATA/DETAILED_RESULTS/sulfurdioxide_total_air_mass_factor_polluted[]";
     harp_variable_definition_add_mapping(variable_definition, "so2_column unset", NULL, path, NULL);
     path = "/PRODUCT/SUPPORT_DATA/DETAILED_RESULTS/sulfurdioxide_total_air_mass_factor_1km[]";
-    harp_variable_definition_add_mapping(variable_definition, "so2_column=1km", NULL, path, NULL);
+    harp_variable_definition_add_mapping(variable_definition, "so2_column=1km", "NRTI", path, NULL);
     path = "/PRODUCT/SUPPORT_DATA/DETAILED_RESULTS/sulfurdioxide_total_air_mass_factor_7km[]";
-    harp_variable_definition_add_mapping(variable_definition, "so2_column=7km", NULL, path, NULL);
+    harp_variable_definition_add_mapping(variable_definition, "so2_column=7km", "NRTI", path, NULL);
     path = "/PRODUCT/SUPPORT_DATA/DETAILED_RESULTS/sulfurdioxide_total_air_mass_factor_15km[]";
-    harp_variable_definition_add_mapping(variable_definition, "so2_column=15km", NULL, path, NULL);
+    harp_variable_definition_add_mapping(variable_definition, "so2_column=15km", "NRTI", path, NULL);
 
     /* SO2_column_number_density_amf_uncertainty_random */
     description = "random component of the uncertainty of the total air mass factor";
@@ -4207,15 +4524,15 @@ static void register_so2_product(void)
         harp_ingestion_register_variable_full_read(product_definition,
                                                    "SO2_column_number_density_amf_uncertainty_random", harp_type_float,
                                                    1, dimension_type, NULL, description, HARP_UNIT_DIMENSIONLESS,
-                                                   exclude_nrti, read_so2_total_air_mass_factor_precision);
+                                                   exclude_non_nrti, read_so2_total_air_mass_factor_precision);
     path = "/PRODUCT/SUPPORT_DATA/DETAILED_RESULTS/sulfurdioxide_total_air_mass_factor_polluted_precision[]";
-    harp_variable_definition_add_mapping(variable_definition, "so2_column unset", NULL, path, NULL);
+    harp_variable_definition_add_mapping(variable_definition, "so2_column unset", "NRTI", path, NULL);
     path = "/PRODUCT/SUPPORT_DATA/DETAILED_RESULTS/sulfurdioxide_total_air_mass_factor_1km_precision[]";
-    harp_variable_definition_add_mapping(variable_definition, "so2_column=1km", NULL, path, NULL);
+    harp_variable_definition_add_mapping(variable_definition, "so2_column=1km", "NRTI", path, NULL);
     path = "/PRODUCT/SUPPORT_DATA/DETAILED_RESULTS/sulfurdioxide_total_air_mass_factor_7km_precision[]";
-    harp_variable_definition_add_mapping(variable_definition, "so2_column=7km", NULL, path, NULL);
+    harp_variable_definition_add_mapping(variable_definition, "so2_column=7km", "NRTI", path, NULL);
     path = "/PRODUCT/SUPPORT_DATA/DETAILED_RESULTS/sulfurdioxide_total_air_mass_factor_15km_precision[]";
-    harp_variable_definition_add_mapping(variable_definition, "so2_column=15km", NULL, path, NULL);
+    harp_variable_definition_add_mapping(variable_definition, "so2_column=15km", "NRTI", path, NULL);
 
     /* SO2_column_number_density_amf_uncertainty_systematic */
     description = "systematic component of the uncertainty of the total air mass factor";
@@ -4223,16 +4540,16 @@ static void register_so2_product(void)
         harp_ingestion_register_variable_full_read(product_definition,
                                                    "SO2_column_number_density_amf_uncertainty_systematic",
                                                    harp_type_float, 1, dimension_type, NULL, description,
-                                                   HARP_UNIT_DIMENSIONLESS, exclude_nrti,
+                                                   HARP_UNIT_DIMENSIONLESS, exclude_non_nrti,
                                                    read_so2_total_air_mass_factor_trueness);
     path = "/PRODUCT/SUPPORT_DATA/DETAILED_RESULTS/sulfurdioxide_total_air_mass_factor_polluted_trueness[]";
-    harp_variable_definition_add_mapping(variable_definition, "so2_column unset", NULL, path, NULL);
+    harp_variable_definition_add_mapping(variable_definition, "so2_column unset", "NRTI", path, NULL);
     path = "/PRODUCT/SUPPORT_DATA/DETAILED_RESULTS/sulfurdioxide_total_air_mass_factor_1km_trueness[]";
-    harp_variable_definition_add_mapping(variable_definition, "so2_column=1km", NULL, path, NULL);
+    harp_variable_definition_add_mapping(variable_definition, "so2_column=1km", "NRTI", path, NULL);
     path = "/PRODUCT/SUPPORT_DATA/DETAILED_RESULTS/sulfurdioxide_total_air_mass_factor_7km_trueness[]";
-    harp_variable_definition_add_mapping(variable_definition, "so2_column=7km", NULL, path, NULL);
+    harp_variable_definition_add_mapping(variable_definition, "so2_column=7km", "NRTI", path, NULL);
     path = "/PRODUCT/SUPPORT_DATA/DETAILED_RESULTS/sulfurdioxide_total_air_mass_factor_15km_trueness[]";
-    harp_variable_definition_add_mapping(variable_definition, "so2_column=15km", NULL, path, NULL);
+    harp_variable_definition_add_mapping(variable_definition, "so2_column=15km", "NRTI", path, NULL);
 
     /* SO2_column_number_density_avk */
     description = "averaging kernel for the SO2 vertical column density";
