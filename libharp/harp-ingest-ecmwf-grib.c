@@ -57,6 +57,7 @@ typedef enum grib_parameter_enum
     grib_param_tcc,     /* 164: Total cloud cover [-] */
     grib_param_2t,      /* 167: 2 meter temperature [K] */
     grib_param_lsm,     /* 172: Land-sea mask [(0-1)] */
+    grib_param_co2,     /* 210061: Carbon Dioxide [kg/kg] */
     grib_param_ch4,     /* 210062/217004: Methane [kg/kg] */
     grib_param_pm1,     /* 210072: Particulate matter d < 1 um [kg/m3] */
     grib_param_pm2p5,   /* 210073: Particulate matter d < 2.5 um [kg/m3] */
@@ -109,6 +110,7 @@ const char *param_name[NUM_GRIB_PARAMETERS] = {
     "tcc",
     "2t",
     "lsm",
+    "co2",
     "ch4",
     "pm1",
     "pm2p5",
@@ -159,6 +161,7 @@ int param_is_profile[NUM_GRIB_PARAMETERS] = {
     0,  /* tcc */
     0,  /* 2t */
     0,  /* lsm */
+    1,  /* co2 */
     1,  /* ch4 */
     0,  /* pm1 */
     0,  /* pm2p5 */
@@ -448,6 +451,8 @@ static grib_parameter get_grib1_parameter(int parameter_ref)
         case 210:
             switch (indicatorOfParameter)
             {
+                case 61:
+                    return grib_param_co2;
                 case 62:
                     return grib_param_ch4;
                 case 72:
@@ -608,6 +613,8 @@ static grib_parameter get_grib2_parameter(int parameter_ref)
                 case 210:
                     switch (parameterNumber)
                     {
+                        case 61:
+                            return grib_param_co2;
                         case 62:
                             return grib_param_ch4;
                         case 72:
@@ -923,6 +930,11 @@ static int read_tcc(void *user_data, harp_array data)
 static int read_2t(void *user_data, harp_array data)
 {
     return read_2d_grid_data((ingest_info *)user_data, grib_param_2t, data);
+}
+
+static int read_co2(void *user_data, harp_array data)
+{
+    return read_3d_grid_data((ingest_info *)user_data, grib_param_co2, data);
 }
 
 static int read_ch4(void *user_data, harp_array data)
@@ -2539,6 +2551,11 @@ static int exclude_2t(void *user_data)
     return !((ingest_info *)user_data)->has_parameter[grib_param_2t];
 }
 
+static int exclude_co2(void *user_data)
+{
+    return !((ingest_info *)user_data)->has_parameter[grib_param_co2];
+}
+
 static int exclude_ch4(void *user_data)
 {
     return !((ingest_info *)user_data)->has_parameter[grib_param_ch4];
@@ -2912,6 +2929,14 @@ int harp_ingestion_module_ecmwf_grib_init(void)
                                                                      description, "K", exclude_2t, read_2t);
     add_value_variable_mapping(variable_definition, "(table,indicator) = (128,167), (160,167), (180,167), or (190,167)",
                                NULL);
+
+    /* co2: CO2_mass_mixing_ratio */
+    description = "carbon dioxide mass mixing ratio";
+    variable_definition = harp_ingestion_register_variable_full_read(product_definition, "CO2_mass_mixing_ratio",
+                                                                     harp_type_float, 3, &dimension_type[1], NULL,
+                                                                     description, "kg/kg", exclude_co2, read_co2);
+    add_value_variable_mapping(variable_definition, "(table,indicator) = (210,61)",
+                               "(discipline,category,number) = (192,210,61)");
 
     /* ch4: CH4_mass_mixing_ratio */
     description = "methane mass mixing ratio";
