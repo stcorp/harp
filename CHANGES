@@ -18,6 +18,8 @@
 
 * Added harp_product_sort() function.
 
+* wrap() operation now properly updates valid_min/valid_max properties.
+
 * codadef files are now installed in <prefix>/share/coda/definitions.
   This allows a present CODA installation to use the same codadef files.
 

@@ -936,6 +936,9 @@ static int execute_wrap(harp_product *product, harp_operation_wrap *operation)
         variable->data.double_data[i] = harp_wrap(variable->data.double_data[i], operation->min, operation->max);
     }
 
+    variable->valid_min.double_data = operation->min;
+    variable->valid_max.double_data = operation->max;
+
     return 0;
 }
 
