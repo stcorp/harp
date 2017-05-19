@@ -567,6 +567,19 @@ LIBHARP_API int harp_import(const char *filename, const char *operations, const 
             return -1;
         }
 
+        /* set source_product if it was empty */
+        if (imported_product->source_product == NULL)
+        {
+            imported_product->source_product = strdup(harp_basename(filename));
+            if (imported_product->source_product == NULL)
+            {
+                harp_set_error(HARP_ERROR_OUT_OF_MEMORY, "out of memory (could not duplicate string) (%s:%u)", __FILE__,
+                               __LINE__);
+                harp_product_delete(imported_product);
+                return -1;
+            }
+        }
+
         if (operations != NULL)
         {
             if (harp_product_execute_operations(imported_product, operations) != 0)
