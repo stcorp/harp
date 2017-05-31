@@ -5,7 +5,7 @@
   - harpfilter has been removed (use harpconvert instead)
   - '--test' option of harpconvert has been removed (use harpcheck instead)
 
-* Added -o option to harpdump and harmperge.
+* Added -o option to harpdump and harpmerge.
 
 * Added -a and -o options for 'harpdump --list-derivations'.
 
