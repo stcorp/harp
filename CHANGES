@@ -33,8 +33,8 @@
 
 * Improve speed of --list-derivations on a product.
 
-* Updates to GEOMS-TE-UVVIS-DOAS-OFFAXIS, ECMWF-GRIB, and S5P product
-  ingestions.
+* Updates to GEOMS-TE-UVVIS-DOAS-OFFAXIS, ECMWF-GRIB, S5P, and QA4ECV
+  product ingestions.
 
 0.6 2017-04-23
 ~~~~~~~~~~~~~~
