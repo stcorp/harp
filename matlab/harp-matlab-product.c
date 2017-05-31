@@ -108,53 +108,53 @@ static void harp_matlab_add_harp_product_variable(mxArray * mx_struct, harp_prod
 
     mxArray *dim_info = mxCreateNumericArray(1, matlabdim_type, mxINT32_CLASS, mxREAL);
     int *data_dim = mxGetData(dim_info);
-    
-    mxArray *dim_info_type  = mxCreateCellArray(1, matlabdim_type);
-    
+
+    mxArray *dim_info_type = mxCreateCellArray(1, matlabdim_type);
+
     for (i = 0; i < num_dims; i++)
     {
         data_dim[i] = dim[i];
     }
 
     for (i = 0; i < num_dims; i++)
-    {   
-        switch(dim_type[i])
+    {
+        switch (dim_type[i])
         {
             case -1:
                 {
-                   mxSetCell(dim_info_type, (mwIndex)i,mxCreateString("independent"));                   
+                    mxSetCell(dim_info_type, (mwIndex) i, mxCreateString("independent"));
                 }
                 break;
             case 0:
                 {
-                   mxSetCell(dim_info_type, (mwIndex)i,mxCreateString("time"));
+                    mxSetCell(dim_info_type, (mwIndex) i, mxCreateString("time"));
                 }
                 break;
             case 1:
                 {
-                   mxSetCell(dim_info_type, (mwIndex)i,mxCreateString("latitude"));
+                    mxSetCell(dim_info_type, (mwIndex) i, mxCreateString("latitude"));
                 }
                 break;
             case 2:
                 {
-                    mxSetCell(dim_info_type, (mwIndex)i,mxCreateString("longitude"));   
+                    mxSetCell(dim_info_type, (mwIndex) i, mxCreateString("longitude"));
                 }
                 break;
             case 3:
                 {
-                    mxSetCell(dim_info_type, (mwIndex)i,mxCreateString("vertical"));
+                    mxSetCell(dim_info_type, (mwIndex) i, mxCreateString("vertical"));
                 }
                 break;
             case 4:
                 {
-                    mxSetCell(dim_info_type, (mwIndex)i,mxCreateString("spectral"));
+                    mxSetCell(dim_info_type, (mwIndex) i, mxCreateString("spectral"));
                 }
                 break;
-        }    
+        }
 
     }
 
-   
+
     mxAddField(struct_data, "dimension");
     mxSetField(struct_data, 0, "dimension", dim_info);
 
@@ -407,7 +407,7 @@ static void harp_matlab_add_matlab_product_variable(harp_product **product, cons
         dimvalue = mxGetData(meta_variable_dim);
     }
 
-    
+
 
 
     /*set value to variables after the meta data is ready */
@@ -419,8 +419,8 @@ static void harp_matlab_add_matlab_product_variable(harp_product **product, cons
     for (i = 0; i < num_dims; i++)
     {
         dim[i] = (long)mxGetDimensions(datastructure)[i];
-    }    
-    
+    }
+
 
     num_elements = mxGetNumberOfElements(datastructure);
 
@@ -455,53 +455,55 @@ static void harp_matlab_add_matlab_product_variable(harp_product **product, cons
     mxAssert(num_dims >= 0, "Number of dimensions is invalid");
     mxAssert(num_dims <= HARP_MAX_NUM_DIMS, "Number of dimensions is too high");
 
-    /* dimension type */ 
+    /* dimension type */
     mxArray *meta_variable_dim_type = mxGetField(mx_variable, 0, "dimension_type");
     int num_ele = mxGetNumberOfElements(meta_variable_dim_type);
- 
-    if (meta_variable_dim_type != NULL){
-            for (i = 0; i < num_ele; i++)
-            {   
-                    mxArray * mx_cell = mxGetCell(meta_variable_dim_type,i);
-                    dimtypevalue = get_matlab_string_value(mx_cell);
-             }
 
-            if(dimtypevalue!=NULL)
+    if (meta_variable_dim_type != NULL)
+    {
+        for (i = 0; i < num_ele; i++)
+        {
+            mxArray *mx_cell = mxGetCell(meta_variable_dim_type, i);
+
+            dimtypevalue = get_matlab_string_value(mx_cell);
+        }
+
+        if (dimtypevalue != NULL)
+        {
+            for (i = 0; i < num_dims; i++)
             {
-                for (i = 0; i < num_dims; i++)
+                if (strncmp(dimtypevalue, "independent", 11) == 0)
                 {
-                    if (strncmp(dimtypevalue, "independent", 11) ==0)
-                    {
-                        dim_type[i] = harp_dimension_independent;
-                    }
-                    else if (strncmp(dimtypevalue, "time", 4) ==0)       
-                    {
-                        dim_type[i] = harp_dimension_time;
-                    }
-                    else if (strncmp(dimtypevalue, "latitude", 8) ==0)
-                    {
-                        dim_type[i] = harp_dimension_latitude;
-                    }                
-                    else if (strncmp(dimtypevalue, "longitude", 9) ==0)
-                    {
-                        dim_type[i] = harp_dimension_longitude;
-                    }
-                    else if (strncmp(dimtypevalue, "vertical", 8) ==0) 
-                    {
-                        dim_type[i] = harp_dimension_vertical;
-                    }
-                    else if (strncmp(dimtypevalue, "spectral", 8) ==0)
-                    {
-                        dim_type[i] = harp_dimension_spectral;
-                    }
+                    dim_type[i] = harp_dimension_independent;
                 }
-            }   
-    }    
+                else if (strncmp(dimtypevalue, "time", 4) == 0)
+                {
+                    dim_type[i] = harp_dimension_time;
+                }
+                else if (strncmp(dimtypevalue, "latitude", 8) == 0)
+                {
+                    dim_type[i] = harp_dimension_latitude;
+                }
+                else if (strncmp(dimtypevalue, "longitude", 9) == 0)
+                {
+                    dim_type[i] = harp_dimension_longitude;
+                }
+                else if (strncmp(dimtypevalue, "vertical", 8) == 0)
+                {
+                    dim_type[i] = harp_dimension_vertical;
+                }
+                else if (strncmp(dimtypevalue, "spectral", 8) == 0)
+                {
+                    dim_type[i] = harp_dimension_spectral;
+                }
+            }
+        }
+    }
     else
     {
         mexErrMsgTxt("Field of dimension type is missing.");
     }
-        
+
 
 
     switch (class)

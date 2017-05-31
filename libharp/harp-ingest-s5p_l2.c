@@ -1484,8 +1484,8 @@ static int read_product_cloud_albedo_crb(void *user_data, harp_array data)
 {
     ingest_info *info = (ingest_info *)user_data;
 
-    return read_dataset(info->product_cursor, "cloud_albedo_crb", harp_type_float, info->num_scanlines * info->num_pixels,
-                        data);
+    return read_dataset(info->product_cursor, "cloud_albedo_crb", harp_type_float,
+                        info->num_scanlines * info->num_pixels, data);
 }
 
 static int read_product_cloud_albedo_crb_precision(void *user_data, harp_array data)
@@ -2147,7 +2147,7 @@ static int read_o3_cloud_fraction(void *user_data, harp_array data)
 {
     ingest_info *info = (ingest_info *)user_data;
 
-    return read_dataset(info->input_data_cursor, info->is_nrti ? "cloud_fraction" :  "cloud_fraction_crb",
+    return read_dataset(info->input_data_cursor, info->is_nrti ? "cloud_fraction" : "cloud_fraction_crb",
                         harp_type_float, info->num_scanlines * info->num_pixels, data);
 }
 

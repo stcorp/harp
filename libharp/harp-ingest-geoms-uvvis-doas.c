@@ -115,7 +115,7 @@ typedef struct ingest_info_struct
     int has_tropo_column_zenith;
     int has_wind_direction;
     int has_wind_speed;
-    int has_optimal_estimation_variables;   /* used for MAXDOAS */
+    int has_optimal_estimation_variables;       /* used for MAXDOAS */
     char vmr_unit[MAX_UNIT_LENGTH];
     char vmr_covariance_unit[MAX_UNIT_LENGTH];
 } ingest_info;
