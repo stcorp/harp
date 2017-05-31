@@ -58,6 +58,8 @@
 -T IDL_StructDefPtr
 -T IDL_SYSRTN_GENERIC
 -T IDL_VPTR
+-T mxArray
+-T mxClassID
 -T XML_Parser
 -T cv_converter
 -T ut_unit
