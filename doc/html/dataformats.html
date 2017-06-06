@@ -1774,6 +1774,26 @@ indicate the vertical level (i.e. location of the surface) using a &#8216;pressu
 and the angle is increasing when moving Eastwards (i.e. clockwise).
 Wind direction follows the same rules as for azimuth angles (North = 0, East = 90 degrees),
 but the direction indicates where the wind is coming <em>from</em>.</p>
+<p>In addition to the conventions above there can also be variables that describe a &#8216;difference&#8217;.
+These difference variables can only be used to describe differences of the same quantity between different datasets (&#8216;x&#8217; and &#8216;y&#8217;) and only for variables that have a unit.
+All difference variables in a single product should apply to the same datasets &#8216;x&#8217; and &#8216;y&#8217; (i.e. the difference variables should only reflect a single comparison of datasets; you should not combine one difference variable for &#8216;x-y&#8217; and another for &#8216;x-z&#8217; (even for different quantities) within the same product).
+A difference variable is indicated by a postfix. The &#8216;difference postfix&#8217; can come before a &#8216;quality postfix&#8217; if we are talking about the &#8216;quality of the difference&#8217;.
+If the &#8216;difference postfix&#8217; comes after a &#8216;quality postfix&#8217; then we are talking about the &#8216;difference of the quality quantity&#8217;.
+The supported differences are:</p>
+<ul class="simple">
+<li>&lt;variable&gt;_diff (<span class="math">\(x-y\)</span>)</li>
+<li>&lt;variable&gt;_diffrelx (<span class="math">\(\frac{x-y}{x}\)</span>)</li>
+<li>&lt;variable&gt;_diffrely (<span class="math">\(\frac{x-y}{y}\)</span>)</li>
+<li>&lt;variable&gt;_diffrelmin (<span class="math">\(\frac{x-y}{\min(x,y)}\)</span>)</li>
+<li>&lt;variable&gt;_diffrelmax (<span class="math">\(\frac{x-y}{\max(x,y)}\)</span>)</li>
+<li>&lt;variable&gt;_diffrelavg (<span class="math">\(\frac{2(x-y)}{x+y}\)</span>)</li>
+<li>&lt;variable&gt;_diffabs (<span class="math">\(|x-y|\)</span>)</li>
+<li>&lt;variable&gt;_diffabsrelx (<span class="math">\(\frac{|x-y|}{|x|}\)</span>)</li>
+<li>&lt;variable&gt;_diffabsrely (<span class="math">\(\frac{|x-y|}{|y|}\)</span>)</li>
+<li>&lt;variable&gt;_diffabsrelmin (<span class="math">\(\frac{|x-y|}{\min(|x|,|y|)}\)</span>)</li>
+<li>&lt;variable&gt;_diffabsrelmax (<span class="math">\(\frac{|x-y|}{\max(|x|,|y|)}\)</span>)</li>
+<li>&lt;variable&gt;_diffabsrelavg (<span class="math">\(\frac{2|x-y|}{|x+y|}\)</span>)</li>
+</ul>
 <p>Be aware that there are still several topics under discussion that may change the above naming convention.
 See the HARP issues list on the GitHub website for more details.</p>
 </div>

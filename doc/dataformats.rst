@@ -452,6 +452,27 @@ and the angle is increasing when moving Eastwards (i.e. clockwise).
 Wind direction follows the same rules as for azimuth angles (North = 0, East = 90 degrees),
 but the direction indicates where the wind is coming *from*.
 
+In addition to the conventions above there can also be variables that describe a 'difference'.
+These difference variables can only be used to describe differences of the same quantity between different datasets ('x' and 'y') and only for variables that have a unit.
+All difference variables in a single product should apply to the same datasets 'x' and 'y' (i.e. the difference variables should only reflect a single comparison of datasets; you should not combine one difference variable for 'x-y' and another for 'x-z' (even for different quantities) within the same product).
+A difference variable is indicated by a postfix. The 'difference postfix' can come before a 'quality postfix' if we are talking about the 'quality of the difference'.
+If the 'difference postfix' comes after a 'quality postfix' then we are talking about the 'difference of the quality quantity'.
+The supported differences are:
+
+- <variable>_diff (:math:`x-y`)
+- <variable>_diffrelx (:math:`\frac{x-y}{x}`)
+- <variable>_diffrely (:math:`\frac{x-y}{y}`)
+- <variable>_diffrelmin (:math:`\frac{x-y}{\min(x,y)}`)
+- <variable>_diffrelmax (:math:`\frac{x-y}{\max(x,y)}`)
+- <variable>_diffrelavg (:math:`\frac{2(x-y)}{x+y}`)
+- <variable>_diffabs (:math:`|x-y|`)
+- <variable>_diffabsrelx (:math:`\frac{|x-y|}{|x|}`)
+- <variable>_diffabsrely (:math:`\frac{|x-y|}{|y|}`)
+- <variable>_diffabsrelmin (:math:`\frac{|x-y|}{\min(|x|,|y|)}`)
+- <variable>_diffabsrelmax (:math:`\frac{|x-y|}{\max(|x|,|y|)}`)
+- <variable>_diffabsrelavg (:math:`\frac{2|x-y|}{|x+y|}`)
+
+
 Be aware that there are still several topics under discussion that may change the above naming convention.
 See the HARP issues list on the GitHub website for more details.
 
