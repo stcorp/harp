@@ -93,6 +93,7 @@ HARP_DOCFILES = \
 	doc/html/index.html \
 	doc/html/ingestions/ACE_FTS_L2_iso.html \
 	doc/html/ingestions/ACE_FTS_L2_main.html \
+	doc/html/ingestions/ACTRIS_CLOUDS_L2_Aerosol.html \
 	doc/html/ingestions/AEOLUS_L1B_Mie.html \
 	doc/html/ingestions/AEOLUS_L1B_Mie_Observation.html \
 	doc/html/ingestions/AEOLUS_L1B_Rayleigh.html \
@@ -664,6 +665,8 @@ doc/html/index.html:
 doc/html/ingestions/ACE_FTS_L2_iso.html:
 	$(MAKE) harp_doc
 doc/html/ingestions/ACE_FTS_L2_main.html:
+	$(MAKE) harp_doc
+doc/html/ingestions/ACTRIS_CLOUDS_L2_Aerosol.html:
 	$(MAKE) harp_doc
 doc/html/ingestions/AEOLUS_L1B_Mie.html:
 	$(MAKE) harp_doc
