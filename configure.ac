@@ -189,6 +189,7 @@ AC_DEFINE_UNQUOTED(HARP_CONVENTION, ["HARP-$HARP_FORMAT_VERSION_MAJOR.$HARP_FORM
 # codadef versions
 ST_CODADEF_VERSION([$srcdir/definitions],[ACE_FTS])
 ST_CODADEF_VERSION([$srcdir/definitions],[ACSAF])
+ST_CODADEF_VERSION([$srcdir/definitions],[ACTRIS_CLOUDS])
 ST_CODADEF_VERSION([$srcdir/definitions],[AEOLUS])
 ST_CODADEF_VERSION([$srcdir/definitions],[AURA_HIRDLS])
 ST_CODADEF_VERSION([$srcdir/definitions],[AURA_MLS])

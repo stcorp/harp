@@ -1,0 +1,16 @@
+<?xml version="1.0"?>
+<cd:ProductClass name="ACTRIS_CLOUDS" last-modified="2017-05-22" xmlns:cd="http://www.stcorp.nl/coda/definition/2008/07">
+  <cd:Description>ACTRIS_CLOUD aerosol target classification products</cd:Description>
+
+  <cd:ProductType name="L2_Aerosol">
+
+    <cd:ProductDefinition id="L2_Aerosol_nc3" format="netcdf" version="3">
+      <cd:Description>The format definition for this product is taken from the netcdf file itself.</cd:Description>
+      <cd:DetectionRule>
+        <cd:MatchExpression>regex("[0-9]{8}_.*_classification\\.nc", filename())</cd:MatchExpression>
+      </cd:DetectionRule>
+    </cd:ProductDefinition>
+
+  </cd:ProductType>
+
+</cd:ProductClass>

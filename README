@@ -18,6 +18,7 @@ components (see below), but these are planned to be added in the near future.
 The main functionalities of HARP are:
  - ingestion of product data for:
    - ACE FTS L2
+   - ACTRIS CLOUDS L2
    - ADM-Aeolus L1b/L2a/L2b
    - Aura OMI/TES/MLS/HIRDLS L2 + OMI L3
    - CALIPSO (Lidar L2)

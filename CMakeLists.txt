@@ -556,6 +556,7 @@ endfunction(add_codadef)
 
 add_codadef(ACE_FTS)
 add_codadef(ACSAF)
+add_codadef(ACTRIS_CLOUDS)
 add_codadef(AEOLUS)
 add_codadef(AURA_HIRDLS)
 add_codadef(AURA_MLS)

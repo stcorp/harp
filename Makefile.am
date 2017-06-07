@@ -92,6 +92,7 @@ libharp_la_SOURCES = \
 	libharp/harp-geometry-wgs84.c \
 	libharp/harp-geometry.h \
 	libharp/harp-ingest-ace_fts_l2.c \
+	libharp/harp-ingest-actris-clouds_l2_aerosol.c \
 	libharp/harp-ingest-aeolus_l1b.c \
 	libharp/harp-ingest-aeolus_l2a.c \
 	libharp/harp-ingest-aeolus_l2b.c \
@@ -381,6 +382,7 @@ endif
 
 ACE_FTS_DEFINITION_FILE = ACE_FTS-@CODADEF_VERSION_ACE_FTS@.codadef
 ACSAF_DEFINITION_FILE = ACSAF-@CODADEF_VERSION_ACSAF@.codadef
+ACTRIS_CLOUDS_DEFINITION_FILE = ACTRIS_CLOUDS-@CODADEF_VERSION_ACTRIS_CLOUDS@.codadef
 AEOLUS_DEFINITION_FILE = AEOLUS-@CODADEF_VERSION_AEOLUS@.codadef
 AURA_HIRDLS_DEFINITION_FILE = AURA_HIRDLS-@CODADEF_VERSION_AURA_HIRDLS@.codadef
 AURA_MLS_DEFINITION_FILE = AURA_MLS-@CODADEF_VERSION_AURA_MLS@.codadef
@@ -409,6 +411,7 @@ TEMIS_DEFINITION_FILE = TEMIS-@CODADEF_VERSION_TEMIS@.codadef
 DEFINITION_FILES = \
 	definitions/$(ACE_FTS_DEFINITION_FILE) \
 	definitions/$(ACSAF_DEFINITION_FILE) \
+	definitions/$(ACTRIS_CLOUDS_DEFINITION_FILE) \
 	definitions/$(AEOLUS_DEFINITION_FILE) \
 	definitions/$(AURA_HIRDLS_DEFINITION_FILE) \
 	definitions/$(AURA_MLS_DEFINITION_FILE) \
@@ -453,6 +456,15 @@ definitions/$(ACSAF_DEFINITION_FILE):
 	@$(srcdir)/codadef.sh $(srcdir)/definitions/ACSAF definitions
 	@if test ! -f definitions/$(ACSAF_DEFINITION_FILE) ; then \
 	  echo definitions/$(ACSAF_DEFINITION_FILE) not created. ; \
+	  echo run './config.status --recheck' to update the .codadef version reference. ; \
+	  exit 1 ; \
+	 fi
+
+definitions/$(ACTRIS_CLOUDS_DEFINITION_FILE):
+	test -d definitions || $(mkinstalldirs) definitions
+	@$(srcdir)/codadef.sh $(srcdir)/definitions/ACTRIS_CLOUDS definitions
+	@if test ! -f definitions/$(ACTRIS_CLOUDS_DEFINITION_FILE) ; then \
+	  echo definitions/$(ACTRIS_CLOUDS_DEFINITION_FILE) not created. ; \
 	  echo run './config.status --recheck' to update the .codadef version reference. ; \
 	  exit 1 ; \
 	 fi
