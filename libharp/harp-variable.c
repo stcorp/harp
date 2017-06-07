@@ -936,6 +936,13 @@ LIBHARP_API int harp_variable_new(const char *name, harp_data_type data_type, in
     harp_variable *variable;
     int i;
 
+    if (!harp_is_identifier(name))
+    {
+        harp_set_error(HARP_ERROR_INVALID_ARGUMENT, "variable name '%s' is not a valid identifier (%s:%u)", name,
+                       __FILE__, __LINE__);
+        return -1;
+    }
+
     /* Check dimension related arguments. */
     if (dimension_type != NULL)
     {
