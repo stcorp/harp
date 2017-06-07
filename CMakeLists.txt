@@ -255,6 +255,7 @@ set(LIBHARP_SOURCES
   libharp/harp-geometry-wgs84.c
   libharp/harp-geometry.h
   libharp/harp-ingest-ace_fts_l2.c
+  libharp/harp-ingest-actris-clouds_l2_aerosol.c
   libharp/harp-ingest-aeolus_l1b.c
   libharp/harp-ingest-aeolus_l2a.c
   libharp/harp-ingest-aeolus_l2b.c
