@@ -123,6 +123,10 @@ static int collocation_pair_new(long collocation_index, long product_index_a, lo
 
 /** Create a new collocation result set
  * \param new_collocation_result Pointer to the C variable where the new result set will be stored.
+ * \param num_differences The number of differences that have been calculated per pair for the collocation result
+ * \param difference_variable_name An array of variable names describing the type of difference for each calculated
+ *        difference
+ * \param difference_unit An array of units for each calculated difference
  * \return
  *   \arg \c 0, Success.
  *   \arg \c -1, Error occurred (check #harp_errno).
@@ -661,7 +665,9 @@ LIBHARP_API int harp_collocation_result_filter_for_collocation_indices(harp_coll
  * \param index_a Value of the index variable for the matching sample in the product from dataset A
  * \param source_product_b Name of the source_product attribute of the product from dataset B
  * \param index_b Value of the index variable for the matching sample in the product from dataset B
- * \param difference Array of difference values (should have length HARP_COLLOCATION_RESULT_MAX_NUM_DIFFERENCES)
+ * \param num_differences Number of calculated differences (should equal the number of differences with which the
+ *        collocation result was initialized)
+ * \param difference Array of difference values
  * \return
  *   \arg \c 0, Success.
  *   \arg \c -1, Error occurred (check #harp_errno).
