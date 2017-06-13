@@ -450,6 +450,13 @@ LIBHARP_API int harp_dataset_has_product(harp_dataset *dataset, const char *sour
 LIBHARP_API int harp_dataset_add_product(harp_dataset *dataset, const char *source_product,
                                          harp_product_metadata *metadata)
 {
+    if (metadata != NULL && strcmp(metadata->source_product, source_product) != 0)
+    {
+        harp_set_error(HARP_ERROR_INVALID_ARGUMENT, "invalid source product '%s' in metadata, expected '%s'",
+                       metadata->source_product, source_product);
+        return -1;
+    }
+
     /* if source product does not already appear, add it */
     if (!harp_dataset_has_product(dataset, source_product))
     {
