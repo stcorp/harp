@@ -105,6 +105,7 @@ HARP_DOCFILES = \
 	doc/html/ingestions/CALIPSO_L2_CAL_LID_APro.html \
 	doc/html/ingestions/CALIPSO_L2_CAL_LID_CLay.html \
 	doc/html/ingestions/CALIPSO_L2_CAL_LID_CPro.html \
+	doc/html/ingestions/EARLINET_L2_Aerosol_Coefficient.html \
 	doc/html/ingestions/ECMWF_GRIB.html \
 	doc/html/ingestions/ESACCI_AEROSOL_L2_AATSR.html \
 	doc/html/ingestions/ESACCI_AEROSOL_L2_ATSR2.html \
@@ -689,6 +690,8 @@ doc/html/ingestions/CALIPSO_L2_CAL_LID_APro.html:
 doc/html/ingestions/CALIPSO_L2_CAL_LID_CLay.html:
 	$(MAKE) harp_doc
 doc/html/ingestions/CALIPSO_L2_CAL_LID_CPro.html:
+	$(MAKE) harp_doc
+doc/html/ingestions/EARLINET_L2_Aerosol_Coefficient.html:
 	$(MAKE) harp_doc
 doc/html/ingestions/ECMWF_GRIB.html:
 	$(MAKE) harp_doc

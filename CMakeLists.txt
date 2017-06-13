@@ -274,6 +274,7 @@ set(LIBHARP_SOURCES
   libharp/harp-ingest-cci_l3_o3_tc.c
   libharp/harp-ingest-cci_l3_o3_ttoc.c
   libharp/harp-ingest-cci_l4_o3_np.c
+  libharp/harp-ingest-earlinet_l2.c
   libharp/harp-ingest-ecmwf-grib.c
   libharp/harp-ingest-geoms-lidar.c
   libharp/harp-ingest-geoms-mwr.c
@@ -564,6 +565,7 @@ add_codadef(AURA_MLS)
 add_codadef(AURA_OMI)
 add_codadef(AURA_TES)
 add_codadef(CALIPSO)
+add_codadef(EARLINET)
 add_codadef(ECMWF)
 add_codadef(ENVISAT_GOMOS)
 add_codadef(ENVISAT_MIPAS)
