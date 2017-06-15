@@ -29,1746 +29,1413 @@
  * POSSIBILITY OF SUCH DAMAGE.
  */
 
-#include "harpcollocate.h"
+#include "harp.h"
 
 #include <assert.h>
+#include <math.h>
+#include <stdlib.h>
+#include <string.h>
 
-typedef enum Reduced_product_variable_type_enum
+typedef struct collocation_criterium_struct
 {
-    reduced_product_variable_type_index = 0,
-    reduced_product_variable_type_datetime = 1,
-    reduced_product_variable_type_latitude = 2,
-    reduced_product_variable_type_longitude = 3,
-    reduced_product_variable_type_latitude_bounds = 4,
-    reduced_product_variable_type_longitude_bounds = 5,
-    reduced_product_variable_type_sza = 6,
-    reduced_product_variable_type_saa = 7,
-    reduced_product_variable_type_vza = 8,
-    reduced_product_variable_type_vaa = 9,
-    reduced_product_variable_type_theta = 10
-} Reduced_product_variable_type;
+    char *variable_name;
+    double value;
+    char *unit;
+} collocation_criterium;
 
-/* Reduced data product that contains only the parameters that are needed for collocation. These are datetime, latitude,
- * longitude, and measurement geometry parameters.
- */
-typedef struct Reduced_product_struct
+typedef struct cache_variables_struct
 {
-    char *filename;
-    char *source_product;
-    harp_variable *index;
-    harp_variable *datetime;
-    harp_variable *latitude;
-    harp_variable *longitude;
-    harp_variable *latitude_bounds;
-    harp_variable *longitude_bounds;
-    harp_variable *sza;
-    harp_variable *saa;
-    harp_variable *vza;
-    harp_variable *vaa;
-    harp_variable *theta;
-} Reduced_product;
+    harp_variable *index;       /* reference */
+    harp_variable *latitude;    /* copy */
+    harp_variable *longitude;   /* copy */
+    harp_variable *latitude_bounds;     /* copy */
+    harp_variable *longitude_bounds;    /* copy */
+    harp_variable **criterium;  /* references */
+} cache_variables;
 
-/* Define the cache to store multiple reduced_products. */
-typedef struct Cache_struct
+typedef struct collocation_info_struct
 {
-    int num_files;
-    int *file_is_needed;
-    double *datetime_start;
-    double *datetime_stop;
-    int num_subset_files;
-    Reduced_product **reduced_product;
-} Cache;
+    /* options */
+    int num_criteria;
+    collocation_criterium **criterium;
+    int datetime_index; /* datetime criterium index can only be -1 or 0 */
+    int point_distance_index;
+    int filter_area_intersects;
+    int filter_point_in_area_xy;
+    int filter_point_in_area_yx;
 
-void reduced_product_delete(Reduced_product *reduced_product)
+    int perform_nearest_neighbour_x_first;
+    char *nearest_neighbour_x_variable_name;
+    int nearest_neighbour_x_criterium_index;
+    char *nearest_neighbour_y_variable_name;
+    int nearest_neighbour_y_criterium_index;
+
+    /* result */
+    harp_collocation_result *collocation_result;
+
+    /* state */
+    long *sorted_index_a;       /* indices of products sorted by datetime_start/datetime_stop */
+    long *sorted_index_b;
+    harp_product *product_a;    /* we only have one product of dataset A loaded at any moment */
+    harp_product **product_b;   /* for dataset B we may have multiple products loaded */
+    harp_dataset *dataset_a;
+    harp_dataset *dataset_b;
+
+    cache_variables variables_a;
+    cache_variables variables_b;
+
+    double *difference;
+} collocation_info;
+
+static void collocation_criterium_delete(collocation_criterium *criterium)
 {
-    if (reduced_product != NULL)
+    if (criterium != NULL)
     {
-        if (reduced_product->filename != NULL)
+        if (criterium->variable_name != NULL)
         {
-            free(reduced_product->filename);
+            free(criterium->variable_name);
         }
 
-        if (reduced_product->source_product != NULL)
+        if (criterium->unit != NULL)
         {
-            free(reduced_product->source_product);
+            free(criterium->unit);
         }
 
-        if (reduced_product->index != NULL)
-        {
-            harp_variable_delete(reduced_product->index);
-        }
-
-        if (reduced_product->datetime != NULL)
-        {
-            harp_variable_delete(reduced_product->datetime);
-        }
-
-        if (reduced_product->latitude != NULL)
-        {
-            harp_variable_delete(reduced_product->latitude);
-        }
-
-        if (reduced_product->longitude != NULL)
-        {
-            harp_variable_delete(reduced_product->longitude);
-        }
-
-        if (reduced_product->latitude_bounds != NULL)
-        {
-            harp_variable_delete(reduced_product->latitude_bounds);
-        }
-
-        if (reduced_product->longitude_bounds != NULL)
-        {
-            harp_variable_delete(reduced_product->longitude_bounds);
-        }
-
-        if (reduced_product->sza != NULL)
-        {
-            harp_variable_delete(reduced_product->sza);
-        }
-
-        if (reduced_product->saa != NULL)
-        {
-            harp_variable_delete(reduced_product->saa);
-        }
-
-        if (reduced_product->vza != NULL)
-        {
-            harp_variable_delete(reduced_product->vza);
-        }
-
-        if (reduced_product->vaa != NULL)
-        {
-            harp_variable_delete(reduced_product->vaa);
-        }
-
-        if (reduced_product->theta != NULL)
-        {
-            harp_variable_delete(reduced_product->theta);
-        }
-
-        free(reduced_product);
+        free(criterium);
     }
 }
 
-static void cache_delete(Cache *cache)
+static int collocation_criterium_new(int variable_name_length, const char *variable_name, double value, int unit_length,
+                                     const char *unit, collocation_criterium **new_criterium)
 {
-    if (cache != NULL)
+    collocation_criterium *criterium = NULL;
+
+    assert(variable_name != NULL);
+    if (value < 0)
     {
-        if (cache->file_is_needed != NULL)
-        {
-            free(cache->file_is_needed);
-        }
-
-        if (cache->datetime_start != NULL)
-        {
-            free(cache->datetime_start);
-        }
-
-        if (cache->datetime_stop != NULL)
-        {
-            free(cache->datetime_stop);
-        }
-
-        if (cache->reduced_product != NULL)
-        {
-            int i;
-
-            for (i = 0; i < cache->num_files; i++)
-            {
-                reduced_product_delete(cache->reduced_product[i]);
-            }
-
-            free(cache->reduced_product);
-        }
-
-        free(cache);
+        harp_set_error(HARP_ERROR_INVALID_ARGUMENT, "collocation criterium value cannot be negative");
+        return -1;
     }
+
+    criterium = (collocation_criterium *)malloc(sizeof(collocation_criterium));
+    if (criterium == NULL)
+    {
+        harp_set_error(HARP_ERROR_OUT_OF_MEMORY, "out of memory (could not allocate %lu bytes) (%s:%u)",
+                       sizeof(collocation_criterium), __FILE__, __LINE__);
+        return -1;
+    }
+
+    criterium->variable_name = NULL;
+    criterium->value = value;
+    criterium->unit = NULL;
+
+    criterium->variable_name = malloc(variable_name_length + 1);
+    if (criterium->variable_name == NULL)
+    {
+        harp_set_error(HARP_ERROR_OUT_OF_MEMORY, "out of memory (could not duplicate string) (%s:%u)", __FILE__,
+                       __LINE__);
+        collocation_criterium_delete(criterium);
+        return -1;
+    }
+    memcpy(criterium->variable_name, variable_name, variable_name_length);
+    criterium->variable_name[variable_name_length] = '\0';
+
+    if (unit_length == 0)
+    {
+        if (strcmp(criterium->variable_name, "datetime") == 0)
+        {
+            /* use the default unit for a datetime _distance_ */
+            unit_length = strlen(HARP_UNIT_TIME);
+            unit = HARP_UNIT_TIME;
+        }
+        else if (strcmp(criterium->variable_name, "point_distance") == 0)
+        {
+            unit_length = strlen(HARP_UNIT_LENGTH);
+            unit = HARP_UNIT_LENGTH;
+        }
+    }
+
+    if (unit_length != 0)
+    {
+        criterium->unit = malloc(unit_length + 1);
+        if (criterium->unit == NULL)
+        {
+            harp_set_error(HARP_ERROR_OUT_OF_MEMORY, "out of memory (could not duplicate string) (%s:%u)", __FILE__,
+                           __LINE__);
+            collocation_criterium_delete(criterium);
+            return -1;
+        }
+        memcpy(criterium->unit, unit, unit_length);
+        criterium->unit[unit_length] = '\0';
+    }
+
+    *new_criterium = criterium;
+
+    return 0;
 }
 
-static int cache_new(Cache **new_cache, int num_files)
+static void collocation_info_delete(collocation_info *info)
 {
-    Cache *cache = NULL;
-    Reduced_product **reduced_product = NULL;
     int i;
 
-    cache = (Cache *)malloc(sizeof(Cache));
-    if (cache == NULL)
+    if (info != NULL)
     {
-        harp_set_error(HARP_ERROR_OUT_OF_MEMORY, "out of memory (could not allocate %lu bytes) (%s:%u)", sizeof(Cache),
-                       __FILE__, __LINE__);
-        return -1;
-    }
-
-    cache->num_files = num_files;
-
-    cache->file_is_needed = calloc((size_t)num_files, sizeof(int));
-    if (cache->file_is_needed == NULL)
-    {
-        harp_set_error(HARP_ERROR_OUT_OF_MEMORY, "out of memory (could not allocate %lu bytes) (%s:%u)",
-                       (size_t)num_files * sizeof(int), __FILE__, __LINE__);
-        cache_delete(cache);
-        return -1;
-    }
-
-    cache->datetime_start = calloc((size_t)num_files, sizeof(double));
-    if (cache->datetime_start == NULL)
-    {
-        harp_set_error(HARP_ERROR_OUT_OF_MEMORY, "out of memory (could not allocate %lu bytes) (%s:%u)",
-                       (size_t)num_files * sizeof(double), __FILE__, __LINE__);
-        cache_delete(cache);
-        return -1;
-    }
-
-    cache->datetime_stop = calloc((size_t)num_files, sizeof(double));
-    if (cache->datetime_stop == NULL)
-    {
-        harp_set_error(HARP_ERROR_OUT_OF_MEMORY, "out of memory (could not allocate %lu bytes) (%s:%u)",
-                       (size_t)num_files * sizeof(double), __FILE__, __LINE__);
-        cache_delete(cache);
-        return -1;
-    }
-
-    cache->num_subset_files = 0;
-
-    reduced_product = malloc(num_files * sizeof(Reduced_product *));
-    if (reduced_product == NULL)
-    {
-        harp_set_error(HARP_ERROR_OUT_OF_MEMORY, "out of memory (could not allocate %lu bytes) (%s:%u)",
-                       num_files * sizeof(Reduced_product *), __FILE__, __LINE__);
-        cache_delete(cache);
-        return -1;
-    }
-
-    cache->reduced_product = reduced_product;
-
-    for (i = 0; i < num_files; i++)
-    {
-        cache->reduced_product[i] = NULL;
-    }
-
-    *new_cache = cache;
-    return 0;
-}
-
-static int cache_add_reduced_product(Cache *cache, Reduced_product *reduced_product, int index)
-{
-    if (cache->reduced_product[index] != NULL)
-    {
-        /* Reduced product is already in the cache, keep it */
-        return 0;
-    }
-
-    cache->reduced_product[index] = reduced_product;
-    cache->num_subset_files++;
-    return 0;
-}
-
-static int cache_detach_product(Cache *cache, Reduced_product *reduced_product)
-{
-    int i;
-    int found_reduced_product = 0;
-
-    if (reduced_product == NULL)
-    {
-        harp_set_error(HARP_ERROR_INVALID_ARGUMENT, "could not detach empty reduced product");
-        return -1;
-    }
-
-    for (i = 0; i < cache->num_files; i++)
-    {
-        if (cache->reduced_product[i] == reduced_product)
+        if (info->criterium != NULL)
         {
-            found_reduced_product = 1;
-            cache->reduced_product[i] = NULL;
-            cache->num_subset_files--;
-        }
-    }
-
-    if (!found_reduced_product)
-    {
-        harp_set_error(HARP_ERROR_INVALID_ARGUMENT, "could not find reduced product '%s' in cache",
-                       reduced_product->filename);
-        return -1;
-    }
-
-    return 0;
-}
-
-static int cache_b_update(Cache *cache_b, const Collocation_options *collocation_options, const Dataset *dataset_a,
-                          int i)
-{
-    double datetime_start_a = dataset_a->datetime_start[i];
-    double dt;
-    int j;
-
-    if (collocation_options->criterion_is_set[collocation_criterion_type_time] != 1)
-    {
-        /* Do not remove any files from the cache */
-        return 0;
-    }
-
-    /* Enlarge the datetime range */
-    dt = collocation_options->criterion[collocation_criterion_type_time]->value;
-
-    if (cache_b == NULL)
-    {
-        harp_set_error(HARP_ERROR_INVALID_ARGUMENT, "cache is NULL");
-        return -1;
-    }
-
-    /* Remove a reduced_product b from the cache when it is outdated:
-     * the stop time of reduced_product b is before the start time of reduced_product a */
-    for (j = 0; j < cache_b->num_files; j++)
-    {
-        if (cache_b->datetime_stop[j] + dt <= datetime_start_a)
-        {
-            Reduced_product *reduced_product = cache_b->reduced_product[j];
-
-            if (reduced_product != NULL)
+            for (i = 0; i < info->num_criteria; i++)
             {
-                if (cache_detach_product(cache_b, reduced_product) != 0)
+                if (info->criterium[i] != NULL)
                 {
-                    return -1;
+                    collocation_criterium_delete(info->criterium[i]);
                 }
-                reduced_product_delete(reduced_product);
+            }
+            free(info->criterium);
+        }
+        if (info->nearest_neighbour_x_variable_name != NULL)
+        {
+            free(info->nearest_neighbour_x_variable_name);
+        }
+        if (info->nearest_neighbour_y_variable_name != NULL)
+        {
+            free(info->nearest_neighbour_y_variable_name);
+        }
+        if (info->collocation_result != NULL)
+        {
+            harp_collocation_result_delete(info->collocation_result);
+        }
+        if (info->sorted_index_a != NULL)
+        {
+            free(info->sorted_index_a);
+        }
+        if (info->sorted_index_b != NULL)
+        {
+            free(info->sorted_index_b);
+        }
+        if (info->product_a != NULL)
+        {
+            harp_product_delete(info->product_a);
+        }
+        if (info->product_b != NULL)
+        {
+            assert(info->dataset_b != NULL);
+            for (i = 0; i < info->dataset_b->num_products; i++)
+            {
+                if (info->product_b[i] != NULL)
+                {
+                    harp_product_delete(info->product_b[i]);
+                }
+            }
+            free(info->product_b);
+        }
+        if (info->dataset_a != NULL)
+        {
+            harp_dataset_delete(info->dataset_a);
+        }
+        if (info->dataset_b != NULL)
+        {
+            harp_dataset_delete(info->dataset_b);
+        }
+        if (info->variables_a.latitude != NULL)
+        {
+            harp_variable_delete(info->variables_a.latitude);
+        }
+        if (info->variables_a.longitude != NULL)
+        {
+            harp_variable_delete(info->variables_a.longitude);
+        }
+        if (info->variables_a.latitude_bounds != NULL)
+        {
+            harp_variable_delete(info->variables_a.latitude_bounds);
+        }
+        if (info->variables_a.longitude_bounds != NULL)
+        {
+            harp_variable_delete(info->variables_a.longitude_bounds);
+        }
+        if (info->variables_a.criterium != NULL)
+        {
+            free(info->variables_a.criterium);
+        }
+        if (info->variables_b.latitude != NULL)
+        {
+            harp_variable_delete(info->variables_b.latitude);
+        }
+        if (info->variables_b.longitude != NULL)
+        {
+            harp_variable_delete(info->variables_b.longitude);
+        }
+        if (info->variables_b.latitude_bounds != NULL)
+        {
+            harp_variable_delete(info->variables_b.latitude_bounds);
+        }
+        if (info->variables_b.longitude_bounds != NULL)
+        {
+            harp_variable_delete(info->variables_b.longitude_bounds);
+        }
+        if (info->variables_b.criterium != NULL)
+        {
+            free(info->variables_b.criterium);
+        }
+        if (info->difference != NULL)
+        {
+            free(info->difference);
+        }
+        free(info);
+    }
+}
+
+static int collocation_info_new(collocation_info **new_info)
+{
+    collocation_info *info = NULL;
+
+    info = (collocation_info *)malloc(sizeof(collocation_info));
+    if (info == NULL)
+    {
+        harp_set_error(HARP_ERROR_OUT_OF_MEMORY, "out of memory (could not allocate %lu bytes) (%s:%u)",
+                       sizeof(collocation_info), __FILE__, __LINE__);
+        return -1;
+    }
+
+    info->num_criteria = 0;
+    info->criterium = NULL;
+    info->datetime_index = -1;
+    info->point_distance_index = -1;
+    info->filter_area_intersects = 0;
+    info->filter_point_in_area_xy = 0;
+    info->filter_point_in_area_yx = 0;
+    info->perform_nearest_neighbour_x_first = 0;
+    info->nearest_neighbour_x_variable_name = NULL;
+    info->nearest_neighbour_x_criterium_index = -1;
+    info->nearest_neighbour_y_variable_name = NULL;
+    info->nearest_neighbour_y_criterium_index = -1;
+    info->collocation_result = NULL;
+    info->sorted_index_a = NULL;
+    info->sorted_index_b = NULL;
+    info->product_a = NULL;
+    info->product_b = NULL;
+    info->dataset_a = NULL;
+    info->dataset_b = NULL;
+    info->variables_a.index = NULL;
+    info->variables_a.latitude = NULL;
+    info->variables_a.longitude = NULL;
+    info->variables_a.latitude_bounds = NULL;
+    info->variables_a.longitude_bounds = NULL;
+    info->variables_a.criterium = NULL;
+    info->variables_b.index = NULL;
+    info->variables_b.latitude = NULL;
+    info->variables_b.longitude = NULL;
+    info->variables_b.latitude_bounds = NULL;
+    info->variables_b.longitude_bounds = NULL;
+    info->variables_b.criterium = NULL;
+    info->difference = NULL;
+
+    if (harp_dataset_new(&info->dataset_a) != 0)
+    {
+        collocation_info_delete(info);
+        return -1;
+    }
+    if (harp_dataset_new(&info->dataset_b) != 0)
+    {
+        collocation_info_delete(info);
+        return -1;
+    }
+    if (harp_collocation_result_new(&info->collocation_result, 0, NULL, NULL) != 0)
+    {
+        collocation_info_delete(info);
+        return -1;
+    }
+
+    *new_info = info;
+
+    return 0;
+}
+
+static int collocation_info_add_criterium(collocation_info *info, int variable_name_length, const char *variable_name,
+                                          double value, int unit_length, const char *unit)
+{
+    collocation_criterium **new_criterium;
+    collocation_criterium *criterium;
+    int i;
+
+    new_criterium = realloc(info->criterium, (info->num_criteria + 1) * sizeof(collocation_criterium *));
+    if (new_criterium == NULL)
+    {
+        harp_set_error(HARP_ERROR_OUT_OF_MEMORY, "out of memory (could not allocate %lu bytes) (%s:%u)",
+                       (info->num_criteria + 1) * sizeof(collocation_criterium *), __FILE__, __LINE__);
+        return -1;
+    }
+    info->criterium = new_criterium;
+
+    if (collocation_criterium_new(variable_name_length, variable_name, value, unit_length, unit, &criterium) != 0)
+    {
+        return -1;
+    }
+
+    for (i = 0; i < info->num_criteria; i++)
+    {
+        if (strcmp(info->criterium[i]->variable_name, criterium->variable_name) == 0)
+        {
+            harp_set_error(HARP_ERROR_INVALID_ARGUMENT, "cannot provide more than one criterium for variable '%s'",
+                           criterium->variable_name);
+            collocation_criterium_delete(criterium);
+            return -1;
+        }
+    }
+    info->criterium[info->num_criteria] = criterium;
+    info->num_criteria++;
+
+    return 0;
+}
+
+static int collocation_info_add_criterium_from_string(collocation_info *info, char *argument)
+{
+    char *cursor;
+    char *variable_name;
+    char *value_str;
+    char *unit;
+    double value;
+    int variable_name_length;
+    int unit_length = 0;
+
+    cursor = argument;
+    while (*cursor == ' ')
+    {
+        cursor++;
+    }
+    variable_name = cursor;
+    while (*cursor != ' ' && *cursor != '\0')
+    {
+        cursor++;
+    }
+    variable_name_length = cursor - variable_name;
+    if (variable_name_length == 0)
+    {
+        harp_set_error(HARP_ERROR_INVALID_ARGUMENT, "invalid criterium '%s'", argument);
+        return -1;
+    }
+
+    while (*cursor == ' ')
+    {
+        cursor++;
+    }
+    value_str = cursor;
+    value = strtod(value_str, &cursor);
+    if (cursor == value_str)
+    {
+        harp_set_error(HARP_ERROR_INVALID_ARGUMENT, "missing value in criterium '%s'", argument);
+        return -1;
+    }
+
+    while (*cursor == ' ')
+    {
+        cursor++;
+    }
+    if (*cursor != '\0')
+    {
+        if (*cursor != '[')
+        {
+            harp_set_error(HARP_ERROR_INVALID_ARGUMENT, "invalid unit in criterium '%s' (expected '[')", argument);
+            return -1;
+        }
+        cursor++;
+        unit = cursor;
+        while (*cursor != ']' && *cursor != '\0')
+        {
+            cursor++;
+        }
+        unit_length = cursor - unit;
+        if (unit_length == 0)
+        {
+            harp_set_error(HARP_ERROR_INVALID_ARGUMENT, "invalid unit in criterium '%s'", argument);
+            return -1;
+        }
+        if (*cursor != ']')
+        {
+            harp_set_error(HARP_ERROR_INVALID_ARGUMENT, "invalid unit in criterium '%s' (expected ']')", argument);
+            return -1;
+        }
+        cursor++;
+        while (*cursor == ' ')
+        {
+            cursor++;
+        }
+        if (*cursor != '\0')
+        {
+            harp_set_error(HARP_ERROR_INVALID_ARGUMENT, "invalid criterium '%s'", argument);
+            return -1;
+        }
+    }
+
+    return collocation_info_add_criterium(info, variable_name_length, variable_name, value, unit_length, unit);
+}
+
+static int collocation_info_update(collocation_info *info)
+{
+    int i, j;
+
+    /* make sure that datetime criterium is the first */
+    for (i = 0; i < info->num_criteria; i++)
+    {
+        if (strcmp(info->criterium[i]->variable_name, "datetime") == 0)
+        {
+            if (i != 0)
+            {
+                collocation_criterium *criterium;
+                int j;
+
+                /* put datetime criterium in the first position */
+                criterium = info->criterium[i];
+                for (j = i; j > 0; j--)
+                {
+                    info->criterium[j] = info->criterium[j - 1];
+                }
+                info->criterium[0] = criterium;
+            }
+            info->datetime_index = 0;
+        }
+        if (strcmp(info->criterium[i]->variable_name, "point_distance") == 0)
+        {
+            info->point_distance_index = i;
+        }
+    }
+
+    /* add criteria for the nearest neighbour filters (if they were not there yet) */
+    if (info->nearest_neighbour_x_variable_name != NULL)
+    {
+        for (i = 0; i < info->num_criteria; i++)
+        {
+            if (strcmp(info->criterium[i]->variable_name, info->nearest_neighbour_x_variable_name) == 0)
+            {
+                info->nearest_neighbour_x_criterium_index = i;
+                break;
+            }
+        }
+        if (i == info->num_criteria)
+        {
+            if (collocation_info_add_criterium(info, strlen(info->nearest_neighbour_x_variable_name),
+                                               info->nearest_neighbour_x_variable_name, harp_plusinf(), 0, NULL) != 0)
+            {
+                return -1;
+            }
+            info->nearest_neighbour_x_criterium_index = info->num_criteria - 1;
+        }
+    }
+
+    if (info->nearest_neighbour_y_variable_name != NULL)
+    {
+        for (i = 0; i < info->num_criteria; i++)
+        {
+            if (strcmp(info->criterium[i]->variable_name, info->nearest_neighbour_y_variable_name) == 0)
+            {
+                info->nearest_neighbour_y_criterium_index = i;
+                break;
+            }
+        }
+        if (i == info->num_criteria)
+        {
+            if (collocation_info_add_criterium(info, strlen(info->nearest_neighbour_y_variable_name),
+                                               info->nearest_neighbour_y_variable_name, harp_plusinf(), 0, NULL) != 0)
+            {
+                return -1;
+            }
+            info->nearest_neighbour_y_criterium_index = info->num_criteria - 1;
+        }
+    }
+
+    /* if no criteria are set then all data is kept and no need to collocate */
+    if (info->num_criteria == 0 && !info->filter_area_intersects && !info->filter_point_in_area_xy &&
+        !info->filter_point_in_area_yx)
+    {
+        harp_set_error(HARP_ERROR_INVALID_ARGUMENT, "no collocation criteria are set");
+        return -1;
+    }
+
+    /* initialize sorted indices */
+    info->sorted_index_a = malloc(info->dataset_a->num_products * sizeof(long));
+    if (info->sorted_index_a == NULL)
+    {
+        harp_set_error(HARP_ERROR_OUT_OF_MEMORY, "out of memory (could not allocate %lu bytes) (%s:%u)",
+                       info->dataset_a->num_products * sizeof(long), __FILE__, __LINE__);
+        return -1;
+    }
+    for (i = 0; i < info->dataset_a->num_products; i++)
+    {
+        /* start with source_product ordering */
+        info->sorted_index_a[i] = info->dataset_a->sorted_index[i];
+
+        /* bubble down to make it sorted on datetime start/stop */
+        for (j = i; j > 0; j--)
+        {
+            harp_product_metadata *metadata = info->dataset_a->metadata[info->sorted_index_a[j]];
+            harp_product_metadata *metadata_prev = info->dataset_a->metadata[info->sorted_index_a[j - 1]];
+
+            if (metadata->datetime_start < metadata_prev->datetime_start ||
+                (metadata->datetime_start == metadata_prev->datetime_start &&
+                 metadata->datetime_stop < metadata_prev->datetime_stop))
+            {
+                long index = info->sorted_index_a[j - 1];
+
+                info->sorted_index_a[j - 1] = info->sorted_index_a[j];
+                info->sorted_index_a[j] = index;
             }
         }
     }
 
-    return 0;
-}
-
-static int reduced_product_new(Reduced_product **new_reduced_product)
-{
-    Reduced_product *reduced_product = NULL;
-
-    reduced_product = (Reduced_product *)malloc(sizeof(Reduced_product));
-    if (reduced_product == NULL)
+    info->sorted_index_b = malloc(info->dataset_b->num_products * sizeof(long));
+    if (info->sorted_index_b == NULL)
     {
         harp_set_error(HARP_ERROR_OUT_OF_MEMORY, "out of memory (could not allocate %lu bytes) (%s:%u)",
-                       sizeof(Reduced_product), __FILE__, __LINE__);
+                       info->dataset_b->num_products * sizeof(long), __FILE__, __LINE__);
         return -1;
     }
-
-    reduced_product->filename = NULL;
-    reduced_product->source_product = NULL;
-    reduced_product->index = NULL;
-    reduced_product->datetime = NULL;
-    reduced_product->latitude = NULL;
-    reduced_product->longitude = NULL;
-    reduced_product->latitude_bounds = NULL;
-    reduced_product->longitude_bounds = NULL;
-    reduced_product->sza = NULL;
-    reduced_product->saa = NULL;
-    reduced_product->vza = NULL;
-    reduced_product->vaa = NULL;
-    reduced_product->theta = NULL;
-
-    *new_reduced_product = reduced_product;
-
-    return 0;
-}
-
-static void get_variable_name_type_and_unit_from_variable_type(const Reduced_product_variable_type variable_type,
-                                                               const char **variable_name, harp_data_type *data_type,
-                                                               const char **unit)
-{
-    switch (variable_type)
+    for (i = 0; i < info->dataset_b->num_products; i++)
     {
-        case reduced_product_variable_type_index:
-            *variable_name = "index";
-            *data_type = harp_type_int32;
-            *unit = NULL;
-            break;
+        info->sorted_index_b[i] = info->dataset_b->sorted_index[i];
 
-        case reduced_product_variable_type_datetime:
-            *variable_name = "datetime";
-            *data_type = harp_type_double;
-            *unit = HARP_UNIT_DATETIME;
-            break;
+        for (j = i; j > 0; j--)
+        {
+            harp_product_metadata *metadata = info->dataset_b->metadata[info->sorted_index_b[j]];
+            harp_product_metadata *metadata_prev = info->dataset_b->metadata[info->sorted_index_b[j - 1]];
 
-        case reduced_product_variable_type_latitude:
-            *variable_name = "latitude";
-            *data_type = harp_type_double;
-            *unit = HARP_UNIT_LATITUDE;
-            break;
+            if (metadata->datetime_start < metadata_prev->datetime_start ||
+                (metadata->datetime_start == metadata_prev->datetime_start &&
+                 metadata->datetime_stop < metadata_prev->datetime_stop))
+            {
+                long index = info->sorted_index_b[j - 1];
 
-        case reduced_product_variable_type_longitude:
-            *variable_name = "longitude";
-            *data_type = harp_type_double;
-            *unit = HARP_UNIT_LONGITUDE;
-            break;
-
-        case reduced_product_variable_type_latitude_bounds:
-            *variable_name = "latitude_bounds";
-            *data_type = harp_type_double;
-            *unit = HARP_UNIT_LATITUDE;
-            break;
-
-        case reduced_product_variable_type_longitude_bounds:
-            *variable_name = "longitude_bounds";
-            *data_type = harp_type_double;
-            *unit = HARP_UNIT_LONGITUDE;
-            break;
-
-        case reduced_product_variable_type_sza:
-            *variable_name = "solar_zenith_angle";
-            *data_type = harp_type_double;
-            *unit = HARP_UNIT_ANGLE;
-            break;
-
-        case reduced_product_variable_type_saa:
-            *variable_name = "solar_azimuth_angle";
-            *data_type = harp_type_double;
-            *unit = HARP_UNIT_ANGLE;
-            break;
-
-        case reduced_product_variable_type_vza:
-            *variable_name = "viewing_zenith_angle";
-            *data_type = harp_type_double;
-            *unit = HARP_UNIT_ANGLE;
-            break;
-
-        case reduced_product_variable_type_vaa:
-            *variable_name = "viewing_azimuth_angle";
-            *data_type = harp_type_double;
-            *unit = HARP_UNIT_ANGLE;
-            break;
-
-        case reduced_product_variable_type_theta:
-            *variable_name = "scattering_angle";
-            *data_type = harp_type_double;
-            *unit = HARP_UNIT_ANGLE;
-            break;
+                info->sorted_index_b[j - 1] = info->sorted_index_b[j];
+                info->sorted_index_b[j] = index;
+            }
+        }
     }
-}
 
-static int get_derived_variable(harp_product *product, Reduced_product_variable_type variable_type,
-                                harp_variable **new_variable)
-{
-    harp_dimension_type dimension_type = harp_dimension_time;
-    harp_data_type data_type;
-    char *variable_name = NULL;
-    char *unit = NULL;
-
-    /* Get target variable name and unit. */
-    get_variable_name_type_and_unit_from_variable_type(variable_type, (const char **)&variable_name, &data_type,
-                                                       (const char **)&unit);
-
-    if (variable_type == reduced_product_variable_type_latitude_bounds ||
-        variable_type == reduced_product_variable_type_longitude_bounds)
+    /* initialized product_b array */
+    info->product_b = malloc(info->dataset_b->num_products * sizeof(harp_product *));
+    if (info->product_b == NULL)
     {
-        harp_dimension_type dims[] = { harp_dimension_time, harp_dimension_independent };
-
-        /* Get the derived parameter from the product. */
-        return harp_product_get_derived_variable(product, variable_name, data_type, unit, 2, dims, new_variable);
-    }
-    else
-    {
-        /* Get the derived parameter from the product. */
-        return harp_product_get_derived_variable(product, variable_name, data_type, unit, 1, &dimension_type,
-                                                 new_variable);
-    }
-}
-
-/* dataset_id is 0 for dataset A and 1 for dataset B */
-static int reduced_product_import(const char *path, const Collocation_options *collocation_options, int dataset_id,
-                                  Reduced_product **new_reduced_product)
-{
-    harp_product *product = NULL;
-    Reduced_product *reduced_product = NULL;
-
-    /* Import the product. */
-    if (harp_import(path, NULL, NULL, &product) != 0)
-    {
+        harp_set_error(HARP_ERROR_OUT_OF_MEMORY, "out of memory (could not allocate %lu bytes) (%s:%u)",
+                       info->dataset_b->num_products * sizeof(harp_product *), __FILE__, __LINE__);
         return -1;
     }
-
-    /* Create the reduced product. */
-    if (reduced_product_new(&reduced_product) != 0)
+    for (i = 0; i < info->dataset_b->num_products; i++)
     {
-        harp_product_delete(product);
+        info->product_b[i] = NULL;
+    }
+
+    /* set the differences for the collocation result */
+    info->collocation_result->num_differences = info->num_criteria;
+    info->collocation_result->difference_variable_name = malloc((info->num_criteria + 1) * sizeof(char *));
+    if (info->collocation_result->difference_variable_name == NULL)
+    {
+        harp_set_error(HARP_ERROR_OUT_OF_MEMORY, "out of memory (could not allocate %lu bytes) (%s:%u)",
+                       (info->num_criteria + 1) * sizeof(char *), __FILE__, __LINE__);
         return -1;
     }
-
-    /* Set the filename. */
-    reduced_product->filename = strdup(harp_basename(path));
-    if (reduced_product->filename == NULL)
+    info->collocation_result->difference_unit = malloc((info->num_criteria + 1) * sizeof(char *));
+    if (info->collocation_result->difference_unit == NULL)
     {
-        harp_set_error(HARP_ERROR_OUT_OF_MEMORY, "out of memory (could not duplicate string) (%s:%u)", __FILE__,
-                       __LINE__);
-        reduced_product_delete(reduced_product);
-        harp_product_delete(product);
+        harp_set_error(HARP_ERROR_OUT_OF_MEMORY, "out of memory (could not allocate %lu bytes) (%s:%u)",
+                       (info->num_criteria + 1) * sizeof(char *), __FILE__, __LINE__);
         return -1;
     }
-
-    /* Set the source product. */
-    if (product->source_product != NULL)
+    for (i = 0; i < info->num_criteria; i++)
     {
-        reduced_product->source_product = strdup(product->source_product);
+        info->collocation_result->difference_variable_name[i] = NULL;
+        info->collocation_result->difference_unit[i] = NULL;
     }
-    else
+    for (i = 0; i < info->num_criteria; i++)
     {
-        reduced_product->source_product = strdup(harp_basename(path));
-    }
-
-    if (reduced_product->source_product == NULL)
-    {
-        harp_set_error(HARP_ERROR_OUT_OF_MEMORY, "out of memory (could not duplicate string) (%s:%u)", __FILE__,
-                       __LINE__);
-        reduced_product_delete(reduced_product);
-        harp_product_delete(product);
-        return -1;
-    }
-
-    /* Get index variable. */
-    if (get_derived_variable(product, reduced_product_variable_type_index, &reduced_product->index) != 0)
-    {
-        reduced_product_delete(reduced_product);
-        harp_product_delete(product);
-        return -1;
-    }
-
-    if (collocation_options->criterion_is_set[collocation_criterion_type_time])
-    {
-        /* Get datetime variable. */
-        if (get_derived_variable(product, reduced_product_variable_type_datetime, &reduced_product->datetime) != 0)
+        if (strcmp(info->criterium[i]->variable_name, "point_distance") == 0)
         {
-            reduced_product_delete(reduced_product);
-            harp_product_delete(product);
-            return -1;
-        }
-    }
-
-    /* Get latitude and longitude variables. */
-    if (collocation_options->criterion_is_set[collocation_criterion_type_latitude]
-        || collocation_options->criterion_is_set[collocation_criterion_type_longitude]
-        || collocation_options->criterion_is_set[collocation_criterion_type_point_distance]
-        || (dataset_id == 0 && collocation_options->criterion_is_set[collocation_criterion_type_point_a_in_area_b])
-        || (dataset_id == 1 && collocation_options->criterion_is_set[collocation_criterion_type_point_b_in_area_a]))
-    {
-        if (get_derived_variable(product, reduced_product_variable_type_latitude, &reduced_product->latitude) != 0)
-        {
-            reduced_product_delete(reduced_product);
-            harp_product_delete(product);
-            return -1;
-        }
-
-        if (get_derived_variable(product, reduced_product_variable_type_longitude, &reduced_product->longitude) != 0)
-        {
-            reduced_product_delete(reduced_product);
-            harp_product_delete(product);
-            return -1;
-        }
-    }
-
-    /* Get latitude_bounds and longitude_bounds variables. */
-    if (collocation_options->criterion_is_set[collocation_criterion_type_overlapping]
-        || collocation_options->criterion_is_set[collocation_criterion_type_overlapping_percentage]
-        || (dataset_id == 0 && collocation_options->criterion_is_set[collocation_criterion_type_point_b_in_area_a])
-        || (dataset_id == 1 && collocation_options->criterion_is_set[collocation_criterion_type_point_a_in_area_b]))
-    {
-        if (get_derived_variable(product, reduced_product_variable_type_latitude_bounds,
-                                 &reduced_product->latitude_bounds) != 0)
-        {
-            reduced_product_delete(reduced_product);
-            harp_product_delete(product);
-            return -1;
-        }
-
-        if (get_derived_variable(product, reduced_product_variable_type_longitude_bounds,
-                                 &reduced_product->longitude_bounds) != 0)
-        {
-            reduced_product_delete(reduced_product);
-            harp_product_delete(product);
-            return -1;
-        }
-    }
-
-    /* Get all relevant geometry angles. */
-    if (collocation_options->criterion_is_set[collocation_criterion_type_sza])
-    {
-        if (get_derived_variable(product, reduced_product_variable_type_sza, &reduced_product->sza) != 0)
-        {
-            reduced_product_delete(reduced_product);
-            harp_product_delete(product);
-            return -1;
-        }
-    }
-
-    if (collocation_options->criterion_is_set[collocation_criterion_type_saa])
-    {
-        if (get_derived_variable(product, reduced_product_variable_type_saa, &reduced_product->saa) != 0)
-        {
-            reduced_product_delete(reduced_product);
-            harp_product_delete(product);
-            return -1;
-        }
-    }
-
-    if (collocation_options->criterion_is_set[collocation_criterion_type_vza])
-    {
-        if (get_derived_variable(product, reduced_product_variable_type_vza, &reduced_product->vza) != 0)
-        {
-            reduced_product_delete(reduced_product);
-            harp_product_delete(product);
-            return -1;
-        }
-    }
-
-    if (collocation_options->criterion_is_set[collocation_criterion_type_vaa])
-    {
-        if (get_derived_variable(product, reduced_product_variable_type_vaa, &reduced_product->vaa) != 0)
-        {
-            reduced_product_delete(reduced_product);
-            harp_product_delete(product);
-            return -1;
-        }
-    }
-
-    if (collocation_options->criterion_is_set[collocation_criterion_type_theta])
-    {
-        if (get_derived_variable(product, reduced_product_variable_type_theta, &reduced_product->theta) != 0)
-        {
-            reduced_product_delete(reduced_product);
-            harp_product_delete(product);
-            return -1;
-        }
-    }
-
-    harp_product_delete(product);
-
-    *new_reduced_product = reduced_product;
-    return 0;
-}
-
-/* Determine which subset of files in dataset need to be considered. Open only the files which overlap in time. */
-static int dataset_b_determine_subset(Cache *cache_b, const Collocation_options *collocation_options,
-                                      const Dataset *dataset_a, int i)
-{
-    double datetime_start_a = dataset_a->datetime_start[i];
-    double datetime_stop_a = dataset_a->datetime_stop[i];
-    int j;
-
-    /* No optimization: just open all files */
-    if (collocation_options->criterion_is_set[collocation_criterion_type_time] != 1)
-    {
-        for (j = 0; j < cache_b->num_files; j++)
-        {
-            cache_b->file_is_needed[j] = 1;
-        }
-
-        cache_b->num_subset_files = cache_b->num_files;
-        return 0;
-    }
-
-    /* When dt is set, make the datetime range slightly larger */
-    if (collocation_options->criterion_is_set[collocation_criterion_type_time])
-    {
-        double dt = collocation_options->criterion[collocation_criterion_type_time]->value;     /* in collocation unit */
-
-        datetime_start_a = datetime_start_a - dt;
-        datetime_stop_a = datetime_stop_a + dt;
-    }
-
-    cache_b->num_subset_files = 0;
-
-    for (j = 0; j < cache_b->num_files; j++)
-    {
-        /* When datetime ranges overlap, the file needs to be used for matchup */
-        if (cache_b->datetime_stop[j] >= datetime_start_a && cache_b->datetime_start[j] <= datetime_stop_a)
-        {
-            cache_b->file_is_needed[j] = 1;
-            cache_b->num_subset_files++;
+            info->collocation_result->difference_variable_name[i] = strdup(info->criterium[i]->variable_name);
+            if (info->collocation_result->difference_variable_name[i] == NULL)
+            {
+                harp_set_error(HARP_ERROR_OUT_OF_MEMORY, "out of memory (could not duplicate string) (%s:%u)", __FILE__,
+                               __LINE__);
+                return -1;
+            }
         }
         else
         {
-            cache_b->file_is_needed[j] = 0;
-        }
-    }
-
-    return 0;
-}
-
-/* Add difference to collocation result if collocation criterion is set */
-static void collocation_result_add_difference(harp_collocation_result *collocation_result,
-                                              const Collocation_options *collocation_options,
-                                              const Collocation_criterion_type criterion_type,
-                                              const harp_collocation_difference_type difference_type)
-{
-    collocation_result->difference_available[difference_type] = 1;
-
-    /* Copy the original unit that needs to be used in the collocation result (set by user) */
-    if (collocation_result->difference_unit[difference_type] != NULL)
-    {
-        free(collocation_result->difference_unit[difference_type]);
-    }
-    collocation_result->difference_unit[difference_type] =
-        strdup(collocation_options->criterion[criterion_type]->original_unit);
-    assert(collocation_result->difference_unit[difference_type] != NULL);
-}
-
-/* Set the format of the collocation result lines */
-static int collocation_result_init(harp_collocation_result *collocation_result,
-                                   const Collocation_options *collocation_options)
-{
-    int i;
-
-    /* Add difference for each collocation criterion that is set, except for:
-     * dlat, dlon */
-    for (i = 0; i < MAX_NUM_COLLOCATION_CRITERIA; i++)
-    {
-        if (i == collocation_criterion_type_latitude || i == collocation_criterion_type_longitude ||
-            i == collocation_criterion_type_point_a_in_area_b || i == collocation_criterion_type_point_b_in_area_a)
-        {
-            continue;
-        }
-
-        if (collocation_options->criterion_is_set[i])
-        {
-            harp_collocation_difference_type difference_type = harp_collocation_difference_unknown;
-
-            /* Determine the difference index k from the collocation criterion */
-            Collocation_criterion_type criterion_type = collocation_options->criterion[i]->type;
-
-            get_difference_type_from_collocation_criterion_type(criterion_type, &difference_type);
-
-            if (difference_type == harp_collocation_difference_unknown)
+            info->collocation_result->difference_variable_name[i] =
+                malloc(strlen(info->criterium[i]->variable_name) + 9);
+            if (info->collocation_result->difference_variable_name == NULL)
             {
-                harp_set_error(HARP_ERROR_INVALID_ARGUMENT, "unable to derive difference type for collocation"
-                               " criterion '%s'",
-                               collocation_criterion_command_line_option_from_criterion_type(criterion_type));
+                harp_set_error(HARP_ERROR_OUT_OF_MEMORY, "out of memory (could not allocate %lu bytes) (%s:%u)",
+                               (long)(strlen(info->criterium[i]->variable_name) + 9), __FILE__, __LINE__);
                 return -1;
             }
-
-            collocation_result_add_difference(collocation_result, collocation_options, criterion_type, difference_type);
+            strcpy(info->collocation_result->difference_variable_name[i], info->criterium[i]->variable_name);
+            strcat(info->collocation_result->difference_variable_name[i], "_absdiff");
         }
-    }
-
-    /* If dlat or dlon is set, add point distance as well */
-    if ((collocation_options->criterion_is_set[collocation_criterion_type_latitude]
-         || collocation_options->criterion_is_set[collocation_criterion_type_longitude])
-        && collocation_options->criterion_is_set[collocation_criterion_type_point_distance] != 1)
-    {
-        /* collocation_result_add_difference(collocation_result,
-           collocation_options,
-           collocation_criterion_type_point_distance, harp_collocation_difference_point_distance); */
-    }
-
-    /* Add the weighted norm of all the differences that are set */
-    collocation_result->difference_available[harp_collocation_difference_delta] = 1;
-    if (collocation_result->difference_unit[harp_collocation_difference_delta] != NULL)
-    {
-        free(collocation_result->difference_unit[harp_collocation_difference_delta]);
-    }
-    collocation_result->difference_unit[harp_collocation_difference_delta] = strdup("");
-    assert(collocation_result->difference_unit[harp_collocation_difference_delta] != NULL);
-
-    return 0;
-}
-
-/* Calculate delta from:
-
-     absolute_difference_in_time
-     point_distance
-     absolute_difference_in_sza
-     absolute_difference_in_saa
-     absolute_difference_in_vza
-     absolute_difference_in_vaa
-     absolute_difference_in_theta
-
-     overlapping_percentage
-
-    (absolute_difference_in_latitude,
-     absolute_difference_in_longitude,
-     )
- */
-int calculate_delta(const harp_collocation_result *collocation_result, const Collocation_options *collocation_options,
-                    harp_collocation_pair *pair, double *new_delta)
-{
-    int k;
-    double scaling_factor;
-    int count_num_differences = 0;
-    double delta = 0.0;
-
-    /* TODO: Find out why point_distance_has_been_used is set but not used in this function. */
-    // int point_distance_has_been_used = 0;
-
-    for (k = 0; k < HARP_COLLOCATION_RESULT_MAX_NUM_DIFFERENCES; k++)
-    {
-        /* Determine which difference are used from collocation result data structure */
-        if (collocation_result->difference_available[k])
+        /* we only populate the unit if we already have it, we will have to update this at the end */
+        if (info->criterium[i]->unit != NULL)
         {
-            /* Normal behaviour differences */
-            if (k == harp_collocation_difference_absolute_time || k == harp_collocation_difference_point_distance ||
-                k == harp_collocation_difference_absolute_sza || k == harp_collocation_difference_absolute_saa ||
-                k == harp_collocation_difference_absolute_vza || k == harp_collocation_difference_absolute_vaa ||
-                k == harp_collocation_difference_absolute_theta)
+            info->collocation_result->difference_unit[i] = strdup(info->criterium[i]->unit);
+            if (info->collocation_result->difference_unit[i] == NULL)
             {
-                if (collocation_options->weighting_factor[k] == NULL)
-                {
-                    harp_set_error(HARP_ERROR_INVALID_ARGUMENT, "weighting factor '%s' is not set",
-                                   weighting_factor_command_line_option_from_difference_type(k));
-                    return -1;
-                }
-
-                if (collocation_options->weighting_factor[k]->value < 0.0)
-                {
-                    harp_set_error(HARP_ERROR_INVALID_ARGUMENT, "invalid weighting factor value '%g' < 0",
-                                   collocation_options->weighting_factor[k]->value);
-                    return -1;
-                }
-
-                if (collocation_options->weighting_factor[k]->difference_type != k)
-                {
-                    harp_set_error(HARP_ERROR_INVALID_ARGUMENT, "inconsistent weighting factor difference type",
-                                   collocation_options->weighting_factor[k]->value);
-                    return -1;
-                }
-
-                scaling_factor = collocation_options->weighting_factor[k]->value;
-                delta += (scaling_factor * pair->difference[k] * scaling_factor * pair->difference[k]);
-                count_num_differences++;
-                // if (k == harp_collocation_difference_point_distance)
-                // {
-                //     point_distance_has_been_used = 1;
-                // }
-            }
-            else if (k == harp_collocation_difference_overlapping_percentage)
-            {
-                if (collocation_options->weighting_factor[k] == NULL)
-                {
-                    harp_set_error(HARP_ERROR_INVALID_ARGUMENT, "weighting factor '%s' is not set",
-                                   weighting_factor_command_line_option_from_difference_type(k));
-                    return -1;
-                }
-
-                if (collocation_options->weighting_factor[k]->value < 0.0)
-                {
-                    harp_set_error(HARP_ERROR_INVALID_ARGUMENT, "weighting factor value of '%s' (%g) must be larger or "
-                                   "equal to zero", weighting_factor_command_line_option_from_difference_type(k),
-                                   collocation_options->weighting_factor[k]->value);
-                    return -1;
-                }
-
-                if (collocation_options->weighting_factor[k]->difference_type != k)
-                {
-                    harp_set_error(HARP_ERROR_INVALID_ARGUMENT, "inconsistent difference type for weighting factor "
-                                   "'%s'", weighting_factor_command_line_option_from_difference_type(k));
-                    return -1;
-                }
-
-                /* Take the inverse for overlapping percentage; this criterion works the other way around:
-                 * a large overlapping percentage is good (in contrast to a large absolute or relative difference) */
-                if (collocation_options->weighting_factor[k]->value <= 0.0)
-                {
-                    harp_set_error(HARP_ERROR_INVALID_ARGUMENT, "weighting factor value of '%s' (%g) must be larger "
-                                   "than zero", weighting_factor_command_line_option_from_difference_type(k),
-                                   collocation_options->weighting_factor[k]->value);
-                    return -1;
-                }
-                scaling_factor = 1.0 / collocation_options->weighting_factor[k]->value;
-                delta += (scaling_factor * pair->difference[k] * scaling_factor * pair->difference[k]);
-                count_num_differences++;
+                harp_set_error(HARP_ERROR_OUT_OF_MEMORY, "out of memory (could not duplicate string) (%s:%u)", __FILE__,
+                               __LINE__);
+                return -1;
             }
         }
     }
 
-    delta = sqrt(delta / count_num_differences);
-    pair->difference[harp_collocation_difference_delta] = delta;
-    *new_delta = delta;
+    /* initialize the arrays to hold the references to the variables for evaluating the criteria */
+    info->variables_a.criterium = malloc(info->num_criteria * sizeof(harp_variable *));
+    if (info->variables_a.criterium == NULL)
+    {
+        harp_set_error(HARP_ERROR_OUT_OF_MEMORY, "out of memory (could not allocate %lu bytes) (%s:%u)",
+                       (info->num_criteria) * sizeof(harp_variable *), __FILE__, __LINE__);
+        return -1;
+    }
+    info->variables_b.criterium = malloc(info->num_criteria * sizeof(harp_variable *));
+    if (info->variables_b.criterium == NULL)
+    {
+        harp_set_error(HARP_ERROR_OUT_OF_MEMORY, "out of memory (could not allocate %lu bytes) (%s:%u)",
+                       (info->num_criteria) * sizeof(harp_variable *), __FILE__, __LINE__);
+        return -1;
+    }
+    for (i = 0; i < info->num_criteria; i++)
+    {
+        info->variables_a.criterium[i] = NULL;
+        info->variables_b.criterium[i] = NULL;
+    }
+
+    /* initialize array in which the differences are stored */
+    info->difference = malloc(info->num_criteria * sizeof(double));
+    if (info->difference == NULL)
+    {
+        harp_set_error(HARP_ERROR_OUT_OF_MEMORY, "out of memory (could not allocate %lu bytes) (%s:%u)",
+                       (info->num_criteria) * sizeof(double), __FILE__, __LINE__);
+        return -1;
+    }
 
     return 0;
 }
 
-/* Matchup two measurements in point distance */
-static int matchup_two_measurements_in_point_distance(const Reduced_product *reduced_product_a,
-                                                      const Reduced_product *reduced_product_b,
-                                                      const Collocation_options *collocation_options,
-                                                      const long index_a, const long index_b,
-                                                      const Collocation_criterion_type criterion_type,
-                                                      double *new_point_distance, int *match)
+static int perform_matchup_on_measurements(collocation_info *info, long index_a, long product_b_index, long index_b)
 {
+    double *longitude_bounds_a;
+    double *latitude_bounds_a;
+    double *longitude_bounds_b;
+    double *latitude_bounds_b;
     double latitude_a;
     double longitude_a;
     double latitude_b;
     double longitude_b;
-    double point_distance;
-    double ds;
-
-    /* Make some checks */
-    if (criterion_type != collocation_criterion_type_point_distance)
-    {
-        harp_set_error(HARP_ERROR_INVALID_TYPE, "incorrect collocation criterion");
-        return -1;
-    }
-    if (collocation_options->criterion[criterion_type] == NULL ||
-        collocation_options->criterion_is_set[criterion_type] != 1)
-    {
-        harp_set_error(HARP_ERROR_INVALID_ARGUMENT, "collocation criterion %d is not set", criterion_type);
-        return -1;
-    }
-
-    /* Grab the point distance criterion */
-    ds = collocation_options->criterion[criterion_type]->value;
-
-    /* Grab latitude and longitude of measurement A */
-    if (reduced_product_a->latitude == NULL || reduced_product_a->longitude == NULL)
-    {
-        harp_set_error(HARP_ERROR_NO_DATA, "latitude and longitude not in product '%s' (dataset a)",
-                       reduced_product_a->filename);
-        return -1;
-    }
-    latitude_a = reduced_product_a->latitude->data.double_data[index_a];
-    longitude_a = reduced_product_a->longitude->data.double_data[index_a];
-
-    /* Grab latitude and longitude of measurement B */
-    if (reduced_product_b->latitude == NULL || reduced_product_b->longitude == NULL)
-    {
-        harp_set_error(HARP_ERROR_NO_DATA, "latitude and longitude not in product '%s' (dataset b)",
-                       reduced_product_b->filename);
-        return -1;
-    }
-    latitude_b = reduced_product_b->latitude->data.double_data[index_b];
-    longitude_b = reduced_product_b->longitude->data.double_data[index_b];
-
-    /* Calculate the distance between two points on the surface of the Earth sphere in [m] */
-    if (harp_geometry_get_point_distance(latitude_a, longitude_a, latitude_b, longitude_b, &point_distance) != 0)
-    {
-        return -1;
-    }
-
-    assert(harp_isnan(point_distance) || point_distance >= 0.0);
-
-    *match = (point_distance <= ds);
-    *new_point_distance = point_distance;
-
-    return 0;
-}
-
-/* Matchup: point in area? */
-static int matchup_two_measurements_point_in_area(const Reduced_product *reduced_product_points,
-                                                  const Reduced_product *reduced_product_polygons,
-                                                  const long index_point, const long index_polygon, int *match)
-{
-    double *longitude_bounds;
-    double *latitude_bounds;
-    int num_vertices;
-
-    if (reduced_product_points->latitude == NULL || reduced_product_points->longitude == NULL)
-    {
-        harp_set_error(HARP_ERROR_NO_DATA, "latitude and longitude not in product with point measurements");
-        return -1;
-    }
-    if (reduced_product_polygons->latitude_bounds == NULL || reduced_product_polygons->longitude_bounds == NULL)
-    {
-        harp_set_error(HARP_ERROR_NO_DATA, "latitude bounds and longitude bounds not in product with polygon area "
-                       "measurements");
-        return -1;
-    }
-    if (reduced_product_polygons->latitude_bounds->num_dimensions != 2 ||
-        reduced_product_polygons->longitude_bounds->num_dimensions != 2)
-    {
-        harp_set_error(HARP_ERROR_INVALID_ARGUMENT, "latitude bounds and longitude bounds must be 2D");
-        return -1;
-    }
-
-    num_vertices = reduced_product_polygons->latitude_bounds->dimension[1];
-    latitude_bounds = &reduced_product_polygons->latitude_bounds->data.double_data[index_polygon * num_vertices];
-    longitude_bounds = &reduced_product_polygons->longitude_bounds->data.double_data[index_polygon * num_vertices];
-    return harp_geometry_has_point_in_area(reduced_product_points->latitude->data.double_data[index_point],
-                                           reduced_product_points->longitude->data.double_data[index_point],
-                                           num_vertices, latitude_bounds, longitude_bounds, match);
-}
-
-/* Matchup: do areas overlap? */
-static int matchup_two_measurements_areas_in_areas(const Reduced_product *reduced_product_a,
-                                                   const Reduced_product *reduced_product_b,
-                                                   const long index_a, const long index_b, int *match)
-{
-    double *longitude_bounds_a;
-    double *latitude_bounds_a;
-    double *longitude_bounds_b;
-    double *latitude_bounds_b;
     int num_vertices_a;
     int num_vertices_b;
+    int i;
 
-    if (reduced_product_a->latitude_bounds == NULL || reduced_product_a->longitude_bounds == NULL)
+    for (i = 0; i < info->num_criteria; i++)
     {
-        harp_set_error(HARP_ERROR_NO_DATA, "latitude bounds and longitude bounds not in product '%s' (dataset a)",
-                       reduced_product_a->filename);
-        return -1;
+        if (i == info->point_distance_index)
+        {
+            latitude_a = info->variables_a.latitude->data.double_data[index_a];
+            longitude_a = info->variables_a.longitude->data.double_data[index_a];
+            latitude_b = info->variables_b.latitude->data.double_data[index_b];
+            longitude_b = info->variables_b.longitude->data.double_data[index_b];
+
+            if (harp_geometry_get_point_distance(latitude_a, longitude_a, latitude_b, longitude_b, &info->difference[i])
+                != 0)
+            {
+                return -1;
+            }
+            if (harp_convert_unit(HARP_UNIT_LENGTH, info->criterium[info->point_distance_index]->unit, 1,
+                                  &info->difference[i]) != 0)
+            {
+                return -1;
+            }
+        }
+        else
+        {
+            info->difference[i] = fabs(info->variables_a.criterium[i]->data.double_data[index_a] -
+                                       info->variables_b.criterium[i]->data.double_data[index_b]);
+        }
+        if (i == info->datetime_index)
+        {
+            if (harp_convert_unit(HARP_UNIT_TIME, info->criterium[info->datetime_index]->unit, 1, &info->difference[i])
+                != 0)
+            {
+                return -1;
+            }
+        }
+        if (info->difference[i] > info->criterium[i]->value)
+        {
+            return 0;
+        }
     }
 
-    if (reduced_product_a->latitude_bounds->num_dimensions != 2 ||
-        reduced_product_a->longitude_bounds->num_dimensions != 2)
+    if (info->filter_point_in_area_xy)
     {
-        harp_set_error(HARP_ERROR_INVALID_ARGUMENT, "latitude bounds and longitude bounds must be 2D");
-        return -1;
+        int in_area;
+
+        latitude_a = info->variables_a.latitude->data.double_data[index_a];
+        longitude_a = info->variables_a.longitude->data.double_data[index_a];
+        num_vertices_b = info->variables_b.latitude_bounds->dimension[1];
+        latitude_bounds_b = &info->variables_b.latitude_bounds->data.double_data[index_b * num_vertices_b];
+        longitude_bounds_b = &info->variables_b.longitude_bounds->data.double_data[index_b * num_vertices_b];
+        if (harp_geometry_has_point_in_area(latitude_a, longitude_a, num_vertices_b, latitude_bounds_b,
+                                            longitude_bounds_b, &in_area) != 0)
+        {
+            return -1;
+        }
+        if (!in_area)
+        {
+            return 0;
+        }
+    }
+    if (info->filter_point_in_area_yx)
+    {
+        int in_area;
+
+        latitude_b = info->variables_b.latitude->data.double_data[index_b];
+        longitude_b = info->variables_b.longitude->data.double_data[index_b];
+        num_vertices_a = info->variables_a.latitude_bounds->dimension[1];
+        latitude_bounds_a = &info->variables_a.latitude_bounds->data.double_data[index_a * num_vertices_a];
+        longitude_bounds_a = &info->variables_a.longitude_bounds->data.double_data[index_a * num_vertices_a];
+        if (harp_geometry_has_point_in_area(latitude_b, longitude_b, num_vertices_a, latitude_bounds_a,
+                                            longitude_bounds_a, &in_area) != 0)
+        {
+            return -1;
+        }
+        if (!in_area)
+        {
+            return 0;
+        }
+    }
+    if (info->filter_area_intersects)
+    {
+        int has_overlap;
+
+        num_vertices_a = info->variables_a.latitude_bounds->dimension[1];
+        latitude_bounds_a = &info->variables_a.latitude_bounds->data.double_data[index_a * num_vertices_a];
+        longitude_bounds_a = &info->variables_a.longitude_bounds->data.double_data[index_a * num_vertices_a];
+        num_vertices_b = info->variables_b.latitude_bounds->dimension[1];
+        latitude_bounds_b = &info->variables_b.latitude_bounds->data.double_data[index_b * num_vertices_b];
+        longitude_bounds_b = &info->variables_b.longitude_bounds->data.double_data[index_b * num_vertices_b];
+
+        if (harp_geometry_has_area_overlap(num_vertices_a, latitude_bounds_a, longitude_bounds_a, num_vertices_b,
+                                           latitude_bounds_b, longitude_bounds_b, &has_overlap, NULL) != 0)
+        {
+            return -1;
+        }
+        if (!has_overlap)
+        {
+            return 0;
+        }
     }
 
-    if (reduced_product_b->latitude_bounds == NULL || reduced_product_b->longitude_bounds == NULL)
+    if (info->nearest_neighbour_x_criterium_index >= 0 || info->nearest_neighbour_y_criterium_index >= 0)
     {
-        harp_set_error(HARP_ERROR_NO_DATA, "latitude bounds and longitude bounds not in product '%s' (dataset b)",
-                       reduced_product_b->filename);
-        return -1;
+        long product_index;
+        long sample_index;
+
+        /* replace any pair that is not closer for the first nearest neighbour criterium */
+        /* since we apply a nearest filter there can only be at most one pair in the collocation result matching */
+        /* the index we are looking for */
+        if (info->perform_nearest_neighbour_x_first)
+        {
+            /* select nearest x */
+            assert(info->nearest_neighbour_x_criterium_index >= 0);
+
+            if (harp_dataset_get_index_from_source_product(info->collocation_result->dataset_a,
+                                                           info->product_a->source_product, &product_index) != 0)
+            {
+                return -1;
+            }
+            sample_index = info->variables_a.index->data.double_data[index_a];
+
+            for (i = 0; i < info->collocation_result->num_pairs; i++)
+            {
+                harp_collocation_pair *pair = info->collocation_result->pair[i];
+
+                if (pair->product_index_a == product_index && pair->sample_index_a == sample_index)
+                {
+                    if (pair->difference[info->nearest_neighbour_x_criterium_index] <=
+                        info->difference[info->nearest_neighbour_x_criterium_index])
+                    {
+                        /* existing pair is closer -> ignore the new pair */
+                        return 0;
+                    }
+                    /* new pair is closer, remove existing one */
+                    if (harp_collocation_result_remove_pair_at_index(info->collocation_result, i) != 0)
+                    {
+                        return -1;
+                    }
+                    /* stop the search and immediately continue with adding the new pair */
+                    break;
+                }
+            }
+        }
+        else
+        {
+            /* select nearest y */
+            assert(info->nearest_neighbour_y_criterium_index >= 0);
+
+            if (harp_dataset_get_index_from_source_product(info->collocation_result->dataset_b,
+                                                           info->product_b[product_b_index]->source_product,
+                                                           &product_index) != 0)
+            {
+                return -1;
+            }
+            sample_index = info->variables_b.index->data.double_data[index_b];
+
+            for (i = 0; i < info->collocation_result->num_pairs; i++)
+            {
+                harp_collocation_pair *pair = info->collocation_result->pair[i];
+
+                if (pair->product_index_b == product_index && pair->sample_index_b == sample_index)
+                {
+                    if (pair->difference[info->nearest_neighbour_y_criterium_index] <=
+                        info->difference[info->nearest_neighbour_y_criterium_index])
+                    {
+                        /* existing pair is closer -> ignore the new pair */
+                        return 0;
+                    }
+                    /* new pair is closer, remove existing one */
+                    if (harp_collocation_result_remove_pair_at_index(info->collocation_result, i) != 0)
+                    {
+                        return -1;
+                    }
+                    /* stop the search and immediately continue with adding the new pair */
+                    break;
+                }
+            }
+        }
+        /* the second nearest neighbour criterium, if it exists, can only be avaluated at the end of the collocation */
     }
 
-    if (reduced_product_b->latitude_bounds->num_dimensions != 2 ||
-        reduced_product_b->longitude_bounds->num_dimensions != 2)
-    {
-        harp_set_error(HARP_ERROR_INVALID_ARGUMENT, "latitude bounds and longitude bounds must be 2D");
-        return -1;
-    }
-
-    num_vertices_a = reduced_product_a->latitude_bounds->dimension[1];
-    latitude_bounds_a = &reduced_product_a->latitude_bounds->data.double_data[index_a * num_vertices_a];
-    longitude_bounds_a = &reduced_product_a->longitude_bounds->data.double_data[index_a * num_vertices_a];
-    num_vertices_b = reduced_product_b->latitude_bounds->dimension[1];
-    latitude_bounds_b = &reduced_product_b->latitude_bounds->data.double_data[index_b * num_vertices_a];
-    longitude_bounds_b = &reduced_product_b->longitude_bounds->data.double_data[index_b * num_vertices_a];
-
-    return harp_geometry_has_area_overlap(num_vertices_a, latitude_bounds_a, longitude_bounds_a, num_vertices_b,
-                                          latitude_bounds_b, longitude_bounds_b, match, NULL);
-}
-
-/* Matchup: do areas overlap with an overlapping percentage larger than the criterion? */
-static int matchup_two_measurements_in_overlapping_percentage(const Reduced_product *reduced_product_a,
-                                                              const Reduced_product *reduced_product_b,
-                                                              const Collocation_options *collocation_options,
-                                                              const long index_a, const long index_b,
-                                                              const Collocation_criterion_type criterion_type,
-                                                              double *overlapping_percentage, int *match)
-{
-    double *latitude_bounds_a;
-    double *longitude_bounds_a;
-    double *latitude_bounds_b;
-    double *longitude_bounds_b;
-    int num_vertices_a;
-    int num_vertices_b;
-    double da;
-
-    /* Make some checks */
-    if (criterion_type != collocation_criterion_type_overlapping_percentage)
-    {
-        harp_set_error(HARP_ERROR_INVALID_TYPE, "incorrect collocation criterion");
-        return -1;
-    }
-    if (collocation_options->criterion[criterion_type] == NULL ||
-        collocation_options->criterion_is_set[criterion_type] != 1)
-    {
-        harp_set_error(HARP_ERROR_INVALID_ARGUMENT, "collocation criterion %d is not set", criterion_type);
-        return -1;
-    }
-
-    /* Grab the overlapping percentage criterion */
-    da = collocation_options->criterion[criterion_type]->value;
-
-    if (reduced_product_a->latitude_bounds == NULL || reduced_product_a->longitude_bounds == NULL)
-    {
-        harp_set_error(HARP_ERROR_NO_DATA, "latitude bounds and longitude bounds not in product '%s' (dataset a)",
-                       reduced_product_a->filename);
-        return -1;
-    }
-
-    if (reduced_product_a->latitude_bounds->num_dimensions != 2 ||
-        reduced_product_a->longitude_bounds->num_dimensions != 2)
-    {
-        harp_set_error(HARP_ERROR_INVALID_ARGUMENT, "latitude bounds and longitude bounds must be 2D");
-        return -1;
-    }
-
-    if (reduced_product_b->latitude_bounds == NULL || reduced_product_b->longitude_bounds == NULL)
-    {
-        harp_set_error(HARP_ERROR_NO_DATA, "latitude bounds and longitude bounds not in product '%s' (dataset b)",
-                       reduced_product_b->filename);
-        return -1;
-    }
-
-    if (reduced_product_b->latitude_bounds->num_dimensions != 2 ||
-        reduced_product_b->longitude_bounds->num_dimensions != 2)
-    {
-        harp_set_error(HARP_ERROR_INVALID_ARGUMENT, "latitude bounds and longitude bounds must be 2D");
-        return -1;
-    }
-
-    num_vertices_a = reduced_product_a->latitude_bounds->dimension[1];
-    latitude_bounds_a = &reduced_product_a->latitude_bounds->data.double_data[index_a * num_vertices_a];
-    longitude_bounds_a = &reduced_product_a->longitude_bounds->data.double_data[index_a * num_vertices_a];
-    num_vertices_b = reduced_product_b->latitude_bounds->dimension[1];
-    latitude_bounds_b = &reduced_product_b->latitude_bounds->data.double_data[index_b * num_vertices_a];
-    longitude_bounds_b = &reduced_product_b->longitude_bounds->data.double_data[index_b * num_vertices_a];
-
-    if (harp_geometry_has_area_overlap(num_vertices_a, latitude_bounds_a, longitude_bounds_a, num_vertices_b,
-                                       latitude_bounds_b, longitude_bounds_b, match, overlapping_percentage) != 0)
+    if (harp_collocation_result_add_pair(info->collocation_result, info->collocation_result->num_pairs,
+                                         info->product_a->source_product,
+                                         info->variables_a.index->data.int32_data[index_a],
+                                         info->product_b[product_b_index]->source_product,
+                                         info->variables_b.index->data.int32_data[index_b], info->num_criteria,
+                                         info->difference) != 0)
     {
         return -1;
-    }
-
-    if (*match)
-    {
-        *match = (*overlapping_percentage >= da);
     }
 
     return 0;
 }
 
-/* Matchup two measurements in time, space, and measurement geometry */
-static int matchup_two_measurements(harp_collocation_result *collocation_result,
-                                    const Reduced_product *reduced_product_a, const Reduced_product *reduced_product_b,
-                                    const Collocation_options *collocation_options,
-                                    const long original_index_a, const long index_a,
-                                    const long original_index_b, const long index_b, int *new_match)
+static int perform_matchup_on_products(collocation_info *info, long product_b_index)
 {
-    int match;
-    double difference;
-    double differences[HARP_COLLOCATION_RESULT_MAX_NUM_DIFFERENCES];
-    long collocation_index;
-    double delta;
+    long i, j;
 
-    /* Matchup two measurements in time */
-    if (collocation_options->criterion_is_set[collocation_criterion_type_time])
+    for (i = 0; i < info->product_a->dimension[harp_dimension_time]; i++)
     {
-        difference = fabs(reduced_product_a->datetime->data.double_data[index_a] -
-                          reduced_product_b->datetime->data.double_data[index_b]);
-        if (difference > collocation_options->criterion[collocation_criterion_type_time]->value)
+        for (j = 0; j < info->product_b[product_b_index]->dimension[harp_dimension_time]; j++)
         {
-            *new_match = 0;
-            return 0;
-        }
-
-        differences[harp_collocation_difference_absolute_time] = difference;
-    }
-
-    /* Matchup two measurements in latitude */
-    if (collocation_options->criterion_is_set[collocation_criterion_type_latitude])
-    {
-        difference = fabs(reduced_product_a->latitude->data.double_data[index_a] -
-                          reduced_product_b->latitude->data.double_data[index_b]);
-        if (difference > collocation_options->criterion[collocation_criterion_type_latitude]->value)
-        {
-            *new_match = 0;
-            return 0;
-        }
-        differences[harp_collocation_difference_absolute_latitude] = difference;
-    }
-
-    /* Matchup two measurements in longitude */
-    if (collocation_options->criterion_is_set[collocation_criterion_type_longitude])
-    {
-        difference = fabs(reduced_product_a->longitude->data.double_data[index_a] -
-                          reduced_product_b->longitude->data.double_data[index_b]);
-        if (difference > collocation_options->criterion[collocation_criterion_type_longitude]->value)
-        {
-            *new_match = 0;
-            return 0;
-        }
-        differences[harp_collocation_difference_absolute_longitude] = difference;
-    }
-
-    /* Matchup two measurements in SZA */
-    if (collocation_options->criterion_is_set[collocation_criterion_type_sza])
-    {
-        difference = fabs(reduced_product_a->sza->data.double_data[index_a] -
-                          reduced_product_b->sza->data.double_data[index_b]);
-        if (difference > collocation_options->criterion[collocation_criterion_type_sza]->value)
-        {
-            *new_match = 0;
-            return 0;
-        }
-        differences[harp_collocation_difference_absolute_sza] = difference;
-    }
-
-    /* Matchup two measurements in SAA */
-    if (collocation_options->criterion_is_set[collocation_criterion_type_saa])
-    {
-        difference = fabs(reduced_product_a->saa->data.double_data[index_a] -
-                          reduced_product_b->saa->data.double_data[index_b]);
-        if (difference > collocation_options->criterion[collocation_criterion_type_saa]->value)
-        {
-            *new_match = 0;
-            return 0;
-        }
-        differences[harp_collocation_difference_absolute_saa] = difference;
-    }
-
-    /* Matchup two measurements in VZA */
-    if (collocation_options->criterion_is_set[collocation_criterion_type_vza])
-    {
-        difference = fabs(reduced_product_a->vza->data.double_data[index_a] -
-                          reduced_product_b->vza->data.double_data[index_b]);
-        if (difference > collocation_options->criterion[collocation_criterion_type_vza]->value)
-        {
-            *new_match = 0;
-            return 0;
-        }
-        differences[harp_collocation_difference_absolute_vza] = difference;
-    }
-
-    /* Matchup two measurements in VAA */
-    if (collocation_options->criterion_is_set[collocation_criterion_type_vaa])
-    {
-        difference = fabs(reduced_product_a->vaa->data.double_data[index_a] -
-                          reduced_product_b->vaa->data.double_data[index_b]);
-        if (difference > collocation_options->criterion[collocation_criterion_type_vaa]->value)
-        {
-            *new_match = 0;
-            return 0;
-        }
-        differences[harp_collocation_difference_absolute_vaa] = difference;
-    }
-
-    /* Matchup two measurements in scattering angle */
-    if (collocation_options->criterion_is_set[collocation_criterion_type_theta])
-    {
-        difference = fabs(reduced_product_a->theta->data.double_data[index_a] -
-                          reduced_product_b->theta->data.double_data[index_b]);
-        if (difference > collocation_options->criterion[collocation_criterion_type_theta]->value)
-        {
-            *new_match = 0;
-            return 0;
-        }
-        differences[harp_collocation_difference_absolute_theta] = difference;
-    }
-
-    /* Matchup two measurements in point distance */
-    if (collocation_options->criterion_is_set[collocation_criterion_type_point_distance])
-    {
-        match = 0;
-        if (matchup_two_measurements_in_point_distance(reduced_product_a, reduced_product_b, collocation_options,
-                                                       index_a, index_b,
-                                                       collocation_criterion_type_point_distance, &difference, &match)
-            != 0)
-        {
-            return -1;
-        }
-
-        differences[harp_collocation_difference_point_distance] = difference;
-        if (match == 0)
-        {
-            *new_match = 0;
-            return 0;
+            if (perform_matchup_on_measurements(info, i, product_b_index, j) != 0)
+            {
+                return -1;
+            }
         }
     }
 
-    /* Matchup two measurements: point A must lie in area B */
-    if (collocation_options->criterion_is_set[collocation_criterion_type_point_a_in_area_b])
-    {
-        match = 0;
-        if (matchup_two_measurements_point_in_area(reduced_product_a, reduced_product_b, index_a, index_b, &match) != 0)
-        {
-            return -1;
-        }
-
-        if (match == 0)
-        {
-            *new_match = 0;
-            return 0;
-        }
-    }
-
-    /* Matchup two measurements: point B must lie in area A */
-    if (collocation_options->criterion_is_set[collocation_criterion_type_point_b_in_area_a])
-    {
-        match = 0;
-        if (matchup_two_measurements_point_in_area(reduced_product_b, reduced_product_a, index_b, index_a, &match) != 0)
-        {
-            return -1;
-        }
-
-        if (match == 0)
-        {
-            *new_match = 0;
-            return 0;
-        }
-    }
-
-    /* Matchup two measurements: areas must be overlapping */
-    if (collocation_options->criterion_is_set[collocation_criterion_type_overlapping])
-    {
-        match = 0;
-        if (matchup_two_measurements_areas_in_areas(reduced_product_a, reduced_product_b, index_a,
-                                                    index_b, &match) != 0)
-        {
-            return -1;
-        }
-
-        if (match == 0)
-        {
-            *new_match = 0;
-            return 0;
-        }
-    }
-
-    /* Matchup two measurements in overlapping percentage */
-    if (collocation_options->criterion_is_set[collocation_criterion_type_overlapping_percentage])
-    {
-        match = 0;
-        if (matchup_two_measurements_in_overlapping_percentage(reduced_product_a, reduced_product_b,
-                                                               collocation_options, index_a, index_b,
-                                                               collocation_criterion_type_overlapping_percentage,
-                                                               &difference, &match) != 0)
-        {
-            return -1;
-        }
-
-        differences[harp_collocation_difference_overlapping_percentage] = difference;
-
-        if (match == 0)
-        {
-            *new_match = 0;
-            return 0;
-        }
-    }
-
-    /* Store this id in the result to be able to reproduce
-     * the chronological order of the measurements in the re-sampled collocation result later on */
-    collocation_index = collocation_result->num_pairs;
-
-    if (harp_collocation_result_add_pair(collocation_result, collocation_index, reduced_product_a->source_product,
-                                         original_index_a, reduced_product_b->source_product, original_index_b,
-                                         differences) != 0)
-    {
-        return -1;
-    }
-
-    /* Calculate the weighted norm of the differences */
-    if (calculate_delta(collocation_result, collocation_options,
-                        collocation_result->pair[collocation_result->num_pairs - 1], &delta) != 0)
-    {
-        return -1;
-    }
-
-    *new_match = 1;
     return 0;
 }
 
-/* Matchup measurements in two files */
-static int reduced_product_derive_number_of_measurements(const Reduced_product *reduced_product, long *num_measurements)
+static int remove_unused_variables(collocation_info *info, harp_product *product, int include_latlon,
+                                   int include_latlon_bounds)
 {
-    /* Grab the number of elements for file A and file B */
-    if (reduced_product->datetime != NULL)
+    uint8_t *included;
+    int index;
+    int i;
+
+    included = (uint8_t *)malloc(product->num_variables);
+    if (included == NULL)
     {
-        /* Try DATETIME first ... */
-        *num_measurements = reduced_product->datetime->num_elements;
-        return 0;
+        harp_set_error(HARP_ERROR_OUT_OF_MEMORY, "out of memory (could not allocate %lu bytes) (%s:%u)",
+                       product->num_variables * sizeof(uint8_t), __FILE__, __LINE__);
+        return -1;
     }
 
-    if (reduced_product->latitude != NULL)
+    /* assume all variables are excluded */
+    for (i = 0; i < product->num_variables; i++)
     {
-        /* else try LATITUDE */
-        *num_measurements = reduced_product->latitude->num_elements;
-        return 0;
+        included[i] = 0;
     }
 
-    if (reduced_product->latitude_bounds != NULL)
+    /* always keep 'index' variable */
+    if (harp_product_get_variable_index_by_name(product, "index", &index) != 0)
     {
-        /* ... last resort: try latitude_bounds */
-        *num_measurements = reduced_product->latitude_bounds->dimension[0];
-        return 0;
+        free(included);
+        return -1;
+    }
+    included[index] = 1;
+
+    /* set the 'keep' flags in the mask */
+    for (i = 0; i < info->num_criteria; i++)
+    {
+        if (i == info->point_distance_index)
+        {
+            continue;
+        }
+        if (harp_product_get_variable_index_by_name(product, info->criterium[i]->variable_name, &index) != 0)
+        {
+            free(included);
+            return -1;
+        }
+        included[index] = 1;
     }
 
-    harp_set_error(HARP_ERROR_INVALID_ARGUMENT, "could not derive number of samples from variable 'datetime', "
-                   "'latitude', or 'latitude_bounds'");
-    return -1;
+    if (include_latlon)
+    {
+        if (harp_product_get_variable_index_by_name(product, "latitude", &index) != 0)
+        {
+            free(included);
+            return -1;
+        }
+        included[index] = 1;
+        if (harp_product_get_variable_index_by_name(product, "longitude", &index) != 0)
+        {
+            free(included);
+            return -1;
+        }
+        included[index] = 1;
+    }
+    if (include_latlon_bounds)
+    {
+        if (harp_product_get_variable_index_by_name(product, "latitude_bounds", &index) != 0)
+        {
+            free(included);
+            return -1;
+        }
+        included[index] = 1;
+        if (harp_product_get_variable_index_by_name(product, "longitude_bounds", &index) != 0)
+        {
+            free(included);
+            return -1;
+        }
+        included[index] = 1;
+    }
+
+    /* filter the variables using the mask */
+    for (i = product->num_variables - 1; i >= 0; i--)
+    {
+        if (!included[i])
+        {
+            if (harp_product_remove_variable(product, product->variable[i]) != 0)
+            {
+                free(included);
+                return -1;
+            }
+        }
+    }
+
+    free(included);
+
+    return 0;
 }
 
-/* Check for INDEX variable that contains the original measurement id */
-static int get_original_index(const Reduced_product *reduced_product, long index, long *original_index)
+static int filter_product(collocation_info *info, harp_product *product, int is_dataset_a)
 {
-    if (reduced_product->index == NULL)
+    harp_dimension_type dimension_type[2] = { harp_dimension_time, harp_dimension_independent };
+    int include_latlon_bounds;
+    int include_latlon;
+    long i;
+
+    if (is_dataset_a)
     {
-        /* Use the measurement id itself */
-        *original_index = index;
-        return 0;
+        include_latlon = info->point_distance_index >= 0 || info->filter_point_in_area_xy;
+        include_latlon_bounds = info->filter_area_intersects || info->filter_point_in_area_yx;
     }
     else
     {
-        if (index < 0 || index > reduced_product->index->num_elements)
+        include_latlon = info->point_distance_index >= 0 || info->filter_point_in_area_yx;
+        include_latlon_bounds = info->filter_area_intersects || info->filter_point_in_area_xy;
+    }
+
+    /* make sure that we have an 'index' variable */
+    if (harp_product_add_derived_variable(product, "index", harp_type_int32, NULL, 1, dimension_type) != 0)
+    {
+        return -1;
+    }
+
+    for (i = 0; i < info->num_criteria; i++)
+    {
+        const char *unit = NULL;
+
+        if (i == info->point_distance_index)
         {
-            harp_set_error(HARP_ERROR_INVALID_ARGUMENT, "index argument (%ld) is not in the range [0,%ld) (%s:%u)",
-                           index, reduced_product->index->num_elements, __FILE__, __LINE__);
-            return -1;
+            continue;
         }
 
-        *original_index = (long)(reduced_product->index->data.int32_data[index]);
-        return 0;
-    }
-}
-
-static int matchup_measurements_in_two_files(harp_collocation_result *collocation_result,
-                                             const Reduced_product *reduced_product_a,
-                                             const Reduced_product *reduced_product_b,
-                                             const Collocation_options *collocation_options, int *files_match)
-{
-    int measurements_match = 0;
-    long original_index_a;
-    long index_a;
-    long num_measurements_a;
-    long original_index_b;
-    long index_b;
-    long num_measurements_b;
-
-    if (reduced_product_a == NULL)
-    {
-        harp_set_error(HARP_ERROR_INVALID_ARGUMENT, "reduced_product_a is NULL");
-        return -1;
-    }
-    if (reduced_product_b == NULL)
-    {
-        harp_set_error(HARP_ERROR_INVALID_ARGUMENT, "reduced_product_b is NULL");
-        return -1;
-    }
-
-    /* Derive the number of elements of the main dimension */
-    if (reduced_product_derive_number_of_measurements(reduced_product_a, &num_measurements_a) != 0)
-    {
-        return -1;
-    }
-    if (reduced_product_derive_number_of_measurements(reduced_product_b, &num_measurements_b) != 0)
-    {
-        return -1;
-    }
-
-    /* Matchup the two measurements;
-     * the original measurement id are needed for the collocation result */
-    for (index_a = 0; index_a < num_measurements_a; index_a++)
-    {
-        if (get_original_index(reduced_product_a, index_a, &original_index_a) != 0)
+        if (info->criterium[i]->unit == NULL)
         {
-            return -1;
-        }
+            harp_variable *variable;
 
-        for (index_b = 0; index_b < num_measurements_b; index_b++)
-        {
-            if (get_original_index(reduced_product_b, index_b, &original_index_b) != 0)
+            /* determine the unit automatically from the variable in the product and assign it to the criterium */
+            /* also update the difference information in the collocation result */
+            if (!harp_product_has_variable(product, info->criterium[i]->variable_name))
+            {
+                harp_set_error(HARP_ERROR_INVALID_ARGUMENT, "could not determine unit for '%s' collocation criterium "
+                               "(no such variable in product)", info->criterium[i]->variable_name);
+                return -1;
+            }
+            if (harp_product_get_variable_by_name(product, info->criterium[i]->variable_name, &variable) != 0)
             {
                 return -1;
             }
-
-            if (matchup_two_measurements(collocation_result, reduced_product_a, reduced_product_b, collocation_options,
-                                         original_index_a, index_a, original_index_b,
-                                         index_b, &measurements_match) != 0)
+            if (variable->unit == NULL)
             {
+                harp_set_error(HARP_ERROR_INVALID_ARGUMENT, "could not determine unit for '%s' collocation criterium "
+                               "(variable has no unit)", info->criterium[i]->variable_name);
                 return -1;
             }
-
-            /* One matchup of two measurements is enough to be interesting for the collocation result */
-            if (measurements_match == 1)
+            info->criterium[i]->unit = strdup(variable->unit);
+            if (info->criterium[i]->unit == NULL)
             {
-                *files_match = 1;
+                harp_set_error(HARP_ERROR_OUT_OF_MEMORY, "out of memory (could not duplicate string) (%s:%u)", __FILE__,
+                               __LINE__);
+                return -1;
+            }
+            assert(info->collocation_result->difference_unit[i] == NULL);
+            info->collocation_result->difference_unit[i] = strdup(variable->unit);
+            if (info->collocation_result->difference_unit[i] == NULL)
+            {
+                harp_set_error(HARP_ERROR_OUT_OF_MEMORY, "out of memory (could not duplicate string) (%s:%u)", __FILE__,
+                               __LINE__);
+                return -1;
             }
         }
+        if (i == info->datetime_index)
+        {
+            unit = HARP_UNIT_DATETIME;
+        }
+        else
+        {
+            unit = info->criterium[i]->unit;
+        }
+
+        if (harp_product_add_derived_variable(product, info->criterium[i]->variable_name, harp_type_double, unit, 1,
+                                              dimension_type) != 0)
+        {
+            return -1;
+        }
+    }
+
+    /* just include lat/lon with default unit (since they may also be used as collocation criteria with a user specified
+     * unit). We change the unit during the comparison if needed.
+     */
+    if (include_latlon)
+    {
+        if (harp_product_add_derived_variable(product, "latitude", harp_type_double, NULL, 1, dimension_type) != 0)
+        {
+            return -1;
+        }
+        if (harp_product_add_derived_variable(product, "longitude", harp_type_double, NULL, 1, dimension_type) != 0)
+        {
+            return -1;
+        }
+    }
+    if (include_latlon_bounds)
+    {
+        if (harp_product_add_derived_variable(product, "latitude_bounds", harp_type_double, NULL, 2, dimension_type) !=
+            0)
+        {
+            return -1;
+        }
+        if (harp_product_add_derived_variable(product, "longitude_bounds", harp_type_double, NULL, 2, dimension_type) !=
+            0)
+        {
+            return -1;
+        }
+    }
+
+    /* remove all variables that are not needed */
+    if (remove_unused_variables(info, product, include_latlon, include_latlon_bounds) != 0)
+    {
+        return -1;
     }
 
     return 0;
 }
 
-/* Get the start and stop time for each file in the dataset and put this information in the cache structure */
-static int cache_set_dataset_start_stop_times(Cache *cache, const Dataset *dataset)
+static int assign_variables(collocation_info *info, cache_variables *cache, harp_product *product)
 {
-    int j;
+    harp_dimension_type dimension_type[2] = { harp_dimension_time, harp_dimension_independent };
+    long i;
 
-    for (j = 0; j < cache->num_files; j++)
-    {
-        /* Set the start and stop time for each file */
-        cache->datetime_start[j] = dataset->datetime_start[j];
-        cache->datetime_stop[j] = dataset->datetime_stop[j];
-    }
-
-    return 0;
-}
-
-static void swap_files(char **name_a, char **name_b, double *datetime_start_a,
-                       double *datetime_start_b, double *datetime_stop_a, double *datetime_stop_b)
-{
-    char *name_tmp;
-    double datetime_start_tmp;
-    double datetime_stop_tmp;
-
-    name_tmp = *name_a;
-    *name_a = *name_b;
-    *name_b = name_tmp;
-    datetime_start_tmp = *datetime_start_a;
-    *datetime_start_a = *datetime_start_b;
-    *datetime_start_b = datetime_start_tmp;
-    datetime_stop_tmp = *datetime_stop_a;
-    *datetime_stop_a = *datetime_stop_b;
-    *datetime_stop_b = datetime_stop_tmp;
-}
-
-/* Bubble sort filenames based on datetime start value */
-static void sort_filenames(char **filename, double *datetime_start, double *datetime_stop, int num_files)
-{
-    int i, j;
-
-    for (i = 0; i < num_files; ++i)
-    {
-        for (j = i + 1; j < num_files; ++j)
-        {
-            if (datetime_start[i] > datetime_start[j])
-            {
-                swap_files(&filename[i], &filename[j], &datetime_start[i], &datetime_start[j],
-                           &datetime_stop[i], &datetime_stop[j]);
-            }
-        }
-    }
-}
-
-static void dataset_sort_by_datetime_start(Dataset *dataset)
-{
-    sort_filenames(dataset->filename, dataset->datetime_start, dataset->datetime_stop, dataset->num_files);
-}
-
-/* Determine start and stop time in the unit that is used for collocation */
-static int dataset_add_start_stop_datetime(Dataset *dataset)
-{
-    int i;
-
-    if (dataset->datetime_start == NULL)
-    {
-        dataset->datetime_start = malloc((size_t)dataset->num_files * sizeof(double));
-        if (dataset->datetime_start == NULL)
-        {
-            harp_set_error(HARP_ERROR_OUT_OF_MEMORY, "out of memory (could not allocate %lu bytes) (%s:%u)",
-                           dataset->num_files * sizeof(double), __FILE__, __LINE__);
-            return -1;
-        }
-    }
-
-    if (dataset->datetime_stop == NULL)
-    {
-        dataset->datetime_stop = malloc((size_t)dataset->num_files * sizeof(double));
-        if (dataset->datetime_stop == NULL)
-        {
-            harp_set_error(HARP_ERROR_OUT_OF_MEMORY, "out of memory (could not allocate %lu bytes) (%s:%u)",
-                           dataset->num_files * sizeof(double), __FILE__, __LINE__);
-            if (dataset->datetime_start != NULL)
-            {
-                free(dataset->datetime_start);
-            }
-            return -1;
-        }
-    }
-
-    for (i = 0; i < dataset->num_files; i++)
-    {
-        harp_product_metadata *metadata = NULL;
-
-        /* This function will not perform any unit conversion on the datetime start/stop values, but take the values as
-         * is in the product.
-         * This means we have to convert from 'days since 2000-01-01' to HARP_UNIT_DATETIME
-         */
-        if (harp_import_product_metadata(dataset->filename[i], &metadata) != 0)
-        {
-            return -1;
-        }
-
-        dataset->datetime_start[i] = metadata->datetime_start;
-        dataset->datetime_stop[i] = metadata->datetime_stop;
-
-        harp_product_metadata_delete(metadata);
-    }
-    if (harp_convert_unit("days since 2000-01-01", HARP_UNIT_DATETIME, dataset->num_files, dataset->datetime_start) !=
-        0)
+    if (harp_product_get_variable_by_name(product, "index", &cache->index) != 0)
     {
         return -1;
     }
-    if (harp_convert_unit("days since 2000-01-01", HARP_UNIT_DATETIME, dataset->num_files, dataset->datetime_stop) != 0)
+
+    if (harp_product_has_variable(product, "latitude"))
     {
-        return -1;
+        if (cache->latitude != NULL)
+        {
+            harp_variable_delete(cache->latitude);
+        }
+        if (cache->longitude != NULL)
+        {
+            harp_variable_delete(cache->longitude);
+        }
+        if (harp_product_get_derived_variable(product, "latitude", harp_type_double, HARP_UNIT_LATITUDE, 1,
+                                              dimension_type, &cache->latitude) != 0)
+        {
+            return -1;
+        }
+        if (harp_product_get_derived_variable(product, "longitude", harp_type_double, HARP_UNIT_LONGITUDE, 1,
+                                              dimension_type, &cache->longitude) != 0)
+        {
+            return -1;
+        }
+    }
+    if (harp_product_has_variable(product, "latitude_bounds"))
+    {
+        if (cache->latitude_bounds != NULL)
+        {
+            harp_variable_delete(cache->latitude_bounds);
+        }
+        if (cache->longitude_bounds != NULL)
+        {
+            harp_variable_delete(cache->longitude_bounds);
+        }
+        if (harp_product_get_derived_variable(product, "latitude_bounds", harp_type_double, HARP_UNIT_LATITUDE, 2,
+                                              dimension_type, &cache->latitude_bounds) != 0)
+        {
+            return -1;
+        }
+        if (harp_product_get_derived_variable(product, "longitude_bounds", harp_type_double, HARP_UNIT_LONGITUDE, 2,
+                                              dimension_type, &cache->longitude_bounds) != 0)
+        {
+            return -1;
+        }
+    }
+
+    for (i = 0; i < info->num_criteria; i++)
+    {
+        if (i == info->point_distance_index)
+        {
+            continue;
+        }
+        if (harp_product_get_variable_by_name(product, info->criterium[i]->variable_name, &cache->criterium[i]) != 0)
+        {
+            return -1;
+        }
     }
 
     return 0;
 }
 
 /* Collocate two datasets */
-int matchup(const Collocation_options *collocation_options, harp_collocation_result **new_collocation_result)
+static int perform_matchup(collocation_info *info)
 {
-    harp_collocation_result *collocation_result = NULL;
-    Dataset *dataset_a = NULL;
-    Dataset *dataset_b = NULL;
-    Cache *cache_b = NULL;
-    int files_match = 1;
-    int i;
-    int j;
+    long i, j;
+    double delta_time;  /* time criterium to efficiently filter for products that could have matching pairs */
 
-    /* Validate input arguments */
-    if (collocation_options == NULL)
+    if (info->datetime_index >= 0)
     {
-        harp_set_error(HARP_ERROR_INVALID_ARGUMENT, "collocation options is empty");
-        return -1;
-    }
-    if (collocation_options->dataset_a_in == NULL)
-    {
-        harp_set_error(HARP_ERROR_INVALID_ARGUMENT, "collocation options: dataset a not set");
-        return -1;
-    }
-    if (collocation_options->dataset_b_in == NULL)
-    {
-        harp_set_error(HARP_ERROR_INVALID_ARGUMENT, "collocation options: dataset b not set");
-        return -1;
-    }
+        delta_time = info->criterium[info->datetime_index]->value;
 
-    dataset_a = collocation_options->dataset_a_in;
-    dataset_b = collocation_options->dataset_b_in;
-
-    /* If no criteria are set, this means all data is kept, not needed to collocate */
-    if (collocation_options->num_criteria == 0)
-    {
-        harp_set_error(HARP_ERROR_INVALID_ARGUMENT, "no collocation criteria are set");
-        return -1;
-    }
-
-    /* Start with a new collocation result */
-    if (harp_collocation_result_new(&collocation_result) != 0)
-    {
-        return -1;
-    }
-
-    /* Determine the format for the collocation result */
-    if (collocation_result_init(collocation_result, collocation_options) != 0)
-    {
-        harp_collocation_result_delete(collocation_result);
-        return -1;
-    }
-
-    /* Check for empty datasets */
-    if (dataset_a->num_files <= 0 || dataset_b->num_files <= 0)
-    {
-        *new_collocation_result = collocation_result;
-        return 0;
-    }
-
-    /* Determine the start time for each product for sorting purposes */
-    if (dataset_add_start_stop_datetime(dataset_a) != 0)
-    {
-        harp_collocation_result_delete(collocation_result);
-        return -1;
-    }
-    if (dataset_add_start_stop_datetime(dataset_b) != 0)
-    {
-        harp_collocation_result_delete(collocation_result);
-        return -1;
-    }
-
-    /* Sort the filenames in the datasets, ordered by start datetime
-       (i.e. monotonically increasing) */
-    dataset_sort_by_datetime_start(dataset_a);
-    dataset_sort_by_datetime_start(dataset_b);
-
-    /* Setup the cache */
-    if (cache_new(&cache_b, dataset_b->num_files) != 0)
-    {
-        harp_collocation_result_delete(collocation_result);
-        return -1;
-    }
-
-    if (dataset_b->num_files != cache_b->num_files)
-    {
-        harp_set_error(HARP_ERROR_INVALID_ARGUMENT, "maximum cache size (%d) and number of files in dataset b (%d) are "
-                       "not consistent", cache_b->num_files, dataset_b->num_files);
-        cache_delete(cache_b);
-        harp_collocation_result_delete(collocation_result);
-        return -1;
-    }
-
-    /* Determine the start and stop time for each file in dataset B */
-    if (cache_set_dataset_start_stop_times(cache_b, dataset_b) != 0)
-    {
-        cache_delete(cache_b);
-        harp_collocation_result_delete(collocation_result);
-        return -1;
-    }
-
-    /* Loop over files in dataset A */
-    for (i = 0; i < dataset_a->num_files; i++)
-    {
-        Reduced_product *reduced_product_a = NULL;
-
-        /* Import each product of dataset A */
-        if (reduced_product_import(dataset_a->filename[i], collocation_options, 0, &reduced_product_a) != 0)
+        /* the datetime start/stop in the metadata is provided in days since 2000-01-01 */
+        if (harp_convert_unit(info->criterium[info->datetime_index]->unit, "days", 1, &delta_time) != 0)
         {
-            cache_delete(cache_b);
-            harp_collocation_result_delete(collocation_result);
+            return -1;
+        }
+    }
+    else
+    {
+        /* set delta_time to infinite, so we match everything */
+        delta_time = harp_plusinf();
+    }
+
+    /* loop over products in dataset A */
+    for (i = 0; i < info->dataset_a->num_products; i++)
+    {
+        long index_a = info->sorted_index_a[i];
+        double datetime_start_a = info->dataset_a->metadata[index_a]->datetime_start;
+        double datetime_stop_a = info->dataset_a->metadata[index_a]->datetime_stop;
+
+        /* import product of dataset A */
+        if (harp_import(info->dataset_a->metadata[index_a]->filename, NULL, NULL, &info->product_a) != 0)
+        {
+            return -1;
+        }
+        if (filter_product(info, info->product_a, 1) != 0)
+        {
+            return -1;
+        }
+        if (assign_variables(info, &info->variables_a, info->product_a) != 0)
+        {
             return -1;
         }
 
-        /* Determine which subset of files in dataset B need to be considered */
-        if (dataset_b_determine_subset(cache_b, collocation_options, dataset_a, i) != 0)
+        for (j = 0; j < info->dataset_b->num_products; j++)
         {
-            reduced_product_delete(reduced_product_a);
-            cache_delete(cache_b);
-            harp_collocation_result_delete(collocation_result);
-            return -1;
-        }
+            long index_b = info->sorted_index_b[j];
+            double datetime_start_b = info->dataset_b->metadata[index_b]->datetime_start;
+            double datetime_stop_b = info->dataset_b->metadata[index_b]->datetime_stop;
 
-        if (cache_b->num_subset_files > 0)
-        {
-            /* Update the cache */
-            if (cache_b_update(cache_b, collocation_options, dataset_a, i) != 0)
+            if (datetime_start_a <= datetime_stop_b + delta_time && datetime_start_b - delta_time <= datetime_stop_a)
             {
-                reduced_product_delete(reduced_product_a);
-                cache_delete(cache_b);
-                harp_collocation_result_delete(collocation_result);
-                return -1;
-            }
-
-            for (j = 0; j < cache_b->num_files; j++)
-            {
-                /* Perform collocation only when needed */
-                if (cache_b->file_is_needed[j])
+                /* overlap */
+                if (info->product_b[index_b] == NULL)
                 {
-                    Reduced_product *reduced_product_b = NULL;
-
-                    if (cache_b->reduced_product[j] == NULL)
+                    if (harp_import(info->dataset_b->metadata[index_b]->filename, NULL, NULL, &info->product_b[index_b])
+                        != 0)
                     {
-                        /* If not yet open, import product of dataset B ... */
-                        if (reduced_product_import(dataset_b->filename[j], collocation_options, 1, &reduced_product_b)
-                            != 0)
-                        {
-                            reduced_product_delete(reduced_product_a);
-                            cache_delete(cache_b);
-                            harp_collocation_result_delete(collocation_result);
-                            return -1;
-                        }
-
-                        /* ... and add it to the cache */
-                        if (cache_add_reduced_product(cache_b, reduced_product_b, j) != 0)
-                        {
-                            reduced_product_delete(reduced_product_b);
-                            reduced_product_delete(reduced_product_a);
-                            cache_delete(cache_b);
-                            harp_collocation_result_delete(collocation_result);
-                            return -1;
-                        }
+                        return -1;
                     }
-                    else
+                    if (filter_product(info, info->product_b[index_b], 0) != 0)
                     {
-                        /* otherwise, grab it from the cache */
-                        reduced_product_b = cache_b->reduced_product[j];
-                    }
-
-                    /* Matchup measurements in two files */
-                    if (matchup_measurements_in_two_files(collocation_result, reduced_product_a, reduced_product_b,
-                                                          collocation_options, &files_match) != 0)
-                    {
-                        reduced_product_delete(reduced_product_a);
-                        cache_delete(cache_b);
-                        harp_collocation_result_delete(collocation_result);
                         return -1;
                     }
                 }
+                if (assign_variables(info, &info->variables_b, info->product_b[index_b]) != 0)
+                {
+                    return -1;
+                }
+
+                if (perform_matchup_on_products(info, index_b) != 0)
+                {
+                    return -1;
+                }
+            }
+            else if (info->product_b[index_b] != NULL)
+            {
+                harp_product_delete(info->product_b[index_b]);
+                info->product_b[index_b] = NULL;
             }
         }
-
-        reduced_product_delete(reduced_product_a);
+        harp_product_delete(info->product_a);
+        info->product_a = NULL;
     }
 
-    /* Delete the cache */
-    cache_delete(cache_b);
-    *new_collocation_result = collocation_result;
+    return 0;
+}
+
+int matchup(int argc, char *argv[])
+{
+    collocation_info *collocation_info = NULL;
+    int i;
+
+    if (collocation_info_new(&collocation_info) != 0)
+    {
+        return -1;
+    }
+    for (i = 1; i < argc; i++)
+    {
+        if (strcmp(argv[i], "-d") == 0 && i + 1 < argc && argv[i + 1][0] != '-')
+        {
+            if (collocation_info_add_criterium_from_string(collocation_info, argv[i + 1]) != 0)
+            {
+                collocation_info_delete(collocation_info);
+
+                return -1;
+            }
+            i++;
+        }
+        else if (strcmp(argv[i], "--area-intersects") == 0)
+        {
+            collocation_info->filter_area_intersects = 1;
+        }
+        else if (strcmp(argv[i], "--point-in-area-xy") == 0)
+        {
+            collocation_info->filter_point_in_area_xy = 1;
+        }
+        else if (strcmp(argv[i], "--point-in-area-yx") == 0)
+        {
+            collocation_info->filter_point_in_area_yx = 1;
+        }
+        else if (strcmp(argv[i], "-nx") == 0 && i + 1 < argc && argv[i + 1][0] != '-')
+        {
+            if (collocation_info->nearest_neighbour_x_variable_name != NULL)
+            {
+                collocation_info_delete(collocation_info);
+
+                return 1;
+            }
+            collocation_info->nearest_neighbour_x_variable_name = strdup(argv[i + 1]);
+
+            if (collocation_info->nearest_neighbour_x_variable_name == NULL)
+            {
+                harp_set_error(HARP_ERROR_OUT_OF_MEMORY, "out of memory (could not duplicate string) (%s:%u)", __FILE__,
+                               __LINE__);
+                collocation_info_delete(collocation_info);
+
+                return -1;
+            }
+            if (collocation_info->nearest_neighbour_y_variable_name == NULL)
+            {
+                collocation_info->perform_nearest_neighbour_x_first = 1;
+            }
+            i++;
+        }
+        else if (strcmp(argv[i], "-ny") == 0 && i + 1 < argc && argv[i + 1][0] != '-')
+        {
+            if (collocation_info->nearest_neighbour_y_variable_name != NULL)
+            {
+                collocation_info_delete(collocation_info);
+
+                return 1;
+            }
+            collocation_info->nearest_neighbour_y_variable_name = strdup(argv[i + 1]);
+
+            if (collocation_info->nearest_neighbour_y_variable_name == NULL)
+            {
+                harp_set_error(HARP_ERROR_OUT_OF_MEMORY, "out of memory (could not duplicate string) (%s:%u)", __FILE__,
+                               __LINE__);
+                collocation_info_delete(collocation_info);
+
+                return -1;
+            }
+            i++;
+        }
+        else
+        {
+            if (argv[i][0] == '-' || i != argc - 3)
+            {
+                collocation_info_delete(collocation_info);
+
+                return 1;
+            }
+            break;
+        }
+    }
+
+    if (harp_dataset_import(collocation_info->dataset_a, argv[argc - 3]) != 0)
+    {
+        collocation_info_delete(collocation_info);
+
+        return -1;
+    }
+    if (harp_dataset_import(collocation_info->dataset_b, argv[argc - 2]) != 0)
+    {
+        collocation_info_delete(collocation_info);
+
+        return -1;
+    }
+
+    if (collocation_info->dataset_a->num_products > 0 && collocation_info->dataset_b->num_products > 0)
+    {
+        if (collocation_info_update(collocation_info) != 0)
+        {
+            collocation_info_delete(collocation_info);
+
+            return -1;
+        }
+
+        if (perform_matchup(collocation_info) != 0)
+        {
+            collocation_info_delete(collocation_info);
+
+            return -1;
+        }
+    }
+
+    if (harp_collocation_result_write(argv[argc - 1], collocation_info->collocation_result) != 0)
+    {
+        collocation_info_delete(collocation_info);
+
+        return -1;
+    }
+
+    collocation_info_delete(collocation_info);
+
     return 0;
 }

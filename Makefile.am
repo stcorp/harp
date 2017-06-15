@@ -201,11 +201,7 @@ INDENTFILES += $(harpcheck_SOURCES)
 
 harpcollocate_SOURCES = \
 	tools/harpcollocate/harpcollocate.c \
-	tools/harpcollocate/harpcollocate.h \
 	tools/harpcollocate/harpcollocate-matchup.c \
-	tools/harpcollocate/harpcollocate-parse.c \
-	tools/harpcollocate/harpcollocate-resample.c \
-	tools/harpcollocate/harpcollocate-result.c \
 	tools/harpcollocate/harpcollocate-update.c
 harpcollocate_LDADD = libharp.la
 INDENTFILES += $(harpcollocate_SOURCES)

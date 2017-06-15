@@ -29,7 +29,14 @@
  * POSSIBILITY OF SUCH DAMAGE.
  */
 
-#include "harpcollocate.h"
+#include "harp.h"
+
+#include <stdio.h>
+#include <stdlib.h>
+#include <string.h>
+
+int matchup(int argc, char *argv[]);
+int update(int argc, char *argv[]);
 
 static int print_warning(const char *message, va_list ap)
 {
@@ -42,165 +49,58 @@ static int print_warning(const char *message, va_list ap)
     return result;
 }
 
-void print_version(void)
+static void print_version(void)
 {
     printf("harpcollocate version %s\n", libharp_version);
     printf("Copyright (C) 2015-2017 S[&]T, The Netherlands.\n");
 }
 
-static void print_help_collocation_options(void)
-{
-    printf("      Collocation options,\n");
-    printf("      set at least one of the following ([unit] is optional):\n");
-    printf("      -dt 'value [unit]'          : sets maximum allowed difference in time\n");
-    printf("      -dp 'value [unit]'          : sets maximum allowed point distance\n");
-    printf("      -dlat 'value [unit]'        : sets maximum allowed point difference\n");
-    printf("                                    in latitude\n");
-    printf("      -dlon 'value [unit]'        : sets maximum allowed point difference\n");
-    printf("                                    in longitude\n");
-    printf("      -da 'value [unit]'          : sets minimum allowed overlapping\n");
-    printf("                                    percentage of polygon areas\n");
-    printf("      -dsza 'value [unit]'        : sets allowed maximum difference\n");
-    printf("                                    in solar zenith angle\n");
-    printf("      -dsaa 'value [unit]'        : sets allowed maximum difference\n");
-    printf("                                    in solar azimuth angle\n");
-    printf("      -dvza 'value [unit]'        : sets allowed maximum difference\n");
-    printf("                                    in viewing zenith angle\n");
-    printf("      -dvaa 'value [unit]'        : sets allowed maximum difference\n");
-    printf("                                    in viewing azimuth angle\n");
-    printf("      -dtheta 'value [unit]'      : sets allowed maximum difference\n");
-    printf("                                    in scattering angle\n");
-    printf("      -overlap                    : sets that polygon areas must overlap\n");
-    printf("      -painab                     : sets that points of dataset A must fall\n");
-    printf("                                    in polygon areas of B\n");
-    printf("      -pbinaa                     : sets that points of dataset B must fall\n");
-    printf("                                    in polygon areas of A\n");
-    printf("      When '[unit]' is not specified, a default unit is used:\n");
-    printf("        Criteria; [default unit]\n");
-    printf("        -dt; [%s]\n", HARP_UNIT_TIME);
-    printf("        -dp; [%s]\n", HARP_UNIT_LENGTH);
-    printf("        -dlat; [%s]\n", HARP_UNIT_LATITUDE);
-    printf("        -dlon; [%s]\n", HARP_UNIT_LONGITUDE);
-    printf("        -da; [%s]\n", HARP_UNIT_PERCENT);
-    printf("        -dsza, -dsaa, -dvza, -dvaa, -dvaa, -dtheta; [%s]\n", HARP_UNIT_ANGLE);
-}
-
-static void print_help_resampling_options(void)
-{
-    printf("      Resampling options:\n");
-    printf("      -Rnna, --nearest-neighbour-a: keep only nearest neighbour,\n");
-    printf("                                    dataset A is the master dataset\n");
-    printf("      -Rnnb, --nearest-neighbour-b: keep only nearest neighbour, \n");
-    printf("                                    dataset B is the master dataset\n");
-    printf("      The nearest neighbour is the sample with which the squared sum\n");
-    printf("      of the weighted differences is minimal\n");
-    printf("      When resampling is set to 'Rnna' and/or 'Rnnb',\n");
-    printf("      the following parameters can be set:\n");
-    printf("      -wft 'value [unit]'         : sets the weighting factor for time\n");
-    printf("      -wfdp 'value [unit]'        : sets the weighting factor for\n");
-    printf("                                    point distance\n");
-    printf("      -wfa 'value [unit]'         : sets the weighting factor for\n");
-    printf("                                    overlapping percentage\n");
-    printf("      -wfsza 'value [unit]'       : sets the weighting factor\n");
-    printf("                                    for solar zenith angle\n");
-    printf("      -wfsaa 'value [unit]'       : sets the weighting factor\n");
-    printf("                                    for solar azimuth angle\n");
-    printf("      -wfvza 'value [unit]'       : sets the weighting factor\n");
-    printf("                                    for viewing zenith angle\n");
-    printf("      -wfvaa 'value [unit]'       : sets the weighting factor\n");
-    printf("                                    for viewing azimuth angle\n");
-    printf("      -wftheta 'value [unit]'     : sets the weighting factor\n");
-    printf("                                    for scattering angle\n");
-    printf("      When '[unit]' is not specified in the above, a default unit will be\n");
-    printf("      adopted:\n");
-    printf("        Weighting factors; [default unit]\n");
-    printf("        -wft; [1/%s]\n", HARP_UNIT_TIME);
-    printf("        -wfdp; [1/%s]\n", HARP_UNIT_LENGTH);
-    printf("        -wfa; [1/%s]\n", HARP_UNIT_PERCENT);
-    printf("        -wfsza, -wfsaa, -wfvza, -wfvaa, -wfvaa, -wftheta; [1/%s]\n", HARP_UNIT_ANGLE);
-    printf("      When a weighting factor is not set, a default value of 1 and\n");
-    printf("      the default unit are adopted. Recommend value and unit for the\n");
-    printf("      weighting factors are the reciprocals of the corresponding\n");
-    printf("      collocation criteria value and unit that is used.\n");
-}
-
-void print_help_matchup(void)
+static void print_help(void)
 {
     printf("Usage:\n");
-    printf("  harpcollocate matchup [options]\n");
-    printf("    Determine the collocation filter for two sets of HARP files,\n");
-    printf("    and optionally resample the collocation result\n");
+    printf("  harpcollocate [options] <path_a> <path_b> <outputpath>\n");
+    printf("    Collocate samples between two datasets of HARP files.\n");
+    printf("    The path for a dataset can be either a single file or a directory\n");
+    printf("    containing files. The result will be write as a comma separate value\n");
+    printf("    (csv) file to the provided output path\n");
     printf("\n");
     printf("    Options:\n");
     printf("\n");
-    printf("      -h, --help\n");
-    printf("           Show matchup help (this text)\n");
-    printf("      -ia, --input-a <input>\n");
-    printf("           Specifies directory or names of input files of dataset A\n");
-    printf("      -ib, --input-b <input>\n");
-    printf("           Specifies directory or names of input files of dataset B\n");
-    printf("      -or, --output-result <output>\n");
-    printf("           Specifies collocation result file (comma separated values)\n");
+    printf("      -d '<diffvariable> <value> [unit]'\n");
+    printf("           Specifies a collocation criterium\n");
+    printf("           Only include pairs where the absolute difference between the\n");
+    printf("           values of the given variable for dataset A and B are less/equal\n");
+    printf("           than the given value.\n");
+    printf("           There is a special variable name 'point_distance' to indicate\n");
+    printf("           the earth surface distance between lat/lon points of A and B.\n");
+    printf("           Example:\n");
+    printf("             -d 'datetime 3 [h]'\n");
+    printf("             -d 'point_distance 10 [km]'\n");
+    printf("      --area-intersects\n");
+    printf("           Specifies that latitude/longitude polygon areas of A and B must\n");
+    printf("           overlap\n");
+    printf("      --point-in-area-xy\n");
+    printf("           Specifies that latitude/longitude points from dataset A must\n");
+    printf("           fall in polygon areas of dataset B\n");
+    printf("      --point-in-area-yx\n");
+    printf("           Specifies that latitude/longitude points from dataset B must\n");
+    printf("           fall in polygon areas of dataset A\n");
+    printf("      -nx <diffvariable>\n");
+    printf("           Filter collocation pairs such that for each sample from dataset B\n");
+    printf("           only the nearest sample from dataset A (using the given variable\n");
+    printf("           as difference) is kept\n");
+    printf("      -ny <diffvariable>\n");
+    printf("           Filter collocation pairs such that for each sample from dataset A\n");
+    printf("           only the neareset sample from dataset B is kept.\n");
+    printf("      The order in which -nx and -ny are provided determines the order in\n");
+    printf("      which the nearest filters are executed.\n");
+    printf("      When '[unit]' is not specified, the unit of the variable of the\n");
+    printf("      first file from dataset A will be used.\n");
     printf("\n");
-    print_help_collocation_options();
-    printf("\n");
-    print_help_resampling_options();
-    printf("\n");
-}
-
-void print_help_resample(void)
-{
-    printf("Usage:\n");
-    printf("  harpcollocate resample [options]\n");
-    printf("    Resample an existing collocation result file\n");
-    printf("\n");
-    printf("    Options:\n");
-    printf("\n");
-    printf("      -h, --help\n");
-    printf("           Show resample help (this text)\n");
-    printf("      -ir, --input-result <input>\n");
-    printf("           Input collocation result file (comma separated values)\n");
-    printf("      -or, --output-result <output>\n");
-    printf("           Create a new file, and do not overwrite the input\n");
-    printf("           collocation result file\n");
-    printf("\n");
-    print_help_resampling_options();
-    printf("\n");
-}
-
-void print_help_update(void)
-{
-    printf("Usage:\n");
-    printf("  harpcollocate update [options]\n");
-    printf("    Update an existing collocation result file by checking\n");
-    printf("    the measurements in two sets of HARP files that still exist\n");
-    printf("\n");
-    printf("    Options:\n");
-    printf("      -ia, --input-a <input>\n");
-    printf("           Specifies directory or names of input files of dataset A\n");
-    printf("      -ib, --input-b <input>\n");
-    printf("           Specifies directory or names of input files of dataset B\n");
-    printf("      -ir, --input-result <input>\n");
-    printf("           Input collocation result file (comma separated values)\n");
-    printf("      -or, --output-result <output>\n");
-    printf("           Create a new file, and do not overwrite the input\n");
-    printf("           collocation result file\n");
-    printf("\n");
-}
-
-void print_help(void)
-{
-    printf("Usage:\n");
-    printf("  harpcollocate sub-command [options]\n");
-    printf("    Determine the collocation filter for two sets of HARP files.\n");
-    printf("\n");
-    printf("    Available sub-commands:\n");
-    printf("      matchup\n");
-    printf("      resample\n");
-    printf("      update\n");
-    printf("\n");
-    printf("    Use 'harpcollocate <sub-command> --help' to get help on a specific\n");
-    printf("    sub-command.\n");
+    printf("  harpcollocate --update <inputpath> <path_a> <path_b> [<outputpath>]\n");
+    printf("    Update an existing collocation result file by checking the \n");
+    printf("    measurements in two sets of HARP files and only keeping pairs\n");
+    printf("    for which measurements still exist\n");
     printf("\n");
     printf("  harpcollocate -h, --help\n");
     printf("    Show help (this text).\n");
@@ -212,9 +112,7 @@ void print_help(void)
 
 int main(int argc, char *argv[])
 {
-    Collocation_mode collocation_mode;
-    Collocation_options *collocation_options = NULL;
-    harp_collocation_result *collocation_result = NULL;
+    int result;
 
     if (argc == 1 || (strcmp(argv[1], "-h") == 0 || strcmp(argv[1], "--help") == 0))
     {
@@ -226,12 +124,6 @@ int main(int argc, char *argv[])
     {
         print_version();
         exit(0);
-    }
-
-    if (parse_arguments(argc, argv, &collocation_mode, &collocation_options) != 0)
-    {
-        fprintf(stderr, "ERROR: %s\n", harp_errno_to_string(harp_errno));
-        exit(1);
     }
 
     if (harp_set_coda_definition_path_conditional(argv[0], NULL, "../share/coda/definitions") != 0)
@@ -248,113 +140,31 @@ int main(int argc, char *argv[])
         exit(1);
     }
 
-    switch (collocation_mode)
+    if (strcmp(argv[1], "--update") == 0)
     {
-        case collocation_mode_matchup:
-
-            /* Perform a full-blown collocation */
-            if (matchup(collocation_options, &collocation_result) != 0)
-            {
-                collocation_options_delete(collocation_options);
-                fprintf(stderr, "ERROR: %s\n", harp_errno_to_string(harp_errno));
-                harp_done();
-                exit(1);
-            }
-            if (collocation_result_convert_units(collocation_result) != 0)
-            {
-                collocation_options_delete(collocation_options);
-                harp_collocation_result_delete(collocation_result);
-                fprintf(stderr, "ERROR: %s\n", harp_errno_to_string(harp_errno));
-                harp_done();
-                exit(1);
-            }
-
-            /* Optional: Resample the collocation result */
-            if (resample(collocation_options, collocation_result) != 0)
-            {
-                collocation_options_delete(collocation_options);
-                harp_collocation_result_delete(collocation_result);
-                fprintf(stderr, "ERROR: %s\n", harp_errno_to_string(harp_errno));
-                harp_done();
-                exit(1);
-            }
-            if (harp_collocation_result_sort_by_collocation_index(collocation_result) != 0)
-            {
-                collocation_options_delete(collocation_options);
-                harp_collocation_result_delete(collocation_result);
-                fprintf(stderr, "ERROR: %s\n", harp_errno_to_string(harp_errno));
-                harp_done();
-                exit(1);
-            }
-            break;
-
-        case collocation_mode_resample:
-
-            /* Skip the collocation, and resample an existing input collocation result file */
-            if (harp_collocation_result_read(collocation_options->filename_result_in, &collocation_result) != 0)
-            {
-                collocation_options_delete(collocation_options);
-                fprintf(stderr, "ERROR: %s\n", harp_errno_to_string(harp_errno));
-                harp_done();
-                exit(1);
-            }
-
-            /* Resample the collocation result */
-            if (resample(collocation_options, collocation_result) != 0)
-            {
-                collocation_options_delete(collocation_options);
-                harp_collocation_result_delete(collocation_result);
-                fprintf(stderr, "ERROR: %s\n", harp_errno_to_string(harp_errno));
-                harp_done();
-                exit(1);
-            }
-            if (harp_collocation_result_sort_by_collocation_index(collocation_result) != 0)
-            {
-                collocation_options_delete(collocation_options);
-                harp_collocation_result_delete(collocation_result);
-                fprintf(stderr, "ERROR: %s\n", harp_errno_to_string(harp_errno));
-                harp_done();
-                exit(1);
-            }
-
-            break;
-
-        case collocation_mode_update:
-
-            /* Skip the collocation, and update an existing input collocation result file */
-            if (harp_collocation_result_read(collocation_options->filename_result_in, &collocation_result) != 0)
-            {
-                collocation_options_delete(collocation_options);
-                fprintf(stderr, "ERROR: %s\n", harp_errno_to_string(harp_errno));
-                harp_done();
-                exit(1);
-            }
-
-            /* Update the collocation result */
-            if (update(collocation_options, collocation_result) != 0)
-            {
-                collocation_options_delete(collocation_options);
-                harp_collocation_result_delete(collocation_result);
-                fprintf(stderr, "ERROR: %s\n", harp_errno_to_string(harp_errno));
-                harp_done();
-                exit(1);
-            }
-            break;
+        result = update(argc, argv);
     }
-
-    /* Write the collocation result to file */
-    if (harp_collocation_result_write(collocation_options->filename_result, collocation_result) != 0)
+    else
     {
-        collocation_options_delete(collocation_options);
-        harp_collocation_result_delete(collocation_result);
-        fprintf(stderr, "ERROR: %s\n", harp_errno_to_string(harp_errno));
+        result = matchup(argc, argv);
+    }
+    if (result == -1)
+    {
+        if (harp_errno != HARP_SUCCESS)
+        {
+            fprintf(stderr, "ERROR: %s\n", harp_errno_to_string(harp_errno));
+        }
+        harp_done();
+        exit(1);
+    }
+    else if (result == 1)
+    {
+        fprintf(stderr, "ERROR: invalid arguments\n");
+        print_help();
         harp_done();
         exit(1);
     }
 
-    /* Done */
-    collocation_options_delete(collocation_options);
-    harp_collocation_result_delete(collocation_result);
     harp_done();
 
     return 0;

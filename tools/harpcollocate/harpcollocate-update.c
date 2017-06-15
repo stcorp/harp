@@ -29,13 +29,10 @@
  * POSSIBILITY OF SUCH DAMAGE.
  */
 
-#include "harpcollocate.h"
+#include "harp.h"
 
-typedef enum dataset_selection_enum
-{
-    dataset_a,
-    dataset_b
-} dataset_selection;
+#include <stdlib.h>
+#include <string.h>
 
 typedef struct collocation_index_slist_struct
 {
@@ -147,7 +144,7 @@ static void mask_logical_and(long num_elements, const uint8_t *source_mask_a, co
 }
 
 static int update_mask_for_product(const harp_collocation_result *collocation_result,
-                                   dataset_selection selection, const char *product_path, uint8_t *mask)
+                                   int is_dataset_a, const char *product_path, uint8_t *mask)
 {
     harp_product *product;
     harp_variable *collocation_index;
@@ -193,7 +190,7 @@ static int update_mask_for_product(const harp_collocation_result *collocation_re
         const harp_collocation_pair *pair = collocation_result->pair[i];
         long index;
 
-        if (selection == dataset_a)
+        if (is_dataset_a)
         {
             if (harp_dataset_get_index_from_source_product(collocation_result->dataset_a, product->source_product,
                                                            &index) != 0)
@@ -224,8 +221,8 @@ static int update_mask_for_product(const harp_collocation_result *collocation_re
     return 0;
 }
 
-static int get_mask(const harp_collocation_result *collocation_result, dataset_selection selection,
-                    const Dataset *dataset, uint8_t **new_mask)
+static int get_mask(const harp_collocation_result *collocation_result, int is_dataset_a,
+                    const harp_dataset *dataset, uint8_t **new_mask)
 {
     uint8_t *mask;
     int i;
@@ -238,9 +235,9 @@ static int get_mask(const harp_collocation_result *collocation_result, dataset_s
         return -1;
     }
 
-    for (i = 0; i < dataset->num_files; i++)
+    for (i = 0; i < dataset->num_products; i++)
     {
-        if (update_mask_for_product(collocation_result, selection, dataset->filename[i], mask) != 0)
+        if (update_mask_for_product(collocation_result, is_dataset_a, dataset->metadata[i]->filename, mask) != 0)
         {
             free(mask);
             return -1;
@@ -251,14 +248,27 @@ static int get_mask(const harp_collocation_result *collocation_result, dataset_s
     return 0;
 }
 
-static int update_collocation_result(harp_collocation_result *collocation_result, const uint8_t *mask)
+static int update_collocation_result(harp_collocation_result *collocation_result, harp_dataset *dataset_a,
+                                     harp_dataset *dataset_b)
 {
+    uint8_t *mask_a = NULL;
+    uint8_t *mask_b = NULL;
+    uint8_t *mask = NULL;
     long i;
 
-    if (mask == NULL)
+    if (get_mask(collocation_result, 0, dataset_a, &mask_a) != 0)
     {
-        return 0;
+        return -1;
     }
+    if (get_mask(collocation_result, 0, dataset_b, &mask_b) != 0)
+    {
+        free(mask_a);
+        return -1;
+    }
+
+    mask_logical_and(collocation_result->num_pairs, mask_a, mask_b, mask);
+    free(mask_a);
+    free(mask_b);
 
     for (i = collocation_result->num_pairs - 1; i >= 0; i--)
     {
@@ -266,79 +276,88 @@ static int update_collocation_result(harp_collocation_result *collocation_result
         {
             if (harp_collocation_result_remove_pair_at_index(collocation_result, i) != 0)
             {
+                harp_collocation_result_delete(collocation_result);
+                free(mask);
                 return -1;
             }
         }
     }
 
+    free(mask);
+
     return 0;
 }
 
-int update(const Collocation_options *collocation_options, harp_collocation_result *collocation_result)
+int update(int argc, char *argv[])
 {
-    uint8_t *mask_a = NULL;
-    uint8_t *mask_b = NULL;
-    const uint8_t *mask = NULL;
+    harp_collocation_result *collocation_result;
+    harp_dataset *dataset_a;
+    harp_dataset *dataset_b;
+    const char *output;
 
-    /* Validate input arguments */
-    if (collocation_options == NULL)
+    if (argc < 5 || argc > 6 || argv[2][0] == '-' || argv[3][0] == '-' || argv[4][0] == '-')
     {
-        harp_set_error(HARP_ERROR_INVALID_ARGUMENT, "collocation_options is NULL (%s:%u)", __FILE__, __LINE__);
-        return -1;
+        return 1;
     }
-
-    /* Compute row masks for each dataset. */
-    if (collocation_options->dataset_a_in != NULL)
+    if (argc == 6)
     {
-        if (get_mask(collocation_result, dataset_a, collocation_options->dataset_a_in, &mask_a) != 0)
+        if (argv[5][0] == '-')
         {
-            return -1;
+            return 1;
         }
-    }
-
-    if (collocation_options->dataset_b_in != NULL)
-    {
-        if (get_mask(collocation_result, dataset_b, collocation_options->dataset_b_in, &mask_b) != 0)
-        {
-            if (mask_a != NULL)
-            {
-                free(mask_a);
-            }
-
-            return -1;
-        }
-    }
-
-    /* Determine the combined row mask. */
-    if (mask_a == NULL)
-    {
-        mask = mask_b;
-    }
-    else if (mask_b == NULL)
-    {
-        mask = mask_a;
+        output = argv[5];
     }
     else
     {
-        mask_logical_and(collocation_result->num_pairs, mask_a, mask_b, mask_a);
-        mask = mask_a;
+        output = argv[2];
     }
 
-    /* Update the collocation result (using the combined row mask). */
-    if (update_collocation_result(collocation_result, mask) != 0)
+    if (harp_collocation_result_read(argv[2], &collocation_result) != 0)
     {
         return -1;
     }
 
-    if (mask_a != NULL)
+    if (harp_dataset_new(&dataset_a) != 0)
     {
-        free(mask_a);
+        harp_collocation_result_delete(collocation_result);
+        return -1;
+    }
+    if (harp_dataset_import(dataset_a, argv[3]) != 0)
+    {
+        harp_collocation_result_delete(collocation_result);
+        harp_dataset_delete(dataset_a);
+        return -1;
+    }
+    if (harp_dataset_new(&dataset_b) != 0)
+    {
+        harp_collocation_result_delete(collocation_result);
+        harp_dataset_delete(dataset_a);
+        return -1;
+    }
+    if (harp_dataset_import(dataset_b, argv[4]) != 0)
+    {
+        harp_collocation_result_delete(collocation_result);
+        harp_dataset_delete(dataset_a);
+        harp_dataset_delete(dataset_b);
+        return -1;
     }
 
-    if (mask_b != NULL)
+    if (update_collocation_result(collocation_result, dataset_a, dataset_b) != 0)
     {
-        free(mask_b);
+        harp_collocation_result_delete(collocation_result);
+        harp_dataset_delete(dataset_a);
+        harp_dataset_delete(dataset_b);
+        return -1;
     }
+    harp_dataset_delete(dataset_a);
+    harp_dataset_delete(dataset_b);
+
+    if (harp_collocation_result_write(output, collocation_result) != 0)
+    {
+        harp_collocation_result_delete(collocation_result);
+        return -1;
+    }
+    harp_collocation_result_delete(collocation_result);
 
     return 0;
 }
