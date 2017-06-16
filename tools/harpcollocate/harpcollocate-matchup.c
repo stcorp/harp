@@ -1337,10 +1337,10 @@ static int perform_matchup(collocation_info *info)
 
 int matchup(int argc, char *argv[])
 {
-    collocation_info *collocation_info = NULL;
+    collocation_info *info = NULL;
     int i;
 
-    if (collocation_info_new(&collocation_info) != 0)
+    if (collocation_info_new(&info) != 0)
     {
         return -1;
     }
@@ -1348,9 +1348,9 @@ int matchup(int argc, char *argv[])
     {
         if (strcmp(argv[i], "-d") == 0 && i + 1 < argc && argv[i + 1][0] != '-')
         {
-            if (collocation_info_add_criterium_from_string(collocation_info, argv[i + 1]) != 0)
+            if (collocation_info_add_criterium_from_string(info, argv[i + 1]) != 0)
             {
-                collocation_info_delete(collocation_info);
+                collocation_info_delete(info);
 
                 return -1;
             }
@@ -1358,56 +1358,50 @@ int matchup(int argc, char *argv[])
         }
         else if (strcmp(argv[i], "--area-intersects") == 0)
         {
-            collocation_info->filter_area_intersects = 1;
+            info->filter_area_intersects = 1;
         }
         else if (strcmp(argv[i], "--point-in-area-xy") == 0)
         {
-            collocation_info->filter_point_in_area_xy = 1;
+            info->filter_point_in_area_xy = 1;
         }
         else if (strcmp(argv[i], "--point-in-area-yx") == 0)
         {
-            collocation_info->filter_point_in_area_yx = 1;
+            info->filter_point_in_area_yx = 1;
         }
         else if (strcmp(argv[i], "-nx") == 0 && i + 1 < argc && argv[i + 1][0] != '-')
         {
-            if (collocation_info->nearest_neighbour_x_variable_name != NULL)
+            if (info->nearest_neighbour_x_variable_name != NULL)
             {
-                collocation_info_delete(collocation_info);
-
+                collocation_info_delete(info);
                 return 1;
             }
-            collocation_info->nearest_neighbour_x_variable_name = strdup(argv[i + 1]);
-
-            if (collocation_info->nearest_neighbour_x_variable_name == NULL)
+            info->nearest_neighbour_x_variable_name = strdup(argv[i + 1]);
+            if (info->nearest_neighbour_x_variable_name == NULL)
             {
                 harp_set_error(HARP_ERROR_OUT_OF_MEMORY, "out of memory (could not duplicate string) (%s:%u)", __FILE__,
                                __LINE__);
-                collocation_info_delete(collocation_info);
-
+                collocation_info_delete(info);
                 return -1;
             }
-            if (collocation_info->nearest_neighbour_y_variable_name == NULL)
+            if (info->nearest_neighbour_y_variable_name == NULL)
             {
-                collocation_info->perform_nearest_neighbour_x_first = 1;
+                info->perform_nearest_neighbour_x_first = 1;
             }
             i++;
         }
         else if (strcmp(argv[i], "-ny") == 0 && i + 1 < argc && argv[i + 1][0] != '-')
         {
-            if (collocation_info->nearest_neighbour_y_variable_name != NULL)
+            if (info->nearest_neighbour_y_variable_name != NULL)
             {
-                collocation_info_delete(collocation_info);
-
+                collocation_info_delete(info);
                 return 1;
             }
-            collocation_info->nearest_neighbour_y_variable_name = strdup(argv[i + 1]);
-
-            if (collocation_info->nearest_neighbour_y_variable_name == NULL)
+            info->nearest_neighbour_y_variable_name = strdup(argv[i + 1]);
+            if (info->nearest_neighbour_y_variable_name == NULL)
             {
                 harp_set_error(HARP_ERROR_OUT_OF_MEMORY, "out of memory (could not duplicate string) (%s:%u)", __FILE__,
                                __LINE__);
-                collocation_info_delete(collocation_info);
-
+                collocation_info_delete(info);
                 return -1;
             }
             i++;
@@ -1416,52 +1410,46 @@ int matchup(int argc, char *argv[])
         {
             if (argv[i][0] == '-' || i != argc - 3)
             {
-                collocation_info_delete(collocation_info);
-
+                collocation_info_delete(info);
                 return 1;
             }
             break;
         }
     }
 
-    if (harp_dataset_import(collocation_info->dataset_a, argv[argc - 3]) != 0)
+    if (harp_dataset_import(info->dataset_a, argv[argc - 3]) != 0)
     {
-        collocation_info_delete(collocation_info);
-
+        collocation_info_delete(info);
         return -1;
     }
-    if (harp_dataset_import(collocation_info->dataset_b, argv[argc - 2]) != 0)
+    if (harp_dataset_import(info->dataset_b, argv[argc - 2]) != 0)
     {
-        collocation_info_delete(collocation_info);
-
+        collocation_info_delete(info);
         return -1;
     }
 
-    if (collocation_info->dataset_a->num_products > 0 && collocation_info->dataset_b->num_products > 0)
+    if (info->dataset_a->num_products > 0 && info->dataset_b->num_products > 0)
     {
-        if (collocation_info_update(collocation_info) != 0)
+        if (collocation_info_update(info) != 0)
         {
-            collocation_info_delete(collocation_info);
-
+            collocation_info_delete(info);
             return -1;
         }
 
-        if (perform_matchup(collocation_info) != 0)
+        if (perform_matchup(info) != 0)
         {
-            collocation_info_delete(collocation_info);
-
+            collocation_info_delete(info);
             return -1;
         }
     }
 
-    if (harp_collocation_result_write(argv[argc - 1], collocation_info->collocation_result) != 0)
+    if (harp_collocation_result_write(argv[argc - 1], info->collocation_result) != 0)
     {
-        collocation_info_delete(collocation_info);
-
+        collocation_info_delete(info);
         return -1;
     }
 
-    collocation_info_delete(collocation_info);
+    collocation_info_delete(info);
 
     return 0;
 }

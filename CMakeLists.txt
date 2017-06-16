@@ -473,6 +473,7 @@ install(TARGETS harpcheck DESTINATION bin)
 set(HARPCOLLOCATE_SOURCES
   tools/harpcollocate/harpcollocate.c
   tools/harpcollocate/harpcollocate-matchup.c
+  tools/harpcollocate/harpcollocate-resample.c
   tools/harpcollocate/harpcollocate-update.c)
 add_executable(harpcollocate ${HARPCOLLOCATE_SOURCES})
 target_link_libraries(harpcollocate harp ${CODA_LIBRARIES} ${HDF4_LIBRARIES} ${HDF5_LIBRARIES} ${MATHLIB})

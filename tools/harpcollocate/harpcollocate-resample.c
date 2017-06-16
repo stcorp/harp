@@ -29,171 +29,311 @@
  * POSSIBILITY OF SUCH DAMAGE.
  */
 
-#include "harpcollocate.h"
+#include "harp.h"
 
-/* Check if the pairs are neighbours (i.e. have the same measurement index for the master dataset) */
-static int pair_is_neighbour(const harp_collocation_pair *first_pair, const harp_collocation_pair *second_pair,
-                             int master_a)
+#include <stdlib.h>
+#include <string.h>
+
+typedef struct resample_info_struct
 {
-    if (master_a)
+    harp_collocation_result *collocation_result;
+    int perform_nearest_neighbour_x_first;
+    char *nearest_neighbour_x_variable_name;
+    long nearest_neighbour_x_criterium_index;
+    char *nearest_neighbour_y_variable_name;
+    long nearest_neighbour_y_criterium_index;
+} resample_info;
+
+static void resample_info_delete(resample_info *info)
+{
+    if (info != NULL)
     {
-        /* Use source_product_a and index_a. */
-        if (second_pair->product_index_a == first_pair->product_index_a
-            && second_pair->sample_index_a == first_pair->sample_index_a)
+        if (info->collocation_result != NULL)
         {
-            /* Yes, we found a neighbour. */
-            return 1;
+            harp_collocation_result_delete(info->collocation_result);
         }
-        else
+        if (info->nearest_neighbour_x_variable_name != NULL)
         {
-            return 0;
+            free(info->nearest_neighbour_x_variable_name);
         }
+        if (info->nearest_neighbour_y_variable_name != NULL)
+        {
+            free(info->nearest_neighbour_y_variable_name);
+        }
+        free(info);
     }
-    else
+}
+
+static int resample_info_new(resample_info **new_info)
+{
+    resample_info *info = NULL;
+
+    info = (resample_info *)malloc(sizeof(resample_info));
+    if (info == NULL)
     {
-        /* Use source_product_b and index_b. */
-        if (second_pair->product_index_b == first_pair->product_index_b
-            && second_pair->sample_index_b == first_pair->sample_index_b)
-        {
-            /* Yes, we found a neighbour. */
-            return 1;
-        }
-        else
-        {
-            return 0;
-        }
+        harp_set_error(HARP_ERROR_OUT_OF_MEMORY, "out of memory (could not allocate %lu bytes) (%s:%u)",
+                       sizeof(resample_info), __FILE__, __LINE__);
+        return -1;
     }
+    info->collocation_result = NULL;
+    info->perform_nearest_neighbour_x_first = 0;
+    info->nearest_neighbour_x_variable_name = NULL;
+    info->nearest_neighbour_x_criterium_index = -1;
+    info->nearest_neighbour_y_variable_name = NULL;
+    info->nearest_neighbour_y_criterium_index = -1;
+
+    *new_info = info;
+    
     return 0;
 }
 
-static int nearest_neighbour(const Collocation_options *collocation_options,
-                             harp_collocation_result *collocation_result, int master_a)
+static int get_criterium_index_for_variable_name(harp_collocation_result *collocation_result, const char *variable_name,
+                                                 long *index)
 {
-    long target_id = 0;
+    long variable_name_length = strlen(variable_name);
+    int i;
+
+    for (i = 0; i < collocation_result->num_differences; i++)
+    {
+        long difference_name_length = strlen(collocation_result->difference_variable_name[i]);
+        if (variable_name_length == difference_name_length)
+        {
+            if (strcmp(variable_name, collocation_result->difference_variable_name[i]) == 0)
+            {
+                *index = i;
+                return 0;
+            }
+        }
+        else if (variable_name_length < difference_name_length)
+        {
+            if (strncmp(variable_name, collocation_result->difference_variable_name[i], variable_name_length) == 0 &&
+                strcmp(&collocation_result->difference_variable_name[i][variable_name_length], "_absdiff") == 0)
+            {
+                *index = i;
+                return 0;
+            }
+        }
+    }
+
+    harp_set_error(HARP_ERROR_INVALID_ARGUMENT, "collocation result has no difference for '%s'", variable_name);
+    return -1;
+}
+
+static int resample_info_update(resample_info *info)
+{
+    if (info->nearest_neighbour_x_variable_name != NULL)
+    {
+        if (get_criterium_index_for_variable_name(info->collocation_result, info->nearest_neighbour_x_variable_name,
+                                                  &info->nearest_neighbour_x_criterium_index) != 0)
+        {
+            return -1;
+        }
+    }
+    if (info->nearest_neighbour_y_variable_name != NULL)
+    {
+        if (get_criterium_index_for_variable_name(info->collocation_result, info->nearest_neighbour_y_variable_name,
+                                                  &info->nearest_neighbour_y_criterium_index) != 0)
+        {
+            return -1;
+        }
+    }
+
+    return 0;
+}
+
+static int filter_nearest_a(harp_collocation_result *collocation_result, int difference_index)
+{
     long i;
 
-    if (master_a)
+    if (harp_collocation_result_sort_by_a(collocation_result) != 0)
     {
-        if (harp_collocation_result_sort_by_a(collocation_result) != 0)
-        {
-            return -1;
-        }
+        return -1;
     }
-    else
+    for (i = collocation_result->num_pairs - 1; i > 0; i--)
     {
-        if (harp_collocation_result_sort_by_b(collocation_result) != 0)
+        if (collocation_result->pair[i]->product_index_a == collocation_result->pair[i - 1]->product_index_a &&
+            collocation_result->pair[i]->sample_index_a == collocation_result->pair[i - 1]->sample_index_a)
         {
-            return -1;
-        }
-    }
-
-
-    for (i = 1; i < collocation_result->num_pairs; i++)
-    {
-        if (pair_is_neighbour(collocation_result->pair[target_id], collocation_result->pair[i], master_a))
-        {
-            double delta_a, delta_b;
-
-            if (calculate_delta(collocation_result, collocation_options, collocation_result->pair[target_id],
-                                &delta_a) != 0)
+            if (collocation_result->pair[i]->difference[difference_index] >=
+                collocation_result->pair[i - 1]->difference[difference_index])
             {
-                return -1;
+                if (harp_collocation_result_remove_pair_at_index(collocation_result, i) != 0)
+                {
+                    return -1;
+                }
             }
-            if (calculate_delta(collocation_result, collocation_options, collocation_result->pair[i], &delta_b) != 0)
+            else
             {
-                return -1;
+                if (harp_collocation_result_remove_pair_at_index(collocation_result, i - 1) != 0)
+                {
+                    return -1;
+                }
             }
-            if (delta_b < delta_a)
-            {
-                /* swap the pairs */
-                harp_collocation_pair *pair;
-
-                pair = collocation_result->pair[i];
-                collocation_result->pair[i] = collocation_result->pair[target_id];
-                collocation_result->pair[target_id] = pair;
-            }
-        }
-        else
-        {
-            target_id++;
-            if (target_id != i)
-            {
-                /* swap the pairs */
-                harp_collocation_pair *pair;
-
-                pair = collocation_result->pair[i];
-                collocation_result->pair[i] = collocation_result->pair[target_id];
-                collocation_result->pair[target_id] = pair;
-            }
-        }
-    }
-    while (collocation_result->num_pairs - 1 > target_id)
-    {
-        if (harp_collocation_result_remove_pair_at_index(collocation_result, collocation_result->num_pairs - 1) != 0)
-        {
-            return -1;
         }
     }
 
     return 0;
 }
 
-int resample(const Collocation_options *collocation_options, harp_collocation_result *collocation_result)
+static int filter_nearest_b(harp_collocation_result *collocation_result, int difference_index)
 {
-    /* No resampling required */
-    if (collocation_result->num_pairs == 0)
+    long i;
+
+    if (harp_collocation_result_sort_by_b(collocation_result) != 0)
     {
-        return 0;
+        return -1;
+    }
+    for (i = collocation_result->num_pairs - 1; i > 0; i--)
+    {
+        if (collocation_result->pair[i]->product_index_b == collocation_result->pair[i - 1]->product_index_b &&
+            collocation_result->pair[i]->sample_index_b == collocation_result->pair[i - 1]->sample_index_b)
+        {
+            if (collocation_result->pair[i]->difference[difference_index] >=
+                collocation_result->pair[i - 1]->difference[difference_index])
+            {
+                if (harp_collocation_result_remove_pair_at_index(collocation_result, i) != 0)
+                {
+                    return -1;
+                }
+            }
+            else
+            {
+                if (harp_collocation_result_remove_pair_at_index(collocation_result, i - 1) != 0)
+                {
+                    return -1;
+                }
+            }
+        }
     }
 
-    switch (collocation_options->resampling_method)
+    return 0;
+}
+
+int resample(int argc, char *argv[])
+{
+    resample_info *info;
+    const char *output;
+    long i;
+
+    if (resample_info_new(&info) != 0)
     {
-        case resampling_method_none:
-            /* No resampling required */
-            break;
-        case resampling_method_nearest_neighbour_a:
-
-            if (nearest_neighbour(collocation_options, collocation_result, 1) != 0)
-            {
-                return -1;
-            }
-
-            break;
-        case resampling_method_nearest_neighbour_b:
-
-            if (nearest_neighbour(collocation_options, collocation_result, 0) != 0)
-            {
-                return -1;
-            }
-
-            break;
-        case resampling_method_nearest_neighbour_ab:
-
-            if (nearest_neighbour(collocation_options, collocation_result, 1) != 0)
-            {
-                return -1;
-            }
-
-            if (nearest_neighbour(collocation_options, collocation_result, 0) != 0)
-            {
-                return -1;
-            }
-
-            break;
-        case resampling_method_nearest_neighbour_ba:
-
-            if (nearest_neighbour(collocation_options, collocation_result, 0) != 0)
-            {
-                return -1;
-            }
-
-            if (nearest_neighbour(collocation_options, collocation_result, 1) != 0)
-            {
-                return -1;
-            }
-
-            break;
+        return -1;
     }
+    for (i = 2; i < argc; i++)
+    {
+        if (strcmp(argv[i], "-nx") == 0 && i + 1 < argc && argv[i + 1][0] != '-')
+        {
+            if (info->nearest_neighbour_x_variable_name != NULL)
+            {
+                resample_info_delete(info);
+                return 1;
+            }
+            info->nearest_neighbour_x_variable_name = strdup(argv[i + 1]);
+
+            if (info->nearest_neighbour_x_variable_name == NULL)
+            {
+                harp_set_error(HARP_ERROR_OUT_OF_MEMORY, "out of memory (could not duplicate string) (%s:%u)", __FILE__,
+                               __LINE__);
+                resample_info_delete(info);
+                return -1;
+            }
+            if (info->nearest_neighbour_y_variable_name == NULL)
+            {
+                info->perform_nearest_neighbour_x_first = 1;
+            }
+            i++;
+        }
+        else if (strcmp(argv[i], "-ny") == 0 && i + 1 < argc && argv[i + 1][0] != '-')
+        {
+            if (info->nearest_neighbour_y_variable_name != NULL)
+            {
+                resample_info_delete(info);
+                return 1;
+            }
+            info->nearest_neighbour_y_variable_name = strdup(argv[i + 1]);
+
+            if (info->nearest_neighbour_y_variable_name == NULL)
+            {
+                harp_set_error(HARP_ERROR_OUT_OF_MEMORY, "out of memory (could not duplicate string) (%s:%u)", __FILE__,
+                               __LINE__);
+                resample_info_delete(info);
+                return -1;
+            }
+            i++;
+        }
+        else
+        {
+            if (argv[i][0] == '-' || (i != argc - 1  && i != argc - 2))
+            {
+                resample_info_delete(info);
+                return 1;
+            }
+            break;
+        }
+    }
+
+    if (i == argc - 2)
+    {
+        if (argv[argc - 1][0] == '-')
+        {
+            resample_info_delete(info);
+            return 1;
+        }
+        output = argv[argc - 1];
+    }
+    else
+    {
+        output = argv[i];
+    }
+    if (harp_collocation_result_read(argv[i], &info->collocation_result) != 0)
+    {
+        resample_info_delete(info);
+        return -1;
+    }
+    if (resample_info_update(info) != 0)
+    {
+        return -1;
+    }
+
+    for (i = 0; i < 2; i++)
+    {
+        if ((info->perform_nearest_neighbour_x_first && i == 0) || (!info->perform_nearest_neighbour_x_first && i == 1))
+        {
+            if (info->nearest_neighbour_x_criterium_index >= 0)
+            {
+                if (filter_nearest_a(info->collocation_result, info->nearest_neighbour_x_criterium_index) != 0)
+                {
+                    resample_info_delete(info);
+                    return -1;
+                }
+            }
+        }
+        else
+        {
+            if (info->nearest_neighbour_y_criterium_index >= 0)
+            {
+                if (filter_nearest_b(info->collocation_result, info->nearest_neighbour_y_criterium_index) != 0)
+                {
+                    resample_info_delete(info);
+                    return -1;
+                }
+            }
+        }
+    }
+
+    if (harp_collocation_result_sort_by_collocation_index(info->collocation_result) != 0)
+    {
+        resample_info_delete(info);
+        return -1;
+    }
+
+    if (harp_collocation_result_write(output, info->collocation_result) != 0)
+    {
+        resample_info_delete(info);
+        return -1;
+    }
+    
+    resample_info_delete(info);
 
     return 0;
 }
