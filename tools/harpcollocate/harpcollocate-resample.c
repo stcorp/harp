@@ -141,7 +141,7 @@ static int resample_info_update(resample_info *info)
     return 0;
 }
 
-static int filter_nearest_a(harp_collocation_result *collocation_result, int difference_index)
+int resample_nearest_a(harp_collocation_result *collocation_result, int difference_index)
 {
     long i;
 
@@ -175,7 +175,7 @@ static int filter_nearest_a(harp_collocation_result *collocation_result, int dif
     return 0;
 }
 
-static int filter_nearest_b(harp_collocation_result *collocation_result, int difference_index)
+int resample_nearest_b(harp_collocation_result *collocation_result, int difference_index)
 {
     long i;
 
@@ -301,7 +301,7 @@ int resample(int argc, char *argv[])
         {
             if (info->nearest_neighbour_x_criterium_index >= 0)
             {
-                if (filter_nearest_a(info->collocation_result, info->nearest_neighbour_x_criterium_index) != 0)
+                if (resample_nearest_a(info->collocation_result, info->nearest_neighbour_x_criterium_index) != 0)
                 {
                     resample_info_delete(info);
                     return -1;
@@ -312,7 +312,7 @@ int resample(int argc, char *argv[])
         {
             if (info->nearest_neighbour_y_criterium_index >= 0)
             {
-                if (filter_nearest_b(info->collocation_result, info->nearest_neighbour_y_criterium_index) != 0)
+                if (resample_nearest_b(info->collocation_result, info->nearest_neighbour_y_criterium_index) != 0)
                 {
                     resample_info_delete(info);
                     return -1;

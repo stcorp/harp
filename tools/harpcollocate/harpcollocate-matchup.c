@@ -36,6 +36,9 @@
 #include <stdlib.h>
 #include <string.h>
 
+int resample_nearest_a(harp_collocation_result *collocation_result, int difference_index);
+int resample_nearest_b(harp_collocation_result *collocation_result, int difference_index);
+
 typedef struct collocation_criterium_struct
 {
     char *variable_name;
@@ -1440,6 +1443,19 @@ int matchup(int argc, char *argv[])
         {
             collocation_info_delete(info);
             return -1;
+        }
+    }
+
+    if (info->nearest_neighbour_x_criterium_index >= 0 && info->nearest_neighbour_x_criterium_index >= 0)
+    {
+        /* perform the second nearest neighbour filtering using a filter on the collocation results */
+        if (info->perform_nearest_neighbour_x_first)
+        {
+            resample_nearest_b(info->collocation_result, info->nearest_neighbour_y_criterium_index);
+        }
+        else
+        {
+            resample_nearest_a(info->collocation_result, info->nearest_neighbour_x_criterium_index);
         }
     }
 
