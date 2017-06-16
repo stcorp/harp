@@ -83,7 +83,7 @@ static int resample_info_new(resample_info **new_info)
     info->nearest_neighbour_y_criterium_index = -1;
 
     *new_info = info;
-    
+
     return 0;
 }
 
@@ -96,6 +96,7 @@ static int get_criterium_index_for_variable_name(harp_collocation_result *colloc
     for (i = 0; i < collocation_result->num_differences; i++)
     {
         long difference_name_length = strlen(collocation_result->difference_variable_name[i]);
+
         if (variable_name_length == difference_name_length)
         {
             if (strcmp(variable_name, collocation_result->difference_variable_name[i]) == 0)
@@ -263,7 +264,7 @@ int resample(int argc, char *argv[])
         }
         else
         {
-            if (argv[i][0] == '-' || (i != argc - 1  && i != argc - 2))
+            if (argv[i][0] == '-' || (i != argc - 1 && i != argc - 2))
             {
                 resample_info_delete(info);
                 return 1;
@@ -332,7 +333,7 @@ int resample(int argc, char *argv[])
         resample_info_delete(info);
         return -1;
     }
-    
+
     resample_info_delete(info);
 
     return 0;
