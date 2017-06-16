@@ -44,6 +44,8 @@ typedef struct collocation_criterium_struct
     char *variable_name;
     double value;
     char *unit;
+    int use_modulo;
+    double modulo_value;
 } collocation_criterium;
 
 typedef struct cache_variables_struct
@@ -133,6 +135,8 @@ static int collocation_criterium_new(int variable_name_length, const char *varia
     criterium->variable_name = NULL;
     criterium->value = value;
     criterium->unit = NULL;
+    criterium->use_modulo = 0;
+    criterium->modulo_value = harp_plusinf();
 
     criterium->variable_name = malloc(variable_name_length + 1);
     if (criterium->variable_name == NULL)
@@ -174,7 +178,41 @@ static int collocation_criterium_new(int variable_name_length, const char *varia
         criterium->unit[unit_length] = '\0';
     }
 
+    /* determine whether we should use a module comparison */
+    if (strcmp(criterium->variable_name, "longitude") == 0 || strcmp(criterium->variable_name, "wind_direction") == 0 ||
+        strstr(criterium->variable_name, "azimuth_angle") != NULL)
+    {
+        criterium->use_modulo = 1;
+        criterium->modulo_value = 360;
+        if (criterium->unit != NULL)
+        {
+            if (harp_convert_unit(HARP_UNIT_ANGLE, criterium->unit, 1, &criterium->modulo_value) != 0)
+            {
+                return -1;
+            }
+        }
+    }
     *new_criterium = criterium;
+
+    return 0;
+}
+
+static int collocation_criterium_set_unit(collocation_criterium *criterium, const char *unit)
+{
+    criterium->unit = strdup(unit);
+    if (criterium->unit == NULL)
+    {
+        harp_set_error(HARP_ERROR_OUT_OF_MEMORY, "out of memory (could not duplicate string) (%s:%u)", __FILE__,
+                       __LINE__);
+        return -1;
+    }
+    if (criterium->use_modulo)
+    {
+        if (harp_convert_unit(HARP_UNIT_ANGLE, criterium->unit, 1, &criterium->modulo_value) != 0)
+        {
+            return -1;
+        }
+    }
 
     return 0;
 }
@@ -773,6 +811,17 @@ static int perform_matchup_on_measurements(collocation_info *info, long index_a,
                 info->difference[i] *= info->datetime_conversion_factor;
             }
         }
+        if (info->criterium[i]->use_modulo)
+        {
+            while (info->difference[i] > info->criterium[i]->modulo_value)
+            {
+                info->difference[i] -= info->criterium[i]->modulo_value;
+            }
+            if (info->difference[i] > info->criterium[i]->modulo_value / 2)
+            {
+                info->difference[i] = info->criterium[i]->modulo_value - info->difference[i];
+            }
+        }
         /* we use !(x<=y) instead of x>y so a NaN value for the difference will also result in a mismatch */
         if (!(info->difference[i] <= info->criterium[i]->value))
         {
@@ -1115,11 +1164,8 @@ static int filter_product(collocation_info *info, harp_product *product, int is_
                                "(variable has no unit)", info->criterium[i]->variable_name);
                 return -1;
             }
-            info->criterium[i]->unit = strdup(variable->unit);
-            if (info->criterium[i]->unit == NULL)
+            if (collocation_criterium_set_unit(info->criterium[i], variable->unit) != 0)
             {
-                harp_set_error(HARP_ERROR_OUT_OF_MEMORY, "out of memory (could not duplicate string) (%s:%u)", __FILE__,
-                               __LINE__);
                 return -1;
             }
             assert(info->collocation_result->difference_unit[i] == NULL);

@@ -76,6 +76,8 @@ static void print_help(void)
     printf("                Examples:\n");
     printf("                    -d 'datetime 3 [h]'\n");
     printf("                    -d 'point_distance 10 [km]'\n");
+    printf("                Criteria on azimuth angles, longitude, and wind direction\n");
+    printf("                will be automatically mapped to [0..180] degrees.\n");
     printf("            --area-intersects\n");
     printf("                Specifies that latitude/longitude polygon areas of A and B\n");
     printf("                must overlap\n");

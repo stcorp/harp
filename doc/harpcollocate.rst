@@ -24,6 +24,8 @@ HARP compliant netCDF files.
                   Examples:
                       -d 'datetime 3 [h]'
                       -d 'point_distance 10 [km]'
+                  Criteria on azimuth angles, longitude, and wind direction
+                  will be automatically mapped to [0..180] degrees.
               --area-intersects
                   Specifies that latitude/longitude polygon areas of A and B
                   must overlap
