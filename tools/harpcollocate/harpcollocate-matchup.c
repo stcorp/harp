@@ -472,11 +472,11 @@ static int collocation_info_update(collocation_info *info)
 {
     int i, j;
 
-    /* make sure that datetime criterium is the first */
     for (i = 0; i < info->num_criteria; i++)
     {
         if (strcmp(info->criterium[i]->variable_name, "datetime") == 0)
         {
+            /* make sure that datetime criterium is the first */
             if (i != 0)
             {
                 collocation_criterium *criterium;
@@ -491,10 +491,22 @@ static int collocation_info_update(collocation_info *info)
                 info->criterium[0] = criterium;
             }
             info->datetime_index = 0;
+            /* convert threshold value to internal HARP unit */
+            if (harp_convert_unit(info->criterium[info->datetime_index]->unit, HARP_UNIT_TIME, 1,
+                                  &info->criterium[info->datetime_index]->value) != 0)
+            {
+                return -1;
+            }
         }
         if (strcmp(info->criterium[i]->variable_name, "point_distance") == 0)
         {
             info->point_distance_index = i;
+            /* convert threshold value to internal HARP unit */
+            if (harp_convert_unit(info->criterium[info->point_distance_index]->unit, HARP_UNIT_LENGTH, 1,
+                                  &info->criterium[info->point_distance_index]->value) != 0)
+            {
+                return -1;
+            }
         }
     }
 
@@ -741,24 +753,11 @@ static int perform_matchup_on_measurements(collocation_info *info, long index_a,
             {
                 return -1;
             }
-            if (harp_convert_unit(HARP_UNIT_LENGTH, info->criterium[info->point_distance_index]->unit, 1,
-                                  &info->difference[i]) != 0)
-            {
-                return -1;
-            }
         }
         else
         {
             info->difference[i] = fabs(info->variables_a.criterium[i]->data.double_data[index_a] -
                                        info->variables_b.criterium[i]->data.double_data[index_b]);
-        }
-        if (i == info->datetime_index)
-        {
-            if (harp_convert_unit(HARP_UNIT_TIME, info->criterium[info->datetime_index]->unit, 1, &info->difference[i])
-                != 0)
-            {
-                return -1;
-            }
         }
         if (info->difference[i] > info->criterium[i]->value)
         {
@@ -906,6 +905,25 @@ static int perform_matchup_on_measurements(collocation_info *info, long index_a,
         /* the second nearest neighbour criterium, if it exists, can only be avaluated at the end of the collocation */
     }
 
+    /* convert differences for datetime and point_distance back to user-defined unit */
+    if (info->datetime_index >= 0)
+    {
+        if (harp_convert_unit(HARP_UNIT_TIME, info->criterium[info->datetime_index]->unit, 1,
+                              &info->difference[info->datetime_index]) != 0)
+        {
+            return -1;
+        }
+    }
+    if (info->point_distance_index >= 0)
+    {
+        if (harp_convert_unit(HARP_UNIT_LENGTH, info->criterium[info->point_distance_index]->unit, 1,
+                              &info->difference[info->point_distance_index]) != 0)
+        {
+            return -1;
+        }
+    }
+
+    /* add new pair to result */
     if (harp_collocation_result_add_pair(info->collocation_result, info->collocation_result->num_pairs,
                                          info->product_a->source_product,
                                          info->variables_a.index->data.int32_data[index_a],
