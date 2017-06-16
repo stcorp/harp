@@ -179,20 +179,7 @@
 <span class="target" id="libharpgroup__harp__collocation"></span><em>group</em> <code class="descname">harp_collocation</code></dt>
 <dd><p>The HARP Collocation module contains the functionality that deals with collocation two datasets of products. The two datasets are refered to as dataset A (primary) and dataset B (secondary). The result of a collocation is a list of pairs. Each pair references a measurement from dataset A (using the source product name and measurement index within that product) and a measurement from dataset B. Each collocation pair also gets a unique collocation_index sequence number. For each collocation criteria used in the matchup the actual difference is stored as part of the pair as well. Collocation results can be written to and read from a csv file. </p>
 <div class="breathe-sectiondef docutils container">
-<p class="breathe-sectiondef-title rubric">Defines</p>
-<dl class="macro">
-<dt id="c.HARP_COLLOCATION_RESULT_MAX_NUM_DIFFERENCES">
-<span class="target" id="libharpgroup__harp__collocation_1ga2e4f911269201b0dd98e018f1753eae8"></span><code class="descname">HARP_COLLOCATION_RESULT_MAX_NUM_DIFFERENCES</code> (11)</dt>
-<dd></dd></dl>
-
-</div>
-<div class="breathe-sectiondef docutils container">
 <p class="breathe-sectiondef-title rubric">Typedefs</p>
-<dl class="type">
-<dt id="_CPPv232harp_collocation_difference_type">
-<span id="harp_collocation_difference_type"></span><span class="target" id="libharpgroup__harp__collocation_1ga160bac38d1c371c87aa9295126f5bcb5"></span><em class="property">typedef </em><em class="property">enum</em> harp_collocation_difference_type_enum <code class="descname">harp_collocation_difference_type</code><br /></dt>
-<dd></dd></dl>
-
 <dl class="type">
 <dt id="_CPPv221harp_collocation_pair">
 <span id="harp_collocation_pair"></span><span class="target" id="libharpgroup__harp__collocation_1ga0d5cd2a5de254da66941cc813a16d81e"></span><em class="property">typedef </em><em class="property">struct</em> <a class="reference internal" href="#_CPPv228harp_collocation_pair_struct" title="harp_collocation_pair_struct">harp_collocation_pair_struct</a> <code class="descname">harp_collocation_pair</code><br /></dt>
@@ -201,85 +188,14 @@
 <dl class="type">
 <dt id="_CPPv223harp_collocation_result">
 <span id="harp_collocation_result"></span><span class="target" id="libharpgroup__harp__collocation_1gadce42cfa00c3c02cfdb339c3e825147e"></span><em class="property">typedef </em><em class="property">struct</em> <a class="reference internal" href="#_CPPv230harp_collocation_result_struct" title="harp_collocation_result_struct">harp_collocation_result_struct</a> <code class="descname">harp_collocation_result</code><br /></dt>
-<dd><p>HARP Collocation result typedef </p>
-</dd></dl>
-
-</div>
-<div class="breathe-sectiondef docutils container">
-<p class="breathe-sectiondef-title rubric">Enums</p>
-<dl class="type">
-<dt id="_CPPv2N16harp_collocation37harp_collocation_difference_type_enumE">
-<span id="harp_collocation::harp_collocation_difference_type_enum"></span><span class="target" id="libharpgroup__harp__collocation_1ga1734ba13e3db566fb61acc48b893a3d7"></span><em class="property">enum </em><code class="descname">harp_collocation_difference_type_enum</code><br /></dt>
-<dd><p>All possible calculated differences for a collocation pair </p>
-<p><em>Values:</em></p>
-<dl class="member">
-<dt id="_CPPv2N16harp_collocation35harp_collocation_difference_unknownE">
-<span id="harp_collocation::harp_collocation_difference_unknown"></span><span class="target" id="libharpgroup__harp__collocation_1gga1734ba13e3db566fb61acc48b893a3d7a93d3320210138819d0adaa63cdd70ab6"></span><code class="descname">harp_collocation_difference_unknown</code> = -1<br /></dt>
 <dd></dd></dl>
-
-<dl class="member">
-<dt id="_CPPv2N16harp_collocation41harp_collocation_difference_absolute_timeE">
-<span id="harp_collocation::harp_collocation_difference_absolute_time"></span><span class="target" id="libharpgroup__harp__collocation_1gga1734ba13e3db566fb61acc48b893a3d7a0505ff217f24c1c74e3c5177629063fc"></span><code class="descname">harp_collocation_difference_absolute_time</code><br /></dt>
-<dd></dd></dl>
-
-<dl class="member">
-<dt id="_CPPv2N16harp_collocation45harp_collocation_difference_absolute_latitudeE">
-<span id="harp_collocation::harp_collocation_difference_absolute_latitude"></span><span class="target" id="libharpgroup__harp__collocation_1gga1734ba13e3db566fb61acc48b893a3d7a79620d4f089b041785910a5cfcaf0c65"></span><code class="descname">harp_collocation_difference_absolute_latitude</code><br /></dt>
-<dd></dd></dl>
-
-<dl class="member">
-<dt id="_CPPv2N16harp_collocation46harp_collocation_difference_absolute_longitudeE">
-<span id="harp_collocation::harp_collocation_difference_absolute_longitude"></span><span class="target" id="libharpgroup__harp__collocation_1gga1734ba13e3db566fb61acc48b893a3d7a2a68f1eac32317a8e970cabc73432116"></span><code class="descname">harp_collocation_difference_absolute_longitude</code><br /></dt>
-<dd></dd></dl>
-
-<dl class="member">
-<dt id="_CPPv2N16harp_collocation42harp_collocation_difference_point_distanceE">
-<span id="harp_collocation::harp_collocation_difference_point_distance"></span><span class="target" id="libharpgroup__harp__collocation_1gga1734ba13e3db566fb61acc48b893a3d7a1a6834d3a7be87f8124323357340f80d"></span><code class="descname">harp_collocation_difference_point_distance</code><br /></dt>
-<dd></dd></dl>
-
-<dl class="member">
-<dt id="_CPPv2N16harp_collocation50harp_collocation_difference_overlapping_percentageE">
-<span id="harp_collocation::harp_collocation_difference_overlapping_percentage"></span><span class="target" id="libharpgroup__harp__collocation_1gga1734ba13e3db566fb61acc48b893a3d7ad831da38a324d6b634afcd18db323d3b"></span><code class="descname">harp_collocation_difference_overlapping_percentage</code><br /></dt>
-<dd></dd></dl>
-
-<dl class="member">
-<dt id="_CPPv2N16harp_collocation40harp_collocation_difference_absolute_szaE">
-<span id="harp_collocation::harp_collocation_difference_absolute_sza"></span><span class="target" id="libharpgroup__harp__collocation_1gga1734ba13e3db566fb61acc48b893a3d7ac4a9de7ea811f1c71912dd0165a497af"></span><code class="descname">harp_collocation_difference_absolute_sza</code><br /></dt>
-<dd></dd></dl>
-
-<dl class="member">
-<dt id="_CPPv2N16harp_collocation40harp_collocation_difference_absolute_saaE">
-<span id="harp_collocation::harp_collocation_difference_absolute_saa"></span><span class="target" id="libharpgroup__harp__collocation_1gga1734ba13e3db566fb61acc48b893a3d7a3d9dc30847520614af8d68306564e751"></span><code class="descname">harp_collocation_difference_absolute_saa</code><br /></dt>
-<dd></dd></dl>
-
-<dl class="member">
-<dt id="_CPPv2N16harp_collocation40harp_collocation_difference_absolute_vzaE">
-<span id="harp_collocation::harp_collocation_difference_absolute_vza"></span><span class="target" id="libharpgroup__harp__collocation_1gga1734ba13e3db566fb61acc48b893a3d7a5d1ce444b1e8de079dd7352f98840036"></span><code class="descname">harp_collocation_difference_absolute_vza</code><br /></dt>
-<dd></dd></dl>
-
-<dl class="member">
-<dt id="_CPPv2N16harp_collocation40harp_collocation_difference_absolute_vaaE">
-<span id="harp_collocation::harp_collocation_difference_absolute_vaa"></span><span class="target" id="libharpgroup__harp__collocation_1gga1734ba13e3db566fb61acc48b893a3d7afd998689b33ea559dd86b99abc85ed01"></span><code class="descname">harp_collocation_difference_absolute_vaa</code><br /></dt>
-<dd></dd></dl>
-
-<dl class="member">
-<dt id="_CPPv2N16harp_collocation42harp_collocation_difference_absolute_thetaE">
-<span id="harp_collocation::harp_collocation_difference_absolute_theta"></span><span class="target" id="libharpgroup__harp__collocation_1gga1734ba13e3db566fb61acc48b893a3d7ad2306c058ff56587dc48720bdb603a58"></span><code class="descname">harp_collocation_difference_absolute_theta</code><br /></dt>
-<dd></dd></dl>
-
-<dl class="member">
-<dt id="_CPPv2N16harp_collocation33harp_collocation_difference_deltaE">
-<span id="harp_collocation::harp_collocation_difference_delta"></span><span class="target" id="libharpgroup__harp__collocation_1gga1734ba13e3db566fb61acc48b893a3d7aea9dda0fefc4e416f94823c3d03621af"></span><code class="descname">harp_collocation_difference_delta</code><br /></dt>
-<dd></dd></dl>
-
-</dd></dl>
 
 </div>
 <div class="breathe-sectiondef docutils container">
 <p class="breathe-sectiondef-title rubric">Functions</p>
 <dl class="function">
-<dt id="_CPPv227harp_collocation_result_newPP23harp_collocation_result">
-<span id="harp_collocation_result_new__harp_collocation_resultPP"></span><span class="target" id="libharpgroup__harp__collocation_1gaeb776cb427980e1511101ac66055c8aa"></span>int <code class="descname">harp_collocation_result_new</code><span class="sig-paren">(</span><a class="reference internal" href="#_CPPv223harp_collocation_result" title="harp_collocation_result">harp_collocation_result</a> **<em>new_collocation_result</em><span class="sig-paren">)</span><br /></dt>
+<dt id="_CPPv227harp_collocation_result_newPP23harp_collocation_resultiPPKcPPKc">
+<span id="harp_collocation_result_new__harp_collocation_resultPP.i.cCPP.cCPP"></span><span class="target" id="libharpgroup__harp__collocation_1ga6031ad343e7d81272882937baa3c6053"></span>int <code class="descname">harp_collocation_result_new</code><span class="sig-paren">(</span><a class="reference internal" href="#_CPPv223harp_collocation_result" title="harp_collocation_result">harp_collocation_result</a> **<em>new_collocation_result</em>, int <em>num_differences</em>, <em class="property">const</em> char **<em>difference_variable_name</em>, <em class="property">const</em> char **<em>difference_unit</em><span class="sig-paren">)</span><br /></dt>
 <dd><p>Create a new collocation result set <dl class="docutils">
 <dt><strong>Return</strong></dt>
 <dd><ul class="simple">
@@ -290,6 +206,9 @@
 <dt><strong>Parameters</strong></dt>
 <dd><ul class="breatheparameterlist first last simple">
 <li><code class="docutils literal"><span class="pre">new_collocation_result</span></code>: Pointer to the C variable where the new result set will be stored. </li>
+<li><code class="docutils literal"><span class="pre">num_differences</span></code>: The number of differences that have been calculated per pair for the collocation result </li>
+<li><code class="docutils literal"><span class="pre">difference_variable_name</span></code>: An array of variable names describing the type of difference for each calculated difference </li>
+<li><code class="docutils literal"><span class="pre">difference_unit</span></code>: An array of units for each calculated difference </li>
 </ul>
 </dd>
 </dl>
@@ -439,8 +358,8 @@
 </dd></dl>
 
 <dl class="function">
-<dt id="_CPPv232harp_collocation_result_add_pairP23harp_collocation_resultlPKclPKclPKd">
-<span id="harp_collocation_result_add_pair__harp_collocation_resultP.l.cCP.l.cCP.l.doubleCP"></span><span class="target" id="libharpgroup__harp__collocation_1gaa9cd0fe4f098808ed86eb3f9eb24ed19"></span>int <code class="descname">harp_collocation_result_add_pair</code><span class="sig-paren">(</span><a class="reference internal" href="#_CPPv223harp_collocation_result" title="harp_collocation_result">harp_collocation_result</a> *<em>collocation_result</em>, long <em>collocation_index</em>, <em class="property">const</em> char *<em>source_product_a</em>, long <em>index_a</em>, <em class="property">const</em> char *<em>source_product_b</em>, long <em>index_b</em>, <em class="property">const</em> double *<em>difference</em><span class="sig-paren">)</span><br /></dt>
+<dt id="_CPPv232harp_collocation_result_add_pairP23harp_collocation_resultlPKclPKcliPKd">
+<span id="harp_collocation_result_add_pair__harp_collocation_resultP.l.cCP.l.cCP.l.i.doubleCP"></span><span class="target" id="libharpgroup__harp__collocation_1ga44134180c3a56546a89c8c28eecee0c7"></span>int <code class="descname">harp_collocation_result_add_pair</code><span class="sig-paren">(</span><a class="reference internal" href="#_CPPv223harp_collocation_result" title="harp_collocation_result">harp_collocation_result</a> *<em>collocation_result</em>, long <em>collocation_index</em>, <em class="property">const</em> char *<em>source_product_a</em>, long <em>index_a</em>, <em class="property">const</em> char *<em>source_product_b</em>, long <em>index_b</em>, int <em>num_differences</em>, <em class="property">const</em> double *<em>difference</em><span class="sig-paren">)</span><br /></dt>
 <dd><p>Add collocation result entry to a result set <dl class="docutils">
 <dt><strong>Note</strong></dt>
 <dd>this function will not check for uniqueness of the collocation_index values in the resulting set </dd>
@@ -458,7 +377,8 @@
 <li><code class="docutils literal"><span class="pre">index_a</span></code>: Value of the index variable for the matching sample in the product from dataset A </li>
 <li><code class="docutils literal"><span class="pre">source_product_b</span></code>: Name of the source_product attribute of the product from dataset B </li>
 <li><code class="docutils literal"><span class="pre">index_b</span></code>: Value of the index variable for the matching sample in the product from dataset B </li>
-<li><code class="docutils literal"><span class="pre">difference</span></code>: Array of difference values (should have length HARP_COLLOCATION_RESULT_MAX_NUM_DIFFERENCES) </li>
+<li><code class="docutils literal"><span class="pre">num_differences</span></code>: Number of calculated differences (should equal the number of differences with which the collocation result was initialized) </li>
+<li><code class="docutils literal"><span class="pre">difference</span></code>: Array of difference values </li>
 </ul>
 </dd>
 </dl>

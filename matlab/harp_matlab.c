@@ -18,9 +18,9 @@ static int harp_matlab_initialised = 0;
 
 static void harp_matlab_cleanup();
 
-static void harp_matlab_export(int nlhs, mxArray * plhs[], int nrhs, const mxArray * prhs[]);
-static void harp_matlab_import(int nlhs, mxArray * plhs[], int nrhs, const mxArray * prhs[]);
-static void harp_matlab_version(int nlhs, mxArray * plhs[], int nrhs, const mxArray * prhs[]);
+static void harp_matlab_export(int nlhs, mxArray *plhs[], int nrhs, const mxArray *prhs[]);
+static void harp_matlab_import(int nlhs, mxArray *plhs[], int nrhs, const mxArray *prhs[]);
+static void harp_matlab_version(int nlhs, mxArray *plhs[], int nrhs, const mxArray *prhs[]);
 
 void harp_matlab_harp_error(void)
 {
@@ -75,7 +75,7 @@ static void harp_matlab_set_definition_path(void)
     }
 }
 
-void mexFunction(int nlhs, mxArray * plhs[], int nrhs, const mxArray * prhs[])
+void mexFunction(int nlhs, mxArray *plhs[], int nrhs, const mxArray *prhs[])
 {
     char funcname[MAX_FUNCNAME_LENGTH + 1];
 
@@ -124,7 +124,7 @@ void mexFunction(int nlhs, mxArray * plhs[], int nrhs, const mxArray * prhs[])
 }
 
 
-static void harp_matlab_export(int nlhs, mxArray * plhs[], int nrhs, const mxArray * prhs[])
+static void harp_matlab_export(int nlhs, mxArray *plhs[], int nrhs, const mxArray *prhs[])
 {
     harp_product *product;
     char *format;
@@ -188,7 +188,7 @@ static void harp_matlab_export(int nlhs, mxArray * plhs[], int nrhs, const mxArr
 }
 
 
-static void harp_matlab_import(int nlhs, mxArray * plhs[], int nrhs, const mxArray * prhs[])
+static void harp_matlab_import(int nlhs, mxArray *plhs[], int nrhs, const mxArray *prhs[])
 {
     harp_product *product;
     char **filenames;
@@ -353,7 +353,7 @@ static void harp_matlab_import(int nlhs, mxArray * plhs[], int nrhs, const mxArr
 }
 
 
-static void harp_matlab_version(int nlhs, mxArray * plhs[], int nrhs, const mxArray * prhs[])
+static void harp_matlab_version(int nlhs, mxArray *plhs[], int nrhs, const mxArray *prhs[])
 {
     (void)prhs; /* prevents 'unused parameter' warning */
 

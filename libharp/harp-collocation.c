@@ -60,11 +60,25 @@ static void collocation_pair_swap_datasets(harp_collocation_pair *pair)
     pair->sample_index_b = sample_a;
 }
 
+static void collocation_pair_delete(harp_collocation_pair *pair)
+{
+    if (pair != NULL)
+    {
+        if (pair->difference != NULL)
+        {
+            free(pair->difference);
+        }
+
+        free(pair);
+    }
+}
+
 static int collocation_pair_new(long collocation_index, long product_index_a, long sample_index_a, long product_index_b,
-                                long sample_index_b, const double *difference, harp_collocation_pair **new_pair)
+                                long sample_index_b, int num_differences, const double *difference,
+                                harp_collocation_pair **new_pair)
 {
     harp_collocation_pair *pair;
-    int k;
+    int i;
 
     pair = (harp_collocation_pair *)malloc(sizeof(harp_collocation_pair));
     if (pair == NULL)
@@ -82,23 +96,25 @@ static int collocation_pair_new(long collocation_index, long product_index_a, lo
     pair->product_index_b = product_index_b;
     pair->sample_index_b = sample_index_b;
 
-    for (k = 0; k < HARP_COLLOCATION_RESULT_MAX_NUM_DIFFERENCES; k++)
+    pair->num_differences = num_differences;
+    pair->difference = NULL;
+
+    pair->difference = malloc(num_differences * sizeof(double));
+    if (pair->difference == NULL)
     {
-        pair->difference[k] = difference[k];
+        harp_set_error(HARP_ERROR_OUT_OF_MEMORY, "out of memory (could not allocate %lu bytes) (%s:%u)",
+                       sizeof(harp_collocation_pair), __FILE__, __LINE__);
+        collocation_pair_delete(pair);
+        return -1;
+    }
+
+    for (i = 0; i < num_differences; i++)
+    {
+        pair->difference[i] = difference[i];
     }
 
     *new_pair = pair;
     return 0;
-}
-
-static void collocation_pair_delete(harp_collocation_pair *pair)
-{
-    if (pair == NULL)
-    {
-        return;
-    }
-
-    free(pair);
 }
 
 /** \addtogroup harp_collocation
@@ -107,11 +123,16 @@ static void collocation_pair_delete(harp_collocation_pair *pair)
 
 /** Create a new collocation result set
  * \param new_collocation_result Pointer to the C variable where the new result set will be stored.
+ * \param num_differences The number of differences that have been calculated per pair for the collocation result
+ * \param difference_variable_name An array of variable names describing the type of difference for each calculated
+ *        difference
+ * \param difference_unit An array of units for each calculated difference
  * \return
  *   \arg \c 0, Success.
  *   \arg \c -1, Error occurred (check #harp_errno).
  */
-LIBHARP_API int harp_collocation_result_new(harp_collocation_result **new_collocation_result)
+LIBHARP_API int harp_collocation_result_new(harp_collocation_result **new_collocation_result, int num_differences,
+                                            const char **difference_variable_name, const char **difference_unit)
 {
     harp_collocation_result *collocation_result = NULL;
     int i;
@@ -124,17 +145,80 @@ LIBHARP_API int harp_collocation_result_new(harp_collocation_result **new_colloc
         return -1;
     }
 
-    /* create the datasets */
-    harp_dataset_new(&collocation_result->dataset_a);
-    harp_dataset_new(&collocation_result->dataset_b);
-
-    for (i = 0; i < HARP_COLLOCATION_RESULT_MAX_NUM_DIFFERENCES; i++)
-    {
-        collocation_result->difference_available[i] = 0;
-        collocation_result->difference_unit[i] = NULL;
-    }
+    collocation_result->dataset_a = NULL;
+    collocation_result->dataset_b = NULL;
+    collocation_result->num_differences = 0;
+    collocation_result->difference_variable_name = NULL;
+    collocation_result->difference_unit = NULL;
     collocation_result->num_pairs = 0;
     collocation_result->pair = NULL;
+
+    if (harp_dataset_new(&collocation_result->dataset_a) != 0)
+    {
+        harp_collocation_result_delete(collocation_result);
+        return -1;
+    }
+    if (harp_dataset_new(&collocation_result->dataset_b) != 0)
+    {
+        harp_collocation_result_delete(collocation_result);
+        return -1;
+    }
+
+    if (num_differences > 0)
+    {
+        collocation_result->difference_variable_name = malloc(num_differences * sizeof(char *));
+        if (collocation_result->difference_variable_name == NULL)
+        {
+            harp_set_error(HARP_ERROR_OUT_OF_MEMORY, "out of memory (could not allocate %lu bytes) (%s:%u)",
+                           num_differences * sizeof(char *), __FILE__, __LINE__);
+            harp_collocation_result_delete(collocation_result);
+            return -1;
+        }
+        for (i = 0; i < num_differences; i++)
+        {
+            collocation_result->difference_variable_name[i] = NULL;
+        }
+        collocation_result->difference_unit = malloc(num_differences * sizeof(char *));
+        if (collocation_result->difference_unit == NULL)
+        {
+            harp_set_error(HARP_ERROR_OUT_OF_MEMORY, "out of memory (could not allocate %lu bytes) (%s:%u)",
+                           num_differences * sizeof(char *), __FILE__, __LINE__);
+            harp_collocation_result_delete(collocation_result);
+            return -1;
+        }
+        for (i = 0; i < num_differences; i++)
+        {
+            collocation_result->difference_unit[i] = NULL;
+        }
+        if (difference_variable_name != NULL)
+        {
+            for (i = 0; i < num_differences; i++)
+            {
+                collocation_result->difference_variable_name[i] = strdup(difference_variable_name[i]);
+                if (collocation_result->difference_variable_name[i] == NULL)
+                {
+                    harp_set_error(HARP_ERROR_OUT_OF_MEMORY, "out of memory (could not duplicate string) (%s:%u)",
+                                   __FILE__, __LINE__);
+                    harp_collocation_result_delete(collocation_result);
+                    return -1;
+                }
+            }
+        }
+        if (difference_unit != NULL)
+        {
+            for (i = 0; i < num_differences; i++)
+            {
+                collocation_result->difference_unit[i] = strdup(difference_unit[i]);
+                if (collocation_result->difference_unit[i] == NULL)
+                {
+                    harp_set_error(HARP_ERROR_OUT_OF_MEMORY, "out of memory (could not duplicate string) (%s:%u)",
+                                   __FILE__, __LINE__);
+                    harp_collocation_result_delete(collocation_result);
+                    return -1;
+                }
+            }
+        }
+    }
 
     *new_collocation_result = collocation_result;
 
@@ -149,7 +233,7 @@ LIBHARP_API int harp_collocation_result_new(harp_collocation_result **new_colloc
  */
 LIBHARP_API void harp_collocation_result_delete(harp_collocation_result *collocation_result)
 {
-    int k;
+    int i;
 
     if (collocation_result == NULL)
     {
@@ -165,12 +249,27 @@ LIBHARP_API void harp_collocation_result_delete(harp_collocation_result *colloca
         harp_dataset_delete(collocation_result->dataset_b);
     }
 
-    for (k = 0; k < HARP_COLLOCATION_RESULT_MAX_NUM_DIFFERENCES; k++)
+    if (collocation_result->difference_variable_name != NULL)
     {
-        if (collocation_result->difference_unit[k])
+        for (i = 0; i < collocation_result->num_differences; i++)
         {
-            free(collocation_result->difference_unit[k]);
+            if (collocation_result->difference_variable_name[i] != NULL)
+            {
+                free(collocation_result->difference_variable_name[i]);
+            }
         }
+        free(collocation_result->difference_variable_name);
+    }
+    if (collocation_result->difference_unit != NULL)
+    {
+        for (i = 0; i < collocation_result->num_differences; i++)
+        {
+            if (collocation_result->difference_unit[i] != NULL)
+            {
+                free(collocation_result->difference_unit[i]);
+            }
+        }
+        free(collocation_result->difference_unit);
     }
 
     if (collocation_result->pair)
@@ -190,6 +289,55 @@ LIBHARP_API void harp_collocation_result_delete(harp_collocation_result *colloca
 /**
  * @}
  */
+
+int harp_collocation_result_add_difference(harp_collocation_result *collocation_result,
+                                           const char *difference_variable_name, const char *difference_unit)
+{
+    char **new_string_array;
+    int index;
+
+    new_string_array = realloc(collocation_result->difference_variable_name,
+                               (collocation_result->num_differences + 1) * sizeof(char *));
+    if (new_string_array == NULL)
+    {
+        harp_set_error(HARP_ERROR_OUT_OF_MEMORY, "out of memory (could not allocate %lu bytes) (%s:%u)",
+                       (collocation_result->num_differences + 1) * sizeof(char *), __FILE__, __LINE__);
+        return -1;
+    }
+    collocation_result->difference_variable_name = new_string_array;
+
+    new_string_array = realloc(collocation_result->difference_unit,
+                               (collocation_result->num_differences + 1) * sizeof(char *));
+    if (new_string_array == NULL)
+    {
+        harp_set_error(HARP_ERROR_OUT_OF_MEMORY, "out of memory (could not allocate %lu bytes) (%s:%u)",
+                       (collocation_result->num_differences + 1) * sizeof(char *), __FILE__, __LINE__);
+        return -1;
+    }
+    collocation_result->difference_unit = new_string_array;
+
+    index = collocation_result->num_differences;
+    collocation_result->difference_variable_name[index] = NULL;
+    collocation_result->difference_unit[index] = NULL;
+    collocation_result->num_differences++;
+
+    collocation_result->difference_variable_name[index] = strdup(difference_variable_name);
+    if (collocation_result->difference_variable_name[index] == NULL)
+    {
+        harp_set_error(HARP_ERROR_OUT_OF_MEMORY, "out of memory (could not duplicate string) (%s:%u)",
+                       __FILE__, __LINE__);
+        return -1;
+    }
+    collocation_result->difference_unit[index] = strdup(difference_unit);
+    if (collocation_result->difference_unit[index] == NULL)
+    {
+        harp_set_error(HARP_ERROR_OUT_OF_MEMORY, "out of memory (could not duplicate string) (%s:%u)",
+                       __FILE__, __LINE__);
+        return -1;
+    }
+
+    return 0;
+}
 
 static harp_dataset *sort_dataset_a = NULL;
 static harp_dataset *sort_dataset_b = NULL;
@@ -517,17 +665,28 @@ LIBHARP_API int harp_collocation_result_filter_for_collocation_indices(harp_coll
  * \param index_a Value of the index variable for the matching sample in the product from dataset A
  * \param source_product_b Name of the source_product attribute of the product from dataset B
  * \param index_b Value of the index variable for the matching sample in the product from dataset B
- * \param difference Array of difference values (should have length HARP_COLLOCATION_RESULT_MAX_NUM_DIFFERENCES)
+ * \param num_differences Number of calculated differences (should equal the number of differences with which the
+ *        collocation result was initialized)
+ * \param difference Array of difference values
  * \return
  *   \arg \c 0, Success.
  *   \arg \c -1, Error occurred (check #harp_errno).
  */
 LIBHARP_API int harp_collocation_result_add_pair(harp_collocation_result *collocation_result, long collocation_index,
                                                  const char *source_product_a, long index_a,
-                                                 const char *source_product_b, long index_b, const double *difference)
+                                                 const char *source_product_b, long index_b, int num_differences,
+                                                 const double *difference)
 {
     harp_collocation_pair *pair;
     long product_index_a, product_index_b;
+
+    if (num_differences != collocation_result->num_differences)
+    {
+        harp_set_error(HARP_ERROR_INVALID_ARGUMENT,
+                       "number of differences for pair (%d) does not equal that of collocation result (%d) (%s:%u)",
+                       num_differences, collocation_result->num_differences, __FILE__, __LINE__);
+        return -1;
+    }
 
     /* Ensure the products appear in the dataset */
     if (harp_dataset_add_product(collocation_result->dataset_a, source_product_a, NULL) != 0)
@@ -549,8 +708,8 @@ LIBHARP_API int harp_collocation_result_add_pair(harp_collocation_result *colloc
     {
         return -1;
     }
-    if (collocation_pair_new(collocation_index, product_index_a, index_a, product_index_b, index_b, difference, &pair)
-        != 0)
+    if (collocation_pair_new(collocation_index, product_index_a, index_a, product_index_b, index_b, num_differences,
+                             difference, &pair) != 0)
     {
         return -1;
     }
@@ -610,112 +769,6 @@ LIBHARP_API int harp_collocation_result_remove_pair_at_index(harp_collocation_re
  * @}
  */
 
-static int parse_difference_type_and_unit(char **str, harp_collocation_difference_type *difference_type, char **unit)
-{
-    char *cursor = *str;
-    int stringlength = 0;
-
-    /* Skip leading white space */
-    cursor = harp_csv_ltrim(cursor);
-
-    /* Grab difference string */
-    while (cursor[stringlength] != '[' && cursor[stringlength] != ',' && cursor[stringlength] != '\0')
-    {
-        stringlength++;
-    }
-    *str = &cursor[stringlength];
-    while (stringlength > 0 && (cursor[stringlength - 1] == ' ' || cursor[stringlength - 1] == '\t'))
-    {
-        stringlength--;
-    }
-    cursor[stringlength] = '\0';
-
-    if (strcmp(cursor, "absolute difference in time") == 0)
-    {
-        *difference_type = harp_collocation_difference_absolute_time;
-    }
-    else if (strcmp(cursor, "absolute difference in latitude") == 0)
-    {
-        *difference_type = harp_collocation_difference_absolute_latitude;
-    }
-    else if (strcmp(cursor, "absolute difference in longitude") == 0)
-    {
-        *difference_type = harp_collocation_difference_absolute_longitude;
-    }
-    else if (strcmp(cursor, "point distance") == 0)
-    {
-        *difference_type = harp_collocation_difference_point_distance;
-    }
-    else if (strcmp(cursor, "overlapping percentage") == 0)
-    {
-        *difference_type = harp_collocation_difference_overlapping_percentage;
-    }
-    else if (strcmp(cursor, "absolute difference in SZA") == 0)
-    {
-        *difference_type = harp_collocation_difference_absolute_sza;
-    }
-    else if (strcmp(cursor, "absolute difference in SAA") == 0)
-    {
-        *difference_type = harp_collocation_difference_absolute_saa;
-    }
-    else if (strcmp(cursor, "absolute difference in VZA") == 0)
-    {
-        *difference_type = harp_collocation_difference_absolute_vza;
-    }
-    else if (strcmp(cursor, "absolute difference in VAA") == 0)
-    {
-        *difference_type = harp_collocation_difference_absolute_vaa;
-    }
-    else if (strcmp(cursor, "absolute difference in Theta") == 0)
-    {
-        *difference_type = harp_collocation_difference_absolute_theta;
-    }
-    else
-    {
-        harp_set_error(HARP_ERROR_INVALID_ARGUMENT, "could not derive difference type from collocation result file"
-                       " header (%s)", cursor);
-        return -1;
-    }
-
-    cursor = *str;
-    if (*cursor != '[')
-    {
-        /* No unit is found */
-        harp_set_error(HARP_ERROR_INVALID_ARGUMENT, "no unit in header");
-        return -1;
-    }
-    cursor++;
-    stringlength = 0;
-    while (cursor[stringlength] != ']' && cursor[stringlength] != '\0')
-    {
-        stringlength++;
-    }
-    if (cursor[stringlength] == '\0')
-    {
-        *str = &cursor[stringlength];
-    }
-    else
-    {
-        cursor[stringlength] = '\0';
-        *str = &cursor[stringlength + 1];
-    }
-    *unit = cursor;
-
-    /* skip trailing whitespace and next ',' */
-    cursor = *str;
-    while (*cursor != ',' && *cursor != '\0')
-    {
-        cursor++;
-    }
-    if (*cursor == ',')
-    {
-        cursor++;
-    }
-    *str = cursor;
-
-    return 0;
-}
-
 static int read_header(FILE *file, harp_collocation_result *collocation_result)
 {
     char line[HARP_CSV_LINE_LENGTH];
@@ -771,18 +824,15 @@ static int read_header(FILE *file, harp_collocation_result *collocation_result)
     }
     while (*cursor != '\0')
     {
-        harp_collocation_difference_type difference_type;
+        char *variable_name;
+        char *unit;
 
-        if (parse_difference_type_and_unit(&cursor, &difference_type, &string) != 0)
+        if (harp_csv_parse_variable_name_and_unit(&cursor, &variable_name, &unit) != 0)
         {
             return -1;
         }
-        collocation_result->difference_available[difference_type] = 1;
-        collocation_result->difference_unit[difference_type] = strdup(string);
-        if (collocation_result->difference_unit[difference_type] == NULL)
+        if (harp_collocation_result_add_difference(collocation_result, variable_name, unit) != 0)
         {
-            harp_set_error(HARP_ERROR_OUT_OF_MEMORY, "out of memory (could not duplicate string) (%s:%u)", __FILE__,
-                           __LINE__);
             return -1;
         }
     }
@@ -799,8 +849,8 @@ static int read_pair(FILE *file, harp_collocation_result *collocation_result)
     char *source_product_b;
     long index_a;
     long index_b;
-    double differences[HARP_COLLOCATION_RESULT_MAX_NUM_DIFFERENCES];
-    int k;
+    double *difference = NULL;
+    int i;
 
     if (fgets(line, HARP_CSV_LINE_LENGTH, file) == NULL)
     {
@@ -816,23 +866,40 @@ static int read_pair(FILE *file, harp_collocation_result *collocation_result)
     harp_csv_parse_long(&cursor, &index_a);
     harp_csv_parse_string(&cursor, &source_product_b);
     harp_csv_parse_long(&cursor, &index_b);
-    for (k = 0; k < HARP_COLLOCATION_RESULT_MAX_NUM_DIFFERENCES; k++)
+
+    if (collocation_result->num_differences > 0)
     {
-        if (collocation_result->difference_available[k] && k != harp_collocation_difference_delta)
+        difference = malloc(collocation_result->num_differences * sizeof(double));
+        if (difference == NULL)
         {
-            harp_csv_parse_double(&cursor, &differences[k]);
+            harp_set_error(HARP_ERROR_OUT_OF_MEMORY, "out of memory (could not allocate %lu bytes) (%s:%u)",
+                           collocation_result->num_differences * sizeof(double), __FILE__, __LINE__);
+            return -1;
         }
-        else
+        for (i = 0; i < collocation_result->num_differences; i++)
         {
-            differences[k] = harp_nan();
+            if (harp_csv_parse_double(&cursor, &difference[i]) != 0)
+            {
+                free(difference);
+                return -1;
+            }
         }
     }
 
     if (harp_collocation_result_add_pair(collocation_result, collocation_index, source_product_a, index_a,
-                                         source_product_b, index_b, differences) != 0)
+                                         source_product_b, index_b, collocation_result->num_differences, difference)
+        != 0)
     {
-        fclose(file);
+        if (difference != NULL)
+        {
+            free(difference);
+        }
         return -1;
+    }
+
+    if (difference != NULL)
+    {
+        free(difference);
     }
 
     return 0;
@@ -880,7 +947,7 @@ LIBHARP_API int harp_collocation_result_read(const char *collocation_result_file
     }
 
     /* Start new collocation result */
-    if (harp_collocation_result_new(&collocation_result) != 0)
+    if (harp_collocation_result_new(&collocation_result, 0, NULL, NULL) != 0)
     {
         fclose(file);
         return -1;
@@ -898,8 +965,7 @@ LIBHARP_API int harp_collocation_result_read(const char *collocation_result_file
         return 0;
     }
 
-    /* Initialize the collocation result and update the collocation options
-     * with the information in the header */
+    /* Initialize the collocation result and update the collocation differences with the information in the header */
     if (read_header(file, collocation_result) != 0)
     {
         harp_collocation_result_delete(collocation_result);
@@ -936,90 +1002,40 @@ LIBHARP_API int harp_collocation_result_read(const char *collocation_result_file
 
 static void write_header(FILE *file, const harp_collocation_result *collocation_result)
 {
-    int k;
+    int i;
 
     fprintf(file, "collocation_index,source_product_a,index_a,source_product_b,index_b");
-    /* don't write harp_collocation_difference_delta, so stop at HARP_COLLOCATION_RESULT_MAX_NUM_DIFFERENCES - 1 */
-    for (k = 0; k < HARP_COLLOCATION_RESULT_MAX_NUM_DIFFERENCES - 1; k++)
+    for (i = 0; i < collocation_result->num_differences; i++)
     {
-        if (collocation_result->difference_available[k])
+        fprintf(file, ",%s", collocation_result->difference_variable_name[i]);
+        if (collocation_result->difference_unit[i] != NULL)
         {
-            fprintf(file, ",");
-            switch (k)
-            {
-                case harp_collocation_difference_absolute_time:
-                    fprintf(file, "absolute difference in time");
-                    break;
-
-                case harp_collocation_difference_absolute_latitude:
-                    fprintf(file, "absolute difference in latitude");
-                    break;
-
-                case harp_collocation_difference_absolute_longitude:
-                    fprintf(file, "absolute difference in longitude");
-                    break;
-
-                case harp_collocation_difference_point_distance:
-                    fprintf(file, "point distance");
-                    break;
-
-                case harp_collocation_difference_overlapping_percentage:
-                    fprintf(file, "overlapping percentage");
-                    break;
-
-                case harp_collocation_difference_absolute_sza:
-                    fprintf(file, "absolute difference in SZA");
-                    break;
-
-                case harp_collocation_difference_absolute_saa:
-                    fprintf(file, "absolute difference in SAA");
-                    break;
-
-                case harp_collocation_difference_absolute_vza:
-                    fprintf(file, "absolute difference in VZA");
-                    break;
-
-                case harp_collocation_difference_absolute_vaa:
-                    fprintf(file, "absolute difference in VAA");
-                    break;
-
-                case harp_collocation_difference_absolute_theta:
-                    fprintf(file, "absolute difference in Theta");
-                    break;
-
-                case harp_collocation_difference_unknown:
-                case harp_collocation_difference_delta:
-                    assert(0);
-                    exit(1);
-            }
-            fprintf(file, " [%s]", collocation_result->difference_unit[k]);
+            fprintf(file, " [%s]", collocation_result->difference_unit[i]);
         }
     }
     fprintf(file, "\n");
 }
 
-static void write_pair(FILE *file, const harp_collocation_result *collocation_result, long i)
+static void write_pair(FILE *file, const harp_collocation_result *collocation_result, long index)
 {
-    int k;
+    harp_collocation_pair *pair;
+    int i;
 
     assert(collocation_result->pair != NULL);
-    assert(collocation_result->pair[i] != NULL);
+    assert(index >= 0 && index < collocation_result->num_pairs);
+    assert(collocation_result->pair[index] != NULL);
+
+    pair = collocation_result->pair[index];
 
     /* Write filenames and measurement indices */
-    fprintf(file, "%ld,%s,%ld,%s,%ld", collocation_result->pair[i]->collocation_index,
-            collocation_result->dataset_a->source_product[collocation_result->pair[i]->product_index_a],
-            collocation_result->pair[i]->sample_index_a,
-            collocation_result->dataset_b->source_product[collocation_result->pair[i]->product_index_b],
-            collocation_result->pair[i]->sample_index_b);
+    fprintf(file, "%ld,%s,%ld,%s,%ld", pair->collocation_index,
+            collocation_result->dataset_a->source_product[pair->product_index_a], pair->sample_index_a,
+            collocation_result->dataset_b->source_product[pair->product_index_b], pair->sample_index_b);
 
     /* Write differences */
-    /* don't write harp_collocation_difference_delta, so stop at HARP_COLLOCATION_RESULT_MAX_NUM_DIFFERENCES - 1 */
-    for (k = 0; k < HARP_COLLOCATION_RESULT_MAX_NUM_DIFFERENCES - 1; k++)
+    for (i = 0; i < pair->num_differences; i++)
     {
-        if (collocation_result->difference_available[k])
-        {
-            fprintf(file, ",%.8g", collocation_result->pair[i]->difference[k]);
-        }
+        fprintf(file, ",%.8g", pair->difference[i]);
     }
     fprintf(file, "\n");
 }
@@ -1110,7 +1126,6 @@ int harp_collocation_result_shallow_copy(const harp_collocation_result *collocat
                                          harp_collocation_result **new_result)
 {
     harp_collocation_result *result = NULL;
-    harp_collocation_pair **pairs = NULL;
     long i;
 
     /* allocate memory for the result struct */
@@ -1119,37 +1134,40 @@ int harp_collocation_result_shallow_copy(const harp_collocation_result *collocat
     {
         harp_set_error(HARP_ERROR_OUT_OF_MEMORY, "out of memory (could not allocate %lu bytes) (%s:%u)",
                        sizeof(harp_collocation_result), __FILE__, __LINE__);
-        free(result);
         return -1;
     }
+    result->dataset_a = collocation_result->dataset_a;
+    result->dataset_b = collocation_result->dataset_b;
+    result->num_differences = collocation_result->num_differences;
+    result->difference_variable_name = collocation_result->difference_variable_name;
+    result->difference_unit = collocation_result->difference_unit;
+    result->num_pairs = collocation_result->num_pairs;
+    result->pair = NULL;
 
-    /* allocate memory for the pairs array */
-    pairs = malloc(collocation_result->num_pairs * sizeof(harp_collocation_pair *));
-    if (!pairs)
+    result->pair = malloc(collocation_result->num_pairs * sizeof(harp_collocation_pair *));
+    if (result->pair == NULL)
     {
         harp_set_error(HARP_ERROR_OUT_OF_MEMORY, "out of memory (could not allocate %lu bytes) (%s:%u)",
                        collocation_result->num_pairs * sizeof(harp_collocation_pair *), __FILE__, __LINE__);
+        harp_collocation_result_shallow_delete(result);
         return -1;
     }
-    result->pair = pairs;
+    for (i = 0; i < collocation_result->num_pairs; i++)
+    {
+        result->pair[i] = NULL;
+    }
 
-    /* populate the pairs with copies */
     for (i = 0; i < collocation_result->num_pairs; i++)
     {
         harp_collocation_pair *pair = collocation_result->pair[i];
 
-        collocation_pair_new(pair->collocation_index, pair->product_index_a, pair->sample_index_a,
-                             pair->product_index_b, pair->sample_index_b, pair->difference, &result->pair[i]);
-    }
-    result->num_pairs = collocation_result->num_pairs;
-
-    /* copy other attributes */
-    result->dataset_a = collocation_result->dataset_a;
-    result->dataset_b = collocation_result->dataset_b;
-    for (i = 0; i < HARP_COLLOCATION_RESULT_MAX_NUM_DIFFERENCES; i++)
-    {
-        result->difference_available[i] = collocation_result->difference_available[i];
-        result->difference_unit[i] = collocation_result->difference_unit[i];
+        if (collocation_pair_new(pair->collocation_index, pair->product_index_a, pair->sample_index_a,
+                                 pair->product_index_b, pair->sample_index_b, pair->num_differences, pair->difference,
+                                 &result->pair[i]) != 0)
+        {
+            harp_collocation_result_shallow_delete(result);
+            return -1;
+        }
     }
 
     *new_result = result;
@@ -1168,11 +1186,11 @@ void harp_collocation_result_shallow_delete(harp_collocation_result *collocation
             for (i = 0; i < collocation_result->num_pairs; i++)
             {
                 collocation_pair_delete(collocation_result->pair[i]);
-                collocation_result->pair[i] = NULL;
             }
+
+            free(collocation_result->pair);
         }
 
-        free(collocation_result->pair);
         free(collocation_result);
     }
 }

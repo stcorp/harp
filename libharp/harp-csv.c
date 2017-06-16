@@ -36,7 +36,7 @@
 #include <string.h>
 #include <ctype.h>
 
-void harp_csv_parse_double(char **str, double *value)
+int harp_csv_parse_double(char **str, double *value)
 {
     char *cursor = *str;
     int stringlength = 0;
@@ -63,10 +63,16 @@ void harp_csv_parse_double(char **str, double *value)
         cursor[stringlength] = '\0';
         *str = &cursor[stringlength + 1];
     }
-    sscanf(cursor, "%lf", value);
+    if (sscanf(cursor, "%lf", value) != 1)
+    {
+        harp_set_error(HARP_ERROR_INVALID_FORMAT, "could not parse floating point value from csv element '%s'", cursor);
+        return -1;
+    }
+
+    return 0;
 }
 
-void harp_csv_parse_long(char **str, long *value)
+int harp_csv_parse_long(char **str, long *value)
 {
     char *cursor = *str;
     size_t stringlength = 0;
@@ -93,7 +99,13 @@ void harp_csv_parse_long(char **str, long *value)
         cursor[stringlength] = '\0';
         *str = &cursor[stringlength + 1];
     }
-    sscanf(cursor, "%ld", value);
+    if (sscanf(cursor, "%ld", value) != 1)
+    {
+        harp_set_error(HARP_ERROR_INVALID_FORMAT, "could not parse long value from csv element '%s'", cursor);
+        return -1;
+    }
+
+    return 0;
 }
 
 void harp_csv_parse_string(char **str, char **value)
@@ -122,6 +134,95 @@ void harp_csv_parse_string(char **str, char **value)
         *str = &cursor[stringlength + 1];
     }
     *value = cursor;
+}
+
+int harp_csv_parse_variable_name_and_unit(char **str, char **variable_name, char **unit)
+{
+    char *cursor = *str;
+    int stringlength = 0;
+
+    /* Skip leading white space */
+    while (*cursor == ' ')
+    {
+        cursor++;
+    }
+
+    /* Grab string */
+    while (cursor[stringlength] != ',' && cursor[stringlength] != '\0')
+    {
+        stringlength++;
+    }
+    if (cursor[stringlength] == '\0')
+    {
+        *str = &cursor[stringlength];
+    }
+    else
+    {
+        cursor[stringlength] = '\0';
+        *str = &cursor[stringlength + 1];
+    }
+
+    /* Split string in variable name + unit */
+    *variable_name = cursor;
+    *unit = NULL;
+
+    /* parse variable name */
+    stringlength = 0;
+    while (cursor[stringlength] != ' ' && cursor[stringlength] != '\0')
+    {
+        stringlength++;
+    }
+    if (cursor[stringlength] != '\0')
+    {
+        cursor[stringlength] = '\0';
+        cursor = &cursor[stringlength + 1];
+    }
+    if (!harp_is_identifier(*variable_name))
+    {
+        harp_set_error(HARP_ERROR_INVALID_FORMAT, "variable name '%s' in csv element is not an identifier",
+                       *variable_name);
+        return -1;
+    }
+
+    /* parse unit */
+    if (cursor != *variable_name)
+    {
+        /* Skip leading white space */
+        while (*cursor == ' ')
+        {
+            cursor++;
+        }
+        if (*cursor != '[')
+        {
+            harp_set_error(HARP_ERROR_INVALID_FORMAT, "invalid unit '%s' in csv element", cursor);
+            return -1;
+        }
+        cursor++;
+        stringlength = 0;
+        while (cursor[stringlength] != ']' && cursor[stringlength] != '\0')
+        {
+            stringlength++;
+        }
+        if (cursor[stringlength] != ']')
+        {
+            harp_set_error(HARP_ERROR_INVALID_FORMAT, "invalid unit '%s' in csv element", cursor);
+            return -1;
+        }
+        *unit = cursor;
+        cursor[stringlength] = '\0';
+        cursor = &cursor[stringlength + 1];
+        while (*cursor != '\0')
+        {
+            if (*cursor != ' ')
+            {
+                harp_set_error(HARP_ERROR_INVALID_FORMAT, "invalid trailing characters in csv element", cursor);
+                return -1;
+            }
+            cursor++;
+        }
+    }
+
+    return 0;
 }
 
 int harp_csv_get_num_lines(FILE *file, const char *filename, long *new_num_lines)

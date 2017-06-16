@@ -24,7 +24,7 @@
 
 #include "harp-utils.c"
 
-static void harp_matlab_add_harp_product_variable(mxArray * mx_struct, harp_product **product, int index)
+static void harp_matlab_add_harp_product_variable(mxArray *mx_struct, harp_product **product, int index)
 {
 
     harp_variable *variable = (**product).variable[index];
@@ -336,7 +336,7 @@ mxArray *harp_matlab_get_product(harp_product **product)
 }
 
 
-static char *get_matlab_string_value(mxArray * mx_data)
+static char *get_matlab_string_value(mxArray *mx_data)
 {
     char *string_data;
     int buflen;
@@ -350,7 +350,7 @@ static char *get_matlab_string_value(mxArray * mx_data)
 
 
 static void harp_matlab_add_matlab_product_variable(harp_product **product, const char *variable_name,
-                                                    mxArray * mx_variable, int req_num_dims)
+                                                    mxArray *mx_variable, int req_num_dims)
 {
     mxClassID class;
     harp_variable *variable_new;
@@ -859,7 +859,7 @@ static void harp_matlab_add_matlab_product_variable(harp_product **product, cons
 
 }
 
-harp_product *harp_matlab_set_product(const mxArray * mx_struct)
+harp_product *harp_matlab_set_product(const mxArray *mx_struct)
 {
     harp_product *product;
     int num_variables;

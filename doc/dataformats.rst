@@ -598,7 +598,7 @@ DFNT_CHAR. The length of the outer dimension would be 1, the length of the inner
 string stored in the HARP variable. The 'dims' attribute associated with this HDF4 dataset would contain the string
 'scalar,string'.
 
-To summarize, HARP dimensions types are mapped to dimension type names as follows:
+To summarize, HARP dimension types are mapped to dimension type names as follows:
 
 =================== ===================
 HARP dimension type dimension type name
@@ -713,7 +713,7 @@ The collocation result file is a simple comma separated (csv) file, containing t
 
 collocation_id
   Unique id of the collocation pair. This id will correspond with the ``collocation_index`` variable inside HARP
-  products after they are filtered using a collocation result file.
+  products after the products are filtered using a collocation result file.
 
 filename_a
   The filename of the original input file (i.e. ``source_product`` global attribute value) from the primary dataset.

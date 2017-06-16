@@ -44,6 +44,30 @@
 #include <unistd.h>
 #endif
 
+int harp_is_identifier(const char *name)
+{
+    int i;
+
+    if (name == NULL)
+    {
+        return 0;
+    }
+    if (!isalpha(*name))
+    {
+        return 0;
+    }
+    i = 1;
+    while (name[i] != '\0')
+    {
+        if (!(isalnum(name[i]) || name[i] == '_'))
+        {
+            return 0;
+        }
+        i++;
+    }
+    return 1;
+}
+
 /** \addtogroup harp_general
  * @{
  */

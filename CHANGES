@@ -5,6 +5,12 @@
   - harpfilter has been removed (use harpconvert instead)
   - '--test' option of harpconvert has been removed (use harpcheck instead)
 
+* harpcollocate has been completely rewritten.
+  - any 1D time-dependent variable can now be a collocation criterium
+  - nearest neighbour filtering with weighted average is no longer supported
+  - collocation result files are not backward compatible due to a change in
+    the CSV header
+
 * Added -o option to harpdump and harpmerge.
 
 * Added -a and -o options for 'harpdump --list-derivations'.
@@ -17,6 +23,10 @@
 * Added sort() operation.
 
 * Added harp_product_sort() function.
+
+* The C interface for collocation results was modified to support a
+  dynamic set of collocation criteria differences (based on variable names
+  for these differences).
 
 * wrap() operation now properly updates valid_min/valid_max properties.
 
