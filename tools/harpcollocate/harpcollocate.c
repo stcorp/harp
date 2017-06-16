@@ -86,12 +86,12 @@ static void print_help(void)
     printf("           Specifies that latitude/longitude points from dataset B must\n");
     printf("           fall in polygon areas of dataset A\n");
     printf("      -nx <diffvariable>\n");
-    printf("           Filter collocation pairs such that for each sample from dataset B\n");
-    printf("           only the nearest sample from dataset A (using the given variable\n");
+    printf("           Filter collocation pairs such that for each sample from dataset A\n");
+    printf("           only the nearest sample from dataset B (using the given variable\n");
     printf("           as difference) is kept\n");
     printf("      -ny <diffvariable>\n");
-    printf("           Filter collocation pairs such that for each sample from dataset A\n");
-    printf("           only the neareset sample from dataset B is kept.\n");
+    printf("           Filter collocation pairs such that for each sample from dataset B\n");
+    printf("           only the neareset sample from dataset A is kept.\n");
     printf("      The order in which -nx and -ny are provided determines the order in\n");
     printf("      which the nearest filters are executed.\n");
     printf("      When '[unit]' is not specified, the unit of the variable of the\n");

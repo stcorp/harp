@@ -739,6 +739,7 @@ static int perform_matchup_on_measurements(collocation_info *info, long index_a,
     double longitude_a;
     double latitude_b;
     double longitude_b;
+    long collocation_index;
     int num_vertices_a;
     int num_vertices_b;
     int i;
@@ -848,32 +849,35 @@ static int perform_matchup_on_measurements(collocation_info *info, long index_a,
             /* select nearest x */
             assert(info->nearest_neighbour_x_criterium_index >= 0);
 
-            if (harp_dataset_get_index_from_source_product(info->collocation_result->dataset_a,
-                                                           info->product_a->source_product, &product_index) != 0)
+            if (harp_dataset_has_product(info->collocation_result->dataset_a, info->product_a->source_product))
             {
-                return -1;
-            }
-            sample_index = info->variables_a.index->data.double_data[index_a];
-
-            for (i = 0; i < info->collocation_result->num_pairs; i++)
-            {
-                harp_collocation_pair *pair = info->collocation_result->pair[i];
-
-                if (pair->product_index_a == product_index && pair->sample_index_a == sample_index)
+                if (harp_dataset_get_index_from_source_product(info->collocation_result->dataset_a,
+                                                               info->product_a->source_product, &product_index) != 0)
                 {
-                    if (pair->difference[info->nearest_neighbour_x_criterium_index] <=
-                        info->difference[info->nearest_neighbour_x_criterium_index])
+                    return -1;
+                }
+                sample_index = info->variables_a.index->data.int32_data[index_a];
+
+                for (i = 0; i < info->collocation_result->num_pairs; i++)
+                {
+                    harp_collocation_pair *pair = info->collocation_result->pair[i];
+
+                    if (pair->product_index_a == product_index && pair->sample_index_a == sample_index)
                     {
-                        /* existing pair is closer -> ignore the new pair */
-                        return 0;
+                        if (pair->difference[info->nearest_neighbour_x_criterium_index] <=
+                            info->difference[info->nearest_neighbour_x_criterium_index])
+                        {
+                            /* existing pair is closer -> ignore the new pair */
+                            return 0;
+                        }
+                        /* new pair is closer, remove existing one */
+                        if (harp_collocation_result_remove_pair_at_index(info->collocation_result, i) != 0)
+                        {
+                            return -1;
+                        }
+                        /* stop the search and immediately continue with adding the new pair */
+                        break;
                     }
-                    /* new pair is closer, remove existing one */
-                    if (harp_collocation_result_remove_pair_at_index(info->collocation_result, i) != 0)
-                    {
-                        return -1;
-                    }
-                    /* stop the search and immediately continue with adding the new pair */
-                    break;
                 }
             }
         }
@@ -882,33 +886,37 @@ static int perform_matchup_on_measurements(collocation_info *info, long index_a,
             /* select nearest y */
             assert(info->nearest_neighbour_y_criterium_index >= 0);
 
-            if (harp_dataset_get_index_from_source_product(info->collocation_result->dataset_b,
-                                                           info->product_b[product_b_index]->source_product,
-                                                           &product_index) != 0)
+            if (harp_dataset_has_product(info->collocation_result->dataset_b,
+                                         info->product_b[product_b_index]->source_product))
             {
-                return -1;
-            }
-            sample_index = info->variables_b.index->data.double_data[index_b];
-
-            for (i = 0; i < info->collocation_result->num_pairs; i++)
-            {
-                harp_collocation_pair *pair = info->collocation_result->pair[i];
-
-                if (pair->product_index_b == product_index && pair->sample_index_b == sample_index)
+                if (harp_dataset_get_index_from_source_product(info->collocation_result->dataset_b,
+                                                               info->product_b[product_b_index]->source_product,
+                                                               &product_index) != 0)
                 {
-                    if (pair->difference[info->nearest_neighbour_y_criterium_index] <=
-                        info->difference[info->nearest_neighbour_y_criterium_index])
+                    return -1;
+                }
+                sample_index = info->variables_b.index->data.int32_data[index_b];
+
+                for (i = 0; i < info->collocation_result->num_pairs; i++)
+                {
+                    harp_collocation_pair *pair = info->collocation_result->pair[i];
+
+                    if (pair->product_index_b == product_index && pair->sample_index_b == sample_index)
                     {
-                        /* existing pair is closer -> ignore the new pair */
-                        return 0;
+                        if (pair->difference[info->nearest_neighbour_y_criterium_index] <=
+                            info->difference[info->nearest_neighbour_y_criterium_index])
+                        {
+                            /* existing pair is closer -> ignore the new pair */
+                            return 0;
+                        }
+                        /* new pair is closer, remove existing one */
+                        if (harp_collocation_result_remove_pair_at_index(info->collocation_result, i) != 0)
+                        {
+                            return -1;
+                        }
+                        /* stop the search and immediately continue with adding the new pair */
+                        break;
                     }
-                    /* new pair is closer, remove existing one */
-                    if (harp_collocation_result_remove_pair_at_index(info->collocation_result, i) != 0)
-                    {
-                        return -1;
-                    }
-                    /* stop the search and immediately continue with adding the new pair */
-                    break;
                 }
             }
         }
@@ -916,8 +924,16 @@ static int perform_matchup_on_measurements(collocation_info *info, long index_a,
     }
 
     /* add new pair to result */
-    if (harp_collocation_result_add_pair(info->collocation_result, info->collocation_result->num_pairs,
-                                         info->product_a->source_product,
+    if (info->collocation_result->num_pairs == 0)
+    {
+        collocation_index = 0;
+    }
+    else
+    {
+        collocation_index =
+            info->collocation_result->pair[info->collocation_result->num_pairs - 1]->collocation_index + 1;
+    }
+    if (harp_collocation_result_add_pair(info->collocation_result, collocation_index, info->product_a->source_product,
                                          info->variables_a.index->data.int32_data[index_a],
                                          info->product_b[product_b_index]->source_product,
                                          info->variables_b.index->data.int32_data[index_b], info->num_criteria,
