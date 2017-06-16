@@ -59,7 +59,9 @@ typedef struct collocation_info_struct
     int num_criteria;
     collocation_criterium **criterium;
     int datetime_index; /* datetime criterium index can only be -1 or 0 */
+    double datetime_conversion_factor;
     int point_distance_index;
+    double point_distance_conversion_factor;
     int filter_area_intersects;
     int filter_point_in_area_xy;
     int filter_point_in_area_yx;
@@ -298,7 +300,9 @@ static int collocation_info_new(collocation_info **new_info)
     info->num_criteria = 0;
     info->criterium = NULL;
     info->datetime_index = -1;
+    info->datetime_conversion_factor = 1;
     info->point_distance_index = -1;
+    info->point_distance_conversion_factor = 1;
     info->filter_area_intersects = 0;
     info->filter_point_in_area_xy = 0;
     info->filter_point_in_area_yx = 0;
@@ -491,9 +495,9 @@ static int collocation_info_update(collocation_info *info)
                 info->criterium[0] = criterium;
             }
             info->datetime_index = 0;
-            /* convert threshold value to internal HARP unit */
-            if (harp_convert_unit(info->criterium[info->datetime_index]->unit, HARP_UNIT_TIME, 1,
-                                  &info->criterium[info->datetime_index]->value) != 0)
+            /* determine conversion factor between threshold unit and internal HARP unit */
+            if (harp_convert_unit(HARP_UNIT_TIME, info->criterium[info->datetime_index]->unit, 1,
+                                  &info->datetime_conversion_factor) != 0)
             {
                 return -1;
             }
@@ -501,9 +505,9 @@ static int collocation_info_update(collocation_info *info)
         if (strcmp(info->criterium[i]->variable_name, "point_distance") == 0)
         {
             info->point_distance_index = i;
-            /* convert threshold value to internal HARP unit */
-            if (harp_convert_unit(info->criterium[info->point_distance_index]->unit, HARP_UNIT_LENGTH, 1,
-                                  &info->criterium[info->point_distance_index]->value) != 0)
+            /* determine conversion factor between threshold unit and internal HARP unit */
+            if (harp_convert_unit(HARP_UNIT_LENGTH, info->criterium[info->point_distance_index]->unit, 1,
+                                  &info->point_distance_conversion_factor) != 0)
             {
                 return -1;
             }
@@ -753,11 +757,16 @@ static int perform_matchup_on_measurements(collocation_info *info, long index_a,
             {
                 return -1;
             }
+            info->difference[i] *= info->point_distance_conversion_factor;
         }
         else
         {
             info->difference[i] = fabs(info->variables_a.criterium[i]->data.double_data[index_a] -
                                        info->variables_b.criterium[i]->data.double_data[index_b]);
+            if (i == info->datetime_index)
+            {
+                info->difference[i] *= info->datetime_conversion_factor;
+            }
         }
         if (info->difference[i] > info->criterium[i]->value)
         {
@@ -903,24 +912,6 @@ static int perform_matchup_on_measurements(collocation_info *info, long index_a,
             }
         }
         /* the second nearest neighbour criterium, if it exists, can only be avaluated at the end of the collocation */
-    }
-
-    /* convert differences for datetime and point_distance back to user-defined unit */
-    if (info->datetime_index >= 0)
-    {
-        if (harp_convert_unit(HARP_UNIT_TIME, info->criterium[info->datetime_index]->unit, 1,
-                              &info->difference[info->datetime_index]) != 0)
-        {
-            return -1;
-        }
-    }
-    if (info->point_distance_index >= 0)
-    {
-        if (harp_convert_unit(HARP_UNIT_LENGTH, info->criterium[info->point_distance_index]->unit, 1,
-                              &info->difference[info->point_distance_index]) != 0)
-        {
-            return -1;
-        }
     }
 
     /* add new pair to result */
