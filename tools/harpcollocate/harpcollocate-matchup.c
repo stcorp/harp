@@ -768,7 +768,8 @@ static int perform_matchup_on_measurements(collocation_info *info, long index_a,
                 info->difference[i] *= info->datetime_conversion_factor;
             }
         }
-        if (info->difference[i] > info->criterium[i]->value)
+        /* we use !(x<=y) instead of x>y so a NaN value for the difference will also result in a mismatch */
+        if (!(info->difference[i] <= info->criterium[i]->value))
         {
             return 0;
         }
