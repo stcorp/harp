@@ -34,6 +34,7 @@
 
 #include <assert.h>
 #include <math.h>
+#include <stdio.h>
 #include <stdlib.h>
 #include <string.h>
 #include <ctype.h>
@@ -825,6 +826,36 @@ static int read_datetime(void *user_data, harp_array data)
     }
 
 
+    return 0;
+}
+
+static int read_time_coverage_resolution(void *user_data, harp_array data)
+{
+    ingest_info *info = (ingest_info *)user_data;
+    char string_value[32];
+    coda_cursor cursor;
+
+    if (coda_cursor_set_product(&cursor, info->product) != 0)
+    {
+        harp_set_error(HARP_ERROR_CODA, NULL);
+        return -1;
+    }
+    if (coda_cursor_goto(&cursor, "@time_coverage_resolution") != 0)
+    {
+        harp_set_error(HARP_ERROR_CODA, NULL);
+        return -1;
+    }
+    if (coda_cursor_read_string(&cursor, string_value, 32) != 0)
+    {
+        harp_set_error(HARP_ERROR_CODA, NULL);
+        return -1;
+    }
+    if (sscanf(string_value, "PT%lfS", data.double_data) != 1)
+    {
+        harp_set_error(HARP_ERROR_INGESTION, "could not extract value from time_coverage_resolution attribute ('%s')",
+                       string_value);
+        return -1;
+    }
     return 0;
 }
 
@@ -2948,11 +2979,12 @@ static void register_core_variables(harp_product_definition *product_definition,
         "scanline is computed as the index on the temporal dimension modulo the number of scanlines";
     harp_variable_definition_add_mapping(variable_definition, NULL, NULL, NULL, description);
 
-    /* datetime */
+    /* datetime_start */
     description = "start time of the measurement";
     variable_definition =
-        harp_ingestion_register_variable_full_read(product_definition, "datetime", harp_type_double, 1, dimension_type,
-                                                   NULL, description, "seconds since 2010-01-01", NULL, read_datetime);
+        harp_ingestion_register_variable_full_read(product_definition, "datetime_start", harp_type_double, 1,
+                                                   dimension_type, NULL, description, "seconds since 2010-01-01", NULL,
+                                                   read_datetime);
     path = "/PRODUCT/time, /PRODUCT/delta_time[]";
     if (delta_time_num_dims == 2)
     {
@@ -2965,6 +2997,16 @@ static void register_core_variables(harp_product_definition *product_definition,
         description = "time converted from milliseconds since a reference time (given as seconds since 2010-01-01) to "
             "seconds since 2010-01-01 (using 86400 seconds per day)";
     }
+    harp_variable_definition_add_mapping(variable_definition, NULL, NULL, path, description);
+
+    /* datetime_length */
+    description = "duration of the measurement";
+    variable_definition =
+        harp_ingestion_register_variable_full_read(product_definition, "datetime_length", harp_type_double, 0,
+                                                   dimension_type, NULL, description, "s", NULL,
+                                                   read_time_coverage_resolution);
+    path = "/@time_coverage_resolution";
+    description = "the measurement length is parsed assuming the ISO 8601 'PT%(interval_seconds)fS' format";
     harp_variable_definition_add_mapping(variable_definition, NULL, NULL, path, description);
 
     /* validity */

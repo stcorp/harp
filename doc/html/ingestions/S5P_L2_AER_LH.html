@@ -181,121 +181,127 @@
 <td>&#160;</td>
 <td>pixel index (0-based) within the scanline</td>
 </tr>
-<tr class="row-odd"><td><strong>datetime</strong></td>
+<tr class="row-odd"><td><strong>datetime_start</strong></td>
 <td>double</td>
 <td>{<em>time</em>}</td>
 <td>seconds since 2010-01-01</td>
 <td>start time of the measurement</td>
 </tr>
-<tr class="row-even"><td><strong>validity</strong></td>
+<tr class="row-even"><td><strong>datetime_length</strong></td>
+<td>double</td>
+<td>&#160;</td>
+<td>s</td>
+<td>duration of the measurement</td>
+</tr>
+<tr class="row-odd"><td><strong>validity</strong></td>
 <td>int32</td>
 <td>{<em>time</em>}</td>
 <td>&#160;</td>
 <td>processing quality flag</td>
 </tr>
-<tr class="row-odd"><td><strong>latitude</strong></td>
+<tr class="row-even"><td><strong>latitude</strong></td>
 <td>float</td>
 <td>{<em>time</em>}</td>
 <td>degree_north</td>
 <td>latitude of the ground pixel center (WGS84)</td>
 </tr>
-<tr class="row-even"><td><strong>longitude</strong></td>
+<tr class="row-odd"><td><strong>longitude</strong></td>
 <td>float</td>
 <td>{<em>time</em>}</td>
 <td>degree_east</td>
 <td>longitude of the ground pixel center (WGS84)</td>
 </tr>
-<tr class="row-odd"><td><strong>latitude_bounds</strong></td>
+<tr class="row-even"><td><strong>latitude_bounds</strong></td>
 <td>float</td>
 <td>{<em>time</em>, 4}</td>
 <td>degree_north</td>
 <td>latitudes of the ground pixel corners (WGS84)</td>
 </tr>
-<tr class="row-even"><td><strong>longitude_bounds</strong></td>
+<tr class="row-odd"><td><strong>longitude_bounds</strong></td>
 <td>float</td>
 <td>{<em>time</em>, 4}</td>
 <td>degree_east</td>
 <td>longitudes of the ground pixel corners (WGS84)</td>
 </tr>
-<tr class="row-odd"><td><strong>sensor_latitude</strong></td>
+<tr class="row-even"><td><strong>sensor_latitude</strong></td>
 <td>float</td>
 <td>{<em>time</em>}</td>
 <td>degree_north</td>
 <td>latitude of the geodetic sub-satellite point (WGS84)</td>
 </tr>
-<tr class="row-even"><td><strong>sensor_longitude</strong></td>
+<tr class="row-odd"><td><strong>sensor_longitude</strong></td>
 <td>float</td>
 <td>{<em>time</em>}</td>
 <td>degree_east</td>
 <td>longitude of the goedetic sub-satellite point (WGS84)</td>
 </tr>
-<tr class="row-odd"><td><strong>sensor_altitude</strong></td>
+<tr class="row-even"><td><strong>sensor_altitude</strong></td>
 <td>float</td>
 <td>{<em>time</em>}</td>
 <td>m</td>
 <td>altitude of the satellite with respect to the geodetic sub-satellite point (WGS84)</td>
 </tr>
-<tr class="row-even"><td><strong>solar_zenith_angle</strong></td>
+<tr class="row-odd"><td><strong>solar_zenith_angle</strong></td>
 <td>float</td>
 <td>{<em>time</em>}</td>
 <td>degree</td>
 <td>zenith angle of the Sun at the ground pixel location (WGS84); angle measured away from the vertical</td>
 </tr>
-<tr class="row-odd"><td><strong>solar_azimuth_angle</strong></td>
+<tr class="row-even"><td><strong>solar_azimuth_angle</strong></td>
 <td>float</td>
 <td>{<em>time</em>}</td>
 <td>degree</td>
 <td>azimuth angle of the Sun at the ground pixel location (WGS84); angle measured East-of-North</td>
 </tr>
-<tr class="row-even"><td><strong>sensor_zenith_angle</strong></td>
+<tr class="row-odd"><td><strong>sensor_zenith_angle</strong></td>
 <td>float</td>
 <td>{<em>time</em>}</td>
 <td>degree</td>
 <td>zenith angle of the satellite at the ground pixel location (WGS84); angle measured away from the vertical</td>
 </tr>
-<tr class="row-odd"><td><strong>sensor_azimuth_angle</strong></td>
+<tr class="row-even"><td><strong>sensor_azimuth_angle</strong></td>
 <td>float</td>
 <td>{<em>time</em>}</td>
 <td>degree</td>
 <td>azimuth angle of the satellite at the ground pixel location (WGS84); angle measured East-of-North</td>
 </tr>
-<tr class="row-even"><td><strong>altitude</strong></td>
+<tr class="row-odd"><td><strong>altitude</strong></td>
 <td>float</td>
 <td>{<em>time</em>}</td>
 <td>m</td>
 <td>altitude of center of aerosol layer</td>
 </tr>
-<tr class="row-odd"><td><strong>altitude_uncertainty</strong></td>
+<tr class="row-even"><td><strong>altitude_uncertainty</strong></td>
 <td>float</td>
 <td>{<em>time</em>}</td>
 <td>m</td>
 <td>uncertainty of altitude of center of aerosol layer</td>
 </tr>
-<tr class="row-even"><td><strong>pressure</strong></td>
+<tr class="row-odd"><td><strong>pressure</strong></td>
 <td>float</td>
 <td>{<em>time</em>}</td>
 <td>Pa</td>
 <td>pressure at center of aerosol layer</td>
 </tr>
-<tr class="row-odd"><td><strong>pressure_uncertainty</strong></td>
+<tr class="row-even"><td><strong>pressure_uncertainty</strong></td>
 <td>float</td>
 <td>{<em>time</em>}</td>
 <td>Pa</td>
 <td>uncertainty of pressure at center of aerosol layer</td>
 </tr>
-<tr class="row-even"><td><strong>aerosol_optical_depth</strong></td>
+<tr class="row-odd"><td><strong>aerosol_optical_depth</strong></td>
 <td>float</td>
 <td>{<em>time</em>}</td>
 <td>m</td>
 <td>aerosol optical thickness</td>
 </tr>
-<tr class="row-odd"><td><strong>aerosol_optical_depth_uncertainty</strong></td>
+<tr class="row-even"><td><strong>aerosol_optical_depth_uncertainty</strong></td>
 <td>float</td>
 <td>{<em>time</em>}</td>
 <td>m</td>
 <td>uncertainty of the aerosol optical thickness</td>
 </tr>
-<tr class="row-even"><td><strong>index</strong></td>
+<tr class="row-odd"><td><strong>index</strong></td>
 <td>int32</td>
 <td>{<em>time</em>}</td>
 <td>&#160;</td>
@@ -323,12 +329,19 @@
 <td><em>description</em></td>
 <td>the scanline and pixel dimensions are collapsed into a temporal dimension; the index of the pixel within the scanline is computed as the index on the temporal dimension modulo the number of scanlines</td>
 </tr>
-<tr class="row-odd"><td rowspan="2"><strong>datetime</strong></td>
+<tr class="row-odd"><td rowspan="2"><strong>datetime_start</strong></td>
 <td><em>path</em></td>
 <td><strong>/PRODUCT/time, /PRODUCT/delta_time[]</strong></td>
 </tr>
 <tr class="row-even"><td><em>description</em></td>
 <td>time converted from milliseconds since a reference time (given as seconds since 2010-01-01) to seconds since 2010-01-01 (using 86400 seconds per day); the time associated with a scanline is repeated for each pixel in the scanline</td>
+</tr>
+<tr class="row-odd"><td rowspan="2"><strong>datetime_length</strong></td>
+<td><em>path</em></td>
+<td><strong>/&#64;time_coverage_resolution</strong></td>
+</tr>
+<tr class="row-even"><td><em>description</em></td>
+<td>the measurement length is parsed assuming the ISO 8601 &#8216;PT%(interval_seconds)fS&#8217; format</td>
 </tr>
 <tr class="row-odd"><td rowspan="2"><strong>validity</strong></td>
 <td><em>path</em></td>
