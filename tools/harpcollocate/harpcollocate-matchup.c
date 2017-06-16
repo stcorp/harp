@@ -479,44 +479,6 @@ static int collocation_info_update(collocation_info *info)
 {
     int i, j;
 
-    for (i = 0; i < info->num_criteria; i++)
-    {
-        if (strcmp(info->criterium[i]->variable_name, "datetime") == 0)
-        {
-            /* make sure that datetime criterium is the first */
-            if (i != 0)
-            {
-                collocation_criterium *criterium;
-                int j;
-
-                /* put datetime criterium in the first position */
-                criterium = info->criterium[i];
-                for (j = i; j > 0; j--)
-                {
-                    info->criterium[j] = info->criterium[j - 1];
-                }
-                info->criterium[0] = criterium;
-            }
-            info->datetime_index = 0;
-            /* determine conversion factor between threshold unit and internal HARP unit */
-            if (harp_convert_unit(HARP_UNIT_TIME, info->criterium[info->datetime_index]->unit, 1,
-                                  &info->datetime_conversion_factor) != 0)
-            {
-                return -1;
-            }
-        }
-        if (strcmp(info->criterium[i]->variable_name, "point_distance") == 0)
-        {
-            info->point_distance_index = i;
-            /* determine conversion factor between threshold unit and internal HARP unit */
-            if (harp_convert_unit(HARP_UNIT_LENGTH, info->criterium[info->point_distance_index]->unit, 1,
-                                  &info->point_distance_conversion_factor) != 0)
-            {
-                return -1;
-            }
-        }
-    }
-
     /* add criteria for the nearest neighbour filters (if they were not there yet) */
     if (info->nearest_neighbour_x_variable_name != NULL)
     {
@@ -566,6 +528,45 @@ static int collocation_info_update(collocation_info *info)
     {
         harp_set_error(HARP_ERROR_INVALID_ARGUMENT, "no collocation criteria are set");
         return -1;
+    }
+
+    /* properly order criteria and identify special treatment */
+    for (i = 0; i < info->num_criteria; i++)
+    {
+        if (strcmp(info->criterium[i]->variable_name, "datetime") == 0)
+        {
+            /* make sure that datetime criterium is the first */
+            if (i != 0)
+            {
+                collocation_criterium *criterium;
+                int j;
+
+                /* put datetime criterium in the first position */
+                criterium = info->criterium[i];
+                for (j = i; j > 0; j--)
+                {
+                    info->criterium[j] = info->criterium[j - 1];
+                }
+                info->criterium[0] = criterium;
+            }
+            info->datetime_index = 0;
+            /* determine conversion factor between threshold unit and internal HARP unit */
+            if (harp_convert_unit(HARP_UNIT_TIME, info->criterium[info->datetime_index]->unit, 1,
+                                  &info->datetime_conversion_factor) != 0)
+            {
+                return -1;
+            }
+        }
+        if (strcmp(info->criterium[i]->variable_name, "point_distance") == 0)
+        {
+            info->point_distance_index = i;
+            /* determine conversion factor between threshold unit and internal HARP unit */
+            if (harp_convert_unit(HARP_UNIT_LENGTH, info->criterium[info->point_distance_index]->unit, 1,
+                                  &info->point_distance_conversion_factor) != 0)
+            {
+                return -1;
+            }
+        }
     }
 
     /* initialize sorted indices */
@@ -663,7 +664,7 @@ static int collocation_info_update(collocation_info *info)
     }
     for (i = 0; i < info->num_criteria; i++)
     {
-        if (strcmp(info->criterium[i]->variable_name, "point_distance") == 0)
+        if (i == info->point_distance_index)
         {
             info->collocation_result->difference_variable_name[i] = strdup(info->criterium[i]->variable_name);
             if (info->collocation_result->difference_variable_name[i] == NULL)
@@ -686,7 +687,7 @@ static int collocation_info_update(collocation_info *info)
             strcpy(info->collocation_result->difference_variable_name[i], info->criterium[i]->variable_name);
             strcat(info->collocation_result->difference_variable_name[i], "_absdiff");
         }
-        /* we only populate the unit if we already have it, we will have to update this at the end */
+        /* we only populate the unit if we already have it, we will update this information during matchup */
         if (info->criterium[i]->unit != NULL)
         {
             info->collocation_result->difference_unit[i] = strdup(info->criterium[i]->unit);
