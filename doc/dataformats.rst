@@ -212,6 +212,7 @@ aerosol_optical_depth                         stratospheric,                  X 
 altitude                                      sensor,                         X       X    X
                                               surface
 altitude_bounds                                                               X       X    X
+area                                                                          X                          the size of an area defined by latitude/longitude bounds
 backscatter_coefficient                       surface                         X       X    X       X
 cloud_albedo                                                                  X            X
 cloud_base_albedo                                                             X            X

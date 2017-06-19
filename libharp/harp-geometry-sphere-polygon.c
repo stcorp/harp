@@ -1307,3 +1307,35 @@ LIBHARP_API int harp_geometry_has_area_overlap(int num_vertices_a, double *latit
 
     return 0;
 }
+
+/** Calculate the area size for a polygon on the surface of the Earth
+ * \ingroup harp_geometry
+ * This function assumes a spherical earth.
+ * \param num_vertices The number of vertices of the bounding polygon
+ * \param latitude_bounds Latitude values of the bounds of the polygon
+ * \param longitude_bounds Longitude values of the bounds of the polygon
+ * \param area Pointer to the C variable where the area size will be stored (in [m2]).
+ * \return
+ *   \arg \c 0, Success.
+ *   \arg \c -1, Error occurred (check #harp_errno).
+ */
+LIBHARP_API int harp_geometry_get_area(int num_vertices, double *latitude_bounds, double *longitude_bounds,
+                                       double *area)
+{
+    harp_spherical_polygon *polygon = NULL;
+
+    if (harp_spherical_polygon_from_latitude_longitude_bounds(0, num_vertices, latitude_bounds, longitude_bounds,
+                                                              &polygon) != 0)
+    {
+        return -1;
+    }
+    if (harp_spherical_polygon_get_surface_area(polygon, area) != 0)
+    {
+        harp_spherical_polygon_delete(polygon);
+        return -1;
+    }
+
+    harp_spherical_polygon_delete(polygon);
+
+    return 0;
+}

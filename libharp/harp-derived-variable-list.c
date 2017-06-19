@@ -78,6 +78,26 @@ static int get_altitude_from_pressure(harp_variable *variable, const harp_variab
     return 0;
 }
 
+static int get_area(harp_variable *variable, const harp_variable **source_variable)
+{
+    long num_vertices;
+    long i;
+
+    num_vertices = source_variable[0]->dimension[source_variable[0]->num_dimensions - 1];
+
+    for (i = 0; i < variable->num_elements; i++)
+    {
+        if (harp_geometry_get_area(num_vertices, &source_variable[0]->data.double_data[i * num_vertices],
+                                   &source_variable[1]->data.double_data[i * num_vertices],
+                                   &variable->data.double_data[i]) != 0)
+        {
+            return -1;
+        }
+    }
+
+    return 0;
+}
+
 static int get_aux_variable_afgl86(harp_variable *variable, const harp_variable **source_variable)
 {
     long i;
@@ -5482,8 +5502,31 @@ static int add_misc_conversions(void)
 {
     harp_variable_conversion *conversion;
     harp_dimension_type dimension_type[HARP_MAX_NUM_DIMS];
+    int i;
 
     dimension_type[0] = harp_dimension_time;
+
+    /*** area ***/
+
+    dimension_type[1] = harp_dimension_independent;
+    for (i = 0; i < 2; i++)
+    {
+        if (harp_variable_conversion_new("area", harp_type_double, HARP_UNIT_AREA, i, dimension_type, 0, get_area,
+                                         &conversion) != 0)
+        {
+            return -1;
+        }
+        if (harp_variable_conversion_add_source(conversion, "latitude_bounds", harp_type_double, HARP_UNIT_LATITUDE,
+                                                i + 1, &dimension_type[1 - i], -1) != 0)
+        {
+            return -1;
+        }
+        if (harp_variable_conversion_add_source(conversion, "longitude_bounds", harp_type_double, HARP_UNIT_LONGITUDE,
+                                                i + 1, &dimension_type[1 - i], -1) != 0)
+        {
+            return -1;
+        }
+    }
 
     /*** index ***/
 

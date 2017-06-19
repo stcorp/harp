@@ -169,9 +169,10 @@ LIBHARP_API extern int harp_errno;
 
 /** Default units used in HARP */
 #define HARP_UNIT_ACCELERATION "m/s2"
-#define HARP_UNIT_ANGLE "degree"
 #define HARP_UNIT_AEROSOL_EXTINCTION "1/m"
 #define HARP_UNIT_AEROSOL_EXTINCTION_SQUARED "(1/m)2"
+#define HARP_UNIT_ANGLE "degree"
+#define HARP_UNIT_AREA "m2"
 #define HARP_UNIT_COLUMN_MASS_DENSITY "kg/m2"
 #define HARP_UNIT_COLUMN_MASS_DENSITY_SQUARED "(kg/m2)2"
 #define HARP_UNIT_COLUMN_NUMBER_DENSITY "molec/m2"
@@ -426,6 +427,8 @@ LIBHARP_API int harp_doc_export_ingestion_definitions(const char *path);
 /* Geometry */
 LIBHARP_API int harp_geometry_get_point_distance(double latitude_a, double longitude_a, double latitude_b,
                                                  double longitude_b, double *distance);
+LIBHARP_API int harp_geometry_get_area(int num_vertices, double *latitude_bounds, double *longitude_bounds,
+                                       double *area);
 LIBHARP_API int harp_geometry_has_point_in_area(double latitude_point, double longitude_point, int num_vertices,
                                                 double *latitude_bounds, double *longitude_bounds, int *in_area);
 LIBHARP_API int harp_geometry_has_area_overlap(int num_vertices_a, double *latitude_bounds_a,
