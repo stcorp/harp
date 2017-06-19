@@ -177,7 +177,7 @@ static int read_datetime(void *user_data, harp_array data)
         return -1;
     }
     // Read datetime from unit string
-    str[12 + 19] = '\0';    // 12 = strlen("hours since "), 19 = strlen("yyyy-MM-dd HH:mm:ss")
+    str[12 + 19] = '\0';        // 12 = strlen("hours since "), 19 = strlen("yyyy-MM-dd HH:mm:ss")
     if (coda_time_string_to_double_utc("yyyy-MM-dd HH:mm:ss", str + 12, &datetime_start_of_day) != 0)
     {
         harp_set_error(HARP_ERROR_CODA, NULL);
