@@ -273,7 +273,7 @@ library and executables:
     in a 'matlab' directory in your home directory (``~/matlab/startup.m``)
     that contains the line::
 
-        addpath <HARP installdir>/lib/coda/matlab
+        addpath <HARP installdir>/lib/harp/matlab
 
 
 Installing the binary package (Windows)
