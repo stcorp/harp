@@ -22,7 +22,11 @@
 
 * Added sort() operation.
 
-* Added harp_product_sort() function.
+* Added derivation to derive the area (size) of latitude/longitude bounds.
+
+* Added harp_geometry_get_area() and harp_product_sort() functions.
+
+* Added HARP_UNIT_AREA default unit.
 
 * The C interface for collocation results was modified to support a
   dynamic set of collocation criteria differences (based on variable names
