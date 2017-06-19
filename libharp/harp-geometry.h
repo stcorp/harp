@@ -271,7 +271,6 @@ int8_t harp_spherical_polygon_spherical_line_relationship(const harp_spherical_p
                                                           const harp_spherical_line *line);
 int8_t harp_spherical_polygon_spherical_polygon_relationship(const harp_spherical_polygon *polygon_a,
                                                              const harp_spherical_polygon *polygon_b, int recheck);
-int harp_spherical_polygon_get_signed_surface_area(const harp_spherical_polygon *polygon_in, double *signed_area);
 int harp_spherical_polygon_get_surface_area(const harp_spherical_polygon *polygon_in, double *area);
 int harp_spherical_polygon_intersect(const harp_spherical_polygon *polygon_a, const harp_spherical_polygon *polygon_b,
                                      harp_spherical_polygon **polygon_intersect, int *has_intersect);
