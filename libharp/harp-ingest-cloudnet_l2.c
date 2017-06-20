@@ -439,7 +439,7 @@ int harp_ingestion_module_actris_clouds_l2_aerosol_init(void)
         harp_ingestion_register_variable_full_read(product_definition, "datetime", harp_type_double, 1, dimension_type,
                                                    NULL, description, "seconds since 2000-01-01", NULL, read_datetime);
     path = "/time";
-    description = "hours since 00:00:00 of the day of the measurement";
+    description = "convert hours since 00:00:00 of the day of the measurement to seconds since 2000-01-01";
     harp_variable_definition_add_mapping(variable_definition, NULL, NULL, path, description);
 
     /* sensor_latitude */
