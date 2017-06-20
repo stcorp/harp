@@ -427,11 +427,11 @@ int harp_ingestion_module_actris_clouds_l2_aerosol_init(void)
     const char *description;
     const char *path;
 
-    module =
-        harp_ingestion_register_module_coda("ACTRIS_CLOUDS_L2", "ACTRIS_CLOUDS", "ACTRIS_CLOUDS", "L2_Aerosol",
-                                            "ACTRIS_CLOUDS_L2_Aerosol", ingestion_init, ingestion_done);
+    module = harp_ingestion_register_module_coda("CLOUDNET_L2_classification", "CLOUDNET", "CLOUDNET", "classification",
+                                                 "Cloudnet L2A target classification and cloud boundaries",
+                                                 ingestion_init, ingestion_done);
 
-    product_definition = harp_ingestion_register_product(module, "ACTRIS_CLOUDS_L2_Aerosol", NULL, read_dimensions);
+    product_definition = harp_ingestion_register_product(module, "CLOUDNET_L2_classification", NULL, read_dimensions);
 
     /* datetime */
     description = "date and time (in seconds since 2000-01-01 00:00:00)";

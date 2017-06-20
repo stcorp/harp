@@ -255,7 +255,6 @@ set(LIBHARP_SOURCES
   libharp/harp-geometry-wgs84.c
   libharp/harp-geometry.h
   libharp/harp-ingest-ace_fts_l2.c
-  libharp/harp-ingest-actris-clouds_l2_aerosol.c
   libharp/harp-ingest-aeolus_l1b.c
   libharp/harp-ingest-aeolus_l2a.c
   libharp/harp-ingest-aeolus_l2b.c
@@ -274,6 +273,7 @@ set(LIBHARP_SOURCES
   libharp/harp-ingest-cci_l3_o3_tc.c
   libharp/harp-ingest-cci_l3_o3_ttoc.c
   libharp/harp-ingest-cci_l4_o3_np.c
+  libharp/harp-ingest-cloudnet_l2.c
   libharp/harp-ingest-earlinet_l2.c
   libharp/harp-ingest-ecmwf-grib.c
   libharp/harp-ingest-geoms-lidar.c
@@ -555,13 +555,13 @@ endfunction(add_codadef)
 
 add_codadef(ACE_FTS)
 add_codadef(ACSAF)
-add_codadef(ACTRIS_CLOUDS)
 add_codadef(AEOLUS)
 add_codadef(AURA_HIRDLS)
 add_codadef(AURA_MLS)
 add_codadef(AURA_OMI)
 add_codadef(AURA_TES)
 add_codadef(CALIPSO)
+add_codadef(CLOUDNET)
 add_codadef(EARLINET)
 add_codadef(ECMWF)
 add_codadef(ENVISAT_GOMOS)

@@ -93,7 +93,6 @@ HARP_DOCFILES = \
 	doc/html/index.html \
 	doc/html/ingestions/ACE_FTS_L2_iso.html \
 	doc/html/ingestions/ACE_FTS_L2_main.html \
-	doc/html/ingestions/ACTRIS_CLOUDS_L2_Aerosol.html \
 	doc/html/ingestions/AEOLUS_L1B_Mie.html \
 	doc/html/ingestions/AEOLUS_L1B_Mie_Observation.html \
 	doc/html/ingestions/AEOLUS_L1B_Rayleigh.html \
@@ -105,6 +104,7 @@ HARP_DOCFILES = \
 	doc/html/ingestions/CALIPSO_L2_CAL_LID_APro.html \
 	doc/html/ingestions/CALIPSO_L2_CAL_LID_CLay.html \
 	doc/html/ingestions/CALIPSO_L2_CAL_LID_CPro.html \
+	doc/html/ingestions/CLOUDNET_L2_classification.html \
 	doc/html/ingestions/EARLINET_L2_Aerosol_Coefficient.html \
 	doc/html/ingestions/ECMWF_GRIB.html \
 	doc/html/ingestions/ESACCI_AEROSOL_L2_AATSR.html \
@@ -667,8 +667,6 @@ doc/html/ingestions/ACE_FTS_L2_iso.html:
 	$(MAKE) harp_doc
 doc/html/ingestions/ACE_FTS_L2_main.html:
 	$(MAKE) harp_doc
-doc/html/ingestions/ACTRIS_CLOUDS_L2_Aerosol.html:
-	$(MAKE) harp_doc
 doc/html/ingestions/AEOLUS_L1B_Mie.html:
 	$(MAKE) harp_doc
 doc/html/ingestions/AEOLUS_L1B_Mie_Observation.html:
@@ -690,6 +688,8 @@ doc/html/ingestions/CALIPSO_L2_CAL_LID_APro.html:
 doc/html/ingestions/CALIPSO_L2_CAL_LID_CLay.html:
 	$(MAKE) harp_doc
 doc/html/ingestions/CALIPSO_L2_CAL_LID_CPro.html:
+	$(MAKE) harp_doc
+doc/html/ingestions/CLOUDNET_L2_classification.html:
 	$(MAKE) harp_doc
 doc/html/ingestions/EARLINET_L2_Aerosol_Coefficient.html:
 	$(MAKE) harp_doc
