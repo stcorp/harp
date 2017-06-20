@@ -2448,7 +2448,7 @@ static void register_omcldrr_product(void)
     const char *description;
     const char *path;
 
-    module = harp_ingestion_register_module_coda("OMI_L2_OMCLDRR", "OMI", "AURA-OMI", "OMCLDRR",
+    module = harp_ingestion_register_module_coda("OMI_L2_OMCLDRR", "OMI", "AURA_OMI", "OMCLDRR",
                                                  "OMI L2 cloud pressure and cloud fraction (Raman scattering)",
                                                  ingestion_init, ingestion_done);
 
