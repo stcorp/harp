@@ -1,5 +1,5 @@
 <?xml version="1.0"?>
-<cd:ProductClass name="CALIPSO" last-modified="2017-04-06" xmlns:cd="http://www.stcorp.nl/coda/definition/2008/07">
+<cd:ProductClass name="CALIPSO" last-modified="2017-06-20" xmlns:cd="http://www.stcorp.nl/coda/definition/2008/07">
   <cd:Description>Cloud-Aerosol Lidar and Infrared Pathfinder Satellite Observations (CALIPSO) products</cd:Description>
 
   <!-- Level 2 products -->
@@ -11,7 +11,7 @@
   <cd:ProductType name="CAL_LID_L2_ALay">
   <cd:Description>L2 Aerosol Layers</cd:Description>
 
-    <cd:ProductDefinition id="CAL_LID_L2_ALay_hdf4" format="hdf4" version="5">
+    <cd:ProductDefinition id="CAL_LID_L2_ALay" format="hdf4" version="5">
       <cd:Description>The format definition for this product is taken from the netcdf file itself.</cd:Description>
       <cd:DetectionRule>
         <cd:MatchExpression>substr(0, 10, filename()) == "CAL_LID_L2"</cd:MatchExpression>
@@ -24,7 +24,7 @@
   <cd:ProductType name="CAL_LID_L2_APro">
   <cd:Description>L2 Aerosol Profiles</cd:Description>
 
-    <cd:ProductDefinition id="CAL_LID_L2_APro_hdf4" format="hdf4" version="4">
+    <cd:ProductDefinition id="CAL_LID_L2_APro" format="hdf4" version="4">
       <cd:DetectionRule>
         <cd:MatchExpression>substr(0, 10, filename()) == "CAL_LID_L2"</cd:MatchExpression>
         <cd:MatchExpression>regex("APro", filename())</cd:MatchExpression>
@@ -38,7 +38,7 @@
   <cd:ProductType name="CAL_LID_L2_CLay">
   <cd:Description>L2 Cloud Layers</cd:Description>
 
-    <cd:ProductDefinition id="CAL_LID_L2_CLay_hdf4" format="hdf4" version="4">
+    <cd:ProductDefinition id="CAL_LID_L2_CLay" format="hdf4" version="4">
       <cd:Description>The format definition for this product is taken from the netcdf file itself.</cd:Description>
       <cd:DetectionRule>
         <cd:MatchExpression>substr(0, 10, filename()) == "CAL_LID_L2"</cd:MatchExpression>
@@ -51,7 +51,7 @@
   <cd:ProductType name="CAL_LID_L2_CPro">
   <cd:Description>L2 Cloud Profiles</cd:Description>
 
-    <cd:ProductDefinition id="CAL_LID_L2_CPro_hdf4" format="hdf4" version="4">
+    <cd:ProductDefinition id="CAL_LID_L2_CPro" format="hdf4" version="4">
       <cd:DetectionRule>
         <cd:MatchExpression>substr(0, 10, filename()) == "CAL_LID_L2"</cd:MatchExpression>
         <cd:MatchExpression>regex("CPro", filename())</cd:MatchExpression>
@@ -65,7 +65,7 @@
   <cd:ProductType name="CAL_LID_L2_MLay">
   <cd:Description>L2 Merged Aerosol and Cloud Layers</cd:Description>
 
-    <cd:ProductDefinition id="CAL_LID_L2_MLay_hdf4" format="hdf4" version="4">
+    <cd:ProductDefinition id="CAL_LID_L2_MLay" format="hdf4" version="4">
       <cd:DetectionRule>
         <cd:MatchExpression>substr(0, 10, filename()) == "CAL_LID_L2"</cd:MatchExpression>
         <cd:MatchExpression>regex("MLay", filename())</cd:MatchExpression>
@@ -79,7 +79,7 @@
   <cd:ProductType name="CAL_LID_L2_VFM">
   <cd:Description>L2 Vertical Feature Mask</cd:Description>
 
-    <cd:ProductDefinition id="CAL_LID_L2_VFM_hdf4" format="hdf4" version="4">
+    <cd:ProductDefinition id="CAL_LID_L2_VFM" format="hdf4" version="4">
       <cd:DetectionRule>
         <cd:MatchExpression>substr(0, 10, filename()) == "CAL_LID_L2"</cd:MatchExpression>
         <cd:MatchExpression>regex("VFM", filename())</cd:MatchExpression>
@@ -93,7 +93,7 @@
   <cd:ProductType name="CAL_LID_L2_PSC">
   <cd:Description>L2 Polar Stratospheric Cloud</cd:Description>
 
-    <cd:ProductDefinition id="CAL_LID_L2_PSC_hdf4" format="hdf4" version="4">
+    <cd:ProductDefinition id="CAL_LID_L2_PSC" format="hdf4" version="4">
       <cd:DetectionRule>
         <cd:MatchExpression>substr(0, 10, filename()) == "CAL_LID_L2"</cd:MatchExpression>
         <cd:MatchExpression>regex("PSC", filename())</cd:MatchExpression>
@@ -107,7 +107,7 @@
   <cd:ProductType name="CAL_IIR_L2_Track">
   <cd:Description>L2 IIR along CALIOP Lidar Track</cd:Description>
 
-    <cd:ProductDefinition id="CAL_IIR_L2_Track_hdf4" format="hdf4" version="4">
+    <cd:ProductDefinition id="CAL_IIR_L2_Track" format="hdf4" version="4">
       <cd:DetectionRule>
         <cd:MatchExpression>substr(0, 16, filename()) == "CAL_IIR_L2_Track"</cd:MatchExpression>
       </cd:DetectionRule>
@@ -118,7 +118,7 @@
   <cd:ProductType name="CAL_IIR_L2_Swath">
   <cd:Description>L2 IIR Full Swath</cd:Description>
 
-    <cd:ProductDefinition id="CAL_IIR_L2_Swath_hdf4" format="hdf4" version="4">
+    <cd:ProductDefinition id="CAL_IIR_L2_Swath" format="hdf4" version="4">
       <cd:DetectionRule>
         <cd:MatchExpression>substr(0, 16, filename()) == "CAL_IIR_L2_Swath"</cd:MatchExpression>
       </cd:DetectionRule>
@@ -131,7 +131,7 @@
   <cd:ProductType name="CAL_LID_L3_APro_AllSky">
   <cd:Description>L3 CALIOP Lidar: All-Sky Aerosol Extinction Profiles</cd:Description>
 
-    <cd:ProductDefinition id="CAL_LID_L3_APro_AllSky_hdf4" format="hdf4" version="5">
+    <cd:ProductDefinition id="CAL_LID_L3_APro_AllSky" format="hdf4" version="5">
       <cd:Description>The format definition for this product is taken from the netcdf file itself.</cd:Description>
       <cd:DetectionRule>
         <cd:MatchExpression>substr(0, 22, filename()) == "CAL_LID_L3_APro_AllSky"</cd:MatchExpression>
@@ -143,7 +143,7 @@
   <cd:ProductType name="CAL_LID_L3_APro_CloudFree">
   <cd:Description>L3 CALIOP Lidar: Cloud-Free Aerosol Extinction Profiles</cd:Description>
 
-    <cd:ProductDefinition id="CAL_LID_L3_APro_CloudFree_hdf4" format="hdf4" version="5">
+    <cd:ProductDefinition id="CAL_LID_L3_APro_CloudFree" format="hdf4" version="5">
       <cd:Description>The format definition for this product is taken from the netcdf file itself.</cd:Description>
       <cd:DetectionRule>
         <cd:MatchExpression>substr(0, 25, filename()) == "CAL_LID_L3_APro_CloudFree"</cd:MatchExpression>
@@ -155,7 +155,7 @@
   <cd:ProductType name="CAL_LID_L3_APro_CloudySkyTransparent">
   <cd:Description>L3 CALIOP Lidar: Cloudy-Sky, Transparent Aerosol Extinction Profiles</cd:Description>
 
-    <cd:ProductDefinition id="CAL_LID_L3_APro_CloudySkyTransparent_hdf4" format="hdf4" version="5">
+    <cd:ProductDefinition id="CAL_LID_L3_APro_CloudySkyTransparent" format="hdf4" version="5">
       <cd:Description>The format definition for this product is taken from the netcdf file itself.</cd:Description>
       <cd:DetectionRule>
         <cd:MatchExpression>substr(0, 36, filename()) == "CAL_LID_L3_APro_CloudySkyTransparent"</cd:MatchExpression>
@@ -167,7 +167,7 @@
   <cd:ProductType name="CAL_LID_L3_APro_CloudySkyOpaque">
   <cd:Description>L3 CALIOP Lidar: Cloudy-Sky, Opaque Aerosol Extinction Profiles</cd:Description>
 
-    <cd:ProductDefinition id="CAL_LID_L3_APro_CloudySkyOpaque_hdf4" format="hdf4" version="5">
+    <cd:ProductDefinition id="CAL_LID_L3_APro_CloudySkyOpaque" format="hdf4" version="5">
       <cd:Description>The format definition for this product is taken from the netcdf file itself.</cd:Description>
       <cd:DetectionRule>
         <cd:MatchExpression>substr(0, 31, filename()) == "CAL_LID_L3_APro_CloudySkyOpaque"</cd:MatchExpression>
