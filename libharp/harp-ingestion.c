@@ -1452,6 +1452,18 @@ static int execute_polygon_filter(ingest_info *info, harp_program *program)
         num_operations++;
     }
 
+    if (info->dimension_mask_set[harp_dimension_time] == NULL)
+    {
+        long dimension = num_areas;
+
+        if (harp_dimension_mask_new(1, &dimension, &info->dimension_mask_set[harp_dimension_time]) != 0)
+        {
+            harp_variable_delete(latitude_bounds);
+            harp_variable_delete(longitude_bounds);
+            return -1;
+        }
+    }
+
     mask = info->dimension_mask_set[harp_dimension_time]->mask;
 
     for (i = 0; i < num_areas; i++)
