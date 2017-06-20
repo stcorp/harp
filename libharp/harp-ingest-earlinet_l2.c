@@ -422,8 +422,97 @@ static int read_dimensions(void *user_data, long dimension[HARP_NUM_DIM_TYPES])
     return 0;
 }
 
-static void init_earlinet_aerosol_product(harp_ingestion_module *module)
+static int get_dimensions(ingest_info *info)
 {
+    coda_cursor cursor;
+    long coda_dimension[CODA_MAX_NUM_DIMS];
+    int num_coda_dimensions;
+
+    if (coda_cursor_set_product(&cursor, info->product) != 0)
+    {
+        harp_set_error(HARP_ERROR_CODA, NULL);
+        return -1;
+    }
+
+    if (coda_cursor_goto(&cursor, "Time") != 0)
+    {
+        /* This is a single profile file (i.e. all measurements are taken at one time) */
+        info->num_times = 1;
+    }
+    else if (coda_cursor_get_array_dim(&cursor, &num_coda_dimensions, coda_dimension) != 0)
+    {
+        /* This productfile does not contain data */
+        harp_set_error(HARP_ERROR_CODA, NULL);
+        return -1;
+    }
+    else
+    {
+        info->num_times = coda_dimension[0];
+    }
+
+    if (coda_cursor_set_product(&cursor, info->product) != 0)
+    {
+        harp_set_error(HARP_ERROR_CODA, NULL);
+        return -1;
+    }
+    if (coda_cursor_goto(&cursor, "Altitude") != 0)
+    {
+        /* This productfile does not contain data */
+        info->num_altitudes = 0;
+        return 0;
+    }
+    if (coda_cursor_get_array_dim(&cursor, &num_coda_dimensions, coda_dimension) != 0)
+    {
+        /* This productfile does not contain data */
+        info->num_altitudes = 0;
+        return 0;
+    }
+    info->num_altitudes = coda_dimension[0];
+
+    return 0;
+}
+
+static int ingestion_init(const harp_ingestion_module *module, coda_product *product,
+                          const harp_ingestion_options *options, harp_product_definition **definition, void **user_data)
+{
+    ingest_info *info;
+
+    (void)options;
+
+    nan = harp_nan();
+    info = malloc(sizeof(ingest_info));
+    if (info == NULL)
+    {
+        harp_set_error(HARP_ERROR_OUT_OF_MEMORY, "out of memory (could not allocate %lu bytes) (%s:%u)",
+                       sizeof(ingest_info), __FILE__, __LINE__);
+        return -1;
+    }
+    memset(info, '\0', sizeof(ingest_info));
+    info->product = product;
+
+    if (get_dimensions(info) != 0)
+    {
+        ingestion_done(info);
+        return -1;
+    }
+
+    CHECKED_MALLOC(info->values_buffer, info->num_times * info->num_altitudes * sizeof(double));
+
+    *definition = *module->product_definition;
+    *user_data = info;
+
+    return 0;
+}
+
+int harp_ingestion_module_earlinet_l2_aerosol_init(void)
+{
+    harp_ingestion_module *module;
+
+    module =
+        harp_ingestion_register_module_coda("EARLINET_L2", "EARLINET", "EARLINET",
+                                            "L2_Aerosol_Coefficient",
+                                            "EARLINET_L2_Aerosol_Coefficient", ingestion_init,
+                                            ingestion_done);
     harp_product_definition *product_definition;
     harp_variable_definition *variable_definition;
     harp_dimension_type dimension_type[2] = { harp_dimension_time, harp_dimension_vertical };
@@ -542,107 +631,6 @@ static void init_earlinet_aerosol_product(harp_ingestion_module *module)
                                                    read_h2o_mass_mixing_ratio_uncertainty);
     path = "/ErrorWaterVapor";
     harp_variable_definition_add_mapping(variable_definition, NULL, NULL, path, NULL);
-}
-
-static int get_dimensions(ingest_info *info)
-{
-    coda_cursor cursor;
-    long coda_dimension[CODA_MAX_NUM_DIMS];
-    int num_coda_dimensions;
-
-    if (coda_cursor_set_product(&cursor, info->product) != 0)
-    {
-        harp_set_error(HARP_ERROR_CODA, NULL);
-        return -1;
-    }
-
-    if (coda_cursor_goto(&cursor, "Time") != 0)
-    {
-        /* This is a single profile file (i.e. all measurements are taken at one time) */
-        info->num_times = 1;
-    }
-    else if (coda_cursor_get_array_dim(&cursor, &num_coda_dimensions, coda_dimension) != 0)
-    {
-        /* This productfile does not contain data */
-        harp_set_error(HARP_ERROR_CODA, NULL);
-        return -1;
-    }
-    else
-    {
-        info->num_times = coda_dimension[0];
-    }
-
-    if (coda_cursor_set_product(&cursor, info->product) != 0)
-    {
-        harp_set_error(HARP_ERROR_CODA, NULL);
-        return -1;
-    }
-    if (coda_cursor_goto(&cursor, "Altitude") != 0)
-    {
-        /* This productfile does not contain data */
-        info->num_altitudes = 0;
-        return 0;
-    }
-    if (coda_cursor_get_array_dim(&cursor, &num_coda_dimensions, coda_dimension) != 0)
-    {
-        /* This productfile does not contain data */
-        info->num_altitudes = 0;
-        return 0;
-    }
-    info->num_altitudes = coda_dimension[0];
-
-    return 0;
-}
-
-static int ingestion_init(const harp_ingestion_module *module, coda_product *product,
-                          const harp_ingestion_options *options, harp_product_definition **definition, void **user_data)
-{
-    ingest_info *info;
-
-    (void)options;
-
-    nan = harp_nan();
-    info = malloc(sizeof(ingest_info));
-    if (info == NULL)
-    {
-        harp_set_error(HARP_ERROR_OUT_OF_MEMORY, "out of memory (could not allocate %lu bytes) (%s:%u)",
-                       sizeof(ingest_info), __FILE__, __LINE__);
-        return -1;
-    }
-    memset(info, '\0', sizeof(ingest_info));
-    info->product = product;
-
-    if (get_dimensions(info) != 0)
-    {
-        ingestion_done(info);
-        return -1;
-    }
-
-    CHECKED_MALLOC(info->values_buffer, info->num_times * info->num_altitudes * sizeof(double));
-
-    *definition = *module->product_definition;
-    *user_data = info;
-
-    return 0;
-}
-
-int harp_ingestion_module_earlinet_l2_aerosol_init(void)
-{
-    harp_ingestion_module *module;
-
-    module =
-        harp_ingestion_register_module_coda("EARLINET_L2_Backscattering", "EARLINET", "EARLINET",
-                                            "L2_Aerosol_Backscattering_Coefficient",
-                                            "EARLINET_L2_Aerosol_Backscattering_Coefficient", ingestion_init,
-                                            ingestion_done);
-    init_earlinet_aerosol_product(module);
-
-    module =
-        harp_ingestion_register_module_coda("EARLINET_L2_Extinction", "EARLINET", "EARLINET",
-                                            "L2_Aerosol_Extinction_Coefficient",
-                                            "EARLINET_L2_Aerosol_Extinction_Coefficient", ingestion_init,
-                                            ingestion_done);
-    init_earlinet_aerosol_product(module);
 
     return 0;
 }
