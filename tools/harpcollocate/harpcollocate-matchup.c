@@ -598,7 +598,11 @@ static int collocation_info_update(collocation_info *info)
             {
                 return -1;
             }
+            break;
         }
+    }
+    for (i = 0; i < info->num_criteria; i++)
+    {
         if (strcmp(info->criterium[i]->variable_name, "point_distance") == 0)
         {
             info->point_distance_index = i;
@@ -608,6 +612,7 @@ static int collocation_info_update(collocation_info *info)
             {
                 return -1;
             }
+            break;
         }
     }
 
