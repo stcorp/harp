@@ -628,7 +628,7 @@ static int get_akm_data(ingest_info *info, const coda_cursor *mds_cursor, long i
     reverse_array(data.double_data, num_elements);
 
     num_altitudes = info->num_altitudes[index];
-    num_elements = sqrt(num_elements);
+    num_elements = (long)sqrt(num_elements);
     num_i = num_elements;
     for (i = num_altitudes - 1; i >= 0; i--)
     {
@@ -791,7 +791,7 @@ static int get_profile_uncertainty_data(ingest_info *info, const coda_cursor *md
         return -1;
     }
     /* covar variable contains num_pts * (num_pts + 1) / 2 items */
-    num_pts = sqrt(2 * num_elements);   /* when rounded down this will thus give our number of num_pts */
+    num_pts = (long)sqrt(2 * num_elements); /* when rounded down this will thus give our number of num_pts */
 
     /* the first num_pts elements contain the variance data */
     if (coda_cursor_goto_first_array_element(&cursor) != 0)

@@ -2372,7 +2372,7 @@ static int read_no2_column_stratospheric_avk(void *user_data, harp_array data)
         {
             for (j = 0; j < info->num_layers; j++)
             {
-                data.float_data[i * info->num_layers + j] = harp_nan();
+                data.float_data[i * info->num_layers + j] = (float)harp_nan();
             }
         }
         else
@@ -2453,7 +2453,7 @@ static int read_no2_column_tropospheric_avk(void *user_data, harp_array data)
         {
             for (j = 0; j < info->num_layers; j++)
             {
-                data.float_data[i * info->num_layers + j] = harp_nan();
+                data.float_data[i * info->num_layers + j] = (float)harp_nan();
             }
         }
         else
@@ -2880,7 +2880,7 @@ static int read_so2_surface_albedo(void *user_data, harp_array data)
         }
         else
         {
-            data.float_data[i] = harp_nan();
+            data.float_data[i] = (float)harp_nan();
         }
     }
 

@@ -722,7 +722,7 @@ int harp_variable_resize_dimension(harp_variable *variable, int dim_index, long 
                         variable->data.int32_data[to_offset + j] = 0;
                         break;
                     case harp_type_float:
-                        variable->data.float_data[to_offset + j] = harp_nan();
+                        variable->data.float_data[to_offset + j] = (float)harp_nan();
                         break;
                     case harp_type_double:
                         variable->data.double_data[to_offset + j] = harp_nan();

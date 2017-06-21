@@ -256,7 +256,7 @@ static int read_float_dataset_value(ingest_info *info, const char *path, long in
     }
     if (flvalue == invalid_value)
     {
-        flvalue = coda_NaN();
+        flvalue = (float)coda_NaN();
     }
     *value = flvalue;
 
@@ -351,7 +351,7 @@ static int read_corner_longitude(void *user_data, long index, harp_array data)
 
 static int read_co2_column(void *user_data, long index, harp_array data)
 {
-    return read_float_dataset_value((ingest_info *)user_data, "Data/totalColumn/CO2TotalColumn", index, -1.0E30,
+    return read_float_dataset_value((ingest_info *)user_data, "Data/totalColumn/CO2TotalColumn", index, -1.0E30f,
                                     data.double_data);
 }
 
@@ -364,7 +364,7 @@ static int read_co2_column_error(void *user_data, long index, harp_array data)
     double smoothing_error;
 
     *data.double_data = 0;
-    if (read_float_dataset_value(info, "Data/totalColumn/CO2TotalColumnExternalError", index, -1.0E30, &external_error)
+    if (read_float_dataset_value(info, "Data/totalColumn/CO2TotalColumnExternalError", index, -1.0E30f, &external_error)
         != 0)
     {
         return -1;
@@ -374,7 +374,7 @@ static int read_co2_column_error(void *user_data, long index, harp_array data)
         *data.double_data += external_error;
     }
     if (read_float_dataset_value
-        (info, "Data/totalColumn/CO2TotalColumnInterferenceError", index, -1.0E30, &interference_error) != 0)
+        (info, "Data/totalColumn/CO2TotalColumnInterferenceError", index, -1.0E30f, &interference_error) != 0)
     {
         return -1;
     }
@@ -383,7 +383,7 @@ static int read_co2_column_error(void *user_data, long index, harp_array data)
         *data.double_data += interference_error;
     }
     if (read_float_dataset_value
-        (info, "Data/totalColumn/CO2TotalColumnRetrievalNoise", index, -1.0E30, &retrieval_noise) != 0)
+        (info, "Data/totalColumn/CO2TotalColumnRetrievalNoise", index, -1.0E30f, &retrieval_noise) != 0)
     {
         return -1;
     }
@@ -392,7 +392,7 @@ static int read_co2_column_error(void *user_data, long index, harp_array data)
         *data.double_data += retrieval_noise;
     }
     if (read_float_dataset_value
-        (info, "Data/totalColumn/CO2TotalColumnSmoothingError", index, -1.0E30, &smoothing_error) != 0)
+        (info, "Data/totalColumn/CO2TotalColumnSmoothingError", index, -1.0E30f, &smoothing_error) != 0)
     {
         return -1;
     }
@@ -406,7 +406,7 @@ static int read_co2_column_error(void *user_data, long index, harp_array data)
 
 static int read_ch4_column(void *user_data, long index, harp_array data)
 {
-    return read_float_dataset_value((ingest_info *)user_data, "Data/totalColumn/CH4TotalColumn", index, -1.0E30,
+    return read_float_dataset_value((ingest_info *)user_data, "Data/totalColumn/CH4TotalColumn", index, -1.0E30f,
                                     data.double_data);
 }
 
@@ -419,7 +419,7 @@ static int read_ch4_column_error(void *user_data, long index, harp_array data)
     double smoothing_error;
 
     *data.double_data = 0;
-    if (read_float_dataset_value(info, "Data/totalColumn/CH4TotalColumnExternalError", index, -1.0E30, &external_error)
+    if (read_float_dataset_value(info, "Data/totalColumn/CH4TotalColumnExternalError", index, -1.0E30f, &external_error)
         != 0)
     {
         return -1;
@@ -429,7 +429,7 @@ static int read_ch4_column_error(void *user_data, long index, harp_array data)
         *data.double_data += external_error;
     }
     if (read_float_dataset_value
-        (info, "Data/totalColumn/CH4TotalColumnInterferenceError", index, -1.0E30, &interference_error) != 0)
+        (info, "Data/totalColumn/CH4TotalColumnInterferenceError", index, -1.0E30f, &interference_error) != 0)
     {
         return -1;
     }
@@ -438,7 +438,7 @@ static int read_ch4_column_error(void *user_data, long index, harp_array data)
         *data.double_data += interference_error;
     }
     if (read_float_dataset_value
-        (info, "Data/totalColumn/CH4TotalColumnRetrievalNoise", index, -1.0E30, &retrieval_noise) != 0)
+        (info, "Data/totalColumn/CH4TotalColumnRetrievalNoise", index, -1.0E30f, &retrieval_noise) != 0)
     {
         return -1;
     }
@@ -447,7 +447,7 @@ static int read_ch4_column_error(void *user_data, long index, harp_array data)
         *data.double_data += retrieval_noise;
     }
     if (read_float_dataset_value
-        (info, "Data/totalColumn/CH4TotalColumnSmoothingError", index, -1.0E30, &smoothing_error) != 0)
+        (info, "Data/totalColumn/CH4TotalColumnSmoothingError", index, -1.0E30f, &smoothing_error) != 0)
     {
         return -1;
     }

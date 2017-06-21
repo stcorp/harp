@@ -134,7 +134,7 @@ static void filter_array_float(long num_source_elements, const uint8_t *mask, co
 
     for (; target != target_end; target++)
     {
-        *target = harp_nan();
+        *target = (float)harp_nan();
     }
 }
 

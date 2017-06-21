@@ -239,7 +239,7 @@ static int read_time(void *user_data, long index, harp_array data)
     }
     coda_cursor_goto_parent(&cursor);
     second = (int32_t)seconds;
-    microsecond = (seconds - second) * 1.0E6;
+    microsecond = (int32_t)((seconds - second) * 1.0E6);
     if (coda_datetime_to_double(year, month, day, hour, minute, second, microsecond, data.double_data) != 0)
     {
         harp_set_error(HARP_ERROR_CODA, NULL);

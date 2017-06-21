@@ -160,7 +160,7 @@ static int read_o3_std(void *user_data, harp_array data)
 static int get_global_attributes(ingest_info *info)
 {
     coda_cursor cursor;
-    double comp[6];
+    int32_t comp[6];
     double range[2];
     int32_t length;
     long num_elements;
@@ -191,7 +191,7 @@ static int get_global_attributes(ingest_info *info)
     comp[3] = 0;
     comp[4] = 0;
     comp[5] = 0;
-    if (coda_cursor_read_double_array(&cursor, comp, coda_array_ordering_c) != 0)
+    if (coda_cursor_read_int32_array(&cursor, comp, coda_array_ordering_c) != 0)
     {
         harp_set_error(HARP_ERROR_CODA, NULL);
         return -1;

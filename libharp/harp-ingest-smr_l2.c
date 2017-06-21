@@ -602,7 +602,8 @@ static int exclude_pressure(void *user_data)
 }
 
 static void add_ingestion_VMR_variables(harp_product_definition *product_definition,
-                                        harp_dimension_type *dimension_type, char *species, int exclude_function())
+                                        harp_dimension_type *dimension_type, char *species,
+                                        int exclude_function(void *))
 {
     harp_variable_definition *variable_definition;
     const char *path;

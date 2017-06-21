@@ -452,7 +452,7 @@ static int read_longitude_bounds(void *user_data, long index, harp_array data)
     {
         if (data.float_data[i] == info->geo_bounds_fill_value)
         {
-            data.float_data[i] = coda_NaN();
+            data.float_data[i] = (float)coda_NaN();
         }
     }
     coda_cursor_goto_parent(&info->geo_bounds_cursor);
@@ -525,7 +525,7 @@ static int read_latitude_bounds(void *user_data, long index, harp_array data)
     {
         if (data.float_data[i] == info->geo_bounds_fill_value)
         {
-            data.float_data[i] = coda_NaN();
+            data.float_data[i] = (float)coda_NaN();
         }
     }
     coda_cursor_goto_parent(&info->geo_bounds_cursor);

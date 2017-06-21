@@ -179,7 +179,7 @@ LIBHARP_API harp_scalar harp_get_fill_value_for_type(harp_data_type data_type)
             fill_value.int32_data = 0;
             break;
         case harp_type_float:
-            fill_value.float_data = harp_nan();
+            fill_value.float_data = (float)harp_nan();
             break;
         case harp_type_double:
             fill_value.double_data = harp_nan();
@@ -212,7 +212,7 @@ LIBHARP_API harp_scalar harp_get_valid_min_for_type(harp_data_type data_type)
             valid_min.int32_data = -2147483647 - 1;
             break;
         case harp_type_float:
-            valid_min.float_data = harp_mininf();
+            valid_min.float_data = (float)harp_mininf();
             break;
         case harp_type_double:
             valid_min.double_data = harp_mininf();
@@ -245,7 +245,7 @@ LIBHARP_API harp_scalar harp_get_valid_max_for_type(harp_data_type data_type)
             valid_max.int32_data = 2147483647;
             break;
         case harp_type_float:
-            valid_max.float_data = harp_plusinf();
+            valid_max.float_data = (float)harp_plusinf();
             break;
         case harp_type_double:
             valid_max.double_data = harp_plusinf();
@@ -918,7 +918,7 @@ void harp_array_null(harp_data_type data_type, long num_elements, harp_array dat
             fill_int32(num_elements, data.int32_data, 0);
             break;
         case harp_type_float:
-            fill_float(num_elements, data.float_data, harp_nan());
+            fill_float(num_elements, data.float_data, (float)harp_nan());
             break;
         case harp_type_double:
             fill_double(num_elements, data.double_data, harp_nan());

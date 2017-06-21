@@ -544,7 +544,7 @@ static int execute_collocation_filter(harp_product *product, harp_operation_coll
      */
     if (!harp_product_has_variable(product, "collocation_index") && !harp_product_has_variable(product, "index"))
     {
-        int dimension_type = harp_dimension_time;
+        harp_dimension_type dimension_type = harp_dimension_time;
 
         if (harp_product_add_derived_variable(product, "index", harp_type_int32, NULL, 1, &dimension_type) != 0)
         {

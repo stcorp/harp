@@ -168,7 +168,7 @@ static void copy_double_data_to_following_rows(long num_rows_with_data, long num
     double *dest_data;
 
     dest_data = start_of_data + num_columns;
-    for (i = (MAX_READOUTS_PER_MDR_RECORD / num_rows_with_data); i > 1; i--)
+    for (i = (uint16_t)(MAX_READOUTS_PER_MDR_RECORD / num_rows_with_data); i > 1; i--)
     {
         *dest_data = *start_of_data;
         dest_data += num_columns;

@@ -888,7 +888,7 @@ static int read_pressure(void *user_data, harp_array data)
         {
             /* invert the loop because level 0 = TOA */
             data.float_data[((k + 1) * info->num_levels - 1 - i)] =
-                0.5 * (ap[i] + ap[i + 1] + (bp[i] + bp[i + 1]) * surface_pressure);
+                (float)(0.5 * (ap[i] + ap[i + 1] + (bp[i] + bp[i + 1]) * surface_pressure));
         }
     }
 
@@ -914,8 +914,9 @@ static int read_pressure_bounds(void *user_data, harp_array data)
         for (i = 0; i < info->num_levels; i++)
         {
             /* invert the loop because level 0 = TOA */
-            data.float_data[2 * ((k + 1) * info->num_levels - 1 - i)] = ap[i + 1] + bp[i + 1] * surface_pressure;
-            data.float_data[2 * ((k + 1) * info->num_levels - 1 - i) + 1] = ap[i] + bp[i] * surface_pressure;
+            data.float_data[2 * ((k + 1) * info->num_levels - 1 - i)] =
+                (float)(ap[i + 1] + bp[i + 1] * surface_pressure);
+            data.float_data[2 * ((k + 1) * info->num_levels - 1 - i) + 1] = (float)(ap[i] + bp[i] * surface_pressure);
         }
     }
 
@@ -2327,7 +2328,7 @@ static int init_cursors_and_grid(ingest_info *info)
         }
         else
         {
-            long level = info->level[i];
+            long level = (long)info->level[i];
 
             if (param_is_profile[param])
             {
