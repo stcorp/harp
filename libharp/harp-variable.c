@@ -109,6 +109,56 @@ static void write_array(harp_array data, harp_data_type data_type, long num_elem
     }
 }
 
+static void write_enum_array(harp_array data, harp_data_type data_type, long num_elements, long num_enum_values,
+                             char **enum_name, long block_size, int (*print) (const char *, ...))
+{
+    long i, j, index;
+
+    index = 0;
+    for (i = 0; i < num_elements / block_size; i++)
+    {
+        if (block_size > 1)
+        {
+            print("\n  ");
+        }
+        for (j = 0; j < block_size; j++)
+        {
+            int enum_index;
+
+            switch (data_type)
+            {
+                case harp_type_int8:
+                    enum_index = (int)data.int8_data[index];
+                    break;
+                case harp_type_int16:
+                    enum_index = (int)data.int16_data[index];
+                    break;
+                case harp_type_int32:
+                    enum_index = (int)data.int32_data[index];
+                    break;
+                case harp_type_float:
+                case harp_type_double:
+                case harp_type_string:
+                    assert(0);
+                    exit(1);
+            }
+            if (enum_index < 0 || enum_index >= num_enum_values)
+            {
+                /* print empty string */
+                print("(%d) \"\"", enum_index);
+            }
+            else
+            {
+                print("(%d) \"%s\"", enum_index, enum_name[enum_index]);
+            }
+            if (index < num_elements - 1)
+            {
+                print(", ");
+            }
+            index++;
+        }
+    }
+}
 
 /** \addtogroup harp_variable
  * @{
@@ -994,6 +1044,9 @@ LIBHARP_API int harp_variable_new(const char *name, harp_data_type data_type, in
     variable->data.ptr = NULL;
     variable->description = NULL;
     variable->unit = NULL;
+    variable->num_enum_values = 0;
+    variable->enum_name = NULL;
+
     variable->num_elements = 1;
     for (i = 0; i < num_dimensions; i++)
     {
@@ -1069,6 +1122,19 @@ LIBHARP_API void harp_variable_delete(harp_variable *variable)
     {
         free(variable->unit);
     }
+    if (variable->enum_name != NULL)
+    {
+        int i;
+
+        for (i = 0; i < variable->num_enum_values; i++)
+        {
+            if (variable->enum_name[i] != NULL)
+            {
+                free(variable->enum_name[i]);
+            }
+        }
+        free(variable->enum_name);
+    }
 
     free(variable);
 }
@@ -1107,6 +1173,8 @@ LIBHARP_API int harp_variable_copy(const harp_variable *other_variable, harp_var
     variable->unit = NULL;
     variable->valid_min = other_variable->valid_min;
     variable->valid_max = other_variable->valid_max;
+    variable->num_enum_values = 0;
+    variable->enum_name = NULL;
 
     variable->name = strdup(other_variable->name);
     if (variable->name == NULL)
@@ -1138,6 +1206,30 @@ LIBHARP_API int harp_variable_copy(const harp_variable *other_variable, harp_var
                            __LINE__);
             harp_variable_delete(variable);
             return -1;
+        }
+    }
+
+    if (other_variable->enum_name != NULL && other_variable->num_enum_values > 0)
+    {
+        variable->enum_name = malloc(other_variable->num_enum_values * sizeof(char *));
+        if (variable->enum_name == NULL)
+        {
+            harp_set_error(HARP_ERROR_OUT_OF_MEMORY, "out of memory (could not allocate %lu bytes) (%s:%u)",
+                           other_variable->num_enum_values * sizeof(char *), __FILE__, __LINE__);
+            harp_variable_delete(variable);
+            return -1;
+        }
+        for (i = 0; i < other_variable->num_enum_values; i++)
+        {
+            variable->enum_name[i] = strdup(other_variable->enum_name[i]);
+            if (variable->enum_name[i] == NULL)
+            {
+                harp_set_error(HARP_ERROR_OUT_OF_MEMORY, "out of memory (could not duplicate string) (%s:%u)",
+                               __FILE__, __LINE__);
+                harp_variable_delete(variable);
+                return -1;
+            }
+            variable->num_enum_values++;
         }
     }
 
@@ -1203,6 +1295,12 @@ LIBHARP_API int harp_variable_append(harp_variable *variable, const harp_variabl
     if (variable->num_dimensions != other_variable->num_dimensions)
     {
         harp_set_error(HARP_ERROR_INVALID_ARGUMENT, "variables don't have the same number of dimensions (%s)",
+                       variable->name);
+        return -1;
+    }
+    if (variable->num_enum_values != other_variable->num_enum_values)
+    {
+        harp_set_error(HARP_ERROR_INVALID_ARGUMENT, "variables don't have the same number of enumeration values (%s)",
                        variable->name);
         return -1;
     }
@@ -1377,6 +1475,101 @@ LIBHARP_API int harp_variable_set_description(harp_variable *variable, const cha
     }
 
     variable->description = description_copy;
+
+    return 0;
+}
+
+/** Set the enumeration values for a variable with integer values.
+ * This will assign enumeration labels to each integer value from 0 to num_enum_values-1.
+ * The enumeration label for a value is found by using the value as index in the enum_name array.
+ * This function will also set valid_min to 0 and valid_max to num_enum_values - 1
+ * (i.e. any variable value that lies outside the index range is considered invalid).
+ * You can pass num_enum_values = 0 to clear any previous enumeration values that were set for the variable.
+ * \param variable Variable for which to set the enumeration values.
+ * \param num_enum_values Number of enumeration values
+ * \param enum_name Array with the names for each of the enumeration values
+ * \return
+ *   \arg \c 0, Success.
+ *   \arg \c -1, Error occurred (check #harp_errno).
+ */
+LIBHARP_API int harp_variable_set_enumeration_values(harp_variable *variable, int num_enum_values, char **enum_name)
+{
+    int i;
+
+    if (num_enum_values < 0)
+    {
+        harp_set_error(HARP_ERROR_INVALID_ARGUMENT, "num_enum_values < 0 (%s:%u)", __FILE__, __LINE__);
+        return -1;
+    }
+    if (num_enum_values > 0)
+    {
+        if (enum_name == NULL)
+        {
+            harp_set_error(HARP_ERROR_INVALID_ARGUMENT, "enum_name is NULL (%s:%u)", __FILE__, __LINE__);
+            return -1;
+        }
+        for (i = 0; i < num_enum_values; i++)
+        {
+            if (enum_name[i] == NULL)
+            {
+                harp_set_error(HARP_ERROR_INVALID_ARGUMENT, "enum_name[%d] is NULL (%s:%u)", i, __FILE__, __LINE__);
+                return -1;
+            }
+            if (!harp_is_identifier(enum_name[i]))
+            {
+                harp_set_error(HARP_ERROR_INVALID_ARGUMENT, "enumeration value '%s' is not a valid identifier (%s:%u)",
+                               enum_name[i], __FILE__, __LINE__);
+                return -1;
+            }
+        }
+    }
+    if (variable->data_type != harp_type_int8 && variable->data_type != harp_type_int16 &&
+        variable->data_type != harp_type_int32)
+    {
+        harp_set_error(HARP_ERROR_INVALID_ARGUMENT, "enumeration values not allowed for variable of type %s (%s:%u)",
+                       harp_get_data_type_name(variable->data_type), __FILE__, __LINE__);
+        return -1;
+    }
+
+    /* first clear the existing enumeration values */
+    if (variable->enum_name != NULL)
+    {
+        for (i = 0; i < variable->num_enum_values; i++)
+        {
+            if (variable->enum_name[i] != NULL)
+            {
+                free(variable->enum_name[i]);
+            }
+        }
+        free(variable->enum_name);
+        variable->enum_name = NULL;
+    }
+    variable->num_enum_values = 0;
+
+    if (num_enum_values == 0)
+    {
+        /* nothing futher to do -> return */
+        return 0;
+    }
+
+    variable->enum_name = malloc(num_enum_values * sizeof(char *));
+    if (variable->enum_name == NULL)
+    {
+        harp_set_error(HARP_ERROR_OUT_OF_MEMORY, "out of memory (could not allocate %lu bytes) (%s:%u)",
+                       num_enum_values * sizeof(char *), __FILE__, __LINE__);
+        return -1;
+    }
+    for (i = 0; i < num_enum_values; i++)
+    {
+        variable->enum_name[i] = strdup(enum_name[i]);
+        if (variable->enum_name[i] == NULL)
+        {
+            harp_set_error(HARP_ERROR_OUT_OF_MEMORY, "out of memory (could not duplicate string) (%s:%u)",
+                           __FILE__, __LINE__);
+            return -1;
+        }
+        variable->num_enum_values++;
+    }
 
     return 0;
 }
@@ -1816,6 +2009,11 @@ LIBHARP_API int harp_variable_verify(const harp_variable *variable)
         harp_set_error(HARP_ERROR_INVALID_VARIABLE, "name undefined");
         return -1;
     }
+    if (!harp_is_identifier(variable->name))
+    {
+        harp_set_error(HARP_ERROR_INVALID_VARIABLE, "variable name '%s' is not a valid identifier", variable->name);
+        return -1;
+    }
 
     switch (variable->data_type)
     {
@@ -1930,6 +2128,36 @@ LIBHARP_API int harp_variable_verify(const harp_variable *variable)
         return -1;
     }
 
+    if (variable->num_enum_values > 0)
+    {
+        if (variable->enum_name == NULL)
+        {
+            harp_set_error(HARP_ERROR_INVALID_VARIABLE, "no enumeration names set");
+            return -1;
+        }
+        for (i = 0; i < variable->num_enum_values; i++)
+        {
+            if (variable->enum_name[i] == NULL)
+            {
+                harp_set_error(HARP_ERROR_INVALID_VARIABLE, "empty enumeration value (%d)", i);
+                return -1;
+            }
+            if (!harp_is_identifier(variable->enum_name[i]))
+            {
+                harp_set_error(HARP_ERROR_INVALID_VARIABLE, "enumeration value '%s' is not a valid identifier",
+                               variable->enum_name[i]);
+                return -1;
+            }
+        }
+        if (variable->data_type != harp_type_int8 && variable->data_type != harp_type_int16 &&
+            variable->data_type != harp_type_int32)
+        {
+            harp_set_error(HARP_ERROR_INVALID_VARIABLE, "enumeration values not allowed for variable of type %s",
+                           harp_get_data_type_name(variable->data_type));
+            return -1;
+        }
+    }
+
     return 0;
 }
 
@@ -1947,6 +2175,10 @@ LIBHARP_API void harp_variable_print(harp_variable *variable, int show_attribute
     {
         print("NULL\n");
         return;
+    }
+    if (variable->num_enum_values > 0)
+    {
+        print("enum (");
     }
     switch (variable->data_type)
     {
@@ -1968,6 +2200,10 @@ LIBHARP_API void harp_variable_print(harp_variable *variable, int show_attribute
         case harp_type_string:
             print("string");
             break;
+    }
+    if (variable->num_enum_values > 0)
+    {
+        print(")");
     }
     print(" %s", variable->name);
     if (variable->num_dimensions > 0)
@@ -2028,18 +2264,32 @@ LIBHARP_API void harp_variable_print_data(harp_variable *variable, int (*print) 
 {
     print("%s", variable->name);
     print(" = ");
-    if (variable->num_dimensions <= 1)
+    if (variable->num_enum_values > 0)
     {
-        write_array(variable->data, variable->data_type, variable->num_elements, 1, print);
+        if (variable->num_dimensions <= 1)
+        {
+            write_enum_array(variable->data, variable->data_type, variable->num_elements, variable->num_enum_values,
+                             variable->enum_name, 1, print);
+        }
+        else
+        {
+            write_enum_array(variable->data, variable->data_type, variable->num_elements, variable->num_enum_values,
+                             variable->enum_name, variable->dimension[variable->num_dimensions - 1], print);
+        }
     }
     else
     {
-        write_array(variable->data, variable->data_type, variable->num_elements,
-                    variable->dimension[variable->num_dimensions - 1], print);
+        if (variable->num_dimensions <= 1)
+        {
+            write_array(variable->data, variable->data_type, variable->num_elements, 1, print);
+        }
+        else
+        {
+            write_array(variable->data, variable->data_type, variable->num_elements,
+                        variable->dimension[variable->num_dimensions - 1], print);
+        }
     }
     print("\n\n");
 }
-
-/** @} */
 
 /** @} */

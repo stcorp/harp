@@ -458,6 +458,27 @@
 </dd></dl>
 
 <dl class="function">
+<dt id="_CPPv236harp_variable_set_enumeration_valuesP13harp_variableiPPc">
+<span id="harp_variable_set_enumeration_values__harp_variableP.i.cPP"></span><span class="target" id="libharpgroup__harp__variable_1ga2ff3c139a44c586176fb7156d97f2f86"></span>int <code class="descname">harp_variable_set_enumeration_values</code><span class="sig-paren">(</span><a class="reference internal" href="#_CPPv213harp_variable" title="harp_variable">harp_variable</a> *<em>variable</em>, int <em>num_enum_values</em>, char **<em>enum_name</em><span class="sig-paren">)</span><br /></dt>
+<dd><p>Set the enumeration values for a variable with integer values. This will assign enumeration labels to each integer value from 0 to num_enum_values-1. The enumeration label for a value is found by using the value as index in the enum_name array. This function will also set valid_min to 0 and valid_max to num_enum_values - 1 (i.e. any variable value that lies outside the index range is considered invalid). You can pass num_enum_values = 0 to clear any previous enumeration values that were set for the variable. <dl class="docutils">
+<dt><strong>Return</strong></dt>
+<dd><ul class="simple">
+<li><code class="docutils literal"><span class="pre">0</span></code>, Success. </li>
+<li><code class="docutils literal"><span class="pre">-1</span></code>, Error occurred (check <a class="reference internal" href="libharp_error.html#libharpgroup__harp__error_1gab2eeb46528306c6799632d1e800c4c36"><span class="std std-ref">harp_errno</span></a>). </li>
+</ul>
+</dd>
+<dt><strong>Parameters</strong></dt>
+<dd><ul class="breatheparameterlist first last simple">
+<li><code class="docutils literal"><span class="pre">variable</span></code>: Variable for which to set the enumeration values. </li>
+<li><code class="docutils literal"><span class="pre">num_enum_values</span></code>: Number of enumeration values </li>
+<li><code class="docutils literal"><span class="pre">enum_name</span></code>: Array with the names for each of the enumeration values </li>
+</ul>
+</dd>
+</dl>
+</p>
+</dd></dl>
+
+<dl class="function">
 <dt id="_CPPv237harp_variable_set_string_data_elementP13harp_variablelPKc">
 <span id="harp_variable_set_string_data_element__harp_variableP.l.cCP"></span><span class="target" id="libharpgroup__harp__variable_1ga87634436bf81efb1cc15e7641dcece20"></span>int <code class="descname">harp_variable_set_string_data_element</code><span class="sig-paren">(</span><a class="reference internal" href="#_CPPv213harp_variable" title="harp_variable">harp_variable</a> *<em>variable</em>, long <em>index</em>, <em class="property">const</em> char *<em>str</em><span class="sig-paren">)</span><br /></dt>
 <dd><p>Store a copy of <em>str</em> at <em>index</em> into the flattened array of strings associated with <em>variable</em>. <dl class="docutils">
@@ -702,6 +723,18 @@
 <dt id="_CPPv29valid_max">
 <span id="valid_max__harp_scalar"></span><span class="target" id="libharpstructharp__variable__struct_1ab3b40d874754e5e166eb0238b36d74b6"></span><a class="reference internal" href="libharp_general.html#_CPPv211harp_scalar" title="harp_scalar">harp_scalar</a> <code class="descname">valid_max</code><br /></dt>
 <dd><p>corresponds to netCDF valid_max or valid_range[1] </p>
+</dd></dl>
+
+<dl class="member">
+<dt id="_CPPv215num_enum_values">
+<span id="num_enum_values__i"></span><span class="target" id="libharpstructharp__variable__struct_1a65bfbb5ec39a6452d0a8b06c246ca978"></span>int <code class="descname">num_enum_values</code><br /></dt>
+<dd><p>number of enumeration values (which map to values 0..N-1 in &#8216;data&#8217;) </p>
+</dd></dl>
+
+<dl class="member">
+<dt id="_CPPv29enum_name">
+<span id="enum_name__cPP"></span><span class="target" id="libharpstructharp__variable__struct_1af08c4d0477b71a04af40fc8a644d2219"></span>char **<code class="descname">enum_name</code><br /></dt>
+<dd><p>name of each enumeration value </p>
 </dd></dl>
 
 </div>
