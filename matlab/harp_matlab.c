@@ -138,38 +138,30 @@ static void harp_matlab_export(int nlhs, mxArray *plhs[], int nrhs, const mxArra
     {
         mexErrMsgTxt("Function takes exactly three arguments.");
     }
-    if (!mxIsChar(prhs[0]))
-    {
-        mexErrMsgTxt("First argument should be a string.");
-    }
-    if (mxGetM(prhs[0]) != 1)
-    {
-        mexErrMsgTxt("First argument should be a row vector.");
-    }
-    if (!mxIsChar(prhs[1]))
+    if (!mxIsChar(prhs[1]) || (mxGetM(prhs[1]) != 1))
     {
         mexErrMsgTxt("Second argument should be a string.");
     }
-    if (mxGetM(prhs[1]) != 1)
+    if (!mxIsChar(prhs[2]) || (mxGetM(prhs[2]) != 1))
     {
-        mexErrMsgTxt("Second argument should be a row vector.");
-    }
-
-    buflen = mxGetN(prhs[0]) + 1;
-    filename = (char *)mxCalloc(buflen, sizeof(char));
-    if (mxGetString(prhs[0], filename, buflen) != 0)
-    {
-        mexErrMsgTxt("Unable to copy filename string.");
+        mexErrMsgTxt("Third argument should be a string.");
     }
 
     buflen = mxGetN(prhs[1]) + 1;
+    filename = (char *)mxCalloc(buflen, sizeof(char));
+    if (mxGetString(prhs[1], filename, buflen) != 0)
+    {
+        mexErrMsgTxt("Unable to copy filepath string.");
+    }
+
+    buflen = mxGetN(prhs[2]) + 1;
     format = (char *)mxCalloc(buflen, sizeof(char));
-    if (mxGetString(prhs[1], format, buflen) != 0)
+    if (mxGetString(prhs[2], format, buflen) != 0)
     {
         mexErrMsgTxt("Unable to copy export format string.");
     }
 
-    product = harp_matlab_set_product(prhs[2]);
+    product = harp_matlab_set_product(prhs[0]);
 
     if (harp_export(filename, format, product) != 0)
     {
