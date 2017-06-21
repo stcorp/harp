@@ -507,18 +507,17 @@ static int ingestion_init(const harp_ingestion_module *module, coda_product *pro
 int harp_ingestion_module_earlinet_l2_aerosol_init(void)
 {
     harp_ingestion_module *module;
-
-    module =
-        harp_ingestion_register_module_coda("EARLINET_L2", "EARLINET", "EARLINET",
-                                            "L2_Aerosol_Coefficient",
-                                            "EARLINET_L2_Aerosol_Coefficient", ingestion_init,
-                                            ingestion_done);
     harp_product_definition *product_definition;
     harp_variable_definition *variable_definition;
     harp_dimension_type dimension_type[2] = { harp_dimension_time, harp_dimension_vertical };
     const char *description;
     const char *path;
 
+    module =
+        harp_ingestion_register_module_coda("EARLINET_L2", "EARLINET", "EARLINET",
+                                            "L2_Aerosol_Coefficient",
+                                            "EARLINET_L2_Aerosol_Coefficient", ingestion_init,
+                                            ingestion_done);
     product_definition =
         harp_ingestion_register_product(module, "EARLINET_L2_Aerosol_Coefficient", NULL, read_dimensions);
 
