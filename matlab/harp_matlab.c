@@ -66,7 +66,11 @@ static void harp_matlab_set_definition_path(void)
             path[path_length - 14 - 1] = '\0';
         }
         mxDestroyArray(mxpath);
+#ifdef CODA_DEFINITION_MATLAB
+        coda_set_definition_path_conditional("harp_version.m", path, CODA_DEFINITION_MATLAB);
+#else
         coda_set_definition_path_conditional("harp_version.m", path, "../../../share/coda/definitions");
+#endif
         mxFree(path);
     }
 }
