@@ -687,6 +687,34 @@ static int get_molar_mass_from_h2o_vmr(harp_variable *variable, const harp_varia
     return 0;
 }
 
+static int get_month(harp_variable *variable, const harp_variable **source_variable)
+{
+    const char *months[] = {
+        "January", "February", "March", "April", "May", "June",
+        "July", "August", "September", "October", "November", "December"
+    };
+    long i;
+
+    if (harp_variable_set_enumeration_values(variable, 12, (const char **)months) != 0)
+    {
+        return -1;
+    }
+
+    for (i = 0; i < variable->num_elements; i++)
+    {
+        int year, month, day, hour, minute, second, musec;
+
+        if (coda_time_double_to_parts(source_variable[0]->data.double_data[i], &year, &month, &day, &hour, &minute,
+                                      &second, &musec) != 0)
+        {
+            return -1;
+        }
+        variable->data.int8_data[i] = (int8_t)(month - 1);
+    }
+
+    return 0;
+}
+
 static int get_nd_dry_air_from_nd_total(harp_variable *variable, const harp_variable **source_variable)
 {
     long i;
@@ -1192,6 +1220,25 @@ static int get_wavenumber_from_wavelength(harp_variable *variable, const harp_va
     for (i = 0; i < variable->num_elements; i++)
     {
         variable->data.double_data[i] = harp_wavenumber_from_wavelength(source_variable[0]->data.double_data[i]);
+    }
+
+    return 0;
+}
+
+static int get_year(harp_variable *variable, const harp_variable **source_variable)
+{
+    long i;
+
+    for (i = 0; i < variable->num_elements; i++)
+    {
+        int year, month, day, hour, minute, second, musec;
+
+        if (coda_time_double_to_parts(source_variable[0]->data.double_data[i], &year, &month, &day, &hour, &minute,
+                                      &second, &musec) != 0)
+        {
+            return -1;
+        }
+        variable->data.int16_data[i] = (int16_t)year;
     }
 
     return 0;
@@ -5535,6 +5582,18 @@ static int add_misc_conversions(void)
         return -1;
     }
 
+    /*** month ***/
+
+    if (harp_variable_conversion_new("month", harp_type_int8, NULL, 1, dimension_type, 0, get_month, &conversion) != 0)
+    {
+        return -1;
+    }
+    if (harp_variable_conversion_add_source(conversion, "datetime", harp_type_double, HARP_UNIT_DATETIME, 1,
+                                            dimension_type, 0) != 0)
+    {
+        return -1;
+    }
+
     /*** sensor_altitude ***/
 
     if (add_time_indepedent_to_dependent_conversion("sensor_altitude", harp_type_double, HARP_UNIT_LENGTH, 1,
@@ -5555,6 +5614,18 @@ static int add_misc_conversions(void)
 
     if (add_time_indepedent_to_dependent_conversion("sensor_longitude", harp_type_double, HARP_UNIT_LONGITUDE, 1,
                                                     dimension_type, 0) != 0)
+    {
+        return -1;
+    }
+
+    /*** year ***/
+
+    if (harp_variable_conversion_new("year", harp_type_int16, NULL, 1, dimension_type, 0, get_year, &conversion) != 0)
+    {
+        return -1;
+    }
+    if (harp_variable_conversion_add_source(conversion, "datetime", harp_type_double, HARP_UNIT_DATETIME, 1,
+                                            dimension_type, 0) != 0)
     {
         return -1;
     }

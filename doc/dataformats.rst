@@ -261,6 +261,7 @@ longitude                                     sensor                          X 
 longitude_bounds                                                                           (lon)
 molar_mass                                                                    X       X    X             this is the molar mass of the total substance (it is defined by the
                                                                                                          relation between the variables 'density' and 'number_density')
+month                                                                                                    category variable for month of year ('January', ..., 'December')
 number_density                                surface                         X       X    X
 optical_depth                                                                 X       X    X       X     this is equal to 'optical thickness'
 pressure                                      surface                         X       X    X
@@ -312,6 +313,7 @@ wavenumber_radiance                                                           X 
 wavenumber_transmittance                                                      X                    X
 wind_speed                                    surface                         X       X    X
 wind_direction                                surface                         X       X    X
+year                                                                                                     integer value representing a year
 <species>_column_density                      stratospheric,  amf, apriori,   X       X    X             this is the mass density
                                               tropospheric    avk
 <pm>_column_density                           stratospheric,                  X       X    X             this is the mass density
