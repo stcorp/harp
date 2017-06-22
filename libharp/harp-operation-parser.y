@@ -460,19 +460,25 @@ operation:
             if (harp_operation_collocation_filter_new($3, harp_collocation_right, &$$) != 0) YYERROR;
         }
     | FUNC_DERIVE '(' identifier dimensionspec ')' {
-            if (harp_operation_derive_variable_new($3, harp_type_double, $4->num_elements, $4->array.int32_data, NULL,
+            if (harp_operation_derive_variable_new($3, NULL, $4->num_elements, $4->array.int32_data, NULL,
                                                    &$$) != 0) YYERROR;
         }
     | FUNC_DERIVE '(' identifier dimensionspec UNIT ')' {
-            if (harp_operation_derive_variable_new($3, harp_type_double, $4->num_elements, $4->array.int32_data, $5,
+            if (harp_operation_derive_variable_new($3, NULL, $4->num_elements, $4->array.int32_data, $5,
                                                    &$$) != 0) YYERROR;
         }
     | FUNC_DERIVE '(' identifier DATATYPE dimensionspec ')' {
-            if (harp_operation_derive_variable_new($3, $4, $5->num_elements, $5->array.int32_data, NULL, &$$) != 0)
+            harp_data_type data_type = $4;
+
+            if (harp_operation_derive_variable_new($3, &data_type, $5->num_elements, $5->array.int32_data, NULL, &$$) !=
+                0)
                 YYERROR;
         }
     | FUNC_DERIVE '(' identifier DATATYPE dimensionspec UNIT ')' {
-            if (harp_operation_derive_variable_new($3, $4, $5->num_elements, $5->array.int32_data, $6, &$$) != 0)
+            harp_data_type data_type = $4;
+
+            if (harp_operation_derive_variable_new($3, &data_type, $5->num_elements, $5->array.int32_data, $6, &$$) !=
+                0)
                 YYERROR;
         }
     | FUNC_DERIVE_SMOOTHED_COLUMN '(' identifier dimensionspec UNIT ',' identifier UNIT ',' STRING_VALUE ',' ID_A ','

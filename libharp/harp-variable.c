@@ -1492,7 +1492,8 @@ LIBHARP_API int harp_variable_set_description(harp_variable *variable, const cha
  *   \arg \c 0, Success.
  *   \arg \c -1, Error occurred (check #harp_errno).
  */
-LIBHARP_API int harp_variable_set_enumeration_values(harp_variable *variable, int num_enum_values, char **enum_name)
+LIBHARP_API int harp_variable_set_enumeration_values(harp_variable *variable, int num_enum_values,
+                                                     const char **enum_name)
 {
     int i;
 

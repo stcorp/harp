@@ -330,13 +330,13 @@ static int execute_point_filter(harp_product *product, harp_program *program)
     long i;
     int k;
 
-    if (harp_product_get_derived_variable(product, "latitude", harp_type_double, "degree_north", 1, &dimension_type,
-                                          &latitude) != 0)
+    if (harp_product_get_derived_variable(product, "latitude", NULL, "degree_north", 1, &dimension_type, &latitude) !=
+        0)
     {
         return -1;
     }
-    if (harp_product_get_derived_variable(product, "longitude", harp_type_double, "degree_east", 1, &dimension_type,
-                                          &longitude) != 0)
+    if (harp_product_get_derived_variable(product, "longitude", NULL, "degree_east", 1, &dimension_type, &longitude) !=
+        0)
     {
         harp_variable_delete(latitude);
         return -1;
@@ -421,13 +421,13 @@ static int execute_polygon_filter(harp_product *product, harp_program *program)
     long i;
     int k;
 
-    if (harp_product_get_derived_variable(product, "latitude_bounds", harp_type_double, "degree_north", 2,
-                                          dimension_type, &latitude_bounds) != 0)
+    if (harp_product_get_derived_variable(product, "latitude_bounds", NULL, "degree_north", 2, dimension_type,
+                                          &latitude_bounds) != 0)
     {
         return -1;
     }
-    if (harp_product_get_derived_variable(product, "longitude_bounds", harp_type_double, "degree_east", 2,
-                                          dimension_type, &longitude_bounds) != 0)
+    if (harp_product_get_derived_variable(product, "longitude_bounds", NULL, "degree_east", 2, dimension_type,
+                                          &longitude_bounds) != 0)
     {
         harp_variable_delete(latitude_bounds);
         return -1;
@@ -546,7 +546,7 @@ static int execute_collocation_filter(harp_product *product, harp_operation_coll
     {
         harp_dimension_type dimension_type = harp_dimension_time;
 
-        if (harp_product_add_derived_variable(product, "index", harp_type_int32, NULL, 1, &dimension_type) != 0)
+        if (harp_product_add_derived_variable(product, "index", NULL, NULL, 1, &dimension_type) != 0)
         {
             return -1;
         }
@@ -591,7 +591,12 @@ static int execute_bin_with_variable(harp_product *product, harp_operation_bin_w
 
 static int execute_derive_variable(harp_product *product, harp_operation_derive_variable *operation)
 {
-    return harp_product_add_derived_variable(product, operation->variable_name, operation->data_type, operation->unit,
+    if (operation->has_data_type)
+    {
+        return harp_product_add_derived_variable(product, operation->variable_name, &operation->data_type,
+                                                 operation->unit, operation->num_dimensions, operation->dimension_type);
+    }
+    return harp_product_add_derived_variable(product, operation->variable_name, NULL, operation->unit,
                                              operation->num_dimensions, operation->dimension_type);
 }
 

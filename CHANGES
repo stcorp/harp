@@ -24,6 +24,10 @@
 
 * Added derivation to derive the area (size) of latitude/longitude bounds.
 
+* The 'data_type' parameter for harp_product_get_derived_variable() and
+  harp_product_add_derived_variable() is now a pointer to allow it to be
+  optional (i.e. pass NULL to use the default data type).
+
 * Added harp_geometry_get_area() and harp_product_sort() functions.
 
 * Added HARP_UNIT_AREA default unit.

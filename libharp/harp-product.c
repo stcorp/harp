@@ -618,11 +618,11 @@ int harp_product_get_datetime_range(const harp_product *product, double *datetim
     {
         double start = harp_plusinf();
 
-        if (harp_product_get_derived_variable(product, "datetime_start", harp_type_double, "days since 2000-01-01", 1,
+        if (harp_product_get_derived_variable(product, "datetime_start", NULL, "days since 2000-01-01", 1,
                                               dimension_type, &datetime) != 0)
         {
-            if (harp_product_get_derived_variable(product, "datetime", harp_type_double, "days since 2000-01-01", 1,
-                                                  dimension_type, &datetime) != 0)
+            if (harp_product_get_derived_variable(product, "datetime", NULL, "days since 2000-01-01", 1, dimension_type,
+                                                  &datetime) != 0)
             {
                 return -1;
             }
@@ -668,15 +668,15 @@ int harp_product_get_datetime_range(const harp_product *product, double *datetim
     {
         double stop = harp_mininf();
 
-        if (harp_product_get_derived_variable(product, "datetime_stop", harp_type_double, "days since 2000-01-01", 1,
+        if (harp_product_get_derived_variable(product, "datetime_stop", NULL, "days since 2000-01-01", 1,
                                               dimension_type, &datetime) != 0)
         {
             if (mid_datetime != NULL)
             {
                 datetime = mid_datetime;
             }
-            else if (harp_product_get_derived_variable(product, "datetime", harp_type_double, "days since 2000-01-01",
-                                                       1, dimension_type, &datetime) != 0)
+            else if (harp_product_get_derived_variable(product, "datetime", NULL, "days since 2000-01-01", 1,
+                                                       dimension_type, &datetime) != 0)
             {
                 return -1;
             }

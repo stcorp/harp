@@ -1231,7 +1231,7 @@ int harp_operation_comparison_filter_new(const char *variable_name, harp_compari
     return 0;
 }
 
-int harp_operation_derive_variable_new(const char *variable_name, harp_data_type data_type, int num_dimensions,
+int harp_operation_derive_variable_new(const char *variable_name, const harp_data_type *data_type, int num_dimensions,
                                        const harp_dimension_type *dimension_type, const char *unit,
                                        harp_operation **new_operation)
 {
@@ -1249,7 +1249,16 @@ int harp_operation_derive_variable_new(const char *variable_name, harp_data_type
     }
     operation->type = operation_derive_variable;
     operation->variable_name = NULL;
-    operation->data_type = data_type;
+    if (data_type != NULL)
+    {
+        operation->has_data_type = 1;
+        operation->data_type = *data_type;
+    }
+    else
+    {
+        operation->has_data_type = 0;
+        operation->data_type = harp_type_double;
+    }
     operation->num_dimensions = num_dimensions;
     operation->unit = NULL;
 

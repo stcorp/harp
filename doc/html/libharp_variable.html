@@ -458,8 +458,8 @@
 </dd></dl>
 
 <dl class="function">
-<dt id="_CPPv236harp_variable_set_enumeration_valuesP13harp_variableiPPc">
-<span id="harp_variable_set_enumeration_values__harp_variableP.i.cPP"></span><span class="target" id="libharpgroup__harp__variable_1ga2ff3c139a44c586176fb7156d97f2f86"></span>int <code class="descname">harp_variable_set_enumeration_values</code><span class="sig-paren">(</span><a class="reference internal" href="#_CPPv213harp_variable" title="harp_variable">harp_variable</a> *<em>variable</em>, int <em>num_enum_values</em>, char **<em>enum_name</em><span class="sig-paren">)</span><br /></dt>
+<dt id="_CPPv236harp_variable_set_enumeration_valuesP13harp_variableiPPKc">
+<span id="harp_variable_set_enumeration_values__harp_variableP.i.cCPP"></span><span class="target" id="libharpgroup__harp__variable_1ga9ce68c378f834c4178f8d0e95bb3c5d0"></span>int <code class="descname">harp_variable_set_enumeration_values</code><span class="sig-paren">(</span><a class="reference internal" href="#_CPPv213harp_variable" title="harp_variable">harp_variable</a> *<em>variable</em>, int <em>num_enum_values</em>, <em class="property">const</em> char **<em>enum_name</em><span class="sig-paren">)</span><br /></dt>
 <dd><p>Set the enumeration values for a variable with integer values. This will assign enumeration labels to each integer value from 0 to num_enum_values-1. The enumeration label for a value is found by using the value as index in the enum_name array. This function will also set valid_min to 0 and valid_max to num_enum_values - 1 (i.e. any variable value that lies outside the index range is considered invalid). You can pass num_enum_values = 0 to clear any previous enumeration values that were set for the variable. <dl class="docutils">
 <dt><strong>Return</strong></dt>
 <dd><ul class="simple">

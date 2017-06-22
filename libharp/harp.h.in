@@ -460,7 +460,8 @@ LIBHARP_API int harp_variable_append(harp_variable *variable, const harp_variabl
 LIBHARP_API int harp_variable_rename(harp_variable *variable, const char *name);
 LIBHARP_API int harp_variable_set_description(harp_variable *variable, const char *description);
 LIBHARP_API int harp_variable_set_unit(harp_variable *variable, const char *unit);
-LIBHARP_API int harp_variable_set_enumeration_values(harp_variable *variable, int num_enum_values, char **enum_name);
+LIBHARP_API int harp_variable_set_enumeration_values(harp_variable *variable, int num_enum_values,
+                                                     const char **enum_name);
 LIBHARP_API int harp_variable_set_string_data_element(harp_variable *variable, long index, const char *str);
 LIBHARP_API int harp_variable_convert_data_type(harp_variable *variable, harp_data_type target_data_type);
 LIBHARP_API int harp_variable_convert_unit(harp_variable *variable, const char *target_unit);
@@ -493,10 +494,10 @@ LIBHARP_API int harp_product_get_variable_by_name(const harp_product *product, c
                                                   harp_variable **variable);
 LIBHARP_API int harp_product_get_variable_index_by_name(const harp_product *product, const char *name, int *index);
 LIBHARP_API int harp_product_get_derived_variable(const harp_product *product, const char *name,
-                                                  harp_data_type data_type, const char *unit, int num_dimensions,
+                                                  const harp_data_type *data_type, const char *unit, int num_dimensions,
                                                   const harp_dimension_type *dimension_type, harp_variable **variable);
-LIBHARP_API int harp_product_add_derived_variable(harp_product *product, const char *name, harp_data_type data_type,
-                                                  const char *unit, int num_dimensions,
+LIBHARP_API int harp_product_add_derived_variable(harp_product *product, const char *name,
+                                                  const harp_data_type *data_type, const char *unit, int num_dimensions,
                                                   const harp_dimension_type *dimension_type);
 LIBHARP_API int harp_product_update_history(harp_product *product, const char *executable, int argc, char *argv[]);
 LIBHARP_API int harp_product_verify(const harp_product *product);

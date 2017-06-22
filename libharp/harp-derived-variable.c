@@ -1101,7 +1101,7 @@ LIBHARP_API int harp_doc_list_conversions(const harp_product *product, int (*pri
  * \note pointers to axis variables are passed through unmodified.
  * \param product Product from which to derive the new variable.
  * \param name Name of the variable that should be created.
- * \param data_type Data type of the variable that should be created.
+ * \param data_type Data type (optional) of the variable that should be created.
  * \param unit Unit (optional) of the variable that should be created.
  * \param num_dimensions Number of dimensions of the variable that should be created.
  * \param dimension_type Type of dimension for each of the dimensions of the variable that should be created.
@@ -1111,7 +1111,7 @@ LIBHARP_API int harp_doc_list_conversions(const harp_product *product, int (*pri
  *   \arg \c -1, Error occurred (check #harp_errno).
  */
 LIBHARP_API int harp_product_get_derived_variable(const harp_product *product, const char *name,
-                                                  harp_data_type data_type, const char *unit, int num_dimensions,
+                                                  const harp_data_type *data_type, const char *unit, int num_dimensions,
                                                   const harp_dimension_type *dimension_type, harp_variable **variable)
 {
     conversion_info info;
@@ -1141,9 +1141,9 @@ LIBHARP_API int harp_product_get_derived_variable(const harp_product *product, c
                     return -1;
                 }
             }
-            if (info.variable->data_type != data_type)
+            if (info.variable->data_type != *data_type)
             {
-                if (harp_variable_convert_data_type(info.variable, data_type) != 0)
+                if (harp_variable_convert_data_type(info.variable, *data_type) != 0)
                 {
                     return -1;
                 }
@@ -1180,12 +1180,15 @@ LIBHARP_API int harp_product_get_derived_variable(const harp_product *product, c
             return -1;
         }
     }
-    if (info.variable->data_type != data_type)
+    if (data_type != NULL)
     {
-        if (harp_variable_convert_data_type(info.variable, data_type) != 0)
+        if (info.variable->data_type != *data_type)
         {
-            conversion_info_done(&info);
-            return -1;
+            if (harp_variable_convert_data_type(info.variable, *data_type) != 0)
+            {
+                conversion_info_done(&info);
+                return -1;
+            }
         }
     }
 
@@ -1206,7 +1209,7 @@ LIBHARP_API int harp_product_get_derived_variable(const harp_product *product, c
  * harp_product_add_variable() (removing any existing variable with the same name, but different dimensions)
  * \param product Product from which to derive the new variable and into which the derived variable should be placed.
  * \param name Name of the variable that should be added.
- * \param data_type Data type of the variable that should be added.
+ * \param data_type Data type (optional) of the variable that should be added.
  * \param unit Unit (optional) of the variable that should be added.
  * \param num_dimensions Number of dimensions of the variable that should be created.
  * \param dimension_type Type of dimension for each of the dimensions of the variable that should be created.
@@ -1214,8 +1217,8 @@ LIBHARP_API int harp_product_get_derived_variable(const harp_product *product, c
  *   \arg \c 0, Success.
  *   \arg \c -1, Error occurred (check #harp_errno).
  */
-LIBHARP_API int harp_product_add_derived_variable(harp_product *product, const char *name, harp_data_type data_type,
-                                                  const char *unit, int num_dimensions,
+LIBHARP_API int harp_product_add_derived_variable(harp_product *product, const char *name,
+                                                  const harp_data_type *data_type, const char *unit, int num_dimensions,
                                                   const harp_dimension_type *dimension_type)
 {
     harp_variable *new_variable;
@@ -1233,9 +1236,9 @@ LIBHARP_API int harp_product_add_derived_variable(harp_product *product, const c
                     return -1;
                 }
             }
-            if (variable->data_type != data_type)
+            if (variable->data_type != *data_type)
             {
-                if (harp_variable_convert_data_type(variable, data_type) != 0)
+                if (harp_variable_convert_data_type(variable, *data_type) != 0)
                 {
                     return -1;
                 }
