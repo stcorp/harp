@@ -109,57 +109,6 @@ static void write_array(harp_array data, harp_data_type data_type, long num_elem
     }
 }
 
-static void write_enum_array(harp_array data, harp_data_type data_type, long num_elements, long num_enum_values,
-                             char **enum_name, long block_size, int (*print) (const char *, ...))
-{
-    long i, j, index;
-
-    index = 0;
-    for (i = 0; i < num_elements / block_size; i++)
-    {
-        if (block_size > 1)
-        {
-            print("\n  ");
-        }
-        for (j = 0; j < block_size; j++)
-        {
-            int enum_index;
-
-            switch (data_type)
-            {
-                case harp_type_int8:
-                    enum_index = (int)data.int8_data[index];
-                    break;
-                case harp_type_int16:
-                    enum_index = (int)data.int16_data[index];
-                    break;
-                case harp_type_int32:
-                    enum_index = (int)data.int32_data[index];
-                    break;
-                case harp_type_float:
-                case harp_type_double:
-                case harp_type_string:
-                    assert(0);
-                    exit(1);
-            }
-            if (enum_index < 0 || enum_index >= num_enum_values)
-            {
-                /* print empty string */
-                print("(%d) \"\"", enum_index);
-            }
-            else
-            {
-                print("(%d) \"%s\"", enum_index, enum_name[enum_index]);
-            }
-            if (index < num_elements - 1)
-            {
-                print(", ");
-            }
-            index++;
-        }
-    }
-}
-
 /** \addtogroup harp_variable
  * @{
  */
@@ -2177,10 +2126,6 @@ LIBHARP_API void harp_variable_print(harp_variable *variable, int show_attribute
         print("NULL\n");
         return;
     }
-    if (variable->num_enum_values > 0)
-    {
-        print("enum (");
-    }
     switch (variable->data_type)
     {
         case harp_type_int8:
@@ -2201,10 +2146,6 @@ LIBHARP_API void harp_variable_print(harp_variable *variable, int show_attribute
         case harp_type_string:
             print("string");
             break;
-    }
-    if (variable->num_enum_values > 0)
-    {
-        print(")");
     }
     print(" %s", variable->name);
     if (variable->num_dimensions > 0)
@@ -2254,6 +2195,38 @@ LIBHARP_API void harp_variable_print(harp_variable *variable, int show_attribute
             print("\n");
         }
     }
+    if (variable->num_enum_values > 0)
+    {
+        print("        enum = ");
+        if (variable->data_type == harp_type_int8)
+        {
+            /* print all values */
+            for (i = 0; i < variable->num_enum_values; i++)
+            {
+                if (i > 0)
+                {
+                    print(", ");
+                }
+                print("\"%s\" (%d)", variable->enum_name[i], i);
+            }
+        }
+        else
+        {
+            /* print only first and last value with ... */
+            print("\"%s\" (0)", variable->enum_name[0]);
+            if (variable->num_enum_values > 1)
+            {
+                if (variable->num_enum_values > 2)
+                {
+                    print(", ...");
+                }
+                print(", \"%s\" (%d)", variable->enum_name[variable->num_enum_values - 1],
+                      variable->num_enum_values - 1);
+            }
+        }
+        print("\n");
+
+    }
     print("\n");
 }
 
@@ -2265,30 +2238,14 @@ LIBHARP_API void harp_variable_print_data(harp_variable *variable, int (*print) 
 {
     print("%s", variable->name);
     print(" = ");
-    if (variable->num_enum_values > 0)
+    if (variable->num_dimensions <= 1)
     {
-        if (variable->num_dimensions <= 1)
-        {
-            write_enum_array(variable->data, variable->data_type, variable->num_elements, variable->num_enum_values,
-                             variable->enum_name, 1, print);
-        }
-        else
-        {
-            write_enum_array(variable->data, variable->data_type, variable->num_elements, variable->num_enum_values,
-                             variable->enum_name, variable->dimension[variable->num_dimensions - 1], print);
-        }
+        write_array(variable->data, variable->data_type, variable->num_elements, 1, print);
     }
     else
     {
-        if (variable->num_dimensions <= 1)
-        {
-            write_array(variable->data, variable->data_type, variable->num_elements, 1, print);
-        }
-        else
-        {
-            write_array(variable->data, variable->data_type, variable->num_elements,
-                        variable->dimension[variable->num_dimensions - 1], print);
-        }
+        write_array(variable->data, variable->data_type, variable->num_elements,
+                    variable->dimension[variable->num_dimensions - 1], print);
     }
     print("\n\n");
 }
