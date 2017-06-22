@@ -516,8 +516,7 @@ int harp_ingestion_module_earlinet_l2_aerosol_init(void)
     module =
         harp_ingestion_register_module_coda("EARLINET_L2", "EARLINET", "EARLINET",
                                             "L2_Aerosol_Coefficient",
-                                            "EARLINET_L2_Aerosol_Coefficient", ingestion_init,
-                                            ingestion_done);
+                                            "EARLINET_L2_Aerosol_Coefficient", ingestion_init, ingestion_done);
     product_definition =
         harp_ingestion_register_product(module, "EARLINET_L2_Aerosol_Coefficient", NULL, read_dimensions);
 

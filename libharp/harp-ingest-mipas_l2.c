@@ -791,7 +791,7 @@ static int get_profile_uncertainty_data(ingest_info *info, const coda_cursor *md
         return -1;
     }
     /* covar variable contains num_pts * (num_pts + 1) / 2 items */
-    num_pts = (long)sqrt(2 * num_elements); /* when rounded down this will thus give our number of num_pts */
+    num_pts = (long)sqrt(2 * num_elements);     /* when rounded down this will thus give our number of num_pts */
 
     /* the first num_pts elements contain the variance data */
     if (coda_cursor_goto_first_array_element(&cursor) != 0)
