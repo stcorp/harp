@@ -31,7 +31,6 @@
 #include "export.h"
 
 #include "harp.h"
-#include "harp-program.h"
 
 /* ---------- defines ---------- */
 
