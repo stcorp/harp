@@ -198,7 +198,7 @@ static int read_datetime(void *user_data, harp_array data)
         harp_set_error(HARP_ERROR_CODA, NULL);
         return -1;
     }
-    if (coda_time_string_to_double_utc("yyyy-MM-dd HH:mm:ss.SS+00", datetime_str, &datetime_in_seconds) != 0)
+    if (coda_time_string_to_double("yyyy-MM-dd HH:mm:ss.SS+00", datetime_str, &datetime_in_seconds) != 0)
     {
         harp_set_error(HARP_ERROR_CODA, NULL);
         return -1;

@@ -229,7 +229,7 @@ static int read_datetime(void *user_data, harp_array data)
         year = start_date / 10000;
         month = (start_date - (10000 * year)) / 100;
         day = start_date - (10000 * year) - (100 * month);
-        coda_time_parts_to_double_utc(year, month, day, 0, 0, 0, 0, &datetime);
+        coda_time_parts_to_double(year, month, day, 0, 0, 0, 0, &datetime);
         *(data.double_data) = (datetime + (double)start_time);
         return 0;
     }
