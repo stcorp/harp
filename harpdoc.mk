@@ -475,6 +475,7 @@ HARP_DOCFILES = \
 	doc/html/libharp_product.html \
 	doc/html/libharp_product_metadata.html \
 	doc/html/libharp_variable.html \
+	doc/html/matlab.html \
 	doc/html/objects.inv \
 	doc/html/operations.html \
 	doc/html/python.html \
@@ -1430,6 +1431,8 @@ doc/html/libharp_product.html:
 doc/html/libharp_product_metadata.html:
 	$(MAKE) harp_doc
 doc/html/libharp_variable.html:
+	$(MAKE) harp_doc
+doc/html/matlab.html:
 	$(MAKE) harp_doc
 doc/html/objects.inv:
 	$(MAKE) harp_doc

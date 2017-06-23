@@ -19,6 +19,7 @@ Contents
    ingestions/index
    libharp
    idl
+   matlab 
    python
    tools
 
@@ -93,6 +94,13 @@ IDL interface
 The :doc:`HARP IDL interface <idl>` provides a set of functions to import
 and export HARP products, and to ingest non-HARP products of a type supported by
 HARP from IDL.
+
+MATLAB interface
+----------------
+
+The :doc:`HARP MATLAB interface <matlab>` provides a set of functions to import
+and export HARP products, and to ingest non-HARP products of a type supported by
+HARP from MATLAB.
 
 Python interface
 ----------------
