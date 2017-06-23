@@ -897,7 +897,7 @@ harp_product *harp_matlab_set_product(const mxArray *mx_struct)
             mxArray *mx_variable;
             mxArray *mx_dim_variable;
             int dim_variable_index;
-            int dim1 = 2;  // mxGetNumberOfDimensions always yields at least 2 because every Matlab variable is at least an [1 x 1] array.
+            int dim1 = 2;       // mxGetNumberOfDimensions always yields at least 2 because every Matlab variable is at least an [1 x 1] array.
 
             dim_variable_index = mxGetFieldNumber(mx_struct, variable_name);
 
