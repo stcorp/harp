@@ -44,6 +44,7 @@ static void harp_matlab_add_harp_product_variable(mxArray *mx_struct, harp_produ
     int num_dims = variable->num_dimensions;
     long num_elements = variable->num_elements;
     long i;
+    short variable_is_scalar = false;
 
     mxArray *mx_data = NULL;
 
@@ -64,7 +65,7 @@ static void harp_matlab_add_harp_product_variable(mxArray *mx_struct, harp_produ
     for (i = 0; i < HARP_MAX_NUM_DIMS; i++)
     {
         dim[i] = variable->dimension[i];
-        if (dim[i] > 1)
+        if (dim[i] > 0)
         {
             dim_type[i] = variable->dimension_type[i];
         }
@@ -92,6 +93,7 @@ static void harp_matlab_add_harp_product_variable(mxArray *mx_struct, harp_produ
     /* MATLAB does not allow creation of arrays with num_dims == 0 */
     if (num_dims == 0 && type != harp_type_string)
     {
+        variable_is_scalar = true;
         dim[num_dims++] = 1;
     }
 
@@ -107,59 +109,57 @@ static void harp_matlab_add_harp_product_variable(mxArray *mx_struct, harp_produ
     }
 
     mxArray *dim_info = mxCreateNumericArray(1, matlabdim_type, mxINT32_CLASS, mxREAL);
-    int *data_dim = mxGetData(dim_info);
-
-    mxArray *dim_info_type = mxCreateCellArray(1, matlabdim_type);
-
-    for (i = 0; i < num_dims; i++)
-    {
-        data_dim[i] = dim[i];
-    }
-
-    for (i = 0; i < num_dims; i++)
-    {
-        switch (dim_type[i])
-        {
-            case -1:
-                {
-                    mxSetCell(dim_info_type, (mwIndex) i, mxCreateString("independent"));
-                }
-                break;
-            case 0:
-                {
-                    mxSetCell(dim_info_type, (mwIndex) i, mxCreateString("time"));
-                }
-                break;
-            case 1:
-                {
-                    mxSetCell(dim_info_type, (mwIndex) i, mxCreateString("latitude"));
-                }
-                break;
-            case 2:
-                {
-                    mxSetCell(dim_info_type, (mwIndex) i, mxCreateString("longitude"));
-                }
-                break;
-            case 3:
-                {
-                    mxSetCell(dim_info_type, (mwIndex) i, mxCreateString("vertical"));
-                }
-                break;
-            case 4:
-                {
-                    mxSetCell(dim_info_type, (mwIndex) i, mxCreateString("spectral"));
-                }
-                break;
-        }
-
-    }
-
 
     mxAddField(struct_data, "dimension");
     mxSetField(struct_data, 0, "dimension", dim_info);
 
-    mxAddField(struct_data, "dimension_type");
-    mxSetField(struct_data, 0, "dimension_type", dim_info_type);
+    if (!variable_is_scalar)
+    {
+        int *data_dim = mxGetData(dim_info);
+        mxArray *dim_info_type = mxCreateCellArray(1, matlabdim_type);
+
+        for (i = 0; i < num_dims; i++)
+        {
+            data_dim[i] = dim[i];
+
+            switch (dim_type[i])
+            {
+                case -1:
+                    {
+                        mxSetCell(dim_info_type, (mwIndex) i, mxCreateString("independent"));
+                    }
+                    break;
+                case 0:
+                    {
+                        mxSetCell(dim_info_type, (mwIndex) i, mxCreateString("time"));
+                    }
+                    break;
+                case 1:
+                    {
+                        mxSetCell(dim_info_type, (mwIndex) i, mxCreateString("latitude"));
+                    }
+                    break;
+                case 2:
+                    {
+                        mxSetCell(dim_info_type, (mwIndex) i, mxCreateString("longitude"));
+                    }
+                    break;
+                case 3:
+                    {
+                        mxSetCell(dim_info_type, (mwIndex) i, mxCreateString("vertical"));
+                    }
+                    break;
+                case 4:
+                    {
+                        mxSetCell(dim_info_type, (mwIndex) i, mxCreateString("spectral"));
+                    }
+                    break;
+            }
+
+        }
+        mxAddField(struct_data, "dimension_type");
+        mxSetField(struct_data, 0, "dimension_type", dim_info_type);
+    }
 
     switch (type)
     {
@@ -316,7 +316,6 @@ mxArray *harp_matlab_get_product(harp_product **product)
     mxArray *string_source = mxCreateString(source_product);
     mxArray *string_his = mxCreateString(history);
 
-
     mxAddField(mx_data, "source");
     mxSetField(mx_data, 0, "source", string_source);
 
@@ -352,7 +351,7 @@ static char *get_matlab_string_value(mxArray *mx_data)
 static void harp_matlab_add_matlab_product_variable(harp_product **product, const char *variable_name,
                                                     mxArray *mx_variable, int req_num_dims)
 {
-    mxClassID class;
+    mxClassID class = 0;
     harp_variable *variable_new;
     char *string_data;
     long dim[HARP_MAX_NUM_DIMS];
@@ -369,8 +368,6 @@ static void harp_matlab_add_matlab_product_variable(harp_product **product, cons
 
     char *des_string = NULL;
     char *unit_string = NULL;
-    char *dimtypevalue = NULL;
-    int32_t *dimvalue = NULL;
     mxArray *datastructure;
 
     datastructure = mxGetField(mx_variable, 0, "value");
@@ -392,7 +389,6 @@ static void harp_matlab_add_matlab_product_variable(harp_product **product, cons
         des_string = mxArrayToString(meta_variable_des);
     }
 
-
     mxArray *meta_variable_unit = mxGetField(mx_variable, 0, "unit");
 
     if (meta_variable_unit != NULL)
@@ -400,18 +396,7 @@ static void harp_matlab_add_matlab_product_variable(harp_product **product, cons
         unit_string = mxArrayToString(meta_variable_unit);
     }
 
-    mxArray *meta_variable_dim = mxGetField(mx_variable, 0, "dimensions");
-
-    if (meta_variable_dim != NULL)
-    {
-        dimvalue = mxGetData(meta_variable_dim);
-    }
-
-
-
-
     /*set value to variables after the meta data is ready */
-
     if (num_dims > HARP_MAX_NUM_DIMS)
     {
         mexErrMsgTxt("Number of dimensions for product variable is too high.");
@@ -446,7 +431,7 @@ static void harp_matlab_add_matlab_product_variable(harp_product **product, cons
         }
     }
 
-    /* descrease number of dimensions to the lowest value possible */
+    /* decrease number of dimensions to the lowest value possible */
     while (num_dims > 0 && dim[num_dims - 1] == 1)
     {
         num_dims--;
@@ -457,20 +442,19 @@ static void harp_matlab_add_matlab_product_variable(harp_product **product, cons
 
     /* dimension type */
     mxArray *meta_variable_dim_type = mxGetField(mx_variable, 0, "dimension_type");
-    int num_ele = mxGetNumberOfElements(meta_variable_dim_type);
 
     if (meta_variable_dim_type != NULL)
     {
+        int num_ele = mxGetNumberOfElements(meta_variable_dim_type);
+        char *dimtypevalue = NULL;
+
         for (i = 0; i < num_ele; i++)
         {
             mxArray *mx_cell = mxGetCell(meta_variable_dim_type, i);
 
             dimtypevalue = get_matlab_string_value(mx_cell);
-        }
 
-        if (dimtypevalue != NULL)
-        {
-            for (i = 0; i < num_dims; i++)
+            if (dimtypevalue != NULL)
             {
                 if (strncmp(dimtypevalue, "independent", 11) == 0)
                 {
@@ -501,14 +485,13 @@ static void harp_matlab_add_matlab_product_variable(harp_product **product, cons
     }
     else
     {
-        mexErrMsgTxt("Field of dimension type is missing.");
+        num_dims = 0;
     }
-
 
 
     switch (class)
     {
-        case mxUINT8_CLASS:
+        case mxINT8_CLASS:
             {
                 int8_t *data;
 
@@ -557,7 +540,7 @@ static void harp_matlab_add_matlab_product_variable(harp_product **product, cons
                 }
             }
             break;
-        case mxUINT16_CLASS:
+        case mxINT16_CLASS:
             {
                 int16_t *data;
 
@@ -914,7 +897,7 @@ harp_product *harp_matlab_set_product(const mxArray *mx_struct)
             mxArray *mx_variable;
             mxArray *mx_dim_variable;
             int dim_variable_index;
-            int dim1 = 2;
+            int dim1 = 2;  // mxGetNumberOfDimensions always yields at least 2 because every Matlab variable is at least an [1 x 1] array.
 
             dim_variable_index = mxGetFieldNumber(mx_struct, variable_name);
 
