@@ -1,0 +1,394 @@
+
+
+<!DOCTYPE html>
+<!--[if IE 8]><html class="no-js lt-ie9" lang="en" > <![endif]-->
+<!--[if gt IE 8]><!--> <html class="no-js" lang="en" > <!--<![endif]-->
+<head>
+  <meta charset="utf-8">
+  
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  
+  <title>MATLAB interface &mdash; HARP 0.6b documentation</title>
+  
+
+  
+  
+  
+  
+
+  
+
+  
+  
+    
+
+  
+
+  
+  
+    <link rel="stylesheet" href="_static/css/theme.css" type="text/css" />
+  
+
+  
+    <link rel="stylesheet" href="_static/custom.css" type="text/css" />
+  
+
+  
+        <link rel="index" title="Index"
+              href="genindex.html"/>
+    <link rel="top" title="HARP 0.6b documentation" href="index.html"/>
+        <link rel="next" title="Python interface" href="python.html"/>
+        <link rel="prev" title="IDL interface" href="idl.html"/> 
+
+  
+  <script src="_static/js/modernizr.min.js"></script>
+
+</head>
+
+<body class="wy-body-for-nav" role="document">
+
+   
+  <div class="wy-grid-for-nav">
+
+    
+    <nav data-toggle="wy-nav-shift" class="wy-nav-side">
+      <div class="wy-side-scroll">
+        <div class="wy-side-nav-search">
+          
+
+          
+            <a href="index.html" class="icon icon-home"> HARP
+          
+
+          
+          </a>
+
+          
+            
+            
+              <div class="version">
+                0.6
+              </div>
+            
+          
+
+          
+
+          
+        </div>
+
+        <div class="wy-menu wy-menu-vertical" data-spy="affix" role="navigation" aria-label="main navigation">
+          
+            
+            
+              
+            
+            
+              <ul class="current">
+<li class="toctree-l1"><a class="reference internal" href="install.html">Installation</a></li>
+<li class="toctree-l1"><a class="reference internal" href="dataformats.html">Data formats</a></li>
+<li class="toctree-l1"><a class="reference internal" href="algorithms/index.html">Algorithms</a></li>
+<li class="toctree-l1"><a class="reference internal" href="operations.html">Operations</a></li>
+<li class="toctree-l1"><a class="reference internal" href="ingestions/index.html">Ingestion definitions</a></li>
+<li class="toctree-l1"><a class="reference internal" href="libharp.html">C library</a></li>
+<li class="toctree-l1"><a class="reference internal" href="idl.html">IDL interface</a></li>
+<li class="toctree-l1 current"><a class="current reference internal" href="#">MATLAB interface</a><ul>
+<li class="toctree-l2"><a class="reference internal" href="#dimension-types">Dimension types</a></li>
+<li class="toctree-l2"><a class="reference internal" href="#data-types">Data types</a></li>
+<li class="toctree-l2"><a class="reference internal" href="#unicode">Unicode</a></li>
+<li class="toctree-l2"><a class="reference internal" href="#examples">Examples</a></li>
+<li class="toctree-l2"><a class="reference internal" href="#api-reference">API reference</a></li>
+</ul>
+</li>
+<li class="toctree-l1"><a class="reference internal" href="python.html">Python interface</a></li>
+<li class="toctree-l1"><a class="reference internal" href="tools.html">Command line tools</a></li>
+</ul>
+
+            
+          
+        </div>
+      </div>
+    </nav>
+
+    <section data-toggle="wy-nav-shift" class="wy-nav-content-wrap">
+
+      
+      <nav class="wy-nav-top" role="navigation" aria-label="top navigation">
+        
+          <i data-toggle="wy-nav-top" class="fa fa-bars"></i>
+          <a href="index.html">HARP</a>
+        
+      </nav>
+
+
+      
+      <div class="wy-nav-content">
+        <div class="rst-content">
+          
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+<div role="navigation" aria-label="breadcrumbs navigation">
+
+  <ul class="wy-breadcrumbs">
+    
+      <li><a href="index.html">Docs</a> &raquo;</li>
+        
+      <li>MATLAB interface</li>
+    
+    
+      <li class="wy-breadcrumbs-aside">
+        
+            
+        
+      </li>
+    
+  </ul>
+
+  
+  <hr/>
+</div>
+          <div role="main" class="document" itemscope="itemscope" itemtype="http://schema.org/Article">
+           <div itemprop="articleBody">
+            
+  <div class="section" id="matlab-interface">
+<h1>MATLAB interface</h1>
+<p>The Matrix Laboratory (MATLAB) interface consists of a series of M-files
+that provide the <cite>harp_import</cite>, <cite>harp_export</cite> and <cite>harp_version</cite> functions.</p>
+<p>Products are represented in MATLAB as structures which can be manipulated freely
+from within MATLAB. A product structure contains an array field for each variable
+contained in the product.</p>
+<p>Products can be exported as HARP compliant products in any of the file formats
+supported by the HARP C library (netCDF/HDF4/HDF5). Such exported products can
+subsequently be processed further using the <a class="reference internal" href="tools.html"><span class="doc">HARP command line tools</span></a>.</p>
+<div class="section" id="dimension-types">
+<h2>Dimension types</h2>
+<p>The HARP C library defines several dimension types (time, vertical, latitude
+etc.). This information is stored in the dimension_type field of each variable
+in MATLAB. If a variable is a scalar (which has no dimensions), the dimension_type
+field is not present.</p>
+</div>
+<div class="section" id="data-types">
+<h2>Data types</h2>
+<p>The HARP MATLAB interface takes care of the conversion of product and variables
+from the C domain to the MATLAB domain and back. This section describes the
+relation between types in the C domain and types in the MATLAB domain.</p>
+<p>The table below shows the type map that is used when importing or ingesting a
+product, i.e. when translating from the C domain to the MATLAB domain.</p>
+<p>Variable data arrays are converted to arrays in the product structure. The data
+type used for the converted array is determined from the HARP data type of the
+variable according to the type map shown below. Zero-dimensional arrays of
+length 1 are converted to MATLAB arrays of 1x1. The resulting MATLAB type is also
+shown in the type map.</p>
+<table border="1" class="docutils">
+<colgroup>
+<col width="58%" />
+<col width="42%" />
+</colgroup>
+<thead valign="bottom">
+<tr class="row-odd"><th class="head">HARP data type</th>
+<th class="head">MATLAB type</th>
+</tr>
+</thead>
+<tbody valign="top">
+<tr class="row-even"><td>harp_type_int8</td>
+<td>int8</td>
+</tr>
+<tr class="row-odd"><td>harp_type_int16</td>
+<td>int16</td>
+</tr>
+<tr class="row-even"><td>harp_type_int32</td>
+<td>int32</td>
+</tr>
+<tr class="row-odd"><td>harp_type_float</td>
+<td>single</td>
+</tr>
+<tr class="row-even"><td>harp_type_double</td>
+<td>double</td>
+</tr>
+<tr class="row-odd"><td>harp_type_string</td>
+<td>char</td>
+</tr>
+</tbody>
+</table>
+</div>
+<div class="section" id="unicode">
+<h2>Unicode</h2>
+<p>Zero-terminated C strings received from the HARP C library are always converted
+to arrays of mxCHAR in MATLAB which is an unicode string.</p>
+</div>
+<div class="section" id="examples">
+<h2>Examples</h2>
+<div class="highlight-MATLAB"><div class="highlight"><pre><span></span><span class="p">;</span> <span class="n">Ingest</span> <span class="n">a</span> <span class="n">file</span> <span class="n">and</span> <span class="n">convert</span> <span class="n">it</span> <span class="n">to</span> <span class="n">a</span> <span class="n">HARP</span> <span class="n">product</span> <span class="p">(</span><span class="n">the</span>
+<span class="p">;</span> <span class="n">file</span> <span class="n">that</span> <span class="n">is</span> <span class="n">used</span> <span class="n">in</span> <span class="n">this</span> <span class="n">example</span> <span class="n">is</span> <span class="n">an</span> <span class="n">ACE</span><span class="o">-</span><span class="n">FTS</span> <span class="n">file</span><span class="p">).</span>
+<span class="n">product1</span> <span class="p">=</span> <span class="n">harp_import</span><span class="p">(</span>&quot;<span class="n">ss13799</span><span class="p">.</span><span class="n">asc</span>&quot;<span class="p">)</span>
+
+<span class="p">;</span> <span class="n">Print</span> <span class="n">information</span> <span class="n">about</span> <span class="n">the</span> <span class="n">product</span><span class="p">.</span>
+<span class="nb">disp</span><span class="p">(</span><span class="n">product1</span><span class="p">)</span>
+
+<span class="p">;</span> <span class="n">Print</span> <span class="n">information</span> <span class="n">about</span> <span class="n">the</span> <span class="n">variable</span> <span class="s">&#39;temperature&#39;</span><span class="p">.</span>
+<span class="nb">disp</span><span class="p">(</span><span class="n">product1</span><span class="p">.</span><span class="n">temperature</span><span class="p">)</span>
+
+<span class="p">;</span> <span class="n">Print</span> <span class="n">the</span> <span class="n">contents</span> <span class="n">of</span> <span class="n">the</span> <span class="n">variable</span> <span class="s">&#39;temperature&#39;</span><span class="p">.</span>
+<span class="n">product1</span><span class="p">.</span><span class="n">temperature</span><span class="p">.</span><span class="n">value</span>
+
+<span class="p">;</span> <span class="n">Export</span> <span class="n">the</span> <span class="n">updated</span> <span class="n">product</span> <span class="n">as</span> <span class="n">an</span> <span class="n">HDF4</span> <span class="n">file</span> <span class="p">(</span><span class="n">the</span> <span class="n">format</span> <span class="n">must</span> <span class="n">be</span>
+<span class="p">;</span> <span class="n">HDF4</span><span class="p">,</span> <span class="n">HDF5</span> <span class="n">or</span> <span class="n">netCDF</span><span class="p">,</span> <span class="k">if</span> <span class="n">no</span> <span class="n">format</span> <span class="n">is</span> <span class="n">specified</span> <span class="n">netCDF</span> <span class="n">is</span> <span class="n">used</span><span class="p">).</span>
+<span class="n">result</span> <span class="p">=</span> <span class="n">harp_export</span><span class="p">(</span><span class="n">product1</span><span class="p">,</span> &quot;<span class="n">ace_fts_ss13799</span><span class="p">.</span><span class="n">hdf</span>&quot;<span class="p">,</span> &quot;<span class="n">hdf4</span>&quot;<span class="p">)</span>
+
+<span class="p">;</span> <span class="n">Print</span> <span class="n">the</span> <span class="n">result</span> <span class="n">of</span> <span class="n">the</span> <span class="n">export</span><span class="p">.</span>
+<span class="nb">disp</span><span class="p">(</span><span class="n">result</span><span class="p">)</span>
+
+<span class="p">;</span> <span class="n">Import</span> <span class="n">the</span> <span class="n">HDF4</span> <span class="n">file</span> <span class="n">and</span> <span class="n">perform</span> <span class="n">an</span> <span class="n">operation</span> <span class="n">to</span> <span class="n">exclude</span> <span class="n">the</span> <span class="n">variable</span>
+<span class="p">;</span> <span class="n">temperature</span> <span class="p">(</span><span class="n">variable</span> <span class="n">name</span> <span class="n">must</span> <span class="n">be</span> <span class="n">in</span> <span class="n">uppercase</span><span class="p">).</span>
+<span class="n">product2</span> <span class="p">=</span> <span class="n">harp_import</span><span class="p">(</span>&quot;<span class="n">ace_fts_ss13799</span><span class="p">.</span><span class="n">hdf</span>&quot;<span class="p">,</span> &quot;<span class="n">exclude</span><span class="p">(</span><span class="n">TEMPERATURE</span><span class="p">)</span>&quot;<span class="p">);</span>
+
+<span class="p">;</span> <span class="n">Print</span> <span class="n">information</span> <span class="n">about</span> <span class="n">the</span> <span class="n">product</span><span class="p">.</span>
+<span class="nb">disp</span><span class="p">(</span><span class="n">product2</span><span class="p">)</span>
+</pre></div>
+</div>
+</div>
+<div class="section" id="api-reference">
+<h2>API reference</h2>
+<p>This section describes the functions defined by the HARP MATLAB interface.</p>
+<dl class="function">
+<dt>
+<code class="descname">harp_import</code><span class="sig-paren">(</span><em>filename</em>, <em>operations=''</em>, <em>options=''</em><span class="sig-paren">)</span></dt>
+<dd><p>Import a product from a file.</p>
+<p>This will first try to import the file as an HDF4, HDF5, or netCDF file that
+complies to the HARP Data Format. If the file is not stored using the HARP
+format then it will try to import it using one of the available ingestion
+modules.</p>
+<p>If the filename argument is a list of filenames or a globbing (glob.glob())
+pattern then the harp.import_product() function will be called on each
+individual file and the result of harp.concatenate() on the imported products
+will be returned.</p>
+<table class="docutils field-list" frame="void" rules="none">
+<col class="field-name" />
+<col class="field-body" />
+<tbody valign="top">
+<tr class="field-odd field"><th class="field-name">Parameters:</th><td class="field-body"><ul class="first simple">
+<li><strong>filename</strong> (<em>str</em>) &#8211; Filename of the product to ingest</li>
+<li><strong>operations</strong> (<em>str</em>) &#8211; Actions to apply as part of the import; should be
+specified as a semi-colon separated string of operations.</li>
+<li><strong>options</strong> (<em>str</em>) &#8211; Ingestion module specific options; should be specified as
+a semi-colon separated string of key=value pairs; only
+used if the file is not in HARP format.</li>
+</ul>
+</td>
+</tr>
+<tr class="field-even field"><th class="field-name">Returns:</th><td class="field-body"><p class="first last">Ingested product.</p>
+</td>
+</tr>
+</tbody>
+</table>
+</dd></dl>
+
+<dl class="function">
+<dt>
+<code class="descname">harp_export</code><span class="sig-paren">(</span><em>product</em>, <em>filename</em>, <em>file_format='netcdf'</em><span class="sig-paren">)</span></dt>
+<dd><p>Export a HARP compliant product.</p>
+<table class="docutils field-list" frame="void" rules="none">
+<col class="field-name" />
+<col class="field-body" />
+<tbody valign="top">
+<tr class="field-odd field"><th class="field-name">Parameters:</th><td class="field-body"><ul class="first last simple">
+<li><strong>product</strong> (<em>str</em>) &#8211; Product to export.</li>
+<li><strong>filename</strong> (<em>str</em>) &#8211; Filename of the exported product.</li>
+<li><strong>file_format</strong> (<em>str</em>) &#8211; File format to use; one of &#8216;netcdf&#8217;, &#8216;hdf4&#8217;, or
+&#8216;hdf5&#8217;. If no format is specified, netcdf is used.</li>
+</ul>
+</td>
+</tr>
+</tbody>
+</table>
+</dd></dl>
+
+</div>
+</div>
+
+
+           </div>
+           <div class="articleComments">
+            
+           </div>
+          </div>
+          <footer>
+  
+    <div class="rst-footer-buttons" role="navigation" aria-label="footer navigation">
+      
+        <a href="python.html" class="btn btn-neutral float-right" title="Python interface" accesskey="n" rel="next">Next <span class="fa fa-arrow-circle-right"></span></a>
+      
+      
+        <a href="idl.html" class="btn btn-neutral" title="IDL interface" accesskey="p" rel="prev"><span class="fa fa-arrow-circle-left"></span> Previous</a>
+      
+    </div>
+  
+
+  <hr/>
+
+  <div role="contentinfo">
+    <p>
+        &copy; Copyright 2015-2017 S&amp;T, The Netherlands.
+
+    </p>
+  </div> 
+
+</footer>
+
+        </div>
+      </div>
+
+    </section>
+
+  </div>
+  
+
+
+  
+
+    <script type="text/javascript">
+        var DOCUMENTATION_OPTIONS = {
+            URL_ROOT:'./',
+            VERSION:'0.6b',
+            COLLAPSE_INDEX:false,
+            FILE_SUFFIX:'.html',
+            HAS_SOURCE:  false,
+            SOURCELINK_SUFFIX: '.txt'
+        };
+    </script>
+      <script type="text/javascript" src="_static/jquery.js"></script>
+      <script type="text/javascript" src="_static/underscore.js"></script>
+      <script type="text/javascript" src="_static/doctools.js"></script>
+      <script type="text/javascript" src="https://cdnjs.cloudflare.com/ajax/libs/mathjax/2.7.0/MathJax.js?config=TeX-AMS-MML_HTMLorMML"></script>
+
+  
+
+  
+  
+    <script type="text/javascript" src="_static/js/theme.js"></script>
+  
+
+  
+  
+  <script type="text/javascript">
+      jQuery(function () {
+          SphinxRtdTheme.StickyNav.enable();
+      });
+  </script>
+   
+
+</body>
+</html>
