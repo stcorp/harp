@@ -30,6 +30,7 @@
 
 #include "export.h"
 
+#include "coda.h"
 #include "harp.h"
 
 /* ---------- defines ---------- */
@@ -66,7 +67,11 @@ static int harp_idl_init(void)
 {
     if (!harp_idl_initialised)
     {
-        harp_set_coda_definition_path("/usr/local/share/harp/definitions");
+#ifdef CODA_DEFINITION_IDL
+        coda_set_definition_path_conditional("harp_idl.dlm", getenv("IDL_DLM_PATH"), CODA_DEFINITION_IDL);
+#else
+        coda_set_definition_path_conditional("harp_idl.dlm", getenv("IDL_DLM_PATH"), "../../../share/coda/definitions");
+#endif
 
         if (harp_init() != 0)
         {
