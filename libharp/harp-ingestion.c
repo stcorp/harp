@@ -1618,16 +1618,17 @@ static int evaluate_ingestion_mask(ingest_info *info, harp_program *program)
                     return -1;
                 }
                 break;
-            case operation_area_mask_covers_point_filter:
             case operation_point_distance_filter:
+            case operation_point_in_area_filter:
                 if (execute_point_filter(info, program) != 0)
                 {
                     return -1;
                 }
                 break;
-            case operation_area_mask_covers_area_filter:
-            case operation_area_mask_intersects_area_filter:
-            case operation_point_in_area_filter:
+            case operation_area_covers_area_filter:
+            case operation_area_covers_point_filter:
+            case operation_area_inside_area_filter:
+            case operation_area_intersects_area_filter:
                 if (execute_polygon_filter(info, program) != 0)
                 {
                     return -1;

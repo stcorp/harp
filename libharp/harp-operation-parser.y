@@ -217,9 +217,10 @@ int harp_sized_array_add_int32(harp_sized_array *sized_array, int32_t value)
 %token  <string_val>    UNIT
 %token                  ID_A
 %token                  ID_B
-%token                  FUNC_AREA_MASK_COVERS_AREA
-%token                  FUNC_AREA_MASK_COVERS_POINT
-%token                  FUNC_AREA_MASK_INTERSECTS_AREA
+%token                  FUNC_AREA_COVERS_AREA
+%token                  FUNC_AREA_COVERS_POINT
+%token                  FUNC_AREA_INSIDE_AREA
+%token                  FUNC_AREA_INTERSECTS_AREA
 %token                  FUNC_BIN
 %token                  FUNC_COLLOCATE_LEFT
 %token                  FUNC_COLLOCATE_RIGHT
@@ -279,9 +280,10 @@ reserved_identifier:
     | DATATYPE { $$ = harp_get_data_type_name($1); }
     | ID_A { $$ = "a"; }
     | ID_B { $$ = "b"; }
-    | FUNC_AREA_MASK_COVERS_AREA { $$ = "area_mask_covers_area"; }
-    | FUNC_AREA_MASK_COVERS_POINT { $$ = "area_mask_covers_point"; }
-    | FUNC_AREA_MASK_INTERSECTS_AREA { $$ = "area_mask_intersects_area"; }
+    | FUNC_AREA_COVERS_AREA { $$ = "area_covers_area"; }
+    | FUNC_AREA_COVERS_POINT { $$ = "area_covers_point"; }
+    | FUNC_AREA_INSIDE_AREA { $$ = "area_inside_area"; }
+    | FUNC_AREA_INTERSECTS_AREA { $$ = "area_intersects_area"; }
     | FUNC_BIN { $$ = "bin"; }
     | FUNC_COLLOCATE_LEFT { $$ = "collocate_left"; }
     | FUNC_COLLOCATE_RIGHT { $$ = "collocate_right"; }
@@ -435,14 +437,130 @@ operation:
             if (harp_operation_string_membership_filter_new($1, $2, $4->num_elements,
                                                             (const char **)$4->array.string_data, &$$) != 0) YYERROR;
         }
-    | FUNC_AREA_MASK_COVERS_AREA '(' STRING_VALUE ')' {
-            if (harp_operation_area_mask_covers_area_filter_new($3, &$$) != 0) YYERROR;
+    | FUNC_AREA_COVERS_AREA '(' '(' double_array ')' ',' '(' double_array ')' ')' {
+            if (harp_operation_area_covers_area_filter_new(NULL, $4->num_elements, $4->array.double_data, NULL,
+                                                           $8->num_elements, $8->array.double_data, NULL, &$$) != 0)
+                YYERROR;
         }
-    | FUNC_AREA_MASK_COVERS_POINT '(' STRING_VALUE ')' {
-            if (harp_operation_area_mask_covers_point_filter_new($3, &$$) != 0) YYERROR;
+    | FUNC_AREA_COVERS_AREA '(' '(' double_array ')' ',' '(' double_array ')' UNIT ')' {
+            if (harp_operation_area_covers_area_filter_new(NULL, $4->num_elements, $4->array.double_data, NULL,
+                                                           $8->num_elements, $8->array.double_data, $10, &$$) != 0)
+                YYERROR;
         }
-    | FUNC_AREA_MASK_INTERSECTS_AREA '(' STRING_VALUE ',' double_value ')' {
-            if (harp_operation_area_mask_intersects_area_filter_new($3, $5, &$$) != 0) YYERROR;
+    | FUNC_AREA_COVERS_AREA '(' '(' double_array ')' UNIT ',' '(' double_array ')' ')' {
+            if (harp_operation_area_covers_area_filter_new(NULL, $4->num_elements, $4->array.double_data, $6,
+                                                           $9->num_elements, $9->array.double_data, NULL, &$$) != 0)
+                YYERROR;
+        }
+    | FUNC_AREA_COVERS_AREA '(' '(' double_array ')' UNIT ',' '(' double_array ')' UNIT ')' {
+            if (harp_operation_area_covers_area_filter_new(NULL, $4->num_elements, $4->array.double_data, $6,
+                                                           $9->num_elements, $9->array.double_data, $11, &$$) != 0)
+                YYERROR;
+        }
+    | FUNC_AREA_COVERS_AREA '(' STRING_VALUE ')' {
+            if (harp_operation_area_covers_area_filter_new($3, 0, NULL, NULL, 0, NULL, NULL, &$$) != 0) YYERROR;
+        }
+    | FUNC_AREA_COVERS_POINT '(' double_value ',' double_value ')' {
+            if (harp_operation_area_covers_point_filter_new($3, NULL, $5, NULL, &$$) != 0) YYERROR;
+        }
+    | FUNC_AREA_COVERS_POINT '(' double_value ',' double_value UNIT ')' {
+            if (harp_operation_area_covers_point_filter_new($3, NULL, $5, $6, &$$) != 0) YYERROR;
+        }
+    | FUNC_AREA_COVERS_POINT '(' double_value UNIT ',' double_value ')' {
+            if (harp_operation_area_covers_point_filter_new($3, $4, $6, NULL, &$$) != 0) YYERROR;
+        }
+    | FUNC_AREA_COVERS_POINT '(' double_value UNIT ',' double_value UNIT ')' {
+            if (harp_operation_area_covers_point_filter_new($3, $4, $6, $7, &$$) != 0) YYERROR;
+        }
+    | FUNC_AREA_INSIDE_AREA '(' '(' double_array ')' ',' '(' double_array ')' ')' {
+            if (harp_operation_area_inside_area_filter_new(NULL, $4->num_elements, $4->array.double_data, NULL,
+                                                           $8->num_elements, $8->array.double_data, NULL, &$$) != 0)
+                YYERROR;
+        }
+    | FUNC_AREA_INSIDE_AREA '(' '(' double_array ')' ',' '(' double_array ')' UNIT ')' {
+            if (harp_operation_area_inside_area_filter_new(NULL, $4->num_elements, $4->array.double_data, NULL,
+                                                           $8->num_elements, $8->array.double_data, $10, &$$) != 0)
+                YYERROR;
+        }
+    | FUNC_AREA_INSIDE_AREA '(' '(' double_array ')' UNIT ',' '(' double_array ')' ')' {
+            if (harp_operation_area_inside_area_filter_new(NULL, $4->num_elements, $4->array.double_data, $6,
+                                                           $9->num_elements, $9->array.double_data, NULL, &$$) != 0)
+                YYERROR;
+        }
+    | FUNC_AREA_INSIDE_AREA '(' '(' double_array ')' UNIT ',' '(' double_array ')' UNIT ')' {
+            if (harp_operation_area_inside_area_filter_new(NULL, $4->num_elements, $4->array.double_data, $6,
+                                                           $9->num_elements, $9->array.double_data, $11, &$$) != 0)
+                YYERROR;
+        }
+    | FUNC_AREA_INSIDE_AREA '(' STRING_VALUE ')' {
+            if (harp_operation_area_inside_area_filter_new($3, 0, NULL, NULL, 0, NULL, NULL, &$$) != 0) YYERROR;
+        }
+    | FUNC_AREA_INTERSECTS_AREA '(' '(' double_array ')' ',' '(' double_array ')' ')' {
+            if (harp_operation_area_intersects_area_filter_new(NULL, $4->num_elements, $4->array.double_data, NULL,
+                                                               $8->num_elements, $8->array.double_data, NULL, NULL, &$$)
+                != 0)
+                YYERROR;
+        }
+    | FUNC_AREA_INTERSECTS_AREA '(' '(' double_array ')' ',' '(' double_array ')' UNIT ')' {
+            if (harp_operation_area_intersects_area_filter_new(NULL, $4->num_elements, $4->array.double_data, NULL,
+                                                               $8->num_elements, $8->array.double_data, $10, NULL, &$$)
+                != 0)
+                YYERROR;
+        }
+    | FUNC_AREA_INTERSECTS_AREA '(' '(' double_array ')' UNIT ',' '(' double_array ')' ')' {
+            if (harp_operation_area_intersects_area_filter_new(NULL, $4->num_elements, $4->array.double_data, $6,
+                                                               $9->num_elements, $9->array.double_data, NULL, NULL, &$$)
+                != 0)
+                YYERROR;
+        }
+    | FUNC_AREA_INTERSECTS_AREA '(' '(' double_array ')' UNIT ',' '(' double_array ')' UNIT ')' {
+            if (harp_operation_area_intersects_area_filter_new(NULL, $4->num_elements, $4->array.double_data, $6,
+                                                               $9->num_elements, $9->array.double_data, $11, NULL, &$$)
+                != 0)
+                YYERROR;
+        }
+    | FUNC_AREA_INTERSECTS_AREA '(' STRING_VALUE ')' {
+            if (harp_operation_area_intersects_area_filter_new($3, 0, NULL, NULL, 0, NULL, NULL, NULL, &$$) != 0)
+                YYERROR;
+        }
+    | FUNC_AREA_INTERSECTS_AREA '(' '(' double_array ')' ',' '(' double_array ')' ',' double_value ')' {
+            double min_fraction = $11;
+
+            if (harp_operation_area_intersects_area_filter_new(NULL, $4->num_elements, $4->array.double_data, NULL,
+                                                               $8->num_elements, $8->array.double_data, NULL,
+                                                               &min_fraction, &$$) != 0)
+                YYERROR;
+        }
+    | FUNC_AREA_INTERSECTS_AREA '(' '(' double_array ')' ',' '(' double_array ')' UNIT ',' double_value ')' {
+            double min_fraction = $12;
+
+            if (harp_operation_area_intersects_area_filter_new(NULL, $4->num_elements, $4->array.double_data, NULL,
+                                                               $8->num_elements, $8->array.double_data, $10,
+                                                               &min_fraction, &$$) != 0)
+                YYERROR;
+        }
+    | FUNC_AREA_INTERSECTS_AREA '(' '(' double_array ')' UNIT ',' '(' double_array ')' ',' double_value ')' {
+            double min_fraction = $12;
+
+            if (harp_operation_area_intersects_area_filter_new(NULL, $4->num_elements, $4->array.double_data, $6,
+                                                               $9->num_elements, $9->array.double_data, NULL,
+                                                               &min_fraction, &$$) != 0)
+                YYERROR;
+        }
+    | FUNC_AREA_INTERSECTS_AREA '(' '(' double_array ')' UNIT ',' '(' double_array ')' UNIT ',' double_value ')' {
+            double min_fraction = $13;
+
+            if (harp_operation_area_intersects_area_filter_new(NULL, $4->num_elements, $4->array.double_data, $6,
+                                                               $9->num_elements, $9->array.double_data, $11,
+                                                               &min_fraction, &$$) != 0)
+                YYERROR;
+        }
+    | FUNC_AREA_INTERSECTS_AREA '(' STRING_VALUE ',' double_value ')' {
+            double min_fraction = $5;
+
+            if (harp_operation_area_intersects_area_filter_new($3, 0, NULL, NULL, 0, NULL, NULL, &min_fraction, &$$) !=
+                0)
+                YYERROR;
         }
     | FUNC_BIN '(' identifier ')' {
             if (harp_operation_bin_with_variable_new($3, &$$) != 0) YYERROR;
@@ -538,17 +656,28 @@ operation:
     | FUNC_POINT_DISTANCE '(' double_value UNIT ',' double_value UNIT ',' double_value UNIT ')' {
             if (harp_operation_point_distance_filter_new($3, $4, $6, $7, $9, $10, &$$) != 0) YYERROR;
         }
-    | FUNC_POINT_IN_AREA '(' double_value ',' double_value ')' {
-            if (harp_operation_point_in_area_filter_new($3, NULL, $5, NULL, &$$) != 0) YYERROR;
+    | FUNC_POINT_IN_AREA '(' '(' double_array ')' ',' '(' double_array ')' ')' {
+            if (harp_operation_point_in_area_filter_new(NULL, $4->num_elements, $4->array.double_data, NULL,
+                                                        $8->num_elements, $8->array.double_data, NULL, &$$) != 0)
+                YYERROR;
         }
-    | FUNC_POINT_IN_AREA '(' double_value ',' double_value UNIT ')' {
-            if (harp_operation_point_in_area_filter_new($3, NULL, $5, $6, &$$) != 0) YYERROR;
+    | FUNC_POINT_IN_AREA '(' '(' double_array ')' ',' '(' double_array ')' UNIT ')' {
+            if (harp_operation_point_in_area_filter_new(NULL, $4->num_elements, $4->array.double_data, NULL,
+                                                        $8->num_elements, $8->array.double_data, $10, &$$) != 0)
+                YYERROR;
         }
-    | FUNC_POINT_IN_AREA '(' double_value UNIT ',' double_value ')' {
-            if (harp_operation_point_in_area_filter_new($3, $4, $6, NULL, &$$) != 0) YYERROR;
+    | FUNC_POINT_IN_AREA '(' '(' double_array ')' UNIT ',' '(' double_array ')' ')' {
+            if (harp_operation_point_in_area_filter_new(NULL, $4->num_elements, $4->array.double_data, $6,
+                                                        $9->num_elements, $9->array.double_data, NULL, &$$) != 0)
+                YYERROR;
         }
-    | FUNC_POINT_IN_AREA '(' double_value UNIT ',' double_value UNIT ')' {
-            if (harp_operation_point_in_area_filter_new($3, $4, $6, $7, &$$) != 0) YYERROR;
+    | FUNC_POINT_IN_AREA '(' '(' double_array ')' UNIT ',' '(' double_array ')' UNIT ')' {
+            if (harp_operation_point_in_area_filter_new(NULL, $4->num_elements, $4->array.double_data, $6,
+                                                        $9->num_elements, $9->array.double_data, $11, &$$) != 0)
+                YYERROR;
+        }
+    | FUNC_POINT_IN_AREA '(' STRING_VALUE ')' {
+            if (harp_operation_point_in_area_filter_new($3, 0, NULL, NULL, 0, NULL, NULL, &$$) != 0) YYERROR;
         }
     | FUNC_REGRID '(' DIMENSION ',' identifier UNIT ',' '(' double_array ')' ')' {
             if (harp_operation_regrid_new($3, $5, $6, $9->num_elements, $9->array.double_data, &$$) != 0) YYERROR;

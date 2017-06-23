@@ -35,20 +35,22 @@
 #include "harp-internal.h"
 #include "harp-constants.h"
 
-#define HARP_GEOMETRY_LINE_AVOID     1  /* line avoids other line */
-#define HARP_GEOMETRY_LINE_EQUAL     2  /* lines are equal */
-#define HARP_GEOMETRY_LINE_CONT_LINE 3  /* line contains line */
-#define HARP_GEOMETRY_LINE_CROSS     4  /* lines cross each other */
-#define HARP_GEOMETRY_LINE_CONNECT   5  /* lines are "connected" */
-#define HARP_GEOMETRY_LINE_OVER      6  /* lines overlap each other */
+#define HARP_GEOMETRY_LINE_SEPARATE 1   /* lines are separate */
+#define HARP_GEOMETRY_LINE_EQUAL 2      /* lines are equal */
+#define HARP_GEOMETRY_LINE_CONTAINS 3   /* line contains line */
+#define HARP_GEOMETRY_LINE_CONTAINED 4  /* line is contained by line */
+#define HARP_GEOMETRY_LINE_CROSS 5      /* lines cross each other */
+#define HARP_GEOMETRY_LINE_CONNECTED 6  /* lines are connected at the end points */
+#define HARP_GEOMETRY_LINE_OVERLAP 7    /* lines overlap each other */
 
-#define HARP_GEOMETRY_POLY_AVOID 0      /* polygon avoids other polygon */
-#define HARP_GEOMETRY_POLY_CONT  1      /* polygon contains other polygon */
-#define HARP_GEOMETRY_POLY_OVER  2      /* polygons overlap */
+#define HARP_GEOMETRY_POLY_SEPARATE 0   /* polygons are separate */
+#define HARP_GEOMETRY_POLY_CONTAINS 1   /* polygon contains polygon */
+#define HARP_GEOMETRY_POLY_CONTAINED 2  /* polygon is contained by polygon */
+#define HARP_GEOMETRY_POLY_OVERLAP 3    /* polygons overlap each other */
 
-#define HARP_GEOMETRY_LINE_POLY_AVOID 0 /* line avoids polygon */
-#define HARP_GEOMETRY_POLY_CONT_LINE  1 /* polygon contains line */
-#define HARP_GEOMETRY_LINE_POLY_OVER  2 /* line overlap polygon */
+#define HARP_GEOMETRY_LINE_POLY_SEPARATE 0      /* line and polygon are separate */
+#define HARP_GEOMETRY_LINE_POLY_CONTAINED 1     /* line is contained by polygon */
+#define HARP_GEOMETRY_LINE_POLY_OVERLAP 2       /* line overlap polygon */
 
 #define HARP_GEOMETRY_EPSILON    (1.0E-10)
 #define HARP_GEOMETRY_FPzero(A)  (fabs(A) <= HARP_GEOMETRY_EPSILON)
@@ -160,27 +162,6 @@ typedef struct harp_euler_transformation_struct
     double psi; /* third rotation angle */
 } harp_euler_transformation;
 
-/* Define all possible relationships between spherical lines */
-extern const int8_t harp_spherical_line_relationship_avoid;     /* line avoids other line */
-extern const int8_t harp_spherical_line_relationship_equal;     /* lines are equal */
-extern const int8_t harp_spherical_line_relationship_contain_line;      /* line contains line */
-extern const int8_t harp_spherical_line_relationship_cross;     /* lines cross each other */
-extern const int8_t harp_spherical_line_relationship_connect;   /* line are "connected" */
-extern const int8_t harp_spherical_line_relationship_overlap;   /* lines overlap each other */
-
-/* Define all possible relationships between spherical polygons */
-typedef enum harp_spherical_polygon_relationship_enum
-{
-    harp_spherical_polygon_relationship_unknown = -1,
-    harp_spherical_polygon_relationship_avoid = 0,
-    harp_spherical_polygon_relationship_near = 1,
-    harp_spherical_polygon_relationship_equal = 2,
-    harp_spherical_polygon_relationship_a_contains_b = 3,
-    harp_spherical_polygon_relationship_b_contains_a = 4,
-    harp_spherical_polygon_relationship_overlap = 5,
-    harp_spherical_polygon_relationship_touch = 6
-} harp_spherical_polygon_relationship;
-
 /* 3D vector functions */
 harp_vector3d *harp_vector3d_new(double x, double y, double z);
 void harp_vector3d_delete(harp_vector3d *vector);
@@ -290,10 +271,10 @@ int harp_spherical_point_distance_from_latitude_longitude(double latitude_a, dou
 int harp_spherical_polygon_overlapping(const harp_spherical_polygon *polygona, const harp_spherical_polygon *polygonb,
                                        int *polygons_are_overlapping);
 
-/* Calculate the overlapping percentage [%] of two areas */
-int harp_spherical_polygon_overlapping_percentage(const harp_spherical_polygon *polygona,
-                                                  const harp_spherical_polygon *polygonb,
-                                                  int *polygons_are_overlapping, double *overlapping_percentage);
+/* Calculate the overlapping fraction of two areas */
+int harp_spherical_polygon_overlapping_fraction(const harp_spherical_polygon *polygona,
+                                                const harp_spherical_polygon *polygonb,
+                                                int *polygons_are_overlapping, double *overlapping_fraction);
 
 
 /* Convert latitude, longitude [deg] to Cartesian coordinates [m] */

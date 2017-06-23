@@ -141,7 +141,7 @@ int harp_spherical_polygon_check(const harp_spherical_polygon *polygon)
             relationship = harp_spherical_line_spherical_line_relationship(&linei, &linek);
 
             /* Line segments should not cross each other, i.e. they should connect or avoid each other entirely */
-            if (!(relationship == HARP_GEOMETRY_LINE_CONNECT || relationship == HARP_GEOMETRY_LINE_AVOID))
+            if (!(relationship == HARP_GEOMETRY_LINE_CONNECTED || relationship == HARP_GEOMETRY_LINE_SEPARATE))
             {
                 /* return false */
                 return 0;
@@ -546,12 +546,12 @@ int8_t harp_spherical_polygon_spherical_line_relationship(const harp_spherical_p
     static harp_spherical_line sl;
     static harp_spherical_point slbeg, slend;
     static int8_t p1, p2, pos, res;
-    static const int8_t sl_os = (int8_t)(1 << HARP_GEOMETRY_LINE_AVOID);
-    static const int8_t sl_cl = (int8_t)(1 << HARP_GEOMETRY_LINE_CONT_LINE);
-    static const int8_t sl_cr = (int8_t)(1 << HARP_GEOMETRY_LINE_CROSS);
-    static const int8_t sl_cn = (int8_t)(1 << HARP_GEOMETRY_LINE_CONNECT);
-    static const int8_t sl_ov = (int8_t)(1 << HARP_GEOMETRY_LINE_OVER);
+    static const int8_t sl_os = (int8_t)(1 << HARP_GEOMETRY_LINE_SEPARATE);
     static const int8_t sl_eq = (int8_t)(1 << HARP_GEOMETRY_LINE_EQUAL);
+    static const int8_t sl_cd = (int8_t)(1 << HARP_GEOMETRY_LINE_CONTAINED);
+    static const int8_t sl_cr = (int8_t)(1 << HARP_GEOMETRY_LINE_CROSS);
+    static const int8_t sl_cn = (int8_t)(1 << HARP_GEOMETRY_LINE_CONNECTED);
+    static const int8_t sl_ov = (int8_t)(1 << HARP_GEOMETRY_LINE_OVERLAP);
 
     pos = 0;
     res = 0;
@@ -566,12 +566,12 @@ int8_t harp_spherical_polygon_spherical_line_relationship(const harp_spherical_p
         pos = (int8_t)(1 << harp_spherical_line_spherical_line_relationship(&sl, line));
         if (pos == sl_eq)
         {
-            pos = sl_cl;        /* is contain */
+            pos = sl_cd;        /* is contained */
         }
 
         if (pos == sl_ov)
         {
-            return HARP_GEOMETRY_LINE_POLY_OVER;        /* overlap */
+            return HARP_GEOMETRY_LINE_POLY_OVERLAP;     /* overlap */
         }
         /* Recheck line crossing */
         if (pos == sl_cr)
@@ -582,34 +582,34 @@ int8_t harp_spherical_polygon_spherical_line_relationship(const harp_spherical_p
             eal = (int8_t)harp_spherical_point_is_at_spherical_line(&slend, &sl);
             if (!bal && !eal)
             {
-                return HARP_GEOMETRY_LINE_POLY_OVER;    /* overlap */
+                return HARP_GEOMETRY_LINE_POLY_OVERLAP; /* overlap */
             }
             if ((bal && p2) || (eal && p1))
             {
-                pos = sl_cl;    /* is contain */
+                pos = sl_cd;    /* is contained */
             }
             else
             {
-                return HARP_GEOMETRY_LINE_POLY_OVER;    /* overlap */
+                return HARP_GEOMETRY_LINE_POLY_OVERLAP; /* overlap */
             }
         }
 
         res |= pos;
     }
-    if ((res & sl_cl) && ((res - sl_cl - sl_os - sl_cn - 1) < 0))
+    if ((res & sl_cd) && ((res - sl_cd - sl_os - sl_cn - 1) < 0))
     {
-        return HARP_GEOMETRY_POLY_CONT_LINE;
+        return HARP_GEOMETRY_LINE_POLY_CONTAINED;
     }
     else if (p1 && p2 && ((res - sl_os - sl_cn - 1) < 0))
     {
-        return HARP_GEOMETRY_POLY_CONT_LINE;
+        return HARP_GEOMETRY_LINE_POLY_CONTAINED;
     }
     else if (!p1 && !p2 && ((res - sl_os - 1) < 0))
     {
-        return HARP_GEOMETRY_LINE_POLY_AVOID;
+        return HARP_GEOMETRY_LINE_POLY_SEPARATE;
     }
 
-    return HARP_GEOMETRY_LINE_POLY_OVER;
+    return HARP_GEOMETRY_LINE_POLY_OVERLAP;
 }
 
 /* Determine relationship of two polygon areas */
@@ -619,9 +619,9 @@ int8_t harp_spherical_polygon_spherical_polygon_relationship(const harp_spherica
     int32_t i;
     harp_spherical_line sl;
     int8_t pos = 0, res = 0;
-    static const int8_t sp_os = (int8_t)(1 << HARP_GEOMETRY_LINE_POLY_AVOID);
-    static const int8_t sp_ct = (int8_t)(1 << HARP_GEOMETRY_POLY_CONT_LINE);
-    static const int8_t sp_ov = (int8_t)(1 << HARP_GEOMETRY_LINE_POLY_OVER);
+    static const int8_t sp_os = (int8_t)(1 << HARP_GEOMETRY_LINE_POLY_SEPARATE);
+    static const int8_t sp_ct = (int8_t)(1 << HARP_GEOMETRY_LINE_POLY_CONTAINED);
+    static const int8_t sp_ov = (int8_t)(1 << HARP_GEOMETRY_LINE_POLY_OVERLAP);
 
     for (i = 0; i < polygon_b->numberofpoints; i++)
     {
@@ -631,7 +631,7 @@ int8_t harp_spherical_polygon_spherical_polygon_relationship(const harp_spherica
         if (pos == sp_ov)
         {
             /* overlap */
-            return HARP_GEOMETRY_POLY_OVER;
+            return HARP_GEOMETRY_POLY_OVERLAP;
         }
 
         res |= pos;
@@ -644,22 +644,22 @@ int8_t harp_spherical_polygon_spherical_polygon_relationship(const harp_spherica
             pos = harp_spherical_polygon_spherical_polygon_relationship(polygon_b, polygon_a, 1);
         }
 
-        if (pos == HARP_GEOMETRY_POLY_CONT)
+        if (pos == HARP_GEOMETRY_POLY_CONTAINS)
         {
-            return HARP_GEOMETRY_POLY_OVER;
+            return HARP_GEOMETRY_POLY_CONTAINED;
         }
         else
         {
-            return HARP_GEOMETRY_POLY_AVOID;
+            return HARP_GEOMETRY_POLY_SEPARATE;
         }
     }
 
     if (res == sp_ct)
     {
-        return HARP_GEOMETRY_POLY_CONT;
+        return HARP_GEOMETRY_POLY_CONTAINS;
     }
 
-    return HARP_GEOMETRY_POLY_OVER;
+    return HARP_GEOMETRY_POLY_OVERLAP;
 }
 
 /* Determine whether two polygons overlap */
@@ -672,20 +672,21 @@ int harp_spherical_polygon_overlapping(const harp_spherical_polygon *polygon_a, 
 
     {
         harp_set_error(HARP_ERROR_INVALID_ARGUMENT,
-                       "a line segment overlaps or polygon too large for polygon overlap percentage");
+                       "a line segment overlaps or polygon too large for polygon overlap fraction");
         return -1;
     }
 
     if (harp_spherical_polygon_check(polygon_b) != 1)
     {
         harp_set_error(HARP_ERROR_INVALID_ARGUMENT,
-                       "a line segment overlaps or polygon too large for polygon overlap percentage");
+                       "a line segment overlaps or polygon too large for polygon overlap fraction");
         return -1;
     }
 
     /* First, determine relationship of two areas */
     relationship = harp_spherical_polygon_spherical_polygon_relationship(polygon_a, polygon_b, 0);
-    if (relationship == HARP_GEOMETRY_POLY_CONT || relationship == HARP_GEOMETRY_POLY_OVER)
+    if (relationship == HARP_GEOMETRY_POLY_CONTAINS || relationship == HARP_GEOMETRY_POLY_CONTAINED ||
+        relationship == HARP_GEOMETRY_POLY_OVERLAP)
     {
         *polygons_are_overlapping = 1;
     }
@@ -699,10 +700,10 @@ int harp_spherical_polygon_overlapping(const harp_spherical_polygon *polygon_a, 
 }
 
 /* Determine whether two polygons overlap, and if so
- * calculate the overlapping percentage of the two polygons */
-int harp_spherical_polygon_overlapping_percentage(const harp_spherical_polygon *polygon_a,
-                                                  const harp_spherical_polygon *polygon_b,
-                                                  int *polygons_are_overlapping, double *overlapping_percentage)
+ * calculate the overlapping fraction of the two polygons */
+int harp_spherical_polygon_overlapping_fraction(const harp_spherical_polygon *polygon_a,
+                                                const harp_spherical_polygon *polygon_b,
+                                                int *polygons_are_overlapping, double *overlapping_fraction)
 {
     int8_t relationship;
 
@@ -710,25 +711,25 @@ int harp_spherical_polygon_overlapping_percentage(const harp_spherical_polygon *
 
     {
         harp_set_error(HARP_ERROR_INVALID_ARGUMENT,
-                       "a line segment overlaps or polygon too large for polygon overlap percentage");
+                       "a line segment overlaps or polygon too large for polygon overlap fraction");
         return -1;
     }
 
     if (harp_spherical_polygon_check(polygon_b) != 1)
     {
         harp_set_error(HARP_ERROR_INVALID_ARGUMENT,
-                       "a line segment overlaps or polygon too large for polygon overlap percentage");
+                       "a line segment overlaps or polygon too large for polygon overlap fraction");
         return -1;
     }
 
     /* First, determine relationship of two areas */
     relationship = harp_spherical_polygon_spherical_polygon_relationship(polygon_a, polygon_b, 0);
-    if (relationship == HARP_GEOMETRY_POLY_CONT)
+    if (relationship == HARP_GEOMETRY_POLY_CONTAINS || relationship == HARP_GEOMETRY_POLY_CONTAINED)
     {
-        *overlapping_percentage = 100.0;
+        *overlapping_fraction = 1.0;
         *polygons_are_overlapping = 1;
     }
-    else if (relationship == HARP_GEOMETRY_POLY_OVER)
+    else if (relationship == HARP_GEOMETRY_POLY_OVERLAP)
     {
         harp_spherical_polygon *polygon_intersect = NULL;
         double min_area_a_area_b;
@@ -741,15 +742,6 @@ int harp_spherical_polygon_overlapping_percentage(const harp_spherical_polygon *
         int32_t offset_a = 0;
         int32_t offset_c = 0;   /* index in intersection polygon */
         int32_t i;
-
-        /* check if polygon a is contained in polygon b */
-        relationship = harp_spherical_polygon_spherical_polygon_relationship(polygon_b, polygon_a, 1);
-        if (relationship == HARP_GEOMETRY_POLY_CONT)
-        {
-            *overlapping_percentage = 100.0;
-            *polygons_are_overlapping = 1;
-            return 0;
-        }
 
         /* There must be an intersection, so try to find it */
         point_a_in_polygon_b = malloc((size_t)polygon_a->numberofpoints * sizeof(uint8_t));
@@ -832,7 +824,7 @@ int harp_spherical_polygon_overlapping_percentage(const harp_spherical_polygon *
                     {
                         harp_spherical_line_segment_from_polygon(&line_b, polygon_b, offset_b);
                         if (harp_spherical_line_spherical_line_relationship(&line_a, &line_b) !=
-                            HARP_GEOMETRY_LINE_AVOID)
+                            HARP_GEOMETRY_LINE_SEPARATE)
                         {
                             if (harp_spherical_line_spherical_line_relationship(&line_a, &line_b) ==
                                 HARP_GEOMETRY_LINE_CROSS)
@@ -918,18 +910,18 @@ int harp_spherical_polygon_overlapping_percentage(const harp_spherical_polygon *
         /* Calculate areaB = surface area of polygon B */
         harp_spherical_polygon_get_surface_area(polygon_b, &area_b);
 
-        /* Overlapping percentage = 100 * areaAB / min(areaA, areaB) */
+        /* Overlapping fraction = areaAB / min(areaA, areaB) */
         min_area_a_area_b = (area_a < area_b ? area_a : area_b);
         assert(min_area_a_area_b >= 0.0);
         if (HARP_GEOMETRY_FPzero(min_area_a_area_b))
         {
-            /* just set to 100% if area_a/area_b is too small */
-            *overlapping_percentage = 100.0;
+            /* just set to 1 if area_a/area_b is too small */
+            *overlapping_fraction = 1.0;
             *polygons_are_overlapping = 1;
         }
         else
         {
-            *overlapping_percentage = 100.0 * area_ab / min_area_a_area_b;
+            *overlapping_fraction = area_ab / min_area_a_area_b;
             *polygons_are_overlapping = 1;
         }
 
@@ -938,7 +930,7 @@ int harp_spherical_polygon_overlapping_percentage(const harp_spherical_polygon *
     else
     {
         /* No overlap */
-        *overlapping_percentage = 0.0;
+        *overlapping_fraction = 0.0;
         *polygons_are_overlapping = 0;
     }
 
@@ -1105,7 +1097,6 @@ int harp_spherical_polygon_from_latitude_longitude_bounds(long measurement_id, l
     harp_spherical_polygon *polygon = NULL;
     double deg2rad = (double)(CONST_DEG2RAD);
     harp_spherical_point_array *point_array = NULL;
-    harp_spherical_point *point = NULL;
     int32_t numberofpoints = (int32_t)num_vertices;     /* Start with num_vertices */
     long ii;
     int32_t i;
@@ -1127,31 +1118,23 @@ int harp_spherical_polygon_from_latitude_longitude_bounds(long measurement_id, l
         return -1;
     }
 
-    point = malloc(sizeof(harp_spherical_point));
-    if (point == NULL)
-    {
-        harp_set_error(HARP_ERROR_OUT_OF_MEMORY, "out of memory (could not allocate %lu bytes) (%s:%u)",
-                       sizeof(harp_spherical_point), __FILE__, __LINE__);
-        harp_spherical_point_array_delete(point_array);
-        return -1;
-    }
-
     for (i = 0; i < numberofpoints; i++)
     {
+        harp_spherical_point point;
+
         /* Element index in the data array */
         /* Remember: At this point 'numberofpoints' can be smaller than original input 'num_vertices'. */
         ii = measurement_id * num_vertices + i;
 
         /* Make sure we have the coordinates in the correct units */
-        point->lat = latitude_bounds[ii] * deg2rad;
-        point->lon = longitude_bounds[ii] * deg2rad;
-        harp_spherical_point_check(point);
+        point.lat = latitude_bounds[ii] * deg2rad;
+        point.lon = longitude_bounds[ii] * deg2rad;
+        harp_spherical_point_check(&point);
 
         /* Add the point to the point array */
-        if (harp_spherical_point_array_add_point(point_array, point) != 0)
+        if (harp_spherical_point_array_add_point(point_array, &point) != 0)
         {
             harp_spherical_point_array_delete(point_array);
-            free(point);
             return -1;
         }
     }
@@ -1160,7 +1143,6 @@ int harp_spherical_polygon_from_latitude_longitude_bounds(long measurement_id, l
     if (harp_spherical_polygon_from_point_array(point_array, &polygon) != 0)
     {
         harp_spherical_point_array_delete(point_array);
-        free(point);
         return -1;
     }
 
@@ -1170,12 +1152,10 @@ int harp_spherical_polygon_from_latitude_longitude_bounds(long measurement_id, l
         harp_set_error(HARP_ERROR_INVALID_ARGUMENT, "invalid polygon from input latitude bounds and longitude bounds");
         harp_spherical_point_array_delete(point_array);
         harp_spherical_polygon_delete(polygon);
-        free(point);
         return -1;
     }
 
     harp_spherical_point_array_delete(point_array);
-    free(point);
 
     *new_polygon = polygon;
     return 0;
@@ -1281,7 +1261,8 @@ LIBHARP_API int harp_geometry_has_point_in_area(double latitude_point, double lo
 
 /** Determine whether a point is in an area on the surface of the Earth
  * \ingroup harp_geometry
- * This function assumes a spherical earth
+ * This function assumes a spherical earth.
+ * The overlap fraction is calculated as area(intersection)/min(area(A),area(B)).
  * \param num_vertices_a The number of vertices of the bounding polygon of the first area
  * \param latitude_bounds_a Latitude values of the bounds of the area of the first polygon
  * \param longitude_bounds_a Longitude values of the bounds of the area of the first polygon
@@ -1289,7 +1270,7 @@ LIBHARP_API int harp_geometry_has_point_in_area(double latitude_point, double lo
  * \param latitude_bounds_b Latitude values of the bounds of the area of the second polygon
  * \param longitude_bounds_b Longitude values of the bounds of the area of the second polygon
  * \param has_overlap Pointer to the C variable where the result will be stored (1 if there is overlap, 0 otherwise).
- * \param percentage Pointer to the C variable where the overlap percentage will be stored (use NULL if not needed).
+ * \param fraction Pointer to the C variable where the overlap fraction will be stored (use NULL if not needed).
  * \return
  *   \arg \c 0, Success.
  *   \arg \c -1, Error occurred (check #harp_errno).
@@ -1297,7 +1278,7 @@ LIBHARP_API int harp_geometry_has_point_in_area(double latitude_point, double lo
 LIBHARP_API int harp_geometry_has_area_overlap(int num_vertices_a, double *latitude_bounds_a,
                                                double *longitude_bounds_a, int num_vertices_b,
                                                double *latitude_bounds_b, double *longitude_bounds_b, int *has_overlap,
-                                               double *percentage)
+                                               double *fraction)
 {
     harp_spherical_polygon *polygon_a = NULL;
     harp_spherical_polygon *polygon_b = NULL;
@@ -1313,10 +1294,10 @@ LIBHARP_API int harp_geometry_has_area_overlap(int num_vertices_a, double *latit
         return -1;
     }
 
-    if (percentage != NULL)
+    if (fraction != NULL)
     {
-        /* Determine overlapping percentage */
-        if (harp_spherical_polygon_overlapping_percentage(polygon_a, polygon_b, has_overlap, percentage) != 0)
+        /* Determine overlapping fraction */
+        if (harp_spherical_polygon_overlapping_fraction(polygon_a, polygon_b, has_overlap, fraction) != 0)
         {
             harp_spherical_polygon_delete(polygon_a);
             harp_spherical_polygon_delete(polygon_b);

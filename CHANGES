@@ -20,7 +20,18 @@
 
 * Added -l option to harpmerge.
 
-* Added sort() operation.
+* Renamed area/point operations:
+  - area_mask_covers_area -> area_covers_area
+  - area_mask_covers_point -> point_in_area
+  - area_mask_intersects_area -> area_intersects_area
+  - point_in_area -> area_covers_point
+  The first part of the operation name now reflects the item in the
+  product and the second part reflects the parameter that is provided.
+
+* Added sort() and area_inside_area() operations.
+
+* An area parameter for operations can now either be a reference to an
+  area mask file or a single polygon provided as lat/lon array parameters.
 
 * Added derivation to derive the area (size) of latitude/longitude bounds.
 
@@ -29,6 +40,9 @@
   optional (i.e. pass NULL to use the default data type).
 
 * Added harp_geometry_get_area() and harp_product_sort() functions.
+
+* Changed 'percentage' parameter of harp_geometry_has_area_overlap() to
+  'fraction'.
 
 * Added HARP_UNIT_AREA default unit.
 

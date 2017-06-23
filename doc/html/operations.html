@@ -209,21 +209,64 @@ Units can only be specified for numerical variables.</p>
 <p>Supported functions:</p>
 <blockquote>
 <div><dl class="docutils">
-<dt><code class="docutils literal"><span class="pre">area_mask_covers_area(area-mask-file)</span></code></dt>
-<dd>Exclude measurements for which no area from the area
-mask file covers the measurement area completely.</dd>
-<dt><code class="docutils literal"><span class="pre">area_mask_covers_point(area-mask-file)</span></code></dt>
-<dd>Exclude measurements for which no area from the area
-mask file contains the measurement location.</dd>
-<dt><code class="docutils literal"><span class="pre">area_mask_intersects_area(area-mask-file,</span> <span class="pre">minimum-overlap-percentage)</span></code></dt>
-<dd>Exclude measurements for which no area from the area
-mask file overlaps at least the specified percentage of
-the measurement area.</dd>
+<dt><code class="docutils literal"><span class="pre">area_covers_area((lat,</span> <span class="pre">...)</span> <span class="pre">[unit],</span> <span class="pre">(lon,</span> <span class="pre">...)</span> <span class="pre">[unit])</span></code></dt>
+<dd><p class="first">Exclude measurements whose area does not fully cover the given polygon.
+Example:</p>
+<blockquote class="last">
+<div><div class="line-block">
+<div class="line"><code class="docutils literal"><span class="pre">area_covers_area((51.98,51.98,52.02,52.02),(4.33,4.39,4.39,4.33))</span></code></div>
+</div>
+</div></blockquote>
+</dd>
+<dt><code class="docutils literal"><span class="pre">area_covers_area(area-mask-file)</span></code></dt>
+<dd><p class="first">Exclude measurements whose area does not fully cover one of the
+areas of the area mask file.</p>
+<p>Example:</p>
+<blockquote class="last">
+<div><div class="line-block">
+<div class="line"><code class="docutils literal"><span class="pre">area_covers_area(&quot;areas.csv&quot;)</span></code></div>
+</div>
+</div></blockquote>
+</dd>
+<dt><code class="docutils literal"><span class="pre">area_covers_point(latitude</span> <span class="pre">[unit],</span> <span class="pre">longitude</span> <span class="pre">[unit])</span></code></dt>
+<dd><p class="first">Exclude measurements whose area does not cover the given point.
+Example:</p>
+<blockquote class="last">
+<div><div class="line-block">
+<div class="line"><code class="docutils literal"><span class="pre">area_covers_point(52.012,</span> <span class="pre">4.357)</span></code></div>
+</div>
+</div></blockquote>
+</dd>
+<dt><code class="docutils literal"><span class="pre">area_inside_area((lat,</span> <span class="pre">...)</span> <span class="pre">[unit],</span> <span class="pre">(lon,</span> <span class="pre">...)</span> <span class="pre">[unit])</span></code></dt>
+<dd><p class="first">Exclude measurements whose area is not inside the given polygon.
+Example:</p>
+<blockquote class="last">
+<div><div class="line-block">
+<div class="line"><code class="docutils literal"><span class="pre">area_inside_area((50,50,54,54),(3,8,8,3))</span></code></div>
+</div>
+</div></blockquote>
+</dd>
+<dt><code class="docutils literal"><span class="pre">area_inside_area(area-mask-file)</span></code></dt>
+<dd>Exclude measurements whose area is not inside one of the areas of
+the area mask file.</dd>
+<dt><code class="docutils literal"><span class="pre">area_intersects_area((lat,</span> <span class="pre">...)</span> <span class="pre">[unit],</span> <span class="pre">(lon,</span> <span class="pre">...)</span> <span class="pre">[unit],</span> <span class="pre">minimum-overlap-fraction)</span></code></dt>
+<dd>Exclude measurements whose area does not overlap at least the
+specified fraction with the given polygon.
+The fraction is calculated as area(intersection)/min(area(x),area(y))</dd>
+<dt><code class="docutils literal"><span class="pre">area_intersects_area(area-mask-file,</span> <span class="pre">minimum-overlap-fraction)</span></code></dt>
+<dd>Exclude measurements whose area does not overlap at least the
+specified fraction with one the areas of the area mask file.</dd>
+<dt><code class="docutils literal"><span class="pre">area_intersects_area((lat,</span> <span class="pre">...)</span> <span class="pre">[unit],</span> <span class="pre">(lon,</span> <span class="pre">...)</span> <span class="pre">[unit])</span></code></dt>
+<dd>Exclude measurements whose area does not overlap with the given
+polygon.</dd>
+<dt><code class="docutils literal"><span class="pre">area_intersects_area(area-mask-file)</span></code></dt>
+<dd>Exclude measurements whose area does not overlap with one of the
+areas of the area mask file.</dd>
 <dt><code class="docutils literal"><span class="pre">bin(variable)</span></code></dt>
 <dd><p class="first">For all variables in a product perform an averaging in the time
 dimension such that all samples in the same bin get averaged.
-A bin is defined by all samples of the given variable that have the
-same value.
+A bin is defined by all samples of the given variable that have
+the same value.
 Example:</p>
 <blockquote class="last">
 <div><div class="line-block">
@@ -235,13 +278,14 @@ Example:</p>
 <dt><code class="docutils literal"><span class="pre">bin(collocation-result-file,</span> <span class="pre">a|b)</span></code></dt>
 <dd><p class="first">For all variables in a product perform an averaging in the time
 dimension such that all samples in the same bin get averaged.
-A bin is defined by all samples having the same collocated pair from
-the dataset that is indicated by the second parameter.
+A bin is defined by all samples having the same collocated pair
+from the dataset that is indicated by the second parameter.
 Example:</p>
 <blockquote class="last">
 <div><div class="line-block">
 <div class="line"><code class="docutils literal"><span class="pre">bin(&quot;collocation-result.csv&quot;,</span> <span class="pre">b)</span></code></div>
-<div class="line">(the product is part of dataset A and the collocated pair that defines the bin is part of dataset B)</div>
+<div class="line">(the product is part of dataset A and the collocated pair
+that defines the bin is part of dataset B)</div>
 </div>
 </div></blockquote>
 </dd>
@@ -326,19 +370,22 @@ cross the international date line.</p>
 </div></blockquote>
 </dd>
 <dt><code class="docutils literal"><span class="pre">point_distance(latitude</span> <span class="pre">[unit],</span> <span class="pre">longitude</span> <span class="pre">[unit],</span> <span class="pre">distance</span> <span class="pre">[unit])</span></code></dt>
-<dd><p class="first">Exclude measurements situated further than the specified
-distance from the specified location.
+<dd><p class="first">Exclude measurements whose point location is situated further than
+the specified distance from the given location.
 Example:</p>
 <blockquote class="last">
 <div><code class="docutils literal"><span class="pre">point_distance(52.012,</span> <span class="pre">4.357,</span> <span class="pre">3</span> <span class="pre">[km])</span></code></div></blockquote>
 </dd>
-<dt><code class="docutils literal"><span class="pre">point_in_area(latitude</span> <span class="pre">[unit],</span> <span class="pre">longitude</span> <span class="pre">[unit])</span></code></dt>
-<dd><p class="first">Exclude measurements for which the given location does not
-fall inside the measurement area.
+<dt><code class="docutils literal"><span class="pre">point_in_area((lat,</span> <span class="pre">...)</span> <span class="pre">[unit],</span> <span class="pre">(lon,</span> <span class="pre">...)</span> <span class="pre">[unit])</span></code></dt>
+<dd><p class="first">Exclude measurements whose point location does not fall inside the
+measurement area.
 Example:</p>
 <blockquote class="last">
-<div><code class="docutils literal"><span class="pre">point_in_area(52.012,</span> <span class="pre">4.357)</span></code></div></blockquote>
+<div><code class="docutils literal"><span class="pre">point_in_area((50,50,54,54)</span> <span class="pre">[degN],(3,8,8,3)</span> <span class="pre">[degE])</span></code></div></blockquote>
 </dd>
+<dt><code class="docutils literal"><span class="pre">point_in_area(area-mask-file)</span></code></dt>
+<dd>Exclude measurements whose point location does not fall inside one of
+the areas from the area mask file.</dd>
 <dt><code class="docutils literal"><span class="pre">regrid(dimension,</span> <span class="pre">axis-variable</span> <span class="pre">unit,</span> <span class="pre">(value,</span> <span class="pre">...))</span></code></dt>
 <dd><p class="first">Regrid all variables in the product for the given dimension using
 the given axis variable as target grid. The operation will use a
@@ -372,10 +419,12 @@ Example:</p>
 </dd>
 <dt><code class="docutils literal"><span class="pre">rename(variable,</span> <span class="pre">new_name)</span></code></dt>
 <dd><p class="first">Rename the variable to the new name.
-Note that this operation should be used with care since it will change the meaning of the
-data (potentially interpreting it incorrectly in further operations).
-It is primarilly meant to add/remove prefixes (such as surface/tropospheric/etc.) to allow
-the variable to be used in a more specific (with prefix) or generic (without prefix) way.
+Note that this operation should be used with care since it will
+change the meaning of the data (potentially interpreting it
+incorrectly in further operations). It is primarilly meant to
+add/remove prefixes (such as surface/tropospheric/etc.) to allow
+the variable to be used in a more specific (with prefix) or
+generic (without prefix) way.
 Example:</p>
 <blockquote class="last">
 <div><code class="docutils literal"><span class="pre">rename(&quot;surface_temperature&quot;,</span> <span class="pre">&quot;temperature&quot;)</span></code></div></blockquote>
@@ -391,20 +440,20 @@ values.
 Available options are:</p>
 <dl class="docutils">
 <dt><code class="docutils literal"><span class="pre">afgl86</span></code></dt>
-<dd><p class="first">Determine how to deal with interpolation of target grid values that
-fall outside the source grid range.
+<dd><p class="first">Determine how to deal with interpolation of target grid values
+that fall outside the source grid range.
 Possible values are:</p>
 <ul class="last simple">
-<li><code class="docutils literal"><span class="pre">disabled</span></code> (default) disable the use of AFGL86 climatology in
-variable conversions</li>
+<li><code class="docutils literal"><span class="pre">disabled</span></code> (default) disable the use of AFGL86 climatology
+in variable conversions</li>
 <li><code class="docutils literal"><span class="pre">enabled</span></code> enable the use of AFGL86 climatology in variable
 conversions (using seasonal and latitude band dependence)</li>
 <li><code class="docutils literal"><span class="pre">usstd76</span></code> enable AFGL86 using US Standard profiles</li>
 </ul>
 </dd>
 <dt><code class="docutils literal"><span class="pre">regrid_out_of_bounds</span></code></dt>
-<dd><p class="first">Determine how to deal with interpolation of target grid values that
-fall outside the source grid range.
+<dd><p class="first">Determine how to deal with interpolation of target grid values
+that fall outside the source grid range.
 Possible values are:</p>
 <ul class="last simple">
 <li><code class="docutils literal"><span class="pre">nan</span></code> (default) to set values outside the range to NaN</li>
@@ -433,9 +482,10 @@ Example:</p>
 <div><code class="docutils literal"><span class="pre">smooth(O3_number_density,</span> <span class="pre">vertical,</span> <span class="pre">altitude</span> <span class="pre">[km],</span> <span class="pre">&quot;collocation-result.csv&quot;,</span> <span class="pre">b,</span> <span class="pre">&quot;./correlative_data/&quot;)</span></code></div></blockquote>
 </dd>
 <dt><code class="docutils literal"><span class="pre">smooth((variable,</span> <span class="pre">variable,</span> <span class="pre">...),</span> <span class="pre">dimension,</span> <span class="pre">axis-variable</span> <span class="pre">unit,</span> <span class="pre">collocation-result-file,</span> <span class="pre">a|b,</span> <span class="pre">dataset-dir)</span></code></dt>
-<dd>Same as above, but then providing a list of variables that need to be smoothed.
-For each variable an associated averaging kernel (and associated a-priori,
-if applicable) needs to be present in the collocated dataset.</dd>
+<dd>Same as above, but then providing a list of variables that need
+to be smoothed. For each variable an associated averaging kernel
+(and associated a-priori, if applicable) needs to be present in
+the collocated dataset.</dd>
 <dt><code class="docutils literal"><span class="pre">sort(variable)</span></code></dt>
 <dd>Reorder a dimension for all variables in the product such that the
 variable provided as parameter ends up being sorted. The variable
@@ -445,8 +495,8 @@ this dimension of the referenced variable.</dd>
 <dd>Exclude invalid values of the specified variable (values
 outside the valid range of the variable, or NaN).</dd>
 <dt><code class="docutils literal"><span class="pre">wrap(variable</span> <span class="pre">[unit],</span> <span class="pre">minimum,</span> <span class="pre">maximum)</span></code></dt>
-<dd><p class="first">Wrap the values of the variable to the range given by minimum and maximum.
-The result is: min + (value - min) % (max - min)
+<dd><p class="first">Wrap the values of the variable to the range given by minimum
+and maximum. The result is: min + (value - min) % (max - min)
 Example:</p>
 <blockquote class="last">
 <div><code class="docutils literal"><span class="pre">wrap(longitude</span> <span class="pre">[degree_east],</span> <span class="pre">-180,</span> <span class="pre">180)</span></code></div></blockquote>
@@ -456,7 +506,8 @@ Example:</p>
 </div>
 <div class="section" id="collocation-result-file">
 <h2>Collocation result file</h2>
-<p>The format of the collocation result file is described in the <a class="reference internal" href="dataformats.html#collocation-result-file-format"><span class="std std-ref">data formats</span></a> documentation.</p>
+<p>The format of the collocation result file is described in the
+<a class="reference internal" href="dataformats.html#collocation-result-file-format"><span class="std std-ref">data formats</span></a> documentation.</p>
 </div>
 <div class="section" id="area-mask-file">
 <h2>Area mask file</h2>
@@ -467,8 +518,9 @@ Example:</p>
 <span class="o">...</span>
 </pre></div>
 </div>
-<p>It starts with a header with latitude, longitude column headers (this header will be skipped by HARP).
-Then, each further line defines a polygon. Each polygon consists of the vertices as defined on that line.</p>
+<p>It starts with a header with latitude, longitude column headers (this
+header will be skipped by HARP). Then, each further line defines a polygon.
+Each polygon consists of the vertices as defined on that line.</p>
 </div>
 <div class="section" id="examples">
 <h2>Examples</h2>
@@ -542,9 +594,15 @@ Then, each further line defines a polygon. Each polygon consists of the vertices
 <span class="n">dimensionspec</span> <span class="o">=</span> <span class="s1">&#39;{&#39;</span> <span class="n">dimensionlist</span> <span class="s1">&#39;}&#39;</span> <span class="p">;</span>
 
 <span class="n">functioncall</span> <span class="o">=</span>
-   <span class="s1">&#39;area_mask_covers_area&#39;</span><span class="p">,</span> <span class="s1">&#39;(&#39;</span><span class="p">,</span> <span class="n">stringvalue</span><span class="p">,</span> <span class="s1">&#39;)&#39;</span> <span class="o">|</span>
-   <span class="s1">&#39;area_mask_covers_point&#39;</span><span class="p">,</span> <span class="s1">&#39;(&#39;</span><span class="p">,</span> <span class="n">stringvalue</span><span class="p">,</span> <span class="s1">&#39;)&#39;</span> <span class="o">|</span>
-   <span class="s1">&#39;area_mask_intersects_area&#39;</span><span class="p">,</span> <span class="s1">&#39;(&#39;</span><span class="p">,</span> <span class="n">stringvalue</span><span class="p">,</span> <span class="s1">&#39;,&#39;</span><span class="p">,</span> <span class="n">floatvalue</span><span class="p">,</span> <span class="s1">&#39;)&#39;</span> <span class="o">|</span>
+   <span class="s1">&#39;area_covers_area&#39;</span><span class="p">,</span> <span class="s1">&#39;(&#39;</span><span class="p">,</span> <span class="s1">&#39;(&#39;</span><span class="p">,</span> <span class="n">floatvaluelist</span><span class="p">,</span> <span class="s1">&#39;)&#39;</span><span class="p">,</span> <span class="p">[</span><span class="n">unit</span><span class="p">],</span> <span class="s1">&#39;(&#39;</span><span class="p">,</span> <span class="n">floatvaluelist</span><span class="p">,</span> <span class="s1">&#39;)&#39;</span><span class="p">,</span> <span class="p">[</span><span class="n">unit</span><span class="p">],</span> <span class="s1">&#39;)&#39;</span> <span class="o">|</span>
+   <span class="s1">&#39;area_covers_area&#39;</span><span class="p">,</span> <span class="s1">&#39;(&#39;</span><span class="p">,</span> <span class="n">stringvalue</span><span class="p">,</span> <span class="s1">&#39;)&#39;</span> <span class="o">|</span>
+   <span class="s1">&#39;area_covers_point&#39;</span><span class="p">,</span> <span class="s1">&#39;(&#39;</span><span class="p">,</span> <span class="n">floatvalue</span><span class="p">,</span> <span class="p">[</span><span class="n">unit</span><span class="p">],</span> <span class="s1">&#39;,&#39;</span><span class="p">,</span> <span class="n">floatvalue</span><span class="p">,</span> <span class="p">[</span><span class="n">unit</span><span class="p">],</span> <span class="s1">&#39;)&#39;</span> <span class="o">|</span>
+   <span class="s1">&#39;area_inside_area&#39;</span><span class="p">,</span> <span class="s1">&#39;(&#39;</span><span class="p">,</span> <span class="s1">&#39;(&#39;</span><span class="p">,</span> <span class="n">floatvaluelist</span><span class="p">,</span> <span class="s1">&#39;)&#39;</span><span class="p">,</span> <span class="p">[</span><span class="n">unit</span><span class="p">],</span> <span class="s1">&#39;(&#39;</span><span class="p">,</span> <span class="n">floatvaluelist</span><span class="p">,</span> <span class="s1">&#39;)&#39;</span><span class="p">,</span> <span class="p">[</span><span class="n">unit</span><span class="p">],</span> <span class="s1">&#39;)&#39;</span> <span class="o">|</span>
+   <span class="s1">&#39;area_inside_area&#39;</span><span class="p">,</span> <span class="s1">&#39;(&#39;</span><span class="p">,</span> <span class="n">stringvalue</span><span class="p">,</span> <span class="s1">&#39;)&#39;</span> <span class="o">|</span>
+   <span class="s1">&#39;area_intersects_area&#39;</span><span class="p">,</span> <span class="s1">&#39;(&#39;</span><span class="p">,</span> <span class="s1">&#39;(&#39;</span><span class="p">,</span> <span class="n">floatvaluelist</span><span class="p">,</span> <span class="s1">&#39;)&#39;</span><span class="p">,</span> <span class="p">[</span><span class="n">unit</span><span class="p">],</span> <span class="s1">&#39;(&#39;</span><span class="p">,</span> <span class="n">floatvaluelist</span><span class="p">,</span> <span class="s1">&#39;)&#39;</span><span class="p">,</span> <span class="p">[</span><span class="n">unit</span><span class="p">],</span> <span class="s1">&#39;,&#39;</span><span class="p">,</span> <span class="n">floatvalue</span><span class="p">,</span> <span class="s1">&#39;)&#39;</span> <span class="o">|</span>
+   <span class="s1">&#39;area_intersects_area&#39;</span><span class="p">,</span> <span class="s1">&#39;(&#39;</span><span class="p">,</span> <span class="n">stringvalue</span><span class="p">,</span> <span class="s1">&#39;,&#39;</span><span class="p">,</span> <span class="n">floatvalue</span><span class="p">,</span> <span class="s1">&#39;)&#39;</span> <span class="o">|</span>
+   <span class="s1">&#39;area_intersects_area&#39;</span><span class="p">,</span> <span class="s1">&#39;(&#39;</span><span class="p">,</span> <span class="s1">&#39;(&#39;</span><span class="p">,</span> <span class="n">floatvaluelist</span><span class="p">,</span> <span class="s1">&#39;)&#39;</span><span class="p">,</span> <span class="p">[</span><span class="n">unit</span><span class="p">],</span> <span class="s1">&#39;(&#39;</span><span class="p">,</span> <span class="n">floatvaluelist</span><span class="p">,</span> <span class="s1">&#39;)&#39;</span><span class="p">,</span> <span class="p">[</span><span class="n">unit</span><span class="p">],</span> <span class="s1">&#39;)&#39;</span> <span class="o">|</span>
+   <span class="s1">&#39;area_intersects_area&#39;</span><span class="p">,</span> <span class="s1">&#39;(&#39;</span><span class="p">,</span> <span class="n">stringvalue</span><span class="p">,</span> <span class="s1">&#39;)&#39;</span> <span class="o">|</span>
    <span class="s1">&#39;bin&#39;</span><span class="p">,</span> <span class="s1">&#39;(&#39;</span><span class="p">,</span> <span class="n">variable</span><span class="p">,</span> <span class="s1">&#39;)&#39;</span> <span class="o">|</span>
    <span class="s1">&#39;bin&#39;</span><span class="p">,</span> <span class="s1">&#39;(&#39;</span><span class="p">,</span> <span class="n">stringvalue</span><span class="p">,</span> <span class="s1">&#39;,&#39;</span><span class="p">,</span> <span class="p">(</span> <span class="s1">&#39;a&#39;</span> <span class="o">|</span> <span class="s1">&#39;b&#39;</span> <span class="p">),</span> <span class="s1">&#39;)&#39;</span> <span class="o">|</span>
    <span class="s1">&#39;collocate_left&#39;</span><span class="p">,</span> <span class="s1">&#39;(&#39;</span><span class="p">,</span> <span class="n">stringvalue</span><span class="p">,</span> <span class="s1">&#39;)&#39;</span> <span class="o">|</span>
@@ -556,7 +614,8 @@ Then, each further line defines a polygon. Each polygon consists of the vertices
    <span class="s1">&#39;keep&#39;</span><span class="p">,</span> <span class="s1">&#39;(&#39;</span><span class="p">,</span> <span class="n">variablelist</span><span class="p">,</span> <span class="s1">&#39;)&#39;</span> <span class="o">|</span>
    <span class="s1">&#39;longitude_range&#39;</span><span class="p">,</span> <span class="s1">&#39;(&#39;</span><span class="p">,</span> <span class="n">floatvalue</span><span class="p">,</span> <span class="p">[</span><span class="n">unit</span><span class="p">],</span> <span class="s1">&#39;,&#39;</span><span class="p">,</span> <span class="n">floatvalue</span><span class="p">,</span> <span class="p">[</span><span class="n">unit</span><span class="p">],</span> <span class="s1">&#39;)&#39;</span> <span class="o">|</span>
    <span class="s1">&#39;point_distance&#39;</span><span class="p">,</span> <span class="s1">&#39;(&#39;</span><span class="p">,</span> <span class="n">floatvalue</span><span class="p">,</span> <span class="p">[</span><span class="n">unit</span><span class="p">],</span> <span class="s1">&#39;,&#39;</span><span class="p">,</span> <span class="n">floatvalue</span><span class="p">,</span> <span class="p">[</span><span class="n">unit</span><span class="p">],</span> <span class="s1">&#39;,&#39;</span><span class="p">,</span> <span class="n">floatvalue</span><span class="p">,</span> <span class="p">[</span><span class="n">unit</span><span class="p">],</span> <span class="s1">&#39;)&#39;</span> <span class="o">|</span>
-   <span class="s1">&#39;point_in_area&#39;</span><span class="p">,</span> <span class="s1">&#39;(&#39;</span><span class="p">,</span> <span class="n">floatvalue</span><span class="p">,</span> <span class="p">[</span><span class="n">unit</span><span class="p">],</span> <span class="s1">&#39;,&#39;</span><span class="p">,</span> <span class="n">floatvalue</span><span class="p">,</span> <span class="p">[</span><span class="n">unit</span><span class="p">],</span> <span class="s1">&#39;)&#39;</span> <span class="o">|</span>
+   <span class="s1">&#39;point_in_area&#39;</span><span class="p">,</span> <span class="s1">&#39;(&#39;</span><span class="p">,</span> <span class="s1">&#39;(&#39;</span><span class="p">,</span> <span class="n">floatvaluelist</span><span class="p">,</span> <span class="s1">&#39;)&#39;</span><span class="p">,</span> <span class="p">[</span><span class="n">unit</span><span class="p">],</span> <span class="s1">&#39;(&#39;</span><span class="p">,</span> <span class="n">floatvaluelist</span><span class="p">,</span> <span class="s1">&#39;)&#39;</span><span class="p">,</span> <span class="p">[</span><span class="n">unit</span><span class="p">],</span> <span class="s1">&#39;)&#39;</span> <span class="o">|</span>
+   <span class="s1">&#39;point_in_area&#39;</span><span class="p">,</span> <span class="s1">&#39;(&#39;</span><span class="p">,</span> <span class="n">stringvalue</span><span class="p">,</span> <span class="s1">&#39;)&#39;</span> <span class="o">|</span>
    <span class="s1">&#39;regrid&#39;</span><span class="p">,</span> <span class="s1">&#39;(&#39;</span><span class="p">,</span> <span class="n">dimension</span><span class="p">,</span> <span class="s1">&#39;,&#39;</span><span class="p">,</span> <span class="n">variable</span><span class="p">,</span> <span class="n">unit</span><span class="p">,</span> <span class="s1">&#39;,&#39;</span><span class="p">,</span> <span class="s1">&#39;(&#39;</span><span class="p">,</span> <span class="n">floatvaluelist</span><span class="p">,</span> <span class="s1">&#39;)&#39;</span><span class="p">,</span> <span class="s1">&#39;)&#39;</span> <span class="o">|</span>
    <span class="s1">&#39;regrid&#39;</span><span class="p">,</span> <span class="s1">&#39;(&#39;</span><span class="p">,</span> <span class="n">dimension</span><span class="p">,</span> <span class="s1">&#39;,&#39;</span><span class="p">,</span> <span class="n">variable</span><span class="p">,</span> <span class="n">unit</span><span class="p">,</span> <span class="s1">&#39;,&#39;</span><span class="p">,</span> <span class="n">intvalue</span><span class="p">,</span> <span class="s1">&#39;,&#39;</span><span class="p">,</span> <span class="n">floatvalue</span><span class="p">,</span> <span class="s1">&#39;,&#39;</span><span class="p">,</span> <span class="n">floatvalue</span><span class="p">,</span> <span class="s1">&#39;)&#39;</span> <span class="o">|</span>
    <span class="s1">&#39;regrid&#39;</span><span class="p">,</span> <span class="s1">&#39;(&#39;</span><span class="p">,</span> <span class="n">dimension</span><span class="p">,</span> <span class="s1">&#39;,&#39;</span><span class="p">,</span> <span class="n">variable</span><span class="p">,</span> <span class="n">unit</span><span class="p">,</span> <span class="s1">&#39;,&#39;</span><span class="p">,</span> <span class="n">stringvalue</span><span class="p">,</span> <span class="s1">&#39;,&#39;</span><span class="p">,</span> <span class="p">(</span> <span class="s1">&#39;a&#39;</span> <span class="o">|</span> <span class="s1">&#39;b&#39;</span> <span class="p">),</span> <span class="s1">&#39;,&#39;</span><span class="p">,</span> <span class="n">stringvalue</span><span class="p">,</span> <span class="s1">&#39;)&#39;</span> <span class="o">|</span>

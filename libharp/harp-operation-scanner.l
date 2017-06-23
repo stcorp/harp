@@ -88,9 +88,10 @@ WHITESPACE   [[:space:]]+
 "a"                     return ID_A;
 "b"                     return ID_B;
 
-"area_mask_covers_area" return FUNC_AREA_MASK_COVERS_AREA;
-"area_mask_covers_point"    return FUNC_AREA_MASK_COVERS_POINT;
-"area_mask_intersects_area" return FUNC_AREA_MASK_INTERSECTS_AREA;
+"area_covers_area"      return FUNC_AREA_COVERS_AREA;
+"area_covers_point"     return FUNC_AREA_COVERS_POINT;
+"area_inside_area"      return FUNC_AREA_INSIDE_AREA;
+"area_intersects_area"  return FUNC_AREA_INTERSECTS_AREA;
 "bin"                   return FUNC_BIN;
 "collocate_left"        return FUNC_COLLOCATE_LEFT;
 "collocate_right"       return FUNC_COLLOCATE_RIGHT;

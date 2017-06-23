@@ -46,8 +46,10 @@ int harp_area_mask_add_polygon(harp_area_mask *area_mask, harp_spherical_polygon
 
 int harp_area_mask_covers_point(const harp_area_mask *area_mask, const harp_spherical_point *point);
 int harp_area_mask_covers_area(const harp_area_mask *area_mask, const harp_spherical_polygon *area);
-int harp_area_mask_intersects_area(const harp_area_mask *area_mask, const harp_spherical_polygon *area,
-                                   double min_percentage);
+int harp_area_mask_inside_area(const harp_area_mask *area_mask, const harp_spherical_polygon *area);
+int harp_area_mask_intersects_area(const harp_area_mask *area_mask, const harp_spherical_polygon *area);
+int harp_area_mask_intersects_area_with_fraction(const harp_area_mask *area_mask, const harp_spherical_polygon *area,
+                                                 double min_fraction);
 
 int harp_area_mask_read(const char *path, harp_area_mask **new_area_mask);
 #endif

@@ -33,14 +33,6 @@
 
 #include <math.h>
 
-/* Define all possible relationships between spherical lines */
-const int8_t harp_spherical_line_relationship_avoid = HARP_GEOMETRY_LINE_AVOID; /* line avoids other line */
-const int8_t harp_spherical_line_relationship_equal = HARP_GEOMETRY_LINE_EQUAL; /* lines are equal */
-const int8_t harp_spherical_line_relationship_contain_line = HARP_GEOMETRY_LINE_CONT_LINE;      /* line contains line */
-const int8_t harp_spherical_line_relationship_cross = HARP_GEOMETRY_LINE_CROSS; /* lines cross each other */
-const int8_t harp_spherical_line_relationship_connect = HARP_GEOMETRY_LINE_CONNECT;     /* line are "connected" */
-const int8_t harp_spherical_line_relationship_overlap = HARP_GEOMETRY_LINE_OVER;        /* lines overlap each other */
-
 /* A spherical_line is defined by a length and
  *   an Euler transformation that defines
  *   the begin point of the line. This point is obtained
@@ -210,7 +202,7 @@ int8_t harp_spherical_line_spherical_line_relationship(const harp_spherical_line
     harp_spherical_line_swap_begin_end(&sl1, line1);
     if (harp_spherical_line_equal(&sl1, line2))
     {
-        return HARP_GEOMETRY_LINE_CONT_LINE;
+        return HARP_GEOMETRY_LINE_CONTAINS;
     }
 
     /* transform the larger line into equator ( begin at (0,0) ) */
@@ -231,7 +223,7 @@ int8_t harp_spherical_line_spherical_line_relationship(const harp_spherical_line
     }
     if (HARP_GEOMETRY_FPzero(sl1.length))
     {   /* both are points */
-        return HARP_GEOMETRY_LINE_AVOID;
+        return HARP_GEOMETRY_LINE_SEPARATE;
     }
 
     harp_spherical_line_begin(&p[0], &sl1);
@@ -249,19 +241,19 @@ int8_t harp_spherical_line_spherical_line_relationship(const harp_spherical_line
         {
             if (switched)
             {
-                return HARP_GEOMETRY_LINE_OVER;
+                return HARP_GEOMETRY_LINE_CONTAINED;
             }
             else
             {
-                return HARP_GEOMETRY_LINE_CONT_LINE;
+                return HARP_GEOMETRY_LINE_CONTAINS;
             }
         }
         else if (a1 || a2)
         {
-            return HARP_GEOMETRY_LINE_OVER;
+            return HARP_GEOMETRY_LINE_OVERLAP;
         }
 
-        return HARP_GEOMETRY_LINE_AVOID;
+        return HARP_GEOMETRY_LINE_SEPARATE;
     }
 
     /* Now sl2 is not at equator */
@@ -272,24 +264,28 @@ int8_t harp_spherical_line_spherical_line_relationship(const harp_spherical_line
     {
         if (harp_spherical_point_equal(&p[0], &p[2]))
         {
-            res = (1 << HARP_GEOMETRY_LINE_CONNECT);
+            res = (1 << HARP_GEOMETRY_LINE_CONNECTED);
         }
 
         if (harp_spherical_point_equal(&p[0], &p[3]))
         {
-            res = (1 << HARP_GEOMETRY_LINE_CONNECT);
+            res = (1 << HARP_GEOMETRY_LINE_CONNECTED);
         }
 
         if (harp_spherical_point_equal(&p[1], &p[2]))
         {
-            res = (1 << HARP_GEOMETRY_LINE_CONNECT);
+            res = (1 << HARP_GEOMETRY_LINE_CONNECTED);
         }
 
         if (harp_spherical_point_equal(&p[1], &p[3]))
         {
-            res = (1 << HARP_GEOMETRY_LINE_CONNECT);
+            res = (1 << HARP_GEOMETRY_LINE_CONNECTED);
         }
     }
+
+    /* TODO: review/rework the following part, because line lengths can never be larger than 180 degrees
+     * (i.e. shortest distance between two points on a sphere is always <= 180 degrees)
+     */
 
     /* split lines in segments less than 180 degrees and check for each of it */
     mi = sl1.length / step;
@@ -327,12 +323,11 @@ int8_t harp_spherical_line_spherical_line_relationship(const harp_spherical_line
 
             if (!(a1 || a2))
             {
-                res |= (1 << HARP_GEOMETRY_LINE_AVOID);
+                res |= (1 << HARP_GEOMETRY_LINE_SEPARATE);
             }
             else
             {
                 static harp_vector3d v[2][2];
-                static int lbeg, lend;
                 static harp_spherical_point sp;
 
                 /* Now we take the vectors of line's begin and end */
@@ -345,18 +340,6 @@ int8_t harp_spherical_line_spherical_line_relationship(const harp_spherical_line
                 {
                     v[0][1].y = 1.0;
                 }
-
-                /* check whether sl2's longitudes are in sl1 range ( begin and end ) */
-                lbeg = HARP_GEOMETRY_FPle(v[0][1].x, v[1][0].x) &&
-                    HARP_GEOMETRY_FPle(v[1][0].x, 1.0) &&
-                    HARP_GEOMETRY_FPle(0.0, v[1][0].y) && HARP_GEOMETRY_FPle(v[1][0].y, v[0][1].y);
-
-                lend = HARP_GEOMETRY_FPle(v[0][1].x, v[1][1].x) &&
-                    HARP_GEOMETRY_FPle(v[1][1].x, 1.0) &&
-                    HARP_GEOMETRY_FPle(0.0, v[1][1].y) && HARP_GEOMETRY_FPle(v[1][1].y, v[0][1].y);
-
-                (void)lbeg;     /* Prevent compiler warning */
-                (void)lend;
 
                 harp_inverse_euler_transformation_from_spherical_line(&se, &sl2);
 
@@ -371,25 +354,30 @@ int8_t harp_spherical_line_spherical_line_relationship(const harp_spherical_line
                 }
                 else
                 {
-                    res |= (1 << HARP_GEOMETRY_LINE_AVOID);
+                    res |= (1 << HARP_GEOMETRY_LINE_SEPARATE);
                 }
             }
         }
     }
 
-    if (res == (1 << HARP_GEOMETRY_LINE_AVOID))
+    if (res == (1 << HARP_GEOMETRY_LINE_SEPARATE))
     {
-        return HARP_GEOMETRY_LINE_AVOID;
+        return HARP_GEOMETRY_LINE_SEPARATE;
     }
 
-    if (res & (1 << HARP_GEOMETRY_LINE_CONNECT))
+    if (res & (1 << HARP_GEOMETRY_LINE_CONNECTED))
     {
-        return HARP_GEOMETRY_LINE_CONNECT;
+        return HARP_GEOMETRY_LINE_CONNECTED;
     }
 
-    if (res & (1 << HARP_GEOMETRY_LINE_CONT_LINE))
+    if (res & (1 << HARP_GEOMETRY_LINE_CONTAINS))
     {
-        return HARP_GEOMETRY_LINE_CONT_LINE;
+        return HARP_GEOMETRY_LINE_CONTAINS;
+    }
+
+    if (res & (1 << HARP_GEOMETRY_LINE_CONTAINED))
+    {
+        return HARP_GEOMETRY_LINE_CONTAINED;
     }
 
     if (res & (1 << HARP_GEOMETRY_LINE_CROSS))
@@ -397,7 +385,7 @@ int8_t harp_spherical_line_spherical_line_relationship(const harp_spherical_line
         return HARP_GEOMETRY_LINE_CROSS;
     }
 
-    return HARP_GEOMETRY_LINE_AVOID;
+    return HARP_GEOMETRY_LINE_SEPARATE;
 }
 
 /* Return a meridian line for a given longitude [rad] */

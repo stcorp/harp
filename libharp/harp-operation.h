@@ -39,9 +39,10 @@
 
 typedef enum harp_operation_type_enum
 {
-    operation_area_mask_covers_area_filter,
-    operation_area_mask_covers_point_filter,
-    operation_area_mask_intersects_area_filter,
+    operation_area_covers_area_filter,
+    operation_area_covers_point_filter,
+    operation_area_inside_area_filter,
+    operation_area_intersects_area_filter,
     operation_bin_collocated,
     operation_bin_with_variable,
     operation_bit_mask_filter,
@@ -104,12 +105,12 @@ typedef enum harp_membership_operator_type_enum
  *   |  |-  harp_operation_string_membership_filter
  *   |  |-  harp_operation_valid_range_filter
  *   |- harp_operation_point_filter
- *   |  |-  harp_operation_area_mask_covers_point_filter
  *   |  |-  harp_operation_point_distance_filter
- *   |- harp_operation_polygon_filter
- *   |  |-  harp_operation_area_mask_covers_area_filter
- *   |  |-  harp_operation_area_mask_intersects_area_filter
  *   |  |-  harp_operation_point_in_area_filter
+ *   |- harp_operation_polygon_filter
+ *   |  |-  harp_operation_area_covers_area_filter
+ *   |  |-  harp_operation_area_covers_point_filter
+ *   |  |-  harp_operation_area_intersects_area_filter
  *   |-  harp_operation_bin_collocated
  *   |-  harp_operation_bin_with_variable
  *   |-  harp_operation_derive_variable
@@ -149,36 +150,45 @@ typedef struct harp_operation_polygon_filter_struct
     int (*eval) (struct harp_operation_polygon_filter_struct *, harp_spherical_polygon *);
 } harp_operation_polygon_filter;
 
-typedef struct harp_operation_area_mask_covers_area_filter_struct
+typedef struct harp_operation_area_covers_area_filter_struct
 {
     harp_operation_type type;
-    int (*eval) (struct harp_operation_area_mask_covers_area_filter_struct *, harp_spherical_polygon *);
+    int (*eval) (struct harp_operation_area_covers_area_filter_struct *, harp_spherical_polygon *);
     /* parameters */
-    char *filename;
+    char *filename;     /* can be NULL */
     /* extra */
     harp_area_mask *area_mask;
-} harp_operation_area_mask_covers_area_filter;
+} harp_operation_area_covers_area_filter;
 
-typedef struct harp_operation_area_mask_covers_point_filter_struct
+typedef struct harp_operation_area_covers_point_filter_struct
 {
     harp_operation_type type;
-    int (*eval) (struct harp_operation_area_mask_covers_point_filter_struct *, harp_spherical_point *);
+    int (*eval) (struct harp_operation_area_covers_point_filter_struct *, harp_spherical_polygon *);
     /* parameters */
-    char *filename;
-    /* extra */
-    harp_area_mask *area_mask;
-} harp_operation_area_mask_covers_point_filter;
+    harp_spherical_point point;
+} harp_operation_area_covers_point_filter;
 
-typedef struct harp_operation_area_mask_intersects_area_filter_struct
+typedef struct harp_operation_area_inside_area_filter_struct
 {
     harp_operation_type type;
-    int (*eval) (struct harp_operation_area_mask_intersects_area_filter_struct *, harp_spherical_polygon *);
+    int (*eval) (struct harp_operation_area_inside_area_filter_struct *, harp_spherical_polygon *);
     /* parameters */
-    char *filename;
-    double min_percentage;
+    char *filename;     /* can be NULL */
     /* extra */
     harp_area_mask *area_mask;
-} harp_operation_area_mask_intersects_area_filter;
+} harp_operation_area_inside_area_filter;
+
+typedef struct harp_operation_area_intersects_area_filter_struct
+{
+    harp_operation_type type;
+    int (*eval) (struct harp_operation_area_intersects_area_filter_struct *, harp_spherical_polygon *);
+    /* parameters */
+    char *filename;     /* can be NULL */
+    int has_fraction;
+    double min_fraction;
+    /* extra */
+    harp_area_mask *area_mask;
+} harp_operation_area_intersects_area_filter;
 
 typedef struct harp_operation_bin_collocated_struct
 {
@@ -319,9 +329,11 @@ typedef struct harp_operation_point_distance_filter_struct
 typedef struct harp_operation_point_in_area_filter_struct
 {
     harp_operation_type type;
-    int (*eval) (struct harp_operation_point_in_area_filter_struct *, harp_spherical_polygon *);
+    int (*eval) (struct harp_operation_point_in_area_filter_struct *, harp_spherical_point *);
     /* parameters */
-    harp_spherical_point point;
+    char *filename;     /* can be NULL */
+    /* extra */
+    harp_area_mask *area_mask;
 } harp_operation_point_in_area_filter;
 
 typedef struct harp_operation_regrid_struct
@@ -432,10 +444,18 @@ int harp_operation_is_value_filter(const harp_operation *operation);
 int harp_operation_set_value_unit(harp_operation *operation, const char *unit);
 
 /* Specific operations */
-int harp_operation_area_mask_covers_area_filter_new(const char *filename, harp_operation **new_operation);
-int harp_operation_area_mask_covers_point_filter_new(const char *filename, harp_operation **new_operation);
-int harp_operation_area_mask_intersects_area_filter_new(const char *filename, double min_percentage,
-                                                        harp_operation **new_operation);
+int harp_operation_area_covers_area_filter_new(const char *filename, int num_latitudes, double *latitude,
+                                               const char *latitude_unit, int num_longitudes, double *longitude,
+                                               const char *longitude_unit, harp_operation **new_operation);
+int harp_operation_area_covers_point_filter_new(double latitude, const char *latitude_unit, double longitude,
+                                                const char *longitude_unit, harp_operation **new_operation);
+int harp_operation_area_inside_area_filter_new(const char *filename, int num_latitudes, double *latitude,
+                                               const char *latitude_unit, int num_longitudes, double *longitude,
+                                               const char *longitude_unit, harp_operation **new_operation);
+int harp_operation_area_intersects_area_filter_new(const char *filename, int num_latitudes, double *latitude,
+                                                   const char *latitude_unit, int num_longitudes, double *longitude,
+                                                   const char *longitude_unit, double *min_fraction,
+                                                   harp_operation **new_operation);
 int harp_operation_bin_collocated_new(const char *collocation_result, const char target_dataset,
                                       harp_operation **new_operation);
 int harp_operation_bin_with_variable_new(const char *variable_name, harp_operation **new_operation);
@@ -464,7 +484,8 @@ int harp_operation_membership_filter_new(const char *variable_name, harp_members
 int harp_operation_point_distance_filter_new(double latitude, const char *latitude_unit, double longitude,
                                              const char *longitude_unit, double distance, const char *distance_unit,
                                              harp_operation **operation);
-int harp_operation_point_in_area_filter_new(double latitude, const char *latitude_unit, double longitude,
+int harp_operation_point_in_area_filter_new(const char *filename, int num_latitudes, double *latitude,
+                                            const char *latitude_unit, int num_longitudes, double *longitude,
                                             const char *longitude_unit, harp_operation **operation);
 int harp_operation_regrid_new(harp_dimension_type dimension_type, const char *axis_variable_name, const char *axis_unit,
                               long num_values, double *values, harp_operation **new_operation);

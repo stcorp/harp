@@ -55,22 +55,98 @@ static int compare_int32(const void *untyped_a, const void *untyped_b)
     return 0;
 }
 
-static int eval_area_mask_covers_area(harp_operation_area_mask_covers_area_filter *operation,
-                                      harp_spherical_polygon *polygon)
+static int add_latitude_longitude_bounds_to_area_mask(harp_area_mask *area_mask, int num_vertices, double *latitude,
+                                                      const char *latitude_unit, double *longitude,
+                                                      const char *longitude_unit)
+{
+    harp_spherical_polygon *polygon;
+
+    if (latitude_unit != NULL || longitude_unit != NULL)
+    {
+        double *coordinates;
+        int i;
+
+        coordinates = (double *)malloc(2 * num_vertices * sizeof(double));
+        if (coordinates == NULL)
+        {
+            harp_set_error(HARP_ERROR_OUT_OF_MEMORY, "out of memory (could not allocate %lu bytes) (%s:%u)",
+                           2 * num_vertices * sizeof(double), __FILE__, __LINE__);
+            return -1;
+        }
+        for (i = 0; i < num_vertices; i++)
+        {
+            coordinates[i] = latitude[i];
+            coordinates[i + num_vertices] = longitude[i];
+        }
+        if (latitude_unit != NULL)
+        {
+            if (harp_unit_compare(latitude_unit, "degree_north") != 0)
+            {
+                if (harp_convert_unit(latitude_unit, "degree_north", num_vertices, coordinates) != 0)
+                {
+                    free(coordinates);
+                    return -1;
+                }
+            }
+        }
+        if (longitude_unit != NULL)
+        {
+            if (harp_unit_compare(longitude_unit, "degree_east") != 0)
+            {
+                if (harp_convert_unit(longitude_unit, "degree_east", num_vertices, &coordinates[num_vertices]) != 0)
+                {
+                    free(coordinates);
+                    return -1;
+                }
+            }
+        }
+        if (harp_spherical_polygon_from_latitude_longitude_bounds(0, num_vertices, coordinates,
+                                                                  &coordinates[num_vertices], &polygon) != 0)
+        {
+            free(coordinates);
+            return -1;
+        }
+        free(coordinates);
+    }
+    else
+    {
+        if (harp_spherical_polygon_from_latitude_longitude_bounds(0, num_vertices, latitude, longitude, &polygon) != 0)
+        {
+            return -1;
+        }
+    }
+    if (harp_area_mask_add_polygon(area_mask, polygon) != 0)
+    {
+        harp_spherical_polygon_delete(polygon);
+        return -1;
+    }
+
+    return 0;
+}
+
+static int eval_area_covers_area(harp_operation_area_covers_area_filter *operation, harp_spherical_polygon *polygon)
+{
+    return harp_area_mask_inside_area(operation->area_mask, polygon);
+}
+
+static int eval_area_covers_point(harp_operation_area_covers_point_filter *operation, harp_spherical_polygon *polygon)
+{
+    return harp_spherical_polygon_contains_point(polygon, &operation->point);
+}
+
+static int eval_area_inside_area(harp_operation_area_inside_area_filter *operation, harp_spherical_polygon *polygon)
 {
     return harp_area_mask_covers_area(operation->area_mask, polygon);
 }
 
-static int eval_area_mask_covers_point(harp_operation_area_mask_covers_point_filter *operation,
-                                       harp_spherical_point *point)
+static int eval_area_intersects_area(harp_operation_area_intersects_area_filter *operation,
+                                     harp_spherical_polygon *polygon)
 {
-    return harp_area_mask_covers_point(operation->area_mask, point);
-}
-
-static int eval_area_mask_intersects_area(harp_operation_area_mask_intersects_area_filter *operation,
-                                          harp_spherical_polygon *polygon)
-{
-    return harp_area_mask_intersects_area(operation->area_mask, polygon, operation->min_percentage);
+    if (operation->has_fraction)
+    {
+        return harp_area_mask_intersects_area_with_fraction(operation->area_mask, polygon, operation->min_fraction);
+    }
+    return harp_area_mask_intersects_area(operation->area_mask, polygon);
 }
 
 static int eval_bitmask(harp_operation_bit_mask_filter *operation, harp_data_type data_type, void *value)
@@ -283,9 +359,9 @@ static int eval_point_distance(harp_operation_point_distance_filter *operation, 
     return (harp_spherical_point_distance_in_meters(&operation->point, point) <= operation->distance);
 }
 
-static int eval_point_in_area(harp_operation_point_in_area_filter *operation, harp_spherical_polygon *polygon)
+static int eval_point_in_area(harp_operation_point_in_area_filter *operation, harp_spherical_point *point)
 {
-    return harp_spherical_polygon_contains_point(polygon, &operation->point);
+    return harp_area_mask_covers_point(operation->area_mask, point);
 }
 
 static int eval_string_comparison(harp_operation_string_comparison_filter *operation, harp_data_type data_type,
@@ -371,7 +447,7 @@ static int eval_valid_range(harp_operation_valid_range_filter *operation, harp_d
     return (!harp_isnan(double_value) && double_value >= operation->valid_min && double_value <= operation->valid_max);
 }
 
-static void area_mask_covers_area_filter_delete(harp_operation_area_mask_covers_area_filter *operation)
+static void area_covers_area_filter_delete(harp_operation_area_covers_area_filter *operation)
 {
     if (operation != NULL)
     {
@@ -388,7 +464,15 @@ static void area_mask_covers_area_filter_delete(harp_operation_area_mask_covers_
     }
 }
 
-static void area_mask_covers_point_filter_delete(harp_operation_area_mask_covers_point_filter *operation)
+static void area_covers_point_filter_delete(harp_operation_area_covers_point_filter *operation)
+{
+    if (operation != NULL)
+    {
+        free(operation);
+    }
+}
+
+static void area_inside_area_filter_delete(harp_operation_area_inside_area_filter *operation)
 {
     if (operation != NULL)
     {
@@ -405,7 +489,7 @@ static void area_mask_covers_point_filter_delete(harp_operation_area_mask_covers
     }
 }
 
-static void area_mask_intersects_area_filter_delete(harp_operation_area_mask_intersects_area_filter *operation)
+static void area_intersects_area_filter_delete(harp_operation_area_intersects_area_filter *operation)
 {
     if (operation != NULL)
     {
@@ -657,6 +741,15 @@ static void point_in_area_filter_delete(harp_operation_point_in_area_filter *ope
 {
     if (operation != NULL)
     {
+        if (operation->filename != NULL)
+        {
+            free(operation->filename);
+        }
+        if (operation->area_mask != NULL)
+        {
+            harp_area_mask_delete(operation->area_mask);
+        }
+
         free(operation);
     }
 }
@@ -863,14 +956,17 @@ void harp_operation_delete(harp_operation *operation)
 {
     switch (operation->type)
     {
-        case operation_area_mask_covers_area_filter:
-            area_mask_covers_area_filter_delete((harp_operation_area_mask_covers_area_filter *)operation);
+        case operation_area_covers_area_filter:
+            area_covers_area_filter_delete((harp_operation_area_covers_area_filter *)operation);
             break;
-        case operation_area_mask_covers_point_filter:
-            area_mask_covers_point_filter_delete((harp_operation_area_mask_covers_point_filter *)operation);
+        case operation_area_covers_point_filter:
+            area_covers_point_filter_delete((harp_operation_area_covers_point_filter *)operation);
             break;
-        case operation_area_mask_intersects_area_filter:
-            area_mask_intersects_area_filter_delete((harp_operation_area_mask_intersects_area_filter *)operation);
+        case operation_area_inside_area_filter:
+            area_inside_area_filter_delete((harp_operation_area_inside_area_filter *)operation);
+            break;
+        case operation_area_intersects_area_filter:
+            area_intersects_area_filter_delete((harp_operation_area_intersects_area_filter *)operation);
             break;
         case operation_bin_collocated:
             bin_collocated_delete((harp_operation_bin_collocated *)operation);
@@ -947,111 +1043,268 @@ void harp_operation_delete(harp_operation *operation)
     }
 }
 
-int harp_operation_area_mask_covers_area_filter_new(const char *filename, harp_operation **new_operation)
+int harp_operation_area_covers_area_filter_new(const char *filename, int num_latitudes, double *latitude,
+                                               const char *latitude_unit, int num_longitudes, double *longitude,
+                                               const char *longitude_unit, harp_operation **new_operation)
 {
-    harp_operation_area_mask_covers_area_filter *operation;
+    harp_operation_area_covers_area_filter *operation;
 
-    operation =
-        (harp_operation_area_mask_covers_area_filter *)malloc(sizeof(harp_operation_area_mask_covers_area_filter));
+    if (num_latitudes != num_longitudes)
+    {
+        harp_set_error(HARP_ERROR_INVALID_ARGUMENT, "number of latitude and longitude points need to be the same");
+        return -1;
+    }
+    if (filename != NULL && num_latitudes > 0)
+    {
+        harp_set_error(HARP_ERROR_INVALID_ARGUMENT, "cannot provide both area mask file and individual area (%s:%u)",
+                       __FILE__, __LINE__);
+        return -1;
+    }
+    if (filename == NULL && num_latitudes == 0)
+    {
+        harp_set_error(HARP_ERROR_INVALID_ARGUMENT, "neither area mask file nor individual area provided (%s:%u)",
+                       __FILE__, __LINE__);
+        return -1;
+    }
+    operation = (harp_operation_area_covers_area_filter *)malloc(sizeof(harp_operation_area_covers_area_filter));
     if (operation == NULL)
     {
         harp_set_error(HARP_ERROR_OUT_OF_MEMORY, "out of memory (could not allocate %lu bytes) (%s:%u)",
-                       sizeof(harp_operation_area_mask_covers_area_filter), __FILE__, __LINE__);
+                       sizeof(harp_operation_area_covers_area_filter), __FILE__, __LINE__);
         return -1;
     }
-    operation->type = operation_area_mask_covers_area_filter;
-    operation->eval = eval_area_mask_covers_area;
+    operation->type = operation_area_covers_area_filter;
+    operation->eval = eval_area_covers_area;
     operation->filename = NULL;
     operation->area_mask = NULL;
 
-    operation->filename = strdup(filename);
-    if (operation->filename == NULL)
+    if (filename != NULL)
     {
-        harp_set_error(HARP_ERROR_OUT_OF_MEMORY, "out of memory (could not duplicate string) (%s:%u)", __FILE__,
-                       __LINE__);
-        area_mask_covers_area_filter_delete(operation);
-        return -1;
+        operation->filename = strdup(filename);
+        if (operation->filename == NULL)
+        {
+            harp_set_error(HARP_ERROR_OUT_OF_MEMORY, "out of memory (could not duplicate string) (%s:%u)", __FILE__,
+                           __LINE__);
+            area_covers_area_filter_delete(operation);
+            return -1;
+        }
+        if (harp_area_mask_read(operation->filename, &operation->area_mask) != 0)
+        {
+            area_covers_area_filter_delete(operation);
+            return -1;
+        }
     }
-
-    if (harp_area_mask_read(operation->filename, &operation->area_mask) != 0)
+    else
     {
-        area_mask_covers_area_filter_delete(operation);
-        return -1;
+        if (harp_area_mask_new(&operation->area_mask) != 0)
+        {
+            area_covers_area_filter_delete(operation);
+            return -1;
+        }
+        if (add_latitude_longitude_bounds_to_area_mask(operation->area_mask, num_latitudes, latitude, latitude_unit,
+                                                       longitude, longitude_unit) != 0)
+        {
+            area_covers_area_filter_delete(operation);
+            return -1;
+        }
     }
 
     *new_operation = (harp_operation *)operation;
     return 0;
 }
 
-int harp_operation_area_mask_covers_point_filter_new(const char *filename, harp_operation **new_operation)
+int harp_operation_area_covers_point_filter_new(double latitude, const char *latitude_unit, double longitude,
+                                                const char *longitude_unit, harp_operation **new_operation)
 {
-    harp_operation_area_mask_covers_point_filter *operation;
+    harp_operation_area_covers_point_filter *operation;
 
-    operation =
-        (harp_operation_area_mask_covers_point_filter *)malloc(sizeof(harp_operation_area_mask_covers_point_filter));
+    operation = (harp_operation_area_covers_point_filter *)malloc(sizeof(harp_operation_point_in_area_filter));
     if (operation == NULL)
     {
         harp_set_error(HARP_ERROR_OUT_OF_MEMORY, "out of memory (could not allocate %lu bytes) (%s:%u)",
-                       sizeof(harp_operation_area_mask_covers_point_filter), __FILE__, __LINE__);
+                       sizeof(harp_operation_area_covers_point_filter), __FILE__, __LINE__);
         return -1;
     }
-    operation->type = operation_area_mask_covers_point_filter;
-    operation->eval = eval_area_mask_covers_point;
+    operation->type = operation_area_covers_point_filter;
+    operation->eval = eval_area_covers_point;
+    operation->point.lat = latitude;
+    operation->point.lon = longitude;
+
+    /* convert parameters to internal units */
+    if (latitude_unit != NULL)
+    {
+        if (harp_unit_compare(latitude_unit, "degree_north") != 0)
+        {
+            if (harp_convert_unit(latitude_unit, "degree_north", 1, &operation->point.lat) != 0)
+            {
+                return -1;
+            }
+        }
+    }
+    if (longitude_unit != NULL)
+    {
+        if (harp_unit_compare(longitude_unit, "degree_east") != 0)
+        {
+            if (harp_convert_unit(longitude_unit, "degree_east", 1, &operation->point.lon) != 0)
+            {
+                return -1;
+            }
+        }
+    }
+
+    harp_spherical_point_rad_from_deg(&operation->point);
+    harp_spherical_point_check(&operation->point);
+
+    *new_operation = (harp_operation *)operation;
+    return 0;
+}
+
+int harp_operation_area_inside_area_filter_new(const char *filename, int num_latitudes, double *latitude,
+                                               const char *latitude_unit, int num_longitudes, double *longitude,
+                                               const char *longitude_unit, harp_operation **new_operation)
+{
+    harp_operation_area_inside_area_filter *operation;
+
+    if (num_latitudes != num_longitudes)
+    {
+        harp_set_error(HARP_ERROR_INVALID_ARGUMENT, "number of latitude and longitude points need to be the same");
+        return -1;
+    }
+    if (filename != NULL && num_latitudes > 0)
+    {
+        harp_set_error(HARP_ERROR_INVALID_ARGUMENT, "cannot provide both area mask file and individual area (%s:%u)",
+                       __FILE__, __LINE__);
+        return -1;
+    }
+    if (filename == NULL && num_latitudes == 0)
+    {
+        harp_set_error(HARP_ERROR_INVALID_ARGUMENT, "neither area mask file nor individual area provided (%s:%u)",
+                       __FILE__, __LINE__);
+        return -1;
+    }
+    operation = (harp_operation_area_inside_area_filter *)malloc(sizeof(harp_operation_area_inside_area_filter));
+    if (operation == NULL)
+    {
+        harp_set_error(HARP_ERROR_OUT_OF_MEMORY, "out of memory (could not allocate %lu bytes) (%s:%u)",
+                       sizeof(harp_operation_area_inside_area_filter), __FILE__, __LINE__);
+        return -1;
+    }
+    operation->type = operation_area_inside_area_filter;
+    operation->eval = eval_area_inside_area;
     operation->filename = NULL;
     operation->area_mask = NULL;
 
-    operation->filename = strdup(filename);
-    if (operation->filename == NULL)
+    if (filename != NULL)
     {
-        harp_set_error(HARP_ERROR_OUT_OF_MEMORY, "out of memory (could not duplicate string) (%s:%u)", __FILE__,
-                       __LINE__);
-        area_mask_covers_point_filter_delete(operation);
-        return -1;
+        operation->filename = strdup(filename);
+        if (operation->filename == NULL)
+        {
+            harp_set_error(HARP_ERROR_OUT_OF_MEMORY, "out of memory (could not duplicate string) (%s:%u)", __FILE__,
+                           __LINE__);
+            area_inside_area_filter_delete(operation);
+            return -1;
+        }
+        if (harp_area_mask_read(operation->filename, &operation->area_mask) != 0)
+        {
+            area_inside_area_filter_delete(operation);
+            return -1;
+        }
     }
-
-    if (harp_area_mask_read(operation->filename, &operation->area_mask) != 0)
+    else
     {
-        area_mask_covers_point_filter_delete(operation);
-        return -1;
+        if (harp_area_mask_new(&operation->area_mask) != 0)
+        {
+            area_inside_area_filter_delete(operation);
+            return -1;
+        }
+        if (add_latitude_longitude_bounds_to_area_mask(operation->area_mask, num_latitudes, latitude, latitude_unit,
+                                                       longitude, longitude_unit) != 0)
+        {
+            area_inside_area_filter_delete(operation);
+            return -1;
+        }
     }
 
     *new_operation = (harp_operation *)operation;
     return 0;
 }
 
-int harp_operation_area_mask_intersects_area_filter_new(const char *filename, double min_percentage,
-                                                        harp_operation **new_operation)
+int harp_operation_area_intersects_area_filter_new(const char *filename, int num_latitudes, double *latitude,
+                                                   const char *latitude_unit, int num_longitudes, double *longitude,
+                                                   const char *longitude_unit, double *min_fraction,
+                                                   harp_operation **new_operation)
 {
-    harp_operation_area_mask_intersects_area_filter *operation;
+    harp_operation_area_intersects_area_filter *operation;
 
+    if (num_latitudes != num_longitudes)
+    {
+        harp_set_error(HARP_ERROR_INVALID_ARGUMENT, "number of latitude and longitude points need to be the same");
+        return -1;
+    }
+    if (filename != NULL && num_latitudes > 0)
+    {
+        harp_set_error(HARP_ERROR_INVALID_ARGUMENT, "cannot provide both area mask file and individual area (%s:%u)",
+                       __FILE__, __LINE__);
+        return -1;
+    }
+    if (filename == NULL && num_latitudes == 0)
+    {
+        harp_set_error(HARP_ERROR_INVALID_ARGUMENT, "neither area mask file nor individual area provided (%s:%u)",
+                       __FILE__, __LINE__);
+        return -1;
+    }
     operation =
-        (harp_operation_area_mask_intersects_area_filter
-         *)malloc(sizeof(harp_operation_area_mask_intersects_area_filter));
+        (harp_operation_area_intersects_area_filter *)malloc(sizeof(harp_operation_area_intersects_area_filter));
     if (operation == NULL)
     {
         harp_set_error(HARP_ERROR_OUT_OF_MEMORY, "out of memory (could not allocate %lu bytes) (%s:%u)",
-                       sizeof(harp_operation_area_mask_intersects_area_filter), __FILE__, __LINE__);
+                       sizeof(harp_operation_area_intersects_area_filter), __FILE__, __LINE__);
         return -1;
     }
-    operation->type = operation_area_mask_intersects_area_filter;
-    operation->eval = eval_area_mask_intersects_area;
+    operation->type = operation_area_intersects_area_filter;
+    operation->eval = eval_area_intersects_area;
     operation->filename = NULL;
-    operation->min_percentage = min_percentage;
+    if (min_fraction == NULL)
+    {
+        operation->has_fraction = 0;
+        operation->min_fraction = 0;
+    }
+    else
+    {
+        operation->has_fraction = 1;
+        operation->min_fraction = *min_fraction;
+    }
     operation->area_mask = NULL;
 
-    operation->filename = strdup(filename);
-    if (operation->filename == NULL)
+    if (filename != NULL)
     {
-        harp_set_error(HARP_ERROR_OUT_OF_MEMORY, "out of memory (could not duplicate string) (%s:%u)", __FILE__,
-                       __LINE__);
-        area_mask_intersects_area_filter_delete(operation);
-        return -1;
+        operation->filename = strdup(filename);
+        if (operation->filename == NULL)
+        {
+            harp_set_error(HARP_ERROR_OUT_OF_MEMORY, "out of memory (could not duplicate string) (%s:%u)", __FILE__,
+                           __LINE__);
+            area_intersects_area_filter_delete(operation);
+            return -1;
+        }
+        if (harp_area_mask_read(operation->filename, &operation->area_mask) != 0)
+        {
+            area_intersects_area_filter_delete(operation);
+            return -1;
+        }
     }
-
-    if (harp_area_mask_read(operation->filename, &operation->area_mask) != 0)
+    else
     {
-        area_mask_intersects_area_filter_delete(operation);
-        return -1;
+        if (harp_area_mask_new(&operation->area_mask) != 0)
+        {
+            area_intersects_area_filter_delete(operation);
+            return -1;
+        }
+        if (add_latitude_longitude_bounds_to_area_mask(operation->area_mask, num_latitudes, latitude, latitude_unit,
+                                                       longitude, longitude_unit) != 0)
+        {
+            area_intersects_area_filter_delete(operation);
+            return -1;
+        }
     }
 
     *new_operation = (harp_operation *)operation;
@@ -1665,11 +1918,29 @@ int harp_operation_point_distance_filter_new(double latitude, const char *latitu
     return 0;
 }
 
-int harp_operation_point_in_area_filter_new(double latitude, const char *latitude_unit, double longitude,
+int harp_operation_point_in_area_filter_new(const char *filename, int num_latitudes, double *latitude,
+                                            const char *latitude_unit, int num_longitudes, double *longitude,
                                             const char *longitude_unit, harp_operation **new_operation)
 {
     harp_operation_point_in_area_filter *operation;
 
+    if (num_latitudes != num_longitudes)
+    {
+        harp_set_error(HARP_ERROR_INVALID_ARGUMENT, "number of latitude and longitude points need to be the same");
+        return -1;
+    }
+    if (filename != NULL && num_latitudes > 0)
+    {
+        harp_set_error(HARP_ERROR_INVALID_ARGUMENT, "cannot provide both area mask file and individual area (%s:%u)",
+                       __FILE__, __LINE__);
+        return -1;
+    }
+    if (filename == NULL && num_latitudes == 0)
+    {
+        harp_set_error(HARP_ERROR_INVALID_ARGUMENT, "neither area mask file nor individual area provided (%s:%u)",
+                       __FILE__, __LINE__);
+        return -1;
+    }
     operation = (harp_operation_point_in_area_filter *)malloc(sizeof(harp_operation_point_in_area_filter));
     if (operation == NULL)
     {
@@ -1679,33 +1950,39 @@ int harp_operation_point_in_area_filter_new(double latitude, const char *latitud
     }
     operation->type = operation_point_in_area_filter;
     operation->eval = eval_point_in_area;
-    operation->point.lat = latitude;
-    operation->point.lon = longitude;
+    operation->filename = NULL;
+    operation->area_mask = NULL;
 
-    /* convert parameters to internal units */
-    if (latitude_unit != NULL)
+    if (filename != NULL)
     {
-        if (harp_unit_compare(latitude_unit, "degree_north") != 0)
+        operation->filename = strdup(filename);
+        if (operation->filename == NULL)
         {
-            if (harp_convert_unit(latitude_unit, "degree_north", 1, &operation->point.lat) != 0)
-            {
-                return -1;
-            }
+            harp_set_error(HARP_ERROR_OUT_OF_MEMORY, "out of memory (could not duplicate string) (%s:%u)", __FILE__,
+                           __LINE__);
+            point_in_area_filter_delete(operation);
+            return -1;
+        }
+        if (harp_area_mask_read(operation->filename, &operation->area_mask) != 0)
+        {
+            point_in_area_filter_delete(operation);
+            return -1;
         }
     }
-    if (longitude_unit != NULL)
+    else
     {
-        if (harp_unit_compare(longitude_unit, "degree_east") != 0)
+        if (harp_area_mask_new(&operation->area_mask) != 0)
         {
-            if (harp_convert_unit(longitude_unit, "degree_east", 1, &operation->point.lon) != 0)
-            {
-                return -1;
-            }
+            point_in_area_filter_delete(operation);
+            return -1;
+        }
+        if (add_latitude_longitude_bounds_to_area_mask(operation->area_mask, num_latitudes, latitude, latitude_unit,
+                                                       longitude, longitude_unit) != 0)
+        {
+            point_in_area_filter_delete(operation);
+            return -1;
         }
     }
-
-    harp_spherical_point_rad_from_deg(&operation->point);
-    harp_spherical_point_check(&operation->point);
 
     *new_operation = (harp_operation *)operation;
     return 0;
@@ -2242,8 +2519,8 @@ int harp_operation_is_point_filter(const harp_operation *operation)
 {
     switch (operation->type)
     {
-        case operation_area_mask_covers_point_filter:
         case operation_point_distance_filter:
+        case operation_point_in_area_filter:
             return 1;
         default:
             return 0;
@@ -2255,9 +2532,10 @@ int harp_operation_is_polygon_filter(const harp_operation *operation)
 {
     switch (operation->type)
     {
-        case operation_area_mask_covers_area_filter:
-        case operation_area_mask_intersects_area_filter:
-        case operation_point_in_area_filter:
+        case operation_area_covers_area_filter:
+        case operation_area_covers_point_filter:
+        case operation_area_inside_area_filter:
+        case operation_area_intersects_area_filter:
             return 1;
         default:
             return 0;

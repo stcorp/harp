@@ -102,6 +102,7 @@ int harp_area_mask_add_polygon(harp_area_mask *area_mask, harp_spherical_polygon
     return 0;
 }
 
+/* returns true (1) if at least one polygon of the mask covers the given point */
 int harp_area_mask_covers_point(const harp_area_mask *area_mask, const harp_spherical_point *point)
 {
     long i;
@@ -117,6 +118,7 @@ int harp_area_mask_covers_point(const harp_area_mask *area_mask, const harp_sphe
     return 0;
 }
 
+/* returns true (1) if at least one polygon of the mask covers the given polygon */
 int harp_area_mask_covers_area(const harp_area_mask *area_mask, const harp_spherical_polygon *area)
 {
     long i;
@@ -124,7 +126,7 @@ int harp_area_mask_covers_area(const harp_area_mask *area_mask, const harp_spher
     for (i = 0; i < area_mask->num_polygons; i++)
     {
         if (harp_spherical_polygon_spherical_polygon_relationship(area_mask->polygon[i], area, 0)
-            == HARP_GEOMETRY_POLY_CONT)
+            == HARP_GEOMETRY_POLY_CONTAINS)
         {
             return 1;
         }
@@ -133,22 +135,62 @@ int harp_area_mask_covers_area(const harp_area_mask *area_mask, const harp_spher
     return 0;
 }
 
-int harp_area_mask_intersects_area(const harp_area_mask *area_mask, const harp_spherical_polygon *area,
-                                   double min_percentage)
+/* returns true (1) if at least one polygon of the mask falls inside the given polygon */
+int harp_area_mask_inside_area(const harp_area_mask *area_mask, const harp_spherical_polygon *area)
 {
     long i;
 
     for (i = 0; i < area_mask->num_polygons; i++)
     {
-        int dummy;
-        double percentage;
+        if (harp_spherical_polygon_spherical_polygon_relationship(area_mask->polygon[i], area, 0)
+            == HARP_GEOMETRY_POLY_CONTAINED)
+        {
+            return 1;
+        }
+    }
 
-        if (harp_spherical_polygon_overlapping_percentage(area_mask->polygon[i], area, &dummy, &percentage) != 0)
+    return 0;
+}
+
+/* returns true (1) if at least one polygon of the mask intersects the given polygon */
+int harp_area_mask_intersects_area(const harp_area_mask *area_mask, const harp_spherical_polygon *area)
+{
+    long i;
+
+    for (i = 0; i < area_mask->num_polygons; i++)
+    {
+        int has_overlap;
+
+        if (harp_spherical_polygon_overlapping(area_mask->polygon[i], area, &has_overlap) != 0)
+        {
+            continue;
+        }
+        if (has_overlap)
+        {
+            return 1;
+        }
+    }
+
+    return 0;
+}
+
+/* returns true (1) if at least one polygon of the mask intersects the given polygon for at least the given fraction */
+int harp_area_mask_intersects_area_with_fraction(const harp_area_mask *area_mask, const harp_spherical_polygon *area,
+                                                 double min_fraction)
+{
+    long i;
+
+    for (i = 0; i < area_mask->num_polygons; i++)
+    {
+        int has_overlap;
+        double fraction;
+
+        if (harp_spherical_polygon_overlapping_fraction(area_mask->polygon[i], area, &has_overlap, &fraction) != 0)
         {
             continue;
         }
 
-        if (percentage > min_percentage)
+        if (has_overlap && fraction >= min_fraction)
         {
             return 1;
         }

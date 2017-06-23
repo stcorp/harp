@@ -47,24 +47,58 @@ Function call
 
 Supported functions:
 
-    ``area_mask_covers_area(area-mask-file)``
-        Exclude measurements for which no area from the area
-        mask file covers the measurement area completely.
+    ``area_covers_area((lat, ...) [unit], (lon, ...) [unit])``
+        Exclude measurements whose area does not fully cover the given polygon.
+        Example:
 
-    ``area_mask_covers_point(area-mask-file)``
-        Exclude measurements for which no area from the area
-        mask file contains the measurement location.
+            | ``area_covers_area((51.98,51.98,52.02,52.02),(4.33,4.39,4.39,4.33))``
 
-    ``area_mask_intersects_area(area-mask-file, minimum-overlap-percentage)``
-        Exclude measurements for which no area from the area
-        mask file overlaps at least the specified percentage of
-        the measurement area.
+    ``area_covers_area(area-mask-file)``
+        Exclude measurements whose area does not fully cover one of the
+        areas of the area mask file.
+
+        Example:
+
+            | ``area_covers_area("areas.csv")``
+
+    ``area_covers_point(latitude [unit], longitude [unit])``
+        Exclude measurements whose area does not cover the given point.
+        Example:
+
+            | ``area_covers_point(52.012, 4.357)``
+
+    ``area_inside_area((lat, ...) [unit], (lon, ...) [unit])``
+        Exclude measurements whose area is not inside the given polygon.
+        Example:
+
+            | ``area_inside_area((50,50,54,54),(3,8,8,3))``
+
+    ``area_inside_area(area-mask-file)``
+        Exclude measurements whose area is not inside one of the areas of
+        the area mask file.
+
+    ``area_intersects_area((lat, ...) [unit], (lon, ...) [unit], minimum-overlap-fraction)``
+        Exclude measurements whose area does not overlap at least the
+        specified fraction with the given polygon.
+        The fraction is calculated as area(intersection)/min(area(x),area(y))
+
+    ``area_intersects_area(area-mask-file, minimum-overlap-fraction)``
+        Exclude measurements whose area does not overlap at least the
+        specified fraction with one the areas of the area mask file.
+
+    ``area_intersects_area((lat, ...) [unit], (lon, ...) [unit])``
+        Exclude measurements whose area does not overlap with the given
+        polygon.
+
+    ``area_intersects_area(area-mask-file)``
+        Exclude measurements whose area does not overlap with one of the
+        areas of the area mask file.
 
     ``bin(variable)``
         For all variables in a product perform an averaging in the time
         dimension such that all samples in the same bin get averaged.
-        A bin is defined by all samples of the given variable that have the
-        same value.
+        A bin is defined by all samples of the given variable that have
+        the same value.
         Example:
 
             | ``bin(index)``
@@ -73,12 +107,13 @@ Supported functions:
     ``bin(collocation-result-file, a|b)``
         For all variables in a product perform an averaging in the time
         dimension such that all samples in the same bin get averaged.
-        A bin is defined by all samples having the same collocated pair from
-        the dataset that is indicated by the second parameter.
+        A bin is defined by all samples having the same collocated pair
+        from the dataset that is indicated by the second parameter.
         Example:
 
             | ``bin("collocation-result.csv", b)``
-            | (the product is part of dataset A and the collocated pair that defines the bin is part of dataset B)
+            | (the product is part of dataset A and the collocated pair
+              that defines the bin is part of dataset B)
 
     ``collocate_left(collocation-result-file)``
         Apply the specified collocation result file as an index
@@ -158,18 +193,22 @@ Supported functions:
             | (select a 2 degree range around the international dateline)
 
     ``point_distance(latitude [unit], longitude [unit], distance [unit])``
-        Exclude measurements situated further than the specified
-        distance from the specified location.
+        Exclude measurements whose point location is situated further than
+        the specified distance from the given location.
         Example:
 
             ``point_distance(52.012, 4.357, 3 [km])``
 
-    ``point_in_area(latitude [unit], longitude [unit])``
-        Exclude measurements for which the given location does not
-        fall inside the measurement area.
+    ``point_in_area((lat, ...) [unit], (lon, ...) [unit])``
+        Exclude measurements whose point location does not fall inside the
+        measurement area.
         Example:
 
-            ``point_in_area(52.012, 4.357)``
+            ``point_in_area((50,50,54,54) [degN],(3,8,8,3) [degE])``
+
+    ``point_in_area(area-mask-file)``
+        Exclude measurements whose point location does not fall inside one of
+        the areas from the area mask file.
 
     ``regrid(dimension, axis-variable unit, (value, ...))``
         Regrid all variables in the product for the given dimension using
@@ -201,10 +240,12 @@ Supported functions:
 
     ``rename(variable, new_name)``
         Rename the variable to the new name.
-        Note that this operation should be used with care since it will change the meaning of the
-        data (potentially interpreting it incorrectly in further operations).
-        It is primarilly meant to add/remove prefixes (such as surface/tropospheric/etc.) to allow
-        the variable to be used in a more specific (with prefix) or generic (without prefix) way.
+        Note that this operation should be used with care since it will
+        change the meaning of the data (potentially interpreting it
+        incorrectly in further operations). It is primarilly meant to
+        add/remove prefixes (such as surface/tropospheric/etc.) to allow
+        the variable to be used in a more specific (with prefix) or
+        generic (without prefix) way.
         Example:
 
             ``rename("surface_temperature", "temperature")``
@@ -220,19 +261,19 @@ Supported functions:
         Available options are:
 
         ``afgl86``
-            Determine how to deal with interpolation of target grid values that
-            fall outside the source grid range.
+            Determine how to deal with interpolation of target grid values
+            that fall outside the source grid range.
             Possible values are:
 
-            - ``disabled`` (default) disable the use of AFGL86 climatology in
-              variable conversions
+            - ``disabled`` (default) disable the use of AFGL86 climatology
+              in variable conversions
             - ``enabled`` enable the use of AFGL86 climatology in variable
               conversions (using seasonal and latitude band dependence)
             - ``usstd76`` enable AFGL86 using US Standard profiles
 
         ``regrid_out_of_bounds``
-            Determine how to deal with interpolation of target grid values that
-            fall outside the source grid range.
+            Determine how to deal with interpolation of target grid values
+            that fall outside the source grid range.
             Possible values are:
 
             - ``nan`` (default) to set values outside the range to NaN
@@ -256,9 +297,10 @@ Supported functions:
             ``smooth(O3_number_density, vertical, altitude [km], "collocation-result.csv", b, "./correlative_data/")``
 
     ``smooth((variable, variable, ...), dimension, axis-variable unit, collocation-result-file, a|b, dataset-dir)``
-        Same as above, but then providing a list of variables that need to be smoothed.
-        For each variable an associated averaging kernel (and associated a-priori,
-        if applicable) needs to be present in the collocated dataset.
+        Same as above, but then providing a list of variables that need
+        to be smoothed. For each variable an associated averaging kernel
+        (and associated a-priori, if applicable) needs to be present in
+        the collocated dataset.
 
     ``sort(variable)``
         Reorder a dimension for all variables in the product such that the
@@ -271,8 +313,8 @@ Supported functions:
         outside the valid range of the variable, or NaN).
 
     ``wrap(variable [unit], minimum, maximum)``
-        Wrap the values of the variable to the range given by minimum and maximum.
-        The result is: min + (value - min) % (max - min)
+        Wrap the values of the variable to the range given by minimum
+        and maximum. The result is: min + (value - min) % (max - min)
         Example:
 
             ``wrap(longitude [degree_east], -180, 180)``
@@ -281,8 +323,8 @@ Supported functions:
 Collocation result file
 -----------------------
 
-The format of the collocation result file is described in the :ref:`data formats
-<collocation\-result\-file\-format>` documentation.
+The format of the collocation result file is described in the
+:ref:`data formats <collocation\-result\-file\-format>` documentation.
 
 Area mask file
 --------------
@@ -297,8 +339,9 @@ It has the following format:
     0.0,60.0,40.0,60.0,40.0,-60.0,0.0,-60.0
     ...
 
-It starts with a header with latitude, longitude column headers (this header will be skipped by HARP).
-Then, each further line defines a polygon. Each polygon consists of the vertices as defined on that line.
+It starts with a header with latitude, longitude column headers (this
+header will be skipped by HARP). Then, each further line defines a polygon.
+Each polygon consists of the vertices as defined on that line.
 
 Examples
 --------
@@ -372,9 +415,15 @@ Formal definition
     dimensionspec = '{' dimensionlist '}' ;
 
     functioncall =
-       'area_mask_covers_area', '(', stringvalue, ')' |
-       'area_mask_covers_point', '(', stringvalue, ')' |
-       'area_mask_intersects_area', '(', stringvalue, ',', floatvalue, ')' |
+       'area_covers_area', '(', '(', floatvaluelist, ')', [unit], '(', floatvaluelist, ')', [unit], ')' |
+       'area_covers_area', '(', stringvalue, ')' |
+       'area_covers_point', '(', floatvalue, [unit], ',', floatvalue, [unit], ')' |
+       'area_inside_area', '(', '(', floatvaluelist, ')', [unit], '(', floatvaluelist, ')', [unit], ')' |
+       'area_inside_area', '(', stringvalue, ')' |
+       'area_intersects_area', '(', '(', floatvaluelist, ')', [unit], '(', floatvaluelist, ')', [unit], ',', floatvalue, ')' |
+       'area_intersects_area', '(', stringvalue, ',', floatvalue, ')' |
+       'area_intersects_area', '(', '(', floatvaluelist, ')', [unit], '(', floatvaluelist, ')', [unit], ')' |
+       'area_intersects_area', '(', stringvalue, ')' |
        'bin', '(', variable, ')' |
        'bin', '(', stringvalue, ',', ( 'a' | 'b' ), ')' |
        'collocate_left', '(', stringvalue, ')' |
@@ -386,7 +435,8 @@ Formal definition
        'keep', '(', variablelist, ')' |
        'longitude_range', '(', floatvalue, [unit], ',', floatvalue, [unit], ')' |
        'point_distance', '(', floatvalue, [unit], ',', floatvalue, [unit], ',', floatvalue, [unit], ')' |
-       'point_in_area', '(', floatvalue, [unit], ',', floatvalue, [unit], ')' |
+       'point_in_area', '(', '(', floatvaluelist, ')', [unit], '(', floatvaluelist, ')', [unit], ')' |
+       'point_in_area', '(', stringvalue, ')' |
        'regrid', '(', dimension, ',', variable, unit, ',', '(', floatvaluelist, ')', ')' |
        'regrid', '(', dimension, ',', variable, unit, ',', intvalue, ',', floatvalue, ',', floatvalue, ')' |
        'regrid', '(', dimension, ',', variable, unit, ',', stringvalue, ',', ( 'a' | 'b' ), ',', stringvalue, ')' |
