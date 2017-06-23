@@ -649,7 +649,7 @@ LIBHARP_API int harp_product_smooth_vertical_with_collocated_dataset(harp_produc
         local_dimension_type[2] = harp_dimension_independent;
 
         /* vertical grid */
-        if (harp_product_add_derived_variable(collocated_product, vertical_axis, harp_type_double, vertical_unit, 2,
+        if (harp_product_add_derived_variable(collocated_product, vertical_axis, NULL, vertical_unit, 2,
                                               local_dimension_type) != 0)
         {
             harp_product_delete(collocated_product);
@@ -659,8 +659,8 @@ LIBHARP_API int harp_product_smooth_vertical_with_collocated_dataset(harp_produc
         }
 
         /* vertical grid bounds */
-        if (harp_product_add_derived_variable(collocated_product, vertical_bounds_name, harp_type_double, vertical_unit,
-                                              3, local_dimension_type) != 0)
+        if (harp_product_add_derived_variable(collocated_product, vertical_bounds_name, NULL, vertical_unit, 3,
+                                              local_dimension_type) != 0)
         {
             harp_product_delete(collocated_product);
             harp_product_delete(merged_product);
@@ -678,8 +678,7 @@ LIBHARP_API int harp_product_smooth_vertical_with_collocated_dataset(harp_produc
             harp_product_get_variable_by_name(product, smooth_variables[j], &variable);
 
             /* avk */
-            if (harp_product_add_derived_variable(collocated_product, avk_name, harp_type_double, "", 3,
-                                                  local_dimension_type) != 0)
+            if (harp_product_add_derived_variable(collocated_product, avk_name, NULL, "", 3, local_dimension_type) != 0)
             {
                 harp_product_delete(collocated_product);
                 harp_product_delete(merged_product);
@@ -688,7 +687,7 @@ LIBHARP_API int harp_product_smooth_vertical_with_collocated_dataset(harp_produc
             }
 
             /* apriori profile */
-            harp_product_add_derived_variable(collocated_product, apriori_name, harp_type_double, variable->unit, 2,
+            harp_product_add_derived_variable(collocated_product, apriori_name, NULL, variable->unit, 2,
                                               local_dimension_type);
             /* it is Ok if the apriori cannot be derived (we ignore the return value of the function) */
         }
@@ -855,7 +854,7 @@ LIBHARP_API int harp_product_get_smoothed_column(harp_product *product, const ch
     }
 
     /* retrieve partial column profile from source product */
-    if (harp_product_get_derived_variable(product, name, harp_type_double, unit, column_avk->num_dimensions,
+    if (harp_product_get_derived_variable(product, name, NULL, unit, column_avk->num_dimensions,
                                           column_avk->dimension_type, &partcol_variable) != 0)
     {
         harp_product_delete(regrid_product);
@@ -872,11 +871,11 @@ LIBHARP_API int harp_product_get_smoothed_column(harp_product *product, const ch
     grid_dim_type[1] = harp_dimension_vertical;
 
     /* Add axis variables for the source grid to the temporary product */
-    if (harp_product_get_derived_variable(product, vertical_grid->name, harp_type_double, vertical_grid->unit, 1,
+    if (harp_product_get_derived_variable(product, vertical_grid->name, NULL, vertical_grid->unit, 1,
                                           &grid_dim_type[1], &source_grid) != 0)
     {
         /* Failed to derive time independent. Try time dependent. */
-        if (harp_product_get_derived_variable(product, vertical_grid->name, harp_type_double, vertical_grid->unit, 2,
+        if (harp_product_get_derived_variable(product, vertical_grid->name, NULL, vertical_grid->unit, 2,
                                               grid_dim_type, &source_grid) != 0)
         {
             harp_product_delete(regrid_product);
@@ -1076,7 +1075,7 @@ LIBHARP_API int harp_product_get_smoothed_column_using_collocated_dataset(harp_p
         local_dimension_type[2] = harp_dimension_independent;
 
         /* vertical grid */
-        if (harp_product_add_derived_variable(collocated_product, vertical_axis, harp_type_double, vertical_unit, 2,
+        if (harp_product_add_derived_variable(collocated_product, vertical_axis, NULL, vertical_unit, 2,
                                               local_dimension_type) != 0)
         {
             harp_product_delete(collocated_product);
@@ -1086,8 +1085,8 @@ LIBHARP_API int harp_product_get_smoothed_column_using_collocated_dataset(harp_p
         }
 
         /* vertical grid bounds */
-        if (harp_product_add_derived_variable(collocated_product, vertical_bounds_name, harp_type_double, vertical_unit,
-                                              3, local_dimension_type) != 0)
+        if (harp_product_add_derived_variable(collocated_product, vertical_bounds_name, NULL, vertical_unit, 3,
+                                              local_dimension_type) != 0)
         {
             harp_product_delete(collocated_product);
             harp_product_delete(merged_product);
@@ -1102,8 +1101,8 @@ LIBHARP_API int harp_product_get_smoothed_column_using_collocated_dataset(harp_p
         local_dimension_type[num_dimensions] = harp_dimension_vertical;
 
         /* column avk */
-        if (harp_product_add_derived_variable(collocated_product, column_avk_name, harp_type_double, "",
-                                              num_dimensions + 1, local_dimension_type) != 0)
+        if (harp_product_add_derived_variable(collocated_product, column_avk_name, NULL, "", num_dimensions + 1,
+                                              local_dimension_type) != 0)
         {
             harp_product_delete(collocated_product);
             harp_product_delete(merged_product);
@@ -1112,7 +1111,7 @@ LIBHARP_API int harp_product_get_smoothed_column_using_collocated_dataset(harp_p
         }
 
         /* apriori profile */
-        harp_product_add_derived_variable(collocated_product, apriori_name, harp_type_double, unit, num_dimensions + 1,
+        harp_product_add_derived_variable(collocated_product, apriori_name, NULL, unit, num_dimensions + 1,
                                           local_dimension_type);
         /* it is Ok if the apriori cannot be derived (we ignore the return value of the function) */
 
