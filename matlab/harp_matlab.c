@@ -195,9 +195,9 @@ static void harp_matlab_import(int nlhs, mxArray *plhs[], int nrhs, const mxArra
     {
         mexErrMsgTxt("Too many output arguments.");
     }
-    if (nrhs != 1 && nrhs != 2)
+    if ((nrhs < 1) || (nrhs > 3))
     {
-        mexErrMsgTxt("Function takes either one or two arguments.");
+        mexErrMsgTxt("Function takes either one, two or three arguments.");
     }
 
     filenames = NULL;
@@ -209,7 +209,7 @@ static void harp_matlab_import(int nlhs, mxArray *plhs[], int nrhs, const mxArra
 
         if (mxGetNumberOfDimensions(prhs[0]) > 2)
         {
-            mexErrMsgTxt("First argument should not be a char array with more then 2 dimensions.");
+            mexErrMsgTxt("First argument should not be a char array with more than 2 dimensions.");
         }
         buflen = mxGetN(prhs[0]) + 1;
         num_files = mxGetM(prhs[0]);
@@ -236,7 +236,6 @@ static void harp_matlab_import(int nlhs, mxArray *plhs[], int nrhs, const mxArra
             }
             filenames[i][j] = '\0';
         }
-
     }
     else if (mxIsCell(prhs[0]))
     {
@@ -276,36 +275,32 @@ static void harp_matlab_import(int nlhs, mxArray *plhs[], int nrhs, const mxArra
         mexErrMsgTxt("First argument should be either a string or an array of strings.");
     }
 
-
     script = NULL;
     option = NULL;
-    if (nrhs == 3)
+    if (nrhs > 1)
     {
         if (!mxIsChar(prhs[1]))
         {
             mexErrMsgTxt("Second argument should be a string.");
         }
-        if (mxGetM(prhs[1]) != 1)
-        {
-            mexErrMsgTxt("Second argument should be a row vector.");
-        }
 
         buflen = mxGetN(prhs[1]) + 1;
         script = (char *)mxCalloc(buflen, sizeof(char));
-        buflen = mxGetN(prhs[2]) + 1;
-        option = (char *)mxCalloc(buflen, sizeof(char));
         if (mxGetString(prhs[1], script, buflen) != 0)
         {
             mexErrMsgTxt("Unable to copy script string.");
         }
+    }
 
+    if (nrhs > 2)
+    {
         if (!mxIsChar(prhs[2]))
         {
             mexErrMsgTxt("Third argument should be a string.");
         }
         buflen = mxGetN(prhs[2]) + 1;
         option = (char *)mxCalloc(buflen, sizeof(char));
-        if (mxGetString(prhs[1], script, buflen) != 0)
+        if (mxGetString(prhs[2], option, buflen) != 0)
         {
             mexErrMsgTxt("Unable to copy option string.");
         }
@@ -313,7 +308,6 @@ static void harp_matlab_import(int nlhs, mxArray *plhs[], int nrhs, const mxArra
 
     for (i = 0; i < num_files; i++)
     {
-
         if (harp_import(filenames[i], script, option, &product) != 0)
         {
             harp_matlab_harp_error();
