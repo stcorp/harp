@@ -130,3 +130,8 @@ This section describes the functions defined by the HARP MATLAB interface.
    :param str filename: Filename of the exported product.
    :param str file_format: File format to use; one of 'netcdf', 'hdf4', or
                            'hdf5'. If no format is specified, netcdf is used.
+
+.. py:function:: harp_version()
+   :noindex:
+
+   Returns the version number of HARP.
