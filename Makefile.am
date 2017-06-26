@@ -764,6 +764,7 @@ RSTFILES = \
 	doc/harpconvert.rst \
 	doc/harpdump.rst \
 	doc/harpmerge.rst \
+	doc/idl.rst \
 	doc/index.rst \
 	doc/libharp.rst \
 	doc/libharp_collocation.rst \
@@ -774,6 +775,7 @@ RSTFILES = \
 	doc/libharp_product.rst \
 	doc/libharp_product_metadata.rst \
 	doc/libharp_variable.rst \
+	doc/matlab.rst \
 	doc/operations.rst \
 	doc/python.rst \
 	doc/tools.rst
