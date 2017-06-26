@@ -1141,7 +1141,7 @@ LIBHARP_API int harp_product_get_derived_variable(const harp_product *product, c
                     return -1;
                 }
             }
-            if (info.variable->data_type != *data_type)
+            if ((data_type != NULL) && (info.variable->data_type != *data_type))
             {
                 if (harp_variable_convert_data_type(info.variable, *data_type) != 0)
                 {
@@ -1236,7 +1236,7 @@ LIBHARP_API int harp_product_add_derived_variable(harp_product *product, const c
                     return -1;
                 }
             }
-            if (variable->data_type != *data_type)
+            if ((data_type != NULL) && (variable->data_type != *data_type))
             {
                 if (harp_variable_convert_data_type(variable, *data_type) != 0)
                 {
