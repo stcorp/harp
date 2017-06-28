@@ -112,7 +112,7 @@
 
 * Fixed issue with TES TL2CH4L ingestion.
 
-* Updates to Aeolus, S5P, QA4ECV, and Ozone CCI product ingestions.
+* Updates to Aeolus, GEOMS, S5P, QA4ECV, and Ozone CCI product ingestions.
 
 0.5 2017-03-26
 ~~~~~~~~~~~~~~
