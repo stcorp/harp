@@ -1999,7 +1999,8 @@ static int init_product_definition(harp_ingestion_module *module, uvvis_doas_gas
     if (template_type != uvvis_doas_directsun)
     {
         /* cloud_flag */
-        description = "one of clear-sky, thin-clouds, thick-clouds, broken-clouds, unavailable";
+        description =
+            "one of 'clear-sky', 'thin clouds', 'thick clouds', 'broken clouds', or an empty string if unavailable";
         variable_definition = harp_ingestion_register_variable_sample_read
             (product_definition, "cloud_flag", harp_type_string, 1, dimension_type, NULL, description, NULL, NULL,
              read_cloud_conditions);
