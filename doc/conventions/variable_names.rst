@@ -17,12 +17,20 @@ HARP defines the following variable names:
 Name                                          Prefixes        Postfixes       Quality Vert Lat/Lon Spect Comments
 ============================================= =============== =============== ======= ==== ======= ===== =======================================================================
 absorbing_aerosol_index                                                       X            X
+aerosol_base_height                                                           X            X
 aerosol_extinction_coefficient                surface                         X       X    X       X
+aerosol_height                                                                X            X
 aerosol_optical_depth                         stratospheric,                  X       X    X       X     this is equal to 'aerosol optical thickness'
                                               tropospheric
+aerosol_pressure                                                              X            X
+aerosol_top_height                                                            X            X
+<aerosol_type>_aerosol_base_height                                            X            X
 <aerosol_type>_aerosol_extinction_coefficient surface                         X       X    X       X
+<aerosol_type>_aerosol_height                                                 X            X
 <aerosol_type>_aerosol_optical_depth          stratospheric,                  X       X    X       X     this is equal to 'aerosol optical thickness'
                                               tropospheric
+<aerosol_type>_aerosol_pressure                                               X            X
+<aerosol_type>_aerosol_top_height                                             X            X
 altitude                                      sensor,                         X       X    X
                                               surface
 altitude_bounds                                                               X       X    X
