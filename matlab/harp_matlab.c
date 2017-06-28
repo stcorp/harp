@@ -169,8 +169,11 @@ static void harp_matlab_export(int nlhs, mxArray *plhs[], int nrhs, const mxArra
 
     if (harp_export(filename, format, product) != 0)
     {
-        harp_matlab_harp_error();
+        /* harp_matlab_harp_error causes the program to exit so clean up first. */
         harp_product_delete(product);
+        mxFree(format);
+        mxFree(filename);
+        harp_matlab_harp_error();
     }
 
     mxFree(format);
