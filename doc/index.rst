@@ -13,7 +13,7 @@ Contents
    :maxdepth: 2
 
    install
-   dataformats
+   conventions/index
    algorithms/index
    operations
    ingestions/index
@@ -52,19 +52,19 @@ Data formats
 ------------
 
 In order for HARP command line tools to handle each others output the toolkit
-makes uses of its own :doc:`data format conventions <dataformats>`.
+makes uses of its own :doc:`data format conventions <conventions/index>`.
 
-There is one standard for storing measurement data, which only prescribes a
-specific set of constraints to the data format and is still flexible enough to
-allow data storage using either netCDF, HDF4, or HDF5 and inclusion of metadata
-from other standards such as netCDF-CF.
+There is one standard for representing and storing measurement data, which
+only prescribes a specific set of constraints to the data format and is still
+flexible enough to allow data storage using either netCDF, HDF4, or HDF5 and
+inclusion of metadata from other standards such as netCDF-CF.
 
 The other data format convention is a standard for storing information on
-collocations, the :ref:`Collocation Result File
-<collocation\-result\-file\-format>`, which is based on CSV.
+collocations, the :doc:`Collocation Result File <conventions/collocation_result>`,
+which is based on CSV.
 
 Both data formats are described in more detail in the :doc:`Data formats
-<dataformats>` section of the documentation.
+<conventions/index>` section of the documentation.
 
 Algorithms
 ----------

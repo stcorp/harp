@@ -1,0 +1,317 @@
+
+
+<!DOCTYPE html>
+<!--[if IE 8]><html class="no-js lt-ie9" lang="en" > <![endif]-->
+<!--[if gt IE 8]><!--> <html class="no-js" lang="en" > <!--<![endif]-->
+<head>
+  <meta charset="utf-8">
+  
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  
+  <title>Data types &mdash; HARP 0.6b documentation</title>
+  
+
+  
+  
+  
+  
+
+  
+
+  
+  
+    
+
+  
+
+  
+  
+    <link rel="stylesheet" href="../_static/css/theme.css" type="text/css" />
+  
+
+  
+    <link rel="stylesheet" href="../_static/custom.css" type="text/css" />
+  
+
+  
+        <link rel="index" title="Index"
+              href="../genindex.html"/>
+    <link rel="top" title="HARP 0.6b documentation" href="../index.html"/>
+        <link rel="up" title="Conventions" href="index.html"/>
+        <link rel="next" title="Dimensions" href="dimensions.html"/>
+        <link rel="prev" title="Conventions" href="index.html"/> 
+
+  
+  <script src="../_static/js/modernizr.min.js"></script>
+
+</head>
+
+<body class="wy-body-for-nav" role="document">
+
+   
+  <div class="wy-grid-for-nav">
+
+    
+    <nav data-toggle="wy-nav-shift" class="wy-nav-side">
+      <div class="wy-side-scroll">
+        <div class="wy-side-nav-search">
+          
+
+          
+            <a href="../index.html" class="icon icon-home"> HARP
+          
+
+          
+          </a>
+
+          
+            
+            
+              <div class="version">
+                0.6
+              </div>
+            
+          
+
+          
+
+          
+        </div>
+
+        <div class="wy-menu wy-menu-vertical" data-spy="affix" role="navigation" aria-label="main navigation">
+          
+            
+            
+              
+            
+            
+              <ul class="current">
+<li class="toctree-l1"><a class="reference internal" href="../install.html">Installation</a></li>
+<li class="toctree-l1 current"><a class="reference internal" href="index.html">Conventions</a><ul class="current">
+<li class="toctree-l2 current"><a class="current reference internal" href="#">Data types</a></li>
+<li class="toctree-l2"><a class="reference internal" href="dimensions.html">Dimensions</a></li>
+<li class="toctree-l2"><a class="reference internal" href="global_attributes.html">Global attributes</a></li>
+<li class="toctree-l2"><a class="reference internal" href="variable_attributes.html">Variable attributes</a></li>
+<li class="toctree-l2"><a class="reference internal" href="variables.html">Variables</a></li>
+<li class="toctree-l2"><a class="reference internal" href="variable_names.html">Variable names</a></li>
+<li class="toctree-l2"><a class="reference internal" href="datetime.html">Datetime values</a></li>
+<li class="toctree-l2"><a class="reference internal" href="filenames.html">File naming</a></li>
+<li class="toctree-l2"><a class="reference internal" href="netcdf3.html">netCDF-3</a></li>
+<li class="toctree-l2"><a class="reference internal" href="hdf4.html">HDF4</a></li>
+<li class="toctree-l2"><a class="reference internal" href="hdf5.html">HDF5/netCDF-4</a></li>
+<li class="toctree-l2"><a class="reference internal" href="collocation_result.html">Collocation result file</a></li>
+</ul>
+</li>
+<li class="toctree-l1"><a class="reference internal" href="../algorithms/index.html">Algorithms</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../operations.html">Operations</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../ingestions/index.html">Ingestion definitions</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../libharp.html">C library</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../idl.html">IDL interface</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../matlab.html">MATLAB interface</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../python.html">Python interface</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../tools.html">Command line tools</a></li>
+</ul>
+
+            
+          
+        </div>
+      </div>
+    </nav>
+
+    <section data-toggle="wy-nav-shift" class="wy-nav-content-wrap">
+
+      
+      <nav class="wy-nav-top" role="navigation" aria-label="top navigation">
+        
+          <i data-toggle="wy-nav-top" class="fa fa-bars"></i>
+          <a href="../index.html">HARP</a>
+        
+      </nav>
+
+
+      
+      <div class="wy-nav-content">
+        <div class="rst-content">
+          
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+<div role="navigation" aria-label="breadcrumbs navigation">
+
+  <ul class="wy-breadcrumbs">
+    
+      <li><a href="../index.html">Docs</a> &raquo;</li>
+        
+          <li><a href="index.html">Conventions</a> &raquo;</li>
+        
+      <li>Data types</li>
+    
+    
+      <li class="wy-breadcrumbs-aside">
+        
+            
+        
+      </li>
+    
+  </ul>
+
+  
+  <hr/>
+</div>
+          <div role="main" class="document" itemscope="itemscope" itemtype="http://schema.org/Article">
+           <div itemprop="articleBody">
+            
+  <div class="section" id="data-types">
+<h1>Data types</h1>
+<p>HARP defines the following data types. See sections <a class="reference internal" href="netcdf3.html"><span class="doc">netCDF-3</span></a>, <a class="reference internal" href="hdf4.html"><span class="doc">HDF4</span></a>, and <a class="reference internal" href="hdf5.html"><span class="doc">HDF5</span></a>
+for a detailed description of how these data types are mapped to and from the data types supported by each file format.</p>
+<table border="1" class="docutils">
+<colgroup>
+<col width="10%" />
+<col width="8%" />
+<col width="3%" />
+<col width="4%" />
+<col width="18%" />
+<col width="57%" />
+</colgroup>
+<thead valign="bottom">
+<tr class="row-odd"><th class="head">HARP data type</th>
+<th class="head">C data type</th>
+<th class="head">bits</th>
+<th class="head">sign</th>
+<th class="head">range</th>
+<th class="head">description</th>
+</tr>
+</thead>
+<tbody valign="top">
+<tr class="row-even"><td>int8</td>
+<td>int8_t</td>
+<td>8</td>
+<td>signed</td>
+<td>[-128, 127]</td>
+<td>signed 8-bit integer type (two&#8217;s complement representation)</td>
+</tr>
+<tr class="row-odd"><td>int16</td>
+<td>int16_t</td>
+<td>16</td>
+<td>signed</td>
+<td>[-32768, 32767]</td>
+<td>signed 16-bit integer type (two&#8217;s complement representation)</td>
+</tr>
+<tr class="row-even"><td>int32</td>
+<td>int32_t</td>
+<td>32</td>
+<td>signed</td>
+<td>[-2147483648, 2147483647]</td>
+<td>signed 32-bit integer type (two&#8217;s complement representation)</td>
+</tr>
+<tr class="row-odd"><td>float</td>
+<td>float</td>
+<td>32</td>
+<td>signed</td>
+<td>[-3.4E38, 3.4E38]</td>
+<td>IEEE754 single-precision binary floating-point format (on supported platforms)</td>
+</tr>
+<tr class="row-even"><td>double</td>
+<td>double</td>
+<td>64</td>
+<td>signed</td>
+<td>[-1.7E308, 1.7E308]</td>
+<td>IEEE754 double-precision binary floating-point format (on supported platforms)</td>
+</tr>
+<tr class="row-odd"><td>string</td>
+<td>char*</td>
+<td>&#160;</td>
+<td>&#160;</td>
+<td>&#160;</td>
+<td>null-terminated ASCII string</td>
+</tr>
+</tbody>
+</table>
+</div>
+
+
+           </div>
+           <div class="articleComments">
+            
+           </div>
+          </div>
+          <footer>
+  
+    <div class="rst-footer-buttons" role="navigation" aria-label="footer navigation">
+      
+        <a href="dimensions.html" class="btn btn-neutral float-right" title="Dimensions" accesskey="n" rel="next">Next <span class="fa fa-arrow-circle-right"></span></a>
+      
+      
+        <a href="index.html" class="btn btn-neutral" title="Conventions" accesskey="p" rel="prev"><span class="fa fa-arrow-circle-left"></span> Previous</a>
+      
+    </div>
+  
+
+  <hr/>
+
+  <div role="contentinfo">
+    <p>
+        &copy; Copyright 2015-2017 S&amp;T, The Netherlands.
+
+    </p>
+  </div> 
+
+</footer>
+
+        </div>
+      </div>
+
+    </section>
+
+  </div>
+  
+
+
+  
+
+    <script type="text/javascript">
+        var DOCUMENTATION_OPTIONS = {
+            URL_ROOT:'../',
+            VERSION:'0.6b',
+            COLLAPSE_INDEX:false,
+            FILE_SUFFIX:'.html',
+            HAS_SOURCE:  false,
+            SOURCELINK_SUFFIX: '.txt'
+        };
+    </script>
+      <script type="text/javascript" src="../_static/jquery.js"></script>
+      <script type="text/javascript" src="../_static/underscore.js"></script>
+      <script type="text/javascript" src="../_static/doctools.js"></script>
+      <script type="text/javascript" src="https://cdnjs.cloudflare.com/ajax/libs/mathjax/2.7.0/MathJax.js?config=TeX-AMS-MML_HTMLorMML"></script>
+
+  
+
+  
+  
+    <script type="text/javascript" src="../_static/js/theme.js"></script>
+  
+
+  
+  
+  <script type="text/javascript">
+      jQuery(function () {
+          SphinxRtdTheme.StickyNav.enable();
+      });
+  </script>
+   
+
+</body>
+</html>

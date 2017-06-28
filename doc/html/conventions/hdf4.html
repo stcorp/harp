@@ -1,0 +1,352 @@
+
+
+<!DOCTYPE html>
+<!--[if IE 8]><html class="no-js lt-ie9" lang="en" > <![endif]-->
+<!--[if gt IE 8]><!--> <html class="no-js" lang="en" > <!--<![endif]-->
+<head>
+  <meta charset="utf-8">
+  
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  
+  <title>HDF4 &mdash; HARP 0.6b documentation</title>
+  
+
+  
+  
+  
+  
+
+  
+
+  
+  
+    
+
+  
+
+  
+  
+    <link rel="stylesheet" href="../_static/css/theme.css" type="text/css" />
+  
+
+  
+    <link rel="stylesheet" href="../_static/custom.css" type="text/css" />
+  
+
+  
+        <link rel="index" title="Index"
+              href="../genindex.html"/>
+    <link rel="top" title="HARP 0.6b documentation" href="../index.html"/>
+        <link rel="up" title="Conventions" href="index.html"/>
+        <link rel="next" title="HDF5/netCDF-4" href="hdf5.html"/>
+        <link rel="prev" title="netCDF-3" href="netcdf3.html"/> 
+
+  
+  <script src="../_static/js/modernizr.min.js"></script>
+
+</head>
+
+<body class="wy-body-for-nav" role="document">
+
+   
+  <div class="wy-grid-for-nav">
+
+    
+    <nav data-toggle="wy-nav-shift" class="wy-nav-side">
+      <div class="wy-side-scroll">
+        <div class="wy-side-nav-search">
+          
+
+          
+            <a href="../index.html" class="icon icon-home"> HARP
+          
+
+          
+          </a>
+
+          
+            
+            
+              <div class="version">
+                0.6
+              </div>
+            
+          
+
+          
+
+          
+        </div>
+
+        <div class="wy-menu wy-menu-vertical" data-spy="affix" role="navigation" aria-label="main navigation">
+          
+            
+            
+              
+            
+            
+              <ul class="current">
+<li class="toctree-l1"><a class="reference internal" href="../install.html">Installation</a></li>
+<li class="toctree-l1 current"><a class="reference internal" href="index.html">Conventions</a><ul class="current">
+<li class="toctree-l2"><a class="reference internal" href="datatypes.html">Data types</a></li>
+<li class="toctree-l2"><a class="reference internal" href="dimensions.html">Dimensions</a></li>
+<li class="toctree-l2"><a class="reference internal" href="global_attributes.html">Global attributes</a></li>
+<li class="toctree-l2"><a class="reference internal" href="variable_attributes.html">Variable attributes</a></li>
+<li class="toctree-l2"><a class="reference internal" href="variables.html">Variables</a></li>
+<li class="toctree-l2"><a class="reference internal" href="variable_names.html">Variable names</a></li>
+<li class="toctree-l2"><a class="reference internal" href="datetime.html">Datetime values</a></li>
+<li class="toctree-l2"><a class="reference internal" href="filenames.html">File naming</a></li>
+<li class="toctree-l2"><a class="reference internal" href="netcdf3.html">netCDF-3</a></li>
+<li class="toctree-l2 current"><a class="current reference internal" href="#">HDF4</a></li>
+<li class="toctree-l2"><a class="reference internal" href="hdf5.html">HDF5/netCDF-4</a></li>
+<li class="toctree-l2"><a class="reference internal" href="collocation_result.html">Collocation result file</a></li>
+</ul>
+</li>
+<li class="toctree-l1"><a class="reference internal" href="../algorithms/index.html">Algorithms</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../operations.html">Operations</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../ingestions/index.html">Ingestion definitions</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../libharp.html">C library</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../idl.html">IDL interface</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../matlab.html">MATLAB interface</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../python.html">Python interface</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../tools.html">Command line tools</a></li>
+</ul>
+
+            
+          
+        </div>
+      </div>
+    </nav>
+
+    <section data-toggle="wy-nav-shift" class="wy-nav-content-wrap">
+
+      
+      <nav class="wy-nav-top" role="navigation" aria-label="top navigation">
+        
+          <i data-toggle="wy-nav-top" class="fa fa-bars"></i>
+          <a href="../index.html">HARP</a>
+        
+      </nav>
+
+
+      
+      <div class="wy-nav-content">
+        <div class="rst-content">
+          
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+<div role="navigation" aria-label="breadcrumbs navigation">
+
+  <ul class="wy-breadcrumbs">
+    
+      <li><a href="../index.html">Docs</a> &raquo;</li>
+        
+          <li><a href="index.html">Conventions</a> &raquo;</li>
+        
+      <li>HDF4</li>
+    
+    
+      <li class="wy-breadcrumbs-aside">
+        
+            
+        
+      </li>
+    
+  </ul>
+
+  
+  <hr/>
+</div>
+          <div role="main" class="document" itemscope="itemscope" itemtype="http://schema.org/Article">
+           <div itemprop="articleBody">
+            
+  <div class="section" id="hdf4">
+<h1>HDF4</h1>
+<p>This section details a set of additional conventions that are specific to the HDF4 file format.</p>
+<p>The following table shows the mapping between HARP data types and HDF4 data types. HDF4 data types not covered in this
+table are not supported by HARP.</p>
+<table border="1" class="docutils">
+<colgroup>
+<col width="50%" />
+<col width="50%" />
+</colgroup>
+<thead valign="bottom">
+<tr class="row-odd"><th class="head">HARP data type</th>
+<th class="head">HDF4 data type</th>
+</tr>
+</thead>
+<tbody valign="top">
+<tr class="row-even"><td>int8</td>
+<td>DFNT_INT8</td>
+</tr>
+<tr class="row-odd"><td>int16</td>
+<td>DFNT_INT16</td>
+</tr>
+<tr class="row-even"><td>int32</td>
+<td>DFNT_INT32</td>
+</tr>
+<tr class="row-odd"><td>float</td>
+<td>DFNT_FLOAT32</td>
+</tr>
+<tr class="row-even"><td>double</td>
+<td>DFNT_FLOAT64</td>
+</tr>
+<tr class="row-odd"><td>string</td>
+<td>DFNT_CHAR</td>
+</tr>
+</tbody>
+</table>
+<p>In the HDF4 data model there is no concept of shared dimensions (unlike netCDF). The shape of an HDF4 dataset is
+specified as a list of dimension lengths.</p>
+<p>When a HARP variable is stored as an HDF4 dataset, dimension lengths are preserved, but dimension types are lost. A
+dataset attribute named &#8216;dims&#8217; is used to store the type of each dimension of the associated dataset as a comma-
+separated list of dimension type names. The number of dimension types equals the number of dimensions of the HDF4
+<em>dataset</em>. This number is equal to the number of dimensions of the HARP variable, <em>except</em> for scalar variables and
+variables of type string (see below).</p>
+<p>HDF4 does not support scalars (datasets with zero dimensions). The HDF4 backend stores a scalar HARP variable as an HDF4
+dataset with a single dimension of length 1. To differentiate between scalars and proper 1-D variables, both of which
+are stored as 1-D HDF4 datasets, the introduced dimension is included in the dimension type list using the dimension
+type name &#8216;scalar&#8217;.</p>
+<p>HDF4 does not support strings. The HDF4 backend stores an N-dimensional HARP variable of type string as an
+(N+1)-dimensional HDF4 dataset of type DFNT_CHAR. The length of the introduced dimension equals the length of the
+longest string, or 1 if the length of the longest string is zero. Shorter strings are padded with null-termination
+characters. The introduced dimension is included in the dimension type list using the dimension type name &#8216;string&#8217;.</p>
+<p>Thus, a scalar HARP variable of type string would be represented in HDF4 by a <strong>2</strong>-dimensional dataset of type
+DFNT_CHAR. The length of the outer dimension would be 1, the length of the inner dimension would equal the length of the
+string stored in the HARP variable. The &#8216;dims&#8217; attribute associated with this HDF4 dataset would contain the string
+&#8216;scalar,string&#8217;.</p>
+<p>To summarize, HARP dimension types are mapped to dimension type names as follows:</p>
+<table border="1" class="docutils">
+<colgroup>
+<col width="50%" />
+<col width="50%" />
+</colgroup>
+<thead valign="bottom">
+<tr class="row-odd"><th class="head">HARP dimension type</th>
+<th class="head">dimension type name</th>
+</tr>
+</thead>
+<tbody valign="top">
+<tr class="row-even"><td>time</td>
+<td>time</td>
+</tr>
+<tr class="row-odd"><td>latitude</td>
+<td>latitude</td>
+</tr>
+<tr class="row-even"><td>longitude</td>
+<td>longitude</td>
+</tr>
+<tr class="row-odd"><td>vertical</td>
+<td>vertical</td>
+</tr>
+<tr class="row-even"><td>spectral</td>
+<td>spectral</td>
+</tr>
+<tr class="row-odd"><td>independent</td>
+<td>independent</td>
+</tr>
+<tr class="row-even"><td>N/A</td>
+<td>scalar</td>
+</tr>
+<tr class="row-odd"><td>N/A</td>
+<td>string</td>
+</tr>
+</tbody>
+</table>
+<p>HARP uses empty strings to represent the unit of dimensionless quantities (to distinguish them from non-quantities,
+which will lack a unit attribute). However, HDF4 cannot store string attributes with length zero. For this reason
+an empty unit string will be written as a <code class="docutils literal"><span class="pre">units</span></code> attribute with value <code class="docutils literal"><span class="pre">&quot;1&quot;</span></code> when writing data to HDF4.
+When reading from HDF4 a unit string value <code class="docutils literal"><span class="pre">&quot;1&quot;</span></code> will be converted back again to an empty unit string.</p>
+<p>Note that even though the <code class="docutils literal"><span class="pre">time</span></code> dimension is conceptually considered <cite>appendable</cite>, this dimension is not stored as an
+actual appendable dimension in HDF4. Products are read/written from/to files in full and are only modified in memory.
+The <cite>appendable</cite> aspect is only relevant for tools such as plotting routines that combine the data from a series of HARP
+products in order to provide plots/statistics for a whole dataset (and thus, where data from different files will have
+to be concatenated).</p>
+</div>
+
+
+           </div>
+           <div class="articleComments">
+            
+           </div>
+          </div>
+          <footer>
+  
+    <div class="rst-footer-buttons" role="navigation" aria-label="footer navigation">
+      
+        <a href="hdf5.html" class="btn btn-neutral float-right" title="HDF5/netCDF-4" accesskey="n" rel="next">Next <span class="fa fa-arrow-circle-right"></span></a>
+      
+      
+        <a href="netcdf3.html" class="btn btn-neutral" title="netCDF-3" accesskey="p" rel="prev"><span class="fa fa-arrow-circle-left"></span> Previous</a>
+      
+    </div>
+  
+
+  <hr/>
+
+  <div role="contentinfo">
+    <p>
+        &copy; Copyright 2015-2017 S&amp;T, The Netherlands.
+
+    </p>
+  </div> 
+
+</footer>
+
+        </div>
+      </div>
+
+    </section>
+
+  </div>
+  
+
+
+  
+
+    <script type="text/javascript">
+        var DOCUMENTATION_OPTIONS = {
+            URL_ROOT:'../',
+            VERSION:'0.6b',
+            COLLAPSE_INDEX:false,
+            FILE_SUFFIX:'.html',
+            HAS_SOURCE:  false,
+            SOURCELINK_SUFFIX: '.txt'
+        };
+    </script>
+      <script type="text/javascript" src="../_static/jquery.js"></script>
+      <script type="text/javascript" src="../_static/underscore.js"></script>
+      <script type="text/javascript" src="../_static/doctools.js"></script>
+      <script type="text/javascript" src="https://cdnjs.cloudflare.com/ajax/libs/mathjax/2.7.0/MathJax.js?config=TeX-AMS-MML_HTMLorMML"></script>
+
+  
+
+  
+  
+    <script type="text/javascript" src="../_static/js/theme.js"></script>
+  
+
+  
+  
+  <script type="text/javascript">
+      jQuery(function () {
+          SphinxRtdTheme.StickyNav.enable();
+      });
+  </script>
+   
+
+</body>
+</html>

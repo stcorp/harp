@@ -758,7 +758,19 @@ RSTFILES = \
 	doc/algorithms/derivations/wavenumber.rst \
 	doc/algorithms/formula.rst \
 	doc/algorithms/index.rst \
-	doc/dataformats.rst \
+	doc/conventions/collocation_result.rst \
+	doc/conventions/datatypes.rst \
+	doc/conventions/datetime.rst \
+	doc/conventions/dimensions.rst \
+	doc/conventions/filenames.rst \
+	doc/conventions/global_attributes.rst \
+	doc/conventions/hdf4.rst \
+	doc/conventions/hdf5.rst \
+	doc/conventions/index.rst \
+	doc/conventions/netcdf3.rst \
+	doc/conventions/variable_attributes.rst \
+	doc/conventions/variable_names.rst \
+	doc/conventions/variables.rst \
 	doc/harpcheck.rst \
 	doc/harpcollocate.rst \
 	doc/harpconvert.rst \

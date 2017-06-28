@@ -85,7 +85,7 @@
             
               <ul>
 <li class="toctree-l1"><a class="reference internal" href="install.html">Installation</a></li>
-<li class="toctree-l1"><a class="reference internal" href="dataformats.html">Data formats</a></li>
+<li class="toctree-l1"><a class="reference internal" href="conventions/index.html">Conventions</a></li>
 <li class="toctree-l1"><a class="reference internal" href="algorithms/index.html">Algorithms</a></li>
 <li class="toctree-l1"><a class="reference internal" href="operations.html">Operations</a></li>
 <li class="toctree-l1"><a class="reference internal" href="ingestions/index.html">Ingestion definitions</a></li>
@@ -172,9 +172,19 @@
 <li class="toctree-l2"><a class="reference internal" href="install.html#feedback">Feedback</a></li>
 </ul>
 </li>
-<li class="toctree-l1"><a class="reference internal" href="dataformats.html">Data formats</a><ul>
-<li class="toctree-l2"><a class="reference internal" href="dataformats.html#harp-data-format">HARP data format</a></li>
-<li class="toctree-l2"><a class="reference internal" href="dataformats.html#collocation-result-file-format">Collocation result file format</a></li>
+<li class="toctree-l1"><a class="reference internal" href="conventions/index.html">Conventions</a><ul>
+<li class="toctree-l2"><a class="reference internal" href="conventions/datatypes.html">Data types</a></li>
+<li class="toctree-l2"><a class="reference internal" href="conventions/dimensions.html">Dimensions</a></li>
+<li class="toctree-l2"><a class="reference internal" href="conventions/global_attributes.html">Global attributes</a></li>
+<li class="toctree-l2"><a class="reference internal" href="conventions/variable_attributes.html">Variable attributes</a></li>
+<li class="toctree-l2"><a class="reference internal" href="conventions/variables.html">Variables</a></li>
+<li class="toctree-l2"><a class="reference internal" href="conventions/variable_names.html">Variable names</a></li>
+<li class="toctree-l2"><a class="reference internal" href="conventions/datetime.html">Datetime values</a></li>
+<li class="toctree-l2"><a class="reference internal" href="conventions/filenames.html">File naming</a></li>
+<li class="toctree-l2"><a class="reference internal" href="conventions/netcdf3.html">netCDF-3</a></li>
+<li class="toctree-l2"><a class="reference internal" href="conventions/hdf4.html">HDF4</a></li>
+<li class="toctree-l2"><a class="reference internal" href="conventions/hdf5.html">HDF5/netCDF-4</a></li>
+<li class="toctree-l2"><a class="reference internal" href="conventions/collocation_result.html">Collocation result file</a></li>
 </ul>
 </li>
 <li class="toctree-l1"><a class="reference internal" href="algorithms/index.html">Algorithms</a><ul>
@@ -288,14 +298,15 @@ format, further processing can be performed.</p>
 <div class="section" id="data-formats">
 <span id="id1"></span><h2>Data formats</h2>
 <p>In order for HARP command line tools to handle each others output the toolkit
-makes uses of its own <a class="reference internal" href="dataformats.html"><span class="doc">data format conventions</span></a>.</p>
-<p>There is one standard for storing measurement data, which only prescribes a
-specific set of constraints to the data format and is still flexible enough to
-allow data storage using either netCDF, HDF4, or HDF5 and inclusion of metadata
-from other standards such as netCDF-CF.</p>
+makes uses of its own <a class="reference internal" href="conventions/index.html"><span class="doc">data format conventions</span></a>.</p>
+<p>There is one standard for representing and storing measurement data, which
+only prescribes a specific set of constraints to the data format and is still
+flexible enough to allow data storage using either netCDF, HDF4, or HDF5 and
+inclusion of metadata from other standards such as netCDF-CF.</p>
 <p>The other data format convention is a standard for storing information on
-collocations, the <a class="reference internal" href="dataformats.html#collocation-result-file-format"><span class="std std-ref">Collocation Result File</span></a>, which is based on CSV.</p>
-<p>Both data formats are described in more detail in the <a class="reference internal" href="dataformats.html"><span class="doc">Data formats</span></a> section of the documentation.</p>
+collocations, the <a class="reference internal" href="conventions/collocation_result.html"><span class="doc">Collocation Result File</span></a>,
+which is based on CSV.</p>
+<p>Both data formats are described in more detail in the <a class="reference internal" href="conventions/index.html"><span class="doc">Data formats</span></a> section of the documentation.</p>
 </div>
 <div class="section" id="algorithms">
 <h2>Algorithms</h2>

@@ -65,6 +65,9 @@
 
 * Improve speed of --list-derivations on a product.
 
+* Split data format documentation into seperate sections under a new
+  heading 'conventions'.
+
 * Added product ingestions for Cloudnet L2a classification products.
 
 * Updates to GEOMS-TE-UVVIS-DOAS-OFFAXIS, ECMWF-GRIB, S5P, and QA4ECV

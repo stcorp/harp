@@ -82,7 +82,19 @@ HARP_DOCFILES = \
 	doc/html/algorithms/derivations/wavenumber.html \
 	doc/html/algorithms/formula.html \
 	doc/html/algorithms/index.html \
-	doc/html/dataformats.html \
+	doc/html/conventions/collocation_result.html \
+	doc/html/conventions/datatypes.html \
+	doc/html/conventions/datetime.html \
+	doc/html/conventions/dimensions.html \
+	doc/html/conventions/filenames.html \
+	doc/html/conventions/global_attributes.html \
+	doc/html/conventions/hdf4.html \
+	doc/html/conventions/hdf5.html \
+	doc/html/conventions/index.html \
+	doc/html/conventions/netcdf3.html \
+	doc/html/conventions/variable_attributes.html \
+	doc/html/conventions/variable_names.html \
+	doc/html/conventions/variables.html \
 	doc/html/genindex.html \
 	doc/html/harpcheck.html \
 	doc/html/harpcollocate.html \
@@ -646,7 +658,31 @@ doc/html/algorithms/formula.html:
 	$(MAKE) harp_doc
 doc/html/algorithms/index.html:
 	$(MAKE) harp_doc
-doc/html/dataformats.html:
+doc/html/conventions/collocation_result.html:
+	$(MAKE) harp_doc
+doc/html/conventions/datatypes.html:
+	$(MAKE) harp_doc
+doc/html/conventions/datetime.html:
+	$(MAKE) harp_doc
+doc/html/conventions/dimensions.html:
+	$(MAKE) harp_doc
+doc/html/conventions/filenames.html:
+	$(MAKE) harp_doc
+doc/html/conventions/global_attributes.html:
+	$(MAKE) harp_doc
+doc/html/conventions/hdf4.html:
+	$(MAKE) harp_doc
+doc/html/conventions/hdf5.html:
+	$(MAKE) harp_doc
+doc/html/conventions/index.html:
+	$(MAKE) harp_doc
+doc/html/conventions/netcdf3.html:
+	$(MAKE) harp_doc
+doc/html/conventions/variable_attributes.html:
+	$(MAKE) harp_doc
+doc/html/conventions/variable_names.html:
+	$(MAKE) harp_doc
+doc/html/conventions/variables.html:
 	$(MAKE) harp_doc
 doc/html/genindex.html:
 	$(MAKE) harp_doc

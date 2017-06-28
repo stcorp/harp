@@ -1,0 +1,1688 @@
+
+
+<!DOCTYPE html>
+<!--[if IE 8]><html class="no-js lt-ie9" lang="en" > <![endif]-->
+<!--[if gt IE 8]><!--> <html class="no-js" lang="en" > <!--<![endif]-->
+<head>
+  <meta charset="utf-8">
+  
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  
+  <title>Variable names &mdash; HARP 0.6b documentation</title>
+  
+
+  
+  
+  
+  
+
+  
+
+  
+  
+    
+
+  
+
+  
+  
+    <link rel="stylesheet" href="../_static/css/theme.css" type="text/css" />
+  
+
+  
+    <link rel="stylesheet" href="../_static/custom.css" type="text/css" />
+  
+
+  
+        <link rel="index" title="Index"
+              href="../genindex.html"/>
+    <link rel="top" title="HARP 0.6b documentation" href="../index.html"/>
+        <link rel="up" title="Conventions" href="index.html"/>
+        <link rel="next" title="Datetime values" href="datetime.html"/>
+        <link rel="prev" title="Variables" href="variables.html"/> 
+
+  
+  <script src="../_static/js/modernizr.min.js"></script>
+
+</head>
+
+<body class="wy-body-for-nav" role="document">
+
+   
+  <div class="wy-grid-for-nav">
+
+    
+    <nav data-toggle="wy-nav-shift" class="wy-nav-side">
+      <div class="wy-side-scroll">
+        <div class="wy-side-nav-search">
+          
+
+          
+            <a href="../index.html" class="icon icon-home"> HARP
+          
+
+          
+          </a>
+
+          
+            
+            
+              <div class="version">
+                0.6
+              </div>
+            
+          
+
+          
+
+          
+        </div>
+
+        <div class="wy-menu wy-menu-vertical" data-spy="affix" role="navigation" aria-label="main navigation">
+          
+            
+            
+              
+            
+            
+              <ul class="current">
+<li class="toctree-l1"><a class="reference internal" href="../install.html">Installation</a></li>
+<li class="toctree-l1 current"><a class="reference internal" href="index.html">Conventions</a><ul class="current">
+<li class="toctree-l2"><a class="reference internal" href="datatypes.html">Data types</a></li>
+<li class="toctree-l2"><a class="reference internal" href="dimensions.html">Dimensions</a></li>
+<li class="toctree-l2"><a class="reference internal" href="global_attributes.html">Global attributes</a></li>
+<li class="toctree-l2"><a class="reference internal" href="variable_attributes.html">Variable attributes</a></li>
+<li class="toctree-l2"><a class="reference internal" href="variables.html">Variables</a></li>
+<li class="toctree-l2 current"><a class="current reference internal" href="#">Variable names</a></li>
+<li class="toctree-l2"><a class="reference internal" href="datetime.html">Datetime values</a></li>
+<li class="toctree-l2"><a class="reference internal" href="filenames.html">File naming</a></li>
+<li class="toctree-l2"><a class="reference internal" href="netcdf3.html">netCDF-3</a></li>
+<li class="toctree-l2"><a class="reference internal" href="hdf4.html">HDF4</a></li>
+<li class="toctree-l2"><a class="reference internal" href="hdf5.html">HDF5/netCDF-4</a></li>
+<li class="toctree-l2"><a class="reference internal" href="collocation_result.html">Collocation result file</a></li>
+</ul>
+</li>
+<li class="toctree-l1"><a class="reference internal" href="../algorithms/index.html">Algorithms</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../operations.html">Operations</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../ingestions/index.html">Ingestion definitions</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../libharp.html">C library</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../idl.html">IDL interface</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../matlab.html">MATLAB interface</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../python.html">Python interface</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../tools.html">Command line tools</a></li>
+</ul>
+
+            
+          
+        </div>
+      </div>
+    </nav>
+
+    <section data-toggle="wy-nav-shift" class="wy-nav-content-wrap">
+
+      
+      <nav class="wy-nav-top" role="navigation" aria-label="top navigation">
+        
+          <i data-toggle="wy-nav-top" class="fa fa-bars"></i>
+          <a href="../index.html">HARP</a>
+        
+      </nav>
+
+
+      
+      <div class="wy-nav-content">
+        <div class="rst-content">
+          
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+<div role="navigation" aria-label="breadcrumbs navigation">
+
+  <ul class="wy-breadcrumbs">
+    
+      <li><a href="../index.html">Docs</a> &raquo;</li>
+        
+          <li><a href="index.html">Conventions</a> &raquo;</li>
+        
+      <li>Variable names</li>
+    
+    
+      <li class="wy-breadcrumbs-aside">
+        
+            
+        
+      </li>
+    
+  </ul>
+
+  
+  <hr/>
+</div>
+          <div role="main" class="document" itemscope="itemscope" itemtype="http://schema.org/Article">
+           <div itemprop="articleBody">
+            
+  <div class="section" id="variable-names">
+<h1>Variable names</h1>
+<p>To allow HARP to perform automatic operations on variables, it imposes a strict naming convention for variables. This
+naming convention applies to the variable name itself and is therefore fully complementary to naming conventions that
+apply to the value of a variable attribute, such as <code class="docutils literal"><span class="pre">standard_name</span></code> (as specified by netCDF-CF).</p>
+<p>Note that it is possible to use variables inside HARP products with names that do not follow the convention, but then
+these variables may not be handled correctly by operations that you perform on the product. The general rule is that if
+you have a quantity that can be represented by the naming convention below then you should use the HARP variable name
+for it.</p>
+<p>HARP defines the following variable names:</p>
+<table border="1" class="docutils">
+<colgroup>
+<col width="27%" />
+<col width="9%" />
+<col width="9%" />
+<col width="4%" />
+<col width="2%" />
+<col width="4%" />
+<col width="3%" />
+<col width="42%" />
+</colgroup>
+<thead valign="bottom">
+<tr class="row-odd"><th class="head">Name</th>
+<th class="head">Prefixes</th>
+<th class="head">Postfixes</th>
+<th class="head">Quality</th>
+<th class="head">Vert</th>
+<th class="head">Lat/Lon</th>
+<th class="head">Spect</th>
+<th class="head">Comments</th>
+</tr>
+</thead>
+<tbody valign="top">
+<tr class="row-even"><td>absorbing_aerosol_index</td>
+<td>&#160;</td>
+<td>&#160;</td>
+<td>X</td>
+<td>&#160;</td>
+<td>X</td>
+<td>&#160;</td>
+<td>&#160;</td>
+</tr>
+<tr class="row-odd"><td>aerosol_extinction_coefficient</td>
+<td>surface</td>
+<td>&#160;</td>
+<td>X</td>
+<td>X</td>
+<td>X</td>
+<td>X</td>
+<td>&#160;</td>
+</tr>
+<tr class="row-even"><td>aerosol_optical_depth</td>
+<td>stratospheric,
+tropospheric</td>
+<td>&#160;</td>
+<td>X</td>
+<td>X</td>
+<td>X</td>
+<td>X</td>
+<td>this is equal to &#8216;aerosol optical thickness&#8217;</td>
+</tr>
+<tr class="row-odd"><td>&lt;aerosol_type&gt;_aerosol_extinction_coefficient</td>
+<td>surface</td>
+<td>&#160;</td>
+<td>X</td>
+<td>X</td>
+<td>X</td>
+<td>X</td>
+<td>&#160;</td>
+</tr>
+<tr class="row-even"><td>&lt;aerosol_type&gt;_aerosol_optical_depth</td>
+<td>stratospheric,
+tropospheric</td>
+<td>&#160;</td>
+<td>X</td>
+<td>X</td>
+<td>X</td>
+<td>X</td>
+<td>this is equal to &#8216;aerosol optical thickness&#8217;</td>
+</tr>
+<tr class="row-odd"><td>altitude</td>
+<td>sensor,
+surface</td>
+<td>&#160;</td>
+<td>X</td>
+<td>X</td>
+<td>X</td>
+<td>&#160;</td>
+<td>&#160;</td>
+</tr>
+<tr class="row-even"><td>altitude_bounds</td>
+<td>&#160;</td>
+<td>&#160;</td>
+<td>X</td>
+<td>X</td>
+<td>X</td>
+<td>&#160;</td>
+<td>&#160;</td>
+</tr>
+<tr class="row-odd"><td>area</td>
+<td>&#160;</td>
+<td>&#160;</td>
+<td>X</td>
+<td>&#160;</td>
+<td>&#160;</td>
+<td>&#160;</td>
+<td>the size of an area defined by latitude/longitude bounds</td>
+</tr>
+<tr class="row-even"><td>backscatter_coefficient</td>
+<td>surface</td>
+<td>&#160;</td>
+<td>X</td>
+<td>X</td>
+<td>X</td>
+<td>X</td>
+<td>&#160;</td>
+</tr>
+<tr class="row-odd"><td>cloud_albedo</td>
+<td>&#160;</td>
+<td>&#160;</td>
+<td>X</td>
+<td>&#160;</td>
+<td>X</td>
+<td>&#160;</td>
+<td>&#160;</td>
+</tr>
+<tr class="row-even"><td>cloud_base_albedo</td>
+<td>&#160;</td>
+<td>&#160;</td>
+<td>X</td>
+<td>&#160;</td>
+<td>X</td>
+<td>&#160;</td>
+<td>&#160;</td>
+</tr>
+<tr class="row-odd"><td>cloud_base_height</td>
+<td>&#160;</td>
+<td>&#160;</td>
+<td>X</td>
+<td>&#160;</td>
+<td>X</td>
+<td>&#160;</td>
+<td>&#160;</td>
+</tr>
+<tr class="row-even"><td>cloud_base_pressure</td>
+<td>&#160;</td>
+<td>&#160;</td>
+<td>X</td>
+<td>&#160;</td>
+<td>X</td>
+<td>&#160;</td>
+<td>&#160;</td>
+</tr>
+<tr class="row-odd"><td>cloud_base_temperature</td>
+<td>&#160;</td>
+<td>&#160;</td>
+<td>X</td>
+<td>&#160;</td>
+<td>X</td>
+<td>&#160;</td>
+<td>&#160;</td>
+</tr>
+<tr class="row-even"><td>cloud_fraction</td>
+<td>&#160;</td>
+<td>&#160;</td>
+<td>X</td>
+<td>&#160;</td>
+<td>X</td>
+<td>&#160;</td>
+<td>&#160;</td>
+</tr>
+<tr class="row-odd"><td>cloud_height</td>
+<td>&#160;</td>
+<td>&#160;</td>
+<td>X</td>
+<td>&#160;</td>
+<td>X</td>
+<td>&#160;</td>
+<td>&#160;</td>
+</tr>
+<tr class="row-even"><td>cloud_optical_depth</td>
+<td>&#160;</td>
+<td>&#160;</td>
+<td>X</td>
+<td>&#160;</td>
+<td>X</td>
+<td>&#160;</td>
+<td>this is equal to &#8216;cloud optical thickness&#8217;</td>
+</tr>
+<tr class="row-odd"><td>cloud_pressure</td>
+<td>&#160;</td>
+<td>&#160;</td>
+<td>X</td>
+<td>&#160;</td>
+<td>X</td>
+<td>&#160;</td>
+<td>&#160;</td>
+</tr>
+<tr class="row-even"><td>cloud_temperature</td>
+<td>&#160;</td>
+<td>&#160;</td>
+<td>X</td>
+<td>&#160;</td>
+<td>X</td>
+<td>&#160;</td>
+<td>&#160;</td>
+</tr>
+<tr class="row-odd"><td>cloud_top_albedo</td>
+<td>&#160;</td>
+<td>&#160;</td>
+<td>X</td>
+<td>&#160;</td>
+<td>X</td>
+<td>&#160;</td>
+<td>&#160;</td>
+</tr>
+<tr class="row-even"><td>cloud_top_height</td>
+<td>&#160;</td>
+<td>&#160;</td>
+<td>X</td>
+<td>&#160;</td>
+<td>X</td>
+<td>&#160;</td>
+<td>&#160;</td>
+</tr>
+<tr class="row-odd"><td>cloud_top_pressure</td>
+<td>&#160;</td>
+<td>&#160;</td>
+<td>X</td>
+<td>&#160;</td>
+<td>X</td>
+<td>&#160;</td>
+<td>&#160;</td>
+</tr>
+<tr class="row-even"><td>cloud_top_temperature</td>
+<td>&#160;</td>
+<td>&#160;</td>
+<td>X</td>
+<td>&#160;</td>
+<td>X</td>
+<td>&#160;</td>
+<td>&#160;</td>
+</tr>
+<tr class="row-odd"><td>collocation_index</td>
+<td>&#160;</td>
+<td>&#160;</td>
+<td>&#160;</td>
+<td>&#160;</td>
+<td>&#160;</td>
+<td>&#160;</td>
+<td>zero-based index as provided in the collocation result file</td>
+</tr>
+<tr class="row-even"><td>column_density</td>
+<td>stratospheric,
+tropospheric</td>
+<td>amf, apriori,
+avk</td>
+<td>X</td>
+<td>X</td>
+<td>X</td>
+<td>&#160;</td>
+<td>this is the mass density</td>
+</tr>
+<tr class="row-odd"><td>column_number_density</td>
+<td>stratospheric,
+tropospheric</td>
+<td>amf, apriori,
+avk</td>
+<td>X</td>
+<td>X</td>
+<td>X</td>
+<td>&#160;</td>
+<td>&#160;</td>
+</tr>
+<tr class="row-even"><td>datetime</td>
+<td>&#160;</td>
+<td>&#160;</td>
+<td>&#160;</td>
+<td>&#160;</td>
+<td>&#160;</td>
+<td>&#160;</td>
+<td>&#160;</td>
+</tr>
+<tr class="row-odd"><td>datetime_length</td>
+<td>&#160;</td>
+<td>&#160;</td>
+<td>&#160;</td>
+<td>X</td>
+<td>&#160;</td>
+<td>&#160;</td>
+<td>&#160;</td>
+</tr>
+<tr class="row-even"><td>datetime_start</td>
+<td>&#160;</td>
+<td>&#160;</td>
+<td>&#160;</td>
+<td>&#160;</td>
+<td>&#160;</td>
+<td>&#160;</td>
+<td>&#160;</td>
+</tr>
+<tr class="row-odd"><td>datetime_stop</td>
+<td>&#160;</td>
+<td>&#160;</td>
+<td>&#160;</td>
+<td>&#160;</td>
+<td>&#160;</td>
+<td>&#160;</td>
+<td>&#160;</td>
+</tr>
+<tr class="row-even"><td>density</td>
+<td>&#160;</td>
+<td>&#160;</td>
+<td>X</td>
+<td>X</td>
+<td>X</td>
+<td>&#160;</td>
+<td>this is the mass density</td>
+</tr>
+<tr class="row-odd"><td>extinction_coefficient</td>
+<td>surface</td>
+<td>&#160;</td>
+<td>X</td>
+<td>X</td>
+<td>X</td>
+<td>X</td>
+<td>&#160;</td>
+</tr>
+<tr class="row-even"><td>frequency</td>
+<td>&#160;</td>
+<td>&#160;</td>
+<td>X</td>
+<td>&#160;</td>
+<td>&#160;</td>
+<td>&#160;</td>
+<td>&#160;</td>
+</tr>
+<tr class="row-odd"><td>frequency_irradiance</td>
+<td>&#160;</td>
+<td>&#160;</td>
+<td>X</td>
+<td>&#160;</td>
+<td>&#160;</td>
+<td>X</td>
+<td>&#160;</td>
+</tr>
+<tr class="row-even"><td>frequency_photon_irradiance</td>
+<td>&#160;</td>
+<td>&#160;</td>
+<td>X</td>
+<td>&#160;</td>
+<td>&#160;</td>
+<td>X</td>
+<td>&#160;</td>
+</tr>
+<tr class="row-odd"><td>frequency_photon_radiance</td>
+<td>&#160;</td>
+<td>&#160;</td>
+<td>X</td>
+<td>&#160;</td>
+<td>&#160;</td>
+<td>X</td>
+<td>&#160;</td>
+</tr>
+<tr class="row-even"><td>frequency_photon_transmittance</td>
+<td>&#160;</td>
+<td>&#160;</td>
+<td>X</td>
+<td>&#160;</td>
+<td>&#160;</td>
+<td>X</td>
+<td>&#160;</td>
+</tr>
+<tr class="row-odd"><td>frequency_radiance</td>
+<td>&#160;</td>
+<td>&#160;</td>
+<td>X</td>
+<td>&#160;</td>
+<td>&#160;</td>
+<td>X</td>
+<td>&#160;</td>
+</tr>
+<tr class="row-even"><td>frequency_transmittance</td>
+<td>&#160;</td>
+<td>&#160;</td>
+<td>X</td>
+<td>&#160;</td>
+<td>&#160;</td>
+<td>X</td>
+<td>&#160;</td>
+</tr>
+<tr class="row-odd"><td>geopotential</td>
+<td>surface</td>
+<td>&#160;</td>
+<td>X</td>
+<td>X</td>
+<td>X</td>
+<td>&#160;</td>
+<td>&#160;</td>
+</tr>
+<tr class="row-even"><td>geopotential_height</td>
+<td>surface</td>
+<td>&#160;</td>
+<td>X</td>
+<td>X</td>
+<td>X</td>
+<td>&#160;</td>
+<td>&#160;</td>
+</tr>
+<tr class="row-odd"><td>hlos_wind_velocity</td>
+<td>surface</td>
+<td>&#160;</td>
+<td>X</td>
+<td>X</td>
+<td>X</td>
+<td>&#160;</td>
+<td>hlos means &#8216;horizontal line of sight&#8217;</td>
+</tr>
+<tr class="row-even"><td>index</td>
+<td>&#160;</td>
+<td>&#160;</td>
+<td>&#160;</td>
+<td>&#160;</td>
+<td>&#160;</td>
+<td>&#160;</td>
+<td>zero-based index of the sample within the source product</td>
+</tr>
+<tr class="row-odd"><td>integration_time</td>
+<td>&#160;</td>
+<td>&#160;</td>
+<td>&#160;</td>
+<td>X</td>
+<td>X</td>
+<td>X</td>
+<td>provides measurement specific integration time
+(at e.g. altitude or wavelength) compared to overal datetime_length;
+only use if integration time differs from datetime_length;
+integration_time longer than datetime_length that covers multiple
+datetime values means replication of measured value in time dimension</td>
+</tr>
+<tr class="row-even"><td>latitude</td>
+<td>sensor</td>
+<td>&#160;</td>
+<td>X</td>
+<td>&#160;</td>
+<td>(lat)</td>
+<td>&#160;</td>
+<td>&#160;</td>
+</tr>
+<tr class="row-odd"><td>latitude_bounds</td>
+<td>&#160;</td>
+<td>&#160;</td>
+<td>&#160;</td>
+<td>&#160;</td>
+<td>(lat)</td>
+<td>&#160;</td>
+<td>&#160;</td>
+</tr>
+<tr class="row-even"><td>longitude</td>
+<td>sensor</td>
+<td>&#160;</td>
+<td>X</td>
+<td>&#160;</td>
+<td>(lon)</td>
+<td>&#160;</td>
+<td>&#160;</td>
+</tr>
+<tr class="row-odd"><td>longitude_bounds</td>
+<td>&#160;</td>
+<td>&#160;</td>
+<td>&#160;</td>
+<td>&#160;</td>
+<td>(lon)</td>
+<td>&#160;</td>
+<td>&#160;</td>
+</tr>
+<tr class="row-even"><td>molar_mass</td>
+<td>&#160;</td>
+<td>&#160;</td>
+<td>X</td>
+<td>X</td>
+<td>X</td>
+<td>&#160;</td>
+<td>this is the molar mass of the total substance (it is defined by the
+relation between the variables &#8216;density&#8217; and &#8216;number_density&#8217;)</td>
+</tr>
+<tr class="row-odd"><td>month</td>
+<td>&#160;</td>
+<td>&#160;</td>
+<td>&#160;</td>
+<td>&#160;</td>
+<td>&#160;</td>
+<td>&#160;</td>
+<td>category variable for month of year (&#8216;January&#8217;, ..., &#8216;December&#8217;)</td>
+</tr>
+<tr class="row-even"><td>number_density</td>
+<td>surface</td>
+<td>&#160;</td>
+<td>X</td>
+<td>X</td>
+<td>X</td>
+<td>&#160;</td>
+<td>&#160;</td>
+</tr>
+<tr class="row-odd"><td>optical_depth</td>
+<td>&#160;</td>
+<td>&#160;</td>
+<td>X</td>
+<td>X</td>
+<td>X</td>
+<td>X</td>
+<td>this is equal to &#8216;optical thickness&#8217;</td>
+</tr>
+<tr class="row-even"><td>pressure</td>
+<td>surface</td>
+<td>&#160;</td>
+<td>X</td>
+<td>X</td>
+<td>X</td>
+<td>&#160;</td>
+<td>&#160;</td>
+</tr>
+<tr class="row-odd"><td>pressure_bounds</td>
+<td>&#160;</td>
+<td>&#160;</td>
+<td>X</td>
+<td>X</td>
+<td>X</td>
+<td>&#160;</td>
+<td>&#160;</td>
+</tr>
+<tr class="row-even"><td>radiance</td>
+<td>&#160;</td>
+<td>&#160;</td>
+<td>X</td>
+<td>&#160;</td>
+<td>&#160;</td>
+<td>X</td>
+<td>&#160;</td>
+</tr>
+<tr class="row-odd"><td>reflectance</td>
+<td>&#160;</td>
+<td>&#160;</td>
+<td>X</td>
+<td>&#160;</td>
+<td>&#160;</td>
+<td>X</td>
+<td>&#160;</td>
+</tr>
+<tr class="row-even"><td>relative_azimuth_angle</td>
+<td>&#160;</td>
+<td>&#160;</td>
+<td>X</td>
+<td>&#160;</td>
+<td>&#160;</td>
+<td>&#160;</td>
+<td>absolute difference between sensor and solar azimuth angles</td>
+</tr>
+<tr class="row-odd"><td>relative_humidity</td>
+<td>&#160;</td>
+<td>&#160;</td>
+<td>X</td>
+<td>X</td>
+<td>X</td>
+<td>&#160;</td>
+<td>&#160;</td>
+</tr>
+<tr class="row-even"><td>scan_direction</td>
+<td>&#160;</td>
+<td>&#160;</td>
+<td>&#160;</td>
+<td>&#160;</td>
+<td>&#160;</td>
+<td>&#160;</td>
+<td>&#160;</td>
+</tr>
+<tr class="row-odd"><td>scan_subset_counter</td>
+<td>&#160;</td>
+<td>&#160;</td>
+<td>&#160;</td>
+<td>&#160;</td>
+<td>&#160;</td>
+<td>&#160;</td>
+<td>&#160;</td>
+</tr>
+<tr class="row-even"><td>scanline_pixel_index</td>
+<td>&#160;</td>
+<td>&#160;</td>
+<td>&#160;</td>
+<td>&#160;</td>
+<td>&#160;</td>
+<td>&#160;</td>
+<td>&#160;</td>
+</tr>
+<tr class="row-odd"><td>scattering_angle</td>
+<td>&#160;</td>
+<td>&#160;</td>
+<td>X</td>
+<td>&#160;</td>
+<td>&#160;</td>
+<td>&#160;</td>
+<td>&#160;</td>
+</tr>
+<tr class="row-even"><td>sensor_azimuth_angle</td>
+<td>&#160;</td>
+<td>&#160;</td>
+<td>X</td>
+<td>&#160;</td>
+<td>&#160;</td>
+<td>&#160;</td>
+<td>&#160;</td>
+</tr>
+<tr class="row-odd"><td>sensor_elevation_angle</td>
+<td>&#160;</td>
+<td>&#160;</td>
+<td>X</td>
+<td>&#160;</td>
+<td>&#160;</td>
+<td>&#160;</td>
+<td>&#160;</td>
+</tr>
+<tr class="row-even"><td>sensor_name</td>
+<td>&#160;</td>
+<td>&#160;</td>
+<td>&#160;</td>
+<td>&#160;</td>
+<td>&#160;</td>
+<td>&#160;</td>
+<td>used mainly for ground based networks to provide a unique sensor id</td>
+</tr>
+<tr class="row-odd"><td>sensor_zenith_angle</td>
+<td>&#160;</td>
+<td>&#160;</td>
+<td>X</td>
+<td>&#160;</td>
+<td>&#160;</td>
+<td>&#160;</td>
+<td>&#160;</td>
+</tr>
+<tr class="row-even"><td>site_name</td>
+<td>&#160;</td>
+<td>&#160;</td>
+<td>&#160;</td>
+<td>&#160;</td>
+<td>&#160;</td>
+<td>&#160;</td>
+<td>used for data of a specific named geographical location</td>
+</tr>
+<tr class="row-odd"><td>solar_azimuth_angle</td>
+<td>sensor,
+surface, toa</td>
+<td>&#160;</td>
+<td>X</td>
+<td>&#160;</td>
+<td>&#160;</td>
+<td>&#160;</td>
+<td>&#160;</td>
+</tr>
+<tr class="row-even"><td>solar_elevation_angle</td>
+<td>sensor,
+surface, toa</td>
+<td>&#160;</td>
+<td>X</td>
+<td>&#160;</td>
+<td>&#160;</td>
+<td>&#160;</td>
+<td>&#160;</td>
+</tr>
+<tr class="row-odd"><td>solar_irradiance</td>
+<td>&#160;</td>
+<td>&#160;</td>
+<td>X</td>
+<td>&#160;</td>
+<td>&#160;</td>
+<td>X</td>
+<td>&#160;</td>
+</tr>
+<tr class="row-even"><td>solar_zenith_angle</td>
+<td>sensor,
+surface, toa,</td>
+<td>&#160;</td>
+<td>X</td>
+<td>&#160;</td>
+<td>&#160;</td>
+<td>&#160;</td>
+<td>&#160;</td>
+</tr>
+<tr class="row-odd"><td>sun_normalized_radiance</td>
+<td>&#160;</td>
+<td>&#160;</td>
+<td>X</td>
+<td>&#160;</td>
+<td>&#160;</td>
+<td>X</td>
+<td>&#160;</td>
+</tr>
+<tr class="row-even"><td>surface_albedo</td>
+<td>&#160;</td>
+<td>&#160;</td>
+<td>X</td>
+<td>&#160;</td>
+<td>X</td>
+<td>X</td>
+<td>&#160;</td>
+</tr>
+<tr class="row-odd"><td>temperature</td>
+<td>surface</td>
+<td>&#160;</td>
+<td>X</td>
+<td>X</td>
+<td>X</td>
+<td>&#160;</td>
+<td>&#160;</td>
+</tr>
+<tr class="row-even"><td>tropopause_altitude</td>
+<td>&#160;</td>
+<td>&#160;</td>
+<td>X</td>
+<td>&#160;</td>
+<td>X</td>
+<td>&#160;</td>
+<td>altitude of the troposphere/stratosphere boundary location</td>
+</tr>
+<tr class="row-odd"><td>tropopause_pressure</td>
+<td>&#160;</td>
+<td>&#160;</td>
+<td>X</td>
+<td>&#160;</td>
+<td>X</td>
+<td>&#160;</td>
+<td>pressure level of the troposphere/stratosphere boundary location</td>
+</tr>
+<tr class="row-even"><td>validity</td>
+<td>&#160;</td>
+<td>&#160;</td>
+<td>&#160;</td>
+<td>&#160;</td>
+<td>&#160;</td>
+<td>&#160;</td>
+<td>validity flag for each time sample or whole product;
+only to be used if validity flag is for multiple variables combined</td>
+</tr>
+<tr class="row-odd"><td>viewing_azimuth_angle</td>
+<td>&#160;</td>
+<td>&#160;</td>
+<td>X</td>
+<td>&#160;</td>
+<td>&#160;</td>
+<td>&#160;</td>
+<td>&#160;</td>
+</tr>
+<tr class="row-even"><td>viewing_elevation_angle</td>
+<td>&#160;</td>
+<td>&#160;</td>
+<td>X</td>
+<td>&#160;</td>
+<td>&#160;</td>
+<td>&#160;</td>
+<td>&#160;</td>
+</tr>
+<tr class="row-odd"><td>viewing_zenith_angle</td>
+<td>&#160;</td>
+<td>&#160;</td>
+<td>X</td>
+<td>&#160;</td>
+<td>&#160;</td>
+<td>&#160;</td>
+<td>&#160;</td>
+</tr>
+<tr class="row-even"><td>virtual_temperature</td>
+<td>&#160;</td>
+<td>&#160;</td>
+<td>X</td>
+<td>X</td>
+<td>X</td>
+<td>&#160;</td>
+<td>&#160;</td>
+</tr>
+<tr class="row-odd"><td>wavelength</td>
+<td>&#160;</td>
+<td>&#160;</td>
+<td>X</td>
+<td>&#160;</td>
+<td>&#160;</td>
+<td>X</td>
+<td>&#160;</td>
+</tr>
+<tr class="row-even"><td>wavelength_irradiance</td>
+<td>&#160;</td>
+<td>&#160;</td>
+<td>X</td>
+<td>&#160;</td>
+<td>&#160;</td>
+<td>X</td>
+<td>&#160;</td>
+</tr>
+<tr class="row-odd"><td>wavelength_photon_irradiance</td>
+<td>&#160;</td>
+<td>&#160;</td>
+<td>X</td>
+<td>&#160;</td>
+<td>&#160;</td>
+<td>X</td>
+<td>&#160;</td>
+</tr>
+<tr class="row-even"><td>wavelength_photon_radiance</td>
+<td>&#160;</td>
+<td>&#160;</td>
+<td>X</td>
+<td>&#160;</td>
+<td>&#160;</td>
+<td>X</td>
+<td>&#160;</td>
+</tr>
+<tr class="row-odd"><td>wavelength_photon_transmittance</td>
+<td>&#160;</td>
+<td>&#160;</td>
+<td>X</td>
+<td>&#160;</td>
+<td>&#160;</td>
+<td>X</td>
+<td>&#160;</td>
+</tr>
+<tr class="row-even"><td>wavelength_radiance</td>
+<td>&#160;</td>
+<td>&#160;</td>
+<td>X</td>
+<td>&#160;</td>
+<td>&#160;</td>
+<td>X</td>
+<td>&#160;</td>
+</tr>
+<tr class="row-odd"><td>wavelength_transmittance</td>
+<td>&#160;</td>
+<td>&#160;</td>
+<td>X</td>
+<td>&#160;</td>
+<td>&#160;</td>
+<td>X</td>
+<td>&#160;</td>
+</tr>
+<tr class="row-even"><td>wavenumber</td>
+<td>&#160;</td>
+<td>&#160;</td>
+<td>X</td>
+<td>&#160;</td>
+<td>&#160;</td>
+<td>X</td>
+<td>&#160;</td>
+</tr>
+<tr class="row-odd"><td>wavenumber_irradiance</td>
+<td>&#160;</td>
+<td>&#160;</td>
+<td>X</td>
+<td>&#160;</td>
+<td>&#160;</td>
+<td>X</td>
+<td>&#160;</td>
+</tr>
+<tr class="row-even"><td>wavenumber_photon_irradiance</td>
+<td>&#160;</td>
+<td>&#160;</td>
+<td>X</td>
+<td>&#160;</td>
+<td>&#160;</td>
+<td>X</td>
+<td>&#160;</td>
+</tr>
+<tr class="row-odd"><td>wavenumber_photon_radiance</td>
+<td>&#160;</td>
+<td>&#160;</td>
+<td>X</td>
+<td>&#160;</td>
+<td>&#160;</td>
+<td>X</td>
+<td>&#160;</td>
+</tr>
+<tr class="row-even"><td>wavenumber_photon_transmittance</td>
+<td>&#160;</td>
+<td>&#160;</td>
+<td>X</td>
+<td>&#160;</td>
+<td>&#160;</td>
+<td>X</td>
+<td>&#160;</td>
+</tr>
+<tr class="row-odd"><td>wavenumber_radiance</td>
+<td>&#160;</td>
+<td>&#160;</td>
+<td>X</td>
+<td>&#160;</td>
+<td>&#160;</td>
+<td>X</td>
+<td>&#160;</td>
+</tr>
+<tr class="row-even"><td>wavenumber_transmittance</td>
+<td>&#160;</td>
+<td>&#160;</td>
+<td>X</td>
+<td>&#160;</td>
+<td>&#160;</td>
+<td>X</td>
+<td>&#160;</td>
+</tr>
+<tr class="row-odd"><td>wind_speed</td>
+<td>surface</td>
+<td>&#160;</td>
+<td>X</td>
+<td>X</td>
+<td>X</td>
+<td>&#160;</td>
+<td>&#160;</td>
+</tr>
+<tr class="row-even"><td>wind_direction</td>
+<td>surface</td>
+<td>&#160;</td>
+<td>X</td>
+<td>X</td>
+<td>X</td>
+<td>&#160;</td>
+<td>&#160;</td>
+</tr>
+<tr class="row-odd"><td>year</td>
+<td>&#160;</td>
+<td>&#160;</td>
+<td>&#160;</td>
+<td>&#160;</td>
+<td>&#160;</td>
+<td>&#160;</td>
+<td>integer value representing a year</td>
+</tr>
+<tr class="row-even"><td>&lt;species&gt;_column_density</td>
+<td>stratospheric,
+tropospheric</td>
+<td>amf, apriori,
+avk</td>
+<td>X</td>
+<td>X</td>
+<td>X</td>
+<td>&#160;</td>
+<td>this is the mass density</td>
+</tr>
+<tr class="row-odd"><td>&lt;pm&gt;_column_density</td>
+<td>stratospheric,
+tropospheric</td>
+<td>&#160;</td>
+<td>X</td>
+<td>X</td>
+<td>X</td>
+<td>&#160;</td>
+<td>this is the mass density</td>
+</tr>
+<tr class="row-even"><td>&lt;species&gt;_column_number_density</td>
+<td>stratospheric,
+tropospheric</td>
+<td>amf, apriori,
+avk</td>
+<td>X</td>
+<td>X</td>
+<td>X</td>
+<td>&#160;</td>
+<td>&#160;</td>
+</tr>
+<tr class="row-odd"><td>&lt;species&gt;_column_mass_mixing_ratio</td>
+<td>stratospheric,
+tropospheric</td>
+<td>&#160;</td>
+<td>X</td>
+<td>&#160;</td>
+<td>X</td>
+<td>&#160;</td>
+<td>&#160;</td>
+</tr>
+<tr class="row-even"><td>&lt;species&gt;_column_mass_mixing_ratio_dry_air</td>
+<td>stratospheric,
+tropospheric</td>
+<td>&#160;</td>
+<td>X</td>
+<td>&#160;</td>
+<td>X</td>
+<td>&#160;</td>
+<td>&#160;</td>
+</tr>
+<tr class="row-odd"><td>&lt;species&gt;_column_volume_mixing_ratio</td>
+<td>stratospheric,
+tropospheric</td>
+<td>&#160;</td>
+<td>X</td>
+<td>&#160;</td>
+<td>X</td>
+<td>&#160;</td>
+<td>&#160;</td>
+</tr>
+<tr class="row-even"><td>&lt;species&gt;_column_volume_mixing_ratio_dry_air</td>
+<td>stratospheric,
+tropospheric</td>
+<td>&#160;</td>
+<td>X</td>
+<td>&#160;</td>
+<td>X</td>
+<td>&#160;</td>
+<td>&#160;</td>
+</tr>
+<tr class="row-odd"><td>&lt;species&gt;_density</td>
+<td>surface</td>
+<td>&#160;</td>
+<td>X</td>
+<td>X</td>
+<td>X</td>
+<td>&#160;</td>
+<td>this is the mass density</td>
+</tr>
+<tr class="row-even"><td>&lt;pm&gt;_density</td>
+<td>surface</td>
+<td>&#160;</td>
+<td>X</td>
+<td>X</td>
+<td>X</td>
+<td>&#160;</td>
+<td>this is the mass density</td>
+</tr>
+<tr class="row-odd"><td>&lt;species&gt;_mass_mixing_ratio</td>
+<td>surface</td>
+<td>apriori, avk</td>
+<td>X</td>
+<td>X</td>
+<td>X</td>
+<td>&#160;</td>
+<td>&#160;</td>
+</tr>
+<tr class="row-even"><td>&lt;species&gt;_mass_mixing_ratio_dry_air</td>
+<td>surface</td>
+<td>apriori, avk</td>
+<td>X</td>
+<td>X</td>
+<td>X</td>
+<td>&#160;</td>
+<td>&#160;</td>
+</tr>
+<tr class="row-odd"><td>&lt;species&gt;_number_density</td>
+<td>surface</td>
+<td>apriori, avk</td>
+<td>X</td>
+<td>X</td>
+<td>X</td>
+<td>&#160;</td>
+<td>&#160;</td>
+</tr>
+<tr class="row-even"><td>&lt;species&gt;_partial_pressure</td>
+<td>surface</td>
+<td>&#160;</td>
+<td>X</td>
+<td>X</td>
+<td>X</td>
+<td>&#160;</td>
+<td>&#160;</td>
+</tr>
+<tr class="row-odd"><td>&lt;species&gt;_partial_pressure_dry_air</td>
+<td>surface</td>
+<td>&#160;</td>
+<td>X</td>
+<td>X</td>
+<td>X</td>
+<td>&#160;</td>
+<td>&#160;</td>
+</tr>
+<tr class="row-even"><td>&lt;species&gt;_volume_mixing_ratio</td>
+<td>surface</td>
+<td>apriori, avk</td>
+<td>X</td>
+<td>X</td>
+<td>X</td>
+<td>&#160;</td>
+<td>this is equal to &#8216;number mixing ratio&#8217;</td>
+</tr>
+<tr class="row-odd"><td>&lt;species&gt;_volume_mixing_ratio_dry_air</td>
+<td>surface</td>
+<td>apriori, avk</td>
+<td>X</td>
+<td>X</td>
+<td>X</td>
+<td>&#160;</td>
+<td>&#160;</td>
+</tr>
+</tbody>
+</table>
+<p>The supported aerosol types are:</p>
+<table border="1" class="docutils">
+<colgroup>
+<col width="45%" />
+<col width="55%" />
+</colgroup>
+<thead valign="bottom">
+<tr class="row-odd"><th class="head">Aerosol type</th>
+<th class="head">Description</th>
+</tr>
+</thead>
+<tbody valign="top">
+<tr class="row-even"><td>sea_salt</td>
+<td>sea salt</td>
+</tr>
+<tr class="row-odd"><td>dust</td>
+<td>dust</td>
+</tr>
+<tr class="row-even"><td>organic_matter</td>
+<td>organic matter</td>
+</tr>
+<tr class="row-odd"><td>black_carbon</td>
+<td>black carbon</td>
+</tr>
+<tr class="row-even"><td>sulphate</td>
+<td>sulphate</td>
+</tr>
+</tbody>
+</table>
+<p>The supported PM (particulate matter) types are:</p>
+<table border="1" class="docutils">
+<colgroup>
+<col width="13%" />
+<col width="87%" />
+</colgroup>
+<thead valign="bottom">
+<tr class="row-odd"><th class="head">Name</th>
+<th class="head">Description</th>
+</tr>
+</thead>
+<tbody valign="top">
+<tr class="row-even"><td>PM1</td>
+<td>particulate matter with d &lt; 1 um</td>
+</tr>
+<tr class="row-odd"><td>PM2p5</td>
+<td>particulate matter with d &lt; 2.5 um</td>
+</tr>
+<tr class="row-even"><td>PM10</td>
+<td>particulate matter with d &lt; 10 um</td>
+</tr>
+</tbody>
+</table>
+<p>The supported species are:</p>
+<table border="1" class="docutils">
+<colgroup>
+<col width="13%" />
+<col width="45%" />
+<col width="42%" />
+</colgroup>
+<thead valign="bottom">
+<tr class="row-odd"><th class="head">Name</th>
+<th class="head">Description</th>
+<th class="head">Aliases (not used by HARP)</th>
+</tr>
+</thead>
+<tbody valign="top">
+<tr class="row-even"><td>dry_air</td>
+<td>dry air</td>
+<td>&#160;</td>
+</tr>
+<tr class="row-odd"><td>BrO</td>
+<td>bromine oxide</td>
+<td>&#160;</td>
+</tr>
+<tr class="row-even"><td>BrO2</td>
+<td>bromine dioxide</td>
+<td>&#160;</td>
+</tr>
+<tr class="row-odd"><td>CCl2F2</td>
+<td>dichlorodifluoromethane</td>
+<td>freon-12, CFC-12, R-12</td>
+</tr>
+<tr class="row-even"><td>CCl3F</td>
+<td>trichlorofluoromethane</td>
+<td>freon-11, CFC-11, R-11</td>
+</tr>
+<tr class="row-odd"><td>CF4</td>
+<td>tetrafluoromethane</td>
+<td>&#160;</td>
+</tr>
+<tr class="row-even"><td>CHClF2</td>
+<td>chlorodifluoromethane</td>
+<td>HCFC-22, R-22</td>
+</tr>
+<tr class="row-odd"><td>CH3Cl</td>
+<td>chloromethane,
+methyl chloride</td>
+<td>HCC-40, R-40</td>
+</tr>
+<tr class="row-even"><td>CH3CN</td>
+<td>acetonitrile,
+methyl cyanide</td>
+<td>&#160;</td>
+</tr>
+<tr class="row-odd"><td>CH3OH</td>
+<td>methanol</td>
+<td>&#160;</td>
+</tr>
+<tr class="row-even"><td>CH4</td>
+<td>methane</td>
+<td>&#160;</td>
+</tr>
+<tr class="row-odd"><td>CO</td>
+<td>carbon monoxide</td>
+<td>&#160;</td>
+</tr>
+<tr class="row-even"><td>COF2</td>
+<td>carbonyl fluoride</td>
+<td>&#160;</td>
+</tr>
+<tr class="row-odd"><td>COS</td>
+<td>carbonyl sulfide</td>
+<td>OCS</td>
+</tr>
+<tr class="row-even"><td>CO2</td>
+<td>carbon dioxide</td>
+<td>&#160;</td>
+</tr>
+<tr class="row-odd"><td>C2H2</td>
+<td>acetylene</td>
+<td>HCCH</td>
+</tr>
+<tr class="row-even"><td>C2H2O2</td>
+<td>glyoxal</td>
+<td>OCHCHO, CHOCHO</td>
+</tr>
+<tr class="row-odd"><td>C2H3NO5</td>
+<td>peroxyacetyl nitrate</td>
+<td>PAN</td>
+</tr>
+<tr class="row-even"><td>C2H6</td>
+<td>ethane</td>
+<td>&#160;</td>
+</tr>
+<tr class="row-odd"><td>C3H8</td>
+<td>propane</td>
+<td>&#160;</td>
+</tr>
+<tr class="row-even"><td>C5H8</td>
+<td>isoprene</td>
+<td>&#160;</td>
+</tr>
+<tr class="row-odd"><td>ClNO3</td>
+<td>chlorine nitrate</td>
+<td>&#160;</td>
+</tr>
+<tr class="row-even"><td>ClO</td>
+<td>chlorine monoxide</td>
+<td>&#160;</td>
+</tr>
+<tr class="row-odd"><td>HCHO</td>
+<td>formaldehyde</td>
+<td>CH2O, H2CO</td>
+</tr>
+<tr class="row-even"><td>HCOOH</td>
+<td>formic acid</td>
+<td>HCO2H</td>
+</tr>
+<tr class="row-odd"><td>HCN</td>
+<td>hydrogen cyanide</td>
+<td>&#160;</td>
+</tr>
+<tr class="row-even"><td>HCl</td>
+<td>hydrogen chloride</td>
+<td>&#160;</td>
+</tr>
+<tr class="row-odd"><td>HF</td>
+<td>hydrogen fluoride</td>
+<td>&#160;</td>
+</tr>
+<tr class="row-even"><td>HNO2</td>
+<td>nitrous acid</td>
+<td>&#160;</td>
+</tr>
+<tr class="row-odd"><td>HNO3</td>
+<td>nitric acid</td>
+<td>&#160;</td>
+</tr>
+<tr class="row-even"><td>HNO4</td>
+<td>peroxynitric acid</td>
+<td>&#160;</td>
+</tr>
+<tr class="row-odd"><td>HOCl</td>
+<td>hypochlorous acid</td>
+<td>&#160;</td>
+</tr>
+<tr class="row-even"><td>HO2</td>
+<td>hydroperoxyl</td>
+<td>&#160;</td>
+</tr>
+<tr class="row-odd"><td>H2O</td>
+<td>water</td>
+<td>&#160;</td>
+</tr>
+<tr class="row-even"><td>H2O_161</td>
+<td>water (H1/O16/H1 isotopes)</td>
+<td>&#160;</td>
+</tr>
+<tr class="row-odd"><td>H2O_162</td>
+<td>water (H1/O16/H2 isotopes)</td>
+<td>HDO</td>
+</tr>
+<tr class="row-even"><td>H2O_171</td>
+<td>water (H1/O17/H1 isotopes)</td>
+<td>&#160;</td>
+</tr>
+<tr class="row-odd"><td>H2O_181</td>
+<td>water (H1/O18/H1 isotopes)</td>
+<td>&#160;</td>
+</tr>
+<tr class="row-even"><td>H2O2</td>
+<td>hydrogen peroxide</td>
+<td>&#160;</td>
+</tr>
+<tr class="row-odd"><td>IO</td>
+<td>hypoiodite</td>
+<td>&#160;</td>
+</tr>
+<tr class="row-even"><td>NO</td>
+<td>nitric oxide</td>
+<td>&#160;</td>
+</tr>
+<tr class="row-odd"><td>NOCl</td>
+<td>nitrosyl chloride</td>
+<td>&#160;</td>
+</tr>
+<tr class="row-even"><td>NO2</td>
+<td>nitrogen dioxide</td>
+<td>&#160;</td>
+</tr>
+<tr class="row-odd"><td>NO3</td>
+<td>nitrate</td>
+<td>&#160;</td>
+</tr>
+<tr class="row-even"><td>N2</td>
+<td>nitrogen gas</td>
+<td>&#160;</td>
+</tr>
+<tr class="row-odd"><td>N2O</td>
+<td>nitrous oxide</td>
+<td>NOS</td>
+</tr>
+<tr class="row-even"><td>N2O5</td>
+<td>dinitrogen pentoxide</td>
+<td>&#160;</td>
+</tr>
+<tr class="row-odd"><td>OClO</td>
+<td>chlorine dioxide</td>
+<td>ClO2</td>
+</tr>
+<tr class="row-even"><td>OH</td>
+<td>hydroxyl</td>
+<td>&#160;</td>
+</tr>
+<tr class="row-odd"><td>O2</td>
+<td>oxygen</td>
+<td>&#160;</td>
+</tr>
+<tr class="row-even"><td>O3</td>
+<td>ozone</td>
+<td>&#160;</td>
+</tr>
+<tr class="row-odd"><td>O3_666</td>
+<td>ozone (O16/O16/O16 isotopes)</td>
+<td>&#160;</td>
+</tr>
+<tr class="row-even"><td>O3_667</td>
+<td>ozone (O16/O16/O17 isotopes)</td>
+<td>&#160;</td>
+</tr>
+<tr class="row-odd"><td>O3_668</td>
+<td>ozone (O16/O16/O18 isotopes)</td>
+<td>&#160;</td>
+</tr>
+<tr class="row-even"><td>O3_686</td>
+<td>ozone (O16/O18/O16 isotopes)</td>
+<td>&#160;</td>
+</tr>
+<tr class="row-odd"><td>O4</td>
+<td>tetraoxygen, oxozone</td>
+<td>&#160;</td>
+</tr>
+<tr class="row-even"><td>SF6</td>
+<td>sulfur hexafluoride</td>
+<td>&#160;</td>
+</tr>
+<tr class="row-odd"><td>SO2</td>
+<td>sulfur dioxide</td>
+<td>&#160;</td>
+</tr>
+</tbody>
+</table>
+<p>Variables for which a prefix and/or postfix is provided can have any of the given prefixes and/or any of the given
+postfixes (separated by underscores). It is not allowed to provide more than one prefix or more than one postfix.
+Variables having an &#8216;X&#8217; in the Quality column can have any of the following additional versions of the variable
+(where <cite>&lt;variable&gt;</cite> can include any of the allowed prefix and/or postfix combinations):</p>
+<ul class="simple">
+<li>&lt;variable&gt;_covariance</li>
+<li>&lt;variable&gt;_uncertainty</li>
+<li>&lt;variable&gt;_uncertainty_random</li>
+<li>&lt;variable&gt;_uncertainty_systematic</li>
+<li>&lt;variable&gt;_validity</li>
+</ul>
+<p>Some examples of valid variable names are: <code class="docutils literal"><span class="pre">tropospheric_O3_column_number_density</span></code>,
+<code class="docutils literal"><span class="pre">tropospheric_O3_column_number_density_apriori</span></code>, <code class="docutils literal"><span class="pre">O3_column_number_density_apriori</span></code>,
+<code class="docutils literal"><span class="pre">tropospheric_O3_column_number_density_uncertainty</span></code>, <code class="docutils literal"><span class="pre">O3_column_number_density_apriori_uncertainty</span></code>.</p>
+<p>The <cite>Vert</cite>, <cite>Lat/Lon</cite>, and <cite>Spec</cite> columns indicate whether a variable can be dependent on the <code class="docutils literal"><span class="pre">vertical</span></code>,
+<code class="docutils literal"><span class="pre">latitude</span></code> &amp; <code class="docutils literal"><span class="pre">longitude</span></code>, and/or <code class="docutils literal"><span class="pre">spectral</span></code> dimensions (any variable can be dependent on the <code class="docutils literal"><span class="pre">time</span></code> dimension).</p>
+<p>The &#8216;surface&#8217; prefix should only be used when quantities are combined together with quantities that have a vertical dimension.
+If a product just contains surface quantities then don&#8217;t use a &#8216;surface&#8217; prefix but just omit the vertical dimension and
+indicate the vertical level (i.e. location of the surface) using a &#8216;pressure&#8217;, &#8216;altitude&#8217;, and/or &#8216;geopotential_height&#8217; variable.</p>
+<p>All (horizontal) azimuth angles in HARP should follow the convention that 0 is North facing
+and the angle is increasing when moving Eastwards (i.e. clockwise).
+Wind direction follows the same rules as for azimuth angles (North = 0, East = 90 degrees),
+but the direction indicates where the wind is coming <em>from</em>.</p>
+<p>In addition to the conventions above there can also be variables that describe a &#8216;difference&#8217;.
+These difference variables can only be used to describe differences of the same quantity between different datasets
+(&#8216;x&#8217; and &#8216;y&#8217;) and only for variables that have a unit.
+All difference variables in a single product should apply to the same datasets &#8216;x&#8217; and &#8216;y&#8217;
+(i.e. the difference variables should only reflect a single comparison of datasets;
+you should not combine one difference variable for &#8216;x-y&#8217; and another for &#8216;x-z&#8217; (even for different quantities)
+within the same product).
+A difference variable is indicated by a postfix.
+The &#8216;difference postfix&#8217; can come before a &#8216;quality postfix&#8217; if we are talking about the &#8216;quality of the difference&#8217;.
+If the &#8216;difference postfix&#8217; comes after a &#8216;quality postfix&#8217; then we are talking about the &#8216;difference of the quality quantity&#8217;.
+The supported differences are:</p>
+<ul class="simple">
+<li>&lt;variable&gt;_diff (<span class="math">\(x-y\)</span>)</li>
+<li>&lt;variable&gt;_diffrelx (<span class="math">\(\frac{x-y}{x}\)</span>)</li>
+<li>&lt;variable&gt;_diffrely (<span class="math">\(\frac{x-y}{y}\)</span>)</li>
+<li>&lt;variable&gt;_diffrelmin (<span class="math">\(\frac{x-y}{\min(x,y)}\)</span>)</li>
+<li>&lt;variable&gt;_diffrelmax (<span class="math">\(\frac{x-y}{\max(x,y)}\)</span>)</li>
+<li>&lt;variable&gt;_diffrelavg (<span class="math">\(\frac{2(x-y)}{x+y}\)</span>)</li>
+<li>&lt;variable&gt;_diffabs (<span class="math">\(|x-y|\)</span>)</li>
+<li>&lt;variable&gt;_diffabsrelx (<span class="math">\(\frac{|x-y|}{|x|}\)</span>)</li>
+<li>&lt;variable&gt;_diffabsrely (<span class="math">\(\frac{|x-y|}{|y|}\)</span>)</li>
+<li>&lt;variable&gt;_diffabsrelmin (<span class="math">\(\frac{|x-y|}{\min(|x|,|y|)}\)</span>)</li>
+<li>&lt;variable&gt;_diffabsrelmax (<span class="math">\(\frac{|x-y|}{\max(|x|,|y|)}\)</span>)</li>
+<li>&lt;variable&gt;_diffabsrelavg (<span class="math">\(\frac{2|x-y|}{|x+y|}\)</span>)</li>
+</ul>
+<p>Be aware that there are still several topics under discussion that may change the above naming convention.
+See the HARP issues list on the <a class="reference external" href="https://github.com/stcorp/harp/issues">GitHub website</a> for more details.</p>
+</div>
+
+
+           </div>
+           <div class="articleComments">
+            
+           </div>
+          </div>
+          <footer>
+  
+    <div class="rst-footer-buttons" role="navigation" aria-label="footer navigation">
+      
+        <a href="datetime.html" class="btn btn-neutral float-right" title="Datetime values" accesskey="n" rel="next">Next <span class="fa fa-arrow-circle-right"></span></a>
+      
+      
+        <a href="variables.html" class="btn btn-neutral" title="Variables" accesskey="p" rel="prev"><span class="fa fa-arrow-circle-left"></span> Previous</a>
+      
+    </div>
+  
+
+  <hr/>
+
+  <div role="contentinfo">
+    <p>
+        &copy; Copyright 2015-2017 S&amp;T, The Netherlands.
+
+    </p>
+  </div> 
+
+</footer>
+
+        </div>
+      </div>
+
+    </section>
+
+  </div>
+  
+
+
+  
+
+    <script type="text/javascript">
+        var DOCUMENTATION_OPTIONS = {
+            URL_ROOT:'../',
+            VERSION:'0.6b',
+            COLLAPSE_INDEX:false,
+            FILE_SUFFIX:'.html',
+            HAS_SOURCE:  false,
+            SOURCELINK_SUFFIX: '.txt'
+        };
+    </script>
+      <script type="text/javascript" src="../_static/jquery.js"></script>
+      <script type="text/javascript" src="../_static/underscore.js"></script>
+      <script type="text/javascript" src="../_static/doctools.js"></script>
+      <script type="text/javascript" src="https://cdnjs.cloudflare.com/ajax/libs/mathjax/2.7.0/MathJax.js?config=TeX-AMS-MML_HTMLorMML"></script>
+
+  
+
+  
+  
+    <script type="text/javascript" src="../_static/js/theme.js"></script>
+  
+
+  
+  
+  <script type="text/javascript">
+      jQuery(function () {
+          SphinxRtdTheme.StickyNav.enable();
+      });
+  </script>
+   
+
+</body>
+</html>

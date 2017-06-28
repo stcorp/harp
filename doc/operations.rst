@@ -324,7 +324,7 @@ Collocation result file
 -----------------------
 
 The format of the collocation result file is described in the
-:ref:`data formats <collocation\-result\-file\-format>` documentation.
+:doc:`conventions <conventions/collocation_result>` section of the HARP documentation.
 
 Area mask file
 --------------
