@@ -3329,36 +3329,38 @@ static void register_aer_lh_product(void)
     register_geolocation_variables(product_definition);
     register_additional_geolocation_variables(product_definition);
 
-    /* altitude */
+    /* aerosol_height */
     description = "altitude of center of aerosol layer";
     variable_definition =
-        harp_ingestion_register_variable_full_read(product_definition, "altitude", harp_type_float, 1, dimension_type,
-                                                   NULL, description, "m", NULL, read_product_aerosol_mid_height);
+        harp_ingestion_register_variable_full_read(product_definition, "aerosol_height", harp_type_float, 1,
+                                                   dimension_type, NULL, description, "m", NULL,
+                                                   read_product_aerosol_mid_height);
     path = "/PRODUCT/aerosol_mid_height[]";
     harp_variable_definition_add_mapping(variable_definition, NULL, NULL, path, NULL);
 
-    /* altitude_uncertainty */
+    /* aerosol_height_uncertainty */
     description = "uncertainty of altitude of center of aerosol layer";
     variable_definition =
-        harp_ingestion_register_variable_full_read(product_definition, "altitude_uncertainty", harp_type_float, 1,
+        harp_ingestion_register_variable_full_read(product_definition, "aerosol_height_uncertainty", harp_type_float, 1,
                                                    dimension_type, NULL, description, "m", NULL,
                                                    read_product_aerosol_mid_height_precision);
     path = "/PRODUCT/aerosol_mid_height_precision[]";
     harp_variable_definition_add_mapping(variable_definition, NULL, NULL, path, NULL);
 
-    /* pressure */
+    /* aerosol_pressure */
     description = "pressure at center of aerosol layer";
     variable_definition =
-        harp_ingestion_register_variable_full_read(product_definition, "pressure", harp_type_float, 1, dimension_type,
-                                                   NULL, description, "Pa", NULL, read_product_aerosol_mid_pressure);
+        harp_ingestion_register_variable_full_read(product_definition, "aerosol_pressure", harp_type_float, 1,
+                                                   dimension_type, NULL, description, "Pa", NULL,
+                                                   read_product_aerosol_mid_pressure);
     path = "/PRODUCT/aerosol_mid_pressure[]";
     harp_variable_definition_add_mapping(variable_definition, NULL, NULL, path, NULL);
 
-    /* pressure_uncertainty */
+    /* aerosol_pressure_uncertainty */
     description = "uncertainty of pressure at center of aerosol layer";
     variable_definition =
-        harp_ingestion_register_variable_full_read(product_definition, "pressure_uncertainty", harp_type_float, 1,
-                                                   dimension_type, NULL, description, "Pa", NULL,
+        harp_ingestion_register_variable_full_read(product_definition, "aerosol_pressure_uncertainty", harp_type_float,
+                                                   1, dimension_type, NULL, description, "Pa", NULL,
                                                    read_product_aerosol_mid_pressure_precision);
     path = "/PRODUCT/aerosol_mid_pressure_precision[]";
     harp_variable_definition_add_mapping(variable_definition, NULL, NULL, path, NULL);
