@@ -44,6 +44,8 @@
  */
 #define DIM_WITHOUT_VARIABLE "This is a netCDF dimension but not a netCDF variable."
 
+#define DIM_WITH_VARIABLE "This is a netCDF dimension that is also a netCDF variable."
+
 /* Attribute name used in netCDF-4 files to mark a netCDF-4 file as a netCDF classic file. This #define statement was
  * copied verbatim from nc4internal.h and should be kept in sync with future updates of the netCDF-4 library.
  */
@@ -539,14 +541,15 @@ static herr_t hdf5_read_dimension_scale_func(hid_t dataset_id, unsigned dim, hid
     return 0;
 }
 
-static int read_variable_dimensions(hid_t dataset_id, const hdf5_dimension_ids *dimension_ids,
-                                    int *num_dimensions, harp_dimension_type *dimension_type, long *dimension)
+static int read_variable_dimensions(const char *variable_name, hid_t dataset_id,
+                                    const hdf5_dimension_ids *dimension_ids, int *num_dimensions,
+                                    harp_dimension_type *dimension_type, long *dimension)
 {
     hid_t space_id;
     int hdf5_num_dimensions;
     harp_dimension_type hdf5_dimension_type[HARP_MAX_NUM_DIMS];
     hsize_t hdf5_dimension[HARP_MAX_NUM_DIMS];
-    int i;
+    int i, j;
 
     space_id = H5Dget_space(dataset_id);
     if (space_id < 0)
@@ -601,6 +604,18 @@ static int read_variable_dimensions(hid_t dataset_id, const hdf5_dimension_ids *
         if (hdf5_num_scales == 0)
         {
             hdf5_dimension_type[i] = harp_dimension_independent;
+            if ((i == 0) && H5DSis_scale(dataset_id))
+            {
+                /* This variable has the same name as a dimension */
+                for (j = 0; j < HARP_NUM_DIM_TYPES; j++)
+                {
+                    if (strcmp(harp_get_dimension_type_name(j), variable_name) == 0)
+                    {
+                        hdf5_dimension_type[i] = (harp_dimension_type)j;
+                        break;
+                    }
+                }
+            }
         }
         else if (hdf5_num_scales == 1)
         {
@@ -662,7 +677,7 @@ static int read_variable(hid_t dataset_id, const char *name, const hdf5_dimensio
         return -1;
     }
 
-    if (read_variable_dimensions(dataset_id, dimension_ids, &num_dimensions, dimension_type, dimension) != 0)
+    if (read_variable_dimensions(name, dataset_id, dimension_ids, &num_dimensions, dimension_type, dimension) != 0)
     {
         return -1;
     }
@@ -972,16 +987,16 @@ static herr_t hdf5_read_variable_func(hid_t group_id, const char *name, const H5
 
     if (is_dimension_scale)
     {
-        char name[sizeof(DIM_WITHOUT_VARIABLE)];
+        char scale_name[255];
 
-        if (H5DSget_scale_name(dataset_id, name, sizeof(DIM_WITHOUT_VARIABLE)) < 0)
+        if (H5DSget_scale_name(dataset_id, scale_name, sizeof(scale_name)) < 0)
         {
             harp_set_error(HARP_ERROR_HDF5, NULL);
             H5Dclose(dataset_id);
             return -1;
         }
 
-        if (strncmp(name, DIM_WITHOUT_VARIABLE, sizeof(DIM_WITHOUT_VARIABLE) - 1) == 0)
+        if (strncmp(scale_name, DIM_WITHOUT_VARIABLE, sizeof(DIM_WITHOUT_VARIABLE) - 1) == 0)
         {
             /* Skip dimension scales without a coordinate variable. */
             H5Dclose(dataset_id);
@@ -1684,7 +1699,7 @@ static int finalize_dimensions(hid_t group_id, const harp_product *product, hdf5
         }
 
         /* Upgrade dataset to a dimension scale. The dataset acts as the attached coordinate variable. */
-        if (H5DSset_scale(dataset_id, NULL) != 0)
+        if (H5DSset_scale(dataset_id, DIM_WITH_VARIABLE) != 0)
         {
             harp_set_error(HARP_ERROR_HDF5, NULL);
             H5Dclose(dataset_id);
