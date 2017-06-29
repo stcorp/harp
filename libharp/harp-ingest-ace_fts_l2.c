@@ -180,7 +180,6 @@ static int read_datetime(void *user_data, harp_array data)
     coda_cursor cursor;
     ingest_info *info = (ingest_info *)user_data;
     double datetime_in_seconds;
-    long i;
     char datetime_str[81];
 
     if (coda_cursor_set_product(&cursor, info->product) != 0)
@@ -203,10 +202,7 @@ static int read_datetime(void *user_data, harp_array data)
         harp_set_error(HARP_ERROR_CODA, NULL);
         return -1;
     }
-    for (i = 0; i < info->num_altitudes; i++)
-    {
-        data.double_data[i] = datetime_in_seconds;
-    }
+    data.double_data[0] = datetime_in_seconds;
 
     return 0;
 }
@@ -597,6 +593,7 @@ static int read_dimensions(void *user_data, long dimension[HARP_NUM_DIM_TYPES])
 {
     ingest_info *info = (ingest_info *)user_data;
 
+    dimension[harp_dimension_time] = 1;
     dimension[harp_dimension_vertical] = info->num_altitudes;
 
     return 0;
@@ -764,14 +761,16 @@ static void register_general_fields(harp_product_definition *product_definition)
 {
     harp_variable_definition *variable_definition;
     harp_dimension_type dimension_type[1] = { harp_dimension_vertical };
+    harp_dimension_type datetime_dimension_type[1] = { harp_dimension_time };
     const char *description;
     const char *path;
 
     /* datetime */
     description = "date and time of occultation 30 km geometric tangent point (in seconds since 2000-01-01 00:00:00)";
     variable_definition =
-        harp_ingestion_register_variable_full_read(product_definition, "datetime", harp_type_double, 1, dimension_type,
-                                                   NULL, description, "seconds since 2000-01-01", NULL, read_datetime);
+        harp_ingestion_register_variable_full_read(product_definition, "datetime", harp_type_double, 1,
+                                                   datetime_dimension_type, NULL, description,
+                                                   "seconds since 2000-01-01", NULL, read_datetime);
     path = "/date";
     description = "date field from header section";
     harp_variable_definition_add_mapping(variable_definition, NULL, NULL, path, description);
