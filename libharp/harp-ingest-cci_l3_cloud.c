@@ -322,6 +322,63 @@ static int read_datetime(void *user_data, harp_array data)
     return retval;
 }
 
+static int read_datetime_from_attributes(ingest_info *info, const char *path, double *datetime)
+{
+    coda_cursor cursor;
+    char buffer[17];
+    long length;
+
+    if (coda_cursor_set_product(&cursor, info->product) != 0)
+    {
+        harp_set_error(HARP_ERROR_CODA, NULL);
+        return -1;
+    }
+    if (coda_cursor_goto(&cursor, path) != 0)
+    {
+        harp_set_error(HARP_ERROR_CODA, NULL);
+        return -1;
+    }
+    if (coda_cursor_get_string_length(&cursor, &length) != 0)
+    {
+        harp_set_error(HARP_ERROR_CODA, NULL);
+        return -1;
+    }
+    if (length != 16)
+    {
+        harp_set_error(HARP_ERROR_INGESTION, "datetime value has length %ld; expected 16 (yyyyMMdd'T'HHmmss'Z')",
+                       length);
+        harp_add_coda_cursor_path_to_error_message(&cursor);
+        return -1;
+    }
+    if (coda_cursor_read_string(&cursor, buffer, 17) != 0)
+    {
+        harp_set_error(HARP_ERROR_CODA, NULL);
+        return -1;
+    }
+    if (coda_time_string_to_double("yyyyMMdd'T'HHmmss'Z'", buffer, datetime) != 0)
+    {
+        harp_set_error(HARP_ERROR_CODA, NULL);
+        harp_add_coda_cursor_path_to_error_message(&cursor);
+        return -1;
+    }
+
+    return 0;
+}
+
+static int read_datetime_start(void *user_data, harp_array data)
+{
+    ingest_info *info = (ingest_info *)user_data;
+
+    return read_datetime_from_attributes(info, "/@time_coverage_start", &data.double_data[0]);
+}
+
+static int read_datetime_stop(void *user_data, harp_array data)
+{
+    ingest_info *info = (ingest_info *)user_data;
+
+    return read_datetime_from_attributes(info, "/@time_coverage_end", &data.double_data[0]);
+}
+
 static int read_dimensions(void *user_data, long dimension[HARP_NUM_DIM_TYPES])
 {
     ingest_info *info = (ingest_info *)user_data;
@@ -703,7 +760,27 @@ void register_fields_for_daily_l3u_cloud_data(void)
                                                    "seconds since 2000-01-01", NULL, read_datetime);
     path = "/time";
     description = "datetime converted from days sinds 1970-01-01 to seconds since 2000-01-01";
-    harp_variable_definition_add_mapping(variable_definition, NULL, NULL, path, NULL);
+    harp_variable_definition_add_mapping(variable_definition, NULL, NULL, path, description);
+
+    /* datetime_start */
+    description = "time coverage start";
+    variable_definition =
+        harp_ingestion_register_variable_full_read(product_definition, "datetime_start", harp_type_double, 1,
+                                                   datetime_dimension_type, NULL, description,
+                                                   "seconds since 2000-01-01", NULL, read_datetime_start);
+    path = "/@time_coverage_start";
+    description = "datetime converted from a start date to seconds since 2000-01-01";
+    harp_variable_definition_add_mapping(variable_definition, NULL, NULL, path, description);
+
+    /* datetime_stop */
+    description = "time coverage end";
+    variable_definition =
+        harp_ingestion_register_variable_full_read(product_definition, "datetime_stop", harp_type_double, 1,
+                                                   datetime_dimension_type, NULL, description,
+                                                   "seconds since 2000-01-01", NULL, read_datetime_stop);
+    path = "/@time_coverage_end";
+    description = "datetime converted from an end date to seconds since 2000-01-01";
+    harp_variable_definition_add_mapping(variable_definition, NULL, NULL, path, description);
 }
 
 /* Code specific for montly data */
@@ -910,7 +987,27 @@ void register_fields_for_monthly_l3c_cloud_data(void)
                                                    "seconds since 2000-01-01", NULL, read_datetime);
     path = "/time";
     description = "datetime converted from days sinds 1970-01-01 to seconds since 2000-01-01";
-    harp_variable_definition_add_mapping(variable_definition, NULL, NULL, path, NULL);
+    harp_variable_definition_add_mapping(variable_definition, NULL, NULL, path, description);
+
+    /* datetime_start */
+    description = "time coverage start";
+    variable_definition =
+        harp_ingestion_register_variable_full_read(product_definition, "datetime_start", harp_type_double, 1,
+                                                   datetime_dimension_type, NULL, description,
+                                                   "seconds since 2000-01-01", NULL, read_datetime_start);
+    path = "/@time_coverage_start";
+    description = "datetime converted from a start date to seconds since 2000-01-01";
+    harp_variable_definition_add_mapping(variable_definition, NULL, NULL, path, description);
+
+    /* datetime_stop */
+    description = "time coverage end";
+    variable_definition =
+        harp_ingestion_register_variable_full_read(product_definition, "datetime_stop", harp_type_double, 1,
+                                                   datetime_dimension_type, NULL, description,
+                                                   "seconds since 2000-01-01", NULL, read_datetime_stop);
+    path = "/@time_coverage_end";
+    description = "datetime converted from an end date to seconds since 2000-01-01";
+    harp_variable_definition_add_mapping(variable_definition, NULL, NULL, path, description);
 }
 
 int harp_ingestion_module_cci_l3_cloud_init(void)
