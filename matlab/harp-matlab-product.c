@@ -500,7 +500,8 @@ static void harp_matlab_add_matlab_product_variable(harp_product **product, cons
                     {
                         for (long k = 0; k < dim[matlab_num_dims - 1]; k++)
                         {
-                            variable_new->data.int8_data[counter++] = data[j + k * num_elements / dim[matlab_num_dims - 1]];
+                            variable_new->data.int8_data[counter++] =
+                                data[j + k * num_elements / dim[matlab_num_dims - 1]];
                         }
                     }
                 }
@@ -549,7 +550,8 @@ static void harp_matlab_add_matlab_product_variable(harp_product **product, cons
                     {
                         for (long k = 0; k < dim[matlab_num_dims - 1]; k++)
                         {
-                            variable_new->data.int16_data[counter++] = data[j + k * num_elements / dim[matlab_num_dims - 1]];
+                            variable_new->data.int16_data[counter++] =
+                                data[j + k * num_elements / dim[matlab_num_dims - 1]];
                         }
                     }
                 }
@@ -599,7 +601,8 @@ static void harp_matlab_add_matlab_product_variable(harp_product **product, cons
                     {
                         for (long k = 0; k < dim[matlab_num_dims - 1]; k++)
                         {
-                            variable_new->data.int32_data[counter++] = data[j + k * num_elements / dim[matlab_num_dims - 1]];
+                            variable_new->data.int32_data[counter++] =
+                                data[j + k * num_elements / dim[matlab_num_dims - 1]];
                         }
                     }
                 }
@@ -609,7 +612,8 @@ static void harp_matlab_add_matlab_product_variable(harp_product **product, cons
             {
                 double *data;
 
-                if (harp_variable_new(variable_name, harp_type_double, harp_num_dims, dim_type, dim, &variable_new) != 0)
+                if (harp_variable_new(variable_name, harp_type_double, harp_num_dims, dim_type, dim, &variable_new) !=
+                    0)
                 {
                     harp_matlab_harp_error();
                 }
@@ -648,7 +652,8 @@ static void harp_matlab_add_matlab_product_variable(harp_product **product, cons
                     {
                         for (long k = 0; k < dim[matlab_num_dims - 1]; k++)
                         {
-                            variable_new->data.double_data[counter++] = data[j + k * num_elements / dim[matlab_num_dims - 1]];
+                            variable_new->data.double_data[counter++] =
+                                data[j + k * num_elements / dim[matlab_num_dims - 1]];
                         }
                     }
                 }
@@ -696,7 +701,8 @@ static void harp_matlab_add_matlab_product_variable(harp_product **product, cons
                     {
                         for (long k = 0; k < dim[matlab_num_dims - 1]; k++)
                         {
-                            variable_new->data.float_data[counter++] = data[j + k * num_elements / dim[matlab_num_dims - 1]];
+                            variable_new->data.float_data[counter++] =
+                                data[j + k * num_elements / dim[matlab_num_dims - 1]];
                         }
                     }
                 }
@@ -712,7 +718,8 @@ static void harp_matlab_add_matlab_product_variable(harp_product **product, cons
                 }
                 string_data = get_matlab_string_value(datastructure);
 
-                if (harp_variable_new(variable_name, harp_type_string, harp_num_dims, dim_type, dim, &variable_new) != 0)
+                if (harp_variable_new(variable_name, harp_type_string, harp_num_dims, dim_type, dim, &variable_new) !=
+                    0)
                 {
                     harp_matlab_harp_error();
                 }
@@ -757,7 +764,8 @@ static void harp_matlab_add_matlab_product_variable(harp_product **product, cons
                         mexErrMsgTxt("Cell arrays are only allowed for one dimensional string data.");
                     }
                 }
-                if (harp_variable_new(variable_name, harp_type_string, harp_num_dims, dim_type, dim, &variable_new) != 0)
+                if (harp_variable_new(variable_name, harp_type_string, harp_num_dims, dim_type, dim, &variable_new) !=
+                    0)
                 {
                     harp_matlab_harp_error();
                 }
