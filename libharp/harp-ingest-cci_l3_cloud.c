@@ -326,6 +326,7 @@ static int read_dimensions(void *user_data, long dimension[HARP_NUM_DIM_TYPES])
 {
     ingest_info *info = (ingest_info *)user_data;
 
+    dimension[harp_dimension_time] = 1;
     dimension[harp_dimension_latitude] = info->num_latitudes;
     dimension[harp_dimension_longitude] = info->num_longitudes;
 
@@ -502,6 +503,7 @@ void register_fields_for_daily_l3u_cloud_data(void)
     harp_product_definition *product_definition;
     harp_variable_definition *variable_definition;
     harp_dimension_type dimension_type[2] = { harp_dimension_latitude, harp_dimension_longitude };
+    harp_dimension_type datetime_dimension_type[1] = { harp_dimension_time };
     const char *description;
     const char *path;
     const char *orbit_options[] = { "ascending", "descending" };
@@ -696,10 +698,11 @@ void register_fields_for_daily_l3u_cloud_data(void)
     /* datetime */
     description = "datetime";
     variable_definition =
-        harp_ingestion_register_variable_full_read(product_definition, "datetime", harp_type_double, 0,
-                                                   dimension_type, NULL, description, "s since 2000-01-01", NULL,
-                                                   read_datetime);
+        harp_ingestion_register_variable_full_read(product_definition, "datetime", harp_type_double, 1,
+                                                   datetime_dimension_type, NULL, description,
+                                                   "seconds since 2000-01-01", NULL, read_datetime);
     path = "/time";
+    description = "datetime converted from days sinds 1970-01-01 to seconds since 2000-01-01";
     harp_variable_definition_add_mapping(variable_definition, NULL, NULL, path, NULL);
 }
 
@@ -775,6 +778,7 @@ void register_fields_for_monthly_l3c_cloud_data(void)
     harp_product_definition *product_definition;
     harp_variable_definition *variable_definition;
     harp_dimension_type dimension_type[2] = { harp_dimension_latitude, harp_dimension_longitude };
+    harp_dimension_type datetime_dimension_type[1] = { harp_dimension_time };
     const char *description;
     const char *path;
     const char *corrected_options[] = { "false", "\"\" (default)" };
@@ -901,10 +905,11 @@ void register_fields_for_monthly_l3c_cloud_data(void)
     /* datetime */
     description = "datetime";
     variable_definition =
-        harp_ingestion_register_variable_full_read(product_definition, "datetime", harp_type_double, 0,
-                                                   dimension_type, NULL, description, "s since 2000-01-01", NULL,
-                                                   read_datetime);
+        harp_ingestion_register_variable_full_read(product_definition, "datetime", harp_type_double, 1,
+                                                   datetime_dimension_type, NULL, description,
+                                                   "seconds since 2000-01-01", NULL, read_datetime);
     path = "/time";
+    description = "datetime converted from days sinds 1970-01-01 to seconds since 2000-01-01";
     harp_variable_definition_add_mapping(variable_definition, NULL, NULL, path, NULL);
 }
 
