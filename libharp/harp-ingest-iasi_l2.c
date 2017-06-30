@@ -545,7 +545,7 @@ static int read_co2_column(void *user_data, long index, harp_array data)
     return get_species_data(user_data, index, "INTEGRATED_CO2", data);
 }
 
-static int read_scan_subset_counter(void *user_data, long index, harp_array data)
+static int read_scan_subindex(void *user_data, long index, harp_array data)
 {
     (void)user_data;
     *data.int8_data = (int8_t)(index % 120);
@@ -753,12 +753,11 @@ int harp_ingestion_module_iasi_l2_init(void)
     path = "/MDR[]/MDR/INTEGRATED_N2O[]";
     harp_variable_definition_add_mapping(variable_definition, NULL, NULL, path, NULL);
 
-    /* scan_subset_counter */
+    /* scan_subindex */
     description = "the relative index (0-119) of this measurement within an MDR";
     variable_definition =
-        harp_ingestion_register_variable_sample_read(product_definition, "scan_subset_counter", harp_type_int8, 1,
-                                                     dimension_type, NULL, description, NULL, NULL,
-                                                     read_scan_subset_counter);
+        harp_ingestion_register_variable_sample_read(product_definition, "scan_subindex", harp_type_int8, 1,
+                                                     dimension_type, NULL, description, NULL, NULL, read_scan_subindex);
 
     return 0;
 }

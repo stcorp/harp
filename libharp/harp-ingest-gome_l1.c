@@ -578,7 +578,7 @@ static int read_integration_time(void *user_data, harp_array data)
     return get_spectral_data((ingest_info *)user_data, NULL, INTEGRATION_TIME, data.double_data);
 }
 
-static int read_scan_subset_counter(void *user_data, harp_array data)
+static int read_scan_subindex(void *user_data, harp_array data)
 {
     coda_cursor cursor;
     ingest_info *info;
@@ -1096,12 +1096,11 @@ static int register_nominal_product(harp_ingestion_module *module)
     path = "/egp[]/brda[]/integration_time";
     harp_variable_definition_add_mapping(variable_definition, NULL, NULL, path, NULL);
 
-    /* scan_subset_counter */
+    /* scan_subindex */
     description = "relative index (0-3) of this measurement within a scan (forward+backward)";
     variable_definition =
-        harp_ingestion_register_variable_full_read(product_definition, "scan_subset_counter", harp_type_int8, 1,
-                                                   dimension_type, NULL, description, NULL, NULL,
-                                                   read_scan_subset_counter);
+        harp_ingestion_register_variable_full_read(product_definition, "scan_subindex", harp_type_int8, 1,
+                                                   dimension_type, NULL, description, NULL, NULL, read_scan_subindex);
     harp_variable_definition_set_valid_range_int8(variable_definition, 0, 3);
     path = "/egp[]/sub_counter";
     description = "if a measurement consisted of multiple ground pixels, the subset counter of the last pixel is taken";

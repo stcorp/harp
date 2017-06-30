@@ -219,7 +219,7 @@ static int read_datetime(void *user_data, harp_array data)
     return read_dataset(info, "/time", harp_type_double, info->num_time, data);
 }
 
-static int read_scanline_pixel_index(void *user_data, harp_array data)
+static int read_scan_subindex(void *user_data, harp_array data)
 {
     ingest_info *info = (ingest_info *)user_data;
 
@@ -486,12 +486,11 @@ int harp_ingestion_module_cci_l2_o3_tc_init(void)
     /* ESACCI_OZONE_L2_TC product */
     product_definition = harp_ingestion_register_product(module, "ESACCI_OZONE_L2_TC", NULL, read_dimensions);
 
-    /* scanline_pixel_index */
+    /* scan_subindex */
     description = "zero-based index of the instantaneous field of view within the swath";
     variable_definition =
-        harp_ingestion_register_variable_full_read(product_definition, "scanline_pixel_index", harp_type_int32, 1,
-                                                   dimension_type, NULL, description, NULL, NULL,
-                                                   read_scanline_pixel_index);
+        harp_ingestion_register_variable_full_read(product_definition, "scan_subindex", harp_type_int32, 1,
+                                                   dimension_type, NULL, description, NULL, NULL, read_scan_subindex);
     path = "/pixel_number[]";
     harp_variable_definition_add_mapping(variable_definition, NULL, NULL, path, NULL);
 

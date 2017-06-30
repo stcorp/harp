@@ -839,7 +839,7 @@ static int read_integration_time(void *user_data, harp_array data)
     return get_spectral_data((ingest_info *)user_data, NULL, INTEGRATION_TIME, data.double_data);
 }
 
-static int read_scan_subset_counter(void *user_data, harp_array data)
+static int read_scan_subindex(void *user_data, harp_array data)
 {
     ingest_info *info;
     int8_t *int_data;
@@ -866,7 +866,7 @@ static int read_scan_subset_counter(void *user_data, harp_array data)
 static int read_scan_direction(void *user_data, long index, harp_array data)
 {
     ingest_info *info;
-    long i, subset_counter, index_plus_readout_offset;
+    long i, subindex, index_plus_readout_offset;
 
     info = (ingest_info *)user_data;
 
@@ -878,19 +878,14 @@ static int read_scan_direction(void *user_data, long index, harp_array data)
 
     if (index_plus_readout_offset == 0L)
     {
-        /* First readout is from previous scan so subset counter = 15 */
-        subset_counter = 15;
+        /* First readout is from previous scan so index within scan = 15 */
+        subindex = 15;
     }
     else
     {
-        subset_counter = (((index_plus_readout_offset - 1) % 32) / 2);
+        subindex = (((index_plus_readout_offset - 1) % 32) / 2);
     }
-    /* Note: In previous versions of this source, we had a value 'mixed'    */
-    /* that was meant for a measurement that consisted of both a forward    */
-    /* and a backward scan. Since in HARP we always store GOME2_L1 data     */
-    /* with the maximum resolution (one main-record every 375 milliseconds) */
-    /* this 'mixed' value is no longer used.                                */
-    if (subset_counter < 12)
+    if (subindex < 12)
     {
         *(data.string_data) = strdup("forward");
     }
@@ -1311,8 +1306,7 @@ static int init_measurements_dimensions(ingest_info *info)
                     harp_set_error(HARP_ERROR_CODA, NULL);
                     return -1;
                 }
-                /* dim[0] = number of measurements for this band during a     */
-                /*          (6 second) scan.                                  */
+                /* dim[0] = number of measurements for this band during a (6 second) scan. */
                 /* dim[1] = number of pixels in one measurement for this band */
                 if (info->num_pixels[band_nr] == 0)
                 {
@@ -1506,12 +1500,11 @@ static void register_variables_radiance_transmittance_fields(harp_product_defini
     path = "/MDR[]/Earthshine/INTEGRATION_TIMES[]";
     harp_variable_definition_add_mapping(variable_definition, NULL, NULL, path, NULL);
 
-    /* scan_subset_counter */
+    /* scan_subindex */
     description = "relative index (0-15) of this measurement within a scan (forward+backward)";
     variable_definition =
-        harp_ingestion_register_variable_full_read(product_definition, "scan_subset_counter", harp_type_int8, 1,
-                                                   dimension_type, NULL, description, NULL, NULL,
-                                                   read_scan_subset_counter);
+        harp_ingestion_register_variable_full_read(product_definition, "scan_subindex", harp_type_int8, 1,
+                                                   dimension_type, NULL, description, NULL, NULL, read_scan_subindex);
     harp_variable_definition_set_valid_range_int8(variable_definition, 0, 15);
 
     /* scan_direction */

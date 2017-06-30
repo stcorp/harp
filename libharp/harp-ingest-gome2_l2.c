@@ -2106,12 +2106,12 @@ static void register_scan_variables(harp_product_definition *product_definition,
     const char *description;
     const char *path;
 
-    /* scan_subset_counter */
+    /* scan_subindex */
     if (is_ers_product)
     {
         description = "the relative index (0-3) of this measurement within a scan (forward + backward)";
         variable_definition =
-            harp_ingestion_register_variable_full_read(product_definition, "scan_subset_counter", harp_type_int8, 1,
+            harp_ingestion_register_variable_full_read(product_definition, "scan_subindex", harp_type_int8, 1,
                                                        dimension_type, NULL, description, NULL, NULL,
                                                        read_index_in_scan);
         path = "/GEOLOCATION/IndexInScan[]";
@@ -2121,7 +2121,7 @@ static void register_scan_variables(harp_product_definition *product_definition,
     {
         description = "the relative index (0-31) of this measurement within a scan (forward + backward)";
         variable_definition =
-            harp_ingestion_register_variable_full_read(product_definition, "scan_subset_counter", harp_type_int8, 1,
+            harp_ingestion_register_variable_full_read(product_definition, "scan_subindex", harp_type_int8, 1,
                                                        dimension_type, NULL, description, NULL, NULL,
                                                        read_sub_pixel_in_scan);
         path = "/GEOLOCATION/SubPixelInScan[]";

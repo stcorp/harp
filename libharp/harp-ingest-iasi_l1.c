@@ -323,7 +323,7 @@ static int read_wavenumber_sample(void *user_data, long index, harp_array data)
     return get_wavenumber_sample_data((ingest_info *)user_data, index, data.float_data);
 }
 
-static int read_scan_subset_counter(void *user_data, harp_array data)
+static int read_scan_subindex(void *user_data, harp_array data)
 {
     int8_t *int8_data;
     long i;
@@ -610,12 +610,11 @@ int harp_ingestion_module_iasi_l1_init(void)
     description = "wavenumber[i] = IDefSpectDWn1b * (i + IDefNsfirst1b - 1). ";
     harp_variable_definition_add_mapping(variable_definition, NULL, NULL, path, description);
 
-    /* scan_subset_counter */
+    /* scan_subindex */
     description = "relative index (0-119) of this measurement within an MDR";
     variable_definition =
-        harp_ingestion_register_variable_full_read(product_definition, "scan_subset_counter", harp_type_int8, 1,
-                                                   dimension_type, NULL, description, NULL, NULL,
-                                                   read_scan_subset_counter);
+        harp_ingestion_register_variable_full_read(product_definition, "scan_subindex", harp_type_int8, 1,
+                                                   dimension_type, NULL, description, NULL, NULL, read_scan_subindex);
 
     return 0;
 }

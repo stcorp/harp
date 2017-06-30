@@ -499,7 +499,7 @@ static int read_dimensions(void *user_data, long dimension[HARP_NUM_DIM_TYPES])
     return 0;
 }
 
-static int read_scanline_pixel_index(void *user_data, long index, harp_array data)
+static int read_scan_subindex(void *user_data, long index, harp_array data)
 {
     ingest_info *info = (ingest_info *)user_data;
 
@@ -738,9 +738,8 @@ static void register_irradiance_product_variables(harp_product_definition *produ
 
     description = "zero-based index of the pixel within the scanline";
     variable_definition =
-        harp_ingestion_register_variable_sample_read(product_definition, "scanline_pixel_index", harp_type_int16, 1,
-                                                     dimension_type, NULL, description, NULL, NULL,
-                                                     read_scanline_pixel_index);
+        harp_ingestion_register_variable_sample_read(product_definition, "scan_subindex", harp_type_int16, 1,
+                                                     dimension_type, NULL, description, NULL, NULL, read_scan_subindex);
     description =
         "the scanline and pixel dimensions are collapsed into a temporal dimension; the index of the pixel within the "
         "scanline is computed as the index on the temporal dimension modulo the number of scanlines";
@@ -787,9 +786,8 @@ static void register_radiance_product_variables(harp_product_definition *product
 
     description = "zero-based index of the pixel within the scanline";
     variable_definition =
-        harp_ingestion_register_variable_sample_read(product_definition, "scanline_pixel_index", harp_type_int16, 1,
-                                                     dimension_type, NULL, description, NULL, NULL,
-                                                     read_scanline_pixel_index);
+        harp_ingestion_register_variable_sample_read(product_definition, "scan_subindex", harp_type_int16, 1,
+                                                     dimension_type, NULL, description, NULL, NULL, read_scan_subindex);
     description =
         "the scanline and ground pixel dimensions are collapsed into a single temporal dimension; the index "
         "of the pixel within the scanline is computed as the index on this temporal dimension modulo the "
