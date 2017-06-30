@@ -2972,8 +2972,7 @@ static void register_core_variables(harp_product_definition *product_definition,
     description = "pixel index (0-based) within the scanline";
     variable_definition =
         harp_ingestion_register_variable_sample_read(product_definition, "scan_subindex", harp_type_int16, 1,
-                                                     dimension_type, NULL, description, NULL, NULL,
-                                                     read_scan_subindex);
+                                                     dimension_type, NULL, description, NULL, NULL, read_scan_subindex);
     description =
         "the scanline and pixel dimensions are collapsed into a temporal dimension; the index of the pixel within the "
         "scanline is computed as the index on the temporal dimension modulo the number of scanlines";
