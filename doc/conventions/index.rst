@@ -32,4 +32,5 @@ Each of the specific aspects of the HARP standard are described in the following
    netcdf3
    hdf4
    hdf5
+   compatibility
    collocation_result

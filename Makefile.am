@@ -759,6 +759,7 @@ RSTFILES = \
 	doc/algorithms/formula.rst \
 	doc/algorithms/index.rst \
 	doc/conventions/collocation_result.rst \
+	doc/conventions/compatibility.rst \
 	doc/conventions/datatypes.rst \
 	doc/conventions/datetime.rst \
 	doc/conventions/dimensions.rst \
