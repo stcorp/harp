@@ -175,10 +175,9 @@ static int read_data_field(void *user_data, const char *field_name, double scali
 
 /* Specific read functions */
 
-static int read_datetime(void *user_data, harp_array data)
+static int read_string_from_header(ingest_info *info, char *name, char *expected_format, harp_array data)
 {
     coda_cursor cursor;
-    ingest_info *info = (ingest_info *)user_data;
     double datetime_in_seconds;
     char datetime_str[81];
 
@@ -187,7 +186,7 @@ static int read_datetime(void *user_data, harp_array data)
         harp_set_error(HARP_ERROR_CODA, NULL);
         return -1;
     }
-    if (coda_cursor_goto_record_field_by_name(&cursor, "date") != 0)
+    if (coda_cursor_goto_record_field_by_name(&cursor, name) != 0)
     {
         harp_set_error(HARP_ERROR_CODA, NULL);
         return -1;
@@ -197,14 +196,28 @@ static int read_datetime(void *user_data, harp_array data)
         harp_set_error(HARP_ERROR_CODA, NULL);
         return -1;
     }
-    if (coda_time_string_to_double("yyyy-MM-dd HH:mm:ss.SS+00", datetime_str, &datetime_in_seconds) != 0)
+    if (coda_time_string_to_double(expected_format, datetime_str, &datetime_in_seconds) != 0)
     {
         harp_set_error(HARP_ERROR_CODA, NULL);
         return -1;
     }
     data.double_data[0] = datetime_in_seconds;
-
     return 0;
+}
+
+static int read_datetime(void *user_data, harp_array data)
+{
+    return read_string_from_header((ingest_info *)user_data, "date", "yyyy-MM-dd HH:mm:ss.SS+00", data);
+}
+
+static int read_datetime_start(void *user_data, harp_array data)
+{
+    return read_string_from_header((ingest_info *)user_data, "start_time", "yyyy-MM-dd HH:mm:ss+00", data);
+}
+
+static int read_datetime_stop(void *user_data, harp_array data)
+{
+    return read_string_from_header((ingest_info *)user_data, "end_time", "yyyy-MM-dd HH:mm:ss+00", data);
 }
 
 static int read_latitude(void *user_data, harp_array data)
@@ -772,7 +785,27 @@ static void register_general_fields(harp_product_definition *product_definition)
                                                    datetime_dimension_type, NULL, description,
                                                    "seconds since 2000-01-01", NULL, read_datetime);
     path = "/date";
-    description = "date field from header section";
+    description = "date field from header section converted to seconds since 2000-01-01";
+    harp_variable_definition_add_mapping(variable_definition, NULL, NULL, path, description);
+
+    /* datetime_start */
+    description = "date and time of start of measurement";
+    variable_definition =
+        harp_ingestion_register_variable_full_read(product_definition, "datetime_start", harp_type_double, 1,
+                                                   datetime_dimension_type, NULL, description,
+                                                   "seconds since 2000-01-01", NULL, read_datetime_start);
+    path = "/start_time";
+    description = "start_time field from header section converted to seconds since 2000-01-01";
+    harp_variable_definition_add_mapping(variable_definition, NULL, NULL, path, description);
+
+    /* datetime_stop */
+    description = "date and time of end of measurement";
+    variable_definition =
+        harp_ingestion_register_variable_full_read(product_definition, "datetime_stop", harp_type_double, 1,
+                                                   datetime_dimension_type, NULL, description,
+                                                   "seconds since 2000-01-01", NULL, read_datetime_stop);
+    path = "/end_time";
+    description = "end_time field from header section converted to seconds since 2000-01-01";
     harp_variable_definition_add_mapping(variable_definition, NULL, NULL, path, description);
 
     /* latitude */

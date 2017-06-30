@@ -182,6 +182,18 @@
 <td>seconds since 2000-01-01</td>
 <td>date and time of occultation 30 km geometric tangent point (in seconds since 2000-01-01 00:00:00)</td>
 </tr>
+<tr class="row-odd"><td><strong>datetime_start</strong></td>
+<td>double</td>
+<td>{<em>time</em>}</td>
+<td>seconds since 2000-01-01</td>
+<td>date and time of start of measurement</td>
+</tr>
+<tr class="row-even"><td><strong>datetime_stop</strong></td>
+<td>double</td>
+<td>{<em>time</em>}</td>
+<td>seconds since 2000-01-01</td>
+<td>date and time of end of measurement</td>
+</tr>
 <tr class="row-odd"><td><strong>latitude</strong></td>
 <td>double</td>
 <td>{<em>vertical</em>}</td>
@@ -568,9 +580,9 @@
 <p>The table below details where and how each variable was retrieved from the input product.</p>
 <table border="1" class="docutils">
 <colgroup>
-<col width="46%" />
-<col width="16%" />
-<col width="39%" />
+<col width="33%" />
+<col width="11%" />
+<col width="56%" />
 </colgroup>
 <thead valign="bottom">
 <tr class="row-odd"><th class="head">field name</th>
@@ -583,7 +595,21 @@
 <td><strong>/date</strong></td>
 </tr>
 <tr class="row-odd"><td><em>description</em></td>
-<td>date field from header section</td>
+<td>date field from header section converted to seconds since 2000-01-01</td>
+</tr>
+<tr class="row-even"><td rowspan="2"><strong>datetime_start</strong></td>
+<td><em>path</em></td>
+<td><strong>/start_time</strong></td>
+</tr>
+<tr class="row-odd"><td><em>description</em></td>
+<td>start_time field from header section converted to seconds since 2000-01-01</td>
+</tr>
+<tr class="row-even"><td rowspan="2"><strong>datetime_stop</strong></td>
+<td><em>path</em></td>
+<td><strong>/end_time</strong></td>
+</tr>
+<tr class="row-odd"><td><em>description</em></td>
+<td>end_time field from header section converted to seconds since 2000-01-01</td>
 </tr>
 <tr class="row-even"><td rowspan="2"><strong>latitude</strong></td>
 <td><em>path</em></td>
