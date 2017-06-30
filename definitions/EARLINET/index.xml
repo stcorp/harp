@@ -1,10 +1,10 @@
 <?xml version="1.0"?>
-<cd:ProductClass name="EARLINET" last-modified="2017-06-07" xmlns:cd="http://www.stcorp.nl/coda/definition/2008/07">
+<cd:ProductClass name="EARLINET" last-modified="2017-06-30" xmlns:cd="http://www.stcorp.nl/coda/definition/2008/07">
   <cd:Description>EARLINET aerosol target classification products</cd:Description>
 
-  <cd:ProductType name="L2_Aerosol_Coefficient">
+  <cd:ProductType name="EARLINET">
 
-    <cd:ProductDefinition id="L2_Aerosol_Coefficient" format="netcdf" version="3">
+    <cd:ProductDefinition id="EARLINET" format="netcdf" version="3">
       <cd:Description>The format definition for this product is taken from the netcdf file itself.</cd:Description>
       <cd:DetectionRule>
         <cd:MatchExpression>regex("[a-z]{2}[0-9]{10}\\.b[0-9]+", filename())</cd:MatchExpression>

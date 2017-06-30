@@ -380,16 +380,6 @@ static int exclude_field_if_not_existing(void *user_data, const char *field_name
     return 0;
 }
 
-static int exclude_backscatter(void *user_data)
-{
-    return exclude_field_if_not_existing(user_data, "Backscatter");
-}
-
-static int exclude_backscatter_uncertainty(void *user_data)
-{
-    return exclude_field_if_not_existing(user_data, "ErrorBackscatter");
-}
-
 static int exclude_extinction(void *user_data)
 {
     return exclude_field_if_not_existing(user_data, "Extinction");
@@ -514,18 +504,17 @@ int harp_ingestion_module_earlinet_l2_aerosol_init(void)
     const char *path;
 
     module =
-        harp_ingestion_register_module_coda("EARLINET_L2", "EARLINET", "EARLINET",
-                                            "L2_Aerosol_Coefficient",
-                                            "EARLINET_L2_Aerosol_Coefficient", ingestion_init, ingestion_done);
-    product_definition =
-        harp_ingestion_register_product(module, "EARLINET_L2_Aerosol_Coefficient", NULL, read_dimensions);
+        harp_ingestion_register_module_coda("EARLINET", "EARLINET", "EARLINET", "EARLINET",
+                                            "EARLINET aerosol backscatter and extinction profiles", ingestion_init,
+                                            ingestion_done);
+    product_definition = harp_ingestion_register_product(module, "EARLINET", NULL, read_dimensions);
 
     /* latitude */
     description = "latitude";
     variable_definition =
         harp_ingestion_register_variable_full_read(product_definition, "latitude", harp_type_double, 0, dimension_type,
                                                    NULL, description, "degrees", NULL, read_latitude);
-    path = "Global attributes:Latitude_degrees_north";
+    path = "/@Latitude_degrees_north";
     harp_variable_definition_set_valid_range_double(variable_definition, -90.0, 90.0);
     harp_variable_definition_add_mapping(variable_definition, NULL, NULL, path, NULL);
 
@@ -534,7 +523,7 @@ int harp_ingestion_module_earlinet_l2_aerosol_init(void)
     variable_definition =
         harp_ingestion_register_variable_full_read(product_definition, "longitude", harp_type_double, 0, dimension_type,
                                                    NULL, description, "degrees", NULL, read_longitude);
-    path = "Global attributes:Longitude_degrees_east";
+    path = "/@Longitude_degrees_east";
     harp_variable_definition_set_valid_range_double(variable_definition, -180.0, 180.0);
     harp_variable_definition_add_mapping(variable_definition, NULL, NULL, path, NULL);
 
@@ -543,7 +532,7 @@ int harp_ingestion_module_earlinet_l2_aerosol_init(void)
     variable_definition =
         harp_ingestion_register_variable_full_read(product_definition, "sensor_altitude", harp_type_double, 0,
                                                    dimension_type, NULL, description, "km", NULL, read_sensor_altitude);
-    path = "Global attributes:Altitude_meter_asl";
+    path = "/@Altitude_meter_asl";
     harp_variable_definition_add_mapping(variable_definition, NULL, NULL, path, NULL);
 
     /* sensor_zenith_angle */
@@ -552,7 +541,7 @@ int harp_ingestion_module_earlinet_l2_aerosol_init(void)
         harp_ingestion_register_variable_full_read(product_definition, "sensor_zenith_angle", harp_type_double, 0,
                                                    dimension_type, NULL, description, "degrees", NULL,
                                                    read_sensor_zenith_angle);
-    path = "Global attributes:ZenithAngle_degrees";
+    path = "/@ZenithAngle_degrees";
     harp_variable_definition_add_mapping(variable_definition, NULL, NULL, path, NULL);
 
     /* datetime */
@@ -577,7 +566,7 @@ int harp_ingestion_module_earlinet_l2_aerosol_init(void)
     description = "backscatter coefficient";
     variable_definition =
         harp_ingestion_register_variable_full_read(product_definition, "backscatter_coefficient", harp_type_double, 2,
-                                                   dimension_type, NULL, description, "1/(m*sr)", exclude_backscatter,
+                                                   dimension_type, NULL, description, "1/(m*sr)", NULL,
                                                    read_backscatter);
     path = "/Backscatter";
     harp_variable_definition_add_mapping(variable_definition, NULL, NULL, path, NULL);
@@ -587,7 +576,7 @@ int harp_ingestion_module_earlinet_l2_aerosol_init(void)
     variable_definition =
         harp_ingestion_register_variable_full_read(product_definition, "backscatter_coefficient_uncertainty",
                                                    harp_type_double, 2, dimension_type, NULL, description, "1/(m*sr)",
-                                                   exclude_backscatter_uncertainty, read_backscatter_uncertainty);
+                                                   NULL, read_backscatter_uncertainty);
     path = "/ErrorBackscatter";
     harp_variable_definition_add_mapping(variable_definition, NULL, NULL, path, NULL);
 
@@ -608,8 +597,6 @@ int harp_ingestion_module_earlinet_l2_aerosol_init(void)
                                                    exclude_extinction_uncertainty, read_extinction_uncertainty);
     path = "/ErrorExtinction";
     harp_variable_definition_add_mapping(variable_definition, NULL, NULL, path, NULL);
-
-    /* These two fields are not yet present in de EARLINET data but according to the Data File Structure document they can be added in the future */
 
     /* H2O_mass_mixing_ratio */
     description = "water mass mixing ratio";

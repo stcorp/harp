@@ -8,7 +8,7 @@
   
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
   
-  <title>EARLINET_L2_Aerosol_Coefficient &mdash; HARP 0.6b documentation</title>
+  <title>EARLINET &mdash; HARP 0.6b documentation</title>
   
 
   
@@ -137,7 +137,7 @@
     
       <li><a href="../index.html">Docs</a> &raquo;</li>
         
-      <li>EARLINET_L2_Aerosol_Coefficient</li>
+      <li>EARLINET</li>
     
     
       <li class="wy-breadcrumbs-aside">
@@ -154,11 +154,11 @@
           <div role="main" class="document" itemscope="itemscope" itemtype="http://schema.org/Article">
            <div itemprop="articleBody">
             
-  <div class="section" id="earlinet-l2-aerosol-coefficient">
-<h1>EARLINET_L2_Aerosol_Coefficient</h1>
+  <div class="section" id="earlinet">
+<h1>EARLINET</h1>
 <div class="section" id="variables">
 <h2>Variables</h2>
-<p>The table below lists the variables that are present in the HARP product that results from an ingestion of <code class="docutils literal"><span class="pre">EARLINET_L2_Aerosol_Coefficient</span></code> data.</p>
+<p>The table below lists the variables that are present in the HARP product that results from an ingestion of <code class="docutils literal"><span class="pre">EARLINET</span></code> data.</p>
 <table border="1" class="colwidths-given docutils">
 <colgroup>
 <col width="25%" />
@@ -262,9 +262,9 @@
 <p>The table below details where and how each variable was retrieved from the input product.</p>
 <table border="1" class="docutils">
 <colgroup>
-<col width="40%" />
-<col width="15%" />
 <col width="45%" />
+<col width="16%" />
+<col width="38%" />
 </colgroup>
 <thead valign="bottom">
 <tr class="row-odd"><th class="head">field name</th>
@@ -274,19 +274,19 @@
 <tbody valign="top">
 <tr class="row-even"><td><strong>latitude</strong></td>
 <td><em>path</em></td>
-<td><strong>Global attributes:Latitude_degrees_north</strong></td>
+<td><strong>/&#64;Latitude_degrees_north</strong></td>
 </tr>
 <tr class="row-odd"><td><strong>longitude</strong></td>
 <td><em>path</em></td>
-<td><strong>Global attributes:Longitude_degrees_east</strong></td>
+<td><strong>/&#64;Longitude_degrees_east</strong></td>
 </tr>
 <tr class="row-even"><td><strong>sensor_altitude</strong></td>
 <td><em>path</em></td>
-<td><strong>Global attributes:Altitude_meter_asl</strong></td>
+<td><strong>/&#64;Altitude_meter_asl</strong></td>
 </tr>
 <tr class="row-odd"><td><strong>sensor_zenith_angle</strong></td>
 <td><em>path</em></td>
-<td><strong>Global attributes:ZenithAngle_degrees</strong></td>
+<td><strong>/&#64;ZenithAngle_degrees</strong></td>
 </tr>
 <tr class="row-even"><td rowspan="2"><strong>datetime</strong></td>
 <td><em>path</em></td>
@@ -302,18 +302,12 @@
 <tr class="row-odd"><td><em>description</em></td>
 <td>height above sea level</td>
 </tr>
-<tr class="row-even"><td rowspan="2"><strong>backscatter_coefficient</strong></td>
-<td><em>available</em></td>
-<td>optional</td>
-</tr>
-<tr class="row-odd"><td><em>path</em></td>
+<tr class="row-even"><td><strong>backscatter_coefficient</strong></td>
+<td><em>path</em></td>
 <td><strong>/Backscatter</strong></td>
 </tr>
-<tr class="row-even"><td rowspan="2"><strong>backscatter_coefficient_uncertainty</strong></td>
-<td><em>available</em></td>
-<td>optional</td>
-</tr>
-<tr class="row-odd"><td><em>path</em></td>
+<tr class="row-odd"><td><strong>backscatter_coefficient_uncertainty</strong></td>
+<td><em>path</em></td>
 <td><strong>/ErrorBackscatter</strong></td>
 </tr>
 <tr class="row-even"><td rowspan="2"><strong>extinction_coefficient</strong></td>
