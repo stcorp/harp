@@ -342,13 +342,15 @@ static int parse_option_band(ingest_info *info, const harp_ingestion_options *op
 {
     const char *value;
 
-    if (harp_ingestion_options_get_option(options, "band", &value) != 0)
+    if (harp_ingestion_options_has_option(options, "band"))
     {
-        harp_set_error(HARP_ERROR_INVALID_INGESTION_OPTION, "ingestion option 'band' not specified");
-        return -1;
-    }
+        if (harp_ingestion_options_get_option(options, "band", &value) != 0)
+        {
+            return -1;
+        }
 
-    info->band = *value - '0';
+        info->band = *value - '0';
+    }
 
     return 0;
 }
@@ -374,7 +376,7 @@ static int ingestion_init_s5p_l1b_ir(const harp_ingestion_module *module, coda_p
         return -1;
     }
     info->product = product;
-    info->band = -1;
+    info->band = 1;
 
     if (parse_option_band(info, options) != 0)
     {
