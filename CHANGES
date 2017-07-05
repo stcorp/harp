@@ -44,6 +44,9 @@
 * Changed 'percentage' parameter of harp_geometry_has_area_overlap() to
   'fraction'.
 
+* harp_product_set_source_product() now has a product path as parameter
+  and stores the base name of this as source_product value.
+
 * Added HARP_UNIT_AREA default unit.
 
 * The C interface for collocation results was modified to support a

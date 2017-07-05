@@ -353,8 +353,8 @@
 
 <dl class="function">
 <dt id="_CPPv231harp_product_set_source_productP12harp_productPKc">
-<span id="harp_product_set_source_product__harp_productP.cCP"></span><span class="target" id="libharpgroup__harp__product_1gaced1e960e14b51d2979961b3d16394a1"></span>int <code class="descname">harp_product_set_source_product</code><span class="sig-paren">(</span><a class="reference internal" href="#_CPPv212harp_product" title="harp_product">harp_product</a> *<em>product</em>, <em class="property">const</em> char *<em>source_product</em><span class="sig-paren">)</span><br /></dt>
-<dd><p>Set the source product attribute of the specified product. Store a copy of <em>source_product</em> as the value of the source product attribute of the specified product. The previous value (if any) will be freed. <dl class="docutils">
+<span id="harp_product_set_source_product__harp_productP.cCP"></span><span class="target" id="libharpgroup__harp__product_1ga2788cc7c42cf9fe9b2f60ed3231e3589"></span>int <code class="descname">harp_product_set_source_product</code><span class="sig-paren">(</span><a class="reference internal" href="#_CPPv212harp_product" title="harp_product">harp_product</a> *<em>product</em>, <em class="property">const</em> char *<em>product_path</em><span class="sig-paren">)</span><br /></dt>
+<dd><p>Set the source product attribute of the specified product. Stores the base name of <em>product_path</em> as the value of the source product attribute of the specified product. The previous value (if any) will be freed. The base name of the product path is the filename of the product without any directory name components. <dl class="docutils">
 <dt><strong>Return</strong></dt>
 <dd><ul class="simple">
 <li><code class="docutils literal"><span class="pre">0</span></code>, Success. </li>
@@ -364,7 +364,7 @@
 <dt><strong>Parameters</strong></dt>
 <dd><ul class="breatheparameterlist first last simple">
 <li><code class="docutils literal"><span class="pre">product</span></code>: Product for which to set the source product attribute. </li>
-<li><code class="docutils literal"><span class="pre">source_product</span></code>: New value for the source product attribute. </li>
+<li><code class="docutils literal"><span class="pre">product_path</span></code>: Relative or absolute path to the product or just the product filename. </li>
 </ul>
 </dd>
 </dl>

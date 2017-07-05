@@ -481,7 +481,7 @@ LIBHARP_API int harp_product_new(harp_product **new_product);
 LIBHARP_API void harp_product_delete(harp_product *product);
 LIBHARP_API int harp_product_copy(const harp_product *product, harp_product **new_product);
 LIBHARP_API int harp_product_append(harp_product *product, harp_product *other_product);
-LIBHARP_API int harp_product_set_source_product(harp_product *product, const char *source_product);
+LIBHARP_API int harp_product_set_source_product(harp_product *product, const char *product_path);
 LIBHARP_API int harp_product_set_history(harp_product *product, const char *history);
 LIBHARP_API int harp_product_add_variable(harp_product *product, harp_variable *variable);
 LIBHARP_API int harp_product_detach_variable(harp_product *product, const harp_variable *variable);

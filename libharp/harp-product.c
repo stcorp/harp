@@ -1005,27 +1005,27 @@ LIBHARP_API int harp_product_append(harp_product *product, harp_product *other_p
 }
 
 /** Set the source product attribute of the specified product.
- * Store a copy of \a source_product as the value of the source product attribute of the specified product. The previous
- * value (if any) will be freed.
+ * Stores the base name of \a product_path as the value of the source product attribute of the specified product.
+ * The previous value (if any) will be freed.
+ * The base name of the product path is the filename of the product without any directory name components.
  * \param product Product for which to set the source product attribute.
- * \param source_product New value for the source product attribute.
+ * \param product_path Relative or absolute path to the product or just the product filename.
  * \return
  *   \arg \c 0, Success.
  *   \arg \c -1, Error occurred (check #harp_errno).
  */
-LIBHARP_API int harp_product_set_source_product(harp_product *product, const char *source_product)
+LIBHARP_API int harp_product_set_source_product(harp_product *product, const char *product_path)
 {
-    char *source_product_copy;
+    char *source_product;
 
-    if (source_product == NULL)
+    if (product_path == NULL)
     {
-        harp_set_error(HARP_ERROR_INVALID_ARGUMENT, "source_product is NULL (%s:%u)", __FILE__, __LINE__);
+        harp_set_error(HARP_ERROR_INVALID_ARGUMENT, "product_path is NULL (%s:%u)", __FILE__, __LINE__);
         return -1;
     }
 
-    source_product_copy = strdup(source_product);
-
-    if (source_product_copy == NULL)
+    source_product = strdup(harp_basename(product_path));
+    if (source_product == NULL)
     {
         harp_set_error(HARP_ERROR_OUT_OF_MEMORY, "out of memory (could not duplicate string) (%s:%u)", __FILE__,
                        __LINE__);
@@ -1037,7 +1037,7 @@ LIBHARP_API int harp_product_set_source_product(harp_product *product, const cha
         free(product->source_product);
     }
 
-    product->source_product = source_product_copy;
+    product->source_product = source_product;
 
     return 0;
 }
