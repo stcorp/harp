@@ -570,7 +570,7 @@ LIBHARP_API int harp_import(const char *filename, const char *operations, const 
         /* set source_product if it was empty; we need this for the 'collocate_xxx()' operations to work */
         if (imported_product->source_product == NULL)
         {
-            if (harp_product_set_source_product(product, filename) != 0)
+            if (harp_product_set_source_product(imported_product, filename) != 0)
             {
                 harp_product_delete(imported_product);
                 return -1;
