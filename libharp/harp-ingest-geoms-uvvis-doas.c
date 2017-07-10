@@ -1598,8 +1598,16 @@ static int get_optional_variable_availability(ingest_info *info)
     }
     else
     {
-        /* offaxis (gas+aerosol) should always have AOD */
-        info->has_aod = 1;
+        if (info->aod_variant == 0)
+        {
+            /* offaxis (gas+aerosol) should always have an independent AOD */
+            info->has_aod = 1;
+        }
+        else
+        {
+            info->has_aod = (coda_cursor_goto(&cursor, "/AEROSOL_OPTICAL_DEPTH_STRATOSPHERIC_SCATTER_SOLAR_OFFAXIS") ==
+                             0);
+        }
     }
 
     if (info->template_type != uvvis_doas_offaxis_aerosol)
@@ -2090,7 +2098,7 @@ static int init_product_definition(harp_ingestion_module *module, uvvis_doas_gas
         description = "tropospheric aerosol optical depth used for the retrieval ";
         variable_definition = harp_ingestion_register_variable_full_read
             (product_definition, "tropospheric_aerosol_optical_depth", harp_type_double, 1, dimension_type, NULL,
-             description, HARP_UNIT_DIMENSIONLESS, NULL, read_tropo_aerosol_optical_depth);
+             description, HARP_UNIT_DIMENSIONLESS, exclude_aod, read_tropo_aerosol_optical_depth);
         harp_variable_definition_add_mapping(variable_definition, "AOD=modeled or AOD unset", NULL,
                                              "/AEROSOL.OPTICAL.DEPTH.TROPOSPHERIC_INDEPENDENT", NULL);
         harp_variable_definition_add_mapping(variable_definition, "AOD=measured", NULL,
@@ -2227,7 +2235,7 @@ static int init_product_definition(harp_ingestion_module *module, uvvis_doas_gas
         snprintf(gas_mapping_path, MAX_PATH_LENGTH, "/%s.COLUMN.PARTIAL_SCATTER.SOLAR.OFFAXIS", geoms_gas_name[gas]);
         variable_definition = harp_ingestion_register_variable_full_read
             (product_definition, gas_var_name, harp_type_double, 2, dimension_type, NULL, gas_description,
-             "Pmolec cm-2", NULL, read_partial_column_offaxis);
+             "Pmolec cm-2", exclude_optimal_estimation_variables, read_partial_column_offaxis);
         harp_variable_definition_add_mapping(variable_definition, NULL, NULL, gas_mapping_path, NULL);
 
         /* <gas>_column_number_density_apriori */
