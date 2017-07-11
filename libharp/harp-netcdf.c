@@ -658,6 +658,27 @@ static int read_variable(harp_product *product, int ncid, int varid, netcdf_dime
         return -1;
     }
 
+    if (data_type == harp_type_int8)
+    {
+        result = nc_inq_att(ncid, varid, "flag_meanings", NULL, NULL);
+        if (result == NC_NOERR)
+        {
+            char *flag_meanings;
+
+            if (read_string_attribute(ncid, varid, "flag_meanings", &flag_meanings) != 0)
+            {
+                harp_add_error_message(" (variable '%s')", netcdf_name);
+                return -1;
+            }
+            if (harp_variable_set_enumeration_values_using_flag_meanings(variable, flag_meanings) != 0)
+            {
+                free(flag_meanings);
+                return -1;
+            }
+            free(flag_meanings);
+        }
+    }
+
     return 0;
 }
 

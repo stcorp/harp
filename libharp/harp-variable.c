@@ -236,6 +236,88 @@ int harp_variable_get_flag_meanings_string(const harp_variable *variable, char *
     return 0;
 }
 
+int harp_variable_set_enumeration_values_using_flag_meanings(harp_variable *variable, const char *flag_meanings)
+{
+    char *buffer;
+    const char **enum_name;
+    int num_enum_values;
+    int i;
+    char *p;
+
+    buffer = strdup(flag_meanings);
+    if (buffer == NULL)
+    {
+        harp_set_error(HARP_ERROR_OUT_OF_MEMORY, "out of memory (could not duplicate string) (%s:%u)", __FILE__,
+                       __LINE__);
+        return -1;
+    }
+
+    num_enum_values = 0;
+    p = buffer;
+    while (*p != '\0')
+    {
+        while (*p == ' ')
+        {
+            p++;
+        }
+        if (*p != '\0')
+        {
+            /* start of a new label */
+            num_enum_values++;
+        }
+        while (*p != ' ' && *p != '\0')
+        {
+            p++;
+        }
+    }
+
+    enum_name = (const char **)malloc(num_enum_values * sizeof(char *));
+    if (enum_name == NULL)
+    {
+        harp_set_error(HARP_ERROR_OUT_OF_MEMORY, "out of memory (could not allocate %lu bytes) (%s:%u)",
+                       num_enum_values * sizeof(char *), __FILE__, __LINE__);
+        return -1;
+    }
+
+    p = buffer;
+    i = 0;
+    while (*p != '\0')
+    {
+        while (*p == ' ')
+        {
+            p++;
+        }
+        if (*p != '\0')
+        {
+            /* start of a new label */
+            enum_name[i] = p;
+            i++;
+        }
+        while (*p != ' ' && *p != '\0')
+        {
+            p++;
+        }
+        if (*p != '\0')
+        {
+            *p = '\0';
+            p++;
+        }
+    }
+    assert(i == num_enum_values);
+
+    if (harp_variable_set_enumeration_values(variable, num_enum_values, enum_name) != 0)
+    {
+        free(enum_name);
+        free(buffer);
+        return -1;
+    }
+
+    free(enum_name);
+    free(buffer);
+
+    return 0;
+}
+
 /** Rearrange the data of a variable in one dimension.
  * This function allows data of a variable to be rearranged according to the order of the indices in dim_element_id.
  * The number of indices (num_dim_elements) in dim_element_id does not have to correspond to the number of
