@@ -867,6 +867,26 @@ static int read_variable(hid_t dataset_id, const char *name, const hdf5_dimensio
         return -1;
     }
 
+    if (data_type == harp_type_int8)
+    {
+        result = H5Aexists(dataset_id, "flag_meanings");
+        if (result > 0)
+        {
+            char *flag_meanings;
+
+            if (read_string_attribute(dataset_id, "flag_meanings", &flag_meanings) != 0)
+            {
+                return -1;
+            }
+            if (harp_variable_set_enumeration_values_using_flag_meanings(variable, flag_meanings) != 0)
+            {
+                free(flag_meanings);
+                return -1;
+            }
+            free(flag_meanings);
+        }
+    }
+
     return 0;
 }
 
@@ -1474,6 +1494,33 @@ static int write_variable(hid_t group_id, harp_variable *variable)
                 return -1;
             }
         }
+    }
+
+    if (variable->num_enum_values > 0 && variable->data_type == harp_type_int8)
+    {
+        char *attribute_value;
+
+        if (harp_variable_get_flag_values_string(variable, &attribute_value) != 0)
+        {
+            return -1;
+        }
+        if (write_string_attribute(dataset_id, "flag_values", attribute_value) != 0)
+        {
+            free(attribute_value);
+            return -1;
+        }
+        free(attribute_value);
+
+        if (harp_variable_get_flag_meanings_string(variable, &attribute_value) != 0)
+        {
+            return -1;
+        }
+        if (write_string_attribute(dataset_id, "flag_meanings", attribute_value) != 0)
+        {
+            free(attribute_value);
+            return -1;
+        }
+        free(attribute_value);
     }
 
     H5Dclose(dataset_id);

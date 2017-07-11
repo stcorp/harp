@@ -620,6 +620,26 @@ static int read_variable(harp_product *product, int32 sds_id)
         }
     }
 
+    if (data_type == harp_type_int8)
+    {
+        hdf4_index = SDfindattr(sds_id, "flag_meanings");
+        if (hdf4_index >= 0)
+        {
+            char *flag_meanings;
+
+            if (read_string_attribute(sds_id, hdf4_index, &flag_meanings) != 0)
+            {
+                return -1;
+            }
+            if (harp_variable_set_enumeration_values_using_flag_meanings(variable, flag_meanings) != 0)
+            {
+                free(flag_meanings);
+                return -1;
+            }
+            free(flag_meanings);
+        }
+    }
+
     return 0;
 }
 
@@ -975,6 +995,33 @@ static int write_variable(harp_variable *variable, int32 sd_id)
                 return -1;
             }
         }
+    }
+
+    if (variable->num_enum_values > 0 && variable->data_type == harp_type_int8)
+    {
+        char *attribute_value;
+
+        if (harp_variable_get_flag_values_string(variable, &attribute_value) != 0)
+        {
+            return -1;
+        }
+        if (write_string_attribute(sds_id, "flag_values", attribute_value) != 0)
+        {
+            free(attribute_value);
+            return -1;
+        }
+        free(attribute_value);
+
+        if (harp_variable_get_flag_meanings_string(variable, &attribute_value) != 0)
+        {
+            return -1;
+        }
+        if (write_string_attribute(sds_id, "flag_meanings", attribute_value) != 0)
+        {
+            free(attribute_value);
+            return -1;
+        }
+        free(attribute_value);
     }
 
     SDendaccess(sds_id);
