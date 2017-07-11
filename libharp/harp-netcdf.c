@@ -1212,7 +1212,7 @@ static int write_variable_definition(int ncid, const harp_variable *variable, ne
             }
         }
     }
-    
+
     if (variable->num_enum_values > 0 && variable->data_type == harp_type_int8)
     {
         char *attribute_value;

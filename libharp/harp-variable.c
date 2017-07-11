@@ -117,7 +117,7 @@ int harp_variable_get_flag_values_string(const harp_variable *variable, char **f
     int length;
     int pos;
     int i;
-    
+
     if (variable->num_enum_values <= 0)
     {
         harp_set_error(HARP_ERROR_INVALID_ARGUMENT, "variable has no enumeration values (%s:%u)", __FILE__, __LINE__);
@@ -132,7 +132,7 @@ int harp_variable_get_flag_values_string(const harp_variable *variable, char **f
 
     if (variable->num_enum_values > 100)
     {
-        assert(variable->num_enum_values < 1000);   /* this should always be the case for int8 data */
+        assert(variable->num_enum_values < 1000);       /* this should always be the case for int8 data */
         /* all numbers are three digits, except 0-99 (one digit less), except 0-9 (on additional digit less) */
         length = variable->num_enum_values * 3 - 100 - 10;
     }
@@ -172,7 +172,7 @@ int harp_variable_get_flag_values_string(const harp_variable *variable, char **f
         pos++;
     }
     assert(pos == length);
-    
+
     return 0;
 }
 
