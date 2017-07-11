@@ -1191,6 +1191,33 @@ static int write_variable_definition(int ncid, const harp_variable *variable, ne
             }
         }
     }
+    
+    if (variable->num_enum_values > 0 && variable->data_type == harp_type_int8)
+    {
+        char *attribute_value;
+
+        if (harp_variable_get_flag_values_string(variable, &attribute_value) != 0)
+        {
+            return -1;
+        }
+        if (write_string_attribute(ncid, *varid, "flag_values", attribute_value) != 0)
+        {
+            free(attribute_value);
+            return -1;
+        }
+        free(attribute_value);
+
+        if (harp_variable_get_flag_meanings_string(variable, &attribute_value) != 0)
+        {
+            return -1;
+        }
+        if (write_string_attribute(ncid, *varid, "flag_meanings", attribute_value) != 0)
+        {
+            free(attribute_value);
+            return -1;
+        }
+        free(attribute_value);
+    }
 
     return 0;
 }

@@ -33,6 +33,7 @@
 
 #include <assert.h>
 #include <math.h>
+#include <stdio.h>
 #include <stdlib.h>
 #include <string.h>
 
@@ -109,9 +110,131 @@ static void write_array(harp_array data, harp_data_type data_type, long num_elem
     }
 }
 
-/** \addtogroup harp_variable
- * @{
- */
+/* This function will construct a 'flag_values' attribute value based on the enumaration names.
+ * The caller of this function is responsible of freeing the returned flag_values string. */
+int harp_variable_get_flag_values_string(const harp_variable *variable, char **flag_values)
+{
+    int length;
+    int pos;
+    int i;
+    
+    if (variable->num_enum_values <= 0)
+    {
+        harp_set_error(HARP_ERROR_INVALID_ARGUMENT, "variable has no enumeration values (%s:%u)", __FILE__, __LINE__);
+        return -1;
+    }
+    if (variable->data_type != harp_type_int8)
+    {
+        harp_set_error(HARP_ERROR_INVALID_ARGUMENT, "flag_meanings attribute is only applicable for int8 data (%s:%u)",
+                       __FILE__, __LINE__);
+        return -1;
+    }
+
+    if (variable->num_enum_values > 100)
+    {
+        assert(variable->num_enum_values < 1000);   /* this should always be the case for int8 data */
+        /* all numbers are three digits, except 0-99 (one digit less), except 0-9 (on additional digit less) */
+        length = variable->num_enum_values * 3 - 100 - 10;
+    }
+    else if (variable->num_enum_values > 10)
+    {
+        /* all numbers are two digits, except 0-9 (on digit less) */
+        length = variable->num_enum_values * 2 - 10;
+    }
+    else
+    {
+        /* all numbers are one digit */
+        length = variable->num_enum_values;
+    }
+    /* add room for 'b' postfix, ', ' separators, and terminating zero */
+    length += variable->num_enum_values + (variable->num_enum_values - 1) * 2 + 1;
+    *flag_values = (char *)malloc(length * sizeof(char));
+    if (*flag_values == NULL)
+    {
+        harp_set_error(HARP_ERROR_OUT_OF_MEMORY, "out of memory (could not allocate %u bytes) (%s:%u)",
+                       length * sizeof(char), __FILE__, __LINE__);
+        return -1;
+    }
+    pos = 0;
+    for (i = 0; i < variable->num_enum_values; i++)
+    {
+        pos += sprintf(&(*flag_values)[pos], "%db", i);
+        if (i < variable->num_enum_values - 1)
+        {
+            (*flag_values)[pos] = ',';
+            pos++;
+            (*flag_values)[pos] = ' ';
+        }
+        else
+        {
+            (*flag_values)[pos] = '\0';
+        }
+        pos++;
+    }
+    assert(pos == length);
+    
+    return 0;
+}
+
+/* This function will construct a 'flag_meanings' attribute value based on the enumaration names.
+ * The caller of this function is responsible of freeing the returned flag_meanings string. */
+int harp_variable_get_flag_meanings_string(const harp_variable *variable, char **flag_meanings)
+{
+    int length;
+    int pos;
+    int i;
+
+    if (variable->num_enum_values <= 0)
+    {
+        harp_set_error(HARP_ERROR_INVALID_ARGUMENT, "variable has no enumeration values (%s:%u)", __FILE__, __LINE__);
+        return -1;
+    }
+    if (variable->data_type != harp_type_int8)
+    {
+        harp_set_error(HARP_ERROR_INVALID_ARGUMENT, "flag_meanings attribute is only applicable for int8 data (%s:%u)",
+                       __FILE__, __LINE__);
+        return -1;
+    }
+
+    length = 0;
+    for (i = 0; i < variable->num_enum_values; i++)
+    {
+        if (variable->enum_name[i] == NULL || variable->enum_name[i][0] == '\0')
+        {
+            harp_set_error(HARP_ERROR_INVALID_ARGUMENT, "name for enumeration value '%d' is not set (%s:%u)", i,
+                           __FILE__, __LINE__);
+            return -1;
+        }
+        length += strlen(variable->enum_name[i]);
+    }
+    /* add room for spaces + terminating zero */
+    length += variable->num_enum_values;
+    *flag_meanings = (char *)malloc(length * sizeof(char));
+    if (*flag_meanings == NULL)
+    {
+        harp_set_error(HARP_ERROR_OUT_OF_MEMORY, "out of memory (could not allocate %u bytes) (%s:%u)",
+                       length * sizeof(char), __FILE__, __LINE__);
+        return -1;
+    }
+    pos = 0;
+    for (i = 0; i < variable->num_enum_values; i++)
+    {
+        strcpy(&(*flag_meanings)[pos], variable->enum_name[i]);
+        pos += strlen(variable->enum_name[i]);
+        if (i < variable->num_enum_values - 1)
+        {
+            (*flag_meanings)[pos] = ' ';
+        }
+        else
+        {
+            (*flag_meanings)[pos] = '\0';
+        }
+        pos++;
+    }
+    assert(pos == length);
+
+    return 0;
+}
 
 /** Rearrange the data of a variable in one dimension.
  * This function allows data of a variable to be rearranged according to the order of the indices in dim_element_id.
@@ -917,6 +1040,10 @@ int harp_variable_remove_dimension(harp_variable *variable, int dim_index, long 
     return 0;
 }
 
+/** \addtogroup harp_variable
+ * @{
+ */
+
 /** Create new variable.
  * \param name Name of the variable.
  * \param data_type Storage type of the variable data.
@@ -1519,6 +1646,25 @@ LIBHARP_API int harp_variable_set_enumeration_values(harp_variable *variable, in
             return -1;
         }
         variable->num_enum_values++;
+    }
+
+    switch (variable->data_type)
+    {
+        case harp_type_int8:
+            variable->valid_min.int8_data = 0;
+            variable->valid_max.int8_data = (int8_t)(num_enum_values - 1);
+            break;
+        case harp_type_int16:
+            variable->valid_min.int16_data = 0;
+            variable->valid_max.int16_data = (int16_t)(num_enum_values - 1);
+            break;
+        case harp_type_int32:
+            variable->valid_min.int32_data = 0;
+            variable->valid_max.int32_data = (int32_t)(num_enum_values - 1);
+            break;
+        default:
+            assert(0);
+            exit(1);
     }
 
     return 0;

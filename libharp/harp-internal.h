@@ -148,6 +148,8 @@ void harp_hdf5_add_error_message(void);
 void harp_add_coda_cursor_path_to_error_message(const coda_cursor *cursor);
 
 /* Variables */
+int harp_variable_get_flag_values_string(const harp_variable *variable, char **flag_values);
+int harp_variable_get_flag_meanings_string(const harp_variable *variable, char **flag_meanings);
 int harp_variable_add_dimension(harp_variable *variable, int dim_index, harp_dimension_type dimension_type,
                                 long length);
 int harp_variable_rearrange_dimension(harp_variable *variable, int dim_index, long num_dim_elements,
