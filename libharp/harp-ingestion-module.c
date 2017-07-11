@@ -303,6 +303,8 @@ static int variable_definition_new(const char *name, harp_data_type data_type, i
         variable_definition->valid_min = harp_get_valid_min_for_type(data_type);
         variable_definition->valid_max = harp_get_valid_max_for_type(data_type);
     }
+    variable_definition->num_enum_values = 0;
+    variable_definition->enum_name = NULL;
 
     variable_definition->exclude = exclude;
     variable_definition->read_all = read_all;
@@ -321,6 +323,8 @@ static void variable_definition_delete(harp_variable_definition *variable_defini
 {
     if (variable_definition != NULL)
     {
+        int i;
+
         free(variable_definition->name);
         if (variable_definition->description != NULL)
         {
@@ -330,10 +334,19 @@ static void variable_definition_delete(harp_variable_definition *variable_defini
         {
             free(variable_definition->unit);
         }
+        if (variable_definition->enum_name != NULL)
+        {
+            for (i = 0; i < variable_definition->num_enum_values; i++)
+            {
+                if (variable_definition->enum_name[i] != NULL)
+                {
+                    free(variable_definition->enum_name[i]);
+                }
+            }
+            free(variable_definition->enum_name);
+        }
         if (variable_definition->mapping != NULL)
         {
-            int i;
-
             for (i = 0; i < variable_definition->num_mappings; i++)
             {
                 mapping_description_delete(variable_definition->mapping[i]);
@@ -992,6 +1005,48 @@ void harp_variable_definition_set_valid_range_double(harp_variable_definition *v
 
     variable_definition->valid_min.double_data = valid_min;
     variable_definition->valid_max.double_data = valid_max;
+}
+
+void harp_variable_definition_set_enumeration_values(harp_variable_definition *variable_definition, int num_enum_values,
+                                                     const char **enum_name)
+{
+    int i;
+
+    assert(enum_name != NULL);
+    assert(num_enum_values > 0);
+    assert(variable_definition->data_type == harp_type_int8 || variable_definition->data_type == harp_type_int16 ||
+           variable_definition->data_type == harp_type_int32);
+    assert(variable_definition->enum_name == NULL);
+
+    variable_definition->enum_name = (char **)malloc(num_enum_values * sizeof(char *));
+    assert(variable_definition != NULL);
+    for (i = 0; i < num_enum_values; i++)
+    {
+        assert(enum_name[i] != NULL);
+        assert(harp_is_identifier(enum_name[i]));
+        variable_definition->enum_name[i] = strdup(enum_name[i]);
+        assert(variable_definition->enum_name[i] != NULL);
+        variable_definition->num_enum_values++;
+    }
+
+    switch (variable_definition->data_type)
+    {
+        case harp_type_int8:
+            variable_definition->valid_min.int8_data = 0;
+            variable_definition->valid_max.int8_data = (int8_t)(num_enum_values - 1);
+            break;
+        case harp_type_int16:
+            variable_definition->valid_min.int16_data = 0;
+            variable_definition->valid_max.int16_data = (int16_t)(num_enum_values - 1);
+            break;
+        case harp_type_int32:
+            variable_definition->valid_min.int32_data = 0;
+            variable_definition->valid_max.int32_data = (int32_t)(num_enum_values - 1);
+            break;
+        default:
+            assert(0);
+            exit(1);
+    }
 }
 
 int harp_variable_definition_has_dimension_types(const harp_variable_definition *variable_definition,

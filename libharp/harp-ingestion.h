@@ -76,6 +76,8 @@ typedef struct harp_variable_definition_struct
     char *unit;
     harp_scalar valid_min;
     harp_scalar valid_max;
+    int num_enum_values;
+    char **enum_name;
 
     int (*exclude) (void *user_data);
     int (*read_all) (void *user_data, harp_array data);
@@ -163,6 +165,8 @@ void harp_variable_definition_set_valid_range_float(harp_variable_definition *va
                                                     float valid_max);
 void harp_variable_definition_set_valid_range_double(harp_variable_definition *variable_definition, double valid_min,
                                                      double valid_max);
+void harp_variable_definition_set_enumeration_values(harp_variable_definition *variable_definition, int num_enum_values,
+                                                     const char **enum_name);
 
 int harp_variable_definition_has_dimension_types(const harp_variable_definition *variable_definition,
                                                  int num_dimensions, const harp_dimension_type *dimension_type);

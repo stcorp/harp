@@ -94,6 +94,14 @@ static const char *harp_gas_name[num_uvvis_doas_gas] = {
     "SO2",
 };
 
+#define num_cloud_flag_values 4
+static const char *cloud_flag_values[num_cloud_flag_values] = {
+    "clear_sky",
+    "thin_clouds",
+    "thick_clouds",
+    "broken_clouds"
+};
+
 typedef struct ingest_info_struct
 {
     const harp_product_definition *definition;
@@ -630,7 +638,43 @@ static int read_wind_speed(void *user_data, harp_array data)
 
 static int read_cloud_conditions(void *user_data, long index, harp_array data)
 {
-    return read_variable_string(user_data, "CLOUD_CONDITIONS", index, ((ingest_info *)user_data)->num_time, data);
+    char *value;
+    harp_array string_data;
+
+    string_data.string_data = &value;
+    if (read_variable_string(user_data, "CLOUD_CONDITIONS", index, ((ingest_info *)user_data)->num_time, string_data)
+        != 0)
+    {
+        return -1;
+    }
+
+    if (value[0] == '\0')
+    {
+        data.int8_data[0] = -1;
+    }
+    else if (strcmp(value, "clear-sky") == 0)
+    {
+        data.int8_data[0] = 0;
+    }
+    else if (strcmp(value, "thin clouds") == 0)
+    {
+        data.int8_data[0] = 1;
+    }
+    else if (strcmp(value, "thick clouds") == 0)
+    {
+        data.int8_data[0] = 2;
+    }
+    else if (strcmp(value, "broken clouds") == 0)
+    {
+        data.int8_data[0] = 3;
+    }
+    else
+    {
+        harp_set_error(HARP_ERROR_INGESTION, "invalid value '%s' for CLOUD_CONDITIONS", value);
+        return -1;
+    }
+
+    return 0;
 }
 
 static int read_pressure_ind(void *user_data, harp_array data)
@@ -2007,12 +2051,14 @@ static int init_product_definition(harp_ingestion_module *module, uvvis_doas_gas
     if (template_type != uvvis_doas_directsun)
     {
         /* cloud_flag */
-        description =
-            "one of 'clear-sky', 'thin clouds', 'thick clouds', 'broken clouds', or an empty string if unavailable";
+        description = "cloud condition";
         variable_definition = harp_ingestion_register_variable_sample_read
-            (product_definition, "cloud_flag", harp_type_string, 1, dimension_type, NULL, description, NULL, NULL,
+            (product_definition, "cloud_flag", harp_type_int8, 1, dimension_type, NULL, description, NULL, NULL,
              read_cloud_conditions);
-        harp_variable_definition_add_mapping(variable_definition, NULL, NULL, "/CLOUD.CONDITIONS", NULL);
+        harp_variable_definition_set_enumeration_values(variable_definition, num_cloud_flag_values, cloud_flag_values);
+        description = "clear-sky: clear_sky (0); thin clouds: thin_clouds (1); thick clouds: thick_clouds (2); "
+            "broken clouds: broken_clouds (3); <empty string>: (-1)";
+        harp_variable_definition_add_mapping(variable_definition, NULL, NULL, "/CLOUD.CONDITIONS", description);
     }
 
     if (template_type == uvvis_doas_directsun)

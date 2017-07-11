@@ -758,6 +758,16 @@ static int get_variable(ingest_info *info, const harp_variable_definition *varia
     variable->valid_min = variable_def->valid_min;
     variable->valid_max = variable_def->valid_max;
 
+    if (variable_def->num_enum_values > 0)
+    {
+        if (harp_variable_set_enumeration_values(variable, variable_def->num_enum_values,
+                                                 (const char **)variable_def->enum_name) != 0)
+        {
+            harp_variable_delete(variable);
+            return -1;
+        }
+    }
+
     *new_variable = variable;
     return 0;
 }
