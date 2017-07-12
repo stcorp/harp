@@ -82,6 +82,7 @@ HARP_DOCFILES = \
 	doc/html/algorithms/derivations/wavenumber.html \
 	doc/html/algorithms/formula.html \
 	doc/html/algorithms/index.html \
+	doc/html/conventions/categorical_variables.html \
 	doc/html/conventions/collocation_result.html \
 	doc/html/conventions/compatibility.html \
 	doc/html/conventions/datatypes.html \
@@ -658,6 +659,8 @@ doc/html/algorithms/derivations/wavenumber.html:
 doc/html/algorithms/formula.html:
 	$(MAKE) harp_doc
 doc/html/algorithms/index.html:
+	$(MAKE) harp_doc
+doc/html/conventions/categorical_variables.html:
 	$(MAKE) harp_doc
 doc/html/conventions/collocation_result.html:
 	$(MAKE) harp_doc

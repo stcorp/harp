@@ -1,0 +1,289 @@
+
+
+<!DOCTYPE html>
+<!--[if IE 8]><html class="no-js lt-ie9" lang="en" > <![endif]-->
+<!--[if gt IE 8]><!--> <html class="no-js" lang="en" > <!--<![endif]-->
+<head>
+  <meta charset="utf-8">
+  
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  
+  <title>Categorical Variables &mdash; HARP 0.6b documentation</title>
+  
+
+  
+  
+  
+  
+
+  
+
+  
+  
+    
+
+  
+
+  
+  
+    <link rel="stylesheet" href="../_static/css/theme.css" type="text/css" />
+  
+
+  
+    <link rel="stylesheet" href="../_static/custom.css" type="text/css" />
+  
+
+  
+        <link rel="index" title="Index"
+              href="../genindex.html"/>
+    <link rel="top" title="HARP 0.6b documentation" href="../index.html"/>
+        <link rel="up" title="Conventions" href="index.html"/>
+        <link rel="next" title="Datetime values" href="datetime.html"/>
+        <link rel="prev" title="Variable names" href="variable_names.html"/> 
+
+  
+  <script src="../_static/js/modernizr.min.js"></script>
+
+</head>
+
+<body class="wy-body-for-nav" role="document">
+
+   
+  <div class="wy-grid-for-nav">
+
+    
+    <nav data-toggle="wy-nav-shift" class="wy-nav-side">
+      <div class="wy-side-scroll">
+        <div class="wy-side-nav-search">
+          
+
+          
+            <a href="../index.html" class="icon icon-home"> HARP
+          
+
+          
+          </a>
+
+          
+            
+            
+              <div class="version">
+                0.6
+              </div>
+            
+          
+
+          
+
+          
+        </div>
+
+        <div class="wy-menu wy-menu-vertical" data-spy="affix" role="navigation" aria-label="main navigation">
+          
+            
+            
+              
+            
+            
+              <ul class="current">
+<li class="toctree-l1"><a class="reference internal" href="../install.html">Installation</a></li>
+<li class="toctree-l1 current"><a class="reference internal" href="index.html">Conventions</a><ul class="current">
+<li class="toctree-l2"><a class="reference internal" href="datatypes.html">Data types</a></li>
+<li class="toctree-l2"><a class="reference internal" href="dimensions.html">Dimensions</a></li>
+<li class="toctree-l2"><a class="reference internal" href="global_attributes.html">Global attributes</a></li>
+<li class="toctree-l2"><a class="reference internal" href="variable_attributes.html">Variable attributes</a></li>
+<li class="toctree-l2"><a class="reference internal" href="variables.html">Variables</a></li>
+<li class="toctree-l2"><a class="reference internal" href="variable_names.html">Variable names</a></li>
+<li class="toctree-l2 current"><a class="current reference internal" href="#">Categorical Variables</a></li>
+<li class="toctree-l2"><a class="reference internal" href="datetime.html">Datetime values</a></li>
+<li class="toctree-l2"><a class="reference internal" href="filenames.html">File naming</a></li>
+<li class="toctree-l2"><a class="reference internal" href="netcdf3.html">netCDF-3</a></li>
+<li class="toctree-l2"><a class="reference internal" href="hdf4.html">HDF4</a></li>
+<li class="toctree-l2"><a class="reference internal" href="hdf5.html">HDF5/netCDF-4</a></li>
+<li class="toctree-l2"><a class="reference internal" href="compatibility.html">Compatibility with other standards</a></li>
+<li class="toctree-l2"><a class="reference internal" href="collocation_result.html">Collocation result file</a></li>
+</ul>
+</li>
+<li class="toctree-l1"><a class="reference internal" href="../algorithms/index.html">Algorithms</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../operations.html">Operations</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../ingestions/index.html">Ingestion definitions</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../libharp.html">C library</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../idl.html">IDL interface</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../matlab.html">MATLAB interface</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../python.html">Python interface</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../tools.html">Command line tools</a></li>
+</ul>
+
+            
+          
+        </div>
+      </div>
+    </nav>
+
+    <section data-toggle="wy-nav-shift" class="wy-nav-content-wrap">
+
+      
+      <nav class="wy-nav-top" role="navigation" aria-label="top navigation">
+        
+          <i data-toggle="wy-nav-top" class="fa fa-bars"></i>
+          <a href="../index.html">HARP</a>
+        
+      </nav>
+
+
+      
+      <div class="wy-nav-content">
+        <div class="rst-content">
+          
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+<div role="navigation" aria-label="breadcrumbs navigation">
+
+  <ul class="wy-breadcrumbs">
+    
+      <li><a href="../index.html">Docs</a> &raquo;</li>
+        
+          <li><a href="index.html">Conventions</a> &raquo;</li>
+        
+      <li>Categorical Variables</li>
+    
+    
+      <li class="wy-breadcrumbs-aside">
+        
+            
+        
+      </li>
+    
+  </ul>
+
+  
+  <hr/>
+</div>
+          <div role="main" class="document" itemscope="itemscope" itemtype="http://schema.org/Article">
+           <div itemprop="articleBody">
+            
+  <div class="section" id="categorical-variables">
+<h1>Categorical Variables</h1>
+<p>HARP has special support for categorical variables, which are variables that can be represented by an enumeration type.</p>
+<p>Categorical variables are represented in HARP using integer data types that provide an index into a fixed list of
+enumeration labels. These enumeration labels are stored as metadata together with a variables. For <code class="docutils literal"><span class="pre">int8</span></code> data the
+labels are stored as a <code class="docutils literal"><span class="pre">flag_meanings</span></code> attribute (together with a <code class="docutils literal"><span class="pre">flag_values</span></code> attribute) in netCDF3, HDF4, and
+HDF5 files.</p>
+<p>HARP does not impose a rule on which integer value maps to a specific enumeration label. The integer values are
+just plain indices into the enumeration label list, and the list can be sorted in any way.</p>
+<p>Any integer value in a categorical variable that is outside the range of the available enumeration labels
+(<code class="docutils literal"><span class="pre">value</span> <span class="pre">&lt;</span> <span class="pre">0</span></code> or <code class="docutils literal"><span class="pre">value</span> <span class="pre">&gt;=</span> <span class="pre">N</span></code>) will be treated as an invalid value (<code class="docutils literal"><span class="pre">valid_min</span></code> and <code class="docutils literal"><span class="pre">valid_max</span></code> should therefore
+always be set to <code class="docutils literal"><span class="pre">0</span></code> and <code class="docutils literal"><span class="pre">N-1</span></code> respectively for these variables).</p>
+<p>Operations in HARP on categorical variables will need to primarily use the enumeration label <cite>names</cite>
+(and not the <cite>integer values</cite>). Any standardization (such as for the variable names) on the categories for
+categorical variables in HARP will thus also only be on enumeration names and not on numbers.</p>
+<p>In HARP we distinguish category types and category values. The name of the category type <code class="docutils literal"><span class="pre">&lt;cattype&gt;</span></code> is used in the
+variable name and the names of the category values <code class="docutils literal"><span class="pre">&lt;catval&gt;</span></code> are the enumeration labels. Variables for category
+types should generally be called <code class="docutils literal"><span class="pre">&lt;cattype&gt;_type</span></code>. For instance, if we want to classify clouds we would have
+<code class="docutils literal"><span class="pre">&lt;cattype&gt;=cloud</span></code> and a variable name <code class="docutils literal"><span class="pre">cloud_type</span></code>, and for land use classification we would have <code class="docutils literal"><span class="pre">land_type</span></code>.</p>
+<p>The enumeration labels for a variable should ideally be fully distinct categories. This means that if you have land
+types <code class="docutils literal"><span class="pre">A</span></code>, <code class="docutils literal"><span class="pre">B</span></code>, and <code class="docutils literal"><span class="pre">C</span></code>, you should try to avoid also having land types for <code class="docutils literal"><span class="pre">A_and_B</span></code>, <code class="docutils literal"><span class="pre">B_and_C</span></code>,
+<code class="docutils literal"><span class="pre">A_and_B_and_C</span></code>, etc.
+A <code class="docutils literal"><span class="pre">&lt;cattype&gt;_type</span></code> variable should ideally indicate just a single dominant applicable category.
+To deal with mixed presence of multiple categories one can use variables such as <code class="docutils literal"><span class="pre">&lt;catval&gt;_flag</span></code> and
+<code class="docutils literal"><span class="pre">&lt;catval&gt;_fraction</span></code>.</p>
+<p>For instance, for a <code class="docutils literal"><span class="pre">land_type</span></code> variable we could have <code class="docutils literal"><span class="pre">forest</span></code> as enumeration label, but then also have variables
+<code class="docutils literal"><span class="pre">forest_flag</span></code> and <code class="docutils literal"><span class="pre">forest_fraction</span></code>.</p>
+<p>A <code class="docutils literal"><span class="pre">&lt;catval&gt;_flag</span></code> variable in HARP should always be a binary/dichotomous variable (it should contain true/false, 1/0
+values). A flag variable denotes whether something is present/applicable/true or not. A flag variable will therefore
+generally always have an <code class="docutils literal"><span class="pre">int8</span></code> data type. Important to note is that <code class="docutils literal"><span class="pre">&lt;*&gt;_flag</span></code> variables in HARP should not be used
+as bitfield variables (unlike the <code class="docutils literal"><span class="pre">&lt;*&gt;_validity</span></code> variables).</p>
+<p>A <code class="docutils literal"><span class="pre">&lt;catval&gt;_fraction</span></code> variable can be used to define the fraction of the area that has the given <code class="docutils literal"><span class="pre">&lt;catval&gt;</span></code>
+classification. The fraction is a floating point value between 0 and 1.</p>
+<p>Note that many other data product formats use bitfields to indicate applicability of multiple classification categories
+in order to save storage space. However, the aim of HARP is not to provide a compact data format, but to have data
+variables that can be readily used by algorithms. For this reason, combining multiple information elements in a single
+variable is often avoided within the HARP conventions.</p>
+</div>
+
+
+           </div>
+           <div class="articleComments">
+            
+           </div>
+          </div>
+          <footer>
+  
+    <div class="rst-footer-buttons" role="navigation" aria-label="footer navigation">
+      
+        <a href="datetime.html" class="btn btn-neutral float-right" title="Datetime values" accesskey="n" rel="next">Next <span class="fa fa-arrow-circle-right"></span></a>
+      
+      
+        <a href="variable_names.html" class="btn btn-neutral" title="Variable names" accesskey="p" rel="prev"><span class="fa fa-arrow-circle-left"></span> Previous</a>
+      
+    </div>
+  
+
+  <hr/>
+
+  <div role="contentinfo">
+    <p>
+        &copy; Copyright 2015-2017 S&amp;T, The Netherlands.
+
+    </p>
+  </div> 
+
+</footer>
+
+        </div>
+      </div>
+
+    </section>
+
+  </div>
+  
+
+
+  
+
+    <script type="text/javascript">
+        var DOCUMENTATION_OPTIONS = {
+            URL_ROOT:'../',
+            VERSION:'0.6b',
+            COLLAPSE_INDEX:false,
+            FILE_SUFFIX:'.html',
+            HAS_SOURCE:  false,
+            SOURCELINK_SUFFIX: '.txt'
+        };
+    </script>
+      <script type="text/javascript" src="../_static/jquery.js"></script>
+      <script type="text/javascript" src="../_static/underscore.js"></script>
+      <script type="text/javascript" src="../_static/doctools.js"></script>
+      <script type="text/javascript" src="https://cdnjs.cloudflare.com/ajax/libs/mathjax/2.7.0/MathJax.js?config=TeX-AMS-MML_HTMLorMML"></script>
+
+  
+
+  
+  
+    <script type="text/javascript" src="../_static/js/theme.js"></script>
+  
+
+  
+  
+  <script type="text/javascript">
+      jQuery(function () {
+          SphinxRtdTheme.StickyNav.enable();
+      });
+  </script>
+   
+
+</body>
+</html>

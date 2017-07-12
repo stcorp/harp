@@ -27,6 +27,7 @@ Each of the specific aspects of the HARP standard are described in the following
    variable_attributes
    variables
    variable_names
+   categorical_variables
    datetime
    filenames
    netcdf3
