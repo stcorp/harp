@@ -237,7 +237,7 @@
 <td>relative index (0-3) of this measurement within a scan (forward+backward)</td>
 </tr>
 <tr class="row-even"><td><strong>scan_direction</strong></td>
-<td>string</td>
+<td>int8</td>
 <td>{<em>time</em>}</td>
 <td>&#160;</td>
 <td>scan direction for each measurement: &#8216;forward&#8217; or &#8216;backward&#8217;</td>
@@ -309,9 +309,9 @@
 <p>The table below details where and how each variable was retrieved from the input product.</p>
 <table border="1" class="docutils">
 <colgroup>
-<col width="28%" />
+<col width="27%" />
 <col width="9%" />
-<col width="63%" />
+<col width="64%" />
 </colgroup>
 <thead valign="bottom">
 <tr class="row-odd"><th class="head">field name</th>
@@ -385,7 +385,7 @@
 <td><strong>/egp[]/sub_counter</strong></td>
 </tr>
 <tr class="row-even"><td><em>description</em></td>
-<td>the scan direction is based on the subset counter of the measurement (0-2 forward, 3 = backward)</td>
+<td>the scan direction is based on the subset counter of the measurement; 0-2: forward (0), 3: backward (1)</td>
 </tr>
 <tr class="row-odd"><td><strong>solar_zenith_angle</strong></td>
 <td><em>path</em></td>

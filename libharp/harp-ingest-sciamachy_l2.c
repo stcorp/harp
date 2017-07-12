@@ -1614,7 +1614,7 @@ static int read_scan_direction(void *user_data, long index, harp_array data)
 
     if (info->integration_time[index] > 1)
     {
-        *data.string_data = strdup("mixed");
+        *data.int8_data = 2;
     }
     else
     {
@@ -1655,11 +1655,11 @@ static int read_scan_direction(void *user_data, long index, harp_array data)
 
         if (z < 0.0)
         {
-            *data.string_data = strdup("backward");
+            *data.int8_data = 1;
         }
         else
         {
-            *data.string_data = strdup("forward");
+            *data.int8_data = 0;
         }
     }
 
@@ -2174,6 +2174,7 @@ static int exclude_add_diag(void *user_data)
 
 static void register_common_nadir_cloud_variables(harp_product_definition *product_definition, const char *dataset)
 {
+    const char *scan_direction_values[] = { "forward", "backward", "mixed" };
     const char *condition_no_coadding = "No co-adding needed";
     const char *condition_single_scan = "Co-adding needed and all N geolocations are within a single scan (N is not "
         "divisible by 5)";
@@ -2326,14 +2327,15 @@ static void register_common_nadir_cloud_variables(harp_product_definition *produ
     description = "scan direction for each measurement: 'forward', 'backward', or 'mixed' (for a measurement that "
         "consisted of one or more forward and backward scans)";
     variable_definition = harp_ingestion_register_variable_sample_read(product_definition, "scan_direction",
-                                                                       harp_type_string, 1, dimension_type, NULL,
+                                                                       harp_type_int8, 1, dimension_type, NULL,
                                                                        description, NULL, NULL, read_scan_direction);
+    harp_variable_definition_set_enumeration_values(variable_definition, 3, scan_direction_values);
     snprintf(path, MAX_PATH_LENGTH, "/geolocation_nadir[]/corner_coord[], /geolocation_nadir[]/dsr_time");
-    description = "When the integration time is higher than 1s we are dealing with a mixed pixel, otherwise the scan "
-        "direction is based on the corner coordinates of the first ground pixel of the measurement. The first "
-        "geolocation pixel is a backscan pixel if the inproduct of the unit vector of the third corner with the "
+    description = "When the integration time is higher than 1s we are dealing with a mixed (2) pixel, otherwise the "
+        "scan direction is based on the corner coordinates of the first ground pixel of the measurement. The first "
+        "geolocation pixel is a backscan (1) pixel if the inproduct of the unit vector of the third corner with the "
         "outproduct of the unit vector of the first corner and the unit vector of the second corner is negative "
-        "(otherwise it is part of a forward scan)";
+        "(otherwise it is part of a forward (0) scan)";
     harp_variable_definition_add_mapping(variable_definition, NULL, NULL, path, description);
 
     /* cloud_fraction */

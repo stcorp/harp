@@ -324,34 +324,7 @@ static int read_illumination_condition(void *user_data, long index, harp_array d
         harp_set_error(HARP_ERROR_CODA, NULL);
         return -1;
     }
-    switch (condition)
-    {
-        case 0:
-            data.string_data[0] = strdup("dark");
-            break;
-        case 1:
-            data.string_data[0] = strdup("bright");
-            break;
-        case 2:
-            data.string_data[0] = strdup("twilight");
-            break;
-        case 3:
-            data.string_data[0] = strdup("straylight");
-            break;
-        case 4:
-            data.string_data[0] = strdup("twilight/straylight");
-            break;
-        default:
-            harp_set_error(HARP_ERROR_INGESTION, "invalid illumination condition value (%ld) in product",
-                           (long)condition);
-            return -1;
-    }
-    if (data.string_data[0] == NULL)
-    {
-        harp_set_error(HARP_ERROR_OUT_OF_MEMORY, "out of memory (could not duplicate string) (%s:%u)", __FILE__,
-                       __LINE__);
-        return -1;
-    }
+    *data.int8_data = (int8_t)condition;
 
     return 0;
 }
@@ -661,6 +634,7 @@ static int exclude_temperature_std(void *user_data)
 
 int harp_ingestion_module_gomos_l2_init(void)
 {
+    const char *scene_type_values[] = { "dark", "bright", "twilight", "straylight", "twilight_straylight" };
     const char *model_options[] = { "local", "model" };
     harp_ingestion_module *module;
     harp_product_definition *product_definition;
@@ -1030,13 +1004,13 @@ int harp_ingestion_module_gomos_l2_init(void)
     path = "/nl_geolocation[]/longit";
     harp_variable_definition_add_mapping(variable_definition, NULL, NULL, path, NULL);
 
-    /* flag_illumination_condition */
+    /* scene_type */
     description = "illumination condition for the profile: 'dark', 'bright', 'twilight', 'straylight', or "
-        "'twilight/straylight'";
-    variable_definition = harp_ingestion_register_variable_sample_read(product_definition,
-                                                                       "flag_illumination_condition", harp_type_string,
+        "'twilight_straylight'";
+    variable_definition = harp_ingestion_register_variable_sample_read(product_definition, "scene_type", harp_type_int8,
                                                                        1, dimension_type, NULL, description, NULL, NULL,
                                                                        read_illumination_condition);
+    harp_variable_definition_set_enumeration_values(variable_definition, 5, scene_type_values);
     path = "/nl_summary_quality[0]/limb_flag";
     harp_variable_definition_add_mapping(variable_definition, NULL, "CODA product version 0", path, NULL);
     path = "/nl_summary_quality[0]/obs_illum_cond";

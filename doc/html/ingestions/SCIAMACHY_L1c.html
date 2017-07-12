@@ -273,7 +273,7 @@
 <td>viewing azimuth angle for each measurement</td>
 </tr>
 <tr class="row-even"><td><strong>scan_direction</strong></td>
-<td>string</td>
+<td>int8</td>
 <td>{<em>time</em>}</td>
 <td>&#160;</td>
 <td>scan direction for each measurement: &#8216;forward&#8217;, &#8216;backward&#8217; or &#8216;mixed&#8217;</td>
@@ -642,7 +642,7 @@
 <td><strong>/nadir[]/geo[]/corner_coord[], /states[]/intg_times[]</strong></td>
 </tr>
 <tr class="row-odd"><td><em>description</em></td>
-<td>when the minimum integration time of a state is higher than 1 second we are dealing with a mixed pixelotherwise the scan direction is based on the corner coordinates of the first ground pixel of the measurement. The first geolocation pixel is a backscan pixel if the inproduct of the unit vector of the third corner with the outproduct of the unit vector of the first corner and the unit vector of the second corner is negative (otherwise it is part of a forward scan).</td>
+<td>when the minimum integration time of a state is higher than 1 second we are dealing with a mixed (2) pixelotherwise the scan direction is based on the corner coordinates of the first ground pixel of the measurement. The first geolocation pixel is a backscan (1) pixel if the inproduct of the unit vector of the third corner with the outproduct of the unit vector of the first corner and the unit vector of the second corner is negative (otherwise it is part of a forward (0) scan).</td>
 </tr>
 </tbody>
 </table>

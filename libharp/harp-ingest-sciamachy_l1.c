@@ -805,7 +805,7 @@ static int read_scan_direction(void *user_data, long index, harp_array data)
     /* state are mixed pixels. We keep a margin of 0.01 second to prevent rounding problems. */
     if (info->min_integr_time_per_state[state_nr] > 1.01)
     {
-        *data.string_data = strdup("mixed");
+        *data.int8_data = 2;
         return 0;
     }
 
@@ -874,11 +874,11 @@ static int read_scan_direction(void *user_data, long index, harp_array data)
 
     if (z < 0.0)
     {
-        *data.string_data = strdup("backward");
+        *data.int8_data = 1;
     }
     else
     {
-        *data.string_data = strdup("forward");
+        *data.int8_data = 0;
     }
 
     return 0;
@@ -1194,6 +1194,7 @@ static int init_nadir_limb_occultation_dimensions(ingest_info *info)
 
 void register_nadir_limb_occultation_product(harp_ingestion_module *module)
 {
+    const char *scan_direction_values[] = { "forward", "backward", "mixed" };
     harp_product_definition *product_definition;
     harp_variable_definition *variable_definition;
     harp_dimension_type dimension_type[2];
@@ -1423,16 +1424,17 @@ void register_nadir_limb_occultation_product(harp_ingestion_module *module)
     /* scan_direction */
     description = "scan direction for each measurement: 'forward', 'backward' or 'mixed'";
     variable_definition =
-        harp_ingestion_register_variable_sample_read(product_definition, "scan_direction", harp_type_string, 1,
+        harp_ingestion_register_variable_sample_read(product_definition, "scan_direction", harp_type_int8, 1,
                                                      dimension_type, NULL, description, NULL,
                                                      exclude_when_not_nadir, read_scan_direction);
+    harp_variable_definition_set_enumeration_values(variable_definition, 3, scan_direction_values);
     path = "/nadir[]/geo[]/corner_coord[], /states[]/intg_times[]";
     description =
-        "when the minimum integration time of a state is higher than 1 second we are dealing with a mixed pixel"
+        "when the minimum integration time of a state is higher than 1 second we are dealing with a mixed (2) pixel"
         "otherwise the scan direction is based on the corner coordinates of the first ground pixel of the measurement. "
-        "The first geolocation pixel is a backscan pixel if the inproduct of the unit vector of the third "
+        "The first geolocation pixel is a backscan (1) pixel if the inproduct of the unit vector of the third "
         "corner with the outproduct of the unit vector of the first corner and the unit vector of the second "
-        "corner is negative (otherwise it is part of a forward scan).";
+        "corner is negative (otherwise it is part of a forward (0) scan).";
     harp_variable_definition_add_mapping(variable_definition, NULL, NULL, path, description);
 }
 

@@ -231,7 +231,7 @@
 <td>relative index (0-15) of this measurement within a scan (forward+backward)</td>
 </tr>
 <tr class="row-odd"><td><strong>scan_direction</strong></td>
-<td>string</td>
+<td>int8</td>
 <td>{<em>time</em>}</td>
 <td>&#160;</td>
 <td>scan direction for each measurement: &#8216;forward&#8217; or &#8216;backward&#8217;</td>
@@ -436,7 +436,7 @@
 <td><strong>/MDR[]/Earthshine/INTEGRATION_TIMES[]</strong></td>
 </tr>
 <tr class="row-even"><td><em>description</em></td>
-<td>the scan direction is based on the subset counter of the measurement (0-11 forward, 12-15 = backward)</td>
+<td>the scan direction is based on the subset counter of the measurement; 0-11: forward (0), 12-15: backward (1)</td>
 </tr>
 <tr class="row-odd"><td rowspan="2"><strong>cloud_top_pressure</strong></td>
 <td><em>path</em></td>

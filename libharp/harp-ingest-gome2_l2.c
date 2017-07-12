@@ -1129,20 +1129,13 @@ static int read_scan_direction(void *user_data, long index, harp_array data)
         return -1;
     }
 
-    if (info->index_in_scan_buffer.int32_data[index] == 3)
+    if (info->index_in_scan_buffer.int32_data[index] < 3)
     {
-        *data.string_data = strdup("backward");
+        *data.int8_data = 0;
     }
     else
     {
-        *data.string_data = strdup("forward");
-    }
-
-    if (*data.string_data == NULL)
-    {
-        harp_set_error(HARP_ERROR_OUT_OF_MEMORY, "out of memory (could not duplicate string) (%s:%u)", __FILE__,
-                       __LINE__);
-        return -1;
+        *data.int8_data = 1;
     }
 
     return 0;
@@ -2101,6 +2094,7 @@ static void register_common_variables(harp_product_definition *product_definitio
 
 static void register_scan_variables(harp_product_definition *product_definition, int is_ers_product)
 {
+    const char *scan_direction_values[] = { "forward", "backward" };
     harp_variable_definition *variable_definition;
     harp_dimension_type dimension_type[1] = { harp_dimension_time };
     const char *description;
@@ -2134,11 +2128,12 @@ static void register_scan_variables(harp_product_definition *product_definition,
     /* scan_direction */
     description = "scan direction for each measurement: 'forward' or 'backward'";
     variable_definition =
-        harp_ingestion_register_variable_sample_read(product_definition, "scan_direction", harp_type_string, 1,
+        harp_ingestion_register_variable_sample_read(product_definition, "scan_direction", harp_type_int8, 1,
                                                      dimension_type, NULL, description, NULL, NULL,
                                                      read_scan_direction);
+    harp_variable_definition_set_enumeration_values(variable_definition, 2, scan_direction_values);
     path = "/GEOLOCATION/IndexInScan[]";
-    description = "the scan direction is based on IndexInScan[] (0-2 = forward, 3 = backward)";
+    description = "the scan direction is based on IndexInScan[]; 0-2: forward (0), 3: backward (1)";
     harp_variable_definition_add_mapping(variable_definition, NULL, NULL, path, description);
 }
 

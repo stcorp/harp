@@ -11,6 +11,10 @@
   - collocation result files are not backward compatible due to a change in
     the CSV header
 
+* Added support for enumeration variables. Enumeration variables have a int8,
+  int16, or int32 type and provide an index into a fixed list of enum names.
+  Enumeration variables can be treated as string values in operations.
+
 * Added -o option to harpdump and harpmerge.
 
 * Added -a and -o options for 'harpdump --list-derivations'.
@@ -39,7 +43,8 @@
   harp_product_add_derived_variable() is now a pointer to allow it to be
   optional (i.e. pass NULL to use the default data type).
 
-* Added harp_geometry_get_area() and harp_product_sort() functions.
+* Added harp_geometry_get_area(), harp_product_sort(), and
+  harp_variable_set_enumeration_values() functions.
 
 * Changed 'percentage' parameter of harp_geometry_has_area_overlap() to
   'fraction'.

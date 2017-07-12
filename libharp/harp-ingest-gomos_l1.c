@@ -352,34 +352,7 @@ static int get_illumination_condition(ingest_info *info, const char *datasetname
         harp_set_error(HARP_ERROR_CODA, NULL);
         return -1;
     }
-    switch (condition)
-    {
-        case 0:
-            data.string_data[0] = strdup("dark");
-            break;
-        case 1:
-            data.string_data[0] = strdup("bright");
-            break;
-        case 2:
-            data.string_data[0] = strdup("twilight");
-            break;
-        case 3:
-            data.string_data[0] = strdup("straylight");
-            break;
-        case 4:
-            data.string_data[0] = strdup("twilight/straylight");
-            break;
-        default:
-            harp_set_error(HARP_ERROR_INGESTION, "invalid illumination condition value (%ld) in product",
-                           (long)condition);
-            return -1;
-    }
-    if (data.string_data[0] == NULL)
-    {
-        harp_set_error(HARP_ERROR_OUT_OF_MEMORY, "out of memory (could not duplicate string) (%s:%u)", __FILE__,
-                       __LINE__);
-        return -1;
-    }
+    *data.int8_data = (int8_t)condition;
 
     return 0;
 }
@@ -797,14 +770,15 @@ static int lim_ingestion_init(const harp_ingestion_module *module, coda_product 
 
 static void register_limb_product(void)
 {
+    const char *scene_type_values[] = { "dark", "bright", "twilight", "straylight", "twilight_straylight" };
+    const char *upper_lower_options[] = { "upper", "lower" };
+    const char *true_false_options[] = { "true", "false" };
     harp_ingestion_module *module;
     harp_product_definition *product_definition;
     harp_variable_definition *variable_definition;
     harp_dimension_type dimension_type[2];
     const char *description;
     const char *path;
-    const char *upper_lower_options[] = { "upper", "lower" };
-    const char *true_false_options[] = { "true", "false" };
 
     description = "GOMOS Level 1 Geolocated Calibrated Background Spectra (Limb)";
     module = harp_ingestion_register_module_coda("GOMOS_L1_LIMB", "GOMOS", "ENVISAT_GOMOS", "GOM_LIM_1P", description,
@@ -932,13 +906,14 @@ static void register_limb_product(void)
     path = "/lim_ads/alt[]";
     harp_variable_definition_add_mapping(variable_definition, NULL, NULL, path, NULL);
 
-    /* illumination_condition */
-    description = "The illumination condition for each profile: 'dark', 'bright', 'twilight', 'straylight' or "
-        "'twilight/straylight'";
+    /* scene_type */
+    description = "illumination condition for each profile: 'dark', 'bright', 'twilight', 'straylight' or "
+        "'twilight_straylight'";
     variable_definition =
-        harp_ingestion_register_variable_sample_read(product_definition, "flag_illumination_condition",
-                                                     harp_type_string, 0, dimension_type, NULL, description, NULL, NULL,
+        harp_ingestion_register_variable_sample_read(product_definition, "scene_type", harp_type_int8, 0,
+                                                     dimension_type, NULL, description, NULL, NULL,
                                                      read_lim_illumination_condition);
+    harp_variable_definition_set_enumeration_values(variable_definition, 5, scene_type_values);
     path = "/lim_summary_quality[0]/limb_flag";
     harp_variable_definition_add_mapping(variable_definition, NULL, "CODA product version 0", path, NULL);
     path = "/lim_summary_quality[0]/obs_illum_cond";
@@ -1122,6 +1097,7 @@ static int tra_ingestion_init(const harp_ingestion_module *module, coda_product 
 
 static void register_tra_product(void)
 {
+    const char *scene_type_values[] = { "dark", "bright", "twilight", "straylight", "twilight_straylight" };
     harp_ingestion_module *module;
     harp_product_definition *product_definition;
     harp_variable_definition *variable_definition;
@@ -1249,13 +1225,14 @@ static void register_tra_product(void)
     path = "/tra_geolocation/alt[1]";
     harp_variable_definition_add_mapping(variable_definition, NULL, NULL, path, NULL);
 
-    /* illumination_condition */
-    description = "The illumination condition for each profile: 'dark', 'bright', 'twilight', 'straylight' or "
-        "'twilight/straylight'";
+    /* scene_type */
+    description = "illumination condition for each profile: 'dark', 'bright', 'twilight', 'straylight' or "
+        "'twilight_straylight'";
     variable_definition =
-        harp_ingestion_register_variable_sample_read(product_definition, "flag_illumination_condition",
-                                                     harp_type_string, 0, dimension_type, NULL, description, NULL, NULL,
+        harp_ingestion_register_variable_sample_read(product_definition, "scene_type", harp_type_int8, 0,
+                                                     dimension_type, NULL, description, NULL, NULL,
                                                      read_tra_illumination_condition);
+    harp_variable_definition_set_enumeration_values(variable_definition, 5, scene_type_values);
     path = "/tra_summary_quality[0]/limb_flag";
     harp_variable_definition_add_mapping(variable_definition, NULL, "CODA product version 0", path, NULL);
     path = "/tra_summary_quality[0]/obs_illum_cond";

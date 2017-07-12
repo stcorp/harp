@@ -231,7 +231,7 @@
 <td>relative azimuth angle at top of atmosphere</td>
 </tr>
 <tr class="row-odd"><td><strong>scan_direction</strong></td>
-<td>string</td>
+<td>int8</td>
 <td>{<em>time</em>}</td>
 <td>&#160;</td>
 <td>scan direction for each measurement: &#8216;forward&#8217;, &#8216;backward&#8217;, or &#8216;mixed&#8217; (for a measurement that consisted of one or more forward and backward scans)</td>
@@ -298,9 +298,9 @@
 <p>The table below details where and how each variable was retrieved from the input product.</p>
 <table border="1" class="docutils">
 <colgroup>
-<col width="9%" />
+<col width="8%" />
 <col width="3%" />
-<col width="88%" />
+<col width="89%" />
 </colgroup>
 <thead valign="bottom">
 <tr class="row-odd"><th class="head">field name</th>
@@ -508,7 +508,7 @@
 <td><strong>/geolocation_nadir[]/corner_coord[], /geolocation_nadir[]/dsr_time</strong></td>
 </tr>
 <tr class="row-odd"><td><em>description</em></td>
-<td>When the integration time is higher than 1s we are dealing with a mixed pixel, otherwise the scan direction is based on the corner coordinates of the first ground pixel of the measurement. The first geolocation pixel is a backscan pixel if the inproduct of the unit vector of the third corner with the outproduct of the unit vector of the first corner and the unit vector of the second corner is negative (otherwise it is part of a forward scan)</td>
+<td>When the integration time is higher than 1s we are dealing with a mixed (2) pixel, otherwise the scan direction is based on the corner coordinates of the first ground pixel of the measurement. The first geolocation pixel is a backscan (1) pixel if the inproduct of the unit vector of the third corner with the outproduct of the unit vector of the first corner and the unit vector of the second corner is negative (otherwise it is part of a forward (0) scan)</td>
 </tr>
 <tr class="row-even"><td><strong>cloud_fraction</strong></td>
 <td><em>path</em></td>

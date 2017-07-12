@@ -94,14 +94,6 @@ static const char *harp_gas_name[num_uvvis_doas_gas] = {
     "SO2",
 };
 
-#define num_cloud_flag_values 4
-static const char *cloud_flag_values[num_cloud_flag_values] = {
-    "clear_sky",
-    "thin_clouds",
-    "thick_clouds",
-    "broken_clouds"
-};
-
 typedef struct ingest_info_struct
 {
     const harp_product_definition *definition;
@@ -2050,14 +2042,16 @@ static int init_product_definition(harp_ingestion_module *module, uvvis_doas_gas
 
     if (template_type != uvvis_doas_directsun)
     {
-        /* cloud_flag */
+        const char *cloud_type_values[] = { "clear_sky", "thin_clouds", "thick_clouds", "broken_clouds" };
+
+        /* cloud_type */
         description = "cloud condition";
         variable_definition = harp_ingestion_register_variable_sample_read
-            (product_definition, "cloud_flag", harp_type_int8, 1, dimension_type, NULL, description, NULL, NULL,
+            (product_definition, "cloud_type", harp_type_int8, 1, dimension_type, NULL, description, NULL, NULL,
              read_cloud_conditions);
-        harp_variable_definition_set_enumeration_values(variable_definition, num_cloud_flag_values, cloud_flag_values);
-        description = "clear-sky: clear_sky (0); thin clouds: thin_clouds (1); thick clouds: thick_clouds (2); "
-            "broken clouds: broken_clouds (3); <empty string>: (-1)";
+        harp_variable_definition_set_enumeration_values(variable_definition, 4, cloud_type_values);
+        description = "\"clear-sky\": clear_sky (0); \"thin clouds\": thin_clouds (1); "
+            "\"thick clouds\": thick_clouds (2); \"broken clouds\": broken_clouds (3); \"\": (-1)";
         harp_variable_definition_add_mapping(variable_definition, NULL, NULL, "/CLOUD.CONDITIONS", description);
     }
 

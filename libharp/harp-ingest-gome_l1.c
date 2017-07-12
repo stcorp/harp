@@ -632,11 +632,11 @@ static int read_scan_direction(void *user_data, long index, harp_array data)
     /* this 'mixed' value is no longer used.                             */
     if (sub_counter < 3)
     {
-        *data.string_data = strdup("forward");
+        *data.int8_data = 0;
     }
     else
     {
-        *data.string_data = strdup("backward");
+        *data.int8_data = 1;
     }
     return 0;
 }
@@ -992,6 +992,7 @@ static int ingestion_init(const harp_ingestion_module *module, coda_product *pro
 
 static int register_nominal_product(harp_ingestion_module *module)
 {
+    const char *scan_direction_values[] = { "forward", "backward" };
     harp_product_definition *product_definition;
     harp_variable_definition *variable_definition;
     harp_dimension_type dimension_type[2];
@@ -1109,11 +1110,13 @@ static int register_nominal_product(harp_ingestion_module *module)
     /* scan_direction */
     description = "scan direction for each measurement: 'forward' or 'backward'";
     variable_definition =
-        harp_ingestion_register_variable_sample_read(product_definition, "scan_direction", harp_type_string, 1,
+        harp_ingestion_register_variable_sample_read(product_definition, "scan_direction", harp_type_int8, 1,
                                                      dimension_type, NULL, description, NULL, NULL,
                                                      read_scan_direction);
+    harp_variable_definition_set_enumeration_values(variable_definition, 2, scan_direction_values);
     path = "/egp[]/sub_counter";
-    description = "the scan direction is based on the subset counter of the measurement (0-2 forward, 3 = backward)";
+    description =
+        "the scan direction is based on the subset counter of the measurement; 0-2: forward (0), 3: backward (1)";
     harp_variable_definition_add_mapping(variable_definition, NULL, NULL, path, description);
 
     /* solar_zenith_angle */
