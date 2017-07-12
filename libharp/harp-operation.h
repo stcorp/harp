@@ -95,15 +95,16 @@ typedef enum harp_membership_operator_type_enum
  * Each struct can be cast to its 'base struct'
  *
  * - harp_operation
- *   |- harp_operation_value_filter
+ *   |- harp_operation_numeric_value_filter
  *   |  |-  harp_operation_bit_mask_filter
  *   |  |-  harp_operation_collocation_filter
  *   |  |-  harp_operation_comparison_filter
  *   |  |-  harp_operation_longitude_range_filter
  *   |  |-  harp_operation_membership_filter
+ *   |  |-  harp_operation_valid_range_filter
+ *   |- harp_operation_string_value_filter
  *   |  |-  harp_operation_string_comparison_filter
  *   |  |-  harp_operation_string_membership_filter
- *   |  |-  harp_operation_valid_range_filter
  *   |- harp_operation_point_filter
  *   |  |-  harp_operation_point_distance_filter
  *   |  |-  harp_operation_point_in_area_filter
@@ -132,11 +133,18 @@ typedef struct harp_operation_struct
     harp_operation_type type;
 } harp_operation;
 
-typedef struct harp_operation_value_filter_struct
+typedef struct harp_operation_numeric_value_filter_struct
 {
     harp_operation_type type;
-    int (*eval) (struct harp_operation_value_filter_struct *, harp_data_type, void *);
-} harp_operation_value_filter;
+    int (*eval) (struct harp_operation_numeric_value_filter_struct *, harp_data_type, void *);
+} harp_operation_numeric_value_filter;
+
+typedef struct harp_operation_string_value_filter_struct
+{
+    harp_operation_type type;
+    int (*eval) (struct harp_operation_string_value_filter_struct *, int num_enum_values, char **enum_name,
+                 harp_data_type, void *);
+} harp_operation_string_value_filter;
 
 typedef struct harp_operation_point_filter_struct
 {
@@ -395,7 +403,8 @@ typedef struct harp_operation_sort_struct
 typedef struct harp_operation_string_comparison_filter_struct
 {
     harp_operation_type type;
-    int (*eval) (struct harp_operation_string_comparison_filter_struct *, harp_data_type, char **);
+    int (*eval) (struct harp_operation_string_comparison_filter_struct *, int num_enum_values, char **enum_name,
+                 harp_data_type, void *);
     /* parameters */
     char *variable_name;
     harp_comparison_operator_type operator_type;
@@ -405,7 +414,8 @@ typedef struct harp_operation_string_comparison_filter_struct
 typedef struct harp_operation_string_membership_filter_struct
 {
     harp_operation_type type;
-    int (*eval) (struct harp_operation_string_membership_filter_struct *, harp_data_type, char **);
+    int (*eval) (struct harp_operation_string_membership_filter_struct *, int num_enum_values, char **enum_name,
+                 harp_data_type, void *);
     /* parameters */
     char *variable_name;
     harp_membership_operator_type operator_type;
@@ -440,6 +450,7 @@ int harp_operation_get_variable_name(const harp_operation *operation, const char
 int harp_operation_prepare_collocation_filter(harp_operation *operation, const char *source_product);
 int harp_operation_is_point_filter(const harp_operation *operation);
 int harp_operation_is_polygon_filter(const harp_operation *operation);
+int harp_operation_is_string_value_filter(const harp_operation *operation);
 int harp_operation_is_value_filter(const harp_operation *operation);
 int harp_operation_set_value_unit(harp_operation *operation, const char *unit);
 

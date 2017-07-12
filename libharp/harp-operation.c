@@ -364,51 +364,114 @@ static int eval_point_in_area(harp_operation_point_in_area_filter *operation, ha
     return harp_area_mask_covers_point(operation->area_mask, point);
 }
 
-static int eval_string_comparison(harp_operation_string_comparison_filter *operation, harp_data_type data_type,
-                                  char **value)
+static int eval_string_comparison(harp_operation_string_comparison_filter *operation, int num_enum_values,
+                                  char **enum_name, harp_data_type data_type, void *value)
 {
-    if (data_type != harp_type_string)
+    const char *string_value;
+
+    if (num_enum_values > 0)
     {
-        harp_set_error(HARP_ERROR_INVALID_ARGUMENT, "cannot perform string comparison filter for data type: %s",
-                       harp_get_data_type_name(data_type));
-        return -1;
+        int int_value;
+
+        assert(enum_name != NULL);
+        switch (data_type)
+        {
+            case harp_type_int8:
+                int_value = (int)*((int8_t *)value);
+                break;
+            case harp_type_int16:
+                int_value = (int)*((int16_t *)value);
+                break;
+            case harp_type_int32:
+                int_value = (int)*((int32_t *)value);
+                break;
+            default:
+                assert(0);
+                exit(1);
+        }
+        if (int_value >= 0 && int_value < num_enum_values)
+        {
+            string_value = enum_name[int_value];
+            assert(string_value != NULL);
+        }
+    }
+    else
+    {
+        if (data_type != harp_type_string)
+        {
+            harp_set_error(HARP_ERROR_INVALID_ARGUMENT, "cannot perform string comparison filter for data type: %s",
+                           harp_get_data_type_name(data_type));
+            return -1;
+        }
+        string_value = *(char **)value;
     }
 
     switch (operation->operator_type)
     {
         case operator_eq:
-            return (strcmp(operation->value, *value) == 0);
+            return (strcmp(operation->value, string_value) == 0);
         case operator_ne:
-            return (strcmp(operation->value, *value) != 0);
+            return (strcmp(operation->value, string_value) != 0);
         case operator_lt:
-            return (strcmp(operation->value, *value) < 0);
+            return (strcmp(operation->value, string_value) < 0);
         case operator_le:
-            return (strcmp(operation->value, *value) <= 0);
+            return (strcmp(operation->value, string_value) <= 0);
         case operator_gt:
-            return (strcmp(operation->value, *value) > 0);
+            return (strcmp(operation->value, string_value) > 0);
         case operator_ge:
-            return (strcmp(operation->value, *value) >= 0);
+            return (strcmp(operation->value, string_value) >= 0);
     }
 
     assert(0);
     exit(1);
 }
 
-static int eval_string_membership(harp_operation_string_membership_filter *operation, harp_data_type data_type,
-                                  char **value)
+static int eval_string_membership(harp_operation_string_membership_filter *operation, int num_enum_values,
+                                  char **enum_name, harp_data_type data_type, void *value)
 {
+    const char *string_value;
     int i;
 
-    if (data_type != harp_type_string)
+    if (num_enum_values > 0)
     {
-        harp_set_error(HARP_ERROR_INVALID_ARGUMENT, "cannot perform string membership filter for data type: %s",
-                       harp_get_data_type_name(data_type));
-        return -1;
+        int int_value;
+
+        assert(enum_name != NULL);
+        switch (data_type)
+        {
+            case harp_type_int8:
+                int_value = (int)*((int8_t *)value);
+                break;
+            case harp_type_int16:
+                int_value = (int)*((int16_t *)value);
+                break;
+            case harp_type_int32:
+                int_value = (int)*((int32_t *)value);
+                break;
+            default:
+                assert(0);
+                exit(1);
+        }
+        if (int_value >= 0 && int_value < num_enum_values)
+        {
+            string_value = enum_name[int_value];
+            assert(string_value != NULL);
+        }
+    }
+    else
+    {
+        if (data_type != harp_type_string)
+        {
+            harp_set_error(HARP_ERROR_INVALID_ARGUMENT, "cannot perform string membership filter for data type: %s",
+                           harp_get_data_type_name(data_type));
+            return -1;
+        }
+        string_value = *(char **)value;
     }
 
     for (i = 0; i < operation->num_values; i++)
     {
-        if (strcmp(operation->value[i], *value) == 0)
+        if (strcmp(operation->value[i], string_value) == 0)
         {
             return operation->operator_type == operator_in ? 1 : 0;
         }
@@ -2525,7 +2588,6 @@ int harp_operation_is_point_filter(const harp_operation *operation)
         default:
             return 0;
     }
-
 }
 
 int harp_operation_is_polygon_filter(const harp_operation *operation)
@@ -2540,7 +2602,18 @@ int harp_operation_is_polygon_filter(const harp_operation *operation)
         default:
             return 0;
     }
+}
 
+int harp_operation_is_string_value_filter(const harp_operation *operation)
+{
+    switch (operation->type)
+    {
+        case operation_string_comparison_filter:
+        case operation_string_membership_filter:
+            return 1;
+        default:
+            return 0;
+    }
 }
 
 int harp_operation_is_value_filter(const harp_operation *operation)

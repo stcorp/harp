@@ -162,11 +162,23 @@ static int execute_value_filter(harp_product *product, harp_program *program)
     {
         for (k = 0; k < num_operations; k++)
         {
-            harp_operation_value_filter *operation;
             int result;
 
-            operation = (harp_operation_value_filter *)program->operation[program->current_index + k];
-            result = operation->eval(operation, variable->data_type, variable->data.ptr);
+            if (harp_operation_is_string_value_filter(program->operation[program->current_index + k]))
+            {
+                harp_operation_string_value_filter *operation;
+
+                operation = (harp_operation_string_value_filter *)program->operation[program->current_index + k];
+                result = operation->eval(operation, variable->num_enum_values, variable->enum_name,
+                                         variable->data_type, variable->data.ptr);
+            }
+            else
+            {
+                harp_operation_numeric_value_filter *operation;
+
+                operation = (harp_operation_numeric_value_filter *)program->operation[program->current_index + k];
+                result = operation->eval(operation, variable->data_type, variable->data.ptr);
+            }
             if (result < 0)
             {
                 return -1;
@@ -200,12 +212,27 @@ static int execute_value_filter(harp_product *product, harp_program *program)
             {
                 if (dimension_mask->mask[i])
                 {
-                    harp_operation_value_filter *operation;
+                    harp_operation *operation;
                     int result;
 
-                    operation = (harp_operation_value_filter *)program->operation[program->current_index + k];
-                    result = operation->eval(operation, variable->data_type,
-                                             &variable->data.int8_data[i * data_type_size]);
+                    operation = program->operation[program->current_index + k];
+                    if (harp_operation_is_string_value_filter(operation))
+                    {
+                        harp_operation_string_value_filter *string_operation;
+
+                        string_operation = (harp_operation_string_value_filter *)operation;
+                        result = string_operation->eval(string_operation, variable->num_enum_values,
+                                                        variable->enum_name, variable->data_type,
+                                                        &variable->data.int8_data[i * data_type_size]);
+                    }
+                    else
+                    {
+                        harp_operation_numeric_value_filter *numeric_operation;
+
+                        numeric_operation = (harp_operation_numeric_value_filter *)operation;
+                        result = numeric_operation->eval(numeric_operation, variable->data_type,
+                                                         &variable->data.int8_data[i * data_type_size]);
+                    }
                     if (result < 0)
                     {
                         harp_dimension_mask_set_delete(dimension_mask_set);
@@ -268,12 +295,27 @@ static int execute_value_filter(harp_product *product, harp_program *program)
                 {
                     if (dimension_mask->mask[index])
                     {
-                        harp_operation_value_filter *operation;
+                        harp_operation *operation;
                         int result;
 
-                        operation = (harp_operation_value_filter *)program->operation[program->current_index + k];
-                        result = operation->eval(operation, variable->data_type,
-                                                 &variable->data.int8_data[index * data_type_size]);
+                        operation = program->operation[program->current_index + k];
+                        if (harp_operation_is_string_value_filter(operation))
+                        {
+                            harp_operation_string_value_filter *string_operation;
+
+                            string_operation = (harp_operation_string_value_filter *)operation;
+                            result = string_operation->eval(string_operation, variable->num_enum_values,
+                                                            variable->enum_name, variable->data_type,
+                                                            &variable->data.int8_data[index * data_type_size]);
+                        }
+                        else
+                        {
+                            harp_operation_numeric_value_filter *numeric_operation;
+
+                            numeric_operation = (harp_operation_numeric_value_filter *)operation;
+                            result = numeric_operation->eval(numeric_operation, variable->data_type,
+                                                             &variable->data.int8_data[index * data_type_size]);
+                        }
                         if (result < 0)
                         {
                             harp_dimension_mask_set_delete(dimension_mask_set);
