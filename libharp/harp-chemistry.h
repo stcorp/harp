@@ -79,6 +79,8 @@ typedef enum harp_chemical_species_enum
     harp_chemical_species_H2O_181,
     harp_chemical_species_H2O2,
     harp_chemical_species_IO,
+    harp_chemical_species_IWC,
+    harp_chemical_species_LWC,
     harp_chemical_species_NO,
     harp_chemical_species_NOCl,
     harp_chemical_species_NO2,
