@@ -40,8 +40,6 @@
 
 #define SECONDS_FROM_1993_TO_2000 (220838400 + 5)
 
-/* TODO: add support lsm */
-
 /* The parameter id values and their link to GRIB1 table2Version/indicatorOfParameter and
  * GRIB2 discipline/parameterCategory/parameterNumber values are taken from
  * http://apps.ecmwf.int/codes/grib/param-db
@@ -969,6 +967,11 @@ static int read_tcc(void *user_data, harp_array data)
 static int read_2t(void *user_data, harp_array data)
 {
     return read_2d_grid_data((ingest_info *)user_data, grib_param_2t, data);
+}
+
+static int read_lsm(void *user_data, harp_array data)
+{
+    return read_2d_grid_data((ingest_info *)user_data, grib_param_lsm, data);
 }
 
 static int read_clwc(void *user_data, harp_array data)
@@ -2610,6 +2613,11 @@ static int exclude_2t(void *user_data)
     return !((ingest_info *)user_data)->has_parameter[grib_param_2t];
 }
 
+static int exclude_lsm(void *user_data)
+{
+    return !((ingest_info *)user_data)->has_parameter[grib_param_lsm];
+}
+
 static int exclude_clwc(void *user_data)
 {
     return !((ingest_info *)user_data)->has_parameter[grib_param_clwc];
@@ -3014,6 +3022,14 @@ int harp_ingestion_module_ecmwf_grib_init(void)
                                                                      description, "K", exclude_2t, read_2t);
     add_value_variable_mapping(variable_definition, "(table,indicator) = (128,167), (160,167), (180,167), or (190,167)",
                                NULL);
+
+    /* lsm: land_flag */
+    description = "land-sea mask";
+    variable_definition = harp_ingestion_register_variable_full_read(product_definition, "land_flag",
+                                                                     harp_type_float, 2, &dimension_type[1], NULL,
+                                                                     description, NULL, exclude_lsm, read_lsm);
+    add_value_variable_mapping(variable_definition, "(table,indicator) = (128,172), (160,172), (171,172), (174,172), "
+                               "(175,172), (180,172), or (190,172)", "(discipline,category,number) = (2,0,0)");
 
     /* clwc: LWC_mass_mixing_ratio */
     description = "specific cloud liquid water content";
