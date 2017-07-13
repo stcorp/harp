@@ -394,6 +394,10 @@ static int eval_string_comparison(harp_operation_string_comparison_filter *opera
             string_value = enum_name[int_value];
             assert(string_value != NULL);
         }
+        else
+        {
+            string_value = "";
+        }
     }
     else
     {
