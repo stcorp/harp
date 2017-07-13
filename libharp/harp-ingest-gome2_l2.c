@@ -1120,7 +1120,7 @@ static int read_sub_pixel_in_scan(void *user_data, harp_array data)
     return 0;
 }
 
-static int read_scan_direction(void *user_data, long index, harp_array data)
+static int read_scan_direction_type(void *user_data, long index, harp_array data)
 {
     ingest_info *info = (ingest_info *)user_data;
 
@@ -2094,7 +2094,7 @@ static void register_common_variables(harp_product_definition *product_definitio
 
 static void register_scan_variables(harp_product_definition *product_definition, int is_ers_product)
 {
-    const char *scan_direction_values[] = { "forward", "backward" };
+    const char *scan_direction_type_values[] = { "forward", "backward" };
     harp_variable_definition *variable_definition;
     harp_dimension_type dimension_type[1] = { harp_dimension_time };
     const char *description;
@@ -2125,13 +2125,13 @@ static void register_scan_variables(harp_product_definition *product_definition,
         harp_variable_definition_add_mapping(variable_definition, NULL, NULL, path, description);
     }
 
-    /* scan_direction */
+    /* scan_direction_type */
     description = "scan direction for each measurement: 'forward' or 'backward'";
     variable_definition =
-        harp_ingestion_register_variable_sample_read(product_definition, "scan_direction", harp_type_int8, 1,
+        harp_ingestion_register_variable_sample_read(product_definition, "scan_direction_type", harp_type_int8, 1,
                                                      dimension_type, NULL, description, NULL, NULL,
-                                                     read_scan_direction);
-    harp_variable_definition_set_enumeration_values(variable_definition, 2, scan_direction_values);
+                                                     read_scan_direction_type);
+    harp_variable_definition_set_enumeration_values(variable_definition, 2, scan_direction_type_values);
     path = "/GEOLOCATION/IndexInScan[]";
     description = "the scan direction is based on IndexInScan[]; 0-2: forward (0), 3: backward (1)";
     harp_variable_definition_add_mapping(variable_definition, NULL, NULL, path, description);

@@ -775,7 +775,7 @@ static int read_viewing_azimuth_angle(void *user_data, harp_array data)
                          data.double_data);
 }
 
-static int read_scan_direction(void *user_data, long index, harp_array data)
+static int read_scan_direction_type(void *user_data, long index, harp_array data)
 {
     const double pi = 3.14159265358979;
     coda_cursor cursor;
@@ -784,7 +784,7 @@ static int read_scan_direction(void *user_data, long index, harp_array data)
     double px, py, qx, qy, rx, ry, z;
     double latitude[3], longitude[3];
 
-    /* Determine the state and the observation within the state for this scan_direction */
+    /* Determine the state and the observation within the state for this scan_direction_type */
     total_observations = 0;
     for (state_nr = 0; state_nr < info->num_states_current_datasource; state_nr++)
     {
@@ -797,7 +797,7 @@ static int read_scan_direction(void *user_data, long index, harp_array data)
     }
     if (state_nr >= info->num_states_current_datasource)
     {
-        harp_set_error(HARP_ERROR_INGESTION, "Index of scan_direction too large.");
+        harp_set_error(HARP_ERROR_INGESTION, "state index too large");
         return -1;
     }
 
@@ -1194,7 +1194,7 @@ static int init_nadir_limb_occultation_dimensions(ingest_info *info)
 
 void register_nadir_limb_occultation_product(harp_ingestion_module *module)
 {
-    const char *scan_direction_values[] = { "forward", "backward", "mixed" };
+    const char *scan_direction_type_values[] = { "forward", "backward", "mixed" };
     harp_product_definition *product_definition;
     harp_variable_definition *variable_definition;
     harp_dimension_type dimension_type[2];
@@ -1421,13 +1421,13 @@ void register_nadir_limb_occultation_product(harp_ingestion_module *module)
     path = "/occultation[]/geo[]/los_azi_ang[1]";
     harp_variable_definition_add_mapping(variable_definition, "data=occultation", NULL, path, NULL);
 
-    /* scan_direction */
+    /* scan_direction_type */
     description = "scan direction for each measurement: 'forward', 'backward' or 'mixed'";
     variable_definition =
-        harp_ingestion_register_variable_sample_read(product_definition, "scan_direction", harp_type_int8, 1,
+        harp_ingestion_register_variable_sample_read(product_definition, "scan_direction_type", harp_type_int8, 1,
                                                      dimension_type, NULL, description, NULL,
-                                                     exclude_when_not_nadir, read_scan_direction);
-    harp_variable_definition_set_enumeration_values(variable_definition, 3, scan_direction_values);
+                                                     exclude_when_not_nadir, read_scan_direction_type);
+    harp_variable_definition_set_enumeration_values(variable_definition, 3, scan_direction_type_values);
     path = "/nadir[]/geo[]/corner_coord[], /states[]/intg_times[]";
     description =
         "when the minimum integration time of a state is higher than 1 second we are dealing with a mixed (2) pixel"

@@ -863,7 +863,7 @@ static int read_scan_subindex(void *user_data, harp_array data)
     return 0;
 }
 
-static int read_scan_direction(void *user_data, long index, harp_array data)
+static int read_scan_direction_type(void *user_data, long index, harp_array data)
 {
     ingest_info *info;
     long i, subindex, index_plus_readout_offset;
@@ -1375,7 +1375,7 @@ static int exclude_when_not_sun(void *user_data)
 
 static void register_variables_radiance_transmittance_fields(harp_product_definition *product_definition, int radiance)
 {
-    const char *scan_direction_values[] = { "forward", "backward" };
+    const char *scan_direction_type_values[] = { "forward", "backward" };
     harp_variable_definition *variable_definition;
     harp_dimension_type dimension_type[2];
     harp_dimension_type bounds_dimension_type[2];
@@ -1508,13 +1508,13 @@ static void register_variables_radiance_transmittance_fields(harp_product_defini
                                                    dimension_type, NULL, description, NULL, NULL, read_scan_subindex);
     harp_variable_definition_set_valid_range_int8(variable_definition, 0, 15);
 
-    /* scan_direction */
+    /* scan_direction_type */
     description = "scan direction for each measurement: 'forward' or 'backward'";
     variable_definition =
-        harp_ingestion_register_variable_sample_read(product_definition, "scan_direction", harp_type_int8, 1,
+        harp_ingestion_register_variable_sample_read(product_definition, "scan_direction_type", harp_type_int8, 1,
                                                      dimension_type, NULL, description, NULL, NULL,
-                                                     read_scan_direction);
-    harp_variable_definition_set_enumeration_values(variable_definition, 2, scan_direction_values);
+                                                     read_scan_direction_type);
+    harp_variable_definition_set_enumeration_values(variable_definition, 2, scan_direction_type_values);
     path = "/MDR[]/Earthshine/INTEGRATION_TIMES[]";
     description =
         "the scan direction is based on the subset counter of the measurement; 0-11: forward (0), 12-15: backward (1)";

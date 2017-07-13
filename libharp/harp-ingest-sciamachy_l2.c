@@ -1608,7 +1608,7 @@ static int read_absorbing_aerosol_index(void *user_data, long index, harp_array 
     return get_data(user_data, index, "aero_abso_ind", data);
 }
 
-static int read_scan_direction(void *user_data, long index, harp_array data)
+static int read_scan_direction_type(void *user_data, long index, harp_array data)
 {
     ingest_info *info = (ingest_info *)user_data;
 
@@ -2174,7 +2174,7 @@ static int exclude_add_diag(void *user_data)
 
 static void register_common_nadir_cloud_variables(harp_product_definition *product_definition, const char *dataset)
 {
-    const char *scan_direction_values[] = { "forward", "backward", "mixed" };
+    const char *scan_direction_type_values[] = { "forward", "backward", "mixed" };
     const char *condition_no_coadding = "No co-adding needed";
     const char *condition_single_scan = "Co-adding needed and all N geolocations are within a single scan (N is not "
         "divisible by 5)";
@@ -2323,13 +2323,14 @@ static void register_common_nadir_cloud_variables(harp_product_definition *produ
         "integration time of the N-th record";
     harp_variable_definition_add_mapping(variable_definition, NULL, condition_mixed, path, description);
 
-    /* scan_direction */
+    /* scan_direction_type */
     description = "scan direction for each measurement: 'forward', 'backward', or 'mixed' (for a measurement that "
         "consisted of one or more forward and backward scans)";
-    variable_definition = harp_ingestion_register_variable_sample_read(product_definition, "scan_direction",
+    variable_definition = harp_ingestion_register_variable_sample_read(product_definition, "scan_direction_type",
                                                                        harp_type_int8, 1, dimension_type, NULL,
-                                                                       description, NULL, NULL, read_scan_direction);
-    harp_variable_definition_set_enumeration_values(variable_definition, 3, scan_direction_values);
+                                                                       description, NULL, NULL,
+                                                                       read_scan_direction_type);
+    harp_variable_definition_set_enumeration_values(variable_definition, 3, scan_direction_type_values);
     snprintf(path, MAX_PATH_LENGTH, "/geolocation_nadir[]/corner_coord[], /geolocation_nadir[]/dsr_time");
     description = "When the integration time is higher than 1s we are dealing with a mixed (2) pixel, otherwise the "
         "scan direction is based on the corner coordinates of the first ground pixel of the measurement. The first "
