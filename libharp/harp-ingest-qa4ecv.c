@@ -38,6 +38,8 @@
 #include <string.h>
 #include <ctype.h>
 
+const char *surface_type_values[] = { "snow_free_land", "sea_ice", "permanent_ice", "snow", "ocean" };
+
 typedef struct ingest_info_struct
 {
     coda_product *product;
@@ -282,6 +284,39 @@ static int read_dataset(coda_cursor cursor, const char *dataset_name, harp_data_
 
     switch (data_type)
     {
+        case harp_type_int8:
+            {
+                coda_native_type read_type;
+
+                if (coda_cursor_goto_first_array_element(&cursor) != 0)
+                {
+                    harp_set_error(HARP_ERROR_CODA, NULL);
+                    return -1;
+                }
+                if (coda_cursor_get_read_type(&cursor, &read_type) != 0)
+                {
+                    harp_set_error(HARP_ERROR_CODA, NULL);
+                    return -1;
+                }
+                coda_cursor_goto_parent(&cursor);
+                if (read_type == coda_native_type_uint8)
+                {
+                    if (coda_cursor_read_uint8_array(&cursor, (uint8_t *)data.int8_data, coda_array_ordering_c) != 0)
+                    {
+                        harp_set_error(HARP_ERROR_CODA, NULL);
+                        return -1;
+                    }
+                }
+                else
+                {
+                    if (coda_cursor_read_int8_array(&cursor, data.int8_data, coda_array_ordering_c) != 0)
+                    {
+                        harp_set_error(HARP_ERROR_CODA, NULL);
+                        return -1;
+                    }
+                }
+            }
+            break;
         case harp_type_int32:
             {
                 coda_native_type read_type;
@@ -709,6 +744,78 @@ static int read_cloud_pressure_uncertainty(void *user_data, harp_array data)
 
     return read_dataset(info->input_data_cursor, "cloud_pressure_uncertainty", harp_type_float,
                         info->num_scanlines * info->num_pixels, data);
+}
+
+static int read_surface_type(void *user_data, harp_array data)
+{
+    ingest_info *info = (ingest_info *)user_data;
+    long i;
+
+    if (read_dataset(info->input_data_cursor, "snow_ice_flag", harp_type_int8, info->num_scanlines * info->num_pixels,
+                     data) != 0)
+    {
+        return -1;
+    }
+    for (i = 0; i < info->num_scanlines * info->num_pixels; i++)
+    {
+        if (data.int8_data[i] < 0)
+        {
+            if (data.int8_data[i] == -1)        /* == int8 representation of 255 */
+            {
+                data.int8_data[i] = 4;
+            }
+            else
+            {
+                data.int8_data[i] = -1;
+            }
+        }
+        else if (data.int8_data[i] > 0)
+        {
+            if (data.int8_data[i] <= 100)       /* 1..100 is mapped to sea_ice */
+            {
+                data.int8_data[i] = 1;
+            }
+            else if (data.int8_data[i] == 101)
+            {
+                data.int8_data[i] = 2;
+            }
+            else if (data.int8_data[i] == 103)
+            {
+                data.int8_data[i] = 3;
+            }
+            else
+            {
+                data.int8_data[i] = -1;
+            }
+        }
+    }
+
+    return 0;
+}
+
+static int read_sea_ice_fraction(void *user_data, harp_array data)
+{
+    ingest_info *info = (ingest_info *)user_data;
+    long i;
+
+    if (read_dataset(info->input_data_cursor, "snow_ice_flag", harp_type_float, info->num_scanlines * info->num_pixels,
+                     data) != 0)
+    {
+        return -1;
+    }
+    for (i = 0; i < info->num_scanlines * info->num_pixels; i++)
+    {
+        if (data.float_data[i] > 0 && data.float_data[i] <= 100)
+        {
+            data.float_data[i] /= 100.0;
+        }
+        else
+        {
+            data.float_data[i] = 0.0;
+        }
+    }
+
+    return 0;
 }
 
 static int read_surface_albedo_hcho(void *user_data, harp_array data)
@@ -1221,6 +1328,27 @@ static void register_common_variables(harp_product_definition *product_definitio
                                                                      read_cloud_pressure_uncertainty);
     path = "/PRODUCT/SUPPORT_DATA/INPUT_DATA/cloud_pressure_uncertainty[]";
     harp_variable_definition_add_mapping(variable_definition, NULL, NULL, path, NULL);
+
+    /* surface_type */
+    description = "surface type: 'snow_free_land', 'sea_ice', 'permanent_ice', 'snow', 'ocean'";
+    variable_definition =
+        harp_ingestion_register_variable_full_read(product_definition, "surface_type", harp_type_int8, 1,
+                                                   dimension_type, NULL, description, NULL, NULL, read_surface_type);
+    harp_variable_definition_set_enumeration_values(variable_definition, 5, surface_type_values);
+    path = "/PRODUCT/SUPPORT_DATA/DETAILED_RESULTS/snow_ice_flag[]";
+    description = "0: snow_free_land (0), 1-100: sea_ice (1), 101: permanent_ice (2), 103: snow (3), 255: ocean (4), "
+        "other values map to -1";
+    harp_variable_definition_add_mapping(variable_definition, NULL, NULL, path, description);
+
+    /* sea_ice_fraction */
+    description = "sea-ice concentration (as a fraction)";
+    variable_definition =
+        harp_ingestion_register_variable_full_read(product_definition, "sea_ice_fraction", harp_type_float, 1,
+                                                   dimension_type, NULL, description, NULL, NULL,
+                                                   read_sea_ice_fraction);
+    path = "/PRODUCT/SUPPORT_DATA/DETAILED_RESULTS/snow_ice_flag[]";
+    description = "if 1 <= snow_ice_flag <= 100 then snow_ice_flag/100.0 else 0.0";
+    harp_variable_definition_add_mapping(variable_definition, NULL, NULL, path, description);
 }
 
 static void register_hcho_product(void)

@@ -428,8 +428,7 @@ int harp_ingestion_module_actris_clouds_l2_aerosol_init(void)
     description = "cloud_top_height";
     variable_definition =
         harp_ingestion_register_variable_full_read(product_definition, "cloud_top_height", harp_type_float, 1,
-                                                   dimension_type, NULL, description, "m", NULL,
-                                                   read_cloud_top_height);
+                                                   dimension_type, NULL, description, "m", NULL, read_cloud_top_height);
     path = "/cloud_top_height";
     harp_variable_definition_add_mapping(variable_definition, NULL, NULL, path, NULL);
 

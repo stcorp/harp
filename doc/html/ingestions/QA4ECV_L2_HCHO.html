@@ -272,6 +272,18 @@
 <td>hPa</td>
 <td>cloud optical centroid pressure from the cloud product</td>
 </tr>
+<tr class="row-even"><td><strong>surface_type</strong></td>
+<td>int8</td>
+<td>{<em>time</em>}</td>
+<td>&#160;</td>
+<td>surface type: &#8216;snow_free_land&#8217;, &#8216;sea_ice&#8217;, &#8216;permanent_ice&#8217;, &#8216;snow&#8217;, &#8216;ocean&#8217;</td>
+</tr>
+<tr class="row-odd"><td><strong>sea_ice_fraction</strong></td>
+<td>float</td>
+<td>{<em>time</em>}</td>
+<td>&#160;</td>
+<td>sea-ice concentration (as a fraction)</td>
+</tr>
 <tr class="row-even"><td><strong>tropospheric_HCHO_column_number_density</strong></td>
 <td>float</td>
 <td>{<em>time</em>}</td>
@@ -451,6 +463,20 @@
 <tr class="row-even"><td><strong>cloud_pressure_uncertainty</strong></td>
 <td><em>path</em></td>
 <td><strong>/PRODUCT/SUPPORT_DATA/INPUT_DATA/cloud_pressure_uncertainty[]</strong></td>
+</tr>
+<tr class="row-odd"><td rowspan="2"><strong>surface_type</strong></td>
+<td><em>path</em></td>
+<td><strong>/PRODUCT/SUPPORT_DATA/DETAILED_RESULTS/snow_ice_flag[]</strong></td>
+</tr>
+<tr class="row-even"><td><em>description</em></td>
+<td>0: snow_free_land (0), 1-100: sea_ice (1), 101: permanent_ice (2), 103: snow (3), 255: ocean (4), other values map to -1</td>
+</tr>
+<tr class="row-odd"><td rowspan="2"><strong>sea_ice_fraction</strong></td>
+<td><em>path</em></td>
+<td><strong>/PRODUCT/SUPPORT_DATA/DETAILED_RESULTS/snow_ice_flag[]</strong></td>
+</tr>
+<tr class="row-even"><td><em>description</em></td>
+<td>if 1 &lt;= snow_ice_flag &lt;= 100 then snow_ice_flag/100.0 else 0.0</td>
 </tr>
 <tr class="row-odd"><td><strong>tropospheric_HCHO_column_number_density</strong></td>
 <td><em>path</em></td>
