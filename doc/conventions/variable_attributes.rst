@@ -29,6 +29,12 @@ Variable attributes
   *string*. For variables of numeric type, this attribute should only be present if the variable actually contains
   values above this threshold that are to be interpreted as `missing` or `invalid` values.
 
+``enum_name``/``flag_meanings`` [string] (optional)
+  Provides the list of string values of the enumeration labels of a categorical variable. For the in-memory
+  representation (C, Python, etc.) this attribute is called ``enum_name`` and consists of a list of strings.
+  Within a :doc:`netCDF-3 <netcdf3>`, :doc:`HDF4 <hdf4>`, or :doc:`HDF5 <hdf5>` file this attribute is stored as a
+  single string attribute named ``flag_meanings`` which contains a space separated list of the label names.
+
 Note that ``_FillValue`` is not used by HARP. Whether a value is valid is purely determined by the ``valid_min`` and
 ``valid_max`` attributes.
 

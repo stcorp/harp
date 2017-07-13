@@ -201,6 +201,11 @@ values below this threshold that are to be interpreted as <cite>missing</cite> o
 match the data type of the associated variable. This attribute is <em>not</em> allowed to be present for variables of type
 <em>string</em>. For variables of numeric type, this attribute should only be present if the variable actually contains
 values above this threshold that are to be interpreted as <cite>missing</cite> or <cite>invalid</cite> values.</dd>
+<dt><code class="docutils literal"><span class="pre">enum_name</span></code>/<code class="docutils literal"><span class="pre">flag_meanings</span></code> [string] (optional)</dt>
+<dd>Provides the list of string values of the enumeration labels of a categorical variable. For the in-memory
+representation (C, Python, etc.) this attribute is called <code class="docutils literal"><span class="pre">enum_name</span></code> and consists of a list of strings.
+Within a <a class="reference internal" href="netcdf3.html"><span class="doc">netCDF-3</span></a>, <a class="reference internal" href="hdf4.html"><span class="doc">HDF4</span></a>, or <a class="reference internal" href="hdf5.html"><span class="doc">HDF5</span></a> file this attribute is stored as a
+single string attribute named <code class="docutils literal"><span class="pre">flag_meanings</span></code> which contains a space separated list of the label names.</dd>
 </dl>
 <p>Note that <code class="docutils literal"><span class="pre">_FillValue</span></code> is not used by HARP. Whether a value is valid is purely determined by the <code class="docutils literal"><span class="pre">valid_min</span></code> and
 <code class="docutils literal"><span class="pre">valid_max</span></code> attributes.</p>
