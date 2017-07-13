@@ -183,36 +183,54 @@
 <td>date and time (in seconds since 2000-01-01 00:00:00)</td>
 </tr>
 <tr class="row-odd"><td><strong>sensor_latitude</strong></td>
-<td>double</td>
+<td>float</td>
 <td>&#160;</td>
 <td>degree_north</td>
 <td>latitude of the instrument</td>
 </tr>
 <tr class="row-even"><td><strong>sensor_longitude</strong></td>
-<td>double</td>
+<td>float</td>
 <td>&#160;</td>
 <td>degree_east</td>
 <td>longitude of the instrument</td>
 </tr>
 <tr class="row-odd"><td><strong>sensor_altitude</strong></td>
-<td>double</td>
+<td>float</td>
 <td>&#160;</td>
-<td>km</td>
+<td>m</td>
 <td>altitude of the instrument above mean sea level</td>
 </tr>
-<tr class="row-even"><td><strong>cloud_base_height</strong></td>
-<td>double</td>
+<tr class="row-even"><td><strong>altitude</strong></td>
+<td>float</td>
+<td>{<em>vertical</em>}</td>
+<td>m</td>
+<td>altitude of the measurement</td>
+</tr>
+<tr class="row-odd"><td><strong>cloud_type</strong></td>
+<td>int8</td>
+<td>{<em>time</em>, <em>vertical</em>}</td>
+<td>&#160;</td>
+<td>cloud classification type</td>
+</tr>
+<tr class="row-even"><td><strong>cloud_type_validity</strong></td>
+<td>int8</td>
+<td>{<em>time</em>, <em>vertical</em>}</td>
+<td>&#160;</td>
+<td>detection status</td>
+</tr>
+<tr class="row-odd"><td><strong>cloud_base_height</strong></td>
+<td>float</td>
 <td>{<em>time</em>}</td>
-<td>km</td>
+<td>m</td>
 <td>cloud_base_height</td>
 </tr>
-<tr class="row-odd"><td><strong>cloud_top_height</strong></td>
-<td>double</td>
+<tr class="row-even"><td><strong>cloud_top_height</strong></td>
+<td>float</td>
 <td>{<em>time</em>}</td>
-<td>km</td>
+<td>m</td>
 <td>cloud_top_height</td>
 </tr>
-<tr class="row-even"><td><strong>index</strong></td>
+<tr class="row-odd"><td><strong>index</strong></td>
 <td>int32</td>
 <td>{<em>time</em>}</td>
 <td>&#160;</td>
@@ -226,9 +244,9 @@
 <p>The table below details where and how each variable was retrieved from the input product.</p>
 <table border="1" class="docutils">
 <colgroup>
-<col width="18%" />
+<col width="20%" />
 <col width="12%" />
-<col width="70%" />
+<col width="69%" />
 </colgroup>
 <thead valign="bottom">
 <tr class="row-odd"><th class="head">field name</th>
@@ -255,11 +273,29 @@
 <td><em>path</em></td>
 <td><strong>/altitude</strong></td>
 </tr>
-<tr class="row-odd"><td><strong>cloud_base_height</strong></td>
+<tr class="row-odd"><td rowspan="2"><strong>altitude</strong></td>
+<td><em>path</em></td>
+<td><strong>/height</strong></td>
+</tr>
+<tr class="row-even"><td><em>description</em></td>
+<td>height above mean see level</td>
+</tr>
+<tr class="row-odd"><td><strong>cloud_type</strong></td>
+<td><em>path</em></td>
+<td><strong>/target_classification</strong></td>
+</tr>
+<tr class="row-even"><td rowspan="2"><strong>cloud_type_validity</strong></td>
+<td><em>path</em></td>
+<td><strong>/detection_status</strong></td>
+</tr>
+<tr class="row-odd"><td><em>description</em></td>
+<td>radar and lidar detection status</td>
+</tr>
+<tr class="row-even"><td><strong>cloud_base_height</strong></td>
 <td><em>path</em></td>
 <td><strong>/cloud_base_height</strong></td>
 </tr>
-<tr class="row-even"><td><strong>cloud_top_height</strong></td>
+<tr class="row-odd"><td><strong>cloud_top_height</strong></td>
 <td><em>path</em></td>
 <td><strong>/cloud_top_height</strong></td>
 </tr>

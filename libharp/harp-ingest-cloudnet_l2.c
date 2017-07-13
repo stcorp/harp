@@ -93,9 +93,9 @@ static int read_scalar_variable(ingest_info *info, const char *name, harp_array 
     }
 
     /* filter for NaN */
-    if (data.double_data[0] == FILL_VALUE_NO_DATA)
+    if (data.float_data[0] == FILL_VALUE_NO_DATA)
     {
-        data.double_data[0] = nan;
+        data.float_data[0] = nan;
     }
 
     return 0;
@@ -115,12 +115,22 @@ static int read_array_variable(ingest_info *info, const char *name, harp_data_ty
         harp_set_error(HARP_ERROR_CODA, NULL);
         return -1;
     }
-    if (data_type == harp_type_double)
+    if (data_type == harp_type_float)
     {
-        if (coda_cursor_read_double_array(&cursor, data.double_data, coda_array_ordering_c) != 0)
+        long i;
+
+        if (coda_cursor_read_float_array(&cursor, data.float_data, coda_array_ordering_c) != 0)
         {
             harp_set_error(HARP_ERROR_CODA, NULL);
             return -1;
+        }
+        /* filter for NaN */
+        for (i = 0; i < info->num_times; i++)
+        {
+            if (data.float_data[i] == FILL_VALUE_NO_DATA)
+            {
+                data.float_data[i] = nan;
+            }
         }
     }
     else if (data_type == harp_type_int8)
@@ -176,8 +186,8 @@ static int read_datetime(void *user_data, harp_array data)
         harp_set_error(HARP_ERROR_CODA, NULL);
         return -1;
     }
-    // Read datetime from unit string
-    str[12 + 19] = '\0';        // 12 = strlen("hours since "), 19 = strlen("yyyy-MM-dd HH:mm:ss")
+    /* Read datetime from unit string */
+    str[12 + 19] = '\0';        /* 12 = strlen("hours since "), 19 = strlen("yyyy-MM-dd HH:mm:ss") */
     if (coda_time_string_to_double("yyyy-MM-dd HH:mm:ss", str + 12, &datetime_start_of_day) != 0)
     {
         harp_set_error(HARP_ERROR_CODA, NULL);
@@ -200,136 +210,38 @@ static int read_sensor_latitude(void *user_data, harp_array data)
 
 static int read_sensor_longitude(void *user_data, harp_array data)
 {
-    double *double_data;
-
-    if (read_scalar_variable((ingest_info *)user_data, "longitude", data) != 0)
-    {
-        return -1;
-    }
-
-    /* Convert to range -180 to 180 */
-    double_data = data.double_data;
-    if (*double_data > 180.0)
-    {
-        *double_data -= 360.0;
-    }
-    if (*double_data < -180.0)
-    {
-        *double_data += 360.0;
-    }
-    return 0;
+    return read_scalar_variable((ingest_info *)user_data, "longitude", data);
 }
 
 static int read_sensor_altitude(void *user_data, harp_array data)
 {
-    if (read_scalar_variable((ingest_info *)user_data, "altitude", data) != 0)
-    {
-        return -1;
-    }
-
-    /* Convert from m to km */
-    *(data.double_data) *= M_TO_KM;
-    return 0;
+    return read_scalar_variable((ingest_info *)user_data, "altitude", data);
 }
 
 static int read_cloud_base_height(void *user_data, harp_array data)
 {
-    double *double_data;
-    ingest_info *info;
-    long i;
-
-    info = (ingest_info *)user_data;
-    if (read_array_variable(info, "cloud_base_height", harp_type_double, data) != 0)
-    {
-        return -1;
-    }
-    double_data = data.double_data;
-    for (i = 0; i < info->num_times; i++)
-    {
-        /* filter for NaN */
-        if (*double_data == FILL_VALUE_NO_DATA)
-        {
-            *double_data = nan;
-        }
-        else
-        {
-            *double_data *= M_TO_KM;
-        }
-        double_data++;
-    }
-    return 0;
+    return read_array_variable((ingest_info *)user_data, "cloud_base_height", harp_type_float, data);
 }
 
 static int read_cloud_top_height(void *user_data, harp_array data)
 {
-    double *double_data;
-    ingest_info *info;
-    long i;
-
-    info = (ingest_info *)user_data;
-    if (read_array_variable(info, "cloud_top_height", harp_type_double, data) != 0)
-    {
-        return -1;
-    }
-    double_data = data.double_data;
-    for (i = 0; i < info->num_times; i++)
-    {
-        /* filter for NaN */
-        if (*double_data == FILL_VALUE_NO_DATA)
-        {
-            *double_data = nan;
-        }
-        else
-        {
-            *double_data *= M_TO_KM;
-        }
-        double_data++;
-    }
-    return 0;
+    return read_array_variable((ingest_info *)user_data, "cloud_top_height", harp_type_double, data);
 }
 
-#ifdef ISSUE_133_IMPLEMENTED
 static int read_altitude(void *user_data, harp_array data)
 {
-    double *double_data;
-    ingest_info *info;
-    long i;
-
-    info = (ingest_info *)user_data;
-    if (read_array_variable(info, "height", harp_type_double, data) != 0)
-    {
-        return -1;
-    }
-    double_data = data.double_data;
-    for (i = 0; i < info->num_altitudes; i++)
-    {
-        /* filter for NaN */
-        *double_data *= M_TO_KM;
-        double_data++;
-    }
-    return 0;
+    return read_array_variable((ingest_info *)user_data, "height", harp_type_float, data);
 }
 
-static int read_target_classification(void *user_data, harp_array data)
+static int read_cloud_type(void *user_data, harp_array data)
 {
-    if (read_array_variable((ingest_info *)user_data, "target_classification", harp_type_int8, data) != 0)
-    {
-        return -1;
-    }
-    /* TBD: Convert the target classification to a HARP variable (which will be defined as part of issue 133) */
-    return 0;
+    return read_array_variable((ingest_info *)user_data, "target_classification", harp_type_int8, data);
 }
 
 static int read_detection_status(void *user_data, harp_array data)
 {
-    if (read_array_variable((ingest_info *)user_data, "detection_status", harp_type_int8, data) != 0)
-    {
-        return -1;
-    }
-    /* TBD: Convert the detection_status to a HARP variable (which will be defined as part of issue 133) */
-    return 0;
+    return read_array_variable((ingest_info *)user_data, "detection_status", harp_type_int8, data);
 }
-#endif
 
 static int read_dimensions(void *user_data, long dimension[HARP_NUM_DIM_TYPES])
 {
@@ -420,6 +332,10 @@ static int ingestion_init(const harp_ingestion_module *module, coda_product *pro
 
 int harp_ingestion_module_actris_clouds_l2_aerosol_init(void)
 {
+    const char *cloud_type_values[] = {
+        "clear_sky", "cloud_droplets", "drizzle_rain", "drizzle_rain_cloud_droplets", "ice", "ice_supercooled_droplets",
+        "melting_ice", "melting_ice_cloud_droplets", "aerosol", "insects", "aerosol_insects"
+    };
     harp_ingestion_module *module;
     harp_product_definition *product_definition;
     harp_variable_definition *variable_definition;
@@ -445,67 +361,65 @@ int harp_ingestion_module_actris_clouds_l2_aerosol_init(void)
     /* sensor_latitude */
     description = "latitude of the instrument";
     variable_definition =
-        harp_ingestion_register_variable_full_read(product_definition, "sensor_latitude", harp_type_double, 0,
+        harp_ingestion_register_variable_full_read(product_definition, "sensor_latitude", harp_type_float, 0,
                                                    dimension_type, NULL, description, "degree_north", NULL,
                                                    read_sensor_latitude);
-    harp_variable_definition_set_valid_range_double(variable_definition, -90.0, 90.0);
+    harp_variable_definition_set_valid_range_float(variable_definition, -90.0, 90.0);
     path = "/latitude";
     harp_variable_definition_add_mapping(variable_definition, NULL, NULL, path, NULL);
 
     /* sensor_longitude */
     description = "longitude of the instrument";
     variable_definition =
-        harp_ingestion_register_variable_full_read(product_definition, "sensor_longitude", harp_type_double, 0,
+        harp_ingestion_register_variable_full_read(product_definition, "sensor_longitude", harp_type_float, 0,
                                                    dimension_type, NULL, description, "degree_east", NULL,
                                                    read_sensor_longitude);
-    harp_variable_definition_set_valid_range_double(variable_definition, -180.0, 180.0);
+    harp_variable_definition_set_valid_range_float(variable_definition, 0, 360.0);
     path = "/longitude";
     harp_variable_definition_add_mapping(variable_definition, NULL, NULL, path, NULL);
 
     /* sensor_altitude */
     description = "altitude of the instrument above mean sea level";
     variable_definition =
-        harp_ingestion_register_variable_full_read(product_definition, "sensor_altitude", harp_type_double, 0,
-                                                   dimension_type, NULL, description, "km", NULL, read_sensor_altitude);
+        harp_ingestion_register_variable_full_read(product_definition, "sensor_altitude", harp_type_float, 0,
+                                                   dimension_type, NULL, description, "m", NULL, read_sensor_altitude);
     path = "/altitude";
     harp_variable_definition_add_mapping(variable_definition, NULL, NULL, path, NULL);
 
-#ifdef ISSUE_133_IMPLEMENTED
     /* altitude */
     description = "altitude of the measurement";
     variable_definition =
-        harp_ingestion_register_variable_full_read(product_definition, "altitude", harp_type_double, 1,
-                                                   &(dimension_type[1]), NULL, description, "km", NULL, read_altitude);
+        harp_ingestion_register_variable_full_read(product_definition, "altitude", harp_type_float, 1,
+                                                   &(dimension_type[1]), NULL, description, "m", NULL, read_altitude);
     path = "/height";
     description = "height above mean see level";
     harp_variable_definition_add_mapping(variable_definition, NULL, NULL, path, description);
 
-    /* target_classification (will become a HARP variable name later) */
-    description = "target classification";
+    /* cloud_type */
+    description = "cloud classification type";
     variable_definition =
-        harp_ingestion_register_variable_full_read(product_definition, "target_classification", harp_type_int8, 2,
+        harp_ingestion_register_variable_full_read(product_definition, "cloud_type", harp_type_int8, 2,
                                                    dimension_type, NULL, description, HARP_UNIT_DIMENSIONLESS, NULL,
-                                                   read_target_classification);
+                                                   read_cloud_type);
+    harp_variable_definition_set_enumeration_values(variable_definition, 11, cloud_type_values);
     path = "/target_classification";
-    description = "the 9 main atmospheric target classifications that can be distinguished by radar and lidar";
-    harp_variable_definition_add_mapping(variable_definition, NULL, NULL, path, description);
+    harp_variable_definition_add_mapping(variable_definition, NULL, NULL, path, NULL);
 
-    /* detection status (will become a HARP variable name later) */
+    /* cloud_type_validity */
     description = "detection status";
     variable_definition =
-        harp_ingestion_register_variable_full_read(product_definition, "detection_status", harp_type_int8, 2,
+        harp_ingestion_register_variable_full_read(product_definition, "cloud_type_validity", harp_type_int8, 2,
                                                    dimension_type, NULL, description, HARP_UNIT_DIMENSIONLESS, NULL,
                                                    read_detection_status);
     path = "/detection_status";
     description = "radar and lidar detection status";
     harp_variable_definition_add_mapping(variable_definition, NULL, NULL, path, description);
-#endif
 
     /* cloud_base_height */
     description = "cloud_base_height";
     variable_definition =
-        harp_ingestion_register_variable_full_read(product_definition, "cloud_base_height", harp_type_double, 1,
-                                                   dimension_type, NULL, description, "km", NULL,
+        harp_ingestion_register_variable_full_read(product_definition, "cloud_base_height", harp_type_float, 1,
+                                                   dimension_type, NULL, description, "m", NULL,
                                                    read_cloud_base_height);
     path = "/cloud_base_height";
     harp_variable_definition_add_mapping(variable_definition, NULL, NULL, path, NULL);
@@ -513,8 +427,8 @@ int harp_ingestion_module_actris_clouds_l2_aerosol_init(void)
     /* cloud_top_height */
     description = "cloud_top_height";
     variable_definition =
-        harp_ingestion_register_variable_full_read(product_definition, "cloud_top_height", harp_type_double, 1,
-                                                   dimension_type, NULL, description, "km", NULL,
+        harp_ingestion_register_variable_full_read(product_definition, "cloud_top_height", harp_type_float, 1,
+                                                   dimension_type, NULL, description, "m", NULL,
                                                    read_cloud_top_height);
     path = "/cloud_top_height";
     harp_variable_definition_add_mapping(variable_definition, NULL, NULL, path, NULL);
