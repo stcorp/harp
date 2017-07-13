@@ -179,17 +179,18 @@
 <h1>Categorical Variables</h1>
 <p>HARP has special support for categorical variables, which are variables that can be represented by an enumeration type.</p>
 <p>Categorical variables are represented in HARP using integer data types that provide an index into a fixed list of
-enumeration labels. These enumeration labels are stored as metadata together with a variables. For <code class="docutils literal"><span class="pre">int8</span></code> data the
+enumeration labels. These enumeration labels are stored as metadata together with a variable. For <code class="docutils literal"><span class="pre">int8</span></code> data the
 labels are stored as a <code class="docutils literal"><span class="pre">flag_meanings</span></code> attribute (together with a <code class="docutils literal"><span class="pre">flag_values</span></code> attribute) in netCDF3, HDF4, and
 HDF5 files.</p>
 <p>HARP does not impose a rule on which integer value maps to a specific enumeration label. The integer values are
 just plain indices into the enumeration label list, and the list can be sorted in any way.</p>
 <p>Any integer value in a categorical variable that is outside the range of the available enumeration labels
 (<code class="docutils literal"><span class="pre">value</span> <span class="pre">&lt;</span> <span class="pre">0</span></code> or <code class="docutils literal"><span class="pre">value</span> <span class="pre">&gt;=</span> <span class="pre">N</span></code>) will be treated as an invalid value (<code class="docutils literal"><span class="pre">valid_min</span></code> and <code class="docutils literal"><span class="pre">valid_max</span></code> should therefore
-always be set to <code class="docutils literal"><span class="pre">0</span></code> and <code class="docutils literal"><span class="pre">N-1</span></code> respectively for these variables).</p>
+always be set to <code class="docutils literal"><span class="pre">0</span></code> and <code class="docutils literal"><span class="pre">N-1</span></code> respectively for these variables). Invalid values are represented by an empty string
+as label.</p>
 <p>Operations in HARP on categorical variables will need to primarily use the enumeration label <cite>names</cite>
 (and not the <cite>integer values</cite>). Any standardization (such as for the variable names) on the categories for
-categorical variables in HARP will thus also only be on enumeration names and not on numbers.</p>
+categorical variables in HARP will thus only be on enumeration names and not on their numbers.</p>
 <p>In HARP we distinguish category types and category values. The name of the category type <code class="docutils literal"><span class="pre">&lt;cattype&gt;</span></code> is used in the
 variable name and the names of the category values <code class="docutils literal"><span class="pre">&lt;catval&gt;</span></code> are the enumeration labels. Variables for category
 types should generally be called <code class="docutils literal"><span class="pre">&lt;cattype&gt;_type</span></code>. For instance, if we want to classify clouds we would have
@@ -204,14 +205,15 @@ To deal with mixed presence of multiple categories one can use variables such as
 <code class="docutils literal"><span class="pre">forest_flag</span></code> and <code class="docutils literal"><span class="pre">forest_fraction</span></code>.</p>
 <p>A <code class="docutils literal"><span class="pre">&lt;catval&gt;_flag</span></code> variable in HARP should always be a binary/dichotomous variable (it should contain true/false, 1/0
 values). A flag variable denotes whether something is present/applicable/true or not. A flag variable will therefore
-generally always have an <code class="docutils literal"><span class="pre">int8</span></code> data type. Important to note is that <code class="docutils literal"><span class="pre">&lt;*&gt;_flag</span></code> variables in HARP should not be used
-as bitfield variables (unlike the <code class="docutils literal"><span class="pre">&lt;*&gt;_validity</span></code> variables).</p>
+generally always have an <code class="docutils literal"><span class="pre">int8</span></code> data type and is not treated as categorical variable (i.e. it will not have
+enumeration labels). Important to note is that <code class="docutils literal"><span class="pre">&lt;*&gt;_flag</span></code> variables in HARP should not be used as bitfield variables
+(unlike the <code class="docutils literal"><span class="pre">&lt;*&gt;_validity</span></code> variables).</p>
 <p>A <code class="docutils literal"><span class="pre">&lt;catval&gt;_fraction</span></code> variable can be used to define the fraction of the area that has the given <code class="docutils literal"><span class="pre">&lt;catval&gt;</span></code>
-classification. The fraction is a floating point value between 0 and 1.</p>
+classification. This fraction is a floating point value between 0 and 1.</p>
 <p>Note that many other data product formats use bitfields to indicate applicability of multiple classification categories
 in order to save storage space. However, the aim of HARP is not to provide a compact data format, but to have data
 variables that can be readily used by algorithms. For this reason, combining multiple information elements in a single
-variable is often avoided within the HARP conventions.</p>
+variable is discouraged within the HARP conventions.</p>
 </div>
 
 

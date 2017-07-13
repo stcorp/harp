@@ -4,7 +4,7 @@ Categorical Variables
 HARP has special support for categorical variables, which are variables that can be represented by an enumeration type.
 
 Categorical variables are represented in HARP using integer data types that provide an index into a fixed list of
-enumeration labels. These enumeration labels are stored as metadata together with a variables. For ``int8`` data the
+enumeration labels. These enumeration labels are stored as metadata together with a variable. For ``int8`` data the
 labels are stored as a ``flag_meanings`` attribute (together with a ``flag_values`` attribute) in netCDF3, HDF4, and
 HDF5 files.
 
@@ -13,12 +13,12 @@ just plain indices into the enumeration label list, and the list can be sorted i
 
 Any integer value in a categorical variable that is outside the range of the available enumeration labels
 (``value < 0`` or ``value >= N``) will be treated as an invalid value (``valid_min`` and ``valid_max`` should therefore
-always be set to ``0`` and ``N-1`` respectively for these variables).
-
+always be set to ``0`` and ``N-1`` respectively for these variables). Invalid values are represented by an empty string
+as label.
 
 Operations in HARP on categorical variables will need to primarily use the enumeration label `names`
 (and not the `integer values`). Any standardization (such as for the variable names) on the categories for
-categorical variables in HARP will thus also only be on enumeration names and not on numbers.
+categorical variables in HARP will thus only be on enumeration names and not on their numbers.
 
 In HARP we distinguish category types and category values. The name of the category type ``<cattype>`` is used in the
 variable name and the names of the category values ``<catval>`` are the enumeration labels. Variables for category
@@ -37,13 +37,14 @@ For instance, for a ``land_type`` variable we could have ``forest`` as enumerati
 
 A ``<catval>_flag`` variable in HARP should always be a binary/dichotomous variable (it should contain true/false, 1/0
 values). A flag variable denotes whether something is present/applicable/true or not. A flag variable will therefore
-generally always have an ``int8`` data type. Important to note is that ``<*>_flag`` variables in HARP should not be used
-as bitfield variables (unlike the ``<*>_validity`` variables). 
+generally always have an ``int8`` data type and is not treated as categorical variable (i.e. it will not have
+enumeration labels). Important to note is that ``<*>_flag`` variables in HARP should not be used as bitfield variables
+(unlike the ``<*>_validity`` variables).
 
 A ``<catval>_fraction`` variable can be used to define the fraction of the area that has the given ``<catval>``
-classification. The fraction is a floating point value between 0 and 1.
+classification. This fraction is a floating point value between 0 and 1.
 
 Note that many other data product formats use bitfields to indicate applicability of multiple classification categories
 in order to save storage space. However, the aim of HARP is not to provide a compact data format, but to have data
 variables that can be readily used by algorithms. For this reason, combining multiple information elements in a single 
-variable is often avoided within the HARP conventions.
+variable is discouraged within the HARP conventions.
