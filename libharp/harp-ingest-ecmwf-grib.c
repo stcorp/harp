@@ -49,6 +49,8 @@
 typedef enum grib_parameter_enum
 {
     grib_param_unknown = -1,
+    grib_param_tclw,    /* 78: Total column cloud liquid water [kg/m2] */
+    grib_param_tciw,    /* 79: Total column cloud ice water [kg/m2] */
     grib_param_z,       /* 129: Geopotential [m2/s2] (at the surface: orography) */
     grib_param_t,       /* 130: Temperature [K] */
     grib_param_q,       /* 133: Specific humidity [kg/kg] */
@@ -57,6 +59,8 @@ typedef enum grib_parameter_enum
     grib_param_tcc,     /* 164: Total cloud cover [-] */
     grib_param_2t,      /* 167: 2 meter temperature [K] */
     grib_param_lsm,     /* 172: Land-sea mask [(0-1)] */
+    grib_param_clwc,    /* 246: Specific cloud liquid water content [kg/kg] */
+    grib_param_ciwc,    /* 247: Specific cloud ice water content [kg/kg] */
     grib_param_co2,     /* 210061: Carbon Dioxide [kg/kg] */
     grib_param_ch4,     /* 210062/217004: Methane [kg/kg] */
     grib_param_pm1,     /* 210072: Particulate matter d < 1 um [kg/m3] */
@@ -102,6 +106,8 @@ typedef enum grib_parameter_enum
 #define NUM_GRIB_PARAMETERS (grib_param_tc_c3h8 + 1)
 
 const char *param_name[NUM_GRIB_PARAMETERS] = {
+    "tclw",
+    "tciw",
     "z",
     "t",
     "q",
@@ -110,6 +116,8 @@ const char *param_name[NUM_GRIB_PARAMETERS] = {
     "tcc",
     "2t",
     "lsm",
+    "clwc",
+    "ciwc",
     "co2",
     "ch4",
     "pm1",
@@ -153,6 +161,8 @@ const char *param_name[NUM_GRIB_PARAMETERS] = {
 };
 
 int param_is_profile[NUM_GRIB_PARAMETERS] = {
+    0,  /* tclw */
+    0,  /* tciw */
     0,  /* z */
     1,  /* t */
     1,  /* q */
@@ -161,6 +171,8 @@ int param_is_profile[NUM_GRIB_PARAMETERS] = {
     0,  /* tcc */
     0,  /* 2t */
     0,  /* lsm */
+    1,  /* clwc */
+    1,  /* ciwc */
     1,  /* co2 */
     1,  /* ch4 */
     0,  /* pm1 */
@@ -341,6 +353,10 @@ static grib_parameter get_grib1_parameter(int parameter_ref)
         case 128:
             switch (indicatorOfParameter)
             {
+                case 78:
+                    return grib_param_tclw;
+                case 79:
+                    return grib_param_tciw;
                 case 129:
                     return grib_param_z;
                 case 130:
@@ -357,6 +373,10 @@ static grib_parameter get_grib1_parameter(int parameter_ref)
                     return grib_param_2t;
                 case 172:
                     return grib_param_lsm;
+                case 246:
+                    return grib_param_clwc;
+                case 247:
+                    return grib_param_ciwc;
             }
             break;
         case 160:
@@ -573,6 +593,10 @@ static grib_parameter get_grib2_parameter(int parameter_ref)
                     {
                         case 0:
                             return grib_param_q;
+                        case 83:
+                            return grib_param_clwc;
+                        case 84:
+                            return grib_param_ciwc;
                     }
                     break;
                 case 3:
@@ -604,6 +628,10 @@ static grib_parameter get_grib2_parameter(int parameter_ref)
                 case 128:
                     switch (parameterNumber)
                     {
+                        case 78:
+                            return grib_param_tclw;
+                        case 79:
+                            return grib_param_tciw;
                         case 137:
                             return grib_param_tcwv;
                         case 164:
@@ -829,6 +857,16 @@ static int read_wavelength(void *user_data, harp_array data)
     return 0;
 }
 
+static int read_tclw(void *user_data, harp_array data)
+{
+    return read_2d_grid_data((ingest_info *)user_data, grib_param_tclw, data);
+}
+
+static int read_tciw(void *user_data, harp_array data)
+{
+    return read_2d_grid_data((ingest_info *)user_data, grib_param_tciw, data);
+}
+
 static int read_z(void *user_data, harp_array data)
 {
     return read_2d_grid_data((ingest_info *)user_data, grib_param_z, data);
@@ -931,6 +969,16 @@ static int read_tcc(void *user_data, harp_array data)
 static int read_2t(void *user_data, harp_array data)
 {
     return read_2d_grid_data((ingest_info *)user_data, grib_param_2t, data);
+}
+
+static int read_clwc(void *user_data, harp_array data)
+{
+    return read_3d_grid_data((ingest_info *)user_data, grib_param_clwc, data);
+}
+
+static int read_ciwc(void *user_data, harp_array data)
+{
+    return read_3d_grid_data((ingest_info *)user_data, grib_param_ciwc, data);
 }
 
 static int read_co2(void *user_data, harp_array data)
@@ -2510,6 +2558,16 @@ static int exclude_wavelength(void *user_data)
     return harp_isnan(((ingest_info *)user_data)->wavelength);
 }
 
+static int exclude_tclw(void *user_data)
+{
+    return !((ingest_info *)user_data)->has_parameter[grib_param_tclw];
+}
+
+static int exclude_tciw(void *user_data)
+{
+    return !((ingest_info *)user_data)->has_parameter[grib_param_tciw];
+}
+
 static int exclude_z(void *user_data)
 {
     return !((ingest_info *)user_data)->has_parameter[grib_param_z];
@@ -2550,6 +2608,16 @@ static int exclude_tcc(void *user_data)
 static int exclude_2t(void *user_data)
 {
     return !((ingest_info *)user_data)->has_parameter[grib_param_2t];
+}
+
+static int exclude_clwc(void *user_data)
+{
+    return !((ingest_info *)user_data)->has_parameter[grib_param_clwc];
+}
+
+static int exclude_ciwc(void *user_data)
+{
+    return !((ingest_info *)user_data)->has_parameter[grib_param_ciwc];
 }
 
 static int exclude_co2(void *user_data)
@@ -2849,6 +2917,22 @@ int harp_ingestion_module_ecmwf_grib_init(void)
     harp_variable_definition_add_mapping(variable_definition, NULL, "AOD quantity is present", NULL, description);
 
 
+    /* tclw: LWC_column_density */
+    description = "total column cloud liquid water";
+    variable_definition = harp_ingestion_register_variable_full_read(product_definition, "LWC_column_density",
+                                                                     harp_type_float, 2, &dimension_type[1], NULL,
+                                                                     description, "kg/m^2", exclude_tclw, read_tclw);
+    add_value_variable_mapping(variable_definition, "(table,indicator) = (128,78)",
+                               "(discipline,category,number) = (192,128,78)");
+
+    /* tciw: IWC_column_density */
+    description = "total column cloud ice water";
+    variable_definition = harp_ingestion_register_variable_full_read(product_definition, "IWC_column_density",
+                                                                     harp_type_float, 2, &dimension_type[1], NULL,
+                                                                     description, "kg/m^2", exclude_tciw, read_tciw);
+    add_value_variable_mapping(variable_definition, "(table,indicator) = (128,79)",
+                               "(discipline,category,number) = (192,128,79)");
+
     /* z: surface_geopotential */
     description = "geopotential at the surface";
     variable_definition = harp_ingestion_register_variable_full_read(product_definition, "surface_geopotential",
@@ -2930,6 +3014,22 @@ int harp_ingestion_module_ecmwf_grib_init(void)
                                                                      description, "K", exclude_2t, read_2t);
     add_value_variable_mapping(variable_definition, "(table,indicator) = (128,167), (160,167), (180,167), or (190,167)",
                                NULL);
+
+    /* clwc: LWC_mass_mixing_ratio */
+    description = "specific cloud liquid water content";
+    variable_definition = harp_ingestion_register_variable_full_read(product_definition, "LWC_mass_mixing_ratio",
+                                                                     harp_type_float, 3, &dimension_type[1], NULL,
+                                                                     description, "kg/kg", exclude_clwc, read_clwc);
+    add_value_variable_mapping(variable_definition, "(table,indicator) = (128,246)",
+                               "(discipline,category,number) = (0,1,83)");
+
+    /* ciwc: IWC_mass_mixing_ratio */
+    description = "specific cloud ice water content";
+    variable_definition = harp_ingestion_register_variable_full_read(product_definition, "IWC_mass_mixing_ratio",
+                                                                     harp_type_float, 3, &dimension_type[1], NULL,
+                                                                     description, "kg/kg", exclude_ciwc, read_ciwc);
+    add_value_variable_mapping(variable_definition, "(table,indicator) = (128,247)",
+                               "(discipline,category,number) = (0,1,84)");
 
     /* co2: CO2_mass_mixing_ratio */
     description = "carbon dioxide mass mixing ratio";

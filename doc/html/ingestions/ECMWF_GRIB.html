@@ -200,6 +200,18 @@
 <td>nm</td>
 <td>wavelength of the aerosol property</td>
 </tr>
+<tr class="row-even"><td><strong>LWC_column_density</strong></td>
+<td>float</td>
+<td>{<em>latitude</em>, <em>longitude</em>}</td>
+<td>kg/m^2</td>
+<td>total column cloud liquid water</td>
+</tr>
+<tr class="row-odd"><td><strong>IWC_column_density</strong></td>
+<td>float</td>
+<td>{<em>latitude</em>, <em>longitude</em>}</td>
+<td>kg/m^2</td>
+<td>total column cloud ice water</td>
+</tr>
 <tr class="row-even"><td><strong>surface_geopotential</strong></td>
 <td>float</td>
 <td>{<em>latitude</em>, <em>longitude</em>}</td>
@@ -253,6 +265,18 @@
 <td>{<em>latitude</em>, <em>longitude</em>}</td>
 <td>K</td>
 <td>2 metre temperature</td>
+</tr>
+<tr class="row-odd"><td><strong>LWC_mass_mixing_ratio</strong></td>
+<td>float</td>
+<td>{<em>latitude</em>, <em>longitude</em>, <em>vertical</em>}</td>
+<td>kg/kg</td>
+<td>specific cloud liquid water content</td>
+</tr>
+<tr class="row-even"><td><strong>IWC_mass_mixing_ratio</strong></td>
+<td>float</td>
+<td>{<em>latitude</em>, <em>longitude</em>, <em>vertical</em>}</td>
+<td>kg/kg</td>
+<td>specific cloud ice water content</td>
 </tr>
 <tr class="row-odd"><td><strong>CO2_mass_mixing_ratio</strong></td>
 <td>float</td>
@@ -588,6 +612,50 @@
 <tr class="row-even"><td><em>description</em></td>
 <td>the wavelength value is based on the AOD; possible values are: 469, 550, 670, 865, 1240; a single HARP file will not have AODs at more than one wavelength</td>
 </tr>
+<tr class="row-odd"><td rowspan="7"><strong>LWC_column_density</strong></td>
+<td><em>available</em></td>
+<td>optional</td>
+</tr>
+<tr class="row-even"><td><em>condition</em></td>
+<td>GRIB1</td>
+</tr>
+<tr class="row-odd"><td><em>path</em></td>
+<td><strong>/[]/data/values[]</strong></td>
+</tr>
+<tr class="row-even"><td><em>description</em></td>
+<td>(table,indicator) = (128,78)</td>
+</tr>
+<tr class="row-odd"><td><em>condition</em></td>
+<td>GRIB2</td>
+</tr>
+<tr class="row-even"><td><em>path</em></td>
+<td><strong>/[]/data[]/values[]</strong></td>
+</tr>
+<tr class="row-odd"><td><em>description</em></td>
+<td>(discipline,category,number) = (192,128,78)</td>
+</tr>
+<tr class="row-even"><td rowspan="7"><strong>IWC_column_density</strong></td>
+<td><em>available</em></td>
+<td>optional</td>
+</tr>
+<tr class="row-odd"><td><em>condition</em></td>
+<td>GRIB1</td>
+</tr>
+<tr class="row-even"><td><em>path</em></td>
+<td><strong>/[]/data/values[]</strong></td>
+</tr>
+<tr class="row-odd"><td><em>description</em></td>
+<td>(table,indicator) = (128,79)</td>
+</tr>
+<tr class="row-even"><td><em>condition</em></td>
+<td>GRIB2</td>
+</tr>
+<tr class="row-odd"><td><em>path</em></td>
+<td><strong>/[]/data[]/values[]</strong></td>
+</tr>
+<tr class="row-even"><td><em>description</em></td>
+<td>(discipline,category,number) = (192,128,79)</td>
+</tr>
 <tr class="row-odd"><td rowspan="7"><strong>surface_geopotential</strong></td>
 <td><em>available</em></td>
 <td>optional</td>
@@ -758,6 +826,50 @@
 </tr>
 <tr class="row-even"><td><em>description</em></td>
 <td>(table,indicator) = (128,167), (160,167), (180,167), or (190,167)</td>
+</tr>
+<tr class="row-odd"><td rowspan="7"><strong>LWC_mass_mixing_ratio</strong></td>
+<td><em>available</em></td>
+<td>optional</td>
+</tr>
+<tr class="row-even"><td><em>condition</em></td>
+<td>GRIB1</td>
+</tr>
+<tr class="row-odd"><td><em>path</em></td>
+<td><strong>/[]/data/values[]</strong></td>
+</tr>
+<tr class="row-even"><td><em>description</em></td>
+<td>(table,indicator) = (128,246)</td>
+</tr>
+<tr class="row-odd"><td><em>condition</em></td>
+<td>GRIB2</td>
+</tr>
+<tr class="row-even"><td><em>path</em></td>
+<td><strong>/[]/data[]/values[]</strong></td>
+</tr>
+<tr class="row-odd"><td><em>description</em></td>
+<td>(discipline,category,number) = (0,1,83)</td>
+</tr>
+<tr class="row-even"><td rowspan="7"><strong>IWC_mass_mixing_ratio</strong></td>
+<td><em>available</em></td>
+<td>optional</td>
+</tr>
+<tr class="row-odd"><td><em>condition</em></td>
+<td>GRIB1</td>
+</tr>
+<tr class="row-even"><td><em>path</em></td>
+<td><strong>/[]/data/values[]</strong></td>
+</tr>
+<tr class="row-odd"><td><em>description</em></td>
+<td>(table,indicator) = (128,247)</td>
+</tr>
+<tr class="row-even"><td><em>condition</em></td>
+<td>GRIB2</td>
+</tr>
+<tr class="row-odd"><td><em>path</em></td>
+<td><strong>/[]/data[]/values[]</strong></td>
+</tr>
+<tr class="row-even"><td><em>description</em></td>
+<td>(discipline,category,number) = (0,1,84)</td>
 </tr>
 <tr class="row-odd"><td rowspan="7"><strong>CO2_mass_mixing_ratio</strong></td>
 <td><em>available</em></td>
