@@ -461,6 +461,10 @@ static int eval_string_membership(harp_operation_string_membership_filter *opera
             string_value = enum_name[int_value];
             assert(string_value != NULL);
         }
+        else
+        {
+            string_value = "";
+        }
     }
     else
     {
