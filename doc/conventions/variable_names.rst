@@ -233,6 +233,10 @@ H2O_171  water (H1/O17/H1 isotopes)
 H2O_181  water (H1/O18/H1 isotopes)
 H2O2     hydrogen peroxide
 IO       hypoiodite
+IWC      ice water content;
+         part of H2O in ice state
+LWC      liquid water content;
+         part of H2O in liquid state
 NO       nitric oxide
 NOCl     nitrosyl chloride
 NO2      nitrogen dioxide
