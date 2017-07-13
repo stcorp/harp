@@ -2126,7 +2126,7 @@ static void register_scan_variables(harp_product_definition *product_definition,
     }
 
     /* scan_direction_type */
-    description = "scan direction for each measurement: 'forward' or 'backward'";
+    description = "scan direction for each measurement";
     variable_definition =
         harp_ingestion_register_variable_sample_read(product_definition, "scan_direction_type", harp_type_int8, 1,
                                                      dimension_type, NULL, description, NULL, NULL,

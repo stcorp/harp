@@ -2324,8 +2324,7 @@ static void register_common_nadir_cloud_variables(harp_product_definition *produ
     harp_variable_definition_add_mapping(variable_definition, NULL, condition_mixed, path, description);
 
     /* scan_direction_type */
-    description = "scan direction for each measurement: 'forward', 'backward', or 'mixed' (for a measurement that "
-        "consisted of one or more forward and backward scans)";
+    description = "scan direction for each measurement";
     variable_definition = harp_ingestion_register_variable_sample_read(product_definition, "scan_direction_type",
                                                                        harp_type_int8, 1, dimension_type, NULL,
                                                                        description, NULL, NULL,

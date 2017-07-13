@@ -197,6 +197,22 @@ static int generate_product_definition(const char *filename, const harp_ingestio
         {
             fputs(variable_definition->description, fout);
         }
+        if (variable_definition->num_enum_values > 0)
+        {
+            if (variable_definition->description != NULL)
+            {
+                fputs("; ", fout);
+            }
+            fputs("enumeration values: ", fout);
+            for (j = 0; j < variable_definition->num_enum_values; j++)
+            {
+                fprintf(fout, "%s (%d)", variable_definition->enum_name[j], j);
+                if (j < variable_definition->num_enum_values - 1)
+                {
+                    fputs(", ", fout);
+                }
+            }
+        }
         fputc('"', fout);
         fputc('\n', fout);
     }

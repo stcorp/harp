@@ -1330,7 +1330,7 @@ static void register_common_variables(harp_product_definition *product_definitio
     harp_variable_definition_add_mapping(variable_definition, NULL, NULL, path, NULL);
 
     /* surface_type */
-    description = "surface type: 'snow_free_land', 'sea_ice', 'permanent_ice', 'snow', 'ocean'";
+    description = "surface type";
     variable_definition =
         harp_ingestion_register_variable_full_read(product_definition, "surface_type", harp_type_int8, 1,
                                                    dimension_type, NULL, description, NULL, NULL, read_surface_type);

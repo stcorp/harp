@@ -907,8 +907,7 @@ static void register_limb_product(void)
     harp_variable_definition_add_mapping(variable_definition, NULL, NULL, path, NULL);
 
     /* scene_type */
-    description = "illumination condition for each profile: 'dark', 'bright', 'twilight', 'straylight' or "
-        "'twilight_straylight'";
+    description = "illumination condition for each profile";
     variable_definition =
         harp_ingestion_register_variable_sample_read(product_definition, "scene_type", harp_type_int8, 0,
                                                      dimension_type, NULL, description, NULL, NULL,
@@ -1226,8 +1225,7 @@ static void register_tra_product(void)
     harp_variable_definition_add_mapping(variable_definition, NULL, NULL, path, NULL);
 
     /* scene_type */
-    description = "illumination condition for each profile: 'dark', 'bright', 'twilight', 'straylight' or "
-        "'twilight_straylight'";
+    description = "illumination condition for each profile";
     variable_definition =
         harp_ingestion_register_variable_sample_read(product_definition, "scene_type", harp_type_int8, 0,
                                                      dimension_type, NULL, description, NULL, NULL,

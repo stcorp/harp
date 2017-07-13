@@ -1422,7 +1422,7 @@ void register_nadir_limb_occultation_product(harp_ingestion_module *module)
     harp_variable_definition_add_mapping(variable_definition, "data=occultation", NULL, path, NULL);
 
     /* scan_direction_type */
-    description = "scan direction for each measurement: 'forward', 'backward' or 'mixed'";
+    description = "scan direction for each measurement";
     variable_definition =
         harp_ingestion_register_variable_sample_read(product_definition, "scan_direction_type", harp_type_int8, 1,
                                                      dimension_type, NULL, description, NULL,
