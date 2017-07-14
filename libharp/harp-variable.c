@@ -1815,6 +1815,8 @@ LIBHARP_API int harp_variable_set_string_data_element(harp_variable *variable, l
  */
 LIBHARP_API int harp_variable_convert_data_type(harp_variable *variable, harp_data_type target_data_type)
 {
+    harp_scalar valid_min;
+    harp_scalar valid_max;
     harp_array data;
     int i;
 
@@ -1848,6 +1850,9 @@ LIBHARP_API int harp_variable_convert_data_type(harp_variable *variable, harp_da
         return 0;
     }
 
+    valid_min = harp_get_valid_min_for_type(target_data_type);
+    valid_max = harp_get_valid_max_for_type(target_data_type);
+
     switch (target_data_type)
     {
         case harp_type_int8:
@@ -1865,32 +1870,88 @@ LIBHARP_API int harp_variable_convert_data_type(harp_variable *variable, harp_da
                     {
                         data.int8_data[i] = (int8_t)variable->data.int16_data[i];
                     }
-                    variable->valid_min.int8_data = (int8_t)variable->valid_min.int16_data;
-                    variable->valid_max.int8_data = (int8_t)variable->valid_max.int16_data;
+                    if (variable->valid_min.int16_data < valid_min.int8_data)
+                    {
+                        variable->valid_min = valid_min;
+                    }
+                    else
+                    {
+                        variable->valid_min.int8_data = (int8_t)variable->valid_min.int16_data;
+                    }
+                    if (variable->valid_max.int16_data > valid_max.int8_data)
+                    {
+                        variable->valid_max = valid_max;
+                    }
+                    else
+                    {
+                        variable->valid_max.int8_data = (int8_t)variable->valid_max.int16_data;
+                    }
                     break;
                 case harp_type_int32:
                     for (i = 0; i < variable->num_elements; i++)
                     {
                         data.int8_data[i] = (int8_t)variable->data.int32_data[i];
                     }
-                    variable->valid_min.int8_data = (int8_t)variable->valid_min.int32_data;
-                    variable->valid_max.int8_data = (int8_t)variable->valid_max.int32_data;
+                    if (variable->valid_min.int32_data < valid_min.int8_data)
+                    {
+                        variable->valid_min = valid_min;
+                    }
+                    else
+                    {
+                        variable->valid_min.int8_data = (int8_t)variable->valid_min.int32_data;
+                    }
+                    if (variable->valid_max.int32_data > valid_max.int8_data)
+                    {
+                        variable->valid_max = valid_max;
+                    }
+                    else
+                    {
+                        variable->valid_max.int8_data = (int8_t)variable->valid_max.int32_data;
+                    }
                     break;
                 case harp_type_float:
                     for (i = 0; i < variable->num_elements; i++)
                     {
                         data.int8_data[i] = (int8_t)variable->data.float_data[i];
                     }
-                    variable->valid_min.int8_data = (int8_t)variable->valid_min.float_data;
-                    variable->valid_max.int8_data = (int8_t)variable->valid_max.float_data;
+                    if (variable->valid_min.float_data < valid_min.int8_data)
+                    {
+                        variable->valid_min = valid_min;
+                    }
+                    else
+                    {
+                        variable->valid_min.int8_data = (int8_t)variable->valid_min.float_data;
+                    }
+                    if (variable->valid_max.float_data > valid_max.int8_data)
+                    {
+                        variable->valid_max = valid_max;
+                    }
+                    else
+                    {
+                        variable->valid_max.int8_data = (int8_t)variable->valid_max.float_data;
+                    }
                     break;
                 case harp_type_double:
                     for (i = 0; i < variable->num_elements; i++)
                     {
                         data.int8_data[i] = (int8_t)variable->data.double_data[i];
                     }
-                    variable->valid_min.int8_data = (int8_t)variable->valid_min.double_data;
-                    variable->valid_max.int8_data = (int8_t)variable->valid_max.double_data;
+                    if (variable->valid_min.double_data < valid_min.int8_data)
+                    {
+                        variable->valid_min = valid_min;
+                    }
+                    else
+                    {
+                        variable->valid_min.int8_data = (int8_t)variable->valid_min.double_data;
+                    }
+                    if (variable->valid_max.double_data > valid_max.int8_data)
+                    {
+                        variable->valid_max = valid_max;
+                    }
+                    else
+                    {
+                        variable->valid_max.int8_data = (int8_t)variable->valid_max.double_data;
+                    }
                     break;
                 default:
                     assert(0);
@@ -1920,24 +1981,66 @@ LIBHARP_API int harp_variable_convert_data_type(harp_variable *variable, harp_da
                     {
                         data.int16_data[i] = (int16_t)variable->data.int32_data[i];
                     }
-                    variable->valid_min.int16_data = (int16_t)variable->valid_min.int32_data;
-                    variable->valid_max.int16_data = (int16_t)variable->valid_max.int32_data;
+                    if (variable->valid_min.int32_data < valid_min.int16_data)
+                    {
+                        variable->valid_min = valid_min;
+                    }
+                    else
+                    {
+                        variable->valid_min.int16_data = (int16_t)variable->valid_min.int32_data;
+                    }
+                    if (variable->valid_max.int32_data > valid_max.int16_data)
+                    {
+                        variable->valid_max = valid_max;
+                    }
+                    else
+                    {
+                        variable->valid_max.int16_data = (int16_t)variable->valid_max.int32_data;
+                    }
                     break;
                 case harp_type_float:
                     for (i = 0; i < variable->num_elements; i++)
                     {
                         data.int16_data[i] = (int16_t)variable->data.float_data[i];
                     }
-                    variable->valid_min.int16_data = (int16_t)variable->valid_min.float_data;
-                    variable->valid_max.int16_data = (int16_t)variable->valid_max.float_data;
+                    if (variable->valid_min.float_data < valid_min.int16_data)
+                    {
+                        variable->valid_min = valid_min;
+                    }
+                    else
+                    {
+                        variable->valid_min.int16_data = (int16_t)variable->valid_min.float_data;
+                    }
+                    if (variable->valid_max.float_data > valid_max.int16_data)
+                    {
+                        variable->valid_max = valid_max;
+                    }
+                    else
+                    {
+                        variable->valid_max.int16_data = (int16_t)variable->valid_max.float_data;
+                    }
                     break;
                 case harp_type_double:
                     for (i = 0; i < variable->num_elements; i++)
                     {
                         data.int16_data[i] = (int16_t)variable->data.double_data[i];
                     }
-                    variable->valid_min.int16_data = (int16_t)variable->valid_min.double_data;
-                    variable->valid_max.int16_data = (int16_t)variable->valid_max.double_data;
+                    if (variable->valid_min.double_data < valid_min.int16_data)
+                    {
+                        variable->valid_min = valid_min;
+                    }
+                    else
+                    {
+                        variable->valid_min.int16_data = (int16_t)variable->valid_min.double_data;
+                    }
+                    if (variable->valid_max.double_data > valid_max.int16_data)
+                    {
+                        variable->valid_max = valid_max;
+                    }
+                    else
+                    {
+                        variable->valid_max.int16_data = (int16_t)variable->valid_max.double_data;
+                    }
                     break;
                 default:
                     assert(0);
@@ -1975,16 +2078,44 @@ LIBHARP_API int harp_variable_convert_data_type(harp_variable *variable, harp_da
                     {
                         data.int32_data[i] = (int32_t)variable->data.float_data[i];
                     }
-                    variable->valid_min.int32_data = (int32_t)variable->valid_min.float_data;
-                    variable->valid_max.int32_data = (int32_t)variable->valid_max.float_data;
+                    if (variable->valid_min.float_data < valid_min.int32_data)
+                    {
+                        variable->valid_min = valid_min;
+                    }
+                    else
+                    {
+                        variable->valid_min.int32_data = (int32_t)variable->valid_min.float_data;
+                    }
+                    if (variable->valid_max.float_data > valid_max.int32_data)
+                    {
+                        variable->valid_max = valid_max;
+                    }
+                    else
+                    {
+                        variable->valid_max.int32_data = (int32_t)variable->valid_max.float_data;
+                    }
                     break;
                 case harp_type_double:
                     for (i = 0; i < variable->num_elements; i++)
                     {
                         data.int32_data[i] = (int32_t)variable->data.double_data[i];
                     }
-                    variable->valid_min.int32_data = (int32_t)variable->valid_min.double_data;
-                    variable->valid_max.int32_data = (int32_t)variable->valid_max.double_data;
+                    if (variable->valid_min.double_data < valid_min.int32_data)
+                    {
+                        variable->valid_min = valid_min;
+                    }
+                    else
+                    {
+                        variable->valid_min.int32_data = (int32_t)variable->valid_min.double_data;
+                    }
+                    if (variable->valid_max.double_data > valid_max.int32_data)
+                    {
+                        variable->valid_max = valid_max;
+                    }
+                    else
+                    {
+                        variable->valid_max.int32_data = (int32_t)variable->valid_max.double_data;
+                    }
                     break;
                 default:
                     assert(0);
@@ -2030,8 +2161,22 @@ LIBHARP_API int harp_variable_convert_data_type(harp_variable *variable, harp_da
                     {
                         data.float_data[i] = (float)variable->data.double_data[i];
                     }
-                    variable->valid_min.float_data = (float)variable->valid_min.double_data;
-                    variable->valid_max.float_data = (float)variable->valid_max.double_data;
+                    if (variable->valid_min.double_data < valid_min.float_data)
+                    {
+                        variable->valid_min = valid_min;
+                    }
+                    else
+                    {
+                        variable->valid_min.float_data = (float)variable->valid_min.double_data;
+                    }
+                    if (variable->valid_max.double_data > valid_max.float_data)
+                    {
+                        variable->valid_max = valid_max;
+                    }
+                    else
+                    {
+                        variable->valid_max.float_data = (float)variable->valid_max.double_data;
+                    }
                     break;
                 default:
                     assert(0);
