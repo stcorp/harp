@@ -1583,7 +1583,16 @@ int harp_operation_derive_variable_new(const char *variable_name, const harp_dat
         operation->has_data_type = 0;
         operation->data_type = harp_type_double;
     }
-    operation->num_dimensions = num_dimensions;
+    if (num_dimensions < 0)
+    {
+        operation->has_dimensions = 0;
+        operation->num_dimensions = 0;
+    }
+    else
+    {
+        operation->has_dimensions = 1;
+        operation->num_dimensions = num_dimensions;
+    }
     operation->unit = NULL;
 
     operation->variable_name = strdup(variable_name);

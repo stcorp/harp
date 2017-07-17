@@ -123,22 +123,37 @@ Supported functions:
         Apply the specified collocation result file as an index
         filter assuming the product is part of dataset B.
 
-    ``derive(variable [datatype] {dimension-type, ...} [unit])``
-        Derive the specified variable from other variables found
-        in the product. The ``--list-derivations`` option of
-        harpconvert and harpdump can be used to list available
-        variable conversions.
-        The algorithms behind all the conversions are described
-        in the :doc:`Algorithms <algorithms/index>` section of the
-        documentation.
-        If the datatype is not provided then ``double`` values will
-        be retrieved.
-        The derive operation can also be used to perform data type
-        or unit conversions on existing variables in a product.
+    ``derive(variable [datatype] [unit])``
+        The derive operation *without* a dimension specification can be
+        used to change the data type or unit of an already existing
+        variable. A variable with the given name should therefore already
+        be in the product (with any kind of dimensions).
+        If a unit conversion is performed and no data type is specified
+        the variable will be converted to ``double`` values.
 
         Example:
 
-            | ``derive(altitude {time,vertical} [km])``
+            | ``derive(altitude [km])``
+            | ``derive(latitude float)``
+
+    ``derive(variable [datatype] {dimension-type, ...} [unit])``
+        The derive operation *with* a dimension specification is used
+        to derive the specified variable from other variables found in
+        the product (i.e. a variable with that name and dimension does
+        not have to exist yet). The ``--list-derivations`` option of
+        harpdump can be used to list available variable conversions.
+        The algorithms behind all the conversions are described
+        in the :doc:`Algorithms <algorithms/index>` section of the
+        documentation.
+        If the datatype is not provided then the default result data
+        type for a conversion will be used (usually ``double``).
+        If a variable with the given name and dimension specification
+        already exists then this operation will just perform a data
+        type and/or unit conversion on that variable.
+
+        Example:
+
+            | ``derive(number_density {time,vertical} [molec/m3])``
             | ``derive(latitude float {time})``
 
     ``derive_smoothed_column(variable {dimension-type, ...} [unit], axis-variable unit, collocation-result-file, a|b, dataset-dir)``
@@ -428,7 +443,7 @@ Formal definition
        'bin', '(', stringvalue, ',', ( 'a' | 'b' ), ')' |
        'collocate_left', '(', stringvalue, ')' |
        'collocate_right', '(', stringvalue, ')' |
-       'derive', '(', variable, [datatype], dimensionspec, [unit], ')' |
+       'derive', '(', variable, [datatype], [dimensionspec], [unit], ')' |
        'derive_smoothed_column', '(', variable, dimensionspec, [unit], ',', variable, unit, ',', stringvalue, ',', ( 'a' | 'b' ), ',', stringvalue, ')' |
        'exclude', '(', variablelist, ')' |
        'flatten', '(', dimension, ')' |

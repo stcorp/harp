@@ -296,22 +296,39 @@ filter assuming the product is part of dataset A.</dd>
 <dt><code class="docutils literal"><span class="pre">collocate_right(collocation-result-file)</span></code></dt>
 <dd>Apply the specified collocation result file as an index
 filter assuming the product is part of dataset B.</dd>
-<dt><code class="docutils literal"><span class="pre">derive(variable</span> <span class="pre">[datatype]</span> <span class="pre">{dimension-type,</span> <span class="pre">...}</span> <span class="pre">[unit])</span></code></dt>
-<dd><p class="first">Derive the specified variable from other variables found
-in the product. The <code class="docutils literal"><span class="pre">--list-derivations</span></code> option of
-harpconvert and harpdump can be used to list available
-variable conversions.
-The algorithms behind all the conversions are described
-in the <a class="reference internal" href="algorithms/index.html"><span class="doc">Algorithms</span></a> section of the
-documentation.
-If the datatype is not provided then <code class="docutils literal"><span class="pre">double</span></code> values will
-be retrieved.
-The derive operation can also be used to perform data type
-or unit conversions on existing variables in a product.</p>
+<dt><code class="docutils literal"><span class="pre">derive(variable</span> <span class="pre">[datatype]</span> <span class="pre">[unit])</span></code></dt>
+<dd><p class="first">The derive operation <em>without</em> a dimension specification can be
+used to change the data type or unit of an already existing
+variable. A variable with the given name should therefore already
+be in the product (with any kind of dimensions).
+If a unit conversion is performed and no data type is specified
+the variable will be converted to <code class="docutils literal"><span class="pre">double</span></code> values.</p>
 <p>Example:</p>
 <blockquote class="last">
 <div><div class="line-block">
-<div class="line"><code class="docutils literal"><span class="pre">derive(altitude</span> <span class="pre">{time,vertical}</span> <span class="pre">[km])</span></code></div>
+<div class="line"><code class="docutils literal"><span class="pre">derive(altitude</span> <span class="pre">[km])</span></code></div>
+<div class="line"><code class="docutils literal"><span class="pre">derive(latitude</span> <span class="pre">float)</span></code></div>
+</div>
+</div></blockquote>
+</dd>
+<dt><code class="docutils literal"><span class="pre">derive(variable</span> <span class="pre">[datatype]</span> <span class="pre">{dimension-type,</span> <span class="pre">...}</span> <span class="pre">[unit])</span></code></dt>
+<dd><p class="first">The derive operation <em>with</em> a dimension specification is used
+to derive the specified variable from other variables found in
+the product (i.e. a variable with that name and dimension does
+not have to exist yet). The <code class="docutils literal"><span class="pre">--list-derivations</span></code> option of
+harpdump can be used to list available variable conversions.
+The algorithms behind all the conversions are described
+in the <a class="reference internal" href="algorithms/index.html"><span class="doc">Algorithms</span></a> section of the
+documentation.
+If the datatype is not provided then the default result data
+type for a conversion will be used (usually <code class="docutils literal"><span class="pre">double</span></code>).
+If a variable with the given name and dimension specification
+already exists then this operation will just perform a data
+type and/or unit conversion on that variable.</p>
+<p>Example:</p>
+<blockquote class="last">
+<div><div class="line-block">
+<div class="line"><code class="docutils literal"><span class="pre">derive(number_density</span> <span class="pre">{time,vertical}</span> <span class="pre">[molec/m3])</span></code></div>
 <div class="line"><code class="docutils literal"><span class="pre">derive(latitude</span> <span class="pre">float</span> <span class="pre">{time})</span></code></div>
 </div>
 </div></blockquote>
@@ -608,7 +625,7 @@ Each polygon consists of the vertices as defined on that line.</p>
    <span class="s1">&#39;bin&#39;</span><span class="p">,</span> <span class="s1">&#39;(&#39;</span><span class="p">,</span> <span class="n">stringvalue</span><span class="p">,</span> <span class="s1">&#39;,&#39;</span><span class="p">,</span> <span class="p">(</span> <span class="s1">&#39;a&#39;</span> <span class="o">|</span> <span class="s1">&#39;b&#39;</span> <span class="p">),</span> <span class="s1">&#39;)&#39;</span> <span class="o">|</span>
    <span class="s1">&#39;collocate_left&#39;</span><span class="p">,</span> <span class="s1">&#39;(&#39;</span><span class="p">,</span> <span class="n">stringvalue</span><span class="p">,</span> <span class="s1">&#39;)&#39;</span> <span class="o">|</span>
    <span class="s1">&#39;collocate_right&#39;</span><span class="p">,</span> <span class="s1">&#39;(&#39;</span><span class="p">,</span> <span class="n">stringvalue</span><span class="p">,</span> <span class="s1">&#39;)&#39;</span> <span class="o">|</span>
-   <span class="s1">&#39;derive&#39;</span><span class="p">,</span> <span class="s1">&#39;(&#39;</span><span class="p">,</span> <span class="n">variable</span><span class="p">,</span> <span class="p">[</span><span class="n">datatype</span><span class="p">],</span> <span class="n">dimensionspec</span><span class="p">,</span> <span class="p">[</span><span class="n">unit</span><span class="p">],</span> <span class="s1">&#39;)&#39;</span> <span class="o">|</span>
+   <span class="s1">&#39;derive&#39;</span><span class="p">,</span> <span class="s1">&#39;(&#39;</span><span class="p">,</span> <span class="n">variable</span><span class="p">,</span> <span class="p">[</span><span class="n">datatype</span><span class="p">],</span> <span class="p">[</span><span class="n">dimensionspec</span><span class="p">],</span> <span class="p">[</span><span class="n">unit</span><span class="p">],</span> <span class="s1">&#39;)&#39;</span> <span class="o">|</span>
    <span class="s1">&#39;derive_smoothed_column&#39;</span><span class="p">,</span> <span class="s1">&#39;(&#39;</span><span class="p">,</span> <span class="n">variable</span><span class="p">,</span> <span class="n">dimensionspec</span><span class="p">,</span> <span class="p">[</span><span class="n">unit</span><span class="p">],</span> <span class="s1">&#39;,&#39;</span><span class="p">,</span> <span class="n">variable</span><span class="p">,</span> <span class="n">unit</span><span class="p">,</span> <span class="s1">&#39;,&#39;</span><span class="p">,</span> <span class="n">stringvalue</span><span class="p">,</span> <span class="s1">&#39;,&#39;</span><span class="p">,</span> <span class="p">(</span> <span class="s1">&#39;a&#39;</span> <span class="o">|</span> <span class="s1">&#39;b&#39;</span> <span class="p">),</span> <span class="s1">&#39;,&#39;</span><span class="p">,</span> <span class="n">stringvalue</span><span class="p">,</span> <span class="s1">&#39;)&#39;</span> <span class="o">|</span>
    <span class="s1">&#39;exclude&#39;</span><span class="p">,</span> <span class="s1">&#39;(&#39;</span><span class="p">,</span> <span class="n">variablelist</span><span class="p">,</span> <span class="s1">&#39;)&#39;</span> <span class="o">|</span>
    <span class="s1">&#39;flatten&#39;</span><span class="p">,</span> <span class="s1">&#39;(&#39;</span><span class="p">,</span> <span class="n">dimension</span><span class="p">,</span> <span class="s1">&#39;)&#39;</span> <span class="o">|</span>

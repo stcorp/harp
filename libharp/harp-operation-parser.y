@@ -577,6 +577,25 @@ operation:
     | FUNC_COLLOCATE_RIGHT '(' STRING_VALUE ')' {
             if (harp_operation_collocation_filter_new($3, harp_collocation_right, &$$) != 0) YYERROR;
         }
+    | FUNC_DERIVE '(' identifier ')' {
+            /* even though it does nothing, we don't want this case to throw errors */
+            /* it can also be used to perform an assert that a certain variable is available
+             * (without having to perform a keep() with the full set of variables */
+            if (harp_operation_derive_variable_new($3, NULL, -1, NULL, NULL, &$$) != 0) YYERROR;
+        }
+    | FUNC_DERIVE '(' identifier UNIT ')' {
+            if (harp_operation_derive_variable_new($3, NULL, -1, NULL, $4, &$$) != 0) YYERROR;
+        }
+    | FUNC_DERIVE '(' identifier DATATYPE ')' {
+            harp_data_type data_type = $4;
+
+            if (harp_operation_derive_variable_new($3, &data_type, -1, NULL, NULL, &$$) != 0) YYERROR;
+        }
+    | FUNC_DERIVE '(' identifier DATATYPE UNIT ')' {
+            harp_data_type data_type = $4;
+
+            if (harp_operation_derive_variable_new($3, &data_type, -1, NULL, $5, &$$) != 0) YYERROR;
+        }
     | FUNC_DERIVE '(' identifier dimensionspec ')' {
             if (harp_operation_derive_variable_new($3, NULL, $4->num_elements, $4->array.int32_data, NULL,
                                                    &$$) != 0) YYERROR;
@@ -589,15 +608,13 @@ operation:
             harp_data_type data_type = $4;
 
             if (harp_operation_derive_variable_new($3, &data_type, $5->num_elements, $5->array.int32_data, NULL, &$$) !=
-                0)
-                YYERROR;
+                0) YYERROR;
         }
     | FUNC_DERIVE '(' identifier DATATYPE dimensionspec UNIT ')' {
             harp_data_type data_type = $4;
 
             if (harp_operation_derive_variable_new($3, &data_type, $5->num_elements, $5->array.int32_data, $6, &$$) !=
-                0)
-                YYERROR;
+                0) YYERROR;
         }
     | FUNC_DERIVE_SMOOTHED_COLUMN '(' identifier dimensionspec UNIT ',' identifier UNIT ',' STRING_VALUE ',' ID_A ','
       STRING_VALUE ')' {

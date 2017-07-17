@@ -257,6 +257,7 @@ typedef struct harp_operation_derive_variable_struct
     char *variable_name;
     int has_data_type;
     harp_data_type data_type;
+    int has_dimensions;
     int num_dimensions;
     harp_dimension_type dimension_type[HARP_MAX_NUM_DIMS];
     char *unit;

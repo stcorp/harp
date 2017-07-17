@@ -34,6 +34,9 @@
 
 * Added sort() and area_inside_area() operations.
 
+* The derive() operation can now be used without dimension specification
+  to perform a unit and/or data type conversion on an existing variable.
+
 * An area parameter for operations can now either be a reference to an
   area mask file or a single polygon provided as lat/lon array parameters.
 

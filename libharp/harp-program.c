@@ -633,6 +633,31 @@ static int execute_bin_with_variable(harp_product *product, harp_operation_bin_w
 
 static int execute_derive_variable(harp_product *product, harp_operation_derive_variable *operation)
 {
+    if (!operation->has_dimensions)
+    {
+        harp_variable *variable;
+
+        /* we only perform unit and/or data type conversion; the variable should already be there */
+        if (harp_product_get_variable_by_name(product, operation->variable_name, &variable) != 0)
+        {
+            return -1;
+        }
+        if (operation->unit != NULL && !harp_variable_has_unit(variable, operation->unit))
+        {
+            if (harp_variable_convert_unit(variable, operation->unit) != 0)
+            {
+                return -1;
+            }
+        }
+        if (operation->has_data_type)
+        {
+            if (harp_variable_convert_data_type(variable, operation->data_type) != 0)
+            {
+                return -1;
+            }
+        }
+        return 0;
+    }
     if (operation->has_data_type)
     {
         return harp_product_add_derived_variable(product, operation->variable_name, &operation->data_type,
