@@ -55,7 +55,7 @@ static void write_scalar(harp_scalar data, harp_data_type data_type, int (*print
             print("%ld", (long)data.int32_data);
             break;
         case harp_type_float:
-            print("%.16g", (double)data.float_data);
+            print("%.8g", (double)data.float_data);
             break;
         case harp_type_double:
             print("%.16g", (double)data.double_data);
@@ -92,7 +92,7 @@ static void write_array(harp_array data, harp_data_type data_type, long num_elem
                     print("%ld", (long)data.int32_data[index]);
                     break;
                 case harp_type_float:
-                    print("%.16g", (double)data.float_data[index]);
+                    print("%.8g", (double)data.float_data[index]);
                     break;
                 case harp_type_double:
                     print("%.16g", (double)data.double_data[index]);
