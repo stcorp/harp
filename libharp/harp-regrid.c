@@ -661,7 +661,7 @@ LIBHARP_API int harp_product_regrid_with_axis_variable(harp_product *product, ha
     }
     if (source_bounds != NULL)
     {
-        if (harp_variable_copy(target_bounds, &variable) != 0)
+        if (harp_variable_copy(local_target_bounds, &variable) != 0)
         {
             goto error;
         }
