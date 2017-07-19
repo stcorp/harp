@@ -900,8 +900,11 @@ LIBHARP_API int harp_product_copy(const harp_product *other_product, harp_produc
  * All variables in both products will have a 'time' dimension introduced as first dimension.
  * Both products will have all non-time dimensions extended to the maximum of either product.
  * Any 'source_product' attribute for the first product will be removed.
+ *
+ * If you pass NULL for 'other_product', then 'product' will be updated as if it was the result of a merge
+ * (i.e. remove 'index', add 'time' dimension, and remove 'source_product' attribute).
  * \param product Product to which data should be appended.
- * \param other_product Product that should be appended.
+ * \param other_product (optional) Product that should be appended.
  * \return
  *   \arg \c 0, Success.
  *   \arg \c -1, Error occurred (check #harp_errno).
@@ -913,7 +916,6 @@ LIBHARP_API int harp_product_append(harp_product *product, harp_product *other_p
     harp_dimension_type dimension_type;
     int i;
 
-    /* first remove any 'index' variable in both products */
     if (harp_product_has_variable(product, "index"))
     {
         if (harp_product_remove_variable_by_name(product, "index") != 0)
@@ -921,6 +923,22 @@ LIBHARP_API int harp_product_append(harp_product *product, harp_product *other_p
             return -1;
         }
     }
+    if (harp_product_make_time_dependent(product) != 0)
+    {
+        return -1;
+    }
+    if (product->source_product != NULL)
+    {
+        free(product->source_product);
+        product->source_product = NULL;
+    }
+
+    if (other_product == NULL)
+    {
+        /* just update 'product' as if it was a result from a merge and return */
+        return 0;
+    }
+
     if (harp_product_has_variable(other_product, "index"))
     {
         if (harp_product_remove_variable_by_name(other_product, "index") != 0)
@@ -938,18 +956,13 @@ LIBHARP_API int harp_product_append(harp_product *product, harp_product *other_p
     for (i = 0; i < product->num_variables; i++)
     {
         variable = product->variable[i];
-        if (harp_product_get_variable_by_name(other_product, variable->name, &other_variable) != 0)
+        if (!harp_product_has_variable(other_product, variable->name))
         {
             harp_set_error(HARP_ERROR_INVALID_ARGUMENT, "products don't both have variable '%s'", variable->name);
             return -1;
         }
     }
 
-    /* add time dimension to all variables */
-    if (harp_product_make_time_dependent(product) != 0)
-    {
-        return -1;
-    }
     if (harp_product_make_time_dependent(other_product) != 0)
     {
         return -1;
@@ -994,12 +1007,6 @@ LIBHARP_API int harp_product_append(harp_product *product, harp_product *other_p
         }
     }
     product->dimension[harp_dimension_time] += other_product->dimension[harp_dimension_time];
-
-    if (product->source_product != NULL)
-    {
-        free(product->source_product);
-        product->source_product = NULL;
-    }
 
     return 0;
 }

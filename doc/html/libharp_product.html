@@ -334,7 +334,8 @@
 <dl class="function">
 <dt id="_CPPv219harp_product_appendP12harp_productP12harp_product">
 <span id="harp_product_append__harp_productP.harp_productP"></span><span class="target" id="libharpgroup__harp__product_1gac38975a39f20971cac1cefb8416b2347"></span>int <code class="descname">harp_product_append</code><span class="sig-paren">(</span><a class="reference internal" href="#_CPPv212harp_product" title="harp_product">harp_product</a> *<em>product</em>, <a class="reference internal" href="#_CPPv212harp_product" title="harp_product">harp_product</a> *<em>other_product</em><span class="sig-paren">)</span><br /></dt>
-<dd><p>Append one product to another. The &#8216;index&#8217; variable, if present, will be removed. All variables in both products will have a &#8216;time&#8217; dimension introduced as first dimension. Both products will have all non-time dimensions extended to the maximum of either product. Any &#8216;source_product&#8217; attribute for the first product will be removed. <dl class="docutils">
+<dd><p>Append one product to another. The &#8216;index&#8217; variable, if present, will be removed. All variables in both products will have a &#8216;time&#8217; dimension introduced as first dimension. Both products will have all non-time dimensions extended to the maximum of either product. Any &#8216;source_product&#8217; attribute for the first product will be removed.</p>
+<p>If you pass NULL for &#8216;other_product&#8217;, then &#8216;product&#8217; will be updated as if it was the result of a merge (i.e. remove &#8216;index&#8217;, add &#8216;time&#8217; dimension, and remove &#8216;source_product&#8217; attribute). <dl class="docutils">
 <dt><strong>Return</strong></dt>
 <dd><ul class="simple">
 <li><code class="docutils literal"><span class="pre">0</span></code>, Success. </li>
@@ -344,7 +345,7 @@
 <dt><strong>Parameters</strong></dt>
 <dd><ul class="breatheparameterlist first last simple">
 <li><code class="docutils literal"><span class="pre">product</span></code>: Product to which data should be appended. </li>
-<li><code class="docutils literal"><span class="pre">other_product</span></code>: Product that should be appended. </li>
+<li><code class="docutils literal"><span class="pre">other_product</span></code>: (optional) Product that should be appended. </li>
 </ul>
 </dd>
 </dl>
