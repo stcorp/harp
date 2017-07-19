@@ -1646,7 +1646,7 @@ static int add_species_conversions_for_grid(const char *species, int num_dimensi
                                             int has_vertical)
 {
     harp_variable_conversion *conversion;
-    harp_dimension_type dimension_type[HARP_MAX_NUM_DIMS];
+    harp_dimension_type dimension_type[HARP_MAX_NUM_DIMS] = {0};
     char name_column_density[MAX_NAME_LENGTH];
     char name_column_density_apriori[MAX_NAME_LENGTH];
     char name_strato_column_density[MAX_NAME_LENGTH];
@@ -3122,7 +3122,7 @@ static int add_particulate_matter_conversions_for_grid(const char *pm, int num_d
                                                        int has_vertical)
 {
     harp_variable_conversion *conversion;
-    harp_dimension_type dimension_type[HARP_MAX_NUM_DIMS];
+    harp_dimension_type dimension_type[HARP_MAX_NUM_DIMS] = {0};
     char name_column_density[MAX_NAME_LENGTH];
     char name_strato_column_density[MAX_NAME_LENGTH];
     char name_tropo_column_density[MAX_NAME_LENGTH];
