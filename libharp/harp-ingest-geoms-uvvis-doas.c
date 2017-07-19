@@ -1655,13 +1655,13 @@ static int get_optional_variable_availability(ingest_info *info)
         info->has_tropo_column_zenith = (coda_cursor_goto(&cursor, path) == 0);
     }
 
-    info->has_wind_direction = (coda_cursor_goto(&cursor, "/WIND.DIRECTION.SURFACE_INDEPENDENT") == 0);
-    info->has_wind_speed = (coda_cursor_goto(&cursor, "/WIND.SPEED.SURFACE_INDEPENDENT") == 0);
+    info->has_wind_direction = (coda_cursor_goto(&cursor, "/WIND_DIRECTION_SURFACE_INDEPENDENT") == 0);
+    info->has_wind_speed = (coda_cursor_goto(&cursor, "/WIND_SPEED_SURFACE_INDEPENDENT") == 0);
 
     info->has_optimal_estimation_variables = 0;
     if (info->template_type == uvvis_doas_offaxis)
     {
-        snprintf(path, MAX_PATH_LENGTH, "/%s.MIXING.RATIO.VOLUME_SCATTER.SOLAR.OFFAXIS", geoms_gas_name[info->gas]);
+        snprintf(path, MAX_PATH_LENGTH, "/%s_MIXING_RATIO_VOLUME_SCATTER_SOLAR_OFFAXIS", geoms_gas_name[info->gas]);
         info->has_optimal_estimation_variables = (coda_cursor_goto(&cursor, path) == 0);
     }
     return 0;
