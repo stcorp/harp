@@ -440,7 +440,7 @@ static int collocation_info_add_criterium_from_string(collocation_info *info, ch
     char *cursor;
     char *variable_name;
     char *value_str;
-    char *unit;
+    char *unit = NULL;
     double value;
     int variable_name_length;
     int unit_length = 0;
