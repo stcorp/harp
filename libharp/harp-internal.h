@@ -120,6 +120,9 @@ typedef struct harp_derived_variable_list_struct
 extern harp_derived_variable_list *harp_derived_variable_conversions;
 
 /* Utility functions */
+int harp_path_find_file(const char *searchpath, const char *filename, char **location);
+int harp_path_from_path(const char *initialpath, int is_filepath, const char *appendpath, char **resultpath);
+int harp_path_for_program(const char *argv0, char **location);
 int harp_is_identifier(const char *name);
 long harp_parse_double(const char *buffer, long buffer_length, double *dst, int ignore_trailing_bytes);
 long harp_get_max_string_length(long num_strings, char **string_data);

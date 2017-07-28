@@ -113,6 +113,11 @@ int main(int argc, char *argv[])
         fprintf(stderr, "ERROR: %s\n", harp_errno_to_string(harp_errno));
         exit(1);
     }
+    if (harp_set_udunits2_xml_path_conditional(argv[0], NULL, "../share/harp/udunits2.xml") != 0)
+    {
+        fprintf(stderr, "ERROR: %s\n", harp_errno_to_string(harp_errno));
+        exit(1);
+    }
 
     harp_set_warning_handler(print_warning);
 

@@ -107,6 +107,339 @@ LIBHARP_API const char *harp_basename(const char *path)
     }
 }
 
+static void clean_path(char *path)
+{
+    int from;
+    int to;
+
+    if (path == NULL || path[0] == '\0')
+    {
+        return;
+    }
+
+    from = 0;
+    to = 0;
+    while (path[from] == '.' && path[from + 1] == '/')
+    {
+        from += 2;
+    }
+    while (path[from] != '\0')
+    {
+        if (path[from] == '/' || path[from] == '\\')
+        {
+            if (path[from + 1] == '/' || path[from + 1] == '\\')
+            {
+                from++;
+                continue;
+            }
+            if (path[from + 1] == '.')
+            {
+                if (path[from + 2] == '\0' || path[from + 2] == '/' || path[from + 2] == '\\')
+                {
+                    from += 2;
+                    continue;
+                }
+                if (path[from + 2] == '.' &&
+                    (path[from + 3] == '\0' || path[from + 3] == '/' || path[from + 3] == '\\'))
+                {
+                    if (!(to >= 2 && path[to - 1] == '.' && path[to - 2] == '.' &&
+                          (to == 2 || path[to - 3] == '/' || path[to - 3] == '\\')))
+                    {
+                        int prev = to - 1;
+
+                        /* find previous / or \ */
+                        while (prev >= 0 && path[prev] != '/' && path[prev] != '\\')
+                        {
+                            prev--;
+                        }
+                        if (prev >= 0)
+                        {
+                            to = prev;
+                            from += 3;
+                            continue;
+                        }
+                    }
+                }
+            }
+        }
+        path[to] = path[from];
+        from++;
+        to++;
+    }
+
+    /* an empty path is a relative path to the current directory -> use '.' */
+    if (to == 0)
+    {
+        path[to] = '.';
+        to++;
+    }
+
+    path[to] = '\0';
+}
+
+int harp_path_find_file(const char *searchpath, const char *filename, char **location)
+{
+#ifdef WIN32
+    const char path_separator_char = ';';
+#else
+    const char path_separator_char = ':';
+#endif
+    char *path;
+    char *path_component;
+    char *filepath = NULL;
+    int filepath_length = 0;
+    int filename_length = strlen(filename);
+
+    if (searchpath == NULL || searchpath[0] == '\0')
+    {
+        *location = NULL;
+        return 0;
+    }
+
+    path = strdup(searchpath);
+    if (path == NULL)
+    {
+        harp_set_error(HARP_ERROR_OUT_OF_MEMORY, "out of memory (could not duplicate string) (%s:%u)", __FILE__,
+                       __LINE__);
+        return -1;
+    }
+    path_component = path;
+    while (*path_component != '\0')
+    {
+        struct stat sb;
+        char *p;
+        int path_component_length;
+
+        p = path_component;
+        while (*p != '\0' && *p != path_separator_char)
+        {
+            p++;
+        }
+        if (*p != '\0')
+        {
+            *p = '\0';
+            p++;
+        }
+
+        path_component_length = strlen(path_component);
+        if (filepath_length < path_component_length + filename_length + 1)
+        {
+            char *new_filepath;
+
+            new_filepath = realloc(filepath, path_component_length + filename_length + 2);
+            if (new_filepath == NULL)
+            {
+                harp_set_error(HARP_ERROR_OUT_OF_MEMORY, "out of memory (could not duplicate string) (%s:%u)", __FILE__,
+                               __LINE__);
+                if (filepath != NULL)
+                {
+                    free(filepath);
+                }
+                return -1;
+            }
+            filepath = new_filepath;
+            filepath_length = path_component_length + filename_length + 1;
+        }
+        sprintf(filepath, "%s/%s", path_component, filename);
+
+        if (stat(filepath, &sb) == 0)
+        {
+            if (sb.st_mode & S_IFREG)
+            {
+                /* we found the file */
+                *location = filepath;
+                free(path);
+                return 0;
+            }
+        }
+
+        path_component = p;
+    }
+
+    if (filepath != NULL)
+    {
+        free(filepath);
+    }
+    free(path);
+
+    /* the file was not found */
+    *location = NULL;
+    return 0;
+}
+
+int harp_path_from_path(const char *initialpath, int is_filepath, const char *appendpath, char **resultpath)
+{
+    char *path;
+    int initialpath_length;
+    int appendpath_length;
+
+    initialpath_length = strlen(initialpath);
+    appendpath_length = (appendpath == NULL ? 0 : strlen(appendpath));
+
+    if (is_filepath && initialpath_length > 0)
+    {
+        /* remove trailing parth */
+        while (initialpath_length > 0 && initialpath[initialpath_length - 1] != '/' &&
+               initialpath[initialpath_length - 1] != '\\')
+        {
+            initialpath_length--;
+        }
+    }
+
+    *resultpath = malloc(initialpath_length + 1 + appendpath_length + 1);
+    if (*resultpath == NULL)
+    {
+        harp_set_error(HARP_ERROR_OUT_OF_MEMORY, "out of memory (could not duplicate string) (%s:%u)", __FILE__,
+                       __LINE__);
+        return -1;
+    }
+    path = *resultpath;
+    if (initialpath_length > 0)
+    {
+        memcpy(path, initialpath, initialpath_length);
+        path += initialpath_length;
+        if (appendpath_length > 0)
+        {
+            *path = '/';
+            path++;
+        }
+    }
+    if (appendpath_length > 0)
+    {
+        memcpy(path, appendpath, appendpath_length);
+        path += appendpath_length;
+    }
+    *path = '\0';
+
+    clean_path(*resultpath);
+
+    return 0;
+}
+
+int harp_path_for_program(const char *argv0, char **location)
+{
+    const char *p;
+    int is_path = 0;
+
+    /* default (i.e. not found) is NULL */
+    *location = NULL;
+
+    if (argv0 == NULL)
+    {
+        return 0;
+    }
+
+    p = argv0;
+    while (*p != '\0')
+    {
+        if (*p == '/' || *p == '\\')
+        {
+            is_path = 1;
+            break;
+        }
+        p++;
+    }
+
+    if (is_path)
+    {
+        *location = strdup(argv0);
+        if (*location == NULL)
+        {
+            harp_set_error(HARP_ERROR_OUT_OF_MEMORY, "out of memory (could not duplicate string) (%s:%u)", __FILE__,
+                           __LINE__);
+            return -1;
+        }
+    }
+    else
+    {
+        /* use PATH */
+#ifdef WIN32
+        int argv0_length = strlen(argv0);
+
+        if (argv0_length <= 4 || strcmp(&argv0[argv0_length - 4], ".exe") != 0)
+        {
+            char *filepath;
+
+            filepath = malloc(argv0_length + 5);
+            if (filepath == NULL)
+            {
+                harp_set_error(HARP_ERROR_OUT_OF_MEMORY, "out of memory (could not duplicate string) (%s:%u)", __FILE__,
+                               __LINE__);
+                return -1;
+            }
+            strcpy(filepath, argv0);
+            strcpy(&filepath[argv0_length], ".exe");
+            if (harp_path_find_file(".", filepath, location) != 0)
+            {
+                free(filepath);
+                return -1;
+            }
+            if (*location == NULL && getenv("PATH") != NULL)
+            {
+                if (harp_path_find_file(getenv("PATH"), filepath, location) != 0)
+                {
+                    free(filepath);
+                    return -1;
+                }
+            }
+            free(filepath);
+        }
+        else
+        {
+            if (harp_path_find_file(".", argv0, location) != 0)
+            {
+                return -1;
+            }
+            if (*location == NULL && getenv("PATH") != NULL)
+            {
+                if (harp_path_find_file(getenv("PATH"), argv0, location) != 0)
+                {
+                    return -1;
+                }
+            }
+        }
+#else
+        if (getenv("PATH") != NULL)
+        {
+            if (harp_path_find_file(getenv("PATH"), argv0, location) != 0)
+            {
+                return -1;
+            }
+        }
+        else
+        {
+            *location = NULL;
+        }
+#endif
+    }
+
+    if (*location != NULL && (*location)[0] != '/' && (*location)[0] != '\\' &&
+        !(isalpha((*location)[0]) && (*location)[1] == ':'))
+    {
+        char cwd[1024 + 1];
+        char *relative_location;
+
+        /* change relative path into absolute path */
+
+        if (getcwd(cwd, 1024) == NULL)
+        {
+            /* there is a problem with the current working directory -> return 'not found' */
+            return 0;
+        }
+        cwd[1024] = '\0';
+
+        relative_location = *location;
+        if (harp_path_from_path(cwd, 0, relative_location, location) != 0)
+        {
+            free(relative_location);
+            return -1;
+        }
+        free(relative_location);
+    }
+
+    return 0;
+}
+
 /** Returns the name of a data type.
  * \param data_type HARP basic data type
  * \return if the data type is known a string containing the name of the type, otherwise the string "unknown".

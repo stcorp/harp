@@ -38,6 +38,8 @@
 
 #include "udunits2.h"
 
+static char *harp_udunits2_xml_path = NULL;
+
 static ut_system *unit_system = NULL;
 
 struct harp_unit_converter_struct
@@ -99,13 +101,146 @@ static void handle_udunits_error(void)
     }
 }
 
+/** Set the location of the udunits2 unit conversion xml configuration file.
+ * This function should be called before harp_init() is called.
+ *
+ * The HARP C library uses the udunits2 library to perform unit conversions. The xml configuration files for udunits2
+ * are included with a HARP installation and a default absolute path to these xml files is built into the library.
+ *
+ * If the HARP installation ends up in a different location on disk compared to what was provided at build time then
+ * you will either need to set the UDUNITS2_XML_PATH environment variable or call one of the functions
+ * harp_set_udunits2_xml_path() or harp_set_udunits2_xml_path_conditional() to set the path programmatically.
+ *
+ * The path should be an absolute path to the udunits2.xml file that was included with the HARP installation.
+ *
+ * Specifying a path using this function will prevent HARP from using the UDUNITS2_XML_PATH environment variable.
+ * If you still want HARP to acknowledge the UDUNITS2_XML_PATH environment variable then use something like this in
+ * your code:
+ * \code{.c}
+ * if (getenv("UDUNITS2_XML_PATH") == NULL)
+ * {
+ *     harp_set_udunits2_xml_path("<your path>");
+ * }
+ * \endcode
+ *
+ *  \param path Absolute path to the udunits2.xml file
+ *  \return
+ *   \arg \c 0, Success.
+ *   \arg \c -1, Error occurred (check #harp_errno).
+ */
+LIBHARP_API int harp_set_udunits2_xml_path(const char *path)
+{
+    if (harp_udunits2_xml_path != NULL)
+    {
+        free(harp_udunits2_xml_path);
+        harp_udunits2_xml_path = NULL;
+    }
+    if (path == NULL)
+    {
+        return 0;
+    }
+    harp_udunits2_xml_path = strdup(path);
+    if (harp_udunits2_xml_path == NULL)
+    {
+        harp_set_error(HARP_ERROR_OUT_OF_MEMORY, "out of memory (could not duplicate string) (%s:%u)", __FILE__,
+                       __LINE__);
+        return -1;
+    }
+
+    return 0;
+}
+
+/** Set the location of the udunits2 xml configuration file based on the location of another file.
+ * This function should be called before harp_init() is called.
+ *
+ * The HARP C library uses the udunits2 library to perform unit conversions. The xml configuration files for udunits2
+ * are included with a HARP installation and a default absolute path to the main xml file is built into the library.
+ *
+ * If the HARP installation ends up in a different location on disk compared to what was provided at build time then
+ * you will either need to set the UDUNITS2_XML_PATH environment variable or call one of the functions
+ * harp_set_udunits2_xml_path() or harp_set_udunits2_xml_path_conditional() to set the path programmatically.
+ *
+ * This function will try to find the file with filename \a file in the provided searchpath \a searchpath.
+ * The first directory in the searchpath where the file \a file exists will be appended with the relative location
+ * \a relative_location to determine the udunits2 xml path.
+ * If the file to search for could not be found in the searchpath then the HARP udunits2 xml path will not be set.
+ *
+ * If the UDUNITS2_XML_PATH environment variable was set then this function will not perform a search or set the
+ * udunits2 xml path (i.e. the udunits2 xml path will be taken from the UDUNITS2_XML_PATH variable).
+ *
+ * If you provide NULL for \a searchpath then the PATH environment variable will be used as searchpath.
+ * For instance, you can use harp_set_udunits2_xml_path_conditional(argv[0], NULL, "../somedir/udunits2.xml") to set
+ * the udunits2 xml path to a location relative to the location of your executable.
+ *
+ * The searchpath, if provided, should have a similar format as the PATH environment variable of your system. Path
+ * components should be separated by ';' on Windows and by ':' on other systems.
+ *
+ * The \a relative_location parameter should point to the udunits2.xml file itself (and not the directory that the file
+ * is in).
+ *
+ * Note that this function differs from harp_set_udunits2_xml_path() in that it will not modify the udunits2 xml path
+ * if the UDUNITS2_XML_PATH variable was set.
+ *
+ * \param file Filename of the file to search for
+ * \param searchpath Search path where to look for the file \a file (can be NULL)
+ * \param relative_location Filepath relative to the directory from \a searchpath where \a file was found that provides
+ * the location of the udunits2.xml file.
+ * \return
+ *   \arg \c 0, Success.
+ *   \arg \c -1, Error occurred (check #harp_errno).
+ */
+LIBHARP_API int harp_set_udunits2_xml_path_conditional(const char *file, const char *searchpath,
+                                                       const char *relative_location)
+{
+    char *location;
+
+    if (getenv("UDUNITS2_XML_PATH") != NULL)
+    {
+        return 0;
+    }
+
+    if (searchpath == NULL)
+    {
+        if (harp_path_for_program(file, &location) != 0)
+        {
+            return -1;
+        }
+    }
+    else
+    {
+        if (harp_path_find_file(searchpath, file, &location) != 0)
+        {
+            return -1;
+        }
+    }
+    if (location != NULL)
+    {
+        char *path;
+
+        if (harp_path_from_path(location, 1, relative_location, &path) != 0)
+        {
+            free(location);
+            return -1;
+        }
+        free(location);
+        if (harp_set_udunits2_xml_path(path) != 0)
+        {
+            free(path);
+            return -1;
+        }
+        free(path);
+    }
+
+    return 0;
+}
+
 static int unit_system_init(void)
 {
     if (unit_system == NULL)
     {
         ut_set_error_message_handler(ut_ignore);
 
-        unit_system = ut_read_xml(NULL);
+        unit_system = ut_read_xml(harp_udunits2_xml_path);
         if (unit_system == NULL)
         {
             handle_udunits_error();
@@ -122,6 +257,11 @@ static void unit_system_done(void)
     {
         ut_free_system(unit_system);
         unit_system = NULL;
+        if (harp_udunits2_xml_path != NULL)
+        {
+            free(harp_udunits2_xml_path);
+            harp_udunits2_xml_path = NULL;
+        }
     }
 }
 

@@ -369,6 +369,13 @@ def _init():
                                                        _encode_string(os.path.basename(clib)),
                                                        _encode_path(relpath))
 
+    if os.getenv('UDUNITS2_XML_PATH') is None:
+        # Set udunits2 xml path relative to C library
+        relpath = "../share/harp/udunits2.xml"
+        _lib.harp_set_udunits2_xml_path_conditional(_encode_path(os.path.dirname(clib)),
+                                                    _encode_string(os.path.basename(clib)),
+                                                    _encode_path(relpath))
+
     if _lib.harp_init() != 0:
         raise CLibraryError()
 

@@ -67,11 +67,10 @@ static int harp_idl_init(void)
 {
     if (!harp_idl_initialised)
     {
-#ifdef CODA_DEFINITION_IDL
-        coda_set_definition_path_conditional("harp_idl.dlm", getenv("IDL_DLM_PATH"), CODA_DEFINITION_IDL);
-#else
-        coda_set_definition_path_conditional("harp_idl.dlm", getenv("IDL_DLM_PATH"), "../../../share/coda/definitions");
-#endif
+        harp_set_coda_definition_path_conditional("harp_idl.dlm", getenv("IDL_DLM_PATH"),
+                                                  "../../../share/coda/definitions");
+        harp_set_udunits2_xml_path_conditional("harp_idl.dlm", getenv("IDL_DLM_PATH"),
+                                               "../../../share/harp/udunits2.xml");
 
         if (harp_init() != 0)
         {

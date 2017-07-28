@@ -38,9 +38,9 @@ static void harp_matlab_cleanup(void)
     }
 }
 
-static void harp_matlab_set_definition_path(void)
+static void harp_matlab_set_paths(void)
 {
-    if (getenv("CODA_DEFINITION") == NULL)
+    if (getenv("CODA_DEFINITION") == NULL || getenv("UDUNITS2_XML_PATH") == NULL)
     {
         mxArray *mxpath;
         mxArray *arg;
@@ -66,11 +66,8 @@ static void harp_matlab_set_definition_path(void)
             path[path_length - 14 - 1] = '\0';
         }
         mxDestroyArray(mxpath);
-#ifdef CODA_DEFINITION_MATLAB
-        coda_set_definition_path_conditional("harp_version.m", path, CODA_DEFINITION_MATLAB);
-#else
-        coda_set_definition_path_conditional("harp_version.m", path, "../../../share/coda/definitions");
-#endif
+        harp_set_coda_definition_path_conditional("harp_version.m", path, "../../../share/coda/definitions");
+        harp_set_udunits2_xml_path_conditional("harp_version.m", path, "../../../share/harp/udunits2.xml");
         mxFree(path);
     }
 }
@@ -83,7 +80,7 @@ void mexFunction(int nlhs, mxArray *plhs[], int nrhs, const mxArray *prhs[])
 
     if (!harp_matlab_initialised)
     {
-        harp_matlab_set_definition_path();
+        harp_matlab_set_paths();
 
         if (harp_init() != 0)
         {

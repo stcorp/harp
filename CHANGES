@@ -46,8 +46,9 @@
   harp_product_add_derived_variable() is now a pointer to allow it to be
   optional (i.e. pass NULL to use the default data type).
 
-* Added harp_geometry_get_area(), harp_product_sort(), and
-  harp_variable_set_enumeration_values() functions.
+* Added harp_geometry_get_area(), harp_product_sort(),
+  harp_set_udunits2_xml_path(), harp_set_udunits2_xml_path_conditional(),
+  and harp_variable_set_enumeration_values() functions.
 
 * Changed 'percentage' parameter of harp_geometry_has_area_overlap() to
   'fraction'.
@@ -60,6 +61,9 @@
 * The C interface for collocation results was modified to support a
   dynamic set of collocation criteria differences (based on variable names
   for these differences).
+
+* The Python interface now sets the udunits2 xml path dynamically,
+  relative to the location of the HARP C library.
 
 * wrap() operation now properly updates valid_min/valid_max properties.
 
