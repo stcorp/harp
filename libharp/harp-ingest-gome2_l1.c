@@ -146,7 +146,7 @@ static int band_name_to_band_nr(const char *band_name)
 {
     int i;
 
-    for (i = 0; i < 10; i++)
+    for (i = 0; i < MAX_NR_BANDS; i++)
     {
         if (strcmp(band_name, band_name_in_file[i]) == 0)
         {
