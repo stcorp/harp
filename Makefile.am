@@ -378,321 +378,69 @@ endif
 
 # *** product definition files ***
 
-ACE_FTS_DEFINITION_FILE = ACE_FTS-@CODADEF_VERSION_ACE_FTS@.codadef
-ACSAF_DEFINITION_FILE = ACSAF-@CODADEF_VERSION_ACSAF@.codadef
-AEOLUS_DEFINITION_FILE = AEOLUS-@CODADEF_VERSION_AEOLUS@.codadef
-AURA_HIRDLS_DEFINITION_FILE = AURA_HIRDLS-@CODADEF_VERSION_AURA_HIRDLS@.codadef
-AURA_MLS_DEFINITION_FILE = AURA_MLS-@CODADEF_VERSION_AURA_MLS@.codadef
-AURA_OMI_DEFINITION_FILE = AURA_OMI-@CODADEF_VERSION_AURA_OMI@.codadef
-AURA_TES_DEFINITION_FILE = AURA_TES-@CODADEF_VERSION_AURA_TES@.codadef
-CALIPSO_DEFINITION_FILE = CALIPSO-@CODADEF_VERSION_CALIPSO@.codadef
-CLOUDNET_DEFINITION_FILE = CLOUDNET-@CODADEF_VERSION_CLOUDNET@.codadef
-EARLINET_DEFINITION_FILE = EARLINET-@CODADEF_VERSION_EARLINET@.codadef
-ECMWF_DEFINITION_FILE = ECMWF-@CODADEF_VERSION_ECMWF@.codadef
-ENVISAT_GOMOS_DEFINITION_FILE = ENVISAT_GOMOS-@CODADEF_VERSION_ENVISAT_GOMOS@.codadef
-ENVISAT_MIPAS_DEFINITION_FILE = ENVISAT_MIPAS-@CODADEF_VERSION_ENVISAT_MIPAS@.codadef
-ENVISAT_SCIAMACHY_DEFINITION_FILE = ENVISAT_SCIAMACHY-@CODADEF_VERSION_ENVISAT_SCIAMACHY@.codadef
-EPS_DEFINITION_FILE = EPS-@CODADEF_VERSION_EPS@.codadef
-ERS_GOME_DEFINITION_FILE = ERS_GOME-@CODADEF_VERSION_ERS_GOME@.codadef
-ESACCI_AEROSOL_DEFINITION_FILE = ESACCI_AEROSOL-@CODADEF_VERSION_ESACCI_AEROSOL@.codadef
-ESACCI_CLOUD_DEFINITION_FILE = ESACCI_CLOUD-@CODADEF_VERSION_ESACCI_CLOUD@.codadef
-ESACCI_GHG_DEFINITION_FILE = ESACCI_GHG-@CODADEF_VERSION_ESACCI_GHG@.codadef
-ESACCI_OZONE_DEFINITION_FILE = ESACCI_OZONE-@CODADEF_VERSION_ESACCI_OZONE@.codadef
-GEOMS_DEFINITION_FILE = GEOMS-@CODADEF_VERSION_GEOMS@.codadef
-GOSAT_DEFINITION_FILE = GOSAT-@CODADEF_VERSION_GOSAT@.codadef
-NPP_SUOMI_DEFINITION_FILE = NPP_SUOMI-@CODADEF_VERSION_NPP_SUOMI@.codadef
-ODIN_OSIRIS_DEFINITION_FILE = ODIN_OSIRIS-@CODADEF_VERSION_ODIN_OSIRIS@.codadef
-ODIN_SMR_DEFINITION_FILE = ODIN_SMR-@CODADEF_VERSION_ODIN_SMR@.codadef
-QA4ECV_DEFINITION_FILE = QA4ECV-@CODADEF_VERSION_QA4ECV@.codadef
-SENTINEL5P_DEFINITION_FILE = Sentinel5P-@CODADEF_VERSION_Sentinel5P@.codadef
-TEMIS_DEFINITION_FILE = TEMIS-@CODADEF_VERSION_TEMIS@.codadef
-
 DEFINITION_FILES = \
-	definitions/$(ACE_FTS_DEFINITION_FILE) \
-	definitions/$(ACSAF_DEFINITION_FILE) \
-	definitions/$(AEOLUS_DEFINITION_FILE) \
-	definitions/$(AURA_HIRDLS_DEFINITION_FILE) \
-	definitions/$(AURA_MLS_DEFINITION_FILE) \
-	definitions/$(AURA_OMI_DEFINITION_FILE) \
-	definitions/$(AURA_TES_DEFINITION_FILE) \
-	definitions/$(CALIPSO_DEFINITION_FILE) \
-	definitions/$(CLOUDNET_DEFINITION_FILE) \
-	definitions/$(EARLINET_DEFINITION_FILE) \
-	definitions/$(ECMWF_DEFINITION_FILE) \
-	definitions/$(ENVISAT_GOMOS_DEFINITION_FILE) \
-	definitions/$(ENVISAT_MIPAS_DEFINITION_FILE) \
-	definitions/$(ENVISAT_SCIAMACHY_DEFINITION_FILE) \
-	definitions/$(EPS_DEFINITION_FILE) \
-	definitions/$(ERS_GOME_DEFINITION_FILE) \
-	definitions/$(ESACCI_AEROSOL_DEFINITION_FILE) \
-	definitions/$(ESACCI_CLOUD_DEFINITION_FILE) \
-	definitions/$(ESACCI_GHG_DEFINITION_FILE) \
-	definitions/$(ESACCI_OZONE_DEFINITION_FILE) \
-	definitions/$(GEOMS_DEFINITION_FILE) \
-	definitions/$(GOSAT_DEFINITION_FILE) \
-	definitions/$(NPP_SUOMI_DEFINITION_FILE) \
-	definitions/$(ODIN_OSIRIS_DEFINITION_FILE) \
-	definitions/$(ODIN_SMR_DEFINITION_FILE) \
-	definitions/$(QA4ECV_DEFINITION_FILE) \
-	definitions/$(SENTINEL5P_DEFINITION_FILE) \
-	definitions/$(TEMIS_DEFINITION_FILE)
+	definitions/$(CODADEF_FILE_ACE_FTS) \
+	definitions/$(CODADEF_FILE_ACSAF) \
+	definitions/$(CODADEF_FILE_AEOLUS) \
+	definitions/$(CODADEF_FILE_AURA_HIRDLS) \
+	definitions/$(CODADEF_FILE_AURA_MLS) \
+	definitions/$(CODADEF_FILE_AURA_OMI) \
+	definitions/$(CODADEF_FILE_AURA_TES) \
+	definitions/$(CODADEF_FILE_CALIPSO) \
+	definitions/$(CODADEF_FILE_CLOUDNET) \
+	definitions/$(CODADEF_FILE_EARLINET) \
+	definitions/$(CODADEF_FILE_ECMWF) \
+	definitions/$(CODADEF_FILE_ENVISAT_GOMOS) \
+	definitions/$(CODADEF_FILE_ENVISAT_MIPAS) \
+	definitions/$(CODADEF_FILE_ENVISAT_SCIAMACHY) \
+	definitions/$(CODADEF_FILE_EPS) \
+	definitions/$(CODADEF_FILE_ERS_GOME) \
+	definitions/$(CODADEF_FILE_ESACCI_AEROSOL) \
+	definitions/$(CODADEF_FILE_ESACCI_CLOUD) \
+	definitions/$(CODADEF_FILE_ESACCI_GHG) \
+	definitions/$(CODADEF_FILE_ESACCI_OZONE) \
+	definitions/$(CODADEF_FILE_GEOMS) \
+	definitions/$(CODADEF_FILE_GOSAT) \
+	definitions/$(CODADEF_FILE_NPP_SUOMI) \
+	definitions/$(CODADEF_FILE_ODIN_OSIRIS) \
+	definitions/$(CODADEF_FILE_ODIN_SMR) \
+	definitions/$(CODADEF_FILE_QA4ECV) \
+	definitions/$(CODADEF_FILE_Sentinel5P) \
+	definitions/$(CODADEF_FILE_TEMIS)
 
 EXTRA_DIST += $(DEFINITION_FILES) codadef.sh
 MAINTAINERCLEANFILES += $(DEFINITION_FILES)
 
 definitions_DATA = $(DEFINITION_FILES)
 
-definitions/$(ACE_FTS_DEFINITION_FILE):
-	test -d definitions || $(mkinstalldirs) definitions
-	@$(srcdir)/codadef.sh $(srcdir)/definitions/ACE_FTS definitions
-	@if test ! -f definitions/$(ACE_FTS_DEFINITION_FILE) ; then \
-	  echo definitions/$(ACE_FTS_DEFINITION_FILE) not created. ; \
-	  echo run './config.status --recheck' to update the .codadef version reference. ; \
-	  exit 1 ; \
-	 fi
-
-definitions/$(ACSAF_DEFINITION_FILE):
-	test -d definitions || $(mkinstalldirs) definitions
-	@$(srcdir)/codadef.sh $(srcdir)/definitions/ACSAF definitions
-	@if test ! -f definitions/$(ACSAF_DEFINITION_FILE) ; then \
-	  echo definitions/$(ACSAF_DEFINITION_FILE) not created. ; \
-	  echo run './config.status --recheck' to update the .codadef version reference. ; \
-	  exit 1 ; \
-	 fi
-
-definitions/$(AEOLUS_DEFINITION_FILE):
-	test -d definitions || $(mkinstalldirs) definitions
-	@$(srcdir)/codadef.sh $(srcdir)/definitions/AEOLUS definitions
-	@if test ! -f definitions/$(AEOLUS_DEFINITION_FILE) ; then \
-	  echo definitions/$(AEOLUS_DEFINITION_FILE) not created. ; \
-	  echo run './config.status --recheck' to update the .codadef version reference. ; \
-	  exit 1 ; \
-	 fi
-
-definitions/$(AURA_HIRDLS_DEFINITION_FILE):
-	test -d definitions || $(mkinstalldirs) definitions
-	@$(srcdir)/codadef.sh $(srcdir)/definitions/AURA_HIRDLS definitions
-	@if test ! -f definitions/$(AURA_HIRDLS_DEFINITION_FILE) ; then \
-	  echo definitions/$(AURA_HIRDLS_DEFINITION_FILE) not created. ; \
-	  echo run './config.status --recheck' to update the .codadef version reference. ; \
-	  exit 1 ; \
-	 fi
-
-definitions/$(AURA_MLS_DEFINITION_FILE):
-	test -d definitions || $(mkinstalldirs) definitions
-	@$(srcdir)/codadef.sh $(srcdir)/definitions/AURA_MLS definitions
-	@if test ! -f definitions/$(AURA_MLS_DEFINITION_FILE) ; then \
-	  echo definitions/$(AURA_MLS_DEFINITION_FILE) not created. ; \
-	  echo run './config.status --recheck' to update the .codadef version reference. ; \
-	  exit 1 ; \
-	 fi
-
-definitions/$(AURA_OMI_DEFINITION_FILE):
-	test -d definitions || $(mkinstalldirs) definitions
-	@$(srcdir)/codadef.sh $(srcdir)/definitions/AURA_OMI definitions
-	@if test ! -f definitions/$(AURA_OMI_DEFINITION_FILE) ; then \
-	  echo definitions/$(AURA_OMI_DEFINITION_FILE) not created. ; \
-	  echo run './config.status --recheck' to update the .codadef version reference. ; \
-	  exit 1 ; \
-	 fi
-
-definitions/$(AURA_TES_DEFINITION_FILE):
-	test -d definitions || $(mkinstalldirs) definitions
-	@$(srcdir)/codadef.sh $(srcdir)/definitions/AURA_TES definitions
-	@if test ! -f definitions/$(AURA_TES_DEFINITION_FILE) ; then \
-	  echo definitions/$(AURA_TES_DEFINITION_FILE) not created. ; \
-	  echo run './config.status --recheck' to update the .codadef version reference. ; \
-	  exit 1 ; \
-	 fi
-
-definitions/$(CALIPSO_DEFINITION_FILE):
-	test -d definitions || $(mkinstalldirs) definitions
-	@$(srcdir)/codadef.sh $(srcdir)/definitions/CALIPSO definitions
-	@if test ! -f definitions/$(CALIPSO_DEFINITION_FILE) ; then \
-	  echo definitions/$(CALIPSO_DEFINITION_FILE) not created. ; \
-	  echo run './config.status --recheck' to update the .codadef version reference. ; \
-	  exit 1 ; \
-	 fi
-
-definitions/$(CLOUDNET_DEFINITION_FILE):
-	test -d definitions || $(mkinstalldirs) definitions
-	@$(srcdir)/codadef.sh $(srcdir)/definitions/CLOUDNET definitions
-	@if test ! -f definitions/$(CLOUDNET_DEFINITION_FILE) ; then \
-	  echo definitions/$(CLOUDNET_DEFINITION_FILE) not created. ; \
-	  echo run './config.status --recheck' to update the .codadef version reference. ; \
-	  exit 1 ; \
-	 fi
-
-definitions/$(EARLINET_DEFINITION_FILE):
-	test -d definitions || $(mkinstalldirs) definitions
-	@$(srcdir)/codadef.sh $(srcdir)/definitions/EARLINET definitions
-	@if test ! -f definitions/$(EARLINET_DEFINITION_FILE) ; then \
-	  echo definitions/$(EARLINET_DEFINITION_FILE) not created. ; \
-	  echo run './config.status --recheck' to update the .codadef version reference. ; \
-	  exit 1 ; \
-	 fi
-
-definitions/$(ECMWF_DEFINITION_FILE):
-	test -d definitions || $(mkinstalldirs) definitions
-	@$(srcdir)/codadef.sh $(srcdir)/definitions/ECMWF definitions
-	@if test ! -f definitions/$(ECMWF_DEFINITION_FILE) ; then \
-	  echo definitions/$(ECMWF_DEFINITION_FILE) not created. ; \
-	  echo run './config.status --recheck' to update the .codadef version reference. ; \
-	  exit 1 ; \
-	 fi
-
-definitions/$(ENVISAT_GOMOS_DEFINITION_FILE):
-	test -d definitions || $(mkinstalldirs) definitions
-	@$(srcdir)/codadef.sh $(srcdir)/definitions/ENVISAT_GOMOS definitions
-	@if test ! -f definitions/$(ENVISAT_GOMOS_DEFINITION_FILE) ; then \
-	  echo definitions/$(ENVISAT_GOMOS_DEFINITION_FILE) not created. ; \
-	  echo run './config.status --recheck' to update the .codadef version reference. ; \
-	  exit 1 ; \
-	 fi
-
-definitions/$(ENVISAT_MIPAS_DEFINITION_FILE):
-	test -d definitions || $(mkinstalldirs) definitions
-	@$(srcdir)/codadef.sh $(srcdir)/definitions/ENVISAT_MIPAS definitions
-	@if test ! -f definitions/$(ENVISAT_MIPAS_DEFINITION_FILE) ; then \
-	  echo definitions/$(ENVISAT_MIPAS_DEFINITION_FILE) not created. ; \
-	  echo run './config.status --recheck' to update the .codadef version reference. ; \
-	  exit 1 ; \
-	 fi
-
-definitions/$(ENVISAT_SCIAMACHY_DEFINITION_FILE):
-	test -d definitions || $(mkinstalldirs) definitions
-	@$(srcdir)/codadef.sh $(srcdir)/definitions/ENVISAT_SCIAMACHY definitions
-	@if test ! -f definitions/$(ENVISAT_SCIAMACHY_DEFINITION_FILE) ; then \
-	  echo definitions/$(ENVISAT_SCIAMACHY_DEFINITION_FILE) not created. ; \
-	  echo run './config.status --recheck' to update the .codadef version reference. ; \
-	  exit 1 ; \
-	 fi
-
-definitions/$(EPS_DEFINITION_FILE):
-	test -d definitions || $(mkinstalldirs) definitions
-	@$(srcdir)/codadef.sh $(srcdir)/definitions/EPS definitions
-	@if test ! -f definitions/$(EPS_DEFINITION_FILE) ; then \
-	  echo definitions/$(EPS_DEFINITION_FILE) not created. ; \
-	  echo run './config.status --recheck' to update the .codadef version reference. ; \
-	  exit 1 ; \
-	 fi
-
-definitions/$(ERS_GOME_DEFINITION_FILE):
-	test -d definitions || $(mkinstalldirs) definitions
-	@$(srcdir)/codadef.sh $(srcdir)/definitions/ERS_GOME definitions
-	@if test ! -f definitions/$(ERS_GOME_DEFINITION_FILE) ; then \
-	  echo definitions/$(ERS_GOME_DEFINITION_FILE) not created. ; \
-	  echo run './config.status --recheck' to update the .codadef version reference. ; \
-	  exit 1 ; \
-	 fi
-
-definitions/$(ESACCI_AEROSOL_DEFINITION_FILE):
-	test -d definitions || $(mkinstalldirs) definitions
-	@$(srcdir)/codadef.sh $(srcdir)/definitions/ESACCI_AEROSOL definitions
-	@if test ! -f definitions/$(ESACCI_AEROSOL_DEFINITION_FILE) ; then \
-	  echo definitions/$(ESACCI_AEROSOL_DEFINITION_FILE) not created. ; \
-	  echo run './config.status --recheck' to update the .codadef version reference. ; \
-	  exit 1 ; \
-	 fi
-
-definitions/$(ESACCI_CLOUD_DEFINITION_FILE):
-	test -d definitions || $(mkinstalldirs) definitions
-	@$(srcdir)/codadef.sh $(srcdir)/definitions/ESACCI_CLOUD definitions
-	@if test ! -f definitions/$(ESACCI_CLOUD_DEFINITION_FILE) ; then \
-	  echo definitions/$(ESACCI_CLOUD_DEFINITION_FILE) not created. ; \
-	  echo run './config.status --recheck' to update the .codadef version reference. ; \
-	  exit 1 ; \
-	 fi
-
-definitions/$(ESACCI_GHG_DEFINITION_FILE):
-	test -d definitions || $(mkinstalldirs) definitions
-	@$(srcdir)/codadef.sh $(srcdir)/definitions/ESACCI_GHG definitions
-	@if test ! -f definitions/$(ESACCI_GHG_DEFINITION_FILE) ; then \
-	  echo definitions/$(ESACCI_GHG_DEFINITION_FILE) not created. ; \
-	  echo run './config.status --recheck' to update the .codadef version reference. ; \
-	  exit 1 ; \
-	 fi
-
-definitions/$(ESACCI_OZONE_DEFINITION_FILE):
-	test -d definitions || $(mkinstalldirs) definitions
-	@$(srcdir)/codadef.sh $(srcdir)/definitions/ESACCI_OZONE definitions
-	@if test ! -f definitions/$(ESACCI_OZONE_DEFINITION_FILE) ; then \
-	  echo definitions/$(ESACCI_OZONE_DEFINITION_FILE) not created. ; \
-	  echo run './config.status --recheck' to update the .codadef version reference. ; \
-	  exit 1 ; \
-	 fi
-
-definitions/$(GEOMS_DEFINITION_FILE):
-	test -d definitions || $(mkinstalldirs) definitions
-	@$(srcdir)/codadef.sh $(srcdir)/definitions/GEOMS definitions
-	@if test ! -f definitions/$(GEOMS_DEFINITION_FILE) ; then \
-	  echo definitions/$(GEOMS_DEFINITION_FILE) not created. ; \
-	  echo run './config.status --recheck' to update the .codadef version reference. ; \
-	  exit 1 ; \
-	 fi
-
-definitions/$(GOSAT_DEFINITION_FILE):
-	test -d definitions || $(mkinstalldirs) definitions
-	@$(srcdir)/codadef.sh $(srcdir)/definitions/GOSAT definitions
-	@if test ! -f definitions/$(GOSAT_DEFINITION_FILE) ; then \
-	  echo definitions/$(GOSAT_DEFINITION_FILE) not created. ; \
-	  echo run './config.status --recheck' to update the .codadef version reference. ; \
-	  exit 1 ; \
-	 fi
-
-definitions/$(NPP_SUOMI_DEFINITION_FILE):
-	test -d definitions || $(mkinstalldirs) definitions
-	@$(srcdir)/codadef.sh $(srcdir)/definitions/NPP_SUOMI definitions
-	@if test ! -f definitions/$(NPP_SUOMI_DEFINITION_FILE) ; then \
-	  echo definitions/$(NPP_SUOMI_DEFINITION_FILE) not created. ; \
-	  echo run './config.status --recheck' to update the .codadef version reference. ; \
-	  exit 1 ; \
-	 fi
-
-definitions/$(ODIN_OSIRIS_DEFINITION_FILE):
-	test -d definitions || $(mkinstalldirs) definitions
-	@$(srcdir)/codadef.sh $(srcdir)/definitions/ODIN_OSIRIS definitions
-	@if test ! -f definitions/$(ODIN_OSIRIS_DEFINITION_FILE) ; then \
-	  echo definitions/$(ODIN_OSIRIS_DEFINITION_FILE) not created. ; \
-	  echo run './config.status --recheck' to update the .codadef version reference. ; \
-	  exit 1 ; \
-	 fi
-
-definitions/$(ODIN_SMR_DEFINITION_FILE):
-	test -d definitions || $(mkinstalldirs) definitions
-	@$(srcdir)/codadef.sh $(srcdir)/definitions/ODIN_SMR definitions
-	@if test ! -f definitions/$(ODIN_SMR_DEFINITION_FILE) ; then \
-	  echo definitions/$(ODIN_SMR_DEFINITION_FILE) not created. ; \
-	  echo run './config.status --recheck' to update the .codadef version reference. ; \
-	  exit 1 ; \
-	 fi
-
-definitions/$(QA4ECV_DEFINITION_FILE):
-	test -d definitions || $(mkinstalldirs) definitions
-	@$(srcdir)/codadef.sh $(srcdir)/definitions/QA4ECV definitions
-	@if test ! -f definitions/$(QA4ECV_DEFINITION_FILE) ; then \
-	  echo definitions/$(QA4ECV_DEFINITION_FILE) not created. ; \
-	  echo run './config.status --recheck' to update the .codadef version reference. ; \
-	  exit 1 ; \
-	 fi
-
-definitions/$(SENTINEL5P_DEFINITION_FILE):
-	test -d definitions || $(mkinstalldirs) definitions
-	@$(srcdir)/codadef.sh $(srcdir)/definitions/Sentinel5P definitions
-	@if test ! -f definitions/$(SENTINEL5P_DEFINITION_FILE) ; then \
-	  echo definitions/$(SENTINEL5P_DEFINITION_FILE) not created. ; \
-	  echo run './config.status --recheck' to update the .codadef version reference. ; \
-	  exit 1 ; \
-	 fi
-
-definitions/$(TEMIS_DEFINITION_FILE):
-	test -d definitions || $(mkinstalldirs) definitions
-	@$(srcdir)/codadef.sh $(srcdir)/definitions/TEMIS definitions
-	@if test ! -f definitions/$(TEMIS_DEFINITION_FILE) ; then \
-	  echo definitions/$(TEMIS_DEFINITION_FILE) not created. ; \
-	  echo run './config.status --recheck' to update the .codadef version reference. ; \
-	  exit 1 ; \
-	 fi
+@CODADEF_RULE_ACE_FTS@
+@CODADEF_RULE_ACSAF@
+@CODADEF_RULE_AEOLUS@
+@CODADEF_RULE_AURA_HIRDLS@
+@CODADEF_RULE_AURA_MLS@
+@CODADEF_RULE_AURA_OMI@
+@CODADEF_RULE_AURA_TES@
+@CODADEF_RULE_CALIPSO@
+@CODADEF_RULE_CLOUDNET@
+@CODADEF_RULE_EARLINET@
+@CODADEF_RULE_ECMWF@
+@CODADEF_RULE_ENVISAT_GOMOS@
+@CODADEF_RULE_ENVISAT_MIPAS@
+@CODADEF_RULE_ENVISAT_SCIAMACHY@
+@CODADEF_RULE_EPS@
+@CODADEF_RULE_ERS_GOME@
+@CODADEF_RULE_ESACCI_AEROSOL@
+@CODADEF_RULE_ESACCI_CLOUD@
+@CODADEF_RULE_ESACCI_GHG@
+@CODADEF_RULE_ESACCI_OZONE@
+@CODADEF_RULE_GEOMS@
+@CODADEF_RULE_GOSAT@
+@CODADEF_RULE_NPP_SUOMI@
+@CODADEF_RULE_ODIN_OSIRIS@
+@CODADEF_RULE_ODIN_SMR@
+@CODADEF_RULE_QA4ECV@
+@CODADEF_RULE_Sentinel5P@
+@CODADEF_RULE_TEMIS@
 
 # *** misc distribution files ***
 
