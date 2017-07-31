@@ -436,10 +436,41 @@ static int perform_pressure_quality_convergence_precision_checks(ingest_info *in
     harp_array pressure_data, quality_data, convergence_data, precision_data;
     product_limits *limits;
 
-    CHECKED_MALLOC(pressure_data.double_data, info->num_levels * sizeof(double));
-    CHECKED_MALLOC(quality_data.double_data, info->num_times * sizeof(double));
-    CHECKED_MALLOC(convergence_data.double_data, info->num_times * sizeof(double));
-    CHECKED_MALLOC(precision_data.double_data, info->num_times * info->num_levels * sizeof(double));
+    pressure_data.double_data = malloc(info->num_levels * sizeof(double));
+    if (pressure_data.double_data == NULL)
+    {
+        harp_set_error(HARP_ERROR_OUT_OF_MEMORY, "out of memory (could not allocate %lu bytes) (%s:%u)",
+                       info->num_levels * sizeof(double), __FILE__, __LINE__);
+        return -1;
+    }
+    quality_data.double_data = malloc(info->num_levels * sizeof(double));
+    if (quality_data.double_data == NULL)
+    {
+        harp_set_error(HARP_ERROR_OUT_OF_MEMORY, "out of memory (could not allocate %lu bytes) (%s:%u)",
+                       info->num_levels * sizeof(double), __FILE__, __LINE__);
+        free(pressure_data.double_data);
+        return -1;
+    }
+    convergence_data.double_data = malloc(info->num_levels * sizeof(double));
+    if (convergence_data.double_data == NULL)
+    {
+        harp_set_error(HARP_ERROR_OUT_OF_MEMORY, "out of memory (could not allocate %lu bytes) (%s:%u)",
+                       info->num_levels * sizeof(double), __FILE__, __LINE__);
+        free(quality_data.double_data);
+        free(pressure_data.double_data);
+        return -1;
+    }
+    precision_data.double_data = malloc(info->num_levels * sizeof(double));
+    if (precision_data.double_data == NULL)
+    {
+        harp_set_error(HARP_ERROR_OUT_OF_MEMORY, "out of memory (could not allocate %lu bytes) (%s:%u)",
+                       info->num_levels * sizeof(double), __FILE__, __LINE__);
+        free(convergence_data.double_data);
+        free(quality_data.double_data);
+        free(pressure_data.double_data);
+        return -1;
+    }
+
     if (read_variable(&info->geo_cursor, "Pressure", 1, info->num_levels, 0, pressure_data) != 0)
     {
         free(precision_data.double_data);
