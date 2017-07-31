@@ -323,7 +323,7 @@ EXTRA_DIST += \
 
 python/_harpc.py: $(srcdir)/libharp/harp.h.in $(srcdir)/python/build.py
 	@$(MKDIR_P) python
-	$(PYTHON) $(srcdir)/python/build.py $(srcdir)/libharp/harp.h.in python/_harpc.py
+	$(PYTHON) $(srcdir)/python/build.py $(srcdir)/libharp/harp.h.in python/_harpc.py && touch python/_harpc.py # explicitly touch the file to make sure the timestamp gets updated
 
 EXTRA_DIST += \
 	python/_harpc.py \
