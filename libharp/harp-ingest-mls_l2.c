@@ -436,13 +436,7 @@ static int perform_pressure_quality_convergence_precision_checks(ingest_info *in
     harp_array pressure_data, quality_data, convergence_data, precision_data;
     product_limits *limits;
 
-    pressure_data.double_data = malloc(info->num_levels * sizeof(double));
-    if (pressure_data.double_data == NULL)
-    {
-        harp_set_error(HARP_ERROR_OUT_OF_MEMORY, "out of memory (could not allocate %lu bytes) (%s:%u)",
-                       info->num_levels * sizeof(double), __FILE__, __LINE__);
-        return -1;
-    }
+    CHECKED_MALLOC(pressure_data.double_data, info->num_levels * sizeof(double));
     quality_data.double_data = malloc(info->num_levels * sizeof(double));
     if (quality_data.double_data == NULL)
     {
@@ -569,7 +563,14 @@ static int perform_hno3_checks(ingest_info *info, int32_t *status_data)
     harp_array pressure_data, vmr_data;
 
     CHECKED_MALLOC(pressure_data.double_data, info->num_levels * sizeof(double));
-    CHECKED_MALLOC(vmr_data.double_data, info->num_times * info->num_levels * sizeof(double));
+    vmr_data.double_data = malloc(info->num_times * info->num_levels * sizeof(double));
+    if (vmr_data.double_data == NULL)
+    {
+        harp_set_error(HARP_ERROR_OUT_OF_MEMORY, "out of memory (could not allocate %lu bytes) (%s:%u)",
+                       info->num_times * info->num_levels * sizeof(double), __FILE__, __LINE__);
+        free(pressure_data.double_data);
+        return -1;
+    }
     if (read_variable(&info->geo_cursor, "Pressure", 1, info->num_levels, 0, pressure_data) != 0)
     {
         free(vmr_data.double_data);
