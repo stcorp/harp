@@ -413,6 +413,7 @@ int harp_product_sort_by_index(harp_product *product, const char *index_variable
         if (j == num_elements)
         {
             harp_set_error(HARP_ERROR_INVALID_ARGUMENT, "index %ld not found in index variable", (long)index[i]);
+            free(dim_element_ids);
             return -1;
         }
         dim_element_ids[i] = j;

@@ -734,6 +734,7 @@ static int generate_index(const char *filename, int num_ingestion_modules, harp_
     {
         harp_set_error(HARP_ERROR_OUT_OF_MEMORY, "out of memory (could not allocate %lu bytes) (%s:%u)",
                        num_ingestion_modules * sizeof(harp_ingestion_module *), __FILE__, __LINE__);
+        fclose(fout);
         return -1;
     }
     memcpy(sorted_module, ingestion_module, num_ingestion_modules * sizeof(harp_ingestion_module *));
