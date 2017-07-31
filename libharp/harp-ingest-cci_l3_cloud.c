@@ -467,6 +467,7 @@ static int ingestion_daily_l3u_init(const harp_ingestion_module *module, coda_pr
 
     if (coda_cursor_set_product(&cursor, info->product) != 0)
     {
+        ingestion_done(info);
         harp_set_error(HARP_ERROR_CODA, NULL);
         return -1;
     }
@@ -510,6 +511,7 @@ static int ingestion_daily_l3u_init(const harp_ingestion_module *module, coda_pr
 
     if (coda_cursor_set_product(&cursor, info->product) != 0)
     {
+        ingestion_done(info);
         harp_set_error(HARP_ERROR_CODA, NULL);
         return -1;
     }
@@ -535,6 +537,7 @@ static int ingestion_daily_l3u_init(const harp_ingestion_module *module, coda_pr
 
     if (coda_cursor_set_product(&cursor, info->product) != 0)
     {
+        ingestion_done(info);
         harp_set_error(HARP_ERROR_CODA, NULL);
         return -1;
     }
@@ -798,6 +801,7 @@ static int ingestion_monthly_l3c_init(const harp_ingestion_module *module, coda_
 
     if (coda_cursor_set_product(&cursor, info->product) != 0)
     {
+        ingestion_done(info);
         harp_set_error(HARP_ERROR_CODA, NULL);
         return -1;
     }
@@ -805,6 +809,7 @@ static int ingestion_monthly_l3c_init(const harp_ingestion_module *module, coda_
 
     if (coda_cursor_set_product(&cursor, info->product) != 0)
     {
+        ingestion_done(info);
         harp_set_error(HARP_ERROR_CODA, NULL);
         return -1;
     }
@@ -832,6 +837,7 @@ static int ingestion_monthly_l3c_init(const harp_ingestion_module *module, coda_
 
     if (coda_cursor_set_product(&cursor, info->product) != 0)
     {
+        ingestion_done(info);
         harp_set_error(HARP_ERROR_CODA, NULL);
         return -1;
     }
