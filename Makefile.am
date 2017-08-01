@@ -563,7 +563,7 @@ harp_doc: harpconvert libharp/harp.h doc/Doxyfile
 	  $(DOXYGEN) Doxyfile ; \
 	  cd .. ; \
 	  $(mkinstalldirs) doc/ingestions ; \
-	  ./harpconvert --generate-documentation doc/ingestions ; \
+	  UDUNITS2_XML_PATH=$(srcdir)/udunits2/udunits2.xml ./harpconvert --generate-documentation doc/ingestions ; \
 	  cp $(srcdir)/INSTALL doc/install.rst ; \
 	  if test "x$(srcdir)" != "x$(builddir)" ; then \
 	    cp $(srcdir)/doc/conf.py doc ; \
