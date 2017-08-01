@@ -37,7 +37,7 @@
 #include <stdlib.h>
 #include <string.h>
 
-#define NUM_SPECIES_TYPES 10
+#define NUM_SPECIES_TYPES 15
 
 typedef enum species_type_enum
 {
@@ -50,10 +50,17 @@ typedef enum species_type_enum
     species_f11,
     species_clno,
     species_n2o5,
-    species_f12
+    species_f12,
+    species_cof2,
+    species_ccl4,
+    species_hcn,
+    species_f14,
+    species_f22
 } species_type;
 
-const char *species_name[] = { "H2O", "O3", "HNO3", "CH4", "N2O", "NO2", "F11", "ClNO", "N2O5", "F12" };
+const char *species_name[] = {
+    "H2O", "O3", "HNO3", "CH4", "N2O", "NO2", "F11", "ClNO", "N2O5", "F12", "COF2", "CCL4", "HCN", "F14", "F22"
+};
 
 const char *species_mds_name[] = {
     "h2o_retrieval_mds",
@@ -65,7 +72,12 @@ const char *species_mds_name[] = {
     "f11_retrieval_mds",
     "clno_retrieval_mds",
     "n2o5_retrieval_mds",
-    "f12_retrieval_mds"
+    "f12_retrieval_mds",
+    "cof2_retrieval_mds",
+    "ccl4_retrieval_mds",
+    "hcn_retrieval_mds",
+    "f14_retrieval_mds",
+    "f22_retrieval_mds"
 };
 
 typedef struct ingest_info_struct
@@ -202,6 +214,26 @@ static int init_species_numbers(ingest_info *info)
         {
             info->species_index[species_f12] = species_number;
         }
+        else if (strcasecmp(head, "COF2") == 0)
+        {
+            info->species_index[species_cof2] = species_number;
+        }
+        else if (strcasecmp(head, "CCL4") == 0)
+        {
+            info->species_index[species_ccl4] = species_number;
+        }
+        else if (strcasecmp(head, "HCN") == 0)
+        {
+            info->species_index[species_hcn] = species_number;
+        }
+        else if (strcasecmp(head, "F14") == 0)
+        {
+            info->species_index[species_f14] = species_number;
+        }
+        else if (strcasecmp(head, "F22") == 0)
+        {
+            info->species_index[species_f22] = species_number;
+        }
 
         species_number++;
         head = tail;
@@ -224,6 +256,17 @@ static int init_species_numbers(ingest_info *info)
     if (info->product_version >= 3)
     {
         for (i = species_f11; i <= species_f12; i++)
+        {
+            if (info->species_index[i] < 0)
+            {
+                harp_set_error(HARP_ERROR_INGESTION, "missing %s in /sph/order_of_species", species_name[i]);
+                return -1;
+            }
+        }
+    }
+    if (info->product_version >= 4)
+    {
+        for (i = species_cof2; i <= species_f22; i++)
         {
             if (info->species_index[i] < 0)
             {
@@ -559,9 +602,13 @@ static int ingestion_init(const harp_ingestion_module *module, coda_product *pro
     {
         info->num_species = 6;
     }
-    else
+    else if (info->product_version < 4)
     {
         info->num_species = 10;
+    }
+    else
+    {
+        info->num_species = 15;
     }
     if (init_species_numbers(info) != 0)
     {
@@ -937,26 +984,47 @@ static int exclude_no2_akm(void *user_data)
 
 static int exclude_f11_akm(void *user_data)
 {
-    return ((ingest_info *)user_data)->product_version < 2 ||
-        ((ingest_info *)user_data)->species_index[species_f11] < 0;
+    return ((ingest_info *)user_data)->species_index[species_f11] < 0;
 }
 
 static int exclude_clno_akm(void *user_data)
 {
-    return ((ingest_info *)user_data)->product_version < 2 ||
-        ((ingest_info *)user_data)->species_index[species_clno] < 0;
+    return ((ingest_info *)user_data)->species_index[species_clno] < 0;
 }
 
 static int exclude_n2o5_akm(void *user_data)
 {
-    return ((ingest_info *)user_data)->product_version < 2 ||
-        ((ingest_info *)user_data)->species_index[species_n2o5] < 0;
+    return ((ingest_info *)user_data)->species_index[species_n2o5] < 0;
 }
 
 static int exclude_f12_akm(void *user_data)
 {
-    return ((ingest_info *)user_data)->product_version < 2 ||
-        ((ingest_info *)user_data)->species_index[species_f12] < 0;
+    return ((ingest_info *)user_data)->species_index[species_f12] < 0;
+}
+
+static int exclude_cof2_akm(void *user_data)
+{
+    return ((ingest_info *)user_data)->species_index[species_cof2] < 0;
+}
+
+static int exclude_ccl4_akm(void *user_data)
+{
+    return ((ingest_info *)user_data)->species_index[species_ccl4] < 0;
+}
+
+static int exclude_hcn_akm(void *user_data)
+{
+    return ((ingest_info *)user_data)->species_index[species_hcn] < 0;
+}
+
+static int exclude_f14_akm(void *user_data)
+{
+    return ((ingest_info *)user_data)->species_index[species_f14] < 0;
+}
+
+static int exclude_f22_akm(void *user_data)
+{
+    return ((ingest_info *)user_data)->species_index[species_f22] < 0;
 }
 
 static int exclude_h2o(void *user_data)
@@ -1007,6 +1075,31 @@ static int exclude_n2o5(void *user_data)
 static int exclude_f12(void *user_data)
 {
     return ((ingest_info *)user_data)->species_index[species_f12] < 0;
+}
+
+static int exclude_cof2(void *user_data)
+{
+    return ((ingest_info *)user_data)->species_index[species_cof2] < 0;
+}
+
+static int exclude_ccl4(void *user_data)
+{
+    return ((ingest_info *)user_data)->species_index[species_ccl4] < 0;
+}
+
+static int exclude_hcn(void *user_data)
+{
+    return ((ingest_info *)user_data)->species_index[species_hcn] < 0;
+}
+
+static int exclude_f14(void *user_data)
+{
+    return ((ingest_info *)user_data)->species_index[species_f14] < 0;
+}
+
+static int exclude_f22(void *user_data)
+{
+    return ((ingest_info *)user_data)->species_index[species_f22] < 0;
 }
 
 static int read_datetime(void *user_data, long index, harp_array data)
@@ -1329,6 +1422,106 @@ static int read_f12_uncertainty(void *user_data, long index, harp_array data)
                                                    info->max_num_altitudes], data);
 }
 
+static int read_cof2(void *user_data, long index, harp_array data)
+{
+    ingest_info *info = (ingest_info *)user_data;
+    int species_index = info->species_index[species_cof2];
+
+    return get_profile_data(info, &info->mds_cursor[species_cof2][index], "conc_alt", index,
+                            &info->lrv[(index * (info->num_species + 1) + species_index + 1) * info->max_num_altitudes],
+                            data);
+}
+
+static int read_cof2_uncertainty(void *user_data, long index, harp_array data)
+{
+    ingest_info *info = (ingest_info *)user_data;
+    int species_index = info->species_index[species_cof2];
+
+    return get_profile_uncertainty_data(info, &info->mds_cursor[species_cof2][index], "conc_var_cov", index,
+                                        &info->lrv[(index * (info->num_species + 1) + species_index + 1) *
+                                                   info->max_num_altitudes], data);
+}
+
+static int read_ccl4(void *user_data, long index, harp_array data)
+{
+    ingest_info *info = (ingest_info *)user_data;
+    int species_index = info->species_index[species_ccl4];
+
+    return get_profile_data(info, &info->mds_cursor[species_ccl4][index], "conc_alt", index,
+                            &info->lrv[(index * (info->num_species + 1) + species_index + 1) * info->max_num_altitudes],
+                            data);
+}
+
+static int read_ccl4_uncertainty(void *user_data, long index, harp_array data)
+{
+    ingest_info *info = (ingest_info *)user_data;
+    int species_index = info->species_index[species_ccl4];
+
+    return get_profile_uncertainty_data(info, &info->mds_cursor[species_ccl4][index], "conc_var_cov", index,
+                                        &info->lrv[(index * (info->num_species + 1) + species_index + 1) *
+                                                   info->max_num_altitudes], data);
+}
+
+static int read_hcn(void *user_data, long index, harp_array data)
+{
+    ingest_info *info = (ingest_info *)user_data;
+    int species_index = info->species_index[species_hcn];
+
+    return get_profile_data(info, &info->mds_cursor[species_hcn][index], "conc_alt", index,
+                            &info->lrv[(index * (info->num_species + 1) + species_index + 1) * info->max_num_altitudes],
+                            data);
+}
+
+static int read_hcn_uncertainty(void *user_data, long index, harp_array data)
+{
+    ingest_info *info = (ingest_info *)user_data;
+    int species_index = info->species_index[species_hcn];
+
+    return get_profile_uncertainty_data(info, &info->mds_cursor[species_hcn][index], "conc_var_cov", index,
+                                        &info->lrv[(index * (info->num_species + 1) + species_index + 1) *
+                                                   info->max_num_altitudes], data);
+}
+
+static int read_f14(void *user_data, long index, harp_array data)
+{
+    ingest_info *info = (ingest_info *)user_data;
+    int species_index = info->species_index[species_f14];
+
+    return get_profile_data(info, &info->mds_cursor[species_f14][index], "conc_alt", index,
+                            &info->lrv[(index * (info->num_species + 1) + species_index + 1) * info->max_num_altitudes],
+                            data);
+}
+
+static int read_f14_uncertainty(void *user_data, long index, harp_array data)
+{
+    ingest_info *info = (ingest_info *)user_data;
+    int species_index = info->species_index[species_f14];
+
+    return get_profile_uncertainty_data(info, &info->mds_cursor[species_f14][index], "conc_var_cov", index,
+                                        &info->lrv[(index * (info->num_species + 1) + species_index + 1) *
+                                                   info->max_num_altitudes], data);
+}
+
+static int read_f22(void *user_data, long index, harp_array data)
+{
+    ingest_info *info = (ingest_info *)user_data;
+    int species_index = info->species_index[species_f22];
+
+    return get_profile_data(info, &info->mds_cursor[species_f22][index], "conc_alt", index,
+                            &info->lrv[(index * (info->num_species + 1) + species_index + 1) * info->max_num_altitudes],
+                            data);
+}
+
+static int read_f22_uncertainty(void *user_data, long index, harp_array data)
+{
+    ingest_info *info = (ingest_info *)user_data;
+    int species_index = info->species_index[species_f22];
+
+    return get_profile_uncertainty_data(info, &info->mds_cursor[species_f22][index], "conc_var_cov", index,
+                                        &info->lrv[(index * (info->num_species + 1) + species_index + 1) *
+                                                   info->max_num_altitudes], data);
+}
+
 static int read_h2o_vmr(void *user_data, long index, harp_array data)
 {
     ingest_info *info = (ingest_info *)user_data;
@@ -1529,6 +1722,106 @@ static int read_f12_vmr_uncertainty(void *user_data, long index, harp_array data
                                                    info->max_num_altitudes], data);
 }
 
+static int read_cof2_vmr(void *user_data, long index, harp_array data)
+{
+    ingest_info *info = (ingest_info *)user_data;
+    int species_index = info->species_index[species_cof2];
+
+    return get_profile_data(info, &info->mds_cursor[species_cof2][index], "vmr", index,
+                            &info->lrv[(index * (info->num_species + 1) + species_index + 1) * info->max_num_altitudes],
+                            data);
+}
+
+static int read_cof2_vmr_uncertainty(void *user_data, long index, harp_array data)
+{
+    ingest_info *info = (ingest_info *)user_data;
+    int species_index = info->species_index[species_cof2];
+
+    return get_profile_uncertainty_data(info, &info->mds_cursor[species_cof2][index], "vmr_var_cov", index,
+                                        &info->lrv[(index * (info->num_species + 1) + species_index + 1) *
+                                                   info->max_num_altitudes], data);
+}
+
+static int read_ccl4_vmr(void *user_data, long index, harp_array data)
+{
+    ingest_info *info = (ingest_info *)user_data;
+    int species_index = info->species_index[species_ccl4];
+
+    return get_profile_data(info, &info->mds_cursor[species_ccl4][index], "vmr", index,
+                            &info->lrv[(index * (info->num_species + 1) + species_index + 1) * info->max_num_altitudes],
+                            data);
+}
+
+static int read_ccl4_vmr_uncertainty(void *user_data, long index, harp_array data)
+{
+    ingest_info *info = (ingest_info *)user_data;
+    int species_index = info->species_index[species_ccl4];
+
+    return get_profile_uncertainty_data(info, &info->mds_cursor[species_ccl4][index], "vmr_var_cov", index,
+                                        &info->lrv[(index * (info->num_species + 1) + species_index + 1) *
+                                                   info->max_num_altitudes], data);
+}
+
+static int read_hcn_vmr(void *user_data, long index, harp_array data)
+{
+    ingest_info *info = (ingest_info *)user_data;
+    int species_index = info->species_index[species_hcn];
+
+    return get_profile_data(info, &info->mds_cursor[species_hcn][index], "vmr", index,
+                            &info->lrv[(index * (info->num_species + 1) + species_index + 1) * info->max_num_altitudes],
+                            data);
+}
+
+static int read_hcn_vmr_uncertainty(void *user_data, long index, harp_array data)
+{
+    ingest_info *info = (ingest_info *)user_data;
+    int species_index = info->species_index[species_hcn];
+
+    return get_profile_uncertainty_data(info, &info->mds_cursor[species_hcn][index], "vmr_var_cov", index,
+                                        &info->lrv[(index * (info->num_species + 1) + species_index + 1) *
+                                                   info->max_num_altitudes], data);
+}
+
+static int read_f14_vmr(void *user_data, long index, harp_array data)
+{
+    ingest_info *info = (ingest_info *)user_data;
+    int species_index = info->species_index[species_f14];
+
+    return get_profile_data(info, &info->mds_cursor[species_f14][index], "vmr", index,
+                            &info->lrv[(index * (info->num_species + 1) + species_index + 1) * info->max_num_altitudes],
+                            data);
+}
+
+static int read_f14_vmr_uncertainty(void *user_data, long index, harp_array data)
+{
+    ingest_info *info = (ingest_info *)user_data;
+    int species_index = info->species_index[species_f14];
+
+    return get_profile_uncertainty_data(info, &info->mds_cursor[species_f14][index], "vmr_var_cov", index,
+                                        &info->lrv[(index * (info->num_species + 1) + species_index + 1) *
+                                                   info->max_num_altitudes], data);
+}
+
+static int read_f22_vmr(void *user_data, long index, harp_array data)
+{
+    ingest_info *info = (ingest_info *)user_data;
+    int species_index = info->species_index[species_f22];
+
+    return get_profile_data(info, &info->mds_cursor[species_f22][index], "vmr", index,
+                            &info->lrv[(index * (info->num_species + 1) + species_index + 1) * info->max_num_altitudes],
+                            data);
+}
+
+static int read_f22_vmr_uncertainty(void *user_data, long index, harp_array data)
+{
+    ingest_info *info = (ingest_info *)user_data;
+    int species_index = info->species_index[species_f22];
+
+    return get_profile_uncertainty_data(info, &info->mds_cursor[species_f22][index], "vmr_var_cov", index,
+                                        &info->lrv[(index * (info->num_species + 1) + species_index + 1) *
+                                                   info->max_num_altitudes], data);
+}
+
 static int read_h2o_akm_vmr(void *user_data, long index, harp_array data)
 {
     ingest_info *info = (ingest_info *)user_data;
@@ -1629,9 +1922,61 @@ static int read_f12_akm_vmr(void *user_data, long index, harp_array data)
                         data);
 }
 
+static int read_cof2_akm_vmr(void *user_data, long index, harp_array data)
+{
+    ingest_info *info = (ingest_info *)user_data;
+    int species_index = info->species_index[species_cof2];
+
+    return get_akm_data(info, &info->mds_cursor[species_cof2][index], index,
+                        &info->lrv[(index * (info->num_species + 1) + species_index + 1) * info->max_num_altitudes],
+                        data);
+}
+
+static int read_ccl4_akm_vmr(void *user_data, long index, harp_array data)
+{
+    ingest_info *info = (ingest_info *)user_data;
+    int species_index = info->species_index[species_ccl4];
+
+    return get_akm_data(info, &info->mds_cursor[species_ccl4][index], index,
+                        &info->lrv[(index * (info->num_species + 1) + species_index + 1) * info->max_num_altitudes],
+                        data);
+}
+
+static int read_hcn_akm_vmr(void *user_data, long index, harp_array data)
+{
+    ingest_info *info = (ingest_info *)user_data;
+    int species_index = info->species_index[species_hcn];
+
+    return get_akm_data(info, &info->mds_cursor[species_hcn][index], index,
+                        &info->lrv[(index * (info->num_species + 1) + species_index + 1) * info->max_num_altitudes],
+                        data);
+}
+
+static int read_f14_akm_vmr(void *user_data, long index, harp_array data)
+{
+    ingest_info *info = (ingest_info *)user_data;
+    int species_index = info->species_index[species_f14];
+
+    return get_akm_data(info, &info->mds_cursor[species_f14][index], index,
+                        &info->lrv[(index * (info->num_species + 1) + species_index + 1) * info->max_num_altitudes],
+                        data);
+}
+
+static int read_f22_akm_vmr(void *user_data, long index, harp_array data)
+{
+    ingest_info *info = (ingest_info *)user_data;
+    int species_index = info->species_index[species_f22];
+
+    return get_akm_data(info, &info->mds_cursor[species_f22][index], index,
+                        &info->lrv[(index * (info->num_species + 1) + species_index + 1) * info->max_num_altitudes],
+                        data);
+}
+
 int harp_ingestion_module_mipas_l2_init(void)
 {
-    const char *species_options[] = { "H2O", "O3", "HNO3", "CH4", "N2O", "NO2", "F11", "ClNO", "N2O5", "F12" };
+    const char *species_options[] = {
+        "H2O", "O3", "HNO3", "CH4", "N2O", "NO2", "F11", "ClNO", "N2O5", "F12", "COF2", "CCL4", "HCN", "F14", "F22"
+    };
     harp_ingestion_module *module;
     harp_product_definition *product_definition;
     harp_variable_definition *variable_definition;
@@ -1915,6 +2260,91 @@ int harp_ingestion_module_mipas_l2_init(void)
     path = "/f12_retrieval_mds[]/conc_var_cov[]";
     harp_variable_definition_add_mapping(variable_definition, NULL, NULL, path, NULL);
 
+    description = "COF2 number density";
+    variable_definition = harp_ingestion_register_variable_sample_read(product_definition, "COF2_number_density",
+                                                                       harp_type_double, 2, dimension_type, NULL,
+                                                                       description, "molec/cm^3", exclude_cof2,
+                                                                       read_cof2);
+    path = "/cof2_retrieval_mds[]/conc_alt[]";
+    harp_variable_definition_add_mapping(variable_definition, NULL, NULL, path, NULL);
+
+    description = "standard deviation for the COF2 number density";
+    variable_definition = harp_ingestion_register_variable_sample_read(product_definition,
+                                                                       "COF2_number_density_uncertainty",
+                                                                       harp_type_double, 2, dimension_type, NULL,
+                                                                       description, "molec/cm^3", exclude_cof2,
+                                                                       read_cof2_uncertainty);
+    path = "/cof2_retrieval_mds[]/conc_var_cov[]";
+    harp_variable_definition_add_mapping(variable_definition, NULL, NULL, path, NULL);
+
+    description = "CCL4 number density";
+    variable_definition = harp_ingestion_register_variable_sample_read(product_definition, "CCl4_number_density",
+                                                                       harp_type_double, 2, dimension_type, NULL,
+                                                                       description, "molec/cm^3", exclude_ccl4,
+                                                                       read_ccl4);
+    path = "/ccl4_retrieval_mds[]/conc_alt[]";
+    harp_variable_definition_add_mapping(variable_definition, NULL, NULL, path, NULL);
+
+    description = "standard deviation for the CCL4 number density";
+    variable_definition = harp_ingestion_register_variable_sample_read(product_definition,
+                                                                       "CCl4_number_density_uncertainty",
+                                                                       harp_type_double, 2, dimension_type, NULL,
+                                                                       description, "molec/cm^3", exclude_ccl4,
+                                                                       read_ccl4_uncertainty);
+    path = "/ccl4_retrieval_mds[]/conc_var_cov[]";
+    harp_variable_definition_add_mapping(variable_definition, NULL, NULL, path, NULL);
+
+    description = "HCN number density";
+    variable_definition = harp_ingestion_register_variable_sample_read(product_definition, "HCN_number_density",
+                                                                       harp_type_double, 2, dimension_type, NULL,
+                                                                       description, "molec/cm^3", exclude_hcn,
+                                                                       read_hcn);
+    path = "/hcn_retrieval_mds[]/conc_alt[]";
+    harp_variable_definition_add_mapping(variable_definition, NULL, NULL, path, NULL);
+
+    description = "standard deviation for the HCN number density";
+    variable_definition = harp_ingestion_register_variable_sample_read(product_definition,
+                                                                       "HCN_number_density_uncertainty",
+                                                                       harp_type_double, 2, dimension_type, NULL,
+                                                                       description, "molec/cm^3", exclude_hcn,
+                                                                       read_hcn_uncertainty);
+    path = "/hcn_retrieval_mds[]/conc_var_cov[]";
+    harp_variable_definition_add_mapping(variable_definition, NULL, NULL, path, NULL);
+
+    description = "F14 number density";
+    variable_definition = harp_ingestion_register_variable_sample_read(product_definition, "CF4_number_density",
+                                                                       harp_type_double, 2, dimension_type, NULL,
+                                                                       description, "molec/cm^3", exclude_f14,
+                                                                       read_f14);
+    path = "/f14_retrieval_mds[]/conc_alt[]";
+    harp_variable_definition_add_mapping(variable_definition, NULL, NULL, path, NULL);
+
+    description = "standard deviation for the F14 number density";
+    variable_definition = harp_ingestion_register_variable_sample_read(product_definition,
+                                                                       "CF4_number_density_uncertainty",
+                                                                       harp_type_double, 2, dimension_type, NULL,
+                                                                       description, "molec/cm^3", exclude_f14,
+                                                                       read_f14_uncertainty);
+    path = "/f14_retrieval_mds[]/conc_var_cov[]";
+    harp_variable_definition_add_mapping(variable_definition, NULL, NULL, path, NULL);
+
+    description = "F22 number density";
+    variable_definition = harp_ingestion_register_variable_sample_read(product_definition, "CHClF2_number_density",
+                                                                       harp_type_double, 2, dimension_type, NULL,
+                                                                       description, "molec/cm^3", exclude_f22,
+                                                                       read_f22);
+    path = "/f22_retrieval_mds[]/conc_alt[]";
+    harp_variable_definition_add_mapping(variable_definition, NULL, NULL, path, NULL);
+
+    description = "standard deviation for the F22 number density";
+    variable_definition = harp_ingestion_register_variable_sample_read(product_definition,
+                                                                       "CHClF2_number_density_uncertainty",
+                                                                       harp_type_double, 2, dimension_type, NULL,
+                                                                       description, "molec/cm^3", exclude_f22,
+                                                                       read_f22_uncertainty);
+    path = "/f22_retrieval_mds[]/conc_var_cov[]";
+    harp_variable_definition_add_mapping(variable_definition, NULL, NULL, path, NULL);
+
     /* Volume mixing ratio profiles. */
     description = "H2O volume mixing ratio";
     variable_definition = harp_ingestion_register_variable_sample_read(product_definition, "H2O_volume_mixing_ratio",
@@ -2079,6 +2509,88 @@ int harp_ingestion_module_mipas_l2_init(void)
     path = "/f12_retrieval_mds[]/vmr_var_cov[]";
     harp_variable_definition_add_mapping(variable_definition, NULL, NULL, path, NULL);
 
+    description = "COF2 volume mixing ratio";
+    variable_definition = harp_ingestion_register_variable_sample_read(product_definition, "COF2_volume_mixing_ratio",
+                                                                       harp_type_double, 2, dimension_type, NULL,
+                                                                       description, "ppmv", exclude_cof2,
+                                                                       read_cof2_vmr);
+    path = "/cof2_retrieval_mds[]/vmr[]";
+    harp_variable_definition_add_mapping(variable_definition, NULL, NULL, path, NULL);
+
+    description = "standard deviation for the COF2 volume mixing ratio";
+    variable_definition = harp_ingestion_register_variable_sample_read(product_definition,
+                                                                       "COF2_volume_mixing_ratio_uncertainty",
+                                                                       harp_type_double, 2, dimension_type, NULL,
+                                                                       description, "ppmv", exclude_cof2,
+                                                                       read_cof2_vmr_uncertainty);
+    path = "/cof2_retrieval_mds[]/vmr_var_cov[]";
+    harp_variable_definition_add_mapping(variable_definition, NULL, NULL, path, NULL);
+
+    description = "CCL4 volume mixing ratio";
+    variable_definition = harp_ingestion_register_variable_sample_read(product_definition, "CCl4_volume_mixing_ratio",
+                                                                       harp_type_double, 2, dimension_type, NULL,
+                                                                       description, "ppmv", exclude_ccl4,
+                                                                       read_ccl4_vmr);
+    path = "/ccl4_retrieval_mds[]/vmr[]";
+    harp_variable_definition_add_mapping(variable_definition, NULL, NULL, path, NULL);
+
+    description = "standard deviation for the CCL4 volume mixing ratio";
+    variable_definition = harp_ingestion_register_variable_sample_read(product_definition,
+                                                                       "CCl4_volume_mixing_ratio_uncertainty",
+                                                                       harp_type_double, 2, dimension_type, NULL,
+                                                                       description, "ppmv", exclude_ccl4,
+                                                                       read_ccl4_vmr_uncertainty);
+    path = "/ccl4_retrieval_mds[]/vmr_var_cov[]";
+    harp_variable_definition_add_mapping(variable_definition, NULL, NULL, path, NULL);
+
+    description = "HCN volume mixing ratio";
+    variable_definition = harp_ingestion_register_variable_sample_read(product_definition, "HCN_volume_mixing_ratio",
+                                                                       harp_type_double, 2, dimension_type, NULL,
+                                                                       description, "ppmv", exclude_hcn, read_hcn_vmr);
+    path = "/hcn_retrieval_mds[]/vmr[]";
+    harp_variable_definition_add_mapping(variable_definition, NULL, NULL, path, NULL);
+
+    description = "standard deviation for the HCN volume mixing ratio";
+    variable_definition = harp_ingestion_register_variable_sample_read(product_definition,
+                                                                       "HCN_volume_mixing_ratio_uncertainty",
+                                                                       harp_type_double, 2, dimension_type, NULL,
+                                                                       description, "ppmv", exclude_hcn,
+                                                                       read_hcn_vmr_uncertainty);
+    path = "/hcn_retrieval_mds[]/vmr_var_cov[]";
+    harp_variable_definition_add_mapping(variable_definition, NULL, NULL, path, NULL);
+
+    description = "F14 volume mixing ratio";
+    variable_definition = harp_ingestion_register_variable_sample_read(product_definition, "CF4_volume_mixing_ratio",
+                                                                       harp_type_double, 2, dimension_type, NULL,
+                                                                       description, "ppmv", exclude_f14, read_f14_vmr);
+    path = "/f14_retrieval_mds[]/vmr[]";
+    harp_variable_definition_add_mapping(variable_definition, NULL, NULL, path, NULL);
+
+    description = "standard deviation for the F14 volume mixing ratio";
+    variable_definition = harp_ingestion_register_variable_sample_read(product_definition,
+                                                                       "CF4_volume_mixing_ratio_uncertainty",
+                                                                       harp_type_double, 2, dimension_type, NULL,
+                                                                       description, "ppmv", exclude_f14,
+                                                                       read_f14_vmr_uncertainty);
+    path = "/f14_retrieval_mds[]/vmr_var_cov[]";
+    harp_variable_definition_add_mapping(variable_definition, NULL, NULL, path, NULL);
+
+    description = "F22 volume mixing ratio";
+    variable_definition = harp_ingestion_register_variable_sample_read(product_definition, "CHClF2_volume_mixing_ratio",
+                                                                       harp_type_double, 2, dimension_type, NULL,
+                                                                       description, "ppmv", exclude_f22, read_f22_vmr);
+    path = "/f22_retrieval_mds[]/vmr[]";
+    harp_variable_definition_add_mapping(variable_definition, NULL, NULL, path, NULL);
+
+    description = "standard deviation for the F22 volume mixing ratio";
+    variable_definition = harp_ingestion_register_variable_sample_read(product_definition,
+                                                                       "CHClF2_volume_mixing_ratio_uncertainty",
+                                                                       harp_type_double, 2, dimension_type, NULL,
+                                                                       description, "ppmv", exclude_f22,
+                                                                       read_f22_vmr_uncertainty);
+    path = "/f22_retrieval_mds[]/vmr_var_cov[]";
+    harp_variable_definition_add_mapping(variable_definition, NULL, NULL, path, NULL);
+
     /* Volume mixing ratio profile averaging kernel matrices. */
     description = "averaging kernel matrix";
     variable_definition = harp_ingestion_register_variable_sample_read(product_definition,
@@ -2156,6 +2668,46 @@ int harp_ingestion_module_mipas_l2_init(void)
                                                                        description, "ppmv/ppmv", exclude_f12_akm,
                                                                        read_f12_akm_vmr);
     path = "/f12_retrieval_mds[]/avg_kernel[]";
+    harp_variable_definition_add_mapping(variable_definition, NULL, NULL, path, NULL);
+
+    variable_definition = harp_ingestion_register_variable_sample_read(product_definition,
+                                                                       "COF2_volume_mixing_ratio_avk",
+                                                                       harp_type_double, 3, dimension_type, NULL,
+                                                                       description, "ppmv/ppmv", exclude_cof2_akm,
+                                                                       read_cof2_akm_vmr);
+    path = "/cof2_retrieval_mds[]/avg_kernel[]";
+    harp_variable_definition_add_mapping(variable_definition, NULL, NULL, path, NULL);
+
+    variable_definition = harp_ingestion_register_variable_sample_read(product_definition,
+                                                                       "CCl4_volume_mixing_ratio_avk",
+                                                                       harp_type_double, 3, dimension_type, NULL,
+                                                                       description, "ppmv/ppmv", exclude_ccl4_akm,
+                                                                       read_ccl4_akm_vmr);
+    path = "/ccl4_retrieval_mds[]/avg_kernel[]";
+    harp_variable_definition_add_mapping(variable_definition, NULL, NULL, path, NULL);
+
+    variable_definition = harp_ingestion_register_variable_sample_read(product_definition,
+                                                                       "HCN_volume_mixing_ratio_avk",
+                                                                       harp_type_double, 3, dimension_type, NULL,
+                                                                       description, "ppmv/ppmv", exclude_hcn_akm,
+                                                                       read_hcn_akm_vmr);
+    path = "/hcn_retrieval_mds[]/avg_kernel[]";
+    harp_variable_definition_add_mapping(variable_definition, NULL, NULL, path, NULL);
+
+    variable_definition = harp_ingestion_register_variable_sample_read(product_definition,
+                                                                       "CF4_volume_mixing_ratio_avk",
+                                                                       harp_type_double, 3, dimension_type, NULL,
+                                                                       description, "ppmv/ppmv", exclude_f14_akm,
+                                                                       read_f14_akm_vmr);
+    path = "/f14_retrieval_mds[]/avg_kernel[]";
+    harp_variable_definition_add_mapping(variable_definition, NULL, NULL, path, NULL);
+
+    variable_definition = harp_ingestion_register_variable_sample_read(product_definition,
+                                                                       "CHClF2_volume_mixing_ratio_avk",
+                                                                       harp_type_double, 3, dimension_type, NULL,
+                                                                       description, "ppmv/ppmv", exclude_f22_akm,
+                                                                       read_f22_akm_vmr);
+    path = "/f22_retrieval_mds[]/avg_kernel[]";
     harp_variable_definition_add_mapping(variable_definition, NULL, NULL, path, NULL);
 
     return 0;

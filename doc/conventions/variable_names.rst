@@ -188,16 +188,17 @@ PM10  particulate matter with d < 10 um
 
 The supported species are:
 
-======== ============================ ==========================
+======== ============================ ===========================
 Name     Description                  Aliases (not used by HARP)
-======== ============================ ==========================
+======== ============================ ===========================
 dry_air  dry air
 BrO      bromine oxide
 BrO2     bromine dioxide
-CCl2F2   dichlorodifluoromethane      freon-12, CFC-12, R-12
-CCl3F    trichlorofluoromethane       freon-11, CFC-11, R-11
-CF4      tetrafluoromethane
-CHClF2   chlorodifluoromethane        HCFC-22, R-22
+CCl2F2   dichlorodifluoromethane      freon-12, CFC-12, R-12, F12
+CCl3F    trichlorofluoromethane       freon-11, CFC-11, R-11, F11
+CCl4     tetrachloromethane
+CF4      tetrafluoromethane           CFC-14, F14
+CHClF2   chlorodifluoromethane        HCFC-22, R-22, F22
 CH3Cl    chloromethane,               HCC-40, R-40
          methyl chloride
 CH3CN    acetonitrile,
@@ -255,7 +256,7 @@ O3_686   ozone (O16/O18/O16 isotopes)
 O4       tetraoxygen, oxozone
 SF6      sulfur hexafluoride
 SO2      sulfur dioxide
-======== ============================ ==========================
+======== ============================ ===========================
 
 Variables for which a prefix and/or postfix is provided can have any of the given prefixes and/or any of the given
 postfixes (separated by underscores). It is not allowed to provide more than one prefix or more than one postfix.

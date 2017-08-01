@@ -85,8 +85,8 @@
 
 * Added product ingestions for Cloudnet L2a classification products.
 
-* Updates to GEOMS-TE-UVVIS-DOAS-OFFAXIS, ECMWF-GRIB, S5P, and QA4ECV
-  product ingestions.
+* Updates to ECMF-GRIB, GEOMS-TE-UVVIS-DOAS-OFFAXIS, MIPAS, QA4ECV, and
+  S5P product ingestions.
 
 0.6 2017-04-23
 ~~~~~~~~~~~~~~
