@@ -1896,7 +1896,7 @@ static int init_sun_reference_dimensions(ingest_info *info)
     return 0;
 }
 
-void register_variables_reference_spectrum_fields(harp_product_definition *product_definition)
+static void register_variables_reference_spectrum_fields(harp_product_definition *product_definition)
 {
     harp_variable_definition *variable_definition;
     harp_dimension_type dimension_type[2];

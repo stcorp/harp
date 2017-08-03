@@ -990,7 +990,7 @@ static int ingestion_init(const harp_ingestion_module *module, coda_product *pro
     return 0;
 }
 
-static int register_nominal_product(harp_ingestion_module *module)
+static void register_nominal_product(harp_ingestion_module *module)
 {
     const char *scan_direction_type_values[] = { "forward", "backward" };
     harp_product_definition *product_definition;
@@ -1154,11 +1154,9 @@ static int register_nominal_product(harp_ingestion_module *module)
                                                    read_viewing_azimuth_angle);
     path = "/egp[]/agi/los_spacecraft/azimuth_b";
     harp_variable_definition_add_mapping(variable_definition, NULL, NULL, path, NULL);
-
-    return 0;
 }
 
-static int register_sun_reference_product(harp_ingestion_module *module)
+static void register_sun_reference_product(harp_ingestion_module *module)
 {
     harp_product_definition *product_definition_sun_reference;
     harp_variable_definition *variable_definition;
@@ -1213,8 +1211,6 @@ static int register_sun_reference_product(harp_ingestion_module *module)
                                                    read_sun_reference_wavelength);
     path = "/cdr[]/sdr[]/wavelength";
     harp_variable_definition_add_mapping(variable_definition, NULL, NULL, path, NULL);
-
-    return 0;
 }
 
 int harp_ingestion_module_gome_l1_init(void)

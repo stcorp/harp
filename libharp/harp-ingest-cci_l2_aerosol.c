@@ -435,7 +435,7 @@ static int ingestion_init_aatsr_atsr2(const harp_ingestion_module *module, coda_
     return 0;
 }
 
-static int register_aatsr_atsr2_product(harp_ingestion_module *module, char *productname)
+static void register_aatsr_atsr2_product(harp_ingestion_module *module, char *productname)
 {
     harp_product_definition *product_definition;
     harp_variable_definition *variable_definition;
@@ -544,11 +544,9 @@ static int register_aatsr_atsr2_product(harp_ingestion_module *module, char *pro
                                                    exclude_when_multiple_zenith_angles, read_solar_zenith_angle);
     path = "/sun_zenith_at_center[]";
     harp_variable_definition_add_mapping(variable_definition, NULL, NULL, path, NULL);
-
-    return 0;
 }
 
-static int register_module_l2_aatsr_atsr2(void)
+static void register_module_l2_aatsr_atsr2(void)
 {
     harp_ingestion_module *module;
 
@@ -563,8 +561,6 @@ static int register_module_l2_aatsr_atsr2(void)
                                             "ATSR2_L2", "CCI L2 Aerosol profile from ATSR-2",
                                             ingestion_init_aatsr_atsr2, ingestion_done);
     register_aatsr_atsr2_product(module, "ESACCI_AEROSOL_L2_ATSR2");
-
-    return 0;
 }
 
 /* Start of code that is specific for the MERIS instrument */
@@ -595,7 +591,7 @@ static int ingestion_init_meris(const harp_ingestion_module *module, coda_produc
     return 0;
 }
 
-static int register_module_l2_meris(void)
+static void register_module_l2_meris(void)
 {
     harp_ingestion_module *module;
     harp_product_definition *product_definition;
@@ -679,8 +675,6 @@ static int register_module_l2_meris(void)
                                                    dimension_type, NULL, description, "nm", NULL, read_wavelength);
     description = "fixed values";
     harp_variable_definition_add_mapping(variable_definition, NULL, NULL, NULL, description);
-
-    return 0;
 }
 
 /* Start of code that is specific for the IASI instrument */
@@ -725,7 +719,7 @@ static int ingestion_init_iasi(const harp_ingestion_module *module, coda_product
     return 0;
 }
 
-static int register_iasi_product(harp_ingestion_module *module, char *productname)
+static void register_iasi_product(harp_ingestion_module *module, char *productname)
 {
     harp_product_definition *product_definition;
     harp_variable_definition *variable_definition;
@@ -806,11 +800,9 @@ static int register_iasi_product(harp_ingestion_module *module, char *productnam
     harp_variable_definition_add_mapping(variable_definition, "data processed by DLR or ULB", NULL, path, NULL);
     path = "/satellite_zenith[]";
     harp_variable_definition_add_mapping(variable_definition, "data processed by LMD", NULL, path, NULL);
-
-    return 0;
 }
 
-static int register_module_l2_iasi(void)
+static void register_module_l2_iasi(void)
 {
     harp_ingestion_module *module;
 
@@ -819,8 +811,6 @@ static int register_module_l2_iasi(void)
                                             "IASI_L2", "CCI L2 Aerosol profile from IASI",
                                             ingestion_init_iasi, ingestion_done);
     register_iasi_product(module, "ESACCI_AEROSOL_L2_IASI");
-
-    return 0;
 }
 
 /* Main procedure for all instruments */

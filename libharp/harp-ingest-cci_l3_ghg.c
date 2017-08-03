@@ -360,7 +360,7 @@ static int ingestion_init(const harp_ingestion_module *module, coda_product *pro
     return 0;
 }
 
-static int register_module_l3_Obs4MIPs(void)
+static void register_module_l3_Obs4MIPs(void)
 {
     harp_ingestion_module *module;
     harp_product_definition *product_definition;
@@ -437,8 +437,6 @@ static int register_module_l3_Obs4MIPs(void)
                                                    exclude_co2, read_CO2_column_volume_mixing_ratio_uncertainty);
     path = "xco2_stddev[]";
     harp_variable_definition_add_mapping(variable_definition, NULL, NULL, path, NULL);
-
-    return 0;
 }
 
 int harp_ingestion_module_cci_l3_ghg_init(void)

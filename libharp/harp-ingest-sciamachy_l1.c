@@ -1192,7 +1192,7 @@ static int init_nadir_limb_occultation_dimensions(ingest_info *info)
     return 0;
 }
 
-void register_nadir_limb_occultation_product(harp_ingestion_module *module)
+static void register_nadir_limb_occultation_product(harp_ingestion_module *module)
 {
     const char *scan_direction_type_values[] = { "forward", "backward", "mixed" };
     harp_product_definition *product_definition;
@@ -1584,7 +1584,7 @@ static int init_sun_reference_dimensions(ingest_info *info)
     return 0;
 }
 
-void register_sun_reference_product(harp_ingestion_module *module)
+static void register_sun_reference_product(harp_ingestion_module *module)
 {
     harp_product_definition *product_definition;
     harp_variable_definition *variable_definition;

@@ -805,7 +805,7 @@ static int ingestion_init_merged_layer(const harp_ingestion_module *module, coda
 
 #endif
 
-void register_time_specific_fields(harp_product_definition *product_definition)
+static void register_time_specific_fields(harp_product_definition *product_definition)
 {
     harp_variable_definition *variable_definition;
     harp_dimension_type dimension_type[1] = { harp_dimension_time };
@@ -866,7 +866,7 @@ void register_time_specific_fields(harp_product_definition *product_definition)
     harp_variable_definition_add_mapping(variable_definition, NULL, NULL, path, NULL);
 }
 
-void register_layer_specific_fields(harp_product_definition *product_definition)
+static void register_layer_specific_fields(harp_product_definition *product_definition)
 {
     harp_variable_definition *variable_definition;
     harp_dimension_type dimension_type[3] =
@@ -956,7 +956,7 @@ void register_layer_specific_fields(harp_product_definition *product_definition)
     harp_variable_definition_add_mapping(variable_definition, NULL, NULL, path, description);
 }
 
-void register_profile_specific_fields(harp_product_definition *product_definition,
+static void register_profile_specific_fields(harp_product_definition *product_definition,
                                       enum ingested_product_type product_type)
 {
     harp_variable_definition *variable_definition;
@@ -1059,7 +1059,7 @@ void register_profile_specific_fields(harp_product_definition *product_definitio
     harp_variable_definition_add_mapping(variable_definition, NULL, "wavelength=1064", path, NULL);
 }
 
-void register_optical_depth_fields(harp_product_definition *product_definition)
+static void register_optical_depth_fields(harp_product_definition *product_definition)
 {
     harp_variable_definition *variable_definition;
     harp_dimension_type dimension_type[1] = { harp_dimension_time };

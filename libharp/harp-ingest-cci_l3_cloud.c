@@ -557,7 +557,7 @@ static int ingestion_daily_l3u_init(const harp_ingestion_module *module, coda_pr
     return 0;
 }
 
-void register_fields_for_daily_l3u_cloud_data(void)
+static void register_fields_for_daily_l3u_cloud_data(void)
 {
     harp_ingestion_module *module;
     harp_product_definition *product_definition;
@@ -855,7 +855,7 @@ static int ingestion_monthly_l3c_init(const harp_ingestion_module *module, coda_
     return 0;
 }
 
-void register_fields_for_monthly_l3c_cloud_data(void)
+static void register_fields_for_monthly_l3c_cloud_data(void)
 {
     harp_ingestion_module *module;
     harp_product_definition *product_definition;

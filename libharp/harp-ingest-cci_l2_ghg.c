@@ -418,7 +418,7 @@ static int exclude_co2(void *user_data)
     return FALSE;
 }
 
-static int register_fields(harp_product_definition *product_definition, ghg_data_source source)
+static void register_fields(harp_product_definition *product_definition, ghg_data_source source)
 {
     harp_variable_definition *variable_definition;
     harp_dimension_type dimension_type[1] = { harp_dimension_time };
@@ -561,8 +561,6 @@ static int register_fields(harp_product_definition *product_definition, ghg_data
                                                    exclude_co2, read_CO2_column_volume_mixing_ratio_uncertainty);
     path = "xco2_uncertainty[]";
     harp_variable_definition_add_mapping(variable_definition, NULL, NULL, path, NULL);
-
-    return 0;
 }
 
 static int ingestion_init(const harp_ingestion_module *module, coda_product *product,
@@ -593,7 +591,7 @@ static int ingestion_init(const harp_ingestion_module *module, coda_product *pro
 
 /* Start of code that is specific for the EMMA algorithm */
 
-static int register_module_l2_EMMA(void)
+static void register_module_l2_EMMA(void)
 {
     harp_ingestion_module *module;
     harp_product_definition *product_definition;
@@ -604,13 +602,11 @@ static int register_module_l2_EMMA(void)
     product_definition = harp_ingestion_register_product(module, "ESACCI_GHG_L2_EMMA", NULL, read_dimensions);
 
     register_fields(product_definition, EMMA);
-
-    return 0;
 }
 
 /* Start of code that is specific for the GOSAT satellite */
 
-static int register_module_l2_GOSAT(void)
+static void register_module_l2_GOSAT(void)
 {
     harp_ingestion_module *module;
     harp_product_definition *product_definition;
@@ -621,13 +617,11 @@ static int register_module_l2_GOSAT(void)
     product_definition = harp_ingestion_register_product(module, "ESACCI_GHG_L2_GOSAT", NULL, read_dimensions);
 
     register_fields(product_definition, GOSAT);
-
-    return 0;
 }
 
 /* Start of code that is specific for the SCIAMACHY instrument */
 
-static int register_module_l2_SCIAMACHY(void)
+static void register_module_l2_SCIAMACHY(void)
 {
     harp_ingestion_module *module;
     harp_product_definition *product_definition;
@@ -638,8 +632,6 @@ static int register_module_l2_SCIAMACHY(void)
     product_definition = harp_ingestion_register_product(module, "ESACCI_GHG_L2_SCIAMACHY", NULL, read_dimensions);
 
     register_fields(product_definition, SCIAMACHY);
-
-    return 0;
 }
 
 /* Main procedure for all instruments */

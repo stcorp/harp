@@ -646,7 +646,7 @@ static void register_common_variables(harp_product_definition *product_definitio
     harp_variable_definition_add_mapping(variable_definition, NULL, NULL, path, NULL);
 }
 
-void register_co2_product(void)
+static void register_co2_product(void)
 {
     harp_ingestion_module *module;
     harp_product_definition *product_definition;
@@ -687,7 +687,7 @@ void register_co2_product(void)
     harp_variable_definition_add_mapping(variable_definition, NULL, NULL, path, description);
 }
 
-void register_ch4_product(void)
+static void register_ch4_product(void)
 {
     harp_ingestion_module *module;
     harp_product_definition *product_definition;

@@ -890,7 +890,7 @@ static void register_species_fields(harp_product_definition *product_definition,
     harp_variable_definition_add_mapping(variable_definition, NULL, NULL, path, NULL);
 }
 
-int register_ace_fts_main(void)
+static void register_ace_fts_main(void)
 {
     harp_ingestion_module *module;
     harp_product_definition *product_definition;
@@ -929,11 +929,9 @@ int register_ace_fts_main(void)
     register_species_fields(product_definition, "H2O2", read_h2o2_vmr, read_h2o2_vmr_uncertainty);
     register_species_fields(product_definition, "HOCl", read_hocl_vmr, read_hocl_vmr_uncertainty);
     register_species_fields(product_definition, "N2", read_n2_vmr, read_n2_vmr_uncertainty);
-
-    return 0;
 }
 
-int register_ace_fts_iso(void)
+static void register_ace_fts_iso(void)
 {
     harp_ingestion_module *module;
     harp_product_definition *product_definition;
@@ -949,8 +947,6 @@ int register_ace_fts_iso(void)
     register_species_fields(product_definition, "H2O_162", read_h2o_162_vmr, read_h2o_162_vmr_uncertainty);
     register_species_fields(product_definition, "CH4_311", read_ch4_311_vmr, read_ch4_311_vmr_uncertainty);
     register_species_fields(product_definition, "CH4_212", read_ch4_212_vmr, read_ch4_212_vmr_uncertainty);
-
-    return 0;
 }
 
 int harp_ingestion_module_ace_fts_l2_init(void)

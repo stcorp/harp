@@ -529,7 +529,7 @@ static int exclude_when_no_zenith(void *user_data)
     return !(((ingest_info *)user_data)->zenith_fields_present);
 }
 
-static int register_aatsr_atsr2_product(harp_ingestion_module *module, char *productname)
+static void register_aatsr_atsr2_product(harp_ingestion_module *module, char *productname)
 {
     harp_product_definition *product_definition;
     harp_variable_definition *variable_definition;
@@ -612,11 +612,9 @@ static int register_aatsr_atsr2_product(harp_ingestion_module *module, char *pro
                                                    exclude_when_no_zenith, read_aatsr_atsr2_solar_zenith_angle);
     path = "/sun_zenith_mean[]";
     harp_variable_definition_add_mapping(variable_definition, NULL, NULL, path, NULL);
-
-    return 0;
 }
 
-static int register_module_l3_aatsr_atsr2(void)
+static void register_module_l3_aatsr_atsr2(void)
 {
     harp_ingestion_module *module;
 
@@ -631,8 +629,6 @@ static int register_module_l3_aatsr_atsr2(void)
                                             "ATSR2_L3", "CCI L3 Aerosol profile from ATSR-2",
                                             ingestion_init_aatsr_atsr2, ingestion_done);
     register_aatsr_atsr2_product(module, "ESACCI_AEROSOL_L3_ATSR2");
-
-    return 0;
 }
 
 /* Start of code that is specific for the GOMOS instrument */
@@ -665,7 +661,7 @@ static int ingestion_init_gomos(const harp_ingestion_module *module, coda_produc
     return 0;
 }
 
-static int register_module_l3_gomos(void)
+static void register_module_l3_gomos(void)
 {
     harp_ingestion_module *module;
     harp_product_definition *product_definition;
@@ -760,8 +756,6 @@ static int register_module_l3_gomos(void)
                                                    dimension_type, NULL, description, "nm", NULL, read_wavelength);
     description = "fixed values";
     harp_variable_definition_add_mapping(variable_definition, NULL, NULL, NULL, description);
-
-    return 0;
 }
 
 /* Start of code that is specific for the MERIS instrument */
@@ -795,7 +789,7 @@ static int ingestion_init_meris(const harp_ingestion_module *module, coda_produc
     return 0;
 }
 
-static int register_module_l3_meris(void)
+static void register_module_l3_meris(void)
 {
     harp_ingestion_module *module;
     harp_product_definition *product_definition;
@@ -860,8 +854,6 @@ static int register_module_l3_meris(void)
                                                    dimension_type, NULL, description, "nm", NULL, read_wavelength);
     description = "fixed values";
     harp_variable_definition_add_mapping(variable_definition, NULL, NULL, NULL, description);
-
-    return 0;
 }
 
 /* Start of code that is specific for the IASI instrument */
@@ -909,7 +901,7 @@ static int ingestion_init_iasi(const harp_ingestion_module *module, coda_product
     return 0;
 }
 
-static int register_iasi_product(harp_ingestion_module *module, char *productname)
+static void register_iasi_product(harp_ingestion_module *module, char *productname)
 {
     harp_product_definition *product_definition;
     harp_variable_definition *variable_definition;
@@ -974,10 +966,9 @@ static int register_iasi_product(harp_ingestion_module *module, char *productnam
                                                    dimension_type, NULL, description, "nm", NULL, read_wavelength);
     description = "fixed values";
     harp_variable_definition_add_mapping(variable_definition, NULL, NULL, NULL, description);
-    return 0;
 }
 
-static int register_module_l3_iasi(void)
+static void register_module_l3_iasi(void)
 {
     harp_ingestion_module *module;
 
@@ -986,8 +977,6 @@ static int register_module_l3_iasi(void)
                                             "IASI_L3",
                                             "CCI L3 aerosol profile from IASI", ingestion_init_iasi, ingestion_done);
     register_iasi_product(module, "ESACCI_AEROSOL_L3_IASI");
-
-    return 0;
 }
 
 /* Start of code that is specific for the Multi Sensor instrument */
@@ -1026,7 +1015,7 @@ static int ingestion_init_multi_sensor(const harp_ingestion_module *module, coda
     return 0;
 }
 
-static int register_module_l3_multi_sensor(void)
+static void register_module_l3_multi_sensor(void)
 {
     harp_ingestion_module *module;
     harp_product_definition *product_definition;
@@ -1080,8 +1069,6 @@ static int register_module_l3_multi_sensor(void)
                                                    read_multi_sensor_solar_zenith_angle);
     path = "/solar_zenith_angle[]";
     harp_variable_definition_add_mapping(variable_definition, NULL, NULL, path, NULL);
-
-    return 0;
 }
 
 /* Main procedure for all instruments */

@@ -454,7 +454,7 @@ static int ingestion_init(const harp_ingestion_module *module, coda_product *pro
     return 0;
 }
 
-int register_product(harp_ingestion_module *module, short dataset)
+static void register_product(harp_ingestion_module *module, short dataset)
 {
     const char *description;
     const char *path;
@@ -612,8 +612,6 @@ int register_product(harp_ingestion_module *module, short dataset)
         path = "/All_Data/CrIMSS-EDR_All/AltitudeLevels_Pressure";
         harp_variable_definition_add_mapping(variable_definition, NULL, NULL, path, NULL);
     }
-
-    return 0;
 }
 
 int harp_ingestion_module_npp_suomi_crimss_l2_init(void)
