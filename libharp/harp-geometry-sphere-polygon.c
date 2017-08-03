@@ -1040,32 +1040,6 @@ void harp_spherical_polygon_delete(harp_spherical_polygon *polygon)
     free(polygon);
 }
 
-/* Convert unit of each spherical polygon vertex
- * (lat,lon) from [rad] to [deg] */
-void spherical_polygon_deg_from_rad(harp_spherical_polygon *polygon)
-{
-    int32_t i;
-
-    for (i = 0; i < polygon->numberofpoints; ++i)
-    {
-        polygon->point[i].lat = polygon->point[i].lat * (double)CONST_RAD2DEG;
-        polygon->point[i].lon = polygon->point[i].lon * (double)CONST_RAD2DEG;
-    }
-}
-
-/* Convert unit of each spherical polygon vertex
- * (lat,lon) from [deg] to [rad] */
-void spherical_polygon_rad_from_deg(harp_spherical_polygon *polygon)
-{
-    int32_t i;
-
-    for (i = 0; i < polygon->numberofpoints; ++i)
-    {
-        polygon->point[i].lat = polygon->point[i].lat * (double)CONST_DEG2RAD;
-        polygon->point[i].lon = polygon->point[i].lon * (double)CONST_DEG2RAD;
-    }
-}
-
 static int harp_spherical_polygon_begin_end_point_equal(long measurement_id, long num_vertices,
                                                         const double *latitude_bounds, const double *longitude_bounds)
 {
