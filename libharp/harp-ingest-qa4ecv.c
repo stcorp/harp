@@ -38,7 +38,7 @@
 #include <string.h>
 #include <ctype.h>
 
-const char *surface_type_values[] = { "snow_free_land", "sea_ice", "permanent_ice", "snow", "ocean" };
+static const char *snow_ice_type_values[] = { "snow_free_land", "sea_ice", "permanent_ice", "snow", "ocean" };
 
 typedef struct ingest_info_struct
 {
@@ -746,7 +746,7 @@ static int read_cloud_pressure_uncertainty(void *user_data, harp_array data)
                         info->num_scanlines * info->num_pixels, data);
 }
 
-static int read_surface_type(void *user_data, harp_array data)
+static int read_snow_ice_type(void *user_data, harp_array data)
 {
     ingest_info *info = (ingest_info *)user_data;
     long i;
@@ -1329,12 +1329,12 @@ static void register_common_variables(harp_product_definition *product_definitio
     path = "/PRODUCT/SUPPORT_DATA/INPUT_DATA/cloud_pressure_uncertainty[]";
     harp_variable_definition_add_mapping(variable_definition, NULL, NULL, path, NULL);
 
-    /* surface_type */
-    description = "surface type";
+    /* snow_ice_type */
+    description = "surface snow/ice type";
     variable_definition =
-        harp_ingestion_register_variable_full_read(product_definition, "surface_type", harp_type_int8, 1,
-                                                   dimension_type, NULL, description, NULL, NULL, read_surface_type);
-    harp_variable_definition_set_enumeration_values(variable_definition, 5, surface_type_values);
+        harp_ingestion_register_variable_full_read(product_definition, "snow_ice_type", harp_type_int8, 1,
+                                                   dimension_type, NULL, description, NULL, NULL, read_snow_ice_type);
+    harp_variable_definition_set_enumeration_values(variable_definition, 5, snow_ice_type_values);
     path = "/PRODUCT/SUPPORT_DATA/DETAILED_RESULTS/snow_ice_flag[]";
     description = "0: snow_free_land (0), 1-100: sea_ice (1), 101: permanent_ice (2), 103: snow (3), 255: ocean (4), "
         "other values map to -1";
