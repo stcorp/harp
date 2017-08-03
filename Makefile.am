@@ -248,7 +248,6 @@ libnetcdf_la_SOURCES = \
 	netcdf/putget.c \
 	netcdf/rnd.h \
 	netcdf/string.c \
-	netcdf/t_nc.c \
 	netcdf/utf8proc.c \
 	netcdf/utf8proc.h \
 	netcdf/utf8proc_data.h \
