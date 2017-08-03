@@ -39,6 +39,8 @@
 #include <string.h>
 #include <ctype.h>
 
+static const char *snow_ice_type_values[] = { "snow_free_land", "sea_ice", "permanent_ice", "snow", "ocean" };
+
 typedef enum s5p_product_type_enum
 {
     s5p_type_o3_pr,
@@ -677,11 +679,70 @@ static int read_dataset(coda_cursor cursor, const char *dataset_name, harp_data_
 
     switch (data_type)
     {
-        case harp_type_int32:
-            if (coda_cursor_read_int32_array(&cursor, data.int32_data, coda_array_ordering_c) != 0)
+        case harp_type_int8:
             {
-                harp_set_error(HARP_ERROR_CODA, NULL);
-                return -1;
+                coda_native_type read_type;
+
+                if (coda_cursor_goto_first_array_element(&cursor) != 0)
+                {
+                    harp_set_error(HARP_ERROR_CODA, NULL);
+                    return -1;
+                }
+                if (coda_cursor_get_read_type(&cursor, &read_type) != 0)
+                {
+                    harp_set_error(HARP_ERROR_CODA, NULL);
+                    return -1;
+                }
+                coda_cursor_goto_parent(&cursor);
+                if (read_type == coda_native_type_uint8)
+                {
+                    if (coda_cursor_read_uint8_array(&cursor, (uint8_t *)data.int8_data, coda_array_ordering_c) != 0)
+                    {
+                        harp_set_error(HARP_ERROR_CODA, NULL);
+                        return -1;
+                    }
+                }
+                else
+                {
+                    if (coda_cursor_read_int8_array(&cursor, data.int8_data, coda_array_ordering_c) != 0)
+                    {
+                        harp_set_error(HARP_ERROR_CODA, NULL);
+                        return -1;
+                    }
+                }
+            }
+            break;
+        case harp_type_int32:
+            {
+                coda_native_type read_type;
+
+                if (coda_cursor_goto_first_array_element(&cursor) != 0)
+                {
+                    harp_set_error(HARP_ERROR_CODA, NULL);
+                    return -1;
+                }
+                if (coda_cursor_get_read_type(&cursor, &read_type) != 0)
+                {
+                    harp_set_error(HARP_ERROR_CODA, NULL);
+                    return -1;
+                }
+                coda_cursor_goto_parent(&cursor);
+                if (read_type == coda_native_type_uint32)
+                {
+                    if (coda_cursor_read_uint32_array(&cursor, (uint32_t *)data.int32_data, coda_array_ordering_c) != 0)
+                    {
+                        harp_set_error(HARP_ERROR_CODA, NULL);
+                        return -1;
+                    }
+                }
+                else
+                {
+                    if (coda_cursor_read_int32_array(&cursor, data.int32_data, coda_array_ordering_c) != 0)
+                    {
+                        harp_set_error(HARP_ERROR_CODA, NULL);
+                        return -1;
+                    }
+                }
             }
             break;
         case harp_type_float:
@@ -2891,6 +2952,78 @@ static int read_so2_surface_albedo(void *user_data, harp_array data)
     return 0;
 }
 
+static int read_snow_ice_type(void *user_data, harp_array data)
+{
+    ingest_info *info = (ingest_info *)user_data;
+    long i;
+
+    if (read_dataset(info->input_data_cursor, "snow_ice_flag", harp_type_int8, info->num_scanlines * info->num_pixels,
+                     data) != 0)
+    {
+        return -1;
+    }
+    for (i = 0; i < info->num_scanlines * info->num_pixels; i++)
+    {
+        if (data.int8_data[i] < 0)
+        {
+            if (data.int8_data[i] == -1)        /* == int8 representation of 255 */
+            {
+                data.int8_data[i] = 4;
+            }
+            else
+            {
+                data.int8_data[i] = -1;
+            }
+        }
+        else if (data.int8_data[i] > 0)
+        {
+            if (data.int8_data[i] <= 100)       /* 1..100 is mapped to sea_ice */
+            {
+                data.int8_data[i] = 1;
+            }
+            else if (data.int8_data[i] == 101)
+            {
+                data.int8_data[i] = 2;
+            }
+            else if (data.int8_data[i] == 103)
+            {
+                data.int8_data[i] = 3;
+            }
+            else
+            {
+                data.int8_data[i] = -1;
+            }
+        }
+    }
+
+    return 0;
+}
+
+static int read_sea_ice_fraction(void *user_data, harp_array data)
+{
+    ingest_info *info = (ingest_info *)user_data;
+    long i;
+
+    if (read_dataset(info->input_data_cursor, "snow_ice_flag", harp_type_float, info->num_scanlines * info->num_pixels,
+                     data) != 0)
+    {
+        return -1;
+    }
+    for (i = 0; i < info->num_scanlines * info->num_pixels; i++)
+    {
+        if (data.float_data[i] > 0 && data.float_data[i] <= 100)
+        {
+            data.float_data[i] /= 100.0;
+        }
+        else
+        {
+            data.float_data[i] = 0.0;
+        }
+    }
+
+    return 0;
+}
+
 static int parse_option_wavelength_ratio(ingest_info *info, const harp_ingestion_options *options)
 {
     const char *value;
@@ -3268,6 +3401,42 @@ static void register_surface_variables(harp_product_definition *product_definiti
     harp_variable_definition_add_mapping(variable_definition, NULL, NULL, path, NULL);
 }
 
+static void register_snow_ice_flag_variables(harp_product_definition *product_definition, int nise_extension)
+{
+    const char *path;
+    const char *description;
+    harp_variable_definition *variable_definition;
+    harp_dimension_type dimension_type[1] = { harp_dimension_time };
+
+    if (nise_extension)
+    {
+        path = "/PRODUCT/SUPPORT_DATA/DETAILED_RESULTS/snow_ice_flag_nise[]";
+    }
+    else
+    {
+        path = "/PRODUCT/SUPPORT_DATA/DETAILED_RESULTS/snow_ice_flag[]";
+    }
+
+    /* snow_ice_type */
+    description = "surface snow/ice type";
+    variable_definition =
+        harp_ingestion_register_variable_full_read(product_definition, "snow_ice_type", harp_type_int8, 1,
+                                                   dimension_type, NULL, description, NULL, NULL, read_snow_ice_type);
+    harp_variable_definition_set_enumeration_values(variable_definition, 5, snow_ice_type_values);
+    description = "0: snow_free_land (0), 1-100: sea_ice (1), 101: permanent_ice (2), 103: snow (3), 255: ocean (4), "
+        "other values map to -1";
+    harp_variable_definition_add_mapping(variable_definition, NULL, NULL, path, description);
+
+    /* sea_ice_fraction */
+    description = "sea-ice concentration (as a fraction)";
+    variable_definition =
+        harp_ingestion_register_variable_full_read(product_definition, "sea_ice_fraction", harp_type_float, 1,
+                                                   dimension_type, NULL, description, NULL, NULL,
+                                                   read_sea_ice_fraction);
+    description = "if 1 <= snow_ice_flag <= 100 then snow_ice_flag/100.0 else 0.0";
+    harp_variable_definition_add_mapping(variable_definition, NULL, NULL, path, description);
+}
+
 static void register_aer_ai_product(void)
 {
     harp_ingestion_module *module;
@@ -3327,6 +3496,7 @@ static void register_aer_lh_product(void)
     register_core_variables(product_definition, s5p_delta_time_num_dims[s5p_type_aer_lh]);
     register_geolocation_variables(product_definition);
     register_additional_geolocation_variables(product_definition);
+    register_snow_ice_flag_variables(product_definition, 0);
 
     /* aerosol_height */
     description = "altitude of center of aerosol layer";
@@ -3843,6 +4013,7 @@ static void register_o3_product(void)
     harp_variable_definition_add_mapping(variable_definition, NULL, NULL, path, NULL);
 
     register_surface_variables(product_definition);
+    register_snow_ice_flag_variables(product_definition, 1);
 
     /* pressure_bounds */
     description = "pressure bounds per profile layer";
@@ -4088,6 +4259,7 @@ static void register_o3_pr_product(void)
     register_additional_geolocation_variables(product_definition);
     register_o3_profile_variables(product_definition);
     register_surface_variables(product_definition);
+    register_snow_ice_flag_variables(product_definition, 0);
 }
 
 static void register_o3_tcl_product(void)
@@ -4221,6 +4393,7 @@ static void register_o3_tpr_product(void)
     register_additional_geolocation_variables(product_definition);
     register_o3_profile_variables(product_definition);
     register_surface_variables(product_definition);
+    register_snow_ice_flag_variables(product_definition, 0);
 }
 
 static void register_no2_product(void)
@@ -4303,6 +4476,7 @@ static void register_no2_product(void)
     harp_variable_definition_add_mapping(variable_definition, NULL, NULL, path, NULL);
 
     register_surface_variables(product_definition);
+    register_snow_ice_flag_variables(product_definition, 0);
 
     /* pressure_bounds */
     description = "pressure boundaries";
@@ -4783,6 +4957,7 @@ static void register_cloud_cal_variables(harp_product_definition *product_defini
     harp_variable_definition_add_mapping(variable_definition, NULL, NULL, path, NULL);
 
     register_surface_variables(product_definition);
+    register_snow_ice_flag_variables(product_definition, 1);
 }
 
 static void register_cloud_crb_variables(harp_product_definition *product_definition)
@@ -4898,6 +5073,7 @@ static void register_cloud_crb_variables(harp_product_definition *product_defini
     harp_variable_definition_add_mapping(variable_definition, NULL, NULL, path, NULL);
 
     register_surface_variables(product_definition);
+    register_snow_ice_flag_variables(product_definition, 1);
 }
 
 static void register_cloud_product(void)

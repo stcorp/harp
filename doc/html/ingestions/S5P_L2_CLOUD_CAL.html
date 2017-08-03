@@ -374,6 +374,18 @@
 <td>Pa</td>
 <td>surface pressure</td>
 </tr>
+<tr class="row-odd"><td><strong>snow_ice_type</strong></td>
+<td>int8</td>
+<td>{<em>time</em>}</td>
+<td>&#160;</td>
+<td>surface snow/ice type; enumeration values: snow_free_land (0), sea_ice (1), permanent_ice (2), snow (3), ocean (4)</td>
+</tr>
+<tr class="row-even"><td><strong>sea_ice_fraction</strong></td>
+<td>float</td>
+<td>{<em>time</em>}</td>
+<td>&#160;</td>
+<td>sea-ice concentration (as a fraction)</td>
+</tr>
 <tr class="row-odd"><td><strong>index</strong></td>
 <td>int32</td>
 <td>{<em>time</em>}</td>
@@ -571,6 +583,20 @@
 <tr class="row-even"><td><strong>surface_pressure</strong></td>
 <td><em>path</em></td>
 <td><strong>/PRODUCT/SUPPORT_DATA/INPUT_DATA/surface_pressure[]</strong></td>
+</tr>
+<tr class="row-odd"><td rowspan="2"><strong>snow_ice_type</strong></td>
+<td><em>path</em></td>
+<td><strong>/PRODUCT/SUPPORT_DATA/DETAILED_RESULTS/snow_ice_flag_nise[]</strong></td>
+</tr>
+<tr class="row-even"><td><em>description</em></td>
+<td>0: snow_free_land (0), 1-100: sea_ice (1), 101: permanent_ice (2), 103: snow (3), 255: ocean (4), other values map to -1</td>
+</tr>
+<tr class="row-odd"><td rowspan="2"><strong>sea_ice_fraction</strong></td>
+<td><em>path</em></td>
+<td><strong>/PRODUCT/SUPPORT_DATA/DETAILED_RESULTS/snow_ice_flag_nise[]</strong></td>
+</tr>
+<tr class="row-even"><td><em>description</em></td>
+<td>if 1 &lt;= snow_ice_flag &lt;= 100 then snow_ice_flag/100.0 else 0.0</td>
 </tr>
 </tbody>
 </table>
