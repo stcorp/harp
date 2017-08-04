@@ -332,14 +332,14 @@ static int read_sample(ingest_info *info, const harp_variable_definition *variab
 
             if (info->sample_buffer == NULL)
             {
-                if (read_buffer_new(variable_def->data_type, num_blocks, &info->sample_buffer) != 0)
+                if (read_buffer_new(variable_def->data_type, num_elements / num_blocks, &info->sample_buffer) != 0)
                 {
                     return -1;
                 }
             }
             else
             {
-                if (read_buffer_resize(info->sample_buffer, variable_def->data_type, num_blocks) != 0)
+                if (read_buffer_resize(info->sample_buffer, variable_def->data_type, num_elements / num_blocks) != 0)
                 {
                     return -1;
                 }
