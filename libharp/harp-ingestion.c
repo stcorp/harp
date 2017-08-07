@@ -69,14 +69,14 @@ typedef struct ingest_info_struct
     const char *basename;       /* Product basename. */
     harp_product *product;      /* Resulting HARP product. */
 
-    read_buffer *sample_buffer; /* buffer used for storing results from 'read_all' and 'read_range' */
-    int (*sample_buffer_read_all) (void *user_data, harp_array data);   /* 'read_all' that was used to fill buffer */
+    read_buffer *block_buffer;  /* buffer used for storing results from 'read_all' and 'read_range' */
+    int (*block_buffer_read_all) (void *user_data, harp_array data);    /* 'read_all' that was used to fill buffer */
     /* 'read_range' that was used to fill buffer */
-    int (*sample_buffer_read_range) (void *user_data, long index_offset, long index_lenght, harp_array data);
-    long sample_buffer_block_size;      /* byte size of block for each sample */
-    long sample_buffer_index_offset;    /* index of first sample in the buffer */
-    long sample_buffer_num_samples;     /* total number of samples for the variable */
-    long sample_buffer_num_blocks;      /* number of samples that can fit in the buffer */
+    int (*block_buffer_read_range) (void *user_data, long index_offset, long index_length, harp_array data);
+    long block_buffer_block_size;       /* byte size of each block */
+    long block_buffer_index_offset;     /* index of first block in the buffer */
+    long block_buffer_max_blocks;       /* total number of blocks for the variable */
+    long block_buffer_num_blocks;       /* number of blocks that can fit in the buffer */
 } ingest_info;
 
 static void read_buffer_free_string_data(read_buffer *buffer)
@@ -197,7 +197,7 @@ static void ingestion_done(ingest_info *info)
 
         harp_product_delete(info->product);
 
-        read_buffer_delete(info->sample_buffer);
+        read_buffer_delete(info->block_buffer);
 
         free(info);
     }
@@ -225,8 +225,8 @@ static int ingestion_init(ingest_info **new_info)
     info->variable_mask = NULL;
     info->basename = NULL;
     info->product = NULL;
-    info->sample_buffer = NULL;
-    info->sample_buffer_read_all = NULL;
+    info->block_buffer = NULL;
+    info->block_buffer_read_all = NULL;
 
     if (harp_dimension_mask_set_new(&info->dimension_mask_set) != 0)
     {
@@ -253,7 +253,7 @@ static int read_sample(ingest_info *info, const harp_variable_definition *variab
         }
 
         /* we need to use an internal buffer, filled using the read_all() callback */
-        if (info->sample_buffer_read_all != variable_def->read_all)
+        if (info->block_buffer_read_all != variable_def->read_all)
         {
             long dimension[HARP_MAX_NUM_DIMS];
             long num_elements;
@@ -272,43 +272,42 @@ static int read_sample(ingest_info *info, const harp_variable_definition *variab
             }
             num_elements = harp_get_num_elements(variable_def->num_dimensions, dimension);
 
-            if (info->sample_buffer == NULL)
+            if (info->block_buffer == NULL)
             {
-                if (read_buffer_new(variable_def->data_type, num_elements, &info->sample_buffer) != 0)
+                if (read_buffer_new(variable_def->data_type, num_elements, &info->block_buffer) != 0)
                 {
                     return -1;
                 }
             }
             else
             {
-                if (read_buffer_resize(info->sample_buffer, variable_def->data_type, num_elements) != 0)
+                if (read_buffer_resize(info->block_buffer, variable_def->data_type, num_elements) != 0)
                 {
                     return -1;
                 }
             }
-            if (variable_def->read_all(info->user_data, info->sample_buffer->data) != 0)
+            if (variable_def->read_all(info->user_data, info->block_buffer->data) != 0)
             {
                 return -1;
             }
-            info->sample_buffer_read_all = variable_def->read_all;
-            info->sample_buffer_read_range = NULL;
-            info->sample_buffer_block_size =
+            info->block_buffer_read_all = variable_def->read_all;
+            info->block_buffer_read_range = NULL;
+            info->block_buffer_block_size =
                 harp_get_size_for_type(variable_def->data_type) * num_elements / dimension[0];
         }
 
-        memcpy(data.ptr, &info->sample_buffer->data.int8_data[index * info->sample_buffer_block_size],
-               info->sample_buffer_block_size);
+        memcpy(data.ptr, &info->block_buffer->data.int8_data[index * info->block_buffer_block_size],
+               info->block_buffer_block_size);
     }
     else
     {
         assert(variable_def->read_range != NULL);
 
         /* we need to use an internal buffer, filled using the read_range() callback */
-        if (info->sample_buffer_read_range != variable_def->read_range)
+        if (info->block_buffer_read_range != variable_def->read_range)
         {
             long dimension[HARP_MAX_NUM_DIMS];
-            long num_elements;
-            long num_blocks;
+            long num_block_elements;
             int i;
 
             /* read_range() should have only been set for variables that have a time dimension as first dimension */
@@ -325,56 +324,60 @@ static int read_sample(ingest_info *info, const harp_variable_definition *variab
                     dimension[i] = info->dimension[variable_def->dimension_type[i]];
                 }
             }
-            info->sample_buffer_num_samples = dimension[0];
-            num_elements = harp_get_num_elements(variable_def->num_dimensions, dimension);
-
-            num_blocks = variable_def->get_max_range(info->user_data);
-
-            if (info->sample_buffer == NULL)
+            info->block_buffer_max_blocks = dimension[0];
+            num_block_elements = harp_get_num_elements(variable_def->num_dimensions, dimension) / dimension[0];
+            info->block_buffer_num_blocks = variable_def->get_max_range(info->user_data);
+            if (info->block_buffer_num_blocks > info->block_buffer_max_blocks)
             {
-                if (read_buffer_new(variable_def->data_type, num_elements / num_blocks, &info->sample_buffer) != 0)
+                info->block_buffer_num_blocks = info->block_buffer_max_blocks;
+            }
+
+            if (info->block_buffer == NULL)
+            {
+                if (read_buffer_new(variable_def->data_type, info->block_buffer_num_blocks * num_block_elements,
+                                    &info->block_buffer) != 0)
                 {
                     return -1;
                 }
             }
             else
             {
-                if (read_buffer_resize(info->sample_buffer, variable_def->data_type, num_elements / num_blocks) != 0)
+                if (read_buffer_resize(info->block_buffer, variable_def->data_type,
+                                       info->block_buffer_num_blocks * num_block_elements) != 0)
                 {
                     return -1;
                 }
             }
-            info->sample_buffer_read_range = variable_def->read_range;
-            info->sample_buffer_read_all = NULL;
-            info->sample_buffer_block_size =
-                harp_get_size_for_type(variable_def->data_type) * num_elements / dimension[0];
-            info->sample_buffer_index_offset = num_blocks;      /* set to invalid offset, so a read will be triggered */
-            info->sample_buffer_num_blocks = num_blocks;
+            info->block_buffer_read_range = variable_def->read_range;
+            info->block_buffer_read_all = NULL;
+            info->block_buffer_block_size = harp_get_size_for_type(variable_def->data_type) * num_block_elements;
+            /* set index_offset to an invalid value, so a read will be triggered */
+            info->block_buffer_index_offset = info->block_buffer_num_blocks;
         }
 
-        if (index < info->sample_buffer_index_offset ||
-            index >= info->sample_buffer_index_offset + info->sample_buffer_num_blocks)
+        if (index < info->block_buffer_index_offset ||
+            index >= info->block_buffer_index_offset + info->block_buffer_num_blocks)
         {
-            long block_index = index / info->sample_buffer_num_blocks;
-            long num_samples;
+            long block_index = index / info->block_buffer_num_blocks;
+            long num_blocks;
 
-            info->sample_buffer_index_offset = block_index * info->sample_buffer_num_blocks;
-            num_samples = info->sample_buffer_num_blocks;
-            if (num_samples > info->sample_buffer_num_samples - info->sample_buffer_index_offset)
+            info->block_buffer_index_offset = block_index * info->block_buffer_num_blocks;
+            num_blocks = info->block_buffer_num_blocks;
+            if (info->block_buffer_index_offset + num_blocks > info->block_buffer_max_blocks)
             {
-                num_samples = info->sample_buffer_num_samples - info->sample_buffer_index_offset;
+                num_blocks = info->block_buffer_max_blocks - info->block_buffer_index_offset;
             }
-            if (variable_def->read_range(info->user_data, info->sample_buffer_index_offset, num_samples,
-                                         info->sample_buffer->data) != 0)
+            if (variable_def->read_range(info->user_data, info->block_buffer_index_offset, num_blocks,
+                                         info->block_buffer->data) != 0)
             {
                 return -1;
             }
         }
 
-        index -= info->sample_buffer_index_offset;
+        index -= info->block_buffer_index_offset;
 
-        memcpy(data.ptr, &info->sample_buffer->data.int8_data[index * info->sample_buffer_block_size],
-               info->sample_buffer_block_size);
+        memcpy(data.ptr, &info->block_buffer->data.int8_data[index * info->block_buffer_block_size],
+               info->block_buffer_block_size);
     }
 
     return 0;
