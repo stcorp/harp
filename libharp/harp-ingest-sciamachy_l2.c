@@ -2190,26 +2190,26 @@ static void register_common_nadir_cloud_variables(harp_product_definition *produ
 
     /* datetime_start */
     description = "measurement start time";
-    variable_definition = harp_ingestion_register_variable_sample_read(product_definition, "datetime_start",
-                                                                       harp_type_double, 1, dimension_type, NULL,
-                                                                       description, "seconds since 2000-01-01", NULL,
-                                                                       read_datetime);
+    variable_definition = harp_ingestion_register_variable_block_read(product_definition, "datetime_start",
+                                                                      harp_type_double, 1, dimension_type, NULL,
+                                                                      description, "seconds since 2000-01-01", NULL,
+                                                                      read_datetime);
     snprintf(path, MAX_PATH_LENGTH, "/%s[]/dsr_time", dataset);
     harp_variable_definition_add_mapping(variable_definition, NULL, NULL, path, NULL);
 
     /* datetime_length */
     description = "measurement integration time";
-    variable_definition = harp_ingestion_register_variable_sample_read(product_definition, "datetime_length",
-                                                                       harp_type_double, 1, dimension_type, NULL,
-                                                                       description, "s", NULL, read_integration_time);
+    variable_definition = harp_ingestion_register_variable_block_read(product_definition, "datetime_length",
+                                                                      harp_type_double, 1, dimension_type, NULL,
+                                                                      description, "s", NULL, read_integration_time);
     snprintf(path, MAX_PATH_LENGTH, "/%s[]/integr_time", dataset);
     harp_variable_definition_add_mapping(variable_definition, NULL, NULL, path, NULL);
 
     /* latitude */
     description = "center latitude for each nadir pixel";
-    variable_definition = harp_ingestion_register_variable_sample_read(product_definition, "latitude", harp_type_double,
-                                                                       1, dimension_type, NULL, description,
-                                                                       "degree_north", NULL, read_latitude);
+    variable_definition = harp_ingestion_register_variable_block_read(product_definition, "latitude", harp_type_double,
+                                                                      1, dimension_type, NULL, description,
+                                                                      "degree_north", NULL, read_latitude);
     snprintf(path, MAX_PATH_LENGTH, "/geolocation_nadir[]/cen_coor_nad/latitude");
     harp_variable_definition_add_mapping(variable_definition, NULL, condition_no_coadding, path, description);
     snprintf(path, MAX_PATH_LENGTH, "/geolocation_nadir[]/cor_coor_nad[]");
@@ -2222,10 +2222,9 @@ static void register_common_nadir_cloud_variables(harp_product_definition *produ
 
     /* longitude */
     description = "center longitude for each nadir pixel";
-    variable_definition = harp_ingestion_register_variable_sample_read(product_definition, "longitude",
-                                                                       harp_type_double, 1, dimension_type, NULL,
-                                                                       description, "degree_east", NULL,
-                                                                       read_longitude);
+    variable_definition = harp_ingestion_register_variable_block_read(product_definition, "longitude",
+                                                                      harp_type_double, 1, dimension_type, NULL,
+                                                                      description, "degree_east", NULL, read_longitude);
     snprintf(path, MAX_PATH_LENGTH, "/geolocation_nadir[]/cen_coor_nad/longitude");
     harp_variable_definition_add_mapping(variable_definition, NULL, condition_no_coadding, path, description);
     snprintf(path, MAX_PATH_LENGTH, "/geolocation_nadir[]/cor_coor_nad[]");
@@ -2238,10 +2237,10 @@ static void register_common_nadir_cloud_variables(harp_product_definition *produ
 
     /* latitude_bounds */
     description = "corner latitudes for each nadir pixel";
-    variable_definition = harp_ingestion_register_variable_sample_read(product_definition, "latitude_bounds",
-                                                                       harp_type_double, 2, dimension_type,
-                                                                       bounds_dimension, description,
-                                                                       "degree_north", NULL, read_latitude_bounds);
+    variable_definition = harp_ingestion_register_variable_block_read(product_definition, "latitude_bounds",
+                                                                      harp_type_double, 2, dimension_type,
+                                                                      bounds_dimension, description,
+                                                                      "degree_north", NULL, read_latitude_bounds);
     snprintf(path, MAX_PATH_LENGTH, "/geolocation_nadir[]/cor_coor_nad[]/latitude");
     description = "corners are rearranged in the following way: 0,2,3,1";
     harp_variable_definition_add_mapping(variable_definition, NULL, condition_no_coadding, path, description);
@@ -2256,10 +2255,10 @@ static void register_common_nadir_cloud_variables(harp_product_definition *produ
 
     /* longitude_bounds */
     description = "corner longitudes for each nadir pixel";
-    variable_definition = harp_ingestion_register_variable_sample_read(product_definition, "longitude_bounds",
-                                                                       harp_type_double, 2, dimension_type,
-                                                                       bounds_dimension, description,
-                                                                       "degree_east", NULL, read_longitude_bounds);
+    variable_definition = harp_ingestion_register_variable_block_read(product_definition, "longitude_bounds",
+                                                                      harp_type_double, 2, dimension_type,
+                                                                      bounds_dimension, description,
+                                                                      "degree_east", NULL, read_longitude_bounds);
     snprintf(path, MAX_PATH_LENGTH, "/geolocation_nadir[]/cor_coor_nad[]/longitude");
     description = "corners are rearranged in the following way: 0,2,3,1";
     harp_variable_definition_add_mapping(variable_definition, NULL, condition_no_coadding, path, description);
@@ -2274,10 +2273,10 @@ static void register_common_nadir_cloud_variables(harp_product_definition *produ
 
     /* solar_zenith_angle */
     description = "solar zenith angle at top of atmosphere";
-    variable_definition = harp_ingestion_register_variable_sample_read(product_definition, "solar_zenith_angle",
-                                                                       harp_type_double, 1, dimension_type, NULL,
-                                                                       description, "degree", NULL,
-                                                                       read_solar_zenith_angle);
+    variable_definition = harp_ingestion_register_variable_block_read(product_definition, "solar_zenith_angle",
+                                                                      harp_type_double, 1, dimension_type, NULL,
+                                                                      description, "degree", NULL,
+                                                                      read_solar_zenith_angle);
     snprintf(path, MAX_PATH_LENGTH, "/geolocation_nadir[]/sol_zen_angle_toa[1]");
     harp_variable_definition_add_mapping(variable_definition, NULL, condition_no_coadding, path, NULL);
     snprintf(path, MAX_PATH_LENGTH, "/geolocation_nadir[]/sol_zen_angle_toa[2]");
@@ -2291,10 +2290,10 @@ static void register_common_nadir_cloud_variables(harp_product_definition *produ
 
     /* viewing_zenith_angle */
     description = "line of sight zenith angle at top of atmosphere";
-    variable_definition = harp_ingestion_register_variable_sample_read(product_definition, "viewing_zenith_angle",
-                                                                       harp_type_double, 1, dimension_type, NULL,
-                                                                       description, "degree", NULL,
-                                                                       read_los_zenith_angle);
+    variable_definition = harp_ingestion_register_variable_block_read(product_definition, "viewing_zenith_angle",
+                                                                      harp_type_double, 1, dimension_type, NULL,
+                                                                      description, "degree", NULL,
+                                                                      read_los_zenith_angle);
     snprintf(path, MAX_PATH_LENGTH, "/geolocation_nadir[]/los_zen_angle_toa[1]");
     harp_variable_definition_add_mapping(variable_definition, NULL, condition_no_coadding, path, NULL);
     snprintf(path, MAX_PATH_LENGTH, "/geolocation_nadir[]/los_zen_angle_toa[2]");
@@ -2308,10 +2307,10 @@ static void register_common_nadir_cloud_variables(harp_product_definition *produ
 
     /* relative_azimuth_angle */
     description = "relative azimuth angle at top of atmosphere";
-    variable_definition = harp_ingestion_register_variable_sample_read(product_definition, "relative_azimuth_angle",
-                                                                       harp_type_double, 1, dimension_type, NULL,
-                                                                       description, "degree", NULL,
-                                                                       read_rel_azimuth_angle);
+    variable_definition = harp_ingestion_register_variable_block_read(product_definition, "relative_azimuth_angle",
+                                                                      harp_type_double, 1, dimension_type, NULL,
+                                                                      description, "degree", NULL,
+                                                                      read_rel_azimuth_angle);
     snprintf(path, MAX_PATH_LENGTH, "/geolocation_nadir[]/rel_azi_angle_toa[1]");
     harp_variable_definition_add_mapping(variable_definition, NULL, condition_no_coadding, path, NULL);
     snprintf(path, MAX_PATH_LENGTH, "/geolocation_nadir[]/rel_azi_angle_toa[2]");
@@ -2325,10 +2324,10 @@ static void register_common_nadir_cloud_variables(harp_product_definition *produ
 
     /* scan_direction_type */
     description = "scan direction for each measurement";
-    variable_definition = harp_ingestion_register_variable_sample_read(product_definition, "scan_direction_type",
-                                                                       harp_type_int8, 1, dimension_type, NULL,
-                                                                       description, NULL, NULL,
-                                                                       read_scan_direction_type);
+    variable_definition = harp_ingestion_register_variable_block_read(product_definition, "scan_direction_type",
+                                                                      harp_type_int8, 1, dimension_type, NULL,
+                                                                      description, NULL, NULL,
+                                                                      read_scan_direction_type);
     harp_variable_definition_set_enumeration_values(variable_definition, 3, scan_direction_type_values);
     snprintf(path, MAX_PATH_LENGTH, "/geolocation_nadir[]/corner_coord[], /geolocation_nadir[]/dsr_time");
     description = "When the integration time is higher than 1s we are dealing with a mixed (2) pixel, otherwise the "
@@ -2340,10 +2339,10 @@ static void register_common_nadir_cloud_variables(harp_product_definition *produ
 
     /* cloud_fraction */
     description = "average cloud fraction of footprint";
-    variable_definition = harp_ingestion_register_variable_sample_read(product_definition, "cloud_fraction",
-                                                                       harp_type_double, 1, dimension_type, NULL,
-                                                                       description, HARP_UNIT_DIMENSIONLESS, NULL,
-                                                                       read_cloud_fraction);
+    variable_definition = harp_ingestion_register_variable_block_read(product_definition, "cloud_fraction",
+                                                                      harp_type_double, 1, dimension_type, NULL,
+                                                                      description, HARP_UNIT_DIMENSIONLESS, NULL,
+                                                                      read_cloud_fraction);
     snprintf(path, MAX_PATH_LENGTH, "/clouds_aerosol[]/cl_frac");
     harp_variable_definition_add_mapping(variable_definition, NULL, NULL, path, NULL);
 }
@@ -2375,27 +2374,27 @@ static void register_common_limb_variables(harp_product_definition *product_defi
 
     /* datetime_start */
     description = "measurement start time for each profile";
-    variable_definition = harp_ingestion_register_variable_sample_read(product_definition, "datetime_start",
-                                                                       harp_type_double, 1, dimension_type, NULL,
-                                                                       description, "seconds since 2000-01-01", NULL,
-                                                                       read_datetime_profile);
+    variable_definition = harp_ingestion_register_variable_block_read(product_definition, "datetime_start",
+                                                                      harp_type_double, 1, dimension_type, NULL,
+                                                                      description, "seconds since 2000-01-01", NULL,
+                                                                      read_datetime_profile);
     snprintf(path, MAX_PATH_LENGTH, "/geolocation_limb[]/dsr_time");
     harp_variable_definition_add_mapping(variable_definition, NULL, NULL, path, limb_mapping);
 
     /* datetime_length */
     description = "measurement integration time";
-    variable_definition = harp_ingestion_register_variable_sample_read(product_definition, "datetime_length",
-                                                                       harp_type_double, 1, dimension_type, NULL,
-                                                                       description, "s", NULL, read_integration_time);
+    variable_definition = harp_ingestion_register_variable_block_read(product_definition, "datetime_length",
+                                                                      harp_type_double, 1, dimension_type, NULL,
+                                                                      description, "s", NULL, read_integration_time);
     snprintf(path, MAX_PATH_LENGTH, "/%s[]/integr_time", dataset);
     harp_variable_definition_add_mapping(variable_definition, NULL, NULL, path, NULL);
 
     /* altitude_bounds */
     description = "altitude bounds for each profile point";
-    variable_definition = harp_ingestion_register_variable_sample_read(product_definition, "altitude_bounds",
-                                                                       harp_type_double, 3, dimension_type,
-                                                                       bounds_dimension, description, "km", NULL,
-                                                                       read_altitude_bounds);
+    variable_definition = harp_ingestion_register_variable_block_read(product_definition, "altitude_bounds",
+                                                                      harp_type_double, 3, dimension_type,
+                                                                      bounds_dimension, description, "km", NULL,
+                                                                      read_altitude_bounds);
     description = "the tangent heights are the lower bound altitudes; for the top of the heighest layer a TOA value "
         "of 100km is used";
     snprintf(path, MAX_PATH_LENGTH, "/%s[]/tangent_height[]", dataset);
@@ -2403,10 +2402,10 @@ static void register_common_limb_variables(harp_product_definition *product_defi
 
     /* pressure_bounds */
     description = "pressure bounds for each profile point";
-    variable_definition = harp_ingestion_register_variable_sample_read(product_definition, "pressure_bounds",
-                                                                       harp_type_double, 3, dimension_type,
-                                                                       bounds_dimension, description, "hPa", NULL,
-                                                                       read_pressure_bounds);
+    variable_definition = harp_ingestion_register_variable_block_read(product_definition, "pressure_bounds",
+                                                                      harp_type_double, 3, dimension_type,
+                                                                      bounds_dimension, description, "hPa", NULL,
+                                                                      read_pressure_bounds);
     snprintf(path, MAX_PATH_LENGTH, "/%s[]/tangent_pressure[]", dataset);
     description = "the tangent pressures are the lower bound pressures; for the top of the heighest layer a pressure "
         "value of 3.2e-4 hPa is used";
@@ -2414,54 +2413,54 @@ static void register_common_limb_variables(harp_product_definition *product_defi
 
     /* latitude */
     description = "tangent latitude of the vertically mid profile point";
-    variable_definition = harp_ingestion_register_variable_sample_read(product_definition, "latitude", harp_type_double,
-                                                                       1, dimension_type, NULL, description,
-                                                                       "degree_north", NULL, read_latitude_profile);
+    variable_definition = harp_ingestion_register_variable_block_read(product_definition, "latitude", harp_type_double,
+                                                                      1, dimension_type, NULL, description,
+                                                                      "degree_north", NULL, read_latitude_profile);
     snprintf(path, MAX_PATH_LENGTH, "/geolocation_limb[]/tangent_coord[1]/latitude");
     harp_variable_definition_add_mapping(variable_definition, NULL, NULL, path, limb_mapping);
 
     /* longitude */
     description = "tangent longitude of the vertically mid profile point";
-    variable_definition = harp_ingestion_register_variable_sample_read(product_definition, "longitude",
-                                                                       harp_type_double, 1, dimension_type, NULL,
-                                                                       description, "degree_east", NULL,
-                                                                       read_longitude_profile);
+    variable_definition = harp_ingestion_register_variable_block_read(product_definition, "longitude",
+                                                                      harp_type_double, 1, dimension_type, NULL,
+                                                                      description, "degree_east", NULL,
+                                                                      read_longitude_profile);
     snprintf(path, MAX_PATH_LENGTH, "/geolocation_limb[]/tangent_coord[1]/longitude");
     harp_variable_definition_add_mapping(variable_definition, NULL, NULL, path, limb_mapping);
 
     /* solar_zenith_angle */
     description = "solar zenith angle at top of atmosphere for the middle most profile point";
-    variable_definition = harp_ingestion_register_variable_sample_read(product_definition, "solar_zenith_angle",
-                                                                       harp_type_double, 1, dimension_type, NULL,
-                                                                       description, "degree", NULL,
-                                                                       read_solar_zenith_angle_profile);
+    variable_definition = harp_ingestion_register_variable_block_read(product_definition, "solar_zenith_angle",
+                                                                      harp_type_double, 1, dimension_type, NULL,
+                                                                      description, "degree", NULL,
+                                                                      read_solar_zenith_angle_profile);
     snprintf(path, MAX_PATH_LENGTH, "/geolocation_limb[]/sol_zen_angle_toa[1]");
     harp_variable_definition_add_mapping(variable_definition, NULL, NULL, path, limb_mapping);
 
     /* viewing_zenith_angle */
     description = "line of sight zenith angle at top of atmosphere for the middle most profile point";
-    variable_definition = harp_ingestion_register_variable_sample_read(product_definition, "viewing_zenith_angle",
-                                                                       harp_type_double, 1, dimension_type, NULL,
-                                                                       description, "degree", NULL,
-                                                                       read_los_zenith_angle_profile);
+    variable_definition = harp_ingestion_register_variable_block_read(product_definition, "viewing_zenith_angle",
+                                                                      harp_type_double, 1, dimension_type, NULL,
+                                                                      description, "degree", NULL,
+                                                                      read_los_zenith_angle_profile);
     snprintf(path, MAX_PATH_LENGTH, "/geolocation_limb[]/los_zen_angle_toa[1]");
     harp_variable_definition_add_mapping(variable_definition, NULL, NULL, path, limb_mapping);
 
     /* relative_azimuth_angle */
     description = "relative azimuth angle at top of atmosphere for the middle most profile point";
-    variable_definition = harp_ingestion_register_variable_sample_read(product_definition, "relative_azimuth_angle",
-                                                                       harp_type_double, 1, dimension_type, NULL,
-                                                                       description, "degree", NULL,
-                                                                       read_rel_azimuth_angle_profile);
+    variable_definition = harp_ingestion_register_variable_block_read(product_definition, "relative_azimuth_angle",
+                                                                      harp_type_double, 1, dimension_type, NULL,
+                                                                      description, "degree", NULL,
+                                                                      read_rel_azimuth_angle_profile);
     snprintf(path, MAX_PATH_LENGTH, "/geolocation_limb[]/rel_azi_angle_toa[1]");
     harp_variable_definition_add_mapping(variable_definition, NULL, NULL, path, limb_mapping);
 
     /* temperature */
     description = "temperature for each profile point";
-    variable_definition = harp_ingestion_register_variable_sample_read(product_definition, "temperature",
-                                                                       harp_type_double, 2, dimension_type,
-                                                                       bounds_dimension, description, "K", NULL,
-                                                                       read_temperature);
+    variable_definition = harp_ingestion_register_variable_block_read(product_definition, "temperature",
+                                                                      harp_type_double, 2, dimension_type,
+                                                                      bounds_dimension, description, "K", NULL,
+                                                                      read_temperature);
     snprintf(path, MAX_PATH_LENGTH, "/%s[]/tangent_temp[]", dataset);
     harp_variable_definition_add_mapping(variable_definition, NULL, NULL, path, NULL);
 }
@@ -2522,27 +2521,27 @@ int harp_ingestion_module_sciamachy_l2_init(void)
 
     /* O3_column_number_density */
     description = "ozone vertical column density";
-    variable_definition = harp_ingestion_register_variable_sample_read(product_definition, "O3_column_number_density",
-                                                                       harp_type_double, 1, dimension_type, NULL,
-                                                                       description, "molec/cm^2", NULL, read_vcd);
+    variable_definition = harp_ingestion_register_variable_block_read(product_definition, "O3_column_number_density",
+                                                                      harp_type_double, 1, dimension_type, NULL,
+                                                                      description, "molec/cm^2", NULL, read_vcd);
     path = "/nad_uv0_o3[]/vcd[0]";
     harp_variable_definition_add_mapping(variable_definition, NULL, NULL, path, NULL);
 
     /* O3_column_number_density_uncertainty */
     description = "error on the ozone vertical column density";
-    variable_definition = harp_ingestion_register_variable_sample_read(product_definition,
-                                                                       "O3_column_number_density_uncertainty",
-                                                                       harp_type_double, 1, dimension_type, NULL,
-                                                                       description, "molec/cm^2", NULL, read_vcd_error);
+    variable_definition = harp_ingestion_register_variable_block_read(product_definition,
+                                                                      "O3_column_number_density_uncertainty",
+                                                                      harp_type_double, 1, dimension_type, NULL,
+                                                                      description, "molec/cm^2", NULL, read_vcd_error);
     path = "/nad_uv0_o3[]/vcd_err[0], /nad_uv0_o3[]/vcd[0]";
     harp_variable_definition_add_mapping(variable_definition, NULL, NULL, path, error_mapping);
 
     /* O3_column_number_density_validity */
     description = "flag describing the ozone vertical column density";
-    variable_definition = harp_ingestion_register_variable_sample_read(product_definition,
-                                                                       "O3_column_number_density_validity",
-                                                                       harp_type_int32, 1, dimension_type, NULL,
-                                                                       description, NULL, NULL, read_vcd_flag);
+    variable_definition = harp_ingestion_register_variable_block_read(product_definition,
+                                                                      "O3_column_number_density_validity",
+                                                                      harp_type_int32, 1, dimension_type, NULL,
+                                                                      description, NULL, NULL, read_vcd_flag);
     path = "/nad_uv0_o3[]/flag_vcd_flags";
     harp_variable_definition_add_mapping(variable_definition, NULL, NULL, path, NULL);
 
@@ -2556,27 +2555,27 @@ int harp_ingestion_module_sciamachy_l2_init(void)
 
     /* NO2_column_number_density */
     description = "NO2 vertical column density";
-    variable_definition = harp_ingestion_register_variable_sample_read(product_definition, "NO2_column_number_density",
-                                                                       harp_type_double, 1, dimension_type, NULL,
-                                                                       description, "molec/cm^2", NULL, read_vcd);
+    variable_definition = harp_ingestion_register_variable_block_read(product_definition, "NO2_column_number_density",
+                                                                      harp_type_double, 1, dimension_type, NULL,
+                                                                      description, "molec/cm^2", NULL, read_vcd);
     path = "/nad_uv1_no2[]/vcd[0]";
     harp_variable_definition_add_mapping(variable_definition, NULL, NULL, path, NULL);
 
     /* NO2_column_number_density_uncertainty */
     description = "error on the NO2 vertical column density";
-    variable_definition = harp_ingestion_register_variable_sample_read(product_definition,
-                                                                       "NO2_column_number_density_uncertainty",
-                                                                       harp_type_double, 1, dimension_type, NULL,
-                                                                       description, "molec/cm^2", NULL, read_vcd_error);
+    variable_definition = harp_ingestion_register_variable_block_read(product_definition,
+                                                                      "NO2_column_number_density_uncertainty",
+                                                                      harp_type_double, 1, dimension_type, NULL,
+                                                                      description, "molec/cm^2", NULL, read_vcd_error);
     path = "/nad_uv1_no2[]/vcd_err[0], /nad_uv1_no2[]/vcd[0]";
     harp_variable_definition_add_mapping(variable_definition, NULL, NULL, path, error_mapping);
 
     /* NO2_column_number_density_validity */
     description = "flag describing the NO2 vertical column density";
-    variable_definition = harp_ingestion_register_variable_sample_read(product_definition,
-                                                                       "NO2_column_number_density_validity",
-                                                                       harp_type_int32, 1, dimension_type, NULL,
-                                                                       description, NULL, NULL, read_vcd_flag);
+    variable_definition = harp_ingestion_register_variable_block_read(product_definition,
+                                                                      "NO2_column_number_density_validity",
+                                                                      harp_type_int32, 1, dimension_type, NULL,
+                                                                      description, NULL, NULL, read_vcd_flag);
     path = "/nad_uv1_no2[]/flag_vcd_flags";
     harp_variable_definition_add_mapping(variable_definition, NULL, NULL, path, NULL);
 
@@ -2590,27 +2589,27 @@ int harp_ingestion_module_sciamachy_l2_init(void)
 
     /* BrO_column_number_density */
     description = "BrO vertical column density";
-    variable_definition = harp_ingestion_register_variable_sample_read(product_definition, "BrO_column_number_density",
-                                                                       harp_type_double, 1, dimension_type, NULL,
-                                                                       description, "molec/cm^2", NULL, read_vcd);
+    variable_definition = harp_ingestion_register_variable_block_read(product_definition, "BrO_column_number_density",
+                                                                      harp_type_double, 1, dimension_type, NULL,
+                                                                      description, "molec/cm^2", NULL, read_vcd);
     path = "/nad_uv3_bro[]/vcd[0]";
     harp_variable_definition_add_mapping(variable_definition, NULL, NULL, path, NULL);
 
     /* BrO_column_number_density_uncertainty */
     description = "error on the BrO vertical column density";
-    variable_definition = harp_ingestion_register_variable_sample_read(product_definition,
-                                                                       "BrO_column_number_density_uncertainty",
-                                                                       harp_type_double, 1, dimension_type, NULL,
-                                                                       description, "molec/cm^2", NULL, read_vcd_error);
+    variable_definition = harp_ingestion_register_variable_block_read(product_definition,
+                                                                      "BrO_column_number_density_uncertainty",
+                                                                      harp_type_double, 1, dimension_type, NULL,
+                                                                      description, "molec/cm^2", NULL, read_vcd_error);
     path = "/nad_uv3_bro[]/vcd_err[0], /nad_uv3_bro[]/vcd[0]";
     harp_variable_definition_add_mapping(variable_definition, NULL, NULL, path, error_mapping);
 
     /* BrO_column_number_density_validity */
     description = "flag describing the BrO vertical column density";
-    variable_definition = harp_ingestion_register_variable_sample_read(product_definition,
-                                                                       "BrO_column_number_density_validity",
-                                                                       harp_type_int32, 1, dimension_type, NULL,
-                                                                       description, NULL, NULL, read_vcd_flag);
+    variable_definition = harp_ingestion_register_variable_block_read(product_definition,
+                                                                      "BrO_column_number_density_validity",
+                                                                      harp_type_int32, 1, dimension_type, NULL,
+                                                                      description, NULL, NULL, read_vcd_flag);
     path = "/nad_uv3_bro[]/flag_vcd_flags";
     harp_variable_definition_add_mapping(variable_definition, NULL, NULL, path, NULL);
 
@@ -2624,27 +2623,27 @@ int harp_ingestion_module_sciamachy_l2_init(void)
 
     /* HCHO_column_number_density */
     description = "HCHO vertical column density";
-    variable_definition = harp_ingestion_register_variable_sample_read(product_definition, "HCHO_column_number_density",
-                                                                       harp_type_double, 1, dimension_type, NULL,
-                                                                       description, "molec/cm^2", NULL, read_vcd);
+    variable_definition = harp_ingestion_register_variable_block_read(product_definition, "HCHO_column_number_density",
+                                                                      harp_type_double, 1, dimension_type, NULL,
+                                                                      description, "molec/cm^2", NULL, read_vcd);
     path = "/nad_uv4_h2co[]/vcd[0]";
     harp_variable_definition_add_mapping(variable_definition, NULL, NULL, path, NULL);
 
     /* HCHO_column_number_density_uncertainty */
     description = "error on the HCHO vertical column density";
-    variable_definition = harp_ingestion_register_variable_sample_read(product_definition,
-                                                                       "HCHO_column_number_density_uncertainty",
-                                                                       harp_type_double, 1, dimension_type, NULL,
-                                                                       description, "molec/cm^2", NULL, read_vcd_error);
+    variable_definition = harp_ingestion_register_variable_block_read(product_definition,
+                                                                      "HCHO_column_number_density_uncertainty",
+                                                                      harp_type_double, 1, dimension_type, NULL,
+                                                                      description, "molec/cm^2", NULL, read_vcd_error);
     path = "/nad_uv4_h2co[]/vcd_err[0], /nad_uv4_h2co[]/vcd[0]";
     harp_variable_definition_add_mapping(variable_definition, NULL, NULL, path, error_mapping);
 
     /* HCHO_column_number_density_validity */
     description = "flag describing the HCHO vertical column density";
-    variable_definition = harp_ingestion_register_variable_sample_read(product_definition,
-                                                                       "HCHO_column_number_density_validity",
-                                                                       harp_type_int32, 1, dimension_type, NULL,
-                                                                       description, NULL, NULL, read_vcd_flag);
+    variable_definition = harp_ingestion_register_variable_block_read(product_definition,
+                                                                      "HCHO_column_number_density_validity",
+                                                                      harp_type_int32, 1, dimension_type, NULL,
+                                                                      description, NULL, NULL, read_vcd_flag);
     path = "/nad_uv4_h2co[]/flag_vcd_flags";
     harp_variable_definition_add_mapping(variable_definition, NULL, NULL, path, NULL);
 
@@ -2658,27 +2657,27 @@ int harp_ingestion_module_sciamachy_l2_init(void)
 
     /* SO2_column_number_density */
     description = "SO2 vertical column density";
-    variable_definition = harp_ingestion_register_variable_sample_read(product_definition, "SO2_column_number_density",
-                                                                       harp_type_double, 1, dimension_type, NULL,
-                                                                       description, "molec/cm^2", NULL, read_vcd);
+    variable_definition = harp_ingestion_register_variable_block_read(product_definition, "SO2_column_number_density",
+                                                                      harp_type_double, 1, dimension_type, NULL,
+                                                                      description, "molec/cm^2", NULL, read_vcd);
     path = "/nad_uv5_so2[]/vcd[0]";
     harp_variable_definition_add_mapping(variable_definition, NULL, NULL, path, NULL);
 
     /* SO2_column_number_density_uncertainty */
     description = "error on the SO2 vertical column density";
-    variable_definition = harp_ingestion_register_variable_sample_read(product_definition,
-                                                                       "SO2_column_number_density_uncertainty",
-                                                                       harp_type_double, 1, dimension_type, NULL,
-                                                                       description, "molec/cm^2", NULL, read_vcd_error);
+    variable_definition = harp_ingestion_register_variable_block_read(product_definition,
+                                                                      "SO2_column_number_density_uncertainty",
+                                                                      harp_type_double, 1, dimension_type, NULL,
+                                                                      description, "molec/cm^2", NULL, read_vcd_error);
     path = "/nad_uv5_so2[]/vcd_err[0], /nad_uv5_so2[]/vcd[0]";
     harp_variable_definition_add_mapping(variable_definition, NULL, NULL, path, error_mapping);
 
     /* SO2_column_number_density_validity */
     description = "flag describing the SO2 vertical column density";
-    variable_definition = harp_ingestion_register_variable_sample_read(product_definition,
-                                                                       "SO2_column_number_density_validity",
-                                                                       harp_type_int32, 1, dimension_type, NULL,
-                                                                       description, NULL, NULL, read_vcd_flag);
+    variable_definition = harp_ingestion_register_variable_block_read(product_definition,
+                                                                      "SO2_column_number_density_validity",
+                                                                      harp_type_int32, 1, dimension_type, NULL,
+                                                                      description, NULL, NULL, read_vcd_flag);
     path = "/nad_uv5_so2[]/flag_vcd_flags";
     harp_variable_definition_add_mapping(variable_definition, NULL, NULL, path, NULL);
 
@@ -2692,27 +2691,27 @@ int harp_ingestion_module_sciamachy_l2_init(void)
 
     /* OClO_column_number_density */
     description = "OClO vertical column density";
-    variable_definition = harp_ingestion_register_variable_sample_read(product_definition, "OClO_column_number_density",
-                                                                       harp_type_double, 1, dimension_type, NULL,
-                                                                       description, "molec/cm^2", NULL, read_vcd);
+    variable_definition = harp_ingestion_register_variable_block_read(product_definition, "OClO_column_number_density",
+                                                                      harp_type_double, 1, dimension_type, NULL,
+                                                                      description, "molec/cm^2", NULL, read_vcd);
     path = "/nad_uv6_oclo[]/vcd[0]";
     harp_variable_definition_add_mapping(variable_definition, NULL, NULL, path, NULL);
 
     /* OClO_column_number_density_uncertainty */
     description = "error on the OClO vertical column density";
-    variable_definition = harp_ingestion_register_variable_sample_read(product_definition,
-                                                                       "OClO_column_number_density_uncertainty",
-                                                                       harp_type_double, 1, dimension_type, NULL,
-                                                                       description, "molec/cm^2", NULL, read_vcd_error);
+    variable_definition = harp_ingestion_register_variable_block_read(product_definition,
+                                                                      "OClO_column_number_density_uncertainty",
+                                                                      harp_type_double, 1, dimension_type, NULL,
+                                                                      description, "molec/cm^2", NULL, read_vcd_error);
     path = "/nad_uv6_oclo[]/vcd_err[0], /nad_uv6_oclo[]/vcd[0]";
     harp_variable_definition_add_mapping(variable_definition, NULL, NULL, path, error_mapping);
 
     /* OClO_column_number_density_validity */
     description = "flag describing the OClO vertical column density";
-    variable_definition = harp_ingestion_register_variable_sample_read(product_definition,
-                                                                       "OClO_column_number_density_validity",
-                                                                       harp_type_int32, 1, dimension_type, NULL,
-                                                                       description, NULL, NULL, read_vcd_flag);
+    variable_definition = harp_ingestion_register_variable_block_read(product_definition,
+                                                                      "OClO_column_number_density_validity",
+                                                                      harp_type_int32, 1, dimension_type, NULL,
+                                                                      description, NULL, NULL, read_vcd_flag);
     path = "/nad_uv6_oclo[]/flag_vcd_flags";
     harp_variable_definition_add_mapping(variable_definition, NULL, NULL, path, NULL);
 
@@ -2726,27 +2725,27 @@ int harp_ingestion_module_sciamachy_l2_init(void)
 
     /* SO2_column_number_density */
     description = "SO2 vertical column density";
-    variable_definition = harp_ingestion_register_variable_sample_read(product_definition, "SO2_column_number_density",
-                                                                       harp_type_double, 1, dimension_type, NULL,
-                                                                       description, "molec/cm^2", NULL, read_vcd);
+    variable_definition = harp_ingestion_register_variable_block_read(product_definition, "SO2_column_number_density",
+                                                                      harp_type_double, 1, dimension_type, NULL,
+                                                                      description, "molec/cm^2", NULL, read_vcd);
     path = "/nad_uv5_so2[]/vcd[0]";
     harp_variable_definition_add_mapping(variable_definition, NULL, NULL, path, NULL);
 
     /* SO2_column_number_density_uncertainty */
     description = "error on the SO2 vertical column density";
-    variable_definition = harp_ingestion_register_variable_sample_read(product_definition,
-                                                                       "SO2_column_number_density_uncertainty",
-                                                                       harp_type_double, 1, dimension_type, NULL,
-                                                                       description, "molec/cm^2", NULL, read_vcd_error);
+    variable_definition = harp_ingestion_register_variable_block_read(product_definition,
+                                                                      "SO2_column_number_density_uncertainty",
+                                                                      harp_type_double, 1, dimension_type, NULL,
+                                                                      description, "molec/cm^2", NULL, read_vcd_error);
     path = "/nad_uv5_so2[]/vcd_err[0], /nad_uv5_so2[]/vcd[0]";
     harp_variable_definition_add_mapping(variable_definition, NULL, NULL, path, error_mapping);
 
     /* SO2_column_number_density_validity */
     description = "flag describing the SO2 vertical column density";
-    variable_definition = harp_ingestion_register_variable_sample_read(product_definition,
-                                                                       "SO2_column_number_density_validity",
-                                                                       harp_type_int32, 1, dimension_type, NULL,
-                                                                       description, NULL, NULL, read_vcd_flag);
+    variable_definition = harp_ingestion_register_variable_block_read(product_definition,
+                                                                      "SO2_column_number_density_validity",
+                                                                      harp_type_int32, 1, dimension_type, NULL,
+                                                                      description, NULL, NULL, read_vcd_flag);
     path = "/nad_uv5_so2[]/flag_vcd_flags";
     harp_variable_definition_add_mapping(variable_definition, NULL, NULL, path, NULL);
 
@@ -2760,27 +2759,27 @@ int harp_ingestion_module_sciamachy_l2_init(void)
 
     /* H2O_column_number_density */
     description = "H2O vertical column density";
-    variable_definition = harp_ingestion_register_variable_sample_read(product_definition, "H2O_column_number_density",
-                                                                       harp_type_double, 1, dimension_type, NULL,
-                                                                       description, "molec/cm^2", NULL, read_vcd);
+    variable_definition = harp_ingestion_register_variable_block_read(product_definition, "H2O_column_number_density",
+                                                                      harp_type_double, 1, dimension_type, NULL,
+                                                                      description, "molec/cm^2", NULL, read_vcd);
     path = "/nad_uv8_h2o[]/vcd[0]";
     harp_variable_definition_add_mapping(variable_definition, NULL, NULL, path, NULL);
 
     /* H2O_column_number_density_uncertainty */
     description = "error on the H2O vertical column density";
-    variable_definition = harp_ingestion_register_variable_sample_read(product_definition,
-                                                                       "H2O_column_number_density_uncertainty",
-                                                                       harp_type_double, 1, dimension_type, NULL,
-                                                                       description, "molec/cm^2", NULL, read_vcd_error);
+    variable_definition = harp_ingestion_register_variable_block_read(product_definition,
+                                                                      "H2O_column_number_density_uncertainty",
+                                                                      harp_type_double, 1, dimension_type, NULL,
+                                                                      description, "molec/cm^2", NULL, read_vcd_error);
     path = "/nad_uv8_h2o[]/vcd_err[0], /nad_uv8_h2o[]/vcd[0]";
     harp_variable_definition_add_mapping(variable_definition, NULL, NULL, path, error_mapping);
 
     /* H2O_column_number_density_validity */
     description = "flag describing the H2O vertical column density";
-    variable_definition = harp_ingestion_register_variable_sample_read(product_definition,
-                                                                       "H2O_column_number_density_validity",
-                                                                       harp_type_int32, 1, dimension_type, NULL,
-                                                                       description, NULL, NULL, read_vcd_flag);
+    variable_definition = harp_ingestion_register_variable_block_read(product_definition,
+                                                                      "H2O_column_number_density_validity",
+                                                                      harp_type_int32, 1, dimension_type, NULL,
+                                                                      description, NULL, NULL, read_vcd_flag);
     path = "/nad_uv8_h2o[]/flag_vcd_flags";
     harp_variable_definition_add_mapping(variable_definition, NULL, NULL, path, NULL);
 
@@ -2794,28 +2793,28 @@ int harp_ingestion_module_sciamachy_l2_init(void)
 
     /* C2H2O2_column_number_density */
     description = "C2H2O2 vertical column density";
-    variable_definition = harp_ingestion_register_variable_sample_read(product_definition,
-                                                                       "C2H2O2_column_number_density", harp_type_double,
-                                                                       1, dimension_type, NULL, description,
-                                                                       "molec/cm^2", NULL, read_vcd);
+    variable_definition = harp_ingestion_register_variable_block_read(product_definition,
+                                                                      "C2H2O2_column_number_density", harp_type_double,
+                                                                      1, dimension_type, NULL, description,
+                                                                      "molec/cm^2", NULL, read_vcd);
     path = "/nad_uv9_chocho[]/vcd[0]";
     harp_variable_definition_add_mapping(variable_definition, NULL, NULL, path, NULL);
 
     /* C2H2O2_column_number_density_uncertainty */
     description = "error on the C2H2O2 vertical column density";
-    variable_definition = harp_ingestion_register_variable_sample_read(product_definition,
-                                                                       "C2H2O2_column_number_density_uncertainty",
-                                                                       harp_type_double, 1, dimension_type, NULL,
-                                                                       description, "molec/cm^2", NULL, read_vcd_error);
+    variable_definition = harp_ingestion_register_variable_block_read(product_definition,
+                                                                      "C2H2O2_column_number_density_uncertainty",
+                                                                      harp_type_double, 1, dimension_type, NULL,
+                                                                      description, "molec/cm^2", NULL, read_vcd_error);
     path = "/nad_uv9_chocho[]/vcd_err[0], /nad_uv8_h2o[]/vcd[0]";
     harp_variable_definition_add_mapping(variable_definition, NULL, NULL, path, error_mapping);
 
     /* C2H2O2_column_number_density_validity */
     description = "flag describing the C2H2O2 vertical column density";
-    variable_definition = harp_ingestion_register_variable_sample_read(product_definition,
-                                                                       "C2H2O2_column_number_density_validity",
-                                                                       harp_type_int32, 1, dimension_type, NULL,
-                                                                       description, NULL, NULL, read_vcd_flag);
+    variable_definition = harp_ingestion_register_variable_block_read(product_definition,
+                                                                      "C2H2O2_column_number_density_validity",
+                                                                      harp_type_int32, 1, dimension_type, NULL,
+                                                                      description, NULL, NULL, read_vcd_flag);
     path = "/nad_uv9_chocho[]/flag_vcd_flags";
     harp_variable_definition_add_mapping(variable_definition, NULL, NULL, path, NULL);
 
@@ -2829,27 +2828,27 @@ int harp_ingestion_module_sciamachy_l2_init(void)
 
     /* H2O_column_number_density */
     description = "H2O vertical column density";
-    variable_definition = harp_ingestion_register_variable_sample_read(product_definition, "H2O_column_number_density",
-                                                                       harp_type_double, 1, dimension_type, NULL,
-                                                                       description, "molec/cm^2", NULL, read_vcd);
+    variable_definition = harp_ingestion_register_variable_block_read(product_definition, "H2O_column_number_density",
+                                                                      harp_type_double, 1, dimension_type, NULL,
+                                                                      description, "molec/cm^2", NULL, read_vcd);
     path = "/nad_ir0_h2o[]/vcd[0]";
     harp_variable_definition_add_mapping(variable_definition, NULL, NULL, path, NULL);
 
     /* H2O_column_number_density_uncertainty */
     description = "error on the H2O vertical column density";
-    variable_definition = harp_ingestion_register_variable_sample_read(product_definition,
-                                                                       "H2O_column_number_density_uncertainty",
-                                                                       harp_type_double, 1, dimension_type, NULL,
-                                                                       description, "molec/cm^2", NULL, read_vcd_error);
+    variable_definition = harp_ingestion_register_variable_block_read(product_definition,
+                                                                      "H2O_column_number_density_uncertainty",
+                                                                      harp_type_double, 1, dimension_type, NULL,
+                                                                      description, "molec/cm^2", NULL, read_vcd_error);
     path = "/nad_ir0_h2o[]/vcd_err[0], /nad_ir0_h2o[]/vcd[0]";
     harp_variable_definition_add_mapping(variable_definition, NULL, NULL, path, error_mapping);
 
     /* H2O_column_number_density_validity */
     description = "flag describing the H2O vertical column density";
-    variable_definition = harp_ingestion_register_variable_sample_read(product_definition,
-                                                                       "H2O_column_number_density_validity",
-                                                                       harp_type_int32, 1, dimension_type, NULL,
-                                                                       description, NULL, NULL, read_vcd_flag);
+    variable_definition = harp_ingestion_register_variable_block_read(product_definition,
+                                                                      "H2O_column_number_density_validity",
+                                                                      harp_type_int32, 1, dimension_type, NULL,
+                                                                      description, NULL, NULL, read_vcd_flag);
     path = "/nad_ir0_h2o[]/flag_vcd_flags";
     harp_variable_definition_add_mapping(variable_definition, NULL, NULL, path, NULL);
 
@@ -2863,27 +2862,27 @@ int harp_ingestion_module_sciamachy_l2_init(void)
 
     /* CH4_column_number_density */
     description = "CH4 vertical column density";
-    variable_definition = harp_ingestion_register_variable_sample_read(product_definition, "CH4_column_number_density",
-                                                                       harp_type_double, 1, dimension_type, NULL,
-                                                                       description, "molec/cm^2", NULL, read_vcd);
+    variable_definition = harp_ingestion_register_variable_block_read(product_definition, "CH4_column_number_density",
+                                                                      harp_type_double, 1, dimension_type, NULL,
+                                                                      description, "molec/cm^2", NULL, read_vcd);
     path = "/nad_ir1_ch4[]/vcd[0]";
     harp_variable_definition_add_mapping(variable_definition, NULL, NULL, path, NULL);
 
     /* CH4_column_number_density_uncertainty */
     description = "error on the CH4 vertical column density";
-    variable_definition = harp_ingestion_register_variable_sample_read(product_definition,
-                                                                       "CH4_column_number_density_uncertainty",
-                                                                       harp_type_double, 1, dimension_type, NULL,
-                                                                       description, "molec/cm^2", NULL, read_vcd_error);
+    variable_definition = harp_ingestion_register_variable_block_read(product_definition,
+                                                                      "CH4_column_number_density_uncertainty",
+                                                                      harp_type_double, 1, dimension_type, NULL,
+                                                                      description, "molec/cm^2", NULL, read_vcd_error);
     path = "/nad_ir1_ch4[]/vcd_err[0], /nad_ir1_ch4[]/vcd[0]";
     harp_variable_definition_add_mapping(variable_definition, NULL, NULL, path, error_mapping);
 
     /* CH4_column_number_density_validity */
     description = "flag describing the CH4 vertical column density";
-    variable_definition = harp_ingestion_register_variable_sample_read(product_definition,
-                                                                       "CH4_column_number_density_validity",
-                                                                       harp_type_int32, 1, dimension_type, NULL,
-                                                                       description, NULL, NULL, read_vcd_flag);
+    variable_definition = harp_ingestion_register_variable_block_read(product_definition,
+                                                                      "CH4_column_number_density_validity",
+                                                                      harp_type_int32, 1, dimension_type, NULL,
+                                                                      description, NULL, NULL, read_vcd_flag);
     path = "/nad_ir1_ch4[]/flag_vcd_flags";
     harp_variable_definition_add_mapping(variable_definition, NULL, NULL, path, NULL);
 
@@ -2897,27 +2896,27 @@ int harp_ingestion_module_sciamachy_l2_init(void)
 
     /* N2O_column_number_density */
     description = "N2O vertical column density";
-    variable_definition = harp_ingestion_register_variable_sample_read(product_definition, "N2O_column_number_density",
-                                                                       harp_type_double, 1, dimension_type, NULL,
-                                                                       description, "molec/cm^2", NULL, read_vcd);
+    variable_definition = harp_ingestion_register_variable_block_read(product_definition, "N2O_column_number_density",
+                                                                      harp_type_double, 1, dimension_type, NULL,
+                                                                      description, "molec/cm^2", NULL, read_vcd);
     path = "/nad_ir2_n2o[]/vcd[0]";
     harp_variable_definition_add_mapping(variable_definition, NULL, NULL, path, NULL);
 
     /* N2O_column_number_density_uncertainty */
     description = "error on the N2O vertical column density";
-    variable_definition = harp_ingestion_register_variable_sample_read(product_definition,
-                                                                       "N2O_column_number_density_uncertainty",
-                                                                       harp_type_double, 1, dimension_type, NULL,
-                                                                       description, "molec/cm^2", NULL, read_vcd_error);
+    variable_definition = harp_ingestion_register_variable_block_read(product_definition,
+                                                                      "N2O_column_number_density_uncertainty",
+                                                                      harp_type_double, 1, dimension_type, NULL,
+                                                                      description, "molec/cm^2", NULL, read_vcd_error);
     path = "/nad_ir2_n2o[]/vcd_err[0], /nad_ir2_n2o[]/vcd[0]";
     harp_variable_definition_add_mapping(variable_definition, NULL, NULL, path, error_mapping);
 
     /* N2O_column_number_density_validity */
     description = "flag describing the N2O vertical column density";
-    variable_definition = harp_ingestion_register_variable_sample_read(product_definition,
-                                                                       "N2O_column_number_density_validity",
-                                                                       harp_type_int32, 1, dimension_type, NULL,
-                                                                       description, NULL, NULL, read_vcd_flag);
+    variable_definition = harp_ingestion_register_variable_block_read(product_definition,
+                                                                      "N2O_column_number_density_validity",
+                                                                      harp_type_int32, 1, dimension_type, NULL,
+                                                                      description, NULL, NULL, read_vcd_flag);
     path = "/nad_ir2_n2o[]/flag_vcd_flags";
     harp_variable_definition_add_mapping(variable_definition, NULL, NULL, path, NULL);
 
@@ -2931,27 +2930,27 @@ int harp_ingestion_module_sciamachy_l2_init(void)
 
     /* CO_column_number_density */
     description = "CO vertical column density";
-    variable_definition = harp_ingestion_register_variable_sample_read(product_definition, "CO_column_number_density",
-                                                                       harp_type_double, 1, dimension_type, NULL,
-                                                                       description, "molec/cm^2", NULL, read_vcd);
+    variable_definition = harp_ingestion_register_variable_block_read(product_definition, "CO_column_number_density",
+                                                                      harp_type_double, 1, dimension_type, NULL,
+                                                                      description, "molec/cm^2", NULL, read_vcd);
     path = "/nad_ir3_co[]/vcd[0]";
     harp_variable_definition_add_mapping(variable_definition, NULL, NULL, path, NULL);
 
     /* CO_column_number_density_uncertainty */
     description = "error on the CO vertical column density";
-    variable_definition = harp_ingestion_register_variable_sample_read(product_definition,
-                                                                       "CO_column_number_density_uncertainty",
-                                                                       harp_type_double, 1, dimension_type, NULL,
-                                                                       description, "molec/cm^2", NULL, read_vcd_error);
+    variable_definition = harp_ingestion_register_variable_block_read(product_definition,
+                                                                      "CO_column_number_density_uncertainty",
+                                                                      harp_type_double, 1, dimension_type, NULL,
+                                                                      description, "molec/cm^2", NULL, read_vcd_error);
     path = "/nad_ir3_co[]/vcd_err[0], /nad_ir3_co[]/vcd[0]";
     harp_variable_definition_add_mapping(variable_definition, NULL, NULL, path, error_mapping);
 
     /* CO_column_number_density_validity */
     description = "flag describing the CO vertical column density";
-    variable_definition = harp_ingestion_register_variable_sample_read(product_definition,
-                                                                       "CO_column_number_density_validity",
-                                                                       harp_type_int32, 1, dimension_type, NULL,
-                                                                       description, NULL, NULL, read_vcd_flag);
+    variable_definition = harp_ingestion_register_variable_block_read(product_definition,
+                                                                      "CO_column_number_density_validity",
+                                                                      harp_type_int32, 1, dimension_type, NULL,
+                                                                      description, NULL, NULL, read_vcd_flag);
     path = "/nad_ir3_co[]/flag_vcd_flags";
     harp_variable_definition_add_mapping(variable_definition, NULL, NULL, path, NULL);
 
@@ -2965,27 +2964,27 @@ int harp_ingestion_module_sciamachy_l2_init(void)
 
     /* CO2_column_number_density */
     description = "CO2 vertical column density";
-    variable_definition = harp_ingestion_register_variable_sample_read(product_definition, "CO2_column_number_density",
-                                                                       harp_type_double, 1, dimension_type, NULL,
-                                                                       description, "molec/cm^2", NULL, read_vcd);
+    variable_definition = harp_ingestion_register_variable_block_read(product_definition, "CO2_column_number_density",
+                                                                      harp_type_double, 1, dimension_type, NULL,
+                                                                      description, "molec/cm^2", NULL, read_vcd);
     path = "/nad_ir4_co2[]/vcd[0]";
     harp_variable_definition_add_mapping(variable_definition, NULL, NULL, path, NULL);
 
     /* CO2_column_number_density_uncertainty */
     description = "error on the CO2 vertical column density";
-    variable_definition = harp_ingestion_register_variable_sample_read(product_definition,
-                                                                       "CO2_column_number_density_uncertainty",
-                                                                       harp_type_double, 1, dimension_type, NULL,
-                                                                       description, "molec/cm^2", NULL, read_vcd_error);
+    variable_definition = harp_ingestion_register_variable_block_read(product_definition,
+                                                                      "CO2_column_number_density_uncertainty",
+                                                                      harp_type_double, 1, dimension_type, NULL,
+                                                                      description, "molec/cm^2", NULL, read_vcd_error);
     path = "/nad_ir4_co2[]/vcd_err[0], /nad_ir4_co2[]/vcd[0]";
     harp_variable_definition_add_mapping(variable_definition, NULL, NULL, path, error_mapping);
 
     /* CO2_column_number_density_validity */
     description = "flag describing the CO2 vertical column density";
-    variable_definition = harp_ingestion_register_variable_sample_read(product_definition,
-                                                                       "CO2_column_number_density_validity",
-                                                                       harp_type_int32, 1, dimension_type, NULL,
-                                                                       description, NULL, NULL, read_vcd_flag);
+    variable_definition = harp_ingestion_register_variable_block_read(product_definition,
+                                                                      "CO2_column_number_density_validity",
+                                                                      harp_type_int32, 1, dimension_type, NULL,
+                                                                      description, NULL, NULL, read_vcd_flag);
     path = "/nad_ir4_co2[]/flag_vcd_flags";
     harp_variable_definition_add_mapping(variable_definition, NULL, NULL, path, NULL);
 
@@ -2999,65 +2998,65 @@ int harp_ingestion_module_sciamachy_l2_init(void)
 
     /* O3_volume_mixing_ratio */
     description = "ozone volume mixing ratio";
-    variable_definition = harp_ingestion_register_variable_sample_read(product_definition, "O3_volume_mixing_ratio",
-                                                                       harp_type_double, 2, dimension_type, NULL,
-                                                                       description, "", NULL, read_vmr);
+    variable_definition = harp_ingestion_register_variable_block_read(product_definition, "O3_volume_mixing_ratio",
+                                                                      harp_type_double, 2, dimension_type, NULL,
+                                                                      description, "", NULL, read_vmr);
     path = "/lim_uv0_o3[]/main_species[,0]/tang_vmr";
     harp_variable_definition_add_mapping(variable_definition, NULL, NULL, path, NULL);
 
     /* O3_volume_mixing_ratio_uncertainty */
     description = "error on the ozone volume mixing ratio";
-    variable_definition = harp_ingestion_register_variable_sample_read(product_definition,
-                                                                       "O3_volume_mixing_ratio_uncertainty",
-                                                                       harp_type_double, 2, dimension_type, NULL,
-                                                                       description, "", NULL, read_vmr_error);
+    variable_definition = harp_ingestion_register_variable_block_read(product_definition,
+                                                                      "O3_volume_mixing_ratio_uncertainty",
+                                                                      harp_type_double, 2, dimension_type, NULL,
+                                                                      description, "", NULL, read_vmr_error);
     path = "/lim_uv0_o3[]/main_species[,0]/err_tang_vmr, /lim_uv0_o3[]/main_species[,0]/tang_vmr";
     harp_variable_definition_add_mapping(variable_definition, NULL, NULL, path, error_mapping);
 
     /* O3_volume_mixing_ratio_avk */
     description = "averaging kernel on the ozone volume mixing ratio";
-    variable_definition = harp_ingestion_register_variable_sample_read(product_definition,
-                                                                       "O3_volume_mixing_ratio_avk",
-                                                                       harp_type_double, 3, dimension_type, NULL,
-                                                                       description, "", exclude_add_diag, read_vmr_avk);
+    variable_definition = harp_ingestion_register_variable_block_read(product_definition,
+                                                                      "O3_volume_mixing_ratio_avk",
+                                                                      harp_type_double, 3, dimension_type, NULL,
+                                                                      description, "", exclude_add_diag, read_vmr_avk);
     path = "/lim_uv0_o3[]/main_species[,0]/add_diag[0..n]";
     harp_variable_definition_add_mapping(variable_definition, NULL, condition_add_diag, path, vmr_avk_mapping);
 
     /* O3_number_density */
     description = "ozone number density";
-    variable_definition = harp_ingestion_register_variable_sample_read(product_definition, "O3_number_density",
-                                                                       harp_type_double, 2, dimension_type, NULL,
-                                                                       description, "molec/cm^3",
-                                                                       exclude_add_diag, read_nd);
+    variable_definition = harp_ingestion_register_variable_block_read(product_definition, "O3_number_density",
+                                                                      harp_type_double, 2, dimension_type, NULL,
+                                                                      description, "molec/cm^3",
+                                                                      exclude_add_diag, read_nd);
     path = "/lim_uv0_o3[]/main_species[,0]/add_diag[0..n]";
     harp_variable_definition_add_mapping(variable_definition, NULL, condition_add_diag, path, NULL);
 
     /* O3_number_density_uncertainty */
     description = "error on the ozone number density";
-    variable_definition = harp_ingestion_register_variable_sample_read(product_definition,
-                                                                       "O3_number_density_uncertainty",
-                                                                       harp_type_double, 2, dimension_type, NULL,
-                                                                       description, "molec/cm^3",
-                                                                       exclude_add_diag, read_nd_error);
+    variable_definition = harp_ingestion_register_variable_block_read(product_definition,
+                                                                      "O3_number_density_uncertainty",
+                                                                      harp_type_double, 2, dimension_type, NULL,
+                                                                      description, "molec/cm^3",
+                                                                      exclude_add_diag, read_nd_error);
     path = "/lim_uv0_o3[]/main_species[,0]/err_tang_vmr, /lim_uv0_o3[]/main_species[,0]/add_diag[0..n]";
     harp_variable_definition_add_mapping(variable_definition, NULL, condition_add_diag, path, error_mapping);
 
     /* O3_number_density_apriori */
     description = "a priori ozone number density profile";
-    variable_definition = harp_ingestion_register_variable_sample_read(product_definition, "O3_number_density_apriori",
-                                                                       harp_type_double, 2, dimension_type, NULL,
-                                                                       description, "molec/cm^3",
-                                                                       exclude_add_diag, read_nd_apriori);
+    variable_definition = harp_ingestion_register_variable_block_read(product_definition, "O3_number_density_apriori",
+                                                                      harp_type_double, 2, dimension_type, NULL,
+                                                                      description, "molec/cm^3",
+                                                                      exclude_add_diag, read_nd_apriori);
     path = "/lim_uv0_o3[]/main_species[,0]/add_diag[0..n]";
     harp_variable_definition_add_mapping(variable_definition, NULL, condition_add_diag, path, NULL);
 
     /* O3_number_density_avk */
     description = "averaging kernel on the ozone number density";
-    variable_definition = harp_ingestion_register_variable_sample_read(product_definition,
-                                                                       "O3_number_density_avk",
-                                                                       harp_type_double, 3, dimension_type, NULL,
-                                                                       description, "(molec/cm^3)/(molec/cm^3)",
-                                                                       exclude_add_diag, read_nd_avk);
+    variable_definition = harp_ingestion_register_variable_block_read(product_definition,
+                                                                      "O3_number_density_avk",
+                                                                      harp_type_double, 3, dimension_type, NULL,
+                                                                      description, "(molec/cm^3)/(molec/cm^3)",
+                                                                      exclude_add_diag, read_nd_avk);
     path = "/lim_uv0_o3[]/main_species[,0]/add_diag[0..n]";
     harp_variable_definition_add_mapping(variable_definition, NULL, condition_add_diag, path, nd_avk_mapping);
 
@@ -3071,65 +3070,65 @@ int harp_ingestion_module_sciamachy_l2_init(void)
 
     /* NO2_volume_mixing_ratio */
     description = "NO2 volume mixing ratio";
-    variable_definition = harp_ingestion_register_variable_sample_read(product_definition, "NO2_volume_mixing_ratio",
-                                                                       harp_type_double, 2, dimension_type, NULL,
-                                                                       description, "", NULL, read_vmr);
+    variable_definition = harp_ingestion_register_variable_block_read(product_definition, "NO2_volume_mixing_ratio",
+                                                                      harp_type_double, 2, dimension_type, NULL,
+                                                                      description, "", NULL, read_vmr);
     path = "/lim_uv1_no2[]/main_species[,0]/tang_vmr";
     harp_variable_definition_add_mapping(variable_definition, NULL, NULL, path, NULL);
 
     /* NO2_volume_mixing_ratio_uncertainty */
     description = "error on the NO2 volume mixing ratio";
-    variable_definition = harp_ingestion_register_variable_sample_read(product_definition,
-                                                                       "NO2_volume_mixing_ratio_uncertainty",
-                                                                       harp_type_double, 2, dimension_type, NULL,
-                                                                       description, "", NULL, read_vmr_error);
+    variable_definition = harp_ingestion_register_variable_block_read(product_definition,
+                                                                      "NO2_volume_mixing_ratio_uncertainty",
+                                                                      harp_type_double, 2, dimension_type, NULL,
+                                                                      description, "", NULL, read_vmr_error);
     path = "/lim_uv1_no2[]/main_species[,0]/err_tang_vmr, /lim_uv1_no2[]/main_species[,0]/tang_vmr";
     harp_variable_definition_add_mapping(variable_definition, NULL, NULL, path, error_mapping);
 
     /* NO2_volume_mixing_ratio_avk */
     description = "averaging kernel on the NO2 volume mixing ratio";
-    variable_definition = harp_ingestion_register_variable_sample_read(product_definition,
-                                                                       "NO2_volume_mixing_ratio_avk",
-                                                                       harp_type_double, 3, dimension_type, NULL,
-                                                                       description, "", exclude_add_diag, read_vmr_avk);
+    variable_definition = harp_ingestion_register_variable_block_read(product_definition,
+                                                                      "NO2_volume_mixing_ratio_avk",
+                                                                      harp_type_double, 3, dimension_type, NULL,
+                                                                      description, "", exclude_add_diag, read_vmr_avk);
     path = "/lim_uv1_no2[]/main_species[,0]/add_diag[0..n]";
     harp_variable_definition_add_mapping(variable_definition, NULL, condition_add_diag, path, vmr_avk_mapping);
 
     /* NO2_number_density */
     description = "NO2 number density";
-    variable_definition = harp_ingestion_register_variable_sample_read(product_definition, "NO2_number_density",
-                                                                       harp_type_double, 2, dimension_type, NULL,
-                                                                       description, "molec/cm^3",
-                                                                       exclude_add_diag, read_nd);
+    variable_definition = harp_ingestion_register_variable_block_read(product_definition, "NO2_number_density",
+                                                                      harp_type_double, 2, dimension_type, NULL,
+                                                                      description, "molec/cm^3",
+                                                                      exclude_add_diag, read_nd);
     path = "/lim_uv1_no2[]/main_species[,0]/add_diag[0..n]";
     harp_variable_definition_add_mapping(variable_definition, NULL, condition_add_diag, path, NULL);
 
     /* NO2_number_density_uncertainty */
     description = "error on the NO2 number density";
-    variable_definition = harp_ingestion_register_variable_sample_read(product_definition,
-                                                                       "NO2_number_density_uncertainty",
-                                                                       harp_type_double, 2, dimension_type, NULL,
-                                                                       description, "molec/cm^3",
-                                                                       exclude_add_diag, read_nd_error);
+    variable_definition = harp_ingestion_register_variable_block_read(product_definition,
+                                                                      "NO2_number_density_uncertainty",
+                                                                      harp_type_double, 2, dimension_type, NULL,
+                                                                      description, "molec/cm^3",
+                                                                      exclude_add_diag, read_nd_error);
     path = "/lim_uv1_no2[]/main_species[,0]/err_tang_vmr, /lim_uv1_no2[]/main_species[,0]/add_diag[0..n]";
     harp_variable_definition_add_mapping(variable_definition, NULL, condition_add_diag, path, error_mapping);
 
     /* NO2_number_density_apriori */
     description = "a priori NO2 number density profile";
-    variable_definition = harp_ingestion_register_variable_sample_read(product_definition, "NO2_number_density_apriori",
-                                                                       harp_type_double, 2, dimension_type, NULL,
-                                                                       description, "molec/cm^3",
-                                                                       exclude_add_diag, read_nd_apriori);
+    variable_definition = harp_ingestion_register_variable_block_read(product_definition, "NO2_number_density_apriori",
+                                                                      harp_type_double, 2, dimension_type, NULL,
+                                                                      description, "molec/cm^3",
+                                                                      exclude_add_diag, read_nd_apriori);
     path = "/lim_uv1_no2[]/main_species[,0]/add_diag[0..n]";
     harp_variable_definition_add_mapping(variable_definition, NULL, condition_add_diag, path, NULL);
 
     /* NO2_number_density_avk */
     description = "averaging kernel on the NO2 number density";
-    variable_definition = harp_ingestion_register_variable_sample_read(product_definition,
-                                                                       "NO2_number_density_avk",
-                                                                       harp_type_double, 3, dimension_type, NULL,
-                                                                       description, "(molec/cm^3)/(molec/cm^3)",
-                                                                       exclude_add_diag, read_nd_avk);
+    variable_definition = harp_ingestion_register_variable_block_read(product_definition,
+                                                                      "NO2_number_density_avk",
+                                                                      harp_type_double, 3, dimension_type, NULL,
+                                                                      description, "(molec/cm^3)/(molec/cm^3)",
+                                                                      exclude_add_diag, read_nd_avk);
     path = "/lim_uv1_no2[]/main_species[,0]/add_diag[0..n]";
     harp_variable_definition_add_mapping(variable_definition, NULL, condition_add_diag, path, nd_avk_mapping);
 
@@ -3143,65 +3142,65 @@ int harp_ingestion_module_sciamachy_l2_init(void)
 
     /* BrO_volume_mixing_ratio */
     description = "BrO volume mixing ratio";
-    variable_definition = harp_ingestion_register_variable_sample_read(product_definition, "BrO_volume_mixing_ratio",
-                                                                       harp_type_double, 2, dimension_type, NULL,
-                                                                       description, "", NULL, read_vmr);
+    variable_definition = harp_ingestion_register_variable_block_read(product_definition, "BrO_volume_mixing_ratio",
+                                                                      harp_type_double, 2, dimension_type, NULL,
+                                                                      description, "", NULL, read_vmr);
     path = "/lim_uv3_bro[]/main_species[,0]/tang_vmr";
     harp_variable_definition_add_mapping(variable_definition, NULL, NULL, path, NULL);
 
     /* BrO_volume_mixing_ratio_uncertainty */
     description = "error on the BrO volume mixing ratio";
-    variable_definition = harp_ingestion_register_variable_sample_read(product_definition,
-                                                                       "BrO_volume_mixing_ratio_uncertainty",
-                                                                       harp_type_double, 2, dimension_type, NULL,
-                                                                       description, "", NULL, read_vmr_error);
+    variable_definition = harp_ingestion_register_variable_block_read(product_definition,
+                                                                      "BrO_volume_mixing_ratio_uncertainty",
+                                                                      harp_type_double, 2, dimension_type, NULL,
+                                                                      description, "", NULL, read_vmr_error);
     path = "/lim_uv3_bro[]/main_species[,0]/err_tang_vmr, /lim_uv3_bro[]/main_species[,0]/tang_vmr";
     harp_variable_definition_add_mapping(variable_definition, NULL, NULL, path, error_mapping);
 
     /* BrO_volume_mixing_ratio_avk */
     description = "averaging kernel on the BrO volume mixing ratio";
-    variable_definition = harp_ingestion_register_variable_sample_read(product_definition,
-                                                                       "BrO_volume_mixing_ratio_avk",
-                                                                       harp_type_double, 3, dimension_type, NULL,
-                                                                       description, "", exclude_add_diag, read_vmr_avk);
+    variable_definition = harp_ingestion_register_variable_block_read(product_definition,
+                                                                      "BrO_volume_mixing_ratio_avk",
+                                                                      harp_type_double, 3, dimension_type, NULL,
+                                                                      description, "", exclude_add_diag, read_vmr_avk);
     path = "/lim_uv3_bro[]/main_species[,0]/add_diag[0..n]";
     harp_variable_definition_add_mapping(variable_definition, NULL, condition_add_diag, path, vmr_avk_mapping);
 
     /* BrO_number_density */
     description = "BrO number density";
-    variable_definition = harp_ingestion_register_variable_sample_read(product_definition, "BrO_number_density",
-                                                                       harp_type_double, 2, dimension_type, NULL,
-                                                                       description, "molec/cm^3",
-                                                                       exclude_add_diag, read_nd);
+    variable_definition = harp_ingestion_register_variable_block_read(product_definition, "BrO_number_density",
+                                                                      harp_type_double, 2, dimension_type, NULL,
+                                                                      description, "molec/cm^3",
+                                                                      exclude_add_diag, read_nd);
     path = "/lim_uv3_bro[]/main_species[,0]/add_diag[0..n]";
     harp_variable_definition_add_mapping(variable_definition, NULL, condition_add_diag, path, NULL);
 
     /* BrO_number_density_uncertainty */
     description = "error on the BrO number density";
-    variable_definition = harp_ingestion_register_variable_sample_read(product_definition,
-                                                                       "BrO_number_density_uncertainty",
-                                                                       harp_type_double, 2, dimension_type, NULL,
-                                                                       description, "molec/cm^3",
-                                                                       exclude_add_diag, read_nd_error);
+    variable_definition = harp_ingestion_register_variable_block_read(product_definition,
+                                                                      "BrO_number_density_uncertainty",
+                                                                      harp_type_double, 2, dimension_type, NULL,
+                                                                      description, "molec/cm^3",
+                                                                      exclude_add_diag, read_nd_error);
     path = "/lim_uv3_bro[]/main_species[,0]/err_tang_vmr, /lim_uv3_bro[]/main_species[,0]/add_diag[0..n]";
     harp_variable_definition_add_mapping(variable_definition, NULL, condition_add_diag, path, error_mapping);
 
     /* BrO_number_density_apriori */
     description = "a priori BrO number density profile";
-    variable_definition = harp_ingestion_register_variable_sample_read(product_definition, "BrO_number_density_apriori",
-                                                                       harp_type_double, 2, dimension_type, NULL,
-                                                                       description, "molec/cm^3",
-                                                                       exclude_add_diag, read_nd_apriori);
+    variable_definition = harp_ingestion_register_variable_block_read(product_definition, "BrO_number_density_apriori",
+                                                                      harp_type_double, 2, dimension_type, NULL,
+                                                                      description, "molec/cm^3",
+                                                                      exclude_add_diag, read_nd_apriori);
     path = "/lim_uv3_bro[]/main_species[,0]/add_diag[0..n]";
     harp_variable_definition_add_mapping(variable_definition, NULL, condition_add_diag, path, NULL);
 
     /* BrO_number_density_avk */
     description = "averaging kernel on the BrO number density";
-    variable_definition = harp_ingestion_register_variable_sample_read(product_definition,
-                                                                       "BrO_number_density_avk",
-                                                                       harp_type_double, 3, dimension_type, NULL,
-                                                                       description, "(molec/cm^3)/(molec/cm^3)",
-                                                                       exclude_add_diag, read_nd_avk);
+    variable_definition = harp_ingestion_register_variable_block_read(product_definition,
+                                                                      "BrO_number_density_avk",
+                                                                      harp_type_double, 3, dimension_type, NULL,
+                                                                      description, "(molec/cm^3)/(molec/cm^3)",
+                                                                      exclude_add_diag, read_nd_avk);
     path = "/lim_uv3_bro[]/main_species[,0]/add_diag[0..n]";
     harp_variable_definition_add_mapping(variable_definition, NULL, condition_add_diag, path, nd_avk_mapping);
 
@@ -3215,28 +3214,28 @@ int harp_ingestion_module_sciamachy_l2_init(void)
 
     /* cloud_top_pressure */
     description = "cloud top pressure";
-    variable_definition = harp_ingestion_register_variable_sample_read(product_definition, "cloud_top_pressure",
-                                                                       harp_type_double, 1, dimension_type, NULL,
-                                                                       description, "hPa", exclude_cloud_top_pressure,
-                                                                       read_cloud_top_pressure);
+    variable_definition = harp_ingestion_register_variable_block_read(product_definition, "cloud_top_pressure",
+                                                                      harp_type_double, 1, dimension_type, NULL,
+                                                                      description, "hPa", exclude_cloud_top_pressure,
+                                                                      read_cloud_top_pressure);
     path = "/clouds_aerosol[]/cl_top_pres";
     harp_variable_definition_add_mapping(variable_definition, NULL, condition_3j, path, NULL);
 
     /* cloud_top_height */
     description = "cloud top height";
-    variable_definition = harp_ingestion_register_variable_sample_read(product_definition, "cloud_top_height",
-                                                                       harp_type_double, 1, dimension_type, NULL,
-                                                                       description, "km", exclude_cloud_top_height,
-                                                                       read_cloud_top_height);
+    variable_definition = harp_ingestion_register_variable_block_read(product_definition, "cloud_top_height",
+                                                                      harp_type_double, 1, dimension_type, NULL,
+                                                                      description, "km", exclude_cloud_top_height,
+                                                                      read_cloud_top_height);
     path = "/clouds_aerosol[]/cl_top_height";
     harp_variable_definition_add_mapping(variable_definition, NULL, condition_3k, path, NULL);
 
     /* absorbing_aerosol_index */
     description = "absorbing aerosol index";
-    variable_definition = harp_ingestion_register_variable_sample_read(product_definition, "absorbing_aerosol_index",
-                                                                       harp_type_double, 1, dimension_type, NULL,
-                                                                       description, "", NULL,
-                                                                       read_absorbing_aerosol_index);
+    variable_definition = harp_ingestion_register_variable_block_read(product_definition, "absorbing_aerosol_index",
+                                                                      harp_type_double, 1, dimension_type, NULL,
+                                                                      description, "", NULL,
+                                                                      read_absorbing_aerosol_index);
     path = "/clouds_aerosol[]/aero_abso_ind";
     harp_variable_definition_add_mapping(variable_definition, NULL, NULL, path, NULL);
 

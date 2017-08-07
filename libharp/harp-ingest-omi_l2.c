@@ -2082,18 +2082,18 @@ static void register_footprint_variables(harp_product_definition *product_defini
         "c(n-1,m-1))";
 
     description = "longitudes of the ground pixel corners (WGS84)";
-    variable_definition = harp_ingestion_register_variable_sample_read(product_definition, "longitude_bounds",
-                                                                       harp_type_double, 2, dimension_type, dimension,
-                                                                       description, "degree_east", NULL,
-                                                                       read_longitude_bounds);
+    variable_definition = harp_ingestion_register_variable_block_read(product_definition, "longitude_bounds",
+                                                                      harp_type_double, 2, dimension_type, dimension,
+                                                                      description, "degree_east", NULL,
+                                                                      read_longitude_bounds);
     harp_variable_definition_set_valid_range_double(variable_definition, -180.0, 180.0);
     harp_variable_definition_add_mapping(variable_definition, NULL, NULL, NULL, mapping_description);
 
     description = "latitudes of the ground pixel corners (WGS84)";
-    variable_definition = harp_ingestion_register_variable_sample_read(product_definition, "latitude_bounds",
-                                                                       harp_type_double, 2, dimension_type, dimension,
-                                                                       description, "degree_north", NULL,
-                                                                       read_latitude_bounds);
+    variable_definition = harp_ingestion_register_variable_block_read(product_definition, "latitude_bounds",
+                                                                      harp_type_double, 2, dimension_type, dimension,
+                                                                      description, "degree_north", NULL,
+                                                                      read_latitude_bounds);
     harp_variable_definition_set_valid_range_double(variable_definition, -90.0, 90.0);
     harp_variable_definition_add_mapping(variable_definition, NULL, NULL, NULL, mapping_description);
 }
@@ -2192,10 +2192,10 @@ static void register_omaeruv_product(void)
 
     /* wavelength */
     description = "wavelength";
-    variable_definition = harp_ingestion_register_variable_sample_read(product_definition, "wavelength",
-                                                                       harp_type_double, 1, dimension_type_wavelength,
-                                                                       NULL, description, "nm", NULL,
-                                                                       read_aerosol_wavelength);
+    variable_definition = harp_ingestion_register_variable_block_read(product_definition, "wavelength",
+                                                                      harp_type_double, 1, dimension_type_wavelength,
+                                                                      NULL, description, "nm", NULL,
+                                                                      read_aerosol_wavelength);
     description = "wavelength information is not included in the product; however, the product specification for OMI"
         " OMAERUV products defines a set of three fixed wavelengths: 354, 388, and 500 nm; these wavelengths"
         " are made available as a variable that only depends on the spectral dimension (of size 3)";
@@ -2203,20 +2203,20 @@ static void register_omaeruv_product(void)
 
     /* aerosol_optical_depth */
     description = "aerosol optical depth";
-    variable_definition = harp_ingestion_register_variable_sample_read(product_definition, "aerosol_optical_depth",
-                                                                       harp_type_double, 2, dimension_type, NULL,
-                                                                       description, HARP_UNIT_DIMENSIONLESS, NULL,
-                                                                       read_aerosol_optical_depth);
+    variable_definition = harp_ingestion_register_variable_block_read(product_definition, "aerosol_optical_depth",
+                                                                      harp_type_double, 2, dimension_type, NULL,
+                                                                      description, HARP_UNIT_DIMENSIONLESS, NULL,
+                                                                      read_aerosol_optical_depth);
     path = "/HDFEOS/SWATHS/Aerosol_NearUV_Swath/Data_Fields/FinalAerosolOpticalDepth[]";
     harp_variable_definition_add_mapping(variable_definition, NULL, NULL, path, NULL);
 
     /* aerosol_absorbing_optical_depth */
     description = "aerosol absorbing optical depth";
-    variable_definition = harp_ingestion_register_variable_sample_read(product_definition,
-                                                                       "aerosol_absorbing_optical_depth",
-                                                                       harp_type_double, 2, dimension_type, NULL,
-                                                                       description, HARP_UNIT_DIMENSIONLESS, NULL,
-                                                                       read_aerosol_absorbing_optical_depth);
+    variable_definition = harp_ingestion_register_variable_block_read(product_definition,
+                                                                      "aerosol_absorbing_optical_depth",
+                                                                      harp_type_double, 2, dimension_type, NULL,
+                                                                      description, HARP_UNIT_DIMENSIONLESS, NULL,
+                                                                      read_aerosol_absorbing_optical_depth);
 
     path = "/HDFEOS/SWATHS/Aerosol_NearUV_Swath/Data_Fields/FinalAerosolAbsOpticalDepth[]";
     harp_variable_definition_add_mapping(variable_definition, NULL, NULL, path, NULL);
@@ -2985,26 +2985,26 @@ static void register_omo3pr_product(void)
 
     /* pressure */
     description = "pressure level for each profile element";
-    variable_definition = harp_ingestion_register_variable_sample_read(product_definition, "pressure", harp_type_double,
-                                                                       2, dimension_type, NULL, description, "hPa",
-                                                                       NULL, read_pressure);
+    variable_definition = harp_ingestion_register_variable_block_read(product_definition, "pressure", harp_type_double,
+                                                                      2, dimension_type, NULL, description, "hPa",
+                                                                      NULL, read_pressure);
     path = "/HDFEOS/SWATHS/O3Profile/Geolocation_Fields/Pressure[]";
     harp_variable_definition_add_mapping(variable_definition, NULL, NULL, path, NULL);
 
     /* O3_number_density */
     description = "O3 concentration";
-    variable_definition = harp_ingestion_register_variable_sample_read(product_definition, "O3_number_density",
-                                                                       harp_type_double, 2, dimension_type, NULL,
-                                                                       description, "DU", NULL, read_o3);
+    variable_definition = harp_ingestion_register_variable_block_read(product_definition, "O3_number_density",
+                                                                      harp_type_double, 2, dimension_type, NULL,
+                                                                      description, "DU", NULL, read_o3);
     path = "/HDFEOS/SWATHS/O3Profile/Data_Fields/O3[]";
     harp_variable_definition_add_mapping(variable_definition, NULL, NULL, path, NULL);
 
     /* O3_number_density_uncertainty */
     description = "uncertainty of the O3 concentration";
-    variable_definition = harp_ingestion_register_variable_sample_read(product_definition,
-                                                                       "O3_number_density_uncertainty",
-                                                                       harp_type_double, 2, dimension_type, NULL,
-                                                                       description, "DU", NULL, read_o3_error);
+    variable_definition = harp_ingestion_register_variable_block_read(product_definition,
+                                                                      "O3_number_density_uncertainty",
+                                                                      harp_type_double, 2, dimension_type, NULL,
+                                                                      description, "DU", NULL, read_o3_error);
     path = "/HDFEOS/SWATHS/O3Profile/Data_Fields/O3Precision[]";
     harp_variable_definition_add_mapping(variable_definition, NULL, NULL, path, NULL);
 

@@ -445,45 +445,43 @@ static void register_common_variables(harp_product_definition *product_definitio
 
     /* datetime */
     description = "average datetime of the measurements used for the wind profile";
-    variable_definition = harp_ingestion_register_variable_sample_read(product_definition, "datetime_start",
-                                                                       harp_type_double, 1, dimension_type, NULL,
-                                                                       description, "seconds since 2000-01-01",
-                                                                       NULL, read_datetime);
+    variable_definition = harp_ingestion_register_variable_block_read(product_definition, "datetime_start",
+                                                                      harp_type_double, 1, dimension_type, NULL,
+                                                                      description, "seconds since 2000-01-01",
+                                                                      NULL, read_datetime);
     snprintf(path, MAX_PATH_LENGTH, "/%s_profile[]/profile_datetime_average", rayleigh ? "rayleigh" : "mie");
     harp_variable_definition_add_mapping(variable_definition, NULL, NULL, path, NULL);
 
     /* latitude */
     description = "average latitude of the measurements used for the wind profile";
-    variable_definition = harp_ingestion_register_variable_sample_read(product_definition, "latitude",
-                                                                       harp_type_double, 1, dimension_type, NULL,
-                                                                       description, "degree_north", NULL,
-                                                                       read_latitude);
+    variable_definition = harp_ingestion_register_variable_block_read(product_definition, "latitude",
+                                                                      harp_type_double, 1, dimension_type, NULL,
+                                                                      description, "degree_north", NULL, read_latitude);
     snprintf(path, MAX_PATH_LENGTH, "/%s_profile[]/profile_lat_average", rayleigh ? "rayleigh" : "mie");
     harp_variable_definition_add_mapping(variable_definition, NULL, NULL, path, NULL);
 
     /* longitude */
     description = "average longitude of the measurements used for the wind profile";
-    variable_definition = harp_ingestion_register_variable_sample_read(product_definition, "longitude",
-                                                                       harp_type_double, 1, dimension_type, NULL,
-                                                                       description, "degree_east", NULL,
-                                                                       read_longitude);
+    variable_definition = harp_ingestion_register_variable_block_read(product_definition, "longitude",
+                                                                      harp_type_double, 1, dimension_type, NULL,
+                                                                      description, "degree_east", NULL, read_longitude);
     snprintf(path, MAX_PATH_LENGTH, "/%s_profile[]/profile_lon_average", rayleigh ? "rayleigh" : "mie");
     harp_variable_definition_add_mapping(variable_definition, NULL, NULL, path, NULL);
 
     /* altitude */
     description = "vertical COG altitude relative to geoid for each accumulation";
-    variable_definition = harp_ingestion_register_variable_sample_read(product_definition, "altitude",
-                                                                       harp_type_double, 2, dimension_type, dimension,
-                                                                       description, "m", NULL, read_altitude);
+    variable_definition = harp_ingestion_register_variable_block_read(product_definition, "altitude",
+                                                                      harp_type_double, 2, dimension_type, dimension,
+                                                                      description, "m", NULL, read_altitude);
     snprintf(path, MAX_PATH_LENGTH, "/%s_geolocation[/%s_profile/l2b_wind_profies/wind_result_id_number - 1]/"
              "windresult_geolocation/altitude_vcog", rayleigh ? "rayleigh" : "mie", rayleigh ? "rayleigh" : "mie");
     harp_variable_definition_add_mapping(variable_definition, NULL, NULL, path, NULL);
 
     /* altitude_bounds */
     description = "altitude relative to geoid of layer boundaries for each accumulation";
-    variable_definition = harp_ingestion_register_variable_sample_read(product_definition, "altitude_bounds",
-                                                                       harp_type_double, 3, dimension_type, dimension,
-                                                                       description, "m", NULL, read_altitude_bounds);
+    variable_definition = harp_ingestion_register_variable_block_read(product_definition, "altitude_bounds",
+                                                                      harp_type_double, 3, dimension_type, dimension,
+                                                                      description, "m", NULL, read_altitude_bounds);
     snprintf(path, MAX_PATH_LENGTH, "/%s_geolocation[/%s_profile/l2b_wind_profies/wind_result_id_number - 1]"
              "/windresult_geolocation/altitude_bottom, /%s_geolocation[/%s_profile/l2b_wind_profies/"
              "wind_result_id_number - 1]/windresult_geolocation/altitude_top", rayleigh ? "rayleigh" : "mie",
@@ -492,9 +490,9 @@ static void register_common_variables(harp_product_definition *product_definitio
 
     /* hlos_wind_velocity */
     description = "HLOS wind velocity";
-    variable_definition = harp_ingestion_register_variable_sample_read(product_definition, "hlos_wind_velocity",
-                                                                       harp_type_double, 2, dimension_type, NULL,
-                                                                       description, "cm/s", NULL, read_wind_velocity);
+    variable_definition = harp_ingestion_register_variable_block_read(product_definition, "hlos_wind_velocity",
+                                                                      harp_type_double, 2, dimension_type, NULL,
+                                                                      description, "cm/s", NULL, read_wind_velocity);
     snprintf(path, MAX_PATH_LENGTH, "/%s_hloswind[/%s_profile/l2b_wind_profies/wind_result_id_number - 1]"
              "/windresult/%s_wind_velocity", rayleigh ? "rayleigh" : "mie", rayleigh ? "rayleigh" : "mie",
              rayleigh ? "rayleigh" : "mie");
@@ -502,10 +500,10 @@ static void register_common_variables(harp_product_definition *product_definitio
 
     /* hlos_wind_velocity_validity */
     description = "validity flag of the HLOS wind velocity";
-    variable_definition = harp_ingestion_register_variable_sample_read(product_definition,
-                                                                       "hlos_wind_velocity_validity", harp_type_int8,
-                                                                       2, dimension_type, NULL, description, NULL,
-                                                                       NULL, read_wind_velocity_validity);
+    variable_definition = harp_ingestion_register_variable_block_read(product_definition,
+                                                                      "hlos_wind_velocity_validity", harp_type_int8,
+                                                                      2, dimension_type, NULL, description, NULL,
+                                                                      NULL, read_wind_velocity_validity);
     snprintf(path, MAX_PATH_LENGTH, "/%s_hloswind[/%s_profile/l2b_wind_profies/wind_result_id_number - 1]"
              "/windresult/validity_flag", rayleigh ? "rayleigh" : "mie", rayleigh ? "rayleigh" : "mie");
     harp_variable_definition_add_mapping(variable_definition, NULL, NULL, path, NULL);

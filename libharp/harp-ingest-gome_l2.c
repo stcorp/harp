@@ -534,70 +534,69 @@ int harp_ingestion_module_gome_l2_init(void)
 
     /* datetime_stop */
     description = "time of the measurement at end of integration time";
-    variable_definition = harp_ingestion_register_variable_sample_read(product_definition, "datetime_stop",
-                                                                       harp_type_double, 1, dimension_type, NULL,
-                                                                       description, "seconds since 2000-01-01", NULL,
-                                                                       read_datetime);
+    variable_definition = harp_ingestion_register_variable_block_read(product_definition, "datetime_stop",
+                                                                      harp_type_double, 1, dimension_type, NULL,
+                                                                      description, "seconds since 2000-01-01", NULL,
+                                                                      read_datetime);
     harp_variable_definition_add_mapping(variable_definition, NULL, NULL, "/ddr[]/glr/datetime", NULL);
 
     /* datetime_length */
     description = "measurement integration time";
-    variable_definition = harp_ingestion_register_variable_sample_read(product_definition, "datetime_length",
-                                                                       harp_type_double, 1, dimension_type, NULL,
-                                                                       description, "s", NULL, read_integration_time);
+    variable_definition = harp_ingestion_register_variable_block_read(product_definition, "datetime_length",
+                                                                      harp_type_double, 1, dimension_type, NULL,
+                                                                      description, "s", NULL, read_integration_time);
     description = "set to a fixed value of 1.5s for all pixels";
     harp_variable_definition_add_mapping(variable_definition, NULL, NULL, NULL, description);
 
     /* latitude */
     description = "tangent latitude of the measurement";
-    variable_definition = harp_ingestion_register_variable_sample_read(product_definition, "latitude", harp_type_double,
-                                                                       1, dimension_type, NULL, description,
-                                                                       "degree_north", NULL, read_latitude);
+    variable_definition = harp_ingestion_register_variable_block_read(product_definition, "latitude", harp_type_double,
+                                                                      1, dimension_type, NULL, description,
+                                                                      "degree_north", NULL, read_latitude);
     harp_variable_definition_add_mapping(variable_definition, NULL, NULL, "/ddr[]/glr/corners[4]/lat", NULL);
 
     /* longitude */
     description = "tangent longitude of the measurement";
-    variable_definition = harp_ingestion_register_variable_sample_read(product_definition, "longitude",
-                                                                       harp_type_double, 1, dimension_type, NULL,
-                                                                       description, "degree_east", NULL,
-                                                                       read_longitude);
+    variable_definition = harp_ingestion_register_variable_block_read(product_definition, "longitude",
+                                                                      harp_type_double, 1, dimension_type, NULL,
+                                                                      description, "degree_east", NULL, read_longitude);
     description = "each longitude will be transformed from a value in the range 0 - 360 to a value in the range -180 "
         "- 180";
     harp_variable_definition_add_mapping(variable_definition, NULL, NULL, "/ddr[]/glr/corners[4]/lon", description);
 
     /* latitude_bounds */
     description = "corner latitudes for the ground pixel of the measurement";
-    variable_definition = harp_ingestion_register_variable_sample_read(product_definition, "latitude_bounds",
-                                                                       harp_type_double, 2, dimension_type,
-                                                                       bounds_dimension, description,
-                                                                       "degree_north", NULL, read_latitude_bounds);
+    variable_definition = harp_ingestion_register_variable_block_read(product_definition, "latitude_bounds",
+                                                                      harp_type_double, 2, dimension_type,
+                                                                      bounds_dimension, description,
+                                                                      "degree_north", NULL, read_latitude_bounds);
     description = "the corners are rearranged in the following way: 1,3,2,0";
     harp_variable_definition_add_mapping(variable_definition, NULL, NULL, "/ddr[]/glr/corners[0:3]/lat", description);
 
     /* longitude_bounds */
     description = "corner longitudes for the ground pixel of the measurement";
-    variable_definition = harp_ingestion_register_variable_sample_read(product_definition, "longitude_bounds",
-                                                                       harp_type_double, 2, dimension_type,
-                                                                       bounds_dimension, description,
-                                                                       "degree_east", NULL, read_longitude_bounds);
+    variable_definition = harp_ingestion_register_variable_block_read(product_definition, "longitude_bounds",
+                                                                      harp_type_double, 2, dimension_type,
+                                                                      bounds_dimension, description,
+                                                                      "degree_east", NULL, read_longitude_bounds);
     description = "the corners are rearranged in the following way: 1,3,2,0";
     harp_variable_definition_add_mapping(variable_definition, NULL, NULL, "/ddr[]/glr/corners[0:3]/lon", description);
 
     /* O3_column_number_density */
     description = "ozone total column";
-    variable_definition = harp_ingestion_register_variable_sample_read(product_definition, "O3_column_number_density",
-                                                                       harp_type_double, 1, dimension_type, NULL,
-                                                                       description, "molec/cm^2", NULL, read_o3);
+    variable_definition = harp_ingestion_register_variable_block_read(product_definition, "O3_column_number_density",
+                                                                      harp_type_double, 1, dimension_type, NULL,
+                                                                      description, "molec/cm^2", NULL, read_o3);
     harp_variable_definition_add_mapping(variable_definition, "ozone=vcd0 (default)", NULL, "/ddr[]/irr/vcd[0]/total",
                                          NULL);
     harp_variable_definition_add_mapping(variable_definition, "ozone=vcd1", NULL, "/ddr[]/irr/vcd[1]/total", NULL);
 
     /* O3_column_number_density_uncertainty */
     description = "error on the ozone total column";
-    variable_definition = harp_ingestion_register_variable_sample_read(product_definition,
-                                                                       "O3_column_number_density_uncertainty",
-                                                                       harp_type_double, 1, dimension_type, NULL,
-                                                                       description, "molec/cm^2", NULL, read_o3_error);
+    variable_definition = harp_ingestion_register_variable_block_read(product_definition,
+                                                                      "O3_column_number_density_uncertainty",
+                                                                      harp_type_double, 1, dimension_type, NULL,
+                                                                      description, "molec/cm^2", NULL, read_o3_error);
     harp_variable_definition_add_mapping(variable_definition, "ozone=vcd0 (default)", NULL,
                                          "/ddr[]/irr/vcd[0]/total, /ddr[]/irr/vcd[0]/error", error_mapping);
     harp_variable_definition_add_mapping(variable_definition, "ozone=vcd1", NULL,
@@ -605,34 +604,33 @@ int harp_ingestion_module_gome_l2_init(void)
 
     /* NO2_column_number_density */
     description = "NO2 total column";
-    variable_definition = harp_ingestion_register_variable_sample_read(product_definition, "NO2_column_number_density",
-                                                                       harp_type_double, 1, dimension_type, NULL,
-                                                                       description, "molec/cm^2", NULL, read_no2);
+    variable_definition = harp_ingestion_register_variable_block_read(product_definition, "NO2_column_number_density",
+                                                                      harp_type_double, 1, dimension_type, NULL,
+                                                                      description, "molec/cm^2", NULL, read_no2);
     harp_variable_definition_add_mapping(variable_definition, NULL, NULL, "/ddr[]/irr/vcd[2]/total", NULL);
 
     /* NO2_column_number_density_uncertainty */
     description = "error on the NO2 total column";
-    variable_definition = harp_ingestion_register_variable_sample_read(product_definition,
-                                                                       "NO2_column_number_density_uncertainty",
-                                                                       harp_type_double, 1, dimension_type, NULL,
-                                                                       description, "molec/cm^2", NULL, read_no2_error);
+    variable_definition = harp_ingestion_register_variable_block_read(product_definition,
+                                                                      "NO2_column_number_density_uncertainty",
+                                                                      harp_type_double, 1, dimension_type, NULL,
+                                                                      description, "molec/cm^2", NULL, read_no2_error);
     harp_variable_definition_add_mapping(variable_definition, NULL, NULL,
                                          "/ddr[]/irr/vcd[2]/total, /ddr[]/irr/vcd[2]/error", error_mapping);
 
     /* cloud_fraction */
     description = "cloud fraction";
-    variable_definition = harp_ingestion_register_variable_sample_read(product_definition, "cloud_fraction",
-                                                                       harp_type_double, 1, dimension_type, NULL,
-                                                                       description, "", NULL, read_cloud_fraction);
+    variable_definition = harp_ingestion_register_variable_block_read(product_definition, "cloud_fraction",
+                                                                      harp_type_double, 1, dimension_type, NULL,
+                                                                      description, "", NULL, read_cloud_fraction);
     harp_variable_definition_add_mapping(variable_definition, NULL, "version=1", "/ddr[]/irr/icfa/frac", NULL);
     harp_variable_definition_add_mapping(variable_definition, NULL, "version>1", "/ddr[]/irr/ocra/cloud_frac", NULL);
 
     /* cloud_fraction_uncertainty */
     description = "cloud fraction error";
-    variable_definition = harp_ingestion_register_variable_sample_read(product_definition, "cloud_fraction_uncertainty",
-                                                                       harp_type_double, 1, dimension_type, NULL,
-                                                                       description, "", NULL,
-                                                                       read_cloud_fraction_error);
+    variable_definition = harp_ingestion_register_variable_block_read(product_definition, "cloud_fraction_uncertainty",
+                                                                      harp_type_double, 1, dimension_type, NULL,
+                                                                      description, "", NULL, read_cloud_fraction_error);
     harp_variable_definition_add_mapping(variable_definition, NULL, "version=1",
                                          "/ddr[]/irr/icfa/frac, /ddr[]/irr/icfa/err_frac", error_mapping);
     harp_variable_definition_add_mapping(variable_definition, NULL, "version>1",
@@ -640,38 +638,38 @@ int harp_ingestion_module_gome_l2_init(void)
 
     /* cloud_top_height */
     description = "cloud top height";
-    variable_definition = harp_ingestion_register_variable_sample_read(product_definition, "cloud_top_height",
-                                                                       harp_type_double, 1, dimension_type, NULL,
-                                                                       description, "", exclude_version_1_data,
-                                                                       read_cloud_top_height);
+    variable_definition = harp_ingestion_register_variable_block_read(product_definition, "cloud_top_height",
+                                                                      harp_type_double, 1, dimension_type, NULL,
+                                                                      description, "", exclude_version_1_data,
+                                                                      read_cloud_top_height);
     harp_variable_definition_add_mapping(variable_definition, NULL, "version>1", "/ddr[]/irr/rocinn/height", NULL);
 
     /* cloud_top_height_uncertainty */
     description = "cloud top height uncertainty";
-    variable_definition = harp_ingestion_register_variable_sample_read(product_definition,
-                                                                       "cloud_top_height_uncertainty", harp_type_double,
-                                                                       1, dimension_type, NULL, description, "",
-                                                                       exclude_version_1_data,
-                                                                       read_cloud_top_height_error);
+    variable_definition = harp_ingestion_register_variable_block_read(product_definition,
+                                                                      "cloud_top_height_uncertainty", harp_type_double,
+                                                                      1, dimension_type, NULL, description, "",
+                                                                      exclude_version_1_data,
+                                                                      read_cloud_top_height_error);
     harp_variable_definition_add_mapping(variable_definition, NULL, "version>1",
                                          "/ddr[]/irr/rocinn/height, /ddr[]/irr/rocinn/height_error", error_mapping);
 
     /* cloud_top_pressure */
     description = "cloud top pressure";
-    variable_definition = harp_ingestion_register_variable_sample_read(product_definition, "cloud_top_pressure",
-                                                                       harp_type_double, 1, dimension_type, NULL,
-                                                                       description, "hPa", NULL,
-                                                                       read_cloud_top_pressure);
+    variable_definition = harp_ingestion_register_variable_block_read(product_definition, "cloud_top_pressure",
+                                                                      harp_type_double, 1, dimension_type, NULL,
+                                                                      description, "hPa", NULL,
+                                                                      read_cloud_top_pressure);
     harp_variable_definition_add_mapping(variable_definition, NULL, "version=1", "/ddr[]/irr/icfa/press", NULL);
     harp_variable_definition_add_mapping(variable_definition, NULL, "version>1", "/ddr[]/irr/rocinn/pressure", NULL);
 
     /* cloud_top_pressure_uncertainty */
     description = "cloud top pressure uncertainty";
-    variable_definition = harp_ingestion_register_variable_sample_read(product_definition,
-                                                                       "cloud_top_pressure_uncertainty",
-                                                                       harp_type_double, 1, dimension_type, NULL,
-                                                                       description, "hPa", NULL,
-                                                                       read_cloud_top_pressure_error);
+    variable_definition = harp_ingestion_register_variable_block_read(product_definition,
+                                                                      "cloud_top_pressure_uncertainty",
+                                                                      harp_type_double, 1, dimension_type, NULL,
+                                                                      description, "hPa", NULL,
+                                                                      read_cloud_top_pressure_error);
     harp_variable_definition_add_mapping(variable_definition, NULL, "version=1",
                                          "/ddr[]/irr/icfa/press, /ddr[]/irr/icfa/err_press", error_mapping);
     harp_variable_definition_add_mapping(variable_definition, NULL, "version>1",
@@ -679,83 +677,83 @@ int harp_ingestion_module_gome_l2_init(void)
 
     /* cloud_top_albedo */
     description = "cloud top albedo";
-    variable_definition = harp_ingestion_register_variable_sample_read(product_definition, "cloud_top_albedo",
-                                                                       harp_type_double, 1, dimension_type, NULL,
-                                                                       description, "", exclude_version_1_data,
-                                                                       read_cloud_top_albedo);
+    variable_definition = harp_ingestion_register_variable_block_read(product_definition, "cloud_top_albedo",
+                                                                      harp_type_double, 1, dimension_type, NULL,
+                                                                      description, "", exclude_version_1_data,
+                                                                      read_cloud_top_albedo);
     harp_variable_definition_add_mapping(variable_definition, NULL, "version>1", "/ddr[]/irr/rocinn/albedo", NULL);
 
     /* cloud_top_albedo_uncertainty */
     description = "cloud top albedo uncertainty";
-    variable_definition = harp_ingestion_register_variable_sample_read(product_definition,
-                                                                       "cloud_top_albedo_uncertainty",
-                                                                       harp_type_double, 1, dimension_type, NULL,
-                                                                       description, "", exclude_version_1_data,
-                                                                       read_cloud_top_albedo_error);
+    variable_definition = harp_ingestion_register_variable_block_read(product_definition,
+                                                                      "cloud_top_albedo_uncertainty",
+                                                                      harp_type_double, 1, dimension_type, NULL,
+                                                                      description, "", exclude_version_1_data,
+                                                                      read_cloud_top_albedo_error);
     harp_variable_definition_add_mapping(variable_definition, NULL, "version>1",
                                          "/ddr[]/irr/rocinn/albedo, /ddr[]/irr/rocinn/albedo_error", error_mapping);
 
     /* surface_pressure */
     description = "surface pressure";
-    variable_definition = harp_ingestion_register_variable_sample_read(product_definition, "surface_pressure",
-                                                                       harp_type_double, 1, dimension_type, NULL,
-                                                                       description, "hPa", NULL, read_surface_pressure);
+    variable_definition = harp_ingestion_register_variable_block_read(product_definition, "surface_pressure",
+                                                                      harp_type_double, 1, dimension_type, NULL,
+                                                                      description, "hPa", NULL, read_surface_pressure);
     harp_variable_definition_add_mapping(variable_definition, NULL, "version=1", "/ddr[]/irr/icfa/surf_press", NULL);
     harp_variable_definition_add_mapping(variable_definition, NULL, "version>1", "/ddr[]/irr/surface_pressure", NULL);
 
     /* surface_height */
     description = "surface height";
-    variable_definition = harp_ingestion_register_variable_sample_read(product_definition, "surface_height",
-                                                                       harp_type_double, 1, dimension_type, NULL,
-                                                                       description, "km", exclude_version_1_data,
-                                                                       read_surface_height);
+    variable_definition = harp_ingestion_register_variable_block_read(product_definition, "surface_height",
+                                                                      harp_type_double, 1, dimension_type, NULL,
+                                                                      description, "km", exclude_version_1_data,
+                                                                      read_surface_height);
     harp_variable_definition_add_mapping(variable_definition, NULL, "version>1", "/ddr[]/irr/surface_height", NULL);
 
     /* surface_albedo */
     description = "surface albedo";
-    variable_definition = harp_ingestion_register_variable_sample_read(product_definition, "surface_albedo",
-                                                                       harp_type_double, 1, dimension_type, NULL,
-                                                                       description, "", exclude_version_1_data,
-                                                                       read_surface_albedo);
+    variable_definition = harp_ingestion_register_variable_block_read(product_definition, "surface_albedo",
+                                                                      harp_type_double, 1, dimension_type, NULL,
+                                                                      description, "", exclude_version_1_data,
+                                                                      read_surface_albedo);
     harp_variable_definition_add_mapping(variable_definition, NULL, "version>1", "/ddr[]/irr/surface_albedo", NULL);
 
     /* solar_zenith_angle */
     description = "solar zenith angle at top of atmosphere";
-    variable_definition = harp_ingestion_register_variable_sample_read(product_definition, "solar_zenith_angle",
-                                                                       harp_type_double, 1, dimension_type, NULL,
-                                                                       description, "degree", NULL,
-                                                                       read_solar_zenith_angle);
+    variable_definition = harp_ingestion_register_variable_block_read(product_definition, "solar_zenith_angle",
+                                                                      harp_type_double, 1, dimension_type, NULL,
+                                                                      description, "degree", NULL,
+                                                                      read_solar_zenith_angle);
     harp_variable_definition_add_mapping(variable_definition, NULL, NULL, "/ddr[]/glr/sza_toa[1]", NULL);
 
     /* viewing_zenith_angle */
     description = "line of sight zenith angle at top of atmosphere";
-    variable_definition = harp_ingestion_register_variable_sample_read(product_definition, "viewing_zenith_angle",
-                                                                       harp_type_double, 1, dimension_type, NULL,
-                                                                       description, "degree", NULL,
-                                                                       read_los_zenith_angle);
+    variable_definition = harp_ingestion_register_variable_block_read(product_definition, "viewing_zenith_angle",
+                                                                      harp_type_double, 1, dimension_type, NULL,
+                                                                      description, "degree", NULL,
+                                                                      read_los_zenith_angle);
     harp_variable_definition_add_mapping(variable_definition, NULL, NULL, "/ddr[]/glr/line_sight_toa[1]", NULL);
 
     /* relative_azimuth_angle */
     description = "relative azimuth angle at top of atmosphere";
-    variable_definition = harp_ingestion_register_variable_sample_read(product_definition, "relative_azimuth_angle",
-                                                                       harp_type_double, 1, dimension_type, NULL,
-                                                                       description, "degree", NULL,
-                                                                       read_rel_azimuth_angle);
+    variable_definition = harp_ingestion_register_variable_block_read(product_definition, "relative_azimuth_angle",
+                                                                      harp_type_double, 1, dimension_type, NULL,
+                                                                      description, "degree", NULL,
+                                                                      read_rel_azimuth_angle);
     harp_variable_definition_add_mapping(variable_definition, NULL, NULL, "/ddr[]/glr/rel_azi_toa[1]", NULL);
 
     /* scan_subindex */
     description = "relative index (0-3) of this measurement within a scan (forward + backward)";
-    variable_definition = harp_ingestion_register_variable_sample_read(product_definition, "scan_subindex",
-                                                                       harp_type_int8, 1, dimension_type, NULL,
-                                                                       description, NULL, NULL, read_scan_subindex);
+    variable_definition = harp_ingestion_register_variable_block_read(product_definition, "scan_subindex",
+                                                                      harp_type_int8, 1, dimension_type, NULL,
+                                                                      description, NULL, NULL, read_scan_subindex);
     harp_variable_definition_add_mapping(variable_definition, NULL, NULL, "/ddr[]/glr/subset_counter", description);
 
     /* scan_direction_type */
     description = "scan direction for each measurement";
-    variable_definition = harp_ingestion_register_variable_sample_read(product_definition, "scan_direction_type",
-                                                                       harp_type_int8, 1, dimension_type, NULL,
-                                                                       description, NULL, NULL,
-                                                                       read_scan_direction_type);
+    variable_definition = harp_ingestion_register_variable_block_read(product_definition, "scan_direction_type",
+                                                                      harp_type_int8, 1, dimension_type, NULL,
+                                                                      description, NULL, NULL,
+                                                                      read_scan_direction_type);
     harp_variable_definition_set_enumeration_values(variable_definition, 2, scan_direction_type_values);
     description =
         "the scan direction is based on the subset_counter of the measurement; 0-2: forward (0), 3: backward (1)";

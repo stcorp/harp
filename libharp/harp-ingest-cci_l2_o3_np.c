@@ -701,9 +701,9 @@ int harp_ingestion_module_cci_l2_o3_np_init(void)
     /* longitude_bounds */
     description = "longitudes of the ground pixel corners";
     variable_definition =
-        harp_ingestion_register_variable_sample_read(product_definition, "longitude_bounds", harp_type_float, 2,
-                                                     bounds_dimension_type, bounds_dimension, description,
-                                                     "degree_east", NULL, read_longitude_bounds);
+        harp_ingestion_register_variable_block_read(product_definition, "longitude_bounds", harp_type_float, 2,
+                                                    bounds_dimension_type, bounds_dimension, description,
+                                                    "degree_east", NULL, read_longitude_bounds);
     harp_variable_definition_set_valid_range_float(variable_definition, -180.0f, 180.0f);
     path = "/ll[]";
     description = "longitudes and latitudes of the ground pixel corners are stored interleaved; longitudes are "
@@ -714,9 +714,9 @@ int harp_ingestion_module_cci_l2_o3_np_init(void)
     /* latitude_bounds */
     description = "latitudes of the ground pixel corners";
     variable_definition =
-        harp_ingestion_register_variable_sample_read(product_definition, "latitude_bounds", harp_type_float, 2,
-                                                     bounds_dimension_type, bounds_dimension, description,
-                                                     "degree_north", NULL, read_latitude_bounds);
+        harp_ingestion_register_variable_block_read(product_definition, "latitude_bounds", harp_type_float, 2,
+                                                    bounds_dimension_type, bounds_dimension, description,
+                                                    "degree_north", NULL, read_latitude_bounds);
     harp_variable_definition_set_valid_range_float(variable_definition, -90.0f, 90.0f);
     path = "/ll[]";
     description = "longitudes and latitudes of the ground pixel corners are stored interleaved; latitudes are ingested "

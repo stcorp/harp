@@ -1006,9 +1006,9 @@ int harp_ingestion_module_gomos_l2_init(void)
 
     /* scene_type */
     description = "illumination condition for the profile";
-    variable_definition = harp_ingestion_register_variable_sample_read(product_definition, "scene_type", harp_type_int8,
-                                                                       1, dimension_type, NULL, description, NULL, NULL,
-                                                                       read_illumination_condition);
+    variable_definition = harp_ingestion_register_variable_block_read(product_definition, "scene_type", harp_type_int8,
+                                                                      1, dimension_type, NULL, description, NULL, NULL,
+                                                                      read_illumination_condition);
     harp_variable_definition_set_enumeration_values(variable_definition, 5, scene_type_values);
     path = "/nl_summary_quality[0]/limb_flag";
     harp_variable_definition_add_mapping(variable_definition, NULL, "CODA product version 0", path, NULL);

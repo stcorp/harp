@@ -562,9 +562,9 @@ static harp_product_definition *register_radiance_product(harp_ingestion_module 
     /* datetime */
     description = "start time of the measurement";
     variable_definition =
-        harp_ingestion_register_variable_sample_read(product_definition, "datetime", harp_type_double, 1,
-                                                     dimension_type, NULL, description, "seconds since 2000-01-01",
-                                                     NULL, read_time);
+        harp_ingestion_register_variable_block_read(product_definition, "datetime", harp_type_double, 1,
+                                                    dimension_type, NULL, description, "seconds since 2000-01-01",
+                                                    NULL, read_time);
     path = "/exposureAttribute/pointAttribute/Time[]";
     description = "the record with year/month/day/hour/min/sec values is converted to a double precision floating "
         "point value that represents the amount of seconds since 2000-01-01 00:00:00";
@@ -573,9 +573,9 @@ static harp_product_definition *register_radiance_product(harp_ingestion_module 
     /* longitude */
     description = "longitude of the measurement";
     variable_definition =
-        harp_ingestion_register_variable_sample_read(product_definition, "longitude", harp_type_double, 1,
-                                                     dimension_type, NULL, description, "degree_east", NULL,
-                                                     read_longitude);
+        harp_ingestion_register_variable_block_read(product_definition, "longitude", harp_type_double, 1,
+                                                    dimension_type, NULL, description, "degree_east", NULL,
+                                                    read_longitude);
     harp_variable_definition_set_valid_range_double(variable_definition, -180.0, 180.0);
     path = "/exposureAttribute/pointAttribute/geometricInfo/centerLon[]";
     harp_variable_definition_add_mapping(variable_definition, NULL, NULL, path, NULL);
@@ -583,9 +583,9 @@ static harp_product_definition *register_radiance_product(harp_ingestion_module 
     /* latitude */
     description = "latitude of the measurement";
     variable_definition =
-        harp_ingestion_register_variable_sample_read(product_definition, "latitude", harp_type_double, 1,
-                                                     dimension_type, NULL, description, "degree_north", NULL,
-                                                     read_latitude);
+        harp_ingestion_register_variable_block_read(product_definition, "latitude", harp_type_double, 1,
+                                                    dimension_type, NULL, description, "degree_north", NULL,
+                                                    read_latitude);
     harp_variable_definition_set_valid_range_double(variable_definition, -90.0, 90.0);
     path = "/exposureAttribute/pointAttribute/geometricInfo/centerLat[]";
     harp_variable_definition_add_mapping(variable_definition, NULL, NULL, path, NULL);
@@ -594,9 +594,9 @@ static harp_product_definition *register_radiance_product(harp_ingestion_module 
     description = "radiances derived by taking the norm of the fourier transform of measured wavelengths";
     unit = (band_id < 6 ? "V/cm^-1" : "W/(cm^2.sr.cm^-1)");
     variable_definition =
-        harp_ingestion_register_variable_sample_read(product_definition, "radiance", harp_type_double, 2,
-                                                     profile_dimension_type, NULL, description, unit, NULL,
-                                                     read_radiance);
+        harp_ingestion_register_variable_block_read(product_definition, "radiance", harp_type_double, 2,
+                                                    profile_dimension_type, NULL, description, unit, NULL,
+                                                    read_radiance);
     description =
         "the radiance returned is the complex norm of the complex value that is stored in the product; in "
         "other words, what is returned is sqrt(real * real + imag * imag)";
@@ -632,9 +632,9 @@ static harp_product_definition *register_radiance_product(harp_ingestion_module 
     /* wavenumber */
     description = "wavenumber for each point in the spectrum";
     variable_definition =
-        harp_ingestion_register_variable_sample_read(product_definition, "wavenumber", harp_type_double, 2,
-                                                     profile_dimension_type, NULL, description, "cm^-1", NULL,
-                                                     read_wavenumber);
+        harp_ingestion_register_variable_block_read(product_definition, "wavenumber", harp_type_double, 2,
+                                                    profile_dimension_type, NULL, description, "cm^-1", NULL,
+                                                    read_wavenumber);
     description =
         "the wavenumbers are calculated by evaluating the function a.x + b for x = 0 .. N-1 with a,b the "
         "wavelength range parameters in the product";

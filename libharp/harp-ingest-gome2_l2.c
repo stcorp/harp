@@ -2128,9 +2128,9 @@ static void register_scan_variables(harp_product_definition *product_definition,
     /* scan_direction_type */
     description = "scan direction for each measurement";
     variable_definition =
-        harp_ingestion_register_variable_sample_read(product_definition, "scan_direction_type", harp_type_int8, 1,
-                                                     dimension_type, NULL, description, NULL, NULL,
-                                                     read_scan_direction_type);
+        harp_ingestion_register_variable_block_read(product_definition, "scan_direction_type", harp_type_int8, 1,
+                                                    dimension_type, NULL, description, NULL, NULL,
+                                                    read_scan_direction_type);
     harp_variable_definition_set_enumeration_values(variable_definition, 2, scan_direction_type_values);
     path = "/GEOLOCATION/IndexInScan[]";
     description = "the scan direction is based on IndexInScan[]; 0-2: forward (0), 3: backward (1)";

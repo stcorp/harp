@@ -400,109 +400,106 @@ int harp_ingestion_module_aeolus_l2a_init(void)
 
     /* datetime_start */
     description = "start time of observation";
-    variable_definition = harp_ingestion_register_variable_sample_read(product_definition, "datetime",
-                                                                       harp_type_double, 1, dimension_type, NULL,
-                                                                       description, "seconds since 2000-01-01",
-                                                                       NULL, read_datetime);
+    variable_definition = harp_ingestion_register_variable_block_read(product_definition, "datetime",
+                                                                      harp_type_double, 1, dimension_type, NULL,
+                                                                      description, "seconds since 2000-01-01",
+                                                                      NULL, read_datetime);
     harp_variable_definition_add_mapping(variable_definition, NULL, NULL, "/sca_optical_properties[]/starttime", NULL);
 
     /* datetime_length */
     description = "duration of the observation";
-    variable_definition = harp_ingestion_register_variable_sample_read(product_definition, "datetime_length",
-                                                                       harp_type_double, 1, dimension_type, NULL,
-                                                                       description, "s", NULL, read_datetime_length);
+    variable_definition = harp_ingestion_register_variable_block_read(product_definition, "datetime_length",
+                                                                      harp_type_double, 1, dimension_type, NULL,
+                                                                      description, "s", NULL, read_datetime_length);
     harp_variable_definition_add_mapping(variable_definition, NULL, NULL, NULL, "set to fixed value of 12 seconds");
 
     /* latitude */
     description = "latitude of the bin center";
-    variable_definition = harp_ingestion_register_variable_sample_read(product_definition, "latitude",
-                                                                       harp_type_double, 2, dimension_type, NULL,
-                                                                       description, "degree_north", NULL,
-                                                                       read_latitude);
+    variable_definition = harp_ingestion_register_variable_block_read(product_definition, "latitude",
+                                                                      harp_type_double, 2, dimension_type, NULL,
+                                                                      description, "degree_north", NULL, read_latitude);
     harp_variable_definition_add_mapping(variable_definition, NULL, NULL,
                                          "/sca_optical_properties[]/geolocation_middle_bins[]/latitude", NULL);
 
     /* longitude */
     description = "longitude of the bin center";
-    variable_definition = harp_ingestion_register_variable_sample_read(product_definition, "longitude",
-                                                                       harp_type_double, 2, dimension_type, NULL,
-                                                                       description, "degree_east", NULL,
-                                                                       read_longitude);
+    variable_definition = harp_ingestion_register_variable_block_read(product_definition, "longitude",
+                                                                      harp_type_double, 2, dimension_type, NULL,
+                                                                      description, "degree_east", NULL, read_longitude);
     harp_variable_definition_add_mapping(variable_definition, NULL, NULL,
                                          "/sca_optical_properties[]/geolocation_middle_bins[]/longitude", NULL);
 
     /* altitude */
     description = "altitude of the bin center";
-    variable_definition = harp_ingestion_register_variable_sample_read(product_definition, "altitude",
-                                                                       harp_type_double, 2, dimension_type, NULL,
-                                                                       description, "m", NULL, read_altitude);
+    variable_definition = harp_ingestion_register_variable_block_read(product_definition, "altitude",
+                                                                      harp_type_double, 2, dimension_type, NULL,
+                                                                      description, "m", NULL, read_altitude);
     harp_variable_definition_add_mapping(variable_definition, NULL, NULL,
                                          "/sca_optical_properties[]/geolocation_middle_bins[]/altitude", NULL);
 
     /* extinction_coefficient */
     description = "particle extinction";
-    variable_definition = harp_ingestion_register_variable_sample_read(product_definition, "extinction_coefficient",
-                                                                       harp_type_double, 2, dimension_type, NULL,
-                                                                       description, "10^-6 m^-1", NULL,
-                                                                       read_extinction);
+    variable_definition = harp_ingestion_register_variable_block_read(product_definition, "extinction_coefficient",
+                                                                      harp_type_double, 2, dimension_type, NULL,
+                                                                      description, "10^-6 m^-1", NULL, read_extinction);
     harp_variable_definition_add_mapping(variable_definition, NULL, NULL,
                                          "/sca_optical_properties[]/sca_optical_properties[]/extinction", NULL);
 
     /* extinction_coefficient_uncertainty */
     description = "uncertainty of the particle extinction";
-    variable_definition = harp_ingestion_register_variable_sample_read(product_definition,
-                                                                       "extinction_coefficient_uncertainty",
-                                                                       harp_type_double, 2, dimension_type, NULL,
-                                                                       description, "m^-1", NULL,
-                                                                       read_extinction_uncertainty);
+    variable_definition = harp_ingestion_register_variable_block_read(product_definition,
+                                                                      "extinction_coefficient_uncertainty",
+                                                                      harp_type_double, 2, dimension_type, NULL,
+                                                                      description, "m^-1", NULL,
+                                                                      read_extinction_uncertainty);
     description = "the square root of the variance is taken as uncertainty";
     harp_variable_definition_add_mapping(variable_definition, NULL, NULL,
                                          "/sca_pcd[]/profile_pcd_bins[]/extinction_variance", description);
 
     /* backscatter_coefficient */
     description = "particle backscatter";
-    variable_definition = harp_ingestion_register_variable_sample_read(product_definition, "backscatter_coefficient",
-                                                                       harp_type_double, 2, dimension_type, NULL,
-                                                                       description, "10^-6 m^-1 sr^-1", NULL,
-                                                                       read_backscatter);
+    variable_definition = harp_ingestion_register_variable_block_read(product_definition, "backscatter_coefficient",
+                                                                      harp_type_double, 2, dimension_type, NULL,
+                                                                      description, "10^-6 m^-1 sr^-1", NULL,
+                                                                      read_backscatter);
     harp_variable_definition_add_mapping(variable_definition, NULL, NULL,
                                          "/sca_optical_properties[]/sca_optical_properties[]/backscatter", NULL);
 
     /* backscatter_coefficient_uncertainty */
     description = "uncertainty of the particle backscatter";
-    variable_definition = harp_ingestion_register_variable_sample_read(product_definition,
-                                                                       "backscatter_coefficient_uncertainty",
-                                                                       harp_type_double, 2, dimension_type, NULL,
-                                                                       description, "m^-1 sr^-1", NULL,
-                                                                       read_backscatter_uncertainty);
+    variable_definition = harp_ingestion_register_variable_block_read(product_definition,
+                                                                      "backscatter_coefficient_uncertainty",
+                                                                      harp_type_double, 2, dimension_type, NULL,
+                                                                      description, "m^-1 sr^-1", NULL,
+                                                                      read_backscatter_uncertainty);
     description = "the square root of the variance is taken as uncertainty";
     harp_variable_definition_add_mapping(variable_definition, NULL, NULL,
                                          "/sca_pcd[]/profile_pcd_bins[]/backscatter_variance", description);
 
     /* optical_depth */
     description = "particle local optical depth";
-    variable_definition = harp_ingestion_register_variable_sample_read(product_definition, "optical_depth",
-                                                                       harp_type_double, 2, dimension_type, NULL,
-                                                                       description, HARP_UNIT_DIMENSIONLESS, NULL,
-                                                                       read_lod);
+    variable_definition = harp_ingestion_register_variable_block_read(product_definition, "optical_depth",
+                                                                      harp_type_double, 2, dimension_type, NULL,
+                                                                      description, HARP_UNIT_DIMENSIONLESS, NULL,
+                                                                      read_lod);
     harp_variable_definition_add_mapping(variable_definition, NULL, NULL,
                                          "/sca_optical_properties[]/sca_optical_properties[]/lod", NULL);
 
     /* optical_depth_uncertainty */
     description = "uncertainty of the particle local optical depth";
-    variable_definition = harp_ingestion_register_variable_sample_read(product_definition, "optical_depth_uncertainty",
-                                                                       harp_type_double, 2, dimension_type, NULL,
-                                                                       description, HARP_UNIT_DIMENSIONLESS, NULL,
-                                                                       read_lod_uncertainty);
+    variable_definition = harp_ingestion_register_variable_block_read(product_definition, "optical_depth_uncertainty",
+                                                                      harp_type_double, 2, dimension_type, NULL,
+                                                                      description, HARP_UNIT_DIMENSIONLESS, NULL,
+                                                                      read_lod_uncertainty);
     description = "the square root of the variance is taken as uncertainty";
     harp_variable_definition_add_mapping(variable_definition, NULL, NULL,
                                          "/sca_pcd[]/profile_pcd_bins[]/lod_variance", description);
 
     /* validity */
     description = "processing qc flag";
-    variable_definition = harp_ingestion_register_variable_sample_read(product_definition, "validity", harp_type_int8,
-                                                                       2, dimension_type, NULL, description, NULL, NULL,
-                                                                       read_validity);
+    variable_definition = harp_ingestion_register_variable_block_read(product_definition, "validity", harp_type_int8,
+                                                                      2, dimension_type, NULL, description, NULL, NULL,
+                                                                      read_validity);
     harp_variable_definition_add_mapping(variable_definition, NULL, NULL,
                                          "/sca_pcd[]/profile_pcd_bins[]/processing_qc_flag", NULL);
 

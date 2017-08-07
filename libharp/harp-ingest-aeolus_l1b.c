@@ -698,20 +698,20 @@ static void register_common_variables(harp_product_definition *product_definitio
     if (obs)
     {
         description = "start time of the observation";
-        variable_definition = harp_ingestion_register_variable_sample_read(product_definition, "datetime_start",
-                                                                           harp_type_double, 1, dimension_type, NULL,
-                                                                           description, "seconds since 2000-01-01",
-                                                                           NULL, read_datetime);
+        variable_definition = harp_ingestion_register_variable_block_read(product_definition, "datetime_start",
+                                                                          harp_type_double, 1, dimension_type, NULL,
+                                                                          description, "seconds since 2000-01-01",
+                                                                          NULL, read_datetime);
         harp_variable_definition_add_mapping(variable_definition, NULL, NULL,
                                              "/geolocation[]/start_of_observation_time", NULL);
     }
     else
     {
         description = "start time of the measurement";
-        variable_definition = harp_ingestion_register_variable_sample_read(product_definition, "datetime_start",
-                                                                           harp_type_double, 1, dimension_type, NULL,
-                                                                           description, "seconds since 2000-01-01",
-                                                                           NULL, read_datetime);
+        variable_definition = harp_ingestion_register_variable_block_read(product_definition, "datetime_start",
+                                                                          harp_type_double, 1, dimension_type, NULL,
+                                                                          description, "seconds since 2000-01-01",
+                                                                          NULL, read_datetime);
         harp_variable_definition_add_mapping(variable_definition, NULL, NULL,
                                              "/geolocation[]/start_of_observation_time, /sph/n_max_actual",
                                              "start_of_observation_time + 12.0/n_max_actual * index within BRC");
@@ -721,29 +721,26 @@ static void register_common_variables(harp_product_definition *product_definitio
     if (obs)
     {
         description = "duration of the observation";
-        variable_definition = harp_ingestion_register_variable_sample_read(product_definition, "datetime_length",
-                                                                           harp_type_double, 1, dimension_type, NULL,
-                                                                           description, "s", NULL,
-                                                                           read_datetime_length);
+        variable_definition = harp_ingestion_register_variable_block_read(product_definition, "datetime_length",
+                                                                          harp_type_double, 1, dimension_type, NULL,
+                                                                          description, "s", NULL, read_datetime_length);
         harp_variable_definition_add_mapping(variable_definition, NULL, NULL, NULL, "set to fixed value of 12 seconds");
     }
     else
     {
         description = "duration of the measurement";
-        variable_definition = harp_ingestion_register_variable_sample_read(product_definition, "datetime_length",
-                                                                           harp_type_double, 1, dimension_type, NULL,
-                                                                           description, "s", NULL,
-                                                                           read_datetime_length);
+        variable_definition = harp_ingestion_register_variable_block_read(product_definition, "datetime_length",
+                                                                          harp_type_double, 1, dimension_type, NULL,
+                                                                          description, "s", NULL, read_datetime_length);
         harp_variable_definition_add_mapping(variable_definition, NULL, NULL, "/sph/n_max_actual",
                                              "set to 12.0/n_max_actual seconds");
     }
 
     /* latitude */
     description = "average of the latitudes of the edges of the height bin along the line-of-sight";
-    variable_definition = harp_ingestion_register_variable_sample_read(product_definition, "latitude",
-                                                                       harp_type_double, 2, dimension_type, NULL,
-                                                                       description, "degree_north", NULL,
-                                                                       read_latitude);
+    variable_definition = harp_ingestion_register_variable_block_read(product_definition, "latitude", harp_type_double,
+                                                                      2, dimension_type, NULL, description,
+                                                                      "degree_north", NULL, read_latitude);
     snprintf(path, MAX_PATH_LENGTH, "/geolocation[]/%s_geolocation[]/%s%s_geolocation[]/latitude_of_height_bin",
              obs ? "observation" : "measurement", obs ? "observation_" : "", rayleigh ? "rayleigh" : "mie");
     description = "average of the value at the upper and lower edge of the height bin";
@@ -751,10 +748,9 @@ static void register_common_variables(harp_product_definition *product_definitio
 
     /* longitude */
     description = "average of the longitude of the edges of the height bin along the line-of-sight";
-    variable_definition = harp_ingestion_register_variable_sample_read(product_definition, "longitude",
-                                                                       harp_type_double, 2, dimension_type, NULL,
-                                                                       description, "degree_east", NULL,
-                                                                       read_longitude);
+    variable_definition = harp_ingestion_register_variable_block_read(product_definition, "longitude", harp_type_double,
+                                                                      2, dimension_type, NULL, description,
+                                                                      "degree_east", NULL, read_longitude);
     snprintf(path, MAX_PATH_LENGTH, "/geolocation[]/%s_geolocation[]/%s%s_geolocation[]/latitude_of_height_bin",
              obs ? "observation" : "measurement", obs ? "observation_" : "", rayleigh ? "rayleigh" : "mie");
     description = "average of the value at the upper and lower edge of the height bin";
@@ -763,9 +759,9 @@ static void register_common_variables(harp_product_definition *product_definitio
     /* altitude_bounds */
     description = "altitude boundaries of the height bin along the line-of-sight; "
         "value is negative if below DEM surface";
-    variable_definition = harp_ingestion_register_variable_sample_read(product_definition, "altitude_bounds",
-                                                                       harp_type_double, 3, dimension_type, dimension,
-                                                                       description, "m", NULL, read_altitude_bounds);
+    variable_definition = harp_ingestion_register_variable_block_read(product_definition, "altitude_bounds",
+                                                                      harp_type_double, 3, dimension_type, dimension,
+                                                                      description, "m", NULL, read_altitude_bounds);
     snprintf(path, MAX_PATH_LENGTH, "/geolocation[]/%s_geolocation[]/%s%s_geolocation[]/altitude_of_height_bin, "
              "/geolocation[]/observation_geolocation/geoid_separation",
              obs ? "observation" : "measurement", obs ? "observation_" : "", rayleigh ? "rayleigh" : "mie");
@@ -774,27 +770,27 @@ static void register_common_variables(harp_product_definition *product_definitio
 
     /* geoid_height */
     description = "Geoid separation";
-    variable_definition = harp_ingestion_register_variable_sample_read(product_definition, "geoid_height",
-                                                                       harp_type_double, 1, dimension_type, dimension,
-                                                                       description, "m", NULL, read_geoid_separation);
+    variable_definition = harp_ingestion_register_variable_block_read(product_definition, "geoid_height",
+                                                                      harp_type_double, 1, dimension_type, dimension,
+                                                                      description, "m", NULL, read_geoid_separation);
     harp_variable_definition_add_mapping(variable_definition, NULL, NULL,
                                          "/geolocation[]/observation_geolocation/geoid_separation", NULL);
 
     /* hlos_wind_velocity */
     description = "HLOS wind velocity at the altitude bin";
-    variable_definition = harp_ingestion_register_variable_sample_read(product_definition, "hlos_wind_velocity",
-                                                                       harp_type_double, 2, dimension_type, NULL,
-                                                                       description, "m/s", NULL, read_wind_velocity);
+    variable_definition = harp_ingestion_register_variable_block_read(product_definition, "hlos_wind_velocity",
+                                                                      harp_type_double, 2, dimension_type, NULL,
+                                                                      description, "m/s", NULL, read_wind_velocity);
     snprintf(path, MAX_PATH_LENGTH, "/wind_velocity[]/%s_wind_profile[]/%s_altitude_bin_wind_info[]/wind_velocity",
              obs ? "observation" : "measurement", rayleigh ? "rayleigh" : "mie");
     harp_variable_definition_add_mapping(variable_definition, NULL, NULL, path, NULL);
 
     /* hlos_wind_velocity_validity */
     description = "quality flag of the HLOS wind velocity at the altitude bin";
-    variable_definition = harp_ingestion_register_variable_sample_read(product_definition,
-                                                                       "hlos_wind_velocity_validity", harp_type_int32,
-                                                                       2, dimension_type, NULL, description, NULL,
-                                                                       NULL, read_wind_velocity_validity);
+    variable_definition = harp_ingestion_register_variable_block_read(product_definition,
+                                                                      "hlos_wind_velocity_validity", harp_type_int32,
+                                                                      2, dimension_type, NULL, description, NULL,
+                                                                      NULL, read_wind_velocity_validity);
     snprintf(path, MAX_PATH_LENGTH, "/wind_velocity[]/%s_wind_profile[]/%s_altitude_bin_wind_info[]/bin_quality_flag",
              obs ? "observation" : "measurement", rayleigh ? "rayleigh" : "mie");
     harp_variable_definition_add_mapping(variable_definition, NULL, NULL, path, NULL);

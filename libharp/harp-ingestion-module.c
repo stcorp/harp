@@ -238,7 +238,7 @@ static int variable_definition_new(const char *name, harp_data_type data_type, i
                                    int (*read_range) (void *user_data, long index_offset, long index_length,
                                                       harp_array data),
                                    long (*get_max_range) (void *user_data),
-                                   int (*read_sample) (void *user_data, long index, harp_array data),
+                                   int (*read_block) (void *user_data, long index, harp_array data),
                                    harp_variable_definition **new_variable_definition)
 {
     harp_variable_definition *variable_definition;
@@ -248,10 +248,10 @@ static int variable_definition_new(const char *name, harp_data_type data_type, i
     assert(num_dimensions >= 0 && num_dimensions <= HARP_MAX_NUM_DIMS);
     assert(num_dimensions == 0 || dimension_type != NULL);
     assert(unit == NULL || harp_unit_is_valid(unit));
-    assert(read_all != NULL || read_range != NULL || read_sample != NULL);
+    assert(read_all != NULL || read_range != NULL || read_block != NULL);
 
     /* strings can only be read using read_all and read_range when there is no sample dimension */
-    assert(read_sample != NULL || data_type != harp_type_string ||
+    assert(read_block != NULL || data_type != harp_type_string ||
            num_dimensions == 0 || dimension_type[0] != harp_dimension_time);
 
     /* read_range and get_max_range need to be set or unset both */
@@ -310,7 +310,7 @@ static int variable_definition_new(const char *name, harp_data_type data_type, i
     variable_definition->read_all = read_all;
     variable_definition->read_range = read_range;
     variable_definition->get_max_range = get_max_range;
-    variable_definition->read_sample = read_sample;
+    variable_definition->read_block = read_block;
 
     variable_definition->num_mappings = 0;
     variable_definition->mapping = NULL;
@@ -914,16 +914,16 @@ harp_variable_definition *harp_ingestion_register_variable_range_read
     return variable_definition;
 }
 
-harp_variable_definition *harp_ingestion_register_variable_sample_read
+harp_variable_definition *harp_ingestion_register_variable_block_read
     (harp_product_definition *product_definition, const char *name, harp_data_type data_type, int num_dimensions,
      const harp_dimension_type *dimension_type, const long *dimension, const char *description, const char *unit,
-     int (*exclude) (void *user_data), int (*read_sample) (void *user_data, long index, harp_array data))
+     int (*exclude) (void *user_data), int (*read_block) (void *user_data, long index, harp_array data))
 {
     harp_variable_definition *variable_definition;
 
     assert(product_definition != NULL);
     if (variable_definition_new(name, data_type, num_dimensions, dimension_type, dimension, description, unit, exclude,
-                                NULL, NULL, NULL, read_sample, &variable_definition) != 0)
+                                NULL, NULL, NULL, read_block, &variable_definition) != 0)
     {
         assert(0);
     }
@@ -1368,9 +1368,9 @@ int harp_ingestion_init(void)
             if (harp_product_definition_has_dimension_type(product_definition, harp_dimension_time))
             {
                 harp_dimension_type dimension_type[1] = { harp_dimension_time };
-                harp_ingestion_register_variable_sample_read(product_definition, "index", harp_type_int32, 1,
-                                                             dimension_type, NULL, "zero-based index of the sample "
-                                                             "within the source product", NULL, NULL, read_index);
+                harp_ingestion_register_variable_block_read(product_definition, "index", harp_type_int32, 1,
+                                                            dimension_type, NULL, "zero-based index of the sample "
+                                                            "within the source product", NULL, NULL, read_index);
             }
         }
     }

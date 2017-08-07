@@ -238,11 +238,11 @@ static int ingestion_init(ingest_info **new_info)
     return 0;
 }
 
-static int read_sample(ingest_info *info, const harp_variable_definition *variable_def, long index, harp_array data)
+static int read_block(ingest_info *info, const harp_variable_definition *variable_def, long index, harp_array data)
 {
-    if (variable_def->read_sample != NULL)
+    if (variable_def->read_block != NULL)
     {
-        return variable_def->read_sample(info->user_data, index, data);
+        return variable_def->read_block(info->user_data, index, data);
     }
     if (variable_def->read_all != NULL)
     {
@@ -403,7 +403,7 @@ static int get_variable(ingest_info *info, const harp_variable_definition *varia
             return -1;
         }
 
-        if (read_sample(info, variable_def, 0, variable->data) != 0)
+        if (read_block(info, variable_def, 0, variable->data) != 0)
         {
             harp_variable_delete(variable);
             return -1;
@@ -533,7 +533,7 @@ static int get_variable(ingest_info *info, const harp_variable_definition *varia
             if (!has_secondary_masks)
             {
                 /* No mask defined for any secondary dimension. */
-                if (read_sample(info, variable_def, 0, variable->data) != 0)
+                if (read_block(info, variable_def, 0, variable->data) != 0)
                 {
                     harp_variable_delete(variable);
                     return -1;
@@ -571,7 +571,7 @@ static int get_variable(ingest_info *info, const harp_variable_definition *varia
                     return -1;
                 }
 
-                if (read_sample(info, variable_def, 0, buffer->data) != 0)
+                if (read_block(info, variable_def, 0, buffer->data) != 0)
                 {
                     read_buffer_delete(buffer);
                     harp_variable_delete(variable);
@@ -603,7 +603,7 @@ static int get_variable(ingest_info *info, const harp_variable_definition *varia
                     /* No mask defined for the primary dimension. */
                     for (k = 0; k < primary_dimension; k++)
                     {
-                        if (read_sample(info, variable_def, k, block) != 0)
+                        if (read_block(info, variable_def, k, block) != 0)
                         {
                             harp_variable_delete(variable);
                             return -1;
@@ -621,7 +621,7 @@ static int get_variable(ingest_info *info, const harp_variable_definition *varia
                     {
                         if (primary_mask[k])
                         {
-                            if (read_sample(info, variable_def, k, block) != 0)
+                            if (read_block(info, variable_def, k, block) != 0)
                             {
                                 harp_variable_delete(variable);
                                 return -1;
@@ -673,7 +673,7 @@ static int get_variable(ingest_info *info, const harp_variable_definition *varia
                     /* No mask defined for the primary dimension. */
                     for (k = 0; k < primary_dimension; k++)
                     {
-                        if (read_sample(info, variable_def, k, buffer->data) != 0)
+                        if (read_block(info, variable_def, k, buffer->data) != 0)
                         {
                             read_buffer_delete(buffer);
                             harp_variable_delete(variable);
@@ -704,7 +704,7 @@ static int get_variable(ingest_info *info, const harp_variable_definition *varia
                     {
                         if (primary_mask[k])
                         {
-                            if (read_sample(info, variable_def, k, buffer->data) != 0)
+                            if (read_block(info, variable_def, k, buffer->data) != 0)
                             {
                                 read_buffer_delete(buffer);
                                 harp_variable_delete(variable);
@@ -939,7 +939,7 @@ static int execute_value_filter(ingest_info *info, harp_program *program)
             return -1;
         }
 
-        if (read_sample(info, variable_def, 0, buffer->data) != 0)
+        if (read_block(info, variable_def, 0, buffer->data) != 0)
         {
             read_buffer_delete(buffer);
             return -1;
@@ -1015,7 +1015,7 @@ static int execute_value_filter(ingest_info *info, harp_program *program)
                     harp_array data;
 
                     data.int8_data = &buffer->data.int8_data[i * data_type_size];
-                    if (read_sample(info, variable_def, i, data) != 0)
+                    if (read_block(info, variable_def, i, data) != 0)
                     {
                         read_buffer_delete(buffer);
                         return -1;
@@ -1025,7 +1025,7 @@ static int execute_value_filter(ingest_info *info, harp_program *program)
         }
         else
         {
-            if (read_sample(info, variable_def, 0, buffer->data) != 0)
+            if (read_block(info, variable_def, 0, buffer->data) != 0)
             {
                 read_buffer_delete(buffer);
                 return -1;
@@ -1148,7 +1148,7 @@ static int execute_value_filter(ingest_info *info, harp_program *program)
             {
                 long new_dimension_length = 0;
 
-                if (read_sample(info, variable_def, i, buffer->data) != 0)
+                if (read_block(info, variable_def, i, buffer->data) != 0)
                 {
                     read_buffer_delete(buffer);
                     return -1;

@@ -1511,9 +1511,9 @@ static void register_variables_radiance_transmittance_fields(harp_product_defini
     /* scan_direction_type */
     description = "scan direction for each measurement";
     variable_definition =
-        harp_ingestion_register_variable_sample_read(product_definition, "scan_direction_type", harp_type_int8, 1,
-                                                     dimension_type, NULL, description, NULL, NULL,
-                                                     read_scan_direction_type);
+        harp_ingestion_register_variable_block_read(product_definition, "scan_direction_type", harp_type_int8, 1,
+                                                    dimension_type, NULL, description, NULL, NULL,
+                                                    read_scan_direction_type);
     harp_variable_definition_set_enumeration_values(variable_definition, 2, scan_direction_type_values);
     path = "/MDR[]/Earthshine/INTEGRATION_TIMES[]";
     description =

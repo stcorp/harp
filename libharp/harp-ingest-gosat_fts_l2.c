@@ -557,18 +557,18 @@ static void register_common_variables(harp_product_definition *product_definitio
     /* datetime */
     description = "time of the measurement at end of integration time (in seconds since 2000-01-01 00:00:00)";
     variable_definition =
-        harp_ingestion_register_variable_sample_read(product_definition, "datetime", harp_type_double, 1,
-                                                     dimension_type, NULL, description, "seconds since 2000-01-01",
-                                                     NULL, read_time);
+        harp_ingestion_register_variable_block_read(product_definition, "datetime", harp_type_double, 1,
+                                                    dimension_type, NULL, description, "seconds since 2000-01-01",
+                                                    NULL, read_time);
     path = "/scanAttribute/time[]";
     harp_variable_definition_add_mapping(variable_definition, NULL, NULL, path, NULL);
 
     /* longitude */
     description = "longitude of the measurement";
     variable_definition =
-        harp_ingestion_register_variable_sample_read(product_definition, "longitude", harp_type_double, 1,
-                                                     dimension_type, NULL, description, "degree_east", NULL,
-                                                     read_longitude);
+        harp_ingestion_register_variable_block_read(product_definition, "longitude", harp_type_double, 1,
+                                                    dimension_type, NULL, description, "degree_east", NULL,
+                                                    read_longitude);
     harp_variable_definition_set_valid_range_double(variable_definition, -180.0, 180.0);
     path = "/Data/geolocation/longitude[]";
     harp_variable_definition_add_mapping(variable_definition, NULL, NULL, path, NULL);
@@ -576,9 +576,9 @@ static void register_common_variables(harp_product_definition *product_definitio
     /* latitude */
     description = "latitude of the measurement";
     variable_definition =
-        harp_ingestion_register_variable_sample_read(product_definition, "latitude", harp_type_double, 1,
-                                                     dimension_type, NULL, description, "degree_north", NULL,
-                                                     read_latitude);
+        harp_ingestion_register_variable_block_read(product_definition, "latitude", harp_type_double, 1,
+                                                    dimension_type, NULL, description, "degree_north", NULL,
+                                                    read_latitude);
     harp_variable_definition_set_valid_range_double(variable_definition, -90.0, 90.0);
     path = "/Data/geolocation/latitude[]";
     harp_variable_definition_add_mapping(variable_definition, NULL, NULL, path, NULL);
@@ -586,9 +586,9 @@ static void register_common_variables(harp_product_definition *product_definitio
     /* longitude_bounds */
     description = "corner longitudes for the geospatial footprint of the measurement";
     variable_definition =
-        harp_ingestion_register_variable_sample_read(product_definition, "longitude_bounds", harp_type_double, 2,
-                                                     dimension_type_bounds, dimension_bounds, description,
-                                                     "degree_east", NULL, read_corner_longitude);
+        harp_ingestion_register_variable_block_read(product_definition, "longitude_bounds", harp_type_double, 2,
+                                                    dimension_type_bounds, dimension_bounds, description,
+                                                    "degree_east", NULL, read_corner_longitude);
     harp_variable_definition_set_valid_range_double(variable_definition, -180.0, 180.0);
     path = "/Data/geolocation/footPrintLongitude";
     description = "the corners are calculated by defining a bounding box around the circular footprint area";
@@ -597,9 +597,9 @@ static void register_common_variables(harp_product_definition *product_definitio
     /* latitude_bounds */
     description = "corner latitudes for the geospatial footprint of the measurement";
     variable_definition =
-        harp_ingestion_register_variable_sample_read(product_definition, "latitude_bounds", harp_type_double, 2,
-                                                     dimension_type_bounds, dimension_bounds, description,
-                                                     "degree_north", NULL, read_corner_latitude);
+        harp_ingestion_register_variable_block_read(product_definition, "latitude_bounds", harp_type_double, 2,
+                                                    dimension_type_bounds, dimension_bounds, description,
+                                                    "degree_north", NULL, read_corner_latitude);
     harp_variable_definition_set_valid_range_double(variable_definition, -90.0, 90.0);
     path = "/Data/geolocation/footPrintLatitude";
     description = "the corners are calculated by defining a bounding box around the circular footprint area";
@@ -608,9 +608,9 @@ static void register_common_variables(harp_product_definition *product_definitio
     /* solar_azimuth_angle */
     description = "solar azimuth angle at the observation point";
     variable_definition =
-        harp_ingestion_register_variable_sample_read(product_definition, "solar_azimuth_angle", harp_type_double, 1,
-                                                     dimension_type, NULL, description, "degree", NULL,
-                                                     read_solar_azimuth_angle);
+        harp_ingestion_register_variable_block_read(product_definition, "solar_azimuth_angle", harp_type_double, 1,
+                                                    dimension_type, NULL, description, "degree", NULL,
+                                                    read_solar_azimuth_angle);
     harp_variable_definition_set_valid_range_double(variable_definition, 0.0, 360.0);
     path = "/Data/geolocation/solarAzimuth[]";
     harp_variable_definition_add_mapping(variable_definition, NULL, NULL, path, NULL);
@@ -618,9 +618,9 @@ static void register_common_variables(harp_product_definition *product_definitio
     /* solar_zenith_angle */
     description = "solar zenith angle at the observation point";
     variable_definition =
-        harp_ingestion_register_variable_sample_read(product_definition, "solar_zenith_angle", harp_type_double, 1,
-                                                     dimension_type, NULL, description, "degree", NULL,
-                                                     read_solar_zenith_angle);
+        harp_ingestion_register_variable_block_read(product_definition, "solar_zenith_angle", harp_type_double, 1,
+                                                    dimension_type, NULL, description, "degree", NULL,
+                                                    read_solar_zenith_angle);
     harp_variable_definition_set_valid_range_double(variable_definition, 0.0, 180.0);
     path = "/Data/geolocation/solarZenith[]";
     harp_variable_definition_add_mapping(variable_definition, NULL, NULL, path, NULL);
@@ -628,9 +628,9 @@ static void register_common_variables(harp_product_definition *product_definitio
     /* sensor_azimuth_angle */
     description = "sensor azimuth angle at the surface";
     variable_definition =
-        harp_ingestion_register_variable_sample_read(product_definition, "sensor_azimuth_angle", harp_type_double, 1,
-                                                     dimension_type, NULL, description, "degree", NULL,
-                                                     read_los_azimuth_angle);
+        harp_ingestion_register_variable_block_read(product_definition, "sensor_azimuth_angle", harp_type_double, 1,
+                                                    dimension_type, NULL, description, "degree", NULL,
+                                                    read_los_azimuth_angle);
     harp_variable_definition_set_valid_range_double(variable_definition, 0.0, 360.0);
     path = "/Data/geolocation/satelliteAzimuth[]";
     harp_variable_definition_add_mapping(variable_definition, NULL, NULL, path, NULL);
@@ -638,9 +638,9 @@ static void register_common_variables(harp_product_definition *product_definitio
     /* sensor_zenith_angle */
     description = "sensor zenith angle at the observation point";
     variable_definition =
-        harp_ingestion_register_variable_sample_read(product_definition, "sensor_zenith_angle", harp_type_double, 1,
-                                                     dimension_type, NULL, description, "degree", NULL,
-                                                     read_los_zenith_angle);
+        harp_ingestion_register_variable_block_read(product_definition, "sensor_zenith_angle", harp_type_double, 1,
+                                                    dimension_type, NULL, description, "degree", NULL,
+                                                    read_los_zenith_angle);
     harp_variable_definition_set_valid_range_double(variable_definition, 0.0, 180.0);
     path = "/Data/geolocation/satelliteZenith[]";
     harp_variable_definition_add_mapping(variable_definition, NULL, NULL, path, NULL);
@@ -668,18 +668,18 @@ static void register_co2_product(void)
     /* CO2_column_number_density */
     description = "CO2 column number density";
     variable_definition =
-        harp_ingestion_register_variable_sample_read(product_definition, "CO2_column_number_density", harp_type_double,
-                                                     1, dimension_type, NULL, description, "molec/cm^2", NULL,
-                                                     read_co2_column);
+        harp_ingestion_register_variable_block_read(product_definition, "CO2_column_number_density", harp_type_double,
+                                                    1, dimension_type, NULL, description, "molec/cm^2", NULL,
+                                                    read_co2_column);
     path = "/Data/totalColumn/CO2TotalColumn";
     harp_variable_definition_add_mapping(variable_definition, NULL, NULL, path, NULL);
 
     /* CO2_column_number_density_uncertainty */
     description = "uncertainty of the CO2 column number density";
     variable_definition =
-        harp_ingestion_register_variable_sample_read(product_definition, "CO2_column_number_density_uncertainty",
-                                                     harp_type_double, 1, dimension_type, NULL, description,
-                                                     "molec/cm^2", NULL, read_co2_column_error);
+        harp_ingestion_register_variable_block_read(product_definition, "CO2_column_number_density_uncertainty",
+                                                    harp_type_double, 1, dimension_type, NULL, description,
+                                                    "molec/cm^2", NULL, read_co2_column_error);
     path =
         "/Data/totalColumn/CO2TotalColumnSmoothingError, /Data/totalColumn/CO2TotalColumnRetrievalNoise, "
         "/Data/totalColumn/CO2TotalColumnInterferenceError, /Data/totalColumn/CO2TotalColumnExternalNoise";
@@ -709,18 +709,18 @@ static void register_ch4_product(void)
     /* CH4_column_number_density */
     description = "CH4 column number density";
     variable_definition =
-        harp_ingestion_register_variable_sample_read(product_definition, "CH4_column_number_density", harp_type_double,
-                                                     1, dimension_type, NULL, description, "molec/cm^2", NULL,
-                                                     read_ch4_column);
+        harp_ingestion_register_variable_block_read(product_definition, "CH4_column_number_density", harp_type_double,
+                                                    1, dimension_type, NULL, description, "molec/cm^2", NULL,
+                                                    read_ch4_column);
     path = "/Data/totalColumn/CH4TotalColumn";
     harp_variable_definition_add_mapping(variable_definition, NULL, NULL, path, NULL);
 
     /* CH4_column_number_density_uncertainty */
     description = "uncertainty of the CH4 column number density";
     variable_definition =
-        harp_ingestion_register_variable_sample_read(product_definition, "CH4_column_number_density_uncertainty",
-                                                     harp_type_double, 1, dimension_type, NULL, description,
-                                                     "molec/cm^2", NULL, read_ch4_column_error);
+        harp_ingestion_register_variable_block_read(product_definition, "CH4_column_number_density_uncertainty",
+                                                    harp_type_double, 1, dimension_type, NULL, description,
+                                                    "molec/cm^2", NULL, read_ch4_column_error);
     path =
         "/Data/totalColumn/CH4TotalColumnSmoothingError, /Data/totalColumn/CH4TotalColumnRetrievalNoise, "
         "/Data/totalColumn/CH4TotalColumnInterferenceError, /Data/totalColumn/CH4TotalColumnExternalNoise";

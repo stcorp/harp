@@ -615,9 +615,9 @@ int harp_ingestion_module_iasi_l2_init(void)
     /* datetime */
     description = "The time of the measurement at end of integration time (in seconds since 2000-01-01 00:00:00)";
     variable_definition =
-        harp_ingestion_register_variable_sample_read(product_definition, "datetime", harp_type_double, 1,
-                                                     dimension_type, NULL, description, "seconds since 2000-01-01",
-                                                     NULL, read_time);
+        harp_ingestion_register_variable_block_read(product_definition, "datetime", harp_type_double, 1,
+                                                    dimension_type, NULL, description, "seconds since 2000-01-01",
+                                                    NULL, read_time);
     path = "/MDR[]/MDR/RECORD_HEADER/RECORD_START_TIME";
     description = "The time for a scan is the MDR start time + the scan id (0..29) times 8 / 37. Each part of the 2x2 "
         "matrix of a scan will get assigned the same measurement time (i.e. there are 30 unique time values "
@@ -627,9 +627,9 @@ int harp_ingestion_module_iasi_l2_init(void)
     /* longitude */
     description = "center longitude of the measurement";
     variable_definition =
-        harp_ingestion_register_variable_sample_read(product_definition, "longitude", harp_type_double, 1,
-                                                     dimension_type, NULL, description, "degree_east", NULL,
-                                                     read_longitude);
+        harp_ingestion_register_variable_block_read(product_definition, "longitude", harp_type_double, 1,
+                                                    dimension_type, NULL, description, "degree_east", NULL,
+                                                    read_longitude);
     harp_variable_definition_set_valid_range_double(variable_definition, -180.0, 180.0);
     path = "/MDR[]/MDR/EARTH_LOCATION[,1]";
     harp_variable_definition_add_mapping(variable_definition, NULL, NULL, path, NULL);
@@ -637,9 +637,9 @@ int harp_ingestion_module_iasi_l2_init(void)
     /* latitude */
     description = "center latitude of the measurement";
     variable_definition =
-        harp_ingestion_register_variable_sample_read(product_definition, "latitude", harp_type_double, 1,
-                                                     dimension_type, NULL, description, "degree_north", NULL,
-                                                     read_latitude);
+        harp_ingestion_register_variable_block_read(product_definition, "latitude", harp_type_double, 1,
+                                                    dimension_type, NULL, description, "degree_north", NULL,
+                                                    read_latitude);
     harp_variable_definition_set_valid_range_double(variable_definition, -90.0, 90.0);
     path = "/MDR[]/MDR/EARTH_LOCATION[,0]";
     harp_variable_definition_add_mapping(variable_definition, NULL, NULL, path, NULL);
@@ -647,9 +647,9 @@ int harp_ingestion_module_iasi_l2_init(void)
     /* longitude_bounds */
     description = "corner longitudes of the measurement";
     variable_definition =
-        harp_ingestion_register_variable_sample_read(product_definition, "longitude_bounds", harp_type_double, 2,
-                                                     dimension_type_bounds, dimension_bounds, description,
-                                                     "degree_east", NULL, read_corner_longitude);
+        harp_ingestion_register_variable_block_read(product_definition, "longitude_bounds", harp_type_double, 2,
+                                                    dimension_type_bounds, dimension_bounds, description,
+                                                    "degree_east", NULL, read_corner_longitude);
     harp_variable_definition_set_valid_range_double(variable_definition, -180.0, 180.0);
     path = "/MDR[]/MDR/EARTH_LOCATION[]";
     description = "the corner coordinates are rough estimates of the circle areas for the scan elements; the size of "
@@ -660,9 +660,9 @@ int harp_ingestion_module_iasi_l2_init(void)
     /* latitude_bounds */
     description = "corner latitudes of the measurement";
     variable_definition =
-        harp_ingestion_register_variable_sample_read(product_definition, "latitude_bounds", harp_type_double, 2,
-                                                     dimension_type_bounds, dimension_bounds, description,
-                                                     "degree_north", NULL, read_corner_latitude);
+        harp_ingestion_register_variable_block_read(product_definition, "latitude_bounds", harp_type_double, 2,
+                                                    dimension_type_bounds, dimension_bounds, description,
+                                                    "degree_north", NULL, read_corner_latitude);
     harp_variable_definition_set_valid_range_double(variable_definition, -90.0, 90.0);
     path = "/MDR[]/MDR/EARTH_LOCATION[]";
     description = "the corner coordinates are rough estimates of the circle areas for the scan elements; the size of "
@@ -673,9 +673,9 @@ int harp_ingestion_module_iasi_l2_init(void)
     /* solar_azimuth_angle */
     description = "solar azimuth angle at the surface";
     variable_definition =
-        harp_ingestion_register_variable_sample_read(product_definition, "solar_azimuth_angle", harp_type_double, 1,
-                                                     dimension_type, NULL, description, "degree", NULL,
-                                                     read_solar_azimuth_angle);
+        harp_ingestion_register_variable_block_read(product_definition, "solar_azimuth_angle", harp_type_double, 1,
+                                                    dimension_type, NULL, description, "degree", NULL,
+                                                    read_solar_azimuth_angle);
     harp_variable_definition_set_valid_range_double(variable_definition, 0.0, 360.0);
     path = "/MDR[]/MDR/ANGULAR_RELATION[,2]";
     harp_variable_definition_add_mapping(variable_definition, NULL, NULL, path, NULL);
@@ -683,9 +683,9 @@ int harp_ingestion_module_iasi_l2_init(void)
     /* solar_zenith_angle */
     description = "solar zenith angle at the surface";
     variable_definition =
-        harp_ingestion_register_variable_sample_read(product_definition, "solar_zenith_angle", harp_type_double,
-                                                     1, dimension_type, NULL, description, "degree", NULL,
-                                                     read_solar_zenith_angle);
+        harp_ingestion_register_variable_block_read(product_definition, "solar_zenith_angle", harp_type_double,
+                                                    1, dimension_type, NULL, description, "degree", NULL,
+                                                    read_solar_zenith_angle);
     harp_variable_definition_set_valid_range_double(variable_definition, 0.0, 180.0);
     path = "/MDR[]/MDR/ANGULAR_RELATION[,0]";
     harp_variable_definition_add_mapping(variable_definition, NULL, NULL, path, NULL);
@@ -693,9 +693,9 @@ int harp_ingestion_module_iasi_l2_init(void)
     /* sensor_azimuth_angle */
     description = "sensor azimuth angle at the surface";
     variable_definition =
-        harp_ingestion_register_variable_sample_read(product_definition, "sensor_azimuth_angle", harp_type_double, 1,
-                                                     dimension_type, NULL, description, "degree", NULL,
-                                                     read_sensor_azimuth_angle);
+        harp_ingestion_register_variable_block_read(product_definition, "sensor_azimuth_angle", harp_type_double, 1,
+                                                    dimension_type, NULL, description, "degree", NULL,
+                                                    read_sensor_azimuth_angle);
     harp_variable_definition_set_valid_range_double(variable_definition, 0.0, 360.0);
     path = "/MDR[]/MDR/ANGULAR_RELATION[,3]";
     harp_variable_definition_add_mapping(variable_definition, NULL, NULL, path, NULL);
@@ -703,9 +703,9 @@ int harp_ingestion_module_iasi_l2_init(void)
     /* sensor_zenith_angle */
     description = "sensor angle at the surface";
     variable_definition =
-        harp_ingestion_register_variable_sample_read(product_definition, "sensor_zenith_angle", harp_type_double, 1,
-                                                     dimension_type, NULL, description, "degree", NULL,
-                                                     read_sensor_zenith_angle);
+        harp_ingestion_register_variable_block_read(product_definition, "sensor_zenith_angle", harp_type_double, 1,
+                                                    dimension_type, NULL, description, "degree", NULL,
+                                                    read_sensor_zenith_angle);
     harp_variable_definition_set_valid_range_double(variable_definition, 0.0, 180.0);
     path = "/MDR[]/MDR/ANGULAR_RELATION[,1]";
     harp_variable_definition_add_mapping(variable_definition, NULL, NULL, path, NULL);
@@ -713,51 +713,48 @@ int harp_ingestion_module_iasi_l2_init(void)
     /* CH4_column_density */
     description = "CH4 column mass density";
     variable_definition =
-        harp_ingestion_register_variable_sample_read(product_definition, "CH4_column_density", harp_type_double, 1,
-                                                     dimension_type, NULL, description, "kg/m^2", NULL,
-                                                     read_ch4_column);
+        harp_ingestion_register_variable_block_read(product_definition, "CH4_column_density", harp_type_double, 1,
+                                                    dimension_type, NULL, description, "kg/m^2", NULL, read_ch4_column);
     path = "/MDR[]/MDR/INTEGRATED_CH4[]";
     harp_variable_definition_add_mapping(variable_definition, NULL, NULL, path, NULL);
 
     /* CO_column_density */
     description = "CO column mass density";
     variable_definition =
-        harp_ingestion_register_variable_sample_read(product_definition, "CO_column_density", harp_type_double, 1,
-                                                     dimension_type, NULL, description, "kg/m^2", NULL, read_co_column);
+        harp_ingestion_register_variable_block_read(product_definition, "CO_column_density", harp_type_double, 1,
+                                                    dimension_type, NULL, description, "kg/m^2", NULL, read_co_column);
     path = "/MDR[]/MDR/INTEGRATED_CO[]";
     harp_variable_definition_add_mapping(variable_definition, NULL, NULL, path, NULL);
 
     /* CO2_column_density */
     description = "CO2 column mass density";
     variable_definition =
-        harp_ingestion_register_variable_sample_read(product_definition, "CO2_column_density", harp_type_double, 1,
-                                                     dimension_type, NULL, description, "kg/m^2", NULL,
-                                                     read_co2_column);
+        harp_ingestion_register_variable_block_read(product_definition, "CO2_column_density", harp_type_double, 1,
+                                                    dimension_type, NULL, description, "kg/m^2", NULL, read_co2_column);
     path = "/MDR[]/MDR/INTEGRATED_CO2[]";
     harp_variable_definition_add_mapping(variable_definition, NULL, NULL, path, NULL);
 
     /* O3_column_density */
     description = "O3 column mass density";
     variable_definition =
-        harp_ingestion_register_variable_sample_read(product_definition, "O3_column_density", harp_type_double, 1,
-                                                     dimension_type, NULL, description, "kg/m^2", NULL, read_o3_column);
+        harp_ingestion_register_variable_block_read(product_definition, "O3_column_density", harp_type_double, 1,
+                                                    dimension_type, NULL, description, "kg/m^2", NULL, read_o3_column);
     path = "/MDR[]/MDR/INTEGRATED_OZONE[]";
     harp_variable_definition_add_mapping(variable_definition, NULL, NULL, path, NULL);
 
     /* N2O_column_density */
     description = "N2O column mass density";
     variable_definition =
-        harp_ingestion_register_variable_sample_read(product_definition, "N2O_column_density", harp_type_double, 1,
-                                                     dimension_type, NULL, description, "kg/m^2", NULL,
-                                                     read_n2o_column);
+        harp_ingestion_register_variable_block_read(product_definition, "N2O_column_density", harp_type_double, 1,
+                                                    dimension_type, NULL, description, "kg/m^2", NULL, read_n2o_column);
     path = "/MDR[]/MDR/INTEGRATED_N2O[]";
     harp_variable_definition_add_mapping(variable_definition, NULL, NULL, path, NULL);
 
     /* scan_subindex */
     description = "the relative index (0-119) of this measurement within an MDR";
     variable_definition =
-        harp_ingestion_register_variable_sample_read(product_definition, "scan_subindex", harp_type_int8, 1,
-                                                     dimension_type, NULL, description, NULL, NULL, read_scan_subindex);
+        harp_ingestion_register_variable_block_read(product_definition, "scan_subindex", harp_type_int8, 1,
+                                                    dimension_type, NULL, description, NULL, NULL, read_scan_subindex);
 
     return 0;
 }

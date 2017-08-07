@@ -740,8 +740,8 @@ static void register_irradiance_product_variables(harp_product_definition *produ
 
     description = "zero-based index of the pixel within the scanline";
     variable_definition =
-        harp_ingestion_register_variable_sample_read(product_definition, "scan_subindex", harp_type_int16, 1,
-                                                     dimension_type, NULL, description, NULL, NULL, read_scan_subindex);
+        harp_ingestion_register_variable_block_read(product_definition, "scan_subindex", harp_type_int16, 1,
+                                                    dimension_type, NULL, description, NULL, NULL, read_scan_subindex);
     description =
         "the scanline and pixel dimensions are collapsed into a temporal dimension; the index of the pixel within the "
         "scanline is computed as the index on the temporal dimension modulo the number of scanlines";
@@ -762,16 +762,16 @@ static void register_irradiance_product_variables(harp_product_definition *produ
     /* Irradiance. */
     description = "calibrated wavelength";
     variable_definition =
-        harp_ingestion_register_variable_sample_read(product_definition, "wavelength", harp_type_float, 2,
-                                                     dimension_type, NULL, description, "nm", NULL, read_wavelength);
+        harp_ingestion_register_variable_block_read(product_definition, "wavelength", harp_type_float, 2,
+                                                    dimension_type, NULL, description, "nm", NULL, read_wavelength);
     snprintf(path, MAX_PATH_LENGTH, "/%s/STANDARD_MODE/INSTRUMENT/calibrated_wavelength[]", product_group_name);
     harp_variable_definition_add_mapping(variable_definition, NULL, NULL, path, NULL);
 
     description = "spectral photon irradiance";
     variable_definition =
-        harp_ingestion_register_variable_sample_read(product_definition, "photon_irradiance", harp_type_float, 2,
-                                                     dimension_type, NULL, description, "mol/(s.m^2.nm)", NULL,
-                                                     read_observable);
+        harp_ingestion_register_variable_block_read(product_definition, "photon_irradiance", harp_type_float, 2,
+                                                    dimension_type, NULL, description, "mol/(s.m^2.nm)", NULL,
+                                                    read_observable);
     snprintf(path, MAX_PATH_LENGTH, "/%s/STANDARD_MODE/OBSERVATIONS/irradiance[]", product_group_name);
     harp_variable_definition_add_mapping(variable_definition, NULL, NULL, path, NULL);
 }
@@ -788,8 +788,8 @@ static void register_radiance_product_variables(harp_product_definition *product
 
     description = "zero-based index of the pixel within the scanline";
     variable_definition =
-        harp_ingestion_register_variable_sample_read(product_definition, "scan_subindex", harp_type_int16, 1,
-                                                     dimension_type, NULL, description, NULL, NULL, read_scan_subindex);
+        harp_ingestion_register_variable_block_read(product_definition, "scan_subindex", harp_type_int16, 1,
+                                                    dimension_type, NULL, description, NULL, NULL, read_scan_subindex);
     description =
         "the scanline and ground pixel dimensions are collapsed into a single temporal dimension; the index "
         "of the pixel within the scanline is computed as the index on this temporal dimension modulo the "
@@ -911,16 +911,16 @@ static void register_radiance_product_variables(harp_product_definition *product
     /* Radiance. */
     description = "nominal wavelength";
     variable_definition =
-        harp_ingestion_register_variable_sample_read(product_definition, "wavelength", harp_type_float, 2,
-                                                     dimension_type, NULL, description, "nm", NULL, read_wavelength);
+        harp_ingestion_register_variable_block_read(product_definition, "wavelength", harp_type_float, 2,
+                                                    dimension_type, NULL, description, "nm", NULL, read_wavelength);
     snprintf(path, MAX_PATH_LENGTH, "/%s/STANDARD_MODE/INSTRUMENT/nominal_wavelength[]", product_group_name);
     harp_variable_definition_add_mapping(variable_definition, NULL, NULL, path, NULL);
 
     description = "spectral photon radiance";
     variable_definition =
-        harp_ingestion_register_variable_sample_read(product_definition, "photon_radiance", harp_type_float, 2,
-                                                     dimension_type, NULL, description, "mol/(s.m^2.nm.sr)", NULL,
-                                                     read_observable);
+        harp_ingestion_register_variable_block_read(product_definition, "photon_radiance", harp_type_float, 2,
+                                                    dimension_type, NULL, description, "mol/(s.m^2.nm.sr)", NULL,
+                                                    read_observable);
     snprintf(path, MAX_PATH_LENGTH, "/%s/STANDARD_MODE/OBSERVATIONS/radiance[]", product_group_name);
     harp_variable_definition_add_mapping(variable_definition, NULL, NULL, path, NULL);
 }

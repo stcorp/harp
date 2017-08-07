@@ -588,9 +588,9 @@ int harp_ingestion_module_iasi_l1_init(void)
     /* wavenumber_radiance */
     description = "measured radiances";
     variable_definition =
-        harp_ingestion_register_variable_sample_read(product_definition, "wavenumber_radiance", harp_type_float, 2,
-                                                     dimension_type, NULL, description, "W/m^2.sr.m^-1", NULL,
-                                                     read_spectral_radiance_sample);
+        harp_ingestion_register_variable_block_read(product_definition, "wavenumber_radiance", harp_type_float, 2,
+                                                    dimension_type, NULL, description, "W/m^2.sr.m^-1", NULL,
+                                                    read_spectral_radiance_sample);
     path = "/MDR[]/MDR/GS1cSpect[], /MDR[]/MDR/IDefNsfirst1b, /GIADR_ScaleFactors/IDefScaleSondNbScale, "
         "/GIADR_ScaleFactors/IDefScaleSondScaleFactor[], /GIADR_ScaleFactors/IdefScaleSondNsfirst[], "
         "/GIADR_ScaleFactors/IDefScaleSondNslast[]";
@@ -603,9 +603,9 @@ int harp_ingestion_module_iasi_l1_init(void)
     /* wavenumber */
     description = "nominal wavelength assignment for each of the detector pixels";
     variable_definition =
-        harp_ingestion_register_variable_sample_read(product_definition, "wavenumber", harp_type_float, 2,
-                                                     dimension_type, NULL, description, "m^-1", NULL,
-                                                     read_wavenumber_sample);
+        harp_ingestion_register_variable_block_read(product_definition, "wavenumber", harp_type_float, 2,
+                                                    dimension_type, NULL, description, "m^-1", NULL,
+                                                    read_wavenumber_sample);
     path = "/MDR[]/MDR/IDefSpectDWn1b, /MDR[]/MDR/IDefNsfirst1b, /MDR[]/MDR/IDefNslast1b";
     description = "wavenumber[i] = IDefSpectDWn1b * (i + IDefNsfirst1b - 1). ";
     harp_variable_definition_add_mapping(variable_definition, NULL, NULL, path, description);

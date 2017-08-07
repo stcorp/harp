@@ -83,7 +83,7 @@ typedef struct harp_variable_definition_struct
     int (*read_all) (void *user_data, harp_array data);
     int (*read_range) (void *user_data, long index_offset, long index_length, harp_array data);
     long (*get_max_range) (void *user_data);
-    int (*read_sample) (void *user_data, long index, harp_array data);
+    int (*read_block) (void *user_data, long index, harp_array data);
 
     int num_mappings;
     harp_mapping_description **mapping;
@@ -231,15 +231,15 @@ harp_variable_definition *harp_ingestion_register_variable_range_read(harp_produ
                                                                                          long index_offset,
                                                                                          long index_length,
                                                                                          harp_array data));
-harp_variable_definition *harp_ingestion_register_variable_sample_read(harp_product_definition *product_definition,
-                                                                       const char *name, harp_data_type data_type,
-                                                                       int num_dimensions,
-                                                                       const harp_dimension_type *dimension_type,
-                                                                       const long *dimension, const char *description,
-                                                                       const char *unit,
-                                                                       int (*exclude) (void *user_data),
-                                                                       int (*read_sample) (void *user_data, long index,
-                                                                                           harp_array data));
+harp_variable_definition *harp_ingestion_register_variable_block_read(harp_product_definition *product_definition,
+                                                                      const char *name, harp_data_type data_type,
+                                                                      int num_dimensions,
+                                                                      const harp_dimension_type *dimension_type,
+                                                                      const long *dimension, const char *description,
+                                                                      const char *unit,
+                                                                      int (*exclude) (void *user_data),
+                                                                      int (*read_block) (void *user_data, long index,
+                                                                                         harp_array data));
 
 /* Initialization and clean-up. */
 int harp_ingestion_init(void);

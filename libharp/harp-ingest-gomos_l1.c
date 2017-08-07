@@ -909,9 +909,9 @@ static void register_limb_product(void)
     /* scene_type */
     description = "illumination condition for each profile";
     variable_definition =
-        harp_ingestion_register_variable_sample_read(product_definition, "scene_type", harp_type_int8, 0,
-                                                     dimension_type, NULL, description, NULL, NULL,
-                                                     read_lim_illumination_condition);
+        harp_ingestion_register_variable_block_read(product_definition, "scene_type", harp_type_int8, 0,
+                                                    dimension_type, NULL, description, NULL, NULL,
+                                                    read_lim_illumination_condition);
     harp_variable_definition_set_enumeration_values(variable_definition, 5, scene_type_values);
     path = "/lim_summary_quality[0]/limb_flag";
     harp_variable_definition_add_mapping(variable_definition, NULL, "CODA product version 0", path, NULL);
@@ -1227,9 +1227,9 @@ static void register_tra_product(void)
     /* scene_type */
     description = "illumination condition for each profile";
     variable_definition =
-        harp_ingestion_register_variable_sample_read(product_definition, "scene_type", harp_type_int8, 0,
-                                                     dimension_type, NULL, description, NULL, NULL,
-                                                     read_tra_illumination_condition);
+        harp_ingestion_register_variable_block_read(product_definition, "scene_type", harp_type_int8, 0,
+                                                    dimension_type, NULL, description, NULL, NULL,
+                                                    read_tra_illumination_condition);
     harp_variable_definition_set_enumeration_values(variable_definition, 5, scene_type_values);
     path = "/tra_summary_quality[0]/limb_flag";
     harp_variable_definition_add_mapping(variable_definition, NULL, "CODA product version 0", path, NULL);
