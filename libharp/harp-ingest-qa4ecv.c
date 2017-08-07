@@ -57,6 +57,8 @@ typedef struct ingest_info_struct
     coda_cursor detailed_results_cursor;
     coda_cursor input_data_cursor;
 
+    harp_array hybride_coef_a;
+    harp_array hybride_coef_b;
 } ingest_info;
 
 static void broadcast_array_double(long num_scanlines, long num_pixels, double *data)
@@ -102,159 +104,6 @@ static int get_dimension_length(ingest_info *info, const char *name, long *lengt
         return -1;
     }
     *length = coda_dim[0];
-
-    return 0;
-}
-
-static int init_cursors(ingest_info *info)
-{
-    coda_cursor cursor;
-
-    if (coda_cursor_set_product(&cursor, info->product) != 0)
-    {
-        harp_set_error(HARP_ERROR_CODA, NULL);
-        return -1;
-    }
-    if (coda_cursor_goto_record_field_by_name(&cursor, "PRODUCT") != 0)
-    {
-        harp_set_error(HARP_ERROR_CODA, NULL);
-        return -1;
-    }
-    info->product_cursor = cursor;
-
-    if (coda_cursor_goto_record_field_by_name(&cursor, "SUPPORT_DATA") != 0)
-    {
-        harp_set_error(HARP_ERROR_CODA, NULL);
-        return -1;
-    }
-
-    if (coda_cursor_goto_record_field_by_name(&cursor, "GEOLOCATIONS") != 0)
-    {
-        harp_set_error(HARP_ERROR_CODA, NULL);
-        return -1;
-    }
-    info->geolocation_cursor = cursor;
-
-    coda_cursor_goto_parent(&cursor);
-    if (coda_cursor_goto_record_field_by_name(&cursor, "DETAILED_RESULTS") != 0)
-    {
-        harp_set_error(HARP_ERROR_CODA, NULL);
-        return -1;
-    }
-    info->detailed_results_cursor = cursor;
-
-    coda_cursor_goto_parent(&cursor);
-    if (coda_cursor_goto_record_field_by_name(&cursor, "INPUT_DATA") != 0)
-    {
-        harp_set_error(HARP_ERROR_CODA, NULL);
-        return -1;
-    }
-    info->input_data_cursor = cursor;
-
-    return 0;
-}
-
-static int init_dimensions(ingest_info *info)
-{
-    if (get_dimension_length(info, "time", &info->num_times) != 0)
-    {
-        return -1;
-    }
-
-    if (get_dimension_length(info, "scanline", &info->num_scanlines) != 0)
-    {
-        return -1;
-    }
-
-    if (get_dimension_length(info, "ground_pixel", &info->num_pixels) != 0)
-    {
-        return -1;
-    }
-
-    if (get_dimension_length(info, "corner", &info->num_corners) != 0)
-    {
-        return -1;
-    }
-
-    if (get_dimension_length(info, "layer", &info->num_layers) != 0)
-    {
-        return -1;
-    }
-
-    if (info->num_times != 1)
-    {
-        harp_set_error(HARP_ERROR_INGESTION, "dimension 'time' has length %ld; expected 1", info->num_times);
-        return -1;
-    }
-
-    if (info->num_corners != 4)
-    {
-        harp_set_error(HARP_ERROR_INGESTION, "dimension 'corner' has length %ld; expected 4", info->num_corners);
-        return -1;
-    }
-
-    return 0;
-}
-
-static void ingestion_done(void *user_data)
-{
-    free(user_data);
-}
-
-static int ingestion_init(const harp_ingestion_module *module, coda_product *product,
-                          const harp_ingestion_options *options, harp_product_definition **definition, void **user_data)
-{
-    const char *option_value;
-    ingest_info *info;
-
-    info = (ingest_info *)malloc(sizeof(ingest_info));
-    if (info == NULL)
-    {
-        harp_set_error(HARP_ERROR_OUT_OF_MEMORY, "out of memory (could not allocate %lu bytes) (%s:%u)",
-                       sizeof(ingest_info), __FILE__, __LINE__);
-        return -1;
-    }
-
-    info->product = product;
-    info->use_summed_total_column = 1;
-    info->use_radiance_cloud_fraction = 0;
-    info->num_times = 0;
-    info->num_scanlines = 0;
-    info->num_pixels = 0;
-    info->num_corners = 0;
-    info->num_layers = 0;
-
-    if (harp_ingestion_options_has_option(options, "total_column"))
-    {
-        if (harp_ingestion_options_get_option(options, "total_column", &option_value) != 0)
-        {
-            ingestion_done(info);
-            return -1;
-        }
-        if (strcmp(option_value, "total") == 0)
-        {
-            info->use_summed_total_column = 0;
-        }
-    }
-    if (harp_ingestion_options_has_option(options, "cloud_fraction"))
-    {
-        info->use_radiance_cloud_fraction = 1;
-    }
-
-    if (init_cursors(info) != 0)
-    {
-        ingestion_done(info);
-        return -1;
-    }
-
-    if (init_dimensions(info) != 0)
-    {
-        ingestion_done(info);
-        return -1;
-    }
-
-    *definition = *module->product_definition;
-    *user_data = info;
 
     return 0;
 }
@@ -406,6 +255,211 @@ static int read_dimensions(void *user_data, long dimension[HARP_NUM_DIM_TYPES])
     return 0;
 }
 
+static int init_cursors(ingest_info *info)
+{
+    coda_cursor cursor;
+
+    if (coda_cursor_set_product(&cursor, info->product) != 0)
+    {
+        harp_set_error(HARP_ERROR_CODA, NULL);
+        return -1;
+    }
+    if (coda_cursor_goto_record_field_by_name(&cursor, "PRODUCT") != 0)
+    {
+        harp_set_error(HARP_ERROR_CODA, NULL);
+        return -1;
+    }
+    info->product_cursor = cursor;
+
+    if (coda_cursor_goto_record_field_by_name(&cursor, "SUPPORT_DATA") != 0)
+    {
+        harp_set_error(HARP_ERROR_CODA, NULL);
+        return -1;
+    }
+
+    if (coda_cursor_goto_record_field_by_name(&cursor, "GEOLOCATIONS") != 0)
+    {
+        harp_set_error(HARP_ERROR_CODA, NULL);
+        return -1;
+    }
+    info->geolocation_cursor = cursor;
+
+    coda_cursor_goto_parent(&cursor);
+    if (coda_cursor_goto_record_field_by_name(&cursor, "DETAILED_RESULTS") != 0)
+    {
+        harp_set_error(HARP_ERROR_CODA, NULL);
+        return -1;
+    }
+    info->detailed_results_cursor = cursor;
+
+    coda_cursor_goto_parent(&cursor);
+    if (coda_cursor_goto_record_field_by_name(&cursor, "INPUT_DATA") != 0)
+    {
+        harp_set_error(HARP_ERROR_CODA, NULL);
+        return -1;
+    }
+    info->input_data_cursor = cursor;
+
+    return 0;
+}
+
+static int init_dimensions(ingest_info *info)
+{
+    if (get_dimension_length(info, "time", &info->num_times) != 0)
+    {
+        return -1;
+    }
+
+    if (get_dimension_length(info, "scanline", &info->num_scanlines) != 0)
+    {
+        return -1;
+    }
+
+    if (get_dimension_length(info, "ground_pixel", &info->num_pixels) != 0)
+    {
+        return -1;
+    }
+
+    if (get_dimension_length(info, "corner", &info->num_corners) != 0)
+    {
+        return -1;
+    }
+
+    if (get_dimension_length(info, "layer", &info->num_layers) != 0)
+    {
+        return -1;
+    }
+
+    if (info->num_times != 1)
+    {
+        harp_set_error(HARP_ERROR_INGESTION, "dimension 'time' has length %ld; expected 1", info->num_times);
+        return -1;
+    }
+
+    if (info->num_corners != 4)
+    {
+        harp_set_error(HARP_ERROR_INGESTION, "dimension 'corner' has length %ld; expected 4", info->num_corners);
+        return -1;
+    }
+
+    return 0;
+}
+
+static int init_hybride_coef(ingest_info *info)
+{
+    info->hybride_coef_a.ptr = malloc(info->num_layers * 2 * sizeof(double));
+    if (info->hybride_coef_a.ptr == NULL)
+    {
+        harp_set_error(HARP_ERROR_OUT_OF_MEMORY, "out of memory (could not allocate %lu bytes) (%s:%u)",
+                       info->num_layers * 2 * sizeof(double), __FILE__, __LINE__);
+        return -1;
+    }
+
+    info->hybride_coef_b.ptr = malloc(info->num_layers * 2 * sizeof(double));
+    if (info->hybride_coef_b.ptr == NULL)
+    {
+        harp_set_error(HARP_ERROR_OUT_OF_MEMORY, "out of memory (could not allocate %lu bytes) (%s:%u)",
+                       info->num_layers * 2 * sizeof(double), __FILE__, __LINE__);
+        return -1;
+    }
+
+    if (read_dataset(info->product_cursor, "tm5_pressure_level_a", harp_type_double, info->num_layers * 2,
+                     info->hybride_coef_a) != 0)
+    {
+        return -1;
+    }
+
+    if (read_dataset(info->product_cursor, "tm5_pressure_level_b", harp_type_double, info->num_layers * 2,
+                     info->hybride_coef_b) != 0)
+    {
+        return -1;
+    }
+
+    return 0;
+}
+
+static void ingestion_done(void *user_data)
+{
+    ingest_info *info = (ingest_info *)user_data;
+
+    if (info->hybride_coef_a.ptr != NULL)
+    {
+        free(info->hybride_coef_a.ptr);
+    }
+    if (info->hybride_coef_b.ptr != NULL)
+    {
+        free(info->hybride_coef_b.ptr);
+    }
+
+    free(info);
+}
+
+static int ingestion_init(const harp_ingestion_module *module, coda_product *product,
+                          const harp_ingestion_options *options, harp_product_definition **definition, void **user_data)
+{
+    const char *option_value;
+    ingest_info *info;
+
+    info = (ingest_info *)malloc(sizeof(ingest_info));
+    if (info == NULL)
+    {
+        harp_set_error(HARP_ERROR_OUT_OF_MEMORY, "out of memory (could not allocate %lu bytes) (%s:%u)",
+                       sizeof(ingest_info), __FILE__, __LINE__);
+        return -1;
+    }
+
+    info->product = product;
+    info->use_summed_total_column = 1;
+    info->use_radiance_cloud_fraction = 0;
+    info->num_times = 0;
+    info->num_scanlines = 0;
+    info->num_pixels = 0;
+    info->num_corners = 0;
+    info->num_layers = 0;
+    info->hybride_coef_a.ptr = NULL;
+    info->hybride_coef_b.ptr = NULL;
+
+    if (harp_ingestion_options_has_option(options, "total_column"))
+    {
+        if (harp_ingestion_options_get_option(options, "total_column", &option_value) != 0)
+        {
+            ingestion_done(info);
+            return -1;
+        }
+        if (strcmp(option_value, "total") == 0)
+        {
+            info->use_summed_total_column = 0;
+        }
+    }
+    if (harp_ingestion_options_has_option(options, "cloud_fraction"))
+    {
+        info->use_radiance_cloud_fraction = 1;
+    }
+
+    if (init_cursors(info) != 0)
+    {
+        ingestion_done(info);
+        return -1;
+    }
+
+    if (init_dimensions(info) != 0)
+    {
+        ingestion_done(info);
+        return -1;
+    }
+
+    if (init_hybride_coef(info) != 0)
+    {
+        ingestion_done(info);
+        return -1;
+    }
+
+    *definition = *module->product_definition;
+    *user_data = info;
+
+    return 0;
+}
+
 static int read_scan_subindex(void *user_data, long index, harp_array data)
 {
     ingest_info *info = (ingest_info *)user_data;
@@ -524,15 +578,11 @@ static int read_surface_pressure(void *user_data, harp_array data)
 static int read_tropopause_pressure(void *user_data, harp_array data)
 {
     ingest_info *info = (ingest_info *)user_data;
-    harp_array hybride_coef_a;
-    harp_array hybride_coef_b;
     harp_array layer_index;
     long num_profiles;
-    long num_layers;
     long i;
 
     num_profiles = info->num_scanlines * info->num_pixels;
-    num_layers = info->num_layers;
 
     layer_index.ptr = malloc(num_profiles * sizeof(int32_t));
     if (layer_index.ptr == NULL)
@@ -542,56 +592,15 @@ static int read_tropopause_pressure(void *user_data, harp_array data)
         return -1;
     }
 
-    hybride_coef_a.ptr = malloc(num_layers * 2 * sizeof(double));
-    if (hybride_coef_a.ptr == NULL)
-    {
-        harp_set_error(HARP_ERROR_OUT_OF_MEMORY, "out of memory (could not allocate %lu bytes) (%s:%u)",
-                       num_layers * 2 * sizeof(double), __FILE__, __LINE__);
-        free(layer_index.ptr);
-        return -1;
-    }
-
-    hybride_coef_b.ptr = malloc(num_layers * 2 * sizeof(double));
-    if (hybride_coef_b.ptr == NULL)
-    {
-        harp_set_error(HARP_ERROR_OUT_OF_MEMORY, "out of memory (could not allocate %lu bytes) (%s:%u)",
-                       num_layers * 2 * sizeof(double), __FILE__, __LINE__);
-        free(hybride_coef_a.ptr);
-        free(layer_index.ptr);
-        return -1;
-    }
-
     if (read_dataset(info->product_cursor, "tm5_tropopause_layer_index", harp_type_int32, num_profiles, layer_index) !=
         0)
     {
-        free(hybride_coef_b.ptr);
-        free(hybride_coef_a.ptr);
-        free(layer_index.ptr);
-        return -1;
-    }
-
-    if (read_dataset(info->product_cursor, "tm5_pressure_level_a", harp_type_double, num_layers * 2, hybride_coef_a) !=
-        0)
-    {
-        free(hybride_coef_b.ptr);
-        free(hybride_coef_a.ptr);
-        free(layer_index.ptr);
-        return -1;
-    }
-
-    if (read_dataset(info->product_cursor, "tm5_pressure_level_b", harp_type_double, num_layers * 2, hybride_coef_b) !=
-        0)
-    {
-        free(hybride_coef_b.ptr);
-        free(hybride_coef_a.ptr);
         free(layer_index.ptr);
         return -1;
     }
 
     if (read_dataset(info->product_cursor, "tm5_surface_pressure", harp_type_double, num_profiles, data) != 0)
     {
-        free(hybride_coef_b.ptr);
-        free(hybride_coef_a.ptr);
         free(layer_index.ptr);
         return -1;
     }
@@ -600,13 +609,13 @@ static int read_tropopause_pressure(void *user_data, harp_array data)
     {
         long index = layer_index.int32_data[i];
 
-        if (index >= 0 && index < num_layers)
+        if (index >= 0 && index < info->num_layers)
         {
             double surface_pressure = data.double_data[i] * 100.0;      /* surface pressure at specific (time, lat, lon) */
 
             /* the tropause level is the upper boundary of the layer defined by layer_index */
-            data.double_data[i] = hybride_coef_a.double_data[index * 2 + 1] +
-                hybride_coef_b.double_data[index * 2 + 1] * surface_pressure;
+            data.double_data[i] = info->hybride_coef_a.double_data[index * 2 + 1] +
+                info->hybride_coef_b.double_data[index * 2 + 1] * surface_pressure;
         }
         else
         {
@@ -614,8 +623,6 @@ static int read_tropopause_pressure(void *user_data, harp_array data)
         }
     }
 
-    free(hybride_coef_b.ptr);
-    free(hybride_coef_a.ptr);
     free(layer_index.ptr);
 
     return 0;
@@ -624,74 +631,33 @@ static int read_tropopause_pressure(void *user_data, harp_array data)
 static int read_pressure_bounds(void *user_data, harp_array data)
 {
     ingest_info *info = (ingest_info *)user_data;
-    harp_array hybride_coef_a;
-    harp_array hybride_coef_b;
     long num_profiles;
-    long num_layers;
     long i;
 
     num_profiles = info->num_scanlines * info->num_pixels;
-    num_layers = info->num_layers;
 
     /* The air pressure boundaries are interpolated from the position dependent surface air pressure using a
      * position independent set of coefficients a and b.
      */
-    hybride_coef_a.ptr = malloc(num_layers * 2 * sizeof(double));
-    if (hybride_coef_a.ptr == NULL)
-    {
-        harp_set_error(HARP_ERROR_OUT_OF_MEMORY, "out of memory (could not allocate %lu bytes) (%s:%u)",
-                       num_layers * 2 * sizeof(double), __FILE__, __LINE__);
-        return -1;
-    }
-
-    hybride_coef_b.ptr = malloc(num_layers * 2 * sizeof(double));
-    if (hybride_coef_b.ptr == NULL)
-    {
-        harp_set_error(HARP_ERROR_OUT_OF_MEMORY, "out of memory (could not allocate %lu bytes) (%s:%u)",
-                       num_layers * 2 * sizeof(double), __FILE__, __LINE__);
-        free(hybride_coef_a.ptr);
-        return -1;
-    }
-
-    if (read_dataset(info->product_cursor, "tm5_pressure_level_a", harp_type_double, num_layers * 2, hybride_coef_a) !=
-        0)
-    {
-        free(hybride_coef_b.ptr);
-        free(hybride_coef_a.ptr);
-        return -1;
-    }
-
-    if (read_dataset(info->product_cursor, "tm5_pressure_level_b", harp_type_double, num_layers * 2, hybride_coef_b) !=
-        0)
-    {
-        free(hybride_coef_b.ptr);
-        free(hybride_coef_a.ptr);
-        return -1;
-    }
-
     if (read_dataset(info->product_cursor, "tm5_surface_pressure", harp_type_double, num_profiles, data) != 0)
     {
-        free(hybride_coef_b.ptr);
-        free(hybride_coef_a.ptr);
         return -1;
     }
 
     for (i = num_profiles - 1; i >= 0; i--)
     {
-        double *bounds = &data.double_data[i * num_layers * 2]; /* bounds for specific (time, lat, lon) */
+        double *bounds = &data.double_data[i * info->num_layers * 2];   /* bounds for specific (time, lat, lon) */
         double surface_pressure = data.double_data[i] * 100.0;  /* surface pressure at specific (time, lat, lon) */
         long j;
 
-        for (j = 0; j < num_layers; j++)
+        for (j = 0; j < info->num_layers; j++)
         {
-            bounds[j * 2] = hybride_coef_a.double_data[j * 2] + hybride_coef_b.double_data[j * 2] * surface_pressure;
-            bounds[j * 2 + 1] = hybride_coef_a.double_data[j * 2 + 1] + hybride_coef_b.double_data[j * 2 + 1] *
-                surface_pressure;
+            bounds[j * 2] = info->hybride_coef_a.double_data[j * 2] +
+                info->hybride_coef_b.double_data[j * 2] * surface_pressure;
+            bounds[j * 2 + 1] = info->hybride_coef_a.double_data[j * 2 + 1] +
+                info->hybride_coef_b.double_data[j * 2 + 1] * surface_pressure;
         }
     }
-
-    free(hybride_coef_b.ptr);
-    free(hybride_coef_a.ptr);
 
     return 0;
 }
