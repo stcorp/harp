@@ -957,7 +957,7 @@ static void register_layer_specific_fields(harp_product_definition *product_defi
 }
 
 static void register_profile_specific_fields(harp_product_definition *product_definition,
-                                      enum ingested_product_type product_type)
+                                             enum ingested_product_type product_type)
 {
     harp_variable_definition *variable_definition;
     harp_dimension_type dimension_type[2] = { harp_dimension_time, harp_dimension_vertical };
