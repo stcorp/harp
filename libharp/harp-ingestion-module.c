@@ -237,7 +237,7 @@ static int variable_definition_new(const char *name, harp_data_type data_type, i
                                    int (*read_all) (void *user_data, harp_array data),
                                    int (*read_range) (void *user_data, long index_offset, long index_length,
                                                       harp_array data),
-                                   long (*get_max_range) (void *user_data),
+                                   long (*get_optimal_range_length) (void *user_data),
                                    int (*read_block) (void *user_data, long index, harp_array data),
                                    harp_variable_definition **new_variable_definition)
 {
@@ -254,8 +254,9 @@ static int variable_definition_new(const char *name, harp_data_type data_type, i
     assert(read_block != NULL || data_type != harp_type_string ||
            num_dimensions == 0 || dimension_type[0] != harp_dimension_time);
 
-    /* read_range and get_max_range need to be set or unset both */
-    assert((read_range != NULL && get_max_range != NULL) || (read_range == NULL && get_max_range == NULL));
+    /* read_range and get_optimal_range_length need to be set or unset both */
+    assert((read_range != NULL && get_optimal_range_length != NULL) ||
+           (read_range == NULL && get_optimal_range_length == NULL));
 
     variable_definition = malloc(sizeof(harp_variable_definition));
     if (variable_definition == NULL)
@@ -309,7 +310,7 @@ static int variable_definition_new(const char *name, harp_data_type data_type, i
     variable_definition->exclude = exclude;
     variable_definition->read_all = read_all;
     variable_definition->read_range = read_range;
-    variable_definition->get_max_range = get_max_range;
+    variable_definition->get_optimal_range_length = get_optimal_range_length;
     variable_definition->read_block = read_block;
 
     variable_definition->num_mappings = 0;

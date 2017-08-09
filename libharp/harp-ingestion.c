@@ -55,19 +55,19 @@ typedef struct read_buffer_struct
 
 typedef struct ingest_info_struct
 {
-    harp_ingestion_module *module;      /* Ingestion module to use. */
-    harp_product_definition *product_definition;        /* Definition of the product to ingest. */
-    coda_product *cproduct;     /* Reference to coda product handle (in case CODA is used for ingestion) */
+    harp_ingestion_module *module;      /* ingestion module to use */
+    harp_product_definition *product_definition;        /* definition of the product to ingest */
+    coda_product *cproduct;     /* reference to coda product handle (in case CODA is used for ingestion) */
 
-    void *user_data;    /* Ingestion module specific information. */
+    void *user_data;    /* ingestion module specific information. */
 
-    long dimension[HARP_NUM_DIM_TYPES]; /* Length of each dimension (0 if not in use). */
-    harp_dimension_mask_set *dimension_mask_set;        /* which indices along each dimension should be ingested. */
+    long dimension[HARP_NUM_DIM_TYPES]; /* length of each dimension (0 if not in use) */
+    harp_dimension_mask_set *dimension_mask_set;        /* which indices along each dimension should be ingested */
     uint8_t product_mask;
-    uint8_t *variable_mask;     /* indicates for each variable whether it should be included in the product. */
+    uint8_t *variable_mask;     /* indicates for each variable whether it should be included in the product */
 
-    const char *basename;       /* Product basename. */
-    harp_product *product;      /* Resulting HARP product. */
+    const char *basename;       /* product basename */
+    harp_product *product;      /* resulting HARP product */
 
     read_buffer *block_buffer;  /* buffer used for storing results from 'read_all' and 'read_range' */
     int (*block_buffer_read_all) (void *user_data, harp_array data);    /* 'read_all' that was used to fill buffer */
@@ -238,6 +238,63 @@ static int ingestion_init(ingest_info **new_info)
     return 0;
 }
 
+static int read_all(ingest_info *info, const harp_variable_definition *variable_def, harp_array data)
+{
+    long dimension[HARP_MAX_NUM_DIMS];
+    harp_array block;
+    long block_stride;
+    long num_elements;
+    long index;
+    int i;
+
+    if (variable_def->read_all != NULL)
+    {
+        return variable_def->read_all(info->user_data, data);
+    }
+
+    for (i = 0; i < variable_def->num_dimensions; i++)
+    {
+        if (variable_def->dimension_type[i] == harp_dimension_independent)
+        {
+            dimension[i] = variable_def->dimension[i];
+        }
+        else
+        {
+            dimension[i] = info->dimension[variable_def->dimension_type[i]];
+        }
+    }
+    num_elements = harp_get_num_elements(variable_def->num_dimensions, dimension);
+
+    if (variable_def->read_range != NULL)
+    {
+        /* read_range() should have only been set for variables that have one or more dimensions */
+        assert(variable_def->num_dimensions > 0);
+
+        return variable_def->read_range(info->user_data, 0, dimension[0], data);
+    }
+
+    assert(variable_def->read_block != NULL);
+
+    if (variable_def->num_dimensions == 0 || variable_def->dimension[0] == 1)
+    {
+        return variable_def->read_block(info->user_data, 0, data);
+    }
+
+    block = data;
+    block_stride = harp_get_size_for_type(variable_def->data_type) * (num_elements / dimension[0]);
+
+    for (index = 0; index < dimension[0]; index++)
+    {
+        if (variable_def->read_block(info->user_data, index, block) != 0)
+        {
+            return -1;
+        }
+        block.ptr = (void *)(((char *)block.ptr) + block_stride);
+    }
+
+    return 0;
+}
+
 static int read_block(ingest_info *info, const harp_variable_definition *variable_def, long index, harp_array data)
 {
     if (variable_def->read_block != NULL)
@@ -246,9 +303,9 @@ static int read_block(ingest_info *info, const harp_variable_definition *variabl
     }
     if (variable_def->read_all != NULL)
     {
-        if (variable_def->num_dimensions == 0 || variable_def->dimension_type[0] != harp_dimension_time)
+        if (variable_def->num_dimensions == 0 || variable_def->dimension[0] == 1)
         {
-            /* there is only one sample, so read directly into the target buffer */
+            /* there is only one block, so read directly into the target buffer */
             return variable_def->read_all(info->user_data, data);
         }
 
@@ -295,9 +352,6 @@ static int read_block(ingest_info *info, const harp_variable_definition *variabl
             info->block_buffer_block_size =
                 harp_get_size_for_type(variable_def->data_type) * num_elements / dimension[0];
         }
-
-        memcpy(data.ptr, &info->block_buffer->data.int8_data[index * info->block_buffer_block_size],
-               info->block_buffer_block_size);
     }
     else
     {
@@ -310,8 +364,8 @@ static int read_block(ingest_info *info, const harp_variable_definition *variabl
             long num_block_elements;
             int i;
 
-            /* read_range() should have only been set for variables that have a time dimension as first dimension */
-            assert(variable_def->num_dimensions > 0 && variable_def->dimension_type[0] == harp_dimension_time);
+            /* read_range() should have only been set for variables that have one or more dimensions */
+            assert(variable_def->num_dimensions > 0);
 
             for (i = 0; i < variable_def->num_dimensions; i++)
             {
@@ -326,7 +380,7 @@ static int read_block(ingest_info *info, const harp_variable_definition *variabl
             }
             info->block_buffer_max_blocks = dimension[0];
             num_block_elements = harp_get_num_elements(variable_def->num_dimensions, dimension) / dimension[0];
-            info->block_buffer_num_blocks = variable_def->get_max_range(info->user_data);
+            info->block_buffer_num_blocks = variable_def->get_optimal_range_length(info->user_data);
             if (info->block_buffer_num_blocks > info->block_buffer_max_blocks)
             {
                 info->block_buffer_num_blocks = info->block_buffer_max_blocks;
@@ -375,10 +429,10 @@ static int read_block(ingest_info *info, const harp_variable_definition *variabl
         }
 
         index -= info->block_buffer_index_offset;
-
-        memcpy(data.ptr, &info->block_buffer->data.int8_data[index * info->block_buffer_block_size],
-               info->block_buffer_block_size);
     }
+
+    memcpy(data.ptr, &info->block_buffer->data.int8_data[index * info->block_buffer_block_size],
+           info->block_buffer_block_size);
 
     return 0;
 }
@@ -397,13 +451,13 @@ static int get_variable(ingest_info *info, const harp_variable_definition *varia
 
     if (variable_def->num_dimensions == 0)
     {
-        /* Special case for scalars. */
+        /* special case for scalars */
         if (harp_variable_new(variable_def->name, variable_def->data_type, 0, NULL, NULL, &variable) != 0)
         {
             return -1;
         }
 
-        if (read_block(info, variable_def, 0, variable->data) != 0)
+        if (read_all(info, variable_def, variable->data) != 0)
         {
             harp_variable_delete(variable);
             return -1;
@@ -411,329 +465,267 @@ static int get_variable(ingest_info *info, const harp_variable_definition *varia
     }
     else
     {
-        const harp_dimension_mask *primary_dimension_mask;
-        const harp_dimension_mask *secondary_dimension_mask[HARP_MAX_NUM_DIMS];
+        const harp_dimension_mask *dimension_mask[HARP_MAX_NUM_DIMS];
+        harp_dimension_type dimension_type[HARP_MAX_NUM_DIMS];
         long dimension[HARP_MAX_NUM_DIMS];
         long masked_dimension[HARP_MAX_NUM_DIMS];
-        long primary_dimension;
-        int has_primary_dimension;
-        int has_secondary_masks;
-        int has_2D_secondary_masks;
-        int i;
-        int j;
+        int has_2D_masks = 0;
+        int has_dimension_masks = 0;
+        int has_secondary_masks = 0;
+        long i, j;
 
-        /* Variable has one or more dimensions. */
-        has_primary_dimension = (variable_def->dimension_type[0] == harp_dimension_time);
-        primary_dimension = info->dimension[harp_dimension_time];
-        primary_dimension_mask = (dimension_mask_set == NULL ? NULL : dimension_mask_set[harp_dimension_time]);
+        /* variable has one or more dimensions */
 
-        /* Determine the dimensions of the variable, both with and without taking into account the applicable dimension
-         * masks.
-         */
+        /* determine the dimensions of the variable (with and without using the applicable dimension masks) */
         for (i = 0; i < variable_def->num_dimensions; i++)
         {
-            harp_dimension_type dimension_type;
-
-            dimension_type = variable_def->dimension_type[i];
-            if (dimension_type == harp_dimension_independent)
+            dimension_type[i] = variable_def->dimension_type[i];
+            if (dimension_type[i] == harp_dimension_independent)
             {
                 dimension[i] = variable_def->dimension[i];
+                dimension_mask[i] = NULL;
                 masked_dimension[i] = variable_def->dimension[i];
             }
             else
             {
-                dimension[i] = info->dimension[dimension_type];
-
-                if (dimension_mask_set == NULL || dimension_mask_set[dimension_type] == NULL)
+                dimension[i] = info->dimension[dimension_type[i]];
+                if (dimension_mask_set == NULL || dimension_mask_set[dimension_type[i]] == NULL)
                 {
-                    masked_dimension[i] = info->dimension[dimension_type];
+                    dimension_mask[i] = NULL;
+                    masked_dimension[i] = info->dimension[dimension_type[i]];
                 }
                 else
                 {
-                    masked_dimension[i] = dimension_mask_set[dimension_type]->masked_dimension_length;
-                }
-            }
-        }
-
-        /* Gather information about secondary dimension masks. The secondary_dimension_mask array holds pointers to
-         * dimension masks for secondary dimensions only. Therefore, depending on whether or not the variable depends on
-         * the primary (time) dimension, the loop below starts at index 0 (variable does not depend on the primary
-         * dimension), or 1 (variable does depend on the primary dimension).
-         */
-        has_secondary_masks = 0;
-        has_2D_secondary_masks = 0;
-        for (i = (has_primary_dimension ? 1 : 0), j = 0; i < variable_def->num_dimensions; i++, j++)
-        {
-            harp_dimension_type dimension_type;
-
-            dimension_type = variable_def->dimension_type[i];
-            if (dimension_type == harp_dimension_independent)
-            {
-                secondary_dimension_mask[j] = NULL;
-            }
-            else
-            {
-                secondary_dimension_mask[j] = (dimension_mask_set == NULL ? NULL : dimension_mask_set[dimension_type]);
-                if (secondary_dimension_mask[j] != NULL)
-                {
-                    has_secondary_masks = 1;
-                    if (secondary_dimension_mask[j]->num_dimensions == 2)
+                    dimension_mask[i] = dimension_mask_set[dimension_type[i]];
+                    masked_dimension[i] = dimension_mask[i]->masked_dimension_length;
+                    has_dimension_masks = 1;
+                    if (i != 0)
                     {
-                        has_2D_secondary_masks = 1;
+                        has_secondary_masks = 1;
+                    }
+                    if (dimension_mask[i]->num_dimensions == 2)
+                    {
+                        has_2D_masks = 1;
                     }
                 }
             }
         }
 
-        /* Create variable. */
-        if (harp_variable_new(variable_def->name, variable_def->data_type, variable_def->num_dimensions,
-                              variable_def->dimension_type, masked_dimension, &variable) != 0)
+        /* to be able to apply 2D dimension masks to a variable that does not depend on the time dimension,
+         * the variable is expanded by adding the time dimension */
+        if (has_2D_masks && variable_def->dimension_type[0] != harp_dimension_time)
         {
-            return -1;
-        }
+            const uint8_t *mask[HARP_MAX_NUM_DIMS];
+            long mask_stride[HARP_MAX_NUM_DIMS - 1];
+            read_buffer *buffer;
+            harp_array block;
+            long num_buffer_elements;
+            long block_stride;
+            long num_dimensions;
 
-        /* To be able to apply 2-D secondary dimension masks to a variable that does not depend on the primary (time)
-         * dimension, the variable is expanded by adding the primary dimension.
-         */
-        if (has_2D_secondary_masks && !has_primary_dimension)
-        {
-            long length;
-
+            /* update dimension arrays to include the added time dimension */
+            for (i = variable_def->num_dimensions; i >= 1; i--)
+            {
+                dimension_type[i] = dimension_type[i - 1];
+                dimension[i] = dimension[i - 1];
+                dimension_mask[i] = dimension_mask[i - 1];
+                masked_dimension[i] = masked_dimension[i - 1];
+            }
+            dimension_type[0] = harp_dimension_time;
+            dimension[0] = info->dimension[harp_dimension_time];
             if (dimension_mask_set == NULL || dimension_mask_set[harp_dimension_time] == NULL)
             {
-                length = info->dimension[harp_dimension_time];
+                dimension_mask[0] = NULL;
+                masked_dimension[0] = info->dimension[harp_dimension_time];
             }
             else
             {
-                length = dimension_mask_set[harp_dimension_time]->masked_dimension_length;
+                dimension_mask[0] = dimension_mask_set[harp_dimension_time];
+                masked_dimension[0] = dimension_mask[0]->masked_dimension_length;
+            }
+            num_dimensions = variable_def->num_dimensions + 1;
+
+            /* create variable */
+            if (harp_variable_new(variable_def->name, variable_def->data_type, num_dimensions, dimension_type,
+                                  masked_dimension, &variable) != 0)
+            {
+                return -1;
             }
 
-            if (harp_variable_add_dimension(variable, 0, harp_dimension_time, length) != 0)
+            /* we read the whole non-time-dependent variable data once (in full) and then filter for each sample */
+            num_buffer_elements = harp_get_num_elements(num_dimensions - 1, &dimension[1]);
+            if (read_buffer_new(variable->data_type, num_buffer_elements, &buffer) != 0)
             {
                 harp_variable_delete(variable);
                 return -1;
             }
-
-            /* Update dimension arrays to include the added dimension. */
-            for (i = variable_def->num_dimensions; i >= 1; i--)
+            if (read_all(info, variable_def, buffer->data) != 0)
             {
-                dimension[i] = dimension[i - 1];
-                masked_dimension[i] = masked_dimension[i - 1];
+                read_buffer_delete(buffer);
+                harp_variable_delete(variable);
+                return -1;
             }
-            dimension[0] = info->dimension[harp_dimension_time];
-            masked_dimension[0] = length;
 
-            /* Variable now depends on the primary dimension. */
-            has_primary_dimension = 1;
-        }
-
-        if (!has_primary_dimension)
-        {
-            /* Variable does not depend on the primary dimension. */
-            if (!has_secondary_masks)
+            for (i = 0; i < num_dimensions; i++)
             {
-                /* No mask defined for any secondary dimension. */
-                if (read_block(info, variable_def, 0, variable->data) != 0)
+                if (dimension_mask[i] == NULL)
                 {
-                    harp_variable_delete(variable);
-                    return -1;
+                    mask[i] = NULL;
                 }
-            }
-            else
-            {
-                /* At least one mask defined for a secondary dimension. */
-                const uint8_t *mask[HARP_MAX_NUM_DIMS];
-                read_buffer *buffer;
-                long num_buffer_elements;
-
-                for (i = 0; i < variable->num_dimensions; i++)
+                else
                 {
-                    if (secondary_dimension_mask[i] == NULL)
+                    mask[i] = dimension_mask[i]->mask;
+                    if (dimension_mask[i]->num_dimensions == 2)
                     {
-                        mask[i] = NULL;
+                        mask_stride[i] = dimension_mask[i]->dimension[1];
                     }
                     else
                     {
-                        /* A variable that does not depend on the primary dimension is expanded by adding the primary
-                         * dimension if any of the dimension mask defined for any of the secondary dimensions of the
-                         * variable are 2-D. Since the expanded variable does depend on the primary dimension, it is
-                         * not handled here and therefore all secondary dimension masks encountered here should be 1-D.
-                         */
-                        assert(secondary_dimension_mask[i]->num_dimensions == 1);
-                        mask[i] = secondary_dimension_mask[i]->mask;
+                        assert(dimension_mask[i]->num_dimensions == 1);
+                        mask_stride[i] = 0;
                     }
                 }
-
-                num_buffer_elements = harp_get_num_elements(variable->num_dimensions, dimension);
-                if (read_buffer_new(variable->data_type, num_buffer_elements, &buffer) != 0)
-                {
-                    harp_variable_delete(variable);
-                    return -1;
-                }
-
-                if (read_block(info, variable_def, 0, buffer->data) != 0)
-                {
-                    read_buffer_delete(buffer);
-                    harp_variable_delete(variable);
-                    return -1;
-                }
-
-                harp_array_filter(variable->data_type, variable->num_dimensions, dimension, mask, buffer->data,
-                                  masked_dimension, variable->data);
-
-                read_buffer_delete(buffer);
             }
+
+            block = variable->data;
+            block_stride = harp_get_size_for_type(variable->data_type) * (variable->num_elements /
+                                                                          variable->dimension[0]);
+
+            for (i = 0; i < dimension[0]; i++)
+            {
+                if (dimension_mask[0] == NULL || dimension_mask[0]->mask[i])
+                {
+                    harp_array_filter(variable->data_type, num_dimensions - 1, &dimension[1], &mask[1], buffer->data,
+                                      &masked_dimension[1], block);
+
+                    block.ptr = (void *)(((char *)block.ptr) + block_stride);
+                }
+
+                for (j = 1; j < variable->num_dimensions; j++)
+                {
+                    if (mask[j] != NULL)
+                    {
+                        mask[j] += mask_stride[j];
+                    }
+                }
+            }
+
+            read_buffer_delete(buffer);
         }
         else
         {
-            /* Variable depends on the primary dimension. */
-            harp_array block;
-            long block_stride;
-            long k;
-
-            block = variable->data;
-            block_stride = harp_get_size_for_type(variable->data_type) * (variable->num_elements
-                                                                          / variable->dimension[0]);
-
-            if (!has_secondary_masks)
+            /* create variable */
+            if (harp_variable_new(variable_def->name, variable_def->data_type, variable_def->num_dimensions,
+                                  variable_def->dimension_type, masked_dimension, &variable) != 0)
             {
-                /* No mask defined for any secondary dimension. */
-                if (primary_dimension_mask == NULL)
-                {
-                    /* No mask defined for the primary dimension. */
-                    for (k = 0; k < primary_dimension; k++)
-                    {
-                        if (read_block(info, variable_def, k, block) != 0)
-                        {
-                            harp_variable_delete(variable);
-                            return -1;
-                        }
-
-                        block.ptr = (void *)(((char *)block.ptr) + block_stride);
-                    }
-                }
-                else
-                {
-                    /* Mask defined for the primary dimension. */
-                    const uint8_t *primary_mask = primary_dimension_mask->mask;
-
-                    for (k = 0; k < primary_dimension; k++)
-                    {
-                        if (primary_mask[k])
-                        {
-                            if (read_block(info, variable_def, k, block) != 0)
-                            {
-                                harp_variable_delete(variable);
-                                return -1;
-                            }
-
-                            block.ptr = (void *)(((char *)block.ptr) + block_stride);
-                        }
-                    }
-                }
+                return -1;
             }
-            else
-            {
-                /* At least one mask defined for a secondary dimension. */
-                const uint8_t *mask[HARP_MAX_NUM_DIMS - 1];
-                long mask_stride[HARP_MAX_NUM_DIMS - 1];
-                read_buffer *buffer;
-                long num_buffer_elements;
 
-                for (i = 0; i < variable->num_dimensions - 1; i++)
+            if (has_dimension_masks)
+            {
+                harp_array block;
+                long block_stride;
+
+                block = variable->data;
+                block_stride = harp_get_size_for_type(variable->data_type) * (variable->num_elements /
+                                                                              variable->dimension[0]);
+
+                if (has_secondary_masks)
                 {
-                    if (secondary_dimension_mask[i] == NULL)
+                    const uint8_t *mask[HARP_MAX_NUM_DIMS];
+                    long mask_stride[HARP_MAX_NUM_DIMS - 1];
+                    long num_buffer_elements;
+                    read_buffer *buffer;
+
+                    num_buffer_elements = harp_get_num_elements(variable_def->num_dimensions - 1, &dimension[1]);
+                    if (read_buffer_new(variable->data_type, num_buffer_elements, &buffer) != 0)
                     {
-                        mask[i] = NULL;
+                        harp_variable_delete(variable);
+                        return -1;
                     }
-                    else
+
+                    for (i = 0; i < variable->num_dimensions; i++)
                     {
-                        mask[i] = secondary_dimension_mask[i]->mask;
-                        if (secondary_dimension_mask[i]->num_dimensions == 2)
+                        if (dimension_mask[i] == NULL)
                         {
-                            mask_stride[i] = secondary_dimension_mask[i]->dimension[1];
+                            mask[i] = NULL;
                         }
                         else
                         {
-                            assert(secondary_dimension_mask[i]->num_dimensions == 1);
-                            mask_stride[i] = 0;
-                        }
-                    }
-                }
-
-                num_buffer_elements = harp_get_num_elements(variable->num_dimensions - 1, &dimension[1]);
-                if (read_buffer_new(variable->data_type, num_buffer_elements, &buffer) != 0)
-                {
-                    harp_variable_delete(variable);
-                    return -1;
-                }
-
-                if (primary_dimension_mask == NULL)
-                {
-                    /* No mask defined for the primary dimension. */
-                    for (k = 0; k < primary_dimension; k++)
-                    {
-                        if (read_block(info, variable_def, k, buffer->data) != 0)
-                        {
-                            read_buffer_delete(buffer);
-                            harp_variable_delete(variable);
-                            return -1;
-                        }
-
-                        harp_array_filter(variable->data_type, variable->num_dimensions - 1, &dimension[1], mask,
-                                          buffer->data, &masked_dimension[1], block);
-                        read_buffer_free_string_data(buffer);
-
-                        block.ptr = (void *)(((char *)block.ptr) + block_stride);
-
-                        for (i = 0; i < variable->num_dimensions - 1; i++)
-                        {
-                            if (mask[i] != NULL)
+                            mask[i] = dimension_mask[i]->mask;
+                            if (dimension_mask[i]->num_dimensions == 2)
                             {
-                                mask[i] += mask_stride[i];
+                                assert(i != 0);
+                                mask_stride[i] = dimension_mask[i]->dimension[1];
+                            }
+                            else
+                            {
+                                assert(dimension_mask[i]->num_dimensions == 1);
+                                mask_stride[i] = 0;
                             }
                         }
                     }
-                }
-                else
-                {
-                    /* Mask defined for the primary dimension. */
-                    const uint8_t *primary_mask = primary_dimension_mask->mask;
 
-                    for (k = 0; k < primary_dimension; k++)
+                    for (i = 0; i < dimension[0]; i++)
                     {
-                        if (primary_mask[k])
+                        if (mask[0] == NULL || mask[0][i])
                         {
-                            if (read_block(info, variable_def, k, buffer->data) != 0)
+                            if (read_block(info, variable_def, i, buffer->data) != 0)
                             {
                                 read_buffer_delete(buffer);
                                 harp_variable_delete(variable);
                                 return -1;
                             }
 
-                            harp_array_filter(variable->data_type, variable->num_dimensions - 1, &dimension[1], mask,
-                                              buffer->data, &masked_dimension[1], block);
+                            harp_array_filter(variable->data_type, variable_def->num_dimensions - 1, &dimension[1],
+                                              &mask[1], buffer->data, &masked_dimension[1], block);
                             read_buffer_free_string_data(buffer);
 
                             block.ptr = (void *)(((char *)block.ptr) + block_stride);
                         }
 
-                        for (i = 0; i < variable->num_dimensions - 1; i++)
+                        for (j = 1; j < variable->num_dimensions; j++)
                         {
-                            if (mask[i] != NULL)
+                            if (mask[j] != NULL)
                             {
-                                mask[i] += mask_stride[i];
+                                mask[j] += mask_stride[j];
                             }
                         }
                     }
-                }
 
-                read_buffer_delete(buffer);
+                    read_buffer_delete(buffer);
+                }
+                else
+                {
+                    /* we can read directly into the variable */
+                    assert(dimension_mask[0] != NULL);
+                    for (i = 0; i < dimension[0]; i++)
+                    {
+                        if (!dimension_mask[0]->mask[i])
+                        {
+                            continue;
+                        }
+                        if (read_block(info, variable_def, i, block) != 0)
+                        {
+                            harp_variable_delete(variable);
+                            return -1;
+                        }
+                        block.ptr = (void *)(((char *)block.ptr) + block_stride);
+                    }
+                }
+            }
+            else
+            {
+                if (read_all(info, variable_def, variable->data) != 0)
+                {
+                    harp_variable_delete(variable);
+                    return -1;
+                }
             }
         }
     }
 
-    /* Copy variable attributes. */
+    /* copy variable attributes */
     if (variable_def->description != NULL)
     {
         variable->description = strdup(variable_def->description);
@@ -809,7 +801,7 @@ static int init_variable_mask(ingest_info *info)
 {
     int i;
 
-    /* Allocate the variable mask. */
+    /* allocate the variable mask */
     info->variable_mask = (uint8_t *)malloc(info->product_definition->num_variable_definitions * sizeof(uint8_t));
     if (info->variable_mask == NULL)
     {
@@ -818,7 +810,7 @@ static int init_variable_mask(ingest_info *info)
         return -1;
     }
 
-    /* Initialize variable mask according to the availability of each variable. */
+    /* initialize variable mask according to the availability of each variable */
     for (i = 0; i < info->product_definition->num_variable_definitions; i++)
     {
         info->variable_mask[i] = !harp_variable_definition_exclude(info->product_definition->variable_definition[i],
@@ -1001,41 +993,29 @@ static int execute_value_filter(ingest_info *info, harp_program *program)
             }
         }
 
-        if (read_buffer_new(variable_def->data_type, info->dimension[dimension_type], &buffer) != 0)
+        if (read_buffer_new(variable_def->data_type, 1, &buffer) != 0)
         {
+            if (info->dimension_mask_set[dimension_type]->num_dimensions == 2)
+            {
+                harp_dimension_mask_delete(dimension_mask);
+            }
             return -1;
-        }
-
-        if (dimension_type == harp_dimension_time)
-        {
-            for (i = 0; i < info->dimension[dimension_type]; i++)
-            {
-                if (dimension_mask->mask[i])
-                {
-                    harp_array data;
-
-                    data.int8_data = &buffer->data.int8_data[i * data_type_size];
-                    if (read_block(info, variable_def, i, data) != 0)
-                    {
-                        read_buffer_delete(buffer);
-                        return -1;
-                    }
-                }
-            }
-        }
-        else
-        {
-            if (read_block(info, variable_def, 0, buffer->data) != 0)
-            {
-                read_buffer_delete(buffer);
-                return -1;
-            }
         }
 
         for (i = 0; i < info->dimension[dimension_type]; i++)
         {
             if (dimension_mask->mask[i])
             {
+                if (read_block(info, variable_def, i, buffer->data) != 0)
+                {
+                    if (info->dimension_mask_set[dimension_type]->num_dimensions == 2)
+                    {
+                        harp_dimension_mask_delete(dimension_mask);
+                    }
+                    read_buffer_delete(buffer);
+                    return -1;
+                }
+
                 for (k = 0; k < num_operations; k++)
                 {
                     if (dimension_mask->mask[i])
@@ -1049,8 +1029,7 @@ static int execute_value_filter(ingest_info *info, harp_program *program)
                             operation =
                                 (harp_operation_string_value_filter *)program->operation[program->current_index + k];
                             result = operation->eval(operation, variable_def->num_enum_values, variable_def->enum_name,
-                                                     variable_def->data_type,
-                                                     &buffer->data.int8_data[i * data_type_size]);
+                                                     variable_def->data_type, buffer->data.int8_data);
                         }
                         else
                         {
@@ -1058,8 +1037,7 @@ static int execute_value_filter(ingest_info *info, harp_program *program)
 
                             operation =
                                 (harp_operation_numeric_value_filter *)program->operation[program->current_index + k];
-                            result = operation->eval(operation, variable_def->data_type,
-                                                     &buffer->data.int8_data[i * data_type_size]);
+                            result = operation->eval(operation, variable_def->data_type, buffer->data.int8_data);
                         }
                         if (result < 0)
                         {
@@ -1126,7 +1104,7 @@ static int execute_value_filter(ingest_info *info, harp_program *program)
         }
         else if (info->dimension_mask_set[dimension_type]->num_dimensions != 2)
         {
-            /* Extend the existing 1-D mask to 2-D by repeating it along the outer dimension. */
+            /* extend the existing 1-D mask to 2-D by repeating it along the outer dimension */
             assert(info->dimension_mask_set[dimension_type]->num_dimensions == 1);
             if (harp_dimension_mask_prepend_dimension(info->dimension_mask_set[dimension_type],
                                                       info->dimension[harp_dimension_time]) != 0)
@@ -1871,7 +1849,7 @@ static int ingest(const char *filename, harp_program *program, const harp_ingest
 
     info->basename = harp_basename(filename);
 
-    /* Ingest the product. */
+    /* ingest the product */
     if (get_product(info, program) != 0)
     {
         ingestion_done(info);
@@ -1943,19 +1921,18 @@ int harp_ingest(const char *filename, const char *operations, const char *option
         }
     }
 
-    /* All ingestion routines that use CODA are build on the assumption that 'perform conversions' is enabled, so we
-     * explicitly enable it here just in case it was disabled somewhere else.
-     */
+    /* all ingestion routines that use CODA are build on the assumption that 'perform conversions' is enabled, so we
+     * explicitly enable it here just in case it was disabled somewhere else */
     perform_conversions = coda_get_option_perform_conversions();
     coda_set_option_perform_conversions(1);
 
-    /* We also disable the boundary checks of libcoda for increased ingestion performance. */
+    /* we also disable the boundary checks of libcoda for increased ingestion performance */
     perform_boundary_checks = coda_get_option_perform_boundary_checks();
     coda_set_option_perform_boundary_checks(0);
 
     status = ingest(filename, program, option_list, product);
 
-    /* Set the libcoda options back to their original values. */
+    /* set the libcoda options back to their original values */
     coda_set_option_perform_boundary_checks(perform_boundary_checks);
     coda_set_option_perform_conversions(perform_conversions);
 
@@ -2000,13 +1977,12 @@ int harp_ingest_test(const char *filename, int (*print) (const char *, ...))
         return -1;
     }
 
-    /* All ingestion routines that use CODA are build on the assumption that 'perform conversions' is enabled, so we
-     * explicitly enable it here just in case it was disabled somewhere else.
-     */
+    /* all ingestion routines that use CODA are build on the assumption that 'perform conversions' is enabled, so we
+     * explicitly enable it here just in case it was disabled somewhere else */
     perform_conversions = coda_get_option_perform_conversions();
     coda_set_option_perform_conversions(1);
 
-    /* We also disable the boundary checks of libcoda for increased ingestion performance. */
+    /* we also disable the boundary checks of libcoda for increased ingestion performance */
     perform_boundary_checks = coda_get_option_perform_boundary_checks();
     coda_set_option_perform_boundary_checks(0);
 
@@ -2132,7 +2108,7 @@ int harp_ingest_test(const char *filename, int (*print) (const char *, ...))
         coda_close(product);
     }
 
-    /* Set the libcoda options back to their original values. */
+    /* set the libcoda options back to their original values */
     coda_set_option_perform_boundary_checks(perform_boundary_checks);
     coda_set_option_perform_conversions(perform_conversions);
 
