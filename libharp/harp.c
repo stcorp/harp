@@ -551,7 +551,6 @@ LIBHARP_API int harp_import(const char *filename, const char *operations, const 
         /* try ingest */
         if (harp_ingest(filename, operations, options, &imported_product) != 0)
         {
-            harp_product_delete(imported_product);
             return -1;
         }
     }
