@@ -1070,7 +1070,6 @@ LIBHARP_API int harp_product_set_history(harp_product *product, const char *hist
     }
 
     history_copy = strdup(history);
-
     if (history_copy == NULL)
     {
         harp_set_error(HARP_ERROR_OUT_OF_MEMORY, "out of memory (could not duplicate string) (%s:%u)", __FILE__,
