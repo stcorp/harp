@@ -46,7 +46,10 @@
   harp_product_add_derived_variable() is now a pointer to allow it to be
   optional (i.e. pass NULL to use the default data type).
 
-* Added harp_geometry_get_area(), harp_product_sort(),
+* Added harp_geometry_get_area(),
+  harp_product_get_smoothed_column_using_collocated_product(),
+  harp_product_smooth_vertical_with_collocated_product(),
+  harp_product_sort(), harp_product_regrid_with_collocated_product(),
   harp_set_udunits2_xml_path(), harp_set_udunits2_xml_path_conditional(),
   and harp_variable_set_enumeration_values() functions.
 

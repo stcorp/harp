@@ -693,6 +693,160 @@ LIBHARP_API int harp_product_regrid_with_axis_variable(harp_product *product, ha
     return -1;
 }
 
+/** Regrid the product's variables to the target grid of the collocated product.
+ *
+ * This function cannot be used to regrid the time dimension (or an independent dimension).
+ *
+ * Both the product and the collocated product need to have `collocation_index` variables.
+ * These collocation indices will be used to determine the matching pairs.
+ * For each `collocation_index` value in \a product there needs to be a matching value in the `collocation_index`
+ * variable of \a collocated_product (but the reverse does not have to be true).
+ *
+ * \param product Product to regrid.
+ * \param dimension_type Type of dimension that should be regridded.
+ * \param axis_name The name of the variable to use as target grid.
+ * \param axis_unit The unit in which the vertical_axis will be brought for the regridding.
+ * \param collocated_product The product containing the collocated measurements and the target grid for the regridding.
+ *
+ * \return
+ *   \arg \c 0, Success.
+ *   \arg \c -1, Error occurred (check #harp_errno).
+ */
+LIBHARP_API int harp_product_regrid_with_collocated_product(harp_product *product, harp_dimension_type dimension_type,
+                                                            const char *axis_name, const char *axis_unit,
+                                                            const harp_product *collocated_product)
+{
+    harp_dimension_type local_dimension_type[HARP_NUM_DIM_TYPES];
+    harp_product *temp_product = NULL;
+    char bounds_name[MAX_NAME_LENGTH];
+    harp_variable *collocation_index = NULL;
+    harp_variable *target_grid = NULL;
+    harp_variable *target_bounds = NULL;
+    harp_variable *variable;
+
+    if (dimension_type == harp_dimension_independent || dimension_type == harp_dimension_time)
+    {
+        harp_set_error(HARP_ERROR_INVALID_ARGUMENT, "can not regrid %s dimension",
+                       harp_get_dimension_type_name(dimension_type));
+
+    }
+    if (product->dimension[dimension_type] == 0)
+    {
+        harp_set_error(HARP_ERROR_INVALID_ARGUMENT, "product has no %s dimension",
+                       harp_get_dimension_type_name(dimension_type));
+        return -1;
+    }
+
+    snprintf(bounds_name, MAX_NAME_LENGTH, "%s_bounds", axis_name);
+
+    if (harp_product_new(&temp_product) != 0)
+    {
+        return -1;
+    }
+
+    local_dimension_type[0] = harp_dimension_time;
+    if (harp_product_get_derived_variable(collocated_product, "collocation_index", NULL, NULL, 1,
+                                          local_dimension_type, &variable) != 0)
+    {
+        harp_product_delete(temp_product);
+        return -1;
+    }
+    if (harp_product_add_variable(temp_product, variable) != 0)
+    {
+        harp_variable_delete(variable);
+        harp_product_delete(temp_product);
+        return -1;
+    }
+
+    if (collocated_product->dimension[dimension_type] == 0)
+    {
+        /* product does not depend on the regridding dimension
+         * if the axis variable is still there (as 'axis_name {time}') then extend it
+         * with the given dimension type and treat the length of the dimension as 1
+         */
+        if (harp_product_get_derived_variable(collocated_product, axis_name, NULL, axis_unit, 1,
+                                              local_dimension_type, &variable) != 0)
+        {
+            harp_product_delete(temp_product);
+            return -1;
+        }
+        if (harp_variable_add_dimension(variable, 1, dimension_type, 1) != 0)
+        {
+            harp_variable_delete(variable);
+            harp_product_delete(temp_product);
+            return -1;
+        }
+        if (harp_product_add_variable(temp_product, variable) != 0)
+        {
+            harp_variable_delete(variable);
+            harp_product_delete(temp_product);
+            return -1;
+        }
+        /* in this case we don't have a target_bounds variable */
+    }
+    else
+    {
+        local_dimension_type[0] = harp_dimension_time;
+        local_dimension_type[1] = dimension_type;
+        local_dimension_type[2] = harp_dimension_independent;
+
+        /* target grid */
+        if (harp_product_get_derived_variable(collocated_product, axis_name, NULL, axis_unit, 2,
+                                              local_dimension_type, &variable) != 0)
+        {
+            harp_product_delete(temp_product);
+            return -1;
+        }
+        if (harp_product_add_variable(temp_product, variable) != 0)
+        {
+            harp_variable_delete(variable);
+            harp_product_delete(temp_product);
+            return -1;
+        }
+
+        /* target grid bounds */
+        if (harp_product_get_derived_variable(collocated_product, bounds_name, NULL, axis_unit, 3,
+                                              local_dimension_type, &variable) == 0)
+        {
+            if (harp_product_add_variable(temp_product, variable) != 0)
+            {
+                harp_variable_delete(variable);
+                harp_product_delete(temp_product);
+                return -1;
+            }
+        }
+    }
+
+    /* get the source product's collocation index variable */
+    if (harp_product_get_variable_by_name(product, "collocation_index", &collocation_index) != 0)
+    {
+        return -1;
+    }
+
+    /* sort/filter the reduced collocated product so the samples are in the same order as in 'product' */
+    if (harp_product_filter_by_index(temp_product, "collocation_index", collocation_index->num_elements,
+                                     collocation_index->data.int32_data) != 0)
+    {
+        harp_product_delete(temp_product);
+        return -1;
+    }
+
+    harp_product_get_variable_by_name(temp_product, axis_name, &target_grid);
+    if (harp_product_has_variable(temp_product, bounds_name))
+    {
+        harp_product_get_variable_by_name(temp_product, bounds_name, &target_bounds);
+    }
+    if (harp_product_regrid_with_axis_variable(product, target_grid, target_bounds) != 0)
+    {
+        harp_product_delete(temp_product);
+        return -1;
+    }
+
+    harp_product_delete(temp_product);
+
+    return 0;
+}
+
 /** Regrid the product's variables (from dataset a in the collocation result) to the target grid of collocated products
  * in dataset b.
  *
@@ -734,7 +888,7 @@ LIBHARP_API int harp_product_regrid_with_collocated_dataset(harp_product *produc
         return -1;
     }
 
-    /* Get the source product's collocation index variable */
+    /* get the source product's collocation index variable */
     if (harp_product_get_variable_by_name(product, "collocation_index", &collocation_index) != 0)
     {
         return -1;
@@ -746,7 +900,7 @@ LIBHARP_API int harp_product_regrid_with_collocated_dataset(harp_product *produc
         return -1;
     }
 
-    /* Reduce the collocation result to only pairs that include the source product */
+    /* reduce the collocation result to only pairs that include the source product */
     if (harp_collocation_result_filter_for_collocation_indices(filtered_collocation_result,
                                                                collocation_index->num_elements,
                                                                collocation_index->data.int32_data) != 0)
@@ -868,9 +1022,9 @@ LIBHARP_API int harp_product_regrid_with_collocated_dataset(harp_product *produc
         }
     }
 
-    /* sort the merged product so the samples are in the same order as in 'product' */
-    if (harp_product_sort_by_index(merged_product, "collocation_index", collocation_index->num_elements,
-                                   collocation_index->data.int32_data) != 0)
+    /* sort/filter the merged product so the samples are in the same order as in 'product' */
+    if (harp_product_filter_by_index(merged_product, "collocation_index", collocation_index->num_elements,
+                                     collocation_index->data.int32_data) != 0)
     {
         harp_product_delete(merged_product);
         harp_collocation_result_shallow_delete(filtered_collocation_result);

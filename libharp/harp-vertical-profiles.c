@@ -539,6 +539,191 @@ LIBHARP_API int harp_variable_smooth_vertical(harp_variable *variable, harp_vari
  * @{
  */
 
+/** Smooth the product's variables using the vertical grids, avks and a apriori of the collocated product.
+ *
+ * The product is first fully regridded (using the vertical dimension) to the vertical grid of the averaging kernel
+ * (and apriori). Then, the given list of variables is smoothed using the list of AVKs and apriori variables.
+ *
+ * \param product Product to smooth.
+ * \param num_smooth_variables length of smooth_variables.
+ * \param smooth_variables The names of the variables to smooth.
+ * \param vertical_axis The name of the variable to use as a vertical axis (pressure/altitude/etc).
+ * \param vertical_unit The unit in which the vertical_axis will be brought for the regridding.
+ * \param collocated_product The product containing the collocated measurements and the averaging kernel and a-priori.
+ *
+ * \return
+ *   \arg \c 0, Success.
+ *   \arg \c -1, Error occurred (check #harp_errno).
+ */
+LIBHARP_API int harp_product_smooth_vertical_with_collocated_product(harp_product *product, int num_smooth_variables,
+                                                                     const char **smooth_variables,
+                                                                     const char *vertical_axis,
+                                                                     const char *vertical_unit,
+                                                                     const harp_product *collocated_product)
+{
+    harp_dimension_type local_dimension_type[HARP_NUM_DIM_TYPES];
+    harp_product *temp_product = NULL;
+    char vertical_bounds_name[MAX_NAME_LENGTH];
+    char avk_name[MAX_NAME_LENGTH];
+    char apriori_name[MAX_NAME_LENGTH];
+    harp_variable *collocation_index = NULL;
+    harp_variable *vertical_grid = NULL;
+    harp_variable *vertical_bounds = NULL;
+    harp_variable *avk = NULL;
+    harp_variable *apriori = NULL;
+    harp_variable *variable = NULL;
+    harp_variable *temp_variable = NULL;
+    int i;
+
+    if (product->dimension[harp_dimension_vertical] == 0)
+    {
+        harp_set_error(HARP_ERROR_INVALID_ARGUMENT, "product has no vertical dimension");
+        return -1;
+    }
+
+    /* raise warnings for any variables that were not present */
+    for (i = 0; i < num_smooth_variables; i++)
+    {
+        if (!harp_product_has_variable(product, smooth_variables[i]))
+        {
+            harp_set_error(HARP_ERROR_INVALID_ARGUMENT, "product has no variable named '%s'", smooth_variables[i]);
+            return -1;
+        }
+    }
+
+    snprintf(vertical_bounds_name, MAX_NAME_LENGTH, "%s_bounds", vertical_axis);
+    if (harp_product_new(&temp_product) != 0)
+    {
+        return -1;
+    }
+
+    local_dimension_type[0] = harp_dimension_time;
+    if (harp_product_get_derived_variable(collocated_product, "collocation_index", NULL, NULL, 1,
+                                          local_dimension_type, &temp_variable) != 0)
+    {
+        harp_product_delete(temp_product);
+        return -1;
+    }
+    if (harp_product_add_variable(temp_product, temp_variable) != 0)
+    {
+        harp_variable_delete(temp_variable);
+        harp_product_delete(temp_product);
+        return -1;
+    }
+
+    local_dimension_type[0] = harp_dimension_time;
+    local_dimension_type[1] = harp_dimension_vertical;
+    local_dimension_type[2] = harp_dimension_independent;
+
+    /* vertical grid */
+    if (harp_product_get_derived_variable(collocated_product, vertical_axis, NULL, vertical_unit, 2,
+                                          local_dimension_type, &temp_variable) != 0)
+    {
+        harp_product_delete(temp_product);
+        return -1;
+    }
+    if (harp_product_add_variable(temp_product, temp_variable) != 0)
+    {
+        harp_variable_delete(temp_variable);
+        harp_product_delete(temp_product);
+        return -1;
+    }
+
+    /* vertical grid bounds */
+    if (harp_product_get_derived_variable(collocated_product, vertical_bounds_name, NULL, vertical_unit, 3,
+                                          local_dimension_type, &temp_variable) != 0)
+    {
+        harp_product_delete(temp_product);
+        return -1;
+    }
+    if (harp_product_add_variable(temp_product, temp_variable) != 0)
+    {
+        harp_variable_delete(temp_variable);
+        harp_product_delete(temp_product);
+        return -1;
+    }
+
+    local_dimension_type[2] = harp_dimension_vertical;
+    for (i = 0; i < num_smooth_variables; i++)
+    {
+        snprintf(avk_name, MAX_NAME_LENGTH, "%s_avk", smooth_variables[i]);
+        snprintf(apriori_name, MAX_NAME_LENGTH, "%s_apriori", smooth_variables[i]);
+
+        harp_product_get_variable_by_name(product, smooth_variables[i], &variable);
+
+        /* avk */
+        if (harp_product_get_derived_variable(collocated_product, avk_name, NULL, "", 3, local_dimension_type,
+                                              &temp_variable) != 0)
+        {
+            harp_product_delete(temp_product);
+            return -1;
+        }
+        if (harp_product_add_variable(temp_product, temp_variable) != 0)
+        {
+            harp_variable_delete(temp_variable);
+            harp_product_delete(temp_product);
+            return -1;
+        }
+
+        /* apriori profile */
+        if (harp_product_get_derived_variable(collocated_product, apriori_name, NULL, variable->unit, 2,
+                                              local_dimension_type, &temp_variable) == 0)
+        {
+            if (harp_product_add_variable(temp_product, temp_variable) != 0)
+            {
+                harp_variable_delete(temp_variable);
+                harp_product_delete(temp_product);
+                return -1;
+            }
+        }
+    }
+
+    /* Get the source product's collocation index variable */
+    if (harp_product_get_variable_by_name(product, "collocation_index", &collocation_index) != 0)
+    {
+        return -1;
+    }
+
+    /* sort/filter the reduced collocated product so the samples are in the same order as in 'product' */
+    if (harp_product_filter_by_index(temp_product, "collocation_index", collocation_index->num_elements,
+                                     collocation_index->data.int32_data) != 0)
+    {
+        harp_product_delete(temp_product);
+        return -1;
+    }
+
+    harp_product_get_variable_by_name(temp_product, vertical_axis, &vertical_grid);
+    harp_product_get_variable_by_name(temp_product, vertical_bounds_name, &vertical_bounds);
+    if (harp_product_regrid_with_axis_variable(product, vertical_grid, vertical_bounds) != 0)
+    {
+        harp_product_delete(temp_product);
+        return -1;
+    }
+
+    for (i = 0; i < num_smooth_variables; i++)
+    {
+        snprintf(avk_name, MAX_NAME_LENGTH, "%s_avk", smooth_variables[i]);
+        snprintf(apriori_name, MAX_NAME_LENGTH, "%s_apriori", smooth_variables[i]);
+
+        harp_product_get_variable_by_name(product, smooth_variables[i], &variable);
+        harp_product_get_variable_by_name(temp_product, avk_name, &avk);
+        apriori = NULL;
+        if (harp_product_has_variable(temp_product, apriori_name))
+        {
+            harp_product_get_variable_by_name(temp_product, apriori_name, &apriori);
+        }
+        if (harp_variable_smooth_vertical(variable, vertical_grid, avk, apriori) != 0)
+        {
+            harp_product_delete(temp_product);
+            return -1;
+        }
+    }
+
+    harp_product_delete(temp_product);
+
+    return 0;
+}
+
 /** Smooth the product's variables (from dataset a in the collocation result) using the vertical grids,
  * avks and a apriori of collocated products in dataset b.
  *
@@ -550,8 +735,7 @@ LIBHARP_API int harp_variable_smooth_vertical(harp_variable *variable, harp_vari
  * \param smooth_variables The names of the variables to smooth.
  * \param vertical_axis The name of the variable to use as a vertical axis (pressure/altitude/etc).
  * \param vertical_unit The unit in which the vertical_axis will be brought for the regridding.
- * \param collocation_result The collocation result used to locate the matching vertical
- *   grids/avks/apriori.
+ * \param collocation_result The collocation result used to locate the matching vertical grids/avks/apriori.
  *   The collocation result is assumed to have the appropriate metadata available for all matches (dataset b).
  *
  * \return
@@ -728,9 +912,9 @@ LIBHARP_API int harp_product_smooth_vertical_with_collocated_dataset(harp_produc
         }
     }
 
-    /* sort the merged product so the samples are in the same order as in 'product' */
-    if (harp_product_sort_by_index(merged_product, "collocation_index", collocation_index->num_elements,
-                                   collocation_index->data.int32_data) != 0)
+    /* sort/filter the merged product so the samples are in the same order as in 'product' */
+    if (harp_product_filter_by_index(merged_product, "collocation_index", collocation_index->num_elements,
+                                     collocation_index->data.int32_data) != 0)
     {
         harp_product_delete(merged_product);
         harp_collocation_result_shallow_delete(filtered_collocation_result);
@@ -962,6 +1146,181 @@ LIBHARP_API int harp_product_get_smoothed_column(harp_product *product, const ch
     return 0;
 }
 
+/** Derive a vertical column smoothed with column averaging kernel and a-priori from the collocated product
+ *
+ * \param product Product to regrid.
+ * \param name Name of the variable that should be created.
+ * \param unit Unit (optional) of the variable that should be created.
+ * \param num_dimensions Number of dimensions of the variable that should be created.
+ * \param dimension_type Type of dimension for each of the dimensions of the variable that should be created.
+ * \param vertical_axis The name of the variable to use as a vertical axis (pressure/altitude/etc).
+ * \param vertical_unit The unit in which the vertical_axis will be brought for the regridding.
+ * \param collocated_product The product containing the collocated measurements and the averaging kernel and a-priori.
+ * \param variable Pointer to the C variable where the derived HARP variable will be stored.
+ *
+ * \return
+ *   \arg \c 0, Success.
+ *   \arg \c -1, Error occurred (check #harp_errno).
+ */
+LIBHARP_API int harp_product_get_smoothed_column_using_collocated_product(harp_product *product, const char *name,
+                                                                          const char *unit, int num_dimensions,
+                                                                          const harp_dimension_type *dimension_type,
+                                                                          const char *vertical_axis,
+                                                                          const char *vertical_unit,
+                                                                          const harp_product *collocated_product,
+                                                                          harp_variable **variable)
+{
+    harp_dimension_type local_dimension_type[HARP_NUM_DIM_TYPES];
+    harp_product *temp_product = NULL;
+    char vertical_bounds_name[MAX_NAME_LENGTH];
+    char column_avk_name[MAX_NAME_LENGTH];
+    char apriori_name[MAX_NAME_LENGTH];
+    harp_variable *collocation_index = NULL;
+    harp_variable *vertical_grid = NULL;
+    harp_variable *vertical_bounds = NULL;
+    harp_variable *column_avk = NULL;
+    harp_variable *apriori = NULL;
+    harp_variable *temp_variable = NULL;
+    int i;
+
+    if (num_dimensions == 0 || dimension_type[0] != harp_dimension_time)
+    {
+        harp_set_error(HARP_ERROR_INVALID_ARGUMENT,
+                       "first dimension of requested smoothed vertical column should be the time dimension");
+        return -1;
+    }
+    if (num_dimensions >= HARP_NUM_DIM_TYPES)
+    {
+        harp_set_error(HARP_ERROR_INVALID_ARGUMENT, "number of dimensions (%d) too large (%s:%u)", num_dimensions,
+                       __FILE__, __LINE__);
+        return -1;
+    }
+    if (product->dimension[harp_dimension_vertical] == 0)
+    {
+        harp_set_error(HARP_ERROR_INVALID_ARGUMENT, "product has no vertical dimension");
+        return -1;
+    }
+
+    snprintf(vertical_bounds_name, MAX_NAME_LENGTH, "%s_bounds", vertical_axis);
+    snprintf(column_avk_name, MAX_NAME_LENGTH, "%s_avk", name);
+    snprintf(apriori_name, MAX_NAME_LENGTH, "%s_apriori", name);
+
+    if (harp_product_new(&temp_product) != 0)
+    {
+        return -1;
+    }
+
+    local_dimension_type[0] = harp_dimension_time;
+    if (harp_product_get_derived_variable(collocated_product, "collocation_index", NULL, NULL, 1,
+                                          local_dimension_type, &temp_variable) != 0)
+    {
+        harp_product_delete(temp_product);
+        return -1;
+    }
+    if (harp_product_add_variable(temp_product, temp_variable) != 0)
+    {
+        harp_variable_delete(temp_variable);
+        harp_product_delete(temp_product);
+        return -1;
+    }
+
+    local_dimension_type[0] = harp_dimension_time;
+    local_dimension_type[1] = harp_dimension_vertical;
+    local_dimension_type[2] = harp_dimension_independent;
+
+    /* vertical grid */
+    if (harp_product_get_derived_variable(collocated_product, vertical_axis, NULL, vertical_unit, 2,
+                                          local_dimension_type, &temp_variable) != 0)
+    {
+        harp_product_delete(temp_product);
+        return -1;
+    }
+    if (harp_product_add_variable(temp_product, temp_variable) != 0)
+    {
+        harp_variable_delete(temp_variable);
+        harp_product_delete(temp_product);
+        return -1;
+    }
+
+    /* vertical grid bounds */
+    if (harp_product_get_derived_variable(collocated_product, vertical_bounds_name, NULL, vertical_unit, 3,
+                                          local_dimension_type, &temp_variable) != 0)
+    {
+        harp_product_delete(temp_product);
+        return -1;
+    }
+    if (harp_product_add_variable(temp_product, temp_variable) != 0)
+    {
+        harp_variable_delete(temp_variable);
+        harp_product_delete(temp_product);
+        return -1;
+    }
+
+    for (i = 0; i < num_dimensions; i++)
+    {
+        local_dimension_type[i] = dimension_type[i];
+    }
+    local_dimension_type[num_dimensions] = harp_dimension_vertical;
+
+    /* column avk */
+    if (harp_product_get_derived_variable(collocated_product, column_avk_name, NULL, "", num_dimensions + 1,
+                                          local_dimension_type, &temp_variable) != 0)
+    {
+        harp_product_delete(temp_product);
+        return -1;
+    }
+    if (harp_product_add_variable(temp_product, temp_variable) != 0)
+    {
+        harp_variable_delete(temp_variable);
+        harp_product_delete(temp_product);
+        return -1;
+    }
+
+    /* apriori profile */
+    if (harp_product_get_derived_variable(collocated_product, apriori_name, NULL, unit, num_dimensions + 1,
+                                          local_dimension_type, &temp_variable) == 0)
+    {
+        if (harp_product_add_variable(temp_product, temp_variable) != 0)
+        {
+            harp_variable_delete(temp_variable);
+            harp_product_delete(temp_product);
+            return -1;
+        }
+    }
+
+    /* Get the source product's collocation index variable */
+    if (harp_product_get_variable_by_name(product, "collocation_index", &collocation_index) != 0)
+    {
+        return -1;
+    }
+
+    /* sort/filter the reduced collocated product so the samples are in the same order as in 'product' */
+    if (harp_product_filter_by_index(temp_product, "collocation_index", collocation_index->num_elements,
+                                     collocation_index->data.int32_data) != 0)
+    {
+        harp_product_delete(temp_product);
+        return -1;
+    }
+
+    harp_product_get_variable_by_name(temp_product, vertical_axis, &vertical_grid);
+    harp_product_get_variable_by_name(temp_product, vertical_bounds_name, &vertical_bounds);
+    harp_product_get_variable_by_name(temp_product, column_avk_name, &column_avk);
+    if (harp_product_has_variable(temp_product, apriori_name))
+    {
+        harp_product_get_variable_by_name(temp_product, apriori_name, &apriori);
+    }
+    if (harp_product_get_smoothed_column(product, name, unit, vertical_grid, vertical_bounds, column_avk, apriori,
+                                         variable) != 0)
+    {
+        harp_product_delete(temp_product);
+        return -1;
+    }
+
+    harp_product_delete(temp_product);
+
+    return 0;
+}
+
 /** Derive a vertical column smoothed with column averaging kernel and a-priori from collocated products in dataset b
  *
  * \param product Product to regrid.
@@ -984,8 +1343,8 @@ LIBHARP_API int harp_product_get_smoothed_column_using_collocated_dataset(harp_p
                                                                           const harp_dimension_type *dimension_type,
                                                                           const char *vertical_axis,
                                                                           const char *vertical_unit,
-                                                                          harp_collocation_result *collocation_result,
-                                                                          harp_variable **variable)
+                                                                          const harp_collocation_result
+                                                                          *collocation_result, harp_variable **variable)
 {
     harp_collocation_result *filtered_collocation_result = NULL;
     harp_product *merged_product = NULL;
@@ -1151,9 +1510,9 @@ LIBHARP_API int harp_product_get_smoothed_column_using_collocated_dataset(harp_p
         }
     }
 
-    /* sort the merged product so the samples are in the same order as in 'product' */
-    if (harp_product_sort_by_index(merged_product, "collocation_index", collocation_index->num_elements,
-                                   collocation_index->data.int32_data) != 0)
+    /* sort/filter the merged product so the samples are in the same order as in 'product' */
+    if (harp_product_filter_by_index(merged_product, "collocation_index", collocation_index->num_elements,
+                                     collocation_index->data.int32_data) != 0)
     {
         harp_product_delete(merged_product);
         harp_collocation_result_shallow_delete(filtered_collocation_result);

@@ -375,7 +375,8 @@ int harp_product_rearrange_dimension(harp_product *product, harp_dimension_type 
     return 0;
 }
 
-int harp_product_sort_by_index(harp_product *product, const char *index_variable, long num_elements, int32_t *index)
+/* sort/filter the time dimension of \a product such that the index_variable content equals \a index */
+int harp_product_filter_by_index(harp_product *product, const char *index_variable, long num_elements, int32_t *index)
 {
     harp_variable *variable;
     long *dim_element_ids;
@@ -383,13 +384,6 @@ int harp_product_sort_by_index(harp_product *product, const char *index_variable
 
     if (harp_product_get_variable_by_name(product, index_variable, &variable) != 0)
     {
-        return -1;
-    }
-
-    if (num_elements != variable->num_elements)
-    {
-        harp_set_error(HARP_ERROR_INVALID_ARGUMENT, "length of index variable (%ld) and index array (%ld) don't match",
-                       variable->num_elements, num_elements);
         return -1;
     }
 
@@ -403,14 +397,14 @@ int harp_product_sort_by_index(harp_product *product, const char *index_variable
 
     for (i = 0; i < num_elements; i++)
     {
-        for (j = 0; j < num_elements; j++)
+        for (j = 0; j < variable->num_elements; j++)
         {
             if (index[i] == variable->data.int32_data[j])
             {
                 break;
             }
         }
-        if (j == num_elements)
+        if (j == variable->num_elements)
         {
             harp_set_error(HARP_ERROR_INVALID_ARGUMENT, "index %ld not found in index variable", (long)index[i]);
             free(dim_element_ids);

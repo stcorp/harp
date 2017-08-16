@@ -725,6 +725,32 @@
 </dd></dl>
 
 <dl class="function">
+<dt id="_CPPv243harp_product_regrid_with_collocated_productP12harp_product19harp_dimension_typePKcPKcPK12harp_product">
+<span id="harp_product_regrid_with_collocated_product__harp_productP.harp_dimension_type.cCP.cCP.harp_productCP"></span><span class="target" id="libharpgroup__harp__product_1ga57f043de9059d94f7a4060789f780364"></span>int <code class="descname">harp_product_regrid_with_collocated_product</code><span class="sig-paren">(</span><a class="reference internal" href="#_CPPv212harp_product" title="harp_product">harp_product</a> *<em>product</em>, <a class="reference internal" href="libharp_general.html#_CPPv219harp_dimension_type" title="harp_dimension_type">harp_dimension_type</a> <em>dimension_type</em>, <em class="property">const</em> char *<em>axis_name</em>, <em class="property">const</em> char *<em>axis_unit</em>, <em class="property">const</em> <a class="reference internal" href="#_CPPv212harp_product" title="harp_product">harp_product</a> *<em>collocated_product</em><span class="sig-paren">)</span><br /></dt>
+<dd><p>Regrid the product&#8217;s variables to the target grid of the collocated product.</p>
+<p>This function cannot be used to regrid the time dimension (or an independent dimension).</p>
+<p>Both the product and the collocated product need to have <code class="docutils literal"><span class="pre">collocation_index</span></code> variables. These collocation indices will be used to determine the matching pairs. For each <code class="docutils literal"><span class="pre">collocation_index</span></code> value in <em>product</em> there needs to be a matching value in the <code class="docutils literal"><span class="pre">collocation_index</span></code> variable of <em>collocated_product</em> (but the reverse does not have to be true).</p>
+<p><dl class="docutils">
+<dt><strong>Return</strong></dt>
+<dd><ul class="simple">
+<li><code class="docutils literal"><span class="pre">0</span></code>, Success. </li>
+<li><code class="docutils literal"><span class="pre">-1</span></code>, Error occurred (check <a class="reference internal" href="libharp_error.html#libharpgroup__harp__error_1gab2eeb46528306c6799632d1e800c4c36"><span class="std std-ref">harp_errno</span></a>). </li>
+</ul>
+</dd>
+<dt><strong>Parameters</strong></dt>
+<dd><ul class="breatheparameterlist first last simple">
+<li><code class="docutils literal"><span class="pre">product</span></code>: Product to regrid. </li>
+<li><code class="docutils literal"><span class="pre">dimension_type</span></code>: Type of dimension that should be regridded. </li>
+<li><code class="docutils literal"><span class="pre">axis_name</span></code>: The name of the variable to use as target grid. </li>
+<li><code class="docutils literal"><span class="pre">axis_unit</span></code>: The unit in which the vertical_axis will be brought for the regridding. </li>
+<li><code class="docutils literal"><span class="pre">collocated_product</span></code>: The product containing the collocated measurements and the target grid for the regridding.</li>
+</ul>
+</dd>
+</dl>
+</p>
+</dd></dl>
+
+<dl class="function">
 <dt id="_CPPv243harp_product_regrid_with_collocated_datasetP12harp_product19harp_dimension_typePKcPKcP23harp_collocation_result">
 <span id="harp_product_regrid_with_collocated_dataset__harp_productP.harp_dimension_type.cCP.cCP.harp_collocation_resultP"></span><span class="target" id="libharpgroup__harp__product_1ga47c35b04d92f993a62d9911619fe0ea9"></span>int <code class="descname">harp_product_regrid_with_collocated_dataset</code><span class="sig-paren">(</span><a class="reference internal" href="#_CPPv212harp_product" title="harp_product">harp_product</a> *<em>product</em>, <a class="reference internal" href="libharp_general.html#_CPPv219harp_dimension_type" title="harp_dimension_type">harp_dimension_type</a> <em>dimension_type</em>, <em class="property">const</em> char *<em>axis_name</em>, <em class="property">const</em> char *<em>axis_unit</em>, <a class="reference internal" href="libharp_collocation.html#_CPPv223harp_collocation_result" title="harp_collocation_result">harp_collocation_result</a> *<em>collocation_result</em><span class="sig-paren">)</span><br /></dt>
 <dd><p>Regrid the product&#8217;s variables (from dataset a in the collocation result) to the target grid of collocated products in dataset b.</p>
@@ -743,6 +769,32 @@
 <li><code class="docutils literal"><span class="pre">axis_name</span></code>: The name of the variable to use as target grid. </li>
 <li><code class="docutils literal"><span class="pre">axis_unit</span></code>: The unit in which the vertical_axis will be brought for the regridding. </li>
 <li><code class="docutils literal"><span class="pre">collocation_result</span></code>: The collocation result used to find matching variables. The collocation result is assumed to have the appropriate metadata available for all matches (dataset b).</li>
+</ul>
+</dd>
+</dl>
+</p>
+</dd></dl>
+
+<dl class="function">
+<dt id="_CPPv252harp_product_smooth_vertical_with_collocated_productP12harp_productiPPKcPKcPKcPK12harp_product">
+<span id="harp_product_smooth_vertical_with_collocated_product__harp_productP.i.cCPP.cCP.cCP.harp_productCP"></span><span class="target" id="libharpgroup__harp__product_1ga2783850e720160c503036b6f66fbdf3d"></span>int <code class="descname">harp_product_smooth_vertical_with_collocated_product</code><span class="sig-paren">(</span><a class="reference internal" href="#_CPPv212harp_product" title="harp_product">harp_product</a> *<em>product</em>, int <em>num_smooth_variables</em>, <em class="property">const</em> char **<em>smooth_variables</em>, <em class="property">const</em> char *<em>vertical_axis</em>, <em class="property">const</em> char *<em>vertical_unit</em>, <em class="property">const</em> <a class="reference internal" href="#_CPPv212harp_product" title="harp_product">harp_product</a> *<em>collocated_product</em><span class="sig-paren">)</span><br /></dt>
+<dd><p>Smooth the product&#8217;s variables using the vertical grids, avks and a apriori of the collocated product.</p>
+<p>The product is first fully regridded (using the vertical dimension) to the vertical grid of the averaging kernel (and apriori). Then, the given list of variables is smoothed using the list of AVKs and apriori variables.</p>
+<p><dl class="docutils">
+<dt><strong>Return</strong></dt>
+<dd><ul class="simple">
+<li><code class="docutils literal"><span class="pre">0</span></code>, Success. </li>
+<li><code class="docutils literal"><span class="pre">-1</span></code>, Error occurred (check <a class="reference internal" href="libharp_error.html#libharpgroup__harp__error_1gab2eeb46528306c6799632d1e800c4c36"><span class="std std-ref">harp_errno</span></a>). </li>
+</ul>
+</dd>
+<dt><strong>Parameters</strong></dt>
+<dd><ul class="breatheparameterlist first last simple">
+<li><code class="docutils literal"><span class="pre">product</span></code>: Product to smooth. </li>
+<li><code class="docutils literal"><span class="pre">num_smooth_variables</span></code>: length of smooth_variables. </li>
+<li><code class="docutils literal"><span class="pre">smooth_variables</span></code>: The names of the variables to smooth. </li>
+<li><code class="docutils literal"><span class="pre">vertical_axis</span></code>: The name of the variable to use as a vertical axis (pressure/altitude/etc). </li>
+<li><code class="docutils literal"><span class="pre">vertical_unit</span></code>: The unit in which the vertical_axis will be brought for the regridding. </li>
+<li><code class="docutils literal"><span class="pre">collocated_product</span></code>: The product containing the collocated measurements and the averaging kernel and a-priori.</li>
 </ul>
 </dd>
 </dl>
@@ -802,8 +854,36 @@
 </dd></dl>
 
 <dl class="function">
-<dt id="_CPPv257harp_product_get_smoothed_column_using_collocated_datasetP12harp_productPKcPKciPK19harp_dimension_typePKcPKcP23harp_collocation_resultPP13harp_variable">
-<span id="harp_product_get_smoothed_column_using_collocated_dataset__harp_productP.cCP.cCP.i.harp_dimension_typeCP.cCP.cCP.harp_collocation_resultP.harp_variablePP"></span><span class="target" id="libharpgroup__harp__product_1gae8dbb309df51f78ab40414b95f97cbc4"></span>int <code class="descname">harp_product_get_smoothed_column_using_collocated_dataset</code><span class="sig-paren">(</span><a class="reference internal" href="#_CPPv212harp_product" title="harp_product">harp_product</a> *<em>product</em>, <em class="property">const</em> char *<em>name</em>, <em class="property">const</em> char *<em>unit</em>, int <em>num_dimensions</em>, <em class="property">const</em> <a class="reference internal" href="libharp_general.html#_CPPv219harp_dimension_type" title="harp_dimension_type">harp_dimension_type</a> *<em>dimension_type</em>, <em class="property">const</em> char *<em>vertical_axis</em>, <em class="property">const</em> char *<em>vertical_unit</em>, <a class="reference internal" href="libharp_collocation.html#_CPPv223harp_collocation_result" title="harp_collocation_result">harp_collocation_result</a> *<em>collocation_result</em>, <a class="reference internal" href="libharp_variable.html#_CPPv213harp_variable" title="harp_variable">harp_variable</a> **<em>variable</em><span class="sig-paren">)</span><br /></dt>
+<dt id="_CPPv257harp_product_get_smoothed_column_using_collocated_productP12harp_productPKcPKciPK19harp_dimension_typePKcPKcPK12harp_productPP13harp_variable">
+<span id="harp_product_get_smoothed_column_using_collocated_product__harp_productP.cCP.cCP.i.harp_dimension_typeCP.cCP.cCP.harp_productCP.harp_variablePP"></span><span class="target" id="libharpgroup__harp__product_1gac2af6aea04439393cfdea79dcb5b528b"></span>int <code class="descname">harp_product_get_smoothed_column_using_collocated_product</code><span class="sig-paren">(</span><a class="reference internal" href="#_CPPv212harp_product" title="harp_product">harp_product</a> *<em>product</em>, <em class="property">const</em> char *<em>name</em>, <em class="property">const</em> char *<em>unit</em>, int <em>num_dimensions</em>, <em class="property">const</em> <a class="reference internal" href="libharp_general.html#_CPPv219harp_dimension_type" title="harp_dimension_type">harp_dimension_type</a> *<em>dimension_type</em>, <em class="property">const</em> char *<em>vertical_axis</em>, <em class="property">const</em> char *<em>vertical_unit</em>, <em class="property">const</em> <a class="reference internal" href="#_CPPv212harp_product" title="harp_product">harp_product</a> *<em>collocated_product</em>, <a class="reference internal" href="libharp_variable.html#_CPPv213harp_variable" title="harp_variable">harp_variable</a> **<em>variable</em><span class="sig-paren">)</span><br /></dt>
+<dd><p>Derive a vertical column smoothed with column averaging kernel and a-priori from the collocated product</p>
+<p><dl class="docutils">
+<dt><strong>Return</strong></dt>
+<dd><ul class="simple">
+<li><code class="docutils literal"><span class="pre">0</span></code>, Success. </li>
+<li><code class="docutils literal"><span class="pre">-1</span></code>, Error occurred (check <a class="reference internal" href="libharp_error.html#libharpgroup__harp__error_1gab2eeb46528306c6799632d1e800c4c36"><span class="std std-ref">harp_errno</span></a>). </li>
+</ul>
+</dd>
+<dt><strong>Parameters</strong></dt>
+<dd><ul class="breatheparameterlist first last simple">
+<li><code class="docutils literal"><span class="pre">product</span></code>: Product to regrid. </li>
+<li><code class="docutils literal"><span class="pre">name</span></code>: Name of the variable that should be created. </li>
+<li><code class="docutils literal"><span class="pre">unit</span></code>: Unit (optional) of the variable that should be created. </li>
+<li><code class="docutils literal"><span class="pre">num_dimensions</span></code>: Number of dimensions of the variable that should be created. </li>
+<li><code class="docutils literal"><span class="pre">dimension_type</span></code>: Type of dimension for each of the dimensions of the variable that should be created. </li>
+<li><code class="docutils literal"><span class="pre">vertical_axis</span></code>: The name of the variable to use as a vertical axis (pressure/altitude/etc). </li>
+<li><code class="docutils literal"><span class="pre">vertical_unit</span></code>: The unit in which the vertical_axis will be brought for the regridding. </li>
+<li><code class="docutils literal"><span class="pre">collocated_product</span></code>: The product containing the collocated measurements and the averaging kernel and a-priori. </li>
+<li><code class="docutils literal"><span class="pre">variable</span></code>: Pointer to the C variable where the derived HARP variable will be stored.</li>
+</ul>
+</dd>
+</dl>
+</p>
+</dd></dl>
+
+<dl class="function">
+<dt id="_CPPv257harp_product_get_smoothed_column_using_collocated_datasetP12harp_productPKcPKciPK19harp_dimension_typePKcPKcPK23harp_collocation_resultPP13harp_variable">
+<span id="harp_product_get_smoothed_column_using_collocated_dataset__harp_productP.cCP.cCP.i.harp_dimension_typeCP.cCP.cCP.harp_collocation_resultCP.harp_variablePP"></span><span class="target" id="libharpgroup__harp__product_1gaa1910631a41729975dffe7a2dda8aa33"></span>int <code class="descname">harp_product_get_smoothed_column_using_collocated_dataset</code><span class="sig-paren">(</span><a class="reference internal" href="#_CPPv212harp_product" title="harp_product">harp_product</a> *<em>product</em>, <em class="property">const</em> char *<em>name</em>, <em class="property">const</em> char *<em>unit</em>, int <em>num_dimensions</em>, <em class="property">const</em> <a class="reference internal" href="libharp_general.html#_CPPv219harp_dimension_type" title="harp_dimension_type">harp_dimension_type</a> *<em>dimension_type</em>, <em class="property">const</em> char *<em>vertical_axis</em>, <em class="property">const</em> char *<em>vertical_unit</em>, <em class="property">const</em> <a class="reference internal" href="libharp_collocation.html#_CPPv223harp_collocation_result" title="harp_collocation_result">harp_collocation_result</a> *<em>collocation_result</em>, <a class="reference internal" href="libharp_variable.html#_CPPv213harp_variable" title="harp_variable">harp_variable</a> **<em>variable</em><span class="sig-paren">)</span><br /></dt>
 <dd><p>Derive a vertical column smoothed with column averaging kernel and a-priori from collocated products in dataset b</p>
 <p><dl class="docutils">
 <dt><strong>Return</strong></dt>
