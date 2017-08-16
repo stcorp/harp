@@ -37,6 +37,111 @@
 #include <stdlib.h>
 #include <string.h>
 
+/* check whether a point is within the lat/lon bounds of a polygon */
+static int spherical_polygon_bounds_contains_point(const harp_spherical_polygon *polygon,
+                                                   const harp_spherical_point *point)
+{
+    double min_lat, max_lat, lat;
+    double min_lon, max_lon, lon;
+    double ref_lon;
+    int i;
+
+    if (polygon->numberofpoints == 0)
+    {
+        return 0;
+    }
+
+    /* We have two special cases to deal with: boundaries that cross the dateline and boundaries that cover a pole.
+     * Boundaries that cross the dateline are handled by mapping all longitudes to the range [x-PI,x+PI] with x being
+     * the longitude of the first polygon point.
+     */
+
+    min_lon = polygon->point[0].lon;
+    max_lon = min_lon;
+    ref_lon = min_lon;
+    min_lat = polygon->point[0].lat;
+    max_lat = min_lat;
+
+    for (i = 1; i < polygon->numberofpoints; i++)
+    {
+        lon = polygon->point[i].lon;
+        lat = polygon->point[i].lat;
+
+        if (lat < min_lat)
+        {
+            min_lat = lat;
+        }
+        else if (lat > max_lat)
+        {
+            max_lat = lat;
+        }
+
+        if (lon < ref_lon - M_PI)
+        {
+            lon += 2.0 * M_PI;
+        }
+        else if (lon > ref_lon + M_PI)
+        {
+            lon -= 2.0 * M_PI;
+        }
+        if (lon < min_lon)
+        {
+            min_lon = lon;
+        }
+        else if (lon > max_lon)
+        {
+            max_lon = lon;
+        }
+        ref_lon = lon;
+    }
+    /* close the polygon (this could have a different longitude, due to the ref_lon mapping) */
+    lon = polygon->point[0].lon;
+    if (lon < ref_lon - M_PI)
+    {
+        lon += 2.0 * M_PI;
+    }
+    else if (lon > ref_lon + M_PI)
+    {
+        lon -= 2.0 * M_PI;
+    }
+    if (lon < min_lon)
+    {
+        min_lon = lon;
+    }
+    else if (lon > max_lon)
+    {
+        max_lon = lon;
+    }
+    /* we are covering a pole if our longitude range equals 2pi */
+    if (HARP_GEOMETRY_FPeq(max_lon, min_lon + 2.0 * M_PI))
+    {
+        if (max_lat > 0)
+        {
+            max_lat = M_PI_2;
+        }
+        if (min_lat < 0)
+        {
+            min_lat = -M_PI_2;
+        }
+        /* (if we cross the equator then we don't know which pole is covered => take whole earth as bounding box) */
+    }
+
+    lon = point->lon;
+    lat = point->lat;
+
+    if (lon < min_lon)
+    {
+        lon += 2.0 * M_PI;
+    }
+    else if (lon > max_lon)
+    {
+        lon -= 2.0 * M_PI;
+    }
+
+    return (HARP_GEOMETRY_FPle(min_lat, lat) && HARP_GEOMETRY_FPle(lat, max_lat) &&
+            HARP_GEOMETRY_FPle(min_lon, lon) && HARP_GEOMETRY_FPle(lon, max_lon));
+}
+
 int harp_spherical_polygon_equal(const harp_spherical_polygon *polygon_a, const harp_spherical_polygon *polygon_b,
                                  int direction)
 {
@@ -327,28 +432,13 @@ int harp_spherical_polygon_centre(harp_vector3d *vector_centre, const harp_spher
 
 int harp_spherical_polygon_contains_point(const harp_spherical_polygon *polygon, const harp_spherical_point *point)
 {
-    static int32_t i;
+    int32_t i;
+    harp_spherical_line sl;
     int result = 0;     /* false */
-    static harp_spherical_line sl;
-    static harp_vector3d vector_centre, vector_point;
-    static double dotproduct = 0.0;
 
-    /*---------------------------------------------------
-     * First check, if point is outside polygon (behind)
-     *--------------------------------------------------*/
-
-    /* Determine the centre coordinates of the polygon */
-    harp_spherical_polygon_centre(&vector_centre, polygon);
-
-    /* Convert (lat,lon) to (x,y,z) */
-    harp_vector3d_from_spherical_point(&vector_point, point);
-
-    /* Check if the point is on the other side of the sphere, behind the polygon area.
-     * If the inproduct is negative or zero, the point lies outside the bounds of the polygon. */
-    dotproduct = harp_vector3d_dotproduct(&vector_point, &vector_centre);
-    if (dotproduct <= 0.0)
+    if (!spherical_polygon_bounds_contains_point(polygon, point))
     {
-        /* return false */
+        /* point is outside the lat/lon bounds of the polygon => return false */
         return 0;
     }
 
