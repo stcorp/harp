@@ -72,6 +72,7 @@ frequency_photon_radiance                                                     X 
 frequency_photon_transmittance                                                X                    X
 frequency_radiance                                                            X                    X
 frequency_transmittance                                                       X                    X
+geoid_height                                                                  X            X
 geopotential                                  surface                         X       X    X
 geopotential_height                           surface                         X       X    X
 hlos_wind_velocity                            surface                         X       X    X             hlos means 'horizontal line of sight'
