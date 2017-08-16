@@ -321,10 +321,10 @@ static int read_uv_aerosol_index(void *user_data, harp_array data)
 
 static int init_cursors_and_grid(ingest_info *info, const char *data_group_name)
 {
+    const double eps = 1.0e-10;
     coda_cursor cursor;
     long length;
     char str_buffer[64];
-    static const double eps = 1.0e-10;
 
     if (coda_cursor_set_product(&cursor, info->product) != 0)
     {

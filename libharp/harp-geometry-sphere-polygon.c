@@ -632,16 +632,16 @@ int harp_spherical_polygon_contains_point(const harp_spherical_polygon *polygon,
 int8_t harp_spherical_polygon_spherical_line_relationship(const harp_spherical_polygon *polygon,
                                                           const harp_spherical_line *line)
 {
-    static int32_t i;
-    static harp_spherical_line sl;
-    static harp_spherical_point slbeg, slend;
-    static int8_t p1, p2, pos, res;
-    static const int8_t sl_os = (int8_t)(1 << HARP_GEOMETRY_LINE_SEPARATE);
-    static const int8_t sl_eq = (int8_t)(1 << HARP_GEOMETRY_LINE_EQUAL);
-    static const int8_t sl_cd = (int8_t)(1 << HARP_GEOMETRY_LINE_CONTAINED);
-    static const int8_t sl_cr = (int8_t)(1 << HARP_GEOMETRY_LINE_CROSS);
-    static const int8_t sl_cn = (int8_t)(1 << HARP_GEOMETRY_LINE_CONNECTED);
-    static const int8_t sl_ov = (int8_t)(1 << HARP_GEOMETRY_LINE_OVERLAP);
+    harp_spherical_line sl;
+    harp_spherical_point slbeg, slend;
+    const int8_t sl_os = (int8_t)(1 << HARP_GEOMETRY_LINE_SEPARATE);
+    const int8_t sl_eq = (int8_t)(1 << HARP_GEOMETRY_LINE_EQUAL);
+    const int8_t sl_cd = (int8_t)(1 << HARP_GEOMETRY_LINE_CONTAINED);
+    const int8_t sl_cr = (int8_t)(1 << HARP_GEOMETRY_LINE_CROSS);
+    const int8_t sl_cn = (int8_t)(1 << HARP_GEOMETRY_LINE_CONNECTED);
+    const int8_t sl_ov = (int8_t)(1 << HARP_GEOMETRY_LINE_OVERLAP);
+    int8_t p1, p2, pos, res;
+    int i;
 
     pos = 0;
     res = 0;
@@ -666,7 +666,7 @@ int8_t harp_spherical_polygon_spherical_line_relationship(const harp_spherical_p
         /* Recheck line crossing */
         if (pos == sl_cr)
         {
-            static int8_t bal, eal;
+            int8_t bal, eal;
 
             bal = (int8_t)harp_spherical_point_is_at_spherical_line(&slbeg, &sl);
             eal = (int8_t)harp_spherical_point_is_at_spherical_line(&slend, &sl);
@@ -709,9 +709,9 @@ int8_t harp_spherical_polygon_spherical_polygon_relationship(const harp_spherica
     int32_t i;
     harp_spherical_line sl;
     int8_t pos = 0, res = 0;
-    static const int8_t sp_os = (int8_t)(1 << HARP_GEOMETRY_LINE_POLY_SEPARATE);
-    static const int8_t sp_ct = (int8_t)(1 << HARP_GEOMETRY_LINE_POLY_CONTAINED);
-    static const int8_t sp_ov = (int8_t)(1 << HARP_GEOMETRY_LINE_POLY_OVERLAP);
+    const int8_t sp_os = (int8_t)(1 << HARP_GEOMETRY_LINE_POLY_SEPARATE);
+    const int8_t sp_ct = (int8_t)(1 << HARP_GEOMETRY_LINE_POLY_CONTAINED);
+    const int8_t sp_ov = (int8_t)(1 << HARP_GEOMETRY_LINE_POLY_OVERLAP);
 
     for (i = 0; i < polygon_b->numberofpoints; i++)
     {

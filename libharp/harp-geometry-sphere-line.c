@@ -67,9 +67,8 @@ void harp_euler_transformation_from_spherical_line(harp_euler_transformation *tr
 /* Swap the begin point and end point of a spherical line */
 static void harp_spherical_line_swap_begin_end(harp_spherical_line *lineout, const harp_spherical_line *linein)
 {
-    static harp_spherical_line linetemp;
-
-    static harp_euler_transformation transformation;
+    harp_euler_transformation transformation;
+    harp_spherical_line linetemp;
 
     /* Define a temporary line */
     linetemp.length = linein->length;
@@ -98,7 +97,7 @@ int harp_spherical_line_equal(const harp_spherical_line *line1, const harp_spher
     }
     else
     {
-        static harp_euler_transformation euler1, euler2;
+        harp_euler_transformation euler1, euler2;
 
         harp_euler_transformation_set_to_zxz(&euler1);
         harp_euler_transformation_set_to_zxz(&euler2);
@@ -121,7 +120,7 @@ int harp_spherical_line_equal(const harp_spherical_line *line1, const harp_spher
 void harp_spherical_line_apply_euler_transformation(harp_spherical_line *lineout, const harp_spherical_line *linein,
                                                     const harp_euler_transformation *transformation)
 {
-    static harp_euler_transformation transformationtemp[2];
+    harp_euler_transformation transformationtemp[2];
 
     harp_euler_transformation_from_spherical_line(&transformationtemp[0], linein);
 
@@ -136,8 +135,8 @@ void harp_spherical_line_apply_euler_transformation(harp_spherical_line *lineout
 /* Determine begin point of spherical line */
 void harp_spherical_line_begin(harp_spherical_point *point, const harp_spherical_line *line)
 {
-    static harp_spherical_point pointtmp = { 0.0, 0.0 };
-    static harp_euler_transformation euler;
+    harp_spherical_point pointtmp = { 0.0, 0.0 };
+    harp_euler_transformation euler;
 
     harp_euler_transformation_from_spherical_line(&euler, line);
     harp_spherical_point_apply_euler_transformation(point, &pointtmp, &euler);
@@ -146,8 +145,8 @@ void harp_spherical_line_begin(harp_spherical_point *point, const harp_spherical
 /* Determine end point of spherical line */
 void harp_spherical_line_end(harp_spherical_point *point, const harp_spherical_line *line)
 {
-    static harp_spherical_point pointtmp = { 0.0, 0.0 };
-    static harp_euler_transformation euler;
+    harp_spherical_point pointtmp = { 0.0, 0.0 };
+    harp_euler_transformation euler;
 
     pointtmp.lon = line->length;
 
@@ -158,8 +157,8 @@ void harp_spherical_line_end(harp_spherical_point *point, const harp_spherical_l
 /* Return a point at a line at given length position */
 int harp_spherical_line_point_by_length(harp_spherical_point *point, const harp_spherical_line *line, double length)
 {
-    static harp_euler_transformation se;
-    static harp_spherical_point sp = { 0.0, 0.0 };
+    harp_euler_transformation se;
+    harp_spherical_point sp = { 0.0, 0.0 };
 
     if (0.0 > length || length > line->length)
     {
@@ -184,13 +183,13 @@ int harp_spherical_line_point_by_length(harp_spherical_point *point, const harp_
 int8_t harp_spherical_line_spherical_line_relationship(const harp_spherical_line *line1,
                                                        const harp_spherical_line *line2)
 {
-    static harp_euler_transformation se;
-    static harp_spherical_line sl1, sl2;
-    static harp_spherical_point p[4];
-    static int a1, a2, switched;
-    static double i, k, mi, mk;
-    static const double step = (M_PI - 0.1);
-    static int res;
+    harp_euler_transformation se;
+    harp_spherical_line sl1, sl2;
+    harp_spherical_point p[4];
+    int a1, a2, switched;
+    double i, k, mi, mk;
+    const double step = (M_PI - 0.1);
+    int res;
 
     switched = 0;
 
@@ -327,8 +326,8 @@ int8_t harp_spherical_line_spherical_line_relationship(const harp_spherical_line
             }
             else
             {
-                static harp_vector3d v[2][2];
-                static harp_spherical_point sp;
+                harp_vector3d v[2][2];
+                harp_spherical_point sp;
 
                 /* Now we take the vectors of line's begin and end */
                 harp_vector3d_from_spherical_point(&v[0][0], &p[0]);
@@ -391,7 +390,7 @@ int8_t harp_spherical_line_spherical_line_relationship(const harp_spherical_line
 /* Return a meridian line for a given longitude [rad] */
 void harp_spherical_line_meridian(harp_spherical_line *line, double lon)
 {
-    static harp_spherical_point point;
+    harp_spherical_point point;
 
     line->phi = -M_PI_2;
     line->theta = M_PI_2;
@@ -410,10 +409,10 @@ int harp_spherical_line_from_spherical_points(harp_spherical_line *line, const h
                                               const harp_spherical_point *point_end)
 {
     /* Declare an Euler transformation */
-    static harp_euler_transformation se;
+    harp_euler_transformation se;
 
     /* Define the distance between begin and end point */
-    static double length;
+    double length;
 
     /* Calculate the distance between begin and end point */
     length = harp_spherical_point_distance(point_begin, point_end);
@@ -455,8 +454,8 @@ int harp_spherical_line_from_spherical_points(harp_spherical_line *line, const h
 /* Check if a point lies at a spherical line */
 int harp_spherical_point_is_at_spherical_line(const harp_spherical_point *point, const harp_spherical_line *line)
 {
-    static harp_euler_transformation euler_rotation_inverse;
-    static harp_spherical_point point_rotated;
+    harp_euler_transformation euler_rotation_inverse;
+    harp_spherical_point point_rotated;
 
     /* Derive the Euler transformation from the input line */
     harp_inverse_euler_transformation_from_spherical_line(&euler_rotation_inverse, line);

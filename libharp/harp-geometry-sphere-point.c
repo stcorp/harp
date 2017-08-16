@@ -49,10 +49,7 @@ int harp_spherical_point_equal(const harp_spherical_point *pointa, const harp_sp
 /* Check spherical point */
 void harp_spherical_point_check(harp_spherical_point *point)
 {
-    static int lat_is_negative;
-
-    /* Check if latitude is negative */
-    lat_is_negative = (point->lat < 0.0) ? (1) : (0);
+    int lat_is_negative = (point->lat < 0.0);
 
     point->lat = point->lat - floor(point->lat / (2.0 * M_PI)) * (2.0 * M_PI);
     point->lon = point->lon - floor(point->lon / (2.0 * M_PI)) * (2.0 * M_PI);

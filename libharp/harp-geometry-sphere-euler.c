@@ -38,7 +38,7 @@
 /* Check if two Euler transformation are equal */
 int harp_euler_transformation_equal(const harp_euler_transformation *euler1, const harp_euler_transformation *euler2)
 {
-    static harp_spherical_point pointin[2], point[4];
+    harp_spherical_point pointin[2], point[4];
 
     pointin[0].lat = 0.0;
     pointin[0].lon = 0.0;
@@ -60,7 +60,7 @@ void harp_euler_transformation_transform_to_zxz_euler_transformation(harp_euler_
                                                                      const harp_euler_transformation *transformationin,
                                                                      const harp_euler_transformation *transformation)
 {
-    static harp_spherical_point point[4];
+    harp_spherical_point point[4];
 
     point[0].lat = 0.0;
     point[0].lon = 0.0;
@@ -141,10 +141,10 @@ void harp_inverse_euler_transformation_from_spherical_vector(harp_euler_transfor
     }
     else
     {
-        static harp_vector3d vectorbegin;
-        static harp_vector3d vectorend;
-        static harp_vector3d vectortemp;
-        static harp_spherical_point pointtemp[2];
+        harp_vector3d vectorbegin;
+        harp_vector3d vectorend;
+        harp_vector3d vectortemp;
+        harp_spherical_point pointtemp[2];
 
         /* Convert (lat,lon) coordinates to Cartesian coordinates and
            calculate cross product of the two obtained vectors */
@@ -220,10 +220,10 @@ void harp_spherical_point_apply_euler_transformation(harp_spherical_point *point
 int harp_vector3d_apply_euler_transformation(harp_vector3d *vectorout, const harp_vector3d *vectorin,
                                              const harp_euler_transformation *transformation)
 {
-    static int i;
-    static unsigned char axis;
-    static const double *angle;
-    static double u[3], v[3], sin_angle, cos_angle;
+    double u[3], v[3], sin_angle, cos_angle;
+    const double *angle;
+    unsigned char axis;
+    int i;
 
     /* Input vector */
     axis = 'X'; /* Assume X */
