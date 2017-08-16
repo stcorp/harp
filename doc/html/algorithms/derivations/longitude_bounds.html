@@ -248,7 +248,10 @@
    \lambda^{B}(i,1) &amp; = &amp; \frac{\lambda(i-1) + \lambda(i)}{2}, 1 &lt; i \leq N \\
    \lambda^{B}(i,2) &amp; = &amp; \lambda^{B}(i+1,1), 1 \leq i &lt; N \\
    \lambda^{B}(N,2) &amp; = &amp; 2\lambda(N) - \lambda(N-1)
-\end{eqnarray}</div></li>
+\end{eqnarray}</div><p>This formula applies if the harp option <code class="docutils literal"><span class="pre">regrid_out_of_bounds</span></code> is set to <code class="docutils literal"><span class="pre">nan</span></code> or to <code class="docutils literal"><span class="pre">extrapolate</span></code>.
+If the option is set to <code class="docutils literal"><span class="pre">edge</span></code> then the first and last boundary value are set to the midpoints
+(<span class="math">\(\lambda^{B}(1,1) = \lambda(1)\)</span>, <span class="math">\(\lambda^{B}(N,2) = \lambda(N)\)</span>).</p>
+</li>
 </ol>
 </div>
 

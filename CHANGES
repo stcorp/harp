@@ -46,6 +46,9 @@
 
 * Added derivation to derive the area (size) of latitude/longitude bounds.
 
+* Derivations of bound variables will now clamp to the edge midpoints when
+  the `regrid_out_of_bounds` option is set to `edge`.
+
 * The 'data_type' parameter for harp_product_get_derived_variable() and
   harp_product_add_derived_variable() is now a pointer to allow it to be
   optional (i.e. pass NULL to use the default data type).

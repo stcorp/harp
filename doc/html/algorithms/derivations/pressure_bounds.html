@@ -248,7 +248,10 @@
    p^{B}(i,1) &amp; = &amp; e^{\frac{\ln(p(i-1)) + \ln(p(i))}{2}}, 1 &lt; i \leq N \\
    p^{B}(i,2) &amp; = &amp; e^{\ln(p^{B}(i+1,1))}, 1 \leq i &lt; N \\
    p^{B}(N,2) &amp; = &amp; e^{2\ln(p(N)) - \ln(p(N-1))}
-\end{eqnarray}</div></li>
+\end{eqnarray}</div><p>This formula applies if the harp option <code class="docutils literal"><span class="pre">regrid_out_of_bounds</span></code> is set to <code class="docutils literal"><span class="pre">nan</span></code> or to <code class="docutils literal"><span class="pre">extrapolate</span></code>.
+If the option is set to <code class="docutils literal"><span class="pre">edge</span></code> then the first and last boundary value are set to the midpoints
+(<span class="math">\(p^{B}(1,1) = p(1)\)</span>, <span class="math">\(p^{B}(N,2) = p(N)\)</span>).</p>
+</li>
 </ol>
 </div>
 

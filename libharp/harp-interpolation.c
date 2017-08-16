@@ -773,9 +773,13 @@ void harp_interval_interpolate_array_linear(long source_length, const double *so
 /* Determine boundary intervals based on linear inter-/extrapolation of mid points.
  * The bounds array will be treated as a [num_midpoints,2] array and should thus be allocated
  * to hold '2 * num_midpoints' values.
- * if num_midpoints equals 1, the two bounds values will be set equal to the midpoint value.
+ * If num_midpoints equals 1, the two bounds values will be set equal to the midpoint value.
+ * If extrapolate is 1 then the values of the first bound of the first midpoint (bound[0]) and the last bound of the
+ * last midpoint (bound[2 * num_midpoints - 1]) will be set based on extrapolation of the nearest two midpoint values.
+ * If extrapolate is 0 then the midpoint values will be used (i.e. bound[0] = midpoint[0] and
+ * bound[2*num_midpoints-1] = midpoint[num_midpoints-1])
  */
-void harp_bounds_from_midpoints_linear(long num_midpoints, const double *midpoints, double *bounds)
+void harp_bounds_from_midpoints_linear(long num_midpoints, const double *midpoints, int extrapolate, double *bounds)
 {
     long i;
 
@@ -790,7 +794,6 @@ void harp_bounds_from_midpoints_linear(long num_midpoints, const double *midpoin
         return;
     }
 
-    bounds[0] = 0.5 * (3.0 * midpoints[0] - midpoints[1]);
     for (i = 0; i < num_midpoints - 1; i++)
     {
         double average = 0.5 * (midpoints[i] + midpoints[i + 1]);
@@ -798,15 +801,28 @@ void harp_bounds_from_midpoints_linear(long num_midpoints, const double *midpoin
         bounds[2 * i + 1] = average;
         bounds[2 * (i + 1)] = average;
     }
-    bounds[2 * (num_midpoints - 1) + 1] = 0.5 * (3.0 * midpoints[num_midpoints - 1] - midpoints[num_midpoints - 2]);
+    if (extrapolate)
+    {
+        bounds[0] = 0.5 * (3.0 * midpoints[0] - midpoints[1]);
+        bounds[2 * (num_midpoints - 1) + 1] = 0.5 * (3.0 * midpoints[num_midpoints - 1] - midpoints[num_midpoints - 2]);
+    }
+    else
+    {
+        bounds[0] = midpoints[0];
+        bounds[2 * (num_midpoints - 1) + 1] = midpoints[num_midpoints - 1];
+    }
 }
 
 /* Determine boundary intervals based on loglinear inter-/extrapolation of mid points.
  * The bounds array will be treated as a [num_midpoints,2] array and should thus be allocated
  * to hold '2 * num_midpoints' values.
- * if num_midpoints equals 1, the two bounds values will be set equal to the midpoint value.
+ * If num_midpoints equals 1, the two bounds values will be set equal to the midpoint value.
+ * If extrapolate is 1 then the values of the first bound of the first midpoint (bound[0]) and the last bound of the
+ * last midpoint (bound[2 * num_midpoints - 1]) will be set based on extrapolation of the nearest two midpoint values.
+ * If extrapolate is 0 then the midpoint values will be used (i.e. bound[0] = midpoint[0] and
+ * bound[2*num_midpoints-1] = midpoint[num_midpoints-1])
  */
-void harp_bounds_from_midpoints_loglinear(long num_midpoints, const double *midpoints, double *bounds)
+void harp_bounds_from_midpoints_loglinear(long num_midpoints, const double *midpoints, int extrapolate, double *bounds)
 {
     long i;
 
@@ -821,7 +837,6 @@ void harp_bounds_from_midpoints_loglinear(long num_midpoints, const double *midp
         return;
     }
 
-    bounds[0] = exp(0.5 * (3.0 * log(midpoints[0]) - log(midpoints[1])));
     for (i = 0; i < num_midpoints - 1; i++)
     {
         double average = exp(0.5 * (log(midpoints[i]) + log(midpoints[i + 1])));
@@ -829,6 +844,15 @@ void harp_bounds_from_midpoints_loglinear(long num_midpoints, const double *midp
         bounds[2 * i + 1] = average;
         bounds[2 * (i + 1)] = average;
     }
-    bounds[2 * (num_midpoints - 1) + 1] =
-        exp(0.5 * (3.0 * log(midpoints[num_midpoints - 1]) - log(midpoints[num_midpoints - 2])));
+    if (extrapolate)
+    {
+        bounds[0] = exp(0.5 * (3.0 * log(midpoints[0]) - log(midpoints[1])));
+        bounds[2 * (num_midpoints - 1) + 1] =
+            exp(0.5 * (3.0 * log(midpoints[num_midpoints - 1]) - log(midpoints[num_midpoints - 2])));
+    }
+    else
+    {
+        bounds[0] = midpoints[0];
+        bounds[2 * (num_midpoints - 1) + 1] = midpoints[num_midpoints - 1];
+    }
 }

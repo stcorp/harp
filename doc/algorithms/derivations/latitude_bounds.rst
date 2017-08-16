@@ -21,3 +21,9 @@ latitude bounds derivations
          \phi^{B}(i,2) & = & \phi^{B}(i+1,1), 1 \leq i < N \\
          \phi^{B}(N,2) & = & 2\phi(N) - \phi(N-1)
       \end{eqnarray}
+
+   This formula applies if the harp option ``regrid_out_of_bounds`` is set to ``nan`` or to ``extrapolate``.
+   If the option is set to ``edge`` then the first and last boundary value are set to the midpoints
+   (:math:`\phi^{B}(1,1) = \phi(1)`, :math:`\phi^{B}(N,2) = \phi(N)`).
+
+   Note that all latitude values will always be clamped to the range :math:`[-90,90]`.

@@ -248,7 +248,10 @@
    z^{B}(i,1) &amp; = &amp; \frac{z(i-1) + z(i)}{2}, 1 &lt; i \leq N \\
    z^{B}(i,2) &amp; = &amp; z^{B}(i+1,1), 1 \leq i &lt; N \\
    z^{B}(N,2) &amp; = &amp; 2z(N) - z(N-1)
-\end{eqnarray}</div></li>
+\end{eqnarray}</div><p>This formula applies if the harp option <code class="docutils literal"><span class="pre">regrid_out_of_bounds</span></code> is set to <code class="docutils literal"><span class="pre">nan</span></code> or to <code class="docutils literal"><span class="pre">extrapolate</span></code>.
+If the option is set to <code class="docutils literal"><span class="pre">edge</span></code> then the first and last boundary value are set to the midpoints
+(<span class="math">\(z^{B}(1,1) = z(1)\)</span>, <span class="math">\(z^{B}(N,2) = z(N)\)</span>).</p>
+</li>
 </ol>
 </div>
 

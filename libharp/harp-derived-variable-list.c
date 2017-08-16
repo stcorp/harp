@@ -189,7 +189,9 @@ static int get_bounds_from_midpoints(harp_variable *variable, const harp_variabl
 
     for (i = 0; i < num_blocks; i++)
     {
+        /* use extrapolation if out_of_bounds is set to nan (0) or extrapolate (2) (and not edge (1)) */
         harp_bounds_from_midpoints_linear(length, &source_variable[0]->data.double_data[i * length],
+                                          harp_get_option_regrid_out_of_bounds() != 1,
                                           &variable->data.double_data[i * length * 2]);
     }
 
@@ -204,7 +206,9 @@ static int get_bounds_from_midpoints_log(harp_variable *variable, const harp_var
 
     for (i = 0; i < num_blocks; i++)
     {
+        /* use extrapolation if out_of_bounds is set to nan (0) or extrapolate (2) (and not edge (1)) */
         harp_bounds_from_midpoints_loglinear(length, &source_variable[0]->data.double_data[i * length],
+                                             harp_get_option_regrid_out_of_bounds() != 1,
                                              &variable->data.double_data[i * length * 2]);
     }
 

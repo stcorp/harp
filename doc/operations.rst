@@ -319,7 +319,7 @@ Supported functions:
             Possible values are:
 
             - ``nan`` (default) to set values outside the range to NaN
-            - ``edge`` to use to nearest edge value
+            - ``edge`` to use the nearest edge value
             - ``extrapolate`` to perform extrapolation
 
         Example:

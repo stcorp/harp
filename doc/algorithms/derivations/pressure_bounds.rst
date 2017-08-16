@@ -21,3 +21,7 @@ pressure bounds derivations
          p^{B}(i,2) & = & e^{\ln(p^{B}(i+1,1))}, 1 \leq i < N \\
          p^{B}(N,2) & = & e^{2\ln(p(N)) - \ln(p(N-1))}
       \end{eqnarray}
+
+   This formula applies if the harp option ``regrid_out_of_bounds`` is set to ``nan`` or to ``extrapolate``.
+   If the option is set to ``edge`` then the first and last boundary value are set to the midpoints
+   (:math:`p^{B}(1,1) = p(1)`, :math:`p^{B}(N,2) = p(N)`).

@@ -21,3 +21,7 @@ altitude bounds derivations
          z^{B}(i,2) & = & z^{B}(i+1,1), 1 \leq i < N \\
          z^{B}(N,2) & = & 2z(N) - z(N-1)
       \end{eqnarray}
+
+   This formula applies if the harp option ``regrid_out_of_bounds`` is set to ``nan`` or to ``extrapolate``.
+   If the option is set to ``edge`` then the first and last boundary value are set to the midpoints
+   (:math:`z^{B}(1,1) = z(1)`, :math:`z^{B}(N,2) = z(N)`).
