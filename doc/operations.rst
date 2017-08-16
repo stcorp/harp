@@ -157,11 +157,11 @@ Supported functions:
             | ``derive(latitude float {time})``
 
     ``derive_smoothed_column(variable {dimension-type, ...} [unit], axis-variable unit, collocation-result-file, a|b, dataset-dir)``
-        Derive the given intergrated column value by first deriving
+        Derive the given integrated column value by first deriving
         a partial column profile variant of the variable and then
         smoothing/integrating this partial column profile using the
         column avaraging kernel (and a-priori, if available) from a
-        collocated dataset. The third parameter indicates which dataset
+        collocated dataset. The fourth parameter indicates which dataset
         contains the avaraging kernel.
         Before smoothing the partial column profile is regridded to
         the grid of the column averaging kernel using the given
@@ -170,6 +170,23 @@ Supported functions:
         Example:
 
             ``derive_smoothed_column(O3_column_number_density {time} [molec/cm2], altitude [km], "collocation-result.csv", b, "./correlative_data/")``
+
+    ``derive_smoothed_column(variable {dimension-type, ...} [unit], axis-variable unit, collocated-file)``
+        Derive the given integrated column value by first deriving
+        a partial column profile variant of the variable and then
+        smoothing/integrating this partial column profile using the
+        column avaraging kernel (and a-priori, if available) from a
+        single merged collocated product. Both the product and the
+        collocated product need to have a ``collocation_index``
+        variable that will be used to associate the right collocated
+        grid/avk/apriori to each sample.
+        Before smoothing the partial column profile is regridded to
+        the grid of the column averaging kernel using the given
+        axis-variable (see also ``regrid()``).
+
+        Example:
+
+            ``derive_smoothed_column(O3_column_number_density {time} [molec/cm2], altitude [km], "./collocated_file.nc")``
 
     ``exclude(variable, ...)``
         Mark the specified variable(s) for exclusion from the
@@ -253,6 +270,16 @@ Supported functions:
 
             ``regrid(vertical, altitude [km], "collocation-result.csv", b, "./correlative_data/")``
 
+    ``regrid(dimension, axis-variable unit, collocated-file)``
+        Regrid all variables in the product for the given dimension using the
+        target grid taken from a single merged collocated product. Both the
+        product and the collocated product need to have a ``collocation_index``
+        variable that will be used to associate the right collocated grid to
+        each sample.
+        Example:
+
+            ``regrid(vertical, altitude [km], "./collocated_file.nc")``
+
     ``rename(variable, new_name)``
         Rename the variable to the new name.
         Note that this operation should be used with care since it will
@@ -316,6 +343,25 @@ Supported functions:
         to be smoothed. For each variable an associated averaging kernel
         (and associated a-priori, if applicable) needs to be present in
         the collocated dataset.
+
+    ``smooth(variable, dimension, axis-variable unit, collocated-file)``
+        Smooth the given variable in the product for the given dimension
+        using the avaraging kernel (and a-priori profile, if available)
+        from a single merged collocated product. Both the product and the
+        collocated product need to have a ``collocation_index`` variable
+        that will be used to associate the right collocated grid/avk/apriori
+        to each sample.
+        Before smoothing the product is regridded to the grid of the
+        averaging kernel using the given axis-variable (see also ``regrid()``).
+        Example:
+
+            ``smooth(O3_number_density, vertical, altitude [km], "./collocated_file.nc")``
+
+    ``smooth((variable, variable, ...), dimension, axis-variable unit, collocated-file)``
+        Same as above, but then providing a list of variables that need
+        to be smoothed. For each variable an associated averaging kernel
+        (and associated a-priori, if applicable) needs to be present in
+        the merged collocated file.
 
     ``sort(variable)``
         Reorder a dimension for all variables in the product such that the
@@ -445,6 +491,7 @@ Formal definition
        'collocate_right', '(', stringvalue, ')' |
        'derive', '(', variable, [datatype], [dimensionspec], [unit], ')' |
        'derive_smoothed_column', '(', variable, dimensionspec, [unit], ',', variable, unit, ',', stringvalue, ',', ( 'a' | 'b' ), ',', stringvalue, ')' |
+       'derive_smoothed_column', '(', variable, dimensionspec, [unit], ',', variable, unit, ',', stringvalue, ')' |
        'exclude', '(', variablelist, ')' |
        'flatten', '(', dimension, ')' |
        'keep', '(', variablelist, ')' |
@@ -455,9 +502,12 @@ Formal definition
        'regrid', '(', dimension, ',', variable, unit, ',', '(', floatvaluelist, ')', ')' |
        'regrid', '(', dimension, ',', variable, unit, ',', intvalue, ',', floatvalue, ',', floatvalue, ')' |
        'regrid', '(', dimension, ',', variable, unit, ',', stringvalue, ',', ( 'a' | 'b' ), ',', stringvalue, ')' |
+       'regrid', '(', dimension, ',', variable, unit, ',', stringvalue, ')' |
        'set', '(', stringvalue, ',', stringvalue, ')' |
        'smooth', '(', variable, ',', dimension, ',', variable, unit, ',', stringvalue, ',', ( 'a' | 'b' ), ',', stringvalue, ')' |
        'smooth', '(', '(', variablelist, ')', ',', dimension, ',', variable, unit, ',', stringvalue, ',', ( 'a' | 'b' ), ',', stringvalue, ')' |
+       'smooth', '(', variable, ',', dimension, ',', variable, unit, ',', stringvalue, ')' |
+       'smooth', '(', '(', variablelist, ')', ',', dimension, ',', variable, unit, ',', stringvalue, ')' |
        'sort', '(', variable, ')' |
        'valid', '(', variable, ')' |
        'wrap', '(', variable, [unit], ',', floatvalue, ',', floatvalue, ')' ;

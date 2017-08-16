@@ -1694,13 +1694,16 @@ static int evaluate_ingestion_mask(ingest_info *info, harp_program *program)
             case operation_bin_collocated:
             case operation_bin_with_variable:
             case operation_derive_variable:
-            case operation_derive_smoothed_column_collocated:
+            case operation_derive_smoothed_column_collocated_dataset:
+            case operation_derive_smoothed_column_collocated_product:
             case operation_flatten:
             case operation_regrid:
-            case operation_regrid_collocated:
+            case operation_regrid_collocated_dataset:
+            case operation_regrid_collocated_product:
             case operation_rename:
             case operation_set:
-            case operation_smooth_collocated:
+            case operation_smooth_collocated_dataset:
+            case operation_smooth_collocated_product:
             case operation_sort:
             case operation_wrap:
                 /* these operations can only be performed on in-memory data */

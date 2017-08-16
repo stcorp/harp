@@ -667,8 +667,8 @@ static int execute_derive_variable(harp_product *product, harp_operation_derive_
                                              operation->num_dimensions, operation->dimension_type);
 }
 
-static int execute_derive_smoothed_column_collocated(harp_product *product,
-                                                     harp_operation_derive_smoothed_column_collocated *operation)
+static int execute_derive_smoothed_column_collocated_dataset
+    (harp_product *product, harp_operation_derive_smoothed_column_collocated_dataset *operation)
 {
     harp_collocation_result *collocation_result = NULL;
     harp_variable *variable;
@@ -698,6 +698,48 @@ static int execute_derive_smoothed_column_collocated(harp_product *product,
         return -1;
     }
     harp_collocation_result_delete(collocation_result);
+
+    if (harp_product_has_variable(product, variable->name))
+    {
+        if (harp_product_replace_variable(product, variable) != 0)
+        {
+            harp_variable_delete(variable);
+            return -1;
+        }
+    }
+    else
+    {
+        if (harp_product_add_variable(product, variable) != 0)
+        {
+            harp_variable_delete(variable);
+            return -1;
+        }
+    }
+
+    return 0;
+}
+
+static int execute_derive_smoothed_column_collocated_product
+    (harp_product *product, harp_operation_derive_smoothed_column_collocated_product *operation)
+{
+    harp_product *collocated_product = NULL;
+    harp_variable *variable;
+
+    if (harp_import(operation->filename, NULL, NULL, &collocated_product) != 0)
+    {
+        return -1;
+    }
+
+    /* execute the operation */
+    if (harp_product_get_smoothed_column_using_collocated_product(product, operation->variable_name, operation->unit,
+                                                                  operation->num_dimensions, operation->dimension_type,
+                                                                  operation->axis_variable_name, operation->axis_unit,
+                                                                  collocated_product, &variable) != 0)
+    {
+        harp_product_delete(collocated_product);
+        return -1;
+    }
+    harp_product_delete(collocated_product);
 
     if (harp_product_has_variable(product, variable->name))
     {
@@ -813,7 +855,7 @@ static int execute_regrid(harp_product *product, harp_operation_regrid *operatio
     return 0;
 }
 
-static int execute_regrid_collocated(harp_product *product, harp_operation_regrid_collocated *operation)
+static int execute_regrid_collocated_dataset(harp_product *product, harp_operation_regrid_collocated_dataset *operation)
 {
     harp_collocation_result *collocation_result = NULL;
 
@@ -840,6 +882,26 @@ static int execute_regrid_collocated(harp_product *product, harp_operation_regri
     }
 
     harp_collocation_result_delete(collocation_result);
+    return 0;
+}
+
+static int execute_regrid_collocated_product(harp_product *product, harp_operation_regrid_collocated_product *operation)
+{
+    harp_product *collocated_product = NULL;
+
+    if (harp_import(operation->filename, NULL, NULL, &collocated_product) != 0)
+    {
+        return -1;
+    }
+
+    if (harp_product_regrid_with_collocated_product(product, operation->dimension_type, operation->axis_variable_name,
+                                                    operation->axis_unit, collocated_product) != 0)
+    {
+        harp_product_delete(collocated_product);
+        return -1;
+    }
+
+    harp_product_delete(collocated_product);
     return 0;
 }
 
@@ -936,7 +998,7 @@ static int execute_set(harp_product *product, harp_operation_set *operation)
     return 0;
 }
 
-static int execute_smooth_collocated(harp_product *product, harp_operation_smooth_collocated *operation)
+static int execute_smooth_collocated_dataset(harp_product *product, harp_operation_smooth_collocated_dataset *operation)
 {
     harp_collocation_result *collocation_result = NULL;
 
@@ -971,6 +1033,36 @@ static int execute_smooth_collocated(harp_product *product, harp_operation_smoot
         return -1;
     }
 
+    harp_collocation_result_delete(collocation_result);
+    return 0;
+}
+
+static int execute_smooth_collocated_product(harp_product *product, harp_operation_smooth_collocated_product *operation)
+{
+    harp_product *collocated_product = NULL;
+
+    if (operation->dimension_type != harp_dimension_vertical)
+    {
+        harp_set_error(HARP_ERROR_OPERATION, "regridding of '%s' dimension not supported",
+                       harp_get_dimension_type_name(operation->dimension_type));
+        return -1;
+    }
+
+    if (harp_import(operation->filename, NULL, NULL, &collocated_product) != 0)
+    {
+        return -1;
+    }
+
+    if (harp_product_smooth_vertical_with_collocated_product(product, operation->num_variables,
+                                                             (const char **)operation->variable_name,
+                                                             operation->axis_variable_name, operation->axis_unit,
+                                                             collocated_product) != 0)
+    {
+        harp_product_delete(collocated_product);
+        return -1;
+    }
+
+    harp_product_delete(collocated_product);
     return 0;
 }
 
@@ -1077,9 +1169,16 @@ int harp_product_execute_program(harp_product *product, harp_program *program)
                     return -1;
                 }
                 break;
-            case operation_derive_smoothed_column_collocated:
-                if (execute_derive_smoothed_column_collocated
-                    (product, (harp_operation_derive_smoothed_column_collocated *)operation) != 0)
+            case operation_derive_smoothed_column_collocated_dataset:
+                if (execute_derive_smoothed_column_collocated_dataset
+                    (product, (harp_operation_derive_smoothed_column_collocated_dataset *)operation) != 0)
+                {
+                    return -1;
+                }
+                break;
+            case operation_derive_smoothed_column_collocated_product:
+                if (execute_derive_smoothed_column_collocated_product
+                    (product, (harp_operation_derive_smoothed_column_collocated_product *)operation) != 0)
                 {
                     return -1;
                 }
@@ -1108,8 +1207,16 @@ int harp_product_execute_program(harp_product *product, harp_program *program)
                     return -1;
                 }
                 break;
-            case operation_regrid_collocated:
-                if (execute_regrid_collocated(product, (harp_operation_regrid_collocated *)operation) != 0)
+            case operation_regrid_collocated_dataset:
+                if (execute_regrid_collocated_dataset(product, (harp_operation_regrid_collocated_dataset *)operation) !=
+                    0)
+                {
+                    return -1;
+                }
+                break;
+            case operation_regrid_collocated_product:
+                if (execute_regrid_collocated_product(product, (harp_operation_regrid_collocated_product *)operation) !=
+                    0)
                 {
                     return -1;
                 }
@@ -1126,8 +1233,16 @@ int harp_product_execute_program(harp_product *product, harp_program *program)
                     return -1;
                 }
                 break;
-            case operation_smooth_collocated:
-                if (execute_smooth_collocated(product, (harp_operation_smooth_collocated *)operation) != 0)
+            case operation_smooth_collocated_dataset:
+                if (execute_smooth_collocated_dataset(product, (harp_operation_smooth_collocated_dataset *)operation) !=
+                    0)
+                {
+                    return -1;
+                }
+                break;
+            case operation_smooth_collocated_product:
+                if (execute_smooth_collocated_product(product, (harp_operation_smooth_collocated_product *)operation) !=
+                    0)
                 {
                     return -1;
                 }

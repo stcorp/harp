@@ -675,7 +675,8 @@ static void derive_variable_delete(harp_operation_derive_variable *operation)
     }
 }
 
-static void derive_smoothed_column_collocated_delete(harp_operation_derive_smoothed_column_collocated *operation)
+static void derive_smoothed_column_collocated_dataset_delete
+    (harp_operation_derive_smoothed_column_collocated_dataset *operation)
 {
     if (operation != NULL)
     {
@@ -702,6 +703,36 @@ static void derive_smoothed_column_collocated_delete(harp_operation_derive_smoot
         if (operation->dataset_dir != NULL)
         {
             free(operation->dataset_dir);
+        }
+
+        free(operation);
+    }
+}
+
+static void derive_smoothed_column_collocated_product_delete
+    (harp_operation_derive_smoothed_column_collocated_product *operation)
+{
+    if (operation != NULL)
+    {
+        if (operation->variable_name != NULL)
+        {
+            free(operation->variable_name);
+        }
+        if (operation->unit != NULL)
+        {
+            free(operation->unit);
+        }
+        if (operation->axis_variable_name != NULL)
+        {
+            free(operation->axis_variable_name);
+        }
+        if (operation->axis_unit != NULL)
+        {
+            free(operation->axis_unit);
+        }
+        if (operation->filename != NULL)
+        {
+            free(operation->filename);
         }
 
         free(operation);
@@ -838,7 +869,7 @@ static void regrid_delete(harp_operation_regrid *operation)
     }
 }
 
-static void regrid_collocated_delete(harp_operation_regrid_collocated *operation)
+static void regrid_collocated_dataset_delete(harp_operation_regrid_collocated_dataset *operation)
 {
     if (operation != NULL)
     {
@@ -857,6 +888,27 @@ static void regrid_collocated_delete(harp_operation_regrid_collocated *operation
         if (operation->dataset_dir != NULL)
         {
             free(operation->dataset_dir);
+        }
+
+        free(operation);
+    }
+}
+
+static void regrid_collocated_product_delete(harp_operation_regrid_collocated_product *operation)
+{
+    if (operation != NULL)
+    {
+        if (operation->axis_variable_name != NULL)
+        {
+            free(operation->axis_variable_name);
+        }
+        if (operation->axis_unit != NULL)
+        {
+            free(operation->axis_unit);
+        }
+        if (operation->filename != NULL)
+        {
+            free(operation->filename);
         }
 
         free(operation);
@@ -897,7 +949,7 @@ static void set_delete(harp_operation_set *operation)
     }
 }
 
-static void smooth_collocated_delete(harp_operation_smooth_collocated *operation)
+static void smooth_collocated_dataset_delete(harp_operation_smooth_collocated_dataset *operation)
 {
     if (operation != NULL)
     {
@@ -929,6 +981,40 @@ static void smooth_collocated_delete(harp_operation_smooth_collocated *operation
         if (operation->dataset_dir != NULL)
         {
             free(operation->dataset_dir);
+        }
+
+        free(operation);
+    }
+}
+
+static void smooth_collocated_product_delete(harp_operation_smooth_collocated_product *operation)
+{
+    if (operation != NULL)
+    {
+        if (operation->variable_name != NULL)
+        {
+            int i;
+
+            for (i = 0; i < operation->num_variables; i++)
+            {
+                if (operation->variable_name[i] != NULL)
+                {
+                    free(operation->variable_name[i]);
+                }
+            }
+            free(operation->variable_name);
+        }
+        if (operation->axis_variable_name != NULL)
+        {
+            free(operation->axis_variable_name);
+        }
+        if (operation->axis_unit != NULL)
+        {
+            free(operation->axis_unit);
+        }
+        if (operation->filename != NULL)
+        {
+            free(operation->filename);
         }
 
         free(operation);
@@ -1057,8 +1143,13 @@ void harp_operation_delete(harp_operation *operation)
         case operation_derive_variable:
             derive_variable_delete((harp_operation_derive_variable *)operation);
             break;
-        case operation_derive_smoothed_column_collocated:
-            derive_smoothed_column_collocated_delete((harp_operation_derive_smoothed_column_collocated *)operation);
+        case operation_derive_smoothed_column_collocated_dataset:
+            derive_smoothed_column_collocated_dataset_delete
+                ((harp_operation_derive_smoothed_column_collocated_dataset *)operation);
+            break;
+        case operation_derive_smoothed_column_collocated_product:
+            derive_smoothed_column_collocated_product_delete
+                ((harp_operation_derive_smoothed_column_collocated_product *)operation);
             break;
         case operation_exclude_variable:
             exclude_variable_delete((harp_operation_exclude_variable *)operation);
@@ -1084,8 +1175,11 @@ void harp_operation_delete(harp_operation *operation)
         case operation_regrid:
             regrid_delete((harp_operation_regrid *)operation);
             break;
-        case operation_regrid_collocated:
-            regrid_collocated_delete((harp_operation_regrid_collocated *)operation);
+        case operation_regrid_collocated_dataset:
+            regrid_collocated_dataset_delete((harp_operation_regrid_collocated_dataset *)operation);
+            break;
+        case operation_regrid_collocated_product:
+            regrid_collocated_product_delete((harp_operation_regrid_collocated_product *)operation);
             break;
         case operation_rename:
             rename_delete((harp_operation_rename *)operation);
@@ -1093,8 +1187,11 @@ void harp_operation_delete(harp_operation *operation)
         case operation_set:
             set_delete((harp_operation_set *)operation);
             break;
-        case operation_smooth_collocated:
-            smooth_collocated_delete((harp_operation_smooth_collocated *)operation);
+        case operation_smooth_collocated_dataset:
+            smooth_collocated_dataset_delete((harp_operation_smooth_collocated_dataset *)operation);
+            break;
+        case operation_smooth_collocated_product:
+            smooth_collocated_product_delete((harp_operation_smooth_collocated_product *)operation);
             break;
         case operation_sort:
             sort_delete((harp_operation_sort *)operation);
@@ -1625,13 +1722,14 @@ int harp_operation_derive_variable_new(const char *variable_name, const harp_dat
     return 0;
 }
 
-int harp_operation_derive_smoothed_column_collocated_new(const char *variable_name, int num_dimensions,
-                                                         const harp_dimension_type *dimension_type, const char *unit,
-                                                         const char *axis_variable_name, const char *axis_unit,
-                                                         const char *collocation_result, const char target_dataset,
-                                                         const char *dataset_dir, harp_operation **new_operation)
+int harp_operation_derive_smoothed_column_collocated_dataset_new(const char *variable_name, int num_dimensions,
+                                                                 const harp_dimension_type *dimension_type,
+                                                                 const char *unit, const char *axis_variable_name,
+                                                                 const char *axis_unit, const char *collocation_result,
+                                                                 const char target_dataset, const char *dataset_dir,
+                                                                 harp_operation **new_operation)
 {
-    harp_operation_derive_smoothed_column_collocated *operation;
+    harp_operation_derive_smoothed_column_collocated_dataset *operation;
     int i;
 
     assert(variable_name != NULL);
@@ -1641,15 +1739,15 @@ int harp_operation_derive_smoothed_column_collocated_new(const char *variable_na
     assert(dataset_dir != NULL);
 
     operation =
-        (harp_operation_derive_smoothed_column_collocated
-         *)malloc(sizeof(harp_operation_derive_smoothed_column_collocated));
+        (harp_operation_derive_smoothed_column_collocated_dataset
+         *)malloc(sizeof(harp_operation_derive_smoothed_column_collocated_dataset));
     if (operation == NULL)
     {
         harp_set_error(HARP_ERROR_OUT_OF_MEMORY, "out of memory (could not allocate %lu bytes) (%s:%u)",
-                       sizeof(harp_operation_derive_smoothed_column_collocated), __FILE__, __LINE__);
+                       sizeof(harp_operation_derive_smoothed_column_collocated_dataset), __FILE__, __LINE__);
         return -1;
     }
-    operation->type = operation_derive_smoothed_column_collocated;
+    operation->type = operation_derive_smoothed_column_collocated_dataset;
     operation->variable_name = NULL;
     operation->num_dimensions = num_dimensions;
     operation->unit = NULL;
@@ -1664,7 +1762,7 @@ int harp_operation_derive_smoothed_column_collocated_new(const char *variable_na
     {
         harp_set_error(HARP_ERROR_OUT_OF_MEMORY, "out of memory (could not duplicate string) (%s:%u)", __FILE__,
                        __LINE__);
-        derive_smoothed_column_collocated_delete(operation);
+        derive_smoothed_column_collocated_dataset_delete(operation);
         return -1;
     }
     operation->axis_variable_name = strdup(axis_variable_name);
@@ -1672,7 +1770,7 @@ int harp_operation_derive_smoothed_column_collocated_new(const char *variable_na
     {
         harp_set_error(HARP_ERROR_OUT_OF_MEMORY, "out of memory (could not duplicate string) (%s:%u)", __FILE__,
                        __LINE__);
-        derive_smoothed_column_collocated_delete(operation);
+        derive_smoothed_column_collocated_dataset_delete(operation);
         return -1;
     }
     operation->axis_unit = strdup(axis_unit);
@@ -1680,7 +1778,7 @@ int harp_operation_derive_smoothed_column_collocated_new(const char *variable_na
     {
         harp_set_error(HARP_ERROR_OUT_OF_MEMORY, "out of memory (could not duplicate string) (%s:%u)", __FILE__,
                        __LINE__);
-        derive_smoothed_column_collocated_delete(operation);
+        derive_smoothed_column_collocated_dataset_delete(operation);
         return -1;
     }
     operation->collocation_result = strdup(collocation_result);
@@ -1688,7 +1786,7 @@ int harp_operation_derive_smoothed_column_collocated_new(const char *variable_na
     {
         harp_set_error(HARP_ERROR_OUT_OF_MEMORY, "out of memory (could not duplicate string) (%s:%u)", __FILE__,
                        __LINE__);
-        derive_smoothed_column_collocated_delete(operation);
+        derive_smoothed_column_collocated_dataset_delete(operation);
         return -1;
     }
     operation->dataset_dir = strdup(dataset_dir);
@@ -1696,7 +1794,7 @@ int harp_operation_derive_smoothed_column_collocated_new(const char *variable_na
     {
         harp_set_error(HARP_ERROR_OUT_OF_MEMORY, "out of memory (could not duplicate string) (%s:%u)", __FILE__,
                        __LINE__);
-        derive_smoothed_column_collocated_delete(operation);
+        derive_smoothed_column_collocated_dataset_delete(operation);
         return -1;
     }
 
@@ -1712,7 +1810,92 @@ int harp_operation_derive_smoothed_column_collocated_new(const char *variable_na
         {
             harp_set_error(HARP_ERROR_OUT_OF_MEMORY, "out of memory (could not duplicate string) (%s:%u)", __FILE__,
                            __LINE__);
-            derive_smoothed_column_collocated_delete(operation);
+            derive_smoothed_column_collocated_dataset_delete(operation);
+            return -1;
+        }
+    }
+
+    *new_operation = (harp_operation *)operation;
+    return 0;
+}
+
+int harp_operation_derive_smoothed_column_collocated_product_new(const char *variable_name, int num_dimensions,
+                                                                 const harp_dimension_type *dimension_type,
+                                                                 const char *unit, const char *axis_variable_name,
+                                                                 const char *axis_unit, const char *filename,
+                                                                 harp_operation **new_operation)
+{
+    harp_operation_derive_smoothed_column_collocated_product *operation;
+    int i;
+
+    assert(variable_name != NULL);
+    assert(axis_variable_name != NULL);
+    assert(axis_unit != NULL);
+    assert(filename != NULL);
+
+    operation =
+        (harp_operation_derive_smoothed_column_collocated_product
+         *)malloc(sizeof(harp_operation_derive_smoothed_column_collocated_product));
+    if (operation == NULL)
+    {
+        harp_set_error(HARP_ERROR_OUT_OF_MEMORY, "out of memory (could not allocate %lu bytes) (%s:%u)",
+                       sizeof(harp_operation_derive_smoothed_column_collocated_product), __FILE__, __LINE__);
+        return -1;
+    }
+    operation->type = operation_derive_smoothed_column_collocated_product;
+    operation->variable_name = NULL;
+    operation->num_dimensions = num_dimensions;
+    operation->unit = NULL;
+    operation->axis_variable_name = NULL;
+    operation->axis_unit = NULL;
+    operation->filename = NULL;
+
+    operation->variable_name = strdup(variable_name);
+    if (operation->variable_name == NULL)
+    {
+        harp_set_error(HARP_ERROR_OUT_OF_MEMORY, "out of memory (could not duplicate string) (%s:%u)", __FILE__,
+                       __LINE__);
+        derive_smoothed_column_collocated_product_delete(operation);
+        return -1;
+    }
+    operation->axis_variable_name = strdup(axis_variable_name);
+    if (operation->axis_variable_name == NULL)
+    {
+        harp_set_error(HARP_ERROR_OUT_OF_MEMORY, "out of memory (could not duplicate string) (%s:%u)", __FILE__,
+                       __LINE__);
+        derive_smoothed_column_collocated_product_delete(operation);
+        return -1;
+    }
+    operation->axis_unit = strdup(axis_unit);
+    if (operation->axis_unit == NULL)
+    {
+        harp_set_error(HARP_ERROR_OUT_OF_MEMORY, "out of memory (could not duplicate string) (%s:%u)", __FILE__,
+                       __LINE__);
+        derive_smoothed_column_collocated_product_delete(operation);
+        return -1;
+    }
+    operation->filename = strdup(filename);
+    if (operation->filename == NULL)
+    {
+        harp_set_error(HARP_ERROR_OUT_OF_MEMORY, "out of memory (could not duplicate string) (%s:%u)", __FILE__,
+                       __LINE__);
+        derive_smoothed_column_collocated_product_delete(operation);
+        return -1;
+    }
+
+    for (i = 0; i < num_dimensions; i++)
+    {
+        operation->dimension_type[i] = dimension_type[i];
+    }
+
+    if (unit != NULL)
+    {
+        operation->unit = strdup(unit);
+        if (operation->unit == NULL)
+        {
+            harp_set_error(HARP_ERROR_OUT_OF_MEMORY, "out of memory (could not duplicate string) (%s:%u)", __FILE__,
+                           __LINE__);
+            derive_smoothed_column_collocated_product_delete(operation);
             return -1;
         }
     }
@@ -2107,26 +2290,26 @@ int harp_operation_regrid_new(harp_dimension_type dimension_type, const char *ax
     return 0;
 }
 
-int harp_operation_regrid_collocated_new(harp_dimension_type dimension_type, const char *axis_variable_name,
-                                         const char *axis_unit, const char *collocation_result,
-                                         const char target_dataset, const char *dataset_dir,
-                                         harp_operation **new_operation)
+int harp_operation_regrid_collocated_dataset_new(harp_dimension_type dimension_type, const char *axis_variable_name,
+                                                 const char *axis_unit, const char *collocation_result,
+                                                 const char target_dataset, const char *dataset_dir,
+                                                 harp_operation **new_operation)
 {
-    harp_operation_regrid_collocated *operation;
+    harp_operation_regrid_collocated_dataset *operation;
 
     assert(axis_variable_name != NULL);
     assert(axis_unit != NULL);
     assert(collocation_result != NULL);
     assert(dataset_dir != NULL);
 
-    operation = (harp_operation_regrid_collocated *)malloc(sizeof(harp_operation_regrid_collocated));
+    operation = (harp_operation_regrid_collocated_dataset *)malloc(sizeof(harp_operation_regrid_collocated_dataset));
     if (operation == NULL)
     {
         harp_set_error(HARP_ERROR_OUT_OF_MEMORY, "out of memory (could not allocate %lu bytes) (%s:%u)",
-                       sizeof(harp_operation_regrid_collocated), __FILE__, __LINE__);
+                       sizeof(harp_operation_regrid_collocated_dataset), __FILE__, __LINE__);
         return -1;
     }
-    operation->type = operation_regrid_collocated;
+    operation->type = operation_regrid_collocated_dataset;
     operation->dimension_type = dimension_type;
     operation->axis_variable_name = NULL;
     operation->axis_unit = NULL;
@@ -2139,7 +2322,7 @@ int harp_operation_regrid_collocated_new(harp_dimension_type dimension_type, con
     {
         harp_set_error(HARP_ERROR_OUT_OF_MEMORY, "out of memory (could not duplicate string) (%s:%u)", __FILE__,
                        __LINE__);
-        regrid_collocated_delete(operation);
+        regrid_collocated_dataset_delete(operation);
         return -1;
     }
     operation->axis_unit = strdup(axis_unit);
@@ -2147,7 +2330,7 @@ int harp_operation_regrid_collocated_new(harp_dimension_type dimension_type, con
     {
         harp_set_error(HARP_ERROR_OUT_OF_MEMORY, "out of memory (could not duplicate string) (%s:%u)", __FILE__,
                        __LINE__);
-        regrid_collocated_delete(operation);
+        regrid_collocated_dataset_delete(operation);
         return -1;
     }
     operation->collocation_result = strdup(collocation_result);
@@ -2155,7 +2338,7 @@ int harp_operation_regrid_collocated_new(harp_dimension_type dimension_type, con
     {
         harp_set_error(HARP_ERROR_OUT_OF_MEMORY, "out of memory (could not duplicate string) (%s:%u)", __FILE__,
                        __LINE__);
-        regrid_collocated_delete(operation);
+        regrid_collocated_dataset_delete(operation);
         return -1;
     }
     operation->dataset_dir = strdup(dataset_dir);
@@ -2163,7 +2346,59 @@ int harp_operation_regrid_collocated_new(harp_dimension_type dimension_type, con
     {
         harp_set_error(HARP_ERROR_OUT_OF_MEMORY, "out of memory (could not duplicate string) (%s:%u)", __FILE__,
                        __LINE__);
-        regrid_collocated_delete(operation);
+        regrid_collocated_dataset_delete(operation);
+        return -1;
+    }
+
+    *new_operation = (harp_operation *)operation;
+    return 0;
+}
+
+int harp_operation_regrid_collocated_product_new(harp_dimension_type dimension_type, const char *axis_variable_name,
+                                                 const char *axis_unit, const char *filename,
+                                                 harp_operation **new_operation)
+{
+    harp_operation_regrid_collocated_product *operation;
+
+    assert(axis_variable_name != NULL);
+    assert(axis_unit != NULL);
+    assert(filename != NULL);
+
+    operation = (harp_operation_regrid_collocated_product *)malloc(sizeof(harp_operation_regrid_collocated_product));
+    if (operation == NULL)
+    {
+        harp_set_error(HARP_ERROR_OUT_OF_MEMORY, "out of memory (could not allocate %lu bytes) (%s:%u)",
+                       sizeof(harp_operation_regrid_collocated_product), __FILE__, __LINE__);
+        return -1;
+    }
+    operation->type = operation_regrid_collocated_product;
+    operation->dimension_type = dimension_type;
+    operation->axis_variable_name = NULL;
+    operation->axis_unit = NULL;
+    operation->filename = NULL;
+
+    operation->axis_variable_name = strdup(axis_variable_name);
+    if (operation->axis_variable_name == NULL)
+    {
+        harp_set_error(HARP_ERROR_OUT_OF_MEMORY, "out of memory (could not duplicate string) (%s:%u)", __FILE__,
+                       __LINE__);
+        regrid_collocated_product_delete(operation);
+        return -1;
+    }
+    operation->axis_unit = strdup(axis_unit);
+    if (operation->axis_unit == NULL)
+    {
+        harp_set_error(HARP_ERROR_OUT_OF_MEMORY, "out of memory (could not duplicate string) (%s:%u)", __FILE__,
+                       __LINE__);
+        regrid_collocated_product_delete(operation);
+        return -1;
+    }
+    operation->filename = strdup(filename);
+    if (operation->filename == NULL)
+    {
+        harp_set_error(HARP_ERROR_OUT_OF_MEMORY, "out of memory (could not duplicate string) (%s:%u)", __FILE__,
+                       __LINE__);
+        regrid_collocated_product_delete(operation);
         return -1;
     }
 
@@ -2249,13 +2484,13 @@ int harp_operation_set_new(const char *option, const char *value, harp_operation
     return 0;
 }
 
-int harp_operation_smooth_collocated_new(int num_variables, const char **variable_name,
-                                         harp_dimension_type dimension_type, const char *axis_variable_name,
-                                         const char *axis_unit, const char *collocation_result,
-                                         const char target_dataset, const char *dataset_dir,
-                                         harp_operation **new_operation)
+int harp_operation_smooth_collocated_dataset_new(int num_variables, const char **variable_name,
+                                                 harp_dimension_type dimension_type, const char *axis_variable_name,
+                                                 const char *axis_unit, const char *collocation_result,
+                                                 const char target_dataset, const char *dataset_dir,
+                                                 harp_operation **new_operation)
 {
-    harp_operation_smooth_collocated *operation;
+    harp_operation_smooth_collocated_dataset *operation;
 
     assert(variable_name != NULL);
     assert(axis_variable_name != NULL);
@@ -2263,14 +2498,14 @@ int harp_operation_smooth_collocated_new(int num_variables, const char **variabl
     assert(collocation_result != NULL);
     assert(dataset_dir != NULL);
 
-    operation = (harp_operation_smooth_collocated *)malloc(sizeof(harp_operation_smooth_collocated));
+    operation = (harp_operation_smooth_collocated_dataset *)malloc(sizeof(harp_operation_smooth_collocated_dataset));
     if (operation == NULL)
     {
         harp_set_error(HARP_ERROR_OUT_OF_MEMORY, "out of memory (could not allocate %lu bytes) (%s:%u)",
-                       sizeof(harp_operation_smooth_collocated), __FILE__, __LINE__);
+                       sizeof(harp_operation_smooth_collocated_dataset), __FILE__, __LINE__);
         return -1;
     }
-    operation->type = operation_smooth_collocated;
+    operation->type = operation_smooth_collocated_dataset;
     operation->num_variables = 0;
     operation->variable_name = NULL;
     operation->dimension_type = dimension_type;
@@ -2285,7 +2520,7 @@ int harp_operation_smooth_collocated_new(int num_variables, const char **variabl
     {
         harp_set_error(HARP_ERROR_OUT_OF_MEMORY, "out of memory (could not duplicate string) (%s:%u)", __FILE__,
                        __LINE__);
-        smooth_collocated_delete(operation);
+        smooth_collocated_dataset_delete(operation);
         return -1;
     }
     operation->axis_unit = strdup(axis_unit);
@@ -2293,7 +2528,7 @@ int harp_operation_smooth_collocated_new(int num_variables, const char **variabl
     {
         harp_set_error(HARP_ERROR_OUT_OF_MEMORY, "out of memory (could not duplicate string) (%s:%u)", __FILE__,
                        __LINE__);
-        smooth_collocated_delete(operation);
+        smooth_collocated_dataset_delete(operation);
         return -1;
     }
     operation->collocation_result = strdup(collocation_result);
@@ -2301,7 +2536,7 @@ int harp_operation_smooth_collocated_new(int num_variables, const char **variabl
     {
         harp_set_error(HARP_ERROR_OUT_OF_MEMORY, "out of memory (could not duplicate string) (%s:%u)", __FILE__,
                        __LINE__);
-        smooth_collocated_delete(operation);
+        smooth_collocated_dataset_delete(operation);
         return -1;
     }
     operation->dataset_dir = strdup(dataset_dir);
@@ -2309,7 +2544,7 @@ int harp_operation_smooth_collocated_new(int num_variables, const char **variabl
     {
         harp_set_error(HARP_ERROR_OUT_OF_MEMORY, "out of memory (could not duplicate string) (%s:%u)", __FILE__,
                        __LINE__);
-        smooth_collocated_delete(operation);
+        smooth_collocated_dataset_delete(operation);
         return -1;
     }
 
@@ -2322,7 +2557,7 @@ int harp_operation_smooth_collocated_new(int num_variables, const char **variabl
         {
             harp_set_error(HARP_ERROR_OUT_OF_MEMORY, "out of memory (could not allocate %lu bytes) (%s:%u)",
                            num_variables * sizeof(char *), __FILE__, __LINE__);
-            smooth_collocated_delete(operation);
+            smooth_collocated_dataset_delete(operation);
             return -1;
         }
         for (i = 0; i < num_variables; i++)
@@ -2336,7 +2571,93 @@ int harp_operation_smooth_collocated_new(int num_variables, const char **variabl
             {
                 harp_set_error(HARP_ERROR_OUT_OF_MEMORY, "out of memory (could not duplicate string) (%s:%u)", __FILE__,
                                __LINE__);
-                smooth_collocated_delete(operation);
+                smooth_collocated_dataset_delete(operation);
+                return -1;
+            }
+            operation->num_variables++;
+        }
+    }
+
+    *new_operation = (harp_operation *)operation;
+    return 0;
+}
+
+int harp_operation_smooth_collocated_product_new(int num_variables, const char **variable_name,
+                                                 harp_dimension_type dimension_type, const char *axis_variable_name,
+                                                 const char *axis_unit, const char *filename,
+                                                 harp_operation **new_operation)
+{
+    harp_operation_smooth_collocated_product *operation;
+
+    assert(variable_name != NULL);
+    assert(axis_variable_name != NULL);
+    assert(axis_unit != NULL);
+    assert(filename != NULL);
+
+    operation = (harp_operation_smooth_collocated_product *)malloc(sizeof(harp_operation_smooth_collocated_product));
+    if (operation == NULL)
+    {
+        harp_set_error(HARP_ERROR_OUT_OF_MEMORY, "out of memory (could not allocate %lu bytes) (%s:%u)",
+                       sizeof(harp_operation_smooth_collocated_product), __FILE__, __LINE__);
+        return -1;
+    }
+    operation->type = operation_smooth_collocated_product;
+    operation->num_variables = 0;
+    operation->variable_name = NULL;
+    operation->dimension_type = dimension_type;
+    operation->axis_variable_name = NULL;
+    operation->axis_unit = NULL;
+    operation->filename = NULL;
+
+    operation->axis_variable_name = strdup(axis_variable_name);
+    if (operation->axis_variable_name == NULL)
+    {
+        harp_set_error(HARP_ERROR_OUT_OF_MEMORY, "out of memory (could not duplicate string) (%s:%u)", __FILE__,
+                       __LINE__);
+        smooth_collocated_product_delete(operation);
+        return -1;
+    }
+    operation->axis_unit = strdup(axis_unit);
+    if (operation->axis_unit == NULL)
+    {
+        harp_set_error(HARP_ERROR_OUT_OF_MEMORY, "out of memory (could not duplicate string) (%s:%u)", __FILE__,
+                       __LINE__);
+        smooth_collocated_product_delete(operation);
+        return -1;
+    }
+    operation->filename = strdup(filename);
+    if (operation->filename == NULL)
+    {
+        harp_set_error(HARP_ERROR_OUT_OF_MEMORY, "out of memory (could not duplicate string) (%s:%u)", __FILE__,
+                       __LINE__);
+        smooth_collocated_product_delete(operation);
+        return -1;
+    }
+
+    if (num_variables > 0)
+    {
+        int i;
+
+        operation->variable_name = (char **)malloc(num_variables * sizeof(char *));
+        if (operation->variable_name == NULL)
+        {
+            harp_set_error(HARP_ERROR_OUT_OF_MEMORY, "out of memory (could not allocate %lu bytes) (%s:%u)",
+                           num_variables * sizeof(char *), __FILE__, __LINE__);
+            smooth_collocated_product_delete(operation);
+            return -1;
+        }
+        for (i = 0; i < num_variables; i++)
+        {
+            operation->variable_name[i] = NULL;
+        }
+        for (i = 0; i < num_variables; i++)
+        {
+            operation->variable_name[i] = strdup(variable_name[i]);
+            if (operation->variable_name[i] == NULL)
+            {
+                harp_set_error(HARP_ERROR_OUT_OF_MEMORY, "out of memory (could not duplicate string) (%s:%u)", __FILE__,
+                               __LINE__);
+                smooth_collocated_product_delete(operation);
                 return -1;
             }
             operation->num_variables++;

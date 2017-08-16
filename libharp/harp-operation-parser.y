@@ -955,8 +955,8 @@ operation:
         }
     | FUNC_DERIVE_SMOOTHED_COLUMN '(' identifier dimensionspec UNIT ',' identifier UNIT ',' STRING_VALUE ',' ID_A ','
       STRING_VALUE ')' {
-            if (harp_operation_derive_smoothed_column_collocated_new($3, $4->num_elements, $4->array.int32_data, $5, $7,
-                                                                     $8, $10, 'a', $14, &$$) != 0)
+            if (harp_operation_derive_smoothed_column_collocated_dataset_new($3, $4->num_elements, $4->array.int32_data,
+                                                                             $5, $7, $8, $10, 'a', $14, &$$) != 0)
             {
                 free($3);
                 harp_sized_array_delete($4);
@@ -977,8 +977,8 @@ operation:
         }
     | FUNC_DERIVE_SMOOTHED_COLUMN '(' identifier dimensionspec UNIT ',' identifier UNIT ',' STRING_VALUE ',' ID_B ','
       STRING_VALUE ')' {
-            if (harp_operation_derive_smoothed_column_collocated_new($3, $4->num_elements, $4->array.int32_data, $5, $7,
-                                                                     $8, $10, 'b', $14, &$$) != 0)
+            if (harp_operation_derive_smoothed_column_collocated_dataset_new($3, $4->num_elements, $4->array.int32_data,
+                                                                             $5, $7, $8, $10, 'b', $14, &$$) != 0)
             {
                 free($3);
                 harp_sized_array_delete($4);
@@ -996,6 +996,25 @@ operation:
             free($8);
             free($10);
             free($14);
+        }
+    | FUNC_DERIVE_SMOOTHED_COLUMN '(' identifier dimensionspec UNIT ',' identifier UNIT ',' STRING_VALUE ')' {
+            if (harp_operation_derive_smoothed_column_collocated_product_new($3, $4->num_elements, $4->array.int32_data,
+                                                                             $5, $7, $8, $10, &$$) != 0)
+            {
+                free($3);
+                harp_sized_array_delete($4);
+                free($5);
+                free($7);
+                free($8);
+                free($10);
+                YYERROR;
+            }
+            free($3);
+            harp_sized_array_delete($4);
+            free($5);
+            free($7);
+            free($8);
+            free($10);
         }
     | FUNC_EXCLUDE '(' identifier_array ')' {
             if (harp_operation_exclude_variable_new($3->num_elements, (const char **)$3->array.string_data, &$$) != 0)
@@ -1219,7 +1238,7 @@ operation:
             free($6);
         }
     | FUNC_REGRID '(' DIMENSION ',' identifier UNIT ',' STRING_VALUE ',' ID_A ',' STRING_VALUE ')' {
-            if (harp_operation_regrid_collocated_new($3, $5, $6, $8, 'a', $12, &$$) != 0)
+            if (harp_operation_regrid_collocated_dataset_new($3, $5, $6, $8, 'a', $12, &$$) != 0)
             {
                 free($5);
                 free($6);
@@ -1233,7 +1252,7 @@ operation:
             free($12);
         }
     | FUNC_REGRID '(' DIMENSION ',' identifier UNIT ',' STRING_VALUE ',' ID_B ',' STRING_VALUE ')' {
-            if (harp_operation_regrid_collocated_new($3, $5, $6, $8, 'b', $12, &$$) != 0)
+            if (harp_operation_regrid_collocated_dataset_new($3, $5, $6, $8, 'b', $12, &$$) != 0)
             {
                 free($5);
                 free($6);
@@ -1245,6 +1264,18 @@ operation:
             free($6);
             free($8);
             free($12);
+        }
+    | FUNC_REGRID '(' DIMENSION ',' identifier UNIT ',' STRING_VALUE ')' {
+            if (harp_operation_regrid_collocated_product_new($3, $5, $6, $8, &$$) != 0)
+            {
+                free($5);
+                free($6);
+                free($8);
+                YYERROR;
+            }
+            free($5);
+            free($6);
+            free($8);
         }
     | FUNC_RENAME '(' identifier ',' identifier ')' {
             if (harp_operation_rename_new($3, $5, &$$) != 0)
@@ -1267,7 +1298,8 @@ operation:
             free($5);
         }
     | FUNC_SMOOTH '(' identifier ',' DIMENSION ',' identifier UNIT ',' STRING_VALUE ',' ID_A ',' STRING_VALUE ')' {
-            if (harp_operation_smooth_collocated_new(1, (const char **)&$3, $5, $7, $8, $10, 'a', $14, &$$) != 0)
+            if (harp_operation_smooth_collocated_dataset_new(1, (const char **)&$3, $5, $7, $8, $10, 'a', $14, &$$) !=
+                0)
             {
                 free($3);
                 free($7);
@@ -1283,7 +1315,8 @@ operation:
             free($14);
         }
     | FUNC_SMOOTH '(' identifier ',' DIMENSION ',' identifier UNIT ',' STRING_VALUE ',' ID_B ',' STRING_VALUE ')' {
-            if (harp_operation_smooth_collocated_new(1, (const char **)&$3, $5, $7, $8, $10, 'b', $14, &$$) != 0)
+            if (harp_operation_smooth_collocated_dataset_new(1, (const char **)&$3, $5, $7, $8, $10, 'b', $14, &$$) !=
+                0)
             {
                 free($3);
                 free($7);
@@ -1298,9 +1331,23 @@ operation:
             free($10);
             free($14);
         }
+    | FUNC_SMOOTH '(' identifier ',' DIMENSION ',' identifier UNIT ',' STRING_VALUE ')' {
+            if (harp_operation_smooth_collocated_product_new(1, (const char **)&$3, $5, $7, $8, $10, &$$) != 0)
+            {
+                free($3);
+                free($7);
+                free($8);
+                free($10);
+                YYERROR;
+            }
+            free($3);
+            free($7);
+            free($8);
+            free($10);
+        }
     | FUNC_SMOOTH '(' '(' identifier_array ')' ',' DIMENSION ',' identifier UNIT ',' STRING_VALUE ',' ID_A ','
       STRING_VALUE ')' {
-            if (harp_operation_smooth_collocated_new($4->num_elements, (const char **)$4->array.string_data,
+            if (harp_operation_smooth_collocated_dataset_new($4->num_elements, (const char **)$4->array.string_data,
                                                      $7, $9, $10, $12, 'a', $16, &$$) != 0)
             {
                 harp_sized_array_delete($4);
@@ -1318,7 +1365,7 @@ operation:
         }
     | FUNC_SMOOTH '(' '(' identifier_array ')' ',' DIMENSION ',' identifier UNIT ',' STRING_VALUE ',' ID_B ','
       STRING_VALUE ')' {
-            if (harp_operation_smooth_collocated_new($4->num_elements, (const char **)$4->array.string_data,
+            if (harp_operation_smooth_collocated_dataset_new($4->num_elements, (const char **)$4->array.string_data,
                                                      $7, $9, $10, $12, 'b', $16, &$$) != 0)
             {
                 harp_sized_array_delete($4);
@@ -1333,6 +1380,21 @@ operation:
             free($10);
             free($12);
             free($16);
+        }
+    | FUNC_SMOOTH '(' '(' identifier_array ')' ',' DIMENSION ',' identifier UNIT ',' STRING_VALUE ')' {
+            if (harp_operation_smooth_collocated_product_new($4->num_elements, (const char **)$4->array.string_data,
+                                                             $7, $9, $10, $12, &$$) != 0)
+            {
+                harp_sized_array_delete($4);
+                free($9);
+                free($10);
+                free($12);
+                YYERROR;
+            }
+            harp_sized_array_delete($4);
+            free($9);
+            free($10);
+            free($12);
         }
     | FUNC_SORT '(' identifier ')' {
             if (harp_operation_sort_new($3, &$$) != 0)

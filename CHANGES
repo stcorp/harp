@@ -37,6 +37,10 @@
 * The derive() operation can now be used without dimension specification
   to perform a unit and/or data type conversion on an existing variable.
 
+* The derive_smoothed_column(), regrid() and smooth() operations can now
+  use a single merged collocated product (instead of a combination of a csv
+  collocation result file and a dataset directory of collocated products).
+
 * An area parameter for operations can now either be a reference to an
   area mask file or a single polygon provided as lat/lon array parameters.
 

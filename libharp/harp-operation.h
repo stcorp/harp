@@ -49,7 +49,8 @@ typedef enum harp_operation_type_enum
     operation_collocation_filter,
     operation_comparison_filter,
     operation_derive_variable,
-    operation_derive_smoothed_column_collocated,
+    operation_derive_smoothed_column_collocated_dataset,
+    operation_derive_smoothed_column_collocated_product,
     operation_exclude_variable,
     operation_flatten,
     operation_keep_variable,
@@ -58,10 +59,12 @@ typedef enum harp_operation_type_enum
     operation_point_distance_filter,
     operation_point_in_area_filter,
     operation_regrid,
-    operation_regrid_collocated,
+    operation_regrid_collocated_dataset,
+    operation_regrid_collocated_product,
     operation_rename,
     operation_set,
-    operation_smooth_collocated,
+    operation_smooth_collocated_dataset,
+    operation_smooth_collocated_product,
     operation_sort,
     operation_string_comparison_filter,
     operation_string_membership_filter,
@@ -115,15 +118,18 @@ typedef enum harp_membership_operator_type_enum
  *   |-  harp_operation_bin_collocated
  *   |-  harp_operation_bin_with_variable
  *   |-  harp_operation_derive_variable
- *   |-  harp_operation_derive_smoothed_column_collocated
+ *   |-  harp_operation_derive_smoothed_column_collocated_dataset
+ *   |-  harp_operation_derive_smoothed_column_collocated_product
  *   |-  harp_operation_exclude_variable
  *   |-  harp_operation_flatten
  *   |-  harp_operation_keep_variable
  *   |-  harp_operation_regrid
- *   |-  harp_operation_regrid_collocated
+ *   |-  harp_operation_regrid_collocated_dataset
+ *   |-  harp_operation_regrid_collocated_product
  *   |-  harp_operation_rename
  *   |-  harp_operation_set
- *   |-  harp_operation_smooth_collocated
+ *   |-  harp_operation_smooth_collocated_dataset
+ *   |-  harp_operation_smooth_collocated_product
  *   |-  harp_operation_sort
  *   |-  harp_operation_wrap
  */
@@ -263,7 +269,7 @@ typedef struct harp_operation_derive_variable_struct
     char *unit;
 } harp_operation_derive_variable;
 
-typedef struct harp_operation_derive_smoothed_column_collocated_struct
+typedef struct harp_operation_derive_smoothed_column_collocated_dataset_struct
 {
     harp_operation_type type;
     /* parameters */
@@ -276,7 +282,20 @@ typedef struct harp_operation_derive_smoothed_column_collocated_struct
     char *collocation_result;
     char target_dataset;
     char *dataset_dir;
-} harp_operation_derive_smoothed_column_collocated;
+} harp_operation_derive_smoothed_column_collocated_dataset;
+
+typedef struct harp_operation_derive_smoothed_column_collocated_product_struct
+{
+    harp_operation_type type;
+    /* parameters */
+    char *variable_name;
+    int num_dimensions;
+    harp_dimension_type dimension_type[HARP_MAX_NUM_DIMS];
+    char *unit;
+    char *axis_variable_name;
+    char *axis_unit;
+    char *filename;
+} harp_operation_derive_smoothed_column_collocated_product;
 
 typedef struct harp_operation_exclude_variable_struct
 {
@@ -352,7 +371,7 @@ typedef struct harp_operation_regrid_struct
     harp_variable *axis_variable;
 } harp_operation_regrid;
 
-typedef struct harp_operation_regrid_collocated_struct
+typedef struct harp_operation_regrid_collocated_dataset_struct
 {
     harp_operation_type type;
     /* parameters */
@@ -362,7 +381,17 @@ typedef struct harp_operation_regrid_collocated_struct
     char *collocation_result;
     char target_dataset;
     char *dataset_dir;
-} harp_operation_regrid_collocated;
+} harp_operation_regrid_collocated_dataset;
+
+typedef struct harp_operation_regrid_collocated_product_struct
+{
+    harp_operation_type type;
+    /* parameters */
+    harp_dimension_type dimension_type;
+    char *axis_variable_name;
+    char *axis_unit;
+    char *filename;
+} harp_operation_regrid_collocated_product;
 
 typedef struct harp_operation_rename_struct
 {
@@ -380,7 +409,7 @@ typedef struct harp_operation_set_struct
     char *value;
 } harp_operation_set;
 
-typedef struct harp_operation_smooth_collocated_struct
+typedef struct harp_operation_smooth_collocated_dataset_struct
 {
     harp_operation_type type;
     /* parameters */
@@ -392,7 +421,19 @@ typedef struct harp_operation_smooth_collocated_struct
     char *collocation_result;
     char target_dataset;
     char *dataset_dir;
-} harp_operation_smooth_collocated;
+} harp_operation_smooth_collocated_dataset;
+
+typedef struct harp_operation_smooth_collocated_product_struct
+{
+    harp_operation_type type;
+    /* parameters */
+    int num_variables;
+    char **variable_name;
+    harp_dimension_type dimension_type;
+    char *axis_variable_name;
+    char *axis_unit;
+    char *filename;
+} harp_operation_smooth_collocated_product;
 
 typedef struct harp_operation_sort_struct
 {
@@ -480,11 +521,17 @@ int harp_operation_comparison_filter_new(const char *variable_name, harp_compari
 int harp_operation_derive_variable_new(const char *variable_name, const harp_data_type *data_type, int num_dimensions,
                                        const harp_dimension_type *dimension_type, const char *unit,
                                        harp_operation **new_operation);
-int harp_operation_derive_smoothed_column_collocated_new(const char *variable_name, int num_dimensions,
-                                                         const harp_dimension_type *dimension_type, const char *unit,
-                                                         const char *axis_variable_name, const char *axis_unit,
-                                                         const char *collocation_result, const char target_dataset,
-                                                         const char *dataset_dir, harp_operation **new_operation);
+int harp_operation_derive_smoothed_column_collocated_dataset_new(const char *variable_name, int num_dimensions,
+                                                                 const harp_dimension_type *dimension_type,
+                                                                 const char *unit, const char *axis_variable_name,
+                                                                 const char *axis_unit, const char *collocation_result,
+                                                                 const char target_dataset, const char *dataset_dir,
+                                                                 harp_operation **new_operation);
+int harp_operation_derive_smoothed_column_collocated_product_new(const char *variable_name, int num_dimensions,
+                                                                 const harp_dimension_type *dimension_type,
+                                                                 const char *unit, const char *axis_variable_name,
+                                                                 const char *axis_unit, const char *filename,
+                                                                 harp_operation **new_operation);
 int harp_operation_exclude_variable_new(int num_variables, const char **variable_name, harp_operation **new_operation);
 int harp_operation_flatten_new(const harp_dimension_type dimension_type, harp_operation **new_operation);
 int harp_operation_keep_variable_new(int num_variables, const char **variable_name, harp_operation **new_operation);
@@ -501,17 +548,24 @@ int harp_operation_point_in_area_filter_new(const char *filename, int num_latitu
                                             const char *longitude_unit, harp_operation **operation);
 int harp_operation_regrid_new(harp_dimension_type dimension_type, const char *axis_variable_name, const char *axis_unit,
                               long num_values, double *values, harp_operation **new_operation);
-int harp_operation_regrid_collocated_new(harp_dimension_type dimension_type, const char *axis_variable_name,
-                                         const char *axis_unit, const char *collocation_result,
-                                         const char target_dataset, const char *dataset_dir,
-                                         harp_operation **new_operation);
+int harp_operation_regrid_collocated_dataset_new(harp_dimension_type dimension_type, const char *axis_variable_name,
+                                                 const char *axis_unit, const char *collocation_result,
+                                                 const char target_dataset, const char *dataset_dir,
+                                                 harp_operation **new_operation);
+int harp_operation_regrid_collocated_product_new(harp_dimension_type dimension_type, const char *axis_variable_name,
+                                                 const char *axis_unit, const char *filename,
+                                                 harp_operation **new_operation);
 int harp_operation_rename_new(const char *variable_name, const char *new_variable_name, harp_operation **new_operation);
 int harp_operation_set_new(const char *option, const char *value, harp_operation **new_operation);
-int harp_operation_smooth_collocated_new(int num_variables, const char **variable_name,
-                                         harp_dimension_type dimension_type, const char *axis_variable_name,
-                                         const char *axis_unit, const char *collocation_result,
-                                         const char target_dataset, const char *dataset_dir,
-                                         harp_operation **new_operation);
+int harp_operation_smooth_collocated_dataset_new(int num_variables, const char **variable_name,
+                                                 harp_dimension_type dimension_type, const char *axis_variable_name,
+                                                 const char *axis_unit, const char *collocation_result,
+                                                 const char target_dataset, const char *dataset_dir,
+                                                 harp_operation **new_operation);
+int harp_operation_smooth_collocated_product_new(int num_variables, const char **variable_name,
+                                                 harp_dimension_type dimension_type, const char *axis_variable_name,
+                                                 const char *axis_unit, const char *filename,
+                                                 harp_operation **new_operation);
 int harp_operation_sort_new(const char *variable_name, harp_operation **new_operation);
 int harp_operation_string_comparison_filter_new(const char *variable_name, harp_comparison_operator_type operator_type,
                                                 const char *value, harp_operation **new_operation);
