@@ -93,8 +93,8 @@ geopotential height derivations
    :math:`\Phi_{surf}` surface geopotential        :math:`\frac{m^2}{s^2}` `surface_geopotential {:}`
    =================== =========================== ======================= =================================
 
-   The pattern `:` for the dimensions can represent `{vertical}`, `{latitude,longitude}`, `{latitude,longitude,vertical}`,
-   `{time}`, `{time,vertical}`, `{time,latitude,longitude}`, `{time,latitude,longitude,vertical}`, or no dimensions at all.
+   The pattern `:` for the dimensions can represent `{latitude,longitude}`, `{time}`, `{time,latitude,longitude}`,
+   or no dimensions at all.
 
    .. math::
 
@@ -115,7 +115,8 @@ geopotential height derivations
    :math:`\phi`       latitude                     :math:`degN`          `latitude {:}`
    ================== ============================ ===================== =================================
 
-   The pattern `:` for the dimensions can represent `{vertical}`, `{time}`, `{time,vertical}`, or no dimensions at all.
+   The pattern `:` for the dimensions can represent `{latitude,longitude}`, `{time}`, `{time,latitude,longitude}`,
+   or no dimensions at all.
 
    This equation approximates the mean sea level gravity and radius by that of the reference ellipsoid.
 
