@@ -2704,7 +2704,6 @@ int harp_operation_string_comparison_filter_new(const char *variable_name, harp_
 
     assert(variable_name != NULL);
     assert(value != NULL);
-    assert(operator_type == operator_eq || operator_type == operator_ne);
 
     operation = (harp_operation_string_comparison_filter *)malloc(sizeof(harp_operation_string_comparison_filter));
     if (operation == NULL)
