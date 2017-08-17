@@ -3088,8 +3088,8 @@ int harp_operation_set_value_unit(harp_operation *operation, const char *unit)
             unit_converter = &((harp_operation_membership_filter *)operation)->unit_converter;
             break;
         default:
-            harp_set_error(HARP_ERROR_OPERATION, "operation has no value unit");
-            return -1;
+            /* no need to perform unit conversion */
+            return 0;
     }
 
     /* remove previous unit converter if there was one */
