@@ -11,6 +11,10 @@
 /* String to use in netCDF Conventions attribute */
 #cmakedefine HARP_CONVENTION ${HARP_CONVENTION}
 
+/* Define to enable name mangling of symbols for the built-in expat library.
+   */
+#cmakedefine HARP_EXPAT_NAME_MANGLE ${HARP_EXPAT_NAME_MANGLE}
+
 /* Current HARP format major version number. */
 #define HARP_FORMAT_VERSION_MAJOR 1
 
