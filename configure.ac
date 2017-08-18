@@ -186,6 +186,8 @@ AC_DEFINE_UNQUOTED(HARP_FORMAT_VERSION_MAJOR, [$HARP_FORMAT_VERSION_MAJOR], [Cur
 AC_DEFINE_UNQUOTED(HARP_FORMAT_VERSION_MINOR, [$HARP_FORMAT_VERSION_MINOR], [Current HARP format minor version number.])
 AC_DEFINE_UNQUOTED(HARP_CONVENTION, ["HARP-$HARP_FORMAT_VERSION_MAJOR.$HARP_FORMAT_VERSION_MINOR"], [String to use in netCDF Conventions attribute])
 
+AC_DEFINE([HARP_EXPAT_NAME_MANGLE], 1, [Define to enable name mangling of symbols for the built-in expat library.])
+
 # codadef versions
 AC_SUBST(CODADEFSH, $srcdir/codadef.sh)
 ST_CODADEF_VERSION([definitions],[ACE_FTS])

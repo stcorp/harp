@@ -57,6 +57,7 @@ endif()
 option(HARP_BUILD_PYTHON "build Python interface" OFF)
 option(HARP_WITH_HDF4 "use HDF4" ON)
 option(HARP_WITH_HDF5 "use HDF5" ON)
+set(HARP_EXPAT_NAME_MANGLE 1)
 
 find_package(BISON)
 find_package(FLEX)
