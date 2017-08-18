@@ -38,6 +38,8 @@
 #include <stddef.h> /* size_t, ptrdiff_t */
 #include <errno.h>  /* netcdf functions sometimes return system errors */
 
+#include "harp_netcdf_mangle.h"
+
 #if defined(__cplusplus)
 extern "C" {
 #endif

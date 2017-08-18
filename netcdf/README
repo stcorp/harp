@@ -7,6 +7,9 @@ only contain the code needed to support the classic netcdf3 format.
 The source files have been slightly modified in order to fit them into this
 build system. The changes that were made are:
 
+ - netcdf.h, ncx.h, and utf8proc.h include harp_netcdf_mangle.h to name mangle
+   all public symbols.
+
  - Added several casts to unsigned to eliminate 'comparison between signed
    and unsigned' warnings.
 

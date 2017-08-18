@@ -21,6 +21,14 @@
 /* Current HARP format minor version number. */
 #define HARP_FORMAT_VERSION_MINOR 0
 
+/* Define to enable name mangling of symbols for the built-in netcdf library.
+   */
+#cmakedefine HARP_NETCDF_NAME_MANGLE ${HARP_NETCDF_NAME_MANGLE}
+
+/* Define to enable name mangling of symbols for the built-in udunits2
+   library. */
+#cmakedefine HARP_UDUNITS2_NAME_MANGLE ${HARP_UDUNITS2_NAME_MANGLE}
+
 /* This is the current version of HARP */
 #cmakedefine HARP_VERSION ${HARP_VERSION}
 

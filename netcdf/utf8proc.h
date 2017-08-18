@@ -59,6 +59,8 @@
 
 #include "config.h"
 
+#include "harp_netcdf_mangle.h"
+
 #include <stdlib.h>
 #ifdef HAVE_STDBOOL_H
 #include <stdbool.h>

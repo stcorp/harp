@@ -234,6 +234,7 @@ libnetcdf_la_SOURCES = \
 	netcdf/dim.c \
 	netcdf/error.c \
 	netcdf/fbits.h \
+	netcdf/harp_netcdf_mangle.h \
 	netcdf/libvers.c \
 	netcdf/nc.c \
 	netcdf/nc.h \

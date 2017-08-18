@@ -58,6 +58,7 @@ option(HARP_BUILD_PYTHON "build Python interface" OFF)
 option(HARP_WITH_HDF4 "use HDF4" ON)
 option(HARP_WITH_HDF5 "use HDF5" ON)
 set(HARP_EXPAT_NAME_MANGLE 1)
+set(HARP_NETCDF_NAME_MANGLE 1)
 set(HARP_UDUNITS2_NAME_MANGLE 1)
 
 find_package(BISON)
@@ -411,6 +412,7 @@ set(LIBNETCDF_SOURCES
   netcdf/dim.c
   netcdf/error.c
   netcdf/fbits.h
+  netcdf/harp_netcdf_mangle.h
   netcdf/libvers.c
   netcdf/nc.c
   netcdf/nc.h

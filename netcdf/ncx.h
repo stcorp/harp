@@ -23,6 +23,7 @@
  */
 
 #include <config.h> /* output of 'configure' */
+#include "harp_netcdf_mangle.h"
 #include "rnd.h"
 #include <stddef.h> /* size_t */
 #include <errno.h>
