@@ -12,15 +12,15 @@ Supported platforms
 -------------------
 
 HARP is designed to run on most Unix-based operating systems (including Linux
-and Mac OS X) and Windows. The platforms that are supported include at least
-Linux, Windows, and Mac OS X.
+and macOS) and Windows. The platforms that are supported include at least
+Linux, Windows, and macOS.
 
 What you will need
 ------------------
 
   - The HARP package : You can choose between a source installation
-    (harp-x.y.z.tar.gz) or a binary installation (harp-x.y.z-win32.msi or
-    harp-x.y.z-win64.msi (Windows only)).
+    (``harp-x.y.z.tar.gz``) or a binary installation (``harp-x.y.z-win32.msi``
+    or ``harp-x.y.z-win64.msi`` (Windows only)).
     Note that x.y.z stands for the version number of the package.
     The source package contains the source code for the HARP components (C
     Library and command line tools) together with all documentation.
@@ -37,8 +37,8 @@ What you will need
   The following items are needed if you use the HARP source distribution:
 
   - A C compiler : Most Unix platforms come with their own C compiler so this
-    should not be a problem. For Mac OS X you should make sure you have
-    installed the Developer Tools.
+    should not be a problem. For macOS you should make sure you have installed
+    the Developer Tools.
 
   - A recent version of CODA. You will need a version of CODA that is compiled
     using the same HDF4 and HDF5 libraries as you will use for building HARP.
@@ -61,8 +61,8 @@ What you will need
     against them.
 
   - If you plan on using the Python interface you need Python version 2.7 or
-    higher, the Python 'numpy' package (version 1.4 or higher), and the 'cffi'
-    package (version 1.5.2 or higher)
+    higher, the Python ``numpy`` package (version 1.4 or higher), and the
+    ``cffi`` package (version 1.5.2 or higher)
 
 
 Using GitHub
@@ -199,9 +199,9 @@ library and executables:
         option to tell the configuration script where you have installed IDL.
         The <IDL root directory> is the root directory of your IDL
         installation. It should contain for instance the `bin` directory with
-        the idl executable and an `external` directory containing the file
-        `export.h`. Also make sure that you provide an absolute path for the
-        IDL root directory (i.e. starting with a `/`).
+        the idl executable and an ``external`` directory containing the file
+        ``export.h``. Also make sure that you provide an absolute path for the
+        IDL root directory (i.e. starting with a ``/``).
 
     ``--enable-matlab`` :
         By default HARP is built without the MATLAB interface.
@@ -219,13 +219,13 @@ library and executables:
 
     You should now call the configure script with the options that are
     appropriate for you. For instance, if you want to install HARP in the
-    `harp` subdirectory of your home directory then your invocation of
+    ``harp`` subdirectory of your home directory then your invocation of
     configure would be::
 
         % ./configure --prefix=$HOME/harp
 
  4) If this completes successfully, you are now able to build the library by
-    executing the `make` command::
+    executing the ``make`` command::
 
         % make
 
@@ -245,35 +245,66 @@ library and executables:
         % make install
 
  6) If you enabled the IDL interface then you will have to add
-    <CODA installdir>/lib/coda/idl to your DLM_PATH. You do this by setting an
-    IDL_DLM_PATH environment variable and add this setting to your system shell
-    startup script (if you don't now how to set environment variables or add
-    these to your shell startup script, please ask your system administrator).
-    The variable should be set to "<IDL_DEFAULT>" appended with the HARP DLM
-    directory. If, for instance, you have installed HARP un /usr/local then you
-    should set the ``IDL_DLM_PATH`` environment variable to
+    ``<CODA installdir>/lib/coda/idl`` to your ``DLM_PATH``. You do this by
+    setting an ``IDL_DLM_PATH`` environment variable and add this setting to
+    your system shell startup script (if you don't now how to set environment
+    variables or add these to your shell startup script, please ask your
+    system administrator).
+    The variable should be set to ``<IDL_DEFAULT>`` appended with the HARP DLM
+    directory. If, for instance, you have installed HARP un ``/usr/local``
+    then you should set the ``IDL_DLM_PATH`` environment variable to
     ``<IDL_DEFAULT>:/usr/local/lib/harp/idl``.
-    Note that you should ideally not use the IDL 'pref_set' function to set the
-    IDL_DLM_PATH. The HARP DLM file will still load, but HARP will not be able
-    to find the coda format definition files this way. You can work around this
-    by setting an explicit path to your coda definition files directory instead
-    of having HARP/CODA automatically determine this location based on the
-    IDL_DLM_PATH.
-    This is done by setting the CODA_DEFINITION environment variable. This can
-    be done outside IDL by setting the environment variable globally, but you
-    can also do this inside IDL before you call any HARP or CODA functions
-    using::
+
+    Note that you should ideally not use the IDL ``pref_set`` function to set
+    the ``IDL_DLM_PATH``. The HARP DLM file will still load, but HARP will not
+    be able to find the coda format definition files or udunits2 xml files
+    this way. You can work around this by setting the coda definition path and
+    udunits2 xml path explicitly instead of having HARP/CODA automatically
+    determine this location based on the ``IDL_DLM_PATH``.
+    See points 8 and 9 below for how to set the environment variables globally.
+    You can also set the environment variables inside IDL before you call any
+    HARP or CODA functions using e.g.::
 
         IDL> SETENV, 'CODA_DEFINITION=/path/to/codadefs/'
+        IDL> SETENV, 'UDUNITS2_XML_PATH=/path/to/udunits2.xml'
 
-    Information on how to set environment variables on Mac OS X can be found at:
-    http://developer.apple.com/mac/library/documentation/MacOSX/Conceptual/BPRuntimeConfig/Articles/EnvironmentVars.html
-
- 7) If you enabled the MATLAB interface then you should create a startup.m file
-    in a 'matlab' directory in your home directory (``~/matlab/startup.m``)
-    that contains the line::
+ 7) If you enabled the MATLAB interface then you should create a ``startup.m``
+    file in a ``matlab`` directory in your home directory
+    (``~/matlab/startup.m``) that contains the line::
 
         addpath <HARP installdir>/lib/harp/matlab
+
+ 8) Make sure that the CODA definition path is correctly set.
+    If you followed the instructions normally, then HARP and CODA should be
+    able to find the coda definition files (.codadef files) inside the
+    installation path automatically.
+    If you are getting 'unsupported product' errors then you may have to set
+    the coda definition path explicitly. You can do this by setting the
+    ``CODA_DEFINITION`` environment variable and have it point to the
+    directory that contains the .codadef files. On Linux this would be e.g.::
+
+        export CODA_DEFINITION=/usr/local/share/coda/definitions
+
+    Information on how to set environment variables on macOS can be found
+    `here <https://apple.stackexchange.com/questions/106355/setting-the-system-wide-path-environment-variable-in-mavericks>`_.
+
+    Also make sure that you do not already have a CODA_DEFINITION
+    environment variable set that points to a different location than where
+    the .codadef files that come with HARP are located.
+
+ 9) Make sure that the udunits2 xml path is correctly set.
+    If you followed the instructions normally, then HARP should be able to
+    find the udunits2 xml files inside the installation path automatically.
+    If you are getting 'invalid unit' errors then you may have to set the
+    udunits2 xml path explicitly. You can do this by setting the
+    ``UDUNITS2_XML_PATH`` environment variable and have it point to the
+    ``udunits2.xml`` file inside the installation path.
+    On Linux this would be e.g.::
+
+        export UDUNITS2_XML_PATH=/usr/local/share/harp/udunits2.xml
+
+    Information on how to set environment variables on macOS can be found
+    `here <https://apple.stackexchange.com/questions/106355/setting-the-system-wide-path-environment-variable-in-mavericks>`_.
 
 
 Installing the binary package (Windows)
@@ -284,37 +315,39 @@ which will guide you through the installation process. Make sure to install
 HARP in a directory that does not have any spaces in its path. Otherwise
 you might encounter problems with e.g. the Python interface.
 
-For Python make sure that the 'bin' directory of your HARP installation is in
-your PATH setting. And then make sure to add the Lib/site-packages directory
-to your PYTHONPATH (or copy the harp python package that is inside it to a
-location that is already in your Python module path).
+For Python make sure that the ``bin`` directory of your HARP installation is
+in your ``PATH`` setting. And then make sure to add the ``Lib/site-packages``
+directory to your ``PYTHONPATH`` (or copy the harp python package that is
+inside it to a location that is already in your Python module path).
 
-For IDL you will have to add <HARP installdir>\idl to your DLM_PATH.
-You do this by setting an IDL_DLM_PATH environment variable.
-On Windows open the 'System' control panel of your Windows operating system and
-goto the 'Advanced' tab. Then click on 'Environment Variables' and create a new
-system variable with the name ``IDL_DLM_PATH`` and value
+For IDL you will have to add ``<HARP installdir>\idl`` to your ``DLM_PATH``.
+You do this by setting an ``IDL_DLM_PATH`` environment variable.
+On Windows open the 'System' control panel of your Windows operating system
+and goto the 'Advanced' tab. Then click on 'Environment Variables' and create a
+new system variable with the name ``IDL_DLM_PATH`` and value
 ``<IDL_DEFAULT>;C:\HARP\lib``.
-If you have installed HARP in a location different from C:\HARP then replace
-this part in the value by the installation directory you chose when installing
-HARP.
-Note that you should ideally not use the IDL 'pref_set' function to set the
-IDL_DLM_PATH. The HARP DLM file will still load, but HARP will not be able to
-find the coda format definition files this way. You can work around this by
-setting an explicit path to your coda definition files directory instead of
-having HARP/CODA automatically determine this location based on the
-IDL_DLM_PATH.
-This is done by setting the CODA_DEFINITION environment variable. This can be
-done outside IDL by setting the environment variable globally, but you can also
-do this inside IDL before you call any HARP or CODA functions using::
+If you have installed HARP in a location different from ``C:\HARP`` then
+replace this part in the value by the installation directory you chose when
+installing HARP.
+Note that you should ideally not use the IDL ``pref_set`` function to set the
+``IDL_DLM_PATH``. The HARP DLM file will still load, but HARP will not be able
+to find the coda format definition files or udunits2 xml files this way.
+You can work around this by setting the coda definition path and udunits2
+xml path explicitly instead of having HARP/CODA automatically determine this
+location based on the ``IDL_DLM_PATH``.
+This is done by setting the ``CODA_DEFINITION`` and ``UDUNITS2_XML_PATH``
+environment variables. This can be done outside IDL by setting the environment
+variable globally, but you can also do this inside IDL before you call any HARP
+or CODA functions using::
 
     IDL> SETENV, 'CODA_DEFINITION=/path/to/codadefs/'
+    IDL> SETENV, 'UDUNITS2_XML_PATH=/path/to/udunits2.xml'
 
 For MATLAB you will have to start MATLAB and goto the 'Set Path...' menu item
-in the 'File' menu. Here you should add the directory 'C:\HARP\matlab'. If you
-have installed HARP in a location different from C:\HARP then replace this part
-of the directory by the installation directory you had chosen when you
-installed HARP.
+in the 'File' menu. Here you should add the directory ``C:\HARP\matlab``. If
+you have installed HARP in a location different from ``C:\HARP`` then replace
+this part of the directory by the installation directory you had chosen when
+you installed HARP.
 
 Note: The binary installer for Windows comes with DLLs for all dependencies,
 which are CODA, HDF4, HDF5, and their dependencies.
@@ -323,7 +356,7 @@ Building the source package (Windows)
 -------------------------------------
 
 To build the source package, make sure to download the official HARP source
-package, which is named harp-x.y.z.tar.gz. Don't use the packages called
+package, which is named ``harp-x.y.z.tar.gz``. Don't use the packages called
 'Source code' from GitHub as these are contents of the git respository (see
 'Using GitHub' above).
 
@@ -331,12 +364,11 @@ The official and only supported build system on Windows is CMake.
 You will need to have builds of CODA, HDF4, HDF5 (and their dependencies)
 available as well in order to build HARP. The locations of include files
 and libraries for the third-party dependencies can be set using
-<package>_INCLUDE_DIR and <package>_LIBRARY_DIR CMake options.
+``<package>_INCLUDE_DIR`` and ``<package>_LIBRARY_DIR`` CMake options.
 
-The generation of the Windows binary installer is done using the CPack
-and WIX. So, in order to recreate the Windows binary installer, you will
-also have to make sure that you have CMake (3.0 or later) and WIX
-installed.
+The generation of the Windows binary installer is done using CPack and WIX.
+So, in order to recreate the Windows binary installer, you will also have to
+make sure that you have CMake (3.0 or later) and WIX installed.
 
 Documentation location
 ----------------------
