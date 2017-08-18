@@ -4,17 +4,21 @@ These files are taken from udunits, version 2.2.24.
 The source files have been slightly modified in order to fit them into this
 build system. The changes that were made are:
 
+ - converter.h and udunits2.h include harp_udunits2_mangle.h to name mangle
+   all public symbols.
+
  - scanner.l and parser.y have been renamed to utscanner.l and utparser.y
 
- - added options '%option prefix="ut"' and '%option nounput' to utscanner.l
+ - added options '%option prefix="harp_ut"' and '%option nounput' to
+   utscanner.l
 
  - scanner.c is no longer included by parser.y resulting in the following
    additional changes:
    - _restartScanner is now a global variable named utrestartScanner
    - _isTime is now a non-static function named utisTime
    - #define yyparse utparse
-   - #define yylex utlex
-   - #define yyerror uterror
+   - #define yylex harp_utlex
+   - #define yyerror harp_uterror
    - added ut_get_bufferpos function (returning yy_c_buf_p  - buf->yy_ch_buf)
    - added several function declarations to prevent compiler warnings
 

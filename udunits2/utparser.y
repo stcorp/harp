@@ -15,10 +15,10 @@
 
 /*LINTLIBRARY*/
 
+#define yylex       harp_utlex
+#define yyerror     harp_uterror
 #define yymaxdepth	utmaxdepth
 #define yyparse     utparse
-#define yylex       utlex
-#define yyerror     uterror
 #define yylval		utlval
 #define yychar		utchar
 #define yypact		utpact
@@ -83,7 +83,7 @@ extern int		utisTime;        /* product_exp is time? */
 YY_BUFFER_STATE ut_scan_string(const char *);
 void ut_delete_buffer(YY_BUFFER_STATE);
 int ut_get_bufferpos(YY_BUFFER_STATE);
-int utlex(void);
+int yylex(void);
 ut_status utGetPrefixByName(ut_system* system, const char* string,
                             double* value, size_t* len);
 ut_status utGetPrefixBySymbol(ut_system* system, const char* string,

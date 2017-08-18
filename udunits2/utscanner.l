@@ -9,7 +9,7 @@
  * lex(1) specification for tokens for the Unidata units package, UDUNITS2.
  */
 
-%option prefix="ut"
+%option prefix="harp_ut"
 %option noyywrap
 %option noinput
 %option nounput

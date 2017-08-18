@@ -14,6 +14,8 @@
 
 #include <stddef.h>
 
+#include "harp_udunits2_mangle.h"
+
 #ifdef __cplusplus
 extern "C" {
 #endif

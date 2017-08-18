@@ -11,6 +11,8 @@
 #include <stdarg.h>
 #include <stddef.h>
 
+#include "harp_udunits2_mangle.h"
+
 #ifdef _MSC_VER
 #include <stdlib.h>
 #include <stdio.h>

@@ -280,6 +280,7 @@ libudunits2_la_SOURCES = \
 	udunits2/converter.h \
 	udunits2/error.c \
 	udunits2/formatter.c \
+	udunits2/harp_udunits2_mangle.h \
 	udunits2/idToUnitMap.c \
 	udunits2/idToUnitMap.h \
 	udunits2/utparser.y \
@@ -297,7 +298,7 @@ libudunits2_la_SOURCES = \
 	udunits2/unitToIdMap.h \
 	udunits2/ut_free_system.c \
 	udunits2/xml.c
-libudunits2_la_CPPFLAGS = -Iudunits2 -I$(srcdir)/udunits2 -Iexpat -I$(srcdir)/expat -DDEFAULT_UDUNITS2_XML_PATH='"$(pkgdatadir)/udunits2.xml"'
+libudunits2_la_CPPFLAGS = -Iudunits2 -I$(srcdir)/udunits2 -Iexpat -I$(srcdir)/expat -DDEFAULT_UDUNITS2_XML_PATH='"$(pkgdatadir)/udunits2.xml"' -DHARP_UDUNITS2_NAME_MANGLE
 libudunits2_la_LDFLAGS = -no-undefined
 BUILT_SOURCES += udunits2/utparser.h
 pkgdata_DATA = \

@@ -58,6 +58,7 @@ option(HARP_BUILD_PYTHON "build Python interface" OFF)
 option(HARP_WITH_HDF4 "use HDF4" ON)
 option(HARP_WITH_HDF5 "use HDF5" ON)
 set(HARP_EXPAT_NAME_MANGLE 1)
+set(HARP_UDUNITS2_NAME_MANGLE 1)
 
 find_package(BISON)
 find_package(FLEX)
@@ -377,6 +378,7 @@ set(LIBUDUNITS2_SOURCES
   udunits2/converter.h
   udunits2/error.c
   udunits2/formatter.c
+  udunits2/harp_udunits2_mangle.h
   udunits2/idToUnitMap.c
   udunits2/idToUnitMap.h
   udunits2/prefix.c
