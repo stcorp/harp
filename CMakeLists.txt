@@ -59,7 +59,14 @@ option(HARP_WITH_HDF4 "use HDF4" ON)
 option(HARP_WITH_HDF5 "use HDF5" ON)
 set(HARP_EXPAT_NAME_MANGLE 1)
 set(HARP_NETCDF_NAME_MANGLE 1)
+# Note that we also add an explicit -D option for HARP_UDUNITS2_NAME_MANGLE, since the udunits2 sources do not include config.h
 set(HARP_UDUNITS2_NAME_MANGLE 1)
+
+# settings for expat
+set(XML_NS 1)
+set(XML_DTD 1)
+set(XML_LARGE_SIZE 1)
+set(XML_CONTEXT_BYTES 1024)
 
 find_package(BISON)
 find_package(FLEX)
@@ -351,14 +358,7 @@ if(HARP_WITH_HDF5)
   set(LIBHARP_SOURCES ${LIBHARP_SOURCES} ${LIBHARP_HDF5_FILES})
 endif(HARP_WITH_HDF5)
 
-
-file(MAKE_DIRECTORY ${CMAKE_CURRENT_BINARY_DIR}/udunits2)
-BISON_TARGET(utparser ${CMAKE_CURRENT_SOURCE_DIR}/udunits2/utparser.y ${CMAKE_CURRENT_BINARY_DIR}/udunits2/utparser.c)
-FLEX_TARGET(utscanner ${CMAKE_CURRENT_SOURCE_DIR}/udunits2/utscanner.l ${CMAKE_CURRENT_BINARY_DIR}/utscanner.c)
-add_flex_bison_dependency(utscanner utparser)
-include_directories(${CMAKE_CURRENT_BINARY_DIR}/udunits2)
-
-set(LIBUDUNITS2_SOURCES
+set(LIBEXPAT_SOURCES
   expat/xmlparse.c
   expat/xmlrole.c
   expat/xmltok.c
@@ -374,7 +374,15 @@ set(LIBUDUNITS2_SOURCES
   expat/utf8tab.h
   expat/xmlrole.h
   expat/xmltok.h
-  expat/xmltok_impl.h
+  expat/xmltok_impl.h)
+
+file(MAKE_DIRECTORY ${CMAKE_CURRENT_BINARY_DIR}/udunits2)
+BISON_TARGET(utparser ${CMAKE_CURRENT_SOURCE_DIR}/udunits2/utparser.y ${CMAKE_CURRENT_BINARY_DIR}/udunits2/utparser.c)
+FLEX_TARGET(utscanner ${CMAKE_CURRENT_SOURCE_DIR}/udunits2/utscanner.l ${CMAKE_CURRENT_BINARY_DIR}/utscanner.c)
+add_flex_bison_dependency(utscanner utparser)
+include_directories(${CMAKE_CURRENT_BINARY_DIR}/udunits2)
+
+set(LIBUDUNITS2_SOURCES
   udunits2/converter.c
   udunits2/converter.h
   udunits2/error.c
@@ -440,8 +448,8 @@ install(FILES ${CMAKE_CURRENT_BINARY_DIR}/harp.h DESTINATION include)
 
 set(UDUNITS2_XML_DIR_RELATIVE share/harp)
 set(UDUNITS2_XML_DIR ${CMAKE_INSTALL_PREFIX}/${UDUNITS2_XML_DIR_RELATIVE})
-add_definitions(-DDEFAULT_UDUNITS2_XML_PATH="${UDUNITS2_XML_DIR}/udunits2.xml")
-add_library(harp SHARED ${LIBHARP_SOURCES} ${LIBUDUNITS2_SOURCES} ${LIBNETCDF_SOURCES})
+add_definitions(-DDEFAULT_UDUNITS2_XML_PATH="${UDUNITS2_XML_DIR}/udunits2.xml" -DHARP_UDUNITS2_NAME_MANGLE)
+add_library(harp SHARED ${LIBHARP_SOURCES} ${LIBUDUNITS2_SOURCES} ${LIBNETCDF_SOURCES} ${LIBEXPAT_SOURCES})
 target_link_libraries(harp ${CODA_LIBRARIES} ${HDF4_LIBRARIES} ${HDF5_LIBRARIES})
 set_target_properties(harp PROPERTIES
   VERSION ${LIBHARP_MAJOR}.${LIBHARP_MINOR}.${LIBHARP_REVISION}
