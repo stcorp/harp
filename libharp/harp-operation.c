@@ -3099,6 +3099,12 @@ int harp_operation_set_value_unit(harp_operation *operation, const char *unit)
         *unit_converter = NULL;
     }
 
+    /* if the operation did not have a unit then we don't have to perform a unit conversion */
+    if (target_unit == NULL)
+    {
+        return 0;
+    }
+
     if (harp_unit_compare(unit, target_unit) == 0)
     {
         /* no need to perform unit conversion */
