@@ -32,6 +32,9 @@
   The first part of the operation name now reflects the item in the
   product and the second part reflects the parameter that is provided.
 
+* Improved performance of point/area vs. area overlap operations by first
+  comparing against the bounding box of a polygon.
+
 * Added sort() and area_inside_area() operations.
 
 * The derive() operation can now be used without dimension specification

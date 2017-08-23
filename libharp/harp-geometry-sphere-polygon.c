@@ -38,15 +38,15 @@
 #include <string.h>
 
 /* check whether a point is within the lat/lon bounds of a polygon */
-static int spherical_polygon_bounds_contains_point(const harp_spherical_polygon *polygon,
-                                                   const harp_spherical_point *point)
+static int spherical_polygon_bounds_contains_any_points(const harp_spherical_polygon *polygon, int num_points,
+                                                        const harp_spherical_point *point)
 {
     double min_lat, max_lat, lat;
     double min_lon, max_lon, lon;
     double ref_lon;
     int i;
 
-    if (polygon->numberofpoints == 0)
+    if (polygon->numberofpoints == 0 || num_points == 0)
     {
         return 0;
     }
@@ -126,20 +126,28 @@ static int spherical_polygon_bounds_contains_point(const harp_spherical_polygon 
         /* (if we cross the equator then we don't know which pole is covered => take whole earth as bounding box) */
     }
 
-    lon = point->lon;
-    lat = point->lat;
-
-    if (lon < min_lon)
+    for (i = 0; i < num_points; i++)
     {
-        lon += 2.0 * M_PI;
-    }
-    else if (lon > max_lon)
-    {
-        lon -= 2.0 * M_PI;
+        lon = point[i].lon;
+        lat = point[i].lat;
+
+        if (lon < min_lon)
+        {
+            lon += 2.0 * M_PI;
+        }
+        else if (lon > max_lon)
+        {
+            lon -= 2.0 * M_PI;
+        }
+
+        if (HARP_GEOMETRY_FPle(min_lat, lat) && HARP_GEOMETRY_FPle(lat, max_lat) &&
+            HARP_GEOMETRY_FPle(min_lon, lon) && HARP_GEOMETRY_FPle(lon, max_lon))
+        {
+            return 1;
+        }
     }
 
-    return (HARP_GEOMETRY_FPle(min_lat, lat) && HARP_GEOMETRY_FPle(lat, max_lat) &&
-            HARP_GEOMETRY_FPle(min_lon, lon) && HARP_GEOMETRY_FPle(lon, max_lon));
+    return 0;
 }
 
 int harp_spherical_polygon_equal(const harp_spherical_polygon *polygon_a, const harp_spherical_polygon *polygon_b,
@@ -436,7 +444,7 @@ int harp_spherical_polygon_contains_point(const harp_spherical_polygon *polygon,
     harp_spherical_line sl;
     int result = 0;     /* false */
 
-    if (!spherical_polygon_bounds_contains_point(polygon, point))
+    if (!spherical_polygon_bounds_contains_any_points(polygon, 1, point))
     {
         /* point is outside the lat/lon bounds of the polygon => return false */
         return 0;
@@ -713,6 +721,14 @@ int8_t harp_spherical_polygon_spherical_polygon_relationship(const harp_spherica
     const int8_t sp_ct = (int8_t)(1 << HARP_GEOMETRY_LINE_POLY_CONTAINED);
     const int8_t sp_ov = (int8_t)(1 << HARP_GEOMETRY_LINE_POLY_OVERLAP);
 
+    if (!recheck)
+    {
+        if (!spherical_polygon_bounds_contains_any_points(polygon_a, polygon_b->numberofpoints, polygon_b->point))
+        {
+            return HARP_GEOMETRY_POLY_SEPARATE;
+        }
+    }
+
     for (i = 0; i < polygon_b->numberofpoints; i++)
     {
         harp_spherical_polygon_get_segment(&sl, polygon_b, i);
@@ -758,6 +774,13 @@ int harp_spherical_polygon_overlapping(const harp_spherical_polygon *polygon_a, 
 {
     int8_t relationship;
 
+    if (!spherical_polygon_bounds_contains_any_points(polygon_a, polygon_b->numberofpoints, polygon_b->point))
+    {
+        /* No overlap */
+        *polygons_are_overlapping = 0;
+        return 0;
+    }
+
     if (harp_spherical_polygon_check(polygon_a) != 1)
 
     {
@@ -796,6 +819,14 @@ int harp_spherical_polygon_overlapping_fraction(const harp_spherical_polygon *po
                                                 int *polygons_are_overlapping, double *overlapping_fraction)
 {
     int8_t relationship;
+
+    if (!spherical_polygon_bounds_contains_any_points(polygon_a, polygon_b->numberofpoints, polygon_b->point))
+    {
+        /* No overlap */
+        *overlapping_fraction = 0;
+        *polygons_are_overlapping = 0;
+        return 0;
+    }
 
     if (harp_spherical_polygon_check(polygon_a) != 1)
 
