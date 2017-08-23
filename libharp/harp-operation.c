@@ -356,7 +356,8 @@ static int eval_membership(harp_operation_membership_filter *operation, harp_dat
 
 static int eval_point_distance(harp_operation_point_distance_filter *operation, harp_spherical_point *point)
 {
-    return (harp_spherical_point_distance_in_meters(&operation->point, point) <= operation->distance);
+    return (harp_spherical_point_distance(&operation->point, point) * CONST_EARTH_RADIUS_WGS84_SPHERE <=
+            operation->distance);
 }
 
 static int eval_point_in_area(harp_operation_point_in_area_filter *operation, harp_spherical_point *point)

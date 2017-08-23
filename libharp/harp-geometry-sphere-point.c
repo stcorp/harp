@@ -213,13 +213,6 @@ double harp_spherical_point_distance(const harp_spherical_point *pointp, const h
     }
 }
 
-/* Calculate the surface_distance between two points
- * on the surface of a sphere (having the Earth radius) */
-double harp_spherical_point_distance_in_meters(const harp_spherical_point *pointp, const harp_spherical_point *pointq)
-{
-    return harp_spherical_point_distance(pointp, pointq) * CONST_EARTH_RADIUS_WGS84_SPHERE;
-}
-
 /* Obtain a point b that is a distance 'radius' [m] away and with given azimuth angle from point a.
  * The azimuth angle is defined clockwise when looking downward. */
 int harp_spherical_point_at_distance_and_angle(const harp_spherical_point *point_a, double radius,
@@ -318,7 +311,7 @@ void harp_spherical_point_array_delete(harp_spherical_point_array *point_array)
 }
 
 
-/** Calculate the distance between two points on the surface of the Earth meters
+/** Calculate the distance between two points on the surface of the Earth in meters
  * \ingroup harp_geometry
  * This function assumes a spherical earth
  * \param latitude_a Latitude of first point
@@ -343,7 +336,7 @@ LIBHARP_API int harp_geometry_get_point_distance(double latitude_a, double longi
     harp_spherical_point_check(&point_a);
     harp_spherical_point_check(&point_b);
 
-    *distance = harp_spherical_point_distance_in_meters(&point_a, &point_b);
+    *distance = harp_spherical_point_distance(&point_a, &point_b) * CONST_EARTH_RADIUS_WGS84_SPHERE;
 
     return 0;
 }

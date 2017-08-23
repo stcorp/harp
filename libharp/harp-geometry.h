@@ -178,7 +178,6 @@ void harp_spherical_point_from_vector3d(harp_spherical_point *point, const harp_
 void harp_spherical_point_rad_from_deg(harp_spherical_point *point);
 void harp_spherical_point_deg_from_rad(harp_spherical_point *point);
 double harp_spherical_point_distance(const harp_spherical_point *pointp, const harp_spherical_point *pointq);
-double harp_spherical_point_distance_in_meters(const harp_spherical_point *pointp, const harp_spherical_point *pointq);
 int harp_spherical_point_at_distance_and_angle(const harp_spherical_point *point_a, double radius,
                                                double azimuth_angle, harp_spherical_point *point_b);
 
@@ -212,8 +211,6 @@ void harp_spherical_line_spherical_line_intersection_point(const harp_spherical_
                                                            harp_spherical_point *point_u);
 int harp_spherical_polygon_get_segment(harp_spherical_line *line, const harp_spherical_polygon *polygon, int32_t i);
 double harp_spherical_line_spherical_point_distance(const harp_spherical_line *line, const harp_spherical_point *point);
-double harp_spherical_line_spherical_point_distance_in_meters(const harp_spherical_line *line,
-                                                              const harp_spherical_point *point);
 
 /* Euler rotation functions */
 int harp_euler_transformation_equal(const harp_euler_transformation *euler1, const harp_euler_transformation *euler2);
@@ -257,8 +254,6 @@ int harp_spherical_polygon_intersect(const harp_spherical_polygon *polygon_a, co
                                      harp_spherical_polygon **polygon_intersect, int *has_intersect);
 double harp_spherical_polygon_spherical_point_distance(const harp_spherical_polygon *polygon,
                                                        const harp_spherical_point *point);
-double harp_spherical_polygon_spherical_point_distance_in_meters(const harp_spherical_polygon *polygon,
-                                                                 const harp_spherical_point *point);
 
 /* Additional functions. */
 

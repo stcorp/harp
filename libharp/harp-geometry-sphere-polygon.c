@@ -1255,37 +1255,6 @@ double harp_spherical_polygon_spherical_point_distance(const harp_spherical_poly
     return d_nearest;
 }
 
-/* Calculate the distance to the nearest line segment of the polygon */
-double harp_spherical_polygon_spherical_point_distance_in_meters(const harp_spherical_polygon *polygon,
-                                                                 const harp_spherical_point *point)
-{
-    const double Earth_radius = (double)(CONST_EARTH_RADIUS_WGS84_SPHERE);
-    harp_spherical_line linei;
-    int32_t i;
-    double d;
-    double d_nearest = 10.0 * Earth_radius;
-
-    for (i = 0; i < polygon->numberofpoints; i++)
-    {
-        /* Grab line segment from polygon */
-        harp_spherical_line_segment_from_polygon(&linei, polygon, i);
-
-        /* Calculate distance point-line */
-        d = harp_spherical_line_spherical_point_distance_in_meters(&linei, point);
-        if (d < d_nearest)
-        {
-            d_nearest = d;
-        }
-    }
-
-    if (d_nearest >= 10.0 * Earth_radius)
-    {
-        d_nearest = harp_nan();
-    }
-
-    return d_nearest;
-}
-
 /** Determine whether a point is in an area on the surface of the Earth
  * \ingroup harp_geometry
  * This function assumes a spherical earth
