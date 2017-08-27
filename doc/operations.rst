@@ -11,7 +11,11 @@ Comparison filter
 
     ``variable operator value [unit]``
 
-Exclude measurements for which the comparison evaluates to false.
+Filter a dimension for all variables in the product such that items for which
+the value of the provided variable does not match the expression get excluded.
+The variable should be one dimensional or two dimensional (with the first
+dimension being time). The dimension that gets filtered is the last dimension
+of the referenced variable.
 
 Supported operators are:
 
@@ -368,8 +372,10 @@ Supported functions:
     	this dimension of the referenced variable.
 
     ``valid(variable)``
-        Exclude invalid values of the specified variable (values
-        outside the valid range of the variable, or NaN).
+        Filter a dimension for all variables in the product such that
+        invalid values for the variable provided as parameter get excluded
+        (values outside the valid range of the variable, or NaN).
+        This operation is executed similar to a comparison filter.
 
     ``wrap(variable [unit], minimum, maximum)``
         Wrap the values of the variable to the range given by minimum
