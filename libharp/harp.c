@@ -730,7 +730,8 @@ LIBHARP_API int harp_import_product_metadata(const char *filename, harp_product_
             break;
         default:
             harp_product_metadata_delete(metadata);
-            harp_set_error(HARP_ERROR_UNSUPPORTED_PRODUCT, "unsupported file format for %s", filename);
+            harp_set_error(HARP_ERROR_UNSUPPORTED_PRODUCT,
+                           "extraction of global attributes only supported for HARP products");
             return -1;
     }
 
