@@ -303,8 +303,6 @@ Supported functions:
         Available options are:
 
         ``afgl86``
-            Determine how to deal with interpolation of target grid values
-            that fall outside the source grid range.
             Possible values are:
 
             - ``disabled`` (default) disable the use of AFGL86 climatology
