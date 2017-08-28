@@ -371,7 +371,8 @@ axis-variable (see also <code class="docutils literal"><span class="pre">regrid(
 <dd>Mark the specified variable(s) for exclusion from the
 ingested product. All variables marked for exclusion
 will be excluded from the ingested product, all other
-variables will be kept.</dd>
+variables will be kept.
+Variables that do not exist will be ignored.</dd>
 <dt><code class="docutils literal"><span class="pre">flatten(dimension)</span></code></dt>
 <dd><p class="first">Flatten a product for a certain dimension by collapsing the
 given dimension into the time dimension. The time dimension
@@ -394,7 +395,9 @@ Example:</p>
 <dd>Mark the specified variable(s) for inclusion in the
 ingested product. All variables marked for inclusion
 will be kept in the ingested product, all other
-variables will be excluded.</dd>
+variables will be excluded.
+Trying to keep a variable that does not exist will
+result in an error.</dd>
 <dt><code class="docutils literal"><span class="pre">longitude_range(minimum</span> <span class="pre">[unit],</span> <span class="pre">maximum</span> <span class="pre">[unit])</span></code></dt>
 <dd><p class="first">Exclude measurements of which the longitude of the
 measurement location falls outside the specified range.

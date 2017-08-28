@@ -197,6 +197,7 @@ Supported functions:
         ingested product. All variables marked for exclusion
         will be excluded from the ingested product, all other
         variables will be kept.
+        Variables that do not exist will be ignored.
 
     ``flatten(dimension)``
         Flatten a product for a certain dimension by collapsing the
@@ -218,6 +219,8 @@ Supported functions:
         ingested product. All variables marked for inclusion
         will be kept in the ingested product, all other
         variables will be excluded.
+        Trying to keep a variable that does not exist will
+        result in an error.
 
     ``longitude_range(minimum [unit], maximum [unit])``
         Exclude measurements of which the longitude of the
