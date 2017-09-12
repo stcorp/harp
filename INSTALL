@@ -60,9 +60,10 @@ What you will need
     additional libraries zlib, and szlib depending on whether HDF5 was build
     against them.
 
-  - If you plan on using the Python interface you need Python version 2.7 or
-    higher, the Python ``numpy`` package (version 1.4 or higher), and the
-    ``cffi`` package (version 1.5.2 or higher)
+  - If you plan on using the Python interface you need either Python 2
+    (version 2.7 or higher) or Python 3 (version 3.4 or higher).
+    You will also need the Python packages ``numpy`` (version 1.4 or higher)
+    and ``cffi`` (version 1.5.2 or higher).
 
 
 Using GitHub
@@ -189,6 +190,18 @@ library and executables:
         If ``./configure`` complains that it can't find the ``hdf5.h`` include
         file, pass this option to ``./configure`` with the location of this
         include file.
+
+    ``--enable-python`` :
+        By default CODA is built without the Python interface. Use this option
+        to enable building of the interface to Python. If you enable the Python
+        interface then make sure you have installed the numpy and cffi packages
+        for Python.
+
+    ``PYTHON=<Python executable>`` :
+        If you want to build the Python interface you should also use this option
+        to tell the configuration script where your Python executable is located
+        (e.g. PYTHON=/usr/bin/python). Make sure that you provide an absolute path
+        for the Python executable (i.e. the path should start with a '/').
 
     ``--enable-idl`` :
         By default HARP is built without the IDL interface.
