@@ -862,11 +862,6 @@ int harp_import_global_attributes_netcdf(const char *filename, double *datetime_
     int ncid;
     int i;
 
-    if (datetime_start == NULL && datetime_stop == NULL)
-    {
-        return 0;
-    }
-
     if (filename == NULL)
     {
         harp_set_error(HARP_ERROR_INVALID_ARGUMENT, "filename is NULL (%s:%u)", __FILE__, __LINE__);
