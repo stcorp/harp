@@ -770,6 +770,236 @@ int harp_import_hdf4(const char *filename, harp_product **product)
     return 0;
 }
 
+static int update_dimensions_with_variable(long dimension[], int32 sds_id)
+{
+    char hdf4_name[MAX_HDF4_NAME_LENGTH + 1];
+    int32 hdf4_dimension[MAX_HDF4_VAR_DIMS];
+    int32 hdf4_data_type;
+    int32 hdf4_num_dimensions;
+    int32 hdf4_dont_care;
+    int dims_num_dimensions;
+    hdf4_dimension_type dims_dimension_type[MAX_HDF4_VAR_DIMS];
+    long i;
+
+    if (SDgetinfo(sds_id, hdf4_name, &hdf4_num_dimensions, hdf4_dimension, &hdf4_data_type, &hdf4_dont_care) != 0)
+    {
+        harp_set_error(HARP_ERROR_HDF4, NULL);
+        return -1;
+    }
+    assert(hdf4_num_dimensions > 0);
+
+    /* Determine HARP number of dimensions, dimension types, and dimension lengths. */
+    if (read_dimensions(sds_id, &dims_num_dimensions, dims_dimension_type) != 0)
+    {
+        harp_add_error_message(" (dataset '%s')", hdf4_name);
+        return -1;
+    }
+
+    if (hdf4_num_dimensions != dims_num_dimensions)
+    {
+        harp_set_error(HARP_ERROR_IMPORT, "dataset '%s' has %d dimensions; expected %d", hdf4_name,
+                       hdf4_num_dimensions, dims_num_dimensions);
+        return -1;
+    }
+
+    for (i = 0; i < dims_num_dimensions; i++)
+    {
+        switch (dims_dimension_type[i])
+        {
+            case hdf4_dimension_time:
+                dimension[harp_dimension_time] = hdf4_dimension[i];
+                break;
+            case hdf4_dimension_latitude:
+                dimension[harp_dimension_latitude] = hdf4_dimension[i];
+                break;
+            case hdf4_dimension_longitude:
+                dimension[harp_dimension_longitude] = hdf4_dimension[i];
+                break;
+            case hdf4_dimension_vertical:
+                dimension[harp_dimension_vertical] = hdf4_dimension[i];
+                break;
+            case hdf4_dimension_spectral:
+                dimension[harp_dimension_spectral] = hdf4_dimension[i];
+                break;
+            case hdf4_dimension_independent:
+            case hdf4_dimension_string:
+            case hdf4_dimension_scalar:
+                /* ignore */
+                break;
+        }
+    }
+    return 0;
+}
+
+int harp_import_global_attributes_hdf4(const char *filename, double *datetime_start, double *datetime_stop,
+                                       long dimension[], char **source_product)
+{
+    char *attr_source_product = NULL;
+    harp_scalar attr_datetime_start;
+    harp_scalar attr_datetime_stop;
+    harp_data_type attr_data_type;
+    long attr_dimension[HARP_NUM_DIM_TYPES];
+    int32 hdf4_index;
+    int32 sd_id;
+    int i;
+
+    if (filename == NULL)
+    {
+        harp_set_error(HARP_ERROR_INVALID_ARGUMENT, "filename is NULL (%s:%u)", __FILE__, __LINE__);
+        return -1;
+    }
+
+    sd_id = SDstart(filename, DFACC_READ);
+    if (sd_id == -1)
+    {
+        harp_set_error(HARP_ERROR_HDF4, NULL);
+        harp_add_error_message(" (%s)", filename);
+        return -1;
+    }
+
+    if (verify_product(sd_id) != 0)
+    {
+        SDend(sd_id);
+        return -1;
+    }
+
+    if (datetime_start != NULL)
+    {
+        hdf4_index = SDfindattr(sd_id, "datetime_start");
+        if (hdf4_index >= 0)
+        {
+            if (read_numeric_attribute(sd_id, hdf4_index, &attr_data_type, &attr_datetime_start) != 0)
+            {
+                SDend(sd_id);
+                return -1;
+            }
+
+            if (attr_data_type != harp_type_double)
+            {
+                harp_set_error(HARP_ERROR_IMPORT, "attribute 'datetime_start' has invalid type");
+                SDend(sd_id);
+                return -1;
+            }
+        }
+        else
+        {
+            attr_datetime_start.double_data = harp_mininf();
+        }
+    }
+
+    if (datetime_stop != NULL)
+    {
+        hdf4_index = SDfindattr(sd_id, "datetime_stop");
+        if (hdf4_index >= 0)
+        {
+            if (read_numeric_attribute(sd_id, hdf4_index, &attr_data_type, &attr_datetime_start) != 0)
+            {
+                SDend(sd_id);
+                return -1;
+            }
+
+            if (attr_data_type != harp_type_double)
+            {
+                harp_set_error(HARP_ERROR_IMPORT, "attribute 'datetime_stop' has invalid type");
+                SDend(sd_id);
+                return -1;
+            }
+        }
+        else
+        {
+            attr_datetime_stop.double_data = harp_plusinf();
+        }
+    }
+
+    if (dimension != NULL)
+    {
+        int32 hdf4_num_attributes;
+        int32 num_sds;
+
+        for (i = 0; i < HARP_NUM_DIM_TYPES; i++)
+        {
+            attr_dimension[i] = -1;
+        }
+
+        if (SDfileinfo(sd_id, &num_sds, &hdf4_num_attributes) != 0)
+        {
+            harp_set_error(HARP_ERROR_HDF4, NULL);
+            SDend(sd_id);
+            return -1;
+        }
+
+        for (i = 0; i < num_sds; i++)
+        {
+            int32 sds_id;
+
+            sds_id = SDselect(sd_id, i);
+            if (sds_id == -1)
+            {
+                harp_set_error(HARP_ERROR_HDF4, NULL);
+                return -1;
+            }
+
+            if (update_dimensions_with_variable(attr_dimension, sds_id) != 0)
+            {
+                SDendaccess(sds_id);
+                return -1;
+            }
+
+            SDendaccess(sds_id);
+        }
+    }
+
+    if (source_product != NULL)
+    {
+        hdf4_index = SDfindattr(sd_id, "source_product");
+        if (hdf4_index >= 0)
+        {
+            if (read_string_attribute(sd_id, hdf4_index, &attr_source_product) != 0)
+            {
+                return -1;
+            }
+        }
+        else
+        {
+            /* use filename if there is no source_product attribute */
+            attr_source_product = strdup(harp_basename(filename));
+            if (attr_source_product == NULL)
+            {
+                harp_set_error(HARP_ERROR_OUT_OF_MEMORY, "out of memory (could not duplicate string) (%s:%u)", __FILE__,
+                               __LINE__);
+                return -1;
+            }
+        }
+    }
+
+    SDend(sd_id);
+
+    if (datetime_start != NULL)
+    {
+        *datetime_start = attr_datetime_start.double_data;
+    }
+
+    if (datetime_stop != NULL)
+    {
+        *datetime_stop = attr_datetime_stop.double_data;
+    }
+
+    if (source_product != NULL)
+    {
+        *source_product = attr_source_product;
+    }
+
+    if (dimension != NULL)
+    {
+        for (i = 0; i < HARP_NUM_DIM_TYPES; i++)
+        {
+            dimension[i] = attr_dimension[i];
+        }
+    }
+
+    return 0;
+}
+
 static int write_string_attribute(int32 obj_id, const char *name, const char *data)
 {
     if (SDsetattr(obj_id, name, DFNT_CHAR, strlen(data), data) != 0)

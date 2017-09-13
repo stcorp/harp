@@ -703,9 +703,13 @@ LIBHARP_API int harp_import_product_metadata(const char *filename, harp_product_
     {
         case format_hdf4:
 #ifdef HAVE_HDF4
-            harp_product_metadata_delete(metadata);
-            harp_set_error(HARP_ERROR_FILE_OPEN, "extraction of global attributes not yet supported for HDF4");
-            return -1;
+            if (harp_import_global_attributes_hdf4(filename, &metadata->datetime_start, &metadata->datetime_stop,
+                                                   metadata->dimension, &metadata->source_product) != 0)
+            {
+                harp_product_metadata_delete(metadata);
+                return -1;
+            }
+            break;
 #else
             coda_set_error(HARP_ERROR_NO_HDF4_SUPPORT, NULL);
             return -1;
