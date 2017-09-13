@@ -180,12 +180,14 @@ static int add_directory(harp_dataset *dataset, const char *pathname)
             sprintf(filepath, "%s\\%s", pathname, FileData.cFileName);
             if (check_file(filepath) != 0)
             {
-                harp_set_error(HARP_ERROR_INVALID_ARGUMENT, "'%s' is not a valid HARP file", filepath);
                 free(filepath);
                 FindClose(hSearch);
                 return -1;
             }
-            add_file(dataset, filepath);
+            if (add_file(dataset, filepath) != 0)
+            {
+                return -1;
+            }
             free(filepath);
         }
 
@@ -257,12 +259,14 @@ static int add_directory(harp_dataset *dataset, const char *pathname)
         if (check_file(filepath) != 0)
         {
             /* Exit, file type is not supported */
-            harp_set_error(HARP_ERROR_INVALID_ARGUMENT, "'%s' is not a valid HARP file", filepath);
             free(filepath);
             closedir(dirp);
             return -1;
         }
-        add_file(dataset, filepath);
+        if (add_file(dataset, filepath) != 0)
+        {
+            return -1;
+        }
         free(filepath);
     }
 
