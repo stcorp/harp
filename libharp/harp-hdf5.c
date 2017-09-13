@@ -75,13 +75,15 @@ typedef struct hdf5_object_id_struct
     haddr_t addr;
 } hdf5_object_id;
 
-/* List of HDF5 identifiers for each physical dimension. The validity flag is needed because there is no obvious way to
- * represent an unintialized hdf5_object_id, since in principle all combinations of fileno and addr could be valid.
+/* List of HDF5 identifiers and sizes for each physical dimension.
+ * The validity flag is needed because there is no obvious way to represent an unintialized hdf5_object_id,
+ * since in principle all combinations of fileno and addr could be valid.
  */
 typedef struct hdf5_dimension_ids_struct
 {
     int is_valid[HARP_NUM_DIM_TYPES];
     hdf5_object_id object_id[HARP_NUM_DIM_TYPES];
+    long length[HARP_NUM_DIM_TYPES];
 } hdf5_dimension_ids;
 
 static void dimensions_init(hdf5_dimensions *dimensions)
@@ -941,6 +943,7 @@ static herr_t hdf5_find_dimensions_func(hid_t group_id, const char *name, const 
     hid_t dataset_id;
     htri_t is_dimension_scale;
     harp_dimension_type dimension_type;
+    hsize_t length = 0;
 
     (void)info;
     dimension_ids = (hdf5_dimension_ids *)user_data;
@@ -966,9 +969,59 @@ static herr_t hdf5_find_dimensions_func(hid_t group_id, const char *name, const 
     is_dimension_scale = H5DSis_scale(dataset_id);
     if (is_dimension_scale < 0)
     {
-        H5Dclose(dataset_id);
         harp_set_error(HARP_ERROR_HDF5, NULL);
+        H5Dclose(dataset_id);
         return -1;
+    }
+
+    if (is_dimension_scale)
+    {
+        hid_t space_id;
+        int hdf5_num_dimensions;
+
+        space_id = H5Dget_space(dataset_id);
+        if (space_id < 0)
+        {
+            harp_set_error(HARP_ERROR_HDF5, NULL);
+            H5Dclose(dataset_id);
+            return -1;
+        }
+
+        if (H5Sis_simple(space_id) <= 0)
+        {
+            harp_set_error(HARP_ERROR_IMPORT, "dataspace is complex; only simple dataspaces are supported");
+            H5Sclose(space_id);
+            H5Dclose(dataset_id);
+            return -1;
+        }
+
+        hdf5_num_dimensions = H5Sget_simple_extent_ndims(space_id);
+        if (hdf5_num_dimensions < 0)
+        {
+            harp_set_error(HARP_ERROR_HDF5, NULL);
+            H5Sclose(space_id);
+            H5Dclose(dataset_id);
+            return -1;
+        }
+
+        if (hdf5_num_dimensions != 1)
+        {
+            harp_set_error(HARP_ERROR_IMPORT, "dataspace for dimensions scale has %d dimensions; expected 1",
+                           hdf5_num_dimensions);
+            H5Sclose(space_id);
+            H5Dclose(dataset_id);
+            return -1;
+        }
+
+        if (H5Sget_simple_extent_dims(space_id, &length, NULL) < 0)
+        {
+            harp_set_error(HARP_ERROR_HDF5, NULL);
+            H5Sclose(space_id);
+            H5Dclose(dataset_id);
+            return -1;
+        }
+
+        H5Sclose(space_id);
     }
 
     H5Dclose(dataset_id);
@@ -980,6 +1033,7 @@ static herr_t hdf5_find_dimensions_func(hid_t group_id, const char *name, const 
         dimension_ids->is_valid[dimension_type] = 1;
         dimension_ids->object_id[dimension_type].fileno = object_info.fileno;
         dimension_ids->object_id[dimension_type].addr = object_info.addr;
+        dimension_ids->length[dimension_type] = length;
     }
 
     return 0;
@@ -1132,7 +1186,7 @@ static int read_attributes(hid_t group_id, harp_product *product)
 
 static int read_product(hid_t file_id, harp_product *product)
 {
-    hdf5_dimension_ids dimension_ids = { {0}, {{0, 0}} };
+    hdf5_dimension_ids dimension_ids = { {0}, {{0, 0}}, {0} };
     hid_t root_id;
 
     root_id = H5Gopen(file_id, "/");
@@ -1236,6 +1290,198 @@ int harp_import_hdf5(const char *filename, harp_product **product)
     *product = new_product;
 
     H5Fclose(file_id);
+
+    return 0;
+}
+
+int harp_import_global_attributes_hdf5(const char *filename, double *datetime_start, double *datetime_stop,
+                                       long dimension[], char **source_product)
+{
+    char *attr_source_product = NULL;
+    harp_scalar attr_datetime_start;
+    harp_scalar attr_datetime_stop;
+    harp_data_type attr_data_type;
+    long attr_dimension[HARP_NUM_DIM_TYPES];
+    hid_t file_id;
+    hid_t root_id;
+    int result;
+    int i;
+
+    if (filename == NULL)
+    {
+        harp_set_error(HARP_ERROR_INVALID_ARGUMENT, "filename is NULL (%s:%u)", __FILE__, __LINE__);
+        return -1;
+    }
+
+    file_id = H5Fopen(filename, H5F_ACC_RDONLY, H5P_DEFAULT);
+    if (file_id < 0)
+    {
+        harp_add_error_message(" (%s)", filename);
+        harp_set_error(HARP_ERROR_HDF5, NULL);
+        return -1;
+    }
+
+    if (verify_product(file_id) != 0)
+    {
+        H5Fclose(file_id);
+        return -1;
+    }
+
+    root_id = H5Gopen(file_id, "/");
+    if (root_id < 0)
+    {
+        harp_set_error(HARP_ERROR_HDF5, NULL);
+        H5Fclose(file_id);
+        return -1;
+    }
+
+    if (datetime_start != NULL)
+    {
+        result = H5Aexists(root_id, "datetime_start");
+        if (result > 0)
+        {
+            if (read_numeric_attribute(root_id, "datetime_start", &attr_data_type, &attr_datetime_start) != 0)
+            {
+                H5Gclose(root_id);
+                H5Fclose(file_id);
+                return -1;
+            }
+            if (attr_data_type != harp_type_double)
+            {
+                harp_set_error(HARP_ERROR_IMPORT, "attribute 'datetime_start' has invalid type");
+                H5Gclose(root_id);
+                H5Fclose(file_id);
+                return -1;
+            }
+        }
+        else if (result < 0)
+        {
+            harp_set_error(HARP_ERROR_HDF5, NULL);
+            H5Gclose(root_id);
+            H5Fclose(file_id);
+            return -1;
+        }
+        else
+        {
+            attr_datetime_start.double_data = harp_mininf();
+        }
+    }
+
+    if (datetime_stop != NULL)
+    {
+        result = H5Aexists(root_id, "datetime_stop");
+        if (result > 0)
+        {
+            if (read_numeric_attribute(root_id, "datetime_stop", &attr_data_type, &attr_datetime_stop) != 0)
+            {
+                H5Gclose(root_id);
+                H5Fclose(file_id);
+                return -1;
+            }
+            if (attr_data_type != harp_type_double)
+            {
+                harp_set_error(HARP_ERROR_IMPORT, "attribute 'datetime_stop' has invalid type");
+                H5Gclose(root_id);
+                H5Fclose(file_id);
+                return -1;
+            }
+        }
+        else if (result < 0)
+        {
+            harp_set_error(HARP_ERROR_HDF5, NULL);
+            H5Gclose(root_id);
+            H5Fclose(file_id);
+            return -1;
+        }
+        else
+        {
+            attr_datetime_stop.double_data = harp_plusinf();
+        }
+    }
+
+    if (dimension != NULL)
+    {
+        hdf5_dimension_ids dimension_ids = { {0}, {{0, 0}}, {0} };
+
+        /* Find dimension scales. */
+        if (find_dimensions(root_id, &dimension_ids) != 0)
+        {
+            H5Gclose(root_id);
+            H5Fclose(file_id);
+            return -1;
+        }
+
+        for (i = 0; i < HARP_NUM_DIM_TYPES; i++)
+        {
+            if (dimension_ids.is_valid[i])
+            {
+                attr_dimension[i] = dimension_ids.length[i];
+            }
+            else
+            {
+                attr_dimension[i] = -1;
+            }
+        }
+    }
+
+    if (source_product != NULL)
+    {
+        result = H5Aexists(root_id, "source_product");
+        if (result > 0)
+        {
+            if (read_string_attribute(root_id, "source_product", &attr_source_product) != 0)
+            {
+                H5Gclose(root_id);
+                H5Fclose(file_id);
+                return -1;
+            }
+        }
+        else if (result < 0)
+        {
+            harp_set_error(HARP_ERROR_HDF5, NULL);
+            H5Gclose(root_id);
+            H5Fclose(file_id);
+            return -1;
+        }
+        else
+        {
+            /* use filename if there is no source_product attribute */
+            attr_source_product = strdup(harp_basename(filename));
+            if (attr_source_product == NULL)
+            {
+                harp_set_error(HARP_ERROR_OUT_OF_MEMORY, "out of memory (could not duplicate string) (%s:%u)", __FILE__,
+                               __LINE__);
+                H5Gclose(root_id);
+                H5Fclose(file_id);
+                return -1;
+            }
+        }
+    }
+
+    H5Fclose(file_id);
+
+    if (datetime_start != NULL)
+    {
+        *datetime_start = attr_datetime_start.double_data;
+    }
+
+    if (datetime_stop != NULL)
+    {
+        *datetime_stop = attr_datetime_stop.double_data;
+    }
+
+    if (source_product != NULL)
+    {
+        *source_product = attr_source_product;
+    }
+
+    if (dimension != NULL)
+    {
+        for (i = 0; i < HARP_NUM_DIM_TYPES; i++)
+        {
+            dimension[i] = attr_dimension[i];
+        }
+    }
 
     return 0;
 }
