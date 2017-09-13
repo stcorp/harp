@@ -46,14 +46,16 @@ no limitations on the shape or dimensionality of a dimension scale, since it is 
 attributes attached.
 
 To represent shared dimensions, netCDF-4 creates dimension scales for each shared dimension and attaches these dimension
-scales to the corresponding dimensions of all variables. If a product contains a variable with the same name as a shared
-dimension, the dataset containing the values of the variable will be used as the dimension scale. Such a variable is
-called a *coordinate variable* in netCDF-4. Note that in a HARP product, due to the variable naming convention, only
-variables called ``latitude`` or ``longitude`` could possibly be coordinate variables. For shared dimensions for which a
-variable with the same name does not exist, a stub dataset containing fill values is created and used as the dimension
-scale. The optional ``NAME`` attribute of the dimension scale is set to ``This is a netCDF dimension but not a netCDF
-variable.``, which causes the netCDF-4 library to hide the stub dataset from the user. For more information about the
-netCDF-4 format, see the `NetCDF User's Guide`_.
+scales to the corresponding dimensions of all variables. If a product contains a one-dimensional variable with the same
+name as a shared dimension where the single dimension of the variable also matches that shared dimension then the dataset
+containing the values of the variable will be used as the dimension scale. Such a variable is called a
+*coordinate variable* in netCDF-4. If a variable has the same name as the dimension but the variable is not
+one-dimensional or the single dimension of the variable does not match the dimension then the variable will be stored
+with a ``_nc4_non_coord_`` name prefix in the HDF5 file (this is identical to how netCDF-4 deals with this case).
+For shared dimensions for which a variable with the same name does not exist, a stub dataset containing fill values is
+created and used as the dimension scale. The optional ``NAME`` attribute of the dimension scale is set to
+``This is a netCDF dimension but not a netCDF variable.``, which causes the netCDF-4 library to hide the stub dataset
+from the user. For more information about the netCDF-4 format, see the `NetCDF User's Guide`_.
 
 .. _`NetCDF User's Guide`: http://www.unidata.ucar.edu/software/netcdf/docs/file_format_specifications.html#netcdf_4_spec
 

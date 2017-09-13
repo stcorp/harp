@@ -279,14 +279,16 @@ length of the dimension scale does not have to be the same as the length of the 
 no limitations on the shape or dimensionality of a dimension scale, since it is just a dataset with particular
 attributes attached.</p>
 <p>To represent shared dimensions, netCDF-4 creates dimension scales for each shared dimension and attaches these dimension
-scales to the corresponding dimensions of all variables. If a product contains a variable with the same name as a shared
-dimension, the dataset containing the values of the variable will be used as the dimension scale. Such a variable is
-called a <em>coordinate variable</em> in netCDF-4. Note that in a HARP product, due to the variable naming convention, only
-variables called <code class="docutils literal"><span class="pre">latitude</span></code> or <code class="docutils literal"><span class="pre">longitude</span></code> could possibly be coordinate variables. For shared dimensions for which a
-variable with the same name does not exist, a stub dataset containing fill values is created and used as the dimension
-scale. The optional <code class="docutils literal"><span class="pre">NAME</span></code> attribute of the dimension scale is set to <code class="docutils literal"><span class="pre">This</span> <span class="pre">is</span> <span class="pre">a</span> <span class="pre">netCDF</span> <span class="pre">dimension</span> <span class="pre">but</span> <span class="pre">not</span> <span class="pre">a</span> <span class="pre">netCDF</span>
-<span class="pre">variable.</span></code>, which causes the netCDF-4 library to hide the stub dataset from the user. For more information about the
-netCDF-4 format, see the <a class="reference external" href="http://www.unidata.ucar.edu/software/netcdf/docs/file_format_specifications.html#netcdf_4_spec">NetCDF User&#8217;s Guide</a>.</p>
+scales to the corresponding dimensions of all variables. If a product contains a one-dimensional variable with the same
+name as a shared dimension where the single dimension of the variable also matches that shared dimension then the dataset
+containing the values of the variable will be used as the dimension scale. Such a variable is called a
+<em>coordinate variable</em> in netCDF-4. If a variable has the same name as the dimension but the variable is not
+one-dimensional or the single dimension of the variable does not match the dimension then the variable will be stored
+with a <code class="docutils literal"><span class="pre">_nc4_non_coord_</span></code> name prefix in the HDF5 file (this is identical to how netCDF-4 deals with this case).
+For shared dimensions for which a variable with the same name does not exist, a stub dataset containing fill values is
+created and used as the dimension scale. The optional <code class="docutils literal"><span class="pre">NAME</span></code> attribute of the dimension scale is set to
+<code class="docutils literal"><span class="pre">This</span> <span class="pre">is</span> <span class="pre">a</span> <span class="pre">netCDF</span> <span class="pre">dimension</span> <span class="pre">but</span> <span class="pre">not</span> <span class="pre">a</span> <span class="pre">netCDF</span> <span class="pre">variable.</span></code>, which causes the netCDF-4 library to hide the stub dataset
+from the user. For more information about the netCDF-4 format, see the <a class="reference external" href="http://www.unidata.ucar.edu/software/netcdf/docs/file_format_specifications.html#netcdf_4_spec">NetCDF User&#8217;s Guide</a>.</p>
 <p>The HDF5 file format conventions used by HARP are designed to be compatible with netCDF-4. Like netCDF-4, HARP uses
 dimension scales to represent shared dimensions. For independent dimensions, the same approach is used as for the
 netCDF-3 backend. For each unique dimension length <code class="docutils literal"><span class="pre">L</span></code>, a dimension scale named <code class="docutils literal"><span class="pre">independent_L</span></code> is created.</p>

@@ -299,6 +299,44 @@ static hid_t get_hdf5_type(harp_data_type data_type)
     }
 }
 
+static char *get_hdf5_variable_name(const harp_variable *variable)
+{
+    char *name = NULL;
+    int i;
+
+    for (i = 0; i < HARP_NUM_DIM_TYPES; i++)
+    {
+        harp_dimension_type dimension_type = (harp_dimension_type)i;
+
+        if (strcmp(variable->name, harp_get_dimension_type_name(dimension_type)) == 0 &&
+            !(variable->num_dimensions == 1 && *variable->dimension_type == dimension_type))
+        {
+            /* we have a variable with the same name as a dimension but which is not an axis variable */
+            /* -> prepend _nc4_non_coord_ to the name as is also done by the netcdf4 library */
+            name = malloc(strlen(variable->name) + 16);
+            if (name == NULL)
+            {
+                harp_set_error(HARP_ERROR_OUT_OF_MEMORY, "out of memory (could not allocate %lu bytes) (%s:%u)",
+                               strlen(variable->name) + 16, __FILE__, __LINE__);
+                return NULL;
+            }
+            strcpy(name, "_nc4_non_coord_");
+            strcpy(&name[15], variable->name);
+            return name;
+        }
+    }
+
+    name = strdup(variable->name);
+    if (name == NULL)
+    {
+        harp_set_error(HARP_ERROR_OUT_OF_MEMORY, "out of memory (could not duplicate string) (%s:%u)", __FILE__,
+                       __LINE__);
+        return NULL;
+    }
+
+    return name;
+}
+
 static int get_link_iteration_index_type(hid_t group_id, H5_index_t * index_type)
 {
     hid_t gcpl_id;
@@ -665,6 +703,7 @@ static int read_variable_dimensions(const char *variable_name, hid_t dataset_id,
 static int read_variable(hid_t dataset_id, const char *name, const hdf5_dimension_ids *dimension_ids,
                          harp_product *product)
 {
+    const char *variable_name;
     harp_variable *variable;
     harp_dimension_type dimension_type[HARP_MAX_NUM_DIMS];
     long dimension[HARP_MAX_NUM_DIMS];
@@ -682,7 +721,12 @@ static int read_variable(hid_t dataset_id, const char *name, const hdf5_dimensio
         return -1;
     }
 
-    if (harp_variable_new(name, data_type, num_dimensions, dimension_type, dimension, &variable) != 0)
+    variable_name = name;
+    if (strncmp(name, "_nc4_non_coord_", 15) == 0)
+    {
+        variable_name = &name[15];
+    }
+    if (harp_variable_new(variable_name, data_type, num_dimensions, dimension_type, dimension, &variable) != 0)
     {
         return -1;
     }
@@ -1308,6 +1352,7 @@ static int write_variable(hid_t group_id, harp_variable *variable)
     hid_t space_id;
     hid_t dcpl_id;
     hid_t dataset_id;
+    char *name;
     int i;
 
     for (i = 0; i < variable->num_dimensions; i++)
@@ -1381,7 +1426,13 @@ static int write_variable(hid_t group_id, harp_variable *variable)
             return -1;
         }
 
-        dataset_id = H5Dcreate(group_id, variable->name, data_type_id, space_id, dcpl_id);
+        name = get_hdf5_variable_name(variable);
+        if (name == NULL)
+        {
+            return -1;
+        }
+        dataset_id = H5Dcreate(group_id, name, data_type_id, space_id, dcpl_id);
+        free(name);
         if (dataset_id < 0)
         {
             harp_set_error(HARP_ERROR_HDF5, NULL);
@@ -1433,7 +1484,13 @@ static int write_variable(hid_t group_id, harp_variable *variable)
             return -1;
         }
 
-        dataset_id = H5Dcreate(group_id, variable->name, get_hdf5_type(variable->data_type), space_id, dcpl_id);
+        name = get_hdf5_variable_name(variable);
+        if (name == NULL)
+        {
+            return -1;
+        }
+        dataset_id = H5Dcreate(group_id, name, get_hdf5_type(variable->data_type), space_id, dcpl_id);
+        free(name);
         if (dataset_id < 0)
         {
             harp_set_error(HARP_ERROR_HDF5, NULL);
@@ -1611,6 +1668,8 @@ static int write_dimensions(hid_t group_id, const harp_product *product, hdf5_di
 
     netcdf4_dimension_id.int32_data = 0;
 
+    /* Order netCDF dimension ids such that physical dimensions appear before independent dimensions. */
+
     for (i = 0; i < HARP_NUM_DIM_TYPES; i++)
     {
         harp_variable *variable;
@@ -1647,7 +1706,6 @@ static int write_dimensions(hid_t group_id, const harp_product *product, hdf5_di
             return -1;
         }
 
-        /* Re-order netCDF dimension ids such that physical dimensions appear before independent dimensions. */
         if (write_numeric_attribute(dataset_id, NC_DIMID_ATT_NAME, harp_type_int32, netcdf4_dimension_id) != 0)
         {
             H5Dclose(dataset_id);
@@ -1690,7 +1748,6 @@ static int write_dimensions(hid_t group_id, const harp_product *product, hdf5_di
                 return -1;
             }
 
-            /* Re-order netCDF dimension ids such that physical dimensions appear before independent dimensions. */
             if (write_numeric_attribute(dataset_id, NC_DIMID_ATT_NAME, harp_type_int32, netcdf4_dimension_id) != 0)
             {
                 H5Dclose(dataset_id);
@@ -1779,6 +1836,7 @@ static int attach_dimensions(hid_t group_id, const harp_product *product, const 
     for (i = 0; i < product->num_variables; i++)
     {
         const harp_variable *variable;
+        char *name;
         hid_t dataset_id;
         int j;
 
@@ -1788,7 +1846,13 @@ static int attach_dimensions(hid_t group_id, const harp_product *product, const 
             continue;
         }
 
-        dataset_id = H5Dopen(group_id, variable->name);
+        name = get_hdf5_variable_name(variable);
+        if (name == NULL)
+        {
+            return -1;
+        }
+        dataset_id = H5Dopen(group_id, name);
+        free(name);
         if (dataset_id < 0)
         {
             harp_set_error(HARP_ERROR_HDF5, NULL);
