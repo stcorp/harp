@@ -62,32 +62,31 @@ Examples
 
 .. code-block:: IDL
 
-   ; Ingest a file and convert it to a HARP product (the
-   ; file that is used in this example is an ACE-FTS file).
-   product1 = harp_import("ss13799.asc")
+   ; Import a file as a HARP product/
+   prod = harp_import("filename.ext")
 
    ; Print information about the product.
-   help,product1
+   help, prod, /struct
 
    ; Print information about the variable 'temperature'.
-   help,product1.temperature
+   help, prod.temperature
 
    ; Print the contents of the variable 'temperature'.
-   print,product1.temperature
+   print, prod.temperature
 
    ; Export the updated product as an HDF4 file (the format must be
    ; HDF4, HDF5 or netCDF, if no format is specified netCDF is used).
-   result = harp_export(product1, "ace_fts_ss13799.hdf", "hdf4")
+   result = harp_export(prod, "filename.hdf", "hdf4")
 
    ; Print the result of the export.
-   print,result
+   print, result
 
    ; Import the HDF4 file and perform an operation to exclude the variable
    ; temperature (variable name must be in uppercase).
-   product2 = harp_import("ace_fts_ss13799.hdf", "exclude(TEMPERATURE)");
+   prod2 = harp_import("filename.hdf", "exclude(temperature)");
 
    ; Print information about the product.
-   help,product2
+   help, prod2, /struct
 
 API reference
 -------------
@@ -117,7 +116,7 @@ This section describes the functions defined by the HARP IDL interface.
    :param str options: Ingestion module specific options; should be specified as
                        a semi-colon separated string of key=value pairs; only
                        used if the file is not in HARP format.
-   :returns: Ingested product.
+   :returns: Ingested product or error structure.
 
 .. py:function:: harp_export(product, filename, file_format="netcdf")
 
@@ -127,4 +126,12 @@ This section describes the functions defined by the HARP IDL interface.
    :param str filename: Filename of the exported product.
    :param str file_format: File format to use; one of 'netcdf', 'hdf4', or
                            'hdf5'. If no format is specified, netcdf is used.
+   :returns: Error structure with result code.
 
+.. py:function:: harp_version()
+
+   The harp_version function returns a string containing the current version
+   number of HARP. The version number is always of the format 'x.y.z', i.e.,
+   major, minor, and revision numbers, separated by dots.
+
+   :returns: HARP version number.
