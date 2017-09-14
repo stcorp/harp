@@ -337,7 +337,9 @@ INDENTFILES += $(HARP_IDL_SOURCE_FILES)
 
 if BUILD_IDL
 harp_idl_la_SOURCES = $(HARP_IDL_SOURCE_FILES)
-harp_idl_la_LDFLAGS = -module -shared -avoid-version -lharp
+harp_idl_la_LDFLAGS = -module -shared -avoid-version
+harp_idl_la_LIBADD = libharp.la
+harp_idl_la_DEPENDENCIES = libharp.la
 endif
 
 HARP_IDL_DLMFILES = \
