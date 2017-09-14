@@ -640,6 +640,18 @@ static IDL_VPTR harp_idl_import(int argc, IDL_VPTR *argv)
     return retval;
 }
 
+static IDL_VPTR harp_idl_version(int argc, IDL_VPTR *argv)
+{
+    assert(argc == 0);
+    (void)argv;
+    if (harp_idl_init() != 0)
+    {
+        return harp_idl_get_error_struct(harp_errno);
+    }
+
+    return IDL_StrToSTRING(VERSION);
+}
+
 static void harp_idl_unload(int argc, IDL_VPTR *argv)
 {
     assert(argc == 0);
@@ -668,6 +680,7 @@ static int register_idl_functions_and_procedures(void)
     static IDL_SYSFUN_DEF2 idl_func_addr[] = {
         {{harp_idl_export}, "HARP_EXPORT", 2, 3, 0, 0}, /* harp_export(product, filename, <format>) */
         {{harp_idl_import}, "HARP_IMPORT", 1, 3, 0, 0}, /* product = harp_import(filename, <operations>, <options>) */
+        {{harp_idl_version}, "HARP_VERSION", 0, 0, 0, 0}
     };
 
     /* procedure declarations */
