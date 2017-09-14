@@ -308,8 +308,8 @@ mxArray *harp_matlab_get_product(harp_product **product)
     mxArray *string_source = mxCreateString(source_product);
     mxArray *string_his = mxCreateString(history);
 
-    mxAddField(mx_data, "source");
-    mxSetField(mx_data, 0, "source", string_source);
+    mxAddField(mx_data, "source_product");
+    mxSetField(mx_data, 0, "source_product", string_source);
 
     mxAddField(mx_data, "history");
     if (history != NULL)
@@ -419,32 +419,32 @@ static void harp_matlab_add_matlab_product_variable(harp_product **product, cons
 
             if (dimtypevalue != NULL)
             {
-                if (strncmp(dimtypevalue, "independent", 11) == 0)
+                if (strcmp(dimtypevalue, "independent") == 0)
                 {
                     dim_type[i] = harp_dimension_independent;
                     harp_num_dims++;
                 }
-                else if (strncmp(dimtypevalue, "time", 4) == 0)
+                else if (strcmp(dimtypevalue, "time") == 0)
                 {
                     dim_type[i] = harp_dimension_time;
                     harp_num_dims++;
                 }
-                else if (strncmp(dimtypevalue, "latitude", 8) == 0)
+                else if (strcmp(dimtypevalue, "latitude") == 0)
                 {
                     dim_type[i] = harp_dimension_latitude;
                     harp_num_dims++;
                 }
-                else if (strncmp(dimtypevalue, "longitude", 9) == 0)
+                else if (strcmp(dimtypevalue, "longitude") == 0)
                 {
                     dim_type[i] = harp_dimension_longitude;
                     harp_num_dims++;
                 }
-                else if (strncmp(dimtypevalue, "vertical", 8) == 0)
+                else if (strcmp(dimtypevalue, "vertical") == 0)
                 {
                     dim_type[i] = harp_dimension_vertical;
                     harp_num_dims++;
                 }
-                else if (strncmp(dimtypevalue, "spectral", 8) == 0)
+                else if (strcmp(dimtypevalue, "spectral") == 0)
                 {
                     dim_type[i] = harp_dimension_spectral;
                     harp_num_dims++;
@@ -839,7 +839,7 @@ harp_product *harp_matlab_set_product(const mxArray *mx_struct)
         variable_name = mxGetFieldNameByNumber(mx_struct, field_num);
 
         /* set meta info for each product from matlab input */
-        if (strncmp(variable_name, "source", 6) == 0)
+        if (strcmp(variable_name, "source_product") == 0)
         {
             mxArray *meta = mxGetFieldByNumber(mx_struct, 0, field_num);
             char *metastring = mxArrayToString(meta);
@@ -852,7 +852,7 @@ harp_product *harp_matlab_set_product(const mxArray *mx_struct)
                 }
             }
         }
-        else if (strncmp(variable_name, "history", 7) == 0)
+        else if (strcmp(variable_name, "history") == 0)
         {
             mxArray *meta = mxGetFieldByNumber(mx_struct, 0, field_num);
             char *metastring = mxArrayToString(meta);

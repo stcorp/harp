@@ -62,7 +62,7 @@ Examples
 
 .. code-block:: IDL
 
-   ; Import a file as a HARP product/
+   ; Import a file as a HARP product.
    prod = harp_import("filename.ext")
 
    ; Print information about the product.
