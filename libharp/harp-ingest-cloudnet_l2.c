@@ -86,7 +86,7 @@ static int read_scalar_variable(ingest_info *info, const char *name, harp_array 
         harp_set_error(HARP_ERROR_CODA, NULL);
         return -1;
     }
-    if (coda_cursor_read_double(&cursor, data.double_data) != 0)
+    if (coda_cursor_read_float(&cursor, data.float_data) != 0)
     {
         harp_set_error(HARP_ERROR_CODA, NULL);
         return -1;
