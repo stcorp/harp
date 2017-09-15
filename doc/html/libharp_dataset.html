@@ -238,8 +238,8 @@
 </dd></dl>
 
 <dl class="function">
-<dt id="_CPPv219harp_dataset_importP12harp_datasetPKc">
-<span id="harp_dataset_import__harp_datasetP.cCP"></span><span class="target" id="libharpgroup__harp__dataset_1ga69067054ba9d27c1de7df0eb5f1a6f2f"></span>int <code class="descname">harp_dataset_import</code><span class="sig-paren">(</span><a class="reference internal" href="#_CPPv212harp_dataset" title="harp_dataset">harp_dataset</a> *<em>dataset</em>, <em class="property">const</em> char *<em>path</em><span class="sig-paren">)</span><br /></dt>
+<dt id="_CPPv219harp_dataset_importP12harp_datasetPKcPKc">
+<span id="harp_dataset_import__harp_datasetP.cCP.cCP"></span><span class="target" id="libharpgroup__harp__dataset_1gaf09a7b6ceec6c24ff158aae030c128fa"></span>int <code class="descname">harp_dataset_import</code><span class="sig-paren">(</span><a class="reference internal" href="#_CPPv212harp_dataset" title="harp_dataset">harp_dataset</a> *<em>dataset</em>, <em class="property">const</em> char *<em>path</em>, <em class="property">const</em> char *<em>options</em><span class="sig-paren">)</span><br /></dt>
 <dd><p>Import dataset from filesystem. If the dataset already contains a source_product, it&#8217;s metadata is set. <dl class="docutils">
 <dt><strong>Return</strong></dt>
 <dd><ul class="simple">
@@ -251,6 +251,7 @@
 <dd><ul class="breatheparameterlist first last simple">
 <li><code class="docutils literal"><span class="pre">dataset</span></code>: Dataset to import the dataset metadata into. </li>
 <li><code class="docutils literal"><span class="pre">path</span></code>: Path to either a directory containing harp product files or a single harp product filepath. </li>
+<li><code class="docutils literal"><span class="pre">operations</span></code>: string (optional) containing actions to apply as part of the import; should be specified as a semi-colon separated string of operations. </li>
 </ul>
 </dd>
 </dl>

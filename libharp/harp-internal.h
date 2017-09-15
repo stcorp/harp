@@ -191,6 +191,7 @@ int harp_export_hdf4(const char *filename, const harp_product *product);
 int harp_export_hdf5(const char *filename, const harp_product *product);
 #endif
 int harp_export_netcdf(const char *filename, const harp_product *product);
+
 #ifdef HAVE_HDF4
 int harp_import_global_attributes_hdf4(const char *filename, double *datetime_start, double *datetime_stop,
                                        long dimension[], char **source_product);

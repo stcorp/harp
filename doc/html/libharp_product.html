@@ -954,8 +954,8 @@
 </dd></dl>
 
 <dl class="function">
-<dt id="_CPPv228harp_import_product_metadataPKcPP21harp_product_metadata">
-<span id="harp_import_product_metadata__cCP.harp_product_metadataPP"></span><span class="target" id="libharpgroup__harp__product_1ga5c633cf8880cd007c37ca385679a97d2"></span>int <code class="descname">harp_import_product_metadata</code><span class="sig-paren">(</span><em class="property">const</em> char *<em>filename</em>, <a class="reference internal" href="libharp_product_metadata.html#_CPPv221harp_product_metadata" title="harp_product_metadata">harp_product_metadata</a> **<em>new_metadata</em><span class="sig-paren">)</span><br /></dt>
+<dt id="_CPPv228harp_import_product_metadataPKcPKcPP21harp_product_metadata">
+<span id="harp_import_product_metadata__cCP.cCP.harp_product_metadataPP"></span><span class="target" id="libharpgroup__harp__product_1ga596533e3a82733332a90f6b1850f21f3"></span>int <code class="descname">harp_import_product_metadata</code><span class="sig-paren">(</span><em class="property">const</em> char *<em>filename</em>, <em class="property">const</em> char *<em>options</em>, <a class="reference internal" href="libharp_product_metadata.html#_CPPv221harp_product_metadata" title="harp_product_metadata">harp_product_metadata</a> **<em>new_metadata</em><span class="sig-paren">)</span><br /></dt>
 <dd><p>Retrieve global attributes from a product file.</p>
 <p>This function retrieves the product metadata without performing a full import. This function is only supported for netCDF files using the HARP file format. <dl class="docutils">
 <dt><strong>Return</strong></dt>
@@ -967,6 +967,7 @@
 <dt><strong>Parameters</strong></dt>
 <dd><ul class="breatheparameterlist first last simple">
 <li><code class="docutils literal"><span class="pre">filename</span></code>: Path to the file for which to retrieve global attributes. </li>
+<li><code class="docutils literal"><span class="pre">operations</span></code>: string (optional) containing actions to apply as part of the import; should be specified as a semi-colon separated string of operations. </li>
 <li><code class="docutils literal"><span class="pre">new_metadata</span></code>: Pointer to the variable where the metadata should be stored. </li>
 </ul>
 </dd>
