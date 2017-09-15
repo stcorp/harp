@@ -105,10 +105,10 @@ class Variable(object):
     A variable consists of data (either a scalar or NumPy array), a list of
     dimension types that describe the dimensions of the data, and a number of
     optional attributes: physical unit, minimum valid value, maximum valid
-    value, and a human-readable description.
+    value, human-readable description, and enumeration name list.
 
     """
-    def __init__(self, data, dimension=[], unit=None, valid_min=None, valid_max=None, description=None):
+    def __init__(self, data, dimension=[], unit=None, valid_min=None, valid_max=None, description=None, enum=None):
         self.data = data
         self.dimension = dimension
 
@@ -120,6 +120,8 @@ class Variable(object):
             self.valid_max = valid_max
         if description is not None:
             self.description = description
+        if enum is not None:
+            self.enum = enum
 
     def __repr__(self):
         if not self.dimension:
@@ -167,6 +169,14 @@ class Variable(object):
         else:
             if description:
                 print("description = %r" % description, file=stream)
+
+        try:
+            enum = self.enum
+        except AttributeError:
+            pass
+        else:
+            if enum:
+                print("enum = %r" % enum, file=stream)
 
         if self.data is not None:
             if not isinstance(self.data, numpy.ndarray) and not numpy.isscalar(self.data):
@@ -748,6 +758,10 @@ def _import_variable(c_variable):
     if c_variable.description:
         variable.description = _decode_string(_ffi.string(c_variable.description))
 
+    num_enum_values = c_variable.num_enum_values
+    if num_enum_values > 0 and c_variable.enum_name != _ffi.NULL:
+        variable.enum = [_decode_string(_ffi.string(c_variable.enum_name[i])) for i in range(num_enum_values)]
+
     return variable
 
 def _import_product(c_product):
@@ -897,6 +911,15 @@ def _export_variable(name, variable, c_product):
         pass
     else:
         if description and _lib.harp_variable_set_description(c_variable, _encode_string(description)) != 0:
+            raise CLibraryError()
+
+    try:
+        enum = variable.enum
+    except AttributeError:
+        pass
+    else:
+        if enum and _lib.harp_variable_set_enumeration_values(c_variable, len(enum),
+                                                              [_ffi.new("char[]", _encode_string(name)) for name in enum]) != 0:
             raise CLibraryError()
 
 def _export_product(product, c_product):
@@ -1127,6 +1150,8 @@ def concatenate(products):
                     target_variable.valid_max = source_variable.valid_max
                 if hasattr(source_variable, 'description'):
                     target_variable.description = source_variable.description
+                if hasattr(source_variable, 'enum'):
+                    target_variable.enum = source_variable.enum
                 target_product[name] = target_variable
             else:
                 target_variable = target_product[name]
