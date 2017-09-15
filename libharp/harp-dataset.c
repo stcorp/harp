@@ -383,8 +383,8 @@ LIBHARP_API void harp_dataset_print(harp_dataset *dataset, int (*print) (const c
  * If the dataset already contains a source_product, it's metadata is set.
  * \param dataset Dataset to import the dataset metadata into.
  * \param path Path to either a directory containing harp product files or a single harp product filepath.
- * \param operations string (optional) containing actions to apply as part of the import; should be specified as a
- * semi-colon separated string of operations.
+ * \param options Ingestion module specific options (optional); should be specified as a semi-colon separated
+ * string of key=value pair; only used if the file is not in HARP format.
  * \return
  *   \arg \c 0, Success.
  *   \arg \c -1, Error occurred (check #harp_errno).

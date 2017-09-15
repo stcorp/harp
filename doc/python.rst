@@ -314,14 +314,14 @@ This section describes the types defined by the HARP Python interface.
                        line tools that have been performed on the product.
 
 .. py:class:: harp.Variable(data, dimension=[], unit=None, valid_min=None, \
-                            valid_max=None, description=None)
+                            valid_max=None, description=None, enum=None)
 
    Python representation of a HARP variable.
 
    A variable consists of data (either a scalar or NumPy array), a list of
    dimension types that describe the dimensions of the data, and a number of
    optional attributes: physical unit, minimum valid value, maximum valid value,
-   and a human-readable description.
+   human-readable description, and enumeration name list.
 
    :param data: Value(s) associated with the variable; can be either a scalar or
                 a NumPy array.
@@ -334,6 +334,7 @@ This section describes the types defined by the HARP Python interface.
    :param valid_max: Maximum valid value; any value above this threshold is
                      considered to be invalid.
    :param str description: Humand-readble description of the variable.
+   :param list enum: List of strings with the names of each enumeration value.
 
 Functions
 ^^^^^^^^^

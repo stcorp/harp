@@ -597,12 +597,12 @@ line tools that have been performed on the product.</li>
 
 <dl class="class">
 <dt id="harp.Variable">
-<em class="property">class </em><code class="descclassname">harp.</code><code class="descname">Variable</code><span class="sig-paren">(</span><em>data</em>, <em>dimension=[]</em>, <em>unit=None</em>, <em>valid_min=None</em>, <em>valid_max=None</em>, <em>description=None</em><span class="sig-paren">)</span></dt>
+<em class="property">class </em><code class="descclassname">harp.</code><code class="descname">Variable</code><span class="sig-paren">(</span><em>data</em>, <em>dimension=[]</em>, <em>unit=None</em>, <em>valid_min=None</em>, <em>valid_max=None</em>, <em>description=None</em>, <em>enum=None</em><span class="sig-paren">)</span></dt>
 <dd><p>Python representation of a HARP variable.</p>
 <p>A variable consists of data (either a scalar or NumPy array), a list of
 dimension types that describe the dimensions of the data, and a number of
 optional attributes: physical unit, minimum valid value, maximum valid value,
-and a human-readable description.</p>
+human-readable description, and enumeration name list.</p>
 <table class="docutils field-list" frame="void" rules="none">
 <col class="field-name" />
 <col class="field-body" />
@@ -619,6 +619,7 @@ considered to be invalid.</li>
 <li><strong>valid_max</strong> &#8211; Maximum valid value; any value above this threshold is
 considered to be invalid.</li>
 <li><strong>description</strong> (<em>str</em>) &#8211; Humand-readble description of the variable.</li>
+<li><strong>enum</strong> (<em>list</em>) &#8211; List of strings with the names of each enumeration value.</li>
 </ul>
 </td>
 </tr>

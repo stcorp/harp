@@ -669,8 +669,8 @@ LIBHARP_API int harp_import_test(const char *filename, int (*print) (const char 
  * This function retrieves the product metadata without performing a full import.
  * This function is only supported for netCDF files using the HARP file format.
  * \param filename Path to the file for which to retrieve global attributes.
- * \param operations string (optional) containing actions to apply as part of the import; should be specified as a
- * semi-colon separated string of operations.
+ * \param options Ingestion module specific options (optional); should be specified as a semi-colon separated
+ * string of key=value pair; only used if the file is not in HARP format.
  * \param new_metadata Pointer to the variable where the metadata should be stored.
  * \return
  *   \arg \c 0, Succes.
