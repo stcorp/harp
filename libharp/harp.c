@@ -668,16 +668,20 @@ LIBHARP_API int harp_import_test(const char *filename, int (*print) (const char 
  * \ingroup harp_product
  * This function retrieves the product metadata without performing a full import.
  * This function is only supported for netCDF files using the HARP file format.
- * \param  filename Path to the file for which to retrieve global attributes.
- * \param  new_metadata Pointer to the variable where the metadata should be stored.
+ * \param filename Path to the file for which to retrieve global attributes.
+ * \param operations string (optional) containing actions to apply as part of the import; should be specified as a
+ * semi-colon separated string of operations.
+ * \param new_metadata Pointer to the variable where the metadata should be stored.
  * \return
  *   \arg \c 0, Succes.
  *   \arg \c -1, Error occurred (check #harp_errno).
  */
-LIBHARP_API int harp_import_product_metadata(const char *filename, harp_product_metadata **new_metadata)
+LIBHARP_API int harp_import_product_metadata(const char *filename, const char *options,
+                                             harp_product_metadata **new_metadata)
 {
-    file_format format;
     harp_product_metadata *metadata = NULL;
+    file_format format;
+    int result;
 
     if (determine_file_format(filename, &format) != 0)
     {
@@ -703,43 +707,46 @@ LIBHARP_API int harp_import_product_metadata(const char *filename, harp_product_
     {
         case format_hdf4:
 #ifdef HAVE_HDF4
-            if (harp_import_global_attributes_hdf4(filename, &metadata->datetime_start, &metadata->datetime_stop,
-                                                   metadata->dimension, &metadata->source_product) != 0)
-            {
-                harp_product_metadata_delete(metadata);
-                return -1;
-            }
-            break;
+            result = harp_import_global_attributes_hdf4(filename, &metadata->datetime_start, &metadata->datetime_stop,
+                                                        metadata->dimension, &metadata->source_product);
 #else
-            coda_set_error(HARP_ERROR_NO_HDF4_SUPPORT, NULL);
-            return -1;
+            harp_set_error(HARP_ERROR_UNSUPPORTED_PRODUCT, NULL);
+            result = -1;
 #endif
+            break;
         case format_hdf5:
 #ifdef HAVE_HDF5
-            if (harp_import_global_attributes_hdf5(filename, &metadata->datetime_start, &metadata->datetime_stop,
-                                                   metadata->dimension, &metadata->source_product) != 0)
-            {
-                harp_product_metadata_delete(metadata);
-                return -1;
-            }
-            break;
+            result = harp_import_global_attributes_hdf5(filename, &metadata->datetime_start, &metadata->datetime_stop,
+                                                        metadata->dimension, &metadata->source_product);
 #else
-            coda_set_error(HARP_ERROR_NO_HDF5_SUPPORT, NULL);
-            return -1;
+            harp_set_error(HARP_ERROR_UNSUPPORTED_PRODUCT, NULL);
+            result = -1;
 #endif
+            break;
         case format_netcdf:
-            if (harp_import_global_attributes_netcdf(filename, &metadata->datetime_start, &metadata->datetime_stop,
-                                                     metadata->dimension, &metadata->source_product) != 0)
-            {
-                harp_product_metadata_delete(metadata);
-                return -1;
-            }
+            result = harp_import_global_attributes_netcdf(filename, &metadata->datetime_start, &metadata->datetime_stop,
+                                                          metadata->dimension, &metadata->source_product);
             break;
         default:
+            harp_set_error(HARP_ERROR_UNSUPPORTED_PRODUCT, NULL);
+            result = -1;
+    }
+
+    if (result != 0)
+    {
+        if (harp_errno != HARP_ERROR_UNSUPPORTED_PRODUCT)
+        {
             harp_product_metadata_delete(metadata);
-            harp_set_error(HARP_ERROR_UNSUPPORTED_PRODUCT,
-                           "extraction of global attributes only supported for HARP products");
             return -1;
+        }
+
+        /* try ingest */
+        if (harp_ingest_global_attributes(filename, options, &metadata->datetime_start, &metadata->datetime_stop,
+                                          metadata->dimension, &metadata->source_product) != 0)
+        {
+            harp_product_metadata_delete(metadata);
+            return -1;
+        }
     }
 
     *new_metadata = metadata;

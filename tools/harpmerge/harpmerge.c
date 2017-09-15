@@ -213,7 +213,7 @@ static int merge(int argc, char *argv[])
         {
             return -1;
         }
-        if (harp_dataset_import(dataset, argv[i]) != 0)
+        if (harp_dataset_import(dataset, argv[i], options) != 0)
         {
             harp_dataset_delete(dataset);
             return -1;

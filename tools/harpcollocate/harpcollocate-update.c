@@ -215,7 +215,7 @@ int update(int argc, char *argv[])
         harp_collocation_result_delete(collocation_result);
         return -1;
     }
-    if (harp_dataset_import(dataset_a, argv[3]) != 0)
+    if (harp_dataset_import(dataset_a, argv[3], NULL) != 0)
     {
         harp_collocation_result_delete(collocation_result);
         harp_dataset_delete(dataset_a);
@@ -227,7 +227,7 @@ int update(int argc, char *argv[])
         harp_dataset_delete(dataset_a);
         return -1;
     }
-    if (harp_dataset_import(dataset_b, argv[4]) != 0)
+    if (harp_dataset_import(dataset_b, argv[4], NULL) != 0)
     {
         harp_collocation_result_delete(collocation_result);
         harp_dataset_delete(dataset_a);

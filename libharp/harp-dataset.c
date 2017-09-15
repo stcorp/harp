@@ -119,12 +119,12 @@ static int check_file(const char *filename)
     return 0;
 }
 
-static int add_file(harp_dataset *dataset, const char *filename)
+static int add_file(harp_dataset *dataset, const char *filename, const char *options)
 {
     harp_product_metadata *metadata = NULL;
 
     /* Import the metadata */
-    if (harp_import_product_metadata(filename, &metadata) != 0)
+    if (harp_import_product_metadata(filename, options, &metadata) != 0)
     {
         return -1;
     }
@@ -132,7 +132,7 @@ static int add_file(harp_dataset *dataset, const char *filename)
     return harp_dataset_add_product(dataset, metadata->source_product, metadata);
 }
 
-static int add_directory(harp_dataset *dataset, const char *pathname)
+static int add_directory(harp_dataset *dataset, const char *pathname, const char *options)
 {
 #ifdef WIN32
     WIN32_FIND_DATA FileData;
@@ -184,7 +184,7 @@ static int add_directory(harp_dataset *dataset, const char *pathname)
                 FindClose(hSearch);
                 return -1;
             }
-            if (add_file(dataset, filepath) != 0)
+            if (add_file(dataset, filepath, options) != 0)
             {
                 return -1;
             }
@@ -263,7 +263,7 @@ static int add_directory(harp_dataset *dataset, const char *pathname)
             closedir(dirp);
             return -1;
         }
-        if (add_file(dataset, filepath) != 0)
+        if (add_file(dataset, filepath, options) != 0)
         {
             return -1;
         }
@@ -383,11 +383,13 @@ LIBHARP_API void harp_dataset_print(harp_dataset *dataset, int (*print) (const c
  * If the dataset already contains a source_product, it's metadata is set.
  * \param dataset Dataset to import the dataset metadata into.
  * \param path Path to either a directory containing harp product files or a single harp product filepath.
+ * \param operations string (optional) containing actions to apply as part of the import; should be specified as a
+ * semi-colon separated string of operations.
  * \return
  *   \arg \c 0, Success.
  *   \arg \c -1, Error occurred (check #harp_errno).
  */
-LIBHARP_API int harp_dataset_import(harp_dataset *dataset, const char *path)
+LIBHARP_API int harp_dataset_import(harp_dataset *dataset, const char *path, const char *options)
 {
     int result;
 
@@ -398,11 +400,11 @@ LIBHARP_API int harp_dataset_import(harp_dataset *dataset, const char *path)
     }
     if (result)
     {
-        return add_directory(dataset, path);
+        return add_directory(dataset, path, options);
     }
     else
     {
-        return add_file(dataset, path);
+        return add_file(dataset, path, options);
     }
 }
 

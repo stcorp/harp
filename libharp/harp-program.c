@@ -693,7 +693,7 @@ static int execute_derive_smoothed_column_collocated_dataset
     {
         harp_collocation_result_swap_datasets(collocation_result);
     }
-    if (harp_dataset_import(collocation_result->dataset_b, operation->dataset_dir) != 0)
+    if (harp_dataset_import(collocation_result->dataset_b, operation->dataset_dir, NULL) != 0)
     {
         harp_collocation_result_delete(collocation_result);
         return -1;
@@ -879,7 +879,7 @@ static int execute_regrid_collocated_dataset(harp_product *product, harp_operati
     {
         harp_collocation_result_swap_datasets(collocation_result);
     }
-    if (harp_dataset_import(collocation_result->dataset_b, operation->dataset_dir) != 0)
+    if (harp_dataset_import(collocation_result->dataset_b, operation->dataset_dir, NULL) != 0)
     {
         harp_collocation_result_delete(collocation_result);
         return -1;
@@ -1029,7 +1029,7 @@ static int execute_smooth_collocated_dataset(harp_product *product, harp_operati
     {
         harp_collocation_result_swap_datasets(collocation_result);
     }
-    if (harp_dataset_import(collocation_result->dataset_b, operation->dataset_dir) != 0)
+    if (harp_dataset_import(collocation_result->dataset_b, operation->dataset_dir, NULL) != 0)
     {
         harp_collocation_result_delete(collocation_result);
         return -1;

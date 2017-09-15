@@ -1474,12 +1474,12 @@ int matchup(int argc, char *argv[])
         }
     }
 
-    if (harp_dataset_import(info->dataset_a, argv[argc - 3]) != 0)
+    if (harp_dataset_import(info->dataset_a, argv[argc - 3], NULL) != 0)
     {
         collocation_info_delete(info);
         return -1;
     }
-    if (harp_dataset_import(info->dataset_b, argv[argc - 2]) != 0)
+    if (harp_dataset_import(info->dataset_b, argv[argc - 2], NULL) != 0)
     {
         collocation_info_delete(info);
         return -1;

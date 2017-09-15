@@ -1955,6 +1955,14 @@ int harp_ingest(const char *filename, const char *operations, const char *option
     return status;
 }
 
+int harp_ingest_global_attributes(const char *filename, const char *options, double *datetime_start,
+                                  double *datetime_stop, long dimension[], char **source_product)
+{
+    harp_set_error(HARP_ERROR_UNSUPPORTED_PRODUCT,
+                   "extraction of global attributes only supported for HARP products");
+    return -1;
+}
+
 int harp_ingest_test(const char *filename, int (*print) (const char *, ...))
 {
     coda_product *product = NULL;

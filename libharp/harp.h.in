@@ -551,13 +551,14 @@ LIBHARP_API int harp_product_get_smoothed_column_using_collocated_dataset(harp_p
                                                                           harp_variable **variable);
 
 /* Product Metadata */
-LIBHARP_API int harp_import_product_metadata(const char *filename, harp_product_metadata **metadata);
+LIBHARP_API int harp_import_product_metadata(const char *filenames, const char *options,
+                                             harp_product_metadata **metadata);
 LIBHARP_API int harp_product_metadata_new(harp_product_metadata **new_metadata);
 LIBHARP_API void harp_product_metadata_delete(harp_product_metadata *metadata);
 LIBHARP_API void harp_product_metadata_print(harp_product_metadata *metadata, int (*print) (const char *, ...));
 
 /* Dataset */
-LIBHARP_API int harp_dataset_import(harp_dataset *dataset, const char *path);
+LIBHARP_API int harp_dataset_import(harp_dataset *dataset, const char *path, const char *options);
 LIBHARP_API int harp_dataset_new(harp_dataset **dataset);
 LIBHARP_API void harp_dataset_delete(harp_dataset *dataset);
 LIBHARP_API void harp_dataset_print(harp_dataset *dataset, int (*print) (const char *, ...));

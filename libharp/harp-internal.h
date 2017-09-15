@@ -206,6 +206,8 @@ int harp_parse_file_convention(const char *str, int *major, int *minor);
 /* Ingest */
 int harp_ingest(const char *filename, const char *operations, const char *options, harp_product **product);
 int harp_ingest_test(const char *filename, int (*print) (const char *, ...));
+int harp_ingest_global_attributes(const char *filename, const char *options, double *datetime_start,
+                                  double *datetime_stop, long dimension[], char **source_product);
 void harp_ingestion_done(void);
 
 /* Units */
