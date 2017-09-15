@@ -2,12 +2,18 @@ IDL interface
 ================
 
 The Interactive Data Language (IDL) interface consists of a Dynamic Loadable
-Module (DLM) that provides the `harp_import`, `harp_export` and `harp_unload`
-functions.
+Module (DLM) that provides the `harp_import`, `harp_export`, `harp_version`,
+and 'harp_unload' functions.
 
 Products are represented in IDL as structures which can be manipulated freely
 from within IDL. A product structure contains a field for each variable
-contained in the product.
+contained in the product and contains the global attributes `source_product`
+and `history` (if available). Each variable itself is again a structure containing
+the variable attributes (`unit`, `description`, etc.) and a field `data` that
+contains the data of the variable. The structure of a variable also contains a
+field `name` that contains the case-sensitive name of the variable and (if the
+variable is not a scalar) a field `dimension` that contains a list of dimension
+names for each dimension of the variable.
 
 Products can be exported as HARP compliant products in any of the file formats
 supported by the HARP C library (netCDF/HDF4/HDF5). Such exported products can
@@ -16,8 +22,9 @@ subsequently be processed further using the :doc:`HARP command line tools <tools
 Dimension types
 ---------------
 
-The HARP C library defines several dimension types (time, vertical, latitude
-etc.) but this information is not available in IDL.
+Each non-scalar variable will have a `dimension` field in its structure, which
+is a list of strings representing the dimension types (e.g. `time`, `vertical`,
+`latitude`, etc.).
 
 Data types
 ----------
@@ -51,11 +58,19 @@ the type map.
 | harp_type_string | string   |
 +------------------+----------+
 
+Note that the IDL `byte` type is an unsigned type (since IDL does not have any
+8-bit signed type).
+The HARP IDL interface will just hard cast signed int8 values to unsigned uint8
+values (e.g. -1 will become 255). Make sure that in your operations within IDL
+on these 8-bit integers you als treat them as mapped signed integers.
+Note also that this holds for the `valid_min` and `valid_max` attributes
+(e.g. `valid_min` may end up being higher than `valid_max` in IDL).
+
 Unicode
 -------
 
 Zero-terminated C strings received from the HARP C library are always converted
-to instances of type ``string`` in IDL which is an unicode string.
+to instances of type ``string`` in IDL which are unicode strings.
 
 Examples
 --------
@@ -69,10 +84,10 @@ Examples
    help, prod, /struct
 
    ; Print information about the variable 'temperature'.
-   help, prod.temperature
+   help, prod.temperature, /struct
 
    ; Print the contents of the variable 'temperature'.
-   print, prod.temperature
+   print, prod.temperature.data
 
    ; Export the updated product as an HDF4 file (the format must be
    ; HDF4, HDF5 or netCDF, if no format is specified netCDF is used).
@@ -135,3 +150,14 @@ This section describes the functions defined by the HARP IDL interface.
    major, minor, and revision numbers, separated by dots.
 
    :returns: HARP version number.
+
+.. py:function:: harp_unload()
+
+   The harp_unload procedure will clean up any HARP resources. At the first
+   call to a HARP IDL function the HARP C Library will be initialized which
+   will require some memory.
+   A call to harp_unload can then be used to clean up these HARP resources.
+   After a clean up, the first call to a HARP IDL function will initialize
+   the HARP C Library again.
+
+   This function may be (slightly) useful on systems with little memory.

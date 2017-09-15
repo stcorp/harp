@@ -166,18 +166,25 @@
   <div class="section" id="idl-interface">
 <h1>IDL interface</h1>
 <p>The Interactive Data Language (IDL) interface consists of a Dynamic Loadable
-Module (DLM) that provides the <cite>harp_import</cite>, <cite>harp_export</cite> and <cite>harp_unload</cite>
-functions.</p>
+Module (DLM) that provides the <cite>harp_import</cite>, <cite>harp_export</cite>, <cite>harp_version</cite>,
+and &#8216;harp_unload&#8217; functions.</p>
 <p>Products are represented in IDL as structures which can be manipulated freely
 from within IDL. A product structure contains a field for each variable
-contained in the product.</p>
+contained in the product and contains the global attributes <cite>source_product</cite>
+and <cite>history</cite> (if available). Each variable itself is again a structure containing
+the variable attributes (<cite>unit</cite>, <cite>description</cite>, etc.) and a field <cite>data</cite> that
+contains the data of the variable. The structure of a variable also contains a
+field <cite>name</cite> that contains the case-sensitive name of the variable and (if the
+variable is not a scalar) a field <cite>dimension</cite> that contains a list of dimension
+names for each dimension of the variable.</p>
 <p>Products can be exported as HARP compliant products in any of the file formats
 supported by the HARP C library (netCDF/HDF4/HDF5). Such exported products can
 subsequently be processed further using the <a class="reference internal" href="tools.html"><span class="doc">HARP command line tools</span></a>.</p>
 <div class="section" id="dimension-types">
 <h2>Dimension types</h2>
-<p>The HARP C library defines several dimension types (time, vertical, latitude
-etc.) but this information is not available in IDL.</p>
+<p>Each non-scalar variable will have a <cite>dimension</cite> field in its structure, which
+is a list of strings representing the dimension types (e.g. <cite>time</cite>, <cite>vertical</cite>,
+<cite>latitude</cite>, etc.).</p>
 </div>
 <div class="section" id="data-types">
 <h2>Data types</h2>
@@ -222,25 +229,32 @@ the type map.</p>
 </tr>
 </tbody>
 </table>
+<p>Note that the IDL <cite>byte</cite> type is an unsigned type (since IDL does not have any
+8-bit signed type).
+The HARP IDL interface will just hard cast signed int8 values to unsigned uint8
+values (e.g. -1 will become 255). Make sure that in your operations within IDL
+on these 8-bit integers you als treat them as mapped signed integers.
+Note also that this holds for the <cite>valid_min</cite> and <cite>valid_max</cite> attributes
+(e.g. <cite>valid_min</cite> may end up being higher than <cite>valid_max</cite> in IDL).</p>
 </div>
 <div class="section" id="unicode">
 <h2>Unicode</h2>
 <p>Zero-terminated C strings received from the HARP C library are always converted
-to instances of type <code class="docutils literal"><span class="pre">string</span></code> in IDL which is an unicode string.</p>
+to instances of type <code class="docutils literal"><span class="pre">string</span></code> in IDL which are unicode strings.</p>
 </div>
 <div class="section" id="examples">
 <h2>Examples</h2>
-<div class="highlight-IDL"><div class="highlight"><pre><span></span><span class="c c-Singleline">; Import a file as a HARP product/</span>
+<div class="highlight-IDL"><div class="highlight"><pre><span></span><span class="c c-Singleline">; Import a file as a HARP product.</span>
 prod <span class="o">=</span> harp_import(<span class="s2">&quot;filename.ext&quot;</span>)
 
 <span class="c c-Singleline">; Print information about the product.</span>
 <span class="nb">help</span>, prod, <span class="o">/</span>struct
 
 <span class="c c-Singleline">; Print information about the variable &#39;temperature&#39;.</span>
-<span class="nb">help</span>, prod.temperature
+<span class="nb">help</span>, prod.temperature, <span class="o">/</span>struct
 
 <span class="c c-Singleline">; Print the contents of the variable &#39;temperature&#39;.</span>
-<span class="nb">print</span>, prod.temperature
+<span class="nb">print</span>, prod.temperature.data
 
 <span class="c c-Singleline">; Export the updated product as an HDF4 file (the format must be</span>
 <span class="c c-Singleline">; HDF4, HDF5 or netCDF, if no format is specified netCDF is used).</span>
@@ -331,6 +345,18 @@ major, minor, and revision numbers, separated by dots.</p>
 </tr>
 </tbody>
 </table>
+</dd></dl>
+
+<dl class="function">
+<dt id="harp_unload">
+<code class="descname">harp_unload</code><span class="sig-paren">(</span><span class="sig-paren">)</span></dt>
+<dd><p>The harp_unload procedure will clean up any HARP resources. At the first
+call to a HARP IDL function the HARP C Library will be initialized which
+will require some memory.
+A call to harp_unload can then be used to clean up these HARP resources.
+After a clean up, the first call to a HARP IDL function will initialize
+the HARP C Library again.</p>
+<p>This function may be (slightly) useful on systems with little memory.</p>
 </dd></dl>
 
 </div>
