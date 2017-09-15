@@ -480,7 +480,7 @@ int harp_ingestion_module_npp_suomi_omps_totals_l2_init(void)
     product_definition = harp_ingestion_register_product(module, "NPP_SUOMI_L2_OMPS_EDR_OOTC", NULL, read_dimensions);
 
     /* datetime */
-    description = "time of the measurement (in seconds since 2000-01-01 00:00:00)";
+    description = "time of the measurement";
     variable_definition =
         harp_ingestion_register_variable_full_read(product_definition, "datetime", harp_type_double, 1, dimension_type,
                                                    NULL, description, "seconds since 2000-01-01", NULL, read_datetime);

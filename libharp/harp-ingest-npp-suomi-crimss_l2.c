@@ -482,7 +482,7 @@ static void register_product(harp_ingestion_module *module, short dataset)
     }
 
     /* datetime */
-    description = "time of the measurement (in seconds since 2000-01-01 00:00:00)";
+    description = "time of the measurement";
     variable_definition =
         harp_ingestion_register_variable_full_read(product_definition, "datetime", harp_type_double, 1, dimension_type,
                                                    NULL, description, "seconds since 2000-01-01", NULL, read_datetime);

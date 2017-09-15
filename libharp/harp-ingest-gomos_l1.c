@@ -869,7 +869,7 @@ static void register_limb_product(void)
     harp_variable_definition_add_mapping(variable_definition, NULL, NULL, path, "Will be set to nm");
 
     /* datetime_length */
-    description = "integration time for a readout (in seconds)";
+    description = "integration time for a readout";
     variable_definition =
         harp_ingestion_register_variable_full_read(product_definition, "datetime_length", harp_type_double, 0,
                                                    dimension_type, NULL, description, "s", NULL,
@@ -1187,7 +1187,7 @@ static void register_tra_product(void)
     harp_variable_definition_add_mapping(variable_definition, NULL, NULL, path, NULL);
 
     /* datetime_length */
-    description = "integration time for a readout (in seconds)";
+    description = "integration time for a readout";
     variable_definition =
         harp_ingestion_register_variable_full_read(product_definition, "datetime_length", harp_type_double, 0,
                                                    dimension_type, NULL, description, "s", NULL,

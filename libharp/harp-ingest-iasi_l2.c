@@ -613,7 +613,7 @@ int harp_ingestion_module_iasi_l2_init(void)
         harp_ingestion_register_product(module, "IASI_L2", "IASI L2 total column densities", read_dimensions);
 
     /* datetime */
-    description = "The time of the measurement at end of integration time (in seconds since 2000-01-01 00:00:00)";
+    description = "The time of the measurement at end of integration time";
     variable_definition =
         harp_ingestion_register_variable_block_read(product_definition, "datetime", harp_type_double, 1,
                                                     dimension_type, NULL, description, "seconds since 2000-01-01",

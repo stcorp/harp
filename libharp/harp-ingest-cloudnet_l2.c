@@ -350,7 +350,7 @@ int harp_ingestion_module_actris_clouds_l2_aerosol_init(void)
     product_definition = harp_ingestion_register_product(module, "CLOUDNET_L2_classification", NULL, read_dimensions);
 
     /* datetime */
-    description = "date and time (in seconds since 2000-01-01 00:00:00)";
+    description = "date and time";
     variable_definition =
         harp_ingestion_register_variable_full_read(product_definition, "datetime", harp_type_double, 1, dimension_type,
                                                    NULL, description, "seconds since 2000-01-01", NULL, read_datetime);

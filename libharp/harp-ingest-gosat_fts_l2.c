@@ -555,7 +555,7 @@ static void register_common_variables(harp_product_definition *product_definitio
     const char *path;
 
     /* datetime */
-    description = "time of the measurement at end of integration time (in seconds since 2000-01-01 00:00:00)";
+    description = "time of the measurement at end of integration time";
     variable_definition =
         harp_ingestion_register_variable_block_read(product_definition, "datetime", harp_type_double, 1,
                                                     dimension_type, NULL, description, "seconds since 2000-01-01",

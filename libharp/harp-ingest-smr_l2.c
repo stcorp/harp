@@ -660,7 +660,7 @@ int harp_ingestion_module_smr_l2_init(void)
                                                    NULL, description, "seconds since 2000-01-01", NULL, read_datetime);
     path = "/GHz/Data_Vgroup/Geolocation/Time[]";
     harp_variable_definition_add_mapping(variable_definition, NULL, NULL, path,
-                                         "The time converted from TAI93 to seconds since 2000-01-01");
+                                         "time converted from TAI93 to seconds since 2000-01-01");
 
     /* latitude */
     description = "center latitude for a profile";

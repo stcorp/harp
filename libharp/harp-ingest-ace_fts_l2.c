@@ -779,7 +779,7 @@ static void register_general_fields(harp_product_definition *product_definition)
     const char *path;
 
     /* datetime */
-    description = "date and time of occultation 30 km geometric tangent point (in seconds since 2000-01-01 00:00:00)";
+    description = "date and time of occultation 30 km geometric tangent point";
     variable_definition =
         harp_ingestion_register_variable_full_read(product_definition, "datetime", harp_type_double, 1,
                                                    datetime_dimension_type, NULL, description,

@@ -356,7 +356,7 @@ static void register_aerosol_product(void)
                                                    NULL, description, "seconds since 2000-01-01", NULL, read_datetime);
     path = "/HDFEOS/SWATHS/OSIRIS_Odin_Aerosol_MART/Geolocation_Fields/Time[]";
     harp_variable_definition_add_mapping(variable_definition, NULL, NULL, path,
-                                         "The time converted from TAI93 to seconds since 2000-01-01");
+                                         "time converted from TAI93 to seconds since 2000-01-01");
 
     /* latitude */
     description = "center latitude for a profile";
@@ -383,7 +383,7 @@ static void register_aerosol_product(void)
                                                    NULL, description, "km", NULL, read_altitude);
     path = "/HDFEOS/SWATHS/OSIRIS_Odin_Aerosol_MART/Geolocation_Fields/Altitude[]";
     harp_variable_definition_add_mapping(variable_definition, NULL, NULL, path,
-                                         "The altitude information will be duplicated for each profile");
+                                         "altitude information will be duplicated for each profile");
 
     /* aerosol_number_density */
     description = "aerosol number density";
@@ -453,7 +453,7 @@ static void register_no2_oe_product(void)
                                                    NULL, description, "seconds since 2000-01-01", NULL, read_datetime);
     path = "/HDFEOS/SWATHS/OSIRIS_Odin_NO2_DOAS_OE/Geolocation_Fields/Time[]";
     harp_variable_definition_add_mapping(variable_definition, NULL, NULL, path,
-                                         "The time converted from TAI93 to seconds since 2000-01-01");
+                                         "time converted from TAI93 to seconds since 2000-01-01");
 
     /* latitude */
     description = "center latitude for a profile";
@@ -480,7 +480,7 @@ static void register_no2_oe_product(void)
                                                    NULL, description, "km", NULL, read_altitude);
     path = "/HDFEOS/SWATHS/OSIRIS_Odin_NO2_DOAS_OE/Geolocation_Fields/Altitude[]";
     harp_variable_definition_add_mapping(variable_definition, NULL, NULL, path,
-                                         "The altitude information will be duplicated for each profile");
+                                         "altitude information will be duplicated for each profile");
 
     /* no2_vmr */
     description = "volume mixing ratio of NO2";
@@ -556,7 +556,7 @@ static void register_no2_mart_product(void)
                                                    NULL, description, "seconds since 2000-01-01", NULL, read_datetime);
     path = "/HDFEOS/SWATHS/OSIRIS_Odin_NO2MART/Geolocation_Fields/Time[]";
     harp_variable_definition_add_mapping(variable_definition, NULL, NULL, path,
-                                         "The time converted from TAI93 to seconds since 2000-01-01");
+                                         "time converted from TAI93 to seconds since 2000-01-01");
 
     /* latitude */
     description = "center latitude for a profile";
@@ -583,7 +583,7 @@ static void register_no2_mart_product(void)
                                                    NULL, description, "km", NULL, read_altitude);
     path = "/HDFEOS/SWATHS/OSIRIS_Odin_NO2MART/Geolocation_Fields/Altitude[]";
     harp_variable_definition_add_mapping(variable_definition, NULL, NULL, path,
-                                         "The altitude information will be duplicated for each profile");
+                                         "altitude information will be duplicated for each profile");
 
     /* no2_vmr */
     description = "volume mixing ratio of NO2";
@@ -659,7 +659,7 @@ static void register_o3_oe_product(void)
                                                    NULL, description, "seconds since 2000-01-01", NULL, read_datetime);
     path = "/HDFEOS/SWATHS/OSIRIS_Odin_O3_Chappuis_triplet_OE/Geolocation_Fields/Time[]";
     harp_variable_definition_add_mapping(variable_definition, NULL, NULL, path,
-                                         "The time converted from TAI93 to seconds since 2000-01-01");
+                                         "time converted from TAI93 to seconds since 2000-01-01");
 
     /* latitude */
     description = "center latitude for a profile";
@@ -686,7 +686,7 @@ static void register_o3_oe_product(void)
                                                    NULL, description, "km", NULL, read_altitude);
     path = "/HDFEOS/SWATHS/OSIRIS_Odin_O3_Chappuis_triplet_OE/Geolocation_Fields/Altitude[]";
     harp_variable_definition_add_mapping(variable_definition, NULL, NULL, path,
-                                         "The altitude information will be duplicated for each profile");
+                                         "altitude information will be duplicated for each profile");
 
     /* o3_vmr */
     description = "volume mixing ratio of O3";
@@ -763,7 +763,7 @@ static void register_o3_mart_product(void)
                                                    NULL, description, "seconds since 2000-01-01", NULL, read_datetime);
     path = "/HDFEOS/SWATHS/OSIRIS_Odin_O3MART/Geolocation_Fields/Time[]";
     harp_variable_definition_add_mapping(variable_definition, NULL, NULL, path,
-                                         "The time converted from TAI93 to seconds since 2000-01-01");
+                                         "time converted from TAI93 to seconds since 2000-01-01");
 
     /* latitude */
     description = "center latitude for a profile";
@@ -790,7 +790,7 @@ static void register_o3_mart_product(void)
                                                    NULL, description, "km", NULL, read_altitude);
     path = "/HDFEOS/SWATHS/OSIRIS_Odin_O3MART/Geolocation_Fields/Altitude[]";
     harp_variable_definition_add_mapping(variable_definition, NULL, NULL, path,
-                                         "The altitude information will be duplicated for each profile");
+                                         "altitude information will be duplicated for each profile");
 
     /* o3_vmr */
     description = "volume mixing ratio of O3";

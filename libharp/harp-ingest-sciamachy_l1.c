@@ -933,7 +933,7 @@ static int init_nadir_limb_occultation_dimensions(ingest_info *info)
     }
     if (!available)
     {
-        harp_set_error(HARP_ERROR_INGESTION, "This file does not contain %s data.", info->datasource);
+        harp_set_error(HARP_ERROR_INGESTION, "file does not contain %s data", info->datasource);
         return -1;
     }
 
@@ -1362,7 +1362,7 @@ static void register_nadir_limb_occultation_product(harp_ingestion_module *modul
     harp_variable_definition_add_mapping(variable_definition, "data=occultation", NULL, path, NULL);
 
     /* integration_time */
-    description = "integration time for a readout (in seconds)";
+    description = "integration time for a readout";
     variable_definition =
         harp_ingestion_register_variable_full_read(product_definition, "integration_time", harp_type_double, 2,
                                                    dimension_type, NULL, description, "s", NULL, read_integration_time);
@@ -1525,7 +1525,7 @@ static int init_sun_reference_dimensions(ingest_info *info)
     }
     if (!available)
     {
-        harp_set_error(HARP_ERROR_INGESTION, "This file does not contain %s data.", info->datasource);
+        harp_set_error(HARP_ERROR_INGESTION, "file does not contain %s data", info->datasource);
         return -1;
     }
 
