@@ -1801,7 +1801,7 @@ static int read_smr_datetime_start(void *user_data, harp_array data)
     return get_smr_datetime((ingest_info *)user_data, data.double_data, "START_UTC_SUN");
 }
 
-static int read_smr_datetime_end(void *user_data, harp_array data)
+static int read_smr_datetime_stop(void *user_data, harp_array data)
 {
     return get_smr_datetime((ingest_info *)user_data, data.double_data, "END_UTC_SUN");
 }
@@ -1915,13 +1915,13 @@ static void register_variables_reference_spectrum_fields(harp_product_definition
     path = "/VIADR_SMR[]/START_UTC_SUN";
     harp_variable_definition_add_mapping(variable_definition, NULL, NULL, path, NULL);
 
-    /* end time */
+    /* stop time */
     description = "end UTC date/time of Sun calibration mode measurement";
     variable_definition =
-        harp_ingestion_register_variable_full_read(product_definition, "datetime_end", harp_type_double, 1,
+        harp_ingestion_register_variable_full_read(product_definition, "datetime_stop", harp_type_double, 1,
                                                    dimension_type, NULL, description, "seconds since 2000-01-01",
-                                                   NULL, read_smr_datetime_end);
-    path = "/VIADR_SMR[]/START_UTC_SUN";
+                                                   NULL, read_smr_datetime_stop);
+    path = "/VIADR_SMR[]/END_UTC_SUN";
     harp_variable_definition_add_mapping(variable_definition, NULL, NULL, path, NULL);
 
     /* wavelength_photon_irradiance */

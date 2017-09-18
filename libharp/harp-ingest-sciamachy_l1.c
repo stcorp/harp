@@ -134,7 +134,7 @@ static void ingestion_done(void *user_data)
 
 /* Start of code for the ingestion of a nadir/limb/occultation spectrum */
 
-static int get_datetime_data(ingest_info *info, double *double_data_array)
+static int get_datetime_start_data(ingest_info *info, double *double_data_array)
 {
     coda_cursor cursor;
     double *double_data, dsr_time;
@@ -205,6 +205,82 @@ static int get_datetime_data(ingest_info *info, double *double_data_array)
             for (j = 0; j < num_rep_geo; j++)
             {
                 *double_data = dsr_time + j * info->min_integr_time_per_state[nr_state_current_datasource];
+                double_data++;
+            }
+            nr_state_current_datasource++;
+        }
+        if (i < (num_states - 1))
+        {
+            if (coda_cursor_goto_next_array_element(&cursor) != 0)
+            {
+                harp_set_error(HARP_ERROR_CODA, NULL);
+                return -1;
+            }
+        }
+    }
+    return 0;
+}
+
+static int get_datetime_length_data(ingest_info *info, double *double_data_array)
+{
+    coda_cursor cursor;
+    double *double_data;
+    long i, num_states, nr_state_current_datasource;
+    uint16_t num_rep_geo, j;
+    uint8_t mds_type;
+
+    if (coda_cursor_set_product(&cursor, info->product) != 0)
+    {
+        harp_set_error(HARP_ERROR_CODA, NULL);
+        return -1;
+    }
+    if (coda_cursor_goto_record_field_by_name(&cursor, "states") != 0)
+    {
+        harp_set_error(HARP_ERROR_CODA, NULL);
+        return -1;
+    }
+    if (coda_cursor_get_num_elements(&cursor, &num_states) != 0)
+    {
+        harp_set_error(HARP_ERROR_CODA, NULL);
+        return -1;
+    }
+    if (coda_cursor_goto_first_array_element(&cursor) != 0)
+    {
+        harp_set_error(HARP_ERROR_CODA, NULL);
+        return -1;
+    }
+    double_data = double_data_array;
+    nr_state_current_datasource = 0;
+    for (i = 0; i < num_states; i++)
+    {
+        if (coda_cursor_goto_record_field_by_name(&cursor, "mds_type") != 0)
+        {
+            harp_set_error(HARP_ERROR_CODA, NULL);
+            return -1;
+        }
+        if (coda_cursor_read_uint8(&cursor, &mds_type) != 0)
+        {
+            harp_set_error(HARP_ERROR_CODA, NULL);
+            return -1;
+        }
+        coda_cursor_goto_parent(&cursor);
+        if (mds_type == info->mds_type)
+        {
+            /* datetime length = minimum_integration_time for readout */
+            if (coda_cursor_goto_record_field_by_name(&cursor, "num_rep_geo") != 0)
+            {
+                harp_set_error(HARP_ERROR_CODA, NULL);
+                return -1;
+            }
+            if (coda_cursor_read_uint16(&cursor, &num_rep_geo) != 0)
+            {
+                harp_set_error(HARP_ERROR_CODA, NULL);
+                return -1;
+            }
+            coda_cursor_goto_parent(&cursor);
+            for (j = 0; j < num_rep_geo; j++)
+            {
+                *double_data = info->min_integr_time_per_state[nr_state_current_datasource];
                 double_data++;
             }
             nr_state_current_datasource++;
@@ -633,9 +709,14 @@ static int get_integration_time(ingest_info *info, double *double_data_array)
     return 0;
 }
 
-static int read_datetime(void *user_data, harp_array data)
+static int read_datetime_start(void *user_data, harp_array data)
 {
-    return get_datetime_data((ingest_info *)user_data, data.double_data);
+    return get_datetime_start_data((ingest_info *)user_data, data.double_data);
+}
+
+static int read_datetime_length(void *user_data, harp_array data)
+{
+    return get_datetime_length_data((ingest_info *)user_data, data.double_data);
 }
 
 static int read_altitude(void *user_data, harp_array data)
@@ -1214,15 +1295,24 @@ static void register_nadir_limb_occultation_product(harp_ingestion_module *modul
     bounds_dimension_type[0] = harp_dimension_time;
     bounds_dimension_type[1] = harp_dimension_independent;
 
-    /* datetime */
-    description = "time of the measurement";
+    /* datetime_start */
+    description = "start time of the measurement";
     variable_definition =
-        harp_ingestion_register_variable_full_read(product_definition, "datetime", harp_type_double, 1, dimension_type,
-                                                   NULL, description, "seconds since 2000-01-01", NULL, read_datetime);
+        harp_ingestion_register_variable_full_read(product_definition, "datetime_start", harp_type_double, 1,
+                                                   dimension_type, NULL, description, "seconds since 2000-01-01", NULL,
+                                                   read_datetime_start);
     path = "/states/dsr_time";
     description =
         "the dsr_time is increased by the number of the applicable readout multiplied by the minimum integration time";
     harp_variable_definition_add_mapping(variable_definition, NULL, NULL, path, description);
+
+    /* datetime_length */
+    description = "shortest integration time of all measurements at this time";
+    variable_definition =
+        harp_ingestion_register_variable_full_read(product_definition, "datetime_length", harp_type_double, 1,
+                                                   dimension_type, NULL, description, "s", NULL, read_datetime_length);
+    path = "/states[]/clus_config[]/intgr_time";
+    harp_variable_definition_add_mapping(variable_definition, NULL, NULL, path, NULL);
 
     /* altitude */
     description = "tangent altitude for each measurement";

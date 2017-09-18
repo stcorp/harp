@@ -798,13 +798,22 @@ static void register_limb_product(void)
     dimension_type[0] = harp_dimension_time;
     dimension_type[1] = harp_dimension_spectral;
 
-    /* datetime */
-    description = "time of the measurement";
+    /* datetime_start */
+    description = "start time of the measurement";
     variable_definition =
-        harp_ingestion_register_variable_full_read(product_definition, "datetime", harp_type_double, 1, dimension_type,
-                                                   NULL, description, "seconds since 2000-01-01", NULL,
+        harp_ingestion_register_variable_full_read(product_definition, "datetime_start", harp_type_double, 1,
+                                                   dimension_type, NULL, description, "seconds since 2000-01-01", NULL,
                                                    read_lim_datetime);
     path = "/lim_mds/dsr_time";
+    harp_variable_definition_add_mapping(variable_definition, NULL, NULL, path, NULL);
+
+    /* datetime_length */
+    description = "integration time for a readout";
+    variable_definition =
+        harp_ingestion_register_variable_full_read(product_definition, "datetime_length", harp_type_double, 0,
+                                                   dimension_type, NULL, description, "s", NULL,
+                                                   read_lim_integration_time);
+    path = "/sph/samp_duration";
     harp_variable_definition_add_mapping(variable_definition, NULL, NULL, path, NULL);
 
     /* latitude */
@@ -867,15 +876,6 @@ static void register_limb_product(void)
                                                    read_lim_wavelength);
     path = "/lim_nom_wav_assignment[]/nom_wl[]";
     harp_variable_definition_add_mapping(variable_definition, NULL, NULL, path, "Will be set to nm");
-
-    /* datetime_length */
-    description = "integration time for a readout";
-    variable_definition =
-        harp_ingestion_register_variable_full_read(product_definition, "datetime_length", harp_type_double, 0,
-                                                   dimension_type, NULL, description, "s", NULL,
-                                                   read_lim_integration_time);
-    path = "/sph/samp_duration";
-    harp_variable_definition_add_mapping(variable_definition, NULL, NULL, path, NULL);
 
     /* sensor_latitude */
     description = "latitude of the satellite";
@@ -1118,13 +1118,22 @@ static void register_tra_product(void)
     dimension_type[0] = harp_dimension_time;
     dimension_type[1] = harp_dimension_spectral;
 
-    /* datetime */
-    description = "time of the measurement";
+    /* datetime_start */
+    description = "start time of the measurement";
     variable_definition =
-        harp_ingestion_register_variable_full_read(product_definition, "datetime", harp_type_double, 1, dimension_type,
-                                                   NULL, description, "seconds since 2000-01-01", NULL,
+        harp_ingestion_register_variable_full_read(product_definition, "datetime_start", harp_type_double, 1,
+                                                   dimension_type, NULL, description, "seconds since 2000-01-01", NULL,
                                                    read_tra_datetime);
     path = "/tra_transmission/dsr_time";
+    harp_variable_definition_add_mapping(variable_definition, NULL, NULL, path, NULL);
+
+    /* datetime_length */
+    description = "integration time for a readout";
+    variable_definition =
+        harp_ingestion_register_variable_full_read(product_definition, "datetime_length", harp_type_double, 0,
+                                                   dimension_type, NULL, description, "s", NULL,
+                                                   read_tra_integration_time);
+    path = "/sph/samp_duration";
     harp_variable_definition_add_mapping(variable_definition, NULL, NULL, path, NULL);
 
     /* latitude */
@@ -1184,15 +1193,6 @@ static void register_tra_product(void)
                                                    &(dimension_type[1]), NULL, description, "nm", NULL,
                                                    read_tra_wavelength);
     path = "/tra_nom_wav_assignment[]/nom_wl[]";
-    harp_variable_definition_add_mapping(variable_definition, NULL, NULL, path, NULL);
-
-    /* datetime_length */
-    description = "integration time for a readout";
-    variable_definition =
-        harp_ingestion_register_variable_full_read(product_definition, "datetime_length", harp_type_double, 0,
-                                                   dimension_type, NULL, description, "s", NULL,
-                                                   read_tra_integration_time);
-    path = "/sph/samp_duration";
     harp_variable_definition_add_mapping(variable_definition, NULL, NULL, path, NULL);
 
     /* sensor_latitude */

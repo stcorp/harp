@@ -1,33 +1,33 @@
-/*
- * Copyright (C) 2015-2017 S[&]T, The Netherlands.
- * All rights reserved.
- *
- * Redistribution and use in source and binary forms, with or without
- * modification, are permitted provided that the following conditions are met:
- *
- * 1. Redistributions of source code must retain the above copyright notice,
- *    this list of conditions and the following disclaimer.
- *
- * 2. Redistributions in binary form must reproduce the above copyright
- *    notice, this list of conditions and the following disclaimer in the
- *    documentation and/or other materials provided with the distribution.
- *
- * 3. Neither the name of the copyright holder nor the names of its
- *    contributors may be used to endorse or promote products derived from
- *    this software without specific prior written permission.
- *
- * THIS SOFTWARE IS PROVIDED BY THE COPYRIGHT HOLDERS AND CONTRIBUTORS "AS IS"
- * AND ANY EXPRESS OR IMPLIED WARRANTIES, INCLUDING, BUT NOT LIMITED TO, THE
- * IMPLIED WARRANTIES OF MERCHANTABILITY AND FITNESS FOR A PARTICULAR PURPOSE
- * ARE DISCLAIMED. IN NO EVENT SHALL THE COPYRIGHT HOLDER OR CONTRIBUTORS BE
- * LIABLE FOR ANY DIRECT, INDIRECT, INCIDENTAL, SPECIAL, EXEMPLARY, OR
- * CONSEQUENTIAL DAMAGES (INCLUDING, BUT NOT LIMITED TO, PROCUREMENT OF
- * SUBSTITUTE GOODS OR SERVICES; LOSS OF USE, DATA, OR PROFITS; OR BUSINESS
- * INTERRUPTION) HOWEVER CAUSED AND ON ANY THEORY OF LIABILITY, WHETHER IN
- * CONTRACT, STRICT LIABILITY, OR TORT (INCLUDING NEGLIGENCE OR OTHERWISE)
- * ARISING IN ANY WAY OUT OF THE USE OF THIS SOFTWARE, EVEN IF ADVISED OF THE
- * POSSIBILITY OF SUCH DAMAGE.
- */
+ /*
+  * Copyright (C) 2015-2017 S[&]T, The Netherlands.
+  * All rights reserved.
+  *
+  * Redistribution and use in source and binary forms, with or without
+  * modification, are permitted provided that the following conditions are met:
+  *
+  * 1. Redistributions of source code must retain the above copyright notice,
+  *    this list of conditions and the following disclaimer.
+  *
+  * 2. Redistributions in binary form must reproduce the above copyright
+  *    notice, this list of conditions and the following disclaimer in the
+  *    documentation and/or other materials provided with the distribution.
+  *
+  * 3. Neither the name of the copyright holder nor the names of its
+  *    contributors may be used to endorse or promote products derived from
+  *    this software without specific prior written permission.
+  *
+  * THIS SOFTWARE IS PROVIDED BY THE COPYRIGHT HOLDERS AND CONTRIBUTORS "AS IS"
+  * AND ANY EXPRESS OR IMPLIED WARRANTIES, INCLUDING, BUT NOT LIMITED TO, THE
+  * IMPLIED WARRANTIES OF MERCHANTABILITY AND FITNESS FOR A PARTICULAR PURPOSE
+  * ARE DISCLAIMED. IN NO EVENT SHALL THE COPYRIGHT HOLDER OR CONTRIBUTORS BE
+  * LIABLE FOR ANY DIRECT, INDIRECT, INCIDENTAL, SPECIAL, EXEMPLARY, OR
+  * CONSEQUENTIAL DAMAGES (INCLUDING, BUT NOT LIMITED TO, PROCUREMENT OF
+  * SUBSTITUTE GOODS OR SERVICES; LOSS OF USE, DATA, OR PROFITS; OR BUSINESS
+  * INTERRUPTION) HOWEVER CAUSED AND ON ANY THEORY OF LIABILITY, WHETHER IN
+  * CONTRACT, STRICT LIABILITY, OR TORT (INCLUDING NEGLIGENCE OR OTHERWISE)
+  * ARISING IN ANY WAY OUT OF THE USE OF THIS SOFTWARE, EVEN IF ADVISED OF THE
+  * POSSIBILITY OF SUCH DAMAGE.
+  */
 
 #include "coda.h"
 #include "harp-ingestion.h"
@@ -533,9 +533,22 @@ static int get_sun_reference_spectral_data(ingest_info *info, const char *fieldn
     return 0;
 }
 
-static int read_datetime(void *user_data, harp_array data)
+static int read_datetime_stop(void *user_data, harp_array data)
 {
     return get_main_data((ingest_info *)user_data, "agi", "groundpixel_end", IS_NO_ARRAY, data.double_data);
+}
+
+static int read_datetime_length(void *user_data, harp_array data)
+{
+    ingest_info *info = (ingest_info *)user_data;
+    long i;
+
+    for (i = 0; i < info->num_egp_records; i++)
+    {
+        data.double_data[i] = 1.5;
+    }
+
+    return 0;
 }
 
 static int read_latitude(void *user_data, harp_array data)
@@ -1012,15 +1025,23 @@ static void register_nominal_product(harp_ingestion_module *module)
     bounds_dimension_type[0] = harp_dimension_time;
     bounds_dimension_type[1] = harp_dimension_independent;
 
-    /* time_of_the_measurement */
+    /* datetime_stop */
     description = "time of the measurement at the end of the integration time";
     variable_definition =
-        harp_ingestion_register_variable_full_read(product_definition, "datetime", harp_type_double, 1, dimension_type,
-                                                   NULL, description, "seconds since 2000-01-01", NULL, read_datetime);
+        harp_ingestion_register_variable_full_read(product_definition, "datetime_stop", harp_type_double, 1,
+                                                   dimension_type, NULL, description, "seconds since 2000-01-01", NULL,
+                                                   read_datetime_stop);
     path = "/egp[]/agi/groundpixel_end";
     harp_variable_definition_add_mapping(variable_definition, NULL, NULL, path, NULL);
 
-    /* latitude_of_the_measurement */
+    /* datetime_length */
+    description = "length of each measurement";
+    variable_definition =
+        harp_ingestion_register_variable_full_read(product_definition, "datetime_length", harp_type_double, 1,
+                                                   dimension_type, NULL, description, "s", NULL, read_datetime_length);
+    harp_variable_definition_add_mapping(variable_definition, NULL, NULL, NULL, "set to fixed value of 1.5 [s]");
+
+    /* latitude */
     description = "tangent latitude of the measurement";
     variable_definition =
         harp_ingestion_register_variable_full_read(product_definition, "latitude", harp_type_double, 1, dimension_type,
@@ -1029,7 +1050,7 @@ static void register_nominal_product(harp_ingestion_module *module)
     path = "/egp[]/agi/coords[4]/latitude";
     harp_variable_definition_add_mapping(variable_definition, NULL, NULL, path, description);
 
-    /* longitude_of_the_measurement */
+    /* longitude */
     description = "tangent longitude of the measurement";
     variable_definition =
         harp_ingestion_register_variable_full_read(product_definition, "longitude", harp_type_double, 1, dimension_type,
