@@ -1025,7 +1025,6 @@ def import_product(filename, operations="", options=""):
     if not (isinstance(filename, bytes) or isinstance(filename, str)):
         # Assume this is a list of filenames or patterns
         return concatenate([import_product(file, operations, options) for file in filename])
-    filename = _encode_path(filename)
     if '*' in filename or '?' in filename:
         # This is a globbing pattern
         filenames = sorted(glob.glob(filename))
