@@ -75,7 +75,7 @@ typedef enum s5p_dimension_type_enum
 static const char *s5p_dimension_name[S5P_NUM_PRODUCT_TYPES][S5P_NUM_DIM_TYPES] = {
     {"time", "scanline", "ground_pixel", "corner", NULL, "level"},
     {"time", NULL, NULL, NULL, NULL, NULL},
-    {"time", "scanline", "ground_pixel", "corner", NULL, NULL},
+    {"time", "scanline", "ground_pixel", "corner", NULL, "level"},
     {"time", "scanline", "ground_pixel", "corner", "layer", NULL},
     {"time", "scanline", "ground_pixel", "corner", "layer", NULL},
     {"time", "scanline", "ground_pixel", "corner", "layer", "level"},
