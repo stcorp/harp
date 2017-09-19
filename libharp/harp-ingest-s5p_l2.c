@@ -1206,6 +1206,22 @@ static int read_input_cloud_top_pressure_precision(void *user_data, harp_array d
                         info->num_scanlines * info->num_pixels, data);
 }
 
+static int read_input_dry_air_subcolumns(void *user_data, harp_array data)
+{
+    ingest_info *info = (ingest_info *)user_data;
+
+    return read_dataset(info->input_data_cursor, "dry_air_subcolumns", harp_type_float,
+                        info->num_scanlines * info->num_pixels * info->num_layers, data);
+}
+
+static int read_input_methane_profile_apriori(void *user_data, harp_array data)
+{
+    ingest_info *info = (ingest_info *)user_data;
+
+    return read_dataset(info->input_data_cursor, "methane_profile_apriori", harp_type_float,
+                        info->num_scanlines * info->num_pixels * info->num_layers, data);
+}
+
 static int read_input_ozone_total_vertical_column(void *user_data, harp_array data)
 {
     ingest_info *info = (ingest_info *)user_data;
@@ -3630,6 +3646,24 @@ static void register_ch4_product(void)
                                                    harp_type_float, 2, dimension_type, NULL, description,
                                                    HARP_UNIT_DIMENSIONLESS, NULL, read_results_column_averaging_kernel);
     path = "/PRODUCT/SUPPORT_DATA/DETAILED_RESULTS/column_averaging_kernel[]";
+    harp_variable_definition_add_mapping(variable_definition, NULL, NULL, path, NULL);
+
+    /* CH4_column_number_density_apriori */
+    description = "a-priori column number density profile of methane";
+    variable_definition =
+        harp_ingestion_register_variable_full_read(product_definition, "CH4_column_number_density_apriori",
+                                                   harp_type_float, 2, dimension_type, NULL, description, "mol/m2",
+                                                   NULL, read_input_methane_profile_apriori);
+    path = "/PRODUCT/SUPPORT_DATA/INPUT_DATA/methane_profile_apriori[]";
+    harp_variable_definition_add_mapping(variable_definition, NULL, NULL, path, NULL);
+
+    /* dry_air_column_number_density */
+    description = "column number density profile of dry air";
+    variable_definition =
+        harp_ingestion_register_variable_full_read(product_definition, "dry_air_column_number_density",
+                                                   harp_type_float, 2, dimension_type, NULL, description, "mol/m2",
+                                                   NULL, read_input_dry_air_subcolumns);
+    path = "/PRODUCT/SUPPORT_DATA/INPUT_DATA/dry_air_subcolumns[]";
     harp_variable_definition_add_mapping(variable_definition, NULL, NULL, path, NULL);
 }
 
