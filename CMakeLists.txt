@@ -1,4 +1,4 @@
-cmake_minimum_required(VERSION 2.8)
+cmake_minimum_required(VERSION 2.8.8)
 
 project(HARP)
 
@@ -54,6 +54,7 @@ endif()
 
 # Option handling
 #
+option(CODA_BUILD_MATLAB "build MATLAB interface" OFF)
 option(HARP_BUILD_PYTHON "build Python interface" OFF)
 option(HARP_WITH_HDF4 "use HDF4" ON)
 option(HARP_WITH_HDF5 "use HDF5" ON)
@@ -523,6 +524,34 @@ if(WIN32)
   set_target_properties(harpmerge PROPERTIES COMPILE_FLAGS "-DLIBHARPDLL")
 endif(WIN32)
 install(TARGETS harpmerge DESTINATION bin)
+
+# matlab
+if(CODA_BUILD_MATLAB)
+  set(Matlab_FIND_COMPONENTS MX_LIBRARY)
+  find_package(MATLAB)
+  if(NOT MATLAB_FOUND)
+    message(FATAL_ERROR "MATLAB installation not found.")
+  endif(NOT MATLAB_FOUND)
+  include_directories(AFTER ${Matlab_INCLUDE_DIRS})
+  set(HARP_MATLAB_SOURCE_FILES
+    matlab/harp-matlab-product.c
+    matlab/harp-matlab.h
+    matlab/harp_matlab.c)
+  add_library(harp_matlab MODULE ${HARP_MATLAB_SOURCE_FILES})
+  set_target_properties(harp_matlab PROPERTIES PREFIX "" SUFFIX ".${Matlab_MEX_EXTENSION}")
+  target_link_libraries(harp_matlab harp ${Matlab_LIBRARIES})
+  set(HARP_MATLAB_M_FILES
+    matlab/harp_export.m
+    matlab/harp_import.m
+    matlab/harp_version.m)
+  if(WIN32)
+    install(TARGETS harp_matlab DESTINATION matlab)
+    install(FILES ${HARP_MATLAB_M_FILES} DESTINATION matlab)
+  else(WIN32)
+    install(TARGETS harp_matlab DESTINATION lib/harp/matlab)
+    install(FILES ${HARP_MATLAB_M_FILES} DESTINATION lib/harp/matlab)
+  endif(WIN32)
+endif(CODA_BUILD_MATLAB)
 
 # python
 if(HARP_BUILD_PYTHON)
