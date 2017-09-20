@@ -431,7 +431,7 @@
 <td><strong>/PRODUCT/tm5_pressure_level_a[], /PRODUCT/tm5_pressure_level_b[], /PRODUCT/tm5_surface_pressure[]</strong></td>
 </tr>
 <tr class="row-odd"><td><em>description</em></td>
-<td>pressure in Pa at level k is derived from surface pressure in hPa as: tm5_pressure_level_a[k] + tm5_pressure_level_b[k] * tm5_surface_pressure[] * 100.0</td>
+<td>pressure in Pa at level k is derived from surface pressure in hPa as: tm5_pressure_level_a[k] + tm5_pressure_level_b[k] * tm5_surface_pressure[] * 100.0; the TOA pressure is clamped to 1e-3 Pa</td>
 </tr>
 <tr class="row-even"><td rowspan="4"><strong>cloud_fraction</strong></td>
 <td><em>condition</em></td>

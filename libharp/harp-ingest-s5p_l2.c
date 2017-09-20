@@ -2700,6 +2700,11 @@ static int read_no2_pressure_bounds(void *user_data, harp_array data)
             bounds[j * 2 + 1] = hybride_coef_a.double_data[j * 2 + 1] + hybride_coef_b.double_data[j * 2 + 1] *
                 surface_pressure;
         }
+        /* to prevent TOA pressures of zero we make sure the TOA pressure is >= 1e-3 Pa */
+        if (bounds[info->num_layers * 2 - 1] < 1e-3)
+        {
+            bounds[info->num_layers * 2 - 1] = 1e-3;
+        }
     }
 
     free(hybride_coef_b.ptr);
@@ -4602,7 +4607,7 @@ static void register_no2_product(void)
                                                    description, "Pa", NULL, read_no2_pressure_bounds);
     path = "/PRODUCT/tm5_constant_a[], /PRODUCT/tm5_constant_b[], /PRODUCT/SUPPORT_DATA/INPUT_DATA/surface_pressure[]";
     description = "pressure in Pa at level k is derived from surface pressure in Pa as: tm5_constant_a[k] + "
-        "tm5_constant_b[k] * surface_pressure[]";
+        "tm5_constant_b[k] * surface_pressure[]; the top of atmosphere pressure is clamped to 1e-3 Pa";
     harp_variable_definition_add_mapping(variable_definition, NULL, NULL, path, description);
 
     /* tropopause_pressure */

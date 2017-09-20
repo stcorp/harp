@@ -657,6 +657,11 @@ static int read_pressure_bounds(void *user_data, harp_array data)
             bounds[j * 2 + 1] = info->hybride_coef_a.double_data[j * 2 + 1] +
                 info->hybride_coef_b.double_data[j * 2 + 1] * surface_pressure;
         }
+        /* to prevent TOA pressures of zero we make sure the TOA pressure is >= 1e-3 Pa */
+        if (bounds[info->num_layers * 2 - 1] < 1e-3)
+        {
+            bounds[info->num_layers * 2 - 1] = 1e-3;
+        }
     }
 
     return 0;
@@ -1236,7 +1241,7 @@ static void register_common_variables(harp_product_definition *product_definitio
                                                    description, "Pa", NULL, read_pressure_bounds);
     path = "/PRODUCT/tm5_pressure_level_a[], /PRODUCT/tm5_pressure_level_b[], /PRODUCT/tm5_surface_pressure[]";
     description = "pressure in Pa at level k is derived from surface pressure in hPa as: tm5_pressure_level_a[k] + "
-        "tm5_pressure_level_b[k] * tm5_surface_pressure[] * 100.0";
+        "tm5_pressure_level_b[k] * tm5_surface_pressure[] * 100.0; the TOA pressure is clamped to 1e-3 Pa";
     harp_variable_definition_add_mapping(variable_definition, NULL, NULL, path, description);
 
     /* cloud_fraction */
