@@ -1472,6 +1472,77 @@ static int read_input_temperature(void *user_data, harp_array data)
                         info->num_scanlines * info->num_pixels * info->num_levels, data);
 }
 
+static int read_input_tm5_pressure(void *user_data, harp_array data)
+{
+    ingest_info *info = (ingest_info *)user_data;
+    harp_array hybride_coef_a;
+    harp_array hybride_coef_b;
+    long num_profiles;
+    long num_layers;
+    long i;
+
+    num_profiles = info->num_scanlines * info->num_pixels;
+    num_layers = info->num_layers;
+
+    /* The air pressure boundaries are interpolated from the position dependent surface air pressure using a
+     * position independent set of coefficients a and b.
+     */
+    hybride_coef_a.ptr = malloc(num_layers * sizeof(double));
+    if (hybride_coef_a.ptr == NULL)
+    {
+        harp_set_error(HARP_ERROR_OUT_OF_MEMORY, "out of memory (could not allocate %lu bytes) (%s:%u)",
+                       num_layers * sizeof(double), __FILE__, __LINE__);
+        return -1;
+    }
+
+    hybride_coef_b.ptr = malloc(num_layers * sizeof(double));
+    if (hybride_coef_b.ptr == NULL)
+    {
+        harp_set_error(HARP_ERROR_OUT_OF_MEMORY, "out of memory (could not allocate %lu bytes) (%s:%u)",
+                       num_layers * sizeof(double), __FILE__, __LINE__);
+        free(hybride_coef_a.ptr);
+        return -1;
+    }
+
+    if (read_dataset(info->input_data_cursor, "tm5_constant_a", harp_type_double, num_layers, hybride_coef_a) != 0)
+    {
+        free(hybride_coef_b.ptr);
+        free(hybride_coef_a.ptr);
+        return -1;
+    }
+
+    if (read_dataset(info->input_data_cursor, "tm5_constant_b", harp_type_double, num_layers, hybride_coef_b) != 0)
+    {
+        free(hybride_coef_b.ptr);
+        free(hybride_coef_a.ptr);
+        return -1;
+    }
+
+    if (read_dataset(info->input_data_cursor, "surface_pressure", harp_type_double, num_profiles, data) != 0)
+    {
+        free(hybride_coef_b.ptr);
+        free(hybride_coef_a.ptr);
+        return -1;
+    }
+
+    for (i = num_profiles - 1; i >= 0; i--)
+    {
+        double *pressure = &data.double_data[i * num_layers];   /* pressure for specific (time, lat, lon) */
+        double surface_pressure = data.double_data[i];  /* surface pressure at specific (time, lat, lon) */
+        long j;
+
+        for (j = 0; j < num_layers; j++)
+        {
+            pressure[j] = hybride_coef_a.double_data[j] + hybride_coef_b.double_data[j] * surface_pressure;
+        }
+    }
+
+    free(hybride_coef_b.ptr);
+    free(hybride_coef_a.ptr);
+
+    return 0;
+}
+
 static int read_product_air_mass_factor_total(void *user_data, harp_array data)
 {
     ingest_info *info = (ingest_info *)user_data;
@@ -3765,6 +3836,17 @@ static void register_hcho_product(void)
 
     register_surface_variables(product_definition);
 
+    /* pressure */
+    description = "pressure";
+    variable_definition =
+        harp_ingestion_register_variable_full_read(product_definition, "pressure", harp_type_double, 2, dimension_type,
+                                                   NULL, description, "Pa", NULL, read_input_tm5_pressure);
+    path = "/PRODUCT/SUPPORT_DATA/INPUT_DATA/tm5_constant_a[], /PRODUCT/SUPPORT_DATA/INPUT_DATA/tm5_constant_b[], "
+        "/PRODUCT/SUPPORT_DATA/INPUT_DATA/surface_pressure[]";
+    description = "pressure in Pa at layer k is derived from surface pressure in Pa as: tm5_constant_a[k] + "
+        "tm5_constant_b[k] * surface_pressure[]";
+    harp_variable_definition_add_mapping(variable_definition, NULL, NULL, path, description);
+
     /* tropospheric_HCHO_column_number_density */
     description = "tropospheric HCHO column number density";
     variable_definition =
@@ -4707,6 +4789,17 @@ static void register_so2_product(void)
     harp_variable_definition_add_mapping(variable_definition, NULL, NULL, path, description);
 
     register_surface_variables(product_definition);
+
+    /* pressure */
+    description = "pressure";
+    variable_definition =
+        harp_ingestion_register_variable_full_read(product_definition, "pressure", harp_type_double, 2, dimension_type,
+                                                   NULL, description, "Pa", NULL, read_input_tm5_pressure);
+    path = "/PRODUCT/SUPPORT_DATA/INPUT_DATA/tm5_constant_a[], /PRODUCT/SUPPORT_DATA/INPUT_DATA/tm5_constant_b[], "
+        "/PRODUCT/SUPPORT_DATA/INPUT_DATA/surface_pressure[]";
+    description = "pressure in Pa at layer k is derived from surface pressure in Pa as: tm5_constant_a[k] + "
+        "tm5_constant_b[k] * surface_pressure[]";
+    harp_variable_definition_add_mapping(variable_definition, NULL, NULL, path, description);
 
     /* SO2_column_number_density */
     description = "SO2 vertical column density";
