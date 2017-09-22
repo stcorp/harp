@@ -176,6 +176,18 @@
 </tr>
 </thead>
 <tbody valign="top">
+<tr class="row-even"><td><strong>datetime</strong></td>
+<td>double</td>
+<td>{<em>time</em>}</td>
+<td>seconds since 2000-01-01</td>
+<td>time of measurement</td>
+</tr>
+<tr class="row-odd"><td><strong>datetime_length</strong></td>
+<td>double</td>
+<td>{<em>time</em>}</td>
+<td>s</td>
+<td>length of the measurement</td>
+</tr>
 <tr class="row-even"><td><strong>latitude</strong></td>
 <td>double</td>
 <td>&#160;</td>
@@ -194,67 +206,61 @@
 <td>m</td>
 <td>sensor altitude</td>
 </tr>
-<tr class="row-odd"><td><strong>sensor_zenith_angle</strong></td>
+<tr class="row-odd"><td><strong>viewing_zenith_angle</strong></td>
 <td>double</td>
 <td>&#160;</td>
 <td>degrees</td>
-<td>sensor zenith angle</td>
+<td>viewing zenith angle</td>
 </tr>
-<tr class="row-even"><td><strong>datetime</strong></td>
+<tr class="row-even"><td><strong>wavelength</strong></td>
 <td>double</td>
-<td>{<em>time</em>}</td>
-<td>seconds since 2000-01-01</td>
-<td>time of measurement</td>
+<td>&#160;</td>
+<td>nm</td>
+<td>wavelength</td>
 </tr>
-<tr class="row-odd"><td><strong>datetime_length</strong></td>
-<td>double</td>
-<td>{<em>time</em>}</td>
-<td>s</td>
-<td>length of the measurement</td>
-</tr>
-<tr class="row-even"><td><strong>altitude</strong></td>
+<tr class="row-odd"><td><strong>altitude</strong></td>
 <td>double</td>
 <td>{<em>vertical</em>}</td>
 <td>m</td>
 <td>altitude</td>
 </tr>
-<tr class="row-odd"><td><strong>backscatter_coefficient</strong></td>
+<tr class="row-even"><td><strong>backscatter_coefficient</strong></td>
 <td>double</td>
 <td>{<em>time</em>, <em>vertical</em>}</td>
 <td>1/(m*sr)</td>
 <td>backscatter coefficient</td>
 </tr>
-<tr class="row-even"><td><strong>backscatter_coefficient_uncertainty</strong></td>
+<tr class="row-odd"><td><strong>backscatter_coefficient_uncertainty</strong></td>
 <td>double</td>
 <td>{<em>time</em>, <em>vertical</em>}</td>
 <td>1/(m*sr)</td>
 <td>backscatter coefficient uncertainty</td>
 </tr>
-<tr class="row-odd"><td><strong>extinction_coefficient</strong></td>
+<tr class="row-even"><td><strong>extinction_coefficient</strong></td>
 <td>double</td>
 <td>{<em>time</em>, <em>vertical</em>}</td>
 <td>1/m</td>
 <td>extinction coefficient</td>
 </tr>
-<tr class="row-even"><td><strong>extinction_coefficient_uncertainty</strong></td>
+<tr class="row-odd"><td><strong>extinction_coefficient_uncertainty</strong></td>
 <td>double</td>
 <td>{<em>time</em>, <em>vertical</em>}</td>
 <td>1/m</td>
 <td>extinction coefficient uncertainty</td>
 </tr>
-<tr class="row-odd"><td><strong>H2O_mass_mixing_ratio</strong></td>
+<tr class="row-even"><td><strong>H2O_mass_mixing_ratio</strong></td>
 <td>double</td>
 <td>{<em>time</em>, <em>vertical</em>}</td>
 <td>g/kg</td>
 <td>water mass mixing ratio</td>
 </tr>
-<tr class="row-even"><td><strong>H2O_mass_mixing_ratio_uncertainty</strong></td>
+<tr class="row-odd"><td><strong>H2O_mass_mixing_ratio_uncertainty</strong></td>
 <td>double</td>
 <td>{<em>time</em>, <em>vertical</em>}</td>
 <td>g/kg</td>
 <td>water mass mixing ratio uncertainty</td>
 </tr>
-<tr class="row-odd"><td><strong>index</strong></td>
+<tr class="row-even"><td><strong>index</strong></td>
 <td>int32</td>
 <td>{<em>time</em>}</td>
 <td>&#160;</td>
@@ -278,22 +284,6 @@
 </tr>
 </thead>
 <tbody valign="top">
-<tr class="row-even"><td><strong>latitude</strong></td>
-<td><em>path</em></td>
-<td><strong>/&#64;Latitude_degrees_north</strong></td>
-</tr>
-<tr class="row-odd"><td><strong>longitude</strong></td>
-<td><em>path</em></td>
-<td><strong>/&#64;Longitude_degrees_east</strong></td>
-</tr>
-<tr class="row-even"><td><strong>sensor_altitude</strong></td>
-<td><em>path</em></td>
-<td><strong>/&#64;Altitude_meter_asl</strong></td>
-</tr>
-<tr class="row-odd"><td><strong>sensor_zenith_angle</strong></td>
-<td><em>path</em></td>
-<td><strong>/&#64;ZenithAngle_degrees</strong></td>
-</tr>
 <tr class="row-even"><td rowspan="6"><strong>datetime</strong></td>
 <td><em>condition</em></td>
 <td>variable &#8216;Time&#8217; available</td>
@@ -326,47 +316,67 @@
 <tr class="row-odd"><td><em>description</em></td>
 <td>convert &#8216;hhmmss&#8217; encoded integer values for StartTime_UT and StopTime_UT to time-of-day values; use: stop_time - start_time</td>
 </tr>
-<tr class="row-even"><td rowspan="2"><strong>altitude</strong></td>
+<tr class="row-even"><td><strong>latitude</strong></td>
+<td><em>path</em></td>
+<td><strong>/&#64;Latitude_degrees_north</strong></td>
+</tr>
+<tr class="row-odd"><td><strong>longitude</strong></td>
+<td><em>path</em></td>
+<td><strong>/&#64;Longitude_degrees_east</strong></td>
+</tr>
+<tr class="row-even"><td><strong>sensor_altitude</strong></td>
+<td><em>path</em></td>
+<td><strong>/&#64;Altitude_meter_asl</strong></td>
+</tr>
+<tr class="row-odd"><td><strong>viewing_zenith_angle</strong></td>
+<td><em>path</em></td>
+<td><strong>/&#64;ZenithAngle_degrees</strong></td>
+</tr>
+<tr class="row-even"><td><strong>wavelength</strong></td>
+<td><em>path</em></td>
+<td><strong>/&#64;DetectionWavelength_nm</strong></td>
+</tr>
+<tr class="row-odd"><td rowspan="2"><strong>altitude</strong></td>
 <td><em>path</em></td>
 <td><strong>/Altitude</strong></td>
 </tr>
-<tr class="row-odd"><td><em>description</em></td>
+<tr class="row-even"><td><em>description</em></td>
 <td>height above sea level</td>
 </tr>
-<tr class="row-even"><td><strong>backscatter_coefficient</strong></td>
+<tr class="row-odd"><td><strong>backscatter_coefficient</strong></td>
 <td><em>path</em></td>
 <td><strong>/Backscatter</strong></td>
 </tr>
-<tr class="row-odd"><td><strong>backscatter_coefficient_uncertainty</strong></td>
+<tr class="row-even"><td><strong>backscatter_coefficient_uncertainty</strong></td>
 <td><em>path</em></td>
 <td><strong>/ErrorBackscatter</strong></td>
 </tr>
-<tr class="row-even"><td rowspan="2"><strong>extinction_coefficient</strong></td>
+<tr class="row-odd"><td rowspan="2"><strong>extinction_coefficient</strong></td>
 <td><em>available</em></td>
 <td>optional</td>
 </tr>
-<tr class="row-odd"><td><em>path</em></td>
+<tr class="row-even"><td><em>path</em></td>
 <td><strong>/Extinction</strong></td>
 </tr>
-<tr class="row-even"><td rowspan="2"><strong>extinction_coefficient_uncertainty</strong></td>
+<tr class="row-odd"><td rowspan="2"><strong>extinction_coefficient_uncertainty</strong></td>
 <td><em>available</em></td>
 <td>optional</td>
 </tr>
-<tr class="row-odd"><td><em>path</em></td>
+<tr class="row-even"><td><em>path</em></td>
 <td><strong>/ErrorExtinction</strong></td>
 </tr>
-<tr class="row-even"><td rowspan="2"><strong>H2O_mass_mixing_ratio</strong></td>
+<tr class="row-odd"><td rowspan="2"><strong>H2O_mass_mixing_ratio</strong></td>
 <td><em>available</em></td>
 <td>optional</td>
 </tr>
-<tr class="row-odd"><td><em>path</em></td>
+<tr class="row-even"><td><em>path</em></td>
 <td><strong>/WaterVaporMixingRatio</strong></td>
 </tr>
-<tr class="row-even"><td rowspan="2"><strong>H2O_mass_mixing_ratio_uncertainty</strong></td>
+<tr class="row-odd"><td rowspan="2"><strong>H2O_mass_mixing_ratio_uncertainty</strong></td>
 <td><em>available</em></td>
 <td>optional</td>
 </tr>
-<tr class="row-odd"><td><em>path</em></td>
+<tr class="row-even"><td><em>path</em></td>
 <td><strong>/ErrorWaterVapor</strong></td>
 </tr>
 </tbody>

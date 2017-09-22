@@ -191,9 +191,14 @@ static int read_sensor_altitude(void *user_data, harp_array data)
     return read_scalar_attribute((ingest_info *)user_data, "Altitude_meter_asl", harp_type_double, data);
 }
 
-static int read_sensor_zenith_angle(void *user_data, harp_array data)
+static int read_viewing_zenith_angle(void *user_data, harp_array data)
 {
     return read_scalar_attribute((ingest_info *)user_data, "ZenithAngle_degrees", harp_type_double, data);
+}
+
+static int read_wavelength(void *user_data, harp_array data)
+{
+    return read_scalar_attribute((ingest_info *)user_data, "DetectionWavelength_nm", harp_type_double, data);
 }
 
 static int get_start_stop_time(ingest_info *info, double *start, double *stop)
@@ -201,7 +206,7 @@ static int get_start_stop_time(ingest_info *info, double *start, double *stop)
     harp_array int32_array;
     int hour, minute, second;
     int32_t value;
-    
+
     int32_array.int32_data = &value;
     if (read_scalar_attribute(info, "StartTime_UT", harp_type_int32, int32_array) != 0)
     {
@@ -211,7 +216,7 @@ static int get_start_stop_time(ingest_info *info, double *start, double *stop)
     minute = (value - (10000 * hour)) / 100;
     second = value - (10000 * hour) - (100 * minute);
     *start = ((hour * 60.0) + minute) * 60.0 + second;
-    
+
     if (read_scalar_attribute(info, "StopTime_UT", harp_type_int32, int32_array) != 0)
     {
         return -1;
@@ -220,7 +225,7 @@ static int get_start_stop_time(ingest_info *info, double *start, double *stop)
     minute = (value - (10000 * hour)) / 100;
     second = value - (10000 * hour) - (100 * minute);
     *stop = ((hour * 60.0) + minute) * 60.0 + second;
-    
+
     return 0;
 }
 
@@ -537,6 +542,32 @@ int harp_ingestion_module_earlinet_l2_aerosol_init(void)
                                             ingestion_done);
     product_definition = harp_ingestion_register_product(module, "EARLINET", NULL, read_dimensions);
 
+    /* datetime */
+    description = "time of measurement";
+    variable_definition =
+        harp_ingestion_register_variable_full_read(product_definition, "datetime", harp_type_double, 1, dimension_type,
+                                                   NULL, description, "seconds since 2000-01-01", NULL, read_datetime);
+    path = "/Time";
+    description = "converted from seconds sinds 1970 to seconds since 2000";
+    harp_variable_definition_add_mapping(variable_definition, NULL, "variable 'Time' available", path, description);
+
+    path = "/@StartDate, /@StartTime_UT, /@StopTime_UT";
+    description = "convert yymmdd encoded integer value for StartDate to seconds since 2000; "
+        "convert hhmmss encoded integer values for StartTime_UT and StopTime_UT to time-of-day values; "
+        "use: date + (start_time + stop_time) / 2";
+    harp_variable_definition_add_mapping(variable_definition, NULL, "variable 'Time' unavailable", path, description);
+
+    /* datetime_length */
+    description = "length of the measurement";
+    variable_definition =
+        harp_ingestion_register_variable_full_read(product_definition, "datetime_length", harp_type_double, 1,
+                                                   dimension_type, NULL, description, "s", exclude_datetime_length,
+                                                   read_datetime_length);
+    path = "/@StartTime_UT, /@StopTime_UT";
+    description = "convert 'hhmmss' encoded integer values for StartTime_UT and StopTime_UT to time-of-day values; "
+        "use: stop_time - start_time";
+    harp_variable_definition_add_mapping(variable_definition, NULL, "variable 'Time' unavailable", path, description);
+
     /* latitude */
     description = "latitude";
     variable_definition =
@@ -563,39 +594,22 @@ int harp_ingestion_module_earlinet_l2_aerosol_init(void)
     path = "/@Altitude_meter_asl";
     harp_variable_definition_add_mapping(variable_definition, NULL, NULL, path, NULL);
 
-    /* sensor_zenith_angle */
-    description = "sensor zenith angle";
+    /* viewing_zenith_angle */
+    description = "viewing zenith angle";
     variable_definition =
-        harp_ingestion_register_variable_full_read(product_definition, "sensor_zenith_angle", harp_type_double, 0,
+        harp_ingestion_register_variable_full_read(product_definition, "viewing_zenith_angle", harp_type_double, 0,
                                                    dimension_type, NULL, description, "degrees", NULL,
-                                                   read_sensor_zenith_angle);
+                                                   read_viewing_zenith_angle);
     path = "/@ZenithAngle_degrees";
     harp_variable_definition_add_mapping(variable_definition, NULL, NULL, path, NULL);
 
-    /* datetime */
-    description = "time of measurement";
+    /* wavelength */
+    description = "wavelength";
     variable_definition =
-        harp_ingestion_register_variable_full_read(product_definition, "datetime", harp_type_double, 1, dimension_type,
-                                                   NULL, description, "seconds since 2000-01-01", NULL, read_datetime);
-    path = "/Time";
-    description = "converted from seconds sinds 1970 to seconds since 2000";
-    harp_variable_definition_add_mapping(variable_definition, NULL, "variable 'Time' available", path, description);
-
-    path = "/@StartDate, /@StartTime_UT, /@StopTime_UT";
-    description = "convert yymmdd encoded integer value for StartDate to seconds since 2000; "
-        "convert hhmmss encoded integer values for StartTime_UT and StopTime_UT to time-of-day values; "
-        "use: date + (start_time + stop_time) / 2";
-    harp_variable_definition_add_mapping(variable_definition, NULL, "variable 'Time' unavailable", path, description);
-
-    /* datetime_length */
-    description = "length of the measurement";
-    variable_definition =
-    harp_ingestion_register_variable_full_read(product_definition, "datetime_length", harp_type_double, 1, dimension_type,
-                                               NULL, description, "s", exclude_datetime_length, read_datetime_length);
-    path = "/@StartTime_UT, /@StopTime_UT";
-    description = "convert 'hhmmss' encoded integer values for StartTime_UT and StopTime_UT to time-of-day values; "
-        "use: stop_time - start_time";
-    harp_variable_definition_add_mapping(variable_definition, NULL, "variable 'Time' unavailable", path, description);
+        harp_ingestion_register_variable_full_read(product_definition, "wavelength", harp_type_double, 0,
+                                                   dimension_type, NULL, description, "nm", NULL, read_wavelength);
+    path = "/@DetectionWavelength_nm";
+    harp_variable_definition_add_mapping(variable_definition, NULL, NULL, path, NULL);
 
     /* altitude */
     description = "altitude";
