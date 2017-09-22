@@ -41,7 +41,6 @@
 #define FILL_VALUE_NO_DATA              -999.0
 
 #define SECONDS_FROM_1970_TO_2000    946684800
-#define M_TO_KM                          0.001
 
 #define CHECKED_MALLOC(v, s) v = malloc(s); if (v == NULL) { harp_set_error(HARP_ERROR_OUT_OF_MEMORY, "out of memory (could not allocate %lu bytes) (%s:%u)", s, __FILE__, __LINE__); return -1;}
 
@@ -189,14 +188,7 @@ static int read_longitude(void *user_data, harp_array data)
 
 static int read_sensor_altitude(void *user_data, harp_array data)
 {
-    if (read_scalar_attribute((ingest_info *)user_data, "Altitude_meter_asl", harp_type_double, data) != 0)
-    {
-        return -1;
-    }
-
-    /* Convert from m to km */
-    *(data.double_data) *= M_TO_KM;
-    return 0;
+    return read_scalar_attribute((ingest_info *)user_data, "Altitude_meter_asl", harp_type_double, data);
 }
 
 static int read_sensor_zenith_angle(void *user_data, harp_array data)
@@ -204,33 +196,64 @@ static int read_sensor_zenith_angle(void *user_data, harp_array data)
     return read_scalar_attribute((ingest_info *)user_data, "ZenithAngle_degrees", harp_type_double, data);
 }
 
+static int get_start_stop_time(ingest_info *info, double *start, double *stop)
+{
+    harp_array int32_array;
+    int hour, minute, second;
+    int32_t value;
+    
+    int32_array.int32_data = &value;
+    if (read_scalar_attribute(info, "StartTime_UT", harp_type_int32, int32_array) != 0)
+    {
+        return -1;
+    }
+    hour = value / 10000;
+    minute = (value - (10000 * hour)) / 100;
+    second = value - (10000 * hour) - (100 * minute);
+    *start = ((hour * 60.0) + minute) * 60.0 + second;
+    
+    if (read_scalar_attribute(info, "StopTime_UT", harp_type_int32, int32_array) != 0)
+    {
+        return -1;
+    }
+    hour = value / 10000;
+    minute = (value - (10000 * hour)) / 100;
+    second = value - (10000 * hour) - (100 * minute);
+    *stop = ((hour * 60.0) + minute) * 60.0 + second;
+    
+    return 0;
+}
+
 static int read_datetime(void *user_data, harp_array data)
 {
     ingest_info *info = (ingest_info *)user_data;
-    harp_array temp_array;
     double *double_data;
-    double datetime;
     long i;
-    int32_t start_date, start_time;
-    int year, month, day;
 
     if (read_array_variable(info, "Time", data, NULL) != 0)
     {
-        temp_array.int32_data = &start_date;
-        if (read_scalar_attribute(info, "StartDate", harp_type_int32, temp_array) != 0)
+        harp_array int32_array;
+        int year, month, day;
+        double datetime, start, stop;
+        int32_t value;
+
+        int32_array.int32_data = &value;
+        if (read_scalar_attribute(info, "StartDate", harp_type_int32, int32_array) != 0)
         {
             return -1;
         }
-        temp_array.int32_data = &start_time;
-        if (read_scalar_attribute(info, "StartTime_UT", harp_type_int32, temp_array) != 0)
-        {
-            return -1;
-        }
-        year = start_date / 10000;
-        month = (start_date - (10000 * year)) / 100;
-        day = start_date - (10000 * year) - (100 * month);
+        year = value / 10000;
+        month = (value - (10000 * year)) / 100;
+        day = value - (10000 * year) - (100 * month);
         coda_time_parts_to_double(year, month, day, 0, 0, 0, 0, &datetime);
-        *(data.double_data) = (datetime + (double)start_time);
+
+        if (get_start_stop_time(info, &start, &stop) != 0)
+        {
+            return -1;
+        }
+
+        *(data.double_data) = datetime + (start + stop) / 2.0;
+
         return 0;
     }
 
@@ -243,24 +266,23 @@ static int read_datetime(void *user_data, harp_array data)
     return 0;
 }
 
-static int read_altitude(void *user_data, harp_array data)
+static int read_datetime_length(void *user_data, harp_array data)
 {
-    double *double_data;
-    ingest_info *info = (ingest_info *)user_data;
-    long i;
+    double start, stop;
 
-    if (read_array_variable(info, "Altitude", data, NULL) != 0)
+    if (get_start_stop_time((ingest_info *)user_data, &start, &stop) != 0)
     {
         return -1;
     }
 
-    double_data = data.double_data;
-    for (i = 0; i < info->num_altitudes; i++)
-    {
-        *double_data = *double_data * M_TO_KM;
-        double_data++;
-    }
+    *(data.double_data) = stop - start;
+
     return 0;
+}
+
+static int read_altitude(void *user_data, harp_array data)
+{
+    return read_array_variable((ingest_info *)user_data, "Altitude", data, NULL);
 }
 
 static int read_backscatter(void *user_data, harp_array data)
@@ -378,6 +400,12 @@ static int exclude_field_if_not_existing(void *user_data, const char *field_name
         return 1;
     }
     return 0;
+}
+
+static int exclude_datetime_length(void *user_data)
+{
+    /* we exclude datetime_length if the Time variable _does_ exist */
+    return !exclude_field_if_not_existing(user_data, "Time");
 }
 
 static int exclude_extinction(void *user_data)
@@ -531,7 +559,7 @@ int harp_ingestion_module_earlinet_l2_aerosol_init(void)
     description = "sensor altitude";
     variable_definition =
         harp_ingestion_register_variable_full_read(product_definition, "sensor_altitude", harp_type_double, 0,
-                                                   dimension_type, NULL, description, "km", NULL, read_sensor_altitude);
+                                                   dimension_type, NULL, description, "m", NULL, read_sensor_altitude);
     path = "/@Altitude_meter_asl";
     harp_variable_definition_add_mapping(variable_definition, NULL, NULL, path, NULL);
 
@@ -545,19 +573,35 @@ int harp_ingestion_module_earlinet_l2_aerosol_init(void)
     harp_variable_definition_add_mapping(variable_definition, NULL, NULL, path, NULL);
 
     /* datetime */
-    description = "date and time";
+    description = "time of measurement";
     variable_definition =
         harp_ingestion_register_variable_full_read(product_definition, "datetime", harp_type_double, 1, dimension_type,
                                                    NULL, description, "seconds since 2000-01-01", NULL, read_datetime);
     path = "/Time";
-    description = "seconds sinds 1970-01-01 00:00:00";
-    harp_variable_definition_add_mapping(variable_definition, NULL, NULL, path, description);
+    description = "converted from seconds sinds 1970 to seconds since 2000";
+    harp_variable_definition_add_mapping(variable_definition, NULL, "variable 'Time' available", path, description);
+
+    path = "/@StartDate, /@StartTime_UT, /@StopTime_UT";
+    description = "convert yymmdd encoded integer value for StartDate to seconds since 2000; "
+        "convert hhmmss encoded integer values for StartTime_UT and StopTime_UT to time-of-day values; "
+        "use: date + (start_time + stop_time) / 2";
+    harp_variable_definition_add_mapping(variable_definition, NULL, "variable 'Time' unavailable", path, description);
+
+    /* datetime_length */
+    description = "length of the measurement";
+    variable_definition =
+    harp_ingestion_register_variable_full_read(product_definition, "datetime_length", harp_type_double, 1, dimension_type,
+                                               NULL, description, "s", exclude_datetime_length, read_datetime_length);
+    path = "/@StartTime_UT, /@StopTime_UT";
+    description = "convert 'hhmmss' encoded integer values for StartTime_UT and StopTime_UT to time-of-day values; "
+        "use: stop_time - start_time";
+    harp_variable_definition_add_mapping(variable_definition, NULL, "variable 'Time' unavailable", path, description);
 
     /* altitude */
     description = "altitude";
     variable_definition =
         harp_ingestion_register_variable_full_read(product_definition, "altitude", harp_type_double, 1,
-                                                   &(dimension_type[1]), NULL, description, "km", NULL, read_altitude);
+                                                   &(dimension_type[1]), NULL, description, "m", NULL, read_altitude);
     path = "/Altitude";
     description = "height above sea level";
     harp_variable_definition_add_mapping(variable_definition, NULL, NULL, path, description);
