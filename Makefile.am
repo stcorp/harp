@@ -346,6 +346,7 @@ HARP_IDL_DLMFILES = \
 	idl/harp_idl.dlm
 
 EXTRA_DIST += $(HARP_IDL_DLMFILES) \
+	idl/harp_idl.def \
 	idl/harp_idl.dlm.in
 
 if BUILD_IDL
@@ -373,7 +374,8 @@ HARP_MATLAB_MFILES = \
 	matlab/harp_export.m \
 	matlab/harp_version.m
 
-EXTRA_DIST += $(HARP_MATLAB_MFILES)
+EXTRA_DIST += $(HARP_MATLAB_MFILES) \
+	matlab/harp_matlab.def
 
 if BUILD_MATLAB
 matlabmexexec_DATA = $(HARP_MATLAB_MFILES)

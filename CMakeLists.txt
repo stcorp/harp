@@ -54,7 +54,8 @@ endif()
 
 # Option handling
 #
-option(CODA_BUILD_MATLAB "build MATLAB interface" OFF)
+option(HARP_BUILD_IDL "build IDL interface" OFF)
+option(HARP_BUILD_MATLAB "build MATLAB interface" OFF)
 option(HARP_BUILD_PYTHON "build Python interface" OFF)
 option(HARP_WITH_HDF4 "use HDF4" ON)
 option(HARP_WITH_HDF5 "use HDF5" ON)
@@ -525,8 +526,31 @@ if(WIN32)
 endif(WIN32)
 install(TARGETS harpmerge DESTINATION bin)
 
+# idl
+if(HARP_BUILD_IDL)
+  find_package(IDL)
+  if(NOT IDL_FOUND)
+    message(FATAL_ERROR "IDL installation not found.")
+  endif(NOT IDL_FOUND)
+  include_directories(AFTER ${IDL_INCLUDE_DIRS})
+  set(HARP_IDL_SOURCE_FILES idl/harp_idl.c idl/harp_idl.def)
+  add_library(harp_idl MODULE ${HARP_IDL_SOURCE_FILES})
+  set_target_properties(harp_idl PROPERTIES PREFIX "")
+  target_link_libraries(harp_idl harp ${IDL_LIBRARIES})
+  configure_file(
+    ${CMAKE_CURRENT_SOURCE_DIR}/idl/harp_idl.dlm.in
+    ${CMAKE_CURRENT_BINARY_DIR}/idl/harp_idl.dlm)
+  if(WIN32)
+    install(TARGETS harp_idl DESTINATION idl)
+    install(FILES ${CMAKE_CURRENT_BINARY_DIR}/idl/harp_idl.dlm DESTINATION idl)
+  else(WIN32)
+    install(TARGETS harp_idl DESTINATION lib/harp/idl)
+    install(FILES ${CMAKE_CURRENT_BINARY_DIR}/idl/harp_idl.dlm DESTINATION lib/harp/idl)
+  endif(WIN32)
+endif(HARP_BUILD_IDL)
+
 # matlab
-if(CODA_BUILD_MATLAB)
+if(HARP_BUILD_MATLAB)
   set(Matlab_FIND_COMPONENTS MX_LIBRARY)
   find_package(MATLAB)
   if(NOT MATLAB_FOUND)
@@ -536,9 +560,13 @@ if(CODA_BUILD_MATLAB)
   set(HARP_MATLAB_SOURCE_FILES
     matlab/harp-matlab-product.c
     matlab/harp-matlab.h
-    matlab/harp_matlab.c)
+    matlab/harp_matlab.c
+    matlab/harp_matlab.def)
   add_library(harp_matlab MODULE ${HARP_MATLAB_SOURCE_FILES})
-  set_target_properties(harp_matlab PROPERTIES PREFIX "" SUFFIX ".${Matlab_MEX_EXTENSION}")
+  set_target_properties(harp_matlab PROPERTIES
+    PREFIX ""
+    SUFFIX ".${Matlab_MEX_EXTENSION}"
+    COMPILE_DEFINITIONS MATLAB_MEX_FILE)
   target_link_libraries(harp_matlab harp ${Matlab_LIBRARIES})
   set(HARP_MATLAB_M_FILES
     matlab/harp_export.m
@@ -551,7 +579,7 @@ if(CODA_BUILD_MATLAB)
     install(TARGETS harp_matlab DESTINATION lib/harp/matlab)
     install(FILES ${HARP_MATLAB_M_FILES} DESTINATION lib/harp/matlab)
   endif(WIN32)
-endif(CODA_BUILD_MATLAB)
+endif(HARP_BUILD_MATLAB)
 
 # python
 if(HARP_BUILD_PYTHON)
