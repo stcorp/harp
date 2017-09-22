@@ -539,7 +539,7 @@ surface</td>
 <td>stratospheric,
 tropospheric</td>
 <td>amf, apriori,
-avk</td>
+avk, dfs</td>
 <td>X</td>
 <td>X</td>
 <td>X</td>
@@ -550,7 +550,7 @@ avk</td>
 <td>stratospheric,
 tropospheric</td>
 <td>amf, apriori,
-avk</td>
+avk, dfs</td>
 <td>X</td>
 <td>X</td>
 <td>X</td>
@@ -1218,7 +1218,7 @@ only to be used if validity flag is for multiple variables combined</td>
 <td>stratospheric,
 tropospheric</td>
 <td>amf, apriori,
-avk</td>
+avk, dfs</td>
 <td>X</td>
 <td>X</td>
 <td>X</td>
@@ -1239,7 +1239,7 @@ tropospheric</td>
 <td>stratospheric,
 tropospheric</td>
 <td>amf, apriori,
-avk</td>
+avk, dfs</td>
 <td>X</td>
 <td>X</td>
 <td>X</td>
@@ -1306,7 +1306,8 @@ tropospheric</td>
 </tr>
 <tr class="row-odd"><td>&lt;species&gt;_mass_mixing_ratio</td>
 <td>surface</td>
-<td>apriori, avk</td>
+<td>apriori, avk,
+dfs</td>
 <td>X</td>
 <td>X</td>
 <td>X</td>
@@ -1315,7 +1316,8 @@ tropospheric</td>
 </tr>
 <tr class="row-even"><td>&lt;species&gt;_mass_mixing_ratio_dry_air</td>
 <td>surface</td>
-<td>apriori, avk</td>
+<td>apriori, avk,
+dfs</td>
 <td>X</td>
 <td>X</td>
 <td>X</td>
@@ -1324,7 +1326,8 @@ tropospheric</td>
 </tr>
 <tr class="row-odd"><td>&lt;species&gt;_number_density</td>
 <td>surface</td>
-<td>apriori, avk</td>
+<td>apriori, avk,
+dfs</td>
 <td>X</td>
 <td>X</td>
 <td>X</td>
@@ -1351,7 +1354,8 @@ tropospheric</td>
 </tr>
 <tr class="row-even"><td>&lt;species&gt;_volume_mixing_ratio</td>
 <td>surface</td>
-<td>apriori, avk</td>
+<td>apriori, avk,
+dfs</td>
 <td>X</td>
 <td>X</td>
 <td>X</td>
@@ -1360,7 +1364,8 @@ tropospheric</td>
 </tr>
 <tr class="row-odd"><td>&lt;species&gt;_volume_mixing_ratio_dry_air</td>
 <td>surface</td>
-<td>apriori, avk</td>
+<td>apriori, avk,
+dfs</td>
 <td>X</td>
 <td>X</td>
 <td>X</td>
@@ -1733,8 +1738,12 @@ The supported differences are:</p>
 <li>&lt;variable&gt;_diffabsrelmax (<span class="math">\(\frac{|x-y|}{\max(|x|,|y|)}\)</span>)</li>
 <li>&lt;variable&gt;_diffabsrelavg (<span class="math">\(\frac{2|x-y|}{|x+y|}\)</span>)</li>
 </ul>
-<p>Be aware that there are still several topics under discussion that may change the above naming convention.
-See the HARP issues list on the <a class="reference external" href="https://github.com/stcorp/harp/issues">GitHub website</a> for more details.</p>
+<p>The postfix &#8216;avk&#8217; is used for averaging kernels of atmospheric vertical profiles.
+An AVK that only depends once on the vertical dimension is a column averaging kernel,
+and an AVK that depends twice on the vertical dimension is a profile averaging kernel.
+The &#8216;amf&#8217; postfix is used for air mass factors.
+The &#8216;dfs&#8217; postfix is used for the &#8216;degree of freedom for signal&#8217; for vertical profiles which equals the trace of
+the two dimensional AVK and provides information on the vertical resolution and information content of profiles.</p>
 </div>
 
 

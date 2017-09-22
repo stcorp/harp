@@ -56,9 +56,9 @@ cloud_top_pressure                                                            X 
 cloud_top_temperature                                                         X            X
 collocation_index                                                                                        zero-based index as provided in the collocation result file
 column_density                                stratospheric,  amf, apriori,   X       X    X             this is the mass density
-                                              tropospheric    avk
+                                              tropospheric    avk, dfs
 column_number_density                         stratospheric,  amf, apriori,   X       X    X
-                                              tropospheric    avk
+                                              tropospheric    avk, dfs
 datetime
 datetime_length                                                                       X
 datetime_start
@@ -141,11 +141,11 @@ wind_speed                                    surface                         X 
 wind_direction                                surface                         X       X    X
 year                                                                                                     integer value representing a year
 <species>_column_density                      stratospheric,  amf, apriori,   X       X    X             this is the mass density
-                                              tropospheric    avk
+                                              tropospheric    avk, dfs
 <pm>_column_density                           stratospheric,                  X       X    X             this is the mass density
                                               tropospheric
 <species>_column_number_density               stratospheric,  amf, apriori,   X       X    X
-                                              tropospheric    avk
+                                              tropospheric    avk, dfs
 <species>_column_mass_mixing_ratio            stratospheric,                  X            X
                                               tropospheric
 <species>_column_mass_mixing_ratio_dry_air    stratospheric,                  X            X
@@ -156,13 +156,18 @@ year                                                                            
                                               tropospheric
 <species>_density                             surface                         X       X    X             this is the mass density
 <pm>_density                                  surface                         X       X    X             this is the mass density
-<species>_mass_mixing_ratio                   surface         apriori, avk    X       X    X
-<species>_mass_mixing_ratio_dry_air           surface         apriori, avk    X       X    X
-<species>_number_density                      surface         apriori, avk    X       X    X
+<species>_mass_mixing_ratio                   surface         apriori, avk,   X       X    X
+                                                              dfs
+<species>_mass_mixing_ratio_dry_air           surface         apriori, avk,   X       X    X
+                                                              dfs
+<species>_number_density                      surface         apriori, avk,   X       X    X
+                                                              dfs
 <species>_partial_pressure                    surface                         X       X    X
 <species>_partial_pressure_dry_air            surface                         X       X    X
-<species>_volume_mixing_ratio                 surface         apriori, avk    X       X    X             this is equal to 'number mixing ratio'
-<species>_volume_mixing_ratio_dry_air         surface         apriori, avk    X       X    X
+<species>_volume_mixing_ratio                 surface         apriori, avk,   X       X    X             this is equal to 'number mixing ratio'
+                                                              dfs
+<species>_volume_mixing_ratio_dry_air         surface         apriori, avk,   X       X    X
+                                                              dfs
 ============================================= =============== =============== ======= ==== ======= ===== =======================================================================
 
 The supported aerosol types are:
@@ -311,6 +316,9 @@ The supported differences are:
 - <variable>_diffabsrelmax (:math:`\frac{|x-y|}{\max(|x|,|y|)}`)
 - <variable>_diffabsrelavg (:math:`\frac{2|x-y|}{|x+y|}`)
 
-
-Be aware that there are still several topics under discussion that may change the above naming convention.
-See the HARP issues list on the `GitHub website <https://github.com/stcorp/harp/issues>`_ for more details.
+The postfix 'avk' is used for averaging kernels of atmospheric vertical profiles.
+An AVK that only depends once on the vertical dimension is a column averaging kernel,
+and an AVK that depends twice on the vertical dimension is a profile averaging kernel.
+The 'amf' postfix is used for air mass factors.
+The 'dfs' postfix is used for the 'degree of freedom for signal' for vertical profiles which equals the trace of
+the two dimensional AVK and provides information on the vertical resolution and information content of profiles.
