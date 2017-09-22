@@ -286,6 +286,30 @@ static int get_density_from_partial_column_and_alt_bounds(harp_variable *variabl
     return 0;
 }
 
+static int get_dfs_from_avk(harp_variable *variable, const harp_variable **source_variable)
+{
+    long num_vertical;
+    long i, j;
+
+    num_vertical = source_variable[0]->dimension[source_variable[0]->num_dimensions - 1];
+    for (i = 0; i < variable->num_elements; i++)
+    {
+        double *avk = &source_variable[0]->data.double_data[i * num_vertical * num_vertical];
+        double trace = 0;
+
+        /* sum the diagonal elements */
+        for (j = 0; j < num_vertical; j++)
+        {
+            if (!harp_isnan(avk[j * num_vertical + j]))
+            {
+                trace += avk[j * num_vertical + j];
+            }
+        }
+        variable->data.double_data[i] = trace;
+    }
+
+    return 0;
+}
 
 static int get_elevation_angle_from_zenith_angle(harp_variable *variable, const harp_variable **source_variable)
 {
@@ -1645,6 +1669,41 @@ static int add_uncertainty_conversions(const char *variable_name, const char *un
     return 0;
 }
 
+
+static int add_dfs_from_avk_conversion(const char *variable_name, int num_dimensions,
+                                       harp_dimension_type dimension_type[HARP_MAX_NUM_DIMS])
+{
+    harp_variable_conversion *conversion;
+    harp_dimension_type avk_dimension_type[HARP_MAX_NUM_DIMS];
+    char name_dfs[MAX_NAME_LENGTH];
+    char name_avk[MAX_NAME_LENGTH];
+    int i;
+
+    assert(num_dimensions + 2 <= HARP_MAX_NUM_DIMS);
+    snprintf(name_dfs, MAX_NAME_LENGTH, "%s_dfs", variable_name);
+    snprintf(name_avk, MAX_NAME_LENGTH, "%s_avk", variable_name);
+
+    for (i = 0; i < num_dimensions; i++)
+    {
+        avk_dimension_type[i] = dimension_type[i];
+    }
+    avk_dimension_type[num_dimensions] = harp_dimension_vertical;
+    avk_dimension_type[num_dimensions + 1] = harp_dimension_vertical;
+
+    if (harp_variable_conversion_new(name_dfs, harp_type_double, HARP_UNIT_DIMENSIONLESS, num_dimensions,
+                                     dimension_type, 0, get_dfs_from_avk, &conversion) != 0)
+    {
+        return -1;
+    }
+    if (harp_variable_conversion_add_source(conversion, name_avk, harp_type_double, HARP_UNIT_DIMENSIONLESS,
+                                            num_dimensions + 2, avk_dimension_type, 0) != 0)
+    {
+        return -1;
+    }
+
+    return 0;
+}
+
 static int add_species_conversions_for_grid(const char *species, int num_dimensions,
                                             harp_dimension_type target_dimension_type[HARP_MAX_NUM_DIMS],
                                             int has_vertical)
@@ -1825,6 +1884,15 @@ static int add_species_conversions_for_grid(const char *species, int num_dimensi
         return -1;
     }
 
+    /*** column (mass) density DFS ***/
+    if (!has_vertical)
+    {
+        if (add_dfs_from_avk_conversion(name_column_density, num_dimensions, dimension_type) != 0)
+        {
+            return -1;
+        }
+    }
+
     /*** stratospheric column (mass) density ***/
 
     if (!has_vertical)
@@ -1858,6 +1926,15 @@ static int add_species_conversions_for_grid(const char *species, int num_dimensi
         }
     }
 
+    /*** stratospheric column (mass) density DFS ***/
+    if (!has_vertical)
+    {
+        if (add_dfs_from_avk_conversion(name_strato_column_density, num_dimensions, dimension_type) != 0)
+        {
+            return -1;
+        }
+    }
+
     /*** tropospheric column (mass) density ***/
 
     if (!has_vertical)
@@ -1886,6 +1963,15 @@ static int add_species_conversions_for_grid(const char *species, int num_dimensi
         if (add_time_indepedent_to_dependent_conversion(name_tropo_column_density_apriori, harp_type_double,
                                                         HARP_UNIT_COLUMN_MASS_DENSITY, num_dimensions, dimension_type,
                                                         0) != 0)
+        {
+            return -1;
+        }
+    }
+
+    /*** tropospheric column (mass) density DFS ***/
+    if (!has_vertical)
+    {
+        if (add_dfs_from_avk_conversion(name_tropo_column_density, num_dimensions, dimension_type) != 0)
         {
             return -1;
         }
@@ -2123,6 +2209,15 @@ static int add_species_conversions_for_grid(const char *species, int num_dimensi
         return -1;
     }
 
+    /*** column number density DFS ***/
+    if (!has_vertical)
+    {
+        if (add_dfs_from_avk_conversion(name_column_nd, num_dimensions, dimension_type) != 0)
+        {
+            return -1;
+        }
+    }
+
     /*** stratospheric column number density ***/
 
     if (!has_vertical)
@@ -2156,6 +2251,15 @@ static int add_species_conversions_for_grid(const char *species, int num_dimensi
         }
     }
 
+    /*** stratospheric column number density DFS ***/
+    if (!has_vertical)
+    {
+        if (add_dfs_from_avk_conversion(name_strato_column_nd, num_dimensions, dimension_type) != 0)
+        {
+            return -1;
+        }
+    }
+
     /*** tropospheric column number density ***/
 
     if (!has_vertical)
@@ -2184,6 +2288,15 @@ static int add_species_conversions_for_grid(const char *species, int num_dimensi
         if (add_time_indepedent_to_dependent_conversion(name_tropo_column_nd_apriori, harp_type_double,
                                                         HARP_UNIT_COLUMN_NUMBER_DENSITY, num_dimensions, dimension_type,
                                                         0) != 0)
+        {
+            return -1;
+        }
+    }
+
+    /*** tropospheric column number density DFS ***/
+    if (!has_vertical)
+    {
+        if (add_dfs_from_avk_conversion(name_tropo_column_nd, num_dimensions, dimension_type) != 0)
         {
             return -1;
         }
@@ -2225,6 +2338,15 @@ static int add_species_conversions_for_grid(const char *species, int num_dimensi
         }
     }
 
+    /*** column mass mixing ratio DFS ***/
+    if (!has_vertical)
+    {
+        if (add_dfs_from_avk_conversion(name_column_mmr, num_dimensions, dimension_type) != 0)
+        {
+            return -1;
+        }
+    }
+
     /*** column mass mixing ratio dry air ***/
 
     if (!has_vertical)
@@ -2257,6 +2379,15 @@ static int add_species_conversions_for_grid(const char *species, int num_dimensi
         }
     }
 
+    /*** column mass mixing ratio dry air DFS ***/
+    if (!has_vertical)
+    {
+        if (add_dfs_from_avk_conversion(name_column_mmr_dry, num_dimensions, dimension_type) != 0)
+        {
+            return -1;
+        }
+    }
+
     /*** stratospheric column mass mixing ratio ***/
 
     if (!has_vertical)
@@ -2272,6 +2403,15 @@ static int add_species_conversions_for_grid(const char *species, int num_dimensi
         /* uncertainties */
         if (add_uncertainty_conversions(name_strato_column_mmr, HARP_UNIT_MASS_MIXING_RATIO, num_dimensions,
                                         dimension_type) != 0)
+        {
+            return -1;
+        }
+    }
+
+    /*** stratospheric column mass mixing ratio DFS ***/
+    if (!has_vertical)
+    {
+        if (add_dfs_from_avk_conversion(name_strato_column_mmr, num_dimensions, dimension_type) != 0)
         {
             return -1;
         }
@@ -2309,6 +2449,15 @@ static int add_species_conversions_for_grid(const char *species, int num_dimensi
         }
     }
 
+    /*** stratospheric column mass mixing ratio dry air DFS ***/
+    if (!has_vertical)
+    {
+        if (add_dfs_from_avk_conversion(name_strato_column_mmr_dry, num_dimensions, dimension_type) != 0)
+        {
+            return -1;
+        }
+    }
+
     /*** tropospheric column mass mixing ratio ***/
 
     if (!has_vertical)
@@ -2324,6 +2473,15 @@ static int add_species_conversions_for_grid(const char *species, int num_dimensi
         /* uncertainties */
         if (add_uncertainty_conversions(name_tropo_column_mmr, HARP_UNIT_MASS_MIXING_RATIO, num_dimensions,
                                         dimension_type) != 0)
+        {
+            return -1;
+        }
+    }
+
+    /*** tropospheric column mass mixing ratio DFS ***/
+    if (!has_vertical)
+    {
+        if (add_dfs_from_avk_conversion(name_tropo_column_mmr, num_dimensions, dimension_type) != 0)
         {
             return -1;
         }
@@ -2356,6 +2514,15 @@ static int add_species_conversions_for_grid(const char *species, int num_dimensi
         }
         if (harp_variable_conversion_add_source(conversion, name_tropo_column_vmr_dry, harp_type_double,
                                                 HARP_UNIT_VOLUME_MIXING_RATIO, num_dimensions, dimension_type, 0) != 0)
+        {
+            return -1;
+        }
+    }
+
+    /*** tropospheric column mass mixing ratio dry air DFS ***/
+    if (!has_vertical)
+    {
+        if (add_dfs_from_avk_conversion(name_tropo_column_mmr_dry, num_dimensions, dimension_type) != 0)
         {
             return -1;
         }
@@ -2398,6 +2565,15 @@ static int add_species_conversions_for_grid(const char *species, int num_dimensi
         }
     }
 
+    /*** column volume mixing ratio DFS ***/
+    if (!has_vertical)
+    {
+        if (add_dfs_from_avk_conversion(name_column_vmr, num_dimensions, dimension_type) != 0)
+        {
+            return -1;
+        }
+    }
+
     /*** column volume mixing ratio dry air ***/
 
     if (!has_vertical)
@@ -2430,6 +2606,15 @@ static int add_species_conversions_for_grid(const char *species, int num_dimensi
         }
     }
 
+    /*** column volume mixing ratio dry air DFS ***/
+    if (!has_vertical)
+    {
+        if (add_dfs_from_avk_conversion(name_column_vmr_dry, num_dimensions, dimension_type) != 0)
+        {
+            return -1;
+        }
+    }
+
     /*** stratospheric column volume mixing ratio ***/
 
     if (!has_vertical)
@@ -2445,6 +2630,15 @@ static int add_species_conversions_for_grid(const char *species, int num_dimensi
         /* uncertainties */
         if (add_uncertainty_conversions(name_strato_column_vmr, HARP_UNIT_VOLUME_MIXING_RATIO, num_dimensions,
                                         dimension_type) != 0)
+        {
+            return -1;
+        }
+    }
+
+    /*** stratospheric column volume mixing ratio DFS ***/
+    if (!has_vertical)
+    {
+        if (add_dfs_from_avk_conversion(name_strato_column_vmr, num_dimensions, dimension_type) != 0)
         {
             return -1;
         }
@@ -2482,6 +2676,15 @@ static int add_species_conversions_for_grid(const char *species, int num_dimensi
         }
     }
 
+    /*** stratospheric column volume mixing ratio dry air DFS ***/
+    if (!has_vertical)
+    {
+        if (add_dfs_from_avk_conversion(name_strato_column_vmr_dry, num_dimensions, dimension_type) != 0)
+        {
+            return -1;
+        }
+    }
+
     /*** tropospheric column volume mixing ratio ***/
 
     if (!has_vertical)
@@ -2497,6 +2700,15 @@ static int add_species_conversions_for_grid(const char *species, int num_dimensi
         /* uncertainties */
         if (add_uncertainty_conversions(name_tropo_column_vmr, HARP_UNIT_VOLUME_MIXING_RATIO, num_dimensions,
                                         dimension_type) != 0)
+        {
+            return -1;
+        }
+    }
+
+    /*** tropospheric column volume mixing ratio DFS ***/
+    if (!has_vertical)
+    {
+        if (add_dfs_from_avk_conversion(name_tropo_column_vmr, num_dimensions, dimension_type) != 0)
         {
             return -1;
         }
@@ -2529,6 +2741,15 @@ static int add_species_conversions_for_grid(const char *species, int num_dimensi
         }
         if (harp_variable_conversion_add_source(conversion, name_tropo_column_mmr_dry, harp_type_double,
                                                 HARP_UNIT_MASS_MIXING_RATIO, num_dimensions, dimension_type, 0) != 0)
+        {
+            return -1;
+        }
+    }
+
+    /*** tropospheric column volume mixing ratio dry air DFS ***/
+    if (!has_vertical)
+    {
+        if (add_dfs_from_avk_conversion(name_tropo_column_vmr_dry, num_dimensions, dimension_type) != 0)
         {
             return -1;
         }
@@ -2612,38 +2833,6 @@ static int add_species_conversions_for_grid(const char *species, int num_dimensi
         return -1;
     }
 
-    /*** mass mixing ratio ***/
-
-    /* time dependent from independent */
-    if (add_time_indepedent_to_dependent_conversion(name_mmr, harp_type_double, HARP_UNIT_MASS_MIXING_RATIO,
-                                                    num_dimensions, dimension_type, 0) != 0)
-    {
-        return -1;
-    }
-
-    /* uncertainties */
-    if (add_uncertainty_conversions(name_mmr, HARP_UNIT_MASS_MIXING_RATIO, num_dimensions, dimension_type) != 0)
-    {
-        return -1;
-    }
-
-    /* mmr from vmr */
-    if (harp_variable_conversion_new(name_mmr, harp_type_double, HARP_UNIT_MASS_MIXING_RATIO, num_dimensions,
-                                     dimension_type, 0, get_mmr_from_vmr, &conversion) != 0)
-    {
-        return -1;
-    }
-    if (harp_variable_conversion_add_source(conversion, name_vmr, harp_type_double, HARP_UNIT_VOLUME_MIXING_RATIO,
-                                            num_dimensions, dimension_type, 0) != 0)
-    {
-        return -1;
-    }
-    if (harp_variable_conversion_add_source(conversion, "molar_mass", harp_type_double, HARP_UNIT_MOLAR_MASS,
-                                            num_dimensions, dimension_type, 0) != 0)
-    {
-        return -1;
-    }
-
     /*** mass mixing ratio apriori ***/
 
     /* time dependent from independent */
@@ -2668,6 +2857,15 @@ static int add_species_conversions_for_grid(const char *species, int num_dimensi
                                             num_dimensions, dimension_type, 0) != 0)
     {
         return -1;
+    }
+
+    /***  mass mixing ratio DFS ***/
+    if (!has_vertical)
+    {
+        if (add_dfs_from_avk_conversion(name_mmr, num_dimensions, dimension_type) != 0)
+        {
+            return -1;
+        }
     }
 
     /*** mass mixing ratio dry air ***/
@@ -2716,6 +2914,15 @@ static int add_species_conversions_for_grid(const char *species, int num_dimensi
                                             HARP_UNIT_VOLUME_MIXING_RATIO, num_dimensions, dimension_type, 0) != 0)
     {
         return -1;
+    }
+
+    /***  mass mixing ratio dry air DFS ***/
+    if (!has_vertical)
+    {
+        if (add_dfs_from_avk_conversion(name_mmr_dry, num_dimensions, dimension_type) != 0)
+        {
+            return -1;
+        }
     }
 
     /*** number density ***/
@@ -2858,6 +3065,15 @@ static int add_species_conversions_for_grid(const char *species, int num_dimensi
                                             num_dimensions + 1, dimension_type, 2) != 0)
     {
         return -1;
+    }
+
+    /*** number density DFS ***/
+    if (!has_vertical)
+    {
+        if (add_dfs_from_avk_conversion(name_nd, num_dimensions, dimension_type) != 0)
+        {
+            return -1;
+        }
     }
 
     /*** partial pressure ***/
@@ -3018,6 +3234,15 @@ static int add_species_conversions_for_grid(const char *species, int num_dimensi
         return -1;
     }
 
+    /*** volume mixing ratio DFS ***/
+    if (!has_vertical)
+    {
+        if (add_dfs_from_avk_conversion(name_vmr, num_dimensions, dimension_type) != 0)
+        {
+            return -1;
+        }
+    }
+
     /*** volume mixing ratio dry air ****/
 
     /* time dependent from independent */
@@ -3116,6 +3341,15 @@ static int add_species_conversions_for_grid(const char *species, int num_dimensi
                                             HARP_UNIT_MASS_MIXING_RATIO, num_dimensions, dimension_type, 0) != 0)
     {
         return -1;
+    }
+
+    /*** volume mixing ratio dry air DFS ***/
+    if (!has_vertical)
+    {
+        if (add_dfs_from_avk_conversion(name_vmr_dry, num_dimensions, dimension_type) != 0)
+        {
+            return -1;
+        }
     }
 
     return 0;
@@ -3578,6 +3812,15 @@ static int add_conversions_for_grid(int num_dimensions, harp_dimension_type dime
         return -1;
     }
 
+    /*** column (mass) density DFS ***/
+    if (!has_vertical)
+    {
+        if (add_dfs_from_avk_conversion("column_density", num_dimensions, dimension_type) != 0)
+        {
+            return -1;
+        }
+    }
+
     /*** column number density ***/
 
     /* time dependent from independent */
@@ -3647,6 +3890,15 @@ static int add_conversions_for_grid(int num_dimensions, harp_dimension_type dime
                                             num_dimensions, dimension_type, 0) != 0)
     {
         return -1;
+    }
+
+    /*** column number density DFS ***/
+    if (!has_vertical)
+    {
+        if (add_dfs_from_avk_conversion("column_number_density", num_dimensions, dimension_type) != 0)
+        {
+            return -1;
+        }
     }
 
     /*** (mass) density ***/

@@ -49,6 +49,9 @@
 
 * Added derivation to derive the area (size) of latitude/longitude bounds.
 
+* Added derivation to derive degree of freedom for signal (DFS) from 2D
+  averaging kernels (AVK).
+
 * Derivations of bound variables will now clamp to the edge midpoints when
   the `regrid_out_of_bounds` option is set to `edge`.
 
