@@ -762,7 +762,7 @@ static void register_fields_for_daily_l3u_cloud_data(void)
                                                    datetime_dimension_type, NULL, description,
                                                    "seconds since 2000-01-01", NULL, read_datetime);
     path = "/time";
-    description = "datetime converted from days sinds 1970-01-01 to seconds since 2000-01-01";
+    description = "datetime converted from days since 1970-01-01 to seconds since 2000-01-01";
     harp_variable_definition_add_mapping(variable_definition, NULL, NULL, path, description);
 
     /* datetime_start */
@@ -992,7 +992,7 @@ static void register_fields_for_monthly_l3c_cloud_data(void)
                                                    datetime_dimension_type, NULL, description,
                                                    "seconds since 2000-01-01", NULL, read_datetime);
     path = "/time";
-    description = "datetime converted from days sinds 1970-01-01 to seconds since 2000-01-01";
+    description = "datetime converted from days since 1970-01-01 to seconds since 2000-01-01";
     harp_variable_definition_add_mapping(variable_definition, NULL, NULL, path, description);
 
     /* datetime_start */
