@@ -641,6 +641,7 @@ EXTRA_DIST += \
 	CMakeModules/FindCODA.cmake \
 	CMakeModules/FindHDF4.cmake \
 	CMakeModules/FindHDF5.cmake \
+	CMakeModules/FindIDL.cmake \
 	CMakeModules/FindJPEG.cmake \
 	CMakeModules/FindSZIP.cmake \
 	CMakeModules/FindZLIB.cmake \
