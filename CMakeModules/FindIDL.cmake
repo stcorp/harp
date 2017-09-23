@@ -84,7 +84,6 @@
 #   useful for the searching all possible IDL installation.
 # :command:`IDL_get_version_from_root`
 #   returns the version of IDL, given the IDL root directory.
-#   Only works on macOS and Unix.
 #
 # Reference
 # ^^^^^^^^^
