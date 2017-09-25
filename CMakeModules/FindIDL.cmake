@@ -204,9 +204,13 @@ function(IDL_get_all_valid_IDL_roots_from_registry IDL_versions IDL_roots)
   foreach(_IDL_current_version ${IDL_versions})
     get_filename_component(
       current_IDL_ROOT
-      "[HKEY_LOCAL_MACHINE\\SOFTWARE\\ITT\\IDL\\${_IDL_current_version};IDLROOT]"
+      "[HKEY_LOCAL_MACHINE\\SOFTWARE\\ITT\\IDL\\${_IDL_current_version};Installdir]"
       ABSOLUTE)
 
+    # IDL root is "${Installdir}/IDLxy" with x.y the IDL version
+    string(REPLACE "." "" _IDL_current_version_short ${_IDL_current_version})
+    set(current_IDL_ROOT "${current_IDL_ROOT}/IDL${_IDL_current_version_short}")
+    unset(_IDL_current_version_short)
     if(EXISTS ${current_IDL_ROOT})
       list(APPEND _IDL_roots_list ${_IDL_current_version} ${current_IDL_ROOT})
     endif()
@@ -276,7 +280,6 @@ set(IDL_VERSION_STRING "NOTFOUND")
 
 if(IDL_ROOT_DIR)
   # if the user specifies a possible root, we keep this one
-
   if(NOT EXISTS ${IDL_ROOT_DIR})
     # if IDL_ROOT_DIR specified but erroneous
     if(IDL_FIND_DEBUG)
@@ -493,7 +496,7 @@ endif()
 # This small stub around find_library is to prevent any pollution of CMAKE_FIND_LIBRARY_PREFIXES in the global scope.
 # This is the function to be used below instead of the find_library directives.
 function(_IDL_find_library _IDL_library_prefix)
-  set(CMAKE_FIND_LIBRARY_PREFIXES ${CMAKE_FIND_LIBRARY_PREFIXES} ${_IDL_library_prefix})
+  set(CMAKE_FIND_LIBRARY_PREFIXES ${CMAKE_FIND_LIBRARY_PREFIXES} "${_IDL_library_prefix}")
   find_library(${ARGN})
 endfunction()
 
@@ -513,10 +516,10 @@ find_path(
 list(APPEND _IDL_required_variables IDL_INCLUDE_DIRS)
 
 _IDL_find_library(
-  ${_IDL_lib_prefix_for_search}
+  "${_IDL_lib_prefix_for_search}"
   IDL_LIBRARY
   idl
-  PATHS ${_IDL_lib_dir_for_search}
+  PATHS "${_IDL_lib_dir_for_search}"
   NO_DEFAULT_PATH
 )
 
