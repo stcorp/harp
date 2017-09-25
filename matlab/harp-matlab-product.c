@@ -22,8 +22,6 @@
 
 #include <string.h>
 
-#include "harp-utils.c"
-
 static void harp_matlab_add_harp_product_variable(mxArray *mx_struct, harp_product **product, int index)
 {
 
