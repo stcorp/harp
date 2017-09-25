@@ -224,43 +224,49 @@
 <td>m</td>
 <td>altitude</td>
 </tr>
-<tr class="row-even"><td><strong>backscatter_coefficient</strong></td>
+<tr class="row-even"><td><strong>dust_aerosol_top_height</strong></td>
+<td>double</td>
+<td>{<em>time</em>}</td>
+<td>m</td>
+<td>dust layer top height</td>
+</tr>
+<tr class="row-odd"><td><strong>backscatter_coefficient</strong></td>
 <td>double</td>
 <td>{<em>time</em>, <em>vertical</em>}</td>
 <td>1/(m*sr)</td>
 <td>backscatter coefficient</td>
 </tr>
-<tr class="row-odd"><td><strong>backscatter_coefficient_uncertainty</strong></td>
+<tr class="row-even"><td><strong>backscatter_coefficient_uncertainty</strong></td>
 <td>double</td>
 <td>{<em>time</em>, <em>vertical</em>}</td>
 <td>1/(m*sr)</td>
 <td>backscatter coefficient uncertainty</td>
 </tr>
-<tr class="row-even"><td><strong>extinction_coefficient</strong></td>
+<tr class="row-odd"><td><strong>extinction_coefficient</strong></td>
 <td>double</td>
 <td>{<em>time</em>, <em>vertical</em>}</td>
 <td>1/m</td>
 <td>extinction coefficient</td>
 </tr>
-<tr class="row-odd"><td><strong>extinction_coefficient_uncertainty</strong></td>
+<tr class="row-even"><td><strong>extinction_coefficient_uncertainty</strong></td>
 <td>double</td>
 <td>{<em>time</em>, <em>vertical</em>}</td>
 <td>1/m</td>
 <td>extinction coefficient uncertainty</td>
 </tr>
-<tr class="row-even"><td><strong>H2O_mass_mixing_ratio</strong></td>
+<tr class="row-odd"><td><strong>H2O_mass_mixing_ratio</strong></td>
 <td>double</td>
 <td>{<em>time</em>, <em>vertical</em>}</td>
 <td>g/kg</td>
 <td>water mass mixing ratio</td>
 </tr>
-<tr class="row-odd"><td><strong>H2O_mass_mixing_ratio_uncertainty</strong></td>
+<tr class="row-even"><td><strong>H2O_mass_mixing_ratio_uncertainty</strong></td>
 <td>double</td>
 <td>{<em>time</em>, <em>vertical</em>}</td>
 <td>g/kg</td>
 <td>water mass mixing ratio uncertainty</td>
 </tr>
-<tr class="row-even"><td><strong>index</strong></td>
+<tr class="row-odd"><td><strong>index</strong></td>
 <td>int32</td>
 <td>{<em>time</em>}</td>
 <td>&#160;</td>
@@ -336,47 +342,51 @@
 <td><em>path</em></td>
 <td><strong>/&#64;DetectionWavelength_nm</strong></td>
 </tr>
-<tr class="row-odd"><td rowspan="2"><strong>altitude</strong></td>
+<tr class="row-odd"><td><strong>altitude</strong></td>
 <td><em>path</em></td>
 <td><strong>/Altitude</strong></td>
 </tr>
-<tr class="row-even"><td><em>description</em></td>
-<td>height above sea level</td>
+<tr class="row-even"><td rowspan="2"><strong>dust_aerosol_top_height</strong></td>
+<td><em>available</em></td>
+<td>optional</td>
 </tr>
-<tr class="row-odd"><td><strong>backscatter_coefficient</strong></td>
+<tr class="row-odd"><td><em>path</em></td>
+<td><strong>/DustLayerHeight</strong></td>
+</tr>
+<tr class="row-even"><td><strong>backscatter_coefficient</strong></td>
 <td><em>path</em></td>
 <td><strong>/Backscatter</strong></td>
 </tr>
-<tr class="row-even"><td><strong>backscatter_coefficient_uncertainty</strong></td>
+<tr class="row-odd"><td><strong>backscatter_coefficient_uncertainty</strong></td>
 <td><em>path</em></td>
 <td><strong>/ErrorBackscatter</strong></td>
 </tr>
-<tr class="row-odd"><td rowspan="2"><strong>extinction_coefficient</strong></td>
+<tr class="row-even"><td rowspan="2"><strong>extinction_coefficient</strong></td>
 <td><em>available</em></td>
 <td>optional</td>
 </tr>
-<tr class="row-even"><td><em>path</em></td>
+<tr class="row-odd"><td><em>path</em></td>
 <td><strong>/Extinction</strong></td>
 </tr>
-<tr class="row-odd"><td rowspan="2"><strong>extinction_coefficient_uncertainty</strong></td>
+<tr class="row-even"><td rowspan="2"><strong>extinction_coefficient_uncertainty</strong></td>
 <td><em>available</em></td>
 <td>optional</td>
 </tr>
-<tr class="row-even"><td><em>path</em></td>
+<tr class="row-odd"><td><em>path</em></td>
 <td><strong>/ErrorExtinction</strong></td>
 </tr>
-<tr class="row-odd"><td rowspan="2"><strong>H2O_mass_mixing_ratio</strong></td>
+<tr class="row-even"><td rowspan="2"><strong>H2O_mass_mixing_ratio</strong></td>
 <td><em>available</em></td>
 <td>optional</td>
 </tr>
-<tr class="row-even"><td><em>path</em></td>
+<tr class="row-odd"><td><em>path</em></td>
 <td><strong>/WaterVaporMixingRatio</strong></td>
 </tr>
-<tr class="row-odd"><td rowspan="2"><strong>H2O_mass_mixing_ratio_uncertainty</strong></td>
+<tr class="row-even"><td rowspan="2"><strong>H2O_mass_mixing_ratio_uncertainty</strong></td>
 <td><em>available</em></td>
 <td>optional</td>
 </tr>
-<tr class="row-even"><td><em>path</em></td>
+<tr class="row-odd"><td><em>path</em></td>
 <td><strong>/ErrorWaterVapor</strong></td>
 </tr>
 </tbody>

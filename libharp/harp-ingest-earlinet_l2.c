@@ -38,6 +38,7 @@
 
 /* ------------------- Defines ------------------ */
 
+#define DEFAULT_FILL_VALUE              9.9692099683868690e+36
 #define FILL_VALUE_NO_DATA              -999.0
 
 #define SECONDS_FROM_1970_TO_2000    946684800
@@ -52,6 +53,7 @@ typedef struct ingest_info_struct
     long num_times;
     long num_altitudes;
     double *values_buffer;
+    int is_time_series;
 } ingest_info;
 
 /* -------------- Global variables --------------- */
@@ -115,12 +117,40 @@ static int read_scalar_attribute(ingest_info *info, const char *name, harp_data_
     return 0;
 }
 
+static int read_scalar_variable(ingest_info *info, const char *name, harp_array data)
+{
+    coda_cursor cursor;
+    double *double_data;
+
+    if (coda_cursor_set_product(&cursor, info->product) != 0)
+    {
+        harp_set_error(HARP_ERROR_CODA, NULL);
+        return -1;
+    }
+    if (coda_cursor_goto_record_field_by_name(&cursor, name) != 0)
+    {
+        harp_set_error(HARP_ERROR_CODA, NULL);
+        return -1;
+    }
+    if (coda_cursor_read_double(&cursor, data.double_data) != 0)
+    {
+        harp_set_error(HARP_ERROR_CODA, NULL);
+        return -1;
+    }
+    double_data = data.double_data;
+    if (*double_data == FILL_VALUE_NO_DATA || *double_data == DEFAULT_FILL_VALUE)
+    {
+        *double_data = nan;
+    }
+
+    return 0;
+}
+
 static int read_array_variable(ingest_info *info, const char *name, harp_array data, short *unit_is_percent)
 {
     coda_cursor cursor;
     double *double_data;
     long num_elements, l;
-    char units[81];
 
     if (coda_cursor_set_product(&cursor, info->product) != 0)
     {
@@ -153,6 +183,8 @@ static int read_array_variable(ingest_info *info, const char *name, harp_array d
     }
     if (unit_is_percent != NULL)
     {
+        char units[81];
+
         if (coda_cursor_goto_attributes(&cursor) != 0)
         {
             harp_set_error(HARP_ERROR_CODA, NULL);
@@ -334,6 +366,17 @@ static int read_backscatter_uncertainty(void *user_data, harp_array data)
     return 0;
 }
 
+static int read_dust_layer_height(void *user_data, harp_array data)
+{
+    ingest_info *info = (ingest_info *)user_data;
+
+    if (info->is_time_series)
+    {
+        return read_array_variable((ingest_info *)user_data, "DustLayerHeight", data, NULL);
+    }
+    return read_scalar_variable((ingest_info *)user_data, "DustLayerHeight", data);
+}
+
 static int read_extinction(void *user_data, harp_array data)
 {
     return read_array_variable((ingest_info *)user_data, "Extinction", data, NULL);
@@ -413,6 +456,11 @@ static int exclude_datetime_length(void *user_data)
     return !exclude_field_if_not_existing(user_data, "Time");
 }
 
+static int exclude_dust_layer_height(void *user_data)
+{
+    return exclude_field_if_not_existing(user_data, "DustLayerHeight");
+}
+
 static int exclude_extinction(void *user_data)
 {
     return exclude_field_if_not_existing(user_data, "Extinction");
@@ -461,6 +509,7 @@ static int get_dimensions(ingest_info *info)
     {
         /* This is a single profile file (i.e. all measurements are taken at one time) */
         info->num_times = 1;
+        info->is_time_series = 0;
     }
     else if (coda_cursor_get_array_dim(&cursor, &num_coda_dimensions, coda_dimension) != 0)
     {
@@ -471,6 +520,7 @@ static int get_dimensions(ingest_info *info)
     else
     {
         info->num_times = coda_dimension[0];
+        info->is_time_series = 1;
     }
 
     if (coda_cursor_set_product(&cursor, info->product) != 0)
@@ -617,8 +667,16 @@ int harp_ingestion_module_earlinet_l2_aerosol_init(void)
         harp_ingestion_register_variable_full_read(product_definition, "altitude", harp_type_double, 1,
                                                    &(dimension_type[1]), NULL, description, "m", NULL, read_altitude);
     path = "/Altitude";
-    description = "height above sea level";
-    harp_variable_definition_add_mapping(variable_definition, NULL, NULL, path, description);
+    harp_variable_definition_add_mapping(variable_definition, NULL, NULL, path, NULL);
+
+    /* dust_aerosol_top_height */
+    description = "dust layer top height";
+    variable_definition =
+        harp_ingestion_register_variable_full_read(product_definition, "dust_aerosol_top_height", harp_type_double, 1,
+                                                   dimension_type, NULL, description, "m", exclude_dust_layer_height,
+                                                   read_dust_layer_height);
+    path = "/DustLayerHeight";
+    harp_variable_definition_add_mapping(variable_definition, NULL, NULL, path, NULL);
 
     /* backscatter_coefficient */
     description = "backscatter coefficient";
