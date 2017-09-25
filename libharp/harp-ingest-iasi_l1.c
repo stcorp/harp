@@ -54,11 +54,11 @@ typedef struct ingest_info_struct
 {
     coda_product *product;
     int format_version;
-    long mdr_records;   // Total number of MDR records (valid scanlines and dummy records)
-    long valid_scanlines;       // Each file is a series of scanlines, each scanline is a series of scans, each scan is a 2x2 matrix of spectral measurements.
+    long mdr_records;   /* Total number of MDR records (valid scanlines and dummy records) */
+    long valid_scanlines;       /* Each file is a series of scanlines, each scanline is a series of scans, each scan is a 2x2 matrix of spectral measurements. */
     coda_cursor *mdr_cursors;
-    long num_main;      // Number spectral measurements in the file (number scanlines * 30 * 4)
-    long num_pixels;    // Number of pixels in 1 scan (will usually be 8700)
+    long num_main;      /* Number spectral measurements in the file (number scanlines * 30 * 4) */
+    long num_pixels;    /* Number of pixels in 1 scan (will usually be 8700) */
     int16_t nr_scale_factors;
     int16_t *scale_factors;
     int16_t *channel_first;

@@ -50,7 +50,7 @@ typedef enum uvvis_doas_type_enum
     uvvis_doas_directsun,
     uvvis_doas_offaxis,
     uvvis_doas_offaxis_aerosol,
-    uvvis_doas_zenith,
+    uvvis_doas_zenith
 } uvvis_doas_type;
 
 typedef enum uvvis_doas_gas_enum

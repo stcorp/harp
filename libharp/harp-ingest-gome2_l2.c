@@ -350,9 +350,11 @@ static int init_amf(ingest_info *info)
 {
     if (info->amf_buffer.ptr == NULL)
     {
-        long dimension[2] = { info->num_main, info->num_windows };
+        long dimension[2];
         long num_elements;
 
+        dimension[0] = info->num_main;
+        dimension[1] = info->num_windows;
         num_elements = harp_get_num_elements(2, dimension);
 
         info->amf_buffer.ptr = malloc(num_elements * sizeof(double));
@@ -387,10 +389,12 @@ static int init_amf_error(ingest_info *info)
 
     if (info->amf_error_buffer.ptr == NULL)
     {
-        long dimension[2] = { info->num_main, info->num_windows };
+        long dimension[2];
         long num_elements;
         long i;
 
+        dimension[0] = info->num_main;
+        dimension[1] = info->num_windows;
         num_elements = harp_get_num_elements(2, dimension);
 
         info->amf_error_buffer.ptr = malloc(num_elements * sizeof(double));
@@ -593,8 +597,11 @@ static int read_latitude(void *user_data, harp_array data)
 static int read_longitude_bounds(void *user_data, harp_array data)
 {
     ingest_info *info = (ingest_info *)user_data;
-    long dimension[2] = { 4, info->num_main };
+    long dimension[2];
     harp_array tmp;
+
+    dimension[0] = 4;
+    dimension[1] = info->num_main;
 
     tmp = data;
     if (read_dataset(info, "GEOLOCATION/LongitudeB", harp_type_double, info->num_main, data) != 0)
@@ -629,8 +636,11 @@ static int read_longitude_bounds(void *user_data, harp_array data)
 static int read_latitude_bounds(void *user_data, harp_array data)
 {
     ingest_info *info = (ingest_info *)user_data;
-    long dimension[2] = { 4, info->num_main };
+    long dimension[2];
     harp_array tmp;
+
+    dimension[0] = 4;
+    dimension[1] = info->num_main;
 
     tmp = data;
     if (read_dataset(info, "GEOLOCATION/LatitudeB", harp_type_double, info->num_main, data) != 0)

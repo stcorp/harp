@@ -203,7 +203,7 @@ static int get_main_datetime_data(ingest_info *info, double *double_data_array)
         }
         for (j = info->readout_offset[i]; j < MAX_READOUTS_PER_MDR_RECORD; j++)
         {
-            time_from_record += 0.1875; // 6 seconds per scan / 32 readouts
+            time_from_record += 0.1875; /* 6 seconds per scan / 32 readouts */
             *double_data = time_from_record;
             double_data++;
         }
@@ -2087,62 +2087,76 @@ static harp_product_definition *register_measurement_product(harp_ingestion_modu
         "(covering 375ms each) coming from the satellite. Each ISP contains at most two readouts (there are two if "
         "the integration time for a band is 187.5ms (or 93.75ms)). The problem is that the two readouts of the first "
         "ISP of a scan contain the last measurement of the previous scan and the first measurement of the new scan. "
-        "The second ISP contains data for measurements #2 and #3, the third for #4 and #5, etc. The last measurement "
-        "of a scan will again be found in the first ISP of the next scan. Instead of shifting the data and grouping "
-        "all data of a single scan together in a single MDR the Level 1a and Level 1b processors just place the MDR "
-        "boundary at the start of the first ISP of a scan and terminate the MDR at the end of ISP 16. This means that "
-        "in Level 1b (but also 1a) products the first measurement in an MDR will always be the last measurement of "
-        "the previous scan.\n\n";
+        "The second ISP contains data for measurements #2 and #3, the third for #4 and #5, etc. ";
+    harp_product_definition_add_mapping(product_definition, description, NULL);
+    description = "The last measurement of a scan will again be found in the first ISP of the next scan. Instead of "
+        "shifting the data and grouping all data of a single scan together in a single MDR the Level 1a and Level 1b "
+        "processors just place the MDR boundary at the start of the first ISP of a scan and terminate the MDR at the "
+        "end of ISP 16. This means that in Level 1b (but also 1a) products the first measurement in an MDR will always "
+        "be the last measurement of the previous scan.\n\n";
     harp_product_definition_add_mapping(product_definition, description, NULL);
     description = "Nearly all meta-data for a readout (time, geolocation, viewing/solar angles, etc.) in an MDR are "
         "filled taking into account this same shift. This means that for retrieving the geolocation of the first "
         "readout of an MDR from the GEO_EARTH_ACTUAL record, one will in fact get the geolocation information of the "
-        "last backscan pixel of the previous scan. However, the integration time meta-data for the first readout in "
-        "an MDR is not shifted this way (the GEO_EARTH information is also not shifted, by the way, and just contains "
-        "the 32 geolocation pixels for the scan). As long as the integration time does not change from one scan to "
-        "another this won't impact anything, but the L1 products will contain invalid metadata for the first MDR "
-        "readout if there is a change of integration time between two consecutive scans. In that case the calculated "
-        "geolocation, angles, etc. of the first readout are values based on the integration time of the _new_ scan "
-        "instead of the _old_ scan (e.g. the ground pixel will thus either be too large or too small). "
-        "The (relative) good news to this is that, if a change in integration time occurs, the last pixel readout of "
-        "the final scan with the 'old' integration time will never be valid and will have undefined values in the "
-        "product (this is because the instrument prematurely terminates the final readout if a scan configuration "
-        "change occurs). This means that the readout that has the 'invalid' meta-data will never be a valid "
-        "measurement anyway.\n\n";
+        "last backscan pixel of the previous scan. ";
+    harp_product_definition_add_mapping(product_definition, description, NULL);
+    description = "However, the integration time meta-data for the first readout in an MDR is not shifted this way "
+        "(the GEO_EARTH information is also not shifted, by the way, and just contains the 32 geolocation pixels for "
+        "the scan). As long as the integration time does not change from one scan to another this won't impact "
+        "anything, but the L1 products will contain invalid metadata for the first MDR readout if there is a change "
+        "of integration time between two consecutive scans. ";
+    harp_product_definition_add_mapping(product_definition, description, NULL);
+    description = "In that case the calculated geolocation, angles, etc. of the first readout are values based on the "
+        "integration time of the _new_ scan instead of the _old_ scan (e.g. the ground pixel will thus either be too "
+        "large or too small). ";
+    harp_product_definition_add_mapping(product_definition, description, NULL);
+    description = "The (relative) good news to this is that, if a change in integration time occurs, the last pixel "
+        "readout of the final scan with the 'old' integration time will never be valid and will have undefined values "
+        "in the product (this is because the instrument prematurely terminates the final readout if a scan "
+        "configuration change occurs). This means that the readout that has the 'invalid' meta-data will never be a "
+        "valid measurement anyway.\n\n";
     harp_product_definition_add_mapping(product_definition, description, NULL);
     description = "Because of all this, HARP will exercise the following rules during ingestion:\n"
         "1) the first readout of the first MDR will always be ignored (and you will never see the last readout of the "
         "last scan, because it won't be in the product)\n"
         "2) the first readout after a change in measurement mode (i.e. earthshine vs. calibration vs. sun vs. moon) "
-        "will be ignored\n"
-        "3) if a change in integration time occurs (for any of the bands) then the first readout (for all bands) of "
-        "the next MDR will be ignored\n"
+        "will be ignored\n";
+    harp_product_definition_add_mapping(product_definition, description, NULL);
+    description = "3) if a change in integration time occurs (for any of the bands) then the first readout (for all "
+        "bands) of the next MDR will be ignored\n"
         "4) if two MDRs are not continuous (i.e. there is a time gap) then the first readout of the second MDR will "
         "be ignored\n\n";
     harp_product_definition_add_mapping(product_definition, description, NULL);
     description = "GOME-2 uses 6 bands for the main spectra (1A, 1B, 2A, 2B, 3, and 4). Within a scan each band "
         "can have its own integration time. There will be at most 32 readouts per scan (corresponding with an "
         "integration time of 187.5ms). If the integration time is 375ms, 750ms, 1.5s, 3s or 6s there will be 16, 8, "
-        "4, 2, or 1 measurement(s) respectively for this band in a scan. Some readouts may even cover multiple scans "
-        "if the integration time is larger than 6s. HARP will combine the data for all bands into a single "
-        "two-dimensional pixel_readout array. Because of the differences in integration time this means that for some "
-        "bands there will be gaps in the pixel_readout array. These gaps will be filled with NaN values. HARP will "
-        "always use the minimum integration time of all ingested bands to determine the time resolution for the HARP "
-        "variables. For instance, if the minimum integration time for a scan is 1.5s you will find 4 entries in the "
-        "HARP variables for this scan. All meta-data, such as geolocation, angles, etc. will also be ingested "
-        "for this minimum integration time (i.e. you will see co-added meta-data if the integration time is > "
-        "187.5ms). The minimum integration time is calculated based on those bands from which actual data is ingested. "
+        "4, 2, or 1 measurement(s) respectively for this band in a scan. ";
+    harp_product_definition_add_mapping(product_definition, description, NULL);
+    description = "Some readouts may even cover multiple scans if the integration time is larger than 6s. HARP will "
+        "combine the data for all bands into a single two-dimensional pixel_readout array. Because of the differences "
+        "in integration time this means that for some bands there will be gaps in the pixel_readout array. ";
+    harp_product_definition_add_mapping(product_definition, description, NULL);
+    description = "These gaps will be filled with NaN values. HARP will always use the minimum integration time of all "
+        "ingested bands to determine the time resolution for the HARP variables. For instance, if the minimum "
+        "integration time for a scan is 1.5s you will find 4 entries in the HARP variables for this scan. ";
+    harp_product_definition_add_mapping(product_definition, description, NULL);
+    description = "All meta-data, such as geolocation, angles, etc. will also be ingested for this minimum integration "
+        "time (i.e. you will see co-added meta-data if the integration time is > 187.5ms). The minimum integration "
+        "time is calculated based on those bands from which actual data is ingested. "
         "This means that the minimum integration time can change depending on the wavelength filter that was applied"
         "\n\n";
     harp_product_definition_add_mapping(product_definition, description, NULL);
     description = "The filtering on time and geolocation will always be performed using the 187.5ms resolution. "
         "A measurement with a higher integration time will only be included if each of its 187.5ms sub-parts have not "
-        "been filtered out (this also holds for measurements with an integration time > 6s). If spectra from multiple "
-        "bands with different integration times are ingested then the measurements with a high integration time will "
-        "only be ingested if all subpixels of the measurements with the minimum integration time are also ingested. "
-        "The measurement with a high integration time will be put in the same 'row' as the first corresponding minimum "
-        "integration time measurement (i.e. measurements of different bands are aligned according to start time of the "
-        "measurement).\n\n";
+        "been filtered out (this also holds for measurements with an integration time > 6s). ";
+    harp_product_definition_add_mapping(product_definition, description, NULL);
+    description = "If spectra from multiple bands with different integration times are ingested then the measurements "
+        "with a high integration time will only be ingested if all subpixels of the measurements with the minimum "
+        "integration time are also ingested. ";
+    harp_product_definition_add_mapping(product_definition, description, NULL);
+    description = "The measurement with a high integration time will be put in the same 'row' as the first "
+        "corresponding minimum integration time measurement (i.e. measurements of different bands are aligned "
+        "according to start time of the measurement).\n\n";
     harp_product_definition_add_mapping(product_definition, description, NULL);
     description = "If the band configuration changes somewhere during the orbit and a band filter is given, then "
         "we only include detector pixels that are inside the requested band for the duration of the whole orbit. i.e. "

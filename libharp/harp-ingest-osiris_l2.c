@@ -48,8 +48,8 @@ typedef struct ingest_info_struct
 {
     coda_product *product;
     int format_version;
-    long num_profiles;  // The number of profiles (each profile is a series of measurements at a certain latitude, longitude and time)
-    long num_altitudes; // The number of altitudes in a profile
+    long num_profiles;  /* number of profiles */
+    long num_altitudes; /* number of altitudes in a profile */
     const char *swath_name;
 } ingest_info;
 

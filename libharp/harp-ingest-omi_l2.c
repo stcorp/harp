@@ -436,8 +436,10 @@ static int variable_descriptor_init(coda_cursor *cursor, const char *name, int n
 
 static int read_variable_int16(ingest_info *info, coda_cursor *cursor, const char *name, harp_array data)
 {
-    long dimension[2] = { info->dimension[omi_dim_time], info->dimension[omi_dim_xtrack] };
+    long dimension[2];
 
+    dimension[0] = info->dimension[omi_dim_time];
+    dimension[1] = info->dimension[omi_dim_xtrack];
     if (coda_cursor_goto_record_field_by_name(cursor, name) != 0)
     {
         harp_set_error(HARP_ERROR_CODA, NULL);
@@ -459,8 +461,10 @@ static int read_variable_int16(ingest_info *info, coda_cursor *cursor, const cha
 
 static int read_variable_int32(ingest_info *info, coda_cursor *cursor, const char *name, harp_array data)
 {
-    long dimension[2] = { info->dimension[omi_dim_time], info->dimension[omi_dim_xtrack] };
+    long dimension[2];
 
+    dimension[0] = info->dimension[omi_dim_time];
+    dimension[1] = info->dimension[omi_dim_xtrack];
     if (coda_cursor_goto_record_field_by_name(cursor, name) != 0)
     {
         harp_set_error(HARP_ERROR_CODA, NULL);
@@ -483,12 +487,14 @@ static int read_variable_int32(ingest_info *info, coda_cursor *cursor, const cha
 static int read_variable_double(ingest_info *info, coda_cursor *cursor, const char *name, int num_dimensions,
                                 const long *dimension, harp_array data)
 {
-    long default_dimension[2] = { info->dimension[omi_dim_time], info->dimension[omi_dim_xtrack] };
+    long default_dimension[2];
     long num_elements;
     double missing_value;
     double scale_factor;
     double offset;
 
+    default_dimension[0] = info->dimension[omi_dim_time];
+    default_dimension[1] = info->dimension[omi_dim_xtrack];
     if (coda_cursor_goto_record_field_by_name(cursor, name) != 0)
     {
         harp_set_error(HARP_ERROR_CODA, NULL);
@@ -954,10 +960,15 @@ static int read_latitude(void *user_data, harp_array data)
 static int read_longitude_bounds_domino(void *user_data, harp_array data)
 {
     ingest_info *info = (ingest_info *)user_data;
-    long dimension[3] = { 4, info->dimension[omi_dim_time], info->dimension[omi_dim_xtrack] };
-    long dimension_transpose[2] = { 4, info->dimension[omi_dim_time] * info->dimension[omi_dim_xtrack] };
+    long dimension[3];
+    long dimension_transpose[2];
     long i;
 
+    dimension[0] = 4;
+    dimension[1] = info->dimension[omi_dim_time];
+    dimension[2] = info->dimension[omi_dim_xtrack];
+    dimension_transpose[0] = 4;
+    dimension_transpose[1] = info->dimension[omi_dim_time] * info->dimension[omi_dim_xtrack];
     if (read_variable_double(info, &info->geo_cursor, "LongitudeCornerpoints", 3, dimension, data) != 0)
     {
         return -1;
@@ -985,10 +996,15 @@ static int read_longitude_bounds_domino(void *user_data, harp_array data)
 static int read_latitude_bounds_domino(void *user_data, harp_array data)
 {
     ingest_info *info = (ingest_info *)user_data;
-    long dimension[3] = { 4, info->dimension[omi_dim_time], info->dimension[omi_dim_xtrack] };
-    long dimension_transpose[2] = { 4, info->dimension[omi_dim_time] * info->dimension[omi_dim_xtrack] };
+    long dimension[3];
+    long dimension_transpose[2];
     long i;
 
+    dimension[0] = 4;
+    dimension[1] = info->dimension[omi_dim_time];
+    dimension[2] = info->dimension[omi_dim_xtrack];
+    dimension_transpose[0] = 4;
+    dimension_transpose[1] = info->dimension[omi_dim_time] * info->dimension[omi_dim_xtrack];
     if (read_variable_double(info, &info->geo_cursor, "LatitudeCornerpoints", 3, dimension, data) != 0)
     {
         return -1;

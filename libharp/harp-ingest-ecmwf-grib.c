@@ -768,10 +768,14 @@ static int read_2d_grid_data(ingest_info *info, grib_parameter parameter, long i
 
 static int read_3d_grid_data(ingest_info *info, grib_parameter parameter, long index, harp_array data)
 {
-    long dimension_transpose[2] = { info->num_levels, info->num_longitudes };
+    long dimension_transpose[2];
     long i;
 
     assert(info->has_parameter[parameter]);
+
+    dimension_transpose[0] = info->num_levels;
+    dimension_transpose[1] = info->num_longitudes;
+
     /* we read the data as [vertical,longitude] */
     for (i = 0; i < info->num_levels; i++)
     {

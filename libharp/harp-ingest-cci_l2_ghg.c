@@ -638,7 +638,7 @@ static void register_module_l2_SCIAMACHY(void)
 
 int harp_ingestion_module_cci_l2_ghg_init(void)
 {
-    // GHG-CCI core products generated with ECAs
+    /* GHG-CCI core products generated with ECAs */
     register_module_l2_SCIAMACHY();
     register_module_l2_GOSAT();
     register_module_l2_EMMA();

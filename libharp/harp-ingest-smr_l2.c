@@ -68,8 +68,8 @@ typedef struct ingest_info_struct
 {
     coda_product *product;
     int format_version;
-    long num_profiles;  // The number of profiles (each profile is a series of measurements at a certain latitude, longitude and time)
-    long max_num_altitudes;     // The maximum number of altitudes in a profile
+    long num_profiles;  /* number of profiles */
+    long max_num_altitudes;     /* maximum number of altitudes in a profile */
     long num_species;
     long species_nr_in_file[NR_POSSIBLE_SPECIES];
     long current_species_nr;

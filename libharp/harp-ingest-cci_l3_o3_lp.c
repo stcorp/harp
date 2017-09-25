@@ -447,27 +447,36 @@ static int read_pressure(void *user_data, harp_array data)
 static int read_o3_volume_mixing_ratio_mzm(void *user_data, harp_array data)
 {
     ingest_info *info = (ingest_info *)user_data;
-    long dimension[3] = { info->num_time, info->num_vertical, info->num_latitude };
     int order[3] = { 0, 2, 1 };
+    long dimension[3];
 
+    dimension[0] = info->num_time;
+    dimension[1] = info->num_vertical;
+    dimension[2] = info->num_latitude;
     return read_reordered_dataset(info, "/ozone_mixing_ratio", 3, dimension, order, data);
 }
 
 static int read_o3_volume_mixing_ratio_mmzm(void *user_data, harp_array data)
 {
     ingest_info *info = (ingest_info *)user_data;
-    long dimension[3] = { info->num_time, info->num_vertical, info->num_latitude };
     int order[3] = { 0, 2, 1 };
+    long dimension[3];
 
+    dimension[0] = info->num_time;
+    dimension[1] = info->num_vertical;
+    dimension[2] = info->num_latitude;
     return read_reordered_dataset(info, "/merged_ozone_vmr", 3, dimension, order, data);
 }
 
 static int read_o3_volume_mixing_ratio_uncertainty_mmzm(void *user_data, harp_array data)
 {
     ingest_info *info = (ingest_info *)user_data;
-    long dimension[3] = { info->num_time, info->num_vertical, info->num_latitude };
     int order[3] = { 0, 2, 1 };
+    long dimension[3];
 
+    dimension[0] = info->num_time;
+    dimension[1] = info->num_vertical;
+    dimension[2] = info->num_latitude;
     if (read_as_uncertainty(info, "/merged_ozone_vmr", "/uncertainty_of_merged_ozone",
                             harp_get_num_elements(3, dimension), data) != 0)
     {
@@ -480,18 +489,26 @@ static int read_o3_volume_mixing_ratio_uncertainty_mmzm(void *user_data, harp_ar
 static int read_o3_volume_mixing_ratio_msmm(void *user_data, harp_array data)
 {
     ingest_info *info = (ingest_info *)user_data;
-    long dimension[4] = { info->num_time, info->num_vertical, info->num_longitude, info->num_latitude };
     int order[4] = { 0, 3, 2, 1 };
+    long dimension[4];
 
+    dimension[0] = info->num_time;
+    dimension[1] = info->num_vertical;
+    dimension[2] = info->num_longitude;
+    dimension[3] = info->num_latitude;
     return read_reordered_dataset(info, "/merged_ozone_vmr", 4, dimension, order, data);
 }
 
 static int read_o3_volume_mixing_ratio_uncertainty_msmm(void *user_data, harp_array data)
 {
     ingest_info *info = (ingest_info *)user_data;
-    long dimension[4] = { info->num_time, info->num_vertical, info->num_longitude, info->num_latitude };
     int order[4] = { 0, 3, 2, 1 };
+    long dimension[4];
 
+    dimension[0] = info->num_time;
+    dimension[1] = info->num_vertical;
+    dimension[2] = info->num_longitude;
+    dimension[3] = info->num_latitude;
     if (read_as_uncertainty(info, "/merged_ozone_vmr", "/uncertainty_of_merged_ozone",
                             harp_get_num_elements(4, dimension), data) != 0)
     {
@@ -504,27 +521,36 @@ static int read_o3_volume_mixing_ratio_uncertainty_msmm(void *user_data, harp_ar
 static int read_o3_number_density_mzm(void *user_data, harp_array data)
 {
     ingest_info *info = (ingest_info *)user_data;
-    long dimension[3] = { info->num_time, info->num_vertical, info->num_latitude };
     int order[3] = { 0, 2, 1 };
+    long dimension[3];
 
+    dimension[0] = info->num_time;
+    dimension[1] = info->num_vertical;
+    dimension[2] = info->num_latitude;
     return read_reordered_dataset(info, "/ozone_mole_concentation", 3, dimension, order, data);
 }
 
 static int read_o3_number_density_mmzm(void *user_data, harp_array data)
 {
     ingest_info *info = (ingest_info *)user_data;
-    long dimension[3] = { info->num_time, info->num_vertical, info->num_latitude };
     int order[3] = { 0, 2, 1 };
+    long dimension[3];
 
+    dimension[0] = info->num_time;
+    dimension[1] = info->num_vertical;
+    dimension[2] = info->num_latitude;
     return read_reordered_dataset(info, "/merged_ozone_concentration", 3, dimension, order, data);
 }
 
 static int read_o3_number_density_uncertainty_mmzm(void *user_data, harp_array data)
 {
     ingest_info *info = (ingest_info *)user_data;
-    long dimension[3] = { info->num_time, info->num_vertical, info->num_latitude };
     int order[3] = { 0, 2, 1 };
+    long dimension[3];
 
+    dimension[0] = info->num_time;
+    dimension[1] = info->num_vertical;
+    dimension[2] = info->num_latitude;
     if (read_as_uncertainty(info, "/merged_ozone_concentration", "/uncertainty_of_merged_ozone",
                             harp_get_num_elements(3, dimension), data) != 0)
     {
@@ -537,8 +563,8 @@ static int read_o3_number_density_uncertainty_mmzm(void *user_data, harp_array d
 static int read_o3_number_density_msmm(void *user_data, harp_array data)
 {
     ingest_info *info = (ingest_info *)user_data;
-    long dimension[4] = { info->num_time, info->num_vertical, info->num_longitude, info->num_latitude };
     int order[4] = { 0, 3, 2, 1 };
+    long dimension[4];
 
     return read_reordered_dataset(info, "/merged_ozone_concentration", 4, dimension, order, data);
 }
@@ -546,9 +572,13 @@ static int read_o3_number_density_msmm(void *user_data, harp_array data)
 static int read_o3_number_density_uncertainty_msmm(void *user_data, harp_array data)
 {
     ingest_info *info = (ingest_info *)user_data;
-    long dimension[4] = { info->num_time, info->num_vertical, info->num_longitude, info->num_latitude };
     int order[4] = { 0, 3, 2, 1 };
+    long dimension[4];
 
+    dimension[0] = info->num_time;
+    dimension[1] = info->num_vertical;
+    dimension[2] = info->num_longitude;
+    dimension[3] = info->num_latitude;
     if (read_as_uncertainty(info, "/merged_ozone_concentration", "/uncertainty_of_merged_ozone",
                             harp_get_num_elements(4, dimension), data) != 0)
     {

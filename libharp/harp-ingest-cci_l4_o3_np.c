@@ -294,9 +294,13 @@ static int read_dataset(ingest_info *info, const char *path, harp_data_type data
 
 static int read_and_reorder_dataset_4d(ingest_info *info, const char *path, harp_data_type data_type, harp_array data)
 {
-    long dimension[4] = { info->num_time, info->num_vertical, info->num_latitude, info->num_longitude };
     int order[4] = { 0, 3, 1, 2 };
+    long dimension[4];
 
+    dimension[0] = info->num_time;
+    dimension[1] = info->num_vertical;
+    dimension[2] = info->num_latitude;
+    dimension[3] = info->num_longitude;
     if (read_dataset(info, path, data_type, harp_get_num_elements(4, dimension), data) != 0)
     {
         return -1;

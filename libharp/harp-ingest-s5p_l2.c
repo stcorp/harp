@@ -67,7 +67,7 @@ typedef enum s5p_dimension_type_enum
     s5p_dim_pixel,
     s5p_dim_corner,
     s5p_dim_layer,
-    s5p_dim_level,
+    s5p_dim_level
 } s5p_dimension_type;
 
 #define S5P_NUM_DIM_TYPES (((int)s5p_dim_level) + 1)

@@ -58,7 +58,7 @@
 
 #define MAX_PIXELS                4096
 
-#define MAX_SIZE_BANDNAME           14  // Maximum size of the name of a band (is based on longest band_name "Straylight 2a")
+#define MAX_SIZE_BANDNAME           14  /* maximum size of band name (based on longest band_name "Straylight 2a") */
 
 #define CHECKED_MALLOC(v, s) v = malloc(s); if (v == NULL) { harp_set_error(HARP_ERROR_OUT_OF_MEMORY, "out of memory (could not allocate %lu bytes) (%s:%u)", s, __FILE__, __LINE__); return -1;}
 

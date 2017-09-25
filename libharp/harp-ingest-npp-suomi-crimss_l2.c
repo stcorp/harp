@@ -421,7 +421,7 @@ static int ingestion_init(const harp_ingestion_module *module, coda_product *pro
     {
         option_value = "h2o";
     }
-    info->dataset = DATASET_MOISTURE_PROFILE;   // default value
+    info->dataset = DATASET_MOISTURE_PROFILE;   /* default value */
     if (strcmp(option_value, "h2o") == 0)
     {
         info->dataset = DATASET_MOISTURE_PROFILE;

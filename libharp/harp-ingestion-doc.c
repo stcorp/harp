@@ -719,8 +719,9 @@ static int generate_index(const char *filename, int num_ingestion_modules, harp_
     fputs("For each product type, *ingestion options* may be available. These options can be used, for example, to "
           "switch between different product conversions (usually when quantities defined on different grids are "
           "present within a single product), or to switch between different variants of a quantity. Ingestion options "
-          "should be passed to the ingest function as a semi-colon separated string of ``option_name=value`` pairs. "
-          "These options are unrelated to *operations* (filtering, inclusion and exclusion of variables, and adding "
+          "should be passed to the ingest function as a semi-colon separated string of ``option_name=value`` pairs. ",
+          fout);
+    fputs("These options are unrelated to *operations* (filtering, inclusion and exclusion of variables, and adding "
           "derived variables). Ingestion options are only meaningful in the context of an ingestion, while operations "
           "can be applied both on-the-fly during ingestion, as well as to existing HARP products.\n\n", fout);
     fputs("The list below gives an overview of the conversions and ingestion options available for each product type. "

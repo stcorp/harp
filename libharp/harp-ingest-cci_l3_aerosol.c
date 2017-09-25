@@ -583,10 +583,6 @@ static void register_aatsr_atsr2_product(harp_ingestion_module *module, char *pr
         "depending on how the data is processed, uncertainty data is not always available for all wavelengths. If the data is not available, NaN values are used.";
     harp_variable_definition_add_mapping(variable_definition, NULL, NULL, path, description);
 
-    // Note: After a discussion with Sander Niemeijer it has been decided not to ingest the aerosol_type information.
-    // In case we need that aerosol_type information later, look at page 23 of
-    // https://iasi.cnes.fr/sites/default/files/drupal/201612/default/bpc_iasi-conference4-5_03_sst_trent.pdf
-
     /* wavelength */
     description = "wavelengths of the measurements";
     variable_definition =

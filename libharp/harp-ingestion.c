@@ -1106,8 +1106,10 @@ static int execute_value_filter(ingest_info *info, harp_program *program)
 
         if (info->dimension_mask_set[dimension_type] == NULL)
         {
-            long dimension[2] = { info->dimension[harp_dimension_time], info->dimension[dimension_type] };
+            long dimension[2];
 
+            dimension[0] = info->dimension[harp_dimension_time];
+            dimension[1] = info->dimension[dimension_type];
             if (harp_dimension_mask_new(2, dimension, &info->dimension_mask_set[dimension_type]) != 0)
             {
                 return -1;

@@ -101,11 +101,23 @@ static product_limits check_limits[] = {
     {NULL, 0, 0, 0, 0}
 };
 
-static const char *quality_flag_description =
-    "Bits 4 to 9 and 11 to 14 in the quality flag denote a specific error condition while bits 0 to 2 denote the severity (bit 0 error, bit 1 warning, bit 2 comment).\n\nBits 4 to 9 denote the MLS status (bit 4 HICLOUD, bit 5 LOWCLOUD, bit 6 NO_APRIORI_T, bit 7 NUM_ERROR, bit 8 TOO_FEW_RAD, bit 9 GLOB_FAILURE).\n\nBits 11 to 14 denote specific checks as specified in the EOS MLS data quality document (the pressure range, quality and convergence thresholds come from table 1.1.1 in issue 4.2 of that document): Bit 11 denotes pressure out of range, bit 12 denotes quality below threshold, bit 13 denotes convergence above threshold and bit 14 denotes a negative precision. Also, if any of the bits 11 to 14 is set, bit 0 is automatically set.\n\n";
+static const char *quality_flag_description1 =
+    "Bits 4 to 9 and 11 to 14 in the quality flag denote a specific error condition while bits 0 to 2 denote the "
+    "severity (bit 0 error, bit 1 warning, bit 2 comment).\n\nBits 4 to 9 denote the MLS status (bit 4 HICLOUD, "
+    "bit 5 LOWCLOUD, bit 6 NO_APRIORI_T, bit 7 NUM_ERROR, bit 8 TOO_FEW_RAD, bit 9 GLOB_FAILURE).\n\n"
+    "Bits 11 to 14 denote specific checks as specified in the EOS MLS data quality document (the pressure range, ";
+static const char *quality_flag_description2 =
+    "quality and convergence thresholds come from table 1.1.1 in issue 4.2 of that document): "
+    "Bit 11 denotes pressure out of range, bit 12 denotes quality below threshold, bit 13 denotes convergence above "
+    "threshold and bit 14 denotes a negative precision. Also, if any of the bits 11 to 14 is set, "
+    "bit 0 is automatically set.\n\n";
 
 static const char *hno3_quality_flag_description =
-    "Bits 4 to 9 and 11 to 16 in the quality flag denote a specific error condition while bits 0 to 2 denote the severity (bit 0 error, bit 1 warning, bit 2 comment).\n\nBits 4 to 9 denote the MLS status (bit 4 HICLOUD, bit 5 LOWCLOUD, bit 6 NO_APRIORI_T, bit 7 NUM_ERROR, bit 8 TOO_FEW_RAD, bit 9 GLOB_FAILURE).\n\nBits 11 to 14 denote specific checks as specified in the EOS MLS data quality document (the pressure range, quality and convergence thresholds come from table 1.1.1 in issue 4.2 of that document): Bit 11 denotes pressure out of range, bit 12 denotes quality below threshold, bit 13 denotes convergence above threshold and bit 14 denotes a negative precision. Also, if any of the bits 11 to 14 is set, bit 0 is automatically set.\n\nBits 15 and 16 denote the results of checks that are only performed for the HNO3 product. Bit 15 is set if the pressure is at most 68 hPa and the quality flag is not zero. Bit 16 is set if either the pressure is at least 316 hPa and the volume mixing ratio is less than -2.0 or the pressure is between 68 hPa and 215 hPa and the volume mixing ratio is less than -1.2. Again, if any of the bits 15 and 16 is set, bit 0 is automatically set.\n\n";
+    "Bits 15 and 16 denote the results of checks that are only performed for the HNO3 product. Bit 15 is set if the "
+    "pressure is at most 68 hPa and the quality flag is not zero. Bit 16 is set if either the pressure is at least "
+    "316 hPa and the volume mixing ratio is less than -2.0 or the pressure is between 68 hPa and 215 hPa and the "
+    "volume mixing ratio is less than -1.2. Again, if any of the bits 15 and 16 is set, bit 0 is automatically set."
+    "\n\n";
 
 /* -------------------- Code -------------------- */
 
@@ -905,7 +917,8 @@ static void register_bro_product(void)
 
     /* BRO product */
     product_definition = harp_ingestion_register_product(module, "MLS_L2_BRO", NULL, read_dimensions);
-    harp_product_definition_add_mapping(product_definition, quality_flag_description, NULL);
+    harp_product_definition_add_mapping(product_definition, quality_flag_description1, NULL);
+    harp_product_definition_add_mapping(product_definition, quality_flag_description2, NULL);
 
     /* datetime */
     path = "/HDFEOS/SWATHS/BrO/Geolocation_Fields/Time[]";
@@ -962,7 +975,8 @@ static void register_ch3cl_product(void)
 
     /* CH3Cl product */
     product_definition = harp_ingestion_register_product(module, "MLS_L2_CH3Cl", NULL, read_dimensions);
-    harp_product_definition_add_mapping(product_definition, quality_flag_description, NULL);
+    harp_product_definition_add_mapping(product_definition, quality_flag_description1, NULL);
+    harp_product_definition_add_mapping(product_definition, quality_flag_description2, NULL);
 
     /* datetime */
     path = "/HDFEOS/SWATHS/CH3Cl/Geolocation_Fields/Time[]";
@@ -1019,7 +1033,8 @@ static void register_ch3cn_product(void)
 
     /* CH3CN product */
     product_definition = harp_ingestion_register_product(module, "MLS_L2_CH3CN", NULL, read_dimensions);
-    harp_product_definition_add_mapping(product_definition, quality_flag_description, NULL);
+    harp_product_definition_add_mapping(product_definition, quality_flag_description1, NULL);
+    harp_product_definition_add_mapping(product_definition, quality_flag_description2, NULL);
 
     /* datetime */
     path = "/HDFEOS/SWATHS/CH3CN/Geolocation_Fields/Time[]";
@@ -1076,7 +1091,8 @@ static void register_ch3oh_product(void)
 
     /* CH3OH product */
     product_definition = harp_ingestion_register_product(module, "MLS_L2_CH3OH", NULL, read_dimensions);
-    harp_product_definition_add_mapping(product_definition, quality_flag_description, NULL);
+    harp_product_definition_add_mapping(product_definition, quality_flag_description1, NULL);
+    harp_product_definition_add_mapping(product_definition, quality_flag_description2, NULL);
 
     /* datetime */
     path = "/HDFEOS/SWATHS/CH3OH/Geolocation_Fields/Time[]";
@@ -1133,7 +1149,8 @@ static void register_clo_product(void)
 
     /* CLO product */
     product_definition = harp_ingestion_register_product(module, "MLS_L2_CLO", NULL, read_dimensions);
-    harp_product_definition_add_mapping(product_definition, quality_flag_description, NULL);
+    harp_product_definition_add_mapping(product_definition, quality_flag_description1, NULL);
+    harp_product_definition_add_mapping(product_definition, quality_flag_description2, NULL);
 
     /* datetime */
     path = "/HDFEOS/SWATHS/ClO/Geolocation_Fields/Time[]";
@@ -1190,7 +1207,8 @@ static void register_co_product(void)
 
     /* CO product */
     product_definition = harp_ingestion_register_product(module, "MLS_L2_CO", NULL, read_dimensions);
-    harp_product_definition_add_mapping(product_definition, quality_flag_description, NULL);
+    harp_product_definition_add_mapping(product_definition, quality_flag_description1, NULL);
+    harp_product_definition_add_mapping(product_definition, quality_flag_description2, NULL);
 
     /* datetime */
     path = "/HDFEOS/SWATHS/CO/Geolocation_Fields/Time[]";
@@ -1247,7 +1265,8 @@ static void register_gph_product(void)
 
     /* GPH product */
     product_definition = harp_ingestion_register_product(module, "MLS_L2_GPH", NULL, read_dimensions);
-    harp_product_definition_add_mapping(product_definition, quality_flag_description, NULL);
+    harp_product_definition_add_mapping(product_definition, quality_flag_description1, NULL);
+    harp_product_definition_add_mapping(product_definition, quality_flag_description2, NULL);
 
     /* datetime */
     path = "/HDFEOS/SWATHS/GPH/Geolocation_Fields/Time[]";
@@ -1304,7 +1323,8 @@ static void register_h2o_product(void)
 
     /* H2O product */
     product_definition = harp_ingestion_register_product(module, "MLS_L2_H2O", NULL, read_dimensions);
-    harp_product_definition_add_mapping(product_definition, quality_flag_description, NULL);
+    harp_product_definition_add_mapping(product_definition, quality_flag_description1, NULL);
+    harp_product_definition_add_mapping(product_definition, quality_flag_description2, NULL);
 
     /* datetime */
     path = "/HDFEOS/SWATHS/H2O/Geolocation_Fields/Time[]";
@@ -1361,7 +1381,8 @@ static void register_hcl_product(void)
 
     /* HCL product */
     product_definition = harp_ingestion_register_product(module, "MLS_L2_HCL", NULL, read_dimensions);
-    harp_product_definition_add_mapping(product_definition, quality_flag_description, NULL);
+    harp_product_definition_add_mapping(product_definition, quality_flag_description1, NULL);
+    harp_product_definition_add_mapping(product_definition, quality_flag_description2, NULL);
 
     /* datetime */
     path = "/HDFEOS/SWATHS/HCL/Geolocation_Fields/Time[]";
@@ -1418,7 +1439,8 @@ static void register_hcn_product(void)
 
     /* HCN product */
     product_definition = harp_ingestion_register_product(module, "MLS_L2_HCN", NULL, read_dimensions);
-    harp_product_definition_add_mapping(product_definition, quality_flag_description, NULL);
+    harp_product_definition_add_mapping(product_definition, quality_flag_description1, NULL);
+    harp_product_definition_add_mapping(product_definition, quality_flag_description2, NULL);
 
     /* datetime */
     path = "/HDFEOS/SWATHS/HCN/Geolocation_Fields/Time[]";
@@ -1475,6 +1497,8 @@ static void register_hno3_product(void)
 
     /* HNO3 product */
     product_definition = harp_ingestion_register_product(module, "MLS_L2_HNO3", NULL, read_dimensions);
+    harp_product_definition_add_mapping(product_definition, quality_flag_description1, NULL);
+    harp_product_definition_add_mapping(product_definition, quality_flag_description2, NULL);
     harp_product_definition_add_mapping(product_definition, hno3_quality_flag_description, NULL);
 
     /* datetime */
@@ -1532,7 +1556,8 @@ static void register_ho2_product(void)
 
     /* HO2 product */
     product_definition = harp_ingestion_register_product(module, "MLS_L2_HO2", NULL, read_dimensions);
-    harp_product_definition_add_mapping(product_definition, quality_flag_description, NULL);
+    harp_product_definition_add_mapping(product_definition, quality_flag_description1, NULL);
+    harp_product_definition_add_mapping(product_definition, quality_flag_description2, NULL);
 
     /* datetime */
     path = "/HDFEOS/SWATHS/HO2/Geolocation_Fields/Time[]";
@@ -1589,7 +1614,8 @@ static void register_hocl_product(void)
 
     /* HOCL product */
     product_definition = harp_ingestion_register_product(module, "MLS_L2_HOCL", NULL, read_dimensions);
-    harp_product_definition_add_mapping(product_definition, quality_flag_description, NULL);
+    harp_product_definition_add_mapping(product_definition, quality_flag_description1, NULL);
+    harp_product_definition_add_mapping(product_definition, quality_flag_description2, NULL);
 
     /* datetime */
     path = "/HDFEOS/SWATHS/HOCL/Geolocation_Fields/Time[]";
@@ -1646,7 +1672,8 @@ static void register_iwc_product(void)
 
     /* IWC product */
     product_definition = harp_ingestion_register_product(module, "MLS_L2_IWC", NULL, read_dimensions);
-    harp_product_definition_add_mapping(product_definition, quality_flag_description, NULL);
+    harp_product_definition_add_mapping(product_definition, quality_flag_description1, NULL);
+    harp_product_definition_add_mapping(product_definition, quality_flag_description2, NULL);
 
     /* datetime */
     path = "/HDFEOS/SWATHS/IWC/Geolocation_Fields/Time[]";
@@ -1703,7 +1730,8 @@ static void register_n2o_product(void)
 
     /* N2O product */
     product_definition = harp_ingestion_register_product(module, "MLS_L2_N2O", NULL, read_dimensions);
-    harp_product_definition_add_mapping(product_definition, quality_flag_description, NULL);
+    harp_product_definition_add_mapping(product_definition, quality_flag_description1, NULL);
+    harp_product_definition_add_mapping(product_definition, quality_flag_description2, NULL);
 
     /* datetime */
     path = "/HDFEOS/SWATHS/N2O/Geolocation_Fields/Time[]";
@@ -1760,7 +1788,8 @@ static void register_o3_product(void)
 
     /* O3 product */
     product_definition = harp_ingestion_register_product(module, "MLS_L2_O3", NULL, read_dimensions);
-    harp_product_definition_add_mapping(product_definition, quality_flag_description, NULL);
+    harp_product_definition_add_mapping(product_definition, quality_flag_description1, NULL);
+    harp_product_definition_add_mapping(product_definition, quality_flag_description2, NULL);
 
     /* datetime */
     path = "/HDFEOS/SWATHS/O3/Geolocation_Fields/Time[]";
@@ -1817,7 +1846,8 @@ static void register_oh_product(void)
 
     /* OH product */
     product_definition = harp_ingestion_register_product(module, "MLS_L2_OH", NULL, read_dimensions);
-    harp_product_definition_add_mapping(product_definition, quality_flag_description, NULL);
+    harp_product_definition_add_mapping(product_definition, quality_flag_description1, NULL);
+    harp_product_definition_add_mapping(product_definition, quality_flag_description2, NULL);
 
     /* datetime */
     path = "/HDFEOS/SWATHS/OH/Geolocation_Fields/Time[]";
@@ -1875,7 +1905,8 @@ static void register_rhi_product(void)
 
     /* RHI product */
     product_definition = harp_ingestion_register_product(module, "MLS_L2_RHI", NULL, read_dimensions);
-    harp_product_definition_add_mapping(product_definition, quality_flag_description, NULL);
+    harp_product_definition_add_mapping(product_definition, quality_flag_description1, NULL);
+    harp_product_definition_add_mapping(product_definition, quality_flag_description2, NULL);
 
     /* datetime */
     path = "/HDFEOS/SWATHS/RHI/Geolocation_Fields/Time[]";
@@ -1932,7 +1963,8 @@ static void register_so2_product(void)
 
     /* SO2 product */
     product_definition = harp_ingestion_register_product(module, "MLS_L2_SO2", NULL, read_dimensions);
-    harp_product_definition_add_mapping(product_definition, quality_flag_description, NULL);
+    harp_product_definition_add_mapping(product_definition, quality_flag_description1, NULL);
+    harp_product_definition_add_mapping(product_definition, quality_flag_description2, NULL);
 
     /* datetime */
     path = "/HDFEOS/SWATHS/SO2/Geolocation_Fields/Time[]";
@@ -1989,7 +2021,8 @@ static void register_t_product(void)
 
     /* T product */
     product_definition = harp_ingestion_register_product(module, "MLS_L2_T", NULL, read_dimensions);
-    harp_product_definition_add_mapping(product_definition, quality_flag_description, NULL);
+    harp_product_definition_add_mapping(product_definition, quality_flag_description1, NULL);
+    harp_product_definition_add_mapping(product_definition, quality_flag_description2, NULL);
 
     /* datetime */
     path = "/HDFEOS/SWATHS/Temperature/Geolocation_Fields/Time[]";

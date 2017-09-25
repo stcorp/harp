@@ -69,7 +69,7 @@ typedef enum harp_operation_type_enum
     operation_string_comparison_filter,
     operation_string_membership_filter,
     operation_valid_range_filter,
-    operation_wrap,
+    operation_wrap
 } harp_operation_type;
 
 typedef enum harp_comparison_operator_type_enum
