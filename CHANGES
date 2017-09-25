@@ -1,7 +1,11 @@
+1.0 2017-09-25
+~~~~~~~~~~~~~~
+
 * The import and ingest functions have been combined into a single import
   function that can both read HARP compliant products as well as ingest from
   the supported external formats. This means:
   - harp_import() and harp_ingest() are combined into a single harp_import()
+  - harp_ingest_test() has been renamed to harp_import_test()
   - harpfilter has been removed (use harpconvert instead)
   - '--test' option of harpconvert has been removed (use harpcheck instead)
 
@@ -10,10 +14,14 @@
   - nearest neighbour filtering with weighted average is no longer supported
   - collocation result files are not backward compatible due to a change in
     the CSV header
+  - arguments to harp_collocation_result_new() and
+    harp_collocation_result_add_pair() have changed
 
 * Added support for enumeration variables. Enumeration variables have a int8,
   int16, or int32 type and provide an index into a fixed list of enum names.
   Enumeration variables can be treated as string values in operations.
+
+* Added MATLAB and IDL interfaces for HARP.
 
 * Added -o option to harpdump and harpmerge.
 
@@ -53,7 +61,7 @@
   averaging kernels (AVK).
 
 * Derivations of bound variables will now clamp to the edge midpoints when
-  the `regrid_out_of_bounds` option is set to `edge`.
+  the 'regrid_out_of_bounds' option is set to 'edge'.
 
 * The 'data_type' parameter for harp_product_get_derived_variable() and
   harp_product_add_derived_variable() is now a pointer to allow it to be
@@ -65,6 +73,9 @@
   harp_product_sort(), harp_product_regrid_with_collocated_product(),
   harp_set_udunits2_xml_path(), harp_set_udunits2_xml_path_conditional(),
   and harp_variable_set_enumeration_values() functions.
+
+* harp_import_product_metadata() and harp_dataset_import() now have an
+  'options' parameter.
 
 * Changed 'percentage' parameter of harp_geometry_has_area_overlap() to
   'fraction'.
@@ -124,7 +135,7 @@
 
 * Remove double definition of radiance conversions.
 
-* Added global HARP option `regrid_out_of_bounds`.
+* Added global HARP option 'regrid_out_of_bounds'.
 
 * Added harp_product_bin() function.
 
