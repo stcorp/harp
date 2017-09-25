@@ -535,7 +535,9 @@ if(HARP_BUILD_IDL)
   include_directories(AFTER ${IDL_INCLUDE_DIRS})
   set(HARP_IDL_SOURCE_FILES idl/harp_idl.c idl/harp_idl.def)
   add_library(harp_idl MODULE ${HARP_IDL_SOURCE_FILES})
-  set_target_properties(harp_idl PROPERTIES PREFIX "")
+  set_target_properties(harp_idl PROPERTIES
+    PREFIX ""
+    COMPILE_FLAGS "-DLIBHARPDLL")
   target_link_libraries(harp_idl harp ${IDL_LIBRARIES})
   configure_file(
     ${CMAKE_CURRENT_SOURCE_DIR}/idl/harp_idl.dlm.in
@@ -566,7 +568,8 @@ if(HARP_BUILD_MATLAB)
   set_target_properties(harp_matlab PROPERTIES
     PREFIX ""
     SUFFIX ".${Matlab_MEX_EXTENSION}"
-    COMPILE_DEFINITIONS MATLAB_MEX_FILE)
+    COMPILE_DEFINITIONS MATLAB_MEX_FILE
+    COMPILE_FLAGS "-DLIBHARPDLL")
   target_link_libraries(harp_matlab harp ${Matlab_LIBRARIES})
   set(HARP_MATLAB_M_FILES
     matlab/harp_export.m
