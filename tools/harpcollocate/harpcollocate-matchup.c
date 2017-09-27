@@ -1339,6 +1339,12 @@ static int perform_matchup(collocation_info *info)
         {
             return -1;
         }
+        if (harp_product_is_empty(info->product_a))
+        {
+            harp_product_delete(info->product_a);
+            info->product_a = NULL;
+            continue;
+        }
         if (filter_product(info, info->product_a, 1) != 0)
         {
             return -1;
@@ -1364,11 +1370,20 @@ static int perform_matchup(collocation_info *info)
                     {
                         return -1;
                     }
+                    if (harp_product_is_empty(info->product_b[index_b]))
+                    {
+                        continue;
+                    }
                     if (filter_product(info, info->product_b[index_b], 0) != 0)
                     {
                         return -1;
                     }
                 }
+                else if (harp_product_is_empty(info->product_b[index_b]))
+                {
+                    continue;
+                }
+
                 if (assign_variables(info, &info->variables_b, info->product_b[index_b]) != 0)
                 {
                     return -1;
