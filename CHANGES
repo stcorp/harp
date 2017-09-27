@@ -1,3 +1,5 @@
+* harpcollocate now ignores empty products instead of raising errors for them.
+
 1.0 2017-09-25
 ~~~~~~~~~~~~~~
 
