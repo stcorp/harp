@@ -1515,7 +1515,7 @@ int matchup(int argc, char *argv[])
         }
     }
 
-    if (info->nearest_neighbour_x_criterium_index >= 0 && info->nearest_neighbour_x_criterium_index >= 0)
+    if (info->nearest_neighbour_x_criterium_index >= 0 && info->nearest_neighbour_y_criterium_index >= 0)
     {
         /* perform the second nearest neighbour filtering using a filter on the collocation results */
         if (info->perform_nearest_neighbour_x_first)
