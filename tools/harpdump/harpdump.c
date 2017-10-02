@@ -72,7 +72,7 @@ static void print_help()
     printf("\n");
     printf("            -o, --options <option list>\n");
     printf("                List of options to pass to the ingestion module.\n");
-    printf("                Only applicable of the input product is not in HARP format.\n");
+    printf("                Only applicable if the input product is not in HARP format.\n");
     printf("                Options are separated by semi-colons. Each option consists\n");
     printf("                of an <option name>=<value> pair. An option list needs to be\n");
     printf("                provided as a single expression.\n");
@@ -98,7 +98,7 @@ static void print_help()
     printf("\n");
     printf("            -o, --options <option list>\n");
     printf("                List of options to pass to the ingestion module.\n");
-    printf("                Only applicable of the input product is not in HARP format.\n");
+    printf("                Only applicable if the input product is not in HARP format.\n");
     printf("                Options are separated by semi-colons. Each option consists\n");
     printf("                of an <option name>=<value> pair. An option list needs to be\n");
     printf("                provided as a single expression.\n");

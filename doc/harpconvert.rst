@@ -23,7 +23,7 @@ product types supported by HARP.
 
               -o, --options <option list>
                   List of options to pass to the ingestion module.
-                  Only applicable of the input product is not in HARP format.
+                  Only applicable if the input product is not in HARP format.
                   Options are separated by semi-colons. Each option consists
                   of an <option name>=<value> pair. An option list needs to be
                   provided as a single expression.
