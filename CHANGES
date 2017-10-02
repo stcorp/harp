@@ -1,3 +1,10 @@
+* Parameters that required a file or a directory as dataset reference can now
+  also take a file with a .pth extension as input. This file should contain a
+  line-separated list of paths to files and/or directories of the dataset.
+
+* Specifying a directory for a dataset will now recursively add all products
+  (including sub-directories and contents of .pth files).
+
 * Fixed issue in harpcollocate when providing a -nx option without a -ny.
 
 * harpcollocate now ignores empty products instead of raising errors for them.

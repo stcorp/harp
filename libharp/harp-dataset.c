@@ -52,8 +52,6 @@
  *
  * A Dataset contains a list of references to HARP products together with optional metadata on each product.
  * The primary reference to a product is the value of the 'source_product' global attribute of a HARP product.
- * A Dataset thus does not require that its HARP products have been read in memory.
- * The Product Metadata is not guaranteed to be available for every source_product in the dataset.
  */
 
 /**
@@ -88,48 +86,43 @@ static int is_directory(const char *directoryname)
     return 0;
 }
 
-/**
- * Check that filename is a regular file and can be read.
- */
-static int check_file(const char *filename)
+static int add_path_file(harp_dataset *dataset, const char *filename, const char *options)
 {
-    struct stat statbuf;
+    char line[HARP_MAX_PATH_LENGTH];
+    FILE *stream;
 
-    /* stat() the file to be opened */
-    if (stat(filename, &statbuf) != 0)
+    stream = fopen(filename, "r");
+    if (stream == NULL)
     {
-        if (errno == ENOENT)
-        {
-            harp_set_error(HARP_ERROR_FILE_NOT_FOUND, "could not find %s", filename);
-        }
-        else
-        {
-            harp_set_error(HARP_ERROR_FILE_OPEN, "could not open %s (%s)", filename, strerror(errno));
-        }
+        harp_set_error(HARP_ERROR_FILE_OPEN, "cannot open pth file '%s'", filename);
         return -1;
     }
 
-    /* check that the file is a regular file */
-    if ((statbuf.st_mode & S_IFREG) == 0)
+    while (fgets(line, HARP_MAX_PATH_LENGTH, stream) != NULL)
     {
-        harp_set_error(HARP_ERROR_FILE_OPEN, "could not open %s (not a regular file)", filename);
-        return -1;
+        long length = strlen(line);
+
+        /* Trim the line */
+        while (length > 0 && (line[length - 1] == '\r' || line[length - 1] == '\n'))
+        {
+            length--;
+        }
+        line[length] = '\0';
+
+        /* skip empty lines and lines starting with '#' */
+        if (length > 0 && line[0] != '#')
+        {
+            if (harp_dataset_import(dataset, line, options) != 0)
+            {
+                fclose(stream);
+                return -1;
+            }
+        }
     }
+
+    fclose(stream);
 
     return 0;
-}
-
-static int add_file(harp_dataset *dataset, const char *filename, const char *options)
-{
-    harp_product_metadata *metadata = NULL;
-
-    /* Import the metadata */
-    if (harp_import_product_metadata(filename, options, &metadata) != 0)
-    {
-        return -1;
-    }
-
-    return harp_dataset_add_product(dataset, metadata->source_product, metadata);
 }
 
 static int add_directory(harp_dataset *dataset, const char *pathname, const char *options)
@@ -178,14 +171,10 @@ static int add_directory(harp_dataset *dataset, const char *pathname, const char
                 return -1;
             }
             sprintf(filepath, "%s\\%s", pathname, FileData.cFileName);
-            if (check_file(filepath) != 0)
+            if (harp_dataset_import(dataset, filepath, options) != 0)
             {
                 free(filepath);
                 FindClose(hSearch);
-                return -1;
-            }
-            if (add_file(dataset, filepath, options) != 0)
-            {
                 return -1;
             }
             free(filepath);
@@ -223,7 +212,6 @@ static int add_directory(harp_dataset *dataset, const char *pathname, const char
     while ((dp = readdir(dirp)) != NULL)
     {
         char *filepath = NULL;
-        int result;
 
         /* Skip '.' and '..' */
         if (strcmp(dp->d_name, ".") == 0 || strcmp(dp->d_name, "..") == 0)
@@ -242,29 +230,10 @@ static int add_directory(harp_dataset *dataset, const char *pathname, const char
         }
         sprintf(filepath, "%s/%s", pathname, dp->d_name);
 
-        result = is_directory(filepath);
-        if (result == -1)
+        if (harp_dataset_import(dataset, filepath, options) != 0)
         {
             free(filepath);
             closedir(dirp);
-            return -1;
-        }
-        if (result)
-        {
-            /* Skip subdirectories */
-            free(filepath);
-            continue;
-        }
-
-        if (check_file(filepath) != 0)
-        {
-            /* Exit, file type is not supported */
-            free(filepath);
-            closedir(dirp);
-            return -1;
-        }
-        if (add_file(dataset, filepath, options) != 0)
-        {
             return -1;
         }
         free(filepath);
@@ -379,12 +348,21 @@ LIBHARP_API void harp_dataset_print(harp_dataset *dataset, int (*print) (const c
     }
 }
 
-/** Import dataset from filesystem.
- * If the dataset already contains a source_product, it's metadata is set.
- * \param dataset Dataset to import the dataset metadata into.
- * \param path Path to either a directory containing harp product files or a single harp product filepath.
+/** Import metadata for products into the dataset.
+ * If path is a directory then all files (recursively) from that directory are added to the dataset.
+ * If path references a .pth file then the file paths from that text file (one per line) are imported.
+ * These file paths can be absolute or relative and can point to files, directories, or other .pth files.
+ * If path references a product file then that file is added to the dataset. Trying to add a file that is not supported
+ * by HARP will result in an error.
+ *
+ * Note that datasets cannot have multiple entries with the same 'source_product' value. Therefore, for each product
+ * where the dataset already contained an entry with the same 'source_product' value, the metadata of that entry is
+ * replaced with the new metadata (instead of adding a new entry to the dataset or raising an error).
+ *
+ * \param dataset Dataset into which to import the metadata.
+ * \param path Path to either a directory containing product files, a .pth file, or a single product file.
  * \param options Ingestion module specific options (optional); should be specified as a semi-colon separated
- * string of key=value pair; only used if the file is not in HARP format.
+ * string of key=value pair; only used for product files that are not already in HARP format.
  * \return
  *   \arg \c 0, Success.
  *   \arg \c -1, Error occurred (check #harp_errno).
@@ -404,7 +382,21 @@ LIBHARP_API int harp_dataset_import(harp_dataset *dataset, const char *path, con
     }
     else
     {
-        return add_file(dataset, path, options);
+        harp_product_metadata *metadata = NULL;
+        long length = strlen(path);
+
+        if (length > 4 && strcmp(&path[length - 4], ".pth") == 0)
+        {
+            return add_path_file(dataset, path, options);
+        }
+
+        /* Import the metadata */
+        if (harp_import_product_metadata(path, options, &metadata) != 0)
+        {
+            return -1;
+        }
+
+        return harp_dataset_add_product(dataset, metadata->source_product, metadata);
     }
 }
 

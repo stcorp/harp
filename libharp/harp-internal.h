@@ -59,6 +59,9 @@
 /* floating point precission */
 #define EPSILON 1e-10
 
+/* maximum length for file paths */
+#define HARP_MAX_PATH_LENGTH 4096
+
 extern int harp_option_enable_aux_afgl86;
 extern int harp_option_enable_aux_usstd76;
 

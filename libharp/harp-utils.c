@@ -416,17 +416,17 @@ int harp_path_for_program(const char *argv0, char **location)
     if (*location != NULL && (*location)[0] != '/' && (*location)[0] != '\\' &&
         !(isalpha((*location)[0]) && (*location)[1] == ':'))
     {
-        char cwd[1024 + 1];
+        char cwd[HARP_MAX_PATH_LENGTH + 1];
         char *relative_location;
 
         /* change relative path into absolute path */
 
-        if (getcwd(cwd, 1024) == NULL)
+        if (getcwd(cwd, HARP_MAX_PATH_LENGTH) == NULL)
         {
             /* there is a problem with the current working directory -> return 'not found' */
             return 0;
         }
-        cwd[1024] = '\0';
+        cwd[HARP_MAX_PATH_LENGTH] = '\0';
 
         relative_location = *location;
         if (harp_path_from_path(cwd, 0, relative_location, location) != 0)

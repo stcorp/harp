@@ -179,7 +179,7 @@
 <dt>
 <span class="target" id="libharpgroup__harp__dataset"></span><em>group</em> <code class="descname">harp_dataset</code></dt>
 <dd><p>The HARP harp_dataset module contains everything regarding HARP datasets.</p>
-<p>A Dataset contains a list of references to HARP products together with optional metadata on each product. The primary reference to a product is the value of the &#8216;source_product&#8217; global attribute of a HARP product. A Dataset thus does not require that its HARP products have been read in memory. The Product Metadata is not guaranteed to be available for every source_product in the dataset. </p>
+<p>A Dataset contains a list of references to HARP products together with optional metadata on each product. The primary reference to a product is the value of the &#8216;source_product&#8217; global attribute of a HARP product. </p>
 <div class="breathe-sectiondef docutils container">
 <p class="breathe-sectiondef-title rubric">Typedefs</p>
 <dl class="type">
@@ -240,7 +240,9 @@
 <dl class="function">
 <dt id="_CPPv219harp_dataset_importP12harp_datasetPKcPKc">
 <span id="harp_dataset_import__harp_datasetP.cCP.cCP"></span><span class="target" id="libharpgroup__harp__dataset_1gaf09a7b6ceec6c24ff158aae030c128fa"></span>int <code class="descname">harp_dataset_import</code><span class="sig-paren">(</span><a class="reference internal" href="#_CPPv212harp_dataset" title="harp_dataset">harp_dataset</a> *<em>dataset</em>, <em class="property">const</em> char *<em>path</em>, <em class="property">const</em> char *<em>options</em><span class="sig-paren">)</span><br /></dt>
-<dd><p>Import dataset from filesystem. If the dataset already contains a source_product, it&#8217;s metadata is set. <dl class="docutils">
+<dd><p>Import metadata for products into the dataset. If path is a directory then all files (recursively) from that directory are added to the dataset. If path references a .pth file then the file paths from that text file (one per line) are imported. These file paths can be absolute or relative and can point to files, directories, or other .pth files. If path references a product file then that file is added to the dataset. Trying to add a file that is not supported by HARP will result in an error.</p>
+<p>Note that datasets cannot have multiple entries with the same &#8216;source_product&#8217; value. Therefore, for each product where the dataset already contained an entry with the same &#8216;source_product&#8217; value, the metadata of that entry is replaced with the new metadata (instead of adding a new entry to the dataset or raising an error).</p>
+<p><dl class="docutils">
 <dt><strong>Return</strong></dt>
 <dd><ul class="simple">
 <li><code class="docutils literal"><span class="pre">0</span></code>, Success. </li>
@@ -249,9 +251,9 @@
 </dd>
 <dt><strong>Parameters</strong></dt>
 <dd><ul class="breatheparameterlist first last simple">
-<li><code class="docutils literal"><span class="pre">dataset</span></code>: Dataset to import the dataset metadata into. </li>
-<li><code class="docutils literal"><span class="pre">path</span></code>: Path to either a directory containing harp product files or a single harp product filepath. </li>
-<li><code class="docutils literal"><span class="pre">options</span></code>: Ingestion module specific options (optional); should be specified as a semi-colon separated string of key=value pair; only used if the file is not in HARP format. </li>
+<li><code class="docutils literal"><span class="pre">dataset</span></code>: Dataset into which to import the metadata. </li>
+<li><code class="docutils literal"><span class="pre">path</span></code>: Path to either a directory containing product files, a .pth file, or a single product file. </li>
+<li><code class="docutils literal"><span class="pre">options</span></code>: Ingestion module specific options (optional); should be specified as a semi-colon separated string of key=value pair; only used for product files that are not already in HARP format. </li>
 </ul>
 </dd>
 </dl>
