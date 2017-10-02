@@ -242,7 +242,7 @@ int harp_csv_get_num_lines(FILE *file, const char *filename, long *new_num_lines
         LINE[length] = '\0';
 
         /* Do not allow empty lines */
-        if (length == 1)
+        if (length == 0)
         {
             harp_set_error(HARP_ERROR_INVALID_ARGUMENT, "empty line in file '%s'", filename);
             return -1;
