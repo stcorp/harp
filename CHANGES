@@ -5,6 +5,8 @@
 * Specifying a directory for a dataset will now recursively add all products
   (including sub-directories and contents of .pth files).
 
+* Added -oa/-ob options to harpcollocate.
+
 * Fixed issue in harpcollocate when providing a -nx option without a -ny.
 
 * harpcollocate now ignores empty products instead of raising errors for them.

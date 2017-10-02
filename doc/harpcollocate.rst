@@ -42,6 +42,16 @@ HARP compliant netCDF files.
               -ny <diffvariable>
                   Filter collocation pairs such that for each sample from
                   dataset B only the neareset sample from dataset A is kept.
+              -oa, --options_a <option list>
+                  List of options to pass to the ingestion module for ingesting
+                  products from the first dataset.
+                  Only applicable if the input product is not in HARP format.
+                  Options are separated by semi-colons. Each option consists
+                  of an <option name>=<value> pair. An option list needs to be
+                  provided as a single expression.
+              -ob, --options_b <option list>
+                  List of options to pass to the ingestion module for ingesting
+                  products from the second dataset (see above).
           The order in which -nx and -ny are provided determines the order in
           which the nearest filters are executed.
           When '[unit]' is not specified, the unit of the variable of the
