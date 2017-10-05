@@ -10,9 +10,8 @@
 * The variable that is binned on with a 'bin(variable)' operation is now
   always kept in the resulting product.
 
-* Added 'count' variable.
-
-* The bin() operation now creates a 'count' variable if it was not yet present.
+* The bin() operation can now handle 'count' variables (summing it if present
+  and creating it otherwise).
 
 * Fixed issue in harpcollocate when providing a -nx option without a -ny.
 
