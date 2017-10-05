@@ -419,6 +419,7 @@ int harp_product_bin_with_variable(harp_product *product, const char *variable_n
     harp_variable *variable;
     long *index;        /* contains index of first sample for each bin */
     long *bin_index;
+    long num_elements;
     long num_bins;
     long i, j;
 
@@ -433,24 +434,26 @@ int harp_product_bin_with_variable(harp_product *product, const char *variable_n
         return -1;
     }
 
-    index = malloc(variable->num_elements * sizeof(long));
+    num_elements = variable->num_elements;
+
+    index = malloc(num_elements * sizeof(long));
     if (index == NULL)
     {
         harp_set_error(HARP_ERROR_OUT_OF_MEMORY, "out of memory (could not allocate %lu bytes) (%s:%u)",
-                       variable->num_elements * sizeof(long), __FILE__, __LINE__);
+                       num_elements * sizeof(long), __FILE__, __LINE__);
         return -1;
     }
-    bin_index = malloc(variable->num_elements * sizeof(long));
+    bin_index = malloc(num_elements * sizeof(long));
     if (bin_index == NULL)
     {
         harp_set_error(HARP_ERROR_OUT_OF_MEMORY, "out of memory (could not allocate %lu bytes) (%s:%u)",
-                       variable->num_elements * sizeof(long), __FILE__, __LINE__);
+                       num_elements * sizeof(long), __FILE__, __LINE__);
         free(index);
         return -1;
     }
 
     num_bins = 0;
-    for (i = 0; i < variable->num_elements; i++)
+    for (i = 0; i < num_elements; i++)
     {
         int check_nan = 0;
 
@@ -528,10 +531,46 @@ int harp_product_bin_with_variable(harp_product *product, const char *variable_n
 
     free(index);
 
-    if (harp_product_bin(product, num_bins, variable->num_elements, bin_index) != 0)
+    if (get_binning_type(variable) == binning_remove)
     {
+        harp_variable *original_variable = variable;
+
+        /* we always want to keep the variable that we bin on */
+        if (harp_variable_copy(original_variable, &variable) != 0)
+        {
+            free(bin_index);
+            return -1;
+        }
+        if (harp_variable_rearrange_dimension(variable, 0, num_bins, bin_index) != 0)
+        {
+            harp_variable_delete(variable);
+            free(bin_index);
+            return -1;
+        }
+    }
+    else
+    {
+        variable = NULL;
+    }
+
+    if (harp_product_bin(product, num_bins, num_elements, bin_index) != 0)
+    {
+        if (variable != NULL)
+        {
+            harp_variable_delete(variable);
+        }
         free(bin_index);
         return -1;
+    }
+
+    if (variable != NULL)
+    {
+        if (harp_product_add_variable(product, variable) != 0)
+        {
+            harp_variable_delete(variable);
+            free(bin_index);
+            return -1;
+        }
     }
 
     /* cleanup */
