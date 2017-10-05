@@ -204,7 +204,8 @@
 <span id="harp_product_bin__harp_productP.l.l.lP"></span><span class="target" id="libharpgroup__harp__product_1gac1a935b414c03ed0a9a414a53dbc311e"></span>int <code class="descname">harp_product_bin</code><span class="sig-paren">(</span><a class="reference internal" href="#_CPPv212harp_product" title="harp_product">harp_product</a> *<em>product</em>, long <em>num_bins</em>, long <em>num_elements</em>, long *<em>bin_index</em><span class="sig-paren">)</span><br /></dt>
 <dd><p>Bin the product&#8217;s variables. This will bin all variables in the time dimension. Each time sample will be put in the bin defined by bin_index. All variables with a time dimension will then be resampled using these bins. The resulting value for each variable will be the average of all values for the bin. Variables with multiple dimensions will have all elements in the sub dimensions averaged on an element by element basis.</p>
 <p>Variables that have a time dimension but no unit (or using a string data type) will be removed.</p>
-<p>All variables that are binned are converted to a double data type. Bins that have no samples will end up with a NaN value.</p>
+<p>All variables that are binned (except existing &#8216;count&#8217; variables) are converted to a double data type. Bins that have no samples will end up with a NaN value.</p>
+<p>If the product did not already have a &#8216;count&#8217; variable then a &#8216;count&#8217; variable will be added to the product that will contain the number of samples per bin.</p>
 <p><dl class="docutils">
 <dt><strong>Return</strong></dt>
 <dd><ul class="simple">

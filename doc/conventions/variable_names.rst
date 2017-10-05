@@ -59,6 +59,7 @@ column_density                                stratospheric,  amf, apriori,   X 
                                               tropospheric    avk, dfs
 column_number_density                         stratospheric,  amf, apriori,   X       X    X
                                               tropospheric    avk, dfs
+count
 datetime
 datetime_length                                                                       X
 datetime_start
