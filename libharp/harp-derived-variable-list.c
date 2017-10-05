@@ -4971,28 +4971,26 @@ static int add_angle_conversions(void)
     {
         return -1;
     }
-    for (i = 0; i < 2; i++)
+
+    if (harp_variable_conversion_new("solar_azimuth_angle", harp_type_double, HARP_UNIT_ANGLE, 1, dimension_type,
+                                     0, get_solar_azimuth_angle_from_datetime_and_latlon, &conversion) != 0)
     {
-        if (harp_variable_conversion_new("solar_azimuth_angle", harp_type_double, HARP_UNIT_ANGLE, i, dimension_type,
-                                         0, get_solar_azimuth_angle_from_datetime_and_latlon, &conversion) != 0)
-        {
-            return -1;
-        }
-        if (harp_variable_conversion_add_source(conversion, "datetime", harp_type_double, HARP_UNIT_DATETIME, i,
-                                                dimension_type, 0) != 0)
-        {
-            return -1;
-        }
-        if (harp_variable_conversion_add_source(conversion, "latitude", harp_type_double, HARP_UNIT_LATITUDE, i,
-                                                dimension_type, 0) != 0)
-        {
-            return -1;
-        }
-        if (harp_variable_conversion_add_source(conversion, "longitude", harp_type_double, HARP_UNIT_LONGITUDE, i,
-                                                dimension_type, 0) != 0)
-        {
-            return -1;
-        }
+        return -1;
+    }
+    if (harp_variable_conversion_add_source(conversion, "datetime", harp_type_double, HARP_UNIT_DATETIME, 1,
+                                            dimension_type, 0) != 0)
+    {
+        return -1;
+    }
+    if (harp_variable_conversion_add_source(conversion, "latitude", harp_type_double, HARP_UNIT_LATITUDE, 1,
+                                            dimension_type, 0) != 0)
+    {
+        return -1;
+    }
+    if (harp_variable_conversion_add_source(conversion, "longitude", harp_type_double, HARP_UNIT_LONGITUDE, 1,
+                                            dimension_type, 0) != 0)
+    {
+        return -1;
     }
 
     /*** solar elevation angle ***/
@@ -5014,27 +5012,27 @@ static int add_angle_conversions(void)
         {
             return -1;
         }
+    }
 
-        if (harp_variable_conversion_new("solar_elevation_angle", harp_type_double, HARP_UNIT_ANGLE, i, dimension_type,
-                                         0, get_solar_elevation_angle_from_datetime_and_latlon, &conversion) != 0)
-        {
-            return -1;
-        }
-        if (harp_variable_conversion_add_source(conversion, "datetime", harp_type_double, HARP_UNIT_DATETIME, i,
-                                                dimension_type, 0) != 0)
-        {
-            return -1;
-        }
-        if (harp_variable_conversion_add_source(conversion, "latitude", harp_type_double, HARP_UNIT_LATITUDE, i,
-                                                dimension_type, 0) != 0)
-        {
-            return -1;
-        }
-        if (harp_variable_conversion_add_source(conversion, "longitude", harp_type_double, HARP_UNIT_LONGITUDE, i,
-                                                dimension_type, 0) != 0)
-        {
-            return -1;
-        }
+    if (harp_variable_conversion_new("solar_elevation_angle", harp_type_double, HARP_UNIT_ANGLE, 1, dimension_type,
+                                     0, get_solar_elevation_angle_from_datetime_and_latlon, &conversion) != 0)
+    {
+        return -1;
+    }
+    if (harp_variable_conversion_add_source(conversion, "datetime", harp_type_double, HARP_UNIT_DATETIME, 1,
+                                            dimension_type, 0) != 0)
+    {
+        return -1;
+    }
+    if (harp_variable_conversion_add_source(conversion, "latitude", harp_type_double, HARP_UNIT_LATITUDE, 1,
+                                            dimension_type, 0) != 0)
+    {
+        return -1;
+    }
+    if (harp_variable_conversion_add_source(conversion, "longitude", harp_type_double, HARP_UNIT_LONGITUDE, 1,
+                                            dimension_type, 0) != 0)
+    {
+        return -1;
     }
 
     /*** solar zenith angle ***/

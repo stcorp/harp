@@ -5,21 +5,20 @@ solar azimuth angle derivations
 
 #. solar azimuth angle from datetime and latitude/longitude
 
-   =================== ======================= ========================== ===========================
+   =================== ======================= ========================== =============================
    symbol              description             unit                       variable name
-   =================== ======================= ========================== ===========================
+   =================== ======================= ========================== =============================
    :math:`EOT`         equation of time        :math:`deg`
    :math:`t`           datetime                :math:`s` since 2000-01-01 `datetime {time}`
-   :math:`\alpha_{0}`  solar elevation angle   :math:`deg`                `solar_elevation_angle {:}`
+   :math:`\alpha_{0}`  solar elevation angle   :math:`deg`                `solar_elevation_angle time}`
    :math:`\delta`      solar declination angle :math:`deg`
    :math:`\eta`        orbit angle of the      :math:`deg`
                        earth around the sun
-   :math:`\lambda`     longitude               :math:`degE`               `longitude {:}`
-   :math:`\phi`        latitude                :math:`degN`               `latitude {:}`
-   :math:`\varphi_{0}` solar azimuth angle     :math:`deg`                `solar_azimuth_angle {:}`
-   =================== ======================= ========================== ===========================
-
-   The pattern `:` for the dimensions can represent `{time}`, or no dimensions at all.
+   :math:`\lambda`     longitude               :math:`degE`               `longitude {time}`
+   :math:`\phi`        latitude                :math:`degN`               `latitude {time}`
+   :math:`\varphi_{0}` solar azimuth angle     :math:`deg`                `solar_azimuth_angle {time}`
+   :math:`\Omega`      solar hour angle        :math:`deg`
+   =================== ======================= ========================== =============================
 
    .. math::
       :nowrap:
