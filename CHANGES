@@ -17,6 +17,8 @@
 
 * harpcollocate now ignores empty products instead of raising errors for them.
 
+* Added support for GEOMS-TE-UVVIS-DOAS-OFFAXIS-AEROSOL-007.
+
 1.0 2017-09-25
 ~~~~~~~~~~~~~~
 

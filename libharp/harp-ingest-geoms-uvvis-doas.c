@@ -2655,6 +2655,7 @@ int harp_ingestion_module_geoms_uvvis_doas_init()
 
     init_product_definition(module, -1, uvvis_doas_offaxis_aerosol, 4);
     init_product_definition(module, -1, uvvis_doas_offaxis_aerosol, 6);
+    init_product_definition(module, -1, uvvis_doas_offaxis_aerosol, 7);
 
     module = harp_ingestion_register_module_coda("GEOMS-TE-UVVIS-DOAS-ZENITH", "GEOMS", "GEOMS",
                                                  "UVVIS_DOAS_ZENITH_GAS",

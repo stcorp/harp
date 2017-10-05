@@ -261,6 +261,7 @@ HARP_DOCFILES = \
 	doc/html/ingestions/GEOMS-TE-UVVIS-DOAS-DIRECTSUN-GAS-007-SO2.html \
 	doc/html/ingestions/GEOMS-TE-UVVIS-DOAS-OFFAXIS-AEROSOL-004.html \
 	doc/html/ingestions/GEOMS-TE-UVVIS-DOAS-OFFAXIS-AEROSOL-006.html \
+	doc/html/ingestions/GEOMS-TE-UVVIS-DOAS-OFFAXIS-AEROSOL-007.html \
 	doc/html/ingestions/GEOMS-TE-UVVIS-DOAS-OFFAXIS-GAS-004-BrO.html \
 	doc/html/ingestions/GEOMS-TE-UVVIS-DOAS-OFFAXIS-GAS-004-CHOCHO.html \
 	doc/html/ingestions/GEOMS-TE-UVVIS-DOAS-OFFAXIS-GAS-004-H2CO.html \
@@ -1017,6 +1018,8 @@ doc/html/ingestions/GEOMS-TE-UVVIS-DOAS-DIRECTSUN-GAS-007-SO2.html:
 doc/html/ingestions/GEOMS-TE-UVVIS-DOAS-OFFAXIS-AEROSOL-004.html:
 	$(MAKE) harp_doc
 doc/html/ingestions/GEOMS-TE-UVVIS-DOAS-OFFAXIS-AEROSOL-006.html:
+	$(MAKE) harp_doc
+doc/html/ingestions/GEOMS-TE-UVVIS-DOAS-OFFAXIS-AEROSOL-007.html:
 	$(MAKE) harp_doc
 doc/html/ingestions/GEOMS-TE-UVVIS-DOAS-OFFAXIS-GAS-004-BrO.html:
 	$(MAKE) harp_doc
