@@ -13,6 +13,9 @@
 * The bin() operation can now handle 'count' variables (summing it if present
   and creating it otherwise).
 
+* Fixed issue where collocate filter operation on a product with a single
+  sample could end in an infinite loop.
+
 * Fixed issue in harpcollocate when providing a -nx option without a -ny.
 
 * harpcollocate now ignores empty products instead of raising errors for them.

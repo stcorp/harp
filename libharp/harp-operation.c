@@ -203,7 +203,7 @@ static int eval_collocation(harp_operation_collocation_filter *operation, harp_d
     }
 
     /* use bisection to find index in sorted list */
-    while (high - low != 1)
+    while (high - low > 1)
     {
         long middle = (high + low) / 2;
 
