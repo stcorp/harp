@@ -18,6 +18,8 @@
 
 * Fixed issue in harpcollocate when providing a -nx option without a -ny.
 
+* Fixed issue with wrap() operation for values < specified minimum.
+
 * harpcollocate now ignores empty products instead of raising errors for them.
 
 * Added support for GEOMS-TE-UVVIS-DOAS-OFFAXIS-AEROSOL-007.

@@ -614,5 +614,9 @@ double harp_wavenumber_from_wavelength(double wavelength)
  */
 double harp_wrap(double value, double min, double max)
 {
+    if (value < min)
+    {
+        return max + fmod(value - min, max - min);
+    }
     return min + fmod(value - min, max - min);
 }
