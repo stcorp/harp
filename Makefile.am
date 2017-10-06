@@ -499,7 +499,9 @@ RSTFILES = \
 	doc/algorithms/derivations/sensor_elevation_angle.rst \
 	doc/algorithms/derivations/sensor_zenith_angle.rst \
 	doc/algorithms/derivations/solar_azimuth_angle.rst \
+	doc/algorithms/derivations/solar_declination_angle.rst \
 	doc/algorithms/derivations/solar_elevation_angle.rst \
+	doc/algorithms/derivations/solar_hour_angle.rst \
 	doc/algorithms/derivations/solar_zenith_angle.rst \
 	doc/algorithms/derivations/temperature.rst \
 	doc/algorithms/derivations/viewing_azimuth_angle.rst \

@@ -992,37 +992,62 @@ static int get_sensor_angle_from_viewing_angle(harp_variable *variable, const ha
     return 0;
 }
 
-static int get_solar_azimuth_angle_from_datetime_and_latlon(harp_variable *variable,
+static int get_solar_azimuth_angle_from_latitude_and_solar_angles(harp_variable *variable,
+                                                                  const harp_variable **source_variable)
+{
+    long i;
+
+    for (i = 0; i < variable->num_elements; i++)
+    {
+        variable->data.double_data[i] =
+            harp_solar_azimuth_angle_from_latitude_and_solar_angles(source_variable[0]->data.double_data[i],
+                                                                    source_variable[1]->data.double_data[i],
+                                                                    source_variable[2]->data.double_data[i],
+                                                                    source_variable[3]->data.double_data[i]);
+    }
+
+    return 0;
+}
+
+static int get_solar_declination_angle_from_datetime(harp_variable *variable, const harp_variable **source_variable)
+{
+    long i;
+
+    for (i = 0; i < variable->num_elements; i++)
+    {
+        variable->data.double_data[i] =
+            harp_solar_declination_angle_from_datetime(source_variable[0]->data.double_data[i]);
+    }
+
+    return 0;
+}
+
+static int get_solar_hour_angle_from_datetime_and_longitude(harp_variable *variable,
                                                             const harp_variable **source_variable)
 {
     long i;
 
     for (i = 0; i < variable->num_elements; i++)
     {
-        double solar_elevation_angle;
-
-        harp_solar_angles_from_datetime_latitude_and_longitude(source_variable[0]->data.double_data[i],
-                                                               source_variable[1]->data.double_data[i],
-                                                               source_variable[2]->data.double_data[i],
-                                                               &solar_elevation_angle, &variable->data.double_data[i]);
+        variable->data.double_data[i] =
+            harp_solar_hour_angle_from_datetime_and_longitude(source_variable[0]->data.double_data[i],
+                                                              source_variable[1]->data.double_data[i]);
     }
 
     return 0;
 }
 
-static int get_solar_elevation_angle_from_datetime_and_latlon(harp_variable *variable,
-                                                              const harp_variable **source_variable)
+static int get_solar_zenith_angle_from_latitude_and_solar_angles(harp_variable *variable,
+                                                                 const harp_variable **source_variable)
 {
     long i;
 
     for (i = 0; i < variable->num_elements; i++)
     {
-        double solar_azimuth_angle;
-
-        harp_solar_angles_from_datetime_latitude_and_longitude(source_variable[0]->data.double_data[i],
-                                                               source_variable[1]->data.double_data[i],
-                                                               source_variable[2]->data.double_data[i],
-                                                               &variable->data.double_data[i], &solar_azimuth_angle);
+        variable->data.double_data[i] =
+            harp_solar_zenith_angle_from_latitude_and_solar_angles(source_variable[0]->data.double_data[i],
+                                                                   source_variable[1]->data.double_data[i],
+                                                                   source_variable[2]->data.double_data[i]);
     }
 
     return 0;
@@ -4973,7 +4998,35 @@ static int add_angle_conversions(void)
     }
 
     if (harp_variable_conversion_new("solar_azimuth_angle", harp_type_double, HARP_UNIT_ANGLE, 1, dimension_type,
-                                     0, get_solar_azimuth_angle_from_datetime_and_latlon, &conversion) != 0)
+                                     0, get_solar_azimuth_angle_from_latitude_and_solar_angles, &conversion) != 0)
+    {
+        return -1;
+    }
+    if (harp_variable_conversion_add_source(conversion, "latitude", harp_type_double, HARP_UNIT_LATITUDE, 1,
+                                            dimension_type, 0) != 0)
+    {
+        return -1;
+    }
+    if (harp_variable_conversion_add_source(conversion, "solar_declination_angle", harp_type_double, HARP_UNIT_ANGLE, 1,
+                                            dimension_type, 0) != 0)
+    {
+        return -1;
+    }
+    if (harp_variable_conversion_add_source(conversion, "solar_hour_angle", harp_type_double, HARP_UNIT_ANGLE, 1,
+                                            dimension_type, 0) != 0)
+    {
+        return -1;
+    }
+    if (harp_variable_conversion_add_source(conversion, "solar_zenith_angle", harp_type_double, HARP_UNIT_ANGLE, 1,
+                                            dimension_type, 0) != 0)
+    {
+        return -1;
+    }
+
+    /*** solar declination angle ***/
+
+    if (harp_variable_conversion_new("solar_declination_angle", harp_type_double, HARP_UNIT_ANGLE, 1, dimension_type,
+                                     0, get_solar_declination_angle_from_datetime, &conversion) != 0)
     {
         return -1;
     }
@@ -4982,7 +5035,15 @@ static int add_angle_conversions(void)
     {
         return -1;
     }
-    if (harp_variable_conversion_add_source(conversion, "latitude", harp_type_double, HARP_UNIT_LATITUDE, 1,
+
+    /*** solar hour angle ***/
+
+    if (harp_variable_conversion_new("solar_hour_angle", harp_type_double, HARP_UNIT_ANGLE, 1, dimension_type,
+                                     0, get_solar_hour_angle_from_datetime_and_longitude, &conversion) != 0)
+    {
+        return -1;
+    }
+    if (harp_variable_conversion_add_source(conversion, "datetime", harp_type_double, HARP_UNIT_DATETIME, 1,
                                             dimension_type, 0) != 0)
     {
         return -1;
@@ -5014,27 +5075,6 @@ static int add_angle_conversions(void)
         }
     }
 
-    if (harp_variable_conversion_new("solar_elevation_angle", harp_type_double, HARP_UNIT_ANGLE, 1, dimension_type,
-                                     0, get_solar_elevation_angle_from_datetime_and_latlon, &conversion) != 0)
-    {
-        return -1;
-    }
-    if (harp_variable_conversion_add_source(conversion, "datetime", harp_type_double, HARP_UNIT_DATETIME, 1,
-                                            dimension_type, 0) != 0)
-    {
-        return -1;
-    }
-    if (harp_variable_conversion_add_source(conversion, "latitude", harp_type_double, HARP_UNIT_LATITUDE, 1,
-                                            dimension_type, 0) != 0)
-    {
-        return -1;
-    }
-    if (harp_variable_conversion_add_source(conversion, "longitude", harp_type_double, HARP_UNIT_LONGITUDE, 1,
-                                            dimension_type, 0) != 0)
-    {
-        return -1;
-    }
-
     /*** solar zenith angle ***/
 
     if (add_time_indepedent_to_dependent_conversion("solar_zenith_angle", harp_type_double, HARP_UNIT_ANGLE, 1,
@@ -5054,6 +5094,27 @@ static int add_angle_conversions(void)
         {
             return -1;
         }
+    }
+
+    if (harp_variable_conversion_new("solar_zenith_angle", harp_type_double, HARP_UNIT_ANGLE, 1, dimension_type,
+                                     0, get_solar_zenith_angle_from_latitude_and_solar_angles, &conversion) != 0)
+    {
+        return -1;
+    }
+    if (harp_variable_conversion_add_source(conversion, "latitude", harp_type_double, HARP_UNIT_LATITUDE, 1,
+                                            dimension_type, 0) != 0)
+    {
+        return -1;
+    }
+    if (harp_variable_conversion_add_source(conversion, "solar_declination_angle", harp_type_double, HARP_UNIT_ANGLE,
+                                            1, dimension_type, 0) != 0)
+    {
+        return -1;
+    }
+    if (harp_variable_conversion_add_source(conversion, "solar_hour_angle", harp_type_double, HARP_UNIT_ANGLE,
+                                            1, dimension_type, 0) != 0)
+    {
+        return -1;
     }
 
     /*** viewing azimuth angle ***/

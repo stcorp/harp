@@ -108,8 +108,10 @@ sensor_zenith_angle                                                           X
 site_name                                                                                                used for data of a specific named geographical location
 solar_azimuth_angle                           sensor,                         X
                                               surface, toa
+solar_declination_angle
 solar_elevation_angle                         sensor,                         X
                                               surface, toa
+solar_hour_angle
 solar_irradiance                                                              X                    X
 solar_zenith_angle                            sensor,                         X
                                               surface, toa,

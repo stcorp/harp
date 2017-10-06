@@ -60,59 +60,28 @@ double harp_fraction_of_year_from_datetime(double datetime)
 
 /** Calculate the equation of time (EOT) angle
  * \param datetime   Datetime [s since 2000-01-01]
- * \return the equation of time angle [degree]
+ * \return the equation of time [minutes]
  */
-static double get_equation_of_time_angle_from_datetime(double datetime)
+static double get_equation_of_time_from_datetime(double datetime)
 {
-    double eot_angle;
-    double pi = (double)M_PI;
-    double rad2deg = (double)CONST_RAD2DEG;
-    double b0 = 0.0072;
-    double b1 = -0.0528;
-    double b2 = -0.0012;
-    double b3 = -0.1229;
-    double b4 = -0.1565;
-    double b5 = -0.0041;
-    double fraction_of_year;
-    double eta;
+    double mean_angle, corrected_angle, angle_difference;
 
-    /* Calculate eta */
-    fraction_of_year = harp_fraction_of_year_from_datetime(datetime);
-    eta = 2.0 * pi * fraction_of_year;
+    /* calculate Earths orbit angle at date (relative to solstice) */
+    /* add 10 days due to difference between December solstice and Jan 1st */
+    mean_angle = 2 * M_PI * harp_fraction_of_year_from_datetime(datetime + 10 * 86400);
 
-    eot_angle =
-        rad2deg * (b0 * cos(eta) + b1 * cos(2.0 * eta) + b2 * cos(3.0 * eta) + b3 * sin(eta) + b4 * sin(2.0 * eta) +
-                   b5 * sin(3.0 * eta));
-    return eot_angle;
-}
+    /* correct for Earth's orbital eccentricity (0.0167) */
+    /* subtract 2 days due to difference between Jan 1st and Earth's perihelion */
+    corrected_angle =
+        mean_angle + 2 * 0.0167 * sin(2 * M_PI * harp_fraction_of_year_from_datetime(datetime - 2 * 86400));
 
-/** Calculate the solar declination angle
- * \param datetime   Datetime [s since 2000-01-01]
- * \return the solar declination angle [degree]
- */
-static double get_solar_declination_angle_from_datetime(double datetime)
-{
-    double solar_declination_angle;     /* Solar declination angle [degree] */
-    double pi = (double)M_PI;
-    double rad2deg = (double)CONST_RAD2DEG;
-    double a0 = 0.006918;
-    double a1 = -0.399912;
-    double a2 = -0.006758;
-    double a3 = -0.002697;
-    double a4 = 0.070257;
-    double a5 = 0.000907;
-    double a6 = 0.001480;
-    double fraction_of_year;
-    double eta;
+    /* calculate difference between mean spead and corrected speed angles (projected onto equatorial plane) */
+    /* divide by pi to get the difference as a fraction of a 'half turn' */
+    /* 23.44 [deg] is the obliquity (tilt) of the Earth's axis */
+    angle_difference = (mean_angle - atan2(tan(corrected_angle), cos(CONST_DEG2RAD * 23.44))) / M_PI;
 
-    /* Calculate eta */
-    fraction_of_year = harp_fraction_of_year_from_datetime(datetime);
-    eta = 2.0 * pi * fraction_of_year;
-
-    solar_declination_angle =
-        rad2deg * (a0 + a1 * cos(eta) + a2 * cos(2.0 * eta) + a3 * cos(3.0 * eta) + a4 * sin(eta) +
-                   a5 * sin(2.0 * eta) + a6 * sin(3.0 * eta));
-    return solar_declination_angle;
+    /* wrap the fraction to [-0.5,0.5] and multiply by 720 (12 hours * 60 minutes) to get the amount of minutes */
+    return 720 * (angle_difference - floor(angle_difference + 0.5));
 }
 
 /** Convert (electromagnetic wave) wavelength to (electromagnetic wave) frequency
@@ -283,60 +252,93 @@ double harp_scattering_angle_from_sensor_and_solar_angles(double sensor_zenith_a
 }
 
 /** Calculate the solar azimuth angle for the given time and location
- * \param datetime Datetime [s since 2000-01-01]
  * \param latitude Latitude [degree_north]
- * \param longitude Longitude [degree_east]
- * \param solar_elevation_angle Pointer to the variable where the solar elevation angle [degree] will be stored
- * \param solar_azimuth_angle Pointer to the variable where the solar elevation angle [degree] will be stored
+ * \param solar_declination_angle Solar declination angle [deg]
+ * \param solar_hour_angle Solar hour angle [deg]
+ * \param solar_zenith_angle Solar zenith angle [deg]
+ * \return the solar elevation angle [degree]
  */
-void harp_solar_angles_from_datetime_latitude_and_longitude(double datetime, double latitude, double longitude,
-                                                            double *solar_elevation_angle, double *solar_azimuth_angle)
+double harp_solar_azimuth_angle_from_latitude_and_solar_angles(double latitude, double solar_declination_angle,
+                                                               double solar_hour_angle, double solar_zenith_angle)
 {
-    double pi = (double)M_PI;
-    double rad2deg = (double)(CONST_RAD2DEG);
-    double deg2rad = (double)(CONST_DEG2RAD);
-    double phi = latitude * deg2rad;
-    double solar_declination_angle;
-    double eot_angle;
-    double fraction_of_day;
-    double hour_angle;
-    double omega;
-    double cos_psi;
-    double sin_psi;
+    double angle;
+    double sin_sza;
 
-    /* Calculate the solar declination angle [rad] */
-    solar_declination_angle = deg2rad * get_solar_declination_angle_from_datetime(datetime);
+    /* Convert angles to [rad] */
+    latitude *= CONST_DEG2RAD;
+    solar_declination_angle *= CONST_DEG2RAD;
+    solar_hour_angle *= CONST_DEG2RAD;
+    solar_zenith_angle *= CONST_DEG2RAD;
 
-    /* Calculate the equation of time angle [rad] */
-    eot_angle = deg2rad * get_equation_of_time_angle_from_datetime(datetime);
-
-    /* Calculate the fraction of the day */
-    fraction_of_day = harp_fraction_of_day_from_datetime(datetime);
-
-    /* Calculate the hour angle [rad] */
-    hour_angle = fraction_of_day + longitude / 360.0 + (eot_angle - 12.0) / 24.0;
-    omega = 2.0 * pi * hour_angle;
-
-    /* Calculate solar elevation angle [rad] */
-    *solar_elevation_angle = asin(sin(solar_declination_angle) * sin(phi) +
-                                  cos(solar_declination_angle) * cos(phi) * cos(omega));
-
-    /* Calculate the solar azimuth angle [degree] */
-    if (*solar_elevation_angle == 0.0)
+    sin_sza = sin(solar_zenith_angle);
+    if (sin_sza == 0)
     {
-        *solar_azimuth_angle = 0.0;
-    }
-    else
-    {
-        cos_psi = (-sin(solar_declination_angle) * cos(phi) +
-                   cos(solar_declination_angle) * sin(phi) * cos(omega)) / cos(*solar_elevation_angle);
-        sin_psi = cos(solar_declination_angle) * sin(omega) / cos(*solar_elevation_angle);
-
-        /* Use the two argument function atan2 to compute atan(y/x) given y and x, but with a range (-PI, PI] */
-        *solar_azimuth_angle = rad2deg * atan2(sin_psi, cos_psi);
+        return 0;
     }
 
-    *solar_elevation_angle = rad2deg * (*solar_elevation_angle);
+    angle = CONST_RAD2DEG * acos((sin(solar_declination_angle) * cos(latitude) -
+                                  cos(solar_hour_angle) * cos(solar_declination_angle) * sin(latitude)) / sin_sza);
+    if (solar_hour_angle > 0)
+    {
+        /* afternoon */
+        return -angle;
+    }
+    /* morning */
+    return angle;
+}
+
+/** Calculate the solar declination angle
+ * \param datetime   Datetime [s since 2000-01-01]
+ * \return the solar declination angle [degree]
+ */
+double harp_solar_declination_angle_from_datetime(double datetime)
+{
+    double mean_angle, corrected_angle;
+
+    /* calculate Earths orbit angle at date (relative to solstice) */
+    /* add 10 days due to difference between December solstice and Jan 1st */
+    mean_angle = 2 * M_PI * harp_fraction_of_year_from_datetime(datetime + 10 * 86400);
+
+    /* correct for Earth's orbital eccentricity (0.0167) */
+    /* subtract 2 days due to difference between Jan 1st and Earth's perihelion */
+    corrected_angle =
+        mean_angle + 2 * 0.0167 * sin(2 * M_PI * harp_fraction_of_year_from_datetime(datetime - 2 * 86400));
+
+    /* 23.44 [deg] is the obliquity (tilt) of the Earth's axis */
+    return CONST_RAD2DEG * -asin(sin(CONST_DEG2RAD * 23.44) * cos(corrected_angle));
+}
+
+/** Calculate the solar hour angle for the given time and location
+ * \param datetime Datetime [s since 2000-01-01]
+ * \param longitude Longitude [degree_east]
+ * \return the solar hour angle [degree]
+ */
+double harp_solar_hour_angle_from_datetime_and_longitude(double datetime, double longitude)
+{
+    double local_fraction_of_day;
+
+    local_fraction_of_day = harp_fraction_of_day_from_datetime(datetime) +
+        get_equation_of_time_from_datetime(datetime) / (24 * 60);
+
+    return harp_wrap(longitude + 360 * local_fraction_of_day - 180, -180, 180);
+}
+
+/** Calculate the solar zenith angle for the given time and location
+ * \param latitude Latitude [degree_north]
+ * \param solar_declination_angle Solar declination angle [deg]
+ * \param solar_hour_angle Solar hour angle [deg]
+ * \return the solar zenith angle [degree]
+ */
+double harp_solar_zenith_angle_from_latitude_and_solar_angles(double latitude, double solar_declination_angle,
+                                                              double solar_hour_angle)
+{
+    /* Conver angles to [rad] */
+    latitude *= CONST_DEG2RAD;
+    solar_declination_angle *= CONST_DEG2RAD;
+    solar_hour_angle *= CONST_DEG2RAD;
+
+    return CONST_RAD2DEG * acos(sin(solar_declination_angle) * sin(latitude) +
+                                cos(solar_hour_angle) * cos(solar_declination_angle) * cos(latitude));
 }
 
 /** Convert sensor and solar azimuth angles to relative azimuth angle

@@ -15,8 +15,3 @@ solar elevation angle derivations
    .. math::
 
       \alpha_{0} = 90 - \theta_{0}
-
-
-#. solar elevation angle from datetime and latitude/longitude
-
-   See :ref:`solar azimuth angle from datetime and latitude/longitude <solar azimuth angle from datetime derivation>`

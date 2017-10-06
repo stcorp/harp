@@ -38,7 +38,7 @@
               href="../../genindex.html"/>
     <link rel="top" title="HARP 0.6b documentation" href="../../index.html"/>
         <link rel="up" title="Algorithms" href="../index.html"/>
-        <link rel="next" title="solar elevation angle derivations" href="solar_elevation_angle.html"/>
+        <link rel="next" title="solar declination angle derivations" href="solar_declination_angle.html"/>
         <link rel="prev" title="sensor zenith angle derivations" href="sensor_zenith_angle.html"/> 
 
   
@@ -126,7 +126,9 @@
 <li class="toctree-l3"><a class="reference internal" href="sensor_elevation_angle.html">sensor elevation angle derivations</a></li>
 <li class="toctree-l3"><a class="reference internal" href="sensor_zenith_angle.html">sensor zenith angle derivations</a></li>
 <li class="toctree-l3 current"><a class="current reference internal" href="#">solar azimuth angle derivations</a></li>
+<li class="toctree-l3"><a class="reference internal" href="solar_declination_angle.html">solar declination angle derivations</a></li>
 <li class="toctree-l3"><a class="reference internal" href="solar_elevation_angle.html">solar elevation angle derivations</a></li>
+<li class="toctree-l3"><a class="reference internal" href="solar_hour_angle.html">solar hour angle derivations</a></li>
 <li class="toctree-l3"><a class="reference internal" href="solar_zenith_angle.html">solar zenith angle derivations</a></li>
 <li class="toctree-l3"><a class="reference internal" href="temperature.html">temperature derivations</a></li>
 <li class="toctree-l3"><a class="reference internal" href="viewing_azimuth_angle.html">viewing azimuth angle derivations</a></li>
@@ -212,14 +214,14 @@
             
   <div class="section" id="solar-azimuth-angle-derivations">
 <h1>solar azimuth angle derivations</h1>
-<ol class="arabic" id="solar-azimuth-angle-from-datetime-derivation">
-<li><p class="first">solar azimuth angle from datetime and latitude/longitude</p>
+<ol class="arabic">
+<li><p class="first">solar azimuth angle from latitude and solar declination/hour/zenith angles</p>
 <table border="1" class="docutils">
 <colgroup>
 <col width="19%" />
 <col width="23%" />
-<col width="27%" />
-<col width="31%" />
+<col width="26%" />
+<col width="32%" />
 </colgroup>
 <thead valign="bottom">
 <tr class="row-odd"><th class="head">symbol</th>
@@ -229,36 +231,15 @@
 </tr>
 </thead>
 <tbody valign="top">
-<tr class="row-even"><td><span class="math">\(EOT\)</span></td>
-<td>equation of time</td>
-<td><span class="math">\(h\)</span></td>
-<td>&#160;</td>
-</tr>
-<tr class="row-odd"><td><span class="math">\(t\)</span></td>
-<td>datetime</td>
-<td><span class="math">\(s\)</span> since 2000-01-01</td>
-<td><cite>datetime {time}</cite></td>
-</tr>
-<tr class="row-even"><td><span class="math">\(\alpha_{0}\)</span></td>
-<td>solar elevation angle</td>
+<tr class="row-even"><td><span class="math">\(\theta_{0}\)</span></td>
+<td>solar zenith angle</td>
 <td><span class="math">\(deg\)</span></td>
-<td><cite>solar_elevation_angle {time}</cite></td>
+<td><cite>solar_zenith_angle {time}</cite></td>
 </tr>
 <tr class="row-odd"><td><span class="math">\(\delta\)</span></td>
 <td>solar declination angle</td>
-<td><span class="math">\(rad\)</span></td>
-<td>&#160;</td>
-</tr>
-<tr class="row-even"><td><span class="math">\(\eta\)</span></td>
-<td>orbit angle of the
-earth around the sun</td>
-<td><span class="math">\(rad\)</span></td>
-<td>&#160;</td>
-</tr>
-<tr class="row-odd"><td><span class="math">\(\lambda\)</span></td>
-<td>longitude</td>
-<td><span class="math">\(degE\)</span></td>
-<td><cite>longitude {time}</cite></td>
+<td><span class="math">\(deg\)</span></td>
+<td><cite>solar_declination_angle {time}</cite></td>
 </tr>
 <tr class="row-even"><td><span class="math">\(\phi\)</span></td>
 <td>latitude</td>
@@ -270,29 +251,19 @@ earth around the sun</td>
 <td><span class="math">\(deg\)</span></td>
 <td><cite>solar_azimuth_angle {time}</cite></td>
 </tr>
-<tr class="row-even"><td><span class="math">\(\Omega\)</span></td>
+<tr class="row-even"><td><span class="math">\(\omega\)</span></td>
 <td>solar hour angle</td>
-<td><span class="math">\(rad\)</span></td>
-<td>&#160;</td>
+<td><span class="math">\(deg\)</span></td>
+<td><cite>solar_hour_angle {time}</cite></td>
 </tr>
 </tbody>
 </table>
 <div class="math">
 \begin{eqnarray}
-   \eta &amp; = &amp; 2\pi \left( \frac{t}{365.2422 \cdot 86400} - \lvert \frac{t}{365.2422 \cdot 86400} \rvert \right) \\
-   \delta &amp; = &amp; 0.006918 - 0.399912 \cos(\eta) - 0.006758 \cos(2\eta) - 0.002697 \cos(3\eta) + \\
-      &amp; &amp; 0.070257 \sin(\eta) + 0.000907 \sin(2\eta) + 0.001480 \sin(3\eta) \\
-   EOT &amp; = &amp; 0.0072 \cos(\eta) - 0.0528 \cos(2\eta) - 0.0012 \cos(3\eta) - \\
-      &amp; &amp; 0.1229 \sin(\eta) - 0.1565 \sin(2\eta) - 0.0041 \sin(3\eta) \\
-   f_{day} &amp; = &amp; \frac{t}{86400} - \lvert \frac{t}{86400} \rvert \\
-   \Omega &amp; = &amp; 2\pi\left(f_{day} + \frac{\lambda}{360} + \frac{EOT-12}{24}\right) \\
-   \alpha_{0} &amp; = &amp; \frac{180}{\pi}\arcsin(\sin(\delta)\sin(\frac{\pi}{180}\phi) +
-      \cos(\delta)\cos(\frac{\pi}{180}\phi)\cos(\Omega)) \\
    \varphi_{0} &amp; = &amp; \begin{cases}
-      \alpha_{0} = 0, &amp; 0 \\
-      \alpha_{0} \neq 0, &amp; \frac{180}{\pi}\arctan(\frac{\cos(\delta)\sin(\Omega)}{\cos(\frac{\pi}{180}\alpha_{0})},
-         \frac{-\sin(\delta)\cos(\frac{\pi}{180}\phi) +
-         \cos(\delta)\sin(\frac{\pi}{180}\phi)\cos(\Omega)}{\cos(\frac{\pi}{180}\alpha_{0})})
+      \sin(\frac{\pi}{180}\theta_{0}) = 0, &amp; 0 \\
+      \sin(\frac{\pi}{180}\theta_{0}) \neq 0 \wedge \omega &gt; 0, &amp; -\frac{180}{\pi}\arccos(\frac{\sin(\frac{\pi}{180}\delta)\cos(\frac{\pi}{180}\phi) - \cos(\frac{\pi}{180}\omega)\cos(\frac{\pi}{180}\delta)\sin(\frac{\pi}{180}\phi)}{\sin(\frac{\pi}{180}\theta_{0})}) \\
+      \sin(\frac{\pi}{180}\theta_{0}) \neq 0 \wedge \omega &lt;= 0, &amp; \frac{180}{\pi}\arccos(\frac{\sin(\frac{\pi}{180}\delta)\cos(\frac{\pi}{180}\phi) - \cos(\frac{\pi}{180}\omega)\cos(\frac{\pi}{180}\delta)\sin(\frac{\pi}{180}\phi)}{\sin(\frac{\pi}{180}\theta_{0})})
    \end{cases}
 \end{eqnarray}</div></li>
 </ol>
@@ -308,7 +279,7 @@ earth around the sun</td>
   
     <div class="rst-footer-buttons" role="navigation" aria-label="footer navigation">
       
-        <a href="solar_elevation_angle.html" class="btn btn-neutral float-right" title="solar elevation angle derivations" accesskey="n" rel="next">Next <span class="fa fa-arrow-circle-right"></span></a>
+        <a href="solar_declination_angle.html" class="btn btn-neutral float-right" title="solar declination angle derivations" accesskey="n" rel="next">Next <span class="fa fa-arrow-circle-right"></span></a>
       
       
         <a href="sensor_zenith_angle.html" class="btn btn-neutral" title="sensor zenith angle derivations" accesskey="p" rel="prev"><span class="fa fa-arrow-circle-left"></span> Previous</a>

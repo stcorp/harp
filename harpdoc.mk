@@ -70,7 +70,9 @@ HARP_DOCFILES = \
 	doc/html/algorithms/derivations/sensor_elevation_angle.html \
 	doc/html/algorithms/derivations/sensor_zenith_angle.html \
 	doc/html/algorithms/derivations/solar_azimuth_angle.html \
+	doc/html/algorithms/derivations/solar_declination_angle.html \
 	doc/html/algorithms/derivations/solar_elevation_angle.html \
+	doc/html/algorithms/derivations/solar_hour_angle.html \
 	doc/html/algorithms/derivations/solar_zenith_angle.html \
 	doc/html/algorithms/derivations/temperature.html \
 	doc/html/algorithms/derivations/viewing_azimuth_angle.html \
@@ -637,7 +639,11 @@ doc/html/algorithms/derivations/sensor_zenith_angle.html:
 	$(MAKE) harp_doc
 doc/html/algorithms/derivations/solar_azimuth_angle.html:
 	$(MAKE) harp_doc
+doc/html/algorithms/derivations/solar_declination_angle.html:
+	$(MAKE) harp_doc
 doc/html/algorithms/derivations/solar_elevation_angle.html:
+	$(MAKE) harp_doc
+doc/html/algorithms/derivations/solar_hour_angle.html:
 	$(MAKE) harp_doc
 doc/html/algorithms/derivations/solar_zenith_angle.html:
 	$(MAKE) harp_doc

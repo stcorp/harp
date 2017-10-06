@@ -22,6 +22,10 @@
 
 * harpcollocate now ignores empty products instead of raising errors for them.
 
+* Added solar_declination_angle and solar_hour_angle variables and derivations.
+
+* Fixed derivations of solar azimuth/zenith angles from datetime and lat/lon.
+
 * Added support for GEOMS-TE-UVVIS-DOAS-OFFAXIS-AEROSOL-007.
 
 1.0 2017-09-25

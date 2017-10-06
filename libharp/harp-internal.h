@@ -282,8 +282,12 @@ double harp_sea_surface_temperature_skin_from_subskin_wind_speed_and_solar_zenit
 double harp_sea_surface_temperature_subskin_from_skin_wind_speed_and_solar_zenith_angle(double sst_skin,
                                                                                         double wind_speed,
                                                                                         double solar_zenith_angle);
-void harp_solar_angles_from_datetime_latitude_and_longitude(double datetime, double latitude, double longitude,
-                                                            double *solar_elevation_angle, double *solar_azimuth_angle);
+double harp_solar_azimuth_angle_from_latitude_and_solar_angles(double latitude, double solar_declination_angle,
+                                                               double solar_hour_angle, double solar_zenith_angle);
+double harp_solar_declination_angle_from_datetime(double datetime);
+double harp_solar_hour_angle_from_datetime_and_longitude(double datetime, double longitude);
+double harp_solar_zenith_angle_from_latitude_and_solar_angles(double latitude, double solar_declination_angle,
+                                                              double solar_hour_angle);
 double harp_relative_azimuth_angle_from_sensor_and_solar_azimuth_angles(double sensor_azimuth_angle,
                                                                         double solar_azimuth_angle);
 double harp_elevation_angle_from_zenith_angle(double zenith_angle);

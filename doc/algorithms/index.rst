@@ -52,7 +52,9 @@ Variable Conversions
    derivations/sensor_elevation_angle
    derivations/sensor_zenith_angle
    derivations/solar_azimuth_angle
+   derivations/solar_declination_angle
    derivations/solar_elevation_angle
+   derivations/solar_hour_angle
    derivations/solar_zenith_angle
    derivations/temperature
    derivations/viewing_azimuth_angle
