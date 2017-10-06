@@ -57,7 +57,7 @@ Release checklist
 - make sure all 'commit steps' (see above) have been performed
 - ensure automake and CMake builds are consistent
 - check compiler warnings
-- increase HARP version number in configure.ac + CMakeLists.txt + doc/conf.py
+- increase HARP version number in configure.ac + CMakeLists.txt + doc/conf.py (version + release)
   format version is x.y(.z).
   Increase x for big backward compatibility breaking changes.
   Otherwise, increase y if any features were introduced.
