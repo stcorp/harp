@@ -406,7 +406,8 @@ int harp_product_filter_by_index(harp_product *product, const char *index_variab
         }
         if (j == variable->num_elements)
         {
-            harp_set_error(HARP_ERROR_INVALID_ARGUMENT, "index %ld not found in index variable", (long)index[i]);
+            harp_set_error(HARP_ERROR_INVALID_ARGUMENT, "index %ld not found in %s variable", (long)index[i],
+                           index_variable);
             free(dim_element_ids);
             return -1;
         }
