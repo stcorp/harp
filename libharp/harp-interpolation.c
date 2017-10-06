@@ -359,55 +359,6 @@ void harp_interpolate_find_index(long source_length, const double *source_grid, 
     *index = low;
 }
 
-/*  p4 +---+ p3
- *     |  +| <--- p
- *  p1 +---+ p2
- */
-int harp_bilinear_interpolation(const double *source_grid_x, const double *source_grid_y, const double **source_value,
-                                long m, long n, double target_x, double target_y, double *target_value)
-{
-    long i, j;
-
-    /* Start hunt with with initial guess for ilo and jlo */
-    i = 0;
-    j = 0;
-
-    harp_interpolate_find_index(n, source_grid_x, target_x, &i);
-    harp_interpolate_find_index(m, source_grid_y, target_y, &j);
-
-    if (i == -1 || i == m || j == -1 || j == n)
-    {
-        /* Do not use extrapolation  */
-        *target_value = harp_nan();
-    }
-    else
-    {
-        double z1, z2, z3, z4;
-        double x1, x2;
-        double y1, y2;
-        double dx, dy;
-
-        x1 = source_grid_x[i];
-        x2 = source_grid_x[i + 1];
-        dx = x2 - x1;
-
-        y1 = source_grid_y[j];
-        y2 = source_grid_y[j + 1];
-        dy = y2 - y1;
-
-        z1 = source_value[i][j];
-        z2 = source_value[i][j + 1];
-        z3 = source_value[i + 1][j];
-        z4 = source_value[i + 1][j + 1];
-
-        /* Interpolate */
-        *target_value = (z1 * (x2 - target_x) * (y2 - target_y) + z2 * (target_x - x1) * (y2 - target_y) +
-                         z3 * (x2 - target_x) * (target_y - y1) + z4 * (target_x - x1) * (target_y - y1)) / (dx * dy);
-    }
-
-    return 0;
-}
-
 int harp_cubic_spline_interpolation(const double *xx, const double *yy, long n, const double xp, double *yp)
 {
     double d0 = 1.0e30; /* First derivative of the interpolating function at points 0. */

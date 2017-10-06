@@ -316,8 +316,6 @@ double harp_wrap(double value, double min, double max);
 /* Interpolation */
 void harp_interpolate_find_index(long source_length, const double *source_grid, double target_grid_point, long *index);
 int harp_cubic_spline_interpolation(const double *xx, const double *yy, long n, const double xp, double *new_yp);
-int harp_bilinear_interpolation(const double *xx, const double *yy, const double **zz, long m, long n,
-                                double xp, double yp, double *new_zp);
 int harp_bicubic_spline_interpolation(const double *xx, const double *yy, const double **zz, long m, long n,
                                       double xp, double yp, double *new_zp);
 void harp_interpolate_value_linear(long source_length, const double *source_grid, const double *source_array,
