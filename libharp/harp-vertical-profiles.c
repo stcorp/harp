@@ -794,14 +794,12 @@ LIBHARP_API int harp_product_smooth_vertical_with_collocated_dataset(harp_produc
                                                                collocation_index->num_elements,
                                                                collocation_index->data.int32_data) != 0)
     {
-        harp_product_delete(merged_product);
         harp_collocation_result_shallow_delete(filtered_collocation_result);
         return -1;
     }
     if (filtered_collocation_result->num_pairs != collocation_index->num_elements)
     {
         harp_set_error(HARP_ERROR_INVALID_ARGUMENT, "product and collocation result are inconsistent");
-        harp_product_delete(merged_product);
         harp_collocation_result_shallow_delete(filtered_collocation_result);
         return -1;
     }
@@ -910,6 +908,13 @@ LIBHARP_API int harp_product_smooth_vertical_with_collocated_dataset(harp_produc
             }
             harp_product_delete(collocated_product);
         }
+    }
+
+    if (merged_product == NULL)
+    {
+        harp_collocation_result_shallow_delete(filtered_collocation_result);
+        harp_set_error(HARP_ERROR_INVALID_ARGUMENT, "collocated dataset does not contain any matching pairs");
+        return -1;
     }
 
     /* sort/filter the merged product so the samples are in the same order as in 'product' */
@@ -1393,14 +1398,12 @@ LIBHARP_API int harp_product_get_smoothed_column_using_collocated_dataset(harp_p
                                                                collocation_index->num_elements,
                                                                collocation_index->data.int32_data) != 0)
     {
-        harp_product_delete(merged_product);
         harp_collocation_result_shallow_delete(filtered_collocation_result);
         return -1;
     }
     if (filtered_collocation_result->num_pairs != collocation_index->num_elements)
     {
         harp_set_error(HARP_ERROR_INVALID_ARGUMENT, "product and collocation result are inconsistent");
-        harp_product_delete(merged_product);
         harp_collocation_result_shallow_delete(filtered_collocation_result);
         return -1;
     }
@@ -1508,6 +1511,13 @@ LIBHARP_API int harp_product_get_smoothed_column_using_collocated_dataset(harp_p
             }
             harp_product_delete(collocated_product);
         }
+    }
+
+    if (merged_product == NULL)
+    {
+        harp_collocation_result_shallow_delete(filtered_collocation_result);
+        harp_set_error(HARP_ERROR_INVALID_ARGUMENT, "collocated dataset does not contain any matching pairs");
+        return -1;
     }
 
     /* sort/filter the merged product so the samples are in the same order as in 'product' */
