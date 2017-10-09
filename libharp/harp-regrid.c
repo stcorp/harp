@@ -948,6 +948,7 @@ LIBHARP_API int harp_product_regrid_with_collocated_dataset(harp_product *produc
             if (harp_product_add_derived_variable(collocated_product, axis_name, NULL, axis_unit, 1,
                                                   local_dimension_type) != 0)
             {
+                harp_add_error_message(" for collocated dataset");
                 harp_product_delete(collocated_product);
                 harp_product_delete(merged_product);
                 harp_collocation_result_shallow_delete(filtered_collocation_result);
@@ -977,6 +978,7 @@ LIBHARP_API int harp_product_regrid_with_collocated_dataset(harp_product *produc
         if (harp_product_add_derived_variable(collocated_product, axis_name, NULL, axis_unit, 2, local_dimension_type)
             != 0)
         {
+            harp_add_error_message(" for collocated dataset");
             harp_product_delete(collocated_product);
             harp_product_delete(merged_product);
             harp_collocation_result_shallow_delete(filtered_collocation_result);
@@ -1013,6 +1015,7 @@ LIBHARP_API int harp_product_regrid_with_collocated_dataset(harp_product *produc
         {
             if (harp_product_append(merged_product, collocated_product) != 0)
             {
+                harp_add_error_message(" for collocated dataset");
                 harp_product_delete(collocated_product);
                 harp_product_delete(merged_product);
                 harp_collocation_result_shallow_delete(filtered_collocation_result);
@@ -1026,6 +1029,7 @@ LIBHARP_API int harp_product_regrid_with_collocated_dataset(harp_product *produc
     if (harp_product_filter_by_index(merged_product, "collocation_index", collocation_index->num_elements,
                                      collocation_index->data.int32_data) != 0)
     {
+        harp_add_error_message(" for collocated dataset");
         harp_product_delete(merged_product);
         harp_collocation_result_shallow_delete(filtered_collocation_result);
         return -1;
