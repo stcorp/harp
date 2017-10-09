@@ -117,10 +117,10 @@ static resample_type get_resample_type(harp_variable *variable, harp_dimension_t
 
     if (dimension_type == harp_dimension_vertical)
     {
-        /* TODO: how to resample 1D column AVKs */
+        /* use interval interpolation for vertical regridding of 1D column AVKs */
         if (strstr(variable->name, "_avk") != NULL)
         {
-            return resample_remove;
+            return resample_interval;
         }
         /* use interval interpolation for vertical regridding of partial column profiles */
         if (strstr(variable->name, "_column_") != NULL)
