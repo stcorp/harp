@@ -1718,13 +1718,17 @@ static int get_dynamic_units(ingest_info *info)
     }
     else if (info->template_type == uvvis_doas_zenith)
     {
-        if (info->has_vmr_zenith)
+        if (info->has_vmr_zenith || info->product_version >= 7)
         {
-            snprintf(path, MAX_PATH_LENGTH, "/%s_MIXING_RATIO_VOLUME_SCATTER_SOLAR_ZENITH", geoms_gas_name[info->gas]);
+            snprintf(path, MAX_PATH_LENGTH, "/%s_MIXING_RATIO_VOLUME_SCATTER_SOLAR_ZENITH_APRIORI",
+                     geoms_gas_name[info->gas]);
             if (read_unit(&cursor, path, info->vmr_unit) != 0)
             {
                 return -1;
             }
+        }
+        if (info->has_vmr_zenith)
+        {
             snprintf(path, MAX_PATH_LENGTH,
                      "/%s_MIXING_RATIO_VOLUME_SCATTER_SOLAR_ZENITH_UNCERTAINTY_RANDOM_COVARIANCE",
                      geoms_gas_name[info->gas]);
