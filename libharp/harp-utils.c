@@ -1579,13 +1579,13 @@ int harp_array_transpose(harp_data_type data_type, int num_dimensions, const lon
     switch (element_size)
     {
         case 1:
-            for (i = 0; i < num_elements; i++)
+            dst[index] = src[i];
+            index = stride[0];
+            rindex[0] = 1;
+            for (i = 1; i < num_elements; i++)
             {
                 int j = 0;
 
-                dst[index] = src[i];
-                index += stride[j];
-                rindex[j]++;
                 while (rindex[j] == rdim[j])
                 {
                     rindex[j] = 0;
@@ -1594,16 +1594,19 @@ int harp_array_transpose(harp_data_type data_type, int num_dimensions, const lon
                     index += stride[j];
                     rindex[j]++;
                 }
+                dst[index] = src[i];
+                index += stride[0];
+                rindex[0]++;
             }
             break;
         case 2:
-            for (i = 0; i < num_elements; i++)
+            ((uint16_t *)dst)[0] = ((uint16_t *)src)[0];
+            index = stride[0];
+            rindex[0] = 1;
+            for (i = 1; i < num_elements; i++)
             {
                 int j = 0;
 
-                ((uint16_t *)dst)[index] = ((uint16_t *)src)[i];
-                index += stride[j];
-                rindex[j]++;
                 while (rindex[j] == rdim[j])
                 {
                     rindex[j] = 0;
@@ -1612,16 +1615,19 @@ int harp_array_transpose(harp_data_type data_type, int num_dimensions, const lon
                     index += stride[j];
                     rindex[j]++;
                 }
+                ((uint16_t *)dst)[index] = ((uint16_t *)src)[i];
+                index += stride[0];
+                rindex[0]++;
             }
             break;
         case 4:
-            for (i = 0; i < num_elements; i++)
+            ((uint32_t *)dst)[0] = ((uint32_t *)src)[0];
+            index = stride[0];
+            rindex[0] = 1;
+            for (i = 1; i < num_elements; i++)
             {
                 int j = 0;
 
-                ((uint32_t *)dst)[index] = ((uint32_t *)src)[i];
-                index += stride[j];
-                rindex[j]++;
                 while (rindex[j] == rdim[j])
                 {
                     rindex[j] = 0;
@@ -1630,16 +1636,19 @@ int harp_array_transpose(harp_data_type data_type, int num_dimensions, const lon
                     index += stride[j];
                     rindex[j]++;
                 }
+                ((uint32_t *)dst)[index] = ((uint32_t *)src)[i];
+                index += stride[0];
+                rindex[0]++;
             }
             break;
         case 8:
-            for (i = 0; i < num_elements; i++)
+            ((uint64_t *)dst)[0] = ((uint64_t *)src)[0];
+            index = stride[0];
+            rindex[0] = 1;
+            for (i = 1; i < num_elements; i++)
             {
-                int j = 0;
+                long j = 0;
 
-                ((uint64_t *)dst)[index] = ((uint64_t *)src)[i];
-                index += stride[j];
-                rindex[j]++;
                 while (rindex[j] == rdim[j])
                 {
                     rindex[j] = 0;
@@ -1648,6 +1657,9 @@ int harp_array_transpose(harp_data_type data_type, int num_dimensions, const lon
                     index += stride[j];
                     rindex[j]++;
                 }
+                ((uint64_t *)dst)[index] = ((uint64_t *)src)[i];
+                index += stride[0];
+                rindex[0]++;
             }
             break;
         default:
