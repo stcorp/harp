@@ -5,8 +5,6 @@
 * Specifying a directory for a dataset will now recursively add all products
   (including sub-directories and contents of .pth files).
 
-* Added -oa/-ob options to harpcollocate.
-
 * The variable that is binned on with a 'bin(variable)' operation is now
   always kept in the resulting product.
 
@@ -21,6 +19,8 @@
 * Fixed issue with wrap() operation for values < specified minimum.
 
 * harpcollocate now ignores empty products instead of raising errors for them.
+
+* Added -oa/-ob and -aa/-ab options to harpcollocate matchup.
 
 * Added solar_declination_angle and solar_hour_angle variables and derivations.
 

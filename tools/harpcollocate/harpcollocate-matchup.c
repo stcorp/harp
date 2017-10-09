@@ -76,6 +76,8 @@ typedef struct collocation_info_struct
     int filter_point_in_area_yx;
     const char *ingest_options_a;
     const char *ingest_options_b;
+    const char *operations_a;
+    const char *operations_b;
 
     int perform_nearest_neighbour_x_first;
     char *nearest_neighbour_x_variable_name;
@@ -355,6 +357,8 @@ static int collocation_info_new(collocation_info **new_info)
     info->filter_point_in_area_yx = 0;
     info->ingest_options_a = NULL;
     info->ingest_options_b = NULL;
+    info->operations_a = NULL;
+    info->operations_b = NULL;
     info->perform_nearest_neighbour_x_first = 0;
     info->nearest_neighbour_x_variable_name = NULL;
     info->nearest_neighbour_x_criterium_index = -1;
@@ -1339,8 +1343,8 @@ static int perform_matchup(collocation_info *info)
         double datetime_stop_a = info->dataset_a->metadata[index_a]->datetime_stop;
 
         /* import product of dataset A */
-        if (harp_import(info->dataset_a->metadata[index_a]->filename, NULL, info->ingest_options_a, &info->product_a) !=
-            0)
+        if (harp_import(info->dataset_a->metadata[index_a]->filename, info->operations_a, info->ingest_options_a,
+                        &info->product_a) != 0)
         {
             return -1;
         }
@@ -1370,8 +1374,8 @@ static int perform_matchup(collocation_info *info)
                 /* overlap */
                 if (info->product_b[index_b] == NULL)
                 {
-                    if (harp_import(info->dataset_b->metadata[index_b]->filename, NULL, info->ingest_options_b,
-                                    &info->product_b[index_b]) != 0)
+                    if (harp_import(info->dataset_b->metadata[index_b]->filename, info->operations_b,
+                                    info->ingest_options_b, &info->product_b[index_b]) != 0)
                     {
                         return -1;
                     }
@@ -1493,6 +1497,18 @@ int matchup(int argc, char *argv[])
                  && argv[i + 1][0] != '-')
         {
             info->ingest_options_b = argv[i + 1];
+            i++;
+        }
+        else if ((strcmp(argv[i], "-aa") == 0 || strcmp(argv[i], "--operations_a") == 0) && i + 1 < argc
+                 && argv[i + 1][0] != '-')
+        {
+            info->operations_a = argv[i + 1];
+            i++;
+        }
+        else if ((strcmp(argv[i], "-ab") == 0 || strcmp(argv[i], "--operations_b") == 0) && i + 1 < argc
+                 && argv[i + 1][0] != '-')
+        {
+            info->operations_b = argv[i + 1];
             i++;
         }
         else

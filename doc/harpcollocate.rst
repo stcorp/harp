@@ -52,6 +52,15 @@ HARP compliant netCDF files.
               -ob, --options_b <option list>
                   List of options to pass to the ingestion module for ingesting
                   products from the second dataset (see above).
+              -aa, --operations_a <operation list>
+                  List of operations to apply to each product of the first
+                  dataset before collocating.
+                  An operation list needs to be provided as a single expression.
+                  See the 'operations' section of the HARP documentation for
+                  more details.
+              -ab, --operations_b <operation list>
+                  List of operations to apply to each product of the second
+                  dataset before collocating (see above).
           The order in which -nx and -ny are provided determines the order in
           which the nearest filters are executed.
           When '[unit]' is not specified, the unit of the variable of the

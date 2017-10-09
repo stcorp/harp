@@ -108,6 +108,15 @@ static void print_help(void)
     printf("            -ob, --options_b <option list>\n");
     printf("                List of options to pass to the ingestion module for ingesting\n");
     printf("                products from the second dataset (see above).\n");
+    printf("            -aa, --operations_a <operation list>\n");
+    printf("                List of operations to apply to each product of the first\n");
+    printf("                dataset before collocating.\n");
+    printf("                An operation list needs to be provided as a single expression.\n");
+    printf("                See the 'operations' section of the HARP documentation for\n");
+    printf("                more details.\n");
+    printf("            -ab, --operations_b <operation list>\n");
+    printf("                List of operations to apply to each product of the second\n");
+    printf("                dataset before collocating (see above).\n");
     printf("        The order in which -nx and -ny are provided determines the order in\n");
     printf("        which the nearest filters are executed.\n");
     printf("        When '[unit]' is not specified, the unit of the variable of the\n");
