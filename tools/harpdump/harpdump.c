@@ -231,6 +231,16 @@ static int dump(int argc, char *argv[])
         return -1;
     }
 
+    if (operations != NULL || options != NULL)
+    {
+        /* update history attribute for traceability */
+        if (harp_product_update_history(product, "harpdump", argc, argv) != 0)
+        {
+            harp_product_delete(product);
+            return -1;
+        }
+    }
+
     harp_product_print(product, !list, data && !list, printf);
 
     harp_product_delete(product);
