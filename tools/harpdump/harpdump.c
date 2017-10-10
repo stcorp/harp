@@ -154,7 +154,7 @@ static int list_derivations(int argc, char *argv[])
     {
         fprintf(stderr, "ERROR: input product file not specified\n");
         print_help();
-        return -1;
+        exit(1);
     }
 
     /* Import the product */
