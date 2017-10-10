@@ -53,6 +53,7 @@ typedef enum grib_parameter_enum
     grib_param_t,       /* 130: Temperature [K] */
     grib_param_q,       /* 133: Specific humidity [kg/kg] */
     grib_param_tcwv,    /* 137: Total column water vapour [kg/m2] */
+    grib_param_vo,      /* 138: Vorticity (relative) [1/s] */
     grib_param_lnsp,    /* 152: Logarithm of surface pressure [-] */
     grib_param_tcc,     /* 164: Total cloud cover [-] */
     grib_param_2t,      /* 167: 2 meter temperature [K] */
@@ -110,6 +111,7 @@ const char *param_name[NUM_GRIB_PARAMETERS] = {
     "t",
     "q",
     "tcwv",
+    "vo",
     "lnsp",
     "tcc",
     "2t",
@@ -165,6 +167,7 @@ int param_is_profile[NUM_GRIB_PARAMETERS] = {
     1,  /* t */
     1,  /* q */
     0,  /* tcwv */
+    1,  /* vo */
     0,  /* lnsp */
     0,  /* tcc */
     0,  /* 2t */
@@ -363,6 +366,8 @@ static grib_parameter get_grib1_parameter(int parameter_ref)
                     return grib_param_q;
                 case 137:
                     return grib_param_tcwv;
+                case 138:
+                    return grib_param_vo;
                 case 152:
                     return grib_param_lnsp;
                 case 164:
@@ -386,6 +391,8 @@ static grib_parameter get_grib1_parameter(int parameter_ref)
                     return grib_param_t;
                 case 133:
                     return grib_param_q;
+                case 138:
+                    return grib_param_vo;
                 case 152:
                     return grib_param_lnsp;
                 case 164:
@@ -405,6 +412,8 @@ static grib_parameter get_grib1_parameter(int parameter_ref)
                     return grib_param_t;
                 case 133:
                     return grib_param_q;
+                case 138:
+                    return grib_param_vo;
                 case 164:
                     return grib_param_tcc;
             }
@@ -441,6 +450,8 @@ static grib_parameter get_grib1_parameter(int parameter_ref)
                     return grib_param_q;
                 case 137:
                     return grib_param_tcwv;
+                case 138:
+                    return grib_param_vo;
                 case 164:
                     return grib_param_tcc;
                 case 167:
@@ -458,6 +469,8 @@ static grib_parameter get_grib1_parameter(int parameter_ref)
                     return grib_param_t;
                 case 133:
                     return grib_param_q;
+                case 138:
+                    return grib_param_vo;
                 case 164:
                     return grib_param_tcc;
                 case 167:
@@ -595,6 +608,13 @@ static grib_parameter get_grib2_parameter(int parameter_ref)
                             return grib_param_clwc;
                         case 84:
                             return grib_param_ciwc;
+                    }
+                    break;
+                case 2:
+                    switch (parameterNumber)
+                    {
+                        case 12:
+                            return grib_param_vo;
                     }
                     break;
                 case 3:
@@ -865,6 +885,11 @@ static int read_q(void *user_data, long index, harp_array data)
 static int read_tcwv(void *user_data, long index, harp_array data)
 {
     return read_2d_grid_data((ingest_info *)user_data, grib_param_tcwv, index, data);
+}
+
+static int read_vo(void *user_data, long index, harp_array data)
+{
+    return read_3d_grid_data((ingest_info *)user_data, grib_param_vo, index, data);
 }
 
 static int read_lnsp(void *user_data, long index, harp_array data)
@@ -2573,6 +2598,11 @@ static int exclude_tcwv(void *user_data)
     return !((ingest_info *)user_data)->has_parameter[grib_param_tcwv];
 }
 
+static int exclude_vo(void *user_data)
+{
+    return !((ingest_info *)user_data)->has_parameter[grib_param_vo];
+}
+
 static int exclude_lnsp(void *user_data)
 {
     return !((ingest_info *)user_data)->has_parameter[grib_param_lnsp];
@@ -2955,6 +2985,15 @@ int harp_ingestion_module_ecmwf_grib_init(void)
                                                                       description, "kg/m^2", exclude_tcwv, read_tcwv);
     add_value_variable_mapping(variable_definition, "(table,indicator) = (128,137) or (180,137)",
                                "(discipline,category,number) = (192,128,137)");
+
+    /* vo: relative_vorticity */
+    description = "relative vorticity";
+    variable_definition = harp_ingestion_register_variable_block_read(product_definition, "relative_vorticity",
+                                                                      harp_type_float, 3, &dimension_type[1], NULL,
+                                                                      description, "1/s", exclude_vo, read_vo);
+    add_value_variable_mapping(variable_definition,
+                               "(table,indicator) = (160,138), (128,138), (170,138), (180, 138) or (190,138)",
+                               "(discipline,category,number) = (0,2,12)");
 
     /* lnsp: surface_pressure */
     description = "pressure at the surface";

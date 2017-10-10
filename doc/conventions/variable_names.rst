@@ -16,6 +16,7 @@ HARP defines the following variable names:
 ============================================= =============== =============== ======= ==== ======= ===== =======================================================================
 Name                                          Prefixes        Postfixes       Quality Vert Lat/Lon Spect Comments
 ============================================= =============== =============== ======= ==== ======= ===== =======================================================================
+absolute_vorticity                                                            X       X    X
 absorbing_aerosol_index                                                       X            X
 aerosol_base_height                                                           X            X
 aerosol_base_pressure                                                         X            X
@@ -98,6 +99,7 @@ radiance                                                                      X 
 reflectance                                                                   X                    X
 relative_azimuth_angle                                                        X                          absolute difference between sensor and solar azimuth angles
 relative_humidity                                                             X       X    X
+relative_vorticity                                                            X       X    X
 scan_direction_type
 scan_subindex
 scattering_angle                                                              X
