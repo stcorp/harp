@@ -159,7 +159,7 @@ static int merge(int argc, char *argv[])
     int verbose = 0;
     int i;
 
-    /* Parse arguments after list/'export format' */
+    /* parse arguments after list/'export format' */
     for (i = 1; i < argc; i++)
     {
         if ((strcmp(argv[i], "-a") == 0 || strcmp(argv[i], "--operations") == 0) && i + 1 < argc &&
@@ -238,14 +238,14 @@ static int merge(int argc, char *argv[])
         return -2;
     }
 
-    /* Update the product */
+    /* update the product history */
     if (harp_product_update_history(merged_product, "harpmerge", argc, argv) != 0)
     {
         harp_product_delete(merged_product);
         return -1;
     }
 
-    /* Export the product */
+    /* export the product */
     if (harp_export(output_filename, output_format, merged_product) != 0)
     {
         harp_product_delete(merged_product);
