@@ -18,6 +18,9 @@
 
 * Fixed issue with wrap() operation for values < specified minimum.
 
+* Fixed issue with collocate_left/collocate_right operations not including
+  last sample when applying it on products in an external format.
+
 * harpcollocate now ignores empty products instead of raising errors for them.
 
 * Added -oa/-ob and -aa/-ab options to harpcollocate matchup.

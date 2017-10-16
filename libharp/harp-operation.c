@@ -203,13 +203,23 @@ static int eval_collocation(harp_operation_collocation_filter *operation, harp_d
     }
 
     /* use bisection to find index in sorted list */
-    while (high - low > 1)
+    while (high >= low)
     {
         long middle = (high + low) / 2;
 
-        if (index >= operation->value[middle])
+        if (index == operation->value[middle])
         {
-            low = middle;
+            /* found */
+            return 1;
+        }
+        else if (high == low)
+        {
+            /* not found */
+            return 0;
+        }
+        if (index > operation->value[middle])
+        {
+            low = middle + 1;
         }
         else
         {
@@ -217,7 +227,7 @@ static int eval_collocation(harp_operation_collocation_filter *operation, harp_d
         }
     }
 
-    return (index == operation->value[low]);
+    return 0;
 }
 
 static int eval_comparison(harp_operation_comparison_filter *operation, harp_data_type data_type, void *value)
