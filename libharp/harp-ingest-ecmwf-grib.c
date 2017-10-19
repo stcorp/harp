@@ -3369,7 +3369,7 @@ int harp_ingestion_module_ecmwf_grib_init(void)
 
     /* tc_c3h8: C3H8_column_density */
     description = "total column propane";
-    variable_definition = harp_ingestion_register_variable_block_read(product_definition, "C2H8_column_density",
+    variable_definition = harp_ingestion_register_variable_block_read(product_definition, "C3H8_column_density",
                                                                       harp_type_float, 2, &dimension_type[1], NULL,
                                                                       description, "kg/m^2", exclude_tc_c3h8,
                                                                       read_tc_c3h8);
