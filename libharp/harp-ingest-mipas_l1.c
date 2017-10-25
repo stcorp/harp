@@ -110,6 +110,30 @@ static int read_datetime(void *user_data, harp_array data)
     return get_main_data((ingest_info *)user_data, "dsr_time", data.double_data);
 }
 
+static int read_orbit_index(void *user_data, harp_array data)
+{
+    ingest_info *info = (ingest_info *)user_data;
+    coda_cursor cursor;
+
+    if (coda_cursor_set_product(&cursor, info->product) != 0)
+    {
+        harp_set_error(HARP_ERROR_CODA, NULL);
+        return -1;
+    }
+    if (coda_cursor_goto(&cursor, "/mph/abs_orbit") != 0)
+    {
+        harp_set_error(HARP_ERROR_CODA, NULL);
+        return -1;
+    }
+    if (coda_cursor_read_int32(&cursor, data.int32_data) != 0)
+    {
+        harp_set_error(HARP_ERROR_CODA, NULL);
+        return -1;
+    }
+
+    return 0;
+}
+
 static int read_latitude(void *user_data, harp_array data)
 {
     return get_main_data((ingest_info *)user_data, "loc_2/latitude", data.double_data);
@@ -379,6 +403,13 @@ int harp_ingestion_module_mipas_l1_init(void)
                                                    NULL, description, "seconds since 2000-01-01", NULL, read_datetime);
     path = "/mipas_level_1b_mds[]/dsr_time";
     harp_variable_definition_add_mapping(variable_definition, NULL, NULL, path, NULL);
+
+    /* orbit_index */
+    description = "absolute orbit number";
+    variable_definition =
+        harp_ingestion_register_variable_full_read(product_definition, "orbit_index", harp_type_int32, 0, NULL, NULL,
+                                                   description, NULL, NULL, read_orbit_index);
+    harp_variable_definition_add_mapping(variable_definition, NULL, NULL, "/mph/abs_orbit", NULL);
 
     /* latitude_of_the_measurement */
     description = "tangent latitude of the measurement";
