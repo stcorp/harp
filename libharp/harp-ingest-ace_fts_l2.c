@@ -239,7 +239,7 @@ static int read_latitude(void *user_data, harp_array data)
 static int read_orbit_index(void *user_data, harp_array data)
 {
     const char *filename;
-    
+
     if (coda_get_product_filename(((ingest_info *)user_data)->product, &filename) != 0)
     {
         return -1;
@@ -825,12 +825,12 @@ static void register_general_fields(harp_product_definition *product_definition)
     /* orbit_index */
     description = "absolute orbit number";
     variable_definition =
-    harp_ingestion_register_variable_full_read(product_definition, "orbit_index", harp_type_int32, 0, NULL, NULL,
-                                               description, NULL, NULL, read_orbit_index);
+        harp_ingestion_register_variable_full_read(product_definition, "orbit_index", harp_type_int32, 0, NULL, NULL,
+                                                   description, NULL, NULL, read_orbit_index);
     description = "extracted from the filename (assuming ssXXXXX... or srXXXXX... format); "
         "set to 0 if extraction of the value was not possible";
     harp_variable_definition_add_mapping(variable_definition, NULL, NULL, NULL, description);
-    
+
     /* latitude */
     description = "latitude of 30 km geometric tangent point for occultation";
     variable_definition =
