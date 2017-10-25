@@ -1173,7 +1173,7 @@ static int determine_fastest_band(ingest_info *info, coda_cursor start_cursor, l
         }
     }
 
-    if (info->format_version >= 12)
+    if (info->format_version >= 12 && info->ingestion_data != DATA_SUN && info->ingestion_data != DATA_MOON)
     {
         double unique_int[10];
 
