@@ -27,6 +27,8 @@
 
 * Added solar_declination_angle and solar_hour_angle variables and derivations.
 
+* Added orbit_index variable and added this to various ingestions.
+
 * Fixed derivations of solar azimuth/zenith angles from datetime and lat/lon.
 
 * Added support for GEOMS-TE-UVVIS-DOAS-OFFAXIS-AEROSOL-007.
