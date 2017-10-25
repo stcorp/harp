@@ -348,6 +348,30 @@ static int read_datetime_stop(void *user_data, harp_array data)
     return get_profile_point(info, "nl_geolocation", info->num_vertical - 1, "dsr_time", data);
 }
 
+static int read_orbit_index(void *user_data, harp_array data)
+{
+    ingest_info *info = (ingest_info *)user_data;
+    coda_cursor cursor;
+
+    if (coda_cursor_set_product(&cursor, info->product) != 0)
+    {
+        harp_set_error(HARP_ERROR_CODA, NULL);
+        return -1;
+    }
+    if (coda_cursor_goto(&cursor, "/mph/abs_orbit") != 0)
+    {
+        harp_set_error(HARP_ERROR_CODA, NULL);
+        return -1;
+    }
+    if (coda_cursor_read_int32(&cursor, data.int32_data) != 0)
+    {
+        harp_set_error(HARP_ERROR_CODA, NULL);
+        return -1;
+    }
+
+    return 0;
+}
+
 static int read_altitude(void *user_data, harp_array data)
 {
     return get_profile((ingest_info *)user_data, "nl_geolocation", "tangent_alt", data);
@@ -696,6 +720,13 @@ int harp_ingestion_module_gomos_l2_init(void)
                                                                      read_datetime_stop);
     path = "/nl_geolocation[]/dsr_time";
     harp_variable_definition_add_mapping(variable_definition, NULL, NULL, path, "time of last record");
+
+    /* orbit_index */
+    description = "absolute orbit number";
+    variable_definition =
+        harp_ingestion_register_variable_full_read(product_definition, "orbit_index", harp_type_int32, 0, NULL, NULL,
+                                                   description, NULL, NULL, read_orbit_index);
+    harp_variable_definition_add_mapping(variable_definition, NULL, NULL, "/mph/abs_orbit", NULL);
 
     /* altitude */
     description = "altitude";
