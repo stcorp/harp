@@ -279,6 +279,31 @@ static int read_datetime_length(void *user_data, long index, harp_array data)
     return 0;
 }
 
+static int read_orbit_index(void *user_data, harp_array data)
+{
+    ingest_info *info = (ingest_info *)user_data;
+    coda_cursor cursor;
+
+    if (coda_cursor_set_product(&cursor, info->product) != 0)
+    {
+        harp_set_error(HARP_ERROR_CODA, NULL);
+        return -1;
+    }
+    if (coda_cursor_goto(&cursor, "/mph/abs_orbit") != 0)
+    {
+        harp_set_error(HARP_ERROR_CODA, NULL);
+        return -1;
+    }
+    /* we hard cast the unsigned integer to signed (we don't expect orbit numbers > 2^31) */
+    if (coda_cursor_read_uint32(&cursor, (uint32_t *)data.int32_data) != 0)
+    {
+        harp_set_error(HARP_ERROR_CODA, NULL);
+        return -1;
+    }
+
+    return 0;
+}
+
 static int read_latitude(void *user_data, long index, harp_array data)
 {
     return get_double_array(((ingest_info *)user_data)->properties_cursor[index], "geolocation_middle_bins", "latitude",
@@ -412,6 +437,13 @@ int harp_ingestion_module_aeolus_l2a_init(void)
                                                                       harp_type_double, 1, dimension_type, NULL,
                                                                       description, "s", NULL, read_datetime_length);
     harp_variable_definition_add_mapping(variable_definition, NULL, NULL, NULL, "set to fixed value of 12 seconds");
+
+    /* orbit_index */
+    description = "absolute orbit number";
+    variable_definition =
+        harp_ingestion_register_variable_full_read(product_definition, "orbit_index", harp_type_int32, 0, NULL, NULL,
+                                                   description, NULL, NULL, read_orbit_index);
+    harp_variable_definition_add_mapping(variable_definition, NULL, NULL, "/mph/abs_orbit", NULL);
 
     /* latitude */
     description = "latitude of the bin center";
