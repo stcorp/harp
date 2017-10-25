@@ -1011,6 +1011,30 @@ static int read_integration_time(void *user_data, long index, harp_array data)
     return get_data(user_data, index, "integr_time", data);
 }
 
+static int read_orbit_index(void *user_data, harp_array data)
+{
+    ingest_info *info = (ingest_info *)user_data;
+    coda_cursor cursor;
+
+    if (coda_cursor_set_product(&cursor, info->product) != 0)
+    {
+        harp_set_error(HARP_ERROR_CODA, NULL);
+        return -1;
+    }
+    if (coda_cursor_goto(&cursor, "/mph/abs_orbit") != 0)
+    {
+        harp_set_error(HARP_ERROR_CODA, NULL);
+        return -1;
+    }
+    if (coda_cursor_read_int32(&cursor, data.int32_data) != 0)
+    {
+        harp_set_error(HARP_ERROR_CODA, NULL);
+        return -1;
+    }
+
+    return 0;
+}
+
 static int read_latitude(void *user_data, long index, harp_array data)
 {
     ingest_info *info = (ingest_info *)user_data;
@@ -2205,6 +2229,13 @@ static void register_common_nadir_cloud_variables(harp_product_definition *produ
     snprintf(path, MAX_PATH_LENGTH, "/%s[]/integr_time", dataset);
     harp_variable_definition_add_mapping(variable_definition, NULL, NULL, path, NULL);
 
+    /* orbit_index */
+    description = "absolute orbit number";
+    variable_definition =
+        harp_ingestion_register_variable_full_read(product_definition, "orbit_index", harp_type_int32, 0, NULL, NULL,
+                                                   description, NULL, NULL, read_orbit_index);
+    harp_variable_definition_add_mapping(variable_definition, NULL, NULL, "/mph/abs_orbit", NULL);
+
     /* latitude */
     description = "center latitude for each nadir pixel";
     variable_definition = harp_ingestion_register_variable_block_read(product_definition, "latitude", harp_type_double,
@@ -2388,6 +2419,13 @@ static void register_common_limb_variables(harp_product_definition *product_defi
                                                                       description, "s", NULL, read_integration_time);
     snprintf(path, MAX_PATH_LENGTH, "/%s[]/integr_time", dataset);
     harp_variable_definition_add_mapping(variable_definition, NULL, NULL, path, NULL);
+
+    /* orbit_index */
+    description = "absolute orbit number";
+    variable_definition =
+        harp_ingestion_register_variable_full_read(product_definition, "orbit_index", harp_type_int32, 0, NULL, NULL,
+                                                   description, NULL, NULL, read_orbit_index);
+    harp_variable_definition_add_mapping(variable_definition, NULL, NULL, "/mph/abs_orbit", NULL);
 
     /* altitude_bounds */
     description = "altitude bounds for each profile point";
