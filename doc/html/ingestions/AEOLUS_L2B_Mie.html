@@ -182,43 +182,49 @@
 <td>seconds since 2000-01-01</td>
 <td>average datetime of the measurements used for the wind profile</td>
 </tr>
-<tr class="row-odd"><td><strong>latitude</strong></td>
+<tr class="row-odd"><td><strong>orbit_index</strong></td>
+<td>int32</td>
+<td>&#160;</td>
+<td>&#160;</td>
+<td>absolute orbit number</td>
+</tr>
+<tr class="row-even"><td><strong>latitude</strong></td>
 <td>double</td>
 <td>{<em>time</em>}</td>
 <td>degree_north</td>
 <td>average latitude of the measurements used for the wind profile</td>
 </tr>
-<tr class="row-even"><td><strong>longitude</strong></td>
+<tr class="row-odd"><td><strong>longitude</strong></td>
 <td>double</td>
 <td>{<em>time</em>}</td>
 <td>degree_east</td>
 <td>average longitude of the measurements used for the wind profile</td>
 </tr>
-<tr class="row-odd"><td><strong>altitude</strong></td>
+<tr class="row-even"><td><strong>altitude</strong></td>
 <td>double</td>
 <td>{<em>time</em>, <em>vertical</em>}</td>
 <td>m</td>
 <td>vertical COG altitude relative to geoid for each accumulation</td>
 </tr>
-<tr class="row-even"><td><strong>altitude_bounds</strong></td>
+<tr class="row-odd"><td><strong>altitude_bounds</strong></td>
 <td>double</td>
 <td>{<em>time</em>, <em>vertical</em>, 2}</td>
 <td>m</td>
 <td>altitude relative to geoid of layer boundaries for each accumulation</td>
 </tr>
-<tr class="row-odd"><td><strong>hlos_wind_velocity</strong></td>
+<tr class="row-even"><td><strong>hlos_wind_velocity</strong></td>
 <td>double</td>
 <td>{<em>time</em>, <em>vertical</em>}</td>
 <td>cm/s</td>
 <td>HLOS wind velocity</td>
 </tr>
-<tr class="row-even"><td><strong>hlos_wind_velocity_validity</strong></td>
+<tr class="row-odd"><td><strong>hlos_wind_velocity_validity</strong></td>
 <td>int8</td>
 <td>{<em>time</em>, <em>vertical</em>}</td>
 <td>&#160;</td>
 <td>validity flag of the HLOS wind velocity</td>
 </tr>
-<tr class="row-odd"><td><strong>index</strong></td>
+<tr class="row-even"><td><strong>index</strong></td>
 <td>int32</td>
 <td>{<em>time</em>}</td>
 <td>&#160;</td>
@@ -270,27 +276,31 @@
 <td><em>path</em></td>
 <td><strong>/mie_profile[]/profile_datetime_average</strong></td>
 </tr>
-<tr class="row-odd"><td><strong>latitude</strong></td>
+<tr class="row-odd"><td><strong>orbit_index</strong></td>
+<td><em>path</em></td>
+<td><strong>/mph/abs_orbit</strong></td>
+</tr>
+<tr class="row-even"><td><strong>latitude</strong></td>
 <td><em>path</em></td>
 <td><strong>/mie_profile[]/profile_lat_average</strong></td>
 </tr>
-<tr class="row-even"><td><strong>longitude</strong></td>
+<tr class="row-odd"><td><strong>longitude</strong></td>
 <td><em>path</em></td>
 <td><strong>/mie_profile[]/profile_lon_average</strong></td>
 </tr>
-<tr class="row-odd"><td><strong>altitude</strong></td>
+<tr class="row-even"><td><strong>altitude</strong></td>
 <td><em>path</em></td>
 <td><strong>/mie_geolocation[/mie_profile/l2b_wind_profies/wind_result_id_number - 1]/windresult_geolocation/altitude_vcog</strong></td>
 </tr>
-<tr class="row-even"><td><strong>altitude_bounds</strong></td>
+<tr class="row-odd"><td><strong>altitude_bounds</strong></td>
 <td><em>path</em></td>
 <td><strong>/mie_geolocation[/mie_profile/l2b_wind_profies/wind_result_id_number - 1]/windresult_geolocation/altitude_bottom, /mie_geolocation[/mie_profile/l2b_wind_profies/wind_result_id_number - 1]/windresult_geolocation/altitude_top</strong></td>
 </tr>
-<tr class="row-odd"><td><strong>hlos_wind_velocity</strong></td>
+<tr class="row-even"><td><strong>hlos_wind_velocity</strong></td>
 <td><em>path</em></td>
 <td><strong>/mie_hloswind[/mie_profile/l2b_wind_profies/wind_result_id_number - 1]/windresult/mie_wind_velocity</strong></td>
 </tr>
-<tr class="row-even"><td><strong>hlos_wind_velocity_validity</strong></td>
+<tr class="row-odd"><td><strong>hlos_wind_velocity_validity</strong></td>
 <td><em>path</em></td>
 <td><strong>/mie_hloswind[/mie_profile/l2b_wind_profies/wind_result_id_number - 1]/windresult/validity_flag</strong></td>
 </tr>

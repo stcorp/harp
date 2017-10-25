@@ -188,151 +188,157 @@
 <td>s</td>
 <td>measurement integration time</td>
 </tr>
-<tr class="row-even"><td><strong>latitude</strong></td>
+<tr class="row-even"><td><strong>orbit_index</strong></td>
+<td>int32</td>
+<td>&#160;</td>
+<td>&#160;</td>
+<td>absolute orbit number</td>
+</tr>
+<tr class="row-odd"><td><strong>latitude</strong></td>
 <td>double</td>
 <td>{<em>time</em>}</td>
 <td>degree_north</td>
 <td>tangent latitude of the measurement</td>
 </tr>
-<tr class="row-odd"><td><strong>longitude</strong></td>
+<tr class="row-even"><td><strong>longitude</strong></td>
 <td>double</td>
 <td>{<em>time</em>}</td>
 <td>degree_east</td>
 <td>tangent longitude of the measurement</td>
 </tr>
-<tr class="row-even"><td><strong>latitude_bounds</strong></td>
+<tr class="row-odd"><td><strong>latitude_bounds</strong></td>
 <td>double</td>
 <td>{<em>time</em>, 4}</td>
 <td>degree_north</td>
 <td>corner latitudes for the ground pixel of the measurement</td>
 </tr>
-<tr class="row-odd"><td><strong>longitude_bounds</strong></td>
+<tr class="row-even"><td><strong>longitude_bounds</strong></td>
 <td>double</td>
 <td>{<em>time</em>, 4}</td>
 <td>degree_east</td>
 <td>corner longitudes for the ground pixel of the measurement</td>
 </tr>
-<tr class="row-even"><td><strong>O3_column_number_density</strong></td>
+<tr class="row-odd"><td><strong>O3_column_number_density</strong></td>
 <td>double</td>
 <td>{<em>time</em>}</td>
 <td>molec/cm^2</td>
 <td>ozone total column</td>
 </tr>
-<tr class="row-odd"><td><strong>O3_column_number_density_uncertainty</strong></td>
+<tr class="row-even"><td><strong>O3_column_number_density_uncertainty</strong></td>
 <td>double</td>
 <td>{<em>time</em>}</td>
 <td>molec/cm^2</td>
 <td>error on the ozone total column</td>
 </tr>
-<tr class="row-even"><td><strong>NO2_column_number_density</strong></td>
+<tr class="row-odd"><td><strong>NO2_column_number_density</strong></td>
 <td>double</td>
 <td>{<em>time</em>}</td>
 <td>molec/cm^2</td>
 <td>NO2 total column</td>
 </tr>
-<tr class="row-odd"><td><strong>NO2_column_number_density_uncertainty</strong></td>
+<tr class="row-even"><td><strong>NO2_column_number_density_uncertainty</strong></td>
 <td>double</td>
 <td>{<em>time</em>}</td>
 <td>molec/cm^2</td>
 <td>error on the NO2 total column</td>
 </tr>
-<tr class="row-even"><td><strong>cloud_fraction</strong></td>
+<tr class="row-odd"><td><strong>cloud_fraction</strong></td>
 <td>double</td>
 <td>{<em>time</em>}</td>
 <td>&#160;</td>
 <td>cloud fraction</td>
 </tr>
-<tr class="row-odd"><td><strong>cloud_fraction_uncertainty</strong></td>
+<tr class="row-even"><td><strong>cloud_fraction_uncertainty</strong></td>
 <td>double</td>
 <td>{<em>time</em>}</td>
 <td>&#160;</td>
 <td>cloud fraction error</td>
 </tr>
-<tr class="row-even"><td><strong>cloud_top_height</strong></td>
+<tr class="row-odd"><td><strong>cloud_top_height</strong></td>
 <td>double</td>
 <td>{<em>time</em>}</td>
 <td>&#160;</td>
 <td>cloud top height</td>
 </tr>
-<tr class="row-odd"><td><strong>cloud_top_height_uncertainty</strong></td>
+<tr class="row-even"><td><strong>cloud_top_height_uncertainty</strong></td>
 <td>double</td>
 <td>{<em>time</em>}</td>
 <td>&#160;</td>
 <td>cloud top height uncertainty</td>
 </tr>
-<tr class="row-even"><td><strong>cloud_top_pressure</strong></td>
+<tr class="row-odd"><td><strong>cloud_top_pressure</strong></td>
 <td>double</td>
 <td>{<em>time</em>}</td>
 <td>hPa</td>
 <td>cloud top pressure</td>
 </tr>
-<tr class="row-odd"><td><strong>cloud_top_pressure_uncertainty</strong></td>
+<tr class="row-even"><td><strong>cloud_top_pressure_uncertainty</strong></td>
 <td>double</td>
 <td>{<em>time</em>}</td>
 <td>hPa</td>
 <td>cloud top pressure uncertainty</td>
 </tr>
-<tr class="row-even"><td><strong>cloud_top_albedo</strong></td>
+<tr class="row-odd"><td><strong>cloud_top_albedo</strong></td>
 <td>double</td>
 <td>{<em>time</em>}</td>
 <td>&#160;</td>
 <td>cloud top albedo</td>
 </tr>
-<tr class="row-odd"><td><strong>cloud_top_albedo_uncertainty</strong></td>
+<tr class="row-even"><td><strong>cloud_top_albedo_uncertainty</strong></td>
 <td>double</td>
 <td>{<em>time</em>}</td>
 <td>&#160;</td>
 <td>cloud top albedo uncertainty</td>
 </tr>
-<tr class="row-even"><td><strong>surface_pressure</strong></td>
+<tr class="row-odd"><td><strong>surface_pressure</strong></td>
 <td>double</td>
 <td>{<em>time</em>}</td>
 <td>hPa</td>
 <td>surface pressure</td>
 </tr>
-<tr class="row-odd"><td><strong>surface_height</strong></td>
+<tr class="row-even"><td><strong>surface_height</strong></td>
 <td>double</td>
 <td>{<em>time</em>}</td>
 <td>km</td>
 <td>surface height</td>
 </tr>
-<tr class="row-even"><td><strong>surface_albedo</strong></td>
+<tr class="row-odd"><td><strong>surface_albedo</strong></td>
 <td>double</td>
 <td>{<em>time</em>}</td>
 <td>&#160;</td>
 <td>surface albedo</td>
 </tr>
-<tr class="row-odd"><td><strong>solar_zenith_angle</strong></td>
+<tr class="row-even"><td><strong>solar_zenith_angle</strong></td>
 <td>double</td>
 <td>{<em>time</em>}</td>
 <td>degree</td>
 <td>solar zenith angle at top of atmosphere</td>
 </tr>
-<tr class="row-even"><td><strong>viewing_zenith_angle</strong></td>
+<tr class="row-odd"><td><strong>viewing_zenith_angle</strong></td>
 <td>double</td>
 <td>{<em>time</em>}</td>
 <td>degree</td>
 <td>line of sight zenith angle at top of atmosphere</td>
 </tr>
-<tr class="row-odd"><td><strong>relative_azimuth_angle</strong></td>
+<tr class="row-even"><td><strong>relative_azimuth_angle</strong></td>
 <td>double</td>
 <td>{<em>time</em>}</td>
 <td>degree</td>
 <td>relative azimuth angle at top of atmosphere</td>
 </tr>
-<tr class="row-even"><td><strong>scan_subindex</strong></td>
+<tr class="row-odd"><td><strong>scan_subindex</strong></td>
 <td>int8</td>
 <td>{<em>time</em>}</td>
 <td>&#160;</td>
 <td>relative index (0-3) of this measurement within a scan (forward + backward)</td>
 </tr>
-<tr class="row-odd"><td><strong>scan_direction_type</strong></td>
+<tr class="row-even"><td><strong>scan_direction_type</strong></td>
 <td>int8</td>
 <td>{<em>time</em>}</td>
 <td>&#160;</td>
 <td>scan direction for each measurement; enumeration values: forward (0), backward (1)</td>
 </tr>
-<tr class="row-even"><td><strong>index</strong></td>
+<tr class="row-odd"><td><strong>index</strong></td>
 <td>int32</td>
 <td>{<em>time</em>}</td>
 <td>&#160;</td>
@@ -387,198 +393,166 @@
 <td><em>description</em></td>
 <td>set to a fixed value of 1.5s for all pixels</td>
 </tr>
-<tr class="row-even"><td><strong>latitude</strong></td>
+<tr class="row-even"><td><strong>orbit_index</strong></td>
+<td><em>path</em></td>
+<td><strong>/pir/start_orbit</strong></td>
+</tr>
+<tr class="row-odd"><td><strong>latitude</strong></td>
 <td><em>path</em></td>
 <td><strong>/ddr[]/glr/corners[4]/lat</strong></td>
 </tr>
-<tr class="row-odd"><td rowspan="2"><strong>longitude</strong></td>
+<tr class="row-even"><td rowspan="2"><strong>longitude</strong></td>
 <td><em>path</em></td>
 <td><strong>/ddr[]/glr/corners[4]/lon</strong></td>
 </tr>
-<tr class="row-even"><td><em>description</em></td>
+<tr class="row-odd"><td><em>description</em></td>
 <td>each longitude will be transformed from a value in the range 0 - 360 to a value in the range -180 - 180</td>
 </tr>
-<tr class="row-odd"><td rowspan="2"><strong>latitude_bounds</strong></td>
+<tr class="row-even"><td rowspan="2"><strong>latitude_bounds</strong></td>
 <td><em>path</em></td>
 <td><strong>/ddr[]/glr/corners[0:3]/lat</strong></td>
 </tr>
-<tr class="row-even"><td><em>description</em></td>
+<tr class="row-odd"><td><em>description</em></td>
 <td>the corners are rearranged in the following way: 1,3,2,0</td>
 </tr>
-<tr class="row-odd"><td rowspan="2"><strong>longitude_bounds</strong></td>
+<tr class="row-even"><td rowspan="2"><strong>longitude_bounds</strong></td>
 <td><em>path</em></td>
 <td><strong>/ddr[]/glr/corners[0:3]/lon</strong></td>
 </tr>
-<tr class="row-even"><td><em>description</em></td>
+<tr class="row-odd"><td><em>description</em></td>
 <td>the corners are rearranged in the following way: 1,3,2,0</td>
 </tr>
-<tr class="row-odd"><td rowspan="4"><strong>O3_column_number_density</strong></td>
+<tr class="row-even"><td rowspan="4"><strong>O3_column_number_density</strong></td>
 <td><em>condition</em></td>
 <td>ozone=vcd0 (default)</td>
 </tr>
-<tr class="row-even"><td><em>path</em></td>
+<tr class="row-odd"><td><em>path</em></td>
 <td><strong>/ddr[]/irr/vcd[0]/total</strong></td>
-</tr>
-<tr class="row-odd"><td><em>condition</em></td>
-<td>ozone=vcd1</td>
-</tr>
-<tr class="row-even"><td><em>path</em></td>
-<td><strong>/ddr[]/irr/vcd[1]/total</strong></td>
-</tr>
-<tr class="row-odd"><td rowspan="6"><strong>O3_column_number_density_uncertainty</strong></td>
-<td><em>condition</em></td>
-<td>ozone=vcd0 (default)</td>
-</tr>
-<tr class="row-even"><td><em>path</em></td>
-<td><strong>/ddr[]/irr/vcd[0]/total, /ddr[]/irr/vcd[0]/error</strong></td>
-</tr>
-<tr class="row-odd"><td><em>description</em></td>
-<td>relative error is converted to absolute error by multiplying with measured value</td>
 </tr>
 <tr class="row-even"><td><em>condition</em></td>
 <td>ozone=vcd1</td>
 </tr>
 <tr class="row-odd"><td><em>path</em></td>
-<td><strong>/ddr[]/irr/vcd[1]/total, /ddr[]/irr/vcd[1]/error</strong></td>
+<td><strong>/ddr[]/irr/vcd[1]/total</strong></td>
+</tr>
+<tr class="row-even"><td rowspan="6"><strong>O3_column_number_density_uncertainty</strong></td>
+<td><em>condition</em></td>
+<td>ozone=vcd0 (default)</td>
+</tr>
+<tr class="row-odd"><td><em>path</em></td>
+<td><strong>/ddr[]/irr/vcd[0]/total, /ddr[]/irr/vcd[0]/error</strong></td>
 </tr>
 <tr class="row-even"><td><em>description</em></td>
 <td>relative error is converted to absolute error by multiplying with measured value</td>
 </tr>
-<tr class="row-odd"><td><strong>NO2_column_number_density</strong></td>
+<tr class="row-odd"><td><em>condition</em></td>
+<td>ozone=vcd1</td>
+</tr>
+<tr class="row-even"><td><em>path</em></td>
+<td><strong>/ddr[]/irr/vcd[1]/total, /ddr[]/irr/vcd[1]/error</strong></td>
+</tr>
+<tr class="row-odd"><td><em>description</em></td>
+<td>relative error is converted to absolute error by multiplying with measured value</td>
+</tr>
+<tr class="row-even"><td><strong>NO2_column_number_density</strong></td>
 <td><em>path</em></td>
 <td><strong>/ddr[]/irr/vcd[2]/total</strong></td>
 </tr>
-<tr class="row-even"><td rowspan="2"><strong>NO2_column_number_density_uncertainty</strong></td>
+<tr class="row-odd"><td rowspan="2"><strong>NO2_column_number_density_uncertainty</strong></td>
 <td><em>path</em></td>
 <td><strong>/ddr[]/irr/vcd[2]/total, /ddr[]/irr/vcd[2]/error</strong></td>
 </tr>
-<tr class="row-odd"><td><em>description</em></td>
+<tr class="row-even"><td><em>description</em></td>
 <td>relative error is converted to absolute error by multiplying with measured value</td>
 </tr>
-<tr class="row-even"><td rowspan="4"><strong>cloud_fraction</strong></td>
+<tr class="row-odd"><td rowspan="4"><strong>cloud_fraction</strong></td>
 <td><em>condition</em></td>
 <td>version=1</td>
 </tr>
-<tr class="row-odd"><td><em>path</em></td>
+<tr class="row-even"><td><em>path</em></td>
 <td><strong>/ddr[]/irr/icfa/frac</strong></td>
 </tr>
-<tr class="row-even"><td><em>condition</em></td>
+<tr class="row-odd"><td><em>condition</em></td>
 <td>version&gt;1</td>
 </tr>
-<tr class="row-odd"><td><em>path</em></td>
+<tr class="row-even"><td><em>path</em></td>
 <td><strong>/ddr[]/irr/ocra/cloud_frac</strong></td>
 </tr>
-<tr class="row-even"><td rowspan="6"><strong>cloud_fraction_uncertainty</strong></td>
+<tr class="row-odd"><td rowspan="6"><strong>cloud_fraction_uncertainty</strong></td>
 <td><em>condition</em></td>
 <td>version=1</td>
 </tr>
-<tr class="row-odd"><td><em>path</em></td>
+<tr class="row-even"><td><em>path</em></td>
 <td><strong>/ddr[]/irr/icfa/frac, /ddr[]/irr/icfa/err_frac</strong></td>
 </tr>
-<tr class="row-even"><td><em>description</em></td>
+<tr class="row-odd"><td><em>description</em></td>
 <td>relative error is converted to absolute error by multiplying with measured value</td>
 </tr>
-<tr class="row-odd"><td><em>condition</em></td>
+<tr class="row-even"><td><em>condition</em></td>
 <td>version&gt;1</td>
 </tr>
-<tr class="row-even"><td><em>path</em></td>
+<tr class="row-odd"><td><em>path</em></td>
 <td><strong>/ddr[]/irr/ocra/cloud_frac, /ddr[]/irr/ocra/cloud_frac_error</strong></td>
 </tr>
-<tr class="row-odd"><td><em>description</em></td>
+<tr class="row-even"><td><em>description</em></td>
 <td>relative error is converted to absolute error by multiplying with measured value</td>
 </tr>
-<tr class="row-even"><td rowspan="3"><strong>cloud_top_height</strong></td>
+<tr class="row-odd"><td rowspan="3"><strong>cloud_top_height</strong></td>
 <td><em>available</em></td>
 <td>optional</td>
 </tr>
-<tr class="row-odd"><td><em>condition</em></td>
+<tr class="row-even"><td><em>condition</em></td>
 <td>version&gt;1</td>
 </tr>
-<tr class="row-even"><td><em>path</em></td>
+<tr class="row-odd"><td><em>path</em></td>
 <td><strong>/ddr[]/irr/rocinn/height</strong></td>
 </tr>
-<tr class="row-odd"><td rowspan="4"><strong>cloud_top_height_uncertainty</strong></td>
+<tr class="row-even"><td rowspan="4"><strong>cloud_top_height_uncertainty</strong></td>
 <td><em>available</em></td>
 <td>optional</td>
 </tr>
-<tr class="row-even"><td><em>condition</em></td>
+<tr class="row-odd"><td><em>condition</em></td>
 <td>version&gt;1</td>
 </tr>
-<tr class="row-odd"><td><em>path</em></td>
+<tr class="row-even"><td><em>path</em></td>
 <td><strong>/ddr[]/irr/rocinn/height, /ddr[]/irr/rocinn/height_error</strong></td>
 </tr>
-<tr class="row-even"><td><em>description</em></td>
+<tr class="row-odd"><td><em>description</em></td>
 <td>relative error is converted to absolute error by multiplying with measured value</td>
 </tr>
-<tr class="row-odd"><td rowspan="4"><strong>cloud_top_pressure</strong></td>
+<tr class="row-even"><td rowspan="4"><strong>cloud_top_pressure</strong></td>
 <td><em>condition</em></td>
 <td>version=1</td>
 </tr>
-<tr class="row-even"><td><em>path</em></td>
+<tr class="row-odd"><td><em>path</em></td>
 <td><strong>/ddr[]/irr/icfa/press</strong></td>
 </tr>
-<tr class="row-odd"><td><em>condition</em></td>
-<td>version&gt;1</td>
-</tr>
-<tr class="row-even"><td><em>path</em></td>
-<td><strong>/ddr[]/irr/rocinn/pressure</strong></td>
-</tr>
-<tr class="row-odd"><td rowspan="6"><strong>cloud_top_pressure_uncertainty</strong></td>
-<td><em>condition</em></td>
-<td>version=1</td>
-</tr>
-<tr class="row-even"><td><em>path</em></td>
-<td><strong>/ddr[]/irr/icfa/press, /ddr[]/irr/icfa/err_press</strong></td>
-</tr>
-<tr class="row-odd"><td><em>description</em></td>
-<td>relative error is converted to absolute error by multiplying with measured value</td>
-</tr>
 <tr class="row-even"><td><em>condition</em></td>
 <td>version&gt;1</td>
 </tr>
 <tr class="row-odd"><td><em>path</em></td>
-<td><strong>/ddr[]/irr/rocinn/pressure, /ddr[]/irr/rocinn/pressure_error</strong></td>
+<td><strong>/ddr[]/irr/rocinn/pressure</strong></td>
+</tr>
+<tr class="row-even"><td rowspan="6"><strong>cloud_top_pressure_uncertainty</strong></td>
+<td><em>condition</em></td>
+<td>version=1</td>
+</tr>
+<tr class="row-odd"><td><em>path</em></td>
+<td><strong>/ddr[]/irr/icfa/press, /ddr[]/irr/icfa/err_press</strong></td>
 </tr>
 <tr class="row-even"><td><em>description</em></td>
 <td>relative error is converted to absolute error by multiplying with measured value</td>
 </tr>
-<tr class="row-odd"><td rowspan="3"><strong>cloud_top_albedo</strong></td>
-<td><em>available</em></td>
-<td>optional</td>
-</tr>
-<tr class="row-even"><td><em>condition</em></td>
-<td>version&gt;1</td>
-</tr>
-<tr class="row-odd"><td><em>path</em></td>
-<td><strong>/ddr[]/irr/rocinn/albedo</strong></td>
-</tr>
-<tr class="row-even"><td rowspan="4"><strong>cloud_top_albedo_uncertainty</strong></td>
-<td><em>available</em></td>
-<td>optional</td>
-</tr>
 <tr class="row-odd"><td><em>condition</em></td>
 <td>version&gt;1</td>
 </tr>
 <tr class="row-even"><td><em>path</em></td>
-<td><strong>/ddr[]/irr/rocinn/albedo, /ddr[]/irr/rocinn/albedo_error</strong></td>
+<td><strong>/ddr[]/irr/rocinn/pressure, /ddr[]/irr/rocinn/pressure_error</strong></td>
 </tr>
 <tr class="row-odd"><td><em>description</em></td>
 <td>relative error is converted to absolute error by multiplying with measured value</td>
 </tr>
-<tr class="row-even"><td rowspan="4"><strong>surface_pressure</strong></td>
-<td><em>condition</em></td>
-<td>version=1</td>
-</tr>
-<tr class="row-odd"><td><em>path</em></td>
-<td><strong>/ddr[]/irr/icfa/surf_press</strong></td>
-</tr>
-<tr class="row-even"><td><em>condition</em></td>
-<td>version&gt;1</td>
-</tr>
-<tr class="row-odd"><td><em>path</em></td>
-<td><strong>/ddr[]/irr/surface_pressure</strong></td>
-</tr>
-<tr class="row-even"><td rowspan="3"><strong>surface_height</strong></td>
+<tr class="row-even"><td rowspan="3"><strong>cloud_top_albedo</strong></td>
 <td><em>available</em></td>
 <td>optional</td>
 </tr>
@@ -586,9 +560,9 @@
 <td>version&gt;1</td>
 </tr>
 <tr class="row-even"><td><em>path</em></td>
-<td><strong>/ddr[]/irr/surface_height</strong></td>
+<td><strong>/ddr[]/irr/rocinn/albedo</strong></td>
 </tr>
-<tr class="row-odd"><td rowspan="3"><strong>surface_albedo</strong></td>
+<tr class="row-odd"><td rowspan="4"><strong>cloud_top_albedo_uncertainty</strong></td>
 <td><em>available</em></td>
 <td>optional</td>
 </tr>
@@ -596,32 +570,68 @@
 <td>version&gt;1</td>
 </tr>
 <tr class="row-odd"><td><em>path</em></td>
+<td><strong>/ddr[]/irr/rocinn/albedo, /ddr[]/irr/rocinn/albedo_error</strong></td>
+</tr>
+<tr class="row-even"><td><em>description</em></td>
+<td>relative error is converted to absolute error by multiplying with measured value</td>
+</tr>
+<tr class="row-odd"><td rowspan="4"><strong>surface_pressure</strong></td>
+<td><em>condition</em></td>
+<td>version=1</td>
+</tr>
+<tr class="row-even"><td><em>path</em></td>
+<td><strong>/ddr[]/irr/icfa/surf_press</strong></td>
+</tr>
+<tr class="row-odd"><td><em>condition</em></td>
+<td>version&gt;1</td>
+</tr>
+<tr class="row-even"><td><em>path</em></td>
+<td><strong>/ddr[]/irr/surface_pressure</strong></td>
+</tr>
+<tr class="row-odd"><td rowspan="3"><strong>surface_height</strong></td>
+<td><em>available</em></td>
+<td>optional</td>
+</tr>
+<tr class="row-even"><td><em>condition</em></td>
+<td>version&gt;1</td>
+</tr>
+<tr class="row-odd"><td><em>path</em></td>
+<td><strong>/ddr[]/irr/surface_height</strong></td>
+</tr>
+<tr class="row-even"><td rowspan="3"><strong>surface_albedo</strong></td>
+<td><em>available</em></td>
+<td>optional</td>
+</tr>
+<tr class="row-odd"><td><em>condition</em></td>
+<td>version&gt;1</td>
+</tr>
+<tr class="row-even"><td><em>path</em></td>
 <td><strong>/ddr[]/irr/surface_albedo</strong></td>
 </tr>
-<tr class="row-even"><td><strong>solar_zenith_angle</strong></td>
+<tr class="row-odd"><td><strong>solar_zenith_angle</strong></td>
 <td><em>path</em></td>
 <td><strong>/ddr[]/glr/sza_toa[1]</strong></td>
 </tr>
-<tr class="row-odd"><td><strong>viewing_zenith_angle</strong></td>
+<tr class="row-even"><td><strong>viewing_zenith_angle</strong></td>
 <td><em>path</em></td>
 <td><strong>/ddr[]/glr/line_sight_toa[1]</strong></td>
 </tr>
-<tr class="row-even"><td><strong>relative_azimuth_angle</strong></td>
+<tr class="row-odd"><td><strong>relative_azimuth_angle</strong></td>
 <td><em>path</em></td>
 <td><strong>/ddr[]/glr/rel_azi_toa[1]</strong></td>
 </tr>
-<tr class="row-odd"><td rowspan="2"><strong>scan_subindex</strong></td>
+<tr class="row-even"><td rowspan="2"><strong>scan_subindex</strong></td>
 <td><em>path</em></td>
 <td><strong>/ddr[]/glr/subset_counter</strong></td>
 </tr>
-<tr class="row-even"><td><em>description</em></td>
+<tr class="row-odd"><td><em>description</em></td>
 <td>relative index (0-3) of this measurement within a scan (forward + backward)</td>
 </tr>
-<tr class="row-odd"><td rowspan="2"><strong>scan_direction_type</strong></td>
+<tr class="row-even"><td rowspan="2"><strong>scan_direction_type</strong></td>
 <td><em>path</em></td>
 <td><strong>/ddr[]/glr/subset_counter</strong></td>
 </tr>
-<tr class="row-even"><td><em>description</em></td>
+<tr class="row-odd"><td><em>description</em></td>
 <td>the scan direction is based on the subset_counter of the measurement; 0-2: forward (0), 3: backward (1)</td>
 </tr>
 </tbody>

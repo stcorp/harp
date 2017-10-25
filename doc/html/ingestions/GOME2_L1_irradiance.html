@@ -182,31 +182,37 @@
 <td>seconds since 2000-01-01</td>
 <td>time of the measurement at the end of the integration time</td>
 </tr>
-<tr class="row-odd"><td><strong>wavelength_photon_irradiance_sun</strong></td>
+<tr class="row-odd"><td><strong>orbit_index</strong></td>
+<td>int32</td>
+<td>&#160;</td>
+<td>&#160;</td>
+<td>absolute orbit number</td>
+</tr>
+<tr class="row-even"><td><strong>wavelength_photon_irradiance_sun</strong></td>
 <td>double</td>
 <td>{<em>time</em>, <em>spectral</em>}</td>
 <td>count/s/cm2/nm</td>
 <td>measured sun irradiances</td>
 </tr>
-<tr class="row-even"><td><strong>wavelength_photon_irradiance_moon</strong></td>
+<tr class="row-odd"><td><strong>wavelength_photon_irradiance_moon</strong></td>
 <td>double</td>
 <td>{<em>time</em>, <em>spectral</em>}</td>
 <td>count/s/cm2/nm</td>
 <td>measured moon irradiances</td>
 </tr>
-<tr class="row-odd"><td><strong>wavelength</strong></td>
+<tr class="row-even"><td><strong>wavelength</strong></td>
 <td>double</td>
 <td>{<em>time</em>, <em>spectral</em>}</td>
 <td>nm</td>
 <td>nominal wavelength assignment for each of the detector pixels</td>
 </tr>
-<tr class="row-even"><td><strong>integration_time</strong></td>
+<tr class="row-odd"><td><strong>integration_time</strong></td>
 <td>double</td>
 <td>{<em>time</em>, <em>spectral</em>}</td>
 <td>s</td>
 <td>integration time for each pixel</td>
 </tr>
-<tr class="row-odd"><td><strong>index</strong></td>
+<tr class="row-even"><td><strong>index</strong></td>
 <td>int32</td>
 <td>{<em>time</em>}</td>
 <td>&#160;</td>
@@ -289,50 +295,54 @@
 <tr class="row-odd"><td><em>description</em></td>
 <td>The record start time is the start time of the scan and thus the start time of the second readout in the MDR. The start time for readout i (0..31) is thus RECORD_START_TIME + (i - 1) * 0.1875 and the time at end of integration time (which is the time that is returned) is RECORD_START_TIME + i * 0.1875</td>
 </tr>
-<tr class="row-even"><td rowspan="3"><strong>wavelength_photon_irradiance_sun</strong></td>
+<tr class="row-even"><td><strong>orbit_index</strong></td>
+<td><em>path</em></td>
+<td><strong>/MPHR/ORBIT_START</strong></td>
+</tr>
+<tr class="row-odd"><td rowspan="3"><strong>wavelength_photon_irradiance_sun</strong></td>
+<td><em>available</em></td>
+<td>optional</td>
+</tr>
+<tr class="row-even"><td><em>condition</em></td>
+<td>data=sun</td>
+</tr>
+<tr class="row-odd"><td><em>path</em></td>
+<td><strong>/MDR[]/Sun/BAND_1A[,]/RAD, /MDR[]/Sun/BAND_1B[,]/RAD, /MDR[]/Sun/BAND_2A[,]/RAD, /MDR[]/Sun/BAND_2B[,]/RAD, /MDR[]/Sun/BAND_3[,]/RAD, /MDR[]/Sun/BAND_4[,]/RAD</strong></td>
+</tr>
+<tr class="row-even"><td rowspan="3"><strong>wavelength_photon_irradiance_moon</strong></td>
 <td><em>available</em></td>
 <td>optional</td>
 </tr>
 <tr class="row-odd"><td><em>condition</em></td>
+<td>data=moon</td>
+</tr>
+<tr class="row-even"><td><em>path</em></td>
+<td><strong>/MDR[]/Moon/BAND_1A[,]/RAD, /MDR[]/Moon/BAND_1B[,]/RAD, /MDR[]/Moon/BAND_2A[,]/RAD, /MDR[]/Moon/BAND_2B[,]/RAD, /MDR[]/Moon/BAND_3[,]/RAD, /MDR[]/Moon/BAND_4[,]/RAD</strong></td>
+</tr>
+<tr class="row-odd"><td rowspan="4"><strong>wavelength</strong></td>
+<td><em>condition</em></td>
 <td>data=sun</td>
 </tr>
 <tr class="row-even"><td><em>path</em></td>
-<td><strong>/MDR[]/Sun/BAND_1A[,]/RAD, /MDR[]/Sun/BAND_1B[,]/RAD, /MDR[]/Sun/BAND_2A[,]/RAD, /MDR[]/Sun/BAND_2B[,]/RAD, /MDR[]/Sun/BAND_3[,]/RAD, /MDR[]/Sun/BAND_4[,]/RAD</strong></td>
-</tr>
-<tr class="row-odd"><td rowspan="3"><strong>wavelength_photon_irradiance_moon</strong></td>
-<td><em>available</em></td>
-<td>optional</td>
-</tr>
-<tr class="row-even"><td><em>condition</em></td>
-<td>data=moon</td>
-</tr>
-<tr class="row-odd"><td><em>path</em></td>
-<td><strong>/MDR[]/Moon/BAND_1A[,]/RAD, /MDR[]/Moon/BAND_1B[,]/RAD, /MDR[]/Moon/BAND_2A[,]/RAD, /MDR[]/Moon/BAND_2B[,]/RAD, /MDR[]/Moon/BAND_3[,]/RAD, /MDR[]/Moon/BAND_4[,]/RAD</strong></td>
-</tr>
-<tr class="row-even"><td rowspan="4"><strong>wavelength</strong></td>
-<td><em>condition</em></td>
-<td>data=sun</td>
-</tr>
-<tr class="row-odd"><td><em>path</em></td>
 <td><strong>/MDR[]/Sun/WAVELENGTH_1A[], /MDR[]/Sun/WAVELENGTH_1B[], /MDR[]/Sun/WAVELENGTH_2A[], /MDR[]/Sun/WAVELENGTH_2B[], /MDR[]/Sun/WAVELENGTH_3[], /MDR[]/Sun/WAVELENGTH_4[]</strong></td>
 </tr>
-<tr class="row-even"><td><em>condition</em></td>
+<tr class="row-odd"><td><em>condition</em></td>
 <td>data=moon</td>
 </tr>
-<tr class="row-odd"><td><em>path</em></td>
+<tr class="row-even"><td><em>path</em></td>
 <td><strong>/MDR[]/Moon/WAVELENGTH_1A[], /MDR[]/Moon/WAVELENGTH_1B[], /MDR[]/Moon/WAVELENGTH_2A[], /MDR[]/Moon/WAVELENGTH_2B[], /MDR[]/Moon/WAVELENGTH_3[], /MDR[]/Moon/WAVELENGTH_4[]</strong></td>
 </tr>
-<tr class="row-even"><td rowspan="4"><strong>integration_time</strong></td>
+<tr class="row-odd"><td rowspan="4"><strong>integration_time</strong></td>
 <td><em>condition</em></td>
 <td>data=sun</td>
 </tr>
-<tr class="row-odd"><td><em>path</em></td>
+<tr class="row-even"><td><em>path</em></td>
 <td><strong>/MDR[]/Sun/INTEGRATION_TIMES[]</strong></td>
 </tr>
-<tr class="row-even"><td><em>condition</em></td>
+<tr class="row-odd"><td><em>condition</em></td>
 <td>data=moon</td>
 </tr>
-<tr class="row-odd"><td><em>path</em></td>
+<tr class="row-even"><td><em>path</em></td>
 <td><strong>/MDR[]/Moon/INTEGRATION_TIMES[]</strong></td>
 </tr>
 </tbody>

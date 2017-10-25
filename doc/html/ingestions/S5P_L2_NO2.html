@@ -194,223 +194,229 @@
 <td>s</td>
 <td>duration of the measurement</td>
 </tr>
-<tr class="row-odd"><td><strong>validity</strong></td>
+<tr class="row-odd"><td><strong>orbit_index</strong></td>
+<td>int32</td>
+<td>&#160;</td>
+<td>&#160;</td>
+<td>absolute orbit number</td>
+</tr>
+<tr class="row-even"><td><strong>validity</strong></td>
 <td>int32</td>
 <td>{<em>time</em>}</td>
 <td>&#160;</td>
 <td>processing quality flag</td>
 </tr>
-<tr class="row-even"><td><strong>latitude</strong></td>
+<tr class="row-odd"><td><strong>latitude</strong></td>
 <td>float</td>
 <td>{<em>time</em>}</td>
 <td>degree_north</td>
 <td>latitude of the ground pixel center (WGS84)</td>
 </tr>
-<tr class="row-odd"><td><strong>longitude</strong></td>
+<tr class="row-even"><td><strong>longitude</strong></td>
 <td>float</td>
 <td>{<em>time</em>}</td>
 <td>degree_east</td>
 <td>longitude of the ground pixel center (WGS84)</td>
 </tr>
-<tr class="row-even"><td><strong>latitude_bounds</strong></td>
+<tr class="row-odd"><td><strong>latitude_bounds</strong></td>
 <td>float</td>
 <td>{<em>time</em>, 4}</td>
 <td>degree_north</td>
 <td>latitudes of the ground pixel corners (WGS84)</td>
 </tr>
-<tr class="row-odd"><td><strong>longitude_bounds</strong></td>
+<tr class="row-even"><td><strong>longitude_bounds</strong></td>
 <td>float</td>
 <td>{<em>time</em>, 4}</td>
 <td>degree_east</td>
 <td>longitudes of the ground pixel corners (WGS84)</td>
 </tr>
-<tr class="row-even"><td><strong>sensor_latitude</strong></td>
+<tr class="row-odd"><td><strong>sensor_latitude</strong></td>
 <td>float</td>
 <td>{<em>time</em>}</td>
 <td>degree_north</td>
 <td>latitude of the geodetic sub-satellite point (WGS84)</td>
 </tr>
-<tr class="row-odd"><td><strong>sensor_longitude</strong></td>
+<tr class="row-even"><td><strong>sensor_longitude</strong></td>
 <td>float</td>
 <td>{<em>time</em>}</td>
 <td>degree_east</td>
 <td>longitude of the goedetic sub-satellite point (WGS84)</td>
 </tr>
-<tr class="row-even"><td><strong>sensor_altitude</strong></td>
+<tr class="row-odd"><td><strong>sensor_altitude</strong></td>
 <td>float</td>
 <td>{<em>time</em>}</td>
 <td>m</td>
 <td>altitude of the satellite with respect to the geodetic sub-satellite point (WGS84)</td>
 </tr>
-<tr class="row-odd"><td><strong>solar_zenith_angle</strong></td>
+<tr class="row-even"><td><strong>solar_zenith_angle</strong></td>
 <td>float</td>
 <td>{<em>time</em>}</td>
 <td>degree</td>
 <td>zenith angle of the Sun at the ground pixel location (WGS84); angle measured away from the vertical</td>
 </tr>
-<tr class="row-even"><td><strong>solar_azimuth_angle</strong></td>
+<tr class="row-odd"><td><strong>solar_azimuth_angle</strong></td>
 <td>float</td>
 <td>{<em>time</em>}</td>
 <td>degree</td>
 <td>azimuth angle of the Sun at the ground pixel location (WGS84); angle measured East-of-North</td>
 </tr>
-<tr class="row-odd"><td><strong>sensor_zenith_angle</strong></td>
+<tr class="row-even"><td><strong>sensor_zenith_angle</strong></td>
 <td>float</td>
 <td>{<em>time</em>}</td>
 <td>degree</td>
 <td>zenith angle of the satellite at the ground pixel location (WGS84); angle measured away from the vertical</td>
 </tr>
-<tr class="row-even"><td><strong>sensor_azimuth_angle</strong></td>
+<tr class="row-odd"><td><strong>sensor_azimuth_angle</strong></td>
 <td>float</td>
 <td>{<em>time</em>}</td>
 <td>degree</td>
 <td>azimuth angle of the satellite at the ground pixel location (WGS84); angle measured East-of-North</td>
 </tr>
-<tr class="row-odd"><td><strong>cloud_fraction</strong></td>
+<tr class="row-even"><td><strong>cloud_fraction</strong></td>
 <td>float</td>
 <td>{<em>time</em>}</td>
 <td>&#160;</td>
 <td>cloud fraction for NO2 fitting window</td>
 </tr>
-<tr class="row-even"><td><strong>absorbing_aerosol_index</strong></td>
+<tr class="row-odd"><td><strong>absorbing_aerosol_index</strong></td>
 <td>float</td>
 <td>{<em>time</em>}</td>
 <td>&#160;</td>
 <td>aerosol index</td>
 </tr>
-<tr class="row-odd"><td><strong>cloud_albedo</strong></td>
+<tr class="row-even"><td><strong>cloud_albedo</strong></td>
 <td>float</td>
 <td>{<em>time</em>}</td>
 <td>&#160;</td>
 <td>cloud albedo</td>
 </tr>
-<tr class="row-even"><td><strong>cloud_pressure</strong></td>
+<tr class="row-odd"><td><strong>cloud_pressure</strong></td>
 <td>float</td>
 <td>{<em>time</em>}</td>
 <td>Pa</td>
 <td>cloud pressure</td>
 </tr>
-<tr class="row-odd"><td><strong>surface_albedo</strong></td>
+<tr class="row-even"><td><strong>surface_albedo</strong></td>
 <td>float</td>
 <td>{<em>time</em>}</td>
 <td>&#160;</td>
 <td>surface albedo</td>
 </tr>
-<tr class="row-even"><td><strong>surface_altitude</strong></td>
+<tr class="row-odd"><td><strong>surface_altitude</strong></td>
 <td>float</td>
 <td>{<em>time</em>}</td>
 <td>m</td>
 <td>surface altitude</td>
 </tr>
-<tr class="row-odd"><td><strong>surface_altitude_uncertainty</strong></td>
+<tr class="row-even"><td><strong>surface_altitude_uncertainty</strong></td>
 <td>float</td>
 <td>{<em>time</em>}</td>
 <td>m</td>
 <td>surface altitude precision</td>
 </tr>
-<tr class="row-even"><td><strong>surface_pressure</strong></td>
+<tr class="row-odd"><td><strong>surface_pressure</strong></td>
 <td>float</td>
 <td>{<em>time</em>}</td>
 <td>Pa</td>
 <td>surface pressure</td>
 </tr>
-<tr class="row-odd"><td><strong>snow_ice_type</strong></td>
+<tr class="row-even"><td><strong>snow_ice_type</strong></td>
 <td>int8</td>
 <td>{<em>time</em>}</td>
 <td>&#160;</td>
 <td>surface snow/ice type; enumeration values: snow_free_land (0), sea_ice (1), permanent_ice (2), snow (3), ocean (4)</td>
 </tr>
-<tr class="row-even"><td><strong>sea_ice_fraction</strong></td>
+<tr class="row-odd"><td><strong>sea_ice_fraction</strong></td>
 <td>float</td>
 <td>{<em>time</em>}</td>
 <td>&#160;</td>
 <td>sea-ice concentration (as a fraction)</td>
 </tr>
-<tr class="row-odd"><td><strong>pressure_bounds</strong></td>
+<tr class="row-even"><td><strong>pressure_bounds</strong></td>
 <td>double</td>
 <td>{<em>time</em>, <em>vertical</em>, 2}</td>
 <td>Pa</td>
 <td>pressure boundaries</td>
 </tr>
-<tr class="row-even"><td><strong>tropopause_pressure</strong></td>
+<tr class="row-odd"><td><strong>tropopause_pressure</strong></td>
 <td>double</td>
 <td>{<em>time</em>}</td>
 <td>Pa</td>
 <td>tropopause pressure</td>
 </tr>
-<tr class="row-odd"><td><strong>tropospheric_NO2_column_number_density</strong></td>
+<tr class="row-even"><td><strong>tropospheric_NO2_column_number_density</strong></td>
 <td>float</td>
 <td>{<em>time</em>}</td>
 <td>mol/m^2</td>
 <td>tropospheric vertical column of NO2</td>
 </tr>
-<tr class="row-even"><td><strong>tropospheric_NO2_column_number_density_uncertainty</strong></td>
+<tr class="row-odd"><td><strong>tropospheric_NO2_column_number_density_uncertainty</strong></td>
 <td>float</td>
 <td>{<em>time</em>}</td>
 <td>mol/m^2</td>
 <td>uncertainty of the tropospheric vertical column of NO2 (standard error)</td>
 </tr>
-<tr class="row-odd"><td><strong>tropospheric_NO2_column_number_density_amf</strong></td>
+<tr class="row-even"><td><strong>tropospheric_NO2_column_number_density_amf</strong></td>
 <td>float</td>
 <td>{<em>time</em>}</td>
 <td>&#160;</td>
 <td>tropospheric air mass factor, computed by integrating the altitude dependent air mass factor over the atmospheric layers from the surface up to and including the layer with the tropopause</td>
 </tr>
-<tr class="row-even"><td><strong>tropospheric_NO2_column_number_density_avk</strong></td>
+<tr class="row-odd"><td><strong>tropospheric_NO2_column_number_density_avk</strong></td>
 <td>float</td>
 <td>{<em>time</em>, <em>vertical</em>}</td>
 <td>&#160;</td>
 <td>averaging kernel for the tropospheric vertical column number density of NO2</td>
 </tr>
-<tr class="row-odd"><td><strong>NO2_column_number_density</strong></td>
+<tr class="row-even"><td><strong>NO2_column_number_density</strong></td>
 <td>float</td>
 <td>{<em>time</em>}</td>
 <td>mol/m^2</td>
 <td>total vertical column of NO2 (ratio of the slant column density of NO2 and the total air mass factor)</td>
 </tr>
-<tr class="row-even"><td><strong>NO2_column_number_density_uncertainty</strong></td>
+<tr class="row-odd"><td><strong>NO2_column_number_density_uncertainty</strong></td>
 <td>float</td>
 <td>{<em>time</em>}</td>
 <td>mol/m^2</td>
 <td>uncertainty of the total vertical column of NO2 (standard error)</td>
 </tr>
-<tr class="row-odd"><td><strong>NO2_column_number_density_amf</strong></td>
+<tr class="row-even"><td><strong>NO2_column_number_density_amf</strong></td>
 <td>float</td>
 <td>{<em>time</em>}</td>
 <td>&#160;</td>
 <td>total air mass factor, computed by integrating the altitude dependent air mass factor over the atmospheric layers from the surface to top-of-atmosphere</td>
 </tr>
-<tr class="row-even"><td><strong>NO2_column_number_density_avk</strong></td>
+<tr class="row-odd"><td><strong>NO2_column_number_density_avk</strong></td>
 <td>float</td>
 <td>{<em>time</em>, <em>vertical</em>}</td>
 <td>&#160;</td>
 <td>averaging kernel for the air mass factor correction, describing the NO2 profile sensitivity of the vertical column density</td>
 </tr>
-<tr class="row-odd"><td><strong>stratospheric_NO2_column_number_density</strong></td>
+<tr class="row-even"><td><strong>stratospheric_NO2_column_number_density</strong></td>
 <td>float</td>
 <td>{<em>time</em>}</td>
 <td>mol/m^2</td>
 <td>stratospheric vertical column of NO2</td>
 </tr>
-<tr class="row-even"><td><strong>stratospheric_NO2_column_number_density_uncertainty</strong></td>
+<tr class="row-odd"><td><strong>stratospheric_NO2_column_number_density_uncertainty</strong></td>
 <td>float</td>
 <td>{<em>time</em>}</td>
 <td>mol/m^2</td>
 <td>uncertainty of the stratospheric vertical column of NO2 (standard error)</td>
 </tr>
-<tr class="row-odd"><td><strong>stratospheric_NO2_column_number_density_amf</strong></td>
+<tr class="row-even"><td><strong>stratospheric_NO2_column_number_density_amf</strong></td>
 <td>float</td>
 <td>{<em>time</em>}</td>
 <td>&#160;</td>
 <td>stratospheric air mass factor</td>
 </tr>
-<tr class="row-even"><td><strong>stratospheric_NO2_column_number_density_avk</strong></td>
+<tr class="row-odd"><td><strong>stratospheric_NO2_column_number_density_avk</strong></td>
 <td>float</td>
 <td>{<em>time</em>, <em>vertical</em>}</td>
 <td>&#160;</td>
 <td>averaging kernel for the stratospheric vertical column number density of NO2</td>
 </tr>
-<tr class="row-odd"><td><strong>index</strong></td>
+<tr class="row-even"><td><strong>index</strong></td>
 <td>int32</td>
 <td>{<em>time</em>}</td>
 <td>&#160;</td>
@@ -479,205 +485,209 @@
 <tr class="row-even"><td><em>description</em></td>
 <td>the measurement length is parsed assuming the ISO 8601 &#8216;PT%(interval_seconds)fS&#8217; format</td>
 </tr>
-<tr class="row-odd"><td rowspan="2"><strong>validity</strong></td>
+<tr class="row-odd"><td><strong>orbit_index</strong></td>
+<td><em>path</em></td>
+<td><strong>/&#64;orbit</strong></td>
+</tr>
+<tr class="row-even"><td rowspan="2"><strong>validity</strong></td>
 <td><em>path</em></td>
 <td><strong>/PRODUCT/SUPPORT_DATA/DETAILED_RESULTS/processing_quality_flags[]</strong></td>
 </tr>
-<tr class="row-even"><td><em>description</em></td>
+<tr class="row-odd"><td><em>description</em></td>
 <td>the uint32 data is cast to int32</td>
 </tr>
-<tr class="row-odd"><td><strong>latitude</strong></td>
+<tr class="row-even"><td><strong>latitude</strong></td>
 <td><em>path</em></td>
 <td><strong>/PRODUCT/latitude[]</strong></td>
 </tr>
-<tr class="row-even"><td><strong>longitude</strong></td>
+<tr class="row-odd"><td><strong>longitude</strong></td>
 <td><em>path</em></td>
 <td><strong>/PRODUCT/longitude[]</strong></td>
 </tr>
-<tr class="row-odd"><td><strong>latitude_bounds</strong></td>
+<tr class="row-even"><td><strong>latitude_bounds</strong></td>
 <td><em>path</em></td>
 <td><strong>/PRODUCT/SUPPORT_DATA/GEOLOCATIONS/latitude_bounds[]</strong></td>
 </tr>
-<tr class="row-even"><td><strong>longitude_bounds</strong></td>
+<tr class="row-odd"><td><strong>longitude_bounds</strong></td>
 <td><em>path</em></td>
 <td><strong>/PRODUCT/SUPPORT_DATA/GEOLOCATIONS/longitude_bounds[]</strong></td>
 </tr>
-<tr class="row-odd"><td rowspan="2"><strong>sensor_latitude</strong></td>
+<tr class="row-even"><td rowspan="2"><strong>sensor_latitude</strong></td>
 <td><em>path</em></td>
 <td><strong>/PRODUCT/SUPPORT_DATA/GEOLOCATIONS/satellite_latitude[]</strong></td>
 </tr>
-<tr class="row-even"><td><em>description</em></td>
+<tr class="row-odd"><td><em>description</em></td>
 <td>the satellite latitude associated with a scanline is repeated for each pixel in the scanline</td>
 </tr>
-<tr class="row-odd"><td rowspan="2"><strong>sensor_longitude</strong></td>
+<tr class="row-even"><td rowspan="2"><strong>sensor_longitude</strong></td>
 <td><em>path</em></td>
 <td><strong>/PRODUCT/SUPPORT_DATA/GEOLOCATIONS/satellite_longitude[]</strong></td>
 </tr>
-<tr class="row-even"><td><em>description</em></td>
+<tr class="row-odd"><td><em>description</em></td>
 <td>the satellite longitude associated with a scanline is repeated for each pixel in the scanline</td>
 </tr>
-<tr class="row-odd"><td rowspan="2"><strong>sensor_altitude</strong></td>
+<tr class="row-even"><td rowspan="2"><strong>sensor_altitude</strong></td>
 <td><em>path</em></td>
 <td><strong>/PRODUCT/SUPPORT_DATA/GEOLOCATIONS/satellite_altitude[]</strong></td>
 </tr>
-<tr class="row-even"><td><em>description</em></td>
+<tr class="row-odd"><td><em>description</em></td>
 <td>the satellite altitude associated with a scanline is repeated for each pixel in the scanline</td>
 </tr>
-<tr class="row-odd"><td><strong>solar_zenith_angle</strong></td>
+<tr class="row-even"><td><strong>solar_zenith_angle</strong></td>
 <td><em>path</em></td>
 <td><strong>/PRODUCT/SUPPORT_DATA/GEOLOCATIONS/solar_zenith_angle[]</strong></td>
 </tr>
-<tr class="row-even"><td><strong>solar_azimuth_angle</strong></td>
+<tr class="row-odd"><td><strong>solar_azimuth_angle</strong></td>
 <td><em>path</em></td>
 <td><strong>/PRODUCT/SUPPORT_DATA/GEOLOCATIONS/solar_azimuth_angle[]</strong></td>
 </tr>
-<tr class="row-odd"><td><strong>sensor_zenith_angle</strong></td>
+<tr class="row-even"><td><strong>sensor_zenith_angle</strong></td>
 <td><em>path</em></td>
 <td><strong>/PRODUCT/SUPPORT_DATA/GEOLOCATIONS/viewing_zenith_angle[]</strong></td>
 </tr>
-<tr class="row-even"><td><strong>sensor_azimuth_angle</strong></td>
+<tr class="row-odd"><td><strong>sensor_azimuth_angle</strong></td>
 <td><em>path</em></td>
 <td><strong>/PRODUCT/SUPPORT_DATA/GEOLOCATIONS/viewing_azimuth_angle[]</strong></td>
 </tr>
-<tr class="row-odd"><td rowspan="4"><strong>cloud_fraction</strong></td>
+<tr class="row-even"><td rowspan="4"><strong>cloud_fraction</strong></td>
 <td><em>condition</em></td>
 <td>cloud_fraction unset</td>
 </tr>
-<tr class="row-even"><td><em>path</em></td>
+<tr class="row-odd"><td><em>path</em></td>
 <td><strong>/PRODUCT/SUPPORT_DATA/DETAILED_RESULTS/cloud_fraction_crb_nitrogendioxide_window[]</strong></td>
 </tr>
-<tr class="row-odd"><td><em>condition</em></td>
+<tr class="row-even"><td><em>condition</em></td>
 <td>cloud_fraction=radiance</td>
 </tr>
-<tr class="row-even"><td><em>path</em></td>
+<tr class="row-odd"><td><em>path</em></td>
 <td><strong>/PRODUCT/SUPPORT_DATA/DETAILED_RESULTS/cloud_radiance_fraction_nitrogendioxide_window[]</strong></td>
 </tr>
-<tr class="row-odd"><td><strong>absorbing_aerosol_index</strong></td>
+<tr class="row-even"><td><strong>absorbing_aerosol_index</strong></td>
 <td><em>path</em></td>
 <td><strong>/PRODUCT/SUPPORT_DATA/INPUT_DATA/aerosol_index_354_388</strong></td>
 </tr>
-<tr class="row-even"><td><strong>cloud_albedo</strong></td>
+<tr class="row-odd"><td><strong>cloud_albedo</strong></td>
 <td><em>path</em></td>
 <td><strong>/PRODUCT/SUPPORT_DATA/INPUT_DATA/cloud_albedo_crb</strong></td>
 </tr>
-<tr class="row-odd"><td><strong>cloud_pressure</strong></td>
+<tr class="row-even"><td><strong>cloud_pressure</strong></td>
 <td><em>path</em></td>
 <td><strong>/PRODUCT/SUPPORT_DATA/INPUT_DATA/cloud_pressure_crb</strong></td>
 </tr>
-<tr class="row-even"><td><strong>surface_albedo</strong></td>
+<tr class="row-odd"><td><strong>surface_albedo</strong></td>
 <td><em>path</em></td>
 <td><strong>/PRODUCT/SUPPORT_DATA/INPUT_DATA/surface_albedo_nitrogendioxide_window</strong></td>
 </tr>
-<tr class="row-odd"><td><strong>surface_altitude</strong></td>
+<tr class="row-even"><td><strong>surface_altitude</strong></td>
 <td><em>path</em></td>
 <td><strong>/PRODUCT/SUPPORT_DATA/INPUT_DATA/surface_altitude[]</strong></td>
 </tr>
-<tr class="row-even"><td><strong>surface_altitude_uncertainty</strong></td>
+<tr class="row-odd"><td><strong>surface_altitude_uncertainty</strong></td>
 <td><em>path</em></td>
 <td><strong>/PRODUCT/SUPPORT_DATA/INPUT_DATA/surface_altitude_precision[]</strong></td>
 </tr>
-<tr class="row-odd"><td><strong>surface_pressure</strong></td>
+<tr class="row-even"><td><strong>surface_pressure</strong></td>
 <td><em>path</em></td>
 <td><strong>/PRODUCT/SUPPORT_DATA/INPUT_DATA/surface_pressure[]</strong></td>
 </tr>
-<tr class="row-even"><td rowspan="2"><strong>snow_ice_type</strong></td>
+<tr class="row-odd"><td rowspan="2"><strong>snow_ice_type</strong></td>
 <td><em>path</em></td>
 <td><strong>/PRODUCT/SUPPORT_DATA/DETAILED_RESULTS/snow_ice_flag[]</strong></td>
 </tr>
-<tr class="row-odd"><td><em>description</em></td>
+<tr class="row-even"><td><em>description</em></td>
 <td>0: snow_free_land (0), 1-100: sea_ice (1), 101: permanent_ice (2), 103: snow (3), 255: ocean (4), other values map to -1</td>
 </tr>
-<tr class="row-even"><td rowspan="2"><strong>sea_ice_fraction</strong></td>
+<tr class="row-odd"><td rowspan="2"><strong>sea_ice_fraction</strong></td>
 <td><em>path</em></td>
 <td><strong>/PRODUCT/SUPPORT_DATA/DETAILED_RESULTS/snow_ice_flag[]</strong></td>
 </tr>
-<tr class="row-odd"><td><em>description</em></td>
+<tr class="row-even"><td><em>description</em></td>
 <td>if 1 &lt;= snow_ice_flag &lt;= 100 then snow_ice_flag/100.0 else 0.0</td>
 </tr>
-<tr class="row-even"><td rowspan="2"><strong>pressure_bounds</strong></td>
+<tr class="row-odd"><td rowspan="2"><strong>pressure_bounds</strong></td>
 <td><em>path</em></td>
 <td><strong>/PRODUCT/tm5_constant_a[], /PRODUCT/tm5_constant_b[], /PRODUCT/SUPPORT_DATA/INPUT_DATA/surface_pressure[]</strong></td>
 </tr>
-<tr class="row-odd"><td><em>description</em></td>
+<tr class="row-even"><td><em>description</em></td>
 <td>pressure in Pa at level k is derived from surface pressure in Pa as: tm5_constant_a[k] + tm5_constant_b[k] * surface_pressure[]; the top of atmosphere pressure is clamped to 1e-3 Pa</td>
 </tr>
-<tr class="row-even"><td rowspan="2"><strong>tropopause_pressure</strong></td>
+<tr class="row-odd"><td rowspan="2"><strong>tropopause_pressure</strong></td>
 <td><em>path</em></td>
 <td><strong>/PRODUCT/tm5_constant_a[], /PRODUCT/tm5_constant_b[], /PRODUCT/tm5_tropopause_layer_index[], /PRODUCT/SUPPORT_DATA/INPUT_DATA/surface_pressure[]</strong></td>
 </tr>
-<tr class="row-odd"><td><em>description</em></td>
+<tr class="row-even"><td><em>description</em></td>
 <td>pressure in Pa at tropause is derived from the upper bound of the layer with tropopause layer index k: tm5_constant_a[k + 1] + tm5_constant_b[k + 1] * surface_pressure[]</td>
 </tr>
-<tr class="row-even"><td><strong>tropospheric_NO2_column_number_density</strong></td>
+<tr class="row-odd"><td><strong>tropospheric_NO2_column_number_density</strong></td>
 <td><em>path</em></td>
 <td><strong>/PRODUCT/nitrogendioxide_tropospheric_column[]</strong></td>
 </tr>
-<tr class="row-odd"><td><strong>tropospheric_NO2_column_number_density_uncertainty</strong></td>
+<tr class="row-even"><td><strong>tropospheric_NO2_column_number_density_uncertainty</strong></td>
 <td><em>path</em></td>
 <td><strong>/PRODUCT/nitrogendioxide_tropospheric_column_precision[]</strong></td>
 </tr>
-<tr class="row-even"><td><strong>tropospheric_NO2_column_number_density_amf</strong></td>
+<tr class="row-odd"><td><strong>tropospheric_NO2_column_number_density_amf</strong></td>
 <td><em>path</em></td>
 <td><strong>/PRODUCT/air_mass_factor_troposphere[]</strong></td>
 </tr>
-<tr class="row-odd"><td rowspan="2"><strong>tropospheric_NO2_column_number_density_avk</strong></td>
+<tr class="row-even"><td rowspan="2"><strong>tropospheric_NO2_column_number_density_avk</strong></td>
 <td><em>path</em></td>
 <td><strong>/PRODUCT/averaging_kernel[], /PRODUCT/air_mass_factor_total[], /PRODUCT/air_mass_factor_troposphere[], /PRODUCT/tm5_tropopause_layer_index[]</strong></td>
 </tr>
-<tr class="row-even"><td><em>description</em></td>
+<tr class="row-odd"><td><em>description</em></td>
 <td>averaging_kernel[layer] = if layer &lt;= tm5_tropopause_layer_index then averaging_kernel[layer] * air_mass_factor_total / air_mass_factor_troposphere else 0</td>
 </tr>
-<tr class="row-odd"><td rowspan="4"><strong>NO2_column_number_density</strong></td>
+<tr class="row-even"><td rowspan="4"><strong>NO2_column_number_density</strong></td>
 <td><em>condition</em></td>
 <td>total_column=summed or total_column unset</td>
 </tr>
-<tr class="row-even"><td><em>path</em></td>
+<tr class="row-odd"><td><em>path</em></td>
 <td><strong>/PRODUCT/SUPPORT_DATA/DETAILED_RESULTS/nitrogendioxide_summed_total_column[]</strong></td>
 </tr>
-<tr class="row-odd"><td><em>condition</em></td>
+<tr class="row-even"><td><em>condition</em></td>
 <td>total_column=total</td>
 </tr>
-<tr class="row-even"><td><em>path</em></td>
+<tr class="row-odd"><td><em>path</em></td>
 <td><strong>/PRODUCT/SUPPORT_DATA/DETAILED_RESULTS/nitrogendioxide_total_column[]</strong></td>
 </tr>
-<tr class="row-odd"><td rowspan="4"><strong>NO2_column_number_density_uncertainty</strong></td>
+<tr class="row-even"><td rowspan="4"><strong>NO2_column_number_density_uncertainty</strong></td>
 <td><em>condition</em></td>
 <td>total_column=summed or total_column unset</td>
 </tr>
-<tr class="row-even"><td><em>path</em></td>
+<tr class="row-odd"><td><em>path</em></td>
 <td><strong>/PRODUCT/SUPPORT_DATA/DETAILED_RESULTS/nitrogendioxide_summed_total_column_precision[]</strong></td>
 </tr>
-<tr class="row-odd"><td><em>condition</em></td>
+<tr class="row-even"><td><em>condition</em></td>
 <td>total_column=total</td>
 </tr>
-<tr class="row-even"><td><em>path</em></td>
+<tr class="row-odd"><td><em>path</em></td>
 <td><strong>/PRODUCT/SUPPORT_DATA/DETAILED_RESULTS/nitrogendioxide_total_column_precision[]</strong></td>
 </tr>
-<tr class="row-odd"><td><strong>NO2_column_number_density_amf</strong></td>
+<tr class="row-even"><td><strong>NO2_column_number_density_amf</strong></td>
 <td><em>path</em></td>
 <td><strong>/PRODUCT/air_mass_factor_total[]</strong></td>
 </tr>
-<tr class="row-even"><td><strong>NO2_column_number_density_avk</strong></td>
+<tr class="row-odd"><td><strong>NO2_column_number_density_avk</strong></td>
 <td><em>path</em></td>
 <td><strong>/PRODUCT/averaging_kernel[]</strong></td>
 </tr>
-<tr class="row-odd"><td><strong>stratospheric_NO2_column_number_density</strong></td>
+<tr class="row-even"><td><strong>stratospheric_NO2_column_number_density</strong></td>
 <td><em>path</em></td>
 <td><strong>/PRODUCT/nitrogendioxide_tropospheric_column[]</strong></td>
 </tr>
-<tr class="row-even"><td><strong>stratospheric_NO2_column_number_density_uncertainty</strong></td>
+<tr class="row-odd"><td><strong>stratospheric_NO2_column_number_density_uncertainty</strong></td>
 <td><em>path</em></td>
 <td><strong>/PRODUCT/nitrogendioxide_tropospheric_column_precision[]</strong></td>
 </tr>
-<tr class="row-odd"><td><strong>stratospheric_NO2_column_number_density_amf</strong></td>
+<tr class="row-even"><td><strong>stratospheric_NO2_column_number_density_amf</strong></td>
 <td><em>path</em></td>
 <td><strong>/PRODUCT/air_mass_factor_troposphere[]</strong></td>
 </tr>
-<tr class="row-even"><td rowspan="2"><strong>stratospheric_NO2_column_number_density_avk</strong></td>
+<tr class="row-odd"><td rowspan="2"><strong>stratospheric_NO2_column_number_density_avk</strong></td>
 <td><em>path</em></td>
 <td><strong>/PRODUCT/averaging_kernel[], /PRODUCT/air_mass_factor_total[], /PRODUCT/SUPPORT_DATA/DETAILED_RESULTS/air_mass_factor_stratosphere[], /PRODUCT/tm5_tropopause_layer_index[]</strong></td>
 </tr>
-<tr class="row-odd"><td><em>description</em></td>
+<tr class="row-even"><td><em>description</em></td>
 <td>averaging_kernel[layer] = if layer &gt; tm5_tropopause_layer_index then averaging_kernel[layer] * air_mass_factor_total / air_mass_factor_stratosphere else 0</td>
 </tr>
 </tbody>

@@ -182,25 +182,31 @@
 <td>seconds since 2000-01-01</td>
 <td>time of the sun reference measurement at the end of the integration time</td>
 </tr>
-<tr class="row-odd"><td><strong>wavelength_photon_irradiance</strong></td>
+<tr class="row-odd"><td><strong>orbit_index</strong></td>
+<td>int32</td>
+<td>&#160;</td>
+<td>&#160;</td>
+<td>absolute orbit number</td>
+</tr>
+<tr class="row-even"><td><strong>wavelength_photon_irradiance</strong></td>
 <td>double</td>
 <td>{<em>time</em>, <em>spectral</em>}</td>
 <td>count/s/cm2/nm</td>
 <td>sun spectrum spectral irradiance</td>
 </tr>
-<tr class="row-even"><td><strong>wavelength_photon_irradiance_uncertainty</strong></td>
+<tr class="row-odd"><td><strong>wavelength_photon_irradiance_uncertainty</strong></td>
 <td>double</td>
 <td>{<em>time</em>, <em>spectral</em>}</td>
 <td>count/s/cm2/nm</td>
 <td>relative radiometric precision of the sun reference spectrum</td>
 </tr>
-<tr class="row-odd"><td><strong>wavelength</strong></td>
+<tr class="row-even"><td><strong>wavelength</strong></td>
 <td>double</td>
 <td>{<em>time</em>, <em>spectral</em>}</td>
 <td>nm</td>
 <td>nominal wavelength assignment for each of the detector pixels</td>
 </tr>
-<tr class="row-even"><td><strong>index</strong></td>
+<tr class="row-odd"><td><strong>index</strong></td>
 <td>int32</td>
 <td>{<em>time</em>}</td>
 <td>&#160;</td>
@@ -257,15 +263,19 @@
 <td><em>path</em></td>
 <td><strong>/sfs/utc_solar_spectrum</strong></td>
 </tr>
-<tr class="row-odd"><td><strong>wavelength_photon_irradiance</strong></td>
+<tr class="row-odd"><td><strong>orbit_index</strong></td>
+<td><em>path</em></td>
+<td><strong>/pir/start_orbit</strong></td>
+</tr>
+<tr class="row-even"><td><strong>wavelength_photon_irradiance</strong></td>
 <td><em>path</em></td>
 <td><strong>/cdr[]/sdr[]/abs_irr</strong></td>
 </tr>
-<tr class="row-even"><td><strong>wavelength_photon_irradiance_uncertainty</strong></td>
+<tr class="row-odd"><td><strong>wavelength_photon_irradiance_uncertainty</strong></td>
 <td><em>path</em></td>
 <td><strong>/cdr[]/sdr[]/abs_irr_err</strong></td>
 </tr>
-<tr class="row-odd"><td><strong>wavelength</strong></td>
+<tr class="row-even"><td><strong>wavelength</strong></td>
 <td><em>path</em></td>
 <td><strong>/cdr[]/sdr[]/wavelength</strong></td>
 </tr>

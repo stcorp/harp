@@ -188,79 +188,85 @@
 <td>s</td>
 <td>measurement integration time</td>
 </tr>
-<tr class="row-even"><td><strong>latitude</strong></td>
+<tr class="row-even"><td><strong>orbit_index</strong></td>
+<td>int32</td>
+<td>&#160;</td>
+<td>&#160;</td>
+<td>absolute orbit number</td>
+</tr>
+<tr class="row-odd"><td><strong>latitude</strong></td>
 <td>double</td>
 <td>{<em>time</em>}</td>
 <td>degree_north</td>
 <td>center latitude for each nadir pixel</td>
 </tr>
-<tr class="row-odd"><td><strong>longitude</strong></td>
+<tr class="row-even"><td><strong>longitude</strong></td>
 <td>double</td>
 <td>{<em>time</em>}</td>
 <td>degree_east</td>
 <td>center longitude for each nadir pixel</td>
 </tr>
-<tr class="row-even"><td><strong>latitude_bounds</strong></td>
+<tr class="row-odd"><td><strong>latitude_bounds</strong></td>
 <td>double</td>
 <td>{<em>time</em>, 4}</td>
 <td>degree_north</td>
 <td>corner latitudes for each nadir pixel</td>
 </tr>
-<tr class="row-odd"><td><strong>longitude_bounds</strong></td>
+<tr class="row-even"><td><strong>longitude_bounds</strong></td>
 <td>double</td>
 <td>{<em>time</em>, 4}</td>
 <td>degree_east</td>
 <td>corner longitudes for each nadir pixel</td>
 </tr>
-<tr class="row-even"><td><strong>solar_zenith_angle</strong></td>
+<tr class="row-odd"><td><strong>solar_zenith_angle</strong></td>
 <td>double</td>
 <td>{<em>time</em>}</td>
 <td>degree</td>
 <td>solar zenith angle at top of atmosphere</td>
 </tr>
-<tr class="row-odd"><td><strong>viewing_zenith_angle</strong></td>
+<tr class="row-even"><td><strong>viewing_zenith_angle</strong></td>
 <td>double</td>
 <td>{<em>time</em>}</td>
 <td>degree</td>
 <td>line of sight zenith angle at top of atmosphere</td>
 </tr>
-<tr class="row-even"><td><strong>relative_azimuth_angle</strong></td>
+<tr class="row-odd"><td><strong>relative_azimuth_angle</strong></td>
 <td>double</td>
 <td>{<em>time</em>}</td>
 <td>degree</td>
 <td>relative azimuth angle at top of atmosphere</td>
 </tr>
-<tr class="row-odd"><td><strong>scan_direction_type</strong></td>
+<tr class="row-even"><td><strong>scan_direction_type</strong></td>
 <td>int8</td>
 <td>{<em>time</em>}</td>
 <td>&#160;</td>
 <td>scan direction for each measurement; enumeration values: forward (0), backward (1), mixed (2)</td>
 </tr>
-<tr class="row-even"><td><strong>cloud_fraction</strong></td>
+<tr class="row-odd"><td><strong>cloud_fraction</strong></td>
 <td>double</td>
 <td>{<em>time</em>}</td>
 <td>&#160;</td>
 <td>average cloud fraction of footprint</td>
 </tr>
-<tr class="row-odd"><td><strong>SO2_column_number_density</strong></td>
+<tr class="row-even"><td><strong>SO2_column_number_density</strong></td>
 <td>double</td>
 <td>{<em>time</em>}</td>
 <td>molec/cm^2</td>
 <td>SO2 vertical column density</td>
 </tr>
-<tr class="row-even"><td><strong>SO2_column_number_density_uncertainty</strong></td>
+<tr class="row-odd"><td><strong>SO2_column_number_density_uncertainty</strong></td>
 <td>double</td>
 <td>{<em>time</em>}</td>
 <td>molec/cm^2</td>
 <td>error on the SO2 vertical column density</td>
 </tr>
-<tr class="row-odd"><td><strong>SO2_column_number_density_validity</strong></td>
+<tr class="row-even"><td><strong>SO2_column_number_density_validity</strong></td>
 <td>int32</td>
 <td>{<em>time</em>}</td>
 <td>&#160;</td>
 <td>flag describing the SO2 vertical column density</td>
 </tr>
-<tr class="row-even"><td><strong>index</strong></td>
+<tr class="row-odd"><td><strong>index</strong></td>
 <td>int32</td>
 <td>{<em>time</em>}</td>
 <td>&#160;</td>
@@ -316,216 +322,220 @@
 <td><em>path</em></td>
 <td><strong>/nad_uv7_so2[]/integr_time</strong></td>
 </tr>
-<tr class="row-even"><td rowspan="9"><strong>latitude</strong></td>
+<tr class="row-even"><td><strong>orbit_index</strong></td>
+<td><em>path</em></td>
+<td><strong>/mph/abs_orbit</strong></td>
+</tr>
+<tr class="row-odd"><td rowspan="9"><strong>latitude</strong></td>
 <td><em>condition</em></td>
 <td>No co-adding needed</td>
 </tr>
-<tr class="row-odd"><td><em>path</em></td>
+<tr class="row-even"><td><em>path</em></td>
 <td><strong>/geolocation_nadir[]/cen_coor_nad/latitude</strong></td>
 </tr>
-<tr class="row-even"><td><em>description</em></td>
+<tr class="row-odd"><td><em>description</em></td>
 <td>center latitude for each nadir pixel</td>
 </tr>
-<tr class="row-odd"><td><em>condition</em></td>
+<tr class="row-even"><td><em>condition</em></td>
 <td>Co-adding needed and all N geolocations are within a single scan (N is not divisible by 5)</td>
 </tr>
-<tr class="row-even"><td><em>path</em></td>
+<tr class="row-odd"><td><em>path</em></td>
 <td><strong>/geolocation_nadir[]/cor_coor_nad[]</strong></td>
 </tr>
-<tr class="row-odd"><td><em>description</em></td>
+<tr class="row-even"><td><em>description</em></td>
 <td>the latitude of the geographic average of cor_coor_nad[2] and cor_coor_nad[3] of the N/2-th pixel</td>
 </tr>
-<tr class="row-even"><td><em>condition</em></td>
+<tr class="row-odd"><td><em>condition</em></td>
 <td>Co-adding needed of both forward and backward scan pixels (N is divisible by 5)</td>
 </tr>
-<tr class="row-odd"><td><em>path</em></td>
+<tr class="row-even"><td><em>path</em></td>
 <td><strong>/geolocation_nadir[]/cen_coor_nad, /geolocation_nadir[]/cor_coor_nad[]</strong></td>
 </tr>
-<tr class="row-even"><td><em>description</em></td>
+<tr class="row-odd"><td><em>description</em></td>
 <td>the latitude of the geographic average of 1: the geographic average of cor_coor_nad[2] and cor_coor_nad[3] of the second pixel and 2: cen_coor_nad of the N-th pixel</td>
 </tr>
-<tr class="row-odd"><td rowspan="9"><strong>longitude</strong></td>
+<tr class="row-even"><td rowspan="9"><strong>longitude</strong></td>
 <td><em>condition</em></td>
 <td>No co-adding needed</td>
 </tr>
-<tr class="row-even"><td><em>path</em></td>
+<tr class="row-odd"><td><em>path</em></td>
 <td><strong>/geolocation_nadir[]/cen_coor_nad/longitude</strong></td>
 </tr>
-<tr class="row-odd"><td><em>description</em></td>
+<tr class="row-even"><td><em>description</em></td>
 <td>center longitude for each nadir pixel</td>
 </tr>
-<tr class="row-even"><td><em>condition</em></td>
+<tr class="row-odd"><td><em>condition</em></td>
 <td>Co-adding needed and all N geolocations are within a single scan (N is not divisible by 5)</td>
 </tr>
-<tr class="row-odd"><td><em>path</em></td>
+<tr class="row-even"><td><em>path</em></td>
 <td><strong>/geolocation_nadir[]/cor_coor_nad[]</strong></td>
 </tr>
-<tr class="row-even"><td><em>description</em></td>
+<tr class="row-odd"><td><em>description</em></td>
 <td>the longitude of the geographic average of cor_coor_nad[2] and cor_coor_nad[3] of the N/2-th pixel</td>
 </tr>
-<tr class="row-odd"><td><em>condition</em></td>
+<tr class="row-even"><td><em>condition</em></td>
 <td>Co-adding needed of both forward and backward scan pixels (N is divisible by 5)</td>
 </tr>
-<tr class="row-even"><td><em>path</em></td>
+<tr class="row-odd"><td><em>path</em></td>
 <td><strong>/geolocation_nadir[]/cen_coor_nad, /geolocation_nadir[]/cor_coor_nad[]</strong></td>
 </tr>
-<tr class="row-odd"><td><em>description</em></td>
+<tr class="row-even"><td><em>description</em></td>
 <td>the longitude of the geographic average of 1: the geographic average of cor_coor_nad[2] and cor_coor_nad[3] of the second pixel and 2: cen_coor_nad of the N-th pixel</td>
 </tr>
-<tr class="row-even"><td rowspan="9"><strong>latitude_bounds</strong></td>
+<tr class="row-odd"><td rowspan="9"><strong>latitude_bounds</strong></td>
 <td><em>condition</em></td>
 <td>No co-adding needed</td>
 </tr>
-<tr class="row-odd"><td><em>path</em></td>
+<tr class="row-even"><td><em>path</em></td>
 <td><strong>/geolocation_nadir[]/cor_coor_nad[]/latitude</strong></td>
 </tr>
-<tr class="row-even"><td><em>description</em></td>
+<tr class="row-odd"><td><em>description</em></td>
 <td>corners are rearranged in the following way: 0,2,3,1</td>
 </tr>
-<tr class="row-odd"><td><em>condition</em></td>
-<td>Co-adding needed and all N geolocations are within a single scan (N is not divisible by 5)</td>
-</tr>
-<tr class="row-even"><td><em>path</em></td>
-<td><strong>/geolocation_nadir[]/cor_coor_nad[]</strong></td>
-</tr>
-<tr class="row-odd"><td><em>description</em></td>
-<td>cor_coor_nad[0] and cor_coor_nad[1] are taken from the first pixel and cor_coor_nad[2] and cor_coor_nad[3] are taken from the N-th pixel; corners are rearranged in the following way: 0,2,3,1</td>
-</tr>
 <tr class="row-even"><td><em>condition</em></td>
-<td>Co-adding needed of both forward and backward scan pixels (N is divisible by 5)</td>
+<td>Co-adding needed and all N geolocations are within a single scan (N is not divisible by 5)</td>
 </tr>
 <tr class="row-odd"><td><em>path</em></td>
 <td><strong>/geolocation_nadir[]/cor_coor_nad[]</strong></td>
 </tr>
 <tr class="row-even"><td><em>description</em></td>
+<td>cor_coor_nad[0] and cor_coor_nad[1] are taken from the first pixel and cor_coor_nad[2] and cor_coor_nad[3] are taken from the N-th pixel; corners are rearranged in the following way: 0,2,3,1</td>
+</tr>
+<tr class="row-odd"><td><em>condition</em></td>
+<td>Co-adding needed of both forward and backward scan pixels (N is divisible by 5)</td>
+</tr>
+<tr class="row-even"><td><em>path</em></td>
+<td><strong>/geolocation_nadir[]/cor_coor_nad[]</strong></td>
+</tr>
+<tr class="row-odd"><td><em>description</em></td>
 <td>cor_coor_nad[0] is taken from the first pixel, cor_coor_nad[2] is taken from the fourth pixel, cor_coor_nad[1] is taken from cor_coor_nad[3] of the N-th pixel, and cor_coor_nad[3] is taken from cor_coor_nad[1] from the N-th pixel; corners are rearranged in the following way: 0,2,3,1</td>
 </tr>
-<tr class="row-odd"><td rowspan="9"><strong>longitude_bounds</strong></td>
+<tr class="row-even"><td rowspan="9"><strong>longitude_bounds</strong></td>
 <td><em>condition</em></td>
 <td>No co-adding needed</td>
 </tr>
-<tr class="row-even"><td><em>path</em></td>
+<tr class="row-odd"><td><em>path</em></td>
 <td><strong>/geolocation_nadir[]/cor_coor_nad[]/longitude</strong></td>
 </tr>
-<tr class="row-odd"><td><em>description</em></td>
+<tr class="row-even"><td><em>description</em></td>
 <td>corners are rearranged in the following way: 0,2,3,1</td>
 </tr>
-<tr class="row-even"><td><em>condition</em></td>
+<tr class="row-odd"><td><em>condition</em></td>
 <td>Co-adding needed and all N geolocations are within a single scan (N is not divisible by 5)</td>
 </tr>
-<tr class="row-odd"><td><em>path</em></td>
+<tr class="row-even"><td><em>path</em></td>
 <td><strong>/geolocation_nadir[]/cor_coor_nad[]</strong></td>
 </tr>
-<tr class="row-even"><td><em>description</em></td>
+<tr class="row-odd"><td><em>description</em></td>
 <td>cor_coor_nad[0] and cor_coor_nad[1] are taken from the first pixel and cor_coor_nad[2] and cor_coor_nad[3] are taken from the N-th pixel; corners are rearranged in the following way: 0,2,3,1</td>
 </tr>
-<tr class="row-odd"><td><em>condition</em></td>
+<tr class="row-even"><td><em>condition</em></td>
 <td>Co-adding needed of both forward and backward scan pixels (N is divisible by 5)</td>
 </tr>
-<tr class="row-even"><td><em>path</em></td>
+<tr class="row-odd"><td><em>path</em></td>
 <td><strong>/geolocation_nadir[]/cor_coor_nad[]</strong></td>
 </tr>
-<tr class="row-odd"><td><em>description</em></td>
+<tr class="row-even"><td><em>description</em></td>
 <td>cor_coor_nad[0] is taken from the first pixel, cor_coor_nad[2] is taken from the fourth pixel, cor_coor_nad[1] is taken from cor_coor_nad[3] of the N-th pixel, and cor_coor_nad[3] is taken from cor_coor_nad[1] from the N-th pixel; corners are rearranged in the following way: 0,2,3,1</td>
 </tr>
-<tr class="row-even"><td rowspan="8"><strong>solar_zenith_angle</strong></td>
+<tr class="row-odd"><td rowspan="8"><strong>solar_zenith_angle</strong></td>
 <td><em>condition</em></td>
 <td>No co-adding needed</td>
 </tr>
-<tr class="row-odd"><td><em>path</em></td>
+<tr class="row-even"><td><em>path</em></td>
 <td><strong>/geolocation_nadir[]/sol_zen_angle_toa[1]</strong></td>
 </tr>
-<tr class="row-even"><td><em>condition</em></td>
+<tr class="row-odd"><td><em>condition</em></td>
 <td>Co-adding needed and all N geolocations are within a single scan (N is not divisible by 5)</td>
 </tr>
-<tr class="row-odd"><td><em>path</em></td>
+<tr class="row-even"><td><em>path</em></td>
 <td><strong>/geolocation_nadir[]/sol_zen_angle_toa[2]</strong></td>
 </tr>
-<tr class="row-even"><td><em>description</em></td>
+<tr class="row-odd"><td><em>description</em></td>
 <td>the value at end of integration time of the N/2-th geolocation</td>
 </tr>
-<tr class="row-odd"><td><em>condition</em></td>
+<tr class="row-even"><td><em>condition</em></td>
 <td>Co-adding needed of both forward and backward scan pixels (N is divisible by 5)</td>
 </tr>
-<tr class="row-even"><td><em>path</em></td>
+<tr class="row-odd"><td><em>path</em></td>
 <td><strong>/geolocation_nadir[]/sol_zen_angle_toa[1], /geolocation_nadir[]/sol_zen_angle_toa[2]</strong></td>
 </tr>
-<tr class="row-odd"><td><em>description</em></td>
+<tr class="row-even"><td><em>description</em></td>
 <td>the average of the value at end of integration time of the second record and the value at middle of integration time of the N-th record</td>
 </tr>
-<tr class="row-even"><td rowspan="8"><strong>viewing_zenith_angle</strong></td>
+<tr class="row-odd"><td rowspan="8"><strong>viewing_zenith_angle</strong></td>
 <td><em>condition</em></td>
 <td>No co-adding needed</td>
 </tr>
-<tr class="row-odd"><td><em>path</em></td>
+<tr class="row-even"><td><em>path</em></td>
 <td><strong>/geolocation_nadir[]/los_zen_angle_toa[1]</strong></td>
 </tr>
-<tr class="row-even"><td><em>condition</em></td>
+<tr class="row-odd"><td><em>condition</em></td>
 <td>Co-adding needed and all N geolocations are within a single scan (N is not divisible by 5)</td>
 </tr>
-<tr class="row-odd"><td><em>path</em></td>
+<tr class="row-even"><td><em>path</em></td>
 <td><strong>/geolocation_nadir[]/los_zen_angle_toa[2]</strong></td>
 </tr>
-<tr class="row-even"><td><em>description</em></td>
+<tr class="row-odd"><td><em>description</em></td>
 <td>the value at end of integration time of the N/2-th geolocation</td>
 </tr>
-<tr class="row-odd"><td><em>condition</em></td>
+<tr class="row-even"><td><em>condition</em></td>
 <td>Co-adding needed of both forward and backward scan pixels (N is divisible by 5)</td>
 </tr>
-<tr class="row-even"><td><em>path</em></td>
+<tr class="row-odd"><td><em>path</em></td>
 <td><strong>/geolocation_nadir[]/los_zen_angle_toa[1], /geolocation_nadir[]/los_zen_angle_toa[2]</strong></td>
 </tr>
-<tr class="row-odd"><td><em>description</em></td>
+<tr class="row-even"><td><em>description</em></td>
 <td>the average of the value at end of integration time of the second record and the value at middle of integration time of the N-th record</td>
 </tr>
-<tr class="row-even"><td rowspan="8"><strong>relative_azimuth_angle</strong></td>
+<tr class="row-odd"><td rowspan="8"><strong>relative_azimuth_angle</strong></td>
 <td><em>condition</em></td>
 <td>No co-adding needed</td>
 </tr>
-<tr class="row-odd"><td><em>path</em></td>
+<tr class="row-even"><td><em>path</em></td>
 <td><strong>/geolocation_nadir[]/rel_azi_angle_toa[1]</strong></td>
 </tr>
-<tr class="row-even"><td><em>condition</em></td>
+<tr class="row-odd"><td><em>condition</em></td>
 <td>Co-adding needed and all N geolocations are within a single scan (N is not divisible by 5)</td>
 </tr>
-<tr class="row-odd"><td><em>path</em></td>
+<tr class="row-even"><td><em>path</em></td>
 <td><strong>/geolocation_nadir[]/rel_azi_angle_toa[2]</strong></td>
 </tr>
-<tr class="row-even"><td><em>description</em></td>
+<tr class="row-odd"><td><em>description</em></td>
 <td>the value at end of integration time of the N/2-th geolocation</td>
 </tr>
-<tr class="row-odd"><td><em>condition</em></td>
+<tr class="row-even"><td><em>condition</em></td>
 <td>Co-adding needed of both forward and backward scan pixels (N is divisible by 5)</td>
 </tr>
-<tr class="row-even"><td><em>path</em></td>
+<tr class="row-odd"><td><em>path</em></td>
 <td><strong>/geolocation_nadir[]/rel_azi_angle_toa[1], /geolocation_nadir[]/rel_azi_angle_toa[2]</strong></td>
 </tr>
-<tr class="row-odd"><td><em>description</em></td>
+<tr class="row-even"><td><em>description</em></td>
 <td>the average of the value at end of integration time of the second record and the value at middle of integration time of the N-th record</td>
 </tr>
-<tr class="row-even"><td rowspan="2"><strong>scan_direction_type</strong></td>
+<tr class="row-odd"><td rowspan="2"><strong>scan_direction_type</strong></td>
 <td><em>path</em></td>
 <td><strong>/geolocation_nadir[]/corner_coord[], /geolocation_nadir[]/dsr_time</strong></td>
 </tr>
-<tr class="row-odd"><td><em>description</em></td>
+<tr class="row-even"><td><em>description</em></td>
 <td>When the integration time is higher than 1s we are dealing with a mixed (2) pixel, otherwise the scan direction is based on the corner coordinates of the first ground pixel of the measurement. The first geolocation pixel is a backscan (1) pixel if the inproduct of the unit vector of the third corner with the outproduct of the unit vector of the first corner and the unit vector of the second corner is negative (otherwise it is part of a forward (0) scan)</td>
 </tr>
-<tr class="row-even"><td><strong>cloud_fraction</strong></td>
+<tr class="row-odd"><td><strong>cloud_fraction</strong></td>
 <td><em>path</em></td>
 <td><strong>/clouds_aerosol[]/cl_frac</strong></td>
 </tr>
-<tr class="row-odd"><td><strong>SO2_column_number_density</strong></td>
+<tr class="row-even"><td><strong>SO2_column_number_density</strong></td>
 <td><em>path</em></td>
 <td><strong>/nad_uv5_so2[]/vcd[0]</strong></td>
 </tr>
-<tr class="row-even"><td rowspan="2"><strong>SO2_column_number_density_uncertainty</strong></td>
+<tr class="row-odd"><td rowspan="2"><strong>SO2_column_number_density_uncertainty</strong></td>
 <td><em>path</em></td>
 <td><strong>/nad_uv5_so2[]/vcd_err[0], /nad_uv5_so2[]/vcd[0]</strong></td>
 </tr>
-<tr class="row-odd"><td><em>description</em></td>
+<tr class="row-even"><td><em>description</em></td>
 <td>relative error is converted to absolute error by multiplying with measured value</td>
 </tr>
-<tr class="row-even"><td><strong>SO2_column_number_density_validity</strong></td>
+<tr class="row-odd"><td><strong>SO2_column_number_density_validity</strong></td>
 <td><em>path</em></td>
 <td><strong>/nad_uv5_so2[]/flag_vcd_flags</strong></td>
 </tr>

@@ -188,67 +188,73 @@
 <td>s</td>
 <td>integration time for a readout</td>
 </tr>
-<tr class="row-even"><td><strong>latitude</strong></td>
+<tr class="row-even"><td><strong>orbit_index</strong></td>
+<td>int32</td>
+<td>&#160;</td>
+<td>&#160;</td>
+<td>absolute orbit number</td>
+</tr>
+<tr class="row-odd"><td><strong>latitude</strong></td>
 <td>double</td>
 <td>{<em>time</em>}</td>
 <td>degree_north</td>
 <td>latitude of the apparent tangent point</td>
 </tr>
-<tr class="row-odd"><td><strong>longitude</strong></td>
+<tr class="row-even"><td><strong>longitude</strong></td>
 <td>double</td>
 <td>{<em>time</em>}</td>
 <td>degree_east</td>
 <td>longitude of the apparent tangent point</td>
 </tr>
-<tr class="row-even"><td><strong>altitude</strong></td>
+<tr class="row-odd"><td><strong>altitude</strong></td>
 <td>double</td>
 <td>{<em>time</em>}</td>
 <td>m</td>
 <td>altitude of the apparent tangent point</td>
 </tr>
-<tr class="row-odd"><td><strong>wavelength_photon_radiance</strong></td>
+<tr class="row-even"><td><strong>wavelength_photon_radiance</strong></td>
 <td>double</td>
 <td>{<em>time</em>, <em>spectral</em>}</td>
 <td>count/s/cm2/nm/sr</td>
 <td>background spectral photon radiance of each spectrum measurement</td>
 </tr>
-<tr class="row-even"><td><strong>wavelength_photon_radiance_uncertainty</strong></td>
+<tr class="row-odd"><td><strong>wavelength_photon_radiance_uncertainty</strong></td>
 <td>double</td>
 <td>{<em>time</em>, <em>spectral</em>}</td>
 <td>count/s/cm2/nm/sr</td>
 <td>error in the background spectral photon radiance of each spectrum measurement</td>
 </tr>
-<tr class="row-odd"><td><strong>wavelength</strong></td>
+<tr class="row-even"><td><strong>wavelength</strong></td>
 <td>double</td>
 <td>{<em>spectral</em>}</td>
 <td>nm</td>
 <td>nominal wavelength assignment for each of the detector pixels</td>
 </tr>
-<tr class="row-even"><td><strong>sensor_latitude</strong></td>
+<tr class="row-odd"><td><strong>sensor_latitude</strong></td>
 <td>double</td>
 <td>{<em>time</em>}</td>
 <td>degree_north</td>
 <td>latitude of the satellite</td>
 </tr>
-<tr class="row-odd"><td><strong>sensor_longitude</strong></td>
+<tr class="row-even"><td><strong>sensor_longitude</strong></td>
 <td>double</td>
 <td>{<em>time</em>}</td>
 <td>degree_east</td>
 <td>longitude of the satellite</td>
 </tr>
-<tr class="row-even"><td><strong>sensor_altitude</strong></td>
+<tr class="row-odd"><td><strong>sensor_altitude</strong></td>
 <td>double</td>
 <td>{<em>time</em>}</td>
 <td>m</td>
 <td>altitude of satellite</td>
 </tr>
-<tr class="row-odd"><td><strong>scene_type</strong></td>
+<tr class="row-even"><td><strong>scene_type</strong></td>
 <td>int8</td>
 <td>&#160;</td>
 <td>&#160;</td>
 <td>illumination condition for each profile; enumeration values: dark (0), bright (1), twilight (2), straylight (3), twilight_straylight (4)</td>
 </tr>
-<tr class="row-even"><td><strong>index</strong></td>
+<tr class="row-odd"><td><strong>index</strong></td>
 <td>int32</td>
 <td>{<em>time</em>}</td>
 <td>&#160;</td>
@@ -308,86 +314,90 @@
 <td><em>path</em></td>
 <td><strong>/sph/samp_duration</strong></td>
 </tr>
-<tr class="row-even"><td><strong>latitude</strong></td>
+<tr class="row-even"><td><strong>orbit_index</strong></td>
+<td><em>path</em></td>
+<td><strong>/mph/abs_orbit</strong></td>
+</tr>
+<tr class="row-odd"><td><strong>latitude</strong></td>
 <td><em>path</em></td>
 <td><strong>/lim_ads/tangent_lat[]</strong></td>
 </tr>
-<tr class="row-odd"><td><strong>longitude</strong></td>
+<tr class="row-even"><td><strong>longitude</strong></td>
 <td><em>path</em></td>
 <td><strong>/lim_ads/tangent_long[]</strong></td>
 </tr>
-<tr class="row-even"><td><strong>altitude</strong></td>
+<tr class="row-odd"><td><strong>altitude</strong></td>
 <td><em>path</em></td>
 <td><strong>/lim_ads/tangent_alt[]</strong></td>
 </tr>
-<tr class="row-odd"><td rowspan="8"><strong>wavelength_photon_radiance</strong></td>
+<tr class="row-even"><td rowspan="8"><strong>wavelength_photon_radiance</strong></td>
 <td><em>condition</em></td>
 <td>spectra=upper and corrected=false</td>
 </tr>
-<tr class="row-even"><td><em>path</em></td>
+<tr class="row-odd"><td><em>path</em></td>
 <td><strong>/lim_mds[]/up_low_back_no_corr[0,]</strong></td>
 </tr>
-<tr class="row-odd"><td><em>condition</em></td>
+<tr class="row-even"><td><em>condition</em></td>
 <td>spectra=lower and corrected=false</td>
 </tr>
-<tr class="row-even"><td><em>path</em></td>
+<tr class="row-odd"><td><em>path</em></td>
 <td><strong>/lim_mds[]/up_low_back_no_corr[1,]</strong></td>
 </tr>
-<tr class="row-odd"><td><em>condition</em></td>
+<tr class="row-even"><td><em>condition</em></td>
 <td>spectra=upper and corrected=true</td>
 </tr>
-<tr class="row-even"><td><em>path</em></td>
+<tr class="row-odd"><td><em>path</em></td>
 <td><strong>/lim_mds[]/up_low_back_corr[0,]</strong></td>
 </tr>
-<tr class="row-odd"><td><em>condition</em></td>
+<tr class="row-even"><td><em>condition</em></td>
 <td>spectra=lower and corrected=true</td>
 </tr>
-<tr class="row-even"><td><em>path</em></td>
+<tr class="row-odd"><td><em>path</em></td>
 <td><strong>/lim_mds[]/up_low_back_corr[1,]</strong></td>
 </tr>
-<tr class="row-odd"><td rowspan="4"><strong>wavelength_photon_radiance_uncertainty</strong></td>
+<tr class="row-even"><td rowspan="4"><strong>wavelength_photon_radiance_uncertainty</strong></td>
 <td><em>condition</em></td>
 <td>spectra=upper</td>
 </tr>
-<tr class="row-even"><td><em>path</em></td>
+<tr class="row-odd"><td><em>path</em></td>
 <td><strong>/lim_mds[]/err_up_low_back_corr[0,]</strong></td>
 </tr>
-<tr class="row-odd"><td><em>condition</em></td>
+<tr class="row-even"><td><em>condition</em></td>
 <td>spectra=lower</td>
 </tr>
-<tr class="row-even"><td><em>path</em></td>
+<tr class="row-odd"><td><em>path</em></td>
 <td><strong>/lim_mds[]/err_up_low_back_corr[1,]</strong></td>
 </tr>
-<tr class="row-odd"><td rowspan="2"><strong>wavelength</strong></td>
+<tr class="row-even"><td rowspan="2"><strong>wavelength</strong></td>
 <td><em>path</em></td>
 <td><strong>/lim_nom_wav_assignment[]/nom_wl[]</strong></td>
 </tr>
-<tr class="row-even"><td><em>description</em></td>
+<tr class="row-odd"><td><em>description</em></td>
 <td>Will be set to nm</td>
 </tr>
-<tr class="row-odd"><td><strong>sensor_latitude</strong></td>
+<tr class="row-even"><td><strong>sensor_latitude</strong></td>
 <td><em>path</em></td>
 <td><strong>/lim_ads/lat[]</strong></td>
 </tr>
-<tr class="row-even"><td><strong>sensor_longitude</strong></td>
+<tr class="row-odd"><td><strong>sensor_longitude</strong></td>
 <td><em>path</em></td>
 <td><strong>/lim_ads/longit[]</strong></td>
 </tr>
-<tr class="row-odd"><td><strong>sensor_altitude</strong></td>
+<tr class="row-even"><td><strong>sensor_altitude</strong></td>
 <td><em>path</em></td>
 <td><strong>/lim_ads/alt[]</strong></td>
 </tr>
-<tr class="row-even"><td rowspan="4"><strong>scene_type</strong></td>
+<tr class="row-odd"><td rowspan="4"><strong>scene_type</strong></td>
 <td><em>condition</em></td>
 <td>CODA product version 0</td>
 </tr>
-<tr class="row-odd"><td><em>path</em></td>
+<tr class="row-even"><td><em>path</em></td>
 <td><strong>/lim_summary_quality[0]/limb_flag</strong></td>
 </tr>
-<tr class="row-even"><td><em>condition</em></td>
+<tr class="row-odd"><td><em>condition</em></td>
 <td>CODA product version 1 and higher</td>
 </tr>
-<tr class="row-odd"><td><em>path</em></td>
+<tr class="row-even"><td><em>path</em></td>
 <td><strong>/lim_summary_quality[0]/obs_illum_cond</strong></td>
 </tr>
 </tbody>

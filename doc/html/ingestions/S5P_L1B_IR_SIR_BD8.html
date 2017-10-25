@@ -188,19 +188,25 @@
 <td>seconds since 2010-01-01</td>
 <td>time of the measurement</td>
 </tr>
-<tr class="row-even"><td><strong>wavelength</strong></td>
+<tr class="row-even"><td><strong>orbit_index</strong></td>
+<td>int32</td>
+<td>&#160;</td>
+<td>&#160;</td>
+<td>absolute orbit number</td>
+</tr>
+<tr class="row-odd"><td><strong>wavelength</strong></td>
 <td>float</td>
 <td>{<em>time</em>, <em>spectral</em>}</td>
 <td>nm</td>
 <td>calibrated wavelength</td>
 </tr>
-<tr class="row-odd"><td><strong>photon_irradiance</strong></td>
+<tr class="row-even"><td><strong>photon_irradiance</strong></td>
 <td>float</td>
 <td>{<em>time</em>, <em>spectral</em>}</td>
 <td>mol/(s.m^2.nm)</td>
 <td>spectral photon irradiance</td>
 </tr>
-<tr class="row-even"><td><strong>index</strong></td>
+<tr class="row-odd"><td><strong>index</strong></td>
 <td>int32</td>
 <td>{<em>time</em>}</td>
 <td>&#160;</td>
@@ -259,11 +265,15 @@
 <tr class="row-even"><td><em>description</em></td>
 <td>time converted from milliseconds since a reference time (given as seconds since 2010-01-01) to seconds since 2010-01-01 (using 86400 seconds per day); the time associated with a scanline is repeated for each pixel in the scanline</td>
 </tr>
-<tr class="row-odd"><td><strong>wavelength</strong></td>
+<tr class="row-odd"><td><strong>orbit_index</strong></td>
+<td><em>path</em></td>
+<td><strong>/&#64;orbit</strong></td>
+</tr>
+<tr class="row-even"><td><strong>wavelength</strong></td>
 <td><em>path</em></td>
 <td><strong>/BAND8_IRRADIANCE/STANDARD_MODE/INSTRUMENT/calibrated_wavelength[]</strong></td>
 </tr>
-<tr class="row-even"><td><strong>photon_irradiance</strong></td>
+<tr class="row-odd"><td><strong>photon_irradiance</strong></td>
 <td><em>path</em></td>
 <td><strong>/BAND8_IRRADIANCE/STANDARD_MODE/OBSERVATIONS/irradiance[]</strong></td>
 </tr>

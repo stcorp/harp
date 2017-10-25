@@ -182,97 +182,103 @@
 <td>seconds since 2000-01-01</td>
 <td>time of the measurement at the end of the integration time</td>
 </tr>
-<tr class="row-odd"><td><strong>latitude</strong></td>
+<tr class="row-odd"><td><strong>orbit_index</strong></td>
+<td>int32</td>
+<td>&#160;</td>
+<td>&#160;</td>
+<td>absolute orbit number</td>
+</tr>
+<tr class="row-even"><td><strong>latitude</strong></td>
 <td>double</td>
 <td>{<em>time</em>}</td>
 <td>degree_north</td>
 <td>center latitude of the measurement</td>
 </tr>
-<tr class="row-even"><td><strong>longitude</strong></td>
+<tr class="row-odd"><td><strong>longitude</strong></td>
 <td>double</td>
 <td>{<em>time</em>}</td>
 <td>degree_east</td>
 <td>center longitude of the measurement</td>
 </tr>
-<tr class="row-odd"><td><strong>latitude_bounds</strong></td>
+<tr class="row-even"><td><strong>latitude_bounds</strong></td>
 <td>double</td>
 <td>{<em>time</em>, 4}</td>
 <td>degree_north</td>
 <td>corner latitudes for the ground pixel of the measurement</td>
 </tr>
-<tr class="row-even"><td><strong>longitude_bounds</strong></td>
+<tr class="row-odd"><td><strong>longitude_bounds</strong></td>
 <td>double</td>
 <td>{<em>time</em>, 4}</td>
 <td>degree_east</td>
 <td>corner longitudes for the ground pixel of the measurement</td>
 </tr>
-<tr class="row-odd"><td><strong>transmittance</strong></td>
+<tr class="row-even"><td><strong>transmittance</strong></td>
 <td>double</td>
 <td>{<em>time</em>, <em>spectral</em>}</td>
 <td>&#160;</td>
 <td>transmittance</td>
 </tr>
-<tr class="row-even"><td><strong>wavelength</strong></td>
+<tr class="row-odd"><td><strong>wavelength</strong></td>
 <td>double</td>
 <td>{<em>time</em>, <em>spectral</em>}</td>
 <td>nm</td>
 <td>nominal wavelength assignment for each of the detector pixels</td>
 </tr>
-<tr class="row-odd"><td><strong>integration_time</strong></td>
+<tr class="row-even"><td><strong>integration_time</strong></td>
 <td>double</td>
 <td>{<em>time</em>, <em>spectral</em>}</td>
 <td>s</td>
 <td>integration time for each pixel</td>
 </tr>
-<tr class="row-even"><td><strong>scan_subindex</strong></td>
+<tr class="row-odd"><td><strong>scan_subindex</strong></td>
 <td>int8</td>
 <td>{<em>time</em>}</td>
 <td>&#160;</td>
 <td>relative index (0-15) of this measurement within a scan (forward+backward)</td>
 </tr>
-<tr class="row-odd"><td><strong>scan_direction_type</strong></td>
+<tr class="row-even"><td><strong>scan_direction_type</strong></td>
 <td>int8</td>
 <td>{<em>time</em>}</td>
 <td>&#160;</td>
 <td>scan direction for each measurement; enumeration values: forward (0), backward (1)</td>
 </tr>
-<tr class="row-even"><td><strong>cloud_top_pressure</strong></td>
+<tr class="row-odd"><td><strong>cloud_top_pressure</strong></td>
 <td>double</td>
 <td>{<em>time</em>}</td>
 <td>hPa</td>
 <td>cloud top pressure</td>
 </tr>
-<tr class="row-odd"><td><strong>cloud_fraction</strong></td>
+<tr class="row-even"><td><strong>cloud_fraction</strong></td>
 <td>double</td>
 <td>{<em>time</em>}</td>
 <td>&#160;</td>
 <td>cloud fraction</td>
 </tr>
-<tr class="row-even"><td><strong>solar_zenith_angle_toa</strong></td>
+<tr class="row-odd"><td><strong>solar_zenith_angle_toa</strong></td>
 <td>double</td>
 <td>{<em>time</em>}</td>
 <td>degree</td>
 <td>solar zenith angle at top of atmosphere</td>
 </tr>
-<tr class="row-odd"><td><strong>solar_azimuth_angle_toa</strong></td>
+<tr class="row-even"><td><strong>solar_azimuth_angle_toa</strong></td>
 <td>double</td>
 <td>{<em>time</em>}</td>
 <td>degree</td>
 <td>solar azimuth angle at top of atmosphere</td>
 </tr>
-<tr class="row-even"><td><strong>viewing_zenith_angle_toa</strong></td>
+<tr class="row-odd"><td><strong>viewing_zenith_angle_toa</strong></td>
 <td>double</td>
 <td>{<em>time</em>}</td>
 <td>degree</td>
 <td>viewing zenith angle at top of atmosphere</td>
 </tr>
-<tr class="row-odd"><td><strong>viewing_azimuth_angle_toa</strong></td>
+<tr class="row-even"><td><strong>viewing_azimuth_angle_toa</strong></td>
 <td>double</td>
 <td>{<em>time</em>}</td>
 <td>degree</td>
 <td>viewing azimuth angle at top of atmosphere</td>
 </tr>
-<tr class="row-even"><td><strong>index</strong></td>
+<tr class="row-odd"><td><strong>index</strong></td>
 <td>int32</td>
 <td>{<em>time</em>}</td>
 <td>&#160;</td>
@@ -343,189 +349,193 @@
 <tr class="row-odd"><td><em>description</em></td>
 <td>The record start time is the start time of the scan and thus the start time of the second readout in the MDR. The start time for readout i (0..31) is thus RECORD_START_TIME + (i - 1) * 0.1875 and the time at end of integration time (which is the time that is returned) is RECORD_START_TIME + i * 0.1875</td>
 </tr>
-<tr class="row-even"><td rowspan="6"><strong>latitude</strong></td>
+<tr class="row-even"><td><strong>orbit_index</strong></td>
+<td><em>path</em></td>
+<td><strong>/MPHR/ORBIT_START</strong></td>
+</tr>
+<tr class="row-odd"><td rowspan="6"><strong>latitude</strong></td>
 <td><em>condition</em></td>
 <td>CODA version &lt; 12</td>
 </tr>
-<tr class="row-odd"><td><em>path</em></td>
+<tr class="row-even"><td><em>path</em></td>
 <td><strong>/MDR[]/Earthshine/GEO_EARTH_ACTUAL/CENTRE_ACTUAL[INT_INDEX[band_id],]/latitude</strong></td>
 </tr>
-<tr class="row-even"><td><em>description</em></td>
+<tr class="row-odd"><td><em>description</em></td>
 <td>The integration time index INT_INDEX[band_id] is the index of the band with the minimum integration time (limited to those bands that are ingested)</td>
 </tr>
-<tr class="row-odd"><td><em>condition</em></td>
+<tr class="row-even"><td><em>condition</em></td>
 <td>CODA version &gt;= 12</td>
 </tr>
-<tr class="row-even"><td><em>path</em></td>
+<tr class="row-odd"><td><em>path</em></td>
 <td><strong>/MDR[]/Earthshine/GEO_EARTH_ACTUAL_k[]/CENTRE_ACTUAL/latitude</strong></td>
 </tr>
-<tr class="row-odd"><td><em>description</em></td>
+<tr class="row-even"><td><em>description</em></td>
 <td>The integration time index k is the index (starting with 1) of the minimum integration time such that UNIQUE_INT[k-1] == min(INTEGRATION_TIMES[j]) for all bands j (0..9) that are ingeste.</td>
 </tr>
-<tr class="row-even"><td rowspan="6"><strong>longitude</strong></td>
+<tr class="row-odd"><td rowspan="6"><strong>longitude</strong></td>
 <td><em>condition</em></td>
 <td>CODA version &lt; 12</td>
 </tr>
-<tr class="row-odd"><td><em>path</em></td>
+<tr class="row-even"><td><em>path</em></td>
 <td><strong>/MDR[]/Earthshine/GEO_EARTH_ACTUAL/CENTRE_ACTUAL[INT_INDEX[band_id],]/longitude</strong></td>
 </tr>
-<tr class="row-even"><td><em>description</em></td>
+<tr class="row-odd"><td><em>description</em></td>
 <td>The integration time index INT_INDEX[band_id] is the index of the band with the minimum integration time (limited to those bands that are ingested).</td>
 </tr>
-<tr class="row-odd"><td><em>condition</em></td>
+<tr class="row-even"><td><em>condition</em></td>
 <td>CODA version &gt;= 12</td>
 </tr>
-<tr class="row-even"><td><em>path</em></td>
+<tr class="row-odd"><td><em>path</em></td>
 <td><strong>/MDR[]/Earthshine/GEO_EARTH_ACTUAL_k[]/CENTRE_ACTUAL/longitude</strong></td>
 </tr>
-<tr class="row-odd"><td><em>description</em></td>
+<tr class="row-even"><td><em>description</em></td>
 <td>The integration time index k is the index (starting with 1) of the minimum integration time such that UNIQUE_INT[k-1] == min(INTEGRATION_TIMES[j]) for all bands j (0..9) that are ingeste.</td>
 </tr>
-<tr class="row-even"><td rowspan="6"><strong>latitude_bounds</strong></td>
+<tr class="row-odd"><td rowspan="6"><strong>latitude_bounds</strong></td>
 <td><em>condition</em></td>
 <td>CODA version &lt; 12</td>
 </tr>
-<tr class="row-odd"><td><em>path</em></td>
+<tr class="row-even"><td><em>path</em></td>
 <td><strong>/MDR[]/Earthshine/GEO_EARTH_ACTUAL/CORNER_ACTUAL[INT_INDEX[band_id],,]/latitude</strong></td>
 </tr>
-<tr class="row-even"><td><em>description</em></td>
+<tr class="row-odd"><td><em>description</em></td>
 <td>The integration time index INT_INDEX[band_id] is the index of the band with the minimum integration time (limited to those bands that are ingested). The corners ABCD are reordered as BDCA.</td>
 </tr>
-<tr class="row-odd"><td><em>condition</em></td>
+<tr class="row-even"><td><em>condition</em></td>
 <td>CODA version &gt;= 12</td>
 </tr>
-<tr class="row-even"><td><em>path</em></td>
+<tr class="row-odd"><td><em>path</em></td>
 <td><strong>/MDR[]/Earthshine/GEO_EARTH_ACTUAL_k[]/CORNER_ACTUAL[]/latitude</strong></td>
 </tr>
-<tr class="row-odd"><td><em>description</em></td>
+<tr class="row-even"><td><em>description</em></td>
 <td>The integration time index k is the index (starting with 1) of the minimum integration time such that UNIQUE_INT[k-1] == min(INTEGRATION_TIMES[j]) for all bands j (0..9) that are ingeste.</td>
 </tr>
-<tr class="row-even"><td rowspan="6"><strong>longitude_bounds</strong></td>
+<tr class="row-odd"><td rowspan="6"><strong>longitude_bounds</strong></td>
 <td><em>condition</em></td>
 <td>CODA version &lt; 12</td>
 </tr>
-<tr class="row-odd"><td><em>path</em></td>
+<tr class="row-even"><td><em>path</em></td>
 <td><strong>/MDR[]/Earthshine/GEO_EARTH_ACTUAL/CORNER_ACTUAL[INT_INDEX[band_id],,]/longitude</strong></td>
 </tr>
-<tr class="row-even"><td><em>description</em></td>
+<tr class="row-odd"><td><em>description</em></td>
 <td>The integration time index INT_INDEX[band_id] is the index of the band with the minimum integration time (limited to those bands that are ingested). The corners ABCD are reordered as BDCA.</td>
 </tr>
-<tr class="row-odd"><td><em>condition</em></td>
+<tr class="row-even"><td><em>condition</em></td>
 <td>CODA version &gt;= 12</td>
 </tr>
-<tr class="row-even"><td><em>path</em></td>
+<tr class="row-odd"><td><em>path</em></td>
 <td><strong>/MDR[]/Earthshine/GEO_EARTH_ACTUAL_k[]/CORNER_ACTUAL[]/longitude</strong></td>
 </tr>
-<tr class="row-odd"><td><em>description</em></td>
+<tr class="row-even"><td><em>description</em></td>
 <td>The integration time index k is the index (starting with 1) of the minimum integration time such that UNIQUE_INT[k-1] == min(INTEGRATION_TIMES[j]) for all bands j (0..9) that are ingeste.</td>
 </tr>
-<tr class="row-even"><td><strong>transmittance</strong></td>
+<tr class="row-odd"><td><strong>transmittance</strong></td>
 <td><em>path</em></td>
 <td><strong>/MDR[]/Earthshine/BAND_1A[,]/RAD, /MDR[]/Earthshine/BAND_1B[,]/RAD, /MDR[]/Earthshine/BAND_2A[,]/RAD, /MDR[]/Earthshine/BAND_2B[,]/RAD, /MDR[]/Earthshine/BAND_3[,]/RAD, /MDR[]/Earthshine/BAND_4[,]/RAD</strong></td>
 </tr>
-<tr class="row-odd"><td><strong>wavelength</strong></td>
+<tr class="row-even"><td><strong>wavelength</strong></td>
 <td><em>path</em></td>
 <td><strong>/MDR[]/Earthshine/WAVELENGTH_1A[], /MDR[]/Earthshine/WAVELENGTH_1B[], /MDR[]/Earthshine/WAVELENGTH_2A[], /MDR/Earthshine[]/WAVELENGTH_2B[], /MDR[]/Earthshine/WAVELENGTH_3[], /MDR[]/Earthshine/WAVELENGTH_4[]</strong></td>
 </tr>
-<tr class="row-even"><td><strong>integration_time</strong></td>
+<tr class="row-odd"><td><strong>integration_time</strong></td>
 <td><em>path</em></td>
 <td><strong>/MDR[]/Earthshine/INTEGRATION_TIMES[]</strong></td>
 </tr>
-<tr class="row-odd"><td rowspan="2"><strong>scan_direction_type</strong></td>
+<tr class="row-even"><td rowspan="2"><strong>scan_direction_type</strong></td>
 <td><em>path</em></td>
 <td><strong>/MDR[]/Earthshine/INTEGRATION_TIMES[]</strong></td>
 </tr>
-<tr class="row-even"><td><em>description</em></td>
+<tr class="row-odd"><td><em>description</em></td>
 <td>the scan direction is based on the subset counter of the measurement; 0-11: forward (0), 12-15: backward (1)</td>
 </tr>
-<tr class="row-odd"><td rowspan="2"><strong>cloud_top_pressure</strong></td>
+<tr class="row-even"><td rowspan="2"><strong>cloud_top_pressure</strong></td>
 <td><em>path</em></td>
 <td><strong>/MDR[]/Earthshine/CLOUD/FIT_1[]</strong></td>
 </tr>
-<tr class="row-even"><td><em>description</em></td>
+<tr class="row-odd"><td><em>description</em></td>
 <td>If the minimum ingested integration time &gt; 187.5ms then the corresponding cloud top pressures will be combined using logarithmic averaging. The cloud top pressure will be set to NaN if FIT_MODE in the CLOUD structure is not equal to 0 or if FIT_1 is set to a fill value (even when this holds for only one of the averaged items)</td>
 </tr>
-<tr class="row-odd"><td rowspan="2"><strong>cloud_fraction</strong></td>
+<tr class="row-even"><td rowspan="2"><strong>cloud_fraction</strong></td>
 <td><em>path</em></td>
 <td><strong>/MDR[]/Earthshine/CLOUD/FIT_2[]</strong></td>
 </tr>
-<tr class="row-even"><td><em>description</em></td>
+<tr class="row-odd"><td><em>description</em></td>
 <td>If the minimum ingested integration time &gt; 187.5ms then the corresponding cloud fractions will be combined using averaging. The cloud fraction will be set to NaN if FIT_MODE in the CLOUD structure is not equal to 0 or if FIT_2 is set to a fill value (even when this holds for only one of the averaged items)</td>
 </tr>
-<tr class="row-odd"><td rowspan="6"><strong>solar_zenith_angle_toa</strong></td>
+<tr class="row-even"><td rowspan="6"><strong>solar_zenith_angle_toa</strong></td>
 <td><em>condition</em></td>
 <td>CODA version &lt; 12</td>
 </tr>
-<tr class="row-even"><td><em>path</em></td>
+<tr class="row-odd"><td><em>path</em></td>
 <td><strong>/MDR[]/Earthshine/GEO_EARTH_ACTUAL/SOLAR_ZENITH_ACTUAL[INT_INDEX[band_id],1,]</strong></td>
 </tr>
-<tr class="row-odd"><td><em>description</em></td>
+<tr class="row-even"><td><em>description</em></td>
 <td>The integration time index INT_INDEX[band_id] is the index of the band with the minimum integration time (limited to those bands that are ingested).</td>
 </tr>
-<tr class="row-even"><td><em>condition</em></td>
+<tr class="row-odd"><td><em>condition</em></td>
 <td>CODA version &gt;= 12</td>
 </tr>
-<tr class="row-odd"><td><em>path</em></td>
+<tr class="row-even"><td><em>path</em></td>
 <td><strong>/MDR[]/Earthshine/GEO_EARTH_ACTUAL_k[]/SOLAR_ZENITH_ACTUAL[1]</strong></td>
 </tr>
-<tr class="row-even"><td><em>description</em></td>
+<tr class="row-odd"><td><em>description</em></td>
 <td>The integration time index k is the index (starting with 1) of the minimum integration time such that UNIQUE_INT[k-1] == min(INTEGRATION_TIMES[j]) for all bands j (0..9) that are ingeste.</td>
 </tr>
-<tr class="row-odd"><td rowspan="6"><strong>solar_azimuth_angle_toa</strong></td>
+<tr class="row-even"><td rowspan="6"><strong>solar_azimuth_angle_toa</strong></td>
 <td><em>condition</em></td>
 <td>CODA version &lt; 12</td>
 </tr>
-<tr class="row-even"><td><em>path</em></td>
+<tr class="row-odd"><td><em>path</em></td>
 <td><strong>/MDR[]/Earthshine/GEO_EARTH_ACTUAL/SOLAR_AZIMUTH_ACTUAL[INT_INDEX[band_id],1,]</strong></td>
 </tr>
-<tr class="row-odd"><td><em>description</em></td>
+<tr class="row-even"><td><em>description</em></td>
 <td>The integration time index INT_INDEX[band_id] is the index of the band with the minimum integration time (limited to those bands that are ingested).</td>
 </tr>
-<tr class="row-even"><td><em>condition</em></td>
+<tr class="row-odd"><td><em>condition</em></td>
 <td>CODA version &gt;= 12</td>
 </tr>
-<tr class="row-odd"><td><em>path</em></td>
+<tr class="row-even"><td><em>path</em></td>
 <td><strong>/MDR[]/Earthshine/GEO_EARTH_ACTUAL_k[]/SOLAR_AZIMUTH_ACTUAL[1]</strong></td>
 </tr>
-<tr class="row-even"><td><em>description</em></td>
+<tr class="row-odd"><td><em>description</em></td>
 <td>The integration time index k is the index (starting with 1) of the minimum integration time such that UNIQUE_INT[k-1] == min(INTEGRATION_TIMES[j]) for all bands j (0..9) that are ingeste.</td>
 </tr>
-<tr class="row-odd"><td rowspan="6"><strong>viewing_zenith_angle_toa</strong></td>
+<tr class="row-even"><td rowspan="6"><strong>viewing_zenith_angle_toa</strong></td>
 <td><em>condition</em></td>
 <td>CODA version &lt; 12</td>
 </tr>
-<tr class="row-even"><td><em>path</em></td>
+<tr class="row-odd"><td><em>path</em></td>
 <td><strong>/MDR[]/Earthshine/GEO_EARTH_ACTUAL/SAT_ZENITH_ACTUAL[INT_INDEX[band_id],1,]</strong></td>
 </tr>
-<tr class="row-odd"><td><em>description</em></td>
+<tr class="row-even"><td><em>description</em></td>
 <td>The integration time index INT_INDEX[band_id] is the index of the band with the minimum integration time (limited to those bands that are ingested).</td>
 </tr>
-<tr class="row-even"><td><em>condition</em></td>
+<tr class="row-odd"><td><em>condition</em></td>
 <td>CODA version &gt;= 12</td>
 </tr>
-<tr class="row-odd"><td><em>path</em></td>
+<tr class="row-even"><td><em>path</em></td>
 <td><strong>/MDR[]/Earthshine/GEO_EARTH_ACTUAL_k[]/SAT_ZENITH_ACTUAL[1]</strong></td>
 </tr>
-<tr class="row-even"><td><em>description</em></td>
+<tr class="row-odd"><td><em>description</em></td>
 <td>The integration time index k is the index (starting with 1) of the minimum integration time such that UNIQUE_INT[k-1] == min(INTEGRATION_TIMES[j]) for all bands j (0..9) that are ingeste.</td>
 </tr>
-<tr class="row-odd"><td rowspan="6"><strong>viewing_azimuth_angle_toa</strong></td>
+<tr class="row-even"><td rowspan="6"><strong>viewing_azimuth_angle_toa</strong></td>
 <td><em>condition</em></td>
 <td>CODA version &lt; 12</td>
 </tr>
-<tr class="row-even"><td><em>path</em></td>
+<tr class="row-odd"><td><em>path</em></td>
 <td><strong>/MDR[]/Earthshine/GEO_EARTH_ACTUAL/SAT_AZIMUTH_ACTUAL[INT_INDEX[band_id],1,]</strong></td>
 </tr>
-<tr class="row-odd"><td><em>description</em></td>
+<tr class="row-even"><td><em>description</em></td>
 <td>The integration time index INT_INDEX[band_id] is the index of the band with the minimum integration time (limited to those bands that are ingested).</td>
 </tr>
-<tr class="row-even"><td><em>condition</em></td>
+<tr class="row-odd"><td><em>condition</em></td>
 <td>CODA version &gt;= 12</td>
 </tr>
-<tr class="row-odd"><td><em>path</em></td>
+<tr class="row-even"><td><em>path</em></td>
 <td><strong>/MDR[]/Earthshine/GEO_EARTH_ACTUAL_k[]/SAT_AZIMUTH_ACTUAL[1]</strong></td>
 </tr>
-<tr class="row-even"><td><em>description</em></td>
+<tr class="row-odd"><td><em>description</em></td>
 <td>The integration time index k is the index (starting with 1) of the minimum integration time such that UNIQUE_INT[k-1] == min(INTEGRATION_TIMES[j]) for all bands j (0..9) that are ingeste.</td>
 </tr>
 </tbody>

@@ -188,85 +188,91 @@
 <td>seconds since 2010-01-01</td>
 <td>time of the measurement</td>
 </tr>
-<tr class="row-even"><td><strong>latitude</strong></td>
+<tr class="row-even"><td><strong>orbit_index</strong></td>
+<td>int32</td>
+<td>&#160;</td>
+<td>&#160;</td>
+<td>absolute orbit number</td>
+</tr>
+<tr class="row-odd"><td><strong>latitude</strong></td>
 <td>float</td>
 <td>{<em>time</em>}</td>
 <td>degree_north</td>
 <td>latitude of the ground pixel center (WGS84)</td>
 </tr>
-<tr class="row-odd"><td><strong>longitude</strong></td>
+<tr class="row-even"><td><strong>longitude</strong></td>
 <td>float</td>
 <td>{<em>time</em>}</td>
 <td>degree_east</td>
 <td>longitude of the ground pixel center (WGS84)</td>
 </tr>
-<tr class="row-even"><td><strong>latitude_bounds</strong></td>
+<tr class="row-odd"><td><strong>latitude_bounds</strong></td>
 <td>float</td>
 <td>{<em>time</em>, 4}</td>
 <td>degree_north</td>
 <td>latitudes of the ground pixel corners (WGS84)</td>
 </tr>
-<tr class="row-odd"><td><strong>longitude_bounds</strong></td>
+<tr class="row-even"><td><strong>longitude_bounds</strong></td>
 <td>float</td>
 <td>{<em>time</em>, 4}</td>
 <td>degree_east</td>
 <td>longitudes of the ground pixel corners (WGS84)</td>
 </tr>
-<tr class="row-even"><td><strong>sensor_latitude</strong></td>
+<tr class="row-odd"><td><strong>sensor_latitude</strong></td>
 <td>float</td>
 <td>{<em>time</em>}</td>
 <td>degree_north</td>
 <td>latitude of the sub-satellite point (WGS84)</td>
 </tr>
-<tr class="row-odd"><td><strong>sensor_longitude</strong></td>
+<tr class="row-even"><td><strong>sensor_longitude</strong></td>
 <td>float</td>
 <td>{<em>time</em>}</td>
 <td>degree_east</td>
 <td>longitude of the sub-satellite point (WGS84)</td>
 </tr>
-<tr class="row-even"><td><strong>sensor_altitude</strong></td>
+<tr class="row-odd"><td><strong>sensor_altitude</strong></td>
 <td>float</td>
 <td>{<em>time</em>}</td>
 <td>m</td>
 <td>altitude of the satellite (WGS84)</td>
 </tr>
-<tr class="row-odd"><td><strong>solar_zenith_angle</strong></td>
+<tr class="row-even"><td><strong>solar_zenith_angle</strong></td>
 <td>float</td>
 <td>{<em>time</em>}</td>
 <td>degree</td>
 <td>zenith angle of the Sun at the ground pixel location (WGS84)</td>
 </tr>
-<tr class="row-even"><td><strong>solar_azimuth_angle</strong></td>
+<tr class="row-odd"><td><strong>solar_azimuth_angle</strong></td>
 <td>float</td>
 <td>{<em>time</em>}</td>
 <td>degree</td>
 <td>azimuth angle of the Sun at the ground pixel location (WGS84), measured East-of-North</td>
 </tr>
-<tr class="row-odd"><td><strong>sensor_zenith_angle</strong></td>
+<tr class="row-even"><td><strong>sensor_zenith_angle</strong></td>
 <td>float</td>
 <td>{<em>time</em>}</td>
 <td>degree</td>
 <td>zenith angle of the satellite at the ground pixel location (WGS84)</td>
 </tr>
-<tr class="row-even"><td><strong>sensor_azimuth_angle</strong></td>
+<tr class="row-odd"><td><strong>sensor_azimuth_angle</strong></td>
 <td>float</td>
 <td>{<em>time</em>}</td>
 <td>degree</td>
 <td>azimuth angle of the satellite at the ground pixel location (WGS84), measured East-of-North</td>
 </tr>
-<tr class="row-odd"><td><strong>wavelength</strong></td>
+<tr class="row-even"><td><strong>wavelength</strong></td>
 <td>float</td>
 <td>{<em>time</em>, <em>spectral</em>}</td>
 <td>nm</td>
 <td>nominal wavelength</td>
 </tr>
-<tr class="row-even"><td><strong>photon_radiance</strong></td>
+<tr class="row-odd"><td><strong>photon_radiance</strong></td>
 <td>float</td>
 <td>{<em>time</em>, <em>spectral</em>}</td>
 <td>mol/(s.m^2.nm.sr)</td>
 <td>spectral photon radiance</td>
 </tr>
-<tr class="row-odd"><td><strong>index</strong></td>
+<tr class="row-even"><td><strong>index</strong></td>
 <td>int32</td>
 <td>{<em>time</em>}</td>
 <td>&#160;</td>
@@ -301,64 +307,68 @@
 <tr class="row-even"><td><em>description</em></td>
 <td>time converted from milliseconds since a reference time (given as seconds since 2010-01-01) to seconds since 2010-01-01 (using 86400 seconds per day); the time associated with a scanline is repeated for each pixel in the scanline</td>
 </tr>
-<tr class="row-odd"><td><strong>latitude</strong></td>
+<tr class="row-odd"><td><strong>orbit_index</strong></td>
+<td><em>path</em></td>
+<td><strong>/&#64;orbit</strong></td>
+</tr>
+<tr class="row-even"><td><strong>latitude</strong></td>
 <td><em>path</em></td>
 <td><strong>/BAND6_RADIANCE/STANDARD_MODE/GEODATA/latitude[]</strong></td>
 </tr>
-<tr class="row-even"><td><strong>longitude</strong></td>
+<tr class="row-odd"><td><strong>longitude</strong></td>
 <td><em>path</em></td>
 <td><strong>/BAND6_RADIANCE/STANDARD_MODE/GEODATA/longitude[]</strong></td>
 </tr>
-<tr class="row-odd"><td><strong>latitude_bounds</strong></td>
+<tr class="row-even"><td><strong>latitude_bounds</strong></td>
 <td><em>path</em></td>
 <td><strong>/BAND6_RADIANCE/STANDARD_MODE/GEODATA/latitude_bounds[]</strong></td>
 </tr>
-<tr class="row-even"><td><strong>longitude_bounds</strong></td>
+<tr class="row-odd"><td><strong>longitude_bounds</strong></td>
 <td><em>path</em></td>
 <td><strong>/BAND6_RADIANCE/STANDARD_MODE/GEODATA/longitude_bounds[]</strong></td>
 </tr>
-<tr class="row-odd"><td rowspan="2"><strong>sensor_latitude</strong></td>
+<tr class="row-even"><td rowspan="2"><strong>sensor_latitude</strong></td>
 <td><em>path</em></td>
 <td><strong>/BAND6_RADIANCE/STANDARD_MODE/GEODATA/satellite_latitude[]</strong></td>
 </tr>
-<tr class="row-even"><td><em>description</em></td>
+<tr class="row-odd"><td><em>description</em></td>
 <td>the satellite latitude associated with a scanline is repeated for each pixel in the scanline</td>
 </tr>
-<tr class="row-odd"><td rowspan="2"><strong>sensor_longitude</strong></td>
+<tr class="row-even"><td rowspan="2"><strong>sensor_longitude</strong></td>
 <td><em>path</em></td>
 <td><strong>/BAND6_RADIANCE/STANDARD_MODE/GEODATA/satellite_longitude[]</strong></td>
 </tr>
-<tr class="row-even"><td><em>description</em></td>
+<tr class="row-odd"><td><em>description</em></td>
 <td>the satellite longitude associated with a scanline is repeated for each pixel in the scanline</td>
 </tr>
-<tr class="row-odd"><td rowspan="2"><strong>sensor_altitude</strong></td>
+<tr class="row-even"><td rowspan="2"><strong>sensor_altitude</strong></td>
 <td><em>path</em></td>
 <td><strong>/BAND6_RADIANCE/STANDARD_MODE/GEODATA/satellite_altitude[]</strong></td>
 </tr>
-<tr class="row-even"><td><em>description</em></td>
+<tr class="row-odd"><td><em>description</em></td>
 <td>the satellite altitude associated with a scanline is repeated for each pixel in the scanline</td>
 </tr>
-<tr class="row-odd"><td><strong>solar_zenith_angle</strong></td>
+<tr class="row-even"><td><strong>solar_zenith_angle</strong></td>
 <td><em>path</em></td>
 <td><strong>/BAND6_RADIANCE/STANDARD_MODE/GEODATA/solar_zenith_angle[]</strong></td>
 </tr>
-<tr class="row-even"><td><strong>solar_azimuth_angle</strong></td>
+<tr class="row-odd"><td><strong>solar_azimuth_angle</strong></td>
 <td><em>path</em></td>
 <td><strong>/BAND6_RADIANCE/STANDARD_MODE/GEODATA/solar_azimuth_angle[]</strong></td>
 </tr>
-<tr class="row-odd"><td><strong>sensor_zenith_angle</strong></td>
+<tr class="row-even"><td><strong>sensor_zenith_angle</strong></td>
 <td><em>path</em></td>
 <td><strong>/BAND6_RADIANCE/STANDARD_MODE/GEODATA/viewing_zenith_angle[]</strong></td>
 </tr>
-<tr class="row-even"><td><strong>sensor_azimuth_angle</strong></td>
+<tr class="row-odd"><td><strong>sensor_azimuth_angle</strong></td>
 <td><em>path</em></td>
 <td><strong>/BAND6_RADIANCE/STANDARD_MODE/GEODATA/viewing_azimuth_angle[]</strong></td>
 </tr>
-<tr class="row-odd"><td><strong>wavelength</strong></td>
+<tr class="row-even"><td><strong>wavelength</strong></td>
 <td><em>path</em></td>
 <td><strong>/BAND6_RADIANCE/STANDARD_MODE/INSTRUMENT/nominal_wavelength[]</strong></td>
 </tr>
-<tr class="row-even"><td><strong>photon_radiance</strong></td>
+<tr class="row-odd"><td><strong>photon_radiance</strong></td>
 <td><em>path</em></td>
 <td><strong>/BAND6_RADIANCE/STANDARD_MODE/OBSERVATIONS/radiance[]</strong></td>
 </tr>

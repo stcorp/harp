@@ -188,43 +188,49 @@
 <td>s</td>
 <td>duration of the measurement</td>
 </tr>
-<tr class="row-even"><td><strong>latitude</strong></td>
+<tr class="row-even"><td><strong>orbit_index</strong></td>
+<td>int32</td>
+<td>&#160;</td>
+<td>&#160;</td>
+<td>absolute orbit number</td>
+</tr>
+<tr class="row-odd"><td><strong>latitude</strong></td>
 <td>double</td>
 <td>{<em>time</em>, <em>vertical</em>}</td>
 <td>degree_north</td>
 <td>average of the latitudes of the edges of the height bin along the line-of-sight</td>
 </tr>
-<tr class="row-odd"><td><strong>longitude</strong></td>
+<tr class="row-even"><td><strong>longitude</strong></td>
 <td>double</td>
 <td>{<em>time</em>, <em>vertical</em>}</td>
 <td>degree_east</td>
 <td>average of the longitude of the edges of the height bin along the line-of-sight</td>
 </tr>
-<tr class="row-even"><td><strong>altitude_bounds</strong></td>
+<tr class="row-odd"><td><strong>altitude_bounds</strong></td>
 <td>double</td>
 <td>{<em>time</em>, <em>vertical</em>, 2}</td>
 <td>m</td>
 <td>altitude boundaries of the height bin along the line-of-sight; value is negative if below DEM surface</td>
 </tr>
-<tr class="row-odd"><td><strong>geoid_height</strong></td>
+<tr class="row-even"><td><strong>geoid_height</strong></td>
 <td>double</td>
 <td>{<em>time</em>}</td>
 <td>m</td>
 <td>Geoid separation</td>
 </tr>
-<tr class="row-even"><td><strong>hlos_wind_velocity</strong></td>
+<tr class="row-odd"><td><strong>hlos_wind_velocity</strong></td>
 <td>double</td>
 <td>{<em>time</em>, <em>vertical</em>}</td>
 <td>m/s</td>
 <td>HLOS wind velocity at the altitude bin</td>
 </tr>
-<tr class="row-odd"><td><strong>hlos_wind_velocity_validity</strong></td>
+<tr class="row-even"><td><strong>hlos_wind_velocity_validity</strong></td>
 <td>int32</td>
 <td>{<em>time</em>, <em>vertical</em>}</td>
 <td>&#160;</td>
 <td>quality flag of the HLOS wind velocity at the altitude bin</td>
 </tr>
-<tr class="row-even"><td><strong>index</strong></td>
+<tr class="row-odd"><td><strong>index</strong></td>
 <td>int32</td>
 <td>{<em>time</em>}</td>
 <td>&#160;</td>
@@ -286,36 +292,40 @@
 <tr class="row-odd"><td><em>description</em></td>
 <td>set to 12.0/n_max_actual seconds</td>
 </tr>
-<tr class="row-even"><td rowspan="2"><strong>latitude</strong></td>
+<tr class="row-even"><td><strong>orbit_index</strong></td>
+<td><em>path</em></td>
+<td><strong>/mph/abs_orbit</strong></td>
+</tr>
+<tr class="row-odd"><td rowspan="2"><strong>latitude</strong></td>
 <td><em>path</em></td>
 <td><strong>/geolocation[]/measurement_geolocation[]/mie_geolocation[]/latitude_of_height_bin</strong></td>
 </tr>
-<tr class="row-odd"><td><em>description</em></td>
+<tr class="row-even"><td><em>description</em></td>
 <td>average of the value at the upper and lower edge of the height bin</td>
 </tr>
-<tr class="row-even"><td rowspan="2"><strong>longitude</strong></td>
+<tr class="row-odd"><td rowspan="2"><strong>longitude</strong></td>
 <td><em>path</em></td>
 <td><strong>/geolocation[]/measurement_geolocation[]/mie_geolocation[]/latitude_of_height_bin</strong></td>
 </tr>
-<tr class="row-odd"><td><em>description</em></td>
+<tr class="row-even"><td><em>description</em></td>
 <td>average of the value at the upper and lower edge of the height bin</td>
 </tr>
-<tr class="row-even"><td rowspan="2"><strong>altitude_bounds</strong></td>
+<tr class="row-odd"><td rowspan="2"><strong>altitude_bounds</strong></td>
 <td><em>path</em></td>
 <td><strong>/geolocation[]/measurement_geolocation[]/mie_geolocation[]/altitude_of_height_bin, /geolocation[]/observation_geolocation/geoid_separation</strong></td>
 </tr>
-<tr class="row-odd"><td><em>description</em></td>
+<tr class="row-even"><td><em>description</em></td>
 <td>actual altitude is the stored height vs. WGS84 - geoid_separation</td>
 </tr>
-<tr class="row-even"><td><strong>geoid_height</strong></td>
+<tr class="row-odd"><td><strong>geoid_height</strong></td>
 <td><em>path</em></td>
 <td><strong>/geolocation[]/observation_geolocation/geoid_separation</strong></td>
 </tr>
-<tr class="row-odd"><td><strong>hlos_wind_velocity</strong></td>
+<tr class="row-even"><td><strong>hlos_wind_velocity</strong></td>
 <td><em>path</em></td>
 <td><strong>/wind_velocity[]/measurement_wind_profile[]/mie_altitude_bin_wind_info[]/wind_velocity</strong></td>
 </tr>
-<tr class="row-even"><td><strong>hlos_wind_velocity_validity</strong></td>
+<tr class="row-odd"><td><strong>hlos_wind_velocity_validity</strong></td>
 <td><em>path</em></td>
 <td><strong>/wind_velocity[]/measurement_wind_profile[]/mie_altitude_bin_wind_info[]/bin_quality_flag</strong></td>
 </tr>

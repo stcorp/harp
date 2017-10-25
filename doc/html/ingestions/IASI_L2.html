@@ -182,91 +182,97 @@
 <td>seconds since 2000-01-01</td>
 <td>The time of the measurement at end of integration time</td>
 </tr>
-<tr class="row-odd"><td><strong>longitude</strong></td>
+<tr class="row-odd"><td><strong>orbit_index</strong></td>
+<td>int32</td>
+<td>&#160;</td>
+<td>&#160;</td>
+<td>absolute orbit number</td>
+</tr>
+<tr class="row-even"><td><strong>longitude</strong></td>
 <td>double</td>
 <td>{<em>time</em>}</td>
 <td>degree_east</td>
 <td>center longitude of the measurement</td>
 </tr>
-<tr class="row-even"><td><strong>latitude</strong></td>
+<tr class="row-odd"><td><strong>latitude</strong></td>
 <td>double</td>
 <td>{<em>time</em>}</td>
 <td>degree_north</td>
 <td>center latitude of the measurement</td>
 </tr>
-<tr class="row-odd"><td><strong>longitude_bounds</strong></td>
+<tr class="row-even"><td><strong>longitude_bounds</strong></td>
 <td>double</td>
 <td>{<em>time</em>, 4}</td>
 <td>degree_east</td>
 <td>corner longitudes of the measurement</td>
 </tr>
-<tr class="row-even"><td><strong>latitude_bounds</strong></td>
+<tr class="row-odd"><td><strong>latitude_bounds</strong></td>
 <td>double</td>
 <td>{<em>time</em>, 4}</td>
 <td>degree_north</td>
 <td>corner latitudes of the measurement</td>
 </tr>
-<tr class="row-odd"><td><strong>solar_azimuth_angle</strong></td>
+<tr class="row-even"><td><strong>solar_azimuth_angle</strong></td>
 <td>double</td>
 <td>{<em>time</em>}</td>
 <td>degree</td>
 <td>solar azimuth angle at the surface</td>
 </tr>
-<tr class="row-even"><td><strong>solar_zenith_angle</strong></td>
+<tr class="row-odd"><td><strong>solar_zenith_angle</strong></td>
 <td>double</td>
 <td>{<em>time</em>}</td>
 <td>degree</td>
 <td>solar zenith angle at the surface</td>
 </tr>
-<tr class="row-odd"><td><strong>sensor_azimuth_angle</strong></td>
+<tr class="row-even"><td><strong>sensor_azimuth_angle</strong></td>
 <td>double</td>
 <td>{<em>time</em>}</td>
 <td>degree</td>
 <td>sensor azimuth angle at the surface</td>
 </tr>
-<tr class="row-even"><td><strong>sensor_zenith_angle</strong></td>
+<tr class="row-odd"><td><strong>sensor_zenith_angle</strong></td>
 <td>double</td>
 <td>{<em>time</em>}</td>
 <td>degree</td>
 <td>sensor angle at the surface</td>
 </tr>
-<tr class="row-odd"><td><strong>CH4_column_density</strong></td>
+<tr class="row-even"><td><strong>CH4_column_density</strong></td>
 <td>double</td>
 <td>{<em>time</em>}</td>
 <td>kg/m^2</td>
 <td>CH4 column mass density</td>
 </tr>
-<tr class="row-even"><td><strong>CO_column_density</strong></td>
+<tr class="row-odd"><td><strong>CO_column_density</strong></td>
 <td>double</td>
 <td>{<em>time</em>}</td>
 <td>kg/m^2</td>
 <td>CO column mass density</td>
 </tr>
-<tr class="row-odd"><td><strong>CO2_column_density</strong></td>
+<tr class="row-even"><td><strong>CO2_column_density</strong></td>
 <td>double</td>
 <td>{<em>time</em>}</td>
 <td>kg/m^2</td>
 <td>CO2 column mass density</td>
 </tr>
-<tr class="row-even"><td><strong>O3_column_density</strong></td>
+<tr class="row-odd"><td><strong>O3_column_density</strong></td>
 <td>double</td>
 <td>{<em>time</em>}</td>
 <td>kg/m^2</td>
 <td>O3 column mass density</td>
 </tr>
-<tr class="row-odd"><td><strong>N2O_column_density</strong></td>
+<tr class="row-even"><td><strong>N2O_column_density</strong></td>
 <td>double</td>
 <td>{<em>time</em>}</td>
 <td>kg/m^2</td>
 <td>N2O column mass density</td>
 </tr>
-<tr class="row-even"><td><strong>scan_subindex</strong></td>
+<tr class="row-odd"><td><strong>scan_subindex</strong></td>
 <td>int8</td>
 <td>{<em>time</em>}</td>
 <td>&#160;</td>
 <td>the relative index (0-119) of this measurement within an MDR</td>
 </tr>
-<tr class="row-odd"><td><strong>index</strong></td>
+<tr class="row-even"><td><strong>index</strong></td>
 <td>int32</td>
 <td>{<em>time</em>}</td>
 <td>&#160;</td>
@@ -297,61 +303,65 @@
 <tr class="row-odd"><td><em>description</em></td>
 <td>The time for a scan is the MDR start time + the scan id (0..29) times 8 / 37. Each part of the 2x2 matrix of a scan will get assigned the same measurement time (i.e. there are 30 unique time values per mdr)</td>
 </tr>
-<tr class="row-even"><td><strong>longitude</strong></td>
+<tr class="row-even"><td><strong>orbit_index</strong></td>
+<td><em>path</em></td>
+<td><strong>/MPHR/ORBIT_START</strong></td>
+</tr>
+<tr class="row-odd"><td><strong>longitude</strong></td>
 <td><em>path</em></td>
 <td><strong>/MDR[]/MDR/EARTH_LOCATION[,1]</strong></td>
 </tr>
-<tr class="row-odd"><td><strong>latitude</strong></td>
+<tr class="row-even"><td><strong>latitude</strong></td>
 <td><em>path</em></td>
 <td><strong>/MDR[]/MDR/EARTH_LOCATION[,0]</strong></td>
 </tr>
-<tr class="row-even"><td rowspan="2"><strong>longitude_bounds</strong></td>
+<tr class="row-odd"><td rowspan="2"><strong>longitude_bounds</strong></td>
 <td><em>path</em></td>
 <td><strong>/MDR[]/MDR/EARTH_LOCATION[]</strong></td>
 </tr>
-<tr class="row-odd"><td><em>description</em></td>
+<tr class="row-even"><td><em>description</em></td>
 <td>the corner coordinates are rough estimates of the circle areas for the scan elements; the size of a scan element (in a certain direction) is taken to be half the distance, from center to center, from a scan element to its nearest neigbouring scan element</td>
 </tr>
-<tr class="row-even"><td rowspan="2"><strong>latitude_bounds</strong></td>
+<tr class="row-odd"><td rowspan="2"><strong>latitude_bounds</strong></td>
 <td><em>path</em></td>
 <td><strong>/MDR[]/MDR/EARTH_LOCATION[]</strong></td>
 </tr>
-<tr class="row-odd"><td><em>description</em></td>
+<tr class="row-even"><td><em>description</em></td>
 <td>the corner coordinates are rough estimates of the circle areas for the scan elements; the size of a scan element (in a certain direction) is taken to be half the distance, from center to center, from a scan element to its nearest neigbouring scan element</td>
 </tr>
-<tr class="row-even"><td><strong>solar_azimuth_angle</strong></td>
+<tr class="row-odd"><td><strong>solar_azimuth_angle</strong></td>
 <td><em>path</em></td>
 <td><strong>/MDR[]/MDR/ANGULAR_RELATION[,2]</strong></td>
 </tr>
-<tr class="row-odd"><td><strong>solar_zenith_angle</strong></td>
+<tr class="row-even"><td><strong>solar_zenith_angle</strong></td>
 <td><em>path</em></td>
 <td><strong>/MDR[]/MDR/ANGULAR_RELATION[,0]</strong></td>
 </tr>
-<tr class="row-even"><td><strong>sensor_azimuth_angle</strong></td>
+<tr class="row-odd"><td><strong>sensor_azimuth_angle</strong></td>
 <td><em>path</em></td>
 <td><strong>/MDR[]/MDR/ANGULAR_RELATION[,3]</strong></td>
 </tr>
-<tr class="row-odd"><td><strong>sensor_zenith_angle</strong></td>
+<tr class="row-even"><td><strong>sensor_zenith_angle</strong></td>
 <td><em>path</em></td>
 <td><strong>/MDR[]/MDR/ANGULAR_RELATION[,1]</strong></td>
 </tr>
-<tr class="row-even"><td><strong>CH4_column_density</strong></td>
+<tr class="row-odd"><td><strong>CH4_column_density</strong></td>
 <td><em>path</em></td>
 <td><strong>/MDR[]/MDR/INTEGRATED_CH4[]</strong></td>
 </tr>
-<tr class="row-odd"><td><strong>CO_column_density</strong></td>
+<tr class="row-even"><td><strong>CO_column_density</strong></td>
 <td><em>path</em></td>
 <td><strong>/MDR[]/MDR/INTEGRATED_CO[]</strong></td>
 </tr>
-<tr class="row-even"><td><strong>CO2_column_density</strong></td>
+<tr class="row-odd"><td><strong>CO2_column_density</strong></td>
 <td><em>path</em></td>
 <td><strong>/MDR[]/MDR/INTEGRATED_CO2[]</strong></td>
 </tr>
-<tr class="row-odd"><td><strong>O3_column_density</strong></td>
+<tr class="row-even"><td><strong>O3_column_density</strong></td>
 <td><em>path</em></td>
 <td><strong>/MDR[]/MDR/INTEGRATED_OZONE[]</strong></td>
 </tr>
-<tr class="row-even"><td><strong>N2O_column_density</strong></td>
+<tr class="row-odd"><td><strong>N2O_column_density</strong></td>
 <td><em>path</em></td>
 <td><strong>/MDR[]/MDR/INTEGRATED_N2O[]</strong></td>
 </tr>

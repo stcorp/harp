@@ -182,37 +182,43 @@
 <td>seconds since 2000-01-01</td>
 <td>time of the measurement</td>
 </tr>
-<tr class="row-odd"><td><strong>latitude</strong></td>
+<tr class="row-odd"><td><strong>orbit_index</strong></td>
+<td>int32</td>
+<td>&#160;</td>
+<td>&#160;</td>
+<td>absolute orbit number</td>
+</tr>
+<tr class="row-even"><td><strong>latitude</strong></td>
 <td>double</td>
 <td>{<em>time</em>}</td>
 <td>degree_north</td>
 <td>center latitude of the measurement</td>
 </tr>
-<tr class="row-even"><td><strong>longitude</strong></td>
+<tr class="row-odd"><td><strong>longitude</strong></td>
 <td>double</td>
 <td>{<em>time</em>}</td>
 <td>degree_east</td>
 <td>center longitude of the measurement</td>
 </tr>
-<tr class="row-odd"><td><strong>wavenumber_radiance</strong></td>
+<tr class="row-even"><td><strong>wavenumber_radiance</strong></td>
 <td>float</td>
 <td>{<em>time</em>, <em>spectral</em>}</td>
 <td>W/m^2.sr.m^-1</td>
 <td>measured radiances</td>
 </tr>
-<tr class="row-even"><td><strong>wavenumber</strong></td>
+<tr class="row-odd"><td><strong>wavenumber</strong></td>
 <td>float</td>
 <td>{<em>time</em>, <em>spectral</em>}</td>
 <td>m^-1</td>
 <td>nominal wavelength assignment for each of the detector pixels</td>
 </tr>
-<tr class="row-odd"><td><strong>scan_subindex</strong></td>
+<tr class="row-even"><td><strong>scan_subindex</strong></td>
 <td>int8</td>
 <td>{<em>time</em>}</td>
 <td>&#160;</td>
 <td>relative index (0-119) of this measurement within an MDR</td>
 </tr>
-<tr class="row-even"><td><strong>index</strong></td>
+<tr class="row-odd"><td><strong>index</strong></td>
 <td>int32</td>
 <td>{<em>time</em>}</td>
 <td>&#160;</td>
@@ -244,26 +250,30 @@
 <tr class="row-odd"><td><em>description</em></td>
 <td>&#160;</td>
 </tr>
-<tr class="row-even"><td><strong>latitude</strong></td>
+<tr class="row-even"><td><strong>orbit_index</strong></td>
+<td><em>path</em></td>
+<td><strong>/MPHR/ORBIT_START</strong></td>
+</tr>
+<tr class="row-odd"><td><strong>latitude</strong></td>
 <td><em>path</em></td>
 <td><strong>/MDR[]/MDR/GGeoSondLoc[,,1]</strong></td>
 </tr>
-<tr class="row-odd"><td><strong>longitude</strong></td>
+<tr class="row-even"><td><strong>longitude</strong></td>
 <td><em>path</em></td>
 <td><strong>/MDR[]/MDR/GGeoSondLoc[,,0]</strong></td>
 </tr>
-<tr class="row-even"><td rowspan="2"><strong>wavenumber_radiance</strong></td>
+<tr class="row-odd"><td rowspan="2"><strong>wavenumber_radiance</strong></td>
 <td><em>path</em></td>
 <td><strong>/MDR[]/MDR/GS1cSpect[], /MDR[]/MDR/IDefNsfirst1b, /GIADR_ScaleFactors/IDefScaleSondNbScale, /GIADR_ScaleFactors/IDefScaleSondScaleFactor[], /GIADR_ScaleFactors/IdefScaleSondNsfirst[], /GIADR_ScaleFactors/IDefScaleSondNslast[]</strong></td>
 </tr>
-<tr class="row-odd"><td><em>description</em></td>
+<tr class="row-even"><td><em>description</em></td>
 <td>spectral data is scaled using the information in GIADR_ScaleFactors:<code class="docutils literal"><span class="pre">for</span> <span class="pre">numScale</span> <span class="pre">=</span> <span class="pre">0</span> <span class="pre">to</span> <span class="pre">(IDefScaleSondNbScale</span> <span class="pre">-</span> <span class="pre">1)</span> <span class="pre">do</span></code> <code class="docutils literal"><span class="pre">{</span></code> <code class="docutils literal"><span class="pre">SF</span> <span class="pre">=</span> <span class="pre">IDefScaleSondScaleFactor[numScale];</span></code> <code class="docutils literal"><span class="pre">for</span> <span class="pre">chanNb</span> <span class="pre">=</span> <span class="pre">IdefScaleSondNsfirst[numScale]</span> <span class="pre">to</span> <span class="pre">IDefScaleSondNslast[numScale]</span> <span class="pre">do</span></code> <code class="docutils literal"><span class="pre">{</span></code> <code class="docutils literal"><span class="pre">w</span> <span class="pre">=</span> <span class="pre">chanNb</span> <span class="pre">-</span> <span class="pre">IDefNsfirst1b</span> <span class="pre">+</span> <span class="pre">1;</span></code> <code class="docutils literal"><span class="pre">pixel_readout[w]</span> <span class="pre">=</span> <span class="pre">GS1cSpect[..,..,w]</span> <span class="pre">*</span> <span class="pre">10^(-SF)</span></code> <code class="docutils literal"><span class="pre">}</span></code> <code class="docutils literal"><span class="pre">}</span></code></td>
 </tr>
-<tr class="row-even"><td rowspan="2"><strong>wavenumber</strong></td>
+<tr class="row-odd"><td rowspan="2"><strong>wavenumber</strong></td>
 <td><em>path</em></td>
 <td><strong>/MDR[]/MDR/IDefSpectDWn1b, /MDR[]/MDR/IDefNsfirst1b, /MDR[]/MDR/IDefNslast1b</strong></td>
 </tr>
-<tr class="row-odd"><td><em>description</em></td>
+<tr class="row-even"><td><em>description</em></td>
 <td>wavenumber[i] = IDefSpectDWn1b * (i + IDefNsfirst1b - 1).</td>
 </tr>
 </tbody>

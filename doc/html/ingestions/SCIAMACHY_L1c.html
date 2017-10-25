@@ -188,103 +188,109 @@
 <td>s</td>
 <td>shortest integration time of all measurements at this time</td>
 </tr>
-<tr class="row-even"><td><strong>altitude</strong></td>
+<tr class="row-even"><td><strong>orbit_index</strong></td>
+<td>int32</td>
+<td>&#160;</td>
+<td>&#160;</td>
+<td>absolute orbit number</td>
+</tr>
+<tr class="row-odd"><td><strong>altitude</strong></td>
 <td>double</td>
 <td>{<em>time</em>}</td>
 <td>km</td>
 <td>tangent altitude for each measurement</td>
 </tr>
-<tr class="row-odd"><td><strong>latitude</strong></td>
+<tr class="row-even"><td><strong>latitude</strong></td>
 <td>double</td>
 <td>{<em>time</em>}</td>
 <td>degree_north</td>
 <td>center latitude for each pixel</td>
 </tr>
-<tr class="row-even"><td><strong>longitude</strong></td>
+<tr class="row-odd"><td><strong>longitude</strong></td>
 <td>double</td>
 <td>{<em>time</em>}</td>
 <td>degree_east</td>
 <td>center longitude for each pixel</td>
 </tr>
-<tr class="row-odd"><td><strong>latitude_bounds</strong></td>
+<tr class="row-even"><td><strong>latitude_bounds</strong></td>
 <td>double</td>
 <td>{<em>time</em>, 4}</td>
 <td>degree_north</td>
 <td>corner latitudes for each nadir pixel</td>
 </tr>
-<tr class="row-even"><td><strong>longitude_bounds</strong></td>
+<tr class="row-odd"><td><strong>longitude_bounds</strong></td>
 <td>double</td>
 <td>{<em>time</em>, 4}</td>
 <td>degree_east</td>
 <td>corner longitudes for each nadir pixel</td>
 </tr>
-<tr class="row-odd"><td><strong>sensor_altitude</strong></td>
+<tr class="row-even"><td><strong>sensor_altitude</strong></td>
 <td>double</td>
 <td>{<em>time</em>}</td>
 <td>km</td>
 <td>satellite altitude for each pixel</td>
 </tr>
-<tr class="row-even"><td><strong>sensor_latitude</strong></td>
+<tr class="row-odd"><td><strong>sensor_latitude</strong></td>
 <td>double</td>
 <td>{<em>time</em>}</td>
 <td>degree_north</td>
 <td>satellite latitude for each pixel</td>
 </tr>
-<tr class="row-odd"><td><strong>sensor_longitude</strong></td>
+<tr class="row-even"><td><strong>sensor_longitude</strong></td>
 <td>double</td>
 <td>{<em>time</em>}</td>
 <td>degree_east</td>
 <td>satellite longitude for each pixel</td>
 </tr>
-<tr class="row-even"><td><strong>wavelength_photon_radiance</strong></td>
+<tr class="row-odd"><td><strong>wavelength_photon_radiance</strong></td>
 <td>double</td>
 <td>{<em>time</em>, <em>spectral</em>}</td>
 <td>(count/s/cm2/sr/nm)</td>
 <td>wavelength photon radiance of each spectrum measurement</td>
 </tr>
-<tr class="row-odd"><td><strong>wavelength</strong></td>
+<tr class="row-even"><td><strong>wavelength</strong></td>
 <td>double</td>
 <td>{<em>time</em>, <em>spectral</em>}</td>
 <td>nm</td>
 <td>nominal wavelength assignment for each of the detector pixels</td>
 </tr>
-<tr class="row-even"><td><strong>integration_time</strong></td>
+<tr class="row-odd"><td><strong>integration_time</strong></td>
 <td>double</td>
 <td>{<em>time</em>, <em>spectral</em>}</td>
 <td>s</td>
 <td>integration time for a readout</td>
 </tr>
-<tr class="row-odd"><td><strong>solar_zenith_angle</strong></td>
+<tr class="row-even"><td><strong>solar_zenith_angle</strong></td>
 <td>double</td>
 <td>{<em>time</em>}</td>
 <td>degree</td>
 <td>solar zenith angle for each measurement</td>
 </tr>
-<tr class="row-even"><td><strong>solar_azimuth_angle</strong></td>
+<tr class="row-odd"><td><strong>solar_azimuth_angle</strong></td>
 <td>double</td>
 <td>{<em>time</em>}</td>
 <td>degree</td>
 <td>solar azimuth angle for each measurement</td>
 </tr>
-<tr class="row-odd"><td><strong>viewing_zenith_angle</strong></td>
+<tr class="row-even"><td><strong>viewing_zenith_angle</strong></td>
 <td>double</td>
 <td>{<em>time</em>}</td>
 <td>degree</td>
 <td>viewing zenith angle for each measurement</td>
 </tr>
-<tr class="row-even"><td><strong>viewing_azimuth_angle</strong></td>
+<tr class="row-odd"><td><strong>viewing_azimuth_angle</strong></td>
 <td>double</td>
 <td>{<em>time</em>}</td>
 <td>degree</td>
 <td>viewing azimuth angle for each measurement</td>
 </tr>
-<tr class="row-odd"><td><strong>scan_direction_type</strong></td>
+<tr class="row-even"><td><strong>scan_direction_type</strong></td>
 <td>int8</td>
 <td>{<em>time</em>}</td>
 <td>&#160;</td>
 <td>scan direction for each measurement; enumeration values: forward (0), backward (1), mixed (2)</td>
 </tr>
-<tr class="row-even"><td><strong>index</strong></td>
+<tr class="row-odd"><td><strong>index</strong></td>
 <td>int32</td>
 <td>{<em>time</em>}</td>
 <td>&#160;</td>
@@ -344,176 +350,152 @@
 <td><em>path</em></td>
 <td><strong>/states[]/clus_config[]/intgr_time</strong></td>
 </tr>
-<tr class="row-odd"><td rowspan="7"><strong>altitude</strong></td>
+<tr class="row-odd"><td><strong>orbit_index</strong></td>
+<td><em>path</em></td>
+<td><strong>/mph/abs_orbit</strong></td>
+</tr>
+<tr class="row-even"><td rowspan="7"><strong>altitude</strong></td>
 <td><em>available</em></td>
 <td>optional</td>
 </tr>
-<tr class="row-even"><td><em>condition</em></td>
+<tr class="row-odd"><td><em>condition</em></td>
 <td>data=limb</td>
 </tr>
-<tr class="row-odd"><td><em>path</em></td>
+<tr class="row-even"><td><em>path</em></td>
 <td><strong>/limb[]/geo[]/tan_h[1]</strong></td>
 </tr>
-<tr class="row-even"><td><em>description</em></td>
+<tr class="row-odd"><td><em>description</em></td>
 <td>dsr is the dsr for the cluster with an integration time equal to the minimal integration time</td>
 </tr>
-<tr class="row-odd"><td><em>condition</em></td>
+<tr class="row-even"><td><em>condition</em></td>
 <td>data=occultation</td>
 </tr>
-<tr class="row-even"><td><em>path</em></td>
+<tr class="row-odd"><td><em>path</em></td>
 <td><strong>/occultation[]/geo[]/tan_h[1]</strong></td>
 </tr>
-<tr class="row-odd"><td><em>description</em></td>
+<tr class="row-even"><td><em>description</em></td>
 <td>dsr is the dsr for the cluster with an integration time equal to the minimal integration time</td>
 </tr>
-<tr class="row-even"><td rowspan="9"><strong>latitude</strong></td>
+<tr class="row-odd"><td rowspan="9"><strong>latitude</strong></td>
 <td><em>condition</em></td>
 <td>data=nadir or data unset</td>
 </tr>
-<tr class="row-odd"><td><em>path</em></td>
+<tr class="row-even"><td><em>path</em></td>
 <td><strong>/nadir[]/geo[]/center_coord/latitude</strong></td>
 </tr>
-<tr class="row-even"><td><em>description</em></td>
+<tr class="row-odd"><td><em>description</em></td>
 <td>dsr is the dsr for the cluster with an integration time equal to the minimal integration time of all ingested clusters for that state</td>
 </tr>
-<tr class="row-odd"><td><em>condition</em></td>
+<tr class="row-even"><td><em>condition</em></td>
 <td>data=limb</td>
 </tr>
-<tr class="row-even"><td><em>path</em></td>
+<tr class="row-odd"><td><em>path</em></td>
 <td><strong>/limb[]/geo[]/tang_ground_point[1]/latitude</strong></td>
 </tr>
-<tr class="row-odd"><td><em>description</em></td>
+<tr class="row-even"><td><em>description</em></td>
 <td>dsr is the dsr for the cluster with an integration time equal to the minimal integration time of all ingested clusters for that state</td>
 </tr>
-<tr class="row-even"><td><em>condition</em></td>
+<tr class="row-odd"><td><em>condition</em></td>
 <td>data=occultation</td>
 </tr>
-<tr class="row-odd"><td><em>path</em></td>
+<tr class="row-even"><td><em>path</em></td>
 <td><strong>/occultation[]/geo[]/tang_ground_point[1]/latitude</strong></td>
 </tr>
-<tr class="row-even"><td><em>description</em></td>
+<tr class="row-odd"><td><em>description</em></td>
 <td>dsr is the dsr for the cluster with an integration time equal to the minimal integration time of all ingested clusters for that state</td>
 </tr>
-<tr class="row-odd"><td rowspan="9"><strong>longitude</strong></td>
+<tr class="row-even"><td rowspan="9"><strong>longitude</strong></td>
 <td><em>condition</em></td>
 <td>data=nadir or data unset</td>
 </tr>
-<tr class="row-even"><td><em>path</em></td>
+<tr class="row-odd"><td><em>path</em></td>
 <td><strong>/nadir[]/geo[]/center_coord/longitude</strong></td>
 </tr>
-<tr class="row-odd"><td><em>description</em></td>
+<tr class="row-even"><td><em>description</em></td>
 <td>dsr is the dsr for the cluster with an integration time equal to the minimal integration time of all ingested clusters for that state</td>
 </tr>
-<tr class="row-even"><td><em>condition</em></td>
+<tr class="row-odd"><td><em>condition</em></td>
 <td>data=limb</td>
 </tr>
-<tr class="row-odd"><td><em>path</em></td>
+<tr class="row-even"><td><em>path</em></td>
 <td><strong>/limb[]/geo[]/tang_ground_point[1]/longitude</strong></td>
 </tr>
-<tr class="row-even"><td><em>description</em></td>
+<tr class="row-odd"><td><em>description</em></td>
 <td>dsr is the dsr for the cluster with an integration time equal to the minimal integration time of all ingested clusters for that state</td>
 </tr>
-<tr class="row-odd"><td><em>condition</em></td>
+<tr class="row-even"><td><em>condition</em></td>
 <td>data=occultation</td>
 </tr>
-<tr class="row-even"><td><em>path</em></td>
+<tr class="row-odd"><td><em>path</em></td>
 <td><strong>/occultation[]/geo[]/tang_ground_point[1]/longitude</strong></td>
 </tr>
-<tr class="row-odd"><td><em>description</em></td>
+<tr class="row-even"><td><em>description</em></td>
 <td>dsr is the dsr for the cluster with an integration time equal to the minimal integration time of all ingested clusters for that state</td>
 </tr>
-<tr class="row-even"><td rowspan="3"><strong>latitude_bounds</strong></td>
+<tr class="row-odd"><td rowspan="3"><strong>latitude_bounds</strong></td>
 <td><em>available</em></td>
 <td>optional</td>
 </tr>
-<tr class="row-odd"><td><em>path</em></td>
+<tr class="row-even"><td><em>path</em></td>
 <td><strong>/nadir[]/geo[]/corner_coord[]/latitude</strong></td>
 </tr>
-<tr class="row-even"><td><em>description</em></td>
+<tr class="row-odd"><td><em>description</em></td>
 <td>dsr is the dsr for the cluster with an integration time equal to the minimal integration time of all ingested clusters for that state. The corners are rearranged in the following way: 0,2,3,1</td>
 </tr>
-<tr class="row-odd"><td rowspan="3"><strong>longitude_bounds</strong></td>
+<tr class="row-even"><td rowspan="3"><strong>longitude_bounds</strong></td>
 <td><em>available</em></td>
 <td>optional</td>
 </tr>
-<tr class="row-even"><td><em>path</em></td>
+<tr class="row-odd"><td><em>path</em></td>
 <td><strong>/nadir[]/geo[]/corner_coord[]/longitude</strong></td>
 </tr>
-<tr class="row-odd"><td><em>description</em></td>
+<tr class="row-even"><td><em>description</em></td>
 <td>dsr is the dsr for the cluster with an integration time equal to the minimal integration time of all ingested clusters for that state. The corners are rearranged in the following way: 0,2,3,1</td>
 </tr>
-<tr class="row-even"><td rowspan="9"><strong>sensor_altitude</strong></td>
+<tr class="row-odd"><td rowspan="9"><strong>sensor_altitude</strong></td>
 <td><em>condition</em></td>
 <td>data=nadir or data unset</td>
 </tr>
-<tr class="row-odd"><td><em>path</em></td>
+<tr class="row-even"><td><em>path</em></td>
 <td><strong>/nadir[]/geo[]/sat_h</strong></td>
 </tr>
-<tr class="row-even"><td><em>description</em></td>
+<tr class="row-odd"><td><em>description</em></td>
 <td>dsr is the dsr for the cluster with an integration time equal to the minimal integration time of all ingested clusters for that state</td>
 </tr>
-<tr class="row-odd"><td><em>condition</em></td>
+<tr class="row-even"><td><em>condition</em></td>
 <td>data=limb</td>
 </tr>
-<tr class="row-even"><td><em>path</em></td>
+<tr class="row-odd"><td><em>path</em></td>
 <td><strong>/limb[]/geo[]/sat_h</strong></td>
 </tr>
-<tr class="row-odd"><td><em>description</em></td>
+<tr class="row-even"><td><em>description</em></td>
 <td>dsr is the dsr for the cluster with an integration time equal to the minimal integration time of all ingested clusters for that state</td>
 </tr>
-<tr class="row-even"><td><em>condition</em></td>
+<tr class="row-odd"><td><em>condition</em></td>
 <td>data=occultation</td>
 </tr>
-<tr class="row-odd"><td><em>path</em></td>
+<tr class="row-even"><td><em>path</em></td>
 <td><strong>/occultation[]/geo[]/sat_h</strong></td>
 </tr>
-<tr class="row-even"><td><em>description</em></td>
+<tr class="row-odd"><td><em>description</em></td>
 <td>dsr is the dsr for the cluster with an integration time equal to the minimal integration time of all ingested clusters for that state</td>
 </tr>
-<tr class="row-odd"><td rowspan="9"><strong>sensor_latitude</strong></td>
+<tr class="row-even"><td rowspan="9"><strong>sensor_latitude</strong></td>
 <td><em>condition</em></td>
 <td>data=nadir or data unset</td>
 </tr>
-<tr class="row-even"><td><em>path</em></td>
+<tr class="row-odd"><td><em>path</em></td>
 <td><strong>/nadir[]/geo[]/sub_sat_point/latitude</strong></td>
 </tr>
-<tr class="row-odd"><td><em>description</em></td>
+<tr class="row-even"><td><em>description</em></td>
 <td>dsr is the dsr for the cluster with an integration time equal to the minimal integration time of all ingested clusters for that state</td>
 </tr>
-<tr class="row-even"><td><em>condition</em></td>
+<tr class="row-odd"><td><em>condition</em></td>
 <td>data=limb</td>
 </tr>
-<tr class="row-odd"><td><em>path</em></td>
+<tr class="row-even"><td><em>path</em></td>
 <td><strong>/limb[]/geo[]/sub_sat_point/latitude</strong></td>
 </tr>
-<tr class="row-even"><td><em>description</em></td>
-<td>dsr is the dsr for the cluster with an integration time equal to the minimal integration time of all ingested clusters for that state</td>
-</tr>
-<tr class="row-odd"><td><em>condition</em></td>
-<td>data=occultation</td>
-</tr>
-<tr class="row-even"><td><em>path</em></td>
-<td><strong>/occultation[]/geo[]/sub_sat_point/latitude</strong></td>
-</tr>
-<tr class="row-odd"><td><em>description</em></td>
-<td>dsr is the dsr for the cluster with an integration time equal to the minimal integration time of all ingested clusters for that state</td>
-</tr>
-<tr class="row-even"><td rowspan="9"><strong>sensor_longitude</strong></td>
-<td><em>condition</em></td>
-<td>data=nadir or data unset</td>
-</tr>
-<tr class="row-odd"><td><em>path</em></td>
-<td><strong>/nadir[]/geo[]/sub_sat_point/longitude</strong></td>
-</tr>
-<tr class="row-even"><td><em>description</em></td>
-<td>dsr is the dsr for the cluster with an integration time equal to the minimal integration time of all ingested clusters for that state</td>
-</tr>
-<tr class="row-odd"><td><em>condition</em></td>
-<td>data=limb</td>
-</tr>
-<tr class="row-even"><td><em>path</em></td>
-<td><strong>/limb[]/geo[]/sub_sat_point/longitude</strong></td>
-</tr>
 <tr class="row-odd"><td><em>description</em></td>
 <td>dsr is the dsr for the cluster with an integration time equal to the minimal integration time of all ingested clusters for that state</td>
 </tr>
@@ -521,137 +503,165 @@
 <td>data=occultation</td>
 </tr>
 <tr class="row-odd"><td><em>path</em></td>
-<td><strong>/occultation[]/geo[]/sub_sat_point/longitude</strong></td>
+<td><strong>/occultation[]/geo[]/sub_sat_point/latitude</strong></td>
 </tr>
 <tr class="row-even"><td><em>description</em></td>
 <td>dsr is the dsr for the cluster with an integration time equal to the minimal integration time of all ingested clusters for that state</td>
 </tr>
-<tr class="row-odd"><td rowspan="6"><strong>wavelength_photon_radiance</strong></td>
+<tr class="row-odd"><td rowspan="9"><strong>sensor_longitude</strong></td>
 <td><em>condition</em></td>
 <td>data=nadir or data unset</td>
 </tr>
 <tr class="row-even"><td><em>path</em></td>
+<td><strong>/nadir[]/geo[]/sub_sat_point/longitude</strong></td>
+</tr>
+<tr class="row-odd"><td><em>description</em></td>
+<td>dsr is the dsr for the cluster with an integration time equal to the minimal integration time of all ingested clusters for that state</td>
+</tr>
+<tr class="row-even"><td><em>condition</em></td>
+<td>data=limb</td>
+</tr>
+<tr class="row-odd"><td><em>path</em></td>
+<td><strong>/limb[]/geo[]/sub_sat_point/longitude</strong></td>
+</tr>
+<tr class="row-even"><td><em>description</em></td>
+<td>dsr is the dsr for the cluster with an integration time equal to the minimal integration time of all ingested clusters for that state</td>
+</tr>
+<tr class="row-odd"><td><em>condition</em></td>
+<td>data=occultation</td>
+</tr>
+<tr class="row-even"><td><em>path</em></td>
+<td><strong>/occultation[]/geo[]/sub_sat_point/longitude</strong></td>
+</tr>
+<tr class="row-odd"><td><em>description</em></td>
+<td>dsr is the dsr for the cluster with an integration time equal to the minimal integration time of all ingested clusters for that state</td>
+</tr>
+<tr class="row-even"><td rowspan="6"><strong>wavelength_photon_radiance</strong></td>
+<td><em>condition</em></td>
+<td>data=nadir or data unset</td>
+</tr>
+<tr class="row-odd"><td><em>path</em></td>
 <td><strong>/nadir[]/observations[]</strong></td>
 </tr>
-<tr class="row-odd"><td><em>condition</em></td>
+<tr class="row-even"><td><em>condition</em></td>
 <td>data=limb</td>
 </tr>
-<tr class="row-even"><td><em>path</em></td>
+<tr class="row-odd"><td><em>path</em></td>
 <td><strong>/limb[]/observations[]</strong></td>
 </tr>
-<tr class="row-odd"><td><em>condition</em></td>
+<tr class="row-even"><td><em>condition</em></td>
 <td>data=occultation</td>
 </tr>
-<tr class="row-even"><td><em>path</em></td>
+<tr class="row-odd"><td><em>path</em></td>
 <td><strong>/occultation[]/observations[]</strong></td>
 </tr>
-<tr class="row-odd"><td rowspan="6"><strong>wavelength</strong></td>
+<tr class="row-even"><td rowspan="6"><strong>wavelength</strong></td>
 <td><em>condition</em></td>
 <td>data=nadir or data unset</td>
 </tr>
-<tr class="row-even"><td><em>path</em></td>
+<tr class="row-odd"><td><em>path</em></td>
 <td><strong>nadir[]/pixel_wavelength[]</strong></td>
 </tr>
-<tr class="row-odd"><td><em>condition</em></td>
+<tr class="row-even"><td><em>condition</em></td>
 <td>data=limb</td>
 </tr>
-<tr class="row-even"><td><em>path</em></td>
+<tr class="row-odd"><td><em>path</em></td>
 <td><strong>limb[]/pixel_wavelength[]</strong></td>
 </tr>
-<tr class="row-odd"><td><em>condition</em></td>
+<tr class="row-even"><td><em>condition</em></td>
 <td>data=occultation</td>
 </tr>
-<tr class="row-even"><td><em>path</em></td>
+<tr class="row-odd"><td><em>path</em></td>
 <td><strong>occultation[]/pixel_wavelength[]</strong></td>
 </tr>
-<tr class="row-odd"><td><strong>integration_time</strong></td>
+<tr class="row-even"><td><strong>integration_time</strong></td>
 <td><em>path</em></td>
 <td><strong>/states[]/clus_config[]/intgr_time</strong></td>
 </tr>
-<tr class="row-even"><td rowspan="6"><strong>solar_zenith_angle</strong></td>
+<tr class="row-odd"><td rowspan="6"><strong>solar_zenith_angle</strong></td>
 <td><em>condition</em></td>
 <td>data=nadir or data unset</td>
 </tr>
-<tr class="row-odd"><td><em>path</em></td>
+<tr class="row-even"><td><em>path</em></td>
 <td><strong>/nadir[]/geo[]/sol_zen_ang[1]</strong></td>
 </tr>
-<tr class="row-even"><td><em>condition</em></td>
+<tr class="row-odd"><td><em>condition</em></td>
 <td>data=limb</td>
 </tr>
-<tr class="row-odd"><td><em>path</em></td>
+<tr class="row-even"><td><em>path</em></td>
 <td><strong>/limb[]/geo[]/sol_zen_ang[1]</strong></td>
 </tr>
-<tr class="row-even"><td><em>condition</em></td>
+<tr class="row-odd"><td><em>condition</em></td>
 <td>data=occultation</td>
 </tr>
-<tr class="row-odd"><td><em>path</em></td>
+<tr class="row-even"><td><em>path</em></td>
 <td><strong>/occultation[]/geo[]/sol_zen_ang[1]</strong></td>
 </tr>
-<tr class="row-even"><td rowspan="6"><strong>solar_azimuth_angle</strong></td>
+<tr class="row-odd"><td rowspan="6"><strong>solar_azimuth_angle</strong></td>
 <td><em>condition</em></td>
 <td>data=nadir or data unset</td>
 </tr>
-<tr class="row-odd"><td><em>path</em></td>
+<tr class="row-even"><td><em>path</em></td>
 <td><strong>/nadir[]/geo[]/sol_azi_ang[1]</strong></td>
 </tr>
-<tr class="row-even"><td><em>condition</em></td>
+<tr class="row-odd"><td><em>condition</em></td>
 <td>data=limb</td>
 </tr>
-<tr class="row-odd"><td><em>path</em></td>
+<tr class="row-even"><td><em>path</em></td>
 <td><strong>/limb[]/geo[]/sol_azi_ang[1]</strong></td>
 </tr>
-<tr class="row-even"><td><em>condition</em></td>
+<tr class="row-odd"><td><em>condition</em></td>
 <td>data=occultation</td>
 </tr>
-<tr class="row-odd"><td><em>path</em></td>
+<tr class="row-even"><td><em>path</em></td>
 <td><strong>/occultation[]/geo[]/sol_azi_ang[1]</strong></td>
 </tr>
-<tr class="row-even"><td rowspan="6"><strong>viewing_zenith_angle</strong></td>
+<tr class="row-odd"><td rowspan="6"><strong>viewing_zenith_angle</strong></td>
 <td><em>condition</em></td>
 <td>data=nadir or data unset</td>
 </tr>
-<tr class="row-odd"><td><em>path</em></td>
+<tr class="row-even"><td><em>path</em></td>
 <td><strong>/nadir[]/geo[]/los_zen_ang[1]</strong></td>
 </tr>
-<tr class="row-even"><td><em>condition</em></td>
+<tr class="row-odd"><td><em>condition</em></td>
 <td>data=limb</td>
 </tr>
-<tr class="row-odd"><td><em>path</em></td>
+<tr class="row-even"><td><em>path</em></td>
 <td><strong>/limb[]/geo[]/los_zen_ang[1]</strong></td>
 </tr>
-<tr class="row-even"><td><em>condition</em></td>
+<tr class="row-odd"><td><em>condition</em></td>
 <td>data=occultation</td>
 </tr>
-<tr class="row-odd"><td><em>path</em></td>
+<tr class="row-even"><td><em>path</em></td>
 <td><strong>/occultation[]/geo[]/los_zen_ang[1]</strong></td>
 </tr>
-<tr class="row-even"><td rowspan="6"><strong>viewing_azimuth_angle</strong></td>
+<tr class="row-odd"><td rowspan="6"><strong>viewing_azimuth_angle</strong></td>
 <td><em>condition</em></td>
 <td>data=nadir or data unset</td>
 </tr>
-<tr class="row-odd"><td><em>path</em></td>
+<tr class="row-even"><td><em>path</em></td>
 <td><strong>/nadir[]/geo[]/los_azi_ang[1]</strong></td>
 </tr>
-<tr class="row-even"><td><em>condition</em></td>
+<tr class="row-odd"><td><em>condition</em></td>
 <td>data=limb</td>
 </tr>
-<tr class="row-odd"><td><em>path</em></td>
+<tr class="row-even"><td><em>path</em></td>
 <td><strong>/limb[]/geo[]/los_azi_ang[1]</strong></td>
 </tr>
-<tr class="row-even"><td><em>condition</em></td>
+<tr class="row-odd"><td><em>condition</em></td>
 <td>data=occultation</td>
 </tr>
-<tr class="row-odd"><td><em>path</em></td>
+<tr class="row-even"><td><em>path</em></td>
 <td><strong>/occultation[]/geo[]/los_azi_ang[1]</strong></td>
 </tr>
-<tr class="row-even"><td rowspan="3"><strong>scan_direction_type</strong></td>
+<tr class="row-odd"><td rowspan="3"><strong>scan_direction_type</strong></td>
 <td><em>available</em></td>
 <td>optional</td>
 </tr>
-<tr class="row-odd"><td><em>path</em></td>
+<tr class="row-even"><td><em>path</em></td>
 <td><strong>/nadir[]/geo[]/corner_coord[], /states[]/intg_times[]</strong></td>
 </tr>
-<tr class="row-even"><td><em>description</em></td>
+<tr class="row-odd"><td><em>description</em></td>
 <td>when the minimum integration time of a state is higher than 1 second we are dealing with a mixed (2) pixelotherwise the scan direction is based on the corner coordinates of the first ground pixel of the measurement. The first geolocation pixel is a backscan (1) pixel if the inproduct of the unit vector of the third corner with the outproduct of the unit vector of the first corner and the unit vector of the second corner is negative (otherwise it is part of a forward (0) scan).</td>
 </tr>
 </tbody>
