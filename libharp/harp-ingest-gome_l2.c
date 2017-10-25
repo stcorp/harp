@@ -161,6 +161,30 @@ static int read_integration_time(void *user_data, long index, harp_array data)
     return 0;
 }
 
+static int read_orbit_index(void *user_data, harp_array data)
+{
+    ingest_info *info = (ingest_info *)user_data;
+    coda_cursor cursor;
+
+    if (coda_cursor_set_product(&cursor, info->product) != 0)
+    {
+        harp_set_error(HARP_ERROR_CODA, NULL);
+        return -1;
+    }
+    if (coda_cursor_goto(&cursor, "/pir/start_orbit") != 0)
+    {
+        harp_set_error(HARP_ERROR_CODA, NULL);
+        return -1;
+    }
+    if (coda_cursor_read_int32(&cursor, data.int32_data) != 0)
+    {
+        harp_set_error(HARP_ERROR_CODA, NULL);
+        return -1;
+    }
+
+    return 0;
+}
+
 static int read_latitude(void *user_data, long index, harp_array data)
 {
     return get_data(user_data, index, "glr/corners[4]/lat", data);
@@ -547,6 +571,13 @@ int harp_ingestion_module_gome_l2_init(void)
                                                                       description, "s", NULL, read_integration_time);
     description = "set to a fixed value of 1.5s for all pixels";
     harp_variable_definition_add_mapping(variable_definition, NULL, NULL, NULL, description);
+
+    /* orbit_index */
+    description = "absolute orbit number";
+    variable_definition =
+        harp_ingestion_register_variable_full_read(product_definition, "orbit_index", harp_type_int32, 0, NULL, NULL,
+                                                   description, NULL, NULL, read_orbit_index);
+    harp_variable_definition_add_mapping(variable_definition, NULL, NULL, "/pir/start_orbit", NULL);
 
     /* latitude */
     description = "tangent latitude of the measurement";
