@@ -93,6 +93,7 @@ molar_mass                                                                    X 
 month                                                                                                    category variable for month of year ('January', ..., 'December')
 number_density                                surface                         X       X    X
 optical_depth                                                                 X       X    X       X     this is equal to 'optical thickness'
+orbit_index                                                                                              the absolute orbit number for data from polar orbiting satellites
 pressure                                      surface                         X       X    X
 pressure_bounds                                                               X       X    X
 radiance                                                                      X                    X
