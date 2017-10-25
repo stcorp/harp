@@ -238,6 +238,27 @@ double harp_profile_column_from_partial_column(long num_levels, const double *pa
     return column;
 }
 
+/** Sum the columns of the 2D averaging kernal to arrive at a 1D column averaging kernel
+ * The 2D averaging kernel needs to be a partial column number density AVK.
+ * \param num_levels            Number of vertical levels
+ * \param column_density_avk_2d 2D column number density averaging kernel {num_levels,num_levels}
+ * \param column_density_avk_1d 1D column number density averaging kernel {num_levels}
+ */
+void harp_profile_column_avk_from_partial_column_avk(long num_levels, const double *column_density_avk_2d,
+                                                     double *column_density_avk_1d)
+{
+    long i, j;
+
+    for (j = 0; j < num_levels; j++)
+    {
+        column_density_avk_1d[j] = column_density_avk_2d[j];
+        for (i = 1; i < num_levels; i++)
+        {
+            column_density_avk_1d[j] += column_density_avk_2d[i * num_levels + j];
+        }
+    }
+}
+
 /** Convert an altitude profile to a pressure profile
  * \param num_levels Length of vertical axis
  * \param altitude_profile Altitude profile [m]
@@ -337,6 +358,177 @@ void harp_profile_pressure_from_gph(long num_levels, const double *gph_profile, 
         prev_M = M;
         prev_T = T;
         prev_z = z;
+    }
+}
+
+/** Convert a partial column avk to a density avk using the altitude boundaries profile
+ * This is a generic routine to convert partial columns to a densities. It works for all cases where the
+ * conversion is a matter of dividing the partial column value by the altitude height to get the density value.
+ * \param num_levels Number of vertical levels
+ * \param partial_column_avk Partial column avk {vertical,vertical}
+ * \param altitude_bounds Lower and upper altitude [m] boundaries for each level {vertical,2}
+ * \param density_avk variable in which the density avk {vertical,vertical} will be stored
+ */
+void harp_density_avk_from_partial_column_avk_and_altitude_bounds(long num_levels, const double *partial_column_avk,
+                                                                  const double *altitude_bounds, double *density_avk)
+{
+    long i, j;
+
+    for (i = 0; i < num_levels; i++)
+    {
+        double height = fabs(altitude_bounds[i * 2 + 1] - altitude_bounds[i * 2]);
+
+        if (height < EPSILON)
+        {
+            for (j = 0; j < num_levels; j++)
+            {
+                density_avk[i * num_levels + j] = 0;
+            }
+        }
+        else
+        {
+            for (j = 0; j < num_levels; j++)
+            {
+                density_avk[i * num_levels + j] = partial_column_avk[i * num_levels + j] / height;
+            }
+        }
+    }
+    for (j = 0; j < num_levels; j++)
+    {
+        double height = fabs(altitude_bounds[j * 2 + 1] - altitude_bounds[j * 2]);
+
+        for (i = 0; i < num_levels; i++)
+        {
+            density_avk[i * num_levels + j] *= height;
+        }
+    }
+}
+
+/** Convert a partial column profile to a density profile using the altitude boundaries as provided
+ * This is a generic routine to convert densities to partial columns. It works for all cases where the conversion is a
+ * matter of multiplying the density value by the altitude height to get the partial column value.
+ * \param num_levels Number of vertical levels
+ * \param density_avk Density avk {vertical,vertical}
+ * \param altitude_bounds Lower and upper altitude [m] boundaries for each level {vertical,2}
+ * \param partial_column_avk variable in which the partial column avk {vertical,vertical} will be stored
+ */
+void harp_partial_column_avk_from_density_avk_and_altitude_bounds(long num_levels, const double *density_avk,
+                                                                  const double *altitude_bounds,
+                                                                  double *partial_column_avk)
+{
+    long i, j;
+
+    for (i = 0; i < num_levels; i++)
+    {
+        double height = fabs(altitude_bounds[i * 2 + 1] - altitude_bounds[i * 2]);
+
+        for (j = 0; j < num_levels; j++)
+        {
+            partial_column_avk[i * num_levels + j] = density_avk[i * num_levels + j] * height;
+        }
+    }
+    for (j = 0; j < num_levels; j++)
+    {
+        double height = fabs(altitude_bounds[j * 2 + 1] - altitude_bounds[j * 2]);
+
+        if (height < EPSILON)
+        {
+            for (i = 0; i < num_levels; i++)
+            {
+                partial_column_avk[i * num_levels + j] = 0;
+            }
+        }
+        else
+        {
+            for (i = 0; i < num_levels; i++)
+            {
+                partial_column_avk[i * num_levels + j] /= height;
+            }
+        }
+    }
+}
+
+/** Convert a volume mixing ratio avk to a number density avk using the air number density profile
+ * \param num_levels Number of vertical levels
+ * \param volume_mixing_ratio_avk Volume mixing ratio avk {vertical,vertical}
+ * \param number_density_air Number density of air [molec/cm3] {vertical}
+ * \param number_density_avk variable in which the number density avk [(molec/cm3)/(molec/cm3)] {vertical,vertical}
+ * will be stored
+ */
+void harp_number_density_avk_from_volume_mixing_ratio_avk(long num_levels, const double *volume_mixing_ratio_avk,
+                                                          const double *number_density_air, double *number_density_avk)
+{
+    long i, j;
+
+    for (i = 0; i < num_levels; i++)
+    {
+        double number_density = number_density_air[i];
+
+        for (j = 0; j < num_levels; j++)
+        {
+            number_density_avk[i * num_levels + j] = volume_mixing_ratio_avk[i * num_levels + j] * number_density;
+        }
+    }
+    for (j = 0; j < num_levels; j++)
+    {
+        double number_density = number_density_air[j];
+
+        if (fabs(number_density) < EPSILON)
+        {
+            for (i = 0; i < num_levels; i++)
+            {
+                number_density_avk[i * num_levels + j] = 0;
+            }
+        }
+        else
+        {
+            for (i = 0; i < num_levels; i++)
+            {
+                number_density_avk[i * num_levels + j] /= number_density;
+            }
+        }
+    }
+}
+
+/** Convert a number density avk to a volume mixing ratio avk using the air number density profile
+ * \param num_levels Number of vertical levels
+ * \param number_density_avk Number density avk [(molec/cm3)/(molec/cm3)] {vertical,vertical}
+ * \param number_density_air Number density of air [molec/cm3] {vertical}
+ * \param volume_mixing_ratio_avk variable in which the volume mixing ratio avk {vertical,vertical} will be stored
+ */
+void harp_volume_mixing_ratio_avk_from_number_density_avk(long num_levels, const double *number_density_avk,
+                                                          const double *number_density_air,
+                                                          double *volume_mixing_ratio_avk)
+{
+    long i, j;
+
+    for (i = 0; i < num_levels; i++)
+    {
+        double number_density = number_density_air[i];
+
+        if (fabs(number_density) < EPSILON)
+        {
+            for (j = 0; j < num_levels; j++)
+            {
+                volume_mixing_ratio_avk[i * num_levels + j] = 0;
+            }
+        }
+        else
+        {
+            for (j = 0; j < num_levels; j++)
+            {
+                volume_mixing_ratio_avk[i * num_levels + j] = number_density_avk[i * num_levels + j] / number_density;
+            }
+        }
+    }
+    for (j = 0; j < num_levels; j++)
+    {
+        double number_density = number_density_air[j];
+
+        for (i = 0; i < num_levels; i++)
+        {
+            volume_mixing_ratio_avk[i * num_levels + j] *= number_density;
+        }
     }
 }
 
