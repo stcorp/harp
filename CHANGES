@@ -31,6 +31,8 @@
 
 * Fixed derivations of solar azimuth/zenith angles from datetime and lat/lon.
 
+* Added derivations for averaging kernel conversions.
+
 * Added support for GEOMS-TE-UVVIS-DOAS-OFFAXIS-AEROSOL-007.
 
 1.0 2017-09-25
