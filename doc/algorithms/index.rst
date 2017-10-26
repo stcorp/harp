@@ -26,6 +26,7 @@ Variable Conversions
    derivations/column_mass_density
    derivations/column_mass_mixing_ratio
    derivations/column_number_density
+   derivations/column_number_density_avk
    derivations/column_volume_mixing_ratio
    derivations/datetime
    derivations/datetime_length
@@ -42,6 +43,7 @@ Variable Conversions
    derivations/mass_mixing_ratio
    derivations/molar_mass
    derivations/number_density
+   derivations/number_density_avk
    derivations/partial_pressure
    derivations/pressure
    derivations/pressure_bounds
@@ -62,5 +64,6 @@ Variable Conversions
    derivations/viewing_zenith_angle
    derivations/virtual_temperature
    derivations/volume_mixing_ratio
+   derivations/volume_mixing_ratio_avk
    derivations/wavelength
    derivations/wavenumber

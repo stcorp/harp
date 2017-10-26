@@ -44,6 +44,7 @@ HARP_DOCFILES = \
 	doc/html/algorithms/derivations/column_mass_density.html \
 	doc/html/algorithms/derivations/column_mass_mixing_ratio.html \
 	doc/html/algorithms/derivations/column_number_density.html \
+	doc/html/algorithms/derivations/column_number_density_avk.html \
 	doc/html/algorithms/derivations/column_volume_mixing_ratio.html \
 	doc/html/algorithms/derivations/datetime.html \
 	doc/html/algorithms/derivations/datetime_length.html \
@@ -60,6 +61,7 @@ HARP_DOCFILES = \
 	doc/html/algorithms/derivations/mass_mixing_ratio.html \
 	doc/html/algorithms/derivations/molar_mass.html \
 	doc/html/algorithms/derivations/number_density.html \
+	doc/html/algorithms/derivations/number_density_avk.html \
 	doc/html/algorithms/derivations/partial_pressure.html \
 	doc/html/algorithms/derivations/pressure.html \
 	doc/html/algorithms/derivations/pressure_bounds.html \
@@ -80,6 +82,7 @@ HARP_DOCFILES = \
 	doc/html/algorithms/derivations/viewing_zenith_angle.html \
 	doc/html/algorithms/derivations/virtual_temperature.html \
 	doc/html/algorithms/derivations/volume_mixing_ratio.html \
+	doc/html/algorithms/derivations/volume_mixing_ratio_avk.html \
 	doc/html/algorithms/derivations/wavelength.html \
 	doc/html/algorithms/derivations/wavenumber.html \
 	doc/html/algorithms/formula.html \
@@ -587,6 +590,8 @@ doc/html/algorithms/derivations/column_mass_mixing_ratio.html:
 	$(MAKE) harp_doc
 doc/html/algorithms/derivations/column_number_density.html:
 	$(MAKE) harp_doc
+doc/html/algorithms/derivations/column_number_density_avk.html:
+	$(MAKE) harp_doc
 doc/html/algorithms/derivations/column_volume_mixing_ratio.html:
 	$(MAKE) harp_doc
 doc/html/algorithms/derivations/datetime.html:
@@ -618,6 +623,8 @@ doc/html/algorithms/derivations/mass_mixing_ratio.html:
 doc/html/algorithms/derivations/molar_mass.html:
 	$(MAKE) harp_doc
 doc/html/algorithms/derivations/number_density.html:
+	$(MAKE) harp_doc
+doc/html/algorithms/derivations/number_density_avk.html:
 	$(MAKE) harp_doc
 doc/html/algorithms/derivations/partial_pressure.html:
 	$(MAKE) harp_doc
@@ -658,6 +665,8 @@ doc/html/algorithms/derivations/viewing_zenith_angle.html:
 doc/html/algorithms/derivations/virtual_temperature.html:
 	$(MAKE) harp_doc
 doc/html/algorithms/derivations/volume_mixing_ratio.html:
+	$(MAKE) harp_doc
+doc/html/algorithms/derivations/volume_mixing_ratio_avk.html:
 	$(MAKE) harp_doc
 doc/html/algorithms/derivations/wavelength.html:
 	$(MAKE) harp_doc
