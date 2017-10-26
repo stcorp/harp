@@ -60,4 +60,18 @@ double harp_profile_column_from_partial_column(long num_levels, const double *pa
 double harp_profile_column_uncertainty_from_partial_column_uncertainty
     (long num_levels, const double *partial_column_uncertainty_profile);
 
+/* AVK conversions */
+void harp_profile_column_avk_from_partial_column_avk(long num_levels, const double *column_density_avk_2d,
+                                                     double *column_density_avk_1d);
+void harp_density_avk_from_partial_column_avk_and_altitude_bounds(long num_levels, const double *partial_column_avk,
+                                                                  const double *altitude_bounds, double *density_avk);
+void harp_partial_column_avk_from_density_avk_and_altitude_bounds(long num_levels, const double *density_avk,
+                                                                  const double *altitude_bounds,
+                                                                  double *partial_column_avk);
+void harp_number_density_avk_from_volume_mixing_ratio_avk(long num_levels, const double *volume_mixing_ratio_avk,
+                                                          const double *number_density_air, double *number_density_avk);
+void harp_volume_mixing_ratio_avk_from_number_density_avk(long num_levels, const double *number_density_avk,
+                                                          const double *number_density_air,
+                                                          double *volume_mixing_ratio_avk);
+
 #endif

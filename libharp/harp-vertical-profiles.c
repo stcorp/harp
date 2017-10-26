@@ -238,27 +238,6 @@ double harp_profile_column_from_partial_column(long num_levels, const double *pa
     return column;
 }
 
-/** Sum the columns of the 2D averaging kernal to arrive at a 1D column averaging kernel
- * The 2D averaging kernel needs to be a partial column number density AVK.
- * \param num_levels            Number of vertical levels
- * \param column_density_avk_2d 2D column number density averaging kernel {num_levels,num_levels}
- * \param column_density_avk_1d 1D column number density averaging kernel {num_levels}
- */
-void harp_profile_column_avk_from_partial_column_avk(long num_levels, const double *column_density_avk_2d,
-                                                     double *column_density_avk_1d)
-{
-    long i, j;
-
-    for (j = 0; j < num_levels; j++)
-    {
-        column_density_avk_1d[j] = column_density_avk_2d[j];
-        for (i = 1; i < num_levels; i++)
-        {
-            column_density_avk_1d[j] += column_density_avk_2d[i * num_levels + j];
-        }
-    }
-}
-
 /** Convert an altitude profile to a pressure profile
  * \param num_levels Length of vertical axis
  * \param altitude_profile Altitude profile [m]
@@ -358,6 +337,27 @@ void harp_profile_pressure_from_gph(long num_levels, const double *gph_profile, 
         prev_M = M;
         prev_T = T;
         prev_z = z;
+    }
+}
+
+/** Sum the columns of the 2D averaging kernal to arrive at a 1D column averaging kernel
+ * The 2D averaging kernel needs to be a partial column number density AVK.
+ * \param num_levels            Number of vertical levels
+ * \param column_density_avk_2d 2D column number density averaging kernel {num_levels,num_levels}
+ * \param column_density_avk_1d 1D column number density averaging kernel {num_levels}
+ */
+void harp_profile_column_avk_from_partial_column_avk(long num_levels, const double *column_density_avk_2d,
+                                                     double *column_density_avk_1d)
+{
+    long i, j;
+
+    for (j = 0; j < num_levels; j++)
+    {
+        column_density_avk_1d[j] = column_density_avk_2d[j];
+        for (i = 1; i < num_levels; i++)
+        {
+            column_density_avk_1d[j] += column_density_avk_2d[i * num_levels + j];
+        }
     }
 }
 
