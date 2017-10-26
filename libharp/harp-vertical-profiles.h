@@ -60,6 +60,4 @@ double harp_profile_column_from_partial_column(long num_levels, const double *pa
 double harp_profile_column_uncertainty_from_partial_column_uncertainty
     (long num_levels, const double *partial_column_uncertainty_profile);
 
-int harp_profile_import_grid(const char *filename, harp_variable **new_vertical_axis);
-
 #endif
