@@ -1443,15 +1443,15 @@ static int read_input_pressure_bounds(void *user_data, harp_array data)
      */
     for (i = num_elements - 1; i >= 0; --i)
     {
-        double *pressure_bounds = &data.double_data[i * num_layers * 2];
+        float *pressure_bounds = &data.float_data[i * num_layers * 2];
         double surface_pressure = data.double_data[i];
         double delta = delta_pressure.double_data[i];
         long j;
 
         for (j = num_layers - 1; j >= 0; --j)
         {
-            pressure_bounds[j * 2 + 1] = surface_pressure - (j + 1) * delta;
-            pressure_bounds[j * 2] = surface_pressure - j * delta;
+            pressure_bounds[j * 2 + 1] = (float)(surface_pressure - (j + 1) * delta);
+            pressure_bounds[j * 2] = (float)(surface_pressure - j * delta);
         }
     }
 
@@ -3727,7 +3727,7 @@ static void register_ch4_product(void)
     /* pressure_bounds */
     description = "pressure bounds per profile layer";
     variable_definition =
-        harp_ingestion_register_variable_full_read(product_definition, "pressure_bounds", harp_type_double, 3,
+        harp_ingestion_register_variable_full_read(product_definition, "pressure_bounds", harp_type_float, 3,
                                                    dimension_type, dimension, description, "Pa", NULL,
                                                    read_input_pressure_bounds);
     path = "/PRODUCT/SUPPORT_DATA/INPUT_DATA/surface_pressure[],/PRODUCT/SUPPORT_DATA/INPUT_DATA/pressure_interval[]";
