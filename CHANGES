@@ -33,6 +33,8 @@
 
 * Added derivations for averaging kernel conversions.
 
+* Added derivations for tropopause altitude/pressure.
+
 * Added support for GEOMS-TE-UVVIS-DOAS-OFFAXIS-AEROSOL-007.
 
 1.0 2017-09-25
