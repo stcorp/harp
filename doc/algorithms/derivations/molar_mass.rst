@@ -17,7 +17,7 @@ molar mass derivations
 
    .. math::
 
-      M = 10^{3}\frac{\rho N_{A}}{n}
+      M_{air} = 10^{3}\frac{\rho N_{A}}{n}
 
 
 #. molar mass of total air from H2O mass mixing ratio
