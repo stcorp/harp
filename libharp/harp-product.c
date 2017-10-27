@@ -1774,6 +1774,10 @@ LIBHARP_API int harp_product_flatten_dimension(harp_product *product, harp_dimen
         /* the variable must be time-dependend */
         if (var->dimension_type[0] != harp_dimension_time)
         {
+            if (product->dimension[harp_dimension_time] == 0)
+            {
+                product->dimension[harp_dimension_time] = 1;
+            }
             if (harp_variable_add_dimension(var, 0, harp_dimension_time, product->dimension[harp_dimension_time]))
             {
                 return -1;
