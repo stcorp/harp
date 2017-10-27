@@ -1170,6 +1170,60 @@ static int get_temperature_from_virtual_temperature(harp_variable *variable, con
 
 }
 
+static int get_tropopause_altitude_from_temperature(harp_variable *variable, const harp_variable **source_variable)
+{
+    long length;
+    long i;
+
+    length = source_variable[0]->dimension[source_variable[0]->num_dimensions - 1];
+    for (i = 0; i < variable->num_elements; i++)
+    {
+        long index;
+
+        index = harp_tropopause_index_from_altitude_and_temperature(length,
+                                                                    &source_variable[0]->data.double_data[i * length],
+                                                                    &source_variable[1]->data.double_data[i * length],
+                                                                    &source_variable[2]->data.double_data[i * length]);
+        if (index < 0)
+        {
+            variable->data.double_data[i] = harp_nan();
+        }
+        else
+        {
+            variable->data.double_data[i] = source_variable[0]->data.double_data[i * length + index];
+        }
+    }
+
+    return 0;
+}
+
+static int get_tropopause_pressure_from_temperature(harp_variable *variable, const harp_variable **source_variable)
+{
+    long length;
+    long i;
+
+    length = source_variable[0]->dimension[source_variable[0]->num_dimensions - 1];
+    for (i = 0; i < variable->num_elements; i++)
+    {
+        long index;
+
+        index = harp_tropopause_index_from_altitude_and_temperature(length,
+                                                                    &source_variable[0]->data.double_data[i * length],
+                                                                    &source_variable[1]->data.double_data[i * length],
+                                                                    &source_variable[2]->data.double_data[i * length]);
+        if (index < 0)
+        {
+            variable->data.double_data[i] = harp_nan();
+        }
+        else
+        {
+            variable->data.double_data[i] = source_variable[1]->data.double_data[i * length + index];
+        }
+    }
+
+    return 0;
+}
+
 static int get_uncertainty_from_systematic_and_random_uncertainty(harp_variable *variable,
                                                                   const harp_variable **source_variable)
 {
@@ -2349,8 +2403,7 @@ static int add_species_conversions_for_grid(const char *species, int num_dimensi
             return -1;
         }
         if (harp_variable_conversion_add_source(conversion, name_column_nd_avk, harp_type_double,
-                                                HARP_UNIT_DIMENSIONLESS, num_dimensions + 1, dimension_type, 0) !=
-            0)
+                                                HARP_UNIT_DIMENSIONLESS, num_dimensions + 1, dimension_type, 0) != 0)
         {
             return -1;
         }
@@ -4947,6 +5000,62 @@ static int add_conversions_for_grid(int num_dimensions, harp_dimension_type dime
                                             num_dimensions, dimension_type, 0) != 0)
     {
         return -1;
+    }
+
+    /*** tropopause altitude ***/
+
+    if (!has_vertical)
+    {
+        /* tropopause altitude from altitude and temperature */
+        if (harp_variable_conversion_new("tropopause_altitude", harp_type_double, HARP_UNIT_LENGTH, num_dimensions,
+                                         dimension_type, 0, get_tropopause_altitude_from_temperature, &conversion) != 0)
+        {
+            return -1;
+        }
+        dimension_type[num_dimensions] = harp_dimension_vertical;
+        if (harp_variable_conversion_add_source(conversion, "altitude", harp_type_double, HARP_UNIT_LENGTH,
+                                                num_dimensions + 1, dimension_type, 0) != 0)
+        {
+            return -1;
+        }
+        if (harp_variable_conversion_add_source(conversion, "pressure", harp_type_double, HARP_UNIT_PRESSURE,
+                                                num_dimensions + 1, dimension_type, 0) != 0)
+        {
+            return -1;
+        }
+        if (harp_variable_conversion_add_source(conversion, "temperature", harp_type_double, HARP_UNIT_TEMPERATURE,
+                                                num_dimensions + 1, dimension_type, 0) != 0)
+        {
+            return -1;
+        }
+    }
+
+    /*** tropopause pressure ***/
+
+    if (!has_vertical)
+    {
+        /* tropopause pressure from altitudem, pressure and temperature */
+        if (harp_variable_conversion_new("tropopause_pressure", harp_type_double, HARP_UNIT_PRESSURE, num_dimensions,
+                                         dimension_type, 0, get_tropopause_pressure_from_temperature, &conversion) != 0)
+        {
+            return -1;
+        }
+        dimension_type[num_dimensions] = harp_dimension_vertical;
+        if (harp_variable_conversion_add_source(conversion, "altitude", harp_type_double, HARP_UNIT_LENGTH,
+                                                num_dimensions + 1, dimension_type, 0) != 0)
+        {
+            return -1;
+        }
+        if (harp_variable_conversion_add_source(conversion, "pressure", harp_type_double, HARP_UNIT_PRESSURE,
+                                                num_dimensions + 1, dimension_type, 0) != 0)
+        {
+            return -1;
+        }
+        if (harp_variable_conversion_add_source(conversion, "temperature", harp_type_double, HARP_UNIT_TEMPERATURE,
+                                                num_dimensions + 1, dimension_type, 0) != 0)
+        {
+            return -1;
+        }
     }
 
     /*** tropospheric column (mass) density ***/

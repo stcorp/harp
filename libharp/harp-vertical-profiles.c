@@ -158,6 +158,99 @@ double harp_gph_from_altitude_and_latitude(double altitude, double latitude)
     return (gsurf / CONST_GRAV_ACCEL_45LAT_WGS84_SPHERE) * Rsurf * altitude / (altitude + Rsurf);
 }
 
+/** Calculate tropopause level from altitude and temperature grid
+ * This uses the WMO definition:
+ * The boundary between the troposphere and the stratosphere, where an abrupt change in lapse rate usually occurs.
+ * It is defined as the lowest level at which the lapse rate decreases to 2 degC/km or less, provided that the average
+ * lapse rate between this level and all higher levels within 2 km does not exceed 2 degC/km.
+ * Only levels between 50000Pa and 5000Pa are considered (which is why pressure is required as an input).
+ * \param num_levels Length of vertical axis
+ * \param altitude_profile Altitude vertical profile [m] (needs to be in increasing order)
+ * \param pressure_profile Pressure vertical profile [Pa] (needs to be in decreasing order)
+ * \param temperature_profile Temperature vertical profile [K]
+ * \return the index in the altitude grid that represents the tropopause, or -1 if it was not found.
+ */
+long harp_tropopause_index_from_altitude_and_temperature(long num_levels, const double *altitude_profile,
+                                                         const double *pressure_profile,
+                                                         const double *temperature_profile)
+{
+    double lapse_above;
+    double lapse_below;
+    double height;
+    long i = 1;
+
+    while (i < num_levels - 1 && pressure_profile[i] > 50000)
+    {
+        i++;
+    }
+    if (i >= num_levels - 1)
+    {
+        return -1;
+    }
+
+    height = altitude_profile[i] - altitude_profile[i - 1];
+    if (height < 0)
+    {
+        /* altitude needs to be increasing */
+        return -1;
+    }
+    if (height < EPSILON)
+    {
+        lapse_below = harp_nan();
+    }
+    else
+    {
+        lapse_below = (temperature_profile[i - 1] - temperature_profile[i]) / height;
+    }
+    while (i < num_levels - 1 && pressure_profile[i] > 5000)
+    {
+        height = altitude_profile[i + 1] - altitude_profile[i];
+        if (height < 0)
+        {
+            /* altitude needs to be increasing */
+            return -1;
+        }
+        if (height < EPSILON)
+        {
+            /* skip layers that are too small */
+            lapse_above = lapse_below;
+        }
+        else
+        {
+            lapse_above = (temperature_profile[i] - temperature_profile[i + 1]) / height;
+        }
+        /* A rate of 2 degC/km is the same is 0.002 K/m. */
+        if (lapse_below > 0.002 && lapse_above <= 0.002)
+        {
+            long k = i + 2;
+
+            while (k < num_levels && altitude_profile[k] <= altitude_profile[i] + 2000)
+            {
+                height = altitude_profile[k] - altitude_profile[i];
+                if (height >= EPSILON)
+                {
+                    /* average lapse rate should not exceed 2 degC/km */
+                    if ((temperature_profile[i] - temperature_profile[k]) / height > 0.002)
+                    {
+                        k = -1;
+                        break;
+                    }
+                }
+                k++;
+            }
+            if (k > i)
+            {
+                return i;
+            }
+        }
+        lapse_below = lapse_above;
+        i++;
+    }
+
+    /* we were not able to find the tropopause -> return NaN */
+    return -1;
+}
+
 /** Convert a pressure profile to a geopotential height profile
  * \param num_levels Length of vertical axis
  * \param pressure_profile Pressure vertical profile [Pa]
