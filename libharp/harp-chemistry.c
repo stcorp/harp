@@ -80,6 +80,7 @@ static const char *chemical_species_names[] = {
     "IO",
     "IWC",
     "LWC",
+    "NH3",
     "NO",
     "NOCl",
     "NO2",
@@ -145,6 +146,7 @@ double chemical_species_molar_mass[] = {
     CONST_MOLAR_MASS_IO,
     CONST_MOLAR_MASS_H2O,       /* IWC has H2O molar mass */
     CONST_MOLAR_MASS_H2O,       /* LWC has H2O molar mass */
+    CONST_MOLAR_MASS_NH3,
     CONST_MOLAR_MASS_NO,
     CONST_MOLAR_MASS_NOCl,
     CONST_MOLAR_MASS_NO2,

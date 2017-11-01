@@ -250,6 +250,7 @@ IWC      ice water content;
          H2O in ice state
 LWC      liquid water content;
          H2O in liquid state
+NH3      ammonia
 NO       nitric oxide
 NOCl     nitrosyl chloride
 NO2      nitrogen dioxide
