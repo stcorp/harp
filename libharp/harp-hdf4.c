@@ -892,7 +892,7 @@ int harp_import_global_attributes_hdf4(const char *filename, double *datetime_st
         hdf4_index = SDfindattr(sd_id, "datetime_stop");
         if (hdf4_index >= 0)
         {
-            if (read_numeric_attribute(sd_id, hdf4_index, &attr_data_type, &attr_datetime_start) != 0)
+            if (read_numeric_attribute(sd_id, hdf4_index, &attr_data_type, &attr_datetime_stop) != 0)
             {
                 SDend(sd_id);
                 return -1;
