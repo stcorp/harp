@@ -27,7 +27,7 @@
 
 * Added solar_declination_angle and solar_hour_angle variables and derivations.
 
-* Added orbit_index variable and added this to various ingestions.
+* Added orbit_index variable and added this to various product ingestions.
 
 * Fixed derivations of solar azimuth/zenith angles from datetime and lat/lon.
 
@@ -35,7 +35,10 @@
 
 * Added derivations for tropopause altitude/pressure.
 
-* Added support for GEOMS-TE-UVVIS-DOAS-OFFAXIS-AEROSOL-007.
+* Added NH3 (amonia) as supported species.
+
+* Updates to ECMWF-GRIB, GEOMS-TE-UVVIS-DOAS-OFFAXIS, and GEOMS-TE-FTIR
+  product ingestions.
 
 1.0 2017-09-25
 ~~~~~~~~~~~~~~
@@ -151,7 +154,7 @@
 
 * Added product ingestions for Cloudnet L2a classification products.
 
-* Updates to ECMF-GRIB, GEOMS-TE-UVVIS-DOAS-OFFAXIS, MIPAS, QA4ECV, and
+* Updates to ECMWF-GRIB, GEOMS-TE-UVVIS-DOAS-OFFAXIS, MIPAS, QA4ECV, and
   S5P product ingestions.
 
 0.6 2017-04-23
