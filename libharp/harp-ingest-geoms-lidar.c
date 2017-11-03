@@ -228,6 +228,30 @@ static int read_temp_bs_uncertainty(void *user_data, harp_array data)
                                 ((ingest_info *)user_data)->num_vertical, data);
 }
 
+static int read_h2o_vmr_bs(void *user_data, harp_array data)
+{
+    return read_variable_double(user_data, "H2O_MIXING_RATIO_VOLUME_BACKSCATTER",
+                                ((ingest_info *)user_data)->num_time * ((ingest_info *)user_data)->num_vertical, data);
+}
+
+static int read_h2o_vmr_bs_uncertainty(void *user_data, harp_array data)
+{
+    return read_variable_double(user_data, "H2O_MIXING_RATIO_VOLUME_BACKSCATTER_UNCERTAINTY_COMBINED_STANDARD",
+                                ((ingest_info *)user_data)->num_time * ((ingest_info *)user_data)->num_vertical, data);
+}
+
+static int read_relative_humidity(void *user_data, harp_array data)
+{
+    return read_variable_double(user_data, "HUMIDITY_RELATIVE_DERIVED",
+                                ((ingest_info *)user_data)->num_time * ((ingest_info *)user_data)->num_vertical, data);
+}
+
+static int read_relative_humidity_uncertainty(void *user_data, harp_array data)
+{
+    return read_variable_double(user_data, "HUMIDITY_RELATIVE_DERIVED_UNCERTAINTY_COMBINED_STANDARD",
+                                ((ingest_info *)user_data)->num_time * ((ingest_info *)user_data)->num_vertical, data);
+}
+
 static int read_pressure_ind(void *user_data, harp_array data)
 {
     return read_variable_double(user_data, "PRESSURE_INDEPENDENT", ((ingest_info *)user_data)->num_vertical, data);
@@ -559,6 +583,60 @@ static int init_temperature_product_definition(harp_ingestion_module *module, in
     return 0;
 }
 
+static int init_h2o_product_definition(harp_ingestion_module *module, int version)
+{
+    harp_product_definition *product_definition;
+    harp_variable_definition *variable_definition;
+    harp_dimension_type dimension_type[2];
+    char product_name[MAX_NAME_LENGTH];
+    char product_description[MAX_DESCRIPTION_LENGTH];
+    const char *description;
+
+    snprintf(product_name, MAX_NAME_LENGTH, "GEOMS-TE-LIDAR-H2O-%03d", version);
+    snprintf(product_description, MAX_DESCRIPTION_LENGTH, "GEOMS template for LIDAR water vapor v%03d", version);
+    product_definition = harp_ingestion_register_product(module, product_name, product_description, read_dimensions);
+
+    dimension_type[0] = harp_dimension_time;
+    dimension_type[1] = harp_dimension_vertical;
+
+    register_common_variables(product_definition, 1);
+
+    /* H2O_volume_mixing_ratio */
+    description = "backscatter H2O volume mixing ratio";
+    variable_definition = harp_ingestion_register_variable_full_read(product_definition, "H2O_volume_mixing_ratio",
+                                                                     harp_type_double, 2, dimension_type, NULL,
+                                                                     description, "ppmv", NULL, read_h2o_vmr_bs);
+    harp_variable_definition_add_mapping(variable_definition, NULL, NULL, "/H2O.MIXING.RATIO.VOLUME_BACKSCATTER", NULL);
+
+    /* H2O_number_density_uncertainty */
+    description = "combined uncertainty of the absorption differential O3 number density";
+    variable_definition = harp_ingestion_register_variable_full_read(product_definition,
+                                                                     "H2O_volume_mixing_ratio_uncertainty",
+                                                                     harp_type_double, 2, dimension_type, NULL,
+                                                                     description, "ppmv", NULL,
+                                                                     read_h2o_vmr_bs_uncertainty);
+    harp_variable_definition_add_mapping(variable_definition, NULL, NULL,
+                                         "/H2O.MIXING.RATIO.VOLUME_BACKSCATTER_UNCERTAINTY.COMBINED.STANDARD", NULL);
+
+    /* relative_humidity */
+    description = "derived relative humidity";
+    variable_definition = harp_ingestion_register_variable_full_read(product_definition, "relative_humidity",
+                                                                     harp_type_double, 2, dimension_type, NULL,
+                                                                     description, "%", NULL, read_relative_humidity);
+    harp_variable_definition_add_mapping(variable_definition, NULL, NULL, "/HUMIDITY.RELATIVE_DERIVED", NULL);
+
+    /* relative_humidity_uncertainty */
+    description = "combined uncertainty of the derived relative humidity";
+    variable_definition = harp_ingestion_register_variable_full_read(product_definition,
+                                                                     "relative_humidity_uncertainty", harp_type_double,
+                                                                     2, dimension_type, NULL, description, "%", NULL,
+                                                                     read_relative_humidity_uncertainty);
+    harp_variable_definition_add_mapping(variable_definition, NULL, NULL,
+                                         "/HUMIDITY.RELATIVE_DERIVED_UNCERTAINTY.COMBINED.STANDARD", NULL);
+
+    return 0;
+}
+
 int harp_ingestion_module_geoms_lidar_init(void)
 {
     harp_ingestion_module *module;
@@ -568,6 +646,7 @@ int harp_ingestion_module_geoms_lidar_init(void)
 
     init_o3_product_definition(module, 3);
     init_o3_product_definition(module, 4);
+    init_o3_product_definition(module, 5);
 
     module = harp_ingestion_register_module_coda("GEOMS-TE-LIDAR-TEMPERATURE", "GEOMS", "GEOMS", "LIDAR_TEMPERATURE",
                                                  "GEOMS template for LIDAR temperature", ingestion_init,
@@ -575,6 +654,14 @@ int harp_ingestion_module_geoms_lidar_init(void)
 
     init_temperature_product_definition(module, 3);
     init_temperature_product_definition(module, 4);
+    init_temperature_product_definition(module, 5);
+
+    module = harp_ingestion_register_module_coda("GEOMS-TE-LIDAR-H2O", "GEOMS", "GEOMS", "LIDAR_H2O",
+                                                 "GEOMS template for LIDAR water vapor (Raman)", ingestion_init,
+                                                 ingestion_done);
+
+    init_h2o_product_definition(module, 4);
+    init_h2o_product_definition(module, 5);
 
     return 0;
 }
