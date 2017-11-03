@@ -37,8 +37,8 @@
 
 * Added NH3 (amonia) as supported species.
 
-* Updates to ECMWF-GRIB, GEOMS-TE-UVVIS-DOAS-OFFAXIS, and GEOMS-TE-FTIR
-  product ingestions.
+* Updates to ECMWF-GRIB, GEOMS-TE-UVVIS-DOAS-OFFAXIS, GEOMS-TE-FTIR, and
+  S5P L2 product ingestions (and several others for the new orbit_index).
 
 1.0 2017-09-25
 ~~~~~~~~~~~~~~
