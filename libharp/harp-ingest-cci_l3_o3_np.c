@@ -472,7 +472,7 @@ int harp_ingestion_module_cci_l3_o3_np_init(void)
         harp_ingestion_register_variable_full_read(product_definition, "pressure", harp_type_float, 3, dimension_type,
                                                    NULL, description, "hPa", NULL, read_pressure);
     description = "repeat location independent air pressure profile (/air_pressure[]) for each grid point and "
-    "replace value at the lowest level by location dependent surface pressure (/surface_pressure[])";
+        "replace value at the lowest level by location dependent surface pressure (/surface_pressure[])";
     path = "/surface_pressure[], /air_pressure[]";
     harp_variable_definition_add_mapping(variable_definition, NULL, NULL, path, description);
 
