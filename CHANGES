@@ -1,3 +1,6 @@
+1.1 2017-11-03
+~~~~~~~~~~~~~~
+
 * Parameters that required a file or a directory as dataset reference can now
   also take a file with a .pth extension as input. This file should contain a
   line-separated list of paths to files and/or directories of the dataset.
