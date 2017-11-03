@@ -2387,17 +2387,11 @@ static void register_common_limb_variables(harp_product_definition *product_defi
     const char *limb_mapping;
     char path[MAX_PATH_LENGTH];
 
-    limb_mapping = "The records in the geolocation_limb data set do not have a one-to-one mapping with the records in "
-        "the limb/occultation measurement datasets. Each record in the measurement dataset contains one profile "
-        "retrieval (for one or more species) which was calculated using several measurement points. For the SCIAMACHY "
-        "offline product this amount of limb/occultation measurements (n_meas) is unfortunately almost never equal to "
-        "the amount of height levels that was used for the retrieval (n_main). For this reason it is not possible to "
-        "assign a direct measurement time or tangent location to a profile point. The workaround chosen for HARP is "
-        "to use a single measurement time and tangent location per profile. The chosen time and geolocation "
-        "information is taken from the middlemost measurement that was used for the retrieval (i.e. index = "
-        "(n_meas - 1) / 2). The geolocation record belonging to this measurement is retrieved by comparing the "
-        "measurement time measurement_grid[(n_meas - 1) / 2].dsr_time with the time of the geolocation record "
-        "geolocation_limb[]/dsr_time";
+    limb_mapping = "records in geolocation_limb do not have a one-to-one mapping with records in the limb/occultation "
+        "measurement datasets; HARP uses a single measurement time and tangent location per profile which is taken "
+        "from the middlemost measurement used for the retrieval (i.e. index = (n_meas - 1) / 2); the geolocation "
+        "record for this measurement is retrieved by matching the measurement time "
+        "measurement_grid[(n_meas - 1) / 2].dsr_time with the geolocation record time geolocation_limb[]/dsr_time";
 
     dimension_type[0] = harp_dimension_time;
     dimension_type[1] = harp_dimension_vertical;
