@@ -142,3 +142,32 @@ altitude derivations
             \left(\frac{\sin(\frac{\pi}{180}\phi)}{6378137.0}\right)^2}} \\
          z_{surf} & = & \frac{g_{0}R_{wgs84}z_{g,surf}}{g_{wgs84}R_{wgs84} - g_{0}z_{g,surf}}
       \end{eqnarray}
+
+
+#. tropopause altitude from temperature and altitude/pressure
+
+   ============== =================== ========== ==========================
+   symbol         description         unit       variable name
+   ============== =================== ========== ==========================
+   :math:`p(i)`   pressure            :math:`Pa` `pressure {:,vertical}`
+   :math:`T(i)`   temperature         :math:`K`  `temperature {:,vertical}`
+   :math:`z(i)`   altitude            :math:`m`  `altitude {:,vertical}`
+   :math:`z_{TP}` tropopause altitude :math:`m`  `tropopause_altitude {:}`
+   ============== =================== ========== ==========================
+
+   The pattern `:` for the dimensions can represent `{latitude,longitude}`, `{time}`, `{time,latitude,longitude}`,
+   or no dimensions at all.
+
+   The tropopause altitude :math:`z_{TP}` equals the altitude :math:`z(i)` where :math:`i` is the minimum level that satisfies:
+
+   .. math::
+      :nowrap:
+
+      \begin{eqnarray}
+         & 1 < i < N  & \wedge \\
+         & 5000 <= p(i) <= 50000  & \wedge \\
+         & \frac{T(i-1)-T(i)}{z(i)-z(i-1)} > 0.002 \wedge \frac{T(i)-T(i+1)}{z(i+1)-z(i)} <= 0.002 & \wedge \\
+         & \forall_{j, i < j <= N \wedge z(j)-z(i) <= 2000} \frac{T(i)-T(j)}{z(j)-z(i)} <= 0.002 &
+      \end{eqnarray}
+
+   If no such :math:`i` can be found then :math:`z_{TP}` is set to `NaN`.

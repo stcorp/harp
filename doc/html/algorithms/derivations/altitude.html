@@ -519,6 +519,55 @@ or no dimensions at all.</p>
       \left(\frac{\sin(\frac{\pi}{180}\phi)}{6378137.0}\right)^2}} \\
    z_{surf} &amp; = &amp; \frac{g_{0}R_{wgs84}z_{g,surf}}{g_{wgs84}R_{wgs84} - g_{0}z_{g,surf}}
 \end{eqnarray}</div></li>
+<li><p class="first">tropopause altitude from temperature and altitude/pressure</p>
+<table border="1" class="docutils">
+<colgroup>
+<col width="20%" />
+<col width="28%" />
+<col width="14%" />
+<col width="38%" />
+</colgroup>
+<thead valign="bottom">
+<tr class="row-odd"><th class="head">symbol</th>
+<th class="head">description</th>
+<th class="head">unit</th>
+<th class="head">variable name</th>
+</tr>
+</thead>
+<tbody valign="top">
+<tr class="row-even"><td><span class="math">\(p(i)\)</span></td>
+<td>pressure</td>
+<td><span class="math">\(Pa\)</span></td>
+<td><cite>pressure {:,vertical}</cite></td>
+</tr>
+<tr class="row-odd"><td><span class="math">\(T(i)\)</span></td>
+<td>temperature</td>
+<td><span class="math">\(K\)</span></td>
+<td><cite>temperature {:,vertical}</cite></td>
+</tr>
+<tr class="row-even"><td><span class="math">\(z(i)\)</span></td>
+<td>altitude</td>
+<td><span class="math">\(m\)</span></td>
+<td><cite>altitude {:,vertical}</cite></td>
+</tr>
+<tr class="row-odd"><td><span class="math">\(z_{TP}\)</span></td>
+<td>tropopause altitude</td>
+<td><span class="math">\(m\)</span></td>
+<td><cite>tropopause_altitude {:}</cite></td>
+</tr>
+</tbody>
+</table>
+<p>The pattern <cite>:</cite> for the dimensions can represent <cite>{latitude,longitude}</cite>, <cite>{time}</cite>, <cite>{time,latitude,longitude}</cite>,
+or no dimensions at all.</p>
+<p>The tropopause altitude <span class="math">\(z_{TP}\)</span> equals the altitude <span class="math">\(z(i)\)</span> where <span class="math">\(i\)</span> is the minimum level that satisfies:</p>
+<div class="math">
+\begin{eqnarray}
+   &amp; 1 &lt; i &lt; N  &amp; \wedge \\
+   &amp; 5000 &lt;= p(i) &lt;= 50000  &amp; \wedge \\
+   &amp; \frac{T(i-1)-T(i)}{z(i)-z(i-1)} &gt; 0.002 \wedge \frac{T(i)-T(i+1)}{z(i+1)-z(i)} &lt;= 0.002 &amp; \wedge \\
+   &amp; \forall_{j, i &lt; j &lt;= N \wedge z(j)-z(i) &lt;= 2000} \frac{T(i)-T(j)}{z(j)-z(i)} &lt;= 0.002 &amp;
+\end{eqnarray}</div><p>If no such <span class="math">\(i\)</span> can be found then <span class="math">\(z_{TP}\)</span> is set to <cite>NaN</cite>.</p>
+</li>
 </ol>
 </div>
 

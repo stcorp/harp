@@ -135,3 +135,32 @@ pressure derivations
    .. math::
 
       p_{surf} = n_{surf}kT_{surf}
+
+
+#. tropopause pressure from temperature and altitude/pressure
+
+   ============== =================== ========== ==========================
+   symbol         description         unit       variable name
+   ============== =================== ========== ==========================
+   :math:`p(i)`   pressure            :math:`Pa` `pressure {:,vertical}`
+   :math:`p_{TP}` tropopause pressure :math:`Pa` `tropopause_pressure {:}`
+   :math:`T(i)`   temperature         :math:`K`  `temperature {:,vertical}`
+   :math:`z(i)`   altitude            :math:`m`  `altitude {:,vertical}`
+   ============== =================== ========== ==========================
+
+   The pattern `:` for the dimensions can represent `{latitude,longitude}`, `{time}`, `{time,latitude,longitude}`,
+   or no dimensions at all.
+
+   The tropopause pressure :math:`p_{TP}` equals the pressure :math:`p(i)` where :math:`i` is the minimum level that satisfies:
+
+   .. math::
+      :nowrap:
+
+      \begin{eqnarray}
+         & 1 < i < N  & \wedge \\
+         & 5000 <= p(i) <= 50000  & \wedge \\
+         & \frac{T(i-1)-T(i)}{z(i)-z(i-1)} > 0.002 \wedge \frac{T(i)-T(i+1)}{z(i+1)-z(i)} <= 0.002 & \wedge \\
+         & \forall_{j, i < j <= N \wedge z(j)-z(i) <= 2000} \frac{T(i)-T(j)}{z(j)-z(i)} <= 0.002 &
+      \end{eqnarray}
+
+   If no such :math:`i` can be found then :math:`p_{TP}` is set to `NaN`.
