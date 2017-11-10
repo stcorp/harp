@@ -137,7 +137,7 @@ int merge_dataset(harp_product **merged_product, harp_dataset *dataset, const ch
         }
     }
 
-    if (dataset->num_products == 1)
+    if (*merged_product != NULL && dataset->num_products == 1)
     {
         /* if we only had one product then make sure it still looks like it was the result from a merge */
         if (harp_product_append(*merged_product, NULL) != 0)
