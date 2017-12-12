@@ -2178,34 +2178,21 @@ static harp_product_definition *register_measurement_product(harp_ingestion_modu
         "4, 2, or 1 measurement(s) respectively for this band in a scan. ";
     harp_product_definition_add_mapping(product_definition, description, NULL);
     description = "Some readouts may even cover multiple scans if the integration time is larger than 6s. HARP will "
-        "combine the data for all bands into a single two-dimensional pixel_readout array. Because of the differences "
-        "in integration time this means that for some bands there will be gaps in the pixel_readout array. ";
+        "combine the data for all bands into a single two-dimensional pixel_readout array and uses a fixed resulotion "
+        "of 187.5ms for the variables. Because bands might have higher integration time this means that for those "
+        "bands there will be multiple rows in the pixel_readout array for a single readout. ";
     harp_product_definition_add_mapping(product_definition, description, NULL);
-    description = "These gaps will be filled with NaN values. HARP will always use the minimum integration time of all "
-        "ingested bands to determine the time resolution for the HARP variables. For instance, if the minimum "
-        "integration time for a scan is 1.5s you will find 4 entries in the HARP variables for this scan. ";
+    description = "Each of those multiple rows will be filled with the same measurement value. This comes down to "
+        "breaking the measurement up into pieces of 187.5ms (the actual integration time can still be found from the "
+        "integration_time variable). ";
     harp_product_definition_add_mapping(product_definition, description, NULL);
-    description = "All meta-data, such as geolocation, angles, etc. will also be ingested for this minimum integration "
-        "time (i.e. you will see co-added meta-data if the integration time is > 187.5ms). The minimum integration "
-        "time is calculated based on those bands from which actual data is ingested. "
-        "This means that the minimum integration time can change depending on the wavelength filter that was applied"
-        "\n\n";
-    harp_product_definition_add_mapping(product_definition, description, NULL);
-    description = "The filtering on time and geolocation will always be performed using the 187.5ms resolution. "
-        "A measurement with a higher integration time will only be included if each of its 187.5ms sub-parts have not "
-        "been filtered out (this also holds for measurements with an integration time > 6s). ";
-    harp_product_definition_add_mapping(product_definition, description, NULL);
-    description = "If spectra from multiple bands with different integration times are ingested then the measurements "
-        "with a high integration time will only be ingested if all subpixels of the measurements with the minimum "
-        "integration time are also ingested. ";
-    harp_product_definition_add_mapping(product_definition, description, NULL);
-    description = "The measurement with a high integration time will be put in the same 'row' as the first "
-        "corresponding minimum integration time measurement (i.e. measurements of different bands are aligned "
-        "according to start time of the measurement).\n\n";
+    description =  "All meta-data, such as geolocation, angles, etc. will also be ingested for this minimum "
+        "integration time of 187.5ms and filtering on time and geolocation will also always be performed using the "
+        "187.5ms resolution.\n\n";
     harp_product_definition_add_mapping(product_definition, description, NULL);
     description = "If the band configuration changes somewhere during the orbit and a band filter is given, then "
-        "we only include detector pixels that are inside the requested band for the duration of the whole orbit. i.e. "
-        "detector pixels that change band during the orbit will always be excluded when a band filter is given.";
+        "only detector pixels that are inside the requested band for the duration of the whole orbit will be included. "
+        "i.e. detector pixels that change band during the orbit will always be excluded when a band filter is given.";
     harp_product_definition_add_mapping(product_definition, description, NULL);
 
     return product_definition;
