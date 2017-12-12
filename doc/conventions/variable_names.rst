@@ -62,7 +62,7 @@ column_number_density                         stratospheric,  amf, apriori,   X 
                                               tropospheric    avk, dfs
 count
 datetime
-datetime_length                                                                       X
+datetime_length
 datetime_start
 datetime_stop
 density                                                                       X       X    X             this is the mass density
