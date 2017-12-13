@@ -101,7 +101,6 @@ static void print_help()
 int merge_dataset(harp_product **merged_product, harp_dataset *dataset, const char *operations, const char *options,
                   int verbose)
 {
-    int first = (*merged_product == NULL);
     int i;
 
     for (i = 0; i < dataset->num_products; i++)
@@ -125,6 +124,11 @@ int merge_dataset(harp_product **merged_product, harp_dataset *dataset, const ch
             if (*merged_product == NULL)
             {
                 *merged_product = product;
+                /* if this remains the only product then make sure it still looks like it was the result of a merge */
+                if (harp_product_append(*merged_product, NULL) != 0)
+                {
+                    return -1;
+                }
             }
             else
             {
@@ -135,15 +139,6 @@ int merge_dataset(harp_product **merged_product, harp_dataset *dataset, const ch
                 }
                 harp_product_delete(product);
             }
-        }
-    }
-
-    if (first && *merged_product != NULL && dataset->num_products == 1)
-    {
-        /* if we only had one product then make sure it still looks like it was the result from a merge */
-        if (harp_product_append(*merged_product, NULL) != 0)
-        {
-            return -1;
         }
     }
 
