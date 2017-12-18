@@ -2186,7 +2186,7 @@ static harp_product_definition *register_measurement_product(harp_ingestion_modu
         "breaking the measurement up into pieces of 187.5ms (the actual integration time can still be found from the "
         "integration_time variable). ";
     harp_product_definition_add_mapping(product_definition, description, NULL);
-    description =  "All meta-data, such as geolocation, angles, etc. will also be ingested for this minimum "
+    description = "All meta-data, such as geolocation, angles, etc. will also be ingested for this minimum "
         "integration time of 187.5ms and filtering on time and geolocation will also always be performed using the "
         "187.5ms resolution.\n\n";
     harp_product_definition_add_mapping(product_definition, description, NULL);
