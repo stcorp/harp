@@ -1,6 +1,9 @@
 * Fixed issue where harpmerge did not introduce a time dimension for all
   variables.
 
+* Fixed issue where datetime_start and datetime_stop global attributes were not
+  created when exporting in HDF4 or HDF5 format.
+
 * Fixed mapping description of GOME2 L1 product ingestion.
 
 1.1 2017-11-06

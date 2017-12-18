@@ -2162,6 +2162,22 @@ static int write_nc3_strict_attribute(hid_t group_id)
 
 static int write_attributes(hid_t group_id, const harp_product *product)
 {
+    harp_scalar datetime_start;
+    harp_scalar datetime_stop;
+
+    if (harp_product_get_datetime_range(product, &datetime_start.double_data, &datetime_stop.double_data) == 0)
+    {
+        if (write_numeric_attribute(group_id, "datetime_start", harp_type_double, datetime_start) != 0)
+        {
+            return -1;
+        }
+
+        if (write_numeric_attribute(group_id, "datetime_stop", harp_type_double, datetime_stop) != 0)
+        {
+            return -1;
+        }
+    }
+
     if (product->source_product != NULL && strcmp(product->source_product, "") != 0)
     {
         if (write_string_attribute(group_id, "source_product", product->source_product) != 0)

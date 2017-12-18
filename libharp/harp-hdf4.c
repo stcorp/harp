@@ -1261,6 +1261,8 @@ static int write_variable(harp_variable *variable, int32 sd_id)
 
 static int write_product(const harp_product *product, int32 sd_id)
 {
+    harp_scalar datetime_start;
+    harp_scalar datetime_stop;
     int i;
 
     /* Write file convention. */
@@ -1270,6 +1272,19 @@ static int write_product(const harp_product *product, int32 sd_id)
     }
 
     /* Write attributes. */
+    if (harp_product_get_datetime_range(product, &datetime_start.double_data, &datetime_stop.double_data) == 0)
+    {
+        if (write_numeric_attribute(sd_id, "datetime_start", harp_type_double, datetime_start) != 0)
+        {
+            return -1;
+        }
+
+        if (write_numeric_attribute(sd_id, "datetime_stop", harp_type_double, datetime_stop) != 0)
+        {
+            return -1;
+        }
+    }
+
     if (product->source_product != NULL && strcmp(product->source_product, "") != 0)
     {
         if (write_string_attribute(sd_id, "source_product", product->source_product) != 0)
