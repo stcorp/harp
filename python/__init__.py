@@ -68,7 +68,7 @@ does not contain enough information.
 Further information is available in the HARP documentation.
 
 
-Copyright (C) 2015-2017 S[&]T, The Netherlands.
+Copyright (C) 2015-2018 S[&]T, The Netherlands.
 All rights reserved.
 
 Redistribution and use in source and binary forms, with or without
