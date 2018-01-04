@@ -560,6 +560,7 @@ static int read_variable_data_type(hid_t dataset_id, harp_data_type *data_type)
     return 0;
 }
 
+/* don't use -1 on error, otherwise the HDF5 library starts printing error messages to the console */
 static herr_t hdf5_read_dimension_scale_func(hid_t dataset_id, unsigned dim, hid_t dimension_scale_id, void *user_data)
 {
     hdf5_object_id *object_id;
@@ -571,7 +572,7 @@ static herr_t hdf5_read_dimension_scale_func(hid_t dataset_id, unsigned dim, hid
     if (H5Oget_info(dimension_scale_id, &object_info) < 0)
     {
         harp_set_error(HARP_ERROR_HDF5, NULL);
-        return -1;
+        return 1;
     }
 
     object_id = (hdf5_object_id *)user_data;
@@ -662,7 +663,7 @@ static int read_variable_dimensions(const char *variable_name, hid_t dataset_id,
             hdf5_object_id hdf5_dimensions_id;
             int j;
 
-            if (H5DSiterate_scales(dataset_id, i, NULL, hdf5_read_dimension_scale_func, &hdf5_dimensions_id) < 0)
+            if (H5DSiterate_scales(dataset_id, i, NULL, hdf5_read_dimension_scale_func, &hdf5_dimensions_id) != 0)
             {
                 return -1;
             }
@@ -936,6 +937,7 @@ static int read_variable(hid_t dataset_id, const char *name, const hdf5_dimensio
     return 0;
 }
 
+/* don't use -1 on error, otherwise the HDF5 library starts printing error messages to the console */
 static herr_t hdf5_find_dimensions_func(hid_t group_id, const char *name, const H5L_info_t * info, void *user_data)
 {
     H5O_info_t object_info;
@@ -951,7 +953,7 @@ static herr_t hdf5_find_dimensions_func(hid_t group_id, const char *name, const 
     if (H5Oget_info_by_name(group_id, name, &object_info, H5P_DEFAULT) < 0)
     {
         harp_set_error(HARP_ERROR_HDF5, NULL);
-        return -1;
+        return 1;
     }
 
     if (object_info.type != H5O_TYPE_DATASET)
@@ -963,7 +965,7 @@ static herr_t hdf5_find_dimensions_func(hid_t group_id, const char *name, const 
     if (dataset_id < 0)
     {
         harp_set_error(HARP_ERROR_HDF5, NULL);
-        return -1;
+        return 1;
     }
 
     is_dimension_scale = H5DSis_scale(dataset_id);
@@ -971,7 +973,7 @@ static herr_t hdf5_find_dimensions_func(hid_t group_id, const char *name, const 
     {
         harp_set_error(HARP_ERROR_HDF5, NULL);
         H5Dclose(dataset_id);
-        return -1;
+        return 1;
     }
 
     if (is_dimension_scale)
@@ -984,7 +986,7 @@ static herr_t hdf5_find_dimensions_func(hid_t group_id, const char *name, const 
         {
             harp_set_error(HARP_ERROR_HDF5, NULL);
             H5Dclose(dataset_id);
-            return -1;
+            return 1;
         }
 
         if (H5Sis_simple(space_id) <= 0)
@@ -992,7 +994,7 @@ static herr_t hdf5_find_dimensions_func(hid_t group_id, const char *name, const 
             harp_set_error(HARP_ERROR_IMPORT, "dataspace is complex; only simple dataspaces are supported");
             H5Sclose(space_id);
             H5Dclose(dataset_id);
-            return -1;
+            return 1;
         }
 
         hdf5_num_dimensions = H5Sget_simple_extent_ndims(space_id);
@@ -1001,7 +1003,7 @@ static herr_t hdf5_find_dimensions_func(hid_t group_id, const char *name, const 
             harp_set_error(HARP_ERROR_HDF5, NULL);
             H5Sclose(space_id);
             H5Dclose(dataset_id);
-            return -1;
+            return 1;
         }
 
         if (hdf5_num_dimensions != 1)
@@ -1010,7 +1012,7 @@ static herr_t hdf5_find_dimensions_func(hid_t group_id, const char *name, const 
                            hdf5_num_dimensions);
             H5Sclose(space_id);
             H5Dclose(dataset_id);
-            return -1;
+            return 1;
         }
 
         if (H5Sget_simple_extent_dims(space_id, &length, NULL) < 0)
@@ -1018,7 +1020,7 @@ static herr_t hdf5_find_dimensions_func(hid_t group_id, const char *name, const 
             harp_set_error(HARP_ERROR_HDF5, NULL);
             H5Sclose(space_id);
             H5Dclose(dataset_id);
-            return -1;
+            return 1;
         }
 
         H5Sclose(space_id);
@@ -1048,7 +1050,7 @@ static int find_dimensions(hid_t group_id, hdf5_dimension_ids *dimension_ids)
         return -1;
     }
 
-    if (H5Literate(group_id, index_type, H5_ITER_NATIVE, NULL, hdf5_find_dimensions_func, dimension_ids) < 0)
+    if (H5Literate(group_id, index_type, H5_ITER_NATIVE, NULL, hdf5_find_dimensions_func, dimension_ids) != 0)
     {
         return -1;
     }
@@ -1065,6 +1067,7 @@ typedef struct hdf5_read_variable_func_args_struct
     harp_product *product;
 } hdf5_read_variable_func_args;
 
+/* don't use -1 on error, otherwise the HDF5 library starts printing error messages to the console */
 static herr_t hdf5_read_variable_func(hid_t group_id, const char *name, const H5L_info_t * info, void *user_data)
 {
     hdf5_read_variable_func_args *args;
@@ -1079,7 +1082,7 @@ static herr_t hdf5_read_variable_func(hid_t group_id, const char *name, const H5
     if (H5Oget_info_by_name(group_id, name, &object_info, H5P_DEFAULT) < 0)
     {
         harp_set_error(HARP_ERROR_HDF5, NULL);
-        return -1;
+        return 1;
     }
 
     if (object_info.type != H5O_TYPE_DATASET)
@@ -1092,7 +1095,7 @@ static herr_t hdf5_read_variable_func(hid_t group_id, const char *name, const H5
     if (dataset_id < 0)
     {
         harp_set_error(HARP_ERROR_HDF5, NULL);
-        return -1;
+        return 1;
     }
 
     is_dimension_scale = H5DSis_scale(dataset_id);
@@ -1100,7 +1103,7 @@ static herr_t hdf5_read_variable_func(hid_t group_id, const char *name, const H5
     {
         harp_set_error(HARP_ERROR_HDF5, NULL);
         H5Dclose(dataset_id);
-        return -1;
+        return 1;
     }
 
     if (is_dimension_scale)
@@ -1111,7 +1114,7 @@ static herr_t hdf5_read_variable_func(hid_t group_id, const char *name, const H5
         {
             harp_set_error(HARP_ERROR_HDF5, NULL);
             H5Dclose(dataset_id);
-            return -1;
+            return 1;
         }
 
         if (strncmp(scale_name, DIM_WITHOUT_VARIABLE, sizeof(DIM_WITHOUT_VARIABLE) - 1) == 0)
@@ -1125,7 +1128,7 @@ static herr_t hdf5_read_variable_func(hid_t group_id, const char *name, const H5
     if (read_variable(dataset_id, name, args->dimension_ids, args->product) != 0)
     {
         H5Dclose(dataset_id);
-        return -1;
+        return 1;
     }
 
     H5Dclose(dataset_id);
@@ -1146,7 +1149,7 @@ static int read_variables(hid_t group_id, hdf5_dimension_ids *dimension_ids, har
     args.dimension_ids = dimension_ids;
     args.product = product;
 
-    return (H5Literate(group_id, index_type, H5_ITER_INC, NULL, hdf5_read_variable_func, &args) < 0 ? -1 : 0);
+    return (H5Literate(group_id, index_type, H5_ITER_INC, NULL, hdf5_read_variable_func, &args) != 0 ? -1 : 0);
 }
 
 static int read_attributes(hid_t group_id, harp_product *product)
