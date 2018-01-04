@@ -301,7 +301,7 @@ static hid_t get_hdf5_type(harp_data_type data_type)
     }
 }
 
-static char *get_hdf5_variable_name(const harp_variable *variable)
+static char *get_hdf5_variable_name(const harp_product *product, const harp_variable *variable)
 {
     char *name = NULL;
     int i;
@@ -310,7 +310,7 @@ static char *get_hdf5_variable_name(const harp_variable *variable)
     {
         harp_dimension_type dimension_type = (harp_dimension_type)i;
 
-        if (strcmp(variable->name, harp_get_dimension_type_name(dimension_type)) == 0 &&
+        if (product->dimension[i] > 0 && strcmp(variable->name, harp_get_dimension_type_name(dimension_type)) == 0 &&
             !(variable->num_dimensions == 1 && *variable->dimension_type == dimension_type))
         {
             /* we have a variable with the same name as a dimension but which is not an axis variable */
@@ -1592,13 +1592,12 @@ static int write_numeric_attribute(hid_t obj_id, const char *name, harp_data_typ
     return 0;
 }
 
-static int write_variable(hid_t group_id, harp_variable *variable)
+static int write_variable(hid_t group_id, const char *name, harp_variable *variable)
 {
     hsize_t dimension[HARP_MAX_NUM_DIMS];
     hid_t space_id;
     hid_t dcpl_id;
     hid_t dataset_id;
-    char *name;
     int i;
 
     for (i = 0; i < variable->num_dimensions; i++)
@@ -1672,13 +1671,7 @@ static int write_variable(hid_t group_id, harp_variable *variable)
             return -1;
         }
 
-        name = get_hdf5_variable_name(variable);
-        if (name == NULL)
-        {
-            return -1;
-        }
         dataset_id = H5Dcreate(group_id, name, data_type_id, space_id, dcpl_id);
-        free(name);
         if (dataset_id < 0)
         {
             harp_set_error(HARP_ERROR_HDF5, NULL);
@@ -1730,13 +1723,7 @@ static int write_variable(hid_t group_id, harp_variable *variable)
             return -1;
         }
 
-        name = get_hdf5_variable_name(variable);
-        if (name == NULL)
-        {
-            return -1;
-        }
         dataset_id = H5Dcreate(group_id, name, get_hdf5_type(variable->data_type), space_id, dcpl_id);
-        free(name);
         if (dataset_id < 0)
         {
             harp_set_error(HARP_ERROR_HDF5, NULL);
@@ -2092,7 +2079,7 @@ static int attach_dimensions(hid_t group_id, const harp_product *product, const 
             continue;
         }
 
-        name = get_hdf5_variable_name(variable);
+        name = get_hdf5_variable_name(product, variable);
         if (name == NULL)
         {
             return -1;
@@ -2243,12 +2230,21 @@ static int write_product(hid_t file_id, const harp_product *product)
 
     for (i = 0; i < product->num_variables; i++)
     {
-        if (write_variable(root_id, product->variable[i]) != 0)
+        char *name;
+
+        name = get_hdf5_variable_name(product, product->variable[i]);
+        if (name == NULL)
         {
+            return -1;
+        }
+        if (write_variable(root_id, name, product->variable[i]) != 0)
+        {
+            free(name);
             dimensions_done(&dimensions);
             H5Gclose(root_id);
             return -1;
         }
+        free(name);
     }
 
     if (finalize_dimensions(root_id, product, &dimensions) != 0)
