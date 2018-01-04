@@ -634,6 +634,7 @@ indent:
 	@echo Indenting
 	@test "x$(INDENTFILES)" = x || for file in $(INDENTFILES) ; do \
 	  $(INDENT) `test -f $$file || echo '$(srcdir)/'`$$file ; \
+	  $(RM) `test -f $$file || echo '$(srcdir)/'`$$file~ ; \
 	done
 
 # *** CMake-specific ***
