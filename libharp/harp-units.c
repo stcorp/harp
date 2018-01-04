@@ -87,7 +87,7 @@ static void handle_udunits_error(void)
             harp_set_error(HARP_ERROR_UNIT_CONVERSION, "string unit representation contains unknown word");
             break;
         case UT_OPEN_ARG:
-            harp_set_error(HARP_ERROR_UNIT_CONVERSION, "cannot open argument-specified unit database");
+            harp_set_error(HARP_ERROR_UNIT_CONVERSION, "cannot open unit database");
             break;
         case UT_OPEN_ENV:
             harp_set_error(HARP_ERROR_UNIT_CONVERSION, "cannot open environment-specified unit database");
@@ -244,6 +244,7 @@ static int unit_system_init(void)
         if (unit_system == NULL)
         {
             handle_udunits_error();
+            harp_add_error_message(" (%s)", harp_udunits2_xml_path);
             return -1;
         }
     }

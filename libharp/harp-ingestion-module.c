@@ -1340,7 +1340,7 @@ int harp_ingestion_init(void)
     module_register->num_ingestion_modules = 0;
     module_register->ingestion_module = NULL;
 
-    /* Make sure that udunits gets initialized as well */
+    /* Make sure that udunits gets initialized as well (so we can use asserts later on) */
     if (!harp_unit_is_valid(""))
     {
         return -1;

@@ -1539,6 +1539,12 @@ LIBHARP_API int harp_product_verify(const harp_product *product)
         return -1;
     }
 
+    /* Make sure that units module gets initialized so we report on initialization errors early and separately */
+    if (!harp_unit_is_valid(""))
+    {
+        return -1;
+    }
+
     /* Check variables. */
     for (i = 0; i < product->num_variables; i++)
     {
