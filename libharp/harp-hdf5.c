@@ -508,12 +508,25 @@ static int read_numeric_attribute(hid_t obj_id, const char *name, harp_data_type
         return -1;
     }
 
-    if (H5Sis_simple(space_id) <= 0 || H5Sget_simple_extent_type(space_id) != H5S_SCALAR)
+    if (H5Sis_simple(space_id) <= 0)
     {
         harp_set_error(HARP_ERROR_IMPORT, "attribute '%s' has invalid format", name);
         H5Sclose(space_id);
         H5Aclose(attr_id);
         return -1;
+    }
+    if (H5Sget_simple_extent_type(space_id) != H5S_SCALAR)
+    {
+        hssize_t npoints;
+
+        npoints = H5Sget_simple_extent_npoints(space_id);
+        if (npoints != 1)
+        {
+            harp_set_error(HARP_ERROR_IMPORT, "attribute '%s' has invalid dimensions", name);
+            H5Sclose(space_id);
+            H5Aclose(attr_id);
+            return -1;
+        }
     }
     H5Sclose(space_id);
 
