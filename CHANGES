@@ -4,6 +4,8 @@
 * Fixed issue where datetime_start and datetime_stop global attributes were not
   created when exporting in HDF4 or HDF5 format.
 
+* String attributes in HDF5 files can now be empty strings (using H5S_NULL).
+
 * Fixed mapping description of GOME2 L1 product ingestion.
 
 1.1 2017-11-06

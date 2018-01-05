@@ -386,6 +386,38 @@ static int read_string_attribute(hid_t obj_id, const char *name, char **data)
         return -1;
     }
 
+    space_id = H5Aget_space(attr_id);
+    if (space_id < 0)
+    {
+        harp_set_error(HARP_ERROR_HDF5, NULL);
+        H5Aclose(attr_id);
+        return -1;
+    }
+
+    if (H5Sget_simple_extent_type(space_id) == H5S_NULL)
+    {
+        /* this is an empty string */
+        H5Sclose(space_id);
+        H5Aclose(attr_id);
+        *data = strdup("");
+        if (*data == NULL)
+        {
+            harp_set_error(HARP_ERROR_OUT_OF_MEMORY, "out of memory (could not duplicate string) (%s:%u)", __FILE__,
+                           __LINE__);
+            return -1;
+        }
+        return 0;
+    }
+
+    if (H5Sis_simple(space_id) <= 0 || H5Sget_simple_extent_type(space_id) != H5S_SCALAR)
+    {
+        harp_set_error(HARP_ERROR_IMPORT, "attribute '%s' has invalid format", name);
+        H5Sclose(space_id);
+        H5Aclose(attr_id);
+        return -1;
+    }
+    H5Sclose(space_id);
+
     data_type_id = H5Aget_type(attr_id);
     if (data_type_id < 0)
     {
@@ -410,25 +442,6 @@ static int read_string_attribute(hid_t obj_id, const char *name, char **data)
         H5Aclose(attr_id);
         return -1;
     }
-
-    space_id = H5Aget_space(attr_id);
-    if (space_id < 0)
-    {
-        harp_set_error(HARP_ERROR_HDF5, NULL);
-        H5Tclose(data_type_id);
-        H5Aclose(attr_id);
-        return -1;
-    }
-
-    if (H5Sis_simple(space_id) <= 0 || H5Sget_simple_extent_type(space_id) != H5S_SCALAR)
-    {
-        harp_set_error(HARP_ERROR_IMPORT, "attribute '%s' has invalid format", name);
-        H5Tclose(data_type_id);
-        H5Sclose(space_id);
-        H5Aclose(attr_id);
-        return -1;
-    }
-    H5Sclose(space_id);
 
     str = malloc((size + 1) * sizeof(char));
     if (str == NULL)
@@ -1502,6 +1515,28 @@ static int write_string_attribute(hid_t obj_id, const char *name, const char *da
         return -1;
     }
 
+    if (strlen(data) == 0)
+    {
+        space_id = H5Screate(H5S_NULL);
+        if (space_id < 0)
+        {
+            harp_set_error(HARP_ERROR_HDF5, NULL);
+            H5Tclose(data_type_id);
+            return -1;
+        }
+
+        attr_id = H5Acreate(obj_id, name, data_type_id, space_id, H5P_DEFAULT);
+        H5Sclose(space_id);
+        H5Tclose(data_type_id);
+        if (attr_id < 0)
+        {
+            harp_set_error(HARP_ERROR_HDF5, NULL);
+            return -1;
+        }
+
+        return 0;
+    }
+
     if (H5Tset_size(data_type_id, strlen(data)) < 0)
     {
         harp_set_error(HARP_ERROR_HDF5, NULL);
@@ -1759,9 +1794,7 @@ static int write_variable(hid_t group_id, const char *name, harp_variable *varia
 
     if (variable->unit != NULL)
     {
-        const char *unit = variable->unit[0] == '\0' ? "1" : variable->unit;    /* convert "" to "1" */
-
-        if (write_string_attribute(dataset_id, "units", unit) != 0)
+        if (write_string_attribute(dataset_id, "units", variable->unit) != 0)
         {
             H5Dclose(dataset_id);
             return -1;
