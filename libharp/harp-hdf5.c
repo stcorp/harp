@@ -1598,6 +1598,7 @@ static int write_string_attribute(hid_t obj_id, const char *name, const char *da
             harp_set_error(HARP_ERROR_HDF5, NULL);
             return -1;
         }
+        H5Aclose(attr_id);
 
         return 0;
     }
