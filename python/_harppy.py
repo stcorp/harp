@@ -821,9 +821,6 @@ def _export_variable(name, variable, c_product):
     if data is None:
         raise Error("no data or data is None")
 
-    # Determine C data type.
-    c_data_type = _get_c_data_type(data)
-
     # Check dimensions
     dimension = getattr(variable, "dimension", [])
     if not dimension and isinstance(data, numpy.ndarray) and data.size != 1:
@@ -831,6 +828,23 @@ def _export_variable(name, variable, c_product):
 
     if dimension and (not isinstance(data, numpy.ndarray) or data.ndim != len(dimension)):
         raise Error("dimensions incorrect")
+
+    # Determine C data type.
+    c_data_type = _get_c_data_type(data)
+    if len(dimension) == 0:
+        # Allow valid_min/valid_max to influence data type as well
+        try:
+            min_data_type = _get_c_data_type(variable.valid_min)
+            if min_data_type != c_data_type:
+                c_data_type = min_data_type
+        except:
+            pass
+        try:
+            max_data_type = _get_c_data_type(variable.valid_max)
+            if max_data_type != c_data_type:
+                c_data_type = max_data_type
+        except:
+            pass
 
     # Encode variable name.
     c_name = _encode_string(name)
