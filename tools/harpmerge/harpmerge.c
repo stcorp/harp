@@ -87,6 +87,10 @@ static void print_help()
     printf("                    hdf4\n");
     printf("                    hdf5\n");
     printf("\n");
+    printf("            --hdf5-compression <level>\n");
+    printf("                Set data compression level for storing in HDF5 format.\n");
+    printf("                0=disabled, 1=low, ..., 9=high.\n");
+    printf("\n");
     printf("        If the merged product is empty, a warning will be printed and the\n");
     printf("        tool will return with exit code 2 (without writing a file).\n");
     printf("\n");
@@ -179,6 +183,16 @@ static int merge(int argc, char *argv[])
         else if (strcmp(argv[i], "-l") == 0 || strcmp(argv[i], "--list") == 0)
         {
             verbose = 1;
+        }
+        else if (strcmp(argv[i], "--hdf5-compression") == 0 && i + 1 < argc && argv[i + 1][0] != '-')
+        {
+            if (harp_set_option_hdf5_compression(atoi(argv[i + 1])) != 0)
+            {
+                fprintf(stderr, "ERROR: invalid hdf5 compression argument: '%s'\n", argv[i]);
+                print_help();
+                return -1;
+            }
+            i++;
         }
         else if (argv[i][0] != '-')
         {

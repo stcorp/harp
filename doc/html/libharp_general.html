@@ -813,6 +813,37 @@
 </dd></dl>
 
 <dl class="function">
+<dt id="_CPPv232harp_set_option_hdf5_compressioni">
+<span id="harp_set_option_hdf5_compression__i"></span><span class="target" id="libharpgroup__harp__general_1ga37df50bf61d353f47a60cda03c920f36"></span>int <code class="descname">harp_set_option_hdf5_compression</code><span class="sig-paren">(</span>int <em>level</em><span class="sig-paren">)</span><br /></dt>
+<dd><p>Set the compression level to use for storing variables in HDF5 files. <dl class="docutils">
+<dt><strong>Return</strong></dt>
+<dd><ul class="simple">
+<li><code class="docutils literal"><span class="pre">0</span></code>, Success. </li>
+<li><code class="docutils literal"><span class="pre">-1</span></code>, Error occurred (check <a class="reference internal" href="libharp_error.html#libharpgroup__harp__error_1gab2eeb46528306c6799632d1e800c4c36"><span class="std std-ref">harp_errno</span></a>). </li>
+</ul>
+</dd>
+<dt><strong>Parameters</strong></dt>
+<dd><ul class="breatheparameterlist first last simple">
+<li><code class="docutils literal"><span class="pre">level</span></code>: The compression level (1=low, ..., 9=high) or 0 to disable compression. </li>
+</ul>
+</dd>
+</dl>
+</p>
+</dd></dl>
+
+<dl class="function">
+<dt id="_CPPv232harp_get_option_hdf5_compressionv">
+<span id="harp_get_option_hdf5_compression__void"></span><span class="target" id="libharpgroup__harp__general_1ga6de1b72347e2a6e4c5ee86f098f32376"></span>int <code class="descname">harp_get_option_hdf5_compression</code><span class="sig-paren">(</span>void<span class="sig-paren">)</span><br /></dt>
+<dd><p>Retrieve the compression level that is used for storing variables in HDF5 files. <dl class="docutils">
+<dt><strong>See</strong></dt>
+<dd><a class="reference internal" href="#libharpgroup__harp__general_1ga37df50bf61d353f47a60cda03c920f36"><span class="std std-ref">harp_set_option_hdf5_compression()</span></a> </dd>
+<dt><strong>Return</strong></dt>
+<dd>0=disabled, 1=low, ..., 9=high </dd>
+</dl>
+</p>
+</dd></dl>
+
+<dl class="function">
 <dt id="_CPPv236harp_set_option_regrid_out_of_boundsi">
 <span id="harp_set_option_regrid_out_of_bounds__i"></span><span class="target" id="libharpgroup__harp__general_1ga83bdb60fc511d16c19e7c51d48aae84d"></span>int <code class="descname">harp_set_option_regrid_out_of_bounds</code><span class="sig-paren">(</span>int <em>method</em><span class="sig-paren">)</span><br /></dt>
 <dd><p>Set how to treat out of bound values during regridding operations. This is only applicable for point interpolation regridding. Any point that falls outside the target grid can be either set to NaN (the default), set to the nearest edge value, or set based on extrapolation (of two nearest points). This global HARP option determines which of the three cases will be used. <dl class="docutils">

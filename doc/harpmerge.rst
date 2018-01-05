@@ -35,6 +35,10 @@ the time dimension and storing the result into a single output file.
                       hdf4
                       hdf5
 
+              --hdf5-compression <level>
+                  Set data compression level for storing in HDF5 format.
+                  0=disabled, 1=low, ..., 9=high.
+
           If the merged product is empty, a warning will be printed and the
           tool will return with exit code 2 (without writing a file).
 

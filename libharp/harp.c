@@ -53,6 +53,7 @@ static int harp_init_counter = 0;
 
 int harp_option_enable_aux_afgl86 = 0;
 int harp_option_enable_aux_usstd76 = 0;
+int harp_option_hdf5_compression = 0;
 int harp_option_regrid_out_of_bounds = 0;
 
 typedef enum file_format_enum
@@ -376,6 +377,35 @@ LIBHARP_API int harp_set_option_enable_aux_usstd76(int enable)
 LIBHARP_API int harp_get_option_enable_aux_usstd76(void)
 {
     return harp_option_enable_aux_usstd76;
+}
+
+/** Set the compression level to use for storing variables in HDF5 files.
+ * \param level The compression level (1=low, ..., 9=high) or 0 to disable compression.
+ * \return
+ *   \arg \c 0, Success.
+ *   \arg \c -1, Error occurred (check #harp_errno).
+ */
+LIBHARP_API int harp_set_option_hdf5_compression(int level)
+{
+    if (level < 0 || level > 9)
+    {
+        harp_set_error(HARP_ERROR_INVALID_ARGUMENT, "level argument (%d) is not valid (%s:%u)", level, __FILE__,
+                       __LINE__);
+        return -1;
+    }
+
+    harp_option_hdf5_compression = level;
+
+    return 0;
+}
+
+/** Retrieve the compression level that is used for storing variables in HDF5 files.
+ * \see harp_set_option_hdf5_compression()
+ * \return 0=disabled, 1=low, ..., 9=high
+ */
+LIBHARP_API int harp_get_option_hdf5_compression(void)
+{
+    return harp_option_hdf5_compression;
 }
 
 /** Set how to treat out of bound values during regridding operations.

@@ -371,6 +371,58 @@ static int get_link_iteration_index_type(hid_t group_id, H5_index_t * index_type
     return 0;
 }
 
+static int set_compression(hid_t plist_id, harp_variable *variable)
+{
+    int level = harp_get_option_hdf5_compression();
+
+    if (level > 0 && variable->num_dimensions > 0)
+    {
+        long max_length = 4294967295;
+        hsize_t dimension[HARP_MAX_NUM_DIMS];
+        int i;
+
+        /* set chunk configuration (we need chunking to enable compression) */
+        /* we want to use the largest block possible while staying within the 2^32-1 elements per chunk limit */
+        for (i = 0; i < variable->num_dimensions; i++)
+        {
+            dimension[i] = variable->dimension[i];
+        }
+        if (variable->num_elements > max_length)
+        {
+            long num_elements = variable->num_elements;
+            int i = 0;
+
+            while (i < variable->num_dimensions - 1)
+            {
+                num_elements /= dimension[i];
+                if (num_elements <= max_length)
+                {
+                    dimension[i] = max_length / num_elements;
+                    num_elements *= dimension[i];
+                    break;
+                }
+                dimension[i] = 1;
+                i++;
+            }
+            if (num_elements > max_length)
+            {
+                dimension[i] = max_length;
+            }
+        }
+        if (H5Pset_chunk(plist_id, variable->num_dimensions, dimension) < 0)
+        {
+            harp_set_error(HARP_ERROR_HDF5, NULL);
+            return -1;
+        }
+        if (H5Pset_deflate(plist_id, level) < 0)
+        {
+            harp_set_error(HARP_ERROR_HDF5, NULL);
+            return -1;
+        }
+    }
+    return 0;
+}
+
 static int read_string_attribute(hid_t obj_id, const char *name, char **data)
 {
     char *str;
@@ -1722,6 +1774,15 @@ static int write_variable(hid_t group_id, const char *name, harp_variable *varia
             return -1;
         }
 
+        if (set_compression(dcpl_id, variable) != 0)
+        {
+            H5Pclose(dcpl_id);
+            H5Sclose(space_id);
+            H5Tclose(data_type_id);
+            free(buffer);
+            return -1;
+        }
+
         dataset_id = H5Dcreate(group_id, name, data_type_id, space_id, dcpl_id);
         if (dataset_id < 0)
         {
@@ -1769,6 +1830,13 @@ static int write_variable(hid_t group_id, const char *name, harp_variable *varia
         if (H5Pset_attr_creation_order(dcpl_id, H5P_CRT_ORDER_TRACKED | H5P_CRT_ORDER_INDEXED) < 0)
         {
             harp_set_error(HARP_ERROR_HDF5, NULL);
+            H5Pclose(dcpl_id);
+            H5Sclose(space_id);
+            return -1;
+        }
+
+        if (set_compression(dcpl_id, variable) != 0)
+        {
             H5Pclose(dcpl_id);
             H5Sclose(space_id);
             return -1;

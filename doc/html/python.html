@@ -529,7 +529,7 @@ default encoding is <code class="docutils literal"><span class="pre">'ascii'</sp
 <span class="k">print</span><span class="p">(</span><span class="n">hcho_product</span><span class="p">)</span>
 
 <span class="c1"># Export the product as a HARP compliant data product.</span>
-<span class="n">harp</span><span class="o">.</span><span class="n">export_product</span><span class="p">(</span><span class="n">hcho_product</span><span class="p">,</span> <span class="s2">&quot;hcho.h5&quot;</span><span class="p">,</span> <span class="n">file_format</span><span class="o">=</span><span class="s1">&#39;hdf5&#39;</span><span class="p">)</span>
+<span class="n">harp</span><span class="o">.</span><span class="n">export_product</span><span class="p">(</span><span class="n">hcho_product</span><span class="p">,</span> <span class="s2">&quot;hcho.h5&quot;</span><span class="p">,</span> <span class="n">file_format</span><span class="o">=</span><span class="s1">&#39;hdf5&#39;</span><span class="p">,</span> <span class="n">hdf5_compression</span><span class="o">=</span><span class="mi">6</span><span class="p">)</span>
 </pre></div>
 </div>
 </div>
@@ -670,7 +670,7 @@ used if the file is not in HARP format.</li>
 
 <dl class="function">
 <dt id="harp.export_product">
-<code class="descclassname">harp.</code><code class="descname">export_product</code><span class="sig-paren">(</span><em>product</em>, <em>filename</em>, <em>file_format=&quot;netcdf&quot;</em><span class="sig-paren">)</span></dt>
+<code class="descclassname">harp.</code><code class="descname">export_product</code><span class="sig-paren">(</span><em>product</em>, <em>filename</em>, <em>file_format=&quot;netcdf&quot;</em>, <em>hdf5_compression=0</em><span class="sig-paren">)</span></dt>
 <dd><p>Export a HARP compliant product.</p>
 <table class="docutils field-list" frame="void" rules="none">
 <col class="field-name" />
@@ -681,6 +681,8 @@ used if the file is not in HARP format.</li>
 <li><strong>filename</strong> (<em>str</em>) &#8211; Filename of the exported product.</li>
 <li><strong>file_format</strong> (<em>str</em>) &#8211; File format to use; one of &#8216;netcdf&#8217;, &#8216;hdf4&#8217;, or
 &#8216;hdf5&#8217;.</li>
+<li><strong>hdf5_compression</strong> &#8211; Compression level when exporting to hdf5
+(0=disabled, 1=low, ..., 9=high).</li>
 </ul>
 </td>
 </tr>

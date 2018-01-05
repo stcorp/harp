@@ -251,7 +251,7 @@ Examples
    print(hcho_product)
 
    # Export the product as a HARP compliant data product.
-   harp.export_product(hcho_product, "hcho.h5", file_format='hdf5')
+   harp.export_product(hcho_product, "hcho.h5", file_format='hdf5', hdf5_compression=6)
 
 API reference
 -------------
@@ -365,7 +365,8 @@ This section describes the functions defined by the HARP Python library.
    :returns: Imported product.
    :rtype: harp.Product
 
-.. py:function:: harp.export_product(product, filename, file_format="netcdf")
+.. py:function:: harp.export_product(product, filename, file_format="netcdf", \
+                                     hdf5_compression=0)
 
    Export a HARP compliant product.
 
@@ -373,6 +374,8 @@ This section describes the functions defined by the HARP Python library.
    :param str filename: Filename of the exported product.
    :param str file_format: File format to use; one of 'netcdf', 'hdf4', or
                            'hdf5'.
+   :param hdf5_compression: Compression level when exporting to hdf5
+                            (0=disabled, 1=low, ..., 9=high).
 
 .. py:function:: harp.concatenate(productlist)
 

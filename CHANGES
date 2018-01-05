@@ -1,3 +1,9 @@
+* Allow data compression for HDF5 output:
+  - Added harp_set_option_hdf5_compression() and
+    harp_get_option_hdf5_compression() functions to C library.
+  - Added --hdf5-compression option to harpconvert and harpmerge.
+  - Added hdf5_compression parameter to harp.export_product() Python function.
+
 * Fixed issue where harpmerge did not introduce a time dimension for all
   variables.
 

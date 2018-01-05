@@ -1049,13 +1049,14 @@ def import_product(filename, operations="", options=""):
     finally:
         _lib.harp_product_delete(c_product_ptr[0])
 
-def export_product(product, filename, file_format="netcdf"):
+def export_product(product, filename, file_format="netcdf", hdf5_compression=0):
     """Export a HARP compliant product.
 
     Arguments:
-    product     -- Product to export.
-    filename    -- Filename of the exported product.
-    file_format -- File format to use; one of 'netcdf', 'hdf4', or 'hdf5'.
+    product          -- Product to export.
+    filename         -- Filename of the exported product.
+    file_format      -- File format to use; one of 'netcdf', 'hdf4', or 'hdf5'.
+    hdf5_compression -- Compression level when exporting to hdf5 (0=disabled, 1=low, ..., 9=high).
 
     """
     if not isinstance(product, Product):
@@ -1071,6 +1072,8 @@ def export_product(product, filename, file_format="netcdf"):
         _export_product(product, c_product_ptr[0])
 
         # Export the C product to a file.
+        if file_format == 'hdf5':
+            _lib.harp_set_option_hdf5_compression(int(hdf5_compression))
         if _lib.harp_export(_encode_path(filename), _encode_string(file_format), c_product_ptr[0]) != 0:
             raise CLibraryError()
 
