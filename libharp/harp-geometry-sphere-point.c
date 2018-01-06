@@ -134,7 +134,7 @@ void harp_vector3d_from_spherical_point(harp_vector3d *vector, const harp_spheri
 void harp_spherical_point_from_vector3d(harp_spherical_point *point, const harp_vector3d *vector)
 {
     /* Calculate the radius in the (x,y)-plane */
-    double rho = pow(vector->x * vector->x + vector->y * vector->y, 0.5);
+    double rho = sqrt(vector->x * vector->x + vector->y * vector->y);
 
     if (rho == 0.0)
     {
