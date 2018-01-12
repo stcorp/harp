@@ -4,6 +4,8 @@
   - Added --hdf5-compression option to harpconvert and harpmerge.
   - Added hdf5_compression parameter to harp.export_product() Python function.
 
+* Allow regrid() operation to interpolate in the time dimension.
+
 * Fixed issue where harpmerge did not introduce a time dimension for all
   variables.
 

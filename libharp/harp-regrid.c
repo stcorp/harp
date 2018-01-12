@@ -69,6 +69,22 @@ static resample_type get_resample_type(harp_variable *variable, harp_dimension_t
     int num_matching_dims;
     int i;
 
+    if (dimension_type == harp_dimension_time)
+    {
+        /* also remove these variables if they are provided as scalars (without time dimension) */
+
+        /* we can't interpolate these datetime boundary edge values */
+        if (strcmp(variable->name, "datetime_start") == 0 || strcmp(variable->name, "datetime_stop") == 0)
+        {
+            return resample_remove;
+        }
+        /* datetime_length requires interval interpolation which is currently not supported for the time dimension */
+        if (strcmp(variable->name, "datetime_length") == 0)
+        {
+            return resample_remove;
+        }
+    }
+
     /* ensure that there is only 1 dimension of the given type */
     for (i = 0, num_matching_dims = 0; i < variable->num_dimensions; i++)
     {
@@ -93,6 +109,7 @@ static resample_type get_resample_type(harp_variable *variable, harp_dimension_t
     /* we can't resample data without a unit */
     if (variable->unit == NULL)
     {
+        /* this also (intentionally) removes 'index' and 'count' variables when regredding in the time dimension */
         return resample_remove;
     }
 
@@ -267,13 +284,12 @@ static int get_bounds_for_grid_from_variable(harp_variable *grid, harp_variable 
 /**
  * Resample all variables in product against a specified grid.
  * The target grid variable should be an axis variable containing the target grid (as 'double' values).
- * It should be a one-dimensional variable (for a time independent grid) or a two-dimensional variable
- * (for a time dependent grid).
+ * It should be a one-dimensional variable (for a time independent grid or when regridding in the time dimension)
+ * or a two-dimensional variable (for a time dependent grid when not regridding in the time dimension).
  * The dimension to use for regridding is based on the type of the last dimenion of the target grid variable.
- * This function cannot be used to regrid the time dimension (or an independent dimension).
+ * This function cannot be used to regrid an independent dimension.
  *
- * If the target grid variable is two dimensional (i.e. time dependent) then its time dimension should match that of
- * the product.
+ * If the target grid variable is two dimensional then its time dimension should match that of the product.
  *
  * For each variable in the product a dimension-specific rule based on the variable name will determine how to regrid
  * the variable (point/interval interpolation).
@@ -295,7 +311,6 @@ static int get_bounds_for_grid_from_variable(harp_variable *grid, harp_variable 
 LIBHARP_API int harp_product_regrid_with_axis_variable(harp_product *product, harp_variable *target_grid,
                                                        harp_variable *target_bounds)
 {
-    harp_dimension_type grid_dim_type[2];
     harp_dimension_type dimension_type;
     long source_max_dim_elements;       /* actual elems + NaN padding */
     long source_grid_max_dim_elements;
@@ -326,14 +341,14 @@ LIBHARP_API int harp_product_regrid_with_axis_variable(harp_product *product, ha
         return -1;
     }
     dimension_type = target_grid->dimension_type[target_grid->num_dimensions - 1];
-    if (dimension_type == harp_dimension_time || dimension_type == harp_dimension_independent)
+    if (dimension_type == harp_dimension_independent)
     {
         harp_set_error(HARP_ERROR_INVALID_ARGUMENT, "invalid dimensions for axis variable");
         return -1;
     }
     if (target_grid_num_dims == 2)
     {
-        if (target_grid->dimension_type[0] != harp_dimension_time)
+        if (target_grid->dimension_type[0] != harp_dimension_time || dimension_type == harp_dimension_time)
         {
             harp_set_error(HARP_ERROR_INVALID_ARGUMENT, "invalid dimensions for axis variable");
             return -1;
@@ -386,32 +401,50 @@ LIBHARP_API int harp_product_regrid_with_axis_variable(harp_product *product, ha
         }
     }
 
-    if (product->dimension[harp_dimension_time] == 0)
+    if (dimension_type == harp_dimension_time)
     {
-        /* if the product did not have a time dimension then introduce one with length 1
-         * all variables that will be regridded will have this dimension added as first dimension */
-        product->dimension[harp_dimension_time] = 1;
-    }
-    source_num_time_elements = product->dimension[harp_dimension_time];
+        source_num_time_elements = 1;
 
-    grid_dim_type[0] = harp_dimension_time;
-    grid_dim_type[1] = dimension_type;
-
-    /* Derive the source grid (will give doubles because unit is passed) */
-    /* Try time independent */
-    if (harp_product_get_derived_variable(product, target_grid->name, NULL, target_grid->unit, 1, &grid_dim_type[1],
-                                          &source_grid) != 0)
-    {
-        /* Failed to derive time independent. Try time dependent. */
-        if (harp_product_get_derived_variable(product, target_grid->name, NULL, target_grid->unit, 2, grid_dim_type,
-                                              &source_grid) != 0)
+        /* Derive the source grid (will give doubles because unit is passed) */
+        if (harp_product_get_derived_variable(product, target_grid->name, NULL, target_grid->unit, 1,
+                                              target_grid->dimension_type, &source_grid) != 0)
         {
             goto error;
         }
-        source_grid_num_dims = 2;
+        source_grid_max_dim_elements = source_grid->dimension[0];
+        source_max_dim_elements = source_grid_max_dim_elements;
     }
-    source_grid_max_dim_elements = source_grid->dimension[source_grid->num_dimensions - 1];
-    source_max_dim_elements = source_grid_max_dim_elements;
+    else
+    {
+        harp_dimension_type grid_dim_type[2];
+
+        if (product->dimension[harp_dimension_time] == 0)
+        {
+            /* if the product did not have a time dimension then introduce one with length 1
+             * all variables that will be regridded will have this dimension added as first dimension */
+            product->dimension[harp_dimension_time] = 1;
+        }
+        source_num_time_elements = product->dimension[harp_dimension_time];
+
+        grid_dim_type[0] = harp_dimension_time;
+        grid_dim_type[1] = dimension_type;
+
+        /* Derive the source grid (will give doubles because unit is passed) */
+        /* Try time independent */
+        if (harp_product_get_derived_variable(product, target_grid->name, NULL, target_grid->unit, 1, &grid_dim_type[1],
+                                              &source_grid) != 0)
+        {
+            /* Failed to derive time independent. Try time dependent. */
+            if (harp_product_get_derived_variable(product, target_grid->name, NULL, target_grid->unit, 2, grid_dim_type,
+                                                  &source_grid) != 0)
+            {
+                goto error;
+            }
+            source_grid_num_dims = 2;
+        }
+        source_grid_max_dim_elements = source_grid->dimension[source_grid->num_dimensions - 1];
+        source_max_dim_elements = source_grid_max_dim_elements;
+    }
 
     /* derive bounds variables if necessary for resampling */
     if (needs_interval_resample(product, dimension_type))
@@ -535,7 +568,7 @@ LIBHARP_API int harp_product_regrid_with_axis_variable(harp_product *product, ha
             goto error;
         }
 
-        /* Make time independent variables time dependent if source grid or target grid is time dependent */
+        /* Make time independent variables time dependent if source grid or target grid is 2D (i.e. time dependent) */
         if (source_grid_num_dims > 1 || target_grid_num_dims > 1)
         {
             if (variable->dimension_type[0] != harp_dimension_time)
@@ -575,7 +608,7 @@ LIBHARP_API int harp_product_regrid_with_axis_variable(harp_product *product, ha
         {
             long k, l;
 
-            /* keep track of time index for time dependent grids */
+            /* keep track of time index for 2D grids */
             if (j % (num_blocks / source_num_time_elements) == 0)
             {
                 if (source_grid_num_dims == 2 && j > 0)

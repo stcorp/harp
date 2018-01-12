@@ -268,6 +268,7 @@ Supported functions:
 
             | ``regrid(vertical, altitude [km], 10, 0.5, 1.0)``
             | (indicating a grid of altitudes 0.5, 1.5, ..., 9.5)
+            | ``regrid(time, datetime [hours since 2017-04-01], 23, 0.5, 1.0)``
 
     ``regrid(dimension, axis-variable unit, collocation-result-file, a|b, dataset-dir)``
         Regrid all variables in the product for the given dimension using the

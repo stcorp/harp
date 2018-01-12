@@ -850,8 +850,7 @@ static int execute_regrid(harp_product *product, harp_operation_regrid *operatio
 {
     harp_variable *target_grid = NULL;
 
-    if (operation->axis_variable->dimension_type[0] == harp_dimension_time ||
-        operation->axis_variable->dimension_type[0] == harp_dimension_independent)
+    if (operation->axis_variable->dimension_type[0] == harp_dimension_independent)
     {
         harp_set_error(HARP_ERROR_OPERATION, "regridding of '%s' dimension not supported",
                        harp_get_dimension_type_name(operation->axis_variable->dimension_type[0]));
