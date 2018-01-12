@@ -19,6 +19,12 @@ the time dimension and storing the result into a single output file.
                   more details.
                   Operations will be performed before a product is appended.
 
+               -ap, --post-operations <operation list>
+                   List of operations to apply to the merged product.
+                   An operation list needs to be provided as a single expression.
+                   See the 'operations' section of the HARP documentation for
+                   more details.
+
               -o, --options <option list>
                   List of options to pass to the ingestion module.
                   Only applicable if an input product is not in HARP format.

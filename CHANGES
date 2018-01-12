@@ -6,6 +6,8 @@
 
 * Allow regrid() operation to interpolate in the time dimension.
 
+* Added -ap option to harpmerge.
+
 * Fixed issue where harpmerge did not introduce a time dimension for all
   variables.
 

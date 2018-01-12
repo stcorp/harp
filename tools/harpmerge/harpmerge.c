@@ -71,6 +71,12 @@ static void print_help()
     printf("                more details.\n");
     printf("                Operations will be performed before a product is appended.\n");
     printf("\n");
+    printf("            -ap, --post-operations <operation list>\n");
+    printf("                List of operations to apply to the merged product.\n");
+    printf("                An operation list needs to be provided as a single expression.\n");
+    printf("                See the 'operations' section of the HARP documentation for\n");
+    printf("                more details.\n");
+    printf("\n");
     printf("            -o, --options <option list>\n");
     printf("                List of options to pass to the ingestion module.\n");
     printf("                Only applicable if an input product is not in HARP format.\n");
@@ -153,6 +159,7 @@ static int merge(int argc, char *argv[])
 {
     harp_product *merged_product = NULL;
     const char *operations = NULL;
+    const char *post_operations = NULL;
     const char *options = NULL;
     const char *output_filename = NULL;
     const char *output_format = "netcdf";
@@ -166,6 +173,12 @@ static int merge(int argc, char *argv[])
             argv[i + 1][0] != '-')
         {
             operations = argv[i + 1];
+            i++;
+        }
+        else if ((strcmp(argv[i], "-ap") == 0 || strcmp(argv[i], "--post-operations") == 0) && i + 1 < argc &&
+                 argv[i + 1][0] != '-')
+        {
+            post_operations = argv[i + 1];
             i++;
         }
         else if ((strcmp(argv[i], "-o") == 0 || strcmp(argv[i], "--options") == 0) && i + 1 < argc &&
@@ -246,6 +259,19 @@ static int merge(int argc, char *argv[])
     {
         harp_product_delete(merged_product);
         return -2;
+    }
+    if (post_operations != NULL)
+    {
+        if (harp_product_execute_operations(merged_product, post_operations) != 0)
+        {
+            harp_product_delete(merged_product);
+            return -1;
+        }
+        if (harp_product_is_empty(merged_product))
+        {
+            harp_product_delete(merged_product);
+            return -2;
+        }
     }
 
     /* update the product history */
