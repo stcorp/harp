@@ -44,13 +44,20 @@ typedef enum binning_type_enum
     binning_skip,
     binning_remove,
     binning_average,
-    binning_sum
+    binning_sum,
+    binning_angle
 } binning_type;
 
 
 static binning_type get_binning_type(harp_variable *variable)
 {
     int i;
+
+    /* variables with enumeration values get removed */
+    if (variable->num_enum_values > 0)
+    {
+        return binning_remove;
+    }
 
     /* any variable with a time dimension that is not the first dimension gets removed */
     for (i = 1; i < variable->num_dimensions; i++)
@@ -106,6 +113,13 @@ static binning_type get_binning_type(harp_variable *variable)
         {
             return binning_remove;
         }
+    }
+
+    /* note that latitude does not require special angular treatment since there is no wrap-around */
+    if (strstr(variable->name, "longitude") != NULL || strstr(variable->name, "angle") != NULL ||
+        strstr(variable->name, "direction") != NULL)
+    {
+        return binning_angle;
     }
 
     /* use average by default */
@@ -232,18 +246,46 @@ LIBHARP_API int harp_product_bin(harp_product *product, long num_bins, long num_
         {
             continue;
         }
-        assert(type == binning_average || type == binning_sum);
+        assert(type == binning_average || type == binning_sum || type == binning_angle);
 
         assert(variable->dimension[0] == num_elements);
         num_sub_elements = variable->num_elements / num_elements;
 
-        if (type == binning_average)
+        if (type == binning_average || type == binning_angle)
         {
             if (harp_variable_convert_data_type(variable, harp_type_double) != 0)
             {
                 free(index);
                 free(count);
                 return -1;
+            }
+        }
+
+        if (type == binning_angle)
+        {
+            /* convert all angles to degrees */
+            if (harp_convert_unit(variable->unit, "degrees", variable->num_elements, variable->data.double_data) != 0)
+            {
+                free(index);
+                free(count);
+                return -1;
+            }
+            /* wrap all angles to within [x-180,x+180] where x is the first sample of the bin */
+            for (i = 0; i < num_elements; i++)
+            {
+                long target_index = index[bin_index[i]];
+
+                if (target_index != i)
+                {
+                    for (j = 0; j < num_sub_elements; j++)
+                    {
+                        double min = variable->data.double_data[target_index * num_sub_elements + j] - 180;
+                        double max = min + 360;
+
+                        variable->data.double_data[i * num_sub_elements + j] =
+                            harp_wrap(variable->data.double_data[i * num_sub_elements + j], min, max);
+                    }
+                }
             }
         }
 
@@ -276,7 +318,7 @@ LIBHARP_API int harp_product_bin(harp_product *product, long num_bins, long num_
             }
         }
 
-        if (type == binning_average)
+        if (type == binning_average || type == binning_angle)
         {
             /* then divide by the number of elements in the bin */
             for (i = 0; i < num_bins; i++)
@@ -290,6 +332,17 @@ LIBHARP_API int harp_product_bin(harp_product *product, long num_bins, long num_
                         variable->data.double_data[target_index * num_sub_elements + j] /= count[i];
                     }
                 }
+            }
+        }
+
+        if (type == binning_angle)
+        {
+            /* convert all angles back to the original unit */
+            if (harp_convert_unit("degrees", variable->unit, variable->num_elements, variable->data.double_data) != 0)
+            {
+                free(index);
+                free(count);
+                return -1;
             }
         }
 

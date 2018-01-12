@@ -6,6 +6,8 @@
 
 * Allow regrid() operation to interpolate in the time dimension.
 
+* Improved binning of angle values (average of 1 and 359 is now 0).
+
 * Added -ap option to harpmerge.
 
 * Fixed issue where harpmerge did not introduce a time dimension for all
