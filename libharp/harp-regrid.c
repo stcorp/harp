@@ -640,7 +640,7 @@ LIBHARP_API int harp_product_regrid_with_axis_variable(harp_product *product, ha
         }
     }
 
-    /* Resize the vertical dimension in the target product to minimal size */
+    /* Resize the dimension in the target product to minimal size */
     if (target_grid_max_dim_elements < source_max_dim_elements)
     {
         if (resize_dimension(product, dimension_type, target_grid_max_dim_elements) != 0)
