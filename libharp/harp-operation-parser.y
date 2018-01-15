@@ -818,6 +818,12 @@ operation:
             }
             free($3);
         }
+    | FUNC_BIN '(' ')' {
+            if (harp_operation_bin_full_new(&$$) != 0)
+            {
+                YYERROR;
+            }
+        }
     | FUNC_BIN '(' identifier ')' {
             if (harp_operation_bin_with_variable_new($3, &$$) != 0)
             {

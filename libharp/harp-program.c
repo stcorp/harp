@@ -1167,6 +1167,12 @@ int harp_product_execute_program(harp_product *product, harp_program *program)
                     return -1;
                 }
                 break;
+            case operation_bin_full:
+                if (harp_product_bin_full(product) != 0)
+                {
+                    return -1;
+                }
+                break;
             case operation_bin_with_variable:
                 if (execute_bin_with_variable(product, (harp_operation_bin_with_variable *)operation) != 0)
                 {

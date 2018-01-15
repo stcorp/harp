@@ -44,6 +44,7 @@ typedef enum harp_operation_type_enum
     operation_area_inside_area_filter,
     operation_area_intersects_area_filter,
     operation_bin_collocated,
+    operation_bin_full,
     operation_bin_with_variable,
     operation_bit_mask_filter,
     operation_collocation_filter,
@@ -511,6 +512,7 @@ int harp_operation_area_intersects_area_filter_new(const char *filename, int num
                                                    harp_operation **new_operation);
 int harp_operation_bin_collocated_new(const char *collocation_result, const char target_dataset,
                                       harp_operation **new_operation);
+int harp_operation_bin_full_new(harp_operation **new_operation);
 int harp_operation_bin_with_variable_new(const char *variable_name, harp_operation **new_operation);
 int harp_operation_bit_mask_filter_new(const char *variable_name, harp_bit_mask_operator_type operator_type,
                                        uint32_t bit_mask, harp_operation **new_operation);

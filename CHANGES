@@ -8,6 +8,8 @@
 
 * Improved binning of angle values (average of 1 and 359 is now 0).
 
+* Added bin() operation variant without parameters.
+
 * Added -ap option to harpmerge.
 
 * Fixed issue where harpmerge did not introduce a time dimension for all

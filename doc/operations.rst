@@ -98,6 +98,10 @@ Supported functions:
         Exclude measurements whose area does not overlap with one of the
         areas of the area mask file.
 
+    ``bin()``
+        For all variables in a product perform an averaging in the time
+        dimension such that all samples end up in a single bin.
+    
     ``bin(variable)``
         For all variables in a product perform an averaging in the time
         dimension such that all samples in the same bin get averaged.

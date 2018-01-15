@@ -415,6 +415,49 @@ LIBHARP_API int harp_product_bin(harp_product *product, long num_bins, long num_
  * @}
  */
 
+/** Bin the product's variables such that all samples end up in a single bin.
+ *
+ * \param product Product to regrid.
+ *
+ * \return
+ *   \arg \c 0, Success.
+ *   \arg \c -1, Error occurred (check #harp_errno).
+ */
+int harp_product_bin_full(harp_product *product)
+{
+    long *bin_index;
+    long num_elements;
+    long i;
+
+    num_elements = product->dimension[harp_dimension_time];
+    if (num_elements == 0)
+    {
+        /* nothing to do */
+        return 0;
+    }
+
+    bin_index = malloc(num_elements * sizeof(long));
+    if (bin_index == NULL)
+    {
+        harp_set_error(HARP_ERROR_OUT_OF_MEMORY, "out of memory (could not allocate %lu bytes) (%s:%u)",
+                       num_elements * sizeof(long), __FILE__, __LINE__);
+        return -1;
+    }
+    for (i = 0; i < num_elements; i++)
+    {
+        bin_index[i] = 0;
+    }
+
+    if (harp_product_bin(product, 1, num_elements, bin_index) != 0)
+    {
+        free(bin_index);
+        return -1;
+    }
+
+    free(bin_index);
+    return 0;
+}
+
 /** Bin the product's variables (from dataset a in the collocation result) such that all pairs that have the same
  * item in dataset b are averaged together.
  *

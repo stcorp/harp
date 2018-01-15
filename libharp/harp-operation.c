@@ -601,6 +601,14 @@ static void bin_collocated_delete(harp_operation_bin_collocated *operation)
     }
 }
 
+static void bin_full_delete(harp_operation *operation)
+{
+    if (operation != NULL)
+    {
+        free(operation);
+    }
+}
+
 static void bin_with_variable_delete(harp_operation_bin_with_variable *operation)
 {
     if (operation != NULL)
@@ -1139,6 +1147,9 @@ void harp_operation_delete(harp_operation *operation)
         case operation_bin_collocated:
             bin_collocated_delete((harp_operation_bin_collocated *)operation);
             break;
+        case operation_bin_full:
+            bin_full_delete(operation);
+            break;
         case operation_bin_with_variable:
             bin_with_variable_delete((harp_operation_bin_with_variable *)operation);
             break;
@@ -1518,6 +1529,23 @@ int harp_operation_bin_collocated_new(const char *collocation_result, const char
     }
 
     *new_operation = (harp_operation *)operation;
+    return 0;
+}
+
+int harp_operation_bin_full_new(harp_operation **new_operation)
+{
+    harp_operation *operation;
+
+    operation = (harp_operation *)malloc(sizeof(harp_operation));
+    if (operation == NULL)
+    {
+        harp_set_error(HARP_ERROR_OUT_OF_MEMORY, "out of memory (could not allocate %lu bytes) (%s:%u)",
+                       sizeof(harp_operation), __FILE__, __LINE__);
+        return -1;
+    }
+    operation->type = operation_bin_full;
+
+    *new_operation = operation;
     return 0;
 }
 
