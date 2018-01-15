@@ -185,9 +185,14 @@ static int generate_product_definition(const char *filename, const harp_ingestio
         fputs(", ", fout);
 
         fputc('"', fout);
-        if (variable_definition->unit != NULL && strlen(variable_definition->unit) > 0)
+        if (variable_definition->unit != NULL)
         {
-            fputs(variable_definition->unit, fout);
+            fputc('[', fout);
+            if (strlen(variable_definition->unit) > 0)
+            {
+                fputs(variable_definition->unit, fout);
+            }
+            fputc(']', fout);
         }
         fputc('"', fout);
         fputs(", ", fout);

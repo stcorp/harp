@@ -191,115 +191,115 @@
 <tr class="row-even"><td><strong>datetime</strong></td>
 <td>double</td>
 <td>{<em>time</em>}</td>
-<td>days since 2000-01-01</td>
+<td>[days since 2000-01-01]</td>
 <td>mean time of the measurement</td>
 </tr>
 <tr class="row-odd"><td><strong>datetime_start</strong></td>
 <td>double</td>
 <td>{<em>time</em>}</td>
-<td>days since 2000-01-01</td>
+<td>[days since 2000-01-01]</td>
 <td>start time of the measurement</td>
 </tr>
 <tr class="row-even"><td><strong>datetime_stop</strong></td>
 <td>double</td>
 <td>{<em>time</em>}</td>
-<td>days since 2000-01-01</td>
+<td>[days since 2000-01-01]</td>
 <td>stop time of the measurement</td>
 </tr>
 <tr class="row-odd"><td><strong>sensor_latitude</strong></td>
 <td>double</td>
 <td>&#160;</td>
-<td>degree_north</td>
+<td>[degree_north]</td>
 <td>latitude of the sensor</td>
 </tr>
 <tr class="row-even"><td><strong>sensor_longitude</strong></td>
 <td>double</td>
 <td>&#160;</td>
-<td>degree_east</td>
+<td>[degree_east]</td>
 <td>longitude of the sensor</td>
 </tr>
 <tr class="row-odd"><td><strong>sensor_altitude</strong></td>
 <td>double</td>
 <td>&#160;</td>
-<td>m</td>
+<td>[m]</td>
 <td>altitude of the sensor relative to the location site</td>
 </tr>
 <tr class="row-even"><td><strong>wavelength</strong></td>
 <td>double</td>
 <td>{<em>spectral</em>}</td>
-<td>nm</td>
+<td>[nm]</td>
 <td>wavelength at which aerosol is retrieved</td>
 </tr>
 <tr class="row-odd"><td><strong>altitude</strong></td>
 <td>double</td>
 <td>{<em>time</em>, <em>vertical</em>}</td>
-<td>km</td>
+<td>[km]</td>
 <td>effective retrieval altitude</td>
 </tr>
 <tr class="row-even"><td><strong>pressure</strong></td>
 <td>double</td>
 <td>{<em>time</em>, <em>vertical</em>}</td>
-<td>hPa</td>
+<td>[hPa]</td>
 <td>independent pressure profile</td>
 </tr>
 <tr class="row-odd"><td><strong>temperature</strong></td>
 <td>double</td>
 <td>{<em>time</em>, <em>vertical</em>}</td>
-<td>K</td>
+<td>[K]</td>
 <td>independent temperature profile</td>
 </tr>
 <tr class="row-even"><td><strong>altitude_bounds</strong></td>
 <td>double</td>
 <td>{<em>time</em>, <em>vertical</em>, 2}</td>
-<td>km</td>
+<td>[km]</td>
 <td>lower and upper boundaries of the height layers</td>
 </tr>
 <tr class="row-odd"><td><strong>surface_wind_direction</strong></td>
 <td>double</td>
 <td>{<em>time</em>}</td>
-<td>degree</td>
+<td>[degree]</td>
 <td>Wind direction at the station using WMO definition (wind from the north is 360; from the east is 90 and so on. No wind (calm) is 0)</td>
 </tr>
 <tr class="row-even"><td><strong>surface_wind_speed</strong></td>
 <td>double</td>
 <td>{<em>time</em>}</td>
-<td>m/s</td>
+<td>[m/s]</td>
 <td>Wind speed at the station</td>
 </tr>
 <tr class="row-odd"><td><strong>solar_zenith_angle</strong></td>
 <td>double</td>
 <td>{<em>time</em>}</td>
-<td>degree</td>
+<td>[degree]</td>
 <td>solar astronomical zenith angle</td>
 </tr>
 <tr class="row-even"><td><strong>solar_azimuth_angle</strong></td>
 <td>double</td>
 <td>{<em>time</em>}</td>
-<td>degree</td>
+<td>[degree]</td>
 <td>solar azimuth angle</td>
 </tr>
 <tr class="row-odd"><td><strong>viewing_azimuth_angle</strong></td>
 <td>double</td>
 <td>{<em>time</em>}</td>
-<td>degree</td>
+<td>[degree]</td>
 <td>viewing azimuth angle of the sensor</td>
 </tr>
 <tr class="row-even"><td><strong>viewing_zenith_angle</strong></td>
 <td>double</td>
 <td>{<em>time</em>}</td>
-<td>degree</td>
+<td>[degree]</td>
 <td>viewing zenith angle of the sensor</td>
 </tr>
 <tr class="row-odd"><td><strong>latitude</strong></td>
 <td>double</td>
 <td>{<em>time</em>, <em>vertical</em>}</td>
-<td>degree_north</td>
+<td>[degree_north]</td>
 <td>latitude of effective air mass at each altitude</td>
 </tr>
 <tr class="row-even"><td><strong>longitude</strong></td>
 <td>double</td>
 <td>{<em>time</em>, <em>vertical</em>}</td>
-<td>degree_east</td>
+<td>[degree_east]</td>
 <td>longitude of effective air mass at each altitude</td>
 </tr>
 <tr class="row-odd"><td><strong>cloud_type</strong></td>
@@ -311,67 +311,67 @@
 <tr class="row-even"><td><strong>aerosol_extinction_coefficient</strong></td>
 <td>double</td>
 <td>{<em>time</em>, <em>spectral</em>, <em>vertical</em>}</td>
-<td>km^-1</td>
+<td>[km^-1]</td>
 <td>aerosol extinction coefficient</td>
 </tr>
 <tr class="row-odd"><td><strong>aerosol_extinction_coefficient_covariance</strong></td>
 <td>double</td>
 <td>{<em>time</em>, <em>spectral</em>, <em>vertical</em>, <em>vertical</em>}</td>
-<td>km^-2</td>
+<td>[km^-2]</td>
 <td>covariance of the aerosol extinction coefficient</td>
 </tr>
 <tr class="row-even"><td><strong>aerosol_extinction_coefficient_uncertainty_random</strong></td>
 <td>double</td>
 <td>{<em>time</em>, <em>spectral</em>, <em>vertical</em>}</td>
-<td>km^-1</td>
+<td>[km^-1]</td>
 <td>random uncertainty of the aerosol extinction coefficient</td>
 </tr>
 <tr class="row-odd"><td><strong>aerosol_extinction_coefficient_uncertainty_systematic</strong></td>
 <td>double</td>
 <td>{<em>time</em>, <em>spectral</em>, <em>vertical</em>}</td>
-<td>km^-1</td>
+<td>[km^-1]</td>
 <td>systematic uncertainty of the aerosol extinction coefficient</td>
 </tr>
 <tr class="row-even"><td><strong>aerosol_extinction_coefficient_apriori</strong></td>
 <td>double</td>
 <td>{<em>time</em>, <em>spectral</em>, <em>vertical</em>}</td>
-<td>km^-1</td>
+<td>[km^-1]</td>
 <td>a priori aerosol extinction coefficient</td>
 </tr>
 <tr class="row-odd"><td><strong>aerosol_extinction_coefficient_avk</strong></td>
 <td>double</td>
 <td>{<em>time</em>, <em>spectral</em>, <em>vertical</em>, <em>vertical</em>}</td>
-<td>&#160;</td>
+<td>[]</td>
 <td>averaging kernel of the aerosol extinction coefficient</td>
 </tr>
 <tr class="row-even"><td><strong>tropospheric_aerosol_optical_depth</strong></td>
 <td>double</td>
 <td>{<em>time</em>, <em>spectral</em>}</td>
-<td>&#160;</td>
+<td>[]</td>
 <td>tropospheric aerosol optical depth</td>
 </tr>
 <tr class="row-odd"><td><strong>tropospheric_aerosol_optical_depth_uncertainty_random</strong></td>
 <td>double</td>
 <td>{<em>time</em>, <em>spectral</em>}</td>
-<td>&#160;</td>
+<td>[]</td>
 <td>random uncertainty of the tropospheric aerosol optical depth</td>
 </tr>
 <tr class="row-even"><td><strong>tropospheric_aerosol_optical_depth_uncertainty_systematic</strong></td>
 <td>double</td>
 <td>{<em>time</em>, <em>spectral</em>}</td>
-<td>&#160;</td>
+<td>[]</td>
 <td>systematic uncertainty of the tropospheric aerosol optical depth</td>
 </tr>
 <tr class="row-odd"><td><strong>tropospheric_aerosol_optical_depth_apriori</strong></td>
 <td>double</td>
 <td>{<em>time</em>, <em>spectral</em>}</td>
-<td>&#160;</td>
+<td>[]</td>
 <td>a priori tropospheric aerosol optical depth</td>
 </tr>
 <tr class="row-even"><td><strong>tropospheric_aerosol_optical_depth_avk</strong></td>
 <td>double</td>
 <td>{<em>time</em>, <em>spectral</em>, <em>vertical</em>}</td>
-<td>&#160;</td>
+<td>[]</td>
 <td>averaging kernel of the tropospheric aerosol optical depth</td>
 </tr>
 <tr class="row-odd"><td><strong>index</strong></td>

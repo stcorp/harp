@@ -197,157 +197,157 @@
 <tr class="row-odd"><td><strong>sensor_latitude</strong></td>
 <td>double</td>
 <td>&#160;</td>
-<td>degree_north</td>
+<td>[degree_north]</td>
 <td>latitude of the sensor</td>
 </tr>
 <tr class="row-even"><td><strong>sensor_longitude</strong></td>
 <td>double</td>
 <td>&#160;</td>
-<td>degree_east</td>
+<td>[degree_east]</td>
 <td>longitude of the sensor</td>
 </tr>
 <tr class="row-odd"><td><strong>sensor_altitude</strong></td>
 <td>double</td>
 <td>&#160;</td>
-<td>km</td>
+<td>[km]</td>
 <td>altitude of the sensor</td>
 </tr>
 <tr class="row-even"><td><strong>datetime</strong></td>
 <td>double</td>
 <td>{<em>time</em>}</td>
-<td>days since 2000-01-01</td>
+<td>[days since 2000-01-01]</td>
 <td>time of the measurement</td>
 </tr>
 <tr class="row-odd"><td><strong>datetime_length</strong></td>
 <td>double</td>
 <td>{<em>time</em>}</td>
-<td>s</td>
+<td>[s]</td>
 <td>duration of the measurement</td>
 </tr>
 <tr class="row-even"><td><strong>HCl_column_number_density</strong></td>
 <td>double</td>
 <td>{<em>time</em>}</td>
-<td>molec/m2</td>
+<td>[molec/m2]</td>
 <td>total HCl vertical column</td>
 </tr>
 <tr class="row-odd"><td><strong>HCl_column_number_density_apriori</strong></td>
 <td>double</td>
 <td>{<em>time</em>}</td>
-<td>molec/m2</td>
+<td>[molec/m2]</td>
 <td>a priori total HCl vertical column</td>
 </tr>
 <tr class="row-even"><td><strong>HCl_column_number_density_avk</strong></td>
 <td>double</td>
 <td>{<em>time</em>, <em>vertical</em>}</td>
-<td>&#160;</td>
+<td>[]</td>
 <td>averaging kernel for the total HCl vertical column</td>
 </tr>
 <tr class="row-odd"><td><strong>HCl_column_number_density_uncertainty_random</strong></td>
 <td>double</td>
 <td>{<em>time</em>}</td>
-<td>molec/m2</td>
+<td>[molec/m2]</td>
 <td>random uncertainty of the total HCl vertical column</td>
 </tr>
 <tr class="row-even"><td><strong>HCl_column_number_density_uncertainty_systematic</strong></td>
 <td>double</td>
 <td>{<em>time</em>}</td>
-<td>molec/m2</td>
+<td>[molec/m2]</td>
 <td>systematic uncertainty of the total HCl vertical column</td>
 </tr>
 <tr class="row-odd"><td><strong>H2O_column_number_density</strong></td>
 <td>double</td>
 <td>{<em>time</em>}</td>
-<td>molec/m2</td>
+<td>[molec/m2]</td>
 <td>total H2O vertical column</td>
 </tr>
 <tr class="row-even"><td><strong>HCl_volume_mixing_ratio</strong></td>
 <td>double</td>
 <td>{<em>time</em>, <em>vertical</em>}</td>
-<td>ppmv</td>
+<td>[ppmv]</td>
 <td>HCl volume mixing ratio</td>
 </tr>
 <tr class="row-odd"><td><strong>HCl_volume_mixing_ratio_apriori</strong></td>
 <td>double</td>
 <td>{<em>time</em>, <em>vertical</em>}</td>
-<td>ppmv</td>
+<td>[ppmv]</td>
 <td>a priori HCl volume mixing ratio</td>
 </tr>
 <tr class="row-even"><td><strong>HCl_volume_mixing_ratio_avk</strong></td>
 <td>double</td>
 <td>{<em>time</em>, <em>vertical</em>, <em>vertical</em>}</td>
-<td>&#160;</td>
+<td>[]</td>
 <td>averaging kernel for the HCl volume mixing ratio</td>
 </tr>
 <tr class="row-odd"><td><strong>HCl_volume_mixing_ratio_covariance</strong></td>
 <td>double</td>
 <td>{<em>time</em>, <em>vertical</em>, <em>vertical</em>}</td>
-<td>(ppmv)2</td>
+<td>[(ppmv)2]</td>
 <td>covariance of the HCl volume mixing ratio</td>
 </tr>
 <tr class="row-even"><td><strong>HCl_volume_mixing_ratio_uncertainty_random</strong></td>
 <td>double</td>
 <td>{<em>time</em>, <em>vertical</em>}</td>
-<td>ppmv</td>
+<td>[ppmv]</td>
 <td>random uncertainty of the HCl volume mixing ratio</td>
 </tr>
 <tr class="row-odd"><td><strong>HCl_volume_mixing_ratio_uncertainty_systematic</strong></td>
 <td>double</td>
 <td>{<em>time</em>, <em>vertical</em>}</td>
-<td>ppmv</td>
+<td>[ppmv]</td>
 <td>systematic uncertainty of the HCl volume mixing ratio</td>
 </tr>
 <tr class="row-even"><td><strong>H2O_volume_mixing_ratio</strong></td>
 <td>double</td>
 <td>{<em>time</em>, <em>vertical</em>}</td>
-<td>ppmv</td>
+<td>[ppmv]</td>
 <td>H2O volume mixing ratio</td>
 </tr>
 <tr class="row-odd"><td><strong>altitude</strong></td>
 <td>double</td>
 <td>{<em>time</em>, <em>vertical</em>}</td>
-<td>km</td>
+<td>[km]</td>
 <td>retrieval effective altitude</td>
 </tr>
 <tr class="row-even"><td><strong>altitude_bounds</strong></td>
 <td>double</td>
 <td>{<em>time</em>, <em>vertical</em>, 2}</td>
-<td>km</td>
+<td>[km]</td>
 <td>lower and upper boundaries of the height layers</td>
 </tr>
 <tr class="row-odd"><td><strong>pressure</strong></td>
 <td>double</td>
 <td>{<em>time</em>, <em>vertical</em>}</td>
-<td>hPa</td>
+<td>[hPa]</td>
 <td>independent pressure profile</td>
 </tr>
 <tr class="row-even"><td><strong>temperature</strong></td>
 <td>double</td>
 <td>{<em>time</em>, <em>vertical</em>}</td>
-<td>K</td>
+<td>[K]</td>
 <td>independent temperature profile</td>
 </tr>
 <tr class="row-odd"><td><strong>surface_pressure</strong></td>
 <td>double</td>
 <td>{<em>time</em>}</td>
-<td>hPa</td>
+<td>[hPa]</td>
 <td>independent surface pressure</td>
 </tr>
 <tr class="row-even"><td><strong>surface_temperature</strong></td>
 <td>double</td>
 <td>{<em>time</em>}</td>
-<td>K</td>
+<td>[K]</td>
 <td>independent surface temperature</td>
 </tr>
 <tr class="row-odd"><td><strong>solar_azimuth_angle</strong></td>
 <td>double</td>
 <td>{<em>time</em>}</td>
-<td>degree</td>
+<td>[degree]</td>
 <td>solar azimuth angle</td>
 </tr>
 <tr class="row-even"><td><strong>solar_zenith_angle</strong></td>
 <td>double</td>
 <td>{<em>time</em>}</td>
-<td>degree</td>
+<td>[degree]</td>
 <td>solar zenith angle</td>
 </tr>
 <tr class="row-odd"><td><strong>index</strong></td>
