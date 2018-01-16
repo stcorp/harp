@@ -1560,7 +1560,10 @@ int harp_import_global_attributes_hdf5(const char *filename, double *datetime_st
     {
         for (i = 0; i < HARP_NUM_DIM_TYPES; i++)
         {
-            dimension[i] = attr_dimension[i];
+            if (attr_dimension[i] >= 0)
+            {
+                dimension[i] = attr_dimension[i];
+            }
         }
     }
 
