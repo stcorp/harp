@@ -12,6 +12,9 @@
 
 * Added -ap option to harpmerge.
 
+* Added --dataset option to harpdump and changed output format of
+  harp_dataset_print() and harp_product_metadata_print() to csv format.
+
 * Fixed issue where harpmerge did not introduce a time dimension for all
   variables.
 

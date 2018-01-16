@@ -334,6 +334,7 @@ LIBHARP_API void harp_dataset_print(harp_dataset *dataset, int (*print) (const c
 {
     long i;
 
+    print("filename,datetime_start,datetime_stop,time,latitude,longitude,vertical,spectral,source_product\n");
     for (i = 0; i < dataset->num_products; i++)
     {
         if (dataset->metadata[i] != NULL)
@@ -342,9 +343,8 @@ LIBHARP_API void harp_dataset_print(harp_dataset *dataset, int (*print) (const c
         }
         else
         {
-            print("source_product: %s", dataset->source_product[i]);
+            print(",,,,,,,,%s\n", dataset->source_product[i]);
         }
-        print("\n");
     }
 }
 

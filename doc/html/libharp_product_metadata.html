@@ -225,14 +225,25 @@
 <dl class="function">
 <dt id="_CPPv227harp_product_metadata_printP21harp_product_metadataPFiPKczE">
 <span class="target" id="libharpgroup__harp__product__metadata_1gac0b6ff404a5d629b07dd65d6fa44fb76"></span>void <code class="descname">harp_product_metadata_print</code><span class="sig-paren">(</span><a class="reference internal" href="#_CPPv221harp_product_metadata" title="harp_product_metadata">harp_product_metadata</a> *<em>metadata</em>, int (*<em>print</em>)<span class="sig-paren">(</span><em class="property">const</em> char *, ...<span class="sig-paren">)</span><span class="sig-paren">)</span><br /></dt>
-<dd><p>Print product metadata. <dl class="docutils">
+<dd><p>Print product metadata. This will print a comma-separated list of:<ul class="simple">
+<li>filename</li>
+<li>datetime_start</li>
+<li>datetime_stop</li>
+<li>time (dimension length)</li>
+<li>latitude (dimension length)</li>
+<li>longitude (dimension length)</li>
+<li>vertical (dimension length)</li>
+<li>spectral (dimension length)</li>
+<li>source_product <dl class="docutils">
 <dt><strong>Parameters</strong></dt>
-<dd><ul class="breatheparameterlist first last simple">
+<dd><ul class="breatheparameterlist first last">
 <li><code class="docutils literal"><span class="pre">metadata</span></code>: Pointer to the metadata to print. </li>
 <li><code class="docutils literal"><span class="pre">print</span></code>: Pointer to the function that should be used for printing. </li>
 </ul>
 </dd>
 </dl>
+</li>
+</ul>
 </p>
 </dd></dl>
 

@@ -29,6 +29,16 @@ Inspect the contents of a file that can be imported by HARP.
               -d, --data
                   Show data values for each variable.
 
+      harpdump --dataset [options] <file|dir> [<file|dir> ...]
+          Print metadata for all files in the dataset in csv format.
+
+              -o, --options <option list>
+                  List of options to pass to the ingestion module.
+                  Only applicable if the input product is not in HARP format.
+                  Options are separated by semi-colons. Each option consists
+                  of an <option name>=<value> pair. An option list needs to be
+                  provided as a single expression.
+
       harpdump --list-derivations [options] [input product file]
           List all available variable conversions. If an input product file is
           specified, limit the list to variable conversions that are possible

@@ -83,6 +83,16 @@ static void print_help()
     printf("            -d, --data\n");
     printf("                Show data values for each variable.\n");
     printf("\n");
+    printf("    harpdump --dataset [options] <file|dir> [<file|dir> ...]\n");
+    printf("        Print metadata for all files in the dataset in csv format.\n");
+    printf("\n");
+    printf("            -o, --options <option list>\n");
+    printf("                List of options to pass to the ingestion module.\n");
+    printf("                Only applicable if the input product is not in HARP format.\n");
+    printf("                Options are separated by semi-colons. Each option consists\n");
+    printf("                of an <option name>=<value> pair. An option list needs to be\n");
+    printf("                provided as a single expression.\n");
+    printf("\n");
     printf("    harpdump --list-derivations [options] [input product file]\n");
     printf("        List all available variable conversions. If an input product file is\n");
     printf("        specified, limit the list to variable conversions that are possible\n");
@@ -174,6 +184,53 @@ static int list_derivations(int argc, char *argv[])
     return 0;
 }
 
+static int dump_dataset(int argc, char *argv[])
+{
+    const char *options = NULL;
+    harp_dataset *dataset;
+    int i;
+
+    for (i = 2; i < argc; i++)
+    {
+        if ((strcmp(argv[i], "-o") == 0 || strcmp(argv[i], "--options") == 0) && i + 1 < argc && argv[i + 1][0] != '-')
+        {
+            options = argv[i + 1];
+            i++;
+        }
+        else if (argv[i][0] != '-')
+        {
+            /* assume all arguments from here on are files */
+            break;
+        }
+        else
+        {
+            fprintf(stderr, "ERROR: invalid arguments\n");
+            print_help();
+            return -1;
+        }
+    }
+
+    if (harp_dataset_new(&dataset) != 0)
+    {
+        return -1;
+    }
+
+    while (i < argc)
+    {
+        if (harp_dataset_import(dataset, argv[i], options) != 0)
+        {
+            harp_dataset_delete(dataset);
+            return -1;
+        }
+        i++;
+    }
+
+    harp_dataset_print(dataset, printf);
+
+    harp_dataset_delete(dataset);
+    return 0;
+}
+
 static int dump(int argc, char *argv[])
 {
     const char *operations = NULL;
@@ -183,7 +240,7 @@ static int dump(int argc, char *argv[])
     int list = 0;
     int i;
 
-    /* parse argumenst */
+    /* parse arguments */
     for (i = 1; i < argc; i++)
     {
         if ((strcmp(argv[i], "-a") == 0 || strcmp(argv[i], "--operations") == 0) && i + 1 < argc &&
@@ -291,6 +348,15 @@ int main(int argc, char *argv[])
     if (strcmp(argv[1], "--list-derivations") == 0)
     {
         if (list_derivations(argc, argv) != 0)
+        {
+            fprintf(stderr, "ERROR: %s\n", harp_errno_to_string(harp_errno));
+            harp_done();
+            exit(1);
+        }
+    }
+    else if (strcmp(argv[1], "--dataset") == 0)
+    {
+        if (dump_dataset(argc, argv) != 0)
         {
             fprintf(stderr, "ERROR: %s\n", harp_errno_to_string(harp_errno));
             harp_done();

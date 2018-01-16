@@ -32,6 +32,7 @@
 #include "harp-internal.h"
 
 #include "hashtable.h"
+#include "coda.h"
 
 #include <assert.h>
 #include <stdlib.h>
@@ -105,31 +106,50 @@ LIBHARP_API int harp_product_metadata_new(harp_product_metadata **new_metadata)
 
 /**
  * Print product metadata.
+ * This will print a comma-separated list of:
+ *  - filename
+ *  - datetime_start
+ *  - datetime_stop
+ *  - time (dimension length)
+ *  - latitude (dimension length)
+ *  - longitude (dimension length)
+ *  - vertical (dimension length)
+ *  - spectral (dimension length)
+ *  - source_product
  * \param metadata Pointer to the metadata to print.
  * \param print Pointer to the function that should be used for printing.
  */
 LIBHARP_API void harp_product_metadata_print(harp_product_metadata *metadata, int (*print) (const char *, ...))
 {
+    char datetime_string[16];
     int i;
 
-    print("filename: %s, ", metadata->filename);
-    print("source_product: %s, ", metadata->source_product);
-    print("date_start: %f, ", metadata->datetime_start);
-    print("date_stop: %f, ", metadata->datetime_stop);
-    print("dimension: {");
+    print("%s,", metadata->filename);
+    if (coda_time_double_to_string(metadata->datetime_start * 86400, "yyyyMMdd'T'HHmmss", datetime_string) == 0)
+    {
+        print("%s,", datetime_string);
+    }
+    else
+    {
+        print(",");
+    }
+    if (coda_time_double_to_string(metadata->datetime_stop * 86400, "yyyyMMdd'T'HHmmss", datetime_string) == 0)
+    {
+        print("%s,", datetime_string);
+    }
+    else
+    {
+        print(",");
+    }
     for (i = 0; i < HARP_NUM_DIM_TYPES; i++)
     {
-        if (metadata->dimension[i] != 0)
+        if (metadata->dimension[i] >= 0)
         {
-            print("%s = ", harp_get_dimension_type_name(i));
+            print("%ld", metadata->dimension[i]);
         }
-        print("%ld", metadata->dimension[i]);
-        if (i < HARP_NUM_DIM_TYPES - 1)
-        {
-            print(", ");
-        }
+        print(",");
     }
-    print("}");
+    print("%s\n", metadata->source_product);
 }
 
 /** @} */
