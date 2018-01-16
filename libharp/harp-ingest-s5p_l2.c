@@ -3898,7 +3898,7 @@ static void register_hcho_product(void)
     description = "tropospheric HCHO column number density";
     variable_definition =
         harp_ingestion_register_variable_full_read(product_definition, "tropospheric_HCHO_column_number_density",
-                                                   harp_type_float, 1, dimension_type, NULL, description, "mol/cm^2",
+                                                   harp_type_float, 1, dimension_type, NULL, description, "mol/m^2",
                                                    NULL, read_product_formaldehyde_tropospheric_vertical_column);
     path = "/PRODUCT/formaldehyde_tropospheric_vertical_column[]";
     harp_variable_definition_add_mapping(variable_definition, NULL, NULL, path, NULL);
@@ -3908,7 +3908,7 @@ static void register_hcho_product(void)
     variable_definition =
         harp_ingestion_register_variable_full_read(product_definition,
                                                    "tropospheric_HCHO_column_number_density_uncertainty_random",
-                                                   harp_type_float, 1, dimension_type, NULL, description, "mol/cm^2",
+                                                   harp_type_float, 1, dimension_type, NULL, description, "mol/m^2",
                                                    NULL,
                                                    read_product_formaldehyde_tropospheric_vertical_column_precision);
     path = "/PRODUCT/formaldehyde_tropospheric_vertical_column_precision[]";
@@ -3919,7 +3919,7 @@ static void register_hcho_product(void)
     variable_definition =
         harp_ingestion_register_variable_full_read(product_definition,
                                                    "tropospheric_HCHO_column_number_density_uncertainty_systematic",
-                                                   harp_type_float, 1, dimension_type, NULL, description, "mol/cm^2",
+                                                   harp_type_float, 1, dimension_type, NULL, description, "mol/m^2",
                                                    NULL,
                                                    read_results_formaldehyde_tropospheric_vertical_column_trueness);
     path = "/PRODUCT/SUPPORT_DATA/DETAILED_RESULTS/formaldehyde_tropospheric_vertical_column_trueness[]";
