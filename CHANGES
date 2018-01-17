@@ -32,6 +32,8 @@
 
 * Fixed unit in S5P L2 HCHO ingestion.
 
+* Replaced '_' by '-' in long versions of argument names of harpcollocate.
+
 1.1 2017-11-06
 ~~~~~~~~~~~~~~
 

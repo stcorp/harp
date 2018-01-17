@@ -7,7 +7,7 @@ HARP compliant netCDF files.
 ::
 
   Usage:
-      harpcollocate [options] <path_a> <path_b> <outputpath>
+      harpcollocate [options] <path-a> <path-b> <outputpath>
           Find matching sample pairs between two datasets of HARP files.
           The path for a dataset can be either a single file or a directory
           containing files. The result will be write as a comma separate value
@@ -42,23 +42,23 @@ HARP compliant netCDF files.
               -ny <diffvariable>
                   Filter collocation pairs such that for each sample from
                   dataset B only the neareset sample from dataset A is kept.
-              -oa, --options_a <option list>
+              -oa, --options-a <option list>
                   List of options to pass to the ingestion module for ingesting
                   products from the first dataset.
                   Only applicable if the input product is not in HARP format.
                   Options are separated by semi-colons. Each option consists
                   of an <option name>=<value> pair. An option list needs to be
                   provided as a single expression.
-              -ob, --options_b <option list>
+              -ob, --options-b <option list>
                   List of options to pass to the ingestion module for ingesting
                   products from the second dataset (see above).
-              -aa, --operations_a <operation list>
+              -aa, --operations-a <operation list>
                   List of operations to apply to each product of the first
                   dataset before collocating.
                   An operation list needs to be provided as a single expression.
                   See the 'operations' section of the HARP documentation for
                   more details.
-              -ab, --operations_b <operation list>
+              -ab, --operations-b <operation list>
                   List of operations to apply to each product of the second
                   dataset before collocating (see above).
           The order in which -nx and -ny are provided determines the order in
@@ -81,7 +81,7 @@ HARP compliant netCDF files.
           The order in which -nx and -ny are provided determines the order in
           which the nearest filters are executed.
 
-      harpcollocate --update <inputpath> <path_a> <path_b> [<outputpath>]
+      harpcollocate --update <inputpath> <path-a> <path-b> [<outputpath>]
           Update an existing collocation result file by checking the
           measurements in two sets of HARP files and only keeping pairs
           for which measurements still exist

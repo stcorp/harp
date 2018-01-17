@@ -63,7 +63,7 @@ static void print_version(void)
 static void print_help(void)
 {
     printf("Usage:\n");
-    printf("    harpcollocate [options] <path_a> <path_b> <outputpath>\n");
+    printf("    harpcollocate [options] <path-a> <path-b> <outputpath>\n");
     printf("        Find matching sample pairs between two datasets of HARP files.\n");
     printf("        The path for a dataset can be either a single file or a directory\n");
     printf("        containing files. The result will be write as a comma separate value\n");
@@ -98,23 +98,23 @@ static void print_help(void)
     printf("            -ny <diffvariable>\n");
     printf("                Filter collocation pairs such that for each sample from\n");
     printf("                dataset B only the neareset sample from dataset A is kept.\n");
-    printf("            -oa, --options_a <option list>\n");
+    printf("            -oa, --options-a <option list>\n");
     printf("                List of options to pass to the ingestion module for ingesting\n");
     printf("                products from the first dataset.\n");
     printf("                Only applicable if the input product is not in HARP format.\n");
     printf("                Options are separated by semi-colons. Each option consists\n");
     printf("                of an <option name>=<value> pair. An option list needs to be\n");
     printf("                provided as a single expression.\n");
-    printf("            -ob, --options_b <option list>\n");
+    printf("            -ob, --options-b <option list>\n");
     printf("                List of options to pass to the ingestion module for ingesting\n");
     printf("                products from the second dataset (see above).\n");
-    printf("            -aa, --operations_a <operation list>\n");
+    printf("            -aa, --operations-a <operation list>\n");
     printf("                List of operations to apply to each product of the first\n");
     printf("                dataset before collocating.\n");
     printf("                An operation list needs to be provided as a single expression.\n");
     printf("                See the 'operations' section of the HARP documentation for\n");
     printf("                more details.\n");
-    printf("            -ab, --operations_b <operation list>\n");
+    printf("            -ab, --operations-b <operation list>\n");
     printf("                List of operations to apply to each product of the second\n");
     printf("                dataset before collocating (see above).\n");
     printf("        The order in which -nx and -ny are provided determines the order in\n");
@@ -137,7 +137,7 @@ static void print_help(void)
     printf("        The order in which -nx and -ny are provided determines the order in\n");
     printf("        which the nearest filters are executed.\n");
     printf("\n");
-    printf("    harpcollocate --update <inputpath> <path_a> <path_b> [<outputpath>]\n");
+    printf("    harpcollocate --update <inputpath> <path-a> <path-b> [<outputpath>]\n");
     printf("        Update an existing collocation result file by checking the\n");
     printf("        measurements in two sets of HARP files and only keeping pairs\n");
     printf("        for which measurements still exist\n");
