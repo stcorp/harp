@@ -3821,6 +3821,8 @@ static void register_co_product(void)
     path = "/PRODUCT/SUPPORT_DATA/DETAILED_RESULTS/pressure_levels[]";
     harp_variable_definition_add_mapping(variable_definition, NULL, NULL, path, NULL);
 
+    register_surface_variables(product_definition);
+
     /* CO_column_number_density */
     description = "vertically integrated CO column density";
     variable_definition =
