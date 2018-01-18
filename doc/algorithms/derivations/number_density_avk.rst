@@ -56,7 +56,7 @@ number density averaging kernel derivations
                                   component x (e.g. :math:`A^{n}_{O_{3}}(i,j)`)
    :math:`A^{\bar{\nu}}_{x}(i,j)` AVK for volume mixing ratio profile for air           :math:`\frac{ppv}{ppv}`             `<species>_volume_mixing_ratio_dry_air_avk {:,vertical,vertical}`
                                   component x (e.g. :math:`A^{\bar{\nu}}_{O_{3}}(i,j)`)
-   :math:`n_{air}(i)`             number density profile of total air                   :math:`\frac{molec}{m^3}`           `number_density {:,vertical}`
+   :math:`n_{dry_air}(i)`         number density profile of dry air                     :math:`\frac{molec}{m^3}`           `dry_air_number_density {:,vertical}`
    ============================== ===================================================== =================================== =================================================================
 
    The pattern `:` for the first dimensions can represent `{latitude,longitude}`, `{time}`, `{time,latitude,longitude}`,
@@ -65,6 +65,6 @@ number density averaging kernel derivations
    .. math::
 
       A^{n}_{x}(i,j) = \begin{cases}
-        n_{air}(j) \neq 0, & A^{\bar{\nu}}_{x}(i,j) \frac{n_{air}(i)}{n_{air}(j)} \\
-        n_{air}(j) = 0, & 0
+        n_{dry_air}(j) \neq 0, & A^{\bar{\nu}}_{x}(i,j) \frac{n_{dry_air}(i)}{n_{dry_air}(j)} \\
+        n_{dry_air}(j) = 0, & 0
       \end{cases}
