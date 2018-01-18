@@ -125,7 +125,7 @@ static void broadcast_array_float(long num_scanlines, long num_pixels, float *da
     /* Repeat the value for each scanline for all pixels in that scanline. Iterate in reverse to avoid overwriting
      * scanline values.
      */
-    for (i = num_scanlines - 1; i >= 0; --i)
+    for (i = num_scanlines - 1; i >= 0; i--)
     {
         float *pixel = data + i * num_pixels;
         float *pixel_end = pixel + num_pixels;
@@ -145,7 +145,7 @@ static void broadcast_array_double(long num_scanlines, long num_pixels, double *
     /* Repeat the value for each scanline for all pixels in that scanline. Iterate in reverse to avoid overwriting
      * scanline values.
      */
-    for (i = num_scanlines - 1; i >= 0; --i)
+    for (i = num_scanlines - 1; i >= 0; i--)
     {
         double *pixel = data + i * num_pixels;
         double *pixel_end = pixel + num_pixels;
@@ -1098,12 +1098,12 @@ static int read_input_altitude_bounds(void *user_data, harp_array data)
     num_layers = info->num_layers;
     assert((num_layers + 1) == info->num_levels);
 
-    for (i = info->num_scanlines * info->num_pixels - 1; i >= 0; --i)
+    for (i = info->num_scanlines * info->num_pixels - 1; i >= 0; i--)
     {
         float *altitude = &data.float_data[i * (num_layers + 1)];
         float *altitude_bounds = &data.float_data[i * num_layers * 2];
 
-        for (j = num_layers - 1; j >= 0; --j)
+        for (j = num_layers - 1; j >= 0; j--)
         {
             /* NB. The order of the following two lines is important to ensure correct results. */
             altitude_bounds[j * 2 + 1] = altitude[j + 1];
@@ -1441,14 +1441,14 @@ static int read_input_pressure_bounds(void *user_data, harp_array data)
      * altitude. Therefore, the pressure differences read from the product are subtracted from (instead of added to) the
      * surface pressure.
      */
-    for (i = num_elements - 1; i >= 0; --i)
+    for (i = num_elements - 1; i >= 0; i--)
     {
         float *pressure_bounds = &data.float_data[i * num_layers * 2];
         double surface_pressure = data.double_data[i];
         double delta = delta_pressure.double_data[i];
         long j;
 
-        for (j = num_layers - 1; j >= 0; --j)
+        for (j = num_layers - 1; j >= 0; j--)
         {
             pressure_bounds[j * 2 + 1] = (float)(surface_pressure - (j + 1) * delta);
             pressure_bounds[j * 2] = (float)(surface_pressure - j * delta);
@@ -1871,11 +1871,15 @@ static int read_product_formaldehyde_tropospheric_vertical_column_precision(void
                         info->num_scanlines * info->num_pixels, data);
 }
 
-static int read_product_layer(void *user_data, harp_array data)
+static int read_product_layer_inverted(void *user_data, harp_array data)
 {
     ingest_info *info = (ingest_info *)user_data;
 
-    return read_dataset(info->product_cursor, "layer", harp_type_float, info->num_layers, data);
+    if (read_dataset(info->product_cursor, "layer", harp_type_float, info->num_layers, data) != 0)
+    {
+        return -1;
+    }
+    return harp_array_invert(harp_type_float, 0, 1, &info->num_layers, data);
 }
 
 static int read_product_latitude(void *user_data, harp_array data)
@@ -2115,6 +2119,21 @@ static int read_results_column_averaging_kernel(void *user_data, harp_array data
                         info->num_scanlines * info->num_pixels * info->num_layers, data);
 }
 
+static int read_results_column_averaging_kernel_inverted(void *user_data, harp_array data)
+{
+    ingest_info *info = (ingest_info *)user_data;
+    long dimension[2];
+
+    if (read_dataset(info->detailed_results_cursor, "column_averaging_kernel", harp_type_float,
+                     info->num_scanlines * info->num_pixels * info->num_layers, data) != 0)
+    {
+        return -1;
+    }
+    dimension[0] = info->num_scanlines * info->num_pixels;
+    dimension[1] = info->num_layers;
+    return harp_array_invert(harp_type_float, 1, 2, dimension, data);
+}
+
 static int read_results_formaldehyde_profile_apriori(void *user_data, harp_array data)
 {
     ingest_info *info = (ingest_info *)user_data;
@@ -2221,13 +2240,13 @@ static int read_results_pressure_bounds(void *user_data, harp_array data)
     num_layers = info->num_layers;
     assert((num_layers + 1) == info->num_levels);
 
-    for (i = info->num_scanlines * info->num_pixels - 1; i >= 0; --i)
+    for (i = info->num_scanlines * info->num_pixels - 1; i >= 0; i--)
     {
         float *pressure = &data.float_data[i * (num_layers + 1)];
         float *pressure_bounds = &data.float_data[i * num_layers * 2];
         long j;
 
-        for (j = num_layers - 1; j >= 0; --j)
+        for (j = num_layers - 1; j >= 0; j--)
         {
             /* NB. The order of the following two lines is important to ensure correct results. */
             pressure_bounds[j * 2 + 1] = pressure[j + 1];
@@ -2238,12 +2257,52 @@ static int read_results_pressure_bounds(void *user_data, harp_array data)
     return 0;
 }
 
-static int read_results_pressure_levels(void *user_data, harp_array data)
+static int read_results_pressure_levels_as_bounds_inverted(void *user_data, harp_array data)
 {
     ingest_info *info = (ingest_info *)user_data;
+    long dimension[2];
+    long i;
 
-    return read_dataset(info->detailed_results_cursor, "pressure_levels", harp_type_float,
-                        info->num_scanlines * info->num_pixels * info->num_layers, data);
+    if (read_dataset(info->detailed_results_cursor, "pressure_levels", harp_type_float,
+                     info->num_scanlines * info->num_pixels * info->num_layers, data) != 0)
+    {
+        return -1;
+    }
+
+    dimension[0] = info->num_scanlines * info->num_pixels;
+    dimension[1] = info->num_layers;
+    if (harp_array_invert(harp_type_float, 1, 2, dimension, data) != 0)
+    {
+        return -1;
+    }
+
+    /* Convert from #layers bottom pressure values to #layers x 2 pressure bounds.
+     * The upper pressure level is set to TOA (1e-3 Pa).
+     * Iterate in pixels in reverse order to ensure correct results (conversion is performed in place).
+     */
+    for (i = info->num_scanlines * info->num_pixels - 1; i >= 0; i--)
+    {
+        float *pressure = &data.float_data[i * info->num_layers];
+        float *pressure_bounds = &data.float_data[i * info->num_layers * 2];
+        long j;
+
+        if (harp_isnan(pressure[info->num_layers - 1]))
+        {
+            pressure_bounds[info->num_layers * 2 - 1] = harp_nan();
+        }
+        else
+        {
+            pressure_bounds[info->num_layers * 2 - 1] = 1e-3;
+        }
+        for (j = info->num_layers - 1; j > 0; j--)
+        {
+            pressure_bounds[j * 2] = pressure[j];
+            pressure_bounds[j * 2 - 1] = pressure[j];
+        }
+        pressure_bounds[0] = pressure[0];
+    }
+
+    return 0;
 }
 
 static int read_results_processing_quality_flags(void *user_data, harp_array data)
@@ -3794,6 +3853,9 @@ static void register_co_product(void)
     harp_variable_definition *variable_definition;
     harp_dimension_type dimension_type[2] = { harp_dimension_time, harp_dimension_vertical };
     harp_dimension_type dimension_type_altitude[1] = { harp_dimension_vertical };
+    harp_dimension_type pressure_bounds_dimension_type[3] =
+        { harp_dimension_time, harp_dimension_vertical, harp_dimension_independent };
+    long pressure_bounds_dimension[3] = { -1, -1, 2 };
 
     module = harp_ingestion_register_module_coda("S5P_L2_CO", "Sentinel-5P", "Sentinel5P", "L2__CO____",
                                                  "Sentinel-5P L2 CO total column", ingestion_init, ingestion_done);
@@ -3809,17 +3871,23 @@ static void register_co_product(void)
     variable_definition =
         harp_ingestion_register_variable_full_read(product_definition, "altitude", harp_type_float, 1,
                                                    dimension_type_altitude, NULL, description, "m", NULL,
-                                                   read_product_layer);
+                                                   read_product_layer_inverted);
     path = "/PRODUCT/layer[]";
-    harp_variable_definition_add_mapping(variable_definition, NULL, NULL, path, NULL);
+    description = "the vertical grid is inverted to make it ascending";
+    harp_variable_definition_add_mapping(variable_definition, NULL, NULL, path, description);
 
-    /* pressure */
-    description = "pressure of the layer interfaces of the vertical grid";
+    /* pressure_bounds */
+    description = "pressure boundaries of the layers of the vertical grid";
     variable_definition =
-        harp_ingestion_register_variable_full_read(product_definition, "pressure", harp_type_float, 2, dimension_type,
-                                                   NULL, description, "Pa", NULL, read_results_pressure_levels);
+        harp_ingestion_register_variable_full_read(product_definition, "pressure_bounds", harp_type_float, 3,
+                                                   pressure_bounds_dimension_type, pressure_bounds_dimension,
+                                                   description, "Pa", NULL,
+                                                   read_results_pressure_levels_as_bounds_inverted);
     path = "/PRODUCT/SUPPORT_DATA/DETAILED_RESULTS/pressure_levels[]";
-    harp_variable_definition_add_mapping(variable_definition, NULL, NULL, path, NULL);
+    description = "the vertical grid is inverted to make it ascending; the lower boundary of each layer is then taken "
+        "from pressure_levels; the upper boundary is the lower boundary of the layer above or 1e-3 Pa for the upper "
+        "most layer";
+    harp_variable_definition_add_mapping(variable_definition, NULL, NULL, path, description);
 
     register_surface_variables(product_definition);
 
@@ -3846,9 +3914,10 @@ static void register_co_product(void)
     variable_definition =
         harp_ingestion_register_variable_full_read(product_definition, "CO_column_number_density_avk", harp_type_float,
                                                    2, dimension_type, NULL, description, "m", NULL,
-                                                   read_results_column_averaging_kernel);
+                                                   read_results_column_averaging_kernel_inverted);
     path = "/PRODUCT/SUPPORT_DATA/DETAILED_RESULTS/column_averaging_kernel[]";
-    harp_variable_definition_add_mapping(variable_definition, NULL, NULL, path, NULL);
+    description = "the vertical grid is inverted to make it ascending";
+    harp_variable_definition_add_mapping(variable_definition, NULL, NULL, path, description);
 }
 
 static void register_hcho_product(void)

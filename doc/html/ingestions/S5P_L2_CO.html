@@ -278,11 +278,11 @@
 <td>[m]</td>
 <td>fixed altitude grid on which the radiative transfer calculations are done; altitude is measured relative to the surface</td>
 </tr>
-<tr class="row-odd"><td><strong>pressure</strong></td>
+<tr class="row-odd"><td><strong>pressure_bounds</strong></td>
 <td>float</td>
-<td>{<em>time</em>, <em>vertical</em>}</td>
+<td>{<em>time</em>, <em>vertical</em>, 2}</td>
 <td>[Pa]</td>
-<td>pressure of the layer interfaces of the vertical grid</td>
+<td>pressure boundaries of the layers of the vertical grid</td>
 </tr>
 <tr class="row-even"><td><strong>surface_altitude</strong></td>
 <td>float</td>
@@ -426,13 +426,19 @@
 <td><em>path</em></td>
 <td><strong>/PRODUCT/SUPPORT_DATA/GEOLOCATIONS/viewing_azimuth_angle[]</strong></td>
 </tr>
-<tr class="row-even"><td><strong>altitude</strong></td>
+<tr class="row-even"><td rowspan="2"><strong>altitude</strong></td>
 <td><em>path</em></td>
 <td><strong>/PRODUCT/layer[]</strong></td>
 </tr>
-<tr class="row-odd"><td><strong>pressure</strong></td>
+<tr class="row-odd"><td><em>description</em></td>
+<td>the vertical grid is inverted to make it ascending</td>
+</tr>
+<tr class="row-even"><td rowspan="2"><strong>pressure_bounds</strong></td>
 <td><em>path</em></td>
 <td><strong>/PRODUCT/SUPPORT_DATA/DETAILED_RESULTS/pressure_levels[]</strong></td>
+</tr>
+<tr class="row-odd"><td><em>description</em></td>
+<td>the vertical grid is inverted to make it ascending; the lower boundary of each layer is then taken from pressure_levels; the upper boundary is the lower boundary of the layer above or 1e-3 Pa for the upper most layer</td>
 </tr>
 <tr class="row-even"><td><strong>surface_altitude</strong></td>
 <td><em>path</em></td>
@@ -454,9 +460,12 @@
 <td><em>path</em></td>
 <td><strong>/PRODUCT/carbonmonoxide_total_column_precision[]</strong></td>
 </tr>
-<tr class="row-odd"><td><strong>CO_column_number_density_avk</strong></td>
+<tr class="row-odd"><td rowspan="2"><strong>CO_column_number_density_avk</strong></td>
 <td><em>path</em></td>
 <td><strong>/PRODUCT/SUPPORT_DATA/DETAILED_RESULTS/column_averaging_kernel[]</strong></td>
+</tr>
+<tr class="row-even"><td><em>description</em></td>
+<td>the vertical grid is inverted to make it ascending</td>
 </tr>
 </tbody>
 </table>
