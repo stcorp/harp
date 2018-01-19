@@ -366,12 +366,14 @@ This section describes the functions defined by the HARP Python library.
    :rtype: harp.Product
 
 .. py:function:: harp.export_product(product, filename, file_format="netcdf", \
-                                     hdf5_compression=0)
+                                     operations="", hdf5_compression=0)
 
    Export a HARP compliant product.
 
    :param str product: Product to export.
    :param str filename: Filename of the exported product.
+   :param str operations: Actions to apply as part of the export; should be
+                        specified as a semi-colon separated string of operations.
    :param str file_format: File format to use; one of 'netcdf', 'hdf4', or
                            'hdf5'.
    :param hdf5_compression: Compression level when exporting to hdf5

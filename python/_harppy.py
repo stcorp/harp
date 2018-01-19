@@ -1063,13 +1063,15 @@ def import_product(filename, operations="", options=""):
     finally:
         _lib.harp_product_delete(c_product_ptr[0])
 
-def export_product(product, filename, file_format="netcdf", hdf5_compression=0):
+def export_product(product, filename, file_format="netcdf", operations="", hdf5_compression=0):
     """Export a HARP compliant product.
 
     Arguments:
     product          -- Product to export.
     filename         -- Filename of the exported product.
     file_format      -- File format to use; one of 'netcdf', 'hdf4', or 'hdf5'.
+    operations       -- Actions to apply as part of the export; should be specified as a
+                        semi-colon separated string of operations.
     hdf5_compression -- Compression level when exporting to hdf5 (0=disabled, 1=low, ..., 9=high).
 
     """
@@ -1084,6 +1086,10 @@ def export_product(product, filename, file_format="netcdf", hdf5_compression=0):
     try:
         # Convert the Python product to its C representation.
         _export_product(product, c_product_ptr[0])
+
+        if operations:
+            # Apply operations to the product before export
+            _lib.harp_product_execute_operations(c_product_ptr[0], _encode_string(operations))
 
         # Export the C product to a file.
         if file_format == 'hdf5':

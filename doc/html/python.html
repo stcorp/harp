@@ -670,7 +670,7 @@ used if the file is not in HARP format.</li>
 
 <dl class="function">
 <dt id="harp.export_product">
-<code class="descclassname">harp.</code><code class="descname">export_product</code><span class="sig-paren">(</span><em>product</em>, <em>filename</em>, <em>file_format=&quot;netcdf&quot;</em>, <em>hdf5_compression=0</em><span class="sig-paren">)</span></dt>
+<code class="descclassname">harp.</code><code class="descname">export_product</code><span class="sig-paren">(</span><em>product</em>, <em>filename</em>, <em>file_format=&quot;netcdf&quot;</em>, <em>operations=&quot;&quot;</em>, <em>hdf5_compression=0</em><span class="sig-paren">)</span></dt>
 <dd><p>Export a HARP compliant product.</p>
 <table class="docutils field-list" frame="void" rules="none">
 <col class="field-name" />
@@ -679,6 +679,8 @@ used if the file is not in HARP format.</li>
 <tr class="field-odd field"><th class="field-name">Parameters:</th><td class="field-body"><ul class="first last simple">
 <li><strong>product</strong> (<em>str</em>) &#8211; Product to export.</li>
 <li><strong>filename</strong> (<em>str</em>) &#8211; Filename of the exported product.</li>
+<li><strong>operations</strong> (<em>str</em>) &#8211; Actions to apply as part of the export; should be
+specified as a semi-colon separated string of operations.</li>
 <li><strong>file_format</strong> (<em>str</em>) &#8211; File format to use; one of &#8216;netcdf&#8217;, &#8216;hdf4&#8217;, or
 &#8216;hdf5&#8217;.</li>
 <li><strong>hdf5_compression</strong> &#8211; Compression level when exporting to hdf5
