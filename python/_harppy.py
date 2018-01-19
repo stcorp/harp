@@ -1058,7 +1058,22 @@ def import_product(filename, operations="", options=""):
             raise NoDataError()
 
         # Convert the C product into its Python representation.
-        return _import_product(c_product_ptr[0])
+        product = _import_product(c_product_ptr[0])
+
+        if operations or options:
+            # Update history
+            command = "harp.import_product('{0}'".format(filename)
+            if operations:
+                command += ",operations='{0}'".format(operations)
+            if options:
+                command += ",options='{0}'".format(options)
+            command += ")"
+            if 'history' in product:
+                product.history += "\n" + command
+            else:
+                product.history = command
+
+        return product
 
     finally:
         _lib.harp_product_delete(c_product_ptr[0])
@@ -1077,6 +1092,14 @@ def export_product(product, filename, file_format="netcdf", operations="", hdf5_
     """
     if not isinstance(product, Product):
         raise TypeError("product must be Product, not %r" % product.__class__.__name__)
+
+    if operations:
+        # Update history (but only if the export modifies the product)
+        command = "harp.export_product('{0}', operations='{1}')".format(filename, operations)
+        if 'history' in product:
+            product.history += "\n" + command
+        else:
+            product.history = command
 
     # Create C product.
     c_product_ptr = _ffi.new("harp_product **")

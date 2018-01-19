@@ -17,6 +17,9 @@
 
 * Added 'operations' parameter to Python harp.export_product() function.
 
+* Importing/exporting a product with operations in Python now automatically
+  updates the history attribute.
+
 * Fixed issue where harpmerge did not introduce a time dimension for all
   variables.
 
