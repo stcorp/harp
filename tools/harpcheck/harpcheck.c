@@ -77,6 +77,7 @@ static void print_help()
 
 int main(int argc, char *argv[])
 {
+    int result = 0;
     int i;
     int k;
 
@@ -130,14 +131,20 @@ int main(int argc, char *argv[])
     for (k = i; k < argc; k++)
     {
         const char *filename = argv[k];
+        int status;
 
-        if (harp_import_test(filename, printf) != 0)
+        status = harp_import_test(filename, printf);
+        if (status != 0)
         {
-            fprintf(stderr, "ERROR: %s\n", harp_errno_to_string(harp_errno));
+            if (status < 0)
+            {
+                fprintf(stderr, "ERROR: %s\n", harp_errno_to_string(harp_errno));
+            }
+            result = 1;
         }
         printf("\n");
     }
 
     harp_done();
-    return 0;
+    return result;
 }

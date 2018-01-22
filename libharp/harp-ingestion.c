@@ -2137,6 +2137,13 @@ int harp_ingest_global_attributes(const char *filename, const char *options, dou
     return 0;
 }
 
+/** returns:
+ * -1 = initialization problem (e.g. harp initialization, file could not be opened, ...)
+ *      harp_errno will be set
+ * 0 = no problems
+ * 1 = product ingestion results in errors for at least one set of options
+ *     error is already printed, harp_errno should be ignored
+ */
 int harp_ingest_test(const char *filename, int (*print) (const char *, ...))
 {
     coda_product *product = NULL;
@@ -2148,7 +2155,7 @@ int harp_ingest_test(const char *filename, int (*print) (const char *, ...))
     int perform_boundary_checks;
     int num_options = 0;
     int *option_choice = NULL;
-    int status;
+    int result;
     int depth, i;
 
     if (filename == NULL)
@@ -2182,8 +2189,8 @@ int harp_ingest_test(const char *filename, int (*print) (const char *, ...))
     perform_boundary_checks = coda_get_option_perform_boundary_checks();
     coda_set_option_perform_boundary_checks(0);
 
-    status = harp_ingestion_find_module(filename, &module, &product);
-    if (status == 0)
+    result = harp_ingestion_find_module(filename, &module, &product);
+    if (result == 0)
     {
         num_options = module->num_option_definitions;
         option_choice = malloc(num_options * sizeof(int));
@@ -2191,7 +2198,7 @@ int harp_ingest_test(const char *filename, int (*print) (const char *, ...))
         {
             harp_set_error(HARP_ERROR_OUT_OF_MEMORY, "out of memory (could not allocate %lu bytes) (%s:%u)",
                            num_options * sizeof(int), __FILE__, __LINE__);
-            status = -1;
+            result = -1;
         }
         else
         {
@@ -2203,14 +2210,17 @@ int harp_ingest_test(const char *filename, int (*print) (const char *, ...))
     }
 
     depth = num_options;
-    while (status == 0 && depth >= 0)
+    while (result >= 0 && depth >= 0)
     {
         if (depth == num_options)
         {
+            int status;
+
             status = ingestion_init(&info);
             if (status != 0)
             {
                 /* no sense to try other options */
+                result = -1;
                 break;
             }
             info->cproduct = product;
@@ -2267,11 +2277,11 @@ int harp_ingest_test(const char *filename, int (*print) (const char *, ...))
             {
                 print(" [FAIL]\n");
                 print("ERROR: %s\n", harp_errno_to_string(harp_errno));
+                result = 1;
             }
 
             info->cproduct = NULL;
             ingestion_done(info);
-            status = 0;
 
             depth--;
         }
@@ -2311,5 +2321,5 @@ int harp_ingest_test(const char *filename, int (*print) (const char *, ...))
     harp_ingestion_options_delete(option_list);
     harp_program_delete(program);
 
-    return status;
+    return result;
 }

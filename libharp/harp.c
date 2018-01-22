@@ -628,6 +628,7 @@ LIBHARP_API int harp_import(const char *filename, const char *operations, const 
  * \param[in] print Reference to a printf compatible function.
  * \return
  *   \arg \c 0, Success.
+ *   \arg \c 1, Import failed (error is already printed, #harp_errno should be ignored).
  *   \arg \c -1, Error occurred (check #harp_errno).
  */
 LIBHARP_API int harp_import_test(const char *filename, int (*print) (const char *, ...))
@@ -685,7 +686,7 @@ LIBHARP_API int harp_import_test(const char *filename, int (*print) (const char 
         print(" [FAIL]\n");
         print("ERROR: %s\n", harp_errno_to_string(harp_errno));
         harp_product_delete(product);
-        return -1;
+        return 1;
     }
     print(" [OK]\n");
 
