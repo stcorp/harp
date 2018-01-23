@@ -274,9 +274,9 @@
 </tr>
 <tr class="row-even"><td><strong>altitude</strong></td>
 <td>float</td>
-<td>{<em>vertical</em>}</td>
+<td>{<em>time</em>, <em>vertical</em>}</td>
 <td>[m]</td>
-<td>fixed altitude grid on which the radiative transfer calculations are done; altitude is measured relative to the surface</td>
+<td>altitude grid on which the radiative transfer calculations are done</td>
 </tr>
 <tr class="row-odd"><td><strong>pressure_bounds</strong></td>
 <td>float</td>
@@ -319,6 +319,18 @@
 <td>{<em>time</em>, <em>vertical</em>}</td>
 <td>[m]</td>
 <td>averaging kernel for the vertically integrated CO column density</td>
+</tr>
+<tr class="row-even"><td><strong>H2O_column_number_density</strong></td>
+<td>float</td>
+<td>{<em>time</em>}</td>
+<td>[mol/m^2]</td>
+<td>H2O total column density</td>
+</tr>
+<tr class="row-odd"><td><strong>H2O_column_number_density_uncertainty</strong></td>
+<td>float</td>
+<td>{<em>time</em>}</td>
+<td>[mol/m^2]</td>
+<td>uncertainty of the H2O column density (standard error)</td>
 </tr>
 <tr class="row-even"><td><strong>index</strong></td>
 <td>int32</td>
@@ -428,10 +440,10 @@
 </tr>
 <tr class="row-even"><td rowspan="2"><strong>altitude</strong></td>
 <td><em>path</em></td>
-<td><strong>/PRODUCT/layer[]</strong></td>
+<td><strong>/PRODUCT/layer[], /PRODUCT/SUPPORT_DATA/INPUT_DATA/surface_altitude[]</strong></td>
 </tr>
 <tr class="row-odd"><td><em>description</em></td>
-<td>the vertical grid is inverted to make it ascending</td>
+<td>the vertical grid is inverted to make it ascending; height is converted to altitude by adding surface_altitude</td>
 </tr>
 <tr class="row-even"><td rowspan="2"><strong>pressure_bounds</strong></td>
 <td><em>path</em></td>
@@ -466,6 +478,14 @@
 </tr>
 <tr class="row-even"><td><em>description</em></td>
 <td>the vertical grid is inverted to make it ascending</td>
+</tr>
+<tr class="row-odd"><td><strong>H2O_column_number_density</strong></td>
+<td><em>path</em></td>
+<td><strong>/PRODUCT/SUPPORT_DATA/DETAILED_RESULTS/water_total_column[]</strong></td>
+</tr>
+<tr class="row-even"><td><strong>H2O_column_number_density_uncertainty</strong></td>
+<td><em>path</em></td>
+<td><strong>/PRODUCT/SUPPORT_DATA/DETAILED_RESULTS/water_total_column_precision[]</strong></td>
 </tr>
 </tbody>
 </table>

@@ -1067,6 +1067,7 @@ static int read_input_altitude_bounds(void *user_data, harp_array data)
 {
     ingest_info *info = (ingest_info *)user_data;
     harp_array surfalt_data;
+    long dimension[2];
     long num_layers;
     long i, j;
 
@@ -1075,6 +1076,14 @@ static int read_input_altitude_bounds(void *user_data, harp_array data)
     {
         return -1;
     }
+    /* invert axis */
+    dimension[0] = info->num_scanlines * info->num_pixels;
+    dimension[1] = info->num_levels;
+    if (harp_array_invert(harp_type_float, 1, 2, dimension, data) != 0)
+    {
+        return -1;
+    }
+
     /* read surface altitude in buffer after height levels (which will fit if 2*num_layers>num_levels) */
     assert(info->num_layers * 2 > info->num_levels);
     surfalt_data.float_data = &data.float_data[info->num_scanlines * info->num_pixels * info->num_levels];
@@ -1242,20 +1251,34 @@ static int read_input_cloud_top_pressure_precision(void *user_data, harp_array d
                         info->num_scanlines * info->num_pixels, data);
 }
 
-static int read_input_dry_air_subcolumns(void *user_data, harp_array data)
+static int read_input_dry_air_subcolumns_inverted(void *user_data, harp_array data)
 {
     ingest_info *info = (ingest_info *)user_data;
+    long dimension[2];
 
-    return read_dataset(info->input_data_cursor, "dry_air_subcolumns", harp_type_float,
-                        info->num_scanlines * info->num_pixels * info->num_layers, data);
+    if (read_dataset(info->input_data_cursor, "dry_air_subcolumns", harp_type_float,
+                     info->num_scanlines * info->num_pixels * info->num_layers, data) != 0)
+    {
+        return -1;
+    }
+    dimension[0] = info->num_scanlines * info->num_pixels;
+    dimension[1] = info->num_layers;
+    return harp_array_invert(harp_type_float, 1, 2, dimension, data);
 }
 
-static int read_input_methane_profile_apriori(void *user_data, harp_array data)
+static int read_input_methane_profile_apriori_inverted(void *user_data, harp_array data)
 {
     ingest_info *info = (ingest_info *)user_data;
+    long dimension[2];
 
-    return read_dataset(info->input_data_cursor, "methane_profile_apriori", harp_type_float,
-                        info->num_scanlines * info->num_pixels * info->num_layers, data);
+    if (read_dataset(info->input_data_cursor, "methane_profile_apriori", harp_type_float,
+                     info->num_scanlines * info->num_pixels * info->num_layers, data) != 0)
+    {
+        return -1;
+    }
+    dimension[0] = info->num_scanlines * info->num_pixels;
+    dimension[1] = info->num_layers;
+    return harp_array_invert(harp_type_float, 1, 2, dimension, data);
 }
 
 static int read_input_ozone_total_vertical_column(void *user_data, harp_array data)
@@ -1448,10 +1471,10 @@ static int read_input_pressure_bounds(void *user_data, harp_array data)
         double delta = delta_pressure.double_data[i];
         long j;
 
-        for (j = num_layers - 1; j >= 0; j--)
+        for (j = 0; j < num_layers - 1; j++)
         {
-            pressure_bounds[j * 2 + 1] = (float)(surface_pressure - (j + 1) * delta);
             pressure_bounds[j * 2] = (float)(surface_pressure - j * delta);
+            pressure_bounds[j * 2 + 1] = (float)(surface_pressure - (j + 1) * delta);
         }
     }
 
@@ -1874,12 +1897,46 @@ static int read_product_formaldehyde_tropospheric_vertical_column_precision(void
 static int read_product_layer_inverted(void *user_data, harp_array data)
 {
     ingest_info *info = (ingest_info *)user_data;
+    long num_elements = info->num_scanlines * info->num_pixels;
+    harp_array layer;
+    long i, j;
 
-    if (read_dataset(info->product_cursor, "layer", harp_type_float, info->num_layers, data) != 0)
+    layer.float_data = malloc(info->num_layers * sizeof(float));
+    if (layer.float_data == NULL)
     {
+        harp_set_error(HARP_ERROR_OUT_OF_MEMORY, "out of memory (could not allocate %lu bytes) (%s:%u)",
+                       info->num_layers * sizeof(float), __FILE__, __LINE__);
         return -1;
     }
-    return harp_array_invert(harp_type_float, 0, 1, &info->num_layers, data);
+    if (read_dataset(info->product_cursor, "layer", harp_type_float, info->num_layers, layer) != 0)
+    {
+        free(layer.float_data);
+        return -1;
+    }
+    if (harp_array_invert(harp_type_float, 0, 1, &info->num_layers, layer) != 0)
+    {
+        free(layer.float_data);
+        return -1;
+    }
+
+    if (read_dataset(info->input_data_cursor, "surface_altitude", harp_type_float, num_elements, data) != 0)
+    {
+        free(layer.float_data);
+        return -1;
+    }
+
+    /* turn {time} array of surface_altiude values into a {time,vertical} array of altitudes */
+    /* we need to iterate backwards to allow proper in-place adjustment of the altitudes */
+    for (i = num_elements - 1; i >= 0; i--)
+    {
+        for (j = info->num_layers; j >= 0; j--)
+        {
+            data.float_data[i * info->num_layers + j] = data.float_data[i] + layer.float_data[j];
+        }
+    }
+    free(layer.float_data);
+
+    return 0;
 }
 
 static int read_product_latitude(void *user_data, harp_array data)
@@ -2109,14 +2166,6 @@ static int read_results_cloud_pressure_crb_precision(void *user_data, harp_array
 
     return read_dataset(info->detailed_results_cursor, "cloud_pressure_crb_precision", harp_type_float,
                         info->num_scanlines * info->num_pixels, data);
-}
-
-static int read_results_column_averaging_kernel(void *user_data, harp_array data)
-{
-    ingest_info *info = (ingest_info *)user_data;
-
-    return read_dataset(info->detailed_results_cursor, "column_averaging_kernel", harp_type_float,
-                        info->num_scanlines * info->num_pixels * info->num_layers, data);
 }
 
 static int read_results_column_averaging_kernel_inverted(void *user_data, harp_array data)
@@ -2375,6 +2424,22 @@ static int read_results_surface_albedo_fitted_crb_precision(void *user_data, har
     ingest_info *info = (ingest_info *)user_data;
 
     return read_dataset(info->detailed_results_cursor, "surface_albedo_fitted_crb_precision", harp_type_float,
+                        info->num_scanlines * info->num_pixels, data);
+}
+
+static int read_results_water_total_column(void *user_data, harp_array data)
+{
+    ingest_info *info = (ingest_info *)user_data;
+
+    return read_dataset(info->detailed_results_cursor, "water_total_column", harp_type_float,
+                        info->num_scanlines * info->num_pixels, data);
+}
+
+static int read_results_water_total_column_precision(void *user_data, harp_array data)
+{
+    ingest_info *info = (ingest_info *)user_data;
+
+    return read_dataset(info->detailed_results_cursor, "water_total_column_precision", harp_type_float,
                         info->num_scanlines * info->num_pixels, data);
 }
 
@@ -3779,7 +3844,8 @@ static void register_ch4_product(void)
                                                    read_input_altitude_bounds);
     path = "/PRODUCT/SUPPORT_DATA/INPUT_DATA/height_levels[], /PRODUCT/SUPPORT_DATA/INPUT_DATA/surface_altitude[]";
     description = "derived from height per level (layer boundary) by repeating the inner levels; the upper bound of "
-        "layer k is equal to the lower bound of layer k+1; height is converted to altitude by adding surface_altitude";
+        "layer k is equal to the lower bound of layer k+1; the vertical grid is inverted to make it ascending; "
+        "height is converted to altitude by adding surface_altitude";
     harp_variable_definition_add_mapping(variable_definition, NULL, NULL, path, description);
 
     /* pressure_bounds */
@@ -3792,8 +3858,10 @@ static void register_ch4_product(void)
     description = "derived from surface pressure and pressure difference between retrieval levels (the pressure grid "
         "is equidistant between the surface pressure and a fixed top pressure); given a zero-based layer "
         "index k, the pressure bounds for layer k are derived as: (surface_pressure - k * pressure_interval, "
-        "surface_pressure - (k + 1) * pressure_interval)";
+        "surface_pressure - (k + 1) * pressure_interval); the vertical grid is inverted to make it ascending";
     harp_variable_definition_add_mapping(variable_definition, NULL, NULL, path, description);
+
+    register_surface_variables(product_definition);
 
     /* CH4_column_volume_mixing_ratio_dry_air */
     description = "column averaged dry air mixing ratio of methane";
@@ -3821,26 +3889,48 @@ static void register_ch4_product(void)
     variable_definition =
         harp_ingestion_register_variable_full_read(product_definition, "CH4_column_volume_mixing_ratio_dry_air_avk",
                                                    harp_type_float, 2, dimension_type, NULL, description,
-                                                   HARP_UNIT_DIMENSIONLESS, NULL, read_results_column_averaging_kernel);
+                                                   HARP_UNIT_DIMENSIONLESS, NULL,
+                                                   read_results_column_averaging_kernel_inverted);
     path = "/PRODUCT/SUPPORT_DATA/DETAILED_RESULTS/column_averaging_kernel[]";
-    harp_variable_definition_add_mapping(variable_definition, NULL, NULL, path, NULL);
+    description = "the vertical grid is inverted to make it ascending";
+    harp_variable_definition_add_mapping(variable_definition, NULL, NULL, path, description);
 
     /* CH4_column_number_density_apriori */
     description = "a-priori column number density profile of methane";
     variable_definition =
         harp_ingestion_register_variable_full_read(product_definition, "CH4_column_number_density_apriori",
                                                    harp_type_float, 2, dimension_type, NULL, description, "mol/m2",
-                                                   NULL, read_input_methane_profile_apriori);
+                                                   NULL, read_input_methane_profile_apriori_inverted);
     path = "/PRODUCT/SUPPORT_DATA/INPUT_DATA/methane_profile_apriori[]";
-    harp_variable_definition_add_mapping(variable_definition, NULL, NULL, path, NULL);
+    description = "the vertical grid is inverted to make it ascending";
+    harp_variable_definition_add_mapping(variable_definition, NULL, NULL, path, description);
 
     /* dry_air_column_number_density */
     description = "column number density profile of dry air";
     variable_definition =
         harp_ingestion_register_variable_full_read(product_definition, "dry_air_column_number_density",
                                                    harp_type_float, 2, dimension_type, NULL, description, "mol/m2",
-                                                   NULL, read_input_dry_air_subcolumns);
+                                                   NULL, read_input_dry_air_subcolumns_inverted);
     path = "/PRODUCT/SUPPORT_DATA/INPUT_DATA/dry_air_subcolumns[]";
+    description = "the vertical grid is inverted to make it ascending";
+    harp_variable_definition_add_mapping(variable_definition, NULL, NULL, path, description);
+
+    /* H2O_column_number_density */
+    description = "H2O total column density";
+    variable_definition =
+        harp_ingestion_register_variable_full_read(product_definition, "H2O_column_number_density", harp_type_float, 1,
+                                                   dimension_type, NULL, description, "mol/m^2", NULL,
+                                                   read_results_water_total_column);
+    path = "/PRODUCT/SUPPORT_DATA/DETAILED_RESULTS/water_total_column[]";
+    harp_variable_definition_add_mapping(variable_definition, NULL, NULL, path, NULL);
+
+    /* H2O_column_number_density_uncertainty */
+    description = "uncertainty of the H2O column density (standard error)";
+    variable_definition =
+        harp_ingestion_register_variable_full_read(product_definition, "H2O_column_number_density_uncertainty",
+                                                   harp_type_float, 1, dimension_type, NULL, description, "mol/m^2",
+                                                   NULL, read_results_water_total_column_precision);
+    path = "/PRODUCT/SUPPORT_DATA/DETAILED_RESULTS/water_total_column_precision[]";
     harp_variable_definition_add_mapping(variable_definition, NULL, NULL, path, NULL);
 }
 
@@ -3852,7 +3942,6 @@ static void register_co_product(void)
     harp_product_definition *product_definition;
     harp_variable_definition *variable_definition;
     harp_dimension_type dimension_type[2] = { harp_dimension_time, harp_dimension_vertical };
-    harp_dimension_type dimension_type_altitude[1] = { harp_dimension_vertical };
     harp_dimension_type pressure_bounds_dimension_type[3] =
         { harp_dimension_time, harp_dimension_vertical, harp_dimension_independent };
     long pressure_bounds_dimension[3] = { -1, -1, 2 };
@@ -3866,14 +3955,13 @@ static void register_co_product(void)
     register_additional_geolocation_variables(product_definition);
 
     /* altitude */
-    description = "fixed altitude grid on which the radiative transfer calculations are done; altitude is measured"
-        " relative to the surface";
+    description = "altitude grid on which the radiative transfer calculations are done";
     variable_definition =
-        harp_ingestion_register_variable_full_read(product_definition, "altitude", harp_type_float, 1,
-                                                   dimension_type_altitude, NULL, description, "m", NULL,
-                                                   read_product_layer_inverted);
-    path = "/PRODUCT/layer[]";
-    description = "the vertical grid is inverted to make it ascending";
+        harp_ingestion_register_variable_full_read(product_definition, "altitude", harp_type_float, 2, dimension_type,
+                                                   NULL, description, "m", NULL, read_product_layer_inverted);
+    path = "/PRODUCT/layer[], /PRODUCT/SUPPORT_DATA/INPUT_DATA/surface_altitude[]";
+    description = "the vertical grid is inverted to make it ascending; "
+        "height is converted to altitude by adding surface_altitude";
     harp_variable_definition_add_mapping(variable_definition, NULL, NULL, path, description);
 
     /* pressure_bounds */
@@ -3918,6 +4006,24 @@ static void register_co_product(void)
     path = "/PRODUCT/SUPPORT_DATA/DETAILED_RESULTS/column_averaging_kernel[]";
     description = "the vertical grid is inverted to make it ascending";
     harp_variable_definition_add_mapping(variable_definition, NULL, NULL, path, description);
+
+    /* H2O_column_number_density */
+    description = "H2O total column density";
+    variable_definition =
+        harp_ingestion_register_variable_full_read(product_definition, "H2O_column_number_density", harp_type_float, 1,
+                                                   dimension_type, NULL, description, "mol/m^2", NULL,
+                                                   read_results_water_total_column);
+    path = "/PRODUCT/SUPPORT_DATA/DETAILED_RESULTS/water_total_column[]";
+    harp_variable_definition_add_mapping(variable_definition, NULL, NULL, path, NULL);
+
+    /* H2O_column_number_density_uncertainty */
+    description = "uncertainty of the H2O column density (standard error)";
+    variable_definition =
+        harp_ingestion_register_variable_full_read(product_definition, "H2O_column_number_density_uncertainty",
+                                                   harp_type_float, 1, dimension_type, NULL, description, "mol/m^2",
+                                                   NULL, read_results_water_total_column_precision);
+    path = "/PRODUCT/SUPPORT_DATA/DETAILED_RESULTS/water_total_column_precision[]";
+    harp_variable_definition_add_mapping(variable_definition, NULL, NULL, path, NULL);
 }
 
 static void register_hcho_product(void)
