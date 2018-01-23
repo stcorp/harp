@@ -80,6 +80,11 @@ void harp_area_mask_delete(harp_area_mask *area_mask)
 
 int harp_area_mask_add_polygon(harp_area_mask *area_mask, harp_spherical_polygon *polygon)
 {
+    if (harp_spherical_polygon_check(polygon) != 0)
+    {
+        return -1;
+    }
+
     if (area_mask->num_polygons % AREA_MASK_BLOCK_SIZE == 0)
     {
         harp_spherical_polygon **new_polygon = NULL;
@@ -319,9 +324,8 @@ static int parse_polygon(const char *str, harp_spherical_polygon **new_polygon)
     harp_spherical_point_array_delete(point_array);
 
     /* Check the polygon */
-    if (!harp_spherical_polygon_check(polygon))
+    if (harp_spherical_polygon_check(polygon) != 0)
     {
-        harp_set_error(HARP_ERROR_INVALID_FORMAT, "invalid polygon");
         harp_spherical_polygon_delete(polygon);
         return -1;
     }

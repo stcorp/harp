@@ -37,6 +37,8 @@
 
 * Fixed mapping description of GOME2 L1 product ingestion.
 
+* Fixed wrong results of area overlap calculation.
+
 * Replaced '_' by '-' in long versions of argument names of harpcollocate.
 
 * Updates to S5P L2 product ingestions.
