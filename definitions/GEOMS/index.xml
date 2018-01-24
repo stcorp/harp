@@ -1,5 +1,5 @@
 <?xml version="1.0"?>
-<cd:ProductClass name="GEOMS" last-modified="2017-11-03" xmlns:cd="http://www.stcorp.nl/coda/definition/2008/07">
+<cd:ProductClass name="GEOMS" last-modified="2018-01-24" xmlns:cd="http://www.stcorp.nl/coda/definition/2008/07">
   <cd:Description>Products using the Generic Earth Observation Metadata Standard (GEOMS)</cd:Description>
   <!-- version numbers are a combination of base format and template version: <format> + <version>
        format: hdf4=1000, hdf5=2000, netcdf3=3000 (netcdf4 is treated as hdf5) -->
@@ -41,6 +41,12 @@
   </cd:ProductType>
   <cd:ProductType name="LIDAR_TEMPERATURE">
     <cd:Description>GEOMS template for LIDAR temperature measurements</cd:Description>
+    <cd:ProductDefinition id="LIDAR_TEMPERATURE_002_hdf4" format="hdf4" version="1002">
+      <cd:Description>The format definition for this product is taken from the HDF4 file itself.</cd:Description>
+      <cd:DetectionRule>
+        <cd:MatchExpression path="/@DATA_TEMPLATE">str(.) == "GEOMS-TE-LIDAR-TEMPERATURE-002"</cd:MatchExpression>
+      </cd:DetectionRule>
+    </cd:ProductDefinition>
     <cd:ProductDefinition id="LIDAR_TEMPERATURE_003_hdf4" format="hdf4" version="1003">
       <cd:Description>The format definition for this product is taken from the HDF4 file itself.</cd:Description>
       <cd:DetectionRule>
