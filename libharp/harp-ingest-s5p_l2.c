@@ -1929,7 +1929,7 @@ static int read_product_layer_inverted(void *user_data, harp_array data)
     /* we need to iterate backwards to allow proper in-place adjustment of the altitudes */
     for (i = num_elements - 1; i >= 0; i--)
     {
-        for (j = info->num_layers; j >= 0; j--)
+        for (j = info->num_layers - 1; j >= 0; j--)
         {
             data.float_data[i * info->num_layers + j] = data.float_data[i] + layer.float_data[j];
         }
