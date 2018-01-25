@@ -25,7 +25,6 @@ latitude derivations
 
    The vector :math:`\mathbf{p}_{center}` is converted back to :math:`\phi` and :math:`\lambda`
 
-|
 
 #. latitude from range
 
@@ -41,6 +40,26 @@ latitude derivations
    .. math::
 
       \phi = \frac{\phi^{B}(2) + \phi^{B}(1)}{2}
+
+
+#. latitude from vertical profile latitudes
+
+   =============== ==================================== ============ =======================
+   symbol          description                          unit         variable name
+   =============== ==================================== ============ =======================
+   :math:`\phi`    single latitude for the full profile :math:`degN` `latitude {:}`
+   :math:`\phi(i)` latitude for each profile point      :math:`degN` `latitude {:,vertical}`
+   :math:`N`       number of profile points
+   =============== ==================================== ============ =======================
+
+   The pattern `:` for the dimensions can represent `{time}`, or no dimensions at all.
+
+   .. math::
+
+      \begin{eqnarray}
+        N & = & max(i, \phi(i) \neq NaN) \\
+        \phi & = & \phi(N/2)
+      \end{eqnarray}
 
 
 #. latitude from sensor latitude

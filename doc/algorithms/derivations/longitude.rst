@@ -23,6 +23,27 @@ longitude derivations
       \lambda = \frac{\lambda^{B}(2) + \lambda^{B}(1)}{2}
 
 
+#. longitude from vertical profile latitudes
+
+   ================== ===================================== ============ ========================
+   symbol             description                           unit         variable name
+   ================== ===================================== ============ ========================
+   :math:`\lambda`    single longitude for the full profile :math:`degE` `longitude {:}`
+   :math:`\lambda(i)` longitude for each profile point      :math:`degE` `longitude {:,vertical}`
+   :math:`N`          number of profile points
+   ================== ===================================== ============ ========================
+
+   The pattern `:` for the dimensions can represent `{time}`, or no dimensions at all.
+
+   .. math::
+      :nowrap:
+
+      \begin{eqnarray}
+        N & = & max(i, \lambda(i) \neq NaN) \\
+        \lambda & = & \lambda(N/2)
+      \end{eqnarray}
+
+
 #. longitude from sensor longitude
 
    ======================= ======================= ============ ==========================
