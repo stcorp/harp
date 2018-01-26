@@ -327,5 +327,6 @@ The postfix 'avk' is used for averaging kernels of atmospheric vertical profiles
 An AVK that only depends once on the vertical dimension is a column averaging kernel,
 and an AVK that depends twice on the vertical dimension is a profile averaging kernel.
 The 'amf' postfix is used for air mass factors.
-The 'dfs' postfix is used for the 'degree of freedom for signal' for vertical profiles which equals the trace of
-the two dimensional AVK and provides information on the vertical resolution and information content of profiles.
+The 'dfs' postfix is used for the 'degree of freedom for signal' for vertical profiles which equals the trace or
+diagonal of the two-dimensional AVK and provides information on the vertical resolution and information content of
+profiles.

@@ -32,6 +32,7 @@ Variable Conversions
    derivations/datetime_length
    derivations/datetime_start
    derivations/datetime_stop
+   derivations/degrees_of_freedom_for_signal
    derivations/frequency
    derivations/geopotential
    derivations/geopotential_height

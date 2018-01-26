@@ -303,26 +303,23 @@ static int get_density_avk_from_partial_column_avk_and_alt_bounds(harp_variable 
     return 0;
 }
 
-static int get_dfs_from_avk(harp_variable *variable, const harp_variable **source_variable)
+static int get_dfs_profile_from_avk(harp_variable *variable, const harp_variable **source_variable)
 {
+    long num_elements;
     long num_vertical;
     long i, j;
 
-    num_vertical = source_variable[0]->dimension[source_variable[0]->num_dimensions - 1];
-    for (i = 0; i < variable->num_elements; i++)
+    num_vertical = variable->dimension[variable->num_dimensions - 1];
+    num_elements = variable->num_elements / num_vertical;
+    for (i = 0; i < num_elements; i++)
     {
         double *avk = &source_variable[0]->data.double_data[i * num_vertical * num_vertical];
-        double trace = 0;
 
-        /* sum the diagonal elements */
+        /* take the diagonal */
         for (j = 0; j < num_vertical; j++)
         {
-            if (!harp_isnan(avk[j * num_vertical + j]))
-            {
-                trace += avk[j * num_vertical + j];
-            }
+            variable->data.double_data[i * num_vertical + j] = avk[j * num_vertical + j];
         }
-        variable->data.double_data[i] = trace;
     }
 
     return 0;
@@ -1837,7 +1834,7 @@ static int add_dfs_from_avk_conversion(const char *variable_name, int num_dimens
                                        harp_dimension_type dimension_type[HARP_MAX_NUM_DIMS])
 {
     harp_variable_conversion *conversion;
-    harp_dimension_type avk_dimension_type[HARP_MAX_NUM_DIMS];
+    harp_dimension_type vertical_dimension_type[HARP_MAX_NUM_DIMS];
     char name_dfs[MAX_NAME_LENGTH];
     char name_avk[MAX_NAME_LENGTH];
     int i;
@@ -1848,18 +1845,31 @@ static int add_dfs_from_avk_conversion(const char *variable_name, int num_dimens
 
     for (i = 0; i < num_dimensions; i++)
     {
-        avk_dimension_type[i] = dimension_type[i];
+        vertical_dimension_type[i] = dimension_type[i];
     }
-    avk_dimension_type[num_dimensions] = harp_dimension_vertical;
-    avk_dimension_type[num_dimensions + 1] = harp_dimension_vertical;
+    vertical_dimension_type[num_dimensions] = harp_dimension_vertical;
+    vertical_dimension_type[num_dimensions + 1] = harp_dimension_vertical;
 
+    /* scalar dfs from dfs profile (just a non-Nan summation, just as for partial column summation)  */
     if (harp_variable_conversion_new(name_dfs, harp_type_double, HARP_UNIT_DIMENSIONLESS, num_dimensions,
-                                     dimension_type, 0, get_dfs_from_avk, &conversion) != 0)
+                                     vertical_dimension_type, 0, get_column_from_partial_column, &conversion) != 0)
+    {
+        return -1;
+    }
+    if (harp_variable_conversion_add_source(conversion, name_dfs, harp_type_double, HARP_UNIT_DIMENSIONLESS,
+                                            num_dimensions + 1, vertical_dimension_type, 0) != 0)
+    {
+        return -1;
+    }
+
+    /* dfs profile from avk */
+    if (harp_variable_conversion_new(name_dfs, harp_type_double, HARP_UNIT_DIMENSIONLESS, num_dimensions + 1,
+                                     vertical_dimension_type, 0, get_dfs_profile_from_avk, &conversion) != 0)
     {
         return -1;
     }
     if (harp_variable_conversion_add_source(conversion, name_avk, harp_type_double, HARP_UNIT_DIMENSIONLESS,
-                                            num_dimensions + 2, avk_dimension_type, 0) != 0)
+                                            num_dimensions + 2, vertical_dimension_type, 0) != 0)
     {
         return -1;
     }
@@ -3880,7 +3890,8 @@ static int add_particulate_matter_conversions_for_grid(const char *pm, int num_d
     return 0;
 }
 
-static int add_aerosol_conversions_for_grid(int num_dimensions, harp_dimension_type dimension_type[HARP_MAX_NUM_DIMS])
+static int add_aerosol_conversions_for_grid(int num_dimensions, harp_dimension_type dimension_type[HARP_MAX_NUM_DIMS],
+                                            int has_vertical)
 {
     const char *prefix[] = { "", "sea_salt_", "dust_", "organic_matter_", "black_carbon_", "sulphate_" };
     int i;
@@ -3909,23 +3920,35 @@ static int add_aerosol_conversions_for_grid(int num_dimensions, harp_dimension_t
             return -1;
         }
 
-        /* ext from aod */
-        if (harp_variable_conversion_new(name_ext, harp_type_double, HARP_UNIT_AEROSOL_EXTINCTION,
-                                         num_dimensions, dimension_type, 0,
-                                         get_density_from_partial_column_and_alt_bounds, &conversion) != 0)
+        if (has_vertical)
         {
-            return -1;
+            /* ext from aod */
+            if (harp_variable_conversion_new(name_ext, harp_type_double, HARP_UNIT_AEROSOL_EXTINCTION,
+                                             num_dimensions, dimension_type, 0,
+                                             get_density_from_partial_column_and_alt_bounds, &conversion) != 0)
+            {
+                return -1;
+            }
+            if (harp_variable_conversion_add_source(conversion, name_aod, harp_type_double, HARP_UNIT_DIMENSIONLESS,
+                                                    num_dimensions, dimension_type, 0) != 0)
+            {
+                return -1;
+            }
+            dimension_type[num_dimensions] = harp_dimension_independent;
+            if (harp_variable_conversion_add_source(conversion, "altitude_bounds", harp_type_double, HARP_UNIT_LENGTH,
+                                                    num_dimensions + 1, dimension_type, 2) != 0)
+            {
+                return -1;
+            }
         }
-        if (harp_variable_conversion_add_source(conversion, name_aod, harp_type_double, HARP_UNIT_DIMENSIONLESS,
-                                                num_dimensions, dimension_type, 0) != 0)
+
+        if (!has_vertical)
         {
-            return -1;
-        }
-        dimension_type[num_dimensions] = harp_dimension_independent;
-        if (harp_variable_conversion_add_source(conversion, "altitude_bounds", harp_type_double, HARP_UNIT_LENGTH,
-                                                num_dimensions + 1, dimension_type, 2) != 0)
-        {
-            return -1;
+            /* ext dfs */
+            if (add_dfs_from_avk_conversion(name_ext, num_dimensions, dimension_type) != 0)
+            {
+                return -1;
+            }
         }
 
         /*** aerosol optical depth ***/
@@ -3944,7 +3967,7 @@ static int add_aerosol_conversions_for_grid(int num_dimensions, harp_dimension_t
         }
 
         /* aod from partial aod profile */
-        if (num_dimensions == 0 || dimension_type[num_dimensions - 1] != harp_dimension_vertical)
+        if (!has_vertical)
         {
             if (harp_variable_conversion_new(name_aod, harp_type_double, HARP_UNIT_DIMENSIONLESS, num_dimensions,
                                              dimension_type, 0, get_column_from_partial_column, &conversion) != 0)
@@ -3959,23 +3982,36 @@ static int add_aerosol_conversions_for_grid(int num_dimensions, harp_dimension_t
             }
         }
 
-        /* aod from ext */
-        if (harp_variable_conversion_new(name_aod, harp_type_double, HARP_UNIT_DIMENSIONLESS, num_dimensions,
-                                         dimension_type, 0, get_partial_column_from_density_and_alt_bounds, &conversion)
-            != 0)
+        if (has_vertical)
         {
-            return -1;
+            /* aod from ext */
+            if (harp_variable_conversion_new(name_aod, harp_type_double, HARP_UNIT_DIMENSIONLESS, num_dimensions,
+                                             dimension_type, 0, get_partial_column_from_density_and_alt_bounds,
+                                             &conversion) != 0)
+            {
+                return -1;
+            }
+            if (harp_variable_conversion_add_source
+                (conversion, name_ext, harp_type_double, HARP_UNIT_AEROSOL_EXTINCTION, num_dimensions, dimension_type,
+                 0) != 0)
+            {
+                return -1;
+            }
+            dimension_type[num_dimensions] = harp_dimension_independent;
+            if (harp_variable_conversion_add_source(conversion, "altitude_bounds", harp_type_double, HARP_UNIT_LENGTH,
+                                                    num_dimensions + 1, dimension_type, 2) != 0)
+            {
+                return -1;
+            }
         }
-        if (harp_variable_conversion_add_source(conversion, name_ext, harp_type_double, HARP_UNIT_AEROSOL_EXTINCTION,
-                                                num_dimensions, dimension_type, 0) != 0)
+
+        if (!has_vertical)
         {
-            return -1;
-        }
-        dimension_type[num_dimensions] = harp_dimension_independent;
-        if (harp_variable_conversion_add_source(conversion, "altitude_bounds", harp_type_double, HARP_UNIT_LENGTH,
-                                                num_dimensions + 1, dimension_type, 2) != 0)
-        {
-            return -1;
+            /* aod dfs */
+            if (add_dfs_from_avk_conversion(name_aod, num_dimensions, dimension_type) != 0)
+            {
+                return -1;
+            }
         }
     }
 
@@ -3983,12 +4019,13 @@ static int add_aerosol_conversions_for_grid(int num_dimensions, harp_dimension_t
 }
 
 static int add_spectral_grouping_conversions_for_grid(int num_dimensions,
-                                                      harp_dimension_type target_dimension_type[HARP_MAX_NUM_DIMS])
+                                                      harp_dimension_type target_dimension_type[HARP_MAX_NUM_DIMS],
+                                                      int has_vertical)
 {
     harp_dimension_type dimension_type[HARP_MAX_NUM_DIMS];
     int i;
 
-    if (add_aerosol_conversions_for_grid(num_dimensions, target_dimension_type) != 0)
+    if (add_aerosol_conversions_for_grid(num_dimensions, target_dimension_type, has_vertical) != 0)
     {
         return -1;
     }
@@ -4015,7 +4052,7 @@ static int add_spectral_grouping_conversions_for_grid(int num_dimensions,
             dimension_type[i + 1] = target_dimension_type[i];
         }
     }
-    if (add_aerosol_conversions_for_grid(num_dimensions + 1, dimension_type) != 0)
+    if (add_aerosol_conversions_for_grid(num_dimensions + 1, dimension_type, has_vertical) != 0)
     {
         return -1;
     }
@@ -4053,7 +4090,7 @@ static int add_conversions_for_grid(int num_dimensions, harp_dimension_type dime
     }
 
     /* Add conversions for variables that can be spectral dependent (with spectral dimension used for grouping) */
-    if (add_spectral_grouping_conversions_for_grid(num_dimensions, dimension_type) != 0)
+    if (add_spectral_grouping_conversions_for_grid(num_dimensions, dimension_type, has_vertical) != 0)
     {
         return -1;
     }

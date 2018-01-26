@@ -50,6 +50,7 @@ HARP_DOCFILES = \
 	doc/html/algorithms/derivations/datetime_length.html \
 	doc/html/algorithms/derivations/datetime_start.html \
 	doc/html/algorithms/derivations/datetime_stop.html \
+	doc/html/algorithms/derivations/degrees_of_freedom_for_signal.html \
 	doc/html/algorithms/derivations/frequency.html \
 	doc/html/algorithms/derivations/geopotential.html \
 	doc/html/algorithms/derivations/geopotential_height.html \
@@ -609,6 +610,8 @@ doc/html/algorithms/derivations/datetime_length.html:
 doc/html/algorithms/derivations/datetime_start.html:
 	$(MAKE) harp_doc
 doc/html/algorithms/derivations/datetime_stop.html:
+	$(MAKE) harp_doc
+doc/html/algorithms/derivations/degrees_of_freedom_for_signal.html:
 	$(MAKE) harp_doc
 doc/html/algorithms/derivations/frequency.html:
 	$(MAKE) harp_doc
