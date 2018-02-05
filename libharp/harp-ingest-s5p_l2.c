@@ -3754,7 +3754,6 @@ static void register_aer_lh_product(void)
     register_core_variables(product_definition, s5p_delta_time_num_dims[s5p_type_aer_lh]);
     register_geolocation_variables(product_definition);
     register_additional_geolocation_variables(product_definition);
-    register_snow_ice_flag_variables(product_definition, 0);
 
     /* aerosol_height */
     description = "altitude of center of aerosol layer";
@@ -3809,6 +3808,8 @@ static void register_aer_lh_product(void)
                                                    read_results_aerosol_optical_thickness_precision);
     path = "/PRODUCT/SUPPORT_DATA/DETAILED_RESULTS/aerosol_optical_thickness_precision[]";
     harp_variable_definition_add_mapping(variable_definition, NULL, NULL, path, NULL);
+
+    register_snow_ice_flag_variables(product_definition, 0);
 }
 
 static void register_ch4_product(void)
@@ -4047,19 +4048,6 @@ static void register_hcho_product(void)
     register_geolocation_variables(product_definition);
     register_additional_geolocation_variables(product_definition);
 
-    register_cloud_variables(product_definition);
-
-    /* surface_albedo */
-    description = "surface albedo";
-    variable_definition =
-        harp_ingestion_register_variable_full_read(product_definition, "surface_albedo", harp_type_float, 1,
-                                                   dimension_type, NULL, description, HARP_UNIT_DIMENSIONLESS, NULL,
-                                                   read_input_surface_albedo);
-    path = "/PRODUCT/SUPPORT_DATA/INPUT_DATA/surface_albedo";
-    harp_variable_definition_add_mapping(variable_definition, NULL, NULL, path, NULL);
-
-    register_surface_variables(product_definition);
-
     /* pressure */
     description = "pressure";
     variable_definition =
@@ -4151,6 +4139,19 @@ static void register_hcho_product(void)
                                                    read_results_formaldehyde_tropospheric_air_mass_factor_trueness);
     path = "/PRODUCT/SUPPORT_DATA/DETAILED_RESULTS/formaldehyde_tropospheric_air_mass_factor_trueness[]";
     harp_variable_definition_add_mapping(variable_definition, NULL, NULL, path, NULL);
+
+    register_cloud_variables(product_definition);
+
+    /* surface_albedo */
+    description = "surface albedo";
+    variable_definition =
+        harp_ingestion_register_variable_full_read(product_definition, "surface_albedo", harp_type_float, 1,
+                                                   dimension_type, NULL, description, HARP_UNIT_DIMENSIONLESS, NULL,
+                                                   read_input_surface_albedo);
+    path = "/PRODUCT/SUPPORT_DATA/INPUT_DATA/surface_albedo";
+    harp_variable_definition_add_mapping(variable_definition, NULL, NULL, path, NULL);
+
+    register_surface_variables(product_definition);
 }
 
 static void register_o3_product(void)
@@ -4173,6 +4174,72 @@ static void register_o3_product(void)
     register_core_variables(product_definition, s5p_delta_time_num_dims[s5p_type_o3]);
     register_geolocation_variables(product_definition);
     register_additional_geolocation_variables(product_definition);
+
+    /* pressure_bounds */
+    description = "pressure bounds per profile layer";
+    variable_definition =
+        harp_ingestion_register_variable_full_read(product_definition, "pressure_bounds", harp_type_float, 3,
+                                                   dimension_type, dimension, description, "Pa", NULL,
+                                                   read_results_pressure_bounds);
+    path = "/PRODUCT/SUPPORT_DATA/DETAILED_RESULTS/pressure_grid[]";
+    description = "derived from pressure per level (layer boundary) by repeating the inner levels; "
+        "the upper bound of layer k is equal to the lower bound of layer k+1";
+    harp_variable_definition_add_mapping(variable_definition, NULL, NULL, path, description);
+
+    /* O3_column_number_density */
+    description = "O3 column number density";
+    variable_definition =
+        harp_ingestion_register_variable_full_read(product_definition, "O3_column_number_density", harp_type_float, 1,
+                                                   dimension_type, NULL, description, "mol/m^2", NULL,
+                                                   read_product_ozone_total_vertical_column);
+    path = "/PRODUCT/ozone_total_vertical_column[]";
+    harp_variable_definition_add_mapping(variable_definition, NULL, NULL, path, NULL);
+
+    /* O3_column_number_density_uncertainty */
+    description = "uncertainty of the O3 column number density";
+    variable_definition =
+        harp_ingestion_register_variable_full_read(product_definition, "O3_column_number_density_uncertainty",
+                                                   harp_type_float, 1, dimension_type, NULL, description, "mol/m^2",
+                                                   NULL, read_product_ozone_total_vertical_column_precision);
+    path = "/PRODUCT/ozone_total_vertical_column_precision[]";
+    harp_variable_definition_add_mapping(variable_definition, NULL, NULL, path, NULL);
+
+    /* O3_column_number_density_apriori */
+    description = "O3 column number density apriori";
+    variable_definition =
+        harp_ingestion_register_variable_full_read(product_definition, "O3_column_number_density_apriori",
+                                                   harp_type_float, 2, dimension_type, NULL, description, "mol/m^2",
+                                                   NULL, read_results_ozone_profile_apriori);
+    path = "/PRODUCT/SUPPORT_DATA/DETAILED_RESULTS/ozone_profile_apriori[]";
+    harp_variable_definition_add_mapping(variable_definition, NULL, NULL, path, NULL);
+
+    /* O3_column_number_density_avk */
+    description = "averaging kernel for the O3 column number density";
+    variable_definition =
+        harp_ingestion_register_variable_full_read(product_definition, "O3_column_number_density_avk", harp_type_float,
+                                                   2, dimension_type, NULL, description, HARP_UNIT_DIMENSIONLESS, NULL,
+                                                   read_results_averaging_kernel_1d);
+    path = "/PRODUCT/SUPPORT_DATA/DETAILED_RESULTS/averaging_kernel[]";
+    harp_variable_definition_add_mapping(variable_definition, NULL, NULL, path, NULL);
+
+    /* O3_column_number_density_amf */
+    description = "O3 column number density total air mass factor";
+    variable_definition =
+        harp_ingestion_register_variable_full_read(product_definition, "O3_column_number_density_amf", harp_type_float,
+                                                   1, dimension_type, NULL, description, HARP_UNIT_DIMENSIONLESS,
+                                                   exclude_non_nrti, read_results_ozone_total_air_mass_factor);
+    path = "/PRODUCT/SUPPORT_DATA/DETAILED_RESULTS/ozone_total_air_mass_factor[]";
+    harp_variable_definition_add_mapping(variable_definition, NULL, "NRTI", path, NULL);
+
+    /* O3_column_number_density_amf_uncertainty */
+    description = "uncertainty of the O3 column number density total air mass factor";
+    variable_definition =
+        harp_ingestion_register_variable_full_read(product_definition, "O3_column_number_density_amf_uncertainty",
+                                                   harp_type_float, 1, dimension_type, NULL, description,
+                                                   HARP_UNIT_DIMENSIONLESS, exclude_non_nrti,
+                                                   read_results_ozone_total_air_mass_factor_trueness);
+    path = "/PRODUCT/SUPPORT_DATA/DETAILED_RESULTS/ozone_total_air_mass_factor_trueness[]";
+    harp_variable_definition_add_mapping(variable_definition, NULL, "NRTI", path, NULL);
 
     /* cloud_base_height */
     description = "cloud base height calculated using the OCRA/ROCINN CAL model";
@@ -4354,72 +4421,6 @@ static void register_o3_product(void)
 
     register_surface_variables(product_definition);
     register_snow_ice_flag_variables(product_definition, 1);
-
-    /* pressure_bounds */
-    description = "pressure bounds per profile layer";
-    variable_definition =
-        harp_ingestion_register_variable_full_read(product_definition, "pressure_bounds", harp_type_float, 3,
-                                                   dimension_type, dimension, description, "Pa", NULL,
-                                                   read_results_pressure_bounds);
-    path = "/PRODUCT/SUPPORT_DATA/DETAILED_RESULTS/pressure_grid[]";
-    description = "derived from pressure per level (layer boundary) by repeating the inner levels; "
-        "the upper bound of layer k is equal to the lower bound of layer k+1";
-    harp_variable_definition_add_mapping(variable_definition, NULL, NULL, path, description);
-
-    /* O3_column_number_density */
-    description = "O3 column number density";
-    variable_definition =
-        harp_ingestion_register_variable_full_read(product_definition, "O3_column_number_density", harp_type_float, 1,
-                                                   dimension_type, NULL, description, "mol/m^2", NULL,
-                                                   read_product_ozone_total_vertical_column);
-    path = "/PRODUCT/ozone_total_vertical_column[]";
-    harp_variable_definition_add_mapping(variable_definition, NULL, NULL, path, NULL);
-
-    /* O3_column_number_density_uncertainty */
-    description = "uncertainty of the O3 column number density";
-    variable_definition =
-        harp_ingestion_register_variable_full_read(product_definition, "O3_column_number_density_uncertainty",
-                                                   harp_type_float, 1, dimension_type, NULL, description, "mol/m^2",
-                                                   NULL, read_product_ozone_total_vertical_column_precision);
-    path = "/PRODUCT/ozone_total_vertical_column_precision[]";
-    harp_variable_definition_add_mapping(variable_definition, NULL, NULL, path, NULL);
-
-    /* O3_column_number_density_apriori */
-    description = "O3 column number density apriori";
-    variable_definition =
-        harp_ingestion_register_variable_full_read(product_definition, "O3_column_number_density_apriori",
-                                                   harp_type_float, 2, dimension_type, NULL, description, "mol/m^2",
-                                                   NULL, read_results_ozone_profile_apriori);
-    path = "/PRODUCT/SUPPORT_DATA/DETAILED_RESULTS/ozone_profile_apriori[]";
-    harp_variable_definition_add_mapping(variable_definition, NULL, NULL, path, NULL);
-
-    /* O3_column_number_density_avk */
-    description = "averaging kernel for the O3 column number density";
-    variable_definition =
-        harp_ingestion_register_variable_full_read(product_definition, "O3_column_number_density_avk", harp_type_float,
-                                                   2, dimension_type, NULL, description, HARP_UNIT_DIMENSIONLESS, NULL,
-                                                   read_results_averaging_kernel_1d);
-    path = "/PRODUCT/SUPPORT_DATA/DETAILED_RESULTS/averaging_kernel[]";
-    harp_variable_definition_add_mapping(variable_definition, NULL, NULL, path, NULL);
-
-    /* O3_column_number_density_amf */
-    description = "O3 column number density total air mass factor";
-    variable_definition =
-        harp_ingestion_register_variable_full_read(product_definition, "O3_column_number_density_amf", harp_type_float,
-                                                   1, dimension_type, NULL, description, HARP_UNIT_DIMENSIONLESS,
-                                                   exclude_non_nrti, read_results_ozone_total_air_mass_factor);
-    path = "/PRODUCT/SUPPORT_DATA/DETAILED_RESULTS/ozone_total_air_mass_factor[]";
-    harp_variable_definition_add_mapping(variable_definition, NULL, "NRTI", path, NULL);
-
-    /* O3_column_number_density_amf_uncertainty */
-    description = "uncertainty of the O3 column number density total air mass factor";
-    variable_definition =
-        harp_ingestion_register_variable_full_read(product_definition, "O3_column_number_density_amf_uncertainty",
-                                                   harp_type_float, 1, dimension_type, NULL, description,
-                                                   HARP_UNIT_DIMENSIONLESS, exclude_non_nrti,
-                                                   read_results_ozone_total_air_mass_factor_trueness);
-    path = "/PRODUCT/SUPPORT_DATA/DETAILED_RESULTS/ozone_total_air_mass_factor_trueness[]";
-    harp_variable_definition_add_mapping(variable_definition, NULL, "NRTI", path, NULL);
 }
 
 static void register_o3_profile_variables(harp_product_definition *product_definition)
@@ -4429,33 +4430,6 @@ static void register_o3_profile_variables(harp_product_definition *product_defin
     harp_variable_definition *variable_definition;
     harp_dimension_type dimension_type[3] = { harp_dimension_time, harp_dimension_vertical, harp_dimension_vertical };
 
-    /* cloud_pressure */
-    description = "air pressure at cloud optical centroid";
-    variable_definition =
-        harp_ingestion_register_variable_full_read(product_definition, "cloud_pressure", harp_type_float, 1,
-                                                   dimension_type, NULL, description, "Pa", NULL,
-                                                   read_input_cloud_pressure_crb);
-    path = "/PRODUCT/SUPPORT_DATA/INPUT_DATA/cloud_pressure_crb[]";
-    harp_variable_definition_add_mapping(variable_definition, NULL, NULL, path, NULL);
-
-    /* cloud_fraction */
-    description = "effective wavelenght-dependent cloud fraction";
-    variable_definition =
-        harp_ingestion_register_variable_full_read(product_definition, "cloud_fraction", harp_type_float, 1,
-                                                   dimension_type, NULL, description, HARP_UNIT_DIMENSIONLESS, NULL,
-                                                   read_results_cloud_fraction_crb);
-    path = "/PRODUCT/SUPPORT_DATA/DETAILED_RESULTS/cloud_fraction_crb[]";
-    harp_variable_definition_add_mapping(variable_definition, NULL, NULL, path, NULL);
-
-    /* cloud_fraction_uncertainty */
-    description = "precision of the effective wavelenght-dependent cloud fraction";
-    variable_definition =
-        harp_ingestion_register_variable_full_read(product_definition, "cloud_fraction_uncertainty", harp_type_float, 1,
-                                                   dimension_type, NULL, description, HARP_UNIT_DIMENSIONLESS, NULL,
-                                                   read_results_cloud_fraction_crb_precision);
-    path = "/PRODUCT/SUPPORT_DATA/DETAILED_RESULTS/cloud_fraction_crb_precision[]";
-    harp_variable_definition_add_mapping(variable_definition, NULL, NULL, path, NULL);
-
     /* pressure */
     description = "pressure";
     variable_definition =
@@ -4464,30 +4438,12 @@ static void register_o3_profile_variables(harp_product_definition *product_defin
     path = "/PRODUCT/SUPPORT_DATA/INPUT_DATA/pressure[]";
     harp_variable_definition_add_mapping(variable_definition, NULL, NULL, path, NULL);
 
-    /* tropopause_pressure */
-    description = "tropopause pressure";
-    variable_definition =
-        harp_ingestion_register_variable_full_read(product_definition, "tropopause_pressure", harp_type_float, 1,
-                                                   dimension_type, NULL, description, "Pa", NULL,
-                                                   read_input_pressure_at_tropopause);
-    path = "/PRODUCT/SUPPORT_DATA/INPUT_DATA/pressure_at_tropopause[]";
-    harp_variable_definition_add_mapping(variable_definition, NULL, NULL, path, NULL);
-
     /* altitude */
     description = "altitude";
     variable_definition =
         harp_ingestion_register_variable_full_read(product_definition, "altitude", harp_type_float, 2, dimension_type,
                                                    NULL, description, "m", NULL, read_input_altitude);
     path = "/PRODUCT/SUPPORT_DATA/INPUT_DATA/altitude[]";
-    harp_variable_definition_add_mapping(variable_definition, NULL, NULL, path, NULL);
-
-    /* temperature */
-    description = "temperature";
-    variable_definition =
-        harp_ingestion_register_variable_full_read(product_definition, "temperature", harp_type_float, 2,
-                                                   dimension_type, NULL, description, "K", NULL,
-                                                   read_input_temperature);
-    path = "/PRODUCT/SUPPORT_DATA/INPUT_DATA/temperature[]";
     harp_variable_definition_add_mapping(variable_definition, NULL, NULL, path, NULL);
 
     /* O3_volume_mixing_ratio */
@@ -4582,6 +4538,51 @@ static void register_o3_profile_variables(harp_product_definition *product_defin
                                                    1, dimension_type, NULL, description, "mol/m^2", NULL,
                                                    read_product_ozone_tropospheric_column_precision);
     path = "/PRODUCT/ozone_tropospheric_column_precision[]";
+    harp_variable_definition_add_mapping(variable_definition, NULL, NULL, path, NULL);
+
+    /* cloud_pressure */
+    description = "air pressure at cloud optical centroid";
+    variable_definition =
+        harp_ingestion_register_variable_full_read(product_definition, "cloud_pressure", harp_type_float, 1,
+                                                   dimension_type, NULL, description, "Pa", NULL,
+                                                   read_input_cloud_pressure_crb);
+    path = "/PRODUCT/SUPPORT_DATA/INPUT_DATA/cloud_pressure_crb[]";
+    harp_variable_definition_add_mapping(variable_definition, NULL, NULL, path, NULL);
+
+    /* cloud_fraction */
+    description = "effective wavelenght-dependent cloud fraction";
+    variable_definition =
+        harp_ingestion_register_variable_full_read(product_definition, "cloud_fraction", harp_type_float, 1,
+                                                   dimension_type, NULL, description, HARP_UNIT_DIMENSIONLESS, NULL,
+                                                   read_results_cloud_fraction_crb);
+    path = "/PRODUCT/SUPPORT_DATA/DETAILED_RESULTS/cloud_fraction_crb[]";
+    harp_variable_definition_add_mapping(variable_definition, NULL, NULL, path, NULL);
+
+    /* cloud_fraction_uncertainty */
+    description = "precision of the effective wavelenght-dependent cloud fraction";
+    variable_definition =
+        harp_ingestion_register_variable_full_read(product_definition, "cloud_fraction_uncertainty", harp_type_float, 1,
+                                                   dimension_type, NULL, description, HARP_UNIT_DIMENSIONLESS, NULL,
+                                                   read_results_cloud_fraction_crb_precision);
+    path = "/PRODUCT/SUPPORT_DATA/DETAILED_RESULTS/cloud_fraction_crb_precision[]";
+    harp_variable_definition_add_mapping(variable_definition, NULL, NULL, path, NULL);
+
+    /* tropopause_pressure */
+    description = "tropopause pressure";
+    variable_definition =
+        harp_ingestion_register_variable_full_read(product_definition, "tropopause_pressure", harp_type_float, 1,
+                                                   dimension_type, NULL, description, "Pa", NULL,
+                                                   read_input_pressure_at_tropopause);
+    path = "/PRODUCT/SUPPORT_DATA/INPUT_DATA/pressure_at_tropopause[]";
+    harp_variable_definition_add_mapping(variable_definition, NULL, NULL, path, NULL);
+
+    /* temperature */
+    description = "temperature";
+    variable_definition =
+        harp_ingestion_register_variable_full_read(product_definition, "temperature", harp_type_float, 2,
+                                                   dimension_type, NULL, description, "K", NULL,
+                                                   read_input_temperature);
+    path = "/PRODUCT/SUPPORT_DATA/INPUT_DATA/temperature[]";
     harp_variable_definition_add_mapping(variable_definition, NULL, NULL, path, NULL);
 }
 
@@ -4768,56 +4769,6 @@ static void register_no2_product(void)
     register_geolocation_variables(product_definition);
     register_additional_geolocation_variables(product_definition);
 
-    /* cloud_fraction */
-    description = "cloud fraction for NO2 fitting window";
-    variable_definition =
-        harp_ingestion_register_variable_full_read(product_definition, "cloud_fraction", harp_type_float, 1,
-                                                   dimension_type, NULL, description, HARP_UNIT_DIMENSIONLESS, NULL,
-                                                   read_results_cloud_fraction_nitrogendioxide_window);
-    path = "/PRODUCT/SUPPORT_DATA/DETAILED_RESULTS/cloud_fraction_crb_nitrogendioxide_window[]";
-    harp_variable_definition_add_mapping(variable_definition, "cloud_fraction unset", NULL, path, NULL);
-    path = "/PRODUCT/SUPPORT_DATA/DETAILED_RESULTS/cloud_radiance_fraction_nitrogendioxide_window[]";
-    harp_variable_definition_add_mapping(variable_definition, "cloud_fraction=radiance", NULL, path, NULL);
-
-    /* absorbing_aerosol_index */
-    description = "aerosol index";
-    variable_definition =
-        harp_ingestion_register_variable_full_read(product_definition, "absorbing_aerosol_index", harp_type_float, 1,
-                                                   dimension_type, NULL, description, HARP_UNIT_DIMENSIONLESS, NULL,
-                                                   read_input_aerosol_index_354_388);
-    path = "/PRODUCT/SUPPORT_DATA/INPUT_DATA/aerosol_index_354_388";
-    harp_variable_definition_add_mapping(variable_definition, NULL, NULL, path, NULL);
-
-    /* cloud_albedo */
-    description = "cloud albedo";
-    variable_definition =
-        harp_ingestion_register_variable_full_read(product_definition, "cloud_albedo", harp_type_float, 1,
-                                                   dimension_type, NULL, description, HARP_UNIT_DIMENSIONLESS, NULL,
-                                                   read_input_cloud_albedo_crb);
-    path = "/PRODUCT/SUPPORT_DATA/INPUT_DATA/cloud_albedo_crb";
-    harp_variable_definition_add_mapping(variable_definition, NULL, NULL, path, NULL);
-
-    /* cloud_pressure */
-    description = "cloud pressure";
-    variable_definition =
-        harp_ingestion_register_variable_full_read(product_definition, "cloud_pressure", harp_type_float, 1,
-                                                   dimension_type, NULL, description, "Pa", NULL,
-                                                   read_input_cloud_pressure_crb);
-    path = "/PRODUCT/SUPPORT_DATA/INPUT_DATA/cloud_pressure_crb";
-    harp_variable_definition_add_mapping(variable_definition, NULL, NULL, path, NULL);
-
-    /* surface_albedo */
-    description = "surface albedo";
-    variable_definition =
-        harp_ingestion_register_variable_full_read(product_definition, "surface_albedo", harp_type_float, 1,
-                                                   dimension_type, NULL, description, HARP_UNIT_DIMENSIONLESS, NULL,
-                                                   read_input_surface_albedo_nitrogendioxide_window);
-    path = "/PRODUCT/SUPPORT_DATA/INPUT_DATA/surface_albedo_nitrogendioxide_window";
-    harp_variable_definition_add_mapping(variable_definition, NULL, NULL, path, NULL);
-
-    register_surface_variables(product_definition);
-    register_snow_ice_flag_variables(product_definition, 0);
-
     /* pressure_bounds */
     description = "pressure boundaries";
     variable_definition =
@@ -4827,18 +4778,6 @@ static void register_no2_product(void)
     path = "/PRODUCT/tm5_constant_a[], /PRODUCT/tm5_constant_b[], /PRODUCT/SUPPORT_DATA/INPUT_DATA/surface_pressure[]";
     description = "pressure in Pa at level k is derived from surface pressure in Pa as: tm5_constant_a[k] + "
         "tm5_constant_b[k] * surface_pressure[]; the top of atmosphere pressure is clamped to 1e-3 Pa";
-    harp_variable_definition_add_mapping(variable_definition, NULL, NULL, path, description);
-
-    /* tropopause_pressure */
-    description = "tropopause pressure";
-    variable_definition = harp_ingestion_register_variable_full_read(product_definition, "tropopause_pressure",
-                                                                     harp_type_double, 1, dimension_type, NULL,
-                                                                     description, "Pa", NULL,
-                                                                     read_no2_tropopause_pressure);
-    path = "/PRODUCT/tm5_constant_a[], /PRODUCT/tm5_constant_b[], /PRODUCT/tm5_tropopause_layer_index[], "
-        "/PRODUCT/SUPPORT_DATA/INPUT_DATA/surface_pressure[]";
-    description = "pressure in Pa at tropause is derived from the upper bound of the layer with tropopause layer index "
-        "k: tm5_constant_a[k + 1] + tm5_constant_b[k + 1] * surface_pressure[]";
     harp_variable_definition_add_mapping(variable_definition, NULL, NULL, path, description);
 
     /* tropospheric_NO2_column_number_density */
@@ -4967,6 +4906,68 @@ static void register_no2_product(void)
     description = "averaging_kernel[layer] = if layer > tm5_tropopause_layer_index then "
         "averaging_kernel[layer] * air_mass_factor_total / air_mass_factor_stratosphere else 0";
     harp_variable_definition_add_mapping(variable_definition, NULL, NULL, path, description);
+
+    /* cloud_fraction */
+    description = "cloud fraction for NO2 fitting window";
+    variable_definition =
+        harp_ingestion_register_variable_full_read(product_definition, "cloud_fraction", harp_type_float, 1,
+                                                   dimension_type, NULL, description, HARP_UNIT_DIMENSIONLESS, NULL,
+                                                   read_results_cloud_fraction_nitrogendioxide_window);
+    path = "/PRODUCT/SUPPORT_DATA/DETAILED_RESULTS/cloud_fraction_crb_nitrogendioxide_window[]";
+    harp_variable_definition_add_mapping(variable_definition, "cloud_fraction unset", NULL, path, NULL);
+    path = "/PRODUCT/SUPPORT_DATA/DETAILED_RESULTS/cloud_radiance_fraction_nitrogendioxide_window[]";
+    harp_variable_definition_add_mapping(variable_definition, "cloud_fraction=radiance", NULL, path, NULL);
+
+    /* absorbing_aerosol_index */
+    description = "aerosol index";
+    variable_definition =
+        harp_ingestion_register_variable_full_read(product_definition, "absorbing_aerosol_index", harp_type_float, 1,
+                                                   dimension_type, NULL, description, HARP_UNIT_DIMENSIONLESS, NULL,
+                                                   read_input_aerosol_index_354_388);
+    path = "/PRODUCT/SUPPORT_DATA/INPUT_DATA/aerosol_index_354_388";
+    harp_variable_definition_add_mapping(variable_definition, NULL, NULL, path, NULL);
+
+    /* cloud_albedo */
+    description = "cloud albedo";
+    variable_definition =
+        harp_ingestion_register_variable_full_read(product_definition, "cloud_albedo", harp_type_float, 1,
+                                                   dimension_type, NULL, description, HARP_UNIT_DIMENSIONLESS, NULL,
+                                                   read_input_cloud_albedo_crb);
+    path = "/PRODUCT/SUPPORT_DATA/INPUT_DATA/cloud_albedo_crb";
+    harp_variable_definition_add_mapping(variable_definition, NULL, NULL, path, NULL);
+
+    /* cloud_pressure */
+    description = "cloud pressure";
+    variable_definition =
+        harp_ingestion_register_variable_full_read(product_definition, "cloud_pressure", harp_type_float, 1,
+                                                   dimension_type, NULL, description, "Pa", NULL,
+                                                   read_input_cloud_pressure_crb);
+    path = "/PRODUCT/SUPPORT_DATA/INPUT_DATA/cloud_pressure_crb";
+    harp_variable_definition_add_mapping(variable_definition, NULL, NULL, path, NULL);
+
+    /* surface_albedo */
+    description = "surface albedo";
+    variable_definition =
+        harp_ingestion_register_variable_full_read(product_definition, "surface_albedo", harp_type_float, 1,
+                                                   dimension_type, NULL, description, HARP_UNIT_DIMENSIONLESS, NULL,
+                                                   read_input_surface_albedo_nitrogendioxide_window);
+    path = "/PRODUCT/SUPPORT_DATA/INPUT_DATA/surface_albedo_nitrogendioxide_window";
+    harp_variable_definition_add_mapping(variable_definition, NULL, NULL, path, NULL);
+
+    register_surface_variables(product_definition);
+    register_snow_ice_flag_variables(product_definition, 0);
+
+    /* tropopause_pressure */
+    description = "tropopause pressure";
+    variable_definition = harp_ingestion_register_variable_full_read(product_definition, "tropopause_pressure",
+                                                                     harp_type_double, 1, dimension_type, NULL,
+                                                                     description, "Pa", NULL,
+                                                                     read_no2_tropopause_pressure);
+    path = "/PRODUCT/tm5_constant_a[], /PRODUCT/tm5_constant_b[], /PRODUCT/tm5_tropopause_layer_index[], "
+        "/PRODUCT/SUPPORT_DATA/INPUT_DATA/surface_pressure[]";
+    description = "pressure in Pa at tropause is derived from the upper bound of the layer with tropopause layer index "
+        "k: tm5_constant_a[k + 1] + tm5_constant_b[k + 1] * surface_pressure[]";
+    harp_variable_definition_add_mapping(variable_definition, NULL, NULL, path, description);
 }
 
 static void register_so2_product(void)
@@ -4996,23 +4997,6 @@ static void register_so2_product(void)
     register_core_variables(product_definition, s5p_delta_time_num_dims[s5p_type_so2]);
     register_geolocation_variables(product_definition);
     register_additional_geolocation_variables(product_definition);
-
-    register_cloud_variables(product_definition);
-
-    /* surface_albedo */
-    description = "surface albedo";
-    variable_definition =
-        harp_ingestion_register_variable_full_read(product_definition, "surface_albedo", harp_type_float, 1,
-                                                   dimension_type, NULL, description, HARP_UNIT_DIMENSIONLESS, NULL,
-                                                   read_so2_surface_albedo);
-    path = "/PRODUCT/SUPPORT_DATA/INPUT_DATA/surface_albedo_328nm, "
-        "/PRODUCT/SUPPORT_DATA/INPUT_DATA/surface_albedo_376nm, "
-        "/PRODUCT/SUPPORT_DATA/DETAILED_RESULTS/selected_fitting_window_flag";
-    description = "if selected_fitting_window_flag is 1 or 2 then use surface_albedo_328, if "
-        "selected_fitting_window_flag is 3 then use surface_albedo_376, else set to NaN";
-    harp_variable_definition_add_mapping(variable_definition, NULL, NULL, path, description);
-
-    register_surface_variables(product_definition);
 
     /* pressure */
     description = "pressure";
@@ -5155,6 +5139,23 @@ static void register_so2_product(void)
                                                    NULL, read_input_ozone_total_vertical_column_precision);
     path = "/PRODUCT/SUPPORT_DATA/INPUT_DATA/ozone_total_vertical_column_precision[]";
     harp_variable_definition_add_mapping(variable_definition, NULL, NULL, path, NULL);
+
+    register_cloud_variables(product_definition);
+
+    /* surface_albedo */
+    description = "surface albedo";
+    variable_definition =
+        harp_ingestion_register_variable_full_read(product_definition, "surface_albedo", harp_type_float, 1,
+                                                   dimension_type, NULL, description, HARP_UNIT_DIMENSIONLESS, NULL,
+                                                   read_so2_surface_albedo);
+    path = "/PRODUCT/SUPPORT_DATA/INPUT_DATA/surface_albedo_328nm, "
+        "/PRODUCT/SUPPORT_DATA/INPUT_DATA/surface_albedo_376nm, "
+        "/PRODUCT/SUPPORT_DATA/DETAILED_RESULTS/selected_fitting_window_flag";
+    description = "if selected_fitting_window_flag is 1 or 2 then use surface_albedo_328, if "
+        "selected_fitting_window_flag is 3 then use surface_albedo_376, else set to NaN";
+    harp_variable_definition_add_mapping(variable_definition, NULL, NULL, path, description);
+
+    register_surface_variables(product_definition);
 }
 
 static void register_cloud_cal_variables(harp_product_definition *product_definition)

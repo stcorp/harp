@@ -272,150 +272,6 @@
 <td>[degree]</td>
 <td>azimuth angle of the satellite at the ground pixel location (WGS84); angle measured East-of-North</td>
 </tr>
-<tr class="row-even"><td><strong>cloud_base_height</strong></td>
-<td>float</td>
-<td>{<em>time</em>}</td>
-<td>[m]</td>
-<td>cloud base height calculated using the OCRA/ROCINN CAL model</td>
-</tr>
-<tr class="row-odd"><td><strong>cloud_base_height_uncertainty</strong></td>
-<td>float</td>
-<td>{<em>time</em>}</td>
-<td>[m]</td>
-<td>error of the cloud base height calculated using the OCRA/ROCINN CAL model</td>
-</tr>
-<tr class="row-even"><td><strong>cloud_base_pressure</strong></td>
-<td>float</td>
-<td>{<em>time</em>}</td>
-<td>[Pa]</td>
-<td>cloud base pressure calculated using the OCRA/ROCINN CAL model</td>
-</tr>
-<tr class="row-odd"><td><strong>cloud_base_pressure_uncertainty</strong></td>
-<td>float</td>
-<td>{<em>time</em>}</td>
-<td>[Pa]</td>
-<td>error of the cloud base pressure calculated using the OCRA/ROCINN CAL model</td>
-</tr>
-<tr class="row-even"><td><strong>cloud_fraction</strong></td>
-<td>float</td>
-<td>{<em>time</em>}</td>
-<td>[]</td>
-<td>cloud fraction from either the OCRA/ROCINN CAL or CRB model</td>
-</tr>
-<tr class="row-odd"><td><strong>cloud_fraction_uncertainty</strong></td>
-<td>float</td>
-<td>{<em>time</em>}</td>
-<td>[]</td>
-<td>uncertainty of the cloud fraction</td>
-</tr>
-<tr class="row-even"><td><strong>cloud_optical_depth</strong></td>
-<td>float</td>
-<td>{<em>time</em>}</td>
-<td>[m]</td>
-<td>retrieved cloud optical depth using the OCRA/ROCINN CAL model</td>
-</tr>
-<tr class="row-odd"><td><strong>cloud_optical_depth_uncertainty</strong></td>
-<td>float</td>
-<td>{<em>time</em>}</td>
-<td>[m]</td>
-<td>uncertainty of the retrieved cloud optical depth using the OCRA/ROCINN CAL model</td>
-</tr>
-<tr class="row-even"><td><strong>cloud_top_pressure</strong></td>
-<td>float</td>
-<td>{<em>time</em>}</td>
-<td>[Pa]</td>
-<td>retrieved atmospheric pressure at the level of cloud top using the OCRA/ROCINN CAL model</td>
-</tr>
-<tr class="row-odd"><td><strong>cloud_top_pressure_uncertainty</strong></td>
-<td>float</td>
-<td>{<em>time</em>}</td>
-<td>[Pa]</td>
-<td>uncertainty of the retrieved atmospheric pressure at the level of cloud top using the OCRA/ROCINN CAL model</td>
-</tr>
-<tr class="row-even"><td><strong>cloud_top_height</strong></td>
-<td>float</td>
-<td>{<em>time</em>}</td>
-<td>[m]</td>
-<td>retrieved vertical distance above the surface of the cloud top using the OCRA/ROCINN CAL model</td>
-</tr>
-<tr class="row-odd"><td><strong>cloud_top_height_uncertainty</strong></td>
-<td>float</td>
-<td>{<em>time</em>}</td>
-<td>[m]</td>
-<td>uncertainty of the retrieved vertical distance above the surface of the cloud top using the OCRA/ROCINN CAL model</td>
-</tr>
-<tr class="row-even"><td><strong>cloud_albedo</strong></td>
-<td>float</td>
-<td>{<em>time</em>}</td>
-<td>[]</td>
-<td>albedo of cloud using the OCRA/ROCINN CRB model</td>
-</tr>
-<tr class="row-odd"><td><strong>cloud_albedo_uncertainty</strong></td>
-<td>float</td>
-<td>{<em>time</em>}</td>
-<td>[]</td>
-<td>uncertainty of the albedo of cloud using the OCRA/ROCINN CRB model</td>
-</tr>
-<tr class="row-even"><td><strong>cloud_height</strong></td>
-<td>float</td>
-<td>{<em>time</em>}</td>
-<td>[m]</td>
-<td>retrieved atmospheric height at the level of cloud using the OCRA/ROCINN CRB model</td>
-</tr>
-<tr class="row-odd"><td><strong>cloud_height_uncertainty</strong></td>
-<td>float</td>
-<td>{<em>time</em>}</td>
-<td>[m]</td>
-<td>error of the retrieved atmospheric height at the level of cloud using the OCRA/ROCINN CRB model</td>
-</tr>
-<tr class="row-even"><td><strong>cloud_pressure</strong></td>
-<td>float</td>
-<td>{<em>time</em>}</td>
-<td>[Pa]</td>
-<td>retrieved atmospheric pressure at the level of cloud using the OCRA/ROCINN CRB model</td>
-</tr>
-<tr class="row-odd"><td><strong>cloud_pressure_uncertainty</strong></td>
-<td>float</td>
-<td>{<em>time</em>}</td>
-<td>[Pa]</td>
-<td>error of the retrieved atmospheric pressure at the level of cloud using the OCRA/ROCINN CRB model</td>
-</tr>
-<tr class="row-even"><td><strong>surface_albedo</strong></td>
-<td>float</td>
-<td>{<em>time</em>}</td>
-<td>[]</td>
-<td>surface albedo</td>
-</tr>
-<tr class="row-odd"><td><strong>surface_altitude</strong></td>
-<td>float</td>
-<td>{<em>time</em>}</td>
-<td>[m]</td>
-<td>surface altitude</td>
-</tr>
-<tr class="row-even"><td><strong>surface_altitude_uncertainty</strong></td>
-<td>float</td>
-<td>{<em>time</em>}</td>
-<td>[m]</td>
-<td>surface altitude precision</td>
-</tr>
-<tr class="row-odd"><td><strong>surface_pressure</strong></td>
-<td>float</td>
-<td>{<em>time</em>}</td>
-<td>[Pa]</td>
-<td>surface pressure</td>
-</tr>
-<tr class="row-even"><td><strong>snow_ice_type</strong></td>
-<td>int8</td>
-<td>{<em>time</em>}</td>
-<td>&#160;</td>
-<td>surface snow/ice type; enumeration values: snow_free_land (0), sea_ice (1), permanent_ice (2), snow (3), ocean (4)</td>
-</tr>
-<tr class="row-odd"><td><strong>sea_ice_fraction</strong></td>
-<td>float</td>
-<td>{<em>time</em>}</td>
-<td>[]</td>
-<td>sea-ice concentration (as a fraction)</td>
-</tr>
 <tr class="row-even"><td><strong>pressure_bounds</strong></td>
 <td>float</td>
 <td>{<em>time</em>, <em>vertical</em>, 2}</td>
@@ -457,6 +313,150 @@
 <td>{<em>time</em>}</td>
 <td>[]</td>
 <td>uncertainty of the O3 column number density total air mass factor</td>
+</tr>
+<tr class="row-odd"><td><strong>cloud_base_height</strong></td>
+<td>float</td>
+<td>{<em>time</em>}</td>
+<td>[m]</td>
+<td>cloud base height calculated using the OCRA/ROCINN CAL model</td>
+</tr>
+<tr class="row-even"><td><strong>cloud_base_height_uncertainty</strong></td>
+<td>float</td>
+<td>{<em>time</em>}</td>
+<td>[m]</td>
+<td>error of the cloud base height calculated using the OCRA/ROCINN CAL model</td>
+</tr>
+<tr class="row-odd"><td><strong>cloud_base_pressure</strong></td>
+<td>float</td>
+<td>{<em>time</em>}</td>
+<td>[Pa]</td>
+<td>cloud base pressure calculated using the OCRA/ROCINN CAL model</td>
+</tr>
+<tr class="row-even"><td><strong>cloud_base_pressure_uncertainty</strong></td>
+<td>float</td>
+<td>{<em>time</em>}</td>
+<td>[Pa]</td>
+<td>error of the cloud base pressure calculated using the OCRA/ROCINN CAL model</td>
+</tr>
+<tr class="row-odd"><td><strong>cloud_fraction</strong></td>
+<td>float</td>
+<td>{<em>time</em>}</td>
+<td>[]</td>
+<td>cloud fraction from either the OCRA/ROCINN CAL or CRB model</td>
+</tr>
+<tr class="row-even"><td><strong>cloud_fraction_uncertainty</strong></td>
+<td>float</td>
+<td>{<em>time</em>}</td>
+<td>[]</td>
+<td>uncertainty of the cloud fraction</td>
+</tr>
+<tr class="row-odd"><td><strong>cloud_optical_depth</strong></td>
+<td>float</td>
+<td>{<em>time</em>}</td>
+<td>[m]</td>
+<td>retrieved cloud optical depth using the OCRA/ROCINN CAL model</td>
+</tr>
+<tr class="row-even"><td><strong>cloud_optical_depth_uncertainty</strong></td>
+<td>float</td>
+<td>{<em>time</em>}</td>
+<td>[m]</td>
+<td>uncertainty of the retrieved cloud optical depth using the OCRA/ROCINN CAL model</td>
+</tr>
+<tr class="row-odd"><td><strong>cloud_top_pressure</strong></td>
+<td>float</td>
+<td>{<em>time</em>}</td>
+<td>[Pa]</td>
+<td>retrieved atmospheric pressure at the level of cloud top using the OCRA/ROCINN CAL model</td>
+</tr>
+<tr class="row-even"><td><strong>cloud_top_pressure_uncertainty</strong></td>
+<td>float</td>
+<td>{<em>time</em>}</td>
+<td>[Pa]</td>
+<td>uncertainty of the retrieved atmospheric pressure at the level of cloud top using the OCRA/ROCINN CAL model</td>
+</tr>
+<tr class="row-odd"><td><strong>cloud_top_height</strong></td>
+<td>float</td>
+<td>{<em>time</em>}</td>
+<td>[m]</td>
+<td>retrieved vertical distance above the surface of the cloud top using the OCRA/ROCINN CAL model</td>
+</tr>
+<tr class="row-even"><td><strong>cloud_top_height_uncertainty</strong></td>
+<td>float</td>
+<td>{<em>time</em>}</td>
+<td>[m]</td>
+<td>uncertainty of the retrieved vertical distance above the surface of the cloud top using the OCRA/ROCINN CAL model</td>
+</tr>
+<tr class="row-odd"><td><strong>cloud_albedo</strong></td>
+<td>float</td>
+<td>{<em>time</em>}</td>
+<td>[]</td>
+<td>albedo of cloud using the OCRA/ROCINN CRB model</td>
+</tr>
+<tr class="row-even"><td><strong>cloud_albedo_uncertainty</strong></td>
+<td>float</td>
+<td>{<em>time</em>}</td>
+<td>[]</td>
+<td>uncertainty of the albedo of cloud using the OCRA/ROCINN CRB model</td>
+</tr>
+<tr class="row-odd"><td><strong>cloud_height</strong></td>
+<td>float</td>
+<td>{<em>time</em>}</td>
+<td>[m]</td>
+<td>retrieved atmospheric height at the level of cloud using the OCRA/ROCINN CRB model</td>
+</tr>
+<tr class="row-even"><td><strong>cloud_height_uncertainty</strong></td>
+<td>float</td>
+<td>{<em>time</em>}</td>
+<td>[m]</td>
+<td>error of the retrieved atmospheric height at the level of cloud using the OCRA/ROCINN CRB model</td>
+</tr>
+<tr class="row-odd"><td><strong>cloud_pressure</strong></td>
+<td>float</td>
+<td>{<em>time</em>}</td>
+<td>[Pa]</td>
+<td>retrieved atmospheric pressure at the level of cloud using the OCRA/ROCINN CRB model</td>
+</tr>
+<tr class="row-even"><td><strong>cloud_pressure_uncertainty</strong></td>
+<td>float</td>
+<td>{<em>time</em>}</td>
+<td>[Pa]</td>
+<td>error of the retrieved atmospheric pressure at the level of cloud using the OCRA/ROCINN CRB model</td>
+</tr>
+<tr class="row-odd"><td><strong>surface_albedo</strong></td>
+<td>float</td>
+<td>{<em>time</em>}</td>
+<td>[]</td>
+<td>surface albedo</td>
+</tr>
+<tr class="row-even"><td><strong>surface_altitude</strong></td>
+<td>float</td>
+<td>{<em>time</em>}</td>
+<td>[m]</td>
+<td>surface altitude</td>
+</tr>
+<tr class="row-odd"><td><strong>surface_altitude_uncertainty</strong></td>
+<td>float</td>
+<td>{<em>time</em>}</td>
+<td>[m]</td>
+<td>surface altitude precision</td>
+</tr>
+<tr class="row-even"><td><strong>surface_pressure</strong></td>
+<td>float</td>
+<td>{<em>time</em>}</td>
+<td>[Pa]</td>
+<td>surface pressure</td>
+</tr>
+<tr class="row-odd"><td><strong>snow_ice_type</strong></td>
+<td>int8</td>
+<td>{<em>time</em>}</td>
+<td>&#160;</td>
+<td>surface snow/ice type; enumeration values: snow_free_land (0), sea_ice (1), permanent_ice (2), snow (3), ocean (4)</td>
+</tr>
+<tr class="row-even"><td><strong>sea_ice_fraction</strong></td>
+<td>float</td>
+<td>{<em>time</em>}</td>
+<td>[]</td>
+<td>sea-ice concentration (as a fraction)</td>
 </tr>
 <tr class="row-odd"><td><strong>index</strong></td>
 <td>int32</td>
@@ -563,6 +563,49 @@
 <tr class="row-odd"><td><strong>sensor_azimuth_angle</strong></td>
 <td><em>path</em></td>
 <td><strong>/PRODUCT/SUPPORT_DATA/GEOLOCATIONS/viewing_azimuth_angle[]</strong></td>
+</tr>
+<tr class="row-even"><td rowspan="2"><strong>pressure_bounds</strong></td>
+<td><em>path</em></td>
+<td><strong>/PRODUCT/SUPPORT_DATA/DETAILED_RESULTS/pressure_grid[]</strong></td>
+</tr>
+<tr class="row-odd"><td><em>description</em></td>
+<td>derived from pressure per level (layer boundary) by repeating the inner levels; the upper bound of layer k is equal to the lower bound of layer k+1</td>
+</tr>
+<tr class="row-even"><td><strong>O3_column_number_density</strong></td>
+<td><em>path</em></td>
+<td><strong>/PRODUCT/ozone_total_vertical_column[]</strong></td>
+</tr>
+<tr class="row-odd"><td><strong>O3_column_number_density_uncertainty</strong></td>
+<td><em>path</em></td>
+<td><strong>/PRODUCT/ozone_total_vertical_column_precision[]</strong></td>
+</tr>
+<tr class="row-even"><td><strong>O3_column_number_density_apriori</strong></td>
+<td><em>path</em></td>
+<td><strong>/PRODUCT/SUPPORT_DATA/DETAILED_RESULTS/ozone_profile_apriori[]</strong></td>
+</tr>
+<tr class="row-odd"><td><strong>O3_column_number_density_avk</strong></td>
+<td><em>path</em></td>
+<td><strong>/PRODUCT/SUPPORT_DATA/DETAILED_RESULTS/averaging_kernel[]</strong></td>
+</tr>
+<tr class="row-even"><td rowspan="3"><strong>O3_column_number_density_amf</strong></td>
+<td><em>available</em></td>
+<td>optional</td>
+</tr>
+<tr class="row-odd"><td><em>condition</em></td>
+<td>NRTI</td>
+</tr>
+<tr class="row-even"><td><em>path</em></td>
+<td><strong>/PRODUCT/SUPPORT_DATA/DETAILED_RESULTS/ozone_total_air_mass_factor[]</strong></td>
+</tr>
+<tr class="row-odd"><td rowspan="3"><strong>O3_column_number_density_amf_uncertainty</strong></td>
+<td><em>available</em></td>
+<td>optional</td>
+</tr>
+<tr class="row-even"><td><em>condition</em></td>
+<td>NRTI</td>
+</tr>
+<tr class="row-odd"><td><em>path</em></td>
+<td><strong>/PRODUCT/SUPPORT_DATA/DETAILED_RESULTS/ozone_total_air_mass_factor_trueness[]</strong></td>
 </tr>
 <tr class="row-even"><td rowspan="3"><strong>cloud_base_height</strong></td>
 <td><em>available</em></td>
@@ -779,49 +822,6 @@
 </tr>
 <tr class="row-odd"><td><em>description</em></td>
 <td>if 1 &lt;= snow_ice_flag &lt;= 100 then snow_ice_flag/100.0 else 0.0</td>
-</tr>
-<tr class="row-even"><td rowspan="2"><strong>pressure_bounds</strong></td>
-<td><em>path</em></td>
-<td><strong>/PRODUCT/SUPPORT_DATA/DETAILED_RESULTS/pressure_grid[]</strong></td>
-</tr>
-<tr class="row-odd"><td><em>description</em></td>
-<td>derived from pressure per level (layer boundary) by repeating the inner levels; the upper bound of layer k is equal to the lower bound of layer k+1</td>
-</tr>
-<tr class="row-even"><td><strong>O3_column_number_density</strong></td>
-<td><em>path</em></td>
-<td><strong>/PRODUCT/ozone_total_vertical_column[]</strong></td>
-</tr>
-<tr class="row-odd"><td><strong>O3_column_number_density_uncertainty</strong></td>
-<td><em>path</em></td>
-<td><strong>/PRODUCT/ozone_total_vertical_column_precision[]</strong></td>
-</tr>
-<tr class="row-even"><td><strong>O3_column_number_density_apriori</strong></td>
-<td><em>path</em></td>
-<td><strong>/PRODUCT/SUPPORT_DATA/DETAILED_RESULTS/ozone_profile_apriori[]</strong></td>
-</tr>
-<tr class="row-odd"><td><strong>O3_column_number_density_avk</strong></td>
-<td><em>path</em></td>
-<td><strong>/PRODUCT/SUPPORT_DATA/DETAILED_RESULTS/averaging_kernel[]</strong></td>
-</tr>
-<tr class="row-even"><td rowspan="3"><strong>O3_column_number_density_amf</strong></td>
-<td><em>available</em></td>
-<td>optional</td>
-</tr>
-<tr class="row-odd"><td><em>condition</em></td>
-<td>NRTI</td>
-</tr>
-<tr class="row-even"><td><em>path</em></td>
-<td><strong>/PRODUCT/SUPPORT_DATA/DETAILED_RESULTS/ozone_total_air_mass_factor[]</strong></td>
-</tr>
-<tr class="row-odd"><td rowspan="3"><strong>O3_column_number_density_amf_uncertainty</strong></td>
-<td><em>available</em></td>
-<td>optional</td>
-</tr>
-<tr class="row-even"><td><em>condition</em></td>
-<td>NRTI</td>
-</tr>
-<tr class="row-odd"><td><em>path</em></td>
-<td><strong>/PRODUCT/SUPPORT_DATA/DETAILED_RESULTS/ozone_total_air_mass_factor_trueness[]</strong></td>
 </tr>
 </tbody>
 </table>
