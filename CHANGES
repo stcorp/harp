@@ -10,6 +10,9 @@
 
 * Added bin() operation variant without parameters.
 
+* The bin() operation using a collocation result file now retains the
+  collocation_index variable (with the first value for each bin).
+
 * Added -ap option to harpmerge.
 
 * Added --dataset option to harpdump and changed output format of

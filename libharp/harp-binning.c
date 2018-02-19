@@ -544,18 +544,42 @@ int harp_product_bin_with_collocated_dataset(harp_product *product, harp_colloca
         bin_index[i] = j;
     }
 
-    free(index);
+    if (harp_product_detach_variable(product, collocation_index) != 0)
+    {
+        harp_collocation_result_shallow_delete(filtered_collocation_result);
+        free(bin_index);
+        free(index);
+        return -1;
+    }
 
     if (harp_product_bin(product, num_bins, collocation_index->num_elements, bin_index) != 0)
     {
         harp_collocation_result_shallow_delete(filtered_collocation_result);
+        harp_variable_delete(collocation_index);
         free(bin_index);
+        free(index);
         return -1;
     }
 
-    /* cleanup */
+    if (harp_variable_rearrange_dimension(collocation_index, 0, num_bins, index) != 0)
+    {
+        harp_collocation_result_shallow_delete(filtered_collocation_result);
+        harp_variable_delete(collocation_index);
+        free(bin_index);
+        free(index);
+        return -1;
+    }
+
     harp_collocation_result_shallow_delete(filtered_collocation_result);
     free(bin_index);
+    free(index);
+
+    /* add filtered collocation_index back again */
+    if (harp_product_add_variable(product, collocation_index) != 0)
+    {
+        harp_variable_delete(collocation_index);
+        return -1;
+    }
 
     return 0;
 }
