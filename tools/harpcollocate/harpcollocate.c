@@ -137,9 +137,9 @@ static void print_help(void)
     printf("        The order in which -nx and -ny are provided determines the order in\n");
     printf("        which the nearest filters are executed.\n");
     printf("\n");
-    printf("    harpcollocate --update <inputpath> <path-a> <path-b> [<outputpath>]\n");
+    printf("    harpcollocate --update <inputpath> <datasetpath> [<outputpath>]\n");
     printf("        Update an existing collocation result file by checking the\n");
-    printf("        measurements in two sets of HARP files and only keeping pairs\n");
+    printf("        measurements in the given dataset and only keeping pairs\n");
     printf("        for which measurements still exist\n");
     printf("\n");
     printf("    harpcollocate -h, --help\n");

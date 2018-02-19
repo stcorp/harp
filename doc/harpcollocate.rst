@@ -81,9 +81,9 @@ HARP compliant netCDF files.
           The order in which -nx and -ny are provided determines the order in
           which the nearest filters are executed.
 
-      harpcollocate --update <inputpath> <path-a> <path-b> [<outputpath>]
+      harpcollocate --update <inputpath> <datasetpath> [<outputpath>]
           Update an existing collocation result file by checking the
-          measurements in two sets of HARP files and only keeping pairs
+          measurements in the given dataset and only keeping pairs
           for which measurements still exist
 
       harpcollocate -h, --help

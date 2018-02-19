@@ -76,8 +76,8 @@ static long get_index_for_collocation_index(const harp_collocation_result *collo
     return -1;
 }
 
-static int update_mask_for_product(const harp_collocation_result *collocation_result,
-                                   int is_dataset_a, const char *product_path, uint8_t *mask)
+static int update_mask_for_product(const harp_collocation_result *collocation_result, const char *product_path,
+                                   uint8_t *mask)
 {
     harp_product *product;
     harp_variable *collocation_index;
@@ -107,31 +107,14 @@ static int update_mask_for_product(const harp_collocation_result *collocation_re
             harp_product_delete(product);
             return -1;
         }
-        mask[index] |= is_dataset_a ? 1 : 2;
+        mask[index] = 1;
     }
 
     harp_product_delete(product);
     return 0;
 }
 
-static int update_mask(const harp_collocation_result *collocation_result, int is_dataset_a,
-                       const harp_dataset *dataset, uint8_t *mask)
-{
-    int i;
-
-    for (i = 0; i < dataset->num_products; i++)
-    {
-        if (update_mask_for_product(collocation_result, is_dataset_a, dataset->metadata[i]->filename, mask) != 0)
-        {
-            return -1;
-        }
-    }
-
-    return 0;
-}
-
-static int update_collocation_result(harp_collocation_result *collocation_result, harp_dataset *dataset_a,
-                                     harp_dataset *dataset_b)
+static int update_collocation_result(harp_collocation_result *collocation_result, harp_dataset *dataset)
 {
     uint8_t *mask = NULL;
     long i;
@@ -148,20 +131,18 @@ static int update_collocation_result(harp_collocation_result *collocation_result
         mask[i] = 0;
     }
 
-    if (update_mask(collocation_result, 1, dataset_a, mask) != 0)
+    for (i = 0; i < dataset->num_products; i++)
     {
-        free(mask);
-        return -1;
-    }
-    if (update_mask(collocation_result, 0, dataset_b, mask) != 0)
-    {
-        free(mask);
-        return -1;
+        if (update_mask_for_product(collocation_result, dataset->metadata[i]->filename, mask) != 0)
+        {
+            free(mask);
+            return -1;
+        }
     }
 
     for (i = collocation_result->num_pairs - 1; i >= 0; i--)
     {
-        if (mask[i] != 3)       /* 1 (= present in dataset_a) + 2 (= present in dataset_b) */
+        if (!mask[i])
         {
             if (harp_collocation_result_remove_pair_at_index(collocation_result, i) != 0)
             {
@@ -179,21 +160,20 @@ static int update_collocation_result(harp_collocation_result *collocation_result
 int update(int argc, char *argv[])
 {
     harp_collocation_result *collocation_result;
-    harp_dataset *dataset_a;
-    harp_dataset *dataset_b;
+    harp_dataset *dataset;
     const char *output;
 
-    if (argc < 5 || argc > 6 || argv[2][0] == '-' || argv[3][0] == '-' || argv[4][0] == '-')
+    if (argc < 4 || argc > 5 || argv[2][0] == '-' || argv[3][0] == '-')
     {
         return 1;
     }
-    if (argc == 6)
+    if (argc == 5)
     {
-        if (argv[5][0] == '-')
+        if (argv[4][0] == '-')
         {
             return 1;
         }
-        output = argv[5];
+        output = argv[4];
     }
     else
     {
@@ -210,40 +190,26 @@ int update(int argc, char *argv[])
         return -1;
     }
 
-    if (harp_dataset_new(&dataset_a) != 0)
+    if (harp_dataset_new(&dataset) != 0)
     {
         harp_collocation_result_delete(collocation_result);
         return -1;
     }
-    if (harp_dataset_import(dataset_a, argv[3], NULL) != 0)
+    if (harp_dataset_import(dataset, argv[3], NULL) != 0)
     {
         harp_collocation_result_delete(collocation_result);
-        harp_dataset_delete(dataset_a);
-        return -1;
-    }
-    if (harp_dataset_new(&dataset_b) != 0)
-    {
-        harp_collocation_result_delete(collocation_result);
-        harp_dataset_delete(dataset_a);
-        return -1;
-    }
-    if (harp_dataset_import(dataset_b, argv[4], NULL) != 0)
-    {
-        harp_collocation_result_delete(collocation_result);
-        harp_dataset_delete(dataset_a);
-        harp_dataset_delete(dataset_b);
+        harp_dataset_delete(dataset);
         return -1;
     }
 
-    if (update_collocation_result(collocation_result, dataset_a, dataset_b) != 0)
+    if (update_collocation_result(collocation_result, dataset) != 0)
     {
         harp_collocation_result_delete(collocation_result);
-        harp_dataset_delete(dataset_a);
-        harp_dataset_delete(dataset_b);
+        harp_dataset_delete(dataset);
         return -1;
     }
-    harp_dataset_delete(dataset_a);
-    harp_dataset_delete(dataset_b);
+
+    harp_dataset_delete(dataset);
 
     if (harp_collocation_result_write(output, collocation_result) != 0)
     {

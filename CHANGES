@@ -36,6 +36,8 @@
 
 * harpcheck now returns with exit code 1 if any of the imports fail.
 
+* harpcollocate --update now only allows one dataset as argument.
+
 * Fixed performance issue with spatial filtering on systems with slow math lib.
 
 * Fixed mapping description of GOME2 L1 product ingestion.
