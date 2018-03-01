@@ -344,7 +344,25 @@
 <td>[mol/m^2]</td>
 <td>uncertainty of the H2O column density (standard error)</td>
 </tr>
-<tr class="row-even"><td><strong>index</strong></td>
+<tr class="row-even"><td><strong>cloud_fraction</strong></td>
+<td>float</td>
+<td>{<em>time</em>}</td>
+<td>[]</td>
+<td>cloud fraction from VIIRS data in the SWIR channel for the instantaneous field of view</td>
+</tr>
+<tr class="row-odd"><td><strong>aerosol_height</strong></td>
+<td>float</td>
+<td>{<em>time</em>}</td>
+<td>[m]</td>
+<td>aerosol height parameter in the CH4 retrieval</td>
+</tr>
+<tr class="row-even"><td><strong>aerosol_optical_depth</strong></td>
+<td>float</td>
+<td>{<em>time</em>}</td>
+<td>[]</td>
+<td>aerosol optical thicknesss in the SWIR band</td>
+</tr>
+<tr class="row-odd"><td><strong>index</strong></td>
 <td>int32</td>
 <td>{<em>time</em>}</td>
 <td>&#160;</td>
@@ -544,6 +562,18 @@
 <tr class="row-odd"><td><strong>H2O_column_number_density_uncertainty</strong></td>
 <td><em>path</em></td>
 <td><strong>/PRODUCT/SUPPORT_DATA/DETAILED_RESULTS/water_total_column_precision[]</strong></td>
+</tr>
+<tr class="row-even"><td><strong>cloud_fraction</strong></td>
+<td><em>path</em></td>
+<td><strong>/PRODUCT/SUPPORT_DATA/INPUT_DATA/cloud_fraction_VIIRS_SWIR_IFOV[]</strong></td>
+</tr>
+<tr class="row-odd"><td><strong>aerosol_height</strong></td>
+<td><em>path</em></td>
+<td><strong>/PRODUCT/SUPPORT_DATA/DETAILED_RESULTS/aerosol_mid_height[]</strong></td>
+</tr>
+<tr class="row-even"><td><strong>aerosol_optical_depth</strong></td>
+<td><em>path</em></td>
+<td><strong>/PRODUCT/SUPPORT_DATA/DETAILED_RESULTS/aerosol_optical_thickness_SWIR[]</strong></td>
 </tr>
 </tbody>
 </table>

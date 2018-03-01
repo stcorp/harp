@@ -332,6 +332,18 @@
 <td>[mol/m^2]</td>
 <td>uncertainty of the H2O column density (standard error)</td>
 </tr>
+<tr class="row-even"><td><strong>cloud_height</strong></td>
+<td>float</td>
+<td>{<em>time</em>}</td>
+<td>[m]</td>
+<td>Scattering layer height</td>
+</tr>
+<tr class="row-odd"><td><strong>cloud_optical_depth</strong></td>
+<td>float</td>
+<td>{<em>time</em>}</td>
+<td>[]</td>
+<td>Scattering optical thickness SWIR</td>
+</tr>
 <tr class="row-even"><td><strong>index</strong></td>
 <td>int32</td>
 <td>{<em>time</em>}</td>
@@ -486,6 +498,14 @@
 <tr class="row-even"><td><strong>H2O_column_number_density_uncertainty</strong></td>
 <td><em>path</em></td>
 <td><strong>/PRODUCT/SUPPORT_DATA/DETAILED_RESULTS/water_total_column_precision[]</strong></td>
+</tr>
+<tr class="row-odd"><td><strong>cloud_height</strong></td>
+<td><em>path</em></td>
+<td><strong>/PRODUCT/SUPPORT_DATA/DETAILED_RESULTS/height_scattering_layer[]</strong></td>
+</tr>
+<tr class="row-even"><td><strong>cloud_optical_depth</strong></td>
+<td><em>path</em></td>
+<td><strong>/PRODUCT/SUPPORT_DATA/DETAILED_RESULTS/scattering_optical_thickness_SWIR[]</strong></td>
 </tr>
 </tbody>
 </table>

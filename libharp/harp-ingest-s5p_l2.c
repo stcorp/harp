@@ -1171,6 +1171,14 @@ static int read_input_cloud_base_pressure_precision(void *user_data, harp_array 
                         info->num_scanlines * info->num_pixels, data);
 }
 
+static int read_input_cloud_fraction_viirs_swir(void *user_data, harp_array data)
+{
+    ingest_info *info = (ingest_info *)user_data;
+
+    return read_dataset(info->input_data_cursor, "cloud_fraction_VIIRS_SWIR_IFOV", harp_type_float,
+                        info->num_scanlines * info->num_pixels, data);
+}
+
 static int read_input_cloud_height_crb(void *user_data, harp_array data)
 {
     ingest_info *info = (ingest_info *)user_data;
@@ -2043,6 +2051,14 @@ static int read_product_ozone_tropospheric_column_precision(void *user_data, har
                         info->num_scanlines * info->num_pixels, data);
 }
 
+static int read_results_aerosol_mid_height(void *user_data, harp_array data)
+{
+    ingest_info *info = (ingest_info *)user_data;
+
+    return read_dataset(info->detailed_results_cursor, "aerosol_mid_height", harp_type_float,
+                        info->num_scanlines * info->num_pixels, data);
+}
+
 static int read_results_aerosol_optical_thickness(void *user_data, harp_array data)
 {
     ingest_info *info = (ingest_info *)user_data;
@@ -2058,6 +2074,15 @@ static int read_results_aerosol_optical_thickness_precision(void *user_data, har
     return read_dataset(info->detailed_results_cursor, "aerosol_optical_thickness_precision", harp_type_float,
                         info->num_scanlines * info->num_pixels, data);
 }
+
+static int read_results_aerosol_optical_thickness_swir(void *user_data, harp_array data)
+{
+    ingest_info *info = (ingest_info *)user_data;
+
+    return read_dataset(info->detailed_results_cursor, "aerosol_optical_thickness_SWIR", harp_type_float,
+                        info->num_scanlines * info->num_pixels, data);
+}
+
 
 static int read_results_air_mass_factor_stratosphere(void *user_data, harp_array data)
 {
@@ -2223,6 +2248,14 @@ static int read_results_formaldehyde_tropospheric_vertical_column_trueness(void 
                         harp_type_float, info->num_scanlines * info->num_pixels, data);
 }
 
+static int read_results_height_scattering_layer(void *user_data, harp_array data)
+{
+    ingest_info *info = (ingest_info *)user_data;
+
+    return read_dataset(info->detailed_results_cursor, "height_scattering_layer", harp_type_float,
+                        info->num_scanlines * info->num_pixels, data);
+}
+
 static int read_results_nitrogendioxide_stratospheric_column(void *user_data, harp_array data)
 {
     ingest_info *info = (ingest_info *)user_data;
@@ -2385,6 +2418,14 @@ static int read_results_processing_quality_flags(void *user_data, harp_array dat
     }
 
     return 0;
+}
+
+static int read_results_scattering_optical_thickness_SWIR(void *user_data, harp_array data)
+{
+    ingest_info *info = (ingest_info *)user_data;
+
+    return read_dataset(info->detailed_results_cursor, "scattering_optical_thickness_SWIR", harp_type_float,
+                        info->num_scanlines * info->num_pixels, data);
 }
 
 static int read_results_sulfurdioxide_profile_apriori(void *user_data, harp_array data)
@@ -3933,6 +3974,33 @@ static void register_ch4_product(void)
                                                    NULL, read_results_water_total_column_precision);
     path = "/PRODUCT/SUPPORT_DATA/DETAILED_RESULTS/water_total_column_precision[]";
     harp_variable_definition_add_mapping(variable_definition, NULL, NULL, path, NULL);
+
+    /* cloud_fraction */
+    description = "cloud fraction from VIIRS data in the SWIR channel for the instantaneous field of view";
+    variable_definition =
+        harp_ingestion_register_variable_full_read(product_definition, "cloud_fraction",
+                                                   harp_type_float, 1, dimension_type, NULL, description, "",
+                                                   NULL, read_input_cloud_fraction_viirs_swir);
+    path = "/PRODUCT/SUPPORT_DATA/INPUT_DATA/cloud_fraction_VIIRS_SWIR_IFOV[]";
+    harp_variable_definition_add_mapping(variable_definition, NULL, NULL, path, NULL);
+
+    /* aerosol_height */
+    description = "aerosol height parameter in the CH4 retrieval";
+    variable_definition =
+        harp_ingestion_register_variable_full_read(product_definition, "aerosol_height",
+                                                   harp_type_float, 1, dimension_type, NULL, description, "m",
+                                                   NULL, read_results_aerosol_mid_height);
+    path = "/PRODUCT/SUPPORT_DATA/DETAILED_RESULTS/aerosol_mid_height[]";
+    harp_variable_definition_add_mapping(variable_definition, NULL, NULL, path, NULL);
+
+    /* aerosol_optical_depth */
+    description = "aerosol optical thicknesss in the SWIR band";
+    variable_definition =
+        harp_ingestion_register_variable_full_read(product_definition, "aerosol_optical_depth",
+                                                   harp_type_float, 1, dimension_type, NULL, description, "",
+                                                   NULL, read_results_aerosol_optical_thickness_swir);
+    path = "/PRODUCT/SUPPORT_DATA/DETAILED_RESULTS/aerosol_optical_thickness_SWIR[]";
+    harp_variable_definition_add_mapping(variable_definition, NULL, NULL, path, NULL);
 }
 
 static void register_co_product(void)
@@ -4024,6 +4092,24 @@ static void register_co_product(void)
                                                    harp_type_float, 1, dimension_type, NULL, description, "mol/m^2",
                                                    NULL, read_results_water_total_column_precision);
     path = "/PRODUCT/SUPPORT_DATA/DETAILED_RESULTS/water_total_column_precision[]";
+    harp_variable_definition_add_mapping(variable_definition, NULL, NULL, path, NULL);
+
+    /* cloud_height */
+    description = "Scattering layer height";
+    variable_definition =
+        harp_ingestion_register_variable_full_read(product_definition, "cloud_height", harp_type_float, 1,
+                                                   dimension_type, NULL, description, "m", NULL,
+                                                   read_results_height_scattering_layer);
+    path = "/PRODUCT/SUPPORT_DATA/DETAILED_RESULTS/height_scattering_layer[]";
+    harp_variable_definition_add_mapping(variable_definition, NULL, NULL, path, NULL);
+
+    /* cloud_optical_depth */
+    description = "Scattering optical thickness SWIR";
+    variable_definition =
+        harp_ingestion_register_variable_full_read(product_definition, "cloud_optical_depth", harp_type_float, 1,
+                                                   dimension_type, NULL, description, "", NULL,
+                                                   read_results_scattering_optical_thickness_SWIR);
+    path = "/PRODUCT/SUPPORT_DATA/DETAILED_RESULTS/scattering_optical_thickness_SWIR[]";
     harp_variable_definition_add_mapping(variable_definition, NULL, NULL, path, NULL);
 }
 
