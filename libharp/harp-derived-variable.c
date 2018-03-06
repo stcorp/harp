@@ -1229,11 +1229,25 @@ LIBHARP_API int harp_product_add_derived_variable(harp_product *product, const c
         if (harp_variable_has_dimension_types(variable, num_dimensions, dimension_type))
         {
             /* variable already exists */
-            if (unit != NULL && !harp_variable_has_unit(variable, unit))
+            if (unit != NULL)
             {
-                if (harp_variable_convert_unit(variable, unit) != 0)
+                if (harp_variable_has_unit(variable, unit))
                 {
-                    return -1;
+                    if (strcmp(variable->unit, unit) != 0)
+                    {
+                        /* make sure that the unit becomes syntactically the same */
+                        if (harp_variable_set_unit(variable, unit) != 0)
+                        {
+                            return -1;
+                        }
+                    }
+                }
+                else
+                {
+                    if (harp_variable_convert_unit(variable, unit) != 0)
+                    {
+                        return -1;
+                    }
                 }
             }
             if ((data_type != NULL) && (variable->data_type != *data_type))

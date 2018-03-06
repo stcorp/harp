@@ -653,11 +653,25 @@ static int execute_derive_variable(harp_product *product, harp_operation_derive_
         {
             return -1;
         }
-        if (operation->unit != NULL && !harp_variable_has_unit(variable, operation->unit))
+        if (operation->unit != NULL)
         {
-            if (harp_variable_convert_unit(variable, operation->unit) != 0)
+            if (harp_variable_has_unit(variable, operation->unit))
             {
-                return -1;
+                if (strcmp(variable->unit, operation->unit) != 0)
+                {
+                    /* make sure that the unit becomes syntactically the same */
+                    if (harp_variable_set_unit(variable, operation->unit) != 0)
+                    {
+                        return -1;
+                    }
+                }
+            }
+            else
+            {
+                if (harp_variable_convert_unit(variable, operation->unit) != 0)
+                {
+                    return -1;
+                }
             }
         }
         if (operation->has_data_type)
