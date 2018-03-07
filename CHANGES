@@ -13,6 +13,9 @@
 * The bin() operation using a collocation result file now retains the
   collocation_index variable (with the first value for each bin).
 
+* Changed smooth() operation such that each level where the source grid point
+  was NaN the target grid point also remains NaN.
+
 * Added -ap option to harpmerge.
 
 * Added --dataset option to harpdump and changed output format of

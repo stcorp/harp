@@ -783,29 +783,32 @@ LIBHARP_API int harp_variable_smooth_vertical(harp_variable *variable, harp_vari
             /* multiply by avk */
             for (i = 0; i < num_vertical_elements; i++)
             {
-                long avk_offset = (k * max_vertical_elements + i) * max_vertical_elements;
-                long num_valid = 0;
-
-                variable->data.double_data[blockoffset + i] = 0;
-                for (j = 0; j < num_vertical_elements; j++)
+                if (!harp_isnan(vector[i]))
                 {
-                    if (!harp_isnan(vector[j]))
+                    long avk_offset = (k * max_vertical_elements + i) * max_vertical_elements;
+                    long num_valid = 0;
+
+                    variable->data.double_data[blockoffset + i] = 0;
+                    for (j = 0; j < num_vertical_elements; j++)
+                    {
+                        if (!harp_isnan(vector[j]))
+                        {
+                            variable->data.double_data[blockoffset + i] +=
+                                averaging_kernel->data.double_data[avk_offset + j] * vector[j];
+                            num_valid++;
+                        }
+                    }
+
+                    /* add the apriori again */
+                    if (apriori != NULL)
                     {
                         variable->data.double_data[blockoffset + i] +=
-                            averaging_kernel->data.double_data[avk_offset + j] * vector[j];
-                        num_valid++;
+                            apriori->data.double_data[k * max_vertical_elements + i];
                     }
-                }
-
-                /* add the apriori again */
-                if (apriori != NULL)
-                {
-                    variable->data.double_data[blockoffset + i] +=
-                        apriori->data.double_data[k * max_vertical_elements + i];
-                }
-                else if (num_valid == 0)
-                {
-                    variable->data.double_data[blockoffset + i] = harp_nan();
+                    else if (num_valid == 0)
+                    {
+                        variable->data.double_data[blockoffset + i] = harp_nan();
+                    }
                 }
             }
         }
