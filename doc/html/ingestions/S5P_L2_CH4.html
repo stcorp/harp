@@ -276,7 +276,7 @@
 <td>float</td>
 <td>{<em>time</em>, <em>vertical</em>, 2}</td>
 <td>[m]</td>
-<td>altitude bounds per profile layer; altitude is measured as the vertical distance to the surface</td>
+<td>altitude bounds per profile layer</td>
 </tr>
 <tr class="row-odd"><td><strong>pressure_bounds</strong></td>
 <td>float</td>
@@ -493,10 +493,10 @@
 </tr>
 <tr class="row-even"><td rowspan="2"><strong>altitude_bounds</strong></td>
 <td><em>path</em></td>
-<td><strong>/PRODUCT/SUPPORT_DATA/INPUT_DATA/height_levels[], /PRODUCT/SUPPORT_DATA/INPUT_DATA/surface_altitude[]</strong></td>
+<td><strong>/PRODUCT/SUPPORT_DATA/INPUT_DATA/height_levels[]</strong></td>
 </tr>
 <tr class="row-odd"><td><em>description</em></td>
-<td>derived from height per level (layer boundary) by repeating the inner levels; the upper bound of layer k is equal to the lower bound of layer k+1; the vertical grid is inverted to make it ascending; height is converted to altitude by adding surface_altitude</td>
+<td>derived from height per level (layer boundary) by repeating the inner levels; the upper bound of layer k is equal to the lower bound of layer k+1; the vertical grid is inverted to make it ascending</td>
 </tr>
 <tr class="row-even"><td rowspan="2"><strong>pressure_bounds</strong></td>
 <td><em>path</em></td>

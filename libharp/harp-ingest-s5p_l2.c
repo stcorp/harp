@@ -1066,7 +1066,6 @@ static int read_input_altitude(void *user_data, harp_array data)
 static int read_input_altitude_bounds(void *user_data, harp_array data)
 {
     ingest_info *info = (ingest_info *)user_data;
-    harp_array surfalt_data;
     long dimension[2];
     long num_layers;
     long i, j;
@@ -1082,23 +1081,6 @@ static int read_input_altitude_bounds(void *user_data, harp_array data)
     if (harp_array_invert(harp_type_float, 1, 2, dimension, data) != 0)
     {
         return -1;
-    }
-
-    /* read surface altitude in buffer after height levels (which will fit if 2*num_layers>num_levels) */
-    assert(info->num_layers * 2 > info->num_levels);
-    surfalt_data.float_data = &data.float_data[info->num_scanlines * info->num_pixels * info->num_levels];
-    if (read_dataset(info->input_data_cursor, "surface_altitude", harp_type_float,
-                     info->num_scanlines * info->num_pixels, surfalt_data) != 0)
-    {
-        return -1;
-    }
-    /* convert level heights to level altitudes using surface altitude */
-    for (i = 0; i < info->num_scanlines * info->num_pixels; i++)
-    {
-        for (j = 0; j < info->num_levels; j++)
-        {
-            data.float_data[i * info->num_levels + j] += surfalt_data.float_data[i];
-        }
     }
 
     /* Convert from #levels (== #layers + 1) consecutive altitudes to #layers x 2 altitude bounds. Iterate in reverse to
@@ -3879,15 +3861,14 @@ static void register_ch4_product(void)
     register_additional_geolocation_variables(product_definition);
 
     /* altitude_bounds */
-    description = "altitude bounds per profile layer; altitude is measured as the vertical distance to the surface";
+    description = "altitude bounds per profile layer";
     variable_definition =
         harp_ingestion_register_variable_full_read(product_definition, "altitude_bounds", harp_type_float, 3,
                                                    dimension_type, dimension, description, "m", NULL,
                                                    read_input_altitude_bounds);
-    path = "/PRODUCT/SUPPORT_DATA/INPUT_DATA/height_levels[], /PRODUCT/SUPPORT_DATA/INPUT_DATA/surface_altitude[]";
+    path = "/PRODUCT/SUPPORT_DATA/INPUT_DATA/height_levels[]";
     description = "derived from height per level (layer boundary) by repeating the inner levels; the upper bound of "
-        "layer k is equal to the lower bound of layer k+1; the vertical grid is inverted to make it ascending; "
-        "height is converted to altitude by adding surface_altitude";
+        "layer k is equal to the lower bound of layer k+1; the vertical grid is inverted to make it ascending";
     harp_variable_definition_add_mapping(variable_definition, NULL, NULL, path, description);
 
     /* pressure_bounds */
