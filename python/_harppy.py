@@ -959,8 +959,7 @@ def _export_product(product, c_product):
         try:
             _export_variable(name, product[name], c_product)
         except Error as _error:
-            _error.args = (_error.args[0] + " (variable %r)" % name,) + _error.args[1:]
-            raise
+            raise Error("variable '%r' could not be exported (%s)" % (name, str(_error)))
 
 def get_encoding():
     """Return the encoding used to convert between unicode strings and C strings
