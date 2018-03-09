@@ -251,13 +251,18 @@ additional steps if you want to build HARP from the GitHub git respository.</p>
 </dl>
 <p>When you clone and checkout the HARP git repository make sure to also
 initialize the git submodules:</p>
-<div class="highlight-default"><div class="highlight"><pre><span></span>$ git submodule init
+<div class="highlight-default"><div class="highlight"><pre><span></span>$ git clone https://github.com/stcorp/harp.git
+$ cd harp
+$ git submodule init
 $ git submodule update
 </pre></div>
 </div>
 <p>This will pull in several entries in the definitions subdirectory.</p>
-<p>Then, run the bootstrap script in the root of the source directory. After
-that you can follow the steps as usual for building the source package.</p>
+<p>Then, run the bootstrap script in the root of the source directory:</p>
+<div class="highlight-default"><div class="highlight"><pre><span></span>$ ./bootstrap
+</pre></div>
+</div>
+<p>After that you can follow the steps as usual for building the source package.</p>
 <p>Note that the CMake build scripts that come with HARP can also be used to
 build HARP, but they do not allow regeneration of automatically generated
 files (such as the documentation), so they are not recommended for performing

@@ -82,13 +82,18 @@ Additional software that you will need:
 When you clone and checkout the HARP git repository make sure to also
 initialize the git submodules::
 
+    $ git clone https://github.com/stcorp/harp.git
+    $ cd harp
     $ git submodule init
     $ git submodule update
 
 This will pull in several entries in the definitions subdirectory.
 
-Then, run the bootstrap script in the root of the source directory. After
-that you can follow the steps as usual for building the source package.
+Then, run the bootstrap script in the root of the source directory::
+
+    $ ./bootstrap
+
+After that you can follow the steps as usual for building the source package.
 
 Note that the CMake build scripts that come with HARP can also be used to
 build HARP, but they do not allow regeneration of automatically generated
