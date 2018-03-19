@@ -1067,9 +1067,9 @@ def import_product(filename, operations="", options=""):
             if options:
                 command += ",options='{0}'".format(options)
             command += ")"
-            if 'history' in product:
+            try:
                 product.history += "\n" + command
-            else:
+            except AttributeError:
                 product.history = command
 
         return product
@@ -1095,9 +1095,9 @@ def export_product(product, filename, file_format="netcdf", operations="", hdf5_
     if operations:
         # Update history (but only if the export modifies the product)
         command = "harp.export_product('{0}', operations='{1}')".format(filename, operations)
-        if 'history' in product:
+        try:
             product.history += "\n" + command
-        else:
+        except AttributeError:
             product.history = command
 
     # Create C product.
