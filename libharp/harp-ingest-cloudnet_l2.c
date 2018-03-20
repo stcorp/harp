@@ -225,7 +225,7 @@ static int read_cloud_base_height(void *user_data, harp_array data)
 
 static int read_cloud_top_height(void *user_data, harp_array data)
 {
-    return read_array_variable((ingest_info *)user_data, "cloud_top_height", harp_type_double, data);
+    return read_array_variable((ingest_info *)user_data, "cloud_top_height", harp_type_float, data);
 }
 
 static int read_altitude(void *user_data, harp_array data)
