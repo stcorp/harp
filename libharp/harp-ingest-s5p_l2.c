@@ -2522,6 +2522,22 @@ static int read_o3_cloud_fraction_precision(void *user_data, harp_array data)
                         info->num_scanlines * info->num_pixels, data);
 }
 
+static int read_o3_tcl_cloud_top_pressure_min(void *user_data, harp_array data)
+{
+    ingest_info *info = (ingest_info *)user_data;
+
+    return read_dataset(info->detailed_results_cursor, "cloud_top_pressure_min", harp_type_float,
+                        info->num_latitudes * info->num_longitudes, data);
+}
+
+static int read_o3_tcl_cloud_top_pressure_max(void *user_data, harp_array data)
+{
+    ingest_info *info = (ingest_info *)user_data;
+
+    return read_dataset(info->detailed_results_cursor, "cloud_top_pressure_max", harp_type_float,
+                        info->num_latitudes * info->num_longitudes, data);
+}
+
 static int read_o3_tcl_time_value(void *user_data, const char *path, harp_array data)
 {
     ingest_info *info = (ingest_info *)user_data;
@@ -2584,6 +2600,46 @@ static int read_o3_tcl_longitude(void *user_data, harp_array data)
     return read_dataset(info->product_cursor, "longitude", harp_type_float, info->num_longitudes, data);
 }
 
+static int read_o3_tcl_numobs_ozone_upper_tropospheric_mixing_ratio(void *user_data, harp_array data)
+{
+    ingest_info *info = (ingest_info *)user_data;
+
+    return read_dataset(info->detailed_results_cursor, "number_of_observations_ozone_upper_tropospheric_mixing_ratio",
+                        harp_type_float, info->num_latitudes * info->num_longitudes, data);
+}
+
+static int read_o3_tcl_ozone_stratospheric_vertical_column(void *user_data, harp_array data)
+{
+    ingest_info *info = (ingest_info *)user_data;
+
+    return read_dataset(info->detailed_results_cursor, "ozone_stratospheric_vertical_column", harp_type_float,
+                        info->num_latitudes * info->num_longitudes, data);
+}
+
+static int read_o3_tcl_ozone_stratospheric_vertical_column_precision(void *user_data, harp_array data)
+{
+    ingest_info *info = (ingest_info *)user_data;
+
+    return read_dataset(info->detailed_results_cursor, "ozone_stratospheric_vertical_column_precision", harp_type_float,
+                        info->num_latitudes * info->num_longitudes, data);
+}
+
+static int read_o3_tcl_ozone_total_vertical_column(void *user_data, harp_array data)
+{
+    ingest_info *info = (ingest_info *)user_data;
+
+    return read_dataset(info->detailed_results_cursor, "ozone_total_vertical_column", harp_type_float,
+                        info->num_latitudes * info->num_longitudes, data);
+}
+
+static int read_o3_tcl_ozone_total_vertical_column_precision(void *user_data, harp_array data)
+{
+    ingest_info *info = (ingest_info *)user_data;
+
+    return read_dataset(info->detailed_results_cursor, "ozone_total_vertical_column_precision", harp_type_float,
+                        info->num_latitudes * info->num_longitudes, data);
+}
+
 static int read_o3_tcl_ozone_tropospheric_mixing_ratio(void *user_data, harp_array data)
 {
     ingest_info *info = (ingest_info *)user_data;
@@ -2631,6 +2687,22 @@ static int read_o3_tcl_ozone_tropospheric_vertical_column_precision(void *user_d
     ingest_info *info = (ingest_info *)user_data;
 
     return read_dataset(info->product_cursor, "ozone_tropospheric_vertical_column_precision", harp_type_float,
+                        info->num_latitudes * info->num_longitudes, data);
+}
+
+static int read_o3_tcl_surface_albedo(void *user_data, harp_array data)
+{
+    ingest_info *info = (ingest_info *)user_data;
+
+    return read_dataset(info->detailed_results_cursor, "surface_albedo", harp_type_float,
+                        info->num_latitudes * info->num_longitudes, data);
+}
+
+static int read_o3_tcl_surface_altitude(void *user_data, harp_array data)
+{
+    ingest_info *info = (ingest_info *)user_data;
+
+    return read_dataset(info->detailed_results_cursor, "surface_altitude", harp_type_float,
                         info->num_latitudes * info->num_longitudes, data);
 }
 
@@ -4730,7 +4802,7 @@ static void register_o3_tcl_product(void)
     harp_variable_definition_add_mapping(variable_definition, "o3=upper", NULL, path, NULL);
 
     /* tropospheric_O3_column_volume_mixing_ratio_dry_air */
-    description = "average tropospheric ozone mixing ratio";
+    description = "tropospheric ozone mixing ratio";
     variable_definition =
         harp_ingestion_register_variable_full_read(product_definition,
                                                    "tropospheric_O3_column_volume_mixing_ratio_dry_air",
@@ -4742,7 +4814,7 @@ static void register_o3_tcl_product(void)
     harp_variable_definition_add_mapping(variable_definition, "o3=upper", NULL, path, NULL);
 
     /* tropospheric_O3_column_volume_mixing_ratio_dry_air_uncertainty */
-    description = "uncertainty of the average tropospheric ozone mixing ratio";
+    description = "uncertainty of the tropospheric ozone mixing ratio";
     variable_definition =
         harp_ingestion_register_variable_full_read(product_definition,
                                                    "tropospheric_O3_column_volume_mixing_ratio_dry_air_uncertainty",
@@ -4754,13 +4826,24 @@ static void register_o3_tcl_product(void)
     harp_variable_definition_add_mapping(variable_definition, "o3=upper", NULL, path, NULL);
 
     /* tropospheric_O3_column_volume_mixing_ratio_dry_air_validity */
-    description = "validity of the average tropospheric ozone mixing ratio";
+    description = "validity of the tropospheric ozone mixing ratio";
     variable_definition =
         harp_ingestion_register_variable_full_read(product_definition,
                                                    "tropospheric_O3_column_volume_mixing_ratio_dry_air_validity",
                                                    harp_type_int32, 3, dimension_type, NULL, description, NULL,
                                                    exclude_o3_tcl, read_o3_tcl_ozone_tropospheric_mixing_ratio_flag);
     path = "/PRODUCT/ozone_upper_tropospheric_mixing_ratio_flag[]";
+    harp_variable_definition_add_mapping(variable_definition, "o3=upper", NULL, path, NULL);
+
+    /* tropospheric_O3_column_volume_mixing_ratio_dry_air_count */
+    description = "number of data used in the tropospheric ozone mixing ratio";
+    variable_definition =
+        harp_ingestion_register_variable_full_read(product_definition,
+                                                   "tropospheric_O3_column_volume_mixing_ratio_dry_air_count",
+                                                   harp_type_int32, 3, dimension_type, NULL, description, NULL,
+                                                   exclude_o3_tcl,
+                                                   read_o3_tcl_numobs_ozone_upper_tropospheric_mixing_ratio);
+    path = "/PRODUCT/SUPPORT_DATA/DETAILED_RESULTS/number_of_observations_ozone_upper_tropospheric_mixing_ratio[]";
     harp_variable_definition_add_mapping(variable_definition, "o3=upper", NULL, path, NULL);
 
     /* tropospheric_O3_column_number_density */
@@ -4784,6 +4867,82 @@ static void register_o3_tcl_product(void)
                                                    read_o3_tcl_ozone_tropospheric_vertical_column_precision);
     path = "/PRODUCT/ozone_tropospheric_vertical_column_precision[]";
     harp_variable_definition_add_mapping(variable_definition, "o3 unset", NULL, path, NULL);
+
+    /* stratospheric_O3_column_number_density */
+    description = "average stratospheric ozone column number density";
+    variable_definition =
+        harp_ingestion_register_variable_full_read(product_definition, "stratospheric_O3_column_number_density",
+                                                   harp_type_float, 3, dimension_type, NULL, description, "mol/m2",
+                                                   exclude_o3_tcl_upper,
+                                                   read_o3_tcl_ozone_stratospheric_vertical_column);
+    path = "/PRODUCT/SUPPORT_DATA/DETAILED_RESULTS/ozone_stratospheric_vertical_column[]";
+    harp_variable_definition_add_mapping(variable_definition, "o3 unset", NULL, path, NULL);
+
+    /* stratospheric_O3_column_number_density_precision */
+    description = "uncertainty of the average stratospheric ozone column number density";
+    variable_definition =
+        harp_ingestion_register_variable_full_read(product_definition,
+                                                   "stratospheric_O3_column_number_density_uncertainty",
+                                                   harp_type_float, 3, dimension_type, NULL, description, "mol/m2",
+                                                   exclude_o3_tcl_upper,
+                                                   read_o3_tcl_ozone_stratospheric_vertical_column_precision);
+    path = "/PRODUCT/SUPPORT_DATA/DETAILED_RESULTS/ozone_stratospheric_vertical_column_precision[]";
+    harp_variable_definition_add_mapping(variable_definition, "o3 unset", NULL, path, NULL);
+
+    /* O3_column_number_density */
+    description = "average total ozone column number density";
+    variable_definition =
+        harp_ingestion_register_variable_full_read(product_definition, "O3_column_number_density", harp_type_float, 3,
+                                                   dimension_type, NULL, description, "mol/m2", exclude_o3_tcl_upper,
+                                                   read_o3_tcl_ozone_total_vertical_column);
+    path = "/PRODUCT/SUPPORT_DATA/DETAILED_RESULTS/ozone_total_vertical_column[]";
+    harp_variable_definition_add_mapping(variable_definition, "o3 unset", NULL, path, NULL);
+
+    /* O3_column_number_density_precision */
+    description = "uncertainty of the average total ozone column number density";
+    variable_definition =
+        harp_ingestion_register_variable_full_read(product_definition, "O3_column_number_density_uncertainty",
+                                                   harp_type_float, 3, dimension_type, NULL, description, "mol/m2",
+                                                   exclude_o3_tcl_upper,
+                                                   read_o3_tcl_ozone_total_vertical_column_precision);
+    path = "/PRODUCT/SUPPORT_DATA/DETAILED_RESULTS/ozone_total_vertical_column_precision[]";
+    harp_variable_definition_add_mapping(variable_definition, "o3 unset", NULL, path, NULL);
+
+    /* surface_albedo */
+    description = "averaged surface albedo";
+    variable_definition =
+        harp_ingestion_register_variable_full_read(product_definition, "surface_albedo", harp_type_float, 3,
+                                                   dimension_type, NULL, description, "", exclude_o3_tcl_upper,
+                                                   read_o3_tcl_surface_albedo);
+    path = "/PRODUCT/SUPPORT_DATA/DETAILED_RESULTS/surface_albedo[]";
+    harp_variable_definition_add_mapping(variable_definition, "o3 unset", NULL, path, NULL);
+
+    /* surface_alitude */
+    description = "averaged surface height above mean sea level";
+    variable_definition =
+        harp_ingestion_register_variable_full_read(product_definition, "surface_altitude", harp_type_float, 3,
+                                                   dimension_type, NULL, description, "m", exclude_o3_tcl_upper,
+                                                   read_o3_tcl_surface_altitude);
+    path = "/PRODUCT/SUPPORT_DATA/DETAILED_RESULTS/surface_altitude[]";
+    harp_variable_definition_add_mapping(variable_definition, "o3 unset", NULL, path, NULL);
+
+    /* cloud_top_pressure_min */
+    description = "minimum cloud top pressure";
+    variable_definition =
+        harp_ingestion_register_variable_full_read(product_definition, "cloud_top_pressure_min", harp_type_float, 3,
+                                                   dimension_type, NULL, description, "Pa", exclude_o3_tcl,
+                                                   read_o3_tcl_cloud_top_pressure_min);
+    path = "/PRODUCT/SUPPORT_DATA/DETAILED_RESULTS/cloud_top_pressure_min[]";
+    harp_variable_definition_add_mapping(variable_definition, "o3=upper", NULL, path, NULL);
+
+    /* cloud_top_pressure_max */
+    description = "maximum cloud top pressure";
+    variable_definition =
+        harp_ingestion_register_variable_full_read(product_definition, "cloud_top_pressure_max", harp_type_float, 3,
+                                                   dimension_type, NULL, description, "Pa", exclude_o3_tcl,
+                                                   read_o3_tcl_cloud_top_pressure_max);
+    path = "/PRODUCT/SUPPORT_DATA/DETAILED_RESULTS/cloud_top_pressure_max[]";
+    harp_variable_definition_add_mapping(variable_definition, "o3=upper", NULL, path, NULL);
 }
 
 static void register_o3_tpr_product(void)
