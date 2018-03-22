@@ -1047,6 +1047,14 @@ static int read_geolocation_viewing_zenith_angle(void *user_data, harp_array dat
                         info->num_scanlines * info->num_pixels, data);
 }
 
+static int read_input_aerosol_index_340_380(void *user_data, harp_array data)
+{
+    ingest_info *info = (ingest_info *)user_data;
+
+    return read_dataset(info->input_data_cursor, "aerosol_index_340_380", harp_type_float,
+                        info->num_scanlines * info->num_pixels, data);
+}
+
 static int read_input_aerosol_index_354_388(void *user_data, harp_array data)
 {
     ingest_info *info = (ingest_info *)user_data;
@@ -4279,6 +4287,15 @@ static void register_hcho_product(void)
     path = "/PRODUCT/SUPPORT_DATA/DETAILED_RESULTS/formaldehyde_tropospheric_air_mass_factor_trueness[]";
     harp_variable_definition_add_mapping(variable_definition, NULL, NULL, path, NULL);
 
+    /* absorbing_aerosol_index */
+    description = "aerosol index";
+    variable_definition =
+        harp_ingestion_register_variable_full_read(product_definition, "absorbing_aerosol_index", harp_type_float, 1,
+                                                   dimension_type, NULL, description, HARP_UNIT_DIMENSIONLESS, NULL,
+                                                   read_input_aerosol_index_340_380);
+    path = "/PRODUCT/SUPPORT_DATA/INPUT_DATA/aerosol_index_340_380";
+    harp_variable_definition_add_mapping(variable_definition, NULL, NULL, path, NULL);
+
     register_cloud_variables(product_definition);
 
     /* surface_albedo */
@@ -5364,6 +5381,15 @@ static void register_so2_product(void)
                                                    harp_type_float, 1, dimension_type, NULL, description, "mol/m^2",
                                                    NULL, read_input_ozone_total_vertical_column_precision);
     path = "/PRODUCT/SUPPORT_DATA/INPUT_DATA/ozone_total_vertical_column_precision[]";
+    harp_variable_definition_add_mapping(variable_definition, NULL, NULL, path, NULL);
+
+    /* absorbing_aerosol_index */
+    description = "aerosol index";
+    variable_definition =
+        harp_ingestion_register_variable_full_read(product_definition, "absorbing_aerosol_index", harp_type_float, 1,
+                                                   dimension_type, NULL, description, HARP_UNIT_DIMENSIONLESS, NULL,
+                                                   read_input_aerosol_index_340_380);
+    path = "/PRODUCT/SUPPORT_DATA/INPUT_DATA/aerosol_index_340_380";
     harp_variable_definition_add_mapping(variable_definition, NULL, NULL, path, NULL);
 
     register_cloud_variables(product_definition);
