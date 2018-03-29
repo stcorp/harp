@@ -1308,10 +1308,9 @@ static void register_nadir_limb_occultation_product(harp_ingestion_module *modul
     const char *description;
     const char *path;
 
-    description = "SCIAMACHY Level 1c";
-    product_definition = harp_ingestion_register_product(module, "SCIAMACHY_L1c", description, read_dimensions);
-    description = "SCIAMACHY Level 1c";
-    harp_product_definition_add_mapping(product_definition, description, "data=nadir or data=limb or data=occultation");
+    product_definition = harp_ingestion_register_product(module, "SCIAMACHY_L1c", "SCIAMACHY Level 1c",
+                                                         read_dimensions);
+    harp_product_definition_add_mapping(product_definition, NULL, "data=nadir or data=limb or data=occultation");
 
     dimension_type[0] = harp_dimension_time;
     dimension_type[1] = harp_dimension_spectral;
@@ -1713,11 +1712,9 @@ static void register_sun_reference_product(harp_ingestion_module *module)
     const char *description;
     const char *path;
 
-    description = "SCIAMACHY Level 1c sun reference";
-    product_definition =
-        harp_ingestion_register_product(module, "SCIAMACHY_L1c_sun_reference", description, read_dimensions);
-    description = "SCIAMACHY Level 1c sun reference";
-    harp_product_definition_add_mapping(product_definition, description, "data=sun_reference");
+    product_definition = harp_ingestion_register_product(module, "SCIAMACHY_L1c_sun_reference",
+                                                         "SCIAMACHY Level 1c sun reference", read_dimensions);
+    harp_product_definition_add_mapping(product_definition, NULL, "data=sun_reference");
 
     dimension_type[0] = harp_dimension_time;
     dimension_type[1] = harp_dimension_spectral;

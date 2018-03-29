@@ -2074,6 +2074,32 @@ static void register_latitude_variable(harp_product_definition *product_definiti
     harp_variable_definition_add_mapping(variable_definition, NULL, NULL, path, NULL);
 }
 
+static void add_footprint_mapping(harp_product_definition *product_definition)
+{
+    const char *description;
+
+    /* split description in parts since official max string length that C90 compilers are required to support is 509 */
+    description = "The shape and size of each ground pixel is not included in the product. HARP therefore "
+        "provides its own approximation which is based on interpolation of the available center coordinates for each "
+        "of the ground pixels. Each corner coordinate is determined by its four surrounding center coordinates. "
+        "The corner coordinate is exactly at the intersection of the cross that can be made with these four points "
+        "(each line of the cross is the great-circle distance from one center coordinate to the other). ";
+    harp_product_definition_add_mapping(product_definition, description, NULL);
+
+    description = "In situations where a corner coordinate is not surrounded by four center coordinates (i.e. at "
+        "the boundaries) virtual center coordinates are created by means of extrapolation. The virtual center "
+        "coordinate is placed such that the distance to its nearest real center coordinate equals the distance "
+        "between that nearest real center coordinate and the next center coordinate going further inwards. ";
+    harp_product_definition_add_mapping(product_definition, description, NULL);
+
+    description = "In mathematical notation: when c(i,m+1) is the virtual center coordinate and c(i,m) "
+        "and c(i,m-1) are real center coordinates, then ||c(i,m+1) - c(i,m)|| = ||c(i,m) - c(i,m-1)|| and all three "
+        "coordinates should lie on the same great circle. The four virtual coordinates that lie in the utmost corners "
+        "of the boundaries are calculated by extrapolating in a diagonal direction (e.g. c(n+1,m+1) is calculated "
+        "from c(n,m) and c(n-1,m-1)).";
+    harp_product_definition_add_mapping(product_definition, description, NULL);
+}
+
 static void register_footprint_variables(harp_product_definition *product_definition)
 {
     harp_variable_definition *variable_definition;
@@ -2082,20 +2108,7 @@ static void register_footprint_variables(harp_product_definition *product_defini
     const char *description;
     const char *mapping_description;
 
-    mapping_description = "The shape and size of each ground pixel is not included in the product. HARP therefore "
-        "provides its own approximation. The calculation is based on interpolation of the available center coordinates "
-        "for each of the ground pixels. Each corner coordinate is determined by its four surrounding center "
-        "coordinates. The corner coordinate is exactly at the intersection of the cross that can be made with these "
-        "four points (each line of the cross is the minimal distance along the earth surface from one center "
-        "coordinate to the other). In situations where a corner coordinate is not surrounded by four center "
-        "coordinates (i.e. at the boundaries) virtual center coordinates are created by means of extrapolation. The "
-        "virtual center coordinate is placed such that the distance to its nearest real center coordinate equals the "
-        "distance between that nearest real center coordinate and the next center coordinate going further inwards. In "
-        "mathematical notation: when c(i,m+1) is the virtual center coordinate and c(i,m) and c(i,m-1) are real center "
-        "coordinates, then ||c(i,m+1) - c(i,m)|| = ||c(i,m) - c(i,m-1)|| and all three coordinates should lie on the "
-        "same great circle. The four virtual coordinates that lie in the utmost corners of the boundaries are "
-        "calculated by extrapolating in a diagonal direction (e.g. c(n+1,m+1) is calculated from c(n,m) and "
-        "c(n-1,m-1))";
+    mapping_description = "interpolated from the available center coordinates for each of the ground pixels";
 
     description = "longitudes of the ground pixel corners (WGS84)";
     variable_definition = harp_ingestion_register_variable_block_read(product_definition, "longitude_bounds",
@@ -2192,6 +2205,7 @@ static void register_omaeruv_product(void)
 
     /* OMAERUV product */
     product_definition = harp_ingestion_register_product(module, "OMI_L2_OMAERUV", NULL, read_dimensions_omaeruv);
+    add_footprint_mapping(product_definition);
 
     /* datetime */
     path = "/HDFEOS/SWATHS/Aerosol_NearUV_Swath/Geolocation_Fields/Time[]";
@@ -2212,9 +2226,7 @@ static void register_omaeruv_product(void)
                                                                       harp_type_double, 1, dimension_type_wavelength,
                                                                       NULL, description, "nm", NULL,
                                                                       read_aerosol_wavelength);
-    description = "wavelength information is not included in the product; however, the product specification for OMI"
-        " OMAERUV products defines a set of three fixed wavelengths: 354, 388, and 500 nm; these wavelengths"
-        " are made available as a variable that only depends on the spectral dimension (of size 3)";
+    description = "three fixed wavelengths (354, 388, and 500 nm) as defined by the OMI OMAERUV product specification";
     harp_variable_definition_add_mapping(variable_definition, NULL, NULL, NULL, description);
 
     /* aerosol_optical_depth */
@@ -2275,6 +2287,7 @@ static void register_ombro_product(void)
 
     /* OMBRO product */
     product_definition = harp_ingestion_register_product(module, "OMI_L2_OMBRO", NULL, read_dimensions);
+    add_footprint_mapping(product_definition);
 
     /* datetime */
     path = "/HDFEOS/SWATHS/OMI_Total_Column_Amount_BRO/Geolocation_Fields/Time[]";
@@ -2320,9 +2333,9 @@ static void register_omchocho_product(void)
     const char *description;
     const char *path;
 
-    module =
-        harp_ingestion_register_module_coda("OMI_L2_OMCHOCHO", "OMI", "AURA_OMI", "OMCHOCHO",
-                                            "OMI L2 Glyoxal total column", ingestion_init_omchocho, ingestion_done);
+    module = harp_ingestion_register_module_coda("OMI_L2_OMCHOCHO", "OMI", "AURA_OMI", "OMCHOCHO",
+                                                 "OMI L2 Glyoxal total column", ingestion_init_omchocho,
+                                                 ingestion_done);
 
     /* destriped ingestion option */
     description = "ingest column densities with destriping correction";
@@ -2330,6 +2343,7 @@ static void register_omchocho_product(void)
 
     /* OMCHOCHO product */
     product_definition = harp_ingestion_register_product(module, "OMI_L2_OMCHOCHO", NULL, read_dimensions);
+    add_footprint_mapping(product_definition);
 
     /* datetime */
     path = "/HDFEOS/SWATHS/OMI_Total_Column_Amount_CHOCHO/Geolocation_Fields/Time[]";
@@ -2387,6 +2401,7 @@ static void register_omcldo2_product(void)
 
     /* OMCLDO2 product */
     product_definition = harp_ingestion_register_product(module, "OMI_L2_OMCLDO2", NULL, read_dimensions);
+    add_footprint_mapping(product_definition);
 
     /* datetime */
     path = "/HDFEOS/SWATHS/CloudFractionAndPressure/Geolocation_Fields/Time[]";
@@ -2470,6 +2485,7 @@ static void register_omcldrr_product(void)
 
     /* OMCLDRR product */
     product_definition = harp_ingestion_register_product(module, "OMI_L2_OMCLDRR", NULL, read_dimensions);
+    add_footprint_mapping(product_definition);
 
     /* datetime */
     path = "/HDFEOS/SWATHS/Cloud_Product/Geolocation_Fields/Time[]";
@@ -2536,6 +2552,7 @@ static void register_omdoao3_product(void)
 
     /* OMDOAO3 product */
     product_definition = harp_ingestion_register_product(module, "OMI_L2_OMDOAO3", NULL, read_dimensions);
+    add_footprint_mapping(product_definition);
 
     /* datetime */
     path = "/HDFEOS/SWATHS/ColumnAmountO3/Geolocation_Fields/Time[]";
@@ -2637,6 +2654,7 @@ static void register_omdomino_product(void)
 
     /* OMDOMINO product */
     product_definition = harp_ingestion_register_product(module, "OMI_L2_OMDOMINO", NULL, read_dimensions);
+    add_footprint_mapping(product_definition);
 
     /* datetime */
     path = "/HDFEOS/SWATHS/DominoNO2/Geolocation_Fields/Time[]";
@@ -2802,6 +2820,7 @@ static void register_omhcho_product(void)
 
     /* OMHCHO product */
     product_definition = harp_ingestion_register_product(module, "OMI_L2_OMHCHO", NULL, read_dimensions);
+    add_footprint_mapping(product_definition);
 
     /* datetime */
     path = "/HDFEOS/SWATHS/OMI_Total_Column_Amount_HCHO/Geolocation_Fields/Time[]";
@@ -2852,6 +2871,7 @@ static void register_omno2_product(void)
 
     /* OMNO2 product */
     product_definition = harp_ingestion_register_product(module, "OMI_L2_OMNO2", NULL, read_dimensions);
+    add_footprint_mapping(product_definition);
 
     /* datetime */
     path = "/HDFEOS/SWATHS/ColumnAmountNO2/Geolocation_Fields/Time[]";
@@ -2969,6 +2989,7 @@ static void register_omo3pr_product(void)
 
     /* OMO3PR product */
     product_definition = harp_ingestion_register_product(module, "OMI_L2_OMO3PR", NULL, read_dimensions_omo3pr);
+    add_footprint_mapping(product_definition);
 
     /* datetime */
     path = "/HDFEOS/SWATHS/O3Profile/Geolocation_Fields/Time[]";
@@ -3053,6 +3074,7 @@ static void register_omoclo_product(void)
 
     /* OMOCLO product */
     product_definition = harp_ingestion_register_product(module, "OMI_L2_OMOCLO", NULL, read_dimensions);
+    add_footprint_mapping(product_definition);
 
     /* datetime */
     path = "/HDFEOS/SWATHS/OMI_Total_Column_Amount_OClO/Geolocation_Fields/Time[]";
@@ -3110,6 +3132,7 @@ static void register_omso2_product(void)
 
     /* OMSO2 product */
     product_definition = harp_ingestion_register_product(module, "OMI_L2_OMSO2", NULL, read_dimensions);
+    add_footprint_mapping(product_definition);
 
     /* datetime */
     path = "/HDFEOS/SWATHS/OMI_Total_Column_Amount_SO2/Geolocation_Fields/Time[]";
@@ -3211,6 +3234,7 @@ static void register_omto3_product(void)
 
     /* OMTO3 product */
     product_definition = harp_ingestion_register_product(module, "OMI_L2_OMTO3", NULL, read_dimensions);
+    add_footprint_mapping(product_definition);
 
     /* datetime */
     path = "/HDFEOS/SWATHS/OMI_Column_Amount_O3/Geolocation_Fields/Time[]";
@@ -3318,6 +3342,7 @@ static void register_omuvb_product(void)
 
     /* OMUVB product */
     product_definition = harp_ingestion_register_product(module, "OMI_L2_OMUVB", NULL, read_dimensions);
+    add_footprint_mapping(product_definition);
 
     /* datetime */
     path = "/HDFEOS/SWATHS/UVB/Geolocation_Fields/Time[]";
