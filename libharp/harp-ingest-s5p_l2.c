@@ -4493,7 +4493,7 @@ static void register_o3_product(void)
     harp_variable_definition_add_mapping(variable_definition, NULL, "NRTI", path, NULL);
 
     /* cloud_top_height */
-    description = "retrieved vertical distance above the surface of the cloud top using the OCRA/ROCINN CAL model";
+    description = "retrieved altitude of the cloud top using the OCRA/ROCINN CAL model";
     variable_definition =
         harp_ingestion_register_variable_full_read(product_definition, "cloud_top_height", harp_type_float, 1,
                                                    dimension_type, NULL, description, "m", exclude_non_nrti,
@@ -4502,8 +4502,7 @@ static void register_o3_product(void)
     harp_variable_definition_add_mapping(variable_definition, NULL, "NRTI", path, NULL);
 
     /* cloud_top_height_uncertainty */
-    description = "uncertainty of the retrieved vertical distance above the surface of the cloud top using the "
-        "OCRA/ROCINN CAL model";
+    description = "uncertainty of the retrieved altitude of the cloud top using the OCRA/ROCINN CAL model";
     variable_definition =
         harp_ingestion_register_variable_full_read(product_definition, "cloud_top_height_uncertainty", harp_type_float,
                                                    1, dimension_type, NULL, description, "m", exclude_non_nrti,
@@ -4531,7 +4530,7 @@ static void register_o3_product(void)
     harp_variable_definition_add_mapping(variable_definition, NULL, "OFFL", path, NULL);
 
     /* cloud_height */
-    description = "retrieved atmospheric height at the level of cloud using the OCRA/ROCINN CRB model";
+    description = "retrieved altitude at the level of cloud using the OCRA/ROCINN CRB model";
     variable_definition =
         harp_ingestion_register_variable_full_read(product_definition, "cloud_height", harp_type_float, 1,
                                                    dimension_type, NULL, description, "m", exclude_nrti,
@@ -4540,7 +4539,7 @@ static void register_o3_product(void)
     harp_variable_definition_add_mapping(variable_definition, NULL, "OFFL", path, NULL);
 
     /* cloud_height_uncertainty */
-    description = "error of the retrieved atmospheric height at the level of cloud using the OCRA/ROCINN CRB model";
+    description = "error of the retrieved altitude at the level of cloud using the OCRA/ROCINN CRB model";
     variable_definition =
         harp_ingestion_register_variable_full_read(product_definition, "cloud_height_uncertainty", harp_type_float,
                                                    1, dimension_type, NULL, description, "m", exclude_nrti,
@@ -5505,7 +5504,7 @@ static void register_cloud_cal_variables(harp_product_definition *product_defini
     harp_variable_definition_add_mapping(variable_definition, NULL, NULL, path, NULL);
 
     /* cloud_top_height */
-    description = "retrieved vertical distance above the surface of the cloud top using the OCRA/ROCINN CAL model";
+    description = "retrieved altitude of the cloud top using the OCRA/ROCINN CAL model";
     variable_definition =
         harp_ingestion_register_variable_full_read(product_definition, "cloud_top_height", harp_type_float, 1,
                                                    dimension_type, NULL, description, "m", NULL,
@@ -5514,8 +5513,7 @@ static void register_cloud_cal_variables(harp_product_definition *product_defini
     harp_variable_definition_add_mapping(variable_definition, NULL, NULL, path, NULL);
 
     /* cloud_top_height_uncertainty */
-    description = "uncertainty of the retrieved vertical distance above the surface of the cloud top using the "
-        "OCRA/ROCINN CAL model";
+    description = "uncertainty of the altitude of the cloud top using the OCRA/ROCINN CAL model";
     variable_definition =
         harp_ingestion_register_variable_full_read(product_definition, "cloud_top_height_uncertainty", harp_type_float,
                                                    1, dimension_type, NULL, description, "m", NULL,
@@ -5621,7 +5619,7 @@ static void register_cloud_crb_variables(harp_product_definition *product_defini
     harp_variable_definition_add_mapping(variable_definition, NULL, NULL, path, NULL);
 
     /* cloud_height */
-    description = "retrieved atmospheric height at the level of cloud using the OCRA/ROCINN CRB model";
+    description = "retrieved altitude at the level of cloud using the OCRA/ROCINN CRB model";
     variable_definition =
         harp_ingestion_register_variable_full_read(product_definition, "cloud_height", harp_type_float, 1,
                                                    dimension_type, NULL, description, "m", NULL,
@@ -5630,7 +5628,7 @@ static void register_cloud_crb_variables(harp_product_definition *product_defini
     harp_variable_definition_add_mapping(variable_definition, NULL, NULL, path, NULL);
 
     /* cloud_height_uncertainty */
-    description = "error of the retrieved atmospheric height at the level of cloud using the OCRA/ROCINN CRB model";
+    description = "error of the retrieved altitude at the level of cloud using the OCRA/ROCINN CRB model";
     variable_definition =
         harp_ingestion_register_variable_full_read(product_definition, "cloud_height_uncertainty", harp_type_float,
                                                    1, dimension_type, NULL, description, "m", NULL,
@@ -5756,7 +5754,7 @@ static void register_fresco_product(void)
     harp_variable_definition_add_mapping(variable_definition, NULL, NULL, path, NULL);
 
     /* cloud_height */
-    description = "cloud optical centroid height with respect to the surface";
+    description = "cloud optical centroid altitude";
     variable_definition =
         harp_ingestion_register_variable_full_read(product_definition, "cloud_height", harp_type_float, 1,
                                                    dimension_type, NULL, description, "m", NULL,
@@ -5765,7 +5763,7 @@ static void register_fresco_product(void)
     harp_variable_definition_add_mapping(variable_definition, NULL, NULL, path, NULL);
 
     /* cloud_height_uncertainty */
-    description = "uncertainty of the cloud optical centroid height";
+    description = "uncertainty of the cloud optical centroid altitude";
     variable_definition =
         harp_ingestion_register_variable_full_read(product_definition, "cloud_height_uncertainty", harp_type_float, 1,
                                                    dimension_type, NULL, description, "m", NULL,
