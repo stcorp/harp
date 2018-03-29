@@ -284,43 +284,49 @@
 <td>[]</td>
 <td>uncertainty of the effective cloud fraction</td>
 </tr>
-<tr class="row-even"><td><strong>cloud_pressure</strong></td>
+<tr class="row-even"><td><strong>cloud_fraction_validity</strong></td>
+<td>int8</td>
+<td>{<em>time</em>}</td>
+<td>&#160;</td>
+<td>continuous quality descriptor, varying between 0 (no data) and 1 (full quality data)</td>
+</tr>
+<tr class="row-odd"><td><strong>cloud_pressure</strong></td>
 <td>float</td>
 <td>{<em>time</em>}</td>
 <td>[Pa]</td>
 <td>cloud optical centroid pressure retrieved from the O2 A-band</td>
 </tr>
-<tr class="row-odd"><td><strong>cloud_pressure_uncertainty</strong></td>
+<tr class="row-even"><td><strong>cloud_pressure_uncertainty</strong></td>
 <td>float</td>
 <td>{<em>time</em>}</td>
 <td>[Pa]</td>
 <td>uncertainty of the cloud optical centroid pressure</td>
 </tr>
-<tr class="row-even"><td><strong>cloud_height</strong></td>
+<tr class="row-odd"><td><strong>cloud_height</strong></td>
 <td>float</td>
 <td>{<em>time</em>}</td>
 <td>[m]</td>
 <td>cloud optical centroid altitude</td>
 </tr>
-<tr class="row-odd"><td><strong>cloud_height_uncertainty</strong></td>
+<tr class="row-even"><td><strong>cloud_height_uncertainty</strong></td>
 <td>float</td>
 <td>{<em>time</em>}</td>
 <td>[m]</td>
 <td>uncertainty of the cloud optical centroid altitude</td>
 </tr>
-<tr class="row-even"><td><strong>cloud_albedo</strong></td>
+<tr class="row-odd"><td><strong>cloud_albedo</strong></td>
 <td>float</td>
 <td>{<em>time</em>}</td>
 <td>[]</td>
 <td>cloud albedo; this is a fixed value for FRESCO</td>
 </tr>
-<tr class="row-odd"><td><strong>cloud_albedo_uncertainty</strong></td>
+<tr class="row-even"><td><strong>cloud_albedo_uncertainty</strong></td>
 <td>float</td>
 <td>{<em>time</em>}</td>
 <td>[]</td>
 <td>cloud albedo error; since cloud albedo is fixed for FRESCO, this value is set to NaN</td>
 </tr>
-<tr class="row-even"><td><strong>index</strong></td>
+<tr class="row-odd"><td><strong>index</strong></td>
 <td>int32</td>
 <td>{<em>time</em>}</td>
 <td>&#160;</td>
@@ -434,27 +440,31 @@
 <td><em>path</em></td>
 <td><strong>/PRODUCT/cloud_fraction_crb_precision[]</strong></td>
 </tr>
-<tr class="row-even"><td><strong>cloud_pressure</strong></td>
+<tr class="row-even"><td><strong>cloud_fraction_validity</strong></td>
+<td><em>path</em></td>
+<td><strong>/PRODUCT/qa_value</strong></td>
+</tr>
+<tr class="row-odd"><td><strong>cloud_pressure</strong></td>
 <td><em>path</em></td>
 <td><strong>/PRODUCT/cloud_pressure_crb[]</strong></td>
 </tr>
-<tr class="row-odd"><td><strong>cloud_pressure_uncertainty</strong></td>
+<tr class="row-even"><td><strong>cloud_pressure_uncertainty</strong></td>
 <td><em>path</em></td>
 <td><strong>/PRODUCT/cloud_pressure_crb_precision[]</strong></td>
 </tr>
-<tr class="row-even"><td><strong>cloud_height</strong></td>
+<tr class="row-odd"><td><strong>cloud_height</strong></td>
 <td><em>path</em></td>
 <td><strong>/PRODUCT/cloud_height_crb[]</strong></td>
 </tr>
-<tr class="row-odd"><td><strong>cloud_height_uncertainty</strong></td>
+<tr class="row-even"><td><strong>cloud_height_uncertainty</strong></td>
 <td><em>path</em></td>
 <td><strong>/PRODUCT/cloud_height_crb_precision[]</strong></td>
 </tr>
-<tr class="row-even"><td><strong>cloud_albedo</strong></td>
+<tr class="row-odd"><td><strong>cloud_albedo</strong></td>
 <td><em>path</em></td>
 <td><strong>/PRODUCT/cloud_albedo_crb[]</strong></td>
 </tr>
-<tr class="row-odd"><td><strong>cloud_albedo_uncertainty</strong></td>
+<tr class="row-even"><td><strong>cloud_albedo_uncertainty</strong></td>
 <td><em>path</em></td>
 <td><strong>/PRODUCT/cloud_albedo_crb_precision[]</strong></td>
 </tr>

@@ -284,7 +284,13 @@
 <td>[]</td>
 <td>uncertainty of the aerosol index</td>
 </tr>
-<tr class="row-even"><td><strong>index</strong></td>
+<tr class="row-even"><td><strong>absorbing_aerosol_index_validity</strong></td>
+<td>int8</td>
+<td>{<em>time</em>}</td>
+<td>&#160;</td>
+<td>continuous quality descriptor, varying between 0 (no data) and 1 (full quality data)</td>
+</tr>
+<tr class="row-odd"><td><strong>index</strong></td>
 <td>int32</td>
 <td>{<em>time</em>}</td>
 <td>&#160;</td>
@@ -438,6 +444,10 @@
 </tr>
 <tr class="row-odd"><td><em>path</em></td>
 <td><strong>/PRODUCT/aerosol_index_340_380_precision</strong></td>
+</tr>
+<tr class="row-even"><td><strong>absorbing_aerosol_index_validity</strong></td>
+<td><em>path</em></td>
+<td><strong>/PRODUCT/qa_value</strong></td>
 </tr>
 </tbody>
 </table>

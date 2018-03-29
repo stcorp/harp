@@ -2041,6 +2041,20 @@ static int read_product_ozone_tropospheric_column_precision(void *user_data, har
                         info->num_scanlines * info->num_pixels, data);
 }
 
+static int read_product_qa_value(void *user_data, harp_array data)
+{
+    ingest_info *info = (ingest_info *)user_data;
+    int result;
+
+    /* we don't want the add_offset/scale_factor applied for the qa_value; we just want the raw 8bit value */
+    coda_set_option_perform_conversions(0);
+    result = read_dataset(info->product_cursor, "qa_value", harp_type_int8, info->num_scanlines * info->num_pixels,
+                          data);
+    coda_set_option_perform_conversions(1);
+
+    return result;
+}
+
 static int read_results_aerosol_mid_height(void *user_data, harp_array data)
 {
     ingest_info *info = (ingest_info *)user_data;
@@ -3839,6 +3853,14 @@ static void register_aer_ai_product(void)
                                          "/PRODUCT/aerosol_index_354_388_precision", NULL);
     harp_variable_definition_add_mapping(variable_definition, "wavelength_ratio=340_380nm", NULL,
                                          "/PRODUCT/aerosol_index_340_380_precision", NULL);
+
+    /* absorbing_aerosol_index_validity */
+    description = "continuous quality descriptor, varying between 0 (no data) and 1 (full quality data)";
+    variable_definition =
+        harp_ingestion_register_variable_full_read(product_definition, "absorbing_aerosol_index_validity",
+                                                   harp_type_int8, 1, dimension_type, NULL, description, NULL, NULL,
+                                                   read_product_qa_value);
+    harp_variable_definition_add_mapping(variable_definition, NULL, NULL, "/PRODUCT/qa_value", NULL);
 }
 
 static void register_aer_lh_product(void)
@@ -3875,6 +3897,14 @@ static void register_aer_lh_product(void)
                                                    read_product_aerosol_mid_height_precision);
     path = "/PRODUCT/aerosol_mid_height_precision[]";
     harp_variable_definition_add_mapping(variable_definition, NULL, NULL, path, NULL);
+
+    /* aerosol_height_validity */
+    description = "continuous quality descriptor, varying between 0 (no data) and 1 (full quality data)";
+    variable_definition =
+        harp_ingestion_register_variable_full_read(product_definition, "aerosol_height_validity_validity",
+                                                   harp_type_int8, 1, dimension_type, NULL, description, NULL, NULL,
+                                                   read_product_qa_value);
+    harp_variable_definition_add_mapping(variable_definition, NULL, NULL, "/PRODUCT/qa_value", NULL);
 
     /* aerosol_pressure */
     description = "pressure at center of aerosol layer";
@@ -3986,6 +4016,15 @@ static void register_ch4_product(void)
                                                    read_product_methane_mixing_ratio_precision);
     path = "/PRODUCT/methane_mixing_ratio_precision[]";
     harp_variable_definition_add_mapping(variable_definition, NULL, NULL, path, NULL);
+
+    /* CH4_column_volume_mixing_ratio_dry_air_validity */
+    description = "continuous quality descriptor, varying between 0 (no data) and 1 (full quality data)";
+    variable_definition =
+        harp_ingestion_register_variable_full_read(product_definition,
+                                                   "CH4_column_volume_mixing_ratio_dry_air_validity", harp_type_int8, 1,
+                                                   dimension_type, NULL, description, NULL, NULL,
+                                                   read_product_qa_value);
+    harp_variable_definition_add_mapping(variable_definition, NULL, NULL, "/PRODUCT/qa_value", NULL);
 
     /* CH4_column_volume_mixing_ratio_dry_air_avk */
     description = "column averaging kernel for methane retrieval";
@@ -4127,6 +4166,14 @@ static void register_co_product(void)
     path = "/PRODUCT/carbonmonoxide_total_column_precision[]";
     harp_variable_definition_add_mapping(variable_definition, NULL, NULL, path, NULL);
 
+    /* CO_column_number_density_validity */
+    description = "continuous quality descriptor, varying between 0 (no data) and 1 (full quality data)";
+    variable_definition =
+        harp_ingestion_register_variable_full_read(product_definition, "CO_column_number_density_validity",
+                                                   harp_type_int8, 1, dimension_type, NULL, description, NULL, NULL,
+                                                   read_product_qa_value);
+    harp_variable_definition_add_mapping(variable_definition, NULL, NULL, "/PRODUCT/qa_value", NULL);
+
     /* CO_column_number_density_avk */
     description = "averaging kernel for the vertically integrated CO column density";
     variable_definition =
@@ -4236,6 +4283,15 @@ static void register_hcho_product(void)
                                                    read_results_formaldehyde_tropospheric_vertical_column_trueness);
     path = "/PRODUCT/SUPPORT_DATA/DETAILED_RESULTS/formaldehyde_tropospheric_vertical_column_trueness[]";
     harp_variable_definition_add_mapping(variable_definition, NULL, NULL, path, NULL);
+
+    /* tropospheric_HCHO_column_number_density_validity */
+    description = "continuous quality descriptor, varying between 0 (no data) and 1 (full quality data)";
+    variable_definition =
+        harp_ingestion_register_variable_full_read(product_definition,
+                                                   "tropospheric_HCHO_column_number_density_validity", harp_type_int8,
+                                                   1, dimension_type, NULL, description, NULL, NULL,
+                                                   read_product_qa_value);
+    harp_variable_definition_add_mapping(variable_definition, NULL, NULL, "/PRODUCT/qa_value", NULL);
 
     /* HCHO_column_number_density_avk */
     description = "averaging kernel for the total HCHO column number density";
@@ -4359,6 +4415,14 @@ static void register_o3_product(void)
                                                    NULL, read_product_ozone_total_vertical_column_precision);
     path = "/PRODUCT/ozone_total_vertical_column_precision[]";
     harp_variable_definition_add_mapping(variable_definition, NULL, NULL, path, NULL);
+
+    /* O3_column_number_density_validity */
+    description = "continuous quality descriptor, varying between 0 (no data) and 1 (full quality data)";
+    variable_definition =
+        harp_ingestion_register_variable_full_read(product_definition, "O3_column_number_density_validity",
+                                                   harp_type_int8, 1, dimension_type, NULL, description, NULL, NULL,
+                                                   read_product_qa_value);
+    harp_variable_definition_add_mapping(variable_definition, NULL, NULL, "/PRODUCT/qa_value", NULL);
 
     /* O3_column_number_density_apriori */
     description = "O3 column number density apriori";
@@ -4618,6 +4682,14 @@ static void register_o3_profile_variables(harp_product_definition *product_defin
                                                    read_product_ozone_profile_precision);
     path = "/PRODUCT/ozone_profile_precision[]";
     harp_variable_definition_add_mapping(variable_definition, NULL, NULL, path, NULL);
+
+    /* O3_volume_mixing_ratio_validity */
+    description = "continuous quality descriptor, varying between 0 (no data) and 1 (full quality data)";
+    variable_definition =
+        harp_ingestion_register_variable_full_read(product_definition, "O3_volume_mixing_ratio_validity",
+                                                   harp_type_int8, 1, dimension_type, NULL, description, NULL, NULL,
+                                                   read_product_qa_value);
+    harp_variable_definition_add_mapping(variable_definition, NULL, NULL, "/PRODUCT/qa_value", NULL);
 
     /* O3_volume_mixing_ratio_avk */
     description = "O3 volume mixing ratio averaging kernel";
@@ -5041,6 +5113,15 @@ static void register_no2_product(void)
     path = "/PRODUCT/nitrogendioxide_tropospheric_column_precision[]";
     harp_variable_definition_add_mapping(variable_definition, NULL, NULL, path, NULL);
 
+    /* tropospheric_NO2_column_number_density_validity */
+    description = "continuous quality descriptor, varying between 0 (no data) and 1 (full quality data)";
+    variable_definition =
+        harp_ingestion_register_variable_full_read(product_definition,
+                                                   "tropospheric_NO2_column_number_density_validity", harp_type_int8, 1,
+                                                   dimension_type, NULL, description, NULL, NULL,
+                                                   read_product_qa_value);
+    harp_variable_definition_add_mapping(variable_definition, NULL, NULL, "/PRODUCT/qa_value", NULL);
+
     /* tropospheric_NO2_column_number_density_amf */
     description = "tropospheric air mass factor, computed by integrating the altitude dependent air mass factor over "
         "the atmospheric layers from the surface up to and including the layer with the tropopause";
@@ -5297,6 +5378,15 @@ static void register_so2_product(void)
     path = "/PRODUCT/SUPPORT_DATA/DETAILED_RESULTS/sulfurdioxide_total_vertical_column_15km_trueness[]";
     harp_variable_definition_add_mapping(variable_definition, "so2_column=15km", "NRTI", path, NULL);
 
+    /* SO2_column_number_density_uncertainty_validity */
+    description = "continuous quality descriptor, varying between 0 (no data) and 1 (full quality data)";
+    variable_definition =
+        harp_ingestion_register_variable_full_read(product_definition,
+                                                   "SO2_column_number_density_uncertainty_validity", harp_type_int8, 1,
+                                                   dimension_type, NULL, description, NULL, NULL,
+                                                   read_product_qa_value);
+    harp_variable_definition_add_mapping(variable_definition, NULL, NULL, "/PRODUCT/qa_value", NULL);
+
     /* SO2_column_number_density_amf */
     description = "total air mass factor";
     variable_definition =
@@ -5438,6 +5528,14 @@ static void register_cloud_cal_variables(harp_product_definition *product_defini
                                                    read_product_cloud_fraction_precision);
     path = "/PRODUCT/cloud_fraction_precision[]";
     harp_variable_definition_add_mapping(variable_definition, NULL, NULL, path, NULL);
+
+    /* cloud_fraction_validity */
+    description = "continuous quality descriptor, varying between 0 (no data) and 1 (full quality data)";
+    variable_definition =
+        harp_ingestion_register_variable_full_read(product_definition, "cloud_fraction_validity", harp_type_int8, 1,
+                                                   dimension_type, NULL, description, NULL, NULL,
+                                                   read_product_qa_value);
+    harp_variable_definition_add_mapping(variable_definition, NULL, NULL, "/PRODUCT/qa_value", NULL);
 
     /* cloud_fraction_apriori */
     description = "effective radiometric cloud fraction a priori";
@@ -5591,6 +5689,14 @@ static void register_cloud_crb_variables(harp_product_definition *product_defini
     path = "/PRODUCT/SUPPORT_DATA/DETAILED_RESULTS/cloud_fraction_crb_precision[]";
     harp_variable_definition_add_mapping(variable_definition, NULL, NULL, path, NULL);
 
+    /* cloud_fraction_validity */
+    description = "continuous quality descriptor, varying between 0 (no data) and 1 (full quality data)";
+    variable_definition =
+        harp_ingestion_register_variable_full_read(product_definition, "cloud_fraction_validity", harp_type_int8, 1,
+                                                   dimension_type, NULL, description, NULL, NULL,
+                                                   read_product_qa_value);
+    harp_variable_definition_add_mapping(variable_definition, NULL, NULL, "/PRODUCT/qa_value", NULL);
+
     /* cloud_fraction_apriori */
     description = "effective radiometric cloud fraction a priori";
     variable_definition =
@@ -5734,6 +5840,14 @@ static void register_fresco_product(void)
                                                    read_product_cloud_fraction_crb_precision);
     path = "/PRODUCT/cloud_fraction_crb_precision[]";
     harp_variable_definition_add_mapping(variable_definition, NULL, NULL, path, NULL);
+
+    /* cloud_fraction_validity */
+    description = "continuous quality descriptor, varying between 0 (no data) and 1 (full quality data)";
+    variable_definition =
+        harp_ingestion_register_variable_full_read(product_definition, "cloud_fraction_validity", harp_type_int8, 1,
+                                                   dimension_type, NULL, description, NULL, NULL,
+                                                   read_product_qa_value);
+    harp_variable_definition_add_mapping(variable_definition, NULL, NULL, "/PRODUCT/qa_value", NULL);
 
     /* cloud_pressure */
     description = "cloud optical centroid pressure retrieved from the O2 A-band";
