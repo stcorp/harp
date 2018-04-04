@@ -3901,8 +3901,8 @@ static void register_aer_lh_product(void)
     /* aerosol_height_validity */
     description = "continuous quality descriptor, varying between 0 (no data) and 1 (full quality data)";
     variable_definition =
-        harp_ingestion_register_variable_full_read(product_definition, "aerosol_height_validity_validity",
-                                                   harp_type_int8, 1, dimension_type, NULL, description, NULL, NULL,
+        harp_ingestion_register_variable_full_read(product_definition, "aerosol_height_validity", harp_type_int8, 1,
+                                                   dimension_type, NULL, description, NULL, NULL,
                                                    read_product_qa_value);
     harp_variable_definition_add_mapping(variable_definition, NULL, NULL, "/PRODUCT/qa_value", NULL);
 
