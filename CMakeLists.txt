@@ -458,7 +458,7 @@ set_target_properties(harp PROPERTIES
   SOVERSION ${LIBHARP_MAJOR})
 if(WIN32)
   # Also set DLL compile flags
-  set_target_properties(harp PROPERTIES COMPILE_FLAGS "-DLIBHARPDLL -DLIBHARPDLL_EXPORTS -DH5_BUILT_AS_DYNAMIC_LIB -DLIBCODADLL")
+  set_target_properties(harp PROPERTIES COMPILE_FLAGS "-DLIBHARPDLL -DLIBHARPDLL_EXPORTS -DH5_BUILT_AS_DYNAMIC_LIB -DLIBCODADLL -DYY_NO_UNISTD_H")
   install(TARGETS harp RUNTIME DESTINATION bin ARCHIVE DESTINATION libs)
 else(WIN32)
   install(TARGETS harp DESTINATION lib)
@@ -469,7 +469,9 @@ add_library(harp_static STATIC ${LIBHARP_SOURCES} ${LIBUDUNITS2_SOURCES} ${LIBNE
 # On Windows, we want libharp.lib for static, harp.dll & harp.lib for shared.
 # On Unix, we want libharp.a and libharp.so
 if(WIN32)
-  set_target_properties(harp_static PROPERTIES OUTPUT_NAME "libharp")
+  set_target_properties(harp_static PROPERTIES
+    COMPILE_FLAGS "-DYY_NO_UNISTD_H"
+    OUTPUT_NAME "libharp")
   install(TARGETS harp_static DESTINATION libs)
 else(WIN32)
   set_target_properties(harp_static PROPERTIES OUTPUT_NAME "harp")
