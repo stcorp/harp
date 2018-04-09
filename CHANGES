@@ -1,3 +1,6 @@
+1.2 2018-04-09
+~~~~~~~~~~~~~~
+
 * Allow data compression for HDF5 output:
   - Added harp_set_option_hdf5_compression() and
     harp_get_option_hdf5_compression() functions to C library.
@@ -6,15 +9,15 @@
 
 * Allow regrid() operation to interpolate in the time dimension.
 
-* Improved binning of angle values (average of 1 and 359 is now 0).
+* Improved binning of angle values (average of 1 and 359 [deg] is now 0).
 
 * Added bin() operation variant without parameters.
 
 * The bin() operation using a collocation result file now retains the
   collocation_index variable (with the first value for each bin).
 
-* Changed smooth() operation such that each level where the source grid point
-  was NaN the target grid point also remains NaN.
+* Changed smooth() operation such that each vertical level where the source
+  grid point was NaN the target grid point also remains NaN.
 
 * Added -ap option to harpmerge.
 

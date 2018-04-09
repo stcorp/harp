@@ -1,6 +1,6 @@
 Copyright (C) 2015-2018 S[&]T, The Netherlands
 
-                HARP 1.1 Release Notes
+                HARP 1.2 Release Notes
 
 
 HARP is a toolset for ingesting, processing and inter-comparing satellite or
@@ -68,8 +68,11 @@ Documentation
 
 Full documentation in HTML is included with the HARP software.
 
-An online version of the documentation matching the latest development
-status on GitHub can be viewed at:
+An online version of the documentation for this release is available at:
+
+    https://cdn.rawgit.com/stcorp/harp/1.2/doc/html/index.html
+
+A version matching the latest development status on GitHub can be viewed at:
 
     https://cdn.rawgit.com/stcorp/harp/master/doc/html/index.html
 
