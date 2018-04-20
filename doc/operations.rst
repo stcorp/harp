@@ -115,13 +115,13 @@ Supported functions:
     ``bin(collocation-result-file, a|b)``
         For all variables in a product perform an averaging in the time
         dimension such that all samples in the same bin get averaged.
-        A bin is defined by all samples having the same collocated pair
+        A bin is defined by all samples having the same collocated sample
         from the dataset that is indicated by the second parameter.
         Example:
 
             | ``bin("collocation-result.csv", b)``
-            | (the product is part of dataset A and the collocated pair
-              that defines the bin is part of dataset B)
+            | (the product is part of dataset A and the collocated
+              sample that defines the bin is part of dataset B)
 
     ``collocate_left(collocation-result-file)``
         Apply the specified collocation result file as an index
