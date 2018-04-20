@@ -497,7 +497,7 @@ Formal definition
        'area_intersects_area', '(', stringvalue, ',', floatvalue, ')' |
        'area_intersects_area', '(', '(', floatvaluelist, ')', [unit], '(', floatvaluelist, ')', [unit], ')' |
        'area_intersects_area', '(', stringvalue, ')' |
-       'bin', '(', variable, ')' |
+       'bin', '(', [variable], ')' |
        'bin', '(', stringvalue, ',', ( 'a' | 'b' ), ')' |
        'collocate_left', '(', stringvalue, ')' |
        'collocate_right', '(', stringvalue, ')' |
@@ -515,6 +515,7 @@ Formal definition
        'regrid', '(', dimension, ',', variable, unit, ',', intvalue, ',', floatvalue, ',', floatvalue, ')' |
        'regrid', '(', dimension, ',', variable, unit, ',', stringvalue, ',', ( 'a' | 'b' ), ',', stringvalue, ')' |
        'regrid', '(', dimension, ',', variable, unit, ',', stringvalue, ')' |
+       'rename', '(', variable, ',', variable, ')' |
        'set', '(', stringvalue, ',', stringvalue, ')' |
        'smooth', '(', variable, ',', dimension, ',', variable, unit, ',', stringvalue, ',', ( 'a' | 'b' ), ',', stringvalue, ')' |
        'smooth', '(', '(', variablelist, ')', ',', dimension, ',', variable, unit, ',', stringvalue, ',', ( 'a' | 'b' ), ',', stringvalue, ')' |
