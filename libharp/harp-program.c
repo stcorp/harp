@@ -871,7 +871,7 @@ static int execute_regrid(harp_product *product, harp_operation_regrid *operatio
         return -1;
     }
 
-    if (harp_product_regrid_with_axis_variable(product, operation->axis_variable, NULL) != 0)
+    if (harp_product_regrid_with_axis_variable(product, operation->axis_variable, operation->axis_bounds_variable) != 0)
     {
         harp_variable_delete(target_grid);
         return -1;

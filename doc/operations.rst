@@ -262,6 +262,22 @@ Supported functions:
 
             ``regrid(vertical, altitude [km], (1.0, 2.0, 5.0, 10.0, 15.0, 20.0, 30.0))``
 
+    ``regrid(dimension, axis-variable unit, (value, ...), (value, ...))``
+        Regrid all variables in the product for the given dimension using
+        the given axis variable as target grid. The operation will use a
+        ``derive(axis-variable {[time,]dimension} unit)`` and
+        ``derive(<axis-variable>_bounds {[time,]dimension} unit)`` to
+        determine the current grid and boundaries. The target grid mid points
+        are specified by the first list of values and the target grid
+        boundaries by the second list of values. If there are N mid points,
+        then the list of boundary values can either contain N+1 points if the
+        boundaries are adjacent or 2N points to define each boundary pair
+        separately.
+        Example:
+
+            | ``regrid(vertical, altitude [km], (1.0, 2.0, 5.0), (0.0, 1.5, 3.0, 7.0))``
+            | ``regrid(vertical, altitude [km], (1.0, 2.0, 5.0), (0.5, 1.5, 1.5, 2.5, 4.0, 6.0))``
+
     ``regrid(dimension, axis-variable unit, length, offset, step)``
         Regrid all variables in the product for the given dimension using
         the given axis variable as target grid. The operation will use a
@@ -512,6 +528,7 @@ Formal definition
        'point_in_area', '(', '(', floatvaluelist, ')', [unit], '(', floatvaluelist, ')', [unit], ')' |
        'point_in_area', '(', stringvalue, ')' |
        'regrid', '(', dimension, ',', variable, unit, ',', '(', floatvaluelist, ')', ')' |
+       'regrid', '(', dimension, ',', variable, unit, ',', '(', floatvaluelist, ')', ',', '(', floatvaluelist, ')', ')' |
        'regrid', '(', dimension, ',', variable, unit, ',', intvalue, ',', floatvalue, ',', floatvalue, ')' |
        'regrid', '(', dimension, ',', variable, unit, ',', stringvalue, ',', ( 'a' | 'b' ), ',', stringvalue, ')' |
        'regrid', '(', dimension, ',', variable, unit, ',', stringvalue, ')' |

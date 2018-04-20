@@ -33,6 +33,7 @@
 
 #include <assert.h>
 #include <math.h>
+#include <stdio.h>
 #include <stdlib.h>
 #include <string.h>
 
@@ -882,6 +883,10 @@ static void regrid_delete(harp_operation_regrid *operation)
         if (operation->axis_variable != NULL)
         {
             harp_variable_delete(operation->axis_variable);
+        }
+        if (operation->axis_bounds_variable != NULL)
+        {
+            harp_variable_delete(operation->axis_bounds_variable);
         }
 
         free(operation);
@@ -2291,13 +2296,25 @@ int harp_operation_point_in_area_filter_new(const char *filename, int num_latitu
 }
 
 int harp_operation_regrid_new(harp_dimension_type dimension_type, const char *axis_variable_name, const char *axis_unit,
-                              long num_values, double *values, harp_operation **new_operation)
+                              long num_values, double *values, long num_bounds_values, double *bounds_values,
+                              harp_operation **new_operation)
 {
     harp_operation_regrid *operation;
     long i;
 
     assert(axis_variable_name != NULL);
     assert(axis_unit != NULL);
+
+    if (num_bounds_values > 0)
+    {
+        if (num_bounds_values != num_values + 1 && num_bounds_values != 2 * num_values)
+        {
+            harp_set_error(HARP_ERROR_INVALID_ARGUMENT,
+                           "number of boundary values (%ld) should equal the number of grid values + 1 (%ld) or equal "
+                           "twice the number of grid values (%ld)", num_bounds_values, num_values + 1, 2 * num_values);
+            return -1;
+        }
+    }
 
     operation = (harp_operation_regrid *)malloc(sizeof(harp_operation_regrid));
     if (operation == NULL)
@@ -2308,6 +2325,7 @@ int harp_operation_regrid_new(harp_dimension_type dimension_type, const char *ax
     }
     operation->type = operation_regrid;
     operation->axis_variable = NULL;
+    operation->axis_bounds_variable = NULL;
 
     if (harp_variable_new(axis_variable_name, harp_type_double, 1, &dimension_type, &num_values,
                           &operation->axis_variable) != 0)
@@ -2323,6 +2341,56 @@ int harp_operation_regrid_new(harp_dimension_type dimension_type, const char *ax
     for (i = 0; i < num_values; i++)
     {
         operation->axis_variable->data.double_data[i] = values[i];
+    }
+
+    if (num_bounds_values > 0)
+    {
+        harp_dimension_type dimension_type_bounds[2];
+        long dimension[2];
+        char *bounds_name;
+
+        bounds_name = malloc(sizeof(axis_variable_name) + 8);
+        if (bounds_name == NULL)
+        {
+            harp_set_error(HARP_ERROR_OUT_OF_MEMORY, "out of memory (could not allocate %lu bytes) (%s:%u)",
+                           sizeof(axis_variable_name) + 8, __FILE__, __LINE__);
+            regrid_delete(operation);
+            return -1;
+        }
+        snprintf(bounds_name, sizeof(axis_variable_name) + 8, "%s_bounds", axis_variable_name);
+        dimension_type_bounds[0] = dimension_type;
+        dimension_type_bounds[1] = harp_dimension_independent;
+        dimension[0] = num_values;
+        dimension[1] = 2;
+        if (harp_variable_new(bounds_name, harp_type_double, 2, dimension_type_bounds, dimension,
+                              &operation->axis_bounds_variable) != 0)
+        {
+            regrid_delete(operation);
+            free(bounds_name);
+            return -1;
+        }
+        free(bounds_name);
+        if (harp_variable_set_unit(operation->axis_variable, axis_unit) != 0)
+        {
+            regrid_delete(operation);
+            return -1;
+        }
+        if (num_bounds_values == num_values + 1)
+        {
+            for (i = 0; i < num_values; i++)
+            {
+                operation->axis_bounds_variable->data.double_data[2 * i] = bounds_values[i];
+                operation->axis_bounds_variable->data.double_data[2 * i + 1] = bounds_values[i + 1];
+            }
+        }
+        else
+        {
+            /* num_bounds_values == 2 * num_values */
+            for (i = 0; i < num_bounds_values; i++)
+            {
+                operation->axis_bounds_variable->data.double_data[i] = bounds_values[i];
+            }
+        }
     }
 
     *new_operation = (harp_operation *)operation;

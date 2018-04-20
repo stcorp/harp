@@ -370,6 +370,7 @@ typedef struct harp_operation_regrid_struct
     harp_operation_type type;
     /* parameters */
     harp_variable *axis_variable;
+    harp_variable *axis_bounds_variable;
 } harp_operation_regrid;
 
 typedef struct harp_operation_regrid_collocated_dataset_struct
@@ -549,7 +550,8 @@ int harp_operation_point_in_area_filter_new(const char *filename, int num_latitu
                                             const char *latitude_unit, int num_longitudes, double *longitude,
                                             const char *longitude_unit, harp_operation **operation);
 int harp_operation_regrid_new(harp_dimension_type dimension_type, const char *axis_variable_name, const char *axis_unit,
-                              long num_values, double *values, harp_operation **new_operation);
+                              long num_values, double *values, long num_bounds_values, double *bounds_values,
+                              harp_operation **new_operation);
 int harp_operation_regrid_collocated_dataset_new(harp_dimension_type dimension_type, const char *axis_variable_name,
                                                  const char *axis_unit, const char *collocation_result,
                                                  const char target_dataset, const char *dataset_dir,

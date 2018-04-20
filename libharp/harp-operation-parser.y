@@ -1200,7 +1200,20 @@ operation:
             free($3);
         }
     | FUNC_REGRID '(' DIMENSION ',' identifier UNIT ',' '(' double_array ')' ')' {
-            if (harp_operation_regrid_new($3, $5, $6, $9->num_elements, $9->array.double_data, &$$) != 0)
+            if (harp_operation_regrid_new($3, $5, $6, $9->num_elements, $9->array.double_data, 0, NULL, &$$) != 0)
+            {
+                free($5);
+                free($6);
+                harp_sized_array_delete($9);
+                YYERROR;
+            }
+            free($5);
+            free($6);
+            harp_sized_array_delete($9);
+        }
+    | FUNC_REGRID '(' DIMENSION ',' identifier UNIT ',' '(' double_array ')' ',' '(' double_array ')' ')' {
+            if (harp_operation_regrid_new($3, $5, $6, $9->num_elements, $9->array.double_data, $13->num_elements,
+                                          $13->array.double_data, &$$) != 0)
             {
                 free($5);
                 free($6);
@@ -1232,7 +1245,7 @@ operation:
                     YYERROR;
                 }
             }
-            if (harp_operation_regrid_new($3, $5, $6, array->num_elements, array->array.double_data, &$$) != 0)
+            if (harp_operation_regrid_new($3, $5, $6, array->num_elements, array->array.double_data, 0, NULL, &$$) != 0)
             {
                 harp_sized_array_delete(array);
                 free($5);
