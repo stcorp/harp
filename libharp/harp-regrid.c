@@ -692,7 +692,8 @@ LIBHARP_API int harp_product_regrid_with_axis_variable(harp_product *product, ha
         harp_variable_delete(variable);
         goto error;
     }
-    if (source_bounds != NULL)
+    /* add axis bounds variable if either we derived it or if it was provided explicitly */
+    if (source_bounds != NULL || local_target_bounds != NULL)
     {
         if (harp_variable_copy(local_target_bounds, &variable) != 0)
         {
