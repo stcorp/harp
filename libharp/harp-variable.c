@@ -1424,6 +1424,35 @@ LIBHARP_API int harp_variable_copy(const harp_variable *other_variable, harp_var
     return 0;
 }
 
+/** Copy all attributes of a variable to a target variable.
+ * This will copy all attribute information of a variable that is not available as a parameter of \a harp_variable_new.
+ * \param variable Variable from which the attributes should be copied.
+ * \param target_variable Variable into which the attribtes will be stored.
+ * \return
+ *   \arg \c 0, Success.
+ *   \arg \c -1, Error occurred (check #harp_errno).
+ */
+LIBHARP_API int harp_variable_copy_attributes(const harp_variable *variable, harp_variable *target_variable)
+{
+    if (harp_variable_set_description(target_variable, variable->description) != 0)
+    {
+        return -1;
+    }
+
+    if (harp_variable_set_unit(target_variable, variable->unit) != 0)
+    {
+        return -1;
+    }
+
+    if (harp_variable_set_enumeration_values(target_variable, variable->num_enum_values,
+                                             (const char **)variable->enum_name) != 0)
+    {
+        return -1;
+    }
+
+    return 0;
+}
+
 /** Append one variable to another.
  * Both variables need to have the 'time' dimension as first dimension.
  * And all non-time dimensions need to be the same for both variables.

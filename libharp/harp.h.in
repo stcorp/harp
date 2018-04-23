@@ -461,6 +461,7 @@ LIBHARP_API int harp_variable_new(const char *name, harp_data_type data_type, in
                                   harp_variable **new_variable);
 LIBHARP_API void harp_variable_delete(harp_variable *variable);
 LIBHARP_API int harp_variable_copy(const harp_variable *variable, harp_variable **new_variable);
+LIBHARP_API int harp_variable_copy_attributes(const harp_variable *variable, harp_variable *target_variable);
 LIBHARP_API int harp_variable_append(harp_variable *variable, const harp_variable *other_variable);
 LIBHARP_API int harp_variable_rename(harp_variable *variable, const char *name);
 LIBHARP_API int harp_variable_set_description(harp_variable *variable, const char *description);
