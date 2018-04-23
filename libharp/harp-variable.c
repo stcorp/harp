@@ -1711,13 +1711,6 @@ LIBHARP_API int harp_variable_set_enumeration_values(harp_variable *variable, in
             }
         }
     }
-    if (variable->data_type != harp_type_int8 && variable->data_type != harp_type_int16 &&
-        variable->data_type != harp_type_int32)
-    {
-        harp_set_error(HARP_ERROR_INVALID_ARGUMENT, "enumeration values not allowed for variable of type %s (%s:%u)",
-                       harp_get_data_type_name(variable->data_type), __FILE__, __LINE__);
-        return -1;
-    }
 
     /* first clear the existing enumeration values */
     if (variable->enum_name != NULL)
@@ -1738,6 +1731,14 @@ LIBHARP_API int harp_variable_set_enumeration_values(harp_variable *variable, in
     {
         /* nothing futher to do -> return */
         return 0;
+    }
+
+    if (variable->data_type != harp_type_int8 && variable->data_type != harp_type_int16 &&
+        variable->data_type != harp_type_int32)
+    {
+        harp_set_error(HARP_ERROR_INVALID_ARGUMENT, "enumeration values not allowed for variable of type %s (%s:%u)",
+                       harp_get_data_type_name(variable->data_type), __FILE__, __LINE__);
+        return -1;
     }
 
     variable->enum_name = malloc(num_enum_values * sizeof(char *));
