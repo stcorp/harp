@@ -93,6 +93,7 @@ WHITESPACE   [[:space:]]+
 "area_inside_area"      return FUNC_AREA_INSIDE_AREA;
 "area_intersects_area"  return FUNC_AREA_INTERSECTS_AREA;
 "bin"                   return FUNC_BIN;
+"bin_spatial"           return FUNC_BIN_SPATIAL;
 "collocate_left"        return FUNC_COLLOCATE_LEFT;
 "collocate_right"       return FUNC_COLLOCATE_RIGHT;
 "derive"                return FUNC_DERIVE;

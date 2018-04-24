@@ -637,6 +637,12 @@ static int execute_bin_collocated(harp_product *product, harp_operation_bin_coll
     return 0;
 }
 
+static int execute_bin_spatial(harp_product *product, harp_operation_bin_spatial *operation)
+{
+    return harp_product_bin_spatial_full(product, operation->num_latitude_edges, operation->latitude_edges,
+                                         operation->num_longitude_edges, operation->longitude_edges);
+}
+
 static int execute_bin_with_variable(harp_product *product, harp_operation_bin_with_variable *operation)
 {
     return harp_product_bin_with_variable(product, operation->variable_name);
@@ -1183,6 +1189,12 @@ int harp_product_execute_program(harp_product *product, harp_program *program)
                 break;
             case operation_bin_full:
                 if (harp_product_bin_full(product) != 0)
+                {
+                    return -1;
+                }
+                break;
+            case operation_bin_spatial:
+                if (execute_bin_spatial(product, (harp_operation_bin_spatial *)operation) != 0)
                 {
                     return -1;
                 }

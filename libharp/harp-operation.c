@@ -610,6 +610,22 @@ static void bin_full_delete(harp_operation *operation)
     }
 }
 
+static void bin_spatial_delete(harp_operation_bin_spatial *operation)
+{
+    if (operation != NULL)
+    {
+        if (operation->latitude_edges != NULL)
+        {
+            free(operation->latitude_edges);
+        }
+        if (operation->longitude_edges != NULL)
+        {
+            free(operation->longitude_edges);
+        }
+        free(operation);
+    }
+}
+
 static void bin_with_variable_delete(harp_operation_bin_with_variable *operation)
 {
     if (operation != NULL)
@@ -1155,6 +1171,9 @@ void harp_operation_delete(harp_operation *operation)
         case operation_bin_full:
             bin_full_delete(operation);
             break;
+        case operation_bin_spatial:
+            bin_spatial_delete((harp_operation_bin_spatial *)operation);
+            break;
         case operation_bin_with_variable:
             bin_with_variable_delete((harp_operation_bin_with_variable *)operation);
             break;
@@ -1551,6 +1570,55 @@ int harp_operation_bin_full_new(harp_operation **new_operation)
     operation->type = operation_bin_full;
 
     *new_operation = operation;
+    return 0;
+}
+
+int harp_operation_bin_spatial_new(long num_latitude_edges, double *latitude_edges, long num_longitude_edges,
+                                   double *longitude_edges, harp_operation **new_operation)
+{
+    harp_operation_bin_spatial *operation;
+    long i;
+
+    operation = (harp_operation_bin_spatial *)malloc(sizeof(harp_operation_bin_spatial));
+    if (operation == NULL)
+    {
+        harp_set_error(HARP_ERROR_OUT_OF_MEMORY, "out of memory (could not allocate %lu bytes) (%s:%u)",
+                       sizeof(harp_operation_bin_spatial), __FILE__, __LINE__);
+        return -1;
+    }
+    operation->type = operation_bin_spatial;
+    operation->num_latitude_edges = num_latitude_edges;
+    operation->latitude_edges = NULL;
+    operation->num_longitude_edges = num_longitude_edges;
+    operation->longitude_edges = NULL;
+
+    operation->latitude_edges = malloc(num_latitude_edges * sizeof(double));
+    if (operation->latitude_edges == NULL)
+    {
+        harp_set_error(HARP_ERROR_OUT_OF_MEMORY, "out of memory (could not allocate %lu bytes) (%s:%u)",
+                       num_latitude_edges * sizeof(double), __FILE__, __LINE__);
+        bin_spatial_delete(operation);
+        return -1;
+    }
+    for (i = 0; i < num_latitude_edges; i++)
+    {
+        operation->latitude_edges[i] = latitude_edges[i];
+    }
+
+    operation->longitude_edges = malloc(num_longitude_edges * sizeof(double));
+    if (operation->longitude_edges == NULL)
+    {
+        harp_set_error(HARP_ERROR_OUT_OF_MEMORY, "out of memory (could not allocate %lu bytes) (%s:%u)",
+                       num_longitude_edges * sizeof(double), __FILE__, __LINE__);
+        bin_spatial_delete(operation);
+        return -1;
+    }
+    for (i = 0; i < num_longitude_edges; i++)
+    {
+        operation->longitude_edges[i] = longitude_edges[i];
+    }
+
+    *new_operation = (harp_operation *)operation;
     return 0;
 }
 

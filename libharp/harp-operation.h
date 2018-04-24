@@ -45,6 +45,7 @@ typedef enum harp_operation_type_enum
     operation_area_intersects_area_filter,
     operation_bin_collocated,
     operation_bin_full,
+    operation_bin_spatial,
     operation_bin_with_variable,
     operation_bit_mask_filter,
     operation_collocation_filter,
@@ -117,6 +118,8 @@ typedef enum harp_membership_operator_type_enum
  *   |  |-  harp_operation_area_covers_point_filter
  *   |  |-  harp_operation_area_intersects_area_filter
  *   |-  harp_operation_bin_collocated
+ *   |-  harp_operation_bin_full
+ *   |-  harp_operation_bin_spatial
  *   |-  harp_operation_bin_with_variable
  *   |-  harp_operation_derive_variable
  *   |-  harp_operation_derive_smoothed_column_collocated_dataset
@@ -212,6 +215,16 @@ typedef struct harp_operation_bin_collocated_struct
     char *collocation_result;
     char target_dataset;
 } harp_operation_bin_collocated;
+
+typedef struct harp_operation_bin_spatial_struct
+{
+    harp_operation_type type;
+    /* parameters */
+    long num_latitude_edges;
+    double *latitude_edges;
+    long num_longitude_edges;
+    double *longitude_edges;
+} harp_operation_bin_spatial;
 
 typedef struct harp_operation_bin_with_variable_struct
 {
@@ -514,6 +527,8 @@ int harp_operation_area_intersects_area_filter_new(const char *filename, int num
 int harp_operation_bin_collocated_new(const char *collocation_result, const char target_dataset,
                                       harp_operation **new_operation);
 int harp_operation_bin_full_new(harp_operation **new_operation);
+int harp_operation_bin_spatial_new(long num_latitude_edges, double *latitude_edges, long num_longitude_edges,
+                                   double *longitude_edges, harp_operation **new_operation);
 int harp_operation_bin_with_variable_new(const char *variable_name, harp_operation **new_operation);
 int harp_operation_bit_mask_filter_new(const char *variable_name, harp_bit_mask_operator_type operator_type,
                                        uint32_t bit_mask, harp_operation **new_operation);

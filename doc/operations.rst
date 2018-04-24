@@ -123,6 +123,25 @@ Supported functions:
             | (the product is part of dataset A and the collocated
               sample that defines the bin is part of dataset B)
 
+    ``bin_spatial((lat_edge, lat_edge, ...), (lon_edge, lon_edge, ...))``
+        For all variables in a product map all time samples onto a
+        spatial latitude/longitude grid. The latitude/longitude grid is
+        defined by the list of edge values.
+        Example:
+
+            | ``bin_spatial((-90,-60,-30,0,30,60,90),(-180,0,180))``
+            | (bin data onto latitude bands, separated into an
+            |  eastern and western hemisphere)
+
+    ``bin_spatial(lat_edge_length, lat_edge_offset, lat_edge_step, lon_edge_length, lon_edge_offset, lon_edge_step)``
+        For all variables in a product map all time samples onto a
+        spatial latitude/longitude grid. The latitude/longitude grid is
+        defined by the list of edge values.
+        Example:
+
+            | ``bin_spatial(7, -90, 30, 3, -180, 180)``
+            | (this is the same as ``bin_spatial((-90,-60,-30,0,30,60,90),(-180,0,180))``)
+
     ``collocate_left(collocation-result-file)``
         Apply the specified collocation result file as an index
         filter assuming the product is part of dataset A.

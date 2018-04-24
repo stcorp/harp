@@ -222,6 +222,7 @@ int harp_sized_array_add_int32(harp_sized_array *sized_array, int32_t value)
 %token                  FUNC_AREA_INSIDE_AREA
 %token                  FUNC_AREA_INTERSECTS_AREA
 %token                  FUNC_BIN
+%token                  FUNC_BIN_SPATIAL
 %token                  FUNC_COLLOCATE_LEFT
 %token                  FUNC_COLLOCATE_RIGHT
 %token                  FUNC_DERIVE
@@ -285,6 +286,7 @@ reserved_identifier:
     | FUNC_AREA_INSIDE_AREA { $$ = "area_inside_area"; }
     | FUNC_AREA_INTERSECTS_AREA { $$ = "area_intersects_area"; }
     | FUNC_BIN { $$ = "bin"; }
+    | FUNC_BIN_SPATIAL { $$ = "bin_spatial"; }
     | FUNC_COLLOCATE_LEFT { $$ = "collocate_left"; }
     | FUNC_COLLOCATE_RIGHT { $$ = "collocate_right"; }
     | FUNC_DERIVE { $$ = "derive"; }
@@ -848,6 +850,59 @@ operation:
             }
             free($3);
         }
+    | FUNC_BIN_SPATIAL '(' '(' double_array ')' ',' '(' double_array ')' ')' {
+            if (harp_operation_bin_spatial_new($4->num_elements, $4->array.double_data,
+                                               $8->num_elements, $8->array.double_data, &$$) != 0)
+            {
+                harp_sized_array_delete($4);
+                harp_sized_array_delete($8);
+                YYERROR;
+            }
+            harp_sized_array_delete($4);
+            harp_sized_array_delete($8);
+        }
+    | FUNC_BIN_SPATIAL '(' int32_value ',' double_value ',' double_value ',' int32_value ',' double_value ','
+      double_value ')' {
+            harp_sized_array *lat_array;
+            harp_sized_array *lon_array;
+            long i;
+
+            if (harp_sized_array_new(harp_type_double, &lat_array) != 0)
+            {
+                YYERROR;
+            }
+            for (i = 0; i < $3; i++)
+            {
+                if (harp_sized_array_add_double(lat_array, $5 + i * $7) != 0)
+                {
+                    harp_sized_array_delete(lat_array);
+                    YYERROR;
+                }
+            }
+            if (harp_sized_array_new(harp_type_double, &lon_array) != 0)
+            {
+                harp_sized_array_delete(lat_array);
+                YYERROR;
+            }
+            for (i = 0; i < $9; i++)
+            {
+                if (harp_sized_array_add_double(lon_array, $11 + i * $13) != 0)
+                {
+                    harp_sized_array_delete(lat_array);
+                    harp_sized_array_delete(lon_array);
+                    YYERROR;
+                }
+            }
+            if (harp_operation_bin_spatial_new(lat_array->num_elements, lat_array->array.double_data,
+                                               lon_array->num_elements, lon_array->array.double_data, &$$) != 0)
+            {
+                harp_sized_array_delete(lat_array);
+                harp_sized_array_delete(lon_array);
+                YYERROR;
+            }
+            harp_sized_array_delete(lat_array);
+            harp_sized_array_delete(lon_array);
+        }
     | FUNC_COLLOCATE_LEFT '(' STRING_VALUE ')' {
             if (harp_operation_collocation_filter_new($3, harp_collocation_left, &$$) != 0)
             {
@@ -1230,7 +1285,6 @@ operation:
 
             if (harp_sized_array_new(harp_type_double, &array) != 0)
             {
-                harp_sized_array_delete(array);
                 free($5);
                 free($6);
                 YYERROR;
