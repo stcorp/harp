@@ -87,8 +87,11 @@ static binning_type get_binning_type(harp_variable *variable)
     /* we can't bin values that have no unit */
     if (variable->unit == NULL)
     {
-        /* 'count' variables are just summed up, but only if they are unitless and use an int32 data type */
-        if (strcmp(variable->name, "count") == 0 && variable->data_type == harp_type_int32)
+        long variable_name_length = strlen(variable->name);
+
+        /* '...count' variables are just summed up, but only if they are unitless and use an int32 data type */
+        if (variable->data_type == harp_type_int32 && variable_name_length >= 5 &&
+            strcmp(&variable->name[variable_name_length - 5], "count") == 0)
         {
             return binning_sum;
         }
@@ -171,18 +174,147 @@ static binning_type get_spatial_binning_type(harp_variable *variable, int area_b
     return type;
 }
 
-static int filter_binable_variables(harp_product *product)
+/* find a <variable->name>_count variable.
+ * If the variable exists but is invalid its entry in the bintype array will be set to binning_remove.
+ */
+static int get_count_for_variable(harp_product *product, harp_variable *variable, binning_type *bintype, int32_t *count)
 {
-    int i;
+    char variable_name[MAX_NAME_LENGTH];
+    harp_variable *count_variable = NULL;
+    int index = -1;
+    long i, j;
 
-    for (i = product->num_variables - 1; i >= 0; i--)
+    snprintf(variable_name, MAX_NAME_LENGTH, "%s_count", variable->name);
+    if (harp_product_has_variable(product, variable_name))
     {
-        if (get_binning_type(product->variable[i]) == binning_remove)
+        if (harp_product_get_variable_index_by_name(product, variable_name, &index) != 0)
         {
-            if (harp_product_remove_variable(product, product->variable[i]) != 0)
+            return -1;
+        }
+        if (bintype[index] == binning_sum)
+        {
+            if (product->variable[index]->data_type != harp_type_int32 ||
+                product->variable[index]->num_dimensions != variable->num_dimensions)
+            {
+                bintype[index] = binning_remove;
+            }
+            else
+            {
+                count_variable = product->variable[index];
+            }
+        }
+    }
+
+    if (count_variable == NULL && harp_product_has_variable(product, "count"))
+    {
+        if (harp_product_get_variable_index_by_name(product, "count", &index) != 0)
+        {
+            return -1;
+        }
+        if (bintype[index] == binning_sum)
+        {
+            if (product->variable[index]->data_type != harp_type_int32 ||
+                product->variable[index]->num_dimensions > variable->num_dimensions)
+            {
+                bintype[index] = binning_remove;
+            }
+            else
+            {
+                count_variable = product->variable[index];
+            }
+        }
+    }
+
+    if (count_variable == NULL)
+    {
+        return 0;
+    }
+
+    /* make sure that the dimensions of the count variable match the first dimensions of the given variable */
+    for (i = 0; i < count_variable->num_dimensions; i++)
+    {
+        if (count_variable->dimension_type[i] != variable->dimension_type[i] ||
+            count_variable->dimension[i] != variable->dimension[i])
+        {
+            bintype[index] = binning_remove;
+            return 0;
+        }
+    }
+
+    /* store data into count parameter */
+    if (variable->num_elements == count_variable->num_elements)
+    {
+        memcpy(count, count_variable->data.int32_data, count_variable->num_elements * sizeof(int32_t));
+    }
+    else
+    {
+        long num_sub_elements = variable->num_elements / count_variable->num_elements;
+
+        for (i = 0; i < count_variable->num_elements; i++)
+        {
+            for (j = 0; j < num_sub_elements; j++)
+            {
+                count[i * num_sub_elements + j] = count_variable->data.int32_data[i];
+            }
+        }
+    }
+
+    return 1;
+}
+
+static int add_count_variable(harp_product *product, binning_type *bintype, const char *variable_name,
+                              int num_dimensions, harp_dimension_type *dimension_type, long *dimension, int32_t *count)
+{
+    char count_variable_name[MAX_NAME_LENGTH];
+    harp_variable *variable;
+
+    if (variable_name != NULL)
+    {
+        snprintf(count_variable_name, MAX_NAME_LENGTH, "%s_count", variable_name);
+    }
+    else
+    {
+        strcpy(count_variable_name, "count");
+    }
+
+    if (!harp_product_has_variable(product, count_variable_name))
+    {
+        if (harp_variable_new(count_variable_name, harp_type_int32, num_dimensions, dimension_type, dimension,
+                              &variable) != 0)
+        {
+            return -1;
+        }
+        memcpy(variable->data.int32_data, count, variable->num_elements * sizeof(int32_t));
+        if (harp_product_add_variable(product, variable) != 0)
+        {
+            harp_variable_delete(variable);
+            return -1;
+        }
+        bintype[product->num_variables - 1] = binning_sum;
+    }
+    else
+    {
+        int index;
+
+        if (harp_product_get_variable_index_by_name(product, count_variable_name, &index) != 0)
+        {
+            return -1;
+        }
+        if (bintype[index] == binning_remove)
+        {
+            /* if the existing count variable was scheduled for removal than replace it with a new one */
+            if (harp_variable_new(count_variable_name, harp_type_int32, num_dimensions, dimension_type, dimension,
+                                  &variable) != 0)
             {
                 return -1;
             }
+            memcpy(variable->data.int32_data, count, variable->num_elements * sizeof(int32_t));
+            if (harp_product_replace_variable(product, variable) != 0)
+            {
+                harp_variable_delete(variable);
+                return -1;
+            }
+            bintype[index] = binning_sum;
         }
     }
 
@@ -302,8 +434,12 @@ static int find_matching_cells_for_points(harp_variable *latitude, harp_variable
  */
 LIBHARP_API int harp_product_bin(harp_product *product, long num_bins, long num_elements, long *bin_index)
 {
-    long *index;
-    long *count;
+    harp_dimension_type dimension_type[HARP_MAX_NUM_DIMS];
+    binning_type *bintype = NULL;
+    long filtered_count_size = 0;
+    int32_t *filtered_count = NULL;
+    int32_t *count = NULL;
+    long *index = NULL;
     long i, j, k;
 
     if (num_elements != product->dimension[harp_dimension_time])
@@ -323,9 +459,33 @@ LIBHARP_API int harp_product_bin(harp_product *product, long num_bins, long num_
         }
     }
 
-    if (filter_binable_variables(product) != 0)
+    /* make 'bintype' big enough to also store any count variables that we may want to add (i.e. 1 + factor 2) */
+    bintype = malloc((2 * product->num_variables + 1) * sizeof(binning_type));
+    if (bintype == NULL)
     {
-        return -1;
+        harp_set_error(HARP_ERROR_OUT_OF_MEMORY, "out of memory (could not allocate %lu bytes) (%s:%u)",
+                       (2 * product->num_variables + 1) * sizeof(binning_type), __FILE__, __LINE__);
+        goto error;
+    }
+    for (k = 0; k < product->num_variables; k++)
+    {
+        bintype[k] = get_binning_type(product->variable[k]);
+
+        /* determine the maximum number of elements (as size for the 'filtered_count' array) */
+        if (bintype[k] != binning_remove && bintype[k] != binning_skip)
+        {
+            long total_num_elements = product->variable[k]->num_elements;
+
+            if (num_bins > num_elements)
+            {
+                /* use longest time dimension (before vs. after binning) */
+                total_num_elements = num_bins * (total_num_elements / num_elements);
+            }
+            if (total_num_elements > filtered_count_size)
+            {
+                filtered_count_size = total_num_elements;
+            }
+        }
     }
 
     index = malloc(num_bins * sizeof(long));
@@ -333,15 +493,21 @@ LIBHARP_API int harp_product_bin(harp_product *product, long num_bins, long num_
     {
         harp_set_error(HARP_ERROR_OUT_OF_MEMORY, "out of memory (could not allocate %lu bytes) (%s:%u)",
                        num_bins * sizeof(long), __FILE__, __LINE__);
-        return -1;
+        goto error;
     }
-    count = malloc(num_bins * sizeof(long));
+    count = malloc(num_bins * sizeof(int32_t));
     if (count == NULL)
     {
         harp_set_error(HARP_ERROR_OUT_OF_MEMORY, "out of memory (could not allocate %lu bytes) (%s:%u)",
-                       num_bins * sizeof(long), __FILE__, __LINE__);
-        free(index);
-        return -1;
+                       num_bins * sizeof(int32_t), __FILE__, __LINE__);
+        goto error;
+    }
+    filtered_count = malloc(filtered_count_size * sizeof(int32_t));
+    if (filtered_count == NULL)
+    {
+        harp_set_error(HARP_ERROR_OUT_OF_MEMORY, "out of memory (could not allocate %lu bytes) (%s:%u)",
+                       filtered_count_size * sizeof(int32_t), __FILE__, __LINE__);
+        goto error;
     }
 
     /* for each bin, store the index of the first sample that contributes to the bin */
@@ -359,44 +525,35 @@ LIBHARP_API int harp_product_bin(harp_product *product, long num_bins, long num_
         count[bin_index[i]]++;
     }
 
+    /* pre-process all variables */
     for (k = 0; k < product->num_variables; k++)
     {
         harp_variable *variable;
         long num_sub_elements;
-        binning_type type;
 
-        variable = product->variable[k];
-
-        type = get_binning_type(variable);
-
-        if (type == binning_skip)
+        if (bintype[k] == binning_skip || bintype[k] == binning_remove)
         {
             continue;
         }
-        assert(type == binning_average || type == binning_sum || type == binning_angle || type == binning_time_min ||
-               type == binning_time_max);
 
-        assert(variable->dimension[0] == num_elements);
+        variable = product->variable[k];
         num_sub_elements = variable->num_elements / num_elements;
 
-        if (type == binning_average || type == binning_angle || type == binning_time_min || type == binning_time_max)
+        /* convert variables to double */
+        if (bintype[k] != binning_sum)
         {
             if (harp_variable_convert_data_type(variable, harp_type_double) != 0)
             {
-                free(index);
-                free(count);
-                return -1;
+                goto error;
             }
         }
 
-        if (type == binning_angle)
+        /* convert all angles to degrees */
+        if (bintype[k] == binning_angle)
         {
-            /* convert all angles to degrees */
             if (harp_convert_unit(variable->unit, "degrees", variable->num_elements, variable->data.double_data) != 0)
             {
-                free(index);
-                free(count);
-                return -1;
+                goto error;
             }
             /* wrap all angles to within [x-180,x+180] where x is the first sample of the bin */
             for (i = 0; i < num_elements; i++)
@@ -417,9 +574,45 @@ LIBHARP_API int harp_product_bin(harp_product *product, long num_bins, long num_
             }
         }
 
+        /* pre-multiply variables by existing counts */
+        if (bintype[k] == binning_average || bintype[k] == binning_angle)
+        {
+            int result;
+
+            result = get_count_for_variable(product, variable, bintype, filtered_count);
+            if (result < 0)
+            {
+                goto error;
+            }
+            if (result == 1)
+            {
+                /* multiply by the count */
+                for (i = 0; i < variable->num_elements; i++)
+                {
+                    variable->data.double_data[i] *= filtered_count[i];
+                }
+            }
+        }
+    }
+
+    /* sum up all samples into bins (in place) and create count variables where needed */
+    for (k = 0; k < product->num_variables; k++)
+    {
+        harp_variable *variable;
+        long num_sub_elements;
+
+        if (bintype[k] == binning_skip || bintype[k] == binning_remove)
+        {
+            continue;
+        }
+
+        variable = product->variable[k];
+        assert(variable->dimension[0] == num_elements);
+        num_sub_elements = variable->num_elements / num_elements;
+
         /* TODO: use special approach for lat/lon (bounds) averaging (use spatial averaging + bounds) */
 
-        if (type == binning_time_min)
+        if (bintype[k] == binning_time_min)
         {
             /* take minimum of all values per bin */
             assert(num_sub_elements == 1);
@@ -433,7 +626,7 @@ LIBHARP_API int harp_product_bin(harp_product *product, long num_bins, long num_
                 }
             }
         }
-        else if (type == binning_time_max)
+        else if (bintype[k] == binning_time_max)
         {
             /* take maximum of all values per bin */
             assert(num_sub_elements == 1);
@@ -449,7 +642,15 @@ LIBHARP_API int harp_product_bin(harp_product *product, long num_bins, long num_
         }
         else
         {
-            /* first sum up all values of a bin into the location of the first sample */
+            int store_count_variable = 0;
+
+            /* sum up all values of a bin into the location of the first sample */
+
+            if (variable->data_type != harp_type_int32)
+            {
+                memset(filtered_count, 0, variable->num_elements * sizeof(int32_t));
+            }
+
             for (i = 0; i < num_elements; i++)
             {
                 long target_index = index[bin_index[i]];
@@ -468,106 +669,194 @@ LIBHARP_API int harp_product_bin(harp_product *product, long num_bins, long num_
                     {
                         for (j = 0; j < num_sub_elements; j++)
                         {
-                            variable->data.double_data[target_index * num_sub_elements + j] +=
-                                variable->data.double_data[i * num_sub_elements + j];
+                            if (harp_isnan(variable->data.double_data[i * num_sub_elements + j]))
+                            {
+                                filtered_count[i * num_sub_elements + j] = 0;
+                                store_count_variable = 1;
+                            }
+                            else
+                            {
+                                filtered_count[i * num_sub_elements + j] = 1;
+                                variable->data.double_data[target_index * num_sub_elements + j] +=
+                                    variable->data.double_data[i * num_sub_elements + j];
+                            }
                         }
                     }
                 }
-            }
-
-            if (type == binning_average || type == binning_angle)
-            {
-                /* then divide by the number of elements in the bin */
-                for (i = 0; i < num_bins; i++)
+                else if (variable->data_type != harp_type_int32)
                 {
-                    long target_index = index[i];
-
-                    if (count[i] > 1)
+                    for (j = 0; j < num_sub_elements; j++)
                     {
-                        for (j = 0; j < num_sub_elements; j++)
+                        if (harp_isnan(variable->data.double_data[target_index * num_sub_elements + j]))
                         {
-                            variable->data.double_data[target_index * num_sub_elements + j] /= count[i];
+                            filtered_count[target_index * num_sub_elements + j] = 0;
+                            variable->data.double_data[target_index * num_sub_elements + j] = 0;
+                            store_count_variable = 1;
+                        }
+                        else
+                        {
+                            filtered_count[target_index * num_sub_elements + j] = 1;
                         }
                     }
                 }
             }
 
-            if (type == binning_angle)
+            if (store_count_variable)
             {
-                /* convert all angles back to the original unit */
-                if (harp_convert_unit("degrees", variable->unit, variable->num_elements, variable->data.double_data) !=
-                    0)
+                if (add_count_variable(product, bintype, variable->name, variable->num_dimensions,
+                                       variable->dimension_type, variable->dimension, filtered_count) != 0)
                 {
-                    free(index);
-                    free(count);
-                    return -1;
+                    goto error;
                 }
             }
+        }
+    }
+
+    /* resample variables */
+    for (k = 0; k < product->num_variables; k++)
+    {
+        if (bintype[k] == binning_skip || bintype[k] == binning_remove)
+        {
+            continue;
         }
 
         /* resample the time dimension to the target bins */
-        if (harp_variable_rearrange_dimension(variable, 0, num_bins, index) != 0)
+        if (harp_variable_rearrange_dimension(product->variable[k], 0, num_bins, index) != 0)
         {
-            free(index);
-            free(count);
-            return -1;
+            goto error;
+        }
+    }
+
+    /* update product dimensions */
+    product->dimension[harp_dimension_time] = num_bins;
+
+    /* add global count variable if it didn't exist yet */
+    dimension_type[0] = harp_dimension_time;
+    if (add_count_variable(product, bintype, NULL, 1, dimension_type, &num_bins, count) != 0)
+    {
+        goto error;
+    }
+
+    /* post-process all variables */
+    for (k = 0; k < product->num_variables; k++)
+    {
+        harp_variable *variable;
+        long num_sub_elements;
+        int count_applied = 0;
+
+        if (bintype[k] == binning_skip || bintype[k] == binning_remove)
+        {
+            continue;
+        }
+
+        variable = product->variable[k];
+        num_sub_elements = variable->num_elements / num_elements;
+
+        /* divide variables by the sample count */
+        if (bintype[k] == binning_average || bintype[k] == binning_angle)
+        {
+            double nan_value = harp_nan();
+            int result;
+
+            result = get_count_for_variable(product, variable, bintype, filtered_count);
+            if (result < 0)
+            {
+                goto error;
+            }
+            if (result == 1)
+            {
+                /* divide by the count (or set value to NaN if count==0) */
+                for (i = 0; i < variable->num_elements; i++)
+                {
+                    assert(i < filtered_count_size);
+                    if (filtered_count[i] == 0)
+                    {
+                        variable->data.double_data[i] = nan_value;
+                    }
+                    else if (filtered_count[i] > 1)
+                    {
+                        variable->data.double_data[i] /= filtered_count[i];
+                    }
+                }
+                count_applied = 1;
+            }
         }
 
         /* set all empty bins to NaN (for double) or 0 (for int32) */
-        for (i = 0; i < num_bins; i++)
+        if (!count_applied)
         {
-            if (count[i] == 0)
+            for (i = 0; i < num_bins; i++)
             {
-                double nan_value = harp_nan();
+                if (count[i] == 0)
+                {
+                    double nan_value = harp_nan();
 
-                if (variable->data_type == harp_type_int32)
-                {
-                    for (j = 0; j < num_sub_elements; j++)
+                    if (variable->data_type == harp_type_int32)
                     {
-                        variable->data.int32_data[i * num_sub_elements + j] = 0;
+                        for (j = 0; j < num_sub_elements; j++)
+                        {
+                            variable->data.int32_data[i * num_sub_elements + j] = 0;
+                        }
                     }
-                }
-                else
-                {
-                    for (j = 0; j < num_sub_elements; j++)
+                    else
                     {
-                        variable->data.double_data[i * num_sub_elements + j] = nan_value;
+                        for (j = 0; j < num_sub_elements; j++)
+                        {
+                            variable->data.double_data[i * num_sub_elements + j] = nan_value;
+                        }
                     }
                 }
             }
         }
+
+        /* convert angle variables back to original unit */
+        if (bintype[k] == binning_angle)
+        {
+            /* convert all angles back to the original unit */
+            if (harp_convert_unit("degrees", variable->unit, variable->num_elements, variable->data.double_data) != 0)
+            {
+                goto error;
+            }
+        }
     }
 
-    product->dimension[harp_dimension_time] = num_bins;
+    /* remove all variables that need to be removed (in reverse order!) */
+    for (k = product->num_variables - 1; k >= 0; k--)
+    {
+        if (bintype[k] == binning_remove)
+        {
+            if (harp_product_remove_variable(product, product->variable[k]) != 0)
+            {
+                return -1;
+            }
+        }
+    }
 
+    free(bintype);
+    free(filtered_count);
+    free(count);
     free(index);
 
-    if (!harp_product_has_variable(product, "count"))
-    {
-        harp_dimension_type dimension_type = harp_dimension_time;
-        harp_variable *variable;
-
-        /* if we did not bin an existing 'count' variable then add one containing the number of items per bin */
-        if (harp_variable_new("count", harp_type_int32, 1, &dimension_type, &num_bins, &variable) != 0)
-        {
-            free(count);
-            return -1;
-        }
-        for (i = 0; i < num_bins; i++)
-        {
-            variable->data.int32_data[i] = count[i];
-        }
-        if (harp_product_add_variable(product, variable) != 0)
-        {
-            harp_variable_delete(variable);
-            free(count);
-            return -1;
-        }
-    }
-
-    free(count);
-
     return 0;
+
+  error:
+    if (bintype != NULL)
+    {
+        free(bintype);
+    }
+    if (filtered_count != NULL)
+    {
+        free(filtered_count);
+    }
+    if (count != NULL)
+    {
+        free(count);
+    }
+    if (index != NULL)
+    {
+        free(index);
+    }
+    return -1;
 }
 
 /** Bin the product's variables into a spatial grid.
