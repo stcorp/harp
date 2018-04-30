@@ -1,3 +1,12 @@
+* Added bin_spatial() operation.
+
+* Improved binning operation to automatically filter for NaN values and add
+  variable-specific count variables to specify the number of non-NaN values.
+
+* Performing a binning operation on top of a binning operation will propagate
+  averages based on the available count variables (i.e. as if the final bin was
+  performed on the original data).
+
 * Allow NULL as argument for harp_variable_set_description() and
   harp_variable_set_unit() to clear the current description/unit.
 
