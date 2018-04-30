@@ -439,14 +439,14 @@ static int find_matching_cells_for_points(harp_variable *latitude, harp_variable
     for (i = 0; i < num_elements; i++)
     {
         harp_interpolate_find_index(num_latitude_edges, latitude_edges, latitude->data.double_data[i], &latitude_index);
-        if (latitude_index < 0 || latitude_index >= num_latitude_edges)
+        if (latitude_index < 0 || latitude_index >= num_latitude_edges - 1)
         {
             num_latlon_index[i] = 0;
             continue;
         }
         harp_interpolate_find_index(num_longitude_edges, longitude_edges, longitude->data.double_data[i],
                                     &longitude_index);
-        if (longitude_index < 0 || longitude_index >= num_longitude_edges)
+        if (longitude_index < 0 || longitude_index >= num_longitude_edges - 1)
         {
             num_latlon_index[i] = 0;
             continue;
@@ -1300,7 +1300,7 @@ LIBHARP_API int harp_product_bin_spatial(harp_product *product, long num_time_bi
     cumsum_index = 0;
     for (i = 0; i < num_time_elements; i++)
     {
-        long index_offset = time_index[time_bin_index[i]] * spatial_block_length;
+        long index_offset = time_bin_index[i] * spatial_block_length;
 
         for (l = 0; l < num_latlon_index[i]; l++)
         {
@@ -1385,7 +1385,7 @@ LIBHARP_API int harp_product_bin_spatial(harp_product *product, long num_time_bi
         cumsum_index = 0;
         for (i = 0; i < num_time_elements; i++)
         {
-            long index_offset = time_index[time_bin_index[i]] * spatial_block_length;
+            long index_offset = time_bin_index[i] * spatial_block_length;
 
             if (area_binning)
             {
@@ -1594,7 +1594,7 @@ LIBHARP_API int harp_product_bin_spatial(harp_product *product, long num_time_bi
             cumsum_index = 0;
             for (i = 0; i < num_time_elements; i++)
             {
-                long index_offset = time_index[time_bin_index[i]] * spatial_block_length;
+                long index_offset = time_bin_index[i] * spatial_block_length;
 
                 for (l = 0; l < num_latlon_index[i]; l++)
                 {
