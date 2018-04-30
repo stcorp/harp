@@ -709,9 +709,31 @@ LIBHARP_API int harp_product_bin(harp_product *product, long num_bins, long num_
 
             /* sum up all values of a bin into the location of the first sample */
 
-            if (variable->data_type != harp_type_int32)
+            if (bintype[k] == binning_angle)
             {
-                memset(filtered_count, 0, variable->num_elements * sizeof(int32_t));
+                /* for angle variables we use one filtered_count element per complex pair (and don't pre-multiply) */
+                for (i = 0; i < variable->num_elements / 2; i++)
+                {
+                    filtered_count[i] = 1;
+                }
+            }
+            else if (variable->data_type != harp_type_int32)
+            {
+                int result = 0;
+
+                result = get_count_for_variable(product, variable, bintype, filtered_count);
+                if (result < 0)
+                {
+                    goto error;
+                }
+                if (result == 0)
+                {
+                    /* if there is no pre-existing count then set all counts to 1 */
+                    for (i = 0; i < variable->num_elements; i++)
+                    {
+                        filtered_count[i] = 1;
+                    }
+                }
             }
 
             for (i = 0; i < num_elements; i++)
@@ -722,7 +744,7 @@ LIBHARP_API int harp_product_bin(harp_product *product, long num_bins, long num_
                 {
                     if (bintype[k] == binning_angle)
                     {
-                        /* for angle variables we use 1 filtered_count element per complex pair */
+                        /* for angle variables we use one filtered_count element per complex pair */
                         for (j = 0; j < num_sub_elements; j += 2)
                         {
                             if (harp_isnan(variable->data.double_data[i * num_sub_elements + j]))
@@ -732,7 +754,6 @@ LIBHARP_API int harp_product_bin(harp_product *product, long num_bins, long num_
                             }
                             else
                             {
-                                filtered_count[(i * num_sub_elements + j) / 2] = 1;
                                 variable->data.double_data[target_index * num_sub_elements + j] +=
                                     variable->data.double_data[i * num_sub_elements + j];
                                 variable->data.double_data[target_index * num_sub_elements + j + 1] +=
@@ -759,7 +780,6 @@ LIBHARP_API int harp_product_bin(harp_product *product, long num_bins, long num_
                             }
                             else
                             {
-                                filtered_count[i * num_sub_elements + j] = 1;
                                 variable->data.double_data[target_index * num_sub_elements + j] +=
                                     variable->data.double_data[i * num_sub_elements + j];
                             }
@@ -779,10 +799,6 @@ LIBHARP_API int harp_product_bin(harp_product *product, long num_bins, long num_
                                 variable->data.double_data[target_index * num_sub_elements + j + 1] = 0;
                                 store_count_variable = 1;
                             }
-                            else
-                            {
-                                filtered_count[(target_index * num_sub_elements + j) / 2] = 1;
-                            }
                         }
                     }
                     else
@@ -794,10 +810,6 @@ LIBHARP_API int harp_product_bin(harp_product *product, long num_bins, long num_
                                 filtered_count[target_index * num_sub_elements + j] = 0;
                                 variable->data.double_data[target_index * num_sub_elements + j] = 0;
                                 store_count_variable = 1;
-                            }
-                            else
-                            {
-                                filtered_count[target_index * num_sub_elements + j] = 1;
                             }
                         }
                     }
@@ -1459,8 +1471,21 @@ LIBHARP_API int harp_product_bin_spatial(harp_product *product, long num_time_bi
             else
             {
                 int store_count_variable = 0;
+                int result = 0;
 
-                memset(filtered_count, 0, variable->num_elements * sizeof(int32_t));
+                result = get_count_for_variable(product, variable, bintype, filtered_count);
+                if (result < 0)
+                {
+                    goto error;
+                }
+                if (result == 0)
+                {
+                    /* if there is no pre-existing count then set all counts to 1 */
+                    for (i = 0; i < variable->num_elements; i++)
+                    {
+                        filtered_count[i] = 1;
+                    }
+                }
 
                 /* sum up all values of a bin into the location of the first sample */
                 for (i = 0; i < num_time_elements; i++)
@@ -1475,10 +1500,6 @@ LIBHARP_API int harp_product_bin_spatial(harp_product *product, long num_time_bi
                             variable->data.double_data[target_index] = 0;
                             store_count_variable = 1;
                         }
-                        else
-                        {
-                            filtered_count[target_index] = 1;
-                        }
                     }
                     else
                     {
@@ -1489,7 +1510,6 @@ LIBHARP_API int harp_product_bin_spatial(harp_product *product, long num_time_bi
                         }
                         else
                         {
-                            filtered_count[target_index] = 1;
                             variable->data.double_data[target_index] += variable->data.double_data[i];
                         }
                     }
@@ -1515,9 +1535,31 @@ LIBHARP_API int harp_product_bin_spatial(harp_product *product, long num_time_bi
 
             assert(bintype[k] == binning_average || bintype[k] == binning_sum || bintype[k] == binning_angle);
 
-            if (variable->data_type != harp_type_int32)
+            if (bintype[k] == binning_angle)
             {
-                memset(filtered_count, 0, variable->num_elements * sizeof(int32_t));
+                /* for angle variables we use one filtered_count element per complex pair (and don't pre-multiply) */
+                for (i = 0; i < variable->num_elements / 2; i++)
+                {
+                    filtered_count[i] = 1;
+                }
+            }
+            else if (variable->data_type != harp_type_int32)
+            {
+                int result = 0;
+
+                result = get_count_for_variable(product, variable, bintype, filtered_count);
+                if (result < 0)
+                {
+                    goto error;
+                }
+                if (result == 0)
+                {
+                    /* if there is no pre-existing count then set all counts to 1 */
+                    for (i = 0; i < variable->num_elements; i++)
+                    {
+                        filtered_count[i] = 1;
+                    }
+                }
             }
 
             /* we need to create a new variable that includes the lat/lon dimensions and uses the binned time dimension */
@@ -1570,7 +1612,6 @@ LIBHARP_API int harp_product_bin_spatial(harp_product *product, long num_time_bi
                             }
                             else
                             {
-                                filtered_count[(i * num_sub_elements + j) / 2] = 1;
                                 new_variable->data.double_data[target_index * num_sub_elements + j] +=
                                     variable->data.double_data[i * num_sub_elements + j];
                                 new_variable->data.double_data[target_index * num_sub_elements + j + 1] +=
@@ -1601,7 +1642,6 @@ LIBHARP_API int harp_product_bin_spatial(harp_product *product, long num_time_bi
                                 }
                                 else
                                 {
-                                    filtered_count[i * num_sub_elements + j] = 1;
                                     new_variable->data.double_data[target_index * num_sub_elements + j] +=
                                         weight * variable->data.double_data[i * num_sub_elements + j];
                                 }
@@ -1618,7 +1658,6 @@ LIBHARP_API int harp_product_bin_spatial(harp_product *product, long num_time_bi
                                 }
                                 else
                                 {
-                                    filtered_count[i * num_sub_elements + j] = 1;
                                     new_variable->data.double_data[target_index * num_sub_elements + j] +=
                                         variable->data.double_data[i * num_sub_elements + j];
                                 }
