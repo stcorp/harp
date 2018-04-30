@@ -267,8 +267,7 @@ static int get_count_for_variable(harp_product *product, harp_variable *variable
         }
         if (bintype[index] == binning_sum)
         {
-            if (product->variable[index]->data_type != harp_type_int32 ||
-                product->variable[index]->num_dimensions > variable->num_dimensions)
+            if (product->variable[index]->data_type != harp_type_int32)
             {
                 bintype[index] = binning_remove;
             }
@@ -276,14 +275,30 @@ static int get_count_for_variable(harp_product *product, harp_variable *variable
             {
                 count_variable = product->variable[index];
 
-                /* make sure that the dimensions of the count variable match the first dimensions of the variable */
-                for (i = 0; i < count_variable->num_dimensions; i++)
+                if (product->variable[index]->num_dimensions > variable->num_dimensions)
                 {
-                    if (count_variable->dimension_type[i] != variable->dimension_type[i] ||
-                        count_variable->dimension[i] != variable->dimension[i])
+                    /* make sure that the first dimensions of the count variable match the dimensions of the variable */
+                    for (i = 0; i < variable->num_dimensions; i++)
                     {
-                        bintype[index] = binning_remove;
-                        return 0;
+                        if (count_variable->dimension_type[i] != variable->dimension_type[i] ||
+                            count_variable->dimension[i] != variable->dimension[i])
+                        {
+                            bintype[index] = binning_remove;
+                            return 0;
+                        }
+                    }
+                }
+                else
+                {
+                    /* make sure that the dimensions of the count variable match the first dimensions of the variable */
+                    for (i = 0; i < count_variable->num_dimensions; i++)
+                    {
+                        if (count_variable->dimension_type[i] != variable->dimension_type[i] ||
+                            count_variable->dimension[i] != variable->dimension[i])
+                        {
+                            bintype[index] = binning_remove;
+                            return 0;
+                        }
                     }
                 }
             }
@@ -300,6 +315,19 @@ static int get_count_for_variable(harp_product *product, harp_variable *variable
     if (variable->num_elements == count_variable->num_elements)
     {
         memcpy(count, count_variable->data.int32_data, count_variable->num_elements * sizeof(int32_t));
+    }
+    else if (count_variable->num_elements > variable->num_elements)
+    {
+        long num_sub_elements = count_variable->num_elements / variable->num_elements;
+
+        for (i = 0; i < variable->num_elements; i++)
+        {
+            count[i] = 0;
+            for (j = 0; j < num_sub_elements; j++)
+            {
+                count[i] = count_variable->data.int32_data[i * num_sub_elements + j];
+            }
+        }
     }
     else
     {
