@@ -635,7 +635,7 @@ LIBHARP_API int harp_product_bin(harp_product *product, long num_bins, long num_
             for (i = 0; i < variable->num_elements; i += 2)
             {
                 variable->data.double_data[i] = cos(variable->data.double_data[i]);
-                variable->data.double_data[i + 1] = sin(variable->data.double_data[i]);
+                variable->data.double_data[i + 1] = sin(variable->data.double_data[i + 1]);
             }
         }
 
@@ -1346,7 +1346,7 @@ LIBHARP_API int harp_product_bin_spatial(harp_product *product, long num_time_bi
             for (i = 0; i < variable->num_elements; i += 2)
             {
                 variable->data.double_data[i] = cos(variable->data.double_data[i]);
-                variable->data.double_data[i + 1] = sin(variable->data.double_data[i]);
+                variable->data.double_data[i + 1] = sin(variable->data.double_data[i + 1]);
             }
         }
 
