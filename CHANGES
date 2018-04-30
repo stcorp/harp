@@ -14,6 +14,8 @@
 
 * Added optional parameter to regrid() operation to specify the axis boundaries.
 
+* Updates to S5P L2 product ingestions.
+
 1.2 2018-04-09
 ~~~~~~~~~~~~~~
 
