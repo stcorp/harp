@@ -1601,21 +1601,18 @@ LIBHARP_API int harp_variable_rename(harp_variable *variable, const char *name)
  */
 LIBHARP_API int harp_variable_set_unit(harp_variable *variable, const char *unit)
 {
-    char *unit_copy;
+    char *unit_copy = NULL;
 
-    if (unit == NULL)
+    if (unit != NULL)
     {
-        harp_set_error(HARP_ERROR_INVALID_ARGUMENT, "unit is NULL (%s:%u)", __FILE__, __LINE__);
-        return -1;
-    }
+        unit_copy = strdup(unit);
 
-    unit_copy = strdup(unit);
-
-    if (unit_copy == NULL)
-    {
-        harp_set_error(HARP_ERROR_OUT_OF_MEMORY, "out of memory (could not duplicate string) (%s:%u)", __FILE__,
-                       __LINE__);
-        return -1;
+        if (unit_copy == NULL)
+        {
+            harp_set_error(HARP_ERROR_OUT_OF_MEMORY, "out of memory (could not duplicate string) (%s:%u)", __FILE__,
+                           __LINE__);
+            return -1;
+        }
     }
 
     if (variable->unit != NULL)
@@ -1639,21 +1636,18 @@ LIBHARP_API int harp_variable_set_unit(harp_variable *variable, const char *unit
  */
 LIBHARP_API int harp_variable_set_description(harp_variable *variable, const char *description)
 {
-    char *description_copy;
+    char *description_copy = NULL;
 
-    if (description == NULL)
+    if (description != NULL)
     {
-        harp_set_error(HARP_ERROR_INVALID_ARGUMENT, "description is NULL (%s:%u)", __FILE__, __LINE__);
-        return -1;
-    }
+        description_copy = strdup(description);
 
-    description_copy = strdup(description);
-
-    if (description_copy == NULL)
-    {
-        harp_set_error(HARP_ERROR_OUT_OF_MEMORY, "out of memory (could not duplicate string) (%s:%u)", __FILE__,
-                       __LINE__);
-        return -1;
+        if (description_copy == NULL)
+        {
+            harp_set_error(HARP_ERROR_OUT_OF_MEMORY, "out of memory (could not duplicate string) (%s:%u)", __FILE__,
+                           __LINE__);
+            return -1;
+        }
     }
 
     if (variable->description != NULL)

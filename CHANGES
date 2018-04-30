@@ -1,3 +1,6 @@
+* Allow NULL as argument for harp_variable_set_description() and
+  harp_variable_set_unit() to clear the current description/unit.
+
 * Added harp_variable_copy_attributes() function.
 
 * Added optional parameter to regrid() operation to specify the axis boundaries.
