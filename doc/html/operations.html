@@ -297,6 +297,33 @@ sample that defines the bin is part of dataset B)</div>
 </div>
 </div></blockquote>
 </dd>
+<dt><code class="docutils literal"><span class="pre">bin_spatial((lat_edge,</span> <span class="pre">lat_edge,</span> <span class="pre">...),</span> <span class="pre">(lon_edge,</span> <span class="pre">lon_edge,</span> <span class="pre">...))</span></code></dt>
+<dd><p class="first">For all variables in a product map all time samples onto a
+spatial latitude/longitude grid. The latitude/longitude grid is
+defined by the list of edge values.
+Example:</p>
+<blockquote class="last">
+<div><div class="line-block">
+<div class="line"><code class="docutils literal"><span class="pre">bin_spatial((-90,-60,-30,0,30,60,90),(-180,0,180))</span></code></div>
+<div class="line">(bin data onto latitude bands, separated into an</div>
+<div class="line-block">
+<div class="line">eastern and western hemisphere)</div>
+</div>
+</div>
+</div></blockquote>
+</dd>
+<dt><code class="docutils literal"><span class="pre">bin_spatial(lat_edge_length,</span> <span class="pre">lat_edge_offset,</span> <span class="pre">lat_edge_step,</span> <span class="pre">lon_edge_length,</span> <span class="pre">lon_edge_offset,</span> <span class="pre">lon_edge_step)</span></code></dt>
+<dd><p class="first">For all variables in a product map all time samples onto a
+spatial latitude/longitude grid. The latitude/longitude grid is
+defined by the list of edge values.
+Example:</p>
+<blockquote class="last">
+<div><div class="line-block">
+<div class="line"><code class="docutils literal"><span class="pre">bin_spatial(7,</span> <span class="pre">-90,</span> <span class="pre">30,</span> <span class="pre">3,</span> <span class="pre">-180,</span> <span class="pre">180)</span></code></div>
+<div class="line">(this is the same as <code class="docutils literal"><span class="pre">bin_spatial((-90,-60,-30,0,30,60,90),(-180,0,180))</span></code>)</div>
+</div>
+</div></blockquote>
+</dd>
 <dt><code class="docutils literal"><span class="pre">collocate_left(collocation-result-file)</span></code></dt>
 <dd>Apply the specified collocation result file as an index
 filter assuming the product is part of dataset A.</dd>

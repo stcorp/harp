@@ -202,10 +202,11 @@
 <dl class="function">
 <dt id="_CPPv216harp_product_binP12harp_productllPl">
 <span id="harp_product_bin__harp_productP.l.l.lP"></span><span class="target" id="libharpgroup__harp__product_1gac1a935b414c03ed0a9a414a53dbc311e"></span>int <code class="descname">harp_product_bin</code><span class="sig-paren">(</span><a class="reference internal" href="#_CPPv212harp_product" title="harp_product">harp_product</a> *<em>product</em>, long <em>num_bins</em>, long <em>num_elements</em>, long *<em>bin_index</em><span class="sig-paren">)</span><br /></dt>
-<dd><p>Bin the product&#8217;s variables. This will bin all variables in the time dimension. Each time sample will be put in the bin defined by bin_index. All variables with a time dimension will then be resampled using these bins. The resulting value for each variable will be the average of all values for the bin. Variables with multiple dimensions will have all elements in the sub dimensions averaged on an element by element basis.</p>
+<dd><p>Bin the product&#8217;s variables. This will bin all variables in the time dimension. Each time sample will be put in the bin defined by bin_index. All variables with a time dimension will then be resampled using these bins. The resulting value for each variable will be the average of all values for the bin (using existing count variables as weighting factors where available). Variables with multiple dimensions will have all elements in the sub dimensions averaged on an element by element basis.</p>
 <p>Variables that have a time dimension but no unit (or using a string data type) will be removed.</p>
 <p>All variables that are binned (except existing &#8216;count&#8217; variables) are converted to a double data type. Bins that have no samples will end up with a NaN value.</p>
 <p>If the product did not already have a &#8216;count&#8217; variable then a &#8216;count&#8217; variable will be added to the product that will contain the number of samples per bin.</p>
+<p>Only non-NaN values will contribute to a bin. If there are NaN values then a separate variable-specific count variable will be created that will contain the number of non-NaN values that contributed to each bin. This count variable will have the same dimensions as the variable it provides the count for.</p>
 <p><dl class="docutils">
 <dt><strong>Return</strong></dt>
 <dd><ul class="simple">
@@ -219,6 +220,41 @@
 <li><code class="docutils literal"><span class="pre">num_bins</span></code>: Number of target bins. </li>
 <li><code class="docutils literal"><span class="pre">num_elements</span></code>: Length of bin_index array (should equal the length of the time dimension) </li>
 <li><code class="docutils literal"><span class="pre">bin_index</span></code>: Array of target bin index numbers (0 .. num_bins-1) for each sample in the time dimension.</li>
+</ul>
+</dd>
+</dl>
+</p>
+</dd></dl>
+
+<dl class="function">
+<dt id="_CPPv224harp_product_bin_spatialP12harp_productllPllPdlPd">
+<span id="harp_product_bin_spatial__harp_productP.l.l.lP.l.doubleP.l.doubleP"></span><span class="target" id="libharpgroup__harp__product_1ga10e515f7b5a798c0b952db718bafeaa3"></span>int <code class="descname">harp_product_bin_spatial</code><span class="sig-paren">(</span><a class="reference internal" href="#_CPPv212harp_product" title="harp_product">harp_product</a> *<em>product</em>, long <em>num_time_bins</em>, long <em>num_time_elements</em>, long *<em>time_bin_index</em>, long <em>num_latitude_edges</em>, double *<em>latitude_edges</em>, long <em>num_longitude_edges</em>, double *<em>longitude_edges</em><span class="sig-paren">)</span><br /></dt>
+<dd><p>Bin the product&#8217;s variables into a spatial grid. This will bin all variables with a time dimension into a three dimensional time x latitude x longitude grid. Each time sample will first be allocated to a time bin defined by time_bin_index (similar to <em>harp_product_bin</em>). Then within that time bin the sample will be allocated to the appropriate cell(s) in the latitude/longitude grid as defined by the latitude_edges and longitude_edges variables.</p>
+<p>The lat/lon grid will be a fixed time-independent grid and will have &#8216;num_latitude_edges-1&#8217; latitudes and &#8216;num_longitude_edges-1&#8217; longitudes. The latitude_edges and longitude_edges arrays provide the boundaries of the grid cells in degrees and need to be provided in a strict ascending order. The latitude edge values need to be between -90 and 90 and for the longitude edge values the constraint is that the difference between the last and first edge should be &lt;= 360.</p>
+<p>If the product has latitude_bounds {time,independent} and longitude_bounds {time,independent} variables then an area binning is performed. This means that each sample will be allocated to each lat/lon grid cell based on the amount of overlap. This overlap calculation will treat lines between points as straight lines within the carthesian plane (i.e. using a Plate Carree projection, and not using great circle arcs between points on a sphere).</p>
+<p>If the product doesn&#8217;t have lat/lon bounds per sample, it should have latitude {time} and longitude {time} variables. The binning onto the lat/lon grid will then be a point binning. This means that each sample is allocated to only one grid cell based on its lat/lon coordinate. To achieve a unique assignment, for each cell the lower edge will be considered inclusive and the upper edge exclusive (except for the last cell (when there is now wrap-around)).</p>
+<p>The resulting value for each time/lat/lon cell will be the average of all values for that cell. This will be a weighted average in case an area binning is performed and a straight average for point binning. Variables with multiple dimensions will have all elements in its sub dimensions averaged on an element by element basis (i.e. sub dimensions will be retained).</p>
+<p>Variables that have a time dimension but no unit (or using a string data type) will be removed.</p>
+<p>All variables that are binned (except existing &#8216;count&#8217; variables) are converted to a double data type. Cells that have no samples will end up with a NaN value.</p>
+<p>In case of point binning, if the product did not already have a &#8216;count&#8217; variable then a &#8216;count&#8217; variable will be added to the product that will contain the number of samples per cell. In case of area binning, any existing &#8216;count&#8217; variables will be removed.</p>
+<p>Axis variables for the time dimension such as datetime, datetime_length, datetime_start, and datetime_stop will only be binned in the time dimension (but will not gain a latitude or longitude dimension)</p>
+<p><dl class="docutils">
+<dt><strong>Return</strong></dt>
+<dd><ul class="simple">
+<li><code class="docutils literal"><span class="pre">0</span></code>, Success. </li>
+<li><code class="docutils literal"><span class="pre">-1</span></code>, Error occurred (check <a class="reference internal" href="libharp_error.html#libharpgroup__harp__error_1gab2eeb46528306c6799632d1e800c4c36"><span class="std std-ref">harp_errno</span></a>). </li>
+</ul>
+</dd>
+<dt><strong>Parameters</strong></dt>
+<dd><ul class="breatheparameterlist first last simple">
+<li><code class="docutils literal"><span class="pre">product</span></code>: Product to regrid. </li>
+<li><code class="docutils literal"><span class="pre">num_time_bins</span></code>: Number of target bins in the time dimension. </li>
+<li><code class="docutils literal"><span class="pre">num_time_elements</span></code>: Length of bin_index array (should equal the length of the time dimension) </li>
+<li><code class="docutils literal"><span class="pre">time_bin_index</span></code>: Array of target time bin index numbers (0 .. num_bins-1) for each sample in the time dimension. </li>
+<li><code class="docutils literal"><span class="pre">num_latitude_edges</span></code>: Number of edges for the latitude grid (number of latitude rows = num_latitude_edges - 1) </li>
+<li><code class="docutils literal"><span class="pre">latitude_edges</span></code>: latitude grid edge vales </li>
+<li><code class="docutils literal"><span class="pre">num_longitude_edges</span></code>: Number of edges for the longitude grid (number of longitude columns = num_longitude_edges - 1) </li>
+<li><code class="docutils literal"><span class="pre">longitude_edges</span></code>: longitude grid edge vales</li>
 </ul>
 </dd>
 </dl>
