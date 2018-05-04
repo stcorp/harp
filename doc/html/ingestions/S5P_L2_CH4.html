@@ -497,8 +497,20 @@
 <td><em>path</em></td>
 <td><strong>/PRODUCT/SUPPORT_DATA/GEOLOCATIONS/viewing_azimuth_angle[]</strong></td>
 </tr>
-<tr class="row-even"><td rowspan="2"><strong>altitude_bounds</strong></td>
-<td><em>path</em></td>
+<tr class="row-even"><td rowspan="6"><strong>altitude_bounds</strong></td>
+<td><em>condition</em></td>
+<td>processor version &gt;= 01.00.00</td>
+</tr>
+<tr class="row-odd"><td><em>path</em></td>
+<td><strong>/PRODUCT/SUPPORT_DATA/INPUT_DATA/altitude_levels[]</strong></td>
+</tr>
+<tr class="row-even"><td><em>description</em></td>
+<td>derived from height per level (layer boundary) by repeating the inner levels; the upper bound of layer k is equal to the lower bound of layer k+1; the vertical grid is inverted to make it ascending</td>
+</tr>
+<tr class="row-odd"><td><em>condition</em></td>
+<td>processor version &lt; 01.00.00</td>
+</tr>
+<tr class="row-even"><td><em>path</em></td>
 <td><strong>/PRODUCT/SUPPORT_DATA/INPUT_DATA/height_levels[]</strong></td>
 </tr>
 <tr class="row-odd"><td><em>description</em></td>
@@ -577,11 +589,20 @@
 <td><em>path</em></td>
 <td><strong>/PRODUCT/SUPPORT_DATA/INPUT_DATA/cloud_fraction_VIIRS_SWIR_IFOV[]</strong></td>
 </tr>
-<tr class="row-even"><td><strong>aerosol_height</strong></td>
-<td><em>path</em></td>
+<tr class="row-even"><td rowspan="4"><strong>aerosol_height</strong></td>
+<td><em>condition</em></td>
+<td>processor version &gt;= 01.00.00</td>
+</tr>
+<tr class="row-odd"><td><em>path</em></td>
+<td><strong>/PRODUCT/SUPPORT_DATA/DETAILED_RESULTS/aerosol_mid_altitude[]</strong></td>
+</tr>
+<tr class="row-even"><td><em>condition</em></td>
+<td>processor version &lt; 01.00.00</td>
+</tr>
+<tr class="row-odd"><td><em>path</em></td>
 <td><strong>/PRODUCT/SUPPORT_DATA/DETAILED_RESULTS/aerosol_mid_height[]</strong></td>
 </tr>
-<tr class="row-odd"><td><strong>aerosol_optical_depth</strong></td>
+<tr class="row-even"><td><strong>aerosol_optical_depth</strong></td>
 <td><em>path</em></td>
 <td><strong>/PRODUCT/SUPPORT_DATA/DETAILED_RESULTS/aerosol_optical_thickness_SWIR[]</strong></td>
 </tr>

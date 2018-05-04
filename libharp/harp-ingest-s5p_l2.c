@@ -114,6 +114,8 @@ typedef struct ingest_info_struct
     coda_cursor detailed_results_cursor;
     coda_cursor input_data_cursor;
 
+    int processor_version;
+    int collection_number;
     int wavelength_ratio;
     int is_nrti;
 } ingest_info;
@@ -253,7 +255,6 @@ static int get_product_type(coda_product *product, s5p_product_type *product_typ
     }
 
     harp_set_error(HARP_ERROR_INGESTION, "unsupported product type '%s'", product_short_name);
-
     return -1;
 }
 
@@ -456,6 +457,40 @@ static int init_dimensions(ingest_info *info)
     return 0;
 }
 
+static int init_versions(ingest_info *info)
+{
+    coda_cursor cursor;
+    char product_name[84];
+
+    /* since earlier S5P L2 products did not always have a valid 'id' global attribute
+     * we will keep the version numbers at -1 if we can't extract the right information.
+     */
+    if (coda_cursor_set_product(&cursor, info->product) != 0)
+    {
+        harp_set_error(HARP_ERROR_CODA, NULL);
+        return -1;
+    }
+    if (coda_cursor_goto(&cursor, "/@id") != 0)
+    {
+        /* no global 'id' attribute */
+        return 0;
+    }
+    if (coda_cursor_read_string(&cursor, product_name, 84) != 0)
+    {
+        harp_set_error(HARP_ERROR_CODA, NULL);
+        return -1;
+    }
+    if (strlen(product_name) != 83)
+    {
+        /* 'id' attribute does not contain a valid logical product name */
+        return 0;
+    }
+    info->collection_number = (int)strtol(&product_name[58], NULL, 10);
+    info->processor_version = (int)strtol(&product_name[61], NULL, 10);
+
+    return 0;
+}
+
 static int init_processing_mode(ingest_info *info)
 {
     coda_cursor cursor;
@@ -521,10 +556,18 @@ static int ingestion_init(const harp_ingestion_module *module, coda_product *pro
     info->num_corners = 0;
     info->num_layers = 0;
     info->num_levels = 0;
+    info->processor_version = -1;
+    info->collection_number = -1;
     info->wavelength_ratio = 354;
     info->is_nrti = 0;
 
     if (get_product_type(info->product, &info->product_type) != 0)
+    {
+        ingestion_done(info);
+        return -1;
+    }
+
+    if (init_versions(info) != 0)
     {
         ingestion_done(info);
         return -1;
@@ -1074,11 +1117,17 @@ static int read_input_altitude(void *user_data, harp_array data)
 static int read_input_altitude_bounds(void *user_data, harp_array data)
 {
     ingest_info *info = (ingest_info *)user_data;
+    const char *fieldname = "altitude_levels";
     long dimension[2];
     long num_layers;
     long i, j;
 
-    if (read_dataset(info->input_data_cursor, "height_levels", harp_type_float,
+    if (info->processor_version < 10000)
+    {
+        fieldname = "height_levels";
+    }
+
+    if (read_dataset(info->input_data_cursor, fieldname, harp_type_float,
                      info->num_scanlines * info->num_pixels * info->num_levels, data) != 0)
     {
         return -1;
@@ -2055,11 +2104,17 @@ static int read_product_qa_value(void *user_data, harp_array data)
     return result;
 }
 
-static int read_results_aerosol_mid_height(void *user_data, harp_array data)
+static int read_results_aerosol_mid_altitude(void *user_data, harp_array data)
 {
     ingest_info *info = (ingest_info *)user_data;
+    const char *fieldname = "aerosol_mid_altitude";
 
-    return read_dataset(info->detailed_results_cursor, "aerosol_mid_height", harp_type_float,
+    if (info->processor_version < 10000)
+    {
+        fieldname = "aerosol_mid_height";
+    }
+
+    return read_dataset(info->detailed_results_cursor, fieldname, harp_type_float,
                         info->num_scanlines * info->num_pixels, data);
 }
 
@@ -3976,10 +4031,12 @@ static void register_ch4_product(void)
         harp_ingestion_register_variable_full_read(product_definition, "altitude_bounds", harp_type_float, 3,
                                                    dimension_type, dimension, description, "m", NULL,
                                                    read_input_altitude_bounds);
-    path = "/PRODUCT/SUPPORT_DATA/INPUT_DATA/height_levels[]";
+    path = "/PRODUCT/SUPPORT_DATA/INPUT_DATA/altitude_levels[]";
     description = "derived from height per level (layer boundary) by repeating the inner levels; the upper bound of "
         "layer k is equal to the lower bound of layer k+1; the vertical grid is inverted to make it ascending";
-    harp_variable_definition_add_mapping(variable_definition, NULL, NULL, path, description);
+    harp_variable_definition_add_mapping(variable_definition, NULL, "processor version >= 01.00.00", path, description);
+    path = "/PRODUCT/SUPPORT_DATA/INPUT_DATA/height_levels[]";
+    harp_variable_definition_add_mapping(variable_definition, NULL, "processor version < 01.00.00", path, description);
 
     /* pressure_bounds */
     description = "pressure bounds per profile layer";
@@ -4089,9 +4146,11 @@ static void register_ch4_product(void)
     variable_definition =
         harp_ingestion_register_variable_full_read(product_definition, "aerosol_height",
                                                    harp_type_float, 1, dimension_type, NULL, description, "m",
-                                                   NULL, read_results_aerosol_mid_height);
+                                                   NULL, read_results_aerosol_mid_altitude);
+    path = "/PRODUCT/SUPPORT_DATA/DETAILED_RESULTS/aerosol_mid_altitude[]";
+    harp_variable_definition_add_mapping(variable_definition, NULL, "processor version >= 01.00.00", path, NULL);
     path = "/PRODUCT/SUPPORT_DATA/DETAILED_RESULTS/aerosol_mid_height[]";
-    harp_variable_definition_add_mapping(variable_definition, NULL, NULL, path, NULL);
+    harp_variable_definition_add_mapping(variable_definition, NULL, "processor version < 01.00.00", path, NULL);
 
     /* aerosol_optical_depth */
     description = "aerosol optical thicknesss in the SWIR band";
@@ -5476,10 +5535,10 @@ static void register_so2_product(void)
     description = "aerosol index";
     variable_definition =
         harp_ingestion_register_variable_full_read(product_definition, "absorbing_aerosol_index", harp_type_float, 1,
-                                                   dimension_type, NULL, description, HARP_UNIT_DIMENSIONLESS, NULL,
-                                                   read_input_aerosol_index_340_380);
+                                                   dimension_type, NULL, description, HARP_UNIT_DIMENSIONLESS,
+                                                   exclude_nrti, read_input_aerosol_index_340_380);
     path = "/PRODUCT/SUPPORT_DATA/INPUT_DATA/aerosol_index_340_380";
-    harp_variable_definition_add_mapping(variable_definition, NULL, NULL, path, NULL);
+    harp_variable_definition_add_mapping(variable_definition, NULL, "OFFL", path, NULL);
 
     register_cloud_variables(product_definition);
 
