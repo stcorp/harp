@@ -34,8 +34,11 @@
 #include "hashtable.h"
 
 #include <assert.h>
+#include <errno.h>
+#include <stdio.h>
 #include <stdlib.h>
 #include <string.h>
+#include <time.h>
 
 /** \defgroup harp_product HARP Products
  * The HARP Products module contains everything related to HARP products.
@@ -1436,8 +1439,10 @@ LIBHARP_API int harp_product_is_empty(const harp_product *product)
 }
 
 /** Update the history attribute in the product based on the command line parameters.
- * This function will extend the existing product history metadata element with a line containing the call that was
- * used to run this program. This command line execution call is constructed based on the \a argc and \a argv arguments.
+ * This function will extend the existing product history metadata element with a line containing the current UTC time,
+ * the HARP version, and the call that was used to run this program.
+ * The command line execution call is constructed based on the \a argc and \a argv arguments.
+ * The format of the added line is: YYYY-MM-DDThh:mm:ssZ [harp-x.y] args ....
  * \param product Product for which the history metada should be extended.
  * \param executable Name of the command line executable (this value is used instead of argv[0]).
  * \param argc Variable as passed by main().
@@ -1448,6 +1453,8 @@ LIBHARP_API int harp_product_is_empty(const harp_product *product)
  */
 LIBHARP_API int harp_product_update_history(harp_product *product, const char *executable, int argc, char *argv[])
 {
+    time_t now;
+    struct tm tmnow;
     char *arguments = NULL;
     char *buffer = NULL;
     size_t length;
@@ -1464,11 +1471,22 @@ LIBHARP_API int harp_product_update_history(harp_product *product, const char *e
         return -1;
     }
 
+    /* get current UTC time */
+    now = time(NULL);
+    if (gmtime_r(&now, &tmnow) == NULL)
+    {
+        harp_set_error(HARP_ERROR_INVALID_DATETIME, "could not get current time (%s)", strerror(errno));
+        return -1;
+    }
+
     /* Update the history attribute */
-    /* Add the length of the executable and the arguments, a whitespace and a string termination character */
-    length = strlen(executable) + strlen(arguments) + 2;
+    /* Reserve length for 'YYYY-MM-DDThh:mm:ssZ [harp-<version>] ' and string termination character */
+    length = 30 + strlen(HARP_VERSION);
+    /* Add the length of the executable, a whitespace, and the arguments */
+    length += strlen(executable) + 1 + strlen(arguments);
     if (product->history != NULL)
     {
+        /* also add newline character */
         length += strlen(product->history) + 1;
     }
 
@@ -1489,6 +1507,8 @@ LIBHARP_API int harp_product_update_history(harp_product *product, const char *e
         free(product->history);
         product->history = NULL;
     }
+    sprintf(&buffer[strlen(buffer)], "%04d-%02d-%02dT%02d:%02d:%02dZ [harp-%s] ", tmnow.tm_year + 1900,
+            tmnow.tm_mon + 1, tmnow.tm_mday, tmnow.tm_hour, tmnow.tm_min, tmnow.tm_sec, HARP_VERSION);
     strcat(buffer, executable);
     strcat(buffer, " ");
     strcat(buffer, arguments);
