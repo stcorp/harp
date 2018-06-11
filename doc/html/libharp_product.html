@@ -615,7 +615,7 @@
 <dl class="function">
 <dt id="_CPPv227harp_product_update_historyP12harp_productPKciA_Pc">
 <span id="harp_product_update_history__harp_productP.cCP.i.cPA"></span><span class="target" id="libharpgroup__harp__product_1ga6e574e19c463cf244b60cc4d25710195"></span>int <code class="descname">harp_product_update_history</code><span class="sig-paren">(</span><a class="reference internal" href="#_CPPv212harp_product" title="harp_product">harp_product</a> *<em>product</em>, <em class="property">const</em> char *<em>executable</em>, int <em>argc</em>, char *<em>argv</em>[]<span class="sig-paren">)</span><br /></dt>
-<dd><p>Update the history attribute in the product based on the command line parameters. This function will extend the existing product history metadata element with a line containing the call that was used to run this program. This command line execution call is constructed based on the <em>argc</em> and <em>argv</em> arguments. <dl class="docutils">
+<dd><p>Update the history attribute in the product based on the command line parameters. This function will extend the existing product history metadata element with a line containing the current UTC time, the HARP version, and the call that was used to run this program. The command line execution call is constructed based on the <em>argc</em> and <em>argv</em> arguments. The format of the added line is: YYYY-MM-DDThh:mm:ssZ [harp-x.y] args .... <dl class="docutils">
 <dt><strong>Return</strong></dt>
 <dd><ul class="simple">
 <li><code class="docutils literal"><span class="pre">0</span></code>, Success. </li>
