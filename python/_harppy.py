@@ -32,6 +32,7 @@ POSSIBILITY OF SUCH DAMAGE.
 from __future__ import print_function
 
 from collections import OrderedDict
+import datetime
 import glob
 import numpy
 import os
@@ -961,6 +962,15 @@ def _export_product(product, c_product):
         except Error as _error:
             raise Error("variable '%r' could not be exported (%s)" % (name, str(_error)))
 
+def _update_history(product, command):
+    line = datetime.datetime.utcnow().strftime("%Y-%m-%dT%H:%M:%SZ")
+    line += " [harp-%s] " % (version())
+    line += command
+    try:
+        product.history += "\n" + line
+    except AttributeError:
+        product.history = line
+
 def get_encoding():
     """Return the encoding used to convert between unicode strings and C strings
     (only relevant when using Python 3).
@@ -1067,10 +1077,7 @@ def import_product(filename, operations="", options=""):
             if options:
                 command += ",options='{0}'".format(options)
             command += ")"
-            try:
-                product.history += "\n" + command
-            except AttributeError:
-                product.history = command
+            _update_history(product, command)
 
         return product
 
@@ -1095,10 +1102,7 @@ def export_product(product, filename, file_format="netcdf", operations="", hdf5_
     if operations:
         # Update history (but only if the export modifies the product)
         command = "harp.export_product('{0}', operations='{1}')".format(filename, operations)
-        try:
-            product.history += "\n" + command
-        except AttributeError:
-            product.history = command
+        _update_history(product, command)
 
     # Create C product.
     c_product_ptr = _ffi.new("harp_product **")
