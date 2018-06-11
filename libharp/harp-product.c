@@ -1454,7 +1454,7 @@ LIBHARP_API int harp_product_is_empty(const harp_product *product)
 LIBHARP_API int harp_product_update_history(harp_product *product, const char *executable, int argc, char *argv[])
 {
     time_t now;
-    struct tm tmnow;
+    struct tm *tmnow;
     char *arguments = NULL;
     char *buffer = NULL;
     size_t length;
@@ -1473,7 +1473,8 @@ LIBHARP_API int harp_product_update_history(harp_product *product, const char *e
 
     /* get current UTC time */
     now = time(NULL);
-    if (gmtime_r(&now, &tmnow) == NULL)
+    tmnow = gmtime(&now);
+    if (tmnow == NULL)
     {
         harp_set_error(HARP_ERROR_INVALID_DATETIME, "could not get current time (%s)", strerror(errno));
         return -1;
@@ -1507,8 +1508,8 @@ LIBHARP_API int harp_product_update_history(harp_product *product, const char *e
         free(product->history);
         product->history = NULL;
     }
-    sprintf(&buffer[strlen(buffer)], "%04d-%02d-%02dT%02d:%02d:%02dZ [harp-%s] ", tmnow.tm_year + 1900,
-            tmnow.tm_mon + 1, tmnow.tm_mday, tmnow.tm_hour, tmnow.tm_min, tmnow.tm_sec, HARP_VERSION);
+    sprintf(&buffer[strlen(buffer)], "%04d-%02d-%02dT%02d:%02d:%02dZ [harp-%s] ", tmnow->tm_year + 1900,
+            tmnow->tm_mon + 1, tmnow->tm_mday, tmnow->tm_hour, tmnow->tm_min, tmnow->tm_sec, HARP_VERSION);
     strcat(buffer, executable);
     strcat(buffer, " ");
     strcat(buffer, arguments);
