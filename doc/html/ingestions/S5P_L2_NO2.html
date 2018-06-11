@@ -356,6 +356,18 @@
 <td>[]</td>
 <td>averaging kernel for the stratospheric vertical column number density of NO2</td>
 </tr>
+<tr class="row-even"><td><strong>NO2_slant_column_number_density</strong></td>
+<td>float</td>
+<td>{<em>time</em>}</td>
+<td>[mol/m^2]</td>
+<td>slant column of NO2</td>
+</tr>
+<tr class="row-odd"><td><strong>NO2_slant_column_number_density_uncertainty</strong></td>
+<td>float</td>
+<td>{<em>time</em>}</td>
+<td>[mol/m^2]</td>
+<td>uncertainty of the slant column of NO2</td>
+</tr>
 <tr class="row-even"><td><strong>cloud_fraction</strong></td>
 <td>float</td>
 <td>{<em>time</em>}</td>
@@ -637,6 +649,14 @@
 </tr>
 <tr class="row-even"><td><em>description</em></td>
 <td>averaging_kernel[layer] = if layer &gt; tm5_tropopause_layer_index then averaging_kernel[layer] * air_mass_factor_total / air_mass_factor_stratosphere else 0</td>
+</tr>
+<tr class="row-odd"><td><strong>NO2_slant_column_number_density</strong></td>
+<td><em>path</em></td>
+<td><strong>/PRODUCT/SUPPORT_DATA/DETAILED_RESULTS/nitrogendioxide_slant_column_density[]</strong></td>
+</tr>
+<tr class="row-even"><td><strong>NO2_slant_column_number_density_uncertainty</strong></td>
+<td><em>path</em></td>
+<td><strong>/PRODUCT/SUPPORT_DATA/DETAILED_RESULTS/nitrogendioxide_slant_column_density_precision[]</strong></td>
 </tr>
 <tr class="row-odd"><td rowspan="4"><strong>cloud_fraction</strong></td>
 <td><em>condition</em></td>

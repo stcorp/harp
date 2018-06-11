@@ -2275,6 +2275,22 @@ static int read_results_column_averaging_kernel_inverted(void *user_data, harp_a
     return harp_array_invert(harp_type_float, 1, 2, dimension, data);
 }
 
+static int read_results_formaldehyde_slant_column_corrected(void *user_data, harp_array data)
+{
+    ingest_info *info = (ingest_info *)user_data;
+
+    return read_dataset(info->detailed_results_cursor, "formaldehyde_slant_column_corrected", harp_type_float,
+                        info->num_scanlines * info->num_pixels, data);
+}
+
+static int read_results_formaldehyde_slant_column_corrected_trueness(void *user_data, harp_array data)
+{
+    ingest_info *info = (ingest_info *)user_data;
+
+    return read_dataset(info->detailed_results_cursor, "formaldehyde_slant_column_corrected_trueness", harp_type_float,
+                        info->num_scanlines * info->num_pixels, data);
+}
+
 static int read_results_formaldehyde_profile_apriori(void *user_data, harp_array data)
 {
     ingest_info *info = (ingest_info *)user_data;
@@ -2323,6 +2339,22 @@ static int read_results_height_scattering_layer(void *user_data, harp_array data
                         info->num_scanlines * info->num_pixels, data);
 }
 
+static int read_results_nitrogendioxide_slant_column_density(void *user_data, harp_array data)
+{
+    ingest_info *info = (ingest_info *)user_data;
+
+    return read_dataset(info->detailed_results_cursor, "nitrogendioxide_slant_column_density", harp_type_float,
+                        info->num_scanlines * info->num_pixels, data);
+}
+
+static int read_results_nitrogendioxide_slant_column_density_precision(void *user_data, harp_array data)
+{
+    ingest_info *info = (ingest_info *)user_data;
+
+    return read_dataset(info->detailed_results_cursor, "nitrogendioxide_slant_column_density_precision",
+                        harp_type_float, info->num_scanlines * info->num_pixels, data);
+}
+
 static int read_results_nitrogendioxide_stratospheric_column(void *user_data, harp_array data)
 {
     ingest_info *info = (ingest_info *)user_data;
@@ -2337,6 +2369,14 @@ static int read_results_nitrogendioxide_stratospheric_column_precision(void *use
 
     return read_dataset(info->detailed_results_cursor, "nitrogendioxide_stratospheric_column_precision",
                         harp_type_float, info->num_scanlines * info->num_pixels, data);
+}
+
+static int read_results_ozone_effective_temperature(void *user_data, harp_array data)
+{
+    ingest_info *info = (ingest_info *)user_data;
+
+    return read_dataset(info->detailed_results_cursor, "ozone_effective_temperature", harp_type_float,
+                        info->num_scanlines * info->num_pixels, data);
 }
 
 static int read_results_ozone_total_air_mass_factor(void *user_data, harp_array data)
@@ -2369,6 +2409,14 @@ static int read_results_ozone_profile_error_covariance_matrix(void *user_data, h
 
     return read_dataset(info->detailed_results_cursor, "ozone_profile_error_covariance_matrix", harp_type_float,
                         info->num_scanlines * info->num_pixels * info->num_levels * info->num_levels, data);
+}
+
+static int read_results_ozone_slant_column_ring_corrected(void *user_data, harp_array data)
+{
+    ingest_info *info = (ingest_info *)user_data;
+
+    return read_dataset(info->detailed_results_cursor, "ozone_slant_column_ring_corrected", harp_type_float,
+                        info->num_scanlines * info->num_pixels, data);
 }
 
 static int read_results_pressure_bounds(void *user_data, harp_array data)
@@ -2501,6 +2549,14 @@ static int read_results_sulfurdioxide_profile_apriori(void *user_data, harp_arra
 
     return read_dataset(info->detailed_results_cursor, "sulfurdioxide_profile_apriori", harp_type_float,
                         info->num_scanlines * info->num_pixels * info->num_layers, data);
+}
+
+static int read_results_sulfurdioxide_slant_column_corrected(void *user_data, harp_array data)
+{
+    ingest_info *info = (ingest_info *)user_data;
+
+    return read_dataset(info->detailed_results_cursor, "sulfurdioxide_slant_column_corrected", harp_type_float,
+                        info->num_scanlines * info->num_pixels, data);
 }
 
 static int read_results_surface_albedo_fitted(void *user_data, harp_array data)
@@ -4426,6 +4482,24 @@ static void register_hcho_product(void)
     path = "/PRODUCT/SUPPORT_DATA/DETAILED_RESULTS/formaldehyde_tropospheric_air_mass_factor_trueness[]";
     harp_variable_definition_add_mapping(variable_definition, NULL, NULL, path, NULL);
 
+    /* HCHO_slant_column_number_density */
+    description = "HCHO slant column number density";
+    variable_definition =
+        harp_ingestion_register_variable_full_read(product_definition, "HCHO_slant_column_number_density",
+                                                   harp_type_float, 1, dimension_type, NULL, description, "mol/m^2",
+                                                   NULL, read_results_formaldehyde_slant_column_corrected);
+    path = "/PRODUCT/SUPPORT_DATA/DETAILED_RESULTS/formaldehyde_slant_column_corrected[]";
+    harp_variable_definition_add_mapping(variable_definition, NULL, NULL, path, NULL);
+
+    /* HCHO_slant_column_number_density_uncertainty */
+    description = "uncertainty of the HCHO slant column number density";
+    variable_definition =
+        harp_ingestion_register_variable_full_read(product_definition, "HCHO_slant_column_number_density_uncertainty",
+                                                   harp_type_float, 1, dimension_type, NULL, description, "mol/m^2",
+                                                   NULL, read_results_formaldehyde_slant_column_corrected_trueness);
+    path = "/PRODUCT/SUPPORT_DATA/DETAILED_RESULTS/formaldehyde_slant_column_corrected_trueness[]";
+    harp_variable_definition_add_mapping(variable_definition, NULL, NULL, path, NULL);
+
     /* absorbing_aerosol_index */
     description = "aerosol index";
     variable_definition =
@@ -4543,6 +4617,24 @@ static void register_o3_product(void)
                                                    read_results_ozone_total_air_mass_factor_trueness);
     path = "/PRODUCT/SUPPORT_DATA/DETAILED_RESULTS/ozone_total_air_mass_factor_trueness[]";
     harp_variable_definition_add_mapping(variable_definition, NULL, "NRTI", path, NULL);
+
+    /* O3_slant_column_number_density */
+    description = "O3 ring corrected slant column number density";
+    variable_definition =
+        harp_ingestion_register_variable_full_read(product_definition, "O3_slant_column_number_density",
+                                                   harp_type_float, 1, dimension_type, NULL, description, "mol/m^2",
+                                                   exclude_non_nrti, read_results_ozone_slant_column_ring_corrected);
+    path = "/PRODUCT/SUPPORT_DATA/DETAILED_RESULTS/ozone_slant_column_ring_corrected[]";
+    harp_variable_definition_add_mapping(variable_definition, NULL, "NRTI", path, NULL);
+
+    /* O3_effective_temperature */
+    description = "ozone cross section effective temperature";
+    variable_definition =
+        harp_ingestion_register_variable_full_read(product_definition, "O3_effective_temperature",
+                                                   harp_type_float, 1, dimension_type, NULL, description, "K",
+                                                   NULL, read_results_ozone_effective_temperature);
+    path = "/PRODUCT/SUPPORT_DATA/DETAILED_RESULTS/ozone_effective_temperature[]";
+    harp_variable_definition_add_mapping(variable_definition, NULL, NULL, path, NULL);
 
     /* cloud_base_height */
     description = "cloud base height calculated using the OCRA/ROCINN CAL model";
@@ -5313,6 +5405,24 @@ static void register_no2_product(void)
         "averaging_kernel[layer] * air_mass_factor_total / air_mass_factor_stratosphere else 0";
     harp_variable_definition_add_mapping(variable_definition, NULL, NULL, path, description);
 
+    /* NO2_slant_column_number_density */
+    description = "slant column of NO2";
+    variable_definition =
+        harp_ingestion_register_variable_full_read(product_definition, "NO2_slant_column_number_density",
+                                                   harp_type_float, 1, dimension_type, NULL, description, "mol/m^2",
+                                                   NULL, read_results_nitrogendioxide_slant_column_density);
+    path = "/PRODUCT/SUPPORT_DATA/DETAILED_RESULTS/nitrogendioxide_slant_column_density[]";
+    harp_variable_definition_add_mapping(variable_definition, NULL, NULL, path, NULL);
+
+    /* NO2_slant_column_number_density_uncertainty */
+    description = "uncertainty of the slant column of NO2";
+    variable_definition =
+        harp_ingestion_register_variable_full_read(product_definition, "NO2_slant_column_number_density_uncertainty",
+                                                   harp_type_float, 1, dimension_type, NULL, description, "mol/m^2",
+                                                   NULL, read_results_nitrogendioxide_slant_column_density_precision);
+    path = "/PRODUCT/SUPPORT_DATA/DETAILED_RESULTS/nitrogendioxide_slant_column_density_precision[]";
+    harp_variable_definition_add_mapping(variable_definition, NULL, NULL, path, NULL);
+
     /* cloud_fraction */
     description = "cloud fraction for NO2 fitting window";
     variable_definition =
@@ -5536,6 +5646,15 @@ static void register_so2_product(void)
                                                    read_results_sulfurdioxide_profile_apriori);
     path = "/PRODUCT/SUPPORT_DATA/DETAILED_RESULTS/sulfurdioxide_profile_apriori[]";
     harp_variable_definition_add_mapping(variable_definition, "so2_column unset", NULL, path, NULL);
+
+    /* SO2_slant_column_number_density */
+    description = "SO2 slant column density";
+    variable_definition =
+        harp_ingestion_register_variable_full_read(product_definition, "SO2_slant_column_number_density",
+                                                   harp_type_float, 1, dimension_type, NULL, description, "mol/m^2",
+                                                   NULL, read_results_sulfurdioxide_slant_column_corrected);
+    path = "/PRODUCT/SUPPORT_DATA/DETAILED_RESULTS/sulfurdioxide_slant_column_corrected[]";
+    harp_variable_definition_add_mapping(variable_definition, NULL, NULL, path, NULL);
 
     /* O3_column_number_density */
     description = "O3 vertical column density";

@@ -320,6 +320,18 @@
 <td>[]</td>
 <td>uncertainty of the O3 column number density total air mass factor</td>
 </tr>
+<tr class="row-even"><td><strong>O3_slant_column_number_density</strong></td>
+<td>float</td>
+<td>{<em>time</em>}</td>
+<td>[mol/m^2]</td>
+<td>O3 ring corrected slant column number density</td>
+</tr>
+<tr class="row-odd"><td><strong>O3_effective_temperature</strong></td>
+<td>float</td>
+<td>{<em>time</em>}</td>
+<td>[K]</td>
+<td>ozone cross section effective temperature</td>
+</tr>
 <tr class="row-even"><td><strong>cloud_base_height</strong></td>
 <td>float</td>
 <td>{<em>time</em>}</td>
@@ -616,6 +628,20 @@
 </tr>
 <tr class="row-even"><td><em>path</em></td>
 <td><strong>/PRODUCT/SUPPORT_DATA/DETAILED_RESULTS/ozone_total_air_mass_factor_trueness[]</strong></td>
+</tr>
+<tr class="row-odd"><td rowspan="3"><strong>O3_slant_column_number_density</strong></td>
+<td><em>available</em></td>
+<td>optional</td>
+</tr>
+<tr class="row-even"><td><em>condition</em></td>
+<td>NRTI</td>
+</tr>
+<tr class="row-odd"><td><em>path</em></td>
+<td><strong>/PRODUCT/SUPPORT_DATA/DETAILED_RESULTS/ozone_slant_column_ring_corrected[]</strong></td>
+</tr>
+<tr class="row-even"><td><strong>O3_effective_temperature</strong></td>
+<td><em>path</em></td>
+<td><strong>/PRODUCT/SUPPORT_DATA/DETAILED_RESULTS/ozone_effective_temperature[]</strong></td>
 </tr>
 <tr class="row-odd"><td rowspan="3"><strong>cloud_base_height</strong></td>
 <td><em>available</em></td>

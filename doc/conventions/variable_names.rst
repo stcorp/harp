@@ -148,10 +148,12 @@ wind_direction                                surface                         X 
 year                                                                                                     integer value representing a year
 <species>_column_density                      stratospheric,  amf, apriori,   X       X    X             this is the mass density
                                               tropospheric    avk, dfs
+<species>_slant_column_density                                                X            X             this is the mass density
 <pm>_column_density                           stratospheric,                  X       X    X             this is the mass density
                                               tropospheric
 <species>_column_number_density               stratospheric,  amf, apriori,   X       X    X
                                               tropospheric    avk, dfs
+<species>_slant_column_number_density                                         X            X
 <species>_column_mass_mixing_ratio            stratospheric,                  X            X
                                               tropospheric
 <species>_column_mass_mixing_ratio_dry_air    stratospheric,                  X            X
@@ -162,6 +164,7 @@ year                                                                            
                                               tropospheric
 <species>_density                             surface                         X       X    X             this is the mass density
 <pm>_density                                  surface                         X       X    X             this is the mass density
+O3_effective_temperature                                                      X            X
 <species>_mass_mixing_ratio                   surface         apriori, avk,   X       X    X
                                                               dfs
 <species>_mass_mixing_ratio_dry_air           surface         apriori, avk,   X       X    X

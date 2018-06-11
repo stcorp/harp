@@ -332,97 +332,103 @@
 <td>[ppv]</td>
 <td>SO2 apriori profile in volume mixing ratios</td>
 </tr>
-<tr class="row-even"><td><strong>O3_column_number_density</strong></td>
+<tr class="row-even"><td><strong>SO2_slant_column_number_density</strong></td>
+<td>float</td>
+<td>{<em>time</em>}</td>
+<td>[mol/m^2]</td>
+<td>SO2 slant column density</td>
+</tr>
+<tr class="row-odd"><td><strong>O3_column_number_density</strong></td>
 <td>float</td>
 <td>{<em>time</em>}</td>
 <td>[mol/m^2]</td>
 <td>O3 vertical column density</td>
 </tr>
-<tr class="row-odd"><td><strong>O3_column_number_density_uncertainty</strong></td>
+<tr class="row-even"><td><strong>O3_column_number_density_uncertainty</strong></td>
 <td>float</td>
 <td>{<em>time</em>}</td>
 <td>[mol/m^2]</td>
 <td>random component of the uncertainty of the O3 vertical column density</td>
 </tr>
-<tr class="row-even"><td><strong>absorbing_aerosol_index</strong></td>
+<tr class="row-odd"><td><strong>absorbing_aerosol_index</strong></td>
 <td>float</td>
 <td>{<em>time</em>}</td>
 <td>[]</td>
 <td>aerosol index</td>
 </tr>
-<tr class="row-odd"><td><strong>cloud_albedo</strong></td>
+<tr class="row-even"><td><strong>cloud_albedo</strong></td>
 <td>float</td>
 <td>{<em>time</em>}</td>
 <td>[]</td>
 <td>cloud albedo</td>
 </tr>
-<tr class="row-even"><td><strong>cloud_albedo_uncertainty</strong></td>
+<tr class="row-odd"><td><strong>cloud_albedo_uncertainty</strong></td>
 <td>float</td>
 <td>{<em>time</em>}</td>
 <td>[]</td>
 <td>uncertainty of the cloud albedo</td>
 </tr>
-<tr class="row-odd"><td><strong>cloud_fraction</strong></td>
+<tr class="row-even"><td><strong>cloud_fraction</strong></td>
 <td>float</td>
 <td>{<em>time</em>}</td>
 <td>[]</td>
 <td>cloud fraction</td>
 </tr>
-<tr class="row-even"><td><strong>cloud_fraction_uncertainty</strong></td>
+<tr class="row-odd"><td><strong>cloud_fraction_uncertainty</strong></td>
 <td>float</td>
 <td>{<em>time</em>}</td>
 <td>[]</td>
 <td>uncertainty of the cloud fraction</td>
 </tr>
-<tr class="row-odd"><td><strong>cloud_altitude</strong></td>
+<tr class="row-even"><td><strong>cloud_altitude</strong></td>
 <td>float</td>
 <td>{<em>time</em>}</td>
 <td>[km]</td>
 <td>cloud altitude</td>
 </tr>
-<tr class="row-even"><td><strong>cloud_altitude_uncertainty</strong></td>
+<tr class="row-odd"><td><strong>cloud_altitude_uncertainty</strong></td>
 <td>float</td>
 <td>{<em>time</em>}</td>
 <td>[km]</td>
 <td>uncertainty of the cloud altitude</td>
 </tr>
-<tr class="row-odd"><td><strong>cloud_pressure</strong></td>
+<tr class="row-even"><td><strong>cloud_pressure</strong></td>
 <td>float</td>
 <td>{<em>time</em>}</td>
 <td>[Pa]</td>
 <td>cloud pressure</td>
 </tr>
-<tr class="row-even"><td><strong>cloud_pressure_uncertainty</strong></td>
+<tr class="row-odd"><td><strong>cloud_pressure_uncertainty</strong></td>
 <td>float</td>
 <td>{<em>time</em>}</td>
 <td>[Pa]</td>
 <td>uncertainty of the cloud pressure</td>
 </tr>
-<tr class="row-odd"><td><strong>surface_albedo</strong></td>
+<tr class="row-even"><td><strong>surface_albedo</strong></td>
 <td>float</td>
 <td>{<em>time</em>}</td>
 <td>[]</td>
 <td>surface albedo</td>
 </tr>
-<tr class="row-even"><td><strong>surface_altitude</strong></td>
+<tr class="row-odd"><td><strong>surface_altitude</strong></td>
 <td>float</td>
 <td>{<em>time</em>}</td>
 <td>[m]</td>
 <td>surface altitude</td>
 </tr>
-<tr class="row-odd"><td><strong>surface_altitude_uncertainty</strong></td>
+<tr class="row-even"><td><strong>surface_altitude_uncertainty</strong></td>
 <td>float</td>
 <td>{<em>time</em>}</td>
 <td>[m]</td>
 <td>surface altitude precision</td>
 </tr>
-<tr class="row-even"><td><strong>surface_pressure</strong></td>
+<tr class="row-odd"><td><strong>surface_pressure</strong></td>
 <td>float</td>
 <td>{<em>time</em>}</td>
 <td>[Pa]</td>
 <td>surface pressure</td>
 </tr>
-<tr class="row-odd"><td><strong>index</strong></td>
+<tr class="row-even"><td><strong>index</strong></td>
 <td>int32</td>
 <td>{<em>time</em>}</td>
 <td>&#160;</td>
@@ -742,90 +748,94 @@
 <tr class="row-even"><td><em>path</em></td>
 <td><strong>/PRODUCT/SUPPORT_DATA/DETAILED_RESULTS/sulfurdioxide_profile_apriori[]</strong></td>
 </tr>
-<tr class="row-odd"><td><strong>O3_column_number_density</strong></td>
+<tr class="row-odd"><td><strong>SO2_slant_column_number_density</strong></td>
+<td><em>path</em></td>
+<td><strong>/PRODUCT/SUPPORT_DATA/DETAILED_RESULTS/sulfurdioxide_slant_column_corrected[]</strong></td>
+</tr>
+<tr class="row-even"><td><strong>O3_column_number_density</strong></td>
 <td><em>path</em></td>
 <td><strong>/PRODUCT/SUPPORT_DATA/INPUT_DATA/ozone_total_vertical_column[]</strong></td>
 </tr>
-<tr class="row-even"><td><strong>O3_column_number_density_uncertainty</strong></td>
+<tr class="row-odd"><td><strong>O3_column_number_density_uncertainty</strong></td>
 <td><em>path</em></td>
 <td><strong>/PRODUCT/SUPPORT_DATA/INPUT_DATA/ozone_total_vertical_column_precision[]</strong></td>
 </tr>
-<tr class="row-odd"><td rowspan="3"><strong>absorbing_aerosol_index</strong></td>
+<tr class="row-even"><td rowspan="3"><strong>absorbing_aerosol_index</strong></td>
 <td><em>available</em></td>
 <td>optional</td>
 </tr>
-<tr class="row-even"><td><em>condition</em></td>
+<tr class="row-odd"><td><em>condition</em></td>
 <td>OFFL</td>
 </tr>
-<tr class="row-odd"><td><em>path</em></td>
+<tr class="row-even"><td><em>path</em></td>
 <td><strong>/PRODUCT/SUPPORT_DATA/INPUT_DATA/aerosol_index_340_380</strong></td>
 </tr>
-<tr class="row-even"><td><strong>cloud_albedo</strong></td>
+<tr class="row-odd"><td><strong>cloud_albedo</strong></td>
 <td><em>path</em></td>
 <td><strong>/PRODUCT/SUPPORT_DATA/INPUT_DATA/cloud_albedo_crb</strong></td>
 </tr>
-<tr class="row-odd"><td><strong>cloud_albedo_uncertainty</strong></td>
+<tr class="row-even"><td><strong>cloud_albedo_uncertainty</strong></td>
 <td><em>path</em></td>
 <td><strong>/PRODUCT/SUPPORT_DATA/INPUT_DATA/cloud_albedo_crb_precision</strong></td>
 </tr>
-<tr class="row-even"><td rowspan="4"><strong>cloud_fraction</strong></td>
+<tr class="row-odd"><td rowspan="4"><strong>cloud_fraction</strong></td>
 <td><em>condition</em></td>
 <td>cloud_fraction unset</td>
 </tr>
-<tr class="row-odd"><td><em>path</em></td>
+<tr class="row-even"><td><em>path</em></td>
 <td><strong>/PRODUCT/SUPPORT_DATA/INPUT_DATA/cloud_fraction_crb[]</strong></td>
 </tr>
-<tr class="row-even"><td><em>condition</em></td>
+<tr class="row-odd"><td><em>condition</em></td>
 <td>cloud_fraction=radiance</td>
 </tr>
-<tr class="row-odd"><td><em>path</em></td>
+<tr class="row-even"><td><em>path</em></td>
 <td><strong>/PRODUCT/SUPPORT_DATA/DETAILED_RESULTS/cloud_fraction_intensity_weighted[]</strong></td>
 </tr>
-<tr class="row-even"><td rowspan="4"><strong>cloud_fraction_uncertainty</strong></td>
+<tr class="row-odd"><td rowspan="4"><strong>cloud_fraction_uncertainty</strong></td>
 <td><em>condition</em></td>
 <td>cloud_fraction unset</td>
 </tr>
-<tr class="row-odd"><td><em>path</em></td>
+<tr class="row-even"><td><em>path</em></td>
 <td><strong>/PRODUCT/SUPPORT_DATA/INPUT_DATA/cloud_fraction_crb_precision[]</strong></td>
 </tr>
-<tr class="row-even"><td><em>condition</em></td>
+<tr class="row-odd"><td><em>condition</em></td>
 <td>cloud_fraction=radiance</td>
 </tr>
-<tr class="row-odd"><td><em>path</em></td>
+<tr class="row-even"><td><em>path</em></td>
 <td><strong>/PRODUCT/SUPPORT_DATA/DETAILED_RESULTS/cloud_fraction_intensity_weighted_precision[]</strong></td>
 </tr>
-<tr class="row-even"><td><strong>cloud_altitude</strong></td>
+<tr class="row-odd"><td><strong>cloud_altitude</strong></td>
 <td><em>path</em></td>
 <td><strong>/PRODUCT/SUPPORT_DATA/INPUT_DATA/cloud_height_crb</strong></td>
 </tr>
-<tr class="row-odd"><td><strong>cloud_altitude_uncertainty</strong></td>
+<tr class="row-even"><td><strong>cloud_altitude_uncertainty</strong></td>
 <td><em>path</em></td>
 <td><strong>/PRODUCT/SUPPORT_DATA/INPUT_DATA/cloud_height_crb_precision</strong></td>
 </tr>
-<tr class="row-even"><td><strong>cloud_pressure</strong></td>
+<tr class="row-odd"><td><strong>cloud_pressure</strong></td>
 <td><em>path</em></td>
 <td><strong>/PRODUCT/SUPPORT_DATA/INPUT_DATA/cloud_pressure_crb</strong></td>
 </tr>
-<tr class="row-odd"><td><strong>cloud_pressure_uncertainty</strong></td>
+<tr class="row-even"><td><strong>cloud_pressure_uncertainty</strong></td>
 <td><em>path</em></td>
 <td><strong>/PRODUCT/SUPPORT_DATA/INPUT_DATA/cloud_pressure_crb_precision</strong></td>
 </tr>
-<tr class="row-even"><td rowspan="2"><strong>surface_albedo</strong></td>
+<tr class="row-odd"><td rowspan="2"><strong>surface_albedo</strong></td>
 <td><em>path</em></td>
 <td><strong>/PRODUCT/SUPPORT_DATA/INPUT_DATA/surface_albedo_328nm, /PRODUCT/SUPPORT_DATA/INPUT_DATA/surface_albedo_376nm, /PRODUCT/SUPPORT_DATA/DETAILED_RESULTS/selected_fitting_window_flag</strong></td>
 </tr>
-<tr class="row-odd"><td><em>description</em></td>
+<tr class="row-even"><td><em>description</em></td>
 <td>if selected_fitting_window_flag is 1 or 2 then use surface_albedo_328, if selected_fitting_window_flag is 3 then use surface_albedo_376, else set to NaN</td>
 </tr>
-<tr class="row-even"><td><strong>surface_altitude</strong></td>
+<tr class="row-odd"><td><strong>surface_altitude</strong></td>
 <td><em>path</em></td>
 <td><strong>/PRODUCT/SUPPORT_DATA/INPUT_DATA/surface_altitude[]</strong></td>
 </tr>
-<tr class="row-odd"><td><strong>surface_altitude_uncertainty</strong></td>
+<tr class="row-even"><td><strong>surface_altitude_uncertainty</strong></td>
 <td><em>path</em></td>
 <td><strong>/PRODUCT/SUPPORT_DATA/INPUT_DATA/surface_altitude_precision[]</strong></td>
 </tr>
-<tr class="row-even"><td><strong>surface_pressure</strong></td>
+<tr class="row-odd"><td><strong>surface_pressure</strong></td>
 <td><em>path</em></td>
 <td><strong>/PRODUCT/SUPPORT_DATA/INPUT_DATA/surface_pressure[]</strong></td>
 </tr>
