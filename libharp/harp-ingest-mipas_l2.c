@@ -97,13 +97,26 @@ typedef struct ingest_info_struct
     uint8_t *lrv;       /* logical retrieval vector; dim=[num_main, {pT, sp#1, sp#2, .., sp#n}, max_num_altitudes] */
 } ingest_info;
 
-static void reverse_array(double *data, long num_elements)
+static void reverse_double_array(double *data, long num_elements)
 {
     long bottom, top;
 
     for (bottom = 0, top = num_elements - 1; bottom < num_elements / 2; bottom++, top--)
     {
         double tmp = data[bottom];
+
+        data[bottom] = data[top];
+        data[top] = tmp;
+    }
+}
+
+static void reverse_uint8_array(uint8_t *data, long num_elements)
+{
+    long bottom, top;
+
+    for (bottom = 0, top = num_elements - 1; bottom < num_elements / 2; bottom++, top--)
+    {
+        uint8_t tmp = data[bottom];
 
         data[bottom] = data[top];
         data[top] = tmp;
@@ -470,6 +483,7 @@ static int init_logical_retrieval_vector(ingest_info *info)
             harp_set_error(HARP_ERROR_CODA, NULL);
             return -1;
         }
+        reverse_uint8_array(&info->lrv[offset], info->num_altitudes[i]);
         offset += info->max_num_altitudes;
         coda_cursor_goto_parent(&cursor);
         coda_cursor_goto_parent(&cursor);
@@ -495,6 +509,7 @@ static int init_logical_retrieval_vector(ingest_info *info)
                 harp_set_error(HARP_ERROR_CODA, NULL);
                 return -1;
             }
+            reverse_uint8_array(&info->lrv[offset], info->num_altitudes[i]);
             offset += info->max_num_altitudes;
             coda_cursor_goto_parent(&cursor);
             if (j < info->num_species - 1)
@@ -672,40 +687,40 @@ static int get_akm_data(ingest_info *info, const coda_cursor *mds_cursor, long i
         harp_set_error(HARP_ERROR_CODA, NULL);
         return -1;
     }
-    reverse_array(data.double_data, num_elements);
+    reverse_double_array(data.double_data, num_elements);
 
     num_altitudes = info->num_altitudes[index];
     num_elements = (long)sqrt(num_elements);
     num_i = num_elements;
-    for (i = num_altitudes - 1; i >= 0; i--)
+    for (i = info->max_num_altitudes - 1; i >= 0; i--)
     {
         /* we need to reverse the lrv index, because we already reversed 'data' with reverse_array() */
-        if (lrv[num_altitudes - i - 1])
+        if (lrv[i])
         {
             long num_j = num_elements;
 
             num_i--;
             assert(num_i >= 0);
-            for (j = num_altitudes - 1; j >= 0; j--)
+            for (j = info->max_num_altitudes - 1; j >= 0; j--)
             {
-                if (lrv[num_altitudes - j - 1])
+                if (lrv[j])
                 {
                     num_j--;
                     assert(num_j >= 0);
-                    data.double_data[i * num_altitudes + j] = data.double_data[num_i * num_elements + num_j];
+                    data.double_data[i * info->max_num_altitudes + j] = data.double_data[num_i * num_elements + num_j];
                 }
                 else
                 {
-                    data.double_data[i * num_altitudes + j] = harp_nan();
+                    data.double_data[i * info->max_num_altitudes + j] = harp_nan();
                 }
             }
             assert(num_j == 0);
         }
         else
         {
-            for (j = 0; j < num_altitudes; j++)
+            for (j = 0; j < info->max_num_altitudes; j++)
             {
-                data.double_data[i * num_altitudes + j] = harp_nan();
+                data.double_data[i * info->max_num_altitudes + j] = harp_nan();
             }
         }
     }
@@ -717,33 +732,34 @@ static int get_akm_data(ingest_info *info, const coda_cursor *mds_cursor, long i
 
         lrv_filter = &info->lrv[(index * (info->num_species + 1) + info->selected_species + 1) *
                                 info->max_num_altitudes];
-        for (i = 0; i < num_altitudes; i++)
+        for (i = 0; i < info->max_num_altitudes; i++)
         {
-            if (lrv_filter[num_altitudes - i - 1])
+            if (lrv_filter[i])
             {
                 long num_j = 0;
 
-                for (j = 0; j < num_altitudes; j++)
+                for (j = 0; j < info->max_num_altitudes; j++)
                 {
-                    if (lrv_filter[num_altitudes - j - 1])
+                    if (lrv_filter[j])
                     {
 
-                        data.double_data[num_i * num_altitudes + num_j] = data.double_data[i * num_altitudes + j];
+                        data.double_data[num_i * info->max_num_altitudes + num_j] =
+                            data.double_data[i * info->max_num_altitudes + j];
                         num_j++;
                     }
                 }
-                for (j = num_j; j < num_altitudes; j++)
+                for (j = num_j; j < info->max_num_altitudes; j++)
                 {
-                    data.double_data[num_i * num_altitudes + j] = harp_nan();
+                    data.double_data[num_i * info->max_num_altitudes + j] = harp_nan();
                 }
                 num_i++;
             }
         }
-        for (i = num_i; i < num_altitudes; i++)
+        for (i = num_i; i < info->max_num_altitudes; i++)
         {
-            for (j = 0; j < num_altitudes; j++)
+            for (j = 0; j < info->max_num_altitudes; j++)
             {
-                data.double_data[i * num_altitudes + j] = harp_nan();
+                data.double_data[i * info->max_num_altitudes + j] = harp_nan();
             }
         }
     }
@@ -775,13 +791,12 @@ static int get_profile_data(ingest_info *info, const coda_cursor *mds_cursor, co
         harp_set_error(HARP_ERROR_CODA, NULL);
         return -1;
     }
-    reverse_array(data.double_data, num_elements);
+    reverse_double_array(data.double_data, num_elements);
 
     num_altitudes = info->num_altitudes[index];
-    for (i = num_altitudes - 1; i >= 0; i--)
+    for (i = info->max_num_altitudes - 1; i >= 0; i--)
     {
-        /* we need to reverse the lrv index, because we already reversed 'data' with reverse_array() */
-        if (lrv[num_altitudes - i - 1])
+        if (lrv[i])
         {
             assert(num_elements > 0);
             data.double_data[i] = data.double_data[num_elements - 1];
@@ -800,15 +815,15 @@ static int get_profile_data(ingest_info *info, const coda_cursor *mds_cursor, co
 
         lrv_filter = &info->lrv[(index * (info->num_species + 1) + info->selected_species + 1) *
                                 info->max_num_altitudes];
-        for (i = 0; i < num_altitudes; i++)
+        for (i = 0; i < info->max_num_altitudes; i++)
         {
-            if (lrv_filter[num_altitudes - i - 1])
+            if (lrv_filter[i])
             {
                 data.double_data[num_elements] = data.double_data[i];
                 num_elements++;
             }
         }
-        for (i = num_elements; i < num_altitudes; i++)
+        for (i = num_elements; i < info->max_num_altitudes; i++)
         {
             data.double_data[i] = harp_nan();
         }
@@ -866,13 +881,13 @@ static int get_profile_uncertainty_data(ingest_info *info, const coda_cursor *md
             }
         }
     }
-    reverse_array(data.double_data, num_pts);
+    reverse_double_array(data.double_data, num_pts);
 
     num_altitudes = info->num_altitudes[index];
-    for (i = num_altitudes - 1; i >= 0; i--)
+    for (i = info->max_num_altitudes - 1; i >= 0; i--)
     {
         /* we need to reverse the lrv index, because we already reversed 'data' with reverse_array() */
-        if (lrv[num_altitudes - i - 1])
+        if (lrv[i])
         {
             assert(num_pts > 0);
             data.double_data[i] = data.double_data[num_pts - 1];
@@ -891,15 +906,15 @@ static int get_profile_uncertainty_data(ingest_info *info, const coda_cursor *md
 
         lrv_filter = &info->lrv[(index * (info->num_species + 1) + info->selected_species + 1) *
                                 info->max_num_altitudes];
-        for (i = 0; i < num_altitudes; i++)
+        for (i = 0; i < info->max_num_altitudes; i++)
         {
-            if (lrv_filter[num_altitudes - i - 1])
+            if (lrv_filter[i])
             {
                 data.double_data[num_pts] = data.double_data[i];
                 num_pts++;
             }
         }
-        for (i = num_pts; i < num_altitudes; i++)
+        for (i = num_pts; i < info->max_num_altitudes; i++)
         {
             data.double_data[i] = harp_nan();
         }
@@ -1152,7 +1167,7 @@ static int read_altitude(void *user_data, long index, harp_array data)
         harp_set_error(HARP_ERROR_CODA, NULL);
         return -1;
     }
-    reverse_array(data.double_data, num_altitudes);
+    reverse_double_array(data.double_data, num_altitudes);
 
     if (info->selected_species != -1)
     {
