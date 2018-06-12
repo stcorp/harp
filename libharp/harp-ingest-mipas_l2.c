@@ -1121,7 +1121,17 @@ static int read_datetime(void *user_data, long index, harp_array data)
 {
     ingest_info *info = (ingest_info *)user_data;
 
-    return get_data(&info->geo_cursor[index], "dsr_time", NULL, data);
+    if (get_data(&info->geo_cursor[index], "dsr_time", NULL, data) != 0)
+    {
+        return -1;
+    }
+    /* some products have invalid time values (which are set to 0) -> set those values to NaN */
+    if (*data.double_data == 0)
+    {
+        *data.double_data = harp_nan();
+    }
+
+    return 0;
 }
 
 static int read_orbit_index(void *user_data, harp_array data)
