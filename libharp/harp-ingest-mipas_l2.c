@@ -1189,7 +1189,7 @@ static int read_altitude(void *user_data, long index, harp_array data)
                                 info->max_num_altitudes];
         for (i = 0; i < num_altitudes; i++)
         {
-            if (lrv_filter[num_altitudes - i - 1])
+            if (lrv_filter[i])
             {
                 data.double_data[num_elements] = data.double_data[i];
                 num_elements++;
