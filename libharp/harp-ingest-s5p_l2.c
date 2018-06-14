@@ -1518,7 +1518,7 @@ static int read_input_pressure_bounds(void *user_data, harp_array data)
         double delta = delta_pressure.double_data[i];
         long j;
 
-        for (j = 0; j < num_layers - 1; j++)
+        for (j = 0; j < num_layers; j++)
         {
             pressure_bounds[j * 2] = (float)(surface_pressure - j * delta);
             pressure_bounds[j * 2 + 1] = (float)(surface_pressure - (j + 1) * delta);
