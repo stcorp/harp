@@ -698,7 +698,6 @@ LIBHARP_API int harp_import_test(const char *filename, int (*print) (const char 
 /** Retrieve global attributes from a product file.
  * \ingroup harp_product
  * This function retrieves the product metadata without performing a full import.
- * This function is only supported for netCDF files using the HARP file format.
  * \param filename Path to the file for which to retrieve global attributes.
  * \param options Ingestion module specific options (optional); should be specified as a semi-colon separated
  * string of key=value pair; only used if the file is not in HARP format.
