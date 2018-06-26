@@ -2607,6 +2607,36 @@ static int read_results_water_total_column_precision(void *user_data, harp_array
                         info->num_scanlines * info->num_pixels, data);
 }
 
+static int read_co_surface_pressure(void *user_data, harp_array data)
+{
+    ingest_info *info = (ingest_info *)user_data;
+    harp_array pressure_levels;
+    long num_elements = info->num_scanlines * info->num_pixels * info->num_layers;
+    long i;
+
+    pressure_levels.ptr = malloc(num_elements * sizeof(float));
+    if (pressure_levels.ptr == NULL)
+    {
+        harp_set_error(HARP_ERROR_OUT_OF_MEMORY, "out of memory (could not allocate %lu bytes) (%s:%u)",
+                       num_elements * sizeof(float), __FILE__, __LINE__);
+        return -1;
+    }
+    if (read_dataset(info->detailed_results_cursor, "pressure_levels", harp_type_float,
+                     info->num_scanlines * info->num_pixels * info->num_layers, pressure_levels) != 0)
+    {
+        free(pressure_levels.ptr);
+        return -1;
+    }
+    for (i = 0; i < info->num_scanlines * info->num_pixels; i++)
+    {
+        /* the surface pressure is the last value within the array of pressure levels */
+        data.float_data[i] = pressure_levels.float_data[(i + 1) * info->num_layers - 1];
+    }
+
+    free(pressure_levels.ptr);
+    return 0;
+}
+
 static int read_ch4_methane_mixing_ratio(void *user_data, harp_array data)
 {
     ingest_info *info = (ingest_info *)user_data;
@@ -3866,7 +3896,7 @@ static void register_cloud_variables(harp_product_definition *product_definition
     harp_variable_definition_add_mapping(variable_definition, NULL, NULL, path, NULL);
 }
 
-static void register_surface_variables(harp_product_definition *product_definition, int is_fresco)
+static void register_surface_variables(harp_product_definition *product_definition, int include_surface_pressure)
 {
     const char *path;
     const char *description;
@@ -3892,18 +3922,10 @@ static void register_surface_variables(harp_product_definition *product_definiti
     harp_variable_definition_add_mapping(variable_definition, NULL, NULL, path, NULL);
 
     /* surface_pressure */
-    description = "surface pressure";
-    path = "/PRODUCT/SUPPORT_DATA/INPUT_DATA/surface_pressure[]";
-    if (is_fresco)
+    if (include_surface_pressure)
     {
-        variable_definition =
-            harp_ingestion_register_variable_full_read(product_definition, "surface_pressure", harp_type_float, 1,
-                                                       dimension_type, NULL, description, "Pa",
-                                                       exclude_before_procver_010000, read_input_surface_pressure);
-        harp_variable_definition_add_mapping(variable_definition, NULL, "processor version >= 01.00.00", path, NULL);
-    }
-    else
-    {
+        description = "surface pressure";
+        path = "/PRODUCT/SUPPORT_DATA/INPUT_DATA/surface_pressure[]";
         variable_definition =
             harp_ingestion_register_variable_full_read(product_definition, "surface_pressure", harp_type_float, 1,
                                                        dimension_type, NULL, description, "Pa", NULL,
@@ -4131,7 +4153,7 @@ static void register_ch4_product(void)
         "surface_pressure - (k + 1) * pressure_interval); the vertical grid is inverted to make it ascending";
     harp_variable_definition_add_mapping(variable_definition, NULL, NULL, path, description);
 
-    register_surface_variables(product_definition, 0);
+    register_surface_variables(product_definition, 1);
 
     /* CH4_column_volume_mixing_ratio_dry_air */
     description = "column averaged dry air mixing ratio of methane";
@@ -4286,6 +4308,17 @@ static void register_co_product(void)
     harp_variable_definition_add_mapping(variable_definition, NULL, NULL, path, description);
 
     register_surface_variables(product_definition, 0);
+
+    /* surface_pressure */
+    description = "surface pressure";
+    variable_definition =
+        harp_ingestion_register_variable_full_read(product_definition, "surface_pressure", harp_type_float, 1,
+                                                   dimension_type, NULL, description, "Pa", NULL,
+                                                   read_co_surface_pressure);
+    path = "/PRODUCT/SUPPORT_DATA/INPUT_DATA/pressure_levels[]";
+    description = "the surface pressure is the pressure at the lowest pressure level";
+    harp_variable_definition_add_mapping(variable_definition, NULL, NULL, path, description);
+
 
     /* CO_column_number_density */
     description = "vertically integrated CO column density";
@@ -4520,7 +4553,7 @@ static void register_hcho_product(void)
     path = "/PRODUCT/SUPPORT_DATA/INPUT_DATA/surface_albedo";
     harp_variable_definition_add_mapping(variable_definition, NULL, NULL, path, NULL);
 
-    register_surface_variables(product_definition, 0);
+    register_surface_variables(product_definition, 1);
 }
 
 static void register_o3_product(void)
@@ -4813,7 +4846,7 @@ static void register_o3_product(void)
     path = "/PRODUCT/SUPPORT_DATA/INPUT_DATA/surface_albedo[]";
     harp_variable_definition_add_mapping(variable_definition, NULL, NULL, path, NULL);
 
-    register_surface_variables(product_definition, 0);
+    register_surface_variables(product_definition, 1);
     register_snow_ice_flag_variables(product_definition, 1);
 }
 
@@ -5001,7 +5034,7 @@ static void register_o3_pr_product(void)
     register_geolocation_variables(product_definition);
     register_additional_geolocation_variables(product_definition);
     register_o3_profile_variables(product_definition);
-    register_surface_variables(product_definition, 0);
+    register_surface_variables(product_definition, 1);
     register_snow_ice_flag_variables(product_definition, 0);
 }
 
@@ -5222,7 +5255,7 @@ static void register_o3_tpr_product(void)
     register_geolocation_variables(product_definition);
     register_additional_geolocation_variables(product_definition);
     register_o3_profile_variables(product_definition);
-    register_surface_variables(product_definition, 0);
+    register_surface_variables(product_definition, 1);
     register_snow_ice_flag_variables(product_definition, 0);
 }
 
@@ -5470,7 +5503,7 @@ static void register_no2_product(void)
     path = "/PRODUCT/SUPPORT_DATA/INPUT_DATA/surface_albedo_nitrogendioxide_window";
     harp_variable_definition_add_mapping(variable_definition, NULL, NULL, path, NULL);
 
-    register_surface_variables(product_definition, 0);
+    register_surface_variables(product_definition, 1);
     register_snow_ice_flag_variables(product_definition, 0);
 
     /* tropopause_pressure */
@@ -5698,7 +5731,7 @@ static void register_so2_product(void)
         "selected_fitting_window_flag is 3 then use surface_albedo_376, else set to NaN";
     harp_variable_definition_add_mapping(variable_definition, NULL, NULL, path, description);
 
-    register_surface_variables(product_definition, 0);
+    register_surface_variables(product_definition, 1);
 }
 
 static void register_cloud_cal_variables(harp_product_definition *product_definition)
@@ -5858,7 +5891,7 @@ static void register_cloud_cal_variables(harp_product_definition *product_defini
     path = "/PRODUCT/SUPPORT_DATA/DETAILED_RESULTS/surface_albedo_fitted_precision[]";
     harp_variable_definition_add_mapping(variable_definition, NULL, NULL, path, NULL);
 
-    register_surface_variables(product_definition, 0);
+    register_surface_variables(product_definition, 1);
     register_snow_ice_flag_variables(product_definition, 1);
 }
 
@@ -5982,7 +6015,7 @@ static void register_cloud_crb_variables(harp_product_definition *product_defini
     path = "/PRODUCT/SUPPORT_DATA/DETAILED_RESULTS/surface_albedo_fitted_crb_precision[]";
     harp_variable_definition_add_mapping(variable_definition, NULL, NULL, path, NULL);
 
-    register_surface_variables(product_definition, 0);
+    register_surface_variables(product_definition, 1);
     register_snow_ice_flag_variables(product_definition, 1);
 }
 
@@ -6114,7 +6147,17 @@ static void register_fresco_product(void)
     path = "/PRODUCT/SUPPORT_DATA/INPUT_DATA/surface_albedo_assumed[]";
     harp_variable_definition_add_mapping(variable_definition, NULL, NULL, path, NULL);
 
-    register_surface_variables(product_definition, 1);
+    register_surface_variables(product_definition, 0);
+
+    /* surface_pressure */
+    description = "surface pressure";
+    path = "/PRODUCT/SUPPORT_DATA/INPUT_DATA/surface_pressure[]";
+    variable_definition =
+        harp_ingestion_register_variable_full_read(product_definition, "surface_pressure", harp_type_float, 1,
+                                                   dimension_type, NULL, description, "Pa",
+                                                   exclude_before_procver_010000, read_input_surface_pressure);
+    harp_variable_definition_add_mapping(variable_definition, NULL, "processor version >= 01.00.00", path, NULL);
+
     register_snow_ice_flag_variables(product_definition, 1);
 }
 
