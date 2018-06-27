@@ -415,7 +415,7 @@ static int read_variable_string(void *user_data, const char *path, long index, l
         harp_set_error(HARP_ERROR_CODA, NULL);
         return -1;
     }
-    if (coda_cursor_goto(&cursor, "/CLOUD_CONDITIONS") != 0)
+    if (coda_cursor_goto(&cursor, path) != 0)
     {
         harp_set_error(HARP_ERROR_CODA, NULL);
         return -1;
@@ -640,7 +640,7 @@ static int read_cloud_conditions(void *user_data, long index, harp_array data)
         return -1;
     }
 
-    if (value[0] == '\0')
+    if (value[0] == '\0' || strcmp(value, " ") == 0)
     {
         data.int8_data[0] = -1;
     }
