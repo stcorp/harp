@@ -6,7 +6,7 @@ volume mixing ratio derivations
    =============== ======================================= ========================= ==================================
    symbol          description                             unit                      variable name
    =============== ======================================= ========================= ==================================
-   :math:`n_{air}` number density of total air             :math:`\frac{molec}{m^3}` `number_density {:}`
+   :math:`n`       number density of total air             :math:`\frac{molec}{m^3}` `number_density {:}`
    :math:`n_{x}`   number density for air component x      :math:`\frac{molec}{m^3}` `<species>_number_density {:}`
                    (e.g. :math:`n_{O_{3}}`)
    :math:`\nu_{x}` volume mixing ratio for air component x :math:`ppv`               `<species>_volum_mixing_ratio {:}`
@@ -18,7 +18,7 @@ volume mixing ratio derivations
 
    .. math::
 
-      \nu_{x} = \frac{n_{x}}{n_{air}}
+      \nu_{x} = \frac{n_{x}}{n}
 
 
 #. volume mixing ratio from mass mixing ratio

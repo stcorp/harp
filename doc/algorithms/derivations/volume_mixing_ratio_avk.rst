@@ -10,7 +10,7 @@ volume mixing ratio averaging kernel derivations
                             component x (e.g. :math:`A^{n}_{O_{3}}(i,j)`)
    :math:`A^{\nu}_{x}(i,j)` AVK for volume mixing ratio profile for air     :math:`\frac{ppv}{ppv}`             `<species>_volume_mixing_ratio_avk {:,vertical,vertical}`
                             component x (e.g. :math:`A^{\nu}_{O_{3}}(i,j)`)
-   :math:`n_{air}(i)`       number density profile of total air             :math:`\frac{molec}{m^3}`           `number_density {:,vertical}`
+   :math:`n(i)`             number density profile of total air             :math:`\frac{molec}{m^3}`           `number_density {:,vertical}`
    ======================== =============================================== =================================== =========================================================
 
    The pattern `:` for the first dimensions can represent `{latitude,longitude}`, `{time}`, `{time,latitude,longitude}`,
@@ -19,8 +19,8 @@ volume mixing ratio averaging kernel derivations
    .. math::
 
       A^{\nu}_{x}(i,j) = \begin{cases}
-        n_{air}(i) \neq 0, & A^{n}_{x}(i,j) \frac{n_{air}(j)}{n_{air}(i)} \\
-        n_{air}(i) = 0, & 0
+        n(i) \neq 0, & A^{n}_{x}(i,j) \frac{n(j)}{n(i)} \\
+        n(i) = 0, & 0
       \end{cases}
 
 

@@ -679,7 +679,7 @@ This gives:</p>
 </tr>
 </thead>
 <tbody valign="top">
-<tr class="row-even"><td><span class="math">\(n_{air}\)</span></td>
+<tr class="row-even"><td><span class="math">\(n\)</span></td>
 <td>number density of total air</td>
 <td><span class="math">\(\frac{molec}{m^3}\)</span></td>
 </tr>
@@ -703,7 +703,7 @@ This gives:</p>
 <td>molar mass of H2O</td>
 <td><span class="math">\(\frac{g}{mol}\)</span></td>
 </tr>
-<tr class="row-even"><td><span class="math">\(\rho_{air}\)</span></td>
+<tr class="row-even"><td><span class="math">\(\rho\)</span></td>
 <td>mass density of total air</td>
 <td><span class="math">\(\frac{kg}{m^3}\)</span></td>
 </tr>
@@ -719,9 +719,9 @@ This gives:</p>
 </table>
 <div class="math">
 \begin{eqnarray}
-   n_{air} &amp; = &amp; n_{dry\_air} + n_{H_{2}O} \\
-   M_{air}n_{air} &amp; = &amp; M_{dry\_air}n_{dry\_air} + M_{H_{2}O}n_{H_{2}O} \\
-   \rho_{air} &amp; = &amp; \rho_{dry\_air} + \rho_{H_{2}O} \\
+   n &amp; = &amp; n_{dry\_air} + n_{H_{2}O} \\
+   M_{air}n &amp; = &amp; M_{dry\_air}n_{dry\_air} + M_{H_{2}O}n_{H_{2}O} \\
+   \rho &amp; = &amp; \rho_{dry\_air} + \rho_{H_{2}O} \\
 \end{eqnarray}</div></div></blockquote>
 </div>
 <div class="section" id="virtual-temperature">
@@ -821,7 +821,7 @@ This gives:</p>
 </tr>
 </thead>
 <tbody valign="top">
-<tr class="row-even"><td><span class="math">\(n_{air}\)</span></td>
+<tr class="row-even"><td><span class="math">\(n\)</span></td>
 <td>number density of total air</td>
 <td><span class="math">\(\frac{molec}{m^3}\)</span></td>
 </tr>
@@ -851,11 +851,11 @@ x with regard to dry air</td>
 </table>
 <div class="math">
 \begin{eqnarray}
-   \nu_{x} &amp; = &amp; \frac{n_{x}}{n_{air}} \\
+   \nu_{x} &amp; = &amp; \frac{n_{x}}{n} \\
    \bar{\nu}_{x} &amp; = &amp; \frac{n_{x}}{n_{dry\_air}} \\
-   \nu_{dry\_air} &amp; = &amp; \frac{n_{dry\_air}}{n_{air}} =
-      \frac{n_{air} - n_{H_{2}O}}{n_{air}} = 1 - \nu_{H_{2}O} \\
-   \nu_{air} &amp; = &amp; \frac{n_{air}}{n_{air}} = 1 \\
+   \nu_{dry\_air} &amp; = &amp; \frac{n_{dry\_air}}{n} =
+      \frac{n - n_{H_{2}O}}{n} = 1 - \nu_{H_{2}O} \\
+   \nu_{air} &amp; = &amp; \frac{n}{n} = 1 \\
    \bar{\nu}_{dry\_air} &amp; = &amp; \frac{n_{dry\_air}}{n_{dry\_air}} = 1 \\
    \bar{\nu}_{H_{2}O} &amp; = &amp; \frac{n_{H_{2}O}}{n_{dry\_air}} =
       \frac{\nu_{H_{2}O}}{\nu_{dry\_air}} = \frac{\nu_{H_{2}O}}{1 - \nu_{H_{2}O}} \\
@@ -890,7 +890,7 @@ x with regard to dry air</td>
 <td>molar mass of quantity x</td>
 <td><span class="math">\(\frac{g}{mol}\)</span></td>
 </tr>
-<tr class="row-odd"><td><span class="math">\(n_{air}\)</span></td>
+<tr class="row-odd"><td><span class="math">\(n\)</span></td>
 <td>number density of total air</td>
 <td><span class="math">\(\frac{molec}{m^3}\)</span></td>
 </tr>
@@ -930,11 +930,11 @@ x with regard to dry air</td>
 </table>
 <div class="math">
 \begin{eqnarray}
-   q_{x} &amp; = &amp; \frac{n_{x}M_{x}}{n_{air}M_{air}} = \nu_{x}\frac{M_{x}}{M_{air}} \\
+   q_{x} &amp; = &amp; \frac{n_{x}M_{x}}{nM_{air}} = \nu_{x}\frac{M_{x}}{M_{air}} \\
    \bar{q}_{x} &amp; = &amp; \frac{n_{x}M_{x}}{n_{dry\_air}M_{dry\_air}} = \bar{\nu}_{x}\frac{M_{x}}{M_{dry\_air}} \\
-   q_{dry\_air} &amp; = &amp; \frac{n_{dry\_air}M_{dry\_air}}{n_{air}M_{air}} =
-      \frac{n_{air}M_{air} - n_{H_{2}O}M_{H_{2}O}}{n_{air}M_{air}} = 1 - q_{H_{2}O} \\
-   q_{air} &amp; = &amp; \frac{n_{air}M_{air}}{n_{air}M_{air}} = 1 \\
+   q_{dry\_air} &amp; = &amp; \frac{n_{dry\_air}M_{dry\_air}}{nM_{air}} =
+      \frac{nM_{air} - n_{H_{2}O}M_{H_{2}O}}{nM_{air}} = 1 - q_{H_{2}O} \\
+   q_{air} &amp; = &amp; \frac{nM_{air}}{nM_{air}} = 1 \\
    \bar{q}_{dry\_air} &amp; = &amp; \frac{n_{dry\_air}M_{dry\_air}}{n_{dry\_air}M_{dry\_air}} = 1 \\
    \bar{q}_{H_{2}O} &amp; = &amp; \frac{n_{H_{2}O}M_{H_{2}O}}{n_{dry\_air}M_{dry\_air}} =
       \frac{q_{H_{2}O}}{q_{dry\_air}} = \frac{q_{H_{2}O}}{1 - q_{H_{2}O}} \\
@@ -970,7 +970,7 @@ x with regard to dry air</td>
 <td>molar mass of H2O</td>
 <td><span class="math">\(\frac{g}{mol}\)</span></td>
 </tr>
-<tr class="row-odd"><td><span class="math">\(n_{air}\)</span></td>
+<tr class="row-odd"><td><span class="math">\(n\)</span></td>
 <td>number density of total air</td>
 <td><span class="math">\(\frac{molec}{m^3}\)</span></td>
 </tr>
@@ -990,7 +990,7 @@ x with regard to dry air</td>
 </table>
 <div class="math">
 \begin{eqnarray}
-   M_{air} &amp; = &amp; \frac{M_{dry\_air}n_{dry\_air} + M_{H_{2}O}n_{H_{2}O}}{n_{air}} \\
+   M_{air} &amp; = &amp; \frac{M_{dry\_air}n_{dry\_air} + M_{H_{2}O}n_{H_{2}O}}{n} \\
            &amp; = &amp; M_{dry\_air}\left(1 - \nu_{H_{2}O}\right) + M_{H_{2}O}\nu_{H_{2}O}
 \end{eqnarray}</div></li>
 <li><p class="first">molar mass of total air from H2O mass mixing ratio</p>
@@ -1019,7 +1019,7 @@ x with regard to dry air</td>
 <td>molar mass of H2O</td>
 <td><span class="math">\(\frac{g}{mol}\)</span></td>
 </tr>
-<tr class="row-odd"><td><span class="math">\(n_{air}\)</span></td>
+<tr class="row-odd"><td><span class="math">\(n\)</span></td>
 <td>number density of total air</td>
 <td><span class="math">\(\frac{molec}{m^3}\)</span></td>
 </tr>

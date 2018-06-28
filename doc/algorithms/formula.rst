@@ -272,13 +272,13 @@ dry air vs. total air
    ======================= =========================== =========================
    symbol                  name                        unit
    ======================= =========================== =========================
-   :math:`n_{air}`         number density of total air :math:`\frac{molec}{m^3}`
+   :math:`n`               number density of total air :math:`\frac{molec}{m^3}`
    :math:`n_{dry\_air}`    number density of dry air   :math:`\frac{molec}{m^3}`
    :math:`n_{H_{2}O}`      number density of H2O       :math:`\frac{molec}{m^3}`
    :math:`M_{air}`         molar mass of total air     :math:`\frac{g}{mol}`
    :math:`M_{dry\_air}`    molar mass of dry air       :math:`\frac{g}{mol}`
    :math:`M_{H_{2}O}`      molar mass of H2O           :math:`\frac{g}{mol}`
-   :math:`\rho_{air}`      mass density of total air   :math:`\frac{kg}{m^3}`
+   :math:`\rho`            mass density of total air   :math:`\frac{kg}{m^3}`
    :math:`\rho_{dry\_air}` mass density of dry air     :math:`\frac{kg}{m^3}`
    :math:`\rho_{H_{2}O}`   mass density of H2O         :math:`\frac{kg}{m^3}`
    ======================= =========================== =========================
@@ -287,9 +287,9 @@ dry air vs. total air
       :nowrap:
 
       \begin{eqnarray}
-         n_{air} & = & n_{dry\_air} + n_{H_{2}O} \\
-         M_{air}n_{air} & = & M_{dry\_air}n_{dry\_air} + M_{H_{2}O}n_{H_{2}O} \\
-         \rho_{air} & = & \rho_{dry\_air} + \rho_{H_{2}O} \\
+         n & = & n_{dry\_air} + n_{H_{2}O} \\
+         M_{air}n & = & M_{dry\_air}n_{dry\_air} + M_{H_{2}O}n_{H_{2}O} \\
+         \rho & = & \rho_{dry\_air} + \rho_{H_{2}O} \\
       \end{eqnarray}
 
 
@@ -339,7 +339,7 @@ volume mixing ratio
    ====================== =============================== =========================
    symbol                 name                            unit
    ====================== =============================== =========================
-   :math:`n_{air}`        number density of total air     :math:`\frac{molec}{m^3}`
+   :math:`n`              number density of total air     :math:`\frac{molec}{m^3}`
    :math:`n_{dry\_air}`   number density of dry air       :math:`\frac{molec}{m^3}`
    :math:`n_{H_{2}O}`     number density of H2O           :math:`\frac{molec}{m^3}`
    :math:`n_{x}`          number density of quantity x    :math:`\frac{molec}{m^3}`
@@ -353,11 +353,11 @@ volume mixing ratio
       :nowrap:
 
       \begin{eqnarray}
-         \nu_{x} & = & \frac{n_{x}}{n_{air}} \\
+         \nu_{x} & = & \frac{n_{x}}{n} \\
          \bar{\nu}_{x} & = & \frac{n_{x}}{n_{dry\_air}} \\
-         \nu_{dry\_air} & = & \frac{n_{dry\_air}}{n_{air}} =
-            \frac{n_{air} - n_{H_{2}O}}{n_{air}} = 1 - \nu_{H_{2}O} \\
-         \nu_{air} & = & \frac{n_{air}}{n_{air}} = 1 \\
+         \nu_{dry\_air} & = & \frac{n_{dry\_air}}{n} =
+            \frac{n - n_{H_{2}O}}{n} = 1 - \nu_{H_{2}O} \\
+         \nu_{air} & = & \frac{n}{n} = 1 \\
          \bar{\nu}_{dry\_air} & = & \frac{n_{dry\_air}}{n_{dry\_air}} = 1 \\
          \bar{\nu}_{H_{2}O} & = & \frac{n_{H_{2}O}}{n_{dry\_air}} =
             \frac{\nu_{H_{2}O}}{\nu_{dry\_air}} = \frac{\nu_{H_{2}O}}{1 - \nu_{H_{2}O}} \\
@@ -374,7 +374,7 @@ mass mixing ratio
    :math:`M_{air}`       molar mass of total air         :math:`\frac{g}{mol}`
    :math:`M_{dry\_air}`  molar mass of dry air           :math:`\frac{g}{mol}`
    :math:`M_{x}`         molar mass of quantity x        :math:`\frac{g}{mol}`
-   :math:`n_{air}`       number density of total air     :math:`\frac{molec}{m^3}`
+   :math:`n`             number density of total air     :math:`\frac{molec}{m^3}`
    :math:`n_{dry\_air}`  number density of dry air       :math:`\frac{molec}{m^3}`
    :math:`n_{H_{2}O}`    number density of H2O           :math:`\frac{molec}{m^3}`
    :math:`n_{x}`         number density of quantity x    :math:`\frac{molec}{m^3}`
@@ -392,11 +392,11 @@ mass mixing ratio
       :nowrap:
 
       \begin{eqnarray}
-         q_{x} & = & \frac{n_{x}M_{x}}{n_{air}M_{air}} = \nu_{x}\frac{M_{x}}{M_{air}} \\
+         q_{x} & = & \frac{n_{x}M_{x}}{nM_{air}} = \nu_{x}\frac{M_{x}}{M_{air}} \\
          \bar{q}_{x} & = & \frac{n_{x}M_{x}}{n_{dry\_air}M_{dry\_air}} = \bar{\nu}_{x}\frac{M_{x}}{M_{dry\_air}} \\
-         q_{dry\_air} & = & \frac{n_{dry\_air}M_{dry\_air}}{n_{air}M_{air}} =
-            \frac{n_{air}M_{air} - n_{H_{2}O}M_{H_{2}O}}{n_{air}M_{air}} = 1 - q_{H_{2}O} \\
-         q_{air} & = & \frac{n_{air}M_{air}}{n_{air}M_{air}} = 1 \\
+         q_{dry\_air} & = & \frac{n_{dry\_air}M_{dry\_air}}{nM_{air}} =
+            \frac{nM_{air} - n_{H_{2}O}M_{H_{2}O}}{nM_{air}} = 1 - q_{H_{2}O} \\
+         q_{air} & = & \frac{nM_{air}}{nM_{air}} = 1 \\
          \bar{q}_{dry\_air} & = & \frac{n_{dry\_air}M_{dry\_air}}{n_{dry\_air}M_{dry\_air}} = 1 \\
          \bar{q}_{H_{2}O} & = & \frac{n_{H_{2}O}M_{H_{2}O}}{n_{dry\_air}M_{dry\_air}} =
             \frac{q_{H_{2}O}}{q_{dry\_air}} = \frac{q_{H_{2}O}}{1 - q_{H_{2}O}} \\
@@ -415,7 +415,7 @@ molar mass of total air
    :math:`M_{air}`      molar mass of total air     :math:`\frac{g}{mol}`
    :math:`M_{dry\_air}` molar mass of dry air       :math:`\frac{g}{mol}`
    :math:`M_{H_{2}O}`   molar mass of H2O           :math:`\frac{g}{mol}`
-   :math:`n_{air}`      number density of total air :math:`\frac{molec}{m^3}`
+   :math:`n`            number density of total air :math:`\frac{molec}{m^3}`
    :math:`n_{dry\_air}` number density of dry air   :math:`\frac{molec}{m^3}`
    :math:`n_{H_{2}O}`   number density of H2O       :math:`\frac{molec}{m^3}`
    :math:`\nu_{H_{2}O}` volume mixing ratio of H2O  :math:`ppv`
@@ -425,7 +425,7 @@ molar mass of total air
       :nowrap:
 
       \begin{eqnarray}
-         M_{air} & = & \frac{M_{dry\_air}n_{dry\_air} + M_{H_{2}O}n_{H_{2}O}}{n_{air}} \\
+         M_{air} & = & \frac{M_{dry\_air}n_{dry\_air} + M_{H_{2}O}n_{H_{2}O}}{n} \\
                  & = & M_{dry\_air}\left(1 - \nu_{H_{2}O}\right) + M_{H_{2}O}\nu_{H_{2}O}
       \end{eqnarray}
 
@@ -438,7 +438,7 @@ molar mass of total air
    :math:`M_{air}`      molar mass of total air     :math:`\frac{g}{mol}`
    :math:`M_{dry\_air}` molar mass of dry air       :math:`\frac{g}{mol}`
    :math:`M_{H_{2}O}`   molar mass of H2O           :math:`\frac{g}{mol}`
-   :math:`n_{air}`      number density of total air :math:`\frac{molec}{m^3}`
+   :math:`n`            number density of total air :math:`\frac{molec}{m^3}`
    :math:`n_{dry\_air}` number density of dry air   :math:`\frac{molec}{m^3}`
    :math:`n_{H_{2}O}`   number density of H2O       :math:`\frac{molec}{m^3}`
    :math:`q_{H_{2}O}`   mass mixing ratio of H2O    :math:`\frac{kg}{kg}`
