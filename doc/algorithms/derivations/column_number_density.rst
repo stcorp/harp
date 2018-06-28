@@ -44,7 +44,7 @@ column number density derivations
    ==================== ================================ ========================= ===================================
    :math:`c`            column number density            :math:`\frac{molec}{m^2}` `column_number_density {:}`
    :math:`c_{dry\_air}` column number density of dry air :math:`\frac{molec}{m^2}` `dry_air_column_number_density {:}`
-   :math:`c_{H2O}`      column number density for H2O    :math:`\frac{molec}{m^2}` `H2O_column_number_density {:}`
+   :math:`c_{H_{2}O}`   column number density for H2O    :math:`\frac{molec}{m^2}` `H2O_column_number_density {:}`
    ==================== ================================ ========================= ===================================
 
    The pattern `:` for the dimensions can represent `{vertical}`, `{latitude,longitude}`, `{latitude,longitude,vertical}`,
@@ -52,7 +52,7 @@ column number density derivations
 
    .. math::
 
-     c = c_{dry\_air} + c_{H2O}
+     c = c_{dry\_air} + c_{H_{2}O}
 
 
 #. column number density for dry air from total air column number density and H2O column number density
@@ -62,7 +62,7 @@ column number density derivations
    ==================== ================================ ========================= ===================================
    :math:`c`            column number density            :math:`\frac{molec}{m^2}` `column_number_density {:}`
    :math:`c_{dry\_air}` column number density of dry air :math:`\frac{molec}{m^2}` `dry_air_column_number_density {:}`
-   :math:`c_{H2O}`      column number density for H2O    :math:`\frac{molec}{m^2}` `H2O_column_number_density {:}`
+   :math:`c_{H_{2}O}`   column number density for H2O    :math:`\frac{molec}{m^2}` `H2O_column_number_density {:}`
    ==================== ================================ ========================= ===================================
 
    The pattern `:` for the dimensions can represent `{vertical}`, `{latitude,longitude}`, `{latitude,longitude,vertical}`,
@@ -70,7 +70,7 @@ column number density derivations
 
    .. math::
 
-     c_{dry\_air} = c - c_{H2O}
+     c_{dry\_air} = c - c_{H_{2}O}
 
 
 #. column number density for H2O from total air column number density and dry air column number density
@@ -80,7 +80,7 @@ column number density derivations
    ==================== ================================ ========================= ===================================
    :math:`c`            column number density            :math:`\frac{molec}{m^2}` `column_number_density {:}`
    :math:`c_{dry\_air}` column number density of dry air :math:`\frac{molec}{m^2}` `dry_air_column_number_density {:}`
-   :math:`c_{H2O}`      column number density for H2O    :math:`\frac{molec}{m^2}` `H2O_column_number_density {:}`
+   :math:`c_{H_{2}O}`   column number density for H2O    :math:`\frac{molec}{m^2}` `H2O_column_number_density {:}`
    ==================== ================================ ========================= ===================================
 
    The pattern `:` for the dimensions can represent `{vertical}`, `{latitude,longitude}`, `{latitude,longitude,vertical}`,
@@ -88,7 +88,7 @@ column number density derivations
 
    .. math::
 
-     c_{H2O} = c - c_{dry\_air}
+     c_{H_{2}O} = c - c_{dry\_air}
 
 
 #. column number density for air component from number density:

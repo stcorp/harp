@@ -127,7 +127,7 @@ number density derivations
    ==================== ========================= ========================= ============================
    :math:`n`            number density            :math:`\frac{molec}{m^3}` `number_density {:}`
    :math:`n_{dry\_air}` number density of dry air :math:`\frac{molec}{m^3}` `dry_air_number_density {:}`
-   :math:`n_{H2O}`      number density for H2O    :math:`\frac{molec}{m^3}` `H2O_number_density {:}`
+   :math:`n_{H_{2}O}`   number density for H2O    :math:`\frac{molec}{m^3}` `H2O_number_density {:}`
    ==================== ========================= ========================= ============================
 
    The pattern `:` for the dimensions can represent `{vertical}`, `{latitude,longitude}`, `{latitude,longitude,vertical}`,
@@ -135,7 +135,7 @@ number density derivations
 
    .. math::
 
-     n = n_{dry\_air} + n_{H2O}
+     n = n_{dry\_air} + n_{H_{2}O}
 
 
 #. number density for dry air from total air number density and H2O number density
@@ -145,7 +145,7 @@ number density derivations
    ==================== ========================= ========================= ============================
    :math:`n`            number density            :math:`\frac{molec}{m^3}` `number_density {:}`
    :math:`n_{dry\_air}` number density of dry air :math:`\frac{molec}{m^3}` `dry_air_number_density {:}`
-   :math:`n_{H2O}`      number density for H2O    :math:`\frac{molec}{m^3}` `H2O_number_density {:}`
+   :math:`n_{H_{2}O}`   number density for H2O    :math:`\frac{molec}{m^3}` `H2O_number_density {:}`
    ==================== ========================= ========================= ============================
 
    The pattern `:` for the dimensions can represent `{vertical}`, `{latitude,longitude}`, `{latitude,longitude,vertical}`,
@@ -153,7 +153,7 @@ number density derivations
 
    .. math::
 
-     n_{dry\_air} = n - n_{H2O}
+     n_{dry\_air} = n - n_{H_{2}O}
 
 
 #. number density for H2O from total air number density and dry air number density
@@ -163,7 +163,7 @@ number density derivations
    ==================== ========================= ========================= ============================
    :math:`n`            number density            :math:`\frac{molec}{m^3}` `number_density {:}`
    :math:`n_{dry\_air}` number density of dry air :math:`\frac{molec}{m^3}` `dry_air_number_density {:}`
-   :math:`n_{H2O}`      number density for H2O    :math:`\frac{molec}{m^3}` `H2O_number_density {:}`
+   :math:`n_{H_{2}O}`   number density for H2O    :math:`\frac{molec}{m^3}` `H2O_number_density {:}`
    ==================== ========================= ========================= ============================
 
    The pattern `:` for the dimensions can represent `{vertical}`, `{latitude,longitude}`, `{latitude,longitude,vertical}`,
@@ -171,7 +171,7 @@ number density derivations
 
    .. math::
 
-     n_{H2O} = n - n_{dry\_air}
+     n_{H_{2}O} = n - n_{dry\_air}
 
 
 #. number density for total air from column number density
