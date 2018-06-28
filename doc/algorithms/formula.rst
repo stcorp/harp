@@ -269,23 +269,27 @@ number density
 dry air vs. total air
 ---------------------
 
-   ==================== =========================== =========================
-   symbol               name                        unit
-   ==================== =========================== =========================
-   :math:`n_{air}`      number density of total air :math:`\frac{molec}{m^3}`
-   :math:`n_{dry\_air}` number density of dry air   :math:`\frac{molec}{m^3}`
-   :math:`n_{H_{2}O}`   number density of H2O       :math:`\frac{molec}{m^3}`
-   :math:`M_{air}`      molar mass of total air     :math:`\frac{g}{mol}`
-   :math:`M_{dry\_air}` molar mass of dry air       :math:`\frac{g}{mol}`
-   :math:`M_{H_{2}O}`   molar mass of H2O           :math:`\frac{g}{mol}`
-   ==================== =========================== =========================
+   ======================= =========================== =========================
+   symbol                  name                        unit
+   ======================= =========================== =========================
+   :math:`n_{air}`         number density of total air :math:`\frac{molec}{m^3}`
+   :math:`n_{dry\_air}`    number density of dry air   :math:`\frac{molec}{m^3}`
+   :math:`n_{H_{2}O}`      number density of H2O       :math:`\frac{molec}{m^3}`
+   :math:`M_{air}`         molar mass of total air     :math:`\frac{g}{mol}`
+   :math:`M_{dry\_air}`    molar mass of dry air       :math:`\frac{g}{mol}`
+   :math:`M_{H_{2}O}`      molar mass of H2O           :math:`\frac{g}{mol}`
+   :math:`\rho_{air}`      mass density of total air   :math:`\frac{kg}{m^3}`
+   :math:`\rho_{dry\_air}` mass density of dry air     :math:`\frac{kg}{m^3}`
+   :math:`\rho_{H_{2}O}`   mass density of H2O         :math:`\frac{kg}{m^3}`
+   ======================= =========================== =========================
 
    .. math::
       :nowrap:
 
       \begin{eqnarray}
          n_{air} & = & n_{dry\_air} + n_{H_{2}O} \\
-         M_{air}n_{air} & = & M_{dry\_air}n_{dry\_air} + M_{H_{2}O}n_{H_{2}O}
+         M_{air}n_{air} & = & M_{dry\_air}n_{dry\_air} + M_{H_{2}O}n_{H_{2}O} \\
+         \rho_{air} & = & \rho_{dry\_air} + \rho_{H_{2}O} \\
       \end{eqnarray}
 
 

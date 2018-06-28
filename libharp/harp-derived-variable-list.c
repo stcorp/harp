@@ -45,6 +45,19 @@
 
 harp_derived_variable_list *harp_derived_variable_conversions = NULL;
 
+static int get_air_from_dry_air_and_h2o(harp_variable *variable, const harp_variable **source_variable)
+{
+    long i;
+
+    for (i = 0; i < variable->num_elements; i++)
+    {
+        variable->data.double_data[i] = source_variable[0]->data.double_data[i] +
+            source_variable[1]->data.double_data[i];
+    }
+
+    return 0;
+}
+
 static int get_altitude_from_gph_and_latitude(harp_variable *variable, const harp_variable **source_variable)
 {
     long i;
@@ -325,6 +338,19 @@ static int get_dfs_profile_from_avk(harp_variable *variable, const harp_variable
     return 0;
 }
 
+static int get_dry_air_from_air_and_h2o(harp_variable *variable, const harp_variable **source_variable)
+{
+    long i;
+
+    for (i = 0; i < variable->num_elements; i++)
+    {
+        variable->data.double_data[i] = source_variable[0]->data.double_data[i] -
+            source_variable[1]->data.double_data[i];
+    }
+
+    return 0;
+}
+
 static int get_elevation_angle_from_zenith_angle(harp_variable *variable, const harp_variable **source_variable)
 {
     long i;
@@ -488,7 +514,7 @@ static int get_gph_from_geopotential(harp_variable *variable, const harp_variabl
     return 0;
 }
 
-static int get_h2o_nd_from_air_nd(harp_variable *variable, const harp_variable **source_variable)
+static int get_h2o_from_air_and_dry_air(harp_variable *variable, const harp_variable **source_variable)
 {
     long i;
 
@@ -765,32 +791,6 @@ static int get_month(harp_variable *variable, const harp_variable **source_varia
             return -1;
         }
         variable->data.int8_data[i] = (int8_t)(month - 1);
-    }
-
-    return 0;
-}
-
-static int get_nd_dry_air_from_nd_total(harp_variable *variable, const harp_variable **source_variable)
-{
-    long i;
-
-    for (i = 0; i < variable->num_elements; i++)
-    {
-        variable->data.double_data[i] = source_variable[0]->data.double_data[i] -
-            source_variable[1]->data.double_data[i];
-    }
-
-    return 0;
-}
-
-static int get_nd_total_from_nd_dry_air(harp_variable *variable, const harp_variable **source_variable)
-{
-    long i;
-
-    for (i = 0; i < variable->num_elements; i++)
-    {
-        variable->data.double_data[i] = source_variable[0]->data.double_data[i] +
-            source_variable[1]->data.double_data[i];
     }
 
     return 0;
@@ -4231,6 +4231,57 @@ static int add_conversions_for_grid(int num_dimensions, harp_dimension_type dime
         return -1;
     }
 
+    /* total air column mass density from dry air column mass density */
+    if (harp_variable_conversion_new("column_density", harp_type_double, HARP_UNIT_COLUMN_MASS_DENSITY, num_dimensions,
+                                     dimension_type, 0, get_air_from_dry_air_and_h2o, &conversion) != 0)
+    {
+        return -1;
+    }
+    if (harp_variable_conversion_add_source(conversion, "dry_air_column_density", harp_type_double,
+                                            HARP_UNIT_COLUMN_MASS_DENSITY, num_dimensions, dimension_type, 0) != 0)
+    {
+        return -1;
+    }
+    if (harp_variable_conversion_add_source(conversion, "H2O_column_density", harp_type_double,
+                                            HARP_UNIT_COLUMN_MASS_DENSITY, num_dimensions, dimension_type, 0) != 0)
+    {
+        return -1;
+    }
+
+    /* dry air column mass density from total air column mass density */
+    if (harp_variable_conversion_new("dry_air_column_density", harp_type_double, HARP_UNIT_COLUMN_MASS_DENSITY,
+                                     num_dimensions, dimension_type, 0, get_dry_air_from_air_and_h2o, &conversion) != 0)
+    {
+        return -1;
+    }
+    if (harp_variable_conversion_add_source(conversion, "column_density", harp_type_double,
+                                            HARP_UNIT_COLUMN_MASS_DENSITY, num_dimensions, dimension_type, 0) != 0)
+    {
+        return -1;
+    }
+    if (harp_variable_conversion_add_source(conversion, "H2O_column_density", harp_type_double,
+                                            HARP_UNIT_COLUMN_MASS_DENSITY, num_dimensions, dimension_type, 0) != 0)
+    {
+        return -1;
+    }
+
+    /* H2O column mass density from dry and total air column mass density */
+    if (harp_variable_conversion_new("H2O_column_density", harp_type_double, HARP_UNIT_COLUMN_MASS_DENSITY,
+                                     num_dimensions, dimension_type, 0, get_h2o_from_air_and_dry_air, &conversion) != 0)
+    {
+        return -1;
+    }
+    if (harp_variable_conversion_add_source(conversion, "column_density", harp_type_double,
+                                            HARP_UNIT_COLUMN_MASS_DENSITY, num_dimensions, dimension_type, 0) != 0)
+    {
+        return -1;
+    }
+    if (harp_variable_conversion_add_source(conversion, "dry_air_column_density", harp_type_double,
+                                            HARP_UNIT_COLUMN_MASS_DENSITY, num_dimensions, dimension_type, 0) != 0)
+    {
+        return -1;
+    }
+
     /*** column (mass) density DFS ***/
     if (!has_vertical)
     {
@@ -4313,7 +4364,7 @@ static int add_conversions_for_grid(int num_dimensions, harp_dimension_type dime
 
     /* total air column number density from dry air column number density */
     if (harp_variable_conversion_new("column_number_density", harp_type_double, HARP_UNIT_NUMBER_DENSITY,
-                                     num_dimensions, dimension_type, 0, get_nd_total_from_nd_dry_air, &conversion) != 0)
+                                     num_dimensions, dimension_type, 0, get_air_from_dry_air_and_h2o, &conversion) != 0)
     {
         return -1;
     }
@@ -4330,7 +4381,7 @@ static int add_conversions_for_grid(int num_dimensions, harp_dimension_type dime
 
     /* dry air column number density from total air column number density */
     if (harp_variable_conversion_new("dry_air_column_number_density", harp_type_double, HARP_UNIT_NUMBER_DENSITY,
-                                     num_dimensions, dimension_type, 0, get_nd_dry_air_from_nd_total, &conversion) != 0)
+                                     num_dimensions, dimension_type, 0, get_dry_air_from_air_and_h2o, &conversion) != 0)
     {
         return -1;
     }
@@ -4347,7 +4398,7 @@ static int add_conversions_for_grid(int num_dimensions, harp_dimension_type dime
 
     /* H2O column number density from dry and total air column number density */
     if (harp_variable_conversion_new("H2O_column_number_density", harp_type_double, HARP_UNIT_NUMBER_DENSITY,
-                                     num_dimensions, dimension_type, 0, get_h2o_nd_from_air_nd, &conversion) != 0)
+                                     num_dimensions, dimension_type, 0, get_h2o_from_air_and_dry_air, &conversion) != 0)
     {
         return -1;
     }
@@ -4405,7 +4456,7 @@ static int add_conversions_for_grid(int num_dimensions, harp_dimension_type dime
     }
 
     /* mass density from partial column profile */
-    if (harp_variable_conversion_new("density", harp_type_double, HARP_UNIT_NUMBER_DENSITY, num_dimensions,
+    if (harp_variable_conversion_new("density", harp_type_double, HARP_UNIT_MASS_DENSITY, num_dimensions,
                                      dimension_type, 0, get_density_from_partial_column_and_alt_bounds, &conversion) !=
         0)
     {
@@ -4419,6 +4470,57 @@ static int add_conversions_for_grid(int num_dimensions, harp_dimension_type dime
     dimension_type[num_dimensions] = harp_dimension_independent;
     if (harp_variable_conversion_add_source(conversion, "altitude_bounds", harp_type_double, HARP_UNIT_LENGTH,
                                             num_dimensions + 1, dimension_type, 2) != 0)
+    {
+        return -1;
+    }
+
+    /* total air mass density from dry air mass density */
+    if (harp_variable_conversion_new("density", harp_type_double, HARP_UNIT_MASS_DENSITY, num_dimensions,
+                                     dimension_type, 0, get_air_from_dry_air_and_h2o, &conversion) != 0)
+    {
+        return -1;
+    }
+    if (harp_variable_conversion_add_source(conversion, "dry_air_density", harp_type_double, HARP_UNIT_MASS_DENSITY,
+                                            num_dimensions, dimension_type, 0) != 0)
+    {
+        return -1;
+    }
+    if (harp_variable_conversion_add_source(conversion, "H2O_density", harp_type_double, HARP_UNIT_MASS_DENSITY,
+                                            num_dimensions, dimension_type, 0) != 0)
+    {
+        return -1;
+    }
+
+    /* dry air mass density from total air mass density */
+    if (harp_variable_conversion_new("dry_air_density", harp_type_double, HARP_UNIT_MASS_DENSITY, num_dimensions,
+                                     dimension_type, 0, get_dry_air_from_air_and_h2o, &conversion) != 0)
+    {
+        return -1;
+    }
+    if (harp_variable_conversion_add_source(conversion, "density", harp_type_double, HARP_UNIT_MASS_DENSITY,
+                                            num_dimensions, dimension_type, 0) != 0)
+    {
+        return -1;
+    }
+    if (harp_variable_conversion_add_source(conversion, "H2O_density", harp_type_double, HARP_UNIT_MASS_DENSITY,
+                                            num_dimensions, dimension_type, 0) != 0)
+    {
+        return -1;
+    }
+
+    /* H2O mass density from dry and total air mass density */
+    if (harp_variable_conversion_new("H2O_density", harp_type_double, HARP_UNIT_MASS_DENSITY, num_dimensions,
+                                     dimension_type, 0, get_h2o_from_air_and_dry_air, &conversion) != 0)
+    {
+        return -1;
+    }
+    if (harp_variable_conversion_add_source(conversion, "density", harp_type_double, HARP_UNIT_MASS_DENSITY,
+                                            num_dimensions, dimension_type, 0) != 0)
+    {
+        return -1;
+    }
+    if (harp_variable_conversion_add_source(conversion, "dry_air_density", harp_type_double, HARP_UNIT_MASS_DENSITY,
+                                            num_dimensions, dimension_type, 0) != 0)
     {
         return -1;
     }
@@ -4646,7 +4748,7 @@ static int add_conversions_for_grid(int num_dimensions, harp_dimension_type dime
 
     /* total air number density from dry air number density */
     if (harp_variable_conversion_new("number_density", harp_type_double, HARP_UNIT_NUMBER_DENSITY, num_dimensions,
-                                     dimension_type, 0, get_nd_total_from_nd_dry_air, &conversion) != 0)
+                                     dimension_type, 0, get_air_from_dry_air_and_h2o, &conversion) != 0)
     {
         return -1;
     }
@@ -4663,7 +4765,7 @@ static int add_conversions_for_grid(int num_dimensions, harp_dimension_type dime
 
     /* dry air number density from total air number density */
     if (harp_variable_conversion_new("dry_air_number_density", harp_type_double, HARP_UNIT_NUMBER_DENSITY,
-                                     num_dimensions, dimension_type, 0, get_nd_dry_air_from_nd_total, &conversion) != 0)
+                                     num_dimensions, dimension_type, 0, get_dry_air_from_air_and_h2o, &conversion) != 0)
     {
         return -1;
     }
@@ -4680,7 +4782,7 @@ static int add_conversions_for_grid(int num_dimensions, harp_dimension_type dime
 
     /* H2O number density from dry and total air number density */
     if (harp_variable_conversion_new("H2O_number_density", harp_type_double, HARP_UNIT_NUMBER_DENSITY,
-                                     num_dimensions, dimension_type, 0, get_h2o_nd_from_air_nd, &conversion) != 0)
+                                     num_dimensions, dimension_type, 0, get_h2o_from_air_and_dry_air, &conversion) != 0)
     {
         return -1;
     }

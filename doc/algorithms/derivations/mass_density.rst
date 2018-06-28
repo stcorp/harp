@@ -61,6 +61,60 @@ mass density derivations
      \rho_{x} = \frac{\sigma_{x}}{\lvert z^{B}(2) - z^{B}(1) \rvert}
 
 
+#. mass density for total air from dry air mass density and H2O mass density
+
+   ======================= ======================= ====================== =====================
+   symbol                  description             unit                   variable name
+   ======================= ======================= ====================== =====================
+   :math:`\rho`            mass density            :math:`\frac{kg}{m^3}` `density {:}`
+   :math:`\rho_{dry\_air}` mass density of dry air :math:`\frac{kg}{m^3}` `dry_air_density {:}`
+   :math:`\rho_{H_{2}O}`   mass density for H2O    :math:`\frac{kg}{m^3}` `H2O_density {:}`
+   ======================= ======================= ====================== =====================
+
+   The pattern `:` for the dimensions can represent `{vertical}`, `{latitude,longitude}`, `{latitude,longitude,vertical}`,
+   `{time}`, `{time,vertical}`, `{time,latitude,longitude}`, `{time,latitude,longitude,vertical}`, or no dimensions at all.
+
+   .. math::
+
+     \rho = \rho_{dry\_air} + \rho_{H_{2}O}
+
+
+#. mass density for dry air from total air mass density and H2O mass density
+
+   ======================= ======================= ====================== =====================
+   symbol                  description             unit                   variable name
+   ======================= ======================= ====================== =====================
+   :math:`\rho`            mass density            :math:`\frac{kg}{m^3}` `density {:}`
+   :math:`\rho_{dry\_air}` mass density of dry air :math:`\frac{kg}{m^3}` `dry_air_density {:}`
+   :math:`\rho_{H_{2}O}`   mass density for H2O    :math:`\frac{kg}{m^3}` `H2O_density {:}`
+   ======================= ======================= ====================== =====================
+
+   The pattern `:` for the dimensions can represent `{vertical}`, `{latitude,longitude}`, `{latitude,longitude,vertical}`,
+   `{time}`, `{time,vertical}`, `{time,latitude,longitude}`, `{time,latitude,longitude,vertical}`, or no dimensions at all.
+
+   .. math::
+
+     \rho_{dry\_air} = \rho - \rho_{H_{2}O}
+
+
+#. mass density for H2O from total air mass density and dry air mass density
+
+   ======================= ======================= ====================== =====================
+   symbol                  description               unit                 variable name
+   ======================= ======================= ====================== =====================
+   :math:`\rho`            mass density            :math:`\frac{kg}{m^3}` `density {:}`
+   :math:`\rho_{dry\_air}` mass density of dry air :math:`\frac{kg}{m^3}` `dry_air_density {:}`
+   :math:`\rho_{H_{2}O}`   mass density for H2O    :math:`\frac{kg}{m^3}` `H2O_density {:}`
+   ======================= ======================= ====================== =====================
+
+   The pattern `:` for the dimensions can represent `{vertical}`, `{latitude,longitude}`, `{latitude,longitude,vertical}`,
+   `{time}`, `{time,vertical}`, `{time,latitude,longitude}`, `{time,latitude,longitude,vertical}`, or no dimensions at all.
+
+   .. math::
+
+     \rho_{H_{2}O} = \rho - \rho_{dry\_air}
+
+
 #. mass density for total air from column mass density:
 
    ================ =========================================== ====================== =======================

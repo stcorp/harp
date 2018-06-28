@@ -1,6 +1,60 @@
 column mass density derivations
 ===============================
 
+#. column mass density for total air from dry air column mass density and H2O column mass density
+
+   ========================= ============================== ====================== ============================
+   symbol                    description                    unit                   variable name
+   ========================= ============================== ====================== ============================
+   :math:`\sigma`            column mass density            :math:`\frac{kg}{m^2}` `column_density {:}`
+   :math:`\sigma_{dry\_air}` column mass density of dry air :math:`\frac{kg}{m^2}` `dry_air_column_density {:}`
+   :math:`\sigma_{H_{2}O}`   column mass density for H2O    :math:`\frac{kg}{m^2}` `H2O_column_density {:}`
+   ========================= ============================== ====================== ============================
+
+   The pattern `:` for the dimensions can represent `{vertical}`, `{latitude,longitude}`, `{latitude,longitude,vertical}`,
+   `{time}`, `{time,vertical}`, `{time,latitude,longitude}`, `{time,latitude,longitude,vertical}`, or no dimensions at all.
+
+   .. math::
+
+     \sigma = \sigma_{dry\_air} + \sigma_{H_{2}O}
+
+
+#. column mass density for dry air from total air column mass density and H2O column mass density
+
+   ========================= ============================== ====================== ============================
+   symbol                    description                    unit                   variable name
+   ========================= ============================== ====================== ============================
+   :math:`\sigma`            column mass density            :math:`\frac{kg}{m^2}` `column_density {:}`
+   :math:`\sigma_{dry\_air}` column mass density of dry air :math:`\frac{kg}{m^2}` `dry_air_column_density {:}`
+   :math:`\sigma_{H_{2}O}`   column mass density for H2O    :math:`\frac{kg}{m^2}` `H2O_column_density {:}`
+   ========================= ============================== ====================== ============================
+
+   The pattern `:` for the dimensions can represent `{vertical}`, `{latitude,longitude}`, `{latitude,longitude,vertical}`,
+   `{time}`, `{time,vertical}`, `{time,latitude,longitude}`, `{time,latitude,longitude,vertical}`, or no dimensions at all.
+
+   .. math::
+
+     \sigma_{dry\_air} = \sigma - \sigma_{H_{2}O}
+
+
+#. column mass density for H2O from total air column mass density and dry air column mass density
+
+   ========================= ============================== ====================== ============================
+   symbol                    description                    unit                   variable name
+   ========================= ============================== ====================== ============================
+   :math:`\sigma`            column mass density            :math:`\frac{kg}{m^2}` `column_density {:}`
+   :math:`\sigma_{dry\_air}` column mass density of dry air :math:`\frac{kg}{m^2}` `dry_air_column_density {:}`
+   :math:`\sigma_{H_{2}O}`   column mass density for H2O    :math:`\frac{kg}{m^2}` `H2O_column_density {:}`
+   ========================= ============================== ====================== ============================
+
+   The pattern `:` for the dimensions can represent `{vertical}`, `{latitude,longitude}`, `{latitude,longitude,vertical}`,
+   `{time}`, `{time,vertical}`, `{time,latitude,longitude}`, `{time,latitude,longitude,vertical}`, or no dimensions at all.
+
+   .. math::
+
+     \sigma_{H_{2}O} = \sigma - \sigma_{dry\_air}
+
+
 #. column mass density for air component from mass density:
 
    ================== =========================================== ====================== ==============================
