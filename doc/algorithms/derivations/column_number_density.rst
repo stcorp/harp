@@ -37,6 +37,60 @@ column number density derivations
       c_{x} = \sum_{i}{c_{x}(i)}
 
 
+#. column number density for total air from dry air column number density and H2O column number density
+
+   ==================== ================================ ========================= ===================================
+   symbol               description                      unit                      variable name
+   ==================== ================================ ========================= ===================================
+   :math:`c`            column number density            :math:`\frac{molec}{m^2}` `column_number_density {:}`
+   :math:`c_{dry\_air}` column number density of dry air :math:`\frac{molec}{m^2}` `dry_air_column_number_density {:}`
+   :math:`c_{H2O}`      column number density for H2O    :math:`\frac{molec}{m^2}` `H2O_column_number_density {:}`
+   ==================== ================================ ========================= ===================================
+
+   The pattern `:` for the dimensions can represent `{vertical}`, `{latitude,longitude}`, `{latitude,longitude,vertical}`,
+   `{time}`, `{time,vertical}`, `{time,latitude,longitude}`, `{time,latitude,longitude,vertical}`, or no dimensions at all.
+
+   .. math::
+
+     c = c_{dry\_air} + c_{H2O}
+
+
+#. column number density for dry air from total air column number density and H2O column number density
+
+   ==================== ================================ ========================= ===================================
+   symbol               description                      unit                      variable name
+   ==================== ================================ ========================= ===================================
+   :math:`c`            column number density            :math:`\frac{molec}{m^2}` `column_number_density {:}`
+   :math:`c_{dry\_air}` column number density of dry air :math:`\frac{molec}{m^2}` `dry_air_column_number_density {:}`
+   :math:`c_{H2O}`      column number density for H2O    :math:`\frac{molec}{m^2}` `H2O_column_number_density {:}`
+   ==================== ================================ ========================= ===================================
+
+   The pattern `:` for the dimensions can represent `{vertical}`, `{latitude,longitude}`, `{latitude,longitude,vertical}`,
+   `{time}`, `{time,vertical}`, `{time,latitude,longitude}`, `{time,latitude,longitude,vertical}`, or no dimensions at all.
+
+   .. math::
+
+     c_{dry\_air} = c - c_{H2O}
+
+
+#. column number density for H2O from total air column number density and dry air column number density
+
+   ==================== ================================ ========================= ===================================
+   symbol               description                      unit                      variable name
+   ==================== ================================ ========================= ===================================
+   :math:`c`            column number density            :math:`\frac{molec}{m^2}` `column_number_density {:}`
+   :math:`c_{dry\_air}` column number density of dry air :math:`\frac{molec}{m^2}` `dry_air_column_number_density {:}`
+   :math:`c_{H2O}`      column number density for H2O    :math:`\frac{molec}{m^2}` `H2O_column_number_density {:}`
+   ==================== ================================ ========================= ===================================
+
+   The pattern `:` for the dimensions can represent `{vertical}`, `{latitude,longitude}`, `{latitude,longitude,vertical}`,
+   `{time}`, `{time,vertical}`, `{time,latitude,longitude}`, `{time,latitude,longitude,vertical}`, or no dimensions at all.
+
+   .. math::
+
+     c_{H2O} = c - c_{dry\_air}
+
+
 #. column number density for air component from number density:
 
    ================ =========================================== ========================= =====================================

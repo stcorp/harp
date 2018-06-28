@@ -120,13 +120,67 @@ number density derivations
      n_{x} = \frac{c_{x}}{\lvert z^{B}(2) - z^{B}(1) \rvert}
 
 
-#. number density for total air column number density
+#. number density for total air from dry air number density and H2O number density
+
+   ==================== ========================= ========================= ============================
+   symbol               description               unit                      variable name
+   ==================== ========================= ========================= ============================
+   :math:`n`            number density            :math:`\frac{molec}{m^3}` `number_density {:}`
+   :math:`n_{dry\_air}` number density of dry air :math:`\frac{molec}{m^3}` `dry_air_number_density {:}`
+   :math:`n_{H2O}`      number density for H2O    :math:`\frac{molec}{m^3}` `H2O_number_density {:}`
+   ==================== ========================= ========================= ============================
+
+   The pattern `:` for the dimensions can represent `{vertical}`, `{latitude,longitude}`, `{latitude,longitude,vertical}`,
+   `{time}`, `{time,vertical}`, `{time,latitude,longitude}`, `{time,latitude,longitude,vertical}`, or no dimensions at all.
+
+   .. math::
+
+     n = n_{dry\_air} + n_{H2O}
+
+
+#. number density for dry air from total air number density and H2O number density
+
+   ==================== ========================= ========================= ============================
+   symbol               description               unit                      variable name
+   ==================== ========================= ========================= ============================
+   :math:`n`            number density            :math:`\frac{molec}{m^3}` `number_density {:}`
+   :math:`n_{dry\_air}` number density of dry air :math:`\frac{molec}{m^3}` `dry_air_number_density {:}`
+   :math:`n_{H2O}`      number density for H2O    :math:`\frac{molec}{m^3}` `H2O_number_density {:}`
+   ==================== ========================= ========================= ============================
+
+   The pattern `:` for the dimensions can represent `{vertical}`, `{latitude,longitude}`, `{latitude,longitude,vertical}`,
+   `{time}`, `{time,vertical}`, `{time,latitude,longitude}`, `{time,latitude,longitude,vertical}`, or no dimensions at all.
+
+   .. math::
+
+     n_{dry\_air} = n - n_{H2O}
+
+
+#. number density for H2O from total air number density and dry air number density
+
+   ==================== ========================= ========================= ============================
+   symbol               description               unit                      variable name
+   ==================== ========================= ========================= ============================
+   :math:`n`            number density            :math:`\frac{molec}{m^3}` `number_density {:}`
+   :math:`n_{dry\_air}` number density of dry air :math:`\frac{molec}{m^3}` `dry_air_number_density {:}`
+   :math:`n_{H2O}`      number density for H2O    :math:`\frac{molec}{m^3}` `H2O_number_density {:}`
+   ==================== ========================= ========================= ============================
+
+   The pattern `:` for the dimensions can represent `{vertical}`, `{latitude,longitude}`, `{latitude,longitude,vertical}`,
+   `{time}`, `{time,vertical}`, `{time,latitude,longitude}`, `{time,latitude,longitude,vertical}`, or no dimensions at all.
+
+   .. math::
+
+     n_{H2O} = n - n_{dry\_air}
+
+
+#. number density for total air from column number density
 
    ================ =========================================== ========================= ===========================
    symbol           description                                 unit                      variable name
    ================ =========================================== ========================= ===========================
-   :math:`c`        column number density for air component x   :math:`\frac{molec}{m^2}` `column_number_density {:}`
-   :math:`n`        number density for air component x          :math:`\frac{molec}{m^3}` `number_density {:}`
+   :math:`c`        column number density                       :math:`\frac{molec}{m^2}` `column_number_density {:}`
+   :math:`n`        number density                              :math:`\frac{molec}{m^3}` `number_density {:}`
    :math:`z^{B}(l)` altitude boundaries (:math:`l \in \{1,2\}`) :math:`m`                 `altitude_bounds {:,2}`
    ================ =========================================== ========================= ===========================
 
