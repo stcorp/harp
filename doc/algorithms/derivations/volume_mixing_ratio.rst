@@ -10,7 +10,7 @@ volume mixing ratio derivations
    :math:`n_{x}`   number density for air component x      :math:`\frac{molec}{m^3}` `<species>_number_density {:}`
                    (e.g. :math:`n_{O_{3}}`)
    :math:`\nu_{x}` volume mixing ratio for air component x :math:`ppv`               `<species>_volum_mixing_ratio {:}`
-                   (e.g. :math:`n_{O_{3}}`)
+                   with regard to total air
    =============== ======================================= ========================= ==================================
 
    The pattern `:` for the dimensions can represent `{vertical}`, `{latitude,longitude}`, `{latitude,longitude,vertical}`,
@@ -51,7 +51,7 @@ volume mixing ratio derivations
    :math:`p_{x}`   partial pressure for air component x    :math:`Pa`  `<species>_partial_pressure {:}`
                    (e.g. :math:`p_{O_{3}}`)
    :math:`\nu_{x}` volume mixing ratio for air component x :math:`ppv` `<species>_volume_mixing_ratio {:}`
-                   (e.g. :math:`\nu_{O_{3}}`)
+                   with regard to total air
    =============== ======================================= =========== ===================================
 
    The pattern `:` for the dimensions can represent `{vertical}`, `{latitude,longitude}`, `{latitude,longitude,vertical}`,
@@ -71,7 +71,7 @@ volume mixing ratio derivations
    :math:`n_{x}`         number density for air component x      :math:`\frac{molec}{m^3}` `<species>_number_density {:}`
                          (e.g. :math:`n_{O_{3}}`)
    :math:`\bar{\nu}_{x}` volume mixing ratio for air component x :math:`ppv`               `<species>_volum_mixing_ratio_dry_air {:}`
-                         (e.g. :math:`n_{O_{3}}`)
+                         with regard to dry air
    ===================== ======================================= ========================= ==========================================
 
    The pattern `:` for the dimensions can represent `{vertical}`, `{latitude,longitude}`, `{latitude,longitude,vertical}`,
@@ -108,10 +108,11 @@ volume mixing ratio derivations
    ===================== ======================================= =========== ===========================================
    symbol                description                             unit        variable name
    ===================== ======================================= =========== ===========================================
+   :math:`p_{dry\_air}`  partial pressure of dry air             :math:`Pa`  `dry_air_partial_pressure {:}`
    :math:`p_{x}`         partial pressure for air component x    :math:`Pa`  `<species>_partial_pressure {:}`
                          (e.g. :math:`p_{O_{3}}`)
    :math:`\bar{\nu}_{x}` volume mixing ratio for air component x :math:`ppv` `<species>_volume_mixing_ratio_dry_air {:}`
-                         (e.g. :math:`\nu_{O_{3}}`)
+                         with regard to dry air
    ===================== ======================================= =========== ===========================================
 
    The pattern `:` for the dimensions can represent `{vertical}`, `{latitude,longitude}`, `{latitude,longitude,vertical}`,

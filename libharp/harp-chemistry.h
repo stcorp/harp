@@ -112,6 +112,7 @@ harp_chemical_species harp_chemical_species_from_variable_name(const char *varia
 double harp_density_from_partial_column_and_altitude_bounds(double partial_column, const double *altitude_bounds);
 
 double harp_mass_density_from_number_density(double number_density, double molar_mass);
+double harp_mass_mixing_ratio_from_density(double density, double density_air);
 double harp_mass_mixing_ratio_from_volume_mixing_ratio(double volume_mixing_ratio, double molar_mass_species,
                                                        double molar_mass_air);
 double harp_molar_mass_air_from_density_and_number_density(double density, double number_density);

@@ -219,6 +219,46 @@
   <div class="section" id="mass-mixing-ratio-derivations">
 <h1>mass mixing ratio derivations</h1>
 <ol class="arabic">
+<li><p class="first">mass mixing ratio from mass density</p>
+<table border="1" class="docutils">
+<colgroup>
+<col width="15%" />
+<col width="34%" />
+<col width="20%" />
+<col width="31%" />
+</colgroup>
+<thead valign="bottom">
+<tr class="row-odd"><th class="head">symbol</th>
+<th class="head">description</th>
+<th class="head">unit</th>
+<th class="head">variable name</th>
+</tr>
+</thead>
+<tbody valign="top">
+<tr class="row-even"><td><span class="math">\(\rho\)</span></td>
+<td>mass density of total air</td>
+<td><span class="math">\(\frac{kg}{m^3}\)</span></td>
+<td><cite>density {:}</cite></td>
+</tr>
+<tr class="row-odd"><td><span class="math">\(\rho_{x}\)</span></td>
+<td>mass density for air component x
+(e.g. <span class="math">\(\rho_{O_{3}}\)</span>)</td>
+<td><span class="math">\(\frac{kg}{m^3}\)</span></td>
+<td><cite>&lt;species&gt;_density {:}</cite></td>
+</tr>
+<tr class="row-even"><td><span class="math">\(q_{x}\)</span></td>
+<td>mass mixing ratio for air component x
+with regard to total air</td>
+<td><span class="math">\(\frac{kg}{kg}\)</span></td>
+<td><cite>&lt;species&gt;_mass_mixing_ratio {:}</cite></td>
+</tr>
+</tbody>
+</table>
+<p>The pattern <cite>:</cite> for the dimensions can represent <cite>{vertical}</cite>, <cite>{latitude,longitude}</cite>, <cite>{latitude,longitude,vertical}</cite>,
+<cite>{time}</cite>, <cite>{time,vertical}</cite>, <cite>{time,latitude,longitude}</cite>, <cite>{time,latitude,longitude,vertical}</cite>, or no dimensions at all.</p>
+<div class="math">
+\[q_{x} = \frac{\rho_{x}}{\rho}\]</div>
+</li>
 <li><p class="first">mass mixing ratio from volume mixing ratio</p>
 <table border="1" class="docutils">
 <colgroup>
@@ -263,6 +303,46 @@ with regard to total air</td>
 <cite>{time}</cite>, <cite>{time,vertical}</cite>, <cite>{time,latitude,longitude}</cite>, <cite>{time,latitude,longitude,vertical}</cite>, or no dimensions at all.</p>
 <div class="math">
 \[q_{x} = \nu_{x}\frac{M_{x}}{M_{air}}\]</div>
+</li>
+<li><p class="first">mass mixing ratio dry air from mass density</p>
+<table border="1" class="docutils">
+<colgroup>
+<col width="19%" />
+<col width="30%" />
+<col width="18%" />
+<col width="33%" />
+</colgroup>
+<thead valign="bottom">
+<tr class="row-odd"><th class="head">symbol</th>
+<th class="head">description</th>
+<th class="head">unit</th>
+<th class="head">variable name</th>
+</tr>
+</thead>
+<tbody valign="top">
+<tr class="row-even"><td><span class="math">\(\rho_{dry\_air}\)</span></td>
+<td>mass density of dry air</td>
+<td><span class="math">\(\frac{kg}{m^3}\)</span></td>
+<td><cite>dry_air_density {:}</cite></td>
+</tr>
+<tr class="row-odd"><td><span class="math">\(\rho_{x}\)</span></td>
+<td>mass density for air component x
+(e.g. <span class="math">\(\rho_{O_{3}}\)</span>)</td>
+<td><span class="math">\(\frac{kg}{m^3}\)</span></td>
+<td><cite>&lt;species&gt;_density {:}</cite></td>
+</tr>
+<tr class="row-even"><td><span class="math">\(\bar{q}_{x}\)</span></td>
+<td>mass mixing ratio for air component x
+with regard to dry air</td>
+<td><span class="math">\(\frac{kg}{kg}\)</span></td>
+<td><cite>&lt;species&gt;_mass_mixing_ratio_dry_air {:}</cite></td>
+</tr>
+</tbody>
+</table>
+<p>The pattern <cite>:</cite> for the dimensions can represent <cite>{vertical}</cite>, <cite>{latitude,longitude}</cite>, <cite>{latitude,longitude,vertical}</cite>,
+<cite>{time}</cite>, <cite>{time,vertical}</cite>, <cite>{time,latitude,longitude}</cite>, <cite>{time,latitude,longitude,vertical}</cite>, or no dimensions at all.</p>
+<div class="math">
+\[q_{x} = \frac{\rho_{x}}{\rho_{dry\_air}}\]</div>
 </li>
 <li><p class="first">mass mixing ratio dry air from volume mixing ratio dry air</p>
 <table border="1" class="docutils">

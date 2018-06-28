@@ -691,6 +691,20 @@ static int get_midpoint_from_bounds_log(harp_variable *variable, const harp_vari
     return 0;
 }
 
+static int get_mmr_from_density(harp_variable *variable, const harp_variable **source_variable)
+{
+    long i;
+
+    for (i = 0; i < variable->num_elements; i++)
+    {
+        variable->data.double_data[i] =
+            harp_mass_mixing_ratio_from_density(source_variable[0]->data.double_data[i],
+                                                source_variable[1]->data.double_data[i]);
+    }
+
+    return 0;
+}
+
 static int get_mmr_from_vmr(harp_variable *variable, const harp_variable **source_variable)
 {
     double molar_mass_species;
@@ -3073,6 +3087,23 @@ static int add_species_conversions_for_grid(const char *species, int num_dimensi
         return -1;
     }
 
+    /* mass mixing ratio from density */
+    if (harp_variable_conversion_new(name_mmr, harp_type_double, HARP_UNIT_MASS_MIXING_RATIO, num_dimensions,
+                                     dimension_type, 0, get_mmr_from_density, &conversion) != 0)
+    {
+        return -1;
+    }
+    if (harp_variable_conversion_add_source(conversion, name_density, harp_type_double, HARP_UNIT_MASS_DENSITY,
+                                            num_dimensions, dimension_type, 0) != 0)
+    {
+        return -1;
+    }
+    if (harp_variable_conversion_add_source(conversion, "density", harp_type_double, HARP_UNIT_MASS_DENSITY,
+                                            num_dimensions, dimension_type, 0) != 0)
+    {
+        return -1;
+    }
+
     /* mmr from vmr */
     if (harp_variable_conversion_new(name_mmr, harp_type_double, HARP_UNIT_MASS_MIXING_RATIO, num_dimensions,
                                      dimension_type, 0, get_mmr_from_vmr, &conversion) != 0)
@@ -3137,6 +3168,23 @@ static int add_species_conversions_for_grid(const char *species, int num_dimensi
 
     /* uncertainties */
     if (add_uncertainty_conversions(name_mmr_dry, HARP_UNIT_MASS_MIXING_RATIO, num_dimensions, dimension_type) != 0)
+    {
+        return -1;
+    }
+
+    /* mass mixing ratio dry air from density */
+    if (harp_variable_conversion_new(name_mmr_dry, harp_type_double, HARP_UNIT_MASS_MIXING_RATIO, num_dimensions,
+                                     dimension_type, 0, get_vmr_from_nd, &conversion) != 0)
+    {
+        return -1;
+    }
+    if (harp_variable_conversion_add_source(conversion, name_density, harp_type_double, HARP_UNIT_MASS_DENSITY,
+                                            num_dimensions, dimension_type, 0) != 0)
+    {
+        return -1;
+    }
+    if (harp_variable_conversion_add_source(conversion, "dry_air_density", harp_type_double, HARP_UNIT_MASS_DENSITY,
+                                            num_dimensions, dimension_type, 0) != 0)
     {
         return -1;
     }

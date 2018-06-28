@@ -236,6 +236,16 @@ double harp_mass_density_from_number_density(double number_density, double molar
     return 1e-3 * number_density * molar_mass / CONST_NUM_AVOGADRO;
 }
 
+/** Convert mass density to mass mixing ratio
+ * \param density Mass density of air component [kg/m3]
+ * \param density_air Mass density of air [kg/cm3]
+ * \return the mass mixing ratio [kg/kg]
+ */
+double harp_mass_mixing_ratio_from_density(double density, double density_air)
+{
+    return density / density_air;
+}
+
 /* Convert volume mixing ratio to mass mixing ratio
  * \param volume_mixing_ratio Volume mixing ratio of the air component [ppv]
  * \param molar_mass_species Molar mass of the air component [g/mol]
