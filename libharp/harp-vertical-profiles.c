@@ -158,6 +158,32 @@ double harp_gph_from_altitude_and_latitude(double altitude, double latitude)
     return (gsurf / CONST_GRAV_ACCEL_45LAT_WGS84_SPHERE) * Rsurf * altitude / (altitude + Rsurf);
 }
 
+/** Convert geometric height (= altitude) to geopotential height
+ * \param surface_pressure Surface pressure [Pa]
+ * \param num_levels Length of vertical axis
+ * \param pressure_bounds Lower and upper pressure [Pa] boundaries for each level {vertical,2} (decreasing order)
+ * \param altitude_profile Altitude vertical profile [m] (needs to be in increasing order)
+ * \param latitude Latitude at the surface [degree_north]
+ * \return the total column mass density [kg/m2]
+ */
+double harp_column_mass_density_from_surface_pressure_and_profile(double surface_pressure, long num_levels,
+                                                                  const double *pressure_bounds,
+                                                                  const double *altitude_profile, double latitude)
+{
+    double sum1 = 0, sum2 = 0;  /* the average gravity g = sum1/sum2 */
+    long i;
+
+    for (i = 0; i < num_levels; i++)
+    {
+        double g = harp_gravity_from_latitude_and_height(latitude, altitude_profile[i]);
+
+        sum1 += pressure_bounds[2 * i] - pressure_bounds[2 * i + 1];
+        sum2 += (pressure_bounds[2 * i] - pressure_bounds[2 * i + 1]) / g;
+    }
+
+    return surface_pressure * sum2 / sum1;
+}
+
 /** Calculate tropopause level from altitude and temperature grid
  * This uses the WMO definition:
  * The boundary between the troposphere and the stratosphere, where an abrupt change in lapse rate usually occurs.

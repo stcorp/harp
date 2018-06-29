@@ -41,6 +41,10 @@ double harp_altitude_from_gph_and_latitude(double gph, double latitude);
 double harp_gph_from_altitude_and_latitude(double altitude, double latitude);
 double harp_gph_from_pressure(double pressure);
 
+double harp_column_mass_density_from_surface_pressure_and_profile(double surface_pressure, long num_levels,
+                                                                  const double *pressure_bounds,
+                                                                  const double *altitude_profile, double latitude);
+
 long harp_tropopause_index_from_altitude_and_temperature(long num_levels, const double *altitude_profile,
                                                          const double *pressure_profile,
                                                          const double *temperature_profile);

@@ -244,6 +244,28 @@ static int get_column_from_partial_column(harp_variable *variable, const harp_va
     return 0;
 }
 
+static int get_column_mass_density_from_surface_pressure_and_profile(harp_variable *variable,
+                                                                     const harp_variable **source_variable)
+{
+    long num_levels;
+    long i;
+
+    num_levels = source_variable[2]->dimension[source_variable[2]->num_dimensions - 1];
+    assert(variable->num_elements == source_variable[0]->num_elements / num_levels);
+    for (i = 0; i < variable->num_elements; i++)
+    {
+        double *pressure_bounds = &source_variable[1]->data.double_data[i * num_levels * 2];
+        double *altitude = &source_variable[2]->data.double_data[i * num_levels];
+
+        variable->data.double_data[i] =
+            harp_column_mass_density_from_surface_pressure_and_profile(source_variable[0]->data.double_data[i],
+                                                                       num_levels, pressure_bounds, altitude,
+                                                                       source_variable[3]->data.double_data[i]);
+    }
+
+    return 0;
+}
+
 static int get_copy(harp_variable *variable, const harp_variable **source_variable)
 {
     assert(variable->data_type != harp_type_string);
@@ -4311,6 +4333,39 @@ static int add_conversions_for_grid(int num_dimensions, harp_dimension_type dime
                                             HARP_UNIT_COLUMN_MASS_DENSITY, num_dimensions, dimension_type, 0) != 0)
     {
         return -1;
+    }
+
+    if (!has_vertical)
+    {
+        /* column from surface pressure and pressure profile */
+        if (harp_variable_conversion_new("column_density", harp_type_double, HARP_UNIT_COLUMN_MASS_DENSITY,
+                                         num_dimensions, dimension_type, 0,
+                                         get_column_mass_density_from_surface_pressure_and_profile, &conversion) != 0)
+        {
+            return -1;
+        }
+        dimension_type[num_dimensions] = harp_dimension_vertical;
+        dimension_type[num_dimensions + 1] = harp_dimension_independent;
+        if (harp_variable_conversion_add_source(conversion, "surface_pressure", harp_type_double, HARP_UNIT_PRESSURE,
+                                                num_dimensions, dimension_type, 0) != 0)
+        {
+            return -1;
+        }
+        if (harp_variable_conversion_add_source(conversion, "pressure_bounds", harp_type_double,
+                                                HARP_UNIT_PRESSURE, num_dimensions + 2, dimension_type, 2) != 0)
+        {
+            return -1;
+        }
+        if (harp_variable_conversion_add_source(conversion, "altitude", harp_type_double,
+                                                HARP_UNIT_LENGTH, num_dimensions + 1, dimension_type, 0) != 0)
+        {
+            return -1;
+        }
+        if (harp_variable_conversion_add_source(conversion, "latitude", harp_type_double, HARP_UNIT_LATITUDE,
+                                                num_dimensions, dimension_type, 0) != 0)
+        {
+            return -1;
+        }
     }
 
     /* H2O column mass density from dry and total air column mass density */

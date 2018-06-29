@@ -135,3 +135,35 @@ column mass density derivations
    .. math::
 
       \sigma = \frac{10^{-3}c M_{air}}{N_{A}}
+
+
+#. column mass density for total air from pressure profile and surface pressure:
+
+   ================== ================================= ====================== ================================
+   symbol             description                       unit                   variable name
+   ================== ================================= ====================== ================================
+   :math:`\bar{g}`    mean gravity for profile          :math:`\frac{m}{s^2}`
+   :math:`g_{wgs84}`  gravity at WGS84 ellipsoid        :math:`\frac{m}{s^2}`
+   :math:`p^{B}(i,l)` pressure boundaries               :math:`Pa`             `pressure_bounds {:,vertical,2}`
+                      (:math:`l \in \{1,2\}`)
+   :math:`p_{surf}`   surface pressure                  :math:`Pa`             `surface_pressure {:}`
+   :math:`R_{wgs84}`  local earth curvature radius      :math:`m`
+                      at WGS84 ellipsoid
+   :math:`z(i)`       altitude                          :math:`m`              `altitude {:,vertical}`
+   :math:`\phi`       latitude                          :math:`degN`           `latitude {:}`
+   :math:`\sigma`     column mass density for total air :math:`\frac{kg}{m^2}` `column_density {:}`
+   ================== ================================= ====================== ================================
+
+   The pattern `:` for the dimensions can represent `{latitude,longitude}`, `{time}`, `{time,latitude,longitude}`,
+   or no dimensions at all.
+
+   .. math::
+      :nowrap:
+
+      \begin{eqnarray}
+         g_{wgs84} & = & 9.7803253359 \frac{1 + 0.00193185265241{\sin}^2(\frac{\pi}{180}\phi)}
+            {\sqrt{1 - 0.00669437999013{\sin}^2(\frac{\pi}{180}\phi)}} \\
+         g(i) & = & g_{wgs84}\left(\frac{R_{wgs84}}{R_{wgs84} + z(i)}\right)^2 \\
+         \bar{g} & = & \frac{\sum_{i}{p^{B}(i,0)-p^{B}(i,1)}}{\sum_{i}{\frac{p^{B}(i,0)-p^{B}(i,1)}{g(i)}}} \\
+         \sigma & = & \frac{p_{surf}}{\bar{g}}
+      \end{eqnarray}
