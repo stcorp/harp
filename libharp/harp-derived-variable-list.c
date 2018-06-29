@@ -2601,6 +2601,23 @@ static int add_species_conversions_for_grid(const char *species, int num_dimensi
             return -1;
         }
 
+        /* mass mixing ratio from density */
+        if (harp_variable_conversion_new(name_column_mmr, harp_type_double, HARP_UNIT_MASS_MIXING_RATIO, num_dimensions,
+                                         dimension_type, 0, get_mmr_from_density, &conversion) != 0)
+        {
+            return -1;
+        }
+        if (harp_variable_conversion_add_source(conversion, name_column_density, harp_type_double,
+                                                HARP_UNIT_COLUMN_MASS_DENSITY, num_dimensions, dimension_type, 0) != 0)
+        {
+            return -1;
+        }
+        if (harp_variable_conversion_add_source(conversion, "column_density", harp_type_double,
+                                                HARP_UNIT_COLUMN_MASS_DENSITY, num_dimensions, dimension_type, 0) != 0)
+        {
+            return -1;
+        }
+
         /* mmr from vmr */
         if (harp_variable_conversion_new(name_column_mmr, harp_type_double, HARP_UNIT_MASS_MIXING_RATIO, num_dimensions,
                                          dimension_type, 0, get_mmr_from_vmr, &conversion) != 0)
@@ -2644,6 +2661,23 @@ static int add_species_conversions_for_grid(const char *species, int num_dimensi
         /* uncertainties */
         if (add_uncertainty_conversions(name_column_mmr_dry, HARP_UNIT_MASS_MIXING_RATIO, num_dimensions,
                                         dimension_type) != 0)
+        {
+            return -1;
+        }
+
+        /* mass mixing ratio from density */
+        if (harp_variable_conversion_new(name_column_mmr_dry, harp_type_double, HARP_UNIT_MASS_MIXING_RATIO,
+                                         num_dimensions, dimension_type, 0, get_mmr_from_density, &conversion) != 0)
+        {
+            return -1;
+        }
+        if (harp_variable_conversion_add_source(conversion, name_column_density, harp_type_double,
+                                                HARP_UNIT_COLUMN_MASS_DENSITY, num_dimensions, dimension_type, 0) != 0)
+        {
+            return -1;
+        }
+        if (harp_variable_conversion_add_source(conversion, "dry_air_column_density", harp_type_double,
+                                                HARP_UNIT_COLUMN_MASS_DENSITY, num_dimensions, dimension_type, 0) != 0)
         {
             return -1;
         }
@@ -2834,6 +2868,25 @@ static int add_species_conversions_for_grid(const char *species, int num_dimensi
             return -1;
         }
 
+        /* volume mixing ratio from number density */
+        if (harp_variable_conversion_new(name_column_vmr, harp_type_double, HARP_UNIT_VOLUME_MIXING_RATIO,
+                                         num_dimensions, dimension_type, 0, get_vmr_from_nd, &conversion) != 0)
+        {
+            return -1;
+        }
+        if (harp_variable_conversion_add_source(conversion, name_column_nd, harp_type_double,
+                                                HARP_UNIT_COLUMN_NUMBER_DENSITY, num_dimensions, dimension_type, 0) !=
+            0)
+        {
+            return -1;
+        }
+        if (harp_variable_conversion_add_source(conversion, "column_number_density", harp_type_double,
+                                                HARP_UNIT_COLUMN_NUMBER_DENSITY, num_dimensions, dimension_type, 0) !=
+            0)
+        {
+            return -1;
+        }
+
         /* vmr from mmr */
         if (harp_variable_conversion_new(name_column_vmr, harp_type_double, HARP_UNIT_VOLUME_MIXING_RATIO,
                                          num_dimensions, dimension_type, 0, get_vmr_from_mmr, &conversion) != 0)
@@ -2877,6 +2930,25 @@ static int add_species_conversions_for_grid(const char *species, int num_dimensi
         /* uncertainties */
         if (add_uncertainty_conversions(name_column_vmr_dry, HARP_UNIT_VOLUME_MIXING_RATIO, num_dimensions,
                                         dimension_type) != 0)
+        {
+            return -1;
+        }
+
+        /* volume mixing ratio from number density */
+        if (harp_variable_conversion_new(name_column_vmr_dry, harp_type_double, HARP_UNIT_VOLUME_MIXING_RATIO,
+                                         num_dimensions, dimension_type, 0, get_vmr_from_nd, &conversion) != 0)
+        {
+            return -1;
+        }
+        if (harp_variable_conversion_add_source(conversion, name_column_nd, harp_type_double,
+                                                HARP_UNIT_COLUMN_NUMBER_DENSITY, num_dimensions, dimension_type, 0) !=
+            0)
+        {
+            return -1;
+        }
+        if (harp_variable_conversion_add_source(conversion, "dry_air_column_number_density", harp_type_double,
+                                                HARP_UNIT_COLUMN_NUMBER_DENSITY, num_dimensions, dimension_type, 0) !=
+            0)
         {
             return -1;
         }

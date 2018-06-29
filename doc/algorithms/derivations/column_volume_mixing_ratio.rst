@@ -1,6 +1,46 @@
 column volume mixing ratio derivations
 ======================================
 
+#. column volume mixing ratio from column number density
+
+   =============== ======================================== ========================= ==========================================
+   symbol          description                              unit                      variable name
+   =============== ======================================== ========================= ==========================================
+   :math:`c`       total column number density of total air :math:`\frac{molec}{m^2}` `column_number_density {:}`
+   :math:`c_{x}`   total column number density for air      :math:`\frac{molec}{m^2}` `<species>_column_number_density {:}`
+                   component x (e.g. :math:`c_{O_{3}}`)
+   :math:`\nu_{x}` column volume mixing ratio of            :math:`ppv`               `<species>_column_volume_mixing_ratio {:}`
+                   quantity x with regard to total air
+   =============== ======================================== ========================= ==========================================
+
+   The pattern `:` for the dimensions can represent `{latitude,longitude}`, `{time}`, `{time,latitude,longitude}`,
+   or no dimensions at all.
+
+   .. math::
+
+      \nu_{x} = \frac{c_{x}}{c}
+
+
+#. column volume mixing ratio dry air from column number density
+
+   ===================== ====================================== ========================= ==================================================
+   symbol                description                            unit                      variable name
+   ===================== ====================================== ========================= ==================================================
+   :math:`c_{dry\_air}`  total column number density of dry air :math:`\frac{molec}{m^2}` `dry_air_column_number_density {:}`
+   :math:`c_{x}`         total column number density for air    :math:`\frac{molec}{m^2}` `<species>_column_number_density {:}`
+                         component x (e.g. :math:`c_{O_{3}}`)
+   :math:`\bar{\nu}_{x}` column volume mixing ratio of          :math:`ppv`               `<species>_column_volume_mixing_ratio_dry_air {:}`
+                         quantity x with regard to dry air
+   ===================== ====================================== ========================= ==================================================
+
+   The pattern `:` for the dimensions can represent `{latitude,longitude}`, `{time}`, `{time,latitude,longitude}`,
+   or no dimensions at all.
+
+   .. math::
+
+      \bar{\nu}_{x} = \frac{c_{x}}{c_{dry\_air}}
+
+
 #. column volume mixing ratio from column mass mixing ratio
 
    =============== ======================================== ====================== ==========================================

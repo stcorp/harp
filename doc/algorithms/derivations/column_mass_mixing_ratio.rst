@@ -1,6 +1,46 @@
 column mass mixing ratio derivations
 ====================================
 
+#. column mass mixing ratio from column mass density
+
+   ================== ===================================== ====================== ========================================
+   symbol             description                           unit                   variable name
+   ================== ===================================== ====================== ========================================
+   :math:`\sigma`     column mass density of total air      :math:`\frac{kg}{m^3}` `column_density {:}`
+   :math:`\sigma_{x}` column mass density for air component :math:`\frac{kg}{m^3}` `<species>_column_density {:}`
+                      x (e.g. :math:`\sigma{O_{3}}`)
+   :math:`q_{x}`      column mass mixing ratio of           :math:`\frac{kg}{kg}`  `<species>_column_mass_mixing_ratio {:}`
+                      quantity x with regard to total air
+   ================== ===================================== ====================== ========================================
+
+   The pattern `:` for the dimensions can represent `{latitude,longitude}`, `{time}`, `{time,latitude,longitude}`,
+   or no dimensions at all.
+
+   .. math::
+
+      q_{x} = \frac{\sigma_{x}}{\sigma}
+
+
+#. column mass mixing ratio from column mass density
+
+   ========================= ===================================== ====================== ================================================
+   symbol                    description                           unit                   variable name
+   ========================= ===================================== ====================== ================================================
+   :math:`\sigma_{dry\_air}` column mass density of dry air        :math:`\frac{kg}{m^3}` `dry_air_column_density {:}`
+   :math:`\sigma_{x}`        column mass density for air component :math:`\frac{kg}{m^3}` `<species>_column_density {:}`
+                             x (e.g. :math:`\sigma{O_{3}}`)
+   :math:`\bar{q}_{x}`       column mass mixing ratio of           :math:`\frac{kg}{kg}`  `<species>_column_mass_mixing_ratio_dry_air {:}`
+                             quantity x with regard to dry air
+   ========================= ===================================== ====================== ================================================
+
+   The pattern `:` for the dimensions can represent `{latitude,longitude}`, `{time}`, `{time,latitude,longitude}`,
+   or no dimensions at all.
+
+   .. math::
+
+      \bar{q}_{x} = \frac{\sigma_{x}}{\sigma_{dry\_air}}
+
+
 #. column mass mixing ratio from column volume mixing ratio
 
    =============== ======================================== ===================== ==========================================
