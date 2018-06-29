@@ -251,7 +251,7 @@ static int get_column_mass_density_from_surface_pressure_and_profile(harp_variab
     long i;
 
     num_levels = source_variable[2]->dimension[source_variable[2]->num_dimensions - 1];
-    assert(variable->num_elements == source_variable[0]->num_elements / num_levels);
+    assert(variable->num_elements == source_variable[2]->num_elements / num_levels);
     for (i = 0; i < variable->num_elements; i++)
     {
         double *pressure_bounds = &source_variable[1]->data.double_data[i * num_levels * 2];
@@ -4466,52 +4466,52 @@ static int add_conversions_for_grid(int num_dimensions, harp_dimension_type dime
     }
 
     /* total air column number density from dry air column number density */
-    if (harp_variable_conversion_new("column_number_density", harp_type_double, HARP_UNIT_NUMBER_DENSITY,
+    if (harp_variable_conversion_new("column_number_density", harp_type_double, HARP_UNIT_COLUMN_NUMBER_DENSITY,
                                      num_dimensions, dimension_type, 0, get_air_from_dry_air_and_h2o, &conversion) != 0)
     {
         return -1;
     }
     if (harp_variable_conversion_add_source(conversion, "dry_air_column_number_density", harp_type_double,
-                                            HARP_UNIT_NUMBER_DENSITY, num_dimensions, dimension_type, 0) != 0)
+                                            HARP_UNIT_COLUMN_NUMBER_DENSITY, num_dimensions, dimension_type, 0) != 0)
     {
         return -1;
     }
     if (harp_variable_conversion_add_source(conversion, "H2O_column_number_density", harp_type_double,
-                                            HARP_UNIT_NUMBER_DENSITY, num_dimensions, dimension_type, 0) != 0)
+                                            HARP_UNIT_COLUMN_NUMBER_DENSITY, num_dimensions, dimension_type, 0) != 0)
     {
         return -1;
     }
 
     /* dry air column number density from total air column number density */
-    if (harp_variable_conversion_new("dry_air_column_number_density", harp_type_double, HARP_UNIT_NUMBER_DENSITY,
+    if (harp_variable_conversion_new("dry_air_column_number_density", harp_type_double, HARP_UNIT_COLUMN_NUMBER_DENSITY,
                                      num_dimensions, dimension_type, 0, get_dry_air_from_air_and_h2o, &conversion) != 0)
     {
         return -1;
     }
     if (harp_variable_conversion_add_source(conversion, "column_number_density", harp_type_double,
-                                            HARP_UNIT_NUMBER_DENSITY, num_dimensions, dimension_type, 0) != 0)
+                                            HARP_UNIT_COLUMN_NUMBER_DENSITY, num_dimensions, dimension_type, 0) != 0)
     {
         return -1;
     }
     if (harp_variable_conversion_add_source(conversion, "H2O_column_number_density", harp_type_double,
-                                            HARP_UNIT_NUMBER_DENSITY, num_dimensions, dimension_type, 0) != 0)
+                                            HARP_UNIT_COLUMN_NUMBER_DENSITY, num_dimensions, dimension_type, 0) != 0)
     {
         return -1;
     }
 
     /* H2O column number density from dry and total air column number density */
-    if (harp_variable_conversion_new("H2O_column_number_density", harp_type_double, HARP_UNIT_NUMBER_DENSITY,
+    if (harp_variable_conversion_new("H2O_column_number_density", harp_type_double, HARP_UNIT_COLUMN_NUMBER_DENSITY,
                                      num_dimensions, dimension_type, 0, get_h2o_from_air_and_dry_air, &conversion) != 0)
     {
         return -1;
     }
     if (harp_variable_conversion_add_source(conversion, "column_number_density", harp_type_double,
-                                            HARP_UNIT_NUMBER_DENSITY, num_dimensions, dimension_type, 0) != 0)
+                                            HARP_UNIT_COLUMN_NUMBER_DENSITY, num_dimensions, dimension_type, 0) != 0)
     {
         return -1;
     }
     if (harp_variable_conversion_add_source(conversion, "dry_air_column_number_density", harp_type_double,
-                                            HARP_UNIT_NUMBER_DENSITY, num_dimensions, dimension_type, 0) != 0)
+                                            HARP_UNIT_COLUMN_NUMBER_DENSITY, num_dimensions, dimension_type, 0) != 0)
     {
         return -1;
     }
