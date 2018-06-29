@@ -47,6 +47,8 @@ typedef struct conversion_info_struct
     int num_dimensions;
     harp_dimension_type dimension_type[HARP_MAX_NUM_DIMS];
     uint8_t *skip;
+    int depth;
+    int max_depth;
     harp_variable *variable;
 } conversion_info;
 
@@ -153,6 +155,8 @@ static int conversion_info_init(conversion_info *info, const harp_product *produ
     info->variable_name = NULL;
     info->num_dimensions = 0;
     info->skip = NULL;
+    info->depth = 0;
+    info->max_depth = 16;
     info->variable = NULL;
 
     info->skip = malloc(harp_derived_variable_conversions->num_variables);
@@ -347,6 +351,7 @@ static int perform_conversion(conversion_info *info)
             return -1;
         }
         memcpy(source_info.skip, info->skip, harp_derived_variable_conversions->num_variables);
+        source_info.depth = info->depth + 1;
 
         if (get_source_variable(&source_info, source_definition->data_type, source_definition->unit, &is_temp[i]) != 0)
         {
@@ -384,6 +389,9 @@ static int perform_conversion(conversion_info *info)
     return result;
 }
 
+static void print_source_variable(const harp_source_variable_definition *source_definition,
+                                  int (*print) (const char *, ...), int indent);
+
 /* return: 0: possible, 1: not possible (no cycle), 2: not possible (cycle) */
 static int find_source_variables(conversion_info *info, harp_source_variable_definition *source_definition)
 {
@@ -401,6 +409,12 @@ static int find_source_variables(conversion_info *info, harp_source_variable_def
             /* variable is present in the product */
             return 0;
         }
+    }
+
+    /* if we are at the maximum search depth then bail out */
+    if (info->depth == info->max_depth)
+    {
+        return 1;
     }
 
     /* try to find a conversion for the variable */
@@ -442,6 +456,7 @@ static int find_source_variables(conversion_info *info, harp_source_variable_def
         }
 
         info->skip[index] = 1;
+        info->depth++;
 
         for (j = 0; j < conversion->num_source_variables; j++)
         {
@@ -460,6 +475,7 @@ static int find_source_variables(conversion_info *info, harp_source_variable_def
             }
         }
 
+        info->depth--;
         info->skip[index] = 0;
 
         if (j == conversion->num_source_variables)
@@ -553,9 +569,9 @@ static int find_and_execute_conversion(conversion_info *info)
     return -1;
 }
 
-static void print_conversion(conversion_info *info, int (*print) (const char *, ...), int indent);
+static void print_conversion(conversion_info *info, int (*print) (const char *, ...));
 
-static int find_and_print_conversion(conversion_info *info, int (*print) (const char *, ...), int indent)
+static int find_and_print_conversion(conversion_info *info, int (*print) (const char *, ...))
 {
     int index;
 
@@ -598,7 +614,9 @@ static int find_and_print_conversion(conversion_info *info, int (*print) (const 
             {
                 /* all source variables were found, conversion should be possible */
                 info->conversion = conversion;
-                print_conversion(info, print, indent + 1);
+                info->depth++;
+                print_conversion(info, print);
+                info->depth--;
                 info->skip[index] = 0;
                 return 0;
             }
@@ -611,7 +629,7 @@ static int find_and_print_conversion(conversion_info *info, int (*print) (const 
     return -1;
 }
 
-static int print_source_variable_conversion(conversion_info *info, int (*print) (const char *, ...), int indent)
+static int print_source_variable_conversion(conversion_info *info, int (*print) (const char *, ...))
 {
     harp_variable *variable;
 
@@ -623,7 +641,7 @@ static int print_source_variable_conversion(conversion_info *info, int (*print) 
             return 0;
         }
     }
-    return find_and_print_conversion(info, print, indent);
+    return find_and_print_conversion(info, print);
 }
 
 static void print_conversion_variable(const harp_variable_conversion *conversion, int (*print) (const char *, ...))
@@ -690,14 +708,14 @@ static void print_source_variable(const harp_source_variable_definition *source_
     print(" (%s)", harp_get_data_type_name(source_definition->data_type));
 }
 
-static void print_conversion(conversion_info *info, int (*print) (const char *, ...), int indent)
+static void print_conversion(conversion_info *info, int (*print) (const char *, ...))
 {
     int i, k;
 
     if (info->conversion->num_source_variables == 0)
     {
         print("\n");
-        for (k = 0; k < indent; k++)
+        for (k = 0; k < info->depth; k++)
         {
             print("  ");
         }
@@ -711,7 +729,7 @@ static void print_conversion(conversion_info *info, int (*print) (const char *, 
             conversion_info source_info;
             harp_source_variable_definition *source_definition = &info->conversion->source_definition[i];
 
-            print_source_variable(source_definition, print, indent);
+            print_source_variable(source_definition, print, info->depth);
             if (conversion_info_init_with_variable(&source_info, info->product, source_definition->variable_name,
                                                    source_definition->num_dimensions, source_definition->dimension_type)
                 != 0)
@@ -720,10 +738,11 @@ static void print_conversion(conversion_info *info, int (*print) (const char *, 
                 return;
             }
             memcpy(source_info.skip, info->skip, harp_derived_variable_conversions->num_variables);
+            source_info.depth = info->depth + 1;
 
-            if (print_source_variable_conversion(&source_info, print, indent) != 0)
+            if (print_source_variable_conversion(&source_info, print) != 0)
             {
-                for (k = 0; k < indent; k++)
+                for (k = 0; k < info->depth; k++)
                 {
                     print("  ");
                 }
@@ -734,7 +753,7 @@ static void print_conversion(conversion_info *info, int (*print) (const char *, 
     }
     if (info->conversion->source_description != NULL)
     {
-        for (k = 0; k < indent; k++)
+        for (k = 0; k < info->depth; k++)
         {
             print("  ");
         }
@@ -1044,11 +1063,9 @@ LIBHARP_API int harp_doc_list_conversions(const harp_product *product, int (*pri
                 continue;
             }
 
-            if (harp_product_get_variable_by_name(product, conversion_list->conversion[j]->variable_name, &variable) ==
-                0)
+            if (harp_product_get_variable_by_name(product, conversion->variable_name, &variable) == 0)
             {
-                if (harp_variable_has_dimension_types(variable, conversion_list->conversion[j]->num_dimensions,
-                                                      conversion_list->conversion[j]->dimension_type))
+                if (harp_variable_has_dimension_types(variable, conversion->num_dimensions, conversion->dimension_type))
                 {
                     /* variable with same dimensions already exists -> skip conversions for this variable */
                     continue;
@@ -1072,7 +1089,9 @@ LIBHARP_API int harp_doc_list_conversions(const harp_product *product, int (*pri
                 /* all sources are found, conversion should be possible */
                 info.conversion = conversion;
                 print_conversion_variable(conversion, print);
-                print_conversion(&info, print, 1);
+                info.depth++;
+                print_conversion(&info, print);
+                info.depth--;
                 print("\n");
                 /* don't show any remaining results */
                 is_possible = 1;
