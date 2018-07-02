@@ -404,27 +404,31 @@ static int init_dimensions(ingest_info *info)
 
     if (info->product_type == s5p_type_o3_tcl)
     {
+        char *variable_name;
+
         if (info->use_o3_tcl_upper)
         {
-            if (get_dimension_length(info, "lat", &info->num_latitudes) != 0)
-            {
-                return -1;
-            }
-            if (get_dimension_length(info, "lon", &info->num_longitudes) != 0)
-            {
-                return -1;
-            }
+            variable_name = info->processor_version < 10100 ? "lat" : "latitude_csa";
         }
         else
         {
-            if (get_dimension_length(info, "latitude", &info->num_latitudes) != 0)
-            {
-                return -1;
-            }
-            if (get_dimension_length(info, "longitude", &info->num_longitudes) != 0)
-            {
-                return -1;
-            }
+            variable_name = info->processor_version < 10100 ? "latitude" : "latitude_ccd";
+        }
+        if (get_dimension_length(info, variable_name, &info->num_latitudes) != 0)
+        {
+            return -1;
+        }
+        if (info->use_o3_tcl_upper)
+        {
+            variable_name = info->processor_version < 10100 ? "lon" : "longitude_csa";
+        }
+        else
+        {
+            variable_name = info->processor_version < 10100 ? "longitude" : "longitude_ccd";
+        }
+        if (get_dimension_length(info, variable_name, &info->num_longitudes) != 0)
+        {
+            return -1;
         }
     }
 
@@ -2778,7 +2782,7 @@ static int read_o3_tcl_longitude(void *user_data, harp_array data)
     {
         variable_name = info->processor_version < 10100 ? "longitude" : "longitude_ccd";
     }
-    return read_dataset(info->product_cursor, variable_name, harp_type_float, info->num_latitudes, data);
+    return read_dataset(info->product_cursor, variable_name, harp_type_float, info->num_longitudes, data);
 }
 
 static int read_o3_tcl_numobs_ozone_upper_tropospheric_mixing_ratio(void *user_data, harp_array data)
