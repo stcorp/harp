@@ -339,31 +339,55 @@
 <td><em>path</em></td>
 <td><strong>/&#64;time_coverage_end</strong></td>
 </tr>
-<tr class="row-even"><td rowspan="4"><strong>latitude</strong></td>
+<tr class="row-even"><td rowspan="8"><strong>latitude</strong></td>
 <td><em>condition</em></td>
-<td>o3 unset</td>
+<td>o3 unset and processor version &lt; 01.01.00</td>
 </tr>
 <tr class="row-odd"><td><em>path</em></td>
 <td><strong>/PRODUCT/latitude[]</strong></td>
 </tr>
 <tr class="row-even"><td><em>condition</em></td>
-<td>o3=upper</td>
+<td>o3 unset and processor version &gt;= 01.01.00</td>
+</tr>
+<tr class="row-odd"><td><em>path</em></td>
+<td><strong>/PRODUCT/latitude_ccd[]</strong></td>
+</tr>
+<tr class="row-even"><td><em>condition</em></td>
+<td>o3=upper and processor version &lt; 01.01.00</td>
 </tr>
 <tr class="row-odd"><td><em>path</em></td>
 <td><strong>/PRODUCT/lat[]</strong></td>
 </tr>
-<tr class="row-even"><td rowspan="4"><strong>longitude</strong></td>
+<tr class="row-even"><td><em>condition</em></td>
+<td>o3=upper and processor version &gt;= 01.01.00</td>
+</tr>
+<tr class="row-odd"><td><em>path</em></td>
+<td><strong>/PRODUCT/latitude_csa[]</strong></td>
+</tr>
+<tr class="row-even"><td rowspan="8"><strong>longitude</strong></td>
 <td><em>condition</em></td>
-<td>o3 unset</td>
+<td>o3 unset and processor version &lt; 01.01.00</td>
 </tr>
 <tr class="row-odd"><td><em>path</em></td>
 <td><strong>/PRODUCT/longitude[]</strong></td>
 </tr>
 <tr class="row-even"><td><em>condition</em></td>
-<td>o3=upper</td>
+<td>o3 unset and processor version &gt;= 01.01.00</td>
+</tr>
+<tr class="row-odd"><td><em>path</em></td>
+<td><strong>/PRODUCT/longitude_ccd[]</strong></td>
+</tr>
+<tr class="row-even"><td><em>condition</em></td>
+<td>o3=upper and processor version &lt; 01.01.00</td>
 </tr>
 <tr class="row-odd"><td><em>path</em></td>
 <td><strong>/PRODUCT/lon[]</strong></td>
+</tr>
+<tr class="row-even"><td><em>condition</em></td>
+<td>o3=upper and processor version &gt;= 01.01.00</td>
+</tr>
+<tr class="row-odd"><td><em>path</em></td>
+<td><strong>/PRODUCT/longitude_csa[]</strong></td>
 </tr>
 <tr class="row-even"><td rowspan="4"><strong>tropospheric_O3_column_volume_mixing_ratio_dry_air</strong></td>
 <td><em>condition</em></td>

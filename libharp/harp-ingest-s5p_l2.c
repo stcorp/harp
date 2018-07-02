@@ -2752,23 +2752,33 @@ static int read_o3_tcl_datetime_stop(void *user_data, harp_array data)
 static int read_o3_tcl_latitude(void *user_data, harp_array data)
 {
     ingest_info *info = (ingest_info *)user_data;
+    char *variable_name;
 
     if (info->use_o3_tcl_upper)
     {
-        return read_dataset(info->product_cursor, "lat", harp_type_float, info->num_latitudes, data);
+        variable_name = info->processor_version < 10100 ? "lat" : "latitude_csa";
     }
-    return read_dataset(info->product_cursor, "latitude", harp_type_float, info->num_latitudes, data);
+    else
+    {
+        variable_name = info->processor_version < 10100 ? "latitude" : "latitude_ccd";
+    }
+    return read_dataset(info->product_cursor, variable_name, harp_type_float, info->num_latitudes, data);
 }
 
 static int read_o3_tcl_longitude(void *user_data, harp_array data)
 {
     ingest_info *info = (ingest_info *)user_data;
+    char *variable_name;
 
     if (info->use_o3_tcl_upper)
     {
-        return read_dataset(info->product_cursor, "lon", harp_type_float, info->num_longitudes, data);
+        variable_name = info->processor_version < 10100 ? "lon" : "longitude_csa";
     }
-    return read_dataset(info->product_cursor, "longitude", harp_type_float, info->num_longitudes, data);
+    else
+    {
+        variable_name = info->processor_version < 10100 ? "longitude" : "longitude_ccd";
+    }
+    return read_dataset(info->product_cursor, variable_name, harp_type_float, info->num_latitudes, data);
 }
 
 static int read_o3_tcl_numobs_ozone_upper_tropospheric_mixing_ratio(void *user_data, harp_array data)
@@ -5082,9 +5092,13 @@ static void register_o3_tcl_product(void)
                                                                      "degree_north", NULL, read_o3_tcl_latitude);
     harp_variable_definition_set_valid_range_float(variable_definition, -90.0f, 90.0f);
     path = "/PRODUCT/latitude[]";
-    harp_variable_definition_add_mapping(variable_definition, "o3 unset", NULL, path, NULL);
+    harp_variable_definition_add_mapping(variable_definition, "o3 unset", "processor version < 01.01.00", path, NULL);
+    path = "/PRODUCT/latitude_ccd[]";
+    harp_variable_definition_add_mapping(variable_definition, "o3 unset", "processor version >= 01.01.00", path, NULL);
     path = "/PRODUCT/lat[]";
-    harp_variable_definition_add_mapping(variable_definition, "o3=upper", NULL, path, NULL);
+    harp_variable_definition_add_mapping(variable_definition, "o3=upper", "processor version < 01.01.00", path, NULL);
+    path = "/PRODUCT/latitude_csa[]";
+    harp_variable_definition_add_mapping(variable_definition, "o3=upper", "processor version >= 01.01.00", path, NULL);
 
     /* longitude */
     description = "grid center longitudes";
@@ -5093,9 +5107,13 @@ static void register_o3_tcl_product(void)
                                                                      "degree_east", NULL, read_o3_tcl_longitude);
     harp_variable_definition_set_valid_range_float(variable_definition, -180.0f, 180.0f);
     path = "/PRODUCT/longitude[]";
-    harp_variable_definition_add_mapping(variable_definition, "o3 unset", NULL, path, NULL);
+    harp_variable_definition_add_mapping(variable_definition, "o3 unset", "processor version < 01.01.00", path, NULL);
+    path = "/PRODUCT/longitude_ccd[]";
+    harp_variable_definition_add_mapping(variable_definition, "o3 unset", "processor version >= 01.01.00", path, NULL);
     path = "/PRODUCT/lon[]";
-    harp_variable_definition_add_mapping(variable_definition, "o3=upper", NULL, path, NULL);
+    harp_variable_definition_add_mapping(variable_definition, "o3=upper", "processor version < 01.01.00", path, NULL);
+    path = "/PRODUCT/longitude_csa[]";
+    harp_variable_definition_add_mapping(variable_definition, "o3=upper", "processor version >= 01.01.00", path, NULL);
 
     /* tropospheric_O3_column_volume_mixing_ratio_dry_air */
     description = "tropospheric ozone mixing ratio";
