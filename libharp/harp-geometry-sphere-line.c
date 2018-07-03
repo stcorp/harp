@@ -187,8 +187,6 @@ int8_t harp_spherical_line_spherical_line_relationship(const harp_spherical_line
     harp_spherical_line sl1, sl2;
     harp_spherical_point p[4];
     int a1, a2, switched;
-    double i, k, mi, mk;
-    const double step = (M_PI - 0.1);
     int res;
 
     switched = 0;
@@ -282,80 +280,43 @@ int8_t harp_spherical_line_spherical_line_relationship(const harp_spherical_line
         }
     }
 
-    /* TODO: review/rework the following part, because line lengths can never be larger than 180 degrees
-     * (i.e. shortest distance between two points on a sphere is always <= 180 degrees)
-     */
+    a1 = (HARP_GEOMETRY_FPge(p[2].lat, 0.0) && HARP_GEOMETRY_FPle(p[3].lat, 0.0));      /* sl2 crosses equator desc. */
+    a2 = (HARP_GEOMETRY_FPle(p[2].lat, 0.0) && HARP_GEOMETRY_FPge(p[3].lat, 0.0));      /* sl1 crosses equator asc. */
 
-    /* split lines in segments less than 180 degrees and check for each of it */
-    mi = sl1.length / step;
-    mk = sl2.length / step;
-
-    if (HARP_GEOMETRY_FPzero(mk))
+    if (!(a1 || a2))
     {
-        mk = 0.1;       /* force one loop for sl2 */
+        res |= (1 << HARP_GEOMETRY_LINE_SEPARATE);
     }
-
-    sl2.psi += step;
-
-    for (i = 0.0; i < mi; i += 1.0)
+    else
     {
-        sl2.psi -= step;
+        harp_vector3d v[2][2];
+        harp_spherical_point sp;
 
-        if ((i + 1) >= mi)
+        /* Now we take the vectors of line's begin and end */
+        harp_vector3d_from_spherical_point(&v[0][0], &p[0]);
+        harp_vector3d_from_spherical_point(&v[0][1], &p[1]);
+        harp_vector3d_from_spherical_point(&v[1][0], &p[2]);
+        harp_vector3d_from_spherical_point(&v[1][1], &p[3]);
+
+        if (v[0][1].x <= 0.0)
         {
-            harp_spherical_line_point_by_length(&p[0], &sl1, 0.0);
-            harp_spherical_line_point_by_length(&p[1], &sl1, sl1.length - (i * step));
+            v[0][1].y = 1.0;
         }
-        else if (i == 0.0)
+
+        harp_inverse_euler_transformation_from_spherical_line(&se, &sl2);
+
+        sp.lat = 0;
+        sp.lon = ((a1) ? (M_PI) : (0.0)) - se.phi;      /* node */
+
+        harp_spherical_point_check(&sp);
+
+        if (HARP_GEOMETRY_FPge(sp.lon, 0.0) && HARP_GEOMETRY_FPle(sp.lon, p[1].lon))
         {
-            harp_spherical_line_point_by_length(&p[0], &sl1, 0.0);
-            harp_spherical_line_point_by_length(&p[1], &sl1, step);
+            res |= (1 << HARP_GEOMETRY_LINE_CROSS);
         }
-
-        for (k = 0.0; k < mk; k += 1.0)
+        else
         {
-            harp_spherical_line_point_by_length(&p[2], &sl2, k * step);
-            harp_spherical_line_point_by_length(&p[3], &sl2, (((k + 1.0) > mk) ? (sl2.length) : ((k + 1.0) * step)));
-
-            a1 = (HARP_GEOMETRY_FPge(p[2].lat, 0.0) && HARP_GEOMETRY_FPle(p[3].lat, 0.0));      /* sl2 crosses equator desc. */
-            a2 = (HARP_GEOMETRY_FPle(p[2].lat, 0.0) && HARP_GEOMETRY_FPge(p[3].lat, 0.0));      /* sl1 crosses equator asc. */
-
-            if (!(a1 || a2))
-            {
-                res |= (1 << HARP_GEOMETRY_LINE_SEPARATE);
-            }
-            else
-            {
-                harp_vector3d v[2][2];
-                harp_spherical_point sp;
-
-                /* Now we take the vectors of line's begin and end */
-                harp_vector3d_from_spherical_point(&v[0][0], &p[0]);
-                harp_vector3d_from_spherical_point(&v[0][1], &p[1]);
-                harp_vector3d_from_spherical_point(&v[1][0], &p[2]);
-                harp_vector3d_from_spherical_point(&v[1][1], &p[3]);
-
-                if (v[0][1].x <= 0.0)
-                {
-                    v[0][1].y = 1.0;
-                }
-
-                harp_inverse_euler_transformation_from_spherical_line(&se, &sl2);
-
-                sp.lat = 0;
-                sp.lon = ((a1) ? (M_PI) : (0.0)) - se.phi;      /* node */
-
-                harp_spherical_point_check(&sp);
-
-                if (HARP_GEOMETRY_FPge(sp.lon, 0.0) && HARP_GEOMETRY_FPle(sp.lon, p[1].lon))
-                {
-                    res |= (1 << HARP_GEOMETRY_LINE_CROSS);
-                }
-                else
-                {
-                    res |= (1 << HARP_GEOMETRY_LINE_SEPARATE);
-                }
-            }
+            res |= (1 << HARP_GEOMETRY_LINE_SEPARATE);
         }
     }
 
