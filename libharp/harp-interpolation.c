@@ -258,9 +258,18 @@ static int execute_bicubic_spline_interpolation(const double *xx, const double *
 }
 
 /* Given an array source_grid[0...n-1], with n=source_length, and given 'target_grid_point',
- * returns 'index' such that target_grid_point is between source_grid[index] and source_grid[index+1].
+ * returns 'index' such that target_grid_point is inside the interval [source_grid[index],source_grid[index+1]).
  * source_grid[0...n-1] must be monotonic, either increasing or decreasing.
- * index = -1 or index = n-1 is returned to indicate that target_grid_point is out of range.
+ * If the grid is increasing then return:
+ *   index = -1 if target_grid_point < source_grid[0]
+ *   index = i if source_grid[i] <= target_grid_point < source_grid[i+1] (0 <= i < n)
+ *   index = n-1 if target_grid_point == source_grid[n-1]
+ *   index = n if target_grid_point > source_grid[n-1]
+ * If the grid is decreasing then return:
+ *   index = -1 if target_grid_point > source_grid[0]
+ *   index = i if source_grid[i] >= target_grid_point > source_grid[i+1] (0 <= i < n)
+ *   index = n-1 if target_grid_point == source_grid[n-1]
+ *   index = n if target_grid_point < source_grid[n-1]
  * 'index' as input is taken as the initial guess for 'index' on output. */
 void harp_interpolate_find_index(long source_length, const double *source_grid, double target_grid_point, long *index)
 {
@@ -271,13 +280,7 @@ void harp_interpolate_find_index(long source_length, const double *source_grid, 
 
     if (target_grid_point == source_grid[source_length - 1])
     {
-        *index = source_length - 2;
-        return;
-    }
-
-    if (target_grid_point == source_grid[0])
-    {
-        *index = 0;
+        *index = source_length - 1;
         return;
     }
 
@@ -295,15 +298,15 @@ void harp_interpolate_find_index(long source_length, const double *source_grid, 
     else
     {
         increment = 1;
-        if ((target_grid_point >= source_grid[low]) == ascend)
+        if (target_grid_point == source_grid[low] || (target_grid_point > source_grid[low]) == ascend)
         {
             if (low == source_length - 1)
             {
-                *index = source_length - 1;
+                *index = source_length;
                 return;
             }
             high = low + 1;
-            while ((target_grid_point >= source_grid[high]) == ascend)
+            while (target_grid_point == source_grid[high] || (target_grid_point > source_grid[high]) == ascend)
             {
                 low = high;
                 high = low + increment;
@@ -324,7 +327,7 @@ void harp_interpolate_find_index(long source_length, const double *source_grid, 
             }
             high = low;
             low -= 1;
-            while ((target_grid_point < source_grid[low]) == ascend)
+            while (target_grid_point != source_grid[low] && (target_grid_point < source_grid[low]) == ascend)
             {
                 high = low;
                 if (increment >= high)
@@ -346,7 +349,7 @@ void harp_interpolate_find_index(long source_length, const double *source_grid, 
     {
         long middle = (high + low) / 2;
 
-        if ((target_grid_point >= source_grid[middle]) == ascend)
+        if (target_grid_point == source_grid[middle] || (target_grid_point < source_grid[middle]) == ascend)
         {
             low = middle;
         }
@@ -476,7 +479,7 @@ static void interpolate_linear(long source_length, const double *source_grid, co
             *target_value = harp_nan();
         }
     }
-    else if (*pos == source_length - 1)
+    else if (*pos == source_length)
     {
         /* grid point is after source_grid[source_length - 1] */
         if (out_of_bound_flag == 1)
@@ -578,7 +581,7 @@ static void interpolate_loglinear(long source_length, const double *source_grid,
             *target_value = harp_nan();
         }
     }
-    else if (*pos == source_length - 1)
+    else if (*pos == source_length)
     {
         /* grid point is after source_grid[source_length - 1] */
         if (out_of_bound_flag == 1)
