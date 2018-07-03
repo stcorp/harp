@@ -1045,15 +1045,26 @@ def import_product(filename, operations="", options=""):
                in HARP format.
 
     """
+    filenames = None
     if not (isinstance(filename, bytes) or isinstance(filename, str)):
         # Assume this is a list of filenames or patterns
-        return concatenate([import_product(file, operations, options) for file in filename])
+        filenames = filename
     if '*' in filename or '?' in filename:
         # This is a globbing pattern
         filenames = sorted(glob.glob(filename))
         if len(filenames) == 0:
             raise Error("no files matching '%s'" % (filename))
-        return concatenate([import_product(file, operations, options) for file in filenames])
+    if filenames is not None:
+        products = []
+        for file in filenames:
+            try:
+                product = import_product(file, operations, options)
+                products.append(product)
+            except NoDataError:
+                pass
+        if len(products) == 0:
+            raise NoDataError()
+        return concatenate(products)
 
     c_product_ptr = _ffi.new("harp_product **")
 

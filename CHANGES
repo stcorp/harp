@@ -17,6 +17,9 @@
 
 * Added optional parameter to regrid() operation to specify the axis boundaries.
 
+* Python harp.import_product() now ignores empty products when ingesting a list
+  of products.
+
 * Updates to S5P L2 and MIPAS L2 product ingestions.
 
 1.2 2018-04-09
