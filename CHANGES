@@ -7,8 +7,8 @@
   averages based on the available count variables (i.e. as if the final bin was
   performed on the original data).
 
-* harp_product_update_history() now also adds the current utc time and harp
-  version before the execution command.
+* Entries added to the global 'history' attribute now also include the current
+  utc time and harp version before the execution command.
 
 * Allow NULL as argument for harp_variable_set_description() and
   harp_variable_set_unit() to clear the current description/unit.
@@ -19,6 +19,15 @@
 
 * Python harp.import_product() now ignores empty products when ingesting a list
   of products.
+
+* Added derivations:
+  - column vmr/mmr from column density ratios
+  - total column mass density from surface pressure and pressure profile
+  - mass mixing ratio from mass density
+  - between dry air and total air mass (column) density
+  - between dry air, total air, and H2O number densities
+
+* Fixed derivation of altitude from gph/latitude.
 
 * Updates to S5P L2 and MIPAS L2 product ingestions.
 
