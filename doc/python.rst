@@ -355,7 +355,7 @@ This section describes the functions defined by the HARP Python library.
    individual file and the result of harp.concatenate() on the imported products
    will be returned.
 
-   :param str filename: Filename, list of filenames or file pattern of the
+   :param str,list filename: Filename, list of filenames or file pattern of the
                        product(s) to import
    :param str operations: Actions to apply as part of the import; should be
                        specified as a semi-colon separated string of operations.
