@@ -259,6 +259,9 @@ int harp_spherical_polygon_check(const harp_spherical_polygon *polygon)
         }
     }
 
+    /* Check that polygon does not cover more than half the globe */
+    /* (all polygon points should be on the northern hemisphere if the polygon center was the north pole) */
+
     /* Convert Cartesian vector to spherical point on sphere */
     harp_spherical_point_from_vector3d(&point, &vector);
 
@@ -272,8 +275,7 @@ int harp_spherical_polygon_check(const harp_spherical_polygon *polygon)
     {
         harp_spherical_point_apply_euler_transformation(&point, &(polygon->point[i]), &se);
 
-        /* Less _AND_ equal are important !! */
-        /* Do not change it! */
+        /* Less _AND_ equal is important */
         if (HARP_GEOMETRY_FPle(point.lat, 0.0))
         {
             harp_set_error(HARP_ERROR_INVALID_ARGUMENT, "invalid polygon");
@@ -311,66 +313,6 @@ static int harp_spherical_polygon_apply_euler_transformation(harp_spherical_poly
 /*##################
  * Single polygons
  *##################*/
-
-/* Create a new polygon from an array of points */
-int harp_spherical_polygon_from_point_array(const harp_spherical_point_array *point_array,
-                                            harp_spherical_polygon **new_polygon)
-{
-    harp_spherical_polygon *polygon = NULL;
-    size_t size_polygon;
-    int32_t i;
-
-    if (point_array == NULL)
-    {
-        harp_set_error(HARP_ERROR_INVALID_ARGUMENT, "point array is empty");
-        return -1;
-    }
-    if (point_array->numberofpoints < 2)
-    {
-        harp_set_error(HARP_ERROR_INVALID_ARGUMENT, "invalid number of points (%d) to create polygon",
-                       point_array->numberofpoints);
-        return -1;
-    }
-
-    /* Allocate memory for the polygon  */
-    size_polygon = offsetof(harp_spherical_polygon, point)+sizeof(harp_spherical_point) * point_array->numberofpoints;
-    polygon = (harp_spherical_polygon *)malloc(size_polygon);
-    if (polygon == NULL)
-    {
-        harp_set_error(HARP_ERROR_OUT_OF_MEMORY, "out of memory (could not allocate %lu bytes) (%s:%u)\n", size_polygon,
-                       __FILE__, __LINE__);
-        return -1;
-    }
-    polygon->size = (int32_t)size_polygon;
-    polygon->numberofpoints = point_array->numberofpoints;
-
-    /* Copy the spherical point into the polygon structure */
-    for (i = 0; i < point_array->numberofpoints; ++i)
-    {
-        memcpy((void *)&polygon->point[i], (void *)&(point_array->point[i]), sizeof(harp_spherical_point));
-    }
-
-    *new_polygon = polygon;
-    return 0;
-}
-
-/* Duplicate a polygon */
-harp_spherical_polygon *harp_spherical_polygon_duplicate(const harp_spherical_polygon *polygon_in)
-{
-    /* Declare a new polygon */
-    harp_spherical_polygon *polygon_copy = NULL;
-
-    size_t size_polygon = offsetof(harp_spherical_polygon, point) +
-        sizeof(harp_spherical_point) * polygon_in->numberofpoints;
-
-    /* Allocate memory for the polygon */
-    polygon_copy = harp_spherical_polygon_new(polygon_in->numberofpoints);
-
-    /* Copy the complete polygon */
-    memcpy((void *)polygon_copy, (void *)polygon_in, size_polygon);
-
-    return polygon_copy;
-}
 
 /* Derive the centre coordinates of a polygon */
 int harp_spherical_polygon_centre(harp_vector3d *vector_centre, const harp_spherical_polygon *polygon)
@@ -495,7 +437,12 @@ int harp_spherical_polygon_contains_point(const harp_spherical_polygon *polygon,
         int32_t counter = 0;
 
         /* Create a temporary polygon with same number of points as input polygon */
-        harp_spherical_polygon *tmp = harp_spherical_polygon_new(polygon->numberofpoints);
+        harp_spherical_polygon *tmp;
+
+        if (harp_spherical_polygon_new(polygon->numberofpoints, &tmp) != 0)
+        {
+            return -1;
+        }
 
         /* Make a transformation, so that point is (0,0) */
         harp_euler_transformation_set_to_zxz(&se);
@@ -547,11 +494,13 @@ int harp_spherical_polygon_contains_point(const harp_spherical_polygon *polygon,
             if (on_equator)
             {
                 /* Define a new polygon */
-                harp_spherical_polygon *ttt = harp_spherical_polygon_new(polygon->numberofpoints);
+                harp_spherical_polygon *ttt;
 
-                /* Determine the sizo of the input polygon */
-                size_t size_polygon = offsetof(harp_spherical_polygon, point) +
-                    sizeof(harp_spherical_point) * polygon->numberofpoints;
+                if (harp_spherical_polygon_new(polygon->numberofpoints, &ttt) != 0)
+                {
+                    free(tmp);
+                    return -1;
+                }
 
                 /* Set the seed */
                 srand((unsigned int)counter);
@@ -566,7 +515,8 @@ int harp_spherical_polygon_contains_point(const harp_spherical_polygon *polygon,
                 harp_spherical_polygon_apply_euler_transformation(ttt, tmp, &se);
 
                 /* Copy the polygon ttt back to tmp */
-                memcpy((void *)tmp, (void *)ttt, size_polygon);
+                memcpy((void *)tmp, (void *)ttt, offsetof(harp_spherical_polygon, point) +
+                       sizeof(harp_spherical_point) * polygon->numberofpoints);
 
                 free(ttt);
             }
@@ -854,8 +804,7 @@ int harp_spherical_polygon_overlapping_fraction(const harp_spherical_polygon *po
         }
         assert(num_intersection_points > 0);
 
-        polygon_intersect = harp_spherical_polygon_new(num_intersection_points);
-        if (polygon_intersect == NULL)
+        if (harp_spherical_polygon_new(num_intersection_points, &polygon_intersect) != 0)
         {
             harp_set_error(HARP_ERROR_OUT_OF_MEMORY, "out of memory (could not create polygon) (%s:%u)" __FILE__,
                            __LINE__);
@@ -1098,15 +1047,21 @@ int harp_spherical_polygon_get_surface_area(const harp_spherical_polygon *polygo
 
 /* Given number of vertex points, return empty
  * spherical polygon data structure with points (lat,lon) in  [rad] */
-harp_spherical_polygon *harp_spherical_polygon_new(int32_t numberofpoints)
+int harp_spherical_polygon_new(int32_t numberofpoints, harp_spherical_polygon **polygon)
 {
-    harp_spherical_polygon *polygon = NULL;
     size_t size = offsetof(harp_spherical_polygon, point) + sizeof(harp_spherical_point) * numberofpoints;
 
-    polygon = (harp_spherical_polygon *)malloc(size);
-    polygon->size = size;
-    polygon->numberofpoints = numberofpoints;
-    return polygon;
+    *polygon = (harp_spherical_polygon *)malloc(size);
+    if (*polygon == NULL)
+    {
+        harp_set_error(HARP_ERROR_OUT_OF_MEMORY, "out of memory (could not allocate %lu bytes) (%s:%u)\n", size,
+                       __FILE__, __LINE__);
+        return -1;
+    }
+    (*polygon)->size = size;
+    (*polygon)->numberofpoints = numberofpoints;
+
+    return 0;
 }
 
 void harp_spherical_polygon_delete(harp_spherical_polygon *polygon)
@@ -1144,65 +1099,40 @@ int harp_spherical_polygon_from_latitude_longitude_bounds(long measurement_id, l
 {
     harp_spherical_polygon *polygon = NULL;
     double deg2rad = (double)(CONST_DEG2RAD);
-    harp_spherical_point_array *point_array = NULL;
-    int32_t numberofpoints = (int32_t)num_vertices;     /* Start with num_vertices */
-    long ii;
+    int32_t num_points = (int32_t)num_vertices; /* Start with num_vertices */
     int32_t i;
 
     /* Check if the first and last spherical point of the polygon are equal */
     if (harp_spherical_polygon_begin_end_point_equal(measurement_id, num_vertices, latitude_bounds, longitude_bounds))
     {
         /* If this is the case, do not include the last point */
-        numberofpoints--;
+        num_points--;
     }
-    if (numberofpoints <= 0)
+    if (num_points <= 0)
     {
-        harp_set_error(HARP_ERROR_INVALID_ARGUMENT, "numberofpoints must be larger than zero");
+        harp_set_error(HARP_ERROR_INVALID_ARGUMENT, "num_vertices must be larger than zero");
         return -1;
-    }
-
-    if (harp_spherical_point_array_new(&point_array) != 0)
-    {
-        return -1;
-    }
-
-    for (i = 0; i < numberofpoints; i++)
-    {
-        harp_spherical_point point;
-
-        /* Element index in the data array */
-        /* Remember: At this point 'numberofpoints' can be smaller than original input 'num_vertices'. */
-        ii = measurement_id * num_vertices + i;
-
-        /* Make sure we have the coordinates in the correct units */
-        point.lat = latitude_bounds[ii] * deg2rad;
-        point.lon = longitude_bounds[ii] * deg2rad;
-        harp_spherical_point_check(&point);
-
-        /* Add the point to the point array */
-        if (harp_spherical_point_array_add_point(point_array, &point) != 0)
-        {
-            harp_spherical_point_array_delete(point_array);
-            return -1;
-        }
     }
 
     /* Create the polygon */
-    if (harp_spherical_polygon_from_point_array(point_array, &polygon) != 0)
+    if (harp_spherical_polygon_new(num_points, &polygon) != 0)
     {
-        harp_spherical_point_array_delete(point_array);
         return -1;
+    }
+
+    for (i = 0; i < num_points; i++)
+    {
+        polygon->point[i].lat = latitude_bounds[measurement_id * num_vertices + i] * deg2rad;
+        polygon->point[i].lon = longitude_bounds[measurement_id * num_vertices + i] * deg2rad;
+        harp_spherical_point_check(&polygon->point[i]);
     }
 
     /* Check the polygon */
     if (harp_spherical_polygon_check(polygon) != 0)
     {
-        harp_spherical_point_array_delete(point_array);
         harp_spherical_polygon_delete(polygon);
         return -1;
     }
-
-    harp_spherical_point_array_delete(point_array);
 
     *new_polygon = polygon;
     return 0;

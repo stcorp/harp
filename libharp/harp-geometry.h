@@ -163,8 +163,6 @@ typedef struct harp_euler_transformation_struct
 } harp_euler_transformation;
 
 /* 3D vector functions */
-harp_vector3d *harp_vector3d_new(double x, double y, double z);
-void harp_vector3d_delete(harp_vector3d *vector);
 int harp_vector3d_equal(const harp_vector3d *vectora, const harp_vector3d *vectorb);
 double harp_vector3d_dotproduct(const harp_vector3d *vectora, const harp_vector3d *vectorb);
 void harp_vector3d_crossproduct(harp_vector3d *vectorc, const harp_vector3d *vectora, const harp_vector3d *vectorb);
@@ -178,14 +176,6 @@ void harp_spherical_point_from_vector3d(harp_spherical_point *point, const harp_
 void harp_spherical_point_rad_from_deg(harp_spherical_point *point);
 void harp_spherical_point_deg_from_rad(harp_spherical_point *point);
 double harp_spherical_point_distance(const harp_spherical_point *pointp, const harp_spherical_point *pointq);
-int harp_spherical_point_at_distance_and_angle(const harp_spherical_point *point_a, double radius,
-                                               double azimuth_angle, harp_spherical_point *point_b);
-
-/* Spherical point array functions */
-int harp_spherical_point_array_new(harp_spherical_point_array **new_point_array);
-void harp_spherical_point_array_delete(harp_spherical_point_array *point_array);
-int harp_spherical_point_array_add_point(harp_spherical_point_array *point_array, const harp_spherical_point *point_in);
-void harp_spherical_point_array_remove_point_at_index(harp_spherical_point_array *point_array, int32_t index);
 
 /* Spherical line functions */
 int harp_spherical_line_equal(const harp_spherical_line *line1, const harp_spherical_line *line2);
@@ -232,7 +222,7 @@ void harp_euler_transformation_from_spherical_vector(harp_euler_transformation *
                                                      const harp_spherical_point *sphericalvectorend);
 
 /* Spherical polygon functions */
-harp_spherical_polygon *harp_spherical_polygon_new(int32_t numberofpoints);
+int harp_spherical_polygon_new(int32_t numberofpoints, harp_spherical_polygon **polygon);
 int harp_spherical_polygon_check(const harp_spherical_polygon *polygon);
 int harp_spherical_polygon_equal(const harp_spherical_polygon *polygon_a, const harp_spherical_polygon *polygon_b,
                                  int direction);
@@ -240,9 +230,6 @@ void harp_spherical_polygon_delete(harp_spherical_polygon *polygon);
 int harp_spherical_polygon_from_latitude_longitude_bounds(long measurement_id, long num_vertices,
                                                           const double *latitude_bounds, const double *longitude_bounds,
                                                           harp_spherical_polygon **new_polygon);
-int harp_spherical_polygon_from_point_array(const harp_spherical_point_array *point_array,
-                                            harp_spherical_polygon **new_polygon);
-harp_spherical_polygon *harp_spherical_polygon_duplicate(const harp_spherical_polygon *polygon_in);
 int harp_spherical_polygon_centre(harp_vector3d *vector_centre, const harp_spherical_polygon *polygon);
 int harp_spherical_polygon_contains_point(const harp_spherical_polygon *polygon, const harp_spherical_point *point);
 int8_t harp_spherical_polygon_spherical_line_relationship(const harp_spherical_polygon *polygon,

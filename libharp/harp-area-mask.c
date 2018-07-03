@@ -214,21 +214,16 @@ static int is_blank_line(const char *str)
     return (*str == '\0');
 }
 
-static int parse_polygon(const char *str, harp_spherical_polygon **new_polygon)
+static int parse_polygon(const char *str, harp_spherical_polygon **polygon)
 {
-    harp_spherical_point_array *point_array;
-    harp_spherical_polygon *polygon;
-    const char *mark;
-    int length;
-
-    if (harp_spherical_point_array_new(&point_array) != 0)
-    {
-        return -1;
-    }
+    harp_spherical_point *point_array = NULL;
+    long num_points = 0;
 
     while (1)
     {
         harp_spherical_point point;
+        const char *mark;
+        int length;
 
         while (*str != '\0' && isspace(*str))
         {
@@ -251,7 +246,7 @@ static int parse_polygon(const char *str, harp_spherical_polygon **new_polygon)
         {
             harp_set_error(HARP_ERROR_INVALID_FORMAT, "invalid latitude '%.*s' (%s:%u)", length, mark, __FILE__,
                            __LINE__);
-            harp_spherical_point_array_delete(point_array);
+            free(point_array);
             return -1;
         }
 
@@ -262,7 +257,7 @@ static int parse_polygon(const char *str, harp_spherical_polygon **new_polygon)
 
         if (*str != ',')
         {
-            harp_spherical_point_array_delete(point_array);
+            free(point_array);
             return -1;
         }
 
@@ -285,7 +280,7 @@ static int parse_polygon(const char *str, harp_spherical_polygon **new_polygon)
         {
             harp_set_error(HARP_ERROR_INVALID_FORMAT, "invalid longitude '%.*s' (%s:%u)", length, mark, __FILE__,
                            __LINE__);
-            harp_spherical_point_array_delete(point_array);
+            free(point_array);
             return -1;
         }
 
@@ -298,39 +293,51 @@ static int parse_polygon(const char *str, harp_spherical_polygon **new_polygon)
         harp_spherical_point_rad_from_deg(&point);
         harp_spherical_point_check(&point);
 
-        if (harp_spherical_point_array_add_point(point_array, &point) != 0)
+        if (num_points % BLOCK_SIZE == 0)
         {
-            harp_spherical_point_array_delete(point_array);
-            return -1;
+            harp_spherical_point *new_point_array;
+
+            /* grow the source_product array by one block */
+            new_point_array = realloc(point_array, (num_points + BLOCK_SIZE) * sizeof(harp_spherical_point));
+            if (new_point_array == NULL)
+            {
+                harp_set_error(HARP_ERROR_OUT_OF_MEMORY, "out of memory (could not allocate %lu bytes) (%s:%u)",
+                               (num_points + BLOCK_SIZE) * sizeof(harp_spherical_point), __FILE__, __LINE__);
+                free(point_array);
+                return -1;
+            }
+            point_array = new_point_array;
         }
+        point_array[num_points] = point;
+        num_points++;
     }
 
     /* Discard the last point of the polygon if it is equal to the first. */
-    if (point_array->numberofpoints > 1)
+    if (num_points > 1)
     {
-        if (harp_spherical_point_equal(&point_array->point[0], &point_array->point[point_array->numberofpoints - 1]))
+        if (harp_spherical_point_equal(&point_array[0], &point_array[num_points - 1]))
         {
-            harp_spherical_point_array_remove_point_at_index(point_array, point_array->numberofpoints - 1);
+            num_points--;
         }
     }
 
-    if (harp_spherical_polygon_from_point_array(point_array, &polygon) != 0)
+    if (harp_spherical_polygon_new(num_points, polygon) != 0)
     {
-        harp_spherical_point_array_delete(point_array);
+        free(point_array);
         return -1;
     }
+    memcpy(&(*polygon)->point, point_array, num_points * sizeof(harp_spherical_point));
 
-    /* Once the spherical polygon has been succesfully created, the point array can be deleted. */
-    harp_spherical_point_array_delete(point_array);
+    free(point_array);
 
     /* Check the polygon */
-    if (harp_spherical_polygon_check(polygon) != 0)
+    if (harp_spherical_polygon_check(*polygon) != 0)
     {
-        harp_spherical_polygon_delete(polygon);
+        harp_spherical_polygon_delete(*polygon);
+        *polygon = NULL;
         return -1;
     }
 
-    *new_polygon = polygon;
     return 0;
 }
 

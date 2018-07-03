@@ -34,30 +34,6 @@
 #include <math.h>
 #include <stdlib.h>
 
-/* Create new vector */
-harp_vector3d *harp_vector3d_new(double x, double y, double z)
-{
-    /* Allocate memory for the new vector */
-    harp_vector3d *vector = malloc(3 * sizeof(double));
-
-    /* Set the 3 Cartesian coordinates */
-    vector->x = x;
-    vector->y = y;
-    vector->z = z;
-
-    return vector;
-}
-
-/* Delete vector */
-void harp_vector3d_delete(harp_vector3d *vector)
-{
-    if (vector)
-    {
-        free(vector);
-    }
-    vector = NULL;
-}
-
 /* Check if two 3D vectors are equal */
 int harp_vector3d_equal(const harp_vector3d *vectora, const harp_vector3d *vectorb)
 {
