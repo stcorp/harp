@@ -92,13 +92,6 @@ typedef struct harp_spherical_point_struct
     double lat; /* in [rad] */
 } harp_spherical_point;
 
-/* Define a circle on a sphere */
-typedef struct harp_spherical_circle_struct
-{
-    harp_spherical_point center;        /* the center of circle */
-    double radius;      /* the circle radius in [rad] */
-} harp_spherical_circle;
-
 /* Define line on sphere. It is defined by an
  * Euler transformation and a length.
  * The "untransformed" line starts on the equator at (0,0) and ends at (length, 0).

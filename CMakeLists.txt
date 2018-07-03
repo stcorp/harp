@@ -257,7 +257,6 @@ set(LIBHARP_SOURCES
   libharp/harp-filter.c
   libharp/harp-filter-collocation.h
   libharp/harp-filter-collocation.c
-  libharp/harp-geometry-sphere-circle.c
   libharp/harp-geometry-sphere-euler.c
   libharp/harp-geometry-sphere-line.c
   libharp/harp-geometry-sphere-point.c
