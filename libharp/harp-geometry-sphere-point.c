@@ -117,9 +117,14 @@ void harp_spherical_point_check(harp_spherical_point *point)
  */
 void harp_vector3d_from_spherical_point(harp_vector3d *vector, const harp_spherical_point *point)
 {
-    vector->x = cos(point->lat) * cos(point->lon);
-    vector->y = cos(point->lat) * sin(point->lon);
-    vector->z = sin(point->lat);
+    double sinlat = sin(point->lat);
+    double sinlon = sin(point->lon);
+    double coslat = cos(point->lat);
+    double coslon = cos(point->lon);
+
+    vector->x = coslat * coslon;
+    vector->y = coslat * sinlon;
+    vector->z = sinlat;
 }
 
 /* Convert point (x,y,z) in Cartesian coordinates to
