@@ -408,75 +408,67 @@ static int add_count_variable(harp_product *product, binning_type *bintype, binn
     return 0;
 }
 
-/* determine the lat/lon min/max bounding box for a lat/lon bounds polygon */
-static void get_latlon_extent_for_polygon(int num_elements, double *latitude, double *longitude, double *latitude_min,
-                                          double *latitude_max, double *longitude_min, double *longitude_max)
+/* map polygon to right longitude range, close at the poles (if needed),
+ * replicate first point at the end, and calculate min/max lat/lon
+ */
+static void make_2d_polygon(long *num_elements, double *latitude, double *longitude, double reference_longitude,
+                            double *latitude_min, double *latitude_max, double *longitude_min, double *longitude_max)
 {
-    double min_lat, max_lat, lat;
+    double min_lat, max_lat;
     double min_lon, max_lon, lon;
-    double ref_lon;
-    int i;
+    long i;
 
-    assert(num_elements > 0);
-
-    /* We have two special cases to deal with: boundaries that cross the dateline and boundaries that cover a pole.
-     * Boundaries that cross the dateline are handled by mapping all longitudes to the range [x-180,x+180] with x being
-     * the longitude of the first polygon point.
-     */
+    if (longitude[0] < reference_longitude - 180)
+    {
+        longitude[0] += 360;
+    }
+    if (longitude[0] >= reference_longitude + 180)
+    {
+        longitude[0] -= 360;
+    }
 
     min_lon = longitude[0];
-    while (min_lon < -180)
-    {
-        min_lon += 360;
-    }
-    while (min_lon > 180)
-    {
-        min_lon -= 360;
-    }
     max_lon = min_lon;
-    ref_lon = min_lon;
     min_lat = latitude[0];
     max_lat = min_lat;
 
-    for (i = 1; i < num_elements; i++)
+    for (i = 1; i < *num_elements; i++)
     {
-        lon = longitude[i];
-        lat = latitude[i];
-
-        if (lat < min_lat)
+        while (longitude[i] < longitude[i - 1] - 180)
         {
-            min_lat = lat;
+            longitude[i] += 360;
         }
-        else if (lat > max_lat)
+        while (longitude[i] > longitude[i - 1] + 180)
         {
-            max_lat = lat;
+            longitude[i] -= 360;
         }
 
-        while (lon < ref_lon - 180)
+        if (latitude[i] < min_lat)
         {
-            lon += 360;
+            min_lat = latitude[i];
         }
-        while (lon > ref_lon + 180)
+        else if (latitude[i] > max_lat)
         {
-            lon -= 360;
+            max_lat = latitude[i];
         }
-        if (lon < min_lon)
+
+        if (longitude[i] < min_lon)
         {
-            min_lon = lon;
+            min_lon = longitude[i];
         }
-        else if (lon > max_lon)
+        else if (longitude[i] > max_lon)
         {
-            max_lon = lon;
+            max_lon = longitude[i];
         }
-        ref_lon = lon;
     }
+
     /* close the polygon (this could have a different longitude, due to the ref_lon mapping) */
     lon = longitude[0];
-    while (lon < ref_lon - 180)
+    while (lon < longitude[(*num_elements) - 1] - 180)
     {
         lon += 360;
     }
-    while (lon > ref_lon + 180)
+    while (lon > longitude[(*num_elements) - 1] + 180)
     {
         lon -= 360;
     }
@@ -493,19 +485,102 @@ static void get_latlon_extent_for_polygon(int num_elements, double *latitude, do
     {
         if (max_lat > 0)
         {
+            if (min_lat < 0)
+            {
+                /* if we cross the equator then we don't know which pole is covered */
+                /* skip polygon by setting num_elements to 0 */
+                *num_elements = 0;
+                return;
+            }
             max_lat = 90;
+            /* close the polygon via the North pole */
+            longitude[*num_elements] = longitude[(*num_elements) - 1];
+            latitude[*num_elements] = 90;
+            (*num_elements)++;
+            longitude[*num_elements] = longitude[0];
+            latitude[*num_elements] = 90;
+            (*num_elements)++;
         }
-        if (min_lat < 0)
+        else if (min_lat < 0)
         {
             min_lat = -90;
+            /* close the polygon via the South pole */
+            longitude[*num_elements] = longitude[(*num_elements) - 1];
+            latitude[*num_elements] = -90;
+            (*num_elements)++;
+            longitude[*num_elements] = longitude[0];
+            latitude[*num_elements] = -90;
+            (*num_elements)++;
         }
-        /* (if we cross the equator then we don't know which pole is covered => take whole earth as bounding box) */
+    }
+
+    /* wrap longitude range to [reference_longitude-180,reference_longitude+360] */
+    if (min_lon < reference_longitude - 360)
+    {
+        min_lon += 360;
+        max_lon += 360;
+        for (i = 0; i < *num_elements; i++)
+        {
+            longitude[i] += 360;
+        }
+    }
+    while (min_lon >= reference_longitude + 180)
+    {
+        min_lon -= 360;
+        max_lon -= 360;
+        for (i = 0; i < *num_elements; i++)
+        {
+            longitude[i] -= 360;
+        }
     }
 
     *latitude_min = min_lat;
     *latitude_max = max_lat;
     *longitude_min = min_lon;
     *longitude_max = max_lon;
+
+    /* repeat first point at the end to make iterating over it more easy */
+    latitude[*num_elements] = latitude[0];
+    longitude[*num_elements] = longitude[0];
+    (*num_elements)++;
+}
+
+static int add_cell_index(long cell_index, long *cumsum_index, long **latlon_cell_index, double **latlon_weight)
+{
+    if ((*cumsum_index) % LATLON_BLOCK_SIZE == 0)
+    {
+        long *new_latlon_cell_index;
+        double *new_latlon_weight;
+
+        new_latlon_cell_index = realloc(*latlon_cell_index, ((*cumsum_index) + LATLON_BLOCK_SIZE) * sizeof(long));
+        if (new_latlon_cell_index == NULL)
+        {
+            harp_set_error(HARP_ERROR_OUT_OF_MEMORY, "out of memory (could not allocate %lu bytes) (%s:%u)",
+                           ((*cumsum_index) + LATLON_BLOCK_SIZE) * sizeof(long), __FILE__, __LINE__);
+            return -1;
+        }
+        *latlon_cell_index = new_latlon_cell_index;
+        new_latlon_weight = realloc(*latlon_weight, ((*cumsum_index) + LATLON_BLOCK_SIZE) * sizeof(double));
+        if (new_latlon_weight == NULL)
+        {
+            harp_set_error(HARP_ERROR_OUT_OF_MEMORY, "out of memory (could not allocate %lu bytes) (%s:%u)",
+                           ((*cumsum_index) + LATLON_BLOCK_SIZE) * sizeof(double), __FILE__, __LINE__);
+            return -1;
+        }
+        *latlon_weight = new_latlon_weight;
+    }
+    (*latlon_cell_index)[(*cumsum_index)] = cell_index;
+    (*latlon_weight)[(*cumsum_index)] = 1.0;    /* initialize with default weight */
+    (*cumsum_index)++;
+
+    return 0;
+}
+
+static double find_weight_for_polygon_and_cell(long num_points, double *latitude, double *longitude,
+                                               double lat_min, double lat_max, double lon_min, double lon_max)
+{
+    /* constrict the polygon to within the cell boundaries and then determine the surface fraction */
+    return 1.0;
 }
 
 static int find_matching_cells_and_weights_for_bounds(harp_variable *latitude_bounds, harp_variable *longitude_bounds,
@@ -514,21 +589,93 @@ static int find_matching_cells_and_weights_for_bounds(harp_variable *latitude_bo
                                                       long *num_latlon_index, long **latlon_cell_index,
                                                       double **latlon_weight)
 {
-    long latitude_index = -1;
-    long longitude_index = -1;
+    double *poly_latitude = NULL;
+    double *poly_longitude = NULL;
+    long num_latitude_cells = num_latitude_edges - 1;
+    long num_longitude_cells = num_longitude_edges - 1;
+    long *min_lat_id = NULL, *max_lat_id = NULL;        /* min/max grid latitude index for each longitude grid row */
+    long *min_lon_id = NULL, *max_lon_id = NULL;        /* min/max grid longitude index for each latitude grid row */
     long cumsum_index = 0;
     long num_elements;
-    long num_vertices;
-    long i;
+    long max_num_vertices;
+    long i, j, k;
 
     num_elements = latitude_bounds->dimension[0];
-    num_vertices = latitude_bounds->dimension[latitude_bounds->num_dimensions - 1];
+    max_num_vertices = latitude_bounds->dimension[latitude_bounds->num_dimensions - 1];
+
+    /* add 1 point to allow closing the polygon (i.e. repeat first point at the end) */
+    /* and allow room for 2 more points to close polygons that cover a pole */
+    poly_latitude = malloc((max_num_vertices + 3) * sizeof(double));
+    if (poly_latitude == NULL)
+    {
+        harp_set_error(HARP_ERROR_OUT_OF_MEMORY, "out of memory (could not allocate %lu bytes) (%s:%u)",
+                       (max_num_vertices + 2) * sizeof(double), __FILE__, __LINE__);
+        goto error;
+    }
+    poly_longitude = malloc((max_num_vertices + 3) * sizeof(double));
+    if (poly_longitude == NULL)
+    {
+        harp_set_error(HARP_ERROR_OUT_OF_MEMORY, "out of memory (could not allocate %lu bytes) (%s:%u)",
+                       (max_num_vertices + 2) * sizeof(double), __FILE__, __LINE__);
+        goto error;
+    }
+
+    min_lat_id = malloc((num_longitude_cells + 2) * sizeof(long));
+    if (min_lat_id == NULL)
+    {
+        harp_set_error(HARP_ERROR_OUT_OF_MEMORY, "out of memory (could not allocate %lu bytes) (%s:%u)",
+                       (num_longitude_cells + 2) * sizeof(long), __FILE__, __LINE__);
+        goto error;
+    }
+    max_lat_id = malloc((num_longitude_cells + 2) * sizeof(long));
+    if (max_lat_id == NULL)
+    {
+        harp_set_error(HARP_ERROR_OUT_OF_MEMORY, "out of memory (could not allocate %lu bytes) (%s:%u)",
+                       (num_longitude_cells + 2) * sizeof(long), __FILE__, __LINE__);
+        goto error;
+    }
+    min_lon_id = malloc((num_latitude_cells + 2) * sizeof(long));
+    if (min_lon_id == NULL)
+    {
+        harp_set_error(HARP_ERROR_OUT_OF_MEMORY, "out of memory (could not allocate %lu bytes) (%s:%u)",
+                       (num_latitude_cells + 2) * sizeof(long), __FILE__, __LINE__);
+        goto error;
+    }
+    max_lon_id = malloc((num_latitude_cells + 2) * sizeof(long));
+    if (max_lon_id == NULL)
+    {
+        harp_set_error(HARP_ERROR_OUT_OF_MEMORY, "out of memory (could not allocate %lu bytes) (%s:%u)",
+                       (num_latitude_cells + 2) * sizeof(long), __FILE__, __LINE__);
+        goto error;
+    }
 
     for (i = 0; i < num_elements; i++)
     {
-        double latitude, longitude;
         double lat_min, lat_max, lon_min, lon_max;
-        long lat_min_id, lat_max_id, lon_min_id, lon_max_id;
+        long num_vertices = max_num_vertices;
+        int loop;
+
+        num_latlon_index[i] = 0;
+
+        memcpy(poly_latitude, &latitude_bounds->data.double_data[i * max_num_vertices],
+               max_num_vertices * sizeof(double));
+        memcpy(poly_longitude, &longitude_bounds->data.double_data[i * max_num_vertices],
+               max_num_vertices * sizeof(double));
+        while (num_vertices > 0 && harp_isnan(poly_latitude[num_vertices - 1]))
+        {
+            num_vertices--;
+        }
+        if (num_vertices > 2 && poly_latitude[0] == poly_latitude[num_vertices - 1] &&
+            poly_longitude[0] == poly_longitude[num_vertices - 1])
+        {
+            /* remove duplicate point (make_2d_polygon will introduce it again) */
+            num_vertices--;
+        }
+        if (num_vertices < 3)
+        {
+            /* skip polygon */
+            continue;
+        }
 
         /* - reorder polygon such that it is turning counter-clockwise
          * - check that the polygon is convex
@@ -538,99 +685,285 @@ static int find_matching_cells_and_weights_for_bounds(harp_variable *latitude_bo
          */
         /* the area of a polygon is equal to 0.5 * sum(k=1..n-1, vec(0,k) X vec(0,k+1)) */
 
-        get_latlon_extent_for_polygon(num_vertices, &latitude_bounds->data.double_data[i * num_vertices],
-                                      &longitude_bounds->data.double_data[i * num_vertices], &lat_min, &lat_max,
-                                      &lon_min, &lon_max);
-        if (lat_max < latitude_edges[0] || lat_min > latitude_edges[num_latitude_edges - 1])
+        make_2d_polygon(&num_vertices, poly_latitude, poly_longitude, longitude_edges[0], &lat_min, &lat_max, &lon_min,
+                        &lon_max);
+        if (num_vertices == 0)
         {
-            num_latlon_index[i] = 0;
-            continue;
-        }
-        while (lon_max < longitude_edges[0])
-        {
-            lon_min += 360;
-            lon_max += 360;
-        }
-        if (lon_min > longitude_edges[num_longitude_edges - 1])
-        {
-            num_latlon_index[i] = 0;
             continue;
         }
 
-        /* determine the subgrid that we need to use */
-        lat_min_id = 0;
-        while (lat_min_id < num_latitude_edges - 1 && latitude_edges[lat_min_id + 1] < lat_min)
+        if (lat_max <= latitude_edges[0] || lat_min >= latitude_edges[num_latitude_edges - 1])
         {
-            lat_min_id++;
-        }
-        lat_max_id = num_latitude_edges - 1;
-        while (lat_max_id > 0 && latitude_edges[lat_max_id - 1] > lat_max)
-        {
-            lat_max_id--;
-        }
-        assert(lat_max_id > lat_min_id);
-        lon_min_id = 0;
-        while (lon_min_id < num_longitude_edges - 1 && longitude_edges[lon_min_id + 1] < lon_min)
-        {
-            lon_min_id++;
-        }
-        lon_max_id = num_longitude_edges - 1;
-        while (lon_max_id > 0 && longitude_edges[lon_max_id - 1] > lon_max)
-        {
-            lon_max_id--;
-        }
-        assert(lon_max_id > lon_min_id);
-
-
-        if (harp_geographic_center_from_bounds(num_vertices, &latitude_bounds->data.double_data[i * num_vertices],
-                                               &longitude_bounds->data.double_data[i * num_vertices], &latitude,
-                                               &longitude) != 0)
-        {
-            return -1;
-        }
-
-        harp_interpolate_find_index(num_latitude_edges, latitude_edges, latitude, &latitude_index);
-        if (latitude_index < 0 || latitude_index >= num_latitude_edges - 1)
-        {
-            num_latlon_index[i] = 0;
             continue;
         }
-        longitude = harp_wrap(longitude, longitude_edges[0], longitude_edges[0] + 360);
-        harp_interpolate_find_index(num_longitude_edges, longitude_edges, longitude, &longitude_index);
-        if (longitude_index < 0 || longitude_index >= num_longitude_edges - 1)
-        {
-            num_latlon_index[i] = 0;
-            continue;
-        }
-        num_latlon_index[i] = 1;
-        if (cumsum_index % LATLON_BLOCK_SIZE == 0)
-        {
-            long *new_latlon_cell_index;
-            double *new_latlon_weight;
 
-            new_latlon_cell_index = realloc(*latlon_cell_index, (cumsum_index + LATLON_BLOCK_SIZE) * sizeof(long));
-            if (new_latlon_cell_index == NULL)
+        /* We loop twice to handle wrap-around situations. The second time we use longitudes + 360 */
+        for (loop = 0; loop < 2; loop++)
+        {
+            long lat_id = -1, lon_id = -1;
+            long next_lat_id, next_lon_id;
+
+            if (loop == 1)
             {
-                harp_set_error(HARP_ERROR_OUT_OF_MEMORY, "out of memory (could not allocate %lu bytes) (%s:%u)",
-                               (cumsum_index + LATLON_BLOCK_SIZE) * sizeof(long), __FILE__, __LINE__);
-                return -1;
+                lon_min += 360;
+                lon_max += 360;
+                for (k = 0; k < num_vertices; k++)
+                {
+                    poly_longitude[k] += 360;
+                }
             }
-            *latlon_cell_index = new_latlon_cell_index;
-            new_latlon_weight = realloc(*latlon_weight, (cumsum_index + LATLON_BLOCK_SIZE) * sizeof(double));
-            if (new_latlon_weight == NULL)
+
+            if (lon_max <= longitude_edges[0] || lon_min >= longitude_edges[num_longitude_edges - 1])
             {
-                harp_set_error(HARP_ERROR_OUT_OF_MEMORY, "out of memory (could not allocate %lu bytes) (%s:%u)",
-                               (cumsum_index + LATLON_BLOCK_SIZE) * sizeof(double), __FILE__, __LINE__);
-                return -1;
+                continue;
             }
-            *latlon_weight = new_latlon_weight;
+
+            for (j = 0; j < num_longitude_cells + 2; j++)
+            {
+                min_lat_id[j] = num_latitude_cells;
+                max_lat_id[j] = -1;
+            }
+            for (j = 0; j < num_latitude_cells + 2; j++)
+            {
+                min_lon_id[j] = num_longitude_cells;
+                max_lon_id[j] = -1;
+            }
+
+            /* iterate over all line segements and determine which grid cells are crossed */
+            /* we initially add each crossing cell with weight 0 */
+            harp_interpolate_find_index(num_latitude_edges, latitude_edges, poly_latitude[0], &lat_id);
+            if (lat_id == num_latitude_edges)
+            {
+                lat_id = num_latitude_cells;
+            }
+            harp_interpolate_find_index(num_longitude_edges, longitude_edges, poly_longitude[0], &lon_id);
+            if (lon_id == num_longitude_edges)
+            {
+                lon_id = num_longitude_cells;
+            }
+            next_lat_id = lat_id;
+            next_lon_id = lon_id;
+            /* add cell of starting point (if it falls within the grid) */
+            if (lon_id >= 0 && lon_id < num_longitude_cells && lat_id >= 0 && lat_id < num_latitude_cells)
+            {
+                if (lon_id < min_lon_id[lat_id + 1] || lon_id > max_lon_id[lat_id + 1] ||
+                    lat_id < min_lat_id[lon_id + 1] || lat_id > max_lat_id[lon_id + 1])
+                {
+                    num_latlon_index[i]++;
+                    if (add_cell_index(lat_id * num_longitude_cells + lon_id, &cumsum_index, latlon_cell_index,
+                                       latlon_weight) != 0)
+                    {
+                        goto error;
+                    }
+                }
+            }
+            if (lat_id < min_lat_id[lon_id + 1])
+            {
+                min_lat_id[lon_id + 1] = lat_id;
+            }
+            if (lat_id > max_lat_id[lon_id + 1])
+            {
+                max_lat_id[lon_id + 1] = lat_id;
+            }
+            if (lon_id < min_lon_id[lat_id + 1])
+            {
+                min_lon_id[lat_id + 1] = lon_id;
+            }
+            if (lon_id > max_lon_id[lat_id + 1])
+            {
+                max_lon_id[lat_id + 1] = lon_id;
+            }
+            for (j = 0; j < num_vertices - 1; j++)
+            {
+                double latitude = poly_latitude[j];
+                double longitude = poly_longitude[j];
+                double next_latitude = poly_latitude[j + 1];
+                double next_longitude = poly_longitude[j + 1];
+
+                /* determine grid location of end of line segment */
+                harp_interpolate_find_index(num_latitude_edges, latitude_edges, poly_latitude[j + 1], &next_lat_id);
+                if (next_lat_id == num_latitude_edges)
+                {
+                    next_lat_id = num_latitude_cells;
+                }
+                harp_interpolate_find_index(num_longitude_edges, longitude_edges, poly_longitude[j + 1], &next_lon_id);
+                if (next_lon_id == num_longitude_edges)
+                {
+                    next_lon_id = num_longitude_cells;
+                }
+                while (lat_id != next_lat_id || lon_id != next_lon_id)
+                {
+                    /* determine intermediate cells that the line segment crosses */
+                    if (next_lat_id > lat_id)
+                    {
+                        double slope = (next_longitude - longitude) / (next_latitude - latitude);
+
+                        if (next_lon_id > lon_id &&
+                            longitude + (latitude_edges[lat_id + 1] - latitude) * slope > longitude_edges[lon_id + 1])
+                        {
+                            /* move right */
+                            latitude += (longitude_edges[lon_id + 1] - longitude) / slope;
+                            longitude = longitude_edges[lon_id + 1];
+                            lon_id++;
+                        }
+                        else if (next_lon_id < lon_id &&
+                                 longitude + (latitude_edges[lat_id + 1] - latitude) * slope < longitude_edges[lon_id])
+                        {
+                            /* move left */
+                            latitude += (longitude_edges[lon_id] - longitude) / slope;
+                            longitude = longitude_edges[lon_id];
+                            lon_id--;
+                        }
+                        else
+                        {
+                            /* move up */
+                            longitude += (latitude_edges[lat_id + 1] - latitude) * slope;
+                            latitude = latitude_edges[lat_id + 1];
+                            lat_id++;
+                        }
+                    }
+                    else if (next_lat_id < lat_id)
+                    {
+                        double slope = (next_longitude - longitude) / (next_latitude - latitude);
+
+                        if (next_lon_id > lon_id &&
+                            longitude + (latitude_edges[lat_id] - latitude) * slope > longitude_edges[lon_id + 1])
+                        {
+                            /* move right */
+                            latitude += (longitude_edges[lon_id + 1] - longitude) / slope;
+                            longitude = longitude_edges[lon_id + 1];
+                            lon_id++;
+                        }
+                        else if (next_lon_id < lon_id &&
+                                 longitude + (latitude_edges[lat_id] - latitude) * slope < longitude_edges[lon_id])
+                        {
+                            /* move left */
+                            latitude += (longitude_edges[lon_id] - longitude) / slope;
+                            longitude = longitude_edges[lon_id];
+                            lon_id--;
+                        }
+                        else
+                        {
+                            /* move down */
+                            longitude += (latitude_edges[lat_id] - latitude) * slope;
+                            latitude = latitude_edges[lat_id];
+                            lat_id--;
+                        }
+                    }
+                    else
+                    {
+                        double slope = (next_latitude - latitude) / (next_longitude - longitude);
+
+                        if (next_lon_id > lon_id)
+                        {
+                            /* move right */
+                            latitude += (longitude_edges[lon_id + 1] - longitude) * slope;
+                            longitude = longitude_edges[lon_id + 1];
+                            lon_id++;
+                        }
+                        else
+                        {
+                            /* move left */
+                            latitude += (longitude_edges[lon_id] - longitude) * slope;
+                            longitude = longitude_edges[lon_id];
+                            lon_id--;
+                        }
+                    }
+                    /* add next cell (if it falls within the grid) */
+                    if (lon_id >= 0 && lon_id < num_longitude_cells && lat_id >= 0 && lat_id < num_latitude_cells)
+                    {
+                        if (lon_id < min_lon_id[lat_id + 1] || lon_id > max_lon_id[lat_id + 1] ||
+                            lat_id < min_lat_id[lon_id + 1] || lat_id > max_lat_id[lon_id + 1])
+                        {
+                            num_latlon_index[i]++;
+                            if (add_cell_index(lat_id * num_longitude_cells + lon_id, &cumsum_index, latlon_cell_index,
+                                               latlon_weight) != 0)
+                            {
+                                goto error;
+                            }
+                        }
+                    }
+                    if (lat_id < min_lat_id[lon_id + 1])
+                    {
+                        min_lat_id[lon_id + 1] = lat_id;
+                    }
+                    if (lat_id > max_lat_id[lon_id + 1])
+                    {
+                        max_lat_id[lon_id + 1] = lat_id;
+                    }
+                    if (lon_id < min_lon_id[lat_id + 1])
+                    {
+                        min_lon_id[lat_id + 1] = lon_id;
+                    }
+                    if (lon_id > max_lon_id[lat_id + 1])
+                    {
+                        max_lon_id[lat_id + 1] = lon_id;
+                    }
+                }
+            }
+
+            /* calculate actual weight (based on overlap fraction) for each cell we have added up to now */
+            for (j = cumsum_index - num_latlon_index[i]; j < cumsum_index; j++)
+            {
+                lat_id = (*latlon_cell_index)[j] / num_longitude_cells;
+                lon_id = (*latlon_cell_index)[j] - lat_id * num_longitude_cells;
+                (*latlon_weight)[j] = find_weight_for_polygon_and_cell(num_vertices, poly_latitude, poly_longitude,
+                                                                       latitude_edges[lat_id],
+                                                                       latitude_edges[lat_id + 1],
+                                                                       longitude_edges[lon_id],
+                                                                       longitude_edges[lon_id + 1]);
+            }
+
+            /* add all grid cells that lie fully within the polygon */
+            for (j = 0; j < num_latitude_cells; j++)
+            {
+                if (min_lon_id[j + 1] < max_lon_id[j + 1])
+                {
+                    for (k = min_lon_id[j + 1] + 1; k < max_lon_id[j + 1]; k++)
+                    {
+                        long cell_index = j * num_longitude_cells + k;
+
+                        if (j > min_lat_id[k + 1] && j < max_lat_id[k + 1])
+                        {
+                            /* add cell with full weight */
+                            num_latlon_index[i]++;
+                            if (add_cell_index(cell_index, &cumsum_index, latlon_cell_index, latlon_weight) != 0)
+                            {
+                                goto error;
+                            }
+                        }
+                    }
+                }
+            }
         }
-        (*latlon_cell_index)[cumsum_index] = latitude_index * (num_longitude_edges - 1) + longitude_index;
-        (*latlon_weight)[cumsum_index] = 1.0;
-        cumsum_index++;
     }
 
+    free(poly_latitude);
+    free(poly_longitude);
+    free(min_lon_id);
+    free(max_lon_id);
+
     return 0;
+
+  error:
+    if (poly_latitude != NULL)
+    {
+        free(poly_latitude);
+    }
+    if (poly_longitude != NULL)
+    {
+        free(poly_longitude);
+    }
+    if (min_lon_id != NULL)
+    {
+        free(min_lon_id);
+    }
+    if (max_lon_id != NULL)
+    {
+        free(max_lon_id);
+    }
+
+    return -1;
 }
 
 static int find_matching_cells_for_points(harp_variable *latitude, harp_variable *longitude, long num_latitude_edges,
@@ -1460,7 +1793,6 @@ LIBHARP_API int harp_product_bin_spatial(harp_product *product, long num_time_bi
             }
         }
     }
-
     time_index = malloc(num_time_bins * sizeof(long));
     if (time_index == NULL)
     {
@@ -1722,7 +2054,7 @@ LIBHARP_API int harp_product_bin_spatial(harp_product *product, long num_time_bi
 
             if (area_binning)
             {
-                memset(filtered_weight, 0, num_time_bins * spatial_block_length * num_sub_elements * sizeof(double));
+                memset(filtered_weight, 0, filtered_count_size * sizeof(double));
             }
             else
             {
@@ -1794,18 +2126,26 @@ LIBHARP_API int harp_product_bin_spatial(harp_product *product, long num_time_bi
 
                     if (area_binning)
                     {
-                        if (variable->data_type == harp_type_int32)
+                        double weight = latlon_weight[cumsum_index];
+
+                        assert(variable->data_type == harp_type_double);
+                        if (bintype[k] == binning_angle)
                         {
-                            for (j = 0; j < num_sub_elements; j++)
+                            /* for angle variables we use one filtered_weight element per complex pair */
+                            for (j = 0; j < num_sub_elements; j += 2)
                             {
-                                new_variable->data.int32_data[target_index * num_sub_elements + j] +=
-                                    variable->data.int32_data[i * num_sub_elements + j];
+                                if (!harp_isnan(variable->data.double_data[i * num_sub_elements + j]))
+                                {
+                                    filtered_weight[(target_index * num_sub_elements + j) / 2] += weight;
+                                    new_variable->data.double_data[target_index * num_sub_elements + j] +=
+                                        weight * variable->data.double_data[i * num_sub_elements + j];
+                                    new_variable->data.double_data[target_index * num_sub_elements + j + 1] +=
+                                        weight * variable->data.double_data[i * num_sub_elements + j + 1];
+                                }
                             }
                         }
                         else
                         {
-                            double weight = latlon_weight[cumsum_index];
-
                             for (j = 0; j < num_sub_elements; j++)
                             {
                                 if (!harp_isnan(variable->data.double_data[i * num_sub_elements + j]))
@@ -1871,13 +2211,14 @@ LIBHARP_API int harp_product_bin_spatial(harp_product *product, long num_time_bi
                 double nan_value = harp_nan();
 
                 /* divide variable by the weights and/or set values to NaN if weights==0 */
-                if (variable->data_type == harp_type_int32)
+                if (bintype[k] == binning_angle)
                 {
-                    for (i = 0; i < new_variable->num_elements; i++)
+                    for (i = 0; i < new_variable->num_elements; i += 2)
                     {
-                        if (filtered_weight[i] == 0)
+                        if (filtered_weight[i / 2] == 0)
                         {
-                            new_variable->data.int32_data[i] = 0;
+                            new_variable->data.double_data[i] = nan_value;
+                            new_variable->data.double_data[i + 1] = nan_value;
                         }
                     }
                 }
