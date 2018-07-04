@@ -284,8 +284,6 @@ void harp_interpolate_find_index(long source_length, const double *source_grid, 
         return;
     }
 
-    low = *index;
-
     /* True if ascending order of table, false otherwise. */
     ascend = (source_grid[source_length - 1] >= source_grid[0]);
 
@@ -297,6 +295,7 @@ void harp_interpolate_find_index(long source_length, const double *source_grid, 
     }
     else
     {
+        low = *index;
         increment = 1;
         if (target_grid_point == source_grid[low] || (target_grid_point > source_grid[low]) == ascend)
         {
@@ -349,7 +348,7 @@ void harp_interpolate_find_index(long source_length, const double *source_grid, 
     {
         long middle = (high + low) / 2;
 
-        if (target_grid_point == source_grid[middle] || (target_grid_point < source_grid[middle]) == ascend)
+        if (target_grid_point == source_grid[middle] || (target_grid_point > source_grid[middle]) == ascend)
         {
             low = middle;
         }
