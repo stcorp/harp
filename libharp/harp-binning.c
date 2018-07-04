@@ -576,11 +576,160 @@ static int add_cell_index(long cell_index, long *cumsum_index, long **latlon_cel
     return 0;
 }
 
-static double find_weight_for_polygon_and_cell(long num_points, double *latitude, double *longitude,
-                                               double lat_min, double lat_max, double lon_min, double lon_max)
+/* latitude_edges and longitude_edges and should contain just 2 times (bounds of the cell) */
+static double find_weight_for_polygon_and_cell(long num_points, double *poly_latitude, double *poly_longitude,
+                                               double *temp_latitude, double *temp_longitude,
+                                               double *latitude_edges, double *longitude_edges)
 {
-    /* constrict the polygon to within the cell boundaries and then determine the surface fraction */
-    return 1.0;
+    double latitude, longitude, next_latitude, next_longitude;
+    double cell_area, poly_area;
+    long offset = num_points;
+    long num_temp = 0;
+    long i;
+
+    if (num_points < 3)
+    {
+        return 0.0;
+    }
+
+    /* we start with filling temp_latitude and temp_longitude at offset 'num_points' */
+    /* this allows us to use the same temp buffers in-place for the longitude clamping in the second step */
+
+    /* clamp to latitude range */
+    for (i = 0; i < num_points - 1; i++)
+    {
+        latitude = poly_latitude[i];
+        longitude = poly_longitude[i];
+        next_latitude = poly_latitude[i + 1];
+        next_longitude = poly_longitude[i + 1];
+
+        if (latitude < latitude_edges[0])
+        {
+            if (next_latitude > latitude_edges[0])
+            {
+                longitude += (latitude_edges[0] - latitude) * (next_longitude - longitude) / (next_latitude - latitude);
+                latitude = latitude_edges[0];
+            }
+        }
+        else if (latitude > latitude_edges[1])
+        {
+            if (next_latitude < latitude_edges[1])
+            {
+                longitude += (latitude_edges[1] - latitude) * (next_longitude - longitude) / (next_latitude - latitude);
+                latitude = latitude_edges[1];
+            }
+        }
+        if (latitude >= latitude_edges[0] && latitude <= latitude_edges[1])
+        {
+            temp_latitude[offset + num_temp] = latitude;
+            temp_longitude[offset + num_temp] = longitude;
+            num_temp++;
+            if (next_latitude < latitude_edges[0])
+            {
+                temp_longitude[offset + num_temp] = longitude + (latitude_edges[0] - latitude) *
+                    (next_longitude - longitude) / (next_latitude - latitude);
+                temp_latitude[offset + num_temp] = latitude_edges[0];
+                num_temp++;
+            }
+            else if (next_latitude > latitude_edges[1])
+            {
+                temp_longitude[offset + num_temp] = longitude + (latitude_edges[1] - latitude) *
+                    (next_longitude - longitude) / (next_latitude - latitude);
+                temp_latitude[offset + num_temp] = latitude_edges[1];
+                num_temp++;
+            }
+        }
+    }
+
+    if (num_temp < 3)
+    {
+        return 0.0;
+    }
+
+    if (temp_latitude[offset] != temp_latitude[offset + num_temp - 1] ||
+        temp_longitude[offset] != temp_longitude[offset + num_temp - 1])
+    {
+        temp_latitude[offset + num_temp] = temp_latitude[offset];
+        temp_longitude[offset + num_temp] = temp_longitude[offset];
+        num_temp++;
+    }
+
+    /* clamp to longitude range */
+    num_points = num_temp;
+    num_temp = 0;
+    for (i = 0; i < num_points - 1; i++)
+    {
+        latitude = temp_latitude[offset + i];
+        longitude = temp_longitude[offset + i];
+        next_latitude = temp_latitude[offset + i + 1];
+        next_longitude = temp_longitude[offset + i + 1];
+
+        if (longitude < longitude_edges[0])
+        {
+            if (next_longitude > longitude_edges[0])
+            {
+                latitude +=
+                    (longitude_edges[0] - longitude) * (next_latitude - latitude) / (next_longitude - longitude);
+                longitude = longitude_edges[0];
+            }
+        }
+        else if (longitude > longitude_edges[1])
+        {
+            if (next_longitude < longitude_edges[1])
+            {
+                latitude +=
+                    (longitude_edges[1] - longitude) * (next_latitude - latitude) / (next_longitude - longitude);
+                longitude = longitude_edges[1];
+            }
+        }
+        if (longitude >= longitude_edges[0] && longitude <= longitude_edges[1])
+        {
+            temp_latitude[num_temp] = latitude;
+            temp_longitude[num_temp] = longitude;
+            num_temp++;
+            if (next_longitude < longitude_edges[0])
+            {
+                temp_latitude[num_temp] = latitude + (longitude_edges[0] - longitude) *
+                    (next_latitude - latitude) / (next_longitude - longitude);
+                temp_longitude[num_temp] = longitude_edges[0];
+                num_temp++;
+            }
+            else if (next_longitude > longitude_edges[1])
+            {
+                temp_latitude[num_temp] = latitude + (longitude_edges[1] - longitude) *
+                    (next_latitude - latitude) / (next_longitude - longitude);
+                temp_longitude[num_temp] = longitude_edges[1];
+                num_temp++;
+            }
+        }
+    }
+
+    if (num_temp < 3)
+    {
+        return 0.0;
+    }
+
+    if (temp_latitude[0] != temp_latitude[num_temp - 1] || temp_longitude[0] != temp_longitude[num_temp - 1])
+    {
+        temp_latitude[num_temp] = temp_latitude[0];
+        temp_longitude[num_temp] = temp_longitude[0];
+        num_temp++;
+    }
+
+    /* calculate polygon area */
+    poly_area = 0;
+    for (i = 0; i < num_temp - 1; i++)
+    {
+        poly_area += (temp_longitude[i] + temp_longitude[i + 1]) * (temp_latitude[i] - temp_latitude[i + 1]);
+    }
+    poly_area /= 2.0;
+    if (poly_area < 0)
+    {
+        poly_area = -poly_area;
+    }
+    cell_area = (latitude_edges[1] - latitude_edges[0]) * (longitude_edges[1] - longitude_edges[0]);
+
+    return poly_area / cell_area;
 }
 
 static int find_matching_cells_and_weights_for_bounds(harp_variable *latitude_bounds, harp_variable *longitude_bounds,
@@ -589,6 +738,8 @@ static int find_matching_cells_and_weights_for_bounds(harp_variable *latitude_bo
                                                       long *num_latlon_index, long **latlon_cell_index,
                                                       double **latlon_weight)
 {
+    double *temp_poly_latitude = NULL;
+    double *temp_poly_longitude = NULL;
     double *poly_latitude = NULL;
     double *poly_longitude = NULL;
     long num_latitude_cells = num_latitude_edges - 1;
@@ -609,14 +760,30 @@ static int find_matching_cells_and_weights_for_bounds(harp_variable *latitude_bo
     if (poly_latitude == NULL)
     {
         harp_set_error(HARP_ERROR_OUT_OF_MEMORY, "out of memory (could not allocate %lu bytes) (%s:%u)",
-                       (max_num_vertices + 2) * sizeof(double), __FILE__, __LINE__);
+                       (max_num_vertices + 3) * sizeof(double), __FILE__, __LINE__);
         goto error;
     }
     poly_longitude = malloc((max_num_vertices + 3) * sizeof(double));
     if (poly_longitude == NULL)
     {
         harp_set_error(HARP_ERROR_OUT_OF_MEMORY, "out of memory (could not allocate %lu bytes) (%s:%u)",
-                       (max_num_vertices + 2) * sizeof(double), __FILE__, __LINE__);
+                       (max_num_vertices + 3) * sizeof(double), __FILE__, __LINE__);
+        goto error;
+    }
+    /* the temporary polygon is used for calculating the overlap fraction with a cell */
+    /* it needs to be able to hold three times the amout of poinst as the input polygon */
+    temp_poly_latitude = malloc(3 * (max_num_vertices + 3) * sizeof(double));
+    if (temp_poly_latitude == NULL)
+    {
+        harp_set_error(HARP_ERROR_OUT_OF_MEMORY, "out of memory (could not allocate %lu bytes) (%s:%u)",
+                       3 * (max_num_vertices + 3) * sizeof(double), __FILE__, __LINE__);
+        goto error;
+    }
+    temp_poly_longitude = malloc(3 * (max_num_vertices + 3) * sizeof(double));
+    if (temp_poly_longitude == NULL)
+    {
+        harp_set_error(HARP_ERROR_OUT_OF_MEMORY, "out of memory (could not allocate %lu bytes) (%s:%u)",
+                       3 * (max_num_vertices + 3) * sizeof(double), __FILE__, __LINE__);
         goto error;
     }
 
@@ -908,10 +1075,9 @@ static int find_matching_cells_and_weights_for_bounds(harp_variable *latitude_bo
                 lat_id = (*latlon_cell_index)[j] / num_longitude_cells;
                 lon_id = (*latlon_cell_index)[j] - lat_id * num_longitude_cells;
                 (*latlon_weight)[j] = find_weight_for_polygon_and_cell(num_vertices, poly_latitude, poly_longitude,
-                                                                       latitude_edges[lat_id],
-                                                                       latitude_edges[lat_id + 1],
-                                                                       longitude_edges[lon_id],
-                                                                       longitude_edges[lon_id + 1]);
+                                                                       temp_poly_latitude, temp_poly_longitude,
+                                                                       &latitude_edges[lat_id],
+                                                                       &longitude_edges[lon_id]);
             }
 
             /* add all grid cells that lie fully within the polygon */
@@ -940,6 +1106,10 @@ static int find_matching_cells_and_weights_for_bounds(harp_variable *latitude_bo
 
     free(poly_latitude);
     free(poly_longitude);
+    free(temp_poly_latitude);
+    free(temp_poly_longitude);
+    free(min_lat_id);
+    free(max_lat_id);
     free(min_lon_id);
     free(max_lon_id);
 
@@ -953,6 +1123,22 @@ static int find_matching_cells_and_weights_for_bounds(harp_variable *latitude_bo
     if (poly_longitude != NULL)
     {
         free(poly_longitude);
+    }
+    if (temp_poly_latitude != NULL)
+    {
+        free(temp_poly_latitude);
+    }
+    if (temp_poly_longitude != NULL)
+    {
+        free(temp_poly_longitude);
+    }
+    if (min_lat_id != NULL)
+    {
+        free(min_lat_id);
+    }
+    if (max_lat_id != NULL)
+    {
+        free(max_lat_id);
     }
     if (min_lon_id != NULL)
     {
