@@ -2051,7 +2051,6 @@ LIBHARP_API int harp_product_bin_spatial(harp_product *product, long num_time_bi
     for (k = 0; k < product->num_variables; k++)
     {
         harp_variable *variable;
-        long num_sub_elements;
 
         if (bintype[k] == binning_skip || bintype[k] == binning_remove)
         {
@@ -2059,7 +2058,6 @@ LIBHARP_API int harp_product_bin_spatial(harp_product *product, long num_time_bi
         }
 
         variable = product->variable[k];
-        num_sub_elements = variable->num_elements / num_time_elements;
 
         /* convert variables to double */
         if (bintype[k] != binning_sum && bintype[k] != binning_time_sum)

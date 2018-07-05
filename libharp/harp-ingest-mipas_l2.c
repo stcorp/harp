@@ -769,7 +769,6 @@ static int get_profile_data(ingest_info *info, const coda_cursor *mds_cursor, co
                             uint8_t *lrv, harp_array data)
 {
     coda_cursor cursor;
-    long num_altitudes;
     long num_elements;
     long i;
 
@@ -791,7 +790,6 @@ static int get_profile_data(ingest_info *info, const coda_cursor *mds_cursor, co
     }
     reverse_double_array(data.double_data, num_elements);
 
-    num_altitudes = info->num_altitudes[index];
     for (i = info->max_num_altitudes - 1; i >= 0; i--)
     {
         if (lrv[i])
@@ -834,7 +832,6 @@ static int get_profile_uncertainty_data(ingest_info *info, const coda_cursor *md
                                         long index, uint8_t *lrv, harp_array data)
 {
     coda_cursor cursor;
-    long num_altitudes;
     long num_elements;
     long num_pts;
     long i;
@@ -881,7 +878,6 @@ static int get_profile_uncertainty_data(ingest_info *info, const coda_cursor *md
     }
     reverse_double_array(data.double_data, num_pts);
 
-    num_altitudes = info->num_altitudes[index];
     for (i = info->max_num_altitudes - 1; i >= 0; i--)
     {
         /* we need to reverse the lrv index, because we already reversed 'data' with reverse_array() */
