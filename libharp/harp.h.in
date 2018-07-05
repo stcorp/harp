@@ -515,6 +515,9 @@ LIBHARP_API int harp_product_get_metadata(harp_product *product, harp_product_me
 LIBHARP_API int harp_product_flatten_dimension(harp_product *product, harp_dimension_type dimension_name);
 LIBHARP_API int harp_product_sort(harp_product *product, const char *variable_name);
 LIBHARP_API int harp_product_bin(harp_product *product, long num_bins, long num_elements, long *bin_index);
+LIBHARP_API int harp_product_bin_spatial(harp_product *product, long num_time_bins, long num_time_elements,
+                                         long *time_bin_index, long num_latitude_edges, double *latitude_edges,
+                                         long num_longitude_edges, double *longitude_edges);
 LIBHARP_API int harp_product_regrid_with_axis_variable(harp_product *product, harp_variable *target_grid,
                                                        harp_variable *target_bounds);
 LIBHARP_API int harp_product_regrid_with_collocated_product(harp_product *product, harp_dimension_type dimension_type,

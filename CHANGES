@@ -1,3 +1,6 @@
+1.3 2018-07-05
+~~~~~~~~~~~~~~
+
 * Added bin_spatial() operation.
 
 * Improved binning operation to automatically filter for NaN values and add
@@ -13,7 +16,8 @@
 * Allow NULL as argument for harp_variable_set_description() and
   harp_variable_set_unit() to clear the current description/unit.
 
-* Added harp_variable_copy_attributes() function.
+* Added harp_product_bin_spatial() and harp_variable_copy_attributes()
+  functions.
 
 * Added optional parameter to regrid() operation to specify the axis boundaries.
 
