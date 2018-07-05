@@ -665,7 +665,6 @@ static int ingestion_init(const harp_ingestion_module *module, coda_product *pro
 static int get_akm_data(ingest_info *info, const coda_cursor *mds_cursor, long index, uint8_t *lrv, harp_array data)
 {
     coda_cursor cursor;
-    long num_altitudes;
     long num_elements;
     long num_i;
     long i, j;
@@ -689,7 +688,6 @@ static int get_akm_data(ingest_info *info, const coda_cursor *mds_cursor, long i
     }
     reverse_double_array(data.double_data, num_elements);
 
-    num_altitudes = info->num_altitudes[index];
     num_elements = (long)sqrt(num_elements);
     num_i = num_elements;
     for (i = info->max_num_altitudes - 1; i >= 0; i--)

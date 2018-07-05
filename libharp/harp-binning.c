@@ -869,7 +869,7 @@ static int find_matching_cells_and_weights_for_bounds(harp_variable *latitude_bo
         {
             long lat_id = -1, lon_id = -1;
             long next_lat_id, next_lon_id;
-            long loop_offset;
+            long loop_offset = 0;
 
             if (loop == 1)
             {
@@ -1333,7 +1333,6 @@ LIBHARP_API int harp_product_bin(harp_product *product, long num_bins, long num_
     for (k = 0; k < product->num_variables; k++)
     {
         harp_variable *variable;
-        long num_sub_elements;
 
         if (bintype[k] == binning_skip || bintype[k] == binning_remove)
         {
@@ -1341,7 +1340,6 @@ LIBHARP_API int harp_product_bin(harp_product *product, long num_bins, long num_
         }
 
         variable = product->variable[k];
-        num_sub_elements = variable->num_elements / num_elements;
 
         /* convert variables to double */
         if (bintype[k] != binning_sum)
