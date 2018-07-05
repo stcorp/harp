@@ -614,9 +614,7 @@ static int find_and_print_conversion(conversion_info *info, int (*print) (const 
             {
                 /* all source variables were found, conversion should be possible */
                 info->conversion = conversion;
-                info->depth++;
                 print_conversion(info, print);
-                info->depth--;
                 info->skip[index] = 0;
                 return 0;
             }
