@@ -869,11 +869,13 @@ static int find_matching_cells_and_weights_for_bounds(harp_variable *latitude_bo
         {
             long lat_id = -1, lon_id = -1;
             long next_lat_id, next_lon_id;
+            long loop_offset;
 
             if (loop == 1)
             {
                 lon_min += 360;
                 lon_max += 360;
+                loop_offset = num_latlon_index[i];
                 for (k = 0; k < num_vertices; k++)
                 {
                     poly_longitude[k] += 360;
@@ -1070,7 +1072,7 @@ static int find_matching_cells_and_weights_for_bounds(harp_variable *latitude_bo
             }
 
             /* calculate actual weight (based on overlap fraction) for each cell we have added up to now */
-            for (j = cumsum_index - num_latlon_index[i]; j < cumsum_index; j++)
+            for (j = cumsum_index - num_latlon_index[i] + loop_offset; j < cumsum_index; j++)
             {
                 lat_id = (*latlon_cell_index)[j] / num_longitude_cells;
                 lon_id = (*latlon_cell_index)[j] - lat_id * num_longitude_cells;
