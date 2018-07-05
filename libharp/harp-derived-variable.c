@@ -414,7 +414,8 @@ static int find_source_variables(conversion_info *info, harp_source_variable_def
     /* if we are at the maximum search depth then bail out */
     if (info->depth == info->max_depth)
     {
-        return 1;
+        /* treat this as a cycle (since we don't want to prevent further searches for this variable at lower depths) */
+        return 2;
     }
 
     /* try to find a conversion for the variable */
