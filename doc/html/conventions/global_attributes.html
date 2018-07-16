@@ -185,7 +185,7 @@ file conforms to the HARP data format conventions.</dd>
 <dt><code class="docutils literal"><span class="pre">history</span></code> string (optional)</dt>
 <dd>This attribute is used by all HARP tools to keep a trace of the operations performed on a product. Each time a command
 is performed on a HARP file the full command line is appended to this attribute (using a newline separator between
-commands). This usage is in line with the general netCDF conventions for this attribute.</dd>
+commands). The command line is prepended by the current UTC time and the version of HARP (using the format <code class="docutils literal"><span class="pre">YYY-MM-DDThh:mm:ssZ</span> <span class="pre">[harp-x.y]</span> <span class="pre">&lt;command</span> <span class="pre">line&gt;</span></code>). This usage is in line with the general netCDF conventions for this attribute.</dd>
 <dt><code class="docutils literal"><span class="pre">source_product</span></code> string (optional)</dt>
 <dd>This attribute will hold the name of the original product in case the HARP file was converted using <code class="docutils literal"><span class="pre">harpconvert</span></code>.
 This approach makes it possible to use your own file naming approach for HARP files without losing trace of which

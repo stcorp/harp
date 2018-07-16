@@ -10,7 +10,7 @@ The HARP format defines the following global attributes:
 ``history`` string (optional)
   This attribute is used by all HARP tools to keep a trace of the operations performed on a product. Each time a command
   is performed on a HARP file the full command line is appended to this attribute (using a newline separator between
-  commands). This usage is in line with the general netCDF conventions for this attribute.
+  commands). The command line is prepended by the current UTC time and the version of HARP (using the format ``YYY-MM-DDThh:mm:ssZ [harp-x.y] <command line>``). This usage is in line with the general netCDF conventions for this attribute.
 
 ``source_product`` string (optional)
   This attribute will hold the name of the original product in case the HARP file was converted using ``harpconvert``.
