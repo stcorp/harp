@@ -199,13 +199,13 @@ a dataset to allow the product to be uniquely identified. Tools such as <code cl
 time range of the product. The attribute should be a scalar double precision floating point value giving the
 <code class="docutils literal"><span class="pre">datetime</span></code> of the first measurement as <code class="docutils literal"><span class="pre">days</span> <span class="pre">since</span> <span class="pre">2000-01-01</span></code> (using the fractional part to represent time-of-
 day). When exporting data, HARP will itself generate the value by looking at the minimum value of the available
-<code class="docutils literal"><span class="pre">datetime_start</span></code> (or, if absent, <code class="docutils literal"><span class="pre">datetime`</span></code>) variable.</dd>
+<code class="docutils literal"><span class="pre">datetime_start</span></code> (or, if absent, <code class="docutils literal"><span class="pre">datetime</span></code>) variable.</dd>
 <dt><code class="docutils literal"><span class="pre">datetime_stop</span></code> double (optional)</dt>
 <dd>This attribute is mandatory if the file is to be used with <code class="docutils literal"><span class="pre">harpcollocate</span></code>. It allows for quick extraction of the
 time range of the product. The attribute should be a scalar double precision floating point value giving the
 <code class="docutils literal"><span class="pre">datetime</span></code> of the last measurement as <code class="docutils literal"><span class="pre">days</span> <span class="pre">since</span> <span class="pre">2000-01-01</span></code> (using the fractional part to represent time-of-
-day).  When exporting data, HARP will itself generate the value by looking the maximum value of the available
-<code class="docutils literal"><span class="pre">datetime_stop</span></code> (or, if absent, <code class="docutils literal"><span class="pre">datetime`</span></code>) variable.</dd>
+day). When exporting data, HARP will itself generate the value by looking at the maximum value of the available
+<code class="docutils literal"><span class="pre">datetime_stop</span></code> (or, if absent, <code class="docutils literal"><span class="pre">datetime</span></code>) variable.</dd>
 </dl>
 <p>Note that the <code class="docutils literal"><span class="pre">Conventions</span></code>, <code class="docutils literal"><span class="pre">datetime_start</span></code>, and <code class="docutils literal"><span class="pre">datetime_stop</span></code> attributes are only used inside files.
 For the in-memory representation (in C, Python, etc.) only the <code class="docutils literal"><span class="pre">history</span></code> and <code class="docutils literal"><span class="pre">source_product</span></code> attributes are present.</p>

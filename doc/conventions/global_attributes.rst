@@ -26,14 +26,14 @@ The HARP format defines the following global attributes:
   time range of the product. The attribute should be a scalar double precision floating point value giving the
   ``datetime`` of the first measurement as ``days since 2000-01-01`` (using the fractional part to represent time-of-
   day). When exporting data, HARP will itself generate the value by looking at the minimum value of the available
-  ``datetime_start`` (or, if absent, ``datetime```) variable.
+  ``datetime_start`` (or, if absent, ``datetime``) variable.
 
 ``datetime_stop`` double (optional)
   This attribute is mandatory if the file is to be used with ``harpcollocate``. It allows for quick extraction of the
   time range of the product. The attribute should be a scalar double precision floating point value giving the
   ``datetime`` of the last measurement as ``days since 2000-01-01`` (using the fractional part to represent time-of-
-  day).  When exporting data, HARP will itself generate the value by looking the maximum value of the available
-  ``datetime_stop`` (or, if absent, ``datetime```) variable.
+  day). When exporting data, HARP will itself generate the value by looking at the maximum value of the available
+  ``datetime_stop`` (or, if absent, ``datetime``) variable.
 
 
 Note that the ``Conventions``, ``datetime_start``, and ``datetime_stop`` attributes are only used inside files.
