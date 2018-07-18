@@ -68,3 +68,4 @@ Variable Conversions
    derivations/volume_mixing_ratio_avk
    derivations/wavelength
    derivations/wavenumber
+   derivations/wind_velocity

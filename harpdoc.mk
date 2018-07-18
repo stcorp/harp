@@ -86,6 +86,7 @@ HARP_DOCFILES = \
 	doc/html/algorithms/derivations/volume_mixing_ratio_avk.html \
 	doc/html/algorithms/derivations/wavelength.html \
 	doc/html/algorithms/derivations/wavenumber.html \
+	doc/html/algorithms/derivations/wind_velocity.html \
 	doc/html/algorithms/formula.html \
 	doc/html/algorithms/index.html \
 	doc/html/conventions/categorical_variables.html \
@@ -682,6 +683,8 @@ doc/html/algorithms/derivations/volume_mixing_ratio_avk.html:
 doc/html/algorithms/derivations/wavelength.html:
 	$(MAKE) harp_doc
 doc/html/algorithms/derivations/wavenumber.html:
+	$(MAKE) harp_doc
+doc/html/algorithms/derivations/wind_velocity.html:
 	$(MAKE) harp_doc
 doc/html/algorithms/formula.html:
 	$(MAKE) harp_doc

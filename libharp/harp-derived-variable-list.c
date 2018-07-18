@@ -1462,6 +1462,87 @@ static int get_wavenumber_from_wavelength(harp_variable *variable, const harp_va
     return 0;
 }
 
+static int get_wind_direction_from_uv(harp_variable *variable, const harp_variable **source_variable)
+{
+    long i;
+
+    for (i = 0; i < variable->num_elements; i++)
+    {
+        double u = source_variable[0]->data.double_data[i];     /* East-ward component */
+        double v = source_variable[1]->data.double_data[i];     /* North-ward component */
+        double angle;
+
+        /* use x=v and y=u for atan2() since angle=0 is pointing North */
+        angle = atan2(u, v) * CONST_RAD2DEG;
+
+        /* invert the wind direction angle from 'to' direction to 'from' direction */
+        angle = 180 - angle;
+
+        /* normalize angle to [-180,180] again */
+        if (angle > 180)
+        {
+            angle -= 360;
+        }
+
+        variable->data.double_data[i] = angle;
+    }
+
+    return 0;
+}
+
+static int get_wind_speed_from_uv(harp_variable *variable, const harp_variable **source_variable)
+{
+    long i;
+
+    for (i = 0; i < variable->num_elements; i++)
+    {
+        double u = source_variable[0]->data.double_data[i];     /* East-ward component */
+        double v = source_variable[1]->data.double_data[i];     /* North-ward component */
+
+        variable->data.double_data[i] = sqrt(u * u + v * v);
+    }
+
+    return 0;
+}
+
+static int get_wind_u_from_speed_and_direction(harp_variable *variable, const harp_variable **source_variable)
+{
+    long i;
+
+    for (i = 0; i < variable->num_elements; i++)
+    {
+        double speed = source_variable[0]->data.double_data[i];
+        double angle = source_variable[1]->data.double_data[i];
+
+        /* invert the wind direction angle from 'from' direction to 'to' direction */
+        angle = 180 - angle;
+
+        /* angle=0 is pointing North and moving clock-wise, so we need to use sin() for the East component */
+        variable->data.double_data[i] = speed * sin(angle * CONST_DEG2RAD);
+    }
+
+    return 0;
+}
+
+static int get_wind_v_from_speed_and_direction(harp_variable *variable, const harp_variable **source_variable)
+{
+    long i;
+
+    for (i = 0; i < variable->num_elements; i++)
+    {
+        double speed = source_variable[0]->data.double_data[i];
+        double angle = source_variable[1]->data.double_data[i];
+
+        /* invert the wind direction angle from 'from' direction to 'to' direction */
+        angle = 180 - angle;
+
+        /* angle=0 is pointing North and moving clock-wise, so we need to use cos() for the North component */
+        variable->data.double_data[i] = speed * cos(angle * CONST_DEG2RAD);
+    }
+
+    return 0;
+}
+
 static int get_year(harp_variable *variable, const harp_variable **source_variable)
 {
     long i;
@@ -5523,6 +5604,156 @@ static int add_conversions_for_grid(int num_dimensions, harp_dimension_type dime
                                             num_dimensions, dimension_type, 0) != 0)
     {
         return -1;
+    }
+
+    /*** wind direction ***/
+
+    /* wind direction from zonal and meridional wind velocity */
+    if (harp_variable_conversion_new("wind_direction", harp_type_double, HARP_UNIT_ANGLE, num_dimensions,
+                                     dimension_type, 0, get_wind_direction_from_uv, &conversion) != 0)
+    {
+        return -1;
+    }
+    if (harp_variable_conversion_add_source(conversion, "zonal_wind_velocity", harp_type_double, HARP_UNIT_SPEED,
+                                            num_dimensions, dimension_type, 0) != 0)
+    {
+        return -1;
+    }
+    if (harp_variable_conversion_add_source(conversion, "meridional_wind_velocity", harp_type_double, HARP_UNIT_SPEED,
+                                            num_dimensions, dimension_type, 0) != 0)
+    {
+        return -1;
+    }
+    if (!has_vertical)
+    {
+        if (harp_variable_conversion_new("surface_wind_direction", harp_type_double, HARP_UNIT_ANGLE, num_dimensions,
+                                         dimension_type, 0, get_wind_direction_from_uv, &conversion) != 0)
+        {
+            return -1;
+        }
+        if (harp_variable_conversion_add_source(conversion, "surface_zonal_wind_velocity", harp_type_double,
+                                                HARP_UNIT_SPEED, num_dimensions, dimension_type, 0) != 0)
+        {
+            return -1;
+        }
+        if (harp_variable_conversion_add_source(conversion, "surface_meridional_wind_velocity", harp_type_double,
+                                                HARP_UNIT_SPEED, num_dimensions, dimension_type, 0) != 0)
+        {
+            return -1;
+        }
+    }
+
+    /*** wind speed ***/
+
+    /* wind speed from zonal and meridional wind velocity */
+    if (harp_variable_conversion_new("wind_speed", harp_type_double, HARP_UNIT_SPEED, num_dimensions,
+                                     dimension_type, 0, get_wind_speed_from_uv, &conversion) != 0)
+    {
+        return -1;
+    }
+    if (harp_variable_conversion_add_source(conversion, "zonal_wind_velocity", harp_type_double, HARP_UNIT_SPEED,
+                                            num_dimensions, dimension_type, 0) != 0)
+    {
+        return -1;
+    }
+    if (harp_variable_conversion_add_source(conversion, "meridional_wind_velocity", harp_type_double, HARP_UNIT_SPEED,
+                                            num_dimensions, dimension_type, 0) != 0)
+    {
+        return -1;
+    }
+    if (!has_vertical)
+    {
+        if (harp_variable_conversion_new("surface_wind_speed", harp_type_double, HARP_UNIT_SPEED, num_dimensions,
+                                         dimension_type, 0, get_wind_speed_from_uv, &conversion) != 0)
+        {
+            return -1;
+        }
+        if (harp_variable_conversion_add_source(conversion, "surface_zonal_wind_velocity", harp_type_double,
+                                                HARP_UNIT_SPEED, num_dimensions, dimension_type, 0) != 0)
+        {
+            return -1;
+        }
+        if (harp_variable_conversion_add_source(conversion, "surface_meridional_wind_velocity", harp_type_double,
+                                                HARP_UNIT_SPEED, num_dimensions, dimension_type, 0) != 0)
+        {
+            return -1;
+        }
+    }
+
+    /*** meridional wind velocity ***/
+
+    /* meridional wind velocity (V) from wind speed and direction */
+    if (harp_variable_conversion_new("meridional_wind_velocity", harp_type_double, HARP_UNIT_SPEED, num_dimensions,
+                                     dimension_type, 0, get_wind_v_from_speed_and_direction, &conversion) != 0)
+    {
+        return -1;
+    }
+    if (harp_variable_conversion_add_source(conversion, "wind_speed", harp_type_double, HARP_UNIT_SPEED,
+                                            num_dimensions, dimension_type, 0) != 0)
+    {
+        return -1;
+    }
+    if (harp_variable_conversion_add_source(conversion, "wind_direction", harp_type_double, HARP_UNIT_ANGLE,
+                                            num_dimensions, dimension_type, 0) != 0)
+    {
+        return -1;
+    }
+    if (!has_vertical)
+    {
+        if (harp_variable_conversion_new("surface_meridional_wind_velocity", harp_type_double, HARP_UNIT_SPEED,
+                                         num_dimensions, dimension_type, 0, get_wind_v_from_speed_and_direction,
+                                         &conversion) != 0)
+        {
+            return -1;
+        }
+        if (harp_variable_conversion_add_source(conversion, "surface_wind_speed", harp_type_double, HARP_UNIT_SPEED,
+                                                num_dimensions, dimension_type, 0) != 0)
+        {
+            return -1;
+        }
+        if (harp_variable_conversion_add_source(conversion, "surface_wind_direction", harp_type_double, HARP_UNIT_ANGLE,
+                                                num_dimensions, dimension_type, 0) != 0)
+        {
+            return -1;
+        }
+    }
+
+    /*** zonal wind velocity ***/
+
+    /* zonal wind velocity (U) from wind speed and direction */
+    if (harp_variable_conversion_new("zonal_wind_velocity", harp_type_double, HARP_UNIT_SPEED, num_dimensions,
+                                     dimension_type, 0, get_wind_u_from_speed_and_direction, &conversion) != 0)
+    {
+        return -1;
+    }
+    if (harp_variable_conversion_add_source(conversion, "wind_speed", harp_type_double, HARP_UNIT_SPEED,
+                                            num_dimensions, dimension_type, 0) != 0)
+    {
+        return -1;
+    }
+    if (harp_variable_conversion_add_source(conversion, "wind_direction", harp_type_double, HARP_UNIT_ANGLE,
+                                            num_dimensions, dimension_type, 0) != 0)
+    {
+        return -1;
+    }
+    if (!has_vertical)
+    {
+        if (harp_variable_conversion_new("surface_zonal_wind_velocity", harp_type_double, HARP_UNIT_SPEED,
+                                         num_dimensions, dimension_type, 0, get_wind_u_from_speed_and_direction,
+                                         &conversion) != 0)
+        {
+            return -1;
+        }
+        if (harp_variable_conversion_add_source(conversion, "surface_wind_speed", harp_type_double, HARP_UNIT_SPEED,
+                                                num_dimensions, dimension_type, 0) != 0)
+        {
+            return -1;
+        }
+        if (harp_variable_conversion_add_source(conversion, "surface_wind_direction", harp_type_double, HARP_UNIT_ANGLE,
+                                                num_dimensions, dimension_type, 0) != 0)
+        {
+            return -1;
+        }
     }
 
     return 0;
