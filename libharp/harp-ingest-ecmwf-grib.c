@@ -3113,7 +3113,7 @@ int harp_ingestion_module_ecmwf_grib_init(void)
     description = "10 meter U wind component";
     variable_definition = harp_ingestion_register_variable_block_read(product_definition, "surface_zonal_wind_velocity",
                                                                       harp_type_float, 2, &dimension_type[1], NULL,
-                                                                      description, "m/s2", exclude_10u, read_10u);
+                                                                      description, "m/s", exclude_10u, read_10u);
     add_value_variable_mapping(variable_definition, "(table,indicator) = (128,165), (160,165), (180,165), or (190,165)",
                                "(discipline,category,number) = (0,2,2)");
 
@@ -3122,7 +3122,7 @@ int harp_ingestion_module_ecmwf_grib_init(void)
     variable_definition = harp_ingestion_register_variable_block_read(product_definition,
                                                                       "surface_meridional_wind_velocity",
                                                                       harp_type_float, 2, &dimension_type[1], NULL,
-                                                                      description, "m/s2", exclude_10v, read_10v);
+                                                                      description, "m/s", exclude_10v, read_10v);
     add_value_variable_mapping(variable_definition, "(table,indicator) = (128,166), (160,166), (180,166), or (190,166)",
                                "(discipline,category,number) = (0,2,3)");
 
