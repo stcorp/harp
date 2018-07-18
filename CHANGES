@@ -1,3 +1,8 @@
+* Added support for meridional/zonal wind speed, and planetary boundary layer
+  height variables.
+
+* Updates to ECMWF GRIB product ingestions.
+
 1.3 2018-07-05
 ~~~~~~~~~~~~~~
 

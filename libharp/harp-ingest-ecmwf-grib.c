@@ -55,7 +55,10 @@ typedef enum grib_parameter_enum
     grib_param_tcwv,    /* 137: Total column water vapour [kg/m2] */
     grib_param_vo,      /* 138: Vorticity (relative) [1/s] */
     grib_param_lnsp,    /* 152: Logarithm of surface pressure [-] */
+    grib_param_blh,     /* 159: Boundary layer height [m] */
     grib_param_tcc,     /* 164: Total cloud cover [-] */
+    grib_param_10u,     /* 165: 10 metre U wind component [m/s2] */
+    grib_param_10v,     /* 166: 10 metre V wind component [m/s2] */
     grib_param_2t,      /* 167: 2 meter temperature [K] */
     grib_param_lsm,     /* 172: Land-sea mask [(0-1)] */
     grib_param_clwc,    /* 246: Specific cloud liquid water content [kg/kg] */
@@ -113,7 +116,10 @@ const char *param_name[NUM_GRIB_PARAMETERS] = {
     "tcwv",
     "vo",
     "lnsp",
+    "blh",
     "tcc",
+    "10u",
+    "10v",
     "2t",
     "lsm",
     "clwc",
@@ -169,7 +175,10 @@ int param_is_profile[NUM_GRIB_PARAMETERS] = {
     0,  /* tcwv */
     1,  /* vo */
     0,  /* lnsp */
+    0,  /* blh */
     0,  /* tcc */
+    0,  /* 10u */
+    0,  /* 10v */
     0,  /* 2t */
     0,  /* lsm */
     1,  /* clwc */
@@ -370,8 +379,14 @@ static grib_parameter get_grib1_parameter(int parameter_ref)
                     return grib_param_vo;
                 case 152:
                     return grib_param_lnsp;
+                case 159:
+                    return grib_param_blh;
                 case 164:
                     return grib_param_tcc;
+                case 165:
+                    return grib_param_10u;
+                case 166:
+                    return grib_param_10v;
                 case 167:
                     return grib_param_2t;
                 case 172:
@@ -397,6 +412,10 @@ static grib_parameter get_grib1_parameter(int parameter_ref)
                     return grib_param_lnsp;
                 case 164:
                     return grib_param_tcc;
+                case 165:
+                    return grib_param_10u;
+                case 166:
+                    return grib_param_10v;
                 case 167:
                     return grib_param_2t;
                 case 172:
@@ -454,6 +473,10 @@ static grib_parameter get_grib1_parameter(int parameter_ref)
                     return grib_param_vo;
                 case 164:
                     return grib_param_tcc;
+                case 165:
+                    return grib_param_10u;
+                case 166:
+                    return grib_param_10v;
                 case 167:
                     return grib_param_2t;
                 case 172:
@@ -473,6 +496,10 @@ static grib_parameter get_grib1_parameter(int parameter_ref)
                     return grib_param_vo;
                 case 164:
                     return grib_param_tcc;
+                case 165:
+                    return grib_param_10u;
+                case 166:
+                    return grib_param_10v;
                 case 167:
                     return grib_param_2t;
                 case 172:
@@ -613,6 +640,10 @@ static grib_parameter get_grib2_parameter(int parameter_ref)
                 case 2:
                     switch (parameterNumber)
                     {
+                        case 2:
+                            return grib_param_10u;
+                        case 3:
+                            return grib_param_10v;
                         case 12:
                             return grib_param_vo;
                     }
@@ -652,6 +683,8 @@ static grib_parameter get_grib2_parameter(int parameter_ref)
                             return grib_param_tciw;
                         case 137:
                             return grib_param_tcwv;
+                        case 159:
+                            return grib_param_blh;
                         case 164:
                             return grib_param_tcc;
                     }
@@ -966,9 +999,24 @@ static int read_pressure_bounds(void *user_data, long index, harp_array data)
     return 0;
 }
 
+static int read_blh(void *user_data, long index, harp_array data)
+{
+    return read_2d_grid_data((ingest_info *)user_data, grib_param_blh, index, data);
+}
+
 static int read_tcc(void *user_data, long index, harp_array data)
 {
     return read_2d_grid_data((ingest_info *)user_data, grib_param_tcc, index, data);
+}
+
+static int read_10u(void *user_data, long index, harp_array data)
+{
+    return read_2d_grid_data((ingest_info *)user_data, grib_param_10u, index, data);
+}
+
+static int read_10v(void *user_data, long index, harp_array data)
+{
+    return read_2d_grid_data((ingest_info *)user_data, grib_param_10v, index, data);
 }
 
 static int read_2t(void *user_data, long index, harp_array data)
@@ -2615,9 +2663,24 @@ static int exclude_pressure(void *user_data)
     return !info->has_parameter[grib_param_lnsp] || info->coordinate_values == NULL;
 }
 
+static int exclude_blh(void *user_data)
+{
+    return !((ingest_info *)user_data)->has_parameter[grib_param_blh];
+}
+
 static int exclude_tcc(void *user_data)
 {
     return !((ingest_info *)user_data)->has_parameter[grib_param_tcc];
+}
+
+static int exclude_10u(void *user_data)
+{
+    return !((ingest_info *)user_data)->has_parameter[grib_param_10u];
+}
+
+static int exclude_10v(void *user_data)
+{
+    return !((ingest_info *)user_data)->has_parameter[grib_param_10v];
 }
 
 static int exclude_2t(void *user_data)
@@ -3028,6 +3091,15 @@ int harp_ingestion_module_ecmwf_grib_init(void)
                                          "parameter has vertical coordinate values", "..../coordinateValues[]",
                                          description);
 
+    /* blh: planetary_boundary_layer_height */
+    description = "planetary boundary layer height";
+    variable_definition = harp_ingestion_register_variable_block_read(product_definition,
+                                                                      "planetary_boundary_layer_height",
+                                                                      harp_type_float, 2, &dimension_type[1], NULL,
+                                                                      description, "m", exclude_blh, read_blh);
+    add_value_variable_mapping(variable_definition, "(table,indicator) = (128,159)",
+                               "(discipline,category,number) = (192,128,159)");
+
     /* tcc: cloud_fraction */
     description = "cloud fraction";
     variable_definition = harp_ingestion_register_variable_block_read(product_definition, "cloud_fraction",
@@ -3036,6 +3108,23 @@ int harp_ingestion_module_ecmwf_grib_init(void)
                                                                       read_tcc);
     add_value_variable_mapping(variable_definition, "(table,indicator) = (128,164), (160,164), (170,164), (180,164), "
                                "or (190,164)", "(discipline,category,number) = (192,128,164)");
+
+    /* 10u: surface_zonal_wind_velocity */
+    description = "10 meter U wind component";
+    variable_definition = harp_ingestion_register_variable_block_read(product_definition, "surface_zonal_wind_velocity",
+                                                                      harp_type_float, 2, &dimension_type[1], NULL,
+                                                                      description, "m/s2", exclude_10u, read_10u);
+    add_value_variable_mapping(variable_definition, "(table,indicator) = (128,165), (160,165), (180,165), or (190,165)",
+                               "(discipline,category,number) = (0,2,2)");
+
+    /* 10v: surface_meridional_wind_velocity */
+    description = "10 meter V wind component";
+    variable_definition = harp_ingestion_register_variable_block_read(product_definition,
+                                                                      "surface_meridional_wind_velocity",
+                                                                      harp_type_float, 2, &dimension_type[1], NULL,
+                                                                      description, "m/s2", exclude_10v, read_10v);
+    add_value_variable_mapping(variable_definition, "(table,indicator) = (128,166), (160,166), (180,166), or (190,166)",
+                               "(discipline,category,number) = (0,2,3)");
 
     /* 2t: surface_temperature */
     description = "2 metre temperature";

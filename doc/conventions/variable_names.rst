@@ -88,12 +88,14 @@ latitude                                      sensor                          X 
 latitude_bounds                                                                            (lat)
 longitude                                     sensor                          X            (lon)
 longitude_bounds                                                                           (lon)
+meridional_wind_velocity                      surface                         X       X    X
 molar_mass                                                                    X       X    X             this is the molar mass of the total substance (it is defined by the
                                                                                                          relation between the variables 'density' and 'number_density')
 month                                                                                                    category variable for month of year ('January', ..., 'December')
 number_density                                surface                         X       X    X
 optical_depth                                                                 X       X    X       X     this is equal to 'optical thickness'
 orbit_index                                                                                              the absolute orbit number for data from polar orbiting satellites
+planetary_boundary_layer_height                                               X            X
 pressure                                      surface                         X       X    X
 pressure_bounds                                                               X       X    X
 radiance                                                                      X                    X
@@ -146,6 +148,7 @@ wavenumber_transmittance                                                      X 
 wind_speed                                    surface                         X       X    X
 wind_direction                                surface                         X       X    X
 year                                                                                                     integer value representing a year
+zonal_wind_velocity                           surface                         X       X    X
 <species>_column_density                      stratospheric,  amf, apriori,   X       X    X             this is the mass density
                                               tropospheric    avk, dfs
 <species>_slant_column_density                                                X            X             this is the mass density
@@ -295,6 +298,8 @@ The `Vert`, `Lat/Lon`, and `Spec` columns indicate whether a variable can be dep
 The 'surface' prefix should only be used when quantities are combined together with quantities that have a vertical dimension.
 If a product just contains surface quantities then don't use a 'surface' prefix but just omit the vertical dimension and
 indicate the vertical level (i.e. location of the surface) using a 'pressure', 'altitude', and/or 'geopotential_height' variable.
+
+Surface wind velocity variables are actually near-surface wind velocities (usually at surface_altitude + 10m).
 
 All (horizontal) azimuth angles in HARP should follow the convention that 0 is North facing
 and the angle is increasing when moving Eastwards (i.e. clockwise).
