@@ -1315,7 +1315,7 @@ static int get_reference_datetime(coda_cursor *cursor, int grib_version, ingest_
         {
             info->is_forecast_datetime = 1;
         }
-        else if (significanceOfReferenceTime != 0 || significanceOfReferenceTime != 3)
+        else if (!(significanceOfReferenceTime == 0 || significanceOfReferenceTime == 3))
         {
             harp_set_error(HARP_ERROR_INGESTION, "unsupported significanceOfReferenceTime value (%d)",
                            significanceOfReferenceTime);
