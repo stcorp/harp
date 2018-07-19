@@ -100,6 +100,8 @@ find_include(sys/stat.h HAVE_SYS_STAT_H)
 find_include(sys/types.h HAVE_SYS_TYPES_H)
 find_include(unistd.h HAVE_UNISTD_H)
 
+set(CMAKE_EXTRA_INCLUDE_FILES ${INCLUDES})
+
 check_function_exists(bcopy HAVE_BCOPY)
 check_function_exists(floor HAVE_FLOOR)
 check_function_exists(getpagesize HAVE_GETPAGESIZE)
