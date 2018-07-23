@@ -242,17 +242,29 @@
 <td>[mol/cm^2]</td>
 <td>uncertainty of the BrO column number density</td>
 </tr>
-<tr class="row-odd"><td><strong>H2O_column_density</strong></td>
+<tr class="row-odd"><td><strong>BrO_column_number_density_validity</strong></td>
+<td>int8</td>
+<td>{<em>time</em>}</td>
+<td>[]</td>
+<td>quality flags for BrO retrieval</td>
+</tr>
+<tr class="row-even"><td><strong>H2O_column_density</strong></td>
 <td>double</td>
 <td>{<em>time</em>}</td>
 <td>[kg/m^2]</td>
 <td>H2O column mass density</td>
 </tr>
-<tr class="row-even"><td><strong>H2O_column_density_uncertainty</strong></td>
+<tr class="row-odd"><td><strong>H2O_column_density_uncertainty</strong></td>
 <td>double</td>
 <td>{<em>time</em>}</td>
 <td>[kg/m^2]</td>
 <td>uncertainty of the H2O column mass density</td>
+</tr>
+<tr class="row-even"><td><strong>H2O_column_number_density_validity</strong></td>
+<td>int8</td>
+<td>{<em>time</em>}</td>
+<td>[]</td>
+<td>quality flags for H2O retrieval</td>
 </tr>
 <tr class="row-odd"><td><strong>HCHO_column_number_density</strong></td>
 <td>double</td>
@@ -266,17 +278,29 @@
 <td>[mol/cm^2]</td>
 <td>uncertainty of the HCHO column number density</td>
 </tr>
-<tr class="row-odd"><td><strong>NO2_column_number_density</strong></td>
+<tr class="row-odd"><td><strong>HCHO_column_number_density_validity</strong></td>
+<td>int8</td>
+<td>{<em>time</em>}</td>
+<td>[]</td>
+<td>quality flags for HCHO retrieval</td>
+</tr>
+<tr class="row-even"><td><strong>NO2_column_number_density</strong></td>
 <td>double</td>
 <td>{<em>time</em>}</td>
 <td>[mol/cm^2]</td>
 <td>NO2 column number density</td>
 </tr>
-<tr class="row-even"><td><strong>NO2_column_number_density_uncertainty</strong></td>
+<tr class="row-odd"><td><strong>NO2_column_number_density_uncertainty</strong></td>
 <td>double</td>
 <td>{<em>time</em>}</td>
 <td>[mol/cm^2]</td>
 <td>uncertainty of the NO2 column number density</td>
+</tr>
+<tr class="row-even"><td><strong>NO2_column_number_density_validity</strong></td>
+<td>int8</td>
+<td>{<em>time</em>}</td>
+<td>[]</td>
+<td>quality flags for NO2 retrieval</td>
 </tr>
 <tr class="row-odd"><td><strong>tropospheric_NO2_column_number_density</strong></td>
 <td>double</td>
@@ -296,17 +320,29 @@
 <td>[DU]</td>
 <td>uncertainty of the O3 column number density</td>
 </tr>
-<tr class="row-even"><td><strong>OClO_column_number_density</strong></td>
+<tr class="row-even"><td><strong>O3_column_number_density_validity</strong></td>
+<td>int8</td>
+<td>{<em>time</em>}</td>
+<td>[]</td>
+<td>quality flags for O3 retrieval</td>
+</tr>
+<tr class="row-odd"><td><strong>OClO_column_number_density</strong></td>
 <td>double</td>
 <td>{<em>time</em>}</td>
 <td>[mol/cm^2]</td>
 <td>OClO column number density</td>
 </tr>
-<tr class="row-odd"><td><strong>OClO_column_number_density_uncertainty</strong></td>
+<tr class="row-even"><td><strong>OClO_column_number_density_uncertainty</strong></td>
 <td>double</td>
 <td>{<em>time</em>}</td>
 <td>[mol/cm^2]</td>
 <td>uncertainty of the OClO column number density</td>
+</tr>
+<tr class="row-odd"><td><strong>OClO_column_number_density_validity</strong></td>
+<td>int8</td>
+<td>{<em>time</em>}</td>
+<td>[]</td>
+<td>quality flags for OClO retrieval</td>
 </tr>
 <tr class="row-even"><td><strong>SO2_column_number_density</strong></td>
 <td>double</td>
@@ -320,181 +356,199 @@
 <td>[DU]</td>
 <td>uncertainty of the SO2 column number density</td>
 </tr>
-<tr class="row-even"><td><strong>BrO_column_number_density_amf</strong></td>
+<tr class="row-even"><td><strong>SO2_column_number_density_validity</strong></td>
+<td>int8</td>
+<td>{<em>time</em>}</td>
+<td>[]</td>
+<td>quality flags for SO2 retrieval</td>
+</tr>
+<tr class="row-odd"><td><strong>BrO_column_number_density_amf</strong></td>
 <td>double</td>
 <td>{<em>time</em>}</td>
 <td>[]</td>
 <td>BrO air mass factor</td>
 </tr>
-<tr class="row-odd"><td><strong>BrO_column_number_density_amf_uncertainty</strong></td>
+<tr class="row-even"><td><strong>BrO_column_number_density_amf_uncertainty</strong></td>
 <td>double</td>
 <td>{<em>time</em>}</td>
 <td>[]</td>
 <td>uncertainty of the BrO air mass factor</td>
 </tr>
-<tr class="row-even"><td><strong>H2O_column_number_density_amf</strong></td>
+<tr class="row-odd"><td><strong>H2O_column_number_density_amf</strong></td>
 <td>double</td>
 <td>{<em>time</em>}</td>
 <td>[]</td>
 <td>H2O air mass factor</td>
 </tr>
-<tr class="row-odd"><td><strong>H2O_column_number_density_amf_uncertainty</strong></td>
+<tr class="row-even"><td><strong>H2O_column_number_density_amf_uncertainty</strong></td>
 <td>double</td>
 <td>{<em>time</em>}</td>
 <td>[]</td>
 <td>uncertainty of the H2O air mass factor</td>
 </tr>
-<tr class="row-even"><td><strong>HCHO_column_number_density_amf</strong></td>
+<tr class="row-odd"><td><strong>HCHO_column_number_density_amf</strong></td>
 <td>double</td>
 <td>{<em>time</em>}</td>
 <td>[]</td>
 <td>HCHO air mass factor</td>
 </tr>
-<tr class="row-odd"><td><strong>HCHO_column_number_density_amf_uncertainty</strong></td>
+<tr class="row-even"><td><strong>HCHO_column_number_density_amf_uncertainty</strong></td>
 <td>double</td>
 <td>{<em>time</em>}</td>
 <td>[]</td>
 <td>uncertainty of the HCHO air mass factor</td>
 </tr>
-<tr class="row-even"><td><strong>NO2_column_number_density_amf</strong></td>
+<tr class="row-odd"><td><strong>NO2_column_number_density_amf</strong></td>
 <td>double</td>
 <td>{<em>time</em>}</td>
 <td>[]</td>
 <td>NO2 air mass factor</td>
 </tr>
-<tr class="row-odd"><td><strong>NO2_column_number_density_amf_uncertainty</strong></td>
+<tr class="row-even"><td><strong>NO2_column_number_density_amf_uncertainty</strong></td>
 <td>double</td>
 <td>{<em>time</em>}</td>
 <td>[]</td>
 <td>uncertainty of the NO2 air mass factor</td>
 </tr>
-<tr class="row-even"><td><strong>tropospheric_NO2_column_number_density_amf</strong></td>
+<tr class="row-odd"><td><strong>tropospheric_NO2_column_number_density_amf</strong></td>
 <td>double</td>
 <td>{<em>time</em>}</td>
 <td>[]</td>
 <td>tropospheric NO2 air mass factor</td>
 </tr>
-<tr class="row-odd"><td><strong>tropospheric_NO2_column_number_density_amf_uncertainty</strong></td>
+<tr class="row-even"><td><strong>tropospheric_NO2_column_number_density_amf_uncertainty</strong></td>
 <td>double</td>
 <td>{<em>time</em>}</td>
 <td>[]</td>
 <td>uncertainty of the tropospheric NO2 air mass factor</td>
 </tr>
-<tr class="row-even"><td><strong>O3_column_number_density_amf</strong></td>
+<tr class="row-odd"><td><strong>O3_column_number_density_amf</strong></td>
 <td>double</td>
 <td>{<em>time</em>}</td>
 <td>[]</td>
 <td>O3 air mass factor</td>
 </tr>
-<tr class="row-odd"><td><strong>O3_column_number_density_amf_uncertainty</strong></td>
+<tr class="row-even"><td><strong>O3_column_number_density_amf_uncertainty</strong></td>
 <td>double</td>
 <td>{<em>time</em>}</td>
 <td>[]</td>
 <td>uncertainty of the O3 air mass factor</td>
 </tr>
-<tr class="row-even"><td><strong>OClO_column_number_density_amf</strong></td>
+<tr class="row-odd"><td><strong>OClO_column_number_density_amf</strong></td>
 <td>double</td>
 <td>{<em>time</em>}</td>
 <td>[]</td>
 <td>OClO air mass factor</td>
 </tr>
-<tr class="row-odd"><td><strong>OClO_column_number_density_amf_uncertainty</strong></td>
+<tr class="row-even"><td><strong>OClO_column_number_density_amf_uncertainty</strong></td>
 <td>double</td>
 <td>{<em>time</em>}</td>
 <td>[]</td>
 <td>uncertainty of the OClO air mass factor</td>
 </tr>
-<tr class="row-even"><td><strong>SO2_column_number_density_amf</strong></td>
+<tr class="row-odd"><td><strong>SO2_column_number_density_amf</strong></td>
 <td>double</td>
 <td>{<em>time</em>}</td>
 <td>[]</td>
 <td>SO2 air mass factor</td>
 </tr>
-<tr class="row-odd"><td><strong>SO2_column_number_density_amf_uncertainty</strong></td>
+<tr class="row-even"><td><strong>SO2_column_number_density_amf_uncertainty</strong></td>
 <td>double</td>
 <td>{<em>time</em>}</td>
 <td>[]</td>
 <td>uncertainty of the SO2 air mass factor</td>
 </tr>
-<tr class="row-even"><td><strong>cloud_fraction</strong></td>
+<tr class="row-odd"><td><strong>cloud_fraction</strong></td>
 <td>double</td>
 <td>{<em>time</em>}</td>
 <td>[]</td>
 <td>cloud fraction</td>
 </tr>
-<tr class="row-odd"><td><strong>cloud_fraction_uncertainty</strong></td>
+<tr class="row-even"><td><strong>cloud_fraction_uncertainty</strong></td>
 <td>double</td>
 <td>{<em>time</em>}</td>
 <td>[]</td>
 <td>uncertainty of the cloud fraction</td>
 </tr>
-<tr class="row-even"><td><strong>cloud_top_pressure</strong></td>
+<tr class="row-odd"><td><strong>cloud_top_pressure</strong></td>
 <td>double</td>
 <td>{<em>time</em>}</td>
-<td>[mbar]</td>
+<td>[hPa]</td>
 <td>cloud top pressure</td>
 </tr>
-<tr class="row-odd"><td><strong>cloud_top_pressure_uncertainty</strong></td>
+<tr class="row-even"><td><strong>cloud_top_pressure_uncertainty</strong></td>
 <td>double</td>
 <td>{<em>time</em>}</td>
-<td>[mbar]</td>
+<td>[hPa]</td>
 <td>uncertainty of the cloud top pressure</td>
 </tr>
-<tr class="row-even"><td><strong>cloud_top_height</strong></td>
+<tr class="row-odd"><td><strong>cloud_top_height</strong></td>
 <td>double</td>
 <td>{<em>time</em>}</td>
 <td>[km]</td>
 <td>cloud top height</td>
 </tr>
-<tr class="row-odd"><td><strong>cloud_top_height_uncertainty</strong></td>
+<tr class="row-even"><td><strong>cloud_top_height_uncertainty</strong></td>
 <td>double</td>
 <td>{<em>time</em>}</td>
 <td>[km]</td>
 <td>uncertainty of the cloud top height</td>
 </tr>
-<tr class="row-even"><td><strong>cloud_top_albedo</strong></td>
+<tr class="row-odd"><td><strong>cloud_top_albedo</strong></td>
 <td>double</td>
 <td>{<em>time</em>}</td>
 <td>[]</td>
 <td>cloud top albedo</td>
 </tr>
-<tr class="row-odd"><td><strong>cloud_top_albedo_uncertainty</strong></td>
+<tr class="row-even"><td><strong>cloud_top_albedo_uncertainty</strong></td>
 <td>double</td>
 <td>{<em>time</em>}</td>
 <td>[]</td>
 <td>uncertainty of the cloud top albedo</td>
 </tr>
-<tr class="row-even"><td><strong>cloud_optical_depth</strong></td>
+<tr class="row-odd"><td><strong>cloud_optical_depth</strong></td>
 <td>double</td>
 <td>{<em>time</em>}</td>
 <td>[]</td>
 <td>cloud optical depth</td>
 </tr>
-<tr class="row-odd"><td><strong>cloud_optical_depth_uncertainty</strong></td>
+<tr class="row-even"><td><strong>cloud_optical_depth_uncertainty</strong></td>
 <td>double</td>
 <td>{<em>time</em>}</td>
 <td>[]</td>
 <td>uncertainty of the cloud optical depth</td>
 </tr>
-<tr class="row-even"><td><strong>absorbing_aerosol_index</strong></td>
+<tr class="row-odd"><td><strong>absorbing_aerosol_index</strong></td>
 <td>double</td>
 <td>{<em>time</em>}</td>
 <td>[]</td>
 <td>absorbing aerosol index</td>
 </tr>
-<tr class="row-odd"><td><strong>scan_subindex</strong></td>
+<tr class="row-even"><td><strong>surface_heigth</strong></td>
+<td>double</td>
+<td>{<em>time</em>}</td>
+<td>[km]</td>
+<td>surface height</td>
+</tr>
+<tr class="row-odd"><td><strong>surface_pressure</strong></td>
+<td>double</td>
+<td>{<em>time</em>}</td>
+<td>[hPa]</td>
+<td>surface pressure</td>
+</tr>
+<tr class="row-even"><td><strong>scan_subindex</strong></td>
 <td>int8</td>
 <td>{<em>time</em>}</td>
 <td>&#160;</td>
 <td>the relative index (0-31) of this measurement within a scan (forward + backward)</td>
 </tr>
-<tr class="row-even"><td><strong>scan_direction_type</strong></td>
+<tr class="row-odd"><td><strong>scan_direction_type</strong></td>
 <td>int8</td>
 <td>{<em>time</em>}</td>
 <td>&#160;</td>
 <td>scan direction for each measurement; enumeration values: forward (0), backward (1)</td>
 </tr>
-<tr class="row-odd"><td><strong>index</strong></td>
+<tr class="row-even"><td><strong>index</strong></td>
 <td>int32</td>
 <td>{<em>time</em>}</td>
 <td>&#160;</td>
@@ -612,31 +666,51 @@
 <tr class="row-odd"><td><em>path</em></td>
 <td><strong>/TOTAL_COLUMNS/BrO_Error[]</strong></td>
 </tr>
-<tr class="row-even"><td rowspan="2"><strong>H2O_column_density</strong></td>
+<tr class="row-even"><td rowspan="3"><strong>BrO_column_number_density_validity</strong></td>
 <td><em>available</em></td>
 <td>optional</td>
 </tr>
 <tr class="row-odd"><td><em>path</em></td>
-<td><strong>/TOTAL_COLUMNS/H2O[]</strong></td>
+<td><strong>/DETAILED_RESULTS/QualityFlags[,window], /META_DATA/MainSpecies[]</strong></td>
 </tr>
-<tr class="row-even"><td rowspan="6"><strong>H2O_column_density_uncertainty</strong></td>
+<tr class="row-even"><td><em>description</em></td>
+<td>window is the index in MainSpecies[] that has the value &#8216;BrO&#8217;</td>
+</tr>
+<tr class="row-odd"><td rowspan="2"><strong>H2O_column_density</strong></td>
 <td><em>available</em></td>
 <td>optional</td>
-</tr>
-<tr class="row-odd"><td><em>condition</em></td>
-<td>/TOTAL_COLUMNS/H2O_Error/&#64;Unit == &#8216;%&#8217;</td>
 </tr>
 <tr class="row-even"><td><em>path</em></td>
-<td><strong>/TOTAL_COLUMNS/H2O_Error[], /TOTAL_COLUMNS/H2O[]</strong></td>
+<td><strong>/TOTAL_COLUMNS/H2O[]</strong></td>
 </tr>
-<tr class="row-odd"><td><em>description</em></td>
-<td>derived from the relative error in percent as: H2O_Error[] * 0.01 * H2O[]</td>
+<tr class="row-odd"><td rowspan="6"><strong>H2O_column_density_uncertainty</strong></td>
+<td><em>available</em></td>
+<td>optional</td>
 </tr>
 <tr class="row-even"><td><em>condition</em></td>
-<td>/TOTAL_COLUMNS/H2O_Error/&#64;Unit != &#8216;%&#8217;</td>
+<td>/TOTAL_COLUMNS/H2O_Error/&#64;Unit == &#8216;%&#8217;</td>
 </tr>
 <tr class="row-odd"><td><em>path</em></td>
+<td><strong>/TOTAL_COLUMNS/H2O_Error[], /TOTAL_COLUMNS/H2O[]</strong></td>
+</tr>
+<tr class="row-even"><td><em>description</em></td>
+<td>derived from the relative error in percent as: H2O_Error[] * 0.01 * H2O[]</td>
+</tr>
+<tr class="row-odd"><td><em>condition</em></td>
+<td>/TOTAL_COLUMNS/H2O_Error/&#64;Unit != &#8216;%&#8217;</td>
+</tr>
+<tr class="row-even"><td><em>path</em></td>
 <td><strong>/TOTAL_COLUMNS/H2O_Error[]</strong></td>
+</tr>
+<tr class="row-odd"><td rowspan="3"><strong>H2O_column_number_density_validity</strong></td>
+<td><em>available</em></td>
+<td>optional</td>
+</tr>
+<tr class="row-even"><td><em>path</em></td>
+<td><strong>/DETAILED_RESULTS/QualityFlags[,window], /META_DATA/MainSpecies[]</strong></td>
+</tr>
+<tr class="row-odd"><td><em>description</em></td>
+<td>window is the index in MainSpecies[] that has the value &#8216;H2O&#8217;</td>
 </tr>
 <tr class="row-even"><td rowspan="2"><strong>HCHO_column_number_density</strong></td>
 <td><em>available</em></td>
@@ -664,46 +738,66 @@
 <tr class="row-odd"><td><em>path</em></td>
 <td><strong>/TOTAL_COLUMNS/HCHO_Error[]</strong></td>
 </tr>
-<tr class="row-even"><td rowspan="5"><strong>NO2_column_number_density</strong></td>
+<tr class="row-even"><td rowspan="3"><strong>HCHO_column_number_density_validity</strong></td>
 <td><em>available</em></td>
 <td>optional</td>
-</tr>
-<tr class="row-odd"><td><em>condition</em></td>
-<td>corrected_no2_column=true</td>
-</tr>
-<tr class="row-even"><td><em>path</em></td>
-<td><strong>/TOTAL_COLUMNS/NO2_Corr[]</strong></td>
-</tr>
-<tr class="row-odd"><td><em>condition</em></td>
-<td>corrected_no2_column unset (default)</td>
-</tr>
-<tr class="row-even"><td><em>path</em></td>
-<td><strong>/TOTAL_COLUMNS/NO2[]</strong></td>
-</tr>
-<tr class="row-odd"><td rowspan="8"><strong>NO2_column_number_density_uncertainty</strong></td>
-<td><em>available</em></td>
-<td>optional</td>
-</tr>
-<tr class="row-even"><td><em>condition</em></td>
-<td>corrected_no2_column=true</td>
-</tr>
-<tr class="row-odd"><td><em>description</em></td>
-<td>uncertainty information unavailable; this variable will not be present in the ingested product</td>
-</tr>
-<tr class="row-even"><td><em>condition</em></td>
-<td>corrected_no2_column unset (default) and /TOTAL_COLUMNS/NO2_Error/&#64;Unit == &#8216;%&#8217;</td>
 </tr>
 <tr class="row-odd"><td><em>path</em></td>
-<td><strong>/TOTAL_COLUMNS/NO2_Error[], /TOTAL_COLUMNS/NO2[]</strong></td>
+<td><strong>/DETAILED_RESULTS/QualityFlags[,window], /META_DATA/MainSpecies[]</strong></td>
 </tr>
 <tr class="row-even"><td><em>description</em></td>
-<td>derived from the relative error in percent as: NO2_Error[] * 0.01 * NO2[]</td>
+<td>window is the index in MainSpecies[] that has the value &#8216;HCHO&#8217;</td>
+</tr>
+<tr class="row-odd"><td rowspan="5"><strong>NO2_column_number_density</strong></td>
+<td><em>available</em></td>
+<td>optional</td>
+</tr>
+<tr class="row-even"><td><em>condition</em></td>
+<td>corrected_no2_column=true</td>
+</tr>
+<tr class="row-odd"><td><em>path</em></td>
+<td><strong>/TOTAL_COLUMNS/NO2_Corr[]</strong></td>
+</tr>
+<tr class="row-even"><td><em>condition</em></td>
+<td>corrected_no2_column unset (default)</td>
+</tr>
+<tr class="row-odd"><td><em>path</em></td>
+<td><strong>/TOTAL_COLUMNS/NO2[]</strong></td>
+</tr>
+<tr class="row-even"><td rowspan="8"><strong>NO2_column_number_density_uncertainty</strong></td>
+<td><em>available</em></td>
+<td>optional</td>
 </tr>
 <tr class="row-odd"><td><em>condition</em></td>
-<td>corrected_no2_column unset (default) and /TOTAL_COLUMNS/NO2_Error/&#64;Unit != &#8216;%&#8217;</td>
+<td>corrected_no2_column=true</td>
+</tr>
+<tr class="row-even"><td><em>description</em></td>
+<td>uncertainty information unavailable; this variable will not be present in the ingested product</td>
+</tr>
+<tr class="row-odd"><td><em>condition</em></td>
+<td>corrected_no2_column unset (default) and /TOTAL_COLUMNS/NO2_Error/&#64;Unit == &#8216;%&#8217;</td>
 </tr>
 <tr class="row-even"><td><em>path</em></td>
+<td><strong>/TOTAL_COLUMNS/NO2_Error[], /TOTAL_COLUMNS/NO2[]</strong></td>
+</tr>
+<tr class="row-odd"><td><em>description</em></td>
+<td>derived from the relative error in percent as: NO2_Error[] * 0.01 * NO2[]</td>
+</tr>
+<tr class="row-even"><td><em>condition</em></td>
+<td>corrected_no2_column unset (default) and /TOTAL_COLUMNS/NO2_Error/&#64;Unit != &#8216;%&#8217;</td>
+</tr>
+<tr class="row-odd"><td><em>path</em></td>
 <td><strong>/TOTAL_COLUMNS/NO2_Error[]</strong></td>
+</tr>
+<tr class="row-even"><td rowspan="3"><strong>NO2_column_number_density_validity</strong></td>
+<td><em>available</em></td>
+<td>optional</td>
+</tr>
+<tr class="row-odd"><td><em>path</em></td>
+<td><strong>/DETAILED_RESULTS/QualityFlags[,window], /META_DATA/MainSpecies[]</strong></td>
+</tr>
+<tr class="row-even"><td><em>description</em></td>
+<td>window is the index in MainSpecies[] that has the value &#8216;NO2&#8217;</td>
 </tr>
 <tr class="row-odd"><td rowspan="5"><strong>tropospheric_NO2_column_number_density</strong></td>
 <td><em>available</em></td>
@@ -747,31 +841,51 @@
 <tr class="row-odd"><td><em>path</em></td>
 <td><strong>/TOTAL_COLUMNS/O3_Error[]</strong></td>
 </tr>
-<tr class="row-even"><td rowspan="2"><strong>OClO_column_number_density</strong></td>
+<tr class="row-even"><td rowspan="3"><strong>O3_column_number_density_validity</strong></td>
 <td><em>available</em></td>
 <td>optional</td>
 </tr>
 <tr class="row-odd"><td><em>path</em></td>
-<td><strong>/TOTAL_COLUMNS/OClO[]</strong></td>
+<td><strong>/DETAILED_RESULTS/QualityFlags[,window], /META_DATA/MainSpecies[]</strong></td>
 </tr>
-<tr class="row-even"><td rowspan="6"><strong>OClO_column_number_density_uncertainty</strong></td>
+<tr class="row-even"><td><em>description</em></td>
+<td>window is the index in MainSpecies[] that has the value &#8216;O3&#8217;</td>
+</tr>
+<tr class="row-odd"><td rowspan="2"><strong>OClO_column_number_density</strong></td>
 <td><em>available</em></td>
 <td>optional</td>
-</tr>
-<tr class="row-odd"><td><em>condition</em></td>
-<td>/TOTAL_COLUMNS/OClO_Error/&#64;Unit == &#8216;%&#8217;</td>
 </tr>
 <tr class="row-even"><td><em>path</em></td>
-<td><strong>/TOTAL_COLUMNS/OClO_Error[], /TOTAL_COLUMNS/OClO[]</strong></td>
+<td><strong>/TOTAL_COLUMNS/OClO[]</strong></td>
 </tr>
-<tr class="row-odd"><td><em>description</em></td>
-<td>derived from the relative error in percent as: OClO_Error[] * 0.01 * OClO[]</td>
+<tr class="row-odd"><td rowspan="6"><strong>OClO_column_number_density_uncertainty</strong></td>
+<td><em>available</em></td>
+<td>optional</td>
 </tr>
 <tr class="row-even"><td><em>condition</em></td>
-<td>/TOTAL_COLUMNS/OClO_Error/&#64;Unit != &#8216;%&#8217;</td>
+<td>/TOTAL_COLUMNS/OClO_Error/&#64;Unit == &#8216;%&#8217;</td>
 </tr>
 <tr class="row-odd"><td><em>path</em></td>
+<td><strong>/TOTAL_COLUMNS/OClO_Error[], /TOTAL_COLUMNS/OClO[]</strong></td>
+</tr>
+<tr class="row-even"><td><em>description</em></td>
+<td>derived from the relative error in percent as: OClO_Error[] * 0.01 * OClO[]</td>
+</tr>
+<tr class="row-odd"><td><em>condition</em></td>
+<td>/TOTAL_COLUMNS/OClO_Error/&#64;Unit != &#8216;%&#8217;</td>
+</tr>
+<tr class="row-even"><td><em>path</em></td>
 <td><strong>/TOTAL_COLUMNS/OClO_Error[]</strong></td>
+</tr>
+<tr class="row-odd"><td rowspan="3"><strong>OClO_column_number_density_validity</strong></td>
+<td><em>available</em></td>
+<td>optional</td>
+</tr>
+<tr class="row-even"><td><em>path</em></td>
+<td><strong>/DETAILED_RESULTS/QualityFlags[,window], /META_DATA/MainSpecies[]</strong></td>
+</tr>
+<tr class="row-odd"><td><em>description</em></td>
+<td>window is the index in MainSpecies[] that has the value &#8216;OClO&#8217;</td>
 </tr>
 <tr class="row-even"><td rowspan="2"><strong>SO2_column_number_density</strong></td>
 <td><em>available</em></td>
@@ -799,154 +913,27 @@
 <tr class="row-odd"><td><em>path</em></td>
 <td><strong>/TOTAL_COLUMNS/SO2_Error[]</strong></td>
 </tr>
-<tr class="row-even"><td rowspan="3"><strong>BrO_column_number_density_amf</strong></td>
+<tr class="row-even"><td rowspan="3"><strong>SO2_column_number_density_validity</strong></td>
 <td><em>available</em></td>
 <td>optional</td>
 </tr>
 <tr class="row-odd"><td><em>path</em></td>
-<td><strong>/DETAILED_RESULTS/AMFTotal[,window], /META_DATA/MainSpecies[]</strong></td>
+<td><strong>/DETAILED_RESULTS/QualityFlags[,window], /META_DATA/MainSpecies[]</strong></td>
 </tr>
 <tr class="row-even"><td><em>description</em></td>
-<td>window is the index in MainSpecies[] that has the value &#8216;BrO&#8217;</td>
-</tr>
-<tr class="row-odd"><td rowspan="3"><strong>BrO_column_number_density_amf_uncertainty</strong></td>
-<td><em>available</em></td>
-<td>optional</td>
-</tr>
-<tr class="row-even"><td><em>path</em></td>
-<td><strong>/DETAILED_RESULTS/AMFTotal_Error[,window], /DETAILED_RESULTS/AMFTotal[,window], /META_DATA/MainSpecies[]</strong></td>
-</tr>
-<tr class="row-odd"><td><em>description</em></td>
-<td>derived from the relative error in percent as: AMFTotal_Error[,window] * 0.01 * AMFTotal[,window]; window is the index in MainSpecies[] that has the value &#8216;BrO&#8217;</td>
-</tr>
-<tr class="row-even"><td rowspan="3"><strong>H2O_column_number_density_amf</strong></td>
-<td><em>available</em></td>
-<td>optional</td>
-</tr>
-<tr class="row-odd"><td><em>path</em></td>
-<td><strong>/DETAILED_RESULTS/AMFTotal[,window], /META_DATA/MainSpecies[]</strong></td>
-</tr>
-<tr class="row-even"><td><em>description</em></td>
-<td>window is the index in MainSpecies[] that has the value &#8216;H2O&#8217;</td>
-</tr>
-<tr class="row-odd"><td rowspan="3"><strong>H2O_column_number_density_amf_uncertainty</strong></td>
-<td><em>available</em></td>
-<td>optional</td>
-</tr>
-<tr class="row-even"><td><em>path</em></td>
-<td><strong>/DETAILED_RESULTS/AMFTotal_Error[,window], /DETAILED_RESULTS/AMFTotal[,window], /META_DATA/MainSpecies[]</strong></td>
-</tr>
-<tr class="row-odd"><td><em>description</em></td>
-<td>derived from the relative error in percent as: AMFTotal_Error[,window] * 0.01 * AMFTotal[,window]; window is the index in MainSpecies[] that has the value &#8216;H2O&#8217;</td>
-</tr>
-<tr class="row-even"><td rowspan="3"><strong>HCHO_column_number_density_amf</strong></td>
-<td><em>available</em></td>
-<td>optional</td>
-</tr>
-<tr class="row-odd"><td><em>path</em></td>
-<td><strong>/DETAILED_RESULTS/AMFTotal[,window], /META_DATA/MainSpecies[]</strong></td>
-</tr>
-<tr class="row-even"><td><em>description</em></td>
-<td>window is the index in MainSpecies[] that has the value &#8216;HCHO&#8217;</td>
-</tr>
-<tr class="row-odd"><td rowspan="3"><strong>HCHO_column_number_density_amf_uncertainty</strong></td>
-<td><em>available</em></td>
-<td>optional</td>
-</tr>
-<tr class="row-even"><td><em>path</em></td>
-<td><strong>/DETAILED_RESULTS/AMFTotal_Error[,window], /DETAILED_RESULTS/AMFTotal[,window], /META_DATA/MainSpecies[]</strong></td>
-</tr>
-<tr class="row-odd"><td><em>description</em></td>
-<td>derived from the relative error in percent as: AMFTotal_Error[,window] * 0.01 * AMFTotal[,window]; window is the index in MainSpecies[] that has the value &#8216;HCHO&#8217;</td>
-</tr>
-<tr class="row-even"><td rowspan="3"><strong>NO2_column_number_density_amf</strong></td>
-<td><em>available</em></td>
-<td>optional</td>
-</tr>
-<tr class="row-odd"><td><em>path</em></td>
-<td><strong>/DETAILED_RESULTS/AMFTotal[,window], /META_DATA/MainSpecies[]</strong></td>
-</tr>
-<tr class="row-even"><td><em>description</em></td>
-<td>window is the index in MainSpecies[] that has the value &#8216;NO2&#8217;</td>
-</tr>
-<tr class="row-odd"><td rowspan="3"><strong>NO2_column_number_density_amf_uncertainty</strong></td>
-<td><em>available</em></td>
-<td>optional</td>
-</tr>
-<tr class="row-even"><td><em>path</em></td>
-<td><strong>/DETAILED_RESULTS/AMFTotal_Error[,window], /DETAILED_RESULTS/AMFTotal[,window], /META_DATA/MainSpecies[]</strong></td>
-</tr>
-<tr class="row-odd"><td><em>description</em></td>
-<td>derived from the relative error in percent as: AMFTotal_Error[,window] * 0.01 * AMFTotal[,window]; window is the index in MainSpecies[] that has the value &#8216;NO2&#8217;</td>
-</tr>
-<tr class="row-even"><td rowspan="2"><strong>tropospheric_NO2_column_number_density_amf</strong></td>
-<td><em>available</em></td>
-<td>optional</td>
-</tr>
-<tr class="row-odd"><td><em>path</em></td>
-<td><strong>/DETAILED_RESULTS/NO2/AMFTropo[]</strong></td>
-</tr>
-<tr class="row-even"><td rowspan="3"><strong>tropospheric_NO2_column_number_density_amf_uncertainty</strong></td>
-<td><em>available</em></td>
-<td>optional</td>
-</tr>
-<tr class="row-odd"><td><em>path</em></td>
-<td><strong>/DETAILED_RESULTS/NO2/AMFTropo_Error[], /DETAILED_RESULTS/NO2/AMFTropo[]</strong></td>
-</tr>
-<tr class="row-even"><td><em>description</em></td>
-<td>derived from the relative error in percent as: AMFTropo_Error[] * 0.01 * AMFTropo[]</td>
-</tr>
-<tr class="row-odd"><td rowspan="3"><strong>O3_column_number_density_amf</strong></td>
-<td><em>available</em></td>
-<td>optional</td>
-</tr>
-<tr class="row-even"><td><em>path</em></td>
-<td><strong>/DETAILED_RESULTS/AMFTotal[,window], /META_DATA/MainSpecies[]</strong></td>
-</tr>
-<tr class="row-odd"><td><em>description</em></td>
-<td>window is the index in MainSpecies[] that has the value &#8216;O3&#8217;</td>
-</tr>
-<tr class="row-even"><td rowspan="3"><strong>O3_column_number_density_amf_uncertainty</strong></td>
-<td><em>available</em></td>
-<td>optional</td>
-</tr>
-<tr class="row-odd"><td><em>path</em></td>
-<td><strong>/DETAILED_RESULTS/AMFTotal_Error[,window], /DETAILED_RESULTS/AMFTotal[,window], /META_DATA/MainSpecies[]</strong></td>
-</tr>
-<tr class="row-even"><td><em>description</em></td>
-<td>derived from the relative error in percent as: AMFTotal_Error[,window] * 0.01 * AMFTotal[,window]; window is the index in MainSpecies[] that has the value &#8216;O3&#8217;</td>
-</tr>
-<tr class="row-odd"><td rowspan="3"><strong>OClO_column_number_density_amf</strong></td>
-<td><em>available</em></td>
-<td>optional</td>
-</tr>
-<tr class="row-even"><td><em>path</em></td>
-<td><strong>/DETAILED_RESULTS/AMFTotal[,window], /META_DATA/MainSpecies[]</strong></td>
-</tr>
-<tr class="row-odd"><td><em>description</em></td>
-<td>window is the index in MainSpecies[] that has the value &#8216;OClO&#8217;</td>
-</tr>
-<tr class="row-even"><td rowspan="3"><strong>OClO_column_number_density_amf_uncertainty</strong></td>
-<td><em>available</em></td>
-<td>optional</td>
-</tr>
-<tr class="row-odd"><td><em>path</em></td>
-<td><strong>/DETAILED_RESULTS/AMFTotal_Error[,window], /DETAILED_RESULTS/AMFTotal[,window], /META_DATA/MainSpecies[]</strong></td>
-</tr>
-<tr class="row-even"><td><em>description</em></td>
-<td>derived from the relative error in percent as: AMFTotal_Error[,window] * 0.01 * AMFTotal[,window]; window is the index in MainSpecies[] that has the value &#8216;OClO&#8217;</td>
-</tr>
-<tr class="row-odd"><td rowspan="3"><strong>SO2_column_number_density_amf</strong></td>
-<td><em>available</em></td>
-<td>optional</td>
-</tr>
-<tr class="row-even"><td><em>path</em></td>
-<td><strong>/DETAILED_RESULTS/AMFTotal[,window], /META_DATA/MainSpecies[]</strong></td>
-</tr>
-<tr class="row-odd"><td><em>description</em></td>
 <td>window is the index in MainSpecies[] that has the value &#8216;SO2&#8217;</td>
 </tr>
-<tr class="row-even"><td rowspan="3"><strong>SO2_column_number_density_amf_uncertainty</strong></td>
+<tr class="row-odd"><td rowspan="3"><strong>BrO_column_number_density_amf</strong></td>
+<td><em>available</em></td>
+<td>optional</td>
+</tr>
+<tr class="row-even"><td><em>path</em></td>
+<td><strong>/DETAILED_RESULTS/AMFTotal[,window], /META_DATA/MainSpecies[]</strong></td>
+</tr>
+<tr class="row-odd"><td><em>description</em></td>
+<td>window is the index in MainSpecies[] that has the value &#8216;BrO&#8217;</td>
+</tr>
+<tr class="row-even"><td rowspan="3"><strong>BrO_column_number_density_amf_uncertainty</strong></td>
 <td><em>available</em></td>
 <td>optional</td>
 </tr>
@@ -954,177 +941,298 @@
 <td><strong>/DETAILED_RESULTS/AMFTotal_Error[,window], /DETAILED_RESULTS/AMFTotal[,window], /META_DATA/MainSpecies[]</strong></td>
 </tr>
 <tr class="row-even"><td><em>description</em></td>
+<td>derived from the relative error in percent as: AMFTotal_Error[,window] * 0.01 * AMFTotal[,window]; window is the index in MainSpecies[] that has the value &#8216;BrO&#8217;</td>
+</tr>
+<tr class="row-odd"><td rowspan="3"><strong>H2O_column_number_density_amf</strong></td>
+<td><em>available</em></td>
+<td>optional</td>
+</tr>
+<tr class="row-even"><td><em>path</em></td>
+<td><strong>/DETAILED_RESULTS/AMFTotal[,window], /META_DATA/MainSpecies[]</strong></td>
+</tr>
+<tr class="row-odd"><td><em>description</em></td>
+<td>window is the index in MainSpecies[] that has the value &#8216;H2O&#8217;</td>
+</tr>
+<tr class="row-even"><td rowspan="3"><strong>H2O_column_number_density_amf_uncertainty</strong></td>
+<td><em>available</em></td>
+<td>optional</td>
+</tr>
+<tr class="row-odd"><td><em>path</em></td>
+<td><strong>/DETAILED_RESULTS/AMFTotal_Error[,window], /DETAILED_RESULTS/AMFTotal[,window], /META_DATA/MainSpecies[]</strong></td>
+</tr>
+<tr class="row-even"><td><em>description</em></td>
+<td>derived from the relative error in percent as: AMFTotal_Error[,window] * 0.01 * AMFTotal[,window]; window is the index in MainSpecies[] that has the value &#8216;H2O&#8217;</td>
+</tr>
+<tr class="row-odd"><td rowspan="3"><strong>HCHO_column_number_density_amf</strong></td>
+<td><em>available</em></td>
+<td>optional</td>
+</tr>
+<tr class="row-even"><td><em>path</em></td>
+<td><strong>/DETAILED_RESULTS/AMFTotal[,window], /META_DATA/MainSpecies[]</strong></td>
+</tr>
+<tr class="row-odd"><td><em>description</em></td>
+<td>window is the index in MainSpecies[] that has the value &#8216;HCHO&#8217;</td>
+</tr>
+<tr class="row-even"><td rowspan="3"><strong>HCHO_column_number_density_amf_uncertainty</strong></td>
+<td><em>available</em></td>
+<td>optional</td>
+</tr>
+<tr class="row-odd"><td><em>path</em></td>
+<td><strong>/DETAILED_RESULTS/AMFTotal_Error[,window], /DETAILED_RESULTS/AMFTotal[,window], /META_DATA/MainSpecies[]</strong></td>
+</tr>
+<tr class="row-even"><td><em>description</em></td>
+<td>derived from the relative error in percent as: AMFTotal_Error[,window] * 0.01 * AMFTotal[,window]; window is the index in MainSpecies[] that has the value &#8216;HCHO&#8217;</td>
+</tr>
+<tr class="row-odd"><td rowspan="3"><strong>NO2_column_number_density_amf</strong></td>
+<td><em>available</em></td>
+<td>optional</td>
+</tr>
+<tr class="row-even"><td><em>path</em></td>
+<td><strong>/DETAILED_RESULTS/AMFTotal[,window], /META_DATA/MainSpecies[]</strong></td>
+</tr>
+<tr class="row-odd"><td><em>description</em></td>
+<td>window is the index in MainSpecies[] that has the value &#8216;NO2&#8217;</td>
+</tr>
+<tr class="row-even"><td rowspan="3"><strong>NO2_column_number_density_amf_uncertainty</strong></td>
+<td><em>available</em></td>
+<td>optional</td>
+</tr>
+<tr class="row-odd"><td><em>path</em></td>
+<td><strong>/DETAILED_RESULTS/AMFTotal_Error[,window], /DETAILED_RESULTS/AMFTotal[,window], /META_DATA/MainSpecies[]</strong></td>
+</tr>
+<tr class="row-even"><td><em>description</em></td>
+<td>derived from the relative error in percent as: AMFTotal_Error[,window] * 0.01 * AMFTotal[,window]; window is the index in MainSpecies[] that has the value &#8216;NO2&#8217;</td>
+</tr>
+<tr class="row-odd"><td rowspan="2"><strong>tropospheric_NO2_column_number_density_amf</strong></td>
+<td><em>available</em></td>
+<td>optional</td>
+</tr>
+<tr class="row-even"><td><em>path</em></td>
+<td><strong>/DETAILED_RESULTS/NO2/AMFTropo[]</strong></td>
+</tr>
+<tr class="row-odd"><td rowspan="3"><strong>tropospheric_NO2_column_number_density_amf_uncertainty</strong></td>
+<td><em>available</em></td>
+<td>optional</td>
+</tr>
+<tr class="row-even"><td><em>path</em></td>
+<td><strong>/DETAILED_RESULTS/NO2/AMFTropo_Error[], /DETAILED_RESULTS/NO2/AMFTropo[]</strong></td>
+</tr>
+<tr class="row-odd"><td><em>description</em></td>
+<td>derived from the relative error in percent as: AMFTropo_Error[] * 0.01 * AMFTropo[]</td>
+</tr>
+<tr class="row-even"><td rowspan="3"><strong>O3_column_number_density_amf</strong></td>
+<td><em>available</em></td>
+<td>optional</td>
+</tr>
+<tr class="row-odd"><td><em>path</em></td>
+<td><strong>/DETAILED_RESULTS/AMFTotal[,window], /META_DATA/MainSpecies[]</strong></td>
+</tr>
+<tr class="row-even"><td><em>description</em></td>
+<td>window is the index in MainSpecies[] that has the value &#8216;O3&#8217;</td>
+</tr>
+<tr class="row-odd"><td rowspan="3"><strong>O3_column_number_density_amf_uncertainty</strong></td>
+<td><em>available</em></td>
+<td>optional</td>
+</tr>
+<tr class="row-even"><td><em>path</em></td>
+<td><strong>/DETAILED_RESULTS/AMFTotal_Error[,window], /DETAILED_RESULTS/AMFTotal[,window], /META_DATA/MainSpecies[]</strong></td>
+</tr>
+<tr class="row-odd"><td><em>description</em></td>
+<td>derived from the relative error in percent as: AMFTotal_Error[,window] * 0.01 * AMFTotal[,window]; window is the index in MainSpecies[] that has the value &#8216;O3&#8217;</td>
+</tr>
+<tr class="row-even"><td rowspan="3"><strong>OClO_column_number_density_amf</strong></td>
+<td><em>available</em></td>
+<td>optional</td>
+</tr>
+<tr class="row-odd"><td><em>path</em></td>
+<td><strong>/DETAILED_RESULTS/AMFTotal[,window], /META_DATA/MainSpecies[]</strong></td>
+</tr>
+<tr class="row-even"><td><em>description</em></td>
+<td>window is the index in MainSpecies[] that has the value &#8216;OClO&#8217;</td>
+</tr>
+<tr class="row-odd"><td rowspan="3"><strong>OClO_column_number_density_amf_uncertainty</strong></td>
+<td><em>available</em></td>
+<td>optional</td>
+</tr>
+<tr class="row-even"><td><em>path</em></td>
+<td><strong>/DETAILED_RESULTS/AMFTotal_Error[,window], /DETAILED_RESULTS/AMFTotal[,window], /META_DATA/MainSpecies[]</strong></td>
+</tr>
+<tr class="row-odd"><td><em>description</em></td>
+<td>derived from the relative error in percent as: AMFTotal_Error[,window] * 0.01 * AMFTotal[,window]; window is the index in MainSpecies[] that has the value &#8216;OClO&#8217;</td>
+</tr>
+<tr class="row-even"><td rowspan="3"><strong>SO2_column_number_density_amf</strong></td>
+<td><em>available</em></td>
+<td>optional</td>
+</tr>
+<tr class="row-odd"><td><em>path</em></td>
+<td><strong>/DETAILED_RESULTS/AMFTotal[,window], /META_DATA/MainSpecies[]</strong></td>
+</tr>
+<tr class="row-even"><td><em>description</em></td>
+<td>window is the index in MainSpecies[] that has the value &#8216;SO2&#8217;</td>
+</tr>
+<tr class="row-odd"><td rowspan="3"><strong>SO2_column_number_density_amf_uncertainty</strong></td>
+<td><em>available</em></td>
+<td>optional</td>
+</tr>
+<tr class="row-even"><td><em>path</em></td>
+<td><strong>/DETAILED_RESULTS/AMFTotal_Error[,window], /DETAILED_RESULTS/AMFTotal[,window], /META_DATA/MainSpecies[]</strong></td>
+</tr>
+<tr class="row-odd"><td><em>description</em></td>
 <td>derived from the relative error in percent as: AMFTotal_Error[,window] * 0.01 * AMFTotal[,window]; window is the index in MainSpecies[] that has the value &#8216;SO2&#8217;</td>
 </tr>
-<tr class="row-odd"><td rowspan="5"><strong>cloud_fraction</strong></td>
+<tr class="row-even"><td rowspan="5"><strong>cloud_fraction</strong></td>
 <td><em>available</em></td>
 <td>optional</td>
 </tr>
-<tr class="row-even"><td><em>condition</em></td>
+<tr class="row-odd"><td><em>condition</em></td>
 <td>V1 product</td>
 </tr>
-<tr class="row-odd"><td><em>path</em></td>
+<tr class="row-even"><td><em>path</em></td>
 <td><strong>/DETAILED_RESULTS/CloudFraction[]</strong></td>
 </tr>
-<tr class="row-even"><td><em>condition</em></td>
+<tr class="row-odd"><td><em>condition</em></td>
 <td>V2 product</td>
 </tr>
-<tr class="row-odd"><td><em>path</em></td>
+<tr class="row-even"><td><em>path</em></td>
 <td><strong>/CLOUD_PROPERTIES/CloudFraction[]</strong></td>
 </tr>
-<tr class="row-even"><td rowspan="7"><strong>cloud_fraction_uncertainty</strong></td>
+<tr class="row-odd"><td rowspan="7"><strong>cloud_fraction_uncertainty</strong></td>
 <td><em>available</em></td>
 <td>optional</td>
 </tr>
-<tr class="row-odd"><td><em>condition</em></td>
+<tr class="row-even"><td><em>condition</em></td>
 <td>V1 product</td>
 </tr>
-<tr class="row-even"><td><em>path</em></td>
+<tr class="row-odd"><td><em>path</em></td>
 <td><strong>/DETAILED_RESULTS/CloudFraction_Error[], /DETAILED_RESULTS/CloudFraction[]</strong></td>
 </tr>
-<tr class="row-odd"><td><em>description</em></td>
+<tr class="row-even"><td><em>description</em></td>
 <td>derived from the relative error in percent as: CloudFraction_Error[] * 0.01 * CloudFraction[]</td>
 </tr>
-<tr class="row-even"><td><em>condition</em></td>
+<tr class="row-odd"><td><em>condition</em></td>
 <td>V2 product</td>
 </tr>
-<tr class="row-odd"><td><em>path</em></td>
+<tr class="row-even"><td><em>path</em></td>
 <td><strong>/CLOUD_PROPERTIES/CloudFraction_Error[], /CLOUD_PROPERTIES/CloudFraction[]</strong></td>
 </tr>
-<tr class="row-even"><td><em>description</em></td>
+<tr class="row-odd"><td><em>description</em></td>
 <td>derived from the relative error in percent as: CloudFraction_Error[] * 0.01 * CloudFraction[]</td>
 </tr>
-<tr class="row-odd"><td rowspan="5"><strong>cloud_top_pressure</strong></td>
+<tr class="row-even"><td rowspan="5"><strong>cloud_top_pressure</strong></td>
 <td><em>available</em></td>
 <td>optional</td>
 </tr>
-<tr class="row-even"><td><em>condition</em></td>
+<tr class="row-odd"><td><em>condition</em></td>
 <td>V1 product</td>
 </tr>
-<tr class="row-odd"><td><em>path</em></td>
+<tr class="row-even"><td><em>path</em></td>
 <td><strong>/DETAILED_RESULTS/CloudTopPressure[]</strong></td>
 </tr>
-<tr class="row-even"><td><em>condition</em></td>
+<tr class="row-odd"><td><em>condition</em></td>
 <td>V2 product</td>
 </tr>
-<tr class="row-odd"><td><em>path</em></td>
+<tr class="row-even"><td><em>path</em></td>
 <td><strong>/CLOUD_PROPERTIES/CloudTopPressure[]</strong></td>
 </tr>
-<tr class="row-even"><td rowspan="7"><strong>cloud_top_pressure_uncertainty</strong></td>
+<tr class="row-odd"><td rowspan="7"><strong>cloud_top_pressure_uncertainty</strong></td>
 <td><em>available</em></td>
 <td>optional</td>
 </tr>
-<tr class="row-odd"><td><em>condition</em></td>
+<tr class="row-even"><td><em>condition</em></td>
 <td>V1 product</td>
 </tr>
-<tr class="row-even"><td><em>path</em></td>
+<tr class="row-odd"><td><em>path</em></td>
 <td><strong>/DETAILED_RESULTS/CloudTopPressure_Error[], /DETAILED_RESULTS/CloudTopPressure[]</strong></td>
 </tr>
-<tr class="row-odd"><td><em>description</em></td>
+<tr class="row-even"><td><em>description</em></td>
 <td>derived from the relative error in percent as: CloudTopPressure_Error[] * 0.01 * CloudTopPressure[]</td>
 </tr>
-<tr class="row-even"><td><em>condition</em></td>
+<tr class="row-odd"><td><em>condition</em></td>
 <td>V2 product</td>
 </tr>
-<tr class="row-odd"><td><em>path</em></td>
+<tr class="row-even"><td><em>path</em></td>
 <td><strong>/CLOUD_PROPERTIES/CloudTopPressure_Error[], /CLOUD_PROPERTIES/CloudTopPressure[]</strong></td>
 </tr>
-<tr class="row-even"><td><em>description</em></td>
+<tr class="row-odd"><td><em>description</em></td>
 <td>derived from the relative error in percent as: CloudTopPressure_Error[] * 0.01 * CloudTopPressure[]</td>
 </tr>
-<tr class="row-odd"><td rowspan="5"><strong>cloud_top_height</strong></td>
+<tr class="row-even"><td rowspan="5"><strong>cloud_top_height</strong></td>
 <td><em>available</em></td>
 <td>optional</td>
 </tr>
-<tr class="row-even"><td><em>condition</em></td>
+<tr class="row-odd"><td><em>condition</em></td>
 <td>V1 product</td>
 </tr>
-<tr class="row-odd"><td><em>path</em></td>
+<tr class="row-even"><td><em>path</em></td>
 <td><strong>/DETAILED_RESULTS/CloudTopHeight[]</strong></td>
 </tr>
-<tr class="row-even"><td><em>condition</em></td>
+<tr class="row-odd"><td><em>condition</em></td>
 <td>V2 product</td>
 </tr>
-<tr class="row-odd"><td><em>path</em></td>
+<tr class="row-even"><td><em>path</em></td>
 <td><strong>/CLOUD_PROPERTIES/CloudTopHeight[]</strong></td>
 </tr>
-<tr class="row-even"><td rowspan="7"><strong>cloud_top_height_uncertainty</strong></td>
+<tr class="row-odd"><td rowspan="7"><strong>cloud_top_height_uncertainty</strong></td>
 <td><em>available</em></td>
 <td>optional</td>
 </tr>
-<tr class="row-odd"><td><em>condition</em></td>
+<tr class="row-even"><td><em>condition</em></td>
 <td>V1 product</td>
 </tr>
-<tr class="row-even"><td><em>path</em></td>
+<tr class="row-odd"><td><em>path</em></td>
 <td><strong>/DETAILED_RESULTS/CloudTopHeight_Error[], /DETAILED_RESULTS/CloudTopHeight[]</strong></td>
 </tr>
-<tr class="row-odd"><td><em>description</em></td>
+<tr class="row-even"><td><em>description</em></td>
 <td>derived from the relative error in percent as: CloudTopHeight_Error[] * 0.01 * CloudTopHeight[]</td>
 </tr>
-<tr class="row-even"><td><em>condition</em></td>
+<tr class="row-odd"><td><em>condition</em></td>
 <td>V2 product</td>
 </tr>
-<tr class="row-odd"><td><em>path</em></td>
+<tr class="row-even"><td><em>path</em></td>
 <td><strong>/CLOUD_PROPERTIES/CloudTopHeight_Error[], /CLOUD_PROPERTIES/CloudTopHeight[]</strong></td>
 </tr>
-<tr class="row-even"><td><em>description</em></td>
+<tr class="row-odd"><td><em>description</em></td>
 <td>derived from the relative error in percent as: CloudTopHeight_Error[] * 0.01 * CloudTopHeight[]</td>
 </tr>
-<tr class="row-odd"><td rowspan="5"><strong>cloud_top_albedo</strong></td>
+<tr class="row-even"><td rowspan="5"><strong>cloud_top_albedo</strong></td>
 <td><em>available</em></td>
 <td>optional</td>
 </tr>
-<tr class="row-even"><td><em>condition</em></td>
+<tr class="row-odd"><td><em>condition</em></td>
 <td>V1 product</td>
 </tr>
-<tr class="row-odd"><td><em>path</em></td>
+<tr class="row-even"><td><em>path</em></td>
 <td><strong>/DETAILED_RESULTS/CloudTopAlbedo[]</strong></td>
 </tr>
-<tr class="row-even"><td><em>condition</em></td>
+<tr class="row-odd"><td><em>condition</em></td>
 <td>V2 product</td>
 </tr>
-<tr class="row-odd"><td><em>path</em></td>
+<tr class="row-even"><td><em>path</em></td>
 <td><strong>/CLOUD_PROPERTIES/CloudTopAlbedo[]</strong></td>
 </tr>
-<tr class="row-even"><td rowspan="7"><strong>cloud_top_albedo_uncertainty</strong></td>
+<tr class="row-odd"><td rowspan="7"><strong>cloud_top_albedo_uncertainty</strong></td>
 <td><em>available</em></td>
 <td>optional</td>
 </tr>
-<tr class="row-odd"><td><em>condition</em></td>
+<tr class="row-even"><td><em>condition</em></td>
 <td>V1 product</td>
 </tr>
-<tr class="row-even"><td><em>path</em></td>
+<tr class="row-odd"><td><em>path</em></td>
 <td><strong>/DETAILED_RESULTS/CloudTopAlbedo_Error[], /DETAILED_RESULTS/CloudTopAlbedo[]</strong></td>
 </tr>
-<tr class="row-odd"><td><em>description</em></td>
-<td>derived from the relative error in percent as: CloudTopAlbedo_Error[] * 0.01 * CloudTopAlbedo[]</td>
-</tr>
-<tr class="row-even"><td><em>condition</em></td>
-<td>V2 product</td>
-</tr>
-<tr class="row-odd"><td><em>path</em></td>
-<td><strong>/CLOUD_PROPERTIES/CloudTopAlbedo_Error[], /CLOUD_PROPERTIES/CloudTopAlbedo[]</strong></td>
-</tr>
 <tr class="row-even"><td><em>description</em></td>
 <td>derived from the relative error in percent as: CloudTopAlbedo_Error[] * 0.01 * CloudTopAlbedo[]</td>
 </tr>
-<tr class="row-odd"><td rowspan="5"><strong>cloud_optical_depth</strong></td>
-<td><em>available</em></td>
-<td>optional</td>
-</tr>
-<tr class="row-even"><td><em>condition</em></td>
-<td>V1 product</td>
-</tr>
-<tr class="row-odd"><td><em>path</em></td>
-<td><strong>/DETAILED_RESULTS/CloudOpticalThickness[]</strong></td>
-</tr>
-<tr class="row-even"><td><em>condition</em></td>
+<tr class="row-odd"><td><em>condition</em></td>
 <td>V2 product</td>
 </tr>
-<tr class="row-odd"><td><em>path</em></td>
-<td><strong>/CLOUD_PROPERTIES/CloudOpticalThickness[]</strong></td>
+<tr class="row-even"><td><em>path</em></td>
+<td><strong>/CLOUD_PROPERTIES/CloudTopAlbedo_Error[], /CLOUD_PROPERTIES/CloudTopAlbedo[]</strong></td>
 </tr>
-<tr class="row-even"><td rowspan="7"><strong>cloud_optical_depth_uncertainty</strong></td>
+<tr class="row-odd"><td><em>description</em></td>
+<td>derived from the relative error in percent as: CloudTopAlbedo_Error[] * 0.01 * CloudTopAlbedo[]</td>
+</tr>
+<tr class="row-even"><td rowspan="5"><strong>cloud_optical_depth</strong></td>
 <td><em>available</em></td>
 <td>optional</td>
 </tr>
@@ -1132,39 +1240,63 @@
 <td>V1 product</td>
 </tr>
 <tr class="row-even"><td><em>path</em></td>
-<td><strong>/DETAILED_RESULTS/CloudOpticalThickness_Error[], /DETAILED_RESULTS/CloudOpticalThickness[]</strong></td>
+<td><strong>/DETAILED_RESULTS/CloudOpticalThickness[]</strong></td>
 </tr>
-<tr class="row-odd"><td><em>description</em></td>
-<td>derived from the relative error in percent as: CloudOpticalThickness_Error[] * 0.01 * CloudOpticalThickness[]</td>
-</tr>
-<tr class="row-even"><td><em>condition</em></td>
+<tr class="row-odd"><td><em>condition</em></td>
 <td>V2 product</td>
 </tr>
+<tr class="row-even"><td><em>path</em></td>
+<td><strong>/CLOUD_PROPERTIES/CloudOpticalThickness[]</strong></td>
+</tr>
+<tr class="row-odd"><td rowspan="7"><strong>cloud_optical_depth_uncertainty</strong></td>
+<td><em>available</em></td>
+<td>optional</td>
+</tr>
+<tr class="row-even"><td><em>condition</em></td>
+<td>V1 product</td>
+</tr>
 <tr class="row-odd"><td><em>path</em></td>
-<td><strong>/CLOUD_PROPERTIES/CloudOpticalThickness_Error[], /CLOUD_PROPERTIES/CloudOpticalThickness[]</strong></td>
+<td><strong>/DETAILED_RESULTS/CloudOpticalThickness_Error[], /DETAILED_RESULTS/CloudOpticalThickness[]</strong></td>
 </tr>
 <tr class="row-even"><td><em>description</em></td>
 <td>derived from the relative error in percent as: CloudOpticalThickness_Error[] * 0.01 * CloudOpticalThickness[]</td>
 </tr>
-<tr class="row-odd"><td rowspan="2"><strong>absorbing_aerosol_index</strong></td>
+<tr class="row-odd"><td><em>condition</em></td>
+<td>V2 product</td>
+</tr>
+<tr class="row-even"><td><em>path</em></td>
+<td><strong>/CLOUD_PROPERTIES/CloudOpticalThickness_Error[], /CLOUD_PROPERTIES/CloudOpticalThickness[]</strong></td>
+</tr>
+<tr class="row-odd"><td><em>description</em></td>
+<td>derived from the relative error in percent as: CloudOpticalThickness_Error[] * 0.01 * CloudOpticalThickness[]</td>
+</tr>
+<tr class="row-even"><td rowspan="2"><strong>absorbing_aerosol_index</strong></td>
 <td><em>available</em></td>
 <td>optional</td>
 </tr>
-<tr class="row-even"><td><em>path</em></td>
+<tr class="row-odd"><td><em>path</em></td>
 <td><strong>/DETAILED_RESULTS/AAI[]</strong></td>
 </tr>
-<tr class="row-odd"><td rowspan="2"><strong>scan_subindex</strong></td>
+<tr class="row-even"><td><strong>surface_heigth</strong></td>
+<td><em>path</em></td>
+<td><strong>/DETAILED_RESULTS/SurfaceHeight[]</strong></td>
+</tr>
+<tr class="row-odd"><td><strong>surface_pressure</strong></td>
+<td><em>path</em></td>
+<td><strong>/DETAILED_RESULTS/SurfacePressure[]</strong></td>
+</tr>
+<tr class="row-even"><td rowspan="2"><strong>scan_subindex</strong></td>
 <td><em>path</em></td>
 <td><strong>/GEOLOCATION/SubPixelInScan[]</strong></td>
 </tr>
-<tr class="row-even"><td><em>description</em></td>
+<tr class="row-odd"><td><em>description</em></td>
 <td>the pixel id is actually the pixel id relative to the L1b MDR, which is off by one with regard to the scan; the MDR pixel id is therefore converted to a real scan pixel id by subtracting one and performing a modulo 32</td>
 </tr>
-<tr class="row-odd"><td rowspan="2"><strong>scan_direction_type</strong></td>
+<tr class="row-even"><td rowspan="2"><strong>scan_direction_type</strong></td>
 <td><em>path</em></td>
 <td><strong>/GEOLOCATION/IndexInScan[]</strong></td>
 </tr>
-<tr class="row-even"><td><em>description</em></td>
+<tr class="row-odd"><td><em>description</em></td>
 <td>the scan direction is based on IndexInScan[]; 0-2: forward (0), 3: backward (1)</td>
 </tr>
 </tbody>
