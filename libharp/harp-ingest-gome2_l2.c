@@ -232,6 +232,35 @@ static int init_format_version(ingest_info *info)
     return 0;
 }
 
+static int has_dataset_percentage_unit(ingest_info *info, const char *path)
+{
+    coda_cursor cursor;
+    char unit[10];
+
+    if (coda_cursor_set_product(&cursor, info->product) != 0)
+    {
+        harp_set_error(HARP_ERROR_CODA, NULL);
+        return -1;
+    }
+    if (coda_cursor_goto(&cursor, path) != 0)
+    {
+        harp_set_error(HARP_ERROR_CODA, NULL);
+        return -1;
+    }
+    if (coda_cursor_goto(&cursor, "@Unit[0]") != 0)
+    {
+        harp_set_error(HARP_ERROR_CODA, NULL);
+        return -1;
+    }
+    if (coda_cursor_read_string(&cursor, unit, 10) != 0)
+    {
+        harp_set_error(HARP_ERROR_CODA, NULL);
+        return -1;
+    }
+
+    return strcmp(unit, "%") == 0;
+}
+
 static int read_dataset(ingest_info *info, const char *path, harp_data_type data_type, long num_elements,
                         harp_array data)
 {
@@ -310,11 +339,30 @@ static int read_dataset(ingest_info *info, const char *path, harp_data_type data
     return 0;
 }
 
-static int read_relerr_as_uncertainty(ingest_info *info, const char *path_quantity, const char *path_relerr,
-                                      long num_elements, harp_array data)
+static int read_uncertainty(ingest_info *info, const char *path_quantity, const char *path_error, long num_elements,
+                            harp_array data)
 {
     harp_array relerr;
+    int result;
     long i;
+
+    result = has_dataset_percentage_unit(info, path_error);
+    if (result < 0)
+    {
+        return -1;
+    }
+    if (result == 0)
+    {
+        /* error is absolute, so just read and return */
+        if (read_dataset(info, path_error, harp_type_double, num_elements, data) != 0)
+        {
+            return -1;
+        }
+
+        return 0;
+    }
+
+    /* error is relative, so read main quantity and derive absolute error */
 
     if (read_dataset(info, path_quantity, harp_type_double, num_elements, data) != 0)
     {
@@ -329,7 +377,7 @@ static int read_relerr_as_uncertainty(ingest_info *info, const char *path_quanti
         return -1;
     }
 
-    if (read_dataset(info, path_relerr, harp_type_double, num_elements, relerr) != 0)
+    if (read_dataset(info, path_error, harp_type_double, num_elements, relerr) != 0)
     {
         free(relerr.ptr);
         return -1;
@@ -405,8 +453,8 @@ static int init_amf_error(ingest_info *info)
             return -1;
         }
 
-        if (read_dataset
-            (info, "DETAILED_RESULTS/AMFTotal_Error", harp_type_double, num_elements, info->amf_error_buffer) != 0)
+        if (read_dataset(info, "DETAILED_RESULTS/AMFTotal_Error", harp_type_double, num_elements,
+                         info->amf_error_buffer) != 0)
         {
             return -1;
         }
@@ -711,7 +759,7 @@ static int read_bro_column_error(void *user_data, harp_array data)
 {
     ingest_info *info = (ingest_info *)user_data;
 
-    return read_relerr_as_uncertainty(info, "TOTAL_COLUMNS/BrO", "TOTAL_COLUMNS/BrO_Error", info->num_main, data);
+    return read_uncertainty(info, "TOTAL_COLUMNS/BrO", "TOTAL_COLUMNS/BrO_Error", info->num_main, data);
 }
 
 static int read_h2o_column(void *user_data, harp_array data)
@@ -725,7 +773,7 @@ static int read_h2o_column_error(void *user_data, harp_array data)
 {
     ingest_info *info = (ingest_info *)user_data;
 
-    return read_relerr_as_uncertainty(info, "TOTAL_COLUMNS/H2O", "TOTAL_COLUMNS/H2O_Error", info->num_main, data);
+    return read_uncertainty(info, "TOTAL_COLUMNS/H2O", "TOTAL_COLUMNS/H2O_Error", info->num_main, data);
 }
 
 static int read_hcho_column(void *user_data, harp_array data)
@@ -739,7 +787,7 @@ static int read_hcho_column_error(void *user_data, harp_array data)
 {
     ingest_info *info = (ingest_info *)user_data;
 
-    return read_relerr_as_uncertainty(info, "TOTAL_COLUMNS/HCHO", "TOTAL_COLUMNS/HCHO_Error", info->num_main, data);
+    return read_uncertainty(info, "TOTAL_COLUMNS/HCHO", "TOTAL_COLUMNS/HCHO_Error", info->num_main, data);
 }
 
 static int read_no2_column(void *user_data, harp_array data)
@@ -759,7 +807,7 @@ static int read_no2_column_error(void *user_data, harp_array data)
     ingest_info *info = (ingest_info *)user_data;
 
     assert(!info->corrected_no2);
-    return read_relerr_as_uncertainty(info, "TOTAL_COLUMNS/NO2", "TOTAL_COLUMNS/NO2_Error", info->num_main, data);
+    return read_uncertainty(info, "TOTAL_COLUMNS/NO2", "TOTAL_COLUMNS/NO2_Error", info->num_main, data);
 }
 
 static int read_no2_column_tropospheric(void *user_data, harp_array data)
@@ -785,7 +833,7 @@ static int read_o3_column_error(void *user_data, harp_array data)
 {
     ingest_info *info = (ingest_info *)user_data;
 
-    return read_relerr_as_uncertainty(info, "TOTAL_COLUMNS/O3", "TOTAL_COLUMNS/O3_Error", info->num_main, data);
+    return read_uncertainty(info, "TOTAL_COLUMNS/O3", "TOTAL_COLUMNS/O3_Error", info->num_main, data);
 }
 
 static int read_oclo_column(void *user_data, harp_array data)
@@ -799,7 +847,7 @@ static int read_oclo_column_error(void *user_data, harp_array data)
 {
     ingest_info *info = (ingest_info *)user_data;
 
-    return read_relerr_as_uncertainty(info, "TOTAL_COLUMNS/OClO", "TOTAL_COLUMNS/OClO_Error", info->num_main, data);
+    return read_uncertainty(info, "TOTAL_COLUMNS/OClO", "TOTAL_COLUMNS/OClO_Error", info->num_main, data);
 }
 
 static int read_so2_column(void *user_data, harp_array data)
@@ -813,7 +861,7 @@ static int read_so2_column_error(void *user_data, harp_array data)
 {
     ingest_info *info = (ingest_info *)user_data;
 
-    return read_relerr_as_uncertainty(info, "TOTAL_COLUMNS/SO2", "TOTAL_COLUMNS/SO2_Error", info->num_main, data);
+    return read_uncertainty(info, "TOTAL_COLUMNS/SO2", "TOTAL_COLUMNS/SO2_Error", info->num_main, data);
 }
 
 static int read_amf_bro(void *user_data, harp_array data)
@@ -883,8 +931,8 @@ static int read_amf_no2_tropospheric_error(void *user_data, harp_array data)
 {
     ingest_info *info = (ingest_info *)user_data;
 
-    return read_relerr_as_uncertainty(info, "DETAILED_RESULTS/NO2/AMFTropo", "DETAILED_RESULTS/NO2/AMFTropo_Error",
-                                      info->num_main, data);
+    return read_uncertainty(info, "DETAILED_RESULTS/NO2/AMFTropo", "DETAILED_RESULTS/NO2/AMFTropo_Error",
+                            info->num_main, data);
 }
 
 static int read_amf_o3(void *user_data, harp_array data)
@@ -947,12 +995,12 @@ static int read_cloud_fraction_error(void *user_data, harp_array data)
 
     if (info->format_version <= 1)
     {
-        return read_relerr_as_uncertainty(info, "DETAILED_RESULTS/CloudFraction",
-                                          "DETAILED_RESULTS/CloudFraction_Error", info->num_main, data);
+        return read_uncertainty(info, "DETAILED_RESULTS/CloudFraction", "DETAILED_RESULTS/CloudFraction_Error",
+                                info->num_main, data);
     }
 
-    return read_relerr_as_uncertainty(info, "CLOUD_PROPERTIES/CloudFraction", "CLOUD_PROPERTIES/CloudFraction_Error",
-                                      info->num_main, data);
+    return read_uncertainty(info, "CLOUD_PROPERTIES/CloudFraction", "CLOUD_PROPERTIES/CloudFraction_Error",
+                            info->num_main, data);
 }
 
 static int read_pressure_cloud_top(void *user_data, harp_array data)
@@ -973,12 +1021,12 @@ static int read_pressure_cloud_top_error(void *user_data, harp_array data)
 
     if (info->format_version <= 1)
     {
-        return read_relerr_as_uncertainty(info, "DETAILED_RESULTS/CloudTopPressure",
-                                          "DETAILED_RESULTS/CloudTopPressure_Error", info->num_main, data);
+        return read_uncertainty(info, "DETAILED_RESULTS/CloudTopPressure", "DETAILED_RESULTS/CloudTopPressure_Error",
+                                info->num_main, data);
     }
 
-    return read_relerr_as_uncertainty(info, "CLOUD_PROPERTIES/CloudTopPressure",
-                                      "CLOUD_PROPERTIES/CloudTopPressure_Error", info->num_main, data);
+    return read_uncertainty(info, "CLOUD_PROPERTIES/CloudTopPressure", "CLOUD_PROPERTIES/CloudTopPressure_Error",
+                            info->num_main, data);
 }
 
 static int read_height_cloud_top(void *user_data, harp_array data)
@@ -999,12 +1047,12 @@ static int read_height_cloud_top_error(void *user_data, harp_array data)
 
     if (info->format_version <= 1)
     {
-        return read_relerr_as_uncertainty(info, "DETAILED_RESULTS/CloudTopHeight",
-                                          "DETAILED_RESULTS/CloudTopHeight_Error", info->num_main, data);
+        return read_uncertainty(info, "DETAILED_RESULTS/CloudTopHeight", "DETAILED_RESULTS/CloudTopHeight_Error",
+                                info->num_main, data);
     }
 
-    return read_relerr_as_uncertainty(info, "CLOUD_PROPERTIES/CloudTopHeight", "CLOUD_PROPERTIES/CloudTopHeight_Error",
-                                      info->num_main, data);
+    return read_uncertainty(info, "CLOUD_PROPERTIES/CloudTopHeight", "CLOUD_PROPERTIES/CloudTopHeight_Error",
+                            info->num_main, data);
 }
 
 static int read_albedo_cloud_top(void *user_data, harp_array data)
@@ -1025,12 +1073,12 @@ static int read_albedo_cloud_top_error(void *user_data, harp_array data)
 
     if (info->format_version <= 1)
     {
-        return read_relerr_as_uncertainty(info, "DETAILED_RESULTS/CloudTopAlbedo",
-                                          "DETAILED_RESULTS/CloudTopAlbedo_Error", info->num_main, data);
+        return read_uncertainty(info, "DETAILED_RESULTS/CloudTopAlbedo", "DETAILED_RESULTS/CloudTopAlbedo_Error",
+                                info->num_main, data);
     }
 
-    return read_relerr_as_uncertainty(info, "CLOUD_PROPERTIES/CloudTopAlbedo", "CLOUD_PROPERTIES/CloudTopAlbedo_Error",
-                                      info->num_main, data);
+    return read_uncertainty(info, "CLOUD_PROPERTIES/CloudTopAlbedo", "CLOUD_PROPERTIES/CloudTopAlbedo_Error",
+                            info->num_main, data);
 }
 
 static int read_cloud_optical_thickness(void *user_data, harp_array data)
@@ -1051,12 +1099,12 @@ static int read_cloud_optical_thickness_error(void *user_data, harp_array data)
 
     if (info->format_version <= 1)
     {
-        return read_relerr_as_uncertainty(info, "DETAILED_RESULTS/CloudOpticalThickness",
-                                          "DETAILED_RESULTS/CloudOpticalThickness_Error", info->num_main, data);
+        return read_uncertainty(info, "DETAILED_RESULTS/CloudOpticalThickness",
+                                "DETAILED_RESULTS/CloudOpticalThickness_Error", info->num_main, data);
     }
 
-    return read_relerr_as_uncertainty(info, "CLOUD_PROPERTIES/CloudOpticalThickness",
-                                      "CLOUD_PROPERTIES/CloudOpticalThickness_Error", info->num_main, data);
+    return read_uncertainty(info, "CLOUD_PROPERTIES/CloudOpticalThickness",
+                            "CLOUD_PROPERTIES/CloudOpticalThickness_Error", info->num_main, data);
 }
 
 static int read_absorbing_aerosol_index(void *user_data, harp_array data)
@@ -1672,7 +1720,11 @@ static void register_common_variables(harp_product_definition *product_definitio
                                                    exclude_bro_column_error, read_bro_column_error);
     path = "/TOTAL_COLUMNS/BrO_Error[], /TOTAL_COLUMNS/BrO[]";
     description = "derived from the relative error in percent as: BrO_Error[] * 0.01 * BrO[]";
-    harp_variable_definition_add_mapping(variable_definition, NULL, NULL, path, description);
+    harp_variable_definition_add_mapping(variable_definition, NULL, "/TOTAL_COLUMNS/BrO_Error/\\@Unit == '%'", path,
+                                         description);
+    path = "/TOTAL_COLUMNS/BrO_Error[]";
+    harp_variable_definition_add_mapping(variable_definition, NULL, "/TOTAL_COLUMNS/BrO_Error/\\@Unit != '%'", path,
+                                         NULL);
 
     /* H2O_column_density */
     description = "H2O column mass density";
@@ -1691,7 +1743,11 @@ static void register_common_variables(harp_product_definition *product_definitio
                                                    exclude_h2o_column_error, read_h2o_column_error);
     path = "/TOTAL_COLUMNS/H2O_Error[], /TOTAL_COLUMNS/H2O[]";
     description = "derived from the relative error in percent as: H2O_Error[] * 0.01 * H2O[]";
-    harp_variable_definition_add_mapping(variable_definition, NULL, NULL, path, description);
+    harp_variable_definition_add_mapping(variable_definition, NULL, "/TOTAL_COLUMNS/H2O_Error/\\@Unit == '%'", path,
+                                         description);
+    path = "/TOTAL_COLUMNS/H2O_Error[]";
+    harp_variable_definition_add_mapping(variable_definition, NULL, "/TOTAL_COLUMNS/H2O_Error/\\@Unit != '%'", path,
+                                         NULL);
 
     /* HCHO_column_number_density */
     description = "HCHO column number density";
@@ -1710,7 +1766,11 @@ static void register_common_variables(harp_product_definition *product_definitio
                                                    exclude_hcho_column_error, read_hcho_column_error);
     path = "/TOTAL_COLUMNS/HCHO_Error[], /TOTAL_COLUMNS/HCHO[]";
     description = "derived from the relative error in percent as: HCHO_Error[] * 0.01 * HCHO[]";
-    harp_variable_definition_add_mapping(variable_definition, NULL, NULL, path, description);
+    harp_variable_definition_add_mapping(variable_definition, NULL, "/TOTAL_COLUMNS/HCHO_Error/\\@Unit == '%'", path,
+                                         description);
+    path = "/TOTAL_COLUMNS/HCHO_Error[]";
+    harp_variable_definition_add_mapping(variable_definition, NULL, "/TOTAL_COLUMNS/HCHO_Error/\\@Unit != '%'", path,
+                                         NULL);
 
     /* NO2_column_number_density */
     description = "NO2 column number density";
@@ -1733,8 +1793,11 @@ static void register_common_variables(harp_product_definition *product_definitio
     harp_variable_definition_add_mapping(variable_definition, "corrected_no2_column=true", NULL, NULL, description);
     path = "/TOTAL_COLUMNS/NO2_Error[], /TOTAL_COLUMNS/NO2[]";
     description = "derived from the relative error in percent as: NO2_Error[] * 0.01 * NO2[]";
-    harp_variable_definition_add_mapping(variable_definition, "corrected_no2_column unset (default)", NULL, path,
-                                         description);
+    harp_variable_definition_add_mapping(variable_definition, "corrected_no2_column unset (default)",
+                                         "/TOTAL_COLUMNS/NO2_Error/\\@Unit == '%'", path, description);
+    path = "/TOTAL_COLUMNS/NO2_Error[]";
+    harp_variable_definition_add_mapping(variable_definition, "corrected_no2_column unset (default)",
+                                         "/TOTAL_COLUMNS/NO2_Error/\\@Unit != '%'", path, NULL);
 
     /* tropospheric_NO2_column_number_density */
     description = "tropospheric NO2 column number density";
@@ -1764,7 +1827,10 @@ static void register_common_variables(harp_product_definition *product_definitio
                                                    exclude_o3_column_error, read_o3_column_error);
     path = "/TOTAL_COLUMNS/O3_Error[], /TOTAL_COLUMNS/O3[]";
     description = "derived from the relative error in percent as: O3_Error[] * 0.01 * O3[]";
-    harp_variable_definition_add_mapping(variable_definition, NULL, NULL, path, description);
+    harp_variable_definition_add_mapping(variable_definition, NULL, "/TOTAL_COLUMNS/O3_Error/\\@Unit == '%'", path,
+                                         description);
+    path = "/TOTAL_COLUMNS/O3_Error[]";
+    harp_variable_definition_add_mapping(variable_definition, NULL, "/TOTAL_COLUMNS/O3_Error/\\@Unit != '%'", path, NULL);
 
     /* OClO_column_number_density */
     description = "OClO column number density";
@@ -1783,7 +1849,11 @@ static void register_common_variables(harp_product_definition *product_definitio
                                                    exclude_oclo_column_error, read_oclo_column_error);
     path = "/TOTAL_COLUMNS/OClO_Error[], /TOTAL_COLUMNS/OClO[]";
     description = "derived from the relative error in percent as: OClO_Error[] * 0.01 * OClO[]";
-    harp_variable_definition_add_mapping(variable_definition, NULL, NULL, path, description);
+    harp_variable_definition_add_mapping(variable_definition, NULL, "/TOTAL_COLUMNS/OClO_Error/\\@Unit == '%'", path,
+                                         description);
+    path = "/TOTAL_COLUMNS/OClO_Error[]";
+    harp_variable_definition_add_mapping(variable_definition, NULL, "/TOTAL_COLUMNS/OClO_Error/\\@Unit != '%'", path,
+                                         NULL);
 
     /* SO2_column_number_density */
     description = "SO2 column number density";
@@ -1802,7 +1872,11 @@ static void register_common_variables(harp_product_definition *product_definitio
                                                    exclude_so2_column_error, read_so2_column_error);
     path = "/TOTAL_COLUMNS/SO2_Error[], /TOTAL_COLUMNS/SO2[]";
     description = "derived from the relative error in percent as: SO2_Error[] * 0.01 * SO2[]";
-    harp_variable_definition_add_mapping(variable_definition, NULL, NULL, path, description);
+    harp_variable_definition_add_mapping(variable_definition, NULL, "/TOTAL_COLUMNS/SO2_Error/\\@Unit == '%'", path,
+                                         description);
+    path = "/TOTAL_COLUMNS/SO2_Error[]";
+    harp_variable_definition_add_mapping(variable_definition, NULL, "/TOTAL_COLUMNS/SO2_Error/\\@Unit != '%'", path,
+                                         NULL);
 
     /* BrO_column_number_density_amf */
     description = "BrO air mass factor";

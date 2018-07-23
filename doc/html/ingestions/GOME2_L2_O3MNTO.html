@@ -593,32 +593,50 @@
 <tr class="row-odd"><td><em>path</em></td>
 <td><strong>/TOTAL_COLUMNS/BrO[]</strong></td>
 </tr>
-<tr class="row-even"><td rowspan="3"><strong>BrO_column_number_density_uncertainty</strong></td>
+<tr class="row-even"><td rowspan="6"><strong>BrO_column_number_density_uncertainty</strong></td>
+<td><em>available</em></td>
+<td>optional</td>
+</tr>
+<tr class="row-odd"><td><em>condition</em></td>
+<td>/TOTAL_COLUMNS/BrO_Error/&#64;Unit == &#8216;%&#8217;</td>
+</tr>
+<tr class="row-even"><td><em>path</em></td>
+<td><strong>/TOTAL_COLUMNS/BrO_Error[], /TOTAL_COLUMNS/BrO[]</strong></td>
+</tr>
+<tr class="row-odd"><td><em>description</em></td>
+<td>derived from the relative error in percent as: BrO_Error[] * 0.01 * BrO[]</td>
+</tr>
+<tr class="row-even"><td><em>condition</em></td>
+<td>/TOTAL_COLUMNS/BrO_Error/&#64;Unit != &#8216;%&#8217;</td>
+</tr>
+<tr class="row-odd"><td><em>path</em></td>
+<td><strong>/TOTAL_COLUMNS/BrO_Error[]</strong></td>
+</tr>
+<tr class="row-even"><td rowspan="2"><strong>H2O_column_density</strong></td>
 <td><em>available</em></td>
 <td>optional</td>
 </tr>
 <tr class="row-odd"><td><em>path</em></td>
-<td><strong>/TOTAL_COLUMNS/BrO_Error[], /TOTAL_COLUMNS/BrO[]</strong></td>
-</tr>
-<tr class="row-even"><td><em>description</em></td>
-<td>derived from the relative error in percent as: BrO_Error[] * 0.01 * BrO[]</td>
-</tr>
-<tr class="row-odd"><td rowspan="2"><strong>H2O_column_density</strong></td>
-<td><em>available</em></td>
-<td>optional</td>
-</tr>
-<tr class="row-even"><td><em>path</em></td>
 <td><strong>/TOTAL_COLUMNS/H2O[]</strong></td>
 </tr>
-<tr class="row-odd"><td rowspan="3"><strong>H2O_column_density_uncertainty</strong></td>
+<tr class="row-even"><td rowspan="6"><strong>H2O_column_density_uncertainty</strong></td>
 <td><em>available</em></td>
 <td>optional</td>
+</tr>
+<tr class="row-odd"><td><em>condition</em></td>
+<td>/TOTAL_COLUMNS/H2O_Error/&#64;Unit == &#8216;%&#8217;</td>
 </tr>
 <tr class="row-even"><td><em>path</em></td>
 <td><strong>/TOTAL_COLUMNS/H2O_Error[], /TOTAL_COLUMNS/H2O[]</strong></td>
 </tr>
 <tr class="row-odd"><td><em>description</em></td>
 <td>derived from the relative error in percent as: H2O_Error[] * 0.01 * H2O[]</td>
+</tr>
+<tr class="row-even"><td><em>condition</em></td>
+<td>/TOTAL_COLUMNS/H2O_Error/&#64;Unit != &#8216;%&#8217;</td>
+</tr>
+<tr class="row-odd"><td><em>path</em></td>
+<td><strong>/TOTAL_COLUMNS/H2O_Error[]</strong></td>
 </tr>
 <tr class="row-even"><td rowspan="2"><strong>HCHO_column_number_density</strong></td>
 <td><em>available</em></td>
@@ -627,83 +645,107 @@
 <tr class="row-odd"><td><em>path</em></td>
 <td><strong>/TOTAL_COLUMNS/HCHO[]</strong></td>
 </tr>
-<tr class="row-even"><td rowspan="3"><strong>HCHO_column_number_density_uncertainty</strong></td>
+<tr class="row-even"><td rowspan="6"><strong>HCHO_column_number_density_uncertainty</strong></td>
 <td><em>available</em></td>
 <td>optional</td>
 </tr>
-<tr class="row-odd"><td><em>path</em></td>
+<tr class="row-odd"><td><em>condition</em></td>
+<td>/TOTAL_COLUMNS/HCHO_Error/&#64;Unit == &#8216;%&#8217;</td>
+</tr>
+<tr class="row-even"><td><em>path</em></td>
 <td><strong>/TOTAL_COLUMNS/HCHO_Error[], /TOTAL_COLUMNS/HCHO[]</strong></td>
 </tr>
-<tr class="row-even"><td><em>description</em></td>
+<tr class="row-odd"><td><em>description</em></td>
 <td>derived from the relative error in percent as: HCHO_Error[] * 0.01 * HCHO[]</td>
 </tr>
-<tr class="row-odd"><td rowspan="5"><strong>NO2_column_number_density</strong></td>
+<tr class="row-even"><td><em>condition</em></td>
+<td>/TOTAL_COLUMNS/HCHO_Error/&#64;Unit != &#8216;%&#8217;</td>
+</tr>
+<tr class="row-odd"><td><em>path</em></td>
+<td><strong>/TOTAL_COLUMNS/HCHO_Error[]</strong></td>
+</tr>
+<tr class="row-even"><td rowspan="5"><strong>NO2_column_number_density</strong></td>
 <td><em>available</em></td>
 <td>optional</td>
 </tr>
-<tr class="row-even"><td><em>condition</em></td>
+<tr class="row-odd"><td><em>condition</em></td>
 <td>corrected_no2_column=true</td>
 </tr>
-<tr class="row-odd"><td><em>path</em></td>
+<tr class="row-even"><td><em>path</em></td>
 <td><strong>/TOTAL_COLUMNS/NO2_Corr[]</strong></td>
 </tr>
-<tr class="row-even"><td><em>condition</em></td>
+<tr class="row-odd"><td><em>condition</em></td>
 <td>corrected_no2_column unset (default)</td>
 </tr>
-<tr class="row-odd"><td><em>path</em></td>
+<tr class="row-even"><td><em>path</em></td>
 <td><strong>/TOTAL_COLUMNS/NO2[]</strong></td>
 </tr>
-<tr class="row-even"><td rowspan="6"><strong>NO2_column_number_density_uncertainty</strong></td>
+<tr class="row-odd"><td rowspan="8"><strong>NO2_column_number_density_uncertainty</strong></td>
 <td><em>available</em></td>
 <td>optional</td>
 </tr>
-<tr class="row-odd"><td><em>condition</em></td>
+<tr class="row-even"><td><em>condition</em></td>
 <td>corrected_no2_column=true</td>
 </tr>
-<tr class="row-even"><td><em>description</em></td>
+<tr class="row-odd"><td><em>description</em></td>
 <td>uncertainty information unavailable; this variable will not be present in the ingested product</td>
 </tr>
-<tr class="row-odd"><td><em>condition</em></td>
-<td>corrected_no2_column unset (default)</td>
+<tr class="row-even"><td><em>condition</em></td>
+<td>corrected_no2_column unset (default) and /TOTAL_COLUMNS/NO2_Error/&#64;Unit == &#8216;%&#8217;</td>
 </tr>
-<tr class="row-even"><td><em>path</em></td>
+<tr class="row-odd"><td><em>path</em></td>
 <td><strong>/TOTAL_COLUMNS/NO2_Error[], /TOTAL_COLUMNS/NO2[]</strong></td>
 </tr>
-<tr class="row-odd"><td><em>description</em></td>
+<tr class="row-even"><td><em>description</em></td>
 <td>derived from the relative error in percent as: NO2_Error[] * 0.01 * NO2[]</td>
 </tr>
-<tr class="row-even"><td rowspan="5"><strong>tropospheric_NO2_column_number_density</strong></td>
+<tr class="row-odd"><td><em>condition</em></td>
+<td>corrected_no2_column unset (default) and /TOTAL_COLUMNS/NO2_Error/&#64;Unit != &#8216;%&#8217;</td>
+</tr>
+<tr class="row-even"><td><em>path</em></td>
+<td><strong>/TOTAL_COLUMNS/NO2_Error[]</strong></td>
+</tr>
+<tr class="row-odd"><td rowspan="5"><strong>tropospheric_NO2_column_number_density</strong></td>
 <td><em>available</em></td>
 <td>optional</td>
 </tr>
-<tr class="row-odd"><td><em>condition</em></td>
+<tr class="row-even"><td><em>condition</em></td>
 <td>V1 product</td>
 </tr>
-<tr class="row-even"><td><em>path</em></td>
+<tr class="row-odd"><td><em>path</em></td>
 <td><strong>/TOTAL_COLUMNS/NO2_Trop[]</strong></td>
 </tr>
-<tr class="row-odd"><td><em>condition</em></td>
+<tr class="row-even"><td><em>condition</em></td>
 <td>V2 product</td>
 </tr>
-<tr class="row-even"><td><em>path</em></td>
+<tr class="row-odd"><td><em>path</em></td>
 <td><strong>/TOTAL_COLUMNS/NO2Tropo[]</strong></td>
 </tr>
-<tr class="row-odd"><td rowspan="2"><strong>O3_column_number_density</strong></td>
+<tr class="row-even"><td rowspan="2"><strong>O3_column_number_density</strong></td>
 <td><em>available</em></td>
 <td>optional</td>
 </tr>
-<tr class="row-even"><td><em>path</em></td>
+<tr class="row-odd"><td><em>path</em></td>
 <td><strong>/TOTAL_COLUMNS/O3[]</strong></td>
 </tr>
-<tr class="row-odd"><td rowspan="3"><strong>O3_column_number_density_uncertainty</strong></td>
+<tr class="row-even"><td rowspan="6"><strong>O3_column_number_density_uncertainty</strong></td>
 <td><em>available</em></td>
 <td>optional</td>
+</tr>
+<tr class="row-odd"><td><em>condition</em></td>
+<td>/TOTAL_COLUMNS/O3_Error/&#64;Unit == &#8216;%&#8217;</td>
 </tr>
 <tr class="row-even"><td><em>path</em></td>
 <td><strong>/TOTAL_COLUMNS/O3_Error[], /TOTAL_COLUMNS/O3[]</strong></td>
 </tr>
 <tr class="row-odd"><td><em>description</em></td>
 <td>derived from the relative error in percent as: O3_Error[] * 0.01 * O3[]</td>
+</tr>
+<tr class="row-even"><td><em>condition</em></td>
+<td>/TOTAL_COLUMNS/O3_Error/&#64;Unit != &#8216;%&#8217;</td>
+</tr>
+<tr class="row-odd"><td><em>path</em></td>
+<td><strong>/TOTAL_COLUMNS/O3_Error[]</strong></td>
 </tr>
 <tr class="row-even"><td rowspan="2"><strong>OClO_column_number_density</strong></td>
 <td><em>available</em></td>
@@ -712,32 +754,50 @@
 <tr class="row-odd"><td><em>path</em></td>
 <td><strong>/TOTAL_COLUMNS/OClO[]</strong></td>
 </tr>
-<tr class="row-even"><td rowspan="3"><strong>OClO_column_number_density_uncertainty</strong></td>
+<tr class="row-even"><td rowspan="6"><strong>OClO_column_number_density_uncertainty</strong></td>
+<td><em>available</em></td>
+<td>optional</td>
+</tr>
+<tr class="row-odd"><td><em>condition</em></td>
+<td>/TOTAL_COLUMNS/OClO_Error/&#64;Unit == &#8216;%&#8217;</td>
+</tr>
+<tr class="row-even"><td><em>path</em></td>
+<td><strong>/TOTAL_COLUMNS/OClO_Error[], /TOTAL_COLUMNS/OClO[]</strong></td>
+</tr>
+<tr class="row-odd"><td><em>description</em></td>
+<td>derived from the relative error in percent as: OClO_Error[] * 0.01 * OClO[]</td>
+</tr>
+<tr class="row-even"><td><em>condition</em></td>
+<td>/TOTAL_COLUMNS/OClO_Error/&#64;Unit != &#8216;%&#8217;</td>
+</tr>
+<tr class="row-odd"><td><em>path</em></td>
+<td><strong>/TOTAL_COLUMNS/OClO_Error[]</strong></td>
+</tr>
+<tr class="row-even"><td rowspan="2"><strong>SO2_column_number_density</strong></td>
 <td><em>available</em></td>
 <td>optional</td>
 </tr>
 <tr class="row-odd"><td><em>path</em></td>
-<td><strong>/TOTAL_COLUMNS/OClO_Error[], /TOTAL_COLUMNS/OClO[]</strong></td>
-</tr>
-<tr class="row-even"><td><em>description</em></td>
-<td>derived from the relative error in percent as: OClO_Error[] * 0.01 * OClO[]</td>
-</tr>
-<tr class="row-odd"><td rowspan="2"><strong>SO2_column_number_density</strong></td>
-<td><em>available</em></td>
-<td>optional</td>
-</tr>
-<tr class="row-even"><td><em>path</em></td>
 <td><strong>/TOTAL_COLUMNS/SO2[]</strong></td>
 </tr>
-<tr class="row-odd"><td rowspan="3"><strong>SO2_column_number_density_uncertainty</strong></td>
+<tr class="row-even"><td rowspan="6"><strong>SO2_column_number_density_uncertainty</strong></td>
 <td><em>available</em></td>
 <td>optional</td>
+</tr>
+<tr class="row-odd"><td><em>condition</em></td>
+<td>/TOTAL_COLUMNS/SO2_Error/&#64;Unit == &#8216;%&#8217;</td>
 </tr>
 <tr class="row-even"><td><em>path</em></td>
 <td><strong>/TOTAL_COLUMNS/SO2_Error[], /TOTAL_COLUMNS/SO2[]</strong></td>
 </tr>
 <tr class="row-odd"><td><em>description</em></td>
 <td>derived from the relative error in percent as: SO2_Error[] * 0.01 * SO2[]</td>
+</tr>
+<tr class="row-even"><td><em>condition</em></td>
+<td>/TOTAL_COLUMNS/SO2_Error/&#64;Unit != &#8216;%&#8217;</td>
+</tr>
+<tr class="row-odd"><td><em>path</em></td>
+<td><strong>/TOTAL_COLUMNS/SO2_Error[]</strong></td>
 </tr>
 <tr class="row-even"><td rowspan="3"><strong>BrO_column_number_density_amf</strong></td>
 <td><em>available</em></td>

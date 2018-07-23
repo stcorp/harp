@@ -3,7 +3,7 @@
 
 * Add derivations between wind speed/direction and zonal/meridional velocity.
 
-* Updates to ECMWF GRIB product ingestions.
+* Updates to GOME2 L2 and ECMWF GRIB product ingestions.
 
 1.3 2018-07-05
 ~~~~~~~~~~~~~~
