@@ -4360,10 +4360,10 @@ static void register_co_product(void)
                                                    read_product_qa_value);
     harp_variable_definition_add_mapping(variable_definition, NULL, NULL, "/PRODUCT/qa_value", NULL);
 
-    /* CO_column_number_density_avk */
+    /* CO_number_density_avk */
     description = "averaging kernel for the vertically integrated CO column density";
     variable_definition =
-        harp_ingestion_register_variable_full_read(product_definition, "CO_column_number_density_avk", harp_type_float,
+        harp_ingestion_register_variable_full_read(product_definition, "CO_number_density_avk", harp_type_float,
                                                    2, dimension_type, NULL, description, "m", NULL,
                                                    read_results_column_averaging_kernel_inverted);
     path = "/PRODUCT/SUPPORT_DATA/DETAILED_RESULTS/column_averaging_kernel[]";
