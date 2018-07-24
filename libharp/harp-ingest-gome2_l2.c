@@ -52,6 +52,7 @@ typedef enum species_type_enum
 typedef struct ingest_info_struct
 {
     coda_product *product;
+    int product_version;
     int window_for_species[7];
     harp_array amf_buffer;
     harp_array amf_error_buffer;
@@ -61,7 +62,6 @@ typedef struct ingest_info_struct
     long num_windows;
     int corrected_no2;
     int revision;
-    int format_version;
 } ingest_info;
 
 static int init_num_main(ingest_info *info)
@@ -202,66 +202,6 @@ static int init_revision(ingest_info *info)
     return 0;
 }
 
-static int init_format_version(ingest_info *info)
-{
-    char format_version[4];
-    coda_cursor cursor;
-
-    if (coda_cursor_set_product(&cursor, info->product) != 0)
-    {
-        harp_set_error(HARP_ERROR_CODA, NULL);
-        return -1;
-    }
-    if (coda_cursor_goto(&cursor, "META_DATA@ProductFormatVersion[0]") != 0)
-    {
-        harp_set_error(HARP_ERROR_CODA, NULL);
-        return -1;
-    }
-    if (coda_cursor_read_string(&cursor, format_version, 4) != 0)
-    {
-        harp_set_error(HARP_ERROR_CODA, NULL);
-        return -1;
-    }
-    if (format_version[0] < '0' || format_version[0] > '9')
-    {
-        harp_set_error(HARP_ERROR_INGESTION, "attribute '/META_DATA@ProductFormatVersion' does not contain a valid "
-                       "version value");
-        return -1;
-    }
-    info->format_version = format_version[0] - '0';
-
-    return 0;
-}
-
-static int has_dataset_percentage_unit(ingest_info *info, const char *path)
-{
-    coda_cursor cursor;
-    char unit[10];
-
-    if (coda_cursor_set_product(&cursor, info->product) != 0)
-    {
-        harp_set_error(HARP_ERROR_CODA, NULL);
-        return -1;
-    }
-    if (coda_cursor_goto(&cursor, path) != 0)
-    {
-        harp_set_error(HARP_ERROR_CODA, NULL);
-        return -1;
-    }
-    if (coda_cursor_goto(&cursor, "@Unit[0]") != 0)
-    {
-        harp_set_error(HARP_ERROR_CODA, NULL);
-        return -1;
-    }
-    if (coda_cursor_read_string(&cursor, unit, 10) != 0)
-    {
-        harp_set_error(HARP_ERROR_CODA, NULL);
-        return -1;
-    }
-
-    return strcmp(unit, "%") == 0;
-}
-
 static int read_dataset(ingest_info *info, const char *path, harp_data_type data_type, long num_elements,
                         harp_array data)
 {
@@ -340,30 +280,12 @@ static int read_dataset(ingest_info *info, const char *path, harp_data_type data
     return 0;
 }
 
-static int read_uncertainty(ingest_info *info, const char *path_quantity, const char *path_error, long num_elements,
-                            harp_array data)
+/* read relative uncertainty [%] and turn it into an absolute uncertainty */
+static int read_relative_uncertainty(ingest_info *info, const char *path_quantity, const char *path_error,
+                                     long num_elements, harp_array data)
 {
     harp_array relerr;
-    int result;
     long i;
-
-    result = has_dataset_percentage_unit(info, path_error);
-    if (result < 0)
-    {
-        return -1;
-    }
-    if (result == 0)
-    {
-        /* error is absolute, so just read and return */
-        if (read_dataset(info, path_error, harp_type_double, num_elements, data) != 0)
-        {
-            return -1;
-        }
-
-        return 0;
-    }
-
-    /* error is relative, so read main quantity and derive absolute error */
 
     if (read_dataset(info, path_quantity, harp_type_double, num_elements, data) != 0)
     {
@@ -817,7 +739,12 @@ static int read_bro_column_error(void *user_data, harp_array data)
 {
     ingest_info *info = (ingest_info *)user_data;
 
-    return read_uncertainty(info, "TOTAL_COLUMNS/BrO", "TOTAL_COLUMNS/BrO_Error", info->num_main, data);
+    if (info->product_version < 3)
+    {
+        return read_relative_uncertainty(info, "TOTAL_COLUMNS/BrO", "TOTAL_COLUMNS/BrO_Error", info->num_main, data);
+    }
+
+    return read_dataset(info, "TOTAL_COLUMNS/BrO_Error", harp_type_double, info->num_main, data);
 }
 
 static int read_h2o_column(void *user_data, harp_array data)
@@ -831,7 +758,7 @@ static int read_h2o_column_error(void *user_data, harp_array data)
 {
     ingest_info *info = (ingest_info *)user_data;
 
-    return read_uncertainty(info, "TOTAL_COLUMNS/H2O", "TOTAL_COLUMNS/H2O_Error", info->num_main, data);
+    return read_relative_uncertainty(info, "TOTAL_COLUMNS/H2O", "TOTAL_COLUMNS/H2O_Error", info->num_main, data);
 }
 
 static int read_hcho_column(void *user_data, harp_array data)
@@ -845,7 +772,12 @@ static int read_hcho_column_error(void *user_data, harp_array data)
 {
     ingest_info *info = (ingest_info *)user_data;
 
-    return read_uncertainty(info, "TOTAL_COLUMNS/HCHO", "TOTAL_COLUMNS/HCHO_Error", info->num_main, data);
+    if (info->product_version < 3)
+    {
+        return read_relative_uncertainty(info, "TOTAL_COLUMNS/HCHO", "TOTAL_COLUMNS/HCHO_Error", info->num_main, data);
+    }
+
+    return read_dataset(info, "TOTAL_COLUMNS/HCHO_Error", harp_type_double, info->num_main, data);
 }
 
 static int read_no2_column(void *user_data, harp_array data)
@@ -865,14 +797,20 @@ static int read_no2_column_error(void *user_data, harp_array data)
     ingest_info *info = (ingest_info *)user_data;
 
     assert(!info->corrected_no2);
-    return read_uncertainty(info, "TOTAL_COLUMNS/NO2", "TOTAL_COLUMNS/NO2_Error", info->num_main, data);
+
+    if (info->product_version < 3)
+    {
+        return read_relative_uncertainty(info, "TOTAL_COLUMNS/NO2", "TOTAL_COLUMNS/NO2_Error", info->num_main, data);
+    }
+
+    return read_dataset(info, "TOTAL_COLUMNS/NO2_Error", harp_type_double, info->num_main, data);
 }
 
 static int read_no2_column_tropospheric(void *user_data, harp_array data)
 {
     ingest_info *info = (ingest_info *)user_data;
 
-    if (info->format_version <= 1)
+    if (info->product_version < 2)
     {
         return read_dataset(info, "TOTAL_COLUMNS/NO2_Trop", harp_type_double, info->num_main, data);
     }
@@ -891,7 +829,12 @@ static int read_o3_column_error(void *user_data, harp_array data)
 {
     ingest_info *info = (ingest_info *)user_data;
 
-    return read_uncertainty(info, "TOTAL_COLUMNS/O3", "TOTAL_COLUMNS/O3_Error", info->num_main, data);
+    if (info->product_version < 3)
+    {
+        return read_relative_uncertainty(info, "TOTAL_COLUMNS/O3", "TOTAL_COLUMNS/O3_Error", info->num_main, data);
+    }
+
+    return read_dataset(info, "TOTAL_COLUMNS/O3_Error", harp_type_double, info->num_main, data);
 }
 
 static int read_oclo_column(void *user_data, harp_array data)
@@ -905,7 +848,12 @@ static int read_oclo_column_error(void *user_data, harp_array data)
 {
     ingest_info *info = (ingest_info *)user_data;
 
-    return read_uncertainty(info, "TOTAL_COLUMNS/OClO", "TOTAL_COLUMNS/OClO_Error", info->num_main, data);
+    if (info->product_version < 3)
+    {
+        return read_relative_uncertainty(info, "TOTAL_COLUMNS/OClO", "TOTAL_COLUMNS/OClO_Error", info->num_main, data);
+    }
+
+    return read_dataset(info, "TOTAL_COLUMNS/OClO_Error", harp_type_double, info->num_main, data);
 }
 
 static int read_so2_column(void *user_data, harp_array data)
@@ -919,7 +867,12 @@ static int read_so2_column_error(void *user_data, harp_array data)
 {
     ingest_info *info = (ingest_info *)user_data;
 
-    return read_uncertainty(info, "TOTAL_COLUMNS/SO2", "TOTAL_COLUMNS/SO2_Error", info->num_main, data);
+    if (info->product_version < 3)
+    {
+        return read_relative_uncertainty(info, "TOTAL_COLUMNS/SO2", "TOTAL_COLUMNS/SO2_Error", info->num_main, data);
+    }
+
+    return read_dataset(info, "TOTAL_COLUMNS/SO2_Error", harp_type_double, info->num_main, data);
 }
 
 static int read_amf_bro(void *user_data, harp_array data)
@@ -989,8 +942,8 @@ static int read_amf_no2_tropospheric_error(void *user_data, harp_array data)
 {
     ingest_info *info = (ingest_info *)user_data;
 
-    return read_uncertainty(info, "DETAILED_RESULTS/NO2/AMFTropo", "DETAILED_RESULTS/NO2/AMFTropo_Error",
-                            info->num_main, data);
+    return read_relative_uncertainty(info, "DETAILED_RESULTS/NO2/AMFTropo", "DETAILED_RESULTS/NO2/AMFTropo_Error",
+                                     info->num_main, data);
 }
 
 static int read_amf_o3(void *user_data, harp_array data)
@@ -1088,7 +1041,7 @@ static int read_cloud_fraction(void *user_data, harp_array data)
 {
     ingest_info *info = (ingest_info *)user_data;
 
-    if (info->format_version <= 1)
+    if (info->product_version < 2)
     {
         return read_dataset(info, "DETAILED_RESULTS/CloudFraction", harp_type_double, info->num_main, data);
     }
@@ -1100,21 +1053,21 @@ static int read_cloud_fraction_error(void *user_data, harp_array data)
 {
     ingest_info *info = (ingest_info *)user_data;
 
-    if (info->format_version <= 1)
+    if (info->product_version < 2)
     {
-        return read_uncertainty(info, "DETAILED_RESULTS/CloudFraction", "DETAILED_RESULTS/CloudFraction_Error",
-                                info->num_main, data);
+        return read_relative_uncertainty(info, "DETAILED_RESULTS/CloudFraction", "DETAILED_RESULTS/CloudFraction_Error",
+                                         info->num_main, data);
     }
 
-    return read_uncertainty(info, "CLOUD_PROPERTIES/CloudFraction", "CLOUD_PROPERTIES/CloudFraction_Error",
-                            info->num_main, data);
+    return read_relative_uncertainty(info, "CLOUD_PROPERTIES/CloudFraction", "CLOUD_PROPERTIES/CloudFraction_Error",
+                                     info->num_main, data);
 }
 
 static int read_pressure_cloud_top(void *user_data, harp_array data)
 {
     ingest_info *info = (ingest_info *)user_data;
 
-    if (info->format_version <= 1)
+    if (info->product_version < 2)
     {
         return read_dataset(info, "DETAILED_RESULTS/CloudTopPressure", harp_type_double, info->num_main, data);
     }
@@ -1126,21 +1079,21 @@ static int read_pressure_cloud_top_error(void *user_data, harp_array data)
 {
     ingest_info *info = (ingest_info *)user_data;
 
-    if (info->format_version <= 1)
+    if (info->product_version < 2)
     {
-        return read_uncertainty(info, "DETAILED_RESULTS/CloudTopPressure", "DETAILED_RESULTS/CloudTopPressure_Error",
-                                info->num_main, data);
+        return read_relative_uncertainty(info, "DETAILED_RESULTS/CloudTopPressure",
+                                         "DETAILED_RESULTS/CloudTopPressure_Error", info->num_main, data);
     }
 
-    return read_uncertainty(info, "CLOUD_PROPERTIES/CloudTopPressure", "CLOUD_PROPERTIES/CloudTopPressure_Error",
-                            info->num_main, data);
+    return read_relative_uncertainty(info, "CLOUD_PROPERTIES/CloudTopPressure",
+                                     "CLOUD_PROPERTIES/CloudTopPressure_Error", info->num_main, data);
 }
 
 static int read_height_cloud_top(void *user_data, harp_array data)
 {
     ingest_info *info = (ingest_info *)user_data;
 
-    if (info->format_version <= 1)
+    if (info->product_version < 2)
     {
         return read_dataset(info, "DETAILED_RESULTS/CloudTopHeight", harp_type_double, info->num_main, data);
     }
@@ -1152,21 +1105,21 @@ static int read_height_cloud_top_error(void *user_data, harp_array data)
 {
     ingest_info *info = (ingest_info *)user_data;
 
-    if (info->format_version <= 1)
+    if (info->product_version < 2)
     {
-        return read_uncertainty(info, "DETAILED_RESULTS/CloudTopHeight", "DETAILED_RESULTS/CloudTopHeight_Error",
-                                info->num_main, data);
+        return read_relative_uncertainty(info, "DETAILED_RESULTS/CloudTopHeight",
+                                         "DETAILED_RESULTS/CloudTopHeight_Error", info->num_main, data);
     }
 
-    return read_uncertainty(info, "CLOUD_PROPERTIES/CloudTopHeight", "CLOUD_PROPERTIES/CloudTopHeight_Error",
-                            info->num_main, data);
+    return read_relative_uncertainty(info, "CLOUD_PROPERTIES/CloudTopHeight", "CLOUD_PROPERTIES/CloudTopHeight_Error",
+                                     info->num_main, data);
 }
 
 static int read_albedo_cloud_top(void *user_data, harp_array data)
 {
     ingest_info *info = (ingest_info *)user_data;
 
-    if (info->format_version <= 1)
+    if (info->product_version < 2)
     {
         return read_dataset(info, "DETAILED_RESULTS/CloudTopAlbedo", harp_type_double, info->num_main, data);
     }
@@ -1178,21 +1131,21 @@ static int read_albedo_cloud_top_error(void *user_data, harp_array data)
 {
     ingest_info *info = (ingest_info *)user_data;
 
-    if (info->format_version <= 1)
+    if (info->product_version < 2)
     {
-        return read_uncertainty(info, "DETAILED_RESULTS/CloudTopAlbedo", "DETAILED_RESULTS/CloudTopAlbedo_Error",
-                                info->num_main, data);
+        return read_relative_uncertainty(info, "DETAILED_RESULTS/CloudTopAlbedo",
+                                         "DETAILED_RESULTS/CloudTopAlbedo_Error", info->num_main, data);
     }
 
-    return read_uncertainty(info, "CLOUD_PROPERTIES/CloudTopAlbedo", "CLOUD_PROPERTIES/CloudTopAlbedo_Error",
-                            info->num_main, data);
+    return read_relative_uncertainty(info, "CLOUD_PROPERTIES/CloudTopAlbedo", "CLOUD_PROPERTIES/CloudTopAlbedo_Error",
+                                     info->num_main, data);
 }
 
 static int read_cloud_optical_thickness(void *user_data, harp_array data)
 {
     ingest_info *info = (ingest_info *)user_data;
 
-    if (info->format_version <= 1)
+    if (info->product_version < 2)
     {
         return read_dataset(info, "DETAILED_RESULTS/CloudOpticalThickness", harp_type_double, info->num_main, data);
     }
@@ -1204,14 +1157,14 @@ static int read_cloud_optical_thickness_error(void *user_data, harp_array data)
 {
     ingest_info *info = (ingest_info *)user_data;
 
-    if (info->format_version <= 1)
+    if (info->product_version < 2)
     {
-        return read_uncertainty(info, "DETAILED_RESULTS/CloudOpticalThickness",
-                                "DETAILED_RESULTS/CloudOpticalThickness_Error", info->num_main, data);
+        return read_relative_uncertainty(info, "DETAILED_RESULTS/CloudOpticalThickness",
+                                         "DETAILED_RESULTS/CloudOpticalThickness_Error", info->num_main, data);
     }
 
-    return read_uncertainty(info, "CLOUD_PROPERTIES/CloudOpticalThickness",
-                            "CLOUD_PROPERTIES/CloudOpticalThickness_Error", info->num_main, data);
+    return read_relative_uncertainty(info, "CLOUD_PROPERTIES/CloudOpticalThickness",
+                                     "CLOUD_PROPERTIES/CloudOpticalThickness_Error", info->num_main, data);
 }
 
 static int read_absorbing_aerosol_index(void *user_data, harp_array data)
@@ -1375,12 +1328,20 @@ static int ingestion_init(const harp_ingestion_module *module, coda_product *pro
         return -1;
     }
     info->product = product;
+    info->product_version = -1;
     info->amf_buffer.ptr = NULL;
     info->amf_error_buffer.ptr = NULL;
     info->index_in_scan_buffer.ptr = NULL;
     info->quality_flags_buffer.ptr = NULL;
     info->corrected_no2 = 0;
     info->revision = 0;
+
+    if (coda_get_product_version(info->product, &info->product_version) != 0)
+    {
+        harp_set_error(HARP_ERROR_CODA, NULL);
+        ingestion_done(info);
+        return -1;
+    }
 
     if (init_num_main(info) != 0)
     {
@@ -1393,11 +1354,6 @@ static int ingestion_init(const harp_ingestion_module *module, coda_product *pro
         return -1;
     }
     if (init_revision(info) != 0)
-    {
-        ingestion_done(info);
-        return -1;
-    }
-    if (init_format_version(info) != 0)
     {
         ingestion_done(info);
         return -1;
@@ -1480,7 +1436,7 @@ static int exclude_no2_column_error(void *user_data)
 
 static int exclude_no2_column_tropospheric(void *user_data)
 {
-    if (((ingest_info *)user_data)->format_version <= 1)
+    if (((ingest_info *)user_data)->product_version < 2)
     {
         return dataset_unavailable((ingest_info *)user_data, "TOTAL_COLUMNS/NO2_Trop");
     }
@@ -1687,7 +1643,7 @@ static int exclude_amf_so2_error(void *user_data)
 
 static int exclude_cloud_fraction(void *user_data)
 {
-    if (((ingest_info *)user_data)->format_version <= 1)
+    if (((ingest_info *)user_data)->product_version < 2)
     {
         return dataset_unavailable((ingest_info *)user_data, "DETAILED_RESULTS/CloudFraction");
     }
@@ -1696,7 +1652,7 @@ static int exclude_cloud_fraction(void *user_data)
 
 static int exclude_cloud_fraction_error(void *user_data)
 {
-    if (((ingest_info *)user_data)->format_version <= 1)
+    if (((ingest_info *)user_data)->product_version < 2)
     {
         return dataset_unavailable((ingest_info *)user_data, "DETAILED_RESULTS/CloudFraction_Error");
     }
@@ -1705,7 +1661,7 @@ static int exclude_cloud_fraction_error(void *user_data)
 
 static int exclude_pressure_cloud_top(void *user_data)
 {
-    if (((ingest_info *)user_data)->format_version <= 1)
+    if (((ingest_info *)user_data)->product_version < 2)
     {
         return dataset_unavailable((ingest_info *)user_data, "DETAILED_RESULTS/CloudTopPressure");
     }
@@ -1714,7 +1670,7 @@ static int exclude_pressure_cloud_top(void *user_data)
 
 static int exclude_pressure_cloud_top_error(void *user_data)
 {
-    if (((ingest_info *)user_data)->format_version <= 1)
+    if (((ingest_info *)user_data)->product_version < 2)
     {
         return dataset_unavailable((ingest_info *)user_data, "DETAILED_RESULTS/CloudTopPressure_Error");
     }
@@ -1723,7 +1679,7 @@ static int exclude_pressure_cloud_top_error(void *user_data)
 
 static int exclude_height_cloud_top(void *user_data)
 {
-    if (((ingest_info *)user_data)->format_version <= 1)
+    if (((ingest_info *)user_data)->product_version < 2)
     {
         return dataset_unavailable((ingest_info *)user_data, "DETAILED_RESULTS/CloudTopHeight");
     }
@@ -1732,7 +1688,7 @@ static int exclude_height_cloud_top(void *user_data)
 
 static int exclude_height_cloud_top_error(void *user_data)
 {
-    if (((ingest_info *)user_data)->format_version <= 1)
+    if (((ingest_info *)user_data)->product_version < 2)
     {
         return dataset_unavailable((ingest_info *)user_data, "DETAILED_RESULTS/CloudTopHeight_Error");
     }
@@ -1741,7 +1697,7 @@ static int exclude_height_cloud_top_error(void *user_data)
 
 static int exclude_albedo_cloud_top(void *user_data)
 {
-    if (((ingest_info *)user_data)->format_version <= 1)
+    if (((ingest_info *)user_data)->product_version < 2)
     {
         return dataset_unavailable((ingest_info *)user_data, "DETAILED_RESULTS/CloudTopAlbedo");
     }
@@ -1750,7 +1706,7 @@ static int exclude_albedo_cloud_top(void *user_data)
 
 static int exclude_albedo_cloud_top_error(void *user_data)
 {
-    if (((ingest_info *)user_data)->format_version <= 1)
+    if (((ingest_info *)user_data)->product_version < 2)
     {
         return dataset_unavailable((ingest_info *)user_data, "DETAILED_RESULTS/CloudTopAlbedo_Error");
     }
@@ -1759,7 +1715,7 @@ static int exclude_albedo_cloud_top_error(void *user_data)
 
 static int exclude_cloud_optical_thickness(void *user_data)
 {
-    if (((ingest_info *)user_data)->format_version <= 1)
+    if (((ingest_info *)user_data)->product_version < 2)
     {
         return dataset_unavailable((ingest_info *)user_data, "DETAILED_RESULTS/CloudOpticalThickness");
     }
@@ -1768,7 +1724,7 @@ static int exclude_cloud_optical_thickness(void *user_data)
 
 static int exclude_cloud_optical_thickness_error(void *user_data)
 {
-    if (((ingest_info *)user_data)->format_version <= 1)
+    if (((ingest_info *)user_data)->product_version < 2)
     {
         return dataset_unavailable((ingest_info *)user_data, "DETAILED_RESULTS/CloudOpticalThickness_Error");
     }
@@ -1896,11 +1852,9 @@ static void register_common_variables(harp_product_definition *product_definitio
                                                    exclude_bro_column_error, read_bro_column_error);
     path = "/TOTAL_COLUMNS/BrO_Error[], /TOTAL_COLUMNS/BrO[]";
     description = "derived from the relative error in percent as: BrO_Error[] * 0.01 * BrO[]";
-    harp_variable_definition_add_mapping(variable_definition, NULL, "/TOTAL_COLUMNS/BrO_Error/\\@Unit == '%'", path,
-                                         description);
+    harp_variable_definition_add_mapping(variable_definition, NULL, "CODA product version < 3", path, description);
     path = "/TOTAL_COLUMNS/BrO_Error[]";
-    harp_variable_definition_add_mapping(variable_definition, NULL, "/TOTAL_COLUMNS/BrO_Error/\\@Unit != '%'", path,
-                                         NULL);
+    harp_variable_definition_add_mapping(variable_definition, NULL, "CODA product version >= 3", path, NULL);
 
     /* BrO_column_number_density_validity */
     description = "quality flags for BrO retrieval";
@@ -1930,11 +1884,9 @@ static void register_common_variables(harp_product_definition *product_definitio
                                                    exclude_h2o_column_error, read_h2o_column_error);
     path = "/TOTAL_COLUMNS/H2O_Error[], /TOTAL_COLUMNS/H2O[]";
     description = "derived from the relative error in percent as: H2O_Error[] * 0.01 * H2O[]";
-    harp_variable_definition_add_mapping(variable_definition, NULL, "/TOTAL_COLUMNS/H2O_Error/\\@Unit == '%'", path,
-                                         description);
+    harp_variable_definition_add_mapping(variable_definition, NULL, "CODA product version < 3", path, description);
     path = "/TOTAL_COLUMNS/H2O_Error[]";
-    harp_variable_definition_add_mapping(variable_definition, NULL, "/TOTAL_COLUMNS/H2O_Error/\\@Unit != '%'", path,
-                                         NULL);
+    harp_variable_definition_add_mapping(variable_definition, NULL, "CODA product version >= 3", path, NULL);
 
     /* H2O_column_number_density_validity */
     description = "quality flags for H2O retrieval";
@@ -1964,11 +1916,9 @@ static void register_common_variables(harp_product_definition *product_definitio
                                                    exclude_hcho_column_error, read_hcho_column_error);
     path = "/TOTAL_COLUMNS/HCHO_Error[], /TOTAL_COLUMNS/HCHO[]";
     description = "derived from the relative error in percent as: HCHO_Error[] * 0.01 * HCHO[]";
-    harp_variable_definition_add_mapping(variable_definition, NULL, "/TOTAL_COLUMNS/HCHO_Error/\\@Unit == '%'", path,
-                                         description);
+    harp_variable_definition_add_mapping(variable_definition, NULL, "CODA product version < 3", path, description);
     path = "/TOTAL_COLUMNS/HCHO_Error[]";
-    harp_variable_definition_add_mapping(variable_definition, NULL, "/TOTAL_COLUMNS/HCHO_Error/\\@Unit != '%'", path,
-                                         NULL);
+    harp_variable_definition_add_mapping(variable_definition, NULL, "CODA product version >= 3", path, NULL);
 
     /* HCHO_column_number_density_validity */
     description = "quality flags for HCHO retrieval";
@@ -2003,10 +1953,10 @@ static void register_common_variables(harp_product_definition *product_definitio
     path = "/TOTAL_COLUMNS/NO2_Error[], /TOTAL_COLUMNS/NO2[]";
     description = "derived from the relative error in percent as: NO2_Error[] * 0.01 * NO2[]";
     harp_variable_definition_add_mapping(variable_definition, "corrected_no2_column unset (default)",
-                                         "/TOTAL_COLUMNS/NO2_Error/\\@Unit == '%'", path, description);
+                                         "CODA product version < 3", path, description);
     path = "/TOTAL_COLUMNS/NO2_Error[]";
     harp_variable_definition_add_mapping(variable_definition, "corrected_no2_column unset (default)",
-                                         "/TOTAL_COLUMNS/NO2_Error/\\@Unit != '%'", path, NULL);
+                                         "CODA product version >= 3", path, NULL);
 
     /* NO2_column_number_density_validity */
     description = "quality flags for NO2 retrieval";
@@ -2026,9 +1976,9 @@ static void register_common_variables(harp_product_definition *product_definitio
                                                    harp_type_double, 1, dimension_type, NULL, description, "mol/cm^2",
                                                    exclude_no2_column_tropospheric, read_no2_column_tropospheric);
     path = "/TOTAL_COLUMNS/NO2_Trop[]";
-    harp_variable_definition_add_mapping(variable_definition, NULL, "V1 product", path, NULL);
+    harp_variable_definition_add_mapping(variable_definition, NULL, "CODA product version < 2", path, NULL);
     path = "/TOTAL_COLUMNS/NO2Tropo[]";
-    harp_variable_definition_add_mapping(variable_definition, NULL, "V2 product", path, NULL);
+    harp_variable_definition_add_mapping(variable_definition, NULL, "CODA product version >= 2", path, NULL);
 
     /* O3_column_number_density */
     description = "O3 column number density";
@@ -2047,11 +1997,9 @@ static void register_common_variables(harp_product_definition *product_definitio
                                                    exclude_o3_column_error, read_o3_column_error);
     path = "/TOTAL_COLUMNS/O3_Error[], /TOTAL_COLUMNS/O3[]";
     description = "derived from the relative error in percent as: O3_Error[] * 0.01 * O3[]";
-    harp_variable_definition_add_mapping(variable_definition, NULL, "/TOTAL_COLUMNS/O3_Error/\\@Unit == '%'", path,
-                                         description);
+    harp_variable_definition_add_mapping(variable_definition, NULL, "CODA product version < 3", path, description);
     path = "/TOTAL_COLUMNS/O3_Error[]";
-    harp_variable_definition_add_mapping(variable_definition, NULL, "/TOTAL_COLUMNS/O3_Error/\\@Unit != '%'", path,
-                                         NULL);
+    harp_variable_definition_add_mapping(variable_definition, NULL, "CODA product version >= 3", path, NULL);
 
     /* O3_column_number_density_validity */
     description = "quality flags for O3 retrieval";
@@ -2081,11 +2029,9 @@ static void register_common_variables(harp_product_definition *product_definitio
                                                    exclude_oclo_column_error, read_oclo_column_error);
     path = "/TOTAL_COLUMNS/OClO_Error[], /TOTAL_COLUMNS/OClO[]";
     description = "derived from the relative error in percent as: OClO_Error[] * 0.01 * OClO[]";
-    harp_variable_definition_add_mapping(variable_definition, NULL, "/TOTAL_COLUMNS/OClO_Error/\\@Unit == '%'", path,
-                                         description);
+    harp_variable_definition_add_mapping(variable_definition, NULL, "CODA product version < 3", path, description);
     path = "/TOTAL_COLUMNS/OClO_Error[]";
-    harp_variable_definition_add_mapping(variable_definition, NULL, "/TOTAL_COLUMNS/OClO_Error/\\@Unit != '%'", path,
-                                         NULL);
+    harp_variable_definition_add_mapping(variable_definition, NULL, "CODA product version >= 3", path, NULL);
 
     /* OClO_column_number_density_validity */
     description = "quality flags for OClO retrieval";
@@ -2115,11 +2061,9 @@ static void register_common_variables(harp_product_definition *product_definitio
                                                    exclude_so2_column_error, read_so2_column_error);
     path = "/TOTAL_COLUMNS/SO2_Error[], /TOTAL_COLUMNS/SO2[]";
     description = "derived from the relative error in percent as: SO2_Error[] * 0.01 * SO2[]";
-    harp_variable_definition_add_mapping(variable_definition, NULL, "/TOTAL_COLUMNS/SO2_Error/\\@Unit == '%'", path,
-                                         description);
+    harp_variable_definition_add_mapping(variable_definition, NULL, "CODA product version < 3", path, description);
     path = "/TOTAL_COLUMNS/SO2_Error[]";
-    harp_variable_definition_add_mapping(variable_definition, NULL, "/TOTAL_COLUMNS/SO2_Error/\\@Unit != '%'", path,
-                                         NULL);
+    harp_variable_definition_add_mapping(variable_definition, NULL, "CODA product version >= 3", path, NULL);
 
     /* SO2_column_number_density_validity */
     description = "quality flags for SO2 retrieval";
@@ -2310,9 +2254,9 @@ static void register_common_variables(harp_product_definition *product_definitio
                                                    dimension_type, NULL, description, HARP_UNIT_DIMENSIONLESS,
                                                    exclude_cloud_fraction, read_cloud_fraction);
     path = "/DETAILED_RESULTS/CloudFraction[]";
-    harp_variable_definition_add_mapping(variable_definition, NULL, "V1 product", path, NULL);
+    harp_variable_definition_add_mapping(variable_definition, NULL, "CODA product version < 2", path, NULL);
     path = "/CLOUD_PROPERTIES/CloudFraction[]";
-    harp_variable_definition_add_mapping(variable_definition, NULL, "V2 product", path, NULL);
+    harp_variable_definition_add_mapping(variable_definition, NULL, "CODA product version >= 2", path, NULL);
 
     /* cloud_fraction_uncertainty */
     description = "uncertainty of the cloud fraction";
@@ -2322,9 +2266,9 @@ static void register_common_variables(harp_product_definition *product_definitio
                                                    exclude_cloud_fraction_error, read_cloud_fraction_error);
     description = "derived from the relative error in percent as: CloudFraction_Error[] * 0.01 * CloudFraction[]";
     path = "/DETAILED_RESULTS/CloudFraction_Error[], /DETAILED_RESULTS/CloudFraction[]";
-    harp_variable_definition_add_mapping(variable_definition, NULL, "V1 product", path, description);
+    harp_variable_definition_add_mapping(variable_definition, NULL, "CODA product version < 2", path, description);
     path = "/CLOUD_PROPERTIES/CloudFraction_Error[], /CLOUD_PROPERTIES/CloudFraction[]";
-    harp_variable_definition_add_mapping(variable_definition, NULL, "V2 product", path, description);
+    harp_variable_definition_add_mapping(variable_definition, NULL, "CODA product version >= 2", path, description);
 
     /* cloud_top_pressure */
     description = "cloud top pressure";
@@ -2333,9 +2277,9 @@ static void register_common_variables(harp_product_definition *product_definitio
                                                    dimension_type, NULL, description, "hPa",
                                                    exclude_pressure_cloud_top, read_pressure_cloud_top);
     path = "/DETAILED_RESULTS/CloudTopPressure[]";
-    harp_variable_definition_add_mapping(variable_definition, NULL, "V1 product", path, NULL);
+    harp_variable_definition_add_mapping(variable_definition, NULL, "CODA product version < 2", path, NULL);
     path = "/CLOUD_PROPERTIES/CloudTopPressure[]";
-    harp_variable_definition_add_mapping(variable_definition, NULL, "V2 product", path, NULL);
+    harp_variable_definition_add_mapping(variable_definition, NULL, "CODA product version >= 2", path, NULL);
 
     /* cloud_top_pressure_uncertainty */
     description = "uncertainty of the cloud top pressure";
@@ -2345,9 +2289,9 @@ static void register_common_variables(harp_product_definition *product_definitio
                                                    exclude_pressure_cloud_top_error, read_pressure_cloud_top_error);
     description = "derived from the relative error in percent as: CloudTopPressure_Error[] * 0.01 * CloudTopPressure[]";
     path = "/DETAILED_RESULTS/CloudTopPressure_Error[], /DETAILED_RESULTS/CloudTopPressure[]";
-    harp_variable_definition_add_mapping(variable_definition, NULL, "V1 product", path, description);
+    harp_variable_definition_add_mapping(variable_definition, NULL, "CODA product version < 2", path, description);
     path = "/CLOUD_PROPERTIES/CloudTopPressure_Error[], /CLOUD_PROPERTIES/CloudTopPressure[]";
-    harp_variable_definition_add_mapping(variable_definition, NULL, "V2 product", path, description);
+    harp_variable_definition_add_mapping(variable_definition, NULL, "CODA product version >= 2", path, description);
 
     /* cloud_top_height */
     description = "cloud top height";
@@ -2356,9 +2300,9 @@ static void register_common_variables(harp_product_definition *product_definitio
                                                    dimension_type, NULL, description, "km", exclude_height_cloud_top,
                                                    read_height_cloud_top);
     path = "/DETAILED_RESULTS/CloudTopHeight[]";
-    harp_variable_definition_add_mapping(variable_definition, NULL, "V1 product", path, NULL);
+    harp_variable_definition_add_mapping(variable_definition, NULL, "CODA product version < 2", path, NULL);
     path = "/CLOUD_PROPERTIES/CloudTopHeight[]";
-    harp_variable_definition_add_mapping(variable_definition, NULL, "V2 product", path, NULL);
+    harp_variable_definition_add_mapping(variable_definition, NULL, "CODA product version >= 2", path, NULL);
 
     /* cloud_top_height_uncertainty */
     description = "uncertainty of the cloud top height";
@@ -2368,9 +2312,9 @@ static void register_common_variables(harp_product_definition *product_definitio
                                                    exclude_height_cloud_top_error, read_height_cloud_top_error);
     description = "derived from the relative error in percent as: CloudTopHeight_Error[] * 0.01 * CloudTopHeight[]";
     path = "/DETAILED_RESULTS/CloudTopHeight_Error[], /DETAILED_RESULTS/CloudTopHeight[]";
-    harp_variable_definition_add_mapping(variable_definition, NULL, "V1 product", path, description);
+    harp_variable_definition_add_mapping(variable_definition, NULL, "CODA product version < 2", path, description);
     path = "/CLOUD_PROPERTIES/CloudTopHeight_Error[], /CLOUD_PROPERTIES/CloudTopHeight[]";
-    harp_variable_definition_add_mapping(variable_definition, NULL, "V2 product", path, description);
+    harp_variable_definition_add_mapping(variable_definition, NULL, "CODA product version >= 2", path, description);
 
     /* cloud_top_albedo */
     description = "cloud top albedo";
@@ -2379,9 +2323,9 @@ static void register_common_variables(harp_product_definition *product_definitio
                                                    dimension_type, NULL, description, HARP_UNIT_DIMENSIONLESS,
                                                    exclude_albedo_cloud_top, read_albedo_cloud_top);
     path = "/DETAILED_RESULTS/CloudTopAlbedo[]";
-    harp_variable_definition_add_mapping(variable_definition, NULL, "V1 product", path, NULL);
+    harp_variable_definition_add_mapping(variable_definition, NULL, "CODA product version < 2", path, NULL);
     path = "/CLOUD_PROPERTIES/CloudTopAlbedo[]";
-    harp_variable_definition_add_mapping(variable_definition, NULL, "V2 product", path, NULL);
+    harp_variable_definition_add_mapping(variable_definition, NULL, "CODA product version >= 2", path, NULL);
 
     /* cloud_top_albedo_uncertainty */
     description = "uncertainty of the cloud top albedo";
@@ -2391,9 +2335,9 @@ static void register_common_variables(harp_product_definition *product_definitio
                                                    exclude_albedo_cloud_top_error, read_albedo_cloud_top_error);
     description = "derived from the relative error in percent as: CloudTopAlbedo_Error[] * 0.01 * CloudTopAlbedo[]";
     path = "/DETAILED_RESULTS/CloudTopAlbedo_Error[], /DETAILED_RESULTS/CloudTopAlbedo[]";
-    harp_variable_definition_add_mapping(variable_definition, NULL, "V1 product", path, description);
+    harp_variable_definition_add_mapping(variable_definition, NULL, "CODA product version < 2", path, description);
     path = "/CLOUD_PROPERTIES/CloudTopAlbedo_Error[], /CLOUD_PROPERTIES/CloudTopAlbedo[]";
-    harp_variable_definition_add_mapping(variable_definition, NULL, "V2 product", path, description);
+    harp_variable_definition_add_mapping(variable_definition, NULL, "CODA product version >= 2", path, description);
 
     /* cloud_optical_depth */
     description = "cloud optical depth";
@@ -2402,9 +2346,9 @@ static void register_common_variables(harp_product_definition *product_definitio
                                                    dimension_type, NULL, description, HARP_UNIT_DIMENSIONLESS,
                                                    exclude_cloud_optical_thickness, read_cloud_optical_thickness);
     path = "/DETAILED_RESULTS/CloudOpticalThickness[]";
-    harp_variable_definition_add_mapping(variable_definition, NULL, "V1 product", path, NULL);
+    harp_variable_definition_add_mapping(variable_definition, NULL, "CODA product version < 2", path, NULL);
     path = "/CLOUD_PROPERTIES/CloudOpticalThickness[]";
-    harp_variable_definition_add_mapping(variable_definition, NULL, "V2 product", path, NULL);
+    harp_variable_definition_add_mapping(variable_definition, NULL, "CODA product version >= 2", path, NULL);
 
     /* cloud_optical_depth_uncertainty */
     description = "uncertainty of the cloud optical depth";
@@ -2416,9 +2360,9 @@ static void register_common_variables(harp_product_definition *product_definitio
     description = "derived from the relative error in percent as: CloudOpticalThickness_Error[] * 0.01 * "
         "CloudOpticalThickness[]";
     path = "/DETAILED_RESULTS/CloudOpticalThickness_Error[], /DETAILED_RESULTS/CloudOpticalThickness[]";
-    harp_variable_definition_add_mapping(variable_definition, NULL, "V1 product", path, description);
+    harp_variable_definition_add_mapping(variable_definition, NULL, "CODA product version < 2", path, description);
     path = "/CLOUD_PROPERTIES/CloudOpticalThickness_Error[], /CLOUD_PROPERTIES/CloudOpticalThickness[]";
-    harp_variable_definition_add_mapping(variable_definition, NULL, "V2 product", path, description);
+    harp_variable_definition_add_mapping(variable_definition, NULL, "CODA product version >= 2", path, description);
 
     /* absorbing_aerosol_index */
     description = "absorbing aerosol index";

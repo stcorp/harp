@@ -652,7 +652,7 @@
 <td>optional</td>
 </tr>
 <tr class="row-odd"><td><em>condition</em></td>
-<td>/TOTAL_COLUMNS/BrO_Error/&#64;Unit == &#8216;%&#8217;</td>
+<td>CODA product version &lt; 3</td>
 </tr>
 <tr class="row-even"><td><em>path</em></td>
 <td><strong>/TOTAL_COLUMNS/BrO_Error[], /TOTAL_COLUMNS/BrO[]</strong></td>
@@ -661,7 +661,7 @@
 <td>derived from the relative error in percent as: BrO_Error[] * 0.01 * BrO[]</td>
 </tr>
 <tr class="row-even"><td><em>condition</em></td>
-<td>/TOTAL_COLUMNS/BrO_Error/&#64;Unit != &#8216;%&#8217;</td>
+<td>CODA product version &gt;= 3</td>
 </tr>
 <tr class="row-odd"><td><em>path</em></td>
 <td><strong>/TOTAL_COLUMNS/BrO_Error[]</strong></td>
@@ -688,7 +688,7 @@
 <td>optional</td>
 </tr>
 <tr class="row-even"><td><em>condition</em></td>
-<td>/TOTAL_COLUMNS/H2O_Error/&#64;Unit == &#8216;%&#8217;</td>
+<td>CODA product version &lt; 3</td>
 </tr>
 <tr class="row-odd"><td><em>path</em></td>
 <td><strong>/TOTAL_COLUMNS/H2O_Error[], /TOTAL_COLUMNS/H2O[]</strong></td>
@@ -697,7 +697,7 @@
 <td>derived from the relative error in percent as: H2O_Error[] * 0.01 * H2O[]</td>
 </tr>
 <tr class="row-odd"><td><em>condition</em></td>
-<td>/TOTAL_COLUMNS/H2O_Error/&#64;Unit != &#8216;%&#8217;</td>
+<td>CODA product version &gt;= 3</td>
 </tr>
 <tr class="row-even"><td><em>path</em></td>
 <td><strong>/TOTAL_COLUMNS/H2O_Error[]</strong></td>
@@ -724,7 +724,7 @@
 <td>optional</td>
 </tr>
 <tr class="row-odd"><td><em>condition</em></td>
-<td>/TOTAL_COLUMNS/HCHO_Error/&#64;Unit == &#8216;%&#8217;</td>
+<td>CODA product version &lt; 3</td>
 </tr>
 <tr class="row-even"><td><em>path</em></td>
 <td><strong>/TOTAL_COLUMNS/HCHO_Error[], /TOTAL_COLUMNS/HCHO[]</strong></td>
@@ -733,7 +733,7 @@
 <td>derived from the relative error in percent as: HCHO_Error[] * 0.01 * HCHO[]</td>
 </tr>
 <tr class="row-even"><td><em>condition</em></td>
-<td>/TOTAL_COLUMNS/HCHO_Error/&#64;Unit != &#8216;%&#8217;</td>
+<td>CODA product version &gt;= 3</td>
 </tr>
 <tr class="row-odd"><td><em>path</em></td>
 <td><strong>/TOTAL_COLUMNS/HCHO_Error[]</strong></td>
@@ -775,7 +775,7 @@
 <td>uncertainty information unavailable; this variable will not be present in the ingested product</td>
 </tr>
 <tr class="row-odd"><td><em>condition</em></td>
-<td>corrected_no2_column unset (default) and /TOTAL_COLUMNS/NO2_Error/&#64;Unit == &#8216;%&#8217;</td>
+<td>corrected_no2_column unset (default) and CODA product version &lt; 3</td>
 </tr>
 <tr class="row-even"><td><em>path</em></td>
 <td><strong>/TOTAL_COLUMNS/NO2_Error[], /TOTAL_COLUMNS/NO2[]</strong></td>
@@ -784,7 +784,7 @@
 <td>derived from the relative error in percent as: NO2_Error[] * 0.01 * NO2[]</td>
 </tr>
 <tr class="row-even"><td><em>condition</em></td>
-<td>corrected_no2_column unset (default) and /TOTAL_COLUMNS/NO2_Error/&#64;Unit != &#8216;%&#8217;</td>
+<td>corrected_no2_column unset (default) and CODA product version &gt;= 3</td>
 </tr>
 <tr class="row-odd"><td><em>path</em></td>
 <td><strong>/TOTAL_COLUMNS/NO2_Error[]</strong></td>
@@ -804,13 +804,13 @@
 <td>optional</td>
 </tr>
 <tr class="row-even"><td><em>condition</em></td>
-<td>V1 product</td>
+<td>CODA product version &lt; 2</td>
 </tr>
 <tr class="row-odd"><td><em>path</em></td>
 <td><strong>/TOTAL_COLUMNS/NO2_Trop[]</strong></td>
 </tr>
 <tr class="row-even"><td><em>condition</em></td>
-<td>V2 product</td>
+<td>CODA product version &gt;= 2</td>
 </tr>
 <tr class="row-odd"><td><em>path</em></td>
 <td><strong>/TOTAL_COLUMNS/NO2Tropo[]</strong></td>
@@ -827,7 +827,7 @@
 <td>optional</td>
 </tr>
 <tr class="row-odd"><td><em>condition</em></td>
-<td>/TOTAL_COLUMNS/O3_Error/&#64;Unit == &#8216;%&#8217;</td>
+<td>CODA product version &lt; 3</td>
 </tr>
 <tr class="row-even"><td><em>path</em></td>
 <td><strong>/TOTAL_COLUMNS/O3_Error[], /TOTAL_COLUMNS/O3[]</strong></td>
@@ -836,7 +836,7 @@
 <td>derived from the relative error in percent as: O3_Error[] * 0.01 * O3[]</td>
 </tr>
 <tr class="row-even"><td><em>condition</em></td>
-<td>/TOTAL_COLUMNS/O3_Error/&#64;Unit != &#8216;%&#8217;</td>
+<td>CODA product version &gt;= 3</td>
 </tr>
 <tr class="row-odd"><td><em>path</em></td>
 <td><strong>/TOTAL_COLUMNS/O3_Error[]</strong></td>
@@ -863,7 +863,7 @@
 <td>optional</td>
 </tr>
 <tr class="row-even"><td><em>condition</em></td>
-<td>/TOTAL_COLUMNS/OClO_Error/&#64;Unit == &#8216;%&#8217;</td>
+<td>CODA product version &lt; 3</td>
 </tr>
 <tr class="row-odd"><td><em>path</em></td>
 <td><strong>/TOTAL_COLUMNS/OClO_Error[], /TOTAL_COLUMNS/OClO[]</strong></td>
@@ -872,7 +872,7 @@
 <td>derived from the relative error in percent as: OClO_Error[] * 0.01 * OClO[]</td>
 </tr>
 <tr class="row-odd"><td><em>condition</em></td>
-<td>/TOTAL_COLUMNS/OClO_Error/&#64;Unit != &#8216;%&#8217;</td>
+<td>CODA product version &gt;= 3</td>
 </tr>
 <tr class="row-even"><td><em>path</em></td>
 <td><strong>/TOTAL_COLUMNS/OClO_Error[]</strong></td>
@@ -899,7 +899,7 @@
 <td>optional</td>
 </tr>
 <tr class="row-odd"><td><em>condition</em></td>
-<td>/TOTAL_COLUMNS/SO2_Error/&#64;Unit == &#8216;%&#8217;</td>
+<td>CODA product version &lt; 3</td>
 </tr>
 <tr class="row-even"><td><em>path</em></td>
 <td><strong>/TOTAL_COLUMNS/SO2_Error[], /TOTAL_COLUMNS/SO2[]</strong></td>
@@ -908,7 +908,7 @@
 <td>derived from the relative error in percent as: SO2_Error[] * 0.01 * SO2[]</td>
 </tr>
 <tr class="row-even"><td><em>condition</em></td>
-<td>/TOTAL_COLUMNS/SO2_Error/&#64;Unit != &#8216;%&#8217;</td>
+<td>CODA product version &gt;= 3</td>
 </tr>
 <tr class="row-odd"><td><em>path</em></td>
 <td><strong>/TOTAL_COLUMNS/SO2_Error[]</strong></td>
@@ -1085,13 +1085,13 @@
 <td>optional</td>
 </tr>
 <tr class="row-odd"><td><em>condition</em></td>
-<td>V1 product</td>
+<td>CODA product version &lt; 2</td>
 </tr>
 <tr class="row-even"><td><em>path</em></td>
 <td><strong>/DETAILED_RESULTS/CloudFraction[]</strong></td>
 </tr>
 <tr class="row-odd"><td><em>condition</em></td>
-<td>V2 product</td>
+<td>CODA product version &gt;= 2</td>
 </tr>
 <tr class="row-even"><td><em>path</em></td>
 <td><strong>/CLOUD_PROPERTIES/CloudFraction[]</strong></td>
@@ -1101,7 +1101,7 @@
 <td>optional</td>
 </tr>
 <tr class="row-even"><td><em>condition</em></td>
-<td>V1 product</td>
+<td>CODA product version &lt; 2</td>
 </tr>
 <tr class="row-odd"><td><em>path</em></td>
 <td><strong>/DETAILED_RESULTS/CloudFraction_Error[], /DETAILED_RESULTS/CloudFraction[]</strong></td>
@@ -1110,7 +1110,7 @@
 <td>derived from the relative error in percent as: CloudFraction_Error[] * 0.01 * CloudFraction[]</td>
 </tr>
 <tr class="row-odd"><td><em>condition</em></td>
-<td>V2 product</td>
+<td>CODA product version &gt;= 2</td>
 </tr>
 <tr class="row-even"><td><em>path</em></td>
 <td><strong>/CLOUD_PROPERTIES/CloudFraction_Error[], /CLOUD_PROPERTIES/CloudFraction[]</strong></td>
@@ -1123,13 +1123,13 @@
 <td>optional</td>
 </tr>
 <tr class="row-odd"><td><em>condition</em></td>
-<td>V1 product</td>
+<td>CODA product version &lt; 2</td>
 </tr>
 <tr class="row-even"><td><em>path</em></td>
 <td><strong>/DETAILED_RESULTS/CloudTopPressure[]</strong></td>
 </tr>
 <tr class="row-odd"><td><em>condition</em></td>
-<td>V2 product</td>
+<td>CODA product version &gt;= 2</td>
 </tr>
 <tr class="row-even"><td><em>path</em></td>
 <td><strong>/CLOUD_PROPERTIES/CloudTopPressure[]</strong></td>
@@ -1139,7 +1139,7 @@
 <td>optional</td>
 </tr>
 <tr class="row-even"><td><em>condition</em></td>
-<td>V1 product</td>
+<td>CODA product version &lt; 2</td>
 </tr>
 <tr class="row-odd"><td><em>path</em></td>
 <td><strong>/DETAILED_RESULTS/CloudTopPressure_Error[], /DETAILED_RESULTS/CloudTopPressure[]</strong></td>
@@ -1148,7 +1148,7 @@
 <td>derived from the relative error in percent as: CloudTopPressure_Error[] * 0.01 * CloudTopPressure[]</td>
 </tr>
 <tr class="row-odd"><td><em>condition</em></td>
-<td>V2 product</td>
+<td>CODA product version &gt;= 2</td>
 </tr>
 <tr class="row-even"><td><em>path</em></td>
 <td><strong>/CLOUD_PROPERTIES/CloudTopPressure_Error[], /CLOUD_PROPERTIES/CloudTopPressure[]</strong></td>
@@ -1161,13 +1161,13 @@
 <td>optional</td>
 </tr>
 <tr class="row-odd"><td><em>condition</em></td>
-<td>V1 product</td>
+<td>CODA product version &lt; 2</td>
 </tr>
 <tr class="row-even"><td><em>path</em></td>
 <td><strong>/DETAILED_RESULTS/CloudTopHeight[]</strong></td>
 </tr>
 <tr class="row-odd"><td><em>condition</em></td>
-<td>V2 product</td>
+<td>CODA product version &gt;= 2</td>
 </tr>
 <tr class="row-even"><td><em>path</em></td>
 <td><strong>/CLOUD_PROPERTIES/CloudTopHeight[]</strong></td>
@@ -1177,7 +1177,7 @@
 <td>optional</td>
 </tr>
 <tr class="row-even"><td><em>condition</em></td>
-<td>V1 product</td>
+<td>CODA product version &lt; 2</td>
 </tr>
 <tr class="row-odd"><td><em>path</em></td>
 <td><strong>/DETAILED_RESULTS/CloudTopHeight_Error[], /DETAILED_RESULTS/CloudTopHeight[]</strong></td>
@@ -1186,7 +1186,7 @@
 <td>derived from the relative error in percent as: CloudTopHeight_Error[] * 0.01 * CloudTopHeight[]</td>
 </tr>
 <tr class="row-odd"><td><em>condition</em></td>
-<td>V2 product</td>
+<td>CODA product version &gt;= 2</td>
 </tr>
 <tr class="row-even"><td><em>path</em></td>
 <td><strong>/CLOUD_PROPERTIES/CloudTopHeight_Error[], /CLOUD_PROPERTIES/CloudTopHeight[]</strong></td>
@@ -1199,13 +1199,13 @@
 <td>optional</td>
 </tr>
 <tr class="row-odd"><td><em>condition</em></td>
-<td>V1 product</td>
+<td>CODA product version &lt; 2</td>
 </tr>
 <tr class="row-even"><td><em>path</em></td>
 <td><strong>/DETAILED_RESULTS/CloudTopAlbedo[]</strong></td>
 </tr>
 <tr class="row-odd"><td><em>condition</em></td>
-<td>V2 product</td>
+<td>CODA product version &gt;= 2</td>
 </tr>
 <tr class="row-even"><td><em>path</em></td>
 <td><strong>/CLOUD_PROPERTIES/CloudTopAlbedo[]</strong></td>
@@ -1215,7 +1215,7 @@
 <td>optional</td>
 </tr>
 <tr class="row-even"><td><em>condition</em></td>
-<td>V1 product</td>
+<td>CODA product version &lt; 2</td>
 </tr>
 <tr class="row-odd"><td><em>path</em></td>
 <td><strong>/DETAILED_RESULTS/CloudTopAlbedo_Error[], /DETAILED_RESULTS/CloudTopAlbedo[]</strong></td>
@@ -1224,7 +1224,7 @@
 <td>derived from the relative error in percent as: CloudTopAlbedo_Error[] * 0.01 * CloudTopAlbedo[]</td>
 </tr>
 <tr class="row-odd"><td><em>condition</em></td>
-<td>V2 product</td>
+<td>CODA product version &gt;= 2</td>
 </tr>
 <tr class="row-even"><td><em>path</em></td>
 <td><strong>/CLOUD_PROPERTIES/CloudTopAlbedo_Error[], /CLOUD_PROPERTIES/CloudTopAlbedo[]</strong></td>
@@ -1237,13 +1237,13 @@
 <td>optional</td>
 </tr>
 <tr class="row-odd"><td><em>condition</em></td>
-<td>V1 product</td>
+<td>CODA product version &lt; 2</td>
 </tr>
 <tr class="row-even"><td><em>path</em></td>
 <td><strong>/DETAILED_RESULTS/CloudOpticalThickness[]</strong></td>
 </tr>
 <tr class="row-odd"><td><em>condition</em></td>
-<td>V2 product</td>
+<td>CODA product version &gt;= 2</td>
 </tr>
 <tr class="row-even"><td><em>path</em></td>
 <td><strong>/CLOUD_PROPERTIES/CloudOpticalThickness[]</strong></td>
@@ -1253,7 +1253,7 @@
 <td>optional</td>
 </tr>
 <tr class="row-even"><td><em>condition</em></td>
-<td>V1 product</td>
+<td>CODA product version &lt; 2</td>
 </tr>
 <tr class="row-odd"><td><em>path</em></td>
 <td><strong>/DETAILED_RESULTS/CloudOpticalThickness_Error[], /DETAILED_RESULTS/CloudOpticalThickness[]</strong></td>
@@ -1262,7 +1262,7 @@
 <td>derived from the relative error in percent as: CloudOpticalThickness_Error[] * 0.01 * CloudOpticalThickness[]</td>
 </tr>
 <tr class="row-odd"><td><em>condition</em></td>
-<td>V2 product</td>
+<td>CODA product version &gt;= 2</td>
 </tr>
 <tr class="row-even"><td><em>path</em></td>
 <td><strong>/CLOUD_PROPERTIES/CloudOpticalThickness_Error[], /CLOUD_PROPERTIES/CloudOpticalThickness[]</strong></td>
