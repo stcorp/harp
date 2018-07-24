@@ -156,7 +156,7 @@ static int conversion_info_init(conversion_info *info, const harp_product *produ
     info->num_dimensions = 0;
     info->skip = NULL;
     info->depth = 0;
-    info->max_depth = 16;
+    info->max_depth = 10;
     info->variable = NULL;
 
     info->skip = malloc(harp_derived_variable_conversions->num_variables);
